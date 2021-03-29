@@ -1,0 +1,28 @@
+﻿{
+  "appName": "Empiria Financial Accounting Balance Engine Tests",
+  "description": "Balance engine tests environment settings",
+  "version": "2.0",
+  "date": "2021-03-28",
+  "settings": [
+    {
+      "type": "",
+      "key": "ApplicationKey",
+      "value": "{{APPLICATION-KEY}}"
+    },
+    {
+      "type": "",
+      "key": "GlobalConfigurationFile",
+      "value": "{{GLOBAL-CONFIGURATION-FILE}}"
+    },
+    {
+      "type": "Data",
+      "key": "IsObjectIdGeneratorServer",
+      "value": true
+    },
+    {
+      "type": "Financial.Accounting.Tests",
+      "key": "Testing.SessionToken",
+      "value": "{{TESTING-SESSION-TOKEN}}"
+    }
+  ]
+}
