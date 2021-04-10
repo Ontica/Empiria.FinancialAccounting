@@ -20,7 +20,7 @@
       "value": true
     },
     {
-      "type": "Financial.Accounting.Tests",
+      "type": "FinancialAccounting.Tests",
       "key": "Testing.SessionToken",
       "value": "{{TESTING-SESSION-TOKEN}}"
     }
