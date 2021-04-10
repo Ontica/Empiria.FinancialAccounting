@@ -1,6 +1,6 @@
 ﻿/* Empiria Financial *****************************************************************************************
 *                                                                                                            *
-*  System   : Empiria Financial Accounting                 Module  : Financial Accounting Core Domain        *
+*  System   : Empiria Financial Accounting                 Module  : Financial Accounting Core               *
 *  Assembly : Empiria.FinancialAccounting.Core.dll         Pattern : Assembly Attributes File                *
 *                                                          License : Please read LICENSE.txt file            *
 *                                                                                                            *
