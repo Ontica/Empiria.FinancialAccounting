@@ -1,5 +1,9 @@
 ﻿# Empiria Financial Accounting
 
+[![Codacy Badge](https://app.codacy.com/project/badge/Grade/3eb36cbce7564607855c8995a3796d77)](https://www.codacy.com/gh/Ontica/Empiria.FinancialAccounting/dashboard?utm_source=github.com&amp;utm_medium=referral&amp;utm_content=Ontica/Empiria.FinancialAccounting&amp;utm_campaign=Badge_Grade)
+&nbsp; &nbsp;
+[![Maintainability](https://api.codeclimate.com/v1/badges/3982e4436bbd2779606f/maintainability)](https://codeclimate.com/github/Ontica/Empiria.FinancialAccounting/maintainability)
+
 This repository contains the Empiria Financial Accounting System's backend modules,
 in C# 8.0 and .NET Framework 4.8, with a Http/Json Web Api integration module
 tailored with ASP .NET.
@@ -25,10 +29,10 @@ Empiria Financial Accounting comprises the following modules:
 3.  **Balance Engine**  
     Provides account's balances and trial balances services.
 
-3.  **Balance Engine Tests**  
+4.  **Balance Engine Tests**  
     Tests suite for the Balance Engine services.
 
-4.  **Web API**  
+5.  **Web API**  
     Http/Json RESTful interface for Financial Accounting system.
 
 Each single project can be compiled using Visual Studio 2019 Community Edition.

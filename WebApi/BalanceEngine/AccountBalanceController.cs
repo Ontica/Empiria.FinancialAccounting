@@ -16,7 +16,7 @@ using Empiria.FinancialAccounting.BalanceEngine.Adapters;
 
 namespace Empiria.FinancialAccounting.BalanceEngine.WebApi {
 
-  /// <summary>Web API with methods that perform registrar tasks over legal instruments.</summary>
+  /// <summary>Query web API used to retrive account balances.</summary>
   public class AccountBalanceController : WebApiController {
 
     #region Web Apis

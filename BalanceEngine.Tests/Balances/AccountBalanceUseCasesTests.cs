@@ -14,6 +14,7 @@ using Empiria.FinancialAccounting.BalanceEngine.UseCases;
 
 namespace Empiria.FinancialAccounting.Tests {
 
+
   /// <summary>Test cases for an account balance.</summary>
   public class AccountBalanceUseCasesTests {
 

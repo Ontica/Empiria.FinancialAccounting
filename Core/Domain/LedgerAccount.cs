@@ -33,6 +33,7 @@ namespace Empiria.FinancialAccounting {
 
     static public LedgerAccount Empty => BaseObject.ParseEmpty<LedgerAccount>();
 
+
     #endregion Constructors and parsers
 
     #region Public properties
@@ -45,7 +46,7 @@ namespace Empiria.FinancialAccounting {
 
     [DataField("NOMBRE_CUENTA_ESTANDAR")]
     public string Name {
-      get; set;
+      get; private set;
     } = string.Empty;
 
 
