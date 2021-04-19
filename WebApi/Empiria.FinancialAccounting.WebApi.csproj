@@ -61,9 +61,6 @@
     <WarningsAsErrors />
   </PropertyGroup>
   <ItemGroup>
-    <ProjectReference Include="..\..\..\extensions\Empiria.Extensions\WebApi\Empiria.WebApi.csproj" />
-  </ItemGroup>
-  <ItemGroup>
     <Reference Include="System.Net.Http" />
     <Reference Include="System.Web" />
   </ItemGroup>
@@ -73,6 +70,7 @@
     <PackageReference Include="Empiria.FinancialAccounting.BalanceEngine" Version="2.0.0" />
   </ItemGroup>
   <ItemGroup Condition=" '$(Configuration)' == 'Multisolutions' ">
+    <ProjectReference Include="..\..\extensions\WebApi\Empiria.WebApi.csproj" />
     <ProjectReference Include="..\Core\Empiria.FinancialAccounting.Core.csproj" />
     <ProjectReference Include="..\BalanceEngine\Empiria.FinancialAccounting.BalanceEngine.csproj" />
   </ItemGroup>
