@@ -64,8 +64,10 @@
     <PackageReference Include="Empiria.FinancialAccounting.Core" Version="2.0.0" />
   </ItemGroup>
   <ItemGroup Condition=" '$(Configuration)' == 'Multisolutions' ">
-    <ProjectReference Include="..\..\core\Core\Empiria.Core.csproj" />
-    <ProjectReference Include="..\..\extensions\Services\Empiria.Services.csproj" />
     <ProjectReference Include="..\Core\Empiria.FinancialAccounting.Core.csproj" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\..\..\core\Empiria.Core\Core\Empiria.Core.csproj" />
+    <ProjectReference Include="..\..\..\extensions\Empiria.Extensions\Services\Empiria.Services.csproj" />
   </ItemGroup>
 </Project>

@@ -1,0 +1,39 @@
+﻿/* Empiria Financial *****************************************************************************************
+*                                                                                                            *
+*  Module   : Balance Engine                               Component : Web Api                               *
+*  Assembly : Empiria.FinancialAccounting.WebApi.dll       Pattern   : Controller                            *
+*  Type     : TrialBalanceController                     License   : Please read LICENSE.txt file          *
+*                                                                                                            *
+*  Summary  : Query web API used to retrive trial balance.                                                *
+*                                                                                                            *
+************************* Copyright(c) La Vía Óntica SC, Ontica LLC and contributors. All rights reserved. **/
+
+using System.Web.Http;
+using Empiria.WebApi;
+
+using Empiria.FinancialAccounting.BalanceEngine.UseCases;
+using Empiria.FinancialAccounting.BalanceEngine.Adapters;
+
+namespace Empiria.FinancialAccounting.WebApi.BalanceEngine {
+
+  /// <summary>Query web API used to retrive trial balance.</summary>
+  public class TrialBalanceController : WebApiController{
+
+    #region Web Apis
+
+    [HttpGet]
+    [Route("v2/financial-accounting/trial-balance")]
+    public CollectionModel GetAccountBalance([FromUri] TrialBalanceFields fields) {
+
+      using (var usecases = TrialBalanceUseCases.UseCaseInteractor()) {
+        FixedList<TrialBalanceDto> list = usecases.TrialBalance(fields);
+
+        return new CollectionModel(this.Request, list);
+      }
+    }
+
+    #endregion Web Apis
+
+  } // class TrialBalanceController
+
+} // namespace Empiria.FinancialAccounting.WebApi.BalanceEngine 

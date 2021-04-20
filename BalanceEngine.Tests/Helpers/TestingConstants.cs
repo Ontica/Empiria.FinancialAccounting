@@ -8,6 +8,8 @@
 *                                                                                                            *
 ************************* Copyright(c) La Vía Óntica SC, Ontica LLC and contributors. All rights reserved. **/
 
+using System;
+
 namespace Empiria.FinancialAccounting.Tests {
 
   /// <summary>Provides testing constants.</summary>
@@ -15,11 +17,19 @@ namespace Empiria.FinancialAccounting.Tests {
 
     static internal decimal ACCOUNT_BALANCE = 2000;
 
-    static internal string ACCOUNT_NAME => "Bancos Nacionales";
+    static internal string ACCOUNT_NAME => "Billetes";
 
-    static internal string ACCOUNT_NUMBER => "1000-01-01";
+    static internal string ACCOUNT_NUMBER => "1101-01";
 
     static internal string SESSION_TOKEN => ConfigurationData.GetString("Testing.SessionToken");
+
+    static internal int GeneralLedgerId = 9;
+
+    static internal DateTime InitialDate = new DateTime(2020, 03, 01);
+
+    static internal DateTime FinalDate = new DateTime(2020, 03, 31);
+
+    static internal int GroupId = 1;
 
   }  // class TestingConstants
 
