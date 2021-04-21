@@ -20,8 +20,8 @@ namespace Empiria.FinancialAccounting.BalanceEngine.Data {
 
     static internal FixedList<TrialBalance> GetTrialBalance(TrialBalanceFields fields) {
       var operation = DataOperation.Parse("getTrialBalance", 
-                                    fields.ID_MAYOR, fields.FECHA_INICIAL, 
-                                    fields.FECHA_FINAL, fields.ID_GRUPO_SALDO);
+                                    fields.GeneralLedgerId, fields.InitialDate, 
+                                    fields.FinalDate, fields.BalanceGroupId);
 
       return DataReader.GetPlainObjectFixedList<TrialBalance>(operation);
     }

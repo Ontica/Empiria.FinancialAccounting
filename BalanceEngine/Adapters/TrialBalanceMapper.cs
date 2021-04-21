@@ -23,12 +23,12 @@ namespace Empiria.FinancialAccounting.BalanceEngine.Adapters {
 
       var dto = new TrialBalanceDto();
 
-      dto.NUMERO_CUENTA_ESTANDAR = trialBalance.StandardAccountNumber;
-      dto.NOMBRE_CUENTA_ESTANDAR= trialBalance.StandardAccountName;
-      dto.SALDO_INICIAL= trialBalance.InitialBalance;
-      dto.DEBE = trialBalance.Debit;
-      dto.HABER = trialBalance.Credit;
-      dto.SALDO_ACTUAL = trialBalance.CurrentBalance;
+      dto.StandardAccountNumber = trialBalance.StandardAccountNumber;
+      dto.StandardAccountName = trialBalance.StandardAccountName;
+      dto.InitialBalance = trialBalance.InitialBalance;
+      dto.Debit = trialBalance.Debit;
+      dto.Credit = trialBalance.Credit;
+      dto.CurrentBalance = trialBalance.CurrentBalance;
 
       return dto;
     }

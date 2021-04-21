@@ -12,19 +12,19 @@ using System;
 namespace Empiria.FinancialAccounting.BalanceEngine.Adapters {
   public class TrialBalanceFields {
 
-    public int ID_MAYOR {
+    public int GeneralLedgerId {
       get; set;
     }
 
-    public DateTime FECHA_INICIAL {
+    public DateTime InitialDate {
       get; set;
     }
 
-    public DateTime FECHA_FINAL {
+    public DateTime FinalDate {
       get; set;
     }
 
-    public int ID_GRUPO_SALDO {
+    public int BalanceGroupId {
       get; set;
     }
 

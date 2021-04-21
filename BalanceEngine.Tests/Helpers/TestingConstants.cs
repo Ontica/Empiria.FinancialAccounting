@@ -29,7 +29,7 @@ namespace Empiria.FinancialAccounting.Tests {
 
     static internal DateTime FinalDate = new DateTime(2020, 03, 31);
 
-    static internal int GroupId = 1;
+    static internal int BalanceGroupId = 1;
 
   }  // class TestingConstants
 

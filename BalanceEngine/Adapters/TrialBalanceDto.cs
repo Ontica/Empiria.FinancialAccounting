@@ -14,32 +14,32 @@ namespace Empiria.FinancialAccounting.BalanceEngine.Adapters {
   /// <summary>Output DTO used to return trial balances.</summary>
   public class TrialBalanceDto {
 
-    public string NUMERO_CUENTA_ESTANDAR {
+    public string StandardAccountNumber {
       get;
       internal set;
     } = string.Empty;
 
-    public string NOMBRE_CUENTA_ESTANDAR {
+    public string StandardAccountName {
       get;
       internal set;
     } = string.Empty;
 
-    public decimal SALDO_INICIAL {
+    public decimal InitialBalance {
       get;
       internal set;
     }
 
-    public decimal DEBE {
+    public decimal Debit {
       get;
       internal set;
     }
 
-    public decimal HABER {
+    public decimal Credit {
       get;
       internal set;
     }
 
-    public decimal SALDO_ACTUAL {
+    public decimal CurrentBalance {
       get;
       internal set;
     }

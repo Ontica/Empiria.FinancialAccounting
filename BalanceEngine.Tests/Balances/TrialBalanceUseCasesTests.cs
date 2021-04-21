@@ -44,10 +44,10 @@ namespace Empiria.FinancialAccounting.Tests.Balances {
     public void Should_Get_Trial_Balance() {
       TrialBalanceFields fields = new TrialBalanceFields();
 
-      fields.ID_MAYOR = TestingConstants.GeneralLedgerId;
-      fields.FECHA_INICIAL = TestingConstants.InitialDate;
-      fields.FECHA_FINAL = TestingConstants.FinalDate;
-      fields.ID_GRUPO_SALDO = TestingConstants.GroupId;
+      fields.GeneralLedgerId = TestingConstants.GeneralLedgerId;
+      fields.InitialDate = TestingConstants.InitialDate;
+      fields.FinalDate = TestingConstants.FinalDate;
+      fields.BalanceGroupId = TestingConstants.BalanceGroupId;
 
       FixedList<TrialBalanceDto> trialBalanceList = _usecases.TrialBalance(fields);
 
