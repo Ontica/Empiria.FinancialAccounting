@@ -14,36 +14,59 @@ namespace Empiria.FinancialAccounting.BalanceEngine.Adapters {
   /// <summary>Output DTO used to return trial balances.</summary>
   public class TrialBalanceDto {
 
+    public TrialBalanceCommand Command {
+      get;
+      internal set;
+    } = new TrialBalanceCommand();
+
+
+    public FixedList<TrialBalanceEntryDto> Entries {
+      get;
+      internal set;
+    } = new FixedList<TrialBalanceEntryDto>();
+
+
+  }  // class TrialBalanceDto
+
+
+  /// <summary>Output DTO used to return the entries of a trial balance.</summary>
+  public class TrialBalanceEntryDto {
+
     public string StandardAccountNumber {
       get;
       internal set;
     } = string.Empty;
+
 
     public string StandardAccountName {
       get;
       internal set;
     } = string.Empty;
 
+
     public decimal InitialBalance {
       get;
       internal set;
     }
+
 
     public decimal Debit {
       get;
       internal set;
     }
 
+
     public decimal Credit {
       get;
       internal set;
     }
+
 
     public decimal CurrentBalance {
       get;
       internal set;
     }
 
-  } // class TrialBalanceDto
+  } // class TrialBalanceEntryDto
 
 } // namespace Empiria.FinancialAccounting.BalanceEngine.Adapters

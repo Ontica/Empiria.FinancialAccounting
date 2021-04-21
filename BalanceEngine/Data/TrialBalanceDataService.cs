@@ -8,22 +8,23 @@
 *                                                                                                            *
 ************************* Copyright(c) La Vía Óntica SC, Ontica LLC and contributors. All rights reserved. **/
 using System;
-using System.Collections.Generic;
+
 using Empiria.Data;
 
-using Empiria.FinancialAccounting.BalanceEngine.Adapters;
-
-using Empiria.FinancialAccounting.BalanceEngine.Domain;
-
 namespace Empiria.FinancialAccounting.BalanceEngine.Data {
+
   static internal class TrialBalanceDataService {
 
-    static internal FixedList<TrialBalance> GetTrialBalance(TrialBalanceFields fields) {
-      var operation = DataOperation.Parse("getTrialBalance", 
-                                    fields.GeneralLedgerId, fields.InitialDate, 
-                                    fields.FinalDate, fields.BalanceGroupId);
+    static internal FixedList<TrialBalanceEntry> GetTrialBalanceEntries(int balanceGroupId,
+                                                                        int generalLedgerId,
+                                                                        DateTime initialDate,
+                                                                        DateTime finalDate) {
+      var operation = DataOperation.Parse("getTrialBalance",
+                                          generalLedgerId,
+                                          initialDate, finalDate,
+                                          balanceGroupId);
 
-      return DataReader.GetPlainObjectFixedList<TrialBalance>(operation);
+      return DataReader.GetPlainObjectFixedList<TrialBalanceEntry>(operation);
     }
 
   } // class TrialBalanceDataService

@@ -8,20 +8,33 @@
 *                                                                                                            *
 ************************* Copyright(c) La Vía Óntica SC, Ontica LLC and contributors. All rights reserved. **/
 using System;
-using Empiria.FinancialAccounting.BalanceEngine.Domain;
 
 namespace Empiria.FinancialAccounting.BalanceEngine.Adapters {
+
   static internal class TrialBalanceMapper {
 
-    static internal FixedList<TrialBalanceDto> Map(FixedList<TrialBalance> list) {
-      var mappedItems = list.Select((x) => Map(x));
+    #region Public mappers
 
-      return new FixedList<TrialBalanceDto>(mappedItems);
+    static internal TrialBalanceDto Map(TrialBalanceCommand command, TrialBalance trialBalance) {
+      return new TrialBalanceDto {
+        Command = command,
+        Entries = Map(trialBalance.Entries)
+      };
     }
 
-    static internal TrialBalanceDto Map(TrialBalance trialBalance) {
+    #endregion Public mappers
 
-      var dto = new TrialBalanceDto();
+    #region Helpers
+
+    static private FixedList<TrialBalanceEntryDto> Map(FixedList<TrialBalanceEntry> list) {
+      var mappedItems = list.Select((x) => Map(x));
+
+      return new FixedList<TrialBalanceEntryDto>(mappedItems);
+    }
+
+
+    static private TrialBalanceEntryDto Map(TrialBalanceEntry trialBalance) {
+      var dto = new TrialBalanceEntryDto();
 
       dto.StandardAccountNumber = trialBalance.StandardAccountNumber;
       dto.StandardAccountName = trialBalance.StandardAccountName;
@@ -32,6 +45,8 @@ namespace Empiria.FinancialAccounting.BalanceEngine.Adapters {
 
       return dto;
     }
+
+    #endregion Helpers
 
   } // class TrialBalanceMapper
 

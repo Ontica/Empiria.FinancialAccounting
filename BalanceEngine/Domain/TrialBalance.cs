@@ -1,86 +1,51 @@
 ﻿/* Empiria Financial *****************************************************************************************
 *                                                                                                            *
 *  Module   : Balance Engine                             Component : Domain Layer                            *
-*  Assembly : FinancialAccounting.BalanceEngine.dll      Pattern   : Empiria Plain Object                    *
-*  Type     : AccountBalance                             License   : Please read LICENSE.txt file            *
+*  Assembly : FinancialAccounting.BalanceEngine.dll      Pattern   : Information Holder                      *
+*  Type     : TrialBalance                               License   : Please read LICENSE.txt file            *
 *                                                                                                            *
-*  Summary  : Holds information about trial balance.                                                         *
+*  Summary  : Contains the header and entries of a trial balance                                             *
 *                                                                                                            *
 ************************* Copyright(c) La Vía Óntica SC, Ontica LLC and contributors. All rights reserved. **/
-
 using System;
+using Empiria.FinancialAccounting.BalanceEngine.Adapters;
 
-namespace Empiria.FinancialAccounting.BalanceEngine.Domain {
+namespace Empiria.FinancialAccounting.BalanceEngine {
 
-  /// <summary>Holds information about trial balance.</summary>
+  /// <summary>Contains the header and entries of a trial balance.</summary>
   internal class TrialBalance {
+
+    internal TrialBalance(TrialBalanceCommand command,
+                          FixedList<TrialBalanceEntry> entries) {
+      Assertion.AssertObject(command, "command");
+      Assertion.AssertObject(entries, "entries");
+
+      this.GeneralLedgerId = command.GeneralLedgerId;
+      this.InitialDate = command.InitialDate;
+      this.FinalDate = command.FinalDate;
+      this.Entries = entries;
+    }
 
     #region Constructors and parsers
 
-    private TrialBalance() {
-      // Required by Empiria Framework.
-    }
-
     #endregion Constructors and parsers
 
-    [DataField("StandardAccountNumber")]
-    public string StandardAccountNumber {
-      get;
-      private set;
-    } = string.Empty;
-
-
-    [DataField("StandardAccountName")]
-    public string StandardAccountName {
-      get;
-      private set;
-    } = string.Empty;
-
-
-    [DataField("InitialBalance")]
-    public decimal InitialBalance {
-      get;
-      private set;
-    }
-
-
-    [DataField("Debit")]
-    public decimal Debit {
-      get;
-      private set;
-    }
-
-
-    [DataField("Credit")]
-    public decimal Credit {
-      get;
-      private set;
-    }
-
-
-    [DataField("CurrentBalance")]
-    public decimal CurrentBalance {
-      get;
-      private set;
-    }
-
-
     public int GeneralLedgerId {
-      get; private set;
+      get;
     }
 
-    public string InitialDate {
-      get; private set;
+    public DateTime InitialDate {
+      get;
     }
 
-    public string FinalDate {
-      get; private set;
+    public DateTime FinalDate {
+      get;
     }
 
-    public int GroupId {
-      get; private set;
+    public FixedList<TrialBalanceEntry> Entries {
+      get;
     }
 
   } // class TrialBalance
 
-} // namespace Empiria.FinancialAccounting.BalanceEngine.Domain
+} // namespace Empiria.FinancialAccounting.BalanceEngine

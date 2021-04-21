@@ -2,9 +2,9 @@
 *                                                                                                            *
 *  Module   : Balance Engine                             Component : Use cases Layer                         *
 *  Assembly : FinancialAccounting.BalanceEngine.dll      Pattern   : Use case interactor class               *
-*  Type     : TrialBalanceUseCases                     License   : Please read LICENSE.txt file            *
+*  Type     : TrialBalanceUseCases                       License   : Please read LICENSE.txt file            *
 *                                                                                                            *
-*  Summary  : Use cases used to retrive the trial balance.                                                   *
+*  Summary  : Use cases used to build trial balances.                                                        *
 *                                                                                                            *
 ************************* Copyright(c) La Vía Óntica SC, Ontica LLC and contributors. All rights reserved. **/
 using System;
@@ -12,11 +12,10 @@ using System;
 using Empiria.Services;
 
 using Empiria.FinancialAccounting.BalanceEngine.Adapters;
-using Empiria.FinancialAccounting.BalanceEngine.Domain;
 
 namespace Empiria.FinancialAccounting.BalanceEngine.UseCases {
 
-  /// <summary>Use cases used to retrive the trial balance.</summary>
+  /// <summary>Use cases used to build trial balances.</summary>
   public class TrialBalanceUseCases : UseCase{
 
     #region Constructors and parsers
@@ -33,19 +32,18 @@ namespace Empiria.FinancialAccounting.BalanceEngine.UseCases {
 
     #region Use cases
 
-    public FixedList<TrialBalanceDto> TrialBalance(TrialBalanceFields fields) {
-      Assertion.AssertObject(fields, "fields");
-
+    public TrialBalanceDto BuildTrialBalance(TrialBalanceCommand command) {
+      Assertion.AssertObject(command, "command");
 
       var trialBalanceEngine = new TrialBalanceEngine();
 
-      var balance = trialBalanceEngine.TrialBalance(fields);
+      TrialBalance trialBalance = trialBalanceEngine.BuildTrialBalance(command);
 
-      return TrialBalanceMapper.Map(balance);
+      return TrialBalanceMapper.Map(command, trialBalance);
     }
 
-    #endregion
+    #endregion Use cases
 
-  } // class TrialBalanceUseCases 
+  } // class TrialBalanceUseCases
 
-} // Empiria.FinancialAccounting.BalanceEngine.UseCases 
+} // Empiria.FinancialAccounting.BalanceEngine.UseCases

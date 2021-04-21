@@ -4,11 +4,11 @@
 *  Assembly : FinancialAccounting.BalanceEngine.Tests    Pattern   : Use cases tests                         *
 *  Type     : AccountBalanceUseCasesTests                License   : Please read LICENSE.txt file            *
 *                                                                                                            *
-*  Summary  : Test cases for trial balance report.                                                                  *
+*  Summary  : Test cases for trial balance report.                                                           *
 *                                                                                                            *
 ************************* Copyright(c) La Vía Óntica SC, Ontica LLC and contributors. All rights reserved. **/
-using Xunit;
 using System;
+using Xunit;
 
 using Empiria.FinancialAccounting.BalanceEngine.Adapters;
 using Empiria.FinancialAccounting.BalanceEngine.UseCases;
@@ -41,18 +41,18 @@ namespace Empiria.FinancialAccounting.Tests.Balances {
     #region Facts
 
     [Fact]
-    public void Should_Get_Trial_Balance() {
-      TrialBalanceFields fields = new TrialBalanceFields();
+    public void Should_Build_A_Trial_Balance() {
+      TrialBalanceCommand command = new TrialBalanceCommand();
 
-      fields.GeneralLedgerId = TestingConstants.GeneralLedgerId;
-      fields.InitialDate = TestingConstants.InitialDate;
-      fields.FinalDate = TestingConstants.FinalDate;
-      fields.BalanceGroupId = TestingConstants.BalanceGroupId;
+      command.GeneralLedgerId = TestingConstants.GeneralLedgerId;
+      command.InitialDate = TestingConstants.InitialDate;
+      command.FinalDate = TestingConstants.FinalDate;
 
-      FixedList<TrialBalanceDto> trialBalanceList = _usecases.TrialBalance(fields);
+      TrialBalanceDto trialBalance = _usecases.BuildTrialBalance(command);
 
-      Assert.NotEmpty(trialBalanceList);
-
+      Assert.NotNull(trialBalance);
+      Assert.Equal(command, trialBalance.Command);
+      Assert.NotEmpty(trialBalance.Entries);
     }
 
     #endregion Facts
