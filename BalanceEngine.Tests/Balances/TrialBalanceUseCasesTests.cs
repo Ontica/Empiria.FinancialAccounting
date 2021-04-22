@@ -45,6 +45,9 @@ namespace Empiria.FinancialAccounting.Tests.Balances {
       TrialBalanceCommand command = new TrialBalanceCommand();
 
       command.GeneralLedgerId = TestingConstants.GeneralLedgerId;
+      command.StdAccountTypeId = TestingConstants.StdAccountTypeId;
+      command.StdAccountNumber = TestingConstants.StdAccountNumber;
+      command.StdAccountName = TestingConstants.StdAccountName;
       command.InitialDate = TestingConstants.InitialDate;
       command.FinalDate = TestingConstants.FinalDate;
 

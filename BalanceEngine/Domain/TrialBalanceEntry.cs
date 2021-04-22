@@ -69,6 +69,20 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
     }
 
 
+    public int StdAccountTypeId {
+      get; private set;
+    }
+
+    public string StdAccountNumber {
+      get; private set;
+    }
+
+
+    public string StdAccountName {
+      get; private set;
+    }
+
+
     public string InitialDate {
       get; private set;
     }

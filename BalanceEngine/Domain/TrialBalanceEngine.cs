@@ -29,6 +29,9 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
 
       FixedList<TrialBalanceEntry> entries = TrialBalanceDataService.GetTrialBalanceEntries(balanceGroupId,
                                                                                             command.GeneralLedgerId,
+                                                                                            command.StdAccountTypeId,
+                                                                                            command.StdAccountNumber,
+                                                                                            command.StdAccountName,
                                                                                             command.InitialDate,
                                                                                             command.FinalDate);
 

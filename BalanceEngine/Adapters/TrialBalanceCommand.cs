@@ -18,6 +18,17 @@ namespace Empiria.FinancialAccounting.BalanceEngine.Adapters {
       get; set;
     } = -1;
 
+    public int StdAccountTypeId {
+      get; set;
+    } = -1;
+
+    public string StdAccountNumber {
+      get; set;
+    } = string.Empty;
+
+    public string StdAccountName {
+      get; set;
+    } = string.Empty; 
 
     public DateTime InitialDate {
       get; set;

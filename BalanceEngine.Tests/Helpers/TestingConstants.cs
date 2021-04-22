@@ -25,6 +25,12 @@ namespace Empiria.FinancialAccounting.Tests {
 
     static internal int GeneralLedgerId = 9;
 
+    static internal int StdAccountTypeId = 1;
+
+    static internal string StdAccountNumber = "";
+    
+    static internal string StdAccountName = "Del";
+
     static internal DateTime InitialDate = new DateTime(2020, 03, 01);
 
     static internal DateTime FinalDate = new DateTime(2020, 03, 31);

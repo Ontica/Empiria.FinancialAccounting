@@ -21,6 +21,8 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
       Assertion.AssertObject(entries, "entries");
 
       this.GeneralLedgerId = command.GeneralLedgerId;
+      this.StdAccountTypeId = command.StdAccountTypeId;
+      this.StdAccountNumber = command.StdAccountNumber;
       this.InitialDate = command.InitialDate;
       this.FinalDate = command.FinalDate;
       this.Entries = entries;
@@ -31,6 +33,18 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
     #endregion Constructors and parsers
 
     public int GeneralLedgerId {
+      get;
+    }
+
+    public int StdAccountTypeId {
+      get;
+    }
+
+    public string StdAccountNumber {
+      get;
+    }
+
+    public string StdAccountName {
       get;
     }
 
