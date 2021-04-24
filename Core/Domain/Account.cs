@@ -1,6 +1,6 @@
 ﻿/* Empiria Financial *****************************************************************************************
 *                                                                                                            *
-*  Module   : Financial Accounting Core                  Component : Domain Layer                            *
+*  Module   : Accounts Chart                             Component : Domain Layer                            *
 *  Assembly : FinancialAccounting.Core.dll               Pattern   : Empiria Data Object                     *
 *  Type     : Account                                    License   : Please read LICENSE.txt file            *
 *                                                                                                            *
@@ -33,7 +33,7 @@ namespace Empiria.FinancialAccounting {
     #region Public properties
 
     [DataField("ID_TIPO_CUENTAS_STD")]
-    public int AccountsChartId {
+    internal int AccountsChartId {
       get; private set;
     } = -1;
 
@@ -56,22 +56,26 @@ namespace Empiria.FinancialAccounting {
     } = string.Empty;
 
 
-    [DataField("ROL_CUENTA")]
-    public string Role {
+    [DataField("ROL_CUENTA", Default = AccountRole.Summary)]
+    public AccountRole Role {
       get; private set;
-    } = string.Empty;
+    } = AccountRole.Summary;
 
 
     [DataField("ID_TIPO_CUENTA")]
-    public int AccountType {
-      get; private set;
-    } = -1;
+    private AccountType _accountType = FinancialAccounting.AccountType.Empty;
+
+    public string AccountType {
+      get {
+        return _accountType.Name;
+      }
+    }
 
 
-    [DataField("NATURALEZA")]
-    public string DebtorCreditor {
+    [DataField("NATURALEZA", Default = DebtorCreditorType.Debtor)]
+    public DebtorCreditorType DebtorCreditor {
       get; private set;
-    } = string.Empty;
+    } = DebtorCreditorType.Debtor;
 
 
     #endregion Public properties

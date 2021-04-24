@@ -1,6 +1,6 @@
 ﻿/* Empiria Financial *****************************************************************************************
 *                                                                                                            *
-*  Module   : Financial Accounting Core                  Component : Test cases                              *
+*  Module   : Accounts Chart                             Component : Test cases                              *
 *  Assembly : Empiria.FinancialAccounting.Tests.dll      Pattern   : Domain tests                            *
 *  Type     : AccountsChartTests                         License   : Please read LICENSE.txt file            *
 *                                                                                                            *
@@ -15,6 +15,32 @@ namespace Empiria.FinancialAccounting.Tests {
   public class AccountsChartTests {
 
     #region Facts
+
+    [Fact]
+    public void Should_Search_Accounts_In_An_AccountsChart() {
+      var chart = AccountsChart.Parse(TestingConstants.ACCOUNTS_CHART_UID);
+
+      Account account = chart.GetAccount(TestingConstants.ACCOUNT_NUMBER);
+
+      Assert.Equal(TestingConstants.ACCOUNT_NUMBER, account.Number);
+      Assert.Equal(TestingConstants.ACCOUNT_NAME, account.Name);
+    }
+
+
+    [Fact]
+    public void Should_Parse_An_AccountsChart() {
+      var chart = AccountsChart.Parse(TestingConstants.ACCOUNTS_CHART_UID);
+
+      Assert.Equal(TestingConstants.ACCOUNTS_CHART_UID, chart.UID);
+
+      Assert.NotEmpty(chart.Accounts);
+      Assert.NotNull(chart.AccountsPattern);
+
+      chart = AccountsChart.Parse(TestingConstants.ACCOUNTS_CHART_2021_UID);
+
+      Assert.NotEmpty(chart.Accounts);
+    }
+
 
     [Fact]
     public void Should_Parse_An_Account_By_Id() {
