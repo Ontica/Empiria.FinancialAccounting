@@ -20,9 +20,39 @@
       "value": true
     },
     {
-      "type": "Financial.Accounting.Tests",
-      "key": "Testing.SessionToken",
-      "value": "{{TESTING-SESSION-TOKEN}}"
+      "type": "FinancialAccounting.Tests",
+      "key": "SESSION_TOKEN",
+      "value": "{{TESTS_SESSION_TOKEN}}"
+    },
+    {
+      "type": "FinancialAccounting.Tests",
+      "key": "ACCOUNTS_CHART_UID",
+      "value": "{{TESTS_ACCOUNTS_CHART_UID}}"
+    },
+    {
+      "type": "FinancialAccounting.Tests",
+      "key": "ACCOUNTS_CHART_2021_UID",
+      "value": "{{TESTS_ACCOUNTS_CHART_2021_UID}}"
+    },
+    {
+      "type": "FinancialAccounting.Tests",
+      "key": "ACCOUNT_ID",
+      "value": "{{TESTS_ACCOUNT_ID}}"
+    },
+    {
+      "type": "FinancialAccounting.Tests",
+      "key": "ACCOUNT_NAME",
+      "value": "{{TESTS_ACCOUNT_NAME}}"
+    },
+    {
+      "type": "FinancialAccounting.Tests",
+      "key": "ACCOUNT_NUMBER",
+      "value": "{{TESTS_ACCOUNT_NUMBER}}"
+    },
+    {
+      "type": "FinancialAccounting.Tests",
+      "key": "ACCOUNT_BALANCE",
+      "value": "{{TESTS_ACCOUNT_BALANCE}}"
     }
   ]
 }

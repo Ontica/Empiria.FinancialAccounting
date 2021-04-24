@@ -13,15 +13,19 @@ namespace Empiria.FinancialAccounting.Tests {
   /// <summary>Provides testing constants.</summary>
   static public class TestingConstants {
 
-    static internal decimal ACCOUNT_BALANCE = 2000;
+    static readonly internal string ACCOUNTS_CHART_UID = ConfigurationData.GetString("ACCOUNTS_CHART_UID");
 
-    static internal int ACCOUNT_ID => 4;
+    static readonly internal string ACCOUNTS_CHART_2021_UID = ConfigurationData.GetString("ACCOUNTS_CHART_2021_UID");
 
-    static internal string ACCOUNT_NAME => "Billetes";
+    static readonly internal int ACCOUNT_ID = ConfigurationData.Get<int>("ACCOUNT_ID");
 
-    static internal string ACCOUNT_NUMBER => "1101-01";
+    static readonly internal string ACCOUNT_NAME = ConfigurationData.GetString("ACCOUNT_NAME");
 
-    static internal string SESSION_TOKEN => ConfigurationData.GetString("Testing.SessionToken");
+    static readonly internal string ACCOUNT_NUMBER = ConfigurationData.GetString("ACCOUNT_NUMBER");
+
+    static readonly internal decimal ACCOUNT_BALANCE = ConfigurationData.Get<decimal>("ACCOUNT_BALANCE");
+
+    static readonly internal string SESSION_TOKEN = ConfigurationData.GetString("SESSION_TOKEN");
 
   }  // class TestingConstants
 
