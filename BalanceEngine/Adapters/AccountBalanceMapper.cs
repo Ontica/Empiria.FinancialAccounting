@@ -17,8 +17,8 @@ namespace Empiria.FinancialAccounting.BalanceEngine.Adapters {
     static internal AccountBalanceDto Map(AccountBalance balance) {
 
       return new AccountBalanceDto {
-        AccountNumber = balance.LedgerAccount.AccountNumber,
-        AccountName = balance.LedgerAccount.Name,
+        AccountNumber = balance.Account.Number,
+        AccountName = balance.Account.Name,
         Total = balance.Total
       };
     }

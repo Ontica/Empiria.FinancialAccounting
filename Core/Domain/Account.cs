@@ -2,44 +2,44 @@
 *                                                                                                            *
 *  Module   : Financial Accounting Core                  Component : Domain Layer                            *
 *  Assembly : FinancialAccounting.Core.dll               Pattern   : Empiria Data Object                     *
-*  Type     : LedgerAccount                              License   : Please read LICENSE.txt file            *
+*  Type     : Account                                    License   : Please read LICENSE.txt file            *
 *                                                                                                            *
-*  Summary  : Contains information about a ledger account.                                                   *
+*  Summary  : Contains information about an account.                                                         *
 *                                                                                                            *
 ************************* Copyright(c) La Vía Óntica SC, Ontica LLC and contributors. All rights reserved. **/
 using System;
 
 namespace Empiria.FinancialAccounting {
 
-  /// <summary>Contains information about a ledger account.</summary>
-  public class LedgerAccount : BaseObject {
+  /// <summary>Contains information about an account.</summary>
+  public class Account : BaseObject {
 
     #region Constructors and parsers
 
-    private LedgerAccount() {
+    private Account() {
       // Required by Empiria Framework.
     }
 
 
-    static internal LedgerAccount Parse(int id) {
-      return BaseObject.ParseId<LedgerAccount>(id);
+    static public Account Parse(int id) {
+      return BaseObject.ParseId<Account>(id);
     }
 
-    static public LedgerAccount Parse(string accountNumber) {
-      Assertion.AssertObject(accountNumber, "accountNumber");
-
-      return BaseObject.ParseKey<LedgerAccount>(accountNumber);
-    }
-
-    static public LedgerAccount Empty => BaseObject.ParseEmpty<LedgerAccount>();
+    static public Account Empty => BaseObject.ParseEmpty<Account>();
 
 
     #endregion Constructors and parsers
 
     #region Public properties
 
+    [DataField("ID_TIPO_CUENTAS_STD")]
+    public int AccountsChartId {
+      get; private set;
+    } = -1;
+
+
     [DataField("NUMERO_CUENTA_ESTANDAR")]
-    public string AccountNumber {
+    public string Number {
       get; private set;
     } = string.Empty;
 
@@ -50,28 +50,32 @@ namespace Empiria.FinancialAccounting {
     } = string.Empty;
 
 
+    [DataField("DESCRIPCION")]
     public string Description {
       get; private set;
     } = string.Empty;
 
 
+    [DataField("ROL_CUENTA")]
     public string Role {
       get; private set;
     } = string.Empty;
 
 
-    public string AccountType {
+    [DataField("ID_TIPO_CUENTA")]
+    public int AccountType {
       get; private set;
-    } = string.Empty;
+    } = -1;
 
 
-    public string Naturaleza {
+    [DataField("NATURALEZA")]
+    public string DebtorCreditor {
       get; private set;
     } = string.Empty;
 
 
     #endregion Public properties
 
-  }  // class LedgerAccount
+  }  // class Account
 
 }  // namespace Empiria.FinancialAccounting

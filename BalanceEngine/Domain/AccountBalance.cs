@@ -18,7 +18,7 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
     }
 
     [DataField("ID_CUENTA_ESTANDAR")]
-    public LedgerAccount LedgerAccount {
+    public Account Account {
       get;
       private set;
     }

@@ -16,8 +16,8 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
   /// <summary>Provides data read methods for ledger account balances.</summary>
   static internal class AccountBalanceDataService {
 
-    static internal AccountBalance GetCurrentBalance(LedgerAccount ledgerAccount) {
-      var op = DataOperation.Parse("getAccountBalance", ledgerAccount.AccountNumber);
+    static internal AccountBalance GetCurrentBalance(Account account) {
+      var op = DataOperation.Parse("getAccountBalance", account.Number);
 
       return DataReader.GetPlainObject<AccountBalance>(op);
     }

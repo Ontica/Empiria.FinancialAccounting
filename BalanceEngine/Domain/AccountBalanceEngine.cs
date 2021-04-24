@@ -22,16 +22,16 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
     internal AccountBalance AccountBalance(string accountNumber) {
       Assertion.AssertObject(accountNumber, "accountNumber");
 
-      var ledgerAccount = LedgerAccount.Parse(accountNumber);
+      var account = Account.Parse(4);
 
-      return CalculateCurrentBalance(ledgerAccount);
+      return CalculateCurrentBalance(account);
     }
 
 
     #region Private methods
 
-    private AccountBalance CalculateCurrentBalance(LedgerAccount ledgerAccount) {
-      return AccountBalanceDataService.GetCurrentBalance(ledgerAccount);
+    private AccountBalance CalculateCurrentBalance(Account account) {
+      return AccountBalanceDataService.GetCurrentBalance(account);
     }
 
     #endregion Private methods

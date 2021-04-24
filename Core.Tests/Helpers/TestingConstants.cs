@@ -15,9 +15,11 @@ namespace Empiria.FinancialAccounting.Tests {
 
     static internal decimal ACCOUNT_BALANCE = 2000;
 
-    static internal string ACCOUNT_NAME => "Bancos Nacionales";
+    static internal int ACCOUNT_ID => 4;
 
-    static internal string ACCOUNT_NUMBER => "1000-01-01";
+    static internal string ACCOUNT_NAME => "Billetes";
+
+    static internal string ACCOUNT_NUMBER => "1101-01";
 
     static internal string SESSION_TOKEN => ConfigurationData.GetString("Testing.SessionToken");
 
