@@ -32,7 +32,7 @@ namespace Empiria.FinancialAccounting {
 
     #region Public properties
 
-    [DataField("ID_TIPO_CUENTAS_STD")]
+    [DataField("ID_TIPO_CUENTAS_STD", ConvertFrom=typeof(long))]
     internal int AccountsChartId {
       get; private set;
     } = -1;
