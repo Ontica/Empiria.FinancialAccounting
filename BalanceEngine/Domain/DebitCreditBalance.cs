@@ -2,49 +2,37 @@
 *                                                                                                            *
 *  Module   : Balance Engine                             Component : Domain Layer                            *
 *  Assembly : FinancialAccounting.BalanceEngine.dll      Pattern   : Information Holder                      *
-*  Type     : TrialBalance                               License   : Please read LICENSE.txt file            *
+*  Type     : DebitCreditBalance                         License   : Please read LICENSE.txt file            *
 *                                                                                                            *
-*  Summary  : Contains the header and entries of a trial balance                                             *
+*  Summary  : Contains the header and entries of a credit and debit balance.                                 *
 *                                                                                                            *
 ************************* Copyright(c) La Vía Óntica SC, Ontica LLC and contributors. All rights reserved. **/
 using System;
+
 using Empiria.FinancialAccounting.BalanceEngine.Adapters;
 
 namespace Empiria.FinancialAccounting.BalanceEngine {
 
-  /// <summary>Contains the header and entries of a trial balance.</summary>
-  internal class TrialBalance {
+  /// <summary>Contains the header and entries of a credit and debit balance.</summary>
+  internal class DebitCreditBalance {
 
-    internal TrialBalance(TrialBalanceCommand command,
-                          FixedList<TrialBalanceEntry> entries) {
+
+    internal DebitCreditBalance(TrialBalanceCommand command,
+                                FixedList<DebitCreditBalanceEntry> entries) {
+
       Assertion.AssertObject(command, "command");
       Assertion.AssertObject(entries, "entries");
 
       this.LedgerId = command.LedgerId;
-      this.LedgerAccountId = command.LedgerAccountId;
       this.AccountId = command.AccountId;
       this.SectorId = command.SectorId;
       this.SubsidiaryAccountId = command.SubsidiaryAccountId;
-      this.AccountCatalogueId = command.AccountCatalogueId;
-      this.AccountNumber = command.AccountNumber;
-      this.AccountName = command.AccountName;
-      this.InitialBalance = command.InitialBalance;
-      this.InitialDate = command.InitialDate;
-      this.FinalDate = command.FinalDate;
-      this.SubsidiaryAccountId = command.SubsidiaryAccountId;
+      this.Balance = command.Balance;
       this.Entries = entries;
     }
 
 
-    #region Constructors and parsers
-
-    #endregion Constructors and parsers
-
     public int LedgerId {
-      get;
-    }
-
-    public int LedgerAccountId {
       get;
     }
 
@@ -52,7 +40,6 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
     public int AccountId {
       get;
     }
-
 
     public int SectorId {
       get;
@@ -63,35 +50,15 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
       get;
     }
 
-    public int AccountCatalogueId {
+
+    public decimal Balance {
       get;
     }
 
-    public string AccountNumber {
+    public FixedList<DebitCreditBalanceEntry> Entries {
       get;
     }
 
-    public string AccountName {
-      get;
-    }
-
-    public decimal InitialBalance{
-      get;
-    }
-
-    public DateTime InitialDate {
-      get;
-    }
-
-    public DateTime FinalDate {
-      get;
-    }
-
-    public FixedList<TrialBalanceEntry> Entries {
-      get;
-    }
-
-
-  } // class TrialBalance
+  } // class DebitCreditBalance
 
 } // namespace Empiria.FinancialAccounting.BalanceEngine

@@ -14,21 +14,61 @@ namespace Empiria.FinancialAccounting.BalanceEngine.Adapters {
   /// <summary>Command payload used to build trial balances.</summary>
   public class TrialBalanceCommand {
 
-    public int GeneralLedgerId {
+    public int LedgerId {
       get; set;
     } = -1;
 
-    public int StdAccountTypeId {
+    public int AccountCatalogueId {
       get; set;
     } = -1;
 
-    public string StdAccountNumber {
+    public string AccountNumber {
       get; set;
     } = string.Empty;
 
-    public string StdAccountName {
+    public string AccountName {
       get; set;
-    } = string.Empty; 
+    } = string.Empty;
+
+    public int LedgerAccountId {
+      get; set;
+    } = -1;
+
+
+    public int AccountId {
+      get; set;
+    } = -1;
+
+
+    public int SectorId {
+      get; set;
+    } = -1;
+
+
+    public int SubsidiaryAccountId {
+      get; set;
+    } = -1;
+
+    public int CurrencyId {
+      get; set;
+    } = -1; 
+
+    public decimal InitialBalance {
+      get; set;
+    }
+
+    public decimal Debit {
+      get; set;
+    }
+
+    public decimal Credit {
+      get; set;
+    }
+
+    public decimal Balance {
+      get; set;
+    }
+
 
     public DateTime InitialDate {
       get; set;
@@ -38,6 +78,27 @@ namespace Empiria.FinancialAccounting.BalanceEngine.Adapters {
     public DateTime FinalDate {
       get; set;
     } = DateTime.Today.AddDays(1);
+
+
+    public string Fields {
+      get; set;
+    } = string.Empty;
+
+    public string Condition {
+      get; set;
+    } = string.Empty;
+
+    public string Grouping {
+      get; set;
+    } = string.Empty;
+
+    public string Having {
+      get; set;
+    } = string.Empty;
+
+    public string Ordering {
+      get; set;
+    } = string.Empty;
 
 
     public int OutputFormat {

@@ -27,22 +27,22 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
 
       int balanceGroupId = DetermineBalanceGroup(command.InitialDate);
 
-      FixedList<TrialBalanceEntry> entries = TrialBalanceDataService.GetTrialBalanceEntries(balanceGroupId,
-                                                                                            command.GeneralLedgerId,
-                                                                                            command.StdAccountTypeId,
-                                                                                            command.StdAccountNumber,
-                                                                                            command.StdAccountName,
-                                                                                            command.InitialDate,
-                                                                                            command.FinalDate);
+      FixedList<TrialBalanceEntry> entries = TrialBalanceDataService.GetTrialBalanceEntries(command.InitialDate,
+                                                                                            command.FinalDate,
+                                                                                            balanceGroupId,
+                                                                                            command.LedgerId,
+                                                                                            command.AccountCatalogueId,
+                                                                                            command.AccountNumber,
+                                                                                            command.AccountName
+                                                                                            );
 
       return new TrialBalance(command, entries);
     }
 
-
     private int DetermineBalanceGroup(DateTime initialDate) {
       return 1;
     }
-
+      
   } // class TrialBalanceEngine
 
 } // namespace Empiria.FinancialAccounting.BalanceEngine

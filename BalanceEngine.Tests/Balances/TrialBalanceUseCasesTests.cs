@@ -44,10 +44,10 @@ namespace Empiria.FinancialAccounting.Tests.Balances {
     public void Should_Build_A_Trial_Balance() {
       TrialBalanceCommand command = new TrialBalanceCommand();
 
-      command.GeneralLedgerId = TestingConstants.GeneralLedgerId;
-      command.StdAccountTypeId = TestingConstants.StdAccountTypeId;
-      command.StdAccountNumber = TestingConstants.StdAccountNumber;
-      command.StdAccountName = TestingConstants.StdAccountName;
+      command.LedgerId = TestingConstants.LedgerId;
+      command.AccountCatalogueId = TestingConstants.AccountCatalogueId;
+      command.AccountNumber = TestingConstants.AccountNumber;
+      command.AccountName = TestingConstants.AccountName;
       command.InitialDate = TestingConstants.InitialDate;
       command.FinalDate = TestingConstants.FinalDate;
 
