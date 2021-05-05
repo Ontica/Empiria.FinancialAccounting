@@ -35,13 +35,12 @@ namespace Empiria.FinancialAccounting.BalanceEngine.Adapters {
     static private TrialBalanceEntryDto Map(TrialBalanceEntry trialBalance) {
       var dto = new TrialBalanceEntryDto();
 
-      //dto.AccountNumber = trialBalance.AccountNumber;
-      //dto.AccountName = trialBalance.AccountName;
-      //dto.InitialBalance = trialBalance.InitialBalance;
-      //dto.Debit = trialBalance.Debit;
-      //dto.Credit = trialBalance.Credit;
+
+      dto.LedgerId = trialBalance.LedgerId;
+      dto.CurrencyId = trialBalance.CurrencyId;
+      dto.SectorId = trialBalance.SectorId;
       dto.LedgerAccountId = trialBalance.LedgerAccountId;
-      dto.CurrentBalance = trialBalance.CurrentBalance;
+      dto.AccountId = trialBalance.AccountId;
       
       return dto;
     }

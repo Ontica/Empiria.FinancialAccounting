@@ -27,14 +27,18 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
 
       int balanceGroupId = DetermineBalanceGroup(command.InitialDate);
 
-      FixedList<TrialBalanceEntry> entries = TrialBalanceDataService.GetTrialBalanceEntries(command.InitialDate,
-                                                                                            command.FinalDate,
-                                                                                            balanceGroupId,
-                                                                                            command.LedgerId,
-                                                                                            command.AccountCatalogueId,
-                                                                                            command.AccountNumber,
-                                                                                            command.AccountName
-                                                                                            );
+      TrialBalanceCommandData trialBalanceCommandData = new TrialBalanceCommandData();
+      trialBalanceCommandData.InitialDate = command.InitialDate;
+      trialBalanceCommandData.FinalDate = command.FinalDate;
+      trialBalanceCommandData.BalanceGroupId = balanceGroupId;
+      trialBalanceCommandData.Fields = command.Fields;
+      trialBalanceCommandData.Condition = command.Condition;
+      trialBalanceCommandData.Grouping = command.Grouping;
+      trialBalanceCommandData.Having = command.Having;
+      trialBalanceCommandData.Ordering = command.Ordering;
+
+
+      FixedList<TrialBalanceEntry> entries = TrialBalanceDataService.GetTrialBalanceEntries(trialBalanceCommandData);
 
       return new TrialBalance(command, entries);
     }

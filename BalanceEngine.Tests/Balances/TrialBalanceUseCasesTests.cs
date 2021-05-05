@@ -44,12 +44,13 @@ namespace Empiria.FinancialAccounting.Tests.Balances {
     public void Should_Build_A_Trial_Balance() {
       TrialBalanceCommand command = new TrialBalanceCommand();
 
-      command.LedgerId = TestingConstants.LedgerId;
-      command.AccountCatalogueId = TestingConstants.AccountCatalogueId;
-      command.AccountNumber = TestingConstants.AccountNumber;
-      command.AccountName = TestingConstants.AccountName;
       command.InitialDate = TestingConstants.InitialDate;
       command.FinalDate = TestingConstants.FinalDate;
+      command.Fields = "LedgerId, CurrencyId, SectorId, LedgerAccountId, AccountId";
+      command.Condition = "SectorId > 0";
+      command.Grouping = "LedgerId, CurrencyId, SectorId, LedgerAccountId, AccountId";
+      command.Having = "";
+      command.Ordering = "";
 
       TrialBalanceDto trialBalance = _usecases.BuildTrialBalance(command);
 

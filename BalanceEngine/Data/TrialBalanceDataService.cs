@@ -15,20 +15,15 @@ namespace Empiria.FinancialAccounting.BalanceEngine.Data {
 
   static internal class TrialBalanceDataService {
 
-    static internal FixedList<TrialBalanceEntry> GetTrialBalanceEntries(DateTime initialDate,
-                                                                        DateTime finalDate,
-                                                                        int balanceGroupId,
-                                                                        int generalLedgerId,
-                                                                        int stdAccountTypeId,
-                                                                        string stdAccountNumber,
-                                                                        string stdAccountName) {
-      var operation = DataOperation.Parse("getTrialBalance",
-                                          generalLedgerId,
-                                          stdAccountTypeId,
-                                          stdAccountNumber,
-                                          stdAccountName,
-                                          initialDate, finalDate,
-                                          balanceGroupId);
+    static internal FixedList<TrialBalanceEntry> GetTrialBalanceEntries(TrialBalanceCommandData commandData) {
+      
+      var operation = DataOperation.Parse("@qryTrialBalance", 
+                                          commandData.InitialDate.ToString("yyyy/MM/dd"),
+                                          commandData.FinalDate.ToString("yyyy/MM/dd"), 
+                                          commandData.BalanceGroupId, commandData.Fields, 
+                                          commandData.Condition, commandData.Grouping, 
+                                          commandData.Having, commandData.Ordering
+                                          );
 
       return DataReader.GetPlainObjectFixedList<TrialBalanceEntry>(operation);
     }

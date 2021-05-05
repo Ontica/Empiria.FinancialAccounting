@@ -22,14 +22,32 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
 
     #endregion Constructors and parsers
 
+    [DataField("LedgerId")]
+    public int LedgerId {
+      get;
+      private set;
+    }
+
+    [DataField("CurrencyId")]
+    public int CurrencyId {
+      get;
+      private set;
+    }
+
+    [DataField("SectorId")]
+    public int SectorId {
+      get;
+      private set;
+    }
+
     [DataField("LedgerAccountId")]
     public int LedgerAccountId {
       get;
       private set;
     }
 
-    [DataField("CurrentBalance")]
-    public decimal CurrentBalance {
+    [DataField("AccountId")]
+    public int AccountId {
       get;
       private set;
     }
