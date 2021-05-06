@@ -108,4 +108,4 @@ namespace Empiria.FinancialAccounting.BalanceEngine.Adapters {
 
   } // class TrialBalanceCommand
 
-} // Empiria.FinancialAccounting.BalanceEngine.Adapters
+} // namespace Empiria.FinancialAccounting.BalanceEngine.Adapters

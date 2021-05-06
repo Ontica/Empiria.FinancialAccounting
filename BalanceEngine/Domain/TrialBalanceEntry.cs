@@ -34,12 +34,6 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
       private set;
     }
 
-    [DataField("SectorId")]
-    public int SectorId {
-      get;
-      private set;
-    }
-
     [DataField("LedgerAccountId")]
     public int LedgerAccountId {
       get;
@@ -52,25 +46,55 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
       private set;
     }
 
-
-    public int AccountCatalogueId {
-      get; private set;
+    [DataField("SectorId")]
+    public int SectorId {
+      get;
+      private set;
     }
 
-
-    public string InitialDate {
-      get; private set;
+    [DataField("SubsidiaryAccountId")]
+    public int SubsidiaryAccountId {
+      get;
+      private set;
     }
 
-
-    public string FinalDate {
-      get; private set;
+    [DataField("BudgetKey")]
+    public string BudgetKey {
+      get;
+      private set;
     }
 
-
-    public int GroupId {
-      get; private set;
+    [DataField("AccountNumber")]
+    public string AccountNumber {
+      get;
+      private set;
     }
+
+    //[DataField("AccountName")]
+    //public string AccountName {
+    //  get;
+    //  private set;
+    //}
+
+    //[DataField("SubsidiaryAccountNumber")]
+    //public string SubsidiaryAccountNumber {
+    //  get;
+    //  private set;
+    //}
+
+    //[DataField("SubsidiaryAccountName")]
+    //public string SubsidiaryAccountName {
+    //  get;
+    //  private set;
+    //}
+
+    //[DataField("AccountTypeId")]
+    //public int AccountTypeId {
+    //  get;
+    //  private set;
+    //}
+
+
 
   } // class TrialBalance
 

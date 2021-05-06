@@ -46,9 +46,10 @@ namespace Empiria.FinancialAccounting.Tests.Balances {
 
       command.InitialDate = TestingConstants.InitialDate;
       command.FinalDate = TestingConstants.FinalDate;
-      command.Fields = "LedgerId, CurrencyId, SectorId, LedgerAccountId, AccountId";
-      command.Condition = "SectorId > 0";
-      command.Grouping = "LedgerId, CurrencyId, SectorId, LedgerAccountId, AccountId";
+      command.Fields = " LedgerId, CurrencyId, SectorId, LedgerAccountId, AccountId, " +
+                        "-1 AS SubsidiaryAccountId, '' AS BudgetKey, '' AS AccountNumber ";
+      command.Condition = "AND ID_SECTOR > 0 ";
+      command.Grouping = " LedgerId, CurrencyId, SectorId, LedgerAccountId, AccountId ";
       command.Having = "";
       command.Ordering = "";
 
