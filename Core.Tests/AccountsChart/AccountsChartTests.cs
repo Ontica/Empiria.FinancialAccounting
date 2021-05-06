@@ -39,6 +39,7 @@ namespace Empiria.FinancialAccounting.Tests {
       chart = AccountsChart.Parse(TestingConstants.ACCOUNTS_CHART_2021_UID);
 
       Assert.NotEmpty(chart.Accounts);
+      Assert.NotNull(chart.AccountsPattern);
     }
 
 

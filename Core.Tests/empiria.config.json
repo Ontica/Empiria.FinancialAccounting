@@ -48,11 +48,6 @@
       "type": "FinancialAccounting.Tests",
       "key": "ACCOUNT_NUMBER",
       "value": "{{TESTS_ACCOUNT_NUMBER}}"
-    },
-    {
-      "type": "FinancialAccounting.Tests",
-      "key": "ACCOUNT_BALANCE",
-      "value": "{{TESTS_ACCOUNT_BALANCE}}"
     }
   ]
 }

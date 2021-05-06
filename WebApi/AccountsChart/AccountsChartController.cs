@@ -12,6 +12,9 @@ using System.Web.Http;
 
 using Empiria.WebApi;
 
+using Empiria.FinancialAccounting.UseCases;
+using Empiria.FinancialAccounting.Adapters;
+
 namespace Empiria.FinancialAccounting.WebApi {
 
   /// <summary>Query web API used to retrive accounts and accounts charts.</summary>
@@ -19,13 +22,30 @@ namespace Empiria.FinancialAccounting.WebApi {
 
     #region Web Apis
 
+
     [HttpGet]
     [Route("v2/financial-accounting/accounts-chart/{accountsChartUID:guid}")]
-    public CollectionModel GetAccounts([FromUri] string accountsChartUID) {
+    public SingleObjectModel GetAccounts([FromUri] string accountsChartUID) {
 
-      var chart = AccountsChart.Parse(accountsChartUID);
+      using (var usecases = AccountsChartUseCases.UseCaseInteractor()) {
+        AccountsChartDto accountsChart = usecases.GetAccounts(accountsChartUID);
 
-      return new CollectionModel(this.Request, chart.Accounts);
+        return new SingleObjectModel(base.Request, accountsChart);
+      }
+    }
+
+
+    [HttpPost]
+    [Route("v2/financial-accounting/accounts-chart/{accountsChartUID:guid}")]
+    public SingleObjectModel SearchAccounts([FromUri] string accountsChartUID,
+                                            [FromBody] AccountsSearchCommand searchCommand) {
+      base.RequireBody(searchCommand);
+
+      using (var usecases = AccountsChartUseCases.UseCaseInteractor()) {
+        AccountsChartDto accountsChart = usecases.SearchAccounts(accountsChartUID, searchCommand);
+
+        return new SingleObjectModel(base.Request, accountsChart);
+      }
     }
 
     #endregion Web Apis

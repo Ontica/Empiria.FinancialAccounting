@@ -23,8 +23,6 @@ namespace Empiria.FinancialAccounting.Tests {
 
     static readonly internal string ACCOUNT_NUMBER = ConfigurationData.GetString("ACCOUNT_NUMBER");
 
-    static readonly internal decimal ACCOUNT_BALANCE = ConfigurationData.Get<decimal>("ACCOUNT_BALANCE");
-
     static readonly internal string SESSION_TOKEN = ConfigurationData.GetString("SESSION_TOKEN");
 
   }  // class TestingConstants
