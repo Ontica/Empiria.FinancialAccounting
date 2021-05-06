@@ -34,12 +34,10 @@ namespace Empiria.FinancialAccounting.Tests {
       Assert.Equal(TestingConstants.ACCOUNTS_CHART_UID, chart.UID);
 
       Assert.NotEmpty(chart.Accounts);
-      Assert.NotNull(chart.AccountsPattern);
 
       chart = AccountsChart.Parse(TestingConstants.ACCOUNTS_CHART_2021_UID);
 
       Assert.NotEmpty(chart.Accounts);
-      Assert.NotNull(chart.AccountsPattern);
     }
 
 

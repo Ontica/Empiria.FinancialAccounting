@@ -7,6 +7,7 @@
 *  Summary  : Output DTO with data related to an account chart and its contents.                             *
 *                                                                                                            *
 ************************* Copyright(c) La Vía Óntica SC, Ontica LLC and contributors. All rights reserved. **/
+using System;
 
 namespace Empiria.FinancialAccounting.Adapters {
 
@@ -27,18 +28,11 @@ namespace Empiria.FinancialAccounting.Adapters {
     }
 
 
-    public string AccountsPattern {
-      get; internal set;
-    }
-
-
     public FixedList<AccountDto> Accounts {
       get; internal set;
     }
 
-
   }  // public class AccountsChartDto
-
 
 
   /// <summary>Output DTO with an account data.</summary>

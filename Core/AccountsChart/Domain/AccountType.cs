@@ -21,6 +21,12 @@ namespace Empiria.FinancialAccounting {
       return BaseObject.ParseId<AccountType>(id);
     }
 
+
+    static public FixedList<AccountType> GetList() {
+      return BaseObject.GetList<AccountType>()
+                       .ToFixedList();
+    }
+
     static public AccountType Empty => BaseObject.ParseEmpty<AccountType>();
 
   } // class AccountType

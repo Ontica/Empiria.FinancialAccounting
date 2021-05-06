@@ -35,16 +35,26 @@ namespace Empiria.FinancialAccounting {
     }
 
 
+    static public FixedList<AccountsChart> GetList() {
+      return BaseObject.GetList<AccountsChart>()
+                       .ToFixedList();
+    }
+
+
     static public AccountsChart Empty => BaseObject.ParseEmpty<AccountsChart>();
 
 
-    protected override void OnInitialize() {
-      base.OnInitialize();
+    protected override void OnLoad() {
+      base.OnLoad();
+
+      this.MasterData = new AccountsChartMasterData(this, this.ExtendedDataField);
 
       _accounts = new Lazy<FixedList<Account>>(() => AccountsChartData.GetAccounts(this));
     }
 
+
     #endregion Constructors and parsers
+
 
     #region Public properties
 
@@ -56,11 +66,11 @@ namespace Empiria.FinancialAccounting {
     }
 
 
-    public string AccountsPattern {
-      get {
-        return base.ExtendedDataField.Get<string>("accountsPattern");
-      }
+    public AccountsChartMasterData MasterData {
+      get;
+      private set;
     }
+
 
     #endregion Public properties
 
