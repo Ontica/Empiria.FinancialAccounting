@@ -8,6 +8,7 @@
 *                                                                                                            *
 ************************* Copyright(c) La Vía Óntica SC, Ontica LLC and contributors. All rights reserved. **/
 using System;
+using System.Linq;
 
 using Empiria.Services;
 
@@ -39,6 +40,22 @@ namespace Empiria.FinancialAccounting.UseCases {
       var accountsChart = AccountsChart.Parse(accountsChartUID);
 
       return AccountsChartMapper.Map(accountsChart);
+    }
+
+
+    public FixedList<NamedEntityDto> GetAccountsChartsList() {
+      FixedList<AccountsChart> accountsChartsList = AccountsChart.GetList();
+
+      return accountsChartsList.MapToNamedEntityList();
+    }
+
+
+    public FixedList<AccountsChartMasterDataDto> GetAccountsChartsMasterData() {
+      FixedList<AccountsChart> accountsChartsList = AccountsChart.GetList();
+
+      var masterDataList = new FixedList<AccountsChartMasterData>(accountsChartsList.Select(x => x.MasterData));
+
+      return AccountsChartMasterDataMapper.Map(masterDataList);
     }
 
 

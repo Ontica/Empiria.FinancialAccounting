@@ -8,10 +8,14 @@
 *                                                                                                            *
 ************************* Copyright(c) La Vía Óntica SC, Ontica LLC and contributors. All rights reserved. **/
 
+using System.Collections.Generic;
+
 namespace Empiria.FinancialAccounting.Tests {
 
   /// <summary>Provides testing constants.</summary>
   static public class TestingConstants {
+
+    static readonly internal int ACCOUNTS_CHART_COUNT = ConfigurationData.Get<int>("ACCOUNTS_CHART_COUNT");
 
     static readonly internal string ACCOUNTS_CHART_UID = ConfigurationData.GetString("ACCOUNTS_CHART_UID");
 
@@ -24,6 +28,8 @@ namespace Empiria.FinancialAccounting.Tests {
     static readonly internal string ACCOUNT_NUMBER = ConfigurationData.GetString("ACCOUNT_NUMBER");
 
     static readonly internal string SESSION_TOKEN = ConfigurationData.GetString("SESSION_TOKEN");
+
+
 
   }  // class TestingConstants
 

@@ -26,6 +26,11 @@
     },
     {
       "type": "FinancialAccounting.Tests",
+      "key": "ACCOUNTS_CHART_COUNT",
+      "value": "{{TESTS_ACCOUNTS_CHART_COUNT}}"
+    },
+    {
+      "type": "FinancialAccounting.Tests",
       "key": "ACCOUNTS_CHART_UID",
       "value": "{{TESTS_ACCOUNTS_CHART_UID}}"
     },

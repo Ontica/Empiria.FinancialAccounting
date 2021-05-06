@@ -47,6 +47,22 @@ namespace Empiria.FinancialAccounting.Tests {
 
 
     [Fact]
+    public void Should_Get_The_List_Of_Accounts_Chart() {
+      FixedList<NamedEntityDto> accountsChartsList = _usecases.GetAccountsChartsList();
+
+      Assert.Equal(TestingConstants.ACCOUNTS_CHART_COUNT, accountsChartsList.Count);
+    }
+
+
+    [Fact]
+    public void Should_Get_The_List_Of_Accounts_Charts_Master_Data() {
+      FixedList<AccountsChartMasterDataDto> masterDataList = _usecases.GetAccountsChartsMasterData();
+
+      Assert.Equal(TestingConstants.ACCOUNTS_CHART_COUNT, masterDataList.Count);
+    }
+
+
+    [Fact]
     public void Should_Search_Accounts() {
       var searchCommand = new AccountsSearchCommand {
         Date = new DateTime(2005, 10, 23),

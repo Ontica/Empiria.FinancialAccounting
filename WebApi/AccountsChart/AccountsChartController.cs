@@ -24,7 +24,7 @@ namespace Empiria.FinancialAccounting.WebApi {
 
 
     [HttpGet]
-    [Route("v2/financial-accounting/accounts-chart/{accountsChartUID:guid}")]
+    [Route("v2/financial-accounting/accounts-charts/{accountsChartUID:guid}")]
     public SingleObjectModel GetAccounts([FromUri] string accountsChartUID) {
 
       using (var usecases = AccountsChartUseCases.UseCaseInteractor()) {
@@ -35,8 +35,32 @@ namespace Empiria.FinancialAccounting.WebApi {
     }
 
 
+    [HttpGet]
+    [Route("v2/financial-accounting/accounts-charts")]
+    public CollectionModel GetAccountsChartsList() {
+
+      using (var usecases = AccountsChartUseCases.UseCaseInteractor()) {
+        FixedList<NamedEntityDto> accountsChartList = usecases.GetAccountsChartsList();
+
+        return new CollectionModel(base.Request, accountsChartList);
+      }
+    }
+
+
+    [HttpGet]
+    [Route("v2/financial-accounting/accounts-charts-master-data")]
+    public CollectionModel GetAccountsChartsMasterDataList() {
+
+      using (var usecases = AccountsChartUseCases.UseCaseInteractor()) {
+        FixedList<AccountsChartMasterDataDto> masterDataList = usecases.GetAccountsChartsMasterData();
+
+        return new CollectionModel(base.Request, masterDataList);
+      }
+    }
+
+
     [HttpPost]
-    [Route("v2/financial-accounting/accounts-chart/{accountsChartUID:guid}")]
+    [Route("v2/financial-accounting/accounts-charts/{accountsChartUID:guid}")]
     public SingleObjectModel SearchAccounts([FromUri] string accountsChartUID,
                                             [FromBody] AccountsSearchCommand searchCommand) {
       base.RequireBody(searchCommand);

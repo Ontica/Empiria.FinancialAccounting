@@ -18,7 +18,6 @@ namespace Empiria.FinancialAccounting.Adapters {
       return new AccountsChartDto {
         UID = accountsChart.UID,
         Name = accountsChart.Name,
-        AccountsPattern = accountsChart.AccountsPattern,
         Accounts = MapAccounts(accountsChart.Accounts)
       };
     }
