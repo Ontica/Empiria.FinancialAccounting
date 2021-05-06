@@ -27,18 +27,28 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
 
       int balanceGroupId = DetermineBalanceGroup(command.InitialDate);
 
-      TrialBalanceCommandData trialBalanceCommandData = new TrialBalanceCommandData();
-      trialBalanceCommandData.InitialDate = command.InitialDate;
-      trialBalanceCommandData.FinalDate = command.FinalDate;
-      trialBalanceCommandData.BalanceGroupId = balanceGroupId;
-      trialBalanceCommandData.Fields = command.Fields;
-      trialBalanceCommandData.Condition = command.Condition;
-      trialBalanceCommandData.Grouping = command.Grouping;
-      trialBalanceCommandData.Having = command.Having;
-      trialBalanceCommandData.Ordering = command.Ordering;
+      TrialBalanceCommandData commandData = new TrialBalanceCommandData();
+      commandData.InitialDate = command.InitialDate;
+      commandData.FinalDate = command.FinalDate;
+      commandData.BalanceGroupId = balanceGroupId;
+      commandData.Fields = command.Fields;
+      commandData.Condition = command.Condition;
+      commandData.Grouping = command.Grouping;
+      commandData.Having = command.Having;
+      commandData.Ordering = command.Ordering;
+      
+      if (commandData.Grouping.Contains("SectorId")) {
+        commandData.Grouping = "GROUPING SETS(()," +
+          "(LedgerId)," +
+          "(LedgerId, CurrencyId)," +
+          "(LedgerId, CurrencyId, SectorId)," +
+          "(LedgerId, CurrencyId, SectorId, LedgerAccountId)," +
+          "(LedgerId, CurrencyId, SectorId, LedgerAccountId, AccountId)" +
+          ")";
+      }
 
 
-      FixedList<TrialBalanceEntry> entries = TrialBalanceDataService.GetTrialBalanceEntries(trialBalanceCommandData);
+      FixedList<TrialBalanceEntry> entries = TrialBalanceDataService.GetTrialBalanceEntries(commandData);
 
       return new TrialBalance(command, entries);
     }

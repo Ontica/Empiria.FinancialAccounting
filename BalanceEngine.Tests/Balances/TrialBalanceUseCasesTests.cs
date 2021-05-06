@@ -53,16 +53,6 @@ namespace Empiria.FinancialAccounting.Tests.Balances {
       command.Having = "";
       command.Ordering = "";
 
-      if (command.Grouping.Contains("SectorId")) {
-        command.Grouping = "GROUPING SETS((),"+
-						"(LedgerId),"+
-						"(LedgerId, CurrencyId),"+
-						"(LedgerId, CurrencyId, SectorId),"+
-						"(LedgerId, CurrencyId, SectorId, LedgerAccountId),"+
-						"(LedgerId, CurrencyId, SectorId, LedgerAccountId, AccountId)"+
-					  ")";
-      }
-
       TrialBalanceDto trialBalance = _usecases.BuildTrialBalance(command);
 
       Assert.NotNull(trialBalance);
