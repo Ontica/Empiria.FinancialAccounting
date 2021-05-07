@@ -2,21 +2,21 @@
 *                                                                                                            *
 *  Module   : Accounts Chart                             Component : Interface adapters                      *
 *  Assembly : FinancialAccounting.Core.dll               Pattern   : Data Transfer Object                    *
-*  Type     : AccountsChartMasterDataDto                 License   : Please read LICENSE.txt file            *
+*  Type     : CurrencyDto                                License   : Please read LICENSE.txt file            *
 *                                                                                                            *
-*  Summary  : DTO that contains an accounts chart master data.                                               *
+*  Summary  : Currency data transfer object.                                                                 *
 *                                                                                                            *
 ************************* Copyright(c) La Vía Óntica SC, Ontica LLC and contributors. All rights reserved. **/
-using System;
 
 namespace Empiria.FinancialAccounting.Adapters {
 
-  /// <summary>DTO that contains an accounts chart master data.</summary>
-  public class AccountsChartMasterDataDto {
+  /// <summary>Currency data transfer object.</summary>
+  public class CurrencyDto {
 
-    internal AccountsChartMasterDataDto() {
+    internal CurrencyDto() {
       // no-op
     }
+
 
     public string UID {
       get; internal set;
@@ -28,36 +28,20 @@ namespace Empiria.FinancialAccounting.Adapters {
     }
 
 
-    public string AccountsPattern {
+    public string Code {
       get; internal set;
     }
 
 
-    public DateTime StartDate {
+    public string Abbrev {
       get; internal set;
     }
 
 
-    public DateTime EndDate {
+    public string Symbol {
       get; internal set;
     }
 
-
-    public FixedList<AccountRole> AccountRoles {
-      get; internal set;
-    }
-
-
-    public FixedList<NamedEntityDto> AccountTypes {
-      get; internal set;
-    }
-
-
-    public FixedList<CurrencyDto> Currencies {
-      get; internal set;
-    }
-
-
-  }  // class AccountsChartMasterDataDto
+  }  // class CurrencyDto
 
 }  // namespace Empiria.FinancialAccounting.Adapters

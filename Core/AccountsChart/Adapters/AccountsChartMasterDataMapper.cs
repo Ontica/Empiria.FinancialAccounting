@@ -30,11 +30,27 @@ namespace Empiria.FinancialAccounting.Adapters {
         EndDate = masterData.EndDate,
 
         AccountRoles = masterData.AccountRoles,
-        AccountTypes = masterData.AccountTypes.MapToNamedEntityList()
+        AccountTypes = masterData.AccountTypes.MapToNamedEntityList(),
 
+        Currencies = MapCurrencies(masterData.Currencies),
       };
     }
 
+
+    static private FixedList<CurrencyDto> MapCurrencies(FixedList<Currency> list) {
+      return new FixedList<CurrencyDto>(list.Select((x) => MapCurrency(x)));
+    }
+
+
+    static private CurrencyDto MapCurrency(Currency currency) {
+      return new CurrencyDto {
+        UID = currency.UID,
+        Name = currency.Name,
+        Symbol = currency.Symbol,
+        Code = currency.Code,
+        Abbrev = currency.Abbrev
+      };
+    }
 
   }  // class AccountsChartMasterDataMapper
 

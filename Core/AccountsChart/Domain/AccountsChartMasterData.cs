@@ -58,10 +58,16 @@ namespace Empiria.FinancialAccounting {
     public FixedList<AccountRole> AccountRoles {
       get;
       private set;
-    } = new FixedList<AccountRole>(new [] { AccountRole.Summary, AccountRole.Posting });
+    } = new FixedList<AccountRole>(new[] { AccountRole.Summary, AccountRole.Posting });
 
 
     public FixedList<AccountType> AccountTypes {
+      get;
+      private set;
+    }
+
+
+    public FixedList<Currency> Currencies {
       get;
       private set;
     }
@@ -86,6 +92,13 @@ namespace Empiria.FinancialAccounting {
                                   .ToFixedList();
       } else {
         this.AccountTypes = AccountType.GetList();
+      }
+
+      if (fields.Contains("currencies")) {
+        this.Currencies = fields.GetList<Currency>("currencies")
+                                .ToFixedList();
+      } else {
+        this.Currencies = Currency.GetList();
       }
 
     }
