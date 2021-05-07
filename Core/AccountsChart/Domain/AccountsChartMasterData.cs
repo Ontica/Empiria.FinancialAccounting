@@ -58,7 +58,7 @@ namespace Empiria.FinancialAccounting {
     public FixedList<AccountRole> AccountRoles {
       get;
       private set;
-    } = new FixedList<AccountRole>(new[] { AccountRole.Summary, AccountRole.Posting });
+    }
 
 
     public FixedList<AccountType> AccountTypes {
@@ -73,32 +73,49 @@ namespace Empiria.FinancialAccounting {
     }
 
 
+    public FixedList<Sector> Sectors {
+      get;
+      private set;
+    }
+
     #endregion Properties
 
     #region Methods
 
     private void Load(JsonObject fields) {
       this.AccountsPattern = fields.Get<string>("accountsPattern");
+
       this.StartDate = fields.Get<DateTime>("startDate", this.StartDate);
       this.EndDate = fields.Get<DateTime>("endDate", this.EndDate);
 
+
       if (fields.Contains("accountRoles")) {
-        this.AccountRoles = fields.GetList<AccountRole>("accountRoles")
-                                  .ToFixedList();
+        this.AccountRoles = fields.GetFixedList<AccountRole>("accountRoles");
+      } else {
+        var minimalRoles = new[] { AccountRole.Summary, AccountRole.Posting };
+
+        this.AccountRoles = new FixedList<AccountRole>(minimalRoles);
       }
 
+
       if (fields.Contains("accountTypes")) {
-        this.AccountTypes = fields.GetList<AccountType>("accountTypes")
-                                  .ToFixedList();
+        this.AccountTypes = fields.GetFixedList<AccountType>("accountTypes");
       } else {
         this.AccountTypes = AccountType.GetList();
       }
 
+
       if (fields.Contains("currencies")) {
-        this.Currencies = fields.GetList<Currency>("currencies")
-                                .ToFixedList();
+        this.Currencies = fields.GetFixedList<Currency>("currencies");
       } else {
         this.Currencies = Currency.GetList();
+      }
+
+
+      if (fields.Contains("sectors")) {
+        this.Sectors = fields.GetFixedList<Sector>("sectors");
+      } else {
+        this.Sectors = Sector.GetList();
       }
 
     }

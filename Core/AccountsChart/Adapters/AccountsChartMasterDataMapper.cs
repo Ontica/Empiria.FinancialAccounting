@@ -33,9 +33,11 @@ namespace Empiria.FinancialAccounting.Adapters {
         AccountTypes = masterData.AccountTypes.MapToNamedEntityList(),
 
         Currencies = MapCurrencies(masterData.Currencies),
+        Sectors = MapSectors(masterData.Sectors)
       };
     }
 
+    #region Private methods
 
     static private FixedList<CurrencyDto> MapCurrencies(FixedList<Currency> list) {
       return new FixedList<CurrencyDto>(list.Select((x) => MapCurrency(x)));
@@ -51,6 +53,22 @@ namespace Empiria.FinancialAccounting.Adapters {
         Abbrev = currency.Abbrev
       };
     }
+
+
+    static private FixedList<SectorDto> MapSectors(FixedList<Sector> list) {
+      return new FixedList<SectorDto>(list.Select((x) => MapSector(x)));
+    }
+
+
+    static private SectorDto MapSector(Sector sector) {
+      return new SectorDto {
+        UID = sector.UID,
+        Name = sector.Name,
+        Code = sector.Code
+      };
+    }
+
+    #endregion Private methods
 
   }  // class AccountsChartMasterDataMapper
 
