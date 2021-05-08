@@ -15,16 +15,16 @@ namespace Empiria.FinancialAccounting {
   public enum AccountRole {
 
     /// <summary>Summary account (cuenta sumaria).</summary>
-    Summary = 'S',
+    Sumaria = 'S',
 
     /// <summary>Posting account (cuenta de detalle).</summary>
-    Posting = 'P',
+    Detalle = 'P',
 
     /// <summary>Control account (cuenta de control que se maneja a nivel auxiliar).</summary>
     Control = 'C',
 
     /// <summary>Sectorized account (cuenta que maneja sector, con o sin auxiliares).</summary>
-    Sectorized = 'X',
+    Sectorizada = 'X',
 
   }  // enum AccountRole
 
@@ -34,10 +34,10 @@ namespace Empiria.FinancialAccounting {
   public enum DebtorCreditorType {
 
     /// <summary>Debtor account (naturaleza deudora).</summary>
-    Debtor = 'D',
+    Deudora = 'D',
 
     /// <summary>Creditor account (naturaleza acreedora).</summary>
-    Creditor = 'A'
+    Acreedora = 'A'
 
   }  // enum DebtorCreditorType
 

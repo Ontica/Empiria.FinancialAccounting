@@ -17,7 +17,6 @@ namespace Empiria.FinancialAccounting.Adapters {
       // no-op
     }
 
-
     public string UID {
       get; internal set;
     }

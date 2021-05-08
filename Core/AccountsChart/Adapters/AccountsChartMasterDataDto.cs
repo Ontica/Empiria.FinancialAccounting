@@ -33,6 +33,16 @@ namespace Empiria.FinancialAccounting.Adapters {
     }
 
 
+    public char AccountNumberSeparator {
+      get; internal set;
+    }
+
+
+    public int MaxAccountLevel {
+      get;
+      internal set;
+    }
+
     public DateTime StartDate {
       get; internal set;
     }

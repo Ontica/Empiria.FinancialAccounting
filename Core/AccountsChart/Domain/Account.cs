@@ -38,6 +38,13 @@ namespace Empiria.FinancialAccounting {
     } = -1;
 
 
+    public AccountsChart AccountsChart {
+      get {
+        return AccountsChart.Parse(this.AccountsChartId);
+      }
+    }
+
+
     [DataField("NUMERO_CUENTA_ESTANDAR")]
     public string Number {
       get; private set;
@@ -56,10 +63,10 @@ namespace Empiria.FinancialAccounting {
     } = string.Empty;
 
 
-    [DataField("ROL_CUENTA", Default = AccountRole.Summary)]
+    [DataField("ROL_CUENTA", Default = AccountRole.Sumaria)]
     public AccountRole Role {
       get; private set;
-    } = AccountRole.Summary;
+    } = AccountRole.Sumaria;
 
 
     [DataField("ID_TIPO_CUENTA")]
@@ -72,11 +79,17 @@ namespace Empiria.FinancialAccounting {
     }
 
 
-    [DataField("NATURALEZA", Default = DebtorCreditorType.Debtor)]
+    [DataField("NATURALEZA", Default = DebtorCreditorType.Deudora)]
     public DebtorCreditorType DebtorCreditor {
       get; private set;
-    } = DebtorCreditorType.Debtor;
+    } = DebtorCreditorType.Deudora;
 
+
+    public int Level {
+      get {
+        return EmpiriaString.CountOccurences(Number, this.AccountsChart.MasterData.AccountNumberSeparator) + 1;
+      }
+    }
 
     #endregion Public properties
 

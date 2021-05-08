@@ -71,6 +71,11 @@ namespace Empiria.FinancialAccounting.Adapters {
       get; internal set;
     }
 
+
+    public int Level {
+      get; internal set;
+    }
+
   }  // class AccountDto
 
 }  // namespace Empiria.FinancialAccounting.Adapters

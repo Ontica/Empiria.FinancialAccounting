@@ -26,6 +26,9 @@ namespace Empiria.FinancialAccounting.Adapters {
         Name = masterData.AccountsChart.Name,
 
         AccountsPattern = masterData.AccountsPattern,
+        AccountNumberSeparator = masterData.AccountNumberSeparator,
+        MaxAccountLevel = masterData.MaxAccountLevel,
+
         StartDate = masterData.StartDate,
         EndDate = masterData.EndDate,
 

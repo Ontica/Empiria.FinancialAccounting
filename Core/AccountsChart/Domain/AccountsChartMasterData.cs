@@ -43,6 +43,19 @@ namespace Empiria.FinancialAccounting {
     }
 
 
+    public char AccountNumberSeparator {
+      get;
+      private set;
+    }
+
+
+    public int MaxAccountLevel {
+      get {
+        return EmpiriaString.CountOccurences(AccountsPattern, AccountNumberSeparator) + 1;
+      }
+    }
+
+
     public DateTime StartDate {
       get;
       private set;
@@ -78,12 +91,15 @@ namespace Empiria.FinancialAccounting {
       private set;
     }
 
+
     #endregion Properties
 
     #region Methods
 
     private void Load(JsonObject fields) {
       this.AccountsPattern = fields.Get<string>("accountsPattern");
+
+      this.AccountNumberSeparator = fields.Get<char>("accountNumberSeparator", '-');
 
       this.StartDate = fields.Get<DateTime>("startDate", this.StartDate);
       this.EndDate = fields.Get<DateTime>("endDate", this.EndDate);
@@ -92,7 +108,7 @@ namespace Empiria.FinancialAccounting {
       if (fields.Contains("accountRoles")) {
         this.AccountRoles = fields.GetFixedList<AccountRole>("accountRoles");
       } else {
-        var minimalRoles = new[] { AccountRole.Summary, AccountRole.Posting };
+        var minimalRoles = new[] { AccountRole.Sumaria, AccountRole.Detalle };
 
         this.AccountRoles = new FixedList<AccountRole>(minimalRoles);
       }
