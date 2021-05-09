@@ -27,9 +27,9 @@ namespace Empiria.FinancialAccounting.Tests {
 
     static readonly internal string ACCOUNT_NUMBER = ConfigurationData.GetString("ACCOUNT_NUMBER");
 
+    static readonly internal string LEDGER_UID = ConfigurationData.GetString("LEDGER_UID");
+
     static readonly internal string SESSION_TOKEN = ConfigurationData.GetString("SESSION_TOKEN");
-
-
 
   }  // class TestingConstants
 
