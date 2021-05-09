@@ -12,7 +12,7 @@ using System;
 namespace Empiria.FinancialAccounting {
 
   /// <summary>Holds data about an account's sector.</summary>
-  public class Sector : BaseObject {
+  public class Sector : BaseObject, INamedEntity {
 
     #region Constructors and parsers
 
@@ -32,9 +32,12 @@ namespace Empiria.FinancialAccounting {
 
 
     static public FixedList<Sector> GetList() {
-      return BaseObject.GetList<Sector>(string.Empty, "CLAVE_SECTOR")
+      return BaseObject.GetList<Sector>("ID_SECTOR <> -1", "CLAVE_SECTOR")
                        .ToFixedList();
     }
+
+
+    static public Sector Empty => BaseObject.ParseEmpty<Sector>();
 
 
     #endregion Constructors and parsers

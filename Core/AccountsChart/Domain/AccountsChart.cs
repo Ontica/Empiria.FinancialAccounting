@@ -47,9 +47,14 @@ namespace Empiria.FinancialAccounting {
     protected override void OnLoad() {
       base.OnLoad();
 
-      this.MasterData = new AccountsChartMasterData(this, this.ExtendedDataField);
+      if (!this.IsEmptyInstance) {
+        this.MasterData = new AccountsChartMasterData(this, this.ExtendedDataField);
+        _accounts = new Lazy<FixedList<Account>>(() => AccountsChartData.GetAccounts(this));
 
-      _accounts = new Lazy<FixedList<Account>>(() => AccountsChartData.GetAccounts(this));
+      } else {
+        this.MasterData = new AccountsChartMasterData(this);
+        _accounts = new Lazy<FixedList<Account>>(() => new FixedList<Account>());
+      }
     }
 
 

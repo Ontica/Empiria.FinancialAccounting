@@ -18,6 +18,13 @@ namespace Empiria.FinancialAccounting {
 
     #region Constructors and parsers
 
+    internal AccountsChartMasterData(AccountsChart accountsChart) {
+      Assertion.AssertObject(accountsChart, "accountsChart");
+
+      this.AccountsChart = accountsChart;
+    }
+
+
     internal AccountsChartMasterData(AccountsChart accountsChart, JsonObject fields) {
       Assertion.AssertObject(accountsChart, "accountsChart");
       Assertion.AssertObject(fields, "fields");
@@ -40,13 +47,13 @@ namespace Empiria.FinancialAccounting {
     public string AccountsPattern {
       get;
       private set;
-    }
+    } = string.Empty;
 
 
     public char AccountNumberSeparator {
       get;
       private set;
-    }
+    } = '-';
 
 
     public int MaxAccountLevel {
@@ -71,25 +78,25 @@ namespace Empiria.FinancialAccounting {
     public FixedList<AccountRole> AccountRoles {
       get;
       private set;
-    }
+    } = new FixedList<AccountRole>();
 
 
     public FixedList<AccountType> AccountTypes {
       get;
       private set;
-    }
+    } = new FixedList<AccountType>();
 
 
     public FixedList<Currency> Currencies {
       get;
       private set;
-    }
+    } = new FixedList<Currency>();
 
 
     public FixedList<Sector> Sectors {
       get;
       private set;
-    }
+    } = new FixedList<Sector>();
 
 
     #endregion Properties

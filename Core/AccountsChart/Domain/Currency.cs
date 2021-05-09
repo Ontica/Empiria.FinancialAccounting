@@ -12,7 +12,7 @@ using System;
 namespace Empiria.FinancialAccounting {
 
   /// <summary>Holds data about a currency.</summary>
-  public class Currency : BaseObject {
+  public class Currency : BaseObject, INamedEntity {
 
     #region Constructors and parsers
 
@@ -32,9 +32,12 @@ namespace Empiria.FinancialAccounting {
 
 
     static public FixedList<Currency> GetList() {
-      return BaseObject.GetList<Currency>(string.Empty, "O_ID_MONEDA")
+      return BaseObject.GetList<Currency>("CURRENCY_ID <> -1", "O_ID_MONEDA")
                        .ToFixedList();
     }
+
+
+    static public Currency Empty => BaseObject.ParseEmpty<Currency>();
 
 
     #endregion Constructors and parsers
