@@ -101,49 +101,63 @@ namespace Empiria.FinancialAccounting {
 
     #endregion Properties
 
-    #region Methods
+    #region Private methods
 
     private void Load(JsonObject fields) {
       this.AccountsPattern = fields.Get<string>("accountsPattern");
-
       this.AccountNumberSeparator = fields.Get<char>("accountNumberSeparator", '-');
 
       this.StartDate = fields.Get<DateTime>("startDate", this.StartDate);
       this.EndDate = fields.Get<DateTime>("endDate", this.EndDate);
 
+      this.AccountRoles = GetAccountRoles(fields);
 
+      this.AccountTypes = GetAccountTypes(fields);
+
+      this.Currencies = GetCurrencies(fields);
+
+      this.Sectors = GetSectors(fields);
+    }
+
+
+    static private FixedList<AccountRole> GetAccountRoles(JsonObject fields) {
       if (fields.Contains("accountRoles")) {
-        this.AccountRoles = fields.GetFixedList<AccountRole>("accountRoles");
+        return fields.GetFixedList<AccountRole>("accountRoles");
       } else {
         var minimalRoles = new[] { AccountRole.Sumaria, AccountRole.Detalle };
 
-        this.AccountRoles = new FixedList<AccountRole>(minimalRoles);
+        return new FixedList<AccountRole>(minimalRoles);
       }
-
-
-      if (fields.Contains("accountTypes")) {
-        this.AccountTypes = fields.GetFixedList<AccountType>("accountTypes");
-      } else {
-        this.AccountTypes = AccountType.GetList();
-      }
-
-
-      if (fields.Contains("currencies")) {
-        this.Currencies = fields.GetFixedList<Currency>("currencies");
-      } else {
-        this.Currencies = Currency.GetList();
-      }
-
-
-      if (fields.Contains("sectors")) {
-        this.Sectors = fields.GetFixedList<Sector>("sectors");
-      } else {
-        this.Sectors = Sector.GetList();
-      }
-
     }
 
-    #endregion Methods
+
+    static private FixedList<AccountType> GetAccountTypes(JsonObject fields) {
+      if (fields.Contains("accountTypes")) {
+        return fields.GetFixedList<AccountType>("accountTypes");
+      } else {
+        return AccountType.GetList();
+      }
+    }
+
+
+    static private FixedList<Currency> GetCurrencies(JsonObject fields) {
+      if (fields.Contains("currencies")) {
+        return fields.GetFixedList<Currency>("currencies");
+      } else {
+        return Currency.GetList();
+      }
+    }
+
+
+    static private FixedList<Sector> GetSectors(JsonObject fields) {
+      if (fields.Contains("sectors")) {
+        return fields.GetFixedList<Sector>("sectors");
+      } else {
+        return Sector.GetList();
+      }
+    }
+
+    #endregion Private methods
 
   }  // class AccountsChartMasterData
 
