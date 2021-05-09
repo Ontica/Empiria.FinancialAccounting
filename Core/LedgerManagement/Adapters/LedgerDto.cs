@@ -108,6 +108,16 @@ namespace Empiria.FinancialAccounting.Adapters {
       get; internal set;
     }
 
+
+    public FixedList<Currency> Currencies {
+      get; internal set;
+    }
+
+
+    public FixedList<Sector> Sectors {
+      get; internal set;
+    }
+
   }  // class LedgerAccountDto
 
 }  // namespace Empiria.FinancialAccounting.Adapters

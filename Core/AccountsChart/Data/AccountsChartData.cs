@@ -26,6 +26,32 @@ namespace Empiria.FinancialAccounting.Data {
       return DataReader.GetFixedList<Account>(dataOperation);
     }
 
+
+    static internal FixedList<Currency> GetAccountCurrencies(Account account) {
+      var sql = "SELECT AO_CURRENCIES.* " +
+                $"FROM AO_CURRENCIES INNER JOIN COF_MAPEO_MONEDA " +
+                $"ON AO_CURRENCIES.CURRENCY_ID = COF_MAPEO_MONEDA.ID_MONEDA " +
+                $"WHERE COF_MAPEO_MONEDA.ID_CUENTA_ESTANDAR = {account.Id} " +
+                $"ORDER BY AO_CURRENCIES.ABBREV";
+
+      var dataOperation = DataOperation.Parse(sql);
+
+      return DataReader.GetFixedList<Currency>(dataOperation);
+    }
+
+
+    static internal FixedList<Sector> GetAccountSectors(Account account) {
+      var sql = "SELECT COF_SECTOR.* " +
+                $"FROM COF_SECTOR INNER JOIN COF_MAPEO_SECTOR " +
+                $"ON COF_SECTOR.ID_SECTOR = COF_MAPEO_SECTOR.ID_SECTOR " +
+                $"WHERE COF_MAPEO_SECTOR.ID_CUENTA_ESTANDAR = {account.Id} " +
+                $"ORDER BY COF_SECTOR.CLAVE_SECTOR";
+
+      var dataOperation = DataOperation.Parse(sql);
+
+      return DataReader.GetFixedList<Sector>(dataOperation);
+    }
+
   }  // class AccountsChartData
 
 }  // namespace Empiria.FinancialAccounting.Data

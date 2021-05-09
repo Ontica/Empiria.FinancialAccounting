@@ -58,6 +58,9 @@ namespace Empiria.FinancialAccounting {
 
     public int Level => this.MasterAccount.Level;
 
+    public FixedList<Currency> Currencies => this.MasterAccount.Currencies;
+
+    public FixedList<Sector> Sectors => this.MasterAccount.Sectors;
 
     #endregion Public properties
 

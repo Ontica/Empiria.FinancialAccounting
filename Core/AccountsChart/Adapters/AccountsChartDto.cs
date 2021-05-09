@@ -76,6 +76,11 @@ namespace Empiria.FinancialAccounting.Adapters {
       get; internal set;
     }
 
+
+    public FixedList<Currency> Currencies {
+      get; internal set;
+    }
+
   }  // class AccountDto
 
 }  // namespace Empiria.FinancialAccounting.Adapters

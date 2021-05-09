@@ -36,7 +36,8 @@ namespace Empiria.FinancialAccounting.Adapters {
         Type = account.AccountType,
         Role = account.Role,
         DebtorCreditor = account.DebtorCreditor,
-        Level = account.Level
+        Level = account.Level,
+        Currencies = account.Currencies
       };
     }
 

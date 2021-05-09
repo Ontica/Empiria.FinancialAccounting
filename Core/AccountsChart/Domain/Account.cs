@@ -14,6 +14,14 @@ namespace Empiria.FinancialAccounting {
   /// <summary>Contains information about an account.</summary>
   public class Account : BaseObject {
 
+    #region Fields
+
+    private Lazy<FixedList<Currency>> _currencies = null;
+
+    private Lazy<FixedList<Sector>> _sectors = null;
+
+    #endregion Fields
+
     #region Constructors and parsers
 
     private Account() {
@@ -25,7 +33,16 @@ namespace Empiria.FinancialAccounting {
       return BaseObject.ParseId<Account>(id);
     }
 
+
     static public Account Empty => BaseObject.ParseEmpty<Account>();
+
+
+    protected override void OnLoad() {
+      base.OnLoad();
+
+      this.ResetCurrencies();
+      this.ResetSectors();
+    }
 
 
     #endregion Constructors and parsers
@@ -91,7 +108,35 @@ namespace Empiria.FinancialAccounting {
       }
     }
 
+
+    public FixedList<Currency> Currencies {
+      get {
+        return _currencies.Value;
+      }
+    }
+
+
+    public FixedList<Sector> Sectors {
+      get {
+        return _sectors.Value;
+      }
+    }
+
+
     #endregion Public properties
+
+    #region Private methods
+
+    private void ResetCurrencies() {
+      _currencies = new Lazy<FixedList<Currency>>(() => Data.AccountsChartData.GetAccountCurrencies(this));
+    }
+
+
+    private void ResetSectors() {
+      _sectors = new Lazy<FixedList<Sector>>(() => Data.AccountsChartData.GetAccountSectors(this));
+    }
+
+    #endregion Private methods
 
   }  // class Account
 
