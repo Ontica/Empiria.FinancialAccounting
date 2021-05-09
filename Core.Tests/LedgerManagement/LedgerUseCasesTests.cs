@@ -44,6 +44,15 @@ namespace Empiria.FinancialAccounting.Tests {
     }
 
 
+    [Fact]
+    public void Should_Get_A_Ledger_Account() {
+      LedgerAccountDto ledgerAccount = _usecases.GetLedgerAccount(TestingConstants.LEDGER_UID,
+                                                                  TestingConstants.LEDGER_ACCOUNT_ID);
+
+      Assert.Equal(TestingConstants.LEDGER_UID, ledgerAccount.Ledger.UID);
+      Assert.Equal(TestingConstants.LEDGER_ACCOUNT_ID, ledgerAccount.Id);
+    }
+
     #endregion Facts
 
   }  // class LedgerUseCasesTests

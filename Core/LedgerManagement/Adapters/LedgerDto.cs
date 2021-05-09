@@ -55,4 +55,59 @@ namespace Empiria.FinancialAccounting.Adapters {
 
   }  // public class LedgerDto
 
+
+
+  /// <summary>Output DTO for a ledger account.</summary>
+  public class LedgerAccountDto {
+
+    internal LedgerAccountDto() {
+      // no-op
+    }
+
+    public int Id {
+      get; internal set;
+    }
+
+
+    public NamedEntityDto Ledger {
+      get; internal set;
+    }
+
+
+    public string Number {
+      get; internal set;
+    }
+
+
+    public string Name {
+      get; internal set;
+    }
+
+
+    public string Description {
+      get; internal set;
+    }
+
+
+    public string AccountType {
+      get; internal set;
+    }
+
+
+    public AccountRole Role {
+      get; internal set;
+    }
+
+
+    public DebtorCreditorType DebtorCreditor {
+      get; internal set;
+    }
+
+
+    public int Level {
+      get; internal set;
+    }
+
+  }  // class LedgerAccountDto
+
 }  // namespace Empiria.FinancialAccounting.Adapters

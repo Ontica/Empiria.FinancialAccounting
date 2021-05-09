@@ -58,6 +58,11 @@
       "type": "FinancialAccounting.Tests",
       "key": "LEDGER_UID",
       "value": "{{TESTS_LEDGER_UID}}"
+    },
+    {
+      "type": "FinancialAccounting.Tests",
+      "key": "LEDGER_ACCOUNT_ID",
+      "value": "{{TESTS_LEDGER_ACCOUNT_ID}}"
     }
   ]
 }

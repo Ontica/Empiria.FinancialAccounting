@@ -1,10 +1,10 @@
 ﻿/* Empiria Financial *****************************************************************************************
 *                                                                                                            *
 *  Module   : Ledger Management                            Component : Web Api                               *
-*  Assembly : Empiria.FinancialAccounting.WebApi.dll       Pattern   : Controller                            *
+*  Assembly : Empiria.FinancialAccounting.WebApi.dll       Pattern   : Query Controller                      *
 *  Type     : LedgerController                             License   : Please read LICENSE.txt file          *
 *                                                                                                            *
-*  Summary  : Query web API used to manage accounting ledger books.                                          *
+*  Summary  : Query web API used to get information about accounting ledger books and their accounts.        *
 *                                                                                                            *
 ************************* Copyright(c) La Vía Óntica SC, Ontica LLC and contributors. All rights reserved. **/
 using System;
@@ -17,7 +17,8 @@ using Empiria.FinancialAccounting.Adapters;
 
 namespace Empiria.FinancialAccounting.WebApi {
 
-  /// <summary>Query web API used to manage accounting ledger books..</summary>
+  /// <summary>Query web API used to get information about accounting ledger
+  /// books and their accounts.</summary>
   public class LedgerController : WebApiController {
 
     #region Web Apis
@@ -31,6 +32,19 @@ namespace Empiria.FinancialAccounting.WebApi {
         LedgerDto ledger = usecases.GetLedger(ledgerUID);
 
         return new SingleObjectModel(base.Request, ledger);
+      }
+    }
+
+
+    [HttpGet]
+    [Route("v2/financial-accounting/ledgers/{ledgerUID:guid}/accounts/{accountId:int}")]
+    public SingleObjectModel GetLedgerAccount([FromUri] string ledgerUID,
+                                              [FromUri] int accountId) {
+
+      using (var usecases = LedgerUseCases.UseCaseInteractor()) {
+        LedgerAccountDto ledgerAccount = usecases.GetLedgerAccount(ledgerUID, accountId);
+
+        return new SingleObjectModel(base.Request, ledgerAccount);
       }
     }
 

@@ -40,8 +40,16 @@ namespace Empiria.FinancialAccounting.UseCases {
       return LedgerMapper.Map(ledger);
     }
 
-    public LedgerDto GetLedger(object lEDGER_UID) {
-      throw new NotImplementedException();
+
+    public LedgerAccountDto GetLedgerAccount(string ledgerUID, int accountId) {
+      Assertion.AssertObject(ledgerUID, "ledgerUID");
+      Assertion.Assert(accountId > 0, "accountId");
+
+      var ledger = Ledger.Parse(ledgerUID);
+
+      LedgerAccount ledgerAccount = ledger.GetAccountWithId(accountId);
+
+      return LedgerMapper.MapAccount(ledgerAccount);
     }
 
 

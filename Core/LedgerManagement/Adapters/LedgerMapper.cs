@@ -8,6 +8,8 @@
 *                                                                                                            *
 ************************* Copyright(c) La Vía Óntica SC, Ontica LLC and contributors. All rights reserved. **/
 
+using System;
+
 namespace Empiria.FinancialAccounting.Adapters {
 
   /// <summary>Mapping methods for accounting ledger books.</summary>
@@ -25,6 +27,20 @@ namespace Empiria.FinancialAccounting.Adapters {
       };
     }
 
+
+    static internal LedgerAccountDto MapAccount(LedgerAccount ledgerAccount) {
+      return new LedgerAccountDto {
+        Id = ledgerAccount.Id,
+        Ledger = ledgerAccount.Ledger.MapToNamedEntity(),
+        Name = ledgerAccount.Name,
+        Number = ledgerAccount.Number,
+        Description = ledgerAccount.Description,
+        Role = ledgerAccount.Role,
+        AccountType = ledgerAccount.AccountType,
+        DebtorCreditor = ledgerAccount.DebtorCreditor,
+        Level = ledgerAccount.Level
+      };
+    }
 
   }  // class LedgerMapper
 

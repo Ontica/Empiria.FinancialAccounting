@@ -1,7 +1,7 @@
 ﻿/* Empiria Financial *****************************************************************************************
 *                                                                                                            *
 *  Module   : Ledger Management                          Component : Domain Layer                            *
-*  Assembly : FinancialAccounting.Core.dll               Pattern   : Empiria Data Object                     *
+*  Assembly : FinancialAccounting.Core.dll               Pattern   : Aggregate root                          *
 *  Type     : Ledger                                     License   : Please read LICENSE.txt file            *
 *                                                                                                            *
 *  Summary  : Holds information about an accounting ledger book.                                             *
@@ -38,7 +38,7 @@ namespace Empiria.FinancialAccounting {
     #region Public properties
 
     [DataField("ID_TIPO_CUENTAS_STD", ConvertFrom=typeof(long))]
-    internal AccountsChart AccountsChart {
+    public AccountsChart AccountsChart {
       get; private set;
     }
 
@@ -74,13 +74,13 @@ namespace Empiria.FinancialAccounting {
 
 
     [DataField("ID_EMPRESA", ConvertFrom = typeof(long))]
-    public Organization Organization {
+    internal Organization Organization {
       get; private set;
     }
 
 
     [DataField("ID_CALENDARIO", ConvertFrom = typeof(long))]
-    public int CalendarId {
+    internal int CalendarId {
       get; private set;
     }
 
@@ -98,6 +98,19 @@ namespace Empiria.FinancialAccounting {
 
 
     #endregion Public properties
+
+    #region Public methods
+
+    public LedgerAccount GetAccountWithId(int accountId) {
+      var ledgerAccount = LedgerAccount.Parse(accountId);
+
+      Assertion.Assert(ledgerAccount.Ledger.Equals(this),
+          $"The ledger account with id {accountId} does not belong to ledger '{this.Name}'.");
+
+      return ledgerAccount;
+    }
+
+    #endregion Public methods
 
   }  // class Ledger
 
