@@ -28,17 +28,17 @@ namespace Empiria.FinancialAccounting.Adapters {
     }
 
 
-    public FixedList<AccountDto> Accounts {
+    public FixedList<AccountDescriptorDto> Accounts {
       get; internal set;
     }
 
   }  // public class AccountsChartDto
 
 
-  /// <summary>Output DTO with an account data.</summary>
-  public class AccountDto {
+  /// <summary>Output DTO with an account data with less information to be used in lists.</summary>
+  public class AccountDescriptorDto {
 
-    internal AccountDto() {
+    internal AccountDescriptorDto() {
       // no-op
     }
 
@@ -77,10 +77,22 @@ namespace Empiria.FinancialAccounting.Adapters {
     }
 
 
+  }  // class AccountDescriptorDto
+
+
+
+  /// <summary>Output DTO with an account full data.</summary>
+  public class AccountDto : AccountDescriptorDto {
+
     public FixedList<Currency> Currencies {
       get; internal set;
     }
 
+    public FixedList<Sector> Sectors {
+      get; internal set;
+    }
+
   }  // class AccountDto
+
 
 }  // namespace Empiria.FinancialAccounting.Adapters

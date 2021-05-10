@@ -18,27 +18,46 @@ namespace Empiria.FinancialAccounting.Adapters {
       return new AccountsChartDto {
         UID = accountsChart.UID,
         Name = accountsChart.Name,
-        Accounts = MapAccounts(accountsChart.Accounts)
+        Accounts = MapToAccountDescriptors(accountsChart.Accounts)
       };
+    }
+
+    static internal AccountDto MapAccount(Account account) {
+      var dto = new AccountDto();
+
+      FillAccountDescriptorDto(dto, account);
+
+      dto.Currencies = account.Currencies;
+      dto.Sectors = account.Sectors;
+
+      return dto;
     }
 
     #region Private methods
 
-    static private FixedList<AccountDto> MapAccounts(FixedList<Account> list) {
-      return new FixedList<AccountDto>(list.Select((x) => MapAccount(x)));
+
+    static private void FillAccountDescriptorDto(AccountDescriptorDto dto, Account account) {
+      dto.UID = account.UID;
+      dto.Number = account.Number;
+      dto.Name = account.Name;
+      dto.Type = account.AccountType;
+      dto.Role = account.Role;
+      dto.DebtorCreditor = account.DebtorCreditor;
+      dto.Level = account.Level;
     }
 
-    static private AccountDto MapAccount(Account account) {
-      return new AccountDto {
-        UID = account.UID,
-        Number = account.Number,
-        Name = account.Name,
-        Type = account.AccountType,
-        Role = account.Role,
-        DebtorCreditor = account.DebtorCreditor,
-        Level = account.Level,
-        Currencies = account.Currencies
-      };
+
+    static private FixedList<AccountDescriptorDto> MapToAccountDescriptors(FixedList<Account> list) {
+      return new FixedList<AccountDescriptorDto>(list.Select((x) => MapToAccountDescriptor(x)));
+    }
+
+
+    static private AccountDescriptorDto MapToAccountDescriptor(Account account) {
+      var dto = new AccountDescriptorDto();
+
+      FillAccountDescriptorDto(dto, account);
+
+      return dto;
     }
 
     #endregion Private methods
