@@ -27,9 +27,11 @@ namespace Empiria.FinancialAccounting.Tests {
       Thread.CurrentPrincipal = AuthenticationService.Authenticate(sessionToken);
     }
 
+
     static public Contact GetCurrentUser() {
       return Contact.Parse(ExecutionServer.CurrentUserId);
     }
+
 
     #endregion Auxiliary methods
 
