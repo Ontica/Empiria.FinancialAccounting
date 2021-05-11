@@ -36,17 +36,6 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
       commandData.Grouping = command.Grouping;
       commandData.Having = command.Having;
       commandData.Ordering = command.Ordering;
-      
-      if (commandData.Grouping.Contains("SectorId")) {
-        commandData.Grouping = "GROUPING SETS(()," +
-          "(LedgerId)," +
-          "(LedgerId, CurrencyId)," +
-          "(LedgerId, CurrencyId, SectorId)," +
-          "(LedgerId, CurrencyId, SectorId, LedgerAccountId)," +
-          "(LedgerId, CurrencyId, SectorId, LedgerAccountId, AccountId)" +
-          ")";
-      }
-
 
       FixedList<TrialBalanceEntry> entries = TrialBalanceDataService.GetTrialBalanceEntries(commandData);
 
