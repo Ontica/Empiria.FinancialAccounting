@@ -16,16 +16,6 @@ namespace Empiria.FinancialAccounting.Tests {
 
     #region Facts
 
-    [Fact]
-    public void Should_Search_Accounts_In_An_AccountsChart() {
-      var chart = AccountsChart.Parse(TestingConstants.ACCOUNTS_CHART_UID);
-
-      Account account = chart.GetAccount(TestingConstants.ACCOUNT_NUMBER);
-
-      Assert.Equal(TestingConstants.ACCOUNT_NUMBER, account.Number);
-      Assert.Equal(TestingConstants.ACCOUNT_NAME, account.Name);
-    }
-
 
     [Fact]
     public void Should_Parse_An_AccountsChart() {
@@ -57,6 +47,31 @@ namespace Empiria.FinancialAccounting.Tests {
 
       Assert.Equal(-1, account.Id);
       Assert.Equal("Empty", account.UID);
+    }
+
+
+    [Fact]
+    public void Should_Search_An_Account_In_An_AccountsChart() {
+      var chart = AccountsChart.Parse(TestingConstants.ACCOUNTS_CHART_UID);
+
+      Account account = chart.GetAccount(TestingConstants.ACCOUNT_NUMBER);
+
+      Assert.Equal(TestingConstants.ACCOUNT_NUMBER, account.Number);
+      Assert.Equal(TestingConstants.ACCOUNT_NAME, account.Name);
+    }
+
+
+    [Fact]
+    public void Should_Search_Many_Accounts_In_An_AccountsChart() {
+      var chart = AccountsChart.Parse(TestingConstants.ACCOUNTS_CHART_UID);
+
+      var accounts = chart.Accounts;
+
+      foreach (var item in accounts) {
+        var account = chart.GetAccount(item.Number);
+
+        Assert.Equal(account.Number, item.Number);
+      }
     }
 
     #endregion Facts

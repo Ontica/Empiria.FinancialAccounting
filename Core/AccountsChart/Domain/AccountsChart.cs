@@ -9,6 +9,8 @@
 ************************* Copyright(c) La Vía Óntica SC, Ontica LLC and contributors. All rights reserved. **/
 using System;
 
+using Empiria.Collections;
+
 using Empiria.FinancialAccounting.Data;
 
 namespace Empiria.FinancialAccounting {
@@ -16,7 +18,7 @@ namespace Empiria.FinancialAccounting {
   /// <summary>Aggregate root that holds an accounts chart.</summary>
   public class AccountsChart : GeneralObject {
 
-    private Lazy<FixedList<Account>> _accounts;
+    private Lazy<EmpiriaHashTable<Account>> _accounts;
 
     #region Constructors and parsers
 
@@ -49,11 +51,11 @@ namespace Empiria.FinancialAccounting {
 
       if (!this.IsEmptyInstance) {
         this.MasterData = new AccountsChartMasterData(this, this.ExtendedDataField);
-        _accounts = new Lazy<FixedList<Account>>(() => AccountsChartData.GetAccounts(this));
+        _accounts = new Lazy<EmpiriaHashTable<Account>>(() => AccountsChartData.GetAccounts(this));
 
       } else {
         this.MasterData = new AccountsChartMasterData(this);
-        _accounts = new Lazy<FixedList<Account>>(() => new FixedList<Account>());
+        _accounts = new Lazy<EmpiriaHashTable<Account>>(() => new EmpiriaHashTable<Account>());
       }
     }
 
@@ -63,10 +65,9 @@ namespace Empiria.FinancialAccounting {
 
     #region Public properties
 
-
     public FixedList<Account> Accounts {
       get {
-        return _accounts.Value;
+        return _accounts.Value.ToFixedList();
       }
     }
 
@@ -82,12 +83,14 @@ namespace Empiria.FinancialAccounting {
     #region Public methods
 
     public Account GetAccount(string accountNumber) {
-      var account = this.Accounts.Find(x => x.Number == accountNumber);
+      Account account;
 
-      Assertion.AssertObject(account, $"Account {accountNumber} was not found.");
-
-      return account;
+      if (_accounts.Value.TryGetValue(accountNumber, out account)) {
+        return account;
+      }
+      throw Assertion.AssertNoReachThisCode($"Account {accountNumber} was not found.");
     }
+
 
     #endregion Public methods
 
