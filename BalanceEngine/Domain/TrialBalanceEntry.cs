@@ -22,79 +22,114 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
 
     #endregion Constructors and parsers
 
-    [DataField("LedgerId")]
+    [DataField("ID_MAYOR")]
     public int LedgerId {
       get;
       private set;
     }
 
-    [DataField("CurrencyId")]
+    [DataField("ID_MONEDA")]
     public int CurrencyId {
       get;
       private set;
     }
 
-    [DataField("LedgerAccountId")]
+    [DataField("ID_CUENTA")]
     public int LedgerAccountId {
       get;
       private set;
     }
 
-    [DataField("AccountId")]
+    [DataField("ID_CUENTA_ESTANDAR")]
     public int AccountId {
       get;
       private set;
     }
 
-    [DataField("SectorId")]
+    [DataField("ID_SECTOR")]
     public int SectorId {
       get;
       private set;
     }
 
-    [DataField("SubsidiaryAccountId")]
-    public int SubsidiaryAccountId {
-      get;
-      private set;
-    }
-
-    [DataField("BudgetKey")]
-    public string BudgetKey {
-      get;
-      private set;
-    }
-
-    [DataField("AccountNumber")]
+    [DataField("NUMERO_CUENTA_ESTANDAR")]
     public string AccountNumber {
       get;
       private set;
     }
 
-    //[DataField("AccountName")]
-    //public string AccountName {
-    //  get;
-    //  private set;
-    //}
-
-    //[DataField("SubsidiaryAccountNumber")]
-    //public string SubsidiaryAccountNumber {
-    //  get;
-    //  private set;
-    //}
-
-    //[DataField("SubsidiaryAccountName")]
-    //public string SubsidiaryAccountName {
-    //  get;
-    //  private set;
-    //}
-
-    //[DataField("AccountTypeId")]
-    //public int AccountTypeId {
-    //  get;
-    //  private set;
-    //}
+    [DataField("NOMBRE_CUENTA_ESTANDAR")]
+    public string AccountName {
+      get;
+      private set;
+    }
 
 
+    [DataField("ID_CUENTA_AUXILIAR")]
+    public int SubsidiaryAccountId {
+      get;
+      private set;
+    }
+
+    [DataField("CLAVE_PRESUPUESTAL")]
+    public string BudgetKey {
+      get;
+      private set;
+    }
+
+    [DataField("NUMERO_CUENTA_AUXILIAR")]
+    public string SubsidiaryAccountNumber {
+      get;
+      private set;
+    }
+
+    [DataField("NOMBRE_CUENTA_AUXILIAR")]
+    public string SubsidiaryAccountName {
+      get;
+      private set;
+    }
+
+    [DataField("ID_TIPO_CUENTA")]
+    public int AccountTypeId {
+      get;
+      private set;
+    }
+
+    [DataField("NATURALEZA")]
+    public string Naturaleza {
+      get;
+      private set;
+    }
+
+    [DataField("ROL_CUENTA")]
+    public char AccountRole {
+      get;
+      private set;
+    }
+
+    [DataField("SALDO_ANTERIOR")]
+    public decimal PreviousBalance {
+      get;
+      private set;
+    }
+
+    [DataField("CARGOS")]
+    public decimal Debit {
+      get;
+      private set;
+    }
+
+    [DataField("ABONOS")]
+    public decimal Credit {
+      get;
+      private set;
+    }
+
+    [DataField("SALDO_ACTUAL")]
+    public decimal CurrentBalance {
+      get;
+      private set;
+    }
 
   } // class TrialBalance
 

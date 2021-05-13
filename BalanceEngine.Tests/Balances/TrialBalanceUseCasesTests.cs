@@ -43,13 +43,19 @@ namespace Empiria.FinancialAccounting.Tests.Balances {
     [Fact]
     public void Should_Build_A_Trial_Balance() {
       TrialBalanceCommand command = new TrialBalanceCommand();
+      
+      string id_sector = "";
+      foreach (var item in TestingConstants.Id_Sector) {
+        id_sector += item + ",";
+      }
+      id_sector = id_sector.TrimEnd(',');
 
       command.InitialDate = TestingConstants.InitialDate;
       command.FinalDate = TestingConstants.FinalDate;
-      command.Fields = " LedgerId, CurrencyId, SectorId, LedgerAccountId, AccountId, " +
-                        "-1 AS SubsidiaryAccountId, '' AS BudgetKey, '' AS AccountNumber ";
-      command.Condition = "AND ID_SECTOR > 0 ";
-      command.Grouping = " LedgerId, CurrencyId, SectorId, LedgerAccountId, AccountId ";
+      command.Fields =  "-1 AS ID_MAYOR, -1 AS ID_MONEDA, -1 AS ID_CUENTA,  -1 AS ID_CUENTA_ESTANDAR, " + 
+                        "NUMERO_CUENTA_ESTANDAR, ID_SECTOR, NOMBRE_CUENTA_ESTANDAR, SALDO_ANTERIOR, CARGOS, ABONOS, SALDO_ACTUAL";
+      command.Condition = "AND ID_SECTOR in (" + id_sector + ") ";
+      command.Grouping = "NUMERO_CUENTA_ESTANDAR, ID_SECTOR, NOMBRE_CUENTA_ESTANDAR, SALDO_ANTERIOR, CARGOS, ABONOS, SALDO_ACTUAL";
       command.Having = "";
       command.Ordering = "";
 
