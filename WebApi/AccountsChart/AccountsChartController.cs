@@ -1,10 +1,10 @@
 ﻿/* Empiria Financial *****************************************************************************************
 *                                                                                                            *
 *  Module   : Accounts Chart                               Component : Web Api                               *
-*  Assembly : Empiria.FinancialAccounting.WebApi.dll       Pattern   : Controller                            *
+*  Assembly : Empiria.FinancialAccounting.WebApi.dll       Pattern   : Query Controller                      *
 *  Type     : AccountsChartController                      License   : Please read LICENSE.txt file          *
 *                                                                                                            *
-*  Summary  : Query web API used to retrive accounts and accounts charts.                                    *
+*  Summary  : Query web API used to retrive accounts charts.                                                 *
 *                                                                                                            *
 ************************* Copyright(c) La Vía Óntica SC, Ontica LLC and contributors. All rights reserved. **/
 using System;
@@ -17,7 +17,7 @@ using Empiria.FinancialAccounting.Adapters;
 
 namespace Empiria.FinancialAccounting.WebApi {
 
-  /// <summary>Query web API used to retrive accounts and accounts charts.</summary>
+  /// <summary>Query web API used to retrive accounts charts.</summary>
   public class AccountsChartController : WebApiController {
 
     #region Web Apis

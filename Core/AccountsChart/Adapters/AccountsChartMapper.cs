@@ -22,6 +22,17 @@ namespace Empiria.FinancialAccounting.Adapters {
       };
     }
 
+
+    static internal AccountsChartDto Map(AccountsChart accountsChart,
+                                         FixedList<Account> accounts) {
+      return new AccountsChartDto {
+        UID = accountsChart.UID,
+        Name = accountsChart.Name,
+        Accounts = MapToAccountDescriptors(accounts)
+      };
+    }
+
+
     static internal AccountDto MapAccount(Account account) {
       var dto = new AccountDto();
 

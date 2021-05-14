@@ -9,6 +9,9 @@
 ************************* Copyright(c) La Vía Óntica SC, Ontica LLC and contributors. All rights reserved. **/
 using Xunit;
 
+using Empiria.FinancialAccounting.Adapters;
+
+
 namespace Empiria.FinancialAccounting.Tests {
 
   /// <summary>Test cases for retrieving accounts from the accounts chart.</summary>
@@ -58,6 +61,23 @@ namespace Empiria.FinancialAccounting.Tests {
 
       Assert.Equal(TestingConstants.ACCOUNT_NUMBER, account.Number);
       Assert.Equal(TestingConstants.ACCOUNT_NAME, account.Name);
+    }
+
+
+    [Fact]
+    public void Should_Search_An_Account_Range_In_An_AccountsChart() {
+      var chart = AccountsChart.Parse(TestingConstants.ACCOUNTS_CHART_UID);
+
+      var searchCommand = new AccountsSearchCommand {
+        FromAccount = "1101",
+        ToAccount = "2699"
+      };
+
+      FixedList<Account> accounts = chart.Search(searchCommand.MapToFilterString());
+
+      Assert.NotNull(accounts);
+
+      Assert.DoesNotContain(accounts, x => searchCommand.FromAccount.CompareTo(x.Number) > 0);
     }
 
 

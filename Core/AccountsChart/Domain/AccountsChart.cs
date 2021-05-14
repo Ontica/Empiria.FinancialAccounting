@@ -10,7 +10,7 @@
 using System;
 
 using Empiria.Collections;
-
+using Empiria.FinancialAccounting.Adapters;
 using Empiria.FinancialAccounting.Data;
 
 namespace Empiria.FinancialAccounting {
@@ -91,6 +91,10 @@ namespace Empiria.FinancialAccounting {
       throw Assertion.AssertNoReachThisCode($"Account {accountNumber} was not found.");
     }
 
+
+    public FixedList<Account> Search(string filter) {
+      return AccountsChartData.SearchAccounts(this, filter);
+    }
 
     #endregion Public methods
 

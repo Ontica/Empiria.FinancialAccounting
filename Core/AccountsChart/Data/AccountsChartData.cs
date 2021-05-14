@@ -4,7 +4,7 @@
 *  Assembly : FinancialAccounting.Core.dll               Pattern   : Data Service                            *
 *  Type     : AccountsChartData                          License   : Please read LICENSE.txt file            *
 *                                                                                                            *
-*  Summary  : Data access layer for the accounts chart.                                                      *
+*  Summary  : Data access layer for accounts charts.                                                         *
 *                                                                                                            *
 ************************* Copyright(c) La Vía Óntica SC, Ontica LLC and contributors. All rights reserved. **/
 using System;
@@ -14,7 +14,7 @@ using Empiria.Data;
 
 namespace Empiria.FinancialAccounting.Data {
 
-  /// <summary>Data access layer for the accounts chart.</summary>
+  /// <summary>Data access layer for accounts charts.</summary>
   static internal class AccountsChartData {
 
     static internal EmpiriaHashTable<Account> GetAccounts(AccountsChart accountsChart) {
@@ -51,6 +51,20 @@ namespace Empiria.FinancialAccounting.Data {
       var dataOperation = DataOperation.Parse(sql);
 
       return DataReader.GetFixedList<Sector>(dataOperation);
+    }
+
+
+    static internal FixedList<Account> SearchAccounts(AccountsChart accountsChart,
+                                                      string filter) {
+
+      var sql = "SELECT * FROM COF_CUENTA_ESTANDAR " +
+                $"WHERE ID_TIPO_CUENTAS_STD = {accountsChart.Id} " +
+                (filter.Length != 0 ? $" AND ({filter}) " : String.Empty) +
+                $"ORDER BY NUMERO_CUENTA_ESTANDAR";
+
+      var dataOperation = DataOperation.Parse(sql);
+
+      return DataReader.GetFixedList<Account>(dataOperation);
     }
 
   }  // class AccountsChartData

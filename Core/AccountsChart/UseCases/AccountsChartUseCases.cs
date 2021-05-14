@@ -60,13 +60,19 @@ namespace Empiria.FinancialAccounting.UseCases {
 
 
     public AccountsChartDto SearchAccounts(string accountsChartUID,
-                                           AccountsSearchCommand searchCommand) {
+                                           AccountsSearchCommand command) {
       Assertion.AssertObject(accountsChartUID, "accountsChartUID");
-      Assertion.AssertObject(searchCommand, "searchCommand");
+      Assertion.AssertObject(command, "command");
 
       var accountsChart = AccountsChart.Parse(accountsChartUID);
 
-      return AccountsChartMapper.Map(accountsChart);
+      string filter = command.MapToFilterString();
+
+      FixedList<Account> accounts = accountsChart.Search(filter);
+
+      accounts = command.Restrict(accounts);
+
+      return AccountsChartMapper.Map(accountsChart, accounts);
     }
 
     #endregion Use cases

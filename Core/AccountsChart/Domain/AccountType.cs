@@ -22,6 +22,11 @@ namespace Empiria.FinancialAccounting {
     }
 
 
+    static public AccountType Parse(string uid) {
+      return BaseObject.ParseKey<AccountType>(uid);
+    }
+
+
     static public FixedList<AccountType> GetList() {
       return BaseObject.GetList<AccountType>()
                        .ToFixedList();
