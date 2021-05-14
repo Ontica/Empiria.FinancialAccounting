@@ -52,10 +52,10 @@ namespace Empiria.FinancialAccounting.Tests.Balances {
 
       command.InitialDate = TestingConstants.InitialDate;
       command.FinalDate = TestingConstants.FinalDate;
-      command.Fields = " LedgerId, CurrencyId, SectorId, LedgerAccountId, AccountId, " +
-                        "-1 AS SubsidiaryAccountId, '' AS BudgetKey, '' AS AccountNumber ";
+      command.Fields =  "-1 AS ID_MAYOR, -1 AS ID_MONEDA, -1 AS ID_CUENTA,  -1 AS ID_CUENTA_ESTANDAR, " + 
+                        "NUMERO_CUENTA_ESTANDAR, ID_SECTOR, NOMBRE_CUENTA_ESTANDAR, SALDO_ANTERIOR, CARGOS, ABONOS, SALDO_ACTUAL";
       command.Condition = "AND ID_SECTOR in (" + id_sector + ") ";
-      command.Grouping = " LedgerId, CurrencyId, SectorId, LedgerAccountId, AccountId ";
+      command.Grouping = "NUMERO_CUENTA_ESTANDAR, ID_SECTOR, NOMBRE_CUENTA_ESTANDAR, SALDO_ANTERIOR, CARGOS, ABONOS, SALDO_ACTUAL";
       command.Having = "";
       command.Ordering = "";
 
