@@ -38,6 +38,17 @@ namespace Empiria.FinancialAccounting.Tests {
     #region Facts
 
     [Fact]
+    public void Should_Get_An_Account() {
+      AccountDto account = _usecases.GetAccount(TestingConstants.ACCOUNTS_CHART_UID,
+                                                TestingConstants.ACCOUNT_UID);
+
+
+      Assert.Equal(TestingConstants.ACCOUNT_UID, account.UID);
+      Assert.NotEmpty(account.Currencies);
+    }
+
+
+    [Fact]
     public void Should_Get_Accounts() {
       AccountsChartDto accountsChart = _usecases.GetAccounts(TestingConstants.ACCOUNTS_CHART_UID);
 

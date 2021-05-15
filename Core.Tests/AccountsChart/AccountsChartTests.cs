@@ -19,7 +19,6 @@ namespace Empiria.FinancialAccounting.Tests {
 
     #region Facts
 
-
     [Fact]
     public void Should_Parse_An_AccountsChart() {
       var chart = AccountsChart.Parse(TestingConstants.ACCOUNTS_CHART_UID);

@@ -23,6 +23,8 @@ namespace Empiria.FinancialAccounting.Tests {
 
     static readonly internal int ACCOUNT_ID = ConfigurationData.Get<int>("ACCOUNT_ID");
 
+    static readonly internal string ACCOUNT_UID = ConfigurationData.GetString("ACCOUNT_UID");
+
     static readonly internal string ACCOUNT_NAME = ConfigurationData.GetString("ACCOUNT_NAME");
 
     static readonly internal string ACCOUNT_NUMBER = ConfigurationData.GetString("ACCOUNT_NUMBER");

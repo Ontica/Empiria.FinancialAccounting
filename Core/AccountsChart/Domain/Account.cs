@@ -34,6 +34,11 @@ namespace Empiria.FinancialAccounting {
     }
 
 
+    static public Account Parse(string uid) {
+      return BaseObject.ParseKey<Account>(uid);
+    }
+
+
     static public Account Empty => BaseObject.ParseEmpty<Account>();
 
 

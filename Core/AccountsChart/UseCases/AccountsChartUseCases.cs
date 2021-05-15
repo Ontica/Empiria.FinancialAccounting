@@ -33,6 +33,21 @@ namespace Empiria.FinancialAccounting.UseCases {
 
     #region Use cases
 
+    public AccountDto GetAccount(string accountsChartUID, string accountUID) {
+      Assertion.AssertObject(accountsChartUID, "accountsChartUID");
+      Assertion.AssertObject(accountUID, "accountUID");
+
+      var accountsChart = AccountsChart.Parse(accountsChartUID);
+
+      Account account = Account.Parse(accountUID);
+
+      Assertion.Assert(account.AccountsChart.Equals(accountsChart),
+          $"The account with uid {account.UID} does not belong " +
+          $"to accounts chart {accountsChart.Name}");
+
+      return AccountsChartMapper.MapAccount(account);
+    }
+
 
     public AccountsChartDto GetAccounts(string accountsChartUID) {
       Assertion.AssertObject(accountsChartUID, "accountsChartUID");

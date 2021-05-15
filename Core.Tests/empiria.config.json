@@ -46,6 +46,11 @@
     },
     {
       "type": "FinancialAccounting.Tests",
+      "key": "ACCOUNT_UID",
+      "value": "{{TESTS_ACCOUNT_UID}}"
+    },
+    {
+      "type": "FinancialAccounting.Tests",
       "key": "ACCOUNT_NAME",
       "value": "{{TESTS_ACCOUNT_NAME}}"
     },
