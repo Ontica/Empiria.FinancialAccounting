@@ -41,6 +41,19 @@ namespace Empiria.FinancialAccounting.Data {
     }
 
 
+    static internal FixedList<Ledger> GetAccountLedgers(Account account) {
+      var sql = "SELECT COF_MAYOR.* " +
+                $"FROM COF_MAYOR INNER JOIN COF_CUENTA " +
+                $"ON COF_MAYOR.ID_MAYOR = COF_CUENTA.ID_MAYOR " +
+                $"WHERE COF_CUENTA.ID_CUENTA_ESTANDAR = {account.Id} " +
+                $"ORDER BY COF_MAYOR.NUMERO_MAYOR";
+
+      var dataOperation = DataOperation.Parse(sql);
+
+      return DataReader.GetFixedList<Ledger>(dataOperation);
+    }
+
+
     static internal FixedList<Sector> GetAccountSectors(Account account) {
       var sql = "SELECT COF_SECTOR.* " +
                 $"FROM COF_SECTOR INNER JOIN COF_MAPEO_SECTOR " +

@@ -18,6 +18,8 @@ namespace Empiria.FinancialAccounting {
 
     private Lazy<FixedList<Currency>> _currencies = null;
 
+    private Lazy<FixedList<Ledger>> _ledgers = null;
+
     private Lazy<FixedList<Sector>> _sectors = null;
 
     #endregion Fields
@@ -46,6 +48,7 @@ namespace Empiria.FinancialAccounting {
       base.OnLoad();
 
       this.ResetCurrencies();
+      this.ResetLedgers();
       this.ResetSectors();
     }
 
@@ -121,6 +124,13 @@ namespace Empiria.FinancialAccounting {
     }
 
 
+    public FixedList<Ledger> Ledgers {
+      get {
+        return _ledgers.Value;
+      }
+    }
+
+
     public FixedList<Sector> Sectors {
       get {
         return _sectors.Value;
@@ -136,6 +146,9 @@ namespace Empiria.FinancialAccounting {
       _currencies = new Lazy<FixedList<Currency>>(() => Data.AccountsChartData.GetAccountCurrencies(this));
     }
 
+    private void ResetLedgers() {
+      _ledgers = new Lazy<FixedList<Ledger>>(() => Data.AccountsChartData.GetAccountLedgers(this));
+    }
 
     private void ResetSectors() {
       _sectors = new Lazy<FixedList<Sector>>(() => Data.AccountsChartData.GetAccountSectors(this));
