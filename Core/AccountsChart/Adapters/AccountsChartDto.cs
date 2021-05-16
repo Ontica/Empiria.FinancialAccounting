@@ -76,7 +76,6 @@ namespace Empiria.FinancialAccounting.Adapters {
       get; internal set;
     }
 
-
   }  // class AccountDescriptorDto
 
 
@@ -84,11 +83,19 @@ namespace Empiria.FinancialAccounting.Adapters {
   /// <summary>Output DTO with an account full data.</summary>
   public class AccountDto : AccountDescriptorDto {
 
-    public FixedList<Currency> Currencies {
+    public NamedEntityDto AccountsChart {
       get; internal set;
     }
 
-    public FixedList<Sector> Sectors {
+    public FixedList<CurrencyDto> Currencies {
+      get; internal set;
+    }
+
+    public FixedList<SectorDto> Sectors {
+      get; internal set;
+    }
+
+    public FixedList<LedgerDescriptorDto> Ledgers {
       get; internal set;
     }
 

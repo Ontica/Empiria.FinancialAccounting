@@ -7,13 +7,17 @@
 *  Summary  : Mapping methods for accounting ledger books.                                                   *
 *                                                                                                            *
 ************************* Copyright(c) La Vía Óntica SC, Ontica LLC and contributors. All rights reserved. **/
-
 using System;
 
 namespace Empiria.FinancialAccounting.Adapters {
 
   /// <summary>Mapping methods for accounting ledger books.</summary>
   static internal class LedgerMapper {
+
+    static internal FixedList<LedgerDto> Map(FixedList<Ledger> list) {
+      return new FixedList<LedgerDto>(list.Select((x) => Map(x)));
+    }
+
 
     static internal LedgerDto Map(Ledger ledger) {
       return new LedgerDto {
@@ -24,6 +28,19 @@ namespace Empiria.FinancialAccounting.Adapters {
         AccountsChart = ledger.AccountsChart.MapToNamedEntity(),
         SubsidiaryAccountsPrefix = ledger.SubsidiaryAccountsPrefix,
         BaseCurrency = ledger.BaseCurrency.MapToNamedEntity()
+      };
+    }
+
+    static internal FixedList<LedgerDescriptorDto> MapToDescriptor(FixedList<Ledger> list) {
+      return new FixedList<LedgerDescriptorDto>(list.Select((x) => MapToDescriptor(x)));
+    }
+
+
+    static internal LedgerDescriptorDto MapToDescriptor(Ledger ledger) {
+      return new LedgerDescriptorDto {
+        UID = ledger.UID,
+        Name = ledger.Name,
+        Number = ledger.Number
       };
     }
 
@@ -39,8 +56,8 @@ namespace Empiria.FinancialAccounting.Adapters {
         AccountType = ledgerAccount.AccountType,
         DebtorCreditor = ledgerAccount.DebtorCreditor,
         Level = ledgerAccount.Level,
-        Currencies = ledgerAccount.Currencies,
-        Sectors = ledgerAccount.Sectors
+        Currencies = CataloguesMapper.MapCurrencies(ledgerAccount.Currencies),
+        Sectors = CataloguesMapper.MapSectors(ledgerAccount.Sectors)
       };
     }
 

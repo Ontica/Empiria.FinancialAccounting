@@ -45,6 +45,8 @@ namespace Empiria.FinancialAccounting.Tests {
 
       Assert.Equal(TestingConstants.ACCOUNT_UID, account.UID);
       Assert.NotEmpty(account.Currencies);
+      Assert.NotEmpty(account.Ledgers);
+      Assert.NotEmpty(account.Sectors);
     }
 
 

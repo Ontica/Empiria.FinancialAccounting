@@ -38,8 +38,10 @@ namespace Empiria.FinancialAccounting.Adapters {
 
       FillAccountDescriptorDto(dto, account);
 
-      dto.Currencies = account.Currencies;
-      dto.Sectors = account.Sectors;
+      dto.AccountsChart = account.AccountsChart.MapToNamedEntity();
+      dto.Currencies = CataloguesMapper.MapCurrencies(account.Currencies);
+      dto.Sectors = CataloguesMapper.MapSectors(account.Sectors);
+      dto.Ledgers = LedgerMapper.MapToDescriptor(account.Ledgers);
 
       return dto;
     }
