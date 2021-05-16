@@ -1,15 +1,58 @@
 ﻿/* Empiria Financial *****************************************************************************************
 *                                                                                                            *
 *  Module   : Accounts Chart                             Component : Domain Layer                            *
-*  Assembly : FinancialAccounting.Core.dll               Pattern   : Empiria Plain Object                    *
-*  Type     : CurrencyRule, SectorRule, LedgerRule       License   : Please read LICENSE.txt file            *
+*  Assembly : FinancialAccounting.Core.dll               Pattern   : Empiria Plain Objects                   *
+*  Type     : AreaRules, CurrencyRule,                   License   : Please read LICENSE.txt file            *
+*             LedgerRule, SectorRule                                                                         *
 *                                                                                                            *
-*  Summary  : Types that holds information about an account's sector, currency and leger application rules.  *
+*  Summary  : Types that holds information about an account's responsibility area, sector, currency          *
+*             and leger application rules.                                                                   *
 *                                                                                                            *
 ************************* Copyright(c) La Vía Óntica SC, Ontica LLC and contributors. All rights reserved. **/
 using System;
 
 namespace Empiria.FinancialAccounting {
+
+  /// <summary>Contains information about an account's responsibility area application rule.</summary>
+  public class AreaRule {
+
+    private AreaRule() {
+      // Required by Empiria Framework.
+    }
+
+    public string UID {
+      get {
+        return $"{AccountId}-{AreaCodePattern}-{StartDate.ToString("yyyyMMdd")}-{EndDate.ToString("yyyyMMdd")}";
+      }
+    }
+
+
+    [DataField("ID_CUENTA_ESTANDAR", ConvertFrom = typeof(long))]
+    internal int AccountId {
+      get; private set;
+    }
+
+
+    [DataField("PATRON_AREA")]
+    public string AreaCodePattern {
+      get; private set;
+    }
+
+
+    [DataField("FECHA_INICIO")]
+    public DateTime StartDate {
+      get; private set;
+    }
+
+
+    [DataField("FECHA_FIN", Default = "ExecutionServer.DateMaxValue")]
+    public DateTime EndDate {
+      get; private set;
+    }
+
+  }  // class AreaRule
+
+
 
   /// <summary>Contains information about an account's currency application rule.</summary>
   public class CurrencyRule {

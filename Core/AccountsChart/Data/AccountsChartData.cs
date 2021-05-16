@@ -18,13 +18,25 @@ namespace Empiria.FinancialAccounting.Data {
   static internal class AccountsChartData {
 
     static internal EmpiriaHashTable<Account> GetAccounts(AccountsChart accountsChart) {
-      var sql = "SELECT * FROM COF_CUENTA_ESTANDAR " +
+      var sql = "SELECT * FROM VW_COF_CUENTA_ESTANDAR " +
                 $"WHERE ID_TIPO_CUENTAS_STD = {accountsChart.Id} " +
                 $"ORDER BY NUMERO_CUENTA_ESTANDAR";
 
       var dataOperation = DataOperation.Parse(sql);
 
       return DataReader.GetHashTable<Account>(dataOperation, x => x.Number);
+    }
+
+
+    static internal FixedList<AreaRule> GetAccountAreasRules(Account account) {
+      var sql = "SELECT COF_MAPEO_AREA.* " +
+                $"FROM COF_MAPEO_AREA " +
+                $"WHERE COF_MAPEO_AREA.ID_CUENTA_ESTANDAR = {account.Id} " +
+                $"ORDER BY COF_MAPEO_AREA.PATRON_AREA, FECHA_FIN DESC";
+
+      var dataOperation = DataOperation.Parse(sql);
+
+      return DataReader.GetPlainObjectFixedList<AreaRule>(dataOperation);
     }
 
 
@@ -108,7 +120,7 @@ namespace Empiria.FinancialAccounting.Data {
 
     static internal FixedList<Account> SearchAccounts(AccountsChart accountsChart,
                                                       string filter) {
-      var sql = "SELECT * FROM COF_CUENTA_ESTANDAR " +
+      var sql = "SELECT * FROM VW_COF_CUENTA_ESTANDAR " +
                 $"WHERE ID_TIPO_CUENTAS_STD = {accountsChart.Id} " +
                 (filter.Length != 0 ? $" AND ({filter}) " : String.Empty) +
                 $"ORDER BY NUMERO_CUENTA_ESTANDAR";

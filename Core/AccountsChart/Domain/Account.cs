@@ -16,17 +16,19 @@ namespace Empiria.FinancialAccounting {
 
     #region Fields
 
-    private Lazy<FixedList<Currency>> _currencies = null;
+    private Lazy<FixedList<Currency>> _currencies;
 
-    private Lazy<FixedList<CurrencyRule>> _currenciesRules = null;
+    private Lazy<FixedList<AreaRule>> _areasRules;
 
-    private Lazy<FixedList<Ledger>> _ledgers = null;
+    private Lazy<FixedList<CurrencyRule>> _currenciesRules;
 
-    private Lazy<FixedList<LedgerRule>> _ledgersRules = null;
+    private Lazy<FixedList<Ledger>> _ledgers;
 
-    private Lazy<FixedList<Sector>> _sectors = null;
+    private Lazy<FixedList<LedgerRule>> _ledgersRules;
 
-    private Lazy<FixedList<SectorRule>> _sectorsRules = null;
+    private Lazy<FixedList<Sector>> _sectors;
+
+    private Lazy<FixedList<SectorRule>> _sectorsRules;
 
     #endregion Fields
 
@@ -53,6 +55,7 @@ namespace Empiria.FinancialAccounting {
     protected override void OnLoad() {
       base.OnLoad();
 
+      this.ResetAreas();
       this.ResetCurrencies();
       this.ResetLedgers();
       this.ResetSectors();
@@ -123,6 +126,13 @@ namespace Empiria.FinancialAccounting {
     }
 
 
+    public FixedList<AreaRule> AreasRules {
+      get {
+        return _areasRules.Value;
+      }
+    }
+
+
     public FixedList<Currency> Currencies {
       get {
         return _currencies.Value;
@@ -166,6 +176,10 @@ namespace Empiria.FinancialAccounting {
     #endregion Public properties
 
     #region Private methods
+
+    private void ResetAreas() {
+      _areasRules = new Lazy<FixedList<AreaRule>>(() => Data.AccountsChartData.GetAccountAreasRules(this));
+    }
 
     private void ResetCurrencies() {
       _currencies = new Lazy<FixedList<Currency>>(() => Data.AccountsChartData.GetAccountCurrencies(this));

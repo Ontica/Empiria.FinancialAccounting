@@ -10,7 +10,6 @@
 using System;
 
 using Empiria.Collections;
-using Empiria.FinancialAccounting.Adapters;
 using Empiria.FinancialAccounting.Data;
 
 namespace Empiria.FinancialAccounting {
