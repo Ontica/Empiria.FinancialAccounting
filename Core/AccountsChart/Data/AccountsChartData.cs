@@ -18,8 +18,10 @@ namespace Empiria.FinancialAccounting.Data {
   static internal class AccountsChartData {
 
     static internal EmpiriaHashTable<Account> GetAccounts(AccountsChart accountsChart) {
-      var sql = "SELECT * FROM VW_COF_CUENTA_ESTANDAR " +
+      var sql = "SELECT * FROM VW_COF_CUENTA_ESTANDAR_HIST " +
                 $"WHERE ID_TIPO_CUENTAS_STD = {accountsChart.Id} " +
+                $"AND FECHA_INICIO <= '{CommonMethods.FormatSqlDate(DateTime.Today)}' AND + " +
+                $"'{CommonMethods.FormatSqlDate(DateTime.Today)}' <= FECHA_FIN " +
                 $"ORDER BY NUMERO_CUENTA_ESTANDAR";
 
       var dataOperation = DataOperation.Parse(sql);
@@ -120,7 +122,7 @@ namespace Empiria.FinancialAccounting.Data {
 
     static internal FixedList<Account> SearchAccounts(AccountsChart accountsChart,
                                                       string filter) {
-      var sql = "SELECT * FROM VW_COF_CUENTA_ESTANDAR " +
+      var sql = "SELECT * FROM VW_COF_CUENTA_ESTANDAR_HIST " +
                 $"WHERE ID_TIPO_CUENTAS_STD = {accountsChart.Id} " +
                 (filter.Length != 0 ? $" AND ({filter}) " : String.Empty) +
                 $"ORDER BY NUMERO_CUENTA_ESTANDAR";

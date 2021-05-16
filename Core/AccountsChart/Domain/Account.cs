@@ -79,6 +79,12 @@ namespace Empiria.FinancialAccounting {
     }
 
 
+    [DataField("ID_CUENTA_ESTANDAR", ConvertFrom = typeof(long))]
+    public int BaseAccountId {
+      get; private set;
+    }
+
+
     [DataField("NUMERO_CUENTA_ESTANDAR")]
     public string Number {
       get; private set;
@@ -117,6 +123,18 @@ namespace Empiria.FinancialAccounting {
     public DebtorCreditorType DebtorCreditor {
       get; private set;
     } = DebtorCreditorType.Deudora;
+
+
+    [DataField("FECHA_INICIO")]
+    public DateTime StartDate {
+      get; private set;
+    }
+
+
+    [DataField("FECHA_FIN")]
+    public DateTime EndDate {
+      get; private set;
+    }
 
 
     public int Level {

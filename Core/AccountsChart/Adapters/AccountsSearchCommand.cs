@@ -75,12 +75,14 @@ namespace Empiria.FinancialAccounting.Adapters {
       string typeFilter = BuildAccountsTypeFilter(command.Types);
       string roleFilter = BuildAccountsRoleFilter(command.Roles);
       string keywordsFilter = BuildKeywordsFilter(command.Keywords);
+      string dateFilter = BuildDateFilter(command.Date);
 
       var filter = new Filter(keywordsFilter);
 
       filter.AppendAnd(rangeFilter);
       filter.AppendAnd(typeFilter);
       filter.AppendAnd(roleFilter);
+      filter.AppendAnd(dateFilter);
 
       return filter.ToString();
     }
@@ -146,6 +148,18 @@ namespace Empiria.FinancialAccounting.Adapters {
 
       return $"ID_TIPO_CUENTA IN ({String.Join(", ", idsArray)})";
     }
+
+
+    static private string BuildDateFilter(DateTime? date) {
+      if (!date.HasValue) {
+        date = DateTime.Today;
+      }
+
+      string formattedDate = CommonMethods.FormatSqlDate(date.Value);
+
+      return $"FECHA_INICIO <= '{formattedDate}' AND '{formattedDate}' <= FECHA_FIN";
+    }
+
 
 
     static private string BuildKeywordsFilter(string keywords) {
