@@ -27,6 +27,11 @@ namespace Empiria.FinancialAccounting.Adapters {
     }
 
 
+    public string FullName {
+      get; internal set;
+    }
+
+
     public string Code {
       get; internal set;
     }

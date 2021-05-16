@@ -55,6 +55,17 @@ namespace Empiria.FinancialAccounting {
     } = string.Empty;
 
 
+    public string FullName {
+      get {
+        if (this.Subnumber.Length == 0) {
+          return $"({this.Number}) {this.Name}";
+        } else {
+          return $"({this.Number} - {this.Subnumber}) {this.Name}";
+        }
+      }
+    }
+
+
     [DataField("SUB_NUMERO_MAYOR")]
     public string Subnumber {
       get; private set;
@@ -109,6 +120,12 @@ namespace Empiria.FinancialAccounting {
 
       return ledgerAccount;
     }
+
+
+    public NamedEntityDto MapToNamedEntity() {
+      return new NamedEntityDto(this.UID, this.FullName);
+    }
+
 
     #endregion Public methods
 

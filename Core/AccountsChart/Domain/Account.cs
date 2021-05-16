@@ -18,9 +18,15 @@ namespace Empiria.FinancialAccounting {
 
     private Lazy<FixedList<Currency>> _currencies = null;
 
+    private Lazy<FixedList<CurrencyRule>> _currenciesRules = null;
+
     private Lazy<FixedList<Ledger>> _ledgers = null;
 
+    private Lazy<FixedList<LedgerRule>> _ledgersRules = null;
+
     private Lazy<FixedList<Sector>> _sectors = null;
+
+    private Lazy<FixedList<SectorRule>> _sectorsRules = null;
 
     #endregion Fields
 
@@ -124,6 +130,13 @@ namespace Empiria.FinancialAccounting {
     }
 
 
+    public FixedList<CurrencyRule> CurrenciesRules {
+      get {
+        return _currenciesRules.Value;
+      }
+    }
+
+
     public FixedList<Ledger> Ledgers {
       get {
         return _ledgers.Value;
@@ -131,9 +144,21 @@ namespace Empiria.FinancialAccounting {
     }
 
 
+    public FixedList<LedgerRule> LedgersRules {
+      get {
+        return _ledgersRules.Value;
+      }
+    }
+
     public FixedList<Sector> Sectors {
       get {
         return _sectors.Value;
+      }
+    }
+
+    public FixedList<SectorRule> SectorRules {
+      get {
+        return _sectorsRules.Value;
       }
     }
 
@@ -144,14 +169,17 @@ namespace Empiria.FinancialAccounting {
 
     private void ResetCurrencies() {
       _currencies = new Lazy<FixedList<Currency>>(() => Data.AccountsChartData.GetAccountCurrencies(this));
+      _currenciesRules = new Lazy<FixedList<CurrencyRule>>(() => Data.AccountsChartData.GetAccountCurrenciesRules(this));
     }
 
     private void ResetLedgers() {
       _ledgers = new Lazy<FixedList<Ledger>>(() => Data.AccountsChartData.GetAccountLedgers(this));
+      _ledgersRules = new Lazy<FixedList<LedgerRule>>(() => Data.AccountsChartData.GetAccountLedgersRules(this));
     }
 
     private void ResetSectors() {
       _sectors = new Lazy<FixedList<Sector>>(() => Data.AccountsChartData.GetAccountSectors(this));
+      _sectorsRules = new Lazy<FixedList<SectorRule>>(() => Data.AccountsChartData.GetAccountSectorsRules(this));
     }
 
     #endregion Private methods

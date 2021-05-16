@@ -18,29 +18,16 @@ namespace Empiria.FinancialAccounting.Adapters {
       return new FixedList<LedgerDto>(list.Select((x) => Map(x)));
     }
 
-
     static internal LedgerDto Map(Ledger ledger) {
       return new LedgerDto {
         UID = ledger.UID,
         Name = ledger.Name,
+        FullName = ledger.FullName,
         Number = ledger.Number,
         Subnumber = ledger.Subnumber,
         AccountsChart = ledger.AccountsChart.MapToNamedEntity(),
         SubsidiaryAccountsPrefix = ledger.SubsidiaryAccountsPrefix,
         BaseCurrency = ledger.BaseCurrency.MapToNamedEntity()
-      };
-    }
-
-    static internal FixedList<LedgerDescriptorDto> MapToDescriptor(FixedList<Ledger> list) {
-      return new FixedList<LedgerDescriptorDto>(list.Select((x) => MapToDescriptor(x)));
-    }
-
-
-    static internal LedgerDescriptorDto MapToDescriptor(Ledger ledger) {
-      return new LedgerDescriptorDto {
-        UID = ledger.UID,
-        Name = ledger.Name,
-        Number = ledger.Number
       };
     }
 
@@ -56,10 +43,31 @@ namespace Empiria.FinancialAccounting.Adapters {
         AccountType = ledgerAccount.AccountType,
         DebtorCreditor = ledgerAccount.DebtorCreditor,
         Level = ledgerAccount.Level,
-        Currencies = CataloguesMapper.MapCurrencies(ledgerAccount.Currencies),
-        Sectors = CataloguesMapper.MapSectors(ledgerAccount.Sectors)
+        Currencies = ledgerAccount.Currencies.MapToNamedEntityList(),
+        Sectors = ledgerAccount.Sectors.MapToNamedEntityList()
       };
     }
+
+
+    static internal FixedList<LedgerRuleDto> MapLedgersRules(FixedList<LedgerRule> list) {
+      return new FixedList<LedgerRuleDto>(list.Select(x => MapLedgerRule(x)));
+    }
+
+
+    static internal FixedList<NamedEntityDto> MapToNamedEntityList(FixedList<Ledger> list) {
+      return new FixedList<NamedEntityDto>(list.Select(x => x.MapToNamedEntity()));
+    }
+
+
+    static private LedgerRuleDto MapLedgerRule(LedgerRule ledgerRule) {
+      return new LedgerRuleDto {
+        UID = ledgerRule.UID,
+        Ledger = ledgerRule.Ledger.MapToNamedEntity(),
+        StartDate = ledgerRule.StartDate,
+        EndDate = ledgerRule.EndDate
+      };
+    }
+
 
   }  // class LedgerMapper
 

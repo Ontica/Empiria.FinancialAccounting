@@ -87,15 +87,15 @@ namespace Empiria.FinancialAccounting.Adapters {
       get; internal set;
     }
 
-    public FixedList<CurrencyDto> Currencies {
+    public FixedList<CurrencyRule> CurrenciesRules {
       get; internal set;
     }
 
-    public FixedList<SectorDto> Sectors {
+    public FixedList<SectorRule> SectorsRules {
       get; internal set;
     }
 
-    public FixedList<LedgerDescriptorDto> Ledgers {
+    public FixedList<LedgerRuleDto> LedgersRules {
       get; internal set;
     }
 

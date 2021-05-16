@@ -56,8 +56,21 @@ namespace Empiria.FinancialAccounting {
       get; private set;
     }
 
+    public string FullName {
+      get {
+        return $"({this.Code}) {this.Name}";
+      }
+    }
 
     #endregion Public properties
+
+    #region Methods
+
+    public NamedEntityDto MapToNamedEntity() {
+      return new NamedEntityDto(this.UID, this.FullName);
+    }
+
+    #endregion Methods
 
   }
 

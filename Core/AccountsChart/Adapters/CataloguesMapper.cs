@@ -24,6 +24,7 @@ namespace Empiria.FinancialAccounting.Adapters {
       return new CurrencyDto {
         UID = currency.UID,
         Name = currency.Name,
+        FullName = currency.FullName,
         Symbol = currency.Symbol,
         Code = currency.Code,
         Abbrev = currency.Abbrev
@@ -40,10 +41,10 @@ namespace Empiria.FinancialAccounting.Adapters {
       return new SectorDto {
         UID = sector.UID,
         Name = sector.Name,
+        FullName = sector.FullName,
         Code = sector.Code
       };
     }
-
 
   }  // class CataloguesMapper
 

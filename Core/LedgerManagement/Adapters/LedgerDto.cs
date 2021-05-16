@@ -11,30 +11,6 @@ using System;
 
 namespace Empiria.FinancialAccounting.Adapters {
 
-  /// <summary>Output DTO with minimal data related to an accounting ledger book.</summary>
-  public class LedgerDescriptorDto {
-
-    internal LedgerDescriptorDto() {
-      // no-op
-    }
-
-    public string UID {
-      get; internal set;
-    }
-
-
-    public string Name {
-      get; internal set;
-    }
-
-
-    public string Number {
-      get; internal set;
-    }
-
-  }  // public class LedgerDescriptorDto
-
-
   /// <summary>Output DTO with data related to an accounting ledger book.</summary>
   public class LedgerDto {
 
@@ -51,6 +27,9 @@ namespace Empiria.FinancialAccounting.Adapters {
       get; internal set;
     }
 
+    public string FullName {
+      get; internal set;
+    }
 
     public string Number {
       get; internal set;
@@ -132,15 +111,44 @@ namespace Empiria.FinancialAccounting.Adapters {
     }
 
 
-    public FixedList<CurrencyDto> Currencies {
+    public FixedList<NamedEntityDto> Currencies {
       get; internal set;
     }
 
 
-    public FixedList<SectorDto> Sectors {
+    public FixedList<NamedEntityDto> Sectors {
       get; internal set;
     }
 
   }  // class LedgerAccountDto
+
+
+  public class LedgerRuleDto {
+
+    internal LedgerRuleDto() {
+      // no-op
+    }
+
+    public string UID {
+      get; internal set;
+    }
+
+    public int Id {
+      get; internal set;
+    }
+
+    public NamedEntityDto Ledger {
+      get; internal set;
+    }
+
+    public DateTime StartDate {
+      get; internal set;
+    }
+
+    public DateTime EndDate {
+      get; internal set;
+    }
+
+  }
 
 }  // namespace Empiria.FinancialAccounting.Adapters

@@ -41,6 +41,19 @@ namespace Empiria.FinancialAccounting.Data {
     }
 
 
+    static internal FixedList<CurrencyRule> GetAccountCurrenciesRules(Account account) {
+      var sql = "SELECT COF_MAPEO_MONEDA.* " +
+                $"FROM AO_CURRENCIES INNER JOIN COF_MAPEO_MONEDA " +
+                $"ON AO_CURRENCIES.CURRENCY_ID = COF_MAPEO_MONEDA.ID_MONEDA " +
+                $"WHERE COF_MAPEO_MONEDA.ID_CUENTA_ESTANDAR = {account.Id} " +
+                $"ORDER BY AO_CURRENCIES.ABBREV, FECHA_FIN DESC";
+
+      var dataOperation = DataOperation.Parse(sql);
+
+      return DataReader.GetPlainObjectFixedList<CurrencyRule>(dataOperation);
+    }
+
+
     static internal FixedList<Ledger> GetAccountLedgers(Account account) {
       var sql = "SELECT COF_MAYOR.* " +
                 $"FROM COF_MAYOR INNER JOIN COF_CUENTA " +
@@ -54,6 +67,19 @@ namespace Empiria.FinancialAccounting.Data {
     }
 
 
+    static internal FixedList<LedgerRule> GetAccountLedgersRules(Account account) {
+      var sql = "SELECT COF_CUENTA.* " +
+                $"FROM COF_MAYOR INNER JOIN COF_CUENTA " +
+                $"ON COF_MAYOR.ID_MAYOR = COF_CUENTA.ID_MAYOR " +
+                $"WHERE COF_CUENTA.ID_CUENTA_ESTANDAR = {account.Id} " +
+                $"ORDER BY COF_MAYOR.NUMERO_MAYOR";
+
+      var dataOperation = DataOperation.Parse(sql);
+
+      return DataReader.GetPlainObjectFixedList<LedgerRule>(dataOperation);
+    }
+
+
     static internal FixedList<Sector> GetAccountSectors(Account account) {
       var sql = "SELECT COF_SECTOR.* " +
                 $"FROM COF_SECTOR INNER JOIN COF_MAPEO_SECTOR " +
@@ -63,13 +89,25 @@ namespace Empiria.FinancialAccounting.Data {
 
       var dataOperation = DataOperation.Parse(sql);
 
-      return DataReader.GetFixedList<Sector>(dataOperation);
+      return DataReader.GetPlainObjectFixedList<Sector>(dataOperation);
+    }
+
+
+    static internal FixedList<SectorRule> GetAccountSectorsRules(Account account) {
+      var sql = "SELECT COF_MAPEO_SECTOR.* " +
+                $"FROM COF_SECTOR INNER JOIN COF_MAPEO_SECTOR " +
+                $"ON COF_SECTOR.ID_SECTOR = COF_MAPEO_SECTOR.ID_SECTOR " +
+                $"WHERE COF_MAPEO_SECTOR.ID_CUENTA_ESTANDAR = {account.Id} " +
+                $"ORDER BY COF_SECTOR.CLAVE_SECTOR, FECHA_FIN DESC";
+
+      var dataOperation = DataOperation.Parse(sql);
+
+      return DataReader.GetPlainObjectFixedList<SectorRule>(dataOperation);
     }
 
 
     static internal FixedList<Account> SearchAccounts(AccountsChart accountsChart,
                                                       string filter) {
-
       var sql = "SELECT * FROM COF_CUENTA_ESTANDAR " +
                 $"WHERE ID_TIPO_CUENTAS_STD = {accountsChart.Id} " +
                 (filter.Length != 0 ? $" AND ({filter}) " : String.Empty) +
