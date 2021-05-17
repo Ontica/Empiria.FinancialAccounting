@@ -16,19 +16,13 @@ namespace Empiria.FinancialAccounting {
 
     #region Fields
 
-    private Lazy<FixedList<Currency>> _currencies;
+    private Lazy<FixedList<AreaRule>> _areaRules;
 
-    private Lazy<FixedList<AreaRule>> _areasRules;
+    private Lazy<FixedList<CurrencyRule>> _currencyRules;
 
-    private Lazy<FixedList<CurrencyRule>> _currenciesRules;
+    private Lazy<FixedList<LedgerRule>> _ledgerRules;
 
-    private Lazy<FixedList<Ledger>> _ledgers;
-
-    private Lazy<FixedList<LedgerRule>> _ledgersRules;
-
-    private Lazy<FixedList<Sector>> _sectors;
-
-    private Lazy<FixedList<SectorRule>> _sectorsRules;
+    private Lazy<FixedList<SectorRule>> _sectorRules;
 
     #endregion Fields
 
@@ -55,10 +49,10 @@ namespace Empiria.FinancialAccounting {
     protected override void OnLoad() {
       base.OnLoad();
 
-      this.ResetAreas();
-      this.ResetCurrencies();
-      this.ResetLedgers();
-      this.ResetSectors();
+      this.ResetAreaRules();
+      this.ResetCurrencyRules();
+      this.ResetLedgerRules();
+      this.ResetSectorRules();
     }
 
 
@@ -80,7 +74,7 @@ namespace Empiria.FinancialAccounting {
 
 
     [DataField("ID_CUENTA_ESTANDAR", ConvertFrom = typeof(long))]
-    public int BaseAccountId {
+    public int StandardAccountId {
       get; private set;
     }
 
@@ -144,49 +138,30 @@ namespace Empiria.FinancialAccounting {
     }
 
 
-    public FixedList<AreaRule> AreasRules {
+    public FixedList<AreaRule> AreaRules {
       get {
-        return _areasRules.Value;
+        return _areaRules.Value;
       }
     }
 
 
-    public FixedList<Currency> Currencies {
+    public FixedList<CurrencyRule> CurrencyRules {
       get {
-        return _currencies.Value;
+        return _currencyRules.Value;
       }
     }
 
 
-    public FixedList<CurrencyRule> CurrenciesRules {
+    public FixedList<LedgerRule> LedgerRules {
       get {
-        return _currenciesRules.Value;
+        return _ledgerRules.Value;
       }
     }
 
-
-    public FixedList<Ledger> Ledgers {
-      get {
-        return _ledgers.Value;
-      }
-    }
-
-
-    public FixedList<LedgerRule> LedgersRules {
-      get {
-        return _ledgersRules.Value;
-      }
-    }
-
-    public FixedList<Sector> Sectors {
-      get {
-        return _sectors.Value;
-      }
-    }
 
     public FixedList<SectorRule> SectorRules {
       get {
-        return _sectorsRules.Value;
+        return _sectorRules.Value;
       }
     }
 
@@ -195,23 +170,20 @@ namespace Empiria.FinancialAccounting {
 
     #region Private methods
 
-    private void ResetAreas() {
-      _areasRules = new Lazy<FixedList<AreaRule>>(() => Data.AccountsChartData.GetAccountAreasRules(this));
+    private void ResetAreaRules() {
+      _areaRules = new Lazy<FixedList<AreaRule>>(() => Data.AccountsChartData.GetAccountAreaRules(this));
     }
 
-    private void ResetCurrencies() {
-      _currencies = new Lazy<FixedList<Currency>>(() => Data.AccountsChartData.GetAccountCurrencies(this));
-      _currenciesRules = new Lazy<FixedList<CurrencyRule>>(() => Data.AccountsChartData.GetAccountCurrenciesRules(this));
+    private void ResetCurrencyRules() {
+      _currencyRules = new Lazy<FixedList<CurrencyRule>>(() => Data.AccountsChartData.GetAccountCurrencyRules(this));
     }
 
-    private void ResetLedgers() {
-      _ledgers = new Lazy<FixedList<Ledger>>(() => Data.AccountsChartData.GetAccountLedgers(this));
-      _ledgersRules = new Lazy<FixedList<LedgerRule>>(() => Data.AccountsChartData.GetAccountLedgersRules(this));
+    private void ResetLedgerRules() {
+      _ledgerRules = new Lazy<FixedList<LedgerRule>>(() => Data.AccountsChartData.GetAccountLedgerRules(this));
     }
 
-    private void ResetSectors() {
-      _sectors = new Lazy<FixedList<Sector>>(() => Data.AccountsChartData.GetAccountSectors(this));
-      _sectorsRules = new Lazy<FixedList<SectorRule>>(() => Data.AccountsChartData.GetAccountSectorsRules(this));
+    private void ResetSectorRules() {
+      _sectorRules = new Lazy<FixedList<SectorRule>>(() => Data.AccountsChartData.GetAccountSectorRules(this));
     }
 
     #endregion Private methods

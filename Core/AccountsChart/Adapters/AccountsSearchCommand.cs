@@ -163,7 +163,7 @@ namespace Empiria.FinancialAccounting.Adapters {
 
 
     static private string BuildKeywordsFilter(string keywords) {
-      return SearchExpression.ParseAndLikeKeywords("KEYWORDS_CUENTA_ESTANDAR", keywords);
+      return SearchExpression.ParseAndLikeKeywords("KEYWORDS_CUENTA_ESTANDAR_HIST", keywords);
     }
 
 
@@ -172,10 +172,10 @@ namespace Empiria.FinancialAccounting.Adapters {
         return accounts;
       }
 
-      var restricted = accounts.FindAll(acct => acct.Currencies.Contains(acctCurcy => acctCurcy.UID == currencies[0]));
+      var restricted = accounts.FindAll(acct => acct.CurrencyRules.Contains(acctCurcy => acctCurcy.Currency.UID == currencies[0]));
 
       for (int i = 1; i < currencies.Length; i++) {
-        var temp = restricted.FindAll(acct => acct.Currencies.Contains(acctCurcy => acctCurcy.UID == currencies[i]));
+        var temp = restricted.FindAll(acct => acct.CurrencyRules.Contains(acctCurcy => acctCurcy.Currency.UID == currencies[i]));
         restricted = restricted.Intersect(temp);
       }
 
@@ -196,9 +196,9 @@ namespace Empiria.FinancialAccounting.Adapters {
       if (sectors.Length == 0) {
         return accounts;
       }
-      var restricted = accounts.FindAll(acct => acct.Sectors.Contains(acctSector => acctSector.UID == sectors[0]));
+      var restricted = accounts.FindAll(acct => acct.SectorRules.Contains(acctSector => acctSector.Sector.UID == sectors[0]));
       for (int i = 1; i < sectors.Length; i++) {
-        var temp = restricted.FindAll(acct => acct.Sectors.Contains(acctSector => acctSector.UID == sectors[i]));
+        var temp = restricted.FindAll(acct => acct.SectorRules.Contains(acctSector => acctSector.Sector.UID == sectors[i]));
         restricted = restricted.Intersect(temp);
       }
       return restricted;

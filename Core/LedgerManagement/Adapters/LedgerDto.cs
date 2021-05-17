@@ -111,12 +111,12 @@ namespace Empiria.FinancialAccounting.Adapters {
     }
 
 
-    public FixedList<NamedEntityDto> Currencies {
+    public FixedList<CurrencyRule> CurrencyRules {
       get; internal set;
     }
 
 
-    public FixedList<NamedEntityDto> Sectors {
+    public FixedList<SectorRule> SectorRules {
       get; internal set;
     }
 

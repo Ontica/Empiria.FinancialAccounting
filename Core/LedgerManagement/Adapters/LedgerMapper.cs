@@ -43,8 +43,8 @@ namespace Empiria.FinancialAccounting.Adapters {
         AccountType = ledgerAccount.AccountType,
         DebtorCreditor = ledgerAccount.DebtorCreditor,
         Level = ledgerAccount.Level,
-        Currencies = ledgerAccount.Currencies.MapToNamedEntityList(),
-        Sectors = ledgerAccount.Sectors.MapToNamedEntityList()
+        CurrencyRules = ledgerAccount.CurrencyRules,
+        SectorRules = ledgerAccount.SectorRules
       };
     }
 

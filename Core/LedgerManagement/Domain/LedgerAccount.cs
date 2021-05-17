@@ -30,7 +30,7 @@ namespace Empiria.FinancialAccounting {
 
     #endregion Constructors and parsers
 
-    #region Public properties
+    #region Properties
 
     [DataField("ID_MAYOR", ConvertFrom = typeof(long))]
     public Ledger Ledger {
@@ -39,30 +39,51 @@ namespace Empiria.FinancialAccounting {
 
 
     [DataField("ID_CUENTA_ESTANDAR", ConvertFrom = typeof(long))]
-    private Account MasterAccount {
-      get; set;
+    internal int StandardAccountId {
+      get; private set;
+    }
+
+    private Account _standardAccount;
+
+    private Account StandardAccount {
+      get {
+        if (_standardAccount == null) {
+          _standardAccount = GetStandardAccount();
+        }
+        return _standardAccount;
+      }
     }
 
 
-    public string Number => this.MasterAccount.Number;
+    public string Number => this.StandardAccount.Number;
 
-    public string Name => this.MasterAccount.Name;
+    public string Name => this.StandardAccount.Name;
 
-    public string Description => this.MasterAccount.Description;
+    public string Description => this.StandardAccount.Description;
 
-    public AccountRole Role => this.MasterAccount.Role;
+    public AccountRole Role => this.StandardAccount.Role;
 
-    public string AccountType => this.MasterAccount.AccountType;
+    public string AccountType => this.StandardAccount.AccountType;
 
-    public DebtorCreditorType DebtorCreditor => this.MasterAccount.DebtorCreditor;
+    public DebtorCreditorType DebtorCreditor => this.StandardAccount.DebtorCreditor;
 
-    public int Level => this.MasterAccount.Level;
+    public int Level => this.StandardAccount.Level;
 
-    public FixedList<Currency> Currencies => this.MasterAccount.Currencies;
+    public FixedList<AreaRule> AreaRules => this.StandardAccount.AreaRules;
 
-    public FixedList<Sector> Sectors => this.MasterAccount.Sectors;
+    public FixedList<CurrencyRule> CurrencyRules => this.StandardAccount.CurrencyRules;
 
-    #endregion Public properties
+    public FixedList<SectorRule> SectorRules => this.StandardAccount.SectorRules;
+
+    #endregion Properties
+
+    #region Methods
+
+    private Account GetStandardAccount() {
+      return Data.AccountsChartData.GetCurrentAccountWithStandardAccountId(this.StandardAccountId);
+    }
+
+    #endregion Methods
 
   }  // class LedgerAccount
 

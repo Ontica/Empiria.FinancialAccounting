@@ -39,10 +39,10 @@ namespace Empiria.FinancialAccounting.Adapters {
       FillAccountDescriptorDto(dto, account);
 
       dto.AccountsChart = account.AccountsChart.MapToNamedEntity();
-      dto.AreasRules = account.AreasRules;
-      dto.CurrenciesRules = account.CurrenciesRules;
-      dto.SectorsRules = account.SectorRules;
-      dto.LedgersRules = LedgerMapper.MapLedgersRules(account.LedgersRules);
+      dto.AreaRules = account.AreaRules;
+      dto.CurrencyRules = account.CurrencyRules;
+      dto.SectorRules = account.SectorRules;
+      dto.LedgerRules = LedgerMapper.MapLedgersRules(account.LedgerRules);
 
       return dto;
     }
