@@ -1,9 +1,18 @@
-﻿
+﻿/* Empiria Financial *****************************************************************************************
+*                                                                                                            *
+*  Module   : Balance Engine                             Component : Domain Layer                            *
+*  Assembly : FinancialAccounting.BalanceEngine.dll      Pattern   : Empiria General Object                  *
+*  Type     : TrialBalanceTypes                          License   : Please read LICENSE.txt file            *
+*                                                                                                            *
+*  Summary  : Contains the order of fields depending on the trialBalanceType.                                *
+*                                                                                                            *
+************************* Copyright(c) La Vía Óntica SC, Ontica LLC and contributors. All rights reserved. **/
 
 using System;
 
 namespace Empiria.FinancialAccounting.BalanceEngine {
 
+  /// <summary>Contains the order of fields depending on the trialBalanceType.</summary>
   internal class TrialBalanceTypes {
 
     #region Public methods
@@ -52,11 +61,9 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
       return fieldsGrouping;
     }
 
-
-
-
     #endregion
 
 
-  }
-}
+  } // class TrialBalanceTypes
+
+} // namespace Empiria.FinancialAccounting.BalanceEngine
