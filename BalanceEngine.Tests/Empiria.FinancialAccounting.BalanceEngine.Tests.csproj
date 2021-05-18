@@ -80,6 +80,9 @@
     <ProjectReference Include="..\BalanceEngine\Empiria.FinancialAccounting.BalanceEngine.csproj" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\..\extensions\Data.Oracle\Empiria.Data.Oracle.csproj" />
+  </ItemGroup>
+  <ItemGroup>
     <None Update="empiria.config.json">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>

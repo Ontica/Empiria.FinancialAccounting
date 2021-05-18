@@ -44,19 +44,15 @@ namespace Empiria.FinancialAccounting.Tests.Balances {
     public void Should_Build_A_Trial_Balance() {
       TrialBalanceCommand command = new TrialBalanceCommand();
       
-      string id_sector = "";
-      foreach (var item in TestingConstants.Id_Sector) {
-        id_sector += item + ",";
-      }
-      id_sector = id_sector.TrimEnd(',');
-
-      command.InitialDate = TestingConstants.InitialDate;
-      command.FinalDate = TestingConstants.FinalDate;
-      command.Fields =  "-1 AS ID_MAYOR, -1 AS ID_MONEDA, -1 AS ID_CUENTA,  -1 AS ID_CUENTA_ESTANDAR, " + 
-                        "NUMERO_CUENTA_ESTANDAR, ID_SECTOR, NOMBRE_CUENTA_ESTANDAR, SALDO_ANTERIOR, CARGOS, ABONOS, SALDO_ACTUAL";
-      command.Condition = "AND ID_SECTOR in (" + id_sector + ") ";
-      command.Grouping = "NUMERO_CUENTA_ESTANDAR, ID_SECTOR, NOMBRE_CUENTA_ESTANDAR, SALDO_ANTERIOR, CARGOS, ABONOS, SALDO_ACTUAL";
-      command.Having = "";
+      command.StartDate = TestingConstants.InitialDate;
+      command.EndDate = TestingConstants.FinalDate;
+      command.TrialBalanceType = 1;
+      command.Sectors = TestingConstants.Id_Sector;
+      command.FromAccount = "1101";
+      command.ToAccount = "5204";
+      command.Grouping = "ID_CUENTA_ESTANDAR, ID_SECTOR, " +
+                          "SALDO_ANTERIOR, CARGOS, ABONOS, SALDO_ACTUAL ";
+      command.Having = " HAVING SALDO_ANTERIOR IS NOT NULL AND SALDO_ACTUAL IS NOT NULL ";
       command.Ordering = "";
 
       TrialBalanceDto trialBalance = _usecases.BuildTrialBalance(command);

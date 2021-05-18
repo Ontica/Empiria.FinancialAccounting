@@ -39,11 +39,11 @@ namespace Empiria.FinancialAccounting.Tests {
 
     static internal readonly string Ordering = "";
 
-    static internal readonly int[] Id_Sector = { 7, 8 };
+    static internal readonly string[] Id_Sector = { "0", "5" };
 
-    static internal readonly DateTime InitialDate = new DateTime(2020, 03, 01);
+    static internal readonly DateTime InitialDate = new DateTime(2019, 03, 01);
 
-    static internal readonly DateTime FinalDate = new DateTime(2020, 03, 31);
+    static internal readonly DateTime FinalDate = new DateTime(2019, 03, 31);
 
     static internal readonly int BalanceGroupId = 1;
 

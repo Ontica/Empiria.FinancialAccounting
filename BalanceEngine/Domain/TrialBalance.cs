@@ -23,15 +23,15 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
       this.LedgerId = command.LedgerId;
       this.LedgerAccountId = command.LedgerAccountId;
       this.AccountId = command.AccountId;
-      this.SectorId = command.SectorId;
-      this.SubsidiaryAccountId = command.SubsidiaryAccountId;
+      //this.SectorId = command.SectorId;
+      //this.SubsidiaryAccountId = command.SubsidiaryAccountId;
       this.AccountCatalogueId = command.AccountCatalogueId;
-      this.AccountNumber = command.AccountNumber;
-      this.AccountName = command.AccountName;
-      this.InitialBalance = command.InitialBalance;
-      this.InitialDate = command.InitialDate;
-      this.FinalDate = command.FinalDate;
-      this.SubsidiaryAccountId = command.SubsidiaryAccountId;
+      //this.AccountNumber = command.AccountNumber;
+      //this.AccountName = command.AccountName;
+      //this.InitialBalance = command.InitialBalance;
+      this.StartDate = command.StartDate;
+      this.EndDate = command.StartDate;
+      //this.SubsidiaryAccountId = command.SubsidiaryAccountId;
       this.Entries = entries;
     }
 
@@ -79,11 +79,11 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
       get;
     }
 
-    public DateTime InitialDate {
+    public DateTime StartDate {
       get;
     }
 
-    public DateTime FinalDate {
+    public DateTime EndDate {
       get;
     }
 

@@ -38,10 +38,14 @@ namespace Empiria.FinancialAccounting.BalanceEngine.Adapters {
 
       dto.LedgerId = trialBalance.LedgerId;
       dto.CurrencyId = trialBalance.CurrencyId;
-      dto.SectorId = trialBalance.SectorId;
       dto.LedgerAccountId = trialBalance.LedgerAccountId;
       dto.AccountId = trialBalance.AccountId;
-      
+      dto.SectorId = trialBalance.SectorId;
+      dto.AccountNumber = trialBalance.AccountNumber;
+      dto.AccountName = trialBalance.AccountName;
+      dto.Debit = trialBalance.Debit;
+      dto.Credit = trialBalance.Credit;
+
       return dto;
     }
 

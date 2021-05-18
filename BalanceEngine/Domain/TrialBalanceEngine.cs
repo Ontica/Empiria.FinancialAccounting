@@ -22,27 +22,25 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
     }
 
 
-    internal TrialBalance BuildTrialBalance(TrialBalanceCommand command) {
+    internal TrialBalance BuildTrialBalance(TrialBalanceCommand command, string[] fieldsGrouping, string filter) {
       Assertion.AssertObject(command, "command");
 
-      int balanceGroupId = DetermineBalanceGroup(command.InitialDate);
+      int balanceGroupId = DetermineBalanceGroup(command.StartDate);
 
       TrialBalanceCommandData commandData = new TrialBalanceCommandData();
-      commandData.InitialDate = command.InitialDate;
-      commandData.FinalDate = command.FinalDate;
+      commandData.StartDate = command.StartDate;
+      commandData.EndDate = command.EndDate;
       commandData.BalanceGroupId = balanceGroupId;
-      commandData.Fields = command.Fields;
-      commandData.Condition = command.Condition;
       commandData.Grouping = command.Grouping;
       commandData.Having = command.Having;
       commandData.Ordering = command.Ordering;
 
-      FixedList<TrialBalanceEntry> entries = TrialBalanceDataService.GetTrialBalanceEntries(commandData);
+      FixedList<TrialBalanceEntry> entries = TrialBalanceDataService.GetTrialBalanceEntries(commandData, fieldsGrouping, filter);
 
       return new TrialBalance(command, entries);
     }
 
-    private int DetermineBalanceGroup(DateTime initialDate) {
+    private int DetermineBalanceGroup(DateTime startDate) {
       return 1;
     }
       
