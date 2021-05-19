@@ -31,29 +31,37 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
 
     #region Private methods
     
-    static private string[] BuildFieldTypes(int typeId) {
+    static private string[] BuildFieldTypes(int type) {
       string[] fieldsGrouping = new string[2];
       string fields = String.Empty;
       string grouping = String.Empty;
 
-      if (typeId == 1) {
-        fields = "-1 AS ID_MAYOR, -1 AS ID_MONEDA, -1 AS ID_CUENTA, ID_CUENTA_ESTANDAR, " +
-                 "'-1' AS NUMERO_CUENTA_ESTANDAR, ID_SECTOR, '-1' AS NOMBRE_CUENTA_ESTANDAR, " +
-                 "SALDO_ANTERIOR, CARGOS, ABONOS, SALDO_ACTUAL ";
+      switch (type) {
+        case 1:
+          fields = "-1 AS ID_MAYOR, -1 AS ID_MONEDA, -1 AS ID_CUENTA, ID_CUENTA_ESTANDAR, " +
+                 "NUMERO_CUENTA_ESTANDAR, ID_SECTOR, NOMBRE_CUENTA_ESTANDAR, " +
+                 "SALDO_ANTERIOR, CARGOS, ABONOS, SALDO_ACTUAL";
 
-        grouping = "ID_CUENTA_ESTANDAR, ID_SECTOR, " +
-                   "SALDO_ANTERIOR, CARGOS, ABONOS, SALDO_ACTUAL ";
-      }
+          grouping = "ID_CUENTA_ESTANDAR, NUMERO_CUENTA_ESTANDAR, ID_SECTOR, " +
+                     "NOMBRE_CUENTA_ESTANDAR, SALDO_ANTERIOR, CARGOS, ABONOS, SALDO_ACTUAL";
+          break;
 
-      if (typeId == 2) {
-        fields = "ID_MAYOR, ID_MONEDA, ID_CUENTA, ID_CUENTA_ESTANDAR, " +
+        case 2:
+          fields = "ID_MAYOR, ID_MONEDA, ID_CUENTA, ID_CUENTA_ESTANDAR, " +
                  "NUMERO_CUENTA_ESTANDAR, ID_SECTOR, NOMBRE_CUENTA_ESTANDAR, " +
                  "SALDO_ANTERIOR, CARGOS, ABONOS, SALDO_ACTUAL ";
 
-        grouping = "ID_MAYOR, ID_MONEDA, ID_CUENTA, ID_CUENTA_ESTANDAR, " +
-                   "NUMERO_CUENTA_ESTANDAR, ID_SECTOR, NOMBRE_CUENTA_ESTANDAR, " +
-                   "SALDO_ANTERIOR, CARGOS, ABONOS, SALDO_ACTUAL ";
+          grouping = "ID_MAYOR, ID_MONEDA, ID_CUENTA, ID_CUENTA_ESTANDAR, " +
+                     "NUMERO_CUENTA_ESTANDAR, ID_SECTOR, NOMBRE_CUENTA_ESTANDAR, " +
+                     "SALDO_ANTERIOR, CARGOS, ABONOS, SALDO_ACTUAL ";
+          break;
+
+        default:
+          fields = String.Empty;
+          grouping = String.Empty;
+          break;
       }
+
 
       fieldsGrouping[0] = fields;
       fieldsGrouping[1] = grouping;

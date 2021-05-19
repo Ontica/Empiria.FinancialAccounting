@@ -17,9 +17,22 @@ namespace Empiria.FinancialAccounting.BalanceEngine.Adapters {
   public class TrialBalanceCommand {
 
 
+    public int LedgerGroupId {
+      get; set;
+    } = -1;
+
     public int TrialBalanceType {
       get; set;
     } = 1;
+
+    public int FromLedgerId {
+      get; set;
+    } = -1;
+
+    public int ToLedgerId {
+      get; set;
+    } = -1;
+
     public DateTime StartDate {
       get; set;
     } = DateTime.Today;
@@ -29,6 +42,24 @@ namespace Empiria.FinancialAccounting.BalanceEngine.Adapters {
       get; set;
     } = DateTime.Today.AddDays(1);
 
+
+    public string[] Sectors {
+      get; set;
+    } = new string[0];
+
+
+    public string FromAccount {
+      get; set;
+    } = string.Empty;
+
+
+    public string ToAccount {
+      get; set;
+    } = string.Empty;
+
+    public int Level {
+      get; set;
+    } = 0;
 
     public string Fields {
       get; set;
@@ -47,41 +78,6 @@ namespace Empiria.FinancialAccounting.BalanceEngine.Adapters {
     public string Ordering {
       get; set;
     } = string.Empty;
-
-
-    public string[] Sectors {
-      get; set;
-    } = new string[0];
-
-
-    public string FromAccount {
-      get; set;
-    } = string.Empty;
-
-
-    public string ToAccount {
-      get; set;
-    } = string.Empty;
-
-
-
-    public int LedgerId {
-      get; set;
-    } = -1;
-
-
-    public int AccountCatalogueId {
-      get; set;
-    } = -1;
-
-    public int LedgerAccountId {
-      get; set;
-    } = -1;
-
-
-    public int AccountId {
-      get; set;
-    } = -1;
 
 
     public int OutputFormat {
@@ -108,19 +104,46 @@ namespace Empiria.FinancialAccounting.BalanceEngine.Adapters {
  
 
     static public string MapToFilterString(this TrialBalanceCommand command) {
-      //string startDateFilter = BuildBalanceStartDateFilter(command.StartDate);
-      //string endDateFilter = BuildBalanceEndDateFilter(command.EndDate);
+      string ledgerFilter = BuildBalanceLedgerFilter(command.FromLedgerId, command.ToLedgerId);
       string sectorFilter = BuildBalanceSectorFilter(command.Sectors);
       string rangeFilter = BuildBalanceRangeFilter(command.FromAccount, command.ToAccount);
-      
-      var filter = new Filter(sectorFilter);
+     
+      var filter = new Filter(ledgerFilter);
 
-      //filter.AppendAnd(endDateFilter);
-      //filter.AppendAnd(sectorFilter);
-      filter.AppendAnd(rangeFilter);
+      if (filter.ToString().Length == 0 && sectorFilter.Length > 0) {
+        filter.AppendAnd(" AND " + sectorFilter);
+      } else {
+        filter.AppendAnd(sectorFilter);
+      }
+
+      if (filter.ToString().Length == 0 && rangeFilter.Length > 0) {
+        filter.AppendAnd(" AND " + rangeFilter);
+      } else {
+        filter.AppendAnd(rangeFilter);
+      }
 
       return filter.ToString();
     }
+
+
+    static internal FixedList<TrialBalanceEntry> Restrict(this TrialBalanceCommand command,
+                                                FixedList<TrialBalanceEntry> entries) {
+      FixedList<TrialBalanceEntry> restricted;
+
+      restricted = RestrictLevels(command.Level, entries);
+      
+      return restricted;
+    }
+
+
+    static public string MapToHavingString(this TrialBalanceCommand command) {
+      string having = String.Empty;
+
+      having = command.Having.Length > 0 ? "HAVING " + command.Having : "";
+
+      return having;
+    }
+
     #endregion Public methods
 
     #region Private methods
@@ -143,6 +166,29 @@ namespace Empiria.FinancialAccounting.BalanceEngine.Adapters {
       return $"FECHA_AFECTACION <= '{formattedEndDate}'";
     }
 
+    static private string BuildBalanceLedgerGroupFilter(int ledgerGroupId) {
+      if (ledgerGroupId == -1) {
+        return string.Empty;
+      }
+
+      return $"AND ID_GRUPO_MAYOR IN ({ledgerGroupId})";
+    }
+
+    static private string BuildBalanceLedgerFilter(int fromLedgerId, int toLedgerId) {
+      string filter = String.Empty;
+
+      if (fromLedgerId != -1) {
+        filter = $"AND ID_MAYOR >= '{fromLedgerId}'";
+      }
+      if (toLedgerId != -1) {
+        if (filter.Length != 0) {
+          filter += " AND ";
+        }
+        filter += $"ID_MAYOR <= '{toLedgerId}'";
+      }
+
+      return filter;
+    }
 
     static private string BuildBalanceRangeFilter(string fromAccount, string toAccount) {
       string filter = String.Empty;
@@ -161,6 +207,15 @@ namespace Empiria.FinancialAccounting.BalanceEngine.Adapters {
     }
 
 
+    static private FixedList<TrialBalanceEntry> RestrictLevels(int level, FixedList<TrialBalanceEntry> entries) {
+      if (level > 0) {
+        return entries.FindAll(x => x.Level <= level);
+      } else {
+        return entries;
+      }
+    }
+
+
     static private string BuildBalanceSectorFilter(string[] sectors) {
       if (sectors.Length == 0) {
         return string.Empty;
@@ -169,7 +224,7 @@ namespace Empiria.FinancialAccounting.BalanceEngine.Adapters {
       string[] SectorIds = sectors.Select(x => $"'{x}'")
                                              .ToArray();
       
-      return $"AND ID_SECTOR IN ({String.Join(", ", SectorIds)})";
+      return $"ID_SECTOR IN ({String.Join(", ", SectorIds)})";
     }
 
     static private string BuildFieldTypesFilter(int typeId) {

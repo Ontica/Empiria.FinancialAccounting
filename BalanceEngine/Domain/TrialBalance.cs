@@ -20,18 +20,15 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
       Assertion.AssertObject(command, "command");
       Assertion.AssertObject(entries, "entries");
 
-      this.LedgerId = command.LedgerId;
-      this.LedgerAccountId = command.LedgerAccountId;
-      this.AccountId = command.AccountId;
-      //this.SectorId = command.SectorId;
-      //this.SubsidiaryAccountId = command.SubsidiaryAccountId;
-      this.AccountCatalogueId = command.AccountCatalogueId;
-      //this.AccountNumber = command.AccountNumber;
-      //this.AccountName = command.AccountName;
-      //this.InitialBalance = command.InitialBalance;
+      this.LedgerGroupId = command.LedgerGroupId;
+      this.TrialBalanceType = command.TrialBalanceType;
+      this.FromLedgerId = command.FromLedgerId;
+      this.ToLedgerId = command.ToLedgerId;
       this.StartDate = command.StartDate;
       this.EndDate = command.StartDate;
-      //this.SubsidiaryAccountId = command.SubsidiaryAccountId;
+      this.Sectors = command.Sectors;
+      this.FromAccount = command.FromAccount;
+      this.ToAccount = command.ToAccount;
       this.Entries = entries;
     }
 
@@ -40,42 +37,18 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
 
     #endregion Constructors and parsers
 
-    public int LedgerId {
+    public int LedgerGroupId {
       get;
     }
 
-    public int LedgerAccountId {
+    public int TrialBalanceType {
+      get;
+    }
+    public int FromLedgerId {
       get;
     }
 
-
-    public int AccountId {
-      get;
-    }
-
-
-    public int SectorId {
-      get;
-    }
-
-
-    public int SubsidiaryAccountId {
-      get;
-    }
-
-    public int AccountCatalogueId {
-      get;
-    }
-
-    public string AccountNumber {
-      get;
-    }
-
-    public string AccountName {
-      get;
-    }
-
-    public decimal InitialBalance{
+    public int ToLedgerId {
       get;
     }
 
@@ -87,6 +60,19 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
       get;
     }
 
+    public string[] Sectors {
+      get;
+    }
+
+    public string FromAccount {
+      get;
+    }
+
+    public string ToAccount {
+      get;
+    }
+
+    
     public FixedList<TrialBalanceEntry> Entries {
       get;
     }

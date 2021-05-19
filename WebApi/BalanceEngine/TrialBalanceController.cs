@@ -23,7 +23,7 @@ namespace Empiria.FinancialAccounting.WebApi.BalanceEngine {
 
     [HttpGet]
     [Route("v2/financial-accounting/trial-balance")]
-    public SingleObjectModel GetAccountBalance([FromUri] TrialBalanceCommand command) {
+    public SingleObjectModel GetAccountBalance([FromBody] TrialBalanceCommand command) {
       Assertion.AssertObject(command, "command");
 
       using (var usecases = TrialBalanceUseCases.UseCaseInteractor()) {

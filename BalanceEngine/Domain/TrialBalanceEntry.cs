@@ -56,7 +56,7 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
     public string AccountNumber {
       get;
       private set;
-    }
+    } = string.Empty;
 
     [DataField("NOMBRE_CUENTA_ESTANDAR")]
     public string AccountName {
@@ -129,6 +129,13 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
     public decimal CurrentBalance {
       get;
       private set;
+    }
+
+
+    public int Level {
+      get {
+        return EmpiriaString.CountOccurences(AccountNumber, '-') + 1;
+      }
     }
 
   } // class TrialBalance

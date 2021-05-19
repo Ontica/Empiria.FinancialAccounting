@@ -40,9 +40,13 @@ namespace Empiria.FinancialAccounting.BalanceEngine.UseCases {
 
       string filter = command.MapToFilterString();
 
+      string having = command.MapToHavingString();
+
       var trialBalanceEngine = new TrialBalanceEngine();
 
-      TrialBalance trialBalance = trialBalanceEngine.BuildTrialBalance(command, fieldsGrouping, filter);
+      TrialBalance trialBalance = trialBalanceEngine.BuildTrialBalance(command, fieldsGrouping, filter, having);
+
+      //trialBalance.Entries = command.Restrict(trialBalance.Entries);
 
       return TrialBalanceMapper.Map(command, trialBalance);
     }
