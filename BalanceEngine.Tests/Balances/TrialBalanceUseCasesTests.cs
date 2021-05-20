@@ -47,14 +47,12 @@ namespace Empiria.FinancialAccounting.Tests.Balances {
       command.StartDate = TestingConstants.InitialDate;
       command.EndDate = TestingConstants.FinalDate;
       command.TrialBalanceType = 1;
-      //command.Sectors = TestingConstants.Id_Sector;
+      command.Sectors = TestingConstants.Id_Sector;
       command.FromAccount = "1000";
       command.ToAccount = "6000";
-      //command.FromLedgerId = 7;
-      //command.ToLedgerId = 9;
-      //command.Level = 1;
-      command.Having = "SALDO_ANTERIOR IS NOT NULL AND SALDO_ACTUAL IS NOT NULL ";
-      command.Ordering = "ORDER BY NUMERO_CUENTA_ESTANDAR";
+      command.Level = 1;
+      command.Having = 1;
+      command.Ordering = "ORDER BY ID_CUENTA_ESTANDAR";
 
       TrialBalanceDto trialBalance = _usecases.BuildTrialBalance(command);
 

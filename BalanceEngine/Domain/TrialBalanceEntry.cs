@@ -23,95 +23,45 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
     #endregion Constructors and parsers
 
     [DataField("ID_MAYOR", ConvertFrom = typeof(long))]
-    public int LedgerId {
+    public Ledger Ledger {
       get;
       private set;
-    } = -1;
+    }
+
 
     [DataField("ID_MONEDA", ConvertFrom = typeof(long))]
-    public int CurrencyId {
+    public Currency Currency {
       get;
       private set;
-    } = -1;
+    }
 
-    [DataField("ID_CUENTA", ConvertFrom = typeof(long))]
-    public int LedgerAccountId {
-      get;
-      private set;
-    } = -1;
 
     [DataField("ID_CUENTA_ESTANDAR", ConvertFrom = typeof(long))]
-    public int AccountId {
+    public Account Account {
       get;
       private set;
-    } = -1;
+    }
+
 
     [DataField("ID_SECTOR", ConvertFrom = typeof(long))]
     public int SectorId {
       get;
       private set;
-    } = -1;
-
-    [DataField("NUMERO_CUENTA_ESTANDAR")]
-    public string AccountNumber {
-      get;
-      private set;
-    } = string.Empty;
-
-    [DataField("NOMBRE_CUENTA_ESTANDAR")]
-    public string AccountName {
-      get;
-      private set;
     }
 
-
-    //[DataField("ID_CUENTA_AUXILIAR")]
-    //public int SubsidiaryAccountId {
+    //[DataField("ID_SECTOR", ConvertFrom = typeof(long))]
+    //public Sector Sector {
     //  get;
     //  private set;
     //}
 
-    //[DataField("CLAVE_PRESUPUESTAL")]
-    //public string BudgetKey {
-    //  get;
-    //  private set;
-    //}
-
-    //[DataField("NUMERO_CUENTA_AUXILIAR")]
-    //public string SubsidiaryAccountNumber {
-    //  get;
-    //  private set;
-    //}
-
-    //[DataField("NOMBRE_CUENTA_AUXILIAR")]
-    //public string SubsidiaryAccountName {
-    //  get;
-    //  private set;
-    //}
-
-    //[DataField("ID_TIPO_CUENTA")]
-    //public int AccountTypeId {
-    //  get;
-    //  private set;
-    //}
-
-    //[DataField("NATURALEZA")]
-    //public string Naturaleza {
-    //  get;
-    //  private set;
-    //}
-
-    //[DataField("ROL_CUENTA")]
-    //public char AccountRole {
-    //  get;
-    //  private set;
-    //}
 
     [DataField("SALDO_ANTERIOR")]
-    public decimal PreviousBalance {
+    public decimal InitialBalance {
       get;
       private set;
     }
+
 
     [DataField("CARGOS")]
     public decimal Debit {
@@ -119,11 +69,13 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
       private set;
     }
 
+
     [DataField("ABONOS")]
     public decimal Credit {
       get;
       private set;
     }
+
 
     [DataField("SALDO_ACTUAL")]
     public decimal CurrentBalance {
@@ -134,7 +86,7 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
 
     public int Level {
       get {
-        return EmpiriaString.CountOccurences(AccountNumber, '-') + 1;
+        return EmpiriaString.CountOccurences(Account.Number, '-') + 1;
       }
     }
 

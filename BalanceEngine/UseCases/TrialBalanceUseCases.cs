@@ -35,7 +35,6 @@ namespace Empiria.FinancialAccounting.BalanceEngine.UseCases {
     public TrialBalanceDto BuildTrialBalance(TrialBalanceCommand command) {
       Assertion.AssertObject(command, "command");
 
-      //string fields = command.MapToFieldString();
       string[] fieldsGrouping = TrialBalanceTypes.MapToFieldString(command.TrialBalanceType);
 
       string filter = command.MapToFilterString();
@@ -45,8 +44,6 @@ namespace Empiria.FinancialAccounting.BalanceEngine.UseCases {
       var trialBalanceEngine = new TrialBalanceEngine();
 
       TrialBalance trialBalance = trialBalanceEngine.BuildTrialBalance(command, fieldsGrouping, filter, having);
-
-      //trialBalance.Entries = command.Restrict(trialBalance.Entries);
 
       return TrialBalanceMapper.Map(command, trialBalance);
     }

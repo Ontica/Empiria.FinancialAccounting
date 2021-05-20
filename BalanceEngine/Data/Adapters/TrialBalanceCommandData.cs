@@ -33,6 +33,11 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
     } = string.Empty;
 
 
+    public string Filters {
+      get; set;
+    } = string.Empty;
+
+
     public string Grouping {
       get; set;
     } = string.Empty;

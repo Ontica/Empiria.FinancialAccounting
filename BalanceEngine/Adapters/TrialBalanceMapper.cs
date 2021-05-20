@@ -32,19 +32,21 @@ namespace Empiria.FinancialAccounting.BalanceEngine.Adapters {
       return new FixedList<TrialBalanceEntryDto>(mappedItems);
     }
 
-    static private TrialBalanceEntryDto Map(TrialBalanceEntry trialBalance) {
+    static private TrialBalanceEntryDto Map(TrialBalanceEntry trialBalanceEntry) {
       var dto = new TrialBalanceEntryDto();
 
-
-      dto.LedgerId = trialBalance.LedgerId;
-      dto.CurrencyId = trialBalance.CurrencyId;
-      dto.LedgerAccountId = trialBalance.LedgerAccountId;
-      dto.AccountId = trialBalance.AccountId;
-      dto.SectorId = trialBalance.SectorId;
-      dto.AccountNumber = trialBalance.AccountNumber;
-      dto.AccountName = trialBalance.AccountName;
-      dto.Debit = trialBalance.Debit;
-      dto.Credit = trialBalance.Credit;
+      dto.Ledger = trialBalanceEntry.Ledger.MapToNamedEntity();
+      dto.Currency = trialBalanceEntry.Currency.MapToNamedEntity();
+      dto.AccountUID = trialBalanceEntry.Account.UID;
+      dto.AccountNumber = trialBalanceEntry.Account.Number;
+      dto.AccountName = trialBalanceEntry.Account.Name;
+      dto.SectorId = trialBalanceEntry.SectorId;
+      //dto.Sector = trialBalanceEntry.Sector.MapToNamedEntity();
+      //dto.SectorCode = trialBalanceEntry.Sector.Code;
+      dto.InitialBalance = trialBalanceEntry.InitialBalance;
+      dto.Debit = trialBalanceEntry.Debit;
+      dto.Credit = trialBalanceEntry.Credit;
+      dto.CurrentBalance = trialBalanceEntry.CurrentBalance;
 
       return dto;
     }

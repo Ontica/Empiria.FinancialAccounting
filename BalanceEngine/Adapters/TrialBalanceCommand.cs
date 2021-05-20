@@ -70,9 +70,9 @@ namespace Empiria.FinancialAccounting.BalanceEngine.Adapters {
       get; set;
     } = string.Empty;
 
-    public string Having {
+    public int Having {
       get; set;
-    } = string.Empty;
+    } = 0;
 
 
     public string Ordering {
@@ -139,7 +139,7 @@ namespace Empiria.FinancialAccounting.BalanceEngine.Adapters {
     static public string MapToHavingString(this TrialBalanceCommand command) {
       string having = String.Empty;
 
-      having = command.Having.Length > 0 ? "HAVING " + command.Having : "";
+      having = BuildBalanceHavingClause(command.Having);
 
       return having;
     }
@@ -226,6 +226,26 @@ namespace Empiria.FinancialAccounting.BalanceEngine.Adapters {
       
       return $"ID_SECTOR IN ({String.Join(", ", SectorIds)})";
     }
+
+
+    static private string BuildBalanceHavingClause(int having) {
+      if (having == 0) {
+        return string.Empty;
+      }
+
+      string clause = string.Empty;
+
+      if (having == 1) {
+        clause = "SALDO_ACTUAL > 0";
+      }
+
+      if (having == 2) {
+        clause = "CARGOS > 0 OR ABONOS > 0";
+      }
+
+      return $"HAVING {clause}";
+    }
+
 
     static private string BuildFieldTypesFilter(int typeId) {
       string fields = String.Empty;

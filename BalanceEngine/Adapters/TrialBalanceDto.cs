@@ -15,14 +15,12 @@ namespace Empiria.FinancialAccounting.BalanceEngine.Adapters {
   public class TrialBalanceDto {
 
     public TrialBalanceCommand Command {
-      get;
-      internal set;
+      get; internal set;
     } = new TrialBalanceCommand();
 
 
     public FixedList<TrialBalanceEntryDto> Entries {
-      get;
-      internal set;
+      get; internal set;
     } = new FixedList<TrialBalanceEntryDto>();
 
 
@@ -32,64 +30,62 @@ namespace Empiria.FinancialAccounting.BalanceEngine.Adapters {
   /// <summary>Output DTO used to return the entries of a trial balance.</summary>
   public class TrialBalanceEntryDto {
 
-    public int LedgerId {
+    public NamedEntityDto Ledger {
       get; internal set;
     }
 
-    public int LedgerAccountId {
-      get; set;
-    }
-
-    public int AccountId {
+    public NamedEntityDto Currency {
       get; internal set;
     }
+
+
+    public string AccountUID {
+      get; internal set;
+    }
+
+    public string AccountNumber {
+      get; internal set;
+    }
+
+
+    public string AccountName {
+      get; internal set;
+    }
+
 
     public int SectorId {
       get; internal set;
     }
 
-    public int SubsidiaryAccountId {
-      get; internal set;
-    }
+    //public string SectorCode {
+    //  get; internal set;
+    //}
 
-    public int CurrencyId {
-      get; set;
-    }
-
-    public string AccountNumber {
-      get;
-      internal set;
-    } = string.Empty;
-
-
-    public string AccountName {
-      get;
-      internal set;
-    } = string.Empty;
-
+    //public NamedEntityDto Sector {
+    //  get; internal set;
+    //}
 
     public decimal InitialBalance {
-      get;
-      internal set;
+      get; internal set;
     }
 
 
     public decimal Debit {
-      get;
-      internal set;
+      get; internal set;
     }
 
 
     public decimal Credit {
-      get;
-      internal set;
+      get; internal set;
     }
 
 
     public decimal CurrentBalance {
-      get;
-      internal set;
+      get; internal set;
     }
+
+    
+    
 
   } // class TrialBalanceEntryDto
 

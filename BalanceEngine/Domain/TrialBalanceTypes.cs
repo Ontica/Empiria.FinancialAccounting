@@ -38,20 +38,19 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
 
       switch (type) {
         case 1:
-          fields = "-1 AS ID_MAYOR, -1 AS ID_MONEDA, -1 AS ID_CUENTA, ID_CUENTA_ESTANDAR, " +
-                 "NUMERO_CUENTA_ESTANDAR, ID_SECTOR, NOMBRE_CUENTA_ESTANDAR, " +
-                 "SALDO_ANTERIOR, CARGOS, ABONOS, SALDO_ACTUAL";
+          fields = "ID_MAYOR, ID_MONEDA, ID_CUENTA_ESTANDAR, ID_SECTOR, " +
+                   "SALDO_ANTERIOR, CARGOS, ABONOS, SALDO_ACTUAL";
 
-          grouping = "ID_CUENTA_ESTANDAR, NUMERO_CUENTA_ESTANDAR, ID_SECTOR, " +
-                     "NOMBRE_CUENTA_ESTANDAR, SALDO_ANTERIOR, CARGOS, ABONOS, SALDO_ACTUAL";
+          grouping = "ID_MAYOR, ID_MONEDA, ID_CUENTA_ESTANDAR, ID_SECTOR, " +
+                     "SALDO_ANTERIOR, CARGOS, ABONOS, SALDO_ACTUAL";
           break;
 
         case 2:
-          fields = "ID_MAYOR, ID_MONEDA, ID_CUENTA, ID_CUENTA_ESTANDAR, " +
+          fields = "ID_MAYOR, ID_MONEDA, ID_CUENTA_ESTANDAR, " +
                  "NUMERO_CUENTA_ESTANDAR, ID_SECTOR, NOMBRE_CUENTA_ESTANDAR, " +
                  "SALDO_ANTERIOR, CARGOS, ABONOS, SALDO_ACTUAL ";
 
-          grouping = "ID_MAYOR, ID_MONEDA, ID_CUENTA, ID_CUENTA_ESTANDAR, " +
+          grouping = "ID_MAYOR, ID_MONEDA, ID_CUENTA_ESTANDAR, " +
                      "NUMERO_CUENTA_ESTANDAR, ID_SECTOR, NOMBRE_CUENTA_ESTANDAR, " +
                      "SALDO_ANTERIOR, CARGOS, ABONOS, SALDO_ACTUAL ";
           break;
