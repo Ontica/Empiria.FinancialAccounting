@@ -10,20 +10,21 @@
 using System;
 
 namespace Empiria.FinancialAccounting.BalanceEngine {
+
   internal class TrialBalanceCommandData {
 
     /// <summary>Command payload used to build trial balances.</summary>
-    public DateTime StartDate {
+    public DateTime FromDate {
       get; set;
     } = DateTime.Now;
 
 
-    public DateTime EndDate {
+    public DateTime ToDate {
       get; set;
     } = DateTime.Now.AddDays(1);
 
 
-    public int BalanceGroupId {
+    public int InitialBalanceGroupId {
       get; set;
     } = 1;
 
@@ -55,4 +56,4 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
 
   } // class TrialBalanceCommandData
 
-} // namespace Empiria.FinancialAccounting.BalanceEngine 
+} // namespace Empiria.FinancialAccounting.BalanceEngine

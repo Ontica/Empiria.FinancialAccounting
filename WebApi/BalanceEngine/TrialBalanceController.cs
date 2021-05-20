@@ -21,9 +21,9 @@ namespace Empiria.FinancialAccounting.WebApi.BalanceEngine {
 
     #region Web Apis
 
-    [HttpGet]
+    [HttpPost]
     [Route("v2/financial-accounting/trial-balance")]
-    public SingleObjectModel GetAccountBalance([FromBody] TrialBalanceCommand command) {
+    public SingleObjectModel GetTrialBalance([FromBody] TrialBalanceCommand command) {
       base.RequireBody(command);
 
       using (var usecases = TrialBalanceUseCases.UseCaseInteractor()) {

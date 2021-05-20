@@ -12,7 +12,7 @@ using System;
 namespace Empiria.FinancialAccounting.BalanceEngine {
 
   /// <summary>Represents an entry for a trial balance.</summary>
-  internal class TrialBalanceEntry {
+  public class TrialBalanceEntry {
 
     #region Constructors and parsers
 
@@ -22,10 +22,13 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
 
     #endregion Constructors and parsers
 
-    [DataField("ID_MAYOR", ConvertFrom = typeof(long))]
+    [DataField("ID_MAYOR", ConvertFrom = typeof(decimal))]
+    private int _ledgerId = 0;
+
     public Ledger Ledger {
-      get;
-      private set;
+      get {
+        return Ledger.Parse(_ledgerId);
+      }
     }
 
 
@@ -44,16 +47,17 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
 
 
     [DataField("ID_SECTOR", ConvertFrom = typeof(long))]
-    public int SectorId {
-      get;
-      private set;
-    }
+    private int _sectorId;
 
-    //[DataField("ID_SECTOR", ConvertFrom = typeof(long))]
-    //public Sector Sector {
-    //  get;
-    //  private set;
-    //}
+
+    public Sector Sector {
+      get {
+        if (_sectorId == 0) {
+          _sectorId = -1;
+        }
+        return Sector.Parse(_sectorId);
+      }
+    }
 
 
     [DataField("SALDO_ANTERIOR")]

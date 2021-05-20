@@ -34,6 +34,7 @@ namespace Empiria.FinancialAccounting.BalanceEngine.Adapters {
       get; internal set;
     }
 
+
     public NamedEntityDto Currency {
       get; internal set;
     }
@@ -42,6 +43,7 @@ namespace Empiria.FinancialAccounting.BalanceEngine.Adapters {
     public string AccountUID {
       get; internal set;
     }
+
 
     public string AccountNumber {
       get; internal set;
@@ -53,17 +55,10 @@ namespace Empiria.FinancialAccounting.BalanceEngine.Adapters {
     }
 
 
-    public int SectorId {
+    public NamedEntityDto Sector {
       get; internal set;
     }
 
-    //public string SectorCode {
-    //  get; internal set;
-    //}
-
-    //public NamedEntityDto Sector {
-    //  get; internal set;
-    //}
 
     public decimal InitialBalance {
       get; internal set;
@@ -83,9 +78,6 @@ namespace Empiria.FinancialAccounting.BalanceEngine.Adapters {
     public decimal CurrentBalance {
       get; internal set;
     }
-
-    
-    
 
   } // class TrialBalanceEntryDto
 

@@ -13,70 +13,34 @@ using Empiria.FinancialAccounting.BalanceEngine.Adapters;
 namespace Empiria.FinancialAccounting.BalanceEngine {
 
   /// <summary>Contains the header and entries of a trial balance.</summary>
-  internal class TrialBalance {
+  public class TrialBalance {
+
+    #region Constructors and parsers
 
     internal TrialBalance(TrialBalanceCommand command,
                           FixedList<TrialBalanceEntry> entries) {
       Assertion.AssertObject(command, "command");
       Assertion.AssertObject(entries, "entries");
 
-      this.LedgerGroupId = command.LedgerGroupId;
-      this.TrialBalanceType = command.TrialBalanceType;
-      this.FromLedgerId = command.FromLedgerId;
-      this.ToLedgerId = command.ToLedgerId;
-      this.StartDate = command.StartDate;
-      this.EndDate = command.StartDate;
-      this.Sectors = command.Sectors;
-      this.FromAccount = command.FromAccount;
-      this.ToAccount = command.ToAccount;
+      this.Command = command;
       this.Entries = entries;
     }
 
 
-    #region Constructors and parsers
-
     #endregion Constructors and parsers
 
-    public int LedgerGroupId {
+    #region Properties
+
+    public TrialBalanceCommand Command {
       get;
     }
 
-    public int TrialBalanceType {
-      get;
-    }
-    public int FromLedgerId {
-      get;
-    }
 
-    public int ToLedgerId {
-      get;
-    }
-
-    public DateTime StartDate {
-      get;
-    }
-
-    public DateTime EndDate {
-      get;
-    }
-
-    public string[] Sectors {
-      get;
-    }
-
-    public string FromAccount {
-      get;
-    }
-
-    public string ToAccount {
-      get;
-    }
-
-    
     public FixedList<TrialBalanceEntry> Entries {
       get;
     }
 
+    #endregion Properties
 
   } // class TrialBalance
 

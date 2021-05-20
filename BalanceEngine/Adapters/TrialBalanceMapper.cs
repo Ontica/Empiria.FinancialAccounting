@@ -15,9 +15,9 @@ namespace Empiria.FinancialAccounting.BalanceEngine.Adapters {
 
     #region Public mappers
 
-    static internal TrialBalanceDto Map(TrialBalanceCommand command, TrialBalance trialBalance) {
+    static internal TrialBalanceDto Map(TrialBalance trialBalance) {
       return new TrialBalanceDto {
-        Command = command,
+        Command = trialBalance.Command,
         Entries = Map(trialBalance.Entries)
       };
     }
@@ -40,9 +40,7 @@ namespace Empiria.FinancialAccounting.BalanceEngine.Adapters {
       dto.AccountUID = trialBalanceEntry.Account.UID;
       dto.AccountNumber = trialBalanceEntry.Account.Number;
       dto.AccountName = trialBalanceEntry.Account.Name;
-      dto.SectorId = trialBalanceEntry.SectorId;
-      //dto.Sector = trialBalanceEntry.Sector.MapToNamedEntity();
-      //dto.SectorCode = trialBalanceEntry.Sector.Code;
+      dto.Sector = trialBalanceEntry.Sector.MapToNamedEntity();
       dto.InitialBalance = trialBalanceEntry.InitialBalance;
       dto.Debit = trialBalanceEntry.Debit;
       dto.Credit = trialBalanceEntry.Credit;

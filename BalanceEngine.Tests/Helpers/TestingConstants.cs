@@ -7,7 +7,6 @@
 *  Summary  : Provides testing constants.                                                                    *
 *                                                                                                            *
 ************************* Copyright(c) La Vía Óntica SC, Ontica LLC and contributors. All rights reserved. **/
-
 using System;
 
 namespace Empiria.FinancialAccounting.Tests {
@@ -21,7 +20,8 @@ namespace Empiria.FinancialAccounting.Tests {
 
     static internal readonly string ACCOUNT_NUMBER = "1101-01";
 
-    static internal readonly int LedgerId = 9;
+    static internal readonly string[] Ledgers = { "a70281d1-c9f0-4121-afc1-fe32026feb0d",
+                                                  "82cb925c-1752-4a2b-b0c5-5ae87576cae3" };
 
     static internal readonly int AccountCatalogueId = 1;
 
@@ -39,11 +39,11 @@ namespace Empiria.FinancialAccounting.Tests {
 
     static internal readonly string Ordering = "";
 
-    static internal readonly string[] Id_Sector = { "0", "5", "7", "11" };
+    static internal readonly string[] Sectors = { "0", "5", "7", "11" };
 
-    static internal readonly DateTime InitialDate = new DateTime(2019, 03, 01);
+    static internal readonly DateTime FromDate = new DateTime(2019, 03, 01);
 
-    static internal readonly DateTime FinalDate = new DateTime(2019, 03, 31);
+    static internal readonly DateTime ToDate = new DateTime(2019, 03, 31);
 
     static internal readonly int BalanceGroupId = 1;
 

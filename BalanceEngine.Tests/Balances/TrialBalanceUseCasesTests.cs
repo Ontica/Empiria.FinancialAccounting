@@ -41,18 +41,30 @@ namespace Empiria.FinancialAccounting.Tests.Balances {
     #region Facts
 
     [Fact]
-    public void Should_Build_A_Trial_Balance() {
+    public void Should_Build_A_Traditional_Consolidated_Trial_Balance() {
       TrialBalanceCommand command = new TrialBalanceCommand();
-      
-      command.StartDate = TestingConstants.InitialDate;
-      command.EndDate = TestingConstants.FinalDate;
-      command.TrialBalanceType = 1;
-      command.Sectors = TestingConstants.Id_Sector;
-      command.FromAccount = "1000";
-      command.ToAccount = "6000";
-      command.Level = 1;
-      command.Having = 1;
-      command.Ordering = "ORDER BY ID_CUENTA_ESTANDAR";
+
+      command.TrialBalanceType = BalanceEngine.TrialBalanceType.Traditional;
+      command.Consolidated = true;
+      command.FromDate = TestingConstants.FromDate;
+      command.ToDate = TestingConstants.ToDate;
+
+      TrialBalanceDto trialBalance = _usecases.BuildTrialBalance(command);
+
+      Assert.NotNull(trialBalance);
+      Assert.Equal(command, trialBalance.Command);
+      Assert.NotEmpty(trialBalance.Entries);
+    }
+
+
+    [Fact]
+    public void Should_Build_A_Traditional_No_Consolidated_Trial_Balance() {
+      TrialBalanceCommand command = new TrialBalanceCommand();
+
+      command.TrialBalanceType = BalanceEngine.TrialBalanceType.Traditional;
+      command.Consolidated = false;
+      command.FromDate = TestingConstants.FromDate;
+      command.ToDate = TestingConstants.ToDate;
 
       TrialBalanceDto trialBalance = _usecases.BuildTrialBalance(command);
 

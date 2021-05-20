@@ -8,53 +8,85 @@
 *                                                                                                            *
 ************************* Copyright(c) La Vía Óntica SC, Ontica LLC and contributors. All rights reserved. **/
 using System;
+using System.Linq;
 
 using Empiria.FinancialAccounting.BalanceEngine.Adapters;
 using Empiria.FinancialAccounting.BalanceEngine.Data;
 
 namespace Empiria.FinancialAccounting.BalanceEngine {
 
+  public enum TrialBalanceType {
+
+    Traditional,
+
+    SubsidiaryAccounts
+
+  }
+
+  public enum BalancesType {
+
+    AllAccounts,
+
+    WithCurrentBalance,
+
+    WithMovements
+
+  }
+
+
   /// <summary>Provides services to retrieve a trial balance.</summary>
   internal class TrialBalanceEngine {
 
-    internal TrialBalanceEngine() {
-      //no-op
+
+    internal TrialBalanceEngine(TrialBalanceCommand command) {
+      Assertion.AssertObject(command, "command");
+
+      this.Command = command;
     }
 
 
-    internal TrialBalance BuildTrialBalance(TrialBalanceCommand command, string[] fieldsGrouping, string filters, string having) {
-      Assertion.AssertObject(command, "command");
+    public TrialBalanceCommand Command {
+      get;
+    }
 
-      int balanceGroupId = DetermineBalanceGroup(command.StartDate);
+
+    internal TrialBalance BuildTrialBalance() {
+
+      TrialBalanceClausesHelper clausesHelper = new TrialBalanceClausesHelper(this.Command);
 
       TrialBalanceCommandData commandData = new TrialBalanceCommandData();
-      commandData.StartDate = command.StartDate;
-      commandData.EndDate = command.EndDate;
-      commandData.BalanceGroupId = balanceGroupId;
-      commandData.Fields = fieldsGrouping[0];
-      commandData.Filters = filters;
-      commandData.Grouping = fieldsGrouping[1];
-      commandData.Having = having;
-      commandData.Ordering = command.Ordering;
+
+      commandData.FromDate = Command.FromDate;
+      commandData.ToDate = Command.ToDate;
+      commandData.InitialBalanceGroupId = DetermineBalanceGroup();
+      commandData.Fields = clausesHelper.GetOutputFields();
+      commandData.Filters = clausesHelper.GetFilterString();
+      commandData.Grouping = clausesHelper.GetGroupingClause();
+      commandData.Having = clausesHelper.GetHavingClause();
+      commandData.Ordering = clausesHelper.GetOrderClause();
+
 
       FixedList<TrialBalanceEntry> entries = TrialBalanceDataService.GetTrialBalanceEntries(commandData);
 
-      entries = RestrictLevels(command.Level, entries);
+      entries = RestrictLevels(entries);
 
-      return new TrialBalance(command, entries);
+      return new TrialBalance(Command, entries);
     }
 
-    private int DetermineBalanceGroup(DateTime startDate) {
+
+    private int DetermineBalanceGroup() {
+      // Command.FromDate
       return 1;
     }
 
-    static private FixedList<TrialBalanceEntry> RestrictLevels(int level, FixedList<TrialBalanceEntry> entries) {
-      if (level > 0) {
-        return entries.FindAll(x => x.Level <= level);
+    private FixedList<TrialBalanceEntry> RestrictLevels(FixedList<TrialBalanceEntry> entries) {
+      if (Command.Level > 0) {
+        return entries.FindAll(x => x.Level <= Command.Level);
       } else {
         return entries;
       }
     }
+
 
   } // class TrialBalanceEngine
 

@@ -35,17 +35,11 @@ namespace Empiria.FinancialAccounting.BalanceEngine.UseCases {
     public TrialBalanceDto BuildTrialBalance(TrialBalanceCommand command) {
       Assertion.AssertObject(command, "command");
 
-      string[] fieldsGrouping = TrialBalanceTypes.MapToFieldString(command.TrialBalanceType);
+      var trialBalanceEngine = new TrialBalanceEngine(command);
 
-      string filter = command.MapToFilterString();
+      TrialBalance trialBalance = trialBalanceEngine.BuildTrialBalance();
 
-      string having = command.MapToHavingString();
-
-      var trialBalanceEngine = new TrialBalanceEngine();
-
-      TrialBalance trialBalance = trialBalanceEngine.BuildTrialBalance(command, fieldsGrouping, filter, having);
-
-      return TrialBalanceMapper.Map(command, trialBalance);
+      return TrialBalanceMapper.Map(trialBalance);
     }
 
     #endregion Use cases
