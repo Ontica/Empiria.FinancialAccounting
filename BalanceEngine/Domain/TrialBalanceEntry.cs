@@ -39,7 +39,7 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
     }
 
 
-    [DataField("ID_CUENTA_ESTANDAR", ConvertFrom = typeof(long))]
+    [DataField("ID_CUENTA_ESTANDAR_HIST", ConvertFrom = typeof(long))]
     public Account Account {
       get;
       private set;

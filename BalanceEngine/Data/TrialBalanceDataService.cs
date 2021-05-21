@@ -31,6 +31,7 @@ namespace Empiria.FinancialAccounting.BalanceEngine.Data {
       return DataReader.GetPlainObjectFixedList<TrialBalanceEntry>(operation);
     }
 
+
   } // class TrialBalanceDataService
 
 } // namespace Empiria.FinancialAccounting.BalanceEngine.Data

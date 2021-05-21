@@ -48,6 +48,8 @@ namespace Empiria.FinancialAccounting.Tests.Balances {
       command.Consolidated = true;
       command.FromDate = TestingConstants.FromDate;
       command.ToDate = TestingConstants.ToDate;
+      command.FromAccount = "1001";
+      command.ToAccount = "1999";
 
       TrialBalanceDto trialBalance = _usecases.BuildTrialBalance(command);
 

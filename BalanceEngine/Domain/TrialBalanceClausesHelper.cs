@@ -52,12 +52,12 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
       if (_command.TrialBalanceType == TrialBalanceType.Traditional &&
           _command.Consolidated) {
 
-        return "ID_MONEDA, ID_CUENTA_ESTANDAR, NUMERO_CUENTA_ESTANDAR, ID_SECTOR";
+        return "ID_MONEDA, ID_CUENTA_ESTANDAR_HIST, NUMERO_CUENTA_ESTANDAR, ID_SECTOR";
 
       } else if (_command.TrialBalanceType == TrialBalanceType.Traditional &&
                  !_command.Consolidated) {
 
-        return "ID_MAYOR, ID_MONEDA, NUMERO_CUENTA_ESTANDAR, ID_CUENTA_ESTANDAR, ID_CUENTA, ID_SECTOR";
+        return "ID_MAYOR, ID_MONEDA, NUMERO_CUENTA_ESTANDAR, ID_CUENTA_ESTANDAR_HIST, ID_CUENTA, ID_SECTOR";
 
       } else {
          throw Assertion.AssertNoReachThisCode();
@@ -99,14 +99,14 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
       if (_command.TrialBalanceType == TrialBalanceType.Traditional &&
           _command.Consolidated) {
 
-        return "-1 AS ID_MAYOR, ID_MONEDA, ID_CUENTA_ESTANDAR, NUMERO_CUENTA_ESTANDAR, ID_SECTOR, " +
+        return "-1 AS ID_MAYOR, ID_MONEDA, ID_CUENTA_ESTANDAR_HIST, NUMERO_CUENTA_ESTANDAR, ID_SECTOR, " +
                "SUM(SALDO_ANTERIOR) AS SALDO_ANTERIOR, SUM(CARGOS) AS CARGOS, " +
                "SUM(ABONOS) AS ABONOS, SUM(SALDO_ACTUAL) AS SALDO_ACTUAL";
 
       } else if (_command.TrialBalanceType == TrialBalanceType.Traditional &&
                  !_command.Consolidated) {
 
-        return "ID_MAYOR, ID_MONEDA, ID_CUENTA_ESTANDAR, NUMERO_CUENTA_ESTANDAR, ID_CUENTA, ID_SECTOR, " +
+        return "ID_MAYOR, ID_MONEDA, ID_CUENTA_ESTANDAR_HIST, NUMERO_CUENTA_ESTANDAR, ID_CUENTA, ID_SECTOR, " +
                "SUM(SALDO_ANTERIOR) AS SALDO_ANTERIOR, SUM(CARGOS) AS CARGOS, " +
                "SUM(ABONOS) AS ABONOS, SUM(SALDO_ACTUAL) AS SALDO_ACTUAL";
 
