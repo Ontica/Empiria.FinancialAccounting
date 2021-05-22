@@ -9,6 +9,7 @@
 ************************* Copyright(c) La Vía Óntica SC, Ontica LLC and contributors. All rights reserved. **/
 using System;
 
+
 namespace Empiria.FinancialAccounting {
 
   /// <summary>Contains information about an account.</summary>
@@ -171,19 +172,19 @@ namespace Empiria.FinancialAccounting {
     #region Private methods
 
     private void ResetAreaRules() {
-      _areaRules = new Lazy<FixedList<AreaRule>>(() => Data.AccountsChartData.GetAccountAreaRules(this));
+      _areaRules = new Lazy<FixedList<AreaRule>>(() => AreasRulesChart.GetAccountAreasRules(this));
     }
 
     private void ResetCurrencyRules() {
-      _currencyRules = new Lazy<FixedList<CurrencyRule>>(() => Data.AccountsChartData.GetAccountCurrencyRules(this));
+      _currencyRules = new Lazy<FixedList<CurrencyRule>>(() => CurrenciesRulesChart.GetAccountCurrenciesRules(this));
     }
 
     private void ResetLedgerRules() {
-      _ledgerRules = new Lazy<FixedList<LedgerRule>>(() => Data.AccountsChartData.GetAccountLedgerRules(this));
+      _ledgerRules = new Lazy<FixedList<LedgerRule>>(() => LedgersRulesChart.GetAccountLedgerRules(this));
     }
 
     private void ResetSectorRules() {
-      _sectorRules = new Lazy<FixedList<SectorRule>>(() => Data.AccountsChartData.GetAccountSectorRules(this));
+      _sectorRules = new Lazy<FixedList<SectorRule>>(() => SectorRulesChart.GetAccountSectorRules(this));
     }
 
     #endregion Private methods

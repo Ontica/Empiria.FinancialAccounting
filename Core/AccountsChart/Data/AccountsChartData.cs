@@ -42,11 +42,10 @@ namespace Empiria.FinancialAccounting.Data {
     }
 
 
-    static internal FixedList<AreaRule> GetAccountAreaRules(Account account) {
+    static internal FixedList<AreaRule> GetAccountsAreasRules() {
       var sql = "SELECT COF_MAPEO_AREA.* " +
                 $"FROM COF_MAPEO_AREA " +
-                $"WHERE COF_MAPEO_AREA.ID_CUENTA_ESTANDAR = {account.StandardAccountId} " +
-                $"ORDER BY COF_MAPEO_AREA.PATRON_AREA, FECHA_FIN DESC";
+                $"ORDER BY ID_CUENTA_ESTANDAR, COF_MAPEO_AREA.PATRON_AREA, FECHA_FIN DESC";
 
       var dataOperation = DataOperation.Parse(sql);
 
@@ -54,25 +53,11 @@ namespace Empiria.FinancialAccounting.Data {
     }
 
 
-    static internal FixedList<Currency> GetAccountCurrencies(Account account) {
-      var sql = "SELECT AO_CURRENCIES.* " +
-                $"FROM AO_CURRENCIES INNER JOIN COF_MAPEO_MONEDA " +
-                $"ON AO_CURRENCIES.CURRENCY_ID = COF_MAPEO_MONEDA.ID_MONEDA " +
-                $"WHERE COF_MAPEO_MONEDA.ID_CUENTA_ESTANDAR = {account.StandardAccountId} " +
-                $"ORDER BY AO_CURRENCIES.ABBREV";
-
-      var dataOperation = DataOperation.Parse(sql);
-
-      return DataReader.GetFixedList<Currency>(dataOperation);
-    }
-
-
-    static internal FixedList<CurrencyRule> GetAccountCurrencyRules(Account account) {
+    static internal FixedList<CurrencyRule> GetAccountsCurrenciesRules() {
       var sql = "SELECT COF_MAPEO_MONEDA.* " +
                 $"FROM AO_CURRENCIES INNER JOIN COF_MAPEO_MONEDA " +
                 $"ON AO_CURRENCIES.CURRENCY_ID = COF_MAPEO_MONEDA.ID_MONEDA " +
-                $"WHERE COF_MAPEO_MONEDA.ID_CUENTA_ESTANDAR = {account.StandardAccountId} " +
-                $"ORDER BY AO_CURRENCIES.ABBREV, FECHA_FIN DESC";
+                $"ORDER BY COF_MAPEO_MONEDA.ID_CUENTA_ESTANDAR, AO_CURRENCIES.ABBREV, FECHA_FIN DESC";
 
       var dataOperation = DataOperation.Parse(sql);
 
@@ -80,24 +65,10 @@ namespace Empiria.FinancialAccounting.Data {
     }
 
 
-    static internal FixedList<Ledger> GetAccountLedgers(Account account) {
-      var sql = "SELECT COF_MAYOR.* " +
-                $"FROM COF_MAYOR INNER JOIN COF_CUENTA " +
-                $"ON COF_MAYOR.ID_MAYOR = COF_CUENTA.ID_MAYOR " +
-                $"WHERE COF_CUENTA.ID_CUENTA_ESTANDAR = {account.StandardAccountId} " +
-                $"ORDER BY COF_MAYOR.NUMERO_MAYOR";
-
-      var dataOperation = DataOperation.Parse(sql);
-
-      return DataReader.GetFixedList<Ledger>(dataOperation);
-    }
-
-
-    static internal FixedList<LedgerRule> GetAccountLedgerRules(Account account) {
+    internal static FixedList<LedgerRule> GetAccountsLedgersRules() {
       var sql = "SELECT COF_CUENTA.* " +
                 $"FROM COF_MAYOR INNER JOIN COF_CUENTA " +
                 $"ON COF_MAYOR.ID_MAYOR = COF_CUENTA.ID_MAYOR " +
-                $"WHERE COF_CUENTA.ID_CUENTA_ESTANDAR = {account.StandardAccountId} " +
                 $"ORDER BY COF_MAYOR.NUMERO_MAYOR";
 
       var dataOperation = DataOperation.Parse(sql);
@@ -106,25 +77,11 @@ namespace Empiria.FinancialAccounting.Data {
     }
 
 
-    static internal FixedList<Sector> GetAccountSectors(Account account) {
-      var sql = "SELECT COF_SECTOR.* " +
-                $"FROM COF_SECTOR INNER JOIN COF_MAPEO_SECTOR " +
-                $"ON COF_SECTOR.ID_SECTOR = COF_MAPEO_SECTOR.ID_SECTOR " +
-                $"WHERE COF_MAPEO_SECTOR.ID_CUENTA_ESTANDAR = {account.StandardAccountId} " +
-                $"ORDER BY COF_SECTOR.CLAVE_SECTOR";
-
-      var dataOperation = DataOperation.Parse(sql);
-
-      return DataReader.GetPlainObjectFixedList<Sector>(dataOperation);
-    }
-
-
-    static internal FixedList<SectorRule> GetAccountSectorRules(Account account) {
+    static internal FixedList<SectorRule> GetAccountsSectorsRules() {
       var sql = "SELECT COF_MAPEO_SECTOR.* " +
                 $"FROM COF_SECTOR INNER JOIN COF_MAPEO_SECTOR " +
                 $"ON COF_SECTOR.ID_SECTOR = COF_MAPEO_SECTOR.ID_SECTOR " +
-                $"WHERE COF_MAPEO_SECTOR.ID_CUENTA_ESTANDAR = {account.StandardAccountId} " +
-                $"ORDER BY COF_SECTOR.CLAVE_SECTOR, FECHA_FIN DESC";
+                $"ORDER BY COF_MAPEO_SECTOR.ID_CUENTA_ESTANDAR, COF_SECTOR.CLAVE_SECTOR, FECHA_FIN DESC";
 
       var dataOperation = DataOperation.Parse(sql);
 
