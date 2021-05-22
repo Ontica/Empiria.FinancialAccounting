@@ -11,6 +11,8 @@ using System;
 
 using Empiria.Json;
 
+using Empiria.FinancialAccounting.Data;
+
 namespace Empiria.FinancialAccounting {
 
   /// <summary>Structure that holds master data for an accounts chart.</summary>
@@ -99,6 +101,12 @@ namespace Empiria.FinancialAccounting {
     } = new FixedList<Sector>();
 
 
+    public FixedList<Ledger> Ledgers {
+      get;
+      private set;
+    } = new FixedList<Ledger>();
+
+
     #endregion Properties
 
     #region Private methods
@@ -117,6 +125,8 @@ namespace Empiria.FinancialAccounting {
       this.Currencies = GetCurrencies(fields);
 
       this.Sectors = GetSectors(fields);
+
+      this.Ledgers = GetLedgers();
     }
 
 
@@ -156,6 +166,11 @@ namespace Empiria.FinancialAccounting {
         return Sector.GetList();
       }
     }
+
+    private FixedList<Ledger> GetLedgers() {
+      return AccountsChartData.GetAccountChartLedgers(this.AccountsChart);
+    }
+
 
     #endregion Private methods
 

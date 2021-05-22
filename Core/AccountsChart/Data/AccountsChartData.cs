@@ -30,6 +30,18 @@ namespace Empiria.FinancialAccounting.Data {
     }
 
 
+    static internal FixedList<Ledger> GetAccountChartLedgers(AccountsChart accountsChart) {
+      var sql = "SELECT COF_MAYOR.* " +
+                $"FROM COF_MAYOR " +
+                $"WHERE ID_TIPO_CUENTAS_STD = {accountsChart.Id} " +
+                $"ORDER BY NUMERO_MAYOR";
+
+      var dataOperation = DataOperation.Parse(sql);
+
+      return DataReader.GetFixedList<Ledger>(dataOperation);
+    }
+
+
     static internal FixedList<AreaRule> GetAccountAreaRules(Account account) {
       var sql = "SELECT COF_MAPEO_AREA.* " +
                 $"FROM COF_MAPEO_AREA " +

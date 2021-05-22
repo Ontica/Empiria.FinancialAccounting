@@ -37,9 +37,13 @@ namespace Empiria.FinancialAccounting {
 
     #region Public properties
 
-    [DataField("ID_TIPO_CUENTAS_STD", ConvertFrom=typeof(long))]
+    [DataField("ID_TIPO_CUENTAS_STD", ConvertFrom = typeof(long))]
+    private int _accountsChartId = 0;
+
     public AccountsChart AccountsChart {
-      get; private set;
+      get {
+        return AccountsChart.Parse(_accountsChartId);
+      }
     }
 
 

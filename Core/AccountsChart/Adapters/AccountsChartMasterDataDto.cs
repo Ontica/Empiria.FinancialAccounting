@@ -72,6 +72,12 @@ namespace Empiria.FinancialAccounting.Adapters {
       get; internal set;
     }
 
+
+    public FixedList<LedgerDto> Ledgers {
+      get; internal set;
+    }
+
+
   }  // class AccountsChartMasterDataDto
 
 }  // namespace Empiria.FinancialAccounting.Adapters
