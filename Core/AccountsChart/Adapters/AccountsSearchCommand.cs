@@ -26,6 +26,11 @@ namespace Empiria.FinancialAccounting.Adapters {
     } = DateTime.Today;
 
 
+    public string Ledger {
+      get; set;
+    } = string.Empty;
+
+
     public string FromAccount {
       get; set;
     } = string.Empty;
@@ -71,10 +76,11 @@ namespace Empiria.FinancialAccounting.Adapters {
     #region Public methods
 
     static public string MapToFilterString(this AccountsSearchCommand command) {
+      string keywordsFilter = BuildKeywordsFilter(command.Keywords);
       string rangeFilter = BuildAccountsRangeFilter(command.FromAccount, command.ToAccount);
       string typeFilter = BuildAccountsTypeFilter(command.Types);
       string roleFilter = BuildAccountsRoleFilter(command.Roles);
-      string keywordsFilter = BuildKeywordsFilter(command.Keywords);
+
       string dateFilter = BuildDateFilter(command.Date);
 
       var filter = new Filter(keywordsFilter);
@@ -92,7 +98,8 @@ namespace Empiria.FinancialAccounting.Adapters {
                                                 FixedList<Account> accounts) {
       FixedList<Account> restricted;
 
-      restricted = RestrictLevels(command.Level, accounts);
+      restricted = RestrictLedger(command.Ledger, accounts);
+      restricted = RestrictLevels(command.Level, restricted);
       restricted = RestrictSectors(command.Sectors, restricted);
       restricted = RestrictCurrencies(command.Currencies, restricted);
 
@@ -180,6 +187,14 @@ namespace Empiria.FinancialAccounting.Adapters {
       }
 
       return restricted;
+    }
+
+
+    static private FixedList<Account> RestrictLedger(string ledger, FixedList<Account> accounts) {
+      if (ledger.Length == 0) {
+        return accounts;
+      }
+      return accounts.FindAll(x => x.LedgerRules.Contains(y => y.Ledger.UID == ledger));
     }
 
 
