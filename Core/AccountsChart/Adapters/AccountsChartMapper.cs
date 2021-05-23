@@ -45,10 +45,11 @@ namespace Empiria.FinancialAccounting.Adapters {
       dto.CurrencyRules = account.CurrencyRules;
       dto.SectorRules = account.SectorRules;
       dto.LedgerRules = LedgerMapper.MapLedgersRules(account.LedgerRules);
-
+      dto.History = MapAccountHistory(account.GetHistory());
 
       return dto;
     }
+
 
     #region Private methods
 
@@ -65,7 +66,6 @@ namespace Empiria.FinancialAccounting.Adapters {
       dto.Obsolete = account.EndDate < Account.MAX_END_DATE;
     }
 
-
     static private FixedList<AccountDescriptorDto> MapToAccountDescriptors(FixedList<Account> list) {
       return new FixedList<AccountDescriptorDto>(list.Select((x) => MapToAccountDescriptor(x)));
     }
@@ -77,6 +77,26 @@ namespace Empiria.FinancialAccounting.Adapters {
       FillAccountDescriptorDto(dto, account);
 
       return dto;
+    }
+
+
+    static private FixedList<AccountHistoryDto> MapAccountHistory(FixedList<Account> list) {
+      return new FixedList<AccountHistoryDto>(list.Select((x) => MapToAccountHistory(x)));
+    }
+
+
+    static private AccountHistoryDto MapToAccountHistory(Account account) {
+      return new AccountHistoryDto {
+        UID = account.UID,
+        Name = account.Name,
+        Number = account.Number,
+        Role = account.Role,
+        Type = account.AccountType,
+        DebtorCreditor = account.DebtorCreditor,
+        Description = account.Description,
+        StartDate = account.StartDate,
+        EndDate = account.EndDate
+      };
     }
 
     #endregion Private methods

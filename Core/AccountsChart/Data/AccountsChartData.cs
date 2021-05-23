@@ -30,6 +30,19 @@ namespace Empiria.FinancialAccounting.Data {
     }
 
 
+    static internal FixedList<Account> GetAccountHistory(AccountsChart accountsChart,
+                                                         string accountNumber) {
+      var sql = "SELECT * FROM VW_COF_CUENTA_ESTANDAR_HIST " +
+          $"WHERE ID_TIPO_CUENTAS_STD = {accountsChart.Id} " +
+          $"AND NUMERO_CUENTA_ESTANDAR = '{accountNumber}' " +
+          $"ORDER BY FECHA_INICIO";
+
+      var dataOperation = DataOperation.Parse(sql);
+
+      return DataReader.GetFixedList<Account>(dataOperation);
+    }
+
+
     static internal FixedList<Ledger> GetAccountChartLedgers(AccountsChart accountsChart) {
       var sql = "SELECT COF_MAYOR.* " +
                 $"FROM COF_MAYOR " +

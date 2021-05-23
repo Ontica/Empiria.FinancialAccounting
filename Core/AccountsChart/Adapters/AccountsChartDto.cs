@@ -22,11 +22,9 @@ namespace Empiria.FinancialAccounting.Adapters {
       get; internal set;
     }
 
-
     public string Name {
       get; internal set;
     }
-
 
     public FixedList<AccountDescriptorDto> Accounts {
       get; internal set;
@@ -85,6 +83,10 @@ namespace Empiria.FinancialAccounting.Adapters {
   /// <summary>Output DTO with an account full data.</summary>
   public class AccountDto : AccountDescriptorDto {
 
+    internal AccountDto() {
+      // no-op
+    }
+
     public DateTime StartDate {
       get; internal set;
     }
@@ -113,7 +115,57 @@ namespace Empiria.FinancialAccounting.Adapters {
       get; internal set;
     }
 
+    public FixedList<AccountHistoryDto> History {
+      get; internal set;
+    }
+
   }  // class AccountDto
 
+
+
+  /// <summary>Output DTO with the changes history of an account.</summary>
+  public class AccountHistoryDto {
+
+    internal AccountHistoryDto() {
+      // no-op
+    }
+
+    public string UID {
+      get; internal set;
+    }
+
+    public string Number {
+      get; internal set;
+    }
+
+    public string Name {
+      get; internal set;
+    }
+
+    public string Description {
+      get; internal set;
+    }
+
+    public string Type {
+      get; internal set;
+    }
+
+    public AccountRole Role {
+      get; internal set;
+    }
+
+    public DebtorCreditorType DebtorCreditor {
+      get; internal set;
+    }
+
+    public DateTime StartDate {
+      get; internal set;
+    }
+
+    public DateTime EndDate {
+      get; internal set;
+    }
+
+  }  // class AccountHistoryDto
 
 }  // namespace Empiria.FinancialAccounting.Adapters

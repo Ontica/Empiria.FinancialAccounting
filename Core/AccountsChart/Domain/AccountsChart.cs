@@ -91,6 +91,11 @@ namespace Empiria.FinancialAccounting {
     }
 
 
+    public FixedList<Account> GetAccountHistory(string accountNumber) {
+      return AccountsChartData.GetAccountHistory(this, accountNumber);
+    }
+
+
     public FixedList<Account> Search(string filter) {
       return AccountsChartData.SearchAccounts(this, filter);
     }
