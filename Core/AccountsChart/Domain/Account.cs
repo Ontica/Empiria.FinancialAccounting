@@ -17,6 +17,9 @@ namespace Empiria.FinancialAccounting {
 
     #region Fields
 
+    static public DateTime MAX_END_DATE = ConfigurationData.Get<DateTime>("MAX_ACCOUNT_END_DATE",
+                                                                           new DateTime(2049, 12, 31));
+
     private Lazy<FixedList<AreaRule>> _areaRules;
 
     private Lazy<FixedList<CurrencyRule>> _currencyRules;

@@ -46,33 +46,35 @@ namespace Empiria.FinancialAccounting.Adapters {
       get; internal set;
     }
 
-
     public string Number {
       get; internal set;
     }
-
 
     public string Name {
       get; internal set;
     }
 
+    public string Description {
+      get; internal set;
+    }
 
     public string Type {
       get; internal set;
     }
 
-
     public AccountRole Role {
       get; internal set;
     }
-
 
     public DebtorCreditorType DebtorCreditor {
       get; internal set;
     }
 
-
     public int Level {
+      get; internal set;
+    }
+
+    public bool Obsolete {
       get; internal set;
     }
 
@@ -82,6 +84,14 @@ namespace Empiria.FinancialAccounting.Adapters {
 
   /// <summary>Output DTO with an account full data.</summary>
   public class AccountDto : AccountDescriptorDto {
+
+    public DateTime StartDate {
+      get; internal set;
+    }
+
+    public DateTime EndDate {
+      get; internal set;
+    }
 
     public NamedEntityDto AccountsChart {
       get; internal set;

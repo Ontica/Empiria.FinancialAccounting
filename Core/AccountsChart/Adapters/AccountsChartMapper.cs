@@ -38,11 +38,14 @@ namespace Empiria.FinancialAccounting.Adapters {
 
       FillAccountDescriptorDto(dto, account);
 
+      dto.StartDate = account.StartDate;
+      dto.EndDate = account.EndDate;
       dto.AccountsChart = account.AccountsChart.MapToNamedEntity();
       dto.AreaRules = account.AreaRules;
       dto.CurrencyRules = account.CurrencyRules;
       dto.SectorRules = account.SectorRules;
       dto.LedgerRules = LedgerMapper.MapLedgersRules(account.LedgerRules);
+
 
       return dto;
     }
@@ -54,10 +57,12 @@ namespace Empiria.FinancialAccounting.Adapters {
       dto.UID = account.UID;
       dto.Number = account.Number;
       dto.Name = account.Name;
+      dto.Description = account.Description;
       dto.Type = account.AccountType;
       dto.Role = account.Role;
       dto.DebtorCreditor = account.DebtorCreditor;
       dto.Level = account.Level;
+      dto.Obsolete = account.EndDate < Account.MAX_END_DATE;
     }
 
 
