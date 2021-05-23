@@ -36,7 +36,7 @@ namespace Empiria.FinancialAccounting {
 
 
     static internal FixedList<SectorRule> GetAccountSectorRules(Account account) {
-      var list = _sectorRules.FindAll(x => x.AccountId == account.StandardAccountId);
+      var list = _sectorRules.FindAll(x => x.StandardAccountId == account.StandardAccountId);
 
       list.Sort((x, y) => x.Sector.Code.CompareTo(y.Sector.Code));
 

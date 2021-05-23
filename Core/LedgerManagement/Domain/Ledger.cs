@@ -116,11 +116,11 @@ namespace Empiria.FinancialAccounting {
 
     #region Public methods
 
-    public LedgerAccount GetAccountWithId(int accountId) {
-      var ledgerAccount = LedgerAccount.Parse(accountId);
+    public LedgerAccount GetAccountWithId(int ledgerAccountId) {
+      var ledgerAccount = LedgerAccount.Parse(ledgerAccountId);
 
       Assertion.Assert(ledgerAccount.Ledger.Equals(this),
-          $"The ledger account with id {accountId} does not belong to ledger '{this.Name}'.");
+          $"The ledger account with id {ledgerAccountId} does not belong to ledger '{this.Name}'.");
 
       return ledgerAccount;
     }

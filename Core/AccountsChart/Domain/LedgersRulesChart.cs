@@ -36,7 +36,7 @@ namespace Empiria.FinancialAccounting {
 
 
     static internal FixedList<LedgerRule> GetAccountLedgerRules(Account account) {
-      var list = _ledgersRules.FindAll(x => x.AccountId == account.StandardAccountId);
+      var list = _ledgersRules.FindAll(x => x.StandardAccountId == account.StandardAccountId);
 
       list.Sort((x, y) => x.Ledger.Number.CompareTo(y.Ledger.Number));
 

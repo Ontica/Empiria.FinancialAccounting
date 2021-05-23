@@ -36,7 +36,7 @@ namespace Empiria.FinancialAccounting {
 
 
     static internal FixedList<CurrencyRule> GetAccountCurrenciesRules(Account account) {
-      var list = _currenciesRules.FindAll(x => x.AccountId == account.StandardAccountId);
+      var list = _currenciesRules.FindAll(x => x.StandardAccountId == account.StandardAccountId);
 
       list.Sort((x, y) => x.Currency.Code.CompareTo(y.Currency.Code));
 

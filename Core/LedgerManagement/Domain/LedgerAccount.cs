@@ -9,6 +9,8 @@
 ************************* Copyright(c) La Vía Óntica SC, Ontica LLC and contributors. All rights reserved. **/
 using System;
 
+using Empiria.FinancialAccounting.Data;
+
 namespace Empiria.FinancialAccounting {
 
   /// <summary>Holds information about a ledger account.</summary>
@@ -42,6 +44,7 @@ namespace Empiria.FinancialAccounting {
     internal int StandardAccountId {
       get; private set;
     }
+
 
     private Account _standardAccount;
 
@@ -80,7 +83,7 @@ namespace Empiria.FinancialAccounting {
     #region Methods
 
     private Account GetStandardAccount() {
-      return Data.AccountsChartData.GetCurrentAccountWithStandardAccountId(this.StandardAccountId);
+      return AccountsChartData.GetCurrentAccountWithStandardAccountId(this.StandardAccountId);
     }
 
     #endregion Methods

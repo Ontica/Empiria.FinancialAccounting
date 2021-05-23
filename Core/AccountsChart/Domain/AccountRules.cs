@@ -22,13 +22,13 @@ namespace Empiria.FinancialAccounting {
 
     public string UID {
       get {
-        return $"{AccountId}-{AreaCodePattern}-{StartDate.ToString("yyyyMMdd")}-{EndDate.ToString("yyyyMMdd")}";
+        return $"{StandardAccountId}-{AreaCodePattern}-{StartDate.ToString("yyyyMMdd")}-{EndDate.ToString("yyyyMMdd")}";
       }
     }
 
 
     [DataField("ID_CUENTA_ESTANDAR", ConvertFrom = typeof(long))]
-    internal int AccountId {
+    internal int StandardAccountId {
       get; private set;
     }
 
@@ -63,13 +63,13 @@ namespace Empiria.FinancialAccounting {
 
     public string UID {
       get {
-        return $"{AccountId}-{Currency.Id}-{StartDate.ToString("yyyyMMdd")}-{EndDate.ToString("yyyyMMdd")}";
+        return $"{StandardAccountId}-{Currency.Id}-{StartDate.ToString("yyyyMMdd")}-{EndDate.ToString("yyyyMMdd")}";
       }
     }
 
 
     [DataField("ID_CUENTA_ESTANDAR", ConvertFrom = typeof(long))]
-    internal int AccountId {
+    internal int StandardAccountId {
       get; private set;
     }
 
@@ -110,7 +110,7 @@ namespace Empiria.FinancialAccounting {
 
 
     [DataField("ID_CUENTA_ESTANDAR", ConvertFrom = typeof(long))]
-    internal int AccountId {
+    internal int StandardAccountId {
       get; private set;
     }
 
@@ -144,13 +144,13 @@ namespace Empiria.FinancialAccounting {
 
     public string UID {
       get {
-        return $"{AccountId}-{Sector.Id}-{StartDate.ToString("yyyyMMdd")}-{EndDate.ToString("yyyyMMdd")}";
+        return $"{StandardAccountId}-{Sector.Id}-{StartDate.ToString("yyyyMMdd")}-{EndDate.ToString("yyyyMMdd")}";
       }
     }
 
 
     [DataField("ID_CUENTA_ESTANDAR", ConvertFrom = typeof(long))]
-    internal int AccountId {
+    internal int StandardAccountId {
       get; private set;
     }
 
