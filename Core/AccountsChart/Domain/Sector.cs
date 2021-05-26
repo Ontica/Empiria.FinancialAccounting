@@ -32,7 +32,7 @@ namespace Empiria.FinancialAccounting {
 
 
     static public FixedList<Sector> GetList() {
-      return BaseObject.GetList<Sector>("ID_SECTOR <> -1", "CLAVE_SECTOR")
+      return BaseObject.GetList<Sector>("ID_SECTOR > 0", "CLAVE_SECTOR")
                        .ToFixedList();
     }
 
