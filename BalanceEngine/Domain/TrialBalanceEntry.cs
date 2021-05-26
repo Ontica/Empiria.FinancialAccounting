@@ -34,6 +34,7 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
 
     [DataField("ID_MONEDA", ConvertFrom = typeof(decimal))]
     private int currencyId = 0;
+
     public Currency Currency {
       get {
         return Currency.Parse(currencyId);
@@ -51,7 +52,6 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
     [DataField("ID_SECTOR", ConvertFrom = typeof(long))]
     private int _sectorId;
 
-
     public Sector Sector {
       get {
         if (_sectorId == 0) {
@@ -59,6 +59,13 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
         }
         return Sector.Parse(_sectorId);
       }
+    }
+
+
+    [DataField("ID_CUENTA", ConvertFrom = typeof(decimal))]
+    public int LedgerAccountId {
+      get;
+      private set;
     }
 
 

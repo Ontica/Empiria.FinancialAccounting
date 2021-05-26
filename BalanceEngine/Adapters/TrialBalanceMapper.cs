@@ -41,6 +41,7 @@ namespace Empiria.FinancialAccounting.BalanceEngine.Adapters {
       dto.AccountNumber = trialBalanceEntry.Account.Number;
       dto.AccountName = trialBalanceEntry.Account.Name;
       dto.Sector = trialBalanceEntry.Sector.MapToNamedEntity();
+      dto.LedgerAccountId = trialBalanceEntry.LedgerAccountId;
       dto.InitialBalance = trialBalanceEntry.InitialBalance;
       dto.Debit = trialBalanceEntry.Debit;
       dto.Credit = trialBalanceEntry.Credit;

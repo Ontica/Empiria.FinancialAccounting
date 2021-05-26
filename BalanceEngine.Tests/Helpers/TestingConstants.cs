@@ -43,7 +43,7 @@ namespace Empiria.FinancialAccounting.Tests {
 
     static internal readonly DateTime FromDate = new DateTime(2019, 01, 01);
 
-    static internal readonly DateTime ToDate = new DateTime(2020, 12, 31);
+    static internal readonly DateTime ToDate = new DateTime(2019, 12, 31);
 
     static internal readonly int BalanceGroupId = 1;
 

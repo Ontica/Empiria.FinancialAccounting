@@ -60,6 +60,10 @@ namespace Empiria.FinancialAccounting.BalanceEngine.Adapters {
     }
 
 
+    public int LedgerAccountId {
+      get; internal set;
+    }
+
     public decimal InitialBalance {
       get; internal set;
     }
