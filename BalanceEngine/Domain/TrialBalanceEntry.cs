@@ -32,10 +32,12 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
     }
 
 
-    [DataField("ID_MONEDA", ConvertFrom = typeof(long))]
+    [DataField("ID_MONEDA", ConvertFrom = typeof(decimal))]
+    private int currencyId = 0;
     public Currency Currency {
-      get;
-      private set;
+      get {
+        return Currency.Parse(currencyId);
+      }
     }
 
 
@@ -67,14 +69,14 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
     }
 
 
-    [DataField("CARGOS")]
+    [DataField("DEBE")]
     public decimal Debit {
       get;
       private set;
     }
 
 
-    [DataField("ABONOS")]
+    [DataField("HABER")]
     public decimal Credit {
       get;
       private set;

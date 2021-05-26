@@ -18,14 +18,18 @@ namespace Empiria.FinancialAccounting.BalanceEngine.Data {
     static internal FixedList<TrialBalanceEntry> GetTrialBalanceEntries(TrialBalanceCommandData commandData) {
 
       var operation = DataOperation.Parse("@qryTrialBalance",
+                                          CommonMethods.FormatSqlDate(commandData.BalanceDate),
                                           CommonMethods.FormatSqlDate(commandData.FromDate),
                                           CommonMethods.FormatSqlDate(commandData.ToDate),
                                           commandData.InitialBalanceGroupId,
                                           commandData.Fields,
                                           commandData.Filters,
-                                          commandData.Grouping,
+                                          commandData.AccountFilters,
+                                          commandData.Having.Length > 0 ? commandData.Grouping : "",
                                           commandData.Having,
-                                          commandData.Ordering
+                                          commandData.Ordering,
+                                          commandData.InitialFields,
+                                          commandData.InitialGrouping
                                           );
 
       return DataReader.GetPlainObjectFixedList<TrialBalanceEntry>(operation);

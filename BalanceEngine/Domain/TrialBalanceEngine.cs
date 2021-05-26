@@ -56,11 +56,15 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
 
       TrialBalanceCommandData commandData = new TrialBalanceCommandData();
 
+      commandData.BalanceDate = DetermineBalanceDate();
       commandData.FromDate = Command.FromDate;
       commandData.ToDate = Command.ToDate;
       commandData.InitialBalanceGroupId = DetermineBalanceGroup();
+      commandData.InitialFields = clausesHelper.GetInitialFields();
       commandData.Fields = clausesHelper.GetOutputFields();
       commandData.Filters = clausesHelper.GetFilterString();
+      commandData.AccountFilters = clausesHelper.GetAccountFilterString();
+      commandData.InitialGrouping = clausesHelper.GetInitialGroupingClause();
       commandData.Grouping = clausesHelper.GetGroupingClause();
       commandData.Having = clausesHelper.GetHavingClause();
       commandData.Ordering = clausesHelper.GetOrderClause();
@@ -77,6 +81,11 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
     private int DetermineBalanceGroup() {
       // Command.FromDate
       return 1;
+    }
+
+    private DateTime DetermineBalanceDate() {
+      // Command.FromDate
+      return new DateTime(2000, 12, 30);
     }
 
     private FixedList<TrialBalanceEntry> RestrictLevels(FixedList<TrialBalanceEntry> entries) {
