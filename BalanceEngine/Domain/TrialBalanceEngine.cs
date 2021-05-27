@@ -56,7 +56,6 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
 
       TrialBalanceCommandData commandData = new TrialBalanceCommandData();
 
-      commandData.AccountsChart = AccountsChart.Parse(this.Command.AccountsChartUID);
       commandData.StoredInitialBalanceSet = DetermineStoredBalanceSet();
       commandData.FromDate = Command.FromDate;
       commandData.ToDate = Command.ToDate;
@@ -68,6 +67,7 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
       commandData.Grouping = clausesHelper.GetGroupingClause();
       commandData.Having = clausesHelper.GetHavingClause();
       commandData.Ordering = clausesHelper.GetOrderClause();
+      commandData.AccountsChart = AccountsChart.Parse(this.Command.AccountsChartUID);
 
 
       FixedList<TrialBalanceEntry> entries = TrialBalanceDataService.GetTrialBalanceEntries(commandData);

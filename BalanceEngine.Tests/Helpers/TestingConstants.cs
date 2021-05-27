@@ -41,9 +41,9 @@ namespace Empiria.FinancialAccounting.Tests {
 
     static internal readonly string[] Sectors = { "0", "5", "7", "11" };
 
-    static internal readonly DateTime FromDate = new DateTime(2019, 01, 01);
+    static internal readonly DateTime FromDate = new DateTime(2019, 03, 01);
 
-    static internal readonly DateTime ToDate = new DateTime(2019, 12, 31);
+    static internal readonly DateTime ToDate = new DateTime(2019, 03, 31);
 
     static internal readonly int BalanceGroupId = 1;
 

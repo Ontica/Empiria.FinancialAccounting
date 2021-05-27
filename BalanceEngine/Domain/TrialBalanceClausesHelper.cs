@@ -64,8 +64,8 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
       } else if (_command.TrialBalanceType == TrialBalanceType.Traditional &&
                  !_command.Consolidated) {
 
-        return "GROUP BY ID_MAYOR, ID_MONEDA, ID_CUENTA_ESTANDAR_HIST, NUMERO_CUENTA_ESTANDAR, ID_SECTOR, ID_CUENTA, " +
-               "SALDO_ANTERIOR, DEBE, HABER, SALDO_ACTUAL";
+        return "GROUP BY ID_MAYOR, ID_MONEDA, ID_CUENTA_ESTANDAR_HIST, NUMERO_CUENTA_ESTANDAR, ID_SECTOR, " +
+               "ID_CUENTA, SALDO_ANTERIOR, DEBE, HABER, SALDO_ACTUAL";
 
       } else {
          throw Assertion.AssertNoReachThisCode();
@@ -152,8 +152,8 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
       } else if (_command.TrialBalanceType == TrialBalanceType.Traditional &&
                  !_command.Consolidated) {
 
-        return "ID_MAYOR, ID_MONEDA, ID_CUENTA_ESTANDAR_HIST, NUMERO_CUENTA_ESTANDAR, ID_SECTOR, ID_CUENTA, " +
-               "SALDO_ANTERIOR, DEBE, HABER, SALDO_ACTUAL";
+        return "ID_MAYOR, ID_MONEDA, ID_CUENTA_ESTANDAR_HIST, NUMERO_CUENTA_ESTANDAR, ID_SECTOR, " +
+               "ID_CUENTA, SALDO_ANTERIOR, DEBE, HABER, SALDO_ACTUAL";
 
       } else {
         throw Assertion.AssertNoReachThisCode();

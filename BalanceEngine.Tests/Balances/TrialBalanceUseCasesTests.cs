@@ -46,12 +46,9 @@ namespace Empiria.FinancialAccounting.Tests.Balances {
 
       command.TrialBalanceType = BalanceEngine.TrialBalanceType.Traditional;
       command.BalancesType = BalanceEngine.BalancesType.AllAccounts;
-      command.Consolidated = false;
+      command.Consolidated = true;
       command.FromDate = TestingConstants.FromDate;
       command.ToDate = TestingConstants.ToDate;
-      command.FromAccount = "1101";
-      command.ToAccount = "1504";
-      //command.Level = 1;
 
       TrialBalanceDto trialBalance = _usecases.BuildTrialBalance(command);
 

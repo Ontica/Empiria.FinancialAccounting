@@ -29,8 +29,8 @@ namespace Empiria.FinancialAccounting.BalanceEngine.Data {
                             commandData.Having,
                             commandData.Ordering,
                             commandData.InitialFields,
-                            commandData.InitialGrouping
-                            /* commandData.AccountsChart.Id */
+                            commandData.InitialGrouping,
+                            commandData.AccountsChart.Id
                             );
 
       return DataReader.GetPlainObjectFixedList<TrialBalanceEntry>(operation);
