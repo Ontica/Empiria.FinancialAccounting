@@ -65,7 +65,7 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
                  !_command.Consolidated) {
 
         return "GROUP BY ID_MAYOR, ID_MONEDA, ID_CUENTA_ESTANDAR_HIST, NUMERO_CUENTA_ESTANDAR, ID_SECTOR, ID_CUENTA, " +
-                "SALDO_ANTERIOR, DEBE, HABER, SALDO_ACTUAL";
+               "SALDO_ANTERIOR, DEBE, HABER, SALDO_ACTUAL";
 
       } else {
          throw Assertion.AssertNoReachThisCode();
@@ -82,6 +82,10 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
 
       if (_command.BalancesType == BalancesType.WithCurrentBalance) {
         clause = "SALDO_ACTUAL <> 0";
+
+      } else if (_command.BalancesType == BalancesType.WithCurrenBalanceOrMovements) {
+        clause = "SALDO_ACTUAL <> 0 OR DEBE <> 0 OR HABER <> 0";
+
 
       } else if (_command.BalancesType == BalancesType.WithMovements) {
         clause = "DEBE <> 0 OR HABER <> 0";

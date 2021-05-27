@@ -32,6 +32,13 @@ namespace Empiria.FinancialAccounting.BalanceEngine.UseCases {
 
     #region Use cases
 
+    public FixedList<StoredBalancesSetDto> StoredBalances() {
+      FixedList<StoredBalanceSet> list = StoredBalanceSet.GetList();
+
+      return StoredBalancesMapper.Map(list);
+    }
+
+
     public void StoreBalances(StoreBalancesCommand command) {
       Assertion.AssertObject(command, "command");
 

@@ -9,6 +9,8 @@
 ************************* Copyright(c) La Vía Óntica SC, Ontica LLC and contributors. All rights reserved. **/
 using System;
 
+using Empiria.FinancialAccounting.Adapters;
+
 namespace Empiria.FinancialAccounting.BalanceEngine.Adapters {
 
   /// <summary>Output DTO used to return trial balances.</summary>
@@ -40,17 +42,12 @@ namespace Empiria.FinancialAccounting.BalanceEngine.Adapters {
     }
 
 
-    public string AccountUID {
+    public AccountDescriptorDto Account {
       get; internal set;
     }
 
 
-    public string AccountNumber {
-      get; internal set;
-    }
-
-
-    public string AccountName {
+    public int LedgerAccountId {
       get; internal set;
     }
 
@@ -59,10 +56,6 @@ namespace Empiria.FinancialAccounting.BalanceEngine.Adapters {
       get; internal set;
     }
 
-
-    public int LedgerAccountId {
-      get; internal set;
-    }
 
     public decimal InitialBalance {
       get; internal set;

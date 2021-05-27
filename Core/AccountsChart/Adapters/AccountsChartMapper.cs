@@ -12,7 +12,7 @@ using System;
 namespace Empiria.FinancialAccounting.Adapters {
 
   /// <summary>Mapping methods for accounts charts and their contents.</summary>
-  static internal class AccountsChartMapper {
+  static public class AccountsChartMapper {
 
     static internal AccountsChartDto Map(AccountsChart accountsChart) {
       return new AccountsChartDto {
@@ -51,6 +51,14 @@ namespace Empiria.FinancialAccounting.Adapters {
     }
 
 
+    static public AccountDescriptorDto MapToAccountDescriptor(Account account) {
+      var dto = new AccountDescriptorDto();
+
+      FillAccountDescriptorDto(dto, account);
+
+      return dto;
+    }
+
     #region Private methods
 
 
@@ -66,17 +74,9 @@ namespace Empiria.FinancialAccounting.Adapters {
       dto.Obsolete = account.EndDate < Account.MAX_END_DATE;
     }
 
+
     static private FixedList<AccountDescriptorDto> MapToAccountDescriptors(FixedList<Account> list) {
       return new FixedList<AccountDescriptorDto>(list.Select((x) => MapToAccountDescriptor(x)));
-    }
-
-
-    static private AccountDescriptorDto MapToAccountDescriptor(Account account) {
-      var dto = new AccountDescriptorDto();
-
-      FillAccountDescriptorDto(dto, account);
-
-      return dto;
     }
 
 

@@ -9,6 +9,8 @@
 ************************* Copyright(c) La Vía Óntica SC, Ontica LLC and contributors. All rights reserved. **/
 using System;
 
+using Empiria.FinancialAccounting.Adapters;
+
 namespace Empiria.FinancialAccounting.BalanceEngine.Adapters {
 
   static internal class TrialBalanceMapper {
@@ -37,9 +39,7 @@ namespace Empiria.FinancialAccounting.BalanceEngine.Adapters {
 
       dto.Ledger = trialBalanceEntry.Ledger.MapToNamedEntity();
       dto.Currency = trialBalanceEntry.Currency.MapToNamedEntity();
-      dto.AccountUID = trialBalanceEntry.Account.UID;
-      dto.AccountNumber = trialBalanceEntry.Account.Number;
-      dto.AccountName = trialBalanceEntry.Account.Name;
+      dto.Account = AccountsChartMapper.MapToAccountDescriptor(trialBalanceEntry.Account);
       dto.Sector = trialBalanceEntry.Sector.MapToNamedEntity();
       dto.LedgerAccountId = trialBalanceEntry.LedgerAccountId;
       dto.InitialBalance = trialBalanceEntry.InitialBalance;

@@ -16,15 +16,18 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
 
     Traditional,
 
-    SubsidiaryAccounts
+    Valued
 
   }
+
 
   public enum BalancesType {
 
     AllAccounts,
 
     WithCurrentBalance,
+
+    WithCurrenBalanceOrMovements,
 
     WithMovements
 
