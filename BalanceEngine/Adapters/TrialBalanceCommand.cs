@@ -11,13 +11,17 @@ using System;
 
 namespace Empiria.FinancialAccounting.BalanceEngine.Adapters {
 
-
   /// <summary>Command payload used to build trial balances.</summary>
   public class TrialBalanceCommand {
 
     public TrialBalanceType TrialBalanceType {
       get; set;
-    } = TrialBalanceType.Traditional;
+    }
+
+
+    public string AccountsChartUID {
+      get; set;
+    }
 
 
     public bool Consolidated {
@@ -32,12 +36,12 @@ namespace Empiria.FinancialAccounting.BalanceEngine.Adapters {
 
     public DateTime FromDate {
       get; set;
-    } = DateTime.Today;
+    }
 
 
     public DateTime ToDate {
       get; set;
-    } = DateTime.Today.AddDays(1);
+    }
 
 
     public string[] Sectors {

@@ -7,9 +7,6 @@
 *  Summary  : Provides services to retrieve a trial balance.                                                 *
 *                                                                                                            *
 ************************* Copyright(c) La Vía Óntica SC, Ontica LLC and contributors. All rights reserved. **/
-using System;
-using System.Linq;
-
 using Empiria.FinancialAccounting.BalanceEngine.Adapters;
 using Empiria.FinancialAccounting.BalanceEngine.Data;
 
@@ -56,10 +53,10 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
 
       TrialBalanceCommandData commandData = new TrialBalanceCommandData();
 
-      commandData.BalanceDate = DetermineBalanceDate();
+      commandData.AccountsChart = AccountsChart.Parse(this.Command.AccountsChartUID);
+      commandData.StoredInitialBalanceSet = DetermineStoredBalanceSet();
       commandData.FromDate = Command.FromDate;
       commandData.ToDate = Command.ToDate;
-      commandData.InitialBalanceGroupId = DetermineBalanceGroup();
       commandData.InitialFields = clausesHelper.GetInitialFields();
       commandData.Fields = clausesHelper.GetOutputFields();
       commandData.Filters = clausesHelper.GetFilterString();
@@ -78,15 +75,10 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
     }
 
 
-    private int DetermineBalanceGroup() {
-      // Command.FromDate
-      return 1;
+    private StoredBalanceSet DetermineStoredBalanceSet() {
+      return StoredBalanceSet.GetBestSet(StoredBalanceSetType.TrialBalance, this.Command.FromDate);
     }
 
-    private DateTime DetermineBalanceDate() {
-      // Command.FromDate
-      return new DateTime(2000, 12, 30);
-    }
 
     private FixedList<TrialBalanceEntry> RestrictLevels(FixedList<TrialBalanceEntry> entries) {
       if (Command.Level > 0) {

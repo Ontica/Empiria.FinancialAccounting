@@ -11,6 +11,11 @@ using System;
 
 namespace Empiria.FinancialAccounting.BalanceEngine {
 
+  public enum StoredBalanceSetType {
+    TrialBalance
+  }
+
+
   /// <summary>Describes a stored balance set.</summary>
   internal class StoredBalanceSet : GeneralObject {
 
@@ -24,6 +29,26 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
                         DateTime balancesDate) {
       this.AcountsChart = accountsChart;
       this.BalancesDate = balancesDate;
+    }
+
+
+    static public StoredBalanceSet Parse(int id) {
+      return BaseObject.ParseId<StoredBalanceSet>(id);
+    }
+
+
+    static public FixedList<StoredBalanceSet> GetList() {
+      var list = BaseObject.GetList<StoredBalanceSet>("ObjectStatus <> 'X'", string.Empty);
+
+      list.Sort((x, y) => x.BalancesDate.CompareTo(y.BalancesDate));
+
+      return list.ToFixedList();
+    }
+
+
+    static internal StoredBalanceSet GetBestSet(StoredBalanceSetType storedBalanceSetType,
+                                                DateTime fromDate) {
+      return StoredBalanceSet.Parse(2001);
     }
 
     #endregion Constructors and parsers

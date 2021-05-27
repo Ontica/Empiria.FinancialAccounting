@@ -13,29 +13,24 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
 
   internal class TrialBalanceCommandData {
 
-    /// <summary>Command payload used to build trial balances.</summary>
-    public DateTime BalanceDate {
-      get; set;
-    } = new DateTime(2000, 12, 30);
+    public AccountsChart AccountsChart {
+      get; internal set;
+    }
 
+    public StoredBalanceSet StoredInitialBalanceSet {
+      get; internal set;
+    }
 
     public DateTime FromDate {
-      get; set;
-    } = DateTime.Now;
-
+      get; internal set;
+    }
 
     public DateTime ToDate {
-      get; set;
-    } = DateTime.Now.AddDays(1);
-
-
-    public int InitialBalanceGroupId {
-      get; set;
-    } = 1;
-
+      get; internal set;
+    }
 
     public string Fields {
-      get; set;
+      get; internal set;
     } = string.Empty;
 
 
@@ -45,7 +40,7 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
 
 
     public string Filters {
-      get; set;
+      get; internal set;
     } = string.Empty;
 
 
@@ -55,12 +50,12 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
 
 
     public string InitialGrouping {
-      get; set;
+      get; internal set;
     } = string.Empty;
 
 
     public string Grouping {
-      get; set;
+      get; internal set;
     } = string.Empty;
 
 
@@ -70,9 +65,8 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
 
 
     public string Ordering {
-      get; set;
+      get; internal set;
     } = string.Empty;
-
 
   } // class TrialBalanceCommandData
 

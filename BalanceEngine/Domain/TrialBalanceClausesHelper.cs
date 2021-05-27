@@ -43,23 +43,14 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
     internal string GetFilterString() {
       string ledgerFilter = GetLedgerFilter();
       string sectorFilter = GetSectorFilter();
-      string rangeFilter = GetAccountRangeFilter();
+      string accountRangeFilter = GetAccountRangeFilter();
 
       var filter = new Filter(ledgerFilter);
 
-      if (filter.ToString().Length == 0 && sectorFilter.Length > 0) {
-        filter.AppendAnd(" AND " + sectorFilter);
-      } else {
-        filter.AppendAnd(sectorFilter);
-      }
+      filter.AppendAnd(sectorFilter);
+      filter.AppendAnd(accountRangeFilter);
 
-      if (filter.ToString().Length == 0 && rangeFilter.Length > 0) {
-        filter.AppendAnd(" AND " + rangeFilter);
-      } else {
-        filter.AppendAnd(rangeFilter);
-      }
-
-      return filter.ToString();
+      return $"AND ({filter.ToString()})";
     }
 
 
@@ -150,7 +141,7 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
       if (_command.TrialBalanceType == TrialBalanceType.Traditional &&
           _command.Consolidated) {
 
-        return "-1 AS ID_MAYOR, ID_MONEDA, ID_CUENTA_ESTANDAR_HIST, -1 AS ID_CUENTA, " + 
+        return "-1 AS ID_MAYOR, ID_MONEDA, ID_CUENTA_ESTANDAR_HIST, -1 AS ID_CUENTA, " +
                "NUMERO_CUENTA_ESTANDAR, ID_SECTOR, " +
                "SALDO_ANTERIOR, DEBE, HABER, SALDO_ACTUAL";
 
@@ -193,8 +184,8 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
         return string.Empty;
       }
 
-      string[] ledgerIds = _command.Ledgers.Select(x => $"'{x}'")
-                                           .ToArray();
+      int[] ledgerIds = _command.Ledgers.Select(uid => Ledger.Parse(uid).Id)
+                                        .ToArray();
 
       return $"ID_MAYOR IN ({String.Join(", ", ledgerIds)})";
     }
@@ -205,10 +196,10 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
         return string.Empty;
       }
 
-      string[] SectorIds = _command.Sectors.Select(x => $"'{x}'")
+      int[] sectorIds = _command.Sectors.Select(uid => Sector.Parse(uid).Id)
                                            .ToArray();
 
-      return $"ID_SECTOR IN ({String.Join(", ", SectorIds)})";
+      return $"ID_SECTOR IN ({String.Join(", ", sectorIds)})";
     }
 
 
