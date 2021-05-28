@@ -50,7 +50,7 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
       filter.AppendAnd(sectorFilter);
       filter.AppendAnd(accountRangeFilter);
 
-      return $"AND ({filter.ToString()})";
+      return filter.ToString().Length > 0 ? $"AND ({filter})" : "";
     }
 
 

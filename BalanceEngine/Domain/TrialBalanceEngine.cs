@@ -84,6 +84,7 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
 
 
     private FixedList<TrialBalanceEntry> RestrictLevels(FixedList<TrialBalanceEntry> entries) {
+      
       if (Command.Level > 0) {
         return entries.FindAll(x => x.Level <= Command.Level);
       } else {
