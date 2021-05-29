@@ -8,16 +8,21 @@
 *                                                                                                            *
 ************************* Copyright(c) La Vía Óntica SC, Ontica LLC and contributors. All rights reserved. **/
 using System;
+using System.Collections.Generic;
 
 namespace Empiria.FinancialAccounting.BalanceEngine {
 
   public enum StoredBalanceSetType {
-    TrialBalance
+    AccountBalances
   }
 
 
   /// <summary>Describes a stored balance set.</summary>
   internal class StoredBalanceSet : GeneralObject {
+
+    static private readonly Lazy<List<StoredBalanceSet>> _list =
+                                    new Lazy<List<StoredBalanceSet>>(() => LoadList());
+
 
     #region Constructors and parsers
 
@@ -25,10 +30,10 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
       // Required by Empiria Framework.
     }
 
-    public StoredBalanceSet(AccountsChart accountsChart,
-                        DateTime balancesDate) {
-      this.AcountsChart = accountsChart;
-      this.BalancesDate = balancesDate;
+    private StoredBalanceSet(AccountsChart accountsChart,
+                             DateTime balancesDate) {
+      this.AccountsChart = accountsChart;
+      this.BalancesDate = balancesDate.Date;
     }
 
 
@@ -37,25 +42,47 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
     }
 
 
-    static public FixedList<StoredBalanceSet> GetList() {
-      var list = BaseObject.GetList<StoredBalanceSet>("ObjectStatus <> 'X'", string.Empty);
+    static public StoredBalanceSet Parse(string uid) {
+      return BaseObject.ParseKey<StoredBalanceSet>(uid);
+    }
 
-      list.Sort((x, y) => x.BalancesDate.CompareTo(y.BalancesDate));
 
-      return list.ToFixedList();
+    static public FixedList<StoredBalanceSet> GetList(AccountsChart accountsChart) {
+      return _list.Value.FindAll(x => x.AccountsChart.Equals(accountsChart))
+                         .ToFixedList();
+    }
+
+
+    static internal StoredBalanceSet CreateOrGetBalancesSet(AccountsChart accountsChart,
+                                                            DateTime balancesDate) {
+
+      var existing = GetList(accountsChart).Find(x => x.BalancesDate == balancesDate.Date);
+
+      if (existing != null) {
+        return existing;
+      }
+
+      return new StoredBalanceSet(accountsChart, balancesDate);
     }
 
 
     static internal StoredBalanceSet GetBestSet(StoredBalanceSetType storedBalanceSetType,
+                                                AccountsChart accountsChart,
                                                 DateTime fromDate) {
-      return StoredBalanceSet.Parse(2001);
+      var bestBalanceSet = GetList(accountsChart).FindLast(x => x.BalancesDate <= fromDate && x.Calculated);
+
+      Assertion.AssertObject(bestBalanceSet,
+          $"No hay ningún un conjunto de saldos definidos para el catálogo {accountsChart.Name}.");
+
+      return bestBalanceSet;
     }
+
 
     #endregion Constructors and parsers
 
     #region Properties
 
-    public AccountsChart AcountsChart {
+    public AccountsChart AccountsChart {
       get {
         return this.ExtendedDataField.Get<AccountsChart>("accountsChartId");
       }
@@ -75,9 +102,19 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
     }
 
 
-    public DateTime CaculationTime {
+    public bool Calculated {
       get {
-        return this.ExtendedDataField.Get<DateTime>("calculationTime");
+        return this.ExtendedDataField.Get<bool>("calculated", false);
+      }
+      set {
+        this.ExtendedDataField.Set("calculationTime", value);
+      }
+    }
+
+
+    public DateTime CalculationTime {
+      get {
+        return this.ExtendedDataField.Get<DateTime>("calculationTime", ExecutionServer.DateMinValue);
       }
       set {
         this.ExtendedDataField.Set("calculationTime", value);
@@ -91,10 +128,22 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
 
     protected override void OnSave() {
       base.Name = $"Saldos acumulados al {this.BalancesDate.ToLongDateString()}";
-      this.CaculationTime = DateTime.Now;
       base.Keywords = EmpiriaString.BuildKeywords(base.Name);
 
+      if (IsNew) {
+        _list.Value.Add(this);
+        _list.Value.Sort((x, y) => x.BalancesDate.CompareTo(y.BalancesDate));
+      }
+
       base.OnSave();
+    }
+
+    static private List<StoredBalanceSet> LoadList() {
+      var list = BaseObject.GetList<StoredBalanceSet>("ObjectStatus <> 'X'", string.Empty);
+
+      list.Sort((x, y) => x.BalancesDate.CompareTo(y.BalancesDate));
+
+      return list;
     }
 
     #endregion Methods

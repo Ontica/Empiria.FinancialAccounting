@@ -1,10 +1,10 @@
 ﻿/* Empiria Financial *****************************************************************************************
 *                                                                                                            *
-*  Module   : Balance Engine                             Component : Test cases                              *
-*  Assembly : FinancialAccounting.BalanceEngine.Tests    Pattern   : Use cases tests                         *
-*  Type     : StoreBalancesUseCasesTests                 License   : Please read LICENSE.txt file            *
+*  Module   : Balance Engine                               Component : Test cases                            *
+*  Assembly : FinancialAccounting.BalanceEngine.Tests      Pattern   : Use cases tests                       *
+*  Type     : BalancesStoreUseCasesTests                   License   : Please read LICENSE.txt file          *
 *                                                                                                            *
-*  Summary  : Test cases for store account an account aggrupation balances.                                   *
+*  Summary  : Test cases for store account an account aggrupation balances.                                  *
 *                                                                                                            *
 ************************* Copyright(c) La Vía Óntica SC, Ontica LLC and contributors. All rights reserved. **/
 using System;
@@ -16,23 +16,23 @@ using Empiria.FinancialAccounting.BalanceEngine.UseCases;
 namespace Empiria.FinancialAccounting.Tests.Balances {
 
   /// <summary>Test cases for store account an account aggrupation balances.</summary>
-  public class StoreBalancesUseCasesTests {
+  public class BalancesStoreUseCasesTests {
 
     #region Fields
 
-    private readonly StoreBalancesUseCases _usecases;
+    private readonly BalancesStoreUseCases _usecases;
 
     #endregion Fields
 
     #region Initialization
 
-    public StoreBalancesUseCasesTests() {
+    public BalancesStoreUseCasesTests() {
       CommonMethods.Authenticate();
 
-      _usecases = StoreBalancesUseCases.UseCaseInteractor();
+      _usecases = BalancesStoreUseCases.UseCaseInteractor();
     }
 
-    ~StoreBalancesUseCasesTests() {
+    ~BalancesStoreUseCasesTests() {
       _usecases.Dispose();
     }
 
@@ -44,18 +44,31 @@ namespace Empiria.FinancialAccounting.Tests.Balances {
     public void Should_Generate_A_Balances_Set() {
       var accountsChart = AccountsChart.Parse(TestingConstants.AccountCatalogueId);
 
+      var BALANCES_DATE = new DateTime(2000, 12, 30);
+
       var command = new StoreBalancesCommand() {
-        AccountsChartUID = accountsChart.UID,
-        BalancesDate = new DateTime(2020, 1, 1)
+        BalancesDate = BALANCES_DATE
       };
 
-      _usecases.StoreBalances(command);
+      var storedBalanceSet = _usecases.CreateOrGetStoredBalanceSet(accountsChart.UID, command);
 
-      Assert.True(true);
+      Assert.NotNull(storedBalanceSet);
+      Assert.Equal(BALANCES_DATE, storedBalanceSet.BalancesDate);
     }
+
+
+    [Fact]
+    public void Should_Get_Stored_Balances_Sets() {
+      var accountsChart = AccountsChart.Parse(TestingConstants.AccountCatalogueId);
+
+      FixedList<StoredBalancesSetDto> storedBalancesSets = _usecases.StoredBalancesSets(accountsChart.UID);
+
+      Assert.NotEmpty(storedBalancesSets);
+    }
+
 
     #endregion Facts
 
-  } // class BalanceStorageUseCasesTests
+  } // class BalancesStoreUseCasesTests
 
 } // namespace Empiria.FinancialAccounting.Tests.Balances

@@ -18,7 +18,6 @@ namespace Empiria.FinancialAccounting.BalanceEngine.Adapters {
       get; set;
     }
 
-
     public DateTime BalancesDate {
       get; set;
     }
