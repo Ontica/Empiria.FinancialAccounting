@@ -7,6 +7,8 @@
 *  Summary  : Provides services to retrieve a trial balance.                                                 *
 *                                                                                                            *
 ************************* Copyright(c) La Vía Óntica SC, Ontica LLC and contributors. All rights reserved. **/
+using System;
+
 using Empiria.FinancialAccounting.BalanceEngine.Adapters;
 using Empiria.FinancialAccounting.BalanceEngine.Data;
 
@@ -51,10 +53,28 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
 
 
     internal TrialBalance BuildTrialBalance() {
+      TrialBalanceCommandData commandData = GetTrialBalanceCommandData();
 
-      TrialBalanceClausesHelper clausesHelper = new TrialBalanceClausesHelper(this.Command);
+      FixedList<TrialBalanceEntry> entries = TrialBalanceDataService.GetTrialBalanceEntries(commandData);
 
-      TrialBalanceCommandData commandData = new TrialBalanceCommandData();
+      entries = RestrictLevels(entries);
+
+      return new TrialBalance(Command, entries);
+    }
+
+
+    #region Private methods
+
+    private StoredBalanceSet DetermineStoredBalanceSet() {
+      return StoredBalanceSet.GetBestSet(StoredBalanceSetType.AccountBalances,
+                                         AccountsChart.Parse(this.Command.AccountsChartUID),
+                                         this.Command.FromDate);
+    }
+
+    private TrialBalanceCommandData GetTrialBalanceCommandData() {
+      var clausesHelper = new TrialBalanceClausesHelper(this.Command);
+
+      var commandData = new TrialBalanceCommandData();
 
       commandData.StoredInitialBalanceSet = DetermineStoredBalanceSet();
       commandData.FromDate = Command.FromDate;
@@ -69,22 +89,11 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
       commandData.Ordering = clausesHelper.GetOrderClause();
       commandData.AccountsChart = AccountsChart.Parse(this.Command.AccountsChartUID);
 
-
-      FixedList<TrialBalanceEntry> entries = TrialBalanceDataService.GetTrialBalanceEntries(commandData);
-
-      entries = RestrictLevels(entries);
-
-      return new TrialBalance(Command, entries);
-    }
-
-
-    private StoredBalanceSet DetermineStoredBalanceSet() {
-      return StoredBalanceSet.GetBestSet(StoredBalanceSetType.TrialBalance, this.Command.FromDate);
+      return commandData;
     }
 
 
     private FixedList<TrialBalanceEntry> RestrictLevels(FixedList<TrialBalanceEntry> entries) {
-      
       if (Command.Level > 0) {
         return entries.FindAll(x => x.Level <= Command.Level);
       } else {
@@ -92,6 +101,7 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
       }
     }
 
+    #endregion Private methods
 
   } // class TrialBalanceEngine
 
