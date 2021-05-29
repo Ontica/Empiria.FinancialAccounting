@@ -32,27 +32,55 @@ namespace Empiria.FinancialAccounting.BalanceEngine.Adapters {
   /// <summary>Output DTO used to return the entries of a trial balance.</summary>
   public class TrialBalanceEntryDto {
 
+    public string ItemType {
+      get; internal set;
+    }
+
+
+    public string LedgerUID {
+      get; internal set;
+    }
+
+
+    public object CurrencyUID {
+      get; internal set;
+    }
+
+
     public NamedEntityDto Ledger {
       get; internal set;
     }
 
+    public int LedgerAccountId {
+      get; internal set;
+    }
 
     public NamedEntityDto Currency {
       get; internal set;
     }
 
 
-    public AccountDescriptorDto Account {
+    public string AccountNumber {
       get; internal set;
     }
 
 
-    public int LedgerAccountId {
+    public string AccountName {
       get; internal set;
     }
 
 
-    public NamedEntityDto Sector {
+    public AccountRole AccountRole {
+      get; internal set;
+    }
+
+
+    public int AccountLevel {
+      get; internal set;
+    }
+
+
+    public string SectorCode {
       get; internal set;
     }
 
@@ -75,6 +103,7 @@ namespace Empiria.FinancialAccounting.BalanceEngine.Adapters {
     public decimal CurrentBalance {
       get; internal set;
     }
+
 
   } // class TrialBalanceEntryDto
 
