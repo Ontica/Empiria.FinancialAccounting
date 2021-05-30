@@ -2,7 +2,7 @@
 *                                                                                                            *
 *  Module   : Balance Engine                               Component : Test cases                            *
 *  Assembly : FinancialAccounting.BalanceEngine.Tests      Pattern   : Use cases tests                       *
-*  Type     : BalancesStoreUseCasesTests                   License   : Please read LICENSE.txt file          *
+*  Type     : BalanceStorageUseCasesTests                  License   : Please read LICENSE.txt file          *
 *                                                                                                            *
 *  Summary  : Test cases for store account an account aggrupation balances.                                  *
 *                                                                                                            *
@@ -16,23 +16,23 @@ using Empiria.FinancialAccounting.BalanceEngine.UseCases;
 namespace Empiria.FinancialAccounting.Tests.Balances {
 
   /// <summary>Test cases for store account an account aggrupation balances.</summary>
-  public class BalancesStoreUseCasesTests {
+  public class BalanceStorageUseCasesTests {
 
     #region Fields
 
-    private readonly BalancesStoreUseCases _usecases;
+    private readonly BalanceStorageUseCases _usecases;
 
     #endregion Fields
 
     #region Initialization
 
-    public BalancesStoreUseCasesTests() {
+    public BalanceStorageUseCasesTests() {
       CommonMethods.Authenticate();
 
-      _usecases = BalancesStoreUseCases.UseCaseInteractor();
+      _usecases = BalanceStorageUseCases.UseCaseInteractor();
     }
 
-    ~BalancesStoreUseCasesTests() {
+    ~BalanceStorageUseCasesTests() {
       _usecases.Dispose();
     }
 
@@ -46,11 +46,11 @@ namespace Empiria.FinancialAccounting.Tests.Balances {
 
       var BALANCES_DATE = new DateTime(2000, 12, 30);
 
-      var command = new StoreBalancesCommand() {
+      var command = new BalanceStorageCommand() {
         BalancesDate = BALANCES_DATE
       };
 
-      var storedBalanceSet = _usecases.CreateOrGetStoredBalanceSet(accountsChart.UID, command);
+      var storedBalanceSet = _usecases.CreateOrGetBalanceSet(accountsChart.UID, command);
 
       Assert.NotNull(storedBalanceSet);
       Assert.Equal(BALANCES_DATE, storedBalanceSet.BalancesDate);
@@ -58,17 +58,17 @@ namespace Empiria.FinancialAccounting.Tests.Balances {
 
 
     [Fact]
-    public void Should_Get_Stored_Balances_Sets() {
+    public void Should_Get_Balances_Sets() {
       var accountsChart = AccountsChart.Parse(TestingConstants.AccountCatalogueId);
 
-      FixedList<StoredBalancesSetDto> storedBalancesSets = _usecases.StoredBalancesSets(accountsChart.UID);
+      FixedList<StoredBalanceSetDto> storedBalanceSetsList = _usecases.BalanceSetsList(accountsChart.UID);
 
-      Assert.NotEmpty(storedBalancesSets);
+      Assert.NotEmpty(storedBalanceSetsList);
     }
 
 
     #endregion Facts
 
-  } // class BalancesStoreUseCasesTests
+  } // class BalanceStorageUseCasesTests
 
 } // namespace Empiria.FinancialAccounting.Tests.Balances

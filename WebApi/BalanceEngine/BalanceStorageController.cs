@@ -2,7 +2,7 @@
 *                                                                                                            *
 *  Module   : Balance Engine                               Component : Web Api                               *
 *  Assembly : Empiria.FinancialAccounting.WebApi.dll       Pattern   : Controller                            *
-*  Type     : BalancesStoreController                      License   : Please read LICENSE.txt file          *
+*  Type     : BalanceStorageController                     License   : Please read LICENSE.txt file          *
 *                                                                                                            *
 *  Summary  : Command web API used to store account and account aggrupation balances.                        *
 *                                                                                                            *
@@ -17,17 +17,17 @@ using Empiria.FinancialAccounting.BalanceEngine.Adapters;
 namespace Empiria.FinancialAccounting.WebApi.BalanceEngine {
 
   /// <summary>Command web API used to store account and account aggrupation balances.</summary>
-  public class BalancesStoreController : WebApiController {
+  public class BalanceStorageController : WebApiController {
 
     #region Web Apis
 
     [HttpGet]
     [Route("v2/financial-accounting/accounts-charts/{accountsChartUID:guid}/balances-store")]
-    public CollectionModel GetStoredBalanceSet([FromUri] string accountsChartUID) {
-      using (var usecases = BalancesStoreUseCases.UseCaseInteractor()) {
-        FixedList<StoredBalancesSetDto> storedBalancesSets = usecases.StoredBalancesSets(accountsChartUID);
+    public CollectionModel GetStoredBalanceSetsList([FromUri] string accountsChartUID) {
+      using (var usecases = BalanceStorageUseCases.UseCaseInteractor()) {
+        FixedList<StoredBalanceSetDto> list = usecases.BalanceSetsList(accountsChartUID);
 
-        return new CollectionModel(this.Request, storedBalancesSets);
+        return new CollectionModel(this.Request, list);
       }
     }
 
@@ -35,18 +35,18 @@ namespace Empiria.FinancialAccounting.WebApi.BalanceEngine {
     [HttpPost]
     [Route("v2/financial-accounting/accounts-charts/{accountsChartUID:guid}/balances-store")]
     public SingleObjectModel CreateOrGetStoredBalanceSet([FromUri] string accountsChartUID,
-                                                         [FromBody] StoreBalancesCommand command) {
+                                                         [FromBody] BalanceStorageCommand command) {
       base.RequireBody(command);
 
-      using (var usecases = BalancesStoreUseCases.UseCaseInteractor()) {
-        StoredBalancesSetDto storedBalanceSet = usecases.CreateOrGetStoredBalanceSet(accountsChartUID, command);
+      using (var usecases = BalanceStorageUseCases.UseCaseInteractor()) {
+        StoredBalanceSetDto balanceSet = usecases.CreateOrGetBalanceSet(accountsChartUID, command);
 
-        return new SingleObjectModel(this.Request, storedBalanceSet);
+        return new SingleObjectModel(this.Request, balanceSet);
       }
     }
 
     #endregion Web Apis
 
-  } // class BalancesStoreController
+  } // class BalanceStorageController
 
 } // namespace Empiria.FinancialAccounting.WebApi.BalanceEngine

@@ -2,7 +2,7 @@
 *                                                                                                            *
 *  Module   : Balance Engine                             Component : Use cases Layer                         *
 *  Assembly : FinancialAccounting.BalanceEngine.dll      Pattern   : Use case interactor class               *
-*  Type     : BalancesStoreUseCases                      License   : Please read LICENSE.txt file            *
+*  Type     : BalanceStorageUseCases                     License   : Please read LICENSE.txt file            *
 *                                                                                                            *
 *  Summary  : Use cases used to store account or account aggrupation balances.                               *
 *                                                                                                            *
@@ -16,49 +16,51 @@ using Empiria.FinancialAccounting.BalanceEngine.Adapters;
 namespace Empiria.FinancialAccounting.BalanceEngine.UseCases {
 
   /// <summary>Use cases used to store account or account aggrupation balances.</summary>
-  public class BalancesStoreUseCases : UseCase {
+  public class BalanceStorageUseCases : UseCase {
 
     #region Constructors and parsers
 
-    protected BalancesStoreUseCases() {
+    protected BalanceStorageUseCases() {
       // no-op
     }
 
-    static public BalancesStoreUseCases UseCaseInteractor() {
-      return UseCase.CreateInstance<BalancesStoreUseCases>();
+    static public BalanceStorageUseCases UseCaseInteractor() {
+      return UseCase.CreateInstance<BalanceStorageUseCases>();
     }
 
     #endregion Constructors and parsers
 
     #region Use cases
 
-    public StoredBalancesSetDto CreateOrGetStoredBalanceSet(string accountsChartUID,
-                                                            StoreBalancesCommand command) {
-      Assertion.AssertObject(accountsChartUID, "accountsChartUID");
-      Assertion.AssertObject(command, "command");
-
-      var accountsChart = AccountsChart.Parse(accountsChartUID);
-
-      var storedBalanceSet = StoredBalanceSet.CreateOrGetBalancesSet(accountsChart, command.BalancesDate);
-
-      storedBalanceSet.Save();
-
-      return StoredBalancesMapper.Map(storedBalanceSet);
-    }
-
-
-    public FixedList<StoredBalancesSetDto> StoredBalancesSets(string accountsChartUID) {
+    public FixedList<StoredBalanceSetDto> BalanceSetsList(string accountsChartUID) {
       Assertion.AssertObject(accountsChartUID, "accountsChartUID");
 
       var accountsChart = AccountsChart.Parse(accountsChartUID);
 
       FixedList<StoredBalanceSet> list = StoredBalanceSet.GetList(accountsChart);
 
-      return StoredBalancesMapper.Map(list);
+      return StoredBalanceSetMapper.Map(list);
     }
+
+
+    public StoredBalanceSetDto CreateOrGetBalanceSet(string accountsChartUID,
+                                                BalanceStorageCommand command) {
+      Assertion.AssertObject(accountsChartUID, "accountsChartUID");
+      Assertion.AssertObject(command, "command");
+
+      var accountsChart = AccountsChart.Parse(accountsChartUID);
+
+      var storedBalanceSet = StoredBalanceSet.CreateOrGetBalanceSet(accountsChart, command.BalancesDate);
+
+      storedBalanceSet.Save();
+
+      return StoredBalanceSetMapper.Map(storedBalanceSet);
+    }
+
+
 
     #endregion Use cases
 
-  }  // class BalancesStoreUseCases
+  }  // class BalanceStorageUseCases
 
 }  // namespace Empiria.FinancialAccounting.BalanceEngine.UseCases

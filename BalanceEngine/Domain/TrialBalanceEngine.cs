@@ -66,9 +66,8 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
     #region Private methods
 
     private StoredBalanceSet DetermineStoredBalanceSet() {
-      return StoredBalanceSet.GetBestSet(StoredBalanceSetType.AccountBalances,
-                                         AccountsChart.Parse(this.Command.AccountsChartUID),
-                                         this.Command.FromDate);
+      return StoredBalanceSet.GetBestBalanceSet(AccountsChart.Parse(this.Command.AccountsChartUID),
+                                          this.Command.FromDate);
     }
 
     private TrialBalanceCommandData GetTrialBalanceCommandData() {

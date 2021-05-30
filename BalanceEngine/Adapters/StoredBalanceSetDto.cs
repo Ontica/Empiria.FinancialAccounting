@@ -2,7 +2,7 @@
 *                                                                                                            *
 *  Module   : Balance Engine                             Component : Domain Layer                            *
 *  Assembly : FinancialAccounting.BalanceEngine.dll      Pattern   : Information Holder                      *
-*  Type     : StoredBalancesSetDto                       License   : Please read LICENSE.txt file            *
+*  Type     : StoredBalanceSetDto                        License   : Please read LICENSE.txt file            *
 *                                                                                                            *
 *  Summary  : DTO for a set of stored account balances or account aggrupation balances.                      *
 *                                                                                                            *
@@ -12,12 +12,11 @@ using System;
 namespace Empiria.FinancialAccounting.BalanceEngine.Adapters {
 
   /// <summary>DTO for a set of stored account balances or account aggrupation balances.</summary>
-  public class StoredBalancesSetDto {
+  public class StoredBalanceSetDto {
 
-    internal StoredBalancesSetDto() {
+    internal StoredBalanceSetDto() {
       // no-op
     }
-
 
     public string UID {
       get; internal set;
@@ -49,6 +48,10 @@ namespace Empiria.FinancialAccounting.BalanceEngine.Adapters {
     }
 
 
-  }  // class StoredBalancesSetDto
+    public FixedList<AccountBalance> Balances {
+      get; internal set;
+    }
+
+  }  // class StoredBalanceSetDto
 
 }  // namespace Empiria.FinancialAccounting.BalanceEngine.Adapters

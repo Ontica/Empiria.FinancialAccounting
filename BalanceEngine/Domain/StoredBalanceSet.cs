@@ -4,7 +4,7 @@
 *  Assembly : FinancialAccounting.BalanceEngine.dll      Pattern   : Empiria General Object                  *
 *  Type     : StoredBalanceSet                           License   : Please read LICENSE.txt file            *
 *                                                                                                            *
-*  Summary  : Describes a stored balance set.                                                                *
+*  Summary  : Describes a stored accounts balance set.                                                       *
 *                                                                                                            *
 ************************* Copyright(c) La Vía Óntica SC, Ontica LLC and contributors. All rights reserved. **/
 using System;
@@ -12,12 +12,8 @@ using System.Collections.Generic;
 
 namespace Empiria.FinancialAccounting.BalanceEngine {
 
-  public enum StoredBalanceSetType {
-    AccountBalances
-  }
 
-
-  /// <summary>Describes a stored balance set.</summary>
+  /// <summary>Describes a stored accounts balance set.</summary>
   internal class StoredBalanceSet : GeneralObject {
 
     static private readonly Lazy<List<StoredBalanceSet>> _list =
@@ -30,8 +26,7 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
       // Required by Empiria Framework.
     }
 
-    private StoredBalanceSet(AccountsChart accountsChart,
-                             DateTime balancesDate) {
+    private StoredBalanceSet(AccountsChart accountsChart, DateTime balancesDate) {
       this.AccountsChart = accountsChart;
       this.BalancesDate = balancesDate.Date;
     }
@@ -49,12 +44,12 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
 
     static public FixedList<StoredBalanceSet> GetList(AccountsChart accountsChart) {
       return _list.Value.FindAll(x => x.AccountsChart.Equals(accountsChart))
-                         .ToFixedList();
+                        .ToFixedList();
     }
 
 
-    static internal StoredBalanceSet CreateOrGetBalancesSet(AccountsChart accountsChart,
-                                                            DateTime balancesDate) {
+    static internal StoredBalanceSet CreateOrGetBalanceSet(AccountsChart accountsChart,
+                                                           DateTime balancesDate) {
 
       var existing = GetList(accountsChart).Find(x => x.BalancesDate == balancesDate.Date);
 
@@ -66,9 +61,9 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
     }
 
 
-    static internal StoredBalanceSet GetBestSet(StoredBalanceSetType storedBalanceSetType,
-                                                AccountsChart accountsChart,
-                                                DateTime fromDate) {
+    static internal StoredBalanceSet GetBestBalanceSet(AccountsChart accountsChart,
+                                                       DateTime fromDate) {
+
       var bestBalanceSet = GetList(accountsChart).FindLast(x => x.BalancesDate <= fromDate && x.Calculated);
 
       Assertion.AssertObject(bestBalanceSet,
@@ -121,6 +116,14 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
       }
     }
 
+
+    public FixedList<AccountBalance> Balances {
+      get {
+        return new FixedList<AccountBalance>();
+      }
+    }
+
+
     #endregion Properties
 
 
@@ -137,6 +140,7 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
 
       base.OnSave();
     }
+
 
     static private List<StoredBalanceSet> LoadList() {
       var list = BaseObject.GetList<StoredBalanceSet>("ObjectStatus <> 'X'", string.Empty);

@@ -2,26 +2,26 @@
 *                                                                                                            *
 *  Module   : Balance Engine                             Component : Interface adapters                      *
 *  Assembly : FinancialAccounting.BalanceEngine.dll      Pattern   : Mapper class                            *
-*  Type     : StoredBalancesMapper                       License   : Please read LICENSE.txt file            *
+*  Type     : StoredBalanceSetMapper                     License   : Please read LICENSE.txt file            *
 *                                                                                                            *
-*  Summary  : Methods used to map stored account balances and account aggrupation balances.                  *
+*  Summary  : Methods used to map stored balance sets.                                                       *
 *                                                                                                            *
 ************************* Copyright(c) La Vía Óntica SC, Ontica LLC and contributors. All rights reserved. **/
 using System;
 
 namespace Empiria.FinancialAccounting.BalanceEngine.Adapters {
 
-  /// <summary>Methods used to map stored account balances and account aggrupation balances.</summary>
-  static internal class StoredBalancesMapper {
+  /// <summary>Methods used to map stored balance sets.</summary>
+  static internal class StoredBalanceSetMapper {
 
     #region Public mappers
 
-    static internal FixedList<StoredBalancesSetDto> Map(FixedList<StoredBalanceSet> list) {
-      return new FixedList<StoredBalancesSetDto>(list.Select(x => Map(x)));
+    static internal FixedList<StoredBalanceSetDto> Map(FixedList<StoredBalanceSet> list) {
+      return new FixedList<StoredBalanceSetDto>(list.Select(x => Map(x)));
     }
 
-    static internal StoredBalancesSetDto Map(StoredBalanceSet balanceSet) {
-      return new StoredBalancesSetDto {
+    static internal StoredBalanceSetDto Map(StoredBalanceSet balanceSet) {
+      return new StoredBalanceSetDto {
         UID = balanceSet.UID,
         Name = balanceSet.Name,
         AccountsChart = balanceSet.AccountsChart.MapToNamedEntity(),
@@ -31,8 +31,16 @@ namespace Empiria.FinancialAccounting.BalanceEngine.Adapters {
       };
     }
 
+    internal static StoredBalanceSetDto MapWithBalances(StoredBalanceSet balanceSet) {
+      var dto = Map(balanceSet);
+
+      dto.Balances = balanceSet.Balances;
+
+      return dto;
+    }
+
     #endregion Public mappers
 
-  } // class StoredBalancesMapper
+  } // class StoredBalanceSetMapper
 
 } // namespace Empiria.FinancialAccounting.BalanceEngine.Adapters
