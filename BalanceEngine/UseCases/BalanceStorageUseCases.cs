@@ -58,6 +58,20 @@ namespace Empiria.FinancialAccounting.BalanceEngine.UseCases {
     }
 
 
+    public StoredBalanceSetDto GetBalanceSet(string accountsChartUID,
+                                             string balanceSetUID) {
+      Assertion.AssertObject(accountsChartUID, "accountsChartUID");
+      Assertion.AssertObject(balanceSetUID, "balanceSetUID");
+
+      var accountsChart = AccountsChart.Parse(accountsChartUID);
+      var balanceSet = StoredBalanceSet.Parse(balanceSetUID);
+
+      Assertion.Assert(balanceSet.AccountsChart.Equals(accountsChart),
+          "The requested balance set does not belong to the given accounts chart.");
+
+      return StoredBalanceSetMapper.MapWithBalances(balanceSet);
+    }
+
 
     #endregion Use cases
 

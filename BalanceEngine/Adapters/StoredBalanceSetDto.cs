@@ -48,7 +48,7 @@ namespace Empiria.FinancialAccounting.BalanceEngine.Adapters {
     }
 
 
-    public FixedList<AccountBalance> Balances {
+    public FixedList<StoredBalanceDto> Balances {
       get; internal set;
     }
 

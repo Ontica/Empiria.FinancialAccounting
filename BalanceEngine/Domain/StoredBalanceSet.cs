@@ -1,14 +1,16 @@
 ﻿/* Empiria Financial *****************************************************************************************
 *                                                                                                            *
-*  Module   : Balance Engine                             Component : Domain Layer                            *
-*  Assembly : FinancialAccounting.BalanceEngine.dll      Pattern   : Empiria General Object                  *
-*  Type     : StoredBalanceSet                           License   : Please read LICENSE.txt file            *
+*  Module   : Balance Engine                               Component : Domain Layer                          *
+*  Assembly : FinancialAccounting.BalanceEngine.dll        Pattern   : Empiria General Object                *
+*  Type     : StoredBalanceSet                             License   : Please read LICENSE.txt file          *
 *                                                                                                            *
 *  Summary  : Describes a stored accounts balance set.                                                       *
 *                                                                                                            *
 ************************* Copyright(c) La Vía Óntica SC, Ontica LLC and contributors. All rights reserved. **/
 using System;
 using System.Collections.Generic;
+
+using Empiria.FinancialAccounting.BalanceEngine.Data;
 
 namespace Empiria.FinancialAccounting.BalanceEngine {
 
@@ -19,11 +21,16 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
     static private readonly Lazy<List<StoredBalanceSet>> _list =
                                     new Lazy<List<StoredBalanceSet>>(() => LoadList());
 
+    private Lazy<FixedList<StoredBalance>> _balances;
 
     #region Constructors and parsers
 
     private StoredBalanceSet() {
       // Required by Empiria Framework.
+    }
+
+    protected override void OnInitialize() {
+      _balances = new Lazy<FixedList<StoredBalance>>(() => LoadBalances());
     }
 
     private StoredBalanceSet(AccountsChart accountsChart, DateTime balancesDate) {
@@ -39,6 +46,13 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
 
     static public StoredBalanceSet Parse(string uid) {
       return BaseObject.ParseKey<StoredBalanceSet>(uid);
+    }
+
+
+    static public StoredBalanceSet Empty {
+      get {
+        return BaseObject.ParseEmpty<StoredBalanceSet>();
+      }
     }
 
 
@@ -117,9 +131,9 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
     }
 
 
-    public FixedList<AccountBalance> Balances {
+    public FixedList<StoredBalance> Balances {
       get {
-        return new FixedList<AccountBalance>();
+        return _balances.Value;
       }
     }
 
@@ -141,6 +155,10 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
       base.OnSave();
     }
 
+
+    private FixedList<StoredBalance> LoadBalances() {
+      return StoredBalanceDataService.GetBalances(this);
+    }
 
     static private List<StoredBalanceSet> LoadList() {
       var list = BaseObject.GetList<StoredBalanceSet>("ObjectStatus <> 'X'", string.Empty);

@@ -31,15 +31,36 @@ namespace Empiria.FinancialAccounting.BalanceEngine.Adapters {
       };
     }
 
-    internal static StoredBalanceSetDto MapWithBalances(StoredBalanceSet balanceSet) {
+    static internal StoredBalanceSetDto MapWithBalances(StoredBalanceSet balanceSet) {
       var dto = Map(balanceSet);
 
-      dto.Balances = balanceSet.Balances;
+      dto.Balances = MapBalances(balanceSet.Balances);
 
       return dto;
     }
 
     #endregion Public mappers
+
+    static private FixedList<StoredBalanceDto> MapBalances(FixedList<StoredBalance> balances) {
+      return new FixedList<StoredBalanceDto>(balances.Select(x => MapBalance(x)));
+    }
+
+
+    static private StoredBalanceDto MapBalance(StoredBalance balance) {
+      return new StoredBalanceDto {
+        StandardAccountId = balance.StandardAccountId,
+        Ledger = balance.Ledger.MapToNamedEntity(),
+        LedgerAccountId = balance.LedgerAccountId,
+        Currency = balance.Currency.MapToNamedEntity(),
+        SectorCode = balance.Sector.Code,
+        SubsidiaryAccountId = balance.SubsidiaryAccountId,
+        AccountName = balance.AccountName,
+        AccountNumber = balance.AccountNumber,
+        SubsidiaryAccountNumber = balance.SubsidiaryAccountNumber,
+        SubsidiaryAccountName = balance.SubsidiaryAccountName,
+        Balance = balance.Balance
+      };
+    }
 
   } // class StoredBalanceSetMapper
 

@@ -22,7 +22,19 @@ namespace Empiria.FinancialAccounting.WebApi.BalanceEngine {
     #region Web Apis
 
     [HttpGet]
-    [Route("v2/financial-accounting/accounts-charts/{accountsChartUID:guid}/balances-store")]
+    [Route("v2/financial-accounting/accounts-charts/{accountsChartUID:guid}/balance-store/{balanceSetUID:guid}")]
+    public SingleObjectModel GetStoredBalanceSet([FromUri] string accountsChartUID,
+                                                 [FromUri] string balanceSetUID) {
+      using (var usecases = BalanceStorageUseCases.UseCaseInteractor()) {
+        StoredBalanceSetDto balanceSet = usecases.GetBalanceSet(accountsChartUID, balanceSetUID);
+
+        return new SingleObjectModel(this.Request, balanceSet);
+      }
+    }
+
+
+    [HttpGet]
+    [Route("v2/financial-accounting/accounts-charts/{accountsChartUID:guid}/balance-store")]
     public CollectionModel GetStoredBalanceSetsList([FromUri] string accountsChartUID) {
       using (var usecases = BalanceStorageUseCases.UseCaseInteractor()) {
         FixedList<StoredBalanceSetDto> list = usecases.BalanceSetsList(accountsChartUID);
@@ -33,7 +45,7 @@ namespace Empiria.FinancialAccounting.WebApi.BalanceEngine {
 
 
     [HttpPost]
-    [Route("v2/financial-accounting/accounts-charts/{accountsChartUID:guid}/balances-store")]
+    [Route("v2/financial-accounting/accounts-charts/{accountsChartUID:guid}/balance-store")]
     public SingleObjectModel CreateOrGetStoredBalanceSet([FromUri] string accountsChartUID,
                                                          [FromBody] BalanceStorageCommand command) {
       base.RequireBody(command);
