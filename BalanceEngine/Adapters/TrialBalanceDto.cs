@@ -42,7 +42,7 @@ namespace Empiria.FinancialAccounting.BalanceEngine.Adapters {
     }
 
 
-    public object CurrencyUID {
+    public string CurrencyUID {
       get; internal set;
     }
 

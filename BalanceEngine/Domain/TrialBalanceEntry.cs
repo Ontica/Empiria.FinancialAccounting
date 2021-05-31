@@ -22,23 +22,17 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
 
     #endregion Constructors and parsers
 
-    [DataField("ID_MAYOR", ConvertFrom = typeof(decimal))]
-    private int _ledgerId = 0;
 
+    [DataField("ID_MAYOR", ConvertFrom = typeof(decimal))]
     public Ledger Ledger {
-      get {
-        return Ledger.Parse(_ledgerId);
-      }
+      get;
+      private set;
     }
 
-
     [DataField("ID_MONEDA", ConvertFrom = typeof(decimal))]
-    private int currencyId = 0;
-
     public Currency Currency {
-      get {
-        return Currency.Parse(currencyId);
-      }
+      get;
+      private set;
     }
 
 
@@ -50,15 +44,9 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
 
 
     [DataField("ID_SECTOR", ConvertFrom = typeof(long))]
-    private int _sectorId;
-
     public Sector Sector {
-      get {
-        if (_sectorId == 0) {
-          _sectorId = -1;
-        }
-        return Sector.Parse(_sectorId);
-      }
+      get;
+      private set;
     }
 
 
