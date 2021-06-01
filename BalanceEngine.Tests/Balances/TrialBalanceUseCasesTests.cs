@@ -50,7 +50,7 @@ namespace Empiria.FinancialAccounting.Tests.Balances {
       command.Consolidated = true;
       command.FromDate = TestingConstants.FromDate;
       command.ToDate = TestingConstants.ToDate;
-      command.FromAccount = "1101";
+      command.FromAccount = "1205";
       command.ToAccount = "1221";
 
       TrialBalanceDto trialBalance = _usecases.BuildTrialBalance(command);

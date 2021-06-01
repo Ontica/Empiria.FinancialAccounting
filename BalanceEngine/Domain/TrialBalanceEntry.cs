@@ -20,6 +20,10 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
       // Required by Empiria Framework.
     }
 
+    internal TrialBalanceEntry(TrialBalanceAccumulatedEntry accumulatedEntry) {
+      
+    }
+
     #endregion Constructors and parsers
 
 
@@ -85,6 +89,12 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
     }
 
 
+    public string ItemType {
+      get; 
+      private set;
+    }
+
+
     public int Level {
       get {
         return EmpiriaString.CountOccurences(Account.Number, '-') + 1;
@@ -92,5 +102,46 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
     }
 
   } // class TrialBalance
+
+
+  internal class TrialBalanceAccumulatedEntry {
+
+
+    internal Currency Currency {
+      get; set;
+    }
+
+
+    internal string SectorCode {
+      get; set;
+    }
+
+
+    internal string AccountNumber {
+      get; set;
+    }
+
+
+    internal decimal TotalInitialBalance {
+      get; set;
+    }
+
+
+    internal decimal TotalDebit {
+      get; set;
+    }
+
+
+    internal decimal TotalCredit {
+      get; set;
+    }
+
+
+    internal decimal TotalCurrentBalance {
+      get; set;
+    }
+
+
+  } // class TrialBalanceAccumulated
 
 } // namespace Empiria.FinancialAccounting.BalanceEngine
