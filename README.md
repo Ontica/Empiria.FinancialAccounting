@@ -32,7 +32,13 @@ Empiria Financial Accounting comprises the following modules:
 4.  **Balance Engine Tests**  
     Tests suite for the Balance Engine services.
 
-5.  **Web API**  
+5.  **Vouchers Management**  
+    Provides services for vouchers edition, importation and management.
+
+6.  **Vouchers Management Tests**  
+    Tests suite for vouchers edition, importation and management.
+
+7.  **Web API**  
     Http/Json RESTful interface for Financial Accounting system.
 
 Each single project can be compiled using Visual Studio 2019 Community Edition.

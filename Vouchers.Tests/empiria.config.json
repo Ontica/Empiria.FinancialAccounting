@@ -1,0 +1,28 @@
+﻿{
+  "appName": "Empiria Financial Accounting Vouchers Management Tests",
+  "description": "Vouchers management tests environment settings",
+  "version": "2.0",
+  "date": "2021-05-31",
+  "settings": [
+    {
+      "type": "",
+      "key": "ApplicationKey",
+      "value": "{{APPLICATION-KEY}}"
+    },
+    {
+      "type": "",
+      "key": "GlobalConfigurationFile",
+      "value": "{{GLOBAL-CONFIGURATION-FILE}}"
+    },
+    {
+      "type": "Data",
+      "key": "IsObjectIdGeneratorServer",
+      "value": true
+    },
+    {
+      "type": "FinancialAccounting.Tests",
+      "key": "Testing.SessionToken",
+      "value": "{{TESTING-SESSION-TOKEN}}"
+    }
+  ]
+}
