@@ -17,10 +17,7 @@ namespace Empiria.FinancialAccounting.Vouchers.Adapters {
     #region Extension methods
 
     static internal void EnsureIsValid(this SearchVouchersCommand command) {
-      command.Keywords = command.Keywords ?? String.Empty;
-      command.OrderBy = command.OrderBy ?? "ID_MAYOR, NUMERO_TRANSACCION DESC";
-      command.PageSize = command.PageSize <= 0 ? 200 : command.PageSize;
-      command.Page = command.Page <= 0 ? 1 : command.Page;
+      // no-op
     }
 
 
@@ -48,7 +45,7 @@ namespace Empiria.FinancialAccounting.Vouchers.Adapters {
 
 
     static internal string MapToSortString(this SearchVouchersCommand command) {
-      if (!String.IsNullOrWhiteSpace(command.OrderBy)) {
+      if (command.OrderBy.Length != 0) {
         return command.OrderBy;
       } else {
         return "ID_MAYOR, NUMERO_TRANSACCION DESC";
@@ -82,7 +79,7 @@ namespace Empiria.FinancialAccounting.Vouchers.Adapters {
     static private string BuildLedgerFilter(SearchVouchersCommand command) {
       string filter = string.Empty;
 
-      if (!String.IsNullOrWhiteSpace(command.LedgerUID)) {
+      if (command.LedgerUID.Length != 0) {
         var ledger = Ledger.Parse(command.LedgerUID);
 
         filter += $"ID_MAYOR = {ledger.Id}";
@@ -90,7 +87,7 @@ namespace Empiria.FinancialAccounting.Vouchers.Adapters {
         return filter;
       }
 
-      if (!String.IsNullOrWhiteSpace(command.AccountsChartUID)) {
+      if (command.AccountsChartUID.Length != 0) {
         var accountsChart = AccountsChart.Parse(command.AccountsChartUID);
         if (filter.Length != 0) {
           filter += " AND ";
@@ -139,7 +136,7 @@ namespace Empiria.FinancialAccounting.Vouchers.Adapters {
     }
 
     static private string BuildTransactionTypeFilter(SearchVouchersCommand command) {
-      if (String.IsNullOrWhiteSpace(command.TransactionTypeUID)) {
+      if (command.TransactionTypeUID.Length == 0) {
         return string.Empty;
       }
 
@@ -150,7 +147,7 @@ namespace Empiria.FinancialAccounting.Vouchers.Adapters {
 
 
     static private string BuildVoucherTypeFilter(SearchVouchersCommand command) {
-      if (String.IsNullOrWhiteSpace(command.VoucherTypeUID)) {
+      if (command.VoucherTypeUID.Length == 0) {
         return string.Empty;
       }
 

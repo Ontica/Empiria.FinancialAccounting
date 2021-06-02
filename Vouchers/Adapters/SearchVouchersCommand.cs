@@ -80,7 +80,7 @@ namespace Empiria.FinancialAccounting.Vouchers.Adapters {
     public string Keywords {
       get;
       set;
-    }
+    } = string.Empty;
 
 
     public string LedgersGroupUID {
@@ -140,7 +140,7 @@ namespace Empiria.FinancialAccounting.Vouchers.Adapters {
     public string OrderBy {
       get;
       set;
-    }
+    } = string.Empty;
 
 
     public int PageSize {
