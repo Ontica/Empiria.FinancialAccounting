@@ -1,7 +1,7 @@
 ﻿/* Empiria Financial *****************************************************************************************
 *                                                                                                            *
 *  Module   : Vouchers Management                        Component : Domain Layer                            *
-*  Assembly : FinancialAccounting.Core.dll               Pattern   : Empiria General Object                  *
+*  Assembly : FinancialAccounting.Vouchers.dll           Pattern   : Empiria General Object                  *
 *  Type     : TransactionType                            License   : Please read LICENSE.txt file            *
 *                                                                                                            *
 *  Summary  : Describes the business transaction type related with an accounting voucher.                    *
