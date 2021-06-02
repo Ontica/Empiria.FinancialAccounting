@@ -16,13 +16,10 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
 
     #region Constructors and parsers
 
-    private TrialBalanceEntry() {
+    internal TrialBalanceEntry() {
       // Required by Empiria Framework.
     }
 
-    internal TrialBalanceEntry(TrialBalanceAccumulatedEntry accumulatedEntry) {
-      
-    }
 
     #endregion Constructors and parsers
 
@@ -30,68 +27,68 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
     [DataField("ID_MAYOR", ConvertFrom = typeof(decimal))]
     public Ledger Ledger {
       get;
-      private set;
+      internal set;
     }
 
     [DataField("ID_MONEDA", ConvertFrom = typeof(decimal))]
     public Currency Currency {
       get;
-      private set;
+      internal set;
     }
 
 
     [DataField("ID_CUENTA_ESTANDAR_HIST", ConvertFrom = typeof(long))]
     public Account Account {
       get;
-      private set;
+      internal set;
     }
 
 
     [DataField("ID_SECTOR", ConvertFrom = typeof(long))]
     public Sector Sector {
       get;
-      private set;
+      internal set;
     }
 
 
     [DataField("ID_CUENTA", ConvertFrom = typeof(decimal))]
     public int LedgerAccountId {
       get;
-      private set;
+      internal set;
     }
 
 
     [DataField("SALDO_ANTERIOR")]
     public decimal InitialBalance {
       get;
-      private set;
+      internal set;
     }
 
 
     [DataField("DEBE")]
     public decimal Debit {
       get;
-      private set;
+      internal set;
     }
 
 
     [DataField("HABER")]
     public decimal Credit {
       get;
-      private set;
+      internal set;
     }
 
 
     [DataField("SALDO_ACTUAL")]
     public decimal CurrentBalance {
       get;
-      private set;
+      internal set;
     }
 
 
     public string ItemType {
-      get; 
-      private set;
+      get;
+      internal set;
     }
 
 
@@ -103,45 +100,5 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
 
   } // class TrialBalance
 
-
-  internal class TrialBalanceAccumulatedEntry {
-
-
-    internal Currency Currency {
-      get; set;
-    }
-
-
-    internal string SectorCode {
-      get; set;
-    }
-
-
-    internal string AccountNumber {
-      get; set;
-    }
-
-
-    internal decimal TotalInitialBalance {
-      get; set;
-    }
-
-
-    internal decimal TotalDebit {
-      get; set;
-    }
-
-
-    internal decimal TotalCredit {
-      get; set;
-    }
-
-
-    internal decimal TotalCurrentBalance {
-      get; set;
-    }
-
-
-  } // class TrialBalanceAccumulated
 
 } // namespace Empiria.FinancialAccounting.BalanceEngine

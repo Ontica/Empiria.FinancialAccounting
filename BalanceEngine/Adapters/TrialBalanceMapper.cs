@@ -37,7 +37,7 @@ namespace Empiria.FinancialAccounting.BalanceEngine.Adapters {
     static private TrialBalanceEntryDto Map(TrialBalanceEntry trialBalanceEntry) {
       var dto = new TrialBalanceEntryDto();
 
-      dto.ItemType = "BalanceEntry";
+      dto.ItemType = trialBalanceEntry.ItemType ?? "BalanceEntry";
       dto.LedgerUID = trialBalanceEntry.Ledger.UID;
       dto.LedgerAccountId = trialBalanceEntry.LedgerAccountId;
       dto.CurrencyUID = trialBalanceEntry.Currency.UID;

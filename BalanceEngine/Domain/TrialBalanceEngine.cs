@@ -52,16 +52,20 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
       get;
     }
 
+    public AccountsChart AccountsChart {
+      get {
+        return AccountsChart.Parse(this.Command.AccountsChartUID);
+      }
+    }
 
     internal TrialBalance BuildTrialBalance() {
       TrialBalanceCommandData commandData = GetTrialBalanceCommandData();
 
       FixedList<TrialBalanceEntry> entries = TrialBalanceDataService.GetTrialBalanceEntries(commandData);
 
-      FixedList<TrialBalanceAccumulatedEntry> accumulated = new FixedList<TrialBalanceAccumulatedEntry>();
       entries = RestrictLevels(entries);
 
-      accumulated = Accumulated(entries);
+      entries = Accumulated(entries);
 
       return new TrialBalance(Command, entries);
     }
@@ -90,7 +94,7 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
       commandData.Grouping = clausesHelper.GetGroupingClause();
       commandData.Having = clausesHelper.GetHavingClause();
       commandData.Ordering = clausesHelper.GetOrderClause();
-      commandData.AccountsChart = AccountsChart.Parse(this.Command.AccountsChartUID);
+      commandData.AccountsChart = this.AccountsChart;
 
       return commandData;
     }
@@ -105,9 +109,10 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
     }
 
 
-    private FixedList<TrialBalanceAccumulatedEntry> Accumulated(FixedList<TrialBalanceEntry> entries) {
+    private FixedList<TrialBalanceEntry> Accumulated(FixedList<TrialBalanceEntry> entries) {
 
-      List<TrialBalanceAccumulatedEntry> accumulated = new List<TrialBalanceAccumulatedEntry>();
+      List<TrialBalanceEntry> Entries = new List<TrialBalanceEntry>(entries);
+      List<TrialBalanceEntry> accumulated = new List<TrialBalanceEntry>();
 
       List<int> currencies = new List<int>();
 
@@ -116,75 +121,104 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
       foreach (var currencyId in currencies) {
 
         var ordering = entries.Where(a => a.Currency.Id == currencyId).OrderByDescending(a => a.Account.Number).ToList();
-        
-        //int level = 0;
 
         foreach (var entry in ordering) {
+          if (entry.Account.Level == 1) {
+            continue;
+          }
 
           string currentAccountNumber = entry.Account.Number;
-          
-          while (currentAccountNumber.Contains("-")) {
-            
+
+          while (true) {
+
             string currentParent = currentAccountNumber.Substring(0, currentAccountNumber.LastIndexOf("-"));
 
-            var currentAccumulated = accumulated.Where(a => a.AccountNumber == currentParent 
-                                                        && a.SectorCode == entry.Sector.Code
+            var currentAccumulated = accumulated.Where(a => a.Account.Number == currentParent
+                                                        && a.Sector.Code == entry.Sector.Code
                                                         && a.Currency.Id == entry.Currency.Id).FirstOrDefault();
 
             if (currentAccumulated != null) {
 
-              currentAccumulated.TotalInitialBalance += entry.InitialBalance;
-              currentAccumulated.TotalDebit += entry.Debit;
-              currentAccumulated.TotalCredit += entry.Credit;
-              currentAccumulated.TotalCurrentBalance += entry.CurrentBalance;
+              currentAccumulated.InitialBalance += entry.InitialBalance;
+              currentAccumulated.Debit += entry.Debit;
+              currentAccumulated.Credit += entry.Credit;
+              currentAccumulated.CurrentBalance += entry.CurrentBalance;
 
             } else {
 
-              var current = accumulated.Where(a => a.AccountNumber == currentAccountNumber
-                                              && a.SectorCode == entry.Sector.Code
+              var current = accumulated.Where(a => a.Account.Number == currentAccountNumber
+                                              && a.Sector.Code == entry.Sector.Code
                                               && a.Currency.Id == entry.Currency.Id).FirstOrDefault();
 
-              accumulated.Add(new TrialBalanceAccumulatedEntry() {
+              var ledger = Ledger.Parse(current?.Ledger.Id ?? entry.Ledger.Id);
+              var sector = Sector.Parse(current?.Sector.Code ?? entry.Sector.Code);
+              var account = this.AccountsChart.GetAccount(currentParent);
+
+              accumulated.Add(new TrialBalanceEntry() {
+                Ledger = ledger,
                 Currency = current?.Currency ?? entry.Currency,
-                SectorCode = current?.SectorCode ?? entry.Sector.Code,
-                AccountNumber = currentParent,
-                TotalInitialBalance = current?.TotalInitialBalance ?? entry.InitialBalance,
-                TotalCurrentBalance = current?.TotalCurrentBalance ?? entry.CurrentBalance,
-                TotalDebit = current?.TotalDebit ?? entry.Debit,
-                TotalCredit = current?.TotalCredit ?? entry.Credit
+                Sector = sector,
+                Account = account,
+                InitialBalance = current?.InitialBalance ?? entry.InitialBalance,
+                Debit = current?.Debit ?? entry.Debit,
+                Credit = current?.Credit ?? entry.Credit,
+                CurrentBalance = current?.CurrentBalance ?? entry.CurrentBalance,
+                ItemType = "BalanceSummaries"
               });
 
             }
-            currentAccountNumber = currentParent;
-
-            if ((EmpiriaString.CountOccurences(currentAccountNumber, '-') + 1) == 1) {
-
-              var parentAccount = accumulated.Where(a => a.AccountNumber == currentAccountNumber
-                                                      && a.SectorCode == "00").FirstOrDefault();
-
-              if (parentAccount != null) {
-                parentAccount.TotalInitialBalance += entry.InitialBalance;
-                parentAccount.TotalDebit += entry.Debit;
-                parentAccount.TotalCredit += entry.Credit;
-                parentAccount.TotalCurrentBalance += entry.CurrentBalance;
-              } else {
-                accumulated.Add(new TrialBalanceAccumulatedEntry() {
-                  Currency = entry.Currency,
-                  SectorCode = "00",
-                  AccountNumber = currentAccountNumber,
-                  TotalInitialBalance = entry.InitialBalance,
-                  TotalCurrentBalance = entry.CurrentBalance,
-                  TotalDebit = entry.Debit,
-                  TotalCredit = entry.Credit
-                });
-              }
+            
+            if (!currentParent.Contains("-")) {
+              break;
+            } else {
+              currentAccountNumber = currentParent;
             }
+              //if ((EmpiriaString.CountOccurences(currentAccountNumber, '-') + 1) == 1) {
+
+              //  var parentAccount = accumulated.Where(a => a.Account.Number == currentAccountNumber
+              //                                          && a.Sector.Code == "00"
+              //                                          && a.Currency.Id == currencyId).FirstOrDefault();
+
+              //  var ledger = Ledger.Parse(parentAccount?.Ledger.Id ?? -1);
+              //  var sector = Sector.Parse("00");
+              //  var account = this.AccountsChart.GetAccount(currentAccountNumber);
+
+              //  if (parentAccount != null) {
+              //    parentAccount.InitialBalance += entry.InitialBalance;
+              //    parentAccount.Debit += entry.Debit;
+              //    parentAccount.Credit += entry.Credit;
+              //    parentAccount.CurrentBalance += entry.CurrentBalance;
+              //  } else {
+              //    accumulated.Add(new TrialBalanceEntry() {
+              //      Ledger = ledger,
+              //      Currency = entry.Currency,
+              //      Sector = sector,
+              //      Account = account,
+              //      InitialBalance = entry.InitialBalance,
+              //      Debit = entry.Debit,
+              //      Credit = entry.Credit,
+              //      CurrentBalance = entry.CurrentBalance,
+              //      ItemType = "BalanceSummary"
+              //    });
+              //  }
+
+              //}
+
+
+            
           }
         }
       }
-      FixedList<TrialBalanceAccumulatedEntry> newAccumulated = new FixedList<TrialBalanceAccumulatedEntry>(accumulated);
 
-      return newAccumulated;
+      foreach (var item in accumulated) {
+        Entries.Add(item);
+      }
+
+      Entries = Entries.OrderBy(a => a.Currency.Id).ToList();
+
+      FixedList<TrialBalanceEntry> newEntries = new FixedList<TrialBalanceEntry>(Entries);
+
+      return newEntries;
     }
 
 
