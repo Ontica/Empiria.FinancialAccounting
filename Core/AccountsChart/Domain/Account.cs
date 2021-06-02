@@ -8,7 +8,7 @@
 *                                                                                                            *
 ************************* Copyright(c) La Vía Óntica SC, Ontica LLC and contributors. All rights reserved. **/
 using System;
-using Empiria.FinancialAccounting.Adapters;
+
 
 namespace Empiria.FinancialAccounting {
 
@@ -134,6 +134,11 @@ namespace Empiria.FinancialAccounting {
       get; private set;
     }
 
+    public bool HasParent {
+      get {
+        return (this.Level > 1);
+      }
+    }
 
     public int Level {
       get {
@@ -154,7 +159,6 @@ namespace Empiria.FinancialAccounting {
         return _currencyRules.Value;
       }
     }
-
 
     public FixedList<LedgerRule> LedgerRules {
       get {
@@ -177,6 +181,17 @@ namespace Empiria.FinancialAccounting {
 
     internal FixedList<Account> GetHistory() {
       return this.AccountsChart.GetAccountHistory(this.Number);
+    }
+
+
+    public Account GetParent() {
+      if (this.Level == 1) {
+        return Account.Empty;
+      }
+
+      var parentAccountNumber = this.Number.Substring(0, this.Number.LastIndexOf("-"));
+
+      return AccountsChart.GetAccount(parentAccountNumber);
     }
 
 
