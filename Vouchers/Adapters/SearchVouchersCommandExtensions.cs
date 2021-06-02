@@ -39,6 +39,10 @@ namespace Empiria.FinancialAccounting.Vouchers.Adapters {
       filter.AppendAnd(stageStatusFilter);
       filter.AppendAnd(keywordsFilter);
 
+      string transactionEntriesFilter = BuildTransactionEntriesFilter(command, filter.ToString());
+
+      filter.AppendAnd(transactionEntriesFilter);
+
       return filter.ToString();
     }
 
@@ -99,7 +103,7 @@ namespace Empiria.FinancialAccounting.Vouchers.Adapters {
 
 
     static private string BuildKeywordsFilter(string keywords) {
-      return SearchExpression.ParseAndLikeKeywords("KEYWORDS", keywords);
+      return SearchExpression.ParseAndLikeKeywords("TRANSACCION_KEYWORDS", keywords);
     }
 
 
@@ -107,6 +111,32 @@ namespace Empiria.FinancialAccounting.Vouchers.Adapters {
       return string.Empty;
     }
 
+
+    static private string BuildTransactionEntriesFilter(SearchVouchersCommand command, string nestedFilter) {
+      if (command.AccountKeywords.Length == 0 && command.SubledgerAccountKeywords.Length == 0) {
+        return string.Empty;
+      }
+      string filter = string.Empty;
+
+      if (command.AccountKeywords.Length != 0) {
+        filter = SearchExpression.ParseAndLikeKeywords("CUENTA_ESTANDAR_KEYWORDS",
+                                                       command.AccountKeywords);
+      }
+      if (command.SubledgerAccountKeywords.Length != 0) {
+        if (filter.Length != 0) {
+          filter += " AND ";
+        }
+        filter += SearchExpression.ParseAndLikeKeywords("CUENTA_AUXILIAR_KEYWORDS",
+                                                        command.SubledgerAccountKeywords);
+      }
+
+      if (nestedFilter.Length != 0) {
+        return $"ID_TRANSACCION IN (SELECT ID_TRANSACCION FROM VW_COF_MOVIMIENTO_SEARCH WHERE ({nestedFilter} AND {filter}))";
+      } else {
+        return $"ID_TRANSACCION IN (SELECT ID_TRANSACCION FROM VW_COF_MOVIMIENTO_SEARCH WHERE {filter})";
+      }
+
+    }
 
     static private string BuildTransactionTypeFilter(SearchVouchersCommand command) {
       if (String.IsNullOrWhiteSpace(command.TransactionTypeUID)) {
