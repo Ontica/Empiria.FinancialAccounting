@@ -4,7 +4,7 @@
 *  Assembly : FinancialAccounting.BalanceEngine.dll      Pattern   : Service provider                        *
 *  Type     : TrialBalanceEngine                         License   : Please read LICENSE.txt file            *
 *                                                                                                            *
-*  Summary  : Provides services to retrieve a trial balance.                                                 *
+*  Summary  : Provides services to generate a trial balance.                                                 *
 *                                                                                                            *
 ************************* Copyright(c) La Vía Óntica SC, Ontica LLC and contributors. All rights reserved. **/
 using System;
@@ -38,7 +38,7 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
   }
 
 
-  /// <summary>Provides services to retrieve a trial balance.</summary>
+  /// <summary>Provides services to generate a trial balance.</summary>
   internal class TrialBalanceEngine {
 
 
@@ -89,15 +89,6 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
     }
 
 
-    private FixedList<TrialBalanceEntry> RestrictLevels(FixedList<TrialBalanceEntry> entries) {
-      if (Command.Level > 0) {
-        return entries.FindAll(x => x.Level <= Command.Level);
-      } else {
-        return entries;
-      }
-    }
-
-
     private List<TrialBalanceEntry> GenerateSummaryEntries(FixedList<TrialBalanceEntry> entries) {
       List<TrialBalanceEntry> summaryEntries = new List<TrialBalanceEntry>();
 
@@ -110,38 +101,15 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
 
         while (true) {
 
-          var parentSummaryEntry = summaryEntries.Where(a => a.Ledger.Equals(entry.Ledger) &&
-                                                             a.Account.Number == currentParent.Number &&
-                                                             a.Sector.Code == entry.Sector.Code &&
-                                                             a.Currency.Id == entry.Currency.Id).FirstOrDefault();
+          GenerateOrIncreaseSummaryEntry(summaryEntries, entry, currentParent, entry.Sector);
 
-          if (parentSummaryEntry != null) {
-
-            parentSummaryEntry.InitialBalance += entry.InitialBalance;
-            parentSummaryEntry.Debit += entry.Debit;
-            parentSummaryEntry.Credit += entry.Credit;
-            parentSummaryEntry.CurrentBalance += entry.CurrentBalance;
-
-          } else {
-
-            parentSummaryEntry = new TrialBalanceEntry() {
-              Ledger = entry.Ledger,
-              Currency = entry.Currency,
-              Sector = entry.Sector,
-              Account = currentParent,
-              InitialBalance = entry.InitialBalance,
-              Debit = entry.Debit,
-              Credit = entry.Credit,
-              CurrentBalance = entry.CurrentBalance,
-              ItemType = "BalanceSummary"
-            };
-
-            summaryEntries.Add(parentSummaryEntry);
-
-          }
-
-          if (!currentParent.HasParent) {
+          if (!currentParent.HasParent && entry.Sector.Code != "00") {
+            GenerateOrIncreaseSummaryEntry(summaryEntries, entry, currentParent, Sector.Empty);
             break;
+
+          } else if (!currentParent.HasParent) {
+            break;
+
           } else {
             currentParent = currentParent.GetParent();
           }
@@ -151,6 +119,51 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
       } // foreach
 
       return summaryEntries;
+    }
+
+
+    private void GenerateOrIncreaseSummaryEntry(List<TrialBalanceEntry> summaryEntries,
+                                                TrialBalanceEntry entry,
+                                                Account targetAccount, Sector targetSector) {
+
+      var summaryEntry = summaryEntries.Where(a => a.Ledger.Equals(entry.Ledger) &&
+                                                   a.Account.Number == targetAccount.Number &&
+                                                   a.Sector.Code == targetSector.Code &&
+                                                   a.Currency.Id == entry.Currency.Id).FirstOrDefault();
+
+      if (summaryEntry == null) {
+
+        summaryEntry = new TrialBalanceEntry() {
+          Ledger = entry.Ledger,
+          Currency = entry.Currency,
+          Sector = targetSector,
+          Account = targetAccount,
+          InitialBalance = entry.InitialBalance,
+          Debit = entry.Debit,
+          Credit = entry.Credit,
+          CurrentBalance = entry.CurrentBalance,
+          ItemType = "BalanceSummary"
+        };
+
+        summaryEntries.Add(summaryEntry);
+
+      } else {
+
+        summaryEntry.InitialBalance += entry.InitialBalance;
+        summaryEntry.Debit += entry.Debit;
+        summaryEntry.Credit += entry.Credit;
+        summaryEntry.CurrentBalance += entry.CurrentBalance;
+
+      }
+    }
+
+
+    private FixedList<TrialBalanceEntry> RestrictLevels(FixedList<TrialBalanceEntry> entries) {
+      if (Command.Level > 0) {
+        return entries.FindAll(x => x.Level <= Command.Level);
+      } else {
+        return entries;
+      }
     }
 
 
