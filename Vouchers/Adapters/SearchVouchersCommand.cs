@@ -47,7 +47,7 @@ namespace Empiria.FinancialAccounting.Vouchers.Adapters {
   }  // enum VoucherStatus
 
 
-  public enum DateSearchType {
+  public enum DateSearchField {
     None,
 
     AccountingDate,
@@ -71,7 +71,7 @@ namespace Empiria.FinancialAccounting.Vouchers.Adapters {
     } = VoucherStatus.All;
 
 
-    public string AccountingChartUID {
+    public string AccountsChartUID {
       get;
       set;
     } = string.Empty;
@@ -98,7 +98,7 @@ namespace Empiria.FinancialAccounting.Vouchers.Adapters {
     public DateTime FromDate {
       get;
       set;
-    } = ExecutionServer.DateMaxValue;
+    } = ExecutionServer.DateMinValue;
 
 
     public DateTime ToDate {
@@ -107,10 +107,10 @@ namespace Empiria.FinancialAccounting.Vouchers.Adapters {
     } = ExecutionServer.DateMaxValue;
 
 
-    public DateSearchType DateSearchField {
+    public DateSearchField DateSearchField {
       get;
       set;
-    } = DateSearchType.None;
+    } = DateSearchField.None;
 
 
     public string AccountKeywords {

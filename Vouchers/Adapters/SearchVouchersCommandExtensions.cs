@@ -25,11 +25,18 @@ namespace Empiria.FinancialAccounting.Vouchers.Adapters {
 
 
     static internal string MapToFilterString(this SearchVouchersCommand command) {
-      string stageStatusFilter = BuildStageStatusFilter(command.Stage, command.Status);
+      string ledgerFilter = BuildLedgerFilter(command);
+      string dateRangeFilter = BuildDateRangerFilter(command);
+      string transactionTypeFilter = BuildTransactionTypeFilter(command);
+      string voucherTypeFilter = BuildVoucherTypeFilter(command);
+      string stageStatusFilter = BuildStageStatusFilter(command);
       string keywordsFilter = BuildKeywordsFilter(command.Keywords);
 
-      var filter = new Filter(stageStatusFilter);
-
+      var filter = new Filter(ledgerFilter);
+      filter.AppendAnd(dateRangeFilter);
+      filter.AppendAnd(transactionTypeFilter);
+      filter.AppendAnd(voucherTypeFilter);
+      filter.AppendAnd(stageStatusFilter);
       filter.AppendAnd(keywordsFilter);
 
       return filter.ToString();
@@ -48,15 +55,79 @@ namespace Empiria.FinancialAccounting.Vouchers.Adapters {
 
     #region Private methods
 
+    static private string BuildDateRangerFilter(SearchVouchersCommand command) {
+      if (command.DateSearchField == DateSearchField.None) {
+        return string.Empty;
+      }
+
+      string filter = $"'{CommonMethods.FormatSqlDate(command.FromDate)}' <= @DATE_FIELD@ AND " +
+                      $"@DATE_FIELD@ < '{CommonMethods.FormatSqlDate(command.ToDate.Date.AddDays(1))}'";
+
+      if (command.DateSearchField == DateSearchField.AccountingDate) {
+        return filter.Replace("@DATE_FIELD@", "FECHA_AFECTACION");
+
+      } else if (command.DateSearchField == DateSearchField.RecordingDate) {
+        return filter.Replace("@DATE_FIELD@", "FECHA_REGISTRO");
+
+      } else {
+        throw Assertion.AssertNoReachThisCode();
+      }
+    }
+
+
+    static private string BuildLedgerFilter(SearchVouchersCommand command) {
+      string filter = string.Empty;
+
+      if (!String.IsNullOrWhiteSpace(command.LedgerUID)) {
+        var ledger = Ledger.Parse(command.LedgerUID);
+
+        filter += $"ID_MAYOR = {ledger.Id}";
+
+        return filter;
+      }
+
+      if (!String.IsNullOrWhiteSpace(command.AccountsChartUID)) {
+        var accountsChart = AccountsChart.Parse(command.AccountsChartUID);
+        if (filter.Length != 0) {
+          filter += " AND ";
+        }
+        filter += $"ID_TIPO_CUENTAS_STD = {accountsChart.Id}";
+      }
+
+      return filter;
+    }
+
+
     static private string BuildKeywordsFilter(string keywords) {
       return SearchExpression.ParseAndLikeKeywords("KEYWORDS", keywords);
     }
 
 
-    static private string BuildStageStatusFilter(VoucherStage stage, VoucherStatus status) {
+    static private string BuildStageStatusFilter(SearchVouchersCommand command) {
       return string.Empty;
     }
 
+
+    static private string BuildTransactionTypeFilter(SearchVouchersCommand command) {
+      if (String.IsNullOrWhiteSpace(command.TransactionTypeUID)) {
+        return string.Empty;
+      }
+
+      var transactionType = TransactionType.Parse(command.TransactionTypeUID);
+
+      return $"ID_TIPO_TRANSACCION = {transactionType.Id}";
+    }
+
+
+    static private string BuildVoucherTypeFilter(SearchVouchersCommand command) {
+      if (String.IsNullOrWhiteSpace(command.VoucherTypeUID)) {
+        return string.Empty;
+      }
+
+      var vocherType = VoucherType.Parse(command.VoucherTypeUID);
+
+      return $"ID_TIPO_POLIZA = {vocherType.Id}";
+    }
 
     #endregion Private methods
 

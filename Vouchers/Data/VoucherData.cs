@@ -20,7 +20,7 @@ namespace Empiria.FinancialAccounting.Vouchers.Data {
       var sql = "SELECT * FROM (" +
                   "SELECT * FROM VW_COF_TRANSACCION " +
                   $"WHERE {filter} " +
-                  $"ORDER BY {sort})" +
+                  $"ORDER BY {sort}) " +
                 $"WHERE ROWNUM <= {pageSize}";
 
       var dataOperation = DataOperation.Parse(sql);
