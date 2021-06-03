@@ -58,6 +58,17 @@ namespace Empiria.FinancialAccounting.UseCases {
     }
 
 
+    public AccountsChartDto GetAccountsInADate(string accountsChartUID, DateTime date) {
+      Assertion.AssertObject(accountsChartUID, "accountsChartUID");
+
+      var accountsChart = AccountsChart.Parse(accountsChartUID);
+
+      var accounts = accountsChart.GetAccountsInADate(date);
+
+      return AccountsChartMapper.Map(accountsChart, accounts);
+    }
+
+
     public FixedList<NamedEntityDto> GetAccountsChartsList() {
       FixedList<AccountsChart> accountsChartsList = AccountsChart.GetList();
 

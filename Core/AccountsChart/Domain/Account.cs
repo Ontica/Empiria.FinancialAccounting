@@ -9,7 +9,6 @@
 ************************* Copyright(c) La Vía Óntica SC, Ontica LLC and contributors. All rights reserved. **/
 using System;
 
-
 namespace Empiria.FinancialAccounting {
 
   /// <summary>Contains information about an account.</summary>
@@ -17,8 +16,8 @@ namespace Empiria.FinancialAccounting {
 
     #region Fields
 
-    static public DateTime MAX_END_DATE = ConfigurationData.Get<DateTime>("MAX_ACCOUNT_END_DATE",
-                                                                           new DateTime(2049, 12, 31));
+    static readonly public DateTime MAX_END_DATE = ConfigurationData.Get<DateTime>("MAX_ACCOUNT_END_DATE",
+                                                                                   new DateTime(2049, 12, 31));
 
     private Lazy<FixedList<AreaRule>> _areaRules;
 
@@ -64,16 +63,10 @@ namespace Empiria.FinancialAccounting {
 
     #region Public properties
 
-    [DataField("ID_TIPO_CUENTAS_STD", ConvertFrom=typeof(long))]
-    internal int AccountsChartId {
-      get; private set;
-    } = -1;
 
-
+    [DataField("ID_TIPO_CUENTAS_STD", ConvertFrom = typeof(long))]
     public AccountsChart AccountsChart {
-      get {
-        return AccountsChart.Parse(this.AccountsChartId);
-      }
+      get; private set;
     }
 
 
@@ -142,7 +135,9 @@ namespace Empiria.FinancialAccounting {
 
     public int Level {
       get {
-        return EmpiriaString.CountOccurences(Number, this.AccountsChart.MasterData.AccountNumberSeparator) + 1;
+        var accountNumberSeparator = this.AccountsChart.MasterData.AccountNumberSeparator;
+
+        return EmpiriaString.CountOccurences(Number, accountNumberSeparator) + 1;
       }
     }
 
@@ -189,7 +184,9 @@ namespace Empiria.FinancialAccounting {
         return Account.Empty;
       }
 
-      var parentAccountNumber = this.Number.Substring(0, this.Number.LastIndexOf("-"));
+      var accountNumberSeparator = this.AccountsChart.MasterData.AccountNumberSeparator;
+
+      var parentAccountNumber = this.Number.Substring(0, this.Number.LastIndexOf(accountNumberSeparator));
 
       return AccountsChart.GetAccount(parentAccountNumber);
     }

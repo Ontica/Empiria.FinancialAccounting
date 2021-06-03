@@ -8,6 +8,9 @@
 *                                                                                                            *
 ************************* Copyright(c) La Vía Óntica SC, Ontica LLC and contributors. All rights reserved. **/
 using System;
+using System.Linq;
+
+using System.Threading.Tasks;
 
 using Empiria.Collections;
 using Empiria.FinancialAccounting.Data;
@@ -58,7 +61,6 @@ namespace Empiria.FinancialAccounting {
       }
     }
 
-
     #endregion Constructors and parsers
 
 
@@ -93,6 +95,12 @@ namespace Empiria.FinancialAccounting {
 
     public FixedList<Account> GetAccountHistory(string accountNumber) {
       return AccountsChartData.GetAccountHistory(this, accountNumber);
+    }
+
+
+    public FixedList<Account> GetAccountsInADate(DateTime date) {
+      return _accounts.Value.ToFixedList()
+                            .FindAll(x => x.StartDate <= date && date <= x.EndDate);
     }
 
 
