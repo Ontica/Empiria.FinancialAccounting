@@ -22,6 +22,11 @@ namespace Empiria.FinancialAccounting {
     }
 
 
+    static public ExchangeRateType Parse(string uid) {
+      return BaseObject.ParseKey<ExchangeRateType>(uid);
+    }
+
+
     static public FixedList<ExchangeRateType> GetList() {
       return BaseObject.GetList<ExchangeRateType>()
                        .ToFixedList();

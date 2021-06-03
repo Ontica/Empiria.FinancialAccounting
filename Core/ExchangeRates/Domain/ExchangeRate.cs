@@ -28,13 +28,10 @@ namespace Empiria.FinancialAccounting {
     }
 
 
-    static public ExchangeRate Parse(string uid) {
-      return BaseObject.ParseKey<ExchangeRate>(uid);
-    }
-
     static public FixedList<ExchangeRate> GetList(DateTime date) {
       return ExchangeRatesData.GetExchangeRates(date);
     }
+
 
     static public FixedList<ExchangeRate> GetList(ExchangeRateType exchangeRateType, DateTime date) {
       return ExchangeRatesData.GetExchangeRates(exchangeRateType, date);
