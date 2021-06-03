@@ -11,6 +11,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 
+using Empiria.Collections;
 using Empiria.FinancialAccounting.BalanceEngine.Adapters;
 using Empiria.FinancialAccounting.BalanceEngine.Data;
 
@@ -59,7 +60,7 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
 
       FixedList<TrialBalanceEntry> postingEntries = TrialBalanceDataService.GetTrialBalanceEntries(commandData);
 
-      List<TrialBalanceEntry> summaryEntries = GenerateSummaryEntries(postingEntries);
+      List <TrialBalanceEntry> summaryEntries = GenerateSummaryEntries(postingEntries);
 
       FixedList<TrialBalanceEntry> trialBalance = CombineSummaryAndPostingEntries(summaryEntries, postingEntries);
 
@@ -72,12 +73,10 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
     #region Private methods
 
     private FixedList<TrialBalanceEntry> CombineSummaryAndPostingEntries(List<TrialBalanceEntry> summaryEntries,
-                                                                     FixedList<TrialBalanceEntry> postingEntries) {
+                                                                         FixedList<TrialBalanceEntry> postingEntries) {
       List<TrialBalanceEntry> returnedEntries = new List<TrialBalanceEntry>(postingEntries);
 
-      foreach (var item in summaryEntries) {
-        returnedEntries.Add(item);
-      }
+      returnedEntries.AddRange(summaryEntries);
 
       returnedEntries = returnedEntries.OrderBy(a => a.Ledger.Number)
                                        .ThenBy(a => a.Currency.Code)
@@ -90,7 +89,7 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
 
 
     private List<TrialBalanceEntry> GenerateSummaryEntries(FixedList<TrialBalanceEntry> entries) {
-      List<TrialBalanceEntry> summaryEntries = new List<TrialBalanceEntry>();
+      var summaryEntries = new EmpiriaHashTable<TrialBalanceEntry>(entries.Count);
 
       foreach (var entry in entries) {
         if (!entry.Account.HasParent) {
@@ -118,18 +117,19 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
 
       } // foreach
 
-      return summaryEntries;
+      return summaryEntries.Values.ToList();
     }
 
 
-    private void GenerateOrIncreaseSummaryEntry(List<TrialBalanceEntry> summaryEntries,
+    private void GenerateOrIncreaseSummaryEntry(EmpiriaHashTable<TrialBalanceEntry> summaryEntries,
                                                 TrialBalanceEntry entry,
                                                 Account targetAccount, Sector targetSector) {
 
-      var summaryEntry = summaryEntries.Where(a => a.Ledger.Equals(entry.Ledger) &&
-                                                   a.Account.Number == targetAccount.Number &&
-                                                   a.Sector.Code == targetSector.Code &&
-                                                   a.Currency.Id == entry.Currency.Id).FirstOrDefault();
+      string hash = $"{targetAccount.Number}||{targetSector.Code}||{entry.Currency.Id}||{entry.Ledger.Id}";
+
+      TrialBalanceEntry summaryEntry;
+
+      summaryEntries.TryGetValue(hash, out summaryEntry);
 
       if (summaryEntry == null) {
 
@@ -145,7 +145,7 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
           ItemType = "BalanceSummary"
         };
 
-        summaryEntries.Add(summaryEntry);
+        summaryEntries.Insert(hash, summaryEntry);
 
       } else {
 
