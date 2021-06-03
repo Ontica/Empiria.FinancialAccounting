@@ -61,13 +61,27 @@ namespace Empiria.FinancialAccounting.BalanceEngine.Adapters {
 
     public int Level {
       get; set;
-    } = 0;
+    }
 
 
     public BalancesType BalancesType {
       get; set;
     } = BalancesType.AllAccounts;
 
+
+    public string ValuateToCurrrencyUID {
+      get; set;
+    } = "01";
+
+
+    public string ExchangeRateTypeUID {
+      get; set;
+    } = "96c617f6-8ed9-47f3-8d2d-f1240e446e1d";
+
+
+    public DateTime ExchangeRateDate {
+      get; set;
+    } = new DateTime(2017, 08, 31);
 
 
   } // class TrialBalanceCommand
