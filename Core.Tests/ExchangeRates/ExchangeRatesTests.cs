@@ -2,7 +2,7 @@
 *                                                                                                            *
 *  Module   : Exchange Rates                             Component : Test cases                              *
 *  Assembly : Empiria.FinancialAccounting.Tests.dll      Pattern   : Domain tests                            *
-*  Type     : ExchangeRateTests                          License   : Please read LICENSE.txt file            *
+*  Type     : ExchangeRatesTests                         License   : Please read LICENSE.txt file            *
 *                                                                                                            *
 *  Summary  : Use case tests for accounting ledger book management.                                          *
 *                                                                                                            *
@@ -13,7 +13,7 @@ using Xunit;
 namespace Empiria.FinancialAccounting.Tests {
 
   /// <summary>Use case tests for accounting ledger book management.</summary>
-  public class ExchangeRateTests {
+  public class ExchangeRatesTests {
 
     #region Facts
 
@@ -26,7 +26,7 @@ namespace Empiria.FinancialAccounting.Tests {
 
 
     [Fact]
-    public void Should_Get_A_List_Of_Exchange_Rates_In_A_Date() {
+    public void Should_Get_A_List_Of_Exchange_Rates_For_Type_In_A_Date() {
       FixedList<ExchangeRateType> exchangeRateTypes = ExchangeRateType.GetList();
 
       var EXCHANGE_RATE_TYPE = exchangeRateTypes[0];
@@ -38,6 +38,19 @@ namespace Empiria.FinancialAccounting.Tests {
 
       Assert.All(list, x => { Assert.Equal(DATE, x.Date); });
       Assert.All(list, x => { Assert.Equal(EXCHANGE_RATE_TYPE, x.ExchangeRateType); });
+      Assert.All(list, x => { Assert.True(x.Value > 0); });
+    }
+
+
+    [Fact]
+    public void Should_Get_A_List_Of_Exchange_Rates_In_A_Date() {
+      DateTime DATE = new DateTime(2017, 08, 31);
+
+      FixedList<ExchangeRate> list = ExchangeRate.GetList(DATE);
+
+      Assert.NotEmpty(list);
+
+      Assert.All(list, x => { Assert.Equal(DATE, x.Date); });
       Assert.All(list, x => { Assert.True(x.Value > 0); });
     }
 
@@ -60,6 +73,6 @@ namespace Empiria.FinancialAccounting.Tests {
 
     #endregion Facts
 
-  }  // class ExchangeRateTests
+  }  // class ExchangeRatesTests
 
 }  // namespace Empiria.FinancialAccounting.Tests

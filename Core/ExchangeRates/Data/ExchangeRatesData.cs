@@ -28,6 +28,18 @@ namespace Empiria.FinancialAccounting.Data {
       return DataReader.GetFixedList<ExchangeRate>(dataOperation);
     }
 
+
+    static internal FixedList<ExchangeRate> GetExchangeRates(DateTime date) {
+      var sql = "SELECT * FROM AO_EXCHANGE_RATES " +
+                $"WHERE FROM_DATE = '{CommonMethods.FormatSqlDate(date)}' " +
+                $"ORDER BY EXCHANGE_RATE_TYPE_ID, TO_CURRENCY_ID";
+
+      var dataOperation = DataOperation.Parse(sql);
+
+      return DataReader.GetFixedList<ExchangeRate>(dataOperation);
+    }
+
+
   }  // class ExchangeRatesData
 
 }  // namespace Empiria.FinancialAccounting.Data
