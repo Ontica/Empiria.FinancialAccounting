@@ -19,9 +19,13 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
 
   public enum TrialBalanceType {
 
+    BalancesByAccount,
+
+    BalancesBySubledgerAccount,
+
     Traditional,
 
-    Valued
+    Valued,
 
   }
 
@@ -82,6 +86,7 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
                                        .ThenBy(a => a.Currency.Code)
                                        .ThenBy(a => a.Account.Number)
                                        .ThenBy(a => a.Sector.Code)
+                                       .ThenBy(a => a.SubledgerAccountId)
                                        .ToList();
 
       return returnedEntries.ToFixedList();
@@ -92,11 +97,17 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
       var summaryEntries = new EmpiriaHashTable<TrialBalanceEntry>(entries.Count);
 
       foreach (var entry in entries) {
-        if (!entry.Account.HasParent) {
-          continue;
-        }
+        Account currentParent;
 
-        Account currentParent = entry.Account.GetParent();
+        if (this.Command.TrialBalanceType == TrialBalanceType.BalancesByAccount) {
+          currentParent = entry.Account;
+        } else {
+
+          if (!entry.Account.HasParent) {
+            continue;
+          }
+          currentParent = entry.Account.GetParent();
+        }
 
         while (true) {
 

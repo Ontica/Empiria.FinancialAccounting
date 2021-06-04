@@ -37,15 +37,25 @@ namespace Empiria.FinancialAccounting.BalanceEngine.Adapters {
     static private TrialBalanceEntryDto Map(TrialBalanceEntry trialBalanceEntry) {
       var dto = new TrialBalanceEntryDto();
 
+      SubsidiaryAccount subledgerAccount = SubsidiaryAccount.Parse(trialBalanceEntry.SubledgerAccountId);
+
+
       dto.ItemType = trialBalanceEntry.ItemType ?? "BalanceEntry";
       dto.LedgerUID = trialBalanceEntry.Ledger.UID;
       dto.LedgerAccountId = trialBalanceEntry.LedgerAccountId;
       dto.CurrencyUID = trialBalanceEntry.Currency.UID;
-      dto.AccountName = trialBalanceEntry.Account.Name;
-      dto.AccountNumber = trialBalanceEntry.Account.Number;
+
+      if (subledgerAccount.IsEmptyInstance) {
+        dto.AccountName = trialBalanceEntry.Account.Name;
+        dto.AccountNumber = trialBalanceEntry.Account.Number;
+      } else {
+        dto.AccountName = subledgerAccount.Name;
+        dto.AccountNumber = subledgerAccount.Number;
+      }
       dto.AccountRole = trialBalanceEntry.Account.Role;
       dto.AccountLevel = trialBalanceEntry.Account.Level;
       dto.SectorCode = trialBalanceEntry.Sector.Code;
+      dto.SubledgerAccountId = trialBalanceEntry.SubledgerAccountId;
       dto.InitialBalance = trialBalanceEntry.InitialBalance;
       dto.Debit = trialBalanceEntry.Debit;
       dto.Credit = trialBalanceEntry.Credit;

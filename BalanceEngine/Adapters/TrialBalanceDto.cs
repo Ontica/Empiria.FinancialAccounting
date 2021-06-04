@@ -103,8 +103,10 @@ namespace Empiria.FinancialAccounting.BalanceEngine.Adapters {
     public decimal CurrentBalance {
       get; internal set;
     }
-
-
+    public int SubledgerAccountId {
+      get;
+      internal set;
+    }
   } // class TrialBalanceEntryDto
 
 } // namespace Empiria.FinancialAccounting.BalanceEngine.Adapters

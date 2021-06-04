@@ -21,7 +21,7 @@ namespace Empiria.FinancialAccounting {
     }
 
 
-    static internal SubsidiaryAccount Parse(int id) {
+    static public SubsidiaryAccount Parse(int id) {
       return BaseObject.ParseId<SubsidiaryAccount>(id);
     }
 

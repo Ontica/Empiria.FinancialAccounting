@@ -58,6 +58,13 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
     }
 
 
+    [DataField("ID_CUENTA_AUXILIAR", ConvertFrom = typeof(decimal))]
+    public int SubledgerAccountId {
+      get;
+      internal set;
+    }
+
+
     [DataField("SALDO_ANTERIOR")]
     public decimal InitialBalance {
       get;
