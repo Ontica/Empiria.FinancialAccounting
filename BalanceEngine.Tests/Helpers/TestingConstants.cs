@@ -23,6 +23,8 @@ namespace Empiria.FinancialAccounting.Tests {
     static internal readonly string[] Ledgers = { "a70281d1-c9f0-4121-afc1-fe32026feb0d",
                                                   "82cb925c-1752-4a2b-b0c5-5ae87576cae3" };
 
+    static internal readonly string[] Currencies = { "01", "02"};
+
     static internal readonly int AccountCatalogueId = 1;
 
     static internal readonly string AccountNumber = "";

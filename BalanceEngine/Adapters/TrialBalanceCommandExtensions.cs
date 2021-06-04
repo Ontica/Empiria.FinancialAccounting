@@ -39,7 +39,6 @@ namespace Empiria.FinancialAccounting.BalanceEngine.Adapters {
 
       #region Public methods
 
-
       internal TrialBalanceCommandData GetTrialBalanceCommandData() {
         var commandData = new TrialBalanceCommandData();
 
@@ -65,33 +64,44 @@ namespace Empiria.FinancialAccounting.BalanceEngine.Adapters {
         return commandData;
       }
 
+      #endregion Public methods
+
+
+      #region Private methods
 
       private string GetAccountFilterString() {
         string rangeFilter = GetAccountRangeFilter();
 
-        var filter = new Filter("");
+        var filter = new Filter(rangeFilter);
 
-        if (filter.ToString().Length == 0 && rangeFilter.Length > 0) {
-          filter.AppendAnd(" AND " + rangeFilter);
-        } else {
-          filter.AppendAnd(rangeFilter);
-        }
-
-        return filter.ToString();
+        return filter.ToString().Length > 0 ? $"AND {filter}" : "";
       }
 
 
       private string GetFilterString() {
         string ledgerFilter = GetLedgerFilter();
         string sectorFilter = GetSectorFilter();
+        string currencyFilter = GetCurrencyFilter();
         string accountRangeFilter = GetAccountRangeFilter();
 
         var filter = new Filter(ledgerFilter);
 
         filter.AppendAnd(sectorFilter);
         filter.AppendAnd(accountRangeFilter);
+        filter.AppendAnd(currencyFilter);
 
         return filter.ToString().Length > 0 ? $"AND ({filter})" : "";
+      }
+
+
+      private string GetCurrencyFilter() {
+        if (_command.Currencies.Length == 0) {
+          return string.Empty;
+        }
+        int[] currencyIds = _command.Currencies.Select(uid => Currency.Parse(uid).Id)
+                                          .ToArray();
+
+        return $"ID_MONEDA IN ({String.Join(", ", currencyIds)})";
       }
 
 
@@ -245,11 +255,6 @@ namespace Empiria.FinancialAccounting.BalanceEngine.Adapters {
         }
       }
 
-
-      #endregion Public methods
-
-
-      #region Private methods
 
       private string GetAccountRangeFilter() {
         string filter = String.Empty;

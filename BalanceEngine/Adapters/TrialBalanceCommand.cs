@@ -34,6 +34,11 @@ namespace Empiria.FinancialAccounting.BalanceEngine.Adapters {
     } = new string[0];
 
 
+    public string[] Currencies {
+      get; set;
+    } = new string[0];
+
+
     public DateTime FromDate {
       get; set;
     }
