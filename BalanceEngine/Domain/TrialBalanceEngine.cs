@@ -68,6 +68,8 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
 
       FixedList<TrialBalanceEntry> trialBalance = CombineSummaryAndPostingEntries(summaryEntries, postingEntries);
 
+      trialBalance = ExchangeRateEntries(trialBalance);
+
       trialBalance = RestrictLevels(trialBalance);
 
       return new TrialBalance(Command, trialBalance);
@@ -90,6 +92,30 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
                                        .ToList();
 
       return returnedEntries.ToFixedList();
+    }
+
+
+    private FixedList<TrialBalanceEntry> ExchangeRateEntries(FixedList<TrialBalanceEntry> entries) {
+      if (Command.ValuateToCurrrencyUID == string.Empty) {
+        return entries;
+      }
+
+      ExchangeRateType exchange = ExchangeRateType.Parse(Command.ExchangeRateTypeUID);
+
+      FixedList<ExchangeRate> exchageList = ExchangeRate.GetList(exchange, Command.ExchangeRateDate);
+
+      foreach (var entry in entries) {
+        var exchangeType = exchageList.Where(a => a.FromCurrency.Code == Command.ValuateToCurrrencyUID &&
+                                              a.ToCurrency.Code == entry.Currency.Code).FirstOrDefault();
+
+        Assertion.AssertObject(exchangeType, $"No hay tipo de cambio para la moneda {entry.Currency.FullName}");
+
+        entry.InitialBalance = entry.InitialBalance * exchangeType.Value;
+        entry.Debit = entry.Debit * exchangeType.Value;
+        entry.Credit = entry.Credit * exchangeType.Value;
+        entry.CurrentBalance = entry.CurrentBalance * exchangeType.Value;
+      }
+      return entries;
     }
 
 
