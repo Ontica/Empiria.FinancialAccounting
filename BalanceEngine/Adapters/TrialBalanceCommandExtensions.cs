@@ -44,8 +44,6 @@ namespace Empiria.FinancialAccounting.BalanceEngine.Adapters {
 
         var accountsChart = AccountsChart.Parse(_command.AccountsChartUID);
 
-        var _dummy = accountsChart.Accounts;
-
         StoredBalanceSet balanceSet = StoredBalanceSet.GetBestBalanceSet(accountsChart, _command.FromDate);
 
         commandData.StoredInitialBalanceSet = balanceSet;

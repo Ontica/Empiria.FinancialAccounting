@@ -25,6 +25,10 @@ namespace Empiria.FinancialAccounting {
       return BaseObject.ParseId<SubsidiaryAccount>(id);
     }
 
+    static public void Preload() {
+      BaseObject.GetList<SubsidiaryAccount>();
+    }
+
     static public SubsidiaryAccount Empty => BaseObject.ParseEmpty<SubsidiaryAccount>();
 
 

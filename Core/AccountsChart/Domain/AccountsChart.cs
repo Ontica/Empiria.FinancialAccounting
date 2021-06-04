@@ -39,6 +39,15 @@ namespace Empiria.FinancialAccounting {
     }
 
 
+    static public void Preload() {
+      var list = BaseObject.GetList<AccountsChart>();
+
+      foreach (var item in list) {
+        var dummy = item.Accounts;
+      }
+    }
+
+
     static public FixedList<AccountsChart> GetList() {
       return BaseObject.GetList<AccountsChart>()
                        .ToFixedList();
@@ -96,7 +105,6 @@ namespace Empiria.FinancialAccounting {
     public FixedList<Account> GetAccountHistory(string accountNumber) {
       return AccountsChartData.GetAccountHistory(this, accountNumber);
     }
-
 
     public FixedList<Account> GetAccountsInADate(DateTime date) {
       return _accounts.Value.ToFixedList()

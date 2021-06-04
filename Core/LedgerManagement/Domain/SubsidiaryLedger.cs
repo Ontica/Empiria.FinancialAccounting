@@ -29,6 +29,10 @@ namespace Empiria.FinancialAccounting {
       return BaseObject.ParseKey<SubsidiaryLedger>(uid);
     }
 
+    static public void Preload() {
+      BaseObject.GetList<SubsidiaryLedger>();
+    }
+
     static public SubsidiaryLedger Empty => BaseObject.ParseEmpty<SubsidiaryLedger>();
 
 
