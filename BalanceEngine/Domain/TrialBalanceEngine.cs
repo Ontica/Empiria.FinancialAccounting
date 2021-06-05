@@ -25,6 +25,8 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
 
     Traditional,
 
+    TraditionalWithSubledgerAccounts,
+
   }
 
 
@@ -66,7 +68,7 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
 
       FixedList<TrialBalanceEntry> trialBalance = CombineSummaryAndPostingEntries(summaryEntries, postingEntries);
 
-      trialBalance = ExchangeRateEntries(trialBalance);
+      trialBalance = ValuateToExchangeRate(trialBalance);
 
       trialBalance = RestrictLevels(trialBalance);
 
@@ -94,25 +96,25 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
     }
 
 
-    private FixedList<TrialBalanceEntry> ExchangeRateEntries(FixedList<TrialBalanceEntry> entries) {
+    private FixedList<TrialBalanceEntry> ValuateToExchangeRate(FixedList<TrialBalanceEntry> entries) {
       if (!Command.ValuateBalances) {
         return entries;
       }
 
-      ExchangeRateType exchange = ExchangeRateType.Parse(Command.ExchangeRateTypeUID);
+      var exchangeRateType = ExchangeRateType.Parse(Command.ExchangeRateTypeUID);
 
-      FixedList<ExchangeRate> exchageList = ExchangeRate.GetList(exchange, Command.ExchangeRateDate);
+      FixedList<ExchangeRate> exchageRates = ExchangeRate.GetList(exchangeRateType, Command.ExchangeRateDate);
 
       foreach (var entry in entries) {
-        var exchangeType = exchageList.Where(a => a.FromCurrency.Code == Command.ValuateToCurrrencyUID &&
-                                              a.ToCurrency.Code == entry.Currency.Code).FirstOrDefault();
+        var exchangeRate = exchageRates.FirstOrDefault(a => a.FromCurrency.Code == Command.ValuateToCurrrencyUID &&
+                                                            a.ToCurrency.Code == entry.Currency.Code);
 
-        Assertion.AssertObject(exchangeType, $"No hay tipo de cambio para la moneda {entry.Currency.FullName}");
+        Assertion.AssertObject(exchangeRate, $"No hay tipo de cambio para la moneda {entry.Currency.FullName}");
 
-        entry.InitialBalance = entry.InitialBalance * exchangeType.Value;
-        entry.Debit = entry.Debit * exchangeType.Value;
-        entry.Credit = entry.Credit * exchangeType.Value;
-        entry.CurrentBalance = entry.CurrentBalance * exchangeType.Value;
+        entry.InitialBalance = entry.InitialBalance * exchangeRate.Value;
+        entry.Debit = entry.Debit * exchangeRate.Value;
+        entry.Credit = entry.Credit * exchangeRate.Value;
+        entry.CurrentBalance = entry.CurrentBalance * exchangeRate.Value;
       }
       return entries;
     }
@@ -130,7 +132,7 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
         } else if (this.Command.DoNotReturnSubledgerAccounts && entry.Account.HasParent) {
           currentParent = entry.Account.GetParent();
 
-        } else if (this.Command.DoNotReturnSubledgerAccounts && entry.Account.DoNotHasParent) {
+        } else if (this.Command.DoNotReturnSubledgerAccounts && entry.Account.NotHasParent) {
           continue;
         } else {
           throw Assertion.AssertNoReachThisCode();
@@ -197,10 +199,16 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
 
 
     private FixedList<TrialBalanceEntry> RestrictLevels(FixedList<TrialBalanceEntry> entries) {
-      if (Command.Level > 0) {
-        return entries.FindAll(x => x.Level <= Command.Level);
-      } else {
+      if (Command.Level == 0) {
         return entries;
+      }
+
+      if (Command.DoNotReturnSubledgerAccounts) {
+        return entries.FindAll(x => x.Level <= Command.Level);
+      } else if (Command.ReturnSubledgerAccounts) {
+        return entries.FindAll(x => x.Level <= Command.Level || x.LedgerAccountId != 0);
+      } else {
+        throw Assertion.AssertNoReachThisCode();
       }
     }
 

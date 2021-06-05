@@ -135,7 +135,7 @@ namespace Empiria.FinancialAccounting {
     }
 
 
-    public bool DoNotHasParent {
+    public bool NotHasParent {
       get {
         return !this.HasParent;
       }
