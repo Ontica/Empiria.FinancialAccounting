@@ -86,6 +86,7 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
 
       returnedEntries = returnedEntries.OrderBy(a => a.Ledger.Number)
                                        .ThenBy(a => a.Currency.Code)
+                                       .ThenByDescending(a => a.Account.DebtorCreditor)
                                        .ThenBy(a => a.Account.Number)
                                        .ThenBy(a => a.Sector.Code)
                                        .ThenBy(a => a.SubledgerAccountId)
