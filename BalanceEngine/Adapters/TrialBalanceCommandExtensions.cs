@@ -26,7 +26,6 @@ namespace Empiria.FinancialAccounting.BalanceEngine.Adapters {
     #endregion Public methods
 
 
-
     /// <summary>Private inner class that provides services used to build trial balance sql clauses.</summary>
     private class TrialBalanceClausesHelper {
 
@@ -104,26 +103,22 @@ namespace Empiria.FinancialAccounting.BalanceEngine.Adapters {
 
 
       private string GetGroupingClause() {
-        if (_command.TrialBalanceType == TrialBalanceType.Traditional &&
-            _command.Consolidated) {
+        if (_command.DoNotReturnSubledgerAccounts && _command.Consolidated) {
 
           return "GROUP BY ID_MONEDA, ID_CUENTA_ESTANDAR_HIST, NUMERO_CUENTA_ESTANDAR, ID_SECTOR, " +
                  "SALDO_ANTERIOR, DEBE, HABER, SALDO_ACTUAL";
 
-        } else if (_command.TrialBalanceType == TrialBalanceType.Traditional &&
-                   !_command.Consolidated) {
+        } else if (_command.DoNotReturnSubledgerAccounts && _command.ShowCascadeBalances) {
 
           return "GROUP BY ID_MAYOR, ID_MONEDA, ID_CUENTA_ESTANDAR_HIST, NUMERO_CUENTA_ESTANDAR, ID_SECTOR, " +
                  "ID_CUENTA, SALDO_ANTERIOR, DEBE, HABER, SALDO_ACTUAL";
 
-        } else if (_command.TrialBalanceType == TrialBalanceType.BalancesByAccount &&
-                  _command.Consolidated) {
+        } else if (_command.ReturnSubledgerAccounts && _command.Consolidated) {
 
           return "GROUP BY ID_MONEDA, ID_CUENTA_ESTANDAR_HIST, NUMERO_CUENTA_ESTANDAR, ID_SECTOR, " +
                  "ID_CUENTA_AUXILIAR, NUMERO_CUENTA_AUXILIAR, SALDO_ANTERIOR, DEBE, HABER, SALDO_ACTUAL";
 
-        } else if (_command.TrialBalanceType == TrialBalanceType.BalancesByAccount &&
-                   !_command.Consolidated) {
+        } else if (_command.ReturnSubledgerAccounts &&_command.ShowCascadeBalances) {
 
           return "GROUP BY ID_MAYOR, ID_MONEDA, ID_CUENTA_ESTANDAR_HIST, NUMERO_CUENTA_ESTANDAR, ID_SECTOR, " +
                  "ID_CUENTA, ID_CUENTA_AUXILIAR, NUMERO_CUENTA_AUXILIAR, SALDO_ANTERIOR, DEBE, HABER, SALDO_ACTUAL";
@@ -160,23 +155,19 @@ namespace Empiria.FinancialAccounting.BalanceEngine.Adapters {
 
 
       private string GetInitialFields() {
-        if (_command.TrialBalanceType == TrialBalanceType.Traditional &&
-            _command.Consolidated) {
+        if (_command.DoNotReturnSubledgerAccounts && _command.Consolidated) {
 
           return "-1 AS ID_MAYOR, ID_MONEDA, ID_CUENTA_ESTANDAR, ID_SECTOR, -1 AS ID_CUENTA, -1 AS ID_CUENTA_AUXILIAR, ";
 
-        } else if (_command.TrialBalanceType == TrialBalanceType.Traditional &&
-                   !_command.Consolidated) {
+        } else if (_command.DoNotReturnSubledgerAccounts && _command.ShowCascadeBalances) {
 
           return "ID_MAYOR, ID_MONEDA, ID_CUENTA_ESTANDAR, ID_SECTOR, ID_CUENTA, -1 AS ID_CUENTA_AUXILIAR, ";
 
-        } else if (_command.TrialBalanceType == TrialBalanceType.BalancesByAccount &&
-                   _command.Consolidated) {
+        } else if (_command.ReturnSubledgerAccounts && _command.Consolidated) {
 
           return "-1 AS ID_MAYOR, ID_MONEDA, ID_CUENTA_ESTANDAR, ID_SECTOR, -1 AS ID_CUENTA, ID_CUENTA_AUXILIAR, ";
 
-        } else if (_command.TrialBalanceType == TrialBalanceType.BalancesByAccount &&
-                   !_command.Consolidated) {
+        } else if (_command.ReturnSubledgerAccounts && _command.ShowCascadeBalances) {
 
           return "ID_MAYOR, ID_MONEDA, ID_CUENTA_ESTANDAR, ID_SECTOR, ID_CUENTA, ID_CUENTA_AUXILIAR, ";
 
@@ -187,23 +178,19 @@ namespace Empiria.FinancialAccounting.BalanceEngine.Adapters {
 
 
       private string GetInitialGroupingClause() {
-        if (_command.TrialBalanceType == TrialBalanceType.Traditional &&
-            _command.Consolidated) {
+        if (_command.DoNotReturnSubledgerAccounts && _command.Consolidated) {
 
           return "GROUP BY ID_MONEDA, ID_CUENTA_ESTANDAR, ID_SECTOR";
 
-        } else if (_command.TrialBalanceType == TrialBalanceType.Traditional &&
-                   !_command.Consolidated) {
+        } else if (_command.DoNotReturnSubledgerAccounts && _command.ShowCascadeBalances) {
 
           return "GROUP BY ID_MAYOR, ID_MONEDA, ID_CUENTA_ESTANDAR, ID_SECTOR, ID_CUENTA";
 
-        } else if (_command.TrialBalanceType == TrialBalanceType.BalancesByAccount &&
-                   _command.Consolidated) {
+        } else if (_command.ReturnSubledgerAccounts && _command.Consolidated) {
 
           return "GROUP BY ID_MONEDA, ID_CUENTA_ESTANDAR, ID_SECTOR, ID_CUENTA_AUXILIAR";
 
-        } else if (_command.TrialBalanceType == TrialBalanceType.BalancesByAccount &&
-                   !_command.Consolidated) {
+        } else if (_command.ReturnSubledgerAccounts && _command.ShowCascadeBalances) {
 
           return "GROUP BY ID_MAYOR, ID_MONEDA, ID_CUENTA_ESTANDAR, ID_SECTOR, ID_CUENTA, ID_CUENTA_AUXILIAR";
 
@@ -216,34 +203,32 @@ namespace Empiria.FinancialAccounting.BalanceEngine.Adapters {
       private string GetOrderClause() {
         if (_command.Consolidated) {
           return "ORDER BY ID_MONEDA, NUMERO_CUENTA_ESTANDAR, ID_SECTOR";
-        } else {
+        } else if (_command.ShowCascadeBalances) {
           return "ORDER BY ID_MAYOR, ID_MONEDA, NUMERO_CUENTA_ESTANDAR, ID_SECTOR, ID_CUENTA";
+        } else {
+          throw Assertion.AssertNoReachThisCode();
         }
       }
 
 
       private string GetOutputFields() {
-        if (_command.TrialBalanceType == TrialBalanceType.Traditional &&
-            _command.Consolidated) {
+        if (_command.DoNotReturnSubledgerAccounts && _command.Consolidated) {
 
           return "-1 AS ID_MAYOR, ID_MONEDA, ID_CUENTA_ESTANDAR_HIST, -1 AS ID_CUENTA, " +
                  "NUMERO_CUENTA_ESTANDAR, ID_SECTOR, -1 AS ID_CUENTA_AUXILIAR, " +
                  "SALDO_ANTERIOR, DEBE, HABER, SALDO_ACTUAL";
 
-        } else if (_command.TrialBalanceType == TrialBalanceType.Traditional &&
-                   !_command.Consolidated) {
+        } else if (_command.DoNotReturnSubledgerAccounts && _command.ShowCascadeBalances) {
 
           return "ID_MAYOR, ID_MONEDA, ID_CUENTA_ESTANDAR_HIST, NUMERO_CUENTA_ESTANDAR, ID_SECTOR, " +
                  "ID_CUENTA, -1 AS ID_CUENTA_AUXILIAR, SALDO_ANTERIOR, DEBE, HABER, SALDO_ACTUAL";
 
-        } else if (_command.TrialBalanceType == TrialBalanceType.BalancesByAccount &&
-                   _command.Consolidated) {
+        } else if (_command.ReturnSubledgerAccounts && _command.Consolidated) {
 
           return "-1 AS ID_MAYOR, ID_MONEDA, ID_CUENTA_ESTANDAR_HIST, NUMERO_CUENTA_ESTANDAR, ID_SECTOR, " +
                  "-1 AS ID_CUENTA, ID_CUENTA_AUXILIAR, SALDO_ANTERIOR, DEBE, HABER, SALDO_ACTUAL";
 
-        } else if (_command.TrialBalanceType == TrialBalanceType.BalancesByAccount &&
-                   !_command.Consolidated) {
+        } else if (_command.ReturnSubledgerAccounts && _command.ShowCascadeBalances) {
 
           return "ID_MAYOR, ID_MONEDA, ID_CUENTA_ESTANDAR_HIST, NUMERO_CUENTA_ESTANDAR, ID_SECTOR, " +
                  "ID_CUENTA, ID_CUENTA_AUXILIAR, SALDO_ANTERIOR, DEBE, HABER, SALDO_ACTUAL";

@@ -25,8 +25,6 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
 
     Traditional,
 
-    Valued,
-
   }
 
 
@@ -97,7 +95,7 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
 
 
     private FixedList<TrialBalanceEntry> ExchangeRateEntries(FixedList<TrialBalanceEntry> entries) {
-      if (Command.ValuateToCurrrencyUID == string.Empty) {
+      if (!Command.ValuateBalances) {
         return entries;
       }
 
@@ -126,14 +124,16 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
       foreach (var entry in entries) {
         Account currentParent;
 
-        if (this.Command.TrialBalanceType == TrialBalanceType.BalancesByAccount) {
+        if (this.Command.ReturnSubledgerAccounts) {
           currentParent = entry.Account;
-        } else {
 
-          if (!entry.Account.HasParent) {
-            continue;
-          }
+        } else if (this.Command.DoNotReturnSubledgerAccounts && entry.Account.HasParent) {
           currentParent = entry.Account.GetParent();
+
+        } else if (this.Command.DoNotReturnSubledgerAccounts && entry.Account.DoNotHasParent) {
+          continue;
+        } else {
+          throw Assertion.AssertNoReachThisCode();
         }
 
         while (true) {

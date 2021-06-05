@@ -127,11 +127,20 @@ namespace Empiria.FinancialAccounting {
       get; private set;
     }
 
+
     public bool HasParent {
       get {
         return (this.Level > 1);
       }
     }
+
+
+    public bool DoNotHasParent {
+      get {
+        return !this.HasParent;
+      }
+    }
+
 
     public int Level {
       get {

@@ -24,7 +24,7 @@ namespace Empiria.FinancialAccounting.BalanceEngine.Adapters {
     }
 
 
-    public bool Consolidated {
+    public bool ShowCascadeBalances {
       get; set;
     } = true;
 
@@ -64,6 +64,11 @@ namespace Empiria.FinancialAccounting.BalanceEngine.Adapters {
     } = string.Empty;
 
 
+    public string SubledgerAccount {
+      get; set;
+    } = string.Empty;
+
+
     public int Level {
       get; set;
     }
@@ -76,18 +81,49 @@ namespace Empiria.FinancialAccounting.BalanceEngine.Adapters {
 
     public string ValuateToCurrrencyUID {
       get; set;
-    } = "01";
+    } = string.Empty;
 
 
     public string ExchangeRateTypeUID {
       get; set;
-    } = "96c617f6-8ed9-47f3-8d2d-f1240e446e1d";
+    } = string.Empty;
 
 
     public DateTime ExchangeRateDate {
       get; set;
-    } = new DateTime(2017, 08, 31);
+    }
 
+    public bool ConsolidateBalancesToTargetCurrency {
+      get; set;
+    }
+
+
+    public bool Consolidated {
+      get {
+        return !ShowCascadeBalances;
+      }
+    }
+
+
+    public bool DoNotReturnSubledgerAccounts {
+      get {
+        return !this.ReturnSubledgerAccounts;
+      }
+    }
+
+
+    public bool ReturnSubledgerAccounts {
+      get {
+        return this.TrialBalanceType != TrialBalanceType.Traditional;
+      }
+    }
+
+    public bool ValuateBalances {
+      get {
+        return this.ValuateToCurrrencyUID.Length != 0 &&
+               this.ExchangeRateTypeUID.Length != 0;
+      }
+    }
 
   } // class TrialBalanceCommand
 

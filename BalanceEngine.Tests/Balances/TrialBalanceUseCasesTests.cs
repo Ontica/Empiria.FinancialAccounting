@@ -47,7 +47,7 @@ namespace Empiria.FinancialAccounting.Tests.Balances {
       command.TrialBalanceType = BalanceEngine.TrialBalanceType.BalancesByAccount;
       command.BalancesType = BalanceEngine.BalancesType.AllAccounts;
       command.AccountsChartUID = "b2328e67-3f2e-45b9-b1f6-93ef6292204e";
-      command.Consolidated = true;
+      command.ShowCascadeBalances = false;
       command.FromDate = TestingConstants.FromDate;
       command.ToDate = TestingConstants.ToDate;
       command.FromAccount = "1205";
@@ -67,7 +67,7 @@ namespace Empiria.FinancialAccounting.Tests.Balances {
       TrialBalanceCommand command = new TrialBalanceCommand();
 
       command.TrialBalanceType = BalanceEngine.TrialBalanceType.Traditional;
-      command.Consolidated = false;
+      command.ShowCascadeBalances = true;
       command.FromDate = TestingConstants.FromDate;
       command.ToDate = TestingConstants.ToDate;
 
