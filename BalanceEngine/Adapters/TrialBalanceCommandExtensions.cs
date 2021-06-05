@@ -80,11 +80,13 @@ namespace Empiria.FinancialAccounting.BalanceEngine.Adapters {
         string sectorFilter = GetSectorFilter();
         string currencyFilter = GetCurrencyFilter();
         string accountRangeFilter = GetAccountRangeFilter();
+        string subledgerAccountFilter = GetSubledgerAccountFilter();
 
         var filter = new Filter(ledgerFilter);
 
         filter.AppendAnd(sectorFilter);
         filter.AppendAnd(accountRangeFilter);
+        filter.AppendAnd(subledgerAccountFilter);
         filter.AppendAnd(currencyFilter);
 
         return filter.ToString().Length > 0 ? $"AND ({filter})" : "";
@@ -242,8 +244,8 @@ namespace Empiria.FinancialAccounting.BalanceEngine.Adapters {
       private string GetAccountRangeFilter() {
         if (_command.FromAccount.Length != 0 && _command.ToAccount.Length != 0) {
           return $"NUMERO_CUENTA_ESTANDAR >= '{_command.FromAccount}' AND " +
-                 $"NUMERO_CUENTA_ESTANDAR <= '{_command.ToAccount}' AND " +
-                 $"NUMERO_CUENTA_ESTANDAR LIKE '{_command.ToAccount}%'";
+                 $"(NUMERO_CUENTA_ESTANDAR <= '{_command.ToAccount}' OR " +
+                 $"NUMERO_CUENTA_ESTANDAR LIKE '{_command.ToAccount}%')";
         } else if (_command.FromAccount.Length != 0 && _command.ToAccount.Length == 0) {
           return $"NUMERO_CUENTA_ESTANDAR LIKE '{_command.FromAccount}%'";
         } else if (_command.FromAccount.Length == 0 && _command.ToAccount.Length != 0) {
@@ -252,6 +254,15 @@ namespace Empiria.FinancialAccounting.BalanceEngine.Adapters {
         } else {
           return string.Empty;
         }
+      }
+
+
+      private string GetSubledgerAccountFilter() {
+        if (_command.SubledgerAccount.Length == 0) {
+          return string.Empty;
+        }
+
+        return $"NUMERO_CUENTA_AUXILIAR LIKE '%{_command.SubledgerAccount}'";
       }
 
 
