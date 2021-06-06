@@ -105,6 +105,14 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
       }
     }
 
+    internal void Sum(TrialBalanceEntry entry) {
+      this.InitialBalance += entry.InitialBalance;
+      this.Credit += entry.Credit;
+      this.Debit += entry.Debit;
+      this.CurrentBalance += entry.CurrentBalance;
+    }
+
+
   } // class TrialBalance
 
 

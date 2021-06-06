@@ -62,13 +62,21 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
     internal TrialBalance BuildTrialBalance() {
       TrialBalanceCommandData commandData = this.Command.MapToTrialBalanceCommandData();
 
-      FixedList<TrialBalanceEntry> postingEntries = TrialBalanceDataService.GetTrialBalanceEntries(commandData);
+      FixedList<TrialBalanceEntry> postingEntries =
+                              TrialBalanceDataService.GetTrialBalanceEntries(commandData);
+
+      if (Command.ValuateBalances) {
+        postingEntries = ValuateToExchangeRate(postingEntries);
+
+        if (Command.ConsolidateBalancesToTargetCurrency) {
+          postingEntries = ConsolidateToTargetCurrency(postingEntries);
+        }
+      }
 
       List <TrialBalanceEntry> summaryEntries = GenerateSummaryEntries(postingEntries);
 
-      FixedList<TrialBalanceEntry> trialBalance = CombineSummaryAndPostingEntries(summaryEntries, postingEntries);
-
-      trialBalance = ValuateToExchangeRate(trialBalance);
+      FixedList<TrialBalanceEntry> trialBalance = CombineSummaryAndPostingEntries(summaryEntries,
+                                                                                  postingEntries);
 
       trialBalance = RestrictLevels(trialBalance);
 
@@ -96,11 +104,30 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
     }
 
 
-    private FixedList<TrialBalanceEntry> ValuateToExchangeRate(FixedList<TrialBalanceEntry> entries) {
-      if (!Command.ValuateBalances) {
-        return entries;
+    private FixedList<TrialBalanceEntry> ConsolidateToTargetCurrency(FixedList<TrialBalanceEntry> trialBalance) {
+      var targetCurrency = Currency.Parse(Command.ValuateToCurrrencyUID);
+
+      var summaryEntries = new EmpiriaHashTable<TrialBalanceEntry>();
+
+      foreach (var entry in trialBalance) {
+        string hash = $"{entry.Account.Number}||{entry.Sector.Code}||{targetCurrency.Id}||{entry.Ledger.Id}";
+
+        if (entry.Currency.Equals(targetCurrency)) {
+          summaryEntries.Insert(hash, entry);
+        } else if (summaryEntries.ContainsKey(hash)) {
+          summaryEntries[hash].Sum(entry);
+        } else {
+          entry.Currency = targetCurrency;
+          summaryEntries.Insert(hash, entry);
+        }
       }
 
+      return summaryEntries.Values.ToList()
+                                  .ToFixedList();
+    }
+
+
+    private FixedList<TrialBalanceEntry> ValuateToExchangeRate(FixedList<TrialBalanceEntry> entries) {
       var exchangeRateType = ExchangeRateType.Parse(Command.ExchangeRateTypeUID);
 
       FixedList<ExchangeRate> exchageRates = ExchangeRate.GetList(exchangeRateType, Command.ExchangeRateDate);
