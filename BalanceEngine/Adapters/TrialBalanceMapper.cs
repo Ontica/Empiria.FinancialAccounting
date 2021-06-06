@@ -18,6 +18,7 @@ namespace Empiria.FinancialAccounting.BalanceEngine.Adapters {
     static internal TrialBalanceDto Map(TrialBalance trialBalance) {
       return new TrialBalanceDto {
         Command = trialBalance.Command,
+        Columns = trialBalance.DataColumns(),
         Entries = Map(trialBalance.Entries)
       };
     }

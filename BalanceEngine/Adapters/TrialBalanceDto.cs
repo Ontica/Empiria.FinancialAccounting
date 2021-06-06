@@ -19,10 +19,14 @@ namespace Empiria.FinancialAccounting.BalanceEngine.Adapters {
     } = new TrialBalanceCommand();
 
 
+    public FixedList<DataTableColumn> Columns {
+      get; internal set;
+    } = new FixedList<DataTableColumn>();
+
+
     public FixedList<TrialBalanceEntryDto> Entries {
       get; internal set;
     } = new FixedList<TrialBalanceEntryDto>();
-
 
   }  // class TrialBalanceDto
 

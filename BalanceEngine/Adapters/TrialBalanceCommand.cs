@@ -125,6 +125,15 @@ namespace Empiria.FinancialAccounting.BalanceEngine.Adapters {
       }
     }
 
+
+    public bool ReturnLedgerColumn {
+      get {
+        return (!this.Consolidated &&
+                !this.ConsolidateBalancesToTargetCurrency &&
+                this.Ledgers.Length > 1);
+      }
+    }
+
   } // class TrialBalanceCommand
 
 

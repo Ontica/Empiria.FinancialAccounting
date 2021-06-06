@@ -8,6 +8,7 @@
 *                                                                                                            *
 ************************* Copyright(c) La Vía Óntica SC, Ontica LLC and contributors. All rights reserved. **/
 using System;
+using System.Collections.Generic;
 
 using Empiria.FinancialAccounting.BalanceEngine.Adapters;
 
@@ -25,6 +26,32 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
 
       this.Command = command;
       this.Entries = entries;
+    }
+
+
+    internal FixedList<DataTableColumn> DataColumns() {
+      List<DataTableColumn> columns = new List<DataTableColumn>();
+
+      if (Command.ReturnLedgerColumn) {
+        columns.Add(new DataTableColumn("ledgerNumber", "Cont", "text"));
+      }
+
+      columns.Add(new DataTableColumn("currencyCode", "Mon", "text"));
+
+      if (Command.ReturnSubledgerAccounts) {
+        columns.Add(new DataTableColumn("accountNumber", "Cuenta / Auxiliar", "text-nowrap"));
+      } else {
+        columns.Add(new DataTableColumn("accountNumber", "Cuenta", "text-nowrap"));
+      }
+
+      columns.Add(new DataTableColumn("sectorCode", "Sct", "text"));
+      columns.Add(new DataTableColumn("accountName", "Nombre", "text"));
+      columns.Add(new DataTableColumn("initialBalance", "Saldo anterior", "decimal"));
+      columns.Add(new DataTableColumn("debit", "Cargos", "decimal"));
+      columns.Add(new DataTableColumn("credit", "Abonos", "decimal"));
+      columns.Add(new DataTableColumn("currentBalance", "Saldo actual", "decimal"));
+
+      return columns.ToFixedList();
     }
 
 
