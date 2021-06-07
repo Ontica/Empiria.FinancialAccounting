@@ -105,6 +105,15 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
       }
     }
 
+
+    internal void MultiplyBy(decimal value) {
+      this.InitialBalance *= value;
+      this.Debit *= value;
+      this.Credit *= value;
+      this.CurrentBalance *= value;
+    }
+
+
     internal void Sum(TrialBalanceEntry entry) {
       this.InitialBalance += entry.InitialBalance;
       this.Credit += entry.Credit;
@@ -112,8 +121,6 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
       this.CurrentBalance += entry.CurrentBalance;
     }
 
-
   } // class TrialBalance
-
 
 } // namespace Empiria.FinancialAccounting.BalanceEngine

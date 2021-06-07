@@ -36,7 +36,7 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
 
     WithCurrentBalance,
 
-    WithCurrenBalanceOrMovements,
+    WithCurrentBalanceOrMovements,
 
     WithMovements
 
@@ -45,7 +45,6 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
 
   /// <summary>Provides services to generate a trial balance.</summary>
   internal class TrialBalanceEngine {
-
 
     internal TrialBalanceEngine(TrialBalanceCommand command) {
       Assertion.AssertObject(command, "command");
@@ -138,10 +137,7 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
 
         Assertion.AssertObject(exchangeRate, $"No hay tipo de cambio para la moneda {entry.Currency.FullName}");
 
-        entry.InitialBalance = entry.InitialBalance * exchangeRate.Value;
-        entry.Debit = entry.Debit * exchangeRate.Value;
-        entry.Credit = entry.Credit * exchangeRate.Value;
-        entry.CurrentBalance = entry.CurrentBalance * exchangeRate.Value;
+        entry.MultiplyBy(exchangeRate.Value);
       }
       return entries;
     }
@@ -205,22 +201,14 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
           Currency = entry.Currency,
           Sector = targetSector,
           Account = targetAccount,
-          InitialBalance = entry.InitialBalance,
-          Debit = entry.Debit,
-          Credit = entry.Credit,
-          CurrentBalance = entry.CurrentBalance,
           ItemType = "BalanceSummary"
         };
+        summaryEntry.Sum(entry);
 
         summaryEntries.Insert(hash, summaryEntry);
 
       } else {
-
-        summaryEntry.InitialBalance += entry.InitialBalance;
-        summaryEntry.Debit += entry.Debit;
-        summaryEntry.Credit += entry.Credit;
-        summaryEntry.CurrentBalance += entry.CurrentBalance;
-
+        summaryEntry.Sum(entry);
       }
     }
 
@@ -238,7 +226,6 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
         throw Assertion.AssertNoReachThisCode();
       }
     }
-
 
     #endregion Private methods
 

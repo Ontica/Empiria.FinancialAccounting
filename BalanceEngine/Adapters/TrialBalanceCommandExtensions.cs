@@ -141,7 +141,7 @@ namespace Empiria.FinancialAccounting.BalanceEngine.Adapters {
         if (_command.BalancesType == BalancesType.WithCurrentBalance) {
           clause = "SALDO_ACTUAL <> 0";
 
-        } else if (_command.BalancesType == BalancesType.WithCurrenBalanceOrMovements) {
+        } else if (_command.BalancesType == BalancesType.WithCurrentBalanceOrMovements) {
           clause = "SALDO_ACTUAL <> 0 OR DEBE <> 0 OR HABER <> 0";
 
 
