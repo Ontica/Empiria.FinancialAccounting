@@ -114,7 +114,9 @@ namespace Empiria.FinancialAccounting.BalanceEngine.Adapters {
 
     public bool ReturnSubledgerAccounts {
       get {
-        return this.TrialBalanceType != TrialBalanceType.Traditional;
+        return this.TrialBalanceType == TrialBalanceType.BalanzaConAuxiliares ||
+               this.TrialBalanceType == TrialBalanceType.SaldosPorAuxiliar ||
+               this.TrialBalanceType == TrialBalanceType.SaldosPorCuenta;
       }
     }
 
