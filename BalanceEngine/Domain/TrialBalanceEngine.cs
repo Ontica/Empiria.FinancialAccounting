@@ -9,6 +9,7 @@
 ************************* Copyright(c) La Vía Óntica SC, Ontica LLC and contributors. All rights reserved. **/
 using System;
 using System.Collections.Generic;
+using System.Linq;
 
 using Empiria.FinancialAccounting.BalanceEngine.Adapters;
 
@@ -60,7 +61,7 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
     internal TrialBalance BuildTrialBalance() {
       switch (this.Command.TrialBalanceType) {
         case TrialBalanceType.AnaliticoDeCuentas:
-          throw new NotImplementedException();
+          return BuildAnaliticoDeCuentas();
 
         case TrialBalanceType.Balanza:
         case TrialBalanceType.BalanzaConAuxiliares:
@@ -70,8 +71,28 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
 
         default:
           throw Assertion.AssertNoReachThisCode(
-                $"Unrecognized trial balance type {this.Command.TrialBalanceType}.");
+                $"Unhandled trial balance type {this.Command.TrialBalanceType}.");
       }
+    }
+
+
+    private TrialBalance BuildAnaliticoDeCuentas() {
+      var helper = new TrialBalanceHelper(this.Command);
+
+      FixedList<TrialBalanceEntry> postingEntries = helper.GetTrialBalanceEntries();
+
+      postingEntries = helper.ValuateToExchangeRate(postingEntries);
+
+      List<TrialBalanceEntry> summaryEntries = helper.GenerateSummaryEntries(postingEntries);
+
+      FixedList<TrialBalanceEntry> trialBalance = helper.CombineSummaryAndPostingEntries(summaryEntries,
+                                                                                         postingEntries);
+
+      trialBalance = helper.RestrictLevels(trialBalance);
+
+      FixedList<ITrialBalanceEntry> twoColumnsBalance = helper.MergeAccountsIntoTwoColumnsByCurrency(trialBalance);
+
+      return new TrialBalance(Command, twoColumnsBalance);
     }
 
 
@@ -92,10 +113,12 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
 
       FixedList<TrialBalanceEntry> trialBalance = helper.CombineSummaryAndPostingEntries(summaryEntries,
                                                                                          postingEntries);
-
       trialBalance = helper.RestrictLevels(trialBalance);
 
-      return new TrialBalance(Command, trialBalance);
+      FixedList<ITrialBalanceEntry> returnBalance = trialBalance.Select(x => (ITrialBalanceEntry) x)
+                                                                .ToList().ToFixedList();
+
+      return new TrialBalance(Command, returnBalance);
     }
 
   } // class TrialBalanceEngine

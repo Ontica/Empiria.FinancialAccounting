@@ -20,7 +20,7 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
     #region Constructors and parsers
 
     internal TrialBalance(TrialBalanceCommand command,
-                          FixedList<TrialBalanceEntry> entries) {
+                          FixedList<ITrialBalanceEntry> entries) {
       Assertion.AssertObject(command, "command");
       Assertion.AssertObject(entries, "entries");
 
@@ -30,6 +30,24 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
 
 
     internal FixedList<DataTableColumn> DataColumns() {
+      switch (this.Command.TrialBalanceType) {
+        case TrialBalanceType.AnaliticoDeCuentas:
+          return TwoCurrenciesDataColumns();
+
+        case TrialBalanceType.Balanza:
+        case TrialBalanceType.BalanzaConAuxiliares:
+        case TrialBalanceType.SaldosPorAuxiliar:
+        case TrialBalanceType.SaldosPorCuenta:
+          return TrialBalanceDataColumns();
+
+        default:
+          throw Assertion.AssertNoReachThisCode(
+                $"Unhandled trial balance type {this.Command.TrialBalanceType}.");
+      }
+    }
+
+
+    private FixedList<DataTableColumn> TrialBalanceDataColumns() {
       List<DataTableColumn> columns = new List<DataTableColumn>();
 
       if (Command.ReturnLedgerColumn) {
@@ -55,6 +73,29 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
     }
 
 
+    private FixedList<DataTableColumn> TwoCurrenciesDataColumns() {
+      List<DataTableColumn> columns = new List<DataTableColumn>();
+
+      if (Command.ReturnLedgerColumn) {
+        columns.Add(new DataTableColumn("ledgerNumber", "Cont", "text"));
+      }
+
+      columns.Add(new DataTableColumn("currencyCode", "Mon", "text"));
+
+      if (Command.ReturnSubledgerAccounts) {
+        columns.Add(new DataTableColumn("accountNumber", "Cuenta / Auxiliar", "text-nowrap"));
+      } else {
+        columns.Add(new DataTableColumn("accountNumber", "Cuenta", "text-nowrap"));
+      }
+
+      columns.Add(new DataTableColumn("sectorCode", "Sct", "text"));
+      columns.Add(new DataTableColumn("accountName", "Nombre", "text"));
+      columns.Add(new DataTableColumn("domesticBalance", "Saldo Mon. Nal.", "decimal"));
+      columns.Add(new DataTableColumn("foreignBalance", "Saldo Mon. Ext.", "decimal"));
+
+      return columns.ToFixedList();
+    }
+
     #endregion Constructors and parsers
 
     #region Properties
@@ -64,7 +105,7 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
     }
 
 
-    public FixedList<TrialBalanceEntry> Entries {
+    public FixedList<ITrialBalanceEntry> Entries {
       get;
     }
 

@@ -19,7 +19,7 @@ namespace Empiria.FinancialAccounting.BalanceEngine.Adapters {
       return new TrialBalanceDto {
         Command = trialBalance.Command,
         Columns = trialBalance.DataColumns(),
-        Entries = Map(trialBalance.Entries)
+        Entries = Map(trialBalance.Command, trialBalance.Entries)
       };
     }
 
@@ -27,13 +27,60 @@ namespace Empiria.FinancialAccounting.BalanceEngine.Adapters {
 
     #region Helpers
 
-    static private FixedList<TrialBalanceEntryDto> Map(FixedList<TrialBalanceEntry> list) {
-      var mappedItems = list.Select((x) => Map(x));
+    static private FixedList<ITrialBalanceEntryDto> Map(TrialBalanceCommand command,
+                                                        FixedList<ITrialBalanceEntry> list) {
+      switch (command.TrialBalanceType) {
+        case TrialBalanceType.AnaliticoDeCuentas:
+          var mi = list.Select((x) => MapToTwoCurrenciesBalanceEntry((TwoCurrenciesBalanceEntry) x));
 
-      return new FixedList<TrialBalanceEntryDto>(mappedItems);
+          return new FixedList<ITrialBalanceEntryDto>(mi);
+
+        case TrialBalanceType.Balanza:
+        case TrialBalanceType.BalanzaConAuxiliares:
+        case TrialBalanceType.SaldosPorAuxiliar:
+        case TrialBalanceType.SaldosPorCuenta:
+          var mappedItems = list.Select((x) => MapToTrialBalance((TrialBalanceEntry) x));
+
+          return new FixedList<ITrialBalanceEntryDto>(mappedItems);
+
+        default:
+          throw Assertion.AssertNoReachThisCode(
+                $"Unhandled trial balance type {command.TrialBalanceType}.");
+      }
     }
 
-    static private TrialBalanceEntryDto Map(TrialBalanceEntry trialBalanceEntry) {
+
+    static private TwoColumnsTrialBalanceEntryDto MapToTwoCurrenciesBalanceEntry(TwoCurrenciesBalanceEntry trialBalanceEntry) {
+      var dto = new TwoColumnsTrialBalanceEntryDto();
+
+      SubsidiaryAccount subledgerAccount = SubsidiaryAccount.Parse(trialBalanceEntry.SubledgerAccountId);
+
+
+      dto.ItemType = trialBalanceEntry.ItemType ?? "BalanceEntry";
+      dto.LedgerUID = trialBalanceEntry.Ledger.UID;
+      dto.LedgerNumber = trialBalanceEntry.Ledger.Number;
+      dto.LedgerAccountId = trialBalanceEntry.LedgerAccountId;
+      dto.CurrencyCode = trialBalanceEntry.Currency.Code;
+
+      if (subledgerAccount.IsEmptyInstance) {
+        dto.AccountName = trialBalanceEntry.Account.Name;
+        dto.AccountNumber = trialBalanceEntry.Account.Number;
+      } else {
+        dto.AccountName = subledgerAccount.Name;
+        dto.AccountNumber = subledgerAccount.Number;
+      }
+      dto.AccountRole = trialBalanceEntry.Account.Role;
+      dto.AccountLevel = trialBalanceEntry.Account.Level;
+      dto.SectorCode = trialBalanceEntry.Sector.Code;
+      dto.SubledgerAccountId = trialBalanceEntry.SubledgerAccountId;
+
+      dto.DomesticBalance = trialBalanceEntry.DomesticBalance;
+      dto.ForeignBalance = trialBalanceEntry.ForeignBalance;
+
+      return dto;
+    }
+
+    static private TrialBalanceEntryDto MapToTrialBalance(TrialBalanceEntry trialBalanceEntry) {
       var dto = new TrialBalanceEntryDto();
 
       SubsidiaryAccount subledgerAccount = SubsidiaryAccount.Parse(trialBalanceEntry.SubledgerAccountId);

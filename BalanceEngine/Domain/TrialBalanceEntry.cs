@@ -11,8 +11,72 @@ using System;
 
 namespace Empiria.FinancialAccounting.BalanceEngine {
 
+  public interface ITrialBalanceEntry {
+
+  }
+
+  public class TwoCurrenciesBalanceEntry : ITrialBalanceEntry {
+
+    public Ledger Ledger {
+      get;
+      internal set;
+    }
+
+    public Currency Currency {
+      get;
+      internal set;
+    }
+
+
+    public Account Account {
+      get;
+      internal set;
+    }
+
+
+    public Sector Sector {
+      get;
+      internal set;
+    }
+
+
+    public int LedgerAccountId {
+      get;
+      internal set;
+    }
+
+
+    public int SubledgerAccountId {
+      get;
+      internal set;
+    }
+
+    public decimal DomesticBalance {
+      get;
+      internal set;
+    }
+
+    public decimal ForeignBalance {
+      get;
+      internal set;
+    }
+
+    public string ItemType {
+      get;
+      internal set;
+    }
+
+    public int Level {
+      get {
+        return EmpiriaString.CountOccurences(Account.Number, '-') + 1;
+      }
+    }
+
+  }
+
+
   /// <summary>Represents an entry for a trial balance.</summary>
-  public class TrialBalanceEntry {
+  public class TrialBalanceEntry : ITrialBalanceEntry {
 
     #region Constructors and parsers
 
@@ -120,6 +184,20 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
       this.Debit += entry.Debit;
       this.CurrentBalance += entry.CurrentBalance;
     }
+
+
+    internal TwoCurrenciesBalanceEntry MapToTwoColumnsBalanceEntry() {
+      return new TwoCurrenciesBalanceEntry {
+        Account = this.Account,
+        LedgerAccountId = this.LedgerAccountId,
+        SubledgerAccountId = this.SubledgerAccountId,
+        Ledger = this.Ledger,
+        Currency = this.Currency,
+        ItemType = this.ItemType,
+        Sector = this.Sector,
+      };
+    }
+
 
   } // class TrialBalance
 

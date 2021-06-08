@@ -117,6 +117,30 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
     }
 
 
+    internal FixedList<ITrialBalanceEntry> MergeAccountsIntoTwoColumnsByCurrency(FixedList<TrialBalanceEntry> trialBalance) {
+      var targetCurrency = Currency.Parse(_command.ValuateToCurrrencyUID);
+
+      var summaryEntries = new EmpiriaHashTable<TwoCurrenciesBalanceEntry>();
+
+      foreach (var entry in trialBalance) {
+        string hash = $"{entry.Account.Number}||{entry.Sector.Code}||{targetCurrency.Id}||{entry.Ledger.Id}";
+
+        if (entry.Currency.Equals(targetCurrency)) {
+          summaryEntries.Insert(hash, entry.MapToTwoColumnsBalanceEntry());
+        } else if (summaryEntries.ContainsKey(hash)) {
+          summaryEntries[hash].DomesticBalance = entry.InitialBalance;
+          summaryEntries[hash].ForeignBalance = entry.CurrentBalance;
+        } else {
+          entry.Currency = targetCurrency;
+          summaryEntries.Insert(hash, entry.MapToTwoColumnsBalanceEntry());
+        }
+      }
+
+      return summaryEntries.Values.Select(x => (ITrialBalanceEntry) x)
+                                  .ToList().ToFixedList();
+    }
+
+
     internal FixedList<TrialBalanceEntry> RestrictLevels(FixedList<TrialBalanceEntry> entries) {
       if (_command.Level == 0) {
         return entries;
