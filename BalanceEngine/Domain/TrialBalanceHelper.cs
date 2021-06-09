@@ -7,7 +7,6 @@
 *  Summary  : Helper methods to build trial balances and related accounting information.                     *
 *                                                                                                            *
 ************************* Copyright(c) La Vía Óntica SC, Ontica LLC and contributors. All rights reserved. **/
-using System;
 using System.Linq;
 using System.Collections.Generic;
 
@@ -89,20 +88,20 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
 
         while (true) {
 
-          SummaryEntry(summaryEntries, entry, currentParent, entry.Sector,
+          SummaryByEntry(summaryEntries, entry, currentParent, entry.Sector,
                                          TrialBalanceItemType.BalanceSummary);
 
           if (!currentParent.HasParent && entry.Sector.Code != "00") {
 
-            SummaryEntry(summaryEntries, entry, currentParent, Sector.Empty,
+            SummaryByEntry(summaryEntries, entry, currentParent, Sector.Empty,
                                            TrialBalanceItemType.BalanceSummary);
 
-            SummaryGroupEntries(summaryEntries, entry, Account.Empty, Sector.Empty,
+            SummaryByGroupEntries(summaryEntries, entry, Account.Empty, Sector.Empty,
                                            TrialBalanceItemType.BalanceTotalGroup);
             break;
 
           } else if (!currentParent.HasParent) {
-            SummaryGroupEntries(summaryEntries, entry, Account.Empty, Sector.Empty,
+            SummaryByGroupEntries(summaryEntries, entry, Account.Empty, Sector.Empty,
                                            TrialBalanceItemType.BalanceTotalGroup);
             break;
 
@@ -118,18 +117,18 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
     }
 
 
-    internal List<TrialBalanceEntry> GenerateTotalDebtorCreditor(List<TrialBalanceEntry> entries) {
+    internal List<TrialBalanceEntry> GenerateTotalSummaryDebtorCreditor(List<TrialBalanceEntry> entries) {
       var totalSummaryDebtorCredtor = new EmpiriaHashTable<TrialBalanceEntry>(entries.Count);
 
       foreach (var entry in entries.Where(a => a.Level == 1 && a.Sector.Code == "00" &&
                                           a.ItemType == TrialBalanceItemType.BalanceSummary)) {
 
         if (entry.Account.DebtorCreditor == DebtorCreditorType.Deudora) {
-          SummaryDebtorCreditorEntries(totalSummaryDebtorCredtor, entry, Account.Empty,
+          SummaryByDebtorCreditorEntries(totalSummaryDebtorCredtor, entry, Account.Empty,
                                        Sector.Empty, TrialBalanceItemType.BalanceTotalDeptor);
         }
         if (entry.Account.DebtorCreditor == DebtorCreditorType.Acreedora) {
-          SummaryDebtorCreditorEntries(totalSummaryDebtorCredtor, entry, Account.Empty,
+          SummaryByDebtorCreditorEntries(totalSummaryDebtorCredtor, entry, Account.Empty,
                                        Sector.Empty, TrialBalanceItemType.BalanceTotalCreditor);
         }
       }
@@ -140,7 +139,23 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
     }
 
 
-    
+    internal List<TrialBalanceEntry> GenerateTotalSummaryCurrency(List<TrialBalanceEntry> entries) {
+      var totalSummaryCurrencies = new EmpiriaHashTable<TrialBalanceEntry>(entries.Count);
+
+      foreach (var debtorCreditorEntry in entries.Where(
+                a => a.ItemType == TrialBalanceItemType.BalanceTotalDeptor ||
+                     a.ItemType == TrialBalanceItemType.BalanceTotalCreditor)) {
+
+        SummaryByCurrencyEntries(totalSummaryCurrencies, debtorCreditorEntry, Account.Empty,
+                            Sector.Empty, TrialBalanceItemType.BalanceTotalCurrency);
+      }
+
+      entries.AddRange(totalSummaryCurrencies.Values.ToList());
+
+      return entries;
+    }
+
+
     internal FixedList<TrialBalanceEntry> GetTrialBalanceEntries() {
       TrialBalanceCommandData commandData = _command.MapToTrialBalanceCommandData();
 
@@ -205,32 +220,30 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
 
     #region Private methods
 
-    private void SummaryEntry(EmpiriaHashTable<TrialBalanceEntry> summaryEntries,
-                                            TrialBalanceEntry entry,
-                                            Account targetAccount, Sector targetSector,
-                                            TrialBalanceItemType itemType) {
 
-      string hash = $"{targetAccount.Number}||{targetSector.Code}||{entry.Currency.Id}||{entry.Ledger.Id}";
+    private void SummaryByCurrencyEntries(EmpiriaHashTable<TrialBalanceEntry> summaryEntries,
+                                   TrialBalanceEntry balanceEntry,
+                                   Account targetAccount, Sector targetSector,
+                                   TrialBalanceItemType itemType) {
 
-      GenerateOrIncreaseEntries(summaryEntries, entry, targetAccount, targetSector, itemType, hash);
-    }
+      TrialBalanceEntry entry = TrialBalanceMapper.MapEntry(balanceEntry);
 
+      if (entry.ItemType == TrialBalanceItemType.BalanceTotalCreditor) {
+        entry.InitialBalance = entry.InitialBalance > 0 ? entry.InitialBalance * -1 : entry.InitialBalance;
+        entry.Debit = entry.Debit > 0 ? entry.Debit * -1 : entry.Debit;
+        entry.Credit = entry.Credit > 0 ? entry.Credit * -1 : entry.Credit;
+        entry.CurrentBalance = entry.CurrentBalance > 0 ? entry.CurrentBalance * -1 : entry.CurrentBalance;
+      }
 
-    private void SummaryGroupEntries(EmpiriaHashTable<TrialBalanceEntry> summaryEntries,
-                                     TrialBalanceEntry entry,
-                                     Account targetAccount, Sector targetSector,
-                                     TrialBalanceItemType itemType) {
+      entry.GroupName = "TOTAL MONEDA " + entry.Currency.FullName;
 
-      entry.GroupName = "TOTAL GRUPO";
-      entry.GroupNumber = entry.Account.Number.Substring(0, 2) + "00";
-
-      string hash = $"{entry.GroupNumber}||{targetSector.Code}||{entry.Currency.Id}||{entry.Ledger.Id}";
+      string hash = $"{entry.GroupName}||{targetSector.Code}||{entry.Currency.Id}||{entry.Ledger.Id}";
 
       GenerateOrIncreaseEntries(summaryEntries, entry, targetAccount, targetSector, itemType, hash);
     }
 
 
-    private void SummaryDebtorCreditorEntries(EmpiriaHashTable<TrialBalanceEntry> summaryEntries,
+    private void SummaryByDebtorCreditorEntries(EmpiriaHashTable<TrialBalanceEntry> summaryEntries,
                                               TrialBalanceEntry entry,
                                               Account targetAccount, Sector targetSector,
                                               TrialBalanceItemType itemType) {
@@ -245,6 +258,34 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
 
       GenerateOrIncreaseEntries(summaryEntries, entry, targetAccount, targetSector, itemType, hash);
     }
+
+
+    private void SummaryByEntry(EmpiriaHashTable<TrialBalanceEntry> summaryEntries,
+                                            TrialBalanceEntry entry,
+                                            Account targetAccount, Sector targetSector,
+                                            TrialBalanceItemType itemType) {
+
+      string hash = $"{targetAccount.Number}||{targetSector.Code}||{entry.Currency.Id}||{entry.Ledger.Id}";
+
+      GenerateOrIncreaseEntries(summaryEntries, entry, targetAccount, targetSector, itemType, hash);
+    }
+
+
+    private void SummaryByGroupEntries(EmpiriaHashTable<TrialBalanceEntry> summaryEntries,
+                                     TrialBalanceEntry balanceEntry,
+                                     Account targetAccount, Sector targetSector,
+                                     TrialBalanceItemType itemType) {
+
+      TrialBalanceEntry entry = TrialBalanceMapper.MapEntry(balanceEntry);
+
+      entry.GroupName = "TOTAL GRUPO";
+      entry.GroupNumber = entry.Account.Number.Substring(0, 2) + "00";
+
+      string hash = $"{entry.GroupNumber}||{targetSector.Code}||{entry.Currency.Id}||{entry.Ledger.Id}";
+
+      GenerateOrIncreaseEntries(summaryEntries, entry, targetAccount, targetSector, itemType, hash);
+    }
+
 
     private void GenerateOrIncreaseEntries(EmpiriaHashTable<TrialBalanceEntry> summaryEntries,
                                            TrialBalanceEntry entry,

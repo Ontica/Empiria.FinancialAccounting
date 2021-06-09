@@ -23,6 +23,26 @@ namespace Empiria.FinancialAccounting.BalanceEngine.Adapters {
       };
     }
 
+    static internal TrialBalanceEntry MapEntry(TrialBalanceEntry entry) {
+      var newEntry = new TrialBalanceEntry();
+
+      newEntry.Account = entry.Account;
+      newEntry.Ledger = entry.Ledger;
+      newEntry.Currency = entry.Currency;
+      newEntry.Sector = entry.Sector;
+      newEntry.LedgerAccountId = entry.LedgerAccountId;
+      newEntry.SubledgerAccountId = entry.SubledgerAccountId;
+      newEntry.InitialBalance = entry.InitialBalance;
+      newEntry.Debit = entry.Debit;
+      newEntry.Credit = entry.Credit;
+      newEntry.CurrentBalance = entry.CurrentBalance;
+      newEntry.GroupNumber = entry.GroupNumber;
+      newEntry.GroupName = entry.GroupName;
+      newEntry.ItemType = entry.ItemType;
+
+      return newEntry;
+    }
+
     #endregion Public mappers
 
     #region Helpers

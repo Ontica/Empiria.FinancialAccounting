@@ -130,11 +130,13 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
 
       List<TrialBalanceEntry> summaryEntries = helper.GenerateSummaryEntries(postingEntries);
 
-      List<TrialBalanceEntry> summaryEntriesWithTotalDebtorCredtor = 
-        helper.GenerateTotalDebtorCreditor(summaryEntries);
+      List<TrialBalanceEntry> summaryEntriesWithTotalDebtorCreditor = 
+        helper.GenerateTotalSummaryDebtorCreditor(summaryEntries);
+
+      List<TrialBalanceEntry> summaryCurrencies = helper.GenerateTotalSummaryCurrency(summaryEntriesWithTotalDebtorCreditor);
 
       FixedList<TrialBalanceEntry> trialBalance = 
-        helper.CombineSummaryAndPostingEntries(summaryEntriesWithTotalDebtorCredtor,postingEntries);
+        helper.CombineSummaryAndPostingEntries(summaryCurrencies, postingEntries);
       
       trialBalance = helper.RestrictLevels(trialBalance);
 
