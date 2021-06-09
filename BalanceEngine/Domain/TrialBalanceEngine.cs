@@ -43,6 +43,25 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
   }
 
 
+  public enum TrialBalanceItemType {
+
+    BalanceEntry,
+
+    BalanceSummary,
+
+    BalanceTotalGroup,
+
+    BalanceTotalDeptor,
+
+    BalanceTotalCreditor,
+
+    BalanceTotalCurrency,
+
+    BalanceTotalConsolidated
+
+  }
+
+
   /// <summary>Provides services to generate a trial balance.</summary>
   internal class TrialBalanceEngine {
 
@@ -111,8 +130,12 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
 
       List<TrialBalanceEntry> summaryEntries = helper.GenerateSummaryEntries(postingEntries);
 
-      FixedList<TrialBalanceEntry> trialBalance = helper.CombineSummaryAndPostingEntries(summaryEntries,
-                                                                                         postingEntries);
+      List<TrialBalanceEntry> summaryEntriesWithTotalDebtorCredtor = 
+        helper.GenerateTotalDebtorCreditor(summaryEntries);
+
+      FixedList<TrialBalanceEntry> trialBalance = 
+        helper.CombineSummaryAndPostingEntries(summaryEntriesWithTotalDebtorCredtor,postingEntries);
+      
       trialBalance = helper.RestrictLevels(trialBalance);
 
       FixedList<ITrialBalanceEntry> returnBalance = trialBalance.Select(x => (ITrialBalanceEntry) x)

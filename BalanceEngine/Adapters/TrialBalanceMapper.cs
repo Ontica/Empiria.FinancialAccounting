@@ -56,7 +56,7 @@ namespace Empiria.FinancialAccounting.BalanceEngine.Adapters {
       SubsidiaryAccount subledgerAccount = SubsidiaryAccount.Parse(trialBalanceEntry.SubledgerAccountId);
 
 
-      dto.ItemType = trialBalanceEntry.ItemType ?? "BalanceEntry";
+      dto.ItemType = trialBalanceEntry.ItemType;
       dto.LedgerUID = trialBalanceEntry.Ledger.UID;
       dto.LedgerNumber = trialBalanceEntry.Ledger.Number;
       dto.LedgerAccountId = trialBalanceEntry.LedgerAccountId;
@@ -86,15 +86,19 @@ namespace Empiria.FinancialAccounting.BalanceEngine.Adapters {
       SubsidiaryAccount subledgerAccount = SubsidiaryAccount.Parse(trialBalanceEntry.SubledgerAccountId);
 
 
-      dto.ItemType = trialBalanceEntry.ItemType ?? "BalanceEntry";
+      dto.ItemType = trialBalanceEntry.ItemType;
       dto.LedgerUID = trialBalanceEntry.Ledger.UID;
       dto.LedgerNumber = trialBalanceEntry.Ledger.Number;
       dto.LedgerAccountId = trialBalanceEntry.LedgerAccountId;
       dto.CurrencyCode = trialBalanceEntry.Currency.Code;
 
       if (subledgerAccount.IsEmptyInstance) {
-        dto.AccountName = trialBalanceEntry.Account.Name;
-        dto.AccountNumber = trialBalanceEntry.Account.Number;
+        dto.AccountName = trialBalanceEntry.GroupName != "" ?
+                          trialBalanceEntry.GroupName :
+                          trialBalanceEntry.Account.Name;
+        dto.AccountNumber = trialBalanceEntry.GroupNumber != "" ?
+                            trialBalanceEntry.GroupNumber :
+                            trialBalanceEntry.Account.Number;
       } else {
         dto.AccountName = subledgerAccount.Name;
         dto.AccountNumber = subledgerAccount.Number;

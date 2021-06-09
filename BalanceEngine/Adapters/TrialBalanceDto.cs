@@ -37,7 +37,7 @@ namespace Empiria.FinancialAccounting.BalanceEngine.Adapters {
   /// <summary>Output DTO used to return the entries of a trial balance.</summary>
   public class TwoColumnsTrialBalanceEntryDto : ITrialBalanceEntryDto {
 
-    public string ItemType {
+    public TrialBalanceItemType ItemType {
       get; internal set;
     }
 
@@ -100,7 +100,7 @@ namespace Empiria.FinancialAccounting.BalanceEngine.Adapters {
   /// <summary>Output DTO used to return the entries of a trial balance.</summary>
   public class TrialBalanceEntryDto : ITrialBalanceEntryDto {
 
-    public string ItemType {
+    public TrialBalanceItemType ItemType {
       get; internal set;
     }
 

@@ -61,7 +61,7 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
       internal set;
     }
 
-    public string ItemType {
+    public TrialBalanceItemType ItemType {
       get;
       internal set;
     }
@@ -157,10 +157,20 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
     }
 
 
-    public string ItemType {
+    public string GroupName {
+      get; internal set;
+    } = string.Empty;
+
+
+    public string GroupNumber {
+      get; internal set;
+    } = string.Empty;
+
+
+    public TrialBalanceItemType ItemType {
       get;
       internal set;
-    }
+    } = TrialBalanceItemType.BalanceEntry;
 
 
     public int Level {
