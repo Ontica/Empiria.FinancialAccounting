@@ -169,9 +169,6 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
         string hash = $"{entry.GroupName}||{Sector.Empty.Code}||{entry.Ledger.Id}";
 
         GenerateOrIncreaseEntries(totalSummaryConsolidated, entry, Account.Empty, Sector.Empty, TrialBalanceItemType.BalanceTotalConsolidated, hash);
-
-        //SummaryByConsolidatedEntries(totalSummaryConsolidated, currencyEntry, Account.Empty,
-        //                    Sector.Empty, TrialBalanceItemType.BalanceTotalCurrency);
       }
 
       balanceEntries.AddRange(totalSummaryConsolidated.Values.ToList());
@@ -260,21 +257,6 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
       }
 
       entry.GroupName = "TOTAL MONEDA " + entry.Currency.FullName;
-
-      string hash = $"{entry.GroupName}||{targetSector.Code}||{entry.Currency.Id}||{entry.Ledger.Id}";
-
-      GenerateOrIncreaseEntries(summaryEntries, entry, targetAccount, targetSector, itemType, hash);
-    }
-
-
-    private void SummaryByConsolidatedEntries(EmpiriaHashTable<TrialBalanceEntry> summaryEntries,
-                                   TrialBalanceEntry balanceEntry,
-                                   Account targetAccount, Sector targetSector,
-                                   TrialBalanceItemType itemType) {
-
-      TrialBalanceEntry entry = TrialBalanceMapper.MapToTrialBalanceEntry(balanceEntry);
-
-      entry.GroupName = "TOTAL CONSOLIDADO";
 
       string hash = $"{entry.GroupName}||{targetSector.Code}||{entry.Currency.Id}||{entry.Ledger.Id}";
 
