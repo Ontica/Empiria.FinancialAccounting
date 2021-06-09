@@ -156,6 +156,30 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
     }
 
 
+    internal List<TrialBalanceEntry> GenerateTotalSummaryConsolidated(List<TrialBalanceEntry> balanceEntries) {
+      var totalSummaryConsolidated = new EmpiriaHashTable<TrialBalanceEntry>(balanceEntries.Count);
+
+      foreach (var currencyEntry in balanceEntries.Where(
+                a => a.ItemType == TrialBalanceItemType.BalanceTotalCurrency)) {
+
+        TrialBalanceEntry entry = TrialBalanceMapper.MapToTrialBalanceEntry(currencyEntry);
+
+        entry.GroupName = "TOTAL CONSOLIDADO";
+
+        string hash = $"{entry.GroupName}||{Sector.Empty.Code}||{entry.Ledger.Id}";
+
+        GenerateOrIncreaseEntries(totalSummaryConsolidated, entry, Account.Empty, Sector.Empty, TrialBalanceItemType.BalanceTotalConsolidated, hash);
+
+        //SummaryByConsolidatedEntries(totalSummaryConsolidated, currencyEntry, Account.Empty,
+        //                    Sector.Empty, TrialBalanceItemType.BalanceTotalCurrency);
+      }
+
+      balanceEntries.AddRange(totalSummaryConsolidated.Values.ToList());
+
+      return balanceEntries;
+    }
+
+
     internal FixedList<TrialBalanceEntry> GetTrialBalanceEntries() {
       TrialBalanceCommandData commandData = _command.MapToTrialBalanceCommandData();
 
@@ -226,7 +250,7 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
                                    Account targetAccount, Sector targetSector,
                                    TrialBalanceItemType itemType) {
 
-      TrialBalanceEntry entry = TrialBalanceMapper.MapEntry(balanceEntry);
+      TrialBalanceEntry entry = TrialBalanceMapper.MapToTrialBalanceEntry(balanceEntry);
 
       if (entry.ItemType == TrialBalanceItemType.BalanceTotalCreditor) {
         entry.InitialBalance = entry.InitialBalance > 0 ? entry.InitialBalance * -1 : entry.InitialBalance;
@@ -236,6 +260,21 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
       }
 
       entry.GroupName = "TOTAL MONEDA " + entry.Currency.FullName;
+
+      string hash = $"{entry.GroupName}||{targetSector.Code}||{entry.Currency.Id}||{entry.Ledger.Id}";
+
+      GenerateOrIncreaseEntries(summaryEntries, entry, targetAccount, targetSector, itemType, hash);
+    }
+
+
+    private void SummaryByConsolidatedEntries(EmpiriaHashTable<TrialBalanceEntry> summaryEntries,
+                                   TrialBalanceEntry balanceEntry,
+                                   Account targetAccount, Sector targetSector,
+                                   TrialBalanceItemType itemType) {
+
+      TrialBalanceEntry entry = TrialBalanceMapper.MapToTrialBalanceEntry(balanceEntry);
+
+      entry.GroupName = "TOTAL CONSOLIDADO";
 
       string hash = $"{entry.GroupName}||{targetSector.Code}||{entry.Currency.Id}||{entry.Ledger.Id}";
 
@@ -276,7 +315,7 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
                                      Account targetAccount, Sector targetSector,
                                      TrialBalanceItemType itemType) {
 
-      TrialBalanceEntry entry = TrialBalanceMapper.MapEntry(balanceEntry);
+      TrialBalanceEntry entry = TrialBalanceMapper.MapToTrialBalanceEntry(balanceEntry);
 
       entry.GroupName = "TOTAL GRUPO";
       entry.GroupNumber = entry.Account.Number.Substring(0, 2) + "00";

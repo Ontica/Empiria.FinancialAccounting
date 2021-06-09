@@ -23,7 +23,7 @@ namespace Empiria.FinancialAccounting.BalanceEngine.Adapters {
       };
     }
 
-    static internal TrialBalanceEntry MapEntry(TrialBalanceEntry entry) {
+    static internal TrialBalanceEntry MapToTrialBalanceEntry(TrialBalanceEntry entry) {
       var newEntry = new TrialBalanceEntry();
 
       newEntry.Account = entry.Account;
