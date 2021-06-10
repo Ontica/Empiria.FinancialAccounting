@@ -28,6 +28,16 @@ namespace Empiria.FinancialAccounting.Vouchers.Data {
       return DataReader.GetFixedList<Voucher>(dataOperation);
     }
 
+
+    internal static FixedList<VoucherEntry> GetVoucherEntries(Voucher voucher) {
+      var sql = "SELECT * FROM COF_MOVIMIENTO " +
+                $"WHERE ID_TRANSACCION = {voucher.Id}";
+
+      var dataOperation = DataOperation.Parse(sql);
+
+      return DataReader.GetFixedList<VoucherEntry>(dataOperation);
+    }
+
   }  // class VoucherData
 
 }  // namespace Empiria.FinancialAccounting.Vouchers.Data

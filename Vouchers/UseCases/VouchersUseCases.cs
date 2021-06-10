@@ -33,6 +33,15 @@ namespace Empiria.FinancialAccounting.Vouchers.UseCases {
     #region Use cases
 
 
+    public VoucherDto GetVoucher(int voucherId) {
+      Assertion.Assert(voucherId > 0, "Unrecognized voucherId.");
+
+      Voucher voucher = Voucher.Parse(voucherId);
+
+      return VoucherMapper.Map(voucher);
+    }
+
+
     public FixedList<VoucherDescriptorDto> SearchVouchers(SearchVouchersCommand searchCommand) {
       Assertion.AssertObject(searchCommand, "searchCommand");
 
@@ -45,6 +54,8 @@ namespace Empiria.FinancialAccounting.Vouchers.UseCases {
 
       return VoucherMapper.MapToVoucherDescriptor(list);
     }
+
+
 
     #endregion Use cases
 
