@@ -9,6 +9,7 @@
 ************************* Copyright(c) La Vía Óntica SC, Ontica LLC and contributors. All rights reserved. **/
 using System;
 
+using Empiria.FinancialAccounting.Adapters;
 using Empiria.FinancialAccounting.Data;
 
 namespace Empiria.FinancialAccounting {
@@ -65,6 +66,15 @@ namespace Empiria.FinancialAccounting {
     public string Description => this.StandardAccount.Description;
 
     public AccountRole Role => this.StandardAccount.Role;
+
+    public NumberedNamedEntityDto MapToNumberedNamedEntity() {
+      return new NumberedNamedEntityDto {
+        UID = this.UID,
+        Number = this.Number,
+        Name = this.Name,
+        FullName = $"{this.Number} - {this.Name}"
+      };
+    }
 
     public string AccountType => this.StandardAccount.AccountType;
 

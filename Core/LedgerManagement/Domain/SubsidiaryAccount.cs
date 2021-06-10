@@ -8,6 +8,7 @@
 *                                                                                                            *
 ************************* Copyright(c) La Vía Óntica SC, Ontica LLC and contributors. All rights reserved. **/
 using System;
+using Empiria.FinancialAccounting.Adapters;
 
 namespace Empiria.FinancialAccounting {
 
@@ -66,6 +67,19 @@ namespace Empiria.FinancialAccounting {
     }
 
     #endregion Public properties
+
+    #region Public methods
+
+    public NumberedNamedEntityDto MapToNumberedNamedEntity() {
+      return new NumberedNamedEntityDto {
+        UID = this.UID,
+        Number = this.Number,
+        Name = this.Name,
+        FullName = $"{this.Number} - {this.Name}"
+      };
+    }
+
+    #endregion Public methods
 
   }  // class SubsidiaryAccount
 
