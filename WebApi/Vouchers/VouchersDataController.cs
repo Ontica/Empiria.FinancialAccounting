@@ -12,6 +12,7 @@ using System.Web.Http;
 
 using Empiria.WebApi;
 
+using Empiria.FinancialAccounting.UseCases;
 using Empiria.FinancialAccounting.Vouchers.UseCases;
 
 namespace Empiria.FinancialAccounting.Vouchers.WebApi {
@@ -23,27 +24,40 @@ namespace Empiria.FinancialAccounting.Vouchers.WebApi {
 
 
     [HttpGet]
+    [Route("v2/financial-accounting/vouchers/functional-areas")]
+    public CollectionModel GetFunctionalAreas() {
+
+      using (var usecases = FunctionalAreasUseCases.UseCaseInteractor()) {
+        FixedList<NamedEntityDto> functionalAreas = usecases.FunctionalAreas();
+
+        return new CollectionModel(base.Request, functionalAreas);
+      }
+    }
+
+
+    [HttpGet]
     [Route("v2/financial-accounting/vouchers/transaction-types")]
-    public SingleObjectModel GetTransactionTypesAccount() {
+    public CollectionModel GetTransactionTypes() {
 
       using (var usecases = VouchersDataUseCases.UseCaseInteractor()) {
         FixedList<NamedEntityDto> transactionTypes = usecases.TransactionTypes();
 
-        return new SingleObjectModel(base.Request, transactionTypes);
+        return new CollectionModel(base.Request, transactionTypes);
       }
     }
 
 
     [HttpGet]
     [Route("v2/financial-accounting/vouchers/voucher-types")]
-    public SingleObjectModel GetVoucherTypesAccount() {
+    public CollectionModel GetVoucherTypes() {
 
       using (var usecases = VouchersDataUseCases.UseCaseInteractor()) {
         FixedList<NamedEntityDto> vouchersTypes = usecases.VoucherTypes();
 
-        return new SingleObjectModel(base.Request, vouchersTypes);
+        return new CollectionModel(base.Request, vouchersTypes);
       }
     }
+
 
     #endregion Web Apis
 
