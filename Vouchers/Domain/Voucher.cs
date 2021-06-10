@@ -17,6 +17,8 @@ namespace Empiria.FinancialAccounting.Vouchers {
   /// <summary>Represents an accounting voucher.</summary>
   public class Voucher : BaseObject {
 
+    private Lazy<FixedList<VoucherEntry>> _entries;
+
     #region Constructors and parsers
 
     private Voucher() {
@@ -38,6 +40,17 @@ namespace Empiria.FinancialAccounting.Vouchers {
 
     static public Voucher Empty => BaseObject.ParseEmpty<Voucher>();
 
+
+    protected override void OnLoad() {
+      base.OnLoad();
+
+      if (!this.IsEmptyInstance) {
+        _entries = new Lazy<FixedList<VoucherEntry>>(() => VoucherData.GetVoucherEntries(this));
+
+      } else {
+        _entries = new Lazy<FixedList<VoucherEntry>>(() => new FixedList<VoucherEntry>());
+      }
+    }
 
     #endregion Constructors and parsers
 
@@ -97,12 +110,13 @@ namespace Empiria.FinancialAccounting.Vouchers {
     }
 
 
+    public FixedList<VoucherEntry> Entries {
+      get {
+        return _entries.Value;
+      }
+    }
+
     #endregion Public properties
-
-    #region Public methods
-
-
-    #endregion Public methods
 
   }  // class Voucher
 
