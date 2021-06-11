@@ -32,7 +32,7 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
                                                                           FixedList<TrialBalanceEntry> postingEntries) {
       var returnedEntries = new List<TrialBalanceEntry>(postingEntries);
       returnedEntries.AddRange(summaryEntries);
-      
+
       returnedEntries = returnedEntries.OrderBy(a => a.Ledger.Number)
                                        .ThenBy(a => a.Currency.Code)
                                        .ThenByDescending(a => a.Account.DebtorCreditor)
@@ -70,7 +70,7 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
 
 
     internal FixedList<TrialBalanceEntry> CombineDebtorCreditorAndPostingEntries(
-                                          FixedList<TrialBalanceEntry> trialBalance, 
+                                          FixedList<TrialBalanceEntry> trialBalance,
                                           List<TrialBalanceEntry> summaryEntries) {
 
       var Entries = new List<TrialBalanceEntry>(trialBalance);
@@ -80,7 +80,7 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
       foreach (var deptorCreditorEntry in summaryEntries
                     .Where(a => a.ItemType == TrialBalanceItemType.BalanceTotalDeptor)) {
 
-        var listSummary = Entries.Where(a => a.Ledger.Id == deptorCreditorEntry.Ledger.Id && 
+        var listSummary = Entries.Where(a => a.Ledger.Id == deptorCreditorEntry.Ledger.Id &&
                                              a.Currency.Code == deptorCreditorEntry.Currency.Code &&
                                              a.DebtorCreditor == DebtorCreditorType.Deudora).ToList();
         if (listSummary.Count > 0) {
@@ -91,7 +91,7 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
       foreach (var deptorCreditorEntry in summaryEntries
                     .Where(a => a.ItemType == TrialBalanceItemType.BalanceTotalCreditor)) {
 
-        var listSummary = Entries.Where(a => a.Ledger.Id == deptorCreditorEntry.Ledger.Id && 
+        var listSummary = Entries.Where(a => a.Ledger.Id == deptorCreditorEntry.Ledger.Id &&
                                              a.Currency.Code == deptorCreditorEntry.Currency.Code &&
                                              a.DebtorCreditor == DebtorCreditorType.Acreedora).ToList();
         if (listSummary.Count > 0) {
@@ -146,7 +146,7 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
 
 
     internal FixedList<TrialBalanceEntry> CombineTotalConsolidatedAndPostingEntries(
-                                          FixedList<TrialBalanceEntry> trialBalance, 
+                                          FixedList<TrialBalanceEntry> trialBalance,
                                           List<TrialBalanceEntry> summaryEntries) {
 
       var Entries = new List<TrialBalanceEntry>(trialBalance);
@@ -297,15 +297,15 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
 
       foreach (var entry in entries.Where(a => a.Level == 1 && a.Sector.Code == "00" &&
                                           a.ItemType == TrialBalanceItemType.BalanceSummary)) {
-        
+
         if (entry.Account.DebtorCreditor == DebtorCreditorType.Deudora) {
-          
+
           SummaryByGroupEntries(totalSummaryGroup, entry, Account.Empty,
                                 Sector.Empty, TrialBalanceItemType.BalanceTotalGroupDeptor);
 
         }
         if (entry.Account.DebtorCreditor == DebtorCreditorType.Acreedora) {
-          
+
           SummaryByGroupEntries(totalSummaryGroup, entry, Account.Empty,
                                 Sector.Empty, TrialBalanceItemType.BalanceTotalGroupCreditor);
 
@@ -391,10 +391,10 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
       TrialBalanceEntry entry = TrialBalanceMapper.MapToTrialBalanceEntry(balanceEntry);
 
       if (entry.ItemType == TrialBalanceItemType.BalanceTotalCreditor) {
-        entry.InitialBalance = entry.InitialBalance > 0 ? entry.InitialBalance * -1 : entry.InitialBalance;
-        entry.Debit = entry.Debit > 0 ? entry.Debit * -1 : entry.Debit;
-        entry.Credit = entry.Credit > 0 ? entry.Credit * -1 : entry.Credit;
-        entry.CurrentBalance = entry.CurrentBalance > 0 ? entry.CurrentBalance * -1 : entry.CurrentBalance;
+        entry.InitialBalance = entry.InitialBalance > 0 ? 
+                               decimal.Negate(entry.InitialBalance) : entry.InitialBalance;
+        entry.CurrentBalance = entry.CurrentBalance > 0 ? 
+                               decimal.Negate(entry.CurrentBalance) : entry.CurrentBalance;
       }
 
       entry.GroupName = "TOTAL MONEDA " + entry.Currency.FullName;
