@@ -173,14 +173,9 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
     } = TrialBalanceItemType.BalanceEntry;
 
 
-    public string ItemGroup {
+    public DebtorCreditorType DebtorCreditor {
       get; internal set;
-    } = string.Empty;
-
-
-    public int ItemGroupOrder {
-      get; internal set;
-    } = 1;
+    } = DebtorCreditorType.Deudora;
 
 
     public int Level {
