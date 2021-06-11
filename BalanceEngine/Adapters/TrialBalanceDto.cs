@@ -104,7 +104,6 @@ namespace Empiria.FinancialAccounting.BalanceEngine.Adapters {
       get; internal set;
     }
 
-
     public string LedgerUID {
       get; internal set;
     }

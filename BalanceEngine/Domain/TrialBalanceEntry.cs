@@ -173,6 +173,16 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
     } = TrialBalanceItemType.BalanceEntry;
 
 
+    public string ItemGroup {
+      get; internal set;
+    } = string.Empty;
+
+
+    public int ItemGroupOrder {
+      get; internal set;
+    } = 1;
+
+
     public int Level {
       get {
         return EmpiriaString.CountOccurences(Account.Number, '-') + 1;

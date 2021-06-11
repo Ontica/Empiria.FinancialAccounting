@@ -105,7 +105,6 @@ namespace Empiria.FinancialAccounting.BalanceEngine.Adapters {
 
       SubsidiaryAccount subledgerAccount = SubsidiaryAccount.Parse(trialBalanceEntry.SubledgerAccountId);
 
-
       dto.ItemType = trialBalanceEntry.ItemType;
       dto.LedgerUID = trialBalanceEntry.Ledger.UID;
       dto.LedgerNumber = trialBalanceEntry.Ledger.Number;
