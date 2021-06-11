@@ -74,10 +74,7 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
           returnedEntries.AddRange(listSummary);
         }
       }
-
-      returnedEntries = returnedEntries.OrderBy(a => a.Ledger.Number)
-                                       .ThenBy(a => a.Currency.Code)
-                                       .ToList();
+      returnedEntries = returnedEntries.OrderBy(a => a.Ledger.Number).ThenBy(a => a.Currency.Code).ToList();
 
       return returnedEntries.ToFixedList();
     }
@@ -107,14 +104,33 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
           returnedEntries.AddRange(listSummary);
         }
       }
-      returnedEntries = returnedEntries.OrderBy(a => a.Ledger.Number)
-                                       .ThenBy(a => a.Currency.Code)
-                                       .ToList();
+      returnedEntries = returnedEntries.OrderBy(a => a.Ledger.Number).ThenBy(a => a.Currency.Code).ToList();
 
       return returnedEntries.ToFixedList();
     }
 
-    
+
+    internal FixedList<TrialBalanceEntry> CombineCurrencyAndPostingEntries(FixedList<TrialBalanceEntry> trialBalance, List<TrialBalanceEntry> summaryEntries) {
+
+      var Entries = new List<TrialBalanceEntry>(trialBalance);
+
+      List<TrialBalanceEntry> returnedEntries = new List<TrialBalanceEntry>();
+
+      foreach (var currencyEntry in summaryEntries.Where(a => a.ItemType == TrialBalanceItemType.BalanceTotalCurrency)) {
+        var listSummary = Entries.Where(a => a.Ledger.Id == currencyEntry.Ledger.Id &&
+                                             a.Currency.Code == currencyEntry.Currency.Code).ToList();
+        if (listSummary.Count > 0) {
+          listSummary.Add(currencyEntry);
+          returnedEntries.AddRange(listSummary);
+        }
+      }
+
+      returnedEntries = returnedEntries.OrderBy(a => a.Ledger.Number).ThenBy(a => a.Currency.Code).ToList();
+
+      return returnedEntries.ToFixedList();
+    }
+
+
 
     internal FixedList<TrialBalanceEntry> ConsolidateToTargetCurrency(FixedList<TrialBalanceEntry> trialBalance) {
       var targetCurrency = Currency.Parse(_command.ValuateToCurrrencyUID);
