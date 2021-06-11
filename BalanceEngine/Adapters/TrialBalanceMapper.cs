@@ -109,7 +109,8 @@ namespace Empiria.FinancialAccounting.BalanceEngine.Adapters {
       dto.LedgerUID = trialBalanceEntry.Ledger.UID;
       dto.LedgerNumber = trialBalanceEntry.Ledger.Number;
       dto.LedgerAccountId = trialBalanceEntry.LedgerAccountId;
-      dto.CurrencyCode = trialBalanceEntry.Currency.Code;
+      dto.CurrencyCode = trialBalanceEntry.ItemType == TrialBalanceItemType.BalanceTotalConsolidated ? "" : 
+                         trialBalanceEntry.Currency.Code;
 
       if (subledgerAccount.IsEmptyInstance) {
         dto.AccountName = trialBalanceEntry.GroupName != "" ?
@@ -117,7 +118,8 @@ namespace Empiria.FinancialAccounting.BalanceEngine.Adapters {
                           trialBalanceEntry.Account.Name;
         dto.AccountNumber = trialBalanceEntry.GroupNumber != "" ?
                             trialBalanceEntry.GroupNumber :
-                            trialBalanceEntry.Account.Number;
+                            trialBalanceEntry.Account.Number != "Empty" ?
+                            trialBalanceEntry.Account.Number : "";
       } else {
         dto.AccountName = subledgerAccount.Name;
         dto.AccountNumber = subledgerAccount.Number;
