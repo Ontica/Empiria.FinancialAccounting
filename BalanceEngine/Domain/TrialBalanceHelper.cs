@@ -192,7 +192,7 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
       foreach (var entry in entries) {
         entry.DebtorCreditor = entry.Account.DebtorCreditor;
 
-        Account currentParent;
+        StandardAccount currentParent;
 
         if (_command.ReturnSubledgerAccounts) {
           currentParent = entry.Account;
@@ -236,14 +236,14 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
       var totalSummaryDebtorCredtor = new EmpiriaHashTable<TrialBalanceEntry>(summaryEntries.Count);
 
       foreach (var entry in summaryEntries.Where(a => a.Level == 1 && a.Sector.Code == "00" &&
-                                          a.ItemType == TrialBalanceItemType.BalanceSummary)) {
+                                                 a.ItemType == TrialBalanceItemType.BalanceSummary)) {
 
         if (entry.Account.DebtorCreditor == DebtorCreditorType.Deudora) {
-          SummaryByDebtorCreditorEntries(totalSummaryDebtorCredtor, entry, Account.Empty,
+          SummaryByDebtorCreditorEntries(totalSummaryDebtorCredtor, entry, StandardAccount.Empty,
                                        Sector.Empty, TrialBalanceItemType.BalanceTotalDeptor);
         }
         if (entry.Account.DebtorCreditor == DebtorCreditorType.Acreedora) {
-          SummaryByDebtorCreditorEntries(totalSummaryDebtorCredtor, entry, Account.Empty,
+          SummaryByDebtorCreditorEntries(totalSummaryDebtorCredtor, entry, StandardAccount.Empty,
                                        Sector.Empty, TrialBalanceItemType.BalanceTotalCreditor);
         }
       }
@@ -261,7 +261,7 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
                 a => a.ItemType == TrialBalanceItemType.BalanceTotalDeptor ||
                      a.ItemType == TrialBalanceItemType.BalanceTotalCreditor)) {
 
-        SummaryByCurrencyEntries(totalSummaryCurrencies, debtorCreditorEntry, Account.Empty,
+        SummaryByCurrencyEntries(totalSummaryCurrencies, debtorCreditorEntry, StandardAccount.Empty,
                             Sector.Empty, TrialBalanceItemType.BalanceTotalCurrency);
       }
 
@@ -283,7 +283,7 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
 
         string hash = $"{entry.GroupName}||{Sector.Empty.Code}||{entry.Ledger.Id}";
 
-        GenerateOrIncreaseEntries(totalSummaryConsolidated, entry, Account.Empty, Sector.Empty, TrialBalanceItemType.BalanceTotalConsolidated, hash);
+        GenerateOrIncreaseEntries(totalSummaryConsolidated, entry, StandardAccount.Empty, Sector.Empty, TrialBalanceItemType.BalanceTotalConsolidated, hash);
       }
 
       balanceEntries.AddRange(totalSummaryConsolidated.Values.ToList());
@@ -300,13 +300,13 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
 
         if (entry.Account.DebtorCreditor == DebtorCreditorType.Deudora) {
 
-          SummaryByGroupEntries(totalSummaryGroup, entry, Account.Empty,
+          SummaryByGroupEntries(totalSummaryGroup, entry, StandardAccount.Empty,
                                 Sector.Empty, TrialBalanceItemType.BalanceTotalGroupDeptor);
 
         }
         if (entry.Account.DebtorCreditor == DebtorCreditorType.Acreedora) {
 
-          SummaryByGroupEntries(totalSummaryGroup, entry, Account.Empty,
+          SummaryByGroupEntries(totalSummaryGroup, entry, StandardAccount.Empty,
                                 Sector.Empty, TrialBalanceItemType.BalanceTotalGroupCreditor);
 
         }
@@ -385,15 +385,15 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
 
     private void SummaryByCurrencyEntries(EmpiriaHashTable<TrialBalanceEntry> summaryEntries,
                                    TrialBalanceEntry balanceEntry,
-                                   Account targetAccount, Sector targetSector,
+                                   StandardAccount targetAccount, Sector targetSector,
                                    TrialBalanceItemType itemType) {
 
       TrialBalanceEntry entry = TrialBalanceMapper.MapToTrialBalanceEntry(balanceEntry);
 
       if (entry.ItemType == TrialBalanceItemType.BalanceTotalCreditor) {
-        entry.InitialBalance = entry.InitialBalance > 0 ? 
+        entry.InitialBalance = entry.InitialBalance > 0 ?
                                decimal.Negate(entry.InitialBalance) : entry.InitialBalance;
-        entry.CurrentBalance = entry.CurrentBalance > 0 ? 
+        entry.CurrentBalance = entry.CurrentBalance > 0 ?
                                decimal.Negate(entry.CurrentBalance) : entry.CurrentBalance;
       }
 
@@ -406,7 +406,7 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
 
     private void SummaryByDebtorCreditorEntries(EmpiriaHashTable<TrialBalanceEntry> summaryEntries,
                                               TrialBalanceEntry balanceEntry,
-                                              Account targetAccount, Sector targetSector,
+                                              StandardAccount targetAccount, Sector targetSector,
                                               TrialBalanceItemType itemType) {
 
       TrialBalanceEntry entry = TrialBalanceMapper.MapToTrialBalanceEntry(balanceEntry);
@@ -425,7 +425,7 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
 
     private void SummaryByEntry(EmpiriaHashTable<TrialBalanceEntry> summaryEntries,
                                             TrialBalanceEntry entry,
-                                            Account targetAccount, Sector targetSector,
+                                            StandardAccount targetAccount, Sector targetSector,
                                             TrialBalanceItemType itemType) {
 
       string hash = $"{targetAccount.Number}||{targetSector.Code}||{entry.Currency.Id}||{entry.Ledger.Id}";
@@ -436,7 +436,7 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
 
     private void SummaryByGroupEntries(EmpiriaHashTable<TrialBalanceEntry> summaryEntries,
                                      TrialBalanceEntry balanceEntry,
-                                     Account targetAccount, Sector targetSector,
+                                     StandardAccount targetAccount, Sector targetSector,
                                      TrialBalanceItemType itemType) {
 
       TrialBalanceEntry entry = TrialBalanceMapper.MapToTrialBalanceEntry(balanceEntry);
@@ -453,7 +453,7 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
 
     private void GenerateOrIncreaseEntries(EmpiriaHashTable<TrialBalanceEntry> summaryEntries,
                                            TrialBalanceEntry entry,
-                                           Account targetAccount, Sector targetSector,
+                                           StandardAccount targetAccount, Sector targetSector,
                                            TrialBalanceItemType itemType, string hash) {
 
       TrialBalanceEntry summaryEntry;

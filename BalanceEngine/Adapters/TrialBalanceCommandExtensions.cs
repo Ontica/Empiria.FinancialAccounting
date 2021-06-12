@@ -107,22 +107,22 @@ namespace Empiria.FinancialAccounting.BalanceEngine.Adapters {
       private string GetGroupingClause() {
         if (_command.DoNotReturnSubledgerAccounts && _command.Consolidated) {
 
-          return "GROUP BY ID_MONEDA, ID_CUENTA_ESTANDAR_HIST, NUMERO_CUENTA_ESTANDAR, ID_SECTOR, " +
+          return "GROUP BY ID_MONEDA, ID_CUENTA_ESTANDAR, NUMERO_CUENTA_ESTANDAR, ID_SECTOR, " +
                  "SALDO_ANTERIOR, DEBE, HABER, SALDO_ACTUAL";
 
         } else if (_command.DoNotReturnSubledgerAccounts && _command.ShowCascadeBalances) {
 
-          return "GROUP BY ID_MAYOR, ID_MONEDA, ID_CUENTA_ESTANDAR_HIST, NUMERO_CUENTA_ESTANDAR, ID_SECTOR, " +
+          return "GROUP BY ID_MAYOR, ID_MONEDA, ID_CUENTA_ESTANDAR, NUMERO_CUENTA_ESTANDAR, ID_SECTOR, " +
                  "ID_CUENTA, SALDO_ANTERIOR, DEBE, HABER, SALDO_ACTUAL";
 
         } else if (_command.ReturnSubledgerAccounts && _command.Consolidated) {
 
-          return "GROUP BY ID_MONEDA, ID_CUENTA_ESTANDAR_HIST, NUMERO_CUENTA_ESTANDAR, ID_SECTOR, " +
+          return "GROUP BY ID_MONEDA, ID_CUENTA_ESTANDAR, NUMERO_CUENTA_ESTANDAR, ID_SECTOR, " +
                  "ID_CUENTA_AUXILIAR, NUMERO_CUENTA_AUXILIAR, SALDO_ANTERIOR, DEBE, HABER, SALDO_ACTUAL";
 
         } else if (_command.ReturnSubledgerAccounts &&_command.ShowCascadeBalances) {
 
-          return "GROUP BY ID_MAYOR, ID_MONEDA, ID_CUENTA_ESTANDAR_HIST, NUMERO_CUENTA_ESTANDAR, ID_SECTOR, " +
+          return "GROUP BY ID_MAYOR, ID_MONEDA, ID_CUENTA_ESTANDAR, NUMERO_CUENTA_ESTANDAR, ID_SECTOR, " +
                  "ID_CUENTA, ID_CUENTA_AUXILIAR, NUMERO_CUENTA_AUXILIAR, SALDO_ANTERIOR, DEBE, HABER, SALDO_ACTUAL";
 
         } else {
@@ -216,23 +216,23 @@ namespace Empiria.FinancialAccounting.BalanceEngine.Adapters {
       private string GetOutputFields() {
         if (_command.DoNotReturnSubledgerAccounts && _command.Consolidated) {
 
-          return "-1 AS ID_MAYOR, ID_MONEDA, ID_CUENTA_ESTANDAR_HIST, -1 AS ID_CUENTA, " +
+          return "-1 AS ID_MAYOR, ID_MONEDA, ID_CUENTA_ESTANDAR, -1 AS ID_CUENTA, " +
                  "NUMERO_CUENTA_ESTANDAR, ID_SECTOR, -1 AS ID_CUENTA_AUXILIAR, " +
                  "SALDO_ANTERIOR, DEBE, HABER, SALDO_ACTUAL";
 
         } else if (_command.DoNotReturnSubledgerAccounts && _command.ShowCascadeBalances) {
 
-          return "ID_MAYOR, ID_MONEDA, ID_CUENTA_ESTANDAR_HIST, NUMERO_CUENTA_ESTANDAR, ID_SECTOR, " +
+          return "ID_MAYOR, ID_MONEDA, ID_CUENTA_ESTANDAR, NUMERO_CUENTA_ESTANDAR, ID_SECTOR, " +
                  "ID_CUENTA, -1 AS ID_CUENTA_AUXILIAR, SALDO_ANTERIOR, DEBE, HABER, SALDO_ACTUAL";
 
         } else if (_command.ReturnSubledgerAccounts && _command.Consolidated) {
 
-          return "-1 AS ID_MAYOR, ID_MONEDA, ID_CUENTA_ESTANDAR_HIST, NUMERO_CUENTA_ESTANDAR, ID_SECTOR, " +
+          return "-1 AS ID_MAYOR, ID_MONEDA, ID_CUENTA_ESTANDAR, NUMERO_CUENTA_ESTANDAR, ID_SECTOR, " +
                  "-1 AS ID_CUENTA, ID_CUENTA_AUXILIAR, SALDO_ANTERIOR, DEBE, HABER, SALDO_ACTUAL";
 
         } else if (_command.ReturnSubledgerAccounts && _command.ShowCascadeBalances) {
 
-          return "ID_MAYOR, ID_MONEDA, ID_CUENTA_ESTANDAR_HIST, NUMERO_CUENTA_ESTANDAR, ID_SECTOR, " +
+          return "ID_MAYOR, ID_MONEDA, ID_CUENTA_ESTANDAR, NUMERO_CUENTA_ESTANDAR, ID_SECTOR, " +
                  "ID_CUENTA, ID_CUENTA_AUXILIAR, SALDO_ANTERIOR, DEBE, HABER, SALDO_ACTUAL";
 
         } else {

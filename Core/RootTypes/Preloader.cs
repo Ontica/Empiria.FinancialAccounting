@@ -19,6 +19,7 @@ namespace Empiria.FinancialAccounting {
     static public void Preload() {
       try {
         EmpiriaLog.Info($"Application preloading starts at {DateTime.Now}.");
+        StandardAccount.Preload();
         AccountsChart.Preload();
         SubsidiaryLedger.Preload();
         SubsidiaryAccount.Preload();
