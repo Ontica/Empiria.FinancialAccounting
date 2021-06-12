@@ -8,8 +8,7 @@
 *                                                                                                            *
 ************************* Copyright(c) La Vía Óntica SC, Ontica LLC and contributors. All rights reserved. **/
 using System;
-using Empiria.FinancialAccounting.Adapters;
-using Empiria.FinancialAccounting.Vouchers.Adapters;
+
 
 namespace Empiria.FinancialAccounting.Vouchers {
 
@@ -161,6 +160,12 @@ namespace Empiria.FinancialAccounting.Vouchers {
     public decimal ExchangeRate {
       get {
         return BaseCurrrencyAmount / Amount;
+      }
+    }
+
+    public bool HasSubledgerAccount {
+      get {
+        return !this.SubledgerAccount.IsEmptyInstance;
       }
     }
 

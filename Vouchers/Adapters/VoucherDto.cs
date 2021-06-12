@@ -28,6 +28,10 @@ namespace Empiria.FinancialAccounting.Vouchers.Adapters {
       get; internal set;
     }
 
+    public NamedEntityDto AccountsChart {
+      get; internal set;
+    }
+
     public NamedEntityDto Ledger {
       get; internal set;
     }
@@ -68,7 +72,7 @@ namespace Empiria.FinancialAccounting.Vouchers.Adapters {
       get; internal set;
     }
 
-    public FixedList<VoucherEntryDto> Entries {
+    public FixedList<VoucherEntryDescriptorDto> Entries {
       get; internal set;
     }
 

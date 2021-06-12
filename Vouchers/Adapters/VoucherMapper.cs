@@ -17,6 +17,7 @@ namespace Empiria.FinancialAccounting.Vouchers.Adapters {
     static internal VoucherDto Map(Voucher voucher) {
       return new VoucherDto {
         Id = voucher.Id,
+        AccountsChart = voucher.Ledger.AccountsChart.MapToNamedEntity(),
         Ledger = voucher.Ledger.MapToNamedEntity(),
         Number = voucher.Number,
         Concept = voucher.Concept,
@@ -28,13 +29,32 @@ namespace Empiria.FinancialAccounting.Vouchers.Adapters {
         ElaboratedBy = "María Luisa Jiménez",
         AuthorizedBy = "Rebeca Martínez Solís",
         Status = voucher.IsOpened ? "Pediente" : "Cerrado",
-        Entries = MapEntries(voucher.Entries)
+        Entries = MapToVoucherEntriesDescriptor(voucher.Entries)
       };
     }
 
-    static private FixedList<VoucherEntryDto> MapEntries(FixedList<VoucherEntry> list) {
-      return new FixedList<VoucherEntryDto>(list.Select((x) => MapEntry(x)));
+    private static FixedList<VoucherEntryDescriptorDto> MapToVoucherEntriesDescriptor(FixedList<VoucherEntry> entries) {
+      return new FixedList<VoucherEntryDescriptorDto>(entries.Select((x) => MapToVoucherEntryDescriptor(x)));
     }
+
+
+    private static VoucherEntryDescriptorDto MapToVoucherEntryDescriptor(VoucherEntry entry) {
+      return new VoucherEntryDescriptorDto {
+        Id = entry.Id,
+        VoucherEntryType = entry.VoucherEntryType,
+        AccountNumber = entry.HasSubledgerAccount ? entry.SubledgerAccount.Number : entry.LedgerAccount.Number,
+        AccountName = entry.HasSubledgerAccount ? entry.SubledgerAccount.Name : entry.LedgerAccount.Name,
+        Sector = entry.Sector.Code,
+        ResponsibilityArea = FunctionalArea.Parse(675).Nickname,
+        VerificationNumber = entry.VerificationNumber,
+        Currency = $"{entry.Currency.Code} / {entry.Currency.Abbrev}",
+        ExchangeRate = entry.ExchangeRate,
+        Partial = entry.VoucherEntryType == VoucherEntryType.Debit ? entry.Debit : entry.Credit,
+        Debit = entry.Debit,
+        Credit = entry.Credit,
+        ItemType = entry.HasSubledgerAccount ? VoucherEntryItemType.PartialEntry : VoucherEntryItemType.AccountEntry
+    };
+  }
 
     private static VoucherEntryDto MapEntry(VoucherEntry entry) {
       return new VoucherEntryDto {
