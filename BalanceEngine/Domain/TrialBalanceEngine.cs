@@ -23,6 +23,8 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
 
     BalanzaConAuxiliares,
 
+    Saldos,
+
     SaldosPorCuenta,
 
     SaldosPorAuxiliar,
@@ -81,6 +83,7 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
 
     internal TrialBalance BuildTrialBalance() {
       switch (this.Command.TrialBalanceType) {
+
         case TrialBalanceType.AnaliticoDeCuentas:
           return BuildAnaliticoDeCuentas();
 
@@ -89,6 +92,9 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
         case TrialBalanceType.SaldosPorAuxiliar:
         case TrialBalanceType.SaldosPorCuenta:
           return BuildTraditionalTrialBalance();
+
+        case TrialBalanceType.Saldos:
+          return BuildSaldos();
 
         default:
           throw Assertion.AssertNoReachThisCode(
@@ -114,6 +120,18 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
       FixedList<ITrialBalanceEntry> twoColumnsBalance = helper.MergeAccountsIntoTwoColumnsByCurrency(trialBalance);
 
       return new TrialBalance(Command, twoColumnsBalance);
+    }
+
+
+    private TrialBalance BuildSaldos() {
+      var helper = new TrialBalanceHelper(this.Command);
+
+      FixedList<TrialBalanceEntry> postingEntries = helper.GetTrialBalanceEntries();
+
+      FixedList<ITrialBalanceEntry> returnBalance = postingEntries.Select(x => (ITrialBalanceEntry) x)
+                                                                  .ToList().ToFixedList();
+
+      return new TrialBalance(Command, returnBalance);
     }
 
 

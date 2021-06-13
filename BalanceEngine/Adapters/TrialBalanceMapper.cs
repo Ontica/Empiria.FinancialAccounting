@@ -57,6 +57,7 @@ namespace Empiria.FinancialAccounting.BalanceEngine.Adapters {
 
         case TrialBalanceType.Balanza:
         case TrialBalanceType.BalanzaConAuxiliares:
+        case TrialBalanceType.Saldos:
         case TrialBalanceType.SaldosPorAuxiliar:
         case TrialBalanceType.SaldosPorCuenta:
           var mappedItems = list.Select((x) => MapToTrialBalance((TrialBalanceEntry) x));
