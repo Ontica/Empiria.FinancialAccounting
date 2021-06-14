@@ -44,7 +44,7 @@ namespace Empiria.FinancialAccounting.BalanceEngine.UseCases {
 
 
     public StoredBalanceSetDto CreateOrGetBalanceSet(string accountsChartUID,
-                                                BalanceStorageCommand command) {
+                                                    BalanceStorageCommand command) {
       Assertion.AssertObject(accountsChartUID, "accountsChartUID");
       Assertion.AssertObject(command, "command");
 
@@ -58,8 +58,27 @@ namespace Empiria.FinancialAccounting.BalanceEngine.UseCases {
     }
 
 
-    public StoredBalanceSetDto GetBalanceSet(string accountsChartUID,
-                                             string balanceSetUID) {
+    public StoredBalanceSetDto CalculateBalanceSet(string accountsChartUID, string balanceSetUID) {
+      StoredBalanceSet balanceSet = ParseBalanceSet(accountsChartUID, balanceSetUID);
+
+      balanceSet.Calculate();
+
+      return StoredBalanceSetMapper.MapWithBalances(balanceSet);
+    }
+
+
+    public StoredBalanceSetDto GetBalanceSet(string accountsChartUID, string balanceSetUID) {
+      StoredBalanceSet balanceSet = ParseBalanceSet(accountsChartUID, balanceSetUID);
+
+      return StoredBalanceSetMapper.MapWithBalances(balanceSet);
+    }
+
+
+    #endregion Use cases
+
+    #region Helper methods
+
+    private StoredBalanceSet ParseBalanceSet(string accountsChartUID, string balanceSetUID) {
       Assertion.AssertObject(accountsChartUID, "accountsChartUID");
       Assertion.AssertObject(balanceSetUID, "balanceSetUID");
 
@@ -67,13 +86,12 @@ namespace Empiria.FinancialAccounting.BalanceEngine.UseCases {
       var balanceSet = StoredBalanceSet.Parse(balanceSetUID);
 
       Assertion.Assert(balanceSet.AccountsChart.Equals(accountsChart),
-          "The requested balance set does not belong to the given accounts chart.");
+                       "The requested balance set does not belong to the given accounts chart.");
 
-      return StoredBalanceSetMapper.MapWithBalances(balanceSet);
+      return balanceSet;
     }
 
-
-    #endregion Use cases
+    #endregion Helper methods
 
   }  // class BalanceStorageUseCases
 

@@ -8,6 +8,7 @@
 *                                                                                                            *
 ************************* Copyright(c) La Vía Óntica SC, Ontica LLC and contributors. All rights reserved. **/
 using System;
+using Empiria.FinancialAccounting.BalanceEngine.Data;
 
 namespace Empiria.FinancialAccounting.BalanceEngine {
 
@@ -17,6 +18,22 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
       // Required by Empiria Framework
     }
 
+    internal StoredBalance(StoredBalanceSet storedBalanceSet, TrialBalanceEntry entry) {
+      var subsidiaryAccount = SubsidiaryAccount.Parse(entry.SubledgerAccountId);
+
+      this.StoredBalanceSet = storedBalanceSet;
+      this.StandardAccountId = entry.Account.Id;
+      this.AccountNumber = entry.Account.Number;
+      this.AccountName = entry.Account.Name;
+      this.Ledger = entry.Ledger;
+      this.LedgerAccountId = entry.LedgerAccountId;
+      this.Currency = entry.Currency;
+      this.Sector = entry.Sector;
+      this.SubsidiaryAccountId = entry.SubledgerAccountId;
+      this.SubsidiaryAccountName = subsidiaryAccount.Name;
+      this.SubsidiaryAccountNumber = subsidiaryAccount.Number;
+      this.Balance = entry.CurrentBalance;
+    }
 
     [DataField("ID_GRUPO_SALDOS", ConvertFrom = typeof(long))]
     internal StoredBalanceSet StoredBalanceSet {
@@ -90,6 +107,11 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
     }
 
 
+    protected override void OnSave() {
+      StoredBalanceDataService.WriteStoredBalance(this);
+    }
+
   }  // class StoredBalance
+
 
 }  // namespace Empiria.FinancialAccounting.BalanceEngine.Adapters

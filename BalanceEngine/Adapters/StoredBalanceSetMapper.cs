@@ -27,7 +27,8 @@ namespace Empiria.FinancialAccounting.BalanceEngine.Adapters {
         AccountsChart = balanceSet.AccountsChart.MapToNamedEntity(),
         BalancesDate = balanceSet.BalancesDate,
         Calculated = balanceSet.Calculated,
-        CalculationTime = balanceSet.CalculationTime
+        CalculationTime = balanceSet.CalculationTime,
+        Protected = balanceSet.Protected
       };
     }
 

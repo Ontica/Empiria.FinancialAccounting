@@ -48,6 +48,10 @@ namespace Empiria.FinancialAccounting.BalanceEngine.Adapters {
     }
 
 
+    public bool Protected {
+      get; internal set;
+    }
+
     public FixedList<StoredBalanceDto> Balances {
       get; internal set;
     }

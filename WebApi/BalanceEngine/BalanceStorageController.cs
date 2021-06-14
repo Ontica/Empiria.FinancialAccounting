@@ -45,6 +45,18 @@ namespace Empiria.FinancialAccounting.WebApi.BalanceEngine {
 
 
     [HttpPost]
+    [Route("v2/financial-accounting/accounts-charts/{accountsChartUID:guid}/balance-store/{balanceSetUID:guid}/calculate")]
+    public SingleObjectModel CalculateStoredBalanceSet([FromUri] string accountsChartUID,
+                                                       [FromUri] string balanceSetUID) {
+      using (var usecases = BalanceStorageUseCases.UseCaseInteractor()) {
+        StoredBalanceSetDto balanceSet = usecases.CalculateBalanceSet(accountsChartUID, balanceSetUID);
+
+        return new SingleObjectModel(this.Request, balanceSet);
+      }
+    }
+
+
+    [HttpPost]
     [Route("v2/financial-accounting/accounts-charts/{accountsChartUID:guid}/balance-store")]
     public SingleObjectModel CreateOrGetStoredBalanceSet([FromUri] string accountsChartUID,
                                                          [FromBody] BalanceStorageCommand command) {

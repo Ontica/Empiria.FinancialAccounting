@@ -9,7 +9,7 @@
 ************************* Copyright(c) La Vía Óntica SC, Ontica LLC and contributors. All rights reserved. **/
 using System;
 using System.Collections.Generic;
-
+using Empiria.FinancialAccounting.BalanceEngine.Adapters;
 using Empiria.FinancialAccounting.BalanceEngine.Data;
 
 namespace Empiria.FinancialAccounting.BalanceEngine {
@@ -116,7 +116,7 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
         return this.ExtendedDataField.Get<bool>("calculated", false);
       }
       set {
-        this.ExtendedDataField.Set("calculationTime", value);
+        this.ExtendedDataField.Set("calculated", value);
       }
     }
 
@@ -131,6 +131,16 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
     }
 
 
+    public bool Protected {
+      get {
+        return this.ExtendedDataField.Get<bool>("protected", false);
+      }
+      set {
+        this.ExtendedDataField.Set("protected", value);
+      }
+    }
+
+
     public FixedList<StoredBalance> Balances {
       get {
         return _balances.Value;
@@ -138,10 +148,47 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
     }
 
 
+    public bool Unprotected {
+      get {
+        return !this.Protected;
+      }
+    }
+
     #endregion Properties
 
 
     #region Methods
+
+    internal void Calculate() {
+      Assertion.Assert(this.Unprotected,
+        "This balance set is protected. It can not be recalculated.");
+
+      var command = new TrialBalanceCommand {
+        AccountsChartUID = this.AccountsChart.UID,
+        TrialBalanceType = TrialBalanceType.Saldos,
+        FromDate = this.BalancesDate,
+        ToDate = this.BalancesDate,
+        ShowCascadeBalances = true
+      };
+
+      var balanceEngine = new TrialBalanceEngine(command);
+
+      TrialBalance trialBalance = balanceEngine.BuildTrialBalance();
+
+      StoredBalanceDataService.DeleteBalances(this);
+
+      this.CalculationTime = DateTime.Now;
+
+      foreach (var entry in trialBalance.Entries.FindAll(x => ((TrialBalanceEntry) x).CurrentBalance != 0)) {
+        var storedBalance = new StoredBalance(this, (TrialBalanceEntry) entry);
+
+        storedBalance.Save();
+      }
+
+      this.Calculated = true;
+      this.Save();
+    }
+
 
     protected override void OnSave() {
       base.Name = $"Saldos acumulados al {this.BalancesDate.ToLongDateString()}";
