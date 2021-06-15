@@ -153,6 +153,8 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
       List<TrialBalanceEntry> trialBalance = helper.CombineSummaryAndPostingEntries(summaryEntries,
                                                                                     postingEntries);
 
+      //trialBalance = helper.BalancesBySubsidiaryAccounts(trialBalance);
+
       FixedList<TrialBalanceEntry> summaryGroupEntries = helper.GenerateTotalSummaryGroup(postingEntries);
 
       trialBalance = helper.CombineGroupEntriesAndPostingEntries(trialBalance, summaryGroupEntries);

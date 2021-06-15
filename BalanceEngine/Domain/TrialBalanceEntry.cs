@@ -178,6 +178,11 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
     } = DebtorCreditorType.Deudora;
 
 
+    public int SubledgerAccountIdParent {
+      get; internal set;
+    } = -1;
+
+
     public int Level {
       get {
         return EmpiriaString.CountOccurences(Account.Number, '-') + 1;
