@@ -34,7 +34,9 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
 
       foreach (var entry in trialBalance) {
         if (entry.SubledgerAccountId > 0) {
+
           returnedSubsidiaryEntries.Add(entry);
+
         }
       }
       returnedSubsidiaryEntries = returnedSubsidiaryEntries.OrderBy(a => a.Ledger.Number)
@@ -164,6 +166,7 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
       List<TrialBalanceEntry> returnedEntries = new List<TrialBalanceEntry>();
 
       foreach (var returned in subsidiaryEntries) {
+
         List<TrialBalanceEntry> summaryEntries = new List<TrialBalanceEntry>();
         var summaryParentEntries = new EmpiriaHashTable<TrialBalanceEntry>();
 
@@ -183,21 +186,21 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
 
             if (!currentParent.HasParent && returned.Sector.Code != "00" && returned.SubledgerAccountId > 0) {
 
-              var existEntryWithoutSector = returnedEntries.Where(
+              var entryWithoutSector = returnedEntries.Where(
                                                a => a.Ledger.Number == returned.Ledger.Number &&
                                                a.Currency.Code == returned.Currency.Code &&
                                                a.SubledgerAccountIdParent == returned.SubledgerAccountId &&
                                                a.Account.Number == currentParent.Number &&
                                                a.Sector.Code == "00").FirstOrDefault();
 
-              if (existEntryWithoutSector == null) {
+              if (entryWithoutSector == null) {
                 SummaryByEntry(summaryParentEntries, returned, currentParent, Sector.Empty,
                                              TrialBalanceItemType.BalanceSummary);
               } else {
-                existEntryWithoutSector.InitialBalance += returned.InitialBalance;
-                existEntryWithoutSector.Debit += returned.Debit;
-                existEntryWithoutSector.Credit += returned.Credit;
-                existEntryWithoutSector.CurrentBalance += returned.CurrentBalance;
+                entryWithoutSector.InitialBalance += returned.InitialBalance;
+                entryWithoutSector.Debit += returned.Debit;
+                entryWithoutSector.Credit += returned.Credit;
+                entryWithoutSector.CurrentBalance += returned.CurrentBalance;
               }
               break;
             } else if (!currentParent.HasParent) {
@@ -260,7 +263,7 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
     }
 
 
-    internal List<TrialBalanceEntry> CombineTotalSubsidiaryEntriesAndSummaryAccounts(
+    internal List<TrialBalanceEntry> CombineTotalSubsidiaryEntriesWithSummaryAccounts(
                                                 List<TrialBalanceEntry> summaryEntries) {
 
       List<TrialBalanceEntry> returnedEntries = new List<TrialBalanceEntry>();
@@ -268,6 +271,7 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
       var totaBySubsidiaryAccountList = summaryEntries.Where(a => a.Level == 1 && a.Sector.Code == "00").ToList();
 
       foreach (var entry in totaBySubsidiaryAccountList.OrderBy(a => a.Currency.Code)) {
+
         entry.SubledgerAccountId = entry.SubledgerAccountIdParent;
         var summaryAccounts = summaryEntries.Where(
                                a => a.SubledgerAccountIdParent == entry.SubledgerAccountIdParent &&

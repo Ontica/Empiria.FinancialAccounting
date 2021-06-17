@@ -156,7 +156,7 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
 
         List<TrialBalanceEntry> summarySubsidiaryEntries = helper.BalancesBySubsidiaryAccounts(trialBalance);
 
-        trialBalance = helper.CombineTotalSubsidiaryEntriesAndSummaryAccounts(summarySubsidiaryEntries);
+        trialBalance = helper.CombineTotalSubsidiaryEntriesWithSummaryAccounts(summarySubsidiaryEntries);
       
       } else {
 
