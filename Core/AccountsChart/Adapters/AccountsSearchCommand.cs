@@ -66,6 +66,10 @@ namespace Empiria.FinancialAccounting.Adapters {
     } = new string[0];
 
 
+    public bool WithSectors {
+      get; set;
+    }
+
   }  // class AccountsSearchCommand
 
 

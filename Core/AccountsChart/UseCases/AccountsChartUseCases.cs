@@ -63,7 +63,7 @@ namespace Empiria.FinancialAccounting.UseCases {
 
       var accountsChart = AccountsChart.Parse(accountsChartUID);
 
-      var accounts = accountsChart.GetAccountsInADate(date);
+      FixedList<Account> accounts = accountsChart.GetAccountsInADate(date);
 
       return AccountsChartMapper.Map(accountsChart, accounts);
     }
@@ -98,7 +98,11 @@ namespace Empiria.FinancialAccounting.UseCases {
 
       accounts = command.Restrict(accounts);
 
-      return AccountsChartMapper.Map(accountsChart, accounts);
+      if (command.WithSectors) {
+        return AccountsChartMapper.MapWithSectors(accountsChart, accounts);
+      } else {
+        return AccountsChartMapper.Map(accountsChart, accounts);
+      }
     }
 
     #endregion Use cases

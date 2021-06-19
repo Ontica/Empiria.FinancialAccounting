@@ -8,6 +8,7 @@
 *                                                                                                            *
 ************************* Copyright(c) La Vía Óntica SC, Ontica LLC and contributors. All rights reserved. **/
 using System;
+using System.Collections.Generic;
 
 namespace Empiria.FinancialAccounting.Adapters {
 
@@ -28,6 +29,7 @@ namespace Empiria.FinancialAccounting.Adapters {
       return new AccountsChartDto {
         UID = accountsChart.UID,
         Name = accountsChart.Name,
+        WithSectors = false,
         Accounts = MapToAccountDescriptors(accounts)
       };
     }
@@ -38,6 +40,7 @@ namespace Empiria.FinancialAccounting.Adapters {
 
       FillAccountDescriptorDto(dto, account);
 
+      dto.Description = account.Description;
       dto.StartDate = account.StartDate;
       dto.EndDate = account.EndDate;
       dto.AccountsChart = account.AccountsChart.MapToNamedEntity();
@@ -59,24 +62,53 @@ namespace Empiria.FinancialAccounting.Adapters {
       return dto;
     }
 
-    #region Private methods
+    static internal AccountsChartDto MapWithSectors(AccountsChart accountsChart,
+                                                    FixedList<Account> accounts) {
+      return new AccountsChartDto {
+        UID = accountsChart.UID,
+        Name = accountsChart.Name,
+        WithSectors = true,
+        Accounts = MapToAccountDescriptorsWithSectors(accounts)
+      };
+    }
 
+    #region Private methods
 
     static private void FillAccountDescriptorDto(AccountDescriptorDto dto, Account account) {
       dto.UID = account.UID;
       dto.Number = account.Number;
       dto.Name = account.Name;
-      dto.Description = account.Description;
       dto.Type = account.AccountType;
       dto.Role = account.Role;
       dto.DebtorCreditor = account.DebtorCreditor;
       dto.Level = account.Level;
+      dto.Sector = "00";
+      dto.StartDate = account.StartDate;
       dto.Obsolete = account.EndDate < Account.MAX_END_DATE;
     }
 
 
     static private FixedList<AccountDescriptorDto> MapToAccountDescriptors(FixedList<Account> list) {
       return new FixedList<AccountDescriptorDto>(list.Select((x) => MapToAccountDescriptor(x)));
+    }
+
+
+    static private FixedList<AccountDescriptorDto> MapToAccountDescriptorsWithSectors(FixedList<Account> list) {
+      List<AccountDescriptorDto> withSectors = new List<AccountDescriptorDto>(list.Count * 2);
+
+      foreach (var account in list) {
+        withSectors.Add(MapToAccountDescriptor(account));
+        if (account.SectorRules.Count == 0) {
+          continue;
+        }
+        foreach (var sectorRule in account.SectorRules) {
+          var descriptor = MapToAccountDescriptor(account);
+          descriptor.Sector = sectorRule.Sector.Code;
+          descriptor.Role = sectorRule.SectorRole;
+          withSectors.Add(descriptor);
+        }
+      }
+      return withSectors.ToFixedList();
     }
 
 

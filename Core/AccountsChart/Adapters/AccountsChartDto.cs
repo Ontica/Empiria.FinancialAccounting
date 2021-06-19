@@ -26,6 +26,10 @@ namespace Empiria.FinancialAccounting.Adapters {
       get; internal set;
     }
 
+    public bool WithSectors {
+      get; internal set;
+    }
+
     public FixedList<AccountDescriptorDto> Accounts {
       get; internal set;
     }
@@ -52,10 +56,6 @@ namespace Empiria.FinancialAccounting.Adapters {
       get; internal set;
     }
 
-    public string Description {
-      get; internal set;
-    }
-
     public string Type {
       get; internal set;
     }
@@ -76,6 +76,14 @@ namespace Empiria.FinancialAccounting.Adapters {
       get; internal set;
     }
 
+    public string Sector {
+      get; internal set;
+    }
+
+    public DateTime StartDate {
+      get; internal set;
+    }
+
   }  // class AccountDescriptorDto
 
 
@@ -87,7 +95,7 @@ namespace Empiria.FinancialAccounting.Adapters {
       // no-op
     }
 
-    public DateTime StartDate {
+    public string Description {
       get; internal set;
     }
 
