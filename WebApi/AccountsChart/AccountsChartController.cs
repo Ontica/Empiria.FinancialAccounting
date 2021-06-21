@@ -7,7 +7,6 @@
 *  Summary  : Query web API used to retrive accounts charts.                                                 *
 *                                                                                                            *
 ************************* Copyright(c) La Vía Óntica SC, Ontica LLC and contributors. All rights reserved. **/
-using System;
 using System.Web.Http;
 
 using Empiria.WebApi;
@@ -15,13 +14,15 @@ using Empiria.WebApi;
 using Empiria.FinancialAccounting.UseCases;
 using Empiria.FinancialAccounting.Adapters;
 
+using Empiria.FinancialAccounting.OfficeIntegration;
+using Empiria.FinancialAccounting.OfficeIntegration.Adapters;
+
 namespace Empiria.FinancialAccounting.WebApi {
 
   /// <summary>Query web API used to retrive accounts charts.</summary>
   public class AccountsChartController : WebApiController {
 
     #region Web Apis
-
 
     [HttpGet]
     [Route("v2/financial-accounting/accounts-charts/{accountsChartUID:guid}/accounts/{accountUID:guid}")]
@@ -68,6 +69,23 @@ namespace Empiria.FinancialAccounting.WebApi {
         FixedList<AccountsChartMasterDataDto> masterDataList = usecases.GetAccountsChartsMasterData();
 
         return new CollectionModel(base.Request, masterDataList);
+      }
+    }
+
+    [HttpPost]
+    [Route("v2/financial-accounting/accounts-charts/{accountsChartUID:guid}/excel")]
+    public SingleObjectModel GetAccountsInExcelFile([FromUri] string accountsChartUID,
+                                                    [FromBody] AccountsSearchCommand searchCommand) {
+      base.RequireBody(searchCommand);
+
+      using (var usecases = AccountsChartUseCases.UseCaseInteractor()) {
+        AccountsChartDto accountsChart = usecases.SearchAccounts(accountsChartUID, searchCommand);
+
+        var excelExporter = new ExcelExporter();
+
+        ExcelFileDto excelFileDto = excelExporter.Export(accountsChart, searchCommand);
+
+        return new SingleObjectModel(base.Request, excelFileDto);
       }
     }
 
