@@ -35,7 +35,7 @@ namespace Empiria.FinancialAccounting.OfficeIntegration {
 
     public string Url {
       get {
-        return $"{_templateConfig.BaseUrl}/{FileInfo.Name}";
+        return $"{ExcelTemplateConfig.BaseUrl}/{FileInfo.Name}";
       }
     }
 
@@ -49,7 +49,7 @@ namespace Empiria.FinancialAccounting.OfficeIntegration {
     #region Methods
 
     internal void Open() {
-      _excel = Spreadsheet.Open(_templateConfig.TemplateFileName);
+      _excel = Spreadsheet.Open(_templateConfig.TemplateFullPath);
     }
 
     internal void Close() {

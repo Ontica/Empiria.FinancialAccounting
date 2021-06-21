@@ -29,31 +29,46 @@ namespace Empiria.FinancialAccounting.OfficeIntegration {
 
     #region Properties
 
-    public string BaseUrl {
+    static public string BaseUrl {
       get {
-        return base.ExtendedDataField.Get<string>("baseUrl");
+        return ConfigurationData.Get<string>("ExcelTemplateConfig.BaseUrl");
       }
     }
 
-    public string OriginalFileName {
+    private string OriginalFileName {
       get {
         return base.ExtendedDataField.Get<string>("fileName");
       }
     }
 
 
-    public string StoragePath {
+    static private string GenerationStoragePath {
       get {
-        return base.ExtendedDataField.Get<string>("storagePath");
+        return ConfigurationData.Get<string>("ExcelTemplateConfig.GenerationStoragePath");
       }
     }
 
 
-    public string TemplateFileName {
+    private string TemplateFileName {
       get {
         return base.ExtendedDataField.Get<string>("templateFile");
       }
     }
+
+
+    public string TemplateFullPath {
+      get {
+        return Path.Combine(TemplatesStoragePath, this.TemplateFileName);
+      }
+    }
+
+
+    static private string TemplatesStoragePath {
+      get {
+        return ConfigurationData.Get<string>("ExcelTemplateConfig.TemplatesStoragePath");
+      }
+    }
+
 
     #endregion Properties
 
@@ -62,7 +77,7 @@ namespace Empiria.FinancialAccounting.OfficeIntegration {
     public string NewFilePath() {
       var copyFileName = DateTime.Now.ToString("yyyy.MM.dd-HH.mm.ss-") + this.OriginalFileName;
 
-      return Path.Combine(this.StoragePath, copyFileName);
+      return Path.Combine(GenerationStoragePath, copyFileName);
     }
 
     #endregion Methods
