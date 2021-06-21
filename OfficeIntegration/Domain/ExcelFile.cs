@@ -1,17 +1,106 @@
 ﻿/* Empiria Financial *****************************************************************************************
 *                                                                                                            *
 *  Module   : Office Integration                           Component : Excel Exporter                        *
-*  Assembly : FinancialAccounting.OficeIntegration.dll     Pattern   : Information Holder                    *
+*  Assembly : FinancialAccounting.OficeIntegration.dll     Pattern   : Service provider                      *
 *  Type     : ExcelFile                                    License   : Please read LICENSE.txt file          *
 *                                                                                                            *
-*  Summary  : Holds infomation about a Microsoft Excel file.                                                 *
+*  Summary  : Provides edition services for Microsoft Excel files.                                           *
 *                                                                                                            *
 ************************* Copyright(c) La Vía Óntica SC, Ontica LLC and contributors. All rights reserved. **/
+using System;
+using System.IO;
+
+using Empiria.Office;
 
 namespace Empiria.FinancialAccounting.OfficeIntegration {
 
-  /// <summary>Holds infomation about a Microsoft Excel file.</summary>
+  /// <summary>Provides edition services for Microsoft Excel files.</summary>
   internal class ExcelFile {
+
+    #region Fields
+
+    private readonly ExcelTemplateConfig _templateConfig;
+
+    private Spreadsheet _excel;
+
+    #endregion Fields
+
+    public ExcelFile(ExcelTemplateConfig templateConfig) {
+      Assertion.AssertObject(templateConfig, " templateConfig");
+
+      _templateConfig = templateConfig;
+    }
+
+    #region Properties
+
+    public string Url {
+      get {
+        return $"{_templateConfig.BaseUrl}/{FileInfo.Name}";
+      }
+    }
+
+
+    public FileInfo FileInfo {
+      get; private set;
+    }
+
+    #endregion Properties
+
+    #region Methods
+
+    internal void Open() {
+      _excel = Spreadsheet.Open(_templateConfig.TemplateFileName);
+    }
+
+    internal void Close() {
+      if (_excel != null) {
+        _excel.Close();
+      }
+    }
+
+    internal void Save() {
+      if (_excel != null) {
+        var path = _templateConfig.NewFilePath();
+        _excel.SaveAs(path);
+        this.FileInfo = new FileInfo(path);
+      }
+    }
+
+    public void RemoveColumn(string column) {
+      _excel.RemoveColumn(column);
+    }
+
+    internal void SetCell(string cell, string value) {
+      if (_excel != null) {
+        _excel.SetCell(cell, value);
+      }
+    }
+
+    internal void SetCell(string cell, decimal value) {
+      if (_excel != null) {
+        _excel.SetCell(cell, value);
+      }
+    }
+
+    internal void SetCell(string cell, int value) {
+      if (_excel != null) {
+        _excel.SetCell(cell, value);
+      }
+    }
+
+    internal void SetCell(string cell, DateTime value) {
+      if (_excel != null) {
+        _excel.SetCell(cell, value);
+      }
+    }
+
+    internal void SetRowStyle(Style style, int rowIndex) {
+      if (_excel != null) {
+        _excel.SetRowStyle(style, rowIndex);
+      }
+    }
+
+    #endregion Methods
 
   }  // class ExcelFile
 

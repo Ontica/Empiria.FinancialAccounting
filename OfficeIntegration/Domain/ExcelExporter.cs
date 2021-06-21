@@ -8,7 +8,7 @@
 *                                                                                                            *
 ************************* Copyright(c) La Vía Óntica SC, Ontica LLC and contributors. All rights reserved. **/
 using System;
-
+using Empiria.FinancialAccounting.Adapters;
 using Empiria.FinancialAccounting.BalanceEngine.Adapters;
 
 using Empiria.FinancialAccounting.OfficeIntegration.Adapters;
@@ -22,11 +22,30 @@ namespace Empiria.FinancialAccounting.OfficeIntegration {
       Assertion.AssertObject(trialBalance, "trialBalance");
       Assertion.AssertObject(command, "command");
 
-      var templateConfig = ExcelTemplateConfiguration.GetFor(command.TrialBalanceType);
+      var templateUID = $"TrialBalanceTemplate.{trialBalance.Command.TrialBalanceType}";
+
+      var templateConfig = ExcelTemplateConfig.Parse(templateUID);
 
       var creator = new TrialBalanceExcelFileCreator(templateConfig);
 
       ExcelFile excelFile = creator.CreateExcelFile(trialBalance);
+
+      return ExcelFileMapper.Map(excelFile);
+    }
+
+
+    public ExcelFileDto Export(AccountsChartDto accountsChart,
+                               AccountsSearchCommand searchCommand) {
+      Assertion.AssertObject(accountsChart, "accountsChart");
+      Assertion.AssertObject(searchCommand, "searchCommand");
+
+      var templateUID = $"AccountsChartTemplate";
+
+      var templateConfig = ExcelTemplateConfig.Parse(templateUID);
+
+      var creator = new AccountsChartExcelFileCreator(templateConfig);
+
+      ExcelFile excelFile = creator.CreateExcelFile(accountsChart);
 
       return ExcelFileMapper.Map(excelFile);
     }

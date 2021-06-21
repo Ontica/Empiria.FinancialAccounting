@@ -15,7 +15,9 @@ namespace Empiria.FinancialAccounting.OfficeIntegration.Adapters {
   static internal class ExcelFileMapper {
 
     static internal ExcelFileDto Map(ExcelFile excelFile) {
-      return new ExcelFileDto();
+      return new ExcelFileDto {
+        Url = excelFile.Url
+      };
     }
 
   }  // class ExcelFileMapper

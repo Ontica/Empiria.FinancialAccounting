@@ -16,6 +16,10 @@ namespace Empiria.FinancialAccounting.OfficeIntegration.Adapters {
       // no-op
     }
 
+    public string Url {
+      get; internal set;
+    }
+
   }  // class ExcelFileDto
 
 }  // namespace Empiria.FinancialAccounting.OfficeIntegration.Adapters
