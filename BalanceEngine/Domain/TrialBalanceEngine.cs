@@ -25,9 +25,11 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
 
     Saldos,
 
+    SaldosPorAuxiliar,
+
     SaldosPorCuenta,
 
-    SaldosPorAuxiliar,
+    SaldosPorCuentaConDelegaciones
 
   }
 
@@ -91,6 +93,7 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
         case TrialBalanceType.BalanzaConAuxiliares:
         case TrialBalanceType.SaldosPorAuxiliar:
         case TrialBalanceType.SaldosPorCuenta:
+        case TrialBalanceType.SaldosPorCuentaConDelegaciones:
           return BuildTraditionalTrialBalance();
 
         case TrialBalanceType.Saldos:
@@ -152,12 +155,19 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
 
       List<TrialBalanceEntry> trialBalance = helper.CombineSummaryAndPostingEntries(summaryEntries,
                                                                                     postingEntries);
+
       if (Command.TrialBalanceType == TrialBalanceType.SaldosPorAuxiliar) {
 
         List<TrialBalanceEntry> summarySubsidiaryEntries = helper.BalancesBySubsidiaryAccounts(trialBalance);
 
         trialBalance = helper.CombineTotalSubsidiaryEntriesWithSummaryAccounts(summarySubsidiaryEntries);
-      
+
+      } else if (Command.TrialBalanceType == TrialBalanceType.SaldosPorCuentaConDelegaciones) {
+
+        List<TrialBalanceEntry> summaryByAccountAndDelegations = helper.GenerateTotalByAccountAndDelegations(trialBalance);
+
+        trialBalance = helper.CombineAccountsAndLedgers(summaryByAccountAndDelegations);
+
       } else {
 
         FixedList<TrialBalanceEntry> summaryGroupEntries = helper.GenerateTotalSummaryGroup(postingEntries);
@@ -181,7 +191,7 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
         trialBalance = helper.CombineTotalConsolidatedAndPostingEntries(trialBalance,
                                                                         summaryTrialBalanceConsolidated);
       }
-      
+
 
       trialBalance = helper.RestrictLevels(trialBalance);
 

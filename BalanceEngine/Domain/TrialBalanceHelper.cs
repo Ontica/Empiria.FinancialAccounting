@@ -51,6 +51,36 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
     }
 
 
+    internal List<TrialBalanceEntry> CombineAccountsAndLedgers(List<TrialBalanceEntry> summaryLedgersList) {
+      List<TrialBalanceEntry> returnedEntries = new List<TrialBalanceEntry>();
+      var summaryParentEntries = new EmpiriaHashTable<TrialBalanceEntry>();
+
+      foreach (var entry in summaryLedgersList) {
+
+        var existAccount = returnedEntries.Where(a => a.Ledger == Ledger.Empty &&
+                                                      a.Currency.Code == entry.Currency.Code &&
+                                                      a.Account.Number == entry.Account.Number &&
+                                                      a.Sector.Code == "00" &&
+                                                      a.GroupName == "TOTAL DE LA CUENTA"
+                                                ).FirstOrDefault();
+
+        var ledgersById = summaryLedgersList.Where(a => a.Currency.Code == entry.Currency.Code &&
+                                                        a.Account.Number == entry.Account.Number).ToList();
+
+        if (existAccount == null) {
+          SummaryByAccount(summaryParentEntries, entry, entry.Account, Sector.Empty,
+                                     TrialBalanceItemType.BalanceSummary);
+        }
+      }
+      returnedEntries.AddRange(summaryParentEntries.Values.ToList());
+      returnedEntries.AddRange(summaryLedgersList);
+      returnedEntries = returnedEntries.OrderBy(a => a.Currency.Code)
+                                       .ThenBy(a => a.Account.Number)
+                                       .ToList();
+      return returnedEntries;
+    }
+
+
     internal List<TrialBalanceEntry> CombineSummaryAndPostingEntries(List<TrialBalanceEntry> summaryEntries,
                                                                      FixedList<TrialBalanceEntry> postingEntries) {
       var returnedEntries = new List<TrialBalanceEntry>(postingEntries);
@@ -357,6 +387,41 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
     }
 
 
+    internal List<TrialBalanceEntry> GenerateTotalByAccountAndDelegations(
+                                      List<TrialBalanceEntry> trialBalance) {
+
+      List<TrialBalanceEntry> summaryLedgersList = new List<TrialBalanceEntry>();
+      List<TrialBalanceEntry> ledgersGroupList = trialBalance.Where(
+                                                  a => a.Sector.Code != "00" && a.Level == 1).ToList();
+
+      foreach (var ledgerGroup in ledgersGroupList) {
+
+        var existLedger = summaryLedgersList.Where(a => a.Ledger.Number == ledgerGroup.Ledger.Number &&
+                                                     a.Currency.Code == ledgerGroup.Currency.Code &&
+                                                     a.Account.Number == ledgerGroup.Account.Number
+                                               ).FirstOrDefault();
+
+        var ledgersById = ledgersGroupList.Where(a => a.Ledger.Number == ledgerGroup.Ledger.Number &&
+                                                 a.Currency.Code == ledgerGroup.Currency.Code &&
+                                                 a.Account.Number == ledgerGroup.Account.Number).ToList();
+
+        if (existLedger == null) {
+          ledgerGroup.GroupName = ledgerGroup.Ledger.Name;
+          ledgerGroup.Sector = Sector.Empty;
+          ledgerGroup.ItemType = TrialBalanceItemType.BalanceEntry;
+          summaryLedgersList.Add(ledgerGroup);
+        } else {
+          foreach (var ledger in ledgersById) {
+            existLedger.Sum(ledger);
+          }
+        }
+
+      } // foreach
+
+      return summaryLedgersList;
+    }
+
+
     internal List<TrialBalanceEntry> GenerateTotalSummaryDebtorCreditor(List<TrialBalanceEntry> postingEntries) {
 
       var totalSummaryDebtorCredtor = new EmpiriaHashTable<TrialBalanceEntry>(postingEntries.Count);
@@ -440,6 +505,10 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
 
 
     internal FixedList<TrialBalanceEntry> GetTrialBalanceEntries() {
+      if (_command.TrialBalanceType == TrialBalanceType.SaldosPorCuentaConDelegaciones) {
+        _command.ShowCascadeBalances = true;
+      }
+
       TrialBalanceCommandData commandData = _command.MapToTrialBalanceCommandData();
 
       return TrialBalanceDataService.GetTrialBalanceEntries(commandData);
@@ -502,6 +571,22 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
     }
 
     #region Private methods
+
+
+    private void SummaryByAccount(EmpiriaHashTable<TrialBalanceEntry> summaryEntries,
+                                            TrialBalanceEntry balanceEntry,
+                                            StandardAccount targetAccount, Sector targetSector,
+                                            TrialBalanceItemType itemType) {
+
+      TrialBalanceEntry entry = TrialBalanceMapper.MapToTrialBalanceEntry(balanceEntry);
+
+      entry.Ledger = Ledger.Empty;
+      entry.GroupName = "TOTAL DE LA CUENTA";
+
+      string hash = $"{targetAccount.Number}||{targetSector.Code}||{entry.Currency.Id}||{entry.Ledger.Id}";
+
+      GenerateOrIncreaseEntries(summaryEntries, entry, targetAccount, targetSector, itemType, hash);
+    }
 
 
     private void SummaryByCurrencyEntries(EmpiriaHashTable<TrialBalanceEntry> summaryEntries,
