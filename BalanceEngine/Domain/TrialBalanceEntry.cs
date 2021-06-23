@@ -183,12 +183,23 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
     } = -1;
 
 
+    public bool HasSector {
+      get {
+        return this.Sector.Code != "00";
+      }
+    }
+
     public int Level {
       get {
         return EmpiriaString.CountOccurences(Account.Number, '-') + 1;
       }
     }
 
+    public bool NotHasSector {
+      get {
+        return !HasSector;
+      }
+    }
 
     internal void MultiplyBy(decimal value) {
       this.InitialBalance *= value;
