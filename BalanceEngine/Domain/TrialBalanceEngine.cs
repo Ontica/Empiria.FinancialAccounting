@@ -138,7 +138,7 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
     }
 
 
-    private TrialBalance BuildTraditionalTrialBalance() {
+    private FixedList<TrialBalanceEntry> GetPostingEntries() {
       var helper = new TrialBalanceHelper(this.Command);
 
       FixedList<TrialBalanceEntry> postingEntries = helper.GetTrialBalanceEntries();
@@ -150,50 +150,107 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
           postingEntries = helper.ConsolidateToTargetCurrency(postingEntries);
         }
       }
+      return postingEntries;
+    }
+
+
+    private List<TrialBalanceEntry> GetSummaryAndPostingEntries() {
+      var helper = new TrialBalanceHelper(this.Command);
+
+      FixedList<TrialBalanceEntry> postingEntries = GetPostingEntries();
 
       List<TrialBalanceEntry> summaryEntries = helper.GenerateSummaryEntries(postingEntries);
 
-      List<TrialBalanceEntry> trialBalance = helper.CombineSummaryAndPostingEntries(summaryEntries,
-                                                                                    postingEntries);
+      List<TrialBalanceEntry> trialBalance = helper.CombineSummaryAndPostingEntries(summaryEntries, postingEntries);
 
-      if (Command.TrialBalanceType == TrialBalanceType.SaldosPorAuxiliar) {
+      return helper.RestrictLevels(trialBalance);
+    }
 
-        List<TrialBalanceEntry> summarySubsidiaryEntries = helper.BalancesBySubsidiaryAccounts(trialBalance);
 
-        trialBalance = helper.CombineTotalSubsidiaryEntriesWithSummaryAccounts(summarySubsidiaryEntries);
+    private List<TrialBalanceEntry> BuildSaldosPorAuxiliar() {
+      var helper = new TrialBalanceHelper(this.Command);
 
-      } else if (Command.TrialBalanceType == TrialBalanceType.SaldosPorCuentaConDelegaciones) {
+      List<TrialBalanceEntry> trialBalance = GetSummaryAndPostingEntries();
 
-        List<TrialBalanceEntry> summaryByAccountAndDelegations = helper.GenerateTotalByAccountAndDelegations(trialBalance);
+      List<TrialBalanceEntry> summarySubsidiaryEntries = helper.BalancesBySubsidiaryAccounts(trialBalance);
 
-        trialBalance = helper.CombineAccountsAndLedgers(summaryByAccountAndDelegations);
+      trialBalance = helper.CombineTotalSubsidiaryEntriesWithSummaryAccounts(summarySubsidiaryEntries);
 
-      } else {
+      return helper.RestrictLevels(trialBalance);
+    }
 
-        FixedList<TrialBalanceEntry> summaryGroupEntries = helper.GenerateTotalSummaryGroup(postingEntries);
 
-        trialBalance = helper.CombineGroupEntriesAndPostingEntries(trialBalance, summaryGroupEntries);
+    private List<TrialBalanceEntry> BuildSaldosPorCuentaConDelegaciones() {
+      var helper = new TrialBalanceHelper(this.Command);
 
-        List<TrialBalanceEntry> summaryTotalDebtorCreditorEntries =
-                                helper.GenerateTotalSummaryDebtorCreditor(postingEntries.ToList());
+      List<TrialBalanceEntry> trialBalance = GetSummaryAndPostingEntries();
 
-        trialBalance = helper.CombineDebtorCreditorAndPostingEntries(
-                              trialBalance, summaryTotalDebtorCreditorEntries);
+      List<TrialBalanceEntry> summaryByAccountAndDelegations = helper.GenerateTotalByAccountAndDelegations(trialBalance);
 
-        List<TrialBalanceEntry> summaryTotalCurrencies = helper.GenerateTotalSummaryCurrency(
-                                                           summaryTotalDebtorCreditorEntries);
+      trialBalance = helper.CombineAccountsAndLedgers(summaryByAccountAndDelegations);
 
-        trialBalance = helper.CombineCurrencyAndPostingEntries(trialBalance, summaryTotalCurrencies);
+      return helper.RestrictLevels(trialBalance);
+    }
 
-        List<TrialBalanceEntry> summaryTrialBalanceConsolidated = helper.GenerateTotalSummaryConsolidated(
-                                                                         summaryTotalCurrencies);
 
-        trialBalance = helper.CombineTotalConsolidatedAndPostingEntries(trialBalance,
-                                                                        summaryTrialBalanceConsolidated);
+    private List<TrialBalanceEntry> BuildBalanzaTradicional() {
+      var helper = new TrialBalanceHelper(this.Command);
+
+      FixedList<TrialBalanceEntry> postingEntries = GetPostingEntries();
+
+      List<TrialBalanceEntry> summaryEntries = helper.GenerateSummaryEntries(postingEntries);
+
+      List<TrialBalanceEntry> trialBalance = helper.CombineSummaryAndPostingEntries(summaryEntries, postingEntries);
+
+      FixedList<TrialBalanceEntry> summaryGroupEntries = helper.GenerateTotalSummaryGroup(postingEntries);
+
+      trialBalance = helper.CombineGroupEntriesAndPostingEntries(trialBalance, summaryGroupEntries);
+
+      List<TrialBalanceEntry> summaryTotalDebtorCreditorEntries =
+                              helper.GenerateTotalSummaryDebtorCreditor(postingEntries.ToList());
+
+      trialBalance = helper.CombineDebtorCreditorAndPostingEntries(
+                            trialBalance, summaryTotalDebtorCreditorEntries);
+
+      List<TrialBalanceEntry> summaryTotalCurrencies = helper.GenerateTotalSummaryCurrency(
+                                                         summaryTotalDebtorCreditorEntries);
+
+      trialBalance = helper.CombineCurrencyAndPostingEntries(trialBalance, summaryTotalCurrencies);
+
+      List<TrialBalanceEntry> summaryTrialBalanceConsolidated = helper.GenerateTotalSummaryConsolidated(
+                                                                       summaryTotalCurrencies);
+
+      trialBalance = helper.CombineTotalConsolidatedAndPostingEntries(trialBalance, summaryTrialBalanceConsolidated);
+
+      return helper.RestrictLevels(trialBalance);
+    }
+
+
+    private TrialBalance BuildTraditionalTrialBalance() {
+      List<TrialBalanceEntry> trialBalance;
+
+      switch (this.Command.TrialBalanceType) {
+        case TrialBalanceType.SaldosPorAuxiliar:
+          trialBalance = BuildSaldosPorAuxiliar();
+          break;
+
+        case TrialBalanceType.SaldosPorCuentaConDelegaciones:
+          trialBalance = BuildSaldosPorCuentaConDelegaciones();
+          break;
+
+        case TrialBalanceType.AnaliticoDeCuentas:
+          throw new NotImplementedException("TrialBalanceType.AnaliticoDeCuentas");
+
+        case TrialBalanceType.Balanza:
+        case TrialBalanceType.BalanzaConAuxiliares:
+        case TrialBalanceType.Saldos:
+        case TrialBalanceType.SaldosPorCuenta:
+          trialBalance = BuildBalanzaTradicional();
+          break;
+
+        default:
+          throw Assertion.AssertNoReachThisCode();
       }
-
-
-      trialBalance = helper.RestrictLevels(trialBalance);
 
       FixedList<ITrialBalanceEntry> returnBalance = trialBalance.Select(x => (ITrialBalanceEntry) x)
                                                                   .ToList().ToFixedList();
