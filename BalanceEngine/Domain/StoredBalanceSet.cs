@@ -29,10 +29,6 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
       // Required by Empiria Framework.
     }
 
-    protected override void OnInitialize() {
-      _balances = new Lazy<FixedList<StoredBalance>>(() => LoadBalances());
-    }
-
     private StoredBalanceSet(AccountsChart accountsChart, DateTime balancesDate) {
       this.AccountsChart = accountsChart;
       this.BalancesDate = balancesDate.Date;
@@ -84,6 +80,10 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
           $"No hay ningún un conjunto de saldos definidos para el catálogo {accountsChart.Name}.");
 
       return bestBalanceSet;
+    }
+
+    protected override void OnInitialize() {
+      ResetBalances();
     }
 
 
@@ -165,7 +165,7 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
 
       var command = new TrialBalanceCommand {
         AccountsChartUID = this.AccountsChart.UID,
-        TrialBalanceType = TrialBalanceType.Saldos,
+        TrialBalanceType = TrialBalanceType.BalanzaConAuxiliares,
         FromDate = this.BalancesDate,
         ToDate = this.BalancesDate,
         ShowCascadeBalances = true
@@ -187,6 +187,7 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
 
       this.Calculated = true;
       this.Save();
+      this.ResetBalances();
     }
 
 
@@ -213,6 +214,10 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
       list.Sort((x, y) => x.BalancesDate.CompareTo(y.BalancesDate));
 
       return list;
+    }
+
+    private void ResetBalances() {
+      _balances = new Lazy<FixedList<StoredBalance>>(() => LoadBalances());
     }
 
     #endregion Methods
