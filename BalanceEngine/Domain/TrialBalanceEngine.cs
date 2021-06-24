@@ -8,8 +8,6 @@
 *                                                                                                            *
 ************************* Copyright(c) La Vía Óntica SC, Ontica LLC and contributors. All rights reserved. **/
 using System;
-using System.Collections.Generic;
-using System.Linq;
 
 using Empiria.FinancialAccounting.BalanceEngine.Adapters;
 
@@ -84,47 +82,36 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
 
 
     internal TrialBalance BuildTrialBalance() {
-      List<TrialBalanceEntry> trialBalance;
-
-      var cases = new TrialBalanceCases(this.Command);
-
       switch (this.Command.TrialBalanceType) {
 
         case TrialBalanceType.AnaliticoDeCuentas:
-          //trialBalance = cases.BuildAnaliticoDeCuentas();
-          //break;
-          throw Assertion.AssertNoReachThisCode("TrialBalanceType.AnaliticoDeCuentas");
+          var analiticoDeCuentas = new AnaliticoDeCuentas(this.Command);
+
+          return analiticoDeCuentas.Build();
 
         case TrialBalanceType.Balanza:
         case TrialBalanceType.BalanzaConAuxiliares:
-        case TrialBalanceType.SaldosPorCuenta:
-          trialBalance = cases.BuildBalanzaTradicional();
-          break;
-
         case TrialBalanceType.Saldos:
-          //trialBalance = cases.BuildSaldos();
-          //break;
-          throw Assertion.AssertNoReachThisCode("TrialBalanceType.Saldos");
+        case TrialBalanceType.SaldosPorCuenta:
+          var balanzaTradicional = new BalanzaTradicional(this.Command);
+
+          return balanzaTradicional.Build();
 
         case TrialBalanceType.SaldosPorAuxiliar:
-          trialBalance = cases.BuildSaldosPorAuxiliar();
-          break;
+          var saldosPorAuxiliar = new SaldosPorAuxiliar(this.Command);
+
+          return saldosPorAuxiliar.Build();
 
         case TrialBalanceType.SaldosPorCuentaConDelegaciones:
-          trialBalance = cases.BuildSaldosPorCuentaConDelegaciones();
-          break;
+          var saldosPorCuentaYMayores = new SaldosPorCuentaYMayores(this.Command);
+
+          return saldosPorCuentaYMayores.Build();
 
         default:
           throw Assertion.AssertNoReachThisCode(
                     $"Unhandled trial balance type {this.Command.TrialBalanceType}.");
       }
-
-      FixedList<ITrialBalanceEntry> returnBalance = trialBalance.Select(x => (ITrialBalanceEntry) x)
-                                                                  .ToList().ToFixedList();
-
-      return new TrialBalance(Command, returnBalance);
     }
-
 
   } // class TrialBalanceEngine
 

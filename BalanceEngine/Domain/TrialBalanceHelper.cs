@@ -59,9 +59,7 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
         }
       }
 
-      return returnedEntries.OrderBy(a => a.Ledger.Number)
-                            .ThenBy(a => a.Currency.Code)
-                            .ToList();
+      return OrderByLedgerAndCurrency(returnedEntries);
     }
 
 
@@ -93,11 +91,14 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
         }
       }
 
-      return returnedEntries.OrderBy(a => a.Ledger.Number)
-                            .ThenBy(a => a.Currency.Code)
-                            .ToList();
+      return OrderByLedgerAndCurrency(returnedEntries);
     }
 
+    private List<TrialBalanceEntry> OrderByLedgerAndCurrency(List<TrialBalanceEntry> entries) {
+      return entries.OrderBy(a => a.Ledger.Number)
+                    .ThenBy(a => a.Currency.Code)
+                    .ToList();
+    }
 
     internal List<TrialBalanceEntry> CombineGroupEntriesAndPostingEntries(List<TrialBalanceEntry> trialBalance,
                                                                           FixedList<TrialBalanceEntry> summaryEntries) {
@@ -131,9 +132,7 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
         }
       }
 
-      return returnedEntries.OrderBy(a => a.Ledger.Number)
-                            .ThenBy(a => a.Currency.Code)
-                            .ToList();
+      return OrderByLedgerAndCurrency(returnedEntries);
     }
 
 
@@ -305,6 +304,30 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
       return totalSummaryGroup.ToFixedList();
     }
 
+
+    internal FixedList<TrialBalanceEntry> GetPostingEntries() {
+      var helper = new TrialBalanceHelper(_command);
+
+      FixedList<TrialBalanceEntry> postingEntries = helper.GetTrialBalanceEntries();
+
+      if (_command.ValuateBalances) {
+        postingEntries = helper.ValuateToExchangeRate(postingEntries);
+
+        if (_command.ConsolidateBalancesToTargetCurrency) {
+          postingEntries = helper.ConsolidateToTargetCurrency(postingEntries);
+        }
+      }
+      return postingEntries;
+    }
+
+
+    internal List<TrialBalanceEntry> GetSummaryAndPostingEntries() {
+      FixedList<TrialBalanceEntry> postingEntries = GetPostingEntries();
+
+      List<TrialBalanceEntry> summaryEntries = GenerateSummaryEntries(postingEntries);
+
+      return CombineSummaryAndPostingEntries(summaryEntries, postingEntries);
+    }
 
     internal FixedList<TrialBalanceEntry> GetTrialBalanceEntries() {
       if (_command.TrialBalanceType == TrialBalanceType.SaldosPorCuentaConDelegaciones) {
