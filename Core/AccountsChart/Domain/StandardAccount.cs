@@ -17,7 +17,8 @@ namespace Empiria.FinancialAccounting {
 
     #region Constructors and parsers
 
-    private StandardAccount() {
+
+    protected StandardAccount() {
       // Required by Empiria Framework.
     }
 
@@ -112,6 +113,11 @@ namespace Empiria.FinancialAccounting {
       }
     }
 
+    public string GroupNumber {
+      get {
+        return this.Number.Substring(0, 2) + "00";
+      }
+    }
 
     #endregion Public properties
 
