@@ -84,8 +84,11 @@ namespace Empiria.FinancialAccounting.Adapters {
       get; internal set;
     }
 
-  }  // class AccountDescriptorDto
+    public bool LastLevel {
+      get; internal set;
+    }
 
+  }  // class AccountDescriptorDto
 
 
   /// <summary>Output DTO with an account full data.</summary>

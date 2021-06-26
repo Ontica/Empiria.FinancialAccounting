@@ -84,6 +84,7 @@ namespace Empiria.FinancialAccounting.Adapters {
       dto.Level = account.Level;
       dto.Sector = "00";
       dto.StartDate = account.StartDate;
+      dto.LastLevel = account.Role != AccountRole.Sumaria;
       dto.Obsolete = account.EndDate < Account.MAX_END_DATE;
     }
 
@@ -97,14 +98,20 @@ namespace Empiria.FinancialAccounting.Adapters {
       List<AccountDescriptorDto> withSectors = new List<AccountDescriptorDto>(list.Count * 2);
 
       foreach (var account in list) {
-        withSectors.Add(MapToAccountDescriptor(account));
+        var descriptor = MapToAccountDescriptor(account);
+        if (account.Role == AccountRole.Sectorizada) {
+          descriptor.LastLevel = false;
+        }
+        withSectors.Add(descriptor);
+
         if (account.SectorRules.Count == 0) {
           continue;
         }
         foreach (var sectorRule in account.SectorRules) {
-          var descriptor = MapToAccountDescriptor(account);
+          descriptor = MapToAccountDescriptor(account);
           descriptor.Sector = sectorRule.Sector.Code;
           descriptor.Role = sectorRule.SectorRole;
+          descriptor.LastLevel = true;
           withSectors.Add(descriptor);
         }
       }

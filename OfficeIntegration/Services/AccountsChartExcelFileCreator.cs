@@ -2,18 +2,18 @@
 *                                                                                                            *
 *  Module   : Office Integration                           Component : Excel Exporter                        *
 *  Assembly : FinancialAccounting.OficeIntegration.dll     Pattern   : Service                               *
-*  Type     : ExcelExporter                                License   : Please read LICENSE.txt file          *
+*  Type     : AccountsChartExcelFileCreator                License   : Please read LICENSE.txt file          *
 *                                                                                                            *
-*  Summary  : Main service to export accounting information to Microsoft Excel.                              *
+*  Summary  : Main service used to export charts of accounts to Microsoft Excel.                             *
 *                                                                                                            *
 ************************* Copyright(c) La Vía Óntica SC, Ontica LLC and contributors. All rights reserved. **/
-
-
 using System;
+
 using Empiria.FinancialAccounting.Adapters;
 
 namespace Empiria.FinancialAccounting.OfficeIntegration {
 
+  /// <summary>Main service used to export charts of accounts to Microsoft Excel.</summary>
   internal class AccountsChartExcelFileCreator {
 
     private readonly ExcelTemplateConfig _templateConfig;
@@ -52,9 +52,7 @@ namespace Empiria.FinancialAccounting.OfficeIntegration {
       foreach (var account in accountsChart.Accounts) {
         excelFile.SetCell($"C{i}", account.Number);
         excelFile.SetCell($"D{i}", account.Name);
-
-        if (account.Role != AccountRole.Sumaria &&
-           (account.Role == AccountRole.Sectorizada && accountsChart.WithSectors)) {
+        if (account.LastLevel) {
           excelFile.SetCell($"E{i}", "*");
         }
         excelFile.SetCell($"F{i}", account.Sector);
