@@ -76,7 +76,7 @@ namespace Empiria.FinancialAccounting.Vouchers {
     }
 
 
-    // [DataField("ID_AREA_RESPONSABILIDAD", ConvertFrom = typeof(long))]
+    [DataField("ID_AREA_RESPONSABILIDAD", ConvertFrom = typeof(long))]
     public FunctionalArea ResponsibilityArea {
       get;
       private set;

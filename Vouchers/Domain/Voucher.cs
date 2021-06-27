@@ -91,6 +91,12 @@ namespace Empiria.FinancialAccounting.Vouchers {
       private set;
     }
 
+    [DataField("ID_FUENTE", ConvertFrom = typeof(long))]
+    public FunctionalArea FunctionalArea {
+      get;
+      private set;
+    }
+
 
     [DataField("FECHA_AFECTACION", Default = "ExecutionServer.DateMaxValue")]
     public DateTime AccountingDate {

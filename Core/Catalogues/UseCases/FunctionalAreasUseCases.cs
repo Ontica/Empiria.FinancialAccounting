@@ -34,9 +34,7 @@ namespace Empiria.FinancialAccounting.UseCases {
     public FixedList<NamedEntityDto> FunctionalAreas() {
       var list = FunctionalArea.GetList();
 
-      list.Sort((x, y) => x.FullName.CompareTo(y.FullName));
-
-      return list.MapToNamedEntityList();
+      return new FixedList<NamedEntityDto>(list.Select(x => x.MapToNamedEntity()));
     }
 
     #endregion Use cases
