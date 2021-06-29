@@ -142,6 +142,34 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
     }
 
 
+    private List<TrialBalanceEntry> AddSummaryAccounts(List<TrialBalanceEntry> summaryEntries,
+                                                       List<TrialBalanceEntry> returnedEntries,
+                                                                      TrialBalanceEntry entry) {
+      var helper = new TrialBalanceHelper(_command);
+
+      var summaryAccounts = summaryEntries.Where(
+                               a => a.Account.GroupNumber == entry.Account.GroupNumber &&
+                                    a.SubledgerAccountId == 0 &&
+                                    a.SubledgerAccountIdParent == entry.SubledgerAccountIdParent &&
+                                    a.Ledger.Number == entry.Ledger.Number &&
+                                    a.Currency.Code == entry.Currency.Code).ToList();
+
+      foreach (var summary in summaryAccounts) {
+        var existSummaryAccount = returnedEntries.FirstOrDefault(
+                                    a => a.SubledgerAccountIdParent == entry.SubledgerAccountIdParent &&
+                                         a.Account.Number == summary.Account.Number &&
+                                         a.Ledger.Number == summary.Ledger.Number &&
+                                         a.Currency.Code == summary.Currency.Code &&
+                                         a.Sector.Code == summary.Sector.Code);
+        if (existSummaryAccount == null) {
+          returnedEntries.Add(summary);
+        }
+      }
+
+      return returnedEntries;
+    }
+
+
     private void CreateOrAccumulateParentWithoutSector(List<TrialBalanceEntry> returnedEntries,
                                                        TrialBalanceEntry entry,
                                                         EmpiriaHashTable<TrialBalanceEntry> summaryParentEntries,
@@ -164,7 +192,7 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
       }
     }
 
-    private List<TrialBalanceEntry> AddSubsidiaryEntry(List<TrialBalanceEntry> returnedEntries, 
+    private List<TrialBalanceEntry> CreateOrAccumulateTotalBySubsidiaryEntry(List<TrialBalanceEntry> returnedEntries, 
                                                                       TrialBalanceEntry entry) {
       var helper = new TrialBalanceHelper(_command);
 
@@ -190,33 +218,7 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
       return returnedEntries;
     }
 
-    private List<TrialBalanceEntry> AddSummaryAccounts(List<TrialBalanceEntry> summaryEntries,
-                                                       List<TrialBalanceEntry> returnedEntries,
-                                                                      TrialBalanceEntry entry) {
-      var helper = new TrialBalanceHelper(_command);
-
-      var summaryAccounts = summaryEntries.Where(
-                               a => a.Account.GroupNumber == entry.Account.GroupNumber &&
-                                    a.SubledgerAccountId == 0 &&
-                                    a.SubledgerAccountIdParent == entry.SubledgerAccountIdParent &&
-                                    a.Ledger.Number == entry.Ledger.Number &&
-                                    a.Currency.Code == entry.Currency.Code).ToList();
-
-      foreach (var summary in summaryAccounts) {
-        var existSummaryAccount = returnedEntries.FirstOrDefault(
-                                    a => a.SubledgerAccountIdParent == entry.SubledgerAccountIdParent && 
-                                         a.Account.Number == summary.Account.Number &&
-                                         a.Ledger.Number == summary.Ledger.Number &&
-                                         a.Currency.Code == summary.Currency.Code &&
-                                         a.Sector.Code == summary.Sector.Code);
-        if (existSummaryAccount == null) {
-          returnedEntries.Add(summary);
-        }
-      }
-
-      return returnedEntries;
-    }
-
+    
     private List<TrialBalanceEntry> CombineTotalSubsidiaryEntriesWithSummaryAccounts(
                                          List<TrialBalanceEntry> summaryEntries) {
       
@@ -228,7 +230,7 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
 
       foreach (var entry in totaBySubsidiaryAccountList.OrderBy(a => a.Currency.Code)) {
         
-        returnedEntries = AddSubsidiaryEntry(returnedEntries, entry);
+        returnedEntries = CreateOrAccumulateTotalBySubsidiaryEntry(returnedEntries, entry);
 
         returnedEntries = AddSummaryAccounts(summaryEntries, returnedEntries, entry);
       }
