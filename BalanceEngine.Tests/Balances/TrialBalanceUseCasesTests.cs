@@ -50,7 +50,8 @@ namespace Empiria.FinancialAccounting.Tests.Balances {
       command.ShowCascadeBalances = false;
       command.FromDate = TestingConstants.FromDate;
       command.ToDate = TestingConstants.ToDate;
-      command.SubledgerAccount = "90000000090008389";
+      command.FromAccount = "1103";
+      //command.SubledgerAccount = "90000000000282537";
       TrialBalanceDto trialBalance = _usecases.BuildTrialBalance(command);
 
       Assert.NotNull(trialBalance);

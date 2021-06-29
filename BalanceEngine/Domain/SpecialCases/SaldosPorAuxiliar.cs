@@ -164,6 +164,59 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
       }
     }
 
+    private List<TrialBalanceEntry> AddSubsidiaryEntry(List<TrialBalanceEntry> returnedEntries, 
+                                                                      TrialBalanceEntry entry) {
+      var helper = new TrialBalanceHelper(_command);
+
+      var parentEntries = new EmpiriaHashTable<TrialBalanceEntry>();
+
+      var existTotalByAccount = returnedEntries.FirstOrDefault(
+                                  a => a.SubledgerAccountId == entry.SubledgerAccountIdParent &&
+                                  a.Ledger.Number == entry.Ledger.Number &&
+                                  a.Currency.Code == entry.Currency.Code);
+
+      if (existTotalByAccount == null) {
+        helper.SummaryBySubsidiaryEntry(parentEntries, entry, StandardAccount.Empty, Sector.Empty,
+                           TrialBalanceItemType.BalanceSummary);
+
+        var parent = parentEntries.Values.FirstOrDefault();
+        parent.SubledgerAccountId = parent.SubledgerAccountIdParent;
+        returnedEntries.Add(parent);
+
+      } else {
+        existTotalByAccount.Sum(entry);
+      }
+
+      return returnedEntries;
+    }
+
+    private List<TrialBalanceEntry> AddSummaryAccounts(List<TrialBalanceEntry> summaryEntries,
+                                                       List<TrialBalanceEntry> returnedEntries,
+                                                                      TrialBalanceEntry entry) {
+      var helper = new TrialBalanceHelper(_command);
+
+      var summaryAccounts = summaryEntries.Where(
+                               a => a.Account.GroupNumber == entry.Account.GroupNumber &&
+                                    a.SubledgerAccountId == 0 &&
+                                    a.SubledgerAccountIdParent == entry.SubledgerAccountIdParent &&
+                                    a.Ledger.Number == entry.Ledger.Number &&
+                                    a.Currency.Code == entry.Currency.Code).ToList();
+
+      foreach (var summary in summaryAccounts) {
+        var existSummaryAccount = returnedEntries.FirstOrDefault(
+                                    a => a.SubledgerAccountIdParent == entry.SubledgerAccountIdParent && 
+                                         a.Account.Number == summary.Account.Number &&
+                                         a.Ledger.Number == summary.Ledger.Number &&
+                                         a.Currency.Code == summary.Currency.Code &&
+                                         a.Sector.Code == summary.Sector.Code);
+        if (existSummaryAccount == null) {
+          returnedEntries.Add(summary);
+        }
+      }
+
+      return returnedEntries;
+    }
+
     private List<TrialBalanceEntry> CombineTotalSubsidiaryEntriesWithSummaryAccounts(
                                          List<TrialBalanceEntry> summaryEntries) {
       
@@ -174,35 +227,10 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
       var totaBySubsidiaryAccountList = summaryEntries.Where(a => a.Level == 1 && a.NotHasSector).ToList();
 
       foreach (var entry in totaBySubsidiaryAccountList.OrderBy(a => a.Currency.Code)) {
-        var parentEntries = new EmpiriaHashTable<TrialBalanceEntry>();
-
-        var existTotalByAccount = returnedEntries.FirstOrDefault(
-                                    a => a.SubledgerAccountId == entry.SubledgerAccountIdParent &&
-                                    a.Ledger.Number == entry.Ledger.Number &&
-                                    a.Currency.Code == entry.Currency.Code);
-
-        if (existTotalByAccount == null) {
-          helper.SummaryBySubsidiaryEntry(parentEntries, entry, StandardAccount.Empty, Sector.Empty,
-                             TrialBalanceItemType.BalanceSummary);
-
-          var parent = parentEntries.Values.FirstOrDefault();
-          parent.SubledgerAccountId = parent.SubledgerAccountIdParent;
-          returnedEntries.Add(parent);
-
-        } else {
-          existTotalByAccount.Sum(entry);
-        }
         
-        var summaryAccounts = summaryEntries.Where(
-                               a => a.Account.GroupNumber == entry.Account.GroupNumber &&
-                                    a.SubledgerAccountId == 0 && 
-                                    a.SubledgerAccountIdParent == entry.SubledgerAccountIdParent &&
-                                    a.Ledger.Number == entry.Ledger.Number &&
-                                    a.Currency.Code == entry.Currency.Code).ToList();
+        returnedEntries = AddSubsidiaryEntry(returnedEntries, entry);
 
-        if (summaryAccounts.Count > 0) {
-          returnedEntries.AddRange(summaryAccounts);
-        }
+        returnedEntries = AddSummaryAccounts(summaryEntries, returnedEntries, entry);
       }
 
       return returnedEntries;
