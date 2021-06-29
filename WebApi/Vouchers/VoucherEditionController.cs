@@ -23,8 +23,20 @@ namespace Empiria.FinancialAccounting.Vouchers.WebApi {
     #region Web Apis
 
 
+    [HttpGet]
+    [Route("v2/financial-accounting/vouchers/{voucherId:int}")]
+    public SingleObjectModel GetVoucher([FromUri] int voucherId) {
+
+      using (var usecases = VouchersUseCases.UseCaseInteractor()) {
+        VoucherDto voucher = usecases.GetVoucher(voucherId);
+
+        return new SingleObjectModel(base.Request, voucher);
+      }
+    }
+
+
     [HttpPost]
-    [Route("v2/financial-accounting/vouchers")]
+    [Route("v2/financial-accounting/vouchers/create-voucher")]
     public SingleObjectModel CreateVoucher([FromBody] VoucherFields fields) {
       base.RequireBody(fields);
 
@@ -32,6 +44,18 @@ namespace Empiria.FinancialAccounting.Vouchers.WebApi {
         VoucherDto voucher = usecases.CreateVoucher(fields);
 
         return new SingleObjectModel(base.Request, voucher);
+      }
+    }
+
+
+    [HttpDelete]
+    [Route("v2/financial-accounting/vouchers/{voucherId:int}")]
+    public NoDataModel DeleteVoucher([FromUri] int voucherId) {
+
+      using (var usecases = VoucherEditionUseCases.UseCaseInteractor()) {
+        usecases.DeleteVoucher(voucherId);
+
+        return new NoDataModel(base.Request);
       }
     }
 
@@ -49,17 +73,6 @@ namespace Empiria.FinancialAccounting.Vouchers.WebApi {
       }
     }
 
-
-    [HttpDelete]
-    [Route("v2/financial-accounting/vouchers/{voucherId:int}")]
-    public NoDataModel DeleteVoucher([FromUri] int voucherId) {
-
-      using (var usecases = VoucherEditionUseCases.UseCaseInteractor()) {
-        usecases.DeleteVoucher(voucherId);
-
-        return new NoDataModel(base.Request);
-      }
-    }
 
     #endregion Web Apis
 
