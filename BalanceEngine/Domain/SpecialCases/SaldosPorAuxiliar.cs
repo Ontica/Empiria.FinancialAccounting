@@ -166,16 +166,37 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
 
     private List<TrialBalanceEntry> CombineTotalSubsidiaryEntriesWithSummaryAccounts(
                                          List<TrialBalanceEntry> summaryEntries) {
+      
+      var helper = new TrialBalanceHelper(_command);
 
       List<TrialBalanceEntry> returnedEntries = new List<TrialBalanceEntry>();
 
       var totaBySubsidiaryAccountList = summaryEntries.Where(a => a.Level == 1 && a.NotHasSector).ToList();
 
       foreach (var entry in totaBySubsidiaryAccountList.OrderBy(a => a.Currency.Code)) {
+        var parentEntries = new EmpiriaHashTable<TrialBalanceEntry>();
 
-        entry.SubledgerAccountId = entry.SubledgerAccountIdParent;
+        var existTotalByAccount = returnedEntries.FirstOrDefault(
+                                    a => a.SubledgerAccountId == entry.SubledgerAccountIdParent &&
+                                    a.Ledger.Number == entry.Ledger.Number &&
+                                    a.Currency.Code == entry.Currency.Code);
+
+        if (existTotalByAccount == null) {
+          helper.SummaryBySubsidiaryEntry(parentEntries, entry, StandardAccount.Empty, Sector.Empty,
+                             TrialBalanceItemType.BalanceSummary);
+
+          var parent = parentEntries.Values.FirstOrDefault();
+          parent.SubledgerAccountId = parent.SubledgerAccountIdParent;
+          returnedEntries.Add(parent);
+
+        } else {
+          existTotalByAccount.Sum(entry);
+        }
+        
         var summaryAccounts = summaryEntries.Where(
-                               a => a.SubledgerAccountIdParent == entry.SubledgerAccountIdParent &&
+                               a => a.Account.GroupNumber == entry.Account.GroupNumber &&
+                                    a.SubledgerAccountId == 0 && 
+                                    a.SubledgerAccountIdParent == entry.SubledgerAccountIdParent &&
                                     a.Ledger.Number == entry.Ledger.Number &&
                                     a.Currency.Code == entry.Currency.Code).ToList();
 

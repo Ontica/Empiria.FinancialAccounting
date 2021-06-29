@@ -458,6 +458,21 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
     }
 
 
+    internal void SummaryBySubsidiaryEntry(EmpiriaHashTable<TrialBalanceEntry> summaryEntries,
+                                 TrialBalanceEntry entry,
+                                 StandardAccount targetAccount, Sector targetSector,
+                                 TrialBalanceItemType itemType) {
+
+      TrialBalanceEntry balanceEntry = TrialBalanceMapper.MapToTrialBalanceEntry(entry);
+
+      balanceEntry.SubledgerAccountIdParent = entry.SubledgerAccountIdParent;
+
+      string hash = $"{targetAccount.Number}||{targetSector.Code}||{balanceEntry.Currency.Id}||{balanceEntry.Ledger.Id}";
+
+      GenerateOrIncreaseEntries(summaryEntries, balanceEntry, targetAccount, targetSector, itemType, hash);
+    }
+
+
     private void GenerateOrIncreaseEntries(EmpiriaHashTable<TrialBalanceEntry> summaryEntries,
                                            TrialBalanceEntry entry,
                                            StandardAccount targetAccount, Sector targetSector,
