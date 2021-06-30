@@ -43,26 +43,19 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
 
     #region Helper methods
 
-    internal List<TrialBalanceEntry> CombineAccountsAndLedgers(List<TrialBalanceEntry> summaryAccountList,
-                                                               List<TrialBalanceEntry> trialBalance) {//
-      var helper = new TrialBalanceHelper(_command);
-
-
+    private List<TrialBalanceEntry> CombineAccountsAndLedgers(List<TrialBalanceEntry> summaryAccountList,
+                                                               List<TrialBalanceEntry> trialBalance) {
       List<TrialBalanceEntry> returnedEntries = new List<TrialBalanceEntry>();
 
       foreach (var account in summaryAccountList.OrderBy(a => a.Currency.Code)) {
         List<TrialBalanceEntry> entries = new List<TrialBalanceEntry>();
-
         entries = trialBalance.Where(a => a.Currency.Code == account.Currency.Code &&
-                                          a.Account.Number.Contains(account.Account.Number)
-                                          ).ToList();
-
+                                          a.Account.Number.Contains(account.Account.Number)).ToList();
         foreach (var entry in entries) {
           if (entry.NotHasSector && entry.Level == 1) {
             entry.GroupName = entry.Ledger.Name;
           }
         }
-
         entries = entries.OrderBy(a => a.Ledger.Number)
                          .ThenBy(a => a.Currency.Code)
                          .ThenBy(a => a.Account.Number)
@@ -72,17 +65,15 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
         returnedEntries.Add(account);
         returnedEntries.AddRange(entries);
       }
-
       return returnedEntries;
     }
 
 
-    List<TrialBalanceEntry> GenerateSummaryAccount(List<TrialBalanceEntry> summaryAccountList,
+    private void GenerateSummaryAccount(List<TrialBalanceEntry> summaryAccountList,
                                                     List<TrialBalanceEntry> ledgersGroupList) {
       var helper = new TrialBalanceHelper(_command);
 
       foreach (var accountGroup in ledgersGroupList) {
-
         var existAccount = summaryAccountList.FirstOrDefault(
                             a => a.GroupName == "TOTAL " + accountGroup.Account.Name.ToUpper() &&
                             a.Currency.Code == accountGroup.Currency.Code &&
@@ -96,23 +87,21 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
 
           summaryAccountList.AddRange(summaryParentEntries.Values.ToList());
         }
-      } // foreach
-
-      return summaryAccountList;
+      }
+      //return summaryAccountList;
     }
 
 
     private List<TrialBalanceEntry> GenerateTotalByAccountAndLedgers(
                                List<TrialBalanceEntry> trialBalance) {
-      var helper = new TrialBalanceHelper(_command);
-      //
+
       List<TrialBalanceEntry> summaryAccountList = new List<TrialBalanceEntry>();
       List<TrialBalanceEntry> ledgersGroupList = trialBalance.Where(
                                                   a => a.NotHasSector && a.Level == 1).ToList();
 
-      summaryAccountList = GenerateSummaryAccount(summaryAccountList, ledgersGroupList);
+      GenerateSummaryAccount(summaryAccountList, ledgersGroupList);
 
-      summaryAccountList = SumAccountListAndTotalByLedger(summaryAccountList, ledgersGroupList);
+      SumAccountListAndTotalByLedger(summaryAccountList, ledgersGroupList);
 
       trialBalance = CombineAccountsAndLedgers(summaryAccountList, trialBalance);
 
@@ -120,8 +109,8 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
     }
 
 
-    List<TrialBalanceEntry> SumAccountListAndTotalByLedger(List<TrialBalanceEntry> summaryAccountList,
-                                                            List<TrialBalanceEntry> ledgersGroupList) {//
+    private void SumAccountListAndTotalByLedger(List<TrialBalanceEntry> summaryAccountList,
+                                                            List<TrialBalanceEntry> ledgersGroupList) {
       foreach (var summary in summaryAccountList) {
         var ledgersById = ledgersGroupList.Where(a => a.Currency.Code == summary.Currency.Code &&
                                                  a.Account.Number == summary.Account.Number).ToList();
@@ -129,7 +118,7 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
           summary.Sum(ledger);
         }
       }
-      return summaryAccountList;
+      //return summaryAccountList;
     }
 
 
