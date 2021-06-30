@@ -33,9 +33,7 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
 
       List<TrialBalanceEntry> summaryByAccountAndDelegations = GenerateTotalByAccountAndLedgers(trialBalance);
 
-      trialBalance = CombineAccountsAndLedgers(summaryByAccountAndDelegations);
-
-      trialBalance = helper.RestrictLevels(trialBalance);
+      trialBalance = helper.RestrictLevels(summaryByAccountAndDelegations);
 
       var returnBalance = new FixedList<ITrialBalanceEntry>(trialBalance.Select(x => (ITrialBalanceEntry) x));
 
@@ -45,67 +43,95 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
 
     #region Helper methods
 
-    private List<TrialBalanceEntry> GenerateTotalByAccountAndLedgers(
-                               List<TrialBalanceEntry> trialBalance) {
+    internal List<TrialBalanceEntry> CombineAccountsAndLedgers(List<TrialBalanceEntry> summaryAccountList,
+                                                               List<TrialBalanceEntry> trialBalance) {//
+      var helper = new TrialBalanceHelper(_command);
 
-      List<TrialBalanceEntry> summaryLedgersList = new List<TrialBalanceEntry>();
-      List<TrialBalanceEntry> ledgersGroupList = trialBalance.Where(
-                                                  a => a.HasSector && a.Level == 1).ToList();
 
-      foreach (var ledgerGroup in ledgersGroupList) {
+      List<TrialBalanceEntry> returnedEntries = new List<TrialBalanceEntry>();
 
-        var existLedger = summaryLedgersList.FirstOrDefault(a => a.Ledger.Number == ledgerGroup.Ledger.Number &&
-                                                                 a.Currency.Code == ledgerGroup.Currency.Code &&
-                                                                 a.Account.Number == ledgerGroup.Account.Number);
+      foreach (var account in summaryAccountList.OrderBy(a => a.Currency.Code)) {
+        List<TrialBalanceEntry> entries = new List<TrialBalanceEntry>();
 
-        var ledgersById = ledgersGroupList.Where(a => a.Ledger.Number == ledgerGroup.Ledger.Number &&
-                                                 a.Currency.Code == ledgerGroup.Currency.Code &&
-                                                 a.Account.Number == ledgerGroup.Account.Number).ToList();
+        entries = trialBalance.Where(a => a.Currency.Code == account.Currency.Code &&
+                                          a.Account.Number.Contains(account.Account.Number)
+                                          ).ToList();
 
-        if (existLedger == null) {
-          ledgerGroup.GroupName = ledgerGroup.Ledger.Name;
-          ledgerGroup.Sector = Sector.Empty;
-          ledgerGroup.ItemType = TrialBalanceItemType.BalanceEntry;
-          summaryLedgersList.Add(ledgerGroup);
-        } else {
-          foreach (var ledger in ledgersById) {
-            existLedger.Sum(ledger);
+        foreach (var entry in entries) {
+          if (entry.NotHasSector && entry.Level == 1) {
+            entry.GroupName = entry.Ledger.Name;
           }
         }
 
-      } // foreach
+        entries = entries.OrderBy(a => a.Currency.Code)
+                         .ThenBy(a => a.Ledger.Number)
+                         .ThenBy(a => a.Account.Number)
+                         .ThenBy(a => a.Sector.Code)
+                         .ToList();
 
-      return summaryLedgersList;
-    }
-
-
-    internal List<TrialBalanceEntry> CombineAccountsAndLedgers(List<TrialBalanceEntry> summaryLedgersList) {
-      var helper = new TrialBalanceHelper(_command);
-
-      List<TrialBalanceEntry> returnedEntries = new List<TrialBalanceEntry>();
-      var summaryParentEntries = new EmpiriaHashTable<TrialBalanceEntry>();
-
-      foreach (var entry in summaryLedgersList) {
-
-        var existAccount = returnedEntries.FirstOrDefault(a => a.Ledger == Ledger.Empty &&
-                                                          a.Currency.Code == entry.Currency.Code &&
-                                                          a.Account.Number == entry.Account.Number &&
-                                                          a.NotHasSector &&
-                                                          a.GroupName == "TOTAL DE LA CUENTA"
-                                                         );
-
-        if (existAccount == null) {
-          helper.SummaryByAccount(summaryParentEntries, entry, entry.Account, Sector.Empty,
-                                  TrialBalanceItemType.BalanceSummary);
-        }
+        returnedEntries.Add(account);
+        returnedEntries.AddRange(entries);
       }
-      returnedEntries.AddRange(summaryParentEntries.Values.ToList());
-      returnedEntries.AddRange(summaryLedgersList);
-      returnedEntries = returnedEntries.OrderBy(a => a.Currency.Code)
-                                       .ThenBy(a => a.Account.Number)
-                                       .ToList();
+
       return returnedEntries;
     }
+
+
+    List<TrialBalanceEntry> GenerateSummaryAccount(List<TrialBalanceEntry> summaryAccountList,
+                                                    List<TrialBalanceEntry> ledgersGroupList) {
+      var helper = new TrialBalanceHelper(_command);
+
+      foreach (var accountGroup in ledgersGroupList) {
+
+        var existAccount = summaryAccountList.FirstOrDefault(
+                            a => a.GroupName == "TOTAL " + accountGroup.Account.Name.ToUpper() &&
+                            a.Currency.Code == accountGroup.Currency.Code &&
+                            a.Account.Number == accountGroup.Account.Number);
+
+        if (existAccount == null) {
+          var summaryParentEntries = new EmpiriaHashTable<TrialBalanceEntry>();
+
+          helper.SummaryByAccount(summaryParentEntries, accountGroup, accountGroup.Account, Sector.Empty,
+                                  TrialBalanceItemType.BalanceSummary);
+
+          summaryAccountList.AddRange(summaryParentEntries.Values.ToList());
+        }
+      } // foreach
+
+      return summaryAccountList;
+    }
+
+
+    private List<TrialBalanceEntry> GenerateTotalByAccountAndLedgers(
+                               List<TrialBalanceEntry> trialBalance) {
+      var helper = new TrialBalanceHelper(_command);
+      //
+      List<TrialBalanceEntry> summaryAccountList = new List<TrialBalanceEntry>();
+      List<TrialBalanceEntry> ledgersGroupList = trialBalance.Where(
+                                                  a => a.NotHasSector && a.Level == 1).ToList();
+
+      summaryAccountList = GenerateSummaryAccount(summaryAccountList, ledgersGroupList);
+
+      summaryAccountList = SumAccountListAndTotalByLedger(summaryAccountList, ledgersGroupList);
+
+      trialBalance = CombineAccountsAndLedgers(summaryAccountList, trialBalance);
+
+      return trialBalance;
+    }
+
+
+    List<TrialBalanceEntry> SumAccountListAndTotalByLedger(List<TrialBalanceEntry> summaryAccountList,
+                                                            List<TrialBalanceEntry> ledgersGroupList) {//
+      foreach (var summary in summaryAccountList) {
+        var ledgersById = ledgersGroupList.Where(a => a.Currency.Code == summary.Currency.Code &&
+                                                 a.Account.Number == summary.Account.Number).ToList();
+        foreach (var ledger in ledgersById) {
+          summary.Sum(ledger);
+        }
+      }
+      return summaryAccountList;
+    }
+
 
     #endregion Helper methods
 

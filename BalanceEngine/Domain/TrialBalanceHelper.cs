@@ -382,7 +382,11 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
       TrialBalanceEntry entry = TrialBalanceMapper.MapToTrialBalanceEntry(balanceEntry);
 
       entry.Ledger = Ledger.Empty;
-      entry.GroupName = "TOTAL DE LA CUENTA";
+      entry.GroupName = "TOTAL " + entry.Account.Name.ToUpper();
+      entry.InitialBalance = 0;
+      entry.Debit = 0;
+      entry.Credit = 0;
+      entry.CurrentBalance = 0;
 
       string hash = $"{targetAccount.Number}||{targetSector.Code}||{entry.Currency.Id}||{entry.Ledger.Id}";
 
@@ -484,7 +488,7 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
 
       if (summaryEntry == null) {
 
-        summaryEntry = new TrialBalanceEntry() {
+        summaryEntry = new TrialBalanceEntry {
           Ledger = entry.Ledger,
           Currency = entry.Currency,
           Sector = targetSector,

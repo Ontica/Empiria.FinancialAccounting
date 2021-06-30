@@ -93,8 +93,8 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
         case TrialBalanceType.BalanzaConAuxiliares:
         case TrialBalanceType.Saldos:
         case TrialBalanceType.SaldosPorCuenta:
-          var balanzaTradicional = new BalanzaTradicional(this.Command);
 
+          var balanzaTradicional = new BalanzaTradicional(this.Command);
           return balanzaTradicional.Build();
 
         case TrialBalanceType.SaldosPorAuxiliar:
@@ -104,7 +104,6 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
 
         case TrialBalanceType.SaldosPorCuentaConDelegaciones:
           var saldosPorCuentaYMayores = new SaldosPorCuentaYMayores(this.Command);
-
           return saldosPorCuentaYMayores.Build();
 
         default:

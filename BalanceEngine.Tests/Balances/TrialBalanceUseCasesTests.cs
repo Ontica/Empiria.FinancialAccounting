@@ -44,13 +44,14 @@ namespace Empiria.FinancialAccounting.Tests.Balances {
     public void Should_Build_A_Traditional_Consolidated_Trial_Balance() {
       TrialBalanceCommand command = new TrialBalanceCommand();
 
-      command.TrialBalanceType = BalanceEngine.TrialBalanceType.SaldosPorAuxiliar;
+      command.TrialBalanceType = BalanceEngine.TrialBalanceType.SaldosPorCuentaConDelegaciones;
       command.BalancesType = BalanceEngine.BalancesType.AllAccounts;
       command.AccountsChartUID = "b2328e67-3f2e-45b9-b1f6-93ef6292204e";
       command.ShowCascadeBalances = false;
       command.FromDate = TestingConstants.FromDate;
       command.ToDate = TestingConstants.ToDate;
-      command.FromAccount = "1103";
+      command.FromAccount = "1100";
+      command.ToAccount = "1103";
       //command.SubledgerAccount = "90000000000282537";
       TrialBalanceDto trialBalance = _usecases.BuildTrialBalance(command);
 

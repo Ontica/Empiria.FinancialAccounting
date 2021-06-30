@@ -222,8 +222,6 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
     private List<TrialBalanceEntry> CombineTotalSubsidiaryEntriesWithSummaryAccounts(
                                          List<TrialBalanceEntry> summaryEntries) {
       
-      var helper = new TrialBalanceHelper(_command);
-
       List<TrialBalanceEntry> returnedEntries = new List<TrialBalanceEntry>();
 
       var totaBySubsidiaryAccountList = summaryEntries.Where(a => a.Level == 1 && a.NotHasSector).ToList();
