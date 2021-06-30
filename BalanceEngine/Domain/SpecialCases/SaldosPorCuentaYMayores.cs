@@ -63,8 +63,8 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
           }
         }
 
-        entries = entries.OrderBy(a => a.Currency.Code)
-                         .ThenBy(a => a.Ledger.Number)
+        entries = entries.OrderBy(a => a.Ledger.Number)
+                         .ThenBy(a => a.Currency.Code)
                          .ThenBy(a => a.Account.Number)
                          .ThenBy(a => a.Sector.Code)
                          .ToList();
