@@ -119,6 +119,12 @@ namespace Empiria.FinancialAccounting {
       }
     }
 
+    public string ParentNumber {
+      get {
+        return this.Number.Substring(0, 4);
+      }
+    }
+
     #endregion Public properties
 
 

@@ -47,17 +47,17 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
                                                                List<TrialBalanceEntry> trialBalance) {
       List<TrialBalanceEntry> returnedEntries = new List<TrialBalanceEntry>();
 
-      foreach (var account in summaryAccountList.OrderBy(a => a.Currency.Code)) {
+      foreach (var account in summaryAccountList) {
         List<TrialBalanceEntry> entries = new List<TrialBalanceEntry>();
         entries = trialBalance.Where(a => a.Currency.Code == account.Currency.Code &&
-                                          a.Account.Number.Contains(account.Account.Number)).ToList();
+                                          a.Account.ParentNumber == account.Account.Number).ToList();
         foreach (var entry in entries) {
           if (entry.NotHasSector && entry.Level == 1) {
             entry.GroupName = entry.Ledger.Name;
           }
         }
-        entries = entries.OrderBy(a => a.Ledger.Number)
-                         .ThenBy(a => a.Currency.Code)
+        entries = entries.OrderBy(a => a.Currency.Code)
+                         .ThenBy(a => a.Ledger.Number)
                          .ThenBy(a => a.Account.Number)
                          .ThenBy(a => a.Sector.Code)
                          .ToList();
@@ -88,7 +88,6 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
           summaryAccountList.AddRange(summaryParentEntries.Values.ToList());
         }
       }
-      //return summaryAccountList;
     }
 
 
@@ -118,7 +117,9 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
           summary.Sum(ledger);
         }
       }
-      //return summaryAccountList;
+      summaryAccountList = summaryAccountList.OrderBy(a => a.Currency.Code)
+                                             .ThenBy(a => a.Account.Number)
+                                             .ToList();
     }
 
 

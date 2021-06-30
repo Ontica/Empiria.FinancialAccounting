@@ -51,8 +51,7 @@ namespace Empiria.FinancialAccounting.Tests.Balances {
       command.FromDate = TestingConstants.FromDate;
       command.ToDate = TestingConstants.ToDate;
       command.FromAccount = "1100";
-      command.ToAccount = "1103";
-      //command.SubledgerAccount = "90000000000282537";
+      command.ToAccount = "1509";
       TrialBalanceDto trialBalance = _usecases.BuildTrialBalance(command);
 
       Assert.NotNull(trialBalance);
