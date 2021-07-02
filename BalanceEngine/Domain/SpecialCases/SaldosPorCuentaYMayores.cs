@@ -65,6 +65,7 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
         returnedEntries.Add(account);
         returnedEntries.AddRange(entries);
       }
+
       return returnedEntries;
     }
 
@@ -102,6 +103,11 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
 
       SumAccountListAndTotalByLedger(summaryAccountList, ledgersGroupList);
 
+      summaryAccountList = summaryAccountList.OrderBy(a => a.Ledger.Id)
+                                             .ThenBy(a => a.Currency.Code)
+                                             .ThenBy(a => a.Account.Number)
+                                             .ToList();
+
       trialBalance = CombineAccountsAndLedgers(summaryAccountList, trialBalance);
 
       return trialBalance;
@@ -117,9 +123,6 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
           summary.Sum(ledger);
         }
       }
-      summaryAccountList = summaryAccountList.OrderBy(a => a.Currency.Code)
-                                             .ThenBy(a => a.Account.Number)
-                                             .ToList();
     }
 
 
