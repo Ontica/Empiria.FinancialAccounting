@@ -40,7 +40,7 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
 
       trialBalance = helper.RestrictLevels(trialBalance);
 
-      FixedList<ITrialBalanceEntry> twoColumnsBalance = MergeAccountsIntoTwoColumnsByCurrency(trialBalance);
+      FixedList<ITrialBalanceEntry> twoColumnsBalance = MergeAccountsIntoTwoColumns(trialBalance);
 
       return new TrialBalance(_command, twoColumnsBalance);
     }
@@ -48,23 +48,40 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
 
     #region Helper methods
 
+    internal void GenerateOrIncreaseTwoCurrenciesBalanceEntry(
+                          EmpiriaHashTable<TwoCurrenciesBalanceEntry> summaryEntries,
+                          TrialBalanceEntry entry, string hash, Currency targetCurrency,
+                          Currency currentCurrency) {
 
-    private FixedList<ITrialBalanceEntry> MergeAccountsIntoTwoColumnsByCurrency(List<TrialBalanceEntry> trialBalance) {
+      TwoCurrenciesBalanceEntry summaryEntry;
+      summaryEntries.TryGetValue(hash, out summaryEntry);
+
+      if (summaryEntry == null) {
+        summaryEntries.Insert(hash, entry.MapToTwoColumnsBalanceEntry());
+        SumTwoCurrenciesBalanceEntry(summaryEntries[hash], entry, targetCurrency, currentCurrency);
+      } else {
+        SumTwoCurrenciesBalanceEntry(summaryEntry, entry, targetCurrency, currentCurrency);
+      }
+    }
+
+
+    private FixedList<ITrialBalanceEntry> MergeAccountsIntoTwoColumns(List<TrialBalanceEntry> trialBalance) {
       var targetCurrency = Currency.Parse(_command.ValuateToCurrrencyUID);
-
       var summaryEntries = new EmpiriaHashTable<TwoCurrenciesBalanceEntry>();
 
       foreach (var entry in trialBalance) {
         string hash = $"{entry.Account.Number}||{entry.Sector.Code}||{targetCurrency.Id}||{entry.Ledger.Id}";
-
+        Currency currentCurrency = entry.Currency;
+        
         if (entry.Currency.Equals(targetCurrency)) {
-          summaryEntries.Insert(hash, entry.MapToTwoColumnsBalanceEntry());
+          GenerateOrIncreaseTwoCurrenciesBalanceEntry(summaryEntries, entry, hash, 
+                                                      targetCurrency, currentCurrency);
         } else if (summaryEntries.ContainsKey(hash)) {
-          summaryEntries[hash].DomesticBalance = entry.InitialBalance;
-          summaryEntries[hash].ForeignBalance = entry.CurrentBalance;
+          SumTwoCurrenciesBalanceEntry(summaryEntries[hash], entry, targetCurrency, currentCurrency);
         } else {
           entry.Currency = targetCurrency;
-          summaryEntries.Insert(hash, entry.MapToTwoColumnsBalanceEntry());
+          GenerateOrIncreaseTwoCurrenciesBalanceEntry(summaryEntries, entry, hash,
+                                                      targetCurrency, currentCurrency);
         }
       }
 
@@ -72,6 +89,19 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
                                   .ToList().ToFixedList();
     }
 
+
+    internal void SumTwoCurrenciesBalanceEntry(TwoCurrenciesBalanceEntry twoCurrenciesEntry, 
+                                               TrialBalanceEntry entry,
+                                               Currency targetCurrency, Currency currentCurrency) {
+      
+      if (currentCurrency != targetCurrency &&
+                  entry.Currency.Code != "44") {
+
+        twoCurrenciesEntry.ForeignBalance += entry.CurrentBalance;
+      } else {
+        twoCurrenciesEntry.DomesticBalance += entry.CurrentBalance;
+      }
+    }
 
     #endregion Helper methods
 

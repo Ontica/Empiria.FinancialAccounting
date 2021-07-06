@@ -299,6 +299,7 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
         } else {
           throw Assertion.AssertNoReachThisCode();
         }
+          
       }
 
       return totalSummaryGroup.ToFixedList();
@@ -360,7 +361,7 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
 
       FixedList<ExchangeRate> exchageRates = ExchangeRate.GetList(exchangeRateType, _command.ExchangeRateDate);
 
-      foreach (var entry in entries) {
+      foreach (var entry in entries.Where(a=>a.Currency.Code !="01" )) {
         var exchangeRate = exchageRates.FirstOrDefault(a => a.FromCurrency.Code == _command.ValuateToCurrrencyUID &&
                                                             a.ToCurrency.Code == entry.Currency.Code);
 

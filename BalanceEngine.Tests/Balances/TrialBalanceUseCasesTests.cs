@@ -44,14 +44,19 @@ namespace Empiria.FinancialAccounting.Tests.Balances {
     public void Should_Build_A_Traditional_Consolidated_Trial_Balance() {
       TrialBalanceCommand command = new TrialBalanceCommand();
 
-      command.TrialBalanceType = BalanceEngine.TrialBalanceType.SaldosPorCuentaConDelegaciones;
-      command.BalancesType = BalanceEngine.BalancesType.AllAccounts;
       command.AccountsChartUID = "b2328e67-3f2e-45b9-b1f6-93ef6292204e";
-      command.ShowCascadeBalances = false;
+      command.BalancesType = BalanceEngine.BalancesType.AllAccounts;
+      command.ConsolidateBalancesToTargetCurrency = false;
+      command.ExchangeRateDate = new DateTime(2020, 01, 15);
+      command.ExchangeRateTypeUID = "5923136d-8533-4975-81b9-c8ec3bf18dea";
       command.FromDate = TestingConstants.FromDate;
+      command.ShowCascadeBalances = false;
       command.ToDate = TestingConstants.ToDate;
+      command.TrialBalanceType = BalanceEngine.TrialBalanceType.AnaliticoDeCuentas;
+      command.ValuateToCurrrencyUID = "01";
       command.FromAccount = "1100";
-      command.ToAccount = "1509";
+      command.ToAccount = "1103";
+
       TrialBalanceDto trialBalance = _usecases.BuildTrialBalance(command);
 
       Assert.NotNull(trialBalance);
