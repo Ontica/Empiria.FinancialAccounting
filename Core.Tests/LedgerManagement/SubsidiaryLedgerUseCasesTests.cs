@@ -19,12 +19,12 @@ namespace Empiria.FinancialAccounting.Tests {
 
     #region Use cases initialization
 
-    private readonly LedgerUseCases _usecases;
+    private readonly SubsidiaryLedgerUseCases _usecases;
 
     public SubsidiaryLedgerUseCasesTests() {
       CommonMethods.Authenticate();
 
-      _usecases = LedgerUseCases.UseCaseInteractor();
+      _usecases = SubsidiaryLedgerUseCases.UseCaseInteractor();
     }
 
     ~SubsidiaryLedgerUseCasesTests() {
@@ -38,20 +38,37 @@ namespace Empiria.FinancialAccounting.Tests {
 
     [Fact]
     public void Should_Get_A_Subsidiary_Ledger() {
-      LedgerDto ledger = _usecases.GetLedger(TestingConstants.LEDGER_UID);
+      SubsidiaryLedgerDto subledger = _usecases.GetSubsidiaryLedger(TestingConstants.SUBSIDIARY_LEDGER_UID);
 
-      Assert.Equal(TestingConstants.LEDGER_UID, ledger.UID);
+      Assert.Equal(TestingConstants.SUBSIDIARY_LEDGER_UID, subledger.UID);
     }
+
+
+    //[Fact]
+    //public void Should_Get_A_Subsidiary_Ledger_Account() {
+    //  LedgerAccountDto ledgerAccount = _usecases.GetLedgerAccount(TestingConstants.LEDGER_UID,
+    //                                                              TestingConstants.LEDGER_ACCOUNT_ID);
+
+    //  Assert.Equal(TestingConstants.LEDGER_UID, ledgerAccount.Ledger.UID);
+    //  Assert.Equal(TestingConstants.LEDGER_ACCOUNT_ID, ledgerAccount.Id);
+    //}
 
 
     [Fact]
-    public void Should_Get_A_Subsidiary_Ledger_Account() {
-      LedgerAccountDto ledgerAccount = _usecases.GetLedgerAccount(TestingConstants.LEDGER_UID,
-                                                                  TestingConstants.LEDGER_ACCOUNT_ID);
+    public void Should_Search_Subsidiary_Accounts() {
+      string KEYWORDS = "Ramírez";
 
-      Assert.Equal(TestingConstants.LEDGER_UID, ledgerAccount.Ledger.UID);
-      Assert.Equal(TestingConstants.LEDGER_ACCOUNT_ID, ledgerAccount.Id);
+      FixedList<SubsidiaryAccountDto> subledgerAccounts = _usecases.SearchSubsidiaryAccounts(KEYWORDS);
+
+      Assert.NotNull(subledgerAccounts);
+      Assert.NotEmpty(subledgerAccounts);
+
+      subledgerAccounts = _usecases.SearchSubsidiaryAccounts("sedfsjot7349esjfSDJKFH");
+
+      Assert.NotNull(subledgerAccounts);
+      Assert.Empty(subledgerAccounts);
     }
+
 
     #endregion Facts
 

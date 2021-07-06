@@ -50,6 +50,19 @@ namespace Empiria.FinancialAccounting.WebApi {
       }
     }
 
+
+    [HttpGet]
+    [Route("v2/financial-accounting/subsidiary-accounts/{keywords}")]
+    public CollectionModel SearchSubledgerAcocunts([FromUri] string keywords) {
+
+      using (var usecases = SubsidiaryLedgerUseCases.UseCaseInteractor()) {
+        FixedList<SubsidiaryAccountDto> list = usecases.SearchSubsidiaryAccounts(keywords);
+
+        return new CollectionModel(base.Request, list);
+      }
+    }
+
+
     #endregion Web Apis
 
   }  // class SubsidiaryLedgerController

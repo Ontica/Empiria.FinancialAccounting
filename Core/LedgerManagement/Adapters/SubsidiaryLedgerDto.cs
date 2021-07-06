@@ -63,6 +63,10 @@ namespace Empiria.FinancialAccounting.Adapters {
     }
 
 
+    public NamedEntityDto Ledger {
+      get; internal set;
+    }
+
     public NamedEntityDto SubsidiaryLedger {
       get; internal set;
     }

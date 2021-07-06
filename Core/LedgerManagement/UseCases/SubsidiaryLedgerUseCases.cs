@@ -54,6 +54,15 @@ namespace Empiria.FinancialAccounting.UseCases {
     }
 
 
+    public FixedList<SubsidiaryAccountDto> SearchSubsidiaryAccounts(string keywords) {
+      Assertion.AssertObject(keywords, "keywords");
+
+      FixedList<SubsidiaryAccount> subledgerAccountList = SubsidiaryAccount.GetList(keywords);
+
+      return SubsidiaryLedgerMapper.Map(subledgerAccountList);
+    }
+
+
     #endregion Use cases
 
   }  // class SubsidiaryLedgerUseCases

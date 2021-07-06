@@ -26,10 +26,14 @@ namespace Empiria.FinancialAccounting.Adapters {
       };
     }
 
+    static internal FixedList<SubsidiaryAccountDto> Map(FixedList<SubsidiaryAccount> list) {
+      return new FixedList<SubsidiaryAccountDto>(list.Select(x => MapAccount(x)));
+    }
 
     static internal SubsidiaryAccountDto MapAccount(SubsidiaryAccount subsidiaryAccount) {
       return new SubsidiaryAccountDto {
         Id = subsidiaryAccount.Id,
+        Ledger = subsidiaryAccount.SubsidaryLedger.BaseLedger.MapToNamedEntity(),
         SubsidiaryLedger = subsidiaryAccount.SubsidaryLedger.MapToNamedEntity(),
         Name = subsidiaryAccount.Name,
         Number = subsidiaryAccount.Number,
