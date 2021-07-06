@@ -18,22 +18,11 @@ namespace Empiria.FinancialAccounting {
 
     #region Fields
 
-    static private FixedList<AreaRule> _areasRules;
+    static private FixedList<AreaRule> _areasRules = AccountsChartData.GetAccountsAreasRules();
 
     #endregion Fields
 
-    #region Constructors and parsers
-
-    static AreasRulesChart() {
-      _areasRules = AccountsChartData.GetAccountsAreasRules();
-    }
-
-
-    #endregion Constructors and parsers
-
-
     #region Methods
-
 
     static internal FixedList<AreaRule> GetAccountAreasRules(Account account) {
       var list = _areasRules.FindAll(x => x.StandardAccountId == account.StandardAccountId);

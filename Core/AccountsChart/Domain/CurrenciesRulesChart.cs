@@ -8,7 +8,9 @@
 *                                                                                                            *
 ************************* Copyright(c) La Vía Óntica SC, Ontica LLC and contributors. All rights reserved. **/
 using System;
+using System.Linq;
 
+using Empiria.Collections;
 using Empiria.FinancialAccounting.Data;
 
 namespace Empiria.FinancialAccounting {
@@ -18,14 +20,21 @@ namespace Empiria.FinancialAccounting {
 
     #region Fields
 
-    static private FixedList<CurrencyRule> _currenciesRules;
+    static private EmpiriaHashTable<FixedList<CurrencyRule>> _currenciesRules =
+                                                                new EmpiriaHashTable<FixedList<CurrencyRule>>();
 
     #endregion Fields
 
     #region Constructors and parsers
 
     static CurrenciesRulesChart() {
-      _currenciesRules = AccountsChartData.GetAccountsCurrenciesRules();
+      var list = AccountsChartData.GetAccountsCurrenciesRules()
+                                  .GroupBy(x => x.StandardAccountId);
+
+      foreach (var item in list) {
+        _currenciesRules.Insert(item.Key.ToString(),
+                                item.ToList().ToFixedList());
+      }
     }
 
 
@@ -36,11 +45,27 @@ namespace Empiria.FinancialAccounting {
 
 
     static internal FixedList<CurrencyRule> GetAccountCurrenciesRules(Account account) {
-      var list = _currenciesRules.FindAll(x => x.StandardAccountId == account.StandardAccountId);
+      FixedList<CurrencyRule> list;
 
-      list.Sort((x, y) => x.Currency.Code.CompareTo(y.Currency.Code));
+      _currenciesRules.TryGetValue(account.StandardAccountId.ToString(), out list);
 
-      return list;
+      if (list != null) {
+        return list;
+      } else {
+        return new FixedList<CurrencyRule>();
+      }
+
+
+      //var currencies = from rule in _currenciesRules
+      //                 where rule.StandardAccountId == account.StandardAccountId
+      //                 orderby rule.Currency.Code
+      //                 select rule;
+
+      ////var list = _currenciesRules.Select(x => x.StandardAccountId == account.StandardAccountId).;
+
+      //// list.Sort((x, y) => x.Currency.Code.CompareTo(y.Currency.Code));
+
+      //return new FixedList<CurrencyRule>(currencies);
     }
 
     #endregion Methods

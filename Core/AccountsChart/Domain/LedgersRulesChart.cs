@@ -18,22 +18,11 @@ namespace Empiria.FinancialAccounting {
 
     #region Fields
 
-    static private FixedList<LedgerRule> _ledgersRules;
+    static private FixedList<LedgerRule> _ledgersRules = AccountsChartData.GetAccountsLedgersRules();
 
     #endregion Fields
 
-    #region Constructors and parsers
-
-    static LedgersRulesChart() {
-      _ledgersRules = AccountsChartData.GetAccountsLedgersRules();
-    }
-
-
-    #endregion Constructors and parsers
-
-
     #region Methods
-
 
     static internal FixedList<LedgerRule> GetAccountLedgerRules(Account account) {
       var list = _ledgersRules.FindAll(x => x.StandardAccountId == account.StandardAccountId);
