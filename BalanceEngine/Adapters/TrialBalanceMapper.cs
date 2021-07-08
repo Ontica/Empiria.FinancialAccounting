@@ -43,6 +43,23 @@ namespace Empiria.FinancialAccounting.BalanceEngine.Adapters {
       return newEntry;
     }
 
+    static internal TwoCurrenciesBalanceEntry MapTwoCurrenciesBalance(TwoCurrenciesBalanceEntry balanceEntry) {
+      var entry = new TwoCurrenciesBalanceEntry();
+      entry.Account = balanceEntry.Account;
+      entry.LedgerAccountId = balanceEntry.LedgerAccountId;
+      entry.SubledgerAccountId = balanceEntry.SubledgerAccountId;
+      entry.Ledger = balanceEntry.Ledger;
+      entry.Currency = balanceEntry.Currency;
+      entry.ItemType = balanceEntry.ItemType;
+      entry.Sector = balanceEntry.Sector;
+      entry.DebtorCreditor = balanceEntry.Account.DebtorCreditor;
+      entry.DomesticBalance = balanceEntry.DomesticBalance;
+      entry.ForeignBalance = balanceEntry.ForeignBalance;
+      entry.TotalBalance = balanceEntry.TotalBalance;
+
+      return entry;
+    }
+
     #endregion Public mappers
 
     #region Helpers
@@ -85,8 +102,13 @@ namespace Empiria.FinancialAccounting.BalanceEngine.Adapters {
       dto.CurrencyCode = trialBalanceEntry.Currency.Code;
 
       if (subledgerAccount.IsEmptyInstance) {
-        dto.AccountName = trialBalanceEntry.Account.Name;
-        dto.AccountNumber = trialBalanceEntry.Account.Number;
+        dto.AccountName = trialBalanceEntry.GroupName != "" ?
+                          trialBalanceEntry.GroupName :
+                          trialBalanceEntry.Account.Name;
+        dto.AccountNumber = trialBalanceEntry.GroupNumber != "" ?
+                            trialBalanceEntry.GroupNumber :
+                            trialBalanceEntry.Account.Number != "Empty" ?
+                            trialBalanceEntry.Account.Number : "";
       } else {
         dto.AccountName = subledgerAccount.Name;
         dto.AccountNumber = subledgerAccount.Number;
@@ -98,6 +120,7 @@ namespace Empiria.FinancialAccounting.BalanceEngine.Adapters {
 
       dto.DomesticBalance = trialBalanceEntry.DomesticBalance;
       dto.ForeignBalance = trialBalanceEntry.ForeignBalance;
+      dto.TotalBalance = trialBalanceEntry.TotalBalance;
 
       return dto;
     }

@@ -95,6 +95,11 @@ namespace Empiria.FinancialAccounting.BalanceEngine.Adapters {
       get; internal set;
     }
 
+    public decimal TotalBalance {
+      get; internal set;
+    }
+    
+
   }
 
   /// <summary>Output DTO used to return the entries of a trial balance.</summary>

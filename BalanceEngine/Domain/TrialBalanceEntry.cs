@@ -61,10 +61,42 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
       internal set;
     }
 
+    public decimal TotalBalance {
+      get;
+      internal set;
+    }
+
+    public string GroupName {
+      get; internal set;
+    } = string.Empty;
+
+    public string GroupNumber {
+      get; internal set;
+    } = string.Empty;
+
+    public bool HasSector {
+      get {
+        return this.Sector.Code != "00";
+      }
+    }
+
+    public bool NotHasSector {
+      get {
+        return !HasSector;
+      }
+    }
+
+
+    public DebtorCreditorType DebtorCreditor {
+      get; internal set;
+    } = DebtorCreditorType.Deudora;
+
+
     public TrialBalanceItemType ItemType {
       get;
       internal set;
     }
+
 
     public int Level {
       get {
@@ -72,6 +104,12 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
       }
     }
 
+
+    internal void Sum(TwoCurrenciesBalanceEntry entry) {
+      this.DomesticBalance += entry.DomesticBalance;
+      this.ForeignBalance += entry.ForeignBalance;
+      this.TotalBalance += entry.TotalBalance;
+    }
   }
 
 
@@ -189,17 +227,20 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
       }
     }
 
-    public int Level {
-      get {
-        return EmpiriaString.CountOccurences(Account.Number, '-') + 1;
-      }
-    }
 
     public bool NotHasSector {
       get {
         return !HasSector;
       }
     }
+
+
+    public int Level {
+      get {
+        return EmpiriaString.CountOccurences(Account.Number, '-') + 1;
+      }
+    }
+
 
     internal void MultiplyBy(decimal value) {
       this.InitialBalance *= value;
@@ -226,6 +267,7 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
         Currency = this.Currency,
         ItemType = this.ItemType,
         Sector = this.Sector,
+        DebtorCreditor = this.Account.DebtorCreditor
       };
     }
 

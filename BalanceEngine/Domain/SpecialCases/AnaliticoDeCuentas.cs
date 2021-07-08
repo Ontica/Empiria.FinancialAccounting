@@ -28,6 +28,7 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
 
     internal TrialBalance Build() {
       var helper = new TrialBalanceHelper(_command);
+      var twoColumnsHelper = new TwoCurrenciesBalanceHelper(_command);
 
       FixedList<TrialBalanceEntry> postingEntries = helper.GetTrialBalanceEntries();
 
@@ -40,70 +41,34 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
 
       trialBalance = helper.RestrictLevels(trialBalance);
 
-      FixedList<ITrialBalanceEntry> twoColumnsBalance = MergeAccountsIntoTwoColumns(trialBalance);
+      FixedList<TwoCurrenciesBalanceEntry> twoColumnsEntries = 
+                                            twoColumnsHelper.MergeAccountsIntoTwoColumns(trialBalance);
+
+      FixedList<TwoCurrenciesBalanceEntry> summaryGroupEntries = 
+                                            twoColumnsHelper.GetTotalSummaryGroup(twoColumnsEntries);
+
+      twoColumnsEntries = twoColumnsHelper.CombineGroupEntriesAndTwoColumnsEntries(
+                                            twoColumnsEntries, summaryGroupEntries);
+
+      List<TwoCurrenciesBalanceEntry> summaryTotalDeptorCreditorEntries =
+                                      twoColumnsHelper.GetTotalDeptorCreditorTwoColumnsEntries(
+                                        twoColumnsEntries);
+
+      twoColumnsEntries = twoColumnsHelper.CombineTotalDeptorCreditorAndTwoColumnsEntries(
+                                            twoColumnsEntries.ToList(), summaryTotalDeptorCreditorEntries);
+
+      List<TwoCurrenciesBalanceEntry> summaryTwoColumnsBalanceTotal = 
+                                    twoColumnsHelper.GenerateTotalSummary(summaryTotalDeptorCreditorEntries);
+
+      twoColumnsEntries = twoColumnsHelper.CombineTotalConsolidatedAndPostingEntries(
+                                            twoColumnsEntries, summaryTwoColumnsBalanceTotal);
+
+      FixedList<ITrialBalanceEntry> twoColumnsBalance = twoColumnsEntries.Select(x => (ITrialBalanceEntry) x)
+                                  .ToList().ToFixedList();
 
       return new TrialBalance(_command, twoColumnsBalance);
     }
 
-
-    #region Helper methods
-
-    internal void GenerateOrIncreaseTwoCurrenciesBalanceEntry(
-                          EmpiriaHashTable<TwoCurrenciesBalanceEntry> summaryEntries,
-                          TrialBalanceEntry entry, string hash, Currency targetCurrency,
-                          Currency currentCurrency) {
-
-      TwoCurrenciesBalanceEntry summaryEntry;
-      summaryEntries.TryGetValue(hash, out summaryEntry);
-
-      if (summaryEntry == null) {
-        summaryEntries.Insert(hash, entry.MapToTwoColumnsBalanceEntry());
-        SumTwoCurrenciesBalanceEntry(summaryEntries[hash], entry, targetCurrency, currentCurrency);
-      } else {
-        SumTwoCurrenciesBalanceEntry(summaryEntry, entry, targetCurrency, currentCurrency);
-      }
-    }
-
-
-    private FixedList<ITrialBalanceEntry> MergeAccountsIntoTwoColumns(List<TrialBalanceEntry> trialBalance) {
-      var targetCurrency = Currency.Parse(_command.ValuateToCurrrencyUID);
-      var summaryEntries = new EmpiriaHashTable<TwoCurrenciesBalanceEntry>();
-
-      foreach (var entry in trialBalance) {
-        string hash = $"{entry.Account.Number}||{entry.Sector.Code}||{targetCurrency.Id}||{entry.Ledger.Id}";
-        Currency currentCurrency = entry.Currency;
-        
-        if (entry.Currency.Equals(targetCurrency)) {
-          GenerateOrIncreaseTwoCurrenciesBalanceEntry(summaryEntries, entry, hash, 
-                                                      targetCurrency, currentCurrency);
-        } else if (summaryEntries.ContainsKey(hash)) {
-          SumTwoCurrenciesBalanceEntry(summaryEntries[hash], entry, targetCurrency, currentCurrency);
-        } else {
-          entry.Currency = targetCurrency;
-          GenerateOrIncreaseTwoCurrenciesBalanceEntry(summaryEntries, entry, hash,
-                                                      targetCurrency, currentCurrency);
-        }
-      }
-
-      return summaryEntries.Values.Select(x => (ITrialBalanceEntry) x)
-                                  .ToList().ToFixedList();
-    }
-
-
-    internal void SumTwoCurrenciesBalanceEntry(TwoCurrenciesBalanceEntry twoCurrenciesEntry, 
-                                               TrialBalanceEntry entry,
-                                               Currency targetCurrency, Currency currentCurrency) {
-      
-      if (currentCurrency != targetCurrency &&
-                  entry.Currency.Code != "44") {
-
-        twoCurrenciesEntry.ForeignBalance += entry.CurrentBalance;
-      } else {
-        twoCurrenciesEntry.DomesticBalance += entry.CurrentBalance;
-      }
-    }
-
-    #endregion Helper methods
 
   }  // class AnaliticoDeCuentas
 
