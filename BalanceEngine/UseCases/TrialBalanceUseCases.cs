@@ -16,7 +16,7 @@ using Empiria.FinancialAccounting.BalanceEngine.Adapters;
 namespace Empiria.FinancialAccounting.BalanceEngine.UseCases {
 
   /// <summary>Use cases used to build trial balances.</summary>
-  public class TrialBalanceUseCases : UseCase{
+  public class TrialBalanceUseCases : UseCase {
 
     #region Constructors and parsers
 

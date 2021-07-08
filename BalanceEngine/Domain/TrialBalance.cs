@@ -36,6 +36,7 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
 
         case TrialBalanceType.Balanza:
         case TrialBalanceType.BalanzaConAuxiliares:
+        case TrialBalanceType.GeneracionDeSaldos:
         case TrialBalanceType.Saldos:
         case TrialBalanceType.SaldosPorAuxiliar:
         case TrialBalanceType.SaldosPorCuenta:

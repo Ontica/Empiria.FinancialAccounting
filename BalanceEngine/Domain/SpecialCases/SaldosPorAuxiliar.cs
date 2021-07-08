@@ -43,6 +43,17 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
     }
 
 
+    internal TrialBalance BuildForBalancesGeneration() {
+      var helper = new TrialBalanceHelper(_command);
+
+      FixedList<TrialBalanceEntry> trialBalance = helper.GetPostingEntries();
+
+      var returnBalance = new FixedList<ITrialBalanceEntry>(trialBalance.Select(x => (ITrialBalanceEntry) x));
+
+      return new TrialBalance(_command, returnBalance);
+    }
+
+
     #region Helper methods
 
     private List<TrialBalanceEntry> BalancesBySubsidiaryAccounts(List<TrialBalanceEntry> trialBalance) {

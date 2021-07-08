@@ -74,6 +74,7 @@ namespace Empiria.FinancialAccounting.BalanceEngine.Adapters {
 
         case TrialBalanceType.Balanza:
         case TrialBalanceType.BalanzaConAuxiliares:
+        case TrialBalanceType.GeneracionDeSaldos:
         case TrialBalanceType.Saldos:
         case TrialBalanceType.SaldosPorAuxiliar:
         case TrialBalanceType.SaldosPorCuenta:
@@ -134,7 +135,7 @@ namespace Empiria.FinancialAccounting.BalanceEngine.Adapters {
       dto.LedgerUID = trialBalanceEntry.Ledger.UID;
       dto.LedgerNumber = trialBalanceEntry.Ledger.Number;
       dto.LedgerAccountId = trialBalanceEntry.LedgerAccountId;
-      dto.CurrencyCode = trialBalanceEntry.ItemType == TrialBalanceItemType.BalanceTotalConsolidated ? "" : 
+      dto.CurrencyCode = trialBalanceEntry.ItemType == TrialBalanceItemType.BalanceTotalConsolidated ? "" :
                          trialBalanceEntry.Currency.Code;
 
       if (subledgerAccount.IsEmptyInstance) {

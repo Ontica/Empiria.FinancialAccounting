@@ -21,6 +21,8 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
 
     BalanzaConAuxiliares,
 
+    GeneracionDeSaldos,
+
     Saldos,
 
     SaldosPorAuxiliar,
@@ -96,6 +98,11 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
 
           var balanzaTradicional = new BalanzaTradicional(this.Command);
           return balanzaTradicional.Build();
+
+        case TrialBalanceType.GeneracionDeSaldos:
+          var saldosConAuxiliares = new SaldosPorAuxiliar(this.Command);
+
+          return saldosConAuxiliares.BuildForBalancesGeneration();
 
         case TrialBalanceType.SaldosPorAuxiliar:
           var saldosPorAuxiliar = new SaldosPorAuxiliar(this.Command);

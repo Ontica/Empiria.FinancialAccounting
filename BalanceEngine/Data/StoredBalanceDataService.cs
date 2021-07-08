@@ -19,8 +19,8 @@ namespace Empiria.FinancialAccounting.BalanceEngine.Data {
     static internal FixedList<StoredBalance> GetBalances(StoredBalanceSet balanceSet) {
       var sql = "SELECT * FROM VW_COF_SALDOS " +
                $"WHERE ID_GRUPO_SALDOS = {balanceSet.Id} " +
-               $"ORDER BY ID_MAYOR, ID_MONEDA, NUMERO_CUENTA_ESTANDAR, ID_SECTOR, " +
-               $"NUMERO_CUENTA_AUXILIAR";
+               $"ORDER BY ID_MAYOR, ID_MONEDA, NUMERO_CUENTA_ESTANDAR, " +
+               $"ID_SECTOR, NUMERO_CUENTA_AUXILIAR";
 
       var op = DataOperation.Parse(sql);
 
@@ -39,26 +39,13 @@ namespace Empiria.FinancialAccounting.BalanceEngine.Data {
 
 
     static internal void WriteStoredBalance(StoredBalance o) {
-      var sql = "INSERT INTO COF_SALDOS (" +
-                   "ID_SALDO, ID_CUENTA_ESTANDAR, ID_CUENTA, " +
-                   "ID_MONEDA, ID_SECTOR, ID_CUENTA_AUXILIAR, " +
-                   "FECHA_SALDO, SALDO_INICIAL, ID_GRUPO_SALDOS" +
-                ") VALUES (" +
-                  $"{o.Id}, {o.StandardAccountId}, {o.LedgerAccountId}, " +
-                  $"{o.Currency.Id}, {o.Sector.Id}, {o.SubsidiaryAccountId}, " +
-                  $"'{CommonMethods.FormatSqlDate(o.StoredBalanceSet.BalancesDate)}', " +
-                  $"{o.Balance}, {o.StoredBalanceSet.Id})";
-
-      var dataOperation = DataOperation.Parse(sql);
+      var dataOperation = DataOperation.Parse("apd_cof_saldos", o.Id, o.StandardAccountId,
+                                              o.LedgerAccountId, o.Currency.Id,
+                                              o.Sector.IsEmptyInstance ? 0 : o.Sector.Id,
+                                              o.SubsidiaryAccountId, o.StoredBalanceSet.BalancesDate,
+                                              o.Balance, o.StoredBalanceSet.Id);
 
       DataWriter.Execute(dataOperation);
-
-      //var dataOperation = DataOperation.Parse("APD_COF_SALDOS", o.Id, o.StandardAccountId,
-      //                                        o.LedgerAccountId, o.Currency.Id, o.Sector.Id,
-      //                                        o.SubsidiaryAccountId, o.StoredBalanceSet.BalancesDate,
-      //                                        o.Balance, o.StoredBalanceSet.Id);
-
-      //DataWriter.Execute(dataOperation);
     }
 
   }  // class StoredBalanceDataService

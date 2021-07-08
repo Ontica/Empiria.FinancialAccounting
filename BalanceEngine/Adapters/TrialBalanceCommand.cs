@@ -116,6 +116,7 @@ namespace Empiria.FinancialAccounting.BalanceEngine.Adapters {
       get {
         return this.TrialBalanceType == TrialBalanceType.BalanzaConAuxiliares ||
                this.TrialBalanceType == TrialBalanceType.Saldos ||
+               this.TrialBalanceType == TrialBalanceType.GeneracionDeSaldos ||
                this.TrialBalanceType == TrialBalanceType.SaldosPorAuxiliar ||
                this.TrialBalanceType == TrialBalanceType.SaldosPorCuenta;
       }

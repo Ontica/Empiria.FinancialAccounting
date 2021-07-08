@@ -165,7 +165,7 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
 
       var command = new TrialBalanceCommand {
         AccountsChartUID = this.AccountsChart.UID,
-        TrialBalanceType = TrialBalanceType.BalanzaConAuxiliares,
+        TrialBalanceType = TrialBalanceType.GeneracionDeSaldos,
         FromDate = this.BalancesDate,
         ToDate = this.BalancesDate,
         ShowCascadeBalances = true
@@ -177,16 +177,20 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
 
       StoredBalanceDataService.DeleteBalances(this);
 
-      this.CalculationTime = DateTime.Now;
+      var entries = trialBalance.Entries.FindAll(x => ((TrialBalanceEntry) x).CurrentBalance != 0)
+                                        .Select(x => (TrialBalanceEntry) x);
 
-      foreach (var entry in trialBalance.Entries.FindAll(x => ((TrialBalanceEntry) x).CurrentBalance != 0)) {
-        var storedBalance = new StoredBalance(this, (TrialBalanceEntry) entry);
+      foreach (var entry in entries) {
+        var storedBalance = new StoredBalance(this, entry);
 
         storedBalance.Save();
       }
 
+      this.CalculationTime = DateTime.Now;
+
       this.Calculated = true;
       this.Save();
+
       this.ResetBalances();
     }
 
