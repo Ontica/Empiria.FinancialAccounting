@@ -141,18 +141,23 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
 
 
     internal List<TwoCurrenciesBalanceEntry> GetTotalDeptorCreditorTwoColumnsEntries(
-                                                  FixedList<TwoCurrenciesBalanceEntry> entries) {
+                                                  FixedList<TrialBalanceEntry> entries) {
 
       var totalSummaryDebtorCredtor = new EmpiriaHashTable<TwoCurrenciesBalanceEntry>(entries.Count);
 
-      foreach (var entry in entries.Where(a => a.GroupNumber != "" && a.NotHasSector && a.Level == 1)) {
+      foreach (var entry in entries) {
+        
+        TwoCurrenciesBalanceEntry entryColumns = entry.MapToTwoColumnsBalanceEntry();
+        SumTwoCurrenciesBalanceEntry(entryColumns, entry, Currency.Parse(_command.ValuateToCurrrencyUID), entry.Currency);
+        entryColumns.Currency = Currency.Parse("01");
+
 
         if (entry.DebtorCreditor == DebtorCreditorType.Deudora) {
-          SummaryByDebtorCreditorEntries(totalSummaryDebtorCredtor, entry,
+          SummaryByDebtorCreditorEntries(totalSummaryDebtorCredtor, entryColumns,
                                          TrialBalanceItemType.BalanceTotalDebtor);
         }
         if (entry.DebtorCreditor == DebtorCreditorType.Acreedora) {
-          SummaryByDebtorCreditorEntries(totalSummaryDebtorCredtor, entry,
+          SummaryByDebtorCreditorEntries(totalSummaryDebtorCredtor, entryColumns,
                                          TrialBalanceItemType.BalanceTotalCreditor);
         }
       }
@@ -166,7 +171,11 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
 
       var summaryByGroup = new EmpiriaHashTable<TwoCurrenciesBalanceEntry>(entries.Count);
 
-      foreach (var entry in entries.Where(a => a.NotHasSector && a.Level == 1)) {
+      var listEntries = new List<TwoCurrenciesBalanceEntry>();
+
+      GenerateListSummaryGroupEntries(entries, listEntries);
+
+      foreach (var entry in listEntries) {
         if (entry.Account.DebtorCreditor == DebtorCreditorType.Deudora) {
           SummaryByTwoColumnsGroupEntries(summaryByGroup, entry, 
                                           TrialBalanceItemType.BalanceTotalGroupDebtor);
@@ -177,9 +186,31 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
                                           TrialBalanceItemType.BalanceTotalGroupCreditor);
         }
       }
+
       return summaryByGroup.ToFixedList();
     }
 
+    private void GenerateListSummaryGroupEntries(FixedList<TwoCurrenciesBalanceEntry> entries, List<TwoCurrenciesBalanceEntry> listEntries) {
+      var isSummary = entries.Where(a => a.Level == 1).ToList();
+
+      foreach (var summary in isSummary) {
+        var summaryWithoutSector = entries.FirstOrDefault(
+                                    a => a.Account.Number == summary.Account.Number && a.NotHasSector);
+
+        if (summaryWithoutSector != null &&
+              listEntries.FirstOrDefault(a =>
+                          a.Account.Number == summaryWithoutSector.Account.Number &&
+                          a.NotHasSector &&
+                          a.DebtorCreditor == summaryWithoutSector.DebtorCreditor) == null) {
+
+          listEntries.Add(summaryWithoutSector);
+        } else if (summaryWithoutSector == null) {
+          listEntries.Add(summary);
+        } else {
+          continue;
+        }
+      }
+    }
 
     internal FixedList<TwoCurrenciesBalanceEntry> MergeAccountsIntoTwoColumns(List<TrialBalanceEntry> trialBalance) {
       var targetCurrency = Currency.Parse(_command.ValuateToCurrrencyUID);
@@ -256,8 +287,10 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
         entry.GroupName = "TOTAL ACREEDORAS";
       }
       entry.DebtorCreditor = balanceEntry.DebtorCreditor;
-
-      string hash = $"{entry.GroupName}||{Sector.Empty.Code}||{entry.Currency.Id}||" +
+      if (entry.Ledger.Id > -1) {
+        string x = string.Empty;
+      }
+      string hash = $"{entry.GroupName}||{Sector.Empty.Code}||" +
                     $"{entry.Ledger.Id}||{entry.DebtorCreditor}";
 
       GenerateOrIncreaseTotalTwoCurrenciesBalance(summaryEntries, entry, StandardAccount.Empty, Sector.Empty, itemType, hash);
@@ -286,7 +319,6 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
                                            TrialBalanceItemType itemType, string hash) {
 
       TwoCurrenciesBalanceEntry summaryEntry;
-
       summaryEntries.TryGetValue(hash, out summaryEntry);
 
       if (summaryEntry == null) {

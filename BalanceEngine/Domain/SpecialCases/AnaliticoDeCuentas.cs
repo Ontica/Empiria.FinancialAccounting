@@ -52,7 +52,7 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
 
       List<TwoCurrenciesBalanceEntry> summaryTotalDeptorCreditorEntries =
                                       twoColumnsHelper.GetTotalDeptorCreditorTwoColumnsEntries(
-                                        twoColumnsEntries);
+                                        postingEntries);
 
       twoColumnsEntries = twoColumnsHelper.CombineTotalDeptorCreditorAndTwoColumnsEntries(
                                             twoColumnsEntries.ToList(), summaryTotalDeptorCreditorEntries);
