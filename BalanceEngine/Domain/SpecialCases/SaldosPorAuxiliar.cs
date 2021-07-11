@@ -215,8 +215,7 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
                                   a.Currency.Code == entry.Currency.Code);
 
       if (existTotalByAccount == null) {
-        helper.SummaryBySubsidiaryEntry(parentEntries, entry, StandardAccount.Empty, Sector.Empty,
-                           TrialBalanceItemType.BalanceSummary);
+        helper.SummaryBySubsidiaryEntry(parentEntries, entry, TrialBalanceItemType.BalanceSummary);
 
         var parent = parentEntries.Values.FirstOrDefault();
         parent.SubledgerAccountId = parent.SubledgerAccountIdParent;
