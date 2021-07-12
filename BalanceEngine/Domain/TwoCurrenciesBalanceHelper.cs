@@ -141,23 +141,23 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
 
 
     internal List<TwoCurrenciesBalanceEntry> GetTotalDeptorCreditorTwoColumnsEntries(
-                                                  FixedList<TrialBalanceEntry> entries) {
+                                                  FixedList<TwoCurrenciesBalanceEntry> entries) {
 
       var totalSummaryDebtorCredtor = new EmpiriaHashTable<TwoCurrenciesBalanceEntry>(entries.Count);
+      var listEntries = new List<TwoCurrenciesBalanceEntry>();
+      var summaryEntries = entries.Where(a => a.ItemType != TrialBalanceItemType.BalanceTotalGroupDebtor &&
+                                              a.ItemType != TrialBalanceItemType.BalanceTotalGroupCreditor)
+                                  .ToList().ToFixedList();
 
-      foreach (var entry in entries) {
-        
-        TwoCurrenciesBalanceEntry entryColumns = entry.MapToTwoColumnsBalanceEntry();
-        SumTwoCurrenciesBalanceEntry(entryColumns, entry, Currency.Parse(_command.ValuateToCurrrencyUID), entry.Currency);
-        entryColumns.Currency = Currency.Parse("01");
+      GenerateListSummaryGroupEntries(summaryEntries, listEntries);
 
+      foreach (var entry in listEntries) {
 
         if (entry.DebtorCreditor == DebtorCreditorType.Deudora) {
-          SummaryByDebtorCreditorEntries(totalSummaryDebtorCredtor, entryColumns,
+          SummaryByDebtorCreditorEntries(totalSummaryDebtorCredtor, entry,
                                          TrialBalanceItemType.BalanceTotalDebtor);
-        }
-        if (entry.DebtorCreditor == DebtorCreditorType.Acreedora) {
-          SummaryByDebtorCreditorEntries(totalSummaryDebtorCredtor, entryColumns,
+        }else if (entry.DebtorCreditor == DebtorCreditorType.Acreedora) {
+          SummaryByDebtorCreditorEntries(totalSummaryDebtorCredtor, entry,
                                          TrialBalanceItemType.BalanceTotalCreditor);
         }
       }
@@ -176,21 +176,20 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
       GenerateListSummaryGroupEntries(entries, listEntries);
 
       foreach (var entry in listEntries) {
+        
         if (entry.Account.DebtorCreditor == DebtorCreditorType.Deudora) {
           SummaryByTwoColumnsGroupEntries(summaryByGroup, entry, 
                                           TrialBalanceItemType.BalanceTotalGroupDebtor);
-        }
-
-        if (entry.Account.DebtorCreditor == DebtorCreditorType.Acreedora) {
+        }else if (entry.Account.DebtorCreditor == DebtorCreditorType.Acreedora) {
           SummaryByTwoColumnsGroupEntries(summaryByGroup, entry, 
                                           TrialBalanceItemType.BalanceTotalGroupCreditor);
         }
       }
-
       return summaryByGroup.ToFixedList();
     }
 
-    private void GenerateListSummaryGroupEntries(FixedList<TwoCurrenciesBalanceEntry> entries, List<TwoCurrenciesBalanceEntry> listEntries) {
+    private void GenerateListSummaryGroupEntries(FixedList<TwoCurrenciesBalanceEntry> entries, 
+                                                  List<TwoCurrenciesBalanceEntry> listEntries) {
       var isSummary = entries.Where(a => a.Level == 1).ToList();
 
       foreach (var summary in isSummary) {
@@ -266,7 +265,7 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
                                                TrialBalanceEntry entry,
                                                Currency targetCurrency, Currency currentCurrency) {
 
-      if (currentCurrency != targetCurrency && entry.Currency.Code != "44") {
+      if (currentCurrency != targetCurrency && entry.Currency.Code != "44" && currentCurrency.Code != "44") {
         twoCurrenciesEntry.ForeignBalance += entry.CurrentBalance;
       } else {
         twoCurrenciesEntry.DomesticBalance += entry.CurrentBalance;
@@ -287,9 +286,7 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
         entry.GroupName = "TOTAL ACREEDORAS";
       }
       entry.DebtorCreditor = balanceEntry.DebtorCreditor;
-      if (entry.Ledger.Id > -1) {
-        string x = string.Empty;
-      }
+      
       string hash = $"{entry.GroupName}||{Sector.Empty.Code}||" +
                     $"{entry.Ledger.Id}||{entry.DebtorCreditor}";
 
