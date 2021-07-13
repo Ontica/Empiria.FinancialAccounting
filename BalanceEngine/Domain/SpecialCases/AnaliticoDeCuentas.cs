@@ -31,14 +31,11 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
       var twoColumnsHelper = new TwoCurrenciesBalanceHelper(_command);
 
       FixedList<TrialBalanceEntry> postingEntries = helper.GetTrialBalanceEntries();
-
       postingEntries = helper.ValuateToExchangeRate(postingEntries);
 
       List<TrialBalanceEntry> summaryEntries = helper.GenerateSummaryEntries(postingEntries);
-
       List<TrialBalanceEntry> trialBalance = helper.CombineSummaryAndPostingEntries(summaryEntries,
                                                                                     postingEntries);
-
       trialBalance = helper.RestrictLevels(trialBalance);
 
       FixedList<TwoCurrenciesBalanceEntry> twoColumnsEntries = 
@@ -46,20 +43,17 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
 
       FixedList<TwoCurrenciesBalanceEntry> summaryGroupEntries = 
                                             twoColumnsHelper.GetTotalSummaryGroup(twoColumnsEntries);
-
       twoColumnsEntries = twoColumnsHelper.CombineGroupEntriesAndTwoColumnsEntries(
                                             twoColumnsEntries, summaryGroupEntries);
 
       List<TwoCurrenciesBalanceEntry> summaryTotalDeptorCreditorEntries =
                                       twoColumnsHelper.GetTotalDeptorCreditorTwoColumnsEntries(
                                         twoColumnsEntries);
-
       twoColumnsEntries = twoColumnsHelper.CombineTotalDeptorCreditorAndTwoColumnsEntries(
                                             twoColumnsEntries.ToList(), summaryTotalDeptorCreditorEntries);
 
       List<TwoCurrenciesBalanceEntry> summaryTwoColumnsBalanceTotal = 
                                     twoColumnsHelper.GenerateTotalSummary(summaryTotalDeptorCreditorEntries);
-
       twoColumnsEntries = twoColumnsHelper.CombineTotalConsolidatedAndPostingEntries(
                                             twoColumnsEntries, summaryTwoColumnsBalanceTotal);
 

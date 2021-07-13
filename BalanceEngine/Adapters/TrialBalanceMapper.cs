@@ -90,24 +90,20 @@ namespace Empiria.FinancialAccounting.BalanceEngine.Adapters {
     }
 
 
-    static private TwoColumnsTrialBalanceEntryDto MapToTwoCurrenciesBalanceEntry(TwoCurrenciesBalanceEntry trialBalanceEntry) {
+    static private TwoColumnsTrialBalanceEntryDto MapToTwoCurrenciesBalanceEntry(
+                                                    TwoCurrenciesBalanceEntry trialBalanceEntry) {
       var dto = new TwoColumnsTrialBalanceEntryDto();
-
       SubsidiaryAccount subledgerAccount = SubsidiaryAccount.Parse(trialBalanceEntry.SubledgerAccountId);
-
 
       dto.ItemType = trialBalanceEntry.ItemType;
       dto.LedgerUID = trialBalanceEntry.Ledger.UID;
       dto.LedgerNumber = trialBalanceEntry.Ledger.Number;
       dto.LedgerAccountId = trialBalanceEntry.LedgerAccountId;
       dto.CurrencyCode = trialBalanceEntry.Currency.Code;
-
       if (subledgerAccount.IsEmptyInstance) {
-        dto.AccountName = trialBalanceEntry.GroupName != "" ?
-                          trialBalanceEntry.GroupName :
+        dto.AccountName = trialBalanceEntry.GroupName != "" ? trialBalanceEntry.GroupName :
                           trialBalanceEntry.Account.Name;
-        dto.AccountNumber = trialBalanceEntry.GroupNumber != "" ?
-                            trialBalanceEntry.GroupNumber :
+        dto.AccountNumber = trialBalanceEntry.GroupNumber != "" ? trialBalanceEntry.GroupNumber :
                             trialBalanceEntry.Account.Number != "Empty" ?
                             trialBalanceEntry.Account.Number : "";
       } else {
@@ -118,7 +114,6 @@ namespace Empiria.FinancialAccounting.BalanceEngine.Adapters {
       dto.AccountLevel = trialBalanceEntry.Account.Level;
       dto.SectorCode = trialBalanceEntry.Sector.Code;
       dto.SubledgerAccountId = trialBalanceEntry.SubledgerAccountId;
-
       dto.DomesticBalance = trialBalanceEntry.DomesticBalance;
       dto.ForeignBalance = trialBalanceEntry.ForeignBalance;
       dto.TotalBalance = trialBalanceEntry.TotalBalance;
@@ -128,7 +123,6 @@ namespace Empiria.FinancialAccounting.BalanceEngine.Adapters {
 
     static private TrialBalanceEntryDto MapToTrialBalance(TrialBalanceEntry trialBalanceEntry) {
       var dto = new TrialBalanceEntryDto();
-
       SubsidiaryAccount subledgerAccount = SubsidiaryAccount.Parse(trialBalanceEntry.SubledgerAccountId);
 
       dto.ItemType = trialBalanceEntry.ItemType;
@@ -137,13 +131,10 @@ namespace Empiria.FinancialAccounting.BalanceEngine.Adapters {
       dto.LedgerAccountId = trialBalanceEntry.LedgerAccountId;
       dto.CurrencyCode = trialBalanceEntry.ItemType == TrialBalanceItemType.BalanceTotalConsolidated ? "" :
                          trialBalanceEntry.Currency.Code;
-
       if (subledgerAccount.IsEmptyInstance) {
-        dto.AccountName = trialBalanceEntry.GroupName != "" ?
-                          trialBalanceEntry.GroupName :
+        dto.AccountName = trialBalanceEntry.GroupName != "" ? trialBalanceEntry.GroupName :
                           trialBalanceEntry.Account.Name;
-        dto.AccountNumber = trialBalanceEntry.GroupNumber != "" ?
-                            trialBalanceEntry.GroupNumber :
+        dto.AccountNumber = trialBalanceEntry.GroupNumber != "" ? trialBalanceEntry.GroupNumber :
                             trialBalanceEntry.Account.Number != "Empty" ?
                             trialBalanceEntry.Account.Number : "";
       } else {

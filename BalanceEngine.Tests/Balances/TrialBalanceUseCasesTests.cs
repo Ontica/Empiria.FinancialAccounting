@@ -54,7 +54,7 @@ namespace Empiria.FinancialAccounting.Tests.Balances {
       command.ToDate = TestingConstants.ToDate;
       command.TrialBalanceType = BalanceEngine.TrialBalanceType.AnaliticoDeCuentas;
       command.ValuateToCurrrencyUID = "01";
-      command.FromAccount = "500";
+      command.FromAccount = "5000";
       command.ToAccount = "5099";
 
       TrialBalanceDto trialBalance = _usecases.BuildTrialBalance(command);
