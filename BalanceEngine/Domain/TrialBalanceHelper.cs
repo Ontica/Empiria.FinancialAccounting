@@ -329,9 +329,9 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
         return summaryEntries;
       } else if (_command.TrialBalanceType == TrialBalanceType.SaldosPorAuxiliar) {
         return postingEntries.ToList();
+      } else {
+        return CombineSummaryAndPostingEntries(summaryEntries, postingEntries);
       }
-
-      return CombineSummaryAndPostingEntries(summaryEntries, postingEntries);
     }
 
     internal FixedList<TrialBalanceEntry> GetTrialBalanceEntries() {
@@ -511,8 +511,7 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
           GroupNumber = entry.GroupNumber,
           GroupName = entry.GroupName,
           DebtorCreditor = entry.DebtorCreditor,
-          SubledgerAccountIdParent = entry.SubledgerAccountIdParent,
-          EntryType = entry.EntryType
+          SubledgerAccountIdParent = entry.SubledgerAccountIdParent
         };
         summaryEntry.Sum(entry);
 
