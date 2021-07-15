@@ -327,6 +327,8 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
       if (_command.TrialBalanceType == TrialBalanceType.SaldosPorCuentaConDelegaciones) {
         summaryEntries = summaryEntries.Where(a => a.Level == 1 && a.NotHasSector).ToList();
         return summaryEntries;
+      } else if (_command.TrialBalanceType == TrialBalanceType.SaldosPorAuxiliar) {
+        return postingEntries.ToList();
       }
 
       return CombineSummaryAndPostingEntries(summaryEntries, postingEntries);
@@ -509,7 +511,8 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
           GroupNumber = entry.GroupNumber,
           GroupName = entry.GroupName,
           DebtorCreditor = entry.DebtorCreditor,
-          SubledgerAccountIdParent = entry.SubledgerAccountIdParent
+          SubledgerAccountIdParent = entry.SubledgerAccountIdParent,
+          EntryType = entry.EntryType
         };
         summaryEntry.Sum(entry);
 

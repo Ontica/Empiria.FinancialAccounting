@@ -81,7 +81,8 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
                                     a.SubledgerAccountId == 0 &&
                                     a.SubledgerAccountIdParent == entry.SubledgerAccountIdParent &&
                                     a.Ledger.Number == entry.Ledger.Number &&
-                                    a.Currency.Code == entry.Currency.Code).ToList();
+                                    a.Currency.Code == entry.Currency.Code &&
+                                    a.ItemType == TrialBalanceItemType.BalanceEntry).ToList();
 
       foreach (var summary in summaryAccounts) {
         var existSummaryAccount = returnedEntries.FirstOrDefault(
@@ -208,7 +209,7 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
       var helper = new TrialBalanceHelper(_command);
 
       foreach (var entry in subsidiaryEntries) {
-
+        int count = 0;
         List<TrialBalanceEntry> summaryEntries = new List<TrialBalanceEntry>();
         var summaryParentEntries = new EmpiriaHashTable<TrialBalanceEntry>();
         StandardAccount account = entry.Account;
@@ -220,13 +221,13 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
                             a.Account.Number == account.Number && a.Sector.Code == entry.Sector.Code);
 
           if (parent == null) {
-            helper.SummaryByEntry(summaryParentEntries, entry, account, entry.Sector,
-                                  TrialBalanceItemType.BalanceSummary);
+            count++;
+            TrialBalanceItemType itemType = count == 1 ? TrialBalanceItemType.BalanceEntry : 
+                                                         TrialBalanceItemType.BalanceSummary;
+            helper.SummaryByEntry(summaryParentEntries, entry, account, entry.Sector, itemType);
 
             if (!account.HasParent && entry.HasSector && entry.SubledgerAccountId > 0) {
-              CreateOrAccumulateParentWithoutSector(returnedEntries, entry,
-                                                    summaryParentEntries,
-                                                    account);
+              CreateOrAccumulateParentWithoutSector(returnedEntries, entry, summaryParentEntries, account);
               break;
             } else if (!account.HasParent) {
               break;
