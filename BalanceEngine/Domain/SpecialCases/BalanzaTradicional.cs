@@ -38,15 +38,13 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
 
       trialBalance = helper.CombineGroupEntriesAndPostingEntries(trialBalance, summaryGroupEntries);
 
-      //
       List<TrialBalanceEntry> summaryTotalDebtorCreditorEntries =
                               helper.GenerateTotalSummaryDebtorCreditor(postingEntries.ToList());
 
       trialBalance = helper.CombineDebtorCreditorAndPostingEntries(trialBalance,
                                                                    summaryTotalDebtorCreditorEntries);
 
-      List<TrialBalanceEntry> summaryTotalCurrencies = helper.GenerateTotalSummaryCurrency(
-                                                         summaryTotalDebtorCreditorEntries);
+      List<TrialBalanceEntry> summaryTotalCurrencies = helper.GenerateTotalSummaryCurrency(summaryTotalDebtorCreditorEntries);
 
       trialBalance = helper.CombineCurrencyTotalsAndPostingEntries(trialBalance, summaryTotalCurrencies);
 

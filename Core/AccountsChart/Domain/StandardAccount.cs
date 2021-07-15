@@ -136,7 +136,7 @@ namespace Empiria.FinancialAccounting {
 
 
     public StandardAccount GetParent() {
-      if (this.Level == 1) {
+      if (!this.HasParent) {
         return StandardAccount.Empty;
       }
 
@@ -147,7 +147,6 @@ namespace Empiria.FinancialAccounting {
       var parent = AccountsChart.GetAccount(parentAccountNumber);
 
       return StandardAccount.Parse(parent.StandardAccountId);
-
     }
 
 
