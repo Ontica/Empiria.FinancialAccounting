@@ -310,7 +310,7 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
 
       List<TrialBalanceEntry> summaryEntries = GenerateSummaryEntries(postingEntries);
 
-      if (_command.TrialBalanceType == TrialBalanceType.SaldosPorCuentaConDelegaciones) {
+      if (_command.TrialBalanceType == TrialBalanceType.SaldosPorCuentaYMayor) {
         summaryEntries = summaryEntries.Where(a => a.Level == 1 && a.NotHasSector).ToList();
         return summaryEntries;
       } else if (_command.TrialBalanceType == TrialBalanceType.SaldosPorAuxiliar) {
@@ -321,7 +321,7 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
     }
 
     internal FixedList<TrialBalanceEntry> GetTrialBalanceEntries() {
-      if (_command.TrialBalanceType == TrialBalanceType.SaldosPorCuentaConDelegaciones) {
+      if (_command.TrialBalanceType == TrialBalanceType.SaldosPorCuentaYMayor) {
         _command.ShowCascadeBalances = true;
       }
 

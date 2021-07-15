@@ -29,7 +29,7 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
 
     SaldosPorCuenta,
 
-    SaldosPorCuentaConDelegaciones
+    SaldosPorCuentaYMayor
 
   }
 
@@ -109,7 +109,7 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
 
           return saldosPorAuxiliar.Build();
 
-        case TrialBalanceType.SaldosPorCuentaConDelegaciones:
+        case TrialBalanceType.SaldosPorCuentaYMayor:
           var saldosPorCuentaYMayores = new SaldosPorCuentaYMayores(this.Command);
           return saldosPorCuentaYMayores.Build();
 
