@@ -324,6 +324,11 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
 
       List<TrialBalanceEntry> summaryEntries = GenerateSummaryEntries(postingEntries);
 
+      if (_command.TrialBalanceType == TrialBalanceType.SaldosPorCuentaConDelegaciones) {
+        summaryEntries = summaryEntries.Where(a => a.Level == 1 && a.NotHasSector).ToList();
+        return summaryEntries;
+      }
+
       return CombineSummaryAndPostingEntries(summaryEntries, postingEntries);
     }
 
@@ -380,7 +385,7 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
       TrialBalanceEntry entry = TrialBalanceMapper.MapToTrialBalanceEntry(balanceEntry);
 
       entry.Ledger = Ledger.Empty;
-      entry.GroupName = "TOTAL " + entry.Account.Name.ToUpper();
+      entry.GroupName = entry.Account.Name.ToUpper();
       entry.InitialBalance = 0;
       entry.Debit = 0;
       entry.Credit = 0;

@@ -76,7 +76,7 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
 
       foreach (var accountGroup in ledgersGroupList) {
         var existAccount = summaryAccountList.FirstOrDefault(
-                            a => a.GroupName == "TOTAL " + accountGroup.Account.Name.ToUpper() &&
+                            a => a.GroupName == accountGroup.Account.Name.ToUpper() &&
                             a.Currency.Code == accountGroup.Currency.Code &&
                             a.Account.Number == accountGroup.Account.Number);
 
