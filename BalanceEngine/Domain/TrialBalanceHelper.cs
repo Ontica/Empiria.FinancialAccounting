@@ -32,7 +32,13 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
                                                                      FixedList<TrialBalanceEntry> postingEntries) {
       var returnedEntries = new List<TrialBalanceEntry>(postingEntries);
 
-      returnedEntries.AddRange(summaryEntries);
+      if (_command.TrialBalanceType == TrialBalanceType.SaldosPorCuenta) {
+        foreach (var entry in summaryEntries.Where(a=>a.SubledgerAccountIdParent > 0)) {
+          returnedEntries.Add(entry);
+        }
+      } else {
+        returnedEntries.AddRange(summaryEntries);
+      }
 
       return returnedEntries.OrderBy(a => a.Ledger.Number)
                             .ThenBy(a => a.Currency.Code)
@@ -173,10 +179,10 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
 
     internal List<TrialBalanceEntry> GenerateSummaryEntries(FixedList<TrialBalanceEntry> entries) {
       var summaryEntries = new EmpiriaHashTable<TrialBalanceEntry>(entries.Count);
+      var detailSummaryEntries = new List<TrialBalanceEntry>();
 
       foreach (var entry in entries) {
         entry.DebtorCreditor = entry.Account.DebtorCreditor;
-
         StandardAccount currentParent;
 
         if (_command.ReturnSubledgerAccounts) {
@@ -191,12 +197,18 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
           throw Assertion.AssertNoReachThisCode();
         }
 
+        int cont = 0;
         while (true) {
           entry.DebtorCreditor = entry.Account.DebtorCreditor;
           entry.SubledgerAccountIdParent = entry.SubledgerAccountId;
-
+           
           SummaryByEntry(summaryEntries, entry, currentParent, entry.Sector,
                                          TrialBalanceItemType.BalanceSummary);
+
+          cont++;
+          if (cont == 1 && _command.TrialBalanceType == TrialBalanceType.SaldosPorCuenta) {
+            GetDetailSummaryEntries(detailSummaryEntries, summaryEntries, currentParent, entry);
+          }
 
           if (!currentParent.HasParent && entry.HasSector) {
 
@@ -214,9 +226,30 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
 
       } // foreach
 
+      if (detailSummaryEntries.Count > 0 && _command.TrialBalanceType == TrialBalanceType.SaldosPorCuenta) {
+        return detailSummaryEntries;
+      }
       return summaryEntries.Values.ToList();
     }
 
+    private void GetDetailSummaryEntries(List<TrialBalanceEntry> detailSummaryEntries, 
+                                         EmpiriaHashTable<TrialBalanceEntry> summaryEntries, 
+                                         StandardAccount currentParent, TrialBalanceEntry entry) {
+
+      TrialBalanceEntry detailsEntry;
+      string key = $"{currentParent.Number}||{entry.Sector.Code}||{entry.Currency.Id}||{entry.Ledger.Id}";
+
+      summaryEntries.TryGetValue(key, out detailsEntry);
+      if (detailsEntry != null) {
+        var existEntry = detailSummaryEntries.FirstOrDefault(a => a.Ledger.Id == detailsEntry.Ledger.Id && 
+                                                       a.Currency.Id == detailsEntry.Currency.Id &&
+                                                       a.Account.Number == detailsEntry.Account.Number &&
+                                                       a.Sector.Code == detailsEntry.Sector.Code);
+        if (existEntry == null) {
+          detailSummaryEntries.Add(detailsEntry);
+        }
+      }
+    }
 
     internal List<TrialBalanceEntry> GenerateTotalSummaryDebtorCreditor(List<TrialBalanceEntry> postingEntries) {
 
