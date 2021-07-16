@@ -64,6 +64,14 @@ namespace Empiria.FinancialAccounting.Adapters {
       get; internal set;
     }
 
+    public bool UsesSector {
+      get; internal set;
+    }
+
+    public bool UsesSubledger {
+      get; internal set;
+    }
+
     public DebtorCreditorType DebtorCreditor {
       get; internal set;
     }

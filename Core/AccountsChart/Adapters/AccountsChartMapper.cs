@@ -9,6 +9,7 @@
 ************************* Copyright(c) La Vía Óntica SC, Ontica LLC and contributors. All rights reserved. **/
 using System;
 using System.Collections.Generic;
+using System.Linq;
 
 namespace Empiria.FinancialAccounting.Adapters {
 
@@ -79,7 +80,11 @@ namespace Empiria.FinancialAccounting.Adapters {
       dto.Number = account.Number;
       dto.Name = account.Name;
       dto.Type = account.AccountType;
-      dto.Role = account.Role;
+      dto.Role = MapToDescriptorRole(account.Role);
+      dto.UsesSector = account.Role == AccountRole.Sectorizada;
+      dto.UsesSubledger = account.Role == AccountRole.Control ||
+                          (account.Role == AccountRole.Sectorizada &&
+                           account.GetSectors().All(x => x.SectorRole == AccountRole.Control));
       dto.DebtorCreditor = account.DebtorCreditor;
       dto.Level = account.Level;
       dto.Sector = "00";
@@ -95,7 +100,7 @@ namespace Empiria.FinancialAccounting.Adapters {
 
 
     static private FixedList<AccountDescriptorDto> MapToAccountDescriptorsWithSectors(FixedList<Account> list) {
-      List<AccountDescriptorDto> withSectors = new List<AccountDescriptorDto>(list.Count * 2);
+      var withSectors = new List<AccountDescriptorDto>(list.Count * 2);
 
       foreach (var account in list) {
         var descriptor = MapToAccountDescriptor(account);
@@ -104,17 +109,23 @@ namespace Empiria.FinancialAccounting.Adapters {
         }
         withSectors.Add(descriptor);
 
-        if (account.SectorRules.Count == 0) {
+        var sectors = account.GetSectors();
+        if (sectors.Count == 0) {
           continue;
         }
-        foreach (var sectorRule in account.SectorRules) {
+
+        foreach (var sectorRule in sectors) {
           descriptor = MapToAccountDescriptor(account);
+          descriptor.UsesSector = true;
+          descriptor.UsesSubledger = sectorRule.SectorRole == AccountRole.Control;
           descriptor.Sector = sectorRule.Sector.Code;
-          descriptor.Role = sectorRule.SectorRole;
+          descriptor.Role = AccountRole.Detalle;
           descriptor.LastLevel = true;
+
           withSectors.Add(descriptor);
         }
       }
+
       return withSectors.ToFixedList();
     }
 
@@ -136,6 +147,14 @@ namespace Empiria.FinancialAccounting.Adapters {
         StartDate = account.StartDate,
         EndDate = account.EndDate
       };
+    }
+
+
+    static private AccountRole MapToDescriptorRole(AccountRole role) {
+      if (role == AccountRole.Control || role == AccountRole.Sectorizada) {
+        return AccountRole.Detalle;
+      }
+      return role;
     }
 
     #endregion Private methods

@@ -177,11 +177,21 @@ namespace Empiria.FinancialAccounting {
       }
     }
 
-
     #endregion Public properties
 
 
     #region Public methods
+
+
+    internal FixedList<SectorRule> GetSectors() {
+      return GetSectors(DateTime.Today);
+    }
+
+
+    internal FixedList<SectorRule> GetSectors(DateTime date) {
+      return _sectorRules.Value.FindAll(x => x.StartDate <= date.Date && date.Date <= x.EndDate);
+    }
+
 
     internal FixedList<Account> GetHistory() {
       return this.AccountsChart.GetAccountHistory(this.Number);
