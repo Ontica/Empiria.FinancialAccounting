@@ -32,7 +32,7 @@ namespace Empiria.FinancialAccounting.OfficeIntegration {
 
       excelFile.Open();
 
-      excelFile.SetCell($"A2", "Catálogo de cuentas");
+      excelFile.SetCell($"A2", _templateConfig.Title);
 
       FillOut(accountsChart, excelFile);
 

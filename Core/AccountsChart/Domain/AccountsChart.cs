@@ -8,9 +8,6 @@
 *                                                                                                            *
 ************************* Copyright(c) La Vía Óntica SC, Ontica LLC and contributors. All rights reserved. **/
 using System;
-using System.Linq;
-
-using System.Threading.Tasks;
 
 using Empiria.Collections;
 using Empiria.FinancialAccounting.Data;
@@ -24,7 +21,7 @@ namespace Empiria.FinancialAccounting {
 
     #region Constructors and parsers
 
-    private AccountsChart() {
+    protected AccountsChart() {
       // Required by Empiria Framework.
     }
 

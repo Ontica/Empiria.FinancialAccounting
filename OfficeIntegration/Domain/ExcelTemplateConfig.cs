@@ -17,7 +17,7 @@ namespace Empiria.FinancialAccounting.OfficeIntegration {
 
     #region Constructors and parsers
 
-    private ExcelTemplateConfig() {
+    protected ExcelTemplateConfig() {
       // Required by Empiria Framework
     }
 
@@ -25,26 +25,31 @@ namespace Empiria.FinancialAccounting.OfficeIntegration {
       return BaseObject.ParseKey<ExcelTemplateConfig>(uid);
     }
 
-    #endregion Constructors and parsers
-
-    #region Properties
-
     static public string BaseUrl {
       get {
         return ConfigurationData.Get<string>("ExcelTemplateConfig.BaseUrl");
       }
     }
 
-    private string OriginalFileName {
-      get {
-        return base.ExtendedDataField.Get<string>("fileName");
-      }
-    }
-
-
     static private string GenerationStoragePath {
       get {
         return ConfigurationData.Get<string>("ExcelTemplateConfig.GenerationStoragePath");
+      }
+    }
+
+    static private string TemplatesStoragePath {
+      get {
+        return ConfigurationData.Get<string>("ExcelTemplateConfig.TemplatesStoragePath");
+      }
+    }
+
+    #endregion Constructors and parsers
+
+    #region Properties
+
+    private string OriginalFileName {
+      get {
+        return base.ExtendedDataField.Get<string>("fileName");
       }
     }
 
@@ -63,12 +68,11 @@ namespace Empiria.FinancialAccounting.OfficeIntegration {
     }
 
 
-    static private string TemplatesStoragePath {
+    public string Title {
       get {
-        return ConfigurationData.Get<string>("ExcelTemplateConfig.TemplatesStoragePath");
+        return base.ExtendedDataField.Get<string>("title", string.Empty);
       }
     }
-
 
     #endregion Properties
 
