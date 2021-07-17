@@ -40,6 +40,7 @@ namespace Empiria.FinancialAccounting {
     [DataField("ID_TIPO_CUENTAS_STD", ConvertFrom = typeof(long))]
     private int _accountsChartId = 0;
 
+
     public AccountsChart AccountsChart {
       get {
         return AccountsChart.Parse(_accountsChartId);
@@ -123,6 +124,13 @@ namespace Empiria.FinancialAccounting {
           $"The ledger account with id {ledgerAccountId} does not belong to ledger '{this.Name}'.");
 
       return ledgerAccount;
+    }
+
+
+    public FixedList<DateTime> OpenedAccountingDates() {
+      var calendar = Calendar.Parse(this.CalendarId);
+
+      return calendar.OpenedAccountingDates();
     }
 
 

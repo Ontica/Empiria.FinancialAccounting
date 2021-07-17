@@ -36,6 +36,18 @@ namespace Empiria.FinancialAccounting.Vouchers.WebApi {
 
 
     [HttpGet]
+    [Route("v2/financial-accounting/vouchers/opened-accounting-dates/{ledgerUID:guid}")]
+    public CollectionModel GetOpenedAccountingDates([FromUri] string ledgerUID) {
+
+      using (var usecases = VouchersDataUseCases.UseCaseInteractor()) {
+        FixedList<DateTime> openedAccountingDates = usecases.OpenedAccountingDates(ledgerUID);
+
+        return new CollectionModel(base.Request, openedAccountingDates);
+      }
+    }
+
+
+    [HttpGet]
     [Route("v2/financial-accounting/vouchers/transaction-types")]
     public CollectionModel GetTransactionTypes() {
 

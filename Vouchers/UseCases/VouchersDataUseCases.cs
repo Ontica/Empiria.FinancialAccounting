@@ -11,8 +11,6 @@ using System;
 
 using Empiria.Services;
 
-using Empiria.FinancialAccounting.Vouchers.Adapters;
-
 namespace Empiria.FinancialAccounting.Vouchers.UseCases {
 
   /// <summary>Use cases used to retrive vouchers related data.</summary>
@@ -31,6 +29,15 @@ namespace Empiria.FinancialAccounting.Vouchers.UseCases {
     #endregion Constructors and parsers
 
     #region Use cases
+
+    public FixedList<DateTime> OpenedAccountingDates(string ledgerUID) {
+      Assertion.AssertObject(ledgerUID, "ledgerUID");
+
+      var ledger = Ledger.Parse(ledgerUID);
+
+      return ledger.OpenedAccountingDates();
+    }
+
 
     public FixedList<NamedEntityDto> TransactionTypes() {
       return TransactionType.GetList().MapToNamedEntityList();
