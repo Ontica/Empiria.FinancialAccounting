@@ -45,7 +45,7 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
                             .ThenByDescending(a => a.Account.DebtorCreditor)
                             .ThenBy(a => a.Account.Number)
                             .ThenBy(a => a.Sector.Code)
-                            .ThenBy(a => a.SubledgerAccountId)
+                            .ThenBy(a => a.SubledgerAccountNumber)
                             .ToList();
     }
 
@@ -183,6 +183,7 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
 
       foreach (var entry in entries) {
         entry.DebtorCreditor = entry.Account.DebtorCreditor;
+        entry.SubledgerAccountNumber = SubsidiaryAccount.Parse(entry.SubledgerAccountId).Number ?? "";
         StandardAccount currentParent;
 
         if (_command.ReturnSubledgerAccounts) {

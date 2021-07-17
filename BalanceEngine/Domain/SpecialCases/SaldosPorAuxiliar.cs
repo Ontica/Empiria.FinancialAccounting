@@ -105,7 +105,6 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
 
       foreach (var entry in trialBalance) {
         if (entry.SubledgerAccountId > 0) {
-
           returnedSubsidiaryEntries.Add(entry);
         }
       }
@@ -176,8 +175,8 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
 
         var parent = parentEntries.Values.FirstOrDefault();
         parent.SubledgerAccountId = parent.SubledgerAccountIdParent;
+        parent.SubledgerAccountNumber = SubsidiaryAccount.Parse(entry.SubledgerAccountIdParent).Number ?? "";
         returnedEntries.Add(parent);
-
       } else {
         existTotalByAccount.Sum(entry);
       }
@@ -191,9 +190,9 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
       
       List<TrialBalanceEntry> returnedEntries = new List<TrialBalanceEntry>();
 
-      var totaBySubsidiaryAccountList = summaryEntries.Where(a => a.Level == 1 && a.NotHasSector).ToList();
+      var totaBySubsidiaryAccountList = OrderingSubsidiaryAccountsByNumber(summaryEntries);
 
-      foreach (var entry in totaBySubsidiaryAccountList.OrderBy(a => a.Currency.Code)) {
+      foreach (var entry in totaBySubsidiaryAccountList) {
         
         returnedEntries = CreateOrAccumulateTotalBySubsidiaryEntry(returnedEntries, entry);
 
@@ -249,6 +248,22 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
         returnedEntries.AddRange(summaryEntries);
       } // foreach
 
+    }
+
+
+    private List<TrialBalanceEntry> OrderingSubsidiaryAccountsByNumber(
+                    List<TrialBalanceEntry> totaBySubsidiaryAccountList) {
+
+      var returnedEntries = new List<TrialBalanceEntry>();
+
+      foreach (var entry in totaBySubsidiaryAccountList.Where(a => a.Level == 1 && a.NotHasSector)) {
+        entry.SubledgerAccountNumber = SubsidiaryAccount.Parse(entry.SubledgerAccountIdParent).Number ?? "";
+        returnedEntries.Add(entry);
+      }
+      returnedEntries = returnedEntries.OrderBy(a => a.Currency.Code)
+                                       .ThenBy(a => a.SubledgerAccountNumber)
+                                       .ToList();
+      return returnedEntries;
     }
 
     #endregion Helper methods
