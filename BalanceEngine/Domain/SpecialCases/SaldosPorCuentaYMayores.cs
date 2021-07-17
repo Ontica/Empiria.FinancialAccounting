@@ -33,6 +33,8 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
 
       List<TrialBalanceEntry> summaryByAccountAndDelegations = GenerateTotalByAccountAndLedgers(trialBalance);
 
+      FixedList<TrialBalanceEntry> summaryGroupEntries = helper.GenerateTotalSummaryGroups(trialBalance.ToFixedList());
+
       trialBalance = helper.RestrictLevels(summaryByAccountAndDelegations);
 
       var returnBalance = new FixedList<ITrialBalanceEntry>(trialBalance.Select(x => (ITrialBalanceEntry) x));

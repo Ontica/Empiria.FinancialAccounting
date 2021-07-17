@@ -118,12 +118,12 @@ namespace Empiria.FinancialAccounting.BalanceEngine.Adapters {
         } else if (_command.ReturnSubledgerAccounts && _command.Consolidated) {
           
           return "GROUP BY ID_MONEDA, ID_CUENTA_ESTANDAR, NUMERO_CUENTA_ESTANDAR, ID_SECTOR, " +
-                 "ID_CUENTA_AUXILIAR, NUMERO_CUENTA_AUXILIAR, SALDO_ANTERIOR, DEBE, HABER, SALDO_ACTUAL";
+                 "ID_CUENTA_AUXILIAR, SALDO_ANTERIOR, DEBE, HABER, SALDO_ACTUAL";
 
         } else if (_command.ReturnSubledgerAccounts &&_command.ShowCascadeBalances) {
 
           return "GROUP BY ID_MAYOR, ID_MONEDA, ID_CUENTA_ESTANDAR, NUMERO_CUENTA_ESTANDAR, ID_SECTOR, " +
-                 "ID_CUENTA, ID_CUENTA_AUXILIAR, NUMERO_CUENTA_AUXILIAR, SALDO_ANTERIOR, DEBE, HABER, SALDO_ACTUAL";
+                 "ID_CUENTA, ID_CUENTA_AUXILIAR, SALDO_ANTERIOR, DEBE, HABER, SALDO_ACTUAL";
 
         } else {
           throw Assertion.AssertNoReachThisCode();
