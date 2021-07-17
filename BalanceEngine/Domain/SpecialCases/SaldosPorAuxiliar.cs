@@ -187,18 +187,13 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
     
     private List<TrialBalanceEntry> CombineTotalSubsidiaryEntriesWithSummaryAccounts(
                                          List<TrialBalanceEntry> summaryEntries) {
-      
       List<TrialBalanceEntry> returnedEntries = new List<TrialBalanceEntry>();
-
       var totaBySubsidiaryAccountList = OrderingSubsidiaryAccountsByNumber(summaryEntries);
 
       foreach (var entry in totaBySubsidiaryAccountList) {
-        
         returnedEntries = CreateOrAccumulateTotalBySubsidiaryEntry(returnedEntries, entry);
-
         returnedEntries = AddSummaryAccounts(summaryEntries, returnedEntries, entry);
       }
-
       return returnedEntries;
     }
 
@@ -253,13 +248,13 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
 
     private List<TrialBalanceEntry> OrderingSubsidiaryAccountsByNumber(
                     List<TrialBalanceEntry> totaBySubsidiaryAccountList) {
-
       var returnedEntries = new List<TrialBalanceEntry>();
 
       foreach (var entry in totaBySubsidiaryAccountList.Where(a => a.Level == 1 && a.NotHasSector)) {
         entry.SubledgerAccountNumber = SubsidiaryAccount.Parse(entry.SubledgerAccountIdParent).Number ?? "";
         returnedEntries.Add(entry);
       }
+
       returnedEntries = returnedEntries.OrderBy(a => a.Currency.Code)
                                        .ThenBy(a => a.SubledgerAccountNumber)
                                        .ToList();
