@@ -26,9 +26,9 @@ namespace Empiria.FinancialAccounting.Vouchers.Adapters {
         FunctionalArea = voucher.FunctionalArea.MapToNamedEntity(),
         AccountingDate = voucher.AccountingDate,
         RecordingDate = voucher.RecordingDate,
-        ElaboratedBy = "María Luisa Jiménez",
-        AuthorizedBy = "Rebeca Martínez Solís",
-        Status = voucher.IsOpened ? "Pediente" : "Cerrado",
+        ElaboratedBy = voucher.ElaboratedBy.Name,
+        AuthorizedBy = voucher.AuthorizedBy.Name,
+        Status = voucher.IsOpened ? "Pendiente" : "Cerrado",
         Entries = MapToVoucherEntriesDescriptor(voucher.Entries)
       };
     }
@@ -91,12 +91,12 @@ namespace Empiria.FinancialAccounting.Vouchers.Adapters {
         Concept = voucher.Concept,
         TransactionTypeName = voucher.TransactionType.Name,
         VoucherTypeName = voucher.VoucherType.Name,
-        SourceName = "Banobras",
+        SourceName = voucher.FunctionalArea.FullName,
         AccountingDate = voucher.AccountingDate,
         RecordingDate = voucher.RecordingDate,
-        ElaboratedBy = "María Luisa Jiménez",
-        AuthorizedBy = "Rebeca Martínez Solís",
-        Status = voucher.IsOpened ? "Pediente" : "Cerrado"
+        ElaboratedBy = voucher.ElaboratedBy.Name,
+        AuthorizedBy = voucher.AuthorizedBy.Name,
+        Status = voucher.IsOpened ? "Pendiente" : "Cerrado"
       };
     }
 

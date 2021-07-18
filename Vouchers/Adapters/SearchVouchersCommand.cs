@@ -48,6 +48,7 @@ namespace Empiria.FinancialAccounting.Vouchers.Adapters {
 
 
   public enum DateSearchField {
+
     None,
 
     AccountingDate,
@@ -146,7 +147,7 @@ namespace Empiria.FinancialAccounting.Vouchers.Adapters {
     public int PageSize {
       get;
       set;
-    } = 200;
+    } = 500;
 
 
     public int Page {
