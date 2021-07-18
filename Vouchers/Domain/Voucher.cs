@@ -8,8 +8,8 @@
 *                                                                                                            *
 ************************* Copyright(c) La Vía Óntica SC, Ontica LLC and contributors. All rights reserved. **/
 using System;
-using Empiria.Contacts;
 
+using Empiria.FinancialAccounting.Vouchers.Adapters;
 using Empiria.FinancialAccounting.Vouchers.Data;
 
 namespace Empiria.FinancialAccounting.Vouchers {
@@ -23,6 +23,16 @@ namespace Empiria.FinancialAccounting.Vouchers {
 
     private Voucher() {
       // Required by Empiria Framework.
+    }
+
+    internal Voucher(VoucherFields fields) {
+      Assertion.AssertObject(fields, "fields");
+
+      this.LoadFields(fields);
+      this.Number = "No actualizada";
+      this.RecordingDate = DateTime.Today;
+      this.IsOpened = true;
+      this.ElaboratedBy = Participant.Current;
     }
 
 
@@ -40,8 +50,7 @@ namespace Empiria.FinancialAccounting.Vouchers {
 
     static public Voucher Empty => BaseObject.ParseEmpty<Voucher>();
 
-
-    protected override void OnLoad() {
+    protected override void OnInitialize() {
       base.OnLoad();
 
       if (!this.IsEmptyInstance) {
@@ -91,6 +100,7 @@ namespace Empiria.FinancialAccounting.Vouchers {
       private set;
     }
 
+
     [DataField("ID_FUENTE", ConvertFrom = typeof(long))]
     public FunctionalArea FunctionalArea {
       get;
@@ -100,20 +110,44 @@ namespace Empiria.FinancialAccounting.Vouchers {
 
     [DataField("FECHA_AFECTACION", Default = "ExecutionServer.DateMaxValue")]
     public DateTime AccountingDate {
-      get; private set;
+      get;
+      private set;
     }
 
 
     [DataField("FECHA_REGISTRO", Default = "ExecutionServer.DateMaxValue")]
     public DateTime RecordingDate {
-      get; private set;
+      get;
+      private set;
     }
 
 
     [DataField("ESTA_ABIERTA", ConvertFrom = typeof(int))]
     public bool IsOpened {
-      get; private set;
+      get;
+      private set;
     }
+
+
+    [DataField("ID_ELABORADA_POR", ConvertFrom = typeof(long))]
+    public Participant ElaboratedBy {
+      get;
+      internal set;
+    } = Participant.Empty;
+
+
+    [DataField("ID_AUTORIZADA_POR", ConvertFrom = typeof(long))]
+    public Participant AuthorizedBy {
+      get;
+      internal set;
+    } = Participant.Empty;
+
+
+    [DataField("ID_ENVIADA_DIARIO_POR", ConvertFrom = typeof(long))]
+    public Participant ClosedBy {
+      get;
+      internal set;
+    } = Participant.Empty;
 
 
     public FixedList<VoucherEntry> Entries {
@@ -122,7 +156,45 @@ namespace Empiria.FinancialAccounting.Vouchers {
       }
     }
 
+
+
     #endregion Public properties
+
+    #region Methods
+
+
+    internal void Delete() {
+      VoucherData.DeleteVoucher(this);
+    }
+
+
+    private void LoadFields(VoucherFields fields) {
+      this.Ledger = Ledger.Parse(fields.LedgerUID);
+      this.AccountingDate = fields.AccountingDate;
+      this.Concept = fields.Concept;
+      this.VoucherType = VoucherType.Parse(fields.VoucherTypeUID);
+      this.TransactionType = TransactionType.Parse(fields.TransactionTypeUID);
+      this.FunctionalArea = FunctionalArea.Parse(fields.FunctionalAreaId);
+    }
+
+
+    protected override void OnSave() {
+      VoucherData.WriteVoucher(this);
+    }
+
+
+    internal void Update(VoucherFields fields) {
+      Assertion.AssertObject(fields, "fields");
+
+      this.Ledger = PatchField(fields.LedgerUID, this.Ledger);
+      this.AccountingDate = PatchField(fields.AccountingDate, this.AccountingDate);
+      this.Concept = PatchField(fields.Concept, this.Concept);
+      this.TransactionType = PatchField(fields.TransactionTypeUID, this.TransactionType);
+      this.VoucherType = PatchField(fields.VoucherTypeUID, this.VoucherType);
+      this.FunctionalArea = PatchField(fields.FunctionalAreaId, this.FunctionalArea);
+    }
+
+    #endregion Methods
 
   }  // class Voucher
 

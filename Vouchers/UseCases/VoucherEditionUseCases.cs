@@ -33,18 +33,44 @@ namespace Empiria.FinancialAccounting.Vouchers.UseCases {
     #region Use cases
 
 
-    public VoucherDto CreateVoucher(VoucherFields fields) {
+    public VoucherDto CloseVoucher(int voucherId) {
       throw new NotImplementedException();
+    }
+
+
+    public VoucherDto CreateVoucher(VoucherFields fields) {
+      Assertion.AssertObject(fields, "fields");
+
+      fields.EnsureIsValid();
+
+
+      var voucher = new Voucher(fields);
+
+      voucher.Save();
+
+      return VoucherMapper.Map(voucher);
     }
 
 
     public void DeleteVoucher(int voucherId) {
-      throw new NotImplementedException();
+      var voucher = Voucher.Parse(voucherId);
+
+      voucher.Delete();
     }
 
 
     public VoucherDto UpdateVoucher(int voucherId, VoucherFields fields) {
-      throw new NotImplementedException();
+      Assertion.AssertObject(fields, "fields");
+
+      fields.EnsureIsValid();
+
+      var voucher = Voucher.Parse(voucherId);
+
+      voucher.Update(fields);
+
+      voucher.Save();
+
+      return VoucherMapper.Map(voucher);
     }
 
 

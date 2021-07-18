@@ -16,6 +16,13 @@ namespace Empiria.FinancialAccounting.Vouchers.Data {
   /// <summary>Data access layer for accounting vouchers.</summary>
   static internal class VoucherData {
 
+    static internal void DeleteVoucher(Voucher voucher) {
+      var dataOperation = DataOperation.Parse("do_delete_cof_transaccion", voucher.Id);
+
+      DataWriter.Execute(dataOperation);
+    }
+
+
     static internal FixedList<Voucher> GetVouchers(string filter, string sort, int pageSize) {
       var sql = "SELECT * FROM (" +
                   "SELECT * FROM VW_COF_TRANSACCION " +
@@ -29,7 +36,7 @@ namespace Empiria.FinancialAccounting.Vouchers.Data {
     }
 
 
-    internal static FixedList<VoucherEntry> GetVoucherEntries(Voucher voucher) {
+    static internal FixedList<VoucherEntry> GetVoucherEntries(Voucher voucher) {
       var sql = "SELECT * FROM COF_MOVIMIENTO " +
                 $"WHERE ID_TRANSACCION = {voucher.Id}";
 
@@ -37,6 +44,19 @@ namespace Empiria.FinancialAccounting.Vouchers.Data {
 
       return DataReader.GetFixedList<VoucherEntry>(dataOperation);
     }
+
+
+    static internal void WriteVoucher(Voucher o) {
+      var dataOperation = DataOperation.Parse("write_cof_transaccion", o.Id, o.Number,
+                                              o.Ledger.Id, o.FunctionalArea.Id,
+                                              o.TransactionType.Id, o.VoucherType.Id,
+                                              o.Concept, o.AccountingDate, o.RecordingDate,
+                                              o.ElaboratedBy.Id, o.AuthorizedBy.Id, o.IsOpened ? 1 : 0,
+                                              o.ClosedBy.Id);
+
+      DataWriter.Execute(dataOperation);
+    }
+
 
   }  // class VoucherData
 
