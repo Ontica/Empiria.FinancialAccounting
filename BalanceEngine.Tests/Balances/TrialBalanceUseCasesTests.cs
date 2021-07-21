@@ -46,12 +46,18 @@ namespace Empiria.FinancialAccounting.Tests.Balances {
 
       command.AccountsChartUID = "b2328e67-3f2e-45b9-b1f6-93ef6292204e";
       command.BalancesType = BalanceEngine.BalancesType.AllAccounts;
+      command.ConsolidateBalancesToTargetCurrency = false;
+      command.ExchangeRateDate = new DateTime(2021, 01, 15);
+      command.ExchangeRateTypeUID = "5923136d-8533-4975-81b9-c8ec3bf18dea";
       command.FromDate = TestingConstants.FromDate;
-      command.ShowCascadeBalances = false;
+      command.ShowCascadeBalances = true;
       command.ToDate = TestingConstants.ToDate;
-      command.TrialBalanceType = BalanceEngine.TrialBalanceType.SaldosPorAuxiliar;
-      command.FromAccount = "1503";
-      command.Ledgers = new string[1] { "2584a757-865c-2025-8025-fa633f200c49" };
+      command.TrialBalanceType = BalanceEngine.TrialBalanceType.Balanza;
+      command.ValuateToCurrrencyUID = "01";
+      command.FromAccount = "1305";
+      command.ToAccount = "1503";
+      command.Ledgers = new string[4] { "3426b979-4797-4e13-4643-937361bc0fd9", "30a02a33-7b8d-2b8b-82d3-8f7964bf00b7", 
+                                        "c9ef93c5-5690-512a-2438-e4d471bc9fcc", "2584a757-865c-2025-8025-fa633f200c49" };
 
       TrialBalanceDto trialBalance = _usecases.BuildTrialBalance(command);
 

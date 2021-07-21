@@ -66,6 +66,11 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
       internal set;
     }
 
+    public decimal ExchangeRate {
+      get;
+      internal set;
+    } = 1;
+
     public string GroupName {
       get; internal set;
     } = string.Empty;
@@ -109,6 +114,7 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
       this.DomesticBalance += entry.DomesticBalance;
       this.ForeignBalance += entry.ForeignBalance;
       this.TotalBalance += entry.TotalBalance;
+      this.ExchangeRate = entry.ExchangeRate;
     }
   }
 
@@ -195,6 +201,12 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
     }
 
 
+    public decimal ExchangeRate {
+      get;
+      internal set;
+    } = 1;
+
+
     public string GroupName {
       get; internal set;
     } = string.Empty;
@@ -252,6 +264,7 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
       this.Debit *= value;
       this.Credit *= value;
       this.CurrentBalance *= value;
+      this.ExchangeRate = value;
     }
 
 
@@ -260,6 +273,7 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
       this.Credit += entry.Credit;
       this.Debit += entry.Debit;
       this.CurrentBalance += entry.CurrentBalance;
+      this.ExchangeRate = entry.ExchangeRate;
     }
 
 

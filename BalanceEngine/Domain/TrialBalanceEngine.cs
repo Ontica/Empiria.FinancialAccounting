@@ -63,6 +63,8 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
 
     BalanceTotalCurrency,
 
+    BalanceTotalConsolidatedByLedger,
+
     BalanceTotalConsolidated
 
   }

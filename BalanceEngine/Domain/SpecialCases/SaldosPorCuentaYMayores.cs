@@ -31,17 +31,32 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
 
       List<TrialBalanceEntry> trialBalance = helper.GetSummaryAndPostingEntries();
 
-      List<TrialBalanceEntry> summaryByAccountAndDelegations = GenerateTotalByAccountAndLedgers(trialBalance);
+      List<TrialBalanceEntry> summaryByAccountAndLedgers = GenerateTotalByAccountAndLedgers(trialBalance);
 
-      FixedList<TrialBalanceEntry> summaryGroupEntries = helper.GenerateTotalSummaryGroups(trialBalance.ToFixedList());
+      FixedList<TrialBalanceEntry> summaryGroupEntries = GenerateTotalSummaryByGroup(trialBalance);
 
-      trialBalance = helper.RestrictLevels(summaryByAccountAndDelegations);
+      trialBalance = CombineGroupEntriesAndSummaryEntries(summaryByAccountAndLedgers, 
+                                                          summaryGroupEntries);
+
+      FixedList<TrialBalanceEntry> summaryTotalByCurrency = GenerateTotalSummaryByCurrency(
+                                                            summaryGroupEntries.ToList());
+
+      trialBalance = CombineTotalByCurrencyAndSummaryEntries(trialBalance, summaryTotalByCurrency);
+
+      List<TrialBalanceEntry> summaryTotalConsolidated = helper.GenerateTotalSummaryConsolidated(
+                                                                       trialBalance.ToList());
+
+      trialBalance = helper.CombineTotalConsolidatedAndPostingEntries(trialBalance, summaryTotalConsolidated);
+
+      trialBalance = helper.RestrictLevels(trialBalance);
 
       var returnBalance = new FixedList<ITrialBalanceEntry>(trialBalance.Select(x => (ITrialBalanceEntry) x));
 
       return new TrialBalance(_command, returnBalance);
     }
 
+
+    
 
     #region Helper methods
 
@@ -68,6 +83,45 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
         returnedEntries.AddRange(entries);
       }
 
+      return returnedEntries;
+    }
+
+
+    private List<TrialBalanceEntry> CombineGroupEntriesAndSummaryEntries(
+                                      List<TrialBalanceEntry> summaryByAccountAndLedgers,
+                                      FixedList<TrialBalanceEntry> summaryGroupEntries) {
+      var returnedEntries = new List<TrialBalanceEntry>();
+
+      summaryGroupEntries = OrderingTotalsByGroup(summaryGroupEntries).ToFixedList();
+
+      foreach (var totalGroupDebtorEntry in summaryGroupEntries) {
+        var debtorEntries = summaryByAccountAndLedgers.Where(
+                                  a => a.Account.GroupNumber == totalGroupDebtorEntry.GroupNumber &&
+                                  a.Currency.Id == totalGroupDebtorEntry.Currency.Id).ToList();
+        totalGroupDebtorEntry.GroupNumber = "";
+        debtorEntries.Add(totalGroupDebtorEntry);
+        returnedEntries.AddRange(debtorEntries);
+      }
+
+      return returnedEntries;
+    }
+
+
+    private List<TrialBalanceEntry> CombineTotalByCurrencyAndSummaryEntries(
+                                    List<TrialBalanceEntry> trialBalance,
+                                     FixedList<TrialBalanceEntry> summaryTotalByCurrency) {
+
+      var returnedEntries = new List<TrialBalanceEntry>();
+
+      foreach (var currencyEntry in summaryTotalByCurrency
+                    .Where(a => a.ItemType == TrialBalanceItemType.BalanceTotalCurrency)) {
+
+        var listSummaryByCurrency = trialBalance.Where(a => a.Currency.Code == currencyEntry.Currency.Code).ToList();
+        if (listSummaryByCurrency.Count > 0) {
+          listSummaryByCurrency.Add(currencyEntry);
+          returnedEntries.AddRange(listSummaryByCurrency);
+        }
+      }
       return returnedEntries;
     }
 
@@ -113,6 +167,42 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
       trialBalance = CombineAccountsAndLedgers(summaryAccountList, trialBalance);
 
       return trialBalance;
+    }
+
+
+    private FixedList<TrialBalanceEntry> GenerateTotalSummaryByCurrency(
+                                          List<TrialBalanceEntry> entries) {
+      var helper = new TrialBalanceHelper(_command);
+      var totalByCurrencies = new EmpiriaHashTable<TrialBalanceEntry>(entries.Count);
+
+      foreach (var entry in entries.Where(
+                a => a.ItemType == TrialBalanceItemType.BalanceTotalGroupDebtor)) {
+
+        helper.SummaryByCurrencyEntries(totalByCurrencies, entry, StandardAccount.Empty,
+                            Sector.Empty, TrialBalanceItemType.BalanceTotalCurrency);
+      }
+      
+      return totalByCurrencies.ToFixedList();
+    }
+
+
+    private FixedList<TrialBalanceEntry> GenerateTotalSummaryByGroup(List<TrialBalanceEntry> trialBalance) {
+      var helper = new TrialBalanceHelper(_command);
+      var totalsListByGroupEntries = new EmpiriaHashTable<TrialBalanceEntry>(trialBalance.Count);
+      
+      foreach (var entry in trialBalance) {
+        helper.SummaryByLedgersGroupEntries(totalsListByGroupEntries, entry);
+      }
+      
+      return totalsListByGroupEntries.ToFixedList();
+    }
+
+
+    private List<TrialBalanceEntry> OrderingTotalsByGroup(FixedList<TrialBalanceEntry> summaryGroupEntries) {
+      var returnedList = new List<TrialBalanceEntry>(summaryGroupEntries);
+      return returnedList.OrderBy(a => a.Currency.Code)
+                         .ThenBy(a => a.GroupNumber)
+                         .ToList();
     }
 
 

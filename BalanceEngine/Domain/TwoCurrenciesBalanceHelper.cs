@@ -116,6 +116,7 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
           entry.ForeignBalance = -1 * entry.ForeignBalance;
           entry.TotalBalance = -1 * entry.TotalBalance;
         }
+        entry.Account = StandardAccount.Empty;
         entry.GroupName = "TOTAL DEL REPORTE";
 
         string hash = $"{entry.GroupName}||{Sector.Empty.Code}||{entry.Currency.Id}||{entry.Ledger.Id}";
@@ -276,6 +277,7 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
       } else if (itemType == TrialBalanceItemType.BalanceTotalCreditor) {
         entry.GroupName = "TOTAL ACREEDORAS";
       }
+      entry.Account = StandardAccount.Empty;
       entry.DebtorCreditor = balanceEntry.DebtorCreditor;
       
       string hash = $"{entry.GroupName}||{Sector.Empty.Code}||{entry.Ledger.Id}||{entry.DebtorCreditor}";

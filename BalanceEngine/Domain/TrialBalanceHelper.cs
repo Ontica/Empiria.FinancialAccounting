@@ -33,7 +33,7 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
       var returnedEntries = new List<TrialBalanceEntry>(postingEntries);
 
       if (_command.TrialBalanceType == TrialBalanceType.SaldosPorCuenta) {
-        foreach (var entry in summaryEntries.Where(a=>a.SubledgerAccountIdParent > 0)) {
+        foreach (var entry in summaryEntries.Where(a => a.SubledgerAccountIdParent > 0)) {
           returnedEntries.Add(entry);
         }
       } else {
@@ -68,7 +68,7 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
       return OrderByLedgerAndCurrency(returnedEntries);
     }
 
-
+    
     internal List<TrialBalanceEntry> CombineDebtorCreditorAndPostingEntries(
                                       List<TrialBalanceEntry> trialBalance,
                                       List<TrialBalanceEntry> summaryEntries) {
@@ -154,6 +154,25 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
     }
 
 
+    internal List<TrialBalanceEntry> CombineTotalConsolidatedByLedgerAndPostingEntries(
+                                      List<TrialBalanceEntry> trialBalance, 
+                                      List<TrialBalanceEntry> totalConsolidatedByLedger) {
+      if (totalConsolidatedByLedger.Count == 0) {
+        return trialBalance;
+      }
+      var returnedEntries = new List<TrialBalanceEntry>();
+      var totalConsolidated = new EmpiriaHashTable<TrialBalanceEntry>();
+      foreach (var consolidatedByLedger in totalConsolidatedByLedger) {
+        var listSummaryByLedger = trialBalance.Where(a => a.Ledger.Id == consolidatedByLedger.Ledger.Id).ToList();
+        if (listSummaryByLedger.Count > 0) {
+          listSummaryByLedger.Add(consolidatedByLedger);
+          returnedEntries.AddRange(listSummaryByLedger);
+        }
+      }
+      return returnedEntries;
+    }
+
+
     internal FixedList<TrialBalanceEntry> ConsolidateToTargetCurrency(FixedList<TrialBalanceEntry> trialBalance) {
       var targetCurrency = Currency.Parse(_command.ValuateToCurrrencyUID);
 
@@ -202,7 +221,7 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
         while (true) {
           entry.DebtorCreditor = entry.Account.DebtorCreditor;
           entry.SubledgerAccountIdParent = entry.SubledgerAccountId;
-           
+          
           SummaryByEntry(summaryEntries, entry, currentParent, entry.Sector,
                                          TrialBalanceItemType.BalanceSummary);
 
@@ -233,8 +252,8 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
       return summaryEntries.Values.ToList();
     }
 
-    private void GetDetailSummaryEntries(List<TrialBalanceEntry> detailSummaryEntries, 
-                                         EmpiriaHashTable<TrialBalanceEntry> summaryEntries, 
+    private void GetDetailSummaryEntries(List<TrialBalanceEntry> detailSummaryEntries,
+                                         EmpiriaHashTable<TrialBalanceEntry> summaryEntries,
                                          StandardAccount currentParent, TrialBalanceEntry entry) {
 
       TrialBalanceEntry detailsEntry;
@@ -242,7 +261,7 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
 
       summaryEntries.TryGetValue(key, out detailsEntry);
       if (detailsEntry != null) {
-        var existEntry = detailSummaryEntries.FirstOrDefault(a => a.Ledger.Id == detailsEntry.Ledger.Id && 
+        var existEntry = detailSummaryEntries.FirstOrDefault(a => a.Ledger.Id == detailsEntry.Ledger.Id &&
                                                        a.Currency.Id == detailsEntry.Currency.Id &&
                                                        a.Account.Number == detailsEntry.Account.Number &&
                                                        a.Sector.Code == detailsEntry.Sector.Code);
@@ -297,9 +316,16 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
 
         TrialBalanceEntry entry = TrialBalanceMapper.MapToTrialBalanceEntry(currencyEntry);
 
-        entry.GroupName = "TOTAL CONSOLIDADO";
+        entry.GroupName = "TOTAL CONSOLIDADO GENERAL";
 
-        string hash = $"{entry.GroupName}||{Sector.Empty.Code}||{entry.Ledger.Id}";
+        string hash;
+        if (_command.TrialBalanceType == TrialBalanceType.SaldosPorCuentaYMayor ||
+             (_command.TrialBalanceType == TrialBalanceType.Balanza && _command.ShowCascadeBalances)) {
+          hash = $"{entry.GroupName}";
+          entry.GroupNumber = "";
+        } else {
+          hash = $"{entry.GroupName}||{Sector.Empty.Code}||{entry.Ledger.Id}";
+        }
 
         GenerateOrIncreaseEntries(totalSummaryConsolidated, entry, StandardAccount.Empty, Sector.Empty,
                                   TrialBalanceItemType.BalanceTotalConsolidated, hash);
@@ -308,6 +334,30 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
       balanceEntries.AddRange(totalSummaryConsolidated.Values.ToList());
 
       return balanceEntries;
+    }
+
+    internal List<TrialBalanceEntry> GenerateTotalSummaryConsolidatedByLedger(
+                                      List<TrialBalanceEntry> summaryCurrencies) {
+
+      var summaryConsolidatedByLedger = new EmpiriaHashTable<TrialBalanceEntry>(summaryCurrencies.Count);
+      List<TrialBalanceEntry> returnedListEntries = new List<TrialBalanceEntry>();
+      if (_command.TrialBalanceType == TrialBalanceType.Balanza && _command.ShowCascadeBalances) {
+        foreach (var currencyEntry in summaryCurrencies.Where(
+                        a => a.ItemType == TrialBalanceItemType.BalanceTotalCurrency)) {
+
+          TrialBalanceEntry entry = TrialBalanceMapper.MapToTrialBalanceEntry(currencyEntry);
+
+          entry.GroupName = $"TOTAL CONSOLIDADO {entry.Ledger.FullName}";
+          entry.Currency = Currency.Empty;
+          string hash = $"{entry.Ledger.Id}||{entry.GroupName}||{Sector.Empty.Code}";
+
+          GenerateOrIncreaseEntries(summaryConsolidatedByLedger, entry, StandardAccount.Empty, Sector.Empty,
+                                    TrialBalanceItemType.BalanceTotalConsolidatedByLedger, hash);
+        }
+
+        returnedListEntries.AddRange(summaryConsolidatedByLedger.Values.ToList());
+      }
+      return returnedListEntries.OrderBy(a => a.Ledger.Number).ToList();
     }
 
 
@@ -419,22 +469,27 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
     }
 
 
-    private void SummaryByCurrencyEntries(EmpiriaHashTable<TrialBalanceEntry> summaryEntries,
+    internal void SummaryByCurrencyEntries(EmpiriaHashTable<TrialBalanceEntry> summaryEntries,
                                           TrialBalanceEntry balanceEntry,
                                           StandardAccount targetAccount, Sector targetSector,
                                           TrialBalanceItemType itemType) {
 
       TrialBalanceEntry entry = TrialBalanceMapper.MapToTrialBalanceEntry(balanceEntry);
 
-      if (entry.ItemType == TrialBalanceItemType.BalanceTotalCreditor) {
+      if (_command.TrialBalanceType != TrialBalanceType.SaldosPorCuentaYMayor &&
+           entry.ItemType == TrialBalanceItemType.BalanceTotalCreditor) {
         entry.InitialBalance = -1 * entry.InitialBalance;
         entry.CurrentBalance = -1 * entry.CurrentBalance;
       }
 
       entry.GroupName = "TOTAL MONEDA " + entry.Currency.FullName;
-
-      string hash = $"{entry.GroupName}||{targetSector.Code}||{entry.Currency.Id}||{entry.Ledger.Id}";
-
+      string hash;
+      if (_command.TrialBalanceType == TrialBalanceType.SaldosPorCuentaYMayor) {
+        entry.GroupNumber = "";
+        hash = $"{entry.GroupName}||{entry.Currency.Id}";
+      } else {
+        hash = $"{entry.GroupName}||{targetSector.Code}||{entry.Currency.Id}||{entry.Ledger.Id}";
+      }
       GenerateOrIncreaseEntries(summaryEntries, entry, targetAccount, targetSector, itemType, hash);
     }
 
@@ -494,6 +549,23 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
         GenerateOrIncreaseEntries(summaryEntries, groupEntry, StandardAccount.Empty, Sector.Empty,
                                   TrialBalanceItemType.BalanceTotalGroupCreditor, hash);
       }
+    }
+
+
+    internal void SummaryByLedgersGroupEntries(EmpiriaHashTable<TrialBalanceEntry> totalsListByGroupEntries,
+                                                            TrialBalanceEntry balanceEntry) {
+      TrialBalanceEntry groupEntry = TrialBalanceMapper.MapToTrialBalanceEntry(balanceEntry);
+
+      groupEntry.GroupName = $"TOTAL GRUPO {balanceEntry.Account.GroupNumber}";
+      groupEntry.GroupNumber = balanceEntry.Account.GroupNumber;
+      groupEntry.Account = StandardAccount.Empty;
+      groupEntry.Sector = Sector.Empty;
+      groupEntry.DebtorCreditor = balanceEntry.Account.DebtorCreditor;
+
+      string hash = $"{balanceEntry.Account.GroupNumber}||{balanceEntry.Currency.Id}||{balanceEntry.Sector.Code}";
+
+      GenerateOrIncreaseEntries(totalsListByGroupEntries, groupEntry, StandardAccount.Empty, Sector.Empty,
+                                  TrialBalanceItemType.BalanceTotalGroupDebtor, hash);
     }
 
 

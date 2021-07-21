@@ -39,6 +39,7 @@ namespace Empiria.FinancialAccounting.BalanceEngine.Adapters {
       newEntry.GroupNumber = entry.GroupNumber;
       newEntry.GroupName = entry.GroupName;
       newEntry.ItemType = entry.ItemType;
+      newEntry.ExchangeRate = entry.ExchangeRate;
 
       return newEntry;
     }
@@ -56,6 +57,7 @@ namespace Empiria.FinancialAccounting.BalanceEngine.Adapters {
       entry.DomesticBalance = balanceEntry.DomesticBalance;
       entry.ForeignBalance = balanceEntry.ForeignBalance;
       entry.TotalBalance = balanceEntry.TotalBalance;
+      entry.ExchangeRate = balanceEntry.ExchangeRate;
 
       return entry;
     }
@@ -117,6 +119,7 @@ namespace Empiria.FinancialAccounting.BalanceEngine.Adapters {
       dto.DomesticBalance = trialBalanceEntry.DomesticBalance;
       dto.ForeignBalance = trialBalanceEntry.ForeignBalance;
       dto.TotalBalance = trialBalanceEntry.TotalBalance;
+      dto.ExchangeRate = trialBalanceEntry.ExchangeRate;
 
       return dto;
     }
@@ -149,6 +152,7 @@ namespace Empiria.FinancialAccounting.BalanceEngine.Adapters {
       dto.Debit = trialBalanceEntry.Debit;
       dto.Credit = trialBalanceEntry.Credit;
       dto.CurrentBalance = trialBalanceEntry.CurrentBalance;
+      dto.ExchangeRate = trialBalanceEntry.ExchangeRate;
 
       return dto;
     }

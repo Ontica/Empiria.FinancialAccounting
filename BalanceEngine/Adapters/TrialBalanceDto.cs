@@ -98,7 +98,11 @@ namespace Empiria.FinancialAccounting.BalanceEngine.Adapters {
     public decimal TotalBalance {
       get; internal set;
     }
-    
+
+    public decimal ExchangeRate {
+      get; internal set;
+    }
+
 
   }
 
@@ -171,6 +175,10 @@ namespace Empiria.FinancialAccounting.BalanceEngine.Adapters {
 
 
     public decimal CurrentBalance {
+      get; internal set;
+    }
+
+    public decimal ExchangeRate {
       get; internal set;
     }
 
