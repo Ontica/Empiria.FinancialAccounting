@@ -43,6 +43,9 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
         case TrialBalanceType.SaldosPorCuentaYMayor:
           return TrialBalanceDataColumns();
 
+        case TrialBalanceType.BalanzaValorizadaComparativa:
+          return TwoBalancesComparativeDataColumns();
+
         default:
           throw Assertion.AssertNoReachThisCode(
                 $"Unhandled trial balance type {this.Command.TrialBalanceType}.");
@@ -74,6 +77,38 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
       if (Command.ExchangeRateTypeUID != string.Empty) {
         columns.Add(new DataTableColumn("exchangeRate", "TC", "decimal"));
       }
+
+      return columns.ToFixedList();
+    }
+
+
+    private FixedList<DataTableColumn> TwoBalancesComparativeDataColumns() {
+      List<DataTableColumn> columns = new List<DataTableColumn>();
+
+      columns.Add(new DataTableColumn("ledgerNumber", "Cont", "text"));
+      columns.Add(new DataTableColumn("currencyCode", "Mon", "text"));
+      columns.Add(new DataTableColumn("accountNumber", "Cta", "text-nowrap"));
+      columns.Add(new DataTableColumn("accountNumber", "Scta", "text-nowrap"));
+      columns.Add(new DataTableColumn("accountNumber", "Cuenta", "text-nowrap"));
+      columns.Add(new DataTableColumn("sectorCode", "Sct", "text"));
+      columns.Add(new DataTableColumn("accountNumber", "Auxiliar", "text-nowrap"));
+      columns.Add(new DataTableColumn("subledgerAccountName", "Nombre", "text"));
+
+      columns.Add(new DataTableColumn("totalBalance", $"{Command.FromDate:MMM_yyyy}", "decimal"));
+      columns.Add(new DataTableColumn("exchangeRate", "Tc_Ini", "decimal"));
+      columns.Add(new DataTableColumn("currentVal", $"{Command.FromDate:MMM}_VAL", "decimal"));
+      columns.Add(new DataTableColumn("debit", "Cargos", "decimal"));
+      columns.Add(new DataTableColumn("credit", "Abonos", "decimal"));
+
+      columns.Add(new DataTableColumn("totalBalanceComparative", $"{Command.FromDateComparative:MMM_yyyy}", "decimal"));
+      columns.Add(new DataTableColumn("exchangeRateComparative", "Tc_Fin", "decimal"));
+      columns.Add(new DataTableColumn("totalValComparative", $"{Command.FromDate:MMM}_VAL", "decimal"));
+
+      columns.Add(new DataTableColumn("AccountName", "Nom_Cta", "text"));
+      columns.Add(new DataTableColumn("naturaleza", "Nat", "text"));
+      columns.Add(new DataTableColumn("variation", "Variación", "decimal"));
+      columns.Add(new DataTableColumn("variationByTC", "Variación por TC", "decimal"));
+      columns.Add(new DataTableColumn("realVariation", "Variación por TC", "decimal"));
 
       return columns.ToFixedList();
     }

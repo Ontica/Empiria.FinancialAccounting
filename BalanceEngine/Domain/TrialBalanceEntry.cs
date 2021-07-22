@@ -40,7 +40,7 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
     }
 
 
-    public int LedgerAccountId {
+    public int AccountId {
       get;
       internal set;
     }
@@ -159,8 +159,14 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
     }
 
 
+    //[DataField("ID_CUENTA", ConvertFrom = typeof(decimal))]
+    //public int LedgerAccountId {
+    //  get;
+    //  internal set;
+    //}
+
     [DataField("ID_CUENTA", ConvertFrom = typeof(decimal))]
-    public int LedgerAccountId {
+    public int AccountId {
       get;
       internal set;
     }
@@ -280,7 +286,7 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
     internal TwoCurrenciesBalanceEntry MapToTwoColumnsBalanceEntry() {
       return new TwoCurrenciesBalanceEntry {
         Account = this.Account,
-        LedgerAccountId = this.LedgerAccountId,
+        AccountId = this.AccountId,
         SubledgerAccountId = this.SubledgerAccountId,
         Ledger = this.Ledger,
         Currency = this.Currency,
@@ -292,5 +298,7 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
 
 
   } // class TrialBalance
+
+
 
 } // namespace Empiria.FinancialAccounting.BalanceEngine

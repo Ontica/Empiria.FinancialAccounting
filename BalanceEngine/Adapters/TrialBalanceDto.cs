@@ -54,7 +54,7 @@ namespace Empiria.FinancialAccounting.BalanceEngine.Adapters {
       get; internal set;
     }
 
-    public int LedgerAccountId {
+    public int AccountId {
       get; internal set;
     }
 
@@ -125,7 +125,7 @@ namespace Empiria.FinancialAccounting.BalanceEngine.Adapters {
       get; internal set;
     }
 
-    public int LedgerAccountId {
+    public int AccountId {
       get; internal set;
     }
 

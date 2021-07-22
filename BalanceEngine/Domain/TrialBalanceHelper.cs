@@ -68,7 +68,7 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
       return OrderByLedgerAndCurrency(returnedEntries);
     }
 
-    
+
     internal List<TrialBalanceEntry> CombineDebtorCreditorAndPostingEntries(
                                       List<TrialBalanceEntry> trialBalance,
                                       List<TrialBalanceEntry> summaryEntries) {
@@ -155,7 +155,7 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
 
 
     internal List<TrialBalanceEntry> CombineTotalConsolidatedByLedgerAndPostingEntries(
-                                      List<TrialBalanceEntry> trialBalance, 
+                                      List<TrialBalanceEntry> trialBalance,
                                       List<TrialBalanceEntry> totalConsolidatedByLedger) {
       if (totalConsolidatedByLedger.Count == 0) {
         return trialBalance;
@@ -221,7 +221,7 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
         while (true) {
           entry.DebtorCreditor = entry.Account.DebtorCreditor;
           entry.SubledgerAccountIdParent = entry.SubledgerAccountId;
-          
+
           SummaryByEntry(summaryEntries, entry, currentParent, entry.Sector,
                                          TrialBalanceItemType.BalanceSummary);
 
@@ -405,8 +405,9 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
     }
 
     internal FixedList<TrialBalanceEntry> GetTrialBalanceEntries() {
-      if (_command.TrialBalanceType == TrialBalanceType.SaldosPorCuentaYMayor) {
-        _command.ShowCascadeBalances = true;
+      if (_command.TrialBalanceType == TrialBalanceType.SaldosPorCuentaYMayor ||
+          _command.TrialBalanceType == TrialBalanceType.BalanzaValorizadaComparativa) {
+          _command.ShowCascadeBalances = true;
       }
 
       TrialBalanceCommandData commandData = _command.MapToTrialBalanceCommandData();
@@ -423,7 +424,7 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
       if (_command.DoNotReturnSubledgerAccounts) {
         return entries.FindAll(x => x.Level <= _command.Level);
       } else if (_command.ReturnSubledgerAccounts) {
-        return entries.FindAll(x => x.Level <= _command.Level || x.LedgerAccountId != 0);
+        return entries.FindAll(x => x.Level <= _command.Level || x.AccountId != 0);
       } else {
         throw Assertion.AssertNoReachThisCode();
       }

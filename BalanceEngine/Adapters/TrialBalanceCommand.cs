@@ -49,6 +49,16 @@ namespace Empiria.FinancialAccounting.BalanceEngine.Adapters {
     }
 
 
+    public DateTime FromDateComparative {
+      get; set;
+    }
+
+
+    public DateTime ToDateComparative {
+      get; set;
+    }
+
+
     public string[] Sectors {
       get; set;
     } = new string[0];
@@ -92,6 +102,22 @@ namespace Empiria.FinancialAccounting.BalanceEngine.Adapters {
     public DateTime ExchangeRateDate {
       get; set;
     }
+
+
+    public string ValuateToCurrrencyComparativeUID {
+      get; set;
+    } = string.Empty;
+
+
+    public string ExchangeRateTypeComparativeUID {
+      get; set;
+    } = string.Empty;
+
+
+    public DateTime ExchangeRateDateComparative {
+      get; set;
+    }
+
 
     public bool ConsolidateBalancesToTargetCurrency {
       get; set;

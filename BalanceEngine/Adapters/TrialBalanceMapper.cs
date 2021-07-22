@@ -30,7 +30,7 @@ namespace Empiria.FinancialAccounting.BalanceEngine.Adapters {
       newEntry.Ledger = entry.Ledger;
       newEntry.Currency = entry.Currency;
       newEntry.Sector = entry.Sector;
-      newEntry.LedgerAccountId = entry.LedgerAccountId;
+      newEntry.AccountId = entry.AccountId;
       newEntry.SubledgerAccountId = entry.SubledgerAccountId;
       newEntry.InitialBalance = entry.InitialBalance;
       newEntry.Debit = entry.Debit;
@@ -47,7 +47,7 @@ namespace Empiria.FinancialAccounting.BalanceEngine.Adapters {
     static internal TwoCurrenciesBalanceEntry MapTwoCurrenciesBalance(TwoCurrenciesBalanceEntry balanceEntry) {
       var entry = new TwoCurrenciesBalanceEntry();
       entry.Account = balanceEntry.Account;
-      entry.LedgerAccountId = balanceEntry.LedgerAccountId;
+      entry.AccountId = balanceEntry.AccountId;
       entry.SubledgerAccountId = balanceEntry.SubledgerAccountId;
       entry.Ledger = balanceEntry.Ledger;
       entry.Currency = balanceEntry.Currency;
@@ -81,6 +81,7 @@ namespace Empiria.FinancialAccounting.BalanceEngine.Adapters {
         case TrialBalanceType.SaldosPorAuxiliar:
         case TrialBalanceType.SaldosPorCuenta:
         case TrialBalanceType.SaldosPorCuentaYMayor:
+        case TrialBalanceType.BalanzaValorizadaComparativa:
           var mappedItems = list.Select((x) => MapToTrialBalance((TrialBalanceEntry) x));
 
           return new FixedList<ITrialBalanceEntryDto>(mappedItems);
@@ -100,7 +101,7 @@ namespace Empiria.FinancialAccounting.BalanceEngine.Adapters {
       dto.ItemType = trialBalanceEntry.ItemType;
       dto.LedgerUID = trialBalanceEntry.Ledger.UID;
       dto.LedgerNumber = trialBalanceEntry.Ledger.Number;
-      dto.LedgerAccountId = trialBalanceEntry.LedgerAccountId;
+      dto.AccountId = trialBalanceEntry.AccountId;
       dto.CurrencyCode = trialBalanceEntry.Currency.Code;
       if (subledgerAccount.IsEmptyInstance) {
         dto.AccountName = trialBalanceEntry.GroupName != "" ? trialBalanceEntry.GroupName :
@@ -131,7 +132,7 @@ namespace Empiria.FinancialAccounting.BalanceEngine.Adapters {
       dto.ItemType = trialBalanceEntry.ItemType;
       dto.LedgerUID = trialBalanceEntry.Ledger.UID;
       dto.LedgerNumber = trialBalanceEntry.Ledger.Number;
-      dto.LedgerAccountId = trialBalanceEntry.LedgerAccountId;
+      dto.AccountId = trialBalanceEntry.AccountId;
       dto.CurrencyCode = trialBalanceEntry.ItemType == TrialBalanceItemType.BalanceTotalConsolidated ? "" :
                          trialBalanceEntry.Currency.Code;
       if (subledgerAccount.IsEmptyInstance) {

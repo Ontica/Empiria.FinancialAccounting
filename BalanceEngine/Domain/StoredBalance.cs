@@ -26,7 +26,7 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
       this.AccountNumber = entry.Account.Number;
       this.AccountName = entry.Account.Name;
       this.Ledger = entry.Ledger;
-      this.LedgerAccountId = entry.LedgerAccountId;
+      this.LedgerAccountId = entry.AccountId;
       this.Currency = entry.Currency;
       this.Sector = entry.Sector;
       this.SubsidiaryAccountId = entry.SubledgerAccountId;
