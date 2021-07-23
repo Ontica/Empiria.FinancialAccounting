@@ -30,8 +30,8 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
       var helper = new TrialBalanceHelper(_command);
       var twoColumnsHelper = new TwoCurrenciesBalanceHelper(_command);
 
-      FixedList<TrialBalanceEntry> postingEntries = helper.GetTrialBalanceEntries();
-      postingEntries = helper.ValuateToExchangeRate(postingEntries);
+      FixedList<TrialBalanceEntry> postingEntries = helper.GetTrialBalanceEntries(_command.InitialPeriod);
+      postingEntries = helper.ValuateToExchangeRate(postingEntries, _command.InitialPeriod);
 
       List<TrialBalanceEntry> summaryEntries = helper.GenerateSummaryEntries(postingEntries);
       List<TrialBalanceEntry> trialBalance = helper.CombineSummaryAndPostingEntries(summaryEntries,

@@ -70,8 +70,8 @@ namespace Empiria.FinancialAccounting.BalanceEngine.Adapters {
                                                         FixedList<ITrialBalanceEntry> list) {
       switch (command.TrialBalanceType) {
         case TrialBalanceType.AnaliticoDeCuentas:
+          
           var mi = list.Select((x) => MapToTwoCurrenciesBalanceEntry((TwoCurrenciesBalanceEntry) x));
-
           return new FixedList<ITrialBalanceEntryDto>(mi);
 
         case TrialBalanceType.Balanza:
@@ -81,10 +81,14 @@ namespace Empiria.FinancialAccounting.BalanceEngine.Adapters {
         case TrialBalanceType.SaldosPorAuxiliar:
         case TrialBalanceType.SaldosPorCuenta:
         case TrialBalanceType.SaldosPorCuentaYMayor:
-        case TrialBalanceType.BalanzaValorizadaComparativa:
+          
           var mappedItems = list.Select((x) => MapToTrialBalance((TrialBalanceEntry) x));
-
           return new FixedList<ITrialBalanceEntryDto>(mappedItems);
+
+        case TrialBalanceType.BalanzaValorizadaComparativa:
+          
+          var mappedItemsComparative = list.Select((x) => MapToTrialBalanceComparative((TrialBalanceEntry) x));
+          return new FixedList<ITrialBalanceEntryDto>(mappedItemsComparative);
 
         default:
           throw Assertion.AssertNoReachThisCode(
@@ -126,6 +130,40 @@ namespace Empiria.FinancialAccounting.BalanceEngine.Adapters {
     }
 
     static private TrialBalanceEntryDto MapToTrialBalance(TrialBalanceEntry trialBalanceEntry) {
+      var dto = new TrialBalanceEntryDto();
+      SubsidiaryAccount subledgerAccount = SubsidiaryAccount.Parse(trialBalanceEntry.SubledgerAccountId);
+
+      dto.ItemType = trialBalanceEntry.ItemType;
+      dto.LedgerUID = trialBalanceEntry.Ledger.UID;
+      dto.LedgerNumber = trialBalanceEntry.Ledger.Number;
+      dto.AccountId = trialBalanceEntry.AccountId;
+      dto.CurrencyCode = trialBalanceEntry.ItemType == TrialBalanceItemType.BalanceTotalConsolidated ? "" :
+                         trialBalanceEntry.Currency.Code;
+      if (subledgerAccount.IsEmptyInstance) {
+        dto.AccountName = trialBalanceEntry.GroupName != "" ? trialBalanceEntry.GroupName :
+                          trialBalanceEntry.Account.Name;
+        dto.AccountNumber = trialBalanceEntry.GroupNumber != "" ? trialBalanceEntry.GroupNumber :
+                            trialBalanceEntry.Account.Number != "Empty" ?
+                            trialBalanceEntry.Account.Number : "";
+      } else {
+        dto.AccountName = subledgerAccount.Name;
+        dto.AccountNumber = subledgerAccount.Number;
+      }
+      dto.AccountRole = trialBalanceEntry.Account.Role;
+      dto.AccountLevel = trialBalanceEntry.Account.Level;
+      dto.SectorCode = trialBalanceEntry.Sector.Code;
+      dto.SubledgerAccountId = trialBalanceEntry.SubledgerAccountId;
+      dto.InitialBalance = trialBalanceEntry.InitialBalance;
+      dto.Debit = trialBalanceEntry.Debit;
+      dto.Credit = trialBalanceEntry.Credit;
+      dto.CurrentBalance = trialBalanceEntry.CurrentBalance;
+      dto.ExchangeRate = trialBalanceEntry.ExchangeRate;
+
+      return dto;
+    }
+
+
+    static private TrialBalanceEntryDto MapToTrialBalanceComparative(TrialBalanceEntry trialBalanceEntry) {
       var dto = new TrialBalanceEntryDto();
       SubsidiaryAccount subledgerAccount = SubsidiaryAccount.Parse(trialBalanceEntry.SubledgerAccountId);
 

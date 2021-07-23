@@ -53,11 +53,11 @@ namespace Empiria.FinancialAccounting.OfficeIntegration {
     private void SetHeader(TrialBalanceCommand command) {
       _excelFile.SetCell($"A2", _templateConfig.Title);
 
-      var subTitle = $"Del {command.FromDate.ToString("dd/MMM/yyyy")} " +
-                     $"al {command.ToDate.ToString("dd/MMM/yyyy")}";
+      var subTitle = $"Del {command.InitialPeriod.FromDate.ToString("dd/MMM/yyyy")} " +
+                     $"al {command.InitialPeriod.ToDate.ToString("dd/MMM/yyyy")}";
 
       if (command.ValuateBalances) {
-        subTitle += $". Saldos valorizados al {command.ExchangeRateDate.ToString("dd/MMM/yyyy")}.";
+        subTitle += $". Saldos valorizados al {command.InitialPeriod.ExchangeRateDate.ToString("dd/MMM/yyyy")}.";
       }
 
       _excelFile.SetCell($"A3", subTitle);

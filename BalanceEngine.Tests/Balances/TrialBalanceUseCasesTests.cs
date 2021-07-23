@@ -47,15 +47,21 @@ namespace Empiria.FinancialAccounting.Tests.Balances {
       command.AccountsChartUID = "b2328e67-3f2e-45b9-b1f6-93ef6292204e";
       command.BalancesType = BalanceEngine.BalancesType.AllAccounts;
       command.ConsolidateBalancesToTargetCurrency = false;
-      command.ExchangeRateDate = new DateTime(2021, 01, 15);
-      command.ExchangeRateTypeUID = "5923136d-8533-4975-81b9-c8ec3bf18dea";
-      command.FromDate = TestingConstants.FromDate;
-      command.ToDate = TestingConstants.ToDate;
-      command.FromDateComparative = new DateTime(2021, 02, 01);
-      command.ToDateComparative = new DateTime(2021, 02, 28);
+
+      command.InitialPeriod.FromDate = TestingConstants.FromDate;
+      command.InitialPeriod.ToDate = TestingConstants.ToDate;
+      command.InitialPeriod.ExchangeRateDate = new DateTime(2021, 01, 15);
+      command.InitialPeriod.ExchangeRateTypeUID = "5923136d-8533-4975-81b9-c8ec3bf18dea";
+      command.InitialPeriod.ValuateToCurrrencyUID = "01";
+
+      //command.FinalPeriod.FromDate = new DateTime(2021, 02, 01);
+      //command.FinalPeriod.ToDate = new DateTime(2021, 02, 28);
+      //command.FinalPeriod.ExchangeRateDate = new DateTime(2021, 02, 15);
+      //command.FinalPeriod.ExchangeRateTypeUID = "5923136d-8533-4975-81b9-c8ec3bf18dea";
+      //command.FinalPeriod.ValuateToCurrrencyUID = "01";
+
       command.ShowCascadeBalances = true;
       command.TrialBalanceType = BalanceEngine.TrialBalanceType.BalanzaValorizadaComparativa;
-      command.ValuateToCurrrencyUID = "01";
       command.FromAccount = "1101";
       command.ToAccount = "1103";
       command.Ledgers = new string[] { "2584a757-865c-2025-8025-fa633f200c49" };
@@ -74,8 +80,8 @@ namespace Empiria.FinancialAccounting.Tests.Balances {
 
       command.TrialBalanceType = BalanceEngine.TrialBalanceType.Balanza;
       command.ShowCascadeBalances = true;
-      command.FromDate = TestingConstants.FromDate;
-      command.ToDate = TestingConstants.ToDate;
+      command.InitialPeriod.FromDate = TestingConstants.FromDate;
+      command.InitialPeriod.ToDate = TestingConstants.ToDate;
 
       TrialBalanceDto trialBalance = _usecases.BuildTrialBalance(command);
 

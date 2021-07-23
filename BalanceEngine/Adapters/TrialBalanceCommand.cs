@@ -39,26 +39,6 @@ namespace Empiria.FinancialAccounting.BalanceEngine.Adapters {
     } = new string[0];
 
 
-    public DateTime FromDate {
-      get; set;
-    }
-
-
-    public DateTime ToDate {
-      get; set;
-    }
-
-
-    public DateTime FromDateComparative {
-      get; set;
-    }
-
-
-    public DateTime ToDateComparative {
-      get; set;
-    }
-
-
     public string[] Sectors {
       get; set;
     } = new string[0];
@@ -89,34 +69,14 @@ namespace Empiria.FinancialAccounting.BalanceEngine.Adapters {
     } = BalancesType.AllAccounts;
 
 
-    public string ValuateToCurrrencyUID {
+    public TrialBalanceCommandPeriod InitialPeriod {
       get; set;
-    } = string.Empty;
+    } = new TrialBalanceCommandPeriod();
 
 
-    public string ExchangeRateTypeUID {
+    public TrialBalanceCommandPeriod FinalPeriod {
       get; set;
-    } = string.Empty;
-
-
-    public DateTime ExchangeRateDate {
-      get; set;
-    }
-
-
-    public string ValuateToCurrrencyComparativeUID {
-      get; set;
-    } = string.Empty;
-
-
-    public string ExchangeRateTypeComparativeUID {
-      get; set;
-    } = string.Empty;
-
-
-    public DateTime ExchangeRateDateComparative {
-      get; set;
-    }
+    } = new TrialBalanceCommandPeriod();
 
 
     public bool ConsolidateBalancesToTargetCurrency {
@@ -150,8 +110,15 @@ namespace Empiria.FinancialAccounting.BalanceEngine.Adapters {
 
     public bool ValuateBalances {
       get {
-        return this.ValuateToCurrrencyUID.Length != 0 &&
-               this.ExchangeRateTypeUID.Length != 0;
+        return this.InitialPeriod.ValuateToCurrrencyUID.Length != 0 &&
+               this.InitialPeriod.ExchangeRateTypeUID.Length != 0;
+      }
+    }
+
+    public bool ValuateFinalBalances {
+      get {
+        return this.FinalPeriod.ValuateToCurrrencyUID.Length != 0 &&
+               this.FinalPeriod.ExchangeRateTypeUID.Length != 0;
       }
     }
 
@@ -165,6 +132,29 @@ namespace Empiria.FinancialAccounting.BalanceEngine.Adapters {
     }
 
   } // class TrialBalanceCommand
+
+  public class TrialBalanceCommandPeriod {
+    public DateTime FromDate {
+      get; set;
+    }
+
+    public DateTime ToDate {
+      get; set;
+    }
+
+    public DateTime ExchangeRateDate {
+      get; set;
+    } = DateTime.Now;
+
+    public string ExchangeRateTypeUID {
+      get; set;
+    } = string.Empty;
+
+    public string ValuateToCurrrencyUID {
+      get; set;
+    } = string.Empty;
+
+  }
 
 
 } // namespace Empiria.FinancialAccounting.BalanceEngine.Adapters

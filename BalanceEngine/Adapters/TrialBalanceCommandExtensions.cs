@@ -17,10 +17,13 @@ namespace Empiria.FinancialAccounting.BalanceEngine.Adapters {
 
     #region Public methods
 
-    static internal TrialBalanceCommandData MapToTrialBalanceCommandData(this TrialBalanceCommand command) {
+    static internal TrialBalanceCommandData MapToTrialBalanceCommandData(
+                                              this TrialBalanceCommand command,
+                                              TrialBalanceCommandPeriod commandPeriod) {
+
       var helper = new TrialBalanceClausesHelper(command);
 
-      return helper.GetTrialBalanceCommandData();
+      return helper.GetTrialBalanceCommandData(commandPeriod);
     }
 
     #endregion Public methods
@@ -38,16 +41,17 @@ namespace Empiria.FinancialAccounting.BalanceEngine.Adapters {
 
       #region Public methods
 
-      internal TrialBalanceCommandData GetTrialBalanceCommandData() {
+      internal TrialBalanceCommandData GetTrialBalanceCommandData(TrialBalanceCommandPeriod commandPeriod) {
         var commandData = new TrialBalanceCommandData();
 
         var accountsChart = AccountsChart.Parse(_command.AccountsChartUID);
 
-        StoredBalanceSet balanceSet = StoredBalanceSet.GetBestBalanceSet(accountsChart, _command.FromDate);
+        StoredBalanceSet balanceSet = StoredBalanceSet.GetBestBalanceSet(
+                                        accountsChart, commandPeriod.FromDate);
 
         commandData.StoredInitialBalanceSet = balanceSet;
-        commandData.FromDate = _command.FromDate;
-        commandData.ToDate = _command.ToDate;
+        commandData.FromDate = commandPeriod.FromDate;
+        commandData.ToDate = commandPeriod.ToDate;
         commandData.InitialFields = GetInitialFields();
         commandData.Fields = GetOutputFields();
         commandData.Filters = GetFilterString();

@@ -166,8 +166,7 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
       var command = new TrialBalanceCommand {
         AccountsChartUID = this.AccountsChart.UID,
         TrialBalanceType = TrialBalanceType.GeneracionDeSaldos,
-        FromDate = this.BalancesDate,
-        ToDate = this.BalancesDate,
+        InitialPeriod = { FromDate = this.BalancesDate, ToDate = this.BalancesDate },
         ShowCascadeBalances = true
       };
 

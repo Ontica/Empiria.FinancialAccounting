@@ -28,10 +28,9 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
       var helper = new TrialBalanceHelper(_command);
       List<TrialBalanceEntry> trialBalanceComparative = new List<TrialBalanceEntry>();
 
-      List<TrialBalanceEntry> trialBalanceFirstPeriod = helper.GetSummaryAndPostingEntries();
-      _command.FromDate = _command.FromDateComparative;
-      _command.ToDate = _command.ToDateComparative;
-      List<TrialBalanceEntry> trialBalanceSecondPeriod = helper.GetSummaryAndPostingEntries();
+      FixedList<TrialBalanceEntry> trialBalanceFirstPeriod = helper.GetPostingEntries();
+      
+      FixedList<TrialBalanceEntry> trialBalanceSecondPeriod = helper.GetPostingEntries(true);
 
       trialBalanceComparative.AddRange(trialBalanceFirstPeriod);
       trialBalanceComparative.AddRange(trialBalanceSecondPeriod);

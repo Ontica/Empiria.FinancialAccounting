@@ -181,7 +181,7 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
 
     
     internal FixedList<TwoCurrenciesBalanceEntry> MergeAccountsIntoTwoColumns(List<TrialBalanceEntry> trialBalance) {
-      var targetCurrency = Currency.Parse(_command.ValuateToCurrrencyUID);
+      var targetCurrency = Currency.Parse(_command.InitialPeriod.ValuateToCurrrencyUID);
       var summaryEntries = new EmpiriaHashTable<TwoCurrenciesBalanceEntry>();
 
       foreach (var entry in trialBalance) {

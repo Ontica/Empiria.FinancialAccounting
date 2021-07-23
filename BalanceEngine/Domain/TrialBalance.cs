@@ -74,7 +74,7 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
       columns.Add(new DataTableColumn("debit", "Cargos", "decimal"));
       columns.Add(new DataTableColumn("credit", "Abonos", "decimal"));
       columns.Add(new DataTableColumn("currentBalance", "Saldo actual", "decimal"));
-      if (Command.ExchangeRateTypeUID != string.Empty) {
+      if (Command.InitialPeriod.ExchangeRateTypeUID != string.Empty) {
         columns.Add(new DataTableColumn("exchangeRate", "TC", "decimal"));
       }
 
@@ -87,24 +87,24 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
 
       columns.Add(new DataTableColumn("ledgerNumber", "Cont", "text"));
       columns.Add(new DataTableColumn("currencyCode", "Mon", "text"));
-      columns.Add(new DataTableColumn("accountNumber", "Cta", "text-nowrap"));
-      columns.Add(new DataTableColumn("accountNumber", "Scta", "text-nowrap"));
+      columns.Add(new DataTableColumn("accountParent", "Cta", "text-nowrap"));
+      columns.Add(new DataTableColumn("subAccountNumber", "Scta", "text-nowrap"));
       columns.Add(new DataTableColumn("accountNumber", "Cuenta", "text-nowrap"));
       columns.Add(new DataTableColumn("sectorCode", "Sct", "text"));
-      columns.Add(new DataTableColumn("accountNumber", "Auxiliar", "text-nowrap"));
+      columns.Add(new DataTableColumn("subsidiaryAccountNumber", "Auxiliar", "text-nowrap"));
       columns.Add(new DataTableColumn("subledgerAccountName", "Nombre", "text"));
 
-      columns.Add(new DataTableColumn("totalBalance", $"{Command.FromDate:MMM_yyyy}", "decimal"));
+      columns.Add(new DataTableColumn("totalBalance", $"{Command.InitialPeriod.FromDate:MMM_yyyy}", "decimal"));
       columns.Add(new DataTableColumn("exchangeRate", "Tc_Ini", "decimal"));
-      columns.Add(new DataTableColumn("currentVal", $"{Command.FromDate:MMM}_VAL", "decimal"));
+      columns.Add(new DataTableColumn("currentVal", $"{Command.InitialPeriod.FromDate:MMM}_VAL", "decimal"));
+      
       columns.Add(new DataTableColumn("debit", "Cargos", "decimal"));
       columns.Add(new DataTableColumn("credit", "Abonos", "decimal"));
-
-      columns.Add(new DataTableColumn("totalBalanceComparative", $"{Command.FromDateComparative:MMM_yyyy}", "decimal"));
+      columns.Add(new DataTableColumn("totalBalanceComparative", $"{Command.FinalPeriod.FromDate:MMM_yyyy}", "decimal"));
       columns.Add(new DataTableColumn("exchangeRateComparative", "Tc_Fin", "decimal"));
-      columns.Add(new DataTableColumn("totalValComparative", $"{Command.FromDate:MMM}_VAL", "decimal"));
+      columns.Add(new DataTableColumn("totalValComparative", $"{Command.FinalPeriod.FromDate:MMM}_VAL", "decimal"));
 
-      columns.Add(new DataTableColumn("AccountName", "Nom_Cta", "text"));
+      columns.Add(new DataTableColumn("accountName", "Nom_Cta", "text"));
       columns.Add(new DataTableColumn("naturaleza", "Nat", "text"));
       columns.Add(new DataTableColumn("variation", "Variación", "decimal"));
       columns.Add(new DataTableColumn("variationByTC", "Variación por TC", "decimal"));
@@ -134,7 +134,7 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
       columns.Add(new DataTableColumn("domesticBalance", "Saldo Mon. Nal.", "decimal"));
       columns.Add(new DataTableColumn("foreignBalance", "Saldo Mon. Ext.", "decimal"));
       columns.Add(new DataTableColumn("totalBalance", "Total", "decimal"));
-      if (Command.ExchangeRateTypeUID != string.Empty) {
+      if (Command.InitialPeriod.ExchangeRateTypeUID != string.Empty) {
         //columns.Add(new DataTableColumn("exchangeRate", "TC", "decimal"));
       }
 

@@ -173,8 +173,11 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
     }
 
 
-    internal FixedList<TrialBalanceEntry> ConsolidateToTargetCurrency(FixedList<TrialBalanceEntry> trialBalance) {
-      var targetCurrency = Currency.Parse(_command.ValuateToCurrrencyUID);
+    internal FixedList<TrialBalanceEntry> ConsolidateToTargetCurrency(
+                                          FixedList<TrialBalanceEntry> trialBalance,
+                                          TrialBalanceCommandPeriod commandPeriod) {
+
+      var targetCurrency = Currency.Parse(commandPeriod.ValuateToCurrrencyUID);
 
       var summaryEntries = new EmpiriaHashTable<TrialBalanceEntry>();
 
@@ -373,16 +376,23 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
     }
 
 
-    internal FixedList<TrialBalanceEntry> GetPostingEntries() {
+    internal FixedList<TrialBalanceEntry> GetPostingEntries(bool isComparativeBalance = false) {
       var helper = new TrialBalanceHelper(_command);
 
-      FixedList<TrialBalanceEntry> postingEntries = helper.GetTrialBalanceEntries();
+      TrialBalanceCommandPeriod commandPeriod = new TrialBalanceCommandPeriod();
+      if (isComparativeBalance) {
+        commandPeriod = _command.FinalPeriod;
+      } else {
+        commandPeriod = _command.InitialPeriod;
+      }
 
-      if (_command.ValuateBalances) {
-        postingEntries = helper.ValuateToExchangeRate(postingEntries);
+      FixedList<TrialBalanceEntry> postingEntries = helper.GetTrialBalanceEntries(commandPeriod);
+
+      if (_command.ValuateBalances || _command.ValuateFinalBalances) {
+        postingEntries = helper.ValuateToExchangeRate(postingEntries, commandPeriod);
 
         if (_command.ConsolidateBalancesToTargetCurrency) {
-          postingEntries = helper.ConsolidateToTargetCurrency(postingEntries);
+          postingEntries = helper.ConsolidateToTargetCurrency(postingEntries, commandPeriod);
         }
       }
       return postingEntries;
@@ -404,13 +414,13 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
       }
     }
 
-    internal FixedList<TrialBalanceEntry> GetTrialBalanceEntries() {
+    internal FixedList<TrialBalanceEntry> GetTrialBalanceEntries(TrialBalanceCommandPeriod commandPeriod) {
       if (_command.TrialBalanceType == TrialBalanceType.SaldosPorCuentaYMayor ||
           _command.TrialBalanceType == TrialBalanceType.BalanzaValorizadaComparativa) {
           _command.ShowCascadeBalances = true;
       }
 
-      TrialBalanceCommandData commandData = _command.MapToTrialBalanceCommandData();
+      TrialBalanceCommandData commandData = _command.MapToTrialBalanceCommandData(commandPeriod);
 
       return TrialBalanceDataService.GetTrialBalanceEntries(commandData);
     }
@@ -431,13 +441,15 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
     }
 
 
-    internal FixedList<TrialBalanceEntry> ValuateToExchangeRate(FixedList<TrialBalanceEntry> entries) {
-      var exchangeRateType = ExchangeRateType.Parse(_command.ExchangeRateTypeUID);
+    internal FixedList<TrialBalanceEntry> ValuateToExchangeRate(FixedList<TrialBalanceEntry> entries, 
+                                                                TrialBalanceCommandPeriod commandPeriod) {
 
-      FixedList<ExchangeRate> exchageRates = ExchangeRate.GetList(exchangeRateType, _command.ExchangeRateDate);
+      var exchangeRateType = ExchangeRateType.Parse(commandPeriod.ExchangeRateTypeUID);
+
+      FixedList<ExchangeRate> exchageRates = ExchangeRate.GetList(exchangeRateType, commandPeriod.ExchangeRateDate);
 
       foreach (var entry in entries.Where(a => a.Currency.Code != "01")) {
-        var exchangeRate = exchageRates.FirstOrDefault(a => a.FromCurrency.Code == _command.ValuateToCurrrencyUID &&
+        var exchangeRate = exchageRates.FirstOrDefault(a => a.FromCurrency.Code == commandPeriod.ValuateToCurrrencyUID &&
                                                             a.ToCurrency.Code == entry.Currency.Code);
 
         Assertion.AssertObject(exchangeRate, $"No hay tipo de cambio para la moneda {entry.Currency.FullName}.");
