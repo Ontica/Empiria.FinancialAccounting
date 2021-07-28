@@ -208,7 +208,8 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
         entry.SubledgerAccountNumber = SubsidiaryAccount.Parse(entry.SubledgerAccountId).Number ?? "";
         StandardAccount currentParent;
 
-        if (_command.ReturnSubledgerAccounts) {
+        if ((entry.Account.NotHasParent) ||
+            _command.ReturnSubledgerAccounts) {
           currentParent = entry.Account;
 
         } else if (_command.DoNotReturnSubledgerAccounts && entry.Account.HasParent) {
@@ -220,14 +221,17 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
           throw Assertion.AssertNoReachThisCode();
         }
 
+        
         int cont = 0;
         while (true) {
           entry.DebtorCreditor = entry.Account.DebtorCreditor;
           entry.SubledgerAccountIdParent = entry.SubledgerAccountId;
 
-          SummaryByEntry(summaryEntries, entry, currentParent, entry.Sector,
+          if (entry.Level > 1) {
+            SummaryByEntry(summaryEntries, entry, currentParent, entry.Sector,
                                          TrialBalanceItemType.BalanceSummary);
-
+          }
+          
           cont++;
           if (cont == 1 && _command.TrialBalanceType == TrialBalanceType.SaldosPorCuenta) {
             GetDetailSummaryEntries(detailSummaryEntries, summaryEntries, currentParent, entry);
