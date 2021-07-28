@@ -207,7 +207,7 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
         List<TrialBalanceEntry> summaryEntries = new List<TrialBalanceEntry>();
         var summaryParentEntries = new EmpiriaHashTable<TrialBalanceEntry>();
         StandardAccount account = entry.Account;
-
+        
         while (true) {
           var parent = returnedEntries.FirstOrDefault(a => a.Ledger.Number == entry.Ledger.Number &&
                             a.Currency.Code == entry.Currency.Code && a.SubledgerAccountId == 0 &&
@@ -232,7 +232,9 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
             parent.Sum(entry);
 
             if (!account.HasParent) {
-              AccumulateSubledgerAccount(returnedEntries, entry, account);
+              if (entry.HasSector) {
+                AccumulateSubledgerAccount(returnedEntries, entry, account);
+              }
               break;
             } else {
               account = account.GetParent();
