@@ -27,7 +27,6 @@ namespace Empiria.FinancialAccounting.Data {
       return DataReader.GetHashTable<Account>(dataOperation, x => x.Number);
     }
 
-
     static internal FixedList<Account> GetAccountHistory(AccountsChart accountsChart,
                                                          string accountNumber) {
       var sql = "SELECT * FROM VW_COF_CUENTA_ESTANDAR_HIST " +
@@ -44,7 +43,7 @@ namespace Empiria.FinancialAccounting.Data {
     static internal FixedList<Ledger> GetAccountChartLedgers(AccountsChart accountsChart) {
       var sql = "SELECT COF_MAYOR.* " +
                 $"FROM COF_MAYOR " +
-                $"WHERE ID_TIPO_CUENTAS_STD = {accountsChart.Id} " +
+                $"WHERE ID_TIPO_CUENTAS_STD = {accountsChart.Id} AND ELIMINADO = 0 " +
                 $"ORDER BY NUMERO_MAYOR";
 
       var dataOperation = DataOperation.Parse(sql);
