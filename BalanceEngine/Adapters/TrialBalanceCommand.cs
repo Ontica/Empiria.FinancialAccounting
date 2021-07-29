@@ -154,6 +154,10 @@ namespace Empiria.FinancialAccounting.BalanceEngine.Adapters {
       get; set;
     } = string.Empty;
 
+    public bool UseDefaultValuation {
+      get; set;
+    } = false;
+
   }
 
 

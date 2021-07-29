@@ -395,7 +395,8 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
 
       FixedList<TrialBalanceEntry> postingEntries = helper.GetTrialBalanceEntries(commandPeriod);
 
-      if (_command.ValuateBalances || _command.ValuateFinalBalances) {
+      if (_command.ValuateBalances || _command.ValuateFinalBalances || 
+          _command.InitialPeriod.UseDefaultValuation) {
         postingEntries = helper.ValuateToExchangeRate(postingEntries, commandPeriod);
 
         if (_command.ConsolidateBalancesToTargetCurrency) {
@@ -447,7 +448,11 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
 
     internal FixedList<TrialBalanceEntry> ValuateToExchangeRate(FixedList<TrialBalanceEntry> entries, 
                                                                 TrialBalanceCommandPeriod commandPeriod) {
-
+      if (commandPeriod.UseDefaultValuation) {
+        commandPeriod.ExchangeRateTypeUID = "96c617f6-8ed9-47f3-8d2d-f1240e446e1d";
+        commandPeriod.ValuateToCurrrencyUID = "01";
+        commandPeriod.ExchangeRateDate = commandPeriod.ToDate;
+      }
       var exchangeRateType = ExchangeRateType.Parse(commandPeriod.ExchangeRateTypeUID);
 
       FixedList<ExchangeRate> exchageRates = ExchangeRate.GetList(exchangeRateType, commandPeriod.ExchangeRateDate);

@@ -74,7 +74,8 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
       columns.Add(new DataTableColumn("debit", "Cargos", "decimal"));
       columns.Add(new DataTableColumn("credit", "Abonos", "decimal"));
       columns.Add(new DataTableColumn("currentBalance", "Saldo actual", "decimal"));
-      if (Command.InitialPeriod.ExchangeRateTypeUID != string.Empty) {
+      if (Command.InitialPeriod.ExchangeRateTypeUID != string.Empty ||
+          Command.InitialPeriod.UseDefaultValuation) {
         columns.Add(new DataTableColumn("exchangeRate", "TC", "decimal"));
       }
 
