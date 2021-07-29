@@ -31,7 +31,7 @@ namespace Empiria.FinancialAccounting {
 
     #region Constructors and parsers
 
-    private Account() {
+    protected Account() {
       // Required by Empiria Framework.
     }
 

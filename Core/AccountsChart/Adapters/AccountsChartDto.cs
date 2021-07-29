@@ -92,6 +92,10 @@ namespace Empiria.FinancialAccounting.Adapters {
       get; internal set;
     }
 
+    public DateTime EndDate {
+      get; internal set;
+    }
+
     public bool LastLevel {
       get; internal set;
     }
@@ -107,10 +111,6 @@ namespace Empiria.FinancialAccounting.Adapters {
     }
 
     public string Description {
-      get; internal set;
-    }
-
-    public DateTime EndDate {
       get; internal set;
     }
 

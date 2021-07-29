@@ -63,6 +63,7 @@ namespace Empiria.FinancialAccounting.Adapters {
       return dto;
     }
 
+
     static internal AccountsChartDto MapWithSectors(AccountsChart accountsChart,
                                                     FixedList<Account> accounts) {
       return new AccountsChartDto {
@@ -88,8 +89,9 @@ namespace Empiria.FinancialAccounting.Adapters {
       dto.DebtorCreditor = account.DebtorCreditor;
       dto.Level = account.Level;
       dto.Sector = "00";
-      dto.StartDate = account.StartDate;
       dto.LastLevel = account.Role != AccountRole.Sumaria;
+      dto.StartDate = account.StartDate;
+      dto.EndDate = account.EndDate;
       dto.Obsolete = account.EndDate < Account.MAX_END_DATE;
     }
 
@@ -104,10 +106,11 @@ namespace Empiria.FinancialAccounting.Adapters {
 
       foreach (var account in list) {
         var descriptor = MapToAccountDescriptor(account);
-        if (account.Role == AccountRole.Sectorizada) {
-          descriptor.LastLevel = false;
+
+        if (account.Role != AccountRole.Sectorizada) {
+          withSectors.Add(descriptor);
+          continue;
         }
-        withSectors.Add(descriptor);
 
         var sectors = account.GetSectors();
         if (sectors.Count == 0) {

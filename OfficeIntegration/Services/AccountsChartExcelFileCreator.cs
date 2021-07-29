@@ -62,6 +62,9 @@ namespace Empiria.FinancialAccounting.OfficeIntegration {
         excelFile.SetCell($"J{i}", account.Type);
         excelFile.SetCell($"K{i}", account.DebtorCreditor.ToString());
         excelFile.SetCell($"L{i}", account.StartDate);
+        if (account.Obsolete) {
+          excelFile.SetCell($"M{i}", account.EndDate);
+        }
         i++;
       }
 

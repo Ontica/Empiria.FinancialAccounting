@@ -24,7 +24,7 @@ namespace Empiria.FinancialAccounting {
     }
 
 
-    static internal LedgerAccount Parse(int id) {
+    static public LedgerAccount Parse(int id) {
       return BaseObject.ParseId<LedgerAccount>(id);
     }
 
