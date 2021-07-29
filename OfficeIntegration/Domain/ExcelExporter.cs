@@ -39,13 +39,28 @@ namespace Empiria.FinancialAccounting.OfficeIntegration {
       Assertion.AssertObject(accountsChart, "accountsChart");
       Assertion.AssertObject(searchCommand, "searchCommand");
 
-      var templateUID = $"AccountsChartTemplate";
+      var templateUID = "AccountsChartTemplate";
 
       var templateConfig = ExcelTemplateConfig.Parse(templateUID);
 
       var creator = new AccountsChartExcelFileCreator(templateConfig);
 
       ExcelFile excelFile = creator.CreateExcelFile(accountsChart);
+
+      return ExcelFileMapper.Map(excelFile);
+    }
+
+
+    public ExcelFileDto Export(StoredBalanceSetDto balanceSet) {
+      Assertion.AssertObject(balanceSet, "balanceSet");
+
+      var templateUID = "BalanceSetTemplate";
+
+      var templateConfig = ExcelTemplateConfig.Parse(templateUID);
+
+      var creator = new StoredBalanceSetExcelFileCreator(templateConfig);
+
+      ExcelFile excelFile = creator.CreateExcelFile(balanceSet);
 
       return ExcelFileMapper.Map(excelFile);
     }

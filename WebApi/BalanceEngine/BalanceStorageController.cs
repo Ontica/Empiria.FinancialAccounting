@@ -11,8 +11,11 @@ using System.Web.Http;
 
 using Empiria.WebApi;
 
-using Empiria.FinancialAccounting.BalanceEngine.UseCases;
 using Empiria.FinancialAccounting.BalanceEngine.Adapters;
+using Empiria.FinancialAccounting.BalanceEngine.UseCases;
+
+using Empiria.FinancialAccounting.OfficeIntegration;
+using Empiria.FinancialAccounting.OfficeIntegration.Adapters;
 
 namespace Empiria.FinancialAccounting.WebApi.BalanceEngine {
 
@@ -66,6 +69,22 @@ namespace Empiria.FinancialAccounting.WebApi.BalanceEngine {
         StoredBalanceSetDto balanceSet = usecases.CreateOrGetBalanceSet(accountsChartUID, command);
 
         return new SingleObjectModel(this.Request, balanceSet);
+      }
+    }
+
+    [HttpGet]
+    [Route("v2/financial-accounting/accounts-charts/{accountsChartUID:guid}/balance-store/{balanceSetUID:guid}/excel")]
+    public SingleObjectModel ExportStoredBalancesToExcel([FromUri] string accountsChartUID,
+                                                         [FromUri] string balanceSetUID) {
+
+      using (var usecases = BalanceStorageUseCases.UseCaseInteractor()) {
+        StoredBalanceSetDto balanceSet = usecases.GetBalanceSet(accountsChartUID, balanceSetUID);
+
+        var excelExporter = new ExcelExporter();
+
+        ExcelFileDto excelFileDto = excelExporter.Export(balanceSet);
+
+        return new SingleObjectModel(base.Request, excelFileDto);
       }
     }
 
