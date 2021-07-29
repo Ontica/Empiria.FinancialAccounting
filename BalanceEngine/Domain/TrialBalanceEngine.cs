@@ -78,6 +78,8 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
     internal TrialBalanceEngine(TrialBalanceCommand command) {
       Assertion.AssertObject(command, "command");
 
+      command.Prepare();
+
       this.Command = command;
     }
 
@@ -99,27 +101,27 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
         case TrialBalanceType.BalanzaConAuxiliares:
         case TrialBalanceType.Saldos:
         case TrialBalanceType.SaldosPorCuenta:
-          
+
           var balanzaTradicional = new BalanzaTradicional(this.Command);
           return balanzaTradicional.Build();
 
         case TrialBalanceType.BalanzaValorizadaComparativa:
-          
+
           var balanzaComparativa = new BalanzaComparativa(this.Command);
           return balanzaComparativa.Build();
 
         case TrialBalanceType.GeneracionDeSaldos:
-          
+
           var saldosConAuxiliares = new SaldosPorAuxiliar(this.Command);
           return saldosConAuxiliares.BuildForBalancesGeneration();
 
         case TrialBalanceType.SaldosPorAuxiliar:
-          
+
           var saldosPorAuxiliar = new SaldosPorAuxiliar(this.Command);
           return saldosPorAuxiliar.Build();
 
         case TrialBalanceType.SaldosPorCuentaYMayor:
-          
+
           var saldosPorCuentaYMayores = new SaldosPorCuentaYMayores(this.Command);
           return saldosPorCuentaYMayores.Build();
 

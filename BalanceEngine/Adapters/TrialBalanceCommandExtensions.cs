@@ -26,6 +26,14 @@ namespace Empiria.FinancialAccounting.BalanceEngine.Adapters {
       return helper.GetTrialBalanceCommandData(commandPeriod);
     }
 
+
+    static internal void Prepare(this TrialBalanceCommand command) {
+      if (command.UseDefaultValuation) {
+        command.InitialPeriod.UseDefaultValuation = true;
+        command.FinalPeriod.UseDefaultValuation = true;
+      }
+    }
+
     #endregion Public methods
 
 
@@ -120,7 +128,7 @@ namespace Empiria.FinancialAccounting.BalanceEngine.Adapters {
                  "ID_CUENTA, SALDO_ANTERIOR, DEBE, HABER, SALDO_ACTUAL";
 
         } else if (_command.ReturnSubledgerAccounts && _command.Consolidated) {
-          
+
           return "GROUP BY ID_MONEDA, ID_CUENTA_ESTANDAR, NUMERO_CUENTA_ESTANDAR, ID_SECTOR, " +
                  "ID_CUENTA_AUXILIAR, SALDO_ANTERIOR, DEBE, HABER, SALDO_ACTUAL";
 
@@ -170,7 +178,7 @@ namespace Empiria.FinancialAccounting.BalanceEngine.Adapters {
           return "ID_MAYOR, ID_MONEDA, ID_CUENTA_ESTANDAR, ID_SECTOR, ID_CUENTA, -1 AS ID_CUENTA_AUXILIAR, ";
 
         } else if (_command.ReturnSubledgerAccounts && _command.Consolidated) {
-          
+
           return "-1 AS ID_MAYOR, ID_MONEDA, ID_CUENTA_ESTANDAR, ID_SECTOR, -1 AS ID_CUENTA, ID_CUENTA_AUXILIAR, ";
 
         } else if (_command.ReturnSubledgerAccounts && _command.ShowCascadeBalances) {

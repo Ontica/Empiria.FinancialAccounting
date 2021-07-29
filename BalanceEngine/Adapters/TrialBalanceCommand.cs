@@ -108,6 +108,12 @@ namespace Empiria.FinancialAccounting.BalanceEngine.Adapters {
       }
     }
 
+
+    public bool UseDefaultValuation {
+      get; set;
+    } = false;
+
+
     public bool ValuateBalances {
       get {
         return this.InitialPeriod.ValuateToCurrrencyUID.Length != 0 &&
@@ -126,14 +132,16 @@ namespace Empiria.FinancialAccounting.BalanceEngine.Adapters {
     public bool ReturnLedgerColumn {
       get {
         return (!this.Consolidated &&
-                !this.ConsolidateBalancesToTargetCurrency &&
-                this.Ledgers.Length > 1);
+                !this.ConsolidateBalancesToTargetCurrency);
       }
     }
 
   } // class TrialBalanceCommand
 
+
+
   public class TrialBalanceCommandPeriod {
+
     public DateTime FromDate {
       get; set;
     }
@@ -146,19 +154,23 @@ namespace Empiria.FinancialAccounting.BalanceEngine.Adapters {
       get; set;
     } = DateTime.Now;
 
+
     public string ExchangeRateTypeUID {
       get; set;
     } = string.Empty;
+
 
     public string ValuateToCurrrencyUID {
       get; set;
     } = string.Empty;
 
+
     public bool UseDefaultValuation {
       get; set;
     } = false;
 
-  }
+
+  }  // TrialBalanceCommandPeriod
 
 
 } // namespace Empiria.FinancialAccounting.BalanceEngine.Adapters
