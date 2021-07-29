@@ -44,7 +44,10 @@ namespace Empiria.FinancialAccounting {
       var list = new List<DateTime>(16);
 
       foreach (var period in this.OpenedPeriods) {
-        list.AddRange(period.GetDatesList().FindAll(x => !list.Contains(x)));
+        var periodDates = period.GetDatesList();
+        var uniqueDates = periodDates.FindAll(x => !list.Contains(x));
+
+        list.AddRange(uniqueDates);
       }
 
       list.Sort();
