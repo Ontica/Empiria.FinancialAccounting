@@ -403,6 +403,8 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
           postingEntries = helper.ConsolidateToTargetCurrency(postingEntries, commandPeriod);
         }
       }
+      postingEntries = helper.RoundTrialBalanceEntries(postingEntries);
+
       return postingEntries;
     }
 
@@ -443,6 +445,18 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
       } else {
         throw Assertion.AssertNoReachThisCode();
       }
+    }
+
+
+    internal FixedList<TrialBalanceEntry> RoundTrialBalanceEntries(FixedList<TrialBalanceEntry> postingEntries) {
+      FixedList<TrialBalanceEntry> roundedEntries = new FixedList<TrialBalanceEntry>(postingEntries);
+      foreach (var posting in roundedEntries) {
+        posting.InitialBalance = Math.Round(posting.InitialBalance, 2);
+        posting.Debit = Math.Round(posting.Debit, 2);
+        posting.Credit = Math.Round(posting.Credit, 2);
+        posting.CurrentBalance = Math.Round(posting.CurrentBalance, 2);
+      }
+      return roundedEntries;
     }
 
 

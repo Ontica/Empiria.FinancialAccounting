@@ -33,6 +33,8 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
       FixedList<TrialBalanceEntry> postingEntries = helper.GetTrialBalanceEntries(_command.InitialPeriod);
       postingEntries = helper.ValuateToExchangeRate(postingEntries, _command.InitialPeriod);
 
+      postingEntries = helper.RoundTrialBalanceEntries(postingEntries);
+
       List<TrialBalanceEntry> summaryEntries = helper.GenerateSummaryEntries(postingEntries);
       List<TrialBalanceEntry> trialBalance = helper.CombineSummaryAndPostingEntries(summaryEntries,
                                                                                     postingEntries);
