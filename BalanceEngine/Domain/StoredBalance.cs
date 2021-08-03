@@ -32,7 +32,7 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
       this.SubsidiaryAccountName = subsidiaryAccount.Name;
       this.SubsidiaryAccountNumber = subsidiaryAccount.Number;
       this.Balance = entry.CurrentBalance;
-      //this.LastChangeDate = entry.LastChangeDate;
+      this.LastChangeDate = entry.LastChangeDate;
     }
 
     [DataField("ID_GRUPO_SALDOS", ConvertFrom = typeof(long))]
@@ -102,10 +102,10 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
     }
 
 
-    //[DataField("FECHA_ULTIMO_MOVIMIENTO")]
-    //public DateTime LastChangeDate {
-    //  get; private set;
-    //}
+    [DataField("FECHA_ULTIMO_MOVIMIENTO")]
+    public DateTime LastChangeDate {
+      get; private set;
+    }
 
 
     protected override void OnSave() {

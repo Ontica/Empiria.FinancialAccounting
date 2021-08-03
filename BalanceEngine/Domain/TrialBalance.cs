@@ -78,7 +78,7 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
           Command.InitialPeriod.UseDefaultValuation) {
         columns.Add(new DataTableColumn("exchangeRate", "TC", "decimal"));
       }
-      //columns.Add(new DataTableColumn("lastChangeDate", "Último movimiento", "text"));
+      columns.Add(new DataTableColumn("lastChangeDate", "Último movimiento", "text"));
 
       return columns.ToFixedList();
     }
@@ -99,7 +99,7 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
       columns.Add(new DataTableColumn("totalBalance", $"{Command.InitialPeriod.FromDate:MMM_yyyy}", "decimal"));
       columns.Add(new DataTableColumn("exchangeRate", "Tc_Ini", "decimal"));
       columns.Add(new DataTableColumn("currentVal", $"{Command.InitialPeriod.FromDate:MMM}_VAL", "decimal"));
-      
+
       columns.Add(new DataTableColumn("debit", "Cargos", "decimal"));
       columns.Add(new DataTableColumn("credit", "Abonos", "decimal"));
       columns.Add(new DataTableColumn("totalBalanceComparative", $"{Command.FinalPeriod.FromDate:MMM_yyyy}", "decimal"));
@@ -111,7 +111,7 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
       columns.Add(new DataTableColumn("variation", "Variación", "decimal"));
       columns.Add(new DataTableColumn("variationByTC", "Variación por TC", "decimal"));
       columns.Add(new DataTableColumn("realVariation", "Variación por TC", "decimal"));
-      //columns.Add(new DataTableColumn("lastChangeDate", "Último movimiento", "text"));
+      columns.Add(new DataTableColumn("lastChangeDate", "Último movimiento", "text"));
 
       return columns.ToFixedList();
     }
@@ -140,7 +140,7 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
       if (Command.InitialPeriod.ExchangeRateTypeUID != string.Empty) {
         //columns.Add(new DataTableColumn("exchangeRate", "TC", "decimal"));
       }
-      //columns.Add(new DataTableColumn("lastChangeDate", "Último movimiento", "text"));
+      columns.Add(new DataTableColumn("lastChangeDate", "Último movimiento", "text"));
 
       return columns.ToFixedList();
     }

@@ -92,9 +92,9 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
     }
 
 
-    //public string LastChangeDate {
-    //  get; internal set;
-    //} = string.Empty;
+    public string LastChangeDate {
+      get; internal set;
+    } = string.Empty;
 
 
     public DebtorCreditorType DebtorCreditor {
@@ -200,10 +200,10 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
     }
 
 
-    //[DataField("FECHA_AFECTACION")]
-    //public DateTime LastChangeDate {
-    //  get; internal set;
-    //}
+    [DataField("FECHA_ULTIMO_MOVIMIENTO")]
+    public DateTime LastChangeDate {
+      get; internal set;
+    }
 
 
     public decimal ExchangeRate {

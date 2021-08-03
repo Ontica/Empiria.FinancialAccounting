@@ -39,12 +39,12 @@ namespace Empiria.FinancialAccounting.BalanceEngine.Data {
 
 
     static internal void WriteStoredBalance(StoredBalance o) {
-      var dataOperation = DataOperation.Parse("apd_cof_saldos", o.Id, 
-                                              o.StandardAccountId, o.Currency.Id,
+      var dataOperation = DataOperation.Parse("apd_cof_saldos", o.Id,
+                                              o.StandardAccountId, o.Ledger.Id, o.Currency.Id,
                                               o.Sector.IsEmptyInstance ? 0 : o.Sector.Id,
                                               o.SubsidiaryAccountId, o.StoredBalanceSet.BalancesDate,
-                                              o.Balance, o.StoredBalanceSet.Id
-                                              /*, o.LastChangeDate*/);
+                                              o.Balance, o.StoredBalanceSet.Id,
+                                              o.LastChangeDate);
 
       DataWriter.Execute(dataOperation);
     }

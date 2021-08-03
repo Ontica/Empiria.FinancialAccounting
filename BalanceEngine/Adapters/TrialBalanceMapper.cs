@@ -126,8 +126,8 @@ namespace Empiria.FinancialAccounting.BalanceEngine.Adapters {
       dto.ForeignBalance = entry.ForeignBalance;
       dto.TotalBalance = entry.TotalBalance;
       dto.ExchangeRate = entry.ExchangeRate;
-      //dto.LastChangeDate = entry.ItemType == TrialBalanceItemType.BalanceEntry ?
-      //                      entry.LastChangeDate : "";
+      dto.LastChangeDate = entry.ItemType == TrialBalanceItemType.BalanceEntry ?
+                            entry.LastChangeDate : "";
 
       return dto;
     }
@@ -161,8 +161,8 @@ namespace Empiria.FinancialAccounting.BalanceEngine.Adapters {
       dto.Credit = entry.Credit;
       dto.CurrentBalance = entry.CurrentBalance;
       dto.ExchangeRate = entry.ExchangeRate;
-      //dto.LastChangeDate = entry.ItemType == TrialBalanceItemType.BalanceEntry ?
-      //                      entry.LastChangeDate.ToString("dd-MM-yyyy") : "";
+      dto.LastChangeDate = entry.ItemType == TrialBalanceItemType.BalanceEntry ?
+                            entry.LastChangeDate.ToString("dd-MM-yyyy") : "";
 
       return dto;
     }
