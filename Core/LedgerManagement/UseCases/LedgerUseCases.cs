@@ -52,7 +52,6 @@ namespace Empiria.FinancialAccounting.UseCases {
       return LedgerMapper.MapAccount(ledgerAccount);
     }
 
-
     #endregion Use cases
 
   }  // class LedgerUseCases

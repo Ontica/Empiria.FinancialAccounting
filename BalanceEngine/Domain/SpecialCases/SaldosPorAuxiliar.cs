@@ -73,9 +73,7 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
 
     private List<TrialBalanceEntry> AddSummaryAccounts(List<TrialBalanceEntry> summaryEntries,
                                                        List<TrialBalanceEntry> returnedEntries,
-                                                                      TrialBalanceEntry entry) {
-      var helper = new TrialBalanceHelper(_command);
-
+                                                       TrialBalanceEntry entry) {
       var summaryAccounts = summaryEntries.Where(
                                a => a.Account.GroupNumber == entry.Account.GroupNumber &&
                                     a.SubledgerAccountId == 0 &&
@@ -134,9 +132,9 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
                             .ToList();
     }
 
-    
+
     private void CreateOrAccumulateParentWithoutSector(
-                  List<TrialBalanceEntry> returnedEntries, 
+                  List<TrialBalanceEntry> returnedEntries,
                   TrialBalanceEntry entry,
                   EmpiriaHashTable<TrialBalanceEntry> summaryParentEntries,
                   StandardAccount currentParent) {
@@ -159,7 +157,7 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
     }
 
     private List<TrialBalanceEntry> CreateOrAccumulateTotalBySubsidiaryEntry(
-                                      List<TrialBalanceEntry> returnedEntries, 
+                                      List<TrialBalanceEntry> returnedEntries,
                                       TrialBalanceEntry entry) {
       var helper = new TrialBalanceHelper(_command);
 
@@ -184,7 +182,7 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
       return returnedEntries;
     }
 
-    
+
     private List<TrialBalanceEntry> CombineTotalSubsidiaryEntriesWithSummaryAccounts(
                                          List<TrialBalanceEntry> summaryEntries) {
       List<TrialBalanceEntry> returnedEntries = new List<TrialBalanceEntry>();
@@ -207,7 +205,7 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
         List<TrialBalanceEntry> summaryEntries = new List<TrialBalanceEntry>();
         var summaryParentEntries = new EmpiriaHashTable<TrialBalanceEntry>();
         StandardAccount account = entry.Account;
-        
+
         while (true) {
           var parent = returnedEntries.FirstOrDefault(a => a.Ledger.Number == entry.Ledger.Number &&
                             a.Currency.Code == entry.Currency.Code && a.SubledgerAccountId == 0 &&
@@ -216,7 +214,7 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
 
           if (parent == null) {
             count++;
-            TrialBalanceItemType itemType = count == 1 ? TrialBalanceItemType.BalanceEntry : 
+            TrialBalanceItemType itemType = count == 1 ? TrialBalanceItemType.BalanceEntry :
                                                          TrialBalanceItemType.BalanceSummary;
             helper.SummaryByEntry(summaryParentEntries, entry, account, entry.Sector, itemType);
 

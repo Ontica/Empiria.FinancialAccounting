@@ -11,7 +11,7 @@
 namespace Empiria.FinancialAccounting.BalanceEngine {
 
   /// <summary>Holds information about an account balance.</summary>
-  internal class AccountBalance {
+  public class AccountBalance {
 
     private AccountBalance() {
       // Required by Empiria Framework.

@@ -156,7 +156,6 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
 
     #endregion Properties
 
-
     #region Methods
 
     internal void Calculate() {

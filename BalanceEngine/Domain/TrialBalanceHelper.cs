@@ -56,7 +56,7 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
                                   .ThenBy(a => a.SubledgerAccountNumber)
                                   .ToList();
 
-      return returnedEntries; 
+      return returnedEntries;
     }
 
     internal List<TrialBalanceEntry> CombineCurrencyTotalsAndPostingEntries(
@@ -230,7 +230,7 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
           throw Assertion.AssertNoReachThisCode();
         }
 
-        
+
         int cont = 0;
         while (true) {
           entry.DebtorCreditor = entry.Account.DebtorCreditor;
@@ -240,7 +240,7 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
             SummaryByEntry(summaryEntries, entry, currentParent, entry.Sector,
                                          TrialBalanceItemType.BalanceSummary);
           }
-          
+
           cont++;
           if (cont == 1 && _command.TrialBalanceType == TrialBalanceType.SaldosPorCuenta) {
             GetDetailSummaryEntries(detailSummaryEntries, summaryEntries, currentParent, entry);
@@ -404,7 +404,7 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
 
       FixedList<TrialBalanceEntry> postingEntries = helper.GetTrialBalanceEntries(commandPeriod);
 
-      if (_command.ValuateBalances || _command.ValuateFinalBalances || 
+      if (_command.ValuateBalances || _command.ValuateFinalBalances ||
           _command.InitialPeriod.UseDefaultValuation) {
         postingEntries = helper.ValuateToExchangeRate(postingEntries, commandPeriod);
 
@@ -469,7 +469,7 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
     }
 
 
-    internal FixedList<TrialBalanceEntry> ValuateToExchangeRate(FixedList<TrialBalanceEntry> entries, 
+    internal FixedList<TrialBalanceEntry> ValuateToExchangeRate(FixedList<TrialBalanceEntry> entries,
                                                                 TrialBalanceCommandPeriod commandPeriod) {
       if (commandPeriod.UseDefaultValuation) {
         commandPeriod.ExchangeRateTypeUID = "96c617f6-8ed9-47f3-8d2d-f1240e446e1d";
@@ -600,10 +600,10 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
     internal void SummaryByLedgersGroupEntries(EmpiriaHashTable<TrialBalanceEntry> totalsListByGroupEntries,
                                                             TrialBalanceEntry balanceEntry) {
       TrialBalanceEntry groupEntry = TrialBalanceMapper.MapToTrialBalanceEntry(balanceEntry);
-      
+
       groupEntry.GroupName = $"SUMA DE DELEGACIONES";
       groupEntry.GroupNumber = balanceEntry.Account.Number;
-      groupEntry.Account = StandardAccount.Empty;
+      groupEntry.Account = balanceEntry.Account;
       groupEntry.Sector =  balanceEntry.Sector;
       groupEntry.DebtorCreditor = balanceEntry.Account.DebtorCreditor;
       groupEntry.Ledger = Ledger.Empty;
@@ -617,8 +617,8 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
       string hash = $"{balanceEntry.Currency.Id}||{groupEntry.GroupNumber}||" +
                     $"{groupEntry.Sector.Code}||{groupEntry.DebtorCreditor}";
 
-      GenerateOrIncreaseEntries(totalsListByGroupEntries, groupEntry, StandardAccount.Empty, 
-                                  groupEntry.Sector, itemType, hash);
+      GenerateOrIncreaseEntries(totalsListByGroupEntries, groupEntry, StandardAccount.Empty,
+                                groupEntry.Sector, itemType, hash);
     }
 
 

@@ -117,16 +117,24 @@ namespace Empiria.FinancialAccounting.OfficeIntegration {
       int i = 5;
 
       foreach (var entry in entries) {
+        var account = StandardAccount.Parse(entry.StandardAccountId);
+
         _excelFile.SetCell($"A{i}", entry.CurrencyCode);
-        _excelFile.SetCell($"B{i}", entry.AccountNumber);
+        if (account.IsEmptyInstance) {
+          _excelFile.SetCell($"B{i}", entry.AccountNumber);
+        } else {
+          _excelFile.SetCell($"B{i}", account.Number);
+        }
         if (entry.LedgerNumber.Length == 0) {
           _excelFile.SetCell($"C{i}", entry.AccountName);
           _excelFile.SetCell($"D{i}", "00");
           _excelFile.SetCell($"E{i}", "Todas");
         } else {
+          _excelFile.SetCell($"C{i}", account.Name);
           _excelFile.SetCell($"D{i}", entry.LedgerNumber);
           _excelFile.SetCell($"E{i}", entry.AccountName);
         }
+
         _excelFile.SetCell($"F{i}", entry.InitialBalance);
         _excelFile.SetCell($"G{i}", entry.Debit);
         _excelFile.SetCell($"H{i}", entry.Credit);

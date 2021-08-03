@@ -40,10 +40,10 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
                                                                                     postingEntries);
       trialBalance = helper.RestrictLevels(trialBalance);
 
-      FixedList<TwoCurrenciesBalanceEntry> twoColumnsEntries = 
+      FixedList<TwoCurrenciesBalanceEntry> twoColumnsEntries =
                                             twoColumnsHelper.MergeAccountsIntoTwoColumns(trialBalance);
 
-      FixedList<TwoCurrenciesBalanceEntry> summaryGroupEntries = 
+      FixedList<TwoCurrenciesBalanceEntry> summaryGroupEntries =
                                             twoColumnsHelper.GetTotalSummaryGroup(twoColumnsEntries);
       twoColumnsEntries = twoColumnsHelper.CombineGroupEntriesAndTwoColumnsEntries(
                                             twoColumnsEntries, summaryGroupEntries);
@@ -54,7 +54,7 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
       twoColumnsEntries = twoColumnsHelper.CombineTotalDeptorCreditorAndTwoColumnsEntries(
                                             twoColumnsEntries.ToList(), summaryTotalDeptorCreditorEntries);
 
-      List<TwoCurrenciesBalanceEntry> summaryTwoColumnsBalanceTotal = 
+      List<TwoCurrenciesBalanceEntry> summaryTwoColumnsBalanceTotal =
                                     twoColumnsHelper.GenerateTotalSummary(summaryTotalDeptorCreditorEntries);
       twoColumnsEntries = twoColumnsHelper.CombineTotalConsolidatedAndPostingEntries(
                                             twoColumnsEntries, summaryTwoColumnsBalanceTotal);

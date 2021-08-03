@@ -34,6 +34,8 @@ namespace Empiria.FinancialAccounting.BalanceEngine.Data {
                             //,commandData.LastChangeDateColumn
                             );
 
+      EmpiriaLog.Debug(operation.AsText());
+
       return DataReader.GetPlainObjectFixedList<TrialBalanceEntry>(operation);
     }
 

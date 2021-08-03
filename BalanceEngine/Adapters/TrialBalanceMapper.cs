@@ -71,7 +71,7 @@ namespace Empiria.FinancialAccounting.BalanceEngine.Adapters {
                                                         FixedList<ITrialBalanceEntry> list) {
       switch (command.TrialBalanceType) {
         case TrialBalanceType.AnaliticoDeCuentas:
-          
+
           var mi = list.Select((x) => MapToTwoCurrenciesBalanceEntry((TwoCurrenciesBalanceEntry) x));
           return new FixedList<ITrialBalanceEntryDto>(mi);
 
@@ -82,12 +82,12 @@ namespace Empiria.FinancialAccounting.BalanceEngine.Adapters {
         case TrialBalanceType.SaldosPorAuxiliar:
         case TrialBalanceType.SaldosPorCuenta:
         case TrialBalanceType.SaldosPorCuentaYMayor:
-          
+
           var mappedItems = list.Select((x) => MapToTrialBalance((TrialBalanceEntry) x));
           return new FixedList<ITrialBalanceEntryDto>(mappedItems);
 
         case TrialBalanceType.BalanzaValorizadaComparativa:
-          
+
           var mappedItemsComparative = list.Select((x) => MapToTrialBalanceComparative((TrialBalanceEntry) x));
           return new FixedList<ITrialBalanceEntryDto>(mappedItemsComparative);
 
@@ -146,7 +146,7 @@ namespace Empiria.FinancialAccounting.BalanceEngine.Adapters {
         dto.AccountName = entry.GroupName != "" ? entry.GroupName :
                           entry.Account.Name;
         dto.AccountNumber = entry.GroupNumber != "" ? entry.GroupNumber :
-                            entry.Account.Number != "Empty" ?
+                            !entry.Account.IsEmptyInstance ?
                             entry.Account.Number : "";
       } else {
         dto.AccountName = subledgerAccount.Name;
@@ -161,7 +161,7 @@ namespace Empiria.FinancialAccounting.BalanceEngine.Adapters {
       dto.Credit = entry.Credit;
       dto.CurrentBalance = entry.CurrentBalance;
       dto.ExchangeRate = entry.ExchangeRate;
-      //dto.LastChangeDate = entry.ItemType == TrialBalanceItemType.BalanceEntry ? 
+      //dto.LastChangeDate = entry.ItemType == TrialBalanceItemType.BalanceEntry ?
       //                      entry.LastChangeDate.ToString("dd-MM-yyyy") : "";
 
       return dto;

@@ -7,12 +7,14 @@
 *  Summary  : Query web API used to retrive account balances.                                                *
 *                                                                                                            *
 ************************* Copyright(c) La Vía Óntica SC, Ontica LLC and contributors. All rights reserved. **/
+using System;
 using System.Web.Http;
 
 using Empiria.WebApi;
 
 using Empiria.FinancialAccounting.BalanceEngine.UseCases;
 using Empiria.FinancialAccounting.BalanceEngine.Adapters;
+
 
 namespace Empiria.FinancialAccounting.BalanceEngine.WebApi {
 

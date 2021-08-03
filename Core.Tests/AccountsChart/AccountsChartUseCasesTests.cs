@@ -55,7 +55,6 @@ namespace Empiria.FinancialAccounting.Tests {
     public void Should_Get_Accounts() {
       AccountsChartDto accountsChart = _usecases.GetAccounts(TestingConstants.ACCOUNTS_CHART_UID);
 
-
       Assert.Equal(TestingConstants.ACCOUNTS_CHART_UID, accountsChart.UID);
     }
 
