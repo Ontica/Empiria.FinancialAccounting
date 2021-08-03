@@ -47,12 +47,19 @@ namespace Empiria.FinancialAccounting.Tests.Balances {
       command.AccountsChartUID = "b2328e67-3f2e-45b9-b1f6-93ef6292204e";
       command.BalancesType = BalanceEngine.BalancesType.AllAccounts;
       command.ConsolidateBalancesToTargetCurrency = false;
+      //command.ShowCascadeBalances = true;
+      command.TrialBalanceType = BalanceEngine.TrialBalanceType.Balanza;
+      command.FromAccount = "1103";
+      command.ToAccount = "1103";
+      command.Ledgers = new string[] { "2584a757-865c-2025-8025-fa633f200c49" }; //nuevo leon "379349ef-6ade-71ab-45e1-78a11aaa20e0"  
 
-      command.InitialPeriod.FromDate = TestingConstants.FromDate;
-      command.InitialPeriod.ToDate = TestingConstants.ToDate;
-      command.InitialPeriod.ExchangeRateDate = new DateTime(2021, 01, 15);
-      command.InitialPeriod.ExchangeRateTypeUID = "5923136d-8533-4975-81b9-c8ec3bf18dea";
-      command.InitialPeriod.ValuateToCurrrencyUID = "01";
+      command.InitialPeriod.FromDate = new DateTime(2021, 01, 01);
+      command.InitialPeriod.ToDate = new DateTime(2021, 01, 31);
+      command.InitialPeriod.UseDefaultValuation = false;
+      //command.SubledgerAccount = "90000000090097233";
+      //command.InitialPeriod.ExchangeRateDate = new DateTime(2021, 01, 15);
+      //command.InitialPeriod.ExchangeRateTypeUID = "5923136d-8533-4975-81b9-c8ec3bf18dea";
+      //command.InitialPeriod.ValuateToCurrrencyUID = "01";
 
       //command.FinalPeriod.FromDate = new DateTime(2021, 02, 01);
       //command.FinalPeriod.ToDate = new DateTime(2021, 02, 28);
@@ -60,11 +67,6 @@ namespace Empiria.FinancialAccounting.Tests.Balances {
       //command.FinalPeriod.ExchangeRateTypeUID = "5923136d-8533-4975-81b9-c8ec3bf18dea";
       //command.FinalPeriod.ValuateToCurrrencyUID = "01";
 
-      command.ShowCascadeBalances = true;
-      command.TrialBalanceType = BalanceEngine.TrialBalanceType.BalanzaValorizadaComparativa;
-      command.FromAccount = "1101";
-      command.ToAccount = "1103";
-      command.Ledgers = new string[] { "2584a757-865c-2025-8025-fa633f200c49" };
 
       TrialBalanceDto trialBalance = _usecases.BuildTrialBalance(command);
 

@@ -92,6 +92,11 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
     }
 
 
+    //public string LastChangeDate {
+    //  get; internal set;
+    //} = string.Empty;
+
+
     public DebtorCreditorType DebtorCreditor {
       get; internal set;
     } = DebtorCreditorType.Deudora;
@@ -159,18 +164,6 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
     }
 
 
-    //[DataField("ID_CUENTA", ConvertFrom = typeof(decimal))]
-    //public int LedgerAccountId {
-    //  get;
-    //  internal set;
-    //}
-
-    [DataField("ID_CUENTA", ConvertFrom = typeof(decimal))]
-    public int AccountId {
-      get;
-      internal set;
-    }
-
 
     [DataField("ID_CUENTA_AUXILIAR", ConvertFrom = typeof(decimal))]
     public int SubledgerAccountId {
@@ -205,6 +198,12 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
       get;
       internal set;
     }
+
+
+    //[DataField("FECHA_AFECTACION")]
+    //public DateTime LastChangeDate {
+    //  get; internal set;
+    //}
 
 
     public decimal ExchangeRate {
@@ -286,13 +285,13 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
     internal TwoCurrenciesBalanceEntry MapToTwoColumnsBalanceEntry() {
       return new TwoCurrenciesBalanceEntry {
         Account = this.Account,
-        AccountId = this.AccountId,
         SubledgerAccountId = this.SubledgerAccountId,
         Ledger = this.Ledger,
         Currency = this.Currency,
         ItemType = this.ItemType,
         Sector = this.Sector,
         DebtorCreditor = this.Account.DebtorCreditor
+        //LastChangeDate = this.LastChangeDate.ToString("dd-MM-yyyy")
       };
     }
 

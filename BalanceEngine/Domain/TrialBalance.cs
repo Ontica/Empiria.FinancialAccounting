@@ -78,6 +78,7 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
           Command.InitialPeriod.UseDefaultValuation) {
         columns.Add(new DataTableColumn("exchangeRate", "TC", "decimal"));
       }
+      //columns.Add(new DataTableColumn("lastChangeDate", "Último movimiento", "text"));
 
       return columns.ToFixedList();
     }
@@ -110,6 +111,7 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
       columns.Add(new DataTableColumn("variation", "Variación", "decimal"));
       columns.Add(new DataTableColumn("variationByTC", "Variación por TC", "decimal"));
       columns.Add(new DataTableColumn("realVariation", "Variación por TC", "decimal"));
+      //columns.Add(new DataTableColumn("lastChangeDate", "Último movimiento", "text"));
 
       return columns.ToFixedList();
     }
@@ -138,6 +140,7 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
       if (Command.InitialPeriod.ExchangeRateTypeUID != string.Empty) {
         //columns.Add(new DataTableColumn("exchangeRate", "TC", "decimal"));
       }
+      //columns.Add(new DataTableColumn("lastChangeDate", "Último movimiento", "text"));
 
       return columns.ToFixedList();
     }

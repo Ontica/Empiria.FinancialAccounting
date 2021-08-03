@@ -26,13 +26,13 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
       this.AccountNumber = entry.Account.Number;
       this.AccountName = entry.Account.Name;
       this.Ledger = entry.Ledger;
-      this.LedgerAccountId = entry.AccountId;
       this.Currency = entry.Currency;
       this.Sector = entry.Sector;
       this.SubsidiaryAccountId = entry.SubledgerAccountId;
       this.SubsidiaryAccountName = subsidiaryAccount.Name;
       this.SubsidiaryAccountNumber = subsidiaryAccount.Number;
       this.Balance = entry.CurrentBalance;
+      //this.LastChangeDate = entry.LastChangeDate;
     }
 
     [DataField("ID_GRUPO_SALDOS", ConvertFrom = typeof(long))]
@@ -64,11 +64,6 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
       get; private set;
     }
 
-
-    [DataField("ID_CUENTA", ConvertFrom = typeof(long))]
-    public int LedgerAccountId {
-      get; private set;
-    }
 
 
     [DataField("ID_MONEDA", ConvertFrom = typeof(long))]
@@ -105,6 +100,12 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
     public decimal Balance {
       get; private set;
     }
+
+
+    //[DataField("FECHA_ULTIMO_MOVIMIENTO")]
+    //public DateTime LastChangeDate {
+    //  get; private set;
+    //}
 
 
     protected override void OnSave() {

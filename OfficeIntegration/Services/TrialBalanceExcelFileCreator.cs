@@ -170,7 +170,7 @@ namespace Empiria.FinancialAccounting.OfficeIntegration {
       int i = 5;
 
       foreach (var entry in entries) {
-        var account = StandardAccount.Parse(entry.AccountId);
+        var account = StandardAccount.Parse(entry.StandardAccountId);
         var subledgerAccount = SubsidiaryAccount.Parse(entry.SubledgerAccountId);
 
         _excelFile.SetCell($"A{i}", entry.LedgerNumber);

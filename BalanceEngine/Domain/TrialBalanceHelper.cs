@@ -40,15 +40,24 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
         returnedEntries.AddRange(summaryEntries);
       }
 
-      return returnedEntries.OrderBy(a => a.Ledger.Number)
-                            .ThenBy(a => a.Currency.Code)
-                            .ThenByDescending(a => a.Account.DebtorCreditor)
-                            .ThenBy(a => a.Account.Number)
-                            .ThenBy(a => a.Sector.Code)
-                            .ThenBy(a => a.SubledgerAccountNumber)
-                            .ToList();
+      returnedEntries = OrderingTrialBalance(returnedEntries);
+
+      return returnedEntries;
     }
 
+    private List<TrialBalanceEntry> OrderingTrialBalance(List<TrialBalanceEntry> entries) {
+      List<TrialBalanceEntry> returnedEntries = new List<TrialBalanceEntry>();
+
+      returnedEntries = entries.OrderBy(a => a.Ledger.Number)
+                                  .ThenBy(a => a.Currency.Code)
+                                  .ThenByDescending(a => a.Account.DebtorCreditor)
+                                  .ThenBy(a => a.Account.Number)
+                                  .ThenBy(a => a.Sector.Code)
+                                  .ThenBy(a => a.SubledgerAccountNumber)
+                                  .ToList();
+
+      return returnedEntries; 
+    }
 
     internal List<TrialBalanceEntry> CombineCurrencyTotalsAndPostingEntries(
                                       List<TrialBalanceEntry> trialBalance,
@@ -441,7 +450,7 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
       if (_command.DoNotReturnSubledgerAccounts) {
         return entries.FindAll(x => x.Level <= _command.Level);
       } else if (_command.ReturnSubledgerAccounts) {
-        return entries.FindAll(x => x.Level <= _command.Level || x.AccountId != 0);
+        return entries.FindAll(x => x.Level <= _command.Level);
       } else {
         throw Assertion.AssertNoReachThisCode();
       }

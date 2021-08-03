@@ -54,7 +54,7 @@ namespace Empiria.FinancialAccounting.BalanceEngine.Adapters {
       get; internal set;
     }
 
-    public int AccountId {
+    public int StandardAccountId {
       get; internal set;
     }
 
@@ -103,6 +103,10 @@ namespace Empiria.FinancialAccounting.BalanceEngine.Adapters {
       get; internal set;
     }
 
+    public string LastChangeDate {
+      get; set;
+    }
+
 
   }
 
@@ -125,7 +129,7 @@ namespace Empiria.FinancialAccounting.BalanceEngine.Adapters {
       get; internal set;
     }
 
-    public int AccountId {
+    public int StandardAccountId {
       get; internal set;
     }
 
@@ -180,6 +184,10 @@ namespace Empiria.FinancialAccounting.BalanceEngine.Adapters {
 
     public decimal ExchangeRate {
       get; internal set;
+    }
+
+    public string LastChangeDate {
+      get; set;
     }
 
   } // class TrialBalanceEntryDto

@@ -21,9 +21,6 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
       get; internal set;
     }
 
-    public int LedgerAccountId {
-      get; internal set;
-    }
 
     public NamedEntityDto Ledger {
       get; internal set;
@@ -60,6 +57,11 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
     public decimal Balance {
       get; internal set;
     }
+
+    //public DateTime LastChangeDate {
+    //  get; internal set;
+    //}
+    
 
 
   }  // class StoredBalance

@@ -51,7 +51,6 @@ namespace Empiria.FinancialAccounting.BalanceEngine.Adapters {
       return new StoredBalanceDto {
         StandardAccountId = balance.StandardAccountId,
         Ledger = balance.Ledger.MapToNamedEntity(),
-        LedgerAccountId = balance.LedgerAccountId,
         Currency = balance.Currency.MapToNamedEntity(),
         SectorCode = balance.Sector.Code,
         SubsidiaryAccountId = balance.SubsidiaryAccountId,
@@ -60,6 +59,7 @@ namespace Empiria.FinancialAccounting.BalanceEngine.Adapters {
         SubsidiaryAccountNumber = balance.SubsidiaryAccountNumber,
         SubsidiaryAccountName = balance.SubsidiaryAccountName,
         Balance = balance.Balance
+        //LastChangeDate = balance.LastChangeDate
       };
     }
 

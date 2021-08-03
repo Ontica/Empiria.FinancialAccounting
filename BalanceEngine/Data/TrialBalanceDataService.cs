@@ -31,6 +31,7 @@ namespace Empiria.FinancialAccounting.BalanceEngine.Data {
                             commandData.InitialFields,
                             commandData.InitialGrouping,
                             commandData.AccountsChart.Id
+                            //,commandData.LastChangeDateColumn
                             );
 
       return DataReader.GetPlainObjectFixedList<TrialBalanceEntry>(operation);
