@@ -25,13 +25,11 @@ namespace Empiria.FinancialAccounting.BalanceEngine.Data {
                             commandData.Fields,
                             commandData.Filters,
                             commandData.AccountFilters,
-                            commandData.Having.Length > 0 ? commandData.Grouping : "",
-                            commandData.Having,
+                            commandData.Where,
                             commandData.Ordering,
                             commandData.InitialFields,
                             commandData.InitialGrouping,
                             commandData.AccountsChart.Id
-                            //,commandData.LastChangeDateColumn
                             );
 
       EmpiriaLog.Debug(operation.AsText());

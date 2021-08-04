@@ -59,7 +59,7 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
     } = string.Empty;
 
 
-    public string Having {
+    public string Where {
       get; set;
     } = string.Empty;
 

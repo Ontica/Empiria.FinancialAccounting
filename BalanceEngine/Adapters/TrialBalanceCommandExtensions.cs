@@ -65,8 +65,7 @@ namespace Empiria.FinancialAccounting.BalanceEngine.Adapters {
         commandData.Filters = GetFilterString();
         commandData.AccountFilters = GetAccountFilterString();
         commandData.InitialGrouping = GetInitialGroupingClause();
-        commandData.Grouping = GetGroupingClause();
-        commandData.Having = GetHavingClause();
+        commandData.Where = GetWhereClause();
         commandData.Ordering = GetOrderClause();
         commandData.AccountsChart = accountsChart;
 
@@ -116,32 +115,7 @@ namespace Empiria.FinancialAccounting.BalanceEngine.Adapters {
       }
 
 
-      private string GetGroupingClause() {
-        if (_command.DoNotReturnSubledgerAccounts && _command.Consolidated) {
-
-          return "GROUP BY ID_MONEDA, ID_CUENTA_ESTANDAR, NUMERO_CUENTA_ESTANDAR, ID_SECTOR, FECHA_ULTIMO_MOVIMIENTO";
-
-        } else if (_command.DoNotReturnSubledgerAccounts && _command.ShowCascadeBalances) {
-
-          return "GROUP BY ID_MAYOR, ID_MONEDA, ID_CUENTA_ESTANDAR, NUMERO_CUENTA_ESTANDAR, ID_SECTOR, FECHA_ULTIMO_MOVIMIENTO";
-
-        } else if (_command.ReturnSubledgerAccounts && _command.Consolidated) {
-
-          return "GROUP BY ID_MONEDA, ID_CUENTA_ESTANDAR, NUMERO_CUENTA_ESTANDAR, ID_SECTOR, " +
-                 "ID_CUENTA_AUXILIAR, FECHA_ULTIMO_MOVIMIENTO";
-
-        } else if (_command.ReturnSubledgerAccounts &&_command.ShowCascadeBalances) {
-
-          return "GROUP BY ID_MAYOR, ID_MONEDA, ID_CUENTA_ESTANDAR, NUMERO_CUENTA_ESTANDAR, ID_SECTOR, " +
-                 "ID_CUENTA_AUXILIAR, FECHA_ULTIMO_MOVIMIENTO";
-
-        } else {
-          throw Assertion.AssertNoReachThisCode();
-        }
-      }
-
-
-      private string GetHavingClause() {
+      private string GetWhereClause() {
         if (_command.BalancesType == BalancesType.AllAccounts) {
           return string.Empty;
         }
@@ -162,7 +136,7 @@ namespace Empiria.FinancialAccounting.BalanceEngine.Adapters {
           throw Assertion.AssertNoReachThisCode();
         }
 
-        return $"HAVING {clause}";
+        return $"WHERE {clause}";
       }
 
 
