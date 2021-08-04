@@ -48,15 +48,31 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
     private List<TrialBalanceEntry> OrderingTrialBalance(List<TrialBalanceEntry> entries) {
       List<TrialBalanceEntry> returnedEntries = new List<TrialBalanceEntry>();
 
-      returnedEntries = entries.OrderBy(a => a.Ledger.Number)
+      if (_command.TrialBalanceType == TrialBalanceType.BalanzaConAuxiliares ||
+          _command.TrialBalanceType == TrialBalanceType.SaldosPorCuenta) {
+        foreach (var entry in entries) {
+          SubsidiaryAccount subledgerAccount = SubsidiaryAccount.Parse(entry.SubledgerAccountId);
+          if (!subledgerAccount.IsEmptyInstance) {
+            entry.SubledgerAccountNumber = subledgerAccount.Number;
+            entry.SubledgerNumber = Convert.ToInt64(subledgerAccount.Number);
+          }
+        }
+        return returnedEntries = entries.OrderBy(a => a.Ledger.Number)
+                                  .ThenBy(a => a.Currency.Code)
+                                  .ThenByDescending(a => a.Account.DebtorCreditor)
+                                  .ThenBy(a => a.Account.Number)
+                                  .ThenBy(a => a.Sector.Code)
+                                  .ThenBy(a => a.SubledgerNumber)
+                                  .ToList();
+      } else {
+        return returnedEntries = entries.OrderBy(a => a.Ledger.Number)
                                   .ThenBy(a => a.Currency.Code)
                                   .ThenByDescending(a => a.Account.DebtorCreditor)
                                   .ThenBy(a => a.Account.Number)
                                   .ThenBy(a => a.Sector.Code)
                                   .ThenBy(a => a.SubledgerAccountNumber)
                                   .ToList();
-
-      return returnedEntries;
+      }
     }
 
     internal List<TrialBalanceEntry> CombineCurrencyTotalsAndPostingEntries(

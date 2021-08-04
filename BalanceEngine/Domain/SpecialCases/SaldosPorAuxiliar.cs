@@ -192,6 +192,7 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
         returnedEntries = CreateOrAccumulateTotalBySubsidiaryEntry(returnedEntries, entry);
         returnedEntries = AddSummaryAccounts(summaryEntries, returnedEntries, entry);
       }
+
       return returnedEntries;
     }
 
@@ -252,11 +253,13 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
 
       foreach (var entry in totaBySubsidiaryAccountList.Where(a => a.Level == 1 && a.NotHasSector)) {
         entry.SubledgerAccountNumber = SubsidiaryAccount.Parse(entry.SubledgerAccountIdParent).Number ?? "";
+        entry.SubledgerNumber = entry.SubledgerAccountNumber != "" ?
+                                 Convert.ToInt64(entry.SubledgerAccountNumber) : 0;
         returnedEntries.Add(entry);
       }
 
       returnedEntries = returnedEntries.OrderBy(a => a.Currency.Code)
-                                       .ThenBy(a => a.SubledgerAccountNumber)
+                                       .ThenBy(a => a.SubledgerNumber)
                                        .ToList();
       return returnedEntries;
     }
