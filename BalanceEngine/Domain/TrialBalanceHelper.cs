@@ -636,7 +636,7 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
       string hash = $"{balanceEntry.Currency.Id}||{groupEntry.GroupNumber}||" +
                     $"{groupEntry.Sector.Code}||{groupEntry.DebtorCreditor}";
 
-      GenerateOrIncreaseEntries(totalsListByGroupEntries, groupEntry, StandardAccount.Empty,
+      GenerateOrIncreaseEntries(totalsListByGroupEntries, groupEntry, groupEntry.Account,
                                 groupEntry.Sector, itemType, hash);
     }
 
