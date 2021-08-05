@@ -47,11 +47,11 @@ namespace Empiria.FinancialAccounting.Tests.Balances {
       command.AccountsChartUID = "b2328e67-3f2e-45b9-b1f6-93ef6292204e";
       command.BalancesType = BalanceEngine.BalancesType.AllAccounts;
       command.ConsolidateBalancesToTargetCurrency = false;
-      command.TrialBalanceType = BalanceEngine.TrialBalanceType.SaldosPorAuxiliar;
-      command.FromAccount = "1505";
-      command.ToAccount = "1505";
-      command.Ledgers = new string[] { "30a02a33-7b8d-2b8b-82d3-8f7964bf00b7", "2584a757-865c-2025-8025-fa633f200c49",
-                                       "f8974ff7-7c42-31c2-251e-69d01033256f", "bf41b849-9d0a-4595-a5a8-eba387eb8123" }; 
+      command.ShowCascadeBalances = false;
+      command.TrialBalanceType = BalanceEngine.TrialBalanceType.BalanzaConAuxiliares;
+      command.FromAccount = "2315-01-04-51";
+      command.ToAccount = "2315-01-04-51";
+      command.Ledgers = new string[] {"2584a757-865c-2025-8025-fa633f200c49"};  
 
       command.InitialPeriod.FromDate = new DateTime(2021, 01, 01);
       command.InitialPeriod.ToDate = new DateTime(2021, 01, 31);

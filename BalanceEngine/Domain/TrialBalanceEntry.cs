@@ -243,7 +243,7 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
     } = string.Empty;
 
 
-    public long SubledgerNumber {
+    public int SubledgerNumberOfDigits {
       get; internal set;
     } = 0;
 

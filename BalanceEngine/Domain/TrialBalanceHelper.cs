@@ -54,15 +54,18 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
           SubsidiaryAccount subledgerAccount = SubsidiaryAccount.Parse(entry.SubledgerAccountId);
           if (!subledgerAccount.IsEmptyInstance) {
             entry.SubledgerAccountNumber = subledgerAccount.Number;
-            entry.SubledgerNumber = Convert.ToInt64(subledgerAccount.Number);
+            entry.SubledgerNumberOfDigits = entry.SubledgerAccountNumber != "" ?
+                                            entry.SubledgerAccountNumber.Count() : 0;
           }
         }
-        return returnedEntries = entries.OrderBy(a => a.Ledger.Number)
+        return returnedEntries = entries.Where(a => !a.SubledgerAccountNumber.Contains("undefined"))
+                                  .OrderBy(a => a.Ledger.Number)
                                   .ThenBy(a => a.Currency.Code)
                                   .ThenByDescending(a => a.Account.DebtorCreditor)
                                   .ThenBy(a => a.Account.Number)
                                   .ThenBy(a => a.Sector.Code)
-                                  .ThenBy(a => a.SubledgerNumber)
+                                  .ThenBy(a => a.SubledgerNumberOfDigits)
+                                  .ThenBy(a => a.SubledgerAccountNumber)
                                   .ToList();
       } else {
         return returnedEntries = entries.OrderBy(a => a.Ledger.Number)

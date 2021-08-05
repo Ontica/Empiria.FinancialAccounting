@@ -68,11 +68,6 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
       get; internal set;
     } = string.Empty;
 
-
-    public string LastChangeDateColumn {
-      get; internal set;
-    } = ", FECHA_AFECTACION ";
-
   } // class TrialBalanceCommandData
 
 } // namespace Empiria.FinancialAccounting.BalanceEngine

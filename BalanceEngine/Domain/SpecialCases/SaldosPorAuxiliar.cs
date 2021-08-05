@@ -253,13 +253,15 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
 
       foreach (var entry in totaBySubsidiaryAccountList.Where(a => a.Level == 1 && a.NotHasSector)) {
         entry.SubledgerAccountNumber = SubsidiaryAccount.Parse(entry.SubledgerAccountIdParent).Number ?? "";
-        entry.SubledgerNumber = entry.SubledgerAccountNumber != "" ?
-                                 Convert.ToInt64(entry.SubledgerAccountNumber) : 0;
+        entry.SubledgerNumberOfDigits = entry.SubledgerAccountNumber != "" ?
+                                 entry.SubledgerAccountNumber.Count() : 0;
         returnedEntries.Add(entry);
       }
-
-      returnedEntries = returnedEntries.OrderBy(a => a.Currency.Code)
-                                       .ThenBy(a => a.SubledgerNumber)
+      
+      returnedEntries = returnedEntries.Where(a => !a.SubledgerAccountNumber.Contains("undefined"))
+                                       .OrderBy(a => a.Currency.Code)
+                                       .ThenBy(a => a.SubledgerNumberOfDigits)
+                                       .ThenBy(a => a.SubledgerAccountNumber)
                                        .ToList();
       return returnedEntries;
     }
