@@ -81,6 +81,9 @@ namespace Empiria.FinancialAccounting.Adapters {
       get; internal set;
     }
 
+    public string Keywords {
+      get; internal set;
+    }
 
     public string Description {
       get; internal set;

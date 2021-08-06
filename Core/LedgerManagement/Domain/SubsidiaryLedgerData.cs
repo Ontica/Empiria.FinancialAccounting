@@ -15,11 +15,14 @@ namespace Empiria.FinancialAccounting {
 
   static internal class SubsidiaryLedgerData {
 
-    static internal FixedList<SubsidiaryAccount> GetSubsidiaryAccountsList(string keywords) {
-      string sql = $"SELECT * FROM COF_CUENTA_AUXILIAR " +
-                   $"WHERE NOMBRE_CUENTA_AUXILIAR LIKE '%{keywords}%' ";
+    static internal FixedList<SubsidiaryAccount> GetSubsidiaryAccountsList(AccountsChart accountsChart,
+                                                                           string keywords) {
 
-      DataOperation operation = DataOperation.Parse(sql);
+      string sqlKeywords = SearchExpression.ParseAndLikeKeywords("KEYWORDS_CUENTA_AUXILIAR", keywords);
+
+      DataOperation operation = DataOperation.Parse("@qry_cof_busca_auxiliares",
+                                                    accountsChart.Id,
+                                                    sqlKeywords);
 
       return DataReader.GetFixedList<SubsidiaryAccount>(operation);
     }

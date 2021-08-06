@@ -36,6 +36,9 @@ namespace Empiria.FinancialAccounting.Adapters {
         Ledger = subsidiaryAccount.SubsidaryLedger.BaseLedger.MapToNamedEntity(),
         SubsidiaryLedger = subsidiaryAccount.SubsidaryLedger.MapToNamedEntity(),
         Name = subsidiaryAccount.Name,
+        Keywords = EmpiriaString.BuildKeywords(subsidiaryAccount.Name,
+                                               subsidiaryAccount.Number,
+                                               subsidiaryAccount.SubsidaryLedger.Name),
         Number = subsidiaryAccount.Number,
         Description = subsidiaryAccount.Description
       };

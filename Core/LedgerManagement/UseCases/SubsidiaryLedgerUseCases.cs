@@ -54,10 +54,13 @@ namespace Empiria.FinancialAccounting.UseCases {
     }
 
 
-    public FixedList<SubsidiaryAccountDto> SearchSubsidiaryAccounts(string keywords) {
+    public FixedList<SubsidiaryAccountDto> SearchSubsidiaryAccounts(string accountsChartUID, string keywords) {
+      Assertion.AssertObject(accountsChartUID, "accountsChartUID");
       Assertion.AssertObject(keywords, "keywords");
 
-      FixedList<SubsidiaryAccount> subledgerAccountList = SubsidiaryAccount.GetList(keywords);
+      var accountsChart = AccountsChart.Parse(accountsChartUID);
+
+      FixedList<SubsidiaryAccount> subledgerAccountList = SubsidiaryAccount.GetList(accountsChart, keywords);
 
       return SubsidiaryLedgerMapper.Map(subledgerAccountList);
     }

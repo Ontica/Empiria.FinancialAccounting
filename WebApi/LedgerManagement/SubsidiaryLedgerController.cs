@@ -52,16 +52,16 @@ namespace Empiria.FinancialAccounting.WebApi {
 
 
     [HttpGet]
-    [Route("v2/financial-accounting/subsidiary-accounts/{keywords}")]
-    public CollectionModel SearchSubledgerAcocunts([FromUri] string keywords) {
+    [Route("v2/financial-accounting/{accountsChartUID:guid}/subsidiary-accounts/{keywords}")]
+    public CollectionModel SearchSubledgerAccounts([FromUri] string accountsChartUID,
+                                                   [FromUri] string keywords) {
 
       using (var usecases = SubsidiaryLedgerUseCases.UseCaseInteractor()) {
-        FixedList<SubsidiaryAccountDto> list = usecases.SearchSubsidiaryAccounts(keywords);
+        FixedList<SubsidiaryAccountDto> list = usecases.SearchSubsidiaryAccounts(accountsChartUID, keywords);
 
         return new CollectionModel(base.Request, list);
       }
     }
-
 
     #endregion Web Apis
 
