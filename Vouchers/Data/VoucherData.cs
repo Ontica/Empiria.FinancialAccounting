@@ -23,6 +23,14 @@ namespace Empiria.FinancialAccounting.Vouchers.Data {
     }
 
 
+    internal static void DeleteVoucherEntry(VoucherEntry voucherEntry) {
+      var dataOperation = DataOperation.Parse("do_delete_cof_movimiento_tmp",
+                                              voucherEntry.VoucherId, voucherEntry.Id);
+
+      DataWriter.Execute(dataOperation);
+    }
+
+
     static internal FixedList<Voucher> GetVouchers(string filter, string sort, int pageSize) {
       var sql = "SELECT * FROM (" +
                   "SELECT * FROM VW_COF_TRANSACCION " +
@@ -36,11 +44,8 @@ namespace Empiria.FinancialAccounting.Vouchers.Data {
     }
 
 
-    static internal FixedList<VoucherEntry> GetVoucherEntries(Voucher voucher) {
-      var sql = "SELECT * FROM COF_MOVIMIENTO " +
-                $"WHERE ID_TRANSACCION = {voucher.Id}";
-
-      var dataOperation = DataOperation.Parse(sql);
+    static internal FixedList<VoucherEntry> GetVoucherEntries(Voucher o) {
+      var dataOperation = DataOperation.Parse("qry_cof_movimiento", o.Id, o.IsOpened ? 1 : 0);
 
       return DataReader.GetFixedList<VoucherEntry>(dataOperation);
     }

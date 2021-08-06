@@ -52,13 +52,7 @@ namespace Empiria.FinancialAccounting.Vouchers {
 
     protected override void OnInitialize() {
       base.OnLoad();
-
-      if (!this.IsEmptyInstance) {
-        _entries = new Lazy<FixedList<VoucherEntry>>(() => VoucherData.GetVoucherEntries(this));
-
-      } else {
-        _entries = new Lazy<FixedList<VoucherEntry>>(() => new FixedList<VoucherEntry>());
-      }
+      RefreshEntries();
     }
 
     #endregion Constructors and parsers
@@ -156,15 +150,35 @@ namespace Empiria.FinancialAccounting.Vouchers {
       }
     }
 
-
-
     #endregion Public properties
 
     #region Methods
 
 
     internal void Delete() {
+      Assertion.Assert(this.IsOpened, "Esta póliza no puede eliminarse porque ya está cerrada.");
+
       VoucherData.DeleteVoucher(this);
+    }
+
+
+    internal void DeleteEntry(VoucherEntry entry) {
+      Assertion.AssertObject(entry, "entry");
+      Assertion.Assert(this.IsOpened, "No se puede eliminar el movimiento porque la póliza ya está cerrada.");
+      Assertion.Assert(this.Entries.Contains(entry), "El movimiento que se desea eliminar no pertenece a esta póliza");
+
+      entry.Delete();
+
+      this.RefreshEntries();
+    }
+
+
+    internal VoucherEntry GetEntry(int voucherEntryId) {
+      var entry = Entries.Find(x => x.Id == voucherEntryId);
+
+      Assertion.AssertObject(entry, $"La póliza no tiene registrado un movimiento con id {voucherEntryId}");
+
+      return entry;
     }
 
 
@@ -182,6 +196,14 @@ namespace Empiria.FinancialAccounting.Vouchers {
       VoucherData.WriteVoucher(this);
     }
 
+    private void RefreshEntries() {
+      if (!this.IsEmptyInstance) {
+        _entries = new Lazy<FixedList<VoucherEntry>>(() => VoucherData.GetVoucherEntries(this));
+
+      } else {
+        _entries = new Lazy<FixedList<VoucherEntry>>(() => new FixedList<VoucherEntry>());
+      }
+    }
 
     internal void Update(VoucherFields fields) {
       Assertion.AssertObject(fields, "fields");

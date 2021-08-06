@@ -33,6 +33,11 @@ namespace Empiria.FinancialAccounting.Vouchers.UseCases {
     #region Use cases
 
 
+    public VoucherDto AppendEntry(int voucherId, VoucherEntryFields fields) {
+      throw new NotImplementedException();
+    }
+
+
     public VoucherDto CloseVoucher(int voucherId) {
       throw new NotImplementedException();
     }
@@ -43,10 +48,20 @@ namespace Empiria.FinancialAccounting.Vouchers.UseCases {
 
       fields.EnsureIsValid();
 
-
       var voucher = new Voucher(fields);
 
       voucher.Save();
+
+      return VoucherMapper.Map(voucher);
+    }
+
+
+    public VoucherDto DeleteEntry(int voucherId, int voucherEntryId) {
+      var voucher = Voucher.Parse(voucherId);
+
+      VoucherEntry entry = voucher.GetEntry(voucherEntryId);
+
+      voucher.DeleteEntry(entry);
 
       return VoucherMapper.Map(voucher);
     }
@@ -71,6 +86,12 @@ namespace Empiria.FinancialAccounting.Vouchers.UseCases {
       voucher.Save();
 
       return VoucherMapper.Map(voucher);
+    }
+
+
+    public VoucherDto UpdateEntry(int voucherId, int voucherEntryId,
+                                  VoucherEntryFields fields) {
+      throw new NotImplementedException();
     }
 
 

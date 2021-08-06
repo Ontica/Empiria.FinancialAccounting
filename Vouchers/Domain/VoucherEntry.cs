@@ -8,7 +8,7 @@
 *                                                                                                            *
 ************************* Copyright(c) La Vía Óntica SC, Ontica LLC and contributors. All rights reserved. **/
 using System;
-
+using Empiria.FinancialAccounting.Vouchers.Data;
 
 namespace Empiria.FinancialAccounting.Vouchers {
 
@@ -18,12 +18,13 @@ namespace Empiria.FinancialAccounting.Vouchers {
     Credit = 'H'
   }
 
+
   /// <summary>Represents an accounting voucher entry: a debit or credit movement.</summary>
   public class VoucherEntry : BaseObject {
 
     #region Constructors and parsers
 
-    private VoucherEntry() {
+    protected VoucherEntry() {
       // Required by Empiria Framework.
     }
 
@@ -33,16 +34,13 @@ namespace Empiria.FinancialAccounting.Vouchers {
     }
 
 
-    static public Voucher Empty => BaseObject.ParseEmpty<Voucher>();
-
-
     #endregion Constructors and parsers
 
     #region Public properties
 
 
     [DataField("ID_TRANSACCION", ConvertFrom = typeof(long))]
-    public int TransactionId {
+    public int VoucherId {
       get;
       private set;
     }
@@ -99,19 +97,22 @@ namespace Empiria.FinancialAccounting.Vouchers {
 
     [DataField("NUMERO_VERIFICACION")]
     public string VerificationNumber {
-      get; internal set;
+      get;
+      internal set;
     }
 
 
     [DataField("TIPO_MOVIMIENTO", Default = VoucherEntryType.Debit)]
     public VoucherEntryType VoucherEntryType {
-      get; internal set;
+      get;
+      internal set;
     }
 
 
     [DataField("FECHA_MOVIMIENTO")]
     public DateTime Date {
-      get; internal set;
+      get;
+      internal set;
     }
 
 
@@ -163,6 +164,7 @@ namespace Empiria.FinancialAccounting.Vouchers {
       }
     }
 
+
     public bool HasSubledgerAccount {
       get {
         return !this.SubledgerAccount.IsEmptyInstance;
@@ -170,6 +172,14 @@ namespace Empiria.FinancialAccounting.Vouchers {
     }
 
     #endregion Public properties
+
+    #region Methods
+
+    internal void Delete() {
+      VoucherData.DeleteVoucherEntry(this);
+    }
+
+    #endregion Methods
 
   }  // class VoucherEntry
 

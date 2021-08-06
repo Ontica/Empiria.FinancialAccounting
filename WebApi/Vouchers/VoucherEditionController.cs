@@ -36,6 +36,20 @@ namespace Empiria.FinancialAccounting.Vouchers.WebApi {
 
 
     [HttpPost]
+    [Route("v2/financial-accounting/vouchers/{voucherId:int}/entries")]
+    public SingleObjectModel AppendVoucherEntry([FromUri] int voucherId,
+                                                [FromBody] VoucherEntryFields fields) {
+      base.RequireBody(fields);
+
+      using (var usecases = VoucherEditionUseCases.UseCaseInteractor()) {
+        VoucherDto voucher = usecases.AppendEntry(voucherId, fields);
+
+        return new SingleObjectModel(base.Request, voucher);
+      }
+    }
+
+
+    [HttpPost]
     [Route("v2/financial-accounting/vouchers/create-voucher")]
     public SingleObjectModel CreateVoucher([FromBody] VoucherFields fields) {
       base.RequireBody(fields);
@@ -60,6 +74,19 @@ namespace Empiria.FinancialAccounting.Vouchers.WebApi {
     }
 
 
+    [HttpDelete]
+    [Route("v2/financial-accounting/vouchers/{voucherId:int}/entries/{voucherEntryId:int}")]
+    public SingleObjectModel DeleteVoucherEntry([FromUri] int voucherId,
+                                                [FromUri] int voucherEntryId) {
+
+      using (var usecases = VoucherEditionUseCases.UseCaseInteractor()) {
+        VoucherDto voucher = usecases.DeleteEntry(voucherId, voucherEntryId);
+
+        return new SingleObjectModel(base.Request, voucher);
+      }
+    }
+
+
     [HttpPut, HttpPatch]
     [Route("v2/financial-accounting/vouchers/{voucherId:int}")]
     public SingleObjectModel UpdateVoucher([FromUri] int voucherId,
@@ -73,6 +100,20 @@ namespace Empiria.FinancialAccounting.Vouchers.WebApi {
       }
     }
 
+
+    [HttpPut, HttpPatch]
+    [Route("v2/financial-accounting/vouchers/{voucherId:int}/entries/{voucherEntryId:int}")]
+    public SingleObjectModel UpdateVoucherEntry([FromUri] int voucherId,
+                                                [FromUri] int voucherEntryId,
+                                                [FromBody] VoucherEntryFields fields) {
+      base.RequireBody(fields);
+
+      using (var usecases = VoucherEditionUseCases.UseCaseInteractor()) {
+        VoucherDto voucher = usecases.UpdateEntry(voucherId, voucherEntryId, fields);
+
+        return new SingleObjectModel(base.Request, voucher);
+      }
+    }
 
     #endregion Web Apis
 
