@@ -75,13 +75,18 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
       summaryByAccountEntries = OrderingTotalsByGroup(summaryByAccountEntries).ToFixedList();
 
       foreach (var totalGroupDebtorEntry in summaryByAccountEntries) {
-        var debtorEntries = balanceEntries.Where(
+        var entries = balanceEntries.Where(
                                   a => a.Account.Number == totalGroupDebtorEntry.GroupNumber &&
                                   a.Currency.Id == totalGroupDebtorEntry.Currency.Id &&
                                   a.Sector.Code == totalGroupDebtorEntry.Sector.Code).ToList();
+        foreach (var entry in entries) {
+          if (entry.LastChangeDate > totalGroupDebtorEntry.LastChangeDate) {
+            totalGroupDebtorEntry.LastChangeDate = entry.LastChangeDate;
+          }
+        }
         totalGroupDebtorEntry.GroupNumber = "";
-        debtorEntries.Add(totalGroupDebtorEntry);
-        returnedEntries.AddRange(debtorEntries);
+        entries.Add(totalGroupDebtorEntry);
+        returnedEntries.AddRange(entries);
       }
 
       return returnedEntries;

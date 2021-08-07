@@ -83,7 +83,7 @@ namespace Empiria.FinancialAccounting.BalanceEngine.Adapters {
         case TrialBalanceType.SaldosPorCuenta:
         case TrialBalanceType.SaldosPorCuentaYMayor:
 
-          var mappedItems = list.Select((x) => MapToTrialBalance((TrialBalanceEntry) x));
+          var mappedItems = list.Select((x) => MapToTrialBalance((TrialBalanceEntry) x, command));
           return new FixedList<ITrialBalanceEntryDto>(mappedItems);
 
         case TrialBalanceType.BalanzaValorizadaComparativa:
@@ -126,16 +126,15 @@ namespace Empiria.FinancialAccounting.BalanceEngine.Adapters {
       dto.ForeignBalance = entry.ForeignBalance;
       dto.TotalBalance = entry.TotalBalance;
       dto.ExchangeRate = entry.ExchangeRate;
-      dto.LastChangeDate = entry.ItemType == TrialBalanceItemType.BalanceEntry ?
-                            entry.LastChangeDate : "";
+      dto.LastChangeDate = entry.LastChangeDate;
 
       return dto;
     }
 
-    static private TrialBalanceEntryDto MapToTrialBalance(TrialBalanceEntry entry) {
+    static private TrialBalanceEntryDto MapToTrialBalance(TrialBalanceEntry entry, TrialBalanceCommand command) {
       var dto = new TrialBalanceEntryDto();
       SubsidiaryAccount subledgerAccount = SubsidiaryAccount.Parse(entry.SubledgerAccountId);
-
+      
       dto.ItemType = entry.ItemType;
       dto.LedgerUID = entry.Ledger.UID;
       dto.LedgerNumber = entry.Ledger.Number;
@@ -161,8 +160,10 @@ namespace Empiria.FinancialAccounting.BalanceEngine.Adapters {
       dto.Credit = entry.Credit;
       dto.CurrentBalance = entry.CurrentBalance;
       dto.ExchangeRate = entry.ExchangeRate;
-      dto.LastChangeDate = entry.ItemType == TrialBalanceItemType.BalanceEntry ?
-                            entry.LastChangeDate.ToString("dd-MM-yyyy") : "";
+      dto.LastChangeDate = entry.ItemType == TrialBalanceItemType.BalanceEntry ||
+                           entry.ItemType == TrialBalanceItemType.BalanceSummary ||
+                           command.TrialBalanceType == TrialBalanceType.SaldosPorCuentaYMayor ?
+                           entry.LastChangeDate.ToString("dd-MM-yyyy") : "";
 
       return dto;
     }

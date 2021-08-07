@@ -174,8 +174,13 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
         var parent = parentEntries.Values.FirstOrDefault();
         parent.SubledgerAccountId = parent.SubledgerAccountIdParent;
         parent.SubledgerAccountNumber = SubsidiaryAccount.Parse(entry.SubledgerAccountIdParent).Number ?? "";
+        parent.LastChangeDate = entry.LastChangeDate;
+
         returnedEntries.Add(parent);
       } else {
+        if (entry.LastChangeDate > existTotalByAccount.LastChangeDate) {
+          existTotalByAccount.LastChangeDate = entry.LastChangeDate;
+        }
         existTotalByAccount.Sum(entry);
       }
 
