@@ -47,7 +47,16 @@ namespace Empiria.FinancialAccounting.Vouchers.Data {
     static internal FixedList<VoucherEntry> GetVoucherEntries(Voucher o) {
       var dataOperation = DataOperation.Parse("qry_cof_movimiento", o.Id, o.IsOpened ? 1 : 0);
 
-      return DataReader.GetFixedList<VoucherEntry>(dataOperation);
+      return DataReader.GetPlainObjectFixedList<VoucherEntry>(dataOperation);
+    }
+
+
+    static internal long NextVoucherEntryId() {
+      var sql = "SELECT SEC_ID_MOVIMIENTO_TMP.NEXTVAL FROM DUAL";
+
+      var operation = DataOperation.Parse(sql);
+
+      return Convert.ToInt64(DataReader.GetScalar<decimal>(operation));
     }
 
 
@@ -64,12 +73,14 @@ namespace Empiria.FinancialAccounting.Vouchers.Data {
 
 
     static internal void WriteVoucherEntry(VoucherEntry o) {
-      var op = DataOperation.Parse("write_cof_movimiento_tmp", o.Id, o.VoucherId,
-                                    o.LedgerAccount.Id, o.SubledgerAccount.Id, o.Sector.Id,
-                                    o.ReferenceEntryId, o.ResponsibilityArea.Id, o.BudgetConcept,
-                                    o.AvailabilityCode, o.VerificationNumber, (char) o.VoucherEntryType,
-                                    o.Date, o.Concept, o.Currency.Id, o.Amount, o.BaseCurrrencyAmount,
-                                    o.Protected ? 1 : 0);
+      var op = DataOperation.Parse("write_cof_movimiento_tmp", o.Id, o.VoucherId, o.LedgerAccount.Id,
+                                    o.SubledgerAccount.IsEmptyInstance ? 0 : o.SubledgerAccount.Id,
+                                    o.Sector.IsEmptyInstance ? 0: o.Sector.Id,
+                                    o.ReferenceEntryId,
+                                    o.ResponsibilityArea.IsEmptyInstance ? 0: o.ResponsibilityArea.Id,
+                                    o.BudgetConcept, o.AvailabilityCode, o.VerificationNumber, (char) o.VoucherEntryType,
+                                    o.HasDate ? (object) o.Date : DBNull.Value, o.Concept, o.Currency.Id,
+                                    o.Amount, o.BaseCurrrencyAmount, o.Protected ? 1 : 0);
 
       DataWriter.Execute(op);
     }

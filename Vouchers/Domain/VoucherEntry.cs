@@ -14,6 +14,7 @@ using Empiria.FinancialAccounting.Vouchers.Data;
 namespace Empiria.FinancialAccounting.Vouchers {
 
   public enum VoucherEntryType {
+
     Debit = 'D',
 
     Credit = 'H'
@@ -21,7 +22,7 @@ namespace Empiria.FinancialAccounting.Vouchers {
 
 
   /// <summary>Represents an accounting voucher entry: a debit or credit movement.</summary>
-  public class VoucherEntry : BaseObject {
+  public class VoucherEntry {
 
     #region Constructors and parsers
 
@@ -36,14 +37,16 @@ namespace Empiria.FinancialAccounting.Vouchers {
     }
 
 
-    static public VoucherEntry Parse(int id) {
-      return BaseObject.ParseId<VoucherEntry>(id);
-    }
-
-
     #endregion Constructors and parsers
 
     #region Public properties
+
+
+    [DataField("ID_MOVIMIENTO")]
+    public long Id {
+      get;
+      private set;
+    }
 
 
     [DataField("ID_TRANSACCION", ConvertFrom = typeof(long))]
@@ -116,10 +119,16 @@ namespace Empiria.FinancialAccounting.Vouchers {
     }
 
 
-    [DataField("FECHA_MOVIMIENTO")]
+    [DataField("FECHA_MOVIMIENTO", Default = "ExecutionServer.DateMinValue")]
     public DateTime Date {
       get;
       internal set;
+    }
+
+    public bool HasDate {
+      get {
+        return this.Date != ExecutionServer.DateMinValue;
+      }
     }
 
 
@@ -214,12 +223,19 @@ namespace Empiria.FinancialAccounting.Vouchers {
       this.Concept = fields.Concept;
       this.Currency = fields.GetCurrency();
       this.Amount = fields.Amount;
-      this.BaseCurrrencyAmount = fields.BaseCurrrencyAmount;
+      if (fields.UsesBaseCurrency()) {
+        this.BaseCurrrencyAmount = fields.Amount;
+      } else {
+        this.BaseCurrrencyAmount = fields.BaseCurrencyAmount;
+      }
       this.Protected = fields.Protected;
     }
 
 
-    protected override void OnSave() {
+    internal void Save() {
+      if (this.Id == 0) {
+        this.Id = VoucherData.NextVoucherEntryId();
+      }
       VoucherData.WriteVoucherEntry(this);
     }
 
