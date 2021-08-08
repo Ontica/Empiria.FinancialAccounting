@@ -103,6 +103,20 @@ namespace Empiria.FinancialAccounting {
       return AccountsChartData.GetAccountHistory(this, accountNumber);
     }
 
+
+    public Account GetAccountHistory(string accountNumber, DateTime date) {
+      FixedList<Account> history = AccountsChartData.GetAccountHistory(this, accountNumber);
+
+      Account account = history.Find(x => x.StartDate <= date && date <= x.EndDate);
+
+      Assertion.AssertObject(account,
+        $"There are not historic information for account {accountNumber} " +
+        $"on date {date.ToString("dd/MMM/yyyy")}.");
+
+      return account;
+    }
+
+
     public FixedList<Account> GetAccountsInADate(DateTime date) {
       return _accounts.Value.ToFixedList()
                             .FindAll(x => x.StartDate <= date && date <= x.EndDate);

@@ -92,9 +92,73 @@ namespace Empiria.FinancialAccounting {
 
     #region Methods
 
+    public void CheckIsNotSummary(DateTime accountingDate) {
+      Account account = this.StandardAccount.GetHistory(accountingDate);
+
+      Assertion.Assert(account.Role != AccountRole.Sumaria,
+          $"La cuenta {account.Number} es sumaria {toDate(accountingDate)}.");
+    }
+
+
+    public void CheckCurrencyRule(Currency currency, DateTime accountingDate) {
+      Assertion.Assert(
+          CurrencyRules.Contains(x => x.Currency.Equals(currency) && x.AppliesOn(accountingDate)),
+          $"La moneda {currency.Name} no está definida para la cuenta {this.StandardAccount.Number} " +
+          $"{toDate(accountingDate)}.");
+    }
+
+
+    public void CheckSectorRule(Sector sector, DateTime accountingDate) {
+      Account account = this.StandardAccount.GetHistory(accountingDate);
+
+      Assertion.Assert(account.Role == AccountRole.Sectorizada,
+          $"La cuenta {account.Number} no maneja sectores {toDate(accountingDate)}.");
+
+      Assertion.Assert(
+          SectorRules.Contains(x => x.Sector.Equals(sector) && x.AppliesOn(accountingDate)),
+          $"El sector {sector.Code} no está definido para la cuenta {account.Number} " +
+          $"{toDate(accountingDate)}.");
+    }
+
+
+    public void CheckNoSectorRule(DateTime accountingDate) {
+      Account account = this.StandardAccount.GetHistory(accountingDate);
+
+      Assertion.Assert(account.Role != AccountRole.Sectorizada,
+                       $"La cuenta {account.Number} maneja sectores {toDate(accountingDate)}.");
+    }
+
+
+    public void CheckSubledgerAccountRule(SubsidiaryAccount subledgerAccount, DateTime accountingDate) {
+      Assertion.AssertObject(subledgerAccount, "subledgerAccount");
+
+      Account account = this.StandardAccount.GetHistory(accountingDate);
+
+      Assertion.Assert(account.Role == AccountRole.Control,
+          $"La cuenta {account.Number} no maneja auxiliares {toDate(accountingDate)}.");
+
+      Assertion.Assert(subledgerAccount.SubsidaryLedger.BaseLedger.Equals(this.Ledger),
+          $"El auxiliar {subledgerAccount.Number} no pertenece a la contabilidad {this.Ledger.FullName}.");
+    }
+
+
+    public void CheckNoSubledgerAccountRule(DateTime accountingDate) {
+      Account account = this.StandardAccount.GetHistory(accountingDate);
+
+      Assertion.Assert(account.Role == AccountRole.Detalle,
+          $"La cuenta {account.Number} maneja auxiliares {toDate(accountingDate)}.");
+    }
+
+
     private Account GetStandardAccount() {
       return AccountsChartData.GetCurrentAccountWithStandardAccountId(this.StandardAccountId);
     }
+
+
+    private string toDate(DateTime accountingDate) {
+      return $"(fecha {accountingDate.ToString("dd/MMM/yyyy")})";
+    }
+
 
     #endregion Methods
 

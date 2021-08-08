@@ -197,6 +197,10 @@ namespace Empiria.FinancialAccounting {
       return this.AccountsChart.GetAccountHistory(this.Number);
     }
 
+    internal Account GetHistory(DateTime date) {
+      return this.AccountsChart.GetAccountHistory(this.Number, date);
+    }
+
 
     public Account GetParent() {
       if (this.Level == 1) {
@@ -212,7 +216,6 @@ namespace Empiria.FinancialAccounting {
 
 
     #endregion Public methods
-
 
     #region Private methods
 

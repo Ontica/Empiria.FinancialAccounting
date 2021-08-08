@@ -16,7 +16,7 @@ namespace Empiria.FinancialAccounting {
   /// <summary>Contains information about an account's responsibility area application rule.</summary>
   public class AreaRule {
 
-    private AreaRule() {
+    protected AreaRule() {
       // Required by Empiria Framework.
     }
 
@@ -50,6 +50,11 @@ namespace Empiria.FinancialAccounting {
       get; private set;
     }
 
+
+    internal bool AppliesOn(DateTime date) {
+      return this.StartDate <= date && date <= this.EndDate;
+    }
+
   }  // class AreaRule
 
 
@@ -57,7 +62,7 @@ namespace Empiria.FinancialAccounting {
   /// <summary>Contains information about an account's currency application rule.</summary>
   public class CurrencyRule {
 
-    private CurrencyRule() {
+    protected CurrencyRule() {
       // Required by Empiria Framework.
     }
 
@@ -91,6 +96,11 @@ namespace Empiria.FinancialAccounting {
       get; private set;
     }
 
+
+    internal bool AppliesOn(DateTime date) {
+      return this.StartDate <= date && date <= this.EndDate;
+    }
+
   }  // class CurrencyRule
 
 
@@ -98,7 +108,7 @@ namespace Empiria.FinancialAccounting {
   /// <summary>Contains information about an account's ledger application rule.</summary>
   public class LedgerRule {
 
-    private LedgerRule() {
+    protected LedgerRule() {
       // Required by Empiria Framework.
     }
 
@@ -130,6 +140,11 @@ namespace Empiria.FinancialAccounting {
       get; private set;
     } = new DateTime(2049, 12, 31);
 
+
+    internal bool AppliesOn(DateTime date) {
+      return this.StartDate <= date && date <= this.EndDate;
+    }
+
   }  // class LedgerRule
 
 
@@ -137,7 +152,7 @@ namespace Empiria.FinancialAccounting {
   /// <summary>Contains information about an account's sector application rule.</summary>
   public class SectorRule {
 
-    private SectorRule() {
+    protected SectorRule() {
       // Required by Empiria Framework.
     }
 
@@ -176,6 +191,11 @@ namespace Empiria.FinancialAccounting {
     [DataField("FECHA_FIN", Default = "ExecutionServer.DateMaxValue")]
     public DateTime EndDate {
       get; private set;
+    }
+
+
+    internal bool AppliesOn(DateTime date) {
+      return this.StartDate <= date && date <= this.EndDate;
     }
 
   }  // class SectorRule
