@@ -79,7 +79,7 @@ namespace Empiria.FinancialAccounting.Vouchers.Adapters {
       get; set;
     }
 
-    public decimal BaseCurrrencyAmount {
+    public decimal BaseCurrencyAmount {
       get; set;
     }
 
@@ -100,7 +100,6 @@ namespace Empiria.FinancialAccounting.Vouchers.Adapters {
         return this.SubledgerAccountId > 0;
       }
     }
-
 
   }  // class VoucherEntryFields
 
