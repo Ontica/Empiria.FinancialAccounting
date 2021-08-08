@@ -154,6 +154,21 @@ namespace Empiria.FinancialAccounting.Vouchers {
 
     #region Methods
 
+    internal VoucherEntry AppendEntry(VoucherEntryFields fields) {
+      Assertion.AssertObject(fields, "fields");
+      Assertion.Assert(this.IsOpened, "No se puede agregar el movimiento porque la póliza ya está cerrada.");
+
+      fields.EnsureValidFor(this);
+
+      var voucherEntry = new VoucherEntry(fields);
+
+      voucherEntry.Save();
+
+      this.RefreshEntries();
+
+      return voucherEntry;
+    }
+
 
     internal void Delete() {
       Assertion.Assert(this.IsOpened, "Esta póliza no puede eliminarse porque ya está cerrada.");

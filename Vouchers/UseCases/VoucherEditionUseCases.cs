@@ -34,7 +34,15 @@ namespace Empiria.FinancialAccounting.Vouchers.UseCases {
 
 
     public VoucherDto AppendEntry(int voucherId, VoucherEntryFields fields) {
-      throw new NotImplementedException();
+      Assertion.AssertObject(fields, "fields");
+
+      var voucher = Voucher.Parse(voucherId);
+
+      var voucherEntry = voucher.AppendEntry(fields);
+
+      voucherEntry.Save();
+
+      return VoucherMapper.Map(voucher);
     }
 
 

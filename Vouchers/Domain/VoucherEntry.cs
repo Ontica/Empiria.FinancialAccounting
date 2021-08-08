@@ -8,6 +8,7 @@
 *                                                                                                            *
 ************************* Copyright(c) La Vía Óntica SC, Ontica LLC and contributors. All rights reserved. **/
 using System;
+using Empiria.FinancialAccounting.Vouchers.Adapters;
 using Empiria.FinancialAccounting.Vouchers.Data;
 
 namespace Empiria.FinancialAccounting.Vouchers {
@@ -26,6 +27,12 @@ namespace Empiria.FinancialAccounting.Vouchers {
 
     protected VoucherEntry() {
       // Required by Empiria Framework.
+    }
+
+    internal VoucherEntry(VoucherEntryFields fields) {
+      Assertion.AssertObject(fields, "fields");
+
+      LoadFields(fields);
     }
 
 
@@ -143,6 +150,18 @@ namespace Empiria.FinancialAccounting.Vouchers {
       private set;
     }
 
+    [DataField("PROTEGIDO", ConvertFrom = typeof(int))]
+    public bool Protected {
+      get;
+      private set;
+    }
+
+
+    public Voucher Voucher {
+      get {
+        return Voucher.Parse(this.VoucherId);
+      }
+    }
 
     public decimal Debit {
       get {
@@ -177,6 +196,31 @@ namespace Empiria.FinancialAccounting.Vouchers {
 
     internal void Delete() {
       VoucherData.DeleteVoucherEntry(this);
+    }
+
+
+    private void LoadFields(VoucherEntryFields fields) {
+      this.VoucherId = fields.GetVoucher().Id;
+      this.LedgerAccount = fields.GetLedgerAccount();
+      this.Sector = fields.GetSector();
+      this.SubledgerAccount = fields.GetSubledgerAccount();
+      this.ReferenceEntryId = fields.ReferenceEntryId;
+      this.ResponsibilityArea = fields.GetResponsibilityArea();
+      this.BudgetConcept = fields.BudgetConcept;
+      this.AvailabilityCode = fields.AvailabilityCode;
+      this.VerificationNumber = fields.VerificationNumber;
+      this.VoucherEntryType = fields.VoucherEntryType;
+      this.Date = fields.Date;
+      this.Concept = fields.Concept;
+      this.Currency = fields.GetCurrency();
+      this.Amount = fields.Amount;
+      this.BaseCurrrencyAmount = fields.BaseCurrrencyAmount;
+      this.Protected = fields.Protected;
+    }
+
+
+    protected override void OnSave() {
+      VoucherData.WriteVoucherEntry(this);
     }
 
     #endregion Methods

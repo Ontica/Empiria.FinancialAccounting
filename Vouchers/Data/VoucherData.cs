@@ -52,14 +52,26 @@ namespace Empiria.FinancialAccounting.Vouchers.Data {
 
 
     static internal void WriteVoucher(Voucher o) {
-      var dataOperation = DataOperation.Parse("write_cof_transaccion", o.Id, o.Number,
-                                              o.Ledger.Id, o.FunctionalArea.Id,
-                                              o.TransactionType.Id, o.VoucherType.Id,
-                                              o.Concept, o.AccountingDate, o.RecordingDate,
-                                              o.ElaboratedBy.Id, o.AuthorizedBy.Id, o.IsOpened ? 1 : 0,
-                                              o.ClosedBy.Id);
+      var op = DataOperation.Parse("write_cof_transaccion", o.Id, o.Number,
+                                    o.Ledger.Id, o.FunctionalArea.Id,
+                                    o.TransactionType.Id, o.VoucherType.Id,
+                                    o.Concept, o.AccountingDate, o.RecordingDate,
+                                    o.ElaboratedBy.Id, o.AuthorizedBy.Id, o.IsOpened ? 1 : 0,
+                                    o.ClosedBy.Id);
 
-      DataWriter.Execute(dataOperation);
+      DataWriter.Execute(op);
+    }
+
+
+    static internal void WriteVoucherEntry(VoucherEntry o) {
+      var op = DataOperation.Parse("write_cof_movimiento_tmp", o.Id, o.VoucherId,
+                                    o.LedgerAccount.Id, o.SubledgerAccount.Id, o.Sector.Id,
+                                    o.ReferenceEntryId, o.ResponsibilityArea.Id, o.BudgetConcept,
+                                    o.AvailabilityCode, o.VerificationNumber, (char) o.VoucherEntryType,
+                                    o.Date, o.Concept, o.Currency.Id, o.Amount, o.BaseCurrrencyAmount,
+                                    o.Protected ? 1 : 0);
+
+      DataWriter.Execute(op);
     }
 
 
