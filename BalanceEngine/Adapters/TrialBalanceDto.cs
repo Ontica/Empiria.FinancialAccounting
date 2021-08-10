@@ -198,7 +198,7 @@ namespace Empiria.FinancialAccounting.BalanceEngine.Adapters {
     
 
     public string LastChangeDate {
-      get; set;
+      get; internal set;
     }
 
   } // class TrialBalanceEntryDto
