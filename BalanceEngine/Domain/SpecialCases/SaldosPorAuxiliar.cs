@@ -35,6 +35,8 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
 
       trialBalance = CombineTotalSubsidiaryEntriesWithSummaryAccounts(summarySubsidiaryEntries);
 
+      trialBalance = helper.GenerateAverageBalance(trialBalance, _command.InitialPeriod);
+
       trialBalance = helper.RestrictLevels(trialBalance);
 
       var returnBalance = new FixedList<ITrialBalanceEntry>(trialBalance.Select(x => (ITrialBalanceEntry) x));

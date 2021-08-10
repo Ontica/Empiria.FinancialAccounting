@@ -29,7 +29,12 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
       List<TrialBalanceEntry> trialBalanceComparative = new List<TrialBalanceEntry>();
 
       FixedList<TrialBalanceEntry> trialBalanceFirstPeriod = helper.GetPostingEntries();
+      trialBalanceFirstPeriod = helper.GenerateAverageBalance(trialBalanceFirstPeriod.ToList(),
+                                                              _command.InitialPeriod).ToFixedList();
+
       FixedList<TrialBalanceEntry> trialBalanceSecondPeriod = helper.GetPostingEntries(true);
+      trialBalanceSecondPeriod = helper.GenerateAverageBalance(trialBalanceSecondPeriod.ToList(),
+                                                               _command.InitialPeriod).ToFixedList();
 
       trialBalanceComparative.AddRange(trialBalanceFirstPeriod);
       trialBalanceComparative.AddRange(trialBalanceSecondPeriod);

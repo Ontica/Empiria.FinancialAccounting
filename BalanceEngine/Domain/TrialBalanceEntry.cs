@@ -71,6 +71,11 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
       internal set;
     } = 1;
 
+    public decimal AverageBalance {
+      get;
+      internal set;
+    } = 0; 
+
     public string GroupName {
       get; internal set;
     } = string.Empty;
@@ -204,6 +209,13 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
     public DateTime LastChangeDate {
       get; internal set;
     }
+
+
+    public decimal AverageBalance {
+      get;
+      internal set;
+    } = 0;
+
 
 
     public decimal ExchangeRate {

@@ -38,6 +38,7 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
       List<TrialBalanceEntry> summaryEntries = helper.GenerateSummaryEntries(postingEntries);
       List<TrialBalanceEntry> trialBalance = helper.CombineSummaryAndPostingEntries(summaryEntries,
                                                                                     postingEntries);
+
       trialBalance = helper.RestrictLevels(trialBalance);
 
       FixedList<TwoCurrenciesBalanceEntry> twoColumnsEntries =
@@ -58,6 +59,9 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
                                     twoColumnsHelper.GenerateTotalSummary(summaryTotalDeptorCreditorEntries);
       twoColumnsEntries = twoColumnsHelper.CombineTotalConsolidatedAndPostingEntries(
                                             twoColumnsEntries, summaryTwoColumnsBalanceTotal);
+
+      twoColumnsEntries = twoColumnsHelper.GenerateAverageTwoColumnsBalance(
+                                            twoColumnsEntries, _command.InitialPeriod);
 
       FixedList<ITrialBalanceEntry> twoColumnsBalance = twoColumnsEntries.Select(x => (ITrialBalanceEntry) x)
                                   .ToList().ToFixedList();

@@ -102,13 +102,27 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
       ;
     }
 
+    internal FixedList<TwoCurrenciesBalanceEntry> GenerateAverageTwoColumnsBalance(
+                                                    FixedList<TwoCurrenciesBalanceEntry> twoColumnsBalance,
+                                                    TrialBalanceCommandPeriod commandPeriod) {
+      FixedList<TwoCurrenciesBalanceEntry> returnedBalances = 
+                                            new FixedList<TwoCurrenciesBalanceEntry>(twoColumnsBalance);
+
+      TimeSpan timeSpan = commandPeriod.ToDate - commandPeriod.FromDate;
+      int numberOfDays = timeSpan.Days + 1;
+
+      foreach (var entry in returnedBalances) {
+        entry.AverageBalance = entry.TotalBalance / numberOfDays;
+      }
+
+      return returnedBalances;
+    }
+
     internal List<TwoCurrenciesBalanceEntry> GenerateTotalSummary(
                                              List<TwoCurrenciesBalanceEntry> balanceEntries) {
-
       var totalSummary = new EmpiriaHashTable<TwoCurrenciesBalanceEntry>(balanceEntries.Count);
 
       foreach (var debtorCreditor in balanceEntries) {
-
         TwoCurrenciesBalanceEntry entry = TrialBalanceMapper.MapTwoCurrenciesBalance(debtorCreditor);
 
         if (entry.ItemType == TrialBalanceItemType.BalanceTotalCreditor) {

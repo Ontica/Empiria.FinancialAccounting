@@ -103,6 +103,10 @@ namespace Empiria.FinancialAccounting.BalanceEngine.Adapters {
       get; internal set;
     }
 
+    public decimal AverageBalance {
+      get; internal set;
+    }
+
     public string LastChangeDate {
       get; set;
     }
@@ -182,9 +186,16 @@ namespace Empiria.FinancialAccounting.BalanceEngine.Adapters {
       get; internal set;
     }
 
+
     public decimal ExchangeRate {
       get; internal set;
     }
+
+
+    public decimal AverageBalance {
+      get; internal set;
+    }
+    
 
     public string LastChangeDate {
       get; set;

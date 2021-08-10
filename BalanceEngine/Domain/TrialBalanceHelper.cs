@@ -97,7 +97,7 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
       return OrderByLedgerAndCurrency(returnedEntries);
     }
 
-
+    
     private List<TrialBalanceEntry> OrderByLedgerAndCurrency(List<TrialBalanceEntry> entries) {
       return entries.OrderBy(a => a.Ledger.Number)
                     .ThenBy(a => a.Currency.Code)
@@ -194,6 +194,21 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
 
       return summaryEntries.Values.ToList()
                                   .ToFixedList();
+    }
+
+
+    internal List<TrialBalanceEntry> GenerateAverageBalance(List<TrialBalanceEntry> trialBalance,
+                                                            TrialBalanceCommandPeriod commandPeriod) {
+      List<TrialBalanceEntry> averageBalances = new List<TrialBalanceEntry>(trialBalance);
+
+      TimeSpan timeSpan = commandPeriod.ToDate - commandPeriod.FromDate;
+      int numberOfDays = timeSpan.Days + 1;
+
+      foreach (var entry in averageBalances) {
+        entry.AverageBalance = entry.CurrentBalance / numberOfDays;
+      }
+
+      return averageBalances;
     }
 
 
@@ -369,8 +384,6 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
 
 
     internal FixedList<TrialBalanceEntry> GetPostingEntries(bool isComparativeBalance = false) {
-      var helper = new TrialBalanceHelper(_command);
-
       TrialBalanceCommandPeriod commandPeriod = new TrialBalanceCommandPeriod();
       if (isComparativeBalance) {
         commandPeriod = _command.FinalPeriod;
@@ -378,17 +391,17 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
         commandPeriod = _command.InitialPeriod;
       }
 
-      FixedList<TrialBalanceEntry> postingEntries = helper.GetTrialBalanceEntries(commandPeriod);
+      FixedList<TrialBalanceEntry> postingEntries = GetTrialBalanceEntries(commandPeriod);
 
       if (_command.ValuateBalances || _command.ValuateFinalBalances ||
           _command.InitialPeriod.UseDefaultValuation) {
-        postingEntries = helper.ValuateToExchangeRate(postingEntries, commandPeriod);
+        postingEntries = ValuateToExchangeRate(postingEntries, commandPeriod);
 
         if (_command.ConsolidateBalancesToTargetCurrency) {
-          postingEntries = helper.ConsolidateToTargetCurrency(postingEntries, commandPeriod);
+          postingEntries = ConsolidateToTargetCurrency(postingEntries, commandPeriod);
         }
       }
-      postingEntries = helper.RoundTrialBalanceEntries(postingEntries);
+      postingEntries = RoundTrialBalanceEntries(postingEntries);
 
       return postingEntries;
     }
@@ -489,6 +502,26 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
     }
 
 
+    private void GetDetailSummaryEntries(List<TrialBalanceEntry> detailSummaryEntries,
+                                         EmpiriaHashTable<TrialBalanceEntry> summaryEntries,
+                                         StandardAccount currentParent, TrialBalanceEntry entry) {
+
+      TrialBalanceEntry detailsEntry;
+      string key = $"{currentParent.Number}||{entry.Sector.Code}||{entry.Currency.Id}||{entry.Ledger.Id}";
+
+      summaryEntries.TryGetValue(key, out detailsEntry);
+      if (detailsEntry != null) {
+        var existEntry = detailSummaryEntries.FirstOrDefault(a => a.Ledger.Id == detailsEntry.Ledger.Id &&
+                                                       a.Currency.Id == detailsEntry.Currency.Id &&
+                                                       a.Account.Number == detailsEntry.Account.Number &&
+                                                       a.Sector.Code == detailsEntry.Sector.Code);
+        if (existEntry == null) {
+          detailSummaryEntries.Add(detailsEntry);
+        }
+      }
+    }
+
+
     private void LastChangeDateToSubsidiaryEntries(TrialBalanceEntry entry,
                                                     List<TrialBalanceEntry> summaryEntriesList) {
       var subsidiaryAccount = summaryEntriesList.Where(a => a.Account.Number == entry.Account.Number &&
@@ -525,26 +558,6 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
           break;
         } else {
           currentParent = currentParent.GetParent();
-        }
-      }
-    }
-
-
-    private void GetDetailSummaryEntries(List<TrialBalanceEntry> detailSummaryEntries,
-                                         EmpiriaHashTable<TrialBalanceEntry> summaryEntries,
-                                         StandardAccount currentParent, TrialBalanceEntry entry) {
-
-      TrialBalanceEntry detailsEntry;
-      string key = $"{currentParent.Number}||{entry.Sector.Code}||{entry.Currency.Id}||{entry.Ledger.Id}";
-
-      summaryEntries.TryGetValue(key, out detailsEntry);
-      if (detailsEntry != null) {
-        var existEntry = detailSummaryEntries.FirstOrDefault(a => a.Ledger.Id == detailsEntry.Ledger.Id &&
-                                                       a.Currency.Id == detailsEntry.Currency.Id &&
-                                                       a.Account.Number == detailsEntry.Account.Number &&
-                                                       a.Sector.Code == detailsEntry.Sector.Code);
-        if (existEntry == null) {
-          detailSummaryEntries.Add(detailsEntry);
         }
       }
     }
