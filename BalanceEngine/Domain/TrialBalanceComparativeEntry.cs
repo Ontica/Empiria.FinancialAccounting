@@ -9,7 +9,6 @@
 ************************* Copyright(c) La Vía Óntica SC, Ontica LLC and contributors. All rights reserved. **/
 using System;
 
-
 namespace Empiria.FinancialAccounting.BalanceEngine {
 
   /// <summary>Represents an entry for a comparative balance between periods.</summary>
@@ -97,7 +96,7 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
     public decimal VariationByER {
       get;
       internal set;
-    } = 1;
+    }
 
     public decimal RealVariation {
       get;
@@ -116,6 +115,19 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
     public string GroupNumber {
       get; internal set;
     } = string.Empty;
+
+    public string SubledgerAccountName {
+      get;
+      internal set;
+    } = string.Empty;
+
+    public string SubledgerAccountNumber {
+      get; internal set;
+    } = string.Empty;
+
+    public int SubledgerNumberOfDigits {
+      get; internal set;
+    } = 0;
 
     public bool HasSector {
       get {
@@ -152,5 +164,6 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
       }
     }
 
-  }
-}
+  } // class TrialBalanceComparativeEntry
+
+} // namespace Empiria.FinancialAccounting.BalanceEngine

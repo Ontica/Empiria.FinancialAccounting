@@ -199,6 +199,36 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
     }
 
 
+    internal TrialBalanceComparativeEntry MapToComparativeFirstPeriod() {
+      return new TrialBalanceComparativeEntry {
+        Ledger = this.Ledger,
+        Currency = this.Currency,
+        Sector = this.Sector,
+        Account = this.Account,
+        SubledgerAccountId = this.SubledgerAccountId,
+        DebtorCreditor = this.DebtorCreditor,
+        FirstTotalBalance = this.CurrentBalance,
+        FirstExchangeRate = this.ExchangeRate,
+        FirstValorization = this.CurrentBalance * this.ExchangeRate,
+      };
+    }
+
+    internal TrialBalanceComparativeEntry MapToComparativeSecondPeriod() {
+      return new TrialBalanceComparativeEntry {
+        Ledger = this.Ledger,
+        Currency = this.Currency,
+        Sector = this.Sector,
+        Account = this.Account,
+        SubledgerAccountId = this.SubledgerAccountId,
+        DebtorCreditor = this.DebtorCreditor,
+        Debit = this.Debit,
+        Credit = this.Credit,
+        SecondTotalBalance = this.CurrentBalance,
+        SecondExchangeRate = this.ExchangeRate,
+        SecondValorization = this.CurrentBalance * this.ExchangeRate
+      };
+    }
+
   } // class TrialBalance
 
 

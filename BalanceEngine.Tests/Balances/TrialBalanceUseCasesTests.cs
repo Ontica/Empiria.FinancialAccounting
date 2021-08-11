@@ -47,15 +47,23 @@ namespace Empiria.FinancialAccounting.Tests.Balances {
       command.AccountsChartUID = "b2328e67-3f2e-45b9-b1f6-93ef6292204e";
       command.BalancesType = BalanceEngine.BalancesType.AllAccounts;
       command.ConsolidateBalancesToTargetCurrency = false;
-      command.ShowCascadeBalances = false;
-      command.TrialBalanceType = BalanceEngine.TrialBalanceType.SaldosPorCuentaYMayor;
-      command.FromAccount = "1323-55-01-07-01";
-      command.ToAccount = "1323-55-01-07-01";
+      command.TrialBalanceType = BalanceEngine.TrialBalanceType.BalanzaValorizadaComparativa;
+      command.FromAccount = "1103";
+      command.ToAccount = "1103";
       command.Ledgers = new string[] {"2584a757-865c-2025-8025-fa633f200c49"};  
 
       command.InitialPeriod.FromDate = new DateTime(2021, 01, 01);
       command.InitialPeriod.ToDate = new DateTime(2021, 01, 31);
-      command.InitialPeriod.UseDefaultValuation = false;
+      command.InitialPeriod.ValuateToCurrrencyUID = "01";
+      command.InitialPeriod.ExchangeRateDate = new DateTime(2021, 01, 31);
+      command.InitialPeriod.ExchangeRateTypeUID = "5923136d-8533-4975-81b9-c8ec3bf18dea";
+      //command.InitialPeriod.UseDefaultValuation = false;
+
+      command.FinalPeriod.FromDate = new DateTime(2021, 02, 01);
+      command.FinalPeriod.ToDate = new DateTime(2021, 02, 28);
+      command.FinalPeriod.ValuateToCurrrencyUID = "01";
+      command.FinalPeriod.ExchangeRateDate = new DateTime(2021, 02, 28);
+      command.FinalPeriod.ExchangeRateTypeUID = "5923136d-8533-4975-81b9-c8ec3bf18dea";
 
       TrialBalanceDto trialBalance = _usecases.BuildTrialBalance(command);
 

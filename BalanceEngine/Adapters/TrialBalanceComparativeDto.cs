@@ -42,6 +42,12 @@ namespace Empiria.FinancialAccounting.BalanceEngine.Adapters {
     }
 
 
+    public string AccountParent {
+      get;
+      internal set;
+    }
+
+
     public string AccountNumber {
       get; internal set;
     }
@@ -59,13 +65,21 @@ namespace Empiria.FinancialAccounting.BalanceEngine.Adapters {
       get; internal set;
     }
 
-
     public int AccountLevel {
       get; internal set;
     }
 
     public string SectorCode {
       get; internal set;
+    }
+
+    public string SubledgerAccountNumber {
+      get;
+      internal set;
+    }
+    public string SubledgerAccountName {
+      get;
+      internal set;
     }
 
     public decimal FirstTotalBalance {
@@ -116,7 +130,7 @@ namespace Empiria.FinancialAccounting.BalanceEngine.Adapters {
     public decimal VariationByER {
       get;
       internal set;
-    } = 1;
+    }
 
     public decimal RealVariation {
       get;
@@ -138,6 +152,7 @@ namespace Empiria.FinancialAccounting.BalanceEngine.Adapters {
     public string LastChangeDate {
       get; internal set;
     }
+    
   } // class TrialBalanceComparativeDto
 
 } // namespace Empiria.FinancialAccounting.BalanceEngine.Adapters

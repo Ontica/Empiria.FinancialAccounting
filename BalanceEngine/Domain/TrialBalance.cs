@@ -109,7 +109,7 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
       columns.Add(new DataTableColumn("secondValorization", $"{Command.FinalPeriod.FromDate:MMM}_VAL", "decimal"));
 
       columns.Add(new DataTableColumn("accountName", "Nom_Cta", "text"));
-      columns.Add(new DataTableColumn("naturaleza", "Nat", "text"));
+      columns.Add(new DataTableColumn("debtorCreditor", "Nat", "text"));
       columns.Add(new DataTableColumn("variation", "Variación", "decimal"));
       columns.Add(new DataTableColumn("variationByER", "Variación por TC", "decimal"));
       columns.Add(new DataTableColumn("realVariation", "Variación por TC", "decimal"));

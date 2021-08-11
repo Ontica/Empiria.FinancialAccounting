@@ -44,7 +44,8 @@ namespace Empiria.FinancialAccounting.BalanceEngine.Adapters {
       return newEntry;
     }
 
-    static internal TwoCurrenciesBalanceEntry MapTwoCurrenciesBalance(TwoCurrenciesBalanceEntry balanceEntry) {
+    static internal TwoCurrenciesBalanceEntry MapTwoCurrenciesBalance(
+                                                TwoCurrenciesBalanceEntry balanceEntry) {
       var entry = new TwoCurrenciesBalanceEntry();
       entry.Account = balanceEntry.Account;
       entry.AccountId = balanceEntry.AccountId;
@@ -88,7 +89,8 @@ namespace Empiria.FinancialAccounting.BalanceEngine.Adapters {
 
         case TrialBalanceType.BalanzaValorizadaComparativa:
 
-          var mappedItemsComparative = list.Select((x) => MapToTrialBalanceComparative((TrialBalanceComparativeEntry) x));
+          var mappedItemsComparative = list.Select((x) => 
+                MapToTrialBalanceComparative((TrialBalanceComparativeEntry) x));
           return new FixedList<ITrialBalanceEntryDto>(mappedItemsComparative);
 
         default:
@@ -132,7 +134,8 @@ namespace Empiria.FinancialAccounting.BalanceEngine.Adapters {
       return dto;
     }
 
-    static private TrialBalanceEntryDto MapToTrialBalance(TrialBalanceEntry entry, TrialBalanceCommand command) {
+    static private TrialBalanceEntryDto MapToTrialBalance(TrialBalanceEntry entry, 
+                                                          TrialBalanceCommand command) {
       var dto = new TrialBalanceEntryDto();
       SubsidiaryAccount subledgerAccount = SubsidiaryAccount.Parse(entry.SubledgerAccountId);
       
@@ -171,39 +174,37 @@ namespace Empiria.FinancialAccounting.BalanceEngine.Adapters {
     }
 
 
-    static private TrialBalanceComparativeDto MapToTrialBalanceComparative(TrialBalanceComparativeEntry entry) {
+    static private TrialBalanceComparativeDto MapToTrialBalanceComparative(
+                                              TrialBalanceComparativeEntry entry) {
       var dto = new TrialBalanceComparativeDto();
-      SubsidiaryAccount subledgerAccount = SubsidiaryAccount.Parse(entry.SubledgerAccountId);
-
+      
       dto.ItemType = entry.ItemType;
+      dto.AccountRole = entry.Account.Role;
+      dto.AccountLevel = entry.Account.Level;
+      dto.DebtorCreditor = entry.Account.DebtorCreditor;
       dto.LedgerUID = entry.Ledger.UID;
       dto.LedgerNumber = entry.Ledger.Number;
       dto.StandardAccountId = entry.Account.Id;
-      dto.CurrencyCode = entry.ItemType == TrialBalanceItemType.BalanceTotalConsolidated ? "" :
-                         entry.Currency.Code;
-      if (subledgerAccount.IsEmptyInstance) {
-        dto.AccountName = entry.GroupName != "" ? entry.GroupName :
-                          entry.Account.Name;
-        dto.AccountNumber = entry.GroupNumber != "" ? entry.GroupNumber :
-                            entry.Account.Number != "Empty" ?
-                            entry.Account.Number : "";
-      } else {
-        dto.AccountName = subledgerAccount.Name;
-        dto.AccountNumber = subledgerAccount.Number;
-      }
-
-      dto.AccountRole = entry.Account.Role;
-      dto.AccountLevel = entry.Account.Level;
+      dto.CurrencyCode = entry.Currency.Code;
       dto.SectorCode = entry.Sector.Code;
+
+      dto.AccountParent = entry.Account.ParentNumber;
+      dto.AccountNumber = entry.Account.Number;
+      dto.AccountName = entry.Account.Name;
       dto.SubledgerAccountId = entry.SubledgerAccountId;
+      dto.SubledgerAccountNumber = entry.SubledgerAccountNumber;
+      dto.SubledgerAccountName = entry.SubledgerAccountName;
+
       dto.FirstTotalBalance = entry.FirstTotalBalance;
       dto.FirstExchangeRate = entry.FirstExchangeRate;
       dto.FirstValorization = entry.FirstValorization;
+
       dto.Debit = entry.Debit;
       dto.Credit = entry.Credit;
       dto.SecondTotalBalance = entry.SecondTotalBalance;
       dto.SecondExchangeRate = entry.SecondExchangeRate;
       dto.SecondValorization = entry.SecondValorization;
+
       dto.Variation = entry.Variation;
       dto.VariationByER = entry.VariationByER;
       dto.RealVariation = entry.RealVariation;

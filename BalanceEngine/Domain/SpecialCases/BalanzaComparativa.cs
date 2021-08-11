@@ -28,7 +28,7 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
       var helper = new TrialBalanceHelper(_command);
       var comparativeHelper = new TrialBalanceComparativeHelper(_command);
 
-      List<TrialBalanceEntry> trialBalanceComparative = new List<TrialBalanceEntry>();
+      List<TrialBalanceComparativeEntry> trialBalanceComparative = new List<TrialBalanceComparativeEntry>();
 
       FixedList<TrialBalanceEntry> trialBalanceFirstPeriod = helper.GetPostingEntries();
       trialBalanceFirstPeriod = helper.GenerateAverageBalance(trialBalanceFirstPeriod.ToList(),
@@ -38,12 +38,8 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
       trialBalanceSecondPeriod = helper.GenerateAverageBalance(trialBalanceSecondPeriod.ToList(),
                                                                _command.FinalPeriod).ToFixedList();
 
-      //trialBalanceComparative = comparativeHelper.MergePeriodsIntoComparativeBalance(
-      //                                              trialBalanceFirstPeriod, trialBalanceSecondPeriod);
-
-
-      trialBalanceComparative.AddRange(trialBalanceFirstPeriod);
-      trialBalanceComparative.AddRange(trialBalanceSecondPeriod);
+      trialBalanceComparative = comparativeHelper.MergePeriodsIntoComparativeBalance(
+                                                    trialBalanceFirstPeriod, trialBalanceSecondPeriod);
 
       var returnBalance = new FixedList<ITrialBalanceEntry>(trialBalanceComparative.Select(x => (ITrialBalanceEntry) x));
       return new TrialBalance(_command, returnBalance);
