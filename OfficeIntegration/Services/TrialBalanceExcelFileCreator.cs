@@ -127,18 +127,20 @@ namespace Empiria.FinancialAccounting.OfficeIntegration {
         }
         if (entry.LedgerNumber.Length == 0) {
           _excelFile.SetCell($"C{i}", entry.AccountName);
-          _excelFile.SetCell($"D{i}", "00");
-          _excelFile.SetCell($"E{i}", "Todas");
+          _excelFile.SetCell($"D{i}", entry.SectorCode);
+          _excelFile.SetCell($"E{i}", "00");
+          _excelFile.SetCell($"F{i}", "Todas");
         } else {
           _excelFile.SetCell($"C{i}", account.Name);
-          _excelFile.SetCell($"D{i}", entry.LedgerNumber);
-          _excelFile.SetCell($"E{i}", entry.AccountName);
+          _excelFile.SetCell($"D{i}", entry.SectorCode);
+          _excelFile.SetCell($"E{i}", entry.LedgerNumber);
+          _excelFile.SetCell($"F{i}", entry.AccountName);
         }
 
-        _excelFile.SetCell($"F{i}", entry.InitialBalance);
-        _excelFile.SetCell($"G{i}", entry.Debit);
-        _excelFile.SetCell($"H{i}", entry.Credit);
-        _excelFile.SetCell($"I{i}", entry.CurrentBalance);
+        _excelFile.SetCell($"G{i}", entry.InitialBalance);
+        _excelFile.SetCell($"H{i}", entry.Debit);
+        _excelFile.SetCell($"I{i}", entry.Credit);
+        _excelFile.SetCell($"J{i}", entry.CurrentBalance);
 
         if (entry.LedgerNumber.Length == 0) {
           _excelFile.SetRowStyleBold(i);
