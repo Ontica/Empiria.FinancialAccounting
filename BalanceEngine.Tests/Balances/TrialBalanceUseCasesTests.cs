@@ -45,7 +45,7 @@ namespace Empiria.FinancialAccounting.Tests.Balances {
       TrialBalanceCommand command = new TrialBalanceCommand();
 
       command.AccountsChartUID = "b2328e67-3f2e-45b9-b1f6-93ef6292204e";
-      command.BalancesType = BalanceEngine.BalancesType.AllAccounts;
+      command.BalancesType = BalanceEngine.BalancesType.WithMovements;
       command.ConsolidateBalancesToTargetCurrency = false;
       command.TrialBalanceType = BalanceEngine.TrialBalanceType.AnaliticoDeCuentas;
       command.FromAccount = "1503";
@@ -57,7 +57,6 @@ namespace Empiria.FinancialAccounting.Tests.Balances {
       command.InitialPeriod.ValuateToCurrrencyUID = "01";
       command.InitialPeriod.ExchangeRateDate = new DateTime(2021, 04, 30);
       command.InitialPeriod.ExchangeRateTypeUID = "5923136d-8533-4975-81b9-c8ec3bf18dea";
-      
       TrialBalanceDto trialBalance = _usecases.BuildTrialBalance(command);
 
       Assert.NotNull(trialBalance);

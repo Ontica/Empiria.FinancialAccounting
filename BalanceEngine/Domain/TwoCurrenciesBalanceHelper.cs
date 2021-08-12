@@ -200,18 +200,21 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
       var summaryEntries = new EmpiriaHashTable<TwoCurrenciesBalanceEntry>();
 
       foreach (var entry in trialBalance) {
-        string hash = $"{entry.Account.Number}||{entry.Sector.Code}||{targetCurrency.Id}||{entry.Ledger.Id}||{entry.Account.DebtorCreditor}";
-        Currency currentCurrency = entry.Currency;
+        if (entry.CurrentBalance != 0) {
+          string hash = $"{entry.Account.Number}||{entry.Sector.Code}||{targetCurrency.Id}||" +
+                      $"{entry.Ledger.Id}||{entry.Account.DebtorCreditor}";
+          Currency currentCurrency = entry.Currency;
 
-        if (entry.Currency.Equals(targetCurrency)) {
-          GenerateOrIncreaseTwoCurrenciesBalanceEntry(summaryEntries, entry, hash,
-                                                      targetCurrency, currentCurrency);
-        } else if (summaryEntries.ContainsKey(hash)) {
-          SumTwoCurrenciesBalanceEntry(summaryEntries[hash], entry, targetCurrency, currentCurrency);
-        } else {
-          entry.Currency = targetCurrency;
-          GenerateOrIncreaseTwoCurrenciesBalanceEntry(summaryEntries, entry, hash,
-                                                      targetCurrency, currentCurrency);
+          if (entry.Currency.Equals(targetCurrency)) {
+            GenerateOrIncreaseTwoCurrenciesBalanceEntry(summaryEntries, entry, hash,
+                                                        currentCurrency);
+          } else if (summaryEntries.ContainsKey(hash)) {
+            SumTwoCurrenciesBalanceEntry(summaryEntries[hash], entry, currentCurrency);
+          } else {
+            entry.Currency = targetCurrency;
+            GenerateOrIncreaseTwoCurrenciesBalanceEntry(summaryEntries, entry, hash,
+                                                        currentCurrency);
+          }
         }
       }
 
@@ -254,23 +257,26 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
 
     private void GenerateOrIncreaseTwoCurrenciesBalanceEntry(
                           EmpiriaHashTable<TwoCurrenciesBalanceEntry> summaryEntries,
-                          TrialBalanceEntry entry, string hash, Currency targetCurrency,
+                          TrialBalanceEntry entry, string hash,
                           Currency currentCurrency) {
+      var targetCurrency = Currency.Parse(_command.InitialPeriod.ValuateToCurrrencyUID);
+
       TwoCurrenciesBalanceEntry summaryEntry;
       summaryEntries.TryGetValue(hash, out summaryEntry);
 
       if (summaryEntry == null) {
         summaryEntries.Insert(hash, entry.MapToTwoColumnsBalanceEntry());
-        SumTwoCurrenciesBalanceEntry(summaryEntries[hash], entry, targetCurrency, currentCurrency);
+        SumTwoCurrenciesBalanceEntry(summaryEntries[hash], entry, currentCurrency);
       } else {
-        SumTwoCurrenciesBalanceEntry(summaryEntry, entry, targetCurrency, currentCurrency);
+        SumTwoCurrenciesBalanceEntry(summaryEntry, entry, currentCurrency);
       }
     }
 
 
     private void SumTwoCurrenciesBalanceEntry(TwoCurrenciesBalanceEntry twoCurrenciesEntry,
                                                TrialBalanceEntry entry,
-                                               Currency targetCurrency, Currency currentCurrency) {
+                                               Currency currentCurrency) {
+      var targetCurrency = Currency.Parse(_command.InitialPeriod.ValuateToCurrrencyUID);
 
       if (currentCurrency != targetCurrency && entry.Currency.Code != "44" && currentCurrency.Code != "44") {
         twoCurrenciesEntry.ForeignBalance += entry.CurrentBalance;
