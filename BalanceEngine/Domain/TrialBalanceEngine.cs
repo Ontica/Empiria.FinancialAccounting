@@ -31,6 +31,8 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
 
     SaldosPorCuenta,
 
+    //SaldosPorCuentaYAuxiliar,
+
     SaldosPorCuentaYMayor
 
   }

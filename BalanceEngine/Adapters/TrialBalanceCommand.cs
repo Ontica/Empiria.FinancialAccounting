@@ -152,7 +152,7 @@ namespace Empiria.FinancialAccounting.BalanceEngine.Adapters {
     }
 
     public DateTime ExchangeRateDate {
-      get; set;
+      get;  set;
     } = DateTime.Now;
 
 

@@ -15,6 +15,7 @@ using Empiria.Collections;
 
 using Empiria.FinancialAccounting.BalanceEngine.Adapters;
 using Empiria.FinancialAccounting.BalanceEngine.Data;
+using System.Text.RegularExpressions;
 
 namespace Empiria.FinancialAccounting.BalanceEngine {
 
@@ -46,6 +47,27 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
       return returnedEntries;
     }
 
+    internal List<TrialBalanceEntry> CleanSummaryAccounts(List<TrialBalanceEntry> summaryEntries) {
+      List<TrialBalanceEntry> returnedSummaryEntries = new List<TrialBalanceEntry>();
+
+      foreach (var entry in summaryEntries) {
+        if (entry.Level > 1) {
+          string[] childs = entry.Account.Number.Substring(($"{ entry.Account.ParentNumber}-").Length).Split('-');
+          bool isSummary = true;
+          string result = string.Empty;
+
+          Array.ForEach(childs, child => result += child);
+          isSummary = result.All(a => a == '0') ? false : true;
+
+          if (isSummary) {
+            returnedSummaryEntries.Add(entry);
+          }
+        } else {
+          returnedSummaryEntries.Add(entry);
+        }
+      }
+      return returnedSummaryEntries;
+    }
 
     internal List<TrialBalanceEntry> CombineCurrencyTotalsAndPostingEntries(
                                       List<TrialBalanceEntry> trialBalance,
@@ -97,7 +119,7 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
       return OrderByLedgerAndCurrency(returnedEntries);
     }
 
-    
+
     private List<TrialBalanceEntry> OrderByLedgerAndCurrency(List<TrialBalanceEntry> entries) {
       return entries.OrderBy(a => a.Ledger.Number)
                     .ThenBy(a => a.Currency.Code)
@@ -275,7 +297,7 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
       return returnedEntries;
     }
 
-    
+
     internal List<TrialBalanceEntry> GenerateTotalSummaryDebtorCreditor(
                                       List<TrialBalanceEntry> postingEntries) {
 
@@ -484,9 +506,9 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
     #region Private methods
 
     private List<TrialBalanceEntry> AssignLastChangeDates(
-                                      FixedList<TrialBalanceEntry> entries, 
+                                      FixedList<TrialBalanceEntry> entries,
                                       EmpiriaHashTable<TrialBalanceEntry> summaryEntries) {
-      List<TrialBalanceEntry> summaryEntriesList = 
+      List<TrialBalanceEntry> summaryEntriesList =
                               new List<TrialBalanceEntry>(summaryEntries.ToFixedList().ToList());
 
       foreach (var entry in entries) {

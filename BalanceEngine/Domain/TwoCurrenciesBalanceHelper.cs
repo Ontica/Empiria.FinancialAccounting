@@ -86,6 +86,7 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
       return returnedEntries.ToFixedList();
     }
 
+
     internal FixedList<TwoCurrenciesBalanceEntry> CombineTotalConsolidatedAndPostingEntries
                                     (FixedList<TwoCurrenciesBalanceEntry> twoColumnsEntries, 
                                      List<TwoCurrenciesBalanceEntry> summaryTwoColumnsBalanceTotal) {
