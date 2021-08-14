@@ -24,6 +24,18 @@ namespace Empiria.FinancialAccounting.Vouchers.WebApi {
 
 
     [HttpGet]
+    [Route("v2/financial-accounting/vouchers/event-types")]
+    public CollectionModel GetEventTypes() {
+
+      using (var usecases = EventTypesUseCases.UseCaseInteractor()) {
+        FixedList<NamedEntityDto> eventTypes = usecases.EventTypes();
+
+        return new CollectionModel(base.Request, eventTypes);
+      }
+    }
+
+
+    [HttpGet]
     [Route("v2/financial-accounting/vouchers/functional-areas")]
     public CollectionModel GetFunctionalAreas() {
 
