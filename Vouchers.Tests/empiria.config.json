@@ -21,7 +21,7 @@
     },
     {
       "type": "FinancialAccounting.Tests",
-      "key": "Testing.SessionToken",
+      "key": "SESSION_TOKEN",
       "value": "{{TESTING-SESSION-TOKEN}}"
     }
   ]
