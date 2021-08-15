@@ -18,7 +18,7 @@ namespace Empiria.FinancialAccounting {
 
     #region Constructors and parsers
 
-    private ExchangeRate() {
+    protected ExchangeRate() {
       // Required by Empiria Framework.
     }
 
@@ -36,9 +36,6 @@ namespace Empiria.FinancialAccounting {
     static public FixedList<ExchangeRate> GetList(ExchangeRateType exchangeRateType, DateTime date) {
       return ExchangeRatesData.GetExchangeRates(exchangeRateType, date);
     }
-
-
-    static public ExchangeRate Empty => BaseObject.ParseEmpty<ExchangeRate>();
 
 
     #endregion Constructors and parsers
