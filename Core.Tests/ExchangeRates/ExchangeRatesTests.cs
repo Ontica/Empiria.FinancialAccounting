@@ -29,8 +29,8 @@ namespace Empiria.FinancialAccounting.Tests {
     public void Should_Get_A_List_Of_Exchange_Rates_For_Type_In_A_Date() {
       FixedList<ExchangeRateType> exchangeRateTypes = ExchangeRateType.GetList();
 
-      var EXCHANGE_RATE_TYPE = exchangeRateTypes[0];
-      DateTime DATE = new DateTime(2017, 08, 31);
+      var EXCHANGE_RATE_TYPE = exchangeRateTypes[2];
+      DateTime DATE = new DateTime(2021, 04, 30);
 
       FixedList<ExchangeRate> list = ExchangeRate.GetList(EXCHANGE_RATE_TYPE, DATE);
 
@@ -52,14 +52,6 @@ namespace Empiria.FinancialAccounting.Tests {
 
       Assert.All(list, x => { Assert.Equal(DATE, x.Date); });
       Assert.All(list, x => { Assert.True(x.Value > 0); });
-    }
-
-
-    [Fact]
-    public void Should_Parse_The_Empty_Exchange_Rate() {
-      ExchangeRate empty = ExchangeRate.Empty;
-
-      Assert.NotNull(empty);
     }
 
 

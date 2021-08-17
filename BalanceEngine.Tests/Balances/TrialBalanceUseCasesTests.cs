@@ -2,9 +2,9 @@
 *                                                                                                            *
 *  Module   : Balance Engine                             Component : Test cases                              *
 *  Assembly : FinancialAccounting.BalanceEngine.Tests    Pattern   : Use cases tests                         *
-*  Type     : AccountBalanceUseCasesTests                License   : Please read LICENSE.txt file            *
+*  Type     : TrialBalanceUseCasesTests                  License   : Please read LICENSE.txt file            *
 *                                                                                                            *
-*  Summary  : Test cases for trial balance report.                                                           *
+*  Summary  : Test cases for trial balance reports.                                                          *
 *                                                                                                            *
 ************************* Copyright(c) La Vía Óntica SC, Ontica LLC and contributors. All rights reserved. **/
 using System;
@@ -12,10 +12,11 @@ using Xunit;
 
 using Empiria.FinancialAccounting.BalanceEngine.Adapters;
 using Empiria.FinancialAccounting.BalanceEngine.UseCases;
+using Empiria.FinancialAccounting.BalanceEngine;
 
 namespace Empiria.FinancialAccounting.Tests.Balances {
 
-  /// <summary>Test cases for trial balance report.</summary>
+  /// <summary>Test cases for trial balance reports.</summary>
   public class TrialBalanceUseCasesTests {
 
     #region Fields
@@ -41,22 +42,26 @@ namespace Empiria.FinancialAccounting.Tests.Balances {
     #region Facts
 
     [Fact]
-    public void Should_Build_A_Traditional_Consolidated_Trial_Balance() {
-      TrialBalanceCommand command = new TrialBalanceCommand();
+    public void Should_Build_Analitico_De_Cuentas() {
+      TrialBalanceCommand command = GetDefaultTrialBalanceCommand();
 
-      command.AccountsChartUID = "b2328e67-3f2e-45b9-b1f6-93ef6292204e";
-      command.BalancesType = BalanceEngine.BalancesType.WithMovements;
-      command.ConsolidateBalancesToTargetCurrency = false;
-      command.TrialBalanceType = BalanceEngine.TrialBalanceType.AnaliticoDeCuentas;
+      command.TrialBalanceType = TrialBalanceType.AnaliticoDeCuentas;
+      command.UseDefaultValuation = true;
       command.FromAccount = "1503";
       command.ToAccount = "1503";
-      command.Ledgers = new string[] {"2584a757-865c-2025-8025-fa633f200c49"};  
 
-      command.InitialPeriod.FromDate = new DateTime(2021, 04, 01);
-      command.InitialPeriod.ToDate = new DateTime(2021, 04, 30);
-      command.InitialPeriod.ValuateToCurrrencyUID = "01";
-      command.InitialPeriod.ExchangeRateDate = new DateTime(2021, 04, 30);
-      command.InitialPeriod.ExchangeRateTypeUID = "5923136d-8533-4975-81b9-c8ec3bf18dea";
+      TrialBalanceDto trialBalance = _usecases.BuildTrialBalance(command);
+
+      Assert.NotNull(trialBalance);
+      Assert.Equal(command, trialBalance.Command);
+      Assert.NotEmpty(trialBalance.Entries);
+    }
+
+
+    [Fact]
+    public void Should_Build_A_Traditional_Trial_Balance() {
+      TrialBalanceCommand command = GetDefaultTrialBalanceCommand();
+
       TrialBalanceDto trialBalance = _usecases.BuildTrialBalance(command);
 
       Assert.NotNull(trialBalance);
@@ -67,12 +72,10 @@ namespace Empiria.FinancialAccounting.Tests.Balances {
 
     [Fact]
     public void Should_Build_A_Traditional_No_Consolidated_Trial_Balance() {
-      TrialBalanceCommand command = new TrialBalanceCommand();
+      TrialBalanceCommand command = GetDefaultTrialBalanceCommand();
 
-      command.TrialBalanceType = BalanceEngine.TrialBalanceType.Balanza;
+      command.TrialBalanceType = TrialBalanceType.Balanza;
       command.ShowCascadeBalances = true;
-      command.InitialPeriod.FromDate = TestingConstants.FromDate;
-      command.InitialPeriod.ToDate = TestingConstants.ToDate;
 
       TrialBalanceDto trialBalance = _usecases.BuildTrialBalance(command);
 
@@ -82,6 +85,23 @@ namespace Empiria.FinancialAccounting.Tests.Balances {
     }
 
     #endregion Facts
+
+    #region Helpers
+
+    private TrialBalanceCommand GetDefaultTrialBalanceCommand() {
+      return new TrialBalanceCommand() {
+        AccountsChartUID = TestingConstants.ACCOUNTS_CHART_UID,
+        BalancesType = BalancesType.WithCurrentBalanceOrMovements,
+        TrialBalanceType = TrialBalanceType.Balanza,
+        Ledgers = TestingConstants.BALANCE_LEDGERS_ARRAY,
+        InitialPeriod = new TrialBalanceCommandPeriod() {
+          FromDate = TestingConstants.FROM_DATE,
+          ToDate = TestingConstants.TO_DATE
+        }
+      };
+    }
+
+    #endregion Helpers
 
   } // class TrialBalanceUseCasesTests
 

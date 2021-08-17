@@ -72,9 +72,7 @@ namespace Empiria.FinancialAccounting.BalanceEngine.Adapters {
                                                         FixedList<ITrialBalanceEntry> list) {
       switch (command.TrialBalanceType) {
         case TrialBalanceType.AnaliticoDeCuentas:
-
-          var mi = list.Select((x) => MapToTwoCurrenciesBalanceEntry((TwoCurrenciesBalanceEntry) x));
-          return new FixedList<ITrialBalanceEntryDto>(mi);
+          return MapToAnaliticoCuentas(list);
 
         case TrialBalanceType.Balanza:
         //case TrialBalanceType.BalanzaConAuxiliares:
@@ -89,7 +87,7 @@ namespace Empiria.FinancialAccounting.BalanceEngine.Adapters {
 
         case TrialBalanceType.BalanzaValorizadaComparativa:
 
-          var mappedItemsComparative = list.Select((x) => 
+          var mappedItemsComparative = list.Select((x) =>
                 MapToTrialBalanceComparative((TrialBalanceComparativeEntry) x));
           return new FixedList<ITrialBalanceEntryDto>(mappedItemsComparative);
 
@@ -99,10 +97,16 @@ namespace Empiria.FinancialAccounting.BalanceEngine.Adapters {
       }
     }
 
+    private static FixedList<ITrialBalanceEntryDto> MapToAnaliticoCuentas(FixedList<ITrialBalanceEntry> list) {
+      var mappedItems = list.Select((x) => MapToAnaliticoCuentas((TwoCurrenciesBalanceEntry) x));
 
-    static private TwoColumnsTrialBalanceEntryDto MapToTwoCurrenciesBalanceEntry(
-                                                    TwoCurrenciesBalanceEntry entry) {
+      return new FixedList<ITrialBalanceEntryDto>(mappedItems);
+    }
+
+
+    static private TwoColumnsTrialBalanceEntryDto MapToAnaliticoCuentas(TwoCurrenciesBalanceEntry entry) {
       var dto = new TwoColumnsTrialBalanceEntryDto();
+
       SubsidiaryAccount subledgerAccount = SubsidiaryAccount.Parse(entry.SubledgerAccountId);
 
       dto.ItemType = entry.ItemType;
@@ -110,16 +114,23 @@ namespace Empiria.FinancialAccounting.BalanceEngine.Adapters {
       dto.LedgerNumber = entry.Ledger.Number;
       dto.StandardAccountId = entry.Account.Id;
       dto.CurrencyCode = entry.Currency.Code;
-      if (subledgerAccount.IsEmptyInstance) {
-        dto.AccountName = entry.GroupName != "" ? entry.GroupName :
-                          entry.Account.Name;
-        dto.AccountNumber = entry.GroupNumber != "" ? entry.GroupNumber :
-                            entry.Account.Number != "Empty" ?
-                            entry.Account.Number : "";
-      } else {
+
+      if (!subledgerAccount.IsEmptyInstance) {
         dto.AccountName = subledgerAccount.Name;
         dto.AccountNumber = subledgerAccount.Number;
+
+      } else if (entry.HasSector) {
+        dto.AccountName = entry.Sector.Name;
+        dto.AccountNumber = entry.Account.Number;
+
+      } else if (entry.GroupName.Length != 0) {
+        dto.AccountName = entry.GroupName;
+        dto.AccountNumber = entry.GroupNumber;
+      } else {
+        dto.AccountName = entry.Account.Name;
+        dto.AccountNumber = entry.Account.Number != "Empty" ? entry.Account.Number : "";
       }
+
       dto.AccountRole = entry.Account.Role;
       dto.AccountLevel = entry.Account.Level;
       dto.SectorCode = entry.Sector.Code;
@@ -134,11 +145,11 @@ namespace Empiria.FinancialAccounting.BalanceEngine.Adapters {
       return dto;
     }
 
-    static private TrialBalanceEntryDto MapToTrialBalance(TrialBalanceEntry entry, 
+    static private TrialBalanceEntryDto MapToTrialBalance(TrialBalanceEntry entry,
                                                           TrialBalanceCommand command) {
       var dto = new TrialBalanceEntryDto();
       SubsidiaryAccount subledgerAccount = SubsidiaryAccount.Parse(entry.SubledgerAccountId);
-      
+
       dto.ItemType = entry.ItemType;
       dto.LedgerUID = entry.Ledger.UID;
       dto.LedgerNumber = entry.Ledger.Number;
@@ -177,7 +188,7 @@ namespace Empiria.FinancialAccounting.BalanceEngine.Adapters {
     static private TrialBalanceComparativeDto MapToTrialBalanceComparative(
                                               TrialBalanceComparativeEntry entry) {
       var dto = new TrialBalanceComparativeDto();
-      
+
       dto.ItemType = entry.ItemType;
       dto.AccountRole = entry.Account.Role;
       dto.AccountLevel = entry.Account.Level;

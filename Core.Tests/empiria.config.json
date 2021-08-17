@@ -2,7 +2,7 @@
   "appName": "Empiria Financial Accounting Core Tests",
   "description": "Domain types, classes and services tests environment settings",
   "version": "2.0",
-  "date": "2021-03-28",
+  "date": "2021-08-15",
   "settings": [
     {
       "type": "",

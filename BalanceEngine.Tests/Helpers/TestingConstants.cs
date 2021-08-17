@@ -14,40 +14,16 @@ namespace Empiria.FinancialAccounting.Tests {
   /// <summary>Provides testing constants.</summary>
   static public class TestingConstants {
 
-    static internal readonly decimal ACCOUNT_BALANCE = 2000;
+    static internal readonly int ACCOUNTS_CHART_ID = 1;
 
-    static internal readonly string ACCOUNT_NAME = "Billetes";
+    static internal readonly string ACCOUNTS_CHART_UID = "b2328e67-3f2e-45b9-b1f6-93ef6292204e";
 
-    static internal readonly string ACCOUNT_NUMBER = "1101-01";
+    static internal readonly string[] BALANCE_LEDGERS_ARRAY =
+                                  new string[] { "2584a757-865c-2025-8025-fa633f200c49" };
 
-    static internal readonly string[] Ledgers = { "a70281d1-c9f0-4121-afc1-fe32026feb0d",
-                                                  "82cb925c-1752-4a2b-b0c5-5ae87576cae3" };
+    static internal readonly DateTime FROM_DATE = new DateTime(2020, 04, 01);
 
-    static internal readonly string[] Currencies = { "01", "02"};
-
-    static internal readonly int AccountCatalogueId = 1;
-
-    static internal readonly string AccountNumber = "";
-
-    static internal readonly string AccountName = "";
-
-    static internal readonly string Fields = "";
-
-    static internal readonly string Condition = "";
-
-    static internal readonly string Grouping = "";
-
-    static internal readonly string Having = "";
-
-    static internal readonly string Ordering = "";
-
-    static internal readonly string[] Sectors = { "0", "5", "7", "11" };
-
-    static internal readonly DateTime FromDate = new DateTime(2020, 04, 01);
-
-    static internal readonly DateTime ToDate = new DateTime(2020, 04, 30);
-
-    static internal readonly int BalanceGroupId = 1;
+    static internal readonly DateTime TO_DATE = new DateTime(2020, 04, 30);
 
     static internal readonly string SESSION_TOKEN = ConfigurationData.GetString("Testing.SessionToken");
 
