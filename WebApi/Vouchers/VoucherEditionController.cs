@@ -23,6 +23,18 @@ namespace Empiria.FinancialAccounting.Vouchers.WebApi {
     #region Web Apis
 
 
+    [HttpGet]
+    [Route("v2/financial-accounting/vouchers/{voucherId:int}")]
+    public SingleObjectModel GetVoucher([FromUri] int voucherId) {
+
+      using (var usecases = VoucherUseCases.UseCaseInteractor()) {
+        VoucherDto voucher = usecases.GetVoucher(voucherId);
+
+        return new SingleObjectModel(base.Request, voucher);
+      }
+    }
+
+
     [HttpPost]
     [Route("v2/financial-accounting/vouchers/{voucherId:int}/entries")]
     public SingleObjectModel AppendVoucherEntry([FromUri] int voucherId,
