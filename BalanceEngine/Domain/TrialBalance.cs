@@ -92,7 +92,6 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
       columns.Add(new DataTableColumn("ledgerNumber", "Cont", "text"));
       columns.Add(new DataTableColumn("currencyCode", "Mon", "text"));
       columns.Add(new DataTableColumn("accountParent", "Cta", "text-nowrap"));
-      columns.Add(new DataTableColumn("subAccountNumber", "Scta", "text-nowrap"));
       columns.Add(new DataTableColumn("accountNumber", "Cuenta", "text-nowrap"));
       columns.Add(new DataTableColumn("sectorCode", "Sct", "text"));
       columns.Add(new DataTableColumn("subledgerAccountNumber", "Auxiliar", "text-nowrap"));
