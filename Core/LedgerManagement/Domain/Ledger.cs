@@ -127,15 +127,15 @@ namespace Empiria.FinancialAccounting {
     }
 
 
+    public NamedEntityDto MapToNamedEntity() {
+      return new NamedEntityDto(this.UID, this.FullName);
+    }
+
+
     public FixedList<DateTime> OpenedAccountingDates() {
       var calendar = Calendar.Parse(this.CalendarId);
 
       return calendar.OpenedAccountingDates();
-    }
-
-
-    public NamedEntityDto MapToNamedEntity() {
-      return new NamedEntityDto(this.UID, this.FullName);
     }
 
 

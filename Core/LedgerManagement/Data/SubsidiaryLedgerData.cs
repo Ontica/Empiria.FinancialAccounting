@@ -1,18 +1,19 @@
 ﻿/* Empiria Financial *****************************************************************************************
 *                                                                                                            *
-*  Module   : Accounts Chart                             Component : Domain Layer                            *
-*  Assembly : FinancialAccounting.Core.dll               Pattern   : Empiria Data Object                     *
-*  Type     : SubsidiaryAccount                          License   : Please read LICENSE.txt file            *
+*  Module   : Ledger Management                          Component : Data Access Layer                       *
+*  Assembly : FinancialAccounting.Core.dll               Pattern   : Data Service                            *
+*  Type     : SubsidiaryLedgerData                       License   : Please read LICENSE.txt file            *
 *                                                                                                            *
-*  Summary  : Holds information about a subsidiary ledger account.                                           *
+*  Summary  : Data service layer for subsidiary accounts.                                                    *
 *                                                                                                            *
 ************************* Copyright(c) La Vía Óntica SC, Ontica LLC and contributors. All rights reserved. **/
 using System;
 
 using Empiria.Data;
 
-namespace Empiria.FinancialAccounting {
+namespace Empiria.FinancialAccounting.Data {
 
+  /// <summary>Data service layer for subsidiary accounts.</summary>
   static internal class SubsidiaryLedgerData {
 
     static internal FixedList<SubsidiaryAccount> GetSubsidiaryAccountsList(AccountsChart accountsChart,
@@ -29,4 +30,4 @@ namespace Empiria.FinancialAccounting {
 
   }  // class SubsidiaryLedgerData
 
-}  // namespace Empiria.FinancialAccounting
+}  // namespace Empiria.FinancialAccounting.Data
