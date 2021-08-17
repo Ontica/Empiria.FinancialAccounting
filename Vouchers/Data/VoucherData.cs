@@ -31,6 +31,16 @@ namespace Empiria.FinancialAccounting.Vouchers.Data {
     }
 
 
+    static internal FixedList<EventType> EventTypes() {
+      var sql = "SELECT * " +
+                "FROM COF_EVENTOS_CARTERA " +
+                "ORDER BY COF_EVENTOS_CARTERA.DESCRICPION_EVENTO";
+
+      var dataOperation = DataOperation.Parse(sql);
+
+      return DataReader.GetFixedList<EventType>(dataOperation);
+    }
+
     static internal FixedList<Voucher> GetVouchers(string filter, string sort, int pageSize) {
       var sql = "SELECT * FROM (" +
                   "SELECT * FROM VW_COF_TRANSACCION " +
