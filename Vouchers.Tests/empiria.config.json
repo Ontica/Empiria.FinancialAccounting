@@ -2,7 +2,7 @@
   "appName": "Empiria Financial Accounting Vouchers Management Tests",
   "description": "Vouchers management tests environment settings",
   "version": "2.0",
-  "date": "2021-05-31",
+  "date": "2021-08-16",
   "settings": [
     {
       "type": "",
@@ -23,6 +23,16 @@
       "type": "FinancialAccounting.Tests",
       "key": "SESSION_TOKEN",
       "value": "{{TESTING-SESSION-TOKEN}}"
+    },
+    {
+      "type": "FinancialAccounting.Tests",
+      "key": "LEDGER_UID",
+      "value": "{{TESTING-LEDGER-UID}}"
+    },
+    {
+      "type": "FinancialAccounting.Tests",
+      "key": "VOUCHER_ID",
+      "value": "{{TESTING-VOUCHER-ID}}"
     }
   ]
 }

@@ -12,9 +12,9 @@ using Xunit;
 using Empiria.FinancialAccounting.Vouchers.Adapters;
 using Empiria.FinancialAccounting.Vouchers.UseCases;
 
-namespace Empiria.FinancialAccounting.Tests {
+namespace Empiria.FinancialAccounting.Tests.Vouchers {
 
-  /// <summary>Test cases for vouchers and postings edition. </summary>
+  /// <summary>Test cases for vouchers and postings edition.</summary>
   public class VoucherEditionUseCasesTests {
 
     #region Fields
@@ -73,4 +73,4 @@ namespace Empiria.FinancialAccounting.Tests {
 
   }  // class VoucherEditionUseCasesTests
 
-}  // namespace Empiria.FinancialAccounting.Tests
+}  // namespace Empiria.FinancialAccounting.Tests.Vouchers

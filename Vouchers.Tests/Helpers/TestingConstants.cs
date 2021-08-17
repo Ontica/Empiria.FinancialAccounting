@@ -1,8 +1,8 @@
 ﻿/* Empiria Financial *****************************************************************************************
 *                                                                                                            *
-*  Module   : Financial Accounting Core                  Component : Test Helpers                            *
-*  Assembly : Empiria.FinancialAccounting.Tests.dll      Pattern   : Testing constants                       *
-*  Type     : TestingConstants                           License   : Please read LICENSE.txt file            *
+*  Module   : Vouchers Management                          Component : Test cases                            *
+*  Assembly : FinancialAccounting.Vouchers.Tests           Pattern   : Testing constants                     *
+*  Type     : TestingConstants                             License   : Please read LICENSE.txt file          *
 *                                                                                                            *
 *  Summary  : Provides testing constants.                                                                    *
 *                                                                                                            *
@@ -14,6 +14,10 @@ namespace Empiria.FinancialAccounting.Tests {
   static public class TestingConstants {
 
     static readonly internal string SESSION_TOKEN = ConfigurationData.GetString("SESSION_TOKEN");
+
+    static readonly internal string LEDGER_UID = ConfigurationData.GetString("LEDGER_UID");
+
+    static readonly internal int VOUCHER_ID = ConfigurationData.GetInteger("VOUCHER_ID");
 
   }  // class TestingConstants
 

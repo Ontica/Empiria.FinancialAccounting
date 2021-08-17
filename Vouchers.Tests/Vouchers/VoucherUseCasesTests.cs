@@ -2,36 +2,37 @@
 *                                                                                                            *
 *  Module   : Vouchers Management                          Component : Test cases                            *
 *  Assembly : FinancialAccounting.Vouchers.Tests           Pattern   : Use cases tests                       *
-*  Type     : SearchVouchersUseCasesTests                  License   : Please read LICENSE.txt file          *
+*  Type     : VoucherUseCasesTests                         License   : Please read LICENSE.txt file          *
 *                                                                                                            *
-*  Summary  : Test cases for search vouchers.                                                                *
+*  Summary  : Test cases for accounting vouchers.                                                            *
 *                                                                                                            *
 ************************* Copyright(c) La Vía Óntica SC, Ontica LLC and contributors. All rights reserved. **/
+using System;
 using Xunit;
 
 using Empiria.FinancialAccounting.Vouchers.UseCases;
 using Empiria.FinancialAccounting.Vouchers.Adapters;
 
-namespace Empiria.FinancialAccounting.Tests {
+namespace Empiria.FinancialAccounting.Tests.Vouchers {
 
-  /// <summary>Test cases for search vouchers.</summary>
-  public class SearchVouchersUseCasesTests {
+  /// <summary>Test cases for accounting vouchers.</summary>
+  public class VoucherUseCasesTests {
 
     #region Fields
 
-    private readonly VouchersUseCases _usecases;
+    private readonly VoucherUseCases _usecases;
 
     #endregion Fields
 
     #region Initialization
 
-    public SearchVouchersUseCasesTests() {
+    public VoucherUseCasesTests() {
       CommonMethods.Authenticate();
 
-      _usecases = VouchersUseCases.UseCaseInteractor();
+      _usecases = VoucherUseCases.UseCaseInteractor();
     }
 
-    ~SearchVouchersUseCasesTests() {
+    ~VoucherUseCasesTests() {
       _usecases.Dispose();
     }
 
@@ -40,7 +41,17 @@ namespace Empiria.FinancialAccounting.Tests {
     #region Facts
 
     [Fact]
-    public void SearchVouchersWithKeywords() {
+    public void Should_Read_A_Voucher() {
+      VoucherDto voucherDto = _usecases.GetVoucher(TestingConstants.VOUCHER_ID);
+
+      Assert.NotNull(voucherDto);
+
+      Assert.Equal(TestingConstants.VOUCHER_ID, voucherDto.Id);
+    }
+
+
+    [Fact]
+    public void Should_Search_Vouchers_With_Keywords() {
       var command = new SearchVouchersCommand {
         Keywords = "intereses"
       };
@@ -52,6 +63,6 @@ namespace Empiria.FinancialAccounting.Tests {
 
     #endregion Facts
 
-  }  // class SearchVouchersUseCasesTests
+  }  // class VouchersUseCasesTests
 
-}  // namespace Empiria.FinancialAccounting.Tests
+}  // namespace Empiria.FinancialAccounting.Tests.Vouchers
