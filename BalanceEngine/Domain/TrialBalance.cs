@@ -35,7 +35,7 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
           return TwoCurrenciesDataColumns();
 
         case TrialBalanceType.Balanza:
-        case TrialBalanceType.BalanzaConAuxiliares:
+        //case TrialBalanceType.BalanzaConAuxiliares:
         case TrialBalanceType.GeneracionDeSaldos:
         case TrialBalanceType.Saldos:
         case TrialBalanceType.SaldosPorAuxiliar:
@@ -62,7 +62,7 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
 
       columns.Add(new DataTableColumn("currencyCode", "Mon", "text"));
 
-      if (Command.ReturnSubledgerAccounts) {
+      if (Command.WithSubledgerAccount) {
         columns.Add(new DataTableColumn("accountNumber", "Cuenta / Auxiliar", "text-nowrap"));
       } else {
         columns.Add(new DataTableColumn("accountNumber", "Cuenta", "text-nowrap"));
@@ -128,7 +128,7 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
 
       columns.Add(new DataTableColumn("currencyCode", "Mon", "text"));
 
-      if (Command.ReturnSubledgerAccounts) {
+      if (Command.WithSubledgerAccount) {
         columns.Add(new DataTableColumn("accountNumber", "Cuenta / Auxiliar", "text-nowrap"));
       } else {
         columns.Add(new DataTableColumn("accountNumber", "Cuenta", "text-nowrap"));

@@ -48,6 +48,9 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
     internal TrialBalance BuildForBalancesGeneration() {
       var helper = new TrialBalanceHelper(_command);
 
+      _command.WithSubledgerAccount = _command.TrialBalanceType == TrialBalanceType.GeneracionDeSaldos  ?
+                                      true : _command.WithSubledgerAccount;
+
       FixedList<TrialBalanceEntry> trialBalance = helper.GetPostingEntries();
 
       var returnBalance = new FixedList<ITrialBalanceEntry>(trialBalance.Select(x => (ITrialBalanceEntry) x));

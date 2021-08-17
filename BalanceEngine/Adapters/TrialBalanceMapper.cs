@@ -77,7 +77,7 @@ namespace Empiria.FinancialAccounting.BalanceEngine.Adapters {
           return new FixedList<ITrialBalanceEntryDto>(mi);
 
         case TrialBalanceType.Balanza:
-        case TrialBalanceType.BalanzaConAuxiliares:
+        //case TrialBalanceType.BalanzaConAuxiliares:
         case TrialBalanceType.GeneracionDeSaldos:
         case TrialBalanceType.Saldos:
         case TrialBalanceType.SaldosPorAuxiliar:

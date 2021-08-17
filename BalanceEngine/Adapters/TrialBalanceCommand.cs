@@ -93,21 +93,14 @@ namespace Empiria.FinancialAccounting.BalanceEngine.Adapters {
 
     public bool DoNotReturnSubledgerAccounts {
       get {
-        return !this.ReturnSubledgerAccounts;
+        return !this.WithSubledgerAccount;
       }
     }
 
 
-    public bool ReturnSubledgerAccounts {
-      get {
-        return this.TrialBalanceType == TrialBalanceType.BalanzaConAuxiliares ||
-               this.TrialBalanceType == TrialBalanceType.BalanzaValorizadaComparativa ||
-               this.TrialBalanceType == TrialBalanceType.GeneracionDeSaldos ||
-               this.TrialBalanceType == TrialBalanceType.Saldos ||
-               this.TrialBalanceType == TrialBalanceType.SaldosPorAuxiliar ||
-               this.TrialBalanceType == TrialBalanceType.SaldosPorCuenta;
-      }
-    }
+    public bool WithSubledgerAccount {
+      get; set;
+    } = false;
 
 
     public bool UseDefaultValuation {

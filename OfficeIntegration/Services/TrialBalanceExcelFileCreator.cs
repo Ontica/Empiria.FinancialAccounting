@@ -78,7 +78,7 @@ namespace Empiria.FinancialAccounting.OfficeIntegration {
           FillOutBalanza(trialBalance.Entries.Select(x => (TrialBalanceEntryDto) x));
           return;
 
-        case TrialBalanceType.BalanzaConAuxiliares:
+        //case TrialBalanceType.BalanzaConAuxiliares:
         case TrialBalanceType.SaldosPorAuxiliar:
         case TrialBalanceType.SaldosPorCuenta:
           FillOutBalanzaAuxiliares(trialBalance.Entries.Select(x => (TrialBalanceEntryDto) x));

@@ -35,9 +35,11 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
       var returnedEntries = new List<TrialBalanceEntry>(postingEntries);
 
       if (_command.TrialBalanceType == TrialBalanceType.SaldosPorCuenta) {
+
         foreach (var entry in summaryEntries.Where(a => a.SubledgerAccountIdParent > 0)) {
           returnedEntries.Add(entry);
         }
+
       } else {
         returnedEntries.AddRange(summaryEntries);
       }
@@ -87,6 +89,15 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
       return OrderByLedgerAndCurrency(returnedEntries);
     }
 
+    internal List<TrialBalanceEntry> TrialBalanceWithSubledgerAccounts(List<TrialBalanceEntry> trialBalance) {
+      List<TrialBalanceEntry> returnedEntries = new List<TrialBalanceEntry>(trialBalance);
+
+      if (!_command.WithSubledgerAccount && _command.TrialBalanceType == TrialBalanceType.SaldosPorCuenta) {
+        returnedEntries = returnedEntries.Where(a => a.SubledgerNumberOfDigits == 0).ToList();
+      }
+
+      return returnedEntries;
+    }
 
     internal List<TrialBalanceEntry> CombineDebtorCreditorAndPostingEntries(
                                       List<TrialBalanceEntry> trialBalance,
@@ -245,7 +256,8 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
         StandardAccount currentParent;
 
         if ((entry.Account.NotHasParent) ||
-            _command.ReturnSubledgerAccounts) {
+            _command.WithSubledgerAccount ||
+            _command.TrialBalanceType == TrialBalanceType.SaldosPorCuenta) {
           currentParent = entry.Account;
 
         } else if (_command.DoNotReturnSubledgerAccounts && entry.Account.HasParent) {
@@ -460,7 +472,7 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
 
       if (_command.DoNotReturnSubledgerAccounts) {
         return entries.FindAll(x => x.Level <= _command.Level);
-      } else if (_command.ReturnSubledgerAccounts) {
+      } else if (_command.WithSubledgerAccount) {
         return entries.FindAll(x => x.Level <= _command.Level);
       } else {
         throw Assertion.AssertNoReachThisCode();
@@ -589,8 +601,8 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
     private List<TrialBalanceEntry> OrderingTrialBalance(List<TrialBalanceEntry> entries) {
       List<TrialBalanceEntry> returnedEntries = new List<TrialBalanceEntry>();
 
-      if (_command.TrialBalanceType == TrialBalanceType.BalanzaConAuxiliares ||
-          _command.TrialBalanceType == TrialBalanceType.SaldosPorCuenta) {
+      if (_command.WithSubledgerAccount && (_command.TrialBalanceType == TrialBalanceType.Balanza ||
+          _command.TrialBalanceType == TrialBalanceType.SaldosPorCuenta)) {
         foreach (var entry in entries) {
           SubsidiaryAccount subledgerAccount = SubsidiaryAccount.Parse(entry.SubledgerAccountId);
           if (!subledgerAccount.IsEmptyInstance) {

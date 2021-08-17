@@ -19,8 +19,6 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
 
     Balanza,
 
-    BalanzaConAuxiliares,
-
     BalanzaValorizadaComparativa,
 
     GeneracionDeSaldos,
@@ -30,8 +28,6 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
     SaldosPorAuxiliar,
 
     SaldosPorCuenta,
-
-    //SaldosPorCuentaYAuxiliar,
 
     SaldosPorCuentaYMayor
 
@@ -100,7 +96,7 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
           return analiticoDeCuentas.Build();
 
         case TrialBalanceType.Balanza:
-        case TrialBalanceType.BalanzaConAuxiliares:
+        //case TrialBalanceType.BalanzaConAuxiliares:
         case TrialBalanceType.Saldos:
         case TrialBalanceType.SaldosPorCuenta:
 

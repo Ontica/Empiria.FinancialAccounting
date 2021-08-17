@@ -28,6 +28,9 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
     internal TrialBalance Build() {
       var helper = new TrialBalanceHelper(_command);
 
+      _command.WithSubledgerAccount = _command.TrialBalanceType == TrialBalanceType.Saldos ? true : 
+                                      _command.WithSubledgerAccount;
+
       FixedList<TrialBalanceEntry> postingEntries = helper.GetPostingEntries();
 
       List<TrialBalanceEntry> summaryEntries = helper.GenerateSummaryEntries(postingEntries);
@@ -61,6 +64,8 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
 
       trialBalance = helper.CombineTotalConsolidatedAndPostingEntries(
                             trialBalance, summaryTrialBalanceConsolidated);
+
+      trialBalance = helper.TrialBalanceWithSubledgerAccounts(trialBalance);
 
       trialBalance = helper.GenerateAverageBalance(trialBalance, _command.InitialPeriod);
 
