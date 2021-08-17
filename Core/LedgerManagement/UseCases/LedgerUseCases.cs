@@ -49,7 +49,7 @@ namespace Empiria.FinancialAccounting.UseCases {
 
       LedgerAccount ledgerAccount = ledger.GetAccountWithId(accountId);
 
-      return LedgerMapper.MapAccount(ledgerAccount);
+      return LedgerMapper.MapAccount(ledgerAccount, DateTime.Today);
     }
 
     #endregion Use cases

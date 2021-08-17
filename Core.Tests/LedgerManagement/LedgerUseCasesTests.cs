@@ -52,8 +52,8 @@ namespace Empiria.FinancialAccounting.Tests {
       Assert.Equal(TestingConstants.LEDGER_UID, ledgerAccount.Ledger.UID);
       Assert.Equal(TestingConstants.LEDGER_ACCOUNT_ID, ledgerAccount.Id);
 
-      Assert.NotEmpty(ledgerAccount.CurrencyRules);
-      Assert.NotEmpty(ledgerAccount.SectorRules);
+      Assert.NotEmpty(ledgerAccount.Currencies);
+      Assert.NotEmpty(ledgerAccount.Sectors);
     }
 
     #endregion Facts

@@ -11,6 +11,8 @@ using System;
 
 using Empiria.Services;
 
+using Empiria.FinancialAccounting.Adapters;
+
 namespace Empiria.FinancialAccounting.Vouchers.UseCases {
 
   /// <summary>Use cases used to retrive vouchers related data.</summary>
@@ -31,8 +33,9 @@ namespace Empiria.FinancialAccounting.Vouchers.UseCases {
     #region Use cases
 
     public FixedList<NamedEntityDto> FunctionalAreas() {
-      return FunctionalArea.GetList()
-                           .MapToNamedEntityList();
+      FixedList<FunctionalArea> list = FunctionalArea.GetList();
+
+      return new FixedList<NamedEntityDto>(list.Select(x => x.MapToNamedEntity()));
     }
 
 
@@ -46,13 +49,21 @@ namespace Empiria.FinancialAccounting.Vouchers.UseCases {
 
 
     public FixedList<NamedEntityDto> EventTypes() {
-      return EventType.GetList()
-                      .MapToNamedEntityList();
+      FixedList<EventType> list = EventType.GetList();
+
+      return new FixedList<NamedEntityDto>(list.Select(x => x.MapToNamedEntity()));
     }
 
 
-    public FixedList<NamedEntityDto> SearchAccountsForVoucher(int voucherId, string keywords) {
-      throw new NotImplementedException();
+    public FixedList<LedgerAccountDto> SearchAccountsForVoucherEdition(int voucherId, string keywords) {
+      Assertion.Assert(voucherId > 0, "voucherId must be a non negative number");
+      Assertion.AssertObject(keywords, "keywords");
+
+      var voucher = Voucher.Parse(voucherId);
+
+      FixedList<LedgerAccount> accounts = voucher.SearchAccountsForEdition(keywords);
+
+      return LedgerMapper.Map(accounts, voucher.AccountingDate);
     }
 
 

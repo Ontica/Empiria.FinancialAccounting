@@ -70,6 +70,19 @@ namespace Empiria.FinancialAccounting.Vouchers.Data {
     }
 
 
+    static internal FixedList<LedgerAccount> SearchAccountsForVoucherEdition(Voucher voucher, string keywords) {
+
+      string sqlKeywords = SearchExpression.ParseAndLikeKeywords("keywords_cuenta_estandar_hist", keywords);
+
+      DataOperation operation = DataOperation.Parse("@qry_cof_busca_cuentas_para_edicion",
+                                                    voucher.Ledger.Id,
+                                                    CommonMethods.FormatSqlDate(voucher.AccountingDate),
+                                                    sqlKeywords);
+
+      return DataReader.GetFixedList<LedgerAccount>(operation);
+    }
+
+
     static internal void WriteVoucher(Voucher o) {
       var op = DataOperation.Parse("write_cof_transaccion", o.Id, o.Number,
                                     o.Ledger.Id, o.FunctionalArea.Id,

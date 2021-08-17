@@ -14,7 +14,7 @@ using Empiria.FinancialAccounting.Vouchers.Data;
 namespace Empiria.FinancialAccounting.Vouchers {
 
   /// <summary>Holds data about a functional area.</summary>
-  public class EventType : BaseObject, INamedEntity {
+  public class EventType : BaseObject {
 
     #region Constructors and parsers
 
@@ -46,6 +46,10 @@ namespace Empiria.FinancialAccounting.Vouchers {
     }
 
     #endregion Properties
+
+    public NamedEntityDto MapToNamedEntity() {
+      return new NamedEntityDto(this.Id.ToString(), this.Name);
+    }
 
   } // class EventType
 

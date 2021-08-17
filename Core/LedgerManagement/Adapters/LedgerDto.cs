@@ -111,16 +111,41 @@ namespace Empiria.FinancialAccounting.Adapters {
     }
 
 
-    public FixedList<CurrencyRule> CurrencyRules {
+    public FixedList<NamedEntityDto> Currencies {
       get; internal set;
     }
 
 
-    public FixedList<SectorRule> SectorRules {
+    public FixedList<SectorRuleDto> Sectors {
       get; internal set;
     }
 
   }  // class LedgerAccountDto
+
+
+  public class SectorRuleDto {
+
+    internal SectorRuleDto() {
+      // no-op
+    }
+
+    public int Id {
+      get; internal set;
+    }
+
+    public string Code {
+      get; internal set;
+    }
+
+    public string Name {
+      get; internal set;
+    }
+
+    public AccountRole Role {
+      get; internal set;
+    }
+
+  }
 
 
   public class LedgerRuleDto {

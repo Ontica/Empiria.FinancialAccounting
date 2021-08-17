@@ -13,6 +13,7 @@ using System.Web.Http;
 using Empiria.WebApi;
 
 using Empiria.FinancialAccounting.Vouchers.UseCases;
+using Empiria.FinancialAccounting.Adapters;
 
 namespace Empiria.FinancialAccounting.Vouchers.WebApi {
 
@@ -83,12 +84,12 @@ namespace Empiria.FinancialAccounting.Vouchers.WebApi {
 
 
     [HttpGet]
-    [Route("v2/financial-accounting/vouchers/{voucherId:int}/search-accounts")]
+    [Route("v2/financial-accounting/vouchers/{voucherId:int}/search-accounts-for-edition")]
     public CollectionModel SearchAccountsForVoucher([FromUri] int voucherId,
                                                     [FromUri] string keywords) {
 
       using (var usecases = VoucherDataUseCases.UseCaseInteractor()) {
-        FixedList<NamedEntityDto> accounts = usecases.SearchAccountsForVoucher(voucherId, keywords);
+        FixedList<LedgerAccountDto> accounts = usecases.SearchAccountsForVoucherEdition(voucherId, keywords);
 
         return new CollectionModel(base.Request, accounts);
       }

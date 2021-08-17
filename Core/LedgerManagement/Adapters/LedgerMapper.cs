@@ -12,7 +12,7 @@ using System;
 namespace Empiria.FinancialAccounting.Adapters {
 
   /// <summary>Mapping methods for accounting ledger books.</summary>
-  static internal class LedgerMapper {
+  static public class LedgerMapper {
 
     static internal FixedList<LedgerDto> Map(FixedList<Ledger> list) {
       return new FixedList<LedgerDto>(list.Select((x) => Map(x)));
@@ -31,8 +31,11 @@ namespace Empiria.FinancialAccounting.Adapters {
       };
     }
 
+    static public FixedList<LedgerAccountDto> Map(FixedList<LedgerAccount> list, DateTime date) {
+      return new FixedList<LedgerAccountDto>(list.Select((x) => MapAccount(x, date)));
+    }
 
-    static internal LedgerAccountDto MapAccount(LedgerAccount ledgerAccount) {
+    static internal LedgerAccountDto MapAccount(LedgerAccount ledgerAccount, DateTime date) {
       return new LedgerAccountDto {
         Id = ledgerAccount.Id,
         Ledger = ledgerAccount.Ledger.MapToNamedEntity(),
@@ -43,11 +46,27 @@ namespace Empiria.FinancialAccounting.Adapters {
         AccountType = ledgerAccount.AccountType,
         DebtorCreditor = ledgerAccount.DebtorCreditor,
         Level = ledgerAccount.Level,
-        CurrencyRules = ledgerAccount.CurrencyRules,
-        SectorRules = ledgerAccount.SectorRules
+        Currencies = MapToNamedEntityList(ledgerAccount.CurrencyRulesOn(date)),
+        Sectors = MapSectors(ledgerAccount.SectorRulesOn(date))
       };
     }
 
+    private static FixedList<SectorRuleDto> MapSectors(FixedList<SectorRule> list) {
+      return new FixedList<SectorRuleDto>(list.Select(x => MapSector(x)));
+    }
+
+    private static SectorRuleDto MapSector(SectorRule x) {
+      return new SectorRuleDto {
+        Id = x.Sector.Id,
+        Code = x.Sector.Code,
+        Name = x.Sector.Name,
+        Role = x.SectorRole
+      };
+    }
+
+    private static FixedList<NamedEntityDto> MapToNamedEntityList(FixedList<CurrencyRule> list) {
+      return new FixedList<NamedEntityDto>(list.Select(x => x.Currency.MapToNamedEntity()));
+    }
 
     static internal FixedList<LedgerRuleDto> MapLedgersRules(FixedList<LedgerRule> list) {
       return new FixedList<LedgerRuleDto>(list.Select(x => MapLedgerRule(x)));

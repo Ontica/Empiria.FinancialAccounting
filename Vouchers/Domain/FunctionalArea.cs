@@ -12,7 +12,7 @@ using System;
 namespace Empiria.FinancialAccounting.Vouchers {
 
   /// <summary>Holds data about a functional area.</summary>
-  public class FunctionalArea : BaseObject, INamedEntity {
+  public class FunctionalArea : BaseObject {
 
     #region Constructors and parsers
 
@@ -62,6 +62,10 @@ namespace Empiria.FinancialAccounting.Vouchers {
     }
 
     #endregion Properties
+
+    public NamedEntityDto MapToNamedEntity() {
+      return new NamedEntityDto(this.Id.ToString(), this.Name);
+    }
 
   } // class FunctionalArea
 

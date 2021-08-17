@@ -10,6 +10,7 @@
 using System;
 using Xunit;
 
+using Empiria.FinancialAccounting.Adapters;
 using Empiria.FinancialAccounting.Vouchers.UseCases;
 
 namespace Empiria.FinancialAccounting.Tests.Vouchers {
@@ -81,12 +82,12 @@ namespace Empiria.FinancialAccounting.Tests.Vouchers {
 
 
     [Fact]
-    public void Should_Search_Accounts_for_Voucher() {
+    public void Should_Search_Accounts_for_Voucher_Edition() {
       int voucherId = TestingConstants.VOUCHER_ID;
 
-      FixedList<NamedEntityDto> vouchers = _usecases.SearchAccountsForVoucher(voucherId, "impuestos");
+      FixedList<LedgerAccountDto> accounts = _usecases.SearchAccountsForVoucherEdition(voucherId, "impuestos");
 
-      Assert.NotEmpty(vouchers);
+      Assert.NotEmpty(accounts);
     }
 
 
