@@ -2,7 +2,7 @@
 *                                                                                                            *
 *  Module   : Vouchers Management                        Component : Use cases Layer                         *
 *  Assembly : FinancialAccounting.Vouchers.dll           Pattern   : Use case interactor class               *
-*  Type     : VouchersUseCases                           License   : Please read LICENSE.txt file            *
+*  Type     : VoucherUseCases                            License   : Please read LICENSE.txt file            *
 *                                                                                                            *
 *  Summary  : Use cases used to retrive and manage accounting vouchers.                                      *
 *                                                                                                            *
@@ -16,16 +16,16 @@ using Empiria.FinancialAccounting.Vouchers.Adapters;
 namespace Empiria.FinancialAccounting.Vouchers.UseCases {
 
   /// <summary>Use cases used to retrive and manage accounting vouchers.</summary>
-  public class VouchersUseCases : UseCase {
+  public class VoucherUseCases : UseCase {
 
     #region Constructors and parsers
 
-    protected VouchersUseCases() {
+    protected VoucherUseCases() {
       // no-op
     }
 
-    static public VouchersUseCases UseCaseInteractor() {
-      return UseCase.CreateInstance<VouchersUseCases>();
+    static public VoucherUseCases UseCaseInteractor() {
+      return UseCase.CreateInstance<VoucherUseCases>();
     }
 
     #endregion Constructors and parsers
@@ -55,10 +55,8 @@ namespace Empiria.FinancialAccounting.Vouchers.UseCases {
       return VoucherMapper.MapToVoucherDescriptor(list);
     }
 
-
-
     #endregion Use cases
 
-  }  // class VouchersUseCases
+  }  // class VoucherUseCases
 
 }  // namespace Empiria.FinancialAccounting.Vouchers.UseCases
