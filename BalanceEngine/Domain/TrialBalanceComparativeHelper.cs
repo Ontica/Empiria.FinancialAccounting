@@ -71,6 +71,9 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
                                           new List<TrialBalanceComparativeEntry>(comparativeEntries);
 
       foreach (var entry in calculatedEntries) {
+        if (entry.Account.Number == "1103-05" && entry.Currency.Code == "02") {
+          string x = string.Empty;
+        }
         entry.Variation = entry.SecondValorization - entry.FirstValorization;
         entry.VariationByER = (entry.FirstTotalBalance * entry.SecondExchangeRate) - entry.FirstValorization;
         entry.RealVariation = entry.Variation - entry.VariationByER;
@@ -105,6 +108,9 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
       List<TrialBalanceComparativeEntry> returnedFirstPeriod = new List<TrialBalanceComparativeEntry>();
 
       foreach (var firstPeriod in trialBalanceFirstPeriod) {
+        if (firstPeriod.Account.Number == "1103-05" && firstPeriod.Currency.Code == "02") {
+          string x = string.Empty;
+        }
         returnedFirstPeriod.Add(firstPeriod.MapToComparativeFirstPeriod());
       }
 

@@ -56,7 +56,7 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
 
       trialBalance = helper.CombineTotalConsolidatedAndPostingEntries(trialBalance, summaryTotalConsolidated);
 
-      trialBalance = helper.GenerateAverageBalance(trialBalance, _command.InitialPeriod);
+      trialBalance = helper.GenerateAverageDailyBalance(trialBalance, _command.InitialPeriod);
 
       trialBalance = helper.RestrictLevels(trialBalance);
 

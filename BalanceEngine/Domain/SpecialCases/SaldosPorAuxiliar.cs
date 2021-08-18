@@ -35,7 +35,7 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
 
       trialBalance = CombineTotalSubsidiaryEntriesWithSummaryAccounts(summarySubsidiaryEntries);
 
-      trialBalance = helper.GenerateAverageBalance(trialBalance, _command.InitialPeriod);
+      trialBalance = helper.GenerateAverageDailyBalance(trialBalance, _command.InitialPeriod);
 
       trialBalance = helper.RestrictLevels(trialBalance);
 
@@ -48,8 +48,7 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
     internal TrialBalance BuildForBalancesGeneration() {
       var helper = new TrialBalanceHelper(_command);
 
-      _command.WithSubledgerAccount = _command.TrialBalanceType == TrialBalanceType.GeneracionDeSaldos  ?
-                                      true : _command.WithSubledgerAccount;
+      _command.WithSubledgerAccount = true;
 
       FixedList<TrialBalanceEntry> trialBalance = helper.GetPostingEntries();
 

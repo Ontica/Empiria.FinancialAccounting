@@ -31,11 +31,11 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
       List<TrialBalanceComparativeEntry> trialBalanceComparative = new List<TrialBalanceComparativeEntry>();
 
       FixedList<TrialBalanceEntry> trialBalanceFirstPeriod = helper.GetPostingEntries();
-      trialBalanceFirstPeriod = helper.GenerateAverageBalance(trialBalanceFirstPeriod.ToList(),
+      trialBalanceFirstPeriod = helper.GenerateAverageDailyBalance(trialBalanceFirstPeriod.ToList(),
                                                               _command.InitialPeriod).ToFixedList();
 
       FixedList<TrialBalanceEntry> trialBalanceSecondPeriod = helper.GetPostingEntries(true);
-      trialBalanceSecondPeriod = helper.GenerateAverageBalance(trialBalanceSecondPeriod.ToList(),
+      trialBalanceSecondPeriod = helper.GenerateAverageDailyBalance(trialBalanceSecondPeriod.ToList(),
                                                                _command.FinalPeriod).ToFixedList();
 
       trialBalanceComparative = comparativeHelper.MergePeriodsIntoComparativeBalance(

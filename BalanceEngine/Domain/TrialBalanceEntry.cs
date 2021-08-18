@@ -207,9 +207,9 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
         Account = this.Account,
         SubledgerAccountId = this.SubledgerAccountId,
         DebtorCreditor = this.DebtorCreditor,
-        FirstTotalBalance = this.CurrentBalance,
+        FirstTotalBalance = this.CurrentBalance / this.ExchangeRate,
         FirstExchangeRate = this.ExchangeRate,
-        FirstValorization = this.CurrentBalance * this.ExchangeRate,
+        FirstValorization = (this.CurrentBalance / this.ExchangeRate) * this.ExchangeRate
       };
     }
 
@@ -223,9 +223,9 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
         DebtorCreditor = this.DebtorCreditor,
         Debit = this.Debit,
         Credit = this.Credit,
-        SecondTotalBalance = this.CurrentBalance,
+        SecondTotalBalance = this.CurrentBalance / this.ExchangeRate,
         SecondExchangeRate = this.ExchangeRate,
-        SecondValorization = this.CurrentBalance * this.ExchangeRate
+        SecondValorization = (this.CurrentBalance / this.ExchangeRate) * this.ExchangeRate
       };
     }
 
