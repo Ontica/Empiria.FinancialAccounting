@@ -14,21 +14,27 @@ using Empiria.Services;
 namespace Empiria.FinancialAccounting.Vouchers.UseCases {
 
   /// <summary>Use cases used to retrive vouchers related data.</summary>
-  public class VouchersDataUseCases : UseCase {
+  public class VoucherDataUseCases : UseCase {
 
     #region Constructors and parsers
 
-    protected VouchersDataUseCases() {
+    protected VoucherDataUseCases() {
       // no-op
     }
 
-    static public VouchersDataUseCases UseCaseInteractor() {
-      return UseCase.CreateInstance<VouchersDataUseCases>();
+    static public VoucherDataUseCases UseCaseInteractor() {
+      return UseCase.CreateInstance<VoucherDataUseCases>();
     }
 
     #endregion Constructors and parsers
 
     #region Use cases
+
+    public FixedList<NamedEntityDto> FunctionalAreas() {
+      return FunctionalArea.GetList()
+                           .MapToNamedEntityList();
+    }
+
 
     public FixedList<DateTime> OpenedAccountingDates(string ledgerUID) {
       Assertion.AssertObject(ledgerUID, "ledgerUID");
@@ -39,14 +45,28 @@ namespace Empiria.FinancialAccounting.Vouchers.UseCases {
     }
 
 
+    public FixedList<NamedEntityDto> EventTypes() {
+      return EventType.GetList()
+                      .MapToNamedEntityList();
+    }
+
+
+    public FixedList<NamedEntityDto> SearchAccountsForVoucher(int voucherId, string keywords) {
+      throw new NotImplementedException();
+    }
+
+
     public FixedList<NamedEntityDto> TransactionTypes() {
-      return TransactionType.GetList().MapToNamedEntityList();
+      return TransactionType.GetList()
+                            .MapToNamedEntityList();
     }
 
 
     public FixedList<NamedEntityDto> VoucherTypes() {
-      return VoucherType.GetList().MapToNamedEntityList();
+      return VoucherType.GetList()
+                        .MapToNamedEntityList();
     }
+
 
     #endregion Use cases
 

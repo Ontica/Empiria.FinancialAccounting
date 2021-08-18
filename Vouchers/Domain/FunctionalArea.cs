@@ -1,7 +1,7 @@
 ﻿/* Empiria Financial *****************************************************************************************
 *                                                                                                            *
-*  Module   : Catalogues Management                      Component : Domain Layer                            *
-*  Assembly : FinancialAccounting.Core.dll               Pattern   : Empiria Data Object                     *
+*  Module   : Vouchers Management                        Component : Domain Layer                            *
+*  Assembly : FinancialAccounting.Vouchers.dll           Pattern   : Empiria Data Object                     *
 *  Type     : FunctionalArea                             License   : Please read LICENSE.txt file            *
 *                                                                                                            *
 *  Summary  : Holds data about a functional area.                                                            *
@@ -9,10 +9,10 @@
 ************************* Copyright(c) La Vía Óntica SC, Ontica LLC and contributors. All rights reserved. **/
 using System;
 
-namespace Empiria.FinancialAccounting {
+namespace Empiria.FinancialAccounting.Vouchers {
 
   /// <summary>Holds data about a functional area.</summary>
-  public class FunctionalArea : BaseObject {
+  public class FunctionalArea : BaseObject, INamedEntity {
 
     #region Constructors and parsers
 
@@ -63,14 +63,6 @@ namespace Empiria.FinancialAccounting {
 
     #endregion Properties
 
-    #region Methods
-
-    public NamedEntityDto MapToNamedEntity() {
-      return new NamedEntityDto(this.Id.ToString(), this.FullName);
-    }
-
-    #endregion Methods
-
   } // class FunctionalArea
 
-}  // namespace Empiria.FinancialAccounting
+}  // namespace Empiria.FinancialAccounting.Vouchers
