@@ -69,6 +69,10 @@ namespace Empiria.FinancialAccounting.OfficeIntegration {
           FillOutAnaliticoDeCuentas(trialBalance.Entries.Select(x => (TwoColumnsTrialBalanceEntryDto) x));
           return;
 
+        case TrialBalanceType.BalanzaValorizadaComparativa:
+          FillOutBalanzaComparativa(trialBalance.Entries.Select(x => (TrialBalanceComparativeDto) x));
+          return;
+
         case TrialBalanceType.SaldosPorCuentaYMayor:
           FillOutSaldosPorCuentayMayor(trialBalance.Entries.Select(x => (TrialBalanceEntryDto) x));
           return;
@@ -108,6 +112,35 @@ namespace Empiria.FinancialAccounting.OfficeIntegration {
             entry.ItemType != TrialBalanceItemType.BalanceSummary) {
           _excelFile.SetRowStyleBold(i);
         }
+        i++;
+      }
+    }
+
+
+    private void FillOutBalanzaComparativa(IEnumerable<TrialBalanceComparativeDto> entries) {
+      int i = 5;
+
+      foreach (var entry in entries) {
+        _excelFile.SetCell($"A{i}", entry.LedgerNumber);
+        _excelFile.SetCell($"B{i}", entry.CurrencyCode);
+        _excelFile.SetCell($"C{i}", entry.AccountNumber);
+        _excelFile.SetCell($"D{i}", entry.SectorCode);
+        _excelFile.SetCell($"E{i}", entry.SubledgerAccountNumber);
+        _excelFile.SetCell($"F{i}", entry.SubledgerAccountName);
+        _excelFile.SetCell($"G{i}", entry.FirstTotalBalance);
+        _excelFile.SetCell($"H{i}", entry.FirstExchangeRate);
+        _excelFile.SetCell($"I{i}", entry.FirstValorization);
+        _excelFile.SetCell($"J{i}", entry.Credit);
+        _excelFile.SetCell($"K{i}", entry.Debit);
+        _excelFile.SetCell($"L{i}", entry.SecondTotalBalance);
+        _excelFile.SetCell($"M{i}", entry.SecondExchangeRate);
+        _excelFile.SetCell($"N{i}", entry.SecondValorization);
+        _excelFile.SetCell($"O{i}", entry.AccountName);
+        _excelFile.SetCell($"P{i}", Convert.ToString((char) entry.DebtorCreditor));
+        _excelFile.SetCell($"Q{i}", entry.Variation);
+        _excelFile.SetCell($"R{i}", entry.VariationByER);
+        _excelFile.SetCell($"S{i}", entry.RealVariation);
+
         i++;
       }
     }
