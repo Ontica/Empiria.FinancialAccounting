@@ -209,7 +209,7 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
         DebtorCreditor = this.DebtorCreditor,
         FirstTotalBalance = this.CurrentBalance / this.ExchangeRate,
         FirstExchangeRate = this.ExchangeRate,
-        FirstValorization = (this.CurrentBalance / this.ExchangeRate) * this.ExchangeRate
+        FirstValorization = CurrentBalance
       };
     }
 
@@ -225,7 +225,7 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
         Credit = this.Credit,
         SecondTotalBalance = this.CurrentBalance / this.ExchangeRate,
         SecondExchangeRate = this.ExchangeRate,
-        SecondValorization = (this.CurrentBalance / this.ExchangeRate) * this.ExchangeRate
+        SecondValorization = this.CurrentBalance
       };
     }
 

@@ -200,7 +200,10 @@ namespace Empiria.FinancialAccounting.BalanceEngine.Adapters {
     public string LastChangeDate {
       get; internal set;
     }
-
+    public string DebtorCreditor {
+      get;
+      internal set;
+    }
   } // class TrialBalanceEntryDto
 
 } // namespace Empiria.FinancialAccounting.BalanceEngine.Adapters

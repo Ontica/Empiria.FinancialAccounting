@@ -97,8 +97,13 @@ namespace Empiria.FinancialAccounting.Tests.Balances {
         InitialPeriod = new TrialBalanceCommandPeriod() {
           FromDate = TestingConstants.FROM_DATE,
           ToDate = TestingConstants.TO_DATE
-        }
-      };
+        },
+        FinalPeriod = new TrialBalanceCommandPeriod() {
+          FromDate = new DateTime(2018, 07, 01),
+          ToDate = new DateTime(2018, 07, 31)
+    }
+        
+    };
     }
 
     #endregion Helpers

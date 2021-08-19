@@ -505,7 +505,7 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
       FixedList<ExchangeRate> exchageRates = ExchangeRate.GetList(exchangeRateType, commandPeriod.ExchangeRateDate);
 
       foreach (var entry in entries.Where(a => a.Currency.Code != "01")) {
-
+        
         var exchangeRate = exchageRates.FirstOrDefault(a => a.FromCurrency.Code == commandPeriod.ValuateToCurrrencyUID &&
                                                             a.ToCurrency.Code == entry.Currency.Code);
 

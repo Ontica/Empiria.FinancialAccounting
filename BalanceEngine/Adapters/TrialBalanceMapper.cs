@@ -176,6 +176,9 @@ namespace Empiria.FinancialAccounting.BalanceEngine.Adapters {
       dto.CurrentBalance = entry.CurrentBalance;
       dto.ExchangeRate = entry.ExchangeRate;
       dto.AverageBalance = entry.AverageBalance;
+      dto.DebtorCreditor = entry.ItemType == TrialBalanceItemType.BalanceEntry ||
+                           entry.ItemType == TrialBalanceItemType.BalanceSummary ?
+                           entry.DebtorCreditor.ToString() : "";
       dto.LastChangeDate = entry.ItemType == TrialBalanceItemType.BalanceEntry ||
                            entry.ItemType == TrialBalanceItemType.BalanceSummary ||
                            command.TrialBalanceType == TrialBalanceType.SaldosPorCuentaYMayor ?

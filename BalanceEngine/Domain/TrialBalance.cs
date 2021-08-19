@@ -70,17 +70,24 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
 
       columns.Add(new DataTableColumn("sectorCode", "Sct", "text"));
       columns.Add(new DataTableColumn("accountName", "Nombre", "text"));
-      columns.Add(new DataTableColumn("initialBalance", "Saldo anterior", "decimal"));
-      columns.Add(new DataTableColumn("debit", "Cargos", "decimal"));
-      columns.Add(new DataTableColumn("credit", "Abonos", "decimal"));
-      columns.Add(new DataTableColumn("currentBalance", "Saldo actual", "decimal"));
-      if (Command.InitialPeriod.ExchangeRateTypeUID != string.Empty ||
-          Command.InitialPeriod.UseDefaultValuation) {
-        columns.Add(new DataTableColumn("exchangeRate", "TC", "decimal"));
-      }
-      columns.Add(new DataTableColumn("averageBalance", "Saldo promedio", "decimal"));
       
-      //columns.Add(new DataTableColumn("lastChangeDate", "Último movimiento", "text"));
+      if (Command.TrialBalanceType == TrialBalanceType.SaldosPorCuenta ||
+          Command.TrialBalanceType == TrialBalanceType.SaldosPorAuxiliar) {
+        columns.Add(new DataTableColumn("currentBalance", "Saldo actual", "decimal"));
+        columns.Add(new DataTableColumn("debtorCreditor", "Naturaleza", "text"));
+        columns.Add(new DataTableColumn("lastChangeDate", "Último movimiento", "text"));
+      } else {
+        columns.Add(new DataTableColumn("initialBalance", "Saldo anterior", "decimal"));
+        columns.Add(new DataTableColumn("debit", "Cargos", "decimal"));
+        columns.Add(new DataTableColumn("credit", "Abonos", "decimal"));
+        columns.Add(new DataTableColumn("currentBalance", "Saldo actual", "decimal"));
+        if (Command.InitialPeriod.ExchangeRateTypeUID != string.Empty ||
+            Command.InitialPeriod.UseDefaultValuation) {
+          columns.Add(new DataTableColumn("exchangeRate", "TC", "decimal"));
+        }
+        columns.Add(new DataTableColumn("averageBalance", "Saldo promedio", "decimal"));
+        //columns.Add(new DataTableColumn("lastChangeDate", "Último movimiento", "text"));
+      }
 
       return columns.ToFixedList();
     }
