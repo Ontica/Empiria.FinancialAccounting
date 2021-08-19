@@ -59,7 +59,7 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
           string result = string.Empty;
 
           Array.ForEach(childs, child => result += child);
-          isSummary = result.All(a => a == '0') ? false : true;
+          isSummary = result.EndsWith("00") ? false : true;
 
           if (isSummary) {
             returnedSummaryEntries.Add(entry);
@@ -93,7 +93,9 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
       List<TrialBalanceEntry> returnedEntries = new List<TrialBalanceEntry>(trialBalance);
 
       if (!_command.WithSubledgerAccount && _command.TrialBalanceType == TrialBalanceType.SaldosPorCuenta) {
-        returnedEntries = returnedEntries.Where(a => a.SubledgerNumberOfDigits == 0).ToList();
+        returnedEntries = returnedEntries.Where(a => a.SubledgerNumberOfDigits == 0 
+                                                     //&& a.CurrentBalance != 0
+                                        ).ToList();
       }
 
       return returnedEntries;

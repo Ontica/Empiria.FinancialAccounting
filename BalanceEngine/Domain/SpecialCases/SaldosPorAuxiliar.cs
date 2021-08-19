@@ -202,6 +202,8 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
         returnedEntries = AddSummaryAccounts(summaryEntries, returnedEntries, entry);
       }
 
+      //returnedEntries = returnedEntries.Where(a => a.CurrentBalance != 0).ToList();
+
       return returnedEntries;
     }
 
