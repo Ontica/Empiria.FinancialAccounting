@@ -56,7 +56,7 @@ namespace Empiria.FinancialAccounting.Vouchers.UseCases {
 
 
     public FixedList<LedgerAccountDto> SearchAccountsForVoucherEdition(int voucherId, string keywords) {
-      Assertion.Assert(voucherId > 0, "voucherId must be a non negative number");
+      Assertion.Assert(voucherId > 0, "voucherId must be a non negative number.");
       Assertion.AssertObject(keywords, "keywords");
 
       var voucher = Voucher.Parse(voucherId);
@@ -64,6 +64,24 @@ namespace Empiria.FinancialAccounting.Vouchers.UseCases {
       FixedList<LedgerAccount> accounts = voucher.SearchAccountsForEdition(keywords);
 
       return LedgerMapper.Map(accounts, voucher.AccountingDate);
+    }
+
+
+    public FixedList<SubsidiaryAccountDto> SearchSubledgerAccountsForVoucherEdition(int voucherId,
+                                                                                    int accountId,
+                                                                                    string keywords) {
+      Assertion.Assert(voucherId > 0, "voucherId must be a non negative number.");
+      Assertion.Assert(accountId > 0, "accountId must be a non negative number.");
+      Assertion.AssertObject(keywords, "keywords");
+
+      var voucher = Voucher.Parse(voucherId);
+
+      var ledgerAccount = LedgerAccount.Parse(accountId);
+
+      FixedList<SubsidiaryAccount> subledgerAccounts =
+                            voucher.SearchSubledgerAccountsForEdition(ledgerAccount, keywords);
+
+      return SubsidiaryLedgerMapper.Map(subledgerAccounts);
     }
 
 
@@ -77,7 +95,6 @@ namespace Empiria.FinancialAccounting.Vouchers.UseCases {
       return VoucherType.GetList()
                         .MapToNamedEntityList();
     }
-
 
     #endregion Use cases
 

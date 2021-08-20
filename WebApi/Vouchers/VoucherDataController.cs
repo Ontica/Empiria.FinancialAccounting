@@ -95,6 +95,21 @@ namespace Empiria.FinancialAccounting.Vouchers.WebApi {
       }
     }
 
+
+    [HttpGet]
+    [Route("v2/financial-accounting/vouchers/{voucherId:int}/search-subledger-accounts-for-edition/{accountId:int}")]
+    public CollectionModel SearchSubledgerAccountsForVoucher([FromUri] int voucherId,
+                                                             [FromUri] int accountId,
+                                                             [FromUri] string keywords) {
+
+      using (var usecases = VoucherDataUseCases.UseCaseInteractor()) {
+        FixedList<SubsidiaryAccountDto> accounts =
+                usecases.SearchSubledgerAccountsForVoucherEdition(voucherId, accountId, keywords);
+
+        return new CollectionModel(base.Request, accounts);
+      }
+    }
+
     #endregion Web Apis
 
   }  // class VouchersDataController

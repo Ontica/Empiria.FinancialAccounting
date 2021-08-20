@@ -71,7 +71,6 @@ namespace Empiria.FinancialAccounting.Vouchers.Data {
 
 
     static internal FixedList<LedgerAccount> SearchAccountsForVoucherEdition(Voucher voucher, string keywords) {
-
       string sqlKeywords = SearchExpression.ParseAndLikeKeywords("keywords_cuenta_estandar_hist", keywords);
 
       DataOperation operation = DataOperation.Parse("@qry_cof_busca_cuentas_para_edicion",
@@ -80,6 +79,18 @@ namespace Empiria.FinancialAccounting.Vouchers.Data {
                                                     sqlKeywords);
 
       return DataReader.GetFixedList<LedgerAccount>(operation);
+    }
+
+
+    static internal FixedList<SubsidiaryAccount> SearchSubledgerAccountsForVoucherEdition(Voucher voucher,
+                                                                                          string keywords) {
+      string sqlKeywords = SearchExpression.ParseAndLikeKeywords("keywords_cuenta_auxiliar", keywords);
+
+      DataOperation operation = DataOperation.Parse("@qry_cof_busca_auxiliares_para_edicion",
+                                                    voucher.Ledger.Id,
+                                                    sqlKeywords);
+
+      return DataReader.GetFixedList<SubsidiaryAccount>(operation);
     }
 
 

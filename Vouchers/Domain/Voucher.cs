@@ -228,6 +228,18 @@ namespace Empiria.FinancialAccounting.Vouchers {
     }
 
 
+    internal FixedList<SubsidiaryAccount> SearchSubledgerAccountsForEdition(LedgerAccount account, string keywords) {
+      Assertion.Assert(this.IsOpened, "No hay cuentas auxiliares para edición porque la póliza ya está cerrada.");
+
+      Assertion.Assert(account.Ledger.Equals(this.Ledger), "Account do not belong to voucher ledger.");
+
+      Assertion.Assert(account.Role == AccountRole.Control || account.Role == AccountRole.Sectorizada,
+                       "The account role is not control. There are not subledger accounts");
+
+      return VoucherData.SearchSubledgerAccountsForVoucherEdition(this, keywords);
+    }
+
+
     internal void Update(VoucherFields fields) {
       Assertion.AssertObject(fields, "fields");
 

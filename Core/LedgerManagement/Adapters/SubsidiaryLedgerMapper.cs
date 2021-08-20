@@ -7,13 +7,12 @@
 *  Summary  : Mapping methods for subsidiary ledger books.                                                   *
 *                                                                                                            *
 ************************* Copyright(c) La Vía Óntica SC, Ontica LLC and contributors. All rights reserved. **/
-
 using System;
 
 namespace Empiria.FinancialAccounting.Adapters {
 
   /// <summary>Mapping methods for subsidiary ledger books.</summary>
-  static internal class SubsidiaryLedgerMapper {
+  static public class SubsidiaryLedgerMapper {
 
     static internal SubsidiaryLedgerDto Map(SubsidiaryLedger subsidiaryLedger) {
       return new SubsidiaryLedgerDto {
@@ -26,7 +25,7 @@ namespace Empiria.FinancialAccounting.Adapters {
       };
     }
 
-    static internal FixedList<SubsidiaryAccountDto> Map(FixedList<SubsidiaryAccount> list) {
+    static public FixedList<SubsidiaryAccountDto> Map(FixedList<SubsidiaryAccount> list) {
       return new FixedList<SubsidiaryAccountDto>(list.Select(x => MapAccount(x)));
     }
 
