@@ -105,7 +105,20 @@ namespace Empiria.FinancialAccounting.Vouchers.Adapters {
 
 
     static private string BuildStageStatusFilter(SearchVouchersCommand command) {
-      return string.Empty;
+      switch(command.Stage) {
+        case VoucherStage.All:
+          return string.Empty;
+        case VoucherStage.Completed:
+          return "ESTA_ABIERTA = 0";
+        case VoucherStage.Pending:
+          return "ESTA_ABIERTA <> 0";
+        case VoucherStage.ControlDesk:
+          return $"ESTA_ABIERTA <> 0";
+        case VoucherStage.MyInbox:
+          return $"ESTA_ABIERTA <> 0 AND ID_ELABORADA_POR = {ExecutionServer.CurrentUserId}";
+        default:
+          throw Assertion.AssertNoReachThisCode();
+      }
     }
 
 
