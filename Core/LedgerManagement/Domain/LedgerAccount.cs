@@ -58,7 +58,6 @@ namespace Empiria.FinancialAccounting {
       }
     }
 
-
     public string Number => this.StandardAccount.Number;
 
     public string Name => this.StandardAccount.Name;
@@ -136,6 +135,23 @@ namespace Empiria.FinancialAccounting {
 
       Assertion.Assert(account.Role == AccountRole.Control,
           $"La cuenta {account.Number} no maneja auxiliares {ToDate(accountingDate)}.");
+
+      Assertion.Assert(subledgerAccount.SubsidaryLedger.BaseLedger.Equals(this.Ledger),
+          $"El auxiliar {subledgerAccount.Number} no pertenece a la contabilidad {this.Ledger.FullName}.");
+    }
+
+
+    public void CheckSubledgerAccountRule(Sector sector, SubsidiaryAccount subledgerAccount,
+                                          DateTime accountingDate) {
+      Assertion.AssertObject(sector, "sector");
+      Assertion.AssertObject(subledgerAccount, "subledgerAccount");
+
+      Account account = this.StandardAccount.GetHistory(accountingDate);
+
+      SectorRule sectorRule = account.GetSectors(accountingDate).Find(x => x.Sector.Equals(sector));
+
+      Assertion.Assert(account.Role == AccountRole.Sectorizada && sectorRule.SectorRole == AccountRole.Control,
+          $"La cuenta {account.Number} no maneja auxiliares para el sector ({sector.Code}) {ToDate(accountingDate)}.");
 
       Assertion.Assert(subledgerAccount.SubsidaryLedger.BaseLedger.Equals(this.Ledger),
           $"El auxiliar {subledgerAccount.Number} no pertenece a la contabilidad {this.Ledger.FullName}.");

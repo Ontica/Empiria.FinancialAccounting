@@ -34,7 +34,9 @@ namespace Empiria.FinancialAccounting.Vouchers.Adapters {
         account.CheckNoSectorRule(voucher.AccountingDate);
       }
 
-      if (fields.HasSubledgerAccount) {
+      if (fields.HasSubledgerAccount && fields.HasSector) {
+        account.CheckSubledgerAccountRule(fields.GetSector(), fields.GetSubledgerAccount(), voucher.AccountingDate);
+      } else if (fields.HasSubledgerAccount && !fields.HasSector) {
         account.CheckSubledgerAccountRule(fields.GetSubledgerAccount(), voucher.AccountingDate);
       } else {
         account.CheckNoSubledgerAccountRule(voucher.AccountingDate);

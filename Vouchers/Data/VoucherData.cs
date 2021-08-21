@@ -23,7 +23,7 @@ namespace Empiria.FinancialAccounting.Vouchers.Data {
     }
 
 
-    internal static void DeleteVoucherEntry(VoucherEntry voucherEntry) {
+    static internal void DeleteVoucherEntry(VoucherEntry voucherEntry) {
       var dataOperation = DataOperation.Parse("do_delete_cof_movimiento_tmp",
                                               voucherEntry.VoucherId, voucherEntry.Id);
 
