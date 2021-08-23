@@ -11,6 +11,7 @@ using System;
 using Xunit;
 
 using Empiria.FinancialAccounting.Adapters;
+using Empiria.FinancialAccounting.Vouchers;
 using Empiria.FinancialAccounting.Vouchers.UseCases;
 
 namespace Empiria.FinancialAccounting.Tests.Vouchers {
@@ -48,6 +49,12 @@ namespace Empiria.FinancialAccounting.Tests.Vouchers {
       Assert.NotEmpty(eventTypes);
     }
 
+    [Fact]
+    public void Should_Read_Empty_Event_Type() {
+      var eventType = EventType.Empty;
+
+      Assert.NotNull(eventType);
+    }
 
     [Fact]
     public void Should_Read_Functional_Areas() {

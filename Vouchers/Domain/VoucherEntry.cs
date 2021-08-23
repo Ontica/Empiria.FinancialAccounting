@@ -99,9 +99,18 @@ namespace Empiria.FinancialAccounting.Vouchers {
 
 
     [DataField("CLAVE_DISPONIBILIDAD")]
-    public string AvailabilityCode {
-      get;
-      private set;
+    private string _claveDisponibilidad;
+
+    public EventType EventType {
+      get {
+        if (String.IsNullOrWhiteSpace(_claveDisponibilidad)) {
+          return EventType.Empty;
+        }
+        return EventType.Parse(Convert.ToInt32(_claveDisponibilidad));
+      }
+      private set {
+        _claveDisponibilidad = value.ToString();
+      }
     }
 
 
@@ -199,6 +208,19 @@ namespace Empiria.FinancialAccounting.Vouchers {
       }
     }
 
+    public bool HasSector {
+      get {
+        return !this.Sector.IsEmptyInstance;
+      }
+    }
+
+    public SectorRule SectorRule {
+      get {
+        return this.LedgerAccount.SectorRules.Find(x => x.Sector.Equals(this.Sector) &&
+                                                        x.AppliesOn(this.Voucher.AccountingDate));
+      }
+    }
+
     #endregion Public properties
 
     #region Methods
@@ -216,7 +238,7 @@ namespace Empiria.FinancialAccounting.Vouchers {
       this.ReferenceEntryId = fields.ReferenceEntryId;
       this.ResponsibilityArea = fields.GetResponsibilityArea();
       this.BudgetConcept = fields.BudgetConcept;
-      this.AvailabilityCode = fields.AvailabilityCode;
+      this.EventType = fields.GetEventType();
       this.VerificationNumber = fields.VerificationNumber;
       this.VoucherEntryType = fields.VoucherEntryType;
       this.Date = fields.Date;

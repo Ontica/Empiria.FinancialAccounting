@@ -112,7 +112,7 @@ namespace Empiria.FinancialAccounting.Vouchers.Data {
                                     o.Sector.IsEmptyInstance ? 0: o.Sector.Id,
                                     o.ReferenceEntryId,
                                     o.ResponsibilityArea.IsEmptyInstance ? 0: o.ResponsibilityArea.Id,
-                                    o.BudgetConcept, o.AvailabilityCode, o.VerificationNumber, (char) o.VoucherEntryType,
+                                    o.BudgetConcept, o.EventType, o.VerificationNumber, (char) o.VoucherEntryType,
                                     o.HasDate ? (object) o.Date : DBNull.Value, o.Concept, o.Currency.Id,
                                     o.Amount, o.BaseCurrrencyAmount, o.Protected ? 1 : 0);
 

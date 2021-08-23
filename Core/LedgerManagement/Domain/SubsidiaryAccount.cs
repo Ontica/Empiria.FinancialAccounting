@@ -81,7 +81,7 @@ namespace Empiria.FinancialAccounting {
 
     public NumberedNamedEntityDto MapToNumberedNamedEntity() {
       return new NumberedNamedEntityDto {
-        UID = this.UID,
+        UID = this.Id.ToString(),
         Number = this.Number,
         Name = this.Name,
         FullName = $"{this.Number} - {this.Name}"

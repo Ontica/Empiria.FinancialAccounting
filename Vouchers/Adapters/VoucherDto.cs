@@ -94,11 +94,11 @@ namespace Empiria.FinancialAccounting.Vouchers.Adapters {
       get; internal set;
     }
 
-    public NumberedNamedEntityDto LedgerAccount {
+    public LedgerAccountDto LedgerAccount {
       get; internal set;
     }
 
-    public NamedEntityDto Sector {
+    public SectorRuleDto Sector {
       get; internal set;
     }
 

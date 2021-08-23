@@ -35,7 +35,7 @@ namespace Empiria.FinancialAccounting.Adapters {
       return new FixedList<LedgerAccountDto>(list.Select((x) => MapAccount(x, date)));
     }
 
-    static internal LedgerAccountDto MapAccount(LedgerAccount ledgerAccount, DateTime date) {
+    static public LedgerAccountDto MapAccount(LedgerAccount ledgerAccount, DateTime date) {
       return new LedgerAccountDto {
         Id = ledgerAccount.Id,
         Ledger = ledgerAccount.Ledger.MapToNamedEntity(),
@@ -55,7 +55,7 @@ namespace Empiria.FinancialAccounting.Adapters {
       return new FixedList<SectorRuleDto>(list.Select(x => MapSector(x)));
     }
 
-    private static SectorRuleDto MapSector(SectorRule x) {
+    public static SectorRuleDto MapSector(SectorRule x) {
       return new SectorRuleDto {
         Id = x.Sector.Id,
         Code = x.Sector.Code,
@@ -76,7 +76,6 @@ namespace Empiria.FinancialAccounting.Adapters {
     static internal FixedList<NamedEntityDto> MapToNamedEntityList(FixedList<Ledger> list) {
       return new FixedList<NamedEntityDto>(list.Select(x => x.MapToNamedEntity()));
     }
-
 
     static private LedgerRuleDto MapLedgerRule(LedgerRule ledgerRule) {
       return new LedgerRuleDto {

@@ -194,7 +194,7 @@ namespace Empiria.FinancialAccounting {
     }
 
 
-    internal bool AppliesOn(DateTime date) {
+    public bool AppliesOn(DateTime date) {
       return this.StartDate <= date && date <= this.EndDate;
     }
 

@@ -42,6 +42,17 @@ namespace Empiria.FinancialAccounting.Vouchers.UseCases {
     }
 
 
+    public VoucherEntryDto GetVoucherEntry(int voucherId, int voucherEntryId) {
+      Assertion.Assert(voucherId > 0, "Unrecognized voucherId.");
+      Assertion.Assert(voucherEntryId > 0, "Unrecognized voucherEntryId.");
+
+      Voucher voucher = Voucher.Parse(voucherId);
+      VoucherEntry voucherEntry = voucher.GetEntry(voucherEntryId);
+
+      return VoucherMapper.MapEntry(voucherEntry);
+    }
+
+
     public FixedList<VoucherDescriptorDto> SearchVouchers(SearchVouchersCommand searchCommand) {
       Assertion.AssertObject(searchCommand, "searchCommand");
 

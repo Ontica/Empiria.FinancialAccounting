@@ -43,9 +43,9 @@ namespace Empiria.FinancialAccounting.Vouchers.Adapters {
     } = string.Empty;
 
 
-    public string AvailabilityCode {
+    public int EventTypeId {
       get; set;
-    } = string.Empty;
+    }
 
 
     public string VerificationNumber {

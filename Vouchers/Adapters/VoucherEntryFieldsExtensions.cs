@@ -73,6 +73,10 @@ namespace Empiria.FinancialAccounting.Vouchers.Adapters {
     }
 
 
+    static internal EventType GetEventType(this VoucherEntryFields fields) {
+      return EventType.Parse(fields.EventTypeId);
+    }
+
     static internal LedgerAccount GetLedgerAccount(this VoucherEntryFields fields) {
       return LedgerAccount.Parse(fields.LedgerAccountId);
     }

@@ -8,6 +8,7 @@
 *                                                                                                            *
 ************************* Copyright(c) La Vía Óntica SC, Ontica LLC and contributors. All rights reserved. **/
 using System;
+using Empiria.FinancialAccounting.Adapters;
 
 namespace Empiria.FinancialAccounting.Vouchers.Adapters {
 
@@ -53,22 +54,21 @@ namespace Empiria.FinancialAccounting.Vouchers.Adapters {
         Debit = entry.Debit,
         Credit = entry.Credit,
         ItemType = entry.HasSubledgerAccount ? VoucherEntryItemType.PartialEntry : VoucherEntryItemType.AccountEntry
-    };
-  }
+      };
+    }
 
-    private static VoucherEntryDto MapEntry(VoucherEntry entry) {
+    public static VoucherEntryDto MapEntry(VoucherEntry entry) {
       return new VoucherEntryDto {
         Id = entry.Id,
         VoucherEntryType = entry.VoucherEntryType,
-        LedgerAccount = entry.LedgerAccount.MapToNumberedNamedEntity(),
-        Sector = entry.Sector.MapToNamedEntity(),
+        LedgerAccount = LedgerMapper.MapAccount(entry.LedgerAccount, entry.Voucher.AccountingDate),
+        Sector = entry.HasSector ? LedgerMapper.MapSector(entry.SectorRule) : null,
         SubledgerAccount = entry.SubledgerAccount.MapToNumberedNamedEntity(),
         Concept = entry.Concept,
         Date = entry.Date,
         ResponsibilityArea = entry.ResponsibilityArea.MapToNamedEntity(),
         BudgetConcept = entry.BudgetConcept,
-        AvailabilityCode = entry.AvailabilityCode,
-        // EventType = entry.EventType,
+        // EventType = entry.EventType.MapToNamedEntity(),
         VerificationNumber = entry.VerificationNumber,
         Currency = entry.Currency.MapToNamedEntity(),
         Debit = entry.Debit,
