@@ -122,23 +122,11 @@ namespace Empiria.FinancialAccounting.Vouchers.Adapters {
       get; internal set;
     }
 
-    public string AvailabilityCode {
-      get; internal set;
-    }
-
     public NamedEntityDto EventType {
       get; internal set;
     }
 
     public string VerificationNumber {
-      get; internal set;
-    }
-
-    public decimal Debit {
-      get; internal set;
-    }
-
-    public decimal Credit {
       get; internal set;
     }
 

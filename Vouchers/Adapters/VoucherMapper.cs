@@ -68,11 +68,9 @@ namespace Empiria.FinancialAccounting.Vouchers.Adapters {
         Date = entry.Date,
         ResponsibilityArea = entry.ResponsibilityArea.MapToNamedEntity(),
         BudgetConcept = entry.BudgetConcept,
-        // EventType = entry.EventType.MapToNamedEntity(),
+        EventType = entry.EventType.MapToNamedEntity(),
         VerificationNumber = entry.VerificationNumber,
         Currency = entry.Currency.MapToNamedEntity(),
-        Debit = entry.Debit,
-        Credit = entry.Credit,
         Amount = entry.Amount,
         BaseCurrencyAmount = entry.BaseCurrrencyAmount,
         ExchangeRate = entry.ExchangeRate
