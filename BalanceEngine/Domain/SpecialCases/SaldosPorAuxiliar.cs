@@ -60,6 +60,8 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
 
     #region Helper methods
 
+
+
     private void AccumulateSubledgerAccount(List<TrialBalanceEntry> returnedEntries,
                                             TrialBalanceEntry entry,
                                             StandardAccount currentParent) {
@@ -256,7 +258,6 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
       } // foreach
 
     }
-
 
     private List<TrialBalanceEntry> OrderingSubsidiaryAccountsByNumber(
                     List<TrialBalanceEntry> totaBySubsidiaryAccountList) {

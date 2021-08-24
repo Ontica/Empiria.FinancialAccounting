@@ -221,8 +221,8 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
         Account = this.Account,
         SubledgerAccountId = this.SubledgerAccountId,
         DebtorCreditor = this.DebtorCreditor,
-        Debit = this.Debit,
-        Credit = this.Credit,
+        Debit = this.Debit / this.ExchangeRate,
+        Credit = this.Credit / this.ExchangeRate,
         SecondTotalBalance = this.CurrentBalance / this.ExchangeRate,
         SecondExchangeRate = this.ExchangeRate,
         SecondValorization = this.CurrentBalance

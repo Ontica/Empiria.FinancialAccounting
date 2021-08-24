@@ -103,6 +103,22 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
       ;
     }
 
+    internal List<TrialBalanceEntry> CleanSummaryAccounts(List<TrialBalanceEntry> summaryEntries) {
+      List<TrialBalanceEntry> returnedSummaryEntries = new List<TrialBalanceEntry>();
+
+      foreach (var entry in summaryEntries) {
+        if (entry.Level > 1) {
+          bool isSummary = entry.Account.Number.EndsWith("00") ? false : true;
+          if (isSummary) {
+            returnedSummaryEntries.Add(entry);
+          }
+        } else {
+          returnedSummaryEntries.Add(entry);
+        }
+      }
+      return returnedSummaryEntries;
+    }
+
     internal FixedList<TwoCurrenciesBalanceEntry> GenerateAverageTwoColumnsBalance(
                                                     FixedList<TwoCurrenciesBalanceEntry> twoColumnsBalance,
                                                     TrialBalanceCommandPeriod commandPeriod) {

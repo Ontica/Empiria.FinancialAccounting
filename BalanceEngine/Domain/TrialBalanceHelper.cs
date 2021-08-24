@@ -49,28 +49,6 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
       return returnedEntries;
     }
 
-    internal List<TrialBalanceEntry> CleanSummaryAccounts(List<TrialBalanceEntry> summaryEntries) {
-      List<TrialBalanceEntry> returnedSummaryEntries = new List<TrialBalanceEntry>();
-
-      foreach (var entry in summaryEntries) {
-        if (entry.Level > 1) {
-          string[] childs = entry.Account.Number.Substring(($"{ entry.Account.ParentNumber}-").Length).Split('-');
-          bool isSummary = true;
-          string result = string.Empty;
-
-          Array.ForEach(childs, child => result += child);
-          isSummary = result.EndsWith("00") ? false : true;
-
-          if (isSummary) {
-            returnedSummaryEntries.Add(entry);
-          }
-        } else {
-          returnedSummaryEntries.Add(entry);
-        }
-      }
-      return returnedSummaryEntries;
-    }
-
     internal List<TrialBalanceEntry> CombineCurrencyTotalsAndPostingEntries(
                                       List<TrialBalanceEntry> trialBalance,
                                       List<TrialBalanceEntry> summaryEntries) {
