@@ -32,7 +32,7 @@ namespace Empiria.FinancialAccounting.Vouchers {
 
     static public EventType Empty {
       get {
-        return BaseObject.ParseEmpty<EventType>();
+        return BaseObject.ParseEmpty<EventType>(0);
       }
     }
 

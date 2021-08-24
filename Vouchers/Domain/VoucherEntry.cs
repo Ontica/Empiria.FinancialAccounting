@@ -103,7 +103,8 @@ namespace Empiria.FinancialAccounting.Vouchers {
 
     public EventType EventType {
       get {
-        if (String.IsNullOrWhiteSpace(_claveDisponibilidad)) {
+        if (String.IsNullOrWhiteSpace(_claveDisponibilidad) ||
+            Convert.ToInt32(_claveDisponibilidad) == 0) {
           return EventType.Empty;
         }
         return EventType.Parse(Convert.ToInt32(_claveDisponibilidad));
