@@ -106,13 +106,13 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
 
       columns.Add(new DataTableColumn("firstTotalBalance", $"{Command.InitialPeriod.FromDate:MMM_yyyy}", "decimal"));
       columns.Add(new DataTableColumn("firstExchangeRate", "Tc_Ini", "decimal"));
-      columns.Add(new DataTableColumn("firstValorization", $"{Command.InitialPeriod.FromDate:MMM}_VAL", "decimal"));
+      columns.Add(new DataTableColumn("firstValorization", $"{Command.InitialPeriod.FromDate:MMM}_VAL_A", "decimal"));
 
       columns.Add(new DataTableColumn("debit", "Cargos", "decimal"));
       columns.Add(new DataTableColumn("credit", "Abonos", "decimal"));
       columns.Add(new DataTableColumn("secondTotalBalance", $"{Command.FinalPeriod.FromDate:MMM_yyyy}", "decimal"));
       columns.Add(new DataTableColumn("secondExchangeRate", "Tc_Fin", "decimal"));
-      columns.Add(new DataTableColumn("secondValorization", $"{Command.FinalPeriod.FromDate:MMM}_VAL", "decimal"));
+      columns.Add(new DataTableColumn("secondValorization", $"{Command.FinalPeriod.FromDate:MMM}_VAL_B", "decimal"));
 
       columns.Add(new DataTableColumn("accountName", "Nom_Cta", "text"));
       columns.Add(new DataTableColumn("debtorCreditor", "Nat", "text"));

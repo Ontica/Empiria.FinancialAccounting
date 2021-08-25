@@ -27,18 +27,34 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
     }
 
 
+    internal FixedList<TrialBalanceEntry> GetComparativePostingEntries() {
+      var helper = new TrialBalanceHelper(_command);
+
+      TrialBalanceCommandPeriod commandPeriod;
+
+      commandPeriod = _command.FinalPeriod;
+      commandPeriod.InitialDate = _command.InitialPeriod.ToDate.AddDays(1);
+
+      FixedList<TrialBalanceEntry> postingEntries = helper.GetTrialBalanceEntries(commandPeriod);
+
+      postingEntries = ExchangeRateByPeriod(postingEntries);
+
+      postingEntries = helper.RoundTrialBalanceEntries(postingEntries);
+
+      return postingEntries;
+    }
+
+    
+
     internal List<TrialBalanceComparativeEntry> MergePeriodsIntoComparativeBalance(
-                                      FixedList<TrialBalanceEntry> trialBalanceFirstPeriod,
-                                      FixedList<TrialBalanceEntry> trialBalanceSecondPeriod) {
+                                      FixedList<TrialBalanceEntry> trialBalance) {
 
-      List<TrialBalanceComparativeEntry> firstPeriod = MergeFirstPeriodToComparativeBalance(
-                                                        trialBalanceFirstPeriod);
-      List<TrialBalanceComparativeEntry> secondPeriod = MergeSecondPeriodToComparativeBalance(
-                                                          trialBalanceSecondPeriod);
+      List<TrialBalanceComparativeEntry> comparativeEntries = new List<TrialBalanceComparativeEntry>();
 
-      List<TrialBalanceComparativeEntry> comparativeEntries = CombineFirstAndSecondPeriod(
-                                                                firstPeriod, secondPeriod);
-
+      foreach (var entry in trialBalance) {
+        comparativeEntries.Add(entry.MapToComparativeBalanceEntry());
+      }
+      
       CalculateVariationFields(comparativeEntries);
 
       AssingSubledgerAccountInfo(comparativeEntries);
@@ -77,59 +93,23 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
       }
     }
 
-    private List<TrialBalanceComparativeEntry> CombineFirstAndSecondPeriod(
-                                      List<TrialBalanceComparativeEntry> firstPeriod,
-                                      List<TrialBalanceComparativeEntry> secondPeriod) {
-      List<TrialBalanceComparativeEntry> returnedEntries = new List<TrialBalanceComparativeEntry>();
+    
+    private FixedList<TrialBalanceEntry> ExchangeRateByPeriod(FixedList<TrialBalanceEntry> postingEntries) {
+      var helper = new TrialBalanceHelper(_command);
 
-      returnedEntries.AddRange(firstPeriod);
+      FixedList<TrialBalanceEntry> balanceEntries = new FixedList<TrialBalanceEntry>();
 
-      foreach (var entry in returnedEntries) {
-       
-        var secondEntry = secondPeriod.FirstOrDefault(a => a.Ledger.Id == entry.Ledger.Id &&
-                                                  a.Currency.Id == entry.Currency.Id &&
-                                                  a.Sector.Id == entry.Sector.Id &&
-                                                  a.Account.Number == entry.Account.Number &&
-                                                  a.SubledgerAccountId == entry.SubledgerAccountId &&
-                                                  a.DebtorCreditor == entry.DebtorCreditor);
-        if (secondEntry != null) {
-          MergeSecondPeriodToFirst(entry, secondEntry);
-        }
+      balanceEntries = helper.ValuateToExchangeRate(postingEntries, _command.InitialPeriod);
+
+      balanceEntries = helper.ValuateToExchangeRate(postingEntries, _command.FinalPeriod, true);
+
+      if (_command.ConsolidateBalancesToTargetCurrency) {
+        balanceEntries = helper.ConsolidateToTargetCurrency(postingEntries, _command.FinalPeriod);
       }
 
-      return returnedEntries;
+      return balanceEntries;
     }
 
-    private List<TrialBalanceComparativeEntry> MergeFirstPeriodToComparativeBalance(
-                                                FixedList<TrialBalanceEntry> trialBalanceFirstPeriod) {
-      List<TrialBalanceComparativeEntry> returnedFirstPeriod = new List<TrialBalanceComparativeEntry>();
-
-      foreach (var firstPeriod in trialBalanceFirstPeriod) {
-        returnedFirstPeriod.Add(firstPeriod.MapToComparativeFirstPeriod());
-      }
-
-      return returnedFirstPeriod;
-    }
-
-    private List<TrialBalanceComparativeEntry> MergeSecondPeriodToComparativeBalance(
-                                                FixedList<TrialBalanceEntry> trialBalanceSecondPeriod) {
-      List<TrialBalanceComparativeEntry> returnedSecondPeriod = new List<TrialBalanceComparativeEntry>();
-
-      foreach (var secondPeriod in trialBalanceSecondPeriod) {
-        returnedSecondPeriod.Add(secondPeriod.MapToComparativeSecondPeriod());
-      }
-
-      return returnedSecondPeriod;
-    }
-
-    private void MergeSecondPeriodToFirst(TrialBalanceComparativeEntry entry,
-                                          TrialBalanceComparativeEntry secondPeriod) {
-      entry.Debit = secondPeriod.Debit;
-      entry.Credit = secondPeriod.Credit;
-      entry.SecondTotalBalance = secondPeriod.SecondTotalBalance;
-      entry.SecondExchangeRate = secondPeriod.SecondExchangeRate;
-      entry.SecondValorization = secondPeriod.SecondValorization;
-    }
 
     private List<TrialBalanceComparativeEntry> OrderingComparativeBalance(
                                                 List<TrialBalanceComparativeEntry> comparativeEntries) {

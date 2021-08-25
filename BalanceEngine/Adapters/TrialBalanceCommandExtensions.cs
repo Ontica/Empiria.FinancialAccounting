@@ -58,7 +58,8 @@ namespace Empiria.FinancialAccounting.BalanceEngine.Adapters {
                                         accountsChart, commandPeriod.FromDate);
 
         commandData.StoredInitialBalanceSet = balanceSet;
-        commandData.FromDate = commandPeriod.FromDate;
+        commandData.FromDate = _command.TrialBalanceType == TrialBalanceType.BalanzaValorizadaComparativa ?
+                               commandPeriod.InitialDate : commandPeriod.FromDate;
         commandData.ToDate = commandPeriod.ToDate;
         commandData.InitialFields = GetInitialFields();
         commandData.Fields = GetOutputFields();

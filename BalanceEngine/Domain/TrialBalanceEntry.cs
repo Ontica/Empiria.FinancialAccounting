@@ -110,6 +110,12 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
     } = 1;
 
 
+    public decimal SecondExchangeRate {
+      get;
+      internal set;
+    } = 1;
+
+
     public string GroupName {
       get; internal set;
     } = string.Empty;
@@ -199,7 +205,7 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
     }
 
 
-    internal TrialBalanceComparativeEntry MapToComparativeFirstPeriod() {
+    internal TrialBalanceComparativeEntry MapToComparativeBalanceEntry() {
       return new TrialBalanceComparativeEntry {
         Ledger = this.Ledger,
         Currency = this.Currency,
@@ -207,25 +213,14 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
         Account = this.Account,
         SubledgerAccountId = this.SubledgerAccountId,
         DebtorCreditor = this.DebtorCreditor,
-        FirstTotalBalance = this.CurrentBalance / this.ExchangeRate,
+        Debit = this.Debit,
+        Credit = this.Credit,
+        FirstTotalBalance = this.InitialBalance,
         FirstExchangeRate = this.ExchangeRate,
-        FirstValorization = CurrentBalance
-      };
-    }
-
-    internal TrialBalanceComparativeEntry MapToComparativeSecondPeriod() {
-      return new TrialBalanceComparativeEntry {
-        Ledger = this.Ledger,
-        Currency = this.Currency,
-        Sector = this.Sector,
-        Account = this.Account,
-        SubledgerAccountId = this.SubledgerAccountId,
-        DebtorCreditor = this.DebtorCreditor,
-        Debit = this.Debit / this.ExchangeRate,
-        Credit = this.Credit / this.ExchangeRate,
-        SecondTotalBalance = this.CurrentBalance / this.ExchangeRate,
-        SecondExchangeRate = this.ExchangeRate,
-        SecondValorization = this.CurrentBalance
+        FirstValorization = InitialBalance * this.ExchangeRate,
+        SecondTotalBalance = this.CurrentBalance,
+        SecondExchangeRate = this.SecondExchangeRate,
+        SecondValorization = this.CurrentBalance * this.SecondExchangeRate
       };
     }
 

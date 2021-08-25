@@ -136,6 +136,10 @@ namespace Empiria.FinancialAccounting.BalanceEngine.Adapters {
 
   public class TrialBalanceCommandPeriod {
 
+    public DateTime InitialDate {
+      get; set;
+    }
+
     public DateTime FromDate {
       get; set;
     }
