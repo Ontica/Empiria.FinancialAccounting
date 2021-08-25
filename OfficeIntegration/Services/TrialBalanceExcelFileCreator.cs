@@ -70,6 +70,7 @@ namespace Empiria.FinancialAccounting.OfficeIntegration {
           return;
 
         case TrialBalanceType.BalanzaValorizadaComparativa:
+          SetBalanzaComparativaHeaders(trialBalance.Command);
           FillOutBalanzaComparativa(trialBalance.Entries.Select(x => (TrialBalanceComparativeDto) x));
           return;
 
@@ -145,6 +146,12 @@ namespace Empiria.FinancialAccounting.OfficeIntegration {
       }
     }
 
+    private void SetBalanzaComparativaHeaders(TrialBalanceCommand command) {
+      _excelFile.SetCell($"G4", $"{command.InitialPeriod.ToDate.ToString("MMM_yyyy")}");
+      _excelFile.SetCell($"I4", $"{command.InitialPeriod.ToDate.ToString("MMM")}_VAL_A");
+      _excelFile.SetCell($"L4", $"{command.FinalPeriod.ToDate.ToString("MMM_yyyy")}");
+      _excelFile.SetCell($"N4", $"{command.FinalPeriod.ToDate.ToString("MMM")}_VAL_B");
+    }
 
     private void FillOutSaldosPorCuentayMayor(IEnumerable<TrialBalanceEntryDto> entries) {
       int i = 5;
