@@ -8,6 +8,7 @@
 *                                                                                                            *
 ************************* Copyright(c) La Vía Óntica SC, Ontica LLC and contributors. All rights reserved. **/
 using System;
+
 using Empiria.FinancialAccounting.Adapters;
 
 namespace Empiria.FinancialAccounting.Vouchers.Adapters {
@@ -62,13 +63,17 @@ namespace Empiria.FinancialAccounting.Vouchers.Adapters {
         Id = entry.Id,
         VoucherEntryType = entry.VoucherEntryType,
         LedgerAccount = LedgerMapper.MapAccount(entry.LedgerAccount, entry.Voucher.AccountingDate),
-        Sector = entry.HasSector ? LedgerMapper.MapSector(entry.SectorRule) : null,
-        SubledgerAccount = entry.SubledgerAccount.MapToNumberedNamedEntity(),
+        Sector = entry.HasSector ?
+                 LedgerMapper.MapSector(entry.SectorRule) : null,
+        SubledgerAccount = entry.HasSubledgerAccount ?
+                           SubsidiaryLedgerMapper.MapAccountToDescriptor(entry.SubledgerAccount) : null,
         Concept = entry.Concept,
         Date = entry.Date,
-        ResponsibilityArea = entry.ResponsibilityArea.MapToNamedEntity(),
+        ResponsibilityArea = !entry.ResponsibilityArea.IsEmptyInstance ?
+                              entry.ResponsibilityArea.MapToNamedEntity() : null,
         BudgetConcept = entry.BudgetConcept,
-        EventType = entry.EventType.MapToNamedEntity(),
+        EventType = !entry.EventType.IsEmptyInstance ?
+                     entry.EventType.MapToNamedEntity() : null,
         VerificationNumber = entry.VerificationNumber,
         Currency = entry.Currency.MapToNamedEntity(),
         Amount = entry.Amount,
@@ -77,9 +82,11 @@ namespace Empiria.FinancialAccounting.Vouchers.Adapters {
       };
     }
 
+
     static internal FixedList<VoucherDescriptorDto> MapToVoucherDescriptor(FixedList<Voucher> list) {
       return new FixedList<VoucherDescriptorDto>(list.Select((x) => MapToVoucherDescriptor(x)));
     }
+
 
     static internal VoucherDescriptorDto MapToVoucherDescriptor(Voucher voucher) {
       return new VoucherDescriptorDto {

@@ -50,6 +50,31 @@ namespace Empiria.FinancialAccounting.Adapters {
   }  // public class SubsidiaryLedgerDto
 
 
+  /// <summary>Output DTO for subledger accounts.</summary>
+  public class SubledgerAccountDescriptorDto {
+
+    internal SubledgerAccountDescriptorDto() {
+      // no-op
+    }
+
+    public int Id {
+      get; internal set;
+    }
+
+    public string Number {
+      get; internal set;
+    }
+
+    public string Name {
+      get; internal set;
+    }
+
+    public string FullName {
+      get; internal set;
+    }
+
+  }  // class SubledgerAccountDto
+
 
   /// <summary>Output DTO for a subsidary ledger account.</summary>
   public class SubsidiaryAccountDto {

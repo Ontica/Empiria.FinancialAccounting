@@ -29,17 +29,27 @@ namespace Empiria.FinancialAccounting.Adapters {
       return new FixedList<SubsidiaryAccountDto>(list.Select(x => MapAccount(x)));
     }
 
-    static internal SubsidiaryAccountDto MapAccount(SubsidiaryAccount subsidiaryAccount) {
+
+    static public SubledgerAccountDescriptorDto MapAccountToDescriptor(SubsidiaryAccount subledgerAccount) {
+      return new SubledgerAccountDescriptorDto {
+        Id = subledgerAccount.Id,
+        Number = subledgerAccount.Number,
+        Name = subledgerAccount.Name,
+        FullName = $"{subledgerAccount.Number} - {subledgerAccount.Name}"
+      };
+    }
+
+    static internal SubsidiaryAccountDto MapAccount(SubsidiaryAccount subledgerAccount) {
       return new SubsidiaryAccountDto {
-        Id = subsidiaryAccount.Id,
-        Ledger = subsidiaryAccount.SubsidaryLedger.BaseLedger.MapToNamedEntity(),
-        SubsidiaryLedger = subsidiaryAccount.SubsidaryLedger.MapToNamedEntity(),
-        Name = subsidiaryAccount.Name,
-        Keywords = EmpiriaString.BuildKeywords(subsidiaryAccount.Name,
-                                               subsidiaryAccount.Number,
-                                               subsidiaryAccount.SubsidaryLedger.Name),
-        Number = subsidiaryAccount.Number,
-        Description = subsidiaryAccount.Description
+        Id = subledgerAccount.Id,
+        Ledger = subledgerAccount.SubsidaryLedger.BaseLedger.MapToNamedEntity(),
+        SubsidiaryLedger = subledgerAccount.SubsidaryLedger.MapToNamedEntity(),
+        Name = subledgerAccount.Name,
+        Keywords = EmpiriaString.BuildKeywords(subledgerAccount.Name,
+                                               subledgerAccount.Number,
+                                               subledgerAccount.SubsidaryLedger.Name),
+        Number = subledgerAccount.Number,
+        Description = subledgerAccount.Description
       };
     }
 

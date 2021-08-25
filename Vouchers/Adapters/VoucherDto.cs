@@ -102,7 +102,7 @@ namespace Empiria.FinancialAccounting.Vouchers.Adapters {
       get; internal set;
     }
 
-    public NumberedNamedEntityDto SubledgerAccount {
+    public SubledgerAccountDescriptorDto SubledgerAccount {
       get; internal set;
     }
 
