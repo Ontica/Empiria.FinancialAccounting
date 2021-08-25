@@ -71,8 +71,8 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
       List<TrialBalanceEntry> returnedEntries = new List<TrialBalanceEntry>(trialBalance);
 
       if (!_command.WithSubledgerAccount && _command.TrialBalanceType == TrialBalanceType.SaldosPorCuenta) {
-        returnedEntries = returnedEntries.Where(a => a.SubledgerNumberOfDigits == 0 
-                                                     //&& a.CurrentBalance != 0
+        returnedEntries = returnedEntries.Where(a => a.SubledgerNumberOfDigits == 0
+                                        //&& a.CurrentBalance != 0
                                         ).ToList();
       }
 
@@ -397,24 +397,18 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
     }
 
 
-    internal FixedList<TrialBalanceEntry> GetPostingEntries(bool isComparativeBalance = false) {
-      TrialBalanceCommandPeriod commandPeriod = new TrialBalanceCommandPeriod();
-      if (isComparativeBalance) {
-        commandPeriod = _command.FinalPeriod;
-      } else {
-        commandPeriod = _command.InitialPeriod;
-      }
+    internal FixedList<TrialBalanceEntry> GetPostingEntries() {
+      
+      FixedList<TrialBalanceEntry> postingEntries = GetTrialBalanceEntries(_command.InitialPeriod);
 
-      FixedList<TrialBalanceEntry> postingEntries = GetTrialBalanceEntries(commandPeriod);
-
-      if (_command.ValuateBalances || _command.ValuateFinalBalances ||
-          _command.InitialPeriod.UseDefaultValuation) {
-        postingEntries = ValuateToExchangeRate(postingEntries, commandPeriod);
+      if (_command.ValuateBalances || _command.InitialPeriod.UseDefaultValuation) {
+        postingEntries = ValuateToExchangeRate(postingEntries, _command.InitialPeriod);
 
         if (_command.ConsolidateBalancesToTargetCurrency) {
-          postingEntries = ConsolidateToTargetCurrency(postingEntries, commandPeriod);
+          postingEntries = ConsolidateToTargetCurrency(postingEntries, _command.InitialPeriod);
         }
       }
+
       postingEntries = RoundTrialBalanceEntries(postingEntries);
 
       return postingEntries;
@@ -434,8 +428,8 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
     }
 
     internal FixedList<TrialBalanceEntry> GetTrialBalanceEntries(TrialBalanceCommandPeriod commandPeriod) {
-      if (_command.TrialBalanceType == TrialBalanceType.SaldosPorCuentaYMayor ||
-          _command.TrialBalanceType == TrialBalanceType.BalanzaValorizadaComparativa) {
+
+      if (_command.TrialBalanceType == TrialBalanceType.SaldosPorCuentaYMayor) {
         _command.ShowCascadeBalances = true;
       }
 
@@ -474,7 +468,8 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
 
 
     internal FixedList<TrialBalanceEntry> ValuateToExchangeRate(FixedList<TrialBalanceEntry> entries,
-                                                                TrialBalanceCommandPeriod commandPeriod) {
+                                                                TrialBalanceCommandPeriod commandPeriod,
+                                                                bool isSecondPeriod = false) {
       if (commandPeriod.UseDefaultValuation) {
         commandPeriod.ExchangeRateTypeUID = "96c617f6-8ed9-47f3-8d2d-f1240e446e1d";
         commandPeriod.ValuateToCurrrencyUID = "01";
@@ -482,16 +477,25 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
       }
       var exchangeRateType = ExchangeRateType.Parse(commandPeriod.ExchangeRateTypeUID);
 
-      FixedList<ExchangeRate> exchageRates = ExchangeRate.GetList(exchangeRateType, commandPeriod.ExchangeRateDate);
+      FixedList<ExchangeRate> exchangeRates = ExchangeRate.GetList(exchangeRateType, commandPeriod.ExchangeRateDate);
 
       foreach (var entry in entries.Where(a => a.Currency.Code != "01")) {
-        
-        var exchangeRate = exchageRates.FirstOrDefault(a => a.FromCurrency.Code == commandPeriod.ValuateToCurrrencyUID &&
-                                                            a.ToCurrency.Code == entry.Currency.Code);
+        var exchangeRate = exchangeRates.FirstOrDefault(a => a.FromCurrency.Code == commandPeriod.ValuateToCurrrencyUID &&
+                                                              a.ToCurrency.Code == entry.Currency.Code);
+
+        if (_command.TrialBalanceType == TrialBalanceType.BalanzaValorizadaComparativa) {
+
+          if (isSecondPeriod) {
+            entry.SecondExchangeRate = exchangeRate.Value;
+          } else {
+            entry.ExchangeRate = exchangeRate.Value;
+          }
+
+        } else {
+          entry.MultiplyBy(exchangeRate.Value);
+        }
 
         Assertion.AssertObject(exchangeRate, $"No hay tipo de cambio para la moneda {entry.Currency.FullName}.");
-
-        entry.MultiplyBy(exchangeRate.Value);
       }
       return entries;
     }
@@ -586,7 +590,8 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
         foreach (var entry in entries) {
           SubsidiaryAccount subledgerAccount = SubsidiaryAccount.Parse(entry.SubledgerAccountId);
           if (!subledgerAccount.IsEmptyInstance) {
-            entry.SubledgerAccountNumber = subledgerAccount.Number;
+            entry.SubledgerAccountNumber = subledgerAccount.Number != "0" ? 
+                                           subledgerAccount.Number : "";
             entry.SubledgerNumberOfDigits = entry.SubledgerAccountNumber != "" ?
                                             entry.SubledgerAccountNumber.Count() : 0;
           }

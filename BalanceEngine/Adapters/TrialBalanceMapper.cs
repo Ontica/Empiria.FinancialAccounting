@@ -156,7 +156,7 @@ namespace Empiria.FinancialAccounting.BalanceEngine.Adapters {
       dto.StandardAccountId = entry.Account.Id;
       dto.CurrencyCode = entry.ItemType == TrialBalanceItemType.BalanceTotalConsolidated ? "" :
                          entry.Currency.Code;
-      if (subledgerAccount.IsEmptyInstance) {
+      if (subledgerAccount.IsEmptyInstance || subledgerAccount.Number == "0") {
         dto.AccountName = entry.GroupName != "" ? entry.GroupName :
                           entry.Account.Name;
         dto.AccountNumber = entry.GroupNumber != "" ? entry.GroupNumber :
