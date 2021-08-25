@@ -116,6 +116,15 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
       List<TrialBalanceComparativeEntry> orderingEntries = 
                                           new List<TrialBalanceComparativeEntry>(comparativeEntries);
 
+      foreach (var entry in orderingEntries) {
+        SubsidiaryAccount subledgerAccount = SubsidiaryAccount.Parse(entry.SubledgerAccountId);
+        if (!subledgerAccount.IsEmptyInstance) {
+          entry.SubledgerAccountNumber = subledgerAccount.Number != "0" ?
+                                         subledgerAccount.Number : "";
+          entry.SubledgerNumberOfDigits = entry.SubledgerAccountNumber != "" ?
+                                          entry.SubledgerAccountNumber.Count() : 0;
+        }
+      }
       return orderingEntries.OrderBy(a => a.Ledger.Number)
                             .ThenBy(a => a.Currency.Code)
                             .ThenByDescending(a => a.Account.DebtorCreditor)

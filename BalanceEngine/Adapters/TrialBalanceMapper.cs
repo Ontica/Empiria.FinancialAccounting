@@ -191,6 +191,7 @@ namespace Empiria.FinancialAccounting.BalanceEngine.Adapters {
     static private TrialBalanceComparativeDto MapToTrialBalanceComparative(
                                               TrialBalanceComparativeEntry entry) {
       var dto = new TrialBalanceComparativeDto();
+      SubsidiaryAccount subledgerAccount = SubsidiaryAccount.Parse(entry.SubledgerAccountId);
 
       dto.ItemType = entry.ItemType;
       dto.AccountRole = entry.Account.Role;
@@ -201,13 +202,14 @@ namespace Empiria.FinancialAccounting.BalanceEngine.Adapters {
       dto.StandardAccountId = entry.Account.Id;
       dto.CurrencyCode = entry.Currency.Code;
       dto.SectorCode = entry.Sector.Code;
-
       dto.AccountParent = entry.Account.ParentNumber;
       dto.AccountNumber = entry.Account.Number;
       dto.AccountName = entry.Account.Name;
+
       dto.SubledgerAccountId = entry.SubledgerAccountId;
       dto.SubledgerAccountNumber = entry.SubledgerAccountNumber;
-      dto.SubledgerAccountName = entry.SubledgerAccountName;
+      dto.SubledgerAccountName = entry.SubledgerAccountName != "Empty" ?
+                                 entry.SubledgerAccountName : "";
 
       dto.FirstTotalBalance = entry.FirstTotalBalance;
       dto.FirstExchangeRate = entry.FirstExchangeRate;
