@@ -8,10 +8,10 @@
 *                                                                                                            *
 ************************* Copyright(c) La Vía Óntica SC, Ontica LLC and contributors. All rights reserved. **/
 using System;
+
 using System.Collections.Generic;
 using System.Linq;
 
-using Empiria.Collections;
 using Empiria.FinancialAccounting.BalanceEngine.Adapters;
 
 namespace Empiria.FinancialAccounting.BalanceEngine {
@@ -28,6 +28,7 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
 
     internal TrialBalance Build() {
       var helper = new TrialBalanceHelper(_command);
+
       var twoColumnsHelper = new TwoCurrenciesBalanceHelper(_command);
 
       FixedList<TrialBalanceEntry> postingEntries = helper.GetTrialBalanceEntries(_command.InitialPeriod);
@@ -37,9 +38,11 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
       postingEntries = helper.RoundTrialBalanceEntries(postingEntries);
 
       List<TrialBalanceEntry> summaryEntries = helper.GenerateSummaryEntries(postingEntries);
-      summaryEntries = twoColumnsHelper.CleanSummaryAccounts(summaryEntries);
+
       List<TrialBalanceEntry> trialBalance = helper.CombineSummaryAndPostingEntries(summaryEntries,
                                                                                     postingEntries);
+
+      trialBalance = RemoveCertainAccounts(trialBalance);
 
       trialBalance = helper.RestrictLevels(trialBalance);
 
@@ -71,6 +74,56 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
       return new TrialBalance(_command, twoColumnsBalance);
     }
 
+
+    private List<TrialBalanceEntry> RemoveCertainAccounts(List<TrialBalanceEntry> summaryEntries) {
+      List<TrialBalanceEntry> returnedSummaryEntries = new List<TrialBalanceEntry>();
+
+      foreach (var entry in summaryEntries) {
+        if (MustRemoveAccount(entry.Account)) {
+          continue;
+        }
+        returnedSummaryEntries.Add(entry);
+      }
+      return returnedSummaryEntries;
+    }
+
+
+    private bool MustRemoveAccount(StandardAccount account) {
+      if (account.Number.EndsWith("-00")) {
+        return true;
+      }
+      if (account.Number.StartsWith("1503")) {
+        return true;
+      }
+      if (account.Number.StartsWith("50")) {
+        return true;
+      }
+      if (account.Number.StartsWith("90")) {
+        return true;
+      }
+      if (account.Number.StartsWith("91")) {
+        return true;
+      }
+      if (account.Number.StartsWith("92")) {
+        return true;
+      }
+      if (account.Number.StartsWith("93")) {
+        return true;
+      }
+      if (account.Number.StartsWith("94")) {
+        return true;
+      }
+      if (account.Number.StartsWith("95")) {
+        return true;
+      }
+      if (account.Number.StartsWith("96")) {
+        return true;
+      }
+      if (account.Number.StartsWith("97")) {
+        return true;
+      }
+      return false;
+    }
 
   }  // class AnaliticoDeCuentas
 

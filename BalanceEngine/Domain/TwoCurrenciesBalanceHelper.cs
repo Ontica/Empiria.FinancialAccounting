@@ -23,7 +23,7 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
     private readonly TrialBalanceCommand _command;
 
     internal TwoCurrenciesBalanceHelper(TrialBalanceCommand command) {
-      _command = command;  
+      _command = command;
     }
 
 
@@ -88,7 +88,7 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
 
 
     internal FixedList<TwoCurrenciesBalanceEntry> CombineTotalConsolidatedAndPostingEntries
-                                    (FixedList<TwoCurrenciesBalanceEntry> twoColumnsEntries, 
+                                    (FixedList<TwoCurrenciesBalanceEntry> twoColumnsEntries,
                                      List<TwoCurrenciesBalanceEntry> summaryTwoColumnsBalanceTotal) {
 
       var returnedEntries = new List<TwoCurrenciesBalanceEntry>(twoColumnsEntries);
@@ -100,29 +100,12 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
       }
 
       return returnedEntries.ToFixedList();
-      ;
-    }
-
-    internal List<TrialBalanceEntry> CleanSummaryAccounts(List<TrialBalanceEntry> summaryEntries) {
-      List<TrialBalanceEntry> returnedSummaryEntries = new List<TrialBalanceEntry>();
-
-      foreach (var entry in summaryEntries) {
-        if (entry.Level > 1) {
-          bool isSummary = entry.Account.Number.EndsWith("00") ? false : true;
-          if (isSummary) {
-            returnedSummaryEntries.Add(entry);
-          }
-        } else {
-          returnedSummaryEntries.Add(entry);
-        }
-      }
-      return returnedSummaryEntries;
     }
 
     internal FixedList<TwoCurrenciesBalanceEntry> GenerateAverageTwoColumnsBalance(
                                                     FixedList<TwoCurrenciesBalanceEntry> twoColumnsBalance,
                                                     TrialBalanceCommandPeriod commandPeriod) {
-      FixedList<TwoCurrenciesBalanceEntry> returnedBalances = 
+      FixedList<TwoCurrenciesBalanceEntry> returnedBalances =
                                             new FixedList<TwoCurrenciesBalanceEntry>(twoColumnsBalance);
 
       TimeSpan timeSpan = commandPeriod.ToDate - commandPeriod.FromDate;
@@ -152,7 +135,7 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
 
         string hash = $"{entry.GroupName}||{Sector.Empty.Code}||{entry.Currency.Id}||{entry.Ledger.Id}";
 
-        GenerateOrIncreaseTotalTwoCurrenciesBalance(totalSummary, entry, 
+        GenerateOrIncreaseTotalTwoCurrenciesBalance(totalSummary, entry,
                                                     TrialBalanceItemType.BalanceTotalConsolidated, hash);
       }
 
@@ -198,19 +181,19 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
       GenerateListSummaryGroupEntries(entries, listEntries);
 
       foreach (var entry in listEntries) {
-        
+
         if (entry.Account.DebtorCreditor == DebtorCreditorType.Deudora) {
-          SummaryByTwoColumnsGroupEntries(summaryByGroup, entry, 
+          SummaryByTwoColumnsGroupEntries(summaryByGroup, entry,
                                           TrialBalanceItemType.BalanceTotalGroupDebtor);
         }else if (entry.Account.DebtorCreditor == DebtorCreditorType.Acreedora) {
-          SummaryByTwoColumnsGroupEntries(summaryByGroup, entry, 
+          SummaryByTwoColumnsGroupEntries(summaryByGroup, entry,
                                           TrialBalanceItemType.BalanceTotalGroupCreditor);
         }
       }
       return summaryByGroup.ToFixedList();
     }
 
-    
+
     internal FixedList<TwoCurrenciesBalanceEntry> MergeAccountsIntoTwoColumns(List<TrialBalanceEntry> trialBalance) {
       var targetCurrency = Currency.Parse(_command.InitialPeriod.ValuateToCurrrencyUID);
       var summaryEntries = new EmpiriaHashTable<TwoCurrenciesBalanceEntry>();
@@ -316,7 +299,7 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
       }
       entry.Account = StandardAccount.Empty;
       entry.DebtorCreditor = balanceEntry.DebtorCreditor;
-      
+
       string hash = $"{entry.GroupName}||{Sector.Empty.Code}||{entry.Ledger.Id}||{entry.DebtorCreditor}";
 
       GenerateOrIncreaseTotalTwoCurrenciesBalance(summaryEntries, entry, itemType, hash);
