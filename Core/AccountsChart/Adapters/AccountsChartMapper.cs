@@ -42,8 +42,7 @@ namespace Empiria.FinancialAccounting.Adapters {
       FillAccountDescriptorDto(dto, account);
 
       dto.Description = account.Description;
-      dto.StartDate = account.StartDate;
-      dto.EndDate = account.EndDate;
+
       dto.AccountsChart = account.AccountsChart.MapToNamedEntity();
       dto.AreaRules = account.AreaRules;
       dto.CurrencyRules = account.CurrencyRules;
@@ -91,8 +90,9 @@ namespace Empiria.FinancialAccounting.Adapters {
       dto.Sector = "00";
       dto.LastLevel = account.Role != AccountRole.Sumaria;
       dto.StartDate = account.StartDate;
-      dto.EndDate = account.EndDate;
-      dto.Obsolete = account.EndDate < Account.MAX_END_DATE;
+      dto.EndDate = account.EndDate != Account.MAX_END_DATE ? account.EndDate : ExecutionServer.DateMaxValue;
+      dto.Obsolete = account.EndDate < Account.MAX_END_DATE || account.IsSummaryWithNotChildren;
+      dto.SummaryWithNotChildren = account.IsSummaryWithNotChildren;
     }
 
 

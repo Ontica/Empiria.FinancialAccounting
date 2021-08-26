@@ -150,6 +150,14 @@ namespace Empiria.FinancialAccounting {
       }
     }
 
+    public bool IsSummaryWithNotChildren {
+      get {
+        if (this.Role != AccountRole.Sumaria) {
+          return false;
+        }
+        return !this.AccountsChart.HasChildren(this);
+      }
+    }
 
     public FixedList<AreaRule> AreaRules {
       get {

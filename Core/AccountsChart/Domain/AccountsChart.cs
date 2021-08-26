@@ -123,9 +123,21 @@ namespace Empiria.FinancialAccounting {
     }
 
 
+    public FixedList<Account> GetChildren(Account account) {
+      return _accounts.Value.ToFixedList()
+                            .FindAll(x => x.Number.StartsWith(account.Number + this.MasterData.AccountNumberSeparator));
+    }
+
+
+    public bool HasChildren(Account account) {
+      return this.GetChildren(account).Count > 0;
+    }
+
+
     public FixedList<Account> Search(string filter) {
       return AccountsChartData.SearchAccounts(this, filter);
     }
+
 
     #endregion Public methods
 
