@@ -83,17 +83,19 @@ namespace Empiria.FinancialAccounting.OfficeIntegration {
           FillOutBalanza(trialBalance.Entries.Select(x => (TrialBalanceEntryDto) x));
           return;
 
-        //case TrialBalanceType.BalanzaConAuxiliares:
         case TrialBalanceType.SaldosPorAuxiliar:
+          FillOutSaldosAuxiliar(trialBalance.Entries.Select(x => (TrialBalanceEntryDto) x));
+          return;
+
         case TrialBalanceType.SaldosPorCuenta:
-          FillOutBalanzaAuxiliares(trialBalance.Entries.Select(x => (TrialBalanceEntryDto) x));
+          FillOutSaldosCuenta(trialBalance.Entries.Select(x => (TrialBalanceEntryDto) x),
+                              trialBalance.Command.WithSubledgerAccount);
           return;
 
         default:
           throw Assertion.AssertNoReachThisCode();
       }
     }
-
 
     private void FillOutAnaliticoDeCuentas(IEnumerable<TwoColumnsTrialBalanceEntryDto> entries) {
       int i = 5;
@@ -152,6 +154,7 @@ namespace Empiria.FinancialAccounting.OfficeIntegration {
       _excelFile.SetCell($"L4", $"{command.FinalPeriod.ToDate.ToString("MMM_yyyy")}");
       _excelFile.SetCell($"N4", $"{command.FinalPeriod.ToDate.ToString("MMM")}_VAL_B");
     }
+
 
     private void FillOutSaldosPorCuentayMayor(IEnumerable<TrialBalanceEntryDto> entries) {
       int i = 5;
@@ -215,8 +218,45 @@ namespace Empiria.FinancialAccounting.OfficeIntegration {
       }
     }
 
+    private void FillOutSaldosAuxiliar(IEnumerable<TrialBalanceEntryDto> entries) {
+      int i = 5;
 
-    private void FillOutBalanzaAuxiliares(IEnumerable<TrialBalanceEntryDto> entries) {
+      foreach (var entry in entries) {
+        var account = StandardAccount.Parse(entry.StandardAccountId);
+        var subledgerAccount = SubsidiaryAccount.Parse(entry.SubledgerAccountId);
+
+        _excelFile.SetCell($"A{i}", entry.LedgerNumber);
+        _excelFile.SetCell($"B{i}", entry.CurrencyCode);
+        if (entry.ItemType == TrialBalanceItemType.BalanceEntry) {
+          _excelFile.SetCell($"C{i}", "*");
+        }
+        _excelFile.SetCell($"D{i}", subledgerAccount.Number);
+        _excelFile.SetCell($"E{i}", subledgerAccount.Name);
+
+        if (!account.IsEmptyInstance) {
+          _excelFile.SetCell($"F{i}", account.Number);
+          _excelFile.SetCell($"G{i}", account.Name);
+        } else {
+          _excelFile.SetCell($"F{i}", entry.AccountNumber);
+          _excelFile.SetCell($"G{i}", entry.AccountName);
+        }
+        _excelFile.SetCell($"H{i}", entry.SectorCode);
+
+        _excelFile.SetCell($"I{i}", entry.CurrentBalance);
+        _excelFile.SetCell($"J{i}", Convert.ToString((char) account.DebtorCreditor));
+        _excelFile.SetCell($"K{i}", entry.LastChangeDate);
+
+        if (entry.ItemType != TrialBalanceItemType.BalanceEntry &&
+            entry.ItemType != TrialBalanceItemType.BalanceSummary) {
+          _excelFile.SetRowStyleBold(i);
+        }
+        i++;
+      }
+    }
+
+
+    private void FillOutSaldosCuenta(IEnumerable<TrialBalanceEntryDto> entries,
+                                     bool includeSubledgerAccounts) {
       int i = 5;
 
       foreach (var entry in entries) {
@@ -236,20 +276,24 @@ namespace Empiria.FinancialAccounting.OfficeIntegration {
           _excelFile.SetCell($"E{i}", entry.AccountName);
         }
         _excelFile.SetCell($"F{i}", entry.SectorCode);
-        if (!subledgerAccount.IsEmptyInstance) {
+        if (includeSubledgerAccounts && !subledgerAccount.IsEmptyInstance) {
           _excelFile.SetCell($"G{i}", subledgerAccount.Number);
           _excelFile.SetCell($"H{i}", subledgerAccount.Name);
         }
-        _excelFile.SetCell($"I{i}", entry.InitialBalance);
-        _excelFile.SetCell($"J{i}", entry.Debit);
-        _excelFile.SetCell($"K{i}", entry.Credit);
-        _excelFile.SetCell($"L{i}", entry.CurrentBalance);
+        _excelFile.SetCell($"I{i}", entry.CurrentBalance);
+        _excelFile.SetCell($"J{i}", Convert.ToString((char) account.DebtorCreditor));
+        _excelFile.SetCell($"K{i}", entry.LastChangeDate);
 
         if (entry.ItemType != TrialBalanceItemType.BalanceEntry &&
             entry.ItemType != TrialBalanceItemType.BalanceSummary) {
           _excelFile.SetRowStyleBold(i);
         }
         i++;
+      }
+
+      if (!includeSubledgerAccounts) {
+        _excelFile.RemoveColumn("G");
+        _excelFile.RemoveColumn("H");
       }
     }
 
