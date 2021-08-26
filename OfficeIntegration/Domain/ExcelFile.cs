@@ -94,6 +94,12 @@ namespace Empiria.FinancialAccounting.OfficeIntegration {
       }
     }
 
+    internal void SetCellStyleLineThrough(string cell) {
+      if (_excel != null) {
+        _excel.SetCellStyle(Style.LineThrough, cell);
+      }
+    }
+
     internal void SetRowStyleBold(int rowIndex) {
       if (_excel != null) {
         _excel.SetRowStyle(Style.Bold, rowIndex);

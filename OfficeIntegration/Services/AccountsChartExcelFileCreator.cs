@@ -62,9 +62,16 @@ namespace Empiria.FinancialAccounting.OfficeIntegration {
         excelFile.SetCell($"J{i}", account.Type);
         excelFile.SetCell($"K{i}", account.DebtorCreditor.ToString());
         excelFile.SetCell($"L{i}", account.StartDate);
-        if (account.Obsolete) {
+
+        if (account.EndDate < Account.MAX_END_DATE) {
           excelFile.SetCell($"M{i}", account.EndDate);
         }
+
+        if (account.SummaryWithNotChildren) {
+          excelFile.SetCellStyleLineThrough($"D{i}");
+          excelFile.SetCell($"N{i}", "Sumaria sin hijas");
+        }
+
         i++;
       }
 
