@@ -47,7 +47,6 @@ namespace Empiria.FinancialAccounting.Vouchers.Adapters {
       get; set;
     }
 
-
     public string VerificationNumber {
       get; set;
     } = string.Empty;

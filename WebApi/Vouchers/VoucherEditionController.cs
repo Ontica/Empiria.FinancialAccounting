@@ -87,6 +87,18 @@ namespace Empiria.FinancialAccounting.Vouchers.WebApi {
     }
 
 
+    [HttpPost]
+    [Route("v2/financial-accounting/vouchers/{voucherId:int}/close")]
+    public SingleObjectModel CloseVoucher([FromUri] int voucherId) {
+
+      using (var usecases = VoucherEditionUseCases.UseCaseInteractor()) {
+        VoucherDto voucher = usecases.CloseVoucher(voucherId);
+
+        return new SingleObjectModel(base.Request, voucher);
+      }
+    }
+
+
     [HttpDelete]
     [Route("v2/financial-accounting/vouchers/{voucherId:int}/entries/{voucherEntryId:int}")]
     public SingleObjectModel DeleteVoucherEntry([FromUri] int voucherId,

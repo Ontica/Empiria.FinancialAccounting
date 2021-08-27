@@ -51,7 +51,7 @@ namespace Empiria.FinancialAccounting.WebApi {
     }
 
 
-    [HttpGet]
+    [HttpGet, AllowAnonymous]
     [Route("v2/financial-accounting/{accountsChartUID:guid}/subsidiary-accounts/{keywords}")]
     public CollectionModel SearchSubledgerAccounts([FromUri] string accountsChartUID,
                                                    [FromUri] string keywords) {
