@@ -224,6 +224,7 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
       };
     }
 
+
   } // class TrialBalance
 
 
