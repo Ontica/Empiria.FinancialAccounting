@@ -170,6 +170,20 @@ namespace Empiria.FinancialAccounting.Vouchers {
     }
 
 
+    internal void Close() {
+      Assertion.Assert(this.IsOpened, "Esta póliza ya está cerrada.");
+
+      var validator = new VoucherValidator(this);
+
+      if (validator.IsValid()) {
+        // this.ClosedBy = ExecutionServer.CurrentIdentity;
+        //this.ClosedBy = Participant.Parse(ExecutionServer.CurrentUserId);
+        //this.
+        //VoucherData.CloseVoucher(this);
+      }
+    }
+
+
     internal void Delete() {
       Assertion.Assert(this.IsOpened, "Esta póliza no puede eliminarse porque ya está cerrada.");
 
@@ -249,6 +263,17 @@ namespace Empiria.FinancialAccounting.Vouchers {
       this.TransactionType = PatchField(fields.TransactionTypeUID, this.TransactionType);
       this.VoucherType = PatchField(fields.VoucherTypeUID, this.VoucherType);
       this.FunctionalArea = PatchField(fields.FunctionalAreaId, this.FunctionalArea);
+    }
+
+
+    internal void UpdateEntry(VoucherEntry entry, VoucherEntryFields fields) {
+      Assertion.AssertObject(entry, "entry");
+      Assertion.Assert(this.IsOpened, "No se puede actualizar el movimiento porque la póliza ya está cerrada.");
+      Assertion.Assert(this.Entries.Contains(entry), "El movimiento que se desea modificar no pertenece a esta póliza");
+
+      entry.Update(fields);
+
+      this.RefreshEntries();
     }
 
     #endregion Methods

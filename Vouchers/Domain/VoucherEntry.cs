@@ -110,7 +110,7 @@ namespace Empiria.FinancialAccounting.Vouchers {
         return EventType.Parse(Convert.ToInt32(_claveDisponibilidad));
       }
       private set {
-        _claveDisponibilidad = value.ToString();
+        _claveDisponibilidad = value.Id.ToString();
       }
     }
 
@@ -232,7 +232,9 @@ namespace Empiria.FinancialAccounting.Vouchers {
 
 
     private void LoadFields(VoucherEntryFields fields) {
-      this.VoucherId = fields.GetVoucher().Id;
+      if (this.Id == 0) {
+        this.VoucherId = fields.GetVoucher().Id;
+      }
       this.LedgerAccount = fields.GetLedgerAccount();
       this.Sector = fields.GetSector();
       this.SubledgerAccount = fields.GetSubledgerAccount();
@@ -260,6 +262,15 @@ namespace Empiria.FinancialAccounting.Vouchers {
         this.Id = VoucherData.NextVoucherEntryId();
       }
       VoucherData.WriteVoucherEntry(this);
+    }
+
+
+    internal void Update(VoucherEntryFields fields) {
+      Assertion.AssertObject(fields, "fields");
+
+      LoadFields(fields);
+
+      Save();
     }
 
     #endregion Methods

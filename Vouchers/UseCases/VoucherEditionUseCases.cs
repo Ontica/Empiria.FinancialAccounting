@@ -34,6 +34,7 @@ namespace Empiria.FinancialAccounting.Vouchers.UseCases {
 
 
     public VoucherDto AppendEntry(int voucherId, VoucherEntryFields fields) {
+      Assertion.Assert(voucherId > 0, "voucherId");
       Assertion.AssertObject(fields, "fields");
 
       var voucher = Voucher.Parse(voucherId);
@@ -47,7 +48,13 @@ namespace Empiria.FinancialAccounting.Vouchers.UseCases {
 
 
     public VoucherDto CloseVoucher(int voucherId) {
-      throw new NotImplementedException();
+      Assertion.Assert(voucherId > 0, "voucherId");
+
+      var voucher = Voucher.Parse(voucherId);
+
+      voucher.Close();
+
+      return VoucherMapper.Map(voucher);
     }
 
 
@@ -65,6 +72,9 @@ namespace Empiria.FinancialAccounting.Vouchers.UseCases {
 
 
     public VoucherDto DeleteEntry(int voucherId, int voucherEntryId) {
+      Assertion.Assert(voucherId > 0, "voucherId");
+      Assertion.Assert(voucherEntryId > 0, "voucherEntryId");
+
       var voucher = Voucher.Parse(voucherId);
 
       VoucherEntry entry = voucher.GetEntry(voucherEntryId);
@@ -76,6 +86,8 @@ namespace Empiria.FinancialAccounting.Vouchers.UseCases {
 
 
     public void DeleteVoucher(int voucherId) {
+      Assertion.Assert(voucherId > 0, "voucherId");
+
       var voucher = Voucher.Parse(voucherId);
 
       voucher.Delete();
@@ -83,6 +95,7 @@ namespace Empiria.FinancialAccounting.Vouchers.UseCases {
 
 
     public VoucherDto UpdateVoucher(int voucherId, VoucherFields fields) {
+      Assertion.Assert(voucherId > 0, "voucherId");
       Assertion.AssertObject(fields, "fields");
 
       fields.EnsureIsValid();
@@ -99,7 +112,17 @@ namespace Empiria.FinancialAccounting.Vouchers.UseCases {
 
     public VoucherDto UpdateEntry(int voucherId, int voucherEntryId,
                                   VoucherEntryFields fields) {
-      throw new NotImplementedException();
+      Assertion.Assert(voucherId > 0, "voucherId");
+      Assertion.Assert(voucherEntryId > 0, "voucherEntryId");
+      Assertion.AssertObject(fields, "fields");
+
+      var voucher = Voucher.Parse(voucherId);
+
+      VoucherEntry entry = voucher.GetEntry(voucherEntryId);
+
+      voucher.UpdateEntry(entry, fields);
+
+      return VoucherMapper.Map(voucher);
     }
 
 
