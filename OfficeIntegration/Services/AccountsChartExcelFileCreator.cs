@@ -48,6 +48,7 @@ namespace Empiria.FinancialAccounting.OfficeIntegration {
 
     private void FillOut(AccountsChartDto accountsChart, ExcelFile excelFile) {
       int i = 5;
+      bool hasEndDateData = false;
 
       foreach (var account in accountsChart.Accounts) {
         excelFile.SetCell($"C{i}", account.Number);
@@ -65,6 +66,7 @@ namespace Empiria.FinancialAccounting.OfficeIntegration {
 
         if (account.EndDate < Account.MAX_END_DATE) {
           excelFile.SetCell($"M{i}", account.EndDate);
+          hasEndDateData = true;
         }
 
         if (account.SummaryWithNotChildren) {
@@ -77,6 +79,9 @@ namespace Empiria.FinancialAccounting.OfficeIntegration {
 
       if (!accountsChart.WithSectors) {
         excelFile.RemoveColumn("F");
+      }
+      if (!hasEndDateData) {
+        excelFile.RemoveColumn("M");
       }
     }
 
