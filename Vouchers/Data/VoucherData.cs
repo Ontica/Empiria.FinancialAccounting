@@ -16,6 +16,14 @@ namespace Empiria.FinancialAccounting.Vouchers.Data {
   /// <summary>Data access layer for accounting vouchers.</summary>
   static internal class VoucherData {
 
+    static internal void CloseVoucher(Voucher voucher) {
+      var dataOperation = DataOperation.Parse("do_close_cof_transaccion",
+                              voucher.Id, voucher.Ledger.Id, voucher.Number, voucher.AuthorizedBy.Id);
+
+      DataWriter.Execute(dataOperation);
+    }
+
+
     static internal void DeleteVoucher(Voucher voucher) {
       var dataOperation = DataOperation.Parse("do_delete_cof_transaccion", voucher.Id);
 
@@ -40,6 +48,25 @@ namespace Empiria.FinancialAccounting.Vouchers.Data {
 
       return DataReader.GetFixedList<EventType>(dataOperation);
     }
+
+
+    static internal string GetVoucherNumberFor(Voucher voucher) {
+      var prefix = $"{voucher.AccountingDate.Year}-{voucher.AccountingDate.Month.ToString("00")}";
+
+      var sql = "SELECT MAX(NUMERO_TRANSACCION) " +
+               $"FROM COF_TRANSACCION " +
+               $"WHERE ID_MAYOR = {voucher.Ledger.Id} AND " +
+               $"NUMERO_TRANSACCION LIKE '{prefix}-%' AND ESTA_ABIERTA = 0";
+
+      var dataOperation = DataOperation.Parse(sql);
+
+      string maxNumber = DataReader.GetScalar(dataOperation, "0");
+
+      int number = int.Parse(maxNumber.Substring(prefix.Length + 1)) + 1;
+
+      return $"{prefix}-{number.ToString("000000")}";
+    }
+
 
     static internal FixedList<Voucher> GetVouchers(string filter, string sort, int pageSize) {
       var sql = "SELECT * FROM (" +
@@ -118,7 +145,6 @@ namespace Empiria.FinancialAccounting.Vouchers.Data {
 
       DataWriter.Execute(op);
     }
-
 
   }  // class VoucherData
 

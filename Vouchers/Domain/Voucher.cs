@@ -176,12 +176,29 @@ namespace Empiria.FinancialAccounting.Vouchers {
 
       var validator = new VoucherValidator(this);
 
-      if (validator.IsValid()) {
-        // this.ClosedBy = ExecutionServer.CurrentIdentity;
-        //this.ClosedBy = Participant.Parse(ExecutionServer.CurrentUserId);
-        //this.
-        //VoucherData.CloseVoucher(this);
+      if (!validator.IsValid()) {
+        Assertion.AssertFail("La póliza no puede pasarse al diario porque no está cuadrada.");
       }
+
+      DateTime lastRecordingDate = this.RecordingDate;
+
+      this.AuthorizedBy = Participant.Parse(ExecutionServer.CurrentUserId);
+      this.ClosedBy = Participant.Parse(ExecutionServer.CurrentUserId);
+      this.RecordingDate = DateTime.Today;
+      this.IsOpened = false;
+      this.Number = VoucherData.GetVoucherNumberFor(this);
+      try {
+        VoucherData.CloseVoucher(this);
+      } catch {
+        this.AuthorizedBy = Participant.Empty;
+        this.ClosedBy = Participant.Empty;
+        this.RecordingDate = lastRecordingDate;
+        this.IsOpened = true;
+        this.Number = "No actualizada";
+        throw;
+      }
+
+      this.RefreshEntries();
     }
 
 
