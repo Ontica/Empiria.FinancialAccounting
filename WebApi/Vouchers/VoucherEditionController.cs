@@ -112,6 +112,18 @@ namespace Empiria.FinancialAccounting.Vouchers.WebApi {
     }
 
 
+    [HttpPost]
+    [Route("v2/financial-accounting/vouchers/{voucherId:int}/duplicate-last-entry")]
+    public SingleObjectModel DuplicateLastVoucherEntry([FromUri] int voucherId) {
+
+      using (var usecases = VoucherEditionUseCases.UseCaseInteractor()) {
+        VoucherEntryDto duplicatedEntry = usecases.DuplicateLastEntry(voucherId);
+
+        return new SingleObjectModel(base.Request, duplicatedEntry);
+      }
+    }
+
+
     [HttpPut, HttpPatch]
     [Route("v2/financial-accounting/vouchers/{voucherId:int}")]
     public SingleObjectModel UpdateVoucher([FromUri] int voucherId,

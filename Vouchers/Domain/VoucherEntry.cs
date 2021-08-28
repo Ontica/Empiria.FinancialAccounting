@@ -226,6 +226,14 @@ namespace Empiria.FinancialAccounting.Vouchers {
 
     #region Methods
 
+    internal VoucherEntry CreateCopy() {
+      VoucherEntry copy = (VoucherEntry) this.MemberwiseClone();
+
+      copy.Id = 0;
+
+      return copy;
+    }
+
     internal void Delete() {
       VoucherData.DeleteVoucherEntry(this);
     }

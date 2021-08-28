@@ -8,7 +8,8 @@
 *                                                                                                            *
 ************************* Copyright(c) La Vía Óntica SC, Ontica LLC and contributors. All rights reserved. **/
 using System;
-
+using System.Collections.Generic;
+using System.Linq;
 using Empiria.FinancialAccounting.Vouchers.Adapters;
 using Empiria.FinancialAccounting.Vouchers.Data;
 
@@ -202,12 +203,36 @@ namespace Empiria.FinancialAccounting.Vouchers {
     }
 
 
+    internal VoucherEntry DuplicateLastEntry() {
+      Assertion.Assert(this.IsOpened, "No se puede crear una copia del último movimiento porque la póliza ya está cerrada.");
+      Assertion.Assert(this.Entries.Count > 0, "Esta póliza aún no tiene movimientos.");
+
+      VoucherEntry lastEntry = GetLastEntry();
+
+      VoucherEntry newEntry = lastEntry.CreateCopy();
+
+      newEntry.Save();
+
+      this.RefreshEntries();
+
+      return newEntry;
+    }
+
+
     internal VoucherEntry GetEntry(int voucherEntryId) {
       var entry = Entries.Find(x => x.Id == voucherEntryId);
 
       Assertion.AssertObject(entry, $"La póliza no tiene registrado un movimiento con id {voucherEntryId}");
 
       return entry;
+    }
+
+
+    private VoucherEntry GetLastEntry() {
+      var list = new List<VoucherEntry>(this.Entries);
+
+      return list.OrderByDescending(x => x.Id)
+                 .First();
     }
 
 

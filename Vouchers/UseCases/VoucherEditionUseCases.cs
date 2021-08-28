@@ -94,6 +94,17 @@ namespace Empiria.FinancialAccounting.Vouchers.UseCases {
     }
 
 
+    public VoucherEntryDto DuplicateLastEntry(int voucherId) {
+      Assertion.Assert(voucherId > 0, "voucherId");
+
+      var voucher = Voucher.Parse(voucherId);
+
+      VoucherEntry duplicatedEntry = voucher.DuplicateLastEntry();
+
+      return VoucherMapper.MapEntry(duplicatedEntry);
+    }
+
+
     public VoucherDto UpdateVoucher(int voucherId, VoucherFields fields) {
       Assertion.Assert(voucherId > 0, "voucherId");
       Assertion.AssertObject(fields, "fields");
