@@ -30,15 +30,10 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
 
       List<TrialBalanceComparativeEntry> trialBalanceComparative = new List<TrialBalanceComparativeEntry>();
 
-
-
       FixedList<TrialBalanceEntry> firstPeriod = comparativeHelper.GetComparativePostingEntries();
+
       firstPeriod = helper.GenerateAverageDailyBalance(firstPeriod.ToList(),
                                                               _command.InitialPeriod).ToFixedList();
-
-      //FixedList<TrialBalanceEntry> secondPeriod = comparativeHelper.GetComparativePostingEntries();
-      //secondPeriod = helper.GenerateAverageDailyBalance(secondPeriod.ToList(),
-      //                                                         _command.FinalPeriod).ToFixedList();
 
       trialBalanceComparative = comparativeHelper.MergePeriodsIntoComparativeBalance(firstPeriod);
 

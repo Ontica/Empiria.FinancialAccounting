@@ -96,7 +96,9 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
     private FixedList<DataTableColumn> TwoBalancesComparativeDataColumns() {
       List<DataTableColumn> columns = new List<DataTableColumn>();
 
-      columns.Add(new DataTableColumn("ledgerNumber", "Cont", "text"));
+      if (Command.ReturnLedgerColumn) {
+        columns.Add(new DataTableColumn("ledgerNumber", "Cont", "text"));
+      }
       columns.Add(new DataTableColumn("currencyCode", "Mon", "text"));
       columns.Add(new DataTableColumn("accountParent", "Cta", "text-nowrap"));
       columns.Add(new DataTableColumn("accountNumber", "Cuenta", "text-nowrap"));

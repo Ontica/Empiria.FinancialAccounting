@@ -30,14 +30,9 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
     internal FixedList<TrialBalanceEntry> GetComparativePostingEntries() {
       var helper = new TrialBalanceHelper(_command);
 
-      TrialBalanceCommandPeriod commandPeriod;
+      FixedList<TrialBalanceEntry> postingEntries = helper.GetPostingEntries();
 
-      commandPeriod = _command.FinalPeriod;
-      commandPeriod.InitialDate = _command.InitialPeriod.ToDate.AddDays(1);
-
-      FixedList<TrialBalanceEntry> postingEntries = helper.GetTrialBalanceEntries(commandPeriod);
-
-      postingEntries = ExchangeRateByPeriod(postingEntries);
+      postingEntries = ExchangeRateSecondPeriod(postingEntries);
 
       postingEntries = helper.RoundTrialBalanceEntries(postingEntries);
 
@@ -94,18 +89,10 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
     }
 
     
-    private FixedList<TrialBalanceEntry> ExchangeRateByPeriod(FixedList<TrialBalanceEntry> postingEntries) {
+    private FixedList<TrialBalanceEntry> ExchangeRateSecondPeriod(FixedList<TrialBalanceEntry> postingEntries) {
       var helper = new TrialBalanceHelper(_command);
 
-      FixedList<TrialBalanceEntry> balanceEntries = new FixedList<TrialBalanceEntry>();
-
-      balanceEntries = helper.ValuateToExchangeRate(postingEntries, _command.InitialPeriod);
-
-      balanceEntries = helper.ValuateToExchangeRate(postingEntries, _command.FinalPeriod, true);
-
-      if (_command.ConsolidateBalancesToTargetCurrency) {
-        balanceEntries = helper.ConsolidateToTargetCurrency(postingEntries, _command.FinalPeriod);
-      }
+      FixedList<TrialBalanceEntry> balanceEntries = helper.ValuateToExchangeRate(postingEntries, _command.FinalPeriod, true);
 
       return balanceEntries;
     }
