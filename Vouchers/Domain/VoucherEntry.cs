@@ -203,6 +203,12 @@ namespace Empiria.FinancialAccounting.Vouchers {
     }
 
 
+    public bool HasEventType {
+      get {
+        return this.EventType.Id > 0;
+      }
+    }
+
     public bool HasSubledgerAccount {
       get {
         return !this.SubledgerAccount.IsEmptyInstance;

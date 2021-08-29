@@ -172,6 +172,8 @@ namespace Empiria.FinancialAccounting.Vouchers {
 
 
     internal FixedList<string> ValidateResult() {
+      this.RefreshEntries();
+
       var validator = new VoucherValidator(this);
 
       return validator.ValidationResult();
@@ -181,10 +183,18 @@ namespace Empiria.FinancialAccounting.Vouchers {
     internal void Close() {
       Assertion.Assert(this.IsOpened, "Esta póliza ya está cerrada.");
 
+      this.RefreshEntries();
+
       var validator = new VoucherValidator(this);
 
       if (!validator.IsValid()) {
-        Assertion.AssertFail("La póliza no puede pasarse al diario porque no está cuadrada.");
+        var msg = "La póliza no puede enviarse al diario porque tiene datos inconsistentes.\n\n";
+
+        FixedList<string> validationResult = validator.ValidationResult();
+        foreach (var error in validationResult) {
+          msg += error + "\n";
+        }
+        Assertion.AssertFail(msg);
       }
 
       DateTime lastRecordingDate = this.RecordingDate;
@@ -194,6 +204,7 @@ namespace Empiria.FinancialAccounting.Vouchers {
       this.RecordingDate = DateTime.Today;
       this.IsOpened = false;
       this.Number = VoucherData.GetVoucherNumberFor(this);
+
       try {
         VoucherData.CloseVoucher(this);
       } catch {

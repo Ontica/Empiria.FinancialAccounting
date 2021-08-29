@@ -27,12 +27,19 @@ namespace Empiria.FinancialAccounting.Vouchers {
     }
 
     internal FixedList<string> ValidationResult() {
-      List<string> resultList = new List<string>();
+      var resultList = new List<string>();
+
+      var tempList = VoucherEntriesDataAreValid();
+      if (tempList.Count > 0) {
+        resultList.AddRange(tempList);
+      }
 
       if (!HasEnoughVoucherEntries() ) {
         resultList.Add("La póliza debe tener cuando menos dos movimientos, un cargo y un abono.");
       }
-      var tempList = DebitsAndCreditsByCurrencyAreEqual();
+
+      tempList = DebitsAndCreditsByCurrencyAreEqual();
+
       if (tempList.Count > 0) {
         resultList.AddRange(tempList);
       }
@@ -53,7 +60,7 @@ namespace Empiria.FinancialAccounting.Vouchers {
     }
 
     private FixedList<string> DebitsAndCreditsByCurrencyAreEqual() {
-      List<string> resultList = new List<string>();
+      var resultList = new List<string>();
 
       IEnumerable<Currency> currencies = _voucher.Entries.Select(x => x.Currency).Distinct();
 
@@ -71,6 +78,79 @@ namespace Empiria.FinancialAccounting.Vouchers {
 
     private bool HasEnoughVoucherEntries() {
       return _voucher.Entries.Count >= 2;
+    }
+
+    private FixedList<string> VoucherEntriesDataAreValid() {
+      var resultList = new List<string>();
+
+      foreach (var entry in _voucher.Entries) {
+        var entryResultList = VoucherEntryDataIsValid(entry);
+        if (entryResultList.Count > 0) {
+          resultList.AddRange(entryResultList);
+        }
+      }
+
+      return resultList.ToFixedList();
+    }
+
+    private FixedList<string> VoucherEntryDataIsValid(VoucherEntry entry) {
+      var resultList = new List<string>();
+
+      var account = entry.LedgerAccount;
+      var accountingDate = _voucher.AccountingDate;
+
+      if (!account.Ledger.Equals(_voucher.Ledger)) {
+        resultList.Add($"La cuenta {entry.LedgerAccount.Number} no pertenece a la contabilidad {_voucher.Ledger.Name}.");
+      }
+
+      try {
+        account.CheckIsNotSummary(accountingDate);
+      } catch (Exception e) {
+        resultList.Add(e.Message);
+      }
+
+      try {
+        account.CheckCurrencyRule(entry.Currency, accountingDate);
+      } catch (Exception e) {
+        resultList.Add(e.Message);
+      }
+
+      try {
+        if (entry.HasSector) {
+          account.CheckSectorRule(entry.Sector, accountingDate);
+        } else {
+          account.CheckNoSectorRule(accountingDate);
+        }
+      } catch (Exception e) {
+        resultList.Add(e.Message);
+      }
+
+      try {
+        if (entry.HasSubledgerAccount && entry.HasSector) {
+          account.CheckSubledgerAccountRule(entry.Sector, entry.SubledgerAccount, accountingDate);
+
+        } else if (entry.HasSubledgerAccount && !entry.HasSector) {
+          account.CheckSubledgerAccountRule(entry.SubledgerAccount, accountingDate);
+
+        } else if (!entry.HasSubledgerAccount && entry.HasSector) {
+          account.CheckNoSubledgerAccountRule(entry.Sector, accountingDate);
+
+        } else if (!entry.HasSubledgerAccount && !entry.HasSector) {
+          account.CheckNoSubledgerAccountRule(accountingDate);
+        }
+      } catch (Exception e) {
+        resultList.Add(e.Message);
+      }
+
+      try {
+        if (!entry.HasEventType) {
+          account.CheckNoEventTypeRule(accountingDate);
+        }
+      } catch (Exception e) {
+        resultList.Add(e.Message);
+      }
+
+      return resultList.ToFixedList();
     }
 
 

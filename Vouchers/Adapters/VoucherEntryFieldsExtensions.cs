@@ -47,6 +47,10 @@ namespace Empiria.FinancialAccounting.Vouchers.Adapters {
         account.CheckNoSubledgerAccountRule(voucher.AccountingDate);
 
       }
+
+      if (!fields.HasEventType) {
+        account.CheckNoEventTypeRule(voucher.AccountingDate);
+      }
     }
 
 

@@ -87,6 +87,13 @@ namespace Empiria.FinancialAccounting.Vouchers.Adapters {
     }
 
 
+    public bool HasEventType {
+      get {
+        return this.EventTypeId > 0;
+      }
+    }
+
+
     public bool HasSector {
       get {
         return this.SectorId > 0;

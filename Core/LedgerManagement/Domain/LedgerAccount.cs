@@ -95,15 +95,21 @@ namespace Empiria.FinancialAccounting {
       Account account = this.StandardAccount.GetHistory(accountingDate);
 
       Assertion.Assert(account.Role != AccountRole.Sumaria,
-          $"La cuenta {account.Number} es sumaria {ToDate(accountingDate)}.");
+          $"La cuenta {account.Number} es sumaria, por lo que no admite movimientos.");
     }
 
 
     public void CheckCurrencyRule(Currency currency, DateTime accountingDate) {
       Assertion.Assert(
           CurrencyRules.Contains(x => x.Currency.Equals(currency) && x.AppliesOn(accountingDate)),
-          $"La moneda {currency.Name} no está definida para la cuenta {this.StandardAccount.Number} " +
-          $"{ToDate(accountingDate)}.");
+          $"La moneda {currency.Name} no está definida para la cuenta {this.StandardAccount.Number}.");
+    }
+
+
+    public void CheckNoEventTypeRule(DateTime accountingDate) {
+      if (this.Number.StartsWith("13")) {
+        Assertion.AssertFail($"La cuenta {this.StandardAccount.Number} necesita un tipo de evento, sin embargo no se proporcionó.");
+      }
     }
 
 
@@ -111,12 +117,11 @@ namespace Empiria.FinancialAccounting {
       Account account = this.StandardAccount.GetHistory(accountingDate);
 
       Assertion.Assert(account.Role == AccountRole.Sectorizada,
-          $"La cuenta {account.Number} no maneja sectores {ToDate(accountingDate)}.");
+          $"La cuenta {account.Number} no maneja sectores, sin embargo se proporcionó el sector {sector.FullName}.");
 
       Assertion.Assert(
           SectorRules.Contains(x => x.Sector.Equals(sector) && x.AppliesOn(accountingDate)),
-          $"El sector {sector.Code} no está definido para la cuenta {account.Number} " +
-          $"{ToDate(accountingDate)}.");
+          $"El sector {sector.Code} no está definido para la cuenta {account.Number}.");
     }
 
 
@@ -124,7 +129,7 @@ namespace Empiria.FinancialAccounting {
       Account account = this.StandardAccount.GetHistory(accountingDate);
 
       Assertion.Assert(account.Role != AccountRole.Sectorizada,
-                       $"La cuenta {account.Number} maneja sectores {ToDate(accountingDate)}.");
+                       $"La cuenta {account.Number} maneja sectores, sin embargo no se proporcionó.");
     }
 
 
@@ -134,7 +139,7 @@ namespace Empiria.FinancialAccounting {
       Account account = this.StandardAccount.GetHistory(accountingDate);
 
       Assertion.Assert(account.Role == AccountRole.Control,
-          $"La cuenta {account.Number} no maneja auxiliares {ToDate(accountingDate)}.");
+          $"La cuenta {account.Number} no maneja auxiliares.");
 
       Assertion.Assert(subledgerAccount.SubsidaryLedger.BaseLedger.Equals(this.Ledger),
           $"El auxiliar {subledgerAccount.Number} no pertenece a la contabilidad {this.Ledger.FullName}.");
@@ -150,8 +155,12 @@ namespace Empiria.FinancialAccounting {
 
       SectorRule sectorRule = account.GetSectors(accountingDate).Find(x => x.Sector.Equals(sector));
 
-      Assertion.Assert(account.Role == AccountRole.Sectorizada && sectorRule.SectorRole == AccountRole.Control,
-          $"La cuenta {account.Number} no maneja auxiliares para el sector ({sector.Code}) {ToDate(accountingDate)}.");
+      if (sectorRule == null) {
+        Assertion.AssertFail($"La cuenta {account.Number} no maneja el sector {sector.FullName}.");
+      } else {
+        Assertion.Assert(account.Role == AccountRole.Sectorizada && sectorRule.SectorRole == AccountRole.Control,
+            $"La cuenta {account.Number} no maneja auxiliares para el sector ({sector.Code}).");
+      }
 
       Assertion.Assert(subledgerAccount.SubsidaryLedger.BaseLedger.Equals(this.Ledger),
           $"El auxiliar {subledgerAccount.Number} no pertenece a la contabilidad {this.Ledger.FullName}.");
@@ -162,7 +171,7 @@ namespace Empiria.FinancialAccounting {
       Account account = this.StandardAccount.GetHistory(accountingDate);
 
       Assertion.Assert(account.Role == AccountRole.Detalle,
-          $"La cuenta {account.Number} maneja auxiliares {ToDate(accountingDate)}.");
+          $"La cuenta {account.Number} maneja auxiliares.");
     }
 
 
@@ -173,8 +182,12 @@ namespace Empiria.FinancialAccounting {
 
       SectorRule sectorRule = account.GetSectors(accountingDate).Find(x => x.Sector.Equals(sector));
 
-      Assertion.Assert(account.Role == AccountRole.Sectorizada && sectorRule.SectorRole == AccountRole.Detalle,
-             $"La cuenta {account.Number} maneja auxiliares para el sector ({sector.Code}) {ToDate(accountingDate)}.");
+      if (sectorRule == null) {
+        Assertion.AssertFail($"La cuenta {account.Number} no maneja el sector {sector.FullName}.");
+      } else {
+        Assertion.Assert(account.Role == AccountRole.Sectorizada && sectorRule.SectorRole == AccountRole.Detalle,
+             $"La cuenta {account.Number} maneja auxiliares para el sector ({sector.Code}).");
+      }
     }
 
 
@@ -190,11 +203,6 @@ namespace Empiria.FinancialAccounting {
 
     internal FixedList<SectorRule> SectorRulesOn(DateTime date) {
       return this.SectorRules.FindAll(x => x.AppliesOn(date));
-    }
-
-
-    private string ToDate(DateTime accountingDate) {
-      return $"(fecha {accountingDate.ToString("dd/MMM/yyyy")})";
     }
 
 
