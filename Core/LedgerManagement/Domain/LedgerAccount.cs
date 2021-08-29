@@ -166,6 +166,18 @@ namespace Empiria.FinancialAccounting {
     }
 
 
+    public void CheckNoSubledgerAccountRule(Sector sector, DateTime accountingDate) {
+      Assertion.AssertObject(sector, "sector");
+
+      Account account = this.StandardAccount.GetHistory(accountingDate);
+
+      SectorRule sectorRule = account.GetSectors(accountingDate).Find(x => x.Sector.Equals(sector));
+
+      Assertion.Assert(account.Role == AccountRole.Sectorizada && sectorRule.SectorRole == AccountRole.Detalle,
+             $"La cuenta {account.Number} maneja auxiliares para el sector ({sector.Code}) {ToDate(accountingDate)}.");
+    }
+
+
     internal FixedList<CurrencyRule> CurrencyRulesOn(DateTime date) {
       return this.CurrencyRules.FindAll(x => x.AppliesOn(date));
     }
