@@ -171,6 +171,13 @@ namespace Empiria.FinancialAccounting.Vouchers {
     }
 
 
+    internal FixedList<string> ValidateResult() {
+      var validator = new VoucherValidator(this);
+
+      return validator.ValidationResult();
+    }
+
+
     internal void Close() {
       Assertion.Assert(this.IsOpened, "Esta póliza ya está cerrada.");
 

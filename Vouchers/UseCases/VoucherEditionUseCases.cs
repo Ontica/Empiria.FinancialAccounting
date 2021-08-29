@@ -136,6 +136,14 @@ namespace Empiria.FinancialAccounting.Vouchers.UseCases {
       return VoucherMapper.Map(voucher);
     }
 
+    public FixedList<string> ValidateVoucher(int voucherId) {
+      Assertion.Assert(voucherId > 0, "voucherId");
+
+      var voucher = Voucher.Parse(voucherId);
+
+      return voucher.ValidateResult();
+    }
+
 
     #endregion Use cases
 

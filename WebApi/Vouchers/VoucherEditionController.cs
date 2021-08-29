@@ -152,6 +152,18 @@ namespace Empiria.FinancialAccounting.Vouchers.WebApi {
       }
     }
 
+
+    [HttpGet]
+    [Route("v2/financial-accounting/vouchers/{voucherId:int}/validate")]
+    public CollectionModel ValidateVoucher([FromUri] int voucherId) {
+
+      using (var usecases = VoucherEditionUseCases.UseCaseInteractor()) {
+        FixedList<string> validationResult = usecases.ValidateVoucher(voucherId);
+
+        return new CollectionModel(base.Request, validationResult);
+      }
+    }
+
     #endregion Web Apis
 
   }  // class VoucherEditionController
