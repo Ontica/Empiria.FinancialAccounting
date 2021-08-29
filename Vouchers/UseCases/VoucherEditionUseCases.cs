@@ -141,7 +141,7 @@ namespace Empiria.FinancialAccounting.Vouchers.UseCases {
 
       var voucher = Voucher.Parse(voucherId);
 
-      return voucher.ValidateResult();
+      return voucher.ValidationResult();
     }
 
 

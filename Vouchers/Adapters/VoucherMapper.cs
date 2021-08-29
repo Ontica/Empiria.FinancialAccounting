@@ -31,8 +31,29 @@ namespace Empiria.FinancialAccounting.Vouchers.Adapters {
         ElaboratedBy = voucher.ElaboratedBy.Name,
         AuthorizedBy = voucher.AuthorizedBy.Name,
         Status = voucher.IsOpened ? "Pendiente" : "Cerrado",
+        Actions = MapVoucherActions(voucher),
         Entries = MapToVoucherEntriesDescriptor(voucher.Entries)
       };
+    }
+
+    private static VoucherActionsDto MapVoucherActions(Voucher voucher) {
+      if (!voucher.IsOpened) {
+        return new VoucherActionsDto();
+      }
+      if (!voucher.IsValid()) {
+        return new VoucherActionsDto {
+          ReviewVoucher = true
+        };
+      }
+      if (voucher.CanBeClosedBy(Participant.Current)) {
+        return new VoucherActionsDto {
+          SendToLedger = true
+        };
+      } else {
+        return new VoucherActionsDto {
+          SendToSupervisor = true
+        };
+      }
     }
 
     private static FixedList<VoucherEntryDescriptorDto> MapToVoucherEntriesDescriptor(FixedList<VoucherEntry> entries) {

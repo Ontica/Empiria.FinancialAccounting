@@ -126,6 +126,12 @@ namespace Empiria.FinancialAccounting {
       return ledgerAccount;
     }
 
+    public bool IsAccountingDateOpened(DateTime accountingDate) {
+      FixedList<DateTime> openedAccoutingDates = this.OpenedAccountingDates();
+
+      return openedAccoutingDates.Contains(accountingDate);
+    }
+
 
     public NamedEntityDto MapToNamedEntity() {
       return new NamedEntityDto(this.UID, this.FullName);
@@ -137,7 +143,6 @@ namespace Empiria.FinancialAccounting {
 
       return calendar.OpenedAccountingDates();
     }
-
 
     #endregion Public methods
 

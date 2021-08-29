@@ -72,6 +72,10 @@ namespace Empiria.FinancialAccounting.Vouchers.Adapters {
       get; internal set;
     }
 
+    public VoucherActionsDto Actions {
+      get; internal set;
+    }
+
     public FixedList<VoucherEntryDescriptorDto> Entries {
       get; internal set;
     }
@@ -148,5 +152,25 @@ namespace Empiria.FinancialAccounting.Vouchers.Adapters {
 
   }  // class VoucherEntryDto
 
+
+  public class VoucherActionsDto {
+
+    internal VoucherActionsDto() {
+      // no-op
+    }
+
+    public bool ReviewVoucher {
+      get; internal set;
+    }
+
+    public bool SendToLedger {
+      get; internal set;
+    }
+
+    public bool SendToSupervisor {
+      get; internal set;
+    }
+
+  }
 
 }  // namespace Empiria.FinancialAccounting.Vouchers.Adapters

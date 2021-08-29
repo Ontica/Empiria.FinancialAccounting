@@ -171,36 +171,36 @@ namespace Empiria.FinancialAccounting.Vouchers {
     }
 
 
-    internal FixedList<string> ValidateResult() {
-      this.RefreshEntries();
-
-      var validator = new VoucherValidator(this);
-
-      return validator.ValidationResult();
+    internal bool CanBeClosedBy(Participant participant) {
+      if (this.Ledger.IsAccountingDateOpened(this.AccountingDate)) {
+        return true;
+      }
+      return false;
     }
 
 
     internal void Close() {
       Assertion.Assert(this.IsOpened, "Esta póliza ya está cerrada.");
 
-      this.RefreshEntries();
-
-      var validator = new VoucherValidator(this);
-
-      if (!validator.IsValid()) {
+      if (!this.IsValid()) {
         var msg = "La póliza no puede enviarse al diario porque tiene datos inconsistentes.\n\n";
 
-        FixedList<string> validationResult = validator.ValidationResult();
+        FixedList<string> validationResult = this.ValidationResult();
+
         foreach (var error in validationResult) {
           msg += error + "\n";
         }
         Assertion.AssertFail(msg);
       }
 
+      if (!this.CanBeClosedBy(Participant.Current)) {
+        Assertion.AssertFail("La póliza no puede enviarse directamente al diario porque tiene fecha valor.");
+      }
+
       DateTime lastRecordingDate = this.RecordingDate;
 
-      this.AuthorizedBy = Participant.Parse(ExecutionServer.CurrentUserId);
-      this.ClosedBy = Participant.Parse(ExecutionServer.CurrentUserId);
+      this.AuthorizedBy = Participant.Current;
+      this.ClosedBy = Participant.Current;
       this.RecordingDate = DateTime.Today;
       this.IsOpened = false;
       this.Number = VoucherData.GetVoucherNumberFor(this);
@@ -271,6 +271,19 @@ namespace Empiria.FinancialAccounting.Vouchers {
     }
 
 
+    public bool IsValid() {
+      if (!this.IsOpened) {
+        return true;
+      }
+
+      this.RefreshEntries();
+
+      var validator = new VoucherValidator(this);
+
+      return validator.IsValid();
+    }
+
+
     private void LoadFields(VoucherFields fields) {
       this.Ledger = Ledger.Parse(fields.LedgerUID);
       this.AccountingDate = fields.AccountingDate;
@@ -335,6 +348,16 @@ namespace Empiria.FinancialAccounting.Vouchers {
 
       this.RefreshEntries();
     }
+
+
+    internal FixedList<string> ValidationResult() {
+      this.RefreshEntries();
+
+      var validator = new VoucherValidator(this);
+
+      return validator.ValidationResult();
+    }
+
 
     #endregion Methods
 
