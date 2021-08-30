@@ -126,33 +126,36 @@ namespace Empiria.FinancialAccounting.OfficeIntegration {
       foreach (var entry in entries) {
         _excelFile.SetCell($"A{i}", entry.LedgerNumber);
         _excelFile.SetCell($"B{i}", entry.CurrencyCode);
-        _excelFile.SetCell($"C{i}", entry.AccountNumber);
-        _excelFile.SetCell($"D{i}", entry.SectorCode);
-        _excelFile.SetCell($"E{i}", entry.SubledgerAccountNumber);
-        _excelFile.SetCell($"F{i}", entry.SubledgerAccountName);
-        _excelFile.SetCell($"G{i}", entry.FirstTotalBalance);
-        _excelFile.SetCell($"H{i}", entry.FirstExchangeRate);
-        _excelFile.SetCell($"I{i}", entry.FirstValorization);
-        _excelFile.SetCell($"J{i}", entry.Credit);
-        _excelFile.SetCell($"K{i}", entry.Debit);
-        _excelFile.SetCell($"L{i}", entry.SecondTotalBalance);
-        _excelFile.SetCell($"M{i}", entry.SecondExchangeRate);
-        _excelFile.SetCell($"N{i}", entry.SecondValorization);
-        _excelFile.SetCell($"O{i}", entry.AccountName);
-        _excelFile.SetCell($"P{i}", Convert.ToString((char) entry.DebtorCreditor));
-        _excelFile.SetCell($"Q{i}", entry.Variation);
-        _excelFile.SetCell($"R{i}", entry.VariationByER);
-        _excelFile.SetCell($"S{i}", entry.RealVariation);
+        _excelFile.SetCell($"C{i}", GetLedgerLevelAccountNumber(entry.AccountNumber));
+        _excelFile.SetCell($"D{i}", GetSubAccountNumberWithSector(entry.AccountNumber, entry.SectorCode));
+        _excelFile.SetCell($"E{i}", entry.AccountNumber);
+        _excelFile.SetCell($"F{i}", entry.SectorCode);
+        _excelFile.SetCell($"G{i}", entry.SubledgerAccountNumber);
+        _excelFile.SetCell($"H{i}", entry.SubledgerAccountName);
+        _excelFile.SetCell($"I{i}", entry.FirstTotalBalance);
+        _excelFile.SetCell($"J{i}", entry.FirstExchangeRate);
+        _excelFile.SetCell($"K{i}", entry.FirstValorization);
+        _excelFile.SetCell($"L{i}", entry.Credit);
+        _excelFile.SetCell($"M{i}", entry.Debit);
+        _excelFile.SetCell($"N{i}", entry.SecondTotalBalance);
+        _excelFile.SetCell($"O{i}", entry.SecondExchangeRate);
+        _excelFile.SetCell($"P{i}", entry.SecondValorization);
+        _excelFile.SetCell($"Q{i}", entry.AccountName);
+        _excelFile.SetCell($"R{i}", Convert.ToString((char) entry.DebtorCreditor));
+        _excelFile.SetCell($"S{i}", entry.Variation);
+        _excelFile.SetCell($"T{i}", entry.VariationByER);
+        _excelFile.SetCell($"U{i}", entry.RealVariation);
 
         i++;
       }
     }
 
+
     private void SetBalanzaComparativaHeaders(TrialBalanceCommand command) {
-      _excelFile.SetCell($"G4", $"{command.InitialPeriod.ToDate.ToString("MMM_yyyy")}");
-      _excelFile.SetCell($"I4", $"{command.InitialPeriod.ToDate.ToString("MMM")}_VAL_A");
-      _excelFile.SetCell($"L4", $"{command.FinalPeriod.ToDate.ToString("MMM_yyyy")}");
-      _excelFile.SetCell($"N4", $"{command.FinalPeriod.ToDate.ToString("MMM")}_VAL_B");
+      _excelFile.SetCell($"I4", $"{command.InitialPeriod.ToDate.ToString("MMM_yyyy")}");
+      _excelFile.SetCell($"K4", $"{command.InitialPeriod.ToDate.ToString("MMM")}_VAL_A");
+      _excelFile.SetCell($"N4", $"{command.FinalPeriod.ToDate.ToString("MMM_yyyy")}");
+      _excelFile.SetCell($"P4", $"{command.FinalPeriod.ToDate.ToString("MMM")}_VAL_B");
     }
 
 
@@ -298,6 +301,24 @@ namespace Empiria.FinancialAccounting.OfficeIntegration {
     }
 
     #endregion Private methods
+
+    #region Utility methods
+
+    private string GetLedgerLevelAccountNumber(string accountNumber) {
+      return accountNumber.Substring(0, 4);
+    }
+
+    private string GetSubAccountNumberWithSector(string accountNumber, string sectorCode) {
+      var temp = accountNumber.Substring(4);
+
+      temp = temp.Replace("-", String.Empty);
+
+      temp = temp.PadRight(12, '0');
+
+      return temp + sectorCode;
+    }
+
+    #endregion Utility methods
 
   }  // class TrialBalanceExcelFileCreator
 
