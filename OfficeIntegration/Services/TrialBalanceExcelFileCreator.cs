@@ -135,8 +135,8 @@ namespace Empiria.FinancialAccounting.OfficeIntegration {
         _excelFile.SetCell($"I{i}", entry.FirstTotalBalance);
         _excelFile.SetCell($"J{i}", entry.FirstExchangeRate);
         _excelFile.SetCell($"K{i}", entry.FirstValorization);
-        _excelFile.SetCell($"L{i}", entry.Credit);
-        _excelFile.SetCell($"M{i}", entry.Debit);
+        _excelFile.SetCell($"L{i}", entry.Debit);
+        _excelFile.SetCell($"M{i}", entry.Credit);
         _excelFile.SetCell($"N{i}", entry.SecondTotalBalance);
         _excelFile.SetCell($"O{i}", entry.SecondExchangeRate);
         _excelFile.SetCell($"P{i}", entry.SecondValorization);
