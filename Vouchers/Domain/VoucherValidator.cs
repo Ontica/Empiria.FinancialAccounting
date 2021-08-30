@@ -68,8 +68,21 @@ namespace Empiria.FinancialAccounting.Vouchers {
         var debitsEntries = _voucher.Entries.FindAll(x => x.VoucherEntryType == VoucherEntryType.Debit && x.Currency.Equals(currency));
         var creditsEntries = _voucher.Entries.FindAll(x => x.VoucherEntryType == VoucherEntryType.Credit && x.Currency.Equals(currency));
 
-        if (debitsEntries.Sum(x => x.Debit) != creditsEntries.Sum(x => x.Credit)) {
-          resultList.Add($"La suma de cargos no es igual a la suma de abonos en la moneda {currency.FullName}.");
+        decimal totalDebits = debitsEntries.Sum(x => x.Debit);
+        decimal totalCredits = creditsEntries.Sum(x => x.Credit);
+
+        if (totalDebits != totalCredits) {
+          resultList.Add($"La suma de cargos no es igual a la suma de abonos en la moneda {currency.FullName}. " +
+                          $"Diferencia de {(totalDebits - totalCredits).ToString("C")}");
+        }
+
+        totalDebits = debitsEntries.Sum(x => x.BaseCurrrencyAmount);
+        totalCredits = creditsEntries.Sum(x => x.BaseCurrrencyAmount);
+
+        if (debitsEntries.Sum(x => x.BaseCurrrencyAmount) != creditsEntries.Sum(x => x.BaseCurrrencyAmount)) {
+          resultList.Add($"La suma de cargos y abonos en la moneda base no es igual para la moneda {currency.FullName}. " +
+                         $"Diferencia de {(totalDebits - totalCredits).ToString("C")}. " +
+                         $"Debe existir una diferencia en los tipos de cambio.");
         }
       }
       return resultList.ToFixedList();
