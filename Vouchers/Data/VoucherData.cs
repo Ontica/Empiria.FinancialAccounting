@@ -16,9 +16,14 @@ namespace Empiria.FinancialAccounting.Vouchers.Data {
   /// <summary>Data access layer for accounting vouchers.</summary>
   static internal class VoucherData {
 
-    static internal void CloseVoucher(Voucher voucher) {
+    static internal void CloseVoucher(Voucher o) {
+      Assertion.Assert(o.IsOpened, "Voucher must be opened to be closed in the database.");
+
       var dataOperation = DataOperation.Parse("do_close_cof_transaccion",
-                              voucher.Id, voucher.Ledger.Id, voucher.Number, voucher.AuthorizedBy.Id);
+                                              o.Id, o.Ledger.Id, o.Number,
+                                              o.AuthorizedBy.IsEmptyInstance ? 0 : o.AuthorizedBy.Id,
+                                              o.ClosedBy.IsEmptyInstance ? 0 : o.ClosedBy.Id,
+                                              o.RecordingDate);
 
       DataWriter.Execute(dataOperation);
     }
@@ -122,18 +127,24 @@ namespace Empiria.FinancialAccounting.Vouchers.Data {
 
 
     static internal void WriteVoucher(Voucher o) {
+      Assertion.Assert(o.IsOpened, "Voucher must be opened to be modified in the database.");
+
       var op = DataOperation.Parse("write_cof_transaccion", o.Id, o.Number,
                                     o.Ledger.Id, o.FunctionalArea.Id,
                                     o.TransactionType.Id, o.VoucherType.Id,
                                     o.Concept, o.AccountingDate, o.RecordingDate,
-                                    o.ElaboratedBy.Id, o.AuthorizedBy.Id, o.IsOpened ? 1 : 0,
-                                    o.ClosedBy.Id);
+                                    o.ElaboratedBy.Id,
+                                    o.AuthorizedBy.IsEmptyInstance ? 0 : o.AuthorizedBy.Id,
+                                    1,
+                                    o.ClosedBy.IsEmptyInstance ? 0 : o.ClosedBy.Id);
 
       DataWriter.Execute(op);
     }
 
 
     static internal void WriteVoucherEntry(VoucherEntry o) {
+      Assertion.Assert(o.Voucher.IsOpened, "Voucher must be opened to be modified in the database.");
+
       var op = DataOperation.Parse("write_cof_movimiento_tmp", o.Id, o.VoucherId, o.LedgerAccount.Id,
                                     o.SubledgerAccount.IsEmptyInstance ? 0 : o.SubledgerAccount.Id,
                                     o.Sector.IsEmptyInstance ? 0: o.Sector.Id,
