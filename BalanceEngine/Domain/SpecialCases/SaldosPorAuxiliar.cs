@@ -254,7 +254,8 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
         returnedEntries.Add(entry);
       }
       
-      returnedEntries = returnedEntries.OrderBy(a => a.Currency.Code)
+      returnedEntries = returnedEntries.Where(a => !a.SubledgerAccountNumber.Contains("undefined"))
+                                       .OrderBy(a => a.Currency.Code)
                                        .ThenBy(a => a.SubledgerNumberOfDigits)
                                        .ThenBy(a => a.SubledgerAccountNumber)
                                        .ToList();

@@ -191,8 +191,7 @@ namespace Empiria.FinancialAccounting.BalanceEngine.Adapters {
     static private TrialBalanceComparativeDto MapToTrialBalanceComparative(
                                               TrialBalanceComparativeEntry entry) {
       var dto = new TrialBalanceComparativeDto();
-      SubsidiaryAccount subledgerAccount = SubsidiaryAccount.Parse(entry.SubledgerAccountId);
-
+      
       dto.ItemType = entry.ItemType;
       dto.AccountRole = entry.Account.Role;
       dto.AccountLevel = entry.Account.Level;
@@ -225,7 +224,6 @@ namespace Empiria.FinancialAccounting.BalanceEngine.Adapters {
       dto.VariationByER = entry.VariationByER;
       dto.RealVariation = entry.RealVariation;
       dto.AverageBalance = entry.AverageBalance;
-      //dto.LastChangeDate = entry.LastChangeDate;
       return dto;
     }
 
