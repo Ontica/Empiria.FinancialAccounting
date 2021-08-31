@@ -420,11 +420,7 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
 
       List<TrialBalanceEntry> summaryEntries = GenerateSummaryEntries(postingEntries);
 
-      if (_command.TrialBalanceType == TrialBalanceType.SaldosPorAuxiliar) {
-        return postingEntries.ToList();
-      } else {
-        return CombineSummaryAndPostingEntries(summaryEntries, postingEntries);
-      }
+      return CombineSummaryAndPostingEntries(summaryEntries, postingEntries);
     }
 
     internal FixedList<TrialBalanceEntry> GetTrialBalanceEntries(TrialBalanceCommandPeriod commandPeriod) {

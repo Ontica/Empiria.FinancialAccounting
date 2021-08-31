@@ -29,13 +29,11 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
     internal TrialBalance Build() {
       var helper = new TrialBalanceHelper(_command);
 
-      List<TrialBalanceEntry> trialBalance = helper.GetSummaryAndPostingEntries();
+      List<TrialBalanceEntry> trialBalance = helper.GetPostingEntries().ToList();
 
       List<TrialBalanceEntry> summarySubsidiaryEntries = BalancesBySubsidiaryAccounts(trialBalance);
 
       trialBalance = CombineTotalSubsidiaryEntriesWithSummaryAccounts(summarySubsidiaryEntries);
-
-      trialBalance = helper.GenerateAverageDailyBalance(trialBalance, _command.InitialPeriod);
 
       trialBalance = helper.RestrictLevels(trialBalance);
 
@@ -59,8 +57,6 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
 
 
     #region Helper methods
-
-
 
     private void AccumulateSubledgerAccount(List<TrialBalanceEntry> returnedEntries,
                                             TrialBalanceEntry entry,
@@ -105,19 +101,14 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
 
 
     private List<TrialBalanceEntry> BalancesBySubsidiaryAccounts(List<TrialBalanceEntry> trialBalance) {
-      List<TrialBalanceEntry> returnedSubsidiaryEntries = new List<TrialBalanceEntry>();
+      List<TrialBalanceEntry> returnedSubsidiaryEntries = new List<TrialBalanceEntry>(trialBalance);
 
-      foreach (var entry in trialBalance) {
-        if (entry.SubledgerAccountId > 0) {
-          returnedSubsidiaryEntries.Add(entry);
-        }
+      foreach (var entry in returnedSubsidiaryEntries) {
+        entry.DebtorCreditor = entry.Account.DebtorCreditor;
+        entry.SubledgerAccountIdParent = entry.SubledgerAccountId;
       }
 
-      returnedSubsidiaryEntries = returnedSubsidiaryEntries.OrderBy(a => a.Ledger.Number)
-                                                           .ThenBy(a => a.Currency.Code)
-                                                           .ThenBy(a => a.Account.Number)
-                                                           .ThenBy(a => a.Sector.Code)
-                                                           .ToList();
+      returnedSubsidiaryEntries = returnedSubsidiaryEntries.Where(a => a.SubledgerAccountId > 0).ToList();
 
       returnedSubsidiaryEntries = CombineSubsidiaryEntriesAndSummaryAccounts(returnedSubsidiaryEntries);
 
@@ -130,12 +121,7 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
       List<TrialBalanceEntry> returnedEntries = new List<TrialBalanceEntry>();
       GenerateOrIncreaseParentEntries(subsidiaryEntries, returnedEntries);
 
-      return returnedEntries.OrderBy(a => a.Ledger.Number)
-                            .ThenBy(a => a.Currency.Code)
-                            .ThenByDescending(a => a.SubledgerAccountIdParent)
-                            .ThenBy(a => a.Account.Number).ThenBy(a => a.SubledgerAccountId)
-                            .ThenBy(a => a.Sector.Code)
-                            .ToList();
+      return returnedEntries.ToList();
     }
 
 
@@ -179,7 +165,7 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
 
         var parent = parentEntries.Values.FirstOrDefault();
         parent.SubledgerAccountId = parent.SubledgerAccountIdParent;
-        parent.SubledgerAccountNumber = SubsidiaryAccount.Parse(entry.SubledgerAccountIdParent).Number ?? "";
+        parent.SubledgerAccountNumber = entry.SubledgerAccountNumber;
         parent.LastChangeDate = entry.LastChangeDate;
 
         returnedEntries.Add(parent);
@@ -203,8 +189,6 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
         returnedEntries = CreateOrAccumulateTotalBySubsidiaryEntry(returnedEntries, entry);
         returnedEntries = AddSummaryAccounts(summaryEntries, returnedEntries, entry);
       }
-
-      //returnedEntries = returnedEntries.Where(a => a.CurrentBalance != 0).ToList();
 
       return returnedEntries;
     }
@@ -270,8 +254,7 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
         returnedEntries.Add(entry);
       }
       
-      returnedEntries = returnedEntries.Where(a => !a.SubledgerAccountNumber.Contains("undefined"))
-                                       .OrderBy(a => a.Currency.Code)
+      returnedEntries = returnedEntries.OrderBy(a => a.Currency.Code)
                                        .ThenBy(a => a.SubledgerNumberOfDigits)
                                        .ThenBy(a => a.SubledgerAccountNumber)
                                        .ToList();
