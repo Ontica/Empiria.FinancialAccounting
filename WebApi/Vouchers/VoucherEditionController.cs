@@ -48,6 +48,18 @@ namespace Empiria.FinancialAccounting.Vouchers.WebApi {
     }
 
 
+    [HttpGet]
+    [Route("v2/financial-accounting/vouchers/{voucherId:int}/get-copy-of-last-entry")]
+    public SingleObjectModel GetCopyOfVoucherLastEntry([FromUri] int voucherId) {
+
+      using (var usecases = VoucherEditionUseCases.UseCaseInteractor()) {
+        VoucherEntryDto copy = usecases.GetCopyOfLastEntry(voucherId);
+
+        return new SingleObjectModel(base.Request, copy);
+      }
+    }
+
+
     [HttpPost]
     [Route("v2/financial-accounting/vouchers/{voucherId:int}/entries")]
     public SingleObjectModel AppendVoucherEntry([FromUri] int voucherId,
@@ -108,18 +120,6 @@ namespace Empiria.FinancialAccounting.Vouchers.WebApi {
         VoucherDto voucher = usecases.DeleteEntry(voucherId, voucherEntryId);
 
         return new SingleObjectModel(base.Request, voucher);
-      }
-    }
-
-
-    [HttpPost]
-    [Route("v2/financial-accounting/vouchers/{voucherId:int}/duplicate-last-entry")]
-    public SingleObjectModel DuplicateLastVoucherEntry([FromUri] int voucherId) {
-
-      using (var usecases = VoucherEditionUseCases.UseCaseInteractor()) {
-        VoucherEntryDto duplicatedEntry = usecases.DuplicateLastEntry(voucherId);
-
-        return new SingleObjectModel(base.Request, duplicatedEntry);
       }
     }
 

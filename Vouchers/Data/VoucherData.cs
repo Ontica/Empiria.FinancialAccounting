@@ -17,8 +17,6 @@ namespace Empiria.FinancialAccounting.Vouchers.Data {
   static internal class VoucherData {
 
     static internal void CloseVoucher(Voucher o) {
-      Assertion.Assert(o.IsOpened, "Voucher must be opened to be closed in the database.");
-
       var dataOperation = DataOperation.Parse("do_close_cof_transaccion",
                                               o.Id, o.Ledger.Id, o.Number,
                                               o.AuthorizedBy.IsEmptyInstance ? 0 : o.AuthorizedBy.Id,

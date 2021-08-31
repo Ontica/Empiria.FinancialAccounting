@@ -238,22 +238,6 @@ namespace Empiria.FinancialAccounting.Vouchers {
     }
 
 
-    internal VoucherEntry DuplicateLastEntry() {
-      Assertion.Assert(this.IsOpened, "No se puede crear una copia del último movimiento porque la póliza ya está cerrada.");
-      Assertion.Assert(this.Entries.Count > 0, "Esta póliza aún no tiene movimientos.");
-
-      VoucherEntry lastEntry = GetLastEntry();
-
-      VoucherEntry newEntry = lastEntry.CreateCopy();
-
-      newEntry.Save();
-
-      this.RefreshEntries();
-
-      return newEntry;
-    }
-
-
     internal VoucherEntry GetEntry(int voucherEntryId) {
       var entry = Entries.Find(x => x.Id == voucherEntryId);
 
@@ -263,11 +247,15 @@ namespace Empiria.FinancialAccounting.Vouchers {
     }
 
 
-    private VoucherEntry GetLastEntry() {
+    internal VoucherEntry GetCopyOfLastEntry() {
+      Assertion.Assert(this.Entries.Count > 0, "Esta póliza aún no tiene movimientos.");
+
       var list = new List<VoucherEntry>(this.Entries);
 
-      return list.OrderByDescending(x => x.Id)
-                 .First();
+      VoucherEntry lastEntry = list.OrderByDescending(x => x.Id)
+                                   .First();
+
+      return lastEntry.CreateCopy();
     }
 
 

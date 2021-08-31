@@ -94,14 +94,14 @@ namespace Empiria.FinancialAccounting.Vouchers.UseCases {
     }
 
 
-    public VoucherEntryDto DuplicateLastEntry(int voucherId) {
+    public VoucherEntryDto GetCopyOfLastEntry(int voucherId) {
       Assertion.Assert(voucherId > 0, "voucherId");
 
       var voucher = Voucher.Parse(voucherId);
 
-      VoucherEntry duplicatedEntry = voucher.DuplicateLastEntry();
+      VoucherEntry copy = voucher.GetCopyOfLastEntry();
 
-      return VoucherMapper.MapEntry(duplicatedEntry);
+      return VoucherMapper.MapEntry(copy);
     }
 
 
