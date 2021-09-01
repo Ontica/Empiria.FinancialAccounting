@@ -17,16 +17,28 @@ namespace Empiria.FinancialAccounting {
     #region Public methods
 
     static public void Preload() {
+      EmpiriaLog.Info($"Application preloading starts at {DateTime.Now}.");
       try {
-        EmpiriaLog.Info($"Application preloading starts at {DateTime.Now}.");
-        StandardAccount.Preload();
-        AccountsChart.Preload();
         SubsidiaryLedger.Preload();
-        SubsidiaryAccount.Preload();
-        EmpiriaLog.Info($"Application preloading ends at {DateTime.Now}.");
       } catch (Exception e) {
         EmpiriaLog.Error(e);
       }
+      try {
+        SubsidiaryAccount.Preload();
+      } catch (Exception e) {
+        EmpiriaLog.Error(e);
+      }
+      try {
+        StandardAccount.Preload();
+      } catch (Exception e) {
+        EmpiriaLog.Error(e);
+      }
+      try {
+        AccountsChart.Preload();
+      } catch (Exception e) {
+        EmpiriaLog.Error(e);
+      }
+      EmpiriaLog.Info($"Application preloading ends at {DateTime.Now}.");
     }
 
     #endregion Public methods
