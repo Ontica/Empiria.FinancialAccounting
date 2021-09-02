@@ -8,6 +8,7 @@
 *                                                                                                            *
 ************************* Copyright(c) La Vía Óntica SC, Ontica LLC and contributors. All rights reserved. **/
 using System;
+using System.Collections.Generic;
 
 namespace Empiria.FinancialAccounting.Adapters {
 
@@ -31,13 +32,39 @@ namespace Empiria.FinancialAccounting.Adapters {
       };
     }
 
-    static public FixedList<LedgerAccountDto> Map(FixedList<LedgerAccount> list, DateTime date) {
-      return new FixedList<LedgerAccountDto>(list.Select((x) => MapAccount(x, date)));
+    static public FixedList<LedgerAccountDto> MapAccountsForVoucherEdition(FixedList<LedgerAccount> assignedAccounts,
+                                                                           FixedList<Account> unassignedAccounts,
+                                                                           DateTime date) {
+      var list = new List<LedgerAccountDto>(assignedAccounts.Select((x) => MapAccount(x, date)));
+      var unAssignedMapped = new List<LedgerAccountDto>(unassignedAccounts.Select((x) => MapUnassignedAccount(x)));
+
+      list.AddRange(unAssignedMapped);
+
+      list.Sort((x, y) => x.Number.CompareTo(y.Number));
+
+      return new FixedList<LedgerAccountDto>(list);
+    }
+
+    private static LedgerAccountDto MapUnassignedAccount(Account account) {
+      return new LedgerAccountDto {
+        Id = 0,
+        StandardAccountId = account.StandardAccountId,
+        Name = account.Name,
+        Number = account.Number,
+        Description = account.Description,
+        Role = account.Role,
+        AccountType = account.AccountType,
+        DebtorCreditor = account.DebtorCreditor,
+        Level = account.Level,
+        Currencies = MapToNamedEntityList(account.CurrencyRules),
+        Sectors = MapSectors(account.SectorRules)
+      };
     }
 
     static public LedgerAccountDto MapAccount(LedgerAccount ledgerAccount, DateTime date) {
       return new LedgerAccountDto {
         Id = ledgerAccount.Id,
+        StandardAccountId = ledgerAccount.StandardAccountId,
         Ledger = ledgerAccount.Ledger.MapToNamedEntity(),
         Name = ledgerAccount.Name,
         Number = ledgerAccount.Number,

@@ -10,6 +10,8 @@
 using System;
 using Empiria.Contacts;
 
+using Empiria.FinancialAccounting.Data;
+
 namespace Empiria.FinancialAccounting {
 
   /// <summary>Holds information about an accounting ledger book.</summary>
@@ -17,7 +19,7 @@ namespace Empiria.FinancialAccounting {
 
     #region Constructors and parsers
 
-    private Ledger() {
+    protected Ledger() {
       // Required by Empiria Framework.
     }
 
@@ -117,6 +119,36 @@ namespace Empiria.FinancialAccounting {
 
     #region Public methods
 
+    public LedgerAccount AssignAccount(StandardAccount standardAccount) {
+      Assertion.AssertObject(standardAccount, "standardAccount");
+
+      Assertion.Assert(standardAccount.AccountsChart.Equals(this.AccountsChart),
+          $"La cuenta estandar con id {standardAccount.Id} " +
+          $"pertenece al catálogo de cuentas de cuentas {standardAccount.AccountsChart.Name}, " +
+          $"el cual no corresponde al catálogo asignado a la contabilidad {this.FullName}.");
+
+      Assertion.Assert(standardAccount.Role != AccountRole.Sumaria,
+             $"La cuenta estandar con id {standardAccount.Id} es sumaria. " +
+             $"No se puede agregar a la lista de cuentas de la contabilidad {this.FullName}.");
+
+      if (Contains(standardAccount)) {
+        return GetAccount(standardAccount);
+      }
+
+      return LedgerData.AssignStandardAccount(this, standardAccount);
+    }
+
+
+    public bool Contains(StandardAccount standardAccount) {
+      return LedgerData.ContainsLedgerAccount(this, standardAccount);
+    }
+
+
+    public LedgerAccount GetAccount(StandardAccount standardAccount) {
+      return LedgerData.GetLedgerAccount(this, standardAccount);
+    }
+
+
     public LedgerAccount GetAccountWithId(int ledgerAccountId) {
       var ledgerAccount = LedgerAccount.Parse(ledgerAccountId);
 
@@ -142,6 +174,11 @@ namespace Empiria.FinancialAccounting {
       var calendar = Calendar.Parse(this.CalendarId);
 
       return calendar.OpenedAccountingDates();
+    }
+
+
+    public FixedList<Account> SearchUnassignedAccounts(string keywords, DateTime date) {
+      return LedgerData.SearchUnassignedAccountsForEdition(this, keywords, date);
     }
 
     #endregion Public methods

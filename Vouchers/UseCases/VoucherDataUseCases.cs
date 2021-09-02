@@ -32,6 +32,30 @@ namespace Empiria.FinancialAccounting.Vouchers.UseCases {
 
     #region Use cases
 
+    public LedgerAccountDto AssignVoucherLedgerStandardAccount(int voucherId,
+                                                               int standardAccountId) {
+      Assertion.Assert(voucherId > 0, "voucherId");
+      Assertion.Assert(standardAccountId > 0, "standardAccountId");
+
+      var voucher = Voucher.Parse(voucherId);
+
+      Assertion.Assert(voucher.IsOpened,
+          "Esta operación sólo está disponible para pólizas abiertas.");
+
+      var standardAccount = StandardAccount.Parse(standardAccountId);
+
+      LedgerAccount ledgerAccount;
+
+      if (voucher.Ledger.Contains(standardAccount)) {
+        ledgerAccount = voucher.Ledger.GetAccount(standardAccount);
+      } else {
+        ledgerAccount = voucher.Ledger.AssignAccount(standardAccount);
+      }
+
+      return LedgerMapper.MapAccount(ledgerAccount, voucher.AccountingDate);
+    }
+
+
     public FixedList<NamedEntityDto> FunctionalAreas() {
       FixedList<FunctionalArea> list = FunctionalArea.GetList();
 
@@ -63,7 +87,9 @@ namespace Empiria.FinancialAccounting.Vouchers.UseCases {
 
       FixedList<LedgerAccount> accounts = voucher.SearchAccountsForEdition(keywords);
 
-      return LedgerMapper.Map(accounts, voucher.AccountingDate);
+      FixedList<Account> unassignedAccounts = voucher.Ledger.SearchUnassignedAccounts(keywords, voucher.AccountingDate);
+
+      return LedgerMapper.MapAccountsForVoucherEdition(accounts, unassignedAccounts, voucher.AccountingDate);
     }
 
 
