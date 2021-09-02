@@ -65,7 +65,8 @@ namespace Empiria.FinancialAccounting.Tests.Balances {
       command.TrialBalanceType = TrialBalanceType.SaldosPorAuxiliar;
       command.WithSubledgerAccount = true;
       command.ShowCascadeBalances = false;
-      
+      command.SubledgerAccount = "90000000000226521";
+      command.FromAccount = "1103";
       TrialBalanceDto trialBalance = _usecases.BuildTrialBalance(command);
 
       Assert.NotNull(trialBalance);
