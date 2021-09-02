@@ -75,30 +75,39 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
 
 
     private List<TrialBalanceEntry> AddSummaryAccounts(List<TrialBalanceEntry> summaryEntries,
-                                                       List<TrialBalanceEntry> returnedEntries,
+                                                       List<TrialBalanceEntry> accumulatedEntries,
                                                        TrialBalanceEntry entry) {
 
       var summaryAccounts = summaryEntries.Where(
-                               a => a.Account.GroupNumber == entry.Account.GroupNumber &&
-                                    a.SubledgerAccountId == 0 &&
-                                    a.SubledgerAccountIdParent == entry.SubledgerAccountIdParent &&
-                                    a.Ledger.Number == entry.Ledger.Number &&
-                                    a.Currency.Code == entry.Currency.Code &&
-                                    a.ItemType == TrialBalanceItemType.BalanceEntry).ToList();
+              a => a.Account.GroupNumber == entry.Account.GroupNumber &&
+              a.SubledgerAccountId == 0 &&
+              a.SubledgerAccountIdParent == entry.SubledgerAccountIdParent &&
+              a.Ledger.Number == entry.Ledger.Number &&
+              a.Currency.Code == entry.Currency.Code &&
+              a.ItemType == TrialBalanceItemType.BalanceEntry).ToList();
 
-      foreach (var summary in summaryAccounts) {
-        var existSummaryAccount = returnedEntries.FirstOrDefault(
-                                    a => a.SubledgerAccountIdParent == entry.SubledgerAccountIdParent &&
-                                         a.Account.Number == summary.Account.Number &&
-                                         a.Ledger.Number == summary.Ledger.Number &&
-                                         a.Currency.Code == summary.Currency.Code &&
-                                         a.Sector.Code == summary.Sector.Code);
-        if (existSummaryAccount == null) {
-          returnedEntries.Add(summary);
-        }
+      var hashReturnedEntries = new EmpiriaHashTable<TrialBalanceEntry>();
+      string hashEntry = string.Empty;
+
+      foreach (var item in accumulatedEntries) {
+        hashEntry = $"{item.Ledger.Number}||{item.Currency.Code}||{item.Account.Number}||" +
+                    $"{item.Sector.Code}||{item.SubledgerAccountIdParent}";
+
+        hashReturnedEntries.Insert(hashEntry, item);
       }
 
-      return returnedEntries;
+      foreach (var summary in summaryAccounts) {
+        hashEntry = $"{summary.SubledgerAccountIdParent}||" +
+                    $"{summary.Account.Number}||{summary.Ledger.Number}||" +
+                    $"{summary.Currency.Code}||{summary.Sector.Code}||";
+
+        if (!hashReturnedEntries.ContainsKey(hashEntry)) {
+          hashReturnedEntries.Insert(hashEntry, summary);
+        }
+      }
+      var returnedEntries = new FixedList<TrialBalanceEntry>(hashReturnedEntries.ToFixedList());
+
+      return returnedEntries.ToList();
     }
 
 
@@ -288,7 +297,6 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
     }
 
     private List<TrialBalanceEntry> AssignSubsidiaryNumber(List<TrialBalanceEntry> returnedEntries) {
-      
       SubsidiaryAccount subsidiary;
 
       foreach (var entry in returnedEntries) {
