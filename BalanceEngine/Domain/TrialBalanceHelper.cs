@@ -479,6 +479,8 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
         var exchangeRate = exchangeRates.FirstOrDefault(a => a.FromCurrency.Code == commandPeriod.ValuateToCurrrencyUID &&
                                                               a.ToCurrency.Code == entry.Currency.Code);
 
+        Assertion.AssertObject(exchangeRate, $"No hay tipo de cambio para la moneda {entry.Currency.FullName}.");
+
         if (_command.TrialBalanceType == TrialBalanceType.BalanzaValorizadaComparativa) {
 
           if (isSecondPeriod) {
@@ -491,7 +493,6 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
           entry.MultiplyBy(exchangeRate.Value);
         }
 
-        Assertion.AssertObject(exchangeRate, $"No hay tipo de cambio para la moneda {entry.Currency.FullName}.");
       }
       return entries;
     }
