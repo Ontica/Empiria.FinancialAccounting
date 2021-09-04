@@ -233,8 +233,10 @@ namespace Empiria.FinancialAccounting.OfficeIntegration {
         if (entry.ItemType == TrialBalanceItemType.BalanceEntry) {
           _excelFile.SetCell($"C{i}", "*");
         }
-        _excelFile.SetCell($"D{i}", subledgerAccount.Number);
-        _excelFile.SetCell($"E{i}", subledgerAccount.Name);
+        if (!subledgerAccount.IsEmptyInstance) {
+          _excelFile.SetCell($"D{i}", subledgerAccount.Number);
+          _excelFile.SetCell($"E{i}", subledgerAccount.Name);
+        }
 
         if (!account.IsEmptyInstance) {
           _excelFile.SetCell($"F{i}", account.Number);
@@ -247,7 +249,7 @@ namespace Empiria.FinancialAccounting.OfficeIntegration {
 
         _excelFile.SetCell($"I{i}", entry.CurrentBalance);
         _excelFile.SetCell($"J{i}", Convert.ToString((char) account.DebtorCreditor));
-        _excelFile.SetCell($"K{i}", entry.LastChangeDate);
+        _excelFile.SetCell($"K{i}", entry.LastChangeDate.ToString("dd/MMM/yyyy"));
 
         if (entry.ItemType != TrialBalanceItemType.BalanceEntry &&
             entry.ItemType != TrialBalanceItemType.BalanceSummary) {
@@ -285,7 +287,7 @@ namespace Empiria.FinancialAccounting.OfficeIntegration {
         }
         _excelFile.SetCell($"I{i}", entry.CurrentBalance);
         _excelFile.SetCell($"J{i}", Convert.ToString((char) account.DebtorCreditor));
-        _excelFile.SetCell($"K{i}", entry.LastChangeDate);
+        _excelFile.SetCell($"K{i}", entry.LastChangeDate.ToString("dd/MMM/yyyy"));
 
         if (entry.ItemType != TrialBalanceItemType.BalanceEntry &&
             entry.ItemType != TrialBalanceItemType.BalanceSummary) {

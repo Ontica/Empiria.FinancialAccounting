@@ -2,7 +2,7 @@
 *                                                                                                            *
 *  Module   : Balance Engine                             Component : Interface adapters                      *
 *  Assembly : FinancialAccounting.BalanceEngine.dll      Pattern   : Mapper class                            *
-*  Type     : TrialBalanceMapper                       License   : Please read LICENSE.txt file            *
+*  Type     : TrialBalanceMapper                         License   : Please read LICENSE.txt file            *
 *                                                                                                            *
 *  Summary  : Methods used to map trial balances.                                                            *
 *                                                                                                            *
@@ -182,7 +182,7 @@ namespace Empiria.FinancialAccounting.BalanceEngine.Adapters {
       dto.LastChangeDate = entry.ItemType == TrialBalanceItemType.BalanceEntry ||
                            entry.ItemType == TrialBalanceItemType.BalanceSummary ||
                            command.TrialBalanceType == TrialBalanceType.SaldosPorCuentaYMayor ?
-                           entry.LastChangeDate.ToString("dd-MM-yyyy") : "";
+                           entry.LastChangeDate: ExecutionServer.DateMaxValue;
 
       return dto;
     }

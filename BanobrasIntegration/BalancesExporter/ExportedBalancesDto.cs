@@ -49,7 +49,7 @@ namespace Empiria.FinancialAccounting.BanobrasIntegration.Adapters {
       get; internal set;
     }
 
-    public string FechaUltimoMovimiento {
+    public DateTime FechaUltimoMovimiento {
       get; internal set;
     }
 

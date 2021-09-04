@@ -195,11 +195,12 @@ namespace Empiria.FinancialAccounting.BalanceEngine.Adapters {
     public decimal AverageBalance {
       get; internal set;
     }
-    
 
-    public string LastChangeDate {
+
+    public DateTime LastChangeDate {
       get; internal set;
     }
+
     public string DebtorCreditor {
       get;
       internal set;
