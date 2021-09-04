@@ -12,10 +12,8 @@ using System.Web.Http;
 
 using Empiria.WebApi;
 
-using Empiria.FinancialAccounting.BalanceEngine.UseCases;
-using Empiria.FinancialAccounting.BalanceEngine.Adapters;
-
 using Empiria.FinancialAccounting.BanobrasIntegration.Adapters;
+using Empiria.FinancialAccounting.BanobrasIntegration.UseCases;
 
 namespace Empiria.FinancialAccounting.WebApi.BanobrasIntegration {
 
@@ -27,15 +25,12 @@ namespace Empiria.FinancialAccounting.WebApi.BanobrasIntegration {
     [HttpPost, AllowAnonymous]
     [Route("v2/financial-accounting/integration/balances-by-day")]
     public CollectionModel ExportBalancesByDay([FromBody] ExportBalancesCommand command) {
+
       base.RequireBody(command);
 
-      using (var usecases = TrialBalanceUseCases.UseCaseInteractor()) {
+      using (var usecases = ExportBalancesUseCases.UseCaseInteractor()) {
 
-        TrialBalanceCommand trialBalanceCommand = command.MapToTrialBalanceCommandForBalancesByDay();
-
-        TrialBalanceDto trialBalance = usecases.BuildTrialBalance(trialBalanceCommand);
-
-        FixedList<ExportedBalancesDto> balancesDto = ExportBalancesMapper.MapToExportedBalances(command, trialBalance);
+        FixedList<ExportedBalancesDto> balancesDto = usecases.ExportBalancesByDay(command);
 
         return new CollectionModel(this.Request, balancesDto);
       }
@@ -45,15 +40,12 @@ namespace Empiria.FinancialAccounting.WebApi.BanobrasIntegration {
     [HttpPost, AllowAnonymous]
     [Route("v2/financial-accounting/integration/balances-by-month")]
     public CollectionModel ExportBalancesByMonth([FromBody] ExportBalancesCommand command) {
+
       base.RequireBody(command);
 
-      using (var usecases = TrialBalanceUseCases.UseCaseInteractor()) {
+      using (var usecases = ExportBalancesUseCases.UseCaseInteractor()) {
 
-        TrialBalanceCommand trialBalanceCommand = command.MapToTrialBalanceCommandForBalancesByMonth();
-
-        TrialBalanceDto trialBalance = usecases.BuildTrialBalance(trialBalanceCommand);
-
-        FixedList<ExportedBalancesDto> balancesDto = ExportBalancesMapper.MapToExportedBalances(command, trialBalance);
+        FixedList<ExportedBalancesDto> balancesDto = usecases.ExportBalancesByMonth(command);
 
         return new CollectionModel(this.Request, balancesDto);
       }
