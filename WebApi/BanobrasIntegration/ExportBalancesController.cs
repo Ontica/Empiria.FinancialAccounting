@@ -28,6 +28,8 @@ namespace Empiria.FinancialAccounting.WebApi.BanobrasIntegration {
 
       base.RequireBody(command);
 
+      command.GuardarSaldos = false;
+
       using (var usecases = ExportBalancesUseCases.UseCaseInteractor()) {
 
         FixedList<ExportedBalancesDto> balancesDto = usecases.ExportBalancesByDay(command);
@@ -42,6 +44,8 @@ namespace Empiria.FinancialAccounting.WebApi.BanobrasIntegration {
     public CollectionModel ExportBalancesByMonth([FromBody] ExportBalancesCommand command) {
 
       base.RequireBody(command);
+
+      command.GuardarSaldos = true;
 
       using (var usecases = ExportBalancesUseCases.UseCaseInteractor()) {
 

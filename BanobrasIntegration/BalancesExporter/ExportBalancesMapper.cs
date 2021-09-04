@@ -60,6 +60,6 @@ namespace Empiria.FinancialAccounting.BanobrasIntegration.Adapters {
       };
     }
 
-  }  // class IntegrationMapper
+  }  // class ExportBalancesMapper
 
 }  // namespace Empiria.FinancialAccounting.BanobrasIntegration.Adapters

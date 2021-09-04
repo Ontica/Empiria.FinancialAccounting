@@ -15,6 +15,7 @@ using Empiria.FinancialAccounting.BalanceEngine.UseCases;
 
 using Empiria.FinancialAccounting.BalanceEngine.Adapters;
 using Empiria.FinancialAccounting.BanobrasIntegration.Adapters;
+using Empiria.FinancialAccounting.BanobrasIntegration.Data;
 
 namespace Empiria.FinancialAccounting.BanobrasIntegration.UseCases {
 
@@ -43,7 +44,14 @@ namespace Empiria.FinancialAccounting.BanobrasIntegration.UseCases {
       using (var usecases = TrialBalanceUseCases.UseCaseInteractor()) {
         TrialBalanceDto trialBalance = usecases.BuildTrialBalance(trialBalanceCommand);
 
-        return ExportBalancesMapper.MapToExportedBalances(command, trialBalance);
+        FixedList<ExportedBalancesDto> balances =
+                      ExportBalancesMapper.MapToExportedBalances(command, trialBalance);
+
+        if (command.GuardarSaldos) {
+          ExportBalancesDataService.WriteBalancesByDay(command.Fecha, balances);
+        }
+
+        return balances;
       }
     }
 
@@ -56,9 +64,17 @@ namespace Empiria.FinancialAccounting.BanobrasIntegration.UseCases {
       using (var usecases = TrialBalanceUseCases.UseCaseInteractor()) {
         TrialBalanceDto trialBalance = usecases.BuildTrialBalance(trialBalanceCommand);
 
-        return ExportBalancesMapper.MapToExportedBalances(command, trialBalance);
+        FixedList<ExportedBalancesDto> balances =
+                              ExportBalancesMapper.MapToExportedBalances(command, trialBalance);
+
+        if (command.GuardarSaldos) {
+          ExportBalancesDataService.WriteBalancesByMonth(command.Fecha, balances);
+        }
+
+        return balances;
       }
     }
+
 
     #endregion Use cases
 

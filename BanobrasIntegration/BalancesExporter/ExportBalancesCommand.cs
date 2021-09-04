@@ -28,6 +28,11 @@ namespace Empiria.FinancialAccounting.BanobrasIntegration.Adapters {
       get; set;
     }
 
+
+    public bool GuardarSaldos {
+      get; set;
+    }
+
     #endregion Fields
 
     #region Methods
