@@ -1,7 +1,7 @@
 ﻿/* Empiria Financial *****************************************************************************************
 *                                                                                                            *
-*  Module   : Office Integration                           Component : Excel Exporter                        *
-*  Assembly : FinancialAccounting.OficeIntegration.dll     Pattern   : Service                               *
+*  Module   : Banobras Integration Services                Component : Excel Reports                         *
+*  Assembly : FinancialAccounting.BanobrasIntegration.dll  Pattern   : Service                               *
 *  Type     : AccountsChartExcelFileCreator                License   : Please read LICENSE.txt file          *
 *                                                                                                            *
 *  Summary  : Main service used to export charts of accounts to Microsoft Excel.                             *
@@ -11,7 +11,7 @@ using System;
 
 using Empiria.FinancialAccounting.Adapters;
 
-namespace Empiria.FinancialAccounting.OfficeIntegration {
+namespace Empiria.FinancialAccounting.BanobrasIntegration.ExcelReports {
 
   /// <summary>Main service used to export charts of accounts to Microsoft Excel.</summary>
   internal class AccountsChartExcelFileCreator {
@@ -89,4 +89,4 @@ namespace Empiria.FinancialAccounting.OfficeIntegration {
 
   }  // class AccountsChartExcelFileCreator
 
-}  // namespace Empiria.FinancialAccounting.OfficeIntegration
+}  // namespace Empiria.FinancialAccounting.BanobrasIntegration.ExcelReports

@@ -1,7 +1,7 @@
 ﻿/* Empiria Financial *****************************************************************************************
 *                                                                                                            *
-*  Module   : Office Integration                           Component : Excel Exporter                        *
-*  Assembly : FinancialAccounting.OficeIntegration.dll     Pattern   : Service                               *
+*  Module   : Banobras Integration Services                Component : Excel Reports                         *
+*  Assembly : FinancialAccounting.BanobrasIntegration.dll  Pattern   : Service                               *
 *  Type     : ExcelExporter                                License   : Please read LICENSE.txt file          *
 *                                                                                                            *
 *  Summary  : Main service to export accounting information to Microsoft Excel.                              *
@@ -11,9 +11,9 @@ using System;
 using Empiria.FinancialAccounting.Adapters;
 using Empiria.FinancialAccounting.BalanceEngine.Adapters;
 
-using Empiria.FinancialAccounting.OfficeIntegration.Adapters;
+using Empiria.FinancialAccounting.BanobrasIntegration.ExcelReports.Adapters;
 
-namespace Empiria.FinancialAccounting.OfficeIntegration {
+namespace Empiria.FinancialAccounting.BanobrasIntegration.ExcelReports {
 
   /// <summary>Main service to export accounting information to Microsoft Excel.</summary>
   public class ExcelExporter {
@@ -67,4 +67,4 @@ namespace Empiria.FinancialAccounting.OfficeIntegration {
 
   }  // class ExcelExporter
 
-} // namespace Empiria.FinancialAccounting.OfficeIntegration
+} // namespace Empiria.FinancialAccounting.BanobrasIntegration.ExcelReports

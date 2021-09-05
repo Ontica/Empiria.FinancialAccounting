@@ -1,7 +1,7 @@
 ﻿/* Empiria Financial *****************************************************************************************
 *                                                                                                            *
-*  Module   : Office Integration                           Component : Excel Exporter                        *
-*  Assembly : FinancialAccounting.OficeIntegration.dll     Pattern   : Service provider                      *
+*  Module   : Banobras Integration Services                Component : Excel Reports                         *
+*  Assembly : FinancialAccounting.BanobrasIntegration.dll  Pattern   : Service provider                      *
 *  Type     : ExcelFile                                    License   : Please read LICENSE.txt file          *
 *                                                                                                            *
 *  Summary  : Provides edition services for Microsoft Excel files.                                           *
@@ -12,7 +12,7 @@ using System.IO;
 
 using Empiria.Office;
 
-namespace Empiria.FinancialAccounting.OfficeIntegration {
+namespace Empiria.FinancialAccounting.BanobrasIntegration.ExcelReports {
 
   /// <summary>Provides edition services for Microsoft Excel files.</summary>
   internal class ExcelFile {
@@ -110,4 +110,4 @@ namespace Empiria.FinancialAccounting.OfficeIntegration {
 
   }  // class ExcelFile
 
-}  // namespace Empiria.FinancialAccounting.OfficeIntegration
+}  // namespace Empiria.FinancialAccounting.BanobrasIntegration.ExcelReports

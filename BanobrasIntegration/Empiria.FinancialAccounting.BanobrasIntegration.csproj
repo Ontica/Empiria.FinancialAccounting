@@ -76,7 +76,6 @@
     <ProjectReference Include="..\Vouchers\Empiria.FinancialAccounting.Vouchers.csproj" />
   </ItemGroup>
   <ItemGroup>
-    <Folder Include="ExportReportsToExcel\" />
-    <Folder Include="ImportVouchersFromDbTables\" />
+    <Folder Include="VouchersImporter\DbTablesImporter\" />
   </ItemGroup>
 </Project>

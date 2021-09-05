@@ -1,7 +1,7 @@
 ﻿/* Empiria Financial *****************************************************************************************
 *                                                                                                            *
-*  Module   : Office Integration                           Component : Excel Exporter                        *
-*  Assembly : FinancialAccounting.OficeIntegration.dll     Pattern   : Information Holder                    *
+*  Module   : Banobras Integration Services                Component : Excel Reports                         *
+*  Assembly : FinancialAccounting.BanobrasIntegration.dll  Pattern   : Information Holder                    *
 *  Type     : ExcelTemplateConfig                          License   : Please read LICENSE.txt file          *
 *                                                                                                            *
 *  Summary  : Holds configuration data about a Microsoft Excel template file.                                *
@@ -10,7 +10,7 @@
 using System;
 using System.IO;
 
-namespace Empiria.FinancialAccounting.OfficeIntegration {
+namespace Empiria.FinancialAccounting.BanobrasIntegration.ExcelReports {
 
   /// <summary>Holds configuration data about a Microsoft Excel template file.</summary>
   internal class ExcelTemplateConfig : GeneralObject {
@@ -88,4 +88,4 @@ namespace Empiria.FinancialAccounting.OfficeIntegration {
 
   }  // class ExcelTemplateConfig
 
-}  // namespace Empiria.FinancialAccounting.OfficeIntegration
+}  // namespace Empiria.FinancialAccounting.BanobrasIntegration.ExcelReports

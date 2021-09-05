@@ -14,8 +14,8 @@ using Empiria.WebApi;
 using Empiria.FinancialAccounting.BalanceEngine.Adapters;
 using Empiria.FinancialAccounting.BalanceEngine.UseCases;
 
-using Empiria.FinancialAccounting.OfficeIntegration;
-using Empiria.FinancialAccounting.OfficeIntegration.Adapters;
+using Empiria.FinancialAccounting.BanobrasIntegration.ExcelReports;
+using Empiria.FinancialAccounting.BanobrasIntegration.ExcelReports.Adapters;
 
 namespace Empiria.FinancialAccounting.WebApi.BalanceEngine {
 

@@ -1,7 +1,7 @@
 ﻿/* Empiria Financial *****************************************************************************************
 *                                                                                                            *
-*  Module   : Office Integration                           Component : Excel Exporter                        *
-*  Assembly : FinancialAccounting.OficeIntegration.dll     Pattern   : Service                               *
+*  Module   : Banobras Integration Services                Component : Excel Reports                         *
+*  Assembly : FinancialAccounting.BanobrasIntegration.dll  Pattern   : Service                               *
 *  Type     : StoredBalanceSetExcelFileCreator             License   : Please read LICENSE.txt file          *
 *                                                                                                            *
 *  Summary  : Creates a Microsoft Excel file for a set of stored balances.                                   *
@@ -13,7 +13,7 @@ using System.Collections.Generic;
 using Empiria.FinancialAccounting.BalanceEngine;
 using Empiria.FinancialAccounting.BalanceEngine.Adapters;
 
-namespace Empiria.FinancialAccounting.OfficeIntegration {
+namespace Empiria.FinancialAccounting.BanobrasIntegration.ExcelReports {
 
   /// <summary>Creates a Microsoft Excel file for a set of stored balances.</summary>
   internal class StoredBalanceSetExcelFileCreator {
@@ -85,4 +85,4 @@ namespace Empiria.FinancialAccounting.OfficeIntegration {
 
   }  // class StoredBalanceSetExcelFileCreator
 
-}  // namespace Empiria.FinancialAccounting.OfficeIntegration
+}  // namespace Empiria.FinancialAccounting.BanobrasIntegration.ExcelReports

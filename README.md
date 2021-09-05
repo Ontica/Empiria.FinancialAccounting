@@ -32,8 +32,8 @@ Empiria Financial Accounting comprises the following modules:
 4.  **Balance Engine Tests**  
     Tests suite for the Balance Engine services.
 
-5.  **Office Integration**  
-    Exports accounting information to Office documents.
+5.  **Banobras Integration**  
+    Import and export data services according to Banobras data models and data infrastructure.
 
 6.  **Vouchers Management**  
     Provides services for vouchers edition, importation and management.
