@@ -9,6 +9,7 @@
 ************************* Copyright(c) La Vía Óntica SC, Ontica LLC and contributors. All rights reserved. **/
 using System;
 
+using Empiria.Collections;
 using Empiria.Data;
 
 using Empiria.FinancialAccounting.BanobrasIntegration.Adapters;
@@ -20,10 +21,20 @@ namespace Empiria.FinancialAccounting.BanobrasIntegration.Data {
 
     #region Public methods
 
+    static internal EmpiriaHashTable<CalificacionMoneda> GetCalificacionMonedaHashTable() {
+      var sql = "SELECT * FROM CALIFICA_MONEDA " +
+                "WHERE CALIFICA_SALDO IS NOT NULL";
+
+      var dataOperation = DataOperation.Parse(sql);
+
+      return DataReader.GetPlainObjectHashTable<CalificacionMoneda>(dataOperation,
+                                                                    x => $"{x.Cuenta}||{x.Sector}||{x.Auxiliar}");
+    }
+
+
     static internal void WriteBalancesByDay(DateTime fecha, FixedList<ExportedBalancesDto> balances) {
       throw new NotImplementedException();
     }
-
 
     static internal void WriteBalancesByMonth(DateTime fecha, FixedList<ExportedBalancesDto> balances) {
       DeleteStoredBalancesByMonth(fecha);
@@ -46,11 +57,14 @@ namespace Empiria.FinancialAccounting.BanobrasIntegration.Data {
 
 
     static private void WriteBalancesByMonth(ExportedBalancesDto o) {
+      string nullString = null;
+
       var dataOperation = DataOperation.Parse("apd_scon_saldos_ant",
                               o.Anio, o.Mes, o.Area, o.Moneda, o.NumeroMayor,
                               o.Cuenta, o.Sector, o.Auxiliar, o.FechaUltimoMovimiento,
                               o.Saldo, o.MonedaOrigen, o.NaturalezaCuenta, o.SaldoPromedio,
-                              o.MontoDebito, o.MontoCredito, o.SaldoAnterior, o.Empresa, o.CalificaMoneda,
+                              o.MontoDebito, o.MontoCredito, o.SaldoAnterior, o.Empresa,
+                              o.CalificaMoneda == "null" ? nullString : o.CalificaMoneda,
                               System.DBNull.Value);
 
       DataWriter.Execute(dataOperation);

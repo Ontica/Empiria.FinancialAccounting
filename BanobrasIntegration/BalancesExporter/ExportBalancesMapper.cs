@@ -37,6 +37,9 @@ namespace Empiria.FinancialAccounting.BanobrasIntegration.Adapters {
       var account = StandardAccount.Parse(entry.StandardAccountId);
       var subledgerAccount = SubsidiaryAccount.Parse(entry.SubledgerAccountId);
 
+      var calificaMoneda = CalificacionMoneda.TryParse(account.Number,
+                                                       entry.SectorCode,
+                                                       subledgerAccount.Number);
       return new ExportedBalancesDto {
         Anio = command.Fecha.Year,
         Mes = command.Fecha.Month,
@@ -56,7 +59,7 @@ namespace Empiria.FinancialAccounting.BanobrasIntegration.Adapters {
         MontoCredito = entry.Credit,
         SaldoAnterior = entry.InitialBalance,
         Empresa = command.Empresa,
-        CalificaMoneda = "1"
+        CalificaMoneda = calificaMoneda != null ? calificaMoneda.CalificaSaldo.ToString() : "null"
       };
     }
 
