@@ -12,7 +12,7 @@ using System;
 using Empiria.FinancialAccounting.BalanceEngine;
 using Empiria.FinancialAccounting.BalanceEngine.Adapters;
 
-namespace Empiria.FinancialAccounting.BanobrasIntegration.Adapters {
+namespace Empiria.FinancialAccounting.BanobrasIntegration.BalancesExporter.Adapters {
 
   /// <summary>Command payload used to export balances to other systems.</summary>
   public class ExportBalancesCommand {
@@ -69,4 +69,4 @@ namespace Empiria.FinancialAccounting.BanobrasIntegration.Adapters {
 
   } // class ExportBalancesCommand
 
-}  // namespace Empiria.FinancialAccounting.BanobrasIntegration.Adapters
+}  // namespace Empiria.FinancialAccounting.BanobrasIntegration.BalancesExporter.Adapters

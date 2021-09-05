@@ -12,9 +12,9 @@ using System;
 using Empiria.Collections;
 using Empiria.Data;
 
-using Empiria.FinancialAccounting.BanobrasIntegration.Adapters;
+using Empiria.FinancialAccounting.BanobrasIntegration.BalancesExporter.Adapters;
 
-namespace Empiria.FinancialAccounting.BanobrasIntegration.Data {
+namespace Empiria.FinancialAccounting.BanobrasIntegration.BalancesExporter.Data {
 
   /// <summary>Data methods to store exported balances.</summary>
   static internal class ExportBalancesDataService {
@@ -74,4 +74,4 @@ namespace Empiria.FinancialAccounting.BanobrasIntegration.Data {
 
   }  // class ExportBalancesDataService
 
-}  // namespace Empiria.FinancialAccounting.BanobrasIntegration.Data
+}  // namespace Empiria.FinancialAccounting.BanobrasIntegration.BalancesExporter.Data

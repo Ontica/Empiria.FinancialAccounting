@@ -12,7 +12,9 @@ using System;
 using Empiria.FinancialAccounting.BalanceEngine;
 using Empiria.FinancialAccounting.BalanceEngine.Adapters;
 
-namespace Empiria.FinancialAccounting.BanobrasIntegration.Adapters {
+using Empiria.FinancialAccounting.BanobrasIntegration.BalancesExporter.Data;
+
+namespace Empiria.FinancialAccounting.BanobrasIntegration.BalancesExporter.Adapters {
 
   static public class ExportBalancesMapper {
 
@@ -65,4 +67,4 @@ namespace Empiria.FinancialAccounting.BanobrasIntegration.Adapters {
 
   }  // class ExportBalancesMapper
 
-}  // namespace Empiria.FinancialAccounting.BanobrasIntegration.Adapters
+}  // namespace Empiria.FinancialAccounting.BanobrasIntegration.BalancesExporter.Adapters

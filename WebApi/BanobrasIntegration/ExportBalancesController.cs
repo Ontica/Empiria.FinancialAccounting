@@ -12,8 +12,8 @@ using System.Web.Http;
 
 using Empiria.WebApi;
 
-using Empiria.FinancialAccounting.BanobrasIntegration.Adapters;
-using Empiria.FinancialAccounting.BanobrasIntegration.UseCases;
+using Empiria.FinancialAccounting.BanobrasIntegration.BalancesExporter.Adapters;
+using Empiria.FinancialAccounting.BanobrasIntegration.BalancesExporter.UseCases;
 
 namespace Empiria.FinancialAccounting.WebApi.BanobrasIntegration {
 

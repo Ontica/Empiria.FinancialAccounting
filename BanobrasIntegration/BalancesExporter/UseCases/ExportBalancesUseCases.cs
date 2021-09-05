@@ -11,13 +11,13 @@ using System;
 
 using Empiria.Services;
 
+using Empiria.FinancialAccounting.BalanceEngine.Adapters;
 using Empiria.FinancialAccounting.BalanceEngine.UseCases;
 
-using Empiria.FinancialAccounting.BalanceEngine.Adapters;
-using Empiria.FinancialAccounting.BanobrasIntegration.Adapters;
-using Empiria.FinancialAccounting.BanobrasIntegration.Data;
+using Empiria.FinancialAccounting.BanobrasIntegration.BalancesExporter.Adapters;
+using Empiria.FinancialAccounting.BanobrasIntegration.BalancesExporter.Data;
 
-namespace Empiria.FinancialAccounting.BanobrasIntegration.UseCases {
+namespace Empiria.FinancialAccounting.BanobrasIntegration.BalancesExporter.UseCases {
 
   /// <summary>Use cases used to export balances to other Banobras' systems.</summary>
   public class ExportBalancesUseCases : UseCase {
@@ -80,4 +80,4 @@ namespace Empiria.FinancialAccounting.BanobrasIntegration.UseCases {
 
   }  // class ExportBalancesUseCases
 
-}  // namespace Empiria.FinancialAccounting.BanobrasIntegration.UseCases
+}  // namespace Empiria.FinancialAccounting.BanobrasIntegration.BalancesExporter.UseCases

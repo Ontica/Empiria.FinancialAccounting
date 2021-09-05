@@ -1,6 +1,6 @@
 ﻿/* Empiria Financial *****************************************************************************************
 *                                                                                                            *
-*  Module   : Banobras Integration Services                Component : Domain Layer                          *
+*  Module   : Banobras Integration Services                Component : Data Layer                            *
 *  Assembly : FinancialAccounting.BanobrasIntegration.dll  Pattern   : Information Holder                    *
 *  Type     : CalificacionMoneda                           License   : Please read LICENSE.txt file          *
 *                                                                                                            *
@@ -10,9 +10,8 @@
 using System;
 
 using Empiria.Collections;
-using Empiria.FinancialAccounting.BanobrasIntegration.Data;
 
-namespace Empiria.FinancialAccounting.BanobrasIntegration {
+namespace Empiria.FinancialAccounting.BanobrasIntegration.BalancesExporter.Data {
 
   internal class CalificacionMoneda {
 
@@ -79,4 +78,4 @@ namespace Empiria.FinancialAccounting.BanobrasIntegration {
 
   }  // class CalificacionMoneda
 
-}  // namespace Empiria.FinancialAccounting.BanobrasIntegration
+}  // namespace Empiria.FinancialAccounting.BanobrasIntegration.BalancesExporter.Data
