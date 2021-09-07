@@ -689,6 +689,16 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
     }
 
 
+    internal void SummaryBySubledgerEntry(EmpiriaHashTable<TrialBalanceEntry> summaryEntries,
+                                 TrialBalanceEntry entry, TrialBalanceItemType itemType) {
+
+      string hash = $"{entry.Ledger.Number}||{entry.Currency.Code}||" +
+                        $"{entry.SubledgerAccountIdParent}||{Sector.Empty.Code}";
+
+      GenerateOrIncreaseEntries(summaryEntries, entry, entry.Account, Sector.Empty, itemType, hash);
+    }
+
+
     private void SummaryByGroupEntries(EmpiriaHashTable<TrialBalanceEntry> summaryEntries,
                                        TrialBalanceEntry balanceEntry) {
 
