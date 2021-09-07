@@ -96,7 +96,6 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
           return analiticoDeCuentas.Build();
 
         case TrialBalanceType.Balanza:
-        //case TrialBalanceType.BalanzaConAuxiliares:
         case TrialBalanceType.Saldos:
         case TrialBalanceType.SaldosPorCuenta:
 

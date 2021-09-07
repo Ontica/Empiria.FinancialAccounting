@@ -89,10 +89,12 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
     }
 
     
-    private FixedList<TrialBalanceEntry> ExchangeRateSecondPeriod(FixedList<TrialBalanceEntry> postingEntries) {
+    private FixedList<TrialBalanceEntry> ExchangeRateSecondPeriod(
+                                          FixedList<TrialBalanceEntry> postingEntries) {
       var helper = new TrialBalanceHelper(_command);
 
-      FixedList<TrialBalanceEntry> balanceEntries = helper.ValuateToExchangeRate(postingEntries, _command.FinalPeriod, true);
+      FixedList<TrialBalanceEntry> balanceEntries = helper.ValuateToExchangeRate(
+                                                      postingEntries, _command.FinalPeriod, true);
 
       return balanceEntries;
     }

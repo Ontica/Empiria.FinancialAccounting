@@ -35,7 +35,6 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
           return TwoCurrenciesDataColumns();
 
         case TrialBalanceType.Balanza:
-        //case TrialBalanceType.BalanzaConAuxiliares:
         case TrialBalanceType.GeneracionDeSaldos:
         case TrialBalanceType.Saldos:
         case TrialBalanceType.SaldosPorAuxiliar:

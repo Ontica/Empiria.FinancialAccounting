@@ -216,10 +216,10 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
         Debit = this.Debit,
         Credit = this.Credit,
         FirstTotalBalance = this.InitialBalance,
-        FirstExchangeRate = this.ExchangeRate,
+        FirstExchangeRate = Math.Round(this.ExchangeRate, 6),
         FirstValorization = InitialBalance * this.ExchangeRate,
         SecondTotalBalance = this.CurrentBalance,
-        SecondExchangeRate = this.SecondExchangeRate,
+        SecondExchangeRate = Math.Round(this.SecondExchangeRate, 6),
         SecondValorization = this.CurrentBalance * this.SecondExchangeRate
       };
     }
