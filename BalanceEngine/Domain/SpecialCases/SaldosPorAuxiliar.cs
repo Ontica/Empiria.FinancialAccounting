@@ -33,12 +33,9 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
 
       EmpiriaHashTable<TrialBalanceEntry> summaryEntries = BalancesBySubsidiaryAccounts(trialBalance);
 
-      trialBalance = OrderByAccountNumber(summaryEntries);
+      List<TrialBalanceEntry> orderingtTialBalance = OrderByAccountNumber(summaryEntries);
 
-      EmpiriaHashTable<TrialBalanceEntry> totalBySubsidiaryEntries =
-                                          GenerateTotalBySubsidiaryEntries(trialBalance);
-
-      trialBalance = CombineTotalAndSummaryEntries(totalBySubsidiaryEntries, summaryEntries);
+      trialBalance = CombineTotalAndSummaryEntries(orderingtTialBalance, trialBalance);
 
       trialBalance = helper.RestrictLevels(trialBalance);
 
@@ -47,54 +44,30 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
       return new TrialBalance(_command, returnBalance);
     }
 
-    private List<TrialBalanceEntry> CombineTotalAndSummaryEntries(
-                                    EmpiriaHashTable<TrialBalanceEntry> totalBySubsidiaryEntries, 
-                                    EmpiriaHashTable<TrialBalanceEntry> summaryEntries) {
-      
-      var returnedOrdering = new List<TrialBalanceEntry>();
 
-      foreach (var entry in totalBySubsidiaryEntries.ToFixedList()) {
-        var summaryAccounts = summaryEntries.ToFixedList().Where(
-                      a => a.SubledgerAccountId == 0 &&
-                      a.SubledgerAccountIdParent == entry.SubledgerAccountIdParent &&
-                      a.Ledger.Number == entry.Ledger.Number &&
-                      a.Currency.Code == entry.Currency.Code &&
-                      a.ItemType == TrialBalanceItemType.BalanceEntry).ToList();
+    #region Helper methods
 
-        returnedOrdering.Add(entry);
 
-        if (summaryAccounts.Count > 0) {
-          returnedOrdering.AddRange(summaryAccounts);
-        }
+    private EmpiriaHashTable<TrialBalanceEntry> BalancesBySubsidiaryAccounts(
+                                                List<TrialBalanceEntry> trialBalance) {
+
+      var subsidiaryEntries = trialBalance.Where(a => a.SubledgerAccountId > 0).ToList();
+
+      var hashSubsidiaryEntries = new EmpiriaHashTable<TrialBalanceEntry>();
+
+      foreach (var item in subsidiaryEntries) {
+        string hash = $"{item.Ledger.Number}||{item.Currency.Code}||" +
+                      $"{item.Account.Number}||{item.Sector.Code}||" +
+                      $"{item.SubledgerAccountId}";
+
+        hashSubsidiaryEntries.Insert(hash, item);
       }
 
-      return returnedOrdering;
+      EmpiriaHashTable<TrialBalanceEntry> returnedSubsidiaryEntries = GenerateEntries(hashSubsidiaryEntries);
+
+      return returnedSubsidiaryEntries;
     }
 
-    private List<TrialBalanceEntry> OrderByAccountNumber(
-                                    EmpiriaHashTable<TrialBalanceEntry> summaryEntries) {
-
-      var totaBySubsidiaryAccountList = summaryEntries.ToFixedList()
-                            .Where(a => a.Level == 1 && a.NotHasSector).ToList();
-
-      var returnedCombineOrdering = new List<TrialBalanceEntry>();
-
-      foreach (var entry in totaBySubsidiaryAccountList.ToFixedList()) {
-        SubsidiaryAccount subsidiary = SubsidiaryAccount.Parse(entry.SubledgerAccountIdParent);
-        if (subsidiary != null) {
-          entry.SubledgerAccountNumber = subsidiary.Number;
-          entry.GroupName = subsidiary.Name;
-          entry.SubledgerNumberOfDigits = entry.SubledgerAccountNumber.Count();
-        }
-        returnedCombineOrdering.Add(entry);
-      }
-
-      return returnedCombineOrdering.Where(a => !a.SubledgerAccountNumber.Contains("undefined"))
-                                    .OrderBy(a => a.Currency.Code)
-                                    .ThenBy(a => a.SubledgerNumberOfDigits)
-                                    .ThenBy(a => a.SubledgerAccountNumber)
-                                    .ToList();
-    }
 
     internal TrialBalance BuildForBalancesGeneration() {
       var helper = new TrialBalanceHelper(_command);
@@ -109,215 +82,81 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
     }
 
 
-    #region Helper methods
+    private List<TrialBalanceEntry> CombineTotalAndSummaryEntries(
+                                    List<TrialBalanceEntry> orderingtTialBalance,
+                                    List<TrialBalanceEntry> trialBalance) {
 
+      var returnedOrdering = new List<TrialBalanceEntry>();
 
-    private void AccumulateSubledgerAccount(EmpiriaHashTable<TrialBalanceEntry> returnedEntries,
-                                            TrialBalanceEntry entry,
-                                            StandardAccount currentParent) {
+      foreach (var entry in orderingtTialBalance) {
+        var summaryAccounts = trialBalance.Where(
+                      a => a.SubledgerAccountId == entry.SubledgerAccountIdParent &&
+                      a.Ledger.Number == entry.Ledger.Number &&
+                      a.Currency.Code == entry.Currency.Code &&
+                      a.ItemType == TrialBalanceItemType.BalanceEntry).ToList();
 
-      string hash = $"{entry.Currency.Code}||{currentParent.Number}";
-
-      if (returnedEntries.ContainsKey(hash)) {
-        if (returnedEntries[hash].SubledgerAccountIdParent == entry.SubledgerAccountId &&
-            returnedEntries[hash].NotHasSector) {
-          returnedEntries[hash].Sum(entry);
-        }
-      }
-    }
-
-
-    private EmpiriaHashTable<TrialBalanceEntry> BalancesBySubsidiaryAccounts(List<TrialBalanceEntry> trialBalance) {
-
-      var subsidiaryEntries = trialBalance.Where(a => a.SubledgerAccountId > 0).ToList();
-
-      var hashSubsidiaryEntries = new EmpiriaHashTable<TrialBalanceEntry>();
-
-      foreach (var item in subsidiaryEntries) {
-        string hash = $"{item.Ledger.Number}||{item.Currency.Code}||" +
-                      $"{item.Account.Number}||{item.Sector.Code}||" +
-                      $"{item.SubledgerAccountId}";
-
-        hashSubsidiaryEntries.Insert(hash, item);
-      }
-
-      EmpiriaHashTable<TrialBalanceEntry> returnedSubsidiaryEntries =
-      GenerateOrIncreaseParentEntries(hashSubsidiaryEntries);
-
-      return returnedSubsidiaryEntries;
-    }
-
-
-    private void CreateOrAccumulateParentWithoutSector(
-                  EmpiriaHashTable<TrialBalanceEntry> summaryParentEntries,
-                  EmpiriaHashTable<TrialBalanceEntry> hashReturnedEntries,
-                  TrialBalanceEntry entry,
-                  StandardAccount currentParent) {
-
-      var helper = new TrialBalanceHelper(_command);
-
-      if (hashReturnedEntries.ContainsKey(GetHash(entry, currentParent, Sector.Empty))) {
-
-        if (hashReturnedEntries[GetHash(entry, currentParent, Sector.Empty)
-                               ].SubledgerAccountIdParent == entry.SubledgerAccountId &&
-            hashReturnedEntries[GetHash(entry, currentParent, Sector.Empty)].NotHasSector) {
-
-          hashReturnedEntries[GetHash(entry, currentParent, Sector.Empty)].Sum(entry);
-
-        }
-      } else {
-        helper.SummaryByEntry(summaryParentEntries, entry, currentParent, Sector.Empty,
-                             TrialBalanceItemType.BalanceSummary);
-      }
-
-    }
-
-
-    private List<TrialBalanceEntry> CreateOrAccumulateTotalBySubsidiaryEntry(
-                                      List<TrialBalanceEntry> returnedEntries,
-                                      TrialBalanceEntry entry) {
-      var helper = new TrialBalanceHelper(_command);
-
-      var parentEntries = new EmpiriaHashTable<TrialBalanceEntry>();
-      var hashReturnedEntries = new EmpiriaHashTable<TrialBalanceEntry>();
-
-      returnedEntries.ForEach(item =>
-                          hashReturnedEntries.Insert(GetHash(item, item.Account, item.Sector), item));
-
-      if (hashReturnedEntries.ContainsKey(GetHash(entry, StandardAccount.Empty, Sector.Empty))) {
-
-        if (hashReturnedEntries[GetHash(entry, StandardAccount.Empty, Sector.Empty)
-                               ].SubledgerAccountId == entry.SubledgerAccountIdParent) {
-
-          if (entry.LastChangeDate > hashReturnedEntries[GetHash(entry, StandardAccount.Empty, Sector.Empty)
-                                                        ].LastChangeDate) {
-
-            hashReturnedEntries[GetHash(entry, StandardAccount.Empty, Sector.Empty)
-                               ].LastChangeDate = entry.LastChangeDate;
-
-          }
-          hashReturnedEntries[GetHash(entry, StandardAccount.Empty, Sector.Empty)].Sum(entry);
+        foreach (var summary in summaryAccounts) {
+          entry.LastChangeDate = summary.LastChangeDate > entry.LastChangeDate ?
+                                 summary.LastChangeDate : entry.LastChangeDate;
+          summary.SubledgerAccountId = 0;
         }
 
-      } else {
-        helper.SummaryBySubsidiaryEntry(parentEntries, entry, TrialBalanceItemType.BalanceSummary);
+        returnedOrdering.Add(entry);
 
-        var parent = parentEntries.Values.FirstOrDefault();
-        parent.SubledgerAccountId = parent.SubledgerAccountIdParent;
-        parent.SubledgerAccountNumber = entry.SubledgerAccountNumber;
-        parent.LastChangeDate = entry.LastChangeDate;
-
-        hashReturnedEntries.Insert(GetHash(parent, parent.Account, parent.Sector), parent);
+        if (summaryAccounts.Count > 0) {
+          returnedOrdering.AddRange(summaryAccounts);
+        }
       }
 
-      return hashReturnedEntries.Values.ToList();
+      return returnedOrdering;
     }
 
 
-    private EmpiriaHashTable<TrialBalanceEntry> GenerateTotalBySubsidiaryEntries(
-                                         List<TrialBalanceEntry> summaryEntries) {
+    private EmpiriaHashTable<TrialBalanceEntry> GenerateEntries(
+            EmpiriaHashTable<TrialBalanceEntry> hashSubsidiaryEntries) {
 
-      var balanceEntries = new List<TrialBalanceEntry>();
-
-      foreach (var entry in summaryEntries) {
-        balanceEntries = CreateOrAccumulateTotalBySubsidiaryEntry(balanceEntries, entry);
-      }
-
-      EmpiriaHashTable<TrialBalanceEntry> hashReturnedEntries = GetHashSummaryEntries(balanceEntries);
-
-      return hashReturnedEntries;
-    }
-
-    
-    private EmpiriaHashTable<TrialBalanceEntry> GetHashSummaryEntries(
-                                                List<TrialBalanceEntry> balanceEntries) {
-      var returnedEntries = new EmpiriaHashTable<TrialBalanceEntry>();
-
-      balanceEntries.ForEach(entry => returnedEntries.Insert(
-                              GetHash(entry, entry.Account, entry.Sector), entry));
-
-      return returnedEntries;
-    }
-
-    private string GetHash(TrialBalanceEntry entry, StandardAccount account, Sector sector) {
-      return $"{entry.Ledger.Number}||{entry.Currency.Code}||{account.Number}||" +
-             $"{sector.Code}||{entry.SubledgerAccountIdParent}";
-    }
-
-    private EmpiriaHashTable<TrialBalanceEntry> GenerateOrIncreaseParentEntries(
-                                                EmpiriaHashTable<TrialBalanceEntry> subsidiaryEntries) {
       var helper = new TrialBalanceHelper(_command);
 
       var hashReturnedEntries = new EmpiriaHashTable<TrialBalanceEntry>();
 
-      foreach (var entry in subsidiaryEntries.ToFixedList()) {
+      foreach (var entry in hashSubsidiaryEntries.ToFixedList()) {
         entry.DebtorCreditor = entry.Account.DebtorCreditor;
         entry.SubledgerAccountIdParent = entry.SubledgerAccountId;
 
-        var summaryParentEntries = new EmpiriaHashTable<TrialBalanceEntry>();
+        helper.SummaryBySubledgerEntry(hashReturnedEntries, entry, TrialBalanceItemType.BalanceSummary);
 
-        StandardAccount account = entry.Account;
-
-        int count = 0;
-        while (true) {
-
-          string hash = $"{entry.Ledger.Number}||{entry.Currency.Code}||" +
-                        $"{account.Number}||{entry.Sector.Code}";
-
-          if (hashReturnedEntries.ContainsKey(hash)) {
-
-            SumInSubledgerAccounts(hashReturnedEntries, entry, hash, account);
-
-          } else {
-            count++;
-            TrialBalanceItemType itemType = count == 1 ? TrialBalanceItemType.BalanceEntry :
-                                                         TrialBalanceItemType.BalanceSummary;
-            helper.SummaryByEntry(summaryParentEntries, entry, account, entry.Sector, itemType);
-
-            if (!account.HasParent && entry.HasSector && entry.SubledgerAccountId > 0) {
-              CreateOrAccumulateParentWithoutSector(summaryParentEntries, hashReturnedEntries, entry, account);
-              break;
-            } else if (!account.HasParent) {
-              break;
-            } else {
-              account = account.GetParent();
-            }
-          }
-
-        } // while
-
-        foreach (var item in summaryParentEntries.Values.ToList()) {
-          if (hashReturnedEntries.ContainsKey(GetHash(item, item.Account, item.Sector))) {
-            hashReturnedEntries[GetHash(item, item.Account, item.Sector)].Sum(item);
-          } else {
-            hashReturnedEntries.Insert(GetHash(item, item.Account, item.Sector), item);
-          }
-        }
-      } // foreach
+      }
 
       return hashReturnedEntries;
     }
 
-    private void SumInSubledgerAccounts(EmpiriaHashTable<TrialBalanceEntry> hashReturnedEntries, 
-                                        TrialBalanceEntry entry, string hash, StandardAccount account) {
-      do {
-        if (hashReturnedEntries[hash].SubledgerAccountIdParent == entry.SubledgerAccountId &&
-                hashReturnedEntries[hash].SubledgerAccountId == 0) {
-          hashReturnedEntries[hash].Sum(entry);
-        }
 
-        if (!account.HasParent) {
-          if (entry.HasSector) {
-            AccumulateSubledgerAccount(hashReturnedEntries, entry, account);
-          }
-          break;
-        } else {
-          account = account.GetParent();
+    private List<TrialBalanceEntry> OrderByAccountNumber(
+                                    EmpiriaHashTable<TrialBalanceEntry> summaryEntries) {
+
+      var totaBySubsidiaryAccountList = summaryEntries.ToFixedList();
+
+      var returnedCombineOrdering = new List<TrialBalanceEntry>();
+
+      foreach (var entry in totaBySubsidiaryAccountList) {
+        SubsidiaryAccount subsidiary = SubsidiaryAccount.Parse(entry.SubledgerAccountIdParent);
+        if (subsidiary != null) {
+          entry.SubledgerAccountNumber = subsidiary.Number;
+          entry.GroupName = subsidiary.Name;
+          entry.SubledgerNumberOfDigits = entry.SubledgerAccountNumber.Count();
+          entry.SubledgerAccountId = entry.SubledgerAccountIdParent;
         }
-      } while (false);
+        returnedCombineOrdering.Add(entry);
+      }
+
+      return returnedCombineOrdering.Where(a => !a.SubledgerAccountNumber.Contains("undefined"))
+                                    .OrderBy(a => a.Currency.Code)
+                                    .ThenBy(a => a.SubledgerNumberOfDigits)
+                                    .ThenBy(a => a.SubledgerAccountNumber)
+                                    .ToList();
     }
 
-    
+
     #endregion Helper methods
 
   }  // class SaldosPorAuxiliar

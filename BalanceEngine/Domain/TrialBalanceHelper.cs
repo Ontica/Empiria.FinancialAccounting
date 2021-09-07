@@ -695,7 +695,7 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
       string hash = $"{entry.Ledger.Number}||{entry.Currency.Code}||" +
                         $"{entry.SubledgerAccountIdParent}||{Sector.Empty.Code}";
 
-      GenerateOrIncreaseEntries(summaryEntries, entry, entry.Account, Sector.Empty, itemType, hash);
+      GenerateOrIncreaseEntries(summaryEntries, entry, StandardAccount.Empty, Sector.Empty, itemType, hash);
     }
 
 
