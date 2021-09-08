@@ -75,7 +75,7 @@ namespace Empiria.FinancialAccounting {
     } = AccountRole.Sumaria;
 
 
-    [DataField("ID_TIPO_CUENTA")]
+    [DataField("ID_TIPO_CUENTA", ConvertFrom = typeof(long))]
     private AccountType _accountType = FinancialAccounting.AccountType.Empty;
 
     public string AccountType {
