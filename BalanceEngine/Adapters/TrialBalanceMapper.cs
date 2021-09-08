@@ -207,7 +207,8 @@ namespace Empiria.FinancialAccounting.BalanceEngine.Adapters {
 
       dto.SubledgerAccountId = entry.SubledgerAccountId;
       dto.SubledgerAccountNumber = entry.SubledgerAccountNumber;
-      dto.SubledgerAccountName = entry.SubledgerAccountName != "Empty" ?
+      dto.SubledgerAccountName = entry.SubledgerAccountName != "Empty" &&
+                                 entry.SubledgerAccountName != "" ?
                                  entry.SubledgerAccountName : entry.Account.Name;
 
       dto.FirstTotalBalance = entry.FirstTotalBalance;

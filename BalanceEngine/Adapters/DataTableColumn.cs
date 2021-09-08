@@ -12,10 +12,13 @@ namespace Empiria.FinancialAccounting.BalanceEngine.Adapters {
 
   public class DataTableColumn {
 
-    public DataTableColumn(string field, string title, string type) {
+    public DataTableColumn(string field, string title, string type, int digits=2) {
       this.Field = field;
       this.Title = title;
       this.Type = type;
+      if (type == "decimal") {
+        this.Digits = digits;
+      }
     }
 
 
@@ -30,6 +33,10 @@ namespace Empiria.FinancialAccounting.BalanceEngine.Adapters {
 
 
     public string Type {
+      get; private set;
+    }
+
+    public int Digits {
       get; private set;
     }
 
