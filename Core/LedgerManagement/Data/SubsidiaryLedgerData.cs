@@ -28,6 +28,25 @@ namespace Empiria.FinancialAccounting.Data {
       return DataReader.GetFixedList<SubsidiaryAccount>(operation);
     }
 
+
+    static internal long NextSubledgerAccountId() {
+      var sql = "SELECT SEC_ID_CUENTA_AUXILIAR.NEXTVAL FROM DUAL";
+
+      var operation = DataOperation.Parse(sql);
+
+      return Convert.ToInt64(DataReader.GetScalar<decimal>(operation));
+    }
+
+    static internal void WriteSubledgerAccount(SubsidiaryAccount o) {
+      var op = DataOperation.Parse("write_cof_cuenta_auxiliar",
+                                    o.Id, o.SubsidaryLedger.Id,
+                                    o.Number, o.Name, o.Description,
+                                    o.Deleted ? 1: 0);
+
+      DataWriter.Execute(op);
+    }
+
+
   }  // class SubsidiaryLedgerData
 
 }  // namespace Empiria.FinancialAccounting.Data

@@ -114,7 +114,6 @@ namespace Empiria.FinancialAccounting {
       get; private set;
     }
 
-
     #endregion Public properties
 
     #region Public methods
@@ -179,6 +178,10 @@ namespace Empiria.FinancialAccounting {
 
     public FixedList<Account> SearchUnassignedAccounts(string keywords, DateTime date) {
       return LedgerData.SearchUnassignedAccountsForEdition(this, keywords, date);
+    }
+
+    public FixedList<SubsidiaryLedger> Subledgers() {
+      return LedgerData.GetSubledgers(this);
     }
 
     #endregion Public methods

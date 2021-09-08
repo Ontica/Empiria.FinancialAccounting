@@ -48,6 +48,19 @@ namespace Empiria.FinancialAccounting.WebApi {
       }
     }
 
+
+    [HttpGet]
+    [Route("v2/financial-accounting/ledgers/{ledgerUID:guid}/subledgers")]
+    public CollectionModel GetSubledgers([FromUri] string ledgerUID) {
+
+      using (var usecases = LedgerUseCases.UseCaseInteractor()) {
+        FixedList<SubsidiaryLedgerDto> subledgers = usecases.GetSubledgers(ledgerUID);
+
+        return new CollectionModel(base.Request, subledgers);
+      }
+    }
+
+
     #endregion Web Apis
 
   }  // class LedgerController

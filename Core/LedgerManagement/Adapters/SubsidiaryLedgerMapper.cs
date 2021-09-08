@@ -14,6 +14,11 @@ namespace Empiria.FinancialAccounting.Adapters {
   /// <summary>Mapping methods for subsidiary ledger books.</summary>
   static public class SubsidiaryLedgerMapper {
 
+    static internal FixedList<SubsidiaryLedgerDto> Map(FixedList<SubsidiaryLedger> subledgers) {
+      return new FixedList<SubsidiaryLedgerDto>(subledgers.Select(x => Map(x)));
+    }
+
+
     static internal SubsidiaryLedgerDto Map(SubsidiaryLedger subsidiaryLedger) {
       return new SubsidiaryLedgerDto {
         UID = subsidiaryLedger.UID,
@@ -24,6 +29,7 @@ namespace Empiria.FinancialAccounting.Adapters {
         BaseLedger = subsidiaryLedger.BaseLedger.MapToNamedEntity()
       };
     }
+
 
     static public FixedList<SubsidiaryAccountDto> Map(FixedList<SubsidiaryAccount> list) {
       return new FixedList<SubsidiaryAccountDto>(list.Select(x => MapAccount(x)));
@@ -38,6 +44,7 @@ namespace Empiria.FinancialAccounting.Adapters {
         FullName = $"{subledgerAccount.Number} - {subledgerAccount.Name}"
       };
     }
+
 
     static internal SubsidiaryAccountDto MapAccount(SubsidiaryAccount subledgerAccount) {
       return new SubsidiaryAccountDto {

@@ -8,6 +8,7 @@
 *                                                                                                            *
 ************************* Copyright(c) La Vía Óntica SC, Ontica LLC and contributors. All rights reserved. **/
 using System;
+using Empiria.FinancialAccounting.Adapters;
 
 namespace Empiria.FinancialAccounting {
 
@@ -79,6 +80,14 @@ namespace Empiria.FinancialAccounting {
     #endregion Public properties
 
     #region Public methods
+
+    internal SubsidiaryAccount CreateAccount(SubledgerAccountFields fields) {
+      var subledgerAccount = new SubsidiaryAccount(this, fields);
+
+      subledgerAccount.Save();
+
+      return subledgerAccount;
+    }
 
     public SubsidiaryAccount GetAccountWithId(int subsidaryAccountId) {
       var subsidaryAccount = SubsidiaryAccount.Parse(subsidaryAccountId);

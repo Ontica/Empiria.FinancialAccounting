@@ -52,6 +52,17 @@ namespace Empiria.FinancialAccounting.UseCases {
       return LedgerMapper.MapAccount(ledgerAccount, DateTime.Today);
     }
 
+
+    public FixedList<SubsidiaryLedgerDto> GetSubledgers(string ledgerUID) {
+      Assertion.AssertObject(ledgerUID, "ledgerUID");
+
+      var ledger = Ledger.Parse(ledgerUID);
+
+      FixedList<SubsidiaryLedger> subledgers = ledger.Subledgers();
+
+      return SubsidiaryLedgerMapper.Map(subledgers);
+    }
+
     #endregion Use cases
 
   }  // class LedgerUseCases

@@ -8,7 +8,7 @@
 *                                                                                                            *
 ************************* Copyright(c) La Vía Óntica SC, Ontica LLC and contributors. All rights reserved. **/
 using System;
-
+using Empiria.FinancialAccounting.Adapters;
 using Empiria.FinancialAccounting.Data;
 
 namespace Empiria.FinancialAccounting {
@@ -18,8 +18,15 @@ namespace Empiria.FinancialAccounting {
 
     #region Constructors and parsers
 
-    private SubsidiaryAccount() {
+    protected SubsidiaryAccount() {
       // Required by Empiria Framework.
+    }
+
+    internal SubsidiaryAccount(SubsidiaryLedger subledger,
+                               SubledgerAccountFields fields) {
+
+      this.SubsidaryLedger = subledger;
+      LoadFields(fields);
     }
 
 
@@ -29,6 +36,7 @@ namespace Empiria.FinancialAccounting {
       }
       return BaseObject.ParseId<SubsidiaryAccount>(id);
     }
+
 
     static public FixedList<SubsidiaryAccount> GetList(AccountsChart accountsChart, string keywords) {
       Assertion.AssertObject(accountsChart, "accountsChart");
@@ -78,6 +86,17 @@ namespace Empiria.FinancialAccounting {
     }
 
     #endregion Public properties
+
+    #region Methods
+
+
+    private void LoadFields(SubledgerAccountFields fields) {
+      this.Number = fields.Number;
+      this.Name = fields.Name;
+      this.Description = fields.Description;
+    }
+
+    #endregion Methods
 
   }  // class SubsidiaryAccount
 

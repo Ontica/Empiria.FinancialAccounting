@@ -52,6 +52,17 @@ namespace Empiria.FinancialAccounting.Data {
     }
 
 
+    static internal FixedList<SubsidiaryLedger> GetSubledgers(Ledger ledger) {
+      var sql = "SELECT * FROM COF_MAYOR_AUXILIAR " +
+                $"WHERE ID_MAYOR = {ledger.Id} AND Eliminado = 0 " +
+                 "ORDER BY NOMBRE_MAYOR_AUXILIAR";
+
+      var dataOperation = DataOperation.Parse(sql);
+
+      return DataReader.GetFixedList<SubsidiaryLedger>(dataOperation);
+    }
+
+
     static private long NextLedgerAccountId() {
       var sql = "SELECT SEC_ID_CUENTA.NEXTVAL FROM DUAL";
 

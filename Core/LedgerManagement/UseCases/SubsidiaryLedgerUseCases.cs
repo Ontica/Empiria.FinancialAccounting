@@ -32,6 +32,19 @@ namespace Empiria.FinancialAccounting.UseCases {
 
     #region Use cases
 
+    public SubsidiaryAccountDto CreateSubledgerAccount(string subledgerUID,
+                                                       SubledgerAccountFields fields) {
+      Assertion.AssertObject(subledgerUID, "subledgerUID");
+      Assertion.AssertObject(fields, "fields");
+
+      var subledger = SubsidiaryLedger.Parse(subledgerUID);
+
+      SubsidiaryAccount subledgerAccount = subledger.CreateAccount(fields);
+
+      return SubsidiaryLedgerMapper.MapAccount(subledgerAccount);
+    }
+
+
     public SubsidiaryLedgerDto GetSubsidiaryLedger(string subsidiaryLedgerUID) {
       Assertion.AssertObject(subsidiaryLedgerUID, "subsidiaryLedgerUID");
 
