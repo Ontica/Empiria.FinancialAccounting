@@ -82,6 +82,7 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
       return bestBalanceSet;
     }
 
+
     protected override void OnInitialize() {
       ResetBalances();
     }
@@ -162,10 +163,15 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
       Assertion.Assert(this.Unprotected,
         "This balance set is protected. It can not be recalculated.");
 
+      this.Calculated = false;
+      this.Save();
+
       var command = new TrialBalanceCommand {
         AccountsChartUID = this.AccountsChart.UID,
         TrialBalanceType = TrialBalanceType.GeneracionDeSaldos,
         InitialPeriod = { FromDate = this.BalancesDate, ToDate = this.BalancesDate },
+        WithSubledgerAccount = true,
+        BalancesType = BalancesType.AllAccounts,
         ShowCascadeBalances = true
       };
 
@@ -175,8 +181,7 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
 
       StoredBalanceDataService.DeleteBalances(this);
 
-      var entries = trialBalance.Entries.FindAll(x => ((TrialBalanceEntry) x).CurrentBalance != 0)
-                                        .Select(x => (TrialBalanceEntry) x);
+      var entries = trialBalance.Entries.Select(x => (TrialBalanceEntry) x);
 
       foreach (var entry in entries) {
         var storedBalance = new StoredBalance(this, entry);
