@@ -8,10 +8,8 @@
 *                                                                                                            *
 ************************* Copyright(c) La Vía Óntica SC, Ontica LLC and contributors. All rights reserved. **/
 using System;
-using System.Linq;
 using System.Collections.Generic;
-
-using Empiria.Collections;
+using System.Linq;
 
 using Empiria.FinancialAccounting.BalanceEngine.Adapters;
 
@@ -39,7 +37,7 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
       return postingEntries;
     }
 
-    
+
 
     internal List<TrialBalanceComparativeEntry> MergePeriodsIntoComparativeBalance(
                                       FixedList<TrialBalanceEntry> trialBalance) {
@@ -49,7 +47,7 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
       foreach (var entry in trialBalance) {
         comparativeEntries.Add(entry.MapToComparativeBalanceEntry());
       }
-      
+
       CalculateVariationFields(comparativeEntries);
 
       AssingSubledgerAccountInfo(comparativeEntries);
@@ -59,7 +57,7 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
       return comparativeEntries;
     }
 
-    
+
     #region Private methods
 
     private void AssingSubledgerAccountInfo(List<TrialBalanceComparativeEntry> comparativeEntries) {
@@ -71,14 +69,14 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
         if (!subledgerAccount.IsEmptyInstance) {
           entry.SubledgerAccountName = subledgerAccount.Name;
           entry.SubledgerAccountNumber = subledgerAccount.Number;
-          entry.SubledgerNumberOfDigits = entry.SubledgerAccountNumber != "" ?
-                                          entry.SubledgerAccountNumber.Count() : 0;
+          entry.SubledgerNumberOfDigits = entry.SubledgerAccountNumber.Length;
         }
       }
     }
 
+
     private void CalculateVariationFields(List<TrialBalanceComparativeEntry> comparativeEntries) {
-      List<TrialBalanceComparativeEntry> calculatedEntries = 
+      List<TrialBalanceComparativeEntry> calculatedEntries =
                                           new List<TrialBalanceComparativeEntry>(comparativeEntries);
 
       foreach (var entry in calculatedEntries) {
@@ -88,7 +86,7 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
       }
     }
 
-    
+
     private FixedList<TrialBalanceEntry> ExchangeRateSecondPeriod(
                                           FixedList<TrialBalanceEntry> postingEntries) {
       var helper = new TrialBalanceHelper(_command);
@@ -102,7 +100,7 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
 
     private List<TrialBalanceComparativeEntry> OrderingComparativeBalance(
                                                 List<TrialBalanceComparativeEntry> comparativeEntries) {
-      List<TrialBalanceComparativeEntry> orderingEntries = 
+      List<TrialBalanceComparativeEntry> orderingEntries =
                                           new List<TrialBalanceComparativeEntry>(comparativeEntries);
 
       foreach (var entry in orderingEntries) {
@@ -110,8 +108,7 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
         if (!subledgerAccount.IsEmptyInstance) {
           entry.SubledgerAccountNumber = subledgerAccount.Number != "0" ?
                                          subledgerAccount.Number : "";
-          entry.SubledgerNumberOfDigits = entry.SubledgerAccountNumber != "" ?
-                                          entry.SubledgerAccountNumber.Count() : 0;
+          entry.SubledgerNumberOfDigits = entry.SubledgerAccountNumber.Length;
         }
       }
       return orderingEntries.OrderBy(a => a.Ledger.Number)
