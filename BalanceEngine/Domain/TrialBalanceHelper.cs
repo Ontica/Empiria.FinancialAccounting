@@ -340,9 +340,9 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
         entry.GroupName = "TOTAL CONSOLIDADO GENERAL";
 
         string hash;
-        if (_command.TrialBalanceType == TrialBalanceType.SaldosPorCuentaYMayor ||
+        if (_command.TrialBalanceType == TrialBalanceType.BalanzaConContabilidadesEnCascada ||
              (_command.TrialBalanceType == TrialBalanceType.Balanza && _command.ShowCascadeBalances)) {
-          if (_command.TrialBalanceType == TrialBalanceType.SaldosPorCuentaYMayor) {
+          if (_command.TrialBalanceType == TrialBalanceType.BalanzaConContabilidadesEnCascada) {
             entry.GroupName = "TOTAL DEL REPORTE";
           }
           hash = $"{entry.GroupName}";
@@ -401,7 +401,8 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
       
       FixedList<TrialBalanceEntry> postingEntries = GetTrialBalanceEntries(_command.InitialPeriod);
 
-      if (_command.ValuateBalances || _command.InitialPeriod.UseDefaultValuation) {
+      if ((_command.ValuateBalances || _command.InitialPeriod.UseDefaultValuation) && 
+          _command.TrialBalanceType != TrialBalanceType.BalanzaValorizadaEnDolares) {
         postingEntries = ValuateToExchangeRate(postingEntries, _command.InitialPeriod);
 
         if (_command.ConsolidateBalancesToTargetCurrency) {
@@ -425,7 +426,7 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
 
     internal FixedList<TrialBalanceEntry> GetTrialBalanceEntries(TrialBalanceCommandPeriod commandPeriod) {
 
-      if (_command.TrialBalanceType == TrialBalanceType.SaldosPorCuentaYMayor) {
+      if (_command.TrialBalanceType == TrialBalanceType.BalanzaConContabilidadesEnCascada) {
         _command.ShowCascadeBalances = true;
       }
 
@@ -621,7 +622,7 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
 
       TrialBalanceEntry entry = TrialBalanceMapper.MapToTrialBalanceEntry(balanceEntry);
 
-      if (_command.TrialBalanceType != TrialBalanceType.SaldosPorCuentaYMayor &&
+      if (_command.TrialBalanceType != TrialBalanceType.BalanzaConContabilidadesEnCascada &&
            entry.ItemType == TrialBalanceItemType.BalanceTotalCreditor) {
         entry.InitialBalance = -1 * entry.InitialBalance;
         entry.CurrentBalance = -1 * entry.CurrentBalance;
@@ -629,7 +630,7 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
 
       entry.GroupName = "TOTAL MONEDA " + entry.Currency.FullName;
       string hash;
-      if (_command.TrialBalanceType == TrialBalanceType.SaldosPorCuentaYMayor) {
+      if (_command.TrialBalanceType == TrialBalanceType.BalanzaConContabilidadesEnCascada) {
         entry.GroupNumber = "";
         hash = $"{entry.GroupName}||{entry.Currency.Id}";
       } else {

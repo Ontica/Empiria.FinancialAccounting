@@ -39,11 +39,14 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
         case TrialBalanceType.Saldos:
         case TrialBalanceType.SaldosPorAuxiliar:
         case TrialBalanceType.SaldosPorCuenta:
-        case TrialBalanceType.SaldosPorCuentaYMayor:
+        case TrialBalanceType.BalanzaConContabilidadesEnCascada:
           return TrialBalanceDataColumns();
 
         case TrialBalanceType.BalanzaValorizadaComparativa:
           return TwoBalancesComparativeDataColumns();
+
+        case TrialBalanceType.BalanzaValorizadaEnDolares:
+          return ValuedTrialBalanceDataColumns();
 
         default:
           throw Assertion.AssertNoReachThisCode(
@@ -149,6 +152,23 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
       }
       columns.Add(new DataTableColumn("averageBalance", "Saldo promedio", "decimal"));
       // columns.Add(new DataTableColumn("lastChangeDate", "Último movimiento", "text"));
+
+      return columns.ToFixedList();
+    }
+
+
+    private FixedList<DataTableColumn> ValuedTrialBalanceDataColumns() {
+      List<DataTableColumn> columns = new List<DataTableColumn>();
+      columns.Add(new DataTableColumn("accountNumber", "Cuenta", "text-nowrap"));
+      columns.Add(new DataTableColumn("accountName", "Nombre", "text"));
+
+      columns.Add(new DataTableColumn("currencyName", "Moneda", "text"));
+      columns.Add(new DataTableColumn("currencyCode", "Clave Mon.", "text"));
+
+      columns.Add(new DataTableColumn("totalBalance", "Importe Mon. Ext.", "decimal"));
+      columns.Add(new DataTableColumn("exchangeRate", "Tipo cambio", "decimal"));
+      columns.Add(new DataTableColumn("totalEquivalence", "Equivalencia M.N.", "decimal"));
+
 
       return columns.ToFixedList();
     }

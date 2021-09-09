@@ -75,16 +75,21 @@ namespace Empiria.FinancialAccounting.BalanceEngine.Adapters {
           return MapToAnaliticoCuentas(list);
 
         case TrialBalanceType.Balanza:
-        //case TrialBalanceType.BalanzaConAuxiliares:
+        case TrialBalanceType.BalanzaConContabilidadesEnCascada:
         case TrialBalanceType.GeneracionDeSaldos:
         case TrialBalanceType.Saldos:
         case TrialBalanceType.SaldosPorAuxiliar:
         case TrialBalanceType.SaldosPorCuenta:
-        case TrialBalanceType.SaldosPorCuentaYMayor:
 
           var mappedItems = list.Select((x) => MapToTrialBalance((TrialBalanceEntry) x, command));
           return new FixedList<ITrialBalanceEntryDto>(mappedItems);
 
+
+        case TrialBalanceType.BalanzaValorizadaEnDolares:
+          var valuedMappedItems = list.Select((x) =>
+                MapToValuedTrialBalance((ValuedTrialBalanceEntry) x));
+          return new FixedList<ITrialBalanceEntryDto>(valuedMappedItems);
+          
         case TrialBalanceType.BalanzaValorizadaComparativa:
 
           var mappedItemsComparative = list.Select((x) =>
@@ -181,7 +186,7 @@ namespace Empiria.FinancialAccounting.BalanceEngine.Adapters {
                            entry.DebtorCreditor.ToString() : "";
       dto.LastChangeDate = entry.ItemType == TrialBalanceItemType.BalanceEntry ||
                            entry.ItemType == TrialBalanceItemType.BalanceSummary ||
-                           command.TrialBalanceType == TrialBalanceType.SaldosPorCuentaYMayor ?
+                           command.TrialBalanceType == TrialBalanceType.BalanzaConContabilidadesEnCascada ?
                            entry.LastChangeDate: ExecutionServer.DateMaxValue;
 
       return dto;
@@ -227,6 +232,24 @@ namespace Empiria.FinancialAccounting.BalanceEngine.Adapters {
       return dto;
     }
 
+    static private ValuedTrialBalanceDto MapToValuedTrialBalance(
+                                              ValuedTrialBalanceEntry entry) {
+      var dto = new ValuedTrialBalanceDto();
+      dto.ItemType = entry.ItemType;
+      dto.CurrencyCode = entry.Currency.Code;
+      dto.CurrencyName = entry.Currency.Name;
+      dto.StandardAccountId = entry.Account.Id;
+      dto.AccountNumber = entry.Account.Number;
+      dto.AccountName = entry.Account.Name;
+      dto.SectorCode = entry.Sector.Code;
+      dto.TotalBalance = entry.TotalBalance;
+      dto.ExchangeRate = entry.ExchangeRate;
+      dto.TotalEquivalence = entry.TotalEquivalence;
+      dto.GroupName = entry.GroupName;
+      dto.GroupNumber = entry.GroupNumber;
+      
+      return dto;
+    }
     #endregion Helpers
 
   } // class TrialBalanceMapper

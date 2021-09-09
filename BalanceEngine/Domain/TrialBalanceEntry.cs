@@ -225,8 +225,18 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
     }
 
 
+    internal ValuedTrialBalanceEntry MapToValuedBalanceEntry() {
+      return new ValuedTrialBalanceEntry {
+        Currency = this.Currency,
+        Account = this.Account,
+        Sector = this.Sector,
+        TotalBalance = this.CurrentBalance,
+        ExchangeRate = this.ExchangeRate,
+        ItemType = this.ItemType
+      };
+    }
+
+
   } // class TrialBalance
-
-
 
 } // namespace Empiria.FinancialAccounting.BalanceEngine

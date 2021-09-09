@@ -74,7 +74,7 @@ namespace Empiria.FinancialAccounting.BanobrasIntegration.ExcelReports {
           FillOutBalanzaComparativa(trialBalance.Entries.Select(x => (TrialBalanceComparativeDto) x));
           return;
 
-        case TrialBalanceType.SaldosPorCuentaYMayor:
+        case TrialBalanceType.BalanzaConContabilidadesEnCascada:
           FillOutSaldosPorCuentayMayor(trialBalance.Entries.Select(x => (TrialBalanceEntryDto) x));
           return;
 

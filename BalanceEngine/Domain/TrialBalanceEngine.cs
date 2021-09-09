@@ -19,7 +19,11 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
 
     Balanza,
 
+    BalanzaConContabilidadesEnCascada,
+
     BalanzaValorizadaComparativa,
+
+    BalanzaValorizadaEnDolares,
 
     GeneracionDeSaldos,
 
@@ -27,9 +31,7 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
 
     SaldosPorAuxiliar,
 
-    SaldosPorCuenta,
-
-    SaldosPorCuentaYMayor
+    SaldosPorCuenta
 
   }
 
@@ -107,6 +109,11 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
           var balanzaComparativa = new BalanzaComparativa(this.Command);
           return balanzaComparativa.Build();
 
+        case TrialBalanceType.BalanzaValorizadaEnDolares:
+
+          var balanzaDolarizada = new BalanzaValorizada(this.Command);
+          return balanzaDolarizada.Build();
+
         case TrialBalanceType.GeneracionDeSaldos:
 
           var saldosConAuxiliares = new SaldosPorAuxiliar(this.Command);
@@ -117,7 +124,7 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
           var saldosPorAuxiliar = new SaldosPorAuxiliar(this.Command);
           return saldosPorAuxiliar.Build();
 
-        case TrialBalanceType.SaldosPorCuentaYMayor:
+        case TrialBalanceType.BalanzaConContabilidadesEnCascada:
 
           var saldosPorCuentaYMayores = new SaldosPorCuentaYMayores(this.Command);
           return saldosPorCuentaYMayores.Build();
