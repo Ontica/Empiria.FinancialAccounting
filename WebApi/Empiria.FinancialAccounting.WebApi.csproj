@@ -62,6 +62,7 @@
   </PropertyGroup>
   <ItemGroup>
     <ProjectReference Include="..\BanobrasIntegration\Empiria.FinancialAccounting.BanobrasIntegration.csproj" />
+    <ProjectReference Include="..\Rules\Empiria.FinancialAccounting.Rules.csproj" />
     <ProjectReference Include="..\Vouchers\Empiria.FinancialAccounting.Vouchers.csproj" />
   </ItemGroup>
   <ItemGroup>
