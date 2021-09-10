@@ -36,7 +36,11 @@ namespace Empiria.FinancialAccounting.FinancialReports.UseCases {
     public FinancialReportDto GenerateFinancialReport(FinancialReportCommand command) {
       Assertion.AssertObject(command, "command");
 
-      throw new NotImplementedException();
+      var financialReportGenerator = new FinancialReportGenerator(command);
+
+      FinancialReport financialReport = financialReportGenerator.BuildFinancialReport();
+
+      return FinancialReportMapper.Map(financialReport);
     }
 
     #endregion Use cases

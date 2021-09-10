@@ -14,7 +14,7 @@ using Empiria.FinancialAccounting.Rules.Data;
 namespace Empiria.FinancialAccounting.Rules {
 
   /// <summary>Holds a set of financial accounting rules.</summary>
-  internal class RulesSet : GeneralObject {
+  public class RulesSet : GeneralObject {
 
     #region Constructors and parsers
 
@@ -70,7 +70,7 @@ namespace Empiria.FinancialAccounting.Rules {
 
     #region Methods
 
-    internal FixedList<GroupingRule> GetGroupingRules() {
+    public FixedList<GroupingRule> GetGroupingRules() {
       return GroupingRulesData.GetGroupingRules(this);
     }
 
