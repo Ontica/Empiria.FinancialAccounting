@@ -68,9 +68,4 @@
   <ItemGroup>
     <ProjectReference Include="..\Rules\Empiria.FinancialAccounting.Rules.csproj" />
   </ItemGroup>
-  <ItemGroup>
-    <Folder Include="Adapters\" />
-    <Folder Include="Domain\" />
-    <Folder Include="UseCases\" />
-  </ItemGroup>
 </Project>
