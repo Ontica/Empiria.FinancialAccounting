@@ -232,6 +232,7 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
         Sector = this.Sector,
         TotalBalance = this.CurrentBalance,
         ExchangeRate = this.ExchangeRate,
+        TotalEquivalence = this.CurrentBalance,
         ItemType = this.ItemType
       };
     }

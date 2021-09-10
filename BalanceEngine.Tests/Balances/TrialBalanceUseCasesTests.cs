@@ -62,11 +62,9 @@ namespace Empiria.FinancialAccounting.Tests.Balances {
     public void Should_Build_A_Traditional_Trial_Balance() {
       TrialBalanceCommand command = GetDefaultTrialBalanceCommand();
 
-      command.TrialBalanceType = TrialBalanceType.SaldosPorAuxiliar;
-      command.WithSubledgerAccount = true;
-      command.ShowCascadeBalances = false;
-      command.SubledgerAccount = "90000000000226521";
-      command.FromAccount = "1103";
+      command.TrialBalanceType = TrialBalanceType.BalanzaValorizadaEnDolares;
+      command.UseDefaultValuation = true;
+
       TrialBalanceDto trialBalance = _usecases.BuildTrialBalance(command);
 
       Assert.NotNull(trialBalance);
@@ -104,8 +102,8 @@ namespace Empiria.FinancialAccounting.Tests.Balances {
           ToDate = TestingConstants.TO_DATE
         },
         FinalPeriod = new TrialBalanceCommandPeriod() {
-          FromDate = new DateTime(2021, 03, 01),
-          ToDate = new DateTime(2021, 03, 31)
+          FromDate = new DateTime(2020, 04, 01),
+          ToDate = new DateTime(2020, 04, 30)
     }
         
     };

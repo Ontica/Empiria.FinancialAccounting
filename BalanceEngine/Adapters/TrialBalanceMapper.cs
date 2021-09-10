@@ -64,6 +64,16 @@ namespace Empiria.FinancialAccounting.BalanceEngine.Adapters {
       return entry;
     }
 
+    static internal ValuedTrialBalanceEntry MapValuedTrialBalanceEntry(ValuedTrialBalanceEntry valuedEntry) {
+      var entry = new ValuedTrialBalanceEntry();
+      entry.Account = valuedEntry.Account;
+      entry.Currency = valuedEntry.Currency;
+      entry.Sector = Sector.Empty;
+      entry.GroupName = valuedEntry.GroupName;
+      entry.ItemType = valuedEntry.ItemType;
+
+      return entry;
+    }
     #endregion Public mappers
 
     #region Helpers
@@ -239,11 +249,13 @@ namespace Empiria.FinancialAccounting.BalanceEngine.Adapters {
       dto.CurrencyCode = entry.Currency.Code;
       dto.CurrencyName = entry.Currency.Name;
       dto.StandardAccountId = entry.Account.Id;
-      dto.AccountNumber = entry.Account.Number;
-      dto.AccountName = entry.Account.Name;
+      dto.AccountNumber = entry.ItemType == TrialBalanceItemType.BalanceSummary ? entry.Account.Number : "";
+      dto.AccountName = entry.ItemType == TrialBalanceItemType.BalanceSummary ? entry.Account.Name :
+                        entry.ItemType == TrialBalanceItemType.BalanceTotalCurrency ? entry.GroupName : "";
       dto.SectorCode = entry.Sector.Code;
       dto.TotalBalance = entry.TotalBalance;
       dto.ExchangeRate = entry.ExchangeRate;
+      dto.ValuedExchangeRate = entry.ValuedExchangeRate;
       dto.TotalEquivalence = entry.TotalEquivalence;
       dto.GroupName = entry.GroupName;
       dto.GroupNumber = entry.GroupNumber;

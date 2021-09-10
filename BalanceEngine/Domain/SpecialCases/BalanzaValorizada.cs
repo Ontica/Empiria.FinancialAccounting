@@ -33,58 +33,127 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
 
       List<TrialBalanceEntry> summaryEntries = helper.GenerateSummaryEntries(trialBalance.ToFixedList());
 
-      EmpiriaHashTable<TrialBalanceEntry> getLedgerAccounts = GetLedgerAccountsList(summaryEntries);
+      EmpiriaHashTable<TrialBalanceEntry> ledgerAccounts = GetLedgerAccountsList(summaryEntries);
 
-      //EmpiriaHashTable<TrialBalanceEntry> getAccountsByCurrency = GetAccountsByCurrency(summaryEntries, getLedgerAccounts);
+      FixedList<TrialBalanceEntry> valuedEntries = helper.ValuateToExchangeRate(
+                                    ledgerAccounts.ToFixedList(), _command.InitialPeriod);
 
-      List<ValuedTrialBalanceEntry> mergeTrialBalancetoToValuedBalances = 
-                                    MergeTrialBalanceIntoValuedBalances(getLedgerAccounts);
+      List<ValuedTrialBalanceEntry> mergeBalancesToToValuedBalances =
+                                    MergeTrialBalanceIntoValuedBalances(valuedEntries);
+
+      List<ValuedTrialBalanceEntry> asignExchageRateAndTotalToBalances =
+                                    GetExchangeRateByValuedEntry(mergeBalancesToToValuedBalances);
 
       var returnBalance = new FixedList<ITrialBalanceEntry>(
-                                mergeTrialBalancetoToValuedBalances.Select(x => (ITrialBalanceEntry) x));
+                                asignExchageRateAndTotalToBalances.Select(x => (ITrialBalanceEntry) x));
 
       return new TrialBalance(_command, returnBalance);
     }
 
+    
     private EmpiriaHashTable<TrialBalanceEntry> GetAccountsByCurrency(
-                                                List<TrialBalanceEntry> summaryEntries, 
-                                                EmpiriaHashTable<TrialBalanceEntry> ledgerAccounts) {
+                                                EmpiriaHashTable<TrialBalanceEntry> hashAccountEntries) {
+
+      var headerAccounts = hashAccountEntries.ToFixedList().Where(a => a.Currency.Code == "02").ToList();
+
       var returnedBalances = new EmpiriaHashTable<TrialBalanceEntry>();
 
-      foreach (var ledger in ledgerAccounts.ToFixedList()) {
+      foreach (var header in headerAccounts) {
+        var foreignCurrencies = hashAccountEntries.ToFixedList()
+                                .Where(a => a.Currency.Code != "02" &&
+                                            a.Account.Number == header.Account.Number)
+                                .OrderBy(a => a.Currency.Code).ToList();
 
-        string hash = $"{ledger.Account.Number}";
+        string hash = $"{header.Account.Number}||{header.Currency.Code}||{header.ItemType}";
+        returnedBalances.Insert(hash, header);
 
-
+        foreach (var currencyAccount in foreignCurrencies) {
+          hash = $"{currencyAccount.Account.Number}||{currencyAccount.Currency.Code}";
+          returnedBalances.Insert(hash, currencyAccount);
+        }
       }
 
       return returnedBalances;
     }
 
+    private List<ValuedTrialBalanceEntry> GetExchangeRateByValuedEntry(
+                                          List<ValuedTrialBalanceEntry> mergeBalancesToToValuedBalances) {
+
+      var returnedValuedBalances = new List<ValuedTrialBalanceEntry>();
+
+      var headerAccounts = mergeBalancesToToValuedBalances
+                          .Where(a => a.ItemType == TrialBalanceItemType.BalanceSummary).ToList();
+
+      foreach (var header in headerAccounts) {
+        returnedValuedBalances.Add(header);
+        var foreignAccounts = mergeBalancesToToValuedBalances
+                              .Where(a => a.Account.Number == header.Account.Number &&
+                                          a.Currency.Code != header.Currency.Code).ToList();
+
+        decimal totalEquivalence = header.TotalEquivalence;
+
+        foreach (var foreign in foreignAccounts) {
+          foreign.ValuedExchangeRate = foreign.ExchangeRate / header.ExchangeRate;
+          foreign.TotalEquivalence = foreign.TotalBalance * foreign.ValuedExchangeRate;
+
+          returnedValuedBalances.Add(foreign);
+          totalEquivalence += foreign.TotalEquivalence;
+        }
+        var totalByAccount = GetTotalByAccount(header, totalEquivalence);
+        if (totalByAccount.Values.Count > 0) {
+          returnedValuedBalances.Add(totalByAccount.ToFixedList().FirstOrDefault());
+        }
+      }
+      return returnedValuedBalances;
+    }
+
+
     private EmpiriaHashTable<TrialBalanceEntry> GetLedgerAccountsList(List<TrialBalanceEntry> trialBalance) {
 
       var helper = new TrialBalanceHelper(_command);
 
-      var ledgersList = trialBalance.Where(a => a.Level == 1 && a.Sector.Code == "00" && 
-                                                a.Currency.Code == "02").ToList();
+      var ledgersList = trialBalance.Where(a => a.Level == 1 && a.Sector.Code == "00").ToList();
 
-      var hashReturnedEntries = new EmpiriaHashTable<TrialBalanceEntry>();
+      var hashAccountEntries = new EmpiriaHashTable<TrialBalanceEntry>();
 
       foreach (var entry in ledgersList) {
-
-        helper.SummaryByEntry(hashReturnedEntries, entry, entry.Account, 
-                              Sector.Empty, TrialBalanceItemType.BalanceSummary);
-
+        TrialBalanceItemType itemType = entry.Currency.Code == "02" ? 
+                                        TrialBalanceItemType.BalanceSummary : 
+                                        TrialBalanceItemType.BalanceEntry;
+        helper.SummaryByEntry(hashAccountEntries, entry, entry.Account,
+                              Sector.Empty, itemType);
       }
+
+      var hashReturnedEntries = GetAccountsByCurrency(hashAccountEntries);
 
       return hashReturnedEntries;
     }
 
+
+    private EmpiriaHashTable<ValuedTrialBalanceEntry> GetTotalByAccount(
+                                                ValuedTrialBalanceEntry header, decimal totalEquivalence) {
+
+      ValuedTrialBalanceEntry valuedEntry = TrialBalanceMapper.MapValuedTrialBalanceEntry(header);
+
+      valuedEntry.GroupName = "TOTAL POR CUENTA";
+      valuedEntry.TotalEquivalence = totalEquivalence;
+      valuedEntry.ValuedExchangeRate = 0;
+      valuedEntry.ItemType = TrialBalanceItemType.BalanceTotalCurrency;
+      string hash = $"{valuedEntry.GroupName}||{valuedEntry.Account}";
+
+      EmpiriaHashTable<ValuedTrialBalanceEntry> hashdEntry = new EmpiriaHashTable<ValuedTrialBalanceEntry>();
+
+      hashdEntry.Insert(hash, valuedEntry);
+
+      return hashdEntry;
+    }
+
+
     private List<ValuedTrialBalanceEntry> MergeTrialBalanceIntoValuedBalances(
-                                          EmpiriaHashTable<TrialBalanceEntry> getLedgerAccounts) {
+                                          FixedList<TrialBalanceEntry> getLedgerAccounts) {
 
       List<ValuedTrialBalanceEntry> returnedValuedBalance = new List<ValuedTrialBalanceEntry>();
-      foreach (var entry in getLedgerAccounts.ToFixedList()) {
+      foreach (var entry in getLedgerAccounts) {
         returnedValuedBalance.Add(entry.MapToValuedBalanceEntry());
       }
 

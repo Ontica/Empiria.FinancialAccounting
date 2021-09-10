@@ -483,13 +483,13 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
         Assertion.AssertObject(exchangeRate, $"No hay tipo de cambio para la moneda {entry.Currency.FullName}.");
 
         if (_command.TrialBalanceType == TrialBalanceType.BalanzaValorizadaComparativa) {
-
           if (isSecondPeriod) {
             entry.SecondExchangeRate = exchangeRate.Value;
           } else {
             entry.ExchangeRate = exchangeRate.Value;
           }
-
+        } else if (_command.TrialBalanceType == TrialBalanceType.BalanzaValorizadaEnDolares) {
+          entry.ExchangeRate = exchangeRate.Value;
         } else {
           entry.MultiplyBy(exchangeRate.Value);
         }

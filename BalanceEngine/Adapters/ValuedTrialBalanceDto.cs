@@ -49,6 +49,11 @@ namespace Empiria.FinancialAccounting.BalanceEngine.Adapters {
       internal set;
     }
 
+    public decimal ValuedExchangeRate {
+      get;
+      internal set;
+    }
+
     public decimal TotalEquivalence {
       get;
       internal set;
