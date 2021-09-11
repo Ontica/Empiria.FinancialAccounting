@@ -42,6 +42,9 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
         case TrialBalanceType.BalanzaConContabilidadesEnCascada:
           return TrialBalanceDataColumns();
 
+        case TrialBalanceType.BalanzaConsolidadaPorMoneda:
+          return TrialBalanceByCurrencyDataColumns();
+
         case TrialBalanceType.BalanzaValorizadaComparativa:
           return TwoBalancesComparativeDataColumns();
 
@@ -170,6 +173,19 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
       columns.Add(new DataTableColumn("valuedExchangeRate", "Tipo cambio", "decimal", 6));
       columns.Add(new DataTableColumn("totalEquivalence", "Equivalencia M.N.", "decimal"));
 
+
+      return columns.ToFixedList();
+    }
+
+    private FixedList<DataTableColumn> TrialBalanceByCurrencyDataColumns() {
+      List<DataTableColumn> columns = new List<DataTableColumn>();
+      columns.Add(new DataTableColumn("accountNumber", "Cuenta", "text-nowrap"));
+      columns.Add(new DataTableColumn("accountName", "Nombre", "text"));
+      columns.Add(new DataTableColumn("domesticBalance", "M.N. (01)", "decimal"));
+      columns.Add(new DataTableColumn("dollarBalance", "Dólares (02)", "decimal"));
+      columns.Add(new DataTableColumn("yenBalance", "Yenes (06)", "decimal"));
+      columns.Add(new DataTableColumn("euroBalance", "Euros(27)", "decimal"));
+      columns.Add(new DataTableColumn("udisBalance", "UDIS (44)", "decimal"));
 
       return columns.ToFixedList();
     }

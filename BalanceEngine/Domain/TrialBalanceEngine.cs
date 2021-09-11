@@ -21,6 +21,8 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
 
     BalanzaConContabilidadesEnCascada,
 
+    BalanzaConsolidadaPorMoneda,
+
     BalanzaValorizadaComparativa,
 
     BalanzaValorizadaEnDolares,
@@ -103,6 +105,11 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
 
           var balanzaTradicional = new BalanzaTradicional(this.Command);
           return balanzaTradicional.Build();
+
+        case TrialBalanceType.BalanzaConsolidadaPorMoneda:
+
+          var balanzaPorMoneda = new BalanzaValorizada(this.Command);
+          return balanzaPorMoneda.BuildBalanceConsolidatedByCurrency();
 
         case TrialBalanceType.BalanzaValorizadaComparativa:
 

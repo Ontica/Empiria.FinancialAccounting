@@ -73,4 +73,70 @@ namespace Empiria.FinancialAccounting.BalanceEngine.Adapters {
     }
   } // class ValuedTrialBalanceDto
 
+  public class TrialBalanceByCurrencyDto : ITrialBalanceEntryDto {
+
+    public string CurrencyCode {
+      get; internal set;
+    }
+
+    public string CurrencyName {
+      get; internal set;
+    }
+
+    public int StandardAccountId {
+      get; internal set;
+    }
+
+    public string AccountNumber {
+      get; internal set;
+    }
+
+
+    public string AccountName {
+      get; internal set;
+    }
+
+    public string SectorCode {
+      get; internal set;
+    }
+
+    public decimal DomesticBalance {
+      get;
+      internal set;
+    }
+
+    public decimal DollarBalance {
+      get;
+      internal set;
+    }
+
+    public decimal YenBalance {
+      get;
+      internal set;
+    }
+
+    public decimal EuroBalance {
+      get;
+      internal set;
+    }
+
+    public decimal UdiBalance {
+      get;
+      internal set;
+    }
+
+    public string GroupName {
+      get; internal set;
+    }
+
+    public string GroupNumber {
+      get; internal set;
+    }
+
+    public TrialBalanceItemType ItemType {
+      get;
+      internal set;
+    }
+  }
+
 } // namespace Empiria.FinancialAccounting.BalanceEngine.Adapters

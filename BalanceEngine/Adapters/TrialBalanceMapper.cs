@@ -94,7 +94,11 @@ namespace Empiria.FinancialAccounting.BalanceEngine.Adapters {
           var mappedItems = list.Select((x) => MapToTrialBalance((TrialBalanceEntry) x, command));
           return new FixedList<ITrialBalanceEntryDto>(mappedItems);
 
-
+        case TrialBalanceType.BalanzaConsolidadaPorMoneda:
+          var currencyMappedItems = list.Select((x) =>
+                MapToTrialBalanceByCurrency((TrialBalanceByCurrencyEntry) x));
+          return new FixedList<ITrialBalanceEntryDto>(currencyMappedItems);
+          
         case TrialBalanceType.BalanzaValorizadaEnDolares:
           var valuedMappedItems = list.Select((x) =>
                 MapToValuedTrialBalance((ValuedTrialBalanceEntry) x));
@@ -262,6 +266,28 @@ namespace Empiria.FinancialAccounting.BalanceEngine.Adapters {
       
       return dto;
     }
+
+    static private TrialBalanceByCurrencyDto MapToTrialBalanceByCurrency(
+                                              TrialBalanceByCurrencyEntry entry) {
+      var dto = new TrialBalanceByCurrencyDto();
+      dto.ItemType = entry.ItemType;
+      dto.CurrencyCode = entry.Currency.Code;
+      dto.CurrencyName = entry.Currency.Name;
+      dto.StandardAccountId = entry.Account.Id;
+      dto.AccountNumber = entry.Account.Number;
+      dto.AccountName = entry.Account.Name;
+      dto.SectorCode = entry.Sector.Code;
+      dto.DomesticBalance = entry.DomesticBalance;
+      dto.DollarBalance = entry.DollarBalance;
+      dto.YenBalance = entry.YenBalance;
+      dto.EuroBalance = entry.EuroBalance;
+      dto.UdiBalance = entry.UdisBalance;
+      dto.GroupName = entry.GroupName;
+      dto.GroupNumber = entry.GroupNumber;
+
+      return dto;
+    }
+
     #endregion Helpers
 
   } // class TrialBalanceMapper

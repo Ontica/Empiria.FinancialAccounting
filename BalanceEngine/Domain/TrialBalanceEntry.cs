@@ -238,6 +238,17 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
     }
 
 
+    internal TrialBalanceByCurrencyEntry MapToBalanceByCurrencyEntry() {
+      return new TrialBalanceByCurrencyEntry {
+        Currency = this.Currency,
+        Account = this.Account,
+        Sector = this.Sector,
+        DomesticBalance = this.CurrentBalance,
+        ItemType = this.ItemType
+      };
+    }
+
+
   } // class TrialBalance
 
 } // namespace Empiria.FinancialAccounting.BalanceEngine

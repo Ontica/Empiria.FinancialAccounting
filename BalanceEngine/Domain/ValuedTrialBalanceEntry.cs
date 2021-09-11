@@ -69,4 +69,66 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
 
   } // class ValuedTrialBalanceEntry
 
+  public class TrialBalanceByCurrencyEntry : ITrialBalanceEntry {
+
+    public Currency Currency {
+      get;
+      internal set;
+    }
+
+    public StandardAccount Account {
+      get;
+      internal set;
+    }
+
+    public Sector Sector {
+      get;
+      internal set;
+    }
+
+    public decimal DomesticBalance {
+      get;
+      internal set;
+    }
+
+    public decimal DollarBalance {
+      get;
+      internal set;
+    }
+
+    public decimal YenBalance {
+      get;
+      internal set;
+    }
+
+    public decimal EuroBalance {
+      get;
+      internal set;
+    }
+
+    public decimal UdisBalance {
+      get;
+      internal set;
+    }
+
+    public string GroupName {
+      get; internal set;
+    } = string.Empty;
+
+    public string GroupNumber {
+      get; internal set;
+    } = string.Empty;
+
+    public TrialBalanceItemType ItemType {
+      get;
+      internal set;
+    }
+
+    internal void Sum(ValuedTrialBalanceEntry entry) {
+      
+    }
+
+  }
+
+
 } // namespace Empiria.FinancialAccounting.BalanceEngine

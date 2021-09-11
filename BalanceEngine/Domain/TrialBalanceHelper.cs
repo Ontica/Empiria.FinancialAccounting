@@ -402,7 +402,8 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
       FixedList<TrialBalanceEntry> postingEntries = GetTrialBalanceEntries(_command.InitialPeriod);
 
       if ((_command.ValuateBalances || _command.InitialPeriod.UseDefaultValuation) && 
-          _command.TrialBalanceType != TrialBalanceType.BalanzaValorizadaEnDolares) {
+          _command.TrialBalanceType != TrialBalanceType.BalanzaValorizadaEnDolares &&
+          _command.TrialBalanceType != TrialBalanceType.BalanzaConsolidadaPorMoneda) {
         postingEntries = ValuateToExchangeRate(postingEntries, _command.InitialPeriod);
 
         if (_command.ConsolidateBalancesToTargetCurrency) {
