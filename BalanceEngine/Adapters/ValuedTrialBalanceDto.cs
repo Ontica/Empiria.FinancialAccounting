@@ -120,7 +120,7 @@ namespace Empiria.FinancialAccounting.BalanceEngine.Adapters {
       internal set;
     }
 
-    public decimal UdiBalance {
+    public decimal UdisBalance {
       get;
       internal set;
     }

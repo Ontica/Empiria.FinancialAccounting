@@ -281,7 +281,7 @@ namespace Empiria.FinancialAccounting.BalanceEngine.Adapters {
       dto.DollarBalance = entry.DollarBalance;
       dto.YenBalance = entry.YenBalance;
       dto.EuroBalance = entry.EuroBalance;
-      dto.UdiBalance = entry.UdisBalance;
+      dto.UdisBalance = entry.UdisBalance;
       dto.GroupName = entry.GroupName;
       dto.GroupNumber = entry.GroupNumber;
 
