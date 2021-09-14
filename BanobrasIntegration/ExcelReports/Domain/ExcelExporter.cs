@@ -12,15 +12,15 @@ using Empiria.FinancialAccounting.Adapters;
 using Empiria.FinancialAccounting.BalanceEngine.Adapters;
 
 using Empiria.FinancialAccounting.BanobrasIntegration.ExcelReports.Adapters;
+using Empiria.FinancialAccounting.FinancialReports.Adapters;
 
 namespace Empiria.FinancialAccounting.BanobrasIntegration.ExcelReports {
 
   /// <summary>Main service to export accounting information to Microsoft Excel.</summary>
   public class ExcelExporter {
 
-    public ExcelFileDto Export(TrialBalanceDto trialBalance, TrialBalanceCommand command) {
+    public ExcelFileDto Export(TrialBalanceDto trialBalance) {
       Assertion.AssertObject(trialBalance, "trialBalance");
-      Assertion.AssertObject(command, "command");
 
       var templateUID = $"TrialBalanceTemplate.{trialBalance.Command.TrialBalanceType}";
 
@@ -46,6 +46,21 @@ namespace Empiria.FinancialAccounting.BanobrasIntegration.ExcelReports {
       var creator = new AccountsChartExcelFileCreator(templateConfig);
 
       ExcelFile excelFile = creator.CreateExcelFile(accountsChart);
+
+      return ExcelFileMapper.Map(excelFile);
+    }
+
+
+    public ExcelFileDto Export(FinancialReportDto financialReport) {
+      Assertion.AssertObject(financialReport, "financialReport");
+
+      var templateUID = $"FinancialReportTemplate.{financialReport.Command.FinancialReportType}";
+
+      var templateConfig = ExcelTemplateConfig.Parse(templateUID);
+
+      var creator = new FinancialReportExcelFileCreator(templateConfig);
+
+      ExcelFile excelFile = creator.CreateExcelFile(financialReport);
 
       return ExcelFileMapper.Map(excelFile);
     }

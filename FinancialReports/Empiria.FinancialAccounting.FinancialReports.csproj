@@ -66,6 +66,7 @@
     <ProjectReference Include="..\Core\Empiria.FinancialAccounting.Core.csproj" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\BalanceEngine\Empiria.FinancialAccounting.BalanceEngine.csproj" />
     <ProjectReference Include="..\Rules\Empiria.FinancialAccounting.Rules.csproj" />
   </ItemGroup>
 </Project>
