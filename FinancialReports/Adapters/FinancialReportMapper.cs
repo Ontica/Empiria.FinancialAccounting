@@ -53,9 +53,9 @@ namespace Empiria.FinancialAccounting.FinancialReports.Adapters {
       return new FinancialReportEntryDto {
          ConceptCode = entry.GroupingRule.Code,
          Concept = entry.GroupingRule.Concept,
-         DomesticCurrencyTotal = 1000,
-         ForeignCurrencyTotal = 2500,
-         Total = 3500,
+         DomesticCurrencyTotal = entry.DomesticCurrencyTotal,
+         ForeignCurrencyTotal = entry.ForeignCurrencyTotal,
+         Total = entry.Total,
          GroupingRuleUID = entry.GroupingRule.UID,
       };
     }

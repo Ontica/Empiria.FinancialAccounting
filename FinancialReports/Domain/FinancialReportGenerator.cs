@@ -36,7 +36,6 @@ namespace Empiria.FinancialAccounting.FinancialReports {
 
           return r01.Generate();
 
-
         default:
           throw Assertion.AssertNoReachThisCode(
                     $"Unhandled trial balance type {this.Command.FinancialReportType}.");

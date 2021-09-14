@@ -18,12 +18,23 @@ namespace Empiria.FinancialAccounting.Rules.Data {
 
     static internal FixedList<GroupingRule> GetGroupingRules(RulesSet rulesSet) {
       var sql = "SELECT * FROM COF_CONCEPTOS " +
-                $"WHERE CONJUNTO_BASE = '{rulesSet.Code}' " +
+                $"WHERE ID_CONJUNTO_BASE = {rulesSet.Id} " +
                 "ORDER BY POSICION";
 
       var dataOperation = DataOperation.Parse(sql);
 
       return DataReader.GetFixedList<GroupingRule>(dataOperation);
+    }
+
+    static internal FixedList<GroupingRuleItem> GetGroupingRulesItems(RulesSet rulesSet) {
+      var sql = "SELECT COF_AGRUPACIONES.* " +
+                "FROM COF_AGRUPACIONES INNER JOIN COF_CONCEPTOS " +
+                "ON COF_AGRUPACIONES.ID_CONCEPTO = COF_CONCEPTOS.ID_CONCEPTO " +
+                $"WHERE COF_CONCEPTOS.ID_CONJUNTO_BASE = {rulesSet.Id} ";
+
+      var dataOperation = DataOperation.Parse(sql);
+
+      return DataReader.GetFixedList<GroupingRuleItem>(dataOperation);
     }
 
   }  // class GroupingRulesData

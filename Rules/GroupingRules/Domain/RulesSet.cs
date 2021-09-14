@@ -16,6 +16,13 @@ namespace Empiria.FinancialAccounting.Rules {
   /// <summary>Holds a set of financial accounting rules.</summary>
   public class RulesSet : GeneralObject {
 
+    #region Fields
+
+    private FixedList<GroupingRule> groupingRules;
+    private FixedList<GroupingRuleItem> groupingRulesItems;
+
+    #endregion Fields
+
     #region Constructors and parsers
 
     protected RulesSet() {
@@ -71,8 +78,20 @@ namespace Empiria.FinancialAccounting.Rules {
     #region Methods
 
     public FixedList<GroupingRule> GetGroupingRules() {
-      return GroupingRulesData.GetGroupingRules(this);
+      if (this.groupingRules == null) {
+        this.groupingRules = GroupingRulesData.GetGroupingRules(this);
+      }
+      return this.groupingRules;
     }
+
+
+    internal FixedList<GroupingRuleItem> GetGroupingRuleItems(GroupingRule groupingRule) {
+      if (this.groupingRulesItems == null) {
+        this.groupingRulesItems = GroupingRulesData.GetGroupingRulesItems(this);
+      }
+      return this.groupingRulesItems.FindAll(x => x.GroupingRule.Equals(groupingRule));
+    }
+
 
     #endregion Methods
 

@@ -9,10 +9,18 @@
 ************************* Copyright(c) La Vía Óntica SC, Ontica LLC and contributors. All rights reserved. **/
 using System;
 
+using Empiria.FinancialAccounting.Rules.Data;
+
 namespace Empiria.FinancialAccounting.Rules {
 
   /// <summary>Contains data about a financial accounting grouping rule.</summary>
   public class GroupingRule : BaseObject {
+
+    #region Fields
+
+    private FixedList<GroupingRuleItem> items;
+
+    #endregion Fields
 
     #region Constructors and parsers
 
@@ -38,8 +46,8 @@ namespace Empiria.FinancialAccounting.Rules {
 
     #region Properties
 
-    [DataField("CONJUNTO_BASE")]
-    public string RulesSetCode {
+    [DataField("ID_CONJUNTO_BASE")]
+    public RulesSet RulesSet {
       get; private set;
     }
 
@@ -80,11 +88,16 @@ namespace Empiria.FinancialAccounting.Rules {
       }
     }
 
+    public FixedList<GroupingRuleItem> Items {
+      get {
+        if (items == null) {
+          items = RulesSet.GetGroupingRuleItems(this);
+        }
+        return items;
+      }
+    }
+
     #endregion Properties
-
-    #region Methods
-
-    #endregion Methods
 
   } // class GroupingRule
 

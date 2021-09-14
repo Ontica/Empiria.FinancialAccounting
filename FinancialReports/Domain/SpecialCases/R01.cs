@@ -8,7 +8,8 @@
 *                                                                                                            *
 ************************* Copyright(c) La Vía Óntica SC, Ontica LLC and contributors. All rights reserved. **/
 using System;
-
+using Empiria.FinancialAccounting.BalanceEngine.Adapters;
+using Empiria.FinancialAccounting.BalanceEngine.UseCases;
 using Empiria.FinancialAccounting.FinancialReports.Adapters;
 using Empiria.FinancialAccounting.Rules;
 
@@ -23,19 +24,51 @@ namespace Empiria.FinancialAccounting.FinancialReports {
       _command = command;
     }
 
+
     internal FinancialReport Generate() {
       FixedList<GroupingRule> groupingRules = GetGroupingRules();
 
-      var entries = GetEntries(groupingRules);
+      FixedList<FinancialReportEntry> entries = GetEntries(groupingRules);
+
+      // var balances = GetBalances();
+
+      // ProcessEntries(entries, balances.Entries);
+      ProcessEntries(entries, null);
 
       return new FinancialReport(_command, entries);
     }
 
+
+    private TrialBalanceDto GetBalances() {
+      TrialBalanceCommand trialBalanceCommand = GetTrialBalanceCommand();
+
+      using (var usecases = TrialBalanceUseCases.UseCaseInteractor()) {
+        return usecases.BuildTrialBalance(trialBalanceCommand);
+      }
+    }
+
+    private TrialBalanceCommand GetTrialBalanceCommand() {
+      return new TrialBalanceCommand {
+        AccountsChartUID = _command.AccountsChartUID,
+        TrialBalanceType = BalanceEngine.TrialBalanceType.AnaliticoDeCuentas,
+        UseDefaultValuation = true,
+        ShowCascadeBalances = false,
+        WithSubledgerAccount = false,
+        InitialPeriod = new TrialBalanceCommandPeriod {
+          FromDate = _command.Date,
+          ToDate = _command.Date
+        }
+      };
+    }
+
     private FixedList<FinancialReportEntry> GetEntries(FixedList<GroupingRule> groupingRules) {
-      var entries = new FixedList<FinancialReportEntry>(groupingRules.Select(x => new FinancialReportEntry { GroupingRule = x }));
+      var enumeration = groupingRules.Select(x => new FinancialReportEntry { GroupingRule = x });
+
+      var entries = new FixedList<FinancialReportEntry>(enumeration);
 
       return entries;
     }
+
 
     private FixedList<GroupingRule> GetGroupingRules() {
       RulesSet rulesSet;
@@ -44,13 +77,26 @@ namespace Empiria.FinancialAccounting.FinancialReports {
 
       if (accountsChart.Id == 1) {
         rulesSet = RulesSet.Parse(901);
+
       } else if (accountsChart.Id == 152) {
         rulesSet = RulesSet.Parse(902);
+
       } else {
         rulesSet = RulesSet.Empty;
+
       }
 
       return rulesSet.GetGroupingRules();
+    }
+
+
+    private void ProcessEntries(FixedList<FinancialReportEntry> entries,
+                                FixedList<ITrialBalanceEntryDto> balances) {
+      foreach (var entry in entries) {
+        entry.DomesticCurrencyTotal = entry.GroupingRule.Items.Count * 100m;
+        entry.ForeignCurrencyTotal = 5678;
+        entry.Total = 12345678m;
+      }
     }
 
   }  // class R01
