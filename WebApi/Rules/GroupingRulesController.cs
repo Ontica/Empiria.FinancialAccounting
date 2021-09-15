@@ -34,6 +34,17 @@ namespace Empiria.FinancialAccounting.WebApi.Rules {
     }
 
     [HttpGet]
+    [Route("v2/financial-accounting/rules/grouping-rule-items/{groupingRuleUID:guid}")]
+    public CollectionModel GetGroupingRuleItems([FromUri] string groupingRuleUID) {
+
+      using (var usecases = GroupingRulesUseCases.UseCaseInteractor()) {
+        FixedList<GroupingRuleItemDto> rules = usecases.GroupingRuleItems(groupingRuleUID);
+
+        return new CollectionModel(base.Request, rules);
+      }
+    }
+
+    [HttpGet]
     [Route("v2/financial-accounting/rules/rules-sets-for/{accountsChartUID:guid}/grouping-rules")]
     public CollectionModel GetRulesSetsFor([FromUri] string accountsChartUID) {
 

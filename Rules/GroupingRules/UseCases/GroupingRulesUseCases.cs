@@ -42,6 +42,16 @@ namespace Empiria.FinancialAccounting.Rules.UseCases {
       return GroupingRulesMapper.Map(rules);
     }
 
+
+    public FixedList<GroupingRuleItemDto> GroupingRuleItems(string groupingRuleUID) {
+      Assertion.AssertObject(groupingRuleUID, "groupingRuleUID");
+
+      var groupingRule = GroupingRule.Parse(groupingRuleUID);
+
+      return GroupingRulesMapper.Map(groupingRule.Items);
+    }
+
+
     public FixedList<NamedEntityDto> GroupingRulesSetsFor(string accountsChartUID) {
       Assertion.AssertObject(accountsChartUID, "accountsChartUID");
 

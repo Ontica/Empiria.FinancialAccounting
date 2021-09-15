@@ -14,9 +14,16 @@ namespace Empiria.FinancialAccounting.Rules.Adapters {
   /// <summary>Mapping methods for financial accounting grouping rules.</summary>
   static public class GroupingRulesMapper {
 
+
     static internal FixedList<GroupingRuleDto> Map(FixedList<GroupingRule> rules) {
-      return new FixedList<GroupingRuleDto>(rules.Select<GroupingRuleDto>(x => Map(x)));
+      return new FixedList<GroupingRuleDto>(rules.Select(x => Map(x)));
     }
+
+
+    static internal FixedList<GroupingRuleItemDto> Map(FixedList<GroupingRuleItem> items) {
+      return new FixedList<GroupingRuleItemDto>(items.Select(x => Map(x)));
+    }
+
 
     static internal GroupingRuleDto Map(GroupingRule rule) {
       return new GroupingRuleDto {
@@ -26,6 +33,21 @@ namespace Empiria.FinancialAccounting.Rules.Adapters {
         Position = rule.Position,
         Level = rule.Level,
         ParentUID = rule.Parent.UID,
+        AccountsChartName = rule.RulesSet.AccountsChart.Name,
+        RulesSetName = rule.RulesSet.Name
+      };
+    }
+
+
+    static private GroupingRuleItemDto Map(GroupingRuleItem item) {
+      return new GroupingRuleItemDto {
+        UID = item.UID,
+        Type = item.Type,
+        ItemCode = item.Code,
+        ItemName = item.Name,
+        SubledgerAccount = item.SubledgerAccountNumber,
+        SectorCode = item.SectorCode,
+        Operator = item.Operator
       };
     }
 

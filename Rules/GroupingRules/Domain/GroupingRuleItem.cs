@@ -10,6 +10,17 @@
 
 namespace Empiria.FinancialAccounting.Rules {
 
+  public enum GroupingRuleItemType {
+
+    Agrupation,
+
+    Account,
+
+    FixedValue
+
+  }  // enum GroupingRuleItemType
+
+
   /// <summary>Contains data about a financial accounting grouping rule item.</summary>
   public class GroupingRuleItem : BaseObject {
 
@@ -36,6 +47,20 @@ namespace Empiria.FinancialAccounting.Rules {
     #endregion Constructors and parsers
 
     #region Properties
+
+
+    public GroupingRuleItemType Type {
+      get {
+        if (!this.Reference.IsEmptyInstance) {
+          return GroupingRuleItemType.Agrupation;
+        } else if (this.AccountNumber.Length != 0) {
+          return GroupingRuleItemType.Account;
+        } else {
+          return GroupingRuleItemType.FixedValue;
+        }
+      }
+    }
+
 
     [DataField("ID_CONCEPTO")]
     public GroupingRule GroupingRule {
@@ -82,6 +107,30 @@ namespace Empiria.FinancialAccounting.Rules {
     [DataField("OPERADOR")]
     public string Operator {
       get; private set;
+    }
+
+    public string Name {
+      get {
+        if (this.Type == GroupingRuleItemType.Account) {
+          return GroupingRule.RulesSet.AccountsChart.GetAccount(this.AccountNumber).Name;
+        } else if (this.Type == GroupingRuleItemType.Agrupation) {
+          return this.Reference.Concept;
+        } else {
+          return "ValorDefault";
+        }
+      }
+    }
+
+    public string Code {
+      get {
+        if (this.Type == GroupingRuleItemType.Account) {
+          return this.AccountNumber;
+        } else if (this.Type == GroupingRuleItemType.Agrupation) {
+          return this.Reference.Code;
+        } else {
+          return "Valor";
+        }
+      }
     }
 
     #endregion Properties
