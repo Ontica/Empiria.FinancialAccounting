@@ -195,6 +195,8 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
       return new TwoCurrenciesBalanceEntry {
         Account = this.Account,
         SubledgerAccountId = this.SubledgerAccountId,
+        SubledgerAccountNumber = this.SubledgerAccountNumber,
+        SubledgerNumberOfDigits = this.SubledgerNumberOfDigits,
         Ledger = this.Ledger,
         Currency = this.Currency,
         ItemType = this.ItemType,

@@ -45,10 +45,23 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
     }
 
 
+    internal TrialBalance BuildForBalancesGeneration() {
+      var helper = new TrialBalanceHelper(_command);
+
+      _command.WithSubledgerAccount = true;
+
+      FixedList<TrialBalanceEntry> trialBalance = helper.GetPostingEntries();
+
+      var returnBalance = new FixedList<ITrialBalanceEntry>(trialBalance.Select(x => (ITrialBalanceEntry) x));
+
+      return new TrialBalance(_command, returnBalance);
+    }
+
+
     #region Helper methods
 
 
-    private EmpiriaHashTable<TrialBalanceEntry> BalancesBySubsidiaryAccounts(
+    internal EmpiriaHashTable<TrialBalanceEntry> BalancesBySubsidiaryAccounts(
                                                 List<TrialBalanceEntry> trialBalance) {
 
       var subsidiaryEntries = trialBalance.Where(a => a.SubledgerAccountId > 0).ToList();
@@ -66,19 +79,6 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
       EmpiriaHashTable<TrialBalanceEntry> returnedSubsidiaryEntries = GenerateEntries(hashSubsidiaryEntries);
 
       return returnedSubsidiaryEntries;
-    }
-
-
-    internal TrialBalance BuildForBalancesGeneration() {
-      var helper = new TrialBalanceHelper(_command);
-
-      _command.WithSubledgerAccount = true;
-
-      FixedList<TrialBalanceEntry> trialBalance = helper.GetPostingEntries();
-
-      var returnBalance = new FixedList<ITrialBalanceEntry>(trialBalance.Select(x => (ITrialBalanceEntry) x));
-
-      return new TrialBalance(_command, returnBalance);
     }
 
 
@@ -131,14 +131,12 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
     }
 
 
-    private List<TrialBalanceEntry> OrderByAccountNumber(
+    internal List<TrialBalanceEntry> OrderByAccountNumber(
                                     EmpiriaHashTable<TrialBalanceEntry> summaryEntries) {
-
-      var totaBySubsidiaryAccountList = summaryEntries.ToFixedList();
 
       var returnedCombineOrdering = new List<TrialBalanceEntry>();
 
-      foreach (var entry in totaBySubsidiaryAccountList) {
+      foreach (var entry in summaryEntries.ToFixedList()) {
         SubsidiaryAccount subsidiary = SubsidiaryAccount.Parse(entry.SubledgerAccountIdParent);
         if (subsidiary != null) {
           entry.SubledgerAccountNumber = subsidiary.Number;
@@ -148,12 +146,17 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
         }
         returnedCombineOrdering.Add(entry);
       }
-
-      return returnedCombineOrdering.Where(a => !a.SubledgerAccountNumber.Contains("undefined"))
+      if (_command.TrialBalanceType == TrialBalanceType.AnaliticoDeCuentasPorAuxiliar) {
+        return returnedCombineOrdering.OrderBy(a => a.SubledgerNumberOfDigits)
+                                      .ThenBy(a => a.SubledgerAccountNumber)
+                                      .ToList();
+      } else {
+        return returnedCombineOrdering.Where(a => !a.SubledgerAccountNumber.Contains("undefined"))
                                     .OrderBy(a => a.Currency.Code)
                                     .ThenBy(a => a.SubledgerNumberOfDigits)
                                     .ThenBy(a => a.SubledgerAccountNumber)
                                     .ToList();
+      }
     }
 
 

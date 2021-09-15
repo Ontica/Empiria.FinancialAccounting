@@ -202,6 +202,11 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
         if (entry.CurrentBalance != 0) {
           string hash = $"{entry.Account.Number}||{entry.Sector.Code}||{targetCurrency.Id}||" +
                       $"{entry.Ledger.Id}||{entry.Account.DebtorCreditor}";
+          
+          if (_command.TrialBalanceType == TrialBalanceType.AnaliticoDeCuentasPorAuxiliar) {
+            hash = $"{targetCurrency.Id}||{entry.SubledgerAccountId}";
+          }
+
           Currency currentCurrency = entry.Currency;
 
           if (entry.Currency.Equals(targetCurrency)) {
@@ -258,8 +263,7 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
                           EmpiriaHashTable<TwoCurrenciesBalanceEntry> summaryEntries,
                           TrialBalanceEntry entry, string hash,
                           Currency currentCurrency) {
-      var targetCurrency = Currency.Parse(_command.InitialPeriod.ValuateToCurrrencyUID);
-
+      
       TwoCurrenciesBalanceEntry summaryEntry;
       summaryEntries.TryGetValue(hash, out summaryEntry);
 

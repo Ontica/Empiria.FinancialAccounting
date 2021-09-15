@@ -82,6 +82,7 @@ namespace Empiria.FinancialAccounting.BalanceEngine.Adapters {
                                                         FixedList<ITrialBalanceEntry> list) {
       switch (command.TrialBalanceType) {
         case TrialBalanceType.AnaliticoDeCuentas:
+        case TrialBalanceType.AnaliticoDeCuentasPorAuxiliar:
           return MapToAnaliticoCuentas(list);
 
         case TrialBalanceType.Balanza:

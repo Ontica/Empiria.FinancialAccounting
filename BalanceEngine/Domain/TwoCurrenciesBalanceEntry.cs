@@ -81,6 +81,14 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
       get; internal set;
     } = string.Empty;
 
+    public string SubledgerAccountNumber {
+      get; internal set;
+    } = string.Empty;
+
+    public int SubledgerNumberOfDigits {
+      get; internal set;
+    } = 0;
+
     public bool HasSector {
       get {
         return this.Sector.Code != "00";

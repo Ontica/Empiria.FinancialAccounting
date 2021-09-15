@@ -32,6 +32,7 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
     internal FixedList<DataTableColumn> DataColumns() {
       switch (this.Command.TrialBalanceType) {
         case TrialBalanceType.AnaliticoDeCuentas:
+        case TrialBalanceType.AnaliticoDeCuentasPorAuxiliar:
           return TwoCurrenciesDataColumns();
 
         case TrialBalanceType.Balanza:
@@ -144,18 +145,19 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
       } else {
         columns.Add(new DataTableColumn("accountNumber", "Cuenta", "text-nowrap"));
       }
-
-      columns.Add(new DataTableColumn("sectorCode", "Sct", "text"));
+      if (Command.TrialBalanceType == TrialBalanceType.AnaliticoDeCuentas) {
+        columns.Add(new DataTableColumn("sectorCode", "Sct", "text"));
+      }
       columns.Add(new DataTableColumn("accountName", "Nombre", "text"));
       columns.Add(new DataTableColumn("domesticBalance", "Saldo Mon. Nal.", "decimal"));
       columns.Add(new DataTableColumn("foreignBalance", "Saldo Mon. Ext.", "decimal"));
       columns.Add(new DataTableColumn("totalBalance", "Total", "decimal"));
       if (Command.InitialPeriod.ExchangeRateTypeUID != string.Empty) {
-        //columns.Add(new DataTableColumn("exchangeRate", "TC", "decimal"));
+        columns.Add(new DataTableColumn("exchangeRate", "TC", "decimal"));
       }
-      columns.Add(new DataTableColumn("averageBalance", "Saldo promedio", "decimal"));
-      // columns.Add(new DataTableColumn("lastChangeDate", "Último movimiento", "text"));
-
+      if (Command.TrialBalanceType == TrialBalanceType.AnaliticoDeCuentas) {
+        columns.Add(new DataTableColumn("averageBalance", "Saldo promedio", "decimal"));
+      }
       return columns.ToFixedList();
     }
 

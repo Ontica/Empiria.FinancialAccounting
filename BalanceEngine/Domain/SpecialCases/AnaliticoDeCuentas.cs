@@ -11,7 +11,7 @@ using System;
 
 using System.Collections.Generic;
 using System.Linq;
-
+using Empiria.Collections;
 using Empiria.FinancialAccounting.BalanceEngine.Adapters;
 
 namespace Empiria.FinancialAccounting.BalanceEngine {
@@ -74,6 +74,57 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
       return new TrialBalance(_command, twoColumnsBalance);
     }
 
+
+    internal TrialBalance BuildAnaliticalBySubsidiaryAccount() {
+      var helper = new TrialBalanceHelper(_command);
+      var saldosHelper = new SaldosPorAuxiliar(_command);
+      var twoColumnsHelper = new TwoCurrenciesBalanceHelper(_command);
+
+      List<TrialBalanceEntry> trialBalance = helper.GetPostingEntries().ToList();
+
+      EmpiriaHashTable<TrialBalanceEntry> summaryEntries = 
+                                          saldosHelper.BalancesBySubsidiaryAccounts(trialBalance);
+
+      List<TrialBalanceEntry> assignSubledgerNumber = AssignSubledgerAccountNumber(summaryEntries);
+
+      trialBalance = helper.RestrictLevels(assignSubledgerNumber);
+
+      FixedList<TwoCurrenciesBalanceEntry> mergeCurrenciesByAccount =
+                                                  twoColumnsHelper.MergeAccountsIntoTwoColumns(trialBalance);
+
+      List<TwoCurrenciesBalanceEntry> orderingEntries = OrderingBySubledgerAccountNumber(
+                                                        mergeCurrenciesByAccount);
+
+      var returnBalance = new FixedList<ITrialBalanceEntry>(orderingEntries
+                                                            .Select(x => (ITrialBalanceEntry) x));
+
+      return new TrialBalance(_command, returnBalance);
+    }
+
+    private List<TwoCurrenciesBalanceEntry> OrderingBySubledgerAccountNumber(FixedList<TwoCurrenciesBalanceEntry> subledgerAccounts) {
+      var returnedEntries = new List<TwoCurrenciesBalanceEntry>(subledgerAccounts);
+
+      return returnedEntries.OrderBy(a => a.SubledgerNumberOfDigits)
+                                    .ThenBy(a => a.SubledgerAccountNumber)
+                                    .ToList();
+    }
+
+    private List<TrialBalanceEntry> AssignSubledgerAccountNumber(EmpiriaHashTable<TrialBalanceEntry> summaryEntries) {
+      var returnedEntries = new List<TrialBalanceEntry>();
+
+      foreach (var entry in summaryEntries.ToFixedList()) {
+        SubsidiaryAccount subsidiary = SubsidiaryAccount.Parse(entry.SubledgerAccountIdParent);
+        if (subsidiary != null) {
+          entry.SubledgerAccountNumber = subsidiary.Number;
+          entry.GroupName = subsidiary.Name;
+          entry.SubledgerNumberOfDigits = entry.SubledgerAccountNumber.Count();
+          entry.SubledgerAccountId = entry.SubledgerAccountIdParent;
+        }
+        returnedEntries.Add(entry);
+      }
+      
+      return returnedEntries;
+    }
 
     private List<TrialBalanceEntry> RemoveCertainAccounts(List<TrialBalanceEntry> summaryEntries) {
       List<TrialBalanceEntry> returnedSummaryEntries = new List<TrialBalanceEntry>();
