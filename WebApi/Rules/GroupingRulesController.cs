@@ -14,6 +14,8 @@ using Empiria.WebApi;
 
 using Empiria.FinancialAccounting.Rules.UseCases;
 using Empiria.FinancialAccounting.Rules.Adapters;
+using Empiria.FinancialAccounting.BanobrasIntegration.ExcelReports;
+using Empiria.FinancialAccounting.BanobrasIntegration.ExcelReports.Adapters;
 
 namespace Empiria.FinancialAccounting.WebApi.Rules {
 
@@ -32,6 +34,24 @@ namespace Empiria.FinancialAccounting.WebApi.Rules {
         return new CollectionModel(base.Request, rules);
       }
     }
+
+
+    [HttpGet]
+    [Route("v2/financial-accounting/rules/grouping-rules/{rulesSetUID:guid}/excel")]
+    public SingleObjectModel ExportGroupingRulesToExcel([FromUri] string rulesSetUID) {
+
+      using (var usecases = GroupingRulesUseCases.UseCaseInteractor()) {
+        FixedList<GroupingRuleDto> rules = usecases.GroupingRules(rulesSetUID);
+
+        var excelExporter = new ExcelExporter();
+
+        ExcelFileDto excelFileDto = excelExporter.Export(rules);
+
+        return new SingleObjectModel(this.Request, excelFileDto);
+      }
+    }
+
+
 
     [HttpGet]
     [Route("v2/financial-accounting/rules/grouping-rule-items/{groupingRuleUID:guid}")]

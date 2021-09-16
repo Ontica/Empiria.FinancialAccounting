@@ -13,6 +13,7 @@ using Empiria.FinancialAccounting.BalanceEngine.Adapters;
 
 using Empiria.FinancialAccounting.BanobrasIntegration.ExcelReports.Adapters;
 using Empiria.FinancialAccounting.FinancialReports.Adapters;
+using Empiria.FinancialAccounting.Rules.Adapters;
 
 namespace Empiria.FinancialAccounting.BanobrasIntegration.ExcelReports {
 
@@ -50,6 +51,19 @@ namespace Empiria.FinancialAccounting.BanobrasIntegration.ExcelReports {
       return ExcelFileMapper.Map(excelFile);
     }
 
+    public ExcelFileDto Export(FixedList<GroupingRuleDto> rules) {
+      Assertion.AssertObject(rules, "rules");
+
+      var templateUID = $"GroupingRulesReportTemplate";
+
+      var templateConfig = ExcelTemplateConfig.Parse(templateUID);
+
+      var creator = new GroupingRulesReportExcelFileCreator(templateConfig);
+
+      ExcelFile excelFile = creator.CreateExcelFile(rules);
+
+      return ExcelFileMapper.Map(excelFile);
+    }
 
     public ExcelFileDto Export(FinancialReportDto financialReport) {
       Assertion.AssertObject(financialReport, "financialReport");
