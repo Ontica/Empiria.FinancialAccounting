@@ -37,7 +37,7 @@ namespace Empiria.FinancialAccounting {
 
 
     static public void Preload() {
-      var list = BaseObject.GetList<AccountsChart>();
+      var list = GetList();
 
       foreach (var item in list) {
         var dummy = item.Accounts;
@@ -47,6 +47,7 @@ namespace Empiria.FinancialAccounting {
 
     static public FixedList<AccountsChart> GetList() {
       return BaseObject.GetList<AccountsChart>()
+                       .FindAll(x => x.Status != StateEnums.EntityStatus.Deleted)
                        .ToFixedList();
     }
 
