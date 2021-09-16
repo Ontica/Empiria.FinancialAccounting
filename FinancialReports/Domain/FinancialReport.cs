@@ -44,7 +44,7 @@ namespace Empiria.FinancialAccounting.FinancialReports {
     private FixedList<DataTableColumn> R01DataColumns() {
       List<DataTableColumn> columns = new List<DataTableColumn>();
 
-      columns.Add(new DataTableColumn("conceptCode", "Clave CNBV", "text"));
+      columns.Add(new DataTableColumn("conceptCode", "Clave CNBV", "text-link"));
       columns.Add(new DataTableColumn("concept", "Concepto", "text"));
       columns.Add(new DataTableColumn("domesticCurrencyTotal", "1 Moneda Nacional", "decimal"));
       columns.Add(new DataTableColumn("foreignCurrencyTotal", "2 Moneda Extranjera", "decimal"));

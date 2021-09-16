@@ -13,6 +13,10 @@ namespace Empiria.FinancialAccounting.FinancialReports.Adapters {
   /// <summary>Output DTO used to return the entries of a financial report.</summary>
   public class FinancialReportEntryDto {
 
+    public string UID {
+      get; internal set;
+    }
+
     public FinancialReportItemType ItemType {
       get; internal set;
     }
