@@ -57,7 +57,7 @@ namespace Empiria.FinancialAccounting.BanobrasIntegration.ExcelReports {
           return;
 
         default:
-          throw Assertion.AssertNoReachThisCode();
+          return;
       }
     }
 
@@ -65,7 +65,13 @@ namespace Empiria.FinancialAccounting.BanobrasIntegration.ExcelReports {
     private void SetTable(FinancialReportDto financialReport) {
       switch (financialReport.Command.FinancialReportType) {
         case FinancialReportType.R01:
+        case FinancialReportType.R01_Banxico:
           FillOutR01(financialReport.Entries);
+          return;
+
+        case FinancialReportType.R01_Integracion:
+        case FinancialReportType.R01_Banxico_Integracion:
+          FillOutR01Integracion(financialReport.Entries);
           return;
 
         default:
@@ -85,6 +91,20 @@ namespace Empiria.FinancialAccounting.BanobrasIntegration.ExcelReports {
         i++;
       }
     }
+
+    private void FillOutR01Integracion(FixedList<FinancialReportEntryDto> entries) {
+      int i = 4;
+
+      foreach (var entry in entries) {
+        _excelFile.SetCell($"A{i}", entry.ConceptCode);
+        _excelFile.SetCell($"B{i}", entry.Concept);
+        _excelFile.SetCell($"F{i}", entry.DomesticCurrencyTotal);
+        _excelFile.SetCell($"G{i}", entry.ForeignCurrencyTotal);
+        _excelFile.SetCell($"H{i}", entry.Total);
+        i++;
+      }
+    }
+
 
     #endregion Private methods
 

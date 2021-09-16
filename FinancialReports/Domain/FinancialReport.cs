@@ -32,7 +32,12 @@ namespace Empiria.FinancialAccounting.FinancialReports {
     internal FixedList<DataTableColumn> DataColumns() {
       switch (this.Command.FinancialReportType) {
         case FinancialReportType.R01:
+        case FinancialReportType.R01_Banxico:
           return R01DataColumns();
+
+        case FinancialReportType.R01_Integracion:
+        case FinancialReportType.R01_Banxico_Integracion:
+          return R01IntegracionDataColumns();
 
         default:
           throw Assertion.AssertNoReachThisCode(
@@ -42,6 +47,18 @@ namespace Empiria.FinancialAccounting.FinancialReports {
 
 
     private FixedList<DataTableColumn> R01DataColumns() {
+      List<DataTableColumn> columns = new List<DataTableColumn>();
+
+      columns.Add(new DataTableColumn("conceptCode", "Clave CNBV", "text-link"));
+      columns.Add(new DataTableColumn("concept", "Concepto", "text"));
+      columns.Add(new DataTableColumn("domesticCurrencyTotal", "1 Moneda Nacional", "decimal"));
+      columns.Add(new DataTableColumn("foreignCurrencyTotal", "2 Moneda Extranjera", "decimal"));
+      columns.Add(new DataTableColumn("total", "3 Total", "decimal"));
+
+      return columns.ToFixedList();
+    }
+
+    private FixedList<DataTableColumn> R01IntegracionDataColumns() {
       List<DataTableColumn> columns = new List<DataTableColumn>();
 
       columns.Add(new DataTableColumn("conceptCode", "Clave CNBV", "text-link"));

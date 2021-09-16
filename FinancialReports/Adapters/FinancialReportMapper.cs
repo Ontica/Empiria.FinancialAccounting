@@ -33,7 +33,12 @@ namespace Empiria.FinancialAccounting.FinancialReports.Adapters {
       switch (command.FinancialReportType) {
 
         case FinancialReportType.R01:
+        case FinancialReportType.R01_Banxico:
           return MapToR01(list);
+
+        case FinancialReportType.R01_Integracion:
+        case FinancialReportType.R01_Banxico_Integracion:
+          return MapToR01Integracion(list);
 
         default:
           throw Assertion.AssertNoReachThisCode(
@@ -58,6 +63,24 @@ namespace Empiria.FinancialAccounting.FinancialReports.Adapters {
          ForeignCurrencyTotal = entry.ForeignCurrencyTotal,
          Total = entry.Total,
          GroupingRuleUID = entry.GroupingRule.UID,
+      };
+    }
+
+    static private FixedList<FinancialReportEntryDto> MapToR01Integracion(FixedList<FinancialReportEntry> list) {
+      var mappedItems = list.Select((x) => MapToR01Integracion(x));
+
+      return new FixedList<FinancialReportEntryDto>(mappedItems);
+    }
+
+    static private FinancialReportEntryDto MapToR01Integracion(FinancialReportEntry entry) {
+      return new FinancialReportEntryDto {
+        UID = entry.GroupingRule.UID,
+        ConceptCode = entry.GroupingRule.Code,
+        Concept = entry.GroupingRule.Concept,
+        DomesticCurrencyTotal = entry.DomesticCurrencyTotal,
+        ForeignCurrencyTotal = entry.ForeignCurrencyTotal,
+        Total = entry.Total,
+        GroupingRuleUID = entry.GroupingRule.UID,
       };
     }
 
