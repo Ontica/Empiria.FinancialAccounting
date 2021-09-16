@@ -112,7 +112,12 @@ namespace Empiria.FinancialAccounting.Rules {
     public string Name {
       get {
         if (this.Type == GroupingRuleItemType.Account) {
-          return GroupingRule.RulesSet.AccountsChart.GetAccount(this.AccountNumber).Name;
+          var account = GroupingRule.RulesSet.AccountsChart.TryGetAccount(this.AccountNumber);
+          if (account != null) {
+            return account.Name;
+          } else {
+            return "La cuenta NO existe en el catálogo de cuentas";
+          }
         } else if (this.Type == GroupingRuleItemType.Agrupation) {
           return this.Reference.Concept;
         } else {

@@ -91,12 +91,24 @@ namespace Empiria.FinancialAccounting {
     #region Public methods
 
     public Account GetAccount(string accountNumber) {
+      Account account = TryGetAccount(accountNumber);
+
+      if (account != null) {
+        return account;
+      }
+
+      throw Assertion.AssertNoReachThisCode($"Account {accountNumber} was not found.");
+    }
+
+
+    public Account TryGetAccount(string accountNumber) {
       Account account;
 
       if (_accounts.Value.TryGetValue(accountNumber, out account)) {
         return account;
+      } else {
+        return null;
       }
-      throw Assertion.AssertNoReachThisCode($"Account {accountNumber} was not found.");
     }
 
 
