@@ -28,7 +28,7 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
 
     internal TrialBalance Build() {
       var helper = new TrialBalanceHelper(_command);
-
+      
       var twoColumnsHelper = new TwoCurrenciesBalanceHelper(_command);
 
       FixedList<TrialBalanceEntry> postingEntries = helper.GetTrialBalanceEntries(_command.InitialPeriod);
@@ -47,10 +47,14 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
       trialBalance = helper.RestrictLevels(trialBalance);
 
       FixedList<TwoCurrenciesBalanceEntry> twoColumnsEntries =
-                                            twoColumnsHelper.MergeAccountsIntoTwoColumns(trialBalance);
+                                            twoColumnsHelper.MergeSummaryEntriesIntoTwoColumns(trialBalance);
+
+      twoColumnsEntries = twoColumnsHelper.CombineSubledgerAccountsWithSummaryEntries(
+                                            twoColumnsEntries, trialBalance);
 
       FixedList<TwoCurrenciesBalanceEntry> summaryGroupEntries =
                                             twoColumnsHelper.GetTotalSummaryGroup(twoColumnsEntries);
+
       twoColumnsEntries = twoColumnsHelper.CombineGroupEntriesAndTwoColumnsEntries(
                                             twoColumnsEntries, summaryGroupEntries);
 
@@ -90,7 +94,7 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
       trialBalance = helper.RestrictLevels(assignSubledgerNumber);
 
       FixedList<TwoCurrenciesBalanceEntry> mergeCurrenciesByAccount =
-                                                  twoColumnsHelper.MergeAccountsIntoTwoColumns(trialBalance);
+                                                  twoColumnsHelper.MergeSummaryEntriesIntoTwoColumns(trialBalance);
 
       List<TwoCurrenciesBalanceEntry> orderingEntries = OrderingBySubledgerAccountNumber(
                                                         mergeCurrenciesByAccount);

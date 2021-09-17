@@ -19,7 +19,7 @@ namespace Empiria.FinancialAccounting.Tests {
     static internal readonly string ACCOUNTS_CHART_UID = "b2328e67-3f2e-45b9-b1f6-93ef6292204e";
 
     static internal readonly string[] BALANCE_LEDGERS_ARRAY =
-                                  new string[] { "2584a757-865c-2025-8025-fa633f200c49" }; 
+                                  new string[] { "2584a757-865c-2025-8025-fa633f200c49" };
 
     static internal readonly DateTime FROM_DATE = new DateTime(2021, 07, 01);
 

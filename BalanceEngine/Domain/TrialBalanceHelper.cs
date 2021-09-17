@@ -40,7 +40,7 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
           returnedEntries.Add(entry);
         }
 
-      } else {
+      }  else {
         returnedEntries.AddRange(summaryEntries);
       }
 
@@ -264,15 +264,17 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
           if (cont == 1 && _command.TrialBalanceType == TrialBalanceType.SaldosPorCuenta) {
             GetDetailSummaryEntries(detailSummaryEntries, summaryEntries, currentParent, entry);
           }
-
           if (!currentParent.HasParent && entry.HasSector) {
-
             SummaryByEntry(summaryEntries, entry, currentParent, Sector.Empty,
                                            TrialBalanceItemType.BalanceSummary);
             break;
           } else if (!currentParent.HasParent) {
+            if (_command.TrialBalanceType == TrialBalanceType.AnaliticoDeCuentas &&
+                _command.WithSubledgerAccount && !entry.Account.HasParent) {
+              SummaryByEntry(summaryEntries, entry, currentParent, Sector.Empty,
+                                           TrialBalanceItemType.BalanceSummary);
+            }
             break;
-
           } else {
             currentParent = currentParent.GetParent();
           }
@@ -585,7 +587,8 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
       List<TrialBalanceEntry> returnedEntries = new List<TrialBalanceEntry>();
 
       if (_command.WithSubledgerAccount && (_command.TrialBalanceType == TrialBalanceType.Balanza ||
-          _command.TrialBalanceType == TrialBalanceType.SaldosPorCuenta)) {
+          _command.TrialBalanceType == TrialBalanceType.SaldosPorCuenta ||
+          _command.TrialBalanceType == TrialBalanceType.AnaliticoDeCuentas)) {
         foreach (var entry in entries) {
           SubsidiaryAccount subledgerAccount = SubsidiaryAccount.Parse(entry.SubledgerAccountId);
           if (!subledgerAccount.IsEmptyInstance) {
@@ -686,7 +689,7 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
                                  TrialBalanceItemType itemType) {
 
       string hash = $"{targetAccount.Number}||{targetSector.Code}||{entry.Currency.Id}||{entry.Ledger.Id}";
-
+      
       GenerateOrIncreaseEntries(summaryEntries, entry, targetAccount, targetSector, itemType, hash);
     }
 

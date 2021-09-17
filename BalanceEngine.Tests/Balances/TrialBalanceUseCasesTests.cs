@@ -47,8 +47,9 @@ namespace Empiria.FinancialAccounting.Tests.Balances {
 
       command.TrialBalanceType = TrialBalanceType.AnaliticoDeCuentas;
       command.UseDefaultValuation = true;
-      command.FromAccount = "5205";
-      command.ToAccount = "5205";
+      command.WithSubledgerAccount = true;
+      command.FromAccount = "6350";
+      command.ToAccount = "6378";
 
       TrialBalanceDto trialBalance = _usecases.BuildTrialBalance(command);
 
@@ -94,7 +95,7 @@ namespace Empiria.FinancialAccounting.Tests.Balances {
     private TrialBalanceCommand GetDefaultTrialBalanceCommand() {
       return new TrialBalanceCommand() {
         AccountsChartUID = TestingConstants.ACCOUNTS_CHART_UID,
-        BalancesType = BalancesType.WithCurrentBalanceOrMovements,
+        BalancesType = BalancesType.WithCurrentBalance,
         TrialBalanceType = TrialBalanceType.Balanza,
         Ledgers = TestingConstants.BALANCE_LEDGERS_ARRAY,
         InitialPeriod = new TrialBalanceCommandPeriod() {
@@ -102,8 +103,8 @@ namespace Empiria.FinancialAccounting.Tests.Balances {
           ToDate = TestingConstants.TO_DATE
         },
         FinalPeriod = new TrialBalanceCommandPeriod() {
-          FromDate = new DateTime(2020, 04, 01),
-          ToDate = new DateTime(2020, 04, 30)
+          FromDate = new DateTime(2021, 07, 01),
+          ToDate = new DateTime(2021, 07, 31)
     }
         
     };
