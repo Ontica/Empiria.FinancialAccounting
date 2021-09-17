@@ -48,8 +48,6 @@ namespace Empiria.FinancialAccounting.Tests.Balances {
       command.TrialBalanceType = TrialBalanceType.AnaliticoDeCuentas;
       command.UseDefaultValuation = true;
       command.WithSubledgerAccount = true;
-      command.FromAccount = "6350";
-      command.ToAccount = "6378";
 
       TrialBalanceDto trialBalance = _usecases.BuildTrialBalance(command);
 

@@ -146,17 +146,11 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
         }
         returnedCombineOrdering.Add(entry);
       }
-      if (_command.TrialBalanceType == TrialBalanceType.AnaliticoDeCuentasPorAuxiliar) {
-        return returnedCombineOrdering.OrderBy(a => a.SubledgerNumberOfDigits)
-                                      .ThenBy(a => a.SubledgerAccountNumber)
-                                      .ToList();
-      } else {
-        return returnedCombineOrdering.Where(a => !a.SubledgerAccountNumber.Contains("undefined"))
+      return returnedCombineOrdering.Where(a => !a.SubledgerAccountNumber.Contains("undefined"))
                                     .OrderBy(a => a.Currency.Code)
                                     .ThenBy(a => a.SubledgerNumberOfDigits)
                                     .ThenBy(a => a.SubledgerAccountNumber)
                                     .ToList();
-      }
     }
 
 

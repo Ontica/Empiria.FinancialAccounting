@@ -32,7 +32,6 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
     internal FixedList<DataTableColumn> DataColumns() {
       switch (this.Command.TrialBalanceType) {
         case TrialBalanceType.AnaliticoDeCuentas:
-        case TrialBalanceType.AnaliticoDeCuentasPorAuxiliar:
           return TwoCurrenciesDataColumns();
 
         case TrialBalanceType.Balanza:

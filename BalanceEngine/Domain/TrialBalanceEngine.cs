@@ -17,8 +17,6 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
 
     AnaliticoDeCuentas,
 
-    AnaliticoDeCuentasPorAuxiliar,
-
     Balanza,
 
     BalanzaConContabilidadesEnCascada,
@@ -100,11 +98,6 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
           var analiticoDeCuentas = new AnaliticoDeCuentas(this.Command);
 
           return analiticoDeCuentas.Build();
-
-        case TrialBalanceType.AnaliticoDeCuentasPorAuxiliar:
-
-          var analiticoPorAuxiliar = new AnaliticoDeCuentas(this.Command);
-          return analiticoPorAuxiliar.BuildAnaliticalBySubsidiaryAccount();
 
         case TrialBalanceType.Balanza:
         case TrialBalanceType.Saldos:
