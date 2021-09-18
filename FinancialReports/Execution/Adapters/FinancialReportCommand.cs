@@ -14,7 +14,7 @@ namespace Empiria.FinancialAccounting.FinancialReports.Adapters {
   /// <summary>Command payload used to build financial reports.</summary>
   public class FinancialReportCommand {
 
-    public FinancialReportType FinancialReportType {
+    public FinancialReportTypeEnum FinancialReportType {
       get; set;
     }
 

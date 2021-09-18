@@ -32,12 +32,12 @@ namespace Empiria.FinancialAccounting.FinancialReports.Adapters {
                                                           FixedList<FinancialReportEntry> list) {
       switch (command.FinancialReportType) {
 
-        case FinancialReportType.R01:
-        case FinancialReportType.R01_Banxico:
+        case FinancialReportTypeEnum.R01:
+        case FinancialReportTypeEnum.R01_Banxico:
           return MapToR01(list);
 
-        case FinancialReportType.R01_Integracion:
-        case FinancialReportType.R01_Banxico_Integracion:
+        case FinancialReportTypeEnum.R01_Integracion:
+        case FinancialReportTypeEnum.R01_Banxico_Integracion:
           return MapToR01Integracion(list);
 
         default:

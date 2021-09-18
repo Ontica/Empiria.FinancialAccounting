@@ -11,7 +11,7 @@
 namespace Empiria.FinancialAccounting.FinancialReports {
 
   /// <summary>Enumerates all kinds of financial reports.</summary>
-  public enum FinancialReportType {
+  public enum FinancialReportTypeEnum {
 
     R01,
 
@@ -20,6 +20,18 @@ namespace Empiria.FinancialAccounting.FinancialReports {
     R01_Banxico,
 
     R01_Banxico_Integracion,
+
+    R10_A_1011,
+
+    R10_1012,
+
+    R12_A_1219,
+
+    R12_A_1220,
+
+    R12_A_1223,
+
+    R12_A_1224
 
   }  // enum FinancialReportItemType
 

@@ -31,12 +31,12 @@ namespace Empiria.FinancialAccounting.FinancialReports {
 
     internal FixedList<DataTableColumn> DataColumns() {
       switch (this.Command.FinancialReportType) {
-        case FinancialReportType.R01:
-        case FinancialReportType.R01_Banxico:
+        case FinancialReportTypeEnum.R01:
+        case FinancialReportTypeEnum.R01_Banxico:
           return R01DataColumns();
 
-        case FinancialReportType.R01_Integracion:
-        case FinancialReportType.R01_Banxico_Integracion:
+        case FinancialReportTypeEnum.R01_Integracion:
+        case FinancialReportTypeEnum.R01_Banxico_Integracion:
           return R01IntegracionDataColumns();
 
         default:

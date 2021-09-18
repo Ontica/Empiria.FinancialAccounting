@@ -32,6 +32,16 @@ namespace Empiria.FinancialAccounting.FinancialReports.UseCases {
 
     #region Use cases
 
+    public FixedList<NamedEntityDto> FinancialReportTypes(string accountsChartUID) {
+      Assertion.AssertObject(accountsChartUID, "accountsChartUID");
+
+      var accountsChart = AccountsChart.Parse(accountsChartUID);
+
+      var list = FinancialReportType.GetList(accountsChart);
+
+      return list.MapToNamedEntityList();
+    }
+
 
     public FinancialReportDto GenerateFinancialReport(FinancialReportCommand command) {
       Assertion.AssertObject(command, "command");
