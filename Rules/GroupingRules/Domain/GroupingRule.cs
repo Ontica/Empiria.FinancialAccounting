@@ -46,7 +46,7 @@ namespace Empiria.FinancialAccounting.Rules {
 
     #region Properties
 
-    [DataField("ID_CONJUNTO_BASE")]
+    [DataField("ID_GRUPO")]
     public RulesSet RulesSet {
       get; private set;
     }

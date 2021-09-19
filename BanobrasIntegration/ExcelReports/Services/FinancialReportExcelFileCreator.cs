@@ -50,7 +50,7 @@ namespace Empiria.FinancialAccounting.BanobrasIntegration.ExcelReports {
 
     private void SetHeader(FinancialReportCommand command) {
       switch (command.FinancialReportType) {
-        case FinancialReportType.R01:
+        case FinancialReportTypeEnum.R01:
           _excelFile.SetCell($"A1",
                 $"Fecha {command.Date.ToString("dd/MMM/yyyy")} " +
                  "Regulatorio R01  Reporte B 0111  Subreporte 1");
@@ -64,13 +64,13 @@ namespace Empiria.FinancialAccounting.BanobrasIntegration.ExcelReports {
 
     private void SetTable(FinancialReportDto financialReport) {
       switch (financialReport.Command.FinancialReportType) {
-        case FinancialReportType.R01:
-        case FinancialReportType.R01_Banxico:
+        case FinancialReportTypeEnum.R01:
+        case FinancialReportTypeEnum.R01_Banxico:
           FillOutR01(financialReport.Entries);
           return;
 
-        case FinancialReportType.R01_Integracion:
-        case FinancialReportType.R01_Banxico_Integracion:
+        case FinancialReportTypeEnum.R01_Integracion:
+        case FinancialReportTypeEnum.R01_Banxico_Integracion:
           FillOutR01Integracion(financialReport.Entries);
           return;
 

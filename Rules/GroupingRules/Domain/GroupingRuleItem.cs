@@ -21,6 +21,14 @@ namespace Empiria.FinancialAccounting.Rules {
   }  // enum GroupingRuleItemType
 
 
+  public enum OperatorType {
+
+    Add = '+',
+
+    Substract = '-'
+
+  }
+
   /// <summary>Contains data about a financial accounting grouping rule item.</summary>
   public class GroupingRuleItem : BaseObject {
 
@@ -104,8 +112,8 @@ namespace Empiria.FinancialAccounting.Rules {
     }
 
 
-    [DataField("OPERADOR")]
-    public string Operator {
+    [DataField("OPERADOR", Default = OperatorType.Add)]
+    public OperatorType Operator {
       get; private set;
     }
 

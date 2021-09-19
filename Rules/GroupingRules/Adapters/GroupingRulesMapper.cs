@@ -47,7 +47,7 @@ namespace Empiria.FinancialAccounting.Rules.Adapters {
         ItemName = item.Name,
         SubledgerAccount = item.SubledgerAccountNumber,
         SectorCode = item.SectorCode,
-        Operator = item.Operator
+        Operator = Convert.ToString((char) item.Operator)
       };
     }
 

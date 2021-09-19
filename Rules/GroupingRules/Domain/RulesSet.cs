@@ -89,6 +89,7 @@ namespace Empiria.FinancialAccounting.Rules {
       if (this.groupingRulesItems == null) {
         this.groupingRulesItems = GroupingRulesData.GetGroupingRulesItems(this);
       }
+
       return this.groupingRulesItems.FindAll(x => x.GroupingRule.Equals(groupingRule));
     }
 

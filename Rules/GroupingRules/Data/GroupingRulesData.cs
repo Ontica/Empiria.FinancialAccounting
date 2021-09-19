@@ -18,7 +18,7 @@ namespace Empiria.FinancialAccounting.Rules.Data {
 
     static internal FixedList<GroupingRule> GetGroupingRules(RulesSet rulesSet) {
       var sql = "SELECT * FROM COF_CONCEPTOS " +
-                $"WHERE ID_CONJUNTO_BASE = {rulesSet.Id} " +
+                $"WHERE ID_GRUPO = {rulesSet.Id} " +
                 "ORDER BY POSICION";
 
       var dataOperation = DataOperation.Parse(sql);
@@ -27,10 +27,10 @@ namespace Empiria.FinancialAccounting.Rules.Data {
     }
 
     static internal FixedList<GroupingRuleItem> GetGroupingRulesItems(RulesSet rulesSet) {
-      var sql = "SELECT COF_AGRUPACIONES.* " +
-                "FROM COF_AGRUPACIONES INNER JOIN COF_CONCEPTOS " +
-                "ON COF_AGRUPACIONES.ID_CONCEPTO = COF_CONCEPTOS.ID_CONCEPTO " +
-                $"WHERE COF_CONCEPTOS.ID_CONJUNTO_BASE = {rulesSet.Id} ";
+      var sql = "SELECT COF_CONCEPTOS_INTEGRACION.* " +
+                "FROM COF_CONCEPTOS_INTEGRACION " +
+               $"WHERE ID_GRUPO = {rulesSet.Id} " +
+                "ORDER BY POSICION";
 
       var dataOperation = DataOperation.Parse(sql);
 
