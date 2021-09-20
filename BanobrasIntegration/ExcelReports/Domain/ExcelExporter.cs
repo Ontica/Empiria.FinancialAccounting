@@ -68,9 +68,9 @@ namespace Empiria.FinancialAccounting.BanobrasIntegration.ExcelReports {
     public ExcelFileDto Export(FinancialReportDto financialReport) {
       Assertion.AssertObject(financialReport, "financialReport");
 
-      var templateUID = $"FinancialReportTemplate.{financialReport.Command.FinancialReportType}";
+      var templateId = financialReport.Command.GetFinancialReportType().TemplateFileId;
 
-      var templateConfig = ExcelTemplateConfig.Parse(templateUID);
+      var templateConfig = ExcelTemplateConfig.Parse(templateId);
 
       var creator = new FinancialReportExcelFileCreator(templateConfig);
 

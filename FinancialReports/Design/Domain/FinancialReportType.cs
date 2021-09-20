@@ -7,14 +7,22 @@
 *  Summary  : Describes a financial report.                                                                  *
 *                                                                                                            *
 ************************* Copyright(c) La Vía Óntica SC, Ontica LLC and contributors. All rights reserved. **/
-
 using System;
+
 using Empiria.FinancialAccounting.FinancialReports.Data;
 
 namespace Empiria.FinancialAccounting.FinancialReports {
 
+  public enum FinancialReportDesignType {
+
+    FixedRows,
+
+    ConceptsIntegration
+  }
+
+
   /// <summary>Describes a financial report.</summary>
-  internal class FinancialReportType: GeneralObject {
+  public class FinancialReportType: GeneralObject {
 
     #region Constructors and parsers
 
@@ -48,7 +56,7 @@ namespace Empiria.FinancialAccounting.FinancialReports {
     static internal FixedList<FinancialReportType> GetListForDesign(AccountsChart accountsChart) {
       var fullList = GetList();
 
-      return fullList.FindAll(x => x.AccountsChart.Equals(accountsChart) && x.Designable);
+      return fullList.FindAll(x => x.AccountsChart.Equals(accountsChart) && x.IsDesignable);
     }
 
     #endregion Constructors and parsers
@@ -61,10 +69,23 @@ namespace Empiria.FinancialAccounting.FinancialReports {
       }
     }
 
-
-    public bool Designable {
+    public FinancialReportDesignType DesignType {
       get {
-        return base.ExtendedDataField.Get("designable", false);
+        return base.ExtendedDataField.Get<FinancialReportDesignType>("designType");
+      }
+    }
+
+
+    public bool IsDesignable {
+      get {
+        return this.DesignType == FinancialReportDesignType.FixedRows;
+      }
+    }
+
+
+    public int TemplateFileId {
+      get {
+        return base.ExtendedDataField.Get("templateFileId", -1);
       }
     }
 

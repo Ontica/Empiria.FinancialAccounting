@@ -21,9 +21,16 @@ namespace Empiria.FinancialAccounting.BanobrasIntegration.ExcelReports {
       // Required by Empiria Framework
     }
 
+
+    static internal ExcelTemplateConfig Parse(int id) {
+      return BaseObject.ParseId<ExcelTemplateConfig>(id);
+    }
+
+
     static internal ExcelTemplateConfig Parse(string uid) {
       return BaseObject.ParseKey<ExcelTemplateConfig>(uid);
     }
+
 
     static public string BaseUrl {
       get {
@@ -31,11 +38,13 @@ namespace Empiria.FinancialAccounting.BanobrasIntegration.ExcelReports {
       }
     }
 
+
     static private string GenerationStoragePath {
       get {
         return ConfigurationData.Get<string>("ExcelTemplateConfig.GenerationStoragePath");
       }
     }
+
 
     static private string TemplatesStoragePath {
       get {
