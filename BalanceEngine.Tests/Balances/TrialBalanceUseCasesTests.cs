@@ -61,7 +61,7 @@ namespace Empiria.FinancialAccounting.Tests.Balances {
     public void Should_Build_A_Traditional_Trial_Balance() {
       TrialBalanceCommand command = GetDefaultTrialBalanceCommand();
 
-      command.TrialBalanceType = TrialBalanceType.BalanzaValorizadaEnDolares;
+      command.TrialBalanceType = TrialBalanceType.Balanza;
       command.UseDefaultValuation = true;
 
       TrialBalanceDto trialBalance = _usecases.BuildTrialBalance(command);
@@ -86,6 +86,19 @@ namespace Empiria.FinancialAccounting.Tests.Balances {
       Assert.NotEmpty(trialBalance.Entries);
     }
 
+
+    [Fact]
+    public void Should_Build_Balanza_Consolidada_Por_Moneda() {
+      TrialBalanceCommand command = GetDefaultTrialBalanceCommand();
+
+      command.TrialBalanceType = TrialBalanceType.BalanzaConsolidadaPorMoneda;
+      TrialBalanceDto trialBalance = _usecases.BuildTrialBalance(command);
+
+      Assert.NotNull(trialBalance);
+      Assert.Equal(command, trialBalance.Command);
+      Assert.NotEmpty(trialBalance.Entries);
+    }
+
     #endregion Facts
 
     #region Helpers
@@ -93,7 +106,7 @@ namespace Empiria.FinancialAccounting.Tests.Balances {
     private TrialBalanceCommand GetDefaultTrialBalanceCommand() {
       return new TrialBalanceCommand() {
         AccountsChartUID = TestingConstants.ACCOUNTS_CHART_UID,
-        BalancesType = BalancesType.WithCurrentBalance,
+        BalancesType = BalancesType.WithCurrentBalanceOrMovements,
         TrialBalanceType = TrialBalanceType.Balanza,
         Ledgers = TestingConstants.BALANCE_LEDGERS_ARRAY,
         InitialPeriod = new TrialBalanceCommandPeriod() {
