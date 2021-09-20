@@ -8,10 +8,11 @@
 *                                                                                                            *
 ************************* Copyright(c) La Vía Óntica SC, Ontica LLC and contributors. All rights reserved. **/
 using System;
+
 using Empiria.FinancialAccounting.BalanceEngine.Adapters;
 using Empiria.FinancialAccounting.BalanceEngine.UseCases;
+
 using Empiria.FinancialAccounting.FinancialReports.Adapters;
-using Empiria.FinancialAccounting.Rules;
 
 namespace Empiria.FinancialAccounting.FinancialReports {
 
@@ -26,9 +27,9 @@ namespace Empiria.FinancialAccounting.FinancialReports {
 
 
     internal FinancialReport Generate() {
-      FixedList<GroupingRule> groupingRules = GetGroupingRules();
+      FixedList<FinancialReportRow> rows = GetRows();
 
-      FixedList<FinancialReportEntry> entries = GetEntries(groupingRules);
+      FixedList<FinancialReportEntry> entries = GetEntries(rows);
 
       // var balances = GetBalances();
 
@@ -61,8 +62,8 @@ namespace Empiria.FinancialAccounting.FinancialReports {
       };
     }
 
-    private FixedList<FinancialReportEntry> GetEntries(FixedList<GroupingRule> groupingRules) {
-      var enumeration = groupingRules.Select(x => new FinancialReportEntry { GroupingRule = x });
+    private FixedList<FinancialReportEntry> GetEntries(FixedList<FinancialReportRow> rows) {
+      var enumeration = rows.Select(x => new FinancialReportEntry { GroupingRule = x.GroupingRule });
 
       var entries = new FixedList<FinancialReportEntry>(enumeration);
 
@@ -70,25 +71,9 @@ namespace Empiria.FinancialAccounting.FinancialReports {
     }
 
 
-    private FixedList<GroupingRule> GetGroupingRules() {
-      RulesSet rulesSet;
-
-      var accountsChart = AccountsChart.Parse(_command.AccountsChartUID);
-
-      if (accountsChart.Id == 1) {
-        rulesSet = RulesSet.Parse(901);
-
-      } else if (accountsChart.Id == 152) {
-        rulesSet = RulesSet.Parse(902);
-
-      } else {
-        rulesSet = RulesSet.Empty;
-
-      }
-
-      return rulesSet.GetGroupingRules();
+    private FixedList<FinancialReportRow> GetRows() {
+      return _command.GetFinancialReportType().GetRows();
     }
-
 
     private void ProcessEntries(FixedList<FinancialReportEntry> entries,
                                 FixedList<ITrialBalanceEntryDto> balances) {

@@ -29,16 +29,15 @@ namespace Empiria.FinancialAccounting.FinancialReports {
 
 
     internal FinancialReport BuildFinancialReport() {
-      switch (this.Command.FinancialReportType) {
+      FinancialReportType reportType = this.Command.GetFinancialReportType();
 
-        case FinancialReportTypeEnum.R01:
-        case FinancialReportTypeEnum.R01_Banxico:
+      switch (reportType.DesignType) {
+        case FinancialReportDesignType.FixedRows:
           var r01 = new R01(this.Command);
 
           return r01.Generate();
 
-        case FinancialReportTypeEnum.R01_Integracion:
-        case FinancialReportTypeEnum.R01_Banxico_Integracion:
+        case FinancialReportDesignType.ConceptsIntegration:
           var r01Integracion = new R01(this.Command);
 
           return r01Integracion.Generate();
