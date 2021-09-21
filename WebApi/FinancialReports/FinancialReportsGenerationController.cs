@@ -2,7 +2,7 @@
 *                                                                                                            *
 *  Module   : Financial Reports                            Component : Web Api                               *
 *  Assembly : Empiria.FinancialAccounting.WebApi.dll       Pattern   : Query Controller                      *
-*  Type     : FinancialReportsController                   License   : Please read LICENSE.txt file          *
+*  Type     : FinancialReportsGenerationController         License   : Please read LICENSE.txt file          *
 *                                                                                                            *
 *  Summary  : Query web API used to generate financial reports.                                              *
 *                                                                                                            *
@@ -21,7 +21,7 @@ using Empiria.FinancialAccounting.BanobrasIntegration.ExcelReports.Adapters;
 namespace Empiria.FinancialAccounting.WebApi.FinancialReports {
 
   /// <summary>Query web API used to generate financial reports.</summary>
-  public class FinancialReportsController : WebApiController {
+  public class FinancialReportsGenerationController : WebApiController {
 
     #region Web Apis
 
@@ -82,6 +82,6 @@ namespace Empiria.FinancialAccounting.WebApi.FinancialReports {
 
     #endregion Web Apis
 
-  }  // class FinancialReportsController
+  }  // class FinancialReportsGenerationController
 
 }  // namespace Empiria.FinancialAccounting.WebApi.FinancialReports
