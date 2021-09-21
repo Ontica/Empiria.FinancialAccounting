@@ -69,6 +69,16 @@ namespace Empiria.FinancialAccounting.BalanceEngine.Adapters {
     }
 
 
+    public string StandardAccountNumber {
+      get; internal set;
+    } = string.Empty;
+
+
+    public string SubledgerAccountNumber {
+      get; internal set;
+    } = string.Empty;
+
+
     public string AccountName {
       get; internal set;
     }

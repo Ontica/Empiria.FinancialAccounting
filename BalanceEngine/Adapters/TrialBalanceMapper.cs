@@ -98,12 +98,12 @@ namespace Empiria.FinancialAccounting.BalanceEngine.Adapters {
           var currencyMappedItems = list.Select((x) =>
                 MapToTrialBalanceByCurrency((TrialBalanceByCurrencyEntry) x));
           return new FixedList<ITrialBalanceEntryDto>(currencyMappedItems);
-          
+
         case TrialBalanceType.BalanzaValorizadaEnDolares:
           var valuedMappedItems = list.Select((x) =>
                 MapToValuedTrialBalance((ValuedTrialBalanceEntry) x));
           return new FixedList<ITrialBalanceEntryDto>(valuedMappedItems);
-          
+
         case TrialBalanceType.BalanzaValorizadaComparativa:
 
           var mappedItemsComparative = list.Select((x) =>
@@ -133,10 +133,15 @@ namespace Empiria.FinancialAccounting.BalanceEngine.Adapters {
       dto.LedgerNumber = entry.Ledger.Number;
       dto.StandardAccountId = entry.Account.Id;
       dto.CurrencyCode = entry.Currency.Code;
-
+      if (entry.GroupName.Length == 0) {
+        dto.StandardAccountNumber = entry.Account.Number;
+      } else {
+        dto.StandardAccountNumber = entry.GroupNumber;
+      }
       if (!subledgerAccount.IsEmptyInstance) {
         dto.AccountName = subledgerAccount.Name;
         dto.AccountNumber = subledgerAccount.Number;
+        dto.SubledgerAccountNumber = subledgerAccount.Number;
 
       } else if (entry.HasSector) {
         dto.AccountName = entry.Sector.Name;
@@ -263,7 +268,7 @@ namespace Empiria.FinancialAccounting.BalanceEngine.Adapters {
       dto.TotalEquivalence = entry.TotalEquivalence;
       dto.GroupName = entry.GroupName;
       dto.GroupNumber = entry.GroupNumber;
-      
+
       return dto;
     }
 
