@@ -2,7 +2,7 @@
 *                                                                                                            *
 *  Module   : Financial Reports                            Component : Web Api                               *
 *  Assembly : Empiria.FinancialAccounting.WebApi.dll       Pattern   : Query Controller                      *
-*  Type     : FinancialReportsGenerationController         License   : Please read LICENSE.txt file          *
+*  Type     : FinancialReportsExecutionController          License   : Please read LICENSE.txt file          *
 *                                                                                                            *
 *  Summary  : Query web API used to generate financial reports.                                              *
 *                                                                                                            *
@@ -21,7 +21,7 @@ using Empiria.FinancialAccounting.BanobrasIntegration.ExcelReports.Adapters;
 namespace Empiria.FinancialAccounting.WebApi.FinancialReports {
 
   /// <summary>Query web API used to generate financial reports.</summary>
-  public class FinancialReportsGenerationController : WebApiController {
+  public class FinancialReportsExecutionController : WebApiController {
 
     #region Web Apis
 
@@ -56,7 +56,7 @@ namespace Empiria.FinancialAccounting.WebApi.FinancialReports {
       base.RequireBody(command);
 
       using (var usecases = FinancialReportsUseCases.UseCaseInteractor()) {
-        FinancialReportDto financialReport = usecases.GenerateFinancialReport(command);
+        FinancialReportBreakdownDto financialReport = usecases.GetFinancialReportBreakdown(groupingRuleUID, command);
 
         return new SingleObjectModel(base.Request, financialReport);
       }
@@ -82,6 +82,6 @@ namespace Empiria.FinancialAccounting.WebApi.FinancialReports {
 
     #endregion Web Apis
 
-  }  // class FinancialReportsGenerationController
+  }  // class FinancialReportsExecutionController
 
 }  // namespace Empiria.FinancialAccounting.WebApi.FinancialReports
