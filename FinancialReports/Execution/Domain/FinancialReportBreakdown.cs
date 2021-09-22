@@ -4,7 +4,7 @@
 *  Assembly : FinancialAccounting.FinancialReports.dll   Pattern   : Service provider                        *
 *  Type     : FinancialReportBreakdown                   License   : Please read LICENSE.txt file            *
 *                                                                                                            *
-*  Summary  : Generador del reporte regulatorio R01.                                                         *
+*  Summary  : Data structure that holds a financial report item breakdown.                                   *
 *                                                                                                            *
 ************************* Copyright(c) La Vía Óntica SC, Ontica LLC and contributors. All rights reserved. **/
 using System.Collections.Generic;
@@ -13,6 +13,7 @@ using Empiria.FinancialAccounting.FinancialReports.Adapters;
 
 namespace Empiria.FinancialAccounting.FinancialReports {
 
+  /// <summary>Data structure that holds a financial report item breakdown.</summary>
   internal class FinancialReportBreakdown {
 
 
@@ -50,5 +51,6 @@ namespace Empiria.FinancialAccounting.FinancialReports {
 
     #endregion Properties
 
-  }
-}
+  }  // class FinancialReportBreakdown
+
+}  // namespace Empiria.FinancialAccounting.FinancialReports

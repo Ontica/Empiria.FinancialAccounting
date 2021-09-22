@@ -2,9 +2,9 @@
 *                                                                                                            *
 *  Module   : Financial Reports                          Component : Domain Layer                            *
 *  Assembly : FinancialAccounting.FinancialReports.dll   Pattern   : Service provider                        *
-*  Type     : R01                                        License   : Please read LICENSE.txt file            *
+*  Type     : FixedRowGroupingRulesReport                License   : Please read LICENSE.txt file            *
 *                                                                                                            *
-*  Summary  : Generador del reporte regulatorio R01.                                                         *
+*  Summary  : Generates a fixed row defined report which rows are linked to grouping rules (R01, R10, R12).  *
 *                                                                                                            *
 ************************* Copyright(c) La Vía Óntica SC, Ontica LLC and contributors. All rights reserved. **/
 using System;
@@ -21,14 +21,15 @@ using Empiria.FinancialAccounting.Rules;
 
 namespace Empiria.FinancialAccounting.FinancialReports {
 
-  /// <summary>Generador del reporte regulatorio R01.</summary>
-  internal class R01 {
+  /// <summary>Generates a fixed row defined report which rows are linked to
+  /// grouping rules (R01, R10, R12).</summary>
+  internal class FixedRowGroupingRulesReport {
 
     private readonly FinancialReportCommand _command;
 
     #region Public methods
 
-    internal R01(FinancialReportCommand command) {
+    internal FixedRowGroupingRulesReport(FinancialReportCommand command) {
       _command = command;
     }
 
@@ -258,7 +259,7 @@ namespace Empiria.FinancialAccounting.FinancialReports {
 
     #endregion Helpers
 
-  }  // class R01
+  }  // class FixedRowGroupingRulesReport
 
 
   internal class ReportEntryTotals {

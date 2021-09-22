@@ -69,11 +69,11 @@ namespace Empiria.FinancialAccounting.BanobrasIntegration.ExcelReports {
 
       switch (reportType.DesignType) {
         case FinancialReportDesignType.FixedRows:
-          FillOutR01(financialReport.Entries);
+          FillOutFixedRowsReport(financialReport.Entries);
           return;
 
         case FinancialReportDesignType.ConceptsIntegration:
-          FillOutR01Integracion(financialReport.Entries);
+          FillOutConceptsIntegrationReport(financialReport.Entries);
           return;
 
         default:
@@ -81,7 +81,7 @@ namespace Empiria.FinancialAccounting.BanobrasIntegration.ExcelReports {
       }
     }
 
-    private void FillOutR01(FixedList<FinancialReportEntryDto> entries) {
+    private void FillOutFixedRowsReport(FixedList<FinancialReportEntryDto> entries) {
       int i = 8;
 
       foreach (var entry in entries) {
@@ -94,7 +94,7 @@ namespace Empiria.FinancialAccounting.BanobrasIntegration.ExcelReports {
       }
     }
 
-    private void FillOutR01Integracion(FixedList<FinancialReportEntryDto> entries) {
+    private void FillOutConceptsIntegrationReport(FixedList<FinancialReportEntryDto> entries) {
       int i = 4;
 
       foreach (var entry in entries) {

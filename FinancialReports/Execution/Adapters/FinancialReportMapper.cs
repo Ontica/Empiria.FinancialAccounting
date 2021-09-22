@@ -35,10 +35,10 @@ namespace Empiria.FinancialAccounting.FinancialReports.Adapters {
       switch (reportType.DesignType) {
 
         case FinancialReportDesignType.FixedRows:
-          return MapToR01(list);
+          return MapToFixedRowsReport(list);
 
         case FinancialReportDesignType.ConceptsIntegration:
-          return MapToR01Integracion(list);
+          return MapToFixedRowsReportConceptsIntegration(list);
 
         default:
           throw Assertion.AssertNoReachThisCode(
@@ -47,14 +47,14 @@ namespace Empiria.FinancialAccounting.FinancialReports.Adapters {
     }
 
 
-    static private FixedList<FinancialReportEntryDto> MapToR01(FixedList<FinancialReportEntry> list) {
-      var mappedItems = list.Select((x) => MapToR01(x));
+    static private FixedList<FinancialReportEntryDto> MapToFixedRowsReport(FixedList<FinancialReportEntry> list) {
+      var mappedItems = list.Select((x) => MapToFixedRowsReport(x));
 
       return new FixedList<FinancialReportEntryDto>(mappedItems);
     }
 
 
-    static private FinancialReportEntryDto MapToR01(FinancialReportEntry entry) {
+    static private FinancialReportEntryDto MapToFixedRowsReport(FinancialReportEntry entry) {
       return new FinancialReportEntryDto {
          UID = entry.Row.UID,
          ConceptCode = entry.GroupingRule.Code,
@@ -66,13 +66,13 @@ namespace Empiria.FinancialAccounting.FinancialReports.Adapters {
       };
     }
 
-    static private FixedList<FinancialReportEntryDto> MapToR01Integracion(FixedList<FinancialReportEntry> list) {
-      var mappedItems = list.Select((x) => MapToR01Integracion(x));
+    static private FixedList<FinancialReportEntryDto> MapToFixedRowsReportConceptsIntegration(FixedList<FinancialReportEntry> list) {
+      var mappedItems = list.Select((x) => MapToFixedRowsReportConceptsIntegration(x));
 
       return new FixedList<FinancialReportEntryDto>(mappedItems);
     }
 
-    static private FinancialReportEntryDto MapToR01Integracion(FinancialReportEntry entry) {
+    static private FinancialReportEntryDto MapToFixedRowsReportConceptsIntegration(FinancialReportEntry entry) {
       return new FinancialReportEntryDto {
         UID = entry.Row.UID,
         ConceptCode = entry.GroupingRule.Code,

@@ -34,10 +34,10 @@ namespace Empiria.FinancialAccounting.FinancialReports {
 
       switch (reportType.DesignType) {
         case FinancialReportDesignType.FixedRows:
-          return R01DataColumns();
+          return FixedRowsReportDataColumns();
 
         case FinancialReportDesignType.ConceptsIntegration:
-          return R01IntegracionDataColumns();
+          return FixedRowsReportConceptsIntegrationDataColumns();
 
         default:
           throw Assertion.AssertNoReachThisCode(
@@ -46,7 +46,7 @@ namespace Empiria.FinancialAccounting.FinancialReports {
     }
 
 
-    private FixedList<DataTableColumn> R01DataColumns() {
+    private FixedList<DataTableColumn> FixedRowsReportDataColumns() {
       List<DataTableColumn> columns = new List<DataTableColumn>();
 
       columns.Add(new DataTableColumn("conceptCode", "Clave CNBV", "text-link"));
@@ -58,7 +58,7 @@ namespace Empiria.FinancialAccounting.FinancialReports {
       return columns.ToFixedList();
     }
 
-    private FixedList<DataTableColumn> R01IntegracionDataColumns() {
+    private FixedList<DataTableColumn> FixedRowsReportConceptsIntegrationDataColumns() {
       List<DataTableColumn> columns = new List<DataTableColumn>();
 
       columns.Add(new DataTableColumn("conceptCode", "Clave CNBV", "text-link"));

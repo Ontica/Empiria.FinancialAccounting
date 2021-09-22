@@ -33,14 +33,14 @@ namespace Empiria.FinancialAccounting.FinancialReports {
 
       switch (reportType.DesignType) {
         case FinancialReportDesignType.FixedRows:
-          var r01 = new R01(this.Command);
+          var fixedRows = new FixedRowGroupingRulesReport(this.Command);
 
-          return r01.Generate();
+          return fixedRows.Generate();
 
         case FinancialReportDesignType.ConceptsIntegration:
-          var r01Integracion = new R01(this.Command);
+          var conceptsIntegration = new FixedRowGroupingRulesReport(this.Command);
 
-          return r01Integracion.Generate();
+          return conceptsIntegration.Generate();
 
         default:
           throw Assertion.AssertNoReachThisCode(
@@ -53,14 +53,14 @@ namespace Empiria.FinancialAccounting.FinancialReports {
 
       switch (reportType.DesignType) {
         case FinancialReportDesignType.FixedRows:
-          var r01 = new R01(this.Command);
+          var fixedRows = new FixedRowGroupingRulesReport(this.Command);
 
-          return r01.GetBreakdown(groupingRuleUID);
+          return fixedRows.GetBreakdown(groupingRuleUID);
 
         case FinancialReportDesignType.ConceptsIntegration:
-          var r01Integracion = new R01(this.Command);
+          var conceptsIntegration = new FixedRowGroupingRulesReport(this.Command);
 
-          return r01Integracion.GetBreakdown(groupingRuleUID);
+          return conceptsIntegration.GetBreakdown(groupingRuleUID);
 
         default:
           throw Assertion.AssertNoReachThisCode(
