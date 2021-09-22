@@ -56,7 +56,7 @@ namespace Empiria.FinancialAccounting.FinancialReports.Adapters {
 
     static private FinancialReportEntryDto MapToR01(FinancialReportEntry entry) {
       return new FinancialReportEntryDto {
-         UID = entry.GroupingRule.UID,
+         UID = entry.Row.UID,
          ConceptCode = entry.GroupingRule.Code,
          Concept = entry.GroupingRule.Concept,
          DomesticCurrencyTotal = entry.DomesticCurrencyTotal,
@@ -74,7 +74,7 @@ namespace Empiria.FinancialAccounting.FinancialReports.Adapters {
 
     static private FinancialReportEntryDto MapToR01Integracion(FinancialReportEntry entry) {
       return new FinancialReportEntryDto {
-        UID = entry.GroupingRule.UID,
+        UID = entry.Row.UID,
         ConceptCode = entry.GroupingRule.Code,
         Concept = entry.GroupingRule.Concept,
         DomesticCurrencyTotal = entry.DomesticCurrencyTotal,
