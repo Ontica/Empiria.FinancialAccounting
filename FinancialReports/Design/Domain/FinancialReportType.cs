@@ -97,6 +97,10 @@ namespace Empiria.FinancialAccounting.FinancialReports {
       return FinancialReportsRowData.GetRows(this);
     }
 
+    internal FinancialReportRow GetRow(string rowUID) {
+      return GetRows().Find(x => x.UID == rowUID);
+    }
+
     #endregion Methods
 
   }  // class FinancialReportType

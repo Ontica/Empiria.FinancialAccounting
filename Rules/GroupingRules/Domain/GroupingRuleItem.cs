@@ -146,6 +146,19 @@ namespace Empiria.FinancialAccounting.Rules {
       }
     }
 
+
+    public bool HasSector {
+      get {
+        return (this.SectorCode.Length != 0 && this.SectorCode != "00");
+      }
+    }
+
+    public bool HasSubledgerAccount {
+      get {
+        return (this.SubledgerAccountNumber.Length > 10);
+      }
+    }
+
     #endregion Properties
 
   }  // class GroupingRuleItem

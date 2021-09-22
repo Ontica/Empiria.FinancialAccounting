@@ -48,6 +48,26 @@ namespace Empiria.FinancialAccounting.FinancialReports {
       }
     }
 
+    internal FinancialReportBreakdown GetBreakdown(string groupingRuleUID) {
+      FinancialReportType reportType = this.Command.GetFinancialReportType();
+
+      switch (reportType.DesignType) {
+        case FinancialReportDesignType.FixedRows:
+          var r01 = new R01(this.Command);
+
+          return r01.GetBreakdown(groupingRuleUID);
+
+        case FinancialReportDesignType.ConceptsIntegration:
+          var r01Integracion = new R01(this.Command);
+
+          return r01Integracion.GetBreakdown(groupingRuleUID);
+
+        default:
+          throw Assertion.AssertNoReachThisCode(
+                    $"Unhandled trial balance type {this.Command.FinancialReportType}.");
+      }
+    }
+
   } // class FinancialReportGenerator
 
 } // namespace Empiria.FinancialAccounting.FinancialReports
