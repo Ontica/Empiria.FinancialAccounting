@@ -63,6 +63,8 @@ namespace Empiria.FinancialAccounting.FinancialReports.Adapters {
          ForeignCurrencyTotal = entry.ForeignCurrencyTotal,
          Total = entry.Total,
          GroupingRuleUID = entry.GroupingRule.UID,
+         AccountsChartName = entry.GroupingRule.RulesSet.AccountsChart.Name,
+         RulesSetName = entry.GroupingRule.RulesSet.Name
       };
     }
 
@@ -81,6 +83,8 @@ namespace Empiria.FinancialAccounting.FinancialReports.Adapters {
         ForeignCurrencyTotal = entry.ForeignCurrencyTotal,
         Total = entry.Total,
         GroupingRuleUID = entry.GroupingRule.UID,
+        AccountsChartName = entry.GroupingRule.RulesSet.AccountsChart.Name,
+        RulesSetName = entry.GroupingRule.RulesSet.Name
       };
     }
 
