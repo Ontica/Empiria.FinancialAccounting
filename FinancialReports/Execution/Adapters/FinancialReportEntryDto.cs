@@ -45,6 +45,14 @@ namespace Empiria.FinancialAccounting.FinancialReports.Adapters {
       get; internal set;
     }
 
+    public string AccountsChartName {
+      get; internal set;
+    }
+
+    public string RulesSetName {
+      get; internal set;
+    }
+
   } // class FinancialReportEntryDto
 
 } // namespace Empiria.FinancialAccounting.FinancialReports.Adapters

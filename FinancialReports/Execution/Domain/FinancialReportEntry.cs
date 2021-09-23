@@ -55,6 +55,7 @@ namespace Empiria.FinancialAccounting.FinancialReports {
       get; internal set;
     }
 
+
   } // class FinancialReportEntry
 
 } // namespace Empiria.FinancialAccounting.FinancialReports
