@@ -75,7 +75,7 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
 
       columns.Add(new DataTableColumn("sectorCode", "Sct", "text"));
       columns.Add(new DataTableColumn("accountName", "Nombre", "text"));
-      
+
       if (Command.TrialBalanceType == TrialBalanceType.SaldosPorCuenta ||
           Command.TrialBalanceType == TrialBalanceType.SaldosPorAuxiliar) {
         columns.Add(new DataTableColumn("currentBalance", "Saldo actual", "decimal"));
@@ -188,7 +188,7 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
       columns.Add(new DataTableColumn("domesticBalance", "M.N. (01)", "decimal"));
       columns.Add(new DataTableColumn("dollarBalance", "Dólares (02)", "decimal"));
       columns.Add(new DataTableColumn("yenBalance", "Yenes (06)", "decimal"));
-      columns.Add(new DataTableColumn("euroBalance", "Euros(27)", "decimal"));
+      columns.Add(new DataTableColumn("euroBalance", "Euros (27)", "decimal"));
       columns.Add(new DataTableColumn("udisBalance", "UDIS (44)", "decimal"));
 
       return columns.ToFixedList();
