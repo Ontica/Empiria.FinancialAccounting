@@ -90,8 +90,23 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
       get;
     }
 
-
     internal TrialBalance BuildTrialBalance() {
+      if (!this.Command.UseCache) {
+        return GenerateTrialBalance();
+      }
+
+      string hash = TrialBalanceCache.GenerateHash(this.Command);
+
+      TrialBalance trialBalance = TrialBalanceCache.TryGet(hash);
+      if (trialBalance == null) {
+        trialBalance = GenerateTrialBalance();
+        TrialBalanceCache.Store(hash, trialBalance);
+      }
+
+      return trialBalance;
+    }
+
+    private TrialBalance GenerateTrialBalance() {
       switch (this.Command.TrialBalanceType) {
 
         case TrialBalanceType.AnaliticoDeCuentas:

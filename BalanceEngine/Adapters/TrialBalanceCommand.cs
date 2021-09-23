@@ -18,7 +18,6 @@ namespace Empiria.FinancialAccounting.BalanceEngine.Adapters {
       get; set;
     }
 
-
     public string AccountsChartUID {
       get; set;
     }
@@ -83,6 +82,10 @@ namespace Empiria.FinancialAccounting.BalanceEngine.Adapters {
       get; set;
     }
 
+    public bool UseCache {
+      get; set;
+    } = true;
+
 
     public bool Consolidated {
       get {
@@ -146,7 +149,7 @@ namespace Empiria.FinancialAccounting.BalanceEngine.Adapters {
 
     public DateTime ExchangeRateDate {
       get;  set;
-    } = DateTime.Now;
+    } = DateTime.Today;
 
 
     public string ExchangeRateTypeUID {
