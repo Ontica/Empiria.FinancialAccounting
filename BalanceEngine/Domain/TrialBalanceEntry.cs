@@ -91,17 +91,17 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
     }
 
 
+    [DataField("SALDO_PROMEDIO")]
+    public decimal AverageBalance {
+      get;
+      internal set;
+    }
+
+
     [DataField("FECHA_ULTIMO_MOVIMIENTO")]
     public DateTime LastChangeDate {
       get; internal set;
     }
-
-
-    public decimal AverageBalance {
-      get;
-      internal set;
-    } = 0;
-
 
 
     public decimal ExchangeRate {

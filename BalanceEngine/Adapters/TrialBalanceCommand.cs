@@ -108,6 +108,12 @@ namespace Empiria.FinancialAccounting.BalanceEngine.Adapters {
     } = false;
 
 
+    public bool WithAverageBalance {
+      get; set;
+    } = false;
+
+
+
     public bool ValuateBalances {
       get {
         return this.InitialPeriod.ValuateToCurrrencyUID.Length != 0 &&

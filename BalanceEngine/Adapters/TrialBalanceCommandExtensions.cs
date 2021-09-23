@@ -203,30 +203,53 @@ namespace Empiria.FinancialAccounting.BalanceEngine.Adapters {
 
 
       private string GetOutputFields() {
+        
         if (_command.DoNotReturnSubledgerAccounts && _command.Consolidated) {
 
           return "-1 AS ID_MAYOR, ID_MONEDA, ID_CUENTA_ESTANDAR, " +
                  "NUMERO_CUENTA_ESTANDAR, ID_SECTOR, -1 AS ID_CUENTA_AUXILIAR, " +
-                 "SALDO_ANTERIOR, DEBE, HABER, SALDO_ACTUAL, FECHA_ULTIMO_MOVIMIENTO";
+                 "SALDO_ANTERIOR, DEBE, HABER, SALDO_ACTUAL, FECHA_ULTIMO_MOVIMIENTO" +
+                 $"{GetAverageBalance()}";
 
         } else if (_command.DoNotReturnSubledgerAccounts && _command.ShowCascadeBalances) {
 
           return "ID_MAYOR, ID_MONEDA, ID_CUENTA_ESTANDAR, NUMERO_CUENTA_ESTANDAR, ID_SECTOR, " +
-                 "-1 AS ID_CUENTA_AUXILIAR, SALDO_ANTERIOR, DEBE, HABER, SALDO_ACTUAL, FECHA_ULTIMO_MOVIMIENTO";
+                 "-1 AS ID_CUENTA_AUXILIAR, SALDO_ANTERIOR, DEBE, HABER, SALDO_ACTUAL, FECHA_ULTIMO_MOVIMIENTO" +
+                 $"{GetAverageBalance()}";
 
         } else if (_command.WithSubledgerAccount && _command.Consolidated) {
 
           return "-1 AS ID_MAYOR, ID_MONEDA, ID_CUENTA_ESTANDAR, NUMERO_CUENTA_ESTANDAR, ID_SECTOR, " +
-                 "ID_CUENTA_AUXILIAR, SALDO_ANTERIOR, DEBE, HABER, SALDO_ACTUAL, FECHA_ULTIMO_MOVIMIENTO";
+                 "ID_CUENTA_AUXILIAR, SALDO_ANTERIOR, DEBE, HABER, SALDO_ACTUAL, FECHA_ULTIMO_MOVIMIENTO" +
+                 $"{GetAverageBalance()}";
 
         } else if (_command.WithSubledgerAccount && _command.ShowCascadeBalances) {
 
           return "ID_MAYOR, ID_MONEDA, ID_CUENTA_ESTANDAR, NUMERO_CUENTA_ESTANDAR, ID_SECTOR, " +
-                 "ID_CUENTA_AUXILIAR, SALDO_ANTERIOR, DEBE, HABER, SALDO_ACTUAL, FECHA_ULTIMO_MOVIMIENTO";
+                 "ID_CUENTA_AUXILIAR, SALDO_ANTERIOR, DEBE, HABER, SALDO_ACTUAL, FECHA_ULTIMO_MOVIMIENTO" +
+                 $"{GetAverageBalance()}";
 
         } else {
           throw Assertion.AssertNoReachThisCode();
         }
+
+      }
+
+      private string GetAverageBalance() {
+
+        if (_command.WithAverageBalance) {
+          return $", ROUND(CASE WHEN NATURALEZA = 'D' THEN ((TO_DATE( " +
+                 $"'{CommonMethods.FormatSqlDate(_command.InitialPeriod.ToDate)}','DD/MM/YYYY') - " +
+                 $"FECHA_ULTIMO_MOVIMIENTO + 1) * (DEBE - HABER)) / {_command.InitialPeriod.ToDate.Day} " +
+
+                 $"WHEN NATURALEZA = 'A' THEN ((TO_DATE( " +
+                 $"'{CommonMethods.FormatSqlDate(_command.InitialPeriod.ToDate)}','DD/MM/YYYY') - " +
+                 $"FECHA_ULTIMO_MOVIMIENTO + 1) * (HABER - DEBE)) / {_command.InitialPeriod.ToDate.Day} " +
+                 $"END, 6) AS SALDO_PROMEDIO";
+        } else {
+          return ", 0 AS SALDO_PROMEDIO";
+        }
+
       }
 
 
