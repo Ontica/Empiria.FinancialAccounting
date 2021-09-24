@@ -90,7 +90,10 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
             Command.InitialPeriod.UseDefaultValuation) {
           columns.Add(new DataTableColumn("exchangeRate", "TC", "decimal"));
         }
-        columns.Add(new DataTableColumn("averageBalance", "Saldo promedio", "decimal"));
+        if (Command.WithAverageBalance) {
+          columns.Add(new DataTableColumn("averageBalance", "Saldo promedio", "decimal"));
+          columns.Add(new DataTableColumn("lastChangeDate", "Último movimiento", "text"));
+        }
       }
 
       return columns.ToFixedList();

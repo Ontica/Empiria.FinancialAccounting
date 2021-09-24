@@ -238,13 +238,14 @@ namespace Empiria.FinancialAccounting.BalanceEngine.Adapters {
       private string GetAverageBalance() {
 
         if (_command.WithAverageBalance) {
-          return $", ROUND(CASE WHEN NATURALEZA = 'D' THEN ((TO_DATE( " +
+          return $", ROUND(CASE WHEN NATURALEZA = 'D' THEN (((TO_DATE( " +
                  $"'{CommonMethods.FormatSqlDate(_command.InitialPeriod.ToDate)}','DD/MM/YYYY') - " +
-                 $"FECHA_ULTIMO_MOVIMIENTO + 1) * (DEBE - HABER)) / {_command.InitialPeriod.ToDate.Day} " +
-
-                 $"WHEN NATURALEZA = 'A' THEN ((TO_DATE( " +
+                 $"FECHA_ULTIMO_MOVIMIENTO + 1) * (DEBE - HABER)) / {_command.InitialPeriod.ToDate.Day}) + " +
+                 $"SALDO_ANTERIOR " +
+                 $"WHEN NATURALEZA = 'A' THEN (((TO_DATE( " +
                  $"'{CommonMethods.FormatSqlDate(_command.InitialPeriod.ToDate)}','DD/MM/YYYY') - " +
-                 $"FECHA_ULTIMO_MOVIMIENTO + 1) * (HABER - DEBE)) / {_command.InitialPeriod.ToDate.Day} " +
+                 $"FECHA_ULTIMO_MOVIMIENTO + 1) * (HABER - DEBE)) / {_command.InitialPeriod.ToDate.Day}) + " +
+                 $"SALDO_ANTERIOR " +
                  $"END, 6) AS SALDO_PROMEDIO";
         } else {
           return ", 0 AS SALDO_PROMEDIO";

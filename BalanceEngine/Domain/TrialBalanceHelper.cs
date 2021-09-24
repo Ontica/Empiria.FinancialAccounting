@@ -110,7 +110,6 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
       return OrderByLedgerAndCurrency(returnedEntries);
     }
 
-
     private List<TrialBalanceEntry> OrderByLedgerAndCurrency(List<TrialBalanceEntry> entries) {
       return entries.OrderBy(a => a.Ledger.Number)
                     .ThenBy(a => a.Currency.Code)
@@ -207,6 +206,32 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
 
       return summaryEntries.Values.ToList()
                                   .ToFixedList();
+    }
+
+
+    internal List<TrialBalanceEntry> GenerateAverageBalance(List<TrialBalanceEntry> trialBalance) {
+      var returnedEntries = new List<TrialBalanceEntry>(trialBalance);
+
+      if (_command.WithAverageBalance) {
+             
+        foreach (var entry in returnedEntries.Where(a => a.ItemType == TrialBalanceItemType.BalanceSummary ||
+                  (_command.TrialBalanceType == TrialBalanceType.BalanzaConContabilidadesEnCascada && 
+                   (a.ItemType == TrialBalanceItemType.BalanceTotalGroupDebtor ||
+                    a.ItemType == TrialBalanceItemType.BalanceTotalGroupCreditor)
+                ))) {
+          decimal debtorCreditor = entry.DebtorCreditor == DebtorCreditorType.Deudora ?
+                                   entry.Debit - entry.Credit : entry.Credit - entry.Debit;
+
+          TimeSpan timeSpan = _command.InitialPeriod.ToDate - entry.LastChangeDate;
+          int numberOfDays = timeSpan.Days + 1;
+
+          entry.AverageBalance = ((numberOfDays * debtorCreditor) / 
+                                   _command.InitialPeriod.ToDate.Day) +
+                                   entry.InitialBalance;
+        }
+      }
+
+      return returnedEntries;
     }
 
 
