@@ -62,6 +62,18 @@ namespace Empiria.FinancialAccounting.Rules.UseCases {
       return rulesSets.MapToNamedEntityList();
     }
 
+
+    public FixedList<GroupingRulesTreeItemDto> GroupingRulesFlatTree(string rulesSetUID) {
+      Assertion.AssertObject(rulesSetUID, "rulesSetUID");
+
+      var rulesSet = RulesSet.Parse(rulesSetUID);
+
+      GroupingRulesTree rulesTree = rulesSet.GetGroupingRulesTree();
+
+      return GroupingRulesTreeMapper.MapFlat(rulesTree.GetItemsList());
+    }
+
+
     #endregion Use cases
 
   }  // class GroupingRulesUseCases

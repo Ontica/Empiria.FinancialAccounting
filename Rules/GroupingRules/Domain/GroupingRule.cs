@@ -9,8 +9,6 @@
 ************************* Copyright(c) La Vía Óntica SC, Ontica LLC and contributors. All rights reserved. **/
 using System;
 
-using Empiria.FinancialAccounting.Rules.Data;
-
 namespace Empiria.FinancialAccounting.Rules {
 
   /// <summary>Contains data about a financial accounting grouping rule.</summary>
@@ -76,17 +74,6 @@ namespace Empiria.FinancialAccounting.Rules {
       get; private set;
     }
 
-    public int Level {
-      get {
-        return 1;
-      }
-    }
-
-    public GroupingRule Parent {
-      get {
-        return GroupingRule.Empty;
-      }
-    }
 
     public FixedList<GroupingRuleItem> Items {
       get {

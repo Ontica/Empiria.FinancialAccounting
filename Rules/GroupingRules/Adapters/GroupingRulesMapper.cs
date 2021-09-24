@@ -31,8 +31,6 @@ namespace Empiria.FinancialAccounting.Rules.Adapters {
         Code = rule.Code,
         Concept = rule.Concept,
         Position = rule.Position,
-        Level = rule.Level,
-        ParentUID = rule.Parent.UID,
         AccountsChartName = rule.RulesSet.AccountsChart.Name,
         RulesSetName = rule.RulesSet.Name
       };

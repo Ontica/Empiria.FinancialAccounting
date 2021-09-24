@@ -94,6 +94,20 @@ namespace Empiria.FinancialAccounting.Rules {
     }
 
 
+    internal GroupingRulesTree GetGroupingRulesTree() {
+      return new GroupingRulesTree(this);
+    }
+
+
+    internal FixedList<GroupingRuleItem> GetGroupingRulesRoots() {
+      if (this.groupingRulesItems == null) {
+        this.groupingRulesItems = GroupingRulesData.GetGroupingRulesItems(this);
+      }
+
+      return this.groupingRulesItems.FindAll(x => x.GroupingRule.IsEmptyInstance);
+    }
+
+
     #endregion Methods
 
   } // class RulesSet

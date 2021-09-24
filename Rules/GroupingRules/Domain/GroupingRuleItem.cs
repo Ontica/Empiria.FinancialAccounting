@@ -117,6 +117,19 @@ namespace Empiria.FinancialAccounting.Rules {
       get; private set;
     }
 
+
+    [DataField("ID_GRUPO")]
+    public RulesSet RulesSet {
+      get; private set;
+    }
+
+
+    [DataField("POSICION")]
+    internal int Position {
+      get; private set;
+    }
+
+
     public string Name {
       get {
         if (this.Type == GroupingRuleItemType.Account) {
@@ -140,8 +153,10 @@ namespace Empiria.FinancialAccounting.Rules {
           return this.AccountNumber;
         } else if (this.Type == GroupingRuleItemType.Agrupation) {
           return this.Reference.Code;
+        } else if (this.Type == GroupingRuleItemType.FixedValue) {
+          return "Valor fijo";
         } else {
-          return "Valor";
+          return string.Empty;
         }
       }
     }

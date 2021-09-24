@@ -2,19 +2,19 @@
 *                                                                                                            *
 *  Module   : Financial Accounting Rules                 Component : Interface adapters                      *
 *  Assembly : FinancialAccounting.Rules.dll              Pattern   : Information Holder                      *
-*  Type     : GroupingRuleDto                            License   : Please read LICENSE.txt file            *
+*  Type     : GroupingRuleTreeItemDto                    License   : Please read LICENSE.txt file            *
 *                                                                                                            *
-*  Summary  : Financial accounting grouping rule data transfer object.                                       *
+*  Summary  : Data transfer object for grouping rules tree items.                                            *
 *                                                                                                            *
 ************************* Copyright(c) La Vía Óntica SC, Ontica LLC and contributors. All rights reserved. **/
 using System;
 
 namespace Empiria.FinancialAccounting.Rules.Adapters {
 
-  /// <summary>Financial accounting rule data transfer object.</summary>
-  public class GroupingRuleDto {
+  /// <summary>Data transfer object for grouping rules tree items.</summary>
+  public class GroupingRulesTreeItemDto {
 
-    internal GroupingRuleDto() {
+    internal GroupingRulesTreeItemDto() {
       // no-op
     }
 
@@ -22,26 +22,42 @@ namespace Empiria.FinancialAccounting.Rules.Adapters {
       get; internal set;
     }
 
-    public string Code {
+    public GroupingRuleItemType Type {
       get; internal set;
     }
 
-    public string Concept {
+    public string ItemName {
       get; internal set;
     }
 
-    public int Position {
+    public string ItemCode {
       get; internal set;
     }
 
-    public string AccountsChartName {
+    public string SubledgerAccount {
       get; internal set;
     }
 
-    public string RulesSetName {
+    public string SectorCode {
       get; internal set;
     }
 
-  }  // class GroupingRuleDto
+    public string Operator {
+      get; internal set;
+    }
+
+    public string Qualification {
+      get; internal set;
+    }
+
+    public string ParentCode {
+      get; internal set;
+    }
+
+    public int Level {
+      get; internal set;
+    }
+
+  }  // class GroupingRuleTreeItemDto
 
 }  // namespace Empiria.FinancialAccounting.Rules.Adapters
