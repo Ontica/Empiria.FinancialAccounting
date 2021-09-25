@@ -53,6 +53,11 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
       internal set;
     }
 
+    public decimal AverageBalance {
+      get;
+      internal set;
+    }
+
     public decimal FirstExchangeRate {
       get;
       internal set;
@@ -103,11 +108,6 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
       internal set;
     }
 
-    public decimal AverageBalance {
-      get;
-      internal set;
-    }
-
     public string GroupName {
       get; internal set;
     } = string.Empty;
@@ -142,9 +142,9 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
     }
 
 
-    public string LastChangeDate {
+    public DateTime LastChangeDate {
       get; internal set;
-    } = string.Empty;
+    }
 
 
     public DebtorCreditorType DebtorCreditor {
@@ -164,6 +164,7 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
       }
     }
 
+    
   } // class TrialBalanceComparativeEntry
 
 } // namespace Empiria.FinancialAccounting.BalanceEngine

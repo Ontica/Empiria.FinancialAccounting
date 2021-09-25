@@ -217,12 +217,15 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
         foreach (var entry in returnedEntries.Where(a => a.ItemType == TrialBalanceItemType.BalanceSummary ||
                   (_command.TrialBalanceType == TrialBalanceType.BalanzaConContabilidadesEnCascada && 
                    (a.ItemType == TrialBalanceItemType.BalanceTotalGroupDebtor ||
-                    a.ItemType == TrialBalanceItemType.BalanceTotalGroupCreditor)
-                ))) {
+                    a.ItemType == TrialBalanceItemType.BalanceTotalGroupCreditor)) || 
+                  (_command.TrialBalanceType == TrialBalanceType.BalanzaValorizadaComparativa))) {
+          
           decimal debtorCreditor = entry.DebtorCreditor == DebtorCreditorType.Deudora ?
                                    entry.Debit - entry.Credit : entry.Credit - entry.Debit;
 
-          TimeSpan timeSpan = _command.InitialPeriod.ToDate - entry.LastChangeDate;
+          TimeSpan timeSpan = _command.TrialBalanceType == TrialBalanceType.BalanzaValorizadaComparativa ?
+                                                  _command.FinalPeriod.ToDate - entry.LastChangeDate :
+                                                  _command.InitialPeriod.ToDate - entry.LastChangeDate;
           int numberOfDays = timeSpan.Days + 1;
 
           entry.AverageBalance = ((numberOfDays * debtorCreditor) / 

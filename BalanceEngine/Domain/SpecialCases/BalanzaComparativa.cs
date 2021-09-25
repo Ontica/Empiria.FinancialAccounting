@@ -32,8 +32,7 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
 
       FixedList<TrialBalanceEntry> firstPeriod = comparativeHelper.GetComparativePostingEntries();
 
-      firstPeriod = helper.GenerateAverageDailyBalance(firstPeriod.ToList(),
-                                                              _command.InitialPeriod).ToFixedList();
+      firstPeriod = helper.GenerateAverageBalance(firstPeriod.ToList()).ToFixedList();
 
       trialBalanceComparative = comparativeHelper.MergePeriodsIntoComparativeBalance(firstPeriod);
 

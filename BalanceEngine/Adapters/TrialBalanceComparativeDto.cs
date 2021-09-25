@@ -149,7 +149,7 @@ namespace Empiria.FinancialAccounting.BalanceEngine.Adapters {
       get; internal set;
     }
 
-    public string LastChangeDate {
+    public DateTime LastChangeDate {
       get; internal set;
     }
     

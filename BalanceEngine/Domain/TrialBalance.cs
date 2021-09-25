@@ -128,6 +128,10 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
       columns.Add(new DataTableColumn("variation", "Variación", "decimal"));
       columns.Add(new DataTableColumn("variationByER", "Variación por TC", "decimal"));
       columns.Add(new DataTableColumn("realVariation", "Variación por TC", "decimal"));
+      if (Command.WithAverageBalance) {
+        columns.Add(new DataTableColumn("averageBalance", "Saldo promedio", "decimal"));
+        columns.Add(new DataTableColumn("lastChangeDate", "Último movimiento", "text"));
+      }
 
       return columns.ToFixedList();
     }

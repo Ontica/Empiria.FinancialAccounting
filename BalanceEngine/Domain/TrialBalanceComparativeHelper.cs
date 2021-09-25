@@ -37,8 +37,6 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
       return postingEntries;
     }
 
-
-
     internal List<TrialBalanceComparativeEntry> MergePeriodsIntoComparativeBalance(
                                       FixedList<TrialBalanceEntry> trialBalance) {
 

@@ -222,7 +222,9 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
         FirstValorization = InitialBalance * this.ExchangeRate,
         SecondTotalBalance = this.CurrentBalance,
         SecondExchangeRate = Math.Round(this.SecondExchangeRate, 6),
-        SecondValorization = this.CurrentBalance * this.SecondExchangeRate
+        SecondValorization = this.CurrentBalance * this.SecondExchangeRate,
+        AverageBalance = this.AverageBalance,
+        LastChangeDate = this.LastChangeDate
       };
     }
 

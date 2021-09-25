@@ -248,6 +248,8 @@ namespace Empiria.FinancialAccounting.BalanceEngine.Adapters {
       dto.VariationByER = entry.VariationByER;
       dto.RealVariation = entry.RealVariation;
       dto.AverageBalance = entry.AverageBalance;
+      dto.LastChangeDate = entry.LastChangeDate;
+
       return dto;
     }
 
