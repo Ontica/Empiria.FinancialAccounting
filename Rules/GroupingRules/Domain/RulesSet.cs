@@ -18,8 +18,9 @@ namespace Empiria.FinancialAccounting.Rules {
 
     #region Fields
 
-    private FixedList<GroupingRule> groupingRules;
-    private FixedList<GroupingRuleItem> groupingRulesItems;
+    private Lazy<FixedList<GroupingRule>> _groupingRules;
+
+    private Lazy<FixedList<GroupingRuleItem>> _groupingRulesItems;
 
     #endregion Fields
 
@@ -56,6 +57,18 @@ namespace Empiria.FinancialAccounting.Rules {
       }
     }
 
+    protected override void OnLoad() {
+      base.OnLoad();
+
+      if (this.IsEmptyInstance) {
+        return;
+      }
+
+      _groupingRules = new Lazy<FixedList<GroupingRule>>(() => GroupingRulesData.GetGroupingRules(this));
+      _groupingRulesItems = new Lazy<FixedList<GroupingRuleItem>>(() => GroupingRulesData.GetGroupingRulesItems(this));
+    }
+
+
     #endregion Constructors and parsers
 
     #region Properties
@@ -78,35 +91,23 @@ namespace Empiria.FinancialAccounting.Rules {
     #region Methods
 
     public FixedList<GroupingRule> GetGroupingRules() {
-      if (this.groupingRules == null) {
-        this.groupingRules = GroupingRulesData.GetGroupingRules(this);
-      }
-      return this.groupingRules;
+      return _groupingRules.Value;
     }
 
 
     internal FixedList<GroupingRuleItem> GetGroupingRuleItems(GroupingRule groupingRule) {
-      if (this.groupingRulesItems == null) {
-        this.groupingRulesItems = GroupingRulesData.GetGroupingRulesItems(this);
-      }
+      return _groupingRulesItems.Value.FindAll(x => x.GroupingRule.Equals(groupingRule));
+    }
 
-      return this.groupingRulesItems.FindAll(x => x.GroupingRule.Equals(groupingRule));
+
+    internal FixedList<GroupingRuleItem> GetGroupingRulesRoots() {
+      return _groupingRulesItems.Value.FindAll(x => x.GroupingRule.IsEmptyInstance);
     }
 
 
     internal GroupingRulesTree GetGroupingRulesTree() {
       return new GroupingRulesTree(this);
     }
-
-
-    internal FixedList<GroupingRuleItem> GetGroupingRulesRoots() {
-      if (this.groupingRulesItems == null) {
-        this.groupingRulesItems = GroupingRulesData.GetGroupingRulesItems(this);
-      }
-
-      return this.groupingRulesItems.FindAll(x => x.GroupingRule.IsEmptyInstance);
-    }
-
 
     #endregion Methods
 

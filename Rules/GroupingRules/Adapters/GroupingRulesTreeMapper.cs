@@ -4,14 +4,14 @@
 *  Assembly : FinancialAccounting.Rules.dll              Pattern   : Mapper class                            *
 *  Type     : GroupingRulesTreeMapper                    License   : Please read LICENSE.txt file            *
 *                                                                                                            *
-*  Summary  : Mapping methods for financial accounting grouping rules.                                       *
+*  Summary  : Mapping methods for financial accounting grouping rules as trees.                              *
 *                                                                                                            *
 ************************* Copyright(c) La Vía Óntica SC, Ontica LLC and contributors. All rights reserved. **/
 using System;
 
 namespace Empiria.FinancialAccounting.Rules.Adapters {
 
-  /// <summary>Mapping methods for financial accounting grouping rules.</summary>
+  /// <summary>Mapping methods for financial accounting grouping rules as trees</summary>
   static public class GroupingRulesTreeMapper {
 
     static internal FixedList<GroupingRulesTreeItemDto> MapFlat(FixedList<GroupingRulesTreeItem> items) {
@@ -24,7 +24,7 @@ namespace Empiria.FinancialAccounting.Rules.Adapters {
         ItemName = item.GroupingRuleItem.Name,
         Operator = Convert.ToString((char) item.GroupingRuleItem.Operator),
         ParentCode = item.Parent.GroupingRuleItem.Code,
-        Qualification = "Default",
+        Qualification = item.GroupingRuleItem.Qualification,
         SectorCode = item.GroupingRuleItem.SectorCode,
         SubledgerAccount =item.GroupingRuleItem.SubledgerAccountNumber,
         UID = item.GroupingRuleItem.UID,

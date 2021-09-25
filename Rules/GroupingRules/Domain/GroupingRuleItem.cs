@@ -118,6 +118,12 @@ namespace Empiria.FinancialAccounting.Rules {
     }
 
 
+    [DataField("CALIFICACION")]
+    internal string Qualification {
+      get; private set;
+    }
+
+
     [DataField("ID_GRUPO")]
     public RulesSet RulesSet {
       get; private set;
@@ -146,6 +152,7 @@ namespace Empiria.FinancialAccounting.Rules {
         }
       }
     }
+
 
     public string Code {
       get {
