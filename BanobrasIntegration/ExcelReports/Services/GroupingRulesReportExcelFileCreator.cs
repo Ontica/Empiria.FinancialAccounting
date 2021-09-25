@@ -25,14 +25,14 @@ namespace Empiria.FinancialAccounting.BanobrasIntegration.ExcelReports {
     }
 
 
-    internal ExcelFile CreateExcelFile(FixedList<GroupingRuleDto> rules) {
-      Assertion.AssertObject(rules, "rules");
+    internal ExcelFile CreateExcelFile(FixedList<GroupingRulesTreeItemDto> rulesTreeItems) {
+      Assertion.AssertObject(rulesTreeItems, "rulesTreeItems");
 
       _excelFile = new ExcelFile(_templateConfig);
 
       _excelFile.Open();
 
-      SetTable(rules);
+      SetTable(rulesTreeItems);
 
       _excelFile.Save();
 
@@ -41,12 +41,26 @@ namespace Empiria.FinancialAccounting.BanobrasIntegration.ExcelReports {
       return _excelFile;
     }
 
-    private void SetTable(FixedList<GroupingRuleDto> rules) {
+    private void SetTable(FixedList<GroupingRulesTreeItemDto> rulesTreeItems) {
       int i = 5;
 
-      foreach (var rule in rules) {
-        _excelFile.SetCell($"A{i}", rule.Code);
-        _excelFile.SetCell($"B{i}", rule.Concept);
+      foreach (var rule in rulesTreeItems) {
+        _excelFile.SetCell($"A{i}", rule.ItemCode);
+        _excelFile.SetCell($"B{i}", rule.Type == Rules.GroupingRuleItemType.Agrupation ? "Concepto": "Cuenta");
+        _excelFile.SetCell($"C{i}", rule.ItemName);
+        if (rule.Level > 1) {
+          _excelFile.IndentCell($"C{i}", rule.Level - 1);
+        }
+        _excelFile.SetCell($"D{i}", rule.SubledgerAccount);
+        if (rule.SubledgerAccount.Length != 0) {
+          _excelFile.SetCell($"E{i}", "Nombre del auxiliar");
+        }
+        _excelFile.SetCell($"F{i}", rule.SectorCode);
+        _excelFile.SetCell($"G{i}", rule.Operator);
+        _excelFile.SetCell($"H{i}", rule.Qualification);
+        _excelFile.SetCell($"I{i}", rule.Level);
+        _excelFile.SetCell($"J{i}", rule.ParentCode);
+
         i++;
       }
     }

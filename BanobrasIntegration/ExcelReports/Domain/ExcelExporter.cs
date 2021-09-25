@@ -51,8 +51,9 @@ namespace Empiria.FinancialAccounting.BanobrasIntegration.ExcelReports {
       return ExcelFileMapper.Map(excelFile);
     }
 
-    public ExcelFileDto Export(FixedList<GroupingRuleDto> rules) {
-      Assertion.AssertObject(rules, "rules");
+
+    public ExcelFileDto Export(FixedList<GroupingRulesTreeItemDto> rulesTreeItems) {
+      Assertion.AssertObject(rulesTreeItems, "rulesTreeItems");
 
       var templateUID = $"GroupingRulesReportTemplate";
 
@@ -60,10 +61,11 @@ namespace Empiria.FinancialAccounting.BanobrasIntegration.ExcelReports {
 
       var creator = new GroupingRulesReportExcelFileCreator(templateConfig);
 
-      ExcelFile excelFile = creator.CreateExcelFile(rules);
+      ExcelFile excelFile = creator.CreateExcelFile(rulesTreeItems);
 
       return ExcelFileMapper.Map(excelFile);
     }
+
 
     public ExcelFileDto Export(FinancialReportDto financialReport) {
       Assertion.AssertObject(financialReport, "financialReport");

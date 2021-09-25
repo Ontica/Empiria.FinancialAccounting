@@ -14,6 +14,7 @@ using Empiria.WebApi;
 
 using Empiria.FinancialAccounting.Rules.UseCases;
 using Empiria.FinancialAccounting.Rules.Adapters;
+
 using Empiria.FinancialAccounting.BanobrasIntegration.ExcelReports;
 using Empiria.FinancialAccounting.BanobrasIntegration.ExcelReports.Adapters;
 
@@ -37,20 +38,32 @@ namespace Empiria.FinancialAccounting.WebApi.Rules {
 
 
     [HttpGet]
-    [Route("v2/financial-accounting/rules/grouping-rules/{rulesSetUID:guid}/excel")]
-    public SingleObjectModel ExportGroupingRulesToExcel([FromUri] string rulesSetUID) {
+    [Route("v2/financial-accounting/rules/grouping-rules/{rulesSetUID:guid}/flat-tree")]
+    public CollectionModel GetGroupingRulesFlatTree([FromUri] string rulesSetUID) {
 
       using (var usecases = GroupingRulesUseCases.UseCaseInteractor()) {
-        FixedList<GroupingRuleDto> rules = usecases.GroupingRules(rulesSetUID);
+        FixedList<GroupingRulesTreeItemDto> rulesTreeItems = usecases.GroupingRulesFlatTree(rulesSetUID);
+
+        return new CollectionModel(base.Request, rulesTreeItems);
+      }
+    }
+
+
+    [HttpGet]
+    [Route("v2/financial-accounting/rules/grouping-rules/{rulesSetUID:guid}/excel")]
+    [Route("v2/financial-accounting/rules/grouping-rules/{rulesSetUID:guid}/flat-tree/excel")]
+    public SingleObjectModel ExportGroupingRulesFlatTreeToExcel([FromUri] string rulesSetUID) {
+
+      using (var usecases = GroupingRulesUseCases.UseCaseInteractor()) {
+        FixedList<GroupingRulesTreeItemDto> rulesTreeItems = usecases.GroupingRulesFlatTree(rulesSetUID);
 
         var excelExporter = new ExcelExporter();
 
-        ExcelFileDto excelFileDto = excelExporter.Export(rules);
+        ExcelFileDto excelFileDto = excelExporter.Export(rulesTreeItems);
 
         return new SingleObjectModel(this.Request, excelFileDto);
       }
     }
-
 
 
     [HttpGet]
@@ -63,6 +76,7 @@ namespace Empiria.FinancialAccounting.WebApi.Rules {
         return new CollectionModel(base.Request, rules);
       }
     }
+
 
     [HttpGet]
     [Route("v2/financial-accounting/rules/rules-sets-for/{accountsChartUID:guid}/grouping-rules")]

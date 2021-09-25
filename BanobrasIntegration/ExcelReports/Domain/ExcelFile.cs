@@ -66,6 +66,12 @@ namespace Empiria.FinancialAccounting.BanobrasIntegration.ExcelReports {
       }
     }
 
+    internal void IndentCell(string cell, int indent) {
+      if (_excel != null) {
+        _excel.IndentCell(cell, indent);
+      }
+    }
+
     public void RemoveColumn(string column) {
       _excel.RemoveColumn(column);
     }
