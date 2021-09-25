@@ -74,6 +74,15 @@ namespace Empiria.FinancialAccounting.BanobrasIntegration.ExcelReports {
           FillOutBalanzaComparativa(trialBalance.Entries.Select(x => (TrialBalanceComparativeDto) x));
           return;
 
+
+        case TrialBalanceType.BalanzaConsolidadaPorMoneda:
+          FillOutBalanzaConsolidadaPorMoneda(trialBalance.Entries.Select(x => (TrialBalanceByCurrencyDto) x));
+          return;
+
+        case TrialBalanceType.BalanzaValorizadaEnDolares:
+          FillOutBalanzaValorizadaDolares(trialBalance.Entries.Select(x => (ValuedTrialBalanceDto) x));
+          return;
+
         case TrialBalanceType.BalanzaConContabilidadesEnCascada:
           FillOutSaldosPorCuentayMayor(trialBalance.Entries.Select(x => (TrialBalanceEntryDto) x));
           return;
@@ -96,6 +105,7 @@ namespace Empiria.FinancialAccounting.BanobrasIntegration.ExcelReports {
           throw Assertion.AssertNoReachThisCode();
       }
     }
+
 
     private void FillOutAnaliticoDeCuentas(IEnumerable<TwoColumnsTrialBalanceEntryDto> entries) {
       int i = 5;
@@ -156,6 +166,37 @@ namespace Empiria.FinancialAccounting.BanobrasIntegration.ExcelReports {
       _excelFile.SetCell($"K4", $"{command.InitialPeriod.ToDate.ToString("MMM")}_VAL_A");
       _excelFile.SetCell($"N4", $"{command.FinalPeriod.ToDate.ToString("MMM_yyyy")}");
       _excelFile.SetCell($"P4", $"{command.FinalPeriod.ToDate.ToString("MMM")}_VAL_B");
+    }
+
+
+    private void FillOutBalanzaConsolidadaPorMoneda(IEnumerable<TrialBalanceByCurrencyDto> entries) {
+      int i = 5;
+
+      foreach (var entry in entries) {
+        _excelFile.SetCell($"A{i}", entry.AccountNumber);
+        _excelFile.SetCell($"B{i}", entry.AccountName);
+        _excelFile.SetCell($"C{i}", entry.DomesticBalance);
+        _excelFile.SetCell($"D{i}", entry.DollarBalance);
+        _excelFile.SetCell($"E{i}", entry.YenBalance);
+        _excelFile.SetCell($"F{i}", entry.EuroBalance);
+        _excelFile.SetCell($"G{i}", entry.UdisBalance);
+        i++;
+      }
+    }
+
+    private void FillOutBalanzaValorizadaDolares(IEnumerable<ValuedTrialBalanceDto> entries) {
+      int i = 5;
+
+      foreach (var entry in entries) {
+        _excelFile.SetCell($"A{i}", entry.AccountNumber);
+        _excelFile.SetCell($"B{i}", entry.AccountName);
+        _excelFile.SetCell($"C{i}", entry.CurrencyName);
+        _excelFile.SetCell($"D{i}", entry.CurrencyCode);
+        _excelFile.SetCell($"E{i}", entry.TotalBalance);
+        _excelFile.SetCell($"F{i}", entry.ValuedExchangeRate);
+        _excelFile.SetCell($"G{i}", entry.TotalEquivalence);
+        i++;
+      }
     }
 
 
