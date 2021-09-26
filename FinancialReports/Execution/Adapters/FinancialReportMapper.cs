@@ -8,6 +8,7 @@
 *                                                                                                            *
 ************************* Copyright(c) La Vía Óntica SC, Ontica LLC and contributors. All rights reserved. **/
 using System;
+using System.Dynamic;
 
 namespace Empiria.FinancialAccounting.FinancialReports.Adapters {
 
@@ -55,17 +56,20 @@ namespace Empiria.FinancialAccounting.FinancialReports.Adapters {
 
 
     static private FinancialReportEntryDto MapToFixedRowsReport(FinancialReportEntry entry) {
-      return new FinancialReportEntryDto {
+      dynamic o = new FinancialReportEntryDto {
          UID = entry.Row.UID,
          ConceptCode = entry.GroupingRule.Code,
          Concept = entry.GroupingRule.Concept,
-         DomesticCurrencyTotal = entry.DomesticCurrencyTotal,
-         ForeignCurrencyTotal = entry.ForeignCurrencyTotal,
-         Total = entry.Total,
          GroupingRuleUID = entry.GroupingRule.UID,
          AccountsChartName = entry.GroupingRule.RulesSet.AccountsChart.Name,
-         RulesSetName = entry.GroupingRule.RulesSet.Name
+         RulesSetName = entry.GroupingRule.RulesSet.Name,
       };
+
+      o.SetTotalField(FinancialReportTotalField.DomesticCurrencyTotal, entry.DomesticCurrencyTotal);
+      o.SetTotalField(FinancialReportTotalField.ForeignCurrencyTotal, entry.ForeignCurrencyTotal);
+      o.SetTotalField(FinancialReportTotalField.Total, entry.Total);
+
+      return o;
     }
 
     static private FixedList<FinancialReportEntryDto> MapToFixedRowsReportConceptsIntegration(FixedList<FinancialReportEntry> list) {
@@ -75,17 +79,20 @@ namespace Empiria.FinancialAccounting.FinancialReports.Adapters {
     }
 
     static private FinancialReportEntryDto MapToFixedRowsReportConceptsIntegration(FinancialReportEntry entry) {
-      return new FinancialReportEntryDto {
+      dynamic o = new FinancialReportEntryDto {
         UID = entry.Row.UID,
         ConceptCode = entry.GroupingRule.Code,
         Concept = entry.GroupingRule.Concept,
-        DomesticCurrencyTotal = entry.DomesticCurrencyTotal,
-        ForeignCurrencyTotal = entry.ForeignCurrencyTotal,
-        Total = entry.Total,
         GroupingRuleUID = entry.GroupingRule.UID,
         AccountsChartName = entry.GroupingRule.RulesSet.AccountsChart.Name,
         RulesSetName = entry.GroupingRule.RulesSet.Name
       };
+
+      o.SetTotalField(FinancialReportTotalField.DomesticCurrencyTotal, entry.DomesticCurrencyTotal);
+      o.SetTotalField(FinancialReportTotalField.ForeignCurrencyTotal, entry.ForeignCurrencyTotal);
+      o.SetTotalField(FinancialReportTotalField.Total, entry.Total);
+
+      return o;
     }
 
     #endregion Helpers

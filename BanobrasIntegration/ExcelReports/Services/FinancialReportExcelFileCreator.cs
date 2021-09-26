@@ -87,9 +87,9 @@ namespace Empiria.FinancialAccounting.BanobrasIntegration.ExcelReports {
       foreach (var entry in entries) {
         _excelFile.SetCell($"A{i}", entry.ConceptCode);
         _excelFile.SetCell($"B{i}", entry.Concept);
-        _excelFile.SetCell($"C{i}", entry.DomesticCurrencyTotal);
-        _excelFile.SetCell($"D{i}", entry.ForeignCurrencyTotal);
-        _excelFile.SetCell($"E{i}", entry.Total);
+        _excelFile.SetCell($"C{i}", entry.GetTotalField(FinancialReportTotalField.DomesticCurrencyTotal));
+        _excelFile.SetCell($"D{i}", entry.GetTotalField(FinancialReportTotalField.ForeignCurrencyTotal));
+        _excelFile.SetCell($"E{i}", entry.GetTotalField(FinancialReportTotalField.Total));
         i++;
       }
     }
@@ -100,9 +100,9 @@ namespace Empiria.FinancialAccounting.BanobrasIntegration.ExcelReports {
       foreach (var entry in entries) {
         _excelFile.SetCell($"A{i}", entry.ConceptCode);
         _excelFile.SetCell($"B{i}", entry.Concept);
-        _excelFile.SetCell($"F{i}", entry.DomesticCurrencyTotal);
-        _excelFile.SetCell($"G{i}", entry.ForeignCurrencyTotal);
-        _excelFile.SetCell($"H{i}", entry.Total);
+        _excelFile.SetCell($"F{i}", entry.GetTotalField(FinancialReportTotalField.DomesticCurrencyTotal));
+        _excelFile.SetCell($"G{i}", entry.GetTotalField(FinancialReportTotalField.ForeignCurrencyTotal));
+        _excelFile.SetCell($"H{i}", entry.GetTotalField(FinancialReportTotalField.Total));
         i++;
       }
     }
