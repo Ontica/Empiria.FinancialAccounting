@@ -2,9 +2,9 @@
 *                                                                                                            *
 *  Module   : Financial Reports                          Component : Domain Layer                            *
 *  Assembly : FinancialAccounting.FinancialReports.dll   Pattern   : Information Holder                      *
-*  Type     : FinancialReportEntry                       License   : Please read LICENSE.txt file            *
+*  Type     : FixedRowFinancialReportEntry               License   : Please read LICENSE.txt file            *
 *                                                                                                            *
-*  Summary  : Represents an entry for a financial report.                                                    *
+*  Summary  : Represents an entry for a financial report defined by fixed rows.                              *
 *                                                                                                            *
 ************************* Copyright(c) La Vía Óntica SC, Ontica LLC and contributors. All rights reserved. **/
 using System;
@@ -13,12 +13,12 @@ using Empiria.FinancialAccounting.Rules;
 
 namespace Empiria.FinancialAccounting.FinancialReports {
 
-  /// <summary>Represents an entry for a financial report.</summary>
-  public class FinancialReportEntry {
+  /// <summary>Represents an entry for financial report defined by fixed rows.</summary>
+  public class FixedRowFinancialReportEntry {
 
     #region Constructors and parsers
 
-    internal FinancialReportEntry() {
+    internal FixedRowFinancialReportEntry() {
       // Required by Empiria Framework.
     }
 
@@ -30,6 +30,7 @@ namespace Empiria.FinancialAccounting.FinancialReports {
       internal set;
     }
 
+
     public FinancialReportItemType ItemType {
       get;
       internal set;
@@ -37,25 +38,28 @@ namespace Empiria.FinancialAccounting.FinancialReports {
 
 
     public GroupingRule GroupingRule {
-      get; internal set;
+      get;
+      internal set;
     }
 
 
     public decimal DomesticCurrencyTotal {
-      get; internal set;
+      get;
+      internal set;
     }
 
 
     public decimal ForeignCurrencyTotal {
-      get; internal set;
+      get;
+      internal set;
     }
 
 
     public decimal Total {
-      get; internal set;
+      get;
+      internal set;
     }
 
-
-  } // class FinancialReportEntry
+  } // class FixedRowFinancialReportEntry
 
 } // namespace Empiria.FinancialAccounting.FinancialReports

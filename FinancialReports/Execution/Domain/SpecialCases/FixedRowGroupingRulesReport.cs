@@ -36,7 +36,7 @@ namespace Empiria.FinancialAccounting.FinancialReports {
     internal FinancialReport Generate() {
       FixedList<FinancialReportRow> fixedRows = GetReportFixedRows();
 
-      FixedList<FinancialReportEntry> reportEntries = CreateReportEntriesWithoutTotals(fixedRows);
+      FixedList<FixedRowFinancialReportEntry> reportEntries = CreateReportEntriesWithoutTotals(fixedRows);
 
       EmpiriaHashTable<FixedList<TwoColumnsTrialBalanceEntryDto>> balances = GetBalancesAsHashTable();
 
@@ -49,7 +49,7 @@ namespace Empiria.FinancialAccounting.FinancialReports {
     internal FinancialReportBreakdown GetBreakdown(string reportRowUID) {
       FinancialReportRow row = GetReportBreakdownRow(reportRowUID);
 
-      FinancialReportEntry reportEntry = CreateReportEntryWithoutTotals(row);
+      FixedRowFinancialReportEntry reportEntry = CreateReportEntryWithoutTotals(row);
 
       EmpiriaHashTable<FixedList<TwoColumnsTrialBalanceEntryDto>> balances = GetBalancesAsHashTable();
 
@@ -128,7 +128,7 @@ namespace Empiria.FinancialAccounting.FinancialReports {
     }
 
 
-    private void ProcessEntries(FixedList<FinancialReportEntry> reportEntries,
+    private void ProcessEntries(FixedList<FixedRowFinancialReportEntry> reportEntries,
                                 EmpiriaHashTable<FixedList<TwoColumnsTrialBalanceEntryDto>> balances) {
 
       foreach (var reportEntry in reportEntries) {
@@ -175,7 +175,7 @@ namespace Empiria.FinancialAccounting.FinancialReports {
 
     #region Helpers
 
-    private FixedList<FinancialReportBreakdownEntry> GetBreakdownEntries(FinancialReportEntry reportEntry) {
+    private FixedList<FinancialReportBreakdownEntry> GetBreakdownEntries(FixedRowFinancialReportEntry reportEntry) {
       var breakdown = new List<FinancialReportBreakdownEntry>();
 
       var groupingRule = reportEntry.GroupingRule;
@@ -223,15 +223,15 @@ namespace Empiria.FinancialAccounting.FinancialReports {
     }
 
 
-    private FixedList<FinancialReportEntry> CreateReportEntriesWithoutTotals(FixedList<FinancialReportRow> rows) {
+    private FixedList<FixedRowFinancialReportEntry> CreateReportEntriesWithoutTotals(FixedList<FinancialReportRow> rows) {
       var enumeration = rows.Select(x => CreateReportEntryWithoutTotals(x));
 
-      return new FixedList<FinancialReportEntry>(enumeration);
+      return new FixedList<FixedRowFinancialReportEntry>(enumeration);
     }
 
 
-    private FinancialReportEntry CreateReportEntryWithoutTotals(FinancialReportRow row) {
-      return new FinancialReportEntry { Row = row, GroupingRule = row.GroupingRule };
+    private FixedRowFinancialReportEntry CreateReportEntryWithoutTotals(FinancialReportRow row) {
+      return new FixedRowFinancialReportEntry { Row = row, GroupingRule = row.GroupingRule };
     }
 
 

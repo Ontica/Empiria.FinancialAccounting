@@ -29,7 +29,7 @@ namespace Empiria.FinancialAccounting.FinancialReports.Adapters {
     #region Helpers
 
     static private FixedList<DynamicFinancialReportEntryDto> MapEntries(FinancialReportCommand command,
-                                                                        FixedList<FinancialReportEntry> list) {
+                                                                        FixedList<FixedRowFinancialReportEntry> list) {
       FinancialReportType reportType = command.GetFinancialReportType();
 
       switch (reportType.DesignType) {
@@ -47,14 +47,14 @@ namespace Empiria.FinancialAccounting.FinancialReports.Adapters {
     }
 
 
-    static private FixedList<DynamicFinancialReportEntryDto> MapToFixedRowsReport(FixedList<FinancialReportEntry> list) {
+    static private FixedList<DynamicFinancialReportEntryDto> MapToFixedRowsReport(FixedList<FixedRowFinancialReportEntry> list) {
       var mappedItems = list.Select((x) => MapToFixedRowsReport(x));
 
       return new FixedList<DynamicFinancialReportEntryDto>(mappedItems);
     }
 
 
-    static private FinancialReportEntryDto MapToFixedRowsReport(FinancialReportEntry entry) {
+    static private FinancialReportEntryDto MapToFixedRowsReport(FixedRowFinancialReportEntry entry) {
       dynamic o = new FinancialReportEntryDto {
          UID = entry.Row.UID,
          ConceptCode = entry.GroupingRule.Code,
@@ -71,13 +71,13 @@ namespace Empiria.FinancialAccounting.FinancialReports.Adapters {
       return o;
     }
 
-    static private FixedList<DynamicFinancialReportEntryDto> MapToFixedRowsReportConceptsIntegration(FixedList<FinancialReportEntry> list) {
+    static private FixedList<DynamicFinancialReportEntryDto> MapToFixedRowsReportConceptsIntegration(FixedList<FixedRowFinancialReportEntry> list) {
       var mappedItems = list.Select((x) => MapToFixedRowsReportConceptsIntegration(x));
 
       return new FixedList<DynamicFinancialReportEntryDto>(mappedItems);
     }
 
-    static private FinancialReportEntryDto MapToFixedRowsReportConceptsIntegration(FinancialReportEntry entry) {
+    static private FinancialReportEntryDto MapToFixedRowsReportConceptsIntegration(FixedRowFinancialReportEntry entry) {
       dynamic o = new FinancialReportEntryDto {
         UID = entry.Row.UID,
         ConceptCode = entry.GroupingRule.Code,
