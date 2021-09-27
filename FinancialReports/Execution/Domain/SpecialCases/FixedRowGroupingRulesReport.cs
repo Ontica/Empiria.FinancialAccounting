@@ -125,9 +125,12 @@ namespace Empiria.FinancialAccounting.FinancialReports {
           throw Assertion.AssertNoReachThisCode();
         }
 
-        breakdownItem.DomesticCurrencyTotal = groupingRuleTotals.DomesticCurrencyTotal;
-        breakdownItem.ForeignCurrencyTotal = groupingRuleTotals.ForeignCurrencyTotal;
-        breakdownItem.Total = groupingRuleTotals.TotalBalance;
+        breakdownItem.SetTotalField(FinancialReportTotalField.DomesticCurrencyTotal,
+                                    groupingRuleTotals.DomesticCurrencyTotal);
+        breakdownItem.SetTotalField(FinancialReportTotalField.ForeignCurrencyTotal,
+                                    groupingRuleTotals.ForeignCurrencyTotal);
+        breakdownItem.SetTotalField(FinancialReportTotalField.Total,
+                                    groupingRuleTotals.TotalBalance);
       }
     }
 
@@ -138,9 +141,12 @@ namespace Empiria.FinancialAccounting.FinancialReports {
       foreach (var reportEntry in reportEntries) {
         ReportEntryTotals groupingRuleTotals = ProcessGroupingRule(reportEntry.GroupingRule, balances);
 
-        reportEntry.DomesticCurrencyTotal = groupingRuleTotals.DomesticCurrencyTotal;
-        reportEntry.ForeignCurrencyTotal = groupingRuleTotals.ForeignCurrencyTotal;
-        reportEntry.Total = groupingRuleTotals.TotalBalance;
+        reportEntry.SetTotalField(FinancialReportTotalField.DomesticCurrencyTotal,
+                                  groupingRuleTotals.DomesticCurrencyTotal);
+        reportEntry.SetTotalField(FinancialReportTotalField.ForeignCurrencyTotal,
+                                  groupingRuleTotals.ForeignCurrencyTotal);
+        reportEntry.SetTotalField(FinancialReportTotalField.Total,
+                                  groupingRuleTotals.TotalBalance);
       }
     }
 

@@ -7,6 +7,7 @@
 *  Summary  : Data structure that holds information about a financial report breakdown entry.                *
 *                                                                                                            *
 ************************* Copyright(c) La Vía Óntica SC, Ontica LLC and contributors. All rights reserved. **/
+using System.Collections.Generic;
 using Empiria.FinancialAccounting.Rules;
 
 namespace Empiria.FinancialAccounting.FinancialReports {
@@ -27,19 +28,14 @@ namespace Empiria.FinancialAccounting.FinancialReports {
       internal set;
     }
 
-    public decimal DomesticCurrencyTotal {
-      get;
-      internal set;
-    }
+    public override IEnumerable<string> GetDynamicMemberNames() {
+      var members = new List<string>();
 
-    public decimal ForeignCurrencyTotal {
-      get;
-      internal set;
-    }
+      members.Add("GroupingRuleItem");
 
-    public decimal Total {
-      get;
-      internal set;
+      members.AddRange(base.GetDynamicMemberNames());
+
+      return members;
     }
 
   } // class FinancialReportBreakdownEntry

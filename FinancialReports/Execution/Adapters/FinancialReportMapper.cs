@@ -54,9 +54,12 @@ namespace Empiria.FinancialAccounting.FinancialReports.Adapters {
         GroupingRuleUID = entry.GroupingRuleItem.GroupingRule.UID,
       };
 
-      o.SetTotalField(FinancialReportTotalField.DomesticCurrencyTotal, entry.DomesticCurrencyTotal);
-      o.SetTotalField(FinancialReportTotalField.ForeignCurrencyTotal, entry.ForeignCurrencyTotal);
-      o.SetTotalField(FinancialReportTotalField.Total, entry.Total);
+      o.SetTotalField(FinancialReportTotalField.DomesticCurrencyTotal,
+                      entry.GetTotalField(FinancialReportTotalField.DomesticCurrencyTotal));
+      o.SetTotalField(FinancialReportTotalField.ForeignCurrencyTotal,
+                      entry.GetTotalField(FinancialReportTotalField.ForeignCurrencyTotal));
+      o.SetTotalField(FinancialReportTotalField.Total,
+                      entry.GetTotalField(FinancialReportTotalField.Total));
 
       return o;
     }
@@ -97,9 +100,12 @@ namespace Empiria.FinancialAccounting.FinancialReports.Adapters {
          RulesSetName = entry.GroupingRule.RulesSet.Name,
       };
 
-      o.SetTotalField(FinancialReportTotalField.DomesticCurrencyTotal, entry.DomesticCurrencyTotal);
-      o.SetTotalField(FinancialReportTotalField.ForeignCurrencyTotal, entry.ForeignCurrencyTotal);
-      o.SetTotalField(FinancialReportTotalField.Total, entry.Total);
+      o.SetTotalField(FinancialReportTotalField.DomesticCurrencyTotal,
+                      entry.GetTotalField(FinancialReportTotalField.DomesticCurrencyTotal));
+      o.SetTotalField(FinancialReportTotalField.ForeignCurrencyTotal,
+                      entry.GetTotalField(FinancialReportTotalField.ForeignCurrencyTotal));
+      o.SetTotalField(FinancialReportTotalField.Total,
+                      entry.GetTotalField(FinancialReportTotalField.Total));
 
       return o;
     }
@@ -120,9 +126,12 @@ namespace Empiria.FinancialAccounting.FinancialReports.Adapters {
         RulesSetName = entry.GroupingRule.RulesSet.Name
       };
 
-      o.SetTotalField(FinancialReportTotalField.DomesticCurrencyTotal, entry.DomesticCurrencyTotal);
-      o.SetTotalField(FinancialReportTotalField.ForeignCurrencyTotal, entry.ForeignCurrencyTotal);
-      o.SetTotalField(FinancialReportTotalField.Total, entry.Total);
+      o.SetTotalField(FinancialReportTotalField.DomesticCurrencyTotal,
+                      entry.GetTotalField(FinancialReportTotalField.DomesticCurrencyTotal));
+      o.SetTotalField(FinancialReportTotalField.ForeignCurrencyTotal,
+                      entry.GetTotalField(FinancialReportTotalField.ForeignCurrencyTotal));
+      o.SetTotalField(FinancialReportTotalField.Total,
+                      entry.GetTotalField(FinancialReportTotalField.Total));
 
       return o;
     }

@@ -49,7 +49,6 @@ namespace Empiria.FinancialAccounting.FinancialReports {
     }
 
 
-
     internal FinancialReport GetBreakdown(string groupingRuleUID) {
       FinancialReportType reportType = this.Command.GetFinancialReportType();
 

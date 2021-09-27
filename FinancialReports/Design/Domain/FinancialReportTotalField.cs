@@ -1,6 +1,6 @@
 ﻿/* Empiria Financial *****************************************************************************************
 *                                                                                                            *
-*  Module   : Financial Reports                          Component : Interface adapters                      *
+*  Module   : Financial Reports                          Component : Domain Layer                            *
 *  Assembly : FinancialAccounting.FinancialReports.dll   Pattern   : Enumeration                             *
 *  Type     : FinancialReportTotalField                  License   : Please read LICENSE.txt file            *
 *                                                                                                            *
@@ -8,7 +8,7 @@
 *                                                                                                            *
 ************************* Copyright(c) La Vía Óntica SC, Ontica LLC and contributors. All rights reserved. **/
 
-namespace Empiria.FinancialAccounting.FinancialReports.Adapters {
+namespace Empiria.FinancialAccounting.FinancialReports {
 
   public enum FinancialReportTotalField {
 
@@ -20,4 +20,4 @@ namespace Empiria.FinancialAccounting.FinancialReports.Adapters {
 
   }
 
-} // namespace Empiria.FinancialAccounting.FinancialReports.Adapters
+} // namespace Empiria.FinancialAccounting.FinancialReports

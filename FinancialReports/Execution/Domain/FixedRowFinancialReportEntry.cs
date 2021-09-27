@@ -8,6 +8,7 @@
 *                                                                                                            *
 ************************* Copyright(c) La Vía Óntica SC, Ontica LLC and contributors. All rights reserved. **/
 using System;
+using System.Collections.Generic;
 
 using Empiria.FinancialAccounting.Rules;
 
@@ -43,21 +44,16 @@ namespace Empiria.FinancialAccounting.FinancialReports {
     }
 
 
-    public decimal DomesticCurrencyTotal {
-      get;
-      internal set;
-    }
+    public override IEnumerable<string> GetDynamicMemberNames() {
+      var members = new List<string>();
 
+      members.Add("Row");
+      members.Add("ItemType");
+      members.Add("GroupingRule");
 
-    public decimal ForeignCurrencyTotal {
-      get;
-      internal set;
-    }
+      members.AddRange(base.GetDynamicMemberNames());
 
-
-    public decimal Total {
-      get;
-      internal set;
+      return members;
     }
 
   } // class FixedRowFinancialReportEntry
