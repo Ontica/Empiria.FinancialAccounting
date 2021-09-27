@@ -12,7 +12,7 @@ using Empiria.FinancialAccounting.Rules;
 namespace Empiria.FinancialAccounting.FinancialReports {
 
   /// <summary>Data structure that holds information about a financial report breakdown entry.</summary>
-  internal class FinancialReportBreakdownEntry {
+  internal class FinancialReportBreakdownEntry : FinancialReportEntry {
 
     #region Constructors and parsers
 
@@ -23,19 +23,23 @@ namespace Empiria.FinancialAccounting.FinancialReports {
     #endregion Constructors and parsers
 
     public GroupingRuleItem GroupingRuleItem {
-      get; internal set;
+      get;
+      internal set;
     }
 
     public decimal DomesticCurrencyTotal {
-      get; internal set;
+      get;
+      internal set;
     }
 
     public decimal ForeignCurrencyTotal {
-      get; internal set;
+      get;
+      internal set;
     }
 
     public decimal Total {
-      get; internal set;
+      get;
+      internal set;
     }
 
   } // class FinancialReportBreakdownEntry

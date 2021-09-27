@@ -20,7 +20,15 @@ namespace Empiria.FinancialAccounting.FinancialReports.Adapters {
       return new FinancialReportDto {
         Command = financialReport.Command,
         Columns = financialReport.DataColumns(),
-        Entries = MapEntries(financialReport.Command, financialReport.Entries)
+        Entries = MapEntries(financialReport)
+      };
+    }
+
+    static internal FinancialReportDto MapBreakdown(FinancialReport breakdownReport) {
+      return new FinancialReportDto {
+        Command = breakdownReport.Command,
+        Columns = breakdownReport.BreakdownDataColumns(),
+        Entries = MapBreakdownEntries(breakdownReport.Entries)
       };
     }
 
@@ -28,27 +36,52 @@ namespace Empiria.FinancialAccounting.FinancialReports.Adapters {
 
     #region Helpers
 
-    static private FixedList<DynamicFinancialReportEntryDto> MapEntries(FinancialReportCommand command,
-                                                                        FixedList<FixedRowFinancialReportEntry> list) {
-      FinancialReportType reportType = command.GetFinancialReportType();
+    static private FixedList<DynamicFinancialReportEntryDto> MapBreakdownEntries(FixedList<FinancialReportEntry> list) {
+      var mappedItems = list.Select((x) => MapBreakdownEntry((FinancialReportBreakdownEntry) x));
+
+      return new FixedList<DynamicFinancialReportEntryDto>(mappedItems);
+    }
+
+
+    static private FinancialReportBreakdownEntryDto MapBreakdownEntry(FinancialReportBreakdownEntry entry) {
+      dynamic o = new FinancialReportBreakdownEntryDto {
+        UID = entry.GroupingRuleItem.UID,
+        ItemCode = entry.GroupingRuleItem.Code,
+        ItemName = entry.GroupingRuleItem.Name,
+        SubledgerAccount = entry.GroupingRuleItem.SubledgerAccountNumber,
+        SectorCode = entry.GroupingRuleItem.SectorCode,
+        Operator = Convert.ToString((char) entry.GroupingRuleItem.Operator),
+        GroupingRuleUID = entry.GroupingRuleItem.GroupingRule.UID,
+      };
+
+      o.SetTotalField(FinancialReportTotalField.DomesticCurrencyTotal, entry.DomesticCurrencyTotal);
+      o.SetTotalField(FinancialReportTotalField.ForeignCurrencyTotal, entry.ForeignCurrencyTotal);
+      o.SetTotalField(FinancialReportTotalField.Total, entry.Total);
+
+      return o;
+    }
+
+
+    static private FixedList<DynamicFinancialReportEntryDto> MapEntries(FinancialReport financialReport) {
+      FinancialReportType reportType = financialReport.Command.GetFinancialReportType();
 
       switch (reportType.DesignType) {
 
         case FinancialReportDesignType.FixedRows:
-          return MapToFixedRowsReport(list);
+          return MapToFixedRowsReport(financialReport.Entries);
 
         case FinancialReportDesignType.ConceptsIntegration:
-          return MapToFixedRowsReportConceptsIntegration(list);
+          return MapToFixedRowsReportConceptsIntegration(financialReport.Entries);
 
         default:
           throw Assertion.AssertNoReachThisCode(
-                $"Unhandled financial report type {command.FinancialReportType}.");
+                $"Unhandled financial report type {financialReport.Command.FinancialReportType}.");
       }
     }
 
 
-    static private FixedList<DynamicFinancialReportEntryDto> MapToFixedRowsReport(FixedList<FixedRowFinancialReportEntry> list) {
-      var mappedItems = list.Select((x) => MapToFixedRowsReport(x));
+    static private FixedList<DynamicFinancialReportEntryDto> MapToFixedRowsReport(FixedList<FinancialReportEntry> list) {
+      var mappedItems = list.Select((x) => MapToFixedRowsReport((FixedRowFinancialReportEntry) x));
 
       return new FixedList<DynamicFinancialReportEntryDto>(mappedItems);
     }
@@ -71,8 +104,8 @@ namespace Empiria.FinancialAccounting.FinancialReports.Adapters {
       return o;
     }
 
-    static private FixedList<DynamicFinancialReportEntryDto> MapToFixedRowsReportConceptsIntegration(FixedList<FixedRowFinancialReportEntry> list) {
-      var mappedItems = list.Select((x) => MapToFixedRowsReportConceptsIntegration(x));
+    static private FixedList<DynamicFinancialReportEntryDto> MapToFixedRowsReportConceptsIntegration(FixedList<FinancialReportEntry> list) {
+      var mappedItems = list.Select((x) => MapToFixedRowsReportConceptsIntegration((FixedRowFinancialReportEntry) x));
 
       return new FixedList<DynamicFinancialReportEntryDto>(mappedItems);
     }

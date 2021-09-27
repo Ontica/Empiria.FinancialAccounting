@@ -44,11 +44,13 @@ namespace Empiria.FinancialAccounting.FinancialReports {
 
         default:
           throw Assertion.AssertNoReachThisCode(
-                    $"Unhandled trial balance type {this.Command.FinancialReportType}.");
+                    $"Unhandled financial report design type {reportType.DesignType}.");
       }
     }
 
-    internal FinancialReportBreakdown GetBreakdown(string groupingRuleUID) {
+
+
+    internal FinancialReport GetBreakdown(string groupingRuleUID) {
       FinancialReportType reportType = this.Command.GetFinancialReportType();
 
       switch (reportType.DesignType) {
@@ -57,14 +59,9 @@ namespace Empiria.FinancialAccounting.FinancialReports {
 
           return fixedRows.GetBreakdown(groupingRuleUID);
 
-        case FinancialReportDesignType.ConceptsIntegration:
-          var conceptsIntegration = new FixedRowGroupingRulesReport(this.Command);
-
-          return conceptsIntegration.GetBreakdown(groupingRuleUID);
-
         default:
           throw Assertion.AssertNoReachThisCode(
-                    $"Unhandled trial balance type {this.Command.FinancialReportType}.");
+                    $"Unhandled financial report design type {reportType.DesignType}.");
       }
     }
 

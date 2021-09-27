@@ -14,7 +14,7 @@ using Empiria.FinancialAccounting.Rules;
 namespace Empiria.FinancialAccounting.FinancialReports {
 
   /// <summary>Represents an entry for financial report defined by fixed rows.</summary>
-  public class FixedRowFinancialReportEntry {
+  public class FixedRowFinancialReportEntry : FinancialReportEntry {
 
     #region Constructors and parsers
 

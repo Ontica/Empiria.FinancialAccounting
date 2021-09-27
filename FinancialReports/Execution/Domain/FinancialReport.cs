@@ -20,12 +20,28 @@ namespace Empiria.FinancialAccounting.FinancialReports {
     #region Constructors and parsers
 
     internal FinancialReport(FinancialReportCommand command,
-                             FixedList<FixedRowFinancialReportEntry> entries) {
+                             FixedList<FinancialReportEntry> entries) {
       Assertion.AssertObject(command, "command");
       Assertion.AssertObject(entries, "entries");
 
       this.Command = command;
       this.Entries = entries;
+    }
+
+
+    internal FixedList<DataTableColumn> BreakdownDataColumns() {
+      List<DataTableColumn> columns = new List<DataTableColumn>();
+
+      columns.Add(new DataTableColumn("itemCode", "Clave / Cuenta", "text"));
+      columns.Add(new DataTableColumn("itemName", "Concepto / Nombre de la cuenta", "text"));
+      columns.Add(new DataTableColumn("subledgerAccount", "Auxiliar", "text"));
+      columns.Add(new DataTableColumn("sectorCode", "Sector", "text"));
+      columns.Add(new DataTableColumn("operator", "Operador", "text"));
+      columns.Add(new DataTableColumn("domesticCurrencyTotal", "1 Moneda Nacional", "decimal"));
+      columns.Add(new DataTableColumn("foreignCurrencyTotal", "2 Moneda Extranjera", "decimal"));
+      columns.Add(new DataTableColumn("total", "3 Total", "decimal"));
+
+      return columns.ToFixedList();
     }
 
 
@@ -83,7 +99,7 @@ namespace Empiria.FinancialAccounting.FinancialReports {
     }
 
 
-    public FixedList<FixedRowFinancialReportEntry> Entries {
+    public FixedList<FinancialReportEntry> Entries {
       get;
     }
 

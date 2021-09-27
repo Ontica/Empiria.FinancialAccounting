@@ -60,9 +60,9 @@ namespace Empiria.FinancialAccounting.FinancialReports.UseCases {
 
       var financialReportGenerator = new FinancialReportGenerator(command);
 
-      FinancialReportBreakdown financialReportBreakdown = financialReportGenerator.GetBreakdown(groupingRuleUID);
+      FinancialReport breakdownReport = financialReportGenerator.GetBreakdown(groupingRuleUID);
 
-      return FinancialReportBreakdownMapper.Map(financialReportBreakdown);
+      return FinancialReportMapper.MapBreakdown(breakdownReport);
     }
 
     #endregion Use cases

@@ -42,11 +42,13 @@ namespace Empiria.FinancialAccounting.FinancialReports {
 
       ProcessEntries(reportEntries, balances);
 
-      return new FinancialReport(_command, reportEntries);
+      var convertedEntries = new FixedList<FinancialReportEntry>(reportEntries.Select(x => (FinancialReportEntry) x));
+
+      return new FinancialReport(_command, convertedEntries);
     }
 
 
-    internal FinancialReportBreakdown GetBreakdown(string reportRowUID) {
+    internal FinancialReport GetBreakdown(string reportRowUID) {
       FinancialReportRow row = GetReportBreakdownRow(reportRowUID);
 
       FixedRowFinancialReportEntry reportEntry = CreateReportEntryWithoutTotals(row);
@@ -59,7 +61,9 @@ namespace Empiria.FinancialAccounting.FinancialReports {
 
       // Add breakdown total row
 
-      return new FinancialReportBreakdown(_command, breakdownEntries);
+      var convertedEntries = new FixedList<FinancialReportEntry>(breakdownEntries.Select(x => (FinancialReportEntry) x));
+
+      return new FinancialReport(_command, convertedEntries);
     }
 
 
