@@ -8,7 +8,6 @@
 *                                                                                                            *
 ************************* Copyright(c) La Vía Óntica SC, Ontica LLC and contributors. All rights reserved. **/
 using System;
-using System.Dynamic;
 
 namespace Empiria.FinancialAccounting.FinancialReports.Adapters {
 
@@ -21,7 +20,7 @@ namespace Empiria.FinancialAccounting.FinancialReports.Adapters {
       return new FinancialReportDto {
         Command = financialReport.Command,
         Columns = financialReport.DataColumns(),
-        Entries = Map(financialReport.Command, financialReport.Entries)
+        Entries = MapEntries(financialReport.Command, financialReport.Entries)
       };
     }
 
@@ -29,8 +28,8 @@ namespace Empiria.FinancialAccounting.FinancialReports.Adapters {
 
     #region Helpers
 
-    static private FixedList<FinancialReportEntryDto> Map(FinancialReportCommand command,
-                                                          FixedList<FinancialReportEntry> list) {
+    static private FixedList<DynamicFinancialReportEntryDto> MapEntries(FinancialReportCommand command,
+                                                                        FixedList<FinancialReportEntry> list) {
       FinancialReportType reportType = command.GetFinancialReportType();
 
       switch (reportType.DesignType) {
@@ -48,10 +47,10 @@ namespace Empiria.FinancialAccounting.FinancialReports.Adapters {
     }
 
 
-    static private FixedList<FinancialReportEntryDto> MapToFixedRowsReport(FixedList<FinancialReportEntry> list) {
+    static private FixedList<DynamicFinancialReportEntryDto> MapToFixedRowsReport(FixedList<FinancialReportEntry> list) {
       var mappedItems = list.Select((x) => MapToFixedRowsReport(x));
 
-      return new FixedList<FinancialReportEntryDto>(mappedItems);
+      return new FixedList<DynamicFinancialReportEntryDto>(mappedItems);
     }
 
 
@@ -72,10 +71,10 @@ namespace Empiria.FinancialAccounting.FinancialReports.Adapters {
       return o;
     }
 
-    static private FixedList<FinancialReportEntryDto> MapToFixedRowsReportConceptsIntegration(FixedList<FinancialReportEntry> list) {
+    static private FixedList<DynamicFinancialReportEntryDto> MapToFixedRowsReportConceptsIntegration(FixedList<FinancialReportEntry> list) {
       var mappedItems = list.Select((x) => MapToFixedRowsReportConceptsIntegration(x));
 
-      return new FixedList<FinancialReportEntryDto>(mappedItems);
+      return new FixedList<DynamicFinancialReportEntryDto>(mappedItems);
     }
 
     static private FinancialReportEntryDto MapToFixedRowsReportConceptsIntegration(FinancialReportEntry entry) {

@@ -67,13 +67,16 @@ namespace Empiria.FinancialAccounting.BanobrasIntegration.ExcelReports {
     private void SetTable(FinancialReportDto financialReport) {
       FinancialReportType reportType = financialReport.Command.GetFinancialReportType();
 
+      var entries = new FixedList<FinancialReportEntryDto>(financialReport.Entries.Select(x => (FinancialReportEntryDto) x));
+
       switch (reportType.DesignType) {
         case FinancialReportDesignType.FixedRows:
-          FillOutFixedRowsReport(financialReport.Entries);
+
+          FillOutFixedRowsReport(entries);
           return;
 
         case FinancialReportDesignType.ConceptsIntegration:
-          FillOutConceptsIntegrationReport(financialReport.Entries);
+          FillOutConceptsIntegrationReport(entries);
           return;
 
         default:

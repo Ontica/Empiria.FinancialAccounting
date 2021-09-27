@@ -24,9 +24,9 @@ namespace Empiria.FinancialAccounting.FinancialReports.Adapters {
     } = new FixedList<DataTableColumn>();
 
 
-    public FixedList<FinancialReportEntryDto> Entries {
+    public FixedList<DynamicFinancialReportEntryDto> Entries {
       get; internal set;
-    } = new FixedList<FinancialReportEntryDto>();
+    } = new FixedList<DynamicFinancialReportEntryDto>();
 
 
   }  // class FinancialReportDto

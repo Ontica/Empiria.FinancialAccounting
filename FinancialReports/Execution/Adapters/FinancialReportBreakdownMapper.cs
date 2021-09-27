@@ -16,8 +16,8 @@ namespace Empiria.FinancialAccounting.FinancialReports.Adapters {
 
     #region Public mappers
 
-    static internal FinancialReportBreakdownDto Map(FinancialReportBreakdown financialReportBreakdown) {
-      return new FinancialReportBreakdownDto {
+    static internal FinancialReportDto Map(FinancialReportBreakdown financialReportBreakdown) {
+      return new FinancialReportDto {
         Command = financialReportBreakdown.Command,
         Columns = financialReportBreakdown.DataColumns(),
         Entries = MapBreakdownEntries(financialReportBreakdown.Entries)
@@ -29,28 +29,30 @@ namespace Empiria.FinancialAccounting.FinancialReports.Adapters {
 
     #region Helpers
 
-    static private FixedList<FinancialReportBreakdownEntryDto> MapBreakdownEntries(FixedList<FinancialReportBreakdownEntry> list) {
+    static private FixedList<DynamicFinancialReportEntryDto> MapBreakdownEntries(FixedList<FinancialReportBreakdownEntry> list) {
       var mappedItems = list.Select((x) => MapBreakdownEntry(x));
 
-      return new FixedList<FinancialReportBreakdownEntryDto>(mappedItems);
+      return new FixedList<DynamicFinancialReportEntryDto>(mappedItems);
     }
 
 
     static private FinancialReportBreakdownEntryDto MapBreakdownEntry(FinancialReportBreakdownEntry entry) {
-      return new FinancialReportBreakdownEntryDto {
+      dynamic o = new FinancialReportBreakdownEntryDto {
         UID = entry.GroupingRuleItem.UID,
         ItemCode = entry.GroupingRuleItem.Code,
         ItemName = entry.GroupingRuleItem.Name,
         SubledgerAccount = entry.GroupingRuleItem.SubledgerAccountNumber,
         SectorCode = entry.GroupingRuleItem.SectorCode,
         Operator = Convert.ToString((char) entry.GroupingRuleItem.Operator),
-        DomesticCurrencyTotal = entry.DomesticCurrencyTotal,
-        ForeignCurrencyTotal = entry.ForeignCurrencyTotal,
-        Total = entry.Total,
         GroupingRuleUID = entry.GroupingRuleItem.GroupingRule.UID,
       };
-    }
 
+      o.SetTotalField(FinancialReportTotalField.DomesticCurrencyTotal, entry.DomesticCurrencyTotal);
+      o.SetTotalField(FinancialReportTotalField.ForeignCurrencyTotal, entry.ForeignCurrencyTotal);
+      o.SetTotalField(FinancialReportTotalField.Total, entry.Total);
+
+      return o;
+    }
 
     #endregion Helpers
 

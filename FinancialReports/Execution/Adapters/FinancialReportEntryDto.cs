@@ -52,9 +52,6 @@ namespace Empiria.FinancialAccounting.FinancialReports.Adapters {
       members.Add("GroupingRuleUID");
       members.Add("ConceptCode");
       members.Add("Concept");
-      members.Add("DomesticCurrencyTotal");
-      members.Add("ForeignCurrencyTotal");
-      members.Add("Total");
       members.Add("AccountsChartName");
       members.Add("RulesSetName");
 

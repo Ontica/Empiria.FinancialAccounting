@@ -56,7 +56,7 @@ namespace Empiria.FinancialAccounting.WebApi.FinancialReports {
       base.RequireBody(command);
 
       using (var usecases = FinancialReportsUseCases.UseCaseInteractor()) {
-        FinancialReportBreakdownDto financialReport = usecases.GetFinancialReportBreakdown(groupingRuleUID, command);
+        FinancialReportDto financialReport = usecases.GetFinancialReportBreakdown(groupingRuleUID, command);
 
         return new SingleObjectModel(base.Request, financialReport);
       }

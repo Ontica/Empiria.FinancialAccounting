@@ -22,7 +22,7 @@ namespace Empiria.FinancialAccounting.FinancialReports.Adapters {
     }
 
     public decimal GetTotalField(FinancialReportTotalField field) {
-      var fieldName = field.ToString().ToLower();
+      var fieldName = field.ToString();
 
       if (_fields.ContainsKey(fieldName)) {
         return (decimal) _fields[fieldName];
@@ -33,7 +33,7 @@ namespace Empiria.FinancialAccounting.FinancialReports.Adapters {
 
 
     public void SetTotalField(FinancialReportTotalField field, decimal value) {
-      var fieldName = field.ToString().ToLower();
+      var fieldName = field.ToString();
 
       if (_fields.ContainsKey(fieldName)) {
         _fields[fieldName] = value;
@@ -44,7 +44,7 @@ namespace Empiria.FinancialAccounting.FinancialReports.Adapters {
 
 
     public override bool TryGetMember(GetMemberBinder binder, out object result) {
-      string fieldName = binder.Name.ToLower();
+      string fieldName = binder.Name;
 
       if (_fields.ContainsKey(fieldName)) {
         result = _fields[fieldName];
@@ -57,7 +57,7 @@ namespace Empiria.FinancialAccounting.FinancialReports.Adapters {
 
 
     public override bool TrySetMember(SetMemberBinder binder, object value) {
-      string fieldName = binder.Name.ToLower();
+      string fieldName = binder.Name;
 
       if (_fields.ContainsKey(fieldName)) {
         _fields[fieldName] = value;

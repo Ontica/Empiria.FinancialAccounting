@@ -53,7 +53,8 @@ namespace Empiria.FinancialAccounting.FinancialReports.UseCases {
       return FinancialReportMapper.Map(financialReport);
     }
 
-    public FinancialReportBreakdownDto GetFinancialReportBreakdown(string groupingRuleUID, FinancialReportCommand command) {
+
+    public FinancialReportDto GetFinancialReportBreakdown(string groupingRuleUID, FinancialReportCommand command) {
       Assertion.AssertObject(groupingRuleUID, "groupingRuleUID");
       Assertion.AssertObject(command, "command");
 
