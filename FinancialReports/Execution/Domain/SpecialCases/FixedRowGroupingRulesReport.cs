@@ -34,32 +34,32 @@ namespace Empiria.FinancialAccounting.FinancialReports {
     }
 
     internal FinancialReport Generate() {
-      FixedList<FinancialReportRow> rows = GetReportRows();
+      FixedList<FinancialReportRow> fixedRows = GetReportFixedRows();
 
-      FixedList<FinancialReportEntry> entries = GetEntries(rows);
+      FixedList<FinancialReportEntry> reportEntries = CreateReportEntriesWithoutTotals(fixedRows);
 
-      EmpiriaHashTable<FixedList<TwoColumnsTrialBalanceEntryDto>> hashTable = GetBalancesHashTable();
+      EmpiriaHashTable<FixedList<TwoColumnsTrialBalanceEntryDto>> balances = GetBalancesAsHashTable();
 
-      ProcessEntries(entries, hashTable);
+      ProcessEntries(reportEntries, balances);
 
-      return new FinancialReport(_command, entries);
+      return new FinancialReport(_command, reportEntries);
     }
 
 
     internal FinancialReportBreakdown GetBreakdown(string reportRowUID) {
       FinancialReportRow row = GetReportBreakdownRow(reportRowUID);
 
-      FinancialReportEntry reportEntry = GetEntry(row);
+      FinancialReportEntry reportEntry = CreateReportEntryWithoutTotals(row);
 
-      EmpiriaHashTable<FixedList<TwoColumnsTrialBalanceEntryDto>> hashTable = GetBalancesHashTable();
+      EmpiriaHashTable<FixedList<TwoColumnsTrialBalanceEntryDto>> balances = GetBalancesAsHashTable();
 
-      FixedList<FinancialReportBreakdownEntry> breakdown = GetBreakdownEntries(reportEntry);
+      FixedList<FinancialReportBreakdownEntry> breakdownEntries = GetBreakdownEntries(reportEntry);
 
-      ProcessBreakdown(breakdown, hashTable);
+      ProcessBreakdown(breakdownEntries, balances);
 
-      // Add breakdown total
+      // Add breakdown total row
 
-      return new FinancialReportBreakdown(_command, breakdown);
+      return new FinancialReportBreakdown(_command, breakdownEntries);
     }
 
 
@@ -102,10 +102,11 @@ namespace Empiria.FinancialAccounting.FinancialReports {
 
 
     private void ProcessBreakdown(FixedList<FinancialReportBreakdownEntry> breakdown,
-                              EmpiriaHashTable<FixedList<TwoColumnsTrialBalanceEntryDto>> balances) {
+                                  EmpiriaHashTable<FixedList<TwoColumnsTrialBalanceEntryDto>> balances) {
       foreach (var breakdownItem in breakdown) {
 
         ReportEntryTotals groupingRuleTotals;
+
         if (breakdownItem.GroupingRuleItem.Type == GroupingRuleItemType.Agrupation) {
           groupingRuleTotals = ProcessGroupingRule(breakdownItem.GroupingRuleItem.Reference, balances);
 
@@ -128,7 +129,7 @@ namespace Empiria.FinancialAccounting.FinancialReports {
 
 
     private void ProcessEntries(FixedList<FinancialReportEntry> reportEntries,
-                            EmpiriaHashTable<FixedList<TwoColumnsTrialBalanceEntryDto>> balances) {
+                                EmpiriaHashTable<FixedList<TwoColumnsTrialBalanceEntryDto>> balances) {
 
       foreach (var reportEntry in reportEntries) {
         ReportEntryTotals groupingRuleTotals = ProcessGroupingRule(reportEntry.GroupingRule, balances);
@@ -141,7 +142,7 @@ namespace Empiria.FinancialAccounting.FinancialReports {
 
 
     private ReportEntryTotals ProcessGroupingRule(GroupingRule groupingRule,
-                                              EmpiriaHashTable<FixedList<TwoColumnsTrialBalanceEntryDto>> balances) {
+                                                  EmpiriaHashTable<FixedList<TwoColumnsTrialBalanceEntryDto>> balances) {
       var totals = new ReportEntryTotals();
 
       foreach (var groupingRuleItem in groupingRule.Items) {
@@ -187,7 +188,7 @@ namespace Empiria.FinancialAccounting.FinancialReports {
     }
 
 
-    private EmpiriaHashTable<FixedList<TwoColumnsTrialBalanceEntryDto>> GetBalancesHashTable() {
+    private EmpiriaHashTable<FixedList<TwoColumnsTrialBalanceEntryDto>> GetBalancesAsHashTable() {
       var balances = GetBalances();
 
       var converted = new
@@ -207,6 +208,7 @@ namespace Empiria.FinancialAccounting.FinancialReports {
       return hashTable;
     }
 
+
     private FinancialReportRow GetReportBreakdownRow(string groupingRuleUID) {
       return _command.GetFinancialReportType().GetRow(groupingRuleUID);
     }
@@ -221,21 +223,19 @@ namespace Empiria.FinancialAccounting.FinancialReports {
     }
 
 
-    private FixedList<FinancialReportEntry> GetEntries(FixedList<FinancialReportRow> rows) {
-      var enumeration = rows.Select(x => new FinancialReportEntry { Row = x, GroupingRule = x.GroupingRule });
+    private FixedList<FinancialReportEntry> CreateReportEntriesWithoutTotals(FixedList<FinancialReportRow> rows) {
+      var enumeration = rows.Select(x => CreateReportEntryWithoutTotals(x));
 
-      var entries = new FixedList<FinancialReportEntry>(enumeration);
-
-      return entries;
+      return new FixedList<FinancialReportEntry>(enumeration);
     }
 
 
-    private FinancialReportEntry GetEntry(FinancialReportRow row) {
+    private FinancialReportEntry CreateReportEntryWithoutTotals(FinancialReportRow row) {
       return new FinancialReportEntry { Row = row, GroupingRule = row.GroupingRule };
     }
 
 
-    private FixedList<FinancialReportRow> GetReportRows() {
+    private FixedList<FinancialReportRow> GetReportFixedRows() {
       return _command.GetFinancialReportType().GetRows();
     }
 
