@@ -4,43 +4,21 @@
 *  Assembly : FinancialAccounting.BalanceEngine.dll      Pattern   : Data Transfer Object                    *
 *  Type     : TrialBalanceDto                            License   : Please read LICENSE.txt file            *
 *                                                                                                            *
-*  Summary  : Output DTO used to return trial balances.                                                      *
+*  Summary  : Output DTO used to return the entries of a trial balance with separated domestic               *
+*             and foreign currencies totals                                                                  *
 *                                                                                                            *
 ************************* Copyright(c) La Vía Óntica SC, Ontica LLC and contributors. All rights reserved. **/
-using System;
 
 namespace Empiria.FinancialAccounting.BalanceEngine.Adapters {
 
-  public interface ITrialBalanceEntryDto {
-
-  }
-
-  /// <summary>Output DTO used to return trial balances.</summary>
-  public class TrialBalanceDto {
-
-    public TrialBalanceCommand Command {
-      get; internal set;
-    } = new TrialBalanceCommand();
-
-
-    public FixedList<DataTableColumn> Columns {
-      get; internal set;
-    } = new FixedList<DataTableColumn>();
-
-
-    public FixedList<ITrialBalanceEntryDto> Entries {
-      get; internal set;
-    } = new FixedList<ITrialBalanceEntryDto>();
-
-  }  // class TrialBalanceDto
-
-
-  /// <summary>Output DTO used to return the entries of a trial balance.</summary>
-  public class TrialBalanceEntryDto : ITrialBalanceEntryDto {
+  /// <summary>Output DTO used to return the entries of a trial balance with separated domestic
+  /// and foreign currencies totals.</summary>
+  public class TwoColumnsTrialBalanceEntryDto : ITrialBalanceEntryDto {
 
     public TrialBalanceItemType ItemType {
       get; internal set;
     }
+
 
     public string LedgerUID {
       get; internal set;
@@ -72,9 +50,20 @@ namespace Empiria.FinancialAccounting.BalanceEngine.Adapters {
     }
 
 
+    public string StandardAccountNumber {
+      get; internal set;
+    } = string.Empty;
+
+
+    public string SubledgerAccountNumber {
+      get; internal set;
+    } = string.Empty;
+
+
     public string AccountName {
       get; internal set;
     }
+
 
     public AccountRole AccountRole {
       get; internal set;
@@ -91,22 +80,17 @@ namespace Empiria.FinancialAccounting.BalanceEngine.Adapters {
     }
 
 
-    public decimal InitialBalance {
+    public decimal DomesticBalance {
       get; internal set;
     }
 
 
-    public decimal Debit {
+    public decimal ForeignBalance {
       get; internal set;
     }
 
 
-    public decimal Credit {
-      get; internal set;
-    }
-
-
-    public decimal CurrentBalance {
+    public decimal TotalBalance {
       get; internal set;
     }
 
@@ -121,16 +105,10 @@ namespace Empiria.FinancialAccounting.BalanceEngine.Adapters {
     }
 
 
-    public DateTime LastChangeDate {
-      get; internal set;
+    public string LastChangeDate {
+      get; set;
     }
 
-
-    public string DebtorCreditor {
-      get; internal set;
-    }
-
-
-  } // class TrialBalanceEntryDto
+  }  // class TwoColumnsTrialBalanceEntryDto
 
 } // namespace Empiria.FinancialAccounting.BalanceEngine.Adapters
