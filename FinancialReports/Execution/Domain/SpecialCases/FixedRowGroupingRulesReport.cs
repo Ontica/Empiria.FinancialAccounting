@@ -125,15 +125,9 @@ namespace Empiria.FinancialAccounting.FinancialReports {
           throw Assertion.AssertNoReachThisCode();
         }
 
-        breakdownItem.SetTotalField(FinancialReportTotalField.DomesticCurrencyTotal,
-                                    groupingRuleTotals.DomesticCurrencyTotal);
-        breakdownItem.SetTotalField(FinancialReportTotalField.ForeignCurrencyTotal,
-                                    groupingRuleTotals.ForeignCurrencyTotal);
-        breakdownItem.SetTotalField(FinancialReportTotalField.Total,
-                                    groupingRuleTotals.TotalBalance);
+        SetTotalsFields(breakdownItem, groupingRuleTotals);
       }
     }
-
 
     private void ProcessEntries(FixedList<FixedRowFinancialReportEntry> reportEntries,
                                 EmpiriaHashTable<FixedList<TwoColumnsTrialBalanceEntryDto>> balances) {
@@ -141,12 +135,7 @@ namespace Empiria.FinancialAccounting.FinancialReports {
       foreach (var reportEntry in reportEntries) {
         ReportEntryTotals groupingRuleTotals = ProcessGroupingRule(reportEntry.GroupingRule, balances);
 
-        reportEntry.SetTotalField(FinancialReportTotalField.DomesticCurrencyTotal,
-                                  groupingRuleTotals.DomesticCurrencyTotal);
-        reportEntry.SetTotalField(FinancialReportTotalField.ForeignCurrencyTotal,
-                                  groupingRuleTotals.ForeignCurrencyTotal);
-        reportEntry.SetTotalField(FinancialReportTotalField.Total,
-                                  groupingRuleTotals.TotalBalance);
+        SetTotalsFields(reportEntry, groupingRuleTotals);
       }
     }
 
@@ -265,6 +254,16 @@ namespace Empiria.FinancialAccounting.FinancialReports {
           UseDefaultValuation = true
         }
       };
+    }
+
+
+    private void SetTotalsFields(FinancialReportEntry reportEntry, ReportEntryTotals groupingRuleTotals) {
+      reportEntry.SetTotalField(FinancialReportTotalField.DomesticCurrencyTotal,
+                                groupingRuleTotals.DomesticCurrencyTotal);
+      reportEntry.SetTotalField(FinancialReportTotalField.ForeignCurrencyTotal,
+                                groupingRuleTotals.ForeignCurrencyTotal);
+      reportEntry.SetTotalField(FinancialReportTotalField.Total,
+                                groupingRuleTotals.TotalBalance);
     }
 
     #endregion Helpers

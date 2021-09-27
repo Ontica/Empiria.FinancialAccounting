@@ -34,7 +34,7 @@ namespace Empiria.FinancialAccounting.FinancialReports.Adapters {
 
     #endregion Public mappers
 
-    #region Helpers
+    #region Private mappers
 
     static private FixedList<DynamicFinancialReportEntryDto> MapBreakdownEntries(FixedList<FinancialReportEntry> list) {
       var mappedItems = list.Select((x) => MapBreakdownEntry((FinancialReportBreakdownEntry) x));
@@ -43,7 +43,7 @@ namespace Empiria.FinancialAccounting.FinancialReports.Adapters {
     }
 
 
-    static private FinancialReportBreakdownEntryDto MapBreakdownEntry(FinancialReportBreakdownEntry entry) {
+    static private DynamicFinancialReportEntryDto MapBreakdownEntry(FinancialReportBreakdownEntry entry) {
       dynamic o = new FinancialReportBreakdownEntryDto {
         UID = entry.GroupingRuleItem.UID,
         ItemCode = entry.GroupingRuleItem.Code,
@@ -54,13 +54,7 @@ namespace Empiria.FinancialAccounting.FinancialReports.Adapters {
         GroupingRuleUID = entry.GroupingRuleItem.GroupingRule.UID,
       };
 
-      o.SetTotalField(FinancialReportTotalField.DomesticCurrencyTotal,
-                      entry.GetTotalField(FinancialReportTotalField.DomesticCurrencyTotal));
-      o.SetTotalField(FinancialReportTotalField.ForeignCurrencyTotal,
-                      entry.GetTotalField(FinancialReportTotalField.ForeignCurrencyTotal));
-      o.SetTotalField(FinancialReportTotalField.Total,
-                      entry.GetTotalField(FinancialReportTotalField.Total));
-
+      SetTotalsFields(o, entry);
       return o;
     }
 
@@ -100,12 +94,7 @@ namespace Empiria.FinancialAccounting.FinancialReports.Adapters {
          RulesSetName = entry.GroupingRule.RulesSet.Name,
       };
 
-      o.SetTotalField(FinancialReportTotalField.DomesticCurrencyTotal,
-                      entry.GetTotalField(FinancialReportTotalField.DomesticCurrencyTotal));
-      o.SetTotalField(FinancialReportTotalField.ForeignCurrencyTotal,
-                      entry.GetTotalField(FinancialReportTotalField.ForeignCurrencyTotal));
-      o.SetTotalField(FinancialReportTotalField.Total,
-                      entry.GetTotalField(FinancialReportTotalField.Total));
+      SetTotalsFields(o, entry);
 
       return o;
     }
@@ -126,14 +115,22 @@ namespace Empiria.FinancialAccounting.FinancialReports.Adapters {
         RulesSetName = entry.GroupingRule.RulesSet.Name
       };
 
+      SetTotalsFields(o, entry);
+
+      return o;
+    }
+
+    #endregion Private mappers
+
+    #region Helpers
+
+    static private void SetTotalsFields(DynamicFinancialReportEntryDto o, FinancialReportEntry entry) {
       o.SetTotalField(FinancialReportTotalField.DomesticCurrencyTotal,
                       entry.GetTotalField(FinancialReportTotalField.DomesticCurrencyTotal));
       o.SetTotalField(FinancialReportTotalField.ForeignCurrencyTotal,
                       entry.GetTotalField(FinancialReportTotalField.ForeignCurrencyTotal));
       o.SetTotalField(FinancialReportTotalField.Total,
                       entry.GetTotalField(FinancialReportTotalField.Total));
-
-      return o;
     }
 
     #endregion Helpers
