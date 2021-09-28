@@ -160,12 +160,15 @@ namespace Empiria.FinancialAccounting.BalanceEngine.Adapters {
       dto.SectorCode = entry.Sector.Code;
       dto.SubledgerAccountId = entry.SubledgerAccountId;
       dto.InitialBalance = entry.InitialBalance;
+      dto.Debit = entry.Debit;
+      dto.Credit = entry.Credit;
       dto.DomesticBalance = entry.DomesticBalance;
       dto.ForeignBalance = entry.ForeignBalance;
       dto.TotalBalance = entry.TotalBalance;
       dto.ExchangeRate = entry.ExchangeRate;
       dto.AverageBalance = entry.AverageBalance;
-      dto.LastChangeDate = entry.LastChangeDate;
+      dto.LastChangeDate = entry.LastChangeDate != null ? entry.LastChangeDate : 
+                           ExecutionServer.DateMaxValue;
 
       return dto;
     }

@@ -47,7 +47,8 @@ namespace Empiria.FinancialAccounting.Tests.Balances {
 
       command.TrialBalanceType = TrialBalanceType.AnaliticoDeCuentas;
       command.UseDefaultValuation = true;
-      command.WithSubledgerAccount = true;
+      command.WithSubledgerAccount = false;
+      command.WithAverageBalance = true;
 
       TrialBalanceDto trialBalance = _usecases.BuildTrialBalance(command);
 

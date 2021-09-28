@@ -202,7 +202,7 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
         ItemType = this.ItemType,
         Sector = this.Sector,
         DebtorCreditor = this.Account.DebtorCreditor,
-        LastChangeDate = this.LastChangeDate.ToString("dd-MM-yyyy")
+        LastChangeDate = this.LastChangeDate
       };
     }
 

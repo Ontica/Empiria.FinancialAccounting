@@ -53,6 +53,16 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
       internal set;
     }
 
+    public decimal Debit {
+      get;
+      internal set;
+    }
+
+    public decimal Credit {
+      get;
+      internal set;
+    }
+
     public decimal DomesticBalance {
       get;
       internal set;
@@ -107,9 +117,9 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
     }
 
 
-    public string LastChangeDate {
+    public DateTime LastChangeDate {
       get; internal set;
-    } = string.Empty;
+    }
 
 
     public DebtorCreditorType DebtorCreditor {

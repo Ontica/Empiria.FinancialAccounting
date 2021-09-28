@@ -9,6 +9,8 @@
 *                                                                                                            *
 ************************* Copyright(c) La Vía Óntica SC, Ontica LLC and contributors. All rights reserved. **/
 
+using System;
+
 namespace Empiria.FinancialAccounting.BalanceEngine.Adapters {
 
   /// <summary>Output DTO used to return the entries of a trial balance with separated domestic
@@ -85,6 +87,14 @@ namespace Empiria.FinancialAccounting.BalanceEngine.Adapters {
       internal set;
     }
 
+    public decimal Debit {
+      get;
+      internal set;
+    }
+    public decimal Credit {
+      get;
+      internal set;
+    }
 
     public decimal DomesticBalance {
       get; internal set;
@@ -111,7 +121,7 @@ namespace Empiria.FinancialAccounting.BalanceEngine.Adapters {
     }
 
 
-    public string LastChangeDate {
+    public DateTime LastChangeDate {
       get; set;
     }
     

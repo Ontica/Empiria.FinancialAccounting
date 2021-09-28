@@ -143,11 +143,24 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
       FixedList<TwoCurrenciesBalanceEntry> returnedBalances =
                                             new FixedList<TwoCurrenciesBalanceEntry>(twoColumnsBalance);
       if (_command.WithAverageBalance) {
-        TimeSpan timeSpan = commandPeriod.ToDate - commandPeriod.FromDate;
-        int numberOfDays = timeSpan.Days + 1;
+        //TimeSpan timeSpan = commandPeriod.ToDate - commandPeriod.FromDate;
+        //int numberOfDays = timeSpan.Days + 1;
 
-        foreach (var entry in returnedBalances) {
-          entry.AverageBalance = (entry.TotalBalance / numberOfDays) + entry.InitialBalance;
+        //foreach (var entry in returnedBalances) {
+        //  entry.AverageBalance = (entry.TotalBalance / numberOfDays) + entry.InitialBalance;
+        //}
+
+        foreach (var entry in returnedBalances.Where(a=>a.ItemType == TrialBalanceItemType.BalanceEntry ||
+                                                        a.ItemType == TrialBalanceItemType.BalanceSummary)) {
+          decimal debtorCreditor = entry.DebtorCreditor == DebtorCreditorType.Deudora ?
+                                   entry.Debit - entry.Credit : entry.Credit - entry.Debit;
+
+          TimeSpan timeSpan = commandPeriod.ToDate - entry.LastChangeDate;
+          int numberOfDays = timeSpan.Days + 1;
+
+          entry.AverageBalance = ((numberOfDays * debtorCreditor) /
+                                   _command.InitialPeriod.ToDate.Day) +
+                                   entry.InitialBalance;
         }
       }
       
@@ -366,7 +379,12 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
         twoCurrenciesEntry.DomesticBalance += entry.CurrentBalance;
       }
       twoCurrenciesEntry.InitialBalance += entry.InitialBalance;
+      twoCurrenciesEntry.Debit += entry.Debit;
+      twoCurrenciesEntry.Credit += entry.Credit;
       twoCurrenciesEntry.TotalBalance = twoCurrenciesEntry.DomesticBalance + twoCurrenciesEntry.ForeignBalance;
+
+      twoCurrenciesEntry.LastChangeDate = entry.LastChangeDate > twoCurrenciesEntry.LastChangeDate ?
+                                          entry.LastChangeDate : twoCurrenciesEntry.LastChangeDate;
     }
 
 
