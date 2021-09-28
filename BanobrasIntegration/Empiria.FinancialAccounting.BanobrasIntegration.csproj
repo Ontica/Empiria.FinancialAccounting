@@ -76,7 +76,4 @@
     <ProjectReference Include="..\FinancialReports\Empiria.FinancialAccounting.FinancialReports.csproj" />
     <ProjectReference Include="..\Vouchers\Empiria.FinancialAccounting.Vouchers.csproj" />
   </ItemGroup>
-  <ItemGroup>
-    <Folder Include="VouchersImporter\DbTablesImporter\" />
-  </ItemGroup>
 </Project>
