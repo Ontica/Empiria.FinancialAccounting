@@ -80,7 +80,7 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
           Command.TrialBalanceType == TrialBalanceType.SaldosPorAuxiliar) {
         columns.Add(new DataTableColumn("currentBalance", "Saldo actual", "decimal"));
         columns.Add(new DataTableColumn("debtorCreditor", "Naturaleza", "text"));
-        columns.Add(new DataTableColumn("lastChangeDate", "Último movimiento", "text"));
+        columns.Add(new DataTableColumn("lastChangeDate", "Último movimiento", "date"));
       } else {
         columns.Add(new DataTableColumn("initialBalance", "Saldo anterior", "decimal"));
         columns.Add(new DataTableColumn("debit", "Cargos", "decimal"));
@@ -92,7 +92,7 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
         }
         if (Command.WithAverageBalance) {
           columns.Add(new DataTableColumn("averageBalance", "Saldo promedio", "decimal"));
-          columns.Add(new DataTableColumn("lastChangeDate", "Último movimiento", "text"));
+          columns.Add(new DataTableColumn("lastChangeDate", "Último movimiento", "date"));
         }
       }
 
@@ -130,7 +130,7 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
       columns.Add(new DataTableColumn("realVariation", "Variación por TC", "decimal"));
       if (Command.WithAverageBalance) {
         columns.Add(new DataTableColumn("averageBalance", "Saldo promedio", "decimal"));
-        columns.Add(new DataTableColumn("lastChangeDate", "Último movimiento", "text"));
+        columns.Add(new DataTableColumn("lastChangeDate", "Último movimiento", "date"));
       }
 
       return columns.ToFixedList();
