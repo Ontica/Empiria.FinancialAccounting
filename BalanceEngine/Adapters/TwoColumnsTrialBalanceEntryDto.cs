@@ -80,6 +80,12 @@ namespace Empiria.FinancialAccounting.BalanceEngine.Adapters {
     }
 
 
+    public decimal InitialBalance {
+      get;
+      internal set;
+    }
+
+
     public decimal DomesticBalance {
       get; internal set;
     }
@@ -108,7 +114,7 @@ namespace Empiria.FinancialAccounting.BalanceEngine.Adapters {
     public string LastChangeDate {
       get; set;
     }
-
+    
   }  // class TwoColumnsTrialBalanceEntryDto
 
 } // namespace Empiria.FinancialAccounting.BalanceEngine.Adapters

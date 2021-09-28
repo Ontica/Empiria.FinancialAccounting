@@ -159,6 +159,7 @@ namespace Empiria.FinancialAccounting.BalanceEngine.Adapters {
       dto.AccountLevel = entry.Account.Level;
       dto.SectorCode = entry.Sector.Code;
       dto.SubledgerAccountId = entry.SubledgerAccountId;
+      dto.InitialBalance = entry.InitialBalance;
       dto.DomesticBalance = entry.DomesticBalance;
       dto.ForeignBalance = entry.ForeignBalance;
       dto.TotalBalance = entry.TotalBalance;

@@ -48,6 +48,11 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
       internal set;
     }
 
+    public decimal InitialBalance {
+      get;
+      internal set;
+    }
+
     public decimal DomesticBalance {
       get;
       internal set;

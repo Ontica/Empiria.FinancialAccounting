@@ -142,14 +142,15 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
                                                     TrialBalanceCommandPeriod commandPeriod) {
       FixedList<TwoCurrenciesBalanceEntry> returnedBalances =
                                             new FixedList<TwoCurrenciesBalanceEntry>(twoColumnsBalance);
+      if (_command.WithAverageBalance) {
+        TimeSpan timeSpan = commandPeriod.ToDate - commandPeriod.FromDate;
+        int numberOfDays = timeSpan.Days + 1;
 
-      TimeSpan timeSpan = commandPeriod.ToDate - commandPeriod.FromDate;
-      int numberOfDays = timeSpan.Days + 1;
-
-      foreach (var entry in returnedBalances) {
-        entry.AverageBalance = entry.TotalBalance / numberOfDays;
+        foreach (var entry in returnedBalances) {
+          entry.AverageBalance = (entry.TotalBalance / numberOfDays) + entry.InitialBalance;
+        }
       }
-
+      
       return returnedBalances;
     }
 
@@ -364,6 +365,7 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
       } else {
         twoCurrenciesEntry.DomesticBalance += entry.CurrentBalance;
       }
+      twoCurrenciesEntry.InitialBalance += entry.InitialBalance;
       twoCurrenciesEntry.TotalBalance = twoCurrenciesEntry.DomesticBalance + twoCurrenciesEntry.ForeignBalance;
     }
 
