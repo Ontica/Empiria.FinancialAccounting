@@ -37,6 +37,8 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
 
       trialBalance = CombineTotalAndSummaryEntries(orderingtTialBalance, trialBalance);
 
+      trialBalance = helper.GenerateAverageBalance(trialBalance);
+
       trialBalance = helper.RestrictLevels(trialBalance);
 
       var returnBalance = new FixedList<ITrialBalanceEntry>(trialBalance.Select(x => (ITrialBalanceEntry) x));

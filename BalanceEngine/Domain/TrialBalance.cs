@@ -80,6 +80,9 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
           Command.TrialBalanceType == TrialBalanceType.SaldosPorAuxiliar) {
         columns.Add(new DataTableColumn("currentBalance", "Saldo actual", "decimal"));
         columns.Add(new DataTableColumn("debtorCreditor", "Naturaleza", "text"));
+        if (Command.WithAverageBalance) {
+          columns.Add(new DataTableColumn("averageBalance", "Saldo promedio", "decimal"));
+        }
         columns.Add(new DataTableColumn("lastChangeDate", "Último movimiento", "date"));
       } else {
         columns.Add(new DataTableColumn("initialBalance", "Saldo anterior", "decimal"));
