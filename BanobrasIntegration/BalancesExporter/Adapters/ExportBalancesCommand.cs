@@ -43,6 +43,7 @@ namespace Empiria.FinancialAccounting.BanobrasIntegration.BalancesExporter.Adapt
         AccountsChartUID = AccountsChart.Parse(this.Empresa).UID,
         BalancesType = BalancesType.WithCurrentBalance,
         ShowCascadeBalances = false,
+        WithAverageBalance = true,
         WithSubledgerAccount = true,
         InitialPeriod = new TrialBalanceCommandPeriod {
           FromDate = this.Fecha,
@@ -57,6 +58,7 @@ namespace Empiria.FinancialAccounting.BanobrasIntegration.BalancesExporter.Adapt
         AccountsChartUID = AccountsChart.Parse(this.Empresa).UID,
         BalancesType = BalancesType.WithCurrentBalance,
         ShowCascadeBalances = false,
+        WithAverageBalance = true,
         WithSubledgerAccount = true,
         InitialPeriod = new TrialBalanceCommandPeriod {
           FromDate = new DateTime(this.Fecha.Year, this.Fecha.Month, 1),

@@ -56,7 +56,7 @@ namespace Empiria.FinancialAccounting.BanobrasIntegration.BalancesExporter.Adapt
         Saldo = entry.CurrentBalance,
         MonedaOrigen = Currency.Parse(entry.CurrencyCode).Id,
         NaturalezaCuenta = account.DebtorCreditor == DebtorCreditorType.Deudora ? 1 : -1,
-        SaldoPromedio = entry.CurrentBalance,
+        SaldoPromedio = Math.Round(entry.AverageBalance, 2),
         MontoDebito = entry.Debit,
         MontoCredito = entry.Credit,
         SaldoAnterior = entry.InitialBalance,
