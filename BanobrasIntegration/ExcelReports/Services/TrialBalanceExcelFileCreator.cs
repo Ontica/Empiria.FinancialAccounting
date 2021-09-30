@@ -18,7 +18,11 @@ namespace Empiria.FinancialAccounting.BanobrasIntegration.ExcelReports {
   /// <summary>Creates a Microsoft Excel file with trial balance information.</summary>
   internal class TrialBalanceExcelFileCreator {
 
+    private TrialBalanceCommand _command = new TrialBalanceCommand();
     private readonly ExcelTemplateConfig _templateConfig;
+
+    private readonly DateTime MIN_LAST_CHANGE_DATE_TO_REPORT = DateTime.Parse("01/01/1970");
+
     private ExcelFile _excelFile;
 
     public TrialBalanceExcelFileCreator(ExcelTemplateConfig templateConfig) {
@@ -31,11 +35,13 @@ namespace Empiria.FinancialAccounting.BanobrasIntegration.ExcelReports {
     internal ExcelFile CreateExcelFile(TrialBalanceDto trialBalance) {
       Assertion.AssertObject(trialBalance, "trialBalance");
 
+      _command = trialBalance.Command;
+
       _excelFile = new ExcelFile(_templateConfig);
 
       _excelFile.Open();
 
-      SetHeader(trialBalance.Command);
+      SetHeader();
 
       SetTable(trialBalance);
 
@@ -49,14 +55,14 @@ namespace Empiria.FinancialAccounting.BanobrasIntegration.ExcelReports {
 
     #region Private methods
 
-    private void SetHeader(TrialBalanceCommand command) {
+    private void SetHeader() {
       _excelFile.SetCell($"A2", _templateConfig.Title);
 
-      var subTitle = $"Del {command.InitialPeriod.FromDate.ToString("dd/MMM/yyyy")} " +
-                     $"al {command.InitialPeriod.ToDate.ToString("dd/MMM/yyyy")}";
+      var subTitle = $"Del {_command.InitialPeriod.FromDate.ToString("dd/MMM/yyyy")} " +
+                     $"al {_command.InitialPeriod.ToDate.ToString("dd/MMM/yyyy")}";
 
-      if (command.ValuateBalances) {
-        subTitle += $". Saldos valorizados al {command.InitialPeriod.ExchangeRateDate.ToString("dd/MMM/yyyy")}.";
+      if (_command.ValuateBalances) {
+        subTitle += $". Saldos valorizados al {_command.InitialPeriod.ExchangeRateDate.ToString("dd/MMM/yyyy")}.";
       }
 
       _excelFile.SetCell($"A3", subTitle);
@@ -70,7 +76,7 @@ namespace Empiria.FinancialAccounting.BanobrasIntegration.ExcelReports {
           return;
 
         case TrialBalanceType.BalanzaValorizadaComparativa:
-          SetBalanzaComparativaHeaders(trialBalance.Command);
+          SetBalanzaComparativaHeaders();
           FillOutBalanzaComparativa(trialBalance.Entries.Select(x => (TrialBalanceComparativeDto) x));
           return;
 
@@ -121,11 +127,21 @@ namespace Empiria.FinancialAccounting.BanobrasIntegration.ExcelReports {
         _excelFile.SetCell($"F{i}", entry.DomesticBalance);
         _excelFile.SetCell($"G{i}", entry.ForeignBalance);
 
+        if (MustFillOutAverageBalance(entry.AverageBalance, entry.LastChangeDate)) {
+          _excelFile.SetCell($"H{i}", entry.AverageBalance);
+          _excelFile.SetCell($"I{i}", entry.LastChangeDate.ToString("dd/MMM/yyyy"));
+        }
+
         if (entry.ItemType != TrialBalanceItemType.BalanceEntry &&
             entry.ItemType != TrialBalanceItemType.BalanceSummary) {
           _excelFile.SetRowStyleBold(i);
         }
         i++;
+      }
+
+      if (!_command.WithAverageBalance) {
+        _excelFile.RemoveColumn("I");
+        _excelFile.RemoveColumn("H");
       }
     }
 
@@ -156,16 +172,26 @@ namespace Empiria.FinancialAccounting.BanobrasIntegration.ExcelReports {
         _excelFile.SetCell($"T{i}", entry.VariationByER);
         _excelFile.SetCell($"U{i}", entry.RealVariation);
 
+        if (MustFillOutAverageBalance(entry.AverageBalance, entry.LastChangeDate)) {
+          _excelFile.SetCell($"V{i}", entry.AverageBalance);
+          _excelFile.SetCell($"W{i}", entry.LastChangeDate.ToString("dd/MMM/yyyy"));
+        }
+
         i++;
+      }
+
+      if (!_command.WithAverageBalance) {
+        _excelFile.RemoveColumn("W");
+        _excelFile.RemoveColumn("V");
       }
     }
 
 
-    private void SetBalanzaComparativaHeaders(TrialBalanceCommand command) {
-      _excelFile.SetCell($"I4", $"{command.InitialPeriod.ToDate.ToString("MMM_yyyy")}");
-      _excelFile.SetCell($"K4", $"{command.InitialPeriod.ToDate.ToString("MMM")}_VAL_A");
-      _excelFile.SetCell($"N4", $"{command.FinalPeriod.ToDate.ToString("MMM_yyyy")}");
-      _excelFile.SetCell($"P4", $"{command.FinalPeriod.ToDate.ToString("MMM")}_VAL_B");
+    private void SetBalanzaComparativaHeaders() {
+      _excelFile.SetCell($"I4", $"{_command.InitialPeriod.ToDate.ToString("MMM_yyyy")}");
+      _excelFile.SetCell($"K4", $"{_command.InitialPeriod.ToDate.ToString("MMM")}_VAL_A");
+      _excelFile.SetCell($"N4", $"{_command.FinalPeriod.ToDate.ToString("MMM_yyyy")}");
+      _excelFile.SetCell($"P4", $"{_command.FinalPeriod.ToDate.ToString("MMM")}_VAL_B");
     }
 
 
@@ -183,6 +209,7 @@ namespace Empiria.FinancialAccounting.BanobrasIntegration.ExcelReports {
         i++;
       }
     }
+
 
     private void FillOutBalanzaValorizadaDolares(IEnumerable<ValuedTrialBalanceDto> entries) {
       int i = 5;
@@ -229,10 +256,20 @@ namespace Empiria.FinancialAccounting.BanobrasIntegration.ExcelReports {
         _excelFile.SetCell($"I{i}", entry.Credit);
         _excelFile.SetCell($"J{i}", entry.CurrentBalance);
 
+        if (MustFillOutAverageBalance(entry.AverageBalance, entry.LastChangeDate)) {
+          _excelFile.SetCell($"K{i}", entry.AverageBalance);
+          _excelFile.SetCell($"L{i}", entry.LastChangeDate.ToString("dd/MMM/yyyy"));
+        }
+
         if (entry.LedgerNumber.Length == 0) {
           _excelFile.SetRowStyleBold(i);
         }
         i++;
+      }
+
+      if (!_command.WithAverageBalance) {
+        _excelFile.RemoveColumn("L");
+        _excelFile.RemoveColumn("K");
       }
     }
 
@@ -254,13 +291,24 @@ namespace Empiria.FinancialAccounting.BanobrasIntegration.ExcelReports {
         _excelFile.SetCell($"I{i}", entry.Credit);
         _excelFile.SetCell($"J{i}", entry.CurrentBalance);
 
+        if (MustFillOutAverageBalance(entry.AverageBalance, entry.LastChangeDate)) {
+          _excelFile.SetCell($"K{i}", entry.AverageBalance);
+          _excelFile.SetCell($"L{i}", entry.LastChangeDate.ToString("dd/MMM/yyyy"));
+        }
+
         if (entry.ItemType != TrialBalanceItemType.BalanceEntry &&
             entry.ItemType != TrialBalanceItemType.BalanceSummary) {
           _excelFile.SetRowStyleBold(i);
         }
         i++;
       }
+
+      if (!_command.WithAverageBalance) {
+        _excelFile.RemoveColumn("L");
+        _excelFile.RemoveColumn("K");
+      }
     }
+
 
     private void FillOutSaldosAuxiliar(IEnumerable<TrialBalanceEntryDto> entries) {
       int i = 5;
@@ -290,13 +338,24 @@ namespace Empiria.FinancialAccounting.BanobrasIntegration.ExcelReports {
 
         _excelFile.SetCell($"I{i}", entry.CurrentBalance);
         _excelFile.SetCell($"J{i}", Convert.ToString((char) account.DebtorCreditor));
-        _excelFile.SetCell($"K{i}", entry.LastChangeDate.ToString("dd/MMM/yyyy"));
+
+        if (MustFillOutAverageBalance(entry.AverageBalance, entry.LastChangeDate)) {
+          _excelFile.SetCell($"K{i}", entry.AverageBalance);
+        }
+
+        if (entry.LastChangeDate >= MIN_LAST_CHANGE_DATE_TO_REPORT) {
+          _excelFile.SetCell($"L{i}", entry.LastChangeDate.ToString("dd/MMM/yyyy"));
+        }
 
         if (entry.ItemType != TrialBalanceItemType.BalanceEntry &&
             entry.ItemType != TrialBalanceItemType.BalanceSummary) {
           _excelFile.SetRowStyleBold(i);
         }
         i++;
+      }
+
+      if (!_command.WithAverageBalance) {
+        _excelFile.RemoveColumn("K");
       }
     }
 
@@ -328,7 +387,14 @@ namespace Empiria.FinancialAccounting.BanobrasIntegration.ExcelReports {
         }
         _excelFile.SetCell($"I{i}", entry.CurrentBalance);
         _excelFile.SetCell($"J{i}", Convert.ToString((char) account.DebtorCreditor));
-        _excelFile.SetCell($"K{i}", entry.LastChangeDate.ToString("dd/MMM/yyyy"));
+
+        if (MustFillOutAverageBalance(entry.AverageBalance, entry.LastChangeDate)) {
+          _excelFile.SetCell($"K{i}", entry.AverageBalance);
+        }
+
+        if (entry.LastChangeDate >= MIN_LAST_CHANGE_DATE_TO_REPORT) {
+          _excelFile.SetCell($"L{i}", entry.LastChangeDate.ToString("dd/MMM/yyyy"));
+        }
 
         if (entry.ItemType != TrialBalanceItemType.BalanceEntry &&
             entry.ItemType != TrialBalanceItemType.BalanceSummary) {
@@ -337,9 +403,13 @@ namespace Empiria.FinancialAccounting.BanobrasIntegration.ExcelReports {
         i++;
       }
 
+      if (!_command.WithAverageBalance) {
+        _excelFile.RemoveColumn("K");
+      }
+
       if (!includeSubledgerAccounts) {
-        _excelFile.RemoveColumn("G");
         _excelFile.RemoveColumn("H");
+        _excelFile.RemoveColumn("G");
       }
     }
 
@@ -347,10 +417,13 @@ namespace Empiria.FinancialAccounting.BanobrasIntegration.ExcelReports {
 
     #region Utility methods
 
+    // TODO: CLEAN THIS CODE. ISSUE USING NEW CHART OF ACCOUNTS
     private string GetLedgerLevelAccountNumber(string accountNumber) {
       return accountNumber.Substring(0, 4);
     }
 
+
+    // TODO: CLEAN THIS CODE. ISSUE USING NEW CHART OF ACCOUNTS
     private string GetSubAccountNumberWithSector(string accountNumber, string sectorCode) {
       var temp = accountNumber.Substring(4);
 
@@ -359,6 +432,23 @@ namespace Empiria.FinancialAccounting.BanobrasIntegration.ExcelReports {
       temp = temp.PadRight(12, '0');
 
       return temp + sectorCode;
+    }
+
+
+    private bool MustFillOutAverageBalance(decimal averageBalance, DateTime lastChangeDate) {
+      if (!_command.WithAverageBalance) {
+        return false;
+      }
+      if (averageBalance != 0) {
+        return true;
+      }
+      if (lastChangeDate < MIN_LAST_CHANGE_DATE_TO_REPORT) {
+        return false;
+      }
+      if (lastChangeDate == ExecutionServer.DateMaxValue) {
+        return false;
+      }
+      return true;
     }
 
     #endregion Utility methods
