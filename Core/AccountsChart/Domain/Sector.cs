@@ -40,6 +40,12 @@ namespace Empiria.FinancialAccounting {
     static public Sector Empty => BaseObject.ParseEmpty<Sector>();
 
 
+    static public Sector Root {
+      get {
+        return Empty;
+      }
+    }
+
     #endregion Constructors and parsers
 
     #region Public properties
@@ -59,6 +65,33 @@ namespace Empiria.FinancialAccounting {
     public string FullName {
       get {
         return $"({this.Code}) {this.Name}";
+      }
+    }
+
+    [DataField("ID_SECTOR_PADRE")]
+    private int _parentSectorId = -1;
+
+
+    public Sector Parent {
+      get {
+
+        if (_parentSectorId == -1) {
+          return Sector.Empty;
+        }
+        return Sector.Parse(_parentSectorId);
+      }
+    }
+
+
+    public bool HasParent {
+      get {
+        return !IsRoot;
+      }
+    }
+
+    public bool IsRoot {
+      get {
+        return this.IsEmptyInstance;
       }
     }
 
