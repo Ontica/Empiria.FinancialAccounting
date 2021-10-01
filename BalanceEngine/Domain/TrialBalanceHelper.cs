@@ -40,7 +40,7 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
           returnedEntries.Add(entry);
         }
 
-      }  else {
+      } else {
         returnedEntries.AddRange(summaryEntries);
       }
 
@@ -49,6 +49,7 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
       return returnedEntries;
     }
 
+    
     internal List<TrialBalanceEntry> CombineCurrencyTotalsAndPostingEntries(
                                       List<TrialBalanceEntry> trialBalance,
                                       List<TrialBalanceEntry> summaryEntries) {
@@ -213,13 +214,13 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
       var returnedEntries = new List<TrialBalanceEntry>(trialBalance);
 
       if (_command.WithAverageBalance) {
-             
+
         foreach (var entry in returnedEntries.Where(a => a.ItemType == TrialBalanceItemType.BalanceSummary ||
-                  (_command.TrialBalanceType == TrialBalanceType.BalanzaConContabilidadesEnCascada && 
+                  (_command.TrialBalanceType == TrialBalanceType.BalanzaConContabilidadesEnCascada &&
                    (a.ItemType == TrialBalanceItemType.BalanceTotalGroupDebtor ||
-                    a.ItemType == TrialBalanceItemType.BalanceTotalGroupCreditor)) || 
+                    a.ItemType == TrialBalanceItemType.BalanceTotalGroupCreditor)) ||
                   (_command.TrialBalanceType == TrialBalanceType.BalanzaValorizadaComparativa))) {
-          
+
           decimal debtorCreditor = entry.DebtorCreditor == DebtorCreditorType.Deudora ?
                                    entry.Debit - entry.Credit : entry.Credit - entry.Debit;
 
@@ -228,7 +229,7 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
                                                   _command.InitialPeriod.ToDate - entry.LastChangeDate;
           int numberOfDays = timeSpan.Days + 1;
 
-          entry.AverageBalance = ((numberOfDays * debtorCreditor) / 
+          entry.AverageBalance = ((numberOfDays * debtorCreditor) /
                                    _command.InitialPeriod.ToDate.Day) +
                                    entry.InitialBalance;
         }
@@ -256,7 +257,9 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
     internal List<TrialBalanceEntry> GenerateSummaryEntries(FixedList<TrialBalanceEntry> entries) {
       var summaryEntries = new EmpiriaHashTable<TrialBalanceEntry>(entries.Count);
       var detailSummaryEntries = new List<TrialBalanceEntry>();
-      List<TrialBalanceEntry> returnedEntries = new List<TrialBalanceEntry>();
+      
+      //test only
+      //_command.WithSectorization = true;
 
       foreach (var entry in entries) {
         entry.DebtorCreditor = entry.Account.DebtorCreditor;
@@ -293,9 +296,11 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
             GetDetailSummaryEntries(detailSummaryEntries, summaryEntries, currentParent, entry);
           }
           if (!currentParent.HasParent && entry.HasSector) {
-            SummaryByEntry(summaryEntries, entry, currentParent, Sector.Empty,
-                                           TrialBalanceItemType.BalanceSummary);
+
+            GetEntriesAndParentSector(summaryEntries, entry, currentParent);
+
             break;
+
           } else if (!currentParent.HasParent) {
             if (_command.TrialBalanceType == TrialBalanceType.AnaliticoDeCuentas &&
                 _command.WithSubledgerAccount && !entry.Account.HasParent) {
@@ -311,7 +316,7 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
 
       } // foreach
 
-      returnedEntries = AssignLastChangeDates(entries, summaryEntries);
+      var returnedEntries = AssignLastChangeDates(entries, summaryEntries);
 
       if (detailSummaryEntries.Count > 0 && _command.TrialBalanceType == TrialBalanceType.SaldosPorCuenta) {
         return detailSummaryEntries;
@@ -319,7 +324,7 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
       return returnedEntries;
     }
 
-
+    
     internal List<TrialBalanceEntry> GenerateTotalSummaryDebtorCreditor(
                                       List<TrialBalanceEntry> postingEntries) {
 
@@ -428,10 +433,10 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
 
 
     internal FixedList<TrialBalanceEntry> GetPostingEntries() {
-      
+
       FixedList<TrialBalanceEntry> postingEntries = GetTrialBalanceEntries(_command.InitialPeriod);
 
-      if ((_command.ValuateBalances || _command.InitialPeriod.UseDefaultValuation) && 
+      if ((_command.ValuateBalances || _command.InitialPeriod.UseDefaultValuation) &&
           _command.TrialBalanceType != TrialBalanceType.BalanzaValorizadaEnDolares &&
           _command.TrialBalanceType != TrialBalanceType.BalanzaConsolidadaPorMoneda) {
         postingEntries = ValuateToExchangeRate(postingEntries, _command.InitialPeriod);
@@ -466,7 +471,6 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
       return TrialBalanceDataService.GetTrialBalanceEntries(commandData);
     }
 
-
     internal List<TrialBalanceEntry> RestrictLevels(List<TrialBalanceEntry> entries) {
       if (_command.Level == 0) {
         return entries;
@@ -481,6 +485,20 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
       }
     }
 
+    internal List<TrialBalanceEntry> SummaryEntriesAndSectorization(List<TrialBalanceEntry> summaryEntries) {
+      var returnedEntries = new List<TrialBalanceEntry>(summaryEntries);
+
+      if (_command.WithSectorization) {
+        returnedEntries = returnedEntries
+                            .Where(a =>
+                                  (a.Level > 1 && a.Sector.Parent.Code != "00") ||
+                                  (a.Sector.IsRoot || a.Sector.Parent.Code == "00")
+                            )
+                            .ToList();
+      }
+
+      return returnedEntries;
+    }
 
     internal FixedList<TrialBalanceEntry> RoundTrialBalanceEntries(
                                           FixedList<TrialBalanceEntry> postingEntries) {
@@ -547,6 +565,27 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
 
       }
       return summaryEntriesList.ToList();
+    }
+
+
+    private void GetEntriesAndParentSector(EmpiriaHashTable<TrialBalanceEntry> summaryEntries,
+                                           TrialBalanceEntry entry, StandardAccount currentParent) {
+      if (!_command.WithSectorization) {
+        SummaryByEntry(summaryEntries, entry, currentParent, Sector.Empty,
+                          TrialBalanceItemType.BalanceSummary);
+        //break;
+      } else {
+        var parentSector = entry.Sector.Parent;
+        while (true) {
+          SummaryByEntry(summaryEntries, entry, currentParent, parentSector,
+                                          TrialBalanceItemType.BalanceSummary);
+          if (parentSector.IsRoot) {
+            break;
+          } else {
+            parentSector = parentSector.Parent;
+          }
+        }
+      }
     }
 
 
@@ -620,7 +659,7 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
         foreach (var entry in entries) {
           SubsidiaryAccount subledgerAccount = SubsidiaryAccount.Parse(entry.SubledgerAccountId);
           if (!subledgerAccount.IsEmptyInstance) {
-            entry.SubledgerAccountNumber = subledgerAccount.Number != "0" ? 
+            entry.SubledgerAccountNumber = subledgerAccount.Number != "0" ?
                                            subledgerAccount.Number : "";
             entry.SubledgerNumberOfDigits = entry.SubledgerAccountNumber != "" ?
                                             entry.SubledgerAccountNumber.Count() : 0;
@@ -717,7 +756,7 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
                                  TrialBalanceItemType itemType) {
 
       string hash = $"{targetAccount.Number}||{targetSector.Code}||{entry.Currency.Id}||{entry.Ledger.Id}";
-      
+
       GenerateOrIncreaseEntries(summaryEntries, entry, targetAccount, targetSector, itemType, hash);
     }
 

@@ -115,6 +115,9 @@ namespace Empiria.FinancialAccounting.BalanceEngine.Adapters {
       get; set;
     } = false;
 
+    public bool WithSectorization {
+      get; set;
+    } = false;
 
 
     public bool ValuateBalances {
