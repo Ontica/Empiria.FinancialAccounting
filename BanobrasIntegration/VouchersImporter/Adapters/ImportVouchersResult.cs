@@ -34,18 +34,19 @@ namespace Empiria.FinancialAccounting.BanobrasIntegration.VouchersImporter.Adapt
 
     public bool HasErrors {
       get {
-        return true;
+        return (Errors.Count != 0);
       }
     }
 
-    public FixedList<string> Errors {
+
+    public FixedList<NamedEntityDto> Errors {
       get; internal set;
-    } = new FixedList<string>();
+    } = new FixedList<NamedEntityDto>();
 
 
-    public FixedList<string> Warnings {
+    public FixedList<NamedEntityDto> Warnings {
       get; internal set;
-    } = new FixedList<string>();
+    } = new FixedList<NamedEntityDto>();
 
 
     public FixedList<ImportVouchersTotals> VoucherTotals {
@@ -54,6 +55,9 @@ namespace Empiria.FinancialAccounting.BanobrasIntegration.VouchersImporter.Adapt
 
   }  // class ImportVouchersResult
 
+
+
+  /// <summary>Contains vouchers totals data separated by some unique id.</summary>
   public class ImportVouchersTotals {
 
     public string UID {
@@ -67,6 +71,16 @@ namespace Empiria.FinancialAccounting.BanobrasIntegration.VouchersImporter.Adapt
 
 
     public int VouchersCount {
+      get; internal set;
+    }
+
+
+    public int ErrorsCount {
+      get; internal set;
+    }
+
+
+    public int WarningsCount {
       get; internal set;
     }
 
