@@ -24,14 +24,29 @@ namespace Empiria.FinancialAccounting.BanobrasIntegration.VouchersImporter {
       _command = command;
     }
 
+    #region Public methods
+
     internal ImportVouchersResult DryRunImport() {
-      return ImportVouchersResult.Default;
+      FixedList<Encabezado> encabezados = DbVouchersImporterDataService.GetEncabezados();
+      FixedList<Movimiento> movimientos = DbVouchersImporterDataService.GetMovimientos();
+
+      var structurer = new DbVouchersStructurer(encabezados, movimientos);
+
+      StandardVouchersStructure standardStructure = structurer.GetStandardStructure();
+
+      var voucherImporter = new StandardVoucherImporter(_command, standardStructure);
+
+      return voucherImporter.DryRunImport();
     }
 
 
     internal ImportVouchersResult Import() {
-      return ImportVouchersResult.Default;
+      ImportVouchersResult result = DryRunImport();
+
+      return result;
     }
+
+    #endregion Public methods
 
   }  // class DbVouchersImporter
 
