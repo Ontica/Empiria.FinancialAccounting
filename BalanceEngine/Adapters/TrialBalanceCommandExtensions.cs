@@ -70,6 +70,7 @@ namespace Empiria.FinancialAccounting.BalanceEngine.Adapters {
         commandData.Where = GetWhereClause();
         commandData.Ordering = GetOrderClause();
         commandData.AccountsChart = accountsChart;
+        commandData.AverageBalance = GetAverageBalance();
 
         return commandData;
       }
@@ -208,26 +209,26 @@ namespace Empiria.FinancialAccounting.BalanceEngine.Adapters {
 
           return "-1 AS ID_MAYOR, ID_MONEDA, ID_CUENTA_ESTANDAR, " +
                  "NUMERO_CUENTA_ESTANDAR, ID_SECTOR, -1 AS ID_CUENTA_AUXILIAR, " +
-                 "SALDO_ANTERIOR, DEBE, HABER, SALDO_ACTUAL, FECHA_ULTIMO_MOVIMIENTO" +
-                 $"{GetAverageBalance()}";
+                 "SALDO_ANTERIOR, DEBE, HABER, SALDO_ACTUAL, FECHA_ULTIMO_MOVIMIENTO, " +
+                 "SALDO_PROMEDIO";
 
         } else if (_command.DoNotReturnSubledgerAccounts && _command.ShowCascadeBalances) {
 
           return "ID_MAYOR, ID_MONEDA, ID_CUENTA_ESTANDAR, NUMERO_CUENTA_ESTANDAR, ID_SECTOR, " +
-                 "-1 AS ID_CUENTA_AUXILIAR, SALDO_ANTERIOR, DEBE, HABER, SALDO_ACTUAL, FECHA_ULTIMO_MOVIMIENTO" +
-                 $"{GetAverageBalance()}";
+                 "-1 AS ID_CUENTA_AUXILIAR, SALDO_ANTERIOR, DEBE, HABER, SALDO_ACTUAL, FECHA_ULTIMO_MOVIMIENTO, " +
+                 "SALDO_PROMEDIO";
 
         } else if (_command.WithSubledgerAccount && _command.Consolidated) {
 
           return "-1 AS ID_MAYOR, ID_MONEDA, ID_CUENTA_ESTANDAR, NUMERO_CUENTA_ESTANDAR, ID_SECTOR, " +
-                 "ID_CUENTA_AUXILIAR, SALDO_ANTERIOR, DEBE, HABER, SALDO_ACTUAL, FECHA_ULTIMO_MOVIMIENTO" +
-                 $"{GetAverageBalance()}";
+                 "ID_CUENTA_AUXILIAR, SALDO_ANTERIOR, DEBE, HABER, SALDO_ACTUAL, FECHA_ULTIMO_MOVIMIENTO, " +
+                 "SALDO_PROMEDIO";
 
         } else if (_command.WithSubledgerAccount && _command.ShowCascadeBalances) {
 
           return "ID_MAYOR, ID_MONEDA, ID_CUENTA_ESTANDAR, NUMERO_CUENTA_ESTANDAR, ID_SECTOR, " +
-                 "ID_CUENTA_AUXILIAR, SALDO_ANTERIOR, DEBE, HABER, SALDO_ACTUAL, FECHA_ULTIMO_MOVIMIENTO" +
-                 $"{GetAverageBalance()}";
+                 "ID_CUENTA_AUXILIAR, SALDO_ANTERIOR, DEBE, HABER, SALDO_ACTUAL, FECHA_ULTIMO_MOVIMIENTO, " +
+                 "SALDO_PROMEDIO";
 
         } else {
           throw Assertion.AssertNoReachThisCode();
@@ -238,15 +239,15 @@ namespace Empiria.FinancialAccounting.BalanceEngine.Adapters {
       private string GetAverageBalance() {
 
         if (_command.WithAverageBalance) {
-          return $", ROUND(CASE WHEN NATURALEZA = 'D' THEN (((TO_DATE( " +
+          return $", SUM(CASE WHEN NATURALEZA = 'D' THEN (((TO_DATE( " +
                  $"'{CommonMethods.FormatSqlDate(_command.InitialPeriod.ToDate)}','DD/MM/YYYY') - " +
-                 $"FECHA_ULTIMO_MOVIMIENTO + 1) * (DEBE - HABER)) / {_command.InitialPeriod.ToDate.Day}) + " +
-                 $"SALDO_ANTERIOR " +
+                 $"FECHA_AFECTACION + 1) * MOVIMIENTO) / {_command.InitialPeriod.ToDate.Day}) " +
+                 
                  $"WHEN NATURALEZA = 'A' THEN (((TO_DATE( " +
                  $"'{CommonMethods.FormatSqlDate(_command.InitialPeriod.ToDate)}','DD/MM/YYYY') - " +
-                 $"FECHA_ULTIMO_MOVIMIENTO + 1) * (HABER - DEBE)) / {_command.InitialPeriod.ToDate.Day}) + " +
-                 $"SALDO_ANTERIOR " +
-                 $"END, 6) AS SALDO_PROMEDIO";
+                 $"FECHA_AFECTACION + 1) * MOVIMIENTO) / {_command.InitialPeriod.ToDate.Day}) " +
+                 
+                 $"END) AS SALDO_PROMEDIO";
         } else {
           return ", 0 AS SALDO_PROMEDIO";
         }

@@ -29,7 +29,8 @@ namespace Empiria.FinancialAccounting.BalanceEngine.Data {
                             commandData.Ordering,
                             commandData.InitialFields,
                             commandData.InitialGrouping,
-                            commandData.AccountsChart.Id
+                            commandData.AccountsChart.Id,
+                            commandData.AverageBalance
                             );
 
       EmpiriaLog.Debug(operation.AsText());

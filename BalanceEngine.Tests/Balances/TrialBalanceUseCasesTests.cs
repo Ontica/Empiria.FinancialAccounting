@@ -66,9 +66,9 @@ namespace Empiria.FinancialAccounting.Tests.Balances {
       command.WithSubledgerAccount = false;
       command.FromAccount = "1103";
       command.ToAccount = "1103";
-      command.WithSectorization = true;
+      //command.WithSectorization = true;
       command.BalancesType = BalancesType.WithCurrentBalanceOrMovements;
-      //command.WithAverageBalance = true;
+      command.WithAverageBalance = true;
 
       TrialBalanceDto trialBalance = _usecases.BuildTrialBalance(command);
 

@@ -29,6 +29,11 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
       get; internal set;
     }
 
+    public string AverageBalance {
+      get;
+      internal set;
+    } = string.Empty;
+
     public string Fields {
       get; internal set;
     } = string.Empty;
@@ -67,7 +72,7 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
     public string Ordering {
       get; internal set;
     } = string.Empty;
-
+    
   } // class TrialBalanceCommandData
 
 } // namespace Empiria.FinancialAccounting.BalanceEngine
