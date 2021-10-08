@@ -66,7 +66,7 @@ namespace Empiria.FinancialAccounting.Vouchers.Adapters {
     } = string.Empty;
 
 
-    public int CurrencyId {
+    public string CurrencyUID {
       get; set;
     }
 

@@ -57,7 +57,7 @@ namespace Empiria.FinancialAccounting.Vouchers.Adapters {
     static private void EnsureValidData(this VoucherEntryFields fields) {
       Assertion.Assert(fields.VoucherId > 0, "fields.VoucherId");
       Assertion.Assert(fields.LedgerAccountId > 0, "fields.LedgerAccountId");
-      Assertion.Assert(fields.CurrencyId > 0, "fields.CurrencyId");
+      Assertion.AssertObject(fields.CurrencyUID, "fields.CurrencyUID");
       Assertion.Assert(fields.VoucherEntryType == VoucherEntryType.Credit ||
                        fields.VoucherEntryType == VoucherEntryType.Debit,
                        "fields.VoucherEntryType");
@@ -79,7 +79,7 @@ namespace Empiria.FinancialAccounting.Vouchers.Adapters {
 
 
     static internal Currency GetCurrency(this VoucherEntryFields fields) {
-      return Currency.Parse(fields.CurrencyId);
+      return Currency.Parse(fields.CurrencyUID);
     }
 
 
