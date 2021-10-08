@@ -1,43 +1,76 @@
 ﻿/* Empiria Financial *****************************************************************************************
 *                                                                                                            *
-*  Module   : Banobras Integration Services                Component : Vouchers Importer                     *
-*  Assembly : FinancialAccounting.BanobrasIntegration.dll  Pattern   : Information Holder                    *
-*  Type     : ToImportVoucherEntry                         License   : Please read LICENSE.txt file          *
+*  Module   : Banobras Integration Services                 Component : Vouchers Importer                    *
+*  Assembly : FinancialAccounting.BanobrasIntegration.dll   Pattern   : Structurer                           *
+*  Type     : StandardVoucherEntry                          License   : Please read LICENSE.txt file         *
 *                                                                                                            *
-*  Summary  :                                                                                                *
+*  Summary  : Holds a voucher's structure coming from database tables.                                       *
 *                                                                                                            *
 ************************* Copyright(c) La Vía Óntica SC, Ontica LLC and contributors. All rights reserved. **/
 using System;
+using Empiria.FinancialAccounting.Vouchers;
 
 namespace Empiria.FinancialAccounting.BanobrasIntegration.VouchersImporter {
 
   internal class ToImportVoucherEntry {
 
-    public string BaseAccount {
+    internal ToImportVoucherEntry(ToImportVoucherHeader header) {
+      this.ToImportVoucherHeader = header;
+    }
+
+    public ToImportVoucherHeader ToImportVoucherHeader {
+      get;
+    }
+
+    public LedgerAccount LedgerAccount {
       get; internal set;
     }
 
-    public string Subaccount {
+    public Sector Sector {
       get; internal set;
     }
 
-    public string CurrencyCode {
+    public SubsidiaryAccount SubledgerAccount {
       get; internal set;
     }
 
-    public string Area {
+    public FunctionalArea ResponsibilityArea {
       get; internal set;
     }
 
-    public decimal Debit {
+    public string BudgetConcept {
+      get; internal set;
+    } = string.Empty;
+
+
+    public EventType EventType {
       get; internal set;
     }
 
-    public decimal Credit {
+    public string VerificationNumber {
+      get; internal set;
+    } = string.Empty;
+
+
+    public VoucherEntryType VoucherEntryType {
       get; internal set;
     }
 
-    public string SubledgerAccount {
+    public DateTime Date {
+      get; internal set;
+    } = ExecutionServer.DateMinValue;
+
+
+    public string Concept {
+      get; internal set;
+    } = string.Empty;
+
+
+    public Currency Currency {
+      get; internal set;
+    }
+
+    public decimal Amount {
       get; internal set;
     }
 
@@ -45,33 +78,18 @@ namespace Empiria.FinancialAccounting.BanobrasIntegration.VouchersImporter {
       get; internal set;
     }
 
-    internal Currency GetCurrency() {
-      return Currency.Parse(this.CurrencyCode);
+    public decimal BaseCurrencyAmount {
+      get; internal set;
     }
 
-
-    internal Sector GetSector() {
-      string sectorCode = this.Subaccount.Substring(this.Subaccount.Length - 2);
-
-      return Sector.Parse(sectorCode);
+    public bool Protected {
+      get; internal set;
     }
 
-
-    internal LedgerAccount GetLedgerAccount(Ledger ledger) {
-      string accountNumber = this.BaseAccount + "-" + this.Subaccount;
-
-      var account = ledger.AccountsChart.GetAccount(accountNumber);
-
-      var standardAccount = StandardAccount.Parse(account.StandardAccountId);
-
-      return ledger.GetAccount(standardAccount);
+    public FixedList<ToImportVoucherIssue> Issues {
+      get; internal set;
     }
 
-
-    internal SubsidiaryAccount GetSubledgerAccount(Ledger ledger) {
-      throw new NotImplementedException();
-    }
-
-  }  // class ExcelSourceData
+  }  // class StandardVoucherEntry
 
 }  // namespace Empiria.FinancialAccounting.BanobrasIntegration.VouchersImporter

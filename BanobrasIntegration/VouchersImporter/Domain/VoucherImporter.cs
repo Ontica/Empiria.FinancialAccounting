@@ -2,7 +2,7 @@
 *                                                                                                            *
 *  Module   : Banobras Integration Services                 Component : Vouchers Importer                    *
 *  Assembly : FinancialAccounting.BanobrasIntegration.dll   Pattern   : Service provider                     *
-*  Type     : StandardVoucherImporter                       License   : Please read LICENSE.txt file         *
+*  Type     : VoucherImporter                               License   : Please read LICENSE.txt file         *
 *                                                                                                            *
 *  Summary  : Performs voucher importation tasks from a standard structure adapted from distinct sources.    *
 *                                                                                                            *
@@ -16,42 +16,64 @@ namespace Empiria.FinancialAccounting.BanobrasIntegration.VouchersImporter {
 
   /// <summary>Performs voucher importation tasks from a standard structure
   /// adapted from distinct sources.</summary>
-  internal class StandardVoucherImporter {
+  internal class VoucherImporter {
 
     private readonly ImportVouchersCommand _command;
-    private readonly StandardVouchersStructure _standardStructure;
+    private readonly ToImportVouchersList _toImportVouchersList;
 
     #region Public methods
 
-    internal StandardVoucherImporter(ImportVouchersCommand command,
-                                     StandardVouchersStructure standardStructure) {
+    internal VoucherImporter(ImportVouchersCommand command,
+                             ToImportVouchersList toImportVouchersList) {
+      Assertion.AssertObject(command, "command");
+      Assertion.AssertObject(toImportVouchersList, "toImportVouchersList");
+
       _command = command;
-      _standardStructure = standardStructure;
+      _toImportVouchersList = toImportVouchersList;
     }
 
 
     internal ImportVouchersResult DryRunImport() {
-      FixedList<ImportVouchersTotals> voucherTotals = GetVouchersTotals();
-
-      var voucherErrors = new List<NamedEntityDto>();
-      var voucherWarnings = new List<NamedEntityDto>();
-
       var result = new ImportVouchersResult();
 
-      result.VoucherTotals = voucherTotals;
-      result.Errors = voucherErrors.ToFixedList();
-      result.Warnings = voucherWarnings.ToFixedList();
+      result.VoucherTotals = GetImportVoucherTotals();
+
+      result.Errors = GetImportErrors();
+      result.Warnings = GetImportWarnings();
 
       return result;
     }
+
+
+    internal ImportVouchersResult Import() {
+      ImportVouchersResult result = this.DryRunImport();
+
+      if (result.HasErrors) {
+        return result;
+      }
+
+      return result;
+    }
+
 
     #endregion Public methods
 
     #region Private methods
 
-    private FixedList<ImportVouchersTotals> GetVouchersTotals() {
-      return new FixedList<ImportVouchersTotals>();
+    private FixedList<NamedEntityDto> GetImportErrors() {
+      throw new NotImplementedException();
     }
+
+
+    private FixedList<NamedEntityDto> GetImportWarnings() {
+      throw new NotImplementedException();
+    }
+
+
+    private FixedList<ImportVouchersTotals> GetImportVoucherTotals() {
+      throw new NotImplementedException();
+    }
+
 
     #endregion Private methods
 
