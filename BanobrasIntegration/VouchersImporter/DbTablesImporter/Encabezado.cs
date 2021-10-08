@@ -8,6 +8,8 @@
 *                                                                                                            *
 ************************* Copyright(c) La Vía Óntica SC, Ontica LLC and contributors. All rights reserved. **/
 using System;
+using Empiria.Contacts;
+using Empiria.FinancialAccounting.Vouchers;
 
 namespace Empiria.FinancialAccounting.BanobrasIntegration.VouchersImporter {
 
@@ -75,7 +77,7 @@ namespace Empiria.FinancialAccounting.BanobrasIntegration.VouchersImporter {
 
 
     [DataField("ENC_SISTEMA", ConvertFrom = typeof(long))]
-    public int Sistema {
+    public int IdSistema {
       get; private set;
     }
 
@@ -103,6 +105,60 @@ namespace Empiria.FinancialAccounting.BanobrasIntegration.VouchersImporter {
     //  get; private set;
     //}
 
+
+    internal string GetImportationSet() {
+      return $"Sistema Num {this.IdSistema}";
+    }
+
+
+    internal string GetUniqueID() {
+      return $"{this.IdSistema}||{this.FechaAfectacion.ToString("yyyy-MM-dd")}||" +
+             $"{this.NumeroVolante}||{this.Concepto}";
+    }
+
+
+    internal Ledger GetLedger() {
+      throw new NotImplementedException();
+    }
+
+
+    internal string GetConcept() {
+      return this.Concepto;
+    }
+
+
+    internal DateTime GetAccountingDate() {
+      throw new NotImplementedException();
+    }
+
+
+    internal DateTime GetRecordingDate() {
+      throw new NotImplementedException();
+    }
+
+
+    internal VoucherType GetVoucherType() {
+      throw new NotImplementedException();
+    }
+
+
+    internal TransactionType GetTransactionType() {
+      throw new NotImplementedException();
+    }
+
+
+    internal FunctionalArea GetFunctionalArea() {
+      throw new NotImplementedException();
+    }
+
+
+    internal Contact GetElaboratedBy() {
+      throw new NotImplementedException();
+    }
+
+    internal FixedList<ToImportVoucherIssue> GetIssues() {
+      throw new NotImplementedException();
+    }
 
   }  // class Encabezado
 

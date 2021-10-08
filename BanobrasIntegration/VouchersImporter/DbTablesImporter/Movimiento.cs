@@ -9,6 +9,7 @@
 *                                                                                                            *
 ************************* Copyright(c) La Vía Óntica SC, Ontica LLC and contributors. All rights reserved. **/
 using System;
+using Empiria.FinancialAccounting.Vouchers;
 
 namespace Empiria.FinancialAccounting.BanobrasIntegration.VouchersImporter {
 
@@ -109,6 +110,74 @@ namespace Empiria.FinancialAccounting.BanobrasIntegration.VouchersImporter {
     [DataField("MCO_SISTEMA", ConvertFrom = typeof(long))]
     public int Sistema {
       get; private set;
+    }
+
+    internal string GetVoucherUniqueID() {
+      throw new NotImplementedException();
+    }
+
+    internal LedgerAccount GetLedgerAccount() {
+      throw new NotImplementedException();
+    }
+
+    internal Sector GetSector() {
+      throw new NotImplementedException();
+    }
+
+    internal SubsidiaryAccount GetSubledgerAccount() {
+      throw new NotImplementedException();
+    }
+
+    internal FunctionalArea GetResponsibilityArea() {
+      throw new NotImplementedException();
+    }
+
+    internal string GetBudgetConcept() {
+      throw new NotImplementedException();
+    }
+
+    internal EventType GetEventType() {
+      throw new NotImplementedException();
+    }
+
+    internal string GetVerificationNumber() {
+      throw new NotImplementedException();
+    }
+
+    internal VoucherEntryType GetVoucherEntryType() {
+      throw new NotImplementedException();
+    }
+
+    internal DateTime GetDate() {
+      throw new NotImplementedException();
+    }
+
+    internal string GetConcept() {
+      throw new NotImplementedException();
+    }
+
+    internal Currency GetCurrency() {
+      throw new NotImplementedException();
+    }
+
+    internal decimal GetAmount() {
+      throw new NotImplementedException();
+    }
+
+    internal decimal GetExchangeRate() {
+      throw new NotImplementedException();
+    }
+
+    internal decimal GetBaseCurrencyAmount() {
+      throw new NotImplementedException();
+    }
+
+    internal FixedList<ToImportVoucherIssue> GetIssues() {
+      throw new NotImplementedException();
+    }
+
+    internal bool GetProtected() {
+      throw new NotImplementedException();
     }
 
 

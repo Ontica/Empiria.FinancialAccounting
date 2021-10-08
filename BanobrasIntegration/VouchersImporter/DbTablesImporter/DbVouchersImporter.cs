@@ -27,26 +27,35 @@ namespace Empiria.FinancialAccounting.BanobrasIntegration.VouchersImporter {
     #region Public methods
 
     internal ImportVouchersResult DryRunImport() {
-      FixedList<Encabezado> encabezados = DbVouchersImporterDataService.GetEncabezados();
-      FixedList<Movimiento> movimientos = DbVouchersImporterDataService.GetMovimientos();
+      ToImportVouchersList toImportVouchersList = GetVouchersToBeImported();
 
-      var structurer = new DbVouchersStructurer(encabezados, movimientos);
-
-      StandardVouchersStructure standardStructure = structurer.GetStandardStructure();
-
-      var voucherImporter = new StandardVoucherImporter(_command, standardStructure);
+      var voucherImporter = new VoucherImporter(_command, toImportVouchersList);
 
       return voucherImporter.DryRunImport();
     }
 
 
     internal ImportVouchersResult Import() {
-      ImportVouchersResult result = DryRunImport();
+      ToImportVouchersList standardStructure = GetVouchersToBeImported();
 
-      return result;
+      var voucherImporter = new VoucherImporter(_command, standardStructure);
+
+      return voucherImporter.Import();
     }
 
+
     #endregion Public methods
+
+
+    private ToImportVouchersList GetVouchersToBeImported() {
+      FixedList<Encabezado> encabezados = DbVouchersImporterDataService.GetEncabezados();
+      FixedList<Movimiento> movimientos = DbVouchersImporterDataService.GetMovimientos();
+
+      var structurer = new DbVouchersStructurer(encabezados, movimientos);
+
+      return structurer.GetToImportVouchersList();
+    }
+
 
   }  // class DbVouchersImporter
 
