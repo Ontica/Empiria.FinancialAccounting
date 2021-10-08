@@ -69,7 +69,7 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
 
       trialBalance = helper.TrialBalanceWithSubledgerAccounts(trialBalance);
 
-      trialBalance = helper.GenerateAverageBalance(trialBalance);
+      //trialBalance = helper.GenerateAverageBalance(trialBalance);
 
       trialBalance = helper.RestrictLevels(trialBalance);
 

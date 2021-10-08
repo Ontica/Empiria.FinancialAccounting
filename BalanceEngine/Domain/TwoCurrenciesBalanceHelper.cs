@@ -382,7 +382,7 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
       twoCurrenciesEntry.Debit += entry.Debit;
       twoCurrenciesEntry.Credit += entry.Credit;
       twoCurrenciesEntry.TotalBalance = twoCurrenciesEntry.DomesticBalance + twoCurrenciesEntry.ForeignBalance;
-
+      twoCurrenciesEntry.AverageBalance += entry.AverageBalance;
       twoCurrenciesEntry.LastChangeDate = entry.LastChangeDate > twoCurrenciesEntry.LastChangeDate ?
                                           entry.LastChangeDate : twoCurrenciesEntry.LastChangeDate;
     }

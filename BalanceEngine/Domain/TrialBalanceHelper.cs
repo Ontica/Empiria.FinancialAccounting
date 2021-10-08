@@ -258,9 +258,6 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
       var summaryEntries = new EmpiriaHashTable<TrialBalanceEntry>(entries.Count);
       var detailSummaryEntries = new List<TrialBalanceEntry>();
       
-      //test only
-      //_command.WithSectorization = true;
-
       foreach (var entry in entries) {
         entry.DebtorCreditor = entry.Account.DebtorCreditor;
         entry.SubledgerAccountNumber = SubsidiaryAccount.Parse(entry.SubledgerAccountId).Number ?? "";

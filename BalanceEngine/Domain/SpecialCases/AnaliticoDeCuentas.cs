@@ -71,8 +71,8 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
       twoColumnsEntries = twoColumnsHelper.CombineTotalConsolidatedAndPostingEntries(
                                             twoColumnsEntries, summaryTwoColumnsBalanceTotal);
 
-      twoColumnsEntries = twoColumnsHelper.GenerateAverageTwoColumnsBalance(
-                                            twoColumnsEntries, _command.InitialPeriod);
+      //twoColumnsEntries = twoColumnsHelper.GenerateAverageTwoColumnsBalance(
+      //                                      twoColumnsEntries, _command.InitialPeriod);
 
       FixedList<ITrialBalanceEntry> twoColumnsBalance = twoColumnsEntries.Select(x => (ITrialBalanceEntry) x)
                                   .ToList().ToFixedList();

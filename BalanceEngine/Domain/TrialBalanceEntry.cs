@@ -188,6 +188,7 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
       this.Debit += entry.Debit;
       this.CurrentBalance += entry.CurrentBalance;
       this.ExchangeRate = entry.ExchangeRate;
+      this.AverageBalance += entry.AverageBalance;
     }
 
 
