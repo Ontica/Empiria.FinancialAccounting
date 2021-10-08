@@ -47,8 +47,8 @@ namespace Empiria.FinancialAccounting.BanobrasIntegration.VouchersImporter {
     }
 
 
-    internal StandardVoucherEntry ProcessExcelRow(Spreadsheet _excel, int row) {
-      var sourceData = new ToImportVoucherEntry();
+    internal ExcelVoucherEntry ProcessExcelRow(Spreadsheet _excel, int row) {
+      var sourceData = new ExcelToImportVoucherEntry();
 
       sourceData.BaseAccount = _excel.ReadCellValue<string>($"A{row}");
       sourceData.Subaccount = _excel.ReadCellValue<string>($"B{row}");
@@ -59,7 +59,7 @@ namespace Empiria.FinancialAccounting.BanobrasIntegration.VouchersImporter {
       sourceData.SubledgerAccount = _excel.ReadCellValue<string>($"G{row}", string.Empty);
       sourceData.ExchangeRate = _excel.ReadCellValue<decimal>($"H{row}", 0);
 
-      return new StandardVoucherEntry(_voucher, sourceData);
+      return new ExcelVoucherEntry(_voucher, sourceData);
     }
 
     private FixedList<VoucherEntryFields> ParseVoucherEntries(string worksheetName) {
@@ -73,7 +73,7 @@ namespace Empiria.FinancialAccounting.BanobrasIntegration.VouchersImporter {
           break;
         }
 
-        StandardVoucherEntry excelRow = ProcessExcelRow(_excel, row);
+        ExcelVoucherEntry excelRow = ProcessExcelRow(_excel, row);
 
         VoucherEntryFields entry = excelRow.MapToVoucherEntryFields();
 

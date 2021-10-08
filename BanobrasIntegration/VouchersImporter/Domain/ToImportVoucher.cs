@@ -2,21 +2,43 @@
 *                                                                                                            *
 *  Module   : Banobras Integration Services                 Component : Vouchers Importer                    *
 *  Assembly : FinancialAccounting.BanobrasIntegration.dll   Pattern   : Structurer                           *
-*  Type     : StandardVouchersStructure                     License   : Please read LICENSE.txt file         *
+*  Type     : ToImportVoucher                               License   : Please read LICENSE.txt file         *
 *                                                                                                            *
-*  Summary  : Standard structure for vouchers importation from distinct sources.                             *
+*  Summary  : Holds data for a voucher and its entries to be imported, regardless of its original source.    *
 *                                                                                                            *
 ************************* Copyright(c) La Vía Óntica SC, Ontica LLC and contributors. All rights reserved. **/
 using System;
 
-using Empiria.FinancialAccounting.BanobrasIntegration.VouchersImporter.Adapters;
-
 namespace Empiria.FinancialAccounting.BanobrasIntegration.VouchersImporter {
 
-  /// <summary>Standard structure for vouchers importation from distinct sources.</summary>
-  internal class StandardVouchersStructure {
+  /// <summary>Holds data for a voucher and its entries to be imported,
+  /// regardless of its original source.</summary>
+  internal class ToImportVoucher {
+
+    internal ToImportVoucher(ToImportVoucherHeader header,
+                             FixedList<ToImportVoucherEntry> entries) {
+      Assertion.AssertObject(header, "header");
+      Assertion.AssertObject(entries, "entries");
+
+      this.Header = header;
+      this.Entries = entries;
+    }
 
 
-  }  // class StandardVouchersStructure
+    public ToImportVoucherHeader Header {
+      get;
+    }
+
+
+    public FixedList<ToImportVoucherEntry> Entries {
+      get;
+    }
+
+
+    public FixedList<ToImportVoucherIssue> Issues {
+      get;
+    }
+
+  }  // class ToImportVoucher
 
 }  // namespace Empiria.FinancialAccounting.BanobrasIntegration.VouchersImporter

@@ -13,9 +13,9 @@ using Empiria.FinancialAccounting.Vouchers.Adapters;
 
 namespace Empiria.FinancialAccounting.BanobrasIntegration.VouchersImporter {
 
-  internal class StandardVoucherEntry {
+  internal class ExcelVoucherEntry {
 
-    internal StandardVoucherEntry(Voucher voucher, ToImportVoucherEntry sourceData) {
+    internal ExcelVoucherEntry(Voucher voucher, ExcelToImportVoucherEntry sourceData) {
       Assertion.AssertObject(voucher, "voucher");
       Assertion.AssertObject(sourceData, "sourceData");
 
@@ -36,7 +36,7 @@ namespace Empiria.FinancialAccounting.BanobrasIntegration.VouchersImporter {
       get;
     }
 
-    public ToImportVoucherEntry SourceData {
+    public ExcelToImportVoucherEntry SourceData {
       get;
     }
 
@@ -98,7 +98,7 @@ namespace Empiria.FinancialAccounting.BanobrasIntegration.VouchersImporter {
         LedgerAccountId = this.LedgerAccount.Id,
         SectorId = this.Sector.Id,
         SubledgerAccountId = this.SubledgerAccount.Id,
-        CurrencyId = this.Currency.Id,
+        CurrencyUID = this.Currency.UID,
         Amount = this.Amount,
         ExchangeRate = this.ExchangeRate,
         BaseCurrencyAmount = this.BaseCurrencyAmount,
