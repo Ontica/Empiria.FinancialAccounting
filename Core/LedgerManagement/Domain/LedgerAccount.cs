@@ -141,7 +141,7 @@ namespace Empiria.FinancialAccounting {
       Assertion.Assert(account.Role == AccountRole.Control,
           $"La cuenta {account.Number} no maneja auxiliares.");
 
-      Assertion.Assert(subledgerAccount.SubsidaryLedger.BaseLedger.Equals(this.Ledger),
+      Assertion.Assert(subledgerAccount.SubsidaryLedger.BelongsTo(this.Ledger),
           $"El auxiliar {subledgerAccount.Number} no pertenece a la contabilidad {this.Ledger.FullName}.");
     }
 
@@ -162,7 +162,7 @@ namespace Empiria.FinancialAccounting {
             $"La cuenta {account.Number} no maneja auxiliares para el sector ({sector.Code}).");
       }
 
-      Assertion.Assert(subledgerAccount.SubsidaryLedger.BaseLedger.Equals(this.Ledger),
+      Assertion.Assert(subledgerAccount.SubsidaryLedger.BelongsTo(this.Ledger),
           $"El auxiliar {subledgerAccount.Number} no pertenece a la contabilidad {this.Ledger.FullName}.");
     }
 

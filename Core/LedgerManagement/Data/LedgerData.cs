@@ -54,7 +54,7 @@ namespace Empiria.FinancialAccounting.Data {
 
     static internal FixedList<SubsidiaryLedger> GetSubledgers(Ledger ledger) {
       var sql = "SELECT * FROM COF_MAYOR_AUXILIAR " +
-                $"WHERE ID_MAYOR = {ledger.Id} AND Eliminado = 0 " +
+                $"WHERE (ID_MAYOR = {ledger.Id} OR ID_MAYOR_ADICIONAL = {ledger.Id}) AND Eliminado = 0 " +
                  "ORDER BY NOMBRE_MAYOR_AUXILIAR";
 
       var dataOperation = DataOperation.Parse(sql);
@@ -73,8 +73,8 @@ namespace Empiria.FinancialAccounting.Data {
 
 
     static internal FixedList<Account> SearchUnassignedAccountsForEdition(Ledger ledger,
-                                                                      string keywords,
-                                                                      DateTime date) {
+                                                                          string keywords,
+                                                                          DateTime date) {
 
       string sqlKeywords = SearchExpression.ParseAndLikeKeywords("keywords_cuenta_estandar_hist",
                                                                   keywords);

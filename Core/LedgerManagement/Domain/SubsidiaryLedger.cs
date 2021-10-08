@@ -17,7 +17,7 @@ namespace Empiria.FinancialAccounting {
 
     #region Constructors and parsers
 
-    private SubsidiaryLedger() {
+    protected SubsidiaryLedger() {
       // Required by Empiria Framework.
     }
 
@@ -41,8 +41,15 @@ namespace Empiria.FinancialAccounting {
 
     #region Public properties
 
-    [DataField("ID_MAYOR", ConvertFrom=typeof(long))]
+
+    [DataField("ID_MAYOR", ConvertFrom = typeof(long))]
     public Ledger BaseLedger {
+      get; private set;
+    }
+
+
+    [DataField("ID_MAYOR_ADICIONAL", ConvertFrom = typeof(long))]
+    public Ledger AdditionalLedger {
       get; private set;
     }
 
@@ -81,6 +88,10 @@ namespace Empiria.FinancialAccounting {
 
     #region Public methods
 
+    public bool BelongsTo(Ledger ledger) {
+      return ledger.Equals(this.BaseLedger) || ledger.Equals(this.AdditionalLedger);
+    }
+
     internal SubsidiaryAccount CreateAccount(SubledgerAccountFields fields) {
       var subledgerAccount = new SubsidiaryAccount(this, fields);
 
@@ -98,6 +109,7 @@ namespace Empiria.FinancialAccounting {
 
       return subsidaryAccount;
     }
+
 
     #endregion Public methods
 

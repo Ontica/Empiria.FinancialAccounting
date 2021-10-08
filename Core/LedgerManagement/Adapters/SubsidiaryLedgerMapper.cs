@@ -49,7 +49,7 @@ namespace Empiria.FinancialAccounting.Adapters {
     static internal SubsidiaryAccountDto MapAccount(SubsidiaryAccount subledgerAccount) {
       return new SubsidiaryAccountDto {
         Id = subledgerAccount.Id,
-        Ledger = subledgerAccount.SubsidaryLedger.BaseLedger.MapToNamedEntity(),
+        BaseLedger = subledgerAccount.SubsidaryLedger.BaseLedger.MapToNamedEntity(),
         SubsidiaryLedger = subledgerAccount.SubsidaryLedger.MapToNamedEntity(),
         Name = subledgerAccount.Name,
         Keywords = EmpiriaString.BuildKeywords(subledgerAccount.Name,

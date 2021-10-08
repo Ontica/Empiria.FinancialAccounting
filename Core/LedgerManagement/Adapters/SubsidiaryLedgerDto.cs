@@ -88,7 +88,7 @@ namespace Empiria.FinancialAccounting.Adapters {
     }
 
 
-    public NamedEntityDto Ledger {
+    public NamedEntityDto BaseLedger {
       get; internal set;
     }
 
