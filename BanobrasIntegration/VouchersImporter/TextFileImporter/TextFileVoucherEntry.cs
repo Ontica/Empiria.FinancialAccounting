@@ -9,7 +9,6 @@
 ************************* Copyright(c) La Vía Óntica SC, Ontica LLC and contributors. All rights reserved. **/
 using System;
 using System.Linq;
-using System.Text.RegularExpressions;
 
 namespace Empiria.FinancialAccounting.BanobrasIntegration.VouchersImporter {
 
@@ -77,47 +76,9 @@ namespace Empiria.FinancialAccounting.BanobrasIntegration.VouchersImporter {
     #region Private methods
 
     private void CleanupFields(AccountsChartMasterData masterData) {
-      this.AccountNumber = GetAccountNumber(masterData, this.AccountNumber);
+      this.AccountNumber = masterData.AccountsChart.FormatAccountNumber(this.AccountNumber);
+
       this.SubledgerAccount = GetSubledgerAccount(this.SubledgerAccount);
-    }
-
-
-    static private string ConvertAccountNumberToPattern(string account, string pattern) {
-      Assertion.AssertObject(account, "account");
-      Assertion.AssertObject(pattern, "pattern");
-
-      pattern = pattern.Replace("0", "X");
-
-      int patternPlaceholdersLength = pattern.Count(c => c == 'X');
-
-      if (account.Length > patternPlaceholdersLength) {
-        Assertion.AssertFail("Number of placeholders in pattern is different than " +
-                             "number of characters in the input string.");
-      } else {
-        account = account.PadRight(patternPlaceholdersLength, '0');
-      }
-
-      var reg = new Regex(new string('N', account.Length).Replace("N", "(\\w)"));
-
-      var regX = new Regex("X");
-
-      for (int i = 1; i <= account.Length; i++) {
-        pattern = regX.Replace(pattern, "$" + i.ToString(), 1);
-      }
-
-      return reg.Replace(account, pattern);
-    }
-
-
-    static private string GetAccountNumber(AccountsChartMasterData masterData, string accountNumber) {
-      string temp = ConvertAccountNumberToPattern(accountNumber, masterData.AccountsPattern);
-
-      Assertion.Assert(temp.Replace(masterData.AccountNumberSeparator.ToString(), String.Empty) == accountNumber,
-                      "There was a problem in ConvertAccountNumberToPattern method.");
-
-      temp = EmpiriaString.TrimAll(temp, $"{masterData.AccountNumberSeparator}-00", String.Empty);
-
-      return temp;
     }
 
 

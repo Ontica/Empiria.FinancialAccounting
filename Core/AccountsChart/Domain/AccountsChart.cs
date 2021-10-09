@@ -8,6 +8,8 @@
 *                                                                                                            *
 ************************* Copyright(c) La Vía Óntica SC, Ontica LLC and contributors. All rights reserved. **/
 using System;
+using System.Linq;
+using System.Text.RegularExpressions;
 
 using Empiria.Collections;
 using Empiria.FinancialAccounting.Data;
@@ -101,6 +103,13 @@ namespace Empiria.FinancialAccounting {
     }
 
 
+    public StandardAccount GetStandardAccount(string accountNumber) {
+      Account account = this.GetAccount(accountNumber);
+
+      return StandardAccount.Parse(account.StandardAccountId);
+    }
+
+
     public Account TryGetAccount(string accountNumber) {
       Account account;
 
@@ -152,7 +161,49 @@ namespace Empiria.FinancialAccounting {
     }
 
 
+    public string FormatAccountNumber(string accountNumber) {
+      string temp = ConvertAccountNumberToPattern(accountNumber, this.MasterData.AccountsPattern);
+
+      Assertion.Assert(temp.Replace(this.MasterData.AccountNumberSeparator.ToString(), String.Empty) == accountNumber,
+                      "There was a problem in ConvertAccountNumberToPattern method.");
+
+      temp = EmpiriaString.TrimAll(temp, $"{this.MasterData.AccountNumberSeparator}00", String.Empty);
+
+      return temp;
+    }
+
     #endregion Public methods
+
+
+    #region Private methods
+
+    static private string ConvertAccountNumberToPattern(string account, string pattern) {
+      Assertion.AssertObject(account, "account");
+      Assertion.AssertObject(pattern, "pattern");
+
+      pattern = pattern.Replace("0", "X");
+
+      int patternPlaceholdersLength = pattern.Count(c => c == 'X');
+
+      if (account.Length > patternPlaceholdersLength) {
+        Assertion.AssertFail("Number of placeholders in pattern is different than " +
+                             "number of characters in the input string.");
+      } else {
+        account = account.PadRight(patternPlaceholdersLength, '0');
+      }
+
+      var reg = new Regex(new string('N', account.Length).Replace("N", "(\\w)"));
+
+      var regX = new Regex("X");
+
+      for (int i = 1; i <= account.Length; i++) {
+        pattern = regX.Replace(pattern, "$" + i.ToString(), 1);
+      }
+
+      return reg.Replace(account, pattern);
+    }
+
+    #endregion Private methods
 
   }  // class AccountsChart
 
