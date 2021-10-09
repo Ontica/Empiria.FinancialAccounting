@@ -53,6 +53,17 @@ namespace Empiria.FinancialAccounting.Vouchers.Data {
     }
 
 
+    static internal FixedList<TransactionalSystemRule> GetTransactionalSystemRules(TransactionalSystem system) {
+      var sql = "SELECT * " +
+                "FROM COF_MAPEO_SISTEMAS_POLIZAS " +
+               $"WHERE ID_SISTEMA = {system.Id} ";
+
+      var dataOperation = DataOperation.Parse(sql);
+
+      return DataReader.GetPlainObjectFixedList<TransactionalSystemRule>(dataOperation);
+    }
+
+
     static internal string GetVoucherNumberFor(Voucher voucher) {
       var prefix = $"{voucher.AccountingDate.Year}-{voucher.AccountingDate.Month.ToString("00")}";
 
@@ -63,9 +74,9 @@ namespace Empiria.FinancialAccounting.Vouchers.Data {
 
       var dataOperation = DataOperation.Parse(sql);
 
-      string maxNumber = DataReader.GetScalar(dataOperation, "0");
+      string maxNumber = DataReader.GetScalar(dataOperation, String.Empty);
 
-      int number = int.Parse(maxNumber.Substring(prefix.Length + 1)) + 1;
+      int number = maxNumber.Length == 0 ? 1 : int.Parse(maxNumber.Substring(prefix.Length + 1)) + 1;
 
       return $"{prefix}-{number.ToString("000000")}";
     }
