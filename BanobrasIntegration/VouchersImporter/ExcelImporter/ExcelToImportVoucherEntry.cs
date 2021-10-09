@@ -60,9 +60,7 @@ namespace Empiria.FinancialAccounting.BanobrasIntegration.VouchersImporter {
     internal LedgerAccount GetLedgerAccount(Ledger ledger) {
       string accountNumber = this.BaseAccount + "-" + this.Subaccount;
 
-      var account = ledger.AccountsChart.GetAccount(accountNumber);
-
-      var standardAccount = StandardAccount.Parse(account.StandardAccountId);
+      var standardAccount = ledger.AccountsChart.GetStandardAccount(accountNumber);
 
       return ledger.GetAccount(standardAccount);
     }

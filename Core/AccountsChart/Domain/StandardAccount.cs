@@ -144,9 +144,7 @@ namespace Empiria.FinancialAccounting {
 
       var parentAccountNumber = this.Number.Substring(0, this.Number.LastIndexOf(accountNumberSeparator));
 
-      var parent = AccountsChart.GetAccount(parentAccountNumber);
-
-      return StandardAccount.Parse(parent.StandardAccountId);
+      return this.AccountsChart.GetStandardAccount(parentAccountNumber);
     }
 
 
