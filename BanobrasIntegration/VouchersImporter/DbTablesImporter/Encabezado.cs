@@ -8,7 +8,7 @@
 *                                                                                                            *
 ************************* Copyright(c) La Vía Óntica SC, Ontica LLC and contributors. All rights reserved. **/
 using System;
-using Empiria.Contacts;
+
 using Empiria.FinancialAccounting.Vouchers;
 
 namespace Empiria.FinancialAccounting.BanobrasIntegration.VouchersImporter {
@@ -35,7 +35,7 @@ namespace Empiria.FinancialAccounting.BanobrasIntegration.VouchersImporter {
 
 
     [DataField("ENC_AREA_CAP")]
-    public string Contabilidad {
+    public string AreaCaptura {
       get; private set;
     }
 
@@ -83,7 +83,7 @@ namespace Empiria.FinancialAccounting.BanobrasIntegration.VouchersImporter {
 
 
     [DataField("ENC_TIPO_POLIZA", ConvertFrom = typeof(long))]
-    public int TipoPoliza {
+    public int IdTipoPoliza {
       get; private set;
     }
 
@@ -106,8 +106,15 @@ namespace Empiria.FinancialAccounting.BanobrasIntegration.VouchersImporter {
     //}
 
 
+    internal AccountsChart GetAccountsChart() {
+      return AccountsChart.Parse(this.TipoContabilidad);
+    }
+
+
     internal string GetImportationSet() {
-      return $"Sistema Num {this.IdSistema}";
+      var system = TransactionalSystem.Get(x => x.SourceSystemId == this.IdSistema);
+
+      return system.Name;
     }
 
 
@@ -118,46 +125,72 @@ namespace Empiria.FinancialAccounting.BanobrasIntegration.VouchersImporter {
 
 
     internal Ledger GetLedger() {
-      throw new NotImplementedException();
+      string ledgerNumber = this.AreaCaptura.Substring(1, 2);
+
+      Ledger ledger = this.GetAccountsChart().MasterData.Ledgers.Find(x => x.Number.Equals(ledgerNumber));
+
+      return ledger;
     }
 
 
     internal string GetConcept() {
-      return this.Concepto;
+      return EmpiriaString.TrimAll(this.Concepto);
     }
 
 
     internal DateTime GetAccountingDate() {
-      throw new NotImplementedException();
+      return this.FechaAfectacion;
     }
 
 
     internal DateTime GetRecordingDate() {
-      throw new NotImplementedException();
+      return this.FechaCaptura;
     }
 
 
     internal VoucherType GetVoucherType() {
-      throw new NotImplementedException();
+      var system = TransactionalSystem.Get(x => x.SourceSystemId == this.IdSistema);
+
+      TransactionalSystemRule rule = system.Rules.Find(x => x.SourceVoucherTypeId == this.IdTipoPoliza);
+
+      Assertion.AssertObject(rule, "rule");
+
+      return rule.TargetVoucherType;
     }
 
 
     internal TransactionType GetTransactionType() {
-      throw new NotImplementedException();
+      var system = TransactionalSystem.Get(x => x.SourceSystemId == this.IdSistema);
+
+      TransactionalSystemRule rule = system.Rules.Find(x => x.SourceVoucherTypeId == this.IdTipoPoliza);
+
+      Assertion.AssertObject(rule, "rule");
+
+      return rule.TargetTransactionType;
     }
 
 
     internal FunctionalArea GetFunctionalArea() {
-      throw new NotImplementedException();
+      var areaID = EmpiriaString.TrimAll(this.AreaCaptura);
+
+      return FunctionalArea.Parse(areaID);
     }
 
 
-    internal Contact GetElaboratedBy() {
-      throw new NotImplementedException();
+    internal Participant GetElaboratedBy() {
+      try {
+        var userID = EmpiriaString.TrimAll(this.Usuario);
+
+        return Participant.Parse(userID);
+
+      } catch {
+        return Participant.Empty;
+      }
     }
+
 
     internal FixedList<ToImportVoucherIssue> GetIssues() {
-      throw new NotImplementedException();
+      return new FixedList<ToImportVoucherIssue>();
     }
 
   }  // class Encabezado

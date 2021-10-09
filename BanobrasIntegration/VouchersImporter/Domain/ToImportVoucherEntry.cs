@@ -22,7 +22,7 @@ namespace Empiria.FinancialAccounting.BanobrasIntegration.VouchersImporter {
       get;
     }
 
-    public LedgerAccount LedgerAccount {
+    public StandardAccount StandardAccount {
       get; internal set;
     }
 
@@ -30,7 +30,7 @@ namespace Empiria.FinancialAccounting.BanobrasIntegration.VouchersImporter {
       get; internal set;
     }
 
-    public SubsidiaryAccount SubledgerAccount {
+    public string SubledgerAccountNo {
       get; internal set;
     }
 

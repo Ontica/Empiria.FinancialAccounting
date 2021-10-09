@@ -96,7 +96,7 @@ namespace Empiria.FinancialAccounting.BanobrasIntegration.VouchersImporter {
 
 
     [DataField("MCO_DISPONIB", ConvertFrom = typeof(long))]
-    public int Disponibilidad {
+    public int ClaveDisponibilidad {
       get; private set;
     }
 
@@ -108,76 +108,141 @@ namespace Empiria.FinancialAccounting.BanobrasIntegration.VouchersImporter {
 
 
     [DataField("MCO_SISTEMA", ConvertFrom = typeof(long))]
-    public int Sistema {
+    public int IdSistema {
       get; private set;
     }
 
-    internal string GetVoucherUniqueID() {
-      throw new NotImplementedException();
+
+    public Encabezado Encabezado {
+      get; private set;
     }
 
-    internal LedgerAccount GetLedgerAccount() {
-      throw new NotImplementedException();
+
+
+    internal string GetVoucherUniqueID() {
+      return $"{this.IdSistema}||{this.FechaAfectacion.ToString("yyyy-MM-dd")}||" +
+             $"{this.NumeroVolante}||{this.Descripcion}";
     }
+
+
+    internal StandardAccount GetStandardAccount() {
+      try {
+        var accountsChart = this.Encabezado.GetAccountsChart();
+
+        var formatted = accountsChart.FormatAccountNumber(this.NumeroCuentaEstandar);
+
+        return accountsChart.GetStandardAccount(formatted);
+      } catch {
+        return StandardAccount.Empty;
+      }
+    }
+
 
     internal Sector GetSector() {
-      throw new NotImplementedException();
+      this.ClaveSector = EmpiriaString.TrimAll(this.ClaveSector);
+
+      if (this.ClaveSector.Length == 0 ||
+          this.ClaveSector == "00" ||
+          this.ClaveSector == "0") {
+        return Sector.Empty;
+      }
+
+      return Sector.Parse(this.ClaveSector);
     }
 
-    internal SubsidiaryAccount GetSubledgerAccount() {
-      throw new NotImplementedException();
+
+    internal string GetSubledgerAccountNo() {
+      Ledger ledger = this.Encabezado.GetLedger();
+
+      this.NumeroAuxiliar = EmpiriaString.TrimAll(this.NumeroAuxiliar);
+
+      this.NumeroAuxiliar = ledger.FormatSubledgerAccount(this.NumeroAuxiliar);
+
+      if (this.NumeroAuxiliar.Length == 0 ||
+          this.NumeroAuxiliar == "00" ||
+          this.NumeroAuxiliar == "0") {
+        return String.Empty;
+      }
+
+      return this.NumeroAuxiliar;
     }
+
 
     internal FunctionalArea GetResponsibilityArea() {
-      throw new NotImplementedException();
+      return FunctionalArea.Parse(this.AreaMovimiento);
     }
+
 
     internal string GetBudgetConcept() {
-      throw new NotImplementedException();
+      return this.ConceptoPresupuestal.ToString();
     }
+
 
     internal EventType GetEventType() {
-      throw new NotImplementedException();
+      return EventType.Parse(this.ClaveDisponibilidad);
     }
+
 
     internal string GetVerificationNumber() {
-      throw new NotImplementedException();
+      return String.Empty;
     }
+
 
     internal VoucherEntryType GetVoucherEntryType() {
-      throw new NotImplementedException();
+      if (this.TipoMovimiento == 1) {
+        return VoucherEntryType.Debit;
+      } else if (this.TipoMovimiento == 2) {
+        return VoucherEntryType.Credit;
+      } else {
+        throw Assertion.AssertNoReachThisCode();
+      }
     }
+
 
     internal DateTime GetDate() {
-      throw new NotImplementedException();
+      return ExecutionServer.DateMinValue;
     }
+
 
     internal string GetConcept() {
-      throw new NotImplementedException();
+      return EmpiriaString.TrimAll(this.Descripcion);
     }
+
 
     internal Currency GetCurrency() {
-      throw new NotImplementedException();
+      var claveMoneda = this.ClaveMoneda.ToString("00");
+
+      return Currency.Parse(claveMoneda);
     }
+
 
     internal decimal GetAmount() {
-      throw new NotImplementedException();
+      return this.Importe;
     }
+
 
     internal decimal GetExchangeRate() {
-      throw new NotImplementedException();
+      return this.TipoCambio;
     }
+
 
     internal decimal GetBaseCurrencyAmount() {
-      throw new NotImplementedException();
+      return this.Importe * this.TipoCambio;
     }
+
 
     internal FixedList<ToImportVoucherIssue> GetIssues() {
-      throw new NotImplementedException();
+      return new FixedList<ToImportVoucherIssue>();
     }
 
+
     internal bool GetProtected() {
-      throw new NotImplementedException();
+      return false;
+    }
+
+
+    internal void SetEncabezado(Encabezado encabezado) {
+      this.Encabezado = encabezado;
     }
 
 

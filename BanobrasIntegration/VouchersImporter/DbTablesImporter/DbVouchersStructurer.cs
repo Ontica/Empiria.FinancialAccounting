@@ -42,14 +42,17 @@ namespace Empiria.FinancialAccounting.BanobrasIntegration.VouchersImporter {
 
     private ToImportVoucher BuildVoucherToImport(Encabezado encabezado) {
       ToImportVoucherHeader header = MapEncabezadoToImportVoucherHeader(encabezado);
-      FixedList<ToImportVoucherEntry> entries = MapMovimientosToToImportVoucherEntries(header);
+      FixedList<ToImportVoucherEntry> entries = MapMovimientosToToImportVoucherEntries(encabezado, header);
 
       return new ToImportVoucher(header, entries);
     }
 
 
-    private FixedList<ToImportVoucherEntry> MapMovimientosToToImportVoucherEntries(ToImportVoucherHeader header) {
+    private FixedList<ToImportVoucherEntry> MapMovimientosToToImportVoucherEntries(Encabezado encabezado,
+                                                                                   ToImportVoucherHeader header) {
       var entries = _movimientos.FindAll(x => x.GetVoucherUniqueID() == header.UniqueID);
+
+      entries = new FixedList<Movimiento>(entries.Select<Movimiento>(x => { x.SetEncabezado(encabezado); return x; } ));
 
       var mapped = entries.Select(x => MapMovimientoToStandardVoucherEntry(header, x));
 
@@ -81,9 +84,9 @@ namespace Empiria.FinancialAccounting.BanobrasIntegration.VouchersImporter {
                                                                      Movimiento movimiento) {
       var entry = new ToImportVoucherEntry(header);
 
-      entry.LedgerAccount = movimiento.GetLedgerAccount();
+      entry.StandardAccount = movimiento.GetStandardAccount();
       entry.Sector = movimiento.GetSector();
-      entry.SubledgerAccount = movimiento.GetSubledgerAccount();
+      entry.SubledgerAccountNo = movimiento.GetSubledgerAccountNo();
       entry.ResponsibilityArea = movimiento.GetResponsibilityArea();
       entry.BudgetConcept = movimiento.GetBudgetConcept();
       entry.EventType = movimiento.GetEventType();
