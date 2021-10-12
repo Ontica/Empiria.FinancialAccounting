@@ -61,17 +61,17 @@ namespace Empiria.FinancialAccounting.BanobrasIntegration.VouchersImporter {
     #region Private methods
 
     private FixedList<NamedEntityDto> GetImportErrors() {
-      throw new NotImplementedException();
+      return new FixedList<NamedEntityDto>();
     }
 
 
     private FixedList<NamedEntityDto> GetImportWarnings() {
-      throw new NotImplementedException();
+      return new FixedList<NamedEntityDto>();
     }
 
 
     private FixedList<ImportVouchersTotals> GetImportVoucherTotals() {
-      throw new NotImplementedException();
+      return new FixedList<ImportVouchersTotals>();
     }
 
 

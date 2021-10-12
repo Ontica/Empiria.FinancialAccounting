@@ -7,35 +7,23 @@
 *  Summary  : Data transfer object with voucher importation result.                                          *
 *                                                                                                            *
 ************************* Copyright(c) La Vía Óntica SC, Ontica LLC and contributors. All rights reserved. **/
-
-using System.Collections.Generic;
+using System;
 
 namespace Empiria.FinancialAccounting.BanobrasIntegration.VouchersImporter.Adapters {
 
   /// <summary>Data transfer object with voucher importation result.</summary>
   public class ImportVouchersResult {
 
-    static public ImportVouchersResult Default {
-      get {
-        var list = new List<ImportVouchersTotals>();
-
-        list.Add(new ImportVouchersTotals { UID = "1", Description = "IKOS Cash", VouchersCount = 31 });
-        list.Add(new ImportVouchersTotals { UID = "2", Description = "IKOS Tesorería", VouchersCount = 11 });
-        list.Add(new ImportVouchersTotals { UID = "3", Description = "Sistema de créditos (SIC)", VouchersCount = 1105 });
-        list.Add(new ImportVouchersTotals { UID = "4", Description = "Sistema de fideicomisos (Yatla)", VouchersCount = 879 });
-        list.Add(new ImportVouchersTotals { UID = "5", Description = "Sistema de presupuestos (PyC)", VouchersCount = 25 });
-
-        return new ImportVouchersResult {
-          VoucherTotals = list.ToFixedList()
-        };
-      }
-    }
-
 
     public bool HasErrors {
       get {
         return (Errors.Count != 0);
       }
+    }
+
+
+    public bool IsRunning {
+      get; internal set;
     }
 
 
@@ -71,6 +59,11 @@ namespace Empiria.FinancialAccounting.BanobrasIntegration.VouchersImporter.Adapt
 
 
     public int VouchersCount {
+      get; internal set;
+    }
+
+
+    public int ProcessedCount {
       get; internal set;
     }
 

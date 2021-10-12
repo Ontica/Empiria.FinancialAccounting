@@ -10,10 +10,11 @@
 using System;
 using System.IO;
 
-using Empiria.FinancialAccounting.BanobrasIntegration.VouchersImporter.Adapters;
 using Empiria.FinancialAccounting.Vouchers;
 using Empiria.FinancialAccounting.Vouchers.Adapters;
 using Empiria.FinancialAccounting.Vouchers.UseCases;
+
+using Empiria.FinancialAccounting.BanobrasIntegration.VouchersImporter.Adapters;
 
 namespace Empiria.FinancialAccounting.BanobrasIntegration.VouchersImporter {
 
@@ -33,17 +34,17 @@ namespace Empiria.FinancialAccounting.BanobrasIntegration.VouchersImporter {
 
 
     internal ImportVouchersResult DryRunImport() {
-      return ImportVouchersResult.Default;
+      return new ImportVouchersResult();
     }
 
 
     internal ImportVouchersResult DryRunImport(Voucher voucher) {
-      return ImportVouchersResult.Default;
+      return new ImportVouchersResult();
     }
 
 
     internal ImportVouchersResult Import() {
-      return ImportVouchersResult.Default;
+      return new ImportVouchersResult();
     }
 
 
@@ -62,7 +63,7 @@ namespace Empiria.FinancialAccounting.BanobrasIntegration.VouchersImporter {
         throw;
       }
 
-      return ImportVouchersResult.Default;
+      return new ImportVouchersResult();
     }
 
   }  // class ExcelVouchersImporter

@@ -33,7 +33,7 @@ namespace Empiria.FinancialAccounting.BanobrasIntegration.VouchersImporter {
 
       var contentParser = new TextFileStructurer(_command, textFileLines);
 
-      return ImportVouchersResult.Default;
+      return new ImportVouchersResult();
     }
 
 
@@ -42,7 +42,7 @@ namespace Empiria.FinancialAccounting.BanobrasIntegration.VouchersImporter {
 
       var contentParser = new TextFileStructurer(_command, textFileLines);
 
-      return ImportVouchersResult.Default;
+      return new ImportVouchersResult();
     }
 
 
