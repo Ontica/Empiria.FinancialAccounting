@@ -36,21 +36,24 @@ namespace Empiria.FinancialAccounting.BanobrasIntegration.VouchersImporter.UseCa
 
     #region Database importers
 
-    public ImportVouchersResult DryRunImportVouchersFromDatabase(ImportVouchersCommand command) {
-      Assertion.AssertObject(command, "command");
-
-      var importer = new DbVouchersImporter(command);
-
-      return importer.DryRunImport();
-    }
-
 
     public ImportVouchersResult ImportVouchersFromDatabase(ImportVouchersCommand command) {
       Assertion.AssertObject(command, "command");
 
-      var importer = new DbVouchersImporter(command);
+      var importer = DbVouchersImporter.Instance;
 
-      return importer.Import();
+      if (importer.IsRunning) {
+        Assertion.AssertFail("El importador de pólizas ya está en ejecución.");
+      }
+
+      importer.Start(command).ConfigureAwait(false);
+
+      return importer.GetImportVouchersResult();
+    }
+
+
+    public ImportVouchersResult StatusOfImportVouchersFromDatabase() {
+      return DbVouchersImporter.Instance.GetImportVouchersResult();
     }
 
     #endregion Database importers
@@ -99,6 +102,7 @@ namespace Empiria.FinancialAccounting.BanobrasIntegration.VouchersImporter.UseCa
 
       return importer.Import(voucher);
     }
+
 
     #endregion Excel importers
 

@@ -15,8 +15,6 @@ using System.Web.Http;
 using Empiria.Json;
 using Empiria.WebApi;
 
-using Empiria.FinancialAccounting.Vouchers.Adapters;
-
 using Empiria.FinancialAccounting.BanobrasIntegration.VouchersImporter.Adapters;
 using Empiria.FinancialAccounting.BanobrasIntegration.VouchersImporter.UseCases;
 
@@ -29,14 +27,12 @@ namespace Empiria.FinancialAccounting.WebApi.BanobrasIntegration {
     #region Database importers
 
 
-    [HttpPost]
-    [Route("v2/financial-accounting/vouchers/import-from-database/dry-run")]
-    public SingleObjectModel DryRunImportVouchersFromDatabase([FromBody] ImportVouchersCommand command) {
-
-      base.RequireBody(command);
+    [HttpGet]
+    [Route("v2/financial-accounting/vouchers/import-from-database/status")]
+    public SingleObjectModel StatusOfImportVouchersFromDatabase() {
 
       using (var usecases = ImportVouchersUseCases.UseCaseInteractor()) {
-        ImportVouchersResult result = usecases.DryRunImportVouchersFromDatabase(command);
+        ImportVouchersResult result = usecases.StatusOfImportVouchersFromDatabase();
 
         return new SingleObjectModel(base.Request, result);
       }
