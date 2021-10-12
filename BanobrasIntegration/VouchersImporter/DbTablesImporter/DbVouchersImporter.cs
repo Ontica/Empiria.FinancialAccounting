@@ -1,13 +1,15 @@
 ﻿/* Empiria Financial *****************************************************************************************
 *                                                                                                            *
 *  Module   : Banobras Integration Services                 Component : Vouchers Importer                    *
-*  Assembly : FinancialAccounting.BanobrasIntegration.dll   Pattern   : Command Controller                   *
+*  Assembly : FinancialAccounting.BanobrasIntegration.dll   Pattern   : Singleton Controller                 *
 *  Type     : DbVouchersImporter                            License   : Please read LICENSE.txt file         *
 *                                                                                                            *
 *  Summary  : Performs voucher importation tasks from a central database.                                    *
 *                                                                                                            *
 ************************* Copyright(c) La Vía Óntica SC, Ontica LLC and contributors. All rights reserved. **/
 using System;
+using System.Collections.Generic;
+using System.Threading.Tasks;
 
 using Empiria.FinancialAccounting.BanobrasIntegration.VouchersImporter.Adapters;
 
@@ -16,44 +18,101 @@ namespace Empiria.FinancialAccounting.BanobrasIntegration.VouchersImporter {
   /// <summary>Performs voucher importation tasks from a central database.</summary>
   internal class DbVouchersImporter {
 
-    private readonly ImportVouchersCommand _command;
+    static private readonly DbVouchersImporter _singleton = new DbVouchersImporter();
+    private ImportVouchersResult _importVouchersResult;
 
-    internal DbVouchersImporter(ImportVouchersCommand command) {
-      Assertion.AssertObject(command, "command");
-
-      _command = command;
+    private DbVouchersImporter() {
+      // Singleton private constructor
     }
 
-    #region Public methods
-
-    internal ImportVouchersResult DryRunImport() {
-      ToImportVouchersList toImportVouchersList = GetVouchersToBeImported();
-
-      var voucherImporter = new VoucherImporter(_command, toImportVouchersList);
-
-      return voucherImporter.DryRunImport();
+    static internal DbVouchersImporter Instance {
+      get {
+        return _singleton;
+      }
     }
 
 
-    internal ImportVouchersResult Import() {
-      ToImportVouchersList standardStructure = GetVouchersToBeImported();
+    #region Public members
 
-      var voucherImporter = new VoucherImporter(_command, standardStructure);
 
-      return voucherImporter.Import();
+    internal bool IsRunning {
+      get;
+      private set;
     }
 
 
-    #endregion Public methods
+    internal ImportVouchersResult GetImportVouchersResult() {
+      if (!this.IsRunning) {
+        UpdateImportVouchersResult();
+      }
+      return _importVouchersResult;
+    }
 
 
-    private ToImportVouchersList GetVouchersToBeImported() {
-      FixedList<Encabezado> encabezados = DbVouchersImporterDataService.GetEncabezados();
-      FixedList<Movimiento> movimientos = DbVouchersImporterDataService.GetMovimientos();
+    internal async Task Start(ImportVouchersCommand command) {
+      if (this.IsRunning) {
+        Assertion.AssertFail("DBVouchersImporter is running. Please stop it before call Start() method");
+      }
 
-      var structurer = new DbVouchersStructurer(encabezados, movimientos);
+      SetIsRunningFlag(true);
 
-      return structurer.GetToImportVouchersList();
+      await Task.Run(() => {
+        try {
+          ImportVouchers(command);
+        } catch (Exception e) {
+          EmpiriaLog.Error(e);
+          SetIsRunningFlag(false);
+          throw;
+        }
+      });
+    }
+
+
+    private void ImportVouchers(ImportVouchersCommand command) {
+      List<Encabezado> encabezados = DbVouchersImporterDataService.GetEncabezados();
+      List<Movimiento> movimientos = DbVouchersImporterDataService.GetMovimientos();
+
+      while (encabezados.Count > 0) {
+        EmpiriaLog.Debug($"To be processed {encabezados.Count} at {DateTime.Now}");
+
+        var toProcess = encabezados.GetRange(0, encabezados.Count >= 50 ? 50 : encabezados.Count)
+                                   .ToFixedList();
+
+        var structurer = new DbVouchersStructurer(toProcess, movimientos.ToFixedList());
+
+        var toImport = structurer.GetToImportVouchersList();
+
+        var voucherImporter = new VoucherImporter(command, toImport);
+
+        voucherImporter.Import();
+
+        foreach (var item in toProcess) {
+          encabezados.Remove(item);
+        }
+
+        UpdateImportVouchersResult();
+      }
+    }
+
+
+    internal void Stop() {
+      SetIsRunningFlag(false);
+    }
+
+    #endregion Public members
+
+
+    private void SetIsRunningFlag(bool isRunning) {
+      this.IsRunning = isRunning;
+      UpdateImportVouchersResult();
+    }
+
+
+    private void UpdateImportVouchersResult() {
+      if (!this.IsRunning) {
+        _importVouchersResult = DbVouchersImporterDataService.GetEncabezadosTotals();
+      }
+      _importVouchersResult.IsRunning = this.IsRunning;
     }
 
 
