@@ -18,25 +18,41 @@ namespace Empiria.FinancialAccounting.BanobrasIntegration.VouchersImporter {
       this.ToImportVoucherHeader = header;
     }
 
+
     public ToImportVoucherHeader ToImportVoucherHeader {
       get;
     }
 
+
+    public LedgerAccount LedgerAccount {
+      get; internal set;
+    } = LedgerAccount.Empty;
+
+
     public StandardAccount StandardAccount {
       get; internal set;
-    }
+    } = StandardAccount.Empty;
+
 
     public Sector Sector {
       get; internal set;
-    }
+    } = Sector.Empty;
+
+
+    public SubsidiaryAccount SubledgerAccount {
+      get; internal set;
+    } = SubsidiaryAccount.Empty;
+
 
     public string SubledgerAccountNo {
       get; internal set;
-    }
+    } = string.Empty;
+
 
     public FunctionalArea ResponsibilityArea {
       get; internal set;
-    }
+    } = FunctionalArea.Empty;
+
 
     public string BudgetConcept {
       get; internal set;
@@ -45,7 +61,8 @@ namespace Empiria.FinancialAccounting.BanobrasIntegration.VouchersImporter {
 
     public EventType EventType {
       get; internal set;
-    }
+    } = EventType.Empty;
+
 
     public string VerificationNumber {
       get; internal set;
@@ -55,6 +72,7 @@ namespace Empiria.FinancialAccounting.BanobrasIntegration.VouchersImporter {
     public VoucherEntryType VoucherEntryType {
       get; internal set;
     }
+
 
     public DateTime Date {
       get; internal set;
@@ -68,27 +86,49 @@ namespace Empiria.FinancialAccounting.BanobrasIntegration.VouchersImporter {
 
     public Currency Currency {
       get; internal set;
-    }
+    } = Currency.Empty;
+
 
     public decimal Amount {
       get; internal set;
     }
 
+
     public decimal ExchangeRate {
       get; internal set;
     }
+
 
     public decimal BaseCurrencyAmount {
       get; internal set;
     }
 
+
     public bool Protected {
       get; internal set;
     }
 
+
+    public bool CreateLedgerAccount {
+      get {
+        return this.LedgerAccount.IsEmptyInstance &&
+               !this.StandardAccount.IsEmptyInstance;
+      }
+    }
+
+
+    public bool CreateSubledgerAccount {
+      get {
+        return this.SubledgerAccount.IsEmptyInstance &&
+               this.SubledgerAccountNo.Length != 0;
+      }
+    }
+
+
     public FixedList<ToImportVoucherIssue> Issues {
       get; internal set;
     }
+
 
   }  // class StandardVoucherEntry
 

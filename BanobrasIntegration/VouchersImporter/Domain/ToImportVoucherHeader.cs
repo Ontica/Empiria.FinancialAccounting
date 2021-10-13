@@ -65,6 +65,7 @@ namespace Empiria.FinancialAccounting.BanobrasIntegration.VouchersImporter {
       get; internal set;
     }
 
+
     public FixedList<ToImportVoucherIssue> Issues {
       get; internal set;
     }
