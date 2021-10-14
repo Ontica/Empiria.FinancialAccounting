@@ -54,6 +54,9 @@ namespace Empiria.FinancialAccounting.BanobrasIntegration.VouchersImporter {
         Assertion.AssertFail("DBVouchersImporter is running. Please stop it before call Start() method");
       }
 
+      command.TryToCloseVouchers = true;
+      command.CanEditVoucherEntries = false;
+
       SetIsRunningFlag(true);
 
       await Task.Run(() => {
@@ -72,15 +75,19 @@ namespace Empiria.FinancialAccounting.BanobrasIntegration.VouchersImporter {
       List<Encabezado> encabezados = DbVouchersImporterDataService.GetEncabezados();
       List<Movimiento> movimientos = DbVouchersImporterDataService.GetMovimientos();
 
-      while (encabezados.Count > 0) {
+      while (true) {
+        if (encabezados.Count == 0 || !this.IsRunning) {
+          return;
+        }
+
         EmpiriaLog.Debug($"To be processed {encabezados.Count} at {DateTime.Now}");
 
-        var toProcess = encabezados.GetRange(0, encabezados.Count >= 50 ? 50 : encabezados.Count)
+        var toProcess = encabezados.GetRange(0, encabezados.Count >= 10 ? 10 : encabezados.Count)
                                    .ToFixedList();
 
         var structurer = new DbVouchersStructurer(toProcess, movimientos.ToFixedList());
 
-        var toImport = structurer.GetToImportVouchersList();
+        FixedList<ToImportVoucher> toImport = structurer.GetToImportVouchersList();
 
         var voucherImporter = new VoucherImporter(command, toImport);
 
@@ -104,6 +111,7 @@ namespace Empiria.FinancialAccounting.BanobrasIntegration.VouchersImporter {
 
     private void SetIsRunningFlag(bool isRunning) {
       this.IsRunning = isRunning;
+
       UpdateImportVouchersResult();
     }
 
@@ -112,6 +120,7 @@ namespace Empiria.FinancialAccounting.BanobrasIntegration.VouchersImporter {
       if (!this.IsRunning) {
         _importVouchersResult = DbVouchersImporterDataService.GetEncabezadosTotals();
       }
+
       _importVouchersResult.IsRunning = this.IsRunning;
     }
 

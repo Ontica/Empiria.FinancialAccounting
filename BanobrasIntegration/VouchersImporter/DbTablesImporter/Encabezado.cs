@@ -178,13 +178,24 @@ namespace Empiria.FinancialAccounting.BanobrasIntegration.VouchersImporter {
 
 
     internal Participant GetElaboratedBy() {
+      var userID = EmpiriaString.TrimAll(this.Usuario);
+
       try {
-        var userID = EmpiriaString.TrimAll(this.Usuario);
+        var participant = Participant.TryParse(userID);
 
-        return Participant.Parse(userID);
+        if (participant != null) {
+          return participant;
 
+        } else {
+          EmpiriaLog.Info($"No encontré una cuenta de usuario {userID}. Sistema ({this.IdSistema})");
+
+          return Participant.Empty;
+        }
       } catch {
-        return Participant.Empty;
+        EmpiriaLog.Info($"Tuve problemas para encontrar la cuenta de usuario {userID}. Sistema ({this.IdSistema})");
+
+        throw;
+        // return Participant.Empty;
       }
     }
 

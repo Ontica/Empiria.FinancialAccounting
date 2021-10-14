@@ -27,16 +27,16 @@ namespace Empiria.FinancialAccounting.BanobrasIntegration.VouchersImporter {
     }
 
 
-    internal ToImportVouchersList GetToImportVouchersList() {
-      var vouchersListToImport = new ToImportVouchersList();
+    internal FixedList<ToImportVoucher> GetToImportVouchersList() {
+      var vouchersListToImport = new List<ToImportVoucher>(_encabezados.Count);
 
       foreach (Encabezado encabezado in _encabezados) {
         var voucherToImport = BuildVoucherToImport(encabezado);
 
-        vouchersListToImport.AddVoucher(voucherToImport);
+        vouchersListToImport.Add(voucherToImport);
       }
 
-      return vouchersListToImport;
+      return vouchersListToImport.ToFixedList();
     }
 
 
@@ -44,7 +44,14 @@ namespace Empiria.FinancialAccounting.BanobrasIntegration.VouchersImporter {
       ToImportVoucherHeader header = MapEncabezadoToImportVoucherHeader(encabezado);
       FixedList<ToImportVoucherEntry> entries = MapMovimientosToToImportVoucherEntries(encabezado, header);
 
-      return new ToImportVoucher(header, entries);
+      var toImportVoucher = new ToImportVoucher(header, entries);
+
+      //if (entries.Count < 2) {
+      //  toImportVoucher.AddIssue(VoucherIssueType.Error,
+      //                           "La póliza no tiene movimientos. No puede importarse.");
+      //}
+
+      return toImportVoucher;
     }
 
 
@@ -84,8 +91,10 @@ namespace Empiria.FinancialAccounting.BanobrasIntegration.VouchersImporter {
                                                                      Movimiento movimiento) {
       var entry = new ToImportVoucherEntry(header);
 
+      entry.LedgerAccount = movimiento.GetLedgerAccount();
       entry.StandardAccount = movimiento.GetStandardAccount();
       entry.Sector = movimiento.GetSector();
+      entry.SubledgerAccount = movimiento.GetSubledgerAccount();
       entry.SubledgerAccountNo = movimiento.GetSubledgerAccountNo();
       entry.ResponsibilityArea = movimiento.GetResponsibilityArea();
       entry.BudgetConcept = movimiento.GetBudgetConcept();

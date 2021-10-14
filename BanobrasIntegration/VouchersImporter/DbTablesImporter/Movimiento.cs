@@ -126,13 +126,23 @@ namespace Empiria.FinancialAccounting.BanobrasIntegration.VouchersImporter {
 
 
     internal StandardAccount GetStandardAccount() {
+      string formatted = this.NumeroCuentaEstandar;
+
       try {
         var accountsChart = this.Encabezado.GetAccountsChart();
 
-        var formatted = accountsChart.FormatAccountNumber(this.NumeroCuentaEstandar);
+        formatted = accountsChart.FormatAccountNumber(this.NumeroCuentaEstandar);
 
-        return accountsChart.GetStandardAccount(formatted);
+        StandardAccount stdAccount = accountsChart.TryGetStandardAccount(formatted);
+
+        if (stdAccount != null) {
+          return stdAccount;
+        } else {
+          EmpiriaLog.Info($"La cuenta '{formatted}' no existe en el catálogo de cuentas. (Sistema {this.IdSistema})");
+          return StandardAccount.Empty;
+        }
       } catch {
+        EmpiriaLog.Info($"Ocurrió un problema al leer el catálogo de cuentas. (Sistema {this.IdSistema})");
         return StandardAccount.Empty;
       }
     }
@@ -148,6 +158,36 @@ namespace Empiria.FinancialAccounting.BanobrasIntegration.VouchersImporter {
       }
 
       return Sector.Parse(this.ClaveSector);
+    }
+
+
+    internal LedgerAccount GetLedgerAccount() {
+      Ledger ledger = this.Encabezado.GetLedger();
+
+      StandardAccount standardAccount = this.GetStandardAccount();
+
+      LedgerAccount ledgerAccount = ledger.TryGetAccount(standardAccount);
+
+      if (ledgerAccount != null) {
+        return ledgerAccount;
+      } else {
+        return LedgerAccount.Empty;
+      }
+    }
+
+
+    internal SubsidiaryAccount GetSubledgerAccount() {
+      Ledger ledger = this.Encabezado.GetLedger();
+
+      var formattedAccountNo = GetSubledgerAccountNo();
+
+      SubsidiaryAccount subledgerAccount = ledger.TryGetSubledgerAccount(formattedAccountNo);
+
+      if (subledgerAccount != null) {
+        return subledgerAccount;
+      } else {
+        return SubsidiaryAccount.Empty;
+      }
     }
 
 
@@ -210,9 +250,15 @@ namespace Empiria.FinancialAccounting.BanobrasIntegration.VouchersImporter {
 
 
     internal Currency GetCurrency() {
-      var claveMoneda = this.ClaveMoneda.ToString("00");
+      string claveMoneda = this.ClaveMoneda.ToString("00");
 
-      return Currency.Parse(claveMoneda);
+      try {
+        return Currency.Parse(claveMoneda);
+      } catch {
+        EmpiriaLog.Info($"La moneda '{claveMoneda}' no existe en el catálogo de monedas. (Sistema {this.IdSistema})");
+
+        return Currency.Empty;
+      }
     }
 
 
@@ -237,7 +283,7 @@ namespace Empiria.FinancialAccounting.BanobrasIntegration.VouchersImporter {
 
 
     internal bool GetProtected() {
-      return false;
+      return true;
     }
 
 
