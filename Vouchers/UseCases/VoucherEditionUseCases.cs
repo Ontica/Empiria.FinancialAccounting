@@ -47,6 +47,22 @@ namespace Empiria.FinancialAccounting.Vouchers.UseCases {
     }
 
 
+    public VoucherDto AppendEntries(int voucherId, FixedList<VoucherEntryFields> entries) {
+      Assertion.Assert(voucherId > 0, "voucherId");
+      Assertion.AssertObject(entries, "entries");
+
+      var voucher = Voucher.Parse(voucherId);
+
+      foreach (var entryFields in entries) {
+        var voucherEntry = voucher.AppendEntry(entryFields);
+
+        voucherEntry.Save();
+      }
+
+      return VoucherMapper.Map(voucher);
+    }
+
+
     public VoucherDto CloseVoucher(int voucherId) {
       Assertion.Assert(voucherId > 0, "voucherId");
 
@@ -68,6 +84,24 @@ namespace Empiria.FinancialAccounting.Vouchers.UseCases {
       voucher.Save();
 
       return VoucherMapper.Map(voucher);
+    }
+
+
+    public VoucherDto ImportVoucher(VoucherFields voucherFields,
+                                    FixedList<VoucherEntryFields> entriesFields,
+                                    bool tryToClose) {
+      Assertion.AssertObject(voucherFields, "voucherFields");
+      Assertion.AssertObject(entriesFields, "entriesFields");
+
+      VoucherDto voucher = CreateVoucher(voucherFields);
+
+      voucher = AppendEntries(voucher.Id, entriesFields);
+
+      if (tryToClose) {
+        return CloseVoucher(voucher.Id);
+      } else {
+        return voucher;
+      }
     }
 
 
