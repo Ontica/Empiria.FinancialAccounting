@@ -18,25 +18,31 @@ namespace Empiria.FinancialAccounting.Vouchers.Adapters {
       get; set;
     }
 
+
     public int LedgerAccountId {
       get; set;
     }
+
 
     public int SectorId {
       get; set;
     }
 
+
     public int SubledgerAccountId {
       get; set;
     }
+
 
     public int ReferenceEntryId {
       get; set;
     }
 
+
     public int ResponsibilityAreaId {
       get; set;
     }
+
 
     public string BudgetConcept {
       get; set;
@@ -47,6 +53,7 @@ namespace Empiria.FinancialAccounting.Vouchers.Adapters {
       get; set;
     }
 
+
     public string VerificationNumber {
       get; set;
     } = string.Empty;
@@ -55,6 +62,7 @@ namespace Empiria.FinancialAccounting.Vouchers.Adapters {
     public VoucherEntryType VoucherEntryType {
       get; set;
     }
+
 
     public DateTime Date {
       get; set;
@@ -70,21 +78,45 @@ namespace Empiria.FinancialAccounting.Vouchers.Adapters {
       get; set;
     }
 
+
     public decimal Amount {
       get; set;
     }
+
 
     public decimal ExchangeRate {
       get; set;
     }
 
+
     public decimal BaseCurrencyAmount {
       get; set;
     }
 
+
     public bool Protected {
       get; set;
     }
+
+
+    public bool CreateLedgerAccount {
+      get; set;
+    }
+
+
+    public bool CreateSubledgerAccount {
+      get; set;
+    }
+
+
+    public int StandardAccountIdForCreateLedgerAccount {
+      get; set;
+    } = -1;
+
+
+    public string SubledgerAccountNoToCreate {
+      get; set;
+    } = string.Empty;
 
 
     public bool HasEventType {

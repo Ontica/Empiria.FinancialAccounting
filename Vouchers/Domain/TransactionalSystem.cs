@@ -69,7 +69,7 @@ namespace Empiria.FinancialAccounting.Vouchers {
 
     public int SourceSystemId {
       get {
-        return base.ExtendedDataField.Get<int>("sourceSystemId");
+        return base.ExtendedDataField.Get<int>("sourceSystemId", -1);
       }
     }
 

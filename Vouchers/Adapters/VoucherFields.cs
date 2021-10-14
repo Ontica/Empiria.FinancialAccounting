@@ -21,7 +21,17 @@ namespace Empiria.FinancialAccounting.Vouchers.Adapters {
 
     public DateTime AccountingDate {
       get; set;
-    } = ExecutionServer.DateMinValue;
+    } = ExecutionServer.DateMaxValue;
+
+
+    public DateTime RecordingDate {
+      get; set;
+    } = ExecutionServer.DateMaxValue;
+
+
+    public string ElaboratedByUID {
+      get; set;
+    } = string.Empty;
 
 
     public string LedgerUID {

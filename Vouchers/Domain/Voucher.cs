@@ -275,7 +275,14 @@ namespace Empiria.FinancialAccounting.Vouchers {
     private void LoadFields(VoucherFields fields) {
       this.Ledger = Ledger.Parse(fields.LedgerUID);
       this.AccountingDate = fields.AccountingDate;
-      this.Concept = fields.Concept;
+      this.RecordingDate = fields.RecordingDate;
+
+      if (fields.ElaboratedByUID.Length == 0) {
+        this.ElaboratedBy = Participant.Current;
+      } else {
+        this.ElaboratedBy = Participant.Parse(fields.ElaboratedByUID);
+      }
+      this.Concept = EmpiriaString.TrimAll(fields.Concept);
       this.VoucherType = VoucherType.Parse(fields.VoucherTypeUID);
       this.TransactionType = TransactionType.Parse(fields.TransactionTypeUID);
       this.FunctionalArea = FunctionalArea.Parse(fields.FunctionalAreaId);
@@ -320,7 +327,9 @@ namespace Empiria.FinancialAccounting.Vouchers {
 
       this.Ledger = PatchField(fields.LedgerUID, this.Ledger);
       this.AccountingDate = PatchField(fields.AccountingDate, this.AccountingDate);
-      this.Concept = PatchField(fields.Concept, this.Concept);
+      this.RecordingDate = PatchField(fields.RecordingDate, this.RecordingDate);
+      this.ElaboratedBy = PatchField(fields.ElaboratedByUID, this.ElaboratedBy);
+      this.Concept = PatchField(EmpiriaString.TrimAll(fields.Concept), this.Concept);
       this.TransactionType = PatchField(fields.TransactionTypeUID, this.TransactionType);
       this.VoucherType = PatchField(fields.VoucherTypeUID, this.VoucherType);
       this.FunctionalArea = PatchField(fields.FunctionalAreaId, this.FunctionalArea);

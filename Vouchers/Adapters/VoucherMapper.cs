@@ -16,7 +16,7 @@ namespace Empiria.FinancialAccounting.Vouchers.Adapters {
   /// <summary>Mapping methods for accounting vouchers.</summary>
   static public class VoucherMapper {
 
-    static internal VoucherDto Map(Voucher voucher) {
+    static public VoucherDto Map(Voucher voucher) {
       return new VoucherDto {
         Id = voucher.Id,
         AccountsChart = voucher.Ledger.AccountsChart.MapToNamedEntity(),
