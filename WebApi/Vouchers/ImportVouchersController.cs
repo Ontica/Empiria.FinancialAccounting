@@ -27,7 +27,23 @@ namespace Empiria.FinancialAccounting.WebApi.BanobrasIntegration {
     #region Database importers
 
 
+    [HttpPost]
+    [Route("v2/financial-accounting/vouchers/database-importer/start")]
+    [Route("v2/financial-accounting/vouchers/import-from-database")]
+    public SingleObjectModel ImportVouchersFromDatabase([FromBody] ImportVouchersCommand command) {
+
+      base.RequireBody(command);
+
+      using (var usecases = ImportVouchersUseCases.UseCaseInteractor()) {
+        var result = usecases.ImportVouchersFromDatabase(command);
+
+        return new SingleObjectModel(base.Request, result);
+      }
+    }
+
+
     [HttpGet]
+    [Route("v2/financial-accounting/vouchers/database-importer/status")]
     [Route("v2/financial-accounting/vouchers/import-from-database/status")]
     public SingleObjectModel StatusOfImportVouchersFromDatabase() {
 
@@ -40,13 +56,12 @@ namespace Empiria.FinancialAccounting.WebApi.BanobrasIntegration {
 
 
     [HttpPost]
-    [Route("v2/financial-accounting/vouchers/import-from-database")]
-    public SingleObjectModel ImportVouchersFromDatabase([FromBody] ImportVouchersCommand command) {
-
-      base.RequireBody(command);
+    [Route("v2/financial-accounting/vouchers/database-importer/stop")]
+    [Route("v2/financial-accounting/vouchers/import-from-database/stop")]
+    public SingleObjectModel StopImportVouchersFromDatabase() {
 
       using (var usecases = ImportVouchersUseCases.UseCaseInteractor()) {
-        var result = usecases.ImportVouchersFromDatabase(command);
+        ImportVouchersResult result = usecases.StopImportVouchersFromDatabase();
 
         return new SingleObjectModel(base.Request, result);
       }
@@ -166,6 +181,7 @@ namespace Empiria.FinancialAccounting.WebApi.BanobrasIntegration {
         return new SingleObjectModel(base.Request, result);
       }
     }
+
 
     #endregion Text file importers
 

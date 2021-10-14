@@ -56,6 +56,20 @@ namespace Empiria.FinancialAccounting.BanobrasIntegration.VouchersImporter.UseCa
       return DbVouchersImporter.Instance.GetImportVouchersResult();
     }
 
+
+    public ImportVouchersResult StopImportVouchersFromDatabase() {
+      var importer = DbVouchersImporter.Instance;
+
+      if (!importer.IsRunning) {
+        Assertion.AssertFail("El importador de pólizas no está en ejecución.");
+      }
+
+      importer.Stop();
+
+      return importer.GetImportVouchersResult();
+    }
+
+
     #endregion Database importers
 
 
