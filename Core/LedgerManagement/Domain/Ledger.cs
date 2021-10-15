@@ -143,8 +143,28 @@ namespace Empiria.FinancialAccounting {
     }
 
 
+
+    public string FormatSubledgerAccount(string numeroAuxiliar) {
+      return numeroAuxiliar;
+    }
+
+
     public LedgerAccount GetAccount(StandardAccount standardAccount) {
-      return LedgerData.GetLedgerAccount(this, standardAccount);
+      LedgerAccount account = LedgerData.TryGetLedgerAccount(this, standardAccount);
+
+      Assertion.AssertObject(account, "account");
+
+      return account;
+    }
+
+
+    public LedgerAccount TryGetAccount(StandardAccount standardAccount) {
+      return LedgerData.TryGetLedgerAccount(this, standardAccount);
+    }
+
+
+    public SubsidiaryAccount TryGetSubledgerAccount(string formattedAccountNo) {
+      return LedgerData.TryGetSubledgerAccount(this, formattedAccountNo);
     }
 
 
@@ -156,6 +176,7 @@ namespace Empiria.FinancialAccounting {
 
       return ledgerAccount;
     }
+
 
     public bool IsAccountingDateOpened(DateTime accountingDate) {
       FixedList<DateTime> openedAccoutingDates = this.OpenedAccountingDates();

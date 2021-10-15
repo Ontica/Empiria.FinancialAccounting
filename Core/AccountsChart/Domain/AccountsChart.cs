@@ -121,9 +121,21 @@ namespace Empiria.FinancialAccounting {
     }
 
 
+    public StandardAccount TryGetStandardAccount(string accountNumber) {
+      Account account;
+
+      if (_accounts.Value.TryGetValue(accountNumber, out account)) {
+        return StandardAccount.Parse(account.StandardAccountId);
+      } else {
+        return null;
+      }
+    }
+
+
     public FixedList<Account> GetAccountHistory(string accountNumber) {
       return AccountsChartData.GetAccountHistory(this, accountNumber);
     }
+
 
 
     public Account GetAccountHistory(string accountNumber, DateTime date) {

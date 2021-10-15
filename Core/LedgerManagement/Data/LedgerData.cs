@@ -26,7 +26,11 @@ namespace Empiria.FinancialAccounting.Data {
 
       DataWriter.Execute(dataOperation);
 
-      return GetLedgerAccount(ledger, standardAccount);
+      LedgerAccount ledgerAccount = TryGetLedgerAccount(ledger, standardAccount);
+
+      Assertion.AssertObject(ledgerAccount, "ledgerAccount");
+
+      return ledgerAccount;
     }
 
 
@@ -41,14 +45,14 @@ namespace Empiria.FinancialAccounting.Data {
     }
 
 
-    static internal LedgerAccount GetLedgerAccount(Ledger ledger, StandardAccount standardAccount) {
+    static internal LedgerAccount TryGetLedgerAccount(Ledger ledger, StandardAccount standardAccount) {
       var sql = "SELECT * FROM COF_CUENTA " +
                $"WHERE id_mayor = {ledger.Id} AND " +
                $"id_cuenta_estandar = {standardAccount.Id}";
 
       var dataOperation = DataOperation.Parse(sql);
 
-      return DataReader.GetObject<LedgerAccount>(dataOperation);
+      return DataReader.GetObject<LedgerAccount>(dataOperation, null);
     }
 
 
@@ -93,6 +97,23 @@ namespace Empiria.FinancialAccounting.Data {
 
       return DataReader.GetFixedList<Account>(dataOperation);
     }
+
+
+    internal static SubsidiaryAccount TryGetSubledgerAccount(Ledger ledger, string formattedAccountNo) {
+      var sql = "SELECT COF_CUENTA_AUXILIAR.* " +
+                "FROM COF_CUENTA_AUXILIAR INNER JOIN VW_COF_CUENTA_AUXILIAR " +
+                "ON COF_CUENTA_AUXILIAR.ID_CUENTA_AUXILIAR = VW_COF_CUENTA_AUXILIAR.ID_CUENTA_AUXILIAR " +
+               $"WHERE (VW_COF_CUENTA_AUXILIAR.ID_MAYOR = {ledger.Id} OR " +
+               $"VW_COF_CUENTA_AUXILIAR.ID_MAYOR_ADICIONAL = {ledger.Id}) " +
+               $"AND COF_CUENTA_AUXILIAR.NUMERO_CUENTA_AUXILIAR = '{formattedAccountNo}' " +
+               $"AND COF_CUENTA_AUXILIAR.ELIMINADA = 0";
+
+
+      var dataOperation = DataOperation.Parse(sql);
+
+      return DataReader.GetObject<SubsidiaryAccount>(dataOperation, null);
+    }
+
 
   }  // class LedgerData
 

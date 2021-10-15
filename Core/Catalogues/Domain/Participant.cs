@@ -28,6 +28,10 @@ namespace Empiria.FinancialAccounting {
       return BaseObject.ParseKey<Participant>(uid);
     }
 
+    static public Participant TryParse(string uid) {
+      return BaseObject.TryParse<Participant>($"ParticipantKey = '{uid}'");
+    }
+
     static public FixedList<Participant> GetList() {
       string filter = "ParticipantType = 'U' AND Status = 'A'";
       string orderBy = "ParticipantName";
@@ -69,6 +73,7 @@ namespace Empiria.FinancialAccounting {
     public NamedEntityDto MapToNamedEntity() {
       return new NamedEntityDto(this.Id.ToString(), this.Name);
     }
+
 
     #endregion Methods
 
