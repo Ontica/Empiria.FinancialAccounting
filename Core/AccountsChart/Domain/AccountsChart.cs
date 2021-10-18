@@ -38,6 +38,29 @@ namespace Empiria.FinancialAccounting {
     }
 
 
+    static public AccountsChart ParseForDate(DateTime accountingDate) {
+      if (accountingDate >= new DateTime(2022, 1, 1)) {
+        return AccountsChart.IFRS;
+      } else {
+        return AccountsChart.Former;
+      }
+    }
+
+
+    static public AccountsChart Former {
+      get {
+        return AccountsChart.Parse(1);
+      }
+    }
+
+
+    static public AccountsChart IFRS {
+      get {
+        return AccountsChart.Parse(152);
+      }
+    }
+
+
     static public void Preload() {
       var list = GetList();
 
