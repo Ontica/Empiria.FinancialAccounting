@@ -174,48 +174,58 @@ namespace Empiria.FinancialAccounting {
 
 
     public string FormatAccountNumber(string accountNumber) {
-      string temp = ConvertAccountNumberToPattern(accountNumber, this.MasterData.AccountsPattern);
+      Assertion.AssertObject(accountNumber, "accountNumber");
 
-      Assertion.Assert(temp.Replace(this.MasterData.AccountNumberSeparator.ToString(), String.Empty) == accountNumber,
-                      "There was a problem in ConvertAccountNumberToPattern method.");
+      char separator = this.MasterData.AccountNumberSeparator;
+      string pattern = this.MasterData.AccountsPattern;
 
-      temp = EmpiriaString.TrimAll(temp, $"{this.MasterData.AccountNumberSeparator}00", String.Empty);
+      string temp = accountNumber.Replace(separator.ToString(), string.Empty);
+      temp = EmpiriaString.TrimAll(temp);
+
+      if (temp.Length > EmpiriaString.CountOccurences(pattern, '0')) {
+        Assertion.AssertFail("Number of placeholders in pattern is less than" +
+                             "number of characters in the input string.");
+      } else {
+        temp = temp.PadRight(EmpiriaString.CountOccurences(pattern, '0'), '0');
+      }
+
+      for (int i = 0; i < pattern.Length; i++) {
+        if (pattern[i] == separator) {
+          temp = temp.Insert(i, separator.ToString());
+        }
+      }
+
+      while (true) {
+        if (temp.EndsWith($"{separator}0000")) {
+          temp = temp.Remove(temp.Length - 5);
+
+        } else if (temp.EndsWith($"{separator}000")) {
+          temp = temp.Remove(temp.Length - 4);
+
+        } else if (temp.EndsWith($"{separator}00")) {
+          temp = temp.Remove(temp.Length - 3);
+
+        } else if (temp.EndsWith($"{separator}0")) {
+          temp = temp.Remove(temp.Length - 2);
+
+        } else {
+          break;
+
+        }
+      }
 
       return temp;
     }
 
-    #endregion Public methods
 
+    public Ledger TryGetLedger(string ledgerNumber) {
+      Assertion.AssertObject(ledgerNumber, "ledgerNumber");
 
-    #region Private methods
-
-    static private string ConvertAccountNumberToPattern(string account, string pattern) {
-      Assertion.AssertObject(account, "account");
-      Assertion.AssertObject(pattern, "pattern");
-
-      pattern = pattern.Replace("0", "X");
-
-      int patternPlaceholdersLength = pattern.Count(c => c == 'X');
-
-      if (account.Length > patternPlaceholdersLength) {
-        Assertion.AssertFail("Number of placeholders in pattern is different than " +
-                             "number of characters in the input string.");
-      } else {
-        account = account.PadRight(patternPlaceholdersLength, '0');
-      }
-
-      var reg = new Regex(new string('N', account.Length).Replace("N", "(\\w)"));
-
-      var regX = new Regex("X");
-
-      for (int i = 1; i <= account.Length; i++) {
-        pattern = regX.Replace(pattern, "$" + i.ToString(), 1);
-      }
-
-      return reg.Replace(account, pattern);
+      return this.MasterData.Ledgers.Find(x => x.Number.Equals(ledgerNumber));
     }
 
-    #endregion Private methods
+
+    #endregion Public methods
 
   }  // class AccountsChart
 
