@@ -19,7 +19,8 @@ using Empiria.FinancialAccounting.BanobrasIntegration.VouchersImporter.Adapters;
 
 namespace Empiria.FinancialAccounting.BanobrasIntegration.VouchersImporter.UseCases {
 
-  /// <summary>Use cases used for import vouchers and voucher entries from Databases, Excel and text files.</summary>
+  /// <summary>Use cases used for import vouchers and voucher entries from Databases,
+  /// Excel and text files.</summary>
   public class ImportVouchersUseCases : UseCase {
 
     #region Constructors and parsers
@@ -126,30 +127,48 @@ namespace Empiria.FinancialAccounting.BanobrasIntegration.VouchersImporter.UseCa
     public ImportVouchersResult DryRunImportVouchersFromTextFile(ImportVouchersCommand command, FileData textFileData) {
       FileInfo textFile = AssertParametersAreValidAndGetFileInfo(command, textFileData);
 
+      PrepareCommandForImportTextFile(command);
+
       var importer = new TextFileImporter(command, textFile);
 
       return importer.DryRunImport();
     }
 
 
-    public ImportVouchersResult ImportVouchersFromTextFile(ImportVouchersCommand command, FileData textFileData) {
+    public ImportVouchersResult ImportVouchersFromTextFile(ImportVouchersCommand command,
+                                                           FileData textFileData) {
       FileInfo textFile = AssertParametersAreValidAndGetFileInfo(command, textFileData);
+
+      PrepareCommandForImportTextFile(command);
 
       var importer = new TextFileImporter(command, textFile);
 
       return importer.Import();
     }
 
+
     #endregion Text file importers
 
     #region Helpers
 
-    private FileInfo AssertParametersAreValidAndGetFileInfo(ImportVouchersCommand command, FileData textFileData) {
+    private FileInfo AssertParametersAreValidAndGetFileInfo(ImportVouchersCommand command,
+                                                            FileData textFileData) {
       Assertion.AssertObject(command, "command");
       Assertion.AssertObject(textFileData, "textFileData");
 
       return FileUtilities.SaveFile(textFileData);
     }
+
+
+    private void PrepareCommandForImportTextFile(ImportVouchersCommand command) {
+      if (command.TransactionTypeUID.Length == 0) {
+        command.TransactionTypeUID = "d7b175e7-33e8-4abf-8554-dab648af9384";
+      }
+      if (command.VoucherTypeUID.Length == 0) {
+        command.VoucherTypeUID = "32279ad5-ad9f-46ff-80d8-2463366e3b7a";
+      }
+    }
+
 
     #endregion Helpers
 
