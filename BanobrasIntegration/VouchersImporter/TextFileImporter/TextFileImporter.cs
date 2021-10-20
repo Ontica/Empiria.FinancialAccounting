@@ -29,22 +29,28 @@ namespace Empiria.FinancialAccounting.BanobrasIntegration.VouchersImporter {
 
 
     internal ImportVouchersResult DryRunImport() {
-      string[] textFileLines = FileUtilities.ReadTextFile(_textFile);
+      VoucherImporter voucherImporter = GetVoucherImporter();
 
-      var contentParser = new TextFileStructurer(_command, textFileLines);
-
-      return new ImportVouchersResult();
+      return voucherImporter.DryRunImport();
     }
 
 
     internal ImportVouchersResult Import() {
-      string[] textFileLines = FileUtilities.ReadTextFile(_textFile);
+      VoucherImporter voucherImporter = GetVoucherImporter();
 
-      var contentParser = new TextFileStructurer(_command, textFileLines);
-
-      return new ImportVouchersResult();
+      return voucherImporter.Import();
     }
 
+
+    private VoucherImporter GetVoucherImporter() {
+      string[] textFileLines = FileUtilities.ReadTextFile(_textFile);
+
+      var structurer = new TextFileStructurer(_command, textFileLines);
+
+      FixedList<ToImportVoucher> toImport = structurer.GetToImportVouchersList();
+
+      return new VoucherImporter(_command, toImport);
+    }
 
   }  // class TextFileImporter
 
