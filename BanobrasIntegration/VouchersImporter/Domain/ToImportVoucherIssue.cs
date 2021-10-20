@@ -8,6 +8,8 @@
 *                                                                                                            *
 ************************* Copyright(c) La Vía Óntica SC, Ontica LLC and contributors. All rights reserved. **/
 
+using System;
+
 namespace Empiria.FinancialAccounting.BanobrasIntegration.VouchersImporter {
 
   public enum VoucherIssueType {
@@ -21,17 +23,48 @@ namespace Empiria.FinancialAccounting.BanobrasIntegration.VouchersImporter {
 
   public class ToImportVoucherIssue {
 
-    public ToImportVoucherIssue(VoucherIssueType type, string description) {
+    public ToImportVoucherIssue(VoucherIssueType type,
+                                string importationSet,
+                                string description) {
       this.Type = type;
+      this.ImportationSet = importationSet;
+      this.Location = string.Empty;
       this.Description = description;
     }
+
+    public ToImportVoucherIssue(VoucherIssueType type,
+                                string importationSet,
+                                string location,
+                                string description) {
+      this.Type = type;
+      this.ImportationSet = importationSet;
+      this.Location = location;
+      this.Description = description;
+    }
+
 
     public VoucherIssueType Type {
       get;
     }
 
+
+    public string ImportationSet {
+      get;
+    }
+
+
+    public string Location {
+      get;
+    }
+
+
     public string Description {
       get;
+    }
+
+
+    public NamedEntityDto ToNamedEntity() {
+      return new NamedEntityDto(this.ImportationSet, $"{this.Description} ({this.Location})");
     }
 
   }  // class ToImportVoucherIssue
