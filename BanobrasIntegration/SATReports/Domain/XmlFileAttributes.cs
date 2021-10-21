@@ -33,7 +33,7 @@ namespace Empiria.FinancialAccounting.BanobrasIntegration {
 
     public List<XmlFileVariedAttributes> VariedAttributes {
       get; set;
-    }
+    } = new List<XmlFileVariedAttributes>();
 
   } // class XmlFileAttributes
 

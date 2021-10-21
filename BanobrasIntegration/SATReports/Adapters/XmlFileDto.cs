@@ -8,6 +8,8 @@
 *                                                                                                            *
 ************************* Copyright(c) La Vía Óntica SC, Ontica LLC and contributors. All rights reserved. **/
 
+using System.Xml;
+
 namespace Empiria.FinancialAccounting.BanobrasIntegration.SATReports.Adapters {
 
   /// <summary>DTO that returns an Xml file data.</summary>
@@ -15,6 +17,10 @@ namespace Empiria.FinancialAccounting.BanobrasIntegration.SATReports.Adapters {
 
     internal XmlFileDto() {
       // no-op
+    }
+
+    public XmlDocument XmlStructure {
+      get; internal set;
     }
 
     public string Url {

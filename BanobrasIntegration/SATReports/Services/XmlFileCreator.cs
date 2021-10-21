@@ -49,7 +49,7 @@ namespace Empiria.FinancialAccounting.BanobrasIntegration.SATReports {
 
       XmlDocument doc = _xmlFile.XmlStructure;
 
-      XmlNode root = doc.SelectSingleNode("BCE:Balanza");
+      XmlNode root = doc.SelectSingleNode("Balanza");
 
       foreach (var entry in entries) {
         XmlElement ctas = doc.CreateElement("BCE:Ctas");

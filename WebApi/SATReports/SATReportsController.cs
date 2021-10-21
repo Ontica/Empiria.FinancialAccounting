@@ -41,7 +41,7 @@ namespace Empiria.FinancialAccounting.WebApi.SATReports {
 
 
     [HttpPost]
-    [Route("v2/financial-accounting/trial-balance/xml")]
+    [Route("v2/financial-accounting/sat-reports/trial-balance/xml")]
     public SingleObjectModel GetExcelTrialBalance([FromBody] TrialBalanceCommand command) {
       base.RequireBody(command);
 

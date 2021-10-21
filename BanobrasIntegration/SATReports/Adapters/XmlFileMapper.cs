@@ -15,8 +15,12 @@ namespace Empiria.FinancialAccounting.BanobrasIntegration.SATReports.Adapters {
   static internal class XmlFileMapper {
 
     static internal XmlFileDto Map(XmlFile xmlFile) {
+      //return new XmlFileDto {
+      //  Url = xmlFile.Url
+      //};
+
       return new XmlFileDto {
-        Url = xmlFile.Url
+        XmlStructure = xmlFile.XmlStructure
       };
     }
 
