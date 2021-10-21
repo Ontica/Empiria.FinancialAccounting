@@ -1,6 +1,6 @@
 ﻿/* Empiria Financial *****************************************************************************************
 *                                                                                                            *
-*  Module   : Banobras Integration Services                Component : Excel Reports                         *
+*  Module   : Banobras Integration Services                Component : Xml Reports                           *
 *  Assembly : FinancialAccounting.BanobrasIntegration.dll  Pattern   : Service                               *
 *  Type     : XmlFileCreator                               License   : Please read LICENSE.txt file          *
 *                                                                                                            *
@@ -44,50 +44,74 @@ namespace Empiria.FinancialAccounting.BanobrasIntegration.SATReports {
 
 
     #region Private methods
-    private void SetXmlHeader() {
 
-      string headerName = SetHeaderName();
-      
-      XmlDocument xml = new XmlDocument();
-      XmlElement header = xml.CreateElement(headerName);
-      xml.AppendChild(header);
+    private void FilOutBalanza(IEnumerable<TrialBalanceEntryDto> entries) {
 
-      string[] attributes = SetHeaderAttributes();
+      XmlDocument doc = _xmlFile.XmlStructure;
 
-      foreach (var attr in attributes) {
-        XmlAttribute attribute = xml.CreateAttribute(attr);
-        attribute.Value = "";
-        header.Attributes.Append(attribute);
+      XmlNode root = doc.SelectSingleNode("BCE:Balanza");
+
+      foreach (var entry in entries) {
+        XmlElement ctas = doc.CreateElement("BCE:Ctas");
+        root.AppendChild(ctas);
+
+        XmlAttribute numCta = doc.CreateAttribute("NumCta");
+        numCta.Value = entry.AccountNumber;
+        ctas.Attributes.Append(numCta);
+
+        XmlAttribute saldoIni = doc.CreateAttribute("SaldoIni");
+        saldoIni.Value = entry.InitialBalance.ToString();
+        ctas.Attributes.Append(saldoIni);
+
+        XmlAttribute debe = doc.CreateAttribute("Debe");
+        debe.Value = entry.Debit.ToString();
+        ctas.Attributes.Append(debe);
+
+        XmlAttribute haber = doc.CreateAttribute("Haber");
+        haber.Value = entry.Credit.ToString();
+        ctas.Attributes.Append(haber);
+
+        XmlAttribute saldoFin = doc.CreateAttribute("SaldoFin");
+        saldoFin.Value = entry.InitialBalance.ToString();
+        ctas.Attributes.Append(saldoFin);
       }
-
+      _xmlFile.XmlStructure = doc;
     }
 
-    private string SetHeaderName() {
-      
-      if (true) {
-        return "BCE:Balanza";
-      } else {
-        
-      }
+    private XmlFileAttributes GetBalanceAttributes() {
+      XmlFileAttributes attributes = new XmlFileAttributes();
+
+      attributes.VariedAttributes.Add(new XmlFileVariedAttributes() {
+        Name = "xmlns:BCE",
+        Property = "http://www.sat.gob.mx/esquemas/ContabilidadE/1_3/BalanzaComprobacion"
+      });
+
+      attributes.VariedAttributes.Add(new XmlFileVariedAttributes() {
+        Name = "xmlns:xsi",
+        Property = "http://www.w3.org/2001/XMLSchema-instance"
+      });
+
+      attributes.VariedAttributes.Add(new XmlFileVariedAttributes() {
+        Name = "xsi:schemaLocation",
+        Property = "http://www.sat.gob.mx/esquemas/ContabilidadE/1_3/BalanzaComprobacion " +
+        "http://www.sat.gob.mx/esquemas/ContabilidadE/1_3/BalanzaComprobacion/BalanzaComprobacion_1_3.xsd"
+      });
+
+      attributes.VariedAttributes.Add(new XmlFileVariedAttributes() {
+        Name = "TipoEnvio",
+        Property = "N"
+      });
+
+      return attributes;
     }
 
-    private string[] SetHeaderAttributes() {
-      
-      string[] attributes = { };
+    private XmlFileAttributes SetHeaderAttributes() {
 
-      if (true) {
+      XmlFileAttributes attributes = new XmlFileAttributes();
 
-        attributes.Append("xmlns:BCE");
-        attributes.Append("xmlns:xsi");
-        attributes.Append("xsi:schemaLocation");
-        attributes.Append("Version");
-        attributes.Append("RFC");
-        attributes.Append("Mes");
-        attributes.Append("Anio");
-        attributes.Append("TipoEnvio");
-
+      if (_command.TrialBalanceType == TrialBalanceType.Balanza) {
+        attributes = GetBalanceAttributes();
       } else {
-
       }
 
       return attributes;
@@ -95,7 +119,7 @@ namespace Empiria.FinancialAccounting.BanobrasIntegration.SATReports {
 
     private void SetXmlContent(TrialBalanceDto trialBalance) {
 
-      switch (trialBalance.Command.TrialBalanceType) {
+      switch (_command.TrialBalanceType) {
 
         case TrialBalanceType.Balanza:
           FilOutBalanza(trialBalance.Entries.Select(x => (TrialBalanceEntryDto) x));
@@ -107,10 +131,36 @@ namespace Empiria.FinancialAccounting.BanobrasIntegration.SATReports {
 
     }
 
+    private void SetXmlHeader() {
 
-    private void FilOutBalanza(IEnumerable<TrialBalanceEntryDto> entries) {
-      throw new NotImplementedException();
+      string headerName = SetHeaderName();
+      
+      XmlDocument xml = new XmlDocument();
+      XmlElement header = xml.CreateElement(headerName);
+      xml.AppendChild(header);
+
+      XmlFileAttributes attributes = SetHeaderAttributes();
+
+      foreach (var attr in attributes.VariedAttributes) {
+        XmlAttribute attribute = xml.CreateAttribute(attr.Name);
+        attribute.Value = attr.Property;
+        header.Attributes.Append(attribute);
+      }
+
+      _xmlFile.XmlStructure = xml;
     }
+
+    private string SetHeaderName() {
+      
+      if (_command.TrialBalanceType == TrialBalanceType.Balanza) {
+        return "BCE:Balanza";
+      } else {
+        return "";
+      }
+    }
+
+
+    
     #endregion
 
 

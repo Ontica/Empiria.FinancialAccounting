@@ -1,6 +1,6 @@
 ﻿/* Empiria Financial *****************************************************************************************
 *                                                                                                            *
-*  Module   : Banobras Integration Services                Component : Excel Reports                         *
+*  Module   : Banobras Integration Services                Component : Xml Reports                           *
 *  Assembly : FinancialAccounting.BanobrasIntegration.dll  Pattern   : Data Transfer Object                  *
 *  Type     : XmlFileDto                                   License   : Please read LICENSE.txt file          *
 *                                                                                                            *

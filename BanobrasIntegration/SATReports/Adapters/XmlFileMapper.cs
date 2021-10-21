@@ -1,6 +1,6 @@
 ﻿/* Empiria Financial *****************************************************************************************
 *                                                                                                            *
-*  Module   : Banobras Integration Services                Component : Excel Reports                         *
+*  Module   : Banobras Integration Services                Component : Xml Reports                           *
 *  Assembly : FinancialAccounting.BanobrasIntegration.dll  Pattern   : Mapper class                          *
 *  Type     : XmlFileMapper                              License   : Please read LICENSE.txt file            *
 *                                                                                                            *
@@ -14,9 +14,9 @@ namespace Empiria.FinancialAccounting.BanobrasIntegration.SATReports.Adapters {
   /// <summary>Mapper for XmlFile instances.</summary>
   static internal class XmlFileMapper {
 
-    static internal XmlFileDto Map(XmlFile excelFile) {
+    static internal XmlFileDto Map(XmlFile xmlFile) {
       return new XmlFileDto {
-        Url = excelFile.Url
+        Url = xmlFile.Url
       };
     }
 

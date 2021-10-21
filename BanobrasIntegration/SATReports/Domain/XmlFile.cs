@@ -1,6 +1,6 @@
 ﻿/* Empiria Financial *****************************************************************************************
 *                                                                                                            *
-*  Module   : Banobras Integration Services                Component : Excel Reports                         *
+*  Module   : Banobras Integration Services                Component : Xml Reports                           *
 *  Assembly : FinancialAccounting.BanobrasIntegration.dll  Pattern   : Service provider                      *
 *  Type     : ExcelFile                                    License   : Please read LICENSE.txt file          *
 *                                                                                                            *
@@ -9,6 +9,7 @@
 ************************* Copyright(c) La Vía Óntica SC, Ontica LLC and contributors. All rights reserved. **/
 using System;
 using System.IO;
+using System.Xml;
 
 namespace Empiria.FinancialAccounting.BanobrasIntegration.SATReports {
 
@@ -19,6 +20,10 @@ namespace Empiria.FinancialAccounting.BanobrasIntegration.SATReports {
     }
 
     #region Properties
+
+    public XmlDocument XmlStructure {
+      get; set;
+    }
 
     public string Url {
       get {
