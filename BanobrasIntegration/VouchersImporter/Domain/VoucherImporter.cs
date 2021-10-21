@@ -8,7 +8,7 @@
 *                                                                                                            *
 ************************* Copyright(c) La Vía Óntica SC, Ontica LLC and contributors. All rights reserved. **/
 using System;
-
+using System.Linq;
 using Empiria.FinancialAccounting.BanobrasIntegration.VouchersImporter.Adapters;
 using Empiria.FinancialAccounting.Vouchers.Adapters;
 using Empiria.FinancialAccounting.Vouchers.UseCases;
@@ -78,17 +78,34 @@ namespace Empiria.FinancialAccounting.BanobrasIntegration.VouchersImporter {
     #region Private methods
 
     private FixedList<NamedEntityDto> GetImportErrors() {
-      return new FixedList<NamedEntityDto>();
+      var errors = this._toImportVouchersList.SelectMany(
+                              z => z.AllIssues.FindAll(w => w.Type == VoucherIssueType.Error));
+
+      return new FixedList<NamedEntityDto>(errors.Select(x => x.ToNamedEntity()));
     }
 
 
     private FixedList<NamedEntityDto> GetImportWarnings() {
-      return new FixedList<NamedEntityDto>();
+      var warnings = this._toImportVouchersList.SelectMany(
+                              z => z.AllIssues.FindAll(w => w.Type == VoucherIssueType.Warning));
+
+      return new FixedList<NamedEntityDto>(warnings.Select(x => x.ToNamedEntity()));
     }
 
 
     private FixedList<ImportVouchersTotals> GetImportVoucherTotals() {
-      return new FixedList<ImportVouchersTotals>();
+      var sets = this._toImportVouchersList.Select(x => x.Header.ImportationSet)
+                                           .Distinct();
+
+      var y = sets.Select(x => new ImportVouchersTotals() {
+        UID = x,
+        Description = x,
+        VouchersCount = this._toImportVouchersList.CountAll(z => z.Header.ImportationSet.Equals(x)),
+        ErrorsCount = this._toImportVouchersList.Sum(z => z.AllIssues.Count(w => w.Type == VoucherIssueType.Error)),
+        WarningsCount = this._toImportVouchersList.Sum(z => z.AllIssues.Count(w => w.Type == VoucherIssueType.Warning)),
+      });
+
+      return new FixedList<ImportVouchersTotals>(y);
     }
 
 

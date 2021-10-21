@@ -22,7 +22,7 @@ namespace Empiria.FinancialAccounting.BanobrasIntegration.VouchersImporter {
     }
 
     static internal void StoreVoucherIssues(ToImportVoucher voucher) {
-      var issuesList = voucher.Issues;
+      var issuesList = voucher.AllIssues;
 
       foreach (var issue in issuesList) {
         StoreVoucherIssues(voucher, issue, 'V');

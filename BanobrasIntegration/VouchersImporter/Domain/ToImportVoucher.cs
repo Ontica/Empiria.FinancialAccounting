@@ -27,6 +27,8 @@ namespace Empiria.FinancialAccounting.BanobrasIntegration.VouchersImporter {
 
       this.Header = header;
       this.Entries = entries;
+
+      this.Validate();
     }
 
 
@@ -40,9 +42,19 @@ namespace Empiria.FinancialAccounting.BanobrasIntegration.VouchersImporter {
     }
 
 
-    public FixedList<ToImportVoucherIssue> Issues {
+    public FixedList<ToImportVoucherIssue> AllIssues {
       get {
-        return _issuesList.ToFixedList();
+        var issues = new List<ToImportVoucherIssue>();
+
+        issues.AddRange(_issuesList);
+
+        issues.AddRange(this.Header.Issues);
+
+        foreach (var item in this.Entries) {
+          issues.AddRange(item.Issues);
+        }
+
+        return issues.ToFixedList();
       }
     }
 
@@ -56,8 +68,31 @@ namespace Empiria.FinancialAccounting.BanobrasIntegration.VouchersImporter {
     }
 
 
-    internal void AddIssue(VoucherIssueType type, string description) {
-      _issuesList.Add(new ToImportVoucherIssue(type, description));
+    public FixedList<ToImportVoucherIssue> Issues {
+      get {
+        return _issuesList.ToFixedList();
+      }
+    }
+
+
+    internal void AddError(string description) {
+      _issuesList.Add(new ToImportVoucherIssue(VoucherIssueType.Error,
+                                               this.Header.ImportationSet,
+                                               description));
+    }
+
+
+    internal void AddWarning(string description) {
+      _issuesList.Add(new ToImportVoucherIssue(VoucherIssueType.Warning,
+                                               this.Header.ImportationSet,
+                                               description));
+    }
+
+
+    internal void Validate() {
+      if (this.Entries.Count < 2) {
+        AddError("La póliza no tiene movimientos suficientes.");
+      }
     }
 
   }  // class ToImportVoucher
