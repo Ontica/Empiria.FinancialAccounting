@@ -17,11 +17,11 @@ namespace Empiria.FinancialAccounting.BanobrasIntegration {
 
     public string RFC {
       get; set;
-    }
+    } = "BNO670315CD0";
 
     public string Version {
       get; set;
-    }
+    } = "1.3";
 
     public string Month {
       get; set;
@@ -39,7 +39,7 @@ namespace Empiria.FinancialAccounting.BanobrasIntegration {
 
   public class XmlFileVariedAttributes {
 
-    public string dName {
+    public string Name {
       get; set;
     }
 

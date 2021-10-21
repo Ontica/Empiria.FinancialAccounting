@@ -141,6 +141,22 @@ namespace Empiria.FinancialAccounting.BanobrasIntegration.SATReports {
 
       XmlFileAttributes attributes = SetHeaderAttributes();
 
+      XmlAttribute version = xml.CreateAttribute("Version");
+      version.Value = attributes.Version;
+      header.Attributes.Append(version);
+      
+      XmlAttribute rfc = xml.CreateAttribute("RFC");
+      rfc.Value = attributes.RFC;
+      header.Attributes.Append(rfc);
+
+      XmlAttribute mes = xml.CreateAttribute("Mes");
+      mes.Value = _command.InitialPeriod.FromDate.ToString("MM");
+      header.Attributes.Append(mes);
+
+      XmlAttribute anio = xml.CreateAttribute("Anio");
+      anio.Value = _command.InitialPeriod.FromDate.ToString("yyyy");
+      header.Attributes.Append(anio);
+
       foreach (var attr in attributes.VariedAttributes) {
         XmlAttribute attribute = xml.CreateAttribute(attr.Name);
         attribute.Value = attr.Property;
