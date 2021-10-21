@@ -19,39 +19,38 @@ namespace Empiria.FinancialAccounting.BanobrasIntegration.VouchersImporter.Adapt
       get; set;
     }
 
+
     public string AccountsChartUID {
       get; set;
-    }
+    } = string.Empty;
+
 
     public string TransactionTypeUID {
       get; set;
-    }
+    } = string.Empty;
+
+
+    public string VoucherTypeUID {
+      get; set;
+    } = string.Empty;
+
 
     public bool DistributeVouchers {
       get; set;
     }
 
+
     public bool GenerateSubledgerAccount {
       get; set;
     }
+
 
     public bool CanEditVoucherEntries {
       get; set;
     }
 
+
     public bool TryToCloseVouchers {
-      get; set;
-    }
-
-    public string Type {
-      get; set;
-    }
-
-    public string Format {
-      get; set;
-    }
-
-    public string Version {
       get; set;
     }
 
