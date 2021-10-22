@@ -8,10 +8,12 @@
 *                                                                                                            *
 ************************* Copyright(c) La Vía Óntica SC, Ontica LLC and contributors. All rights reserved. **/
 using System;
+using System.Collections.Generic;
 using System.Linq;
-using Empiria.FinancialAccounting.BanobrasIntegration.VouchersImporter.Adapters;
+
 using Empiria.FinancialAccounting.Vouchers.Adapters;
 using Empiria.FinancialAccounting.Vouchers.UseCases;
+using Empiria.FinancialAccounting.BanobrasIntegration.VouchersImporter.Adapters;
 
 namespace Empiria.FinancialAccounting.BanobrasIntegration.VouchersImporter {
 
@@ -54,7 +56,7 @@ namespace Empiria.FinancialAccounting.BanobrasIntegration.VouchersImporter {
       //}
 
       using (var usecases = VoucherEditionUseCases.UseCaseInteractor()) {
-        foreach (var voucher in _toImportVouchersList) {
+        foreach (ToImportVoucher voucher in _toImportVouchersList) {
           VoucherImporterDataService.StoreVoucher(voucher);
           VoucherImporterDataService.StoreVoucherIssues(voucher);
 
@@ -65,7 +67,7 @@ namespace Empiria.FinancialAccounting.BanobrasIntegration.VouchersImporter {
           VoucherFields voucherFields = MapToVoucherFields(voucher.Header);
           FixedList<VoucherEntryFields> entriesFields = MapToVoucherEntriesFields(voucher.Entries);
 
-          // usecases.ImportVoucher(voucherFields, entriesFields, _command.TryToCloseVouchers);
+          usecases.ImportVoucher(voucherFields, entriesFields, _command.TryToCloseVouchers);
         }
       }
 
@@ -94,18 +96,26 @@ namespace Empiria.FinancialAccounting.BanobrasIntegration.VouchersImporter {
 
 
     private FixedList<ImportVouchersTotals> GetImportVoucherTotals() {
-      var sets = this._toImportVouchersList.Select(x => x.Header.ImportationSet)
-                                           .Distinct();
+      var importationSets = this._toImportVouchersList.Select(x => x.Header.ImportationSet)
+                                                      .Distinct();
 
-      var y = sets.Select(x => new ImportVouchersTotals() {
-        UID = x,
-        Description = x,
-        VouchersCount = this._toImportVouchersList.CountAll(z => z.Header.ImportationSet.Equals(x)),
-        ErrorsCount = this._toImportVouchersList.Sum(z => z.AllIssues.Count(w => w.Type == VoucherIssueType.Error)),
-        WarningsCount = this._toImportVouchersList.Sum(z => z.AllIssues.Count(w => w.Type == VoucherIssueType.Warning)),
-      });
+      var list = new List<ImportVouchersTotals>(importationSets.Count());
 
-      return new FixedList<ImportVouchersTotals>(y);
+      foreach (string set in importationSets) {
+        var totals = new ImportVouchersTotals {
+          UID = set,
+          Description = set
+        };
+        var setVouchers = this._toImportVouchersList.FindAll(x => x.Header.ImportationSet.Equals(set));
+
+        totals.VouchersCount = setVouchers.Count;
+        totals.ErrorsCount = setVouchers.Sum(x => x.AllIssues.Count(y => y.Type == VoucherIssueType.Error));
+        totals.WarningsCount = setVouchers.Sum(x => x.AllIssues.Count(y => y.Type == VoucherIssueType.Warning));
+
+        list.Add(totals);
+      }
+
+      return list.ToFixedList();
     }
 
 
