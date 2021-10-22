@@ -100,15 +100,29 @@ namespace Empiria.FinancialAccounting {
       return subledgerAccount;
     }
 
-    public SubsidiaryAccount GetAccountWithId(int subsidaryAccountId) {
-      var subsidaryAccount = SubsidiaryAccount.Parse(subsidaryAccountId);
+
+    internal SubsidiaryAccount CreateAccount(string subledgerAccountNo) {
+      Assertion.AssertObject(subledgerAccountNo, "subledgerAccountNo");
+
+      var fields = new SubledgerAccountFields {
+        Number = subledgerAccountNo,
+        Name = "Sin nombre. Pendiente de clasificar."
+      };
+
+      return this.CreateAccount(fields);
+    }
+
+
+    public SubsidiaryAccount GetAccountWithId(int subledgerAccountId) {
+      var subsidaryAccount = SubsidiaryAccount.Parse(subledgerAccountId);
 
       Assertion.Assert(subsidaryAccount.SubsidaryLedger.Equals(this),
-          $"The subsidiary ledger account with id {subsidaryAccountId} does not " +
-          $"belong to subsidiary ledger '{this.Name}'.");
+          $"The subledger account with id {subledgerAccountId} does not " +
+          $"belong to subledger '{this.Name}'.");
 
       return subsidaryAccount;
     }
+
 
 
     #endregion Public methods

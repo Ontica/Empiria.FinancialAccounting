@@ -18,13 +18,16 @@ namespace Empiria.FinancialAccounting.Adapters {
       get; internal set;
     }
 
+
     public string Name {
       get; internal set;
     }
 
+
     public string Description {
       get; internal set;
-    }
+    } = string.Empty;
+
 
   }  // public class SubledgerAccountFields
 

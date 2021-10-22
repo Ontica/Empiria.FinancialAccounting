@@ -96,6 +96,11 @@ namespace Empiria.FinancialAccounting {
       this.Description = fields.Description;
     }
 
+
+    protected override void OnSave() {
+      SubsidiaryLedgerData.WriteSubledgerAccount(this);
+    }
+
     #endregion Methods
 
   }  // class SubsidiaryAccount

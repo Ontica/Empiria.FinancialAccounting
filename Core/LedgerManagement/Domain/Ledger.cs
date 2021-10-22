@@ -143,9 +143,29 @@ namespace Empiria.FinancialAccounting {
     }
 
 
+    public SubsidiaryAccount CreateSubledgerAccount(string subledgerAccountNo) {
+      subledgerAccountNo = FormatSubledgerAccount(subledgerAccountNo);
 
-    public string FormatSubledgerAccount(string numeroAuxiliar) {
-      return numeroAuxiliar;
+      SubsidiaryAccount subledgerAccount = this.TryGetSubledgerAccount(subledgerAccountNo);
+
+      if (subledgerAccount != null) {
+        return subledgerAccount;
+      }
+
+      SubsidiaryLedger subLedger = this.Subledgers().Find(
+              x => x.SubsidiaryLedgerType.Equals(SubsidiaryLedgerType.Pending));
+
+      if (subLedger == null) {
+        throw Assertion.AssertNoReachThisCode(
+            $"No se ha definido una lista de auxiliares pendientes para la contabilidad {this.FullName}.");
+      }
+
+      return subLedger.CreateAccount(subledgerAccountNo);
+    }
+
+
+    public string FormatSubledgerAccount(string subledgerAccountNo) {
+      return subledgerAccountNo;
     }
 
 
@@ -163,7 +183,9 @@ namespace Empiria.FinancialAccounting {
     }
 
 
-    public SubsidiaryAccount TryGetSubledgerAccount(string formattedAccountNo) {
+    public SubsidiaryAccount TryGetSubledgerAccount(string subledgerAccountNo) {
+      string formattedAccountNo = FormatSubledgerAccount(subledgerAccountNo);
+
       return LedgerData.TryGetSubledgerAccount(this, formattedAccountNo);
     }
 

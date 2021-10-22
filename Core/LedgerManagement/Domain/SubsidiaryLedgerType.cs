@@ -22,6 +22,13 @@ namespace Empiria.FinancialAccounting {
     }
 
 
+    public static SubsidiaryLedgerType Pending {
+      get {
+        return SubsidiaryLedgerType.Parse(19);
+      }
+    }
+
+
     static public FixedList<SubsidiaryLedgerType> GetList() {
       return BaseObject.GetList<SubsidiaryLedgerType>()
                        .ToFixedList();
