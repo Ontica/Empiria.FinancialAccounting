@@ -4,7 +4,7 @@
 *  Assembly : Empiria.FinancialAccounting.WebApi.dll       Pattern   : Controller                            *
 *  Type     : SATReportsController                         License   : Please read LICENSE.txt file          *
 *                                                                                                            *
-*  Summary  : Query web API used to retrive SAT Reports.                                                     *
+*  Summary  : Query web API used to retrive operational reports.                                             *
 *                                                                                                            *
 ************************* Copyright(c) La Vía Óntica SC, Ontica LLC and contributors. All rights reserved. **/
 using System;
@@ -26,7 +26,7 @@ namespace Empiria.FinancialAccounting.WebApi.SATReports {
     #region Web Apis
 
     [HttpPost]
-    [Route("v2/financial-accounting/sat-reports/trial-balance")]
+    [Route("v2/financial-accounting/operational-reports")]
     public SingleObjectModel GetTrialBalance([FromBody] TrialBalanceCommand command) {
       base.RequireBody(command);
 
@@ -41,7 +41,7 @@ namespace Empiria.FinancialAccounting.WebApi.SATReports {
 
 
     [HttpPost]
-    [Route("v2/financial-accounting/sat-reports/trial-balance/xml")]
+    [Route("v2/financial-accounting/operational-reports/xml")]
     public SingleObjectModel GetExcelTrialBalance([FromBody] TrialBalanceCommand command) {
       base.RequireBody(command);
 

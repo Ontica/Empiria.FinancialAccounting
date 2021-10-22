@@ -31,6 +31,14 @@ namespace Empiria.FinancialAccounting.BanobrasIntegration {
       get; set;
     }
 
+    public string Name {
+      get; set;
+    }
+
+    public string Property {
+      get; set;
+    }
+
     public List<XmlFileVariedAttributes> VariedAttributes {
       get; set;
     } = new List<XmlFileVariedAttributes>();
