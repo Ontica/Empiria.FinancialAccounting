@@ -18,12 +18,12 @@ using Empiria.FinancialAccounting.BalanceEngine.Adapters;
 namespace Empiria.FinancialAccounting.BanobrasIntegration.SATReports {
 
   public enum OperationalReportType { 
-
+    
     BalanzaSat,
 
     CatalogoDeCuentaSat
-
   }
+
 
   /// <summary>Creates a Xml file with trial balance information.</summary>
   public class XmlFileCreator {
