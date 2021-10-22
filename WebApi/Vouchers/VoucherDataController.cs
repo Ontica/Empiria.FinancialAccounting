@@ -83,20 +83,6 @@ namespace Empiria.FinancialAccounting.Vouchers.WebApi {
     }
 
 
-    [HttpPost]
-    [Route("v2/financial-accounting/vouchers/{voucherId:int}/assign-account/{standardAccountId:int}")]
-    public SingleObjectModel AssignStandardAccountToVoucherLedger([FromUri] int voucherId,
-                                                                  [FromUri] int standardAccountId) {
-
-      using (var usecases = VoucherDataUseCases.UseCaseInteractor()) {
-        LedgerAccountDto ledgerAccount = usecases.AssignVoucherLedgerStandardAccount(voucherId,
-                                                                                     standardAccountId);
-
-        return new SingleObjectModel(base.Request, ledgerAccount);
-      }
-    }
-
-
     [HttpGet]
     [Route("v2/financial-accounting/vouchers/{voucherId:int}/search-accounts-for-edition")]
     public CollectionModel SearchAccountsForVoucher([FromUri] int voucherId,

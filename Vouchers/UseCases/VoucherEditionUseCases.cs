@@ -12,6 +12,7 @@ using System;
 using Empiria.Services;
 
 using Empiria.FinancialAccounting.Vouchers.Adapters;
+using Empiria.FinancialAccounting.Adapters;
 
 namespace Empiria.FinancialAccounting.Vouchers.UseCases {
 
@@ -54,12 +55,45 @@ namespace Empiria.FinancialAccounting.Vouchers.UseCases {
       var voucher = Voucher.Parse(voucherId);
 
       foreach (var entryFields in entries) {
+        entryFields.VoucherId = voucherId;
+        if (entryFields.LedgerAccountId == -1 && entryFields.StandardAccountIdForCreateLedgerAccount != -1) {
+          var la = AssignVoucherLedgerStandardAccount(voucher.Id, entryFields.StandardAccountIdForCreateLedgerAccount);
+          entryFields.LedgerAccountId = la.Id;
+        }
+        if (entryFields.CreateSubledgerAccount) {
+          SubsidiaryAccount sa = voucher.Ledger.CreateSubledgerAccount(entryFields.SubledgerAccountNoToCreate);
+          entryFields.SubledgerAccountId = sa.Id;
+        }
         var voucherEntry = voucher.AppendEntry(entryFields);
 
         voucherEntry.Save();
       }
 
       return VoucherMapper.Map(voucher);
+    }
+
+
+    public LedgerAccountDto AssignVoucherLedgerStandardAccount(int voucherId,
+                                                               int standardAccountId) {
+      Assertion.Assert(voucherId > 0, "voucherId");
+      Assertion.Assert(standardAccountId > 0, "standardAccountId");
+
+      var voucher = Voucher.Parse(voucherId);
+
+      Assertion.Assert(voucher.IsOpened,
+          "Esta operación sólo está disponible para pólizas abiertas.");
+
+      var standardAccount = StandardAccount.Parse(standardAccountId);
+
+      LedgerAccount ledgerAccount;
+
+      if (voucher.Ledger.Contains(standardAccount)) {
+        ledgerAccount = voucher.Ledger.GetAccount(standardAccount);
+      } else {
+        ledgerAccount = voucher.Ledger.AssignAccount(standardAccount);
+      }
+
+      return LedgerMapper.MapAccount(ledgerAccount, voucher.AccountingDate);
     }
 
 

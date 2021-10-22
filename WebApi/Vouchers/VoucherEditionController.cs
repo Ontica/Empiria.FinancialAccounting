@@ -14,6 +14,7 @@ using Empiria.WebApi;
 
 using Empiria.FinancialAccounting.Vouchers.UseCases;
 using Empiria.FinancialAccounting.Vouchers.Adapters;
+using Empiria.FinancialAccounting.Adapters;
 
 namespace Empiria.FinancialAccounting.Vouchers.WebApi {
 
@@ -56,6 +57,20 @@ namespace Empiria.FinancialAccounting.Vouchers.WebApi {
         VoucherEntryDto copy = usecases.GetCopyOfLastEntry(voucherId);
 
         return new SingleObjectModel(base.Request, copy);
+      }
+    }
+
+
+    [HttpPost]
+    [Route("v2/financial-accounting/vouchers/{voucherId:int}/assign-account/{standardAccountId:int}")]
+    public SingleObjectModel AssignStandardAccountToVoucherLedger([FromUri] int voucherId,
+                                                                  [FromUri] int standardAccountId) {
+
+      using (var usecases = VoucherEditionUseCases.UseCaseInteractor()) {
+        LedgerAccountDto ledgerAccount = usecases.AssignVoucherLedgerStandardAccount(voucherId,
+                                                                                     standardAccountId);
+
+        return new SingleObjectModel(base.Request, ledgerAccount);
       }
     }
 
