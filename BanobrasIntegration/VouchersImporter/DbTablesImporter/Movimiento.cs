@@ -118,10 +118,14 @@ namespace Empiria.FinancialAccounting.BanobrasIntegration.VouchersImporter {
     }
 
 
+    private string _voucherUniqueID;
 
     internal string GetVoucherUniqueID() {
-      return $"{this.IdSistema}||{this.FechaAfectacion.ToString("yyyy-MM-dd")}||" +
-             $"{this.NumeroVolante}||{this.Descripcion}";
+      if (_voucherUniqueID == null) {
+        _voucherUniqueID = $"{this.IdSistema}||{this.FechaAfectacion.ToString("yyyy-MM-dd")}||" +
+                           $"{this.NumeroVolante}||{this.Descripcion}";
+      }
+      return _voucherUniqueID;
     }
 
 
@@ -194,15 +198,7 @@ namespace Empiria.FinancialAccounting.BanobrasIntegration.VouchersImporter {
     internal string GetSubledgerAccountNo() {
       Ledger ledger = this.Encabezado.GetLedger();
 
-      this.NumeroAuxiliar = EmpiriaString.TrimAll(this.NumeroAuxiliar);
-
       this.NumeroAuxiliar = ledger.FormatSubledgerAccount(this.NumeroAuxiliar);
-
-      if (this.NumeroAuxiliar.Length == 0 ||
-          this.NumeroAuxiliar == "00" ||
-          this.NumeroAuxiliar == "0") {
-        return String.Empty;
-      }
 
       return this.NumeroAuxiliar;
     }
