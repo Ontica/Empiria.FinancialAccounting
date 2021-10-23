@@ -8,114 +8,117 @@
 *                                                                                                            *
 ************************* Copyright(c) La Vía Óntica SC, Ontica LLC and contributors. All rights reserved. **/
 using System;
-using System.IO;
-
-using Empiria.Office;
+using System.Collections.Generic;
+using System.Linq;
 
 using Empiria.FinancialAccounting.Vouchers;
-using Empiria.FinancialAccounting.Vouchers.Adapters;
-using System.Collections.Generic;
+using Empiria.FinancialAccounting.BanobrasIntegration.VouchersImporter.Adapters;
+
 
 namespace Empiria.FinancialAccounting.BanobrasIntegration.VouchersImporter {
 
   /// <summary>Provides information structure services for vouchers contained in Excel Files.</summary>
   internal class ExcelFileStructurer {
 
-    private readonly Voucher _voucher;
-    private readonly Spreadsheet _excel;
+    private readonly ImportVouchersCommand _command;
+    private readonly FixedList<ExcelVoucherEntry> _entries;
 
-    internal ExcelFileStructurer(Voucher voucher, FileInfo excelFile) {
-      Assertion.AssertObject(voucher, "voucher");
-      Assertion.AssertObject(excelFile, "excelFile");
+    public ExcelFileStructurer(ImportVouchersCommand command,
+                               FixedList<ExcelVoucherEntry> excelEntries) {
+      Assertion.AssertObject(command, "command");
+      Assertion.AssertObject(excelEntries, "excelEntries");
 
-      _voucher = voucher;
-      _excel = Spreadsheet.Open(excelFile.FullName);
+      _command = command;
+      _entries = excelEntries;
+
+    }
+
+    internal FixedList<ToImportVoucher> GetToImportVouchersList() {
+      string[] voucherUniqueIDsArray = GetVoucherUniqueIds();
+
+      var vouchersListToImport = new List<ToImportVoucher>(voucherUniqueIDsArray.Length);
+
+      foreach (string voucherUniqueID in voucherUniqueIDsArray) {
+        ToImportVoucher voucherToImport = BuildVoucherToImport(voucherUniqueID);
+
+        vouchersListToImport.Add(voucherToImport);
+      }
+
+      return vouchersListToImport.ToFixedList();
     }
 
 
-    internal FixedList<VoucherEntryFields> GetVoucherEntries() {
-      string worksheetName = TryGetDataWorksheet();
+    private ToImportVoucher BuildVoucherToImport(string voucherUniqueID) {
+      ToImportVoucherHeader header = MapToImportVoucherHeader(voucherUniqueID);
+      FixedList<ToImportVoucherEntry> entries = MapToImportVoucherEntries(header);
 
-      if (worksheetName == null) {
-        Assertion.AssertFail("No encontré ninguna hoja en el archivo Excel con " +
-                             "información de movimientos de pólizas.");
-      }
-
-      FixedList<VoucherEntryFields> entries = ParseVoucherEntries(worksheetName);
-
-      return entries;
+      return new ToImportVoucher(header, entries);
     }
 
 
-    internal ExcelVoucherEntry ProcessExcelRow(Spreadsheet _excel, int row) {
-      var sourceData = new ExcelToImportVoucherEntry();
+    private ToImportVoucherHeader MapToImportVoucherHeader(string voucherUniqueID) {
+      var sourceHeader = _entries.Find(x => x.VoucherUniqueID == voucherUniqueID);
 
-      sourceData.BaseAccount = _excel.ReadCellValue<string>($"A{row}");
-      sourceData.Subaccount = _excel.ReadCellValue<string>($"B{row}");
-      sourceData.CurrencyCode = _excel.ReadCellValue<string>($"C{row}");
-      sourceData.Area = _excel.ReadCellValue<string>($"D{row}");
-      sourceData.Debit = _excel.ReadCellValue<decimal>($"E{row}", 0);
-      sourceData.Credit = _excel.ReadCellValue<decimal>($"F{row}", 0);
-      sourceData.SubledgerAccount = _excel.ReadCellValue<string>($"G{row}", string.Empty);
-      sourceData.ExchangeRate = _excel.ReadCellValue<decimal>($"H{row}", 0);
+      var header = new ToImportVoucherHeader {
+        ImportationSet = sourceHeader.ImportationSet,
+        UniqueID = sourceHeader.VoucherUniqueID,
+        Ledger = sourceHeader.GetLedger(),
+        Concept = sourceHeader.VoucherConcept,
+        AccountingDate = DateTime.Today,
+        VoucherType = VoucherType.Parse(_command.VoucherTypeUID),
+        TransactionType = TransactionType.Parse(_command.TransactionTypeUID),
+        FunctionalArea = sourceHeader.GetFunctionalArea(),
+        RecordingDate = DateTime.Today,
+        ElaboratedBy = Participant.Current,
 
-      return new ExcelVoucherEntry(_voucher, sourceData);
-    }
+        Issues = sourceHeader.GetHeaderIssues()
+      };
 
-    private FixedList<VoucherEntryFields> ParseVoucherEntries(string worksheetName) {
-      _excel.SelectWorksheet(worksheetName);
-
-      List<VoucherEntryFields> entriesList = new List<VoucherEntryFields>(16);
-
-      int row = 2;
-      while (true) {
-        if (_excel.HasNotCellValue($"A{row}")) {
-          break;
-        }
-
-        ExcelVoucherEntry excelRow = ProcessExcelRow(_excel, row);
-
-        VoucherEntryFields entry = excelRow.MapToVoucherEntryFields();
-
-        entriesList.Add(entry);
-
-        row++;
-      }
-
-      return entriesList.ToFixedList();
+      return header;
     }
 
 
-    private string TryGetDataWorksheet() {
-      foreach (var worksheetName in _excel.Worksheets()) {
-        if (WorksheetHasEntriesData(worksheetName)) {
-          return worksheetName;
-        }
-      }
-      return null;
+    private FixedList<ToImportVoucherEntry> MapToImportVoucherEntries(ToImportVoucherHeader header) {
+      var entries = _entries.FindAll(x => x.VoucherUniqueID == header.UniqueID);
+
+      var mapped = entries.Select(entry => MapToImportVoucherEntry(header, entry));
+
+      return new List<ToImportVoucherEntry>(mapped).ToFixedList();
     }
 
-    private bool WorksheetHasEntriesData(string worksheetName) {
-      _excel.SelectWorksheet(worksheetName);
 
-      int row = 2;
+    private ToImportVoucherEntry MapToImportVoucherEntry(ToImportVoucherHeader header,
+                                                         ExcelVoucherEntry sourceEntry) {
+      var entry = new ToImportVoucherEntry(header) {
+        StandardAccount = sourceEntry.GetStandardAccount(),
+        Sector = sourceEntry.GetSector(),
+        SubledgerAccount = sourceEntry.GetSubledgerAccount(),
+        SubledgerAccountNo = sourceEntry.GetSubledgerAccountNo(),
+        ResponsibilityArea = header.FunctionalArea,
+        BudgetConcept = string.Empty,
+        EventType = EventType.Empty,
+        VerificationNumber = string.Empty,
+        VoucherEntryType = sourceEntry.VoucherEntryType,
+        Date = header.AccountingDate,
+        Currency = sourceEntry.GetCurrency(),
+        Amount = sourceEntry.GetAmount(),
+        ExchangeRate = sourceEntry.GetExchangeRate(),
+        BaseCurrencyAmount = sourceEntry.GetBaseCurrencyAmount(),
+        Protected = false,
 
-      if (_excel.HasNotCellValue($"A{row}")) {
-        return false;
-      }
-      if (_excel.HasNotCellValue($"B{row}")) {
-        return false;
-      }
-      if (_excel.HasNotCellValue($"C{row}")) {
-        return false;
-      }
-      if (_excel.HasNotCellValue($"D{row}")) {
-        return false;
-      }
+        Issues = sourceEntry.GetEntryIssues()
+      };
 
-      return true;
+      return entry;
     }
 
-  }  // class VoucherEntriesFileImporter
+
+    private string[] GetVoucherUniqueIds() {
+      return _entries.Select(x => x.VoucherUniqueID)
+                     .Distinct()
+                     .ToArray();
+    }
+
+  }  // class ExcelFileStructurer
 
 }  // namespace Empiria.FinancialAccounting.BanobrasIntegration.VouchersImporter
