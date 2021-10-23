@@ -17,6 +17,7 @@ using Empiria.FinancialAccounting.BalanceEngine.Adapters;
 
 using Empiria.FinancialAccounting.BanobrasIntegration.SATReports;
 using Empiria.FinancialAccounting.BanobrasIntegration.SATReports.Adapters;
+using Empiria.FinancialAccounting.BanobrasIntegration.SATReports.UseCases;
 
 namespace Empiria.FinancialAccounting.WebApi.SATReports {
 
@@ -25,14 +26,28 @@ namespace Empiria.FinancialAccounting.WebApi.SATReports {
 
     #region Web Apis
 
+    //[HttpPost]
+    //[Route("v2/financial-accounting/operational-reports")]
+    //public SingleObjectModel GetTrialBalance([FromBody] TrialBalanceCommand command) {
+    //  base.RequireBody(command);
+
+    //  using (var usecases = TrialBalanceUseCases.UseCaseInteractor()) {
+
+    //    TrialBalanceDto trialBalance = usecases.BuildTrialBalance(command);
+
+    //    return new SingleObjectModel(this.Request, trialBalance);
+    //  }
+    //}
+
     [HttpPost]
     [Route("v2/financial-accounting/operational-reports")]
-    public SingleObjectModel GetTrialBalance([FromBody] TrialBalanceCommand command) {
+    public SingleObjectModel GetOperationalReport([FromBody] OperationalReportCommand command) {
       base.RequireBody(command);
 
-      using (var usecases = TrialBalanceUseCases.UseCaseInteractor()) {
+      OperationalReportCommand _command = new OperationalReportCommand();
 
-        TrialBalanceDto trialBalance = usecases.BuildTrialBalance(command);
+      using (var usecases = OperationalReportsUseCases.UseCaseInteractor()) {
+        OperationalReportDto trialBalance = usecases.GetOperationalReport(command);
 
         return new SingleObjectModel(this.Request, trialBalance);
       }
