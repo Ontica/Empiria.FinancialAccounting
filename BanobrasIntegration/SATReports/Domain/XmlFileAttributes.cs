@@ -39,22 +39,6 @@ namespace Empiria.FinancialAccounting.BanobrasIntegration {
       get; set;
     }
 
-    public List<XmlFileVariedAttributes> VariedAttributes {
-      get; set;
-    } = new List<XmlFileVariedAttributes>();
-
   } // class XmlFileAttributes
-
-  public class XmlFileVariedAttributes {
-
-    public string Name {
-      get; set;
-    }
-
-    public string Property {
-      get; set;
-    }
-
-  } // class XmlFileVariedAttributes
 
 } // namespace Empiria.FinancialAccounting.BanobrasIntegration
