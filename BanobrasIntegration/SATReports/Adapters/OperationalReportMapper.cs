@@ -28,46 +28,18 @@ namespace Empiria.FinancialAccounting.BanobrasIntegration.SATReports.Adapters {
 
 
     internal static OperationalReportDto MapFromAccountsChart(
-                                          OperationalReportCommand command, AccountsChartDto accountsChart) {
+                                         OperationalReportCommand command, 
+                                         FixedList<AccountDescriptorDto> accounts) {
 
       return new OperationalReportDto {
         Command = command,
         Columns = MapColumns(),
-        Entries = MapAccountsChart(accountsChart.Accounts)
+        Entries = MapAccountsChart(accounts)
       };
 
-      throw new NotImplementedException();
     }
 
-    private static FixedList<IOperationalReportEntryDto> MapAccountsChart(
-                                      FixedList<AccountDescriptorDto> list) {
-
-      var mappedItems = list.Select((x) => MapAccountsToOperationalReport((AccountDescriptorDto) x));
-
-      return new FixedList<IOperationalReportEntryDto>(mappedItems);
-      
-    }
-
-    static private OperationalReportEntryDto MapAccountsToOperationalReport(AccountDescriptorDto account) {
-
-      return new OperationalReportEntryDto {
-        
-      };
-      
-    }
-
-    private static FixedList<DataTableColumn> MapColumns() {
-      List<DataTableColumn> columns = new List<DataTableColumn>();
-
-      columns.Add(new DataTableColumn("codAgrup", "CodAgrup", "text"));
-      columns.Add(new DataTableColumn("numCta", "NumCta", "text"));
-      columns.Add(new DataTableColumn("desc", "Desc", "text"));
-      columns.Add(new DataTableColumn("subCtaDe", "SubCtaDe", "text"));
-      columns.Add(new DataTableColumn("nivel", "Nivel", "text"));
-      columns.Add(new DataTableColumn("natur", "Natur", "text"));
-
-      return columns.ToFixedList();
-    }
+    #region Helpers
 
     static private FixedList<IOperationalReportEntryDto> MapBalanceEntry(FixedList<ITrialBalanceEntryDto> list) {
 
@@ -93,6 +65,46 @@ namespace Empiria.FinancialAccounting.BanobrasIntegration.SATReports.Adapters {
       };
 
     }
+
+
+    private static FixedList<IOperationalReportEntryDto> MapAccountsChart(
+                                      FixedList<AccountDescriptorDto> list) {
+
+      var mappedItems = list.Select((x) => MapAccountsToOperationalReport((AccountDescriptorDto) x));
+
+      return new FixedList<IOperationalReportEntryDto>(mappedItems);
+
+    }
+
+    static private OperationalReportEntryDto MapAccountsToOperationalReport(AccountDescriptorDto account) {
+
+      return new OperationalReportEntryDto {
+        GroupingCode = "000",
+        AccountNumber = account.Number,
+        AccountName = account.Name,
+        AccountParent = account.Number,
+        AccountLevel = account.Level,
+        Naturaleza = account.DebtorCreditor == DebtorCreditorType.Deudora ?
+                     "D" : "A"
+      };
+
+    }
+
+    private static FixedList<DataTableColumn> MapColumns() {
+      List<DataTableColumn> columns = new List<DataTableColumn>();
+
+      columns.Add(new DataTableColumn("groupingCode", "CodAgrup", "text"));
+      columns.Add(new DataTableColumn("accountNumber", "NumCta", "text"));
+      columns.Add(new DataTableColumn("accountName", "Desc", "text"));
+      columns.Add(new DataTableColumn("accountParent", "SubCtaDe", "text"));
+      columns.Add(new DataTableColumn("accountLevel", "Nivel", "text"));
+      columns.Add(new DataTableColumn("naturaleza", "Natur", "text"));
+
+      return columns.ToFixedList();
+    }
+
+    #endregion
+
 
   } // class OperationalReportMapper
 

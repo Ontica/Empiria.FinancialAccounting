@@ -51,17 +51,15 @@ namespace Empiria.FinancialAccounting.BanobrasIntegration.SATReports.UseCases {
 
       } else if (command.ReportType == OperationalReportType.CatalogoDeCuentaSat) {
 
-        //using (var usecases = AccountsChartUseCases.UseCaseInteractor()) {
-        //  AccountsSearchCommand searchCommand = command.MapToAccountsSearchCommand();
-        //  searchCommand.FromAccount = "1101";
-        //  searchCommand.ToAccount = "1199";
-        //  AccountsChartDto accountsChart = usecases.SearchAccounts(command.AccountsChartUID, searchCommand);
+        using (var usecases = AccountsChartUseCases.UseCaseInteractor()) {
+          AccountsSearchCommand searchCommand = command.MapToAccountsSearchCommand();
+          searchCommand.FromAccount = "1101";
+          searchCommand.ToAccount = "1199";
+          AccountsChartDto accountsChart = usecases.SearchAccounts(command.AccountsChartUID, searchCommand);
 
-        //  Assertion.AssertObject(accountsChart, $"No hay datos para mostrar.");
-          
-        //  return OperationalReportMapper.MapFromAccountsChart(command, accountsChart);
-        //}
-        throw new NotImplementedException();
+          return OperationalReportMapper.MapFromAccountsChart(command, accountsChart.Accounts);
+        }
+
       } else {
         throw new NotImplementedException();
       }

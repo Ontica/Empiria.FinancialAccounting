@@ -99,6 +99,11 @@ namespace Empiria.FinancialAccounting.BanobrasIntegration.SATReports.Adapters {
       internal set;
     }
 
+
+    public string AccountParent {
+      get;
+      internal set;
+    }
   } // class OperationalReportEntryDto
 
 } // Empiria.FinancialAccounting.BanobrasIntegration.SATReports.Adapters
