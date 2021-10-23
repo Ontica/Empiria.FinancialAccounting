@@ -23,9 +23,6 @@ namespace Empiria.FinancialAccounting.BanobrasIntegration.SATReports.Adapters {
       get; internal set;
     }
 
-    public string Url {
-      get; internal set;
-    }
 
   } // class XmlFileDto
 

@@ -8,6 +8,9 @@
 *                                                                                                            *
 ************************* Copyright(c) La Vía Óntica SC, Ontica LLC and contributors. All rights reserved. **/
 using System;
+using Empiria.FinancialAccounting.Adapters;
+using Empiria.FinancialAccounting.BalanceEngine;
+using Empiria.FinancialAccounting.BalanceEngine.Adapters;
 
 namespace Empiria.FinancialAccounting.BanobrasIntegration.SATReports.Adapters {
 
@@ -34,7 +37,23 @@ namespace Empiria.FinancialAccounting.BanobrasIntegration.SATReports.Adapters {
     }
 
 
+    public TrialBalanceCommand MapToTrialBalanceCommand() {
+      return new TrialBalanceCommand {
+        TrialBalanceType = TrialBalanceType.Balanza,
+        AccountsChartUID = AccountsChart.Parse(this.AccountsChartUID).UID,
+        ShowCascadeBalances = false,
+        InitialPeriod = new TrialBalanceCommandPeriod {
+          FromDate = this.FromDate,
+          ToDate = this.ToDate
+        },
+      };
+    }
 
+    internal AccountsSearchCommand MapToAccountsSearchCommand() {
+      return new AccountsSearchCommand{
+        Date = this.ToDate
+      };
+    }
   } // class OperationalReportCommand
 
 } // namespace Empiria.FinancialAccounting.BanobrasIntegration.SATReports.Adapters
