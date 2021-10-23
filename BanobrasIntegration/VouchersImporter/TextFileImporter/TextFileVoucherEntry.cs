@@ -148,11 +148,6 @@ namespace Empiria.FinancialAccounting.BanobrasIntegration.VouchersImporter {
     #region Private methods
 
 
-    static private string FormatSubledgerAccount(string subledgerAccount) {
-      return subledgerAccount.TrimStart('0');
-    }
-
-
     private void CheckTextLineLength(string textLine) {
       Assertion.AssertObject(textLine, "textLine");
 
@@ -161,6 +156,7 @@ namespace Empiria.FinancialAccounting.BanobrasIntegration.VouchersImporter {
                        $"La línea de texto {this.TextLineIndex} tiene una longitud " +
                        $"({textLine.Length}) que no reconozco.");
     }
+
 
     private void LoadTextLine(string textLine) {
       int lineLengthExcess;
@@ -203,7 +199,6 @@ namespace Empiria.FinancialAccounting.BanobrasIntegration.VouchersImporter {
                                         textLine.Substring(344 + lineLengthExcess, 8));
 
       this.SubledgerAccountNumber = textLine.Substring(371 + lineLengthExcess, 20);
-      this.SubledgerAccountNumber = FormatSubledgerAccount(this.SubledgerAccountNumber);
 
       this.AvailabilityCode = textLine.Substring(403 + lineLengthExcess, 1);
 
@@ -240,17 +235,7 @@ namespace Empiria.FinancialAccounting.BanobrasIntegration.VouchersImporter {
     internal string GetSubledgerAccountNo() {
       Ledger ledger = this.GetLedger();
 
-      this.SubledgerAccountNumber = EmpiriaString.TrimAll(this.SubledgerAccountNumber);
-
-      this.SubledgerAccountNumber = ledger.FormatSubledgerAccount(this.SubledgerAccountNumber);
-
-      if (this.SubledgerAccountNumber.Length == 0 ||
-          this.SubledgerAccountNumber == "00" ||
-          this.SubledgerAccountNumber == "0") {
-        return String.Empty;
-      }
-
-      return this.SubledgerAccountNumber;
+      return ledger.FormatSubledgerAccount(this.SubledgerAccountNumber);
     }
 
 
@@ -285,21 +270,26 @@ namespace Empiria.FinancialAccounting.BanobrasIntegration.VouchersImporter {
       }
     }
 
+
     internal decimal GetAmount() {
       return Math.Abs(this.Amount);
     }
+
 
     internal decimal GetBaseCurrencyAmount() {
       return Math.Abs(this.Amount) * this.ExchangeRate;
     }
 
+
     internal FixedList<ToImportVoucherIssue> GetEntryIssues() {
       return _entryIssues.ToFixedList();
     }
 
+
     internal decimal GetExchangeRate() {
       return this.ExchangeRate;
     }
+
 
     internal VoucherEntryType GetVoucherEntryType() {
       return this.Amount >= 0 ? VoucherEntryType.Debit : VoucherEntryType.Credit;
@@ -364,7 +354,9 @@ namespace Empiria.FinancialAccounting.BanobrasIntegration.VouchersImporter {
 
 
     internal string GetConcept() {
-      return EmpiriaString.TrimAll(this.TransactionConcept);
+      string temp = this.TransactionConcept.Replace("-", " ");
+
+      return EmpiriaString.TrimAll(temp);
     }
 
 

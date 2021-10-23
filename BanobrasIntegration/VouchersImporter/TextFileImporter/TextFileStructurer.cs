@@ -111,7 +111,6 @@ namespace Empiria.FinancialAccounting.BanobrasIntegration.VouchersImporter {
       entry.VerificationNumber = string.Empty;
       entry.VoucherEntryType = sourceEntry.GetVoucherEntryType();
       entry.Date = header.AccountingDate;
-      entry.Concept = sourceEntry.GetConcept();
       entry.Currency = sourceEntry.GetCurrency();
       entry.Amount = sourceEntry.GetAmount();
       entry.ExchangeRate = sourceEntry.GetExchangeRate();
