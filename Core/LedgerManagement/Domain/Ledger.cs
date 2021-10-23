@@ -165,7 +165,35 @@ namespace Empiria.FinancialAccounting {
 
 
     public string FormatSubledgerAccount(string subledgerAccountNo) {
-      return subledgerAccountNo;
+      var temp = EmpiriaString.TrimAll(subledgerAccountNo);
+
+      temp = temp.TrimStart('0');
+
+      if (temp.Length == 0) {
+        return string.Empty;
+      }
+
+      int prefixLength = this.SubsidiaryAccountsPrefix.Length;
+      int accountPartLength = 16;
+
+      if (temp.Length == prefixLength + accountPartLength &&
+          temp.StartsWith(this.SubsidiaryAccountsPrefix)) {
+        return temp;
+
+      } else if (temp.Length == prefixLength + accountPartLength &&
+                 !temp.StartsWith(this.SubsidiaryAccountsPrefix)) {
+        Assertion.AssertFail($"El auxiliar '{subledgerAccountNo}' tiene un formato que no " +
+                             $"es válido para la contabilidad {this.FullName}.");
+
+      } else if (temp.Length < accountPartLength) {
+        return this.SubsidiaryAccountsPrefix + temp.PadLeft(16, '0');
+
+      } else if (temp.Length > prefixLength + accountPartLength) {
+        Assertion.AssertNoReachThisCode($"El auxiliar '{subledgerAccountNo}'" +
+                                        $"tiene una longitud que excede el formato determinado.");
+      }
+
+      return temp;
     }
 
 
