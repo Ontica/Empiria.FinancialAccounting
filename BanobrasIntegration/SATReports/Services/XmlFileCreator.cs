@@ -14,6 +14,7 @@ using System.Xml;
 
 using Empiria.FinancialAccounting.BalanceEngine;
 using Empiria.FinancialAccounting.BalanceEngine.Adapters;
+using Empiria.FinancialAccounting.BanobrasIntegration.SATReports.Adapters;
 
 namespace Empiria.FinancialAccounting.BanobrasIntegration.SATReports {
 
@@ -28,7 +29,7 @@ namespace Empiria.FinancialAccounting.BanobrasIntegration.SATReports {
   /// <summary>Creates a Xml file with trial balance information.</summary>
   public class XmlFileCreator {
 
-    private TrialBalanceCommand _command = new TrialBalanceCommand();
+    private OperationalReportCommand _command = new OperationalReportCommand();
     private XmlFile _xmlFile;
 
     public XmlFileCreator() {
@@ -36,16 +37,17 @@ namespace Empiria.FinancialAccounting.BanobrasIntegration.SATReports {
     }
 
 
-    internal XmlFile CreateXmlFile(TrialBalanceDto trialBalance) {
-      Assertion.AssertObject(trialBalance, "trialBalance");
+    internal XmlFile CreateOperationalReportFile(OperationalReportDto operationalReport, 
+                                                 OperationalReportCommand command) {
+      Assertion.AssertObject(operationalReport, "operationalReport");
 
-      _command = trialBalance.Command;
+      _command = command;
 
       _xmlFile = new XmlFile();
 
       SetXmlHeader();
 
-      SetXmlContent(trialBalance);
+      SetXmlContent(operationalReport);
 
       return _xmlFile;
     }
@@ -53,7 +55,7 @@ namespace Empiria.FinancialAccounting.BanobrasIntegration.SATReports {
 
     #region Private methods
 
-    private void FilOutBalanza(IEnumerable<TrialBalanceEntryDto> entries) {
+    private void FilOutBalanza(IEnumerable<OperationalReportEntryDto> entries) {
 
       XmlDocument doc = _xmlFile.XmlStructure;
 
@@ -63,31 +65,37 @@ namespace Empiria.FinancialAccounting.BanobrasIntegration.SATReports {
         XmlElement ctas = doc.CreateElement("BCE:Ctas");
         root.AppendChild(ctas);
 
-        XmlAttribute numCta = doc.CreateAttribute("NumCta");
-        numCta.Value = entry.AccountNumber;
-        ctas.Attributes.Append(numCta);
-
-        XmlAttribute saldoIni = doc.CreateAttribute("SaldoIni");
-        saldoIni.Value = entry.InitialBalance.ToString();
-        ctas.Attributes.Append(saldoIni);
-
-        XmlAttribute debe = doc.CreateAttribute("Debe");
-        debe.Value = entry.Debit.ToString();
-        ctas.Attributes.Append(debe);
+        XmlAttribute saldoFin = doc.CreateAttribute("SaldoFin");
+        saldoFin.Value = entry.InitialBalance.ToString();
+        ctas.Attributes.Append(saldoFin);
 
         XmlAttribute haber = doc.CreateAttribute("Haber");
         haber.Value = entry.Credit.ToString();
         ctas.Attributes.Append(haber);
 
-        XmlAttribute saldoFin = doc.CreateAttribute("SaldoFin");
-        saldoFin.Value = entry.InitialBalance.ToString();
-        ctas.Attributes.Append(saldoFin);
+        XmlAttribute debe = doc.CreateAttribute("Debe");
+        debe.Value = entry.Debit.ToString();
+        ctas.Attributes.Append(debe);
+
+        XmlAttribute saldoIni = doc.CreateAttribute("SaldoIni");
+        saldoIni.Value = entry.InitialBalance.ToString();
+        ctas.Attributes.Append(saldoIni);
+
+        XmlAttribute numCta = doc.CreateAttribute("NumCta");
+        numCta.Value = entry.AccountNumber;
+        ctas.Attributes.Append(numCta);
+
       }
       _xmlFile.XmlStructure = doc;
     }
 
     private List<XmlFileAttributes> GetBalanceAttributes() {
       List<XmlFileAttributes> attributes = new List<XmlFileAttributes>();
+
+      attributes.Add(new XmlFileAttributes() {
+        Name = "TipoEnvio",
+        Property = "N"
+      });
 
       attributes.Add(new XmlFileAttributes() {
         Name = "xmlns:BCE",
@@ -105,18 +113,13 @@ namespace Empiria.FinancialAccounting.BanobrasIntegration.SATReports {
         "http://www.sat.gob.mx/esquemas/ContabilidadE/1_3/BalanzaComprobacion/BalanzaComprobacion_1_3.xsd"
       });
 
-      attributes.Add(new XmlFileAttributes() {
-        Name = "TipoEnvio",
-        Property = "N"
-      });
-
       return attributes;
     }
 
     private List<XmlFileAttributes> SetHeaderAttributes() {
       List<XmlFileAttributes> attributes = new List<XmlFileAttributes>();
 
-      if (_command.TrialBalanceType == TrialBalanceType.Balanza) {
+      if (_command.ReportType == OperationalReportType.BalanzaSat) {
         attributes = GetBalanceAttributes();
       } else {
       }
@@ -124,12 +127,12 @@ namespace Empiria.FinancialAccounting.BanobrasIntegration.SATReports {
       return attributes;
     }
 
-    private void SetXmlContent(TrialBalanceDto trialBalance) {
+    private void SetXmlContent(OperationalReportDto operationalReport) {
 
-      switch (_command.TrialBalanceType) {
+      switch (_command.ReportType) {
 
-        case TrialBalanceType.Balanza:
-          FilOutBalanza(trialBalance.Entries.Select(x => (TrialBalanceEntryDto) x));
+        case OperationalReportType.BalanzaSat:
+          FilOutBalanza(operationalReport.Entries.Select(x => (OperationalReportEntryDto) x));
           return;
 
         default:
@@ -148,6 +151,14 @@ namespace Empiria.FinancialAccounting.BanobrasIntegration.SATReports {
 
       List<XmlFileAttributes> attributes = SetHeaderAttributes();
 
+      XmlAttribute anio = xml.CreateAttribute("Anio");
+      anio.Value = _command.FromDate.ToString("yyyy");
+      header.Attributes.Append(anio);
+
+      XmlAttribute mes = xml.CreateAttribute("Mes");
+      mes.Value = _command.FromDate.ToString("MM");
+      header.Attributes.Append(mes);
+
       XmlAttribute version = xml.CreateAttribute("Version");
       version.Value = attributes.First().Version;
       header.Attributes.Append(version);
@@ -155,14 +166,6 @@ namespace Empiria.FinancialAccounting.BanobrasIntegration.SATReports {
       XmlAttribute rfc = xml.CreateAttribute("RFC");
       rfc.Value = attributes.First().RFC;
       header.Attributes.Append(rfc);
-
-      XmlAttribute mes = xml.CreateAttribute("Mes");
-      mes.Value = _command.InitialPeriod.FromDate.ToString("MM");
-      header.Attributes.Append(mes);
-
-      XmlAttribute anio = xml.CreateAttribute("Anio");
-      anio.Value = _command.InitialPeriod.FromDate.ToString("yyyy");
-      header.Attributes.Append(anio);
 
       foreach (var attr in attributes) {
         XmlAttribute attribute = xml.CreateAttribute(attr.Name);
@@ -175,7 +178,7 @@ namespace Empiria.FinancialAccounting.BanobrasIntegration.SATReports {
 
     private string SetHeaderName() {
       
-      if (_command.TrialBalanceType == TrialBalanceType.Balanza) {
+      if (_command.ReportType == OperationalReportType.BalanzaSat) {
         return "BCE:Balanza";
       } else {
         return "";

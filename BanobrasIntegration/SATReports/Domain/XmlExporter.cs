@@ -21,12 +21,12 @@ namespace Empiria.FinancialAccounting.BanobrasIntegration.SATReports {
   /// <summary>Main service to export accounting and balances information to xml.</summary>
   public class XmlExporter {
 
-    public XmlFileDto Exporter(TrialBalanceDto trialBalance) {
-      Assertion.AssertObject(trialBalance, "trialBalance");
+    public XmlFileDto Exporter(OperationalReportDto operationalReport, OperationalReportCommand command) {
+      Assertion.AssertObject(operationalReport, "operationalReport");
 
       var creator = new XmlFileCreator();
 
-      XmlFile xmlFile = creator.CreateXmlFile(trialBalance);
+      XmlFile xmlFile = creator.CreateOperationalReportFile(operationalReport, command);
 
       return XmlFileMapper.Map(xmlFile);
     }

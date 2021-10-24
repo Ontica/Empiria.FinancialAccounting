@@ -64,11 +64,9 @@ namespace Empiria.FinancialAccounting.Tests.Balances {
 
       command.TrialBalanceType = TrialBalanceType.Balanza;
       command.WithSubledgerAccount = false;
-      command.FromAccount = "1103";
-      command.ToAccount = "1103";
-      //command.WithSectorization = true;
+      command.WithSectorization = true;
       command.BalancesType = BalancesType.WithCurrentBalanceOrMovements;
-      //command.WithAverageBalance = true;
+      command.WithAverageBalance = true;
 
       TrialBalanceDto trialBalance = _usecases.BuildTrialBalance(command);
 
@@ -122,9 +120,9 @@ namespace Empiria.FinancialAccounting.Tests.Balances {
         FinalPeriod = new TrialBalanceCommandPeriod() {
           FromDate = new DateTime(2021, 07, 01),
           ToDate = new DateTime(2021, 07, 31)
-    }
-        
-    };
+        }
+
+      };
     }
 
     #endregion Helpers

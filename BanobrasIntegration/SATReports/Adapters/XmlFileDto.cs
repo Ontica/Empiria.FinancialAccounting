@@ -19,7 +19,7 @@ namespace Empiria.FinancialAccounting.BanobrasIntegration.SATReports.Adapters {
       // no-op
     }
 
-    public XmlDocument XmlStructure {
+    public string XmlStructure {
       get; internal set;
     }
 

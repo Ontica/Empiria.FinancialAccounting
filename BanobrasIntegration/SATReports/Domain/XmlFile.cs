@@ -25,6 +25,10 @@ namespace Empiria.FinancialAccounting.BanobrasIntegration.SATReports {
       get; set;
     }
 
+    public string XmlDesign {
+      get; set;
+    }
+
     public string Url {
       get {
         return $"/{FileInfo.Name}";

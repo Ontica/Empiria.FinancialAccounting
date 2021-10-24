@@ -20,7 +20,7 @@ namespace Empiria.FinancialAccounting.BanobrasIntegration.SATReports.Adapters {
       //};
 
       return new XmlFileDto {
-        XmlStructure = xmlFile.XmlStructure
+        XmlStructure = xmlFile.XmlStructure.OuterXml
       };
     }
 
