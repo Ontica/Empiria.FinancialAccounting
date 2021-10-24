@@ -28,15 +28,13 @@ namespace Empiria.FinancialAccounting.BanobrasIntegration.SATReports.Adapters {
 
 
     internal static OperationalReportDto MapFromAccountsChart(
-                                         OperationalReportCommand command, 
+                                         OperationalReportCommand command,
                                          FixedList<AccountDescriptorDto> accounts) {
-
       return new OperationalReportDto {
         Command = command,
         Columns = MapColumns(),
         Entries = MapAccountsChart(accounts)
       };
-
     }
 
     #region Helpers
@@ -63,7 +61,6 @@ namespace Empiria.FinancialAccounting.BanobrasIntegration.SATReports.Adapters {
         CurrentBalance = entry.CurrentBalance,
         AccountLevel = entry.AccountLevel,
       };
-
     }
 
 

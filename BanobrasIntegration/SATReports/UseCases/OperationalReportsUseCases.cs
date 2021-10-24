@@ -8,6 +8,7 @@
 *                                                                                                            *
 ************************* Copyright(c) La Vía Óntica SC, Ontica LLC and contributors. All rights reserved. **/
 using System;
+using System.Linq;
 
 using Empiria.Services;
 
@@ -39,34 +40,51 @@ namespace Empiria.FinancialAccounting.BanobrasIntegration.SATReports.UseCases {
     public OperationalReportDto GetOperationalReport(OperationalReportCommand command) {
       Assertion.AssertObject(command, "command");
 
-      if (command.ReportType == OperationalReportType.BalanzaSat) {
-        TrialBalanceCommand balanceCommand = command.MapToTrialBalanceCommand();
+      return GetOperationalReportType(command);
+    }
 
-        using (var usecases = TrialBalanceUseCases.UseCaseInteractor()) {
+    #endregion
 
-          TrialBalanceDto trialBalance = usecases.BuildTrialBalance(balanceCommand);
 
-          return OperationalReportMapper.MapFromTrialBalance(command, trialBalance);
-        }
+    #region Private methods
 
-      } else if (command.ReportType == OperationalReportType.CatalogoDeCuentaSat) {
+    private OperationalReportDto GetOperationalReportType(OperationalReportCommand command) {
+      
+      if (command.ReportType == OperationalReportType.CatalogoDeCuentaSat) {
 
-        using (var usecases = AccountsChartUseCases.UseCaseInteractor()) {
-          AccountsSearchCommand searchCommand = command.MapToAccountsSearchCommand();
-          searchCommand.FromAccount = "1101";
-          searchCommand.ToAccount = "1199";
-          AccountsChartDto accountsChart = usecases.SearchAccounts(command.AccountsChartUID, searchCommand);
+        return GetAccountsChart(command);
 
-          return OperationalReportMapper.MapFromAccountsChart(command, accountsChart.Accounts);
-        }
+      } else if (command.ReportType == OperationalReportType.BalanzaSat) {
+
+        return GetTrialBalance(command);
 
       } else {
         throw new NotImplementedException();
       }
+    }
+
+    private OperationalReportDto GetAccountsChart(OperationalReportCommand command) {
+
+      using (var usecases = AccountsChartUseCases.UseCaseInteractor()) {
+        AccountsSearchCommand searchCommand = command.MapToAccountsSearchCommand();
+
+        AccountsChartDto accountsChart = usecases.SearchAccounts(command.AccountsChartUID, searchCommand);
+
+        return OperationalReportMapper.MapFromAccountsChart(command, accountsChart.Accounts);
+      }
 
     }
 
+    private OperationalReportDto GetTrialBalance(OperationalReportCommand command) {
 
+      using (var usecases = TrialBalanceUseCases.UseCaseInteractor()) {
+        TrialBalanceCommand balanceCommand = command.MapToTrialBalanceCommand();
+
+        TrialBalanceDto trialBalance = usecases.BuildTrialBalance(balanceCommand);
+        
+        return OperationalReportMapper.MapFromTrialBalance(command, trialBalance);
+      }
+    }
 
     #endregion
 
