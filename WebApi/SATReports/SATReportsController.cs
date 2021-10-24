@@ -26,52 +26,35 @@ namespace Empiria.FinancialAccounting.WebApi.SATReports {
 
     #region Web Apis
 
-    //[HttpPost]
-    //[Route("v2/financial-accounting/operational-reports")]
-    //public SingleObjectModel GetTrialBalance([FromBody] TrialBalanceCommand command) {
-    //  base.RequireBody(command);
-
-    //  using (var usecases = TrialBalanceUseCases.UseCaseInteractor()) {
-
-    //    TrialBalanceDto trialBalance = usecases.BuildTrialBalance(command);
-
-    //    return new SingleObjectModel(this.Request, trialBalance);
-    //  }
-    //}
-
     [HttpPost]
     [Route("v2/financial-accounting/operational-reports")]
     public SingleObjectModel GetOperationalReport([FromBody] OperationalReportCommand command) {
       base.RequireBody(command);
 
-      OperationalReportCommand _command = new OperationalReportCommand();
-
       using (var usecases = OperationalReportsUseCases.UseCaseInteractor()) {
-        OperationalReportDto trialBalance = usecases.GetOperationalReport(command);
+        OperationalReportDto operationalReport = usecases.GetOperationalReport(command);
 
-        return new SingleObjectModel(this.Request, trialBalance);
+        return new SingleObjectModel(this.Request, operationalReport);
       }
     }
-
 
 
     [HttpPost]
     [Route("v2/financial-accounting/operational-reports/xml")]
-    public SingleObjectModel GetExcelTrialBalance([FromBody] TrialBalanceCommand command) {
+    public SingleObjectModel GetExcelTrialBalance([FromBody] OperationalReportCommand command) {
       base.RequireBody(command);
-
-      using (var usecases = TrialBalanceUseCases.UseCaseInteractor()) {
-
-        TrialBalanceDto trialBalance = usecases.BuildTrialBalance(command);
+      
+      using (var usecases = OperationalReportsUseCases.UseCaseInteractor()) {
+        OperationalReportDto operationalReport = usecases.GetOperationalReport(command);
 
         var xmlExporter = new XmlExporter();
 
-        XmlFileDto xmlFileDto = xmlExporter.Exporter(trialBalance);
+        XmlFileDto xmlFileDto = xmlExporter.Exporter(operationalReport, command);
 
         return new SingleObjectModel(this.Request, xmlFileDto);
       }
-    }
 
+    }
 
     #endregion Web Apis
 
