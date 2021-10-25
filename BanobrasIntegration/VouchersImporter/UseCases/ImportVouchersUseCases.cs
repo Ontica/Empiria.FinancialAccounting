@@ -47,7 +47,8 @@ namespace Empiria.FinancialAccounting.BanobrasIntegration.VouchersImporter.UseCa
         Assertion.AssertFail("El importador de pólizas ya está en ejecución.");
       }
 
-      importer.Start(command).ConfigureAwait(false);
+      importer.Start(command)
+              .ConfigureAwait(false);
 
       return importer.GetImportVouchersResult();
     }
@@ -80,9 +81,13 @@ namespace Empiria.FinancialAccounting.BanobrasIntegration.VouchersImporter.UseCa
                                                                   FileData excelFileData) {
       FileInfo excelFile = AssertParametersAreValidAndGetFileInfo(command, excelFileData);
 
+      PrepareCommandForImportTextFile(command);
+
       var importer = new ExcelVouchersImporter(command, excelFile);
 
-      return importer.DryRunImport();
+      ImportVouchersResult result = importer.DryRunImport();
+
+      return result;
     }
 
 
@@ -90,6 +95,8 @@ namespace Empiria.FinancialAccounting.BanobrasIntegration.VouchersImporter.UseCa
                                                                         ImportVouchersCommand command,
                                                                         FileData excelFileData) {
       FileInfo excelFile = AssertParametersAreValidAndGetFileInfo(command, excelFileData);
+
+      PrepareCommandForImportTextFile(command);
 
       var voucher = Voucher.Parse(voucherId);
 
@@ -102,6 +109,8 @@ namespace Empiria.FinancialAccounting.BanobrasIntegration.VouchersImporter.UseCa
     public ImportVouchersResult ImportVouchersFromExcelFile(ImportVouchersCommand command, FileData excelFileData) {
       FileInfo excelFile = AssertParametersAreValidAndGetFileInfo(command, excelFileData);
 
+      PrepareCommandForImportTextFile(command);
+
       var importer = new ExcelVouchersImporter(command, excelFile);
 
       return importer.Import();
@@ -110,6 +119,8 @@ namespace Empiria.FinancialAccounting.BanobrasIntegration.VouchersImporter.UseCa
 
     public ImportVouchersResult ImportVoucherEntriesFromExcelFile(int voucherId, ImportVouchersCommand command, FileData excelFileData) {
       FileInfo excelFile = AssertParametersAreValidAndGetFileInfo(command, excelFileData);
+
+      PrepareCommandForImportTextFile(command);
 
       var voucher = Voucher.Parse(voucherId);
 
