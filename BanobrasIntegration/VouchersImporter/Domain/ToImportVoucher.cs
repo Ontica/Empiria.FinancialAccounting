@@ -16,7 +16,7 @@ namespace Empiria.FinancialAccounting.BanobrasIntegration.VouchersImporter {
 
   /// <summary>Holds data for a voucher and its entries to be imported,
   /// regardless of its original source.</summary>
-  internal class ToImportVoucher {
+  public class ToImportVoucher {
 
     private readonly List<ToImportVoucherIssue> _issuesList = new List<ToImportVoucherIssue>();
 
@@ -91,7 +91,7 @@ namespace Empiria.FinancialAccounting.BanobrasIntegration.VouchersImporter {
 
     internal void Validate() {
       if (this.Entries.Count < 2) {
-        AddError("La póliza no tiene movimientos suficientes.");
+        AddError($"La póliza '{Header.UniqueID}' no tiene movimientos suficientes.");
       }
     }
 

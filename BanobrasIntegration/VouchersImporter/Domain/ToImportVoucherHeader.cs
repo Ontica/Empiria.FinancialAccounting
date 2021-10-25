@@ -14,7 +14,7 @@ using Empiria.FinancialAccounting.Vouchers;
 namespace Empiria.FinancialAccounting.BanobrasIntegration.VouchersImporter {
 
   /// <summary>Holds the header of a voucher to be imported.</summary>
-  internal class ToImportVoucherHeader {
+  public class ToImportVoucherHeader {
 
     public string ImportationSet {
       get; internal set;

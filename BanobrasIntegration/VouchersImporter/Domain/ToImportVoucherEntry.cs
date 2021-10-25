@@ -12,7 +12,7 @@ using Empiria.FinancialAccounting.Vouchers;
 
 namespace Empiria.FinancialAccounting.BanobrasIntegration.VouchersImporter {
 
-  internal class ToImportVoucherEntry {
+  public class ToImportVoucherEntry {
 
     internal ToImportVoucherEntry(ToImportVoucherHeader header) {
       this.ToImportVoucherHeader = header;

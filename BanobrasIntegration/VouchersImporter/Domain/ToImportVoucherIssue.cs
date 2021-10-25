@@ -64,7 +64,11 @@ namespace Empiria.FinancialAccounting.BanobrasIntegration.VouchersImporter {
 
 
     public NamedEntityDto ToNamedEntity() {
-      return new NamedEntityDto(this.ImportationSet, $"{this.Description} ({this.Location})");
+      if (this.Location.Length != 0) {
+        return new NamedEntityDto(this.ImportationSet, $"{this.Description} ({this.Location})");
+      } else {
+        return new NamedEntityDto(this.ImportationSet, $"{this.Description}");
+      }
     }
 
   }  // class ToImportVoucherIssue
