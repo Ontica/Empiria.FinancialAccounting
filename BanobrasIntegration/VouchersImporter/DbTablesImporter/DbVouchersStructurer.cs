@@ -46,10 +46,6 @@ namespace Empiria.FinancialAccounting.BanobrasIntegration.VouchersImporter {
 
       var toImportVoucher = new ToImportVoucher(header, entries);
 
-      //if (entries.Count < 2) {
-      //  toImportVoucher.AddIssue(VoucherIssueType.Error,
-      //                           "La póliza no tiene movimientos. No puede importarse.");
-      //}
 
       return toImportVoucher;
     }

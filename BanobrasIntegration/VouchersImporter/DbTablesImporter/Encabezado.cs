@@ -127,9 +127,9 @@ namespace Empiria.FinancialAccounting.BanobrasIntegration.VouchersImporter {
     internal Ledger GetLedger() {
       string ledgerNumber = this.AreaCaptura.Substring(1, 2);
 
-      Ledger ledger = this.GetAccountsChart().MasterData.Ledgers.Find(x => x.Number.Equals(ledgerNumber));
+      Ledger ledger = this.GetAccountsChart().TryGetLedger(ledgerNumber);
 
-      return ledger;
+      return ledger ?? Ledger.Empty;
     }
 
 
@@ -187,7 +187,7 @@ namespace Empiria.FinancialAccounting.BanobrasIntegration.VouchersImporter {
           return participant;
 
         } else {
-          EmpiriaLog.Info($"No encontré una cuenta de usuario {userID}. Sistema ({this.IdSistema})");
+          EmpiriaLog.Info($"No encontré la cuenta de usuario '{userID}'. Sistema ({this.IdSistema})");
 
           return Participant.Empty;
         }
@@ -195,7 +195,6 @@ namespace Empiria.FinancialAccounting.BanobrasIntegration.VouchersImporter {
         EmpiriaLog.Info($"Tuve problemas para encontrar la cuenta de usuario {userID}. Sistema ({this.IdSistema})");
 
         throw;
-        // return Participant.Empty;
       }
     }
 
