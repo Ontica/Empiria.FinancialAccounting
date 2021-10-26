@@ -27,13 +27,16 @@ namespace Empiria.FinancialAccounting.BanobrasIntegration.SATReports {
 
 
   /// <summary>Creates a Xml file with trial balance information.</summary>
-  public class XmlFileCreator {
+  internal class XmlFileCreator {
 
     private OperationalReportCommand _command = new OperationalReportCommand();
+    private readonly OperationalReportTemplateConfig _templateConfig;
     private XmlFile _xmlFile;
 
-    public XmlFileCreator() {
+    public XmlFileCreator(OperationalReportTemplateConfig templateConfig) {
+      Assertion.AssertObject(templateConfig, "templateConfig");
 
+      _templateConfig = templateConfig;
     }
 
 
@@ -54,6 +57,166 @@ namespace Empiria.FinancialAccounting.BanobrasIntegration.SATReports {
 
 
     #region Private methods
+
+    private string SetHeaderName() {
+
+      if (_command.ReportType == OperationalReportType.BalanzaSat) {
+        return "BCE:Balanza";
+      } else if (_command.ReportType == OperationalReportType.CatalogoDeCuentaSat) {
+        return "catalogocuentas:Catalogo";
+      } else {
+        return "";
+      }
+    }
+
+    private void SetXmlHeader() {
+
+      string headerName = SetHeaderName();
+
+      XmlDocument xml = new XmlDocument();
+      XmlElement header = xml.CreateElement(headerName);
+      xml.AppendChild(header);
+
+      List<XmlFileAttributes> attributes = SetHeaderAttributes();
+
+      XmlAttribute anio = xml.CreateAttribute("Anio");
+      anio.Value = _command.Date.ToString("yyyy");
+      header.Attributes.Append(anio);
+
+      XmlAttribute mes = xml.CreateAttribute("Mes");
+      mes.Value = _command.Date.ToString("MM");
+      header.Attributes.Append(mes);
+
+      XmlAttribute version = xml.CreateAttribute("Version");
+      version.Value = attributes.First().Version;
+      header.Attributes.Append(version);
+
+      XmlAttribute rfc = xml.CreateAttribute("RFC");
+      rfc.Value = attributes.First().RFC;
+      header.Attributes.Append(rfc);
+
+      XmlAttribute xsi = xml.CreateAttribute("xmlns:xsi");
+      xsi.Value = "http://www.w3.org/2001/XMLSchema-instance";
+      header.Attributes.Append(xsi);
+
+
+      foreach (var attr in attributes) {
+        XmlAttribute attribute = xml.CreateAttribute(attr.Name);
+        attribute.Value = attr.Property;
+        header.Attributes.Append(attribute);
+      }
+
+      _xmlFile.XmlStructure = xml;
+    }
+
+    private List<XmlFileAttributes> SetHeaderAttributes() {
+      List<XmlFileAttributes> attributes = new List<XmlFileAttributes>();
+
+      if (_command.ReportType == OperationalReportType.BalanzaSat) {
+        attributes = GetBalanceAttributes();
+      } else if(_command.ReportType == OperationalReportType.CatalogoDeCuentaSat) {
+        attributes = GetAccountsChartAttributes();
+      }
+
+      return attributes;
+    }
+
+
+    private void SetXmlContent(OperationalReportDto operationalReport) {
+
+      switch (_command.ReportType) {
+
+        case OperationalReportType.BalanzaSat:
+          FilOutBalanza(operationalReport.Entries.Select(x => (OperationalReportEntryDto) x));
+          return;
+
+        case OperationalReportType.CatalogoDeCuentaSat:
+          FilOutCatalogoDeCuenta(operationalReport.Entries.Select(x => (OperationalReportEntryDto) x));
+          return;
+
+        default:
+          throw Assertion.AssertNoReachThisCode();
+      }
+
+    }
+
+
+    private List<XmlFileAttributes> GetAccountsChartAttributes() {
+      List<XmlFileAttributes> attributes = new List<XmlFileAttributes>();
+
+      attributes.Add(new XmlFileAttributes() {
+        Name = "xsi:schemaLocation",
+        Property = "http://www.sat.gob.mx/esquemas/ContabilidadE/1_3/CatalogoCuentas " +
+                   "http://www.sat.gob.mx/esquemas/ContabilidadE/1_3/CatalogoCuentas/CatalogoCuentas_1_3.xsd"
+      });
+
+      attributes.Add(new XmlFileAttributes() {
+        Name = "xmlns:catalogocuentas",
+        Property = "http://www.sat.gob.mx/esquemas/ContabilidadE/1_3/CatalogoCuentas"
+      });
+
+      return attributes;
+    }
+
+    private List<XmlFileAttributes> GetBalanceAttributes() {
+      List<XmlFileAttributes> attributes = new List<XmlFileAttributes>();
+
+      attributes.Add(new XmlFileAttributes() {
+        Name = "TipoEnvio",
+        Property = "N"
+      });
+
+      attributes.Add(new XmlFileAttributes() {
+        Name = "xmlns:BCE",
+        Property = "http://www.sat.gob.mx/esquemas/ContabilidadE/1_3/BalanzaComprobacion"
+      });
+
+      attributes.Add(new XmlFileAttributes() {
+        Name = "xsi:schemaLocation",
+        Property = "http://www.sat.gob.mx/esquemas/ContabilidadE/1_3/BalanzaComprobacion " +
+        "http://www.sat.gob.mx/esquemas/ContabilidadE/1_3/BalanzaComprobacion/BalanzaComprobacion_1_3.xsd"
+      });
+
+      return attributes;
+    }
+
+    private void FilOutCatalogoDeCuenta(IEnumerable<OperationalReportEntryDto> entries) {
+
+      XmlDocument doc = _xmlFile.XmlStructure;
+
+      XmlNode root = doc.SelectSingleNode("Catalogo");
+
+      foreach (var entry in entries) {
+        XmlElement ctas = doc.CreateElement("catalogocuentas:Ctas");
+        root.AppendChild(ctas);
+
+        XmlAttribute natur = doc.CreateAttribute("Natur");
+        natur.Value = entry.Naturaleza;
+        ctas.Attributes.Append(natur);
+
+        XmlAttribute nivel = doc.CreateAttribute("Nivel");
+        nivel.Value = entry.AccountLevel.ToString();
+        ctas.Attributes.Append(nivel);
+
+        XmlAttribute subCtaDe = doc.CreateAttribute("SubCtaDe");
+        subCtaDe.Value = entry.AccountNumber.ToString();
+        ctas.Attributes.Append(subCtaDe);
+
+        XmlAttribute desc = doc.CreateAttribute("Desc");
+        desc.Value = entry.AccountName.ToString();
+        ctas.Attributes.Append(desc);
+
+        XmlAttribute numCta = doc.CreateAttribute("NumCta");
+        numCta.Value = entry.AccountNumber;
+        ctas.Attributes.Append(numCta);
+
+        XmlAttribute codAgrup = doc.CreateAttribute("CodAgrup");
+        codAgrup.Value = entry.GroupingCode;
+        ctas.Attributes.Append(codAgrup);
+
+      }
+      _xmlFile.XmlStructure = doc;
+    }
 
     private void FilOutBalanza(IEnumerable<OperationalReportEntryDto> entries) {
 
@@ -89,104 +252,7 @@ namespace Empiria.FinancialAccounting.BanobrasIntegration.SATReports {
       _xmlFile.XmlStructure = doc;
     }
 
-    private List<XmlFileAttributes> GetBalanceAttributes() {
-      List<XmlFileAttributes> attributes = new List<XmlFileAttributes>();
 
-      attributes.Add(new XmlFileAttributes() {
-        Name = "TipoEnvio",
-        Property = "N"
-      });
-
-      attributes.Add(new XmlFileAttributes() {
-        Name = "xmlns:BCE",
-        Property = "http://www.sat.gob.mx/esquemas/ContabilidadE/1_3/BalanzaComprobacion"
-      });
-
-      attributes.Add(new XmlFileAttributes() {
-        Name = "xmlns:xsi",
-        Property = "http://www.w3.org/2001/XMLSchema-instance"
-      });
-
-      attributes.Add(new XmlFileAttributes() {
-        Name = "xsi:schemaLocation",
-        Property = "http://www.sat.gob.mx/esquemas/ContabilidadE/1_3/BalanzaComprobacion " +
-        "http://www.sat.gob.mx/esquemas/ContabilidadE/1_3/BalanzaComprobacion/BalanzaComprobacion_1_3.xsd"
-      });
-
-      return attributes;
-    }
-
-    private List<XmlFileAttributes> SetHeaderAttributes() {
-      List<XmlFileAttributes> attributes = new List<XmlFileAttributes>();
-
-      if (_command.ReportType == OperationalReportType.BalanzaSat) {
-        attributes = GetBalanceAttributes();
-      } else {
-      }
-
-      return attributes;
-    }
-
-    private void SetXmlContent(OperationalReportDto operationalReport) {
-
-      switch (_command.ReportType) {
-
-        case OperationalReportType.BalanzaSat:
-          FilOutBalanza(operationalReport.Entries.Select(x => (OperationalReportEntryDto) x));
-          return;
-
-        default:
-          throw Assertion.AssertNoReachThisCode();
-      }
-
-    }
-
-    private void SetXmlHeader() {
-
-      string headerName = SetHeaderName();
-      
-      XmlDocument xml = new XmlDocument();
-      XmlElement header = xml.CreateElement(headerName);
-      xml.AppendChild(header);
-
-      List<XmlFileAttributes> attributes = SetHeaderAttributes();
-
-      XmlAttribute anio = xml.CreateAttribute("Anio");
-      anio.Value = _command.FromDate.ToString("yyyy");
-      header.Attributes.Append(anio);
-
-      XmlAttribute mes = xml.CreateAttribute("Mes");
-      mes.Value = _command.FromDate.ToString("MM");
-      header.Attributes.Append(mes);
-
-      XmlAttribute version = xml.CreateAttribute("Version");
-      version.Value = attributes.First().Version;
-      header.Attributes.Append(version);
-      
-      XmlAttribute rfc = xml.CreateAttribute("RFC");
-      rfc.Value = attributes.First().RFC;
-      header.Attributes.Append(rfc);
-
-      foreach (var attr in attributes) {
-        XmlAttribute attribute = xml.CreateAttribute(attr.Name);
-        attribute.Value = attr.Property;
-        header.Attributes.Append(attribute);
-      }
-
-      _xmlFile.XmlStructure = xml;
-    }
-
-    private string SetHeaderName() {
-      
-      if (_command.ReportType == OperationalReportType.BalanzaSat) {
-        return "BCE:Balanza";
-      } else {
-        return "";
-      }
-    }
-
-
-    
     #endregion
 
 

@@ -17,6 +17,7 @@ namespace Empiria.FinancialAccounting.BanobrasIntegration.SATReports {
   internal class XmlFile {
 
     public XmlFile() {
+      
     }
 
     #region Properties
@@ -31,7 +32,7 @@ namespace Empiria.FinancialAccounting.BanobrasIntegration.SATReports {
 
     public string Url {
       get {
-        return $"/{FileInfo.Name}";
+        return $"{OperationalReportTemplateConfig.BaseUrl}/{FileInfo.Name}";
       }
     }
 

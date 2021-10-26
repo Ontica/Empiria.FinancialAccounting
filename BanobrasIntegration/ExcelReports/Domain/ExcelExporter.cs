@@ -20,7 +20,7 @@ namespace Empiria.FinancialAccounting.BanobrasIntegration.ExcelReports {
   /// <summary>Main service to export accounting information to Microsoft Excel.</summary>
   public class ExcelExporter {
 
-    public ExcelFileDto Export(TrialBalanceDto trialBalance) {
+    public FileReportDto Export(TrialBalanceDto trialBalance) {
       Assertion.AssertObject(trialBalance, "trialBalance");
 
       var templateUID = $"TrialBalanceTemplate.{trialBalance.Command.TrialBalanceType}";
@@ -35,7 +35,7 @@ namespace Empiria.FinancialAccounting.BanobrasIntegration.ExcelReports {
     }
 
 
-    public ExcelFileDto Export(AccountsChartDto accountsChart,
+    public FileReportDto Export(AccountsChartDto accountsChart,
                                AccountsSearchCommand searchCommand) {
       Assertion.AssertObject(accountsChart, "accountsChart");
       Assertion.AssertObject(searchCommand, "searchCommand");
@@ -52,7 +52,7 @@ namespace Empiria.FinancialAccounting.BanobrasIntegration.ExcelReports {
     }
 
 
-    public ExcelFileDto Export(FixedList<GroupingRulesTreeItemDto> rulesTreeItems) {
+    public FileReportDto Export(FixedList<GroupingRulesTreeItemDto> rulesTreeItems) {
       Assertion.AssertObject(rulesTreeItems, "rulesTreeItems");
 
       var templateUID = $"GroupingRulesReportTemplate";
@@ -67,7 +67,7 @@ namespace Empiria.FinancialAccounting.BanobrasIntegration.ExcelReports {
     }
 
 
-    public ExcelFileDto Export(FinancialReportDto financialReport) {
+    public FileReportDto Export(FinancialReportDto financialReport) {
       Assertion.AssertObject(financialReport, "financialReport");
 
       var templateId = financialReport.Command.GetFinancialReportType().TemplateFileId;
@@ -82,7 +82,7 @@ namespace Empiria.FinancialAccounting.BanobrasIntegration.ExcelReports {
     }
 
 
-    public ExcelFileDto Export(StoredBalanceSetDto balanceSet) {
+    public FileReportDto Export(StoredBalanceSetDto balanceSet) {
       Assertion.AssertObject(balanceSet, "balanceSet");
 
       var templateUID = "BalanceSetTemplate";

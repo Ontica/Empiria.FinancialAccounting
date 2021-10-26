@@ -18,6 +18,7 @@ using Empiria.FinancialAccounting.BalanceEngine.Adapters;
 using Empiria.FinancialAccounting.BanobrasIntegration.SATReports;
 using Empiria.FinancialAccounting.BanobrasIntegration.SATReports.Adapters;
 using Empiria.FinancialAccounting.BanobrasIntegration.SATReports.UseCases;
+using Empiria.FinancialAccounting.BanobrasIntegration.ExcelReports.Adapters;
 
 namespace Empiria.FinancialAccounting.WebApi.SATReports {
 
@@ -49,7 +50,7 @@ namespace Empiria.FinancialAccounting.WebApi.SATReports {
 
         var xmlExporter = new XmlExporter();
 
-        XmlFileDto xmlFileDto = xmlExporter.Exporter(operationalReport, command);
+        FileReportDto xmlFileDto = xmlExporter.Export(operationalReport, command);
 
         return new SingleObjectModel(this.Request, xmlFileDto);
       }

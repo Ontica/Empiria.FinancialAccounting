@@ -49,17 +49,16 @@ namespace Empiria.FinancialAccounting.BanobrasIntegration.SATReports.UseCases {
     #region Private methods
 
     private OperationalReportDto GetOperationalReportType(OperationalReportCommand command) {
-      
-      if (command.ReportType == OperationalReportType.CatalogoDeCuentaSat) {
 
-        return GetAccountsChart(command);
+      switch (command.ReportType) {
+        case OperationalReportType.BalanzaSat:
+          return GetTrialBalance(command);
 
-      } else if (command.ReportType == OperationalReportType.BalanzaSat) {
+        case OperationalReportType.CatalogoDeCuentaSat:
+          return GetAccountsChart(command);
 
-        return GetTrialBalance(command);
-
-      } else {
-        throw new NotImplementedException();
+        default:
+          throw Assertion.AssertNoReachThisCode();
       }
     }
 
@@ -67,7 +66,7 @@ namespace Empiria.FinancialAccounting.BanobrasIntegration.SATReports.UseCases {
 
       using (var usecases = AccountsChartUseCases.UseCaseInteractor()) {
         AccountsSearchCommand searchCommand = command.MapToAccountsSearchCommand();
-
+        
         AccountsChartDto accountsChart = usecases.SearchAccounts(command.AccountsChartUID, searchCommand);
 
         return OperationalReportMapper.MapFromAccountsChart(command, accountsChart.Accounts);
@@ -79,7 +78,7 @@ namespace Empiria.FinancialAccounting.BanobrasIntegration.SATReports.UseCases {
 
       using (var usecases = TrialBalanceUseCases.UseCaseInteractor()) {
         TrialBalanceCommand balanceCommand = command.MapToTrialBalanceCommand();
-
+        
         TrialBalanceDto trialBalance = usecases.BuildTrialBalance(balanceCommand);
         
         return OperationalReportMapper.MapFromTrialBalance(command, trialBalance);

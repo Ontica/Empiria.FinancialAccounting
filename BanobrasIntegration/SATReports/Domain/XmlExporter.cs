@@ -21,15 +21,49 @@ namespace Empiria.FinancialAccounting.BanobrasIntegration.SATReports {
   /// <summary>Main service to export accounting and balances information to xml.</summary>
   public class XmlExporter {
 
-    public XmlFileDto Exporter(OperationalReportDto operationalReport, OperationalReportCommand command) {
+    public FileReportDto Export(OperationalReportDto operationalReport, OperationalReportCommand command) {
       Assertion.AssertObject(operationalReport, "operationalReport");
 
-      var creator = new XmlFileCreator();
+      var templateUID = ReportTemplate(command);
 
-      XmlFile xmlFile = creator.CreateOperationalReportFile(operationalReport, command);
+      var templateConfig = OperationalReportTemplateConfig.Parse(templateUID);
 
-      return XmlFileMapper.Map(xmlFile);
+      return GetMappingReportType(operationalReport, command, templateConfig);
+
     }
+
+    private FileReportDto GetMappingReportType(OperationalReportDto operationalReport, 
+                                               OperationalReportCommand command,
+                                               OperationalReportTemplateConfig templateConfig) {
+      if (true) {
+
+        var creator = new XmlFileCreator(templateConfig);
+
+        XmlFile xmlFile = creator.CreateOperationalReportFile(operationalReport, command);
+
+        return ExcelFileMapper.MapFromXmlFile(xmlFile);
+
+      } else {
+        throw new NotImplementedException();
+      }
+      
+    }
+
+
+    #region Private methods
+
+    private string ReportTemplate(OperationalReportCommand command) {
+      if (command.ReportType == OperationalReportType.BalanzaSat) {
+        return "TrialBalanceTemplate";
+      } else if (command.ReportType == OperationalReportType.CatalogoDeCuentaSat) {
+        return "AccountsChartTemplate";
+      } else {
+        return "";
+      }
+    }
+
+    #endregion
+
   } // class XmlExporter
 
 } // namespace Empiria.FinancialAccounting.BanobrasIntegration.SATReports

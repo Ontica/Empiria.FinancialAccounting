@@ -73,7 +73,7 @@ namespace Empiria.FinancialAccounting.WebApi.FinancialReports {
 
         var excelExporter = new ExcelExporter();
 
-        ExcelFileDto excelFileDto = excelExporter.Export(financialReport);
+        FileReportDto excelFileDto = excelExporter.Export(financialReport);
 
         return new SingleObjectModel(this.Request, excelFileDto);
       }

@@ -8,15 +8,22 @@
 *                                                                                                            *
 ************************* Copyright(c) La Vía Óntica SC, Ontica LLC and contributors. All rights reserved. **/
 using System;
+using Empiria.FinancialAccounting.BanobrasIntegration.SATReports;
 
 namespace Empiria.FinancialAccounting.BanobrasIntegration.ExcelReports.Adapters {
 
   /// <summary>Mapper for ExcelFile instances.</summary>
   static internal class ExcelFileMapper {
 
-    static internal ExcelFileDto Map(ExcelFile excelFile) {
-      return new ExcelFileDto {
+    static internal FileReportDto Map(ExcelFile excelFile) {
+      return new FileReportDto {
         Url = excelFile.Url
+      };
+    }
+
+    static internal FileReportDto MapFromXmlFile(XmlFile xmlFile) {
+      return new FileReportDto {
+        Url = xmlFile.Url
       };
     }
 

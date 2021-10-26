@@ -19,7 +19,7 @@ namespace Empiria.FinancialAccounting.BanobrasIntegration.SATReports.Adapters {
 
     public string AccountsChartUID {
       get; set;
-    }
+    } = "b2328e67-3f2e-45b9-b1f6-93ef6292204e";
 
 
     public OperationalReportType ReportType {
@@ -27,12 +27,7 @@ namespace Empiria.FinancialAccounting.BanobrasIntegration.SATReports.Adapters {
     }
 
 
-    public DateTime FromDate {
-      get; set;
-    }
-
-
-    public DateTime ToDate {
+    public DateTime Date {
       get; set;
     }
 
@@ -42,16 +37,17 @@ namespace Empiria.FinancialAccounting.BanobrasIntegration.SATReports.Adapters {
         TrialBalanceType = TrialBalanceType.Balanza,
         AccountsChartUID = AccountsChart.Parse(this.AccountsChartUID).UID,
         ShowCascadeBalances = false,
+        IsOperationalReport = true,
         InitialPeriod = new TrialBalanceCommandPeriod {
-          FromDate = this.FromDate,
-          ToDate = this.ToDate
+          FromDate = new DateTime(this.Date.Year, this.Date.Month, 1),
+          ToDate = this.Date
         },
       };
     }
 
     internal AccountsSearchCommand MapToAccountsSearchCommand() {
       return new AccountsSearchCommand{
-        Date = this.ToDate
+        Date = this.Date
       };
     }
   } // class OperationalReportCommand
