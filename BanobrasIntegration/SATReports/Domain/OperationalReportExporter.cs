@@ -11,7 +11,7 @@ using System;
 
 using Empiria.FinancialAccounting.BanobrasIntegration.SATReports.Adapters;
 using Empiria.FinancialAccounting.BanobrasIntegration.ExcelReports.Adapters;
-
+using Empiria.FinancialAccounting.BanobrasIntegration.ExcelReports;
 
 namespace Empiria.FinancialAccounting.BanobrasIntegration.SATReports {
 
@@ -37,12 +37,17 @@ namespace Empiria.FinancialAccounting.BanobrasIntegration.SATReports {
     }
 
 
-    private FileReportDto ExportToExcel(OperationalReportDto reportDTO,
+    private FileReportDto ExportToExcel(OperationalReportDto reportDto,
                                         OperationalReportCommand command) {
-      var templateUID = ReportTemplate(command);
+      var templateUID = $"TrialBalanceTemplate.{command.ReportType}";
 
+      var templateConfig = ExcelTemplateConfig.Parse(templateUID);
 
-      throw new NotImplementedException();
+      var creator = new OperationalReportExcelFileCreator(templateConfig);
+
+      ExcelFile excelFile = creator.CreateExcelFile(reportDto);
+
+      return ExcelFileMapper.Map(excelFile);
 
     }
 

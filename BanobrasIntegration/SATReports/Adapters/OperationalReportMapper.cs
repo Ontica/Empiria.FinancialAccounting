@@ -21,7 +21,7 @@ namespace Empiria.FinancialAccounting.BanobrasIntegration.SATReports.Adapters {
                                           OperationalReportCommand command, TrialBalanceDto trialBalance) {
       return new OperationalReportDto {
         Command = command,
-        Columns = trialBalance.Columns,
+        Columns = MapBalanceColumns(),
         Entries = MapBalanceEntry(trialBalance.Entries)
       };
     }
@@ -51,15 +51,11 @@ namespace Empiria.FinancialAccounting.BanobrasIntegration.SATReports.Adapters {
     static private OperationalReportEntryDto MapBalanceToOperationalReport(TrialBalanceEntryDto entry) {
 
       return new OperationalReportEntryDto {
-        CurrencyCode = entry.CurrencyCode,
         AccountNumber = entry.AccountNumber,
-        SectorCode = entry.SectorCode,
-        AccountName = entry.AccountName,
         InitialBalance = entry.InitialBalance,
         Debit = entry.Debit,
         Credit = entry.Credit,
-        CurrentBalance = entry.CurrentBalance,
-        AccountLevel = entry.AccountLevel,
+        CurrentBalance = entry.CurrentBalance
       };
     }
 
@@ -85,6 +81,18 @@ namespace Empiria.FinancialAccounting.BanobrasIntegration.SATReports.Adapters {
                      "D" : "A"
       };
 
+    }
+
+    private static FixedList<DataTableColumn> MapBalanceColumns() {
+      List<DataTableColumn> columns = new List<DataTableColumn>();
+
+      columns.Add(new DataTableColumn("accountNumber", "Cuenta", "text"));
+      columns.Add(new DataTableColumn("initialBalance", "Saldo Inicial", "decimal"));
+      columns.Add(new DataTableColumn("debit", "Debe", "decimal"));
+      columns.Add(new DataTableColumn("credit", "Haber", "decimal"));
+      columns.Add(new DataTableColumn("currentBalance", "Saldo Final", "decimal"));
+
+      return columns.ToFixedList();
     }
 
     private static FixedList<DataTableColumn> MapColumns() {
