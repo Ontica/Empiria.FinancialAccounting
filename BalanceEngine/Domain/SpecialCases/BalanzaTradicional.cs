@@ -39,38 +39,12 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
 
       List<TrialBalanceEntry> trialBalance = helper.CombineSummaryAndPostingEntries(
                                                      summaryEntries, postingEntries);
+      if (!_command.IsOperationalReport) {
 
-      if (_command.IsOperationalReport == false) {
-        FixedList<TrialBalanceEntry> summaryGroupEntries = helper.GenerateTotalSummaryGroups(postingEntries);
+        trialBalance = GenerateTrialBalance(trialBalance, postingEntries);
 
-        trialBalance = helper.CombineGroupEntriesAndPostingEntries(trialBalance, summaryGroupEntries);
+      } else {
 
-        List<TrialBalanceEntry> summaryTotalDebtorCreditorEntries =
-                                helper.GenerateTotalSummaryDebtorCreditor(postingEntries.ToList());
-
-        trialBalance = helper.CombineDebtorCreditorAndPostingEntries(trialBalance,
-                                                                     summaryTotalDebtorCreditorEntries);
-
-        List<TrialBalanceEntry> summaryTotalCurrencies = helper.GenerateTotalSummaryCurrency(
-                                                                summaryTotalDebtorCreditorEntries);
-
-        trialBalance = helper.CombineCurrencyTotalsAndPostingEntries(trialBalance, summaryTotalCurrencies);
-
-        List<TrialBalanceEntry> summaryTotalConsolidatedByLedger =
-                                helper.GenerateTotalSummaryConsolidatedByLedger(summaryTotalCurrencies);
-
-        trialBalance = helper.CombineTotalConsolidatedByLedgerAndPostingEntries(
-                              trialBalance, summaryTotalConsolidatedByLedger);
-
-        List<TrialBalanceEntry> summaryTrialBalanceConsolidated = helper.GenerateTotalSummaryConsolidated(
-                                                                       summaryTotalCurrencies);
-
-        trialBalance = helper.CombineTotalConsolidatedAndPostingEntries(
-                              trialBalance, summaryTrialBalanceConsolidated);
-
-        trialBalance = helper.TrialBalanceWithSubledgerAccounts(trialBalance);
-
-        //trialBalance = helper.GenerateAverageBalance(trialBalance);
       }
 
       trialBalance = helper.RestrictLevels(trialBalance);
@@ -80,6 +54,45 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
       return new TrialBalance(_command, returnBalance);
     }
 
+
+
+    private List<TrialBalanceEntry> GenerateTrialBalance(List<TrialBalanceEntry> trialBalance, 
+                                      FixedList<TrialBalanceEntry> postingEntries) {
+      var helper = new TrialBalanceHelper(_command);
+
+      FixedList<TrialBalanceEntry> summaryGroupEntries = helper.GenerateTotalSummaryGroups(postingEntries);
+
+      trialBalance = helper.CombineGroupEntriesAndPostingEntries(trialBalance, summaryGroupEntries);
+
+      List<TrialBalanceEntry> summaryTotalDebtorCreditorEntries =
+                              helper.GenerateTotalSummaryDebtorCreditor(postingEntries.ToList());
+
+      trialBalance = helper.CombineDebtorCreditorAndPostingEntries(trialBalance,
+                                                                   summaryTotalDebtorCreditorEntries);
+
+      List<TrialBalanceEntry> summaryTotalCurrencies = helper.GenerateTotalSummaryCurrency(
+                                                              summaryTotalDebtorCreditorEntries);
+
+      trialBalance = helper.CombineCurrencyTotalsAndPostingEntries(trialBalance, summaryTotalCurrencies);
+
+      List<TrialBalanceEntry> summaryTotalConsolidatedByLedger =
+                              helper.GenerateTotalSummaryConsolidatedByLedger(summaryTotalCurrencies);
+
+      trialBalance = helper.CombineTotalConsolidatedByLedgerAndPostingEntries(
+                            trialBalance, summaryTotalConsolidatedByLedger);
+
+      List<TrialBalanceEntry> summaryTrialBalanceConsolidated = helper.GenerateTotalSummaryConsolidated(
+                                                                     summaryTotalCurrencies);
+
+      trialBalance = helper.CombineTotalConsolidatedAndPostingEntries(
+                            trialBalance, summaryTrialBalanceConsolidated);
+
+      trialBalance = helper.TrialBalanceWithSubledgerAccounts(trialBalance);
+
+      //trialBalance = helper.GenerateAverageBalance(trialBalance);
+
+      return trialBalance;
+    }
   }  // class BalanzaTradicional
 
 }  // namespace Empiria.FinancialAccounting.BalanceEngine

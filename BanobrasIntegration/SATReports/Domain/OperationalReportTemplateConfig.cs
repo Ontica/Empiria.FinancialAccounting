@@ -52,5 +52,6 @@ namespace Empiria.FinancialAccounting.BanobrasIntegration.SATReports {
     }
 
     #endregion
-  }
-}
+  } // class OperationalReportTemplateConfig
+
+} // Empiria.FinancialAccounting.BanobrasIntegration.SATReports

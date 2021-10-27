@@ -21,7 +21,7 @@ namespace Empiria.FinancialAccounting.BanobrasIntegration.ExcelReports.Adapters 
       };
     }
 
-    static internal FileReportDto MapFromXmlFile(XmlFile xmlFile) {
+    static internal FileReportDto MapXml(OperationalReportFile xmlFile) {
       return new FileReportDto {
         Url = xmlFile.Url
       };

@@ -48,7 +48,7 @@ namespace Empiria.FinancialAccounting.BanobrasIntegration.SATReports.UseCases {
 
     #region Private methods
 
-    private OperationalReportDto GetOperationalReportType(OperationalReportCommand command) {
+    internal OperationalReportDto GetOperationalReportType(OperationalReportCommand command) {
 
       switch (command.ReportType) {
         case OperationalReportType.BalanzaSat:
@@ -80,7 +80,7 @@ namespace Empiria.FinancialAccounting.BanobrasIntegration.SATReports.UseCases {
         TrialBalanceCommand balanceCommand = command.MapToTrialBalanceCommand();
         
         TrialBalanceDto trialBalance = usecases.BuildTrialBalance(balanceCommand);
-        
+
         return OperationalReportMapper.MapFromTrialBalance(command, trialBalance);
       }
     }

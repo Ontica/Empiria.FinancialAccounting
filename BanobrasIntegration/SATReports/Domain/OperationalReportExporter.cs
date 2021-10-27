@@ -1,10 +1,10 @@
 ﻿/* Empiria Financial *****************************************************************************************
 *                                                                                                            *
-*  Module   : Banobras Integration Services                Component : Xml Reports                           *
+*  Module   : Banobras Integration                         Component : Operational Reports                   *
 *  Assembly : FinancialAccounting.BanobrasIntegration.dll  Pattern   : Service                               *
-*  Type     : XmlExporter                                  License   : Please read LICENSE.txt file          *
+*  Type     : OperationalReportExporter                    License   : Please read LICENSE.txt file          *
 *                                                                                                            *
-*  Summary  : Main service to export accounting and balances information to xml.                             *
+*  Summary  : Main service to export accounting and balances information to xml or excel.                    *
 *                                                                                                            *
 ************************* Copyright(c) La Vía Óntica SC, Ontica LLC and contributors. All rights reserved. **/
 using System;
@@ -18,8 +18,8 @@ using Empiria.FinancialAccounting.Rules.Adapters;
 
 namespace Empiria.FinancialAccounting.BanobrasIntegration.SATReports {
 
-  /// <summary>Main service to export accounting and balances information to xml.</summary>
-  public class XmlExporter {
+  /// <summary>Main service to export accounting and balances information to xml or excel.</summary>
+  public class OperationalReportExporter {
 
     public FileReportDto Export(OperationalReportDto operationalReport, OperationalReportCommand command) {
       Assertion.AssertObject(operationalReport, "operationalReport");
@@ -28,20 +28,24 @@ namespace Empiria.FinancialAccounting.BanobrasIntegration.SATReports {
 
       var templateConfig = OperationalReportTemplateConfig.Parse(templateUID);
 
-      return GetMappingReportType(operationalReport, command, templateConfig);
+      return GetReportType(operationalReport, command, templateConfig);
 
     }
 
-    private FileReportDto GetMappingReportType(OperationalReportDto operationalReport, 
+    private FileReportDto GetReportType(OperationalReportDto operationalReport, 
                                                OperationalReportCommand command,
                                                OperationalReportTemplateConfig templateConfig) {
-      if (true) {
+      if (command.Format == OperationalReportFormat.Xml) {
 
         var creator = new XmlFileCreator(templateConfig);
 
-        XmlFile xmlFile = creator.CreateOperationalReportFile(operationalReport, command);
+        OperationalReportFile xmlFile = creator.CreateOperationalReportFile(operationalReport, command);
 
-        return ExcelFileMapper.MapFromXmlFile(xmlFile);
+        return ExcelFileMapper.MapXml(xmlFile);
+
+      } else if (command.Format == OperationalReportFormat.Excel) {
+
+        throw new NotImplementedException();
 
       } else {
         throw new NotImplementedException();
@@ -64,6 +68,6 @@ namespace Empiria.FinancialAccounting.BanobrasIntegration.SATReports {
 
     #endregion
 
-  } // class XmlExporter
+  } // class OperationalReportExporter
 
 } // namespace Empiria.FinancialAccounting.BanobrasIntegration.SATReports

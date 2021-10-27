@@ -26,6 +26,9 @@ namespace Empiria.FinancialAccounting.BanobrasIntegration.SATReports.Adapters {
       get; set;
     }
 
+    public OperationalReportFormat Format {
+      get; set;
+    } = OperationalReportFormat.Xml;
 
     public DateTime Date {
       get; set;

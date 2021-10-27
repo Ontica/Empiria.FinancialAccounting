@@ -48,9 +48,9 @@ namespace Empiria.FinancialAccounting.WebApi.SATReports {
       using (var usecases = OperationalReportsUseCases.UseCaseInteractor()) {
         OperationalReportDto operationalReport = usecases.GetOperationalReport(command);
 
-        var xmlExporter = new XmlExporter();
+        var operationalExporter = new OperationalReportExporter();
 
-        FileReportDto xmlFileDto = xmlExporter.Export(operationalReport, command);
+        FileReportDto xmlFileDto = operationalExporter.Export(operationalReport, command);
 
         return new SingleObjectModel(this.Request, xmlFileDto);
       }
