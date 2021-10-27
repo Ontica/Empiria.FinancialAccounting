@@ -8,13 +8,10 @@
 *                                                                                                            *
 ************************* Copyright(c) La Vía Óntica SC, Ontica LLC and contributors. All rights reserved. **/
 using System;
-using Empiria.FinancialAccounting.Adapters;
-using Empiria.FinancialAccounting.BalanceEngine.Adapters;
 
 using Empiria.FinancialAccounting.BanobrasIntegration.SATReports.Adapters;
 using Empiria.FinancialAccounting.BanobrasIntegration.ExcelReports.Adapters;
-using Empiria.FinancialAccounting.FinancialReports.Adapters;
-using Empiria.FinancialAccounting.Rules.Adapters;
+
 
 namespace Empiria.FinancialAccounting.BanobrasIntegration.SATReports {
 
@@ -23,34 +20,40 @@ namespace Empiria.FinancialAccounting.BanobrasIntegration.SATReports {
 
     public FileReportDto Export(OperationalReportDto operationalReport, OperationalReportCommand command) {
       Assertion.AssertObject(operationalReport, "operationalReport");
+      Assertion.AssertObject(command, "command");
 
+      if (command.FileType == FileType.Excel) {
+
+        return ExportToExcel(operationalReport, command);
+
+      } else if (command.FileType == FileType.Xml) {
+
+        return ExportToXmlFile(operationalReport, command);
+
+      } else {
+        throw Assertion.AssertNoReachThisCode();
+
+      }
+    }
+
+
+    private FileReportDto ExportToExcel(OperationalReportDto reportDTO,
+                                        OperationalReportCommand command) {
       var templateUID = ReportTemplate(command);
 
-      var templateConfig = OperationalReportTemplateConfig.Parse(templateUID);
 
-      return GetReportType(operationalReport, command, templateConfig);
+      throw new NotImplementedException();
 
     }
 
-    private FileReportDto GetReportType(OperationalReportDto operationalReport, 
-                                               OperationalReportCommand command,
-                                               OperationalReportTemplateConfig templateConfig) {
-      if (command.FileType == FileType.Xml) {
 
-        var creator = new XmlFileCreator(templateConfig);
+    private FileReportDto ExportToXmlFile(OperationalReportDto reportDTO,
+                                          OperationalReportCommand command) {
+      var xmlFileCreator = new XmlFileCreator();
 
-        OperationalReportFile xmlFile = creator.CreateOperationalReportFile(operationalReport, command);
+      OperationalReportFile xmlFile = xmlFileCreator.CreateOperationalReportFile(reportDTO, command);
 
-        return ExcelFileMapper.MapXml(xmlFile);
-
-      } else if (command.FileType == FileType.Excel) {
-
-        throw new NotImplementedException();
-
-      } else {
-        throw new NotImplementedException();
-      }
-      
+      return ExcelFileMapper.MapXml(xmlFile);
     }
 
 

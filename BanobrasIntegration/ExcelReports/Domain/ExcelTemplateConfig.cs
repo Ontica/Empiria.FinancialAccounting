@@ -34,21 +34,21 @@ namespace Empiria.FinancialAccounting.BanobrasIntegration.ExcelReports {
 
     static public string BaseUrl {
       get {
-        return ConfigurationData.Get<string>("ExcelTemplateConfig.BaseUrl");
+        return ConfigurationData.Get<string>("Reports.BaseUrl");
       }
     }
 
 
     static private string GenerationStoragePath {
       get {
-        return ConfigurationData.Get<string>("ExcelTemplateConfig.GenerationStoragePath");
+        return ConfigurationData.Get<string>("Reports.GenerationStoragePath");
       }
     }
 
 
     static private string TemplatesStoragePath {
       get {
-        return ConfigurationData.Get<string>("ExcelTemplateConfig.TemplatesStoragePath");
+        return ConfigurationData.Get<string>("Reports.TemplatesStoragePath");
       }
     }
 

@@ -12,14 +12,12 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Xml;
 
-using Empiria.FinancialAccounting.BalanceEngine;
-using Empiria.FinancialAccounting.BalanceEngine.Adapters;
 using Empiria.FinancialAccounting.BanobrasIntegration.SATReports.Adapters;
 
 namespace Empiria.FinancialAccounting.BanobrasIntegration.SATReports {
 
-  public enum OperationalReportType { 
-    
+  public enum OperationalReportType {
+
     BalanzaSat,
 
     CatalogoDeCuentaSat
@@ -40,18 +38,17 @@ namespace Empiria.FinancialAccounting.BanobrasIntegration.SATReports {
   internal class XmlFileCreator {
 
     private OperationalReportCommand _command = new OperationalReportCommand();
-    private readonly OperationalReportTemplateConfig _templateConfig;
+
     private OperationalReportFile _xmlFile;
 
-    public XmlFileCreator(OperationalReportTemplateConfig templateConfig) {
-      Assertion.AssertObject(templateConfig, "templateConfig");
 
-      _templateConfig = templateConfig;
+    public XmlFileCreator() {
+      // no-op
     }
 
 
-    internal OperationalReportFile CreateOperationalReportFile(OperationalReportDto operationalReport, 
-                                                 OperationalReportCommand command) {
+    internal OperationalReportFile CreateOperationalReportFile(OperationalReportDto operationalReport,
+                                                               OperationalReportCommand command) {
       Assertion.AssertObject(operationalReport, "operationalReport");
 
       _command = command;
@@ -68,7 +65,7 @@ namespace Empiria.FinancialAccounting.BanobrasIntegration.SATReports {
 
     #region Private methods
 
-    private string SetHeaderName() {
+    private string GetXmlHeaderName() {
 
       if (_command.ReportType == OperationalReportType.BalanzaSat) {
         return "BCE:Balanza";
@@ -79,9 +76,9 @@ namespace Empiria.FinancialAccounting.BanobrasIntegration.SATReports {
       }
     }
 
-    private void SetXmlHeader() {
 
-      string headerName = SetHeaderName();
+    private void SetXmlHeader() {
+      string headerName = GetXmlHeaderName();
 
       XmlDocument xml = new XmlDocument();
       XmlElement header = xml.CreateElement(headerName);
@@ -119,6 +116,7 @@ namespace Empiria.FinancialAccounting.BanobrasIntegration.SATReports {
       _xmlFile.XmlStructure = xml;
     }
 
+
     private List<OperationalReportFileAttributes> SetHeaderAttributes() {
       List<OperationalReportFileAttributes> attributes = new List<OperationalReportFileAttributes>();
 
@@ -137,11 +135,11 @@ namespace Empiria.FinancialAccounting.BanobrasIntegration.SATReports {
       switch (_command.ReportType) {
 
         case OperationalReportType.BalanzaSat:
-          FilOutBalanza(operationalReport.Entries.Select(x => (OperationalReportEntryDto) x));
+          FillOutBalanza(operationalReport.Entries.Select(x => (OperationalReportEntryDto) x));
           return;
 
         case OperationalReportType.CatalogoDeCuentaSat:
-          FilOutCatalogoDeCuenta(operationalReport.Entries.Select(x => (OperationalReportEntryDto) x));
+          FillOutCatalogoDeCuentas(operationalReport.Entries.Select(x => (OperationalReportEntryDto) x));
           return;
 
         default:
@@ -168,6 +166,7 @@ namespace Empiria.FinancialAccounting.BanobrasIntegration.SATReports {
       return attributes;
     }
 
+
     private List<OperationalReportFileAttributes> GetBalanceAttributes() {
       List<OperationalReportFileAttributes> attributes = new List<OperationalReportFileAttributes>();
 
@@ -190,7 +189,8 @@ namespace Empiria.FinancialAccounting.BanobrasIntegration.SATReports {
       return attributes;
     }
 
-    private void FilOutCatalogoDeCuenta(IEnumerable<OperationalReportEntryDto> entries) {
+
+    private void FillOutCatalogoDeCuentas(IEnumerable<OperationalReportEntryDto> entries) {
 
       XmlDocument doc = _xmlFile.XmlStructure;
 
@@ -228,7 +228,7 @@ namespace Empiria.FinancialAccounting.BanobrasIntegration.SATReports {
       _xmlFile.XmlStructure = doc;
     }
 
-    private void FilOutBalanza(IEnumerable<OperationalReportEntryDto> entries) {
+    private void FillOutBalanza(IEnumerable<OperationalReportEntryDto> entries) {
 
       XmlDocument doc = _xmlFile.XmlStructure;
 

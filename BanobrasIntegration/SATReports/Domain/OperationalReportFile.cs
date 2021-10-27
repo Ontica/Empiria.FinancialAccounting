@@ -16,8 +16,12 @@ namespace Empiria.FinancialAccounting.BanobrasIntegration.SATReports {
   /// <summary>Provides edition services for operational report files.</summary>
   internal class OperationalReportFile {
 
+
+    static private string GenerationStoragePath = ConfigurationData.Get<string>("Reports.GenerationStoragePath");
+
+
     public OperationalReportFile() {
-      
+
     }
 
     #region Properties
@@ -26,9 +30,10 @@ namespace Empiria.FinancialAccounting.BanobrasIntegration.SATReports {
       get; set;
     }
 
+
     public string Url {
       get {
-        return $"{OperationalReportTemplateConfig.BaseUrl}/{FileInfo.Name}";
+        return $"{GenerationStoragePath}/{FileInfo.Name}";
       }
     }
 
