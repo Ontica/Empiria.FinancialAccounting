@@ -801,7 +801,7 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
 
       TrialBalanceItemType itemType = TrialBalanceItemType.BalanceSummary;
 
-      string hash = $"{balanceEntry.Account.Number}||{Sector.Empty.Code}";
+      string hash = $"{balanceEntry.Account.Number}";
 
       GenerateOrIncreaseEntries(entries, balanceEntry, balanceEntry.Account,
                                 balanceEntry.Sector, itemType, hash);

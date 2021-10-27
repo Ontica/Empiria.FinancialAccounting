@@ -30,7 +30,7 @@ namespace Empiria.FinancialAccounting.BanobrasIntegration.ExcelReports {
 
 
     internal ExcelFile CreateExcelFile(OperationalReportDto operationalReport) {
-      Assertion.AssertObject(operationalReport, "trialBalance");
+      Assertion.AssertObject(operationalReport, "operationalReport");
 
       _command = operationalReport.Command;
 
@@ -41,8 +41,6 @@ namespace Empiria.FinancialAccounting.BanobrasIntegration.ExcelReports {
       SetHeader();
 
       SetTable(operationalReport);
-
-      FillOutBalanzaSat(operationalReport.Entries.Select(x => (OperationalReportEntryDto) x));
 
       _excelFile.Save();
 

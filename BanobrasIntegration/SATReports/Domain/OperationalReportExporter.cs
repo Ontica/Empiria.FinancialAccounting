@@ -39,7 +39,7 @@ namespace Empiria.FinancialAccounting.BanobrasIntegration.SATReports {
 
     private FileReportDto ExportToExcel(OperationalReportDto reportDto,
                                         OperationalReportCommand command) {
-      var templateUID = $"TrialBalanceTemplate.{command.ReportType}";
+      var templateUID = $"OperationalReportTemplate.{command.ReportType}";
 
       var templateConfig = ExcelTemplateConfig.Parse(templateUID);
 
@@ -60,21 +60,6 @@ namespace Empiria.FinancialAccounting.BanobrasIntegration.SATReports {
 
       return ExcelFileMapper.MapXml(xmlFile);
     }
-
-
-    #region Private methods
-
-    private string ReportTemplate(OperationalReportCommand command) {
-      if (command.ReportType == OperationalReportType.BalanzaSat) {
-        return "TrialBalanceTemplate";
-      } else if (command.ReportType == OperationalReportType.CatalogoDeCuentaSat) {
-        return "AccountsChartTemplate";
-      } else {
-        return "";
-      }
-    }
-
-    #endregion
 
   } // class OperationalReportExporter
 
