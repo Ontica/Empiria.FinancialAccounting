@@ -78,7 +78,7 @@ namespace Empiria.FinancialAccounting.BanobrasIntegration.SATReports.UseCases {
 
       using (var usecases = TrialBalanceUseCases.UseCaseInteractor()) {
         TrialBalanceCommand balanceCommand = command.MapToTrialBalanceCommand();
-        
+       
         TrialBalanceDto trialBalance = usecases.BuildTrialBalance(balanceCommand);
 
         return OperationalReportMapper.MapFromTrialBalance(command, trialBalance);

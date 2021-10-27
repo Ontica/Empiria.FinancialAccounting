@@ -10,7 +10,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
-
+using Empiria.Collections;
 using Empiria.FinancialAccounting.BalanceEngine.Adapters;
 
 namespace Empiria.FinancialAccounting.BalanceEngine {
@@ -44,7 +44,7 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
         trialBalance = GenerateTrialBalance(trialBalance, postingEntries);
 
       } else {
-        //trialBalance = GenerateOperationalBalance(trialBalance);
+        trialBalance = GenerateOperationalBalance(trialBalance);
       }
 
       trialBalance = helper.RestrictLevels(trialBalance);
@@ -55,14 +55,10 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
     }
 
 
-    private List<TrialBalanceEntry> GenerateOperationalBalance(List<TrialBalanceEntry> trialBalance) {
-      var helper = new TrialBalanceHelper(_command);
+    #region Private methods
 
-      throw new NotImplementedException();
-    }
-
-    private List<TrialBalanceEntry> GenerateTrialBalance(List<TrialBalanceEntry> trialBalance, 
-                                      FixedList<TrialBalanceEntry> postingEntries) {
+    private List<TrialBalanceEntry> GenerateTrialBalance(List<TrialBalanceEntry> trialBalance,
+                                     FixedList<TrialBalanceEntry> postingEntries) {
       var helper = new TrialBalanceHelper(_command);
 
       FixedList<TrialBalanceEntry> summaryGroupEntries = helper.GenerateTotalSummaryGroups(postingEntries);
@@ -98,6 +94,20 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
 
       return trialBalance;
     }
+
+    private List<TrialBalanceEntry> GenerateOperationalBalance(List<TrialBalanceEntry> trialBalance) {
+      var helper = new TrialBalanceHelper(_command);
+      var totalByAccountEntries = new EmpiriaHashTable<TrialBalanceEntry>(trialBalance.Count);
+
+      foreach (var entry in trialBalance) {
+        helper.SummaryByAccount(totalByAccountEntries, entry);
+      }
+
+      return totalByAccountEntries.ToFixedList().ToList();
+    }
+
+    #endregion
+   
   }  // class BalanzaTradicional
 
 }  // namespace Empiria.FinancialAccounting.BalanceEngine

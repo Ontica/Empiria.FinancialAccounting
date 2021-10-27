@@ -111,6 +111,7 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
       return OrderByLedgerAndCurrency(returnedEntries);
     }
 
+   
     private List<TrialBalanceEntry> OrderByLedgerAndCurrency(List<TrialBalanceEntry> entries) {
       return entries.OrderBy(a => a.Ledger.Number)
                     .ThenBy(a => a.Currency.Code)
@@ -793,6 +794,18 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
         GenerateOrIncreaseEntries(summaryEntries, groupEntry, StandardAccount.Empty, Sector.Empty,
                                   TrialBalanceItemType.BalanceTotalGroupCreditor, hash);
       }
+    }
+
+
+    internal void SummaryByAccount(EmpiriaHashTable<TrialBalanceEntry> entries, TrialBalanceEntry balanceEntry) {
+
+      TrialBalanceItemType itemType = TrialBalanceItemType.BalanceSummary;
+
+      string hash = $"{balanceEntry.Account.Number}||{Sector.Empty.Code}";
+
+      GenerateOrIncreaseEntries(entries, balanceEntry, balanceEntry.Account,
+                                balanceEntry.Sector, itemType, hash);
+
     }
 
 
