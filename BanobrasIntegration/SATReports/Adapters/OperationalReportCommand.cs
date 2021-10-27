@@ -26,9 +26,9 @@ namespace Empiria.FinancialAccounting.BanobrasIntegration.SATReports.Adapters {
       get; set;
     }
 
-    public OperationalReportFormat Format {
+    public FileType FileType {
       get; set;
-    } = OperationalReportFormat.Xml;
+    } = FileType.Excel;
 
     public DateTime Date {
       get; set;
@@ -39,12 +39,15 @@ namespace Empiria.FinancialAccounting.BanobrasIntegration.SATReports.Adapters {
       return new TrialBalanceCommand {
         TrialBalanceType = TrialBalanceType.Balanza,
         AccountsChartUID = AccountsChart.Parse(this.AccountsChartUID).UID,
+        BalancesType = BalancesType.WithCurrentBalanceOrMovements,
+        UseDefaultValuation = true,
+        ConsolidateBalancesToTargetCurrency = true,
         ShowCascadeBalances = false,
-        IsOperationalReport = true,
         InitialPeriod = new TrialBalanceCommandPeriod {
           FromDate = new DateTime(this.Date.Year, this.Date.Month, 1),
           ToDate = this.Date
         },
+        IsOperationalReport = true,
       };
     }
 

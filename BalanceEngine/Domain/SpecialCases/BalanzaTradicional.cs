@@ -44,7 +44,7 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
         trialBalance = GenerateTrialBalance(trialBalance, postingEntries);
 
       } else {
-
+        //trialBalance = GenerateOperationalBalance(trialBalance);
       }
 
       trialBalance = helper.RestrictLevels(trialBalance);
@@ -55,6 +55,11 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
     }
 
 
+    private List<TrialBalanceEntry> GenerateOperationalBalance(List<TrialBalanceEntry> trialBalance) {
+      var helper = new TrialBalanceHelper(_command);
+
+      throw new NotImplementedException();
+    }
 
     private List<TrialBalanceEntry> GenerateTrialBalance(List<TrialBalanceEntry> trialBalance, 
                                       FixedList<TrialBalanceEntry> postingEntries) {

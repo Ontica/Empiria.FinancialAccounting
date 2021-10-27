@@ -23,7 +23,7 @@ using Empiria.FinancialAccounting.BanobrasIntegration.ExcelReports.Adapters;
 namespace Empiria.FinancialAccounting.WebApi.SATReports {
 
   /// <summary>Query web API used to retrive SAT Reports.</summary>
-  public class SATReportsController : WebApiController {
+  public class OperationalReportsController : WebApiController {
 
     #region Web Apis
 
@@ -41,7 +41,7 @@ namespace Empiria.FinancialAccounting.WebApi.SATReports {
 
 
     [HttpPost]
-    [Route("v2/financial-accounting/operational-reports/xml")]
+    [Route("v2/financial-accounting/operational-reports/export")]
     public SingleObjectModel GetExcelTrialBalance([FromBody] OperationalReportCommand command) {
       base.RequireBody(command);
       

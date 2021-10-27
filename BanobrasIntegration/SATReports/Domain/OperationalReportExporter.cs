@@ -35,7 +35,7 @@ namespace Empiria.FinancialAccounting.BanobrasIntegration.SATReports {
     private FileReportDto GetReportType(OperationalReportDto operationalReport, 
                                                OperationalReportCommand command,
                                                OperationalReportTemplateConfig templateConfig) {
-      if (command.Format == OperationalReportFormat.Xml) {
+      if (command.FileType == FileType.Xml) {
 
         var creator = new XmlFileCreator(templateConfig);
 
@@ -43,7 +43,7 @@ namespace Empiria.FinancialAccounting.BanobrasIntegration.SATReports {
 
         return ExcelFileMapper.MapXml(xmlFile);
 
-      } else if (command.Format == OperationalReportFormat.Excel) {
+      } else if (command.FileType == FileType.Excel) {
 
         throw new NotImplementedException();
 

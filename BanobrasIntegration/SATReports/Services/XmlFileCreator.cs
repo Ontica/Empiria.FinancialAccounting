@@ -25,7 +25,7 @@ namespace Empiria.FinancialAccounting.BanobrasIntegration.SATReports {
     CatalogoDeCuentaSat
   }
 
-  public enum OperationalReportFormat {
+  public enum FileType {
 
     Excel,
 
