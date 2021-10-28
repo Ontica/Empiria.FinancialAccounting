@@ -12,13 +12,14 @@ using System.Linq;
 
 using Empiria.Services;
 
-using Empiria.FinancialAccounting.BanobrasIntegration.SATReports.Adapters;
-using Empiria.FinancialAccounting.BalanceEngine.Adapters;
-using Empiria.FinancialAccounting.BalanceEngine.UseCases;
 using Empiria.FinancialAccounting.Adapters;
 using Empiria.FinancialAccounting.UseCases;
+using Empiria.FinancialAccounting.BalanceEngine.Adapters;
+using Empiria.FinancialAccounting.BalanceEngine.UseCases;
+using Empiria.FinancialAccounting.BanobrasIntegration.ExcelReports;
+using Empiria.FinancialAccounting.BanobrasIntegration.XmlReports;
 
-namespace Empiria.FinancialAccounting.BanobrasIntegration.SATReports.UseCases {
+namespace Empiria.FinancialAccounting.BanobrasIntegration.OperationalReports {
 
   /// <summary>Use cases used to build operational reports and xml files from them.</summary>
   public class OperationalReportsUseCases : UseCase {
@@ -37,6 +38,15 @@ namespace Empiria.FinancialAccounting.BanobrasIntegration.SATReports.UseCases {
 
     #region Use cases
 
+    public FileReportDto ExportOperationalReport(OperationalReportCommand command) {
+      Assertion.AssertObject(command, "command");
+
+      OperationalReportDto reportData = GetOperationalReport(command);
+
+      return ExportToFile(reportData, command);
+    }
+
+
     public OperationalReportDto GetOperationalReport(OperationalReportCommand command) {
       Assertion.AssertObject(command, "command");
 
@@ -48,7 +58,28 @@ namespace Empiria.FinancialAccounting.BanobrasIntegration.SATReports.UseCases {
 
     #region Private methods
 
-    internal OperationalReportDto GetOperationalReportType(OperationalReportCommand command) {
+    private FileReportDto ExportToFile(OperationalReportDto reportData, OperationalReportCommand command) {
+      switch (command.FileType) {
+        case FileType.Excel:
+          var excelExporter = new ExcelExporter();
+
+          return excelExporter.ExportToExcel(reportData, command);
+
+
+        case FileType.Xml:
+
+          var xmlExporter = new XmlExporter();
+
+          return xmlExporter.ExportToXml(reportData);
+
+        default:
+
+          throw Assertion.AssertNoReachThisCode();
+      }
+    }
+
+
+    private OperationalReportDto GetOperationalReportType(OperationalReportCommand command) {
 
       switch (command.ReportType) {
         case OperationalReportType.BalanzaSat:
@@ -66,7 +97,7 @@ namespace Empiria.FinancialAccounting.BanobrasIntegration.SATReports.UseCases {
 
       using (var usecases = AccountsChartUseCases.UseCaseInteractor()) {
         AccountsSearchCommand searchCommand = command.MapToAccountsSearchCommand();
-        
+
         AccountsChartDto accountsChart = usecases.SearchAccounts(command.AccountsChartUID, searchCommand);
 
         return OperationalReportMapper.MapFromAccountsChart(command, accountsChart.Accounts);
@@ -78,7 +109,7 @@ namespace Empiria.FinancialAccounting.BanobrasIntegration.SATReports.UseCases {
 
       using (var usecases = TrialBalanceUseCases.UseCaseInteractor()) {
         TrialBalanceCommand balanceCommand = command.MapToTrialBalanceCommand();
-       
+
         TrialBalanceDto trialBalance = usecases.BuildTrialBalance(balanceCommand);
 
         return OperationalReportMapper.MapFromTrialBalance(command, trialBalance);
@@ -89,4 +120,4 @@ namespace Empiria.FinancialAccounting.BanobrasIntegration.SATReports.UseCases {
 
   } // class OperationalReportsUseCases
 
-} // Empiria.FinancialAccounting.BanobrasIntegration.SATReports.UseCases
+} // Empiria.FinancialAccounting.BanobrasIntegration.OperationalReports

@@ -13,7 +13,7 @@ using Empiria.FinancialAccounting.Adapters;
 using Empiria.FinancialAccounting.BalanceEngine;
 using Empiria.FinancialAccounting.BalanceEngine.Adapters;
 
-namespace Empiria.FinancialAccounting.BanobrasIntegration.SATReports.Adapters {
+namespace Empiria.FinancialAccounting.BanobrasIntegration.OperationalReports {
 
   /// <summary>Command payload used to build operational reports.</summary>
   public class OperationalReportCommand {
@@ -64,4 +64,4 @@ namespace Empiria.FinancialAccounting.BanobrasIntegration.SATReports.Adapters {
 
   } // class OperationalReportCommand
 
-} // namespace Empiria.FinancialAccounting.BanobrasIntegration.SATReports.Adapters
+} // namespace Empiria.FinancialAccounting.BanobrasIntegration.OperationalReports

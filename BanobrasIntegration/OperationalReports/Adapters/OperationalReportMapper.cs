@@ -13,10 +13,11 @@ using System.Collections.Generic;
 using Empiria.FinancialAccounting.Adapters;
 using Empiria.FinancialAccounting.BalanceEngine.Adapters;
 
-namespace Empiria.FinancialAccounting.BanobrasIntegration.SATReports.Adapters {
+namespace Empiria.FinancialAccounting.BanobrasIntegration.OperationalReports {
 
   /// <summary>Maps trial balances entries and accounts chart to OperationalReportDto structures.</summary>
   static public class OperationalReportMapper {
+
     internal static OperationalReportDto MapFromTrialBalance(
                                           OperationalReportCommand command, TrialBalanceDto trialBalance) {
       return new OperationalReportDto {
@@ -113,4 +114,4 @@ namespace Empiria.FinancialAccounting.BanobrasIntegration.SATReports.Adapters {
 
   } // class OperationalReportMapper
 
-} // Empiria.FinancialAccounting.BanobrasIntegration.SATReports.Adapters
+} // Empiria.FinancialAccounting.BanobrasIntegration.OperationalReports

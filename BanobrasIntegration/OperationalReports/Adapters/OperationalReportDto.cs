@@ -9,7 +9,7 @@
 ************************* Copyright(c) La Vía Óntica SC, Ontica LLC and contributors. All rights reserved. **/
 using System;
 
-namespace Empiria.FinancialAccounting.BanobrasIntegration.SATReports.Adapters {
+namespace Empiria.FinancialAccounting.BanobrasIntegration.OperationalReports {
 
   public interface IOperationalReportEntryDto {
 
@@ -106,4 +106,4 @@ namespace Empiria.FinancialAccounting.BanobrasIntegration.SATReports.Adapters {
     }
   } // class OperationalReportEntryDto
 
-} // Empiria.FinancialAccounting.BanobrasIntegration.SATReports.Adapters
+} // Empiria.FinancialAccounting.BanobrasIntegration.OperationalReports
