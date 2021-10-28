@@ -12,48 +12,28 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Xml;
 
-using Empiria.FinancialAccounting.BanobrasIntegration.SATReports.Adapters;
+using Empiria.FinancialAccounting.BanobrasIntegration.OperationalReports;
 
-namespace Empiria.FinancialAccounting.BanobrasIntegration.SATReports {
-
-  public enum OperationalReportType {
-
-    BalanzaSat,
-
-    CatalogoDeCuentaSat
-  }
-
-  public enum FileType {
-
-    Excel,
-
-    PDF,
-
-    Xml,
-
-  }
-
+namespace Empiria.FinancialAccounting.BanobrasIntegration.XmlReports {
 
   /// <summary>Creates a Xml file with trial balance information.</summary>
-  internal class XmlFileCreator {
+  internal class OperationalReportXmlFileCreator {
 
     private OperationalReportCommand _command = new OperationalReportCommand();
 
-    private OperationalReportFile _xmlFile;
+    private XmlFile _xmlFile;
 
-
-    public XmlFileCreator() {
+    public OperationalReportXmlFileCreator() {
       // no-op
     }
 
 
-    internal OperationalReportFile CreateOperationalReportFile(OperationalReportDto operationalReport,
-                                                               OperationalReportCommand command) {
+    internal XmlFile CreateXmlFile(OperationalReportDto operationalReport) {
       Assertion.AssertObject(operationalReport, "operationalReport");
 
-      _command = command;
+      _command = operationalReport.Command;
 
-      _xmlFile = new OperationalReportFile();
+      _xmlFile = new XmlFile();
 
       SetXmlHeader();
 
@@ -84,7 +64,7 @@ namespace Empiria.FinancialAccounting.BanobrasIntegration.SATReports {
       XmlElement header = xml.CreateElement(headerName);
       xml.AppendChild(header);
 
-      List<OperationalReportFileAttributes> attributes = SetHeaderAttributes();
+      List<XmlFileAttributes> attributes = SetHeaderAttributes();
 
       XmlAttribute anio = xml.CreateAttribute("Anio");
       anio.Value = _command.Date.ToString("yyyy");
@@ -117,8 +97,8 @@ namespace Empiria.FinancialAccounting.BanobrasIntegration.SATReports {
     }
 
 
-    private List<OperationalReportFileAttributes> SetHeaderAttributes() {
-      List<OperationalReportFileAttributes> attributes = new List<OperationalReportFileAttributes>();
+    private List<XmlFileAttributes> SetHeaderAttributes() {
+      List<XmlFileAttributes> attributes = new List<XmlFileAttributes>();
 
       if (_command.ReportType == OperationalReportType.BalanzaSat) {
         attributes = GetBalanceAttributes();
@@ -149,16 +129,16 @@ namespace Empiria.FinancialAccounting.BanobrasIntegration.SATReports {
     }
 
 
-    private List<OperationalReportFileAttributes> GetAccountsChartAttributes() {
-      List<OperationalReportFileAttributes> attributes = new List<OperationalReportFileAttributes>();
+    private List<XmlFileAttributes> GetAccountsChartAttributes() {
+      List<XmlFileAttributes> attributes = new List<XmlFileAttributes>();
 
-      attributes.Add(new OperationalReportFileAttributes() {
+      attributes.Add(new XmlFileAttributes() {
         Name = "xsi:schemaLocation",
         Property = "http://www.sat.gob.mx/esquemas/ContabilidadE/1_3/CatalogoCuentas " +
                    "http://www.sat.gob.mx/esquemas/ContabilidadE/1_3/CatalogoCuentas/CatalogoCuentas_1_3.xsd"
       });
 
-      attributes.Add(new OperationalReportFileAttributes() {
+      attributes.Add(new XmlFileAttributes() {
         Name = "xmlns:catalogocuentas",
         Property = "http://www.sat.gob.mx/esquemas/ContabilidadE/1_3/CatalogoCuentas"
       });
@@ -167,20 +147,20 @@ namespace Empiria.FinancialAccounting.BanobrasIntegration.SATReports {
     }
 
 
-    private List<OperationalReportFileAttributes> GetBalanceAttributes() {
-      List<OperationalReportFileAttributes> attributes = new List<OperationalReportFileAttributes>();
+    private List<XmlFileAttributes> GetBalanceAttributes() {
+      List<XmlFileAttributes> attributes = new List<XmlFileAttributes>();
 
-      attributes.Add(new OperationalReportFileAttributes() {
+      attributes.Add(new XmlFileAttributes() {
         Name = "TipoEnvio",
         Property = "N"
       });
 
-      attributes.Add(new OperationalReportFileAttributes() {
+      attributes.Add(new XmlFileAttributes() {
         Name = "xmlns:BCE",
         Property = "http://www.sat.gob.mx/esquemas/ContabilidadE/1_3/BalanzaComprobacion"
       });
 
-      attributes.Add(new OperationalReportFileAttributes() {
+      attributes.Add(new XmlFileAttributes() {
         Name = "xsi:schemaLocation",
         Property = "http://www.sat.gob.mx/esquemas/ContabilidadE/1_3/BalanzaComprobacion " +
         "http://www.sat.gob.mx/esquemas/ContabilidadE/1_3/BalanzaComprobacion/BalanzaComprobacion_1_3.xsd"
