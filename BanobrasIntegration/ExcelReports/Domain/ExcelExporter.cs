@@ -10,8 +10,7 @@
 using System;
 using Empiria.FinancialAccounting.Adapters;
 using Empiria.FinancialAccounting.BalanceEngine.Adapters;
-
-using Empiria.FinancialAccounting.BanobrasIntegration.ExcelReports.Adapters;
+using Empiria.FinancialAccounting.BanobrasIntegration.OperationalReports;
 using Empiria.FinancialAccounting.FinancialReports.Adapters;
 using Empiria.FinancialAccounting.Rules.Adapters;
 
@@ -31,12 +30,12 @@ namespace Empiria.FinancialAccounting.BanobrasIntegration.ExcelReports {
 
       ExcelFile excelFile = creator.CreateExcelFile(trialBalance);
 
-      return ExcelFileMapper.Map(excelFile);
+      return excelFile.ToFileReportDto();
     }
 
 
     public FileReportDto Export(AccountsChartDto accountsChart,
-                               AccountsSearchCommand searchCommand) {
+                                AccountsSearchCommand searchCommand) {
       Assertion.AssertObject(accountsChart, "accountsChart");
       Assertion.AssertObject(searchCommand, "searchCommand");
 
@@ -48,7 +47,7 @@ namespace Empiria.FinancialAccounting.BanobrasIntegration.ExcelReports {
 
       ExcelFile excelFile = creator.CreateExcelFile(accountsChart);
 
-      return ExcelFileMapper.Map(excelFile);
+      return excelFile.ToFileReportDto();
     }
 
 
@@ -63,7 +62,7 @@ namespace Empiria.FinancialAccounting.BanobrasIntegration.ExcelReports {
 
       ExcelFile excelFile = creator.CreateExcelFile(rulesTreeItems);
 
-      return ExcelFileMapper.Map(excelFile);
+      return excelFile.ToFileReportDto();
     }
 
 
@@ -78,7 +77,7 @@ namespace Empiria.FinancialAccounting.BanobrasIntegration.ExcelReports {
 
       ExcelFile excelFile = creator.CreateExcelFile(financialReport);
 
-      return ExcelFileMapper.Map(excelFile);
+      return excelFile.ToFileReportDto();
     }
 
 
@@ -93,7 +92,21 @@ namespace Empiria.FinancialAccounting.BanobrasIntegration.ExcelReports {
 
       ExcelFile excelFile = creator.CreateExcelFile(balanceSet);
 
-      return ExcelFileMapper.Map(excelFile);
+      return excelFile.ToFileReportDto();
+    }
+
+
+    public FileReportDto ExportToExcel(OperationalReportDto reportDto,
+                                       OperationalReportCommand command) {
+      var templateUID = $"OperationalReportTemplate.{command.ReportType}";
+
+      var templateConfig = ExcelTemplateConfig.Parse(templateUID);
+
+      var creator = new OperationalReportExcelFileCreator(templateConfig);
+
+      ExcelFile excelFile = creator.CreateExcelFile(reportDto);
+
+      return excelFile.ToFileReportDto();
     }
 
   }  // class ExcelExporter

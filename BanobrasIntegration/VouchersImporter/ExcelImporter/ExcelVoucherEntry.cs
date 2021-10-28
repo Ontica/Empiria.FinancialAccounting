@@ -167,6 +167,7 @@ namespace Empiria.FinancialAccounting.BanobrasIntegration.VouchersImporter {
       }
     }
 
+
     internal void SetConcept(string value) {
       value = EmpiriaString.TrimAll(value);
 
@@ -201,13 +202,13 @@ namespace Empiria.FinancialAccounting.BanobrasIntegration.VouchersImporter {
       value = EmpiriaString.TrimAll(value);
 
       if (String.IsNullOrWhiteSpace(value)) {
-        AddError("La subcuenta en la celda B no contiene el valor de la subcuenta de mayor y el sector.");
+        AddError("La subcuenta no contiene el valor de la subcuenta de mayor y el sector.", "B");
 
       } else if (value.Length != "14060000000041".Length) {
-        AddError($"La subcuenta en la celda B tiene un valor con una longitud que no coincide con la esperada ({value}).");
+        AddError($"La subcuenta tiene un valor con una longitud que no coincide con la esperada ({value}).", "B");
 
       } else if (!EmpiriaString.IsInteger(value)) {
-        AddError($"La subcuenta de la celda B tiene caracteres que no reconozco ({value}).");
+        AddError($"La subcuenta tiene caracteres que no reconozco ({value}).", "B");
 
       } else {
         this.SubaccountWithSector = value;
@@ -218,20 +219,20 @@ namespace Empiria.FinancialAccounting.BanobrasIntegration.VouchersImporter {
 
     internal void SetDebitOrCredit(decimal debit, decimal credit) {
       if (debit < 0) {
-        AddError($"El cargo en la columna E tiene un valor negativo ({debit.ToString("C2")}).");
+        AddError($"El cargo tiene un valor negativo ({debit.ToString("C2")}).", "E");
         return;
       }
       if (credit < 0) {
-        AddError($"El abono en la columna F tiene un valor negativo ({credit.ToString("C2")}).");
+        AddError($"El abono tiene un valor negativo ({credit.ToString("C2")}).", "F");
         return;
       }
       if (debit == 0 && credit == 0) {
-        AddError($"Tanto la columna de cargos como la de abonos tienen importes iguales a cero.");
+        AddError($"Tanto la columna de cargos como la de abonos tienen importes iguales a cero.", "E");
         return;
       }
       if (debit > 0 && credit > 0) {
-        AddError($"Tanto la columna de cargos E ({debit.ToString("C2")}) como la de abonos F ({credit.ToString("C2")})," +
-                 $"tienen importes mayores a cero.");
+        AddError($"Tanto la columna de cargos ({debit.ToString("C2")}) como la de abonos ({credit.ToString("C2")})," +
+                 $"tienen importes mayores a cero.", "E");
         return;
       }
 
@@ -248,9 +249,9 @@ namespace Empiria.FinancialAccounting.BanobrasIntegration.VouchersImporter {
       value = EmpiriaString.TrimAll(value);
 
       if (String.IsNullOrWhiteSpace(value)) {
-        AddError("La celda C no contiene la clave de la moneda.");
+        AddError("La celda no contiene la clave de la moneda.", "C");
       } else if (value.Length != 2) {
-        AddError($"La celda C tiene el valor '{value}', el cual no corresponde a una clave de moneda.");
+        AddError($"La celda tiene el valor '{value}', el cual no corresponde a una clave de moneda.", "C");
       } else {
         this.CurrencyCode = value;
       }
@@ -271,9 +272,9 @@ namespace Empiria.FinancialAccounting.BanobrasIntegration.VouchersImporter {
       value = EmpiriaString.TrimAll(value);
 
       if (String.IsNullOrWhiteSpace(value)) {
-        AddError("La celda D no contiene la clave del área.");
+        AddError("La celda no contiene la clave del área.", "D");
       } else if (value.Length != 6) {
-        AddError($"La celda D no contiene una clave válida de área ({value}).");
+        AddError($"La celda no contiene una clave válida de área ({value}).", "D");
       } else {
         this.ResponsibilityAreaCode = value;
       }
@@ -281,11 +282,11 @@ namespace Empiria.FinancialAccounting.BanobrasIntegration.VouchersImporter {
 
     internal void SetExchangeRate(decimal value) {
       if (value ==  0) {
-        AddError($"La columna H tiene un tipo de cambio igual a cero.");
+        AddError($"El tipo de cambio es igual a cero.", "H");
         return;
       }
       if (value < 0) {
-        AddError($"La columna H tiene un tipo de cambio negativo ({value.ToString("C2")}).");
+        AddError($"El tipo de cambio es negativo ({value}).", "H");
         return;
       }
       this.ExchangeRate = value;
@@ -391,19 +392,32 @@ namespace Empiria.FinancialAccounting.BanobrasIntegration.VouchersImporter {
       return this._entryIssues.ToFixedList();
     }
 
-    public void AddError(string msg) {
+    public void AddError(string msg, string column = "") {
       _entryIssues.Add(new ToImportVoucherIssue(VoucherIssueType.Error,
                                                 this.ImportationSet,
-                                                $"Hoja {this.WorksheetName}, Renglón {this.Row}",
-                                                msg));
+                                                GetLocation(column), msg));
     }
 
 
-    public void AddWarning(string msg) {
+    public void AddWarning(string msg, string column = "") {
       _entryIssues.Add(new ToImportVoucherIssue(VoucherIssueType.Warning,
                                                 this.ImportationSet,
-                                                $"Hoja {this.WorksheetName}, Renglón {this.Row}",
-                                                msg));
+                                                GetLocation(column), msg));
+    }
+
+    private string GetLocation(string column) {
+      string location;
+
+      if (this.WorksheetName.Contains("Hoja")) {
+        location = $"{this.WorksheetName}";
+      } else {
+        location = $"Hoja {this.WorksheetName}";
+      }
+      if (column.Length != 0) {
+        return $"{location}, Celda {column}{this.Row}";
+      } else {
+        return $"{location}, Renglón {this.Row}";
+      }
     }
 
 

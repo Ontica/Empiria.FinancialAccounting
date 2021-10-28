@@ -112,6 +112,10 @@ namespace Empiria.FinancialAccounting.BanobrasIntegration.ExcelReports {
       }
     }
 
+    internal FileReportDto ToFileReportDto() {
+      return new FileReportDto(FileType.Excel, this.Url);
+    }
+
     #endregion Methods
 
   }  // class ExcelFile

@@ -10,7 +10,7 @@
 using System;
 using System.Collections.Generic;
 
-using Empiria.FinancialAccounting.BanobrasIntegration.SATReports.Adapters;
+using Empiria.FinancialAccounting.BanobrasIntegration.OperationalReports;
 
 namespace Empiria.FinancialAccounting.BanobrasIntegration.ExcelReports {
 
@@ -54,11 +54,11 @@ namespace Empiria.FinancialAccounting.BanobrasIntegration.ExcelReports {
 
     private void SetTable(OperationalReportDto operationalReport) {
       switch (_command.ReportType) {
-        case SATReports.OperationalReportType.BalanzaSat:
+        case OperationalReportType.BalanzaSat:
           FillOutBalanzaSat(operationalReport.Entries.Select(x => (OperationalReportEntryDto) x));
           return;
 
-        case SATReports.OperationalReportType.CatalogoDeCuentaSat:
+        case OperationalReportType.CatalogoDeCuentaSat:
           FillOutCatalogoDeCuentaSat(operationalReport.Entries.Select(x => (OperationalReportEntryDto) x));
           return;
 
@@ -69,7 +69,7 @@ namespace Empiria.FinancialAccounting.BanobrasIntegration.ExcelReports {
     private void SetHeader() {
       _excelFile.SetCell($"A2", _templateConfig.Title);
 
-      var subTitle = _command.ReportType == SATReports.OperationalReportType.BalanzaSat ?
+      var subTitle = _command.ReportType == OperationalReportType.BalanzaSat ?
                       $"Del { new DateTime(_command.Date.Year, _command.Date.Month, 1).ToString("dd/MMM/yyyy")} "
                       : "" +
                      $"Al {_command.Date.ToString("dd/MMM/yyyy")}";
