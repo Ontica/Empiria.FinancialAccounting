@@ -12,13 +12,10 @@ using System.Web.Http;
 
 using Empiria.WebApi;
 
-using Empiria.FinancialAccounting.BalanceEngine.UseCases;
-using Empiria.FinancialAccounting.BalanceEngine.Adapters;
+using Empiria.FinancialAccounting.BanobrasIntegration;
 
-using Empiria.FinancialAccounting.BanobrasIntegration.SATReports;
-using Empiria.FinancialAccounting.BanobrasIntegration.SATReports.Adapters;
-using Empiria.FinancialAccounting.BanobrasIntegration.SATReports.UseCases;
-using Empiria.FinancialAccounting.BanobrasIntegration.ExcelReports.Adapters;
+using Empiria.FinancialAccounting.BanobrasIntegration.OperationalReports;
+
 
 namespace Empiria.FinancialAccounting.WebApi.SATReports {
 
@@ -33,26 +30,22 @@ namespace Empiria.FinancialAccounting.WebApi.SATReports {
       base.RequireBody(command);
 
       using (var usecases = OperationalReportsUseCases.UseCaseInteractor()) {
-        OperationalReportDto operationalReport = usecases.GetOperationalReport(command);
+        OperationalReportDto reportData = usecases.GetOperationalReport(command);
 
-        return new SingleObjectModel(this.Request, operationalReport);
+        return new SingleObjectModel(this.Request, reportData);
       }
     }
 
 
     [HttpPost]
     [Route("v2/financial-accounting/operational-reports/export")]
-    public SingleObjectModel GetExcelTrialBalance([FromBody] OperationalReportCommand command) {
+    public SingleObjectModel ExportOperationReport([FromBody] OperationalReportCommand command) {
       base.RequireBody(command);
-      
+
       using (var usecases = OperationalReportsUseCases.UseCaseInteractor()) {
-        OperationalReportDto operationalReport = usecases.GetOperationalReport(command);
+        FileReportDto fileReportDto = usecases.ExportOperationalReport(command);
 
-        var operationalExporter = new OperationalReportExporter();
-
-        FileReportDto xmlFileDto = operationalExporter.Export(operationalReport, command);
-
-        return new SingleObjectModel(this.Request, xmlFileDto);
+        return new SingleObjectModel(this.Request, fileReportDto);
       }
 
     }

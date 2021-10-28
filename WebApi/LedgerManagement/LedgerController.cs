@@ -51,7 +51,7 @@ namespace Empiria.FinancialAccounting.WebApi {
 
     [HttpGet]
     [Route("v2/financial-accounting/ledgers/{ledgerUID:guid}/subledgers")]
-    public CollectionModel GetSubledgers([FromUri] string ledgerUID) {
+    public CollectionModel GetSubledgersForALedger([FromUri] string ledgerUID) {
 
       using (var usecases = LedgerUseCases.UseCaseInteractor()) {
         FixedList<SubsidiaryLedgerDto> subledgers = usecases.GetSubledgers(ledgerUID);

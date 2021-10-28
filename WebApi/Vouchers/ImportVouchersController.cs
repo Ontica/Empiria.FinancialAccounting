@@ -23,9 +23,7 @@ namespace Empiria.FinancialAccounting.WebApi.BanobrasIntegration {
   /// <summary>Command API used to import vouchers and voucher entries form DB, Excel and text files.</summary>
   public class ImportVouchersController : WebApiController {
 
-
     #region Database importers
-
 
     [HttpPost]
     [Route("v2/financial-accounting/vouchers/database-importer/start")]

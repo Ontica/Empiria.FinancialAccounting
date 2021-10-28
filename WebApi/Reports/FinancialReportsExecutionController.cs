@@ -15,8 +15,8 @@ using Empiria.WebApi;
 using Empiria.FinancialAccounting.FinancialReports.Adapters;
 using Empiria.FinancialAccounting.FinancialReports.UseCases;
 
+using Empiria.FinancialAccounting.BanobrasIntegration;
 using Empiria.FinancialAccounting.BanobrasIntegration.ExcelReports;
-using Empiria.FinancialAccounting.BanobrasIntegration.ExcelReports.Adapters;
 
 namespace Empiria.FinancialAccounting.WebApi.FinancialReports {
 
