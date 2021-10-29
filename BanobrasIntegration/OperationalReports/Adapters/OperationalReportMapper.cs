@@ -61,7 +61,7 @@ namespace Empiria.FinancialAccounting.BanobrasIntegration.OperationalReports {
     }
 
 
-    private static FixedList<IOperationalReportEntryDto> MapAccountsChart(
+    static private FixedList<IOperationalReportEntryDto> MapAccountsChart(
                                       FixedList<AccountDescriptorDto> list) {
 
       var mappedItems = list.Select((x) => MapAccountsToOperationalReport((AccountDescriptorDto) x));
@@ -71,12 +71,13 @@ namespace Empiria.FinancialAccounting.BanobrasIntegration.OperationalReports {
     }
 
     static private OperationalReportEntryDto MapAccountsToOperationalReport(AccountDescriptorDto account) {
+      string accountParent = GetParentAccountNumber(account.Number);
 
       return new OperationalReportEntryDto {
         GroupingCode = "000",
         AccountNumber = account.Number,
         AccountName = account.Name,
-        AccountParent = account.Number,
+        AccountParent = accountParent,
         AccountLevel = account.Level,
         Naturaleza = account.DebtorCreditor == DebtorCreditorType.Deudora ?
                      "D" : "A"
@@ -84,7 +85,17 @@ namespace Empiria.FinancialAccounting.BanobrasIntegration.OperationalReports {
 
     }
 
-    private static FixedList<DataTableColumn> MapBalanceColumns() {
+    static private string GetParentAccountNumber(string accountNumber) {
+      var parentAccountNumber = accountNumber.Contains("-") ? 
+                                accountNumber.Substring(0, accountNumber.LastIndexOf('-')) : 
+                                accountNumber;
+      if (parentAccountNumber.EndsWith("-00")) {
+        parentAccountNumber = parentAccountNumber.Replace("-00", "");
+      }
+      return parentAccountNumber;
+    }
+
+    static private FixedList<DataTableColumn> MapBalanceColumns() {
       List<DataTableColumn> columns = new List<DataTableColumn>();
 
       columns.Add(new DataTableColumn("accountNumber", "Cuenta", "text"));
@@ -96,7 +107,7 @@ namespace Empiria.FinancialAccounting.BanobrasIntegration.OperationalReports {
       return columns.ToFixedList();
     }
 
-    private static FixedList<DataTableColumn> MapColumns() {
+    static private FixedList<DataTableColumn> MapColumns() {
       List<DataTableColumn> columns = new List<DataTableColumn>();
 
       columns.Add(new DataTableColumn("groupingCode", "CodAgrup", "text"));

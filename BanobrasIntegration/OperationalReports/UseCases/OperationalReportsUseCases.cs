@@ -97,7 +97,9 @@ namespace Empiria.FinancialAccounting.BanobrasIntegration.OperationalReports {
 
       using (var usecases = AccountsChartUseCases.UseCaseInteractor()) {
         AccountsSearchCommand searchCommand = command.MapToAccountsSearchCommand();
-        
+        searchCommand.FromAccount = "1101";
+        searchCommand.ToAccount = "1199";
+
         AccountsChartDto accountsChart = usecases.SearchAccounts(command.AccountsChartUID, searchCommand);
 
         return OperationalReportMapper.MapFromAccountsChart(command, accountsChart.Accounts);
