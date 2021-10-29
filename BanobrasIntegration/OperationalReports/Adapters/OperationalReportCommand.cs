@@ -30,7 +30,7 @@ namespace Empiria.FinancialAccounting.BanobrasIntegration.OperationalReports {
 
     public FileType FileType {
       get; set;
-    } = FileType.Excel;
+    } = FileType.Xml;
 
 
     public DateTime Date {

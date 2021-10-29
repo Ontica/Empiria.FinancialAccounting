@@ -801,7 +801,7 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
 
       TrialBalanceEntry entry = TrialBalanceMapper.MapToTrialBalanceEntry(balanceEntry);
 
-      if (entry.ItemType == TrialBalanceItemType.BalanceSummary && entry.Level == 1 && entry.NotHasSector) {
+      if (entry.ItemType == TrialBalanceItemType.BalanceSummary && entry.Level == 1 && entry.HasSector) {
         entry.InitialBalance = 0;
         entry.Debit = 0;
         entry.Credit = 0;
