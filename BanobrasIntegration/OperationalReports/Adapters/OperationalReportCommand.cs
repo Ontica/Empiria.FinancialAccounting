@@ -40,12 +40,12 @@ namespace Empiria.FinancialAccounting.BanobrasIntegration.OperationalReports {
 
     public TrialBalanceCommand MapToTrialBalanceCommand() {
       return new TrialBalanceCommand {
-        TrialBalanceType = TrialBalanceType.Balanza,
-        AccountsChartUID = AccountsChart.Parse(this.AccountsChartUID).UID,
-        BalancesType = BalancesType.WithCurrentBalanceOrMovements,
-        UseDefaultValuation = true,
-        ConsolidateBalancesToTargetCurrency = true,
-        ShowCascadeBalances = false,
+        TrialBalanceType = TrialBalanceType.Balanza,//
+        AccountsChartUID = AccountsChart.Parse(this.AccountsChartUID).UID,//
+        BalancesType = BalancesType.WithCurrentBalanceOrMovements,//
+        UseDefaultValuation = true,//
+        ConsolidateBalancesToTargetCurrency = true,//
+        ShowCascadeBalances = false,//
         InitialPeriod = new TrialBalanceCommandPeriod {
           FromDate = new DateTime(this.Date.Year, this.Date.Month, 1),
           ToDate = this.Date

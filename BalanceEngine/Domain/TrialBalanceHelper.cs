@@ -799,12 +799,21 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
 
     internal void SummaryByAccount(EmpiriaHashTable<TrialBalanceEntry> entries, TrialBalanceEntry balanceEntry) {
 
-      TrialBalanceItemType itemType = TrialBalanceItemType.BalanceSummary;
+      TrialBalanceEntry entry = TrialBalanceMapper.MapToTrialBalanceEntry(balanceEntry);
 
-      string hash = $"{balanceEntry.Account.Number}";
+      if (entry.ItemType == TrialBalanceItemType.BalanceSummary && entry.Level == 1 && entry.NotHasSector) {
+        entry.InitialBalance = 0;
+        entry.Debit = 0;
+        entry.Credit = 0;
+        entry.CurrentBalance = 0;
+      }
 
-      GenerateOrIncreaseEntries(entries, balanceEntry, balanceEntry.Account,
-                                balanceEntry.Sector, itemType, hash);
+      TrialBalanceItemType itemType = TrialBalanceItemType.BalanceEntry;
+
+      string hash = $"{entry.Account.Number}";
+
+      GenerateOrIncreaseEntries(entries, entry, entry.Account,
+                                entry.Sector, itemType, hash);
 
     }
 
