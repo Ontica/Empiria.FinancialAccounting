@@ -45,24 +45,25 @@ namespace Empiria.FinancialAccounting.BanobrasIntegration.XmlReports {
 
     #region Private methods
 
-    private string GetXmlHeaderName() {
+    private string[] GetXmlHeaderName() {
 
       if (_command.ReportType == OperationalReportType.BalanzaSat) {
-        return "BCE:Balanza";
+        return new string[] { "BCE", "Balanza"};
       } else if (_command.ReportType == OperationalReportType.CatalogoDeCuentaSat) {
-        return "catalogocuentas:Catalogo";
+        return new string[] { "catalogocuentas", "Catalogo" };
       } else {
-        return "";
+        throw Assertion.AssertNoReachThisCode();
       }
     }
 
 
     private void SetXmlHeader() {
-      string headerName = GetXmlHeaderName();
+      string[] headerName = GetXmlHeaderName();
 
       XmlDocument xml = new XmlDocument();
-      XmlElement header = xml.CreateElement(headerName);
+      XmlElement header = xml.CreateElement(headerName[1]);
       xml.AppendChild(header);
+      header.Prefix = headerName[0];
 
       List<XmlFileAttributes> attributes = SetHeaderAttributes();
 
@@ -177,8 +178,9 @@ namespace Empiria.FinancialAccounting.BanobrasIntegration.XmlReports {
       XmlNode root = doc.SelectSingleNode("Catalogo");
 
       foreach (var entry in entries) {
-        XmlElement ctas = doc.CreateElement("catalogocuentas:Ctas");
+        XmlElement ctas = doc.CreateElement("Ctas");
         root.AppendChild(ctas);
+        ctas.Prefix = "catalogocuentas";
 
         XmlAttribute natur = doc.CreateAttribute("Natur");
         natur.Value = entry.Naturaleza;
@@ -215,8 +217,9 @@ namespace Empiria.FinancialAccounting.BanobrasIntegration.XmlReports {
       XmlNode root = doc.SelectSingleNode("Balanza");
 
       foreach (var entry in entries) {
-        XmlElement ctas = doc.CreateElement("BCE:Ctas");
+        XmlElement ctas = doc.CreateElement("Ctas");
         root.AppendChild(ctas);
+        ctas.Prefix = "BCE";
 
         XmlAttribute saldoFin = doc.CreateAttribute("SaldoFin");
         saldoFin.Value = entry.InitialBalance.ToString();
