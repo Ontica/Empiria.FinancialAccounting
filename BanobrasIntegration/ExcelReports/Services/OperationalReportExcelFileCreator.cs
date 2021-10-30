@@ -54,11 +54,11 @@ namespace Empiria.FinancialAccounting.BanobrasIntegration.ExcelReports {
 
     private void SetTable(OperationalReportDto operationalReport) {
       switch (_command.ReportType) {
-        case OperationalReportType.BalanzaSat:
+        case OperationalReportType.BalanzaSAT:
           FillOutBalanzaSat(operationalReport.Entries.Select(x => (OperationalReportEntryDto) x));
           return;
 
-        case OperationalReportType.CatalogoDeCuentaSat:
+        case OperationalReportType.CatalogoSAT:
           FillOutCatalogoDeCuentaSat(operationalReport.Entries.Select(x => (OperationalReportEntryDto) x));
           return;
 
@@ -69,7 +69,7 @@ namespace Empiria.FinancialAccounting.BanobrasIntegration.ExcelReports {
     private void SetHeader() {
       _excelFile.SetCell($"A2", _templateConfig.Title);
 
-      var subTitle = _command.ReportType == OperationalReportType.BalanzaSat ?
+      var subTitle = _command.ReportType == OperationalReportType.BalanzaSAT ?
                       $"Del { new DateTime(_command.Date.Year, _command.Date.Month, 1).ToString("dd/MMM/yyyy")} "
                       : "" +
                      $"Al {_command.Date.ToString("dd/MMM/yyyy")}";

@@ -47,9 +47,9 @@ namespace Empiria.FinancialAccounting.BanobrasIntegration.XmlReports {
 
     private string[] GetXmlHeaderName() {
 
-      if (_command.ReportType == OperationalReportType.BalanzaSat) {
+      if (_command.ReportType == OperationalReportType.BalanzaSAT) {
         return new string[] { "BCE", "Balanza"};
-      } else if (_command.ReportType == OperationalReportType.CatalogoDeCuentaSat) {
+      } else if (_command.ReportType == OperationalReportType.CatalogoSAT) {
         return new string[] { "catalogocuentas", "Catalogo" };
       } else {
         throw Assertion.AssertNoReachThisCode();
@@ -101,10 +101,12 @@ namespace Empiria.FinancialAccounting.BanobrasIntegration.XmlReports {
     private List<XmlFileAttributes> SetHeaderAttributes() {
       List<XmlFileAttributes> attributes = new List<XmlFileAttributes>();
 
-      if (_command.ReportType == OperationalReportType.BalanzaSat) {
+      if (_command.ReportType == OperationalReportType.BalanzaSAT) {
         attributes = GetBalanceAttributes();
-      } else if(_command.ReportType == OperationalReportType.CatalogoDeCuentaSat) {
+
+      } else if(_command.ReportType == OperationalReportType.CatalogoSAT) {
         attributes = GetAccountsChartAttributes();
+
       }
 
       return attributes;
@@ -112,21 +114,19 @@ namespace Empiria.FinancialAccounting.BanobrasIntegration.XmlReports {
 
 
     private void SetXmlContent(OperationalReportDto operationalReport) {
-
       switch (_command.ReportType) {
 
-        case OperationalReportType.BalanzaSat:
+        case OperationalReportType.BalanzaSAT:
           FillOutBalanza(operationalReport.Entries.Select(x => (OperationalReportEntryDto) x));
           return;
 
-        case OperationalReportType.CatalogoDeCuentaSat:
+        case OperationalReportType.CatalogoSAT:
           FillOutCatalogoDeCuentas(operationalReport.Entries.Select(x => (OperationalReportEntryDto) x));
           return;
 
         default:
           throw Assertion.AssertNoReachThisCode();
       }
-
     }
 
 

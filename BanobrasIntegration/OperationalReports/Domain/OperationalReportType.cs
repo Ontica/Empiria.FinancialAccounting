@@ -12,9 +12,10 @@ namespace Empiria.FinancialAccounting.BanobrasIntegration.OperationalReports {
 
   public enum OperationalReportType {
 
-    BalanzaSat,
+    BalanzaSAT,
 
-    CatalogoDeCuentaSat
+    CatalogoSAT
+
   }
 
-} // namespace Empiria.FinancialAccounting.BanobrasIntegration.OperationalReports 
+} // namespace Empiria.FinancialAccounting.BanobrasIntegration.OperationalReports

@@ -82,10 +82,10 @@ namespace Empiria.FinancialAccounting.BanobrasIntegration.OperationalReports {
     private OperationalReportDto GetOperationalReportType(OperationalReportCommand command) {
 
       switch (command.ReportType) {
-        case OperationalReportType.BalanzaSat:
+        case OperationalReportType.BalanzaSAT:
           return GetTrialBalance(command);
 
-        case OperationalReportType.CatalogoDeCuentaSat:
+        case OperationalReportType.CatalogoSAT:
           return GetAccountsChart(command);
 
         default:
