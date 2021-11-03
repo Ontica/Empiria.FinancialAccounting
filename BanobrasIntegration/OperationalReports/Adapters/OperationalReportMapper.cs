@@ -114,7 +114,7 @@ namespace Empiria.FinancialAccounting.BanobrasIntegration.OperationalReports {
       columns.Add(new DataTableColumn("accountNumber", "NumCta", "text"));
       columns.Add(new DataTableColumn("accountName", "Desc", "text"));
       columns.Add(new DataTableColumn("accountParent", "SubCtaDe", "text"));
-      columns.Add(new DataTableColumn("accountLevel", "Nivel", "text"));
+      columns.Add(new DataTableColumn("accountLevel", "Nivel", "decimal", 0));
       columns.Add(new DataTableColumn("naturaleza", "Natur", "text"));
 
       return columns.ToFixedList();

@@ -39,6 +39,8 @@ namespace Empiria.FinancialAccounting.BanobrasIntegration.XmlReports {
 
       SetXmlContent(operationalReport);
 
+      _xmlFile.Save(_xmlFile.XmlStructure, _command.ReportType.ToString());
+
       return _xmlFile;
     }
 
@@ -67,13 +69,9 @@ namespace Empiria.FinancialAccounting.BanobrasIntegration.XmlReports {
 
       List<XmlFileAttributes> attributes = SetHeaderAttributes();
 
-      XmlAttribute anio = xml.CreateAttribute("Anio");
-      anio.Value = _command.Date.ToString("yyyy");
-      header.Attributes.Append(anio);
-
-      XmlAttribute mes = xml.CreateAttribute("Mes");
-      mes.Value = _command.Date.ToString("MM");
-      header.Attributes.Append(mes);
+      XmlAttribute xsi = xml.CreateAttribute("xmlns:xsi");
+      xsi.Value = "http://www.w3.org/2001/XMLSchema-instance";
+      header.Attributes.Append(xsi);
 
       XmlAttribute version = xml.CreateAttribute("Version");
       version.Value = attributes.First().Version;
@@ -83,9 +81,13 @@ namespace Empiria.FinancialAccounting.BanobrasIntegration.XmlReports {
       rfc.Value = attributes.First().RFC;
       header.Attributes.Append(rfc);
 
-      XmlAttribute xsi = xml.CreateAttribute("xmlns:xsi");
-      xsi.Value = "http://www.w3.org/2001/XMLSchema-instance";
-      header.Attributes.Append(xsi);
+      XmlAttribute mes = xml.CreateAttribute("Mes");
+      mes.Value = _command.Date.ToString("MM");
+      header.Attributes.Append(mes);
+
+      XmlAttribute anio = xml.CreateAttribute("Anio");
+      anio.Value = _command.Date.ToString("yyyy");
+      header.Attributes.Append(anio);
 
 
       foreach (var attr in attributes) {
@@ -134,14 +136,14 @@ namespace Empiria.FinancialAccounting.BanobrasIntegration.XmlReports {
       List<XmlFileAttributes> attributes = new List<XmlFileAttributes>();
 
       attributes.Add(new XmlFileAttributes() {
-        Name = "xsi:schemaLocation",
-        Property = "http://www.sat.gob.mx/esquemas/ContabilidadE/1_3/CatalogoCuentas " +
-                   "http://www.sat.gob.mx/esquemas/ContabilidadE/1_3/CatalogoCuentas/CatalogoCuentas_1_3.xsd"
+        Name = "xmlns:catalogocuentas",
+        Property = "http://www.sat.gob.mx/esquemas/ContabilidadE/1_3/CatalogoCuentas"
       });
 
       attributes.Add(new XmlFileAttributes() {
-        Name = "xmlns:catalogocuentas",
-        Property = "http://www.sat.gob.mx/esquemas/ContabilidadE/1_3/CatalogoCuentas"
+        Name = "xsi:schemaLocation",
+        Property = "http://www.sat.gob.mx/esquemas/ContabilidadE/1_3/CatalogoCuentas " +
+                   "http://www.sat.gob.mx/esquemas/ContabilidadE/1_3/CatalogoCuentas/CatalogoCuentas_1_3.xsd"
       });
 
       return attributes;
@@ -182,29 +184,29 @@ namespace Empiria.FinancialAccounting.BanobrasIntegration.XmlReports {
         root.AppendChild(ctas);
         ctas.Prefix = "catalogocuentas";
 
-        XmlAttribute natur = doc.CreateAttribute("Natur");
-        natur.Value = entry.Naturaleza;
-        ctas.Attributes.Append(natur);
-
-        XmlAttribute nivel = doc.CreateAttribute("Nivel");
-        nivel.Value = entry.AccountLevel.ToString();
-        ctas.Attributes.Append(nivel);
-
-        XmlAttribute subCtaDe = doc.CreateAttribute("SubCtaDe");
-        subCtaDe.Value = entry.AccountNumber.ToString();
-        ctas.Attributes.Append(subCtaDe);
-
-        XmlAttribute desc = doc.CreateAttribute("Desc");
-        desc.Value = entry.AccountName.ToString();
-        ctas.Attributes.Append(desc);
+        XmlAttribute codAgrup = doc.CreateAttribute("CodAgrup");
+        codAgrup.Value = entry.GroupingCode;
+        ctas.Attributes.Append(codAgrup);
 
         XmlAttribute numCta = doc.CreateAttribute("NumCta");
         numCta.Value = entry.AccountNumber;
         ctas.Attributes.Append(numCta);
 
-        XmlAttribute codAgrup = doc.CreateAttribute("CodAgrup");
-        codAgrup.Value = entry.GroupingCode;
-        ctas.Attributes.Append(codAgrup);
+        XmlAttribute desc = doc.CreateAttribute("Desc");
+        desc.Value = entry.AccountName.ToString();
+        ctas.Attributes.Append(desc);
+
+        XmlAttribute subCtaDe = doc.CreateAttribute("SubCtaDe");
+        subCtaDe.Value = entry.AccountNumber.ToString();
+        ctas.Attributes.Append(subCtaDe);
+
+        XmlAttribute nivel = doc.CreateAttribute("Nivel");
+        nivel.Value = entry.AccountLevel.ToString();
+        ctas.Attributes.Append(nivel);
+
+        XmlAttribute natur = doc.CreateAttribute("Natur");
+        natur.Value = entry.Naturaleza;
+        ctas.Attributes.Append(natur);
 
       }
       _xmlFile.XmlStructure = doc;
@@ -221,25 +223,25 @@ namespace Empiria.FinancialAccounting.BanobrasIntegration.XmlReports {
         root.AppendChild(ctas);
         ctas.Prefix = "BCE";
 
-        XmlAttribute saldoFin = doc.CreateAttribute("SaldoFin");
-        saldoFin.Value = entry.InitialBalance.ToString();
-        ctas.Attributes.Append(saldoFin);
-
-        XmlAttribute haber = doc.CreateAttribute("Haber");
-        haber.Value = entry.Credit.ToString();
-        ctas.Attributes.Append(haber);
+        
+        XmlAttribute numCta = doc.CreateAttribute("NumCta");
+        numCta.Value = entry.AccountNumber;
+        ctas.Attributes.Append(numCta);
+        XmlAttribute saldoIni = doc.CreateAttribute("SaldoIni");
+        saldoIni.Value = entry.InitialBalance.ToString();
+        ctas.Attributes.Append(saldoIni);
 
         XmlAttribute debe = doc.CreateAttribute("Debe");
         debe.Value = entry.Debit.ToString();
         ctas.Attributes.Append(debe);
 
-        XmlAttribute saldoIni = doc.CreateAttribute("SaldoIni");
-        saldoIni.Value = entry.InitialBalance.ToString();
-        ctas.Attributes.Append(saldoIni);
+        XmlAttribute haber = doc.CreateAttribute("Haber");
+        haber.Value = entry.Credit.ToString();
+        ctas.Attributes.Append(haber);
 
-        XmlAttribute numCta = doc.CreateAttribute("NumCta");
-        numCta.Value = entry.AccountNumber;
-        ctas.Attributes.Append(numCta);
+        XmlAttribute saldoFin = doc.CreateAttribute("SaldoFin");
+        saldoFin.Value = entry.InitialBalance.ToString();
+        ctas.Attributes.Append(saldoFin);
 
       }
       _xmlFile.XmlStructure = doc;

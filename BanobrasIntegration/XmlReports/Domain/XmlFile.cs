@@ -18,11 +18,12 @@ namespace Empiria.FinancialAccounting.BanobrasIntegration.XmlReports {
 
 
     static private string GenerationStoragePath = ConfigurationData.Get<string>("Reports.GenerationStoragePath");
-
+    static private string BaseUrl = ConfigurationData.Get<string>("Reports.BaseUrl");
 
     public XmlFile() {
 
     }
+
 
     #region Properties
 
@@ -33,7 +34,7 @@ namespace Empiria.FinancialAccounting.BanobrasIntegration.XmlReports {
 
     public string Url {
       get {
-        return $"{GenerationStoragePath}/{FileInfo.Name}";
+        return $"{BaseUrl}/{FileInfo.Name}";
       }
     }
 
@@ -47,8 +48,21 @@ namespace Empiria.FinancialAccounting.BanobrasIntegration.XmlReports {
       return new FileReportDto(FileType.Xml, this.Url);
     }
 
+
     #endregion Properties
 
+    #region Methods
+
+    internal void Save(XmlDocument xmlStructure, string reportType) {
+      if (xmlStructure != null) {
+        var copyFileName = DateTime.Now.ToString("yyyy.MM.dd-HH.mm.ss-") + reportType + ".xml";
+        var path = Path.Combine(GenerationStoragePath, copyFileName);
+        xmlStructure.Save(path);
+        this.FileInfo = new FileInfo(path);
+      }
+    }
+
+    #endregion
   } // class OperationalReportFile
 
 } // namespace Empiria.FinancialAccounting.BanobrasIntegration.SATReports
