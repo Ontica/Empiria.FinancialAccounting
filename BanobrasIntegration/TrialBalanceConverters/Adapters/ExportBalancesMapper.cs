@@ -25,6 +25,7 @@ namespace Empiria.FinancialAccounting.BanobrasIntegration.BalancesExporter.Adapt
       return new FixedList<ExportedBalancesDto>(entries.Select(x => MapTrialBalanceEntry(command, x)));
     }
 
+
     static private FixedList<TrialBalanceEntryDto> GetEntriesToBeExported(TrialBalanceDto trialBalance) {
       var list = new FixedList<TrialBalanceEntryDto>(trialBalance.Entries.Select(x => (TrialBalanceEntryDto) x));
 
@@ -33,6 +34,7 @@ namespace Empiria.FinancialAccounting.BanobrasIntegration.BalancesExporter.Adapt
 
       return list;
     }
+
 
     static private ExportedBalancesDto MapTrialBalanceEntry(ExportBalancesCommand command,
                                                             TrialBalanceEntryDto entry) {
