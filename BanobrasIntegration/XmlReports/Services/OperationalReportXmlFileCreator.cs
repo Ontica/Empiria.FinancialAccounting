@@ -2,7 +2,7 @@
 *                                                                                                            *
 *  Module   : Banobras Integration Services                Component : Xml Reports                           *
 *  Assembly : FinancialAccounting.BanobrasIntegration.dll  Pattern   : Service                               *
-*  Type     : XmlFileCreator                               License   : Please read LICENSE.txt file          *
+*  Type     : OperationalReportXmlFileCreator              License   : Please read LICENSE.txt file          *
 *                                                                                                            *
 *  Summary  : Creates a Xml file with operational reports information.                                       *
 *                                                                                                            *
@@ -16,7 +16,7 @@ using Empiria.FinancialAccounting.BanobrasIntegration.OperationalReports;
 
 namespace Empiria.FinancialAccounting.BanobrasIntegration.XmlReports {
 
-  /// <summary>Creates a Xml file with trial balance information.</summary>
+  /// <summary>Creates a Xml file with operational reports information.</summary>
   internal class OperationalReportXmlFileCreator {
 
     private OperationalReportCommand _command = new OperationalReportCommand();
@@ -41,7 +41,7 @@ namespace Empiria.FinancialAccounting.BanobrasIntegration.XmlReports {
 
 
 
-      _xmlFile.Save(_xmlFile.XmlStructure, GetReportNameByType(_command.ReportType));
+      _xmlFile.Save(_xmlFile.XmlStructure, GetReportName(_command.ReportType));
 
       return _xmlFile;
     }
@@ -49,13 +49,17 @@ namespace Empiria.FinancialAccounting.BanobrasIntegration.XmlReports {
 
     #region Private methods
 
-    private string GetReportNameByType(OperationalReportType reportType) {
+    private string GetReportName(OperationalReportType reportType) {
       switch (reportType) {
         case OperationalReportType.BalanzaSAT:
           return "balanza.sat";
+
         case OperationalReportType.CatalogoSAT:
+
           return "catalogo.sat";
+
         default:
+
           throw Assertion.AssertNoReachThisCode();
       }
       throw new NotImplementedException();
@@ -63,11 +67,12 @@ namespace Empiria.FinancialAccounting.BanobrasIntegration.XmlReports {
 
 
     private string[] GetXmlHeaderName() {
-
       if (_command.ReportType == OperationalReportType.BalanzaSAT) {
         return new string[] { "BCE", "Balanza"};
+
       } else if (_command.ReportType == OperationalReportType.CatalogoSAT) {
         return new string[] { "catalogocuentas", "Catalogo" };
+
       } else {
         throw Assertion.AssertNoReachThisCode();
       }
@@ -208,11 +213,11 @@ namespace Empiria.FinancialAccounting.BanobrasIntegration.XmlReports {
         ctas.Attributes.Append(numCta);
 
         XmlAttribute desc = doc.CreateAttribute("Desc");
-        desc.Value = entry.AccountName.ToString();
+        desc.Value = entry.AccountName;
         ctas.Attributes.Append(desc);
 
         XmlAttribute subCtaDe = doc.CreateAttribute("SubCtaDe");
-        subCtaDe.Value = entry.AccountNumber.ToString();
+        subCtaDe.Value = entry.AccountParent;
         ctas.Attributes.Append(subCtaDe);
 
         XmlAttribute nivel = doc.CreateAttribute("Nivel");
@@ -227,6 +232,7 @@ namespace Empiria.FinancialAccounting.BanobrasIntegration.XmlReports {
       _xmlFile.XmlStructure = doc;
     }
 
+
     private void FillOutBalanza(IEnumerable<OperationalReportEntryDto> entries) {
 
       XmlDocument doc = _xmlFile.XmlStructure;
@@ -238,10 +244,10 @@ namespace Empiria.FinancialAccounting.BanobrasIntegration.XmlReports {
         root.AppendChild(ctas);
         ctas.Prefix = "BCE";
 
-        
         XmlAttribute numCta = doc.CreateAttribute("NumCta");
         numCta.Value = entry.AccountNumber;
         ctas.Attributes.Append(numCta);
+
         XmlAttribute saldoIni = doc.CreateAttribute("SaldoIni");
         saldoIni.Value = entry.InitialBalance.ToString();
         ctas.Attributes.Append(saldoIni);
@@ -266,6 +272,6 @@ namespace Empiria.FinancialAccounting.BanobrasIntegration.XmlReports {
     #endregion
 
 
-  } // class XmlFileCreator
+  } // class OperationalReportXmlFileCreator
 
 } // namespace Empiria.FinancialAccounting.BanobrasIntegration.SATReports

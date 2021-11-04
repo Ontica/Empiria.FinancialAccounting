@@ -1,6 +1,6 @@
 ﻿/* Empiria Financial *****************************************************************************************
 *                                                                                                            *
-*  Module   : Banobras Integration Services                Component : Operational reports                   *
+*  Module   : Banobras Integration Services                Component : Xml Reports                           *
 *  Assembly : FinancialAccounting.BanobrasIntegration.dll  Pattern   : Empiria Plain Object                  *
 *  Type     : OperationalReportFileAttributes              License   : Please read LICENSE.txt file          *
 *                                                                                                            *
