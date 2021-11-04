@@ -100,7 +100,7 @@ namespace Empiria.FinancialAccounting.BanobrasIntegration.ExcelReports {
         _excelFile.SetCell($"C{i}", entry.AccountName);
         _excelFile.SetCell($"D{i}", entry.AccountParent);
         _excelFile.SetCell($"E{i}", entry.AccountLevel);
-        _excelFile.SetCell($"E{i}", entry.Naturaleza);
+        _excelFile.SetCell($"F{i}", entry.Naturaleza);
 
         i++;
       }

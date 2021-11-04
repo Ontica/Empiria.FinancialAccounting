@@ -39,13 +39,28 @@ namespace Empiria.FinancialAccounting.BanobrasIntegration.XmlReports {
 
       SetXmlContent(operationalReport);
 
-      _xmlFile.Save(_xmlFile.XmlStructure, _command.ReportType.ToString());
+
+
+      _xmlFile.Save(_xmlFile.XmlStructure, GetReportNameByType(_command.ReportType));
 
       return _xmlFile;
     }
 
 
     #region Private methods
+
+    private string GetReportNameByType(OperationalReportType reportType) {
+      switch (reportType) {
+        case OperationalReportType.BalanzaSAT:
+          return "balanza.sat";
+        case OperationalReportType.CatalogoSAT:
+          return "catalogo.sat";
+        default:
+          throw Assertion.AssertNoReachThisCode();
+      }
+      throw new NotImplementedException();
+    }
+
 
     private string[] GetXmlHeaderName() {
 
