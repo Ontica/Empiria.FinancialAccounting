@@ -39,13 +39,7 @@ namespace Empiria.FinancialAccounting.BanobrasIntegration.XmlReports {
 
       SetXmlContent(operationalReport);
 
-<<<<<<< HEAD
       _xmlFile.Save(_xmlFile.XmlStructure, GetReportNameByType(_command.ReportType));
-=======
-
-
-      _xmlFile.Save(_xmlFile.XmlStructure, GetReportName(_command.ReportType));
->>>>>>> fdb1aede85a760b99e718431432821d644c990b0
 
       return _xmlFile;
     }
@@ -53,7 +47,7 @@ namespace Empiria.FinancialAccounting.BanobrasIntegration.XmlReports {
 
     #region Private methods
 
-    private string GetReportName(OperationalReportType reportType) {
+    private string GetReportNameByType(OperationalReportType reportType) {
       switch (reportType) {
         case OperationalReportType.BalanzaSAT:
           return "balanza.sat";
@@ -71,18 +65,11 @@ namespace Empiria.FinancialAccounting.BanobrasIntegration.XmlReports {
 
 
     private string[] GetXmlHeaderName() {
+
       if (_command.ReportType == OperationalReportType.BalanzaSAT) {
-<<<<<<< HEAD
         return new string[] { "BCE", "Balanza", "http://www.sat.gob.mx/esquemas/ContabilidadE/1_3/BalanzaComprobacion"};
       } else if (_command.ReportType == OperationalReportType.CatalogoSAT) {
         return new string[] { "catalogocuentas", "Catalogo", "http://www.sat.gob.mx/esquemas/ContabilidadE/1_3/CatalogoCuentas" };
-=======
-        return new string[] { "BCE", "Balanza"};
-
-      } else if (_command.ReportType == OperationalReportType.CatalogoSAT) {
-        return new string[] { "catalogocuentas", "Catalogo" };
-
->>>>>>> fdb1aede85a760b99e718431432821d644c990b0
       } else {
         throw Assertion.AssertNoReachThisCode();
       }
@@ -95,8 +82,7 @@ namespace Empiria.FinancialAccounting.BanobrasIntegration.XmlReports {
       XmlDocument xml = new XmlDocument();
       XmlElement header = xml.CreateElement(headerName[0], headerName[1], headerName[2]);
       xml.AppendChild(header);
-      //header.Prefix = headerName[0];
-
+      
       List<XmlFileAttributes> attributes = SetHeaderAttributes();
 
       foreach (var attr in attributes) {
@@ -164,11 +150,6 @@ namespace Empiria.FinancialAccounting.BanobrasIntegration.XmlReports {
     private List<XmlFileAttributes> GetAccountsChartAttributes() {
       List<XmlFileAttributes> attributes = new List<XmlFileAttributes>();
 
-      //attributes.Add(new XmlFileAttributes() {
-      //  Name = "xmlns:catalogocuentas",
-      //  Property = "http://www.sat.gob.mx/esquemas/ContabilidadE/1_3/CatalogoCuentas"
-      //});
-
       attributes.Add(new XmlFileAttributes() {
         Name = "xsi:schemaLocation",
         Property = "http://www.sat.gob.mx/esquemas/ContabilidadE/1_3/CatalogoCuentas " +
@@ -187,11 +168,6 @@ namespace Empiria.FinancialAccounting.BanobrasIntegration.XmlReports {
         Property = "N"
       });
 
-      //attributes.Add(new XmlFileAttributes() {
-      //  Name = "xmlns:BCE",
-      //  Property = "http://www.sat.gob.mx/esquemas/ContabilidadE/1_3/BalanzaComprobacion"
-      //});
-
       attributes.Add(new XmlFileAttributes() {
         Name = "xsi:schemaLocation",
         Property = "http://www.sat.gob.mx/esquemas/ContabilidadE/1_3/BalanzaComprobacion " +
@@ -203,10 +179,6 @@ namespace Empiria.FinancialAccounting.BanobrasIntegration.XmlReports {
 
 
     private void FillOutCatalogoDeCuentas(IEnumerable<OperationalReportEntryDto> entries) {
-
-      //XmlDocument doc = _xmlFile.XmlStructure;
-      //XmlNamespaceManager nsmgr = new XmlNamespaceManager(doc.NameTable);
-      //nsmgr.AddNamespace("catalogocuentas:", "http://www.sat.gob.mx/esquemas/ContabilidadE/1_3/CatalogoCuentas");
 
       string[] headerName = GetXmlHeaderName();
 
@@ -241,8 +213,6 @@ namespace Empiria.FinancialAccounting.BanobrasIntegration.XmlReports {
       XmlAttribute anio = doc.CreateAttribute("Anio");
       anio.Value = _command.Date.ToString("yyyy");
       header.Attributes.Append(anio);
-
-      //XmlNode root = doc.SelectSingleNode("Catalogo");
 
       foreach (var entry in entries) {
         XmlElement ctas = doc.CreateElement(headerName[0], "Ctas", headerName[2]);
@@ -279,9 +249,6 @@ namespace Empiria.FinancialAccounting.BanobrasIntegration.XmlReports {
 
     private void FillOutBalanza(IEnumerable<OperationalReportEntryDto> entries) {
 
-      //XmlDocument doc = _xmlFile.XmlStructure;
-      //XmlNode root = doc.SelectSingleNode("Balanza");
-
       string[] headerName = GetXmlHeaderName();
 
       XmlDocument doc = new XmlDocument();
@@ -320,7 +287,6 @@ namespace Empiria.FinancialAccounting.BanobrasIntegration.XmlReports {
       foreach (var entry in entries) {
         XmlElement ctas = doc.CreateElement(headerName[0], "Ctas", headerName[2]);
         header.AppendChild(ctas);
-        //ctas.Prefix = "BCE";
 
         XmlAttribute numCta = doc.CreateAttribute("NumCta");
         numCta.Value = entry.AccountNumber;
