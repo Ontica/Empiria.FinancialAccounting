@@ -35,11 +35,9 @@ namespace Empiria.FinancialAccounting.BanobrasIntegration.XmlReports {
 
       _xmlFile = new XmlFile();
 
-      SetXmlHeader();
+      //SetXmlHeader();
 
       SetXmlContent(operationalReport);
-
-
 
       _xmlFile.Save(_xmlFile.XmlStructure, GetReportNameByType(_command.ReportType));
 
@@ -65,9 +63,9 @@ namespace Empiria.FinancialAccounting.BanobrasIntegration.XmlReports {
     private string[] GetXmlHeaderName() {
 
       if (_command.ReportType == OperationalReportType.BalanzaSAT) {
-        return new string[] { "BCE", "Balanza"};
+        return new string[] { "BCE", "Balanza", "http://www.sat.gob.mx/esquemas/ContabilidadE/1_3/BalanzaComprobacion"};
       } else if (_command.ReportType == OperationalReportType.CatalogoSAT) {
-        return new string[] { "catalogocuentas", "Catalogo" };
+        return new string[] { "catalogocuentas", "Catalogo", "http://www.sat.gob.mx/esquemas/ContabilidadE/1_3/CatalogoCuentas" };
       } else {
         throw Assertion.AssertNoReachThisCode();
       }
@@ -78,11 +76,17 @@ namespace Empiria.FinancialAccounting.BanobrasIntegration.XmlReports {
       string[] headerName = GetXmlHeaderName();
 
       XmlDocument xml = new XmlDocument();
-      XmlElement header = xml.CreateElement(headerName[1]);
+      XmlElement header = xml.CreateElement(headerName[0], headerName[1], headerName[2]);
       xml.AppendChild(header);
-      header.Prefix = headerName[0];
+      //header.Prefix = headerName[0];
 
       List<XmlFileAttributes> attributes = SetHeaderAttributes();
+
+      foreach (var attr in attributes) {
+        XmlAttribute attribute = xml.CreateAttribute(attr.Name);
+        attribute.Value = attr.Property;
+        header.Attributes.Append(attribute);
+      }
 
       XmlAttribute xsi = xml.CreateAttribute("xmlns:xsi");
       xsi.Value = "http://www.w3.org/2001/XMLSchema-instance";
@@ -103,13 +107,6 @@ namespace Empiria.FinancialAccounting.BanobrasIntegration.XmlReports {
       XmlAttribute anio = xml.CreateAttribute("Anio");
       anio.Value = _command.Date.ToString("yyyy");
       header.Attributes.Append(anio);
-
-
-      foreach (var attr in attributes) {
-        XmlAttribute attribute = xml.CreateAttribute(attr.Name);
-        attribute.Value = attr.Property;
-        header.Attributes.Append(attribute);
-      }
 
       _xmlFile.XmlStructure = xml;
     }
@@ -150,10 +147,10 @@ namespace Empiria.FinancialAccounting.BanobrasIntegration.XmlReports {
     private List<XmlFileAttributes> GetAccountsChartAttributes() {
       List<XmlFileAttributes> attributes = new List<XmlFileAttributes>();
 
-      attributes.Add(new XmlFileAttributes() {
-        Name = "xmlns:catalogocuentas",
-        Property = "http://www.sat.gob.mx/esquemas/ContabilidadE/1_3/CatalogoCuentas"
-      });
+      //attributes.Add(new XmlFileAttributes() {
+      //  Name = "xmlns:catalogocuentas",
+      //  Property = "http://www.sat.gob.mx/esquemas/ContabilidadE/1_3/CatalogoCuentas"
+      //});
 
       attributes.Add(new XmlFileAttributes() {
         Name = "xsi:schemaLocation",
@@ -173,10 +170,10 @@ namespace Empiria.FinancialAccounting.BanobrasIntegration.XmlReports {
         Property = "N"
       });
 
-      attributes.Add(new XmlFileAttributes() {
-        Name = "xmlns:BCE",
-        Property = "http://www.sat.gob.mx/esquemas/ContabilidadE/1_3/BalanzaComprobacion"
-      });
+      //attributes.Add(new XmlFileAttributes() {
+      //  Name = "xmlns:BCE",
+      //  Property = "http://www.sat.gob.mx/esquemas/ContabilidadE/1_3/BalanzaComprobacion"
+      //});
 
       attributes.Add(new XmlFileAttributes() {
         Name = "xsi:schemaLocation",
@@ -190,15 +187,50 @@ namespace Empiria.FinancialAccounting.BanobrasIntegration.XmlReports {
 
     private void FillOutCatalogoDeCuentas(IEnumerable<OperationalReportEntryDto> entries) {
 
-      XmlDocument doc = _xmlFile.XmlStructure;
+      //XmlDocument doc = _xmlFile.XmlStructure;
+      //XmlNamespaceManager nsmgr = new XmlNamespaceManager(doc.NameTable);
+      //nsmgr.AddNamespace("catalogocuentas:", "http://www.sat.gob.mx/esquemas/ContabilidadE/1_3/CatalogoCuentas");
 
-      XmlNode root = doc.SelectSingleNode("Catalogo");
+      string[] headerName = GetXmlHeaderName();
+
+      XmlDocument doc = new XmlDocument();
+      XmlElement header = doc.CreateElement(headerName[0], headerName[1], headerName[2]);
+      doc.AppendChild(header);
+
+      List<XmlFileAttributes> attributes = SetHeaderAttributes();
+
+      foreach (var attr in attributes) {
+        XmlAttribute attribute = doc.CreateAttribute(attr.Name);
+        attribute.Value = attr.Property;
+        header.Attributes.Append(attribute);
+      }
+
+      XmlAttribute xsi = doc.CreateAttribute("xmlns:xsi");
+      xsi.Value = "http://www.w3.org/2001/XMLSchema-instance";
+      header.Attributes.Append(xsi);
+
+      XmlAttribute version = doc.CreateAttribute("Version");
+      version.Value = attributes.First().Version;
+      header.Attributes.Append(version);
+
+      XmlAttribute rfc = doc.CreateAttribute("RFC");
+      rfc.Value = attributes.First().RFC;
+      header.Attributes.Append(rfc);
+
+      XmlAttribute mes = doc.CreateAttribute("Mes");
+      mes.Value = _command.Date.ToString("MM");
+      header.Attributes.Append(mes);
+
+      XmlAttribute anio = doc.CreateAttribute("Anio");
+      anio.Value = _command.Date.ToString("yyyy");
+      header.Attributes.Append(anio);
+
+      //XmlNode root = doc.SelectSingleNode("Catalogo");
 
       foreach (var entry in entries) {
-        XmlElement ctas = doc.CreateElement("Ctas");
-        root.AppendChild(ctas);
-        ctas.Prefix = "catalogocuentas";
-
+        XmlElement ctas = doc.CreateElement(headerName[0], "Ctas", headerName[2]);
+        header.AppendChild(ctas);
+        
         XmlAttribute codAgrup = doc.CreateAttribute("CodAgrup");
         codAgrup.Value = entry.GroupingCode;
         ctas.Attributes.Append(codAgrup);
@@ -229,14 +261,48 @@ namespace Empiria.FinancialAccounting.BanobrasIntegration.XmlReports {
 
     private void FillOutBalanza(IEnumerable<OperationalReportEntryDto> entries) {
 
-      XmlDocument doc = _xmlFile.XmlStructure;
+      //XmlDocument doc = _xmlFile.XmlStructure;
+      //XmlNode root = doc.SelectSingleNode("Balanza");
 
-      XmlNode root = doc.SelectSingleNode("Balanza");
+      string[] headerName = GetXmlHeaderName();
+
+      XmlDocument doc = new XmlDocument();
+      XmlElement header = doc.CreateElement(headerName[0], headerName[1], headerName[2]);
+      doc.AppendChild(header);
+
+      List<XmlFileAttributes> attributes = SetHeaderAttributes();
+
+      foreach (var attr in attributes) {
+        XmlAttribute attribute = doc.CreateAttribute(attr.Name);
+        attribute.Value = attr.Property;
+        header.Attributes.Append(attribute);
+      }
+
+      XmlAttribute xsi = doc.CreateAttribute("xmlns:xsi");
+      xsi.Value = "http://www.w3.org/2001/XMLSchema-instance";
+      header.Attributes.Append(xsi);
+
+      XmlAttribute version = doc.CreateAttribute("Version");
+      version.Value = attributes.First().Version;
+      header.Attributes.Append(version);
+
+      XmlAttribute rfc = doc.CreateAttribute("RFC");
+      rfc.Value = attributes.First().RFC;
+      header.Attributes.Append(rfc);
+
+      XmlAttribute mes = doc.CreateAttribute("Mes");
+      mes.Value = _command.Date.ToString("MM");
+      header.Attributes.Append(mes);
+
+      XmlAttribute anio = doc.CreateAttribute("Anio");
+      anio.Value = _command.Date.ToString("yyyy");
+      header.Attributes.Append(anio);
+
 
       foreach (var entry in entries) {
-        XmlElement ctas = doc.CreateElement("Ctas");
-        root.AppendChild(ctas);
-        ctas.Prefix = "BCE";
+        XmlElement ctas = doc.CreateElement(headerName[0], "Ctas", headerName[2]);
+        header.AppendChild(ctas);
+        //ctas.Prefix = "BCE";
 
         
         XmlAttribute numCta = doc.CreateAttribute("NumCta");
