@@ -14,6 +14,8 @@ namespace Empiria.FinancialAccounting.BanobrasIntegration.OperationalReports {
 
     BalanzaSAT,
 
+    BalanzaDeterminarImpuestos,
+
     CatalogoSAT
 
   }

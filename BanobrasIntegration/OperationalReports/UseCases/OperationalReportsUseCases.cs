@@ -88,11 +88,15 @@ namespace Empiria.FinancialAccounting.BanobrasIntegration.OperationalReports {
         case OperationalReportType.CatalogoSAT:
           return GetAccountsChart(command);
 
+        case OperationalReportType.BalanzaDeterminarImpuestos:
+          return GetTrialBalanzaForTaxes(command);
+
         default:
           throw Assertion.AssertNoReachThisCode();
       }
     }
 
+    
     private OperationalReportDto GetAccountsChart(OperationalReportCommand command) {
 
       using (var usecases = AccountsChartUseCases.UseCaseInteractor()) {
@@ -104,6 +108,21 @@ namespace Empiria.FinancialAccounting.BanobrasIntegration.OperationalReports {
       }
 
     }
+
+
+    private OperationalReportDto GetTrialBalanzaForTaxes(OperationalReportCommand command) {
+
+      using (var usecases = TrialBalanceUseCases.UseCaseInteractor()) {
+        TrialBalanceCommand balanceCommand = command.MapToTrialBalanceCommand();
+
+        TrialBalanceDto trialBalance = usecases.BuildTrialBalance(balanceCommand);
+
+        return OperationalReportMapper.MapFromTrialBalanzaForTaxes(command, trialBalance);
+      }
+
+      throw new NotImplementedException();
+    }
+
 
     private OperationalReportDto GetTrialBalance(OperationalReportCommand command) {
 
