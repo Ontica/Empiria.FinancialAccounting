@@ -97,7 +97,7 @@ namespace Empiria.FinancialAccounting.BanobrasIntegration.OperationalReports {
 
       using (var usecases = AccountsChartUseCases.UseCaseInteractor()) {
         AccountsSearchCommand searchCommand = command.MapToAccountsSearchCommand();
-
+      
         AccountsChartDto accountsChart = usecases.SearchAccounts(command.AccountsChartUID, searchCommand);
 
         return OperationalReportMapper.MapFromAccountsChart(command, accountsChart.Accounts);
@@ -109,7 +109,7 @@ namespace Empiria.FinancialAccounting.BanobrasIntegration.OperationalReports {
 
       using (var usecases = TrialBalanceUseCases.UseCaseInteractor()) {
         TrialBalanceCommand balanceCommand = command.MapToTrialBalanceCommand();
-
+       
         TrialBalanceDto trialBalance = usecases.BuildTrialBalance(balanceCommand);
 
         return OperationalReportMapper.MapFromTrialBalance(command, trialBalance);
