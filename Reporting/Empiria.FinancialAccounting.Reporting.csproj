@@ -1,24 +1,23 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup>
     <Company>Ontica</Company>
-    <Product>Empiria Financial Accounting Web Api</Product>
+    <Product>Empiria Financial Accounting Reporting Module</Product>
     <Description>
-      This module contains the Http/Json web services interface, used to interact with
-      the use cases and with other inner layers of the Empiria Financial Accounting System.
+      This module is part of the Financial Accounting System, and provides
+      services used to generate financial accounting reports.
     </Description>
-    <Copyright>(c) 2001-2021. La Vía Óntica SC, Ontica LLC and contributors.</Copyright>
+    <Copyright>(c) 2000-2021. La Vía Óntica SC, Ontica LLC and contributors.</Copyright>
     <Version>2.0.0</Version>
     <AssemblyVersion>2.0.0</AssemblyVersion>
     <FileVersion>2.0.0.0</FileVersion>
     <GeneratePackageOnBuild>false</GeneratePackageOnBuild>
     <PackageRequireLicenseAcceptance>true</PackageRequireLicenseAcceptance>
-    <PackageLicenseUrl>https://github.com/Ontica/Empiria.FinancialAccounting/blob/master/WebApi/LICENSE.txt</PackageLicenseUrl>
-    <PackageProjectUrl>https://github.com/Ontica/Empiria.FinancialAccounting/tree/master/WebApi</PackageProjectUrl>
+    <PackageLicenseUrl></PackageLicenseUrl>
+    <PackageProjectUrl>https://github.com/Ontica/Empiria.FinancialAccounting/tree/master/Reporting</PackageProjectUrl>
     <PackageIconUrl>http://www.ontica.org/logo.ontica.png</PackageIconUrl>
     <PackageTags>
-      Contabilidad Financiera, SICOFIN, Banobras, Banca de Desarrollo, México,
-      web services, web api, RESTful, Http/Json, estados financieros, financial accounting,
-      IFRS, International Financial Reporting Standards
+      Contabilidad Financiera, SICOFIN, Banobras, Banca de desarrollo, México, Saldos, SIGRO, reportes operativos, reportes financieros,
+      financial reporting, Balanzas de comprobación, integración, Microsoft Office, Excel, XML
     </PackageTags>
     <RepositoryUrl>https://github.com/Ontica/Empiria.FinancialAccounting</RepositoryUrl>
     <RepositoryType>git</RepositoryType>
@@ -27,10 +26,10 @@
     <AppendTargetFrameworkToOutputPath>false</AppendTargetFrameworkToOutputPath>
     <NeutralLanguage></NeutralLanguage>
     <Configurations>Debug;Release;Multisolutions</Configurations>
-    <AssemblyName>Empiria.FinancialAccounting.WebApi</AssemblyName>
-    <RootNamespace>Empiria.FinancialAccounting.WebApi</RootNamespace>
+    <AssemblyName>Empiria.FinancialAccounting.Reporting</AssemblyName>
+    <RootNamespace>Empiria.FinancialAccounting.Reporting</RootNamespace>
   </PropertyGroup>
-  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' Or '$(Configuration)|$(Platform)' == 'Multisolutions|AnyCPU' ">
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' Or '$(Configuration)|$(Platform)'=='Multisolutions|AnyCPU' ">
     <OutputPath>bin\</OutputPath>
     <DebugSymbols>true</DebugSymbols>
     <DebugType>full</DebugType>
@@ -60,28 +59,20 @@
     <NoWarn />
     <WarningsAsErrors />
   </PropertyGroup>
-  <ItemGroup>
-    <Reference Include="System.Net.Http" />
-    <Reference Include="System.Web" />
-  </ItemGroup>
   <ItemGroup Condition=" '$(Configuration)' != 'Multisolutions' ">
-    <PackageReference Include="Empiria.WebApi" Version="2.0.0" />
+    <PackageReference Include="Empiria.Core" Version="7.0.0" />
+    <PackageReference Include="Empiria.Services" Version="1.0.0" />
+    <PackageReference Include="Empiria.Office" Version="2.0.0" />
     <PackageReference Include="Empiria.FinancialAccounting.Core" Version="2.0.0" />
     <PackageReference Include="Empiria.FinancialAccounting.BalanceEngine" Version="2.0.0" />
     <PackageReference Include="Empiria.FinancialAccounting.FinancialReports" Version="2.0.0" />
-    <PackageReference Include="Empiria.FinancialAccounting.Reporting" Version="2.0.0" />
-    <PackageReference Include="Empiria.FinancialAccounting.Rules" Version="2.0.0" />
-    <PackageReference Include="Empiria.FinancialAccounting.Vouchers" Version="2.0.0" />
-    <PackageReference Include="Empiria.FinancialAccounting.BanobrasIntegration" Version="2.0.0" />
   </ItemGroup>
-  <ItemGroup>
-    <ProjectReference Include="..\..\extensions\WebApi\Empiria.WebApi.csproj" />
+  <ItemGroup Condition=" '$(Configuration)' == 'Multisolutions' ">
+    <ProjectReference Include="..\..\core\Core\Empiria.Core.csproj" />
+    <ProjectReference Include="..\..\extensions\Services\Empiria.Services.csproj" />
+    <ProjectReference Include="..\..\extensions\Office\Empiria.Office.csproj" />
     <ProjectReference Include="..\Core\Empiria.FinancialAccounting.Core.csproj" />
     <ProjectReference Include="..\BalanceEngine\Empiria.FinancialAccounting.BalanceEngine.csproj" />
     <ProjectReference Include="..\FinancialReports\Empiria.FinancialAccounting.FinancialReports.csproj" />
-    <ProjectReference Include="..\Reporting\Empiria.FinancialAccounting.Reporting.csproj" />
-    <ProjectReference Include="..\Rules\Empiria.FinancialAccounting.Rules.csproj" />
-    <ProjectReference Include="..\Vouchers\Empiria.FinancialAccounting.Vouchers.csproj" />
-    <ProjectReference Include="..\BanobrasIntegration\Empiria.FinancialAccounting.BanobrasIntegration.csproj" />
   </ItemGroup>
 </Project>

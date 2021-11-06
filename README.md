@@ -32,16 +32,19 @@ Empiria Financial Accounting comprises the following modules:
 4.  **Balance Engine Tests**  
     Tests suite for the Balance Engine services.
 
-5.  **Banobras Integration**  
+5.  **Reporting**  
+    Generate financial accounting reports and export them to files.
+
+6.  **Banobras Integration**  
     Import and export data services according to Banobras data models and data infrastructure.
 
-6.  **Vouchers Management**  
+7.  **Vouchers Management**  
     Provides services for vouchers edition, importation and management.
 
-7.  **Vouchers Management Tests**  
+8.  **Vouchers Management Tests**  
     Tests suite for vouchers edition, importation and management.
 
-8.  **Web API**  
+9.  **Web API**  
     Http/Json RESTful interface for Financial Accounting system.
 
 Each single project can be compiled using Visual Studio 2019 Community Edition.
