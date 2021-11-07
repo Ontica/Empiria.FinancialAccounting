@@ -48,12 +48,12 @@ namespace Empiria.FinancialAccounting.Reporting.Builders {
     static private FixedList<DataTableColumn> GetReportColumns() {
       var columns = new List<DataTableColumn>();
 
-      columns.Add(new DataTableColumn("CodAgrup", "CodAgrup", "text"));
-      columns.Add(new DataTableColumn("NumCta", "NumCta", "text"));
-      columns.Add(new DataTableColumn("Desc", "Desc", "text"));
-      columns.Add(new DataTableColumn("SubCtaDe", "SubCtaDe", "text"));
-      columns.Add(new DataTableColumn("Nivel", "Nivel", "decimal", 0));
-      columns.Add(new DataTableColumn("Natur", "Natur", "text"));
+      columns.Add(new DataTableColumn("codigoAgrupacion", "Código agrupación", "text"));
+      columns.Add(new DataTableColumn("numeroCuenta", "Cuenta", "text"));
+      columns.Add(new DataTableColumn("descripcion", "Descripción", "text"));
+      columns.Add(new DataTableColumn("subcuentaDe", "Subcuenta de", "text"));
+      columns.Add(new DataTableColumn("nivel", "Nivel", "decimal", 0));
+      columns.Add(new DataTableColumn("naturaleza", "Naturaleza", "text"));
 
       return columns.ToFixedList();
     }

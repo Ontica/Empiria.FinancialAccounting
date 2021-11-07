@@ -42,11 +42,11 @@ namespace Empiria.FinancialAccounting.Reporting.Builders {
     static private FixedList<DataTableColumn> GetReportColumns() {
       var columns = new List<DataTableColumn>();
 
-      columns.Add(new DataTableColumn("accountNumber", "Cuenta", "text"));
-      columns.Add(new DataTableColumn("initialBalance", "Saldo Inicial", "decimal"));
-      columns.Add(new DataTableColumn("debit", "Debe", "decimal"));
-      columns.Add(new DataTableColumn("credit", "Haber", "decimal"));
-      columns.Add(new DataTableColumn("currentBalance", "Saldo Final", "decimal"));
+      columns.Add(new DataTableColumn("cuenta", "Cuenta", "text"));
+      columns.Add(new DataTableColumn("saldoInicial", "Saldo Inicial", "decimal"));
+      columns.Add(new DataTableColumn("debe", "Debe", "decimal"));
+      columns.Add(new DataTableColumn("haber", "Haber", "decimal"));
+      columns.Add(new DataTableColumn("saldoFinal", "Saldo Final", "decimal"));
 
       return columns.ToFixedList();
     }
