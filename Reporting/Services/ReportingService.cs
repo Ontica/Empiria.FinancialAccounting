@@ -55,7 +55,9 @@ namespace Empiria.FinancialAccounting.Reporting {
 
 
     public FixedList<ReportTypeDto> GetReportTypes() {
-      throw new NotImplementedException("GetReportTypes");
+      FixedList<ReportType> list = ReportType.GetList();
+
+      return ReportTypeMapper.Map(list);
     }
 
     #endregion Services

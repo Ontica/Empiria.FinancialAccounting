@@ -14,6 +14,31 @@ namespace Empiria.FinancialAccounting.Reporting {
   /// <summary>DTO used to describe financial accounting system's report types.</summary>
   public class ReportTypeDto {
 
+    public string UID {
+      get; internal set;
+    } = string.Empty;
+
+
+    public string Name {
+      get; internal set;
+    } = string.Empty;
+
+
+    public string Group {
+      get; internal set;
+    } = string.Empty;
+
+
+    public string PayloadType {
+      get; internal set;
+    } = string.Empty;
+
+
+    public FileType[] ExportTo {
+      get; internal set;
+    } = new FileType[0];
+
+
   } // class ReportTypeDto
 
 } // namespace Empiria.FinancialAccounting.Reporting

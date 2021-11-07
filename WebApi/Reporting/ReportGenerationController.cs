@@ -54,18 +54,6 @@ namespace Empiria.FinancialAccounting.WebApi.Reporting {
       }
     }
 
-
-    [HttpGet]
-    [Route("v2/financial-accounting/reporting/report-types")]
-    public CollectionModel GetReportTypes() {
-
-      using (var service = ReportingService.ServiceInteractor()) {
-        FixedList<ReportTypeDto> reportTypes = service.GetReportTypes();
-
-        return new CollectionModel(this.Request, reportTypes);
-      }
-    }
-
     #endregion Web Apis
 
   } // class ReportGenerationController
