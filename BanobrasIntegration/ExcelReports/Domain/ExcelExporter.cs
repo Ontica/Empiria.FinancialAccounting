@@ -8,9 +8,9 @@
 *                                                                                                            *
 ************************* Copyright(c) La Vía Óntica SC, Ontica LLC and contributors. All rights reserved. **/
 using System;
+
 using Empiria.FinancialAccounting.Adapters;
 using Empiria.FinancialAccounting.BalanceEngine.Adapters;
-using Empiria.FinancialAccounting.BanobrasIntegration.OperationalReports;
 using Empiria.FinancialAccounting.FinancialReports.Adapters;
 using Empiria.FinancialAccounting.Rules.Adapters;
 
@@ -91,20 +91,6 @@ namespace Empiria.FinancialAccounting.BanobrasIntegration.ExcelReports {
       var creator = new StoredBalanceSetExcelFileCreator(templateConfig);
 
       ExcelFile excelFile = creator.CreateExcelFile(balanceSet);
-
-      return excelFile.ToFileReportDto();
-    }
-
-
-    public FileReportDto ExportToExcel(OperationalReportDto reportDto,
-                                       OperationalReportCommand command) {
-      var templateUID = $"OperationalReportTemplate.{command.ReportType}";
-
-      var templateConfig = ExcelTemplateConfig.Parse(templateUID);
-
-      var creator = new OperationalReportExcelFileCreator(templateConfig);
-
-      ExcelFile excelFile = creator.CreateExcelFile(reportDto);
 
       return excelFile.ToFileReportDto();
     }
