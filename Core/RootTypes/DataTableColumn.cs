@@ -14,6 +14,7 @@ namespace Empiria.FinancialAccounting {
   public class DataTableColumn {
 
     public DataTableColumn(string field, string title, string type, int digits = 2) {
+
       this.Field = field;
 
       this.Title = title;

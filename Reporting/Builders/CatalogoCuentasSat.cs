@@ -18,10 +18,12 @@ namespace Empiria.FinancialAccounting.Reporting.Builders {
   /// <summary>Catálolgo de cuentas para la contabilidad electrónica del SAT.</summary>
   internal class CatalogoCuentasSat : IReportBuilder {
 
+    #region Public methods
+
     public ReportDataDto Build(BuildReportCommand command) {
       Assertion.AssertObject(command, "command");
 
-      AccountsSearchCommand searchCommand = this.GetAccountsSearchCommand(command);
+      AccountsSearchCommand searchCommand = GetAccountsSearchCommand(command);
 
       using (var usecases = AccountsChartUseCases.UseCaseInteractor()) {
         AccountsChartDto accountsChart = usecases.SearchAccounts(command.AccountsChartUID, searchCommand);
@@ -31,12 +33,16 @@ namespace Empiria.FinancialAccounting.Reporting.Builders {
     }
 
 
-    private AccountsSearchCommand GetAccountsSearchCommand(BuildReportCommand command) {
+    #endregion Public methods
+
+
+    #region Private methods
+
+    static private AccountsSearchCommand GetAccountsSearchCommand(BuildReportCommand command) {
       return new AccountsSearchCommand {
         Date = command.ToDate
       };
     }
-
 
 
     static private FixedList<DataTableColumn> GetReportColumns() {
@@ -53,8 +59,8 @@ namespace Empiria.FinancialAccounting.Reporting.Builders {
     }
 
 
-    private ReportDataDto MapToReportDataDto(BuildReportCommand command,
-                                             FixedList<AccountDescriptorDto> accounts) {
+    static private ReportDataDto MapToReportDataDto(BuildReportCommand command,
+                                                    FixedList<AccountDescriptorDto> accounts) {
       return new ReportDataDto {
         Command = command,
         Columns = GetReportColumns(),
@@ -62,12 +68,13 @@ namespace Empiria.FinancialAccounting.Reporting.Builders {
       };
     }
 
+
     static private FixedList<IReportEntryDto> MapToReportDataEntries(FixedList<AccountDescriptorDto> list) {
       var mappedItems = list.Select((x) => MapAccountsToOperationalReport(x));
 
       return new FixedList<IReportEntryDto>(mappedItems);
-
     }
+
 
     static private IReportEntryDto MapAccountsToOperationalReport(AccountDescriptorDto account) {
       return new CatalogoCuentasSatEntry {
@@ -80,6 +87,8 @@ namespace Empiria.FinancialAccounting.Reporting.Builders {
       };
 
     }
+
+    #endregion Private methods
 
   }  // class CatalogoCuentasSat
 

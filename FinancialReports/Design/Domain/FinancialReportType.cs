@@ -15,9 +15,12 @@ namespace Empiria.FinancialAccounting.FinancialReports {
 
   public enum FinancialReportDesignType {
 
-    FixedRows,
+    ConceptsIntegration,
 
-    ConceptsIntegration
+    FixedCells,
+
+    FixedRows
+
   }
 
 
@@ -53,11 +56,13 @@ namespace Empiria.FinancialAccounting.FinancialReports {
       return fullList.FindAll(x => x.AccountsChart.Equals(accountsChart));
     }
 
+
     static internal FixedList<FinancialReportType> GetListForDesign(AccountsChart accountsChart) {
       var fullList = GetList();
 
       return fullList.FindAll(x => x.AccountsChart.Equals(accountsChart) && x.IsDesignable);
     }
+
 
     #endregion Constructors and parsers
 
@@ -68,6 +73,7 @@ namespace Empiria.FinancialAccounting.FinancialReports {
         return base.ExtendedDataField.Get<AccountsChart>("accountsChartId");
       }
     }
+
 
     public FinancialReportDesignType DesignType {
       get {
@@ -96,6 +102,7 @@ namespace Empiria.FinancialAccounting.FinancialReports {
     public FixedList<FinancialReportRow> GetRows() {
       return FinancialReportsRowData.GetRows(this);
     }
+
 
     internal FinancialReportRow GetRow(string rowUID) {
       return GetRows().Find(x => x.UID == rowUID);

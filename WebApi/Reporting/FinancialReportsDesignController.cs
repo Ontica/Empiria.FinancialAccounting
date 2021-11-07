@@ -1,6 +1,6 @@
 ﻿/* Empiria Financial *****************************************************************************************
 *                                                                                                            *
-*  Module   : Financial Reports                            Component : Web Api                               *
+*  Module   : Reporting Services                           Component : Web Api                               *
 *  Assembly : Empiria.FinancialAccounting.WebApi.dll       Pattern   : Query Controller                      *
 *  Type     : FinancialReportsDesignController             License   : Please read LICENSE.txt file          *
 *                                                                                                            *

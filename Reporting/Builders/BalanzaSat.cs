@@ -40,6 +40,21 @@ namespace Empiria.FinancialAccounting.Reporting.Builders {
 
     #region Private methods
 
+
+    static private FixedList<DataTableColumn> GetReportColumns() {
+      List<DataTableColumn> columns = new List<DataTableColumn>();
+
+      columns.Add(new DataTableColumn("Cuenta", "Cuenta", "text"));
+      columns.Add(new DataTableColumn("SaldoInicial", "Saldo Inicial", "decimal"));
+      columns.Add(new DataTableColumn("Cargos", "Debe", "decimal"));
+      columns.Add(new DataTableColumn("Abonos", "Haber", "decimal"));
+      columns.Add(new DataTableColumn("SaldoFinal", "Saldo Final", "decimal"));
+
+      return columns.ToFixedList();
+    }
+
+
+
     private TrialBalanceCommand GetTrialBalanceCommand(BuildReportCommand command) {
       return new TrialBalanceCommand {
         TrialBalanceType = TrialBalanceType.Balanza,
@@ -57,19 +72,15 @@ namespace Empiria.FinancialAccounting.Reporting.Builders {
     }
 
 
-
-    static private FixedList<DataTableColumn> GetReportColumns() {
-      List<DataTableColumn> columns = new List<DataTableColumn>();
-
-      columns.Add(new DataTableColumn("Cuenta", "Cuenta", "text"));
-      columns.Add(new DataTableColumn("SaldoInicial", "Saldo Inicial", "decimal"));
-      columns.Add(new DataTableColumn("Cargos", "Debe", "decimal"));
-      columns.Add(new DataTableColumn("Abonos", "Haber", "decimal"));
-      columns.Add(new DataTableColumn("SaldoFinal", "Saldo Final", "decimal"));
-
-      return columns.ToFixedList();
+    static private BalanzaSatEntry MapToBalanzaSATEntry(TrialBalanceEntryDto entry) {
+      return new BalanzaSatEntry {
+        Cuenta = entry.AccountNumber,
+        SaldoInicial = entry.InitialBalance,
+        Debe = entry.Debit,
+        Haber = entry.Credit,
+        SaldoFinal = entry.CurrentBalance
+      };
     }
-
 
 
     static private ReportDataDto MapToReportDataDto(BuildReportCommand command,
@@ -82,24 +93,11 @@ namespace Empiria.FinancialAccounting.Reporting.Builders {
     }
 
 
-    static private BalanzaSatEntry MapToBalanzaSATEntry(TrialBalanceEntryDto entry) {
-      return new BalanzaSatEntry {
-        Cuenta = entry.AccountNumber,
-        SaldoInicial = entry.InitialBalance,
-        Debe = entry.Debit,
-        Haber = entry.Credit,
-        SaldoFinal = entry.CurrentBalance
-      };
-    }
-
-
     static private FixedList<IReportEntryDto> MapToReportDataEntries(FixedList<ITrialBalanceEntryDto> list) {
-
       var mappedItems = list.Select((x) => MapToBalanzaSATEntry((TrialBalanceEntryDto) x));
 
       return new FixedList<IReportEntryDto>(mappedItems);
     }
-
 
 
     #endregion Private methods
