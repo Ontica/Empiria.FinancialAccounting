@@ -9,7 +9,7 @@
 ************************* Copyright(c) La Vía Óntica SC, Ontica LLC and contributors. All rights reserved. **/
 using System;
 
-namespace Empiria.FinancialAccounting.Reporting.Adapters {
+namespace Empiria.FinancialAccounting.Reporting {
 
   /// <summary>DTO that returns information about a server file containing a report.</summary>
   public class FileReportDto {
@@ -34,4 +34,4 @@ namespace Empiria.FinancialAccounting.Reporting.Adapters {
 
   }  // class FileReportDto
 
-}  // namespace Empiria.FinancialAccounting.Reporting.Adapters
+}  // namespace Empiria.FinancialAccounting.Reporting

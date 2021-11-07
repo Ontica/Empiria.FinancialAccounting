@@ -1,8 +1,8 @@
 ﻿/* Empiria Financial *****************************************************************************************
 *                                                                                                            *
-*  Module   : Reporting Services                           Component : Common Types                          *
-*  Assembly : FinancialAccounting.Reporting.dll            Pattern   : Enumeration                           *
-*  Type     : FileType                                     License   : Please read LICENSE.txt file          *
+*  Module   : Reporting Services                            Component : File Exportation Services            *
+*  Assembly : FinancialAccounting.Reporting.dll             Pattern   : Enumeration                          *
+*  Type     : FileType                                      License   : Please read LICENSE.txt file         *
 *                                                                                                            *
 *  Summary  : Enumerates a file technology.                                                                  *
 *                                                                                                            *

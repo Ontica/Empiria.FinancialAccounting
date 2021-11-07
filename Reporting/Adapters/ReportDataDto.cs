@@ -9,7 +9,7 @@
 ************************* Copyright(c) La Vía Óntica SC, Ontica LLC and contributors. All rights reserved. **/
 using System;
 
-namespace Empiria.FinancialAccounting.Reporting.Adapters {
+namespace Empiria.FinancialAccounting.Reporting {
 
   public interface IReportEntryDto {
 
@@ -18,9 +18,9 @@ namespace Empiria.FinancialAccounting.Reporting.Adapters {
   /// <summary>Output DTO used to return financial accounting report's data.</summary>
   public class ReportDataDto {
 
-    public GenerateReportCommand Command {
+    public BuildReportCommand Command {
       get; internal set;
-    } = new GenerateReportCommand();
+    } = new BuildReportCommand();
 
 
     public FixedList<DataTableColumn> Columns {
@@ -34,4 +34,4 @@ namespace Empiria.FinancialAccounting.Reporting.Adapters {
 
   } // class ReportDataDto
 
-} // Empiria.FinancialAccounting.Reporting.Adapters
+} // Empiria.FinancialAccounting.Reporting
