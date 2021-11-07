@@ -11,7 +11,9 @@ using System;
 
 using Empiria.Services;
 
-using Empiria.FinancialAccounting.Reporting.Adapters;
+using Empiria.FinancialAccounting.Reporting.Builders;
+
+using Empiria.FinancialAccounting.Reporting.Exporters;
 
 namespace Empiria.FinancialAccounting.Reporting {
 
@@ -32,17 +34,23 @@ namespace Empiria.FinancialAccounting.Reporting {
 
     #region Services
 
-    public FileReportDto ExportReport(GenerateReportCommand command) {
+    public FileReportDto ExportReport(BuildReportCommand command) {
       Assertion.AssertObject(command, "command");
 
-      throw new NotImplementedException("ExportReport");
+      ReportDataDto reportData = GenerateReport(command);
+
+      IReportExporter exporter = GetReportExporter(command);
+
+      return exporter.Export(reportData);
     }
 
 
-    public ReportDataDto GenerateReport(GenerateReportCommand command) {
+    public ReportDataDto GenerateReport(BuildReportCommand command) {
       Assertion.AssertObject(command, "command");
 
-      throw new NotImplementedException("GenerateReport");
+      IReportBuilder reportBuilder = GetReportBuilder(command);
+
+      return reportBuilder.Build(command);
     }
 
 
@@ -51,6 +59,41 @@ namespace Empiria.FinancialAccounting.Reporting {
     }
 
     #endregion Services
+
+    #region Helpers
+
+    private IReportBuilder GetReportBuilder(BuildReportCommand command) {
+      switch (command.ReportType) {
+        case "BalanzaSAT":
+          return new BalanzaSat();
+
+        case "CatalogoSAT":
+          return new CatalogoCuentasSat();
+
+        case "BalanzaDeterminarImpuestos":
+          return new BalanzaCalculoImpuestos();
+
+        default:
+          throw Assertion.AssertNoReachThisCode($"Unhandled reportType '{command.ReportType}'.");
+      }
+    }
+
+
+    private IReportExporter GetReportExporter(BuildReportCommand command) {
+      switch (command.ExportTo) {
+        case FileType.Excel:
+          return new ExcelExporter();
+
+        case FileType.Xml:
+          return new XmlExporter();
+
+        default:
+          throw Assertion.AssertNoReachThisCode($"Unhandled exportTo file type '{command.ExportTo}'.");
+      }
+    }
+
+
+    #endregion Helpers
 
   } // class ReportingService
 

@@ -13,7 +13,6 @@ using System.Web.Http;
 using Empiria.WebApi;
 
 using Empiria.FinancialAccounting.Reporting;
-using Empiria.FinancialAccounting.Reporting.Adapters;
 
 namespace Empiria.FinancialAccounting.WebApi.Reporting {
 
@@ -25,9 +24,9 @@ namespace Empiria.FinancialAccounting.WebApi.Reporting {
 
 
     [HttpPost]
-    [Route("v2/financial-accounting/reporting/{reportType:string}/export")]
+    [Route("v2/financial-accounting/reporting/{reportType}/export")]
     public SingleObjectModel ExportReportData([FromUri] string reportType,
-                                              [FromBody] GenerateReportCommand command) {
+                                              [FromBody] BuildReportCommand command) {
       base.RequireBody(command);
 
       command.ReportType = reportType;
@@ -41,9 +40,9 @@ namespace Empiria.FinancialAccounting.WebApi.Reporting {
 
 
     [HttpPost]
-    [Route("v2/financial-accounting/reporting/{reportType:string}/data")]
+    [Route("v2/financial-accounting/reporting/{reportType}/data")]
     public SingleObjectModel GenerateReport([FromUri] string reportType,
-                                            [FromBody] GenerateReportCommand command) {
+                                            [FromBody] BuildReportCommand command) {
       base.RequireBody(command);
 
       command.ReportType = reportType;
