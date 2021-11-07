@@ -206,8 +206,8 @@ namespace Empiria.FinancialAccounting {
       temp = EmpiriaString.TrimAll(temp);
 
       if (temp.Length > EmpiriaString.CountOccurences(pattern, '0')) {
-        Assertion.AssertFail("Number of placeholders in pattern is less than" +
-                             "number of characters in the input string.");
+        Assertion.AssertFail($"Number of placeholders in pattern ({pattern}) is less than " +
+                             $"number of characters in the input string ({accountNumber}).");
       } else {
         temp = temp.PadRight(EmpiriaString.CountOccurences(pattern, '0'), '0');
       }

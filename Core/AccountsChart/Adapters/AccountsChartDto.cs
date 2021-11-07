@@ -100,6 +100,10 @@ namespace Empiria.FinancialAccounting.Adapters {
       get; internal set;
     }
 
+    public string Parent {
+      get; internal set;
+    }
+
     public bool SummaryWithNotChildren {
       get; internal set;
     }

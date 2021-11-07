@@ -92,6 +92,7 @@ namespace Empiria.FinancialAccounting.Adapters {
       dto.StartDate = account.StartDate;
       dto.EndDate = account.EndDate != Account.MAX_END_DATE ? account.EndDate : ExecutionServer.DateMaxValue;
       dto.Obsolete = account.EndDate < Account.MAX_END_DATE || account.IsSummaryWithNotChildren;
+      dto.Parent = account.HasParent ? account.GetParent().Number : string.Empty;
       dto.SummaryWithNotChildren = account.IsSummaryWithNotChildren;
     }
 
