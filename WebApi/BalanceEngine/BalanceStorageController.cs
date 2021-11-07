@@ -14,8 +14,7 @@ using Empiria.WebApi;
 using Empiria.FinancialAccounting.BalanceEngine.Adapters;
 using Empiria.FinancialAccounting.BalanceEngine.UseCases;
 
-using Empiria.FinancialAccounting.BanobrasIntegration;
-using Empiria.FinancialAccounting.BanobrasIntegration.ExcelReports;
+using Empiria.FinancialAccounting.Reporting;
 
 namespace Empiria.FinancialAccounting.WebApi.BalanceEngine {
 
@@ -80,7 +79,7 @@ namespace Empiria.FinancialAccounting.WebApi.BalanceEngine {
       using (var usecases = BalanceStorageUseCases.UseCaseInteractor()) {
         StoredBalanceSetDto balanceSet = usecases.GetBalanceSet(accountsChartUID, balanceSetUID);
 
-        var excelExporter = new ExcelExporter();
+        var excelExporter = new ExcelExporterService();
 
         FileReportDto excelFileDto = excelExporter.Export(balanceSet);
 

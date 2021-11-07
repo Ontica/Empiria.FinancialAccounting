@@ -1,8 +1,8 @@
 ﻿/* Empiria Financial *****************************************************************************************
 *                                                                                                            *
-*  Module   : Banobras Integration Services                Component : Excel Reports                         *
-*  Assembly : FinancialAccounting.BanobrasIntegration.dll  Pattern   : Service                               *
-*  Type     : FinancialReportExcelFileCreator              License   : Please read LICENSE.txt file          *
+*  Module   : Reporting Services                           Component : Excel Exporters                       *
+*  Assembly : FinancialAccounting.Reporting.dll            Pattern   : IExcelExporter                        *
+*  Type     : FinancialReportExcelExporter                 License   : Please read LICENSE.txt file          *
 *                                                                                                            *
 *  Summary  : Creates a Microsoft Excel file with a financial report.                                        *
 *                                                                                                            *
@@ -12,15 +12,15 @@ using System;
 using Empiria.FinancialAccounting.FinancialReports;
 using Empiria.FinancialAccounting.FinancialReports.Adapters;
 
-namespace Empiria.FinancialAccounting.BanobrasIntegration.ExcelReports {
+namespace Empiria.FinancialAccounting.Reporting.Exporters.Excel {
 
   /// <summary>Creates a Microsoft Excel file with a financial report.</summary>
-  internal class FinancialReportExcelFileCreator {
+  internal class FinancialReportExcelExporter {
 
     private readonly ExcelTemplateConfig _templateConfig;
     private ExcelFile _excelFile;
 
-    public FinancialReportExcelFileCreator(ExcelTemplateConfig templateConfig) {
+    public FinancialReportExcelExporter(ExcelTemplateConfig templateConfig) {
       Assertion.AssertObject(templateConfig, "templateConfig");
 
       _templateConfig = templateConfig;
@@ -113,6 +113,6 @@ namespace Empiria.FinancialAccounting.BanobrasIntegration.ExcelReports {
 
     #endregion Private methods
 
-  }  // class FinancialReportExcelFileCreator
+  }  // class FinancialReportExcelExporter
 
-}  // namespace Empiria.FinancialAccounting.BanobrasIntegration.ExcelReports
+}  // namespace Empiria.FinancialAccounting.Reporting.Exporters.Excel

@@ -1,24 +1,25 @@
 ﻿/* Empiria Financial *****************************************************************************************
 *                                                                                                            *
-*  Module   : Banobras Integration Services                Component : Excel Reports                         *
-*  Assembly : FinancialAccounting.BanobrasIntegration.dll  Pattern   : Service                               *
-*  Type     : GroupingRulesReportExcelFileCreator          License   : Please read LICENSE.txt file          *
+*  Module   : Reporting Services                           Component : Excel Exporters                       *
+*  Assembly : FinancialAccounting.Reporting.dll            Pattern   : IExcelExporter                        *
+*  Type     : GroupingRulesReportExcelExporter             License   : Please read LICENSE.txt file          *
 *                                                                                                            *
 *  Summary  : Main service to export grouping rules information to Microsoft Excel.                          *
 *                                                                                                            *
 ************************* Copyright(c) La Vía Óntica SC, Ontica LLC and contributors. All rights reserved. **/
 using System;
+
 using Empiria.FinancialAccounting.Rules.Adapters;
 
-namespace Empiria.FinancialAccounting.BanobrasIntegration.ExcelReports {
+namespace Empiria.FinancialAccounting.Reporting.Exporters.Excel {
 
   /// <summary>Main service to export grouping rules information to Microsoft Excel.</summary>
-  internal class GroupingRulesReportExcelFileCreator {
+  internal class GroupingRulesReportExcelExporter {
 
     private readonly ExcelTemplateConfig _templateConfig;
     private ExcelFile _excelFile;
 
-    public GroupingRulesReportExcelFileCreator(ExcelTemplateConfig templateConfig) {
+    public GroupingRulesReportExcelExporter(ExcelTemplateConfig templateConfig) {
       Assertion.AssertObject(templateConfig, "templateConfig");
 
       _templateConfig = templateConfig;
@@ -65,6 +66,6 @@ namespace Empiria.FinancialAccounting.BanobrasIntegration.ExcelReports {
       }
     }
 
-  }  // class GroupingRulesReportExcelFileCreator
+  }  // class GroupingRulesReportExcelExporter
 
-}  // namespace Empiria.FinancialAccounting.BanobrasIntegration.ExcelReports
+}  // namespace Empiria.FinancialAccounting.Reporting.Exporters.Excel

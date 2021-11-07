@@ -15,8 +15,7 @@ using Empiria.WebApi;
 using Empiria.FinancialAccounting.Rules.UseCases;
 using Empiria.FinancialAccounting.Rules.Adapters;
 
-using Empiria.FinancialAccounting.BanobrasIntegration;
-using Empiria.FinancialAccounting.BanobrasIntegration.ExcelReports;
+using Empiria.FinancialAccounting.Reporting;
 
 namespace Empiria.FinancialAccounting.WebApi.Rules {
 
@@ -57,7 +56,7 @@ namespace Empiria.FinancialAccounting.WebApi.Rules {
       using (var usecases = GroupingRulesUseCases.UseCaseInteractor()) {
         FixedList<GroupingRulesTreeItemDto> rulesTreeItems = usecases.GroupingRulesFlatTree(rulesSetUID);
 
-        var excelExporter = new ExcelExporter();
+        var excelExporter = new ExcelExporterService();
 
         FileReportDto excelFileDto = excelExporter.Export(rulesTreeItems);
 

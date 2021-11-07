@@ -14,9 +14,7 @@ using Empiria.WebApi;
 using Empiria.FinancialAccounting.UseCases;
 using Empiria.FinancialAccounting.Adapters;
 
-
-using Empiria.FinancialAccounting.BanobrasIntegration;
-using Empiria.FinancialAccounting.BanobrasIntegration.ExcelReports;
+using Empiria.FinancialAccounting.Reporting;
 
 namespace Empiria.FinancialAccounting.WebApi {
 
@@ -82,7 +80,7 @@ namespace Empiria.FinancialAccounting.WebApi {
       using (var usecases = AccountsChartUseCases.UseCaseInteractor()) {
         AccountsChartDto accountsChart = usecases.SearchAccounts(accountsChartUID, searchCommand);
 
-        var excelExporter = new ExcelExporter();
+        var excelExporter = new ExcelExporterService();
 
         FileReportDto excelFileDto = excelExporter.Export(accountsChart, searchCommand);
 

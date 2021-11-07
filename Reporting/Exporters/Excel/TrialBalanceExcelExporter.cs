@@ -1,8 +1,8 @@
 ﻿/* Empiria Financial *****************************************************************************************
 *                                                                                                            *
-*  Module   : Banobras Integration Services                Component : Excel Reports                         *
-*  Assembly : FinancialAccounting.BanobrasIntegration.dll  Pattern   : Service                               *
-*  Type     : TrialBalanceExcelFileCreator                 License   : Please read LICENSE.txt file          *
+*  Module   : Reporting Services                           Component : Excel Exporters                       *
+*  Assembly : FinancialAccounting.Reporting.dll            Pattern   : IExcelExporter                        *
+*  Type     : TrialBalanceExcelExporter                    License   : Please read LICENSE.txt file          *
 *                                                                                                            *
 *  Summary  : Creates a Microsoft Excel file with trial balance information.                                 *
 *                                                                                                            *
@@ -13,10 +13,10 @@ using System.Collections.Generic;
 using Empiria.FinancialAccounting.BalanceEngine;
 using Empiria.FinancialAccounting.BalanceEngine.Adapters;
 
-namespace Empiria.FinancialAccounting.BanobrasIntegration.ExcelReports {
+namespace Empiria.FinancialAccounting.Reporting.Exporters.Excel {
 
   /// <summary>Creates a Microsoft Excel file with trial balance information.</summary>
-  internal class TrialBalanceExcelFileCreator {
+  internal class TrialBalanceExcelExporter {
 
     private TrialBalanceCommand _command = new TrialBalanceCommand();
     private readonly ExcelTemplateConfig _templateConfig;
@@ -25,7 +25,7 @@ namespace Empiria.FinancialAccounting.BanobrasIntegration.ExcelReports {
 
     private ExcelFile _excelFile;
 
-    public TrialBalanceExcelFileCreator(ExcelTemplateConfig templateConfig) {
+    public TrialBalanceExcelExporter(ExcelTemplateConfig templateConfig) {
       Assertion.AssertObject(templateConfig, "templateConfig");
 
       _templateConfig = templateConfig;
@@ -453,6 +453,6 @@ namespace Empiria.FinancialAccounting.BanobrasIntegration.ExcelReports {
 
     #endregion Utility methods
 
-  }  // class TrialBalanceExcelFileCreator
+  }  // class TrialBalanceExcelExporter
 
-}  // namespace Empiria.FinancialAccounting.BanobrasIntegration.ExcelReports
+}  // namespace Empiria.FinancialAccounting.Reporting.Exporters.Excel

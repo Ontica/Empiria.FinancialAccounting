@@ -1,27 +1,25 @@
 ﻿/* Empiria Financial *****************************************************************************************
 *                                                                                                            *
-*  Module   : Banobras Integration Services                Component : Excel Reports                         *
-*  Assembly : FinancialAccounting.BanobrasIntegration.dll  Pattern   : Service                               *
-*  Type     : StoredBalanceSetExcelFileCreator             License   : Please read LICENSE.txt file          *
+*  Module   : Reporting Services                           Component : Excel Exporters                       *
+*  Assembly : FinancialAccounting.Reporting.dll            Pattern   : IExcelExporter                        *
+*  Type     : StoredBalanceSetExcelExporter                License   : Please read LICENSE.txt file          *
 *                                                                                                            *
 *  Summary  : Creates a Microsoft Excel file for a set of stored balances.                                   *
 *                                                                                                            *
 ************************* Copyright(c) La Vía Óntica SC, Ontica LLC and contributors. All rights reserved. **/
 using System;
-using System.Collections.Generic;
 
-using Empiria.FinancialAccounting.BalanceEngine;
 using Empiria.FinancialAccounting.BalanceEngine.Adapters;
 
-namespace Empiria.FinancialAccounting.BanobrasIntegration.ExcelReports {
+namespace Empiria.FinancialAccounting.Reporting.Exporters.Excel {
 
   /// <summary>Creates a Microsoft Excel file for a set of stored balances.</summary>
-  internal class StoredBalanceSetExcelFileCreator {
+  internal class StoredBalanceSetExcelExporter {
 
     private readonly ExcelTemplateConfig _templateConfig;
     private ExcelFile _excelFile;
 
-    public StoredBalanceSetExcelFileCreator(ExcelTemplateConfig templateConfig) {
+    public StoredBalanceSetExcelExporter(ExcelTemplateConfig templateConfig) {
       Assertion.AssertObject(templateConfig, "templateConfig");
 
       _templateConfig = templateConfig;
@@ -83,6 +81,6 @@ namespace Empiria.FinancialAccounting.BanobrasIntegration.ExcelReports {
 
     #endregion Private methods
 
-  }  // class StoredBalanceSetExcelFileCreator
+  }  // class StoredBalanceSetExcelExporter
 
-}  // namespace Empiria.FinancialAccounting.BanobrasIntegration.ExcelReports
+}  // namespace Empiria.FinancialAccounting.Reporting.Exporters.Excel

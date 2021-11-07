@@ -15,8 +15,7 @@ using Empiria.WebApi;
 using Empiria.FinancialAccounting.FinancialReports.Adapters;
 using Empiria.FinancialAccounting.FinancialReports.UseCases;
 
-using Empiria.FinancialAccounting.BanobrasIntegration;
-using Empiria.FinancialAccounting.BanobrasIntegration.ExcelReports;
+using Empiria.FinancialAccounting.Reporting;
 
 namespace Empiria.FinancialAccounting.WebApi.FinancialReports {
 
@@ -71,7 +70,7 @@ namespace Empiria.FinancialAccounting.WebApi.FinancialReports {
       using (var usecases = FinancialReportsUseCases.UseCaseInteractor()) {
         FinancialReportDto financialReport = usecases.GenerateFinancialReport(command);
 
-        var excelExporter = new ExcelExporter();
+        var excelExporter = new ExcelExporterService();
 
         FileReportDto excelFileDto = excelExporter.Export(financialReport);
 

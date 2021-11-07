@@ -1,8 +1,8 @@
 ﻿/* Empiria Financial *****************************************************************************************
 *                                                                                                            *
-*  Module   : Banobras Integration Services                Component : Excel Reports                         *
-*  Assembly : FinancialAccounting.BanobrasIntegration.dll  Pattern   : Service                               *
-*  Type     : AccountsChartExcelFileCreator                License   : Please read LICENSE.txt file          *
+*  Module   : Reporting Services                           Component : Excel Exporters                       *
+*  Assembly : FinancialAccounting.Reporting.dll            Pattern   : IExcelExporter                        *
+*  Type     : AccountsChartExcelExporter                   License   : Please read LICENSE.txt file          *
 *                                                                                                            *
 *  Summary  : Main service used to export charts of accounts to Microsoft Excel.                             *
 *                                                                                                            *
@@ -11,14 +11,14 @@ using System;
 
 using Empiria.FinancialAccounting.Adapters;
 
-namespace Empiria.FinancialAccounting.BanobrasIntegration.ExcelReports {
+namespace Empiria.FinancialAccounting.Reporting.Exporters.Excel {
 
   /// <summary>Main service used to export charts of accounts to Microsoft Excel.</summary>
-  internal class AccountsChartExcelFileCreator {
+  internal class AccountsChartExcelExporter {
 
     private readonly ExcelTemplateConfig _templateConfig;
 
-    public AccountsChartExcelFileCreator(ExcelTemplateConfig templateConfig) {
+    public AccountsChartExcelExporter(ExcelTemplateConfig templateConfig) {
       Assertion.AssertObject(templateConfig, "templateConfig");
 
       _templateConfig = templateConfig;
@@ -87,6 +87,6 @@ namespace Empiria.FinancialAccounting.BanobrasIntegration.ExcelReports {
 
     #endregion Private methods
 
-  }  // class AccountsChartExcelFileCreator
+  }  // class AccountsChartExcelExporter
 
-}  // namespace Empiria.FinancialAccounting.BanobrasIntegration.ExcelReports
+}  // namespace namespace Empiria.FinancialAccounting.Reporting.Exporters.Excel

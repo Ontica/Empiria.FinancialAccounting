@@ -15,8 +15,7 @@ using Empiria.WebApi;
 using Empiria.FinancialAccounting.BalanceEngine.UseCases;
 using Empiria.FinancialAccounting.BalanceEngine.Adapters;
 
-using Empiria.FinancialAccounting.BanobrasIntegration;
-using Empiria.FinancialAccounting.BanobrasIntegration.ExcelReports;
+using Empiria.FinancialAccounting.Reporting;
 
 namespace Empiria.FinancialAccounting.WebApi.BalanceEngine {
 
@@ -49,7 +48,7 @@ namespace Empiria.FinancialAccounting.WebApi.BalanceEngine {
 
         TrialBalanceDto trialBalance = usecases.BuildTrialBalance(command);
 
-        var excelExporter = new ExcelExporter();
+        var excelExporter = new ExcelExporterService();
 
         FileReportDto excelFileDto = excelExporter.Export(trialBalance);
 
