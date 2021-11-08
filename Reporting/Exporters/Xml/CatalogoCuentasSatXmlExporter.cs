@@ -72,11 +72,12 @@ namespace Empiria.FinancialAccounting.Reporting.Exporters.Xml {
 
     private XmlElement GetDocumentRootElement(XmlDocument doc) {
       XmlElement root = doc.CreateElement(PREFIX, LOCAL_NAME, NAMESPACE_URI);
-
+      
       root.SetAttribute("xmlns:xsi", "http://www.w3.org/2001/XMLSchema-instance");
 
-      root.SetAttribute("xsi:schemaLocation", NAMESPACE_URI +
-                                             "http://www.sat.gob.mx/esquemas/ContabilidadE/1_3/CatalogoCuentas/CatalogoCuentas_1_3.xsd");
+      root.SetAttribute("schemaLocation", "http://www.w3.org/2001/XMLSchema-instance", 
+                          NAMESPACE_URI +
+                          " http://www.sat.gob.mx/esquemas/ContabilidadE/1_3/CatalogoCuentas/CatalogoCuentas_1_3.xsd");
 
       root.SetAttribute("Version", "1.3");
       root.SetAttribute("RFC", "BNO670315CD0");
