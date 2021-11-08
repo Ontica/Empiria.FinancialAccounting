@@ -8,6 +8,7 @@
 *                                                                                                            *
 ************************* Copyright(c) La Vía Óntica SC, Ontica LLC and contributors. All rights reserved. **/
 using System;
+using System.Linq;
 
 namespace Empiria.FinancialAccounting.Reporting {
 
@@ -23,11 +24,13 @@ namespace Empiria.FinancialAccounting.Reporting {
 
     static private ReportTypeDto Map(ReportType reportType) {
       return new ReportTypeDto {
-         UID = reportType.UID,
-         Name = reportType.Name,
-         Group = reportType.Group,
-         PayloadType = reportType.PayloadType,
-         ExportTo = reportType.ExportTo
+        UID = reportType.UID,
+        Name = reportType.Name,
+        Group = reportType.Group,
+        PayloadType = reportType.PayloadType,
+        AccountsCharts = reportType.AccountsCharts.Select(x => x.UID)
+                                                  .ToArray(),
+        ExportTo = reportType.ExportTo.ToArray()
       };
     }
 

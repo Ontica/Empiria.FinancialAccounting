@@ -27,8 +27,26 @@ namespace Empiria.FinancialAccounting.Reporting {
 
     #endregion Constructors and parsers
 
-
     #region Properties
+
+    public FixedList<AccountsChart> AccountsCharts {
+      get {
+        return base.ExtendedDataField.GetFixedList<AccountsChart>("accountsCharts");
+      }
+      private set {
+        base.ExtendedDataField.Set("accountsCharts", value);
+      }
+    }
+
+
+    public FixedList<FileType> ExportTo {
+      get {
+        return base.ExtendedDataField.GetFixedList<FileType>("exportTo");
+      }
+      private set {
+        base.ExtendedDataField.Set("exportTo", value);
+      }
+    }
 
     public string Group {
       get {
@@ -46,17 +64,6 @@ namespace Empiria.FinancialAccounting.Reporting {
       }
       private set {
         base.ExtendedDataField.Set("payloadType", value);
-      }
-    }
-
-
-    public FileType[] ExportTo {
-      get {
-        return base.ExtendedDataField.GetList<FileType>("exportTo")
-                                     .ToArray();
-      }
-      private set {
-        base.ExtendedDataField.Set("exportTo", value);
       }
     }
 

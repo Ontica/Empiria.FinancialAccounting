@@ -8,6 +8,7 @@
 *                                                                                                            *
 ************************* Copyright(c) La Vía Óntica SC, Ontica LLC and contributors. All rights reserved. **/
 using System;
+using System.Collections.Generic;
 
 namespace Empiria.FinancialAccounting.Reporting {
 
@@ -29,6 +30,10 @@ namespace Empiria.FinancialAccounting.Reporting {
     } = string.Empty;
 
 
+    public string[] AccountsCharts {
+      get; internal set;
+    }
+
     public string PayloadType {
       get; internal set;
     } = string.Empty;
@@ -37,7 +42,6 @@ namespace Empiria.FinancialAccounting.Reporting {
     public FileType[] ExportTo {
       get; internal set;
     } = new FileType[0];
-
 
   } // class ReportTypeDto
 
