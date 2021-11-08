@@ -126,7 +126,7 @@ namespace Empiria.FinancialAccounting.BalanceEngine.Adapters {
     static private TwoColumnsTrialBalanceEntryDto MapToAnaliticoCuentas(TwoCurrenciesBalanceEntry entry) {
       var dto = new TwoColumnsTrialBalanceEntryDto();
 
-      SubsidiaryAccount subledgerAccount = SubsidiaryAccount.Parse(entry.SubledgerAccountId);
+      SubledgerAccount subledgerAccount = SubledgerAccount.Parse(entry.SubledgerAccountId);
 
       dto.ItemType = entry.ItemType;
       dto.LedgerUID = entry.Ledger.UID;
@@ -176,7 +176,7 @@ namespace Empiria.FinancialAccounting.BalanceEngine.Adapters {
     static private TrialBalanceEntryDto MapToTrialBalance(TrialBalanceEntry entry,
                                                           TrialBalanceCommand command) {
       var dto = new TrialBalanceEntryDto();
-      SubsidiaryAccount subledgerAccount = SubsidiaryAccount.Parse(entry.SubledgerAccountId);
+      SubledgerAccount subledgerAccount = SubledgerAccount.Parse(entry.SubledgerAccountId);
 
       dto.ItemType = entry.ItemType;
       dto.LedgerUID = entry.Ledger.UID;

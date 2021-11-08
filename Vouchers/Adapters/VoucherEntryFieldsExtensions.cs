@@ -102,8 +102,8 @@ namespace Empiria.FinancialAccounting.Vouchers.Adapters {
     }
 
 
-    static internal SubsidiaryAccount GetSubledgerAccount(this VoucherEntryFields fields) {
-      return SubsidiaryAccount.Parse(fields.SubledgerAccountId);
+    static internal SubledgerAccount GetSubledgerAccount(this VoucherEntryFields fields) {
+      return SubledgerAccount.Parse(fields.SubledgerAccountId);
     }
 
 

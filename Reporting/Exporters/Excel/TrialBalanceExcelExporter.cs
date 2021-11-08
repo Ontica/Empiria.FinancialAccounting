@@ -315,7 +315,7 @@ namespace Empiria.FinancialAccounting.Reporting.Exporters.Excel {
 
       foreach (var entry in entries) {
         var account = StandardAccount.Parse(entry.StandardAccountId);
-        var subledgerAccount = SubsidiaryAccount.Parse(entry.SubledgerAccountId);
+        var subledgerAccount = SubledgerAccount.Parse(entry.SubledgerAccountId);
 
         _excelFile.SetCell($"A{i}", entry.LedgerNumber);
         _excelFile.SetCell($"B{i}", entry.CurrencyCode);
@@ -366,7 +366,7 @@ namespace Empiria.FinancialAccounting.Reporting.Exporters.Excel {
 
       foreach (var entry in entries) {
         var account = StandardAccount.Parse(entry.StandardAccountId);
-        var subledgerAccount = SubsidiaryAccount.Parse(entry.SubledgerAccountId);
+        var subledgerAccount = SubledgerAccount.Parse(entry.SubledgerAccountId);
 
         _excelFile.SetCell($"A{i}", entry.LedgerNumber);
         _excelFile.SetCell($"B{i}", entry.CurrencyCode);

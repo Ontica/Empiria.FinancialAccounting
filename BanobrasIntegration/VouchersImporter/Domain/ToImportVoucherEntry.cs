@@ -2,7 +2,7 @@
 *                                                                                                            *
 *  Module   : Banobras Integration Services                 Component : Vouchers Importer                    *
 *  Assembly : FinancialAccounting.BanobrasIntegration.dll   Pattern   : Structurer                           *
-*  Type     : StandardVoucherEntry                          License   : Please read LICENSE.txt file         *
+*  Type     : ToImportVoucherEntry                          License   : Please read LICENSE.txt file         *
 *                                                                                                            *
 *  Summary  : Holds a voucher's structure coming from database tables.                                       *
 *                                                                                                            *
@@ -39,9 +39,9 @@ namespace Empiria.FinancialAccounting.BanobrasIntegration.VouchersImporter {
     } = Sector.Empty;
 
 
-    public SubsidiaryAccount SubledgerAccount {
+    public SubledgerAccount SubledgerAccount {
       get; internal set;
-    } = SubsidiaryAccount.Empty;
+    } = SubledgerAccount.Empty;
 
 
     public string SubledgerAccountNo {
@@ -130,6 +130,6 @@ namespace Empiria.FinancialAccounting.BanobrasIntegration.VouchersImporter {
     }
 
 
-  }  // class StandardVoucherEntry
+  }  // class ToImportVoucherEntry
 
 }  // namespace Empiria.FinancialAccounting.BanobrasIntegration.VouchersImporter

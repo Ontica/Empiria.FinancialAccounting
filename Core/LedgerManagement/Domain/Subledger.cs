@@ -2,9 +2,9 @@
 *                                                                                                            *
 *  Module   : Ledger Management                          Component : Domain Layer                            *
 *  Assembly : FinancialAccounting.Core.dll               Pattern   : Aggregate root                          *
-*  Type     : SubsidiaryLedger                           License   : Please read LICENSE.txt file            *
+*  Type     : Subledger                                  License   : Please read LICENSE.txt file            *
 *                                                                                                            *
-*  Summary  : Holds information about a subsidiary ledger book.                                              *
+*  Summary  : Holds information about a subledger book.                                                      *
 *                                                                                                            *
 ************************* Copyright(c) La Vía Óntica SC, Ontica LLC and contributors. All rights reserved. **/
 using System;
@@ -12,29 +12,29 @@ using Empiria.FinancialAccounting.Adapters;
 
 namespace Empiria.FinancialAccounting {
 
-  /// <summary>Holds information about a subsidiary ledger book.</summary>
-  public class SubsidiaryLedger : BaseObject, INamedEntity {
+  /// <summary>Holds information about a subledger book.</summary>
+  public class Subledger : BaseObject, INamedEntity {
 
     #region Constructors and parsers
 
-    protected SubsidiaryLedger() {
+    protected Subledger() {
       // Required by Empiria Framework.
     }
 
 
-    static public SubsidiaryLedger Parse(int id) {
-      return BaseObject.ParseId<SubsidiaryLedger>(id);
+    static public Subledger Parse(int id) {
+      return BaseObject.ParseId<Subledger>(id);
     }
 
-    static public SubsidiaryLedger Parse(string uid) {
-      return BaseObject.ParseKey<SubsidiaryLedger>(uid);
+    static public Subledger Parse(string uid) {
+      return BaseObject.ParseKey<Subledger>(uid);
     }
 
     static public void Preload() {
-      BaseObject.GetList<SubsidiaryLedger>();
+      BaseObject.GetList<Subledger>();
     }
 
-    static public SubsidiaryLedger Empty => BaseObject.ParseEmpty<SubsidiaryLedger>();
+    static public Subledger Empty => BaseObject.ParseEmpty<Subledger>();
 
 
     #endregion Constructors and parsers
@@ -55,7 +55,7 @@ namespace Empiria.FinancialAccounting {
 
 
     [DataField("ID_TIPO_MAYOR_AUXILIAR", ConvertFrom = typeof(long))]
-    public SubsidiaryLedgerType SubsidiaryLedgerType {
+    public SubledgerType SubledgerType {
       get; private set;
     }
 
@@ -92,16 +92,13 @@ namespace Empiria.FinancialAccounting {
       return ledger.Equals(this.BaseLedger) || ledger.Equals(this.AdditionalLedger);
     }
 
-    internal SubsidiaryAccount CreateAccount(SubledgerAccountFields fields) {
-      var subledgerAccount = new SubsidiaryAccount(this, fields);
 
-      subledgerAccount.Save();
-
-      return subledgerAccount;
+    internal SubledgerAccount CreateAccount(SubledgerAccountFields fields) {
+      return new SubledgerAccount(this, fields);
     }
 
 
-    internal SubsidiaryAccount CreateAccount(string subledgerAccountNo) {
+    internal SubledgerAccount CreateAccount(string subledgerAccountNo) {
       Assertion.AssertObject(subledgerAccountNo, "subledgerAccountNo");
 
       var fields = new SubledgerAccountFields {
@@ -113,20 +110,18 @@ namespace Empiria.FinancialAccounting {
     }
 
 
-    public SubsidiaryAccount GetAccountWithId(int subledgerAccountId) {
-      var subsidaryAccount = SubsidiaryAccount.Parse(subledgerAccountId);
+    public SubledgerAccount GetAccountWithId(int subledgerAccountId) {
+      var subledgerAccount = SubledgerAccount.Parse(subledgerAccountId);
 
-      Assertion.Assert(subsidaryAccount.SubsidaryLedger.Equals(this),
+      Assertion.Assert(subledgerAccount.Subledger.Equals(this),
           $"The subledger account with id {subledgerAccountId} does not " +
           $"belong to subledger '{this.Name}'.");
 
-      return subsidaryAccount;
+      return subledgerAccount;
     }
-
-
 
     #endregion Public methods
 
-  }  // class SubsidiaryLedger
+  }  // class Subledger
 
 }  // namespace Empiria.FinancialAccounting

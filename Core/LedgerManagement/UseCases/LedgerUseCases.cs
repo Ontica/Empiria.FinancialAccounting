@@ -53,14 +53,14 @@ namespace Empiria.FinancialAccounting.UseCases {
     }
 
 
-    public FixedList<SubsidiaryLedgerDto> GetSubledgers(string ledgerUID) {
+    public FixedList<SubledgerDto> GetSubledgers(string ledgerUID) {
       Assertion.AssertObject(ledgerUID, "ledgerUID");
 
       var ledger = Ledger.Parse(ledgerUID);
 
-      FixedList<SubsidiaryLedger> subledgers = ledger.Subledgers();
+      FixedList<Subledger> subledgers = ledger.Subledgers();
 
-      return SubsidiaryLedgerMapper.Map(subledgers);
+      return SubledgerMapper.Map(subledgers);
     }
 
     #endregion Use cases

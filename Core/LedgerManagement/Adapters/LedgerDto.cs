@@ -41,7 +41,7 @@ namespace Empiria.FinancialAccounting.Adapters {
     }
 
 
-    public string SubsidiaryAccountsPrefix {
+    public string SubledgerAccountsPrefix {
       get;
       internal set;
     }

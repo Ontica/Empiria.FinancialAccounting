@@ -39,7 +39,7 @@ namespace Empiria.FinancialAccounting.BanobrasIntegration.BalancesExporter.Adapt
     static private ExportedBalancesDto MapTrialBalanceEntry(ExportBalancesCommand command,
                                                             TrialBalanceEntryDto entry) {
       var account = StandardAccount.Parse(entry.StandardAccountId);
-      var subledgerAccount = SubsidiaryAccount.Parse(entry.SubledgerAccountId);
+      var subledgerAccount = SubledgerAccount.Parse(entry.SubledgerAccountId);
 
       var calificaMoneda = CalificacionMoneda.TryParse(account.Number,
                                                        entry.SectorCode,

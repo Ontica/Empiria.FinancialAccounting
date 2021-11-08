@@ -2,19 +2,19 @@
 *                                                                                                            *
 *  Module   : Ledger Management                          Component : Interface adapters                      *
 *  Assembly : FinancialAccounting.Core.dll               Pattern   : Data Transfer Object                    *
-*  Type     : SubsidiaryLedgerDto                        License   : Please read LICENSE.txt file            *
+*  Type     : SubledgerDto                               License   : Please read LICENSE.txt file            *
 *                                                                                                            *
-*  Summary  : Output DTO for subsidiary ledger books.                                                        *
+*  Summary  : Output DTOs related to subledger books and subleger accounts.                                  *
 *                                                                                                            *
 ************************* Copyright(c) La Vía Óntica SC, Ontica LLC and contributors. All rights reserved. **/
 using System;
 
 namespace Empiria.FinancialAccounting.Adapters {
 
-  /// <summary>Output DTO for subsidiary ledger books.</summary>
-  public class SubsidiaryLedgerDto {
+  /// <summary>Output DTO for subledger books.</summary>
+  public class SubledgerDto {
 
-    internal SubsidiaryLedgerDto() {
+    internal SubledgerDto() {
       // no-op
     }
 
@@ -47,7 +47,7 @@ namespace Empiria.FinancialAccounting.Adapters {
       get; internal set;
     }
 
-  }  // public class SubsidiaryLedgerDto
+  }  // public class SubledgerDto
 
 
   /// <summary>Output DTO for subledger accounts.</summary>
@@ -76,10 +76,10 @@ namespace Empiria.FinancialAccounting.Adapters {
   }  // class SubledgerAccountDto
 
 
-  /// <summary>Output DTO for a subsidary ledger account.</summary>
-  public class SubsidiaryAccountDto {
+  /// <summary>Output DTO for a subledger account.</summary>
+  public class SubledgerAccountDto {
 
-    internal SubsidiaryAccountDto() {
+    internal SubledgerAccountDto() {
       // no-op
     }
 
@@ -87,26 +87,19 @@ namespace Empiria.FinancialAccounting.Adapters {
       get; internal set;
     }
 
-
     public NamedEntityDto BaseLedger {
       get; internal set;
     }
 
-    public NamedEntityDto SubsidiaryLedger {
+    public NamedEntityDto Subledger {
       get; internal set;
     }
-
 
     public string Number {
       get; internal set;
     }
 
-
     public string Name {
-      get; internal set;
-    }
-
-    public string Keywords {
       get; internal set;
     }
 
@@ -114,6 +107,6 @@ namespace Empiria.FinancialAccounting.Adapters {
       get; internal set;
     }
 
-  }  // class SubsidiaryAccountDto
+  }  // class SubledgerAccountDto
 
 }  // namespace Empiria.FinancialAccounting.Adapters

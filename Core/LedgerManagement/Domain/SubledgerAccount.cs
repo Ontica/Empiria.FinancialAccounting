@@ -1,63 +1,82 @@
 ﻿/* Empiria Financial *****************************************************************************************
 *                                                                                                            *
-*  Module   : Accounts Chart                             Component : Domain Layer                            *
+*  Module   : Ledger Management                          Component : Domain Layer                            *
 *  Assembly : FinancialAccounting.Core.dll               Pattern   : Empiria Data Object                     *
-*  Type     : SubsidiaryAccount                          License   : Please read LICENSE.txt file            *
+*  Type     : SubledgerAccount                           License   : Please read LICENSE.txt file            *
 *                                                                                                            *
-*  Summary  : Holds information about a subsidiary ledger account.                                           *
+*  Summary  : Holds information about a subledger account (cuenta auxiliar).                                 *
 *                                                                                                            *
 ************************* Copyright(c) La Vía Óntica SC, Ontica LLC and contributors. All rights reserved. **/
 using System;
+
 using Empiria.FinancialAccounting.Adapters;
 using Empiria.FinancialAccounting.Data;
 
 namespace Empiria.FinancialAccounting {
 
-  /// <summary>Holds information about a subsidiary ledger account.</summary>
-  public class SubsidiaryAccount : BaseObject {
+  /// <summary>Holds information about a subledger account (cuenta auxiliar).</summary>
+  public class SubledgerAccount : BaseObject {
 
     #region Constructors and parsers
 
-    protected SubsidiaryAccount() {
+    protected SubledgerAccount() {
       // Required by Empiria Framework.
     }
 
-    internal SubsidiaryAccount(SubsidiaryLedger subledger,
-                               SubledgerAccountFields fields) {
+    internal SubledgerAccount(Subledger subledger,
+                              SubledgerAccountFields fields) {
+      Assertion.AssertObject(subledger, "subledger");
+      Assertion.AssertObject(fields, "fields");
 
-      this.SubsidaryLedger = subledger;
+      this.Subledger = subledger;
       LoadFields(fields);
     }
 
 
-    static public SubsidiaryAccount Parse(int id) {
+    static public SubledgerAccount Parse(int id) {
       if (id == 0) {
         id = -1;
       }
-      return BaseObject.ParseId<SubsidiaryAccount>(id);
+      return BaseObject.ParseId<SubledgerAccount>(id);
     }
 
 
-    static public FixedList<SubsidiaryAccount> GetList(AccountsChart accountsChart, string keywords) {
+    static public FixedList<SubledgerAccount> GetList(AccountsChart accountsChart,
+                                                      string keywords) {
       Assertion.AssertObject(accountsChart, "accountsChart");
       Assertion.AssertObject(keywords, "keywords");
 
-      return SubsidiaryLedgerData.GetSubsidiaryAccountsList(accountsChart, keywords);
+      return SubledgerData.GetSubledgerAccountsList(accountsChart, keywords);
     }
+
 
     static public void Preload() {
-      BaseObject.GetList<SubsidiaryAccount>();
+      BaseObject.GetList<SubledgerAccount>();
     }
 
-    static public SubsidiaryAccount Empty => BaseObject.ParseEmpty<SubsidiaryAccount>();
+    static public SubledgerAccount Empty => BaseObject.ParseEmpty<SubledgerAccount>();
 
 
     #endregion Constructors and parsers
 
     #region Public properties
 
+    public Ledger Ledger {
+      get {
+        return this.Subledger.BaseLedger;
+      }
+    }
+
+
+    public Ledger AdditionalLedger {
+      get {
+        return this.Subledger.AdditionalLedger;
+      }
+    }
+
+
     [DataField("ID_MAYOR_AUXILIAR", ConvertFrom = typeof(long))]
-    public SubsidiaryLedger SubsidaryLedger {
+    public Subledger Subledger {
       get; private set;
     }
 
@@ -98,11 +117,11 @@ namespace Empiria.FinancialAccounting {
 
 
     protected override void OnSave() {
-      SubsidiaryLedgerData.WriteSubledgerAccount(this);
+      SubledgerData.WriteSubledgerAccount(this);
     }
 
     #endregion Methods
 
-  }  // class SubsidiaryAccount
+  }  // class SubledgerAccount
 
 }  // namespace Empiria.FinancialAccounting

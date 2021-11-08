@@ -123,7 +123,7 @@ namespace Empiria.FinancialAccounting.Vouchers.Data {
     }
 
 
-    static internal FixedList<SubsidiaryAccount> SearchSubledgerAccountsForVoucherEdition(Voucher voucher,
+    static internal FixedList<SubledgerAccount> SearchSubledgerAccountsForVoucherEdition(Voucher voucher,
                                                                                           string keywords) {
       string sqlKeywords = SearchExpression.ParseAndLikeKeywords("keywords_cuenta_auxiliar", keywords);
 
@@ -131,7 +131,7 @@ namespace Empiria.FinancialAccounting.Vouchers.Data {
                                                     voucher.Ledger.Id,
                                                     sqlKeywords);
 
-      return DataReader.GetFixedList<SubsidiaryAccount>(operation);
+      return DataReader.GetFixedList<SubledgerAccount>(operation);
     }
 
 

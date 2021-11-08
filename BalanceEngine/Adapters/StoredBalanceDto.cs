@@ -30,7 +30,7 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
       get; internal set;
     }
 
-    public int SubsidiaryAccountId {
+    public int SubledgerAccountId {
       get; internal set;
     }
 
@@ -46,11 +46,11 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
       get; internal set;
     }
 
-    public string SubsidiaryAccountNumber {
+    public string SubledgerAccountNumber {
       get; internal set;
     }
 
-    public string SubsidiaryAccountName {
+    public string SubledgerAccountName {
       get; internal set;
     }
 

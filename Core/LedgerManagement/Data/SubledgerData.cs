@@ -2,9 +2,9 @@
 *                                                                                                            *
 *  Module   : Ledger Management                          Component : Data Access Layer                       *
 *  Assembly : FinancialAccounting.Core.dll               Pattern   : Data Service                            *
-*  Type     : SubsidiaryLedgerData                       License   : Please read LICENSE.txt file            *
+*  Type     : SubledgerData                              License   : Please read LICENSE.txt file            *
 *                                                                                                            *
-*  Summary  : Data service layer for subsidiary accounts.                                                    *
+*  Summary  : Data service layer for subledger accounts.                                                     *
 *                                                                                                            *
 ************************* Copyright(c) La Vía Óntica SC, Ontica LLC and contributors. All rights reserved. **/
 using System;
@@ -13,11 +13,11 @@ using Empiria.Data;
 
 namespace Empiria.FinancialAccounting.Data {
 
-  /// <summary>Data service layer for subsidiary accounts.</summary>
-  static internal class SubsidiaryLedgerData {
+  /// <summary>Data service layer for subledger accounts.</summary>
+  static internal class SubledgerData {
 
-    static internal FixedList<SubsidiaryAccount> GetSubsidiaryAccountsList(AccountsChart accountsChart,
-                                                                           string keywords) {
+    static internal FixedList<SubledgerAccount> GetSubledgerAccountsList(AccountsChart accountsChart,
+                                                                         string keywords) {
 
       string sqlKeywords = SearchExpression.ParseAndLikeKeywords("KEYWORDS_CUENTA_AUXILIAR", keywords);
 
@@ -25,7 +25,7 @@ namespace Empiria.FinancialAccounting.Data {
                                                     accountsChart.Id,
                                                     sqlKeywords);
 
-      return DataReader.GetFixedList<SubsidiaryAccount>(operation);
+      return DataReader.GetFixedList<SubledgerAccount>(operation);
     }
 
 
@@ -37,9 +37,10 @@ namespace Empiria.FinancialAccounting.Data {
       return Convert.ToInt64(DataReader.GetScalar<decimal>(operation));
     }
 
-    static internal void WriteSubledgerAccount(SubsidiaryAccount o) {
+
+    static internal void WriteSubledgerAccount(SubledgerAccount o) {
       var op = DataOperation.Parse("write_cof_cuenta_auxiliar",
-                                    o.Id, o.SubsidaryLedger.Id,
+                                    o.Id, o.Subledger.Id,
                                     o.Number, o.Name, o.Description,
                                     o.Deleted ? 1: 0);
 
@@ -47,6 +48,6 @@ namespace Empiria.FinancialAccounting.Data {
     }
 
 
-  }  // class SubsidiaryLedgerData
+  }  // class SubledgerData
 
 }  // namespace Empiria.FinancialAccounting.Data

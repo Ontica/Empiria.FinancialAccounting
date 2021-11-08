@@ -80,7 +80,7 @@ namespace Empiria.FinancialAccounting {
 
 
     [DataField("PREFIJO_CUENTAS_AUXILIARES")]
-    public string SubsidiaryAccountsPrefix {
+    public string SubledgerAccountsPrefix {
       get; private set;
     } = string.Empty;
 
@@ -143,17 +143,16 @@ namespace Empiria.FinancialAccounting {
     }
 
 
-    public SubsidiaryAccount CreateSubledgerAccount(string subledgerAccountNo) {
+    public SubledgerAccount CreateSubledgerAccount(string subledgerAccountNo) {
       subledgerAccountNo = FormatSubledgerAccount(subledgerAccountNo);
 
-      SubsidiaryAccount subledgerAccount = this.TryGetSubledgerAccount(subledgerAccountNo);
+      SubledgerAccount subledgerAccount = this.TryGetSubledgerAccount(subledgerAccountNo);
 
       if (subledgerAccount != null) {
         return subledgerAccount;
       }
 
-      SubsidiaryLedger subLedger = this.Subledgers().Find(
-              x => x.SubsidiaryLedgerType.Equals(SubsidiaryLedgerType.Pending));
+      Subledger subLedger = this.Subledgers().Find(x => x.SubledgerType.Equals(SubledgerType.Pending));
 
       if (subLedger == null) {
         throw Assertion.AssertNoReachThisCode(
@@ -165,6 +164,8 @@ namespace Empiria.FinancialAccounting {
 
 
     public string FormatSubledgerAccount(string subledgerAccountNo) {
+      const int SUBLEDGER_ACCOUNT_FIXED_LENGTH = 16;
+
       var temp = EmpiriaString.TrimAll(subledgerAccountNo);
 
       temp = temp.TrimStart('0');
@@ -173,20 +174,20 @@ namespace Empiria.FinancialAccounting {
         return string.Empty;
       }
 
-      int prefixLength = this.SubsidiaryAccountsPrefix.Length;
-      int accountPartLength = 16;
+      int prefixLength = this.SubledgerAccountsPrefix.Length;
+      int accountPartLength = SUBLEDGER_ACCOUNT_FIXED_LENGTH;
 
       if (temp.Length == prefixLength + accountPartLength &&
-          temp.StartsWith(this.SubsidiaryAccountsPrefix)) {
+          temp.StartsWith(this.SubledgerAccountsPrefix)) {
         return temp;
 
       } else if (temp.Length == prefixLength + accountPartLength &&
-                 !temp.StartsWith(this.SubsidiaryAccountsPrefix)) {
+                 !temp.StartsWith(this.SubledgerAccountsPrefix)) {
         Assertion.AssertFail($"El auxiliar '{subledgerAccountNo}' tiene un formato que no " +
                              $"es válido para la contabilidad {this.FullName}.");
 
       } else if (temp.Length < accountPartLength) {
-        return this.SubsidiaryAccountsPrefix + temp.PadLeft(16, '0');
+        return this.SubledgerAccountsPrefix + temp.PadLeft(SUBLEDGER_ACCOUNT_FIXED_LENGTH, '0');
 
       } else if (temp.Length > prefixLength + accountPartLength) {
         Assertion.AssertNoReachThisCode($"El auxiliar '{subledgerAccountNo}'" +
@@ -211,7 +212,7 @@ namespace Empiria.FinancialAccounting {
     }
 
 
-    public SubsidiaryAccount TryGetSubledgerAccount(string subledgerAccountNo) {
+    public SubledgerAccount TryGetSubledgerAccount(string subledgerAccountNo) {
       string formattedAccountNo = FormatSubledgerAccount(subledgerAccountNo);
 
       return LedgerData.TryGetSubledgerAccount(this, formattedAccountNo);
@@ -251,7 +252,7 @@ namespace Empiria.FinancialAccounting {
       return LedgerData.SearchUnassignedAccountsForEdition(this, keywords, date);
     }
 
-    public FixedList<SubsidiaryLedger> Subledgers() {
+    public FixedList<Subledger> Subledgers() {
       return LedgerData.GetSubledgers(this);
     }
 

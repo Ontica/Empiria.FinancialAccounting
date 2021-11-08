@@ -56,14 +56,14 @@ namespace Empiria.FinancialAccounting.Data {
     }
 
 
-    static internal FixedList<SubsidiaryLedger> GetSubledgers(Ledger ledger) {
+    static internal FixedList<Subledger> GetSubledgers(Ledger ledger) {
       var sql = "SELECT * FROM COF_MAYOR_AUXILIAR " +
                 $"WHERE (ID_MAYOR = {ledger.Id} OR ID_MAYOR_ADICIONAL = {ledger.Id}) AND Eliminado = 0 " +
                  "ORDER BY NOMBRE_MAYOR_AUXILIAR";
 
       var dataOperation = DataOperation.Parse(sql);
 
-      return DataReader.GetFixedList<SubsidiaryLedger>(dataOperation);
+      return DataReader.GetFixedList<Subledger>(dataOperation);
     }
 
 
@@ -99,7 +99,7 @@ namespace Empiria.FinancialAccounting.Data {
     }
 
 
-    internal static SubsidiaryAccount TryGetSubledgerAccount(Ledger ledger, string formattedAccountNo) {
+    internal static SubledgerAccount TryGetSubledgerAccount(Ledger ledger, string formattedAccountNo) {
       var sql = "SELECT COF_CUENTA_AUXILIAR.* " +
                 "FROM COF_CUENTA_AUXILIAR INNER JOIN VW_COF_CUENTA_AUXILIAR " +
                 "ON COF_CUENTA_AUXILIAR.ID_CUENTA_AUXILIAR = VW_COF_CUENTA_AUXILIAR.ID_CUENTA_AUXILIAR " +
@@ -111,7 +111,7 @@ namespace Empiria.FinancialAccounting.Data {
 
       var dataOperation = DataOperation.Parse(sql);
 
-      return DataReader.GetObject<SubsidiaryAccount>(dataOperation, null);
+      return DataReader.GetObject<SubledgerAccount>(dataOperation, null);
     }
 
 

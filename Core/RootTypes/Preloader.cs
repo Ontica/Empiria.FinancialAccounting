@@ -19,12 +19,12 @@ namespace Empiria.FinancialAccounting {
     static public void Preload() {
       EmpiriaLog.Info($"Application preloading starts at {DateTime.Now}.");
       try {
-        SubsidiaryLedger.Preload();
+        Subledger.Preload();
       } catch (Exception e) {
         EmpiriaLog.Error(e);
       }
       try {
-        SubsidiaryAccount.Preload();
+        SubledgerAccount.Preload();
       } catch (Exception e) {
         EmpiriaLog.Error(e);
       }

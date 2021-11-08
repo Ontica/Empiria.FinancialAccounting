@@ -71,8 +71,8 @@
     },
     {
       "type": "FinancialAccounting.Tests",
-      "key": "SUBSIDIARY_LEDGER_UID",
-      "value": "{{TESTS_SUBSIDIARY_LEDGER_UID}}"
+      "key": "SUBLEDGER_UID",
+      "value": "{{TESTS_SUBLEDGER_UID}}"
     }
   ]
 }

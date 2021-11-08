@@ -87,7 +87,7 @@ namespace Empiria.FinancialAccounting.Vouchers.Adapters {
         Sector = entry.HasSector ?
                  LedgerMapper.MapSector(entry.SectorRule) : null,
         SubledgerAccount = entry.HasSubledgerAccount ?
-                           SubsidiaryLedgerMapper.MapAccountToDescriptor(entry.SubledgerAccount) : null,
+                           SubledgerMapper.MapAccountToDescriptor(entry.SubledgerAccount) : null,
         Concept = entry.Concept,
         Date = entry.Date,
         ResponsibilityArea = !entry.ResponsibilityArea.IsEmptyInstance ?

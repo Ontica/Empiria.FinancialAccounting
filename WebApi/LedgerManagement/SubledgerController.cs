@@ -2,9 +2,9 @@
 *                                                                                                            *
 *  Module   : Ledger Management                            Component : Web Api                               *
 *  Assembly : Empiria.FinancialAccounting.WebApi.dll       Pattern   : Query Controller                      *
-*  Type     : SubsidiaryLedgerController                   License   : Please read LICENSE.txt file          *
+*  Type     : SubledgerController                          License   : Please read LICENSE.txt file          *
 *                                                                                                            *
-*  Summary  : Query web API used to get information about subsidiary ledger books and subsidiary accounts.   *
+*  Summary  : Query web API used to get information about subledger books and subledger accounts.            *
 *                                                                                                            *
 ************************* Copyright(c) La Vía Óntica SC, Ontica LLC and contributors. All rights reserved. **/
 using System;
@@ -17,19 +17,18 @@ using Empiria.FinancialAccounting.Adapters;
 
 namespace Empiria.FinancialAccounting.WebApi {
 
-  /// <summary>Query web API used to get information about subsidiary ledger
-  /// books and subsidiary accounts.</summary>
-  public class SubsidiaryLedgerController : WebApiController {
+  /// <summary>Query web API used to get information about subledger books and subledger accounts.</summary>
+  public class SubledgerController : WebApiController {
 
     #region Web Apis
 
 
     [HttpGet]
-    [Route("v2/financial-accounting/subsidiary-ledgers/{subledgerUID:guid}")]
+    [Route("v2/financial-accounting/subledgers/{subledgerUID:guid}")]
     public SingleObjectModel GetSubledger([FromUri] string subledgerUID) {
 
-      using (var usecases = SubsidiaryLedgerUseCases.UseCaseInteractor()) {
-        SubsidiaryLedgerDto subledger = usecases.GetSubsidiaryLedger(subledgerUID);
+      using (var usecases = SubledgerUseCases.UseCaseInteractor()) {
+        SubledgerDto subledger = usecases.GetSubledger(subledgerUID);
 
         return new SingleObjectModel(base.Request, subledger);
       }
@@ -37,13 +36,13 @@ namespace Empiria.FinancialAccounting.WebApi {
 
 
     [HttpGet]
-    [Route("v2/financial-accounting/subsidiary-ledgers/{subledgerUID:guid}" +
+    [Route("v2/financial-accounting/subledgers/{subledgerUID:guid}" +
            "/accounts/{subledgerAccountId:int}")]
     public SingleObjectModel GetSubledgerAccount([FromUri] string subledgerUID,
                                                  [FromUri] int subledgerAccountId) {
 
-      using (var usecases = SubsidiaryLedgerUseCases.UseCaseInteractor()) {
-        SubsidiaryAccountDto subledgerAccount = usecases.GetSubsidiaryAccount(subledgerUID,
+      using (var usecases = SubledgerUseCases.UseCaseInteractor()) {
+        SubledgerAccountDto subledgerAccount = usecases.GetSubledgerAccount(subledgerUID,
                                                                               subledgerAccountId);
 
         return new SingleObjectModel(base.Request, subledgerAccount);
@@ -51,13 +50,13 @@ namespace Empiria.FinancialAccounting.WebApi {
     }
 
 
-    [HttpGet, AllowAnonymous]
-    [Route("v2/financial-accounting/{accountsChartUID:guid}/subsidiary-accounts/{keywords}")]
-    public CollectionModel SearchSubledgerAccounts([FromUri] string accountsChartUID,
-                                                   [FromUri] string keywords) {
+    [HttpPost, AllowAnonymous]
+    [Route("v2/financial-accounting/{accountsChartUID:guid}/subledger-accounts")]
+    public CollectionModel SearchSubledgerAccountsWithCommand([FromUri] string accountsChartUID,
+                                                              [FromBody] SearchSubledgerAccountCommand command) {
 
-      using (var usecases = SubsidiaryLedgerUseCases.UseCaseInteractor()) {
-        FixedList<SubsidiaryAccountDto> list = usecases.SearchSubsidiaryAccounts(accountsChartUID, keywords);
+      using (var usecases = SubledgerUseCases.UseCaseInteractor()) {
+        FixedList<SubledgerAccountDto> list = usecases.SearchSubledgerAccounts(accountsChartUID, command);
 
         return new CollectionModel(base.Request, list);
       }
@@ -65,13 +64,12 @@ namespace Empiria.FinancialAccounting.WebApi {
 
 
     [HttpPost]
-    [Route("v2/financial-accounting/subsidiary-ledgers/{subledgerUID:guid}/accounts")]
+    [Route("v2/financial-accounting/subledgers/{subledgerUID:guid}/accounts")]
     public SingleObjectModel CreateSubledgerAccount([FromUri] string subledgerUID,
                                                     [FromUri] SubledgerAccountFields fields) {
 
-      using (var usecases = SubsidiaryLedgerUseCases.UseCaseInteractor()) {
-        SubsidiaryAccountDto subledgerAccount = usecases.CreateSubledgerAccount(subledgerUID,
-                                                                                fields);
+      using (var usecases = SubledgerUseCases.UseCaseInteractor()) {
+        SubledgerAccountDto subledgerAccount = usecases.CreateSubledgerAccount(subledgerUID, fields);
 
         return new SingleObjectModel(base.Request, subledgerAccount);
       }
@@ -79,6 +77,6 @@ namespace Empiria.FinancialAccounting.WebApi {
 
     #endregion Web Apis
 
-  }  // class SubsidiaryLedgerController
+  }  // class SubledgerController
 
 }  // namespace Empiria.FinancialAccounting.WebApi

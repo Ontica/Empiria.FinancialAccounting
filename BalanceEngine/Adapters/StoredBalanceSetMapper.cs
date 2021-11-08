@@ -53,11 +53,11 @@ namespace Empiria.FinancialAccounting.BalanceEngine.Adapters {
         Ledger = balance.Ledger.MapToNamedEntity(),
         Currency = balance.Currency.MapToNamedEntity(),
         SectorCode = balance.Sector.Code,
-        SubsidiaryAccountId = balance.SubsidiaryAccountId,
+        SubledgerAccountId = balance.SubledgerAccountId,
         AccountName = balance.AccountName,
         AccountNumber = balance.AccountNumber,
-        SubsidiaryAccountNumber = balance.SubsidiaryAccountNumber,
-        SubsidiaryAccountName = balance.SubsidiaryAccountName,
+        SubledgerAccountNumber = balance.SubledgerAccountNumber,
+        SubledgerAccountName = balance.SubledgerAccountName,
         Balance = balance.Balance
         //LastChangeDate = balance.LastChangeDate
       };

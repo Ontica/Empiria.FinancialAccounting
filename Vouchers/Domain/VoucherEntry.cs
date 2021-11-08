@@ -71,7 +71,7 @@ namespace Empiria.FinancialAccounting.Vouchers {
 
 
     [DataField("ID_CUENTA_AUXILIAR", ConvertFrom = typeof(long))]
-    public SubsidiaryAccount SubledgerAccount {
+    public SubledgerAccount SubledgerAccount {
       get;
       private set;
     }

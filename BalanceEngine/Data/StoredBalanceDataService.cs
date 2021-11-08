@@ -42,7 +42,7 @@ namespace Empiria.FinancialAccounting.BalanceEngine.Data {
       var dataOperation = DataOperation.Parse("apd_cof_saldos", o.Id,
                                               o.StandardAccountId, o.Ledger.Id, o.Currency.Id,
                                               o.Sector.IsEmptyInstance ? 0 : o.Sector.Id,
-                                              o.SubsidiaryAccountId, o.StoredBalanceSet.BalancesDate,
+                                              o.SubledgerAccountId, o.StoredBalanceSet.BalancesDate,
                                               o.Balance, o.StoredBalanceSet.Id,
                                               o.LastChangeDate);
 

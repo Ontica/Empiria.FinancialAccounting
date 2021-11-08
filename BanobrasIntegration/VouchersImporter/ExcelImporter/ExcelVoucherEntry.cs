@@ -330,25 +330,25 @@ namespace Empiria.FinancialAccounting.BanobrasIntegration.VouchersImporter {
     }
 
 
-    internal SubsidiaryAccount GetSubledgerAccount() {
+    internal SubledgerAccount GetSubledgerAccount() {
       if (this.SubledgerAccount.Length == 0) {
-        return SubsidiaryAccount.Empty;
+        return FinancialAccounting.SubledgerAccount.Empty;
       }
 
       Ledger ledger = this.GetLedger();
 
       if (ledger.IsEmptyInstance) {
-        return SubsidiaryAccount.Empty;
+        return FinancialAccounting.SubledgerAccount.Empty;
       }
 
       var formattedAccountNo = GetSubledgerAccountNo();
 
-      SubsidiaryAccount subledgerAccount = ledger.TryGetSubledgerAccount(formattedAccountNo);
+      SubledgerAccount subledgerAccount = ledger.TryGetSubledgerAccount(formattedAccountNo);
 
       if (subledgerAccount != null) {
         return subledgerAccount;
       } else {
-        return SubsidiaryAccount.Empty;
+        return FinancialAccounting.SubledgerAccount.Empty;
       }
     }
 

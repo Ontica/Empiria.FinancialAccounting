@@ -1,6 +1,6 @@
 ﻿/* Empiria Financial *****************************************************************************************
 *                                                                                                            *
-*  Module   : Accounts Chart                             Component : Domain Layer                            *
+*  Module   : Ledger Management                          Component : Domain Layer                            *
 *  Assembly : FinancialAccounting.Core.dll               Pattern   : Empiria Data Object                     *
 *  Type     : LedgerAccount                              License   : Please read LICENSE.txt file            *
 *                                                                                                            *
@@ -133,7 +133,7 @@ namespace Empiria.FinancialAccounting {
     }
 
 
-    public void CheckSubledgerAccountRule(SubsidiaryAccount subledgerAccount, DateTime accountingDate) {
+    public void CheckSubledgerAccountRule(SubledgerAccount subledgerAccount, DateTime accountingDate) {
       Assertion.AssertObject(subledgerAccount, "subledgerAccount");
 
       Account account = this.StandardAccount.GetHistory(accountingDate);
@@ -141,12 +141,12 @@ namespace Empiria.FinancialAccounting {
       Assertion.Assert(account.Role == AccountRole.Control,
           $"La cuenta {account.Number} no maneja auxiliares.");
 
-      Assertion.Assert(subledgerAccount.SubsidaryLedger.BelongsTo(this.Ledger),
+      Assertion.Assert(subledgerAccount.Subledger.BelongsTo(this.Ledger),
           $"El auxiliar {subledgerAccount.Number} no pertenece a la contabilidad {this.Ledger.FullName}.");
     }
 
 
-    public void CheckSubledgerAccountRule(Sector sector, SubsidiaryAccount subledgerAccount,
+    public void CheckSubledgerAccountRule(Sector sector, SubledgerAccount subledgerAccount,
                                           DateTime accountingDate) {
       Assertion.AssertObject(sector, "sector");
       Assertion.AssertObject(subledgerAccount, "subledgerAccount");
@@ -162,7 +162,7 @@ namespace Empiria.FinancialAccounting {
             $"La cuenta {account.Number} no maneja auxiliares para el sector ({sector.Code}).");
       }
 
-      Assertion.Assert(subledgerAccount.SubsidaryLedger.BelongsTo(this.Ledger),
+      Assertion.Assert(subledgerAccount.Subledger.BelongsTo(this.Ledger),
           $"El auxiliar {subledgerAccount.Number} no pertenece a la contabilidad {this.Ledger.FullName}.");
     }
 

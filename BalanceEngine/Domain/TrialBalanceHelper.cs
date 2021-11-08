@@ -49,7 +49,7 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
       return returnedEntries;
     }
 
-    
+
     internal List<TrialBalanceEntry> CombineCurrencyTotalsAndPostingEntries(
                                       List<TrialBalanceEntry> trialBalance,
                                       List<TrialBalanceEntry> summaryEntries) {
@@ -111,7 +111,7 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
       return OrderByLedgerAndCurrency(returnedEntries);
     }
 
-   
+
     private List<TrialBalanceEntry> OrderByLedgerAndCurrency(List<TrialBalanceEntry> entries) {
       return entries.OrderBy(a => a.Ledger.Number)
                     .ThenBy(a => a.Currency.Code)
@@ -172,8 +172,9 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
       if (totalConsolidatedByLedger.Count == 0) {
         return trialBalance;
       }
+
       var returnedEntries = new List<TrialBalanceEntry>();
-      var totalConsolidated = new EmpiriaHashTable<TrialBalanceEntry>();
+
       foreach (var consolidatedByLedger in totalConsolidatedByLedger) {
         var listSummaryByLedger = trialBalance.Where(a => a.Ledger.Id == consolidatedByLedger.Ledger.Id).ToList();
         if (listSummaryByLedger.Count > 0) {
@@ -258,10 +259,10 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
     internal List<TrialBalanceEntry> GenerateSummaryEntries(FixedList<TrialBalanceEntry> entries) {
       var summaryEntries = new EmpiriaHashTable<TrialBalanceEntry>(entries.Count);
       var detailSummaryEntries = new List<TrialBalanceEntry>();
-      
+
       foreach (var entry in entries) {
         entry.DebtorCreditor = entry.Account.DebtorCreditor;
-        entry.SubledgerAccountNumber = SubsidiaryAccount.Parse(entry.SubledgerAccountId).Number ?? "";
+        entry.SubledgerAccountNumber = SubledgerAccount.Parse(entry.SubledgerAccountId).Number ?? "";
         StandardAccount currentParent;
 
         if ((entry.Account.NotHasParent) ||
@@ -322,7 +323,7 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
       return returnedEntries;
     }
 
-    
+
     internal List<TrialBalanceEntry> GenerateTotalSummaryDebtorCreditor(
                                       List<TrialBalanceEntry> postingEntries) {
 
@@ -557,7 +558,7 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
         StandardAccount currentParent;
         currentParent = entry.Account.GetParent();
 
-        LastChangeDateToSubsidiaryEntries(entry, summaryEntriesList);
+        SetLastChangeDateToSubledgerAccounts(entry, summaryEntriesList);
 
         LastChangeDateToSummaryEntries(entry, currentParent, summaryEntriesList);
 
@@ -571,7 +572,6 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
       if (!_command.WithSectorization) {
         SummaryByEntry(summaryEntries, entry, currentParent, Sector.Empty,
                           TrialBalanceItemType.BalanceSummary);
-        //break;
       } else {
         var parentSector = entry.Sector.Parent;
         while (true) {
@@ -607,21 +607,21 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
     }
 
 
-    private void LastChangeDateToSubsidiaryEntries(TrialBalanceEntry entry,
-                                                    List<TrialBalanceEntry> summaryEntriesList) {
-      var subsidiaryAccount = summaryEntriesList.Where(a => a.Account.Number == entry.Account.Number &&
-                                                              a.Currency.Code == entry.Currency.Code &&
-                                                              a.Sector.Code == entry.Sector.Code).ToList();
-      foreach (var subsidiary in subsidiaryAccount) {
-        if (entry.LastChangeDate > subsidiary.LastChangeDate) {
-          subsidiary.LastChangeDate = entry.LastChangeDate;
+    private void SetLastChangeDateToSubledgerAccounts(TrialBalanceEntry entry,
+                                                      List<TrialBalanceEntry> trialBalance) {
+      var accountsList = trialBalance.Where(a => a.Account.Number == entry.Account.Number &&
+                                                 a.Currency.Code == entry.Currency.Code &&
+                                                 a.Sector.Code == entry.Sector.Code).ToList();
+      foreach (var account in accountsList) {
+        if (entry.LastChangeDate > account.LastChangeDate) {
+          account.LastChangeDate = entry.LastChangeDate;
         }
       }
     }
 
 
     private void LastChangeDateToSummaryEntries(TrialBalanceEntry entry, StandardAccount currentParent,
-                                                  List<TrialBalanceEntry> summaryEntriesList) {
+                                                List<TrialBalanceEntry> summaryEntriesList) {
       while (true) {
         var summaryParent = summaryEntriesList.FirstOrDefault(
                                                 a => a.Account.Number == currentParent.Number &&
@@ -655,7 +655,7 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
           _command.TrialBalanceType == TrialBalanceType.SaldosPorCuenta ||
           _command.TrialBalanceType == TrialBalanceType.AnaliticoDeCuentas)) {
         foreach (var entry in entries) {
-          SubsidiaryAccount subledgerAccount = SubsidiaryAccount.Parse(entry.SubledgerAccountId);
+          SubledgerAccount subledgerAccount = SubledgerAccount.Parse(entry.SubledgerAccountId);
           if (!subledgerAccount.IsEmptyInstance) {
             entry.SubledgerAccountNumber = subledgerAccount.Number != "0" ?
                                            subledgerAccount.Number : "";
@@ -843,8 +843,8 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
     }
 
 
-    internal void SummaryBySubsidiaryEntry(EmpiriaHashTable<TrialBalanceEntry> summaryEntries,
-                                           TrialBalanceEntry entry, TrialBalanceItemType itemType) {
+    internal void SummaryBySubledgerAccountEntry(EmpiriaHashTable<TrialBalanceEntry> summaryEntries,
+                                                 TrialBalanceEntry entry, TrialBalanceItemType itemType) {
 
       TrialBalanceEntry balanceEntry = TrialBalanceMapper.MapToTrialBalanceEntry(entry);
 

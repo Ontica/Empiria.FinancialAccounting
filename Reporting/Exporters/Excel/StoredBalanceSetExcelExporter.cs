@@ -68,9 +68,9 @@ namespace Empiria.FinancialAccounting.Reporting.Exporters.Excel {
         _excelFile.SetCell($"C{i}", balance.AccountNumber);
         _excelFile.SetCell($"D{i}", balance.AccountName);
         _excelFile.SetCell($"E{i}", balance.SectorCode);
-        if (balance.SubsidiaryAccountId > 0) {
-          _excelFile.SetCell($"F{i}", balance.SubsidiaryAccountNumber);
-          _excelFile.SetCell($"G{i}", balance.SubsidiaryAccountName);
+        if (balance.SubledgerAccountId > 0) {
+          _excelFile.SetCell($"F{i}", balance.SubledgerAccountNumber);
+          _excelFile.SetCell($"G{i}", balance.SubledgerAccountName);
         }
         _excelFile.SetCell($"H{i}", account.DebtorCreditor.ToString());
         _excelFile.SetCell($"I{i}", balance.Balance);

@@ -19,7 +19,7 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
     }
 
     internal StoredBalance(StoredBalanceSet storedBalanceSet, TrialBalanceEntry entry) {
-      var subsidiaryAccount = SubsidiaryAccount.Parse(entry.SubledgerAccountId);
+      var subledgerAccount = SubledgerAccount.Parse(entry.SubledgerAccountId);
 
       this.StoredBalanceSet = storedBalanceSet;
       this.StandardAccountId = entry.Account.Id;
@@ -28,9 +28,9 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
       this.Ledger = entry.Ledger;
       this.Currency = entry.Currency;
       this.Sector = entry.Sector;
-      this.SubsidiaryAccountId = entry.SubledgerAccountId;
-      this.SubsidiaryAccountName = subsidiaryAccount.Name;
-      this.SubsidiaryAccountNumber = subsidiaryAccount.Number;
+      this.SubledgerAccountId = entry.SubledgerAccountId;
+      this.SubledgerAccountName = subledgerAccount.Name;
+      this.SubledgerAccountNumber = subledgerAccount.Number;
       this.Balance = entry.CurrentBalance;
       this.LastChangeDate = entry.LastChangeDate;
     }
@@ -79,19 +79,19 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
 
 
     [DataField("ID_CUENTA_AUXILIAR", ConvertFrom = typeof(long))]
-    public int SubsidiaryAccountId {
+    public int SubledgerAccountId {
       get; private set;
     }
 
 
     [DataField("NUMERO_CUENTA_AUXILIAR")]
-    public string SubsidiaryAccountNumber {
+    public string SubledgerAccountNumber {
       get; private set;
     }
 
 
     [DataField("NOMBRE_CUENTA_AUXILIAR")]
-    public string SubsidiaryAccountName {
+    public string SubledgerAccountName {
       get; private set;
     }
 

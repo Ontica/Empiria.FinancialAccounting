@@ -63,7 +63,7 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
                                           new List<TrialBalanceComparativeEntry>(comparativeEntries);
 
       foreach (var entry in returnedEntries) {
-        SubsidiaryAccount subledgerAccount = SubsidiaryAccount.Parse(entry.SubledgerAccountId);
+        SubledgerAccount subledgerAccount = SubledgerAccount.Parse(entry.SubledgerAccountId);
         if (!subledgerAccount.IsEmptyInstance) {
           entry.SubledgerAccountName = subledgerAccount.Name;
           entry.SubledgerAccountNumber = subledgerAccount.Number;
@@ -102,7 +102,7 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
                                           new List<TrialBalanceComparativeEntry>(comparativeEntries);
 
       foreach (var entry in orderingEntries) {
-        SubsidiaryAccount subledgerAccount = SubsidiaryAccount.Parse(entry.SubledgerAccountId);
+        SubledgerAccount subledgerAccount = SubledgerAccount.Parse(entry.SubledgerAccountId);
         if (!subledgerAccount.IsEmptyInstance) {
           entry.SubledgerAccountNumber = subledgerAccount.Number != "0" ?
                                          subledgerAccount.Number : "";

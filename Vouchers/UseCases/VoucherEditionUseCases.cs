@@ -61,9 +61,13 @@ namespace Empiria.FinancialAccounting.Vouchers.UseCases {
           entryFields.LedgerAccountId = la.Id;
         }
         if (entryFields.CreateSubledgerAccount) {
-          SubsidiaryAccount sa = voucher.Ledger.CreateSubledgerAccount(entryFields.SubledgerAccountNoToCreate);
+          SubledgerAccount sa = voucher.Ledger.CreateSubledgerAccount(entryFields.SubledgerAccountNoToCreate);
+
+          sa.Save();
+
           entryFields.SubledgerAccountId = sa.Id;
         }
+
         var voucherEntry = voucher.AppendEntry(entryFields);
 
         voucherEntry.Save();

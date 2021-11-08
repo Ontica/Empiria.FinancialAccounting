@@ -217,17 +217,17 @@ namespace Empiria.FinancialAccounting.BanobrasIntegration.VouchersImporter {
     }
 
 
-    internal SubsidiaryAccount GetSubledgerAccount() {
+    internal SubledgerAccount GetSubledgerAccount() {
       Ledger ledger = this.GetLedger();
 
       var formattedAccountNo = GetSubledgerAccountNo();
 
-      SubsidiaryAccount subledgerAccount = ledger.TryGetSubledgerAccount(formattedAccountNo);
+      SubledgerAccount subledgerAccount = ledger.TryGetSubledgerAccount(formattedAccountNo);
 
       if (subledgerAccount != null) {
         return subledgerAccount;
       } else {
-        return SubsidiaryAccount.Empty;
+        return SubledgerAccount.Empty;
       }
     }
 

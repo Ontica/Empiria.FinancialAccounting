@@ -27,7 +27,7 @@ namespace Empiria.FinancialAccounting.Adapters {
         Number = ledger.Number,
         Subnumber = ledger.Subnumber,
         AccountsChart = ledger.AccountsChart.MapToNamedEntity(),
-        SubsidiaryAccountsPrefix = ledger.SubsidiaryAccountsPrefix,
+        SubledgerAccountsPrefix = ledger.SubledgerAccountsPrefix,
         BaseCurrency = ledger.BaseCurrency.MapToNamedEntity()
       };
     }

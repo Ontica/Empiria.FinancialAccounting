@@ -2,9 +2,9 @@
 *                                                                                                            *
 *  Module   : Ledger Management                          Component : Test cases                              *
 *  Assembly : Empiria.FinancialAccounting.Tests.dll      Pattern   : Use cases tests                         *
-*  Type     : SubsidiaryLedgerUseCasesTests              License   : Please read LICENSE.txt file            *
+*  Type     : SubledgerUseCasesTests                     License   : Please read LICENSE.txt file            *
 *                                                                                                            *
-*  Summary  : Use case tests for subsidiary ledgers and their accounts.                                      *
+*  Summary  : Use case tests for subledgers and their accounts.                                              *
 *                                                                                                            *
 ************************* Copyright(c) La Vía Óntica SC, Ontica LLC and contributors. All rights reserved. **/
 using Xunit;
@@ -14,20 +14,20 @@ using Empiria.FinancialAccounting.Adapters;
 
 namespace Empiria.FinancialAccounting.Tests {
 
-  /// <summary>Use case tests for subsidiary ledgers and their accounts.</summary>
-  public class SubsidiaryLedgerUseCasesTests {
+  /// <summary>Use case tests for subledgers and their accounts.</summary>
+  public class SubledgerUseCasesTests {
 
     #region Use cases initialization
 
-    private readonly SubsidiaryLedgerUseCases _usecases;
+    private readonly SubledgerUseCases _usecases;
 
-    public SubsidiaryLedgerUseCasesTests() {
+    public SubledgerUseCasesTests() {
       CommonMethods.Authenticate();
 
-      _usecases = SubsidiaryLedgerUseCases.UseCaseInteractor();
+      _usecases = SubledgerUseCases.UseCaseInteractor();
     }
 
-    ~SubsidiaryLedgerUseCasesTests() {
+    ~SubledgerUseCasesTests() {
       _usecases.Dispose();
     }
 
@@ -37,15 +37,15 @@ namespace Empiria.FinancialAccounting.Tests {
     #region Facts
 
     [Fact]
-    public void Should_Get_A_Subsidiary_Ledger() {
-      SubsidiaryLedgerDto subledger = _usecases.GetSubsidiaryLedger(TestingConstants.SUBSIDIARY_LEDGER_UID);
+    public void Should_Get_A_Subledger() {
+      SubledgerDto subledger = _usecases.GetSubledger(TestingConstants.SUBLEDGER_UID);
 
-      Assert.Equal(TestingConstants.SUBSIDIARY_LEDGER_UID, subledger.UID);
+      Assert.Equal(TestingConstants.SUBLEDGER_UID, subledger.UID);
     }
 
 
     //[Fact]
-    //public void Should_Get_A_Subsidiary_Ledger_Account() {
+    //public void Should_Get_A_Subledger_Account() {
     //  LedgerAccountDto ledgerAccount = _usecases.GetLedgerAccount(TestingConstants.LEDGER_UID,
     //                                                              TestingConstants.LEDGER_ACCOUNT_ID);
 
@@ -55,15 +55,15 @@ namespace Empiria.FinancialAccounting.Tests {
 
 
     [Fact]
-    public void Should_Search_Subsidiary_Accounts() {
+    public void Should_Search_Subledger_Accounts() {
       //string KEYWORDS = "Ramírez";
 
-      //FixedList<SubsidiaryAccountDto> subledgerAccounts = _usecases.SearchSubsidiaryAccounts(KEYWORDS);
+      //FixedList<SubledgerAccountDto> subledgerAccounts = _usecases.SearchSubledgerAccounts(KEYWORDS);
 
       //Assert.NotNull(subledgerAccounts);
       //Assert.NotEmpty(subledgerAccounts);
 
-      //subledgerAccounts = _usecases.SearchSubsidiaryAccounts("sedfsjot7349esjfSDJKFH");
+      //subledgerAccounts = _usecases.SearchSubledgerAccounts("sedfsjot7349esjfSDJKFH");
 
       //Assert.NotNull(subledgerAccounts);
       //Assert.Empty(subledgerAccounts);
@@ -72,6 +72,6 @@ namespace Empiria.FinancialAccounting.Tests {
 
     #endregion Facts
 
-  }  // class SubsidiaryLedgerUseCasesTests
+  }  // class SubledgerUseCasesTests
 
 }  // namespace Empiria.FinancialAccounting.Tests
