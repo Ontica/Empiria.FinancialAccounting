@@ -42,11 +42,30 @@ namespace Empiria.FinancialAccounting.Reporting.Builders {
     static private FixedList<DataTableColumn> GetReportColumns() {
       var columns = new List<DataTableColumn>();
 
+      columns.Add(new DataTableColumn("moneda", "Moneda", "text"));
       columns.Add(new DataTableColumn("cuenta", "Cuenta", "text"));
-      columns.Add(new DataTableColumn("saldoInicial", "Saldo Inicial", "decimal"));
-      columns.Add(new DataTableColumn("debe", "Debe", "decimal"));
-      columns.Add(new DataTableColumn("haber", "Haber", "decimal"));
-      columns.Add(new DataTableColumn("saldoFinal", "Saldo Final", "decimal"));
+      columns.Add(new DataTableColumn("sector", "Sector", "text"));
+      columns.Add(new DataTableColumn("descripcion", "Descripcion", "text"));
+      
+      columns.Add(new DataTableColumn("saldoInicial", "Saldo anterior", "decimal"));
+      columns.Add(new DataTableColumn("debe", "Cargo", "decimal"));
+      columns.Add(new DataTableColumn("haber", "Abono", "decimal"));
+      columns.Add(new DataTableColumn("saldoFinal", "Saldo actual", "decimal"));
+
+      columns.Add(new DataTableColumn("movimiento", "Movimiento", "text"));
+      columns.Add(new DataTableColumn("contabilidad", "Contabilidad", "text"));
+
+      columns.Add(new DataTableColumn("vBxcoSaldoInicial", "VBxco Saldo anterior", "decimal"));
+      columns.Add(new DataTableColumn("vBxcoDebe", "VBxco Cargi", "decimal"));
+      columns.Add(new DataTableColumn("vBxcoHaber", "VBxco Abono", "decimal"));
+      columns.Add(new DataTableColumn("vBxcoSaldoFinal", "VBxco Saldo actual", "decimal"));
+
+      columns.Add(new DataTableColumn("ajteInfSaldoInicial", "AjteInf Saldo anterior", "decimal"));
+      columns.Add(new DataTableColumn("ajteInfDebe", "AjteInf Cargo", "decimal"));
+      columns.Add(new DataTableColumn("ajteInfHaber", "AjteInf Abono", "decimal"));
+      columns.Add(new DataTableColumn("ajteInfSaldoFinal", "AjteInf Saldo actual", "decimal"));
+
+      columns.Add(new DataTableColumn("fechaConsulta", "Fecha consulta", "date"));
 
       return columns.ToFixedList();
     }
@@ -88,11 +107,30 @@ namespace Empiria.FinancialAccounting.Reporting.Builders {
 
     static private BalanzaCalculoImpuestosEntry MapToBalanzaCalculoImpuestosEntry(TrialBalanceEntryDto entry) {
       return new BalanzaCalculoImpuestosEntry {
+        
+        Moneda = entry.CurrencyCode,
         Cuenta = entry.AccountNumber,
+        Sector = entry.SectorCode,
+        Descripcion = entry.AccountName,
+        
         SaldoInicial = entry.InitialBalance,
         Debe = entry.Debit,
         Haber = entry.Credit,
-        SaldoFinal = entry.CurrentBalance
+        SaldoFinal = entry.CurrentBalance,
+        Movimiento = "",
+        Contabilidad = "",
+
+        VBxcoSaldoInicial = entry.InitialBalance,
+        VBxcoDebe = entry.Debit,
+        VBxcoHaber = entry.Credit,
+        VBxcoSaldoFinal= entry.CurrentBalance,
+
+        AjteInfSaldoInicial = entry.InitialBalance,
+        AjteInfDebe = entry.Debit,
+        AjteInfHaber = entry.Credit,
+        AjteInfSaldoFinal = entry.CurrentBalance,
+
+        FechaConsulta = DateTime.Now
       };
     }
 
@@ -103,29 +141,81 @@ namespace Empiria.FinancialAccounting.Reporting.Builders {
 
   public class BalanzaCalculoImpuestosEntry : IReportEntryDto {
 
+    public string Moneda {
+      get; internal set;
+    }
+
     public string Cuenta {
       get; internal set;
     }
 
+    public string Sector {
+      get; internal set;
+    }
+
+    public string Descripcion {
+      get; internal set;
+    }
 
     public decimal SaldoInicial {
       get; internal set;
     }
 
-
     public decimal Debe {
       get; internal set;
     }
-
 
     public decimal Haber {
       get; internal set;
     }
 
-
     public decimal SaldoFinal {
       get; internal set;
     }
+
+    public string Movimiento {
+      get; internal set;
+    }
+
+    public string Contabilidad {
+      get; internal set;
+    }
+
+    public decimal VBxcoSaldoInicial {
+      get; internal set;
+    }
+
+    public decimal VBxcoDebe {
+      get; internal set;
+    }
+
+    public decimal VBxcoHaber {
+      get; internal set;
+    }
+
+    public decimal VBxcoSaldoFinal {
+      get; internal set;
+    }
+
+    public decimal AjteInfSaldoInicial {
+      get; internal set;
+    }
+
+    public decimal AjteInfDebe {
+      get; internal set;
+    }
+
+    public decimal AjteInfHaber {
+      get; internal set;
+    }
+
+    public decimal AjteInfSaldoFinal {
+      get; internal set;
+    }
+
+    public DateTime FechaConsulta {
+      get; internal set;
+    } = DateTime.Now;
 
   }  // class BalanzaCalculoImpuestosEntry
 
