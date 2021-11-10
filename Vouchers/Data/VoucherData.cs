@@ -103,23 +103,19 @@ namespace Empiria.FinancialAccounting.Vouchers.Data {
 
 
     static internal long NextVoucherEntryId() {
-      var sql = "SELECT SEC_ID_MOVIMIENTO_TMP.NEXTVAL FROM DUAL";
-
-      var operation = DataOperation.Parse(sql);
-
-      return Convert.ToInt64(DataReader.GetScalar<decimal>(operation));
+      return CommonMethods.GetNextObjectId("SEC_ID_MOVIMIENTO_TMP");
     }
 
 
     static internal FixedList<LedgerAccount> SearchAccountsForVoucherEdition(Voucher voucher, string keywords) {
       string sqlKeywords = SearchExpression.ParseAndLikeKeywords("keywords_cuenta_estandar_hist", keywords);
 
-      DataOperation operation = DataOperation.Parse("@qry_cof_busca_cuentas_para_edicion",
-                                                    voucher.Ledger.Id,
-                                                    CommonMethods.FormatSqlDate(voucher.AccountingDate),
-                                                    sqlKeywords);
+      var dataOperation = DataOperation.Parse("@qry_cof_busca_cuentas_para_edicion",
+                                              voucher.Ledger.Id,
+                                              CommonMethods.FormatSqlDate(voucher.AccountingDate),
+                                              sqlKeywords);
 
-      return DataReader.GetFixedList<LedgerAccount>(operation);
+      return DataReader.GetFixedList<LedgerAccount>(dataOperation);
     }
 
 
