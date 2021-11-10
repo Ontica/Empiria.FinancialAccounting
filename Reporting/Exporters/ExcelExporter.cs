@@ -39,10 +39,11 @@ namespace Empiria.FinancialAccounting.Reporting.Exporters {
       switch (reportData.Command.ReportType) {
         case "BalanzaSAT":
           return new BalanzaSatExcelExporter(reportData, templateConfig);
-
+        case "BalanzaDeterminarImpuestos":
+          return new BalanzaCalculoImpuestosExcelExporter(reportData, templateConfig);
         case "CatalogoSAT":
           return new CatalogoCuentasSatExcelExporter(reportData, templateConfig);
-
+          
         default:
           throw Assertion.AssertNoReachThisCode($"Unhandled reportType '{reportData.Command.ReportType}'.");
       }
