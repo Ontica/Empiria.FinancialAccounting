@@ -19,18 +19,9 @@ namespace Empiria.FinancialAccounting.Data {
 
     static internal LedgerAccount AssignStandardAccount(Ledger ledger,
                                                         StandardAccount standardAccount) {
-      var newLedgerAccountId = NextLedgerAccountId();
+      CreateLedgerAccount(ledger, standardAccount);
 
-      var dataOperation = DataOperation.Parse("apd_cof_cuenta",
-                                              newLedgerAccountId, ledger.Id, standardAccount.Id);
-
-      DataWriter.Execute(dataOperation);
-
-      LedgerAccount ledgerAccount = TryGetLedgerAccount(ledger, standardAccount);
-
-      Assertion.AssertObject(ledgerAccount, "ledgerAccount");
-
-      return ledgerAccount;
+      return GetLedgerAccount(ledger, standardAccount);
     }
 
 
@@ -68,11 +59,7 @@ namespace Empiria.FinancialAccounting.Data {
 
 
     static private long NextLedgerAccountId() {
-      var sql = "SELECT SEC_ID_CUENTA.NEXTVAL FROM DUAL";
-
-      var operation = DataOperation.Parse(sql);
-
-      return Convert.ToInt64(DataReader.GetScalar<decimal>(operation));
+      return CommonMethods.GetNextObjectId("SEC_ID_CUENTA");
     }
 
 
@@ -80,14 +67,14 @@ namespace Empiria.FinancialAccounting.Data {
                                                                           string keywords,
                                                                           DateTime date) {
 
-      string sqlKeywords = SearchExpression.ParseAndLikeKeywords("keywords_cuenta_estandar_hist",
-                                                                  keywords);
+      string keywordsFilter = SearchExpression.ParseAndLikeKeywords("keywords_cuenta_estandar_hist",
+                                                                    keywords);
 
       string sql = "SELECT * FROM VW_COF_CUENTA_ESTANDAR_HIST WHERE " +
                   $"id_tipo_cuentas_std = {ledger.AccountsChart.Id} AND " +
                   $"rol_cuenta <> 'S' AND " +
                   $"fecha_inicio <= '{CommonMethods.FormatSqlDate(date)}' AND " +
-                  $"{sqlKeywords} AND " +
+                  $"{keywordsFilter} AND " +
                   $"'{CommonMethods.FormatSqlDate(date)}' <= fecha_fin AND " +
                   $"id_cuenta_estandar NOT IN " +
                         $"(SELECT id_cuenta_estandar FROM COF_CUENTA WHERE id_mayor = {ledger.Id}) " +
@@ -99,7 +86,7 @@ namespace Empiria.FinancialAccounting.Data {
     }
 
 
-    internal static SubledgerAccount TryGetSubledgerAccount(Ledger ledger, string formattedAccountNo) {
+    static internal SubledgerAccount TryGetSubledgerAccount(Ledger ledger, string formattedAccountNo) {
       var sql = "SELECT COF_CUENTA_AUXILIAR.* " +
                 "FROM COF_CUENTA_AUXILIAR INNER JOIN VW_COF_CUENTA_AUXILIAR " +
                 "ON COF_CUENTA_AUXILIAR.ID_CUENTA_AUXILIAR = VW_COF_CUENTA_AUXILIAR.ID_CUENTA_AUXILIAR " +
@@ -114,6 +101,25 @@ namespace Empiria.FinancialAccounting.Data {
       return DataReader.GetObject<SubledgerAccount>(dataOperation, null);
     }
 
+
+    static private void CreateLedgerAccount(Ledger ledger,
+                                            StandardAccount standardAccount) {
+      var newLedgerAccountId = NextLedgerAccountId();
+
+      var dataOperation = DataOperation.Parse("apd_cof_cuenta",
+                                              newLedgerAccountId, ledger.Id, standardAccount.Id);
+
+      DataWriter.Execute(dataOperation);
+    }
+
+    static private LedgerAccount GetLedgerAccount(Ledger ledger,
+                                                  StandardAccount standardAccount) {
+      LedgerAccount ledgerAccount = TryGetLedgerAccount(ledger, standardAccount);
+
+      Assertion.AssertObject(ledgerAccount, "ledgerAccount");
+
+      return ledgerAccount;
+    }
 
   }  // class LedgerData
 
