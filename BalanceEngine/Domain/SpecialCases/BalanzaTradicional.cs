@@ -28,24 +28,21 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
     internal TrialBalance Build() {
       var helper = new TrialBalanceHelper(_command);
 
-      _command.WithSubledgerAccount = _command.TrialBalanceType == TrialBalanceType.Saldos ? true : 
+      _command.WithSubledgerAccount = _command.TrialBalanceType == TrialBalanceType.Saldos ? true :
                                       _command.WithSubledgerAccount;
 
       FixedList<TrialBalanceEntry> postingEntries = helper.GetPostingEntries();
 
+      postingEntries = GetSecondExchangeRate(postingEntries);
+
       List<TrialBalanceEntry> summaryEntries = helper.GenerateSummaryEntries(postingEntries);
 
-      summaryEntries = helper.SummaryEntriesAndSectorization(summaryEntries); 
+      summaryEntries = helper.SummaryEntriesAndSectorization(summaryEntries);
 
       List<TrialBalanceEntry> trialBalance = helper.CombineSummaryAndPostingEntries(
                                                      summaryEntries, postingEntries);
-      if (!_command.IsOperationalReport) {
 
-        trialBalance = GenerateTrialBalance(trialBalance, postingEntries);
-
-      } else {
-        trialBalance = GenerateOperationalBalance(trialBalance);
-      }
+      trialBalance = GetTrialBalanceType(trialBalance, postingEntries);
 
       trialBalance = helper.RestrictLevels(trialBalance);
 
@@ -56,6 +53,40 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
 
 
     #region Private methods
+
+    private FixedList<TrialBalanceEntry> GetSecondExchangeRate(FixedList<TrialBalanceEntry> postingEntries) {
+      var returnedEntries = new FixedList<TrialBalanceEntry>(postingEntries);
+
+      if (_command.IsOperationalReport && !_command.ConsolidateBalancesToTargetCurrency) {
+        var exchangeRateType = ExchangeRateType.Parse(_command.FinalPeriod.ExchangeRateTypeUID);
+        FixedList<ExchangeRate> exchangeRates = ExchangeRate.GetList(exchangeRateType, _command.FinalPeriod.ExchangeRateDate);
+
+        foreach (var entry in returnedEntries.Where(a => a.Currency.Code != "01")) {
+          var exchangeRate = exchangeRates.FirstOrDefault(a => a.FromCurrency.Code == _command.FinalPeriod.ValuateToCurrrencyUID &&
+                                                                a.ToCurrency.Code == entry.Currency.Code);
+
+          Assertion.AssertObject(exchangeRate, $"No hay tipo de cambio para la moneda {entry.Currency.FullName}.");
+
+          entry.SecondExchangeRate = exchangeRate.Value;
+        }
+      }
+
+      return returnedEntries;
+    }
+
+
+    private List<TrialBalanceEntry> GetTrialBalanceType(List<TrialBalanceEntry> trialBalance,
+                                                        FixedList<TrialBalanceEntry> postingEntries) {
+      if (!_command.IsOperationalReport) {
+
+        trialBalance = GenerateTrialBalance(trialBalance, postingEntries);
+
+      } else {
+        trialBalance = GenerateOperationalBalance(trialBalance);
+      }
+      return trialBalance;
+    }
+
 
     private List<TrialBalanceEntry> GenerateTrialBalance(List<TrialBalanceEntry> trialBalance,
                                      FixedList<TrialBalanceEntry> postingEntries) {
@@ -99,15 +130,22 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
       var helper = new TrialBalanceHelper(_command);
       var totalByAccountEntries = new EmpiriaHashTable<TrialBalanceEntry>(trialBalance.Count);
 
-      foreach (var entry in trialBalance) {
-        helper.SummaryByAccount(totalByAccountEntries, entry);
-      }
+      if (_command.ConsolidateBalancesToTargetCurrency == true) {
 
-      return totalByAccountEntries.ToFixedList().ToList();
+        foreach (var entry in trialBalance) {
+          helper.SummaryByAccount(totalByAccountEntries, entry);
+        }
+        return totalByAccountEntries.ToFixedList().ToList();
+
+      } else {
+
+        return trialBalance;
+
+      }
     }
 
     #endregion
-   
+
   }  // class BalanzaTradicional
 
 }  // namespace Empiria.FinancialAccounting.BalanceEngine

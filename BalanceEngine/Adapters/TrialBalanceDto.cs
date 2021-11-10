@@ -116,6 +116,11 @@ namespace Empiria.FinancialAccounting.BalanceEngine.Adapters {
     }
 
 
+    public decimal SecondExchangeRate {
+      get; internal set;
+    }
+
+
     public decimal AverageBalance {
       get; internal set;
     }

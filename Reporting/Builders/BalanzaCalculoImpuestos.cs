@@ -25,6 +25,8 @@ namespace Empiria.FinancialAccounting.Reporting.Builders {
       Assertion.AssertObject(command, "command");
 
       TrialBalanceCommand trialBalanceCommand = GetTrialBalanceCommand(command);
+      trialBalanceCommand.FromAccount = "1101";
+      trialBalanceCommand.ToAccount = "1199";
 
       using (var usecases = TrialBalanceUseCases.UseCaseInteractor()) {
         TrialBalanceDto trialBalance = usecases.BuildTrialBalance(trialBalanceCommand);
@@ -54,18 +56,19 @@ namespace Empiria.FinancialAccounting.Reporting.Builders {
 
       columns.Add(new DataTableColumn("movimiento", "Movimiento", "text"));
       columns.Add(new DataTableColumn("contabilidad", "Contabilidad", "text"));
+      columns.Add(new DataTableColumn("fechaConsulta", "Fecha consulta", "date"));
 
+      columns.Add(new DataTableColumn("vBxcoEquivalencia", "VBxcoEquivalencia", "decimal", 6));
       columns.Add(new DataTableColumn("vBxcoSaldoInicial", "VBxco Saldo anterior", "decimal"));
-      columns.Add(new DataTableColumn("vBxcoDebe", "VBxco Cargi", "decimal"));
+      columns.Add(new DataTableColumn("vBxcoDebe", "VBxco Cargo", "decimal"));
       columns.Add(new DataTableColumn("vBxcoHaber", "VBxco Abono", "decimal"));
       columns.Add(new DataTableColumn("vBxcoSaldoFinal", "VBxco Saldo actual", "decimal"));
 
+      columns.Add(new DataTableColumn("ajteInfEquivalencia", "AjteInfEquivalencia", "decimal", 6));
       columns.Add(new DataTableColumn("ajteInfSaldoInicial", "AjteInf Saldo anterior", "decimal"));
       columns.Add(new DataTableColumn("ajteInfDebe", "AjteInf Cargo", "decimal"));
       columns.Add(new DataTableColumn("ajteInfHaber", "AjteInf Abono", "decimal"));
       columns.Add(new DataTableColumn("ajteInfSaldoFinal", "AjteInf Saldo actual", "decimal"));
-
-      columns.Add(new DataTableColumn("fechaConsulta", "Fecha consulta", "date"));
 
       return columns.ToFixedList();
     }
@@ -77,11 +80,16 @@ namespace Empiria.FinancialAccounting.Reporting.Builders {
         AccountsChartUID = AccountsChart.Parse(command.AccountsChartUID).UID,
         BalancesType = BalancesType.WithCurrentBalanceOrMovements,
         UseDefaultValuation = true,
-        ConsolidateBalancesToTargetCurrency = true,
+        ConsolidateBalancesToTargetCurrency = false,
         ShowCascadeBalances = false,
         InitialPeriod = new TrialBalanceCommandPeriod {
           FromDate = new DateTime(command.ToDate.Year, command.ToDate.Month, 1),
           ToDate = command.ToDate
+        },
+        FinalPeriod = new TrialBalanceCommandPeriod {
+          ExchangeRateTypeUID= "5923136d-8533-4975-81b9-c8ec3bf18dea",
+          ValuateToCurrrencyUID="01",
+          ExchangeRateDate = command.ToDate
         },
         IsOperationalReport = true,
       };
@@ -93,44 +101,51 @@ namespace Empiria.FinancialAccounting.Reporting.Builders {
       return new ReportDataDto {
         Command = command,
         Columns = GetReportColumns(),
-        Entries = MapToReportDataEntries(trialBalance.Entries)
+        Entries = MapToReportDataEntries(trialBalance.Entries, command)
       };
     }
 
 
-    static private FixedList<IReportEntryDto> MapToReportDataEntries(FixedList<ITrialBalanceEntryDto> list) {
-      var mappedItems = list.Select((x) => MapToBalanzaCalculoImpuestosEntry((TrialBalanceEntryDto) x));
+    static private FixedList<IReportEntryDto> MapToReportDataEntries(FixedList<ITrialBalanceEntryDto> list,
+                                                                     BuildReportCommand command) {
+      var mappedItems = list.Select((x) => MapToBalanzaCalculoImpuestosEntry((TrialBalanceEntryDto) x, command));
 
       return new FixedList<IReportEntryDto>(mappedItems);
     }
 
 
-    static private BalanzaCalculoImpuestosEntry MapToBalanzaCalculoImpuestosEntry(TrialBalanceEntryDto entry) {
+    static private BalanzaCalculoImpuestosEntry MapToBalanzaCalculoImpuestosEntry(TrialBalanceEntryDto entry,
+                                                                                  BuildReportCommand command) {
       return new BalanzaCalculoImpuestosEntry {
-        
+
         Moneda = entry.CurrencyCode,
         Cuenta = entry.AccountNumber,
         Sector = entry.SectorCode,
         Descripcion = entry.AccountName,
-        
+
         SaldoInicial = entry.InitialBalance,
         Debe = entry.Debit,
         Haber = entry.Credit,
         SaldoFinal = entry.CurrentBalance,
-        Movimiento = "",
-        Contabilidad = "",
+        Movimiento = entry.ItemType == TrialBalanceItemType.BalanceEntry &&
+                     (entry.Debit != 0 || entry.Credit != 0) ?
+                      "*" : "",
 
-        VBxcoSaldoInicial = entry.InitialBalance,
-        VBxcoDebe = entry.Debit,
-        VBxcoHaber = entry.Credit,
-        VBxcoSaldoFinal= entry.CurrentBalance,
+        Contabilidad = AccountsChart.Parse(command.AccountsChartUID).Name,
+        FechaConsulta = DateTime.Now,
 
-        AjteInfSaldoInicial = entry.InitialBalance,
-        AjteInfDebe = entry.Debit,
-        AjteInfHaber = entry.Credit,
-        AjteInfSaldoFinal = entry.CurrentBalance,
+        VBxcoEquivalencia = entry.ExchangeRate,
+        VBxcoSaldoInicial = entry.InitialBalance * entry.ExchangeRate,
+        VBxcoDebe = entry.Debit * entry.ExchangeRate,
+        VBxcoHaber = entry.Credit * entry.ExchangeRate,
+        VBxcoSaldoFinal= entry.CurrentBalance * entry.ExchangeRate,
 
-        FechaConsulta = DateTime.Now
+        AjteInfEquivalencia = entry.SecondExchangeRate,
+        AjteInfSaldoInicial = entry.InitialBalance * entry.SecondExchangeRate,
+        AjteInfDebe = entry.Debit * entry.SecondExchangeRate,
+        AjteInfHaber = entry.Credit * entry.SecondExchangeRate,
+        AjteInfSaldoFinal = entry.CurrentBalance * entry.SecondExchangeRate,
+
       };
     }
 
@@ -181,6 +196,11 @@ namespace Empiria.FinancialAccounting.Reporting.Builders {
       get; internal set;
     }
 
+    public decimal VBxcoEquivalencia {
+      get;
+      internal set;
+    }
+
     public decimal VBxcoSaldoInicial {
       get; internal set;
     }
@@ -195,6 +215,11 @@ namespace Empiria.FinancialAccounting.Reporting.Builders {
 
     public decimal VBxcoSaldoFinal {
       get; internal set;
+    }
+
+    public decimal AjteInfEquivalencia {
+      get;
+      internal set;
     }
 
     public decimal AjteInfSaldoInicial {

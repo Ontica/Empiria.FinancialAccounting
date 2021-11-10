@@ -536,7 +536,8 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
           } else {
             entry.ExchangeRate = exchangeRate.Value;
           }
-        } else if (_command.TrialBalanceType == TrialBalanceType.BalanzaValorizadaEnDolares) {
+        } else if ((_command.TrialBalanceType == TrialBalanceType.BalanzaValorizadaEnDolares) ||
+                  (_command.IsOperationalReport && !_command.ConsolidateBalancesToTargetCurrency)) {
           entry.ExchangeRate = exchangeRate.Value;
         } else {
           entry.MultiplyBy(exchangeRate.Value);

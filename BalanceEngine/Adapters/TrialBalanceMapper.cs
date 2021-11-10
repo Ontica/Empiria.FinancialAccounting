@@ -203,6 +203,7 @@ namespace Empiria.FinancialAccounting.BalanceEngine.Adapters {
       dto.Credit = entry.Credit;
       dto.CurrentBalance = entry.CurrentBalance;
       dto.ExchangeRate = entry.ExchangeRate;
+      dto.SecondExchangeRate = entry.SecondExchangeRate;
       dto.AverageBalance = entry.AverageBalance;
       dto.DebtorCreditor = entry.ItemType == TrialBalanceItemType.BalanceEntry ||
                            entry.ItemType == TrialBalanceItemType.BalanceSummary ?
