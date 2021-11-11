@@ -119,8 +119,13 @@ namespace Empiria.FinancialAccounting.BanobrasIntegration.VouchersImporter {
 
 
     internal string GetUniqueID() {
-      return $"{this.IdSistema}||{this.FechaAfectacion.ToString("yyyy-MM-dd")}||" +
-             $"{this.NumeroVolante}||{this.Concepto}";
+      if (this.TipoContabilidad == 1) {
+        return $"{this.TipoContabilidad}||{this.IdSistema}||{this.FechaAfectacion.ToString("yyyy-MM-dd")}||" +
+               $"{this.NumeroVolante}||{this.Concepto}";
+      } else {
+        return $"{this.TipoContabilidad}||{this.IdSistema}||{this.FechaAfectacion.ToString("yyyy-MM-dd")}||" +
+               $"{this.NumeroVolante}";
+      }
     }
 
 

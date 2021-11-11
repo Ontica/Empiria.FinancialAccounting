@@ -118,14 +118,16 @@ namespace Empiria.FinancialAccounting.BanobrasIntegration.VouchersImporter {
     }
 
 
-    private string _voucherUniqueID;
+
 
     internal string GetVoucherUniqueID() {
-      if (_voucherUniqueID == null) {
-        _voucherUniqueID = $"{this.IdSistema}||{this.FechaAfectacion.ToString("yyyy-MM-dd")}||" +
-                           $"{this.NumeroVolante}||{this.Descripcion}";
+      if (this.TipoContabilidad == 1) {
+        return $"{this.TipoContabilidad}||{this.IdSistema}||{this.FechaAfectacion.ToString("yyyy-MM-dd")}||" +
+               $"{this.NumeroVolante}||{this.Descripcion}";
+      } else {
+        return $"{this.TipoContabilidad}||{this.IdSistema}||{this.FechaAfectacion.ToString("yyyy-MM-dd")}||" +
+               $"{this.NumeroVolante}";
       }
-      return _voucherUniqueID;
     }
 
 

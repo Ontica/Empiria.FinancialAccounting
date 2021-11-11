@@ -24,13 +24,16 @@ namespace Empiria.FinancialAccounting.BanobrasIntegration.VouchersImporter {
       this.Row = row;
     }
 
+
     public string WorksheetName {
       get;
-
     }
+
+
     public int WorksheetSection {
       get;
     }
+
 
     public int Row {
       get;
@@ -64,13 +67,17 @@ namespace Empiria.FinancialAccounting.BanobrasIntegration.VouchersImporter {
     private void SetAccountsChart() {
       if (this.BaseAccount.Length == 4) {
         this.AccountsChart = AccountsChart.Former;
+
       } else if (this.BaseAccount.Length == 1) {
         this.AccountsChart = AccountsChart.IFRS;
+
       } else {
-        AddError("No puedo determinar el catálogo de cuentas a partir del archivo Excel.");
+        AddError("No puedo determinar el tipo de catálogo de cuentas a partir del archivo Excel.");
+
         this.AccountsChart = AccountsChart.Empty;
       }
     }
+
 
     private string BaseAccount {
       get; set;
@@ -113,6 +120,7 @@ namespace Empiria.FinancialAccounting.BanobrasIntegration.VouchersImporter {
 
       try {
         return Currency.Parse(this.CurrencyCode);
+
       } catch {
         AddError($"No reconozco la clave de moneda {this.CurrencyCode}.");
 
@@ -204,7 +212,7 @@ namespace Empiria.FinancialAccounting.BanobrasIntegration.VouchersImporter {
       if (String.IsNullOrWhiteSpace(value)) {
         AddError("La subcuenta no contiene el valor de la subcuenta de mayor y el sector.", "B");
 
-      } else if (value.Length != "14060000000041".Length) {
+      } else if (value.Length != "14060000000041".Length && value.Length != "1406000000000000000041".Length) {
         AddError($"La subcuenta tiene un valor con una longitud que no coincide con la esperada ({value}).", "B");
 
       } else if (!EmpiriaString.IsInteger(value)) {
@@ -244,6 +252,7 @@ namespace Empiria.FinancialAccounting.BanobrasIntegration.VouchersImporter {
         this.VoucherEntryType = VoucherEntryType.Credit;
       }
     }
+
 
     internal void SetCurrencyCode(string value) {
       value = EmpiriaString.TrimAll(value);
