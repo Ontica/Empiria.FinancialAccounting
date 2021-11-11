@@ -94,7 +94,8 @@ namespace Empiria.FinancialAccounting.BanobrasIntegration.VouchersImporter {
         var voucherImporter = new VoucherImporter(command, toImport);
 
         // TODO: Db Vouchers importation disabled
-        // voucherImporter.Import();
+        voucherImporter.Import();
+
 
         foreach (var item in toProcess) {
           encabezados.Remove(item);

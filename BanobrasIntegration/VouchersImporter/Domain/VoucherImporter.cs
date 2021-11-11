@@ -13,6 +13,7 @@ using System.Linq;
 
 using Empiria.FinancialAccounting.Vouchers.Adapters;
 using Empiria.FinancialAccounting.Vouchers.UseCases;
+
 using Empiria.FinancialAccounting.BanobrasIntegration.VouchersImporter.Adapters;
 
 namespace Empiria.FinancialAccounting.BanobrasIntegration.VouchersImporter {
@@ -51,23 +52,27 @@ namespace Empiria.FinancialAccounting.BanobrasIntegration.VouchersImporter {
     internal ImportVouchersResult Import() {
       ImportVouchersResult result = this.DryRunImport();
 
-      //if (result.HasErrors) {
-      //  return result;
-      //}
-
       using (var usecases = VoucherEditionUseCases.UseCaseInteractor()) {
         foreach (ToImportVoucher voucher in _toImportVouchersList) {
           VoucherImporterDataService.StoreVoucher(voucher);
           VoucherImporterDataService.StoreVoucherIssues(voucher);
 
           if (voucher.HasErrors) {
+            foreach (var issue in voucher.Issues) {
+              EmpiriaLog.Debug($"Póliza '{voucher.Header.UniqueID}': {issue.Description}");
+            }
             continue;
           }
 
           VoucherFields voucherFields = MapToVoucherFields(voucher.Header);
           FixedList<VoucherEntryFields> entriesFields = MapToVoucherEntriesFields(voucher.Entries);
 
-          usecases.ImportVoucher(voucherFields, entriesFields, _command.TryToCloseVouchers);
+          try {
+            usecases.ImportVoucher(voucherFields, entriesFields, _command.TryToCloseVouchers);
+          } catch (Exception e) {
+            EmpiriaLog.Debug($"Póliza '{voucher.Header.UniqueID}': {e.Message}");
+            // no-op
+          }
         }
       }
 
