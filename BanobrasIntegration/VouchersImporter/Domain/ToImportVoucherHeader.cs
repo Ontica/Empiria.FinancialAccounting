@@ -70,6 +70,6 @@ namespace Empiria.FinancialAccounting.BanobrasIntegration.VouchersImporter {
       get; internal set;
     }
 
-  }  // class StandardVoucherHeader
+  }  // class ToImportVoucherHeader
 
 }  // namespace Empiria.FinancialAccounting.BanobrasIntegration.VouchersImporter

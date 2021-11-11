@@ -35,8 +35,30 @@ namespace Empiria.FinancialAccounting.BanobrasIntegration.VouchersImporter.UseCa
 
     #endregion Constructors and parsers
 
-    #region Database importers
 
+    #region Standard voucher importation
+
+    public ImportVouchersResult DryRunStandardVoucherImportation(VoucherImportationCommand command) {
+      Assertion.AssertObject(command, "command");
+
+      var importer = new StandardVoucherImporter(command);
+
+      return importer.DryRunImport();
+    }
+
+
+    public ImportVouchersResult StandardVoucherImportation(VoucherImportationCommand command) {
+      Assertion.AssertObject(command, "command");
+
+      var importer = new StandardVoucherImporter(command);
+
+      return importer.Import();
+    }
+
+    #endregion Standard voucher importation
+
+
+    #region Database importers
 
     public ImportVouchersResult ImportVouchersFromDatabase(ImportVouchersCommand command) {
       Assertion.AssertObject(command, "command");
