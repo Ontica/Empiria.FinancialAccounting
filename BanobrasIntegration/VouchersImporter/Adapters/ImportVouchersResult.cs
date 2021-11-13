@@ -41,6 +41,7 @@ namespace Empiria.FinancialAccounting.BanobrasIntegration.VouchersImporter.Adapt
       get; internal set;
     } = new FixedList<ImportVouchersTotals>();
 
+
   }  // class ImportVouchersResult
 
 

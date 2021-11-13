@@ -4,13 +4,13 @@
 *  Assembly : FinancialAccounting.Vouchers.dll           Pattern   : Empiria General Object                  *
 *  Type     : TransactionType                            License   : Please read LICENSE.txt file            *
 *                                                                                                            *
-*  Summary  : Describes the business transaction type related with an accounting voucher.                    *
+*  Summary  : Describes a business transaction type related with an accounting voucher.                      *
 *                                                                                                            *
 ************************* Copyright(c) La Vía Óntica SC, Ontica LLC and contributors. All rights reserved. **/
 
 namespace Empiria.FinancialAccounting.Vouchers {
 
-  /// <summary>Describes the business transaction type related with an accounting voucher.</summary>
+  /// <summary>Describes a business transaction type related with an accounting voucher.</summary>
   public class TransactionType : GeneralObject {
 
     private TransactionType() {

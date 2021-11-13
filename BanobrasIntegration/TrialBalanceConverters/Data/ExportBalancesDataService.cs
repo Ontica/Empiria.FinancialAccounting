@@ -65,7 +65,7 @@ namespace Empiria.FinancialAccounting.BanobrasIntegration.BalancesExporter.Data 
                               o.Saldo, o.MonedaOrigen, o.NaturalezaCuenta, o.SaldoPromedio,
                               o.MontoDebito, o.MontoCredito, o.SaldoAnterior, o.Empresa,
                               o.CalificaMoneda == "null" ? nullString : o.CalificaMoneda,
-                              System.DBNull.Value);
+                              DBNull.Value);
 
       DataWriter.Execute(dataOperation);
     }
