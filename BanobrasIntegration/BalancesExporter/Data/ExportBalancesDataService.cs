@@ -36,6 +36,7 @@ namespace Empiria.FinancialAccounting.BanobrasIntegration.BalancesExporter.Data 
       throw new NotImplementedException();
     }
 
+
     static internal void WriteBalancesByMonth(DateTime fecha, FixedList<ExportedBalancesDto> balances) {
       DeleteStoredBalancesByMonth(fecha);
 
@@ -43,6 +44,7 @@ namespace Empiria.FinancialAccounting.BanobrasIntegration.BalancesExporter.Data 
         WriteBalancesByMonth(balance);
       }
     }
+
 
     #endregion Public methods
 

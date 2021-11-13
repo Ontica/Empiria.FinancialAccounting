@@ -1,10 +1,10 @@
 ﻿/* Empiria Financial *****************************************************************************************
 *                                                                                                            *
-*  Module   : Banobras Integration Services                Component : Voucher Text file importer            *
+*  Module   : Banobras Integration Services                Component : Voucher importation                   *
 *  Assembly : FinancialAccounting.BanobrasIntegration.dll  Pattern   : Command Controller                    *
-*  Type     : ImportVouchersController                     License   : Please read LICENSE.txt file          *
+*  Type     : BanobrasVoucherImportersController           License   : Please read LICENSE.txt file          *
 *                                                                                                            *
-*  Summary  : Command API used to import vouchers and voucher entries form DB, Excel and text files.         *
+*  Summary  : API used to import vouchers and their entries form Banobras' DB, Excel and text files.         *
 *                                                                                                            *
 ************************* Copyright(c) La Vía Óntica SC, Ontica LLC and contributors. All rights reserved. **/
 using System;
@@ -20,39 +20,8 @@ using Empiria.FinancialAccounting.BanobrasIntegration.VouchersImporter.UseCases;
 
 namespace Empiria.FinancialAccounting.WebApi.BanobrasIntegration {
 
-  /// <summary>Command API used to import vouchers and voucher entries form DB, Excel and text files.</summary>
-  public class ImportVouchersController : WebApiController {
-
-    #region Standard importation
-
-    [HttpPost]
-    [Route("v2/financial-accounting/vouchers/import/dry-run")]
-    public SingleObjectModel DryRunStandardVoucherImportation([FromBody] VoucherImportationCommand command) {
-
-      base.RequireBody(command);
-
-      using (var usecases = ImportVouchersUseCases.UseCaseInteractor()) {
-        var result = usecases.DryRunStandardVoucherImportation(command);
-
-        return new SingleObjectModel(base.Request, result);
-      }
-    }
-
-
-    [HttpPost]
-    [Route("v2/financial-accounting/vouchers/import")]
-    public SingleObjectModel StandardVoucherImportation([FromBody] VoucherImportationCommand command) {
-
-      base.RequireBody(command);
-
-      using (var usecases = ImportVouchersUseCases.UseCaseInteractor()) {
-        var result = usecases.StandardVoucherImportation(command);
-
-        return new SingleObjectModel(base.Request, result);
-      }
-    }
-
-    #endregion Standard importation
+  /// <summary>API used to import vouchers and their entries form Banobras' DB, Excel and text files.</summary>
+  public class BanobrasVoucherImportersController : WebApiController {
 
     #region Database importers
 
@@ -259,6 +228,6 @@ namespace Empiria.FinancialAccounting.WebApi.BanobrasIntegration {
 
     #endregion Helper methods
 
-  }  // class ImportVouchersController
+  }  // class BanobrasVoucherImportersController
 
 }  // namespace Empiria.FinancialAccounting.WebApi.BanobrasIntegration

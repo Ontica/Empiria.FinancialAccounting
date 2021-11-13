@@ -16,7 +16,7 @@ using Empiria.FinancialAccounting.Vouchers.UseCases;
 using Empiria.FinancialAccounting.Vouchers.Adapters;
 using Empiria.FinancialAccounting.Adapters;
 
-namespace Empiria.FinancialAccounting.Vouchers.WebApi {
+namespace Empiria.FinancialAccounting.WebApi.Vouchers {
 
   /// <summary>Command web API used to retrive accounting vouchers related data.</summary>
   public class VoucherEditionController : WebApiController {
@@ -183,4 +183,4 @@ namespace Empiria.FinancialAccounting.Vouchers.WebApi {
 
   }  // class VoucherEditionController
 
-}  // namespace Empiria.FinancialAccounting.Vouchers.WebApi
+}  // namespace Empiria.FinancialAccounting.WebApi.Vouchers
