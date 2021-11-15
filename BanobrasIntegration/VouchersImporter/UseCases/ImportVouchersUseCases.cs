@@ -34,44 +34,6 @@ namespace Empiria.FinancialAccounting.BanobrasIntegration.VouchersImporter.UseCa
 
     #endregion Constructors and parsers
 
-    #region Database importers
-
-    public ImportVouchersResult ImportVouchersFromDatabase(ImportVouchersCommand command) {
-      Assertion.AssertObject(command, "command");
-
-      var importer = DbVouchersImporter.Instance;
-
-      if (importer.IsRunning) {
-        Assertion.AssertFail("El importador de pólizas ya está en ejecución.");
-      }
-
-      importer.Start(command)
-              .ConfigureAwait(false);
-
-      return importer.GetImportVouchersResult();
-    }
-
-
-    public ImportVouchersResult StatusOfImportVouchersFromDatabase() {
-      return DbVouchersImporter.Instance.GetImportVouchersResult();
-    }
-
-
-    public ImportVouchersResult StopImportVouchersFromDatabase() {
-      var importer = DbVouchersImporter.Instance;
-
-      if (!importer.IsRunning) {
-        Assertion.AssertFail("El importador de pólizas no está en ejecución.");
-      }
-
-      importer.Stop();
-
-      return importer.GetImportVouchersResult();
-    }
-
-
-    #endregion Database importers
-
     #region Importers
 
     public ImportVouchersResult StandardVoucherImportation(VoucherImportationCommand command, bool dryRun) {

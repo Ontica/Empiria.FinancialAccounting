@@ -19,6 +19,7 @@ namespace Empiria.FinancialAccounting.BanobrasIntegration.VouchersImporter {
   internal class DbVouchersImporter {
 
     static private readonly DbVouchersImporter _singleton = new DbVouchersImporter();
+
     private ImportVouchersResult _importVouchersResult;
 
     private DbVouchersImporter() {

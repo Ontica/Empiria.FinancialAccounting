@@ -1,8 +1,8 @@
 ﻿/* Empiria Financial *****************************************************************************************
 *                                                                                                            *
 *  Module   : Banobras Integration Services                Component : Voucher importation                   *
-*  Assembly : FinancialAccounting.BanobrasIntegration.dll  Pattern   : Command Controller                    *
-*  Type     : BanobrasVoucherImporterEngineController      License   : Please read LICENSE.txt file          *
+*  Assembly : Empiria.FinancialAccounting.WebApi.dll       Pattern   : Command Controller                    *
+*  Type     : BanobrasDbVoucherImporterEngineController    License   : Please read LICENSE.txt file          *
 *                                                                                                            *
 *  Summary  : Controls a voucher importer engine that process voucher candidates stored in database tables.  *
 *                                                                                                            *
@@ -19,7 +19,7 @@ namespace Empiria.FinancialAccounting.WebApi.BanobrasIntegration {
 
   /// <summary>Controls a voucher importer engine that process voucher candidates stored
   /// in database tables.</summary>
-  public class BanobrasVoucherImporterEngineController : WebApiController {
+  public class BanobrasDbVoucherImporterEngineController : WebApiController {
 
     #region Database importer
 
@@ -29,8 +29,8 @@ namespace Empiria.FinancialAccounting.WebApi.BanobrasIntegration {
     [Route("v2/financial-accounting/vouchers/import-from-database/status")]
     public SingleObjectModel GetVoucherImporterEngineStatus() {
 
-      using (var usecases = ImportVouchersUseCases.UseCaseInteractor()) {
-        ImportVouchersResult result = usecases.StatusOfImportVouchersFromDatabase();
+      using (var service = DbVoucherImporterEngine.ServiceInteractor()) {
+        ImportVouchersResult result = service.Status();
 
         return new SingleObjectModel(base.Request, result);
       }
@@ -44,8 +44,8 @@ namespace Empiria.FinancialAccounting.WebApi.BanobrasIntegration {
 
       base.RequireBody(command);
 
-      using (var usecases = ImportVouchersUseCases.UseCaseInteractor()) {
-        ImportVouchersResult result = usecases.ImportVouchersFromDatabase(command);
+      using (var service = DbVoucherImporterEngine.ServiceInteractor()) {
+        ImportVouchersResult result = service.Start(command);
 
         return new SingleObjectModel(base.Request, result);
       }
@@ -57,8 +57,8 @@ namespace Empiria.FinancialAccounting.WebApi.BanobrasIntegration {
     [Route("v2/financial-accounting/vouchers/import-from-database/stop")]
     public SingleObjectModel StopVoucherImporterEngine() {
 
-      using (var usecases = ImportVouchersUseCases.UseCaseInteractor()) {
-        ImportVouchersResult result = usecases.StopImportVouchersFromDatabase();
+      using (var service = DbVoucherImporterEngine.ServiceInteractor()) {
+        ImportVouchersResult result = service.Stop();
 
         return new SingleObjectModel(base.Request, result);
       }
@@ -66,6 +66,6 @@ namespace Empiria.FinancialAccounting.WebApi.BanobrasIntegration {
 
     #endregion Encabezados/Movimientos importers
 
-  }  // class BanobrasVoucherImporterEngineController
+  }  // class BanobrasDbVoucherImporterEngineController
 
 }  // namespace Empiria.FinancialAccounting.WebApi.BanobrasIntegration
