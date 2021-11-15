@@ -16,7 +16,6 @@ using Empiria.FinancialAccounting.Vouchers;
 
 using Empiria.FinancialAccounting.BanobrasIntegration.VouchersImporter.Adapters;
 
-
 namespace Empiria.FinancialAccounting.BanobrasIntegration.VouchersImporter.UseCases {
 
   /// <summary>Use cases used for import vouchers and voucher entries from Databases,
@@ -46,7 +45,6 @@ namespace Empiria.FinancialAccounting.BanobrasIntegration.VouchersImporter.UseCa
       return importer.DryRunImport();
     }
 
-
     public ImportVouchersResult StandardVoucherImportation(VoucherImportationCommand command) {
       Assertion.AssertObject(command, "command");
 
@@ -56,6 +54,24 @@ namespace Empiria.FinancialAccounting.BanobrasIntegration.VouchersImporter.UseCa
     }
 
     #endregion Standard voucher importation
+
+
+    #region InterfazUnica structure importation
+
+    public ImportVouchersResult ImportVouchersFromInterfazUnica(InterfazUnicaImporterCommand command,
+                                                                bool dryRun) {
+      Assertion.AssertObject(command, "command");
+
+      var importer = new InterfazUnicaImporter(command);
+
+      if (dryRun) {
+        return importer.DryRunImport();
+      } else {
+        return importer.Import();
+      }
+    }
+
+    #endregion InterfazUnica structure importation
 
 
     #region Database importers
@@ -95,7 +111,6 @@ namespace Empiria.FinancialAccounting.BanobrasIntegration.VouchersImporter.UseCa
 
 
     #endregion Database importers
-
 
     #region Excel importers
 
@@ -153,7 +168,6 @@ namespace Empiria.FinancialAccounting.BanobrasIntegration.VouchersImporter.UseCa
 
 
     #endregion Excel importers
-
 
     #region Text file importers
 

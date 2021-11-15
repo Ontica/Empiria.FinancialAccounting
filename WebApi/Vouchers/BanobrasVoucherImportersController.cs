@@ -4,7 +4,7 @@
 *  Assembly : FinancialAccounting.BanobrasIntegration.dll  Pattern   : Command Controller                    *
 *  Type     : BanobrasVoucherImportersController           License   : Please read LICENSE.txt file          *
 *                                                                                                            *
-*  Summary  : API used to import vouchers and their entries form Banobras' DB, Excel and text files.         *
+*  Summary  : Web API taht imports vouchers and their entries form Banobras' Database and Excel/text files.  *
 *                                                                                                            *
 ************************* Copyright(c) La Vía Óntica SC, Ontica LLC and contributors. All rights reserved. **/
 using System;
@@ -20,10 +20,32 @@ using Empiria.FinancialAccounting.BanobrasIntegration.VouchersImporter.UseCases;
 
 namespace Empiria.FinancialAccounting.WebApi.BanobrasIntegration {
 
-  /// <summary>API used to import vouchers and their entries form Banobras' DB, Excel and text files.</summary>
+  /// <summary>Web API taht imports vouchers and their entries form
+  /// Banobras' Database and Excel/text files.</summary>
   public class BanobrasVoucherImportersController : WebApiController {
 
-    #region Database importers
+    #region InterfazUnica importer
+
+    [HttpPost]
+    [Route("v2/financial-accounting/vouchers/import-from-interfaz-unica")]
+    [Route("v2/financial-accounting/vouchers/import-from-interfaz-unica/dry-run")]
+    public SingleObjectModel InterfazUnicaVoucherImporter([FromBody] InterfazUnicaImporterCommand command) {
+
+      base.RequireBody(command);
+
+      bool dryRun = base.Request.RequestUri.PathAndQuery.EndsWith("/dry-run");
+
+      using (var usecases = ImportVouchersUseCases.UseCaseInteractor()) {
+        ImportVouchersResult result = usecases.ImportVouchersFromInterfazUnica(command, dryRun);
+
+        return new SingleObjectModel(base.Request, result);
+      }
+    }
+
+
+    #endregion InterfazUnica importer
+
+    #region Encabezados/Movimientos Database importers
 
     [HttpPost]
     [Route("v2/financial-accounting/vouchers/database-importer/start")]
@@ -33,7 +55,7 @@ namespace Empiria.FinancialAccounting.WebApi.BanobrasIntegration {
       base.RequireBody(command);
 
       using (var usecases = ImportVouchersUseCases.UseCaseInteractor()) {
-        var result = usecases.ImportVouchersFromDatabase(command);
+        ImportVouchersResult result = usecases.ImportVouchersFromDatabase(command);
 
         return new SingleObjectModel(base.Request, result);
       }
@@ -65,12 +87,9 @@ namespace Empiria.FinancialAccounting.WebApi.BanobrasIntegration {
       }
     }
 
-
-    #endregion Database importers
-
+    #endregion Encabezados/Movimientos importers
 
     #region Excel file importers
-
 
     [HttpPost]
     [Route("v2/financial-accounting/vouchers/import-from-excel/dry-run")]
@@ -142,7 +161,6 @@ namespace Empiria.FinancialAccounting.WebApi.BanobrasIntegration {
 
     #endregion Excel file importers
 
-
     #region Text file importers
 
 
@@ -183,9 +201,7 @@ namespace Empiria.FinancialAccounting.WebApi.BanobrasIntegration {
 
     #endregion Text file importers
 
-
     #region Helper methods
-
 
     private ImportVouchersCommand GetImportVoucherCommandFromRequest(HttpRequest httpRequest) {
       NameValueCollection form = httpRequest.Form;
