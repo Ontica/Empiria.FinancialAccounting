@@ -22,34 +22,22 @@ namespace Empiria.FinancialAccounting.WebApi.Vouchers {
     #region Web api
 
     [HttpPost]
-    [Route("v2/financial-accounting/vouchers/import/dry-run")]
-    public SingleObjectModel DryRunImportVouchers([FromBody] VoucherImportationCommand command) {
-
-      base.RequireBody(command);
-
-      using (var usecases = ImportVouchersUseCases.UseCaseInteractor()) {
-        var result = usecases.DryRunStandardVoucherImportation(command);
-
-        return new SingleObjectModel(base.Request, result);
-      }
-    }
-
-
-    [HttpPost]
     [Route("v2/financial-accounting/vouchers/import")]
+    [Route("v2/financial-accounting/vouchers/import/dry-run")]
     public SingleObjectModel ImportVouchers([FromBody] VoucherImportationCommand command) {
 
       base.RequireBody(command);
 
+      bool dryRun = base.Request.RequestUri.PathAndQuery.EndsWith("/dry-run");
+
       using (var usecases = ImportVouchersUseCases.UseCaseInteractor()) {
-        var result = usecases.StandardVoucherImportation(command);
+        ImportVouchersResult result = usecases.StandardVoucherImportation(command, dryRun);
 
         return new SingleObjectModel(base.Request, result);
       }
     }
 
     #endregion Web api
-
 
   }  // class VouchersImporterController
 

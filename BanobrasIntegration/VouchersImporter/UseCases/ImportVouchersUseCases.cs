@@ -34,46 +34,6 @@ namespace Empiria.FinancialAccounting.BanobrasIntegration.VouchersImporter.UseCa
 
     #endregion Constructors and parsers
 
-
-    #region Standard voucher importation
-
-    public ImportVouchersResult DryRunStandardVoucherImportation(VoucherImportationCommand command) {
-      Assertion.AssertObject(command, "command");
-
-      var importer = new StandardVoucherImporter(command);
-
-      return importer.DryRunImport();
-    }
-
-    public ImportVouchersResult StandardVoucherImportation(VoucherImportationCommand command) {
-      Assertion.AssertObject(command, "command");
-
-      var importer = new StandardVoucherImporter(command);
-
-      return importer.Import();
-    }
-
-    #endregion Standard voucher importation
-
-
-    #region InterfazUnica structure importation
-
-    public ImportVouchersResult ImportVouchersFromInterfazUnica(InterfazUnicaImporterCommand command,
-                                                                bool dryRun) {
-      Assertion.AssertObject(command, "command");
-
-      var importer = new InterfazUnicaImporter(command);
-
-      if (dryRun) {
-        return importer.DryRunImport();
-      } else {
-        return importer.Import();
-      }
-    }
-
-    #endregion InterfazUnica structure importation
-
-
     #region Database importers
 
     public ImportVouchersResult ImportVouchersFromDatabase(ImportVouchersCommand command) {
@@ -112,49 +72,23 @@ namespace Empiria.FinancialAccounting.BanobrasIntegration.VouchersImporter.UseCa
 
     #endregion Database importers
 
-    #region Excel importers
+    #region Importers
 
-    public ImportVouchersResult DryRunImportVouchersFromExcelFile(ImportVouchersCommand command,
-                                                                  FileData excelFileData) {
-      FileInfo excelFile = AssertParametersAreValidAndGetFileInfo(command, excelFileData);
+    public ImportVouchersResult StandardVoucherImportation(VoucherImportationCommand command, bool dryRun) {
+      Assertion.AssertObject(command, "command");
 
-      PrepareCommandForImportTextFile(command);
+      var importer = new StandardVoucherImporter(command);
 
-      var importer = new ExcelVouchersImporter(command, excelFile);
-
-      ImportVouchersResult result = importer.DryRunImport();
-
-      return result;
+      if (dryRun) {
+        return importer.DryRunImport();
+      } else {
+        return importer.Import();
+      }
     }
 
 
-    public ImportVouchersResult DryRunImportVoucherEntriesFromExcelFile(int voucherId,
-                                                                        ImportVouchersCommand command,
-                                                                        FileData excelFileData) {
-      FileInfo excelFile = AssertParametersAreValidAndGetFileInfo(command, excelFileData);
-
-      PrepareCommandForImportTextFile(command);
-
-      var voucher = Voucher.Parse(voucherId);
-
-      var importer = new ExcelVouchersImporter(command, excelFile);
-
-      return importer.DryRunImport(voucher);
-    }
-
-
-    public ImportVouchersResult ImportVouchersFromExcelFile(ImportVouchersCommand command, FileData excelFileData) {
-      FileInfo excelFile = AssertParametersAreValidAndGetFileInfo(command, excelFileData);
-
-      PrepareCommandForImportTextFile(command);
-
-      var importer = new ExcelVouchersImporter(command, excelFile);
-
-      return importer.Import();
-    }
-
-
-    public ImportVouchersResult ImportVoucherEntriesFromExcelFile(int voucherId, ImportVouchersCommand command, FileData excelFileData) {
+    public ImportVouchersResult ImportVoucherEntriesFromExcelFile(int voucherId, ImportVouchersCommand command,
+                                                                  FileData excelFileData, bool dryRun) {
       FileInfo excelFile = AssertParametersAreValidAndGetFileInfo(command, excelFileData);
 
       PrepareCommandForImportTextFile(command);
@@ -163,38 +97,61 @@ namespace Empiria.FinancialAccounting.BanobrasIntegration.VouchersImporter.UseCa
 
       var importer = new ExcelVouchersImporter(command, excelFile);
 
-      return importer.Import(voucher);
+      if (dryRun) {
+        return importer.DryRunImport(voucher);
+      } else {
+        return importer.Import(voucher);
+      }
     }
 
 
-    #endregion Excel importers
-
-    #region Text file importers
-
-    public ImportVouchersResult DryRunImportVouchersFromTextFile(ImportVouchersCommand command, FileData textFileData) {
-      FileInfo textFile = AssertParametersAreValidAndGetFileInfo(command, textFileData);
+    public ImportVouchersResult ImportVouchersFromExcelFile(ImportVouchersCommand command,
+                                                            FileData excelFileData, bool dryRun) {
+      FileInfo excelFile = AssertParametersAreValidAndGetFileInfo(command, excelFileData);
 
       PrepareCommandForImportTextFile(command);
 
-      var importer = new TextFileImporter(command, textFile);
+      var importer = new ExcelVouchersImporter(command, excelFile);
 
-      return importer.DryRunImport();
+      if (dryRun) {
+        return importer.DryRunImport();
+      } else {
+        return importer.Import();
+      }
+    }
+
+
+    public ImportVouchersResult ImportVouchersFromInterfazUnica(InterfazUnicaImporterCommand command,
+                                                                bool dryRun) {
+      Assertion.AssertObject(command, "command");
+
+      var importer = new InterfazUnicaImporter(command);
+
+      if (dryRun) {
+        return importer.DryRunImport();
+      } else {
+        return importer.Import();
+      }
     }
 
 
     public ImportVouchersResult ImportVouchersFromTextFile(ImportVouchersCommand command,
-                                                           FileData textFileData) {
+                                                           FileData textFileData, bool dryRun) {
       FileInfo textFile = AssertParametersAreValidAndGetFileInfo(command, textFileData);
 
       PrepareCommandForImportTextFile(command);
 
       var importer = new TextFileImporter(command, textFile);
 
-      return importer.Import();
+      if (dryRun) {
+        return importer.DryRunImport();
+      } else {
+        return importer.Import();
+      }
     }
 
 
-    #endregion Text file importers
+    #endregion Importers
 
     #region Helpers
 
