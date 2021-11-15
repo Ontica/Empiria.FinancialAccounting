@@ -4,7 +4,8 @@
 *  Assembly : FinancialAccounting.BanobrasIntegration.dll  Pattern   : Command Controller                    *
 *  Type     : BanobrasVoucherImportersController           License   : Please read LICENSE.txt file          *
 *                                                                                                            *
-*  Summary  : Web API taht imports vouchers and their entries form Banobras' Database and Excel/text files.  *
+*  Summary  : Web API that imports vouchers from Banobras' Excel and text files and from                     *
+*             'interfaz única' data structures.                                                              *
 *                                                                                                            *
 ************************* Copyright(c) La Vía Óntica SC, Ontica LLC and contributors. All rights reserved. **/
 using System;
@@ -20,54 +21,9 @@ using Empiria.FinancialAccounting.BanobrasIntegration.VouchersImporter.UseCases;
 
 namespace Empiria.FinancialAccounting.WebApi.BanobrasIntegration {
 
-  /// <summary>Web API taht imports vouchers and their entries form
-  /// Banobras' Database and Excel/text files.</summary>
+  /// <summary>Web API that imports vouchers from Banobras' Excel and text files and
+  /// from 'interfaz única' data structures.</summary>
   public class BanobrasVoucherImportersController : WebApiController {
-
-
-    #region Encabezados/Movimientos Database importers
-
-    [HttpPost]
-    [Route("v2/financial-accounting/vouchers/database-importer/start")]
-    [Route("v2/financial-accounting/vouchers/import-from-database")]
-    public SingleObjectModel ImportVouchersFromDatabase([FromBody] ImportVouchersCommand command) {
-
-      base.RequireBody(command);
-
-      using (var usecases = ImportVouchersUseCases.UseCaseInteractor()) {
-        ImportVouchersResult result = usecases.ImportVouchersFromDatabase(command);
-
-        return new SingleObjectModel(base.Request, result);
-      }
-    }
-
-
-    [HttpGet]
-    [Route("v2/financial-accounting/vouchers/database-importer/status")]
-    [Route("v2/financial-accounting/vouchers/import-from-database/status")]
-    public SingleObjectModel StatusOfImportVouchersFromDatabase() {
-
-      using (var usecases = ImportVouchersUseCases.UseCaseInteractor()) {
-        ImportVouchersResult result = usecases.StatusOfImportVouchersFromDatabase();
-
-        return new SingleObjectModel(base.Request, result);
-      }
-    }
-
-
-    [HttpPost]
-    [Route("v2/financial-accounting/vouchers/database-importer/stop")]
-    [Route("v2/financial-accounting/vouchers/import-from-database/stop")]
-    public SingleObjectModel StopImportVouchersFromDatabase() {
-
-      using (var usecases = ImportVouchersUseCases.UseCaseInteractor()) {
-        ImportVouchersResult result = usecases.StopImportVouchersFromDatabase();
-
-        return new SingleObjectModel(base.Request, result);
-      }
-    }
-
-    #endregion Encabezados/Movimientos importers
 
     #region Voucher importers
 
