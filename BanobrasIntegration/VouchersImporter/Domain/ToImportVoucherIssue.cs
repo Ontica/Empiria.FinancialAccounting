@@ -32,6 +32,7 @@ namespace Empiria.FinancialAccounting.BanobrasIntegration.VouchersImporter {
       this.Description = description;
     }
 
+
     public ToImportVoucherIssue(VoucherIssueType type,
                                 string importationSet,
                                 string location,

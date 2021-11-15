@@ -1,7 +1,7 @@
 ﻿/* Empiria Financial *****************************************************************************************
 *                                                                                                            *
 *  Module   : Banobras Integration Services                 Component : Vouchers Importer                    *
-*  Assembly : FinancialAccounting.BalanceEngine.dll         Pattern   : Information Holder                   *
+*  Assembly : FinancialAccounting.BanobrasIntegration.dll   Pattern   : Information Holder                   *
 *  Type     : Movimiento                                    License   : Please read LICENSE.txt file         *
 *                                                                                                            *
 *  Summary  : Información de un registro de la tabla MC_MOVIMIENTOS (Banobras) con movimientos de pólizas    *
