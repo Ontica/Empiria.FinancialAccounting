@@ -14,21 +14,38 @@ namespace Empiria.FinancialAccounting.Adapters {
   /// <summary>Input data object to create or update subledger accounts.</summary>
   public class SubledgerAccountFields {
 
+    public string LedgerUID {
+      get; set;
+    }
+
+    public string SubledgerTypeUID {
+      get; set;
+    }
+
     public string Number {
-      get; internal set;
+      get; set;
     }
 
 
     public string Name {
-      get; internal set;
+      get; set;
     }
 
 
     public string Description {
-      get; internal set;
+      get; set;
     } = string.Empty;
 
 
   }  // public class SubledgerAccountFields
+
+
+  static internal class SubledgerAccountFieldsExtensionMethods {
+
+    static public SubledgerType SubledgerType(this SubledgerAccountFields fields) {
+      return Empiria.FinancialAccounting.SubledgerType.Pending;
+    }
+
+  }
 
 }  // namespace Empiria.FinancialAccounting.Adapters

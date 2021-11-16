@@ -26,34 +26,38 @@ namespace Empiria.FinancialAccounting.Adapters {
         Name = subledger.Name,
         Description = subledger.Description,
         AccountsPrefix = subledger.AccountsPrefix,
-        BaseLedger = subledger.BaseLedger.MapToNamedEntity()
       };
     }
 
 
     static public FixedList<SubledgerAccountDto> Map(FixedList<SubledgerAccount> list) {
-      return new FixedList<SubledgerAccountDto>(list.Select(x => MapAccount(x)));
+      return new FixedList<SubledgerAccountDto>(list.Select(x => Map(x)));
     }
 
 
-    static public SubledgerAccountDescriptorDto MapAccountToDescriptor(SubledgerAccount subledgerAccount) {
-      return new SubledgerAccountDescriptorDto {
-        Id = subledgerAccount.Id,
-        Number = subledgerAccount.Number,
-        Name = subledgerAccount.Name,
-        FullName = $"{subledgerAccount.Number} - {subledgerAccount.Name}"
-      };
-    }
-
-
-    static internal SubledgerAccountDto MapAccount(SubledgerAccount subledgerAccount) {
+    static internal SubledgerAccountDto Map(SubledgerAccount subledgerAccount) {
       return new SubledgerAccountDto {
         Id = subledgerAccount.Id,
-        BaseLedger = subledgerAccount.Ledger.MapToNamedEntity(),
-        Subledger = subledgerAccount.Subledger.MapToNamedEntity(),
+        Type = subledgerAccount.Subledger.SubledgerType.MapToNamedEntity(),
         Name = subledgerAccount.Name,
         Number = subledgerAccount.Number,
         Description = subledgerAccount.Description
+      };
+    }
+
+    static internal FixedList<SubledgerAccountDescriptorDto> MapToSubledgerAccountDescriptor(FixedList<SubledgerAccount> list) {
+      return new FixedList<SubledgerAccountDescriptorDto>(list.Select(x => MapToSubledgerAccountDescriptor(x)));
+    }
+
+
+    static public SubledgerAccountDescriptorDto MapToSubledgerAccountDescriptor(SubledgerAccount subledgerAccount) {
+      return new SubledgerAccountDescriptorDto {
+        Id = subledgerAccount.Id,
+        LedgerName = subledgerAccount.Ledger.FullName,
+        TypeName = subledgerAccount.Subledger.SubledgerType.Name,
+        Number = subledgerAccount.Number,
+        Name = subledgerAccount.Name,
+        FullName = $"{subledgerAccount.Number} - {subledgerAccount.Name}"
       };
     }
 

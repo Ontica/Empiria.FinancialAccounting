@@ -32,18 +32,48 @@ namespace Empiria.FinancialAccounting.UseCases {
 
     #region Use cases
 
-    public SubledgerAccountDto CreateSubledgerAccount(string subledgerUID,
-                                                      SubledgerAccountFields fields) {
-      Assertion.AssertObject(subledgerUID, "subledgerUID");
+
+    public SubledgerAccountDto CreateSubledgerAccount(SubledgerAccountFields fields) {
       Assertion.AssertObject(fields, "fields");
 
-      var subledger = Subledger.Parse(subledgerUID);
+      var ledger = Ledger.Parse(fields.LedgerUID);
 
-      SubledgerAccount subledgerAccount = subledger.CreateAccount(fields);
+      fields.Number = ledger.FormatSubledgerAccount(fields.Number);
+      fields.Name = EmpiriaString.TrimAll(fields.Name);
 
-      subledgerAccount.Save();
 
-      return SubledgerMapper.MapAccount(subledgerAccount);
+      var sla = ledger.TryGetSubledgerAccount(fields.Number);
+
+      if (sla != null) {
+        Assertion.AssertFail("El auxiliar ya existe.");
+      }
+
+
+      SubledgerAccount createdSubledgerAccount = ledger.CreateSubledgerAccount(fields.Number,
+                                                                               fields.SubledgerType(),
+                                                                               fields.Name);
+
+      createdSubledgerAccount.Save();
+
+      return SubledgerMapper.Map(createdSubledgerAccount);
+
+      //var subledger = Subledger.Parse(fields.SubledgerUID);
+
+      //fields.Number = subledger.FormatSubledgerAccount(fields.Number);
+      //fields.Name = EmpiriaString.TrimAll(fields.Name);
+
+      //var sla = subledger.BaseLedger.TryGetSubledgerAccount(fields.Number);
+
+      //if (sla != null) {
+      //  Assertion.AssertFail("El auxiliar ya existe.");
+      //}
+
+
+      //SubledgerAccount subledgerAccount = subledger.CreateAccount(fields);
+
+      //subledgerAccount.Save();
+
+      // return SubledgerMapper.Map(subledgerAccount);
     }
 
 
@@ -56,30 +86,38 @@ namespace Empiria.FinancialAccounting.UseCases {
     }
 
 
-    public SubledgerAccountDto GetSubledgerAccount(string subledgerUID,
-                                                   int subledgerAccountId) {
-      Assertion.AssertObject(subledgerUID, "subledgerUID");
+    public SubledgerAccountDto GetSubledgerAccount(int subledgerAccountId) {
       Assertion.Assert(subledgerAccountId > 0, "subledgerAccountId");
 
-      var subledger = Subledger.Parse(subledgerUID);
+      var subledgerAccount = SubledgerAccount.Parse(subledgerAccountId);
 
-      SubledgerAccount subledgerAccount = subledger.GetAccountWithId(subledgerAccountId);
-
-      return SubledgerMapper.MapAccount(subledgerAccount);
+      return SubledgerMapper.Map(subledgerAccount);
     }
 
 
-    public FixedList<SubledgerAccountDto> SearchSubledgerAccounts(string accountsChartUID,
-                                                                  SearchSubledgerAccountCommand command) {
-      Assertion.AssertObject(accountsChartUID, "accountsChartUID");
+    public FixedList<SubledgerAccountDescriptorDto> SearchSubledgerAccounts(SearchSubledgerAccountCommand command) {
       Assertion.AssertObject(command, "command");
 
-      var accountsChart = AccountsChart.Parse(accountsChartUID);
+      string filter = command.BuildFilter();
 
-      FixedList<SubledgerAccount> subledgerAccounts = SubledgerAccount.GetList(accountsChart,
-                                                                               command.Keywords);
+      FixedList<SubledgerAccount> subledgerAccounts = SubledgerAccount.Search(command.AccountsChart(), filter);
 
-      return SubledgerMapper.Map(subledgerAccounts);
+      return SubledgerMapper.MapToSubledgerAccountDescriptor(subledgerAccounts);
+    }
+
+
+    public SubledgerAccountDto UpdateSubledgerAccount(int subledgerAccountId,
+                                                      SubledgerAccountFields fields) {
+      Assertion.Assert(subledgerAccountId > 0, "subledgerAccountId");
+      Assertion.AssertObject(fields, "fields");
+
+      var subledgerAccount = SubledgerAccount.Parse(subledgerAccountId);
+
+      subledgerAccount.Update(fields.Number, fields.Name);
+
+      subledgerAccount.Save();
+
+      return SubledgerMapper.Map(subledgerAccount);
     }
 
     #endregion Use cases

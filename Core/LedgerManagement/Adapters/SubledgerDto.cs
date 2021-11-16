@@ -28,11 +28,6 @@ namespace Empiria.FinancialAccounting.Adapters {
     }
 
 
-    public NamedEntityDto BaseLedger {
-      get; internal set;
-    }
-
-
     public string Name {
       get; internal set;
     }
@@ -50,7 +45,7 @@ namespace Empiria.FinancialAccounting.Adapters {
   }  // public class SubledgerDto
 
 
-  /// <summary>Output DTO for subledger accounts.</summary>
+  /// <summary>Minimal output DTO for a subledger account.</summary>
   public class SubledgerAccountDescriptorDto {
 
     internal SubledgerAccountDescriptorDto() {
@@ -58,6 +53,14 @@ namespace Empiria.FinancialAccounting.Adapters {
     }
 
     public int Id {
+      get; internal set;
+    }
+
+    public string TypeName {
+      get; internal set;
+    }
+
+    public string LedgerName {
       get; internal set;
     }
 
@@ -76,7 +79,7 @@ namespace Empiria.FinancialAccounting.Adapters {
   }  // class SubledgerAccountDto
 
 
-  /// <summary>Output DTO for a subledger account.</summary>
+  /// <summary>Complete output DTO for a subledger account.</summary>
   public class SubledgerAccountDto {
 
     internal SubledgerAccountDto() {
@@ -87,11 +90,7 @@ namespace Empiria.FinancialAccounting.Adapters {
       get; internal set;
     }
 
-    public NamedEntityDto BaseLedger {
-      get; internal set;
-    }
-
-    public NamedEntityDto Subledger {
+    public NamedEntityDto Type {
       get; internal set;
     }
 
