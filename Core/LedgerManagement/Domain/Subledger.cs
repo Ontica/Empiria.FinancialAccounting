@@ -8,7 +8,6 @@
 *                                                                                                            *
 ************************* Copyright(c) La Vía Óntica SC, Ontica LLC and contributors. All rights reserved. **/
 using System;
-using Empiria.FinancialAccounting.Adapters;
 
 namespace Empiria.FinancialAccounting {
 
@@ -93,20 +92,24 @@ namespace Empiria.FinancialAccounting {
     }
 
 
-    internal SubledgerAccount CreateAccount(SubledgerAccountFields fields) {
-      return new SubledgerAccount(this, fields);
-    }
-
-
     internal SubledgerAccount CreateAccount(string subledgerAccountNo) {
       Assertion.AssertObject(subledgerAccountNo, "subledgerAccountNo");
 
-      var fields = new SubledgerAccountFields {
-        Number = subledgerAccountNo,
-        Name = "Sin nombre. Pendiente de clasificar."
-      };
+      return this.CreateAccount(subledgerAccountNo, "Sin nombre. Pendiente de clasificar.");
+    }
 
-      return this.CreateAccount(fields);
+
+    internal SubledgerAccount CreateAccount(string subledgerAccountNo, string subledgerAccountName) {
+      Assertion.AssertObject(subledgerAccountNo, "subledgerAccountNo");
+      Assertion.AssertObject(subledgerAccountName, "subledgerAccountName");
+
+      return new SubledgerAccount(this, subledgerAccountNo, subledgerAccountName);
+    }
+
+    internal string FormatSubledgerAccount(string number) {
+      Assertion.AssertObject(number, "number");
+
+      return this.BaseLedger.FormatSubledgerAccount(number);
     }
 
 
@@ -119,6 +122,7 @@ namespace Empiria.FinancialAccounting {
 
       return subledgerAccount;
     }
+
 
     #endregion Public methods
 

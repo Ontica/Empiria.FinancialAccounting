@@ -9,7 +9,6 @@
 ************************* Copyright(c) La Vía Óntica SC, Ontica LLC and contributors. All rights reserved. **/
 using System;
 
-using Empiria.FinancialAccounting.Adapters;
 using Empiria.FinancialAccounting.Data;
 
 namespace Empiria.FinancialAccounting {
@@ -23,13 +22,15 @@ namespace Empiria.FinancialAccounting {
       // Required by Empiria Framework.
     }
 
-    internal SubledgerAccount(Subledger subledger,
-                              SubledgerAccountFields fields) {
+
+    internal SubledgerAccount(Subledger subledger, string number, string name) {
       Assertion.AssertObject(subledger, "subledger");
-      Assertion.AssertObject(fields, "fields");
+      Assertion.AssertObject(number, "number");
+      Assertion.AssertObject(name, "name");
 
       this.Subledger = subledger;
-      LoadFields(fields);
+      this.Number = number;
+      this.Name = name;
     }
 
 
@@ -41,18 +42,18 @@ namespace Empiria.FinancialAccounting {
     }
 
 
-    static public FixedList<SubledgerAccount> GetList(AccountsChart accountsChart,
-                                                      string keywords) {
+    static internal FixedList<SubledgerAccount> Search(AccountsChart accountsChart, string filter) {
       Assertion.AssertObject(accountsChart, "accountsChart");
-      Assertion.AssertObject(keywords, "keywords");
+      Assertion.AssertObject(filter, "filter");
 
-      return SubledgerData.GetSubledgerAccountsList(accountsChart, keywords);
+      return SubledgerData.GetSubledgerAccountsList(accountsChart, filter);
     }
 
 
     static public void Preload() {
       BaseObject.GetList<SubledgerAccount>();
     }
+
 
     static public SubledgerAccount Empty => BaseObject.ParseEmpty<SubledgerAccount>();
 
@@ -100,7 +101,7 @@ namespace Empiria.FinancialAccounting {
 
 
     [DataField("ELIMINADA", ConvertFrom = typeof(int))]
-    public bool Deleted {
+    public bool Suspended {
       get; private set;
     }
 
@@ -109,16 +110,19 @@ namespace Empiria.FinancialAccounting {
     #region Methods
 
 
-    private void LoadFields(SubledgerAccountFields fields) {
-      this.Number = fields.Number;
-      this.Name = fields.Name;
-      this.Description = fields.Description;
-    }
-
-
     protected override void OnSave() {
       SubledgerData.WriteSubledgerAccount(this);
     }
+
+
+    internal void Update(string number, string name) {
+      Assertion.AssertObject(number, "number");
+      Assertion.AssertObject(name, "name");
+
+      this.Number = number;
+      this.Name = name;
+    }
+
 
     #endregion Methods
 

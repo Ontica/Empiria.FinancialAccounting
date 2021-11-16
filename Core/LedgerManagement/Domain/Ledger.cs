@@ -143,7 +143,7 @@ namespace Empiria.FinancialAccounting {
     }
 
 
-    public SubledgerAccount CreateSubledgerAccount(string subledgerAccountNo) {
+    public SubledgerAccount CreateSubledgerAccount(string subledgerAccountNo, SubledgerType subledgerType) {
       subledgerAccountNo = FormatSubledgerAccount(subledgerAccountNo);
 
       SubledgerAccount subledgerAccount = this.TryGetSubledgerAccount(subledgerAccountNo);
@@ -152,7 +152,7 @@ namespace Empiria.FinancialAccounting {
         return subledgerAccount;
       }
 
-      Subledger subLedger = this.Subledgers().Find(x => x.SubledgerType.Equals(SubledgerType.Pending));
+      Subledger subLedger = this.Subledgers().Find(x => x.SubledgerType.Equals(subledgerType));
 
       if (subLedger == null) {
         throw Assertion.AssertNoReachThisCode(
@@ -161,6 +161,27 @@ namespace Empiria.FinancialAccounting {
 
       return subLedger.CreateAccount(subledgerAccountNo);
     }
+
+
+    public SubledgerAccount CreateSubledgerAccount(string subledgerAccountNo, SubledgerType subledgerType, string sublegderAccountName) {
+      subledgerAccountNo = FormatSubledgerAccount(subledgerAccountNo);
+
+      SubledgerAccount subledgerAccount = this.TryGetSubledgerAccount(subledgerAccountNo);
+
+      if (subledgerAccount != null) {
+        return subledgerAccount;
+      }
+
+      Subledger subLedger = this.Subledgers().Find(x => x.SubledgerType.Equals(subledgerType));
+
+      if (subLedger == null) {
+        throw Assertion.AssertNoReachThisCode(
+            $"No se ha definido una lista de auxiliares pendientes para la contabilidad {this.FullName}.");
+      }
+
+      return subLedger.CreateAccount(subledgerAccountNo, sublegderAccountName);
+    }
+
 
 
     public string FormatSubledgerAccount(string subledgerAccountNo) {
@@ -250,6 +271,10 @@ namespace Empiria.FinancialAccounting {
 
     public FixedList<Account> SearchUnassignedAccounts(string keywords, DateTime date) {
       return LedgerData.SearchUnassignedAccountsForEdition(this, keywords, date);
+    }
+
+    public FixedList<SubledgerType> SubledgerTypes() {
+      return new FixedList<SubledgerType>(this.Subledgers().Select(x => x.SubledgerType));
     }
 
     public FixedList<Subledger> Subledgers() {

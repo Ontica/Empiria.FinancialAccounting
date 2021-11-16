@@ -16,16 +16,13 @@ namespace Empiria.FinancialAccounting.Data {
   /// <summary>Data service layer for subledger accounts.</summary>
   static internal class SubledgerData {
 
+
     static internal FixedList<SubledgerAccount> GetSubledgerAccountsList(AccountsChart accountsChart,
-                                                                         string keywords) {
+                                                                         string filter) {
+      var op = DataOperation.Parse("@qry_cof_busca_auxiliares",
+                                   accountsChart.Id, filter);
 
-      string sqlKeywords = SearchExpression.ParseAndLikeKeywords("KEYWORDS_CUENTA_AUXILIAR", keywords);
-
-      DataOperation operation = DataOperation.Parse("@qry_cof_busca_auxiliares",
-                                                    accountsChart.Id,
-                                                    sqlKeywords);
-
-      return DataReader.GetFixedList<SubledgerAccount>(operation);
+      return DataReader.GetFixedList<SubledgerAccount>(op);
     }
 
 
@@ -38,7 +35,7 @@ namespace Empiria.FinancialAccounting.Data {
       var op = DataOperation.Parse("write_cof_cuenta_auxiliar",
                                     o.Id, o.Subledger.Id,
                                     o.Number, o.Name, o.Description,
-                                    o.Deleted ? 1: 0);
+                                    o.Suspended ? 1: 0);
 
       DataWriter.Execute(op);
     }
