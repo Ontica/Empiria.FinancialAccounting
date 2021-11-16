@@ -100,6 +100,8 @@ namespace Empiria.FinancialAccounting.FinancialReports {
         totals = totals.Sum(balance, item.Qualification);
       }
 
+      totals.Round();
+
       return totals;
     }
 
@@ -133,6 +135,7 @@ namespace Empiria.FinancialAccounting.FinancialReports {
       }
     }
 
+
     private ReportEntryTotals GetFixedValue(GroupingRuleItem groupingRuleItem) {
       // groupingRuleItem.ExternalVariableCode
       ExternalValue value = ExternalValue.GetValue(groupingRuleItem.ExternalVariableCode,
@@ -154,6 +157,7 @@ namespace Empiria.FinancialAccounting.FinancialReports {
 
       return groupingRuleTotals;
     }
+
 
     private void ProcessEntries(FixedList<FixedRowFinancialReportEntry> reportEntries,
                                 EmpiriaHashTable<FixedList<TwoColumnsTrialBalanceEntryDto>> balances) {
