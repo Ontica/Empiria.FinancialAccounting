@@ -61,7 +61,8 @@ namespace Empiria.FinancialAccounting.Vouchers.UseCases {
           entryFields.LedgerAccountId = la.Id;
         }
         if (entryFields.CreateSubledgerAccount) {
-          SubledgerAccount sa = voucher.Ledger.CreateSubledgerAccount(entryFields.SubledgerAccountNoToCreate);
+          SubledgerAccount sa = voucher.Ledger.CreateSubledgerAccount(entryFields.SubledgerAccountNoToCreate,
+                                                                      SubledgerType.Pending);
 
           sa.Save();
 
