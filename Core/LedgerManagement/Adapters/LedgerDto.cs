@@ -47,6 +47,11 @@ namespace Empiria.FinancialAccounting.Adapters {
     }
 
 
+    public FixedList<NamedEntityDto> SubledgerAccountsTypes {
+      get; internal set;
+    }
+
+
     public NamedEntityDto AccountsChart {
       get; internal set;
     }
