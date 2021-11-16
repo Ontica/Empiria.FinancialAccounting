@@ -75,4 +75,7 @@
     <ProjectReference Include="..\BalanceEngine\Empiria.FinancialAccounting.BalanceEngine.csproj" />
     <ProjectReference Include="..\FinancialReports\Empiria.FinancialAccounting.FinancialReports.csproj" />
   </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\Vouchers\Empiria.FinancialAccounting.Vouchers.csproj" />
+  </ItemGroup>
 </Project>

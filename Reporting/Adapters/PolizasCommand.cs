@@ -9,7 +9,7 @@
 ************************* Copyright(c) La Vía Óntica SC, Ontica LLC and contributors. All rights reserved. **/
 using System;
 
-namespace Empiria.FinancialAccounting.Reporting {
+namespace Empiria.FinancialAccounting.Reporting.Adapters {
 
   /// <summary>Command payload used to build policies report.</summary>
   public class PolizasCommand {
@@ -37,4 +37,4 @@ namespace Empiria.FinancialAccounting.Reporting {
 
   } // class PolizaCommand
 
-} // namespace Empiria.FinancialAccounting.Reporting
+} // namespace Empiria.FinancialAccounting.Reporting.Adapters
