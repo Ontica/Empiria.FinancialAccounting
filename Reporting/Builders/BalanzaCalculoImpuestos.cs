@@ -62,12 +62,6 @@ namespace Empiria.FinancialAccounting.Reporting.Builders {
       columns.Add(new DataTableColumn("vBxcoHaber", "VBxco Abono", "decimal"));
       columns.Add(new DataTableColumn("vBxcoSaldoFinal", "VBxco Saldo actual", "decimal"));
 
-      columns.Add(new DataTableColumn("ajteInfEquivalencia", "AjteInfEquivalencia", "decimal", 6));
-      columns.Add(new DataTableColumn("ajteInfSaldoInicial", "AjteInf Saldo anterior", "decimal"));
-      columns.Add(new DataTableColumn("ajteInfDebe", "AjteInf Cargo", "decimal"));
-      columns.Add(new DataTableColumn("ajteInfHaber", "AjteInf Abono", "decimal"));
-      columns.Add(new DataTableColumn("ajteInfSaldoFinal", "AjteInf Saldo actual", "decimal"));
-
       return columns.ToFixedList();
     }
 
@@ -83,11 +77,6 @@ namespace Empiria.FinancialAccounting.Reporting.Builders {
         InitialPeriod = new TrialBalanceCommandPeriod {
           FromDate = new DateTime(command.ToDate.Year, command.ToDate.Month, 1),
           ToDate = command.ToDate
-        },
-        FinalPeriod = new TrialBalanceCommandPeriod {
-          ExchangeRateTypeUID= "5923136d-8533-4975-81b9-c8ec3bf18dea",
-          ValuateToCurrrencyUID="01",
-          ExchangeRateDate = command.ToDate
         },
         IsOperationalReport = true,
       };
@@ -136,14 +125,7 @@ namespace Empiria.FinancialAccounting.Reporting.Builders {
         VBxcoSaldoInicial = entry.InitialBalance * entry.ExchangeRate,
         VBxcoDebe = entry.Debit * entry.ExchangeRate,
         VBxcoHaber = entry.Credit * entry.ExchangeRate,
-        VBxcoSaldoFinal= entry.CurrentBalance * entry.ExchangeRate,
-
-        AjteInfEquivalencia = entry.SecondExchangeRate,
-        AjteInfSaldoInicial = entry.InitialBalance * entry.SecondExchangeRate,
-        AjteInfDebe = entry.Debit * entry.SecondExchangeRate,
-        AjteInfHaber = entry.Credit * entry.SecondExchangeRate,
-        AjteInfSaldoFinal = entry.CurrentBalance * entry.SecondExchangeRate,
-
+        VBxcoSaldoFinal= entry.CurrentBalance * entry.ExchangeRate
       };
     }
 
@@ -212,27 +194,6 @@ namespace Empiria.FinancialAccounting.Reporting.Builders {
     }
 
     public decimal VBxcoSaldoFinal {
-      get; internal set;
-    }
-
-    public decimal AjteInfEquivalencia {
-      get;
-      internal set;
-    }
-
-    public decimal AjteInfSaldoInicial {
-      get; internal set;
-    }
-
-    public decimal AjteInfDebe {
-      get; internal set;
-    }
-
-    public decimal AjteInfHaber {
-      get; internal set;
-    }
-
-    public decimal AjteInfSaldoFinal {
       get; internal set;
     }
 

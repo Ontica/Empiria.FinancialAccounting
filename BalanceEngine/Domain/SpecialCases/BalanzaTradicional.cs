@@ -33,7 +33,7 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
 
       FixedList<TrialBalanceEntry> postingEntries = helper.GetPostingEntries();
 
-      postingEntries = GetSecondExchangeRate(postingEntries);
+      //postingEntries = GetSecondExchangeRate(postingEntries);
 
       List<TrialBalanceEntry> summaryEntries = helper.GenerateSummaryEntries(postingEntries);
 
@@ -135,6 +135,7 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
         foreach (var entry in trialBalance) {
           helper.SummaryByAccount(totalByAccountEntries, entry);
         }
+
         return totalByAccountEntries.ToFixedList().ToList();
 
       } else {

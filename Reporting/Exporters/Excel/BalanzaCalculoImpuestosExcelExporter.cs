@@ -100,12 +100,6 @@ namespace Empiria.FinancialAccounting.Reporting.Exporters.Excel {
         excelFile.SetCell($"AK{i}", entry.VBxcoHaber);
         excelFile.SetCell($"AL{i}", entry.VBxcoSaldoFinal);
 
-        excelFile.SetCell($"AM{i}", entry.AjteInfEquivalencia);
-        excelFile.SetCell($"AN{i}", entry.AjteInfSaldoInicial);
-        excelFile.SetCell($"AO{i}", entry.AjteInfDebe);
-        excelFile.SetCell($"AP{i}", entry.AjteInfHaber);
-        excelFile.SetCell($"AQ{i}", entry.AjteInfSaldoFinal);
-
         i++;
       }
     }
