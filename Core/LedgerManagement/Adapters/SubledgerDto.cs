@@ -76,7 +76,7 @@ namespace Empiria.FinancialAccounting.Adapters {
       get; internal set;
     }
 
-  }  // class SubledgerAccountDto
+  }  // class SubledgerAccountDescriptorDto
 
 
   /// <summary>Complete output DTO for a subledger account.</summary>
@@ -87,6 +87,14 @@ namespace Empiria.FinancialAccounting.Adapters {
     }
 
     public int Id {
+      get; internal set;
+    }
+
+    public string AccountsChartUID {
+      get; internal set;
+    }
+
+    public NamedEntityDto Ledger {
       get; internal set;
     }
 
@@ -103,6 +111,11 @@ namespace Empiria.FinancialAccounting.Adapters {
     }
 
     public string Description {
+      get; internal set;
+    }
+
+
+    public FixedList<NamedEntityDto> Lists {
       get; internal set;
     }
 

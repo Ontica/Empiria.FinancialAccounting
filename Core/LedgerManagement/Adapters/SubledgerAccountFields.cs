@@ -18,7 +18,7 @@ namespace Empiria.FinancialAccounting.Adapters {
       get; set;
     }
 
-    public string SubledgerTypeUID {
+    public string TypeUID {
       get; set;
     }
 

@@ -39,13 +39,17 @@ namespace Empiria.FinancialAccounting.Adapters {
       return new SubledgerAccountDto {
         Id = subledgerAccount.Id,
         Type = subledgerAccount.Subledger.SubledgerType.MapToNamedEntity(),
+        AccountsChartUID = subledgerAccount.Ledger.AccountsChart.UID,
+        Ledger = subledgerAccount.Ledger.MapToNamedEntity(),
         Name = subledgerAccount.Name,
         Number = subledgerAccount.Number,
-        Description = subledgerAccount.Description
+        Description = subledgerAccount.Description,
+        Lists = new FixedList<NamedEntityDto>()
       };
     }
 
-    static internal FixedList<SubledgerAccountDescriptorDto> MapToSubledgerAccountDescriptor(FixedList<SubledgerAccount> list) {
+
+    static public FixedList<SubledgerAccountDescriptorDto> MapToSubledgerAccountDescriptor(FixedList<SubledgerAccount> list) {
       return new FixedList<SubledgerAccountDescriptorDto>(list.Select(x => MapToSubledgerAccountDescriptor(x)));
     }
 
