@@ -8,7 +8,7 @@
 *                                                                                                            *
 ************************* Copyright(c) La Vía Óntica SC, Ontica LLC and contributors. All rights reserved. **/
 using System;
-
+using System.Collections.Generic;
 using Empiria.FinancialAccounting.Adapters;
 
 namespace Empiria.FinancialAccounting.Vouchers.Adapters {
@@ -17,7 +17,7 @@ namespace Empiria.FinancialAccounting.Vouchers.Adapters {
   static public class VoucherMapper {
 
     static public VoucherDto Map(Voucher voucher) {
-      return new VoucherDto {
+      var dto = new VoucherDto {
         Id = voucher.Id,
         AccountsChart = voucher.Ledger.AccountsChart.MapToNamedEntity(),
         Ledger = voucher.Ledger.MapToNamedEntity(),
@@ -32,8 +32,9 @@ namespace Empiria.FinancialAccounting.Vouchers.Adapters {
         AuthorizedBy = voucher.AuthorizedBy.Name,
         Status = voucher.IsOpened ? "Pendiente" : "Cerrado",
         Actions = MapVoucherActions(voucher),
-        Entries = MapToVoucherEntriesDescriptor(voucher.Entries)
+        Entries = MapToVoucherEntriesDescriptorWithTotals(voucher)
       };
+      return dto;
     }
 
     private static VoucherActionsDto MapVoucherActions(Voucher voucher) {
@@ -56,26 +57,51 @@ namespace Empiria.FinancialAccounting.Vouchers.Adapters {
       }
     }
 
-    private static FixedList<VoucherEntryDescriptorDto> MapToVoucherEntriesDescriptor(FixedList<VoucherEntry> entries) {
-      return new FixedList<VoucherEntryDescriptorDto>(entries.Select((x) => MapToVoucherEntryDescriptor(x)));
+
+    private static FixedList<VoucherEntryDescriptorDto> MapToVoucherEntriesDescriptorWithTotals(Voucher voucher) {
+      var list = new List<VoucherEntryDescriptorDto>(voucher.Entries.Select((x) => MapToVoucherEntryDescriptor(x)));
+
+      FixedList<VoucherTotal> totals = voucher.GetTotals();
+
+      list.AddRange(MapTotalsEntries(totals));
+
+      return list.ToFixedList();
     }
 
+
+    private static FixedList<VoucherEntryDescriptorDto> MapTotalsEntries(FixedList<VoucherTotal> totals) {
+      return new FixedList<VoucherEntryDescriptorDto>(totals.Select((x) => MapTotalsEntry(x)));
+    }
+
+
+    private static VoucherEntryDescriptorDto MapTotalsEntry(VoucherTotal total) {
+      return new VoucherEntryDescriptorDto {
+        ItemType = VoucherEntryItemType.TotalsEntry,
+        AccountName = total.IsBalanced ?
+                         $"Sumas iguales en {total.Currency.Name}" :
+                         $"Diferencia de {total.Difference.ToString("C2")} en {total.Currency.Name}",
+        Currency = $"{total.Currency.Code} / {total.Currency.Abbrev}",
+        Credit = total.CreditTotal,
+        Debit = total.DebitTotal
+      };
+    }
 
     private static VoucherEntryDescriptorDto MapToVoucherEntryDescriptor(VoucherEntry entry) {
       return new VoucherEntryDescriptorDto {
         Id = entry.Id,
         VoucherEntryType = entry.VoucherEntryType,
-        AccountNumber = entry.HasSubledgerAccount ? entry.SubledgerAccount.Number : entry.LedgerAccount.Number,
-        AccountName = entry.HasSubledgerAccount ? entry.SubledgerAccount.Name : entry.LedgerAccount.Name,
+        AccountNumber = entry.LedgerAccount.Number,
+        AccountName = entry.LedgerAccount.Name,
         Sector = entry.Sector.Code,
-        ResponsibilityArea = entry.ResponsibilityArea.Name,
+        SubledgerAccountNumber = entry.HasSubledgerAccount ? entry.SubledgerAccount.Number : string.Empty,
+        SubledgerAccountName = entry.HasSubledgerAccount ? entry.SubledgerAccount.Name : string.Empty,
+        ResponsibilityArea = entry.ResponsibilityArea.Code == "NULL" ? string.Empty : entry.ResponsibilityArea.Code,
         VerificationNumber = entry.VerificationNumber,
         Currency = $"{entry.Currency.Code} / {entry.Currency.Abbrev}",
         ExchangeRate = entry.ExchangeRate,
-        Partial = entry.VoucherEntryType == VoucherEntryType.Debit ? entry.Debit : entry.Credit,
         Debit = entry.Debit,
         Credit = entry.Credit,
-        ItemType = entry.HasSubledgerAccount ? VoucherEntryItemType.PartialEntry : VoucherEntryItemType.AccountEntry
+        ItemType = VoucherEntryItemType.AccountEntry
       };
     }
 

@@ -105,6 +105,17 @@ namespace Empiria.FinancialAccounting.Vouchers.Adapters {
       get; internal set;
     }
 
+
+    public string SubledgerAccountNumber {
+      get; internal set;
+    }
+
+
+    public string SubledgerAccountName {
+      get; internal set;
+    }
+
+
     public string VerificationNumber {
       get; internal set;
     }
@@ -118,10 +129,6 @@ namespace Empiria.FinancialAccounting.Vouchers.Adapters {
     }
 
     public decimal ExchangeRate {
-      get; internal set;
-    }
-
-    public decimal Partial {
       get; internal set;
     }
 

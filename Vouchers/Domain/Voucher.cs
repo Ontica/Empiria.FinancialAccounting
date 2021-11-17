@@ -238,15 +238,6 @@ namespace Empiria.FinancialAccounting.Vouchers {
     }
 
 
-    internal VoucherEntry GetEntry(int voucherEntryId) {
-      var entry = Entries.Find(x => x.Id == voucherEntryId);
-
-      Assertion.AssertObject(entry, $"La póliza no tiene registrado un movimiento con id {voucherEntryId}");
-
-      return entry;
-    }
-
-
     internal VoucherEntry GetCopyOfLastEntry() {
       Assertion.Assert(this.Entries.Count > 0, "Esta póliza aún no tiene movimientos.");
 
@@ -256,6 +247,38 @@ namespace Empiria.FinancialAccounting.Vouchers {
                                    .First();
 
       return lastEntry.CreateCopy();
+    }
+
+
+    internal VoucherEntry GetEntry(int voucherEntryId) {
+      var entry = Entries.Find(x => x.Id == voucherEntryId);
+
+      Assertion.AssertObject(entry, $"La póliza no tiene registrado un movimiento con id {voucherEntryId}");
+
+      return entry;
+    }
+
+
+    internal FixedList<VoucherTotal> GetTotals() {
+      var totalsList = new List<VoucherTotal>();
+
+      IEnumerable<Currency> currencies = this.Entries.Select(x => x.Currency)
+                                                     .Distinct()
+                                                     .OrderBy(x => x.Code);
+
+      foreach (var currency in currencies) {
+        var debitsEntries = this.Entries.FindAll(x => x.VoucherEntryType == VoucherEntryType.Debit && x.Currency.Equals(currency));
+        var creditsEntries = this.Entries.FindAll(x => x.VoucherEntryType == VoucherEntryType.Credit && x.Currency.Equals(currency));
+
+        decimal totalDebits = debitsEntries.Sum(x => x.Debit);
+        decimal totalCredits = creditsEntries.Sum(x => x.Credit);
+
+        var total = new VoucherTotal(currency, totalDebits, totalCredits);
+
+        totalsList.Add(total);
+      }
+
+      return totalsList.ToFixedList();
     }
 
 
