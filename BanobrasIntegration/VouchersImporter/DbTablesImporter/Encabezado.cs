@@ -1,7 +1,7 @@
 ﻿/* Empiria Financial *****************************************************************************************
 *                                                                                                            *
 *  Module   : Banobras Integration Services                 Component : Vouchers Importer                    *
-*  Assembly : FinancialAccounting.BalanceEngine.dll         Pattern   : Information Holder                   *
+*  Assembly : FinancialAccounting.BanobrasIntegration.dll   Pattern   : Information Holder                   *
 *  Type     : Encabezado                                    License   : Please read LICENSE.txt file         *
 *                                                                                                            *
 *  Summary  : Información de un registro de la tabla MC_ENCABEZADOS (Banobras) con pólizas por integrar.     *
@@ -119,8 +119,13 @@ namespace Empiria.FinancialAccounting.BanobrasIntegration.VouchersImporter {
 
 
     internal string GetUniqueID() {
-      return $"{this.IdSistema}||{this.FechaAfectacion.ToString("yyyy-MM-dd")}||" +
-             $"{this.NumeroVolante}||{this.Concepto}";
+      if (this.TipoContabilidad == 1) {
+        return $"{this.TipoContabilidad}||{this.IdSistema}||{this.FechaAfectacion.ToString("yyyy-MM-dd")}||" +
+               $"{this.NumeroVolante}||{this.Concepto}";
+      } else {
+        return $"{this.TipoContabilidad}||{this.IdSistema}||{this.FechaAfectacion.ToString("yyyy-MM-dd")}||" +
+               $"{this.NumeroVolante}";
+      }
     }
 
 

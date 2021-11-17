@@ -47,7 +47,6 @@ namespace Empiria.FinancialAccounting.FinancialReports {
       return new FinancialReport(_command, convertedEntries);
     }
 
-
     internal FinancialReport GetBreakdown(string reportRowUID) {
       FinancialReportRow row = GetReportBreakdownRow(reportRowUID);
 
@@ -74,7 +73,7 @@ namespace Empiria.FinancialAccounting.FinancialReports {
 
 
     private ReportEntryTotals ProcessAccount(GroupingRuleItem item,
-                                            FixedList<TwoColumnsTrialBalanceEntryDto> balances) {
+                                             FixedList<TwoColumnsTrialBalanceEntryDto> balances) {
       FixedList<TwoColumnsTrialBalanceEntryDto> filtered;
 
       if (item.HasSector && item.HasSubledgerAccount) {
@@ -98,7 +97,7 @@ namespace Empiria.FinancialAccounting.FinancialReports {
       var totals = new ReportEntryTotals();
 
       foreach (var balance in filtered) {
-        totals = totals.Sum(balance);
+        totals = totals.Sum(balance, item.Qualification);
       }
 
       return totals;
@@ -121,12 +120,39 @@ namespace Empiria.FinancialAccounting.FinancialReports {
         } else if (breakdownItem.GroupingRuleItem.Type == GroupingRuleItemType.Account) {
           groupingRuleTotals = new ReportEntryTotals();
 
+        } else if (breakdownItem.GroupingRuleItem.Type == GroupingRuleItemType.FixedValue) {
+          groupingRuleTotals = GetFixedValue(breakdownItem.GroupingRuleItem);
+
         } else {
           throw Assertion.AssertNoReachThisCode();
         }
 
+        groupingRuleTotals.Round();
+
         SetTotalsFields(breakdownItem, groupingRuleTotals);
       }
+    }
+
+    private ReportEntryTotals GetFixedValue(GroupingRuleItem groupingRuleItem) {
+      // groupingRuleItem.ExternalVariableCode
+      ExternalValue value = ExternalValue.GetValue(groupingRuleItem.ExternalVariableCode,
+                                                   _command.Date);
+
+      var groupingRuleTotals = new ReportEntryTotals();
+
+      if (groupingRuleItem.Qualification == "MonedaNacional") {
+        groupingRuleTotals.DomesticCurrencyTotal = value.DomesticCurrencyValue + value.ForeignCurrencyValue;
+
+      } else if (groupingRuleItem.Qualification == "MonedaExtranjera") {
+        groupingRuleTotals.ForeignCurrencyTotal = value.DomesticCurrencyValue + value.ForeignCurrencyValue;
+
+      } else {
+        groupingRuleTotals.DomesticCurrencyTotal = value.DomesticCurrencyValue;
+        groupingRuleTotals.ForeignCurrencyTotal = value.ForeignCurrencyValue;
+      }
+      groupingRuleTotals.TotalBalance = value.DomesticCurrencyValue + value.ForeignCurrencyValue;
+
+      return groupingRuleTotals;
     }
 
     private void ProcessEntries(FixedList<FixedRowFinancialReportEntry> reportEntries,
@@ -134,6 +160,8 @@ namespace Empiria.FinancialAccounting.FinancialReports {
 
       foreach (var reportEntry in reportEntries) {
         ReportEntryTotals groupingRuleTotals = ProcessGroupingRule(reportEntry.GroupingRule, balances);
+
+        groupingRuleTotals.Round();
 
         SetTotalsFields(reportEntry, groupingRuleTotals);
       }
@@ -147,22 +175,29 @@ namespace Empiria.FinancialAccounting.FinancialReports {
       foreach (var groupingRuleItem in groupingRule.Items) {
         if (groupingRuleItem.Type == GroupingRuleItemType.Agrupation &&
             groupingRuleItem.Operator == OperatorType.Add) {
-          totals = totals.Sum(ProcessGroupingRule(groupingRuleItem.Reference, balances));
+          totals = totals.Sum(ProcessGroupingRule(groupingRuleItem.Reference, balances),
+                              groupingRuleItem.Qualification);
 
         } else if (groupingRuleItem.Type == GroupingRuleItemType.Agrupation &&
                    groupingRuleItem.Operator == OperatorType.Substract) {
-          totals = totals.Substract(ProcessGroupingRule(groupingRuleItem.Reference, balances));
+          totals = totals.Substract(ProcessGroupingRule(groupingRuleItem.Reference, balances),
+                                    groupingRuleItem.Qualification);
 
         } else if (groupingRuleItem.Type == GroupingRuleItemType.Account &&
                     balances.ContainsKey(groupingRuleItem.AccountNumber) &&
                     groupingRuleItem.Operator == OperatorType.Add) {
-          totals = totals.Sum(ProcessAccount(groupingRuleItem, balances[groupingRuleItem.AccountNumber]));
+          totals = totals.Sum(ProcessAccount(groupingRuleItem, balances[groupingRuleItem.AccountNumber]),
+                              groupingRuleItem.Qualification);
 
         } else if (groupingRuleItem.Type == GroupingRuleItemType.Account &&
                    balances.ContainsKey(groupingRuleItem.AccountNumber) &&
                    groupingRuleItem.Operator == OperatorType.Substract) {
-          totals = totals.Substract(ProcessAccount(groupingRuleItem, balances[groupingRuleItem.AccountNumber]));
+          totals = totals.Substract(ProcessAccount(groupingRuleItem, balances[groupingRuleItem.AccountNumber]),
+                                    groupingRuleItem.Qualification);
 
+        } else if (groupingRuleItem.Type == GroupingRuleItemType.FixedValue &&
+                   groupingRuleItem.Operator == OperatorType.Add) {
+          totals = totals.Sum(GetFixedValue(groupingRuleItem), groupingRuleItem.Qualification);
         }
       }
 
@@ -285,7 +320,22 @@ namespace Empiria.FinancialAccounting.FinancialReports {
       get; internal set;
     }
 
-    internal ReportEntryTotals Substract(ReportEntryTotals total) {
+
+    internal void Round() {
+      this.DomesticCurrencyTotal = Math.Round(this.DomesticCurrencyTotal, 0);
+      this.ForeignCurrencyTotal = Math.Round(this.ForeignCurrencyTotal, 0);
+      this.TotalBalance = Math.Round(this.TotalBalance, 0);
+    }
+
+
+    internal ReportEntryTotals Substract(ReportEntryTotals total, string qualification) {
+      if (qualification == "MonedaExtranjera") {
+        return new ReportEntryTotals {
+          DomesticCurrencyTotal = this.DomesticCurrencyTotal,
+          ForeignCurrencyTotal = this.ForeignCurrencyTotal - (total.DomesticCurrencyTotal + total.ForeignCurrencyTotal),
+          TotalBalance = this.TotalBalance - total.TotalBalance
+        };
+      }
       return new ReportEntryTotals {
         DomesticCurrencyTotal = this.DomesticCurrencyTotal - total.DomesticCurrencyTotal,
         ForeignCurrencyTotal = this.ForeignCurrencyTotal - total.ForeignCurrencyTotal,
@@ -294,7 +344,14 @@ namespace Empiria.FinancialAccounting.FinancialReports {
     }
 
 
-    internal ReportEntryTotals Substract(TwoColumnsTrialBalanceEntryDto balance) {
+    internal ReportEntryTotals Substract(TwoColumnsTrialBalanceEntryDto balance, string qualification) {
+      if (qualification == "MonedaExtranjera") {
+        return new ReportEntryTotals {
+          DomesticCurrencyTotal = this.DomesticCurrencyTotal,
+          ForeignCurrencyTotal = this.ForeignCurrencyTotal - (balance.DomesticBalance + balance.ForeignBalance),
+          TotalBalance = this.TotalBalance - balance.TotalBalance
+        };
+      }
       return new ReportEntryTotals {
         DomesticCurrencyTotal = this.DomesticCurrencyTotal - balance.DomesticBalance,
         ForeignCurrencyTotal = this.ForeignCurrencyTotal - balance.ForeignBalance,
@@ -303,7 +360,15 @@ namespace Empiria.FinancialAccounting.FinancialReports {
     }
 
 
-    internal ReportEntryTotals Sum(ReportEntryTotals total) {
+    internal ReportEntryTotals Sum(ReportEntryTotals total, string qualification) {
+      if (qualification == "MonedaExtranjera") {
+        return new ReportEntryTotals {
+          DomesticCurrencyTotal = this.DomesticCurrencyTotal,
+          ForeignCurrencyTotal = this.ForeignCurrencyTotal + (total.DomesticCurrencyTotal + total.ForeignCurrencyTotal),
+          TotalBalance = this.TotalBalance + total.TotalBalance
+        };
+      }
+
       return new ReportEntryTotals {
         DomesticCurrencyTotal = this.DomesticCurrencyTotal + total.DomesticCurrencyTotal,
         ForeignCurrencyTotal = this.ForeignCurrencyTotal + total.ForeignCurrencyTotal,
@@ -311,7 +376,15 @@ namespace Empiria.FinancialAccounting.FinancialReports {
       };
     }
 
-    internal ReportEntryTotals Sum(TwoColumnsTrialBalanceEntryDto balance) {
+    internal ReportEntryTotals Sum(TwoColumnsTrialBalanceEntryDto balance, string qualification) {
+      if (qualification == "MonedaExtranjera") {
+        return new ReportEntryTotals {
+          DomesticCurrencyTotal = this.DomesticCurrencyTotal,
+          ForeignCurrencyTotal = this.ForeignCurrencyTotal + (balance.DomesticBalance + balance.ForeignBalance),
+          TotalBalance = this.TotalBalance + balance.TotalBalance
+        };
+      }
+
       return new ReportEntryTotals {
         DomesticCurrencyTotal = this.DomesticCurrencyTotal + balance.DomesticBalance,
         ForeignCurrencyTotal = this.ForeignCurrencyTotal + balance.ForeignBalance,

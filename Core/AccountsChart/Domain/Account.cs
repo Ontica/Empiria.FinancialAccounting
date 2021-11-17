@@ -150,6 +150,7 @@ namespace Empiria.FinancialAccounting {
       }
     }
 
+
     public bool IsSummaryWithNotChildren {
       get {
         if (this.Role != AccountRole.Sumaria) {

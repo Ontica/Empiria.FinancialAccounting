@@ -46,7 +46,6 @@ namespace Empiria.FinancialAccounting.BanobrasIntegration.VouchersImporter {
                $"WHERE ENC_FECHA_VOL >= '{CommonMethods.FormatSqlDate(DB_START_IMPORTATION_DATE)}' " +
                 "GROUP BY ENC_SISTEMA ";
 
-
       var op = DataOperation.Parse(sql);
 
       var view = DataReader.GetDataView(op);
@@ -55,6 +54,8 @@ namespace Empiria.FinancialAccounting.BanobrasIntegration.VouchersImporter {
 
       for (int i = 0; i < view.Count; i++) {
         var system = TransactionalSystem.Get(x => x.SourceSystemId == (int) (view[i]["ENC_SISTEMA"]));
+
+        Assertion.AssertObject(system, "system");
 
         var totals = new ImportVouchersTotals {
           Description = system.Name,

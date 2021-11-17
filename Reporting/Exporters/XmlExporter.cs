@@ -47,7 +47,7 @@ namespace Empiria.FinancialAccounting.Reporting.Exporters {
         case "BalanzaSAT":
           return new BalanzaSatXmlExporter(reportData);
 
-        case "CatalogoSAT":
+        case "CatalogoCuentasSAT":
           return new CatalogoCuentasSatXmlExporter(reportData);
 
         default:

@@ -4,19 +4,20 @@
 *  Assembly : FinancialAccounting.BalanceEngine.dll      Pattern   : Service provider                        *
 *  Type     : BalanzaComparativa                         License   : Please read LICENSE.txt file            *
 *                                                                                                            *
-*  Summary  : Genera los datos para el reporte de balanza valorizada comparativa.                               *
+*  Summary  : Genera los datos para el reporte de balanza valorizada comparativa.                            *
 *                                                                                                            *
 ************************* Copyright(c) La Vía Óntica SC, Ontica LLC and contributors. All rights reserved. **/
 using System;
 using System.Collections.Generic;
 using System.Linq;
+
 using Empiria.FinancialAccounting.BalanceEngine.Adapters;
 
 namespace Empiria.FinancialAccounting.BalanceEngine {
 
   /// <summary>Genera los datos para el reporte de balanza valorizada comparativa.</summary>
   internal class BalanzaComparativa {
-    
+
     private readonly TrialBalanceCommand _command;
 
     public BalanzaComparativa(TrialBalanceCommand command) {
@@ -28,16 +29,17 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
       var helper = new TrialBalanceHelper(_command);
       var comparativeHelper = new TrialBalanceComparativeHelper(_command);
 
-      List<TrialBalanceComparativeEntry> trialBalanceComparative = new List<TrialBalanceComparativeEntry>();
-
       FixedList<TrialBalanceEntry> firstPeriod = comparativeHelper.GetComparativePostingEntries();
 
       firstPeriod = helper.GenerateAverageBalance(firstPeriod.ToList()).ToFixedList();
 
-      trialBalanceComparative = comparativeHelper.MergePeriodsIntoComparativeBalance(firstPeriod);
+      List<TrialBalanceComparativeEntry> comparativeTrialBalance = comparativeHelper.MergePeriodsIntoComparativeBalance(firstPeriod);
 
-      var returnBalance = new FixedList<ITrialBalanceEntry>(trialBalanceComparative.Select(x => (ITrialBalanceEntry) x));
+      var returnBalance = new FixedList<ITrialBalanceEntry>(comparativeTrialBalance.Select(x => (ITrialBalanceEntry) x));
+
       return new TrialBalance(_command, returnBalance);
     }
-  }
-}
+
+  }  // class BalanzaComparativa
+
+}  // namespace Empiria.FinancialAccounting.BalanceEngine

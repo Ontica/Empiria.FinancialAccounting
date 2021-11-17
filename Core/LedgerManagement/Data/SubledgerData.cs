@@ -30,11 +30,7 @@ namespace Empiria.FinancialAccounting.Data {
 
 
     static internal long NextSubledgerAccountId() {
-      var sql = "SELECT SEC_ID_CUENTA_AUXILIAR.NEXTVAL FROM DUAL";
-
-      var operation = DataOperation.Parse(sql);
-
-      return Convert.ToInt64(DataReader.GetScalar<decimal>(operation));
+      return CommonMethods.GetNextObjectId("SEC_ID_CUENTA_AUXILIAR");
     }
 
 

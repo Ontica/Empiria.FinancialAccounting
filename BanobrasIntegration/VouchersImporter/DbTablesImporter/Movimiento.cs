@@ -1,7 +1,7 @@
 ﻿/* Empiria Financial *****************************************************************************************
 *                                                                                                            *
 *  Module   : Banobras Integration Services                 Component : Vouchers Importer                    *
-*  Assembly : FinancialAccounting.BalanceEngine.dll         Pattern   : Information Holder                   *
+*  Assembly : FinancialAccounting.BanobrasIntegration.dll   Pattern   : Information Holder                   *
 *  Type     : Movimiento                                    License   : Please read LICENSE.txt file         *
 *                                                                                                            *
 *  Summary  : Información de un registro de la tabla MC_MOVIMIENTOS (Banobras) con movimientos de pólizas    *
@@ -118,14 +118,16 @@ namespace Empiria.FinancialAccounting.BanobrasIntegration.VouchersImporter {
     }
 
 
-    private string _voucherUniqueID;
+
 
     internal string GetVoucherUniqueID() {
-      if (_voucherUniqueID == null) {
-        _voucherUniqueID = $"{this.IdSistema}||{this.FechaAfectacion.ToString("yyyy-MM-dd")}||" +
-                           $"{this.NumeroVolante}||{this.Descripcion}";
+      if (this.TipoContabilidad == 1) {
+        return $"{this.TipoContabilidad}||{this.IdSistema}||{this.FechaAfectacion.ToString("yyyy-MM-dd")}||" +
+               $"{this.NumeroVolante}||{this.Descripcion}";
+      } else {
+        return $"{this.TipoContabilidad}||{this.IdSistema}||{this.FechaAfectacion.ToString("yyyy-MM-dd")}||" +
+               $"{this.NumeroVolante}";
       }
-      return _voucherUniqueID;
     }
 
 

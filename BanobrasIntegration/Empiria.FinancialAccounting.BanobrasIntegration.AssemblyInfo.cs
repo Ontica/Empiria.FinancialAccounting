@@ -5,7 +5,7 @@
 *                                                          License : Please read LICENSE.txt file            *
 *                                                                                                            *
 *  Summary  : This module is part of the Financial Accounting System, and provides                           *
-*             services used to integrate SICOFIN with other BANOBRAS systems.                                *
+*             services used to integrate SICOFIN with other BANOBRAS' systems.                               *
 *                                                                                                            *
 ************************* Copyright(c) La Vía Óntica SC, Ontica LLC and contributors. All rights reserved. **/
 using System;

@@ -157,9 +157,11 @@ namespace Empiria.FinancialAccounting {
 
       if (sectorRule == null) {
         Assertion.AssertFail($"La cuenta {account.Number} no maneja el sector {sector.FullName}.");
+
       } else {
         Assertion.Assert(account.Role == AccountRole.Sectorizada && sectorRule.SectorRole == AccountRole.Control,
             $"La cuenta {account.Number} no maneja auxiliares para el sector ({sector.Code}).");
+
       }
 
       Assertion.Assert(subledgerAccount.Subledger.BelongsTo(this.Ledger),
@@ -184,9 +186,11 @@ namespace Empiria.FinancialAccounting {
 
       if (sectorRule == null) {
         Assertion.AssertFail($"La cuenta {account.Number} no maneja el sector {sector.FullName}.");
+
       } else {
         Assertion.Assert(account.Role == AccountRole.Sectorizada && sectorRule.SectorRole == AccountRole.Detalle,
              $"La cuenta {account.Number} maneja auxiliares para el sector ({sector.Code}).");
+
       }
     }
 

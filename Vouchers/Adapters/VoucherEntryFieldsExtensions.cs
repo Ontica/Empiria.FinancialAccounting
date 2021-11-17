@@ -16,46 +16,55 @@ namespace Empiria.FinancialAccounting.Vouchers.Adapters {
 
     #region Extension methods
 
-    static internal void EnsureValidFor(this VoucherEntryFields fields, Voucher voucher) {
-      fields.EnsureValidData();
+    static internal void EnsureValidFor(this VoucherEntryFields fields,
+                                        Ledger ledger,
+                                        DateTime accountingDate) {
+      EnsureValidData(fields);
 
-      Assertion.Assert(fields.GetVoucher().Equals(voucher),
-                       "fields.VoucherId does not match the given voucher.");
+      LedgerAccount account = ledger.GetAccountWithId(fields.LedgerAccountId);
 
-      LedgerAccount account = voucher.Ledger.GetAccountWithId(fields.LedgerAccountId);
+      account.CheckIsNotSummary(accountingDate);
 
-      account.CheckIsNotSummary(voucher.AccountingDate);
-
-      account.CheckCurrencyRule(fields.GetCurrency(), voucher.AccountingDate);
+      account.CheckCurrencyRule(fields.GetCurrency(), accountingDate);
 
       if (fields.HasSector) {
-        account.CheckSectorRule(fields.GetSector(), voucher.AccountingDate);
+        account.CheckSectorRule(fields.GetSector(), accountingDate);
       } else {
-        account.CheckNoSectorRule(voucher.AccountingDate);
+        account.CheckNoSectorRule(accountingDate);
       }
 
       if (fields.HasSubledgerAccount && fields.HasSector) {
-        account.CheckSubledgerAccountRule(fields.GetSector(), fields.GetSubledgerAccount(), voucher.AccountingDate);
+        account.CheckSubledgerAccountRule(fields.GetSector(), fields.GetSubledgerAccount(), accountingDate);
 
       } else if (fields.HasSubledgerAccount && !fields.HasSector) {
-        account.CheckSubledgerAccountRule(fields.GetSubledgerAccount(), voucher.AccountingDate);
+        account.CheckSubledgerAccountRule(fields.GetSubledgerAccount(), accountingDate);
 
       } else if (!fields.HasSubledgerAccount && fields.HasSector) {
-        account.CheckNoSubledgerAccountRule(fields.GetSector(), voucher.AccountingDate);
+        account.CheckNoSubledgerAccountRule(fields.GetSector(), accountingDate);
 
       } else if (!fields.HasSubledgerAccount && !fields.HasSector) {
-        account.CheckNoSubledgerAccountRule(voucher.AccountingDate);
+        account.CheckNoSubledgerAccountRule(accountingDate);
 
       }
 
       if (!fields.HasEventType) {
-        account.CheckNoEventTypeRule(voucher.AccountingDate);
+        account.CheckNoEventTypeRule(accountingDate);
       }
     }
 
 
+    static internal void EnsureValidFor(this VoucherEntryFields fields, Voucher voucher) {
+      fields.EnsureValidData();
+      fields.EnsureVoucherIsAssigned(voucher);
+
+      Ledger ledger = voucher.Ledger;
+      DateTime accountingDate = voucher.AccountingDate;
+
+      EnsureValidFor(fields, ledger, accountingDate);
+    }
+
+
     static private void EnsureValidData(this VoucherEntryFields fields) {
-      Assertion.Assert(fields.VoucherId > 0, "fields.VoucherId");
       Assertion.Assert(fields.LedgerAccountId > 0, "fields.LedgerAccountId");
       Assertion.AssertObject(fields.CurrencyUID, "fields.CurrencyUID");
       Assertion.Assert(fields.VoucherEntryType == VoucherEntryType.Credit ||
@@ -117,6 +126,14 @@ namespace Empiria.FinancialAccounting.Vouchers.Adapters {
     }
 
     #endregion Extension methods
+
+    static private void EnsureVoucherIsAssigned(this VoucherEntryFields fields,
+                                            Voucher voucher) {
+      Assertion.Assert(fields.VoucherId > 0, "fields.VoucherId");
+
+      Assertion.Assert(fields.GetVoucher().Equals(voucher),
+                       "fields.VoucherId does not match the given voucher.");
+    }
 
   }  // class VoucherEntryFieldsExtensions
 

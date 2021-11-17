@@ -13,7 +13,7 @@ namespace Empiria.FinancialAccounting.Vouchers {
   /// <summary>Describes the type of a voucher.</summary>
   public class VoucherType : GeneralObject {
 
-    private VoucherType() {
+    protected VoucherType() {
       // Required by Empiria Framework.
     }
 

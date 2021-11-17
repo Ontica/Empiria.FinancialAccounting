@@ -9,6 +9,7 @@
 ************************* Copyright(c) La Vía Óntica SC, Ontica LLC and contributors. All rights reserved. **/
 using System;
 
+using Empiria.Data;
 
 namespace Empiria.FinancialAccounting {
 
@@ -19,6 +20,15 @@ namespace Empiria.FinancialAccounting {
 
     static public string FormatSqlDate(DateTime date) {
       return $"{date.Date.ToString("dd/MMM/yyyy")}";
+    }
+
+
+    static public long GetNextObjectId(string sequenceName) {
+      var sql = $"SELECT {sequenceName}.NEXTVAL FROM DUAL";
+
+      var operation = DataOperation.Parse(sql);
+
+      return Convert.ToInt64(DataReader.GetScalar<decimal>(operation));
     }
 
     #endregion Public methods

@@ -1,6 +1,6 @@
 ﻿/* Empiria Financial *****************************************************************************************
 *                                                                                                            *
-*  Module   : Banobras Integration Services                 Component : Use cases Layer                      *
+*  Module   : Banobras Integration Services                 Component : Balances Exporter                    *
 *  Assembly : FinancialAccounting.BanobrasIntegration.dll   Pattern   : Use case interactor class            *
 *  Type     : ExportBalancesUseCases                        License   : Please read LICENSE.txt file         *
 *                                                                                                            *

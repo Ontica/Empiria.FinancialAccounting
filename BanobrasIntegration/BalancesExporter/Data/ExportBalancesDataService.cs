@@ -36,6 +36,7 @@ namespace Empiria.FinancialAccounting.BanobrasIntegration.BalancesExporter.Data 
       throw new NotImplementedException();
     }
 
+
     static internal void WriteBalancesByMonth(DateTime fecha, FixedList<ExportedBalancesDto> balances) {
       DeleteStoredBalancesByMonth(fecha);
 
@@ -43,6 +44,7 @@ namespace Empiria.FinancialAccounting.BanobrasIntegration.BalancesExporter.Data 
         WriteBalancesByMonth(balance);
       }
     }
+
 
     #endregion Public methods
 
@@ -65,7 +67,7 @@ namespace Empiria.FinancialAccounting.BanobrasIntegration.BalancesExporter.Data 
                               o.Saldo, o.MonedaOrigen, o.NaturalezaCuenta, o.SaldoPromedio,
                               o.MontoDebito, o.MontoCredito, o.SaldoAnterior, o.Empresa,
                               o.CalificaMoneda == "null" ? nullString : o.CalificaMoneda,
-                              System.DBNull.Value);
+                              DBNull.Value);
 
       DataWriter.Execute(dataOperation);
     }

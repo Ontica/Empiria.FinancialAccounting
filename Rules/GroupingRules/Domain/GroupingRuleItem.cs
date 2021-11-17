@@ -61,8 +61,13 @@ namespace Empiria.FinancialAccounting.Rules {
       get {
         if (!this.Reference.IsEmptyInstance) {
           return GroupingRuleItemType.Agrupation;
+
         } else if (this.AccountNumber.Length != 0) {
           return GroupingRuleItemType.Account;
+
+        } else if (this.ExternalVariableCode.Length != 0) {
+          return GroupingRuleItemType.FixedValue;
+
         } else {
           return GroupingRuleItemType.FixedValue;
         }
@@ -106,8 +111,20 @@ namespace Empiria.FinancialAccounting.Rules {
     }
 
 
-    [DataField("VALOR_DEFAULT")]
-    public decimal DefaultValue {
+    [DataField("CLAVE_MONEDA")]
+    public string CurrencyCode {
+      get; private set;
+    }
+
+
+    [DataField("CLAVE_VARIABLE")]
+    public string ExternalVariableCode {
+      get; private set;
+    }
+
+
+    [DataField("ID_LISTA_CUENTAS")]
+    public int AccountsListId {
       get; private set;
     }
 
@@ -119,7 +136,7 @@ namespace Empiria.FinancialAccounting.Rules {
 
 
     [DataField("CALIFICACION")]
-    internal string Qualification {
+    public string Qualification {
       get; private set;
     }
 
@@ -131,7 +148,7 @@ namespace Empiria.FinancialAccounting.Rules {
 
 
     [DataField("POSICION")]
-    internal int Position {
+    public int Position {
       get; private set;
     }
 

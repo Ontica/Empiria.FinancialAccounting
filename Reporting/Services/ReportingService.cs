@@ -69,7 +69,7 @@ namespace Empiria.FinancialAccounting.Reporting {
         case "BalanzaSAT":
           return new BalanzaSat();
 
-        case "CatalogoSAT":
+        case "CatalogoCuentasSAT":
           return new CatalogoCuentasSat();
 
         case "BalanzaDeterminarImpuestos":

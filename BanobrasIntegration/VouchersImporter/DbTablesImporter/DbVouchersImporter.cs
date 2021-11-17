@@ -19,6 +19,7 @@ namespace Empiria.FinancialAccounting.BanobrasIntegration.VouchersImporter {
   internal class DbVouchersImporter {
 
     static private readonly DbVouchersImporter _singleton = new DbVouchersImporter();
+
     private ImportVouchersResult _importVouchersResult;
 
     private DbVouchersImporter() {
@@ -94,7 +95,8 @@ namespace Empiria.FinancialAccounting.BanobrasIntegration.VouchersImporter {
         var voucherImporter = new VoucherImporter(command, toImport);
 
         // TODO: Db Vouchers importation disabled
-        // voucherImporter.Import();
+        voucherImporter.Import();
+
 
         foreach (var item in toProcess) {
           encabezados.Remove(item);

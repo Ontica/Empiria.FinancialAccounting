@@ -1,10 +1,10 @@
 ﻿/* Empiria Financial *****************************************************************************************
 *                                                                                                            *
-*  Module   : Banobras Integration Services                Component : Data Layer                            *
-*  Assembly : FinancialAccounting.BanobrasIntegration.dll  Pattern   : Information Holder                    *
+*  Module   : Banobras Integration Services                Component : Balances Exporter                     *
+*  Assembly : FinancialAccounting.BanobrasIntegration.dll  Pattern   : Information Holder With Cache         *
 *  Type     : CalificacionMoneda                           License   : Please read LICENSE.txt file          *
 *                                                                                                            *
-*  Summary  : Data holder for Califica_Moneda data table.                                                    *
+*  Summary  : Data holder with cache services for Califica_Moneda data table.                                *
 *                                                                                                            *
 ************************* Copyright(c) La Vía Óntica SC, Ontica LLC and contributors. All rights reserved. **/
 using System;
@@ -13,22 +13,24 @@ using Empiria.Collections;
 
 namespace Empiria.FinancialAccounting.BanobrasIntegration.BalancesExporter.Data {
 
+  /// <summary>Data holder with cache services for Califica_Moneda data table.</summary>
   internal class CalificacionMoneda {
 
     static private EmpiriaHashTable<CalificacionMoneda> _cache;
 
-    static CalificacionMoneda() {
+    #region Constructors and parsers
 
-    }
     protected CalificacionMoneda() {
       // Required by Empiria Framework
     }
+
 
     static internal FixedList<CalificacionMoneda> GetList() {
       EnsureCacheIsLoaded();
 
       return _cache.ToFixedList();
     }
+
 
     static internal CalificacionMoneda TryParse(string cuenta, string sector, string auxiliar) {
       EnsureCacheIsLoaded();
@@ -41,6 +43,10 @@ namespace Empiria.FinancialAccounting.BanobrasIntegration.BalancesExporter.Data 
         return null;
       }
     }
+
+    #endregion Constructors and parsers
+
+    #region Properties
 
     [DataField("CUENTA")]
     internal string Cuenta {
@@ -65,9 +71,15 @@ namespace Empiria.FinancialAccounting.BanobrasIntegration.BalancesExporter.Data 
       get; private set;
     }
 
+    #endregion Properties
+
+
+    #region Methods
+
     private static string BuildHash(string cuenta, string sector, string auxiliar) {
       return $"{cuenta}||{sector}||{auxiliar}";
     }
+
 
     static private void EnsureCacheIsLoaded() {
       if (_cache == null) {
@@ -75,6 +87,8 @@ namespace Empiria.FinancialAccounting.BanobrasIntegration.BalancesExporter.Data 
       }
     }
 
+
+    #endregion Methods
 
   }  // class CalificacionMoneda
 

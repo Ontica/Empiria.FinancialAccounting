@@ -2,12 +2,11 @@
 *                                                                                                            *
 *  Module   : Banobras Integration Services                 Component : Vouchers Importer                    *
 *  Assembly : FinancialAccounting.BanobrasIntegration.dll   Pattern   : Service provider                     *
-*  Type     : VoucherImporter                               License   : Please read LICENSE.txt file         *
+*  Type     : StandardVoucherImporter                       License   : Please read LICENSE.txt file         *
 *                                                                                                            *
-*  Summary  : Performs voucher importation tasks from a standard structure adapted from distinct sources.    *
+*  Summary  : Performs batch voucher importation tasks from a standard structure.                            *
 *                                                                                                            *
 ************************* Copyright(c) La Vía Óntica SC, Ontica LLC and contributors. All rights reserved. **/
-using System;
 using System.Collections.Generic;
 using System.Linq;
 
@@ -20,20 +19,18 @@ namespace Empiria.FinancialAccounting.BanobrasIntegration.VouchersImporter {
 
   /// <summary>Performs voucher importation tasks from a standard structure
   /// adapted from distinct sources.</summary>
-  internal class VoucherImporter {
+  internal class StandardVoucherImporter {
 
-    private readonly ImportVouchersCommand _command;
+    private readonly VoucherImportationCommand _command;
     private readonly FixedList<ToImportVoucher> _toImportVouchersList;
 
     #region Public methods
 
-    internal VoucherImporter(ImportVouchersCommand command,
-                             FixedList<ToImportVoucher> toImportVouchersList) {
+    internal StandardVoucherImporter(VoucherImportationCommand command) {
       Assertion.AssertObject(command, "command");
-      Assertion.AssertObject(toImportVouchersList, "toImportVouchersList");
 
       _command = command;
-      _toImportVouchersList = toImportVouchersList;
+      _toImportVouchersList = new FixedList<ToImportVoucher>();
     }
 
 
@@ -52,27 +49,23 @@ namespace Empiria.FinancialAccounting.BanobrasIntegration.VouchersImporter {
     internal ImportVouchersResult Import() {
       ImportVouchersResult result = this.DryRunImport();
 
+      //if (result.HasErrors) {
+      //  return result;
+      //}
+
       using (var usecases = VoucherEditionUseCases.UseCaseInteractor()) {
         foreach (ToImportVoucher voucher in _toImportVouchersList) {
           VoucherImporterDataService.StoreVoucher(voucher);
           VoucherImporterDataService.StoreVoucherIssues(voucher);
 
           if (voucher.HasErrors) {
-            foreach (var issue in voucher.Issues) {
-              EmpiriaLog.Debug($"Póliza '{voucher.Header.UniqueID}': {issue.Description}");
-            }
             continue;
           }
 
           VoucherFields voucherFields = MapToVoucherFields(voucher.Header);
           FixedList<VoucherEntryFields> entriesFields = MapToVoucherEntriesFields(voucher.Entries);
 
-          try {
-            usecases.ImportVoucher(voucherFields, entriesFields, _command.TryToCloseVouchers);
-          } catch (Exception e) {
-            EmpiriaLog.Debug($"Póliza '{voucher.Header.UniqueID}': {e.Message}");
-            // no-op
-          }
+          usecases.ImportVoucher(voucherFields, entriesFields, true); // _command.TryToCloseVouchers)
         }
       }
 
