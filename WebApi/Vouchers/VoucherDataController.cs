@@ -103,8 +103,8 @@ namespace Empiria.FinancialAccounting.WebApi.Vouchers {
                                                              [FromUri] string keywords) {
 
       using (var usecases = VoucherDataUseCases.UseCaseInteractor()) {
-        FixedList<SubledgerAccountDto> accounts =
-                usecases.SearchSubledgerAccountsForVoucherEdition(voucherId, accountId, keywords);
+        FixedList<SubledgerAccountDescriptorDto> accounts =
+                              usecases.SearchSubledgerAccountsForVoucherEdition(voucherId, accountId, keywords);
 
         return new CollectionModel(base.Request, accounts);
       }

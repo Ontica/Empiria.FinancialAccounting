@@ -69,9 +69,9 @@ namespace Empiria.FinancialAccounting.Vouchers.UseCases {
     }
 
 
-    public FixedList<SubledgerAccountDto> SearchSubledgerAccountsForVoucherEdition(int voucherId,
-                                                                                    int accountId,
-                                                                                    string keywords) {
+    public FixedList<SubledgerAccountDescriptorDto> SearchSubledgerAccountsForVoucherEdition(int voucherId,
+                                                                                             int accountId,
+                                                                                             string keywords) {
       Assertion.Assert(voucherId > 0, "voucherId must be a non negative number.");
       Assertion.Assert(accountId > 0, "accountId must be a non negative number.");
       Assertion.AssertObject(keywords, "keywords");
@@ -83,7 +83,7 @@ namespace Empiria.FinancialAccounting.Vouchers.UseCases {
       FixedList<SubledgerAccount> subledgerAccounts =
                             voucher.SearchSubledgerAccountsForEdition(ledgerAccount, keywords);
 
-      return SubledgerMapper.Map(subledgerAccounts);
+      return SubledgerMapper.MapToSubledgerAccountDescriptor(subledgerAccounts);
     }
 
 
