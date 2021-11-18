@@ -28,7 +28,9 @@ namespace Empiria.FinancialAccounting.Reporting {
 
       PolizaCommandData commandData = commandExtensions.MapToPolizaCommandData(_command);
 
-      return PolizasDataService.GetPolizasEntries(commandData);
+      FixedList<PolizaEntry> polizas = PolizasDataService.GetPolizasEntries(commandData);
+
+      return polizas;
     }
 
   } // class PolizasHelper

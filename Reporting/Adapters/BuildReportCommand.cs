@@ -36,8 +36,7 @@ namespace Empiria.FinancialAccounting.Reporting {
     }
 
     public string[] Ledgers {
-      get;
-      internal set;
+      get; set;
     }
   } // class BuildReportCommand
 

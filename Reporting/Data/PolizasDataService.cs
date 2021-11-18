@@ -23,8 +23,6 @@ namespace Empiria.FinancialAccounting.Reporting.Data {
                                           command.Ledgers,
                                           command.AccountsChart.Id);
 
-      EmpiriaLog.Debug(operation.AsText());
-
       return DataReader.GetPlainObjectFixedList<PolizaEntry>(operation);
     }
 

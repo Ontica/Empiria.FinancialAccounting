@@ -60,7 +60,7 @@ namespace Empiria.FinancialAccounting.Reporting.Adapters {
         int[] ledgerIds = _command.Ledgers.Select(uid => Ledger.Parse(uid).Id)
                                           .ToArray();
 
-        return $", AND ID_MAYOR IN ({String.Join(", ", ledgerIds)})";
+        return $" AND T.ID_MAYOR IN ({String.Join(", ", ledgerIds)})";
       }
 
       #endregion

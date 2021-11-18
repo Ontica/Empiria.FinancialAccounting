@@ -54,7 +54,7 @@ namespace Empiria.FinancialAccounting.Reporting.Builders {
       List<DataTableColumn> columns = new List<DataTableColumn>();
 
       columns.Add(new DataTableColumn("ledgerNumber", "Numero mayor", "text"));
-      columns.Add(new DataTableColumn("ledgerName", "Nombre Mayor", "text"));
+      columns.Add(new DataTableColumn("ledgerName", "Nombre mayor", "text"));
       columns.Add(new DataTableColumn("voucherNumber", "Numero poliza", "text"));
       columns.Add(new DataTableColumn("accountingDate", "Afectacion", "date"));
       columns.Add(new DataTableColumn("recordingDate", "Elaboracion", "date"));
