@@ -41,7 +41,7 @@ namespace Empiria.FinancialAccounting.BanobrasIntegration.BalancesExporter.Adapt
       return new TrialBalanceCommand {
         TrialBalanceType = TrialBalanceType.Balanza,
         AccountsChartUID = AccountsChart.Parse(this.Empresa).UID,
-        BalancesType = BalancesType.WithCurrentBalance,
+        BalancesType = BalancesType.WithCurrentBalanceOrMovements,
         ShowCascadeBalances = false,
         WithAverageBalance = true,
         WithSubledgerAccount = true,
@@ -56,7 +56,7 @@ namespace Empiria.FinancialAccounting.BanobrasIntegration.BalancesExporter.Adapt
       return new TrialBalanceCommand {
         TrialBalanceType = TrialBalanceType.Balanza,
         AccountsChartUID = AccountsChart.Parse(this.Empresa).UID,
-        BalancesType = BalancesType.WithCurrentBalance,
+        BalancesType = BalancesType.WithCurrentBalanceOrMovements,
         ShowCascadeBalances = false,
         WithAverageBalance = true,
         WithSubledgerAccount = true,
