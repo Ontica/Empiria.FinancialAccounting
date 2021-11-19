@@ -100,9 +100,9 @@ namespace Empiria.FinancialAccounting.BanobrasIntegration.VouchersImporter.Adapt
     }
 
 
-    //public int MCO_STATUS {
-    //  get; set;
-    //}
+    public int MCO_STATUS {
+      get; set;
+    }
 
 
     //public int MCO_FIDEICOMISO {
@@ -110,19 +110,19 @@ namespace Empiria.FinancialAccounting.BanobrasIntegration.VouchersImporter.Adapt
     //}
 
 
-    //public int MCO_STATUS_ANT {
-    //  get; set;
-    //}
+    public int MCO_STATUS_ANT {
+      get; set;
+    }
 
 
-    //public int MCO_GPO_CTLA {
-    //  get; set;
-    //}
+    public int MCO_GPO_CTLA {
+      get; set;
+    }
 
 
-    //public int MCO_GPO_CTB {
-    //  get; set;
-    //}
+    public int MCO_GPO_CTB {
+      get; set;
+    }
 
   }  // class MovimientoDto
 

@@ -43,9 +43,9 @@ namespace Empiria.FinancialAccounting.BanobrasIntegration.VouchersImporter.Adapt
       get; set;
     }
 
-    //public int ENC_FIDEICOMISO {
-    //  get; set;
-    //}
+    public int ENC_FIDEICOMISO {
+      get; set;
+    }
 
     public DateTime ENC_FECHA_CAP {
       get; set;
@@ -67,13 +67,13 @@ namespace Empiria.FinancialAccounting.BanobrasIntegration.VouchersImporter.Adapt
       get; set;
     }
 
-    //public int ENC_STATUS {
-    //  get; set;
-    //}
+    public int ENC_STATUS {
+      get; set;
+    }
 
-    //public int ENC_GRUPO_CTL {
-    //  get; set;
-    //}
+    public int ENC_GRUPO_CTL {
+      get; set;
+    }
 
     public MovimientoDto[] MOVIMIENTOS {
       get; set;
