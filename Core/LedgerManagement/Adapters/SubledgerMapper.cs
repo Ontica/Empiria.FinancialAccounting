@@ -44,6 +44,7 @@ namespace Empiria.FinancialAccounting.Adapters {
         Name = subledgerAccount.Name,
         Number = subledgerAccount.Number,
         Description = subledgerAccount.Description,
+        Suspended = subledgerAccount.Suspended,
         Lists = new FixedList<NamedEntityDto>()
       };
     }
@@ -61,6 +62,7 @@ namespace Empiria.FinancialAccounting.Adapters {
         TypeName = subledgerAccount.Subledger.SubledgerType.Name,
         Number = subledgerAccount.Number,
         Name = subledgerAccount.Name,
+        Suspended = subledgerAccount.Suspended,
         FullName = $"{subledgerAccount.Number} - {subledgerAccount.Name}"
       };
     }

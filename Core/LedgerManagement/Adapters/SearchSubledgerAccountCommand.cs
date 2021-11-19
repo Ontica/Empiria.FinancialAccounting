@@ -85,7 +85,9 @@ namespace Empiria.FinancialAccounting.Adapters {
         return string.Empty;
       }
 
-      return $"ID_TIPO_MAYOR_AUXILIAR = '{typeUID}'";
+      var subledgerType = SubledgerType.Parse(typeUID);
+
+      return $"ID_TIPO_MAYOR_AUXILIAR = {subledgerType.Id}";
     }
 
   }  // class SearchSubledgerAccountCommandExtensions

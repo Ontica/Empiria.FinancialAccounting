@@ -44,10 +44,11 @@ namespace Empiria.FinancialAccounting.UseCases {
       fields.Name = EmpiriaString.TrimAll(fields.Name);
 
 
-      var sla = ledger.TryGetSubledgerAccount(fields.Number);
+      var subledgerAccount = ledger.TryGetSubledgerAccount(fields.Number);
 
-      if (sla != null) {
-        Assertion.AssertFail("El auxiliar ya existe.");
+      if (subledgerAccount != null) {
+        Assertion.AssertFail($"Ya existe un auxiliar con número {subledgerAccount.Number}, " +
+                             $"y corresponde a {subledgerAccount.Name}.");
       }
 
 

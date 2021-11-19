@@ -76,6 +76,10 @@ namespace Empiria.FinancialAccounting.Adapters {
       get; internal set;
     }
 
+    public bool Suspended {
+      get; internal set;
+    }
+
   }  // class SubledgerAccountDescriptorDto
 
 
@@ -114,6 +118,9 @@ namespace Empiria.FinancialAccounting.Adapters {
       get; internal set;
     }
 
+    public bool Suspended {
+      get; internal set;
+    }
 
     public FixedList<NamedEntityDto> Lists {
       get; internal set;
