@@ -111,6 +111,9 @@ namespace Empiria.FinancialAccounting {
 
     #region Methods
 
+    internal void Activate() {
+      this.Suspended = false;
+    }
 
     protected override void OnSave() {
       SubledgerData.WriteSubledgerAccount(this);

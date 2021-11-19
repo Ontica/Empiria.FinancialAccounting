@@ -22,6 +22,19 @@ namespace Empiria.FinancialAccounting.WebApi {
 
     #region Web Apis
 
+
+    [HttpPost]
+    [Route("v2/financial-accounting/subledger-accounts/{subledgerAccountId:int}/activate")]
+    public SingleObjectModel ActivateSubledgerAccount([FromUri] int subledgerAccountId) {
+
+      using (var usecases = SubledgerUseCases.UseCaseInteractor()) {
+        SubledgerAccountDto subledgerAccount = usecases.ActivateSubledgerAccount(subledgerAccountId);
+
+        return new SingleObjectModel(base.Request, subledgerAccount);
+      }
+    }
+
+
     [HttpGet]
     [Route("v2/financial-accounting/subledgers/{subledgerUID:guid}")]
     public SingleObjectModel GetSubledger([FromUri] string subledgerUID) {
@@ -70,8 +83,8 @@ namespace Empiria.FinancialAccounting.WebApi {
     }
 
 
-    [HttpDelete]
-    [Route("v2/financial-accounting/subledger-accounts/{subledgerAccountId:int}")]
+    [HttpPost]
+    [Route("v2/financial-accounting/subledger-accounts/{subledgerAccountId:int}/suspend")]
     public SingleObjectModel SuspendSubledgerAccount([FromUri] int subledgerAccountId) {
 
       using (var usecases = SubledgerUseCases.UseCaseInteractor()) {
