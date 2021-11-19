@@ -15,7 +15,7 @@ namespace Empiria.FinancialAccounting.Reporting.Adapters {
   /// <summary>Methods used to map vouchers.</summary>
   static internal class PolizasMapper {
 
-    static internal PolizasDto Map(PolizasBuilder polizas) {
+    static internal PolizasDto Map(ListadoPolizasBuilder polizas) {
 
       return new PolizasDto {
         Command = polizas.Command,
@@ -24,7 +24,7 @@ namespace Empiria.FinancialAccounting.Reporting.Adapters {
 
     }
 
-    static private FixedList<IPolizasDto> Map(PolizasCommand command, 
+    static private FixedList<IPolizasDto> Map(ListadoPolizasCommand command, 
                                               FixedList<IPolizaEntry> list) {
 
       var mappedItems = list.Select((x) => MapToPolizas((PolizaEntry) x, command));
@@ -32,7 +32,7 @@ namespace Empiria.FinancialAccounting.Reporting.Adapters {
 
     }
 
-    static private PolizasEntryDto MapToPolizas(PolizaEntry entry, PolizasCommand command) {
+    static private PolizasEntryDto MapToPolizas(PolizaEntry entry, ListadoPolizasCommand command) {
 
       var dto = new PolizasEntryDto();
 

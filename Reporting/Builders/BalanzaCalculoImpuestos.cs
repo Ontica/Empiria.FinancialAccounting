@@ -43,7 +43,7 @@ namespace Empiria.FinancialAccounting.Reporting.Builders {
       var columns = new List<DataTableColumn>();
 
       columns.Add(new DataTableColumn("moneda", "Moneda", "text"));
-      columns.Add(new DataTableColumn("cuenta", "Cuenta", "text"));
+      columns.Add(new DataTableColumn("cuenta", "Cuenta", "text-nowrap"));
       columns.Add(new DataTableColumn("sector", "Sector", "text"));
       columns.Add(new DataTableColumn("descripcion", "Descripcion", "text"));
       

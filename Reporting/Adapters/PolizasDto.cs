@@ -18,9 +18,9 @@ namespace Empiria.FinancialAccounting.Reporting.Adapters {
   /// <summary>Output DTO used to return vouchers report data.</summary>
   public class PolizasDto {
 
-    public PolizasCommand Command {
+    public ListadoPolizasCommand Command {
       get; internal set;
-    } = new PolizasCommand();
+    } = new ListadoPolizasCommand();
 
 
     public FixedList<DataTableColumn> Columns {

@@ -2,7 +2,7 @@
 *                                                                                                            *
 *  Module   : Reporting Services                         Component : Data Layer                              *
 *  Assembly : FinancialAccounting.Reporting.dll          Pattern   : Data Service                            *
-*  Type     : PolizasDataService                         License   : Please read LICENSE.txt file            *
+*  Type     : ListadoPolizasDataService                  License   : Please read LICENSE.txt file            *
 *                                                                                                            *
 *  Summary  : Provides data read methods for vouchers.                                                       *
 *                                                                                                            *
@@ -14,7 +14,7 @@ using Empiria.FinancialAccounting.Reporting.Domain;
 namespace Empiria.FinancialAccounting.Reporting.Data {
 
   /// <summary>Provides data read methods for vouchers.</summary>
-  static internal class PolizasDataService {
+  static internal class ListadoPolizasDataService {
 
     static internal FixedList<PolizaEntry> GetPolizasEntries(PolizaCommandData command) {
       var operation = DataOperation.Parse("@qryVouchers",
@@ -26,6 +26,6 @@ namespace Empiria.FinancialAccounting.Reporting.Data {
       return DataReader.GetPlainObjectFixedList<PolizaEntry>(operation);
     }
 
-  } // class PolizasDataService
+  } // class ListadoPolizasDataService
 
 } // namespace Empiria.FinancialAccounting.Reporting.Data

@@ -2,17 +2,17 @@
 *                                                                                                            *
 *  Module   : Reporting Services                         Component : Interface adapters                      *
 *  Assembly : FinancialAccounting.Reporting.dll          Pattern   : Command payload                         *
-*  Type     : PolizaCommand                              License   : Please read LICENSE.txt file            *
+*  Type     : ListadoPolizasCommand                      License   : Please read LICENSE.txt file            *
 *                                                                                                            *
-*  Summary  : Command payload used to build policies report.                                                 *
+*  Summary  : Command payload used to build vouchers report.                                                 *
 *                                                                                                            *
 ************************* Copyright(c) La Vía Óntica SC, Ontica LLC and contributors. All rights reserved. **/
 using System;
 
 namespace Empiria.FinancialAccounting.Reporting.Adapters {
 
-  /// <summary>Command payload used to build policies report.</summary>
-  public class PolizasCommand {
+  /// <summary>Command payload used to build vouchers report.</summary>
+  public class ListadoPolizasCommand {
 
 
     public string AccountsChartUID {
@@ -35,6 +35,6 @@ namespace Empiria.FinancialAccounting.Reporting.Adapters {
     }
 
 
-  } // class PolizaCommand
+  } // class ListadoPolizasCommand
 
 } // namespace Empiria.FinancialAccounting.Reporting.Adapters

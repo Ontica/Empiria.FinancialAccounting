@@ -17,9 +17,9 @@ namespace Empiria.FinancialAccounting.Reporting.Adapters {
 
     #region Public methods
 
-    internal PolizaCommandData MapToPolizaCommandData(PolizasCommand command) {
+    internal PolizaCommandData MapToPolizaCommandData(ListadoPolizasCommand command) {
 
-      var clauses = new PolizaClausesHelper(command);
+      var clauses = new ListadoPolizasClausesHelper(command);
 
       return clauses.GetPolizaCommandData();
     }
@@ -28,11 +28,11 @@ namespace Empiria.FinancialAccounting.Reporting.Adapters {
     #endregion
 
 
-    private class PolizaClausesHelper {
+    private class ListadoPolizasClausesHelper {
 
-      private readonly PolizasCommand _command;
+      private readonly ListadoPolizasCommand _command;
 
-      internal PolizaClausesHelper(PolizasCommand command) {
+      internal ListadoPolizasClausesHelper(ListadoPolizasCommand command) {
         this._command = command;
       }
 
@@ -47,10 +47,17 @@ namespace Empiria.FinancialAccounting.Reporting.Adapters {
         commandData.AccountsChart = accountsChart;
         commandData.FromDate = _command.FromDate;
         commandData.ToDate = _command.ToDate;
-        commandData.Ledgers = GetLedgerFilter();
+        commandData.Ledgers = GetFilters();
 
         return commandData;
       }
+
+      private string GetFilters() {
+
+        return GetLedgerFilter();
+
+      }
+
 
       private string GetLedgerFilter() {
         if (_command.Ledgers.Length == 0) {
@@ -65,7 +72,7 @@ namespace Empiria.FinancialAccounting.Reporting.Adapters {
 
       #endregion
 
-    }
+    } // class ListadoPolizasClausesHelper
 
 
   } // class PolizasCommandExtensions

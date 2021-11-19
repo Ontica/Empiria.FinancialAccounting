@@ -2,23 +2,21 @@
 *                                                                                                            *
 *  Module   : Reporting Services                            Component : Report Builders                      *
 *  Assembly : FinancialAccounting.Reporting.dll             Pattern   : Report builder                       *
-*  Type     : Polizas                                       License   : Please read LICENSE.txt file        *
+*  Type     : ListadoPolizas                                License   : Please read LICENSE.txt file         *
 *                                                                                                            *
-*  Summary  : Polizas actualizadas o pendientes de actualizar para reporte operativo.                        *
+*  Summary  : Listado de Polizas para reporte operativo.                                                     *
 *                                                                                                            *
 ************************* Copyright(c) La Vía Óntica SC, Ontica LLC and contributors. All rights reserved. **/
 using System;
 using System.Collections.Generic;
 
-using Empiria.FinancialAccounting.Adapters;
 using Empiria.FinancialAccounting.Reporting.Adapters;
 using Empiria.FinancialAccounting.Reporting.Domain;
-using Empiria.FinancialAccounting.UseCases;
 
 namespace Empiria.FinancialAccounting.Reporting.Builders {
 
-  /// <summary>Polizas actualizadas o pendientes de actualizar para reporte operativo.</summary>
-  internal class Polizas : IReportBuilder {
+  /// <summary>Listado de Polizas para reporte operativo.</summary>
+  internal class ListadoPolizas : IReportBuilder {
 
 
     #region Public methods
@@ -26,21 +24,21 @@ namespace Empiria.FinancialAccounting.Reporting.Builders {
     public ReportDataDto Build(BuildReportCommand command) {
       Assertion.AssertObject(command, "command");
 
-      PolizasCommand polizasCommand = GetPolizasCommand(command);
+      ListadoPolizasCommand polizasCommand = GetPolizasCommand(command);
 
       PolizasDto polizas = BuildPolizasReport(polizasCommand);
 
       return MapToReportDataDto(command, polizas);
     }
 
-    private PolizasDto BuildPolizasReport(PolizasCommand polizasCommand) {
+    private PolizasDto BuildPolizasReport(ListadoPolizasCommand polizasCommand) {
 
-      var helper = new PolizasHelper(polizasCommand);
+      var helper = new ListadoPolizasHelper(polizasCommand);
       FixedList<PolizaEntry> entries = helper.GetPolizaEntries();
 
       var returnPolizas = new FixedList<IPolizaEntry>(entries.Select(x => (IPolizaEntry) x));
 
-      PolizasBuilder polizas = new PolizasBuilder(polizasCommand, returnPolizas);
+      ListadoPolizasBuilder polizas = new ListadoPolizasBuilder(polizasCommand, returnPolizas);
 
       return PolizasMapper.Map(polizas);
     }
@@ -53,11 +51,10 @@ namespace Empiria.FinancialAccounting.Reporting.Builders {
     static private FixedList<DataTableColumn> GetReportColumns() {
       List<DataTableColumn> columns = new List<DataTableColumn>();
 
-      columns.Add(new DataTableColumn("ledgerNumber", "Numero mayor", "text"));
-      columns.Add(new DataTableColumn("ledgerName", "Nombre mayor", "text"));
-      columns.Add(new DataTableColumn("voucherNumber", "Numero poliza", "text"));
-      columns.Add(new DataTableColumn("accountingDate", "Afectacion", "date"));
-      columns.Add(new DataTableColumn("recordingDate", "Elaboracion", "date"));
+      columns.Add(new DataTableColumn("ledgerName", "Mayor", "text-nowrap"));
+      columns.Add(new DataTableColumn("voucherNumber", "No. Póliza", "text-nowrap"));
+      columns.Add(new DataTableColumn("accountingDate", "Afectación", "date"));
+      columns.Add(new DataTableColumn("recordingDate", "Elaboración", "date"));
       columns.Add(new DataTableColumn("elaboratedBy", "Elaborado por", "text"));
       columns.Add(new DataTableColumn("concept", "Concepto", "text"));
       columns.Add(new DataTableColumn("debit", "Cargos", "decimal"));
@@ -68,8 +65,8 @@ namespace Empiria.FinancialAccounting.Reporting.Builders {
 
 
 
-    private PolizasCommand GetPolizasCommand(BuildReportCommand command) {
-      return new PolizasCommand {
+    private ListadoPolizasCommand GetPolizasCommand(BuildReportCommand command) {
+      return new ListadoPolizasCommand {
         AccountsChartUID = AccountsChart.Parse(command.AccountsChartUID).UID,
         Ledgers = command.Ledgers,
         FromDate = command.FromDate,
@@ -97,8 +94,7 @@ namespace Empiria.FinancialAccounting.Reporting.Builders {
 
     static private PolizaReturnedEntry MapToPolizaEntry(PolizasEntryDto entry) {
       return new PolizaReturnedEntry {
-        LedgerNumber = entry.LedgerNumber,
-        LedgerName = entry.LedgerName,
+        LedgerName = $"00{entry.LedgerNumber} {entry.LedgerName}",
         VoucherNumber = entry.VoucherNumber,
         AccountingDate = entry.AccountingDate,
         RecordingDate = entry.RecordingDate,
@@ -161,6 +157,6 @@ namespace Empiria.FinancialAccounting.Reporting.Builders {
       get; internal set;
     }
 
-  }  // class Polizas
+  }  // class ListadoPolizas
 
 } // namespace Empiria.FinancialAccounting.Reporting.Builders

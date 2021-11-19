@@ -75,8 +75,8 @@ namespace Empiria.FinancialAccounting.Reporting {
         case "BalanzaDeterminarImpuestos":
           return new BalanzaCalculoImpuestos();
 
-        case "Polizas":
-          return new Polizas();
+        case "ListadoDePolizas":
+          return new ListadoPolizas();
 
         default:
           throw Assertion.AssertNoReachThisCode($"Unhandled reportType '{command.ReportType}'.");

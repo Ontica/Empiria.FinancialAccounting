@@ -51,15 +51,14 @@ namespace Empiria.FinancialAccounting.Reporting.Exporters.Excel {
       int i = 5;
 
       foreach (var entry in entries) {
-        excelFile.SetCell($"A{i}", entry.LedgerNumber);
-        excelFile.SetCell($"B{i}", entry.LedgerName);
-        excelFile.SetCell($"C{i}", entry.VoucherNumber);
-        excelFile.SetCell($"D{i}", entry.AccountingDate);
-        excelFile.SetCell($"E{i}", entry.RecordingDate);
-        excelFile.SetCell($"F{i}", entry.ElaboratedBy);
-        excelFile.SetCell($"G{i}", entry.Concept);
-        excelFile.SetCell($"H{i}", entry.Debit);
-        excelFile.SetCell($"I{i}", entry.Credit);
+        excelFile.SetCell($"A{i}", $"00{entry.LedgerNumber} {entry.LedgerName}");
+        excelFile.SetCell($"B{i}", entry.VoucherNumber);
+        excelFile.SetCell($"C{i}", entry.AccountingDate);
+        excelFile.SetCell($"D{i}", entry.RecordingDate);
+        excelFile.SetCell($"E{i}", entry.ElaboratedBy);
+        excelFile.SetCell($"F{i}", entry.Concept);
+        excelFile.SetCell($"G{i}", entry.Debit);
+        excelFile.SetCell($"H{i}", entry.Credit);
 
         i++;
       }

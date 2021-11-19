@@ -2,7 +2,7 @@
 *                                                                                                            *
 *  Module   : Reporting Services                         Component : Domain Layer                            *
 *  Assembly : FinancialAccounting.Reporting.dll          Pattern   : Helper methods                          *
-*  Type     : PolizasHelper                              License   : Please read LICENSE.txt file            *
+*  Type     : ListadoPolizasHelper                       License   : Please read LICENSE.txt file            *
 *                                                                                                            *
 *  Summary  : Helper methods to build vouchers information.                                                  *
 *                                                                                                            *
@@ -15,11 +15,11 @@ using Empiria.FinancialAccounting.Reporting.Domain;
 namespace Empiria.FinancialAccounting.Reporting {
 
   /// <summary>Helper methods to build vouchers information.</summary>
-  internal class PolizasHelper {
+  internal class ListadoPolizasHelper {
 
-    private readonly PolizasCommand _command;
+    private readonly ListadoPolizasCommand _command;
 
-    internal PolizasHelper(PolizasCommand command) {
+    internal ListadoPolizasHelper(ListadoPolizasCommand command) {
       _command = command;
     }
 
@@ -28,11 +28,11 @@ namespace Empiria.FinancialAccounting.Reporting {
 
       PolizaCommandData commandData = commandExtensions.MapToPolizaCommandData(_command);
 
-      FixedList<PolizaEntry> polizas = PolizasDataService.GetPolizasEntries(commandData);
+      FixedList<PolizaEntry> polizas = ListadoPolizasDataService.GetPolizasEntries(commandData);
 
       return polizas;
     }
 
-  } // class PolizasHelper
+  } // class ListadoPolizasHelper
 
 } // namespace Empiria.FinancialAccounting.Reporting

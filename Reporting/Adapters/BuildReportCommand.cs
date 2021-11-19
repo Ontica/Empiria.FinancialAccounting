@@ -29,7 +29,7 @@ namespace Empiria.FinancialAccounting.Reporting {
 
     public DateTime FromDate {
       get; set;
-    }
+    } = DateTime.Now;
 
     public DateTime ToDate {
       get; set;
