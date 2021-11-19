@@ -51,7 +51,7 @@ namespace Empiria.FinancialAccounting.Reporting.Exporters.Excel {
       int i = 5;
 
       foreach (var entry in entries) {
-        excelFile.SetCell($"A{i}", $"00{entry.LedgerNumber} {entry.LedgerName}");
+        excelFile.SetCell($"A{i}", entry.LedgerName);
         excelFile.SetCell($"B{i}", entry.VoucherNumber);
         excelFile.SetCell($"C{i}", entry.AccountingDate);
         excelFile.SetCell($"D{i}", entry.RecordingDate);

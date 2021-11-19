@@ -37,7 +37,7 @@ namespace Empiria.FinancialAccounting.Reporting.Adapters {
       var dto = new PolizasEntryDto();
 
       dto.LedgerNumber = entry.Ledger.Number;
-      dto.LedgerName = entry.Ledger.Name;
+      dto.LedgerName = entry.Ledger.FullName;
       dto.VoucherNumber = entry.Voucher.Number;
       dto.AccountingDate = entry.Voucher.AccountingDate;
       dto.RecordingDate = entry.Voucher.RecordingDate;

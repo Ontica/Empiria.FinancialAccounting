@@ -94,7 +94,7 @@ namespace Empiria.FinancialAccounting.Reporting.Builders {
 
     static private PolizaReturnedEntry MapToPolizaEntry(PolizasEntryDto entry) {
       return new PolizaReturnedEntry {
-        LedgerName = $"00{entry.LedgerNumber} {entry.LedgerName}",
+        LedgerName = entry.LedgerName,
         VoucherNumber = entry.VoucherNumber,
         AccountingDate = entry.AccountingDate,
         RecordingDate = entry.RecordingDate,
