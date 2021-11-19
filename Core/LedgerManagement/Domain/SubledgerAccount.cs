@@ -9,6 +9,7 @@
 ************************* Copyright(c) La Vía Óntica SC, Ontica LLC and contributors. All rights reserved. **/
 using System;
 
+using Empiria.FinancialAccounting.Adapters;
 using Empiria.FinancialAccounting.Data;
 
 namespace Empiria.FinancialAccounting {
@@ -105,6 +106,7 @@ namespace Empiria.FinancialAccounting {
       get; private set;
     }
 
+
     #endregion Public properties
 
     #region Methods
@@ -115,12 +117,38 @@ namespace Empiria.FinancialAccounting {
     }
 
 
-    internal void Update(string number, string name) {
-      Assertion.AssertObject(number, "number");
-      Assertion.AssertObject(name, "name");
+    internal void Suspend() {
+      this.Suspended = true;
+    }
 
-      this.Number = number;
-      this.Name = name;
+
+    internal void Update(SubledgerAccountFields fields) {
+      Assertion.AssertObject(fields, "fields");
+
+      fields.EnsureValid();
+
+      this.Name = base.PatchField(fields.Name, this.Name);
+      this.Description = base.PatchField(fields.Description, this.Description);
+
+      UpdateSubledger(fields.SubledgerType());
+
+
+    }
+
+    private void UpdateSubledger(SubledgerType newSubledgerType) {
+      Assertion.AssertObject(newSubledgerType, "newSubledgerType");
+
+      if (newSubledgerType.Equals(this.Subledger.SubledgerType)) {
+        return;
+      }
+
+      var newSubledger = this.Ledger.Subledgers().Find(x => x.SubledgerType == newSubledgerType);
+
+      Assertion.AssertObject(newSubledger,
+            $"No existe un libro auxiliar de tipo {newSubledgerType.Name} para la " +
+            $"contabilidad {this.Ledger.FullName}.");
+
+      this.Subledger = newSubledger;
     }
 
 

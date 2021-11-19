@@ -7,6 +7,7 @@
 *  Summary  : Describes the type of the accounts of a subledger (e.g. activo, clientes, proveedores, etc).   *
 *                                                                                                            *
 ************************* Copyright(c) La Vía Óntica SC, Ontica LLC and contributors. All rights reserved. **/
+using System;
 
 namespace Empiria.FinancialAccounting {
 
@@ -18,14 +19,22 @@ namespace Empiria.FinancialAccounting {
       // Required by Empiria Framework.
     }
 
+
     static public SubledgerType Parse(int id) {
       return BaseObject.ParseId<SubledgerType>(id);
     }
 
 
+    static public SubledgerType Parse(string uid) {
+      return BaseObject.ParseKey<SubledgerType>(uid);
+    }
+
+
     static public SubledgerType Pending {
       get {
-        return SubledgerType.Parse(19);
+        const int PENDING_SUBLEDGER_TYPE_ID = 19;
+
+        return SubledgerType.Parse(PENDING_SUBLEDGER_TYPE_ID);
       }
     }
 
@@ -36,6 +45,7 @@ namespace Empiria.FinancialAccounting {
     }
 
     static public SubledgerType Empty => BaseObject.ParseEmpty<SubledgerType>();
+
 
   } // class SubledgerType
 

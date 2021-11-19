@@ -18,9 +18,11 @@ namespace Empiria.FinancialAccounting.Adapters {
       get; set;
     }
 
+
     public string TypeUID {
       get; set;
     }
+
 
     public string Number {
       get; set;
@@ -40,12 +42,24 @@ namespace Empiria.FinancialAccounting.Adapters {
   }  // public class SubledgerAccountFields
 
 
-  static internal class SubledgerAccountFieldsExtensionMethods {
+  /// <summary>Separated static class with extension methods for SubledgerAccountFields.</summary>
+  static internal class SubledgerAccountFieldsExtensions {
 
-    static public SubledgerType SubledgerType(this SubledgerAccountFields fields) {
-      return Empiria.FinancialAccounting.SubledgerType.Pending;
+
+    static public void EnsureValid(this SubledgerAccountFields fields) {
+      Assertion.AssertObject(fields.LedgerUID, "fields.LedgerUID");
+      Assertion.AssertObject(fields.TypeUID, "fields.TypeUID");
+      Assertion.AssertObject(fields.Number, "fields.Number");
+      Assertion.AssertObject(fields.Name, "fields.Name");
     }
 
-  }
+
+    static public SubledgerType SubledgerType(this SubledgerAccountFields fields) {
+      Assertion.AssertObject(fields.TypeUID, "fields.TypeUID");
+
+      return Empiria.FinancialAccounting.SubledgerType.Parse(fields.TypeUID);
+    }
+
+  }  // class SubledgerAccountFieldsExtensions
 
 }  // namespace Empiria.FinancialAccounting.Adapters

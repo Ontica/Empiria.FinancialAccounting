@@ -70,6 +70,18 @@ namespace Empiria.FinancialAccounting.WebApi {
     }
 
 
+    [HttpDelete]
+    [Route("v2/financial-accounting/subledger-accounts/{subledgerAccountId:int}")]
+    public SingleObjectModel SuspendSubledgerAccount([FromUri] int subledgerAccountId) {
+
+      using (var usecases = SubledgerUseCases.UseCaseInteractor()) {
+        SubledgerAccountDto subledgerAccount = usecases.SuspendSubledgerAccount(subledgerAccountId);
+
+        return new SingleObjectModel(base.Request, subledgerAccount);
+      }
+    }
+
+
     [HttpPut, HttpPatch]
     [Route("v2/financial-accounting/subledger-accounts/{subledgerAccountId:int}")]
     public SingleObjectModel UpdateSubledgerAccount([FromUri] int subledgerAccountId,

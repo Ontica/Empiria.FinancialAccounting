@@ -36,6 +36,8 @@ namespace Empiria.FinancialAccounting.UseCases {
     public SubledgerAccountDto CreateSubledgerAccount(SubledgerAccountFields fields) {
       Assertion.AssertObject(fields, "fields");
 
+      fields.EnsureValid();
+
       var ledger = Ledger.Parse(fields.LedgerUID);
 
       fields.Number = ledger.FormatSubledgerAccount(fields.Number);
@@ -56,24 +58,6 @@ namespace Empiria.FinancialAccounting.UseCases {
       createdSubledgerAccount.Save();
 
       return SubledgerMapper.Map(createdSubledgerAccount);
-
-      //var subledger = Subledger.Parse(fields.SubledgerUID);
-
-      //fields.Number = subledger.FormatSubledgerAccount(fields.Number);
-      //fields.Name = EmpiriaString.TrimAll(fields.Name);
-
-      //var sla = subledger.BaseLedger.TryGetSubledgerAccount(fields.Number);
-
-      //if (sla != null) {
-      //  Assertion.AssertFail("El auxiliar ya existe.");
-      //}
-
-
-      //SubledgerAccount subledgerAccount = subledger.CreateAccount(fields);
-
-      //subledgerAccount.Save();
-
-      // return SubledgerMapper.Map(subledgerAccount);
     }
 
 
@@ -106,19 +90,35 @@ namespace Empiria.FinancialAccounting.UseCases {
     }
 
 
-    public SubledgerAccountDto UpdateSubledgerAccount(int subledgerAccountId,
-                                                      SubledgerAccountFields fields) {
+    public SubledgerAccountDto SuspendSubledgerAccount(int subledgerAccountId) {
       Assertion.Assert(subledgerAccountId > 0, "subledgerAccountId");
-      Assertion.AssertObject(fields, "fields");
 
       var subledgerAccount = SubledgerAccount.Parse(subledgerAccountId);
 
-      subledgerAccount.Update(fields.Number, fields.Name);
+      subledgerAccount.Suspend();
 
       subledgerAccount.Save();
 
       return SubledgerMapper.Map(subledgerAccount);
     }
+
+
+    public SubledgerAccountDto UpdateSubledgerAccount(int subledgerAccountId,
+                                                      SubledgerAccountFields fields) {
+      Assertion.Assert(subledgerAccountId > 0, "subledgerAccountId");
+      Assertion.AssertObject(fields, "fields");
+
+      fields.EnsureValid();
+
+      var subledgerAccount = SubledgerAccount.Parse(subledgerAccountId);
+
+      subledgerAccount.Update(fields);
+
+      subledgerAccount.Save();
+
+      return SubledgerMapper.Map(subledgerAccount);
+    }
+
 
     #endregion Use cases
 
