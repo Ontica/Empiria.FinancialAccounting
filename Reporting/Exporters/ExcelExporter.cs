@@ -44,7 +44,7 @@ namespace Empiria.FinancialAccounting.Reporting.Exporters {
         case "CatalogoCuentasSAT":
           return new CatalogoCuentasSatExcelExporter(reportData, templateConfig);
         case "ListadoDePolizas":
-          return new PolizaExcelExporter(reportData, templateConfig);
+          return new ListadoPolizasExcelExporter(reportData, templateConfig);
 
         default:
           throw Assertion.AssertNoReachThisCode($"Unhandled reportType '{reportData.Command.ReportType}'.");

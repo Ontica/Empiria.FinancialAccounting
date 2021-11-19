@@ -53,6 +53,24 @@ namespace Empiria.FinancialAccounting.Reporting.Domain {
       internal set;
     }
 
+
+    public int VouchersByLedger {
+      get; internal set;
+    }
+
+
+    public EntryType EntryType {
+      get; internal set;
+    } = EntryType.PolizaNormal;
+
+
+    internal void Sum(PolizaEntry voucher) {
+      this.Debit += voucher.Debit;
+      this.Credit += voucher.Credit;
+      this.VouchersByLedger += 1; 
+    }
+
   } // class PolizaEntry
 
+  
 } // namespace Empiria.FinancialAccounting.Reporting.Domain

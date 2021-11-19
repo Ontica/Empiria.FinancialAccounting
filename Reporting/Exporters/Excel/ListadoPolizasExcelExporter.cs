@@ -14,12 +14,12 @@ using Empiria.FinancialAccounting.Reporting.Builders;
 namespace Empiria.FinancialAccounting.Reporting.Exporters.Excel {
   
   /// <summary></summary>
-  internal class PolizaExcelExporter : IExcelExporter {
+  internal class ListadoPolizasExcelExporter : IExcelExporter {
 
     private readonly ReportDataDto _reportData;
     private readonly ExcelTemplateConfig _template;
 
-    public PolizaExcelExporter(ReportDataDto reportData, ExcelTemplateConfig template) {
+    public ListadoPolizasExcelExporter(ReportDataDto reportData, ExcelTemplateConfig template) {
       Assertion.AssertObject(reportData, "reportData");
       Assertion.AssertObject(template, "template");
 
@@ -47,18 +47,22 @@ namespace Empiria.FinancialAccounting.Reporting.Exporters.Excel {
 
     #region Private methods
 
-    private void FillOutRows(ExcelFile excelFile, IEnumerable<PolizaReturnedEntry> entries) {
+    private void FillOutRows(ExcelFile excelFile, IEnumerable<PolizaReturnedEntry> vouchers) {
       int i = 5;
 
-      foreach (var entry in entries) {
-        excelFile.SetCell($"A{i}", entry.LedgerName);
-        excelFile.SetCell($"B{i}", entry.VoucherNumber);
-        excelFile.SetCell($"C{i}", entry.AccountingDate);
-        excelFile.SetCell($"D{i}", entry.RecordingDate);
-        excelFile.SetCell($"E{i}", entry.ElaboratedBy);
-        excelFile.SetCell($"F{i}", entry.Concept);
-        excelFile.SetCell($"G{i}", entry.Debit);
-        excelFile.SetCell($"H{i}", entry.Credit);
+      foreach (var voucher in vouchers) {
+        excelFile.SetCell($"A{i}", voucher.LedgerName);
+        excelFile.SetCell($"B{i}", voucher.VoucherNumber);
+        excelFile.SetCell($"C{i}", voucher.AccountingDate);
+        excelFile.SetCell($"D{i}", voucher.RecordingDate);
+        excelFile.SetCell($"E{i}", voucher.ElaboratedBy);
+        excelFile.SetCell($"F{i}", voucher.Concept);
+        excelFile.SetCell($"G{i}", voucher.Debit);
+        excelFile.SetCell($"H{i}", voucher.Credit);
+
+        if (voucher.EntryType != EntryType.PolizaNormal) {
+          excelFile.SetRowStyleBold(i);
+        }
 
         i++;
       }

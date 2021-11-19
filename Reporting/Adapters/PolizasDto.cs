@@ -82,7 +82,17 @@ namespace Empiria.FinancialAccounting.Reporting.Adapters {
     public decimal Credit {
       get; internal set;
     }
-    
+
+
+    public int VouchersByLedger {
+      get; internal set;
+    }
+
+
+    public EntryType EntryType {
+      get; internal set;
+    } = EntryType.PolizaNormal;
+
   } // class PolizasEntryDto
 
 } // namespace Empiria.FinancialAccounting.Reporting.Adapters

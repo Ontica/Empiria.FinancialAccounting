@@ -77,4 +77,5 @@ namespace Empiria.FinancialAccounting.Reporting.Adapters {
 
   } // class PolizasCommandExtensions
 
+
 } // namespace Empiria.FinancialAccounting.Reporting.Adapters

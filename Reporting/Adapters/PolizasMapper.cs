@@ -33,7 +33,7 @@ namespace Empiria.FinancialAccounting.Reporting.Adapters {
     }
 
     static private PolizasEntryDto MapToPolizas(PolizaEntry entry, ListadoPolizasCommand command) {
-
+      
       var dto = new PolizasEntryDto();
 
       dto.LedgerNumber = entry.Ledger.Number;
@@ -45,8 +45,23 @@ namespace Empiria.FinancialAccounting.Reporting.Adapters {
       dto.Concept = entry.Voucher.Concept;
       dto.Debit = entry.Debit;
       dto.Credit = entry.Credit;
+      dto.VouchersByLedger = entry.VouchersByLedger;
+      dto.EntryType = entry.EntryType;
 
       return dto;
+    }
+
+
+    static internal PolizaEntry MapToPolizaEntry(PolizaEntry entry) {
+      var newEntry = new PolizaEntry();
+
+      newEntry.Ledger = entry.Ledger;
+      newEntry.Voucher = entry.Voucher;
+      newEntry.Debit = entry.Debit;
+      newEntry.Credit = entry.Credit;
+      newEntry.EntryType = entry.EntryType;
+
+      return newEntry;
     }
   } // class PolizasMapper
 

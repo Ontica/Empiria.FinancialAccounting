@@ -33,8 +33,6 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
 
       FixedList<TrialBalanceEntry> postingEntries = helper.GetPostingEntries();
 
-      //postingEntries = GetSecondExchangeRate(postingEntries);
-
       List<TrialBalanceEntry> summaryEntries = helper.GenerateSummaryEntries(postingEntries);
 
       summaryEntries = helper.SummaryEntriesAndSectorization(summaryEntries);
@@ -53,27 +51,6 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
 
 
     #region Private methods
-
-    private FixedList<TrialBalanceEntry> GetSecondExchangeRate(FixedList<TrialBalanceEntry> postingEntries) {
-      var returnedEntries = new FixedList<TrialBalanceEntry>(postingEntries);
-
-      if (_command.IsOperationalReport && !_command.ConsolidateBalancesToTargetCurrency) {
-        var exchangeRateType = ExchangeRateType.Parse(_command.FinalPeriod.ExchangeRateTypeUID);
-        FixedList<ExchangeRate> exchangeRates = ExchangeRate.GetList(exchangeRateType, _command.FinalPeriod.ExchangeRateDate);
-
-        foreach (var entry in returnedEntries.Where(a => a.Currency.Code != "01")) {
-          var exchangeRate = exchangeRates.FirstOrDefault(a => a.FromCurrency.Code == _command.FinalPeriod.ValuateToCurrrencyUID &&
-                                                                a.ToCurrency.Code == entry.Currency.Code);
-
-          Assertion.AssertObject(exchangeRate, $"No hay tipo de cambio para la moneda {entry.Currency.FullName}.");
-
-          entry.SecondExchangeRate = exchangeRate.Value;
-        }
-      }
-
-      return returnedEntries;
-    }
-
 
     private List<TrialBalanceEntry> GetTrialBalanceType(List<TrialBalanceEntry> trialBalance,
                                                         FixedList<TrialBalanceEntry> postingEntries) {

@@ -24,21 +24,23 @@ namespace Empiria.FinancialAccounting.Reporting.Builders {
     public ReportDataDto Build(BuildReportCommand command) {
       Assertion.AssertObject(command, "command");
 
-      ListadoPolizasCommand polizasCommand = GetPolizasCommand(command);
+      ListadoPolizasCommand voucherCommand = GetPolizasCommand(command);
 
-      PolizasDto polizas = BuildPolizasReport(polizasCommand);
+      PolizasDto polizas = BuildPolizasReport(voucherCommand);
 
       return MapToReportDataDto(command, polizas);
     }
 
-    private PolizasDto BuildPolizasReport(ListadoPolizasCommand polizasCommand) {
+    private PolizasDto BuildPolizasReport(ListadoPolizasCommand voucherCommand) {
 
-      var helper = new ListadoPolizasHelper(polizasCommand);
+      var helper = new ListadoPolizasHelper(voucherCommand);
       FixedList<PolizaEntry> entries = helper.GetPolizaEntries();
 
-      var returnPolizas = new FixedList<IPolizaEntry>(entries.Select(x => (IPolizaEntry) x));
+      FixedList<PolizaEntry> listadoPolizas = helper.GetListadoPolizasConTotales(entries);
 
-      ListadoPolizasBuilder polizas = new ListadoPolizasBuilder(polizasCommand, returnPolizas);
+      var returnPolizas = new FixedList<IPolizaEntry>(listadoPolizas.Select(x => (IPolizaEntry) x));
+
+      ListadoPolizasBuilder polizas = new ListadoPolizasBuilder(voucherCommand, returnPolizas);
 
       return PolizasMapper.Map(polizas);
     }
@@ -53,8 +55,8 @@ namespace Empiria.FinancialAccounting.Reporting.Builders {
 
       columns.Add(new DataTableColumn("ledgerName", "Mayor", "text-nowrap"));
       columns.Add(new DataTableColumn("voucherNumber", "No. Póliza", "text-nowrap"));
-      columns.Add(new DataTableColumn("accountingDate", "Afectación", "date"));
-      columns.Add(new DataTableColumn("recordingDate", "Elaboración", "date"));
+      columns.Add(new DataTableColumn("accountingDate", "Afectación", "text"));
+      columns.Add(new DataTableColumn("recordingDate", "Elaboración", "text"));
       columns.Add(new DataTableColumn("elaboratedBy", "Elaborado por", "text"));
       columns.Add(new DataTableColumn("concept", "Concepto", "text"));
       columns.Add(new DataTableColumn("debit", "Cargos", "decimal"));
@@ -80,29 +82,55 @@ namespace Empiria.FinancialAccounting.Reporting.Builders {
       return new ReportDataDto {
         Command = command,
         Columns = GetReportColumns(),
-        Entries = MapToReportDataEntries(polizas.Entries)
+        Entries = MapToReportDataEntries(polizas.Entries, command)
       };
     }
 
 
-    static private FixedList<IReportEntryDto> MapToReportDataEntries(FixedList<IPolizasDto> list) {
+    static private FixedList<IReportEntryDto> MapToReportDataEntries(FixedList<IPolizasDto> list,
+                                                                     BuildReportCommand command) {
 
-      var mappedItems = list.Select((x) => MapToPolizaEntry((PolizasEntryDto) x));
+      var mappedItems = list.Select((x) => MapToPolizaEntry((PolizasEntryDto) x, command));
 
       return new FixedList<IReportEntryDto>(mappedItems);
     }
 
-    static private PolizaReturnedEntry MapToPolizaEntry(PolizasEntryDto entry) {
-      return new PolizaReturnedEntry {
-        LedgerName = entry.LedgerName,
-        VoucherNumber = entry.VoucherNumber,
-        AccountingDate = entry.AccountingDate,
-        RecordingDate = entry.RecordingDate,
-        ElaboratedBy = entry.ElaboratedBy,
-        Concept = entry.Concept,
-        Debit = entry.Debit,
-        Credit = entry.Credit
-      };
+    static private PolizaReturnedEntry MapToPolizaEntry(PolizasEntryDto voucher, BuildReportCommand command) {
+      var polizaEntry = new PolizaReturnedEntry();
+
+      polizaEntry.LedgerName = voucher.EntryType == EntryType.TotalPorContabilidad ||
+                                  voucher.EntryType == EntryType.TotalGeneral ? "" :
+                                  voucher.LedgerName;
+
+      polizaEntry.VoucherNumber = voucher.EntryType == EntryType.TotalPorContabilidad || 
+                                  voucher.EntryType == EntryType.TotalGeneral ? "" :
+                                  voucher.VoucherNumber;
+
+      polizaEntry.AccountingDate = voucher.EntryType == EntryType.TotalPorContabilidad ||
+                                   voucher.EntryType == EntryType.TotalGeneral ? "" :
+                                   voucher.AccountingDate.ToString("dd/MM/yyyy");
+
+      polizaEntry.RecordingDate = voucher.EntryType == EntryType.TotalPorContabilidad ||
+                                  voucher.EntryType == EntryType.TotalGeneral ? "" :
+                                  voucher.RecordingDate.ToString("dd/MM/yyyy");
+
+      polizaEntry.ElaboratedBy = voucher.EntryType == EntryType.TotalPorContabilidad ||
+                                 voucher.EntryType == EntryType.TotalGeneral ? "" :
+                                 voucher.ElaboratedBy;
+
+      if (voucher.EntryType == EntryType.TotalPorContabilidad) {
+        polizaEntry.Concept = $"POLIZAS POR CONTABILIDAD: {voucher.VouchersByLedger}";
+      } else if (voucher.EntryType == EntryType.TotalGeneral) {
+        polizaEntry.Concept = $"TOTAL DE POLIZAS: {voucher.VouchersByLedger}";
+      } else {
+        polizaEntry.Concept = voucher.Concept;
+      }
+
+      polizaEntry.Debit = voucher.Debit;
+      polizaEntry.Credit = voucher.Credit;
+      polizaEntry.EntryType = voucher.EntryType;
+
+      return polizaEntry;
     }
     #endregion Private methods
 
@@ -128,12 +156,12 @@ namespace Empiria.FinancialAccounting.Reporting.Builders {
     }
 
 
-    public DateTime AccountingDate {
+    public string AccountingDate {
       get; internal set;
     }
 
 
-    public DateTime RecordingDate {
+    public string RecordingDate {
       get; internal set;
     }
 
@@ -156,6 +184,15 @@ namespace Empiria.FinancialAccounting.Reporting.Builders {
     public decimal Credit {
       get; internal set;
     }
+
+    public int VouchersByLedger {
+      get; internal set;
+    }
+
+
+    public EntryType EntryType {
+      get; internal set;
+    } = EntryType.PolizaNormal;
 
   }  // class ListadoPolizas
 
