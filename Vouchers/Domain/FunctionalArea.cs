@@ -57,14 +57,14 @@ namespace Empiria.FinancialAccounting.Vouchers {
 
     public string FullName {
       get {
-        return $"{Name} ({Code})";
+        return $"({Code}) {Name}";
       }
     }
 
     #endregion Properties
 
     public NamedEntityDto MapToNamedEntity() {
-      return new NamedEntityDto(this.Id.ToString(), this.Name);
+      return new NamedEntityDto(this.Id.ToString(), this.FullName);
     }
 
   } // class FunctionalArea
