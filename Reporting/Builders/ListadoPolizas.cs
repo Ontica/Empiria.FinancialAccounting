@@ -98,29 +98,29 @@ namespace Empiria.FinancialAccounting.Reporting.Builders {
     static private PolizaReturnedEntry MapToPolizaEntry(PolizasEntryDto voucher, BuildReportCommand command) {
       var polizaEntry = new PolizaReturnedEntry();
 
-      polizaEntry.LedgerName = voucher.EntryType == EntryType.TotalPorContabilidad ||
-                                  voucher.EntryType == EntryType.TotalGeneral ? "" :
+      polizaEntry.LedgerName = voucher.ItemType == ItemType.Group ||
+                                  voucher.ItemType == ItemType.Total ? "" :
                                   voucher.LedgerName;
 
-      polizaEntry.VoucherNumber = voucher.EntryType == EntryType.TotalPorContabilidad || 
-                                  voucher.EntryType == EntryType.TotalGeneral ? "" :
+      polizaEntry.VoucherNumber = voucher.ItemType == ItemType.Group || 
+                                  voucher.ItemType == ItemType.Total ? "" :
                                   voucher.VoucherNumber;
 
-      polizaEntry.AccountingDate = voucher.EntryType == EntryType.TotalPorContabilidad ||
-                                   voucher.EntryType == EntryType.TotalGeneral ? "" :
+      polizaEntry.AccountingDate = voucher.ItemType == ItemType.Group ||
+                                   voucher.ItemType == ItemType.Total ? "" :
                                    voucher.AccountingDate.ToString("dd/MM/yyyy");
 
-      polizaEntry.RecordingDate = voucher.EntryType == EntryType.TotalPorContabilidad ||
-                                  voucher.EntryType == EntryType.TotalGeneral ? "" :
+      polizaEntry.RecordingDate = voucher.ItemType == ItemType.Group ||
+                                  voucher.ItemType == ItemType.Total ? "" :
                                   voucher.RecordingDate.ToString("dd/MM/yyyy");
 
-      polizaEntry.ElaboratedBy = voucher.EntryType == EntryType.TotalPorContabilidad ||
-                                 voucher.EntryType == EntryType.TotalGeneral ? "" :
+      polizaEntry.ElaboratedBy = voucher.ItemType == ItemType.Group ||
+                                 voucher.ItemType == ItemType.Total ? "" :
                                  voucher.ElaboratedBy;
 
-      if (voucher.EntryType == EntryType.TotalPorContabilidad) {
+      if (voucher.ItemType == ItemType.Group) {
         polizaEntry.Concept = $"POLIZAS POR CONTABILIDAD: {voucher.VouchersByLedger}";
-      } else if (voucher.EntryType == EntryType.TotalGeneral) {
+      } else if (voucher.ItemType == ItemType.Total) {
         polizaEntry.Concept = $"TOTAL DE POLIZAS: {voucher.VouchersByLedger}";
       } else {
         polizaEntry.Concept = voucher.Concept;
@@ -128,7 +128,7 @@ namespace Empiria.FinancialAccounting.Reporting.Builders {
 
       polizaEntry.Debit = voucher.Debit;
       polizaEntry.Credit = voucher.Credit;
-      polizaEntry.EntryType = voucher.EntryType;
+      polizaEntry.ItemType = voucher.ItemType;
 
       return polizaEntry;
     }
@@ -190,9 +190,9 @@ namespace Empiria.FinancialAccounting.Reporting.Builders {
     }
 
 
-    public EntryType EntryType {
+    public ItemType ItemType {
       get; internal set;
-    } = EntryType.PolizaNormal;
+    } = ItemType.Entry;
 
   }  // class ListadoPolizas
 

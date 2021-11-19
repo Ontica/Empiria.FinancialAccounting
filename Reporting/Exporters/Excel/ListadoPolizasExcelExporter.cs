@@ -60,7 +60,7 @@ namespace Empiria.FinancialAccounting.Reporting.Exporters.Excel {
         excelFile.SetCell($"G{i}", voucher.Debit);
         excelFile.SetCell($"H{i}", voucher.Credit);
 
-        if (voucher.EntryType != EntryType.PolizaNormal) {
+        if (voucher.ItemType != ItemType.Entry) {
           excelFile.SetRowStyleBold(i);
         }
 

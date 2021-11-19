@@ -59,9 +59,10 @@ namespace Empiria.FinancialAccounting.Reporting.Domain {
     }
 
 
-    public EntryType EntryType {
+    public ItemType ItemType {
       get; internal set;
-    } = EntryType.PolizaNormal;
+    } = ItemType.Entry;
+
 
 
     internal void Sum(PolizaEntry voucher) {

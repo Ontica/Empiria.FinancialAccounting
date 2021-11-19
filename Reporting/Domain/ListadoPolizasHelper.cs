@@ -18,13 +18,13 @@ using Empiria.FinancialAccounting.Reporting.Domain;
 namespace Empiria.FinancialAccounting.Reporting {
 
 
-  public enum EntryType {
+  public enum ItemType {
 
-    PolizaNormal,
+    Entry,
 
-    TotalPorContabilidad,
+    Group,
 
-    TotalGeneral
+    Total
 
   }
 
@@ -110,7 +110,7 @@ namespace Empiria.FinancialAccounting.Reporting {
         voucherEntry = new PolizaEntry {
           Ledger = voucher.Ledger,
           Voucher = voucher.Voucher,
-          EntryType = voucher.EntryType
+          ItemType = voucher.ItemType
         };
         voucherEntry.Sum(voucher);
 
@@ -126,7 +126,7 @@ namespace Empiria.FinancialAccounting.Reporting {
       var vouchersWithTotal = new EmpiriaHashTable<PolizaEntry>(list.Count);
 
       foreach (var entry in list) {
-        SummaryByVoucher(vouchersWithTotal, entry, EntryType.TotalPorContabilidad);
+        SummaryByVoucher(vouchersWithTotal, entry, ItemType.Group);
       }
 
       return vouchersWithTotal.ToFixedList();
@@ -136,8 +136,8 @@ namespace Empiria.FinancialAccounting.Reporting {
     private PolizaEntry GetTotalFromVouchers(FixedList<PolizaEntry> vouchersList) {
       var vouchersWithTotal = new EmpiriaHashTable<PolizaEntry>();
 
-      foreach (var voucher in vouchersList.Where(a=>a.EntryType == EntryType.PolizaNormal)) {
-        SummaryByVoucher(vouchersWithTotal, voucher, EntryType.TotalGeneral);
+      foreach (var voucher in vouchersList.Where(a=>a.ItemType == ItemType.Entry)) {
+        SummaryByVoucher(vouchersWithTotal, voucher, ItemType.Total);
       }
 
       return vouchersWithTotal.ToFixedList().FirstOrDefault();
@@ -145,13 +145,13 @@ namespace Empiria.FinancialAccounting.Reporting {
 
 
     private void SummaryByVoucher(EmpiriaHashTable<PolizaEntry> entriesWithTotal,
-                                 PolizaEntry entry, EntryType entryType) {
+                                 PolizaEntry entry, ItemType entryType) {
 
       PolizaEntry polizaEntry = PolizasMapper.MapToPolizaEntry(entry);
-      polizaEntry.EntryType = entryType;
+      polizaEntry.ItemType = entryType;
 
-      string hash = entryType == EntryType.TotalPorContabilidad ?
-                    $"{polizaEntry.Ledger.Number}" : entry.EntryType.ToString();
+      string hash = entryType == ItemType.Group ?
+                    $"{polizaEntry.Ledger.Number}" : entry.ItemType.ToString();
 
       GenerateOrIncreasePolizaEntry(entriesWithTotal, polizaEntry, hash);
 

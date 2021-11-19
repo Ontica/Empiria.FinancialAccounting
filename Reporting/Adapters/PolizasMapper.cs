@@ -46,7 +46,7 @@ namespace Empiria.FinancialAccounting.Reporting.Adapters {
       dto.Debit = entry.Debit;
       dto.Credit = entry.Credit;
       dto.VouchersByLedger = entry.VouchersByLedger;
-      dto.EntryType = entry.EntryType;
+      dto.ItemType = entry.ItemType;
 
       return dto;
     }
@@ -59,7 +59,7 @@ namespace Empiria.FinancialAccounting.Reporting.Adapters {
       newEntry.Voucher = entry.Voucher;
       newEntry.Debit = entry.Debit;
       newEntry.Credit = entry.Credit;
-      newEntry.EntryType = entry.EntryType;
+      newEntry.ItemType = entry.ItemType;
 
       return newEntry;
     }

@@ -89,9 +89,9 @@ namespace Empiria.FinancialAccounting.Reporting.Adapters {
     }
 
 
-    public EntryType EntryType {
+    public ItemType ItemType {
       get; internal set;
-    } = EntryType.PolizaNormal;
+    } = ItemType.Entry;
 
   } // class PolizasEntryDto
 
