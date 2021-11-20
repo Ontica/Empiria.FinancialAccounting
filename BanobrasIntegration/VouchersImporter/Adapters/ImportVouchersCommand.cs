@@ -14,7 +14,8 @@ namespace Empiria.FinancialAccounting.BanobrasIntegration.VouchersImporter.Adapt
   /// <summary>Command payload used to import vouchers from Excel and text files.</summary>
   public class ImportVouchersCommand {
 
-    public DateTime RecordingDate {
+
+    public DateTime AccountingDate {
       get; set;
     }
 
@@ -52,6 +53,7 @@ namespace Empiria.FinancialAccounting.BanobrasIntegration.VouchersImporter.Adapt
     public bool TryToCloseVouchers {
       get; set;
     }
+
 
   } // class ImportVouchersCommand
 

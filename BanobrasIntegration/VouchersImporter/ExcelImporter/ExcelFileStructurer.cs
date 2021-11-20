@@ -64,7 +64,7 @@ namespace Empiria.FinancialAccounting.BanobrasIntegration.VouchersImporter {
         UniqueID = sourceHeader.VoucherUniqueID,
         Ledger = sourceHeader.GetLedger(),
         Concept = sourceHeader.VoucherConcept,
-        AccountingDate = DateTime.Today,
+        AccountingDate = _command.AccountingDate,
         VoucherType = VoucherType.Parse(_command.VoucherTypeUID),
         TransactionType = TransactionType.Parse(_command.TransactionTypeUID),
         FunctionalArea = sourceHeader.GetFunctionalArea(),
