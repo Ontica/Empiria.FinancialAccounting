@@ -269,9 +269,18 @@ namespace Empiria.FinancialAccounting {
     }
 
 
-    public FixedList<Account> SearchUnassignedAccounts(string keywords, DateTime date) {
-      return LedgerData.SearchUnassignedAccountsForEdition(this, keywords, date);
+    public FixedList<LedgerAccount> SearchAssignedAccounts(string keywords, DateTime date) {
+      string filter = BuildSearchAccountsFilter(keywords);
+
+      return LedgerData.SearchAssignedAccountsForEdition(this, date, filter);
     }
+
+    public FixedList<Account> SearchUnassignedAccounts(string keywords, DateTime date) {
+      string filter = BuildSearchAccountsFilter(keywords);
+
+      return LedgerData.SearchUnassignedAccountsForEdition(this, date, filter);
+    }
+
 
     public FixedList<SubledgerType> SubledgerTypes() {
       return new FixedList<SubledgerType>(this.Subledgers().Select(x => x.SubledgerType));
@@ -282,6 +291,47 @@ namespace Empiria.FinancialAccounting {
     }
 
     #endregion Public methods
+
+    #region Private methods
+
+    private string BuildSearchAccountsFilter(string keywords) {
+      keywords = EmpiriaString.TrimSpacesAndControl(keywords);
+
+      string[] keywordsParts = keywords.Split(' ');
+
+      string accountNumber = string.Empty;
+
+      for (int i = 0; i < keywordsParts.Length; i++) {
+        string part = keywordsParts[i];
+
+        part = EmpiriaString.RemovePunctuation(part)
+                            .Replace(" ", string.Empty);
+
+        if (EmpiriaString.IsInteger(part)) {
+          accountNumber = part;
+          keywordsParts[i] = string.Empty;
+          break;
+        }
+      }
+
+      if (accountNumber.Length != 0 && keywordsParts.Length == 1) {
+        accountNumber = this.AccountsChart.FormatAccountNumber(accountNumber);
+
+        return $"NUMERO_CUENTA_ESTANDAR LIKE '{accountNumber}%'";
+
+      } else if (accountNumber.Length != 0 && keywordsParts.Length > 1) {
+        accountNumber = this.AccountsChart.FormatAccountNumber(accountNumber);
+
+        return $"NUMERO_CUENTA_ESTANDAR LIKE '{accountNumber}%' AND " +
+               SearchExpression.ParseAndLikeKeywords("keywords_cuenta_estandar_hist", String.Join(" ", keywordsParts));
+
+      } else {
+        return SearchExpression.ParseAndLikeKeywords("keywords_cuenta_estandar_hist", keywords);
+
+      }
+    }
+
+    #endregion Private methods
 
   }  // class Ledger
 

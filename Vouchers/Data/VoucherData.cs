@@ -107,18 +107,6 @@ namespace Empiria.FinancialAccounting.Vouchers.Data {
     }
 
 
-    static internal FixedList<LedgerAccount> SearchAccountsForVoucherEdition(Voucher voucher, string keywords) {
-      string sqlKeywords = SearchExpression.ParseAndLikeKeywords("keywords_cuenta_estandar_hist", keywords);
-
-      var dataOperation = DataOperation.Parse("@qry_cof_busca_cuentas_para_edicion",
-                                              voucher.Ledger.Id,
-                                              CommonMethods.FormatSqlDate(voucher.AccountingDate),
-                                              sqlKeywords);
-
-      return DataReader.GetFixedList<LedgerAccount>(dataOperation);
-    }
-
-
     static internal FixedList<SubledgerAccount> SearchSubledgerAccountsForVoucherEdition(Voucher voucher,
                                                                                           string keywords) {
       string sqlKeywords = SearchExpression.ParseAndLikeKeywords("keywords_cuenta_auxiliar", keywords);

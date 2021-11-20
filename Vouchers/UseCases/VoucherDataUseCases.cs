@@ -61,7 +61,9 @@ namespace Empiria.FinancialAccounting.Vouchers.UseCases {
 
       var voucher = Voucher.Parse(voucherId);
 
-      FixedList<LedgerAccount> accounts = voucher.SearchAccountsForEdition(keywords);
+      Assertion.Assert(voucher.IsOpened, "No se pueden regresar cuentas para edición porque la póliza ya está cerrada.");
+
+      FixedList<LedgerAccount> accounts = voucher.Ledger.SearchAssignedAccounts(keywords, voucher.AccountingDate);
 
       FixedList<Account> unassignedAccounts = voucher.Ledger.SearchUnassignedAccounts(keywords, voucher.AccountingDate);
 

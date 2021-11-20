@@ -326,13 +326,6 @@ namespace Empiria.FinancialAccounting.Vouchers {
     }
 
 
-    internal FixedList<LedgerAccount> SearchAccountsForEdition(string keywords) {
-      Assertion.Assert(this.IsOpened, "No hay cuentas para edición porque la póliza ya está cerrada.");
-
-      return VoucherData.SearchAccountsForVoucherEdition(this, keywords);
-    }
-
-
     internal FixedList<SubledgerAccount> SearchSubledgerAccountsForEdition(LedgerAccount account, string keywords) {
       Assertion.Assert(this.IsOpened, "No hay cuentas auxiliares para edición porque la póliza ya está cerrada.");
 
