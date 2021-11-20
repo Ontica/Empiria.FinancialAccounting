@@ -119,7 +119,7 @@ namespace Empiria.FinancialAccounting.BanobrasIntegration.VouchersImporter {
 
 
     internal string GetUniqueID() {
-      if (this.TipoContabilidad == 1) {
+      if (this.TipoContabilidad == 1 && IdSistema == 23) {
         return $"{this.TipoContabilidad}||{this.IdSistema}||{this.FechaAfectacion.ToString("yyyy-MM-dd")}||" +
                $"{this.NumeroVolante}||{this.Concepto}";
       } else {
