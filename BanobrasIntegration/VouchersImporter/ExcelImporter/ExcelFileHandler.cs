@@ -51,10 +51,12 @@ namespace Empiria.FinancialAccounting.BanobrasIntegration.VouchersImporter {
           voucherConcept = GetVoucherConcept(currentRow);
 
         } else if (IsVoucherEntryRow(currentRow)) {
-          ExcelVoucherEntry entry = GetExcelRowVoucherEntry(worksheetName, worksheetSection,
-                                                            currentRow, voucherConcept);
+          ExcelVoucherEntry entry = TryGetExcelRowVoucherEntry(worksheetName, worksheetSection,
+                                                               currentRow, voucherConcept);
 
-          entriesList.Add(entry);
+          if (entry != null) {
+            entriesList.Add(entry);
+          }
 
         } else {
           // no-op
@@ -115,8 +117,8 @@ namespace Empiria.FinancialAccounting.BanobrasIntegration.VouchersImporter {
     }
 
 
-    private ExcelVoucherEntry GetExcelRowVoucherEntry(string worksheetName, int worksheetSection,
-                                                      int row, string concept) {
+    private ExcelVoucherEntry TryGetExcelRowVoucherEntry(string worksheetName, int worksheetSection,
+                                                         int row, string concept) {
       var entry = new ExcelVoucherEntry(worksheetName, worksheetSection, row);
 
       entry.SetConcept(concept);
@@ -124,10 +126,15 @@ namespace Empiria.FinancialAccounting.BanobrasIntegration.VouchersImporter {
       entry.SetSubaccountWithSector(_excelFile.ReadCellValue<string>($"B{row}"));
       entry.SetCurrencyCode(_excelFile.ReadCellValue<string>($"C{row}"));
       entry.SetResponsibilityAreaCode(_excelFile.ReadCellValue<string>($"D{row}"));
+      if (_excelFile.ReadCellValue<decimal>($"E{row}", 0) == 0 &&
+          _excelFile.ReadCellValue<decimal>($"F{row}", 0) == 0) {
+        return null;
+      }
       entry.SetDebitOrCredit(_excelFile.ReadCellValue<decimal>($"E{row}", 0),
                              _excelFile.ReadCellValue<decimal>($"F{row}", 0));
       entry.SetSubledgerAccount(_excelFile.ReadCellValue<string>($"G{row}", string.Empty));
       entry.SetExchangeRate(_excelFile.ReadCellValue<decimal>($"H{row}", 1));
+
 
       return entry;
     }
