@@ -46,7 +46,7 @@ namespace Empiria.FinancialAccounting.Adapters {
       dto.AccountsChart = account.AccountsChart.MapToNamedEntity();
       dto.AreaRules = account.AreaRules;
       dto.CurrencyRules = account.CurrencyRules;
-      dto.SectorRules = account.SectorRules;
+      dto.SectorRules = LedgerMapper.MapSectorRules(account.SectorRules);
       dto.LedgerRules = LedgerMapper.MapLedgersRules(account.LedgerRules);
       dto.History = MapAccountHistory(account.GetHistory());
 

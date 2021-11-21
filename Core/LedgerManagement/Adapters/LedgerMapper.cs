@@ -58,7 +58,7 @@ namespace Empiria.FinancialAccounting.Adapters {
         DebtorCreditor = account.DebtorCreditor,
         Level = account.Level,
         Currencies = MapToNamedEntityList(account.CurrencyRules),
-        Sectors = MapSectors(account.SectorRules)
+        Sectors = MapSectorRules(account.SectorRules)
       };
     }
 
@@ -75,24 +75,25 @@ namespace Empiria.FinancialAccounting.Adapters {
         DebtorCreditor = ledgerAccount.DebtorCreditor,
         Level = ledgerAccount.Level,
         Currencies = MapToNamedEntityList(ledgerAccount.CurrencyRulesOn(date)),
-        Sectors = MapSectors(ledgerAccount.SectorRulesOn(date))
+        Sectors = MapSectorRules(ledgerAccount.SectorRulesOn(date))
       };
     }
 
-    private static FixedList<SectorRuleDto> MapSectors(FixedList<SectorRule> list) {
-      return new FixedList<SectorRuleDto>(list.Select(x => MapSector(x)));
+    static internal FixedList<SectorRuleDto> MapSectorRules(FixedList<SectorRule> list) {
+      return new FixedList<SectorRuleDto>(list.Select(x => MapSectorRule(x)));
     }
 
-    public static SectorRuleDto MapSector(SectorRule x) {
+    static public SectorRuleDto MapSectorRule(SectorRule x) {
       return new SectorRuleDto {
-        Id = x.Sector.Id,
-        Code = x.Sector.Code,
-        Name = x.Sector.Name,
-        Role = x.SectorRole
+        UID = x.Sector.Id.ToString(),
+        Sector = CataloguesMapper.MapSector(x.Sector),
+        SectorRole = x.SectorRole,
+        StartDate = x.StartDate,
+        EndDate = x.EndDate,
       };
     }
 
-    private static FixedList<NamedEntityDto> MapToNamedEntityList(FixedList<CurrencyRule> list) {
+    static private FixedList<NamedEntityDto> MapToNamedEntityList(FixedList<CurrencyRule> list) {
       return new FixedList<NamedEntityDto>(list.Select(x => x.Currency.MapToNamedEntity()));
     }
 

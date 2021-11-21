@@ -139,23 +139,27 @@ namespace Empiria.FinancialAccounting.Adapters {
       // no-op
     }
 
-    public int Id {
+    public string UID {
       get; internal set;
     }
 
-    public string Code {
+    public SectorDto Sector {
       get; internal set;
     }
 
-    public string Name {
+    public AccountRole SectorRole {
       get; internal set;
     }
 
-    public AccountRole Role {
+    public DateTime StartDate {
       get; internal set;
     }
 
-  }
+    public DateTime EndDate {
+      get; internal set;
+    }
+
+  }  // class SectorRuleDto
 
 
   public class LedgerRuleDto {

@@ -134,7 +134,7 @@ namespace Empiria.FinancialAccounting.Adapters {
       get; internal set;
     }
 
-    public FixedList<SectorRule> SectorRules {
+    public FixedList<SectorRuleDto> SectorRules {
       get; internal set;
     }
 

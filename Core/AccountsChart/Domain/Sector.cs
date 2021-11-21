@@ -16,7 +16,7 @@ namespace Empiria.FinancialAccounting {
 
     #region Constructors and parsers
 
-    private Sector() {
+    protected Sector() {
       // Required by Empiria Framework.
     }
 
@@ -74,11 +74,13 @@ namespace Empiria.FinancialAccounting {
 
     public Sector Parent {
       get {
-
-        if (_parentSectorId == -1) {
+        if (this.IsEmptyInstance) {
+          return this;
+        } else if (_parentSectorId == -1) {
           return Sector.Empty;
+        } else {
+          return Sector.Parse(_parentSectorId);
         }
-        return Sector.Parse(_parentSectorId);
       }
     }
 

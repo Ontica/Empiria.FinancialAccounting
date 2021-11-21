@@ -111,7 +111,7 @@ namespace Empiria.FinancialAccounting.Vouchers.Adapters {
         VoucherEntryType = entry.VoucherEntryType,
         LedgerAccount = LedgerMapper.MapAccount(entry.LedgerAccount, entry.Voucher.AccountingDate),
         Sector = entry.HasSector ?
-                 LedgerMapper.MapSector(entry.SectorRule) : null,
+                 LedgerMapper.MapSectorRule(entry.SectorRule) : null,
         SubledgerAccount = entry.HasSubledgerAccount ?
                            SubledgerMapper.MapToSubledgerAccountDescriptor(entry.SubledgerAccount) : null,
         Concept = entry.Concept,
