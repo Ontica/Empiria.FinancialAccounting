@@ -230,7 +230,7 @@ namespace Empiria.FinancialAccounting.BalanceEngine.Adapters {
       dto.StandardAccountId = entry.Account.Id;
       dto.CurrencyCode = entry.Currency.Code;
       dto.SectorCode = entry.Sector.Code;
-      dto.AccountParent = entry.Account.ParentNumber;
+      dto.AccountParent = entry.Account.FirstLevelAccountNumber;
       dto.AccountNumber = entry.Account.Number;
       dto.AccountName = entry.Account.Name;
 

@@ -113,17 +113,31 @@ namespace Empiria.FinancialAccounting {
       }
     }
 
-    public string GroupNumber {
+
+    public string FirstLevelAccountNumber {
       get {
-        return this.Number.Substring(0, 2) + "00";
+        if (this.AccountsChart.Id == 1) {
+          return this.Number.Substring(0, 4);
+        } else if (this.AccountsChart.Id == 152) {
+          return this.Number.Substring(0, 1);
+        } else {
+          return this.Number.Substring(0, 4);
+        }
       }
     }
 
-    public string ParentNumber {
+    public string GroupNumber {
       get {
-        return this.Number.Substring(0, 4);
+        if (this.AccountsChart.Id == 1) {
+          return this.Number.Substring(0, 2) + "00";
+        } else if (this.AccountsChart.Id == 152) {
+          return this.Number.Substring(0, 1);
+        } else {
+          return this.Number.Substring(0, 2) + "00";
+        }
       }
     }
+
 
     #endregion Public properties
 

@@ -160,11 +160,11 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
 
     public int Level {
       get {
-        return EmpiriaString.CountOccurences(Account.Number, '-') + 1;
+        return this.Account.Level;
       }
     }
 
-    
+
   } // class TrialBalanceComparativeEntry
 
 } // namespace Empiria.FinancialAccounting.BalanceEngine

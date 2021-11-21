@@ -1,7 +1,7 @@
 ﻿/* Empiria Financial *****************************************************************************************
 *                                                                                                            *
 *  Module   : Balance Engine                             Component : Domain Layer                            *
-*  Assembly : FinancialAccounting.BalanceEngine.dll      Pattern   : Empiria Plain Object                    *
+*  Assembly : FinancialAccounting.BalanceEngine.dll      Pattern   : Information Holder                      *
 *  Type     : TwoCurrenciesBalanceEntry                  License   : Please read LICENSE.txt file            *
 *                                                                                                            *
 *  Summary  : Represents an entry for a two columns balance entry.                                           *
@@ -15,100 +15,101 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
   public class TwoCurrenciesBalanceEntry : ITrialBalanceEntry {
 
     public Ledger Ledger {
-      get;
-      internal set;
+      get; internal set;
     }
 
+
     public Currency Currency {
-      get;
-      internal set;
+      get; internal set;
     }
 
 
     public StandardAccount Account {
-      get;
-      internal set;
+      get; internal set;
     }
 
 
     public Sector Sector {
-      get;
-      internal set;
+      get; internal set;
     }
 
 
     public int AccountId {
-      get;
-      internal set;
+      get; internal set;
     }
 
 
     public int SubledgerAccountId {
-      get;
-      internal set;
+      get; internal set;
     }
+
 
     public decimal InitialBalance {
-      get;
-      internal set;
+      get; internal set;
     }
+
 
     public decimal Debit {
-      get;
-      internal set;
+      get; internal set;
     }
+
 
     public decimal Credit {
-      get;
-      internal set;
+      get; internal set;
     }
+
 
     public decimal DomesticBalance {
-      get;
-      internal set;
+      get; internal set;
     }
+
 
     public decimal ForeignBalance {
-      get;
-      internal set;
+      get; internal set;
     }
+
 
     public decimal TotalBalance {
-      get;
-      internal set;
+      get; internal set;
     }
 
+
     public decimal ExchangeRate {
-      get;
-      internal set;
+      get; internal set;
     } = 1;
 
+
     public decimal AverageBalance {
-      get;
-      internal set;
+      get; internal set;
     } = 0;
+
 
     public string GroupName {
       get; internal set;
     } = string.Empty;
 
+
     public string GroupNumber {
       get; internal set;
     } = string.Empty;
+
 
     public string SubledgerAccountNumber {
       get; internal set;
     } = string.Empty;
 
+
     public int SubledgerNumberOfDigits {
       get; internal set;
     } = 0;
+
 
     public bool HasSector {
       get {
         return this.Sector.Code != "00";
       }
     }
+
 
     public bool NotHasSector {
       get {
@@ -128,14 +129,13 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
 
 
     public TrialBalanceItemType ItemType {
-      get;
-      internal set;
+      get; internal set;
     }
 
 
     public int Level {
       get {
-        return EmpiriaString.CountOccurences(Account.Number, '-') + 1;
+        return this.Account.Level;
       }
     }
 
@@ -146,6 +146,7 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
       this.TotalBalance += entry.TotalBalance;
       this.ExchangeRate = entry.ExchangeRate;
     }
+
 
   } // class TwoCurrenciesBalanceEntry
 

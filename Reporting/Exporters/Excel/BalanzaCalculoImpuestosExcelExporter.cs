@@ -49,7 +49,7 @@ namespace Empiria.FinancialAccounting.Reporting.Exporters.Excel {
       int i = 2;
 
       foreach (var entry in entries) {
-
+        // TODO DO Replace "-"
         string cuentaSinSector = entry.Cuenta.Contains("-") ? entry.Cuenta.Replace("-", "") : entry.Cuenta;
         for (int _i = cuentaSinSector.Length; _i <= 18; _i++) {
           cuentaSinSector += "0";
@@ -70,6 +70,7 @@ namespace Empiria.FinancialAccounting.Reporting.Exporters.Excel {
         excelFile.SetCell($"J{i}", entry.Contabilidad);
         excelFile.SetCell($"K{i}", entry.FechaConsulta);
 
+        // TODO
         excelFile.SetCell($"L{i}", entry.Cuenta.Substring(0, 1));
         excelFile.SetCell($"M{i}", entry.Cuenta.Substring(0, 2));
         excelFile.SetCell($"N{i}", entry.Cuenta.Substring(2, 2));

@@ -15,7 +15,6 @@ using Empiria.Collections;
 
 using Empiria.FinancialAccounting.BalanceEngine.Adapters;
 using Empiria.FinancialAccounting.BalanceEngine.Data;
-using System.Text.RegularExpressions;
 
 namespace Empiria.FinancialAccounting.BalanceEngine {
 
@@ -650,7 +649,6 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
 
 
     private List<TrialBalanceEntry> OrderingTrialBalance(List<TrialBalanceEntry> entries) {
-      List<TrialBalanceEntry> returnedEntries = new List<TrialBalanceEntry>();
 
       if (_command.WithSubledgerAccount && (_command.TrialBalanceType == TrialBalanceType.Balanza ||
           _command.TrialBalanceType == TrialBalanceType.SaldosPorCuenta ||
@@ -664,7 +662,7 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
                                             entry.SubledgerAccountNumber.Count() : 0;
           }
         }
-        return returnedEntries = entries.Where(a => !a.SubledgerAccountNumber.Contains("undefined"))
+        return entries.Where(a => !a.SubledgerAccountNumber.Contains("undefined"))
                                   .OrderBy(a => a.Ledger.Number)
                                   .ThenBy(a => a.Currency.Code)
                                   .ThenByDescending(a => a.Account.DebtorCreditor)
@@ -674,7 +672,7 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
                                   .ThenBy(a => a.SubledgerAccountNumber)
                                   .ToList();
       } else {
-        return returnedEntries = entries.OrderBy(a => a.Ledger.Number)
+        return entries.OrderBy(a => a.Ledger.Number)
                                   .ThenBy(a => a.Currency.Code)
                                   .ThenByDescending(a => a.Account.DebtorCreditor)
                                   .ThenBy(a => a.Account.Number)
