@@ -39,12 +39,12 @@ namespace Empiria.FinancialAccounting.Vouchers.UseCases {
     }
 
 
-    public FixedList<DateTime> OpenedAccountingDates(string ledgerUID) {
-      Assertion.AssertObject(ledgerUID, "ledgerUID");
+    public FixedList<DateTime> OpenedAccountingDates(string accountsChartUID) {
+      Assertion.AssertObject(accountsChartUID, "accountsChartUID");
 
-      var ledger = Ledger.Parse(ledgerUID);
+      var accountsChart = AccountsChart.Parse(accountsChartUID);
 
-      return ledger.OpenedAccountingDates();
+      return accountsChart.OpenedAccountingDates();
     }
 
 
@@ -56,7 +56,7 @@ namespace Empiria.FinancialAccounting.Vouchers.UseCases {
 
 
     public FixedList<LedgerAccountDto> SearchAccountsForVoucherEdition(int voucherId, string keywords) {
-      Assertion.Assert(voucherId > 0, "voucherId must be a non negative number.");
+      Assertion.Assert(voucherId > 0, "voucherId must be a positive number.");
       Assertion.AssertObject(keywords, "keywords");
 
       var voucher = Voucher.Parse(voucherId);
@@ -74,8 +74,8 @@ namespace Empiria.FinancialAccounting.Vouchers.UseCases {
     public FixedList<SubledgerAccountDescriptorDto> SearchSubledgerAccountsForVoucherEdition(int voucherId,
                                                                                              int accountId,
                                                                                              string keywords) {
-      Assertion.Assert(voucherId > 0, "voucherId must be a non negative number.");
-      Assertion.Assert(accountId > 0, "accountId must be a non negative number.");
+      Assertion.Assert(voucherId > 0, "voucherId must be a positive number.");
+      Assertion.Assert(accountId > 0, "accountId must be a positive number.");
       Assertion.AssertObject(keywords, "keywords");
 
       var voucher = Voucher.Parse(voucherId);

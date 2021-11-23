@@ -97,12 +97,6 @@ namespace Empiria.FinancialAccounting {
     }
 
 
-    [DataField("ID_CALENDARIO", ConvertFrom = typeof(long))]
-    internal int CalendarId {
-      get; private set;
-    }
-
-
     [DataField("FECHA_CIERRE", Default = "ExecutionServer.DateMaxValue")]
     public DateTime EndDate {
       get; private set;
@@ -251,9 +245,7 @@ namespace Empiria.FinancialAccounting {
 
 
     public bool IsAccountingDateOpened(DateTime accountingDate) {
-      FixedList<DateTime> openedAccoutingDates = this.OpenedAccountingDates();
-
-      return openedAccoutingDates.Contains(accountingDate);
+      return this.AccountsChart.IsAccountingDateOpened(accountingDate);
     }
 
 
@@ -262,18 +254,12 @@ namespace Empiria.FinancialAccounting {
     }
 
 
-    public FixedList<DateTime> OpenedAccountingDates() {
-      var calendar = Calendar.Parse(this.CalendarId);
-
-      return calendar.OpenedAccountingDates();
-    }
-
-
     public FixedList<LedgerAccount> SearchAssignedAccounts(string keywords, DateTime date) {
       string filter = BuildSearchAccountsFilter(keywords);
 
       return LedgerData.SearchAssignedAccountsForEdition(this, date, filter);
     }
+
 
     public FixedList<Account> SearchUnassignedAccounts(string keywords, DateTime date) {
       string filter = BuildSearchAccountsFilter(keywords);

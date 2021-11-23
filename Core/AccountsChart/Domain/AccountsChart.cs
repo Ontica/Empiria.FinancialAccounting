@@ -191,8 +191,10 @@ namespace Empiria.FinancialAccounting {
     }
 
 
-    public FixedList<Account> Search(string filter) {
-      return AccountsChartData.SearchAccounts(this, filter);
+    internal bool IsAccountingDateOpened(DateTime accountingDate) {
+      FixedList<DateTime> openedAccoutingDates = this.OpenedAccountingDates();
+
+      return openedAccoutingDates.Contains(accountingDate);
     }
 
 
@@ -240,6 +242,16 @@ namespace Empiria.FinancialAccounting {
       }
 
       return temp;
+    }
+
+
+    public FixedList<DateTime> OpenedAccountingDates() {
+      return this.MasterData.Calendar.OpenedAccountingDates();
+    }
+
+
+    public FixedList<Account> Search(string filter) {
+      return AccountsChartData.SearchAccounts(this, filter);
     }
 
 

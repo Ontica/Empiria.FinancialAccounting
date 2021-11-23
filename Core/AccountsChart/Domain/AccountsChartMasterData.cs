@@ -107,6 +107,11 @@ namespace Empiria.FinancialAccounting {
     } = new FixedList<Ledger>();
 
 
+    internal Calendar Calendar {
+      get;
+      private set;
+    }
+
     #endregion Properties
 
     #region Private methods
@@ -127,6 +132,8 @@ namespace Empiria.FinancialAccounting {
       this.Sectors = GetSectors(fields);
 
       this.Ledgers = GetLedgers();
+
+      this.Calendar = Calendar.Parse(fields.Get<int>("calendarId"));
     }
 
 
