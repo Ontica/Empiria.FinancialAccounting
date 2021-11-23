@@ -419,17 +419,38 @@ namespace Empiria.FinancialAccounting.Reporting.Exporters.Excel {
 
     // TODO: CLEAN THIS CODE. ISSUE USING NEW CHART OF ACCOUNTS
     private string GetLedgerLevelAccountNumber(string accountNumber) {
-      return accountNumber.Substring(0, 4);
+      var temp = string.Empty;
+
+      if (accountNumber.Contains("-")) {
+        temp = accountNumber.Substring(0, 4);
+      } else if (accountNumber.Contains(".")) {
+        temp = accountNumber.Substring(0, 1);
+      }
+
+      return temp;
     }
 
 
     // TODO: CLEAN THIS CODE. ISSUE USING NEW CHART OF ACCOUNTS
     private string GetSubAccountNumberWithSector(string accountNumber, string sectorCode) {
-      var temp = accountNumber.Substring(4);
+      var temp = string.Empty;
+      
+      if (accountNumber.Contains("-")) {
 
-      temp = temp.Replace("-", String.Empty);
+        temp = accountNumber.Substring(4);
 
-      temp = temp.PadRight(12, '0');
+        temp = temp.Replace("-", String.Empty);
+
+        temp = temp.PadRight(12, '0');
+
+      } else if (accountNumber.Contains(".")) {
+
+        temp = accountNumber.Substring(1);
+
+        temp = temp.Replace(".", String.Empty);
+
+        temp = temp.PadRight(12, '0');
+      }
 
       return temp + sectorCode;
     }
