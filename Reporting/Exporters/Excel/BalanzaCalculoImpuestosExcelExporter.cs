@@ -45,13 +45,26 @@ namespace Empiria.FinancialAccounting.Reporting.Exporters.Excel {
 
     #region Private methods
 
+    private string AccountNumberReplaceCharacters(string accountNumber) {
+      string returnedString = accountNumber;
+
+      if (accountNumber.Contains("-")) {
+        returnedString = accountNumber.Replace("-", "");
+      } else if (accountNumber.Contains(".")) {
+        returnedString = accountNumber.Replace(".", "");
+      }
+      return returnedString;
+    }
+
+
     private void FillOutRows(ExcelFile excelFile, IEnumerable<BalanzaCalculoImpuestosEntry> entries) {
       int i = 2;
 
       foreach (var entry in entries) {
         // TODO DO Replace "-"
-        string cuentaSinSector = entry.Cuenta.Contains("-") ? entry.Cuenta.Replace("-", "") : entry.Cuenta;
-        for (int _i = cuentaSinSector.Length; _i <= 18; _i++) {
+        string cuentaSinSector = AccountNumberReplaceCharacters(entry.Cuenta);
+
+        for (int _i = cuentaSinSector.Length; _i <= 17; _i++) {
           cuentaSinSector += "0";
         }
         string cuentaSector = $"{cuentaSinSector.Substring(0, 16)}{entry.Sector}";
@@ -71,10 +84,10 @@ namespace Empiria.FinancialAccounting.Reporting.Exporters.Excel {
         excelFile.SetCell($"K{i}", entry.FechaConsulta);
 
         // TODO
-        excelFile.SetCell($"L{i}", entry.Cuenta.Substring(0, 1));
-        excelFile.SetCell($"M{i}", entry.Cuenta.Substring(0, 2));
-        excelFile.SetCell($"N{i}", entry.Cuenta.Substring(2, 2));
-        excelFile.SetCell($"O{i}", entry.Cuenta.Substring(0, 4));
+        excelFile.SetCell($"L{i}", cuentaSinSector.Substring(0, 1));
+        excelFile.SetCell($"M{i}", cuentaSinSector.Substring(0, 2));
+        excelFile.SetCell($"N{i}", cuentaSinSector.Substring(2, 2));
+        excelFile.SetCell($"O{i}", cuentaSinSector.Substring(0, 4));
         excelFile.SetCell($"P{i}", cuentaSector.Substring(4, 2));
         excelFile.SetCell($"Q{i}", cuentaSector.Substring(6, 2));
         excelFile.SetCell($"R{i}", cuentaSector.Substring(8, 2));
@@ -104,6 +117,7 @@ namespace Empiria.FinancialAccounting.Reporting.Exporters.Excel {
         i++;
       }
     }
+
 
     #endregion Private methods
 

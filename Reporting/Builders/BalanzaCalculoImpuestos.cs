@@ -25,7 +25,8 @@ namespace Empiria.FinancialAccounting.Reporting.Builders {
       Assertion.AssertObject(command, "command");
 
       TrialBalanceCommand trialBalanceCommand = GetTrialBalanceCommand(command);
-      
+      trialBalanceCommand.FromAccount = "1101";
+      trialBalanceCommand.ToAccount = "1103";
       using (var usecases = TrialBalanceUseCases.UseCaseInteractor()) {
         TrialBalanceDto trialBalance = usecases.BuildTrialBalance(trialBalanceCommand);
 

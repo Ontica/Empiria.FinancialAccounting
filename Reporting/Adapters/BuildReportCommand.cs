@@ -38,6 +38,10 @@ namespace Empiria.FinancialAccounting.Reporting {
     public string[] Ledgers {
       get; set;
     }
+
+    public string ShippingType {
+      get; set;
+    } = "N";
   } // class BuildReportCommand
 
 } // namespace Empiria.FinancialAccounting.Reporting
