@@ -47,11 +47,10 @@ namespace Empiria.FinancialAccounting.Reporting.Exporters.Excel {
 
     private string AccountNumberReplaceCharacters(string accountNumber) {
       string returnedString = accountNumber;
-
       if (accountNumber.Contains("-")) {
-        returnedString = accountNumber.Replace("-", "");
+        returnedString = accountNumber.Replace("-", string.Empty);
       } else if (accountNumber.Contains(".")) {
-        returnedString = accountNumber.Replace(".", "");
+        returnedString = accountNumber.Replace(".", string.Empty);
       }
       return returnedString;
     }
@@ -67,8 +66,8 @@ namespace Empiria.FinancialAccounting.Reporting.Exporters.Excel {
         for (int _i = cuentaSinSector.Length; _i <= 17; _i++) {
           cuentaSinSector += "0";
         }
-        string cuentaSector = $"{cuentaSinSector.Substring(0, 16)}{entry.Sector}";
 
+        string cuentaSector = $"{cuentaSinSector.Substring(0, 16)}{entry.Sector}";
 
         excelFile.SetCell($"A{i}", entry.Moneda);
         excelFile.SetCell($"B{i}", entry.Cuenta);
