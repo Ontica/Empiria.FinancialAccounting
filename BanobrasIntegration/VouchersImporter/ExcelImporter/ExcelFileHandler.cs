@@ -141,7 +141,7 @@ namespace Empiria.FinancialAccounting.BanobrasIntegration.VouchersImporter {
 
 
     private bool IsCandidateWorksheet() {
-      return this.VoucherDataEndRow() > 0;
+      return this.VoucherDataEndRow() > 2;
     }
 
     private bool IsVoucherEntryRow(int row) {
@@ -149,14 +149,42 @@ namespace Empiria.FinancialAccounting.BanobrasIntegration.VouchersImporter {
         return false;
       }
 
-      if (_excelFile.IsNotEmpty($"A{row}", true) ||
-          _excelFile.IsNotEmpty($"B{row}", true) ||
-          _excelFile.IsNotEmpty($"C{row}", true) ||
-          _excelFile.IsNotEmpty($"D{row}", true)) {
-        return true;
+      if (_excelFile.IsEmpty($"A{row}", true) ||
+          _excelFile.IsEmpty($"B{row}", true) ||
+          _excelFile.IsEmpty($"C{row}", true) ||
+          _excelFile.IsEmpty($"D{row}", true)) {
+        return false;
       }
 
-      return false;
+      // Cuenta de mayor
+      string cellValue = _excelFile.ReadCellValue<string>($"A{row}");
+
+      if (cellValue.Length != 4 && cellValue.Length != 1) {
+        return false;
+      }
+
+      // Subcuenta rellena con ceros y con clave de sector, sin separadores
+      cellValue = _excelFile.ReadCellValue<string>($"B{row}");
+
+      if (cellValue.Length != 14 && cellValue.Length != 22) {
+        return false;
+      }
+
+      // Clave de la moneda en dos posiciones
+      cellValue = _excelFile.ReadCellValue<string>($"C{row}");
+
+      if (cellValue.Length != 2) {
+        return false;
+      }
+
+      // Clave del mayopr en seis posiciones
+      cellValue = _excelFile.ReadCellValue<string>($"D{row}");
+
+      if (cellValue.Length != 6) {
+        return false;
+      }
+
+      return true;
     }
 
 
