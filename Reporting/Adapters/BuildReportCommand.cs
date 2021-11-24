@@ -41,7 +41,7 @@ namespace Empiria.FinancialAccounting.Reporting {
 
     public SendType SendType {
       get; set;
-    } = SendType.C;
+    } = SendType.N;
 
   } // class BuildReportCommand
 

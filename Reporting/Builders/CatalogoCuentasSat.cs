@@ -24,7 +24,6 @@ namespace Empiria.FinancialAccounting.Reporting.Builders {
       Assertion.AssertObject(command, "command");
 
       AccountsSearchCommand searchCommand = GetAccountsSearchCommand(command);
-
       using (var usecases = AccountsChartUseCases.UseCaseInteractor()) {
         AccountsChartDto accountsChart = usecases.SearchAccounts(command.AccountsChartUID, searchCommand);
 
@@ -54,6 +53,8 @@ namespace Empiria.FinancialAccounting.Reporting.Builders {
       columns.Add(new DataTableColumn("subcuentaDe", "Subcuenta de", "text"));
       columns.Add(new DataTableColumn("nivel", "Nivel", "decimal", 0));
       columns.Add(new DataTableColumn("naturaleza", "Naturaleza", "text"));
+      columns.Add(new DataTableColumn("fechaModificacion", "Última modificación", "date"));
+      columns.Add(new DataTableColumn("baja", "Baja", "text"));
 
       return columns.ToFixedList();
     }
@@ -83,7 +84,10 @@ namespace Empiria.FinancialAccounting.Reporting.Builders {
         Descripcion = account.Name,
         SubcuentaDe = account.Level > 1 ? account.Parent : account.Number,
         Nivel = account.Level,
-        Naturaleza = account.DebtorCreditor == DebtorCreditorType.Deudora ? "D" : "A"
+        Naturaleza = account.DebtorCreditor == DebtorCreditorType.Deudora ? "D" : "A",
+        FechaModificacion = account.EndDate < new DateTime(2049,12,31) ? 
+                            account.EndDate : account.StartDate,
+        Baja = account.SummaryWithNotChildren ? "Sí" : ""
       };
 
     }
@@ -125,6 +129,15 @@ namespace Empiria.FinancialAccounting.Reporting.Builders {
       get; internal set;
     }
 
+
+    public DateTime FechaModificacion {
+      get; internal set;
+    }
+
+
+    public string Baja {
+      get; internal set;
+    }
 
   }  // class CatalogoCuentasSatEntry
 

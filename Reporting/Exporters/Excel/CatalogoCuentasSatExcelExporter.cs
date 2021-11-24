@@ -58,6 +58,8 @@ namespace Empiria.FinancialAccounting.Reporting.Exporters.Excel {
         excelFile.SetCell($"D{i}", entry.SubcuentaDe);
         excelFile.SetCell($"E{i}", entry.Nivel);
         excelFile.SetCell($"F{i}", entry.Naturaleza);
+        excelFile.SetCell($"G{i}", entry.FechaModificacion);
+        excelFile.SetCell($"H{i}", entry.Baja);
 
         i++;
       }
