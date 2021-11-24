@@ -127,21 +127,21 @@ namespace Empiria.FinancialAccounting.Vouchers {
     [DataField("ID_ELABORADA_POR", ConvertFrom = typeof(long))]
     public Participant ElaboratedBy {
       get;
-      internal set;
+      private set;
     } = Participant.Empty;
 
 
     [DataField("ID_AUTORIZADA_POR", ConvertFrom = typeof(long))]
     public Participant AuthorizedBy {
       get;
-      internal set;
+      private set;
     } = Participant.Empty;
 
 
     [DataField("ID_ENVIADA_DIARIO_POR", ConvertFrom = typeof(long))]
     public Participant ClosedBy {
       get;
-      internal set;
+      private set;
     } = Participant.Empty;
 
 

@@ -16,7 +16,7 @@ namespace Empiria.FinancialAccounting {
 
     #region Constructors and parsers
 
-    private Currency() {
+    protected Currency() {
       // Required by Empiria Framework.
     }
 

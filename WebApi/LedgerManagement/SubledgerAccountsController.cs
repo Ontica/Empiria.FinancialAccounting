@@ -63,6 +63,8 @@ namespace Empiria.FinancialAccounting.WebApi {
     [Route("v2/financial-accounting/subledger-accounts/search")]
     public CollectionModel SearchSubledgerAccounts([FromBody] SearchSubledgerAccountCommand command) {
 
+      base.RequireBody(command);
+
       using (var usecases = SubledgerUseCases.UseCaseInteractor()) {
         FixedList<SubledgerAccountDescriptorDto> list = usecases.SearchSubledgerAccounts(command);
 
@@ -74,6 +76,8 @@ namespace Empiria.FinancialAccounting.WebApi {
     [HttpPost]
     [Route("v2/financial-accounting/subledger-accounts")]
     public SingleObjectModel CreateSubledgerAccount([FromBody] SubledgerAccountFields fields) {
+
+      base.RequireBody(fields);
 
       using (var usecases = SubledgerUseCases.UseCaseInteractor()) {
         SubledgerAccountDto subledgerAccount = usecases.CreateSubledgerAccount(fields);
@@ -99,6 +103,8 @@ namespace Empiria.FinancialAccounting.WebApi {
     [Route("v2/financial-accounting/subledger-accounts/{subledgerAccountId:int}")]
     public SingleObjectModel UpdateSubledgerAccount([FromUri] int subledgerAccountId,
                                                     [FromBody] SubledgerAccountFields fields) {
+
+      base.RequireBody(fields);
 
       using (var usecases = SubledgerUseCases.UseCaseInteractor()) {
         SubledgerAccountDto subledgerAccount = usecases.UpdateSubledgerAccount(subledgerAccountId, fields);

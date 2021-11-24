@@ -53,7 +53,7 @@ namespace Empiria.FinancialAccounting.BanobrasIntegration.VouchersImporter.UseCa
                                                                   FileData excelFileData, bool dryRun) {
       FileInfo excelFile = AssertParametersAreValidAndGetFileInfo(command, excelFileData);
 
-      PrepareCommandForImportTextFile(command);
+      PrepareCommandForFileImportation(command);
 
       var voucher = Voucher.Parse(voucherId);
 
@@ -71,7 +71,7 @@ namespace Empiria.FinancialAccounting.BanobrasIntegration.VouchersImporter.UseCa
                                                             FileData excelFileData, bool dryRun) {
       FileInfo excelFile = AssertParametersAreValidAndGetFileInfo(command, excelFileData);
 
-      PrepareCommandForImportTextFile(command);
+      PrepareCommandForFileImportation(command);
 
       var importer = new ExcelVouchersImporter(command, excelFile);
 
@@ -101,7 +101,7 @@ namespace Empiria.FinancialAccounting.BanobrasIntegration.VouchersImporter.UseCa
                                                            FileData textFileData, bool dryRun) {
       FileInfo textFile = AssertParametersAreValidAndGetFileInfo(command, textFileData);
 
-      PrepareCommandForImportTextFile(command);
+      PrepareCommandForFileImportation(command);
 
       var importer = new TextFileImporter(command, textFile);
 
@@ -126,7 +126,7 @@ namespace Empiria.FinancialAccounting.BanobrasIntegration.VouchersImporter.UseCa
     }
 
 
-    private void PrepareCommandForImportTextFile(ImportVouchersCommand command) {
+    private void PrepareCommandForFileImportation(ImportVouchersCommand command) {
       if (command.TransactionTypeUID.Length == 0) {
         command.TransactionTypeUID = "d7b175e7-33e8-4abf-8554-dab648af9384";
       }
