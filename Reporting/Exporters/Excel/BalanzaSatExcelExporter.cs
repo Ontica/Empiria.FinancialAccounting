@@ -50,15 +50,19 @@ namespace Empiria.FinancialAccounting.Reporting.Exporters.Excel {
 
     private void FillOutRows(ExcelFile excelFile, IEnumerable<BalanzaSatEntry> entries) {
       int i = 5;
-
+      
       foreach (var entry in entries) {
         excelFile.SetCell($"A{i}", entry.Cuenta);
         excelFile.SetCell($"B{i}", entry.SaldoInicial);
         excelFile.SetCell($"C{i}", entry.Debe);
         excelFile.SetCell($"D{i}", entry.Haber);
         excelFile.SetCell($"E{i}", entry.SaldoFinal);
-
+        excelFile.SetCell($"F{i}", entry.FechaModificacion);
         i++;
+      }
+
+      if (_reportData.Command.SendType == SendType.N) {
+        excelFile.RemoveColumn("F");
       }
     }
 

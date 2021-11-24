@@ -39,9 +39,18 @@ namespace Empiria.FinancialAccounting.Reporting {
       get; set;
     }
 
-    public string ShippingType {
+    public SendType SendType {
       get; set;
-    } = "N";
+    } = SendType.C;
+
   } // class BuildReportCommand
+
+  public enum SendType {
+
+    N,
+
+    C
+
+  }
 
 } // namespace Empiria.FinancialAccounting.Reporting

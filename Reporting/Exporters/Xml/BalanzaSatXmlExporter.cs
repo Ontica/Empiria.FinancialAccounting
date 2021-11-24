@@ -82,7 +82,7 @@ namespace Empiria.FinancialAccounting.Reporting.Exporters.Xml {
       root.SetAttribute("RFC", "BNO670315CD0");
       root.SetAttribute("Mes", _reportData.Command.ToDate.ToString("MM"));
       root.SetAttribute("Anio", _reportData.Command.ToDate.ToString("yyyy"));
-      root.SetAttribute("TipoEnvio", _reportData.Command.ShippingType);
+      root.SetAttribute("TipoEnvio", _reportData.Command.SendType.ToString());
 
       return root;
     }

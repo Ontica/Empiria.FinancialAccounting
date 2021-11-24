@@ -806,6 +806,7 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
         entry.Credit = 0;
         entry.CurrentBalance = 0;
       }
+      entry.LastChangeDate = balanceEntry.LastChangeDate;
 
       TrialBalanceItemType itemType = TrialBalanceItemType.BalanceEntry;
 

@@ -41,7 +41,7 @@ namespace Empiria.FinancialAccounting.Reporting.Builders {
     #region Private methods
 
 
-    static private FixedList<DataTableColumn> GetReportColumns() {
+    static private FixedList<DataTableColumn> GetReportColumns(BuildReportCommand command) {
       List<DataTableColumn> columns = new List<DataTableColumn>();
 
       columns.Add(new DataTableColumn("cuenta", "Cuenta", "text-nowrap"));
@@ -49,6 +49,10 @@ namespace Empiria.FinancialAccounting.Reporting.Builders {
       columns.Add(new DataTableColumn("debe", "Debe", "decimal"));
       columns.Add(new DataTableColumn("haber", "Haber", "decimal"));
       columns.Add(new DataTableColumn("saldoFinal", "Saldo Final", "decimal"));
+      
+      if (command.SendType == SendType.C) {
+        columns.Add(new DataTableColumn("fechaModificacion", "Fecha Modificación", "date"));
+      }
 
       return columns.ToFixedList();
     }
@@ -63,6 +67,7 @@ namespace Empiria.FinancialAccounting.Reporting.Builders {
         UseDefaultValuation = true,
         ConsolidateBalancesToTargetCurrency = true,
         ShowCascadeBalances = false,
+        WithAverageBalance = true,
         InitialPeriod = new TrialBalanceCommandPeriod {
           FromDate = new DateTime(command.ToDate.Year, command.ToDate.Month, 1),
           ToDate = command.ToDate
@@ -78,7 +83,8 @@ namespace Empiria.FinancialAccounting.Reporting.Builders {
         SaldoInicial = entry.InitialBalance,
         Debe = entry.Debit,
         Haber = entry.Credit,
-        SaldoFinal = entry.CurrentBalance
+        SaldoFinal = entry.CurrentBalance,
+        FechaModificacion = entry.LastChangeDate
       };
     }
 
@@ -87,7 +93,7 @@ namespace Empiria.FinancialAccounting.Reporting.Builders {
                                                     TrialBalanceDto trialBalance) {
       return new ReportDataDto {
         Command = command,
-        Columns = GetReportColumns(),
+        Columns = GetReportColumns(command),
         Entries = MapToReportDataEntries(trialBalance.Entries)
       };
     }
@@ -128,6 +134,12 @@ namespace Empiria.FinancialAccounting.Reporting.Builders {
 
     public decimal SaldoFinal {
       get; internal set;
+    }
+
+
+    public DateTime FechaModificacion {
+      get;
+      internal set;
     }
 
   }  // class BalanzaSatEntry
