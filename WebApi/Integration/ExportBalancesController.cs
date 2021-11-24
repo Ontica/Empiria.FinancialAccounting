@@ -28,8 +28,6 @@ namespace Empiria.FinancialAccounting.WebApi.BanobrasIntegration {
 
       base.RequireBody(command);
 
-      command.GuardarSaldos = false;
-
       using (var usecases = ExportBalancesUseCases.UseCaseInteractor()) {
 
         FixedList<ExportedBalancesDto> balancesDto = usecases.ExportBalancesByDay(command);
