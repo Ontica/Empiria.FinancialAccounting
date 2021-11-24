@@ -445,11 +445,11 @@ namespace Empiria.FinancialAccounting.Reporting.Exporters.Excel {
 
       } else if (accountNumber.Contains(".")) {
 
-        temp = accountNumber.Substring(1);
+        temp = accountNumber.Substring(2);
 
         temp = temp.Replace(".", String.Empty);
 
-        temp = temp.PadRight(12, '0');
+        temp = temp.PadRight(20, '0');
       }
 
       return temp + sectorCode;
