@@ -126,7 +126,7 @@ namespace Empiria.FinancialAccounting.Adapters {
     }
 
 
-    public FixedList<SectorRuleDto> Sectors {
+    public FixedList<SectorRuleShortDto> Sectors {
       get; internal set;
     }
 
@@ -161,6 +161,30 @@ namespace Empiria.FinancialAccounting.Adapters {
 
   }  // class SectorRuleDto
 
+
+  public class SectorRuleShortDto {
+
+    internal SectorRuleShortDto() {
+      // no-op
+    }
+
+    public int Id {
+      get; internal set;
+    }
+
+    public string Code {
+      get; internal set;
+    }
+
+    public string Name {
+      get; internal set;
+    }
+
+    public AccountRole Role {
+      get; internal set;
+    }
+
+  }  // class SectorRuleDto
 
   public class LedgerRuleDto {
 
