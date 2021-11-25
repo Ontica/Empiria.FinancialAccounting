@@ -37,8 +37,8 @@ namespace Empiria.FinancialAccounting.BanobrasIntegration.BalancesExporter.Data 
     }
 
 
-    static internal void WriteBalancesByMonth(DateTime fecha, FixedList<ExportedBalancesDto> balances) {
-      DeleteStoredBalancesByMonth(fecha);
+    static internal void WriteBalancesByMonth(ExportBalancesCommand command, FixedList<ExportedBalancesDto> balances) {
+      DeleteStoredBalancesByMonth(command);
 
       foreach (var balance in balances) {
         WriteBalancesByMonth(balance);
@@ -50,9 +50,11 @@ namespace Empiria.FinancialAccounting.BanobrasIntegration.BalancesExporter.Data 
 
     #region Private methods
 
-    static private void DeleteStoredBalancesByMonth(DateTime fecha) {
+    static private void DeleteStoredBalancesByMonth(ExportBalancesCommand command) {
       var dataOperation = DataOperation.Parse("del_scon_saldos_ant",
-                                              fecha.Year, fecha.Month);
+                                              command.Empresa,
+                                              command.Fecha.Year,
+                                              command.Fecha.Month);
 
       DataWriter.Execute(dataOperation);
     }
