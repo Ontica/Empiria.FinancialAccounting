@@ -40,13 +40,6 @@ namespace Empiria.FinancialAccounting.BanobrasIntegration.VouchersImporter {
     }
 
 
-    internal ImportVouchersResult DryRunImport(Voucher voucher) {
-      VoucherImporter voucherImporter = GetVoucherImporter(voucher);
-
-      return voucherImporter.DryRunImport();
-    }
-
-
     internal ImportVouchersResult Import() {
       VoucherImporter voucherImporter = GetVoucherImporter();
 
@@ -54,23 +47,7 @@ namespace Empiria.FinancialAccounting.BanobrasIntegration.VouchersImporter {
     }
 
 
-    internal ImportVouchersResult Import(Voucher voucher) {
-      VoucherImporter voucherImporter = GetVoucherImporter(voucher);
-
-      return voucherImporter.Import();
-    }
-
-
     private VoucherImporter GetVoucherImporter() {
-      var structurer = new ExcelFileStructurer(_command, _excelFileEntries);
-
-      FixedList<ToImportVoucher> toImport = structurer.GetToImportVouchersList();
-
-      return new VoucherImporter(_command, toImport);
-    }
-
-
-    private VoucherImporter GetVoucherImporter(Voucher voucher) {
       var structurer = new ExcelFileStructurer(_command, _excelFileEntries);
 
       FixedList<ToImportVoucher> toImport = structurer.GetToImportVouchersList();

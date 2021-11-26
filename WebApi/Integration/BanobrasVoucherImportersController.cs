@@ -48,26 +48,6 @@ namespace Empiria.FinancialAccounting.WebApi.BanobrasIntegration {
 
 
     [HttpPost]
-    [Route("v2/financial-accounting/vouchers/{voucherId:int}/entries/import-from-excel")]
-    [Route("v2/financial-accounting/vouchers/{voucherId:int}/entries/import-from-excel/dry-run")]
-    public SingleObjectModel ImportVoucherEntriesFromExcelFile([FromUri] int voucherId) {
-
-      HttpRequest httpRequest = GetValidatedHttpRequest();
-
-      FileData excelFile = GetFileDataFromRequest(httpRequest);
-      ImportVouchersCommand command = GetImportVoucherCommandFromRequest(httpRequest);
-
-      bool dryRun = RouteContainsDryRunFlag();
-
-      using (var usecases = ImportVouchersUseCases.UseCaseInteractor()) {
-        ImportVouchersResult result = usecases.ImportVoucherEntriesFromExcelFile(voucherId, command, excelFile, dryRun);
-
-        return new SingleObjectModel(base.Request, result);
-      }
-    }
-
-
-    [HttpPost]
     [Route("v2/financial-accounting/vouchers/import-from-interfaz-unica")]
     [Route("v2/financial-accounting/vouchers/import-from-interfaz-unica/dry-run")]
     public SingleObjectModel InterfazUnicaVoucherImporter([FromBody] InterfazUnicaImporterCommand command) {

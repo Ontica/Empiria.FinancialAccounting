@@ -36,36 +36,6 @@ namespace Empiria.FinancialAccounting.BanobrasIntegration.VouchersImporter.UseCa
 
     #region Importers
 
-    public ImportVouchersResult StandardVoucherImportation(VoucherImportationCommand command, bool dryRun) {
-      Assertion.AssertObject(command, "command");
-
-      var importer = new StandardVoucherImporter(command);
-
-      if (dryRun) {
-        return importer.DryRunImport();
-      } else {
-        return importer.Import();
-      }
-    }
-
-
-    public ImportVouchersResult ImportVoucherEntriesFromExcelFile(int voucherId, ImportVouchersCommand command,
-                                                                  FileData excelFileData, bool dryRun) {
-      FileInfo excelFile = AssertParametersAreValidAndGetFileInfo(command, excelFileData);
-
-      PrepareCommandForFileImportation(command);
-
-      var voucher = Voucher.Parse(voucherId);
-
-      var importer = new ExcelVouchersImporter(command, excelFile);
-
-      if (dryRun) {
-        return importer.DryRunImport(voucher);
-      } else {
-        return importer.Import(voucher);
-      }
-    }
-
 
     public ImportVouchersResult ImportVouchersFromExcelFile(ImportVouchersCommand command,
                                                             FileData excelFileData, bool dryRun) {
