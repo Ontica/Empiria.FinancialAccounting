@@ -8,8 +8,6 @@
 *                                                                                                            *
 ************************* Copyright(c) La Vía Óntica SC, Ontica LLC and contributors. All rights reserved. **/
 using System;
-using System.Linq;
-using System.Text.RegularExpressions;
 
 using Empiria.Collections;
 using Empiria.FinancialAccounting.Data;
@@ -114,6 +112,43 @@ namespace Empiria.FinancialAccounting {
     #endregion Public properties
 
     #region Public methods
+
+    internal string BuildSearchAccountsFilter(string keywords) {
+      keywords = EmpiriaString.TrimSpacesAndControl(keywords);
+
+      string[] keywordsParts = keywords.Split(' ');
+
+      string accountNumber = string.Empty;
+
+      for (int i = 0; i < keywordsParts.Length; i++) {
+        string part = keywordsParts[i];
+
+        part = EmpiriaString.RemovePunctuation(part)
+                            .Replace(" ", string.Empty);
+
+        if (EmpiriaString.IsInteger(part)) {
+          accountNumber = part;
+          keywordsParts[i] = string.Empty;
+          break;
+        }
+      }
+
+      if (accountNumber.Length != 0 && keywordsParts.Length == 1) {
+        accountNumber = this.FormatAccountNumber(accountNumber);
+
+        return $"NUMERO_CUENTA_ESTANDAR LIKE '{accountNumber}%'";
+
+      } else if (accountNumber.Length != 0 && keywordsParts.Length > 1) {
+        accountNumber = this.FormatAccountNumber(accountNumber);
+
+        return $"NUMERO_CUENTA_ESTANDAR LIKE '{accountNumber}%' AND " +
+               SearchExpression.ParseAndLikeKeywords("keywords_cuenta_estandar_hist", String.Join(" ", keywordsParts));
+
+      } else {
+        return SearchExpression.ParseAndLikeKeywords("keywords_cuenta_estandar_hist", keywords);
+      }
+    }
+
 
     public Account GetAccount(string accountNumber) {
       Account account = TryGetAccount(accountNumber);

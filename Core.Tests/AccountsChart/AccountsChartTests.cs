@@ -72,7 +72,9 @@ namespace Empiria.FinancialAccounting.Tests {
         ToAccount = "2699"
       };
 
-      FixedList<Account> accounts = chart.Search(searchCommand.MapToFilterString());
+      string filter = searchCommand.MapToFilterString(chart);
+
+      FixedList<Account> accounts = chart.Search(filter);
 
       Assert.NotNull(accounts);
 

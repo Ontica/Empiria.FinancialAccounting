@@ -92,7 +92,7 @@ namespace Empiria.FinancialAccounting.UseCases {
 
       var accountsChart = AccountsChart.Parse(accountsChartUID);
 
-      string filter = command.MapToFilterString();
+      string filter = command.MapToFilterString(accountsChart);
 
       FixedList<Account> accounts = accountsChart.Search(filter);
 

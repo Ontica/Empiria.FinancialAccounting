@@ -79,8 +79,9 @@ namespace Empiria.FinancialAccounting.Adapters {
 
     #region Public methods
 
-    static public string MapToFilterString(this AccountsSearchCommand command) {
-      string keywordsFilter = BuildKeywordsFilter(command.Keywords);
+    static public string MapToFilterString(this AccountsSearchCommand command,
+                                           AccountsChart accountsChart) {
+      string keywordsFilter = BuildKeywordsFilter(command.Keywords, accountsChart);
       string rangeFilter = BuildAccountsRangeFilter(command.FromAccount, command.ToAccount);
       string typeFilter = BuildAccountsTypeFilter(command.Types);
       string roleFilter = BuildAccountsRoleFilter(command.Roles);
@@ -173,8 +174,8 @@ namespace Empiria.FinancialAccounting.Adapters {
 
 
 
-    static private string BuildKeywordsFilter(string keywords) {
-      return SearchExpression.ParseAndLikeKeywords("KEYWORDS_CUENTA_ESTANDAR_HIST", keywords);
+    static private string BuildKeywordsFilter(string keywords, AccountsChart accountsChart) {
+      return accountsChart.BuildSearchAccountsFilter(keywords);
     }
 
 
