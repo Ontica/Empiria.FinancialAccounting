@@ -12,17 +12,19 @@ using System;
 namespace Empiria.FinancialAccounting.Vouchers.Adapters {
 
   /// <summary>Data structure that serves as an adapter to create or update vouchers entries data.</summary>
-  public class VoucherEntryFields {
+  public class VoucherEntryFields : IVoucherEntry {
 
     public int VoucherId {
       get; set;
     }
 
+    public int StandardAccountId {
+      get; set;
+    }
 
     public int LedgerAccountId {
       get; set;
     }
-
 
     public int SectorId {
       get; set;
@@ -32,6 +34,11 @@ namespace Empiria.FinancialAccounting.Vouchers.Adapters {
     public int SubledgerAccountId {
       get; set;
     }
+
+
+    public string SubledgerAccountNumber {
+      get; set;
+    } = string.Empty;
 
 
     public int ReferenceEntryId {
@@ -99,26 +106,6 @@ namespace Empiria.FinancialAccounting.Vouchers.Adapters {
     }
 
 
-    public bool CreateLedgerAccount {
-      get; set;
-    }
-
-
-    public bool CreateSubledgerAccount {
-      get; set;
-    }
-
-
-    public int StandardAccountIdForCreateLedgerAccount {
-      get; set;
-    } = -1;
-
-
-    public string SubledgerAccountNoToCreate {
-      get; set;
-    } = string.Empty;
-
-
     public bool HasEventType {
       get {
         return this.EventTypeId > 0;
@@ -135,9 +122,35 @@ namespace Empiria.FinancialAccounting.Vouchers.Adapters {
 
     public bool HasSubledgerAccount {
       get {
-        return this.SubledgerAccountId > 0;
+        return this.SubledgerAccountId > 0 || this.SubledgerAccountNumber.Length != 0;
       }
     }
+
+
+    public Currency Currency {
+      get {
+        return Currency.Parse(this.CurrencyUID);
+      }
+    }
+
+
+    public Sector Sector {
+      get {
+        return Sector.Parse(this.SectorId);
+      }
+    }
+
+
+    Account IVoucherEntry.GetAccount(DateTime accountingDate) {
+      if (this.LedgerAccountId > 0) {
+        return LedgerAccount.Parse(this.LedgerAccountId)
+                            .GetHistoric(accountingDate);
+      }
+
+      return StandardAccount.Parse(this.StandardAccountId)
+                            .GetHistoric(accountingDate);
+    }
+
 
   }  // class VoucherEntryFields
 

@@ -20,9 +20,8 @@ namespace Empiria.FinancialAccounting.Vouchers {
     Credit = 'H'
   }
 
-
   /// <summary>Represents an accounting voucher entry: a debit or credit movement.</summary>
-  public class VoucherEntry {
+  public class VoucherEntry : IVoucherEntry {
 
     #region Constructors and parsers
 
@@ -164,7 +163,7 @@ namespace Empiria.FinancialAccounting.Vouchers {
 
 
     [DataField("MONTO_MONEDA_BASE")]
-    public decimal BaseCurrrencyAmount {
+    public decimal BaseCurrencyAmount {
       get;
       private set;
     }
@@ -198,7 +197,7 @@ namespace Empiria.FinancialAccounting.Vouchers {
 
     public decimal ExchangeRate {
       get {
-        return BaseCurrrencyAmount / Amount;
+        return BaseCurrencyAmount / Amount;
       }
     }
 
@@ -245,12 +244,18 @@ namespace Empiria.FinancialAccounting.Vouchers {
     }
 
 
+    Account IVoucherEntry.GetAccount(DateTime accountingDate) {
+      return this.LedgerAccount.GetHistoric(accountingDate);
+    }
+
+
     private void LoadFields(VoucherEntryFields fields) {
       if (this.Id == 0) {
         this.VoucherId = fields.GetVoucher().Id;
       }
+
       this.LedgerAccount = fields.GetLedgerAccount();
-      this.Sector = fields.GetSector();
+      this.Sector = fields.Sector;
       this.SubledgerAccount = fields.GetSubledgerAccount();
       this.ReferenceEntryId = fields.ReferenceEntryId;
       this.ResponsibilityArea = fields.GetResponsibilityArea();
@@ -260,12 +265,12 @@ namespace Empiria.FinancialAccounting.Vouchers {
       this.VoucherEntryType = fields.VoucherEntryType;
       this.Date = fields.Date;
       this.Concept = fields.Concept;
-      this.Currency = fields.GetCurrency();
+      this.Currency = fields.Currency;
       this.Amount = fields.Amount;
       if (fields.UsesBaseCurrency()) {
-        this.BaseCurrrencyAmount = fields.Amount;
+        this.BaseCurrencyAmount = fields.Amount;
       } else {
-        this.BaseCurrrencyAmount = fields.BaseCurrencyAmount;
+        this.BaseCurrencyAmount = fields.BaseCurrencyAmount;
       }
       this.Protected = fields.Protected;
     }
