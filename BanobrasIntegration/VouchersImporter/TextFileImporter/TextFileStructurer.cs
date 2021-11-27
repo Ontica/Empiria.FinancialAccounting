@@ -117,7 +117,7 @@ namespace Empiria.FinancialAccounting.BanobrasIntegration.VouchersImporter {
       entry.BaseCurrencyAmount = sourceEntry.GetBaseCurrencyAmount();
       entry.Protected = false;
 
-      entry.Issues = sourceEntry.GetEntryIssues();
+      entry.AddIssues(sourceEntry.GetEntryIssues());
 
       return entry;
     }

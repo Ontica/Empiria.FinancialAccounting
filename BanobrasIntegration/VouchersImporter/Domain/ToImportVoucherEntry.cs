@@ -8,11 +8,15 @@
 *                                                                                                            *
 ************************* Copyright(c) La Vía Óntica SC, Ontica LLC and contributors. All rights reserved. **/
 using System;
+using System.Collections.Generic;
+
 using Empiria.FinancialAccounting.Vouchers;
 
 namespace Empiria.FinancialAccounting.BanobrasIntegration.VouchersImporter {
 
   public class ToImportVoucherEntry {
+
+    private readonly List<ToImportVoucherIssue> _issues = new List<ToImportVoucherIssue>();
 
     internal ToImportVoucherEntry(ToImportVoucherHeader header) {
       this.ToImportVoucherHeader = header;
@@ -126,9 +130,29 @@ namespace Empiria.FinancialAccounting.BanobrasIntegration.VouchersImporter {
 
 
     public FixedList<ToImportVoucherIssue> Issues {
-      get; internal set;
+      get {
+        return _issues.ToFixedList();
+      }
     }
 
+
+    internal void AddIssue(string description) {
+      var issue = new ToImportVoucherIssue(VoucherIssueType.Error,
+                                           this.ToImportVoucherHeader.ImportationSet,
+                                           description);
+
+      _issues.Add(issue);
+    }
+
+
+    internal void AddIssue(ToImportVoucherIssue issue) {
+      _issues.Add(issue);
+    }
+
+
+    internal void AddIssues(FixedList<ToImportVoucherIssue> issuesList) {
+      _issues.AddRange(issuesList);
+    }
 
   }  // class ToImportVoucherEntry
 

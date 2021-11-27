@@ -38,6 +38,35 @@ namespace Empiria.FinancialAccounting.BanobrasIntegration.VouchersImporter {
 
 
     internal ImportVouchersResult DryRunImport() {
+      using (var usecases = VoucherEditionUseCases.UseCaseInteractor()) {
+        foreach (ToImportVoucher voucher in _toImportVouchersList) {
+
+          if (voucher.HasErrors) {
+            continue;
+          }
+
+          VoucherFields voucherFields = MapToVoucherFields(voucher.Header);
+
+          foreach (var entry in voucher.Entries) {
+            var mappedEntry = MapToVoucherEntryFields(entry);
+
+            FixedList<string> entryIssues = usecases.ValidateVoucherEntryToImport(voucherFields, mappedEntry);
+
+            foreach (var issue in entryIssues) {
+              entry.AddIssue(issue);
+            }
+          }
+
+          FixedList<VoucherEntryFields> entriesFields = MapToVoucherEntriesFields(voucher.Entries);
+
+          FixedList<string> errors = usecases.ValidateVoucherToImport(voucherFields, entriesFields);
+
+          foreach (var error in errors) {
+            voucher.AddError(error);
+          }
+        }
+      }
+
       var result = new ImportVouchersResult();
 
       result.VoucherTotals = GetImportVoucherTotals();
@@ -45,12 +74,14 @@ namespace Empiria.FinancialAccounting.BanobrasIntegration.VouchersImporter {
       result.Errors = GetImportErrors();
       result.Warnings = GetImportWarnings();
 
+
       return result;
     }
 
 
     internal ImportVouchersResult Import() {
       ImportVouchersResult result = this.DryRunImport();
+
 
       using (var usecases = VoucherEditionUseCases.UseCaseInteractor()) {
         foreach (ToImportVoucher voucher in _toImportVouchersList) {
@@ -69,9 +100,10 @@ namespace Empiria.FinancialAccounting.BanobrasIntegration.VouchersImporter {
 
           try {
             usecases.ImportVoucher(voucherFields, entriesFields, _command.TryToCloseVouchers);
+
           } catch (Exception e) {
             EmpiriaLog.Debug($"Póliza '{voucher.Header.UniqueID}': {e.Message}");
-            // no-op
+
           }
         }
       }
@@ -169,6 +201,6 @@ namespace Empiria.FinancialAccounting.BanobrasIntegration.VouchersImporter {
 
     #endregion Private methods
 
-  }  // class StandardVoucherImporter
+  }  // class VoucherImporter
 
 }  // namespace Empiria.FinancialAccounting.BanobrasIntegration.VouchersImporter

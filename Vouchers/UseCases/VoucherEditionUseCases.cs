@@ -56,10 +56,12 @@ namespace Empiria.FinancialAccounting.Vouchers.UseCases {
 
       foreach (var entryFields in entries) {
         entryFields.VoucherId = voucherId;
+
         if (entryFields.LedgerAccountId == -1 && entryFields.StandardAccountIdForCreateLedgerAccount != -1) {
           var la = AssignVoucherLedgerStandardAccount(voucher.Id, entryFields.StandardAccountIdForCreateLedgerAccount);
           entryFields.LedgerAccountId = la.Id;
         }
+
         if (entryFields.CreateSubledgerAccount) {
           SubledgerAccount sa = voucher.Ledger.CreateSubledgerAccount(entryFields.SubledgerAccountNoToCreate,
                                                                       SubledgerType.Pending);
@@ -215,6 +217,31 @@ namespace Empiria.FinancialAccounting.Vouchers.UseCases {
       var voucher = Voucher.Parse(voucherId);
 
       return voucher.ValidationResult();
+    }
+
+
+    public FixedList<string> ValidateVoucherToImport(VoucherFields voucherFields,
+                                                     FixedList<VoucherEntryFields> entriesFields) {
+      var list = new System.Collections.Generic.List<string>();
+
+      list.Add("This is a test");
+
+      return list.ToFixedList();
+    }
+
+
+    public FixedList<string> ValidateVoucherEntryToImport(VoucherFields voucherFields,
+                                                          VoucherEntryFields entry) {
+
+      Ledger ledger = Ledger.Parse(voucherFields.LedgerUID);
+
+      entry.EnsureValidFor(ledger, voucherFields.AccountingDate);
+
+      var list = new System.Collections.Generic.List<string>();
+
+      list.Add("This is an entry problem ... test");
+
+      return list.ToFixedList();
     }
 
 
