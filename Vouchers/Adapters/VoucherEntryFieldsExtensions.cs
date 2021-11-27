@@ -21,35 +21,9 @@ namespace Empiria.FinancialAccounting.Vouchers.Adapters {
                                         DateTime accountingDate) {
       EnsureValidData(fields);
 
-      LedgerAccount account = ledger.GetAccountWithId(fields.LedgerAccountId);
+      var validator = new VoucherEntryValidator(ledger, accountingDate);
 
-      account.CheckIsNotSummary(accountingDate);
-
-      account.CheckCurrencyRule(fields.GetCurrency(), accountingDate);
-
-      if (fields.HasSector) {
-        account.CheckSectorRule(fields.GetSector(), accountingDate);
-      } else {
-        account.CheckNoSectorRule(accountingDate);
-      }
-
-      if (fields.HasSubledgerAccount && fields.HasSector) {
-        account.CheckSubledgerAccountRule(fields.GetSector(), fields.GetSubledgerAccount(), accountingDate);
-
-      } else if (fields.HasSubledgerAccount && !fields.HasSector) {
-        account.CheckSubledgerAccountRule(fields.GetSubledgerAccount(), accountingDate);
-
-      } else if (!fields.HasSubledgerAccount && fields.HasSector) {
-        account.CheckNoSubledgerAccountRule(fields.GetSector(), accountingDate);
-
-      } else if (!fields.HasSubledgerAccount && !fields.HasSector) {
-        account.CheckNoSubledgerAccountRule(accountingDate);
-
-      }
-
-      if (!fields.HasEventType) {
-        account.CheckNoEventTypeRule(accountingDate);
-      }
+      validator.EnsureValid(fields);
     }
 
 
@@ -66,7 +40,9 @@ namespace Empiria.FinancialAccounting.Vouchers.Adapters {
 
     static private void EnsureValidData(this VoucherEntryFields fields) {
       Assertion.Assert(fields.LedgerAccountId > 0, "fields.LedgerAccountId");
+
       Assertion.AssertObject(fields.CurrencyUID, "fields.CurrencyUID");
+
       Assertion.Assert(fields.VoucherEntryType == VoucherEntryType.Credit ||
                        fields.VoucherEntryType == VoucherEntryType.Debit,
                        "fields.VoucherEntryType");
@@ -87,14 +63,10 @@ namespace Empiria.FinancialAccounting.Vouchers.Adapters {
     }
 
 
-    static internal Currency GetCurrency(this VoucherEntryFields fields) {
-      return Currency.Parse(fields.CurrencyUID);
-    }
-
-
     static internal EventType GetEventType(this VoucherEntryFields fields) {
       return EventType.Parse(fields.EventTypeId);
     }
+
 
     static internal LedgerAccount GetLedgerAccount(this VoucherEntryFields fields) {
       return LedgerAccount.Parse(fields.LedgerAccountId);
@@ -103,11 +75,6 @@ namespace Empiria.FinancialAccounting.Vouchers.Adapters {
 
     static internal FunctionalArea GetResponsibilityArea(this VoucherEntryFields fields) {
       return FunctionalArea.Parse(fields.ResponsibilityAreaId);
-    }
-
-
-    static internal Sector GetSector(this VoucherEntryFields fields) {
-      return Sector.Parse(fields.SectorId);
     }
 
 
@@ -122,13 +89,13 @@ namespace Empiria.FinancialAccounting.Vouchers.Adapters {
 
 
     static internal bool UsesBaseCurrency(this VoucherEntryFields fields) {
-      return fields.GetCurrency().Equals(fields.GetLedgerAccount().Ledger.BaseCurrency);
+      return fields.Currency.Equals(fields.GetLedgerAccount().Ledger.BaseCurrency);
     }
 
     #endregion Extension methods
 
     static private void EnsureVoucherIsAssigned(this VoucherEntryFields fields,
-                                            Voucher voucher) {
+                                                Voucher voucher) {
       Assertion.Assert(fields.VoucherId > 0, "fields.VoucherId");
 
       Assertion.Assert(fields.GetVoucher().Equals(voucher),
