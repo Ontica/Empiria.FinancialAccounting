@@ -126,6 +126,7 @@ namespace Empiria.FinancialAccounting {
       }
     }
 
+
     public string GroupNumber {
       get {
         if (this.AccountsChart.Id == 1) {
@@ -143,6 +144,11 @@ namespace Empiria.FinancialAccounting {
 
 
     #region Public methods
+
+    public Account GetHistoric(DateTime date) {
+      return this.AccountsChart.GetAccountHistory(this.Number, date);
+    }
+
 
     internal FixedList<Account> GetHistory() {
       return this.AccountsChart.GetAccountHistory(this.Number);
