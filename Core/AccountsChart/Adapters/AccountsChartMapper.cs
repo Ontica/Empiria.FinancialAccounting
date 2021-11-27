@@ -81,7 +81,7 @@ namespace Empiria.FinancialAccounting.Adapters {
       dto.Name = account.Name;
       dto.Type = account.AccountType;
       dto.Role = MapToDescriptorRole(account.Role);
-      dto.UsesSector = account.Role == AccountRole.Sectorizada;
+      dto.UsesSector = account.Role == AccountRole.Sectorizada || account.HasChildrenWithSectors();
       dto.UsesSubledger = account.Role == AccountRole.Control ||
                           (account.Role == AccountRole.Sectorizada &&
                            account.GetSectors().All(x => x.SectorRole == AccountRole.Control));
