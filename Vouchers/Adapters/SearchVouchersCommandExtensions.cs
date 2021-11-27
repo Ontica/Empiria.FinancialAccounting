@@ -28,12 +28,17 @@ namespace Empiria.FinancialAccounting.Vouchers.Adapters {
       string voucherTypeFilter = BuildVoucherTypeFilter(command);
       string stageStatusFilter = BuildStageStatusFilter(command);
       string keywordsFilter = BuildKeywordsFilter(command.Keywords);
+      string conceptsFilter = BuildConceptFilter(command.Concept);
+      string numberFilter = BuildNumberFilter(command.Number);
 
       var filter = new Filter(ledgerFilter);
       filter.AppendAnd(dateRangeFilter);
       filter.AppendAnd(transactionTypeFilter);
       filter.AppendAnd(voucherTypeFilter);
       filter.AppendAnd(stageStatusFilter);
+      filter.AppendAnd(conceptsFilter);
+      filter.AppendAnd(numberFilter);
+
       filter.AppendAnd(keywordsFilter);
 
       string transactionEntriesFilter = BuildTransactionEntriesFilter(command, filter.ToString());
@@ -48,7 +53,7 @@ namespace Empiria.FinancialAccounting.Vouchers.Adapters {
       if (command.OrderBy.Length != 0) {
         return command.OrderBy;
       } else {
-        return "ID_MAYOR, NUMERO_TRANSACCION DESC";
+        return "ID_MAYOR, NUMERO_TRANSACCION DESC, FECHA_REGISTRO DESC, FECHA_AFECTACION DESC, CONCEPTO_TRANSACCION";
       }
     }
 
@@ -99,8 +104,18 @@ namespace Empiria.FinancialAccounting.Vouchers.Adapters {
     }
 
 
+    static private string BuildConceptFilter(string keywords) {
+      return SearchExpression.ParseLike("CONCEPTO_TRANSACCION", keywords.ToUpperInvariant());
+    }
+
+
     static private string BuildKeywordsFilter(string keywords) {
       return SearchExpression.ParseAndLikeKeywords("TRANSACCION_KEYWORDS", keywords);
+    }
+
+
+    static private string BuildNumberFilter(string number) {
+      return SearchExpression.ParseLike("NUMERO_TRANSACCION", number.ToUpperInvariant());
     }
 
 
