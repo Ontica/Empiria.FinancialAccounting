@@ -289,9 +289,9 @@ namespace Empiria.FinancialAccounting.Vouchers {
 
       this.RefreshEntries();
 
-      var validator = new VoucherValidator(this);
+      var validator = new VoucherValidator(this.Ledger, this.AccountingDate);
 
-      return validator.IsValid();
+      return validator.Validate(this.Entries).Count == 0;
     }
 
 
@@ -305,6 +305,7 @@ namespace Empiria.FinancialAccounting.Vouchers {
       } else {
         this.ElaboratedBy = Participant.Parse(fields.ElaboratedByUID);
       }
+
       this.Concept = EmpiriaString.TrimAll(fields.Concept);
       this.VoucherType = VoucherType.Parse(fields.VoucherTypeUID);
       this.TransactionType = TransactionType.Parse(fields.TransactionTypeUID);
@@ -366,9 +367,9 @@ namespace Empiria.FinancialAccounting.Vouchers {
     internal FixedList<string> ValidationResult() {
       this.RefreshEntries();
 
-      var validator = new VoucherValidator(this);
+      var validator = new VoucherValidator(this.Ledger, this.AccountingDate);
 
-      return validator.ValidationResult();
+      return validator.Validate(this.Entries);
     }
 
 

@@ -11,75 +11,79 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 
+using Empiria.FinancialAccounting.Vouchers.Adapters;
+
 namespace Empiria.FinancialAccounting.Vouchers {
 
   /// <summary>Validates a voucher before be sent to the ledger.</summary>
   internal class VoucherValidator {
 
-    private readonly Voucher _voucher;
+    #region Public members
 
-    public VoucherValidator(Voucher voucher) {
-      _voucher = voucher;
+    public VoucherValidator(Ledger ledger, DateTime accountingDate) {
+      this.Ledger = ledger;
+      this.AccountingDate = accountingDate;
     }
 
-    internal bool IsValid() {
-      return (ValidationResult().Count == 0);
+
+    public DateTime AccountingDate {
+      get;
     }
 
-    internal FixedList<string> ValidationResult() {
+
+    public Ledger Ledger {
+      get;
+    }
+
+
+    internal FixedList<string> Validate(FixedList<VoucherEntry> entries) {
+      var converted = new FixedList<IVoucherEntry>(entries.Select(x => (IVoucherEntry) x));
+
+      return Validate(converted);
+    }
+
+
+    internal FixedList<string> Validate(FixedList<VoucherEntryFields> entries) {
+      var converted = new FixedList<IVoucherEntry>(entries.Select(x => (IVoucherEntry) x));
+
+      return Validate(converted);
+    }
+
+
+    #endregion Public members
+
+    #region Private methods
+
+    private bool DebitsAndCreditsAreEqual(FixedList<IVoucherEntry> entries) {
+      var debitsEntries = entries.FindAll(x => x.VoucherEntryType == VoucherEntryType.Debit);
+      var creditsEntries = entries.FindAll(x => x.VoucherEntryType == VoucherEntryType.Credit);
+
+      return debitsEntries.Sum(x => x.Amount) == creditsEntries.Sum(x => x.Amount);
+    }
+
+
+    private FixedList<string> DebitsAndCreditsByCurrencyAreEqual(FixedList<IVoucherEntry> entries) {
       var resultList = new List<string>();
 
-      var tempList = VoucherEntriesDataAreValid();
-      if (tempList.Count > 0) {
-        resultList.AddRange(tempList);
-      }
-
-      if (!HasEnoughVoucherEntries() ) {
-        resultList.Add("La póliza debe tener cuando menos dos movimientos, un cargo y un abono.");
-      }
-
-      tempList = DebitsAndCreditsByCurrencyAreEqual();
-
-      if (tempList.Count > 0) {
-        resultList.AddRange(tempList);
-      }
-      if (!DebitsAndCreditsAreEqual()) {
-        resultList.Add("La suma total de cargos y abonos no coincide.");
-      }
-
-      return new FixedList<string>(resultList);
-    }
-
-    #region Helper methods
-
-    private bool DebitsAndCreditsAreEqual() {
-      decimal debits = _voucher.Entries.Sum(x => x.Debit);
-      decimal credits = _voucher.Entries.Sum(x => x.Credit);
-
-      return debits == credits;
-    }
-
-    private FixedList<string> DebitsAndCreditsByCurrencyAreEqual() {
-      var resultList = new List<string>();
-
-      IEnumerable<Currency> currencies = _voucher.Entries.Select(x => x.Currency).Distinct();
+      IEnumerable<Currency> currencies = entries.Select(x => x.Currency).Distinct();
 
       foreach (var currency in currencies) {
-        var debitsEntries = _voucher.Entries.FindAll(x => x.VoucherEntryType == VoucherEntryType.Debit && x.Currency.Equals(currency));
-        var creditsEntries = _voucher.Entries.FindAll(x => x.VoucherEntryType == VoucherEntryType.Credit && x.Currency.Equals(currency));
+        var debitsEntries = entries.FindAll(x => x.VoucherEntryType == VoucherEntryType.Debit && x.Currency.Equals(currency));
+        var creditsEntries = entries.FindAll(x => x.VoucherEntryType == VoucherEntryType.Credit && x.Currency.Equals(currency));
 
-        decimal totalDebits = debitsEntries.Sum(x => x.Debit);
-        decimal totalCredits = creditsEntries.Sum(x => x.Credit);
+        decimal totalDebits = debitsEntries.Sum(x => x.Amount);
+        decimal totalCredits = creditsEntries.Sum(x => x.Amount);
 
         if (totalDebits != totalCredits) {
           resultList.Add($"La suma de cargos no es igual a la suma de abonos en la moneda {currency.FullName}. " +
                           $"Diferencia de {(totalDebits - totalCredits).ToString("C")}");
+          return resultList.ToFixedList();
         }
 
-        totalDebits = debitsEntries.Sum(x => x.BaseCurrrencyAmount);
-        totalCredits = creditsEntries.Sum(x => x.BaseCurrrencyAmount);
+        totalDebits = debitsEntries.Sum(x => x.BaseCurrencyAmount);
+        totalCredits = creditsEntries.Sum(x => x.BaseCurrencyAmount);
 
-        if (debitsEntries.Sum(x => x.BaseCurrrencyAmount) != creditsEntries.Sum(x => x.BaseCurrrencyAmount)) {
+        if (totalDebits != totalCredits) {
           resultList.Add($"La suma de cargos y abonos en la moneda base no es igual para la moneda {currency.FullName}. " +
                          $"Diferencia de {(totalDebits - totalCredits).ToString("C")}. " +
                          $"Debe existir una diferencia en los tipos de cambio.");
@@ -89,85 +93,49 @@ namespace Empiria.FinancialAccounting.Vouchers {
     }
 
 
-    private bool HasEnoughVoucherEntries() {
-      return _voucher.Entries.Count >= 2;
-    }
-
-    private FixedList<string> VoucherEntriesDataAreValid() {
+    private FixedList<string> Validate(FixedList<IVoucherEntry> entries) {
       var resultList = new List<string>();
 
-      foreach (var entry in _voucher.Entries) {
-        var entryResultList = VoucherEntryDataIsValid(entry);
-        if (entryResultList.Count > 0) {
-          resultList.AddRange(entryResultList);
+
+      var tempList = VoucherEntriesDataAreValid(entries);
+      if (tempList.Count > 0) {
+        resultList.AddRange(tempList);
+      }
+
+      if (entries.Count < 2) {
+        resultList.Add("La póliza debe tener cuando menos dos movimientos, un cargo y un abono.");
+      }
+
+      tempList = DebitsAndCreditsByCurrencyAreEqual(entries);
+
+      if (tempList.Count > 0) {
+        resultList.AddRange(tempList);
+      }
+      if (!DebitsAndCreditsAreEqual(entries)) {
+        resultList.Add("La suma total de cargos y abonos no coincide.");
+      }
+
+      return new FixedList<string>(resultList);
+    }
+
+
+    private FixedList<string> VoucherEntriesDataAreValid(FixedList<IVoucherEntry> entries) {
+      var resultList = new List<string>();
+
+      var validator = new VoucherEntryValidator(this.Ledger, this.AccountingDate);
+
+      foreach (var entry in entries) {
+        FixedList<string> issues = validator.Validate(entry);
+
+        if (issues.Count > 0) {
+          resultList.AddRange(issues);
         }
       }
 
       return resultList.ToFixedList();
     }
 
-    private FixedList<string> VoucherEntryDataIsValid(VoucherEntry entry) {
-      var resultList = new List<string>();
-
-      var account = entry.LedgerAccount;
-      var accountingDate = _voucher.AccountingDate;
-
-      if (!account.Ledger.Equals(_voucher.Ledger)) {
-        resultList.Add($"La cuenta {entry.LedgerAccount.Number} no pertenece a la contabilidad {_voucher.Ledger.Name}.");
-      }
-
-      try {
-        account.CheckIsNotSummary(accountingDate);
-      } catch (Exception e) {
-        resultList.Add(e.Message);
-      }
-
-      try {
-        account.CheckCurrencyRule(entry.Currency, accountingDate);
-      } catch (Exception e) {
-        resultList.Add(e.Message);
-      }
-
-      try {
-        if (entry.HasSector) {
-          account.CheckSectorRule(entry.Sector, accountingDate);
-        } else {
-          account.CheckNoSectorRule(accountingDate);
-        }
-      } catch (Exception e) {
-        resultList.Add(e.Message);
-      }
-
-      try {
-        if (entry.HasSubledgerAccount && entry.HasSector) {
-          account.CheckSubledgerAccountRule(entry.Sector, entry.SubledgerAccount, accountingDate);
-
-        } else if (entry.HasSubledgerAccount && !entry.HasSector) {
-          account.CheckSubledgerAccountRule(entry.SubledgerAccount, accountingDate);
-
-        } else if (!entry.HasSubledgerAccount && entry.HasSector) {
-          account.CheckNoSubledgerAccountRule(entry.Sector, accountingDate);
-
-        } else if (!entry.HasSubledgerAccount && !entry.HasSector) {
-          account.CheckNoSubledgerAccountRule(accountingDate);
-        }
-      } catch (Exception e) {
-        resultList.Add(e.Message);
-      }
-
-      try {
-        if (!entry.HasEventType) {
-          account.CheckNoEventTypeRule(accountingDate);
-        }
-      } catch (Exception e) {
-        resultList.Add(e.Message);
-      }
-
-      return resultList.ToFixedList();
-    }
-
-
-    #endregion Helper methods
+    #endregion Private methods
 
   }  // class VoucherValidator
 
