@@ -117,21 +117,21 @@ namespace Empiria.FinancialAccounting.Vouchers {
     [DataField("NUMERO_VERIFICACION")]
     public string VerificationNumber {
       get;
-      internal set;
+      private set;
     }
 
 
     [DataField("TIPO_MOVIMIENTO", Default = VoucherEntryType.Debit)]
     public VoucherEntryType VoucherEntryType {
       get;
-      internal set;
+      private set;
     }
 
 
     [DataField("FECHA_MOVIMIENTO", Default = "ExecutionServer.DateMinValue")]
     public DateTime Date {
       get;
-      internal set;
+      private set;
     }
 
     public bool HasDate {
@@ -244,6 +244,23 @@ namespace Empiria.FinancialAccounting.Vouchers {
     }
 
 
+    private void EnsureIsValidAfterLoad() {
+      Ledger ledger = Voucher.Ledger;
+
+      Assertion.Assert(LedgerAccount.Ledger.Equals(ledger),
+           $"La cuenta de mayor con id {LedgerAccount.Id} no pertenece a la contabilidad {ledger.FullName}.");
+
+      if (!SubledgerAccount.IsEmptyInstance) {
+        Assertion.Assert(SubledgerAccount.Subledger.BelongsTo(ledger),
+              $"El auxiliar {SubledgerAccount.Number} no pertenece a la contabilidad {ledger.FullName}.");
+      }
+
+      Assertion.Assert(Amount > 0, "Amount must be a positive value.");
+
+      Assertion.Assert(BaseCurrencyAmount > 0, "BaseCurrencyAmount must be a positive value.");
+    }
+
+
     Account IVoucherEntry.GetAccount(DateTime accountingDate) {
       return this.LedgerAccount.GetHistoric(accountingDate);
     }
@@ -264,7 +281,7 @@ namespace Empiria.FinancialAccounting.Vouchers {
       this.VerificationNumber = fields.VerificationNumber;
       this.VoucherEntryType = fields.VoucherEntryType;
       this.Date = fields.Date;
-      this.Concept = fields.Concept;
+      this.Concept = fields.Concept.ToUpperInvariant();
       this.Currency = fields.Currency;
       this.Amount = fields.Amount;
       if (fields.UsesBaseCurrency()) {
@@ -273,6 +290,8 @@ namespace Empiria.FinancialAccounting.Vouchers {
         this.BaseCurrencyAmount = fields.BaseCurrencyAmount;
       }
       this.Protected = fields.Protected;
+
+      EnsureIsValidAfterLoad();
     }
 
 

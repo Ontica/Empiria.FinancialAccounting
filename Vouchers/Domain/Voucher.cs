@@ -306,7 +306,7 @@ namespace Empiria.FinancialAccounting.Vouchers {
         this.ElaboratedBy = Participant.Parse(fields.ElaboratedByUID);
       }
 
-      this.Concept = EmpiriaString.TrimAll(fields.Concept);
+      this.Concept = EmpiriaString.TrimAll(fields.Concept).ToUpperInvariant();
       this.VoucherType = VoucherType.Parse(fields.VoucherTypeUID);
       this.TransactionType = TransactionType.Parse(fields.TransactionTypeUID);
       this.FunctionalArea = FunctionalArea.Parse(fields.FunctionalAreaId);
