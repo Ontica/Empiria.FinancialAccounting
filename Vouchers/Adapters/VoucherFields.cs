@@ -41,7 +41,7 @@ namespace Empiria.FinancialAccounting.Vouchers.Adapters {
 
     public string TransactionTypeUID {
       get; set;
-    } = string.Empty;
+    } = "6ea907ee-1534-49ba-9678-a13e90fdf6d2";
 
 
     public string VoucherTypeUID {

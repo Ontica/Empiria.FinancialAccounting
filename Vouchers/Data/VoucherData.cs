@@ -145,7 +145,7 @@ namespace Empiria.FinancialAccounting.Vouchers.Data {
                                     o.ResponsibilityArea.IsEmptyInstance ? 0: o.ResponsibilityArea.Id,
                                     o.BudgetConcept, o.EventType.Id, o.VerificationNumber, (char) o.VoucherEntryType,
                                     o.HasDate ? (object) o.Date : DBNull.Value, o.Concept, o.Currency.Id,
-                                    o.Amount, o.BaseCurrrencyAmount, o.Protected ? 1 : 0);
+                                    o.Amount, o.BaseCurrencyAmount, o.Protected ? 1 : 0);
 
       DataWriter.Execute(op);
     }

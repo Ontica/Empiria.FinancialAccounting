@@ -205,7 +205,6 @@ namespace Empiria.FinancialAccounting.BanobrasIntegration.VouchersImporter {
       this.ResponsibilityArea = textLine.Substring(419 + lineLengthExcess, 6);
 
       // this.AccountsChartId = textLine.Substring(425 + lineLengthExcess, 4);
-
     }
 
 

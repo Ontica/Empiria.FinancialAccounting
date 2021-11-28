@@ -33,6 +33,7 @@ namespace Empiria.FinancialAccounting.FinancialReports {
       _command = command;
     }
 
+
     internal FinancialReport Generate() {
       FixedList<FinancialReportRow> fixedRows = GetReportFixedRows();
 
@@ -46,6 +47,7 @@ namespace Empiria.FinancialAccounting.FinancialReports {
 
       return new FinancialReport(_command, convertedEntries);
     }
+
 
     internal FinancialReport GetBreakdown(string reportRowUID) {
       FinancialReportRow row = GetReportBreakdownRow(reportRowUID);

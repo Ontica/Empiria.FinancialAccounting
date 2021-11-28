@@ -8,9 +8,6 @@
 *                                                                                                            *
 ************************* Copyright(c) La Vía Óntica SC, Ontica LLC and contributors. All rights reserved. **/
 using System;
-using System.Linq;
-
-using Empiria.Data;
 
 namespace Empiria.FinancialAccounting.BanobrasIntegration.VouchersImporter {
 

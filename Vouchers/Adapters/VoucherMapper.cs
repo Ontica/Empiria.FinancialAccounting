@@ -124,7 +124,7 @@ namespace Empiria.FinancialAccounting.Vouchers.Adapters {
         VerificationNumber = entry.VerificationNumber,
         Currency = entry.Currency.MapToNamedEntity(),
         Amount = entry.Amount,
-        BaseCurrencyAmount = entry.BaseCurrrencyAmount,
+        BaseCurrencyAmount = entry.BaseCurrencyAmount,
         ExchangeRate = entry.ExchangeRate
       };
     }
