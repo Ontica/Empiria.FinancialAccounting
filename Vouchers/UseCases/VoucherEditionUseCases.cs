@@ -57,19 +57,18 @@ namespace Empiria.FinancialAccounting.Vouchers.UseCases {
       foreach (var entryFields in entries) {
         entryFields.VoucherId = voucherId;
 
-        if (entryFields.LedgerAccountId == -1 && entryFields.StandardAccountIdForCreateLedgerAccount != -1) {
-          var la = AssignVoucherLedgerStandardAccount(voucher.Id, entryFields.StandardAccountIdForCreateLedgerAccount);
-          entryFields.LedgerAccountId = la.Id;
+        if (entryFields.LedgerAccountId <= 0) {
+          entryFields.LedgerAccountId = AssignVoucherLedgerStandardAccount(voucherId, entryFields.StandardAccountId).Id;
         }
 
-        if (entryFields.CreateSubledgerAccount) {
-          SubledgerAccount sa = voucher.Ledger.CreateSubledgerAccount(entryFields.SubledgerAccountNoToCreate,
-                                                                      SubledgerType.Pending);
+        if (entryFields.SubledgerAccountId <= 0 && entryFields.SubledgerAccountNumber.Length != 0) {
+          var newSubledgerAccount = voucher.Ledger.CreateSubledgerAccount(entryFields.SubledgerAccountNumber,
+                                                                         SubledgerType.Pending);
+          newSubledgerAccount.Save();
 
-          sa.Save();
-
-          entryFields.SubledgerAccountId = sa.Id;
+          entryFields.SubledgerAccountId = newSubledgerAccount.Id;
         }
+
 
         var voucherEntry = voucher.AppendEntry(entryFields);
 
@@ -133,6 +132,10 @@ namespace Empiria.FinancialAccounting.Vouchers.UseCases {
                                     bool tryToClose) {
       Assertion.AssertObject(voucherFields, "voucherFields");
       Assertion.AssertObject(entriesFields, "entriesFields");
+
+      FixedList<string> issues = ValidateVoucherToImport(voucherFields, entriesFields);
+
+      Assertion.Assert(issues.Count == 0, "There are one ore more problems with voucher data to be imported");
 
       VoucherDto voucher = CreateVoucher(voucherFields);
 
@@ -220,28 +223,24 @@ namespace Empiria.FinancialAccounting.Vouchers.UseCases {
     }
 
 
-    public FixedList<string> ValidateVoucherToImport(VoucherFields voucherFields,
-                                                     FixedList<VoucherEntryFields> entriesFields) {
-      var list = new System.Collections.Generic.List<string>();
+    public FixedList<string> ValidateVoucherToImport(VoucherFields voucher,
+                                                     FixedList<VoucherEntryFields> entries) {
+      Ledger ledger = Ledger.Parse(voucher.LedgerUID);
 
-      list.Add("This is a test");
+      var validator = new VoucherValidator(ledger, voucher.AccountingDate);
 
-      return list.ToFixedList();
+      return validator.Validate(entries);
     }
 
 
-    public FixedList<string> ValidateVoucherEntryToImport(VoucherFields voucherFields,
+    public FixedList<string> ValidateVoucherEntryToImport(VoucherFields voucher,
                                                           VoucherEntryFields entry) {
 
-      Ledger ledger = Ledger.Parse(voucherFields.LedgerUID);
+      Ledger ledger = Ledger.Parse(voucher.LedgerUID);
 
-      entry.EnsureValidFor(ledger, voucherFields.AccountingDate);
+      var validator = new VoucherEntryValidator(ledger, voucher.AccountingDate);
 
-      var list = new System.Collections.Generic.List<string>();
-
-      list.Add("This is an entry problem ... test");
-
-      return list.ToFixedList();
+      return validator.Validate(entry);
     }
 
 
