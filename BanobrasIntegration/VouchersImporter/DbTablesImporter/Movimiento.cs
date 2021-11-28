@@ -9,6 +9,7 @@
 *                                                                                                            *
 ************************* Copyright(c) La Vía Óntica SC, Ontica LLC and contributors. All rights reserved. **/
 using System;
+
 using Empiria.FinancialAccounting.Vouchers;
 
 namespace Empiria.FinancialAccounting.BanobrasIntegration.VouchersImporter {
@@ -118,8 +119,6 @@ namespace Empiria.FinancialAccounting.BanobrasIntegration.VouchersImporter {
     }
 
 
-
-
     internal string GetVoucherUniqueID() {
       if (this.TipoContabilidad == 1 && IdSistema == 23) {
         return $"{this.TipoContabilidad}||{this.IdSistema}||{this.FechaAfectacion.ToString("yyyy-MM-dd")}||" +
@@ -164,21 +163,6 @@ namespace Empiria.FinancialAccounting.BanobrasIntegration.VouchersImporter {
       }
 
       return Sector.Parse(this.ClaveSector);
-    }
-
-
-    internal LedgerAccount GetLedgerAccount() {
-      Ledger ledger = this.Encabezado.GetLedger();
-
-      StandardAccount standardAccount = this.GetStandardAccount();
-
-      LedgerAccount ledgerAccount = ledger.TryGetAccount(standardAccount);
-
-      if (ledgerAccount != null) {
-        return ledgerAccount;
-      } else {
-        return LedgerAccount.Empty;
-      }
     }
 
 

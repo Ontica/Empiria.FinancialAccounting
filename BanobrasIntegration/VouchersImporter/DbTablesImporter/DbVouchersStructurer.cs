@@ -82,25 +82,24 @@ namespace Empiria.FinancialAccounting.BanobrasIntegration.VouchersImporter {
 
     private ToImportVoucherEntry MapMovimientoToStandardVoucherEntry(ToImportVoucherHeader header,
                                                                      Movimiento movimiento) {
-      var entry = new ToImportVoucherEntry(header);
-
-      entry.LedgerAccount = movimiento.GetLedgerAccount();
-      entry.StandardAccount = movimiento.GetStandardAccount();
-      entry.Sector = movimiento.GetSector();
-      entry.SubledgerAccount = movimiento.GetSubledgerAccount();
-      entry.SubledgerAccountNo = movimiento.GetSubledgerAccountNo();
-      entry.ResponsibilityArea = movimiento.GetResponsibilityArea();
-      entry.BudgetConcept = movimiento.GetBudgetConcept();
-      entry.EventType = movimiento.GetEventType();
-      entry.VerificationNumber = movimiento.GetVerificationNumber();
-      entry.VoucherEntryType = movimiento.GetVoucherEntryType();
-      entry.Date = movimiento.GetDate();
-      entry.Concept = movimiento.GetConcept();
-      entry.Currency = movimiento.GetCurrency();
-      entry.Amount = movimiento.GetAmount();
-      entry.ExchangeRate = movimiento.GetExchangeRate();
-      entry.BaseCurrencyAmount = movimiento.GetBaseCurrencyAmount();
-      entry.Protected = movimiento.GetProtected();
+      var entry = new ToImportVoucherEntry(header) {
+        StandardAccount = movimiento.GetStandardAccount(),
+        Sector = movimiento.GetSector(),
+        SubledgerAccount = movimiento.GetSubledgerAccount(),
+        SubledgerAccountNo = movimiento.GetSubledgerAccountNo(),
+        ResponsibilityArea = movimiento.GetResponsibilityArea(),
+        BudgetConcept = movimiento.GetBudgetConcept(),
+        EventType = movimiento.GetEventType(),
+        VerificationNumber = movimiento.GetVerificationNumber(),
+        VoucherEntryType = movimiento.GetVoucherEntryType(),
+        Date = movimiento.GetDate(),
+        Concept = movimiento.GetConcept(),
+        Currency = movimiento.GetCurrency(),
+        Amount = movimiento.GetAmount(),
+        ExchangeRate = movimiento.GetExchangeRate(),
+        BaseCurrencyAmount = movimiento.GetBaseCurrencyAmount(),
+        Protected = movimiento.GetProtected(),
+      };
 
       entry.AddIssues(movimiento.GetIssues());
 

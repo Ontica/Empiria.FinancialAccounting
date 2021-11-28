@@ -113,22 +113,6 @@ namespace Empiria.FinancialAccounting.BanobrasIntegration.VouchersImporter {
     }
 
 
-    public bool CreateLedgerAccount {
-      get {
-        return this.LedgerAccount.IsEmptyInstance &&
-               !this.StandardAccount.IsEmptyInstance;
-      }
-    }
-
-
-    public bool CreateSubledgerAccount {
-      get {
-        return this.SubledgerAccount.IsEmptyInstance &&
-               this.SubledgerAccountNo.Length != 0;
-      }
-    }
-
-
     public FixedList<ToImportVoucherIssue> Issues {
       get {
         return _issues.ToFixedList();

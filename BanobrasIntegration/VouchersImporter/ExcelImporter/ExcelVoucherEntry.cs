@@ -335,7 +335,15 @@ namespace Empiria.FinancialAccounting.BanobrasIntegration.VouchersImporter {
 
       string accountNumber = ledger.AccountsChart.FormatAccountNumber(this.BaseAccount + subaccount);
 
-      return ledger.AccountsChart.GetStandardAccount(accountNumber);
+      StandardAccount stdAccount = ledger.AccountsChart.TryGetStandardAccount(accountNumber);
+
+      if (stdAccount != null) {
+        return stdAccount;
+      } else {
+        AddError($"No existe una cuenta con número {accountNumber} en el catálogo {ledger.AccountsChart.Name}.");
+
+        return StandardAccount.Empty;
+      }
     }
 
 

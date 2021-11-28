@@ -39,6 +39,7 @@ namespace Empiria.FinancialAccounting.BanobrasIntegration.VouchersImporter {
 
     internal ImportVouchersResult DryRunImport() {
       using (var usecases = VoucherEditionUseCases.UseCaseInteractor()) {
+
         foreach (ToImportVoucher voucher in _toImportVouchersList) {
 
           if (voucher.HasErrors) {
@@ -55,6 +56,10 @@ namespace Empiria.FinancialAccounting.BanobrasIntegration.VouchersImporter {
             foreach (var issue in entryIssues) {
               entry.AddIssue(issue);
             }
+          }
+
+          if (voucher.HasErrors) {
+            continue;
           }
 
           FixedList<VoucherEntryFields> entriesFields = MapToVoucherEntriesFields(voucher.Entries);
@@ -177,10 +182,9 @@ namespace Empiria.FinancialAccounting.BanobrasIntegration.VouchersImporter {
 
     private VoucherEntryFields MapToVoucherEntryFields(ToImportVoucherEntry entry) {
       return new VoucherEntryFields {
+        StandardAccountId = entry.StandardAccount.Id,
         LedgerAccountId = entry.LedgerAccount.Id,
         SubledgerAccountId = entry.SubledgerAccount.Id,
-        StandardAccountIdForCreateLedgerAccount = entry.StandardAccount.Id,
-        SubledgerAccountNoToCreate = entry.SubledgerAccountNo,
         SectorId = entry.Sector.Id,
         ResponsibilityAreaId = entry.ResponsibilityArea.Id,
         BudgetConcept = entry.BudgetConcept,
@@ -193,9 +197,7 @@ namespace Empiria.FinancialAccounting.BanobrasIntegration.VouchersImporter {
         Amount = entry.Amount,
         ExchangeRate = entry.ExchangeRate,
         BaseCurrencyAmount = entry.BaseCurrencyAmount,
-        Protected = entry.Protected,
-        CreateLedgerAccount = entry.CreateLedgerAccount,
-        CreateSubledgerAccount = entry.CreateSubledgerAccount
+        Protected = entry.Protected
       };
     }
 

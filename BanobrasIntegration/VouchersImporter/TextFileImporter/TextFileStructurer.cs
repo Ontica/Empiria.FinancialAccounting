@@ -99,23 +99,23 @@ namespace Empiria.FinancialAccounting.BanobrasIntegration.VouchersImporter {
 
     private ToImportVoucherEntry MapToImportVoucherEntry(ToImportVoucherHeader header,
                                                          TextFileVoucherEntry sourceEntry) {
-      var entry = new ToImportVoucherEntry(header);
-
-      entry.StandardAccount = sourceEntry.GetStandardAccount();
-      entry.Sector = sourceEntry.GetSector();
-      entry.SubledgerAccount = sourceEntry.GetSubledgerAccount();
-      entry.SubledgerAccountNo = sourceEntry.GetSubledgerAccountNo();
-      entry.ResponsibilityArea = sourceEntry.GetResponsibilityArea();
-      entry.BudgetConcept = string.Empty;
-      entry.EventType = sourceEntry.GetEventType();
-      entry.VerificationNumber = string.Empty;
-      entry.VoucherEntryType = sourceEntry.GetVoucherEntryType();
-      entry.Date = header.AccountingDate;
-      entry.Currency = sourceEntry.GetCurrency();
-      entry.Amount = sourceEntry.GetAmount();
-      entry.ExchangeRate = sourceEntry.GetExchangeRate();
-      entry.BaseCurrencyAmount = sourceEntry.GetBaseCurrencyAmount();
-      entry.Protected = false;
+      var entry = new ToImportVoucherEntry(header) {
+        StandardAccount = sourceEntry.GetStandardAccount(),
+        Sector = sourceEntry.GetSector(),
+        SubledgerAccount = sourceEntry.GetSubledgerAccount(),
+        SubledgerAccountNo = sourceEntry.GetSubledgerAccountNo(),
+        ResponsibilityArea = sourceEntry.GetResponsibilityArea(),
+        BudgetConcept = string.Empty,
+        EventType = sourceEntry.GetEventType(),
+        VerificationNumber = string.Empty,
+        VoucherEntryType = sourceEntry.GetVoucherEntryType(),
+        Date = header.AccountingDate,
+        Currency = sourceEntry.GetCurrency(),
+        Amount = sourceEntry.GetAmount(),
+        ExchangeRate = sourceEntry.GetExchangeRate(),
+        BaseCurrencyAmount = sourceEntry.GetBaseCurrencyAmount(),
+        Protected = false,
+      };
 
       entry.AddIssues(sourceEntry.GetEntryIssues());
 
