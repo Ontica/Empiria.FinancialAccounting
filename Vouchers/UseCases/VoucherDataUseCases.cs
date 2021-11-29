@@ -32,6 +32,7 @@ namespace Empiria.FinancialAccounting.Vouchers.UseCases {
 
     #region Use cases
 
+
     public FixedList<NamedEntityDto> FunctionalAreas() {
       FixedList<FunctionalArea> list = FunctionalArea.GetList();
 
@@ -92,6 +93,15 @@ namespace Empiria.FinancialAccounting.Vouchers.UseCases {
     public FixedList<NamedEntityDto> TransactionTypes() {
       return TransactionType.GetList()
                             .MapToNamedEntityList();
+    }
+
+
+    public FixedList<NamedEntityDto> VoucherEditors(string keywords) {
+      Assertion.AssertObject(keywords, "keywords");
+
+      FixedList<Participant> list = Participant.GetList(keywords);
+
+      return new FixedList<NamedEntityDto>(list.Select(x => x.MapToNamedEntity()));
     }
 
 

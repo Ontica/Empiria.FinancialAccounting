@@ -24,6 +24,18 @@ namespace Empiria.FinancialAccounting.WebApi.Vouchers {
 
 
     [HttpGet]
+    [Route("v2/financial-accounting/vouchers/editors/")]
+    public CollectionModel GetVoucherEditors([FromUri] string keywords) {
+
+      using (var usecases = VoucherDataUseCases.UseCaseInteractor()) {
+        FixedList<NamedEntityDto> editors = usecases.VoucherEditors(keywords);
+
+        return new CollectionModel(base.Request, editors);
+      }
+    }
+
+
+    [HttpGet]
     [Route("v2/financial-accounting/vouchers/event-types")]
     public CollectionModel GetEventTypes() {
 

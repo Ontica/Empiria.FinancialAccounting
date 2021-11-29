@@ -9,6 +9,8 @@
 ************************* Copyright(c) La Vía Óntica SC, Ontica LLC and contributors. All rights reserved. **/
 using System;
 
+using Empiria.FinancialAccounting.Data;
+
 namespace Empiria.FinancialAccounting {
 
   /// <summary>Holds data about an accounting system user.</summary>
@@ -38,6 +40,17 @@ namespace Empiria.FinancialAccounting {
 
       return BaseObject.GetList<Participant>(filter, orderBy).ToFixedList();
     }
+
+
+    static public FixedList<Participant> GetList(string keywords) {
+      Assertion.AssertObject(keywords, "keywords");
+
+      string filter = "ParticipantType = 'U' AND Status = 'A' AND "+
+                      SearchExpression.ParseAndLike("Keywords", keywords);
+
+      return ParticipantData.SearchParticipants(filter);
+    }
+
 
     static public Participant Empty {
       get {
@@ -71,7 +84,7 @@ namespace Empiria.FinancialAccounting {
     #region Methods
 
     public NamedEntityDto MapToNamedEntity() {
-      return new NamedEntityDto(this.Id.ToString(), this.Name);
+      return new NamedEntityDto(this.Id.ToString(), $"[{this.UserName}] {this.Name}");
     }
 
 
