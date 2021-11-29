@@ -104,7 +104,8 @@ namespace Empiria.FinancialAccounting.BanobrasIntegration.VouchersImporter {
         Amount = sourceEntry.GetAmount(),
         ExchangeRate = sourceEntry.GetExchangeRate(),
         BaseCurrencyAmount = sourceEntry.GetBaseCurrencyAmount(),
-        Protected = false,
+        DataSource = $"{sourceEntry.ImportationSet}, Renglón {sourceEntry.Row}",
+        Protected = false
       };
 
       entry.AddIssues(sourceEntry.GetEntryIssues());

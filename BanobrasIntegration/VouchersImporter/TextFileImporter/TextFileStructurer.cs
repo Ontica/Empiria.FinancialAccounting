@@ -114,6 +114,7 @@ namespace Empiria.FinancialAccounting.BanobrasIntegration.VouchersImporter {
         Amount = sourceEntry.GetAmount(),
         ExchangeRate = sourceEntry.GetExchangeRate(),
         BaseCurrencyAmount = sourceEntry.GetBaseCurrencyAmount(),
+        DataSource = $"Línea {sourceEntry.TextLineIndex}",
         Protected = false,
       };
 

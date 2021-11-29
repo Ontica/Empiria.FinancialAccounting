@@ -113,6 +113,11 @@ namespace Empiria.FinancialAccounting.BanobrasIntegration.VouchersImporter {
     }
 
 
+    public string DataSource {
+      get; internal set;
+    }
+
+
     public FixedList<ToImportVoucherIssue> Issues {
       get {
         return _issues.ToFixedList();
@@ -123,6 +128,7 @@ namespace Empiria.FinancialAccounting.BanobrasIntegration.VouchersImporter {
     internal void AddIssue(string description) {
       var issue = new ToImportVoucherIssue(VoucherIssueType.Error,
                                            this.ToImportVoucherHeader.ImportationSet,
+                                           this.DataSource,
                                            description);
 
       _issues.Add(issue);

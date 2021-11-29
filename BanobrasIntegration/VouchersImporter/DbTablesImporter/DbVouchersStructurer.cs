@@ -98,7 +98,8 @@ namespace Empiria.FinancialAccounting.BanobrasIntegration.VouchersImporter {
         Amount = movimiento.GetAmount(),
         ExchangeRate = movimiento.GetExchangeRate(),
         BaseCurrencyAmount = movimiento.GetBaseCurrencyAmount(),
-        Protected = movimiento.GetProtected(),
+        DataSource = movimiento.GetVoucherUniqueID(),
+        Protected = movimiento.GetProtected()
       };
 
       entry.AddIssues(movimiento.GetIssues());

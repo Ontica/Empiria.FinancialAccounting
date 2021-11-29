@@ -53,7 +53,12 @@ namespace Empiria.FinancialAccounting.BanobrasIntegration.VouchersImporter {
 
             FixedList<string> entryIssues = usecases.ValidateVoucherEntryToImport(voucherFields, mappedEntry);
 
-            foreach (var issue in entryIssues) {
+            foreach (var issueText in entryIssues) {
+              var issue = new ToImportVoucherIssue(VoucherIssueType.Error,
+                                                   voucher.Header.ImportationSet,
+                                                   entry.DataSource,
+                                                   issueText);
+
               entry.AddIssue(issue);
             }
           }
