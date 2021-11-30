@@ -71,14 +71,26 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
 
       FixedList<TrialBalanceEntry> entries = GetTrialBalanceEntries(commandData);
 
-      return Map(entries);
+      return MapToBalance(entries);
     }
 
 
-    private FixedList<BalanceEntry> Map(FixedList<TrialBalanceEntry> entries) {
+    private FixedList<BalanceEntry> MapToBalance(FixedList<TrialBalanceEntry> entries) {
+      var mappedEntries = new List<BalanceEntry>();
 
-      var mappedEntries = entries.Select((x) => MapToBalance((TrialBalanceEntry) x));
-      return (FixedList<BalanceEntry>) mappedEntries;
+      foreach (var entry in entries) {
+        var balanceEntry = new BalanceEntry();
+        balanceEntry.Ledger = entry.Ledger;
+        balanceEntry.Currency = entry.Currency;
+        balanceEntry.Account = entry.Account;
+        balanceEntry.Sector = entry.Sector;
+        balanceEntry.SubledgerAccountId = entry.SubledgerAccountId;
+        balanceEntry.CurrentBalance = Math.Round(entry.CurrentBalance, 2);
+        balanceEntry.LastChangeDate = entry.LastChangeDate;
+        balanceEntry.DebtorCreditor = entry.DebtorCreditor;
+        mappedEntries.Add(balanceEntry);
+      }
+      return mappedEntries.ToFixedList();
     }
 
 
