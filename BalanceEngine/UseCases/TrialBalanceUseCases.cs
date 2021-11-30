@@ -42,6 +42,18 @@ namespace Empiria.FinancialAccounting.BalanceEngine.UseCases {
       return TrialBalanceMapper.Map(trialBalance);
     }
 
+    public TrialBalanceDto BuildBalances(TrialBalanceCommand command) {
+      Assertion.AssertObject(command, "command");
+
+      var trialBalanceEngine = new TrialBalanceEngine(command);
+
+      TrialBalance trialBalance = trialBalanceEngine.BuildTrialBalance();
+
+      return TrialBalanceMapper.Map(trialBalance);
+
+      throw new NotImplementedException();
+    }
+
     #endregion Use cases
 
   } // class TrialBalanceUseCases

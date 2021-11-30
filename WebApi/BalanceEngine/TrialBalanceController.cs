@@ -57,6 +57,19 @@ namespace Empiria.FinancialAccounting.WebApi.BalanceEngine {
     }
 
 
+    [HttpPost]
+    [Route("v2/financial-accounting/balances")]
+    public SingleObjectModel GetBalances([FromBody] BalanceCommand command) {
+      base.RequireBody(command);
+
+      using (var usecases = BalanceUseCases.UseCaseInteractor()) {
+
+        BalanceDto balance = usecases.BuildBalances(command);
+
+        return new SingleObjectModel(this.Request, balance);
+      }
+    }
+
     #endregion Web Apis
 
   } // class TrialBalanceController
