@@ -23,6 +23,7 @@ namespace Empiria.FinancialAccounting.Vouchers.Adapters {
 
     static internal string MapToFilterString(this SearchVouchersCommand command) {
       string ledgerFilter = BuildLedgerFilter(command);
+      string editedByFilter = BuildEditedByFilter(command);
       string dateRangeFilter = BuildDateRangerFilter(command);
       string transactionTypeFilter = BuildTransactionTypeFilter(command);
       string voucherTypeFilter = BuildVoucherTypeFilter(command);
@@ -32,6 +33,7 @@ namespace Empiria.FinancialAccounting.Vouchers.Adapters {
       string numberFilter = BuildNumberFilter(command.Number);
 
       var filter = new Filter(ledgerFilter);
+      filter.AppendAnd(editedByFilter);
       filter.AppendAnd(dateRangeFilter);
       filter.AppendAnd(transactionTypeFilter);
       filter.AppendAnd(voucherTypeFilter);
@@ -77,6 +79,26 @@ namespace Empiria.FinancialAccounting.Vouchers.Adapters {
 
       } else {
         throw Assertion.AssertNoReachThisCode();
+      }
+    }
+
+
+    static private string BuildEditedByFilter(SearchVouchersCommand command) {
+      if (command.EditorType.Length == 0 || command.EditorUID.Length == 0) {
+        return string.Empty;
+      }
+
+      switch (command.EditorType) {
+        case "ElaboratedBy":
+          return $"ID_ELABORADA_POR = {command.EditorUID}";
+        case "AuthorizedBy":
+          return $"ID_AUTORIZADA_POR = {command.EditorUID}";
+        case "PostedBy":
+          return $"ID_ENVIADA_DIARIO_POR = {command.EditorUID}";
+        default:
+          return $"ID_ELABORADA_POR = {command.EditorUID} OR " +
+                 $"ID_AUTORIZADA_POR = {command.EditorUID} OR " +
+                 $"ID_ENVIADA_DIARIO_POR = {command.EditorUID}";
       }
     }
 

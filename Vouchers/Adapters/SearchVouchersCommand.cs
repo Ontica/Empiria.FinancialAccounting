@@ -151,6 +151,18 @@ namespace Empiria.FinancialAccounting.Vouchers.Adapters {
     } = String.Empty;
 
 
+    public string EditorType {
+      get;
+      set;
+    } = String.Empty;
+
+
+    public string EditorUID {
+      get;
+      set;
+    } = String.Empty;
+
+
     public string OrderBy {
       get;
       set;
