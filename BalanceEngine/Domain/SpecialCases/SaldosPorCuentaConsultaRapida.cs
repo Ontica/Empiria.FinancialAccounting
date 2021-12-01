@@ -109,7 +109,7 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
       var headerByAccount = new EmpiriaHashTable<BalanceEntry>();
 
       foreach (var entry in subledgerAccounts) {
-        helper.GetHeaderAccountName(headerByAccount, entry, TrialBalanceItemType.BalanceTotalConsolidated);
+        helper.GetHeaderAccountName(headerByAccount, entry, TrialBalanceItemType.Total);
       }
       return headerByAccount;
     }
@@ -154,7 +154,7 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
       var totalByCurrencies = new EmpiriaHashTable<BalanceEntry>();
 
       foreach (var entry in balanceList) {
-        helper.SummaryEntriesByCurrency(totalByCurrencies, entry, TrialBalanceItemType.BalanceTotalCurrency);
+        helper.SummaryEntriesByCurrency(totalByCurrencies, entry, TrialBalanceItemType.Group);
       }
       return totalByCurrencies;
     }

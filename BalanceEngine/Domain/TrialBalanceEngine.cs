@@ -53,6 +53,14 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
 
   public enum TrialBalanceItemType {
 
+    Entry,
+
+    Summary,
+
+    Group,
+
+    Total,
+
     BalanceEntry,
 
     BalanceSummary,
