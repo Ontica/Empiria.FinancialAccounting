@@ -62,11 +62,10 @@ namespace Empiria.FinancialAccounting.Tests.Balances {
     public void Should_Build_A_Traditional_Trial_Balance() {
       TrialBalanceCommand command = GetDefaultTrialBalanceCommand();
 
-      command.TrialBalanceType = TrialBalanceType.SaldosPorAuxiliar;
-      command.BalancesType = BalancesType.WithCurrentBalanceOrMovements;
-      command.ShowCascadeBalances = false;
-      command.SubledgerAccount = "90000000000342548";
+      command.TrialBalanceType = TrialBalanceType.SaldosPorCuenta;
+      command.BalancesType = BalancesType.AllAccounts;
       command.WithSubledgerAccount = true;
+      command.ShowCascadeBalances = false;
 
       TrialBalanceDto trialBalance = _usecases.BuildTrialBalance(command);
 

@@ -38,7 +38,6 @@ namespace Empiria.FinancialAccounting.WebApi.BalanceEngine {
     }
 
 
-
     [HttpPost]
     [Route("v2/financial-accounting/trial-balance/excel")]
     public SingleObjectModel GetExcelTrialBalance([FromBody] TrialBalanceCommand command) {
@@ -58,7 +57,7 @@ namespace Empiria.FinancialAccounting.WebApi.BalanceEngine {
 
 
     [HttpPost]
-    [Route("v2/financial-accounting/balances")]
+    [Route("v2/financial-accounting/balance")]
     public SingleObjectModel GetBalances([FromBody] BalanceCommand command) {
       base.RequireBody(command);
 

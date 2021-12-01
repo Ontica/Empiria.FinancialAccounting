@@ -41,7 +41,7 @@ namespace Empiria.FinancialAccounting.BalanceEngine.Adapters {
 
     public BalancesType BalancesType {
       get; set;
-    } = BalancesType.WithCurrentBalanceOrMovements;
+    } = BalancesType.AllAccounts;
 
 
     public TrialBalanceCommandPeriod InitialPeriod {

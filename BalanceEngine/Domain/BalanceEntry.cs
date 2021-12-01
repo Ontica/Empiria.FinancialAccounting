@@ -77,6 +77,11 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
     } = string.Empty;
 
 
+    public string GroupNumber {
+      get; internal set;
+    } = string.Empty;
+
+
     public DebtorCreditorType DebtorCreditor {
       get; internal set;
     } = DebtorCreditorType.Deudora;

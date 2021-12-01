@@ -35,8 +35,78 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
 
     }
 
-    
+
+    #region Public methods
+
+    internal void GetHeaderAccountName(EmpiriaHashTable<BalanceEntry> headerByAccount,
+                                        BalanceEntry entry, TrialBalanceItemType balanceType) {
+      BalanceEntry newEntry = BalanceMapper.MapToBalanceEntry(entry);
+      newEntry.GroupName = $"{newEntry.Account.Name} [{newEntry.Currency.FullName}]";
+
+      string hash = $"{newEntry.Ledger.Number}||{newEntry.Currency.Code}||{newEntry.Account.Number}";
+
+      GenerateOrIncreaseBalances(headerByAccount, newEntry, newEntry.Account,
+                                 Sector.Empty, balanceType, hash);
+    }
+
+
+    internal void SummaryBySubledgerAccount(EmpiriaHashTable<BalanceEntry> entries,
+                                    BalanceEntry entry, TrialBalanceItemType balanceType) {
+
+      string hash = $"{entry.Ledger.Number}||{entry.Currency.Code}||" +
+                    $"{entry.SubledgerAccountIdParent}||{Sector.Empty.Code}";
+
+      GenerateOrIncreaseBalances(entries, entry, StandardAccount.Empty, Sector.Empty, balanceType, hash);
+    }
+
+
+    internal void SummaryEntriesByCurrency(EmpiriaHashTable<BalanceEntry> totalByCurrencies,
+                                           BalanceEntry entry, TrialBalanceItemType balanceType) {
+
+      BalanceEntry newEntry = BalanceMapper.MapToBalanceEntry(entry);
+      newEntry.GroupName = $"TOTAL DE LA CUENTA {newEntry.Account.Number} EN {newEntry.Currency.FullName}";
+
+      string hash = $"{newEntry.Ledger.Number}||{newEntry.Currency.Code}||{newEntry.Account.Number}";
+
+      GenerateOrIncreaseBalances(totalByCurrencies, newEntry, newEntry.Account,
+                                 Sector.Empty, balanceType, hash);
+
+    }
+
+    #endregion
+
     #region Private methods
+
+
+    private void GenerateOrIncreaseBalances(EmpiriaHashTable<BalanceEntry> entries,
+                                            BalanceEntry entry, StandardAccount account,
+                                            Sector sector, TrialBalanceItemType balanceType, string hash) {
+      BalanceEntry returnedEntry;
+
+      entries.TryGetValue(hash, out returnedEntry);
+
+      if (returnedEntry == null) {
+
+        returnedEntry = new BalanceEntry {
+          Ledger = entry.Ledger,
+          Currency = entry.Currency,
+          Sector = sector,
+          Account = account,
+          ItemType = balanceType,
+          GroupNumber = entry.GroupNumber,
+          GroupName = entry.GroupName,
+          DebtorCreditor = entry.DebtorCreditor,
+          SubledgerAccountIdParent = entry.SubledgerAccountIdParent,
+          LastChangeDate = entry.LastChangeDate
+        };
+        returnedEntry.CurrentBalance += entry.CurrentBalance;
+
+        entries.Insert(hash, returnedEntry);
+
+      } else {
+        returnedEntry.CurrentBalance += entry.CurrentBalance;
+      }
+    }
 
 
     private TrialBalanceCommandData GetBalanceCommandMapped() {
@@ -84,49 +154,8 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
       return mappedEntries.ToFixedList();
     }
 
-
-    internal void SummaryBySubledgerAccount(EmpiriaHashTable<BalanceEntry> entries, 
-                                    BalanceEntry entry, TrialBalanceItemType balanceType) {
-
-      string hash = $"{entry.Ledger.Number}||{entry.Currency.Code}||" +
-                    $"{entry.SubledgerAccountIdParent}||{Sector.Empty.Code}";
-
-      GenerateOrIncreaseBalances(entries, entry, StandardAccount.Empty, Sector.Empty, balanceType, hash);
-    }
-
-
-    private void GenerateOrIncreaseBalances(EmpiriaHashTable<BalanceEntry> entries, 
-                                            BalanceEntry entry, StandardAccount account, 
-                                            Sector sector, TrialBalanceItemType balanceType, string hash) {
-
-      BalanceEntry returnedEntry;
-
-      entries.TryGetValue(hash, out returnedEntry);
-
-      if (returnedEntry == null) {
-
-        returnedEntry = new BalanceEntry {
-          Ledger = entry.Ledger,
-          Currency = entry.Currency,
-          Sector = sector,
-          Account = account,
-          ItemType = balanceType,
-          //GroupNumber = entry.GroupNumber,
-          GroupName = entry.GroupName,
-          DebtorCreditor = entry.DebtorCreditor,
-          SubledgerAccountIdParent = entry.SubledgerAccountIdParent,
-          LastChangeDate = entry.LastChangeDate
-        };
-        returnedEntry.CurrentBalance += entry.CurrentBalance;
-
-        entries.Insert(hash, returnedEntry);
-
-      } else {
-        returnedEntry.CurrentBalance += entry.CurrentBalance;
-      }
-    }
-
-
+    
+    
     #endregion
 
   } // class BalanceHelper 
