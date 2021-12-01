@@ -55,12 +55,12 @@ namespace Empiria.FinancialAccounting.BalanceEngine.Adapters {
     static private BalanceEntryDto MapToBalance(BalanceEntry entry) {
 
       var dto = new BalanceEntryDto();
-
+      dto.ItemType = entry.ItemType;
       dto.LedgerNumber = entry.Ledger.Number;
-      dto.LedgerName = entry.Ledger.Name;
+      dto.LedgerName = entry.Ledger.Number != string.Empty ? entry.Ledger.FullName : "";
       dto.CurrencyCode = entry.Currency.Code;
-      dto.AccountNumber = entry.Account.Number;
-      dto.AccountName = entry.Account.Name;
+      dto.AccountNumber = entry.Account.Number == "Empty" ? "" : entry.Account.Number;
+      dto.AccountName = entry.GroupName == string.Empty ? entry.Account.Name : entry.GroupName;
       dto.SectorCode = entry.Sector.Code;
       dto.CurrentBalance = entry.CurrentBalance;
       dto.DebtorCreditor = entry.DebtorCreditor.ToString();

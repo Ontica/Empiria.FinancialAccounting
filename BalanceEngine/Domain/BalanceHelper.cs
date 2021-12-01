@@ -50,16 +50,6 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
     }
 
 
-    internal FixedList<BalanceEntry> GetOrderingBalance(FixedList<BalanceEntry> balance) {
-      var orderingBalance = balance.OrderBy(a => a.Ledger.Number)
-                                   .ThenBy(a => a.Currency.Code)
-                                   .ThenBy(a => a.Account.Number)
-                                   .ThenBy(a => a.Sector.Code).ToList();
-
-      return orderingBalance.ToFixedList();
-    }
-
-
     private FixedList<TrialBalanceEntry> GetTrialBalanceEntries(TrialBalanceCommandData commandData) {
 
       return TrialBalanceDataService.GetTrialBalanceEntries(commandData);
@@ -80,6 +70,7 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
 
       foreach (var entry in entries) {
         var balanceEntry = new BalanceEntry();
+        balanceEntry.ItemType = entry.ItemType;
         balanceEntry.Ledger = entry.Ledger;
         balanceEntry.Currency = entry.Currency;
         balanceEntry.Account = entry.Account;
@@ -94,20 +85,45 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
     }
 
 
-    static private BalanceEntry MapToBalance(TrialBalanceEntry entry) {
+    internal void SummaryBySubledgerAccount(EmpiriaHashTable<BalanceEntry> entries, 
+                                    BalanceEntry entry, TrialBalanceItemType balanceType) {
 
-      var balanceEntry = new BalanceEntry();
+      string hash = $"{entry.Ledger.Number}||{entry.Currency.Code}||" +
+                    $"{entry.SubledgerAccountIdParent}||{Sector.Empty.Code}";
 
-      balanceEntry.Ledger = entry.Ledger;
-      balanceEntry.Currency = entry.Currency;
-      balanceEntry.Account = entry.Account;
-      balanceEntry.Sector = entry.Sector;
-      balanceEntry.SubledgerAccountId = entry.SubledgerAccountId;
-      balanceEntry.CurrentBalance = Math.Round(entry.CurrentBalance, 2);
-      balanceEntry.LastChangeDate = entry.LastChangeDate;
-      balanceEntry.DebtorCreditor = entry.DebtorCreditor;
-      
-      return balanceEntry;
+      GenerateOrIncreaseBalances(entries, entry, StandardAccount.Empty, Sector.Empty, balanceType, hash);
+    }
+
+
+    private void GenerateOrIncreaseBalances(EmpiriaHashTable<BalanceEntry> entries, 
+                                            BalanceEntry entry, StandardAccount account, 
+                                            Sector sector, TrialBalanceItemType balanceType, string hash) {
+
+      BalanceEntry returnedEntry;
+
+      entries.TryGetValue(hash, out returnedEntry);
+
+      if (returnedEntry == null) {
+
+        returnedEntry = new BalanceEntry {
+          Ledger = entry.Ledger,
+          Currency = entry.Currency,
+          Sector = sector,
+          Account = account,
+          ItemType = balanceType,
+          //GroupNumber = entry.GroupNumber,
+          GroupName = entry.GroupName,
+          DebtorCreditor = entry.DebtorCreditor,
+          SubledgerAccountIdParent = entry.SubledgerAccountIdParent,
+          LastChangeDate = entry.LastChangeDate
+        };
+        returnedEntry.CurrentBalance += entry.CurrentBalance;
+
+        entries.Insert(hash, returnedEntry);
+
+      } else {
+        returnedEntry.CurrentBalance += entry.CurrentBalance;
+      }
     }
 
 

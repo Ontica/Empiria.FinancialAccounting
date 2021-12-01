@@ -36,6 +36,10 @@ namespace Empiria.FinancialAccounting.BalanceEngine.Adapters {
 
   public class BalanceEntryDto : IBalanceEntryDto {
 
+    public TrialBalanceItemType ItemType {
+      get; internal set;
+    }
+
     public string LedgerNumber {
       get; internal set;
     }

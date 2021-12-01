@@ -30,11 +30,17 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
 
       FixedList<BalanceEntry> balance = helper.GetBalanceEntries();
 
-      FixedList<BalanceEntry> orderingBalance = helper.GetOrderingBalance(balance);
+      //FixedList<BalanceEntry> orderingBalance = helper.GetOrderingBalance(balance);
 
-      var returnedBalance = new FixedList<IBalanceEntry>(orderingBalance.Select(x => (IBalanceEntry) x));
+      FixedList<BalanceEntry> balanceByLedger = GetBalanceByLedger(balance);
+
+      var returnedBalance = new FixedList<IBalanceEntry>(balance.Select(x => (IBalanceEntry) x));
 
       return new Balance(_command, returnedBalance);
+    }
+
+    private FixedList<BalanceEntry> GetBalanceByLedger(FixedList<BalanceEntry> orderingBalance) {
+      throw new NotImplementedException();
     }
   } // class SaldosPorCuentaConsultaRapida
 

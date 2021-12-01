@@ -62,6 +62,16 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
     }
 
 
+    public int SubledgerAccountIdParent {
+      get; internal set;
+    } = -1;
+
+
+    public int SubledgerNumberOfDigits {
+      get; internal set;
+    } = 0;
+
+
     public string GroupName {
       get; internal set;
     } = string.Empty;
@@ -81,10 +91,6 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
       get; internal set;
     } = string.Empty;
 
-
-    public int SubledgerNumberOfDigits {
-      get; internal set;
-    } = 0;
 
   } // class BalanceEntry 
 

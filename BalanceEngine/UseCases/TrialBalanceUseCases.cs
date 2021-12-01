@@ -54,6 +54,17 @@ namespace Empiria.FinancialAccounting.BalanceEngine.UseCases {
       throw new NotImplementedException();
     }
 
+
+    public BalanceDto BuildBalanceSearch(BalanceCommand command) {
+      Assertion.AssertObject(command, "command");
+
+      var balanceConstructor = new BalanceConstructor(command);
+
+      Balance balance = balanceConstructor.BuildBalance();
+
+      return BalanceMapper.Map(balance);
+    }
+
     #endregion Use cases
 
   } // class TrialBalanceUseCases

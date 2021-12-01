@@ -62,9 +62,9 @@ namespace Empiria.FinancialAccounting.WebApi.BalanceEngine {
     public SingleObjectModel GetBalances([FromBody] BalanceCommand command) {
       base.RequireBody(command);
 
-      using (var usecases = BalanceUseCases.UseCaseInteractor()) {
+      using (var usecases = TrialBalanceUseCases.UseCaseInteractor()) {
 
-        BalanceDto balance = usecases.BuildBalances(command);
+        BalanceDto balance = usecases.BuildBalanceSearch(command);
 
         return new SingleObjectModel(this.Request, balance);
       }
