@@ -26,7 +26,7 @@ namespace Empiria.FinancialAccounting.WebApi.Vouchers {
 
     [HttpGet]
     [Route("v2/financial-accounting/vouchers/{voucherId:int}")]
-    public SingleObjectModel GetVoucher([FromUri] int voucherId) {
+    public SingleObjectModel GetVoucher([FromUri] long voucherId) {
 
       using (var usecases = VoucherUseCases.UseCaseInteractor()) {
         VoucherDto voucher = usecases.GetVoucher(voucherId);
@@ -38,8 +38,8 @@ namespace Empiria.FinancialAccounting.WebApi.Vouchers {
 
     [HttpGet]
     [Route("v2/financial-accounting/vouchers/{voucherId:int}/entries/{voucherEntryId:int}")]
-    public SingleObjectModel GetVoucherEntry([FromUri] int voucherId,
-                                             [FromUri] int voucherEntryId) {
+    public SingleObjectModel GetVoucherEntry([FromUri] long voucherId,
+                                             [FromUri] long voucherEntryId) {
 
       using (var usecases = VoucherUseCases.UseCaseInteractor()) {
         VoucherEntryDto voucher = usecases.GetVoucherEntry(voucherId, voucherEntryId);
@@ -51,7 +51,7 @@ namespace Empiria.FinancialAccounting.WebApi.Vouchers {
 
     [HttpGet]
     [Route("v2/financial-accounting/vouchers/{voucherId:int}/get-copy-of-last-entry")]
-    public SingleObjectModel GetCopyOfVoucherLastEntry([FromUri] int voucherId) {
+    public SingleObjectModel GetCopyOfVoucherLastEntry([FromUri] long voucherId) {
 
       using (var usecases = VoucherEditionUseCases.UseCaseInteractor()) {
         VoucherEntryDto copy = usecases.GetCopyOfLastEntry(voucherId);
@@ -63,7 +63,7 @@ namespace Empiria.FinancialAccounting.WebApi.Vouchers {
 
     [HttpPost]
     [Route("v2/financial-accounting/vouchers/{voucherId:int}/assign-account/{standardAccountId:int}")]
-    public SingleObjectModel AssignStandardAccountToVoucherLedger([FromUri] int voucherId,
+    public SingleObjectModel AssignStandardAccountToVoucherLedger([FromUri] long voucherId,
                                                                   [FromUri] int standardAccountId) {
 
       using (var usecases = VoucherEditionUseCases.UseCaseInteractor()) {
@@ -77,7 +77,7 @@ namespace Empiria.FinancialAccounting.WebApi.Vouchers {
 
     [HttpPost]
     [Route("v2/financial-accounting/vouchers/{voucherId:int}/entries")]
-    public SingleObjectModel AppendVoucherEntry([FromUri] int voucherId,
+    public SingleObjectModel AppendVoucherEntry([FromUri] long voucherId,
                                                 [FromBody] VoucherEntryFields fields) {
       base.RequireBody(fields);
 
@@ -104,7 +104,7 @@ namespace Empiria.FinancialAccounting.WebApi.Vouchers {
 
     [HttpDelete]
     [Route("v2/financial-accounting/vouchers/{voucherId:int}")]
-    public NoDataModel DeleteVoucher([FromUri] int voucherId) {
+    public NoDataModel DeleteVoucher([FromUri] long voucherId) {
 
       using (var usecases = VoucherEditionUseCases.UseCaseInteractor()) {
         usecases.DeleteVoucher(voucherId);
@@ -116,7 +116,7 @@ namespace Empiria.FinancialAccounting.WebApi.Vouchers {
 
     [HttpPost]
     [Route("v2/financial-accounting/vouchers/{voucherId:int}/close")]
-    public SingleObjectModel CloseVoucher([FromUri] int voucherId) {
+    public SingleObjectModel CloseVoucher([FromUri] long voucherId) {
 
       using (var usecases = VoucherEditionUseCases.UseCaseInteractor()) {
         VoucherDto voucher = usecases.CloseVoucher(voucherId);
@@ -128,8 +128,8 @@ namespace Empiria.FinancialAccounting.WebApi.Vouchers {
 
     [HttpDelete]
     [Route("v2/financial-accounting/vouchers/{voucherId:int}/entries/{voucherEntryId:int}")]
-    public SingleObjectModel DeleteVoucherEntry([FromUri] int voucherId,
-                                                [FromUri] int voucherEntryId) {
+    public SingleObjectModel DeleteVoucherEntry([FromUri] long voucherId,
+                                                [FromUri] long voucherEntryId) {
 
       using (var usecases = VoucherEditionUseCases.UseCaseInteractor()) {
         VoucherDto voucher = usecases.DeleteEntry(voucherId, voucherEntryId);
@@ -141,7 +141,7 @@ namespace Empiria.FinancialAccounting.WebApi.Vouchers {
 
     [HttpPut, HttpPatch]
     [Route("v2/financial-accounting/vouchers/{voucherId:int}")]
-    public SingleObjectModel UpdateVoucher([FromUri] int voucherId,
+    public SingleObjectModel UpdateVoucher([FromUri] long voucherId,
                                            [FromBody] VoucherFields fields) {
       base.RequireBody(fields);
 
@@ -155,8 +155,8 @@ namespace Empiria.FinancialAccounting.WebApi.Vouchers {
 
     [HttpPut, HttpPatch]
     [Route("v2/financial-accounting/vouchers/{voucherId:int}/entries/{voucherEntryId:int}")]
-    public SingleObjectModel UpdateVoucherEntry([FromUri] int voucherId,
-                                                [FromUri] int voucherEntryId,
+    public SingleObjectModel UpdateVoucherEntry([FromUri] long voucherId,
+                                                [FromUri] long voucherEntryId,
                                                 [FromBody] VoucherEntryFields fields) {
       base.RequireBody(fields);
 
@@ -170,7 +170,7 @@ namespace Empiria.FinancialAccounting.WebApi.Vouchers {
 
     [HttpGet]
     [Route("v2/financial-accounting/vouchers/{voucherId:int}/validate")]
-    public CollectionModel ValidateVoucher([FromUri] int voucherId) {
+    public CollectionModel ValidateVoucher([FromUri] long voucherId) {
 
       using (var usecases = VoucherEditionUseCases.UseCaseInteractor()) {
         FixedList<string> validationResult = usecases.ValidateVoucher(voucherId);

@@ -14,7 +14,7 @@ namespace Empiria.FinancialAccounting.Vouchers.Adapters {
   /// <summary>Data structure that serves as an adapter to create or update vouchers entries data.</summary>
   public class VoucherEntryFields : IVoucherEntry {
 
-    public int VoucherId {
+    public long VoucherId {
       get; set;
     }
 

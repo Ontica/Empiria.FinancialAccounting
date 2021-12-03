@@ -90,7 +90,7 @@ namespace Empiria.FinancialAccounting.Tests.Vouchers {
 
     [Fact]
     public void Should_Search_Accounts_for_Voucher_Edition() {
-      int voucherId = TestingConstants.VOUCHER_ID;
+      long voucherId = TestingConstants.VOUCHER_ID;
 
       FixedList<LedgerAccountDto> accounts = _usecases.SearchAccountsForVoucherEdition(voucherId, "impuestos");
 

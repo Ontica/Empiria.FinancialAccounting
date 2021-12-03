@@ -17,7 +17,7 @@ namespace Empiria.FinancialAccounting.Tests {
 
     static readonly internal string LEDGER_UID = ConfigurationData.GetString("LEDGER_UID");
 
-    static readonly internal int VOUCHER_ID = ConfigurationData.GetInteger("VOUCHER_ID");
+    static readonly internal long VOUCHER_ID = ConfigurationData.Get<long>("VOUCHER_ID");
 
   }  // class TestingConstants
 

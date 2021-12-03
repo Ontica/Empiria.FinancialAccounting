@@ -33,7 +33,7 @@ namespace Empiria.FinancialAccounting.Vouchers.UseCases {
     #region Use cases
 
 
-    public VoucherDto GetVoucher(int voucherId) {
+    public VoucherDto GetVoucher(long voucherId) {
       Assertion.Assert(voucherId > 0, "Unrecognized voucherId.");
 
       Voucher voucher = Voucher.Parse(voucherId);
@@ -42,7 +42,7 @@ namespace Empiria.FinancialAccounting.Vouchers.UseCases {
     }
 
 
-    public VoucherEntryDto GetVoucherEntry(int voucherId, int voucherEntryId) {
+    public VoucherEntryDto GetVoucherEntry(long voucherId, long voucherEntryId) {
       Assertion.Assert(voucherId > 0, "Unrecognized voucherId.");
       Assertion.Assert(voucherEntryId > 0, "Unrecognized voucherEntryId.");
 
@@ -50,6 +50,14 @@ namespace Empiria.FinancialAccounting.Vouchers.UseCases {
       VoucherEntry voucherEntry = voucher.GetEntry(voucherEntryId);
 
       return VoucherMapper.MapEntry(voucherEntry);
+    }
+
+    public string GetVoucherAsHtmlString(long voucherId) {
+      Assertion.Assert(voucherId > 0, "Unrecognized voucherId.");
+
+      Voucher voucher = Voucher.Parse(voucherId);
+
+      return "http://172.27.207.97/sicofin/files/vouchers/poliza.prueba.pdf";
     }
 
 

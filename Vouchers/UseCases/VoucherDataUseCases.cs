@@ -56,7 +56,7 @@ namespace Empiria.FinancialAccounting.Vouchers.UseCases {
     }
 
 
-    public FixedList<LedgerAccountDto> SearchAccountsForVoucherEdition(int voucherId, string keywords) {
+    public FixedList<LedgerAccountDto> SearchAccountsForVoucherEdition(long voucherId, string keywords) {
       Assertion.Assert(voucherId > 0, "voucherId must be a positive number.");
       Assertion.AssertObject(keywords, "keywords");
 
@@ -72,7 +72,7 @@ namespace Empiria.FinancialAccounting.Vouchers.UseCases {
     }
 
 
-    public FixedList<SubledgerAccountDescriptorDto> SearchSubledgerAccountsForVoucherEdition(int voucherId,
+    public FixedList<SubledgerAccountDescriptorDto> SearchSubledgerAccountsForVoucherEdition(long voucherId,
                                                                                              int accountId,
                                                                                              string keywords) {
       Assertion.Assert(voucherId > 0, "voucherId must be a positive number.");

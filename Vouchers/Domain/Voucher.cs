@@ -258,7 +258,7 @@ namespace Empiria.FinancialAccounting.Vouchers {
     }
 
 
-    internal VoucherEntry GetEntry(int voucherEntryId) {
+    internal VoucherEntry GetEntry(long voucherEntryId) {
       var entry = Entries.Find(x => x.Id == voucherEntryId);
 
       Assertion.AssertObject(entry, $"La póliza no tiene registrado un movimiento con id {voucherEntryId}");

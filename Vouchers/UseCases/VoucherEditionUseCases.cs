@@ -34,7 +34,7 @@ namespace Empiria.FinancialAccounting.Vouchers.UseCases {
     #region Use cases
 
 
-    public VoucherDto AppendEntry(int voucherId, VoucherEntryFields fields) {
+    public VoucherDto AppendEntry(long voucherId, VoucherEntryFields fields) {
       Assertion.Assert(voucherId > 0, "voucherId");
       Assertion.AssertObject(fields, "fields");
 
@@ -48,7 +48,7 @@ namespace Empiria.FinancialAccounting.Vouchers.UseCases {
     }
 
 
-    public VoucherDto AppendEntries(int voucherId, FixedList<VoucherEntryFields> entries) {
+    public VoucherDto AppendEntries(long voucherId, FixedList<VoucherEntryFields> entries) {
       Assertion.Assert(voucherId > 0, "voucherId");
       Assertion.AssertObject(entries, "entries");
 
@@ -79,7 +79,7 @@ namespace Empiria.FinancialAccounting.Vouchers.UseCases {
     }
 
 
-    public LedgerAccountDto AssignVoucherLedgerStandardAccount(int voucherId,
+    public LedgerAccountDto AssignVoucherLedgerStandardAccount(long voucherId,
                                                                int standardAccountId) {
       Assertion.Assert(voucherId > 0, "voucherId");
       Assertion.Assert(standardAccountId > 0, "standardAccountId");
@@ -103,7 +103,7 @@ namespace Empiria.FinancialAccounting.Vouchers.UseCases {
     }
 
 
-    public VoucherDto CloseVoucher(int voucherId) {
+    public VoucherDto CloseVoucher(long voucherId) {
       Assertion.Assert(voucherId > 0, "voucherId");
 
       var voucher = Voucher.Parse(voucherId);
@@ -149,7 +149,7 @@ namespace Empiria.FinancialAccounting.Vouchers.UseCases {
     }
 
 
-    public VoucherDto DeleteEntry(int voucherId, int voucherEntryId) {
+    public VoucherDto DeleteEntry(long voucherId, long voucherEntryId) {
       Assertion.Assert(voucherId > 0, "voucherId");
       Assertion.Assert(voucherEntryId > 0, "voucherEntryId");
 
@@ -163,7 +163,7 @@ namespace Empiria.FinancialAccounting.Vouchers.UseCases {
     }
 
 
-    public void DeleteVoucher(int voucherId) {
+    public void DeleteVoucher(long voucherId) {
       Assertion.Assert(voucherId > 0, "voucherId");
 
       var voucher = Voucher.Parse(voucherId);
@@ -172,7 +172,7 @@ namespace Empiria.FinancialAccounting.Vouchers.UseCases {
     }
 
 
-    public VoucherEntryDto GetCopyOfLastEntry(int voucherId) {
+    public VoucherEntryDto GetCopyOfLastEntry(long voucherId) {
       Assertion.Assert(voucherId > 0, "voucherId");
 
       var voucher = Voucher.Parse(voucherId);
@@ -183,7 +183,7 @@ namespace Empiria.FinancialAccounting.Vouchers.UseCases {
     }
 
 
-    public VoucherDto UpdateVoucher(int voucherId, VoucherFields fields) {
+    public VoucherDto UpdateVoucher(long voucherId, VoucherFields fields) {
       Assertion.Assert(voucherId > 0, "voucherId");
       Assertion.AssertObject(fields, "fields");
 
@@ -199,7 +199,7 @@ namespace Empiria.FinancialAccounting.Vouchers.UseCases {
     }
 
 
-    public VoucherDto UpdateEntry(int voucherId, int voucherEntryId,
+    public VoucherDto UpdateEntry(long voucherId, long voucherEntryId,
                                   VoucherEntryFields fields) {
       Assertion.Assert(voucherId > 0, "voucherId");
       Assertion.Assert(voucherEntryId > 0, "voucherEntryId");
@@ -214,7 +214,7 @@ namespace Empiria.FinancialAccounting.Vouchers.UseCases {
       return VoucherMapper.Map(voucher);
     }
 
-    public FixedList<string> ValidateVoucher(int voucherId) {
+    public FixedList<string> ValidateVoucher(long voucherId) {
       Assertion.Assert(voucherId > 0, "voucherId");
 
       var voucher = Voucher.Parse(voucherId);

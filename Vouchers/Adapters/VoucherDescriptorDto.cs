@@ -18,7 +18,7 @@ namespace Empiria.FinancialAccounting.Vouchers.Adapters {
       // no-op
     }
 
-    public int Id {
+    public long Id {
       get; internal set;
     }
 

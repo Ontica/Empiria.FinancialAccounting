@@ -97,7 +97,7 @@ namespace Empiria.FinancialAccounting.WebApi.Vouchers {
 
     [HttpGet]
     [Route("v2/financial-accounting/vouchers/{voucherId:int}/search-accounts-for-edition")]
-    public CollectionModel SearchAccountsForVoucher([FromUri] int voucherId,
+    public CollectionModel SearchAccountsForVoucher([FromUri] long voucherId,
                                                     [FromUri] string keywords) {
 
       using (var usecases = VoucherDataUseCases.UseCaseInteractor()) {
@@ -110,7 +110,7 @@ namespace Empiria.FinancialAccounting.WebApi.Vouchers {
 
     [HttpGet]
     [Route("v2/financial-accounting/vouchers/{voucherId:int}/search-subledger-accounts-for-edition/{accountId:int}")]
-    public CollectionModel SearchSubledgerAccountsForVoucher([FromUri] int voucherId,
+    public CollectionModel SearchSubledgerAccountsForVoucher([FromUri] long voucherId,
                                                              [FromUri] int accountId,
                                                              [FromUri] string keywords) {
 
