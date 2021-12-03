@@ -111,7 +111,7 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
 
     private TrialBalanceCommandData GetBalanceCommandMapped() {
 
-      TrialBalanceCommand trialBalanceCommand = BalanceCommand.MapToTrialBalanceCommand(_command);
+      TrialBalanceCommand trialBalanceCommand = BalanceMapper.MapToTrialBalanceCommand(_command);
 
       TrialBalanceCommandData commandData = trialBalanceCommand
                                             .MapToTrialBalanceCommandData(trialBalanceCommand.InitialPeriod);

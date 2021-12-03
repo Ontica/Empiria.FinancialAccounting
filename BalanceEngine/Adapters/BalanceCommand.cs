@@ -39,6 +39,16 @@ namespace Empiria.FinancialAccounting.BalanceEngine.Adapters {
     } = false;
 
 
+    public string[] Ledgers {
+      get; set;
+    } = new string[0];
+
+
+    public string[] Currencies {
+      get; set;
+    } = new string[0];
+
+
     public BalancesType BalancesType {
       get; set;
     } = BalancesType.AllAccounts;
@@ -48,23 +58,6 @@ namespace Empiria.FinancialAccounting.BalanceEngine.Adapters {
       get; set;
     } = new TrialBalanceCommandPeriod();
 
-
-
-    internal static TrialBalanceCommand MapToTrialBalanceCommand(BalanceCommand command) {
-      var trialBalanceCommand = new TrialBalanceCommand();
-
-      trialBalanceCommand.AccountsChartUID = command.AccountsChartUID;
-      trialBalanceCommand.FromAccount = command.FromAccount;
-      trialBalanceCommand.InitialPeriod.FromDate = command.InitialPeriod.FromDate;
-      trialBalanceCommand.InitialPeriod.ToDate = command.InitialPeriod.ToDate;
-      trialBalanceCommand.SubledgerAccount = command.SubledgerAccount;
-      trialBalanceCommand.TrialBalanceType = command.TrialBalanceType;
-      trialBalanceCommand.ShowCascadeBalances = true;
-      trialBalanceCommand.WithSubledgerAccount = command.TrialBalanceType == TrialBalanceType.SaldosPorAuxiliar ?
-                                                 true : command.WithSubledgerAccount;
-
-      return trialBalanceCommand;
-    }
 
   } // class BalanceCommand 
 

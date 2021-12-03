@@ -25,6 +25,24 @@ namespace Empiria.FinancialAccounting.BalanceEngine.Adapters {
       };
     }
 
+
+    internal static TrialBalanceCommand MapToTrialBalanceCommand(BalanceCommand command) {
+      var trialBalanceCommand = new TrialBalanceCommand();
+
+      trialBalanceCommand.AccountsChartUID = command.AccountsChartUID;
+      trialBalanceCommand.FromAccount = command.FromAccount;
+      trialBalanceCommand.InitialPeriod.FromDate = command.InitialPeriod.FromDate;
+      trialBalanceCommand.InitialPeriod.ToDate = command.InitialPeriod.ToDate;
+      trialBalanceCommand.SubledgerAccount = command.SubledgerAccount;
+      trialBalanceCommand.TrialBalanceType = command.TrialBalanceType;
+      trialBalanceCommand.ShowCascadeBalances = true;
+      trialBalanceCommand.WithSubledgerAccount = command.TrialBalanceType == TrialBalanceType.SaldosPorAuxiliar ?
+                                                 true : command.WithSubledgerAccount;
+
+      return trialBalanceCommand;
+    }
+
+
     #endregion Public mappers
 
 
@@ -49,7 +67,9 @@ namespace Empiria.FinancialAccounting.BalanceEngine.Adapters {
       return columns.ToFixedList();
     }
 
-    static private FixedList<IBalanceEntryDto> MapToDto(FixedList<IBalanceEntry> list, BalanceCommand command) {
+    static private FixedList<IBalanceEntryDto> MapToDto(
+                    FixedList<IBalanceEntry> list, BalanceCommand command) {
+
       switch (command.TrialBalanceType) {
         case TrialBalanceType.SaldosPorAuxiliar:
           

@@ -69,6 +69,20 @@ namespace Empiria.FinancialAccounting.WebApi.BalanceEngine {
       }
     }
 
+
+    [HttpPost]
+    [Route("v2/financial-accounting/balance-voucher")]
+    public SingleObjectModel GetVouchersByAccount([FromBody] BalanceCommand command) {
+      base.RequireBody(command);
+
+      using (var usecases = TrialBalanceUseCases.UseCaseInteractor()) {
+
+        VouchersByAccountDto balance = usecases.BuilVouchersByAccount(command);
+
+        return new SingleObjectModel(this.Request, balance);
+      }
+    }
+
     #endregion Web Apis
 
   } // class TrialBalanceController
