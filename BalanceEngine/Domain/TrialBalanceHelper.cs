@@ -489,7 +489,7 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
       if (_command.WithSectorization) {
         returnedEntries = returnedEntries
                             .Where(a =>
-                                  (a.Level > 1 && a.Sector.Parent.Code != "00") ||
+                                  (a.Level >= 1 && a.Sector.Parent.Code != "00") ||
                                   (a.Sector.IsRoot || a.Sector.Parent.Code == "00")
                             )
                             .ToList();
