@@ -48,8 +48,8 @@ namespace Empiria.FinancialAccounting.Vouchers {
     }
 
 
-    [DataField("ID_TRANSACCION", ConvertFrom = typeof(long))]
-    public int VoucherId {
+    [DataField("ID_TRANSACCION")]
+    public long VoucherId {
       get;
       private set;
     }

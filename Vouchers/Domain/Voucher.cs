@@ -10,13 +10,14 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+
 using Empiria.FinancialAccounting.Vouchers.Adapters;
 using Empiria.FinancialAccounting.Vouchers.Data;
 
 namespace Empiria.FinancialAccounting.Vouchers {
 
   /// <summary>Represents an accounting voucher.</summary>
-  public class Voucher : BaseObject {
+  public class Voucher {
 
     private Lazy<FixedList<VoucherEntry>> _entries;
 
@@ -24,6 +25,7 @@ namespace Empiria.FinancialAccounting.Vouchers {
 
     private Voucher() {
       // Required by Empiria Framework.
+      RefreshEntries();
     }
 
     internal Voucher(VoucherFields fields) {
@@ -37,28 +39,28 @@ namespace Empiria.FinancialAccounting.Vouchers {
     }
 
 
-    static public Voucher Parse(int id) {
-      return BaseObject.ParseId<Voucher>(id);
+    static public Voucher Parse(long id) {
+      return VoucherData.GetVoucher(id);
     }
 
-    static public Voucher Parse(string uid) {
-      return BaseObject.ParseKey<Voucher>(uid);
-    }
 
     static public FixedList<Voucher> GetList(string filter, string sort, int pageSize) {
       return VoucherData.GetVouchers(filter, sort, pageSize);
     }
 
-    static public Voucher Empty => BaseObject.ParseEmpty<Voucher>();
 
-    protected override void OnInitialize() {
-      base.OnLoad();
-      RefreshEntries();
-    }
+    static public Voucher Empty => Parse(-1);
 
     #endregion Constructors and parsers
 
     #region Public properties
+
+
+    [DataField("ID_TRANSACCION")]
+    public long Id {
+      get;
+      private set;
+    }
 
 
     [DataField("NUMERO_TRANSACCION")]
@@ -151,9 +153,15 @@ namespace Empiria.FinancialAccounting.Vouchers {
       }
     }
 
+    public bool IsEmptyInstance {
+      get {
+        return this.Id == -1;
+      }
+    }
+
     #endregion Public properties
 
-    #region Methods
+      #region Methods
 
     internal VoucherEntry AppendEntry(VoucherEntryFields fields) {
       Assertion.AssertObject(fields, "fields");
@@ -267,8 +275,10 @@ namespace Empiria.FinancialAccounting.Vouchers {
                                                      .OrderBy(x => x.Code);
 
       foreach (var currency in currencies) {
-        var debitsEntries = this.Entries.FindAll(x => x.VoucherEntryType == VoucherEntryType.Debit && x.Currency.Equals(currency));
-        var creditsEntries = this.Entries.FindAll(x => x.VoucherEntryType == VoucherEntryType.Credit && x.Currency.Equals(currency));
+        var debitsEntries = this.Entries.FindAll(x => x.VoucherEntryType == VoucherEntryType.Debit &&
+                                                      x.Currency.Equals(currency));
+        var creditsEntries = this.Entries.FindAll(x => x.VoucherEntryType == VoucherEntryType.Credit &&
+                                                       x.Currency.Equals(currency));
 
         decimal totalDebits = debitsEntries.Sum(x => x.Debit);
         decimal totalCredits = creditsEntries.Sum(x => x.Credit);
@@ -313,7 +323,10 @@ namespace Empiria.FinancialAccounting.Vouchers {
     }
 
 
-    protected override void OnSave() {
+    protected internal void Save() {
+      if (this.Id == 0) {
+        this.Id = VoucherData.NextVoucherId();
+      }
       VoucherData.WriteVoucher(this);
     }
 
@@ -342,14 +355,14 @@ namespace Empiria.FinancialAccounting.Vouchers {
     internal void Update(VoucherFields fields) {
       Assertion.AssertObject(fields, "fields");
 
-      this.Ledger = PatchField(fields.LedgerUID, this.Ledger);
-      this.AccountingDate = PatchField(fields.AccountingDate, this.AccountingDate);
-      this.RecordingDate = PatchField(fields.RecordingDate, this.RecordingDate);
-      this.ElaboratedBy = PatchField(fields.ElaboratedByUID, this.ElaboratedBy);
-      this.Concept = PatchField(EmpiriaString.TrimAll(fields.Concept), this.Concept);
-      this.TransactionType = PatchField(fields.TransactionTypeUID, this.TransactionType);
-      this.VoucherType = PatchField(fields.VoucherTypeUID, this.VoucherType);
-      this.FunctionalArea = PatchField(fields.FunctionalAreaId, this.FunctionalArea);
+      this.Ledger = FieldPatcher.PatchField(fields.LedgerUID, this.Ledger);
+      this.AccountingDate = FieldPatcher.PatchField(fields.AccountingDate, this.AccountingDate);
+      this.RecordingDate = FieldPatcher.PatchField(fields.RecordingDate, this.RecordingDate);
+      this.ElaboratedBy = FieldPatcher.PatchField(fields.ElaboratedByUID, this.ElaboratedBy);
+      this.Concept = FieldPatcher.PatchField(EmpiriaString.TrimAll(fields.Concept), this.Concept);
+      this.TransactionType = FieldPatcher.PatchField(fields.TransactionTypeUID, this.TransactionType);
+      this.VoucherType = FieldPatcher.PatchField(fields.VoucherTypeUID, this.VoucherType);
+      this.FunctionalArea = FieldPatcher.PatchField(fields.FunctionalAreaId, this.FunctionalArea);
     }
 
 

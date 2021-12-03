@@ -64,6 +64,14 @@ namespace Empiria.FinancialAccounting.Vouchers.Data {
     }
 
 
+    static internal Voucher GetVoucher(long id) {
+      var sql = $"SELECT * FROM COF_TRANSACCION WHERE ID_TRANSACCION = {id}";
+
+      var dataOperation = DataOperation.Parse(sql);
+
+      return DataReader.GetPlainObject<Voucher>(dataOperation);
+    }
+
     static internal string GetVoucherNumberFor(Voucher voucher) {
       var prefix = $"{voucher.AccountingDate.Year}-{voucher.AccountingDate.Month.ToString("00")}";
 
@@ -91,7 +99,7 @@ namespace Empiria.FinancialAccounting.Vouchers.Data {
 
       var dataOperation = DataOperation.Parse(sql);
 
-      return DataReader.GetFixedList<Voucher>(dataOperation);
+      return DataReader.GetPlainObjectFixedList<Voucher>(dataOperation);
     }
 
 
@@ -99,6 +107,11 @@ namespace Empiria.FinancialAccounting.Vouchers.Data {
       var dataOperation = DataOperation.Parse("qry_cof_movimiento", o.Id, o.IsOpened ? 1 : 0);
 
       return DataReader.GetPlainObjectFixedList<VoucherEntry>(dataOperation);
+    }
+
+
+    static internal long NextVoucherId() {
+      return CommonMethods.GetNextObjectId("SEC_ID_TRANSACCION");
     }
 
 
