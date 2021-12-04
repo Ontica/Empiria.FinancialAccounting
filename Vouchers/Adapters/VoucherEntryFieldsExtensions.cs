@@ -98,9 +98,10 @@ namespace Empiria.FinancialAccounting.Vouchers.Adapters {
                                                 Voucher voucher) {
       Assertion.Assert(fields.VoucherId > 0, "fields.VoucherId");
 
-      Assertion.Assert(fields.GetVoucher().Equals(voucher),
+      Assertion.Assert(fields.GetVoucher().Id == voucher.Id,
                        "fields.VoucherId does not match the given voucher.");
-    }
+
+   }
 
   }  // class VoucherEntryFieldsExtensions
 
