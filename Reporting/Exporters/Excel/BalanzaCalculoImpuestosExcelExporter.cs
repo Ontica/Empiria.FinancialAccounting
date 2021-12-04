@@ -45,21 +45,21 @@ namespace Empiria.FinancialAccounting.Reporting.Exporters.Excel {
 
     #region Private methods
 
-    
+
     private void FillOutRows(ExcelFile excelFile, IEnumerable<BalanzaCalculoImpuestosEntry> entries) {
       int i = 2;
       bool accountsChartflag = false;
 
       foreach (var entry in entries) {
-       
+
         if (entry.Contabilidad == "Contabilidad bancaria") {
           FillAccountChartRows(entry, excelFile, i);
           accountsChartflag = true;
 
         } else if (entry.Contabilidad == "Contabilidad bancaria 2022") {
           FillAccountChart2022Rows(entry, excelFile, i);
-          
         }
+        i++;
       }
       if (accountsChartflag) {
         excelFile.RemoveColumn("Z");
@@ -75,7 +75,7 @@ namespace Empiria.FinancialAccounting.Reporting.Exporters.Excel {
       cuentaSinSector = cuentaSinSector.PadRight(18, '0');
 
       string cuentaSector = $"{cuentaSinSector.Substring(0, 16)}{entry.Sector}";
-      
+
       excelFile.SetCell($"A{i}", entry.Moneda);
       excelFile.SetCell($"B{i}", entry.Cuenta);
       excelFile.SetCell($"C{i}", entry.Sector);
@@ -118,16 +118,14 @@ namespace Empiria.FinancialAccounting.Reporting.Exporters.Excel {
       excelFile.SetCell($"AN{i}", entry.VBxcoDebe);
       excelFile.SetCell($"AO{i}", entry.VBxcoHaber);
       excelFile.SetCell($"AP{i}", entry.VBxcoSaldoFinal);
-
-      i++;
-
     }
+
 
     private void FillAccountChart2022Rows(BalanzaCalculoImpuestosEntry entry, ExcelFile excelFile, int i) {
       string cuentaSinSector = (entry.Cuenta.Replace(".", string.Empty)).PadRight(23, '0');
 
       string cuentaSector = $"{cuentaSinSector.Substring(0, 21)}{entry.Sector}";
-      
+
       excelFile.SetCell($"A{i}", entry.Moneda);
       excelFile.SetCell($"B{i}", entry.Cuenta);
       excelFile.SetCell($"C{i}", entry.Sector);
