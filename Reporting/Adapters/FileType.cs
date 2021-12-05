@@ -14,6 +14,8 @@ namespace Empiria.FinancialAccounting.Reporting {
 
     Excel,
 
+    Pdf,
+
     Xml,
 
   }  // enum FileType

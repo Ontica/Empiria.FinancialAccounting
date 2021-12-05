@@ -39,14 +39,14 @@ namespace Empiria.FinancialAccounting.Reporting.Exporters.Excel {
     }
 
 
-    static private string GenerationStoragePath {
+    static public string GenerationStoragePath {
       get {
         return ConfigurationData.Get<string>("Reports.GenerationStoragePath");
       }
     }
 
 
-    static private string TemplatesStoragePath {
+    static public string TemplatesStoragePath {
       get {
         return ConfigurationData.Get<string>("Reports.TemplatesStoragePath");
       }
