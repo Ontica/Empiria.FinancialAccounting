@@ -72,6 +72,14 @@ namespace Empiria.FinancialAccounting.Vouchers.Adapters {
       get; internal set;
     }
 
+    public bool IsClosed {
+      get; internal set;
+    }
+
+    public bool AllEntriesAreInBaseCurrency {
+      get; internal set;
+    }
+
     public VoucherActionsDto Actions {
       get; internal set;
     }

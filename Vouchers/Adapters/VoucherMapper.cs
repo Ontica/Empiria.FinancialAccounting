@@ -9,6 +9,7 @@
 ************************* Copyright(c) La Vía Óntica SC, Ontica LLC and contributors. All rights reserved. **/
 using System;
 using System.Collections.Generic;
+
 using Empiria.FinancialAccounting.Adapters;
 
 namespace Empiria.FinancialAccounting.Vouchers.Adapters {
@@ -31,13 +32,16 @@ namespace Empiria.FinancialAccounting.Vouchers.Adapters {
         ElaboratedBy = voucher.ElaboratedBy.Name,
         AuthorizedBy = voucher.AuthorizedBy.Name,
         Status = voucher.IsOpened ? "Pendiente" : "Cerrado",
+        IsClosed = !voucher.IsOpened,
+        AllEntriesAreInBaseCurrency = !voucher.Entries.Contains(x => !x.Currency.Equals(voucher.Ledger.BaseCurrency)),
         Actions = MapVoucherActions(voucher),
         Entries = MapToVoucherEntriesDescriptorWithTotals(voucher)
       };
+
       return dto;
     }
 
-    private static VoucherActionsDto MapVoucherActions(Voucher voucher) {
+    static private VoucherActionsDto MapVoucherActions(Voucher voucher) {
       if (!voucher.IsOpened) {
         return new VoucherActionsDto();
       }
@@ -58,7 +62,7 @@ namespace Empiria.FinancialAccounting.Vouchers.Adapters {
     }
 
 
-    private static FixedList<VoucherEntryDescriptorDto> MapToVoucherEntriesDescriptorWithTotals(Voucher voucher) {
+    static private FixedList<VoucherEntryDescriptorDto> MapToVoucherEntriesDescriptorWithTotals(Voucher voucher) {
       var list = new List<VoucherEntryDescriptorDto>(voucher.Entries.Select((x) => MapToVoucherEntryDescriptor(x)));
 
       FixedList<VoucherTotal> totals = voucher.GetTotals();
@@ -69,12 +73,12 @@ namespace Empiria.FinancialAccounting.Vouchers.Adapters {
     }
 
 
-    private static FixedList<VoucherEntryDescriptorDto> MapTotalsEntries(FixedList<VoucherTotal> totals) {
+    static private FixedList<VoucherEntryDescriptorDto> MapTotalsEntries(FixedList<VoucherTotal> totals) {
       return new FixedList<VoucherEntryDescriptorDto>(totals.Select((x) => MapTotalsEntry(x)));
     }
 
 
-    private static VoucherEntryDescriptorDto MapTotalsEntry(VoucherTotal total) {
+    static private VoucherEntryDescriptorDto MapTotalsEntry(VoucherTotal total) {
       return new VoucherEntryDescriptorDto {
         ItemType = VoucherEntryItemType.TotalsEntry,
         AccountName = total.IsBalanced ?
@@ -86,7 +90,8 @@ namespace Empiria.FinancialAccounting.Vouchers.Adapters {
       };
     }
 
-    private static VoucherEntryDescriptorDto MapToVoucherEntryDescriptor(VoucherEntry entry) {
+
+    static private VoucherEntryDescriptorDto MapToVoucherEntryDescriptor(VoucherEntry entry) {
       return new VoucherEntryDescriptorDto {
         Id = entry.Id,
         VoucherEntryType = entry.VoucherEntryType,
@@ -105,7 +110,8 @@ namespace Empiria.FinancialAccounting.Vouchers.Adapters {
       };
     }
 
-    public static VoucherEntryDto MapEntry(VoucherEntry entry) {
+
+    static public VoucherEntryDto MapEntry(VoucherEntry entry) {
       return new VoucherEntryDto {
         Id = entry.Id,
         VoucherEntryType = entry.VoucherEntryType,
