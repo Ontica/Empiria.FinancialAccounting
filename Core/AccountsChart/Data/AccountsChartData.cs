@@ -27,6 +27,7 @@ namespace Empiria.FinancialAccounting.Data {
       return DataReader.GetHashTable<Account>(dataOperation, x => x.Number);
     }
 
+
     static internal FixedList<Account> GetAccountHistory(AccountsChart accountsChart,
                                                          string accountNumber) {
       var sql = "SELECT * FROM VW_COF_CUENTA_ESTANDAR_HIST " +
@@ -67,7 +68,7 @@ namespace Empiria.FinancialAccounting.Data {
       var sql = "SELECT COF_MAPEO_MONEDA.* " +
                 $"FROM AO_CURRENCIES INNER JOIN COF_MAPEO_MONEDA " +
                 $"ON AO_CURRENCIES.CURRENCY_ID = COF_MAPEO_MONEDA.ID_MONEDA " +
-                $"ORDER BY COF_MAPEO_MONEDA.ID_CUENTA_ESTANDAR, AO_CURRENCIES.ABBREV, FECHA_FIN DESC";
+                $"ORDER BY COF_MAPEO_MONEDA.ID_CUENTA_ESTANDAR, AO_CURRENCIES.O_ID_MONEDA, FECHA_FIN DESC";
 
       var dataOperation = DataOperation.Parse(sql);
 
