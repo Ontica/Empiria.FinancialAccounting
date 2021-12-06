@@ -26,8 +26,8 @@ namespace Empiria.FinancialAccounting.BanobrasIntegration.VouchersImporter {
     static private readonly int WIDE_TEXT_LINE_LENGTH =
             STANDARD_TEXT_LINE_LENGTH + (WIDE_ACCOUNT_NUMBER_LENGTH - STANDARD_ACCOUNT_NUMBER_LENGTH);
 
-
     private readonly List<ToImportVoucherIssue> _entryIssues = new List<ToImportVoucherIssue>();
+
 
     internal TextFileVoucherEntry(string textLine, int textLineIndex) {
       Assertion.AssertObject(textLine, "textLine");
@@ -43,12 +43,14 @@ namespace Empiria.FinancialAccounting.BanobrasIntegration.VouchersImporter {
     private AccountsChart AccountsChart {
       get {
         if (this.TextLineIsInWideFormat) {
-          return AccountsChart.ParseForDate(this.AccountingDate);
+          return AccountsChart.IFRS;
+          // return AccountsChart.ParseForDate(this.AccountingDate);
         } else {
           return AccountsChart.Former;
         }
       }
     }
+
 
     public string TextLine {
       get;
