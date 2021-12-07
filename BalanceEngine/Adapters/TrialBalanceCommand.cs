@@ -119,6 +119,11 @@ namespace Empiria.FinancialAccounting.BalanceEngine.Adapters {
       get; set;
     } = false;
 
+    public bool UseNewSectorizationModel {
+      get {
+        return this.AccountsChartUID == "47ec2ec7-0f4f-482e-9799-c23107b60d8a";
+      }
+    }
 
     public bool ValuateBalances {
       get {

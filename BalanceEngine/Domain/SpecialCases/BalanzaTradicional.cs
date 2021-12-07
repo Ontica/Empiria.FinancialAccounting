@@ -30,12 +30,12 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
 
       _command.WithSubledgerAccount = _command.TrialBalanceType == TrialBalanceType.Saldos ? true :
                                       _command.WithSubledgerAccount;
-
+      
       FixedList<TrialBalanceEntry> postingEntries = helper.GetPostingEntries();
 
       List<TrialBalanceEntry> summaryEntries = helper.GenerateSummaryEntries(postingEntries);
 
-      summaryEntries = helper.SummaryEntriesAndSectorization(summaryEntries);
+      summaryEntries = helper.GetSummaryByLevelAndSector(summaryEntries);
 
       List<TrialBalanceEntry> trialBalance = helper.CombineSummaryAndPostingEntries(
                                                      summaryEntries, postingEntries);

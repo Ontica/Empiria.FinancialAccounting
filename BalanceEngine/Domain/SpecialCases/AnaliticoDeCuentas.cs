@@ -39,7 +39,7 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
 
       List<TrialBalanceEntry> summaryEntries = helper.GenerateSummaryEntries(postingEntries);
 
-      summaryEntries = helper.SummaryEntriesAndSectorization(summaryEntries);
+      summaryEntries = helper.GetSummaryByLevelAndSector(summaryEntries);
 
       List<TrialBalanceEntry> trialBalance = helper.CombineSummaryAndPostingEntries(summaryEntries,
                                                                                     postingEntries);

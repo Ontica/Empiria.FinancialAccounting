@@ -48,7 +48,7 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
       return returnedEntries;
     }
 
-
+    
     internal List<TrialBalanceEntry> CombineCurrencyTotalsAndPostingEntries(
                                       List<TrialBalanceEntry> trialBalance,
                                       List<TrialBalanceEntry> summaryEntries) {
@@ -67,17 +67,6 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
       return OrderByLedgerAndCurrency(returnedEntries);
     }
 
-    internal List<TrialBalanceEntry> TrialBalanceWithSubledgerAccounts(List<TrialBalanceEntry> trialBalance) {
-      List<TrialBalanceEntry> returnedEntries = new List<TrialBalanceEntry>(trialBalance);
-
-      if (!_command.WithSubledgerAccount && _command.TrialBalanceType == TrialBalanceType.SaldosPorCuenta) {
-        returnedEntries = returnedEntries.Where(a => a.SubledgerNumberOfDigits == 0
-                                        //&& a.CurrentBalance != 0
-                                        ).ToList();
-      }
-
-      return returnedEntries;
-    }
 
     internal List<TrialBalanceEntry> CombineDebtorCreditorAndPostingEntries(
                                       List<TrialBalanceEntry> trialBalance,
@@ -287,6 +276,8 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
           if (entry.Level > 1) {
             SummaryByEntry(summaryEntries, entry, currentParent, entry.Sector,
                                          TrialBalanceItemType.BalanceSummary);
+
+            SummaryEntryBySectorization(summaryEntries, entry, currentParent);
           }
 
           cont++;
@@ -322,6 +313,22 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
       return returnedEntries;
     }
 
+
+    private void SummaryEntryBySectorization(EmpiriaHashTable<TrialBalanceEntry> summaryEntries,
+                                             TrialBalanceEntry entry, StandardAccount currentParent) {
+      if (_command.UseNewSectorizationModel) {
+        if (currentParent.HasParent && entry.HasSector) {
+          var sectorParent = entry.Sector.Parent;
+          if (sectorParent.Code == "00") {
+            SummaryByEntry(summaryEntries, entry, currentParent, entry.Sector.Parent,
+                                            TrialBalanceItemType.BalanceSummary);
+          } else if (_command.WithSectorization) {
+            SummaryByEntry(summaryEntries, entry, currentParent, entry.Sector.Parent,
+                                            TrialBalanceItemType.BalanceSummary);
+          }
+        }
+      }
+    }
 
     internal List<TrialBalanceEntry> GenerateTotalSummaryDebtorCreditor(
                                       List<TrialBalanceEntry> postingEntries) {
@@ -458,6 +465,25 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
       return CombineSummaryAndPostingEntries(summaryEntries, postingEntries);
     }
 
+
+    internal List<TrialBalanceEntry> GetSummaryByLevelAndSector(List<TrialBalanceEntry> summaryEntries) {
+      var entries = new List<TrialBalanceEntry>(summaryEntries);
+      if (_command.UseNewSectorizationModel) {
+        var summaryEntriesList = new List<TrialBalanceEntry>(summaryEntries);
+        foreach (var entry in summaryEntriesList) {
+          var entriesWithSummarySector = summaryEntries.Where(a => a.Ledger.Number == entry.Ledger.Number &&
+                                                        a.Currency.Code == entry.Currency.Code &&
+                                                        a.Account.Number == entry.Account.Number).ToList();
+          if (entry.Level > 1 && entriesWithSummarySector.Count == 2) {
+            var entryWithoutSector = entriesWithSummarySector.FirstOrDefault(a => a.Sector.Code == "00");
+            entries.Remove(entryWithoutSector);
+          }
+        }
+      }
+      return entries;
+    }
+
+
     internal FixedList<TrialBalanceEntry> GetTrialBalanceEntries(TrialBalanceCommandPeriod commandPeriod) {
 
       if (_command.TrialBalanceType == TrialBalanceType.BalanzaConContabilidadesEnCascada) {
@@ -483,20 +509,6 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
       }
     }
 
-    internal List<TrialBalanceEntry> SummaryEntriesAndSectorization(List<TrialBalanceEntry> summaryEntries) {
-      var returnedEntries = new List<TrialBalanceEntry>(summaryEntries);
-
-      if (_command.WithSectorization) {
-        returnedEntries = returnedEntries
-                            .Where(a =>
-                                  (a.Level >= 1 && a.Sector.Parent.Code != "00") ||
-                                  (a.Sector.IsRoot || a.Sector.Parent.Code == "00")
-                            )
-                            .ToList();
-      }
-
-      return returnedEntries;
-    }
 
     internal FixedList<TrialBalanceEntry> RoundTrialBalanceEntries(
                                           FixedList<TrialBalanceEntry> postingEntries) {
@@ -508,6 +520,19 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
         posting.CurrentBalance = Math.Round(posting.CurrentBalance, 2);
       }
       return roundedEntries;
+    }
+
+
+    internal List<TrialBalanceEntry> TrialBalanceWithSubledgerAccounts(List<TrialBalanceEntry> trialBalance) {
+      List<TrialBalanceEntry> returnedEntries = new List<TrialBalanceEntry>(trialBalance);
+
+      if (!_command.WithSubledgerAccount && _command.TrialBalanceType == TrialBalanceType.SaldosPorCuenta) {
+        returnedEntries = returnedEntries.Where(a => a.SubledgerNumberOfDigits == 0
+                                        //&& a.CurrentBalance != 0
+                                        ).ToList();
+      }
+
+      return returnedEntries;
     }
 
 
@@ -744,6 +769,23 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
       string hash = $"{entry.GroupName}||{targetSector.Code}||{entry.Currency.Id}||{entry.Ledger.Id}";
 
       GenerateOrIncreaseEntries(summaryEntries, entry, targetAccount, targetSector, itemType, hash);
+    }
+
+
+    internal void SummaryBySectorization(EmpiriaHashTable<TrialBalanceEntry> hashSummaryEntries,
+                                         TrialBalanceEntry balanceEntry) {
+      TrialBalanceEntry entry = TrialBalanceMapper.MapToTrialBalanceEntry(balanceEntry);
+      if (entry.NotHasSector) {
+        entry.InitialBalance = 0;
+        entry.Debit = 0;
+        entry.Credit = 0;
+        entry.CurrentBalance = 0;
+      }
+      string hash = $"{entry.Account.Number}||{entry.Currency.Id}||{entry.Ledger.Id}";
+      //{targetSector.Code}||
+      GenerateOrIncreaseEntries(hashSummaryEntries, entry, entry.Account, Sector.Empty,
+                                TrialBalanceItemType.Summary, hash);
+
     }
 
 
