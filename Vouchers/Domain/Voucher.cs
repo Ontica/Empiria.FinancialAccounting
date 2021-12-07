@@ -36,6 +36,8 @@ namespace Empiria.FinancialAccounting.Vouchers {
       this.RecordingDate = DateTime.Today;
       this.IsOpened = true;
       this.ElaboratedBy = Participant.Current;
+
+      RefreshEntries();
     }
 
 
