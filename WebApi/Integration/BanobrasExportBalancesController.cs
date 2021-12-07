@@ -2,9 +2,9 @@
 *                                                                                                            *
 *  Module   : Banobras Integration Services                Component : Web Api                               *
 *  Assembly : Empiria.FinancialAccounting.WebApi.dll       Pattern   : Query Controller                      *
-*  Type     : ExportBalancesController                     License   : Please read LICENSE.txt file          *
+*  Type     : BanobrasExportBalancesController             License   : Please read LICENSE.txt file          *
 *                                                                                                            *
-*  Summary  : Query web API used to export balances to other systems.                                        *
+*  Summary  : Query web API used to return balances used by other systems (Banobras).                        *
 *                                                                                                            *
 ************************* Copyright(c) La Vía Óntica SC, Ontica LLC and contributors. All rights reserved. **/
 using System;
@@ -18,7 +18,7 @@ using Empiria.FinancialAccounting.BanobrasIntegration.BalancesExporter.UseCases;
 namespace Empiria.FinancialAccounting.WebApi.BanobrasIntegration {
 
   /// <summary>Query web API used to return balances used by other systems (Banobras).</summary>
-  public class ExportBalancesController : WebApiController {
+  public class BanobrasExportBalancesController : WebApiController {
 
     #region Web Apis
 
@@ -55,6 +55,6 @@ namespace Empiria.FinancialAccounting.WebApi.BanobrasIntegration {
 
     #endregion Web Apis
 
-  } // class ExportBalancesController
+  } // class BanobrasExportBalancesController
 
 } // namespace Empiria.FinancialAccounting.WebApi.BanobrasIntegration
