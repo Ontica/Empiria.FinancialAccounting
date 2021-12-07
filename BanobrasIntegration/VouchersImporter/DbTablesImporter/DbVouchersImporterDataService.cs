@@ -19,11 +19,8 @@ namespace Empiria.FinancialAccounting.BanobrasIntegration.VouchersImporter {
   /// <summary>Data methods used to read and write data for vouchers importation data tables.</summary>
   static internal class DbVouchersImporterDataService {
 
-    static readonly DateTime DB_START_IMPORTATION_DATE = new DateTime(2021, 8, 1);
-
     static internal List<Encabezado> GetEncabezados() {
-      var sql = "SELECT * FROM VW_MC_ENCABEZADOS " +
-               $"WHERE ENC_FECHA_VOL >= '{CommonMethods.FormatSqlDate(DB_START_IMPORTATION_DATE)}'";
+      var sql = "SELECT * FROM VW_MC_ENCABEZADOS";
 
       var op = DataOperation.Parse(sql);
 
@@ -32,8 +29,7 @@ namespace Empiria.FinancialAccounting.BanobrasIntegration.VouchersImporter {
 
 
     static internal List<Movimiento> GetMovimientos() {
-      var sql = "SELECT * FROM VW_MC_MOVIMIENTOS " +
-               $"WHERE MCO_FECHA_VOL >= '{CommonMethods.FormatSqlDate(DB_START_IMPORTATION_DATE)}'";
+      var sql = "SELECT * FROM VW_MC_MOVIMIENTOS";
 
       var op = DataOperation.Parse(sql);
 
@@ -43,7 +39,6 @@ namespace Empiria.FinancialAccounting.BanobrasIntegration.VouchersImporter {
     static internal ImportVouchersResult GetEncabezadosTotals() {
       var sql = "SELECT ENC_SISTEMA, COUNT(*) AS TOTAL " +
                 "FROM VW_MC_ENCABEZADOS " +
-               $"WHERE ENC_FECHA_VOL >= '{CommonMethods.FormatSqlDate(DB_START_IMPORTATION_DATE)}' " +
                 "GROUP BY ENC_SISTEMA ";
 
       var op = DataOperation.Parse(sql);

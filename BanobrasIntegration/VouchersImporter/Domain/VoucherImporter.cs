@@ -74,8 +74,10 @@ namespace Empiria.FinancialAccounting.BanobrasIntegration.VouchersImporter {
           foreach (var error in errors) {
             voucher.AddError(error);
           }
-        }
-      }
+
+        }  // foreach
+
+      }  // using
 
       var result = new ImportVouchersResult();
 
@@ -92,15 +94,17 @@ namespace Empiria.FinancialAccounting.BanobrasIntegration.VouchersImporter {
     internal ImportVouchersResult Import() {
       ImportVouchersResult result = this.DryRunImport();
 
+      EmpiriaLog.Info("Dry run importation ends. Actual importation starts ...");
 
       using (var usecases = VoucherEditionUseCases.UseCaseInteractor()) {
+
         foreach (ToImportVoucher voucher in _toImportVouchersList) {
           VoucherImporterDataService.StoreVoucher(voucher);
           VoucherImporterDataService.StoreVoucherIssues(voucher);
 
           if (voucher.HasErrors) {
             foreach (var issue in voucher.Issues) {
-              EmpiriaLog.Debug($"Póliza '{voucher.Header.UniqueID}': {issue.Description}");
+              EmpiriaLog.Info($"Póliza '{voucher.Header.UniqueID}': {issue.Description}");
             }
             continue;
           }
@@ -112,11 +116,12 @@ namespace Empiria.FinancialAccounting.BanobrasIntegration.VouchersImporter {
             usecases.ImportVoucher(voucherFields, entriesFields, _command.TryToCloseVouchers);
 
           } catch (Exception e) {
-            EmpiriaLog.Debug($"Póliza '{voucher.Header.UniqueID}': {e.Message}");
+            EmpiriaLog.Info($"Póliza '{voucher.Header.UniqueID}': {e.Message}");
 
           }
-        }
-      }
+        }  // foreach
+
+      }  // using
 
       return result;
     }

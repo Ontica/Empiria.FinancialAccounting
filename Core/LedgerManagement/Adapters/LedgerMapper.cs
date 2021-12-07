@@ -161,7 +161,7 @@ namespace Empiria.FinancialAccounting.Adapters {
     static private ValuedCurrencyDto MapToValuedCurrency(CurrencyRule currencyRule) {
       return new ValuedCurrencyDto {
          UID = currencyRule.Currency.UID,
-         Name = currencyRule.Currency.Name,
+         Name = currencyRule.Currency.FullName,
          ExchangeRate = 1m
       };
     }

@@ -17,7 +17,7 @@ namespace Empiria.FinancialAccounting.BanobrasIntegration.VouchersImporter.Adapt
 
     public DateTime AccountingDate {
       get; set;
-    }
+    } = ExecutionServer.DateMaxValue;
 
 
     public string AccountsChartUID {

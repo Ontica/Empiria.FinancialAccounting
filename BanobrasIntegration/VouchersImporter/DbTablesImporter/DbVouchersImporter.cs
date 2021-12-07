@@ -73,17 +73,18 @@ namespace Empiria.FinancialAccounting.BanobrasIntegration.VouchersImporter {
 
 
     private void ImportVouchers(ImportVouchersCommand command) {
-      const int BATCH_SIZE = 250;
+      const int BATCH_SIZE = 50;
 
       List<Encabezado> encabezados = DbVouchersImporterDataService.GetEncabezados();
       List<Movimiento> movimientos = DbVouchersImporterDataService.GetMovimientos();
 
       while (true) {
         if (encabezados.Count == 0 || !this.IsRunning) {
+          EmpiriaLog.Info($"Voucher processing ends at {DateTime.Now}.");
           return;
         }
 
-        EmpiriaLog.Debug($"To be processed {encabezados.Count} at {DateTime.Now}");
+        EmpiriaLog.Info($"To be processed {encabezados.Count} at {DateTime.Now}.");
 
         var toProcess = encabezados.GetRange(0, encabezados.Count >= BATCH_SIZE ? BATCH_SIZE : encabezados.Count)
                                    .ToFixedList();

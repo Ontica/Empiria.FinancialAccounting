@@ -41,7 +41,16 @@ namespace Empiria.FinancialAccounting.Vouchers {
     internal FixedList<string> Validate(IVoucherEntry entry) {
       var resultList = new List<string>();
 
-      Account account = entry.GetAccount(this.AccountingDate);
+      Account account;
+
+      try {
+        account = entry.GetAccount(this.AccountingDate);
+
+      } catch (Exception e) {
+        resultList.Add(e.Message);
+
+        return resultList.ToFixedList();
+      }
 
       try {
         account.CheckIsNotSummary(this.AccountingDate);

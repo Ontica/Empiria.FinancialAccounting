@@ -11,8 +11,6 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 
-using Empiria.FinancialAccounting.Vouchers;
-
 using Empiria.FinancialAccounting.BanobrasIntegration.VouchersImporter.Adapters;
 
 namespace Empiria.FinancialAccounting.BanobrasIntegration.VouchersImporter {
