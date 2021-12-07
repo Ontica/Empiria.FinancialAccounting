@@ -7,6 +7,7 @@
 *  Summary  : Represents an exchange rate type.                                                              *
 *                                                                                                            *
 ************************* Copyright(c) La Vía Óntica SC, Ontica LLC and contributors. All rights reserved. **/
+using System;
 
 namespace Empiria.FinancialAccounting {
 
@@ -33,6 +34,14 @@ namespace Empiria.FinancialAccounting {
     }
 
     static public ExchangeRateType Empty => BaseObject.ParseEmpty<ExchangeRateType>();
+
+
+    static public ExchangeRateType ForVoucherEntries {
+      get {
+        return ExchangeRateType.Parse(46);
+      }
+    }
+
 
   } // class ExchangeRateType
 

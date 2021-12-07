@@ -39,7 +39,7 @@ namespace Empiria.FinancialAccounting.Adapters {
                                                                            FixedList<Account> unassignedAccounts,
                                                                            DateTime date) {
       var list = new List<LedgerAccountDto>(assignedAccounts.Select((x) => MapAccount(x, date)));
-      var unAssignedMapped = new List<LedgerAccountDto>(unassignedAccounts.Select((x) => MapUnassignedAccount(x)));
+      var unAssignedMapped = new List<LedgerAccountDto>(unassignedAccounts.Select((x) => MapUnassignedAccount(x, date)));
 
       list.AddRange(unAssignedMapped);
 
@@ -49,7 +49,7 @@ namespace Empiria.FinancialAccounting.Adapters {
     }
 
 
-    static private LedgerAccountDto MapUnassignedAccount(Account account) {
+    static private LedgerAccountDto MapUnassignedAccount(Account account, DateTime date) {
       return new LedgerAccountDto {
         Id = 0,
         StandardAccountId = account.StandardAccountId,
@@ -60,11 +60,10 @@ namespace Empiria.FinancialAccounting.Adapters {
         AccountType = account.AccountType,
         DebtorCreditor = account.DebtorCreditor,
         Level = account.Level,
-        Currencies = MapToNamedEntityList(account.CurrencyRules),
+        Currencies = MapToValuedCurrencies(account.CurrencyRules),
         Sectors = MapSectorRulesShort(account.SectorRules)
       };
     }
-
 
     static public LedgerAccountDto MapAccount(LedgerAccount ledgerAccount, DateTime date) {
       return new LedgerAccountDto {
@@ -78,7 +77,7 @@ namespace Empiria.FinancialAccounting.Adapters {
         AccountType = ledgerAccount.AccountType,
         DebtorCreditor = ledgerAccount.DebtorCreditor,
         Level = ledgerAccount.Level,
-        Currencies = MapToNamedEntityList(ledgerAccount.CurrencyRulesOn(date)),
+        Currencies = MapToValuedCurrencies(ledgerAccount.CurrencyRulesOn(date), ledgerAccount.Ledger.BaseCurrency, date),
         Sectors = MapSectorRulesShort(ledgerAccount.SectorRulesOn(date))
       };
     }
@@ -115,11 +114,6 @@ namespace Empiria.FinancialAccounting.Adapters {
     }
 
 
-    static private FixedList<NamedEntityDto> MapToNamedEntityList(FixedList<CurrencyRule> list) {
-      return new FixedList<NamedEntityDto>(list.Select(x => x.Currency.MapToNamedEntity()));
-    }
-
-
     static internal FixedList<LedgerRuleDto> MapLedgersRules(FixedList<LedgerRule> list) {
       return new FixedList<LedgerRuleDto>(list.Select(x => MapLedgerRule(x)));
     }
@@ -127,6 +121,49 @@ namespace Empiria.FinancialAccounting.Adapters {
 
     static internal FixedList<NamedEntityDto> MapToNamedEntityList(FixedList<Ledger> list) {
       return new FixedList<NamedEntityDto>(list.Select(x => x.MapToNamedEntity()));
+    }
+
+    static private FixedList<ValuedCurrencyDto> MapToValuedCurrencies(FixedList<CurrencyRule> list) {
+      return new FixedList<ValuedCurrencyDto>(list.Select(x => MapToValuedCurrency(x)));
+    }
+
+    static private FixedList<ValuedCurrencyDto> MapToValuedCurrencies(FixedList<CurrencyRule> list,
+                                                                      Currency baseCurrency, DateTime date) {
+
+      var valuedCurrencies = new FixedList<ValuedCurrencyDto>(list.Select(x => MapToValuedCurrency(x)));
+
+      if (valuedCurrencies.Count <= 1 && valuedCurrencies[0].UID == baseCurrency.UID) {
+        return valuedCurrencies;
+      }
+
+      return ValuateCurrencies(valuedCurrencies, baseCurrency, date);
+    }
+
+    static private FixedList<ValuedCurrencyDto> ValuateCurrencies(FixedList<ValuedCurrencyDto> valuedCurrencies,
+                                                                  Currency baseCurrency,
+                                                                  DateTime date) {
+      FixedList<ExchangeRate> exchangeRates = ExchangeRate.GetList(ExchangeRateType.ForVoucherEntries, date);
+
+      foreach (var currency in valuedCurrencies) {
+        if (currency.UID == baseCurrency.UID) {
+          continue;
+        }
+
+        var erate = exchangeRates.Find(x => x.ToCurrency.UID == currency.UID);
+
+        currency.ExchangeRate = (erate != null ? erate.Value : 0);
+      }
+
+      return valuedCurrencies;
+    }
+
+
+    static private ValuedCurrencyDto MapToValuedCurrency(CurrencyRule currencyRule) {
+      return new ValuedCurrencyDto {
+         UID = currencyRule.Currency.UID,
+         Name = currencyRule.Currency.Name,
+         ExchangeRate = 1m
+      };
     }
 
 

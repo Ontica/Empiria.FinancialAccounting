@@ -121,7 +121,7 @@ namespace Empiria.FinancialAccounting.Adapters {
     }
 
 
-    public FixedList<NamedEntityDto> Currencies {
+    public FixedList<ValuedCurrencyDto> Currencies {
       get; internal set;
     }
 
@@ -186,6 +186,7 @@ namespace Empiria.FinancialAccounting.Adapters {
 
   }  // class SectorRuleDto
 
+
   public class LedgerRuleDto {
 
     internal LedgerRuleDto() {
@@ -239,5 +240,28 @@ namespace Empiria.FinancialAccounting.Adapters {
     }
 
   }  // class NumberedNamedEntityDto
+
+
+  /// <summary>Output DTO for currencies with an exchange rate value.</summary>
+  public class ValuedCurrencyDto {
+
+    internal ValuedCurrencyDto() {
+      // no-op
+    }
+
+    public string UID {
+      get; internal set;
+    }
+
+    public string Name {
+      get; internal set;
+    }
+
+    public decimal ExchangeRate {
+      get; internal set;
+    }
+
+  }  // class ValuedCurrencyDto
+
 
 }  // namespace Empiria.FinancialAccounting.Adapters
