@@ -255,13 +255,15 @@ namespace Empiria.FinancialAccounting.BanobrasIntegration.VouchersImporter {
 
 
     internal EventType GetEventType() {
-      try {
-        return EventType.Parse(int.Parse(this.AvailabilityCode));
-      } catch {
-        AddError($"El evento '{this.AvailabilityCode}' no existe en el catálogo de eventos.");
+      return EventType.Empty;
 
-        return EventType.Empty;
-      }
+      //try {
+      //  return EventType.Parse(int.Parse(this.AvailabilityCode));
+      //} catch {
+      //  AddError($"El evento '{this.AvailabilityCode}' no existe en el catálogo de eventos.");
+
+      //  return EventType.Empty;
+      //}
     }
 
     internal Currency GetCurrency() {
