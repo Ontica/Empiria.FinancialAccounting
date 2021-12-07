@@ -139,6 +139,25 @@ namespace Empiria.FinancialAccounting.WebApi.Vouchers {
     }
 
 
+    [HttpPost]
+    [Route("v2/financial-accounting/vouchers/bulk-operation/{operationName}")]
+    public SingleObjectModel ExecuteBulkOperation([FromUri] string operationName,
+                                                  [FromBody] int[] voucherIdsArray) {
+
+      using (var usecases = VoucherEditionUseCases.UseCaseInteractor()) {
+        string result;
+
+        if (operationName == "close") {
+          result = usecases.BulkClose(voucherIdsArray);
+        } else {
+          throw Assertion.AssertNoReachThisCode($"Unrecognized bulk operation name '{operationName}'.");
+        }
+
+        return new SingleObjectModel(base.Request, result);
+      }
+    }
+
+
     [HttpPut, HttpPatch]
     [Route("v2/financial-accounting/vouchers/{voucherId:int}")]
     public SingleObjectModel UpdateVoucher([FromUri] long voucherId,

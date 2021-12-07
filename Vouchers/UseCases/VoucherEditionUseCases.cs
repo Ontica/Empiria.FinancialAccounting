@@ -103,6 +103,37 @@ namespace Empiria.FinancialAccounting.Vouchers.UseCases {
     }
 
 
+    public string BulkClose(int[] voucherIdsArray) {
+      Assertion.AssertObject(voucherIdsArray, "voucherIdsArray");
+      Assertion.Assert(voucherIdsArray.Length > 0, "voucherIdsArray must have one or more values.");
+
+      int closedCounter = 0;
+
+      foreach (var voucherId in voucherIdsArray) {
+        var voucher = Voucher.Parse(voucherId);
+
+        if (!voucher.IsOpened) {
+          continue;
+        }
+        if (!voucher.IsValid()) {
+          continue;
+        }
+        if (!voucher.CanBeClosedBy(Participant.Current)) {
+          continue;
+        }
+
+        try {
+          voucher.Close();
+          closedCounter++;
+        } finally {
+
+        }
+      }
+
+      return $"Se enviaron al diario {closedCounter} pólizas de {voucherIdsArray.Length} seleccionadas.";
+    }
+
+
     public VoucherDto CloseVoucher(long voucherId) {
       Assertion.Assert(voucherId > 0, "voucherId");
 
