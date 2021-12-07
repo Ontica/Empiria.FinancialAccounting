@@ -31,7 +31,7 @@ namespace Empiria.FinancialAccounting {
     }
 
     static public Participant TryParse(string uid) {
-      return BaseObject.TryParse<Participant>($"ParticipantKey = '{uid}'");
+      return BaseObject.TryParse<Participant>($"UPPER(ParticipantKey) = '{uid.ToUpperInvariant()}'");
     }
 
     static public FixedList<Participant> GetList() {
