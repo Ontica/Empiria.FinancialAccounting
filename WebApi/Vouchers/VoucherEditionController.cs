@@ -150,7 +150,9 @@ namespace Empiria.FinancialAccounting.WebApi.Vouchers {
         if (operationName == "close") {
           result = usecases.BulkClose(voucherIdsArray);
         } else {
-          throw Assertion.AssertNoReachThisCode($"Unrecognized bulk operation name '{operationName}'.");
+          result = "Funcionalidad en proceso de desarrollo.";
+
+          // throw Assertion.AssertNoReachThisCode($"Unrecognized bulk operation name '{operationName}'.");
         }
 
         return new SingleObjectModel(base.Request, result);

@@ -110,7 +110,7 @@ namespace Empiria.FinancialAccounting.Vouchers.Adapters {
       get; internal set;
     }
 
-    public SectorRuleDto Sector {
+    public SectorRuleShortDto Sector {
       get; internal set;
     }
 

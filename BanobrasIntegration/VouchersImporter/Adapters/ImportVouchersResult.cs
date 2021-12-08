@@ -37,6 +37,11 @@ namespace Empiria.FinancialAccounting.BanobrasIntegration.VouchersImporter.Adapt
     } = new FixedList<NamedEntityDto>();
 
 
+    public int VouchersCount {
+      get; internal set;
+    }
+
+
     public FixedList<ImportVouchersTotals> VoucherTotals {
       get; internal set;
     } = new FixedList<ImportVouchersTotals>();

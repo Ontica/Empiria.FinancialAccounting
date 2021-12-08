@@ -31,7 +31,7 @@ namespace Empiria.FinancialAccounting.Vouchers.Adapters {
         RecordingDate = voucher.RecordingDate,
         ElaboratedBy = voucher.ElaboratedBy.Name,
         AuthorizedBy = voucher.AuthorizedBy.Name,
-        Status = voucher.IsOpened ? "Pendiente" : "Cerrado",
+        Status = voucher.IsOpened ? "Pendiente" : "Enviada al diario",
         IsClosed = !voucher.IsOpened,
         AllEntriesAreInBaseCurrency = !voucher.Entries.Contains(x => !x.Currency.Equals(voucher.Ledger.BaseCurrency)),
         Actions = MapVoucherActions(voucher),
@@ -117,7 +117,7 @@ namespace Empiria.FinancialAccounting.Vouchers.Adapters {
         VoucherEntryType = entry.VoucherEntryType,
         LedgerAccount = LedgerMapper.MapAccount(entry.LedgerAccount, entry.Voucher.AccountingDate),
         Sector = entry.HasSector ?
-                 LedgerMapper.MapSectorRule(entry.SectorRule) : null,
+                 LedgerMapper.MapSectorRulesShort(entry.SectorRule) : null,
         SubledgerAccount = entry.HasSubledgerAccount ?
                            SubledgerMapper.MapToSubledgerAccountDescriptor(entry.SubledgerAccount) : null,
         Concept = entry.Concept,
@@ -154,7 +154,7 @@ namespace Empiria.FinancialAccounting.Vouchers.Adapters {
         RecordingDate = voucher.RecordingDate,
         ElaboratedBy = voucher.ElaboratedBy.Name,
         AuthorizedBy = voucher.AuthorizedBy.Name,
-        Status = voucher.IsOpened ? "Pendiente" : "Cerrado"
+        Status = voucher.IsOpened ? "Pendiente" : "Enviada al diario"
       };
     }
 

@@ -47,6 +47,8 @@ namespace Empiria.FinancialAccounting.BanobrasIntegration.VouchersImporter {
 
       var list = new List<ImportVouchersTotals>();
 
+      int vouchersCount = 0;
+
       for (int i = 0; i < view.Count; i++) {
         var system = TransactionalSystem.Get(x => x.SourceSystemId == (int) (view[i]["ENC_SISTEMA"]));
 
@@ -57,6 +59,7 @@ namespace Empiria.FinancialAccounting.BanobrasIntegration.VouchersImporter {
           UID = system.UID,
           VouchersCount = (int) (decimal) view[i]["TOTAL"]
         };
+        vouchersCount += totals.VouchersCount;
         list.Add(totals);
       }
 
@@ -65,6 +68,7 @@ namespace Empiria.FinancialAccounting.BanobrasIntegration.VouchersImporter {
       list.Sort((x, y) => x.Description.CompareTo(y.Description));
 
       result.VoucherTotals = list.ToFixedList();
+      result.VouchersCount = vouchersCount;
 
       return result;
     }
