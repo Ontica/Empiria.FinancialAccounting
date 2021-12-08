@@ -69,8 +69,9 @@ namespace Empiria.FinancialAccounting.Tests.Balances {
       command.UseDefaultValuation = false;
       command.WithSubledgerAccount = false;
       command.WithAverageBalance = false;
-      command.WithSectorization = true;
-
+      command.WithSectorization = false;
+      command.FromAccount = "1.01";
+      command.ToAccount = "1.01";
       TrialBalanceDto trialBalance = _usecases.BuildTrialBalance(command);
 
       Assert.NotNull(trialBalance);

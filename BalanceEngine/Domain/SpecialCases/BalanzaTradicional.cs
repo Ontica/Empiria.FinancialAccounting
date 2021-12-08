@@ -35,10 +35,12 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
 
       List<TrialBalanceEntry> summaryEntries = helper.GenerateSummaryEntries(postingEntries);
 
-      summaryEntries = helper.GetSummaryByLevelAndSector(summaryEntries);
+      List<TrialBalanceEntry> summaryEntriesAndSectorization = helper.GetSummaryEntriesAndSectorization(summaryEntries);
+
+      List<TrialBalanceEntry> summaryByLevelAndSector = helper.GetSummaryByLevelAndSector(summaryEntriesAndSectorization);
 
       List<TrialBalanceEntry> trialBalance = helper.CombineSummaryAndPostingEntries(
-                                                     summaryEntries, postingEntries);
+                                                     summaryByLevelAndSector, postingEntries);
 
       trialBalance = GetTrialBalanceType(trialBalance, postingEntries);
 
