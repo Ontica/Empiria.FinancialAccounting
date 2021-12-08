@@ -9,6 +9,7 @@
 ************************* Copyright(c) La Vía Óntica SC, Ontica LLC and contributors. All rights reserved. **/
 using System;
 using Empiria.FinancialAccounting.Reporting.Domain;
+using Empiria.FinancialAccounting.Vouchers;
 
 namespace Empiria.FinancialAccounting.Reporting.Adapters {
 
@@ -33,16 +34,18 @@ namespace Empiria.FinancialAccounting.Reporting.Adapters {
     }
 
     static private PolizasEntryDto MapToPolizas(PolizaEntry entry, ListadoPolizasCommand command) {
-      
+
+      Voucher voucher = entry.Voucher;
+
       var dto = new PolizasEntryDto();
 
       dto.LedgerNumber = entry.Ledger.Number;
       dto.LedgerName = entry.Ledger.FullName;
-      dto.VoucherNumber = entry.Voucher.Number;
-      dto.AccountingDate = entry.Voucher.AccountingDate;
-      dto.RecordingDate = entry.Voucher.RecordingDate;
-      dto.ElaboratedBy = entry.Voucher.ElaboratedBy.Name;
-      dto.Concept = entry.Voucher.Concept;
+      dto.VoucherNumber = voucher.Number;
+      dto.AccountingDate = voucher.AccountingDate;
+      dto.RecordingDate = voucher.RecordingDate;
+      dto.ElaboratedBy = voucher.ElaboratedBy.Name;
+      dto.Concept = voucher.Concept;
       dto.Debit = entry.Debit;
       dto.Credit = entry.Credit;
       dto.VouchersByLedger = entry.VouchersByLedger;

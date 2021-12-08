@@ -55,11 +55,13 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
 
 
     [DataField("ID_TRANSACCION", ConvertFrom = typeof(decimal))]
-    public Voucher Voucher {
-      get;
-      internal set;
-    }
+    private decimal _id_transaccion = 0;
 
+    public Voucher Voucher {
+      get {
+        return Voucher.Parse((long) _id_transaccion);
+      }
+    }
 
     [DataField("DEBE")]
     public decimal Debit {

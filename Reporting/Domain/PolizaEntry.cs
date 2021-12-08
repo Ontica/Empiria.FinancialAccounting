@@ -35,10 +35,23 @@ namespace Empiria.FinancialAccounting.Reporting.Domain {
     }
 
     [DataField("ID_TRANSACCION", ConvertFrom = typeof(decimal))]
+    private decimal _id_transaccion = 0;
+
+    private Voucher _voucher;
+
     public Voucher Voucher {
-      get;
-      internal set;
+      get {
+        if (_voucher != null) {
+          return _voucher;
+        } else {
+          return Voucher.Parse((long) _id_transaccion);
+        }
+      }
+      set {
+        _voucher = value;
+      }
     }
+
 
     [DataField("DEBE")]
     public decimal Debit {
