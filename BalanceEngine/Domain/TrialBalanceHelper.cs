@@ -48,7 +48,6 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
       return returnedEntries;
     }
 
-
     internal List<TrialBalanceEntry> CombineCurrencyTotalsAndPostingEntries(
                                       List<TrialBalanceEntry> trialBalance,
                                       List<TrialBalanceEntry> summaryEntries) {
@@ -468,10 +467,14 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
       if (_command.UseNewSectorizationModel) {
         var summaryEntriesList = new List<TrialBalanceEntry>(summaryEntries);
         foreach (var entry in summaryEntriesList) {
+
           var entriesWithSummarySector = summaryEntries.Where(a => a.Ledger.Number == entry.Ledger.Number &&
                                                         a.Currency.Code == entry.Currency.Code &&
                                                         a.Account.Number == entry.Account.Number).ToList();
-          if (entry.Level > 1 && entriesWithSummarySector.Count == 2) {
+
+          if ((entry.Level > 1 && entriesWithSummarySector.Count == 2) ||
+               (entry.ItemType == TrialBalanceItemType.BalanceEntry && 
+               entriesWithSummarySector.Count == 1 && entry.Sector.Code != "00")) {
             var entryWithoutSector = entriesWithSummarySector.FirstOrDefault(a => a.Sector.Code == "00");
             entries.Remove(entryWithoutSector);
           }
@@ -479,6 +482,9 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
       }
       return entries;
     }
+
+
+
 
 
     internal List<TrialBalanceEntry> GetSummaryEntriesAndSectorization(
@@ -496,6 +502,9 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
                              hashEntries, checkSummaryEntries, returnedEntries);
         }
       }
+
+      returnedEntries = GetSummaryByLevelAndSector(returnedEntries.ToList());
+
       return returnedEntries.ToList();
     }
 
@@ -516,8 +525,7 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
           summaryEntry.Credit += entry.Credit;
           summaryEntry.CurrentBalance += entry.CurrentBalance;
         } else if (entry.HasSector) {
-          SummaryByEntry(hashEntries, entry, entry.Account, Sector.Empty,
-                                     TrialBalanceItemType.BalanceSummary);
+          SummaryByEntry(hashEntries, entry, entry.Account, Sector.Empty, entry.ItemType);
         }
       }
       if (hashEntries.Count > 0) {
@@ -553,8 +561,7 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
           summaryEntry.CurrentBalance += entry.CurrentBalance;
 
         } else if (sectorParent.Code != "00") {
-          SummaryByEntry(hashEntries, entry, entry.Account, Sector.Empty,
-                                     TrialBalanceItemType.BalanceSummary);
+          SummaryByEntry(hashEntries, entry, entry.Account, Sector.Empty, entry.ItemType);
         }
       }
       if (hashEntries.Count > 0) {
