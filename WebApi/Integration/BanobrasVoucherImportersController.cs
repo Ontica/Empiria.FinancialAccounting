@@ -35,6 +35,7 @@ namespace Empiria.FinancialAccounting.WebApi.BanobrasIntegration {
       HttpRequest httpRequest = GetValidatedHttpRequest();
 
       FileData excelFile = GetFileDataFromRequest(httpRequest);
+
       ImportVouchersCommand command = GetImportVoucherCommandFromRequest(httpRequest);
 
       bool dryRun = RouteContainsDryRunFlag();
@@ -102,15 +103,15 @@ namespace Empiria.FinancialAccounting.WebApi.BanobrasIntegration {
     static private FileData GetFileDataFromRequest(HttpRequest httpRequest) {
       HttpPostedFile file = httpRequest.Files[0];
 
-      var fields = new FileData();
+      var fileData = new FileData();
 
-      fields.InputStream = httpRequest.Files[0].InputStream;
+      fileData.InputStream = httpRequest.Files[0].InputStream;
 
-      fields.MediaType = file.ContentType;
-      fields.MediaLength = file.ContentLength;
-      fields.OriginalFileName = file.FileName;
+      fileData.MediaType = file.ContentType;
+      fileData.MediaLength = file.ContentLength;
+      fileData.OriginalFileName = file.FileName;
 
-      return fields;
+      return fileData;
     }
 
 

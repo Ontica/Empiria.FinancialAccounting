@@ -71,7 +71,6 @@ namespace Empiria.FinancialAccounting {
       get; private set;
     }
 
-
     #endregion Public properties
 
   }  // class ExchangeRate

@@ -335,13 +335,16 @@ namespace Empiria.FinancialAccounting {
       _areaRules = new Lazy<FixedList<AreaRule>>(() => AreasRulesChart.GetAccountAreasRules(this));
     }
 
+
     private void ResetCurrencyRules() {
       _currencyRules = new Lazy<FixedList<CurrencyRule>>(() => CurrenciesRulesChart.GetAccountCurrenciesRules(this));
     }
 
+
     private void ResetLedgerRules() {
       _ledgerRules = new Lazy<FixedList<LedgerRule>>(() => LedgersRulesChart.GetAccountLedgerRules(this));
     }
+
 
     private void ResetSectorRules() {
       _sectorRules = new Lazy<FixedList<SectorRule>>(() => SectorRulesChart.GetAccountSectorRules(this));

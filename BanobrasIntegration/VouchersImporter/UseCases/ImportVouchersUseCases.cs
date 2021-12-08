@@ -86,11 +86,11 @@ namespace Empiria.FinancialAccounting.BanobrasIntegration.VouchersImporter.UseCa
     #region Helpers
 
     private FileInfo AssertParametersAreValidAndGetFileInfo(ImportVouchersCommand command,
-                                                            FileData textFileData) {
+                                                            FileData fileData) {
       Assertion.AssertObject(command, "command");
-      Assertion.AssertObject(textFileData, "textFileData");
+      Assertion.AssertObject(fileData, "fileData");
 
-      return FileUtilities.SaveFile(textFileData);
+      return FileUtilities.SaveFile(fileData);
     }
 
 

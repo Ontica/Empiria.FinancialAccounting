@@ -79,15 +79,7 @@ namespace Empiria.FinancialAccounting.BanobrasIntegration.VouchersImporter {
 
       }  // using
 
-      var result = new ImportVouchersResult();
-
-      result.VoucherTotals = GetImportVoucherTotals();
-
-      result.Errors = GetImportErrors();
-      result.Warnings = GetImportWarnings();
-
-
-      return result;
+      return GetDryRunResult();
     }
 
 
@@ -116,6 +108,7 @@ namespace Empiria.FinancialAccounting.BanobrasIntegration.VouchersImporter {
             usecases.ImportVoucher(voucherFields, entriesFields, _command.TryToCloseVouchers);
 
           } catch (Exception e) {
+            EmpiriaLog.Error(e);
             EmpiriaLog.Info($"Póliza '{voucher.Header.UniqueID}': {e.Message}");
 
           }
@@ -130,6 +123,20 @@ namespace Empiria.FinancialAccounting.BanobrasIntegration.VouchersImporter {
     #endregion Public methods
 
     #region Private methods
+
+    private ImportVouchersResult GetDryRunResult() {
+      var result = new ImportVouchersResult();
+
+      result.VoucherTotals = GetImportVoucherTotals();
+
+      result.VouchersCount = result.VoucherTotals.Sum(x => x.VouchersCount);
+
+      result.Errors = GetImportErrors();
+      result.Warnings = GetImportWarnings();
+
+
+      return result;
+    }
 
     private FixedList<NamedEntityDto> GetImportErrors() {
       var errors = this._toImportVouchersList.SelectMany(
@@ -195,6 +202,7 @@ namespace Empiria.FinancialAccounting.BanobrasIntegration.VouchersImporter {
         StandardAccountId = entry.StandardAccount.Id,
         LedgerAccountId = entry.LedgerAccount.Id,
         SubledgerAccountId = entry.SubledgerAccount.Id,
+        SubledgerAccountNumber = entry.SubledgerAccountNo,
         SectorId = entry.Sector.Id,
         ResponsibilityAreaId = entry.ResponsibilityArea.Id,
         BudgetConcept = entry.BudgetConcept,

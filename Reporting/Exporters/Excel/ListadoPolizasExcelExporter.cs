@@ -9,10 +9,11 @@
 ************************* Copyright(c) La Vía Óntica SC, Ontica LLC and contributors. All rights reserved. **/
 using System;
 using System.Collections.Generic;
+
 using Empiria.FinancialAccounting.Reporting.Builders;
 
 namespace Empiria.FinancialAccounting.Reporting.Exporters.Excel {
-  
+
   /// <summary></summary>
   internal class ListadoPolizasExcelExporter : IExcelExporter {
 
