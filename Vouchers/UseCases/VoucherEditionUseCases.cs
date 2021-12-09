@@ -134,6 +134,35 @@ namespace Empiria.FinancialAccounting.Vouchers.UseCases {
     }
 
 
+    public string BulkDelete(int[] voucherIdsArray) {
+      Assertion.AssertObject(voucherIdsArray, "voucherIdsArray");
+      Assertion.Assert(voucherIdsArray.Length > 0, "voucherIdsArray must have one or more values.");
+
+      int deletedCounter = 0;
+
+      foreach (var voucherId in voucherIdsArray) {
+        var voucher = Voucher.Parse(voucherId);
+
+        if (!voucher.IsOpened) {
+          continue;
+        }
+
+        if (!voucher.ElaboratedBy.Equals(Participant.Current)) {
+          continue;
+        }
+
+        try {
+          voucher.Delete();
+          deletedCounter++;
+        } finally {
+
+        }
+      }
+
+      return $"Se eliminaron {deletedCounter} pólizas de {voucherIdsArray.Length} seleccionadas.";
+    }
+
+
     public VoucherDto CloseVoucher(long voucherId) {
       Assertion.Assert(voucherId > 0, "voucherId");
 
