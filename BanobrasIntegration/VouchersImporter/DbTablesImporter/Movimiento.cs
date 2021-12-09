@@ -191,7 +191,12 @@ namespace Empiria.FinancialAccounting.BanobrasIntegration.VouchersImporter {
 
 
     internal FunctionalArea GetResponsibilityArea() {
-      return FunctionalArea.Parse(this.AreaMovimiento);
+      try {
+        return FunctionalArea.Parse(this.AreaMovimiento);
+      } catch {
+        EmpiriaLog.Info($"Ocurrió un problema al leer el área funcional {this.AreaMovimiento} (Sistema {this.IdSistema})");
+        return FunctionalArea.Empty;
+      }
     }
 
 
