@@ -142,15 +142,15 @@ namespace Empiria.FinancialAccounting.WebApi.Vouchers {
     [HttpPost]
     [Route("v2/financial-accounting/vouchers/bulk-operation/{operationName}")]
     public SingleObjectModel ExecuteBulkOperation([FromUri] string operationName,
-                                                  [FromBody] int[] voucherIdsArray) {
+                                                  [FromBody] VoucherBulkOperationCommand command) {
 
       using (var usecases = VoucherEditionUseCases.UseCaseInteractor()) {
-        string result;
+        var result = new VoucherBulkOperationResult();
 
         if (operationName == "close") {
-          result = usecases.BulkClose(voucherIdsArray);
+          result.Message = usecases.BulkClose(command.Vouchers);
         } else {
-          result = "Funcionalidad en proceso de desarrollo.";
+          result.Message = "Funcionalidad en proceso de desarrollo.";
 
           // throw Assertion.AssertNoReachThisCode($"Unrecognized bulk operation name '{operationName}'.");
         }
@@ -203,5 +203,23 @@ namespace Empiria.FinancialAccounting.WebApi.Vouchers {
     #endregion Web Apis
 
   }  // class VoucherEditionController
+
+  public class VoucherBulkOperationCommand {
+
+    public int[] Vouchers {
+      get;
+      set;
+    }
+  }
+
+  public class VoucherBulkOperationResult {
+    internal VoucherBulkOperationResult() {
+    }
+
+    public string Message {
+      get;
+      internal set;
+    }
+  }
 
 }  // namespace Empiria.FinancialAccounting.WebApi.Vouchers
