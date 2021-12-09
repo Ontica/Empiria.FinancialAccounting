@@ -34,22 +34,39 @@ namespace Empiria.FinancialAccounting.Reporting.Domain {
       internal set;
     }
 
-    [DataField("ID_TRANSACCION", ConvertFrom = typeof(decimal))]
-    private decimal _id_transaccion = 0;
 
-    private Voucher _voucher;
+    [DataField("ID_ELABORADA_POR", ConvertFrom = typeof(long))]
+    public Participant ElaboratedBy {
+      get;
+      internal set;
+    } = Participant.Empty;
 
-    public Voucher Voucher {
-      get {
-        if (_voucher != null) {
-          return _voucher;
-        } else {
-          return Voucher.Parse((long) _id_transaccion);
-        }
-      }
-      set {
-        _voucher = value;
-      }
+
+    [DataField("NUMERO_TRANSACCION")]
+    public string Number {
+      get;
+      internal set;
+    }
+
+
+    [DataField("CONCEPTO_TRANSACCION")]
+    public string Concept {
+      get;
+      internal set;
+    }
+
+
+    [DataField("FECHA_AFECTACION", Default = "ExecutionServer.DateMaxValue")]
+    public DateTime AccountingDate {
+      get;
+      internal set;
+    }
+
+
+    [DataField("FECHA_REGISTRO", Default = "ExecutionServer.DateMaxValue")]
+    public DateTime RecordingDate {
+      get;
+      internal set;
     }
 
 
@@ -65,6 +82,25 @@ namespace Empiria.FinancialAccounting.Reporting.Domain {
       get;
       internal set;
     }
+
+
+    //[DataField("ID_TRANSACCION", ConvertFrom = typeof(decimal))]
+    //private decimal _id_transaccion = 0;
+
+    //private Voucher _voucher;
+
+    //public Voucher Voucher {
+    //  get {
+    //    if (_voucher != null) {
+    //      return _voucher;
+    //    } else {
+    //      return Voucher.Parse((long) _id_transaccion);
+    //    }
+    //  }
+    //  set {
+    //    _voucher = value;
+    //  }
+    //}
 
 
     public int VouchersByLedger {

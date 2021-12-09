@@ -54,7 +54,7 @@ namespace Empiria.FinancialAccounting.Reporting {
     }
 
     internal FixedList<PolizaEntry> GetListadoPolizasConTotales(FixedList<PolizaEntry> vouchers) {
-      
+
       FixedList<PolizaEntry> totalByLedger = GetTotalByLedger(vouchers);
 
       FixedList<PolizaEntry> vouchersAndTotalByLedger = CombineTotalByLedgerAndVouchers(vouchers, totalByLedger);
@@ -111,7 +111,11 @@ namespace Empiria.FinancialAccounting.Reporting {
 
         voucherEntry = new PolizaEntry {
           Ledger = voucher.Ledger,
-          Voucher = voucher.Voucher,
+          Number = voucher.Number,
+          AccountingDate = voucher.AccountingDate,
+          RecordingDate = voucher.RecordingDate,
+          ElaboratedBy = voucher.ElaboratedBy,
+          Concept = voucher.Concept,
           ItemType = voucher.ItemType
         };
         voucherEntry.Sum(voucher);
@@ -138,7 +142,7 @@ namespace Empiria.FinancialAccounting.Reporting {
     private PolizaEntry GetTotalFromVouchers(FixedList<PolizaEntry> vouchersList) {
       var vouchersWithTotal = new EmpiriaHashTable<PolizaEntry>();
 
-      foreach (var voucher in vouchersList.Where(a=>a.ItemType == ItemType.Entry)) {
+      foreach (var voucher in vouchersList.Where(a => a.ItemType == ItemType.Entry)) {
         SummaryByVoucher(vouchersWithTotal, voucher, ItemType.Total);
       }
 
