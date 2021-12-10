@@ -38,14 +38,15 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
       postingEntries = helper.RoundTrialBalanceEntries(postingEntries);
 
       List<TrialBalanceEntry> summaryEntries = helper.GenerateSummaryEntries(postingEntries);
+      
+      List<TrialBalanceEntry> _postingEntries = helper.GetSummaryEntriesAndSectorization(
+                                                postingEntries.ToList());
 
-      //postingEntries = helper.GetSummaryEntriesAndSectorization(postingEntries.ToList()).ToFixedList();
+      List<TrialBalanceEntry> summaryEntriesAndSectorization =
+                              helper.GetSummaryEntriesAndSectorization(summaryEntries);
 
-      //List<TrialBalanceEntry> summaryEntriesAndSectorization = 
-      //                        helper.GetSummaryEntriesAndSectorization(summaryEntries);
-
-      List<TrialBalanceEntry> trialBalance = helper.CombineSummaryAndPostingEntries(summaryEntries,
-                                                                                    postingEntries);
+      List<TrialBalanceEntry> trialBalance = helper.CombineSummaryAndPostingEntries(
+                                             summaryEntriesAndSectorization, _postingEntries.ToFixedList());
 
       trialBalance = RemoveCertainAccounts(trialBalance);
 

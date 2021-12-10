@@ -34,19 +34,22 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
       FixedList<TrialBalanceEntry> postingEntries = helper.GetPostingEntries();
 
       List<TrialBalanceEntry> summaryEntries = helper.GenerateSummaryEntries(postingEntries);
-      
-      //postingEntries = helper.GetSummaryEntriesAndSectorization(postingEntries.ToList()).ToFixedList();
 
-      //List<TrialBalanceEntry> summaryEntriesAndSectorization = helper.GetSummaryEntriesAndSectorization(summaryEntries);
-      
+      List<TrialBalanceEntry> _postingEntries = helper.GetSummaryEntriesAndSectorization(
+                                                postingEntries.ToList());
+
+      List<TrialBalanceEntry> summaryEntriesAndSectorization = 
+                              helper.GetSummaryEntriesAndSectorization(summaryEntries);
+
       List<TrialBalanceEntry> trialBalance = helper.CombineSummaryAndPostingEntries(
-                                                     summaryEntries, postingEntries);
+                                             summaryEntriesAndSectorization, _postingEntries.ToFixedList());
 
       trialBalance = GetTrialBalanceType(trialBalance, postingEntries);
 
       trialBalance = helper.RestrictLevels(trialBalance);
 
-      var returnBalance = new FixedList<ITrialBalanceEntry>(trialBalance.Select(x => (ITrialBalanceEntry) x));
+      var returnBalance = new FixedList<ITrialBalanceEntry>(
+                              trialBalance.Select(x => (ITrialBalanceEntry) x));
 
       return new TrialBalance(_command, returnBalance);
     }
