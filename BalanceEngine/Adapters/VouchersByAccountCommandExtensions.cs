@@ -70,10 +70,11 @@ namespace Empiria.FinancialAccounting.BalanceEngine.Adapters {
     }
 
     private string GetAccountFilter() {
-      if (_command.FromAccount.Length == 0) {
+      if (_command.FromAccount.Length != 0) {
+        return $"NUMERO_CUENTA_ESTANDAR LIKE '{_command.FromAccount}%'";
+      } else {
         return string.Empty;
       }
-      return $"NUMERO_CUENTA_ESTANDAR = {_command.FromAccount}";
     }
 
     private string GetCurrencyFilter() {
