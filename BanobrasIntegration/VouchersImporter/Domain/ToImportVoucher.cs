@@ -26,8 +26,6 @@ namespace Empiria.FinancialAccounting.BanobrasIntegration.VouchersImporter {
 
       this.Header = header;
       this.Entries = entries;
-
-      this.Validate();
     }
 
 
@@ -77,6 +75,7 @@ namespace Empiria.FinancialAccounting.BanobrasIntegration.VouchersImporter {
     internal void AddError(string description) {
       _issuesList.Add(new ToImportVoucherIssue(VoucherIssueType.Error,
                                                this.Header.ImportationSet,
+                                               this.Header.UniqueID,
                                                description));
     }
 
@@ -84,15 +83,10 @@ namespace Empiria.FinancialAccounting.BanobrasIntegration.VouchersImporter {
     internal void AddWarning(string description) {
       _issuesList.Add(new ToImportVoucherIssue(VoucherIssueType.Warning,
                                                this.Header.ImportationSet,
+                                               this.Header.UniqueID,
                                                description));
     }
 
-
-    internal void Validate() {
-      if (this.Entries.Count < 2) {
-        AddError($"La póliza '{Header.UniqueID}' no tiene movimientos suficientes.");
-      }
-    }
 
   }  // class ToImportVoucher
 
