@@ -39,7 +39,7 @@ namespace Empiria.FinancialAccounting.BalanceEngine.Adapters {
     }
 
     private string GetGroupingClause() {
-      return GetFilters();
+      return string.Empty;
     }
 
     #endregion

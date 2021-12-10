@@ -19,7 +19,11 @@ namespace Empiria.FinancialAccounting.BalanceEngine.Data {
     static internal FixedList<VouchersByAccountEntry> GetVouchersByAccountEntries(
                                                         VouchersByAccountCommandData commandData) {
 
-      var operation = DataOperation.Parse("@VouchersByAccount");
+      var operation = DataOperation.Parse("@qryVouchersByAccount",
+                                          commandData.AccountsChartId,
+                                          CommonMethods.FormatSqlDate(commandData.FromDate),
+                                          CommonMethods.FormatSqlDate(commandData.ToDate),
+                                          commandData.Filters);
 
       return DataReader.GetPlainObjectFixedList<VouchersByAccountEntry>(operation);
     }

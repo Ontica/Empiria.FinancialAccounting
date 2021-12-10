@@ -63,11 +63,6 @@ namespace Empiria.FinancialAccounting.BalanceEngine.Adapters {
     }
 
 
-    public int SubledgerAccountId {
-      get; internal set;
-    }
-
-
     public string AccountNumber {
       get; internal set;
     }

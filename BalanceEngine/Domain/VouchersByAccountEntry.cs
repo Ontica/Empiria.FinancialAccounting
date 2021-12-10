@@ -19,63 +19,82 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
   /// <summary>Represents an entry for vouchers by account.</summary>
   public class VouchersByAccountEntry : IVouchersByAccountEntry {
 
+
     [DataField("ID_MAYOR", ConvertFrom = typeof(decimal))]
     public Ledger Ledger {
-      get;
-      internal set;
+      get; internal set;
     }
+
 
     [DataField("ID_MONEDA", ConvertFrom = typeof(decimal))]
     public Currency Currency {
-      get;
-      internal set;
+      get;  internal set;
     }
 
 
     [DataField("ID_CUENTA_ESTANDAR", ConvertFrom = typeof(long))]
     public StandardAccount Account {
-      get;
-      internal set;
+      get; internal set;
     }
 
 
     [DataField("ID_SECTOR", ConvertFrom = typeof(long))]
     public Sector Sector {
-      get;
-      internal set;
-    }
-
-
-
-    [DataField("ID_CUENTA_AUXILIAR", ConvertFrom = typeof(decimal))]
-    public int SubledgerAccountId {
-      get;
-      internal set;
+      get; internal set;
     }
 
 
     [DataField("ID_TRANSACCION", ConvertFrom = typeof(decimal))]
-    private decimal _id_transaccion = 0;
-
-    public Voucher Voucher {
-      get {
-        return Voucher.Parse((long) _id_transaccion);
-      }
+    public int VoucherId {
+      get; internal set;
     }
+
+
+    [DataField("NUMERO_CUENTA_AUXILIAR")]
+    public string SubledgerAccountNumber {
+      get; internal set;
+    }
+
+
+    [DataField("NUMERO_TRANSACCION")]
+    public string VoucherNumber {
+      get; internal set;
+    }
+
+
+    [DataField("FECHA_AFECTACION", Default = "ExecutionServer.DateMaxValue")]
+    public DateTime AccountingDate {
+      get; internal set;
+    }
+
+
+    [DataField("FECHA_REGISTRO", Default = "ExecutionServer.DateMaxValue")]
+    public DateTime RecordingDate {
+      get; internal set;
+    }
+
+
+    [DataField("CONCEPTO_TRANSACCION")]
+    public string Concept {
+      get; internal set;
+    }
+
 
     [DataField("DEBE")]
     public decimal Debit {
-      get;
-      internal set;
+      get;  internal set;
     }
 
 
     [DataField("HABER")]
     public decimal Credit {
-      get;
-      internal set;
+      get; internal set;
     }
 
+
+    public decimal CurrentBalance {
+      get; internal set;
+    }
 
 
     public TrialBalanceItemType ItemType {

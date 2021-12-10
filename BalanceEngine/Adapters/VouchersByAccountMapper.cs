@@ -42,11 +42,12 @@ namespace Empiria.FinancialAccounting.BalanceEngine.Adapters {
       columns.Add(new DataTableColumn("accountNumber", "Cuenta", "text-nowrap"));
       columns.Add(new DataTableColumn("sectorCode", "Sct", "text"));
       columns.Add(new DataTableColumn("subledgerAccountNumber", "Auxiliar", "text-nowrap"));
-      columns.Add(new DataTableColumn("accountingDate", "Afectación", "date"));
-      columns.Add(new DataTableColumn("recordingDate", "Registro", "date"));
+      columns.Add(new DataTableColumn("voucherNumber", "No. Poliza", "text-nowrap"));
+      columns.Add(new DataTableColumn("concept", "Concepto", "text"));
       columns.Add(new DataTableColumn("debit", "Cargo", "decimal"));
       columns.Add(new DataTableColumn("credit", "Abono", "decimal"));
-      columns.Add(new DataTableColumn("currentBalance", "Saldo actual", "decimal"));
+      columns.Add(new DataTableColumn("accountingDate", "Afectación", "date"));
+      columns.Add(new DataTableColumn("recordingDate", "Registro", "date"));
 
       return columns.ToFixedList();
     }
@@ -61,28 +62,26 @@ namespace Empiria.FinancialAccounting.BalanceEngine.Adapters {
 
     static private VouchersByAccountEntryDto MapToVouchersByAccount(
                                               VouchersByAccountEntry entry, BalanceCommand command) {
-      SubledgerAccount subledgerAccount = SubledgerAccount.Parse(entry.SubledgerAccountId);
-
+      
       var dto = new VouchersByAccountEntryDto();
 
       dto.ItemType = entry.ItemType;
-      dto.StandardAccountId = entry.Account.Id;
-      dto.SubledgerAccountId = entry.SubledgerAccountId;
       dto.LedgerName = entry.Ledger.Name;
       dto.LedgerNumber = entry.Ledger.Number;
       dto.CurrencyCode = entry.Currency.Code;
+      dto.StandardAccountId = entry.Account.Id;
       dto.AccountName = entry.Account.Name;
       dto.AccountNumber = entry.Account.Number;
       dto.SectorCode = entry.Sector.Code;
-      dto.SubledgerAccountNumber = subledgerAccount.Number;
-      dto.VoucherNumber = entry.Voucher.Number;
-      dto.ElaboratedBy = entry.Voucher.ElaboratedBy.Name;
-      dto.Concept = entry.Voucher.Concept;
+      dto.SubledgerAccountNumber = entry.SubledgerAccountNumber;
+      dto.VoucherNumber = entry.VoucherNumber;
+      //dto.ElaboratedBy = entry.ElaboratedBy.Name;
+      dto.Concept = entry.Concept;
       dto.Debit = entry.Debit;
       dto.Credit = entry.Credit;
       dto.CurrentBalance = 0;
-      dto.AccountingDate = entry.Voucher.AccountingDate;
-      dto.RecordingDate = entry.Voucher.RecordingDate;
+      dto.AccountingDate = entry.AccountingDate;
+      dto.RecordingDate = entry.RecordingDate;
 
       return dto;
     }
