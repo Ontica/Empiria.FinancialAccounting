@@ -195,10 +195,14 @@ namespace Empiria.FinancialAccounting.BanobrasIntegration.VouchersImporter {
       this.Amount = decimal.Parse(textLine.Substring(316 + lineLengthExcess, 13) + "." +
                                   textLine.Substring(329 + lineLengthExcess, 6));
 
+      this.Amount = Math.Round(this.Amount, 2);
+
       this.CurrencyCode = textLine.Substring(335 + lineLengthExcess, 2);
 
       this.ExchangeRate = decimal.Parse(textLine.Substring(337 + lineLengthExcess, 7) + "." +
                                         textLine.Substring(344 + lineLengthExcess, 8));
+
+      this.ExchangeRate = Math.Round(this.ExchangeRate, 6);
 
       this.SubledgerAccountNumber = textLine.Substring(371 + lineLengthExcess, 20);
 

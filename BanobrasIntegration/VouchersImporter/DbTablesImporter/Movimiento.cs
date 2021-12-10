@@ -250,17 +250,17 @@ namespace Empiria.FinancialAccounting.BanobrasIntegration.VouchersImporter {
 
 
     internal decimal GetAmount() {
-      return this.Importe;
+      return Math.Round(this.Importe, 2);
     }
 
 
     internal decimal GetExchangeRate() {
-      return this.TipoCambio;
+      return Math.Round(this.TipoCambio, 6);
     }
 
 
     internal decimal GetBaseCurrencyAmount() {
-      return this.Importe * this.TipoCambio;
+      return this.GetAmount() * this.GetExchangeRate();
     }
 
 

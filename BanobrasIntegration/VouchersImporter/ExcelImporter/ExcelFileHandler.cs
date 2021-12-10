@@ -71,6 +71,10 @@ namespace Empiria.FinancialAccounting.BanobrasIntegration.VouchersImporter {
       var worksheets = new List<string>();
 
       foreach (var worksheetName in _excelFile.Worksheets()) {
+        if (_excelFile.IsWorksheetHidden(worksheetName)) {
+          continue;
+        }
+
         _excelFile.SelectWorksheet(worksheetName);
 
         if (IsCandidateWorksheet()) {
@@ -120,8 +124,13 @@ namespace Empiria.FinancialAccounting.BanobrasIntegration.VouchersImporter {
     private ExcelVoucherEntry TryGetExcelRowVoucherEntry(string worksheetName, int worksheetSection,
                                                          int row, string concept) {
 
-      if (_excelFile.ReadCellValue<decimal>($"E{row}", 0) == 0 &&
-          _excelFile.ReadCellValue<decimal>($"F{row}", 0) == 0) {
+      decimal debit = _excelFile.ReadCellValue<decimal>($"E{row}", 0);
+      decimal credit = _excelFile.ReadCellValue<decimal>($"F{row}", 0);
+
+      debit = Math.Round(debit, 2);
+      credit = Math.Round(credit, 2);
+
+      if (debit == 0 && credit == 0) {    // skip rows with zeros
         return null;
       }
 
@@ -132,8 +141,7 @@ namespace Empiria.FinancialAccounting.BanobrasIntegration.VouchersImporter {
       entry.SetSubaccountWithSector(_excelFile.ReadCellValue<string>($"B{row}"));
       entry.SetCurrencyCode(_excelFile.ReadCellValue<string>($"C{row}"));
       entry.SetResponsibilityAreaCode(_excelFile.ReadCellValue<string>($"D{row}"));
-      entry.SetDebitOrCredit(_excelFile.ReadCellValue<decimal>($"E{row}", 0),
-                             _excelFile.ReadCellValue<decimal>($"F{row}", 0));
+      entry.SetDebitOrCredit(debit, credit);
       entry.SetSubledgerAccount(_excelFile.ReadCellValue<string>($"G{row}", string.Empty));
       entry.SetExchangeRate(_excelFile.ReadCellValue<decimal>($"H{row}", 1));
 

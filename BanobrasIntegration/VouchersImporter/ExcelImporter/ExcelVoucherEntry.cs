@@ -245,10 +245,10 @@ namespace Empiria.FinancialAccounting.BanobrasIntegration.VouchersImporter {
       }
 
       if (debit > 0) {
-        this.Amount = debit;
+        this.Amount = Math.Round(debit, 2);
         this.VoucherEntryType = VoucherEntryType.Debit;
       } else if (credit > 0) {
-        this.Amount = credit;
+        this.Amount = Math.Round(credit, 2);
         this.VoucherEntryType = VoucherEntryType.Credit;
       }
     }
@@ -277,6 +277,7 @@ namespace Empiria.FinancialAccounting.BanobrasIntegration.VouchersImporter {
       }
     }
 
+
     internal void SetResponsibilityAreaCode(string value) {
       value = EmpiriaString.TrimAll(value);
 
@@ -289,6 +290,7 @@ namespace Empiria.FinancialAccounting.BanobrasIntegration.VouchersImporter {
       }
     }
 
+
     internal void SetExchangeRate(decimal value) {
       if (value ==  0) {
         AddError($"El tipo de cambio es igual a cero.", "H");
@@ -298,8 +300,10 @@ namespace Empiria.FinancialAccounting.BanobrasIntegration.VouchersImporter {
         AddError($"El tipo de cambio es negativo ({value}).", "H");
         return;
       }
-      this.ExchangeRate = value;
+
+      this.ExchangeRate = Math.Round(value, 6);
     }
+
 
     internal FunctionalArea GetFunctionalArea() {
       if (this.ResponsibilityAreaCode.Length == 0) {

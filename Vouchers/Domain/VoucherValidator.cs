@@ -74,9 +74,17 @@ namespace Empiria.FinancialAccounting.Vouchers {
         decimal totalDebits = debitsEntries.Sum(x => x.Amount);
         decimal totalCredits = creditsEntries.Sum(x => x.Amount);
 
+
+        if (totalDebits != Math.Round(totalDebits, 2)) {
+          resultList.Add($"La suma total de cargos no puede tener más de dos decimales: {totalDebits}");
+        }
+        if (totalCredits != Math.Round(totalCredits, 2)) {
+          resultList.Add($"La suma total de abonos no puede tener más de dos decimales: {totalCredits}");
+        }
+
         if (totalDebits != totalCredits) {
           resultList.Add($"La suma de cargos no es igual a la suma de abonos en la moneda {currency.FullName}. " +
-                          $"Diferencia de {(totalDebits - totalCredits).ToString("C")}");
+                          $"Diferencia de ${(totalDebits - totalCredits)}");
           return resultList.ToFixedList();
         }
 
@@ -85,7 +93,7 @@ namespace Empiria.FinancialAccounting.Vouchers {
 
         if (totalDebits != totalCredits) {
           resultList.Add($"La suma de cargos y abonos en la moneda base no es igual para la moneda {currency.FullName}. " +
-                         $"Diferencia de {(totalDebits - totalCredits).ToString("C")}. " +
+                         $"Diferencia de ${(totalDebits - totalCredits)}. " +
                          $"Debe existir una diferencia en los tipos de cambio.");
         }
       }
@@ -111,6 +119,7 @@ namespace Empiria.FinancialAccounting.Vouchers {
       if (tempList.Count > 0) {
         resultList.AddRange(tempList);
       }
+
       if (!DebitsAndCreditsAreEqual(entries)) {
         resultList.Add("La suma total de cargos y abonos no coincide.");
       }

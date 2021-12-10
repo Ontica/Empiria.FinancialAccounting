@@ -99,6 +99,16 @@ namespace Empiria.FinancialAccounting.Vouchers {
         resultList.Add(e.Message);
       }
 
+
+      if (entry.Amount <= 0) {
+        resultList.Add($"El importe del cargo o abono debe ser mayor que cero.");
+      }
+
+
+      if (entry.Amount != Math.Round(entry.Amount, 2)) {
+        resultList.Add($"El importe del movimiento tiene más de dos decimales: {entry.Amount}");
+      }
+
       return resultList.ToFixedList();
     }
 
