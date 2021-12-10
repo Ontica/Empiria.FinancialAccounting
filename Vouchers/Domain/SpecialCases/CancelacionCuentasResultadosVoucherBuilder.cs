@@ -1,0 +1,33 @@
+﻿/* Empiria Financial *****************************************************************************************
+*                                                                                                            *
+*  Module   : Vouchers Management                        Component : Domain Layer                            *
+*  Assembly : FinancialAccounting.Vouchers.dll           Pattern   : Concrete Builder                        *
+*  Type     : CancelacionCuentasResultadosVoucherBuilder License   : Please read LICENSE.txt file            *
+*                                                                                                            *
+*  Summary  : Builds a voucher that cancels the balances of profit and loss accounts                         *
+*             at a given date (cuentas de resultados).                                                       *
+*                                                                                                            *
+************************* Copyright(c) La Vía Óntica SC, Ontica LLC and contributors. All rights reserved. **/
+using System;
+
+using Empiria.FinancialAccounting.Vouchers.Adapters;
+
+namespace Empiria.FinancialAccounting.Vouchers.SpecialCases {
+
+  /// <summary>Builds a voucher that cancels the balances of profit and loss
+  /// accounts (cuentas de resultados) at a given date.</summary>
+  internal class CancelacionCuentasResultadosVoucherBuilder : VoucherBuilder {
+
+    public CancelacionCuentasResultadosVoucherBuilder(VoucherSpecialCaseFields fields) : base(fields) {
+      // no-op
+    }
+
+
+    internal override Voucher BuildVoucher() {
+      throw new NotImplementedException("CancelacionCuentasResultadosVoucherBuilder");
+    }
+
+
+  }  // class CancelacionCuentasResultadosVoucherBuilder
+
+}  // namespace Empiria.FinancialAccounting.Vouchers.SpecialCases
