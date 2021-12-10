@@ -35,8 +35,6 @@ namespace Empiria.FinancialAccounting.Reporting.Adapters {
 
     static private PolizasEntryDto MapToPolizas(PolizaEntry entry, ListadoPolizasCommand command) {
 
-      //Voucher voucher = entry.Voucher;
-
       var dto = new PolizasEntryDto();
 
       dto.LedgerNumber = entry.Ledger.Number;
@@ -44,7 +42,7 @@ namespace Empiria.FinancialAccounting.Reporting.Adapters {
       dto.VoucherNumber = entry.Number;
       dto.AccountingDate = entry.AccountingDate;
       dto.RecordingDate = entry.RecordingDate;
-      dto.ElaboratedBy = entry.ElaboratedBy.Name; //voucher.ElaboratedBy.Name;
+      dto.ElaboratedBy = entry.ElaboratedBy.Name;
       dto.Concept = entry.Concept;
       dto.Debit = entry.Debit;
       dto.Credit = entry.Credit;

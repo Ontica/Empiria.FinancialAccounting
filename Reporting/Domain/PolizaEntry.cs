@@ -84,25 +84,6 @@ namespace Empiria.FinancialAccounting.Reporting.Domain {
     }
 
 
-    //[DataField("ID_TRANSACCION", ConvertFrom = typeof(decimal))]
-    //private decimal _id_transaccion = 0;
-
-    //private Voucher _voucher;
-
-    //public Voucher Voucher {
-    //  get {
-    //    if (_voucher != null) {
-    //      return _voucher;
-    //    } else {
-    //      return Voucher.Parse((long) _id_transaccion);
-    //    }
-    //  }
-    //  set {
-    //    _voucher = value;
-    //  }
-    //}
-
-
     public int VouchersByLedger {
       get; internal set;
     }
