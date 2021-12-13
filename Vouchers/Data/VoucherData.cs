@@ -45,7 +45,7 @@ namespace Empiria.FinancialAccounting.Vouchers.Data {
     static internal FixedList<EventType> EventTypes() {
       var sql = "SELECT * " +
                 "FROM COF_EVENTOS_CARTERA " +
-                "ORDER BY COF_EVENTOS_CARTERA.DESCRICPION_EVENTO";
+                "ORDER BY COF_EVENTOS_CARTERA.DESCRICPION_EVENTO";    // 'DESCRICPION' is 'ok'
 
       var dataOperation = DataOperation.Parse(sql);
 
@@ -121,7 +121,7 @@ namespace Empiria.FinancialAccounting.Vouchers.Data {
 
 
     static internal FixedList<SubledgerAccount> SearchSubledgerAccountsForVoucherEdition(Voucher voucher,
-                                                                                          string keywords) {
+                                                                                         string keywords) {
       string sqlKeywords = SearchExpression.ParseAndLikeKeywords("keywords_cuenta_auxiliar", keywords);
 
       DataOperation operation = DataOperation.Parse("@qry_cof_busca_auxiliares_para_edicion",
@@ -129,6 +129,16 @@ namespace Empiria.FinancialAccounting.Vouchers.Data {
                                                     sqlKeywords);
 
       return DataReader.GetFixedList<SubledgerAccount>(operation);
+    }
+
+
+    static internal Voucher TryGetVoucher(Ledger ledger, string voucherNumber) {
+      var sql = "SELECT * FROM VW_COF_TRANSACCION " +
+               $"WHERE Numero_Transaccion = '{voucherNumber}' AND Id_Mayor = {ledger.Id}";
+
+      var dataOperation = DataOperation.Parse(sql);
+
+      return DataReader.GetPlainObject<Voucher>(dataOperation, null);
     }
 
 
@@ -141,8 +151,7 @@ namespace Empiria.FinancialAccounting.Vouchers.Data {
                                     o.Concept, o.AccountingDate, o.RecordingDate,
                                     o.ElaboratedBy.Id,
                                     o.AuthorizedBy.IsEmptyInstance ? 0 : o.AuthorizedBy.Id,
-                                    1,
-                                    o.ClosedBy.IsEmptyInstance ? 0 : o.ClosedBy.Id);
+                                    1, o.ClosedBy.IsEmptyInstance ? 0 : o.ClosedBy.Id);
 
       DataWriter.Execute(op);
     }
