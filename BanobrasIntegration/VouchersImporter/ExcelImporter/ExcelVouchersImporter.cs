@@ -70,7 +70,17 @@ namespace Empiria.FinancialAccounting.BanobrasIntegration.VouchersImporter {
         allEntries.AddRange(worksheetEntries);
       }
 
+      AccountsChart accountsChart = _command.GetAccountsChart();
+
+      EnsureEntriesHaveRequestedAccountsChart(allEntries, accountsChart);
+
       return allEntries.ToFixedList();
+    }
+
+
+    private void EnsureEntriesHaveRequestedAccountsChart(List<ExcelVoucherEntry> entries, AccountsChart accountsChart) {
+      Assertion.Assert(entries.TrueForAll(x => x.AccountsChart.Equals(accountsChart)),
+        $"El archivo Excel tiene pólizas o movimientos que no coresponden al catálogo de cuentas {accountsChart.Name}.");
     }
 
   }  // class ExcelVouchersImporter

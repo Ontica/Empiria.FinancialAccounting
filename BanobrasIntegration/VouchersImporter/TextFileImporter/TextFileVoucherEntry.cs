@@ -18,20 +18,22 @@ namespace Empiria.FinancialAccounting.BanobrasIntegration.VouchersImporter {
   /// with imported voucher entry data.</summary>
   public class TextFileVoucherEntry {
 
-    static private readonly int STANDARD_TEXT_LINE_LENGTH = 441;
+    static internal readonly int STANDARD_TEXT_LINE_LENGTH = 441;
 
     static private readonly int STANDARD_ACCOUNT_NUMBER_LENGTH = 16;
     static private readonly int WIDE_ACCOUNT_NUMBER_LENGTH = 50;
 
-    static private readonly int WIDE_TEXT_LINE_LENGTH =
+    static internal readonly int WIDE_TEXT_LINE_LENGTH =
             STANDARD_TEXT_LINE_LENGTH + (WIDE_ACCOUNT_NUMBER_LENGTH - STANDARD_ACCOUNT_NUMBER_LENGTH);
 
     private readonly List<ToImportVoucherIssue> _entryIssues = new List<ToImportVoucherIssue>();
 
 
-    internal TextFileVoucherEntry(string textLine, int textLineIndex) {
+    internal TextFileVoucherEntry(AccountsChart accountsChart, string textLine, int textLineIndex) {
+      Assertion.AssertObject(accountsChart, "accountsChart");
       Assertion.AssertObject(textLine, "textLine");
 
+      AccountsChart = accountsChart;
       TextLine = textLine;
       TextLineIndex = textLineIndex;
 
@@ -41,14 +43,7 @@ namespace Empiria.FinancialAccounting.BanobrasIntegration.VouchersImporter {
 
 
     private AccountsChart AccountsChart {
-      get {
-        if (this.TextLineIsInWideFormat) {
-          return AccountsChart.IFRS;
-          // return AccountsChart.ParseForDate(this.AccountingDate);
-        } else {
-          return AccountsChart.Former;
-        }
-      }
+      get;
     }
 
 
@@ -133,9 +128,9 @@ namespace Empiria.FinancialAccounting.BanobrasIntegration.VouchersImporter {
     }
 
 
-    private string AvailabilityCode {
-      get; set;
-    }
+    //private string AvailabilityCode {
+    //  get; set;
+    //}
 
 
     private string ResponsibilityArea {
@@ -206,7 +201,7 @@ namespace Empiria.FinancialAccounting.BanobrasIntegration.VouchersImporter {
 
       this.SubledgerAccountNumber = textLine.Substring(371 + lineLengthExcess, 20);
 
-      this.AvailabilityCode = textLine.Substring(403 + lineLengthExcess, 4);
+      // this.AvailabilityCode = textLine.Substring(403 + lineLengthExcess, 4);
 
       this.ResponsibilityArea = textLine.Substring(419 + lineLengthExcess, 6);
 

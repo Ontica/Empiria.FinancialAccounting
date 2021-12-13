@@ -41,6 +41,7 @@ namespace Empiria.FinancialAccounting.BanobrasIntegration.VouchersImporter {
       }
     }
 
+
     #region Methods
 
     internal FixedList<ToImportVoucher> GetToImportVouchersList() {
@@ -127,13 +128,25 @@ namespace Empiria.FinancialAccounting.BanobrasIntegration.VouchersImporter {
     private FixedList<TextFileVoucherEntry> ParseTextLinesToTextFileVoucherEntries() {
       List<TextFileVoucherEntry> entries = new List<TextFileVoucherEntry>(_textFileLines.Length);
 
+      AccountsChart accountsChart = _command.GetAccountsChart();
+
+      EnsureTextLinesHaveTheRightLength(accountsChart);
+
       for (int lineIndex = 0; lineIndex < _textFileLines.Length; lineIndex++) {
-        entries.Add(new TextFileVoucherEntry(_textFileLines[lineIndex], lineIndex + 1));
+        entries.Add(new TextFileVoucherEntry(accountsChart, _textFileLines[lineIndex], lineIndex + 1));
       }
 
       return entries.ToFixedList();
     }
 
+    private void EnsureTextLinesHaveTheRightLength(AccountsChart accountsChart) {
+      int textFileLineLengthForAccountsChart = accountsChart.Equals(AccountsChart.IFRS) ?
+                                                  TextFileVoucherEntry.WIDE_TEXT_LINE_LENGTH : TextFileVoucherEntry.STANDARD_TEXT_LINE_LENGTH;
+
+      Assertion.Assert(_textFileLines.All(x => x.Length == textFileLineLengthForAccountsChart),
+            $"El archivo de texto tiene líneas de longitud distinta a {textFileLineLengthForAccountsChart}, " +
+            $"tamaño definido para importar pólizas para el catálogo de cuentas {accountsChart.Name}.");
+    }
 
     private string[] GetVoucherUniqueIds() {
       return this.Entries.Select(x => x.VoucherUniqueID)
