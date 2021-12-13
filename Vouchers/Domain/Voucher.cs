@@ -17,7 +17,7 @@ using Empiria.FinancialAccounting.Vouchers.Data;
 namespace Empiria.FinancialAccounting.Vouchers {
 
   /// <summary>Represents an accounting voucher.</summary>
-  public class Voucher {
+  internal class Voucher {
 
     private Lazy<FixedList<VoucherEntry>> _entries;
 
@@ -45,6 +45,9 @@ namespace Empiria.FinancialAccounting.Vouchers {
       return VoucherData.GetVoucher(id);
     }
 
+    internal static Voucher TryParse(Ledger ledger, string voucherNumber) {
+      return VoucherData.TryGetVoucher(ledger, voucherNumber);
+    }
 
     static public FixedList<Voucher> GetList(string filter, string sort, int pageSize) {
       return VoucherData.GetVouchers(filter, sort, pageSize);

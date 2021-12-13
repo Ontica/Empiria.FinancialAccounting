@@ -15,9 +15,9 @@ using Empiria.FinancialAccounting.Adapters;
 namespace Empiria.FinancialAccounting.Vouchers.Adapters {
 
   /// <summary>Mapping methods for accounting vouchers.</summary>
-  static public class VoucherMapper {
+  static internal class VoucherMapper {
 
-    static public VoucherDto Map(Voucher voucher) {
+    static internal VoucherDto Map(Voucher voucher) {
       var dto = new VoucherDto {
         Id = voucher.Id,
         AccountsChart = voucher.Ledger.AccountsChart.MapToNamedEntity(),
@@ -111,7 +111,7 @@ namespace Empiria.FinancialAccounting.Vouchers.Adapters {
     }
 
 
-    static public VoucherEntryDto MapEntry(VoucherEntry entry) {
+    static internal VoucherEntryDto MapEntry(VoucherEntry entry) {
       return new VoucherEntryDto {
         Id = entry.Id,
         VoucherEntryType = entry.VoucherEntryType,
