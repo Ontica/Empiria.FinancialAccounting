@@ -255,9 +255,14 @@ namespace Empiria.FinancialAccounting.Vouchers {
               $"El auxiliar {SubledgerAccount.Number} no pertenece a la contabilidad {ledger.FullName}.");
       }
 
-      Assertion.Assert(Amount > 0, "Amount must be a positive value.");
+      Assertion.Assert(Amount > 0, "El importe del cargo o abono debe ser mayor a cero.");
 
-      Assertion.Assert(BaseCurrencyAmount > 0, "BaseCurrencyAmount must be a positive value.");
+      Assertion.Assert(Math.Round(Amount, 2) == Amount, "El movimiento tiene un importe con más de dos decimales.");
+
+      Assertion.Assert(BaseCurrencyAmount > 0, "El importe en moneda base debe ser mayor a cero.");
+
+      Assertion.Assert(Math.Round(BaseCurrencyAmount, 6) == BaseCurrencyAmount,
+          "El movimiento en moneda base tiene un importe con más de seis decimales. El tipo de cambio debe estar incorrecto.");
     }
 
 
@@ -284,11 +289,13 @@ namespace Empiria.FinancialAccounting.Vouchers {
       this.Concept = fields.Concept.ToUpperInvariant();
       this.Currency = fields.Currency;
       this.Amount = fields.Amount;
+
       if (fields.UsesBaseCurrency()) {
         this.BaseCurrencyAmount = fields.Amount;
       } else {
         this.BaseCurrencyAmount = fields.BaseCurrencyAmount;
       }
+
       this.Protected = fields.Protected;
 
       EnsureIsValidAfterLoad();
