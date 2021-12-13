@@ -88,7 +88,7 @@ namespace Empiria.FinancialAccounting.Reporting.Exporters.Excel {
       int i = 8;
 
       foreach (var entry in entries) {
-        _excelFile.SetCell($"A{i}", entry.ConceptCode);
+        _excelFile.SetCell($"A{i}", entry.ConceptCode.Replace(" ", string.Empty));
         _excelFile.SetCell($"B{i}", entry.Concept);
         _excelFile.SetCell($"C{i}", entry.GetTotalField(FinancialReportTotalField.DomesticCurrencyTotal));
         _excelFile.SetCell($"D{i}", entry.GetTotalField(FinancialReportTotalField.ForeignCurrencyTotal));
@@ -101,7 +101,7 @@ namespace Empiria.FinancialAccounting.Reporting.Exporters.Excel {
       int i = 4;
 
       foreach (var entry in entries) {
-        _excelFile.SetCell($"A{i}", entry.ConceptCode);
+        _excelFile.SetCell($"A{i}", entry.ConceptCode.Replace(" ", string.Empty));
         _excelFile.SetCell($"B{i}", entry.Concept);
         _excelFile.SetCell($"F{i}", entry.GetTotalField(FinancialReportTotalField.DomesticCurrencyTotal));
         _excelFile.SetCell($"G{i}", entry.GetTotalField(FinancialReportTotalField.ForeignCurrencyTotal));
