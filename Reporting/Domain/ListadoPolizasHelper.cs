@@ -95,8 +95,10 @@ namespace Empiria.FinancialAccounting.Reporting {
                                     PolizaEntry totalOfVouchers) {
 
       var returnedVouchers = vouchersAndTotalByLedger.ToList();
-      returnedVouchers.Add(totalOfVouchers);
-
+      if (totalOfVouchers != null) {
+        returnedVouchers.Add(totalOfVouchers);
+      }
+      
       return returnedVouchers.ToFixedList();
     }
 
