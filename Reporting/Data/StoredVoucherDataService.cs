@@ -1,7 +1,7 @@
 ﻿/* Empiria Financial *****************************************************************************************
 *                                                                                                            *
 *  Module   : Balance Engine                             Component : Data Layer                              *
-*  Assembly : FinancialAccounting.BalanceEngine.dll      Pattern   : Data Service                            *
+*  Assembly : FinancialAccounting.Reporting.dll      Pattern   : Data Service                            *
 *  Type     : StoredVoucherDataService                  License   : Please read LICENSE.txt file             *
 *                                                                                                            *
 *  Summary  : Provides data read methods for vouchers by account.                                            *
@@ -11,7 +11,7 @@ using System;
 
 using Empiria.Data;
 
-namespace Empiria.FinancialAccounting.BalanceEngine.Data {
+namespace Empiria.FinancialAccounting.Reporting.Data {
 
   /// <summary>Provides data read methods for vouchers by account.</summary>
   static internal class StoredVoucherDataService {

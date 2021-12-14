@@ -1,7 +1,7 @@
 ﻿/* Empiria Financial *****************************************************************************************
 *                                                                                                            *
 *  Module   : Balance Engine                             Component : Interface adapters                      *
-*  Assembly : FinancialAccounting.BalanceEngine.dll      Pattern   : Command payload                         *
+*  Assembly : FinancialAccounting.Reporting.dll      Pattern   : Command payload                         *
 *  Type     : VouchersByAccountCommandData               License   : Please read LICENSE.txt file            *
 *                                                                                                            *
 *  Summary  : Command payload used to build vouchers by account.                                             *
@@ -9,7 +9,7 @@
 ************************* Copyright(c) La Vía Óntica SC, Ontica LLC and contributors. All rights reserved. **/
 using System;
 
-namespace Empiria.FinancialAccounting.BalanceEngine.Data {
+namespace Empiria.FinancialAccounting.Reporting.Data {
   
   internal class VouchersByAccountCommandData {
 
@@ -51,4 +51,4 @@ namespace Empiria.FinancialAccounting.BalanceEngine.Data {
     
   } // class VouchersByAccountCommandData
 
-} // namespace Empiria.FinancialAccounting.BalanceEngine.Data.Adapters
+} // namespace Empiria.FinancialAccounting.Reporting.Data.Adapters

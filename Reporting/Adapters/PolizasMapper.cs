@@ -37,17 +37,17 @@ namespace Empiria.FinancialAccounting.Reporting.Adapters {
 
       var dto = new PolizasEntryDto();
 
-      dto.LedgerNumber = entry.Ledger.Number;
-      dto.LedgerName = entry.Ledger.FullName;
-      dto.VoucherNumber = entry.Number;
-      dto.AccountingDate = entry.AccountingDate;
-      dto.RecordingDate = entry.RecordingDate;
-      dto.ElaboratedBy = entry.ElaboratedBy.Name;
-      dto.Concept = entry.Concept;
-      dto.Debit = entry.Debit;
-      dto.Credit = entry.Credit;
-      dto.VouchersByLedger = entry.VouchersByLedger;
-      dto.ItemType = entry.ItemType;
+        dto.LedgerNumber = entry.Ledger.Number ?? Ledger.Empty.Number;
+        dto.LedgerName = entry.Ledger.FullName ?? Ledger.Empty.FullName;
+        dto.VoucherNumber = entry.Number;
+        dto.AccountingDate = entry.AccountingDate != null ? entry.AccountingDate : DateTime.Now;
+        dto.RecordingDate = entry.RecordingDate != entry.RecordingDate ? entry.RecordingDate : DateTime.Now;
+        dto.ElaboratedBy = entry.ElaboratedBy.Name;
+        dto.Concept = entry.Concept;
+        dto.Debit = entry.Debit;
+        dto.Credit = entry.Credit;
+        dto.VouchersByLedger = entry.VouchersByLedger;
+        dto.ItemType = entry.ItemType;
 
       return dto;
     }

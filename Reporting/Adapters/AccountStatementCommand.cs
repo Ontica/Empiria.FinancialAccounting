@@ -1,41 +1,34 @@
 ﻿/* Empiria Financial *****************************************************************************************
 *                                                                                                            *
 *  Module   : Balance Engine                             Component : Interface adapters                      *
-*  Assembly : FinancialAccounting.BalanceEngine.dll      Pattern   : Data Transfer Object                    *
-*  Type     : BalanceDto                            License   : Please read LICENSE.txt file                 *
+*  Assembly : FinancialAccounting.Reporting.dll      Pattern   : Command payload                         *
+*  Type     : AccountStatementCommand                    License   : Please read LICENSE.txt file            *
 *                                                                                                            *
-*  Summary  : Output DTO used to return balances.                                                            *
+*  Summary  : Command payload used to build account statement.                                               *
 *                                                                                                            *
 ************************* Copyright(c) La Vía Óntica SC, Ontica LLC and contributors. All rights reserved. **/
 using System;
+using Empiria.FinancialAccounting.BalanceEngine;
+using Empiria.FinancialAccounting.BalanceEngine.Adapters;
 
-namespace Empiria.FinancialAccounting.BalanceEngine.Adapters {
+namespace Empiria.FinancialAccounting.Reporting.Adapters {
 
-  public interface IBalanceEntryDto {
 
-  }
+  /// <summary>Command payload used to build account statement.</summary>
+  public class AccountStatementCommand {
 
-  /// <summary>Output DTO used to return balances.</summary>
-  public class BalanceDto {
     public BalanceCommand Command {
       get; internal set;
     } = new BalanceCommand();
 
 
-    public FixedList<DataTableColumn> Columns {
+    public AccountStatementEntry Entry {
       get; internal set;
-    } = new FixedList<DataTableColumn>();
+    } = new AccountStatementEntry();
 
+  } // class AccountStatementCommand 
 
-    public FixedList<IBalanceEntryDto> Entries {
-      get; internal set;
-    } = new FixedList<IBalanceEntryDto>();
-
-  } // class BalanceDto
-
-
-  public class BalanceEntryDto : IBalanceEntryDto {
-
+  public class AccountStatementEntry {
     public TrialBalanceItemType ItemType {
       get; internal set;
     } = TrialBalanceItemType.BalanceEntry;
@@ -80,7 +73,6 @@ namespace Empiria.FinancialAccounting.BalanceEngine.Adapters {
       get; internal set;
     }
 
+  }
 
-  } // class BalanceEntryDto
-
-} // Empiria.FinancialAccounting.BalanceEngine.Adapters
+} // namespace Empiria.FinancialAccounting.Reporting.Adapters

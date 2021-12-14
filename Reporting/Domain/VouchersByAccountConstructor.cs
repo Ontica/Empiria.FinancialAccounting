@@ -1,27 +1,27 @@
 ﻿/* Empiria Financial *****************************************************************************************
 *                                                                                                            *
 *  Module   : Balance Engine                             Component : Domain Layer                            *
-*  Assembly : FinancialAccounting.BalanceEngine.dll      Pattern   : Service provider                        *
+*  Assembly : FinancialAccounting.Reporting.dll      Pattern   : Service provider                        *
 *  Type     : VouchersByAccountConstructor               License   : Please read LICENSE.txt file            *
 *                                                                                                            *
 *  Summary  : Provides services to generate vouchers by account.                                             *
 *                                                                                                            *
 ************************* Copyright(c) La Vía Óntica SC, Ontica LLC and contributors. All rights reserved. **/
 using System;
-using Empiria.FinancialAccounting.BalanceEngine.Adapters;
-using Empiria.FinancialAccounting.BalanceEngine.Data;
+using Empiria.FinancialAccounting.Reporting.Adapters;
+using Empiria.FinancialAccounting.Reporting.Data;
 
-namespace Empiria.FinancialAccounting.BalanceEngine {
+namespace Empiria.FinancialAccounting.Reporting {
 
   /// <summary>Provides services to generate vouchers by account.</summary>
   internal class VouchersByAccountConstructor {
 
-    private readonly BalanceCommand Command;
+    private readonly AccountStatementCommand AccountStatementCommand;
 
-    internal VouchersByAccountConstructor(BalanceCommand command) {
-      Assertion.AssertObject(command, "command");
+    internal VouchersByAccountConstructor(AccountStatementCommand accountStatementCommand) {
+      Assertion.AssertObject(accountStatementCommand, "accountStatementCommand");
 
-      Command = command;
+      AccountStatementCommand = accountStatementCommand;
     }
 
 
@@ -34,8 +34,34 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
 
       var returnedVoucherEntries = new FixedList<IVouchersByAccountEntry>(
                                         voucherEntries.Select(x => (IVouchersByAccountEntry) x));
+      string title = ""; //GetTitle();
 
-      return new VouchersByAccount(Command, returnedVoucherEntries);
+      return new VouchersByAccount(AccountStatementCommand.Command, returnedVoucherEntries, title);
+    }
+
+    private string GetTitle() {
+      if (AccountStatementCommand.Entry.AccountNumber != string.Empty &&
+          AccountStatementCommand.Entry.SubledgerAccountNumber != string.Empty &&
+          AccountStatementCommand.Entry.SubledgerAccountNumber != "0") {
+
+        return $"{AccountStatementCommand.Entry.AccountNumber}: " +
+               $"{AccountStatementCommand.Entry.AccountName} " +
+               $"({AccountStatementCommand.Entry.SubledgerAccountNumber})";
+
+      } else if (AccountStatementCommand.Entry.AccountNumber != string.Empty) {
+
+        return $"{AccountStatementCommand.Entry.AccountNumber}: " +
+               $"{AccountStatementCommand.Entry.AccountName}";
+
+      } else if (AccountStatementCommand.Entry.AccountNumber == string.Empty &&
+                 AccountStatementCommand.Entry.SubledgerAccountNumber != string.Empty &&
+                 AccountStatementCommand.Entry.SubledgerAccountNumber != "0") {
+
+        return $"{AccountStatementCommand.Entry.SubledgerAccountNumber}";
+      } else {
+        return string.Empty;
+      }
+      
     }
 
 
@@ -52,9 +78,9 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
 
     private VouchersByAccountCommandData VouchersByAccountCommandDataMapped() {
 
-      var commandExtensions = new VouchersByAccountCommandExtensions(Command);
+      var commandExtensions = new VouchersByAccountCommandExtensions(AccountStatementCommand);
       VouchersByAccountCommandData commandData = commandExtensions.MapToVouchersByAccountCommandData();
-      
+
       return commandData;
     }
 
@@ -64,4 +90,4 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
 
   } // class VouchersByAccountConstructor
 
-} // namespace Empiria.FinancialAccounting.BalanceEngine
+} // namespace Empiria.FinancialAccounting.Reporting

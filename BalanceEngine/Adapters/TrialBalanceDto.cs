@@ -76,6 +76,12 @@ namespace Empiria.FinancialAccounting.BalanceEngine.Adapters {
       get; internal set;
     }
 
+
+    public string SubledgerAccountNumber {
+      get; internal set;
+    }
+
+
     public AccountRole AccountRole {
       get; internal set;
     }
@@ -134,8 +140,7 @@ namespace Empiria.FinancialAccounting.BalanceEngine.Adapters {
     public string DebtorCreditor {
       get; internal set;
     }
-
-
+    
   } // class TrialBalanceEntryDto
 
 } // namespace Empiria.FinancialAccounting.BalanceEngine.Adapters

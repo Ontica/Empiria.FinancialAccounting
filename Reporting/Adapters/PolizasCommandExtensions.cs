@@ -60,7 +60,7 @@ namespace Empiria.FinancialAccounting.Reporting.Adapters {
 
 
       private string GetLedgerFilter() {
-        if (_command.Ledgers.Length == 0) {
+        if (_command.Ledgers == null || _command.Ledgers.Length == 0) {
           return string.Empty;
         }
 

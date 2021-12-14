@@ -13,6 +13,8 @@ using System.Web.Http;
 using Empiria.WebApi;
 
 using Empiria.FinancialAccounting.Reporting;
+using Empiria.FinancialAccounting.Reporting.Adapters;
+using Empiria.FinancialAccounting.Reporting.UseCases;
 
 namespace Empiria.FinancialAccounting.WebApi.Reporting {
 
@@ -53,6 +55,22 @@ namespace Empiria.FinancialAccounting.WebApi.Reporting {
         return new SingleObjectModel(this.Request, reportData);
       }
     }
+
+
+    [HttpPost]
+    [Route("v2/financial-accounting/balance-voucher")]
+    public SingleObjectModel GetVouchersByAccount(
+            [FromBody] AccountStatementCommand accountStatementCommand) {
+      base.RequireBody(accountStatementCommand);
+
+      using (var usecases = VouchersByAccountUseCases.UseCaseInteractor()) {
+
+        VouchersByAccountDto balance = usecases.BuilVouchersByAccount(accountStatementCommand);
+
+        return new SingleObjectModel(this.Request, balance);
+      }
+    }
+
 
     #endregion Web Apis
 

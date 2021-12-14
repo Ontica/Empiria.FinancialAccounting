@@ -1,7 +1,7 @@
 ﻿/* Empiria Financial *****************************************************************************************
 *                                                                                                            *
 *  Module   : Balance Engine                             Component : Interface adapters                      *
-*  Assembly : FinancialAccounting.BalanceEngine.dll      Pattern   : Type Extension methods                  *
+*  Assembly : FinancialAccounting.Reporting.dll      Pattern   : Type Extension methods                  *
 *  Type     : VouchersByAccountCommandExtensions         License   : Please read LICENSE.txt file            *
 *                                                                                                            *
 *  Summary  : Type extension methods for VouchersByAccountCommand.                                           *
@@ -9,30 +9,29 @@
 ************************* Copyright(c) La Vía Óntica SC, Ontica LLC and contributors. All rights reserved. **/
 using System;
 using System.Linq;
-using Empiria.FinancialAccounting.BalanceEngine.Data;
+using Empiria.FinancialAccounting.Reporting.Data;
 
-namespace Empiria.FinancialAccounting.BalanceEngine.Adapters {
+namespace Empiria.FinancialAccounting.Reporting.Adapters {
 
   /// <summary>Type extension methods for VouchersByAccountCommand.</summary>
   internal class VouchersByAccountCommandExtensions {
 
-    private BalanceCommand _command;
-    internal VouchersByAccountCommandExtensions(BalanceCommand command) {
-      _command = command;
+    private AccountStatementCommand _accountStatementCommand;
+    internal VouchersByAccountCommandExtensions(AccountStatementCommand accountStatementCommand) {
+      _accountStatementCommand = accountStatementCommand;
     }
 
     #region Public methods
 
     internal VouchersByAccountCommandData MapToVouchersByAccountCommandData() {
       var commandData = new VouchersByAccountCommandData();
-
-      var accountsChart = AccountsChart.Parse(_command.AccountsChartUID);
+      var accountsChart = AccountsChart.Parse(_accountStatementCommand.Command.AccountsChartUID);
 
 
       commandData.Fields = GetFields();
       commandData.AccountsChartId = accountsChart.Id;
-      commandData.FromDate = _command.InitialPeriod.FromDate;
-      commandData.ToDate = _command.InitialPeriod.ToDate;
+      commandData.FromDate = _accountStatementCommand.Command.InitialPeriod.FromDate;
+      commandData.ToDate = _accountStatementCommand.Command.InitialPeriod.ToDate;
       commandData.Filters = GetFilters();
       commandData.Grouping = GetGroupingClause();
       return commandData;
@@ -63,36 +62,38 @@ namespace Empiria.FinancialAccounting.BalanceEngine.Adapters {
     }
 
     private string GetSubledgerAccountFilter() {
-      if (_command.SubledgerAccount.Length == 0) {
+      if (_accountStatementCommand.Entry.SubledgerAccountNumber.Length == 0 || 
+          _accountStatementCommand.Entry.SubledgerAccountNumber == "0") {
         return string.Empty;
       }
-      return $"NUMERO_CUENTA_AUXILIAR LIKE '%{_command.SubledgerAccount}'";
+      return $"NUMERO_CUENTA_AUXILIAR = '{_accountStatementCommand.Entry.SubledgerAccountNumber}'";
     }
 
     private string GetAccountFilter() {
-      if (_command.FromAccount.Length != 0) {
-        return $"NUMERO_CUENTA_ESTANDAR LIKE '{_command.FromAccount}%'";
+      if (_accountStatementCommand.Entry.AccountNumber.Length != 0) {
+        return $"NUMERO_CUENTA_ESTANDAR = '{_accountStatementCommand.Entry.AccountNumber}'";
       } else {
         return string.Empty;
       }
     }
 
     private string GetCurrencyFilter() {
-      if (_command.Currencies.Length == 0) {
+      if (_accountStatementCommand.Entry.CurrencyCode.Length == 0) {
         return string.Empty;
       }
-      int[] currencyIds = _command.Currencies.Select(uid => Currency.Parse(uid).Id).ToArray();
-
-      return $"ID_MONEDA IN ({String.Join(", ", currencyIds)})";
+      //int[] currencyIds = _accountStatementCommand.Entry.CurrencyCode
+      //                    .Select(uid => Currency.Parse(uid).Id).ToArray();
+      int currencyId = Currency.Parse(_accountStatementCommand.Entry.CurrencyCode).Id;
+      return $"ID_MONEDA IN ({String.Join(", ", currencyId)})";
     }
 
     private string GetLedgerFilter() {
-      if (_command.Ledgers.Length == 0) {
+      if (_accountStatementCommand.Command.Ledgers.Length == 0) {
         return string.Empty;
       }
 
-      int[] ledgerIds = _command.Ledgers.Select(uid => Ledger.Parse(uid).Id)
-                                        .ToArray();
+      int[] ledgerIds = _accountStatementCommand.Command.Ledgers
+                        .Select(uid => Ledger.Parse(uid).Id).ToArray();
 
       return $"ID_MAYOR IN ({String.Join(", ", ledgerIds)})";
     }
@@ -108,4 +109,4 @@ namespace Empiria.FinancialAccounting.BalanceEngine.Adapters {
 
   } // class VouchersByAccountCommandExtensions
 
-} // namespace Empiria.FinancialAccounting.BalanceEngine.Adapters
+} // namespace Empiria.FinancialAccounting.Reporting.Adapters

@@ -53,20 +53,7 @@ namespace Empiria.FinancialAccounting.BalanceEngine.UseCases {
       return BalanceMapper.Map(balance);
     }
 
-    public VouchersByAccountDto BuilVouchersByAccount(BalanceCommand command) {
-
-      Assertion.AssertObject(command, "command");
-
-      var vouchersConstructor = new VouchersByAccountConstructor(command);
-
-      VouchersByAccount vouchers = vouchersConstructor.Build();
-
-      return VouchersByAccountMapper.Map(vouchers);
-    }
-
-
-
-
+   
     #endregion Use cases
 
   } // class TrialBalanceUseCases

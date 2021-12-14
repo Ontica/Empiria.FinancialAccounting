@@ -1,15 +1,17 @@
 ﻿/* Empiria Financial *****************************************************************************************
 *                                                                                                            *
 *  Module   : Balance Engine                             Component : Interface adapters                      *
-*  Assembly : FinancialAccounting.BalanceEngine.dll      Pattern   : Data Transfer Object                    *
+*  Assembly : FinancialAccounting.Reporting.dll      Pattern   : Data Transfer Object                    *
 *  Type     : VouchersByAccountDto                            License   : Please read LICENSE.txt file       *
 *                                                                                                            *
 *  Summary  : Output DTO used to return vouchers by account.                                                 *
 *                                                                                                            *
 ************************* Copyright(c) La Vía Óntica SC, Ontica LLC and contributors. All rights reserved. **/
 using System;
+using Empiria.FinancialAccounting.BalanceEngine;
+using Empiria.FinancialAccounting.BalanceEngine.Adapters;
 
-namespace Empiria.FinancialAccounting.BalanceEngine.Adapters {
+namespace Empiria.FinancialAccounting.Reporting.Adapters {
 
 
   public interface IVouchersByAccountEntryDto {
@@ -33,6 +35,11 @@ namespace Empiria.FinancialAccounting.BalanceEngine.Adapters {
       get; internal set;
     } = new FixedList<IVouchersByAccountEntryDto>();
 
+
+    public string Title {
+      get; internal set;
+    }
+
   } // class VouchersByAccountDto
 
 
@@ -40,6 +47,12 @@ namespace Empiria.FinancialAccounting.BalanceEngine.Adapters {
 
     public TrialBalanceItemType ItemType {
       get; internal set;
+    }
+
+
+    public int VoucherId {
+      get;
+      internal set;
     }
 
 
@@ -127,7 +140,7 @@ namespace Empiria.FinancialAccounting.BalanceEngine.Adapters {
       get;
       internal set;
     }
-
+    
   } // class VouchersByAccountEntryDto
 
-} // namespace Empiria.FinancialAccounting.BalanceEngine.Adapters
+} // namespace Empiria.FinancialAccounting.Reporting.Adapters

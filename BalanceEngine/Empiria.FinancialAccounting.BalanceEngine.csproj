@@ -82,7 +82,4 @@
     <Compile Remove="Domain\DebitCreditBalance.cs" />
     <Compile Remove="Domain\InitialBalance.cs" />
   </ItemGroup>
-  <ItemGroup>
-    <ProjectReference Include="..\Vouchers\Empiria.FinancialAccounting.Vouchers.csproj" />
-  </ItemGroup>
 </Project>

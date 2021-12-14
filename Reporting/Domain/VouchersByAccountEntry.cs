@@ -1,16 +1,17 @@
 ﻿/* Empiria Financial *****************************************************************************************
 *                                                                                                            *
 *  Module   : Balance Engine                             Component : Domain Layer                            *
-*  Assembly : FinancialAccounting.BalanceEngine.dll      Pattern   : Empiria Plain Object                    *
+*  Assembly : FinancialAccounting.Reporting.dll      Pattern   : Empiria Plain Object                    *
 *  Type     : VouchersByAccountEntry                     License   : Please read LICENSE.txt file            *
 *                                                                                                            *
 *  Summary  : Represents an entry for vouchers by account.                                                   *
 *                                                                                                            *
 ************************* Copyright(c) La Vía Óntica SC, Ontica LLC and contributors. All rights reserved. **/
 using System;
-using Empiria.FinancialAccounting.Vouchers;
+using Empiria.FinancialAccounting.BalanceEngine;
+using Empiria.FinancialAccounting.Reporting;
 
-namespace Empiria.FinancialAccounting.BalanceEngine {
+namespace Empiria.FinancialAccounting.Reporting {
 
   public interface IVouchersByAccountEntry {
 
@@ -103,4 +104,4 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
 
   } // class VouchersByAccountEntry
 
-} // namespace Empiria.FinancialAccounting.BalanceEngine
+} // namespace Empiria.FinancialAccounting.Reporting

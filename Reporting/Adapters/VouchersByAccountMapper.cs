@@ -1,7 +1,7 @@
 ﻿/* Empiria Financial *****************************************************************************************
 *                                                                                                            *
 *  Module   : Balance Engine                             Component : Interface adapters                      *
-*  Assembly : FinancialAccounting.BalanceEngine.dll      Pattern   : Mapper class                            *
+*  Assembly : FinancialAccounting.Reporting.dll      Pattern   : Mapper class                            *
 *  Type     : VouchersByAccountMapper                              License   : Please read LICENSE.txt file  *
 *                                                                                                            *
 *  Summary  : Methods used to map vouchers by account.                                                       *
@@ -9,9 +9,9 @@
 ************************* Copyright(c) La Vía Óntica SC, Ontica LLC and contributors. All rights reserved. **/
 using System;
 using System.Collections.Generic;
-using Empiria.FinancialAccounting.BalanceEngine.Data;
+using Empiria.FinancialAccounting.BalanceEngine.Adapters;
 
-namespace Empiria.FinancialAccounting.BalanceEngine.Adapters {
+namespace Empiria.FinancialAccounting.Reporting.Adapters {
 
   /// <summary>Methods used to map vouchers by account.</summary>
   static internal class VouchersByAccountMapper {
@@ -24,7 +24,8 @@ namespace Empiria.FinancialAccounting.BalanceEngine.Adapters {
       return new VouchersByAccountDto { 
         Command = vouchers.Command,
         Columns = MapColumns(vouchers.Command),
-        Entries = MapToDto(vouchers.Entries, vouchers.Command)
+        Entries = MapToDto(vouchers.Entries, vouchers.Command),
+        Title = vouchers.Title
       };
     }
 
@@ -82,16 +83,14 @@ namespace Empiria.FinancialAccounting.BalanceEngine.Adapters {
       dto.CurrentBalance = 0;
       dto.AccountingDate = entry.AccountingDate;
       dto.RecordingDate = entry.RecordingDate;
+      dto.VoucherId = entry.VoucherId;
 
       return dto;
     }
-
-
-
 
 
     #endregion Private methods
 
   } // class VouchersByAccountMapper
 
-} // namespace Empiria.FinancialAccounting.BalanceEngine.Adapters
+} // namespace Empiria.FinancialAccounting.Reporting.Adapters

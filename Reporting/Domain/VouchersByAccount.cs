@@ -1,7 +1,7 @@
 ﻿/* Empiria Financial *****************************************************************************************
 *                                                                                                            *
 *  Module   : Balance Engine                             Component : Domain Layer                            *
-*  Assembly : FinancialAccounting.BalanceEngine.dll      Pattern   : Information Holder                      *
+*  Assembly : FinancialAccounting.Reporting.dll      Pattern   : Information Holder                      *
 *  Type     : VouchersByAccount                          License   : Please read LICENSE.txt file            *
 *                                                                                                            *
 *  Summary  : Contains the header and entries of vouchers by account.                                        *
@@ -9,20 +9,23 @@
 ************************* Copyright(c) La Vía Óntica SC, Ontica LLC and contributors. All rights reserved. **/
 using System;
 using Empiria.FinancialAccounting.BalanceEngine.Adapters;
+using Empiria.FinancialAccounting.Reporting.Adapters;
 
-namespace Empiria.FinancialAccounting.BalanceEngine {
+namespace Empiria.FinancialAccounting.Reporting {
 
   /// <summary>Contains the header and entries of vouchers by account.</summary>
   public class VouchersByAccount {
 
     #region Constructors and parsers
 
-    internal VouchersByAccount(BalanceCommand command, FixedList<IVouchersByAccountEntry> entries) {
+    internal VouchersByAccount(BalanceCommand command, FixedList<IVouchersByAccountEntry> entries, string title) {
       Assertion.AssertObject(command, "command");
       Assertion.AssertObject(entries, "entries");
+      Assertion.AssertObject(title, "title");
 
       Command = command;
       Entries = entries;
+      Title = title;
     }
 
 
@@ -39,8 +42,13 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
     }
 
 
+    public string Title {
+      get;
+    }
+
+
     #endregion
 
   } // class VouchersByAccount 
 
-} // namespace Empiria.FinancialAccounting.BalanceEngine
+} // namespace Empiria.FinancialAccounting.Reporting

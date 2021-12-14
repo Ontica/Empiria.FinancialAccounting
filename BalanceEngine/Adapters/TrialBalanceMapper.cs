@@ -127,7 +127,7 @@ namespace Empiria.FinancialAccounting.BalanceEngine.Adapters {
       var dto = new TwoColumnsTrialBalanceEntryDto();
 
       SubledgerAccount subledgerAccount = SubledgerAccount.Parse(entry.SubledgerAccountId);
-
+       
       dto.ItemType = entry.ItemType;
       dto.LedgerUID = entry.Ledger.UID;
       dto.LedgerNumber = entry.Ledger.Number;
@@ -194,6 +194,7 @@ namespace Empiria.FinancialAccounting.BalanceEngine.Adapters {
         dto.AccountName = subledgerAccount.Name;
         dto.AccountNumber = subledgerAccount.Number;
       }
+      dto.SubledgerAccountNumber = subledgerAccount.Number;
       dto.AccountRole = entry.Account.Role;
       dto.AccountLevel = entry.Account.Level;
       dto.SectorCode = entry.Sector.Code;
@@ -286,7 +287,7 @@ namespace Empiria.FinancialAccounting.BalanceEngine.Adapters {
       dto.CurrencyCode = entry.Currency.Code;
       dto.CurrencyName = entry.Currency.Name;
       dto.StandardAccountId = entry.Account.Id;
-      dto.AccountNumber = entry.Account.Number;
+      dto.AccountNumber = entry.Account.Number; 
       dto.AccountName = entry.Account.Name;
       dto.SectorCode = entry.Sector.Code;
       dto.DomesticBalance = entry.DomesticBalance;
@@ -296,7 +297,6 @@ namespace Empiria.FinancialAccounting.BalanceEngine.Adapters {
       dto.UdisBalance = entry.UdisBalance;
       dto.GroupName = entry.GroupName;
       dto.GroupNumber = entry.GroupNumber;
-
       return dto;
     }
 

@@ -433,6 +433,29 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
     }
 
 
+    private List<TrialBalanceEntry> GetEntriesMappedForSectorization(
+                                    List<TrialBalanceEntry> entriesList) {
+      var returnedEntriesMapped = new List<TrialBalanceEntry>();
+      var isBalanceEntry = entriesList.FirstOrDefault(a => a.ItemType == TrialBalanceItemType.BalanceEntry);
+      if (isBalanceEntry != null) {
+        foreach (var entry in entriesList) {
+          TrialBalanceEntry balanceEntry = TrialBalanceMapper.MapToTrialBalanceEntry(entry);
+          balanceEntry.LastChangeDate = entry.LastChangeDate;
+          balanceEntry.AverageBalance = entry.AverageBalance;
+          balanceEntry.SecondExchangeRate = entry.SecondExchangeRate;
+          balanceEntry.DebtorCreditor = entry.DebtorCreditor;
+          balanceEntry.SubledgerAccountIdParent = entry.SubledgerAccountIdParent;
+          balanceEntry.SubledgerAccountNumber = entry.SubledgerAccountNumber;
+          balanceEntry.SubledgerNumberOfDigits = entry.SubledgerNumberOfDigits;
+          returnedEntriesMapped.Add(balanceEntry);
+        }
+      } else {
+        returnedEntriesMapped = entriesList;
+      }
+      return returnedEntriesMapped;
+    }
+
+
     internal FixedList<TrialBalanceEntry> GetPostingEntries() {
 
       FixedList<TrialBalanceEntry> postingEntries = GetTrialBalanceEntries(_command.InitialPeriod);
@@ -499,28 +522,7 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
       return returnedEntries.ToList();
     }
 
-    private List<TrialBalanceEntry> GetEntriesMappedForSectorization(
-                                    List<TrialBalanceEntry> entriesList) {
-      var returnedEntriesMapped = new List<TrialBalanceEntry>();
-      var isBalanceEntry = entriesList.FirstOrDefault(a=>a.ItemType == TrialBalanceItemType.BalanceEntry);
-      if (isBalanceEntry != null) {
-        foreach (var entry in entriesList) {
-          TrialBalanceEntry balanceEntry = TrialBalanceMapper.MapToTrialBalanceEntry(entry);
-          balanceEntry.LastChangeDate = entry.LastChangeDate;
-          balanceEntry.AverageBalance = entry.AverageBalance;
-          balanceEntry.SecondExchangeRate = entry.SecondExchangeRate;
-          balanceEntry.DebtorCreditor = entry.DebtorCreditor;
-          balanceEntry.SubledgerAccountIdParent = entry.SubledgerAccountIdParent;
-          balanceEntry.SubledgerAccountNumber = entry.SubledgerAccountNumber;
-          balanceEntry.SubledgerNumberOfDigits = entry.SubledgerNumberOfDigits;
-          returnedEntriesMapped.Add(balanceEntry);
-        }
-      } else {
-        returnedEntriesMapped = entriesList;
-      }
-      return returnedEntriesMapped;
-    }
-
+    
     private List<TrialBalanceEntry> GetSummaryEntriesWithoutSectorization(
                                     EmpiriaHashTable<TrialBalanceEntry> hashEntries,
                                     List<TrialBalanceEntry> checkSummaryEntries,

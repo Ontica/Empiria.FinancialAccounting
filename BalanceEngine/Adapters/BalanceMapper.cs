@@ -96,7 +96,7 @@ namespace Empiria.FinancialAccounting.BalanceEngine.Adapters {
       dto.LedgerNumber = entry.Ledger.Number;
       dto.LedgerName = entry.Ledger.Number != string.Empty ? entry.Ledger.FullName : "";
       dto.CurrencyCode = entry.Currency.Code;
-
+      dto.SubledgerAccountNumber = entry.SubledgerAccountNumber;
       if (entry.ItemType == TrialBalanceItemType.BalanceTotalCurrency) {
         dto.AccountNumber = "";
       } else if (entry.SubledgerAccountNumber != string.Empty && command.WithSubledgerAccount) {

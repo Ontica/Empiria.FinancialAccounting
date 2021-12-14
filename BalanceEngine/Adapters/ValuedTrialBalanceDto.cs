@@ -40,13 +40,11 @@ namespace Empiria.FinancialAccounting.BalanceEngine.Adapters {
     }
 
     public decimal TotalBalance {
-      get;
-      internal set;
+      get;  internal set;
     }
 
     public decimal ExchangeRate {
-      get;
-      internal set;
+      get; internal set;
     }
 
     public decimal ValuedExchangeRate {
@@ -55,8 +53,7 @@ namespace Empiria.FinancialAccounting.BalanceEngine.Adapters {
     }
 
     public decimal TotalEquivalence {
-      get;
-      internal set;
+      get;  internal set;
     }
 
     public string GroupName {
@@ -101,8 +98,7 @@ namespace Empiria.FinancialAccounting.BalanceEngine.Adapters {
     }
 
     public decimal DomesticBalance {
-      get;
-      internal set;
+      get;  internal set;
     }
 
     public decimal DollarBalance {
@@ -111,18 +107,15 @@ namespace Empiria.FinancialAccounting.BalanceEngine.Adapters {
     }
 
     public decimal YenBalance {
-      get;
-      internal set;
+      get; internal set;
     }
 
     public decimal EuroBalance {
-      get;
-      internal set;
+      get;  internal set;
     }
 
     public decimal UdisBalance {
-      get;
-      internal set;
+      get; internal set;
     }
 
     public string GroupName {
@@ -134,9 +127,9 @@ namespace Empiria.FinancialAccounting.BalanceEngine.Adapters {
     }
 
     public TrialBalanceItemType ItemType {
-      get;
-      internal set;
+      get; internal set;
     }
+
   }
 
 } // namespace Empiria.FinancialAccounting.BalanceEngine.Adapters
