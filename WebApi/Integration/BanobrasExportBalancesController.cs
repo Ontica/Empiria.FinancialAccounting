@@ -43,7 +43,7 @@ namespace Empiria.FinancialAccounting.WebApi.BanobrasIntegration {
 
       base.RequireBody(command);
 
-      command.GuardarSaldos = true;
+      // command.GuardarSaldos = true;
 
       using (var usecases = ExportBalancesUseCases.UseCaseInteractor()) {
 
