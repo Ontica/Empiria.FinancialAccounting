@@ -261,8 +261,8 @@ namespace Empiria.FinancialAccounting.Vouchers {
 
       Assertion.Assert(BaseCurrencyAmount > 0, "El importe en moneda base debe ser mayor a cero.");
 
-      Assertion.Assert(Math.Round(BaseCurrencyAmount, 6) == BaseCurrencyAmount,
-          "El movimiento en moneda base tiene un importe con más de seis decimales. El tipo de cambio debe estar incorrecto.");
+      Assertion.Assert(Math.Round(BaseCurrencyAmount, 8) == BaseCurrencyAmount,
+          "El movimiento en moneda base tiene un importe con más de ocho decimales. El tipo de cambio debe estar incorrecto.");
     }
 
 
