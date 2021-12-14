@@ -77,7 +77,8 @@ namespace Empiria.FinancialAccounting.Vouchers.Data {
 
       var sql = "SELECT MAX(NUMERO_TRANSACCION) " +
                $"FROM COF_TRANSACCION " +
-               $"WHERE ID_MAYOR = {voucher.Ledger.Id} AND " +
+               //$"WHERE ID_MAYOR = {voucher.Ledger.Id} AND " +
+               $"WHERE " +
                $"NUMERO_TRANSACCION LIKE '{prefix}-%' AND ESTA_ABIERTA = 0";
 
       var dataOperation = DataOperation.Parse(sql);

@@ -35,6 +35,7 @@ namespace Empiria.FinancialAccounting.Reporting {
       return ToFileReportDto(filename);
     }
 
+
     #region Private methods
 
     private bool ExistsFile(string filename) {
@@ -62,7 +63,7 @@ namespace Empiria.FinancialAccounting.Reporting {
 
     private string GetVoucherPdfFileName(VoucherDto voucher) {
       if (voucher.IsClosed) {
-        return $"poliza.{voucher.Number}.pdf";
+        return $"poliza.{voucher.Number}.{voucher.Ledger.UID}.pdf";
       } else {
         return $"poliza.{voucher.Id.ToString("0000000000")}.{DateTime.Now.ToString("yyyy.MM.dd-HH.mm.ss")}.pdf";
       }
