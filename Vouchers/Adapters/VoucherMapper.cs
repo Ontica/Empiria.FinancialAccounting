@@ -31,6 +31,7 @@ namespace Empiria.FinancialAccounting.Vouchers.Adapters {
         RecordingDate = voucher.RecordingDate,
         ElaboratedBy = voucher.ElaboratedBy.Name,
         AuthorizedBy = voucher.AuthorizedBy.Name,
+        ClosedBy = !voucher.IsOpened ? voucher.ClosedBy.Name : string.Empty,
         Status = voucher.IsOpened ? "Pendiente" : "Enviada al diario",
         IsClosed = !voucher.IsOpened,
         AllEntriesAreInBaseCurrency = !voucher.Entries.Contains(x => !x.Currency.Equals(voucher.Ledger.BaseCurrency)),

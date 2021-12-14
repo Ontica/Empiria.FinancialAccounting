@@ -68,6 +68,10 @@ namespace Empiria.FinancialAccounting.Vouchers.Adapters {
       get; internal set;
     }
 
+    public string ClosedBy {
+      get; internal set;
+    }
+
     public string Status {
       get; internal set;
     }
