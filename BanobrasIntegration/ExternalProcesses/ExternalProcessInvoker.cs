@@ -40,7 +40,7 @@ namespace Empiria.FinancialAccounting.BanobrasIntegration {
       } catch (Exception e) {
         EmpiriaLog.Error(e);
 
-        return e.Message;
+        throw;
       }
     }
 
