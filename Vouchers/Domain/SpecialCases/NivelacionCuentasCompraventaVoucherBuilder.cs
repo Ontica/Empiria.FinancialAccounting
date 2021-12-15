@@ -10,15 +10,13 @@
 ************************* Copyright(c) La Vía Óntica SC, Ontica LLC and contributors. All rights reserved. **/
 using System;
 
-using Empiria.FinancialAccounting.Vouchers.Adapters;
-
 namespace Empiria.FinancialAccounting.Vouchers.SpecialCases {
 
   /// <summary>Builds a voucher that mantains the right valued balance for a list of accounts pairs,
   /// typically accounts handled in different currencies at different times.</summary>
   internal class NivelacionCuentasCompraventaVoucherBuilder : VoucherBuilder {
 
-    public NivelacionCuentasCompraventaVoucherBuilder(VoucherSpecialCaseFields fields) : base(fields) {
+    internal NivelacionCuentasCompraventaVoucherBuilder() {
       // no-op
     }
 

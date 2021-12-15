@@ -4,13 +4,10 @@
 *  Assembly : FinancialAccounting.Vouchers.dll           Pattern   : Concrete Builder                        *
 *  Type     : CancelacionMovimientosVoucherBuilder       License   : Please read LICENSE.txt file            *
 *                                                                                                            *
-*  Summary  : Builds a voucher that manticancels the balances of profit and loss accounts                    *
-*             at a given date (cuentas de resultados).                                                       *
+*  Summary  : Builds a voucher that cancels (reverses) the credits and debits included in another voucher.   *
 *                                                                                                            *
 ************************* Copyright(c) La Vía Óntica SC, Ontica LLC and contributors. All rights reserved. **/
 using System;
-
-using Empiria.FinancialAccounting.Vouchers.Adapters;
 
 namespace Empiria.FinancialAccounting.Vouchers.SpecialCases {
 
@@ -18,8 +15,12 @@ namespace Empiria.FinancialAccounting.Vouchers.SpecialCases {
   /// included in another voucher.</summary>
   internal class CancelacionMovimientosVoucherBuilder : VoucherBuilder {
 
-    public CancelacionMovimientosVoucherBuilder(VoucherSpecialCaseFields fields) : base(fields) {
-      // no-op
+    private readonly Voucher _voucherToCancel;
+
+    internal CancelacionMovimientosVoucherBuilder(Voucher voucherToCancel) {
+      Assertion.AssertObject(voucherToCancel, "voucherToCancel");
+
+      _voucherToCancel = voucherToCancel;
     }
 
 

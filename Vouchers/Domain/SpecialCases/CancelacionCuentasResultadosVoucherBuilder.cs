@@ -10,15 +10,13 @@
 ************************* Copyright(c) La Vía Óntica SC, Ontica LLC and contributors. All rights reserved. **/
 using System;
 
-using Empiria.FinancialAccounting.Vouchers.Adapters;
-
 namespace Empiria.FinancialAccounting.Vouchers.SpecialCases {
 
   /// <summary>Builds a voucher that cancels the balances of profit and loss
   /// accounts (cuentas de resultados) at a given date.</summary>
   internal class CancelacionCuentasResultadosVoucherBuilder : VoucherBuilder {
 
-    public CancelacionCuentasResultadosVoucherBuilder(VoucherSpecialCaseFields fields) : base(fields) {
+    internal CancelacionCuentasResultadosVoucherBuilder() {
       // no-op
     }
 
