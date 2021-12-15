@@ -91,12 +91,12 @@ namespace Empiria.FinancialAccounting.Reporting.Adapters {
     }
 
 
-    public decimal Debit {
+    public decimal? Debit {
       get; internal set;
     }
 
 
-    public decimal Credit {
+    public decimal? Credit {
       get; internal set;
     }
 

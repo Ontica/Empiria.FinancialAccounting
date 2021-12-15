@@ -30,47 +30,51 @@ namespace Empiria.FinancialAccounting.Reporting.Adapters {
 
   public class AccountStatementEntry {
     public TrialBalanceItemType ItemType {
-      get; internal set;
+      get; set;
     } = TrialBalanceItemType.BalanceEntry;
 
     public string LedgerNumber {
-      get; internal set;
+      get; set;
     } = "";
 
     public string LedgerName {
-      get; internal set;
+      get; set;
     } = "";
 
     public string CurrencyCode {
-      get; internal set;
+      get; set;
     } = "";
 
     public string AccountNumber {
-      get; internal set;
+      get; set;
     } = "";
 
     public string AccountName {
-      get; internal set;
+      get; set;
     } = "";
 
     public string SubledgerAccountNumber {
-      get; internal set;
+      get; set;
     } = "";
 
     public string SectorCode {
-      get; internal set;
+      get; set;
     } = "";
 
+    public decimal InitialBalance {
+      get; set;
+    }
+
     public decimal CurrentBalance {
-      get; internal set;
+      get; set;
     }
 
     public DateTime LastChangeDate {
-      get; internal set;
+      get; set;
     } = DateTime.Now;
 
     public string DebtorCreditor {
-      get; internal set;
+      get; set;
     }
 
   }

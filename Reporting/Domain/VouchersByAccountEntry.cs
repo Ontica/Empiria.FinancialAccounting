@@ -100,7 +100,7 @@ namespace Empiria.FinancialAccounting.Reporting {
 
     public TrialBalanceItemType ItemType {
       get; internal set;
-    }
+    } = TrialBalanceItemType.BalanceEntry;
 
   } // class VouchersByAccountEntry
 

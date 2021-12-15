@@ -9,6 +9,7 @@
 ************************* Copyright(c) La Vía Óntica SC, Ontica LLC and contributors. All rights reserved. **/
 using System;
 using System.Collections.Generic;
+using Empiria.FinancialAccounting.BalanceEngine;
 using Empiria.FinancialAccounting.BalanceEngine.Adapters;
 
 namespace Empiria.FinancialAccounting.Reporting.Adapters {
@@ -24,7 +25,7 @@ namespace Empiria.FinancialAccounting.Reporting.Adapters {
       return new VouchersByAccountDto { 
         Command = vouchers.Command,
         Columns = MapColumns(vouchers.Command),
-        Entries = MapToDto(vouchers.Entries, vouchers.Command),
+        Entries = MapToDto(vouchers.Entries),
         Title = vouchers.Title
       };
     }
@@ -47,6 +48,7 @@ namespace Empiria.FinancialAccounting.Reporting.Adapters {
       columns.Add(new DataTableColumn("concept", "Concepto", "text"));
       columns.Add(new DataTableColumn("debit", "Cargo", "decimal"));
       columns.Add(new DataTableColumn("credit", "Abono", "decimal"));
+      columns.Add(new DataTableColumn("currentBalance", "Saldo actual", "decimal"));
       columns.Add(new DataTableColumn("accountingDate", "Afectación", "date"));
       columns.Add(new DataTableColumn("recordingDate", "Registro", "date"));
 
@@ -55,34 +57,38 @@ namespace Empiria.FinancialAccounting.Reporting.Adapters {
 
 
     private static FixedList<IVouchersByAccountEntryDto> MapToDto(
-                    FixedList<IVouchersByAccountEntry> list, BalanceCommand command) {
+                    FixedList<IVouchersByAccountEntry> list) {
 
-      var mapped = list.Select((x) => MapToVouchersByAccount((VouchersByAccountEntry) x, command));
+      var mapped = list.Select((x) => MapToVouchersByAccount((VouchersByAccountEntry) x));
       return new FixedList<IVouchersByAccountEntryDto>(mapped);
     }
 
     static private VouchersByAccountEntryDto MapToVouchersByAccount(
-                                              VouchersByAccountEntry entry, BalanceCommand command) {
+                                              VouchersByAccountEntry entry) {
       
       var dto = new VouchersByAccountEntryDto();
 
       dto.ItemType = entry.ItemType;
       dto.LedgerName = entry.Ledger.Name;
       dto.LedgerNumber = entry.Ledger.Number;
-      dto.CurrencyCode = entry.Currency.Code;
+      dto.CurrencyCode = entry.ItemType == TrialBalanceItemType.BalanceEntry ? entry.Currency.Code : "";
       dto.StandardAccountId = entry.Account.Id;
       dto.AccountName = entry.Account.Name;
-      dto.AccountNumber = entry.Account.Number;
-      dto.SectorCode = entry.Sector.Code;
+      dto.AccountNumber = entry.ItemType == TrialBalanceItemType.BalanceEntry ? entry.Account.Number : "";
+      dto.SectorCode = entry.ItemType == TrialBalanceItemType.BalanceEntry ? entry.Sector.Code : "";
       dto.SubledgerAccountNumber = entry.SubledgerAccountNumber;
       dto.VoucherNumber = entry.VoucherNumber;
       //dto.ElaboratedBy = entry.ElaboratedBy.Name;
       dto.Concept = entry.Concept;
-      dto.Debit = entry.Debit;
-      dto.Credit = entry.Credit;
-      dto.CurrentBalance = 0;
-      dto.AccountingDate = entry.AccountingDate;
-      dto.RecordingDate = entry.RecordingDate;
+      if (entry.ItemType == TrialBalanceItemType.BalanceEntry) {
+        dto.Debit = entry.Debit;
+        dto.Credit = entry.Credit;
+      }
+      dto.CurrentBalance = entry.CurrentBalance;
+      dto.AccountingDate = entry.ItemType == TrialBalanceItemType.BalanceEntry ? 
+                           entry.AccountingDate : ExecutionServer.DateMaxValue;
+      dto.RecordingDate = entry.ItemType == TrialBalanceItemType.BalanceEntry ? 
+                          entry.RecordingDate : ExecutionServer.DateMaxValue;
       dto.VoucherId = entry.VoucherId;
 
       return dto;

@@ -8,6 +8,9 @@
 *                                                                                                            *
 ************************* Copyright(c) La Vía Óntica SC, Ontica LLC and contributors. All rights reserved. **/
 using System;
+using System.Collections.Generic;
+using System.Linq;
+using Empiria.FinancialAccounting.BalanceEngine;
 using Empiria.FinancialAccounting.Reporting.Adapters;
 using Empiria.FinancialAccounting.Reporting.Data;
 
@@ -29,64 +32,44 @@ namespace Empiria.FinancialAccounting.Reporting {
     #region Public methods
 
     internal VouchersByAccount Build() {
+      var helper = new VouchersByAccountHelper(AccountStatementCommand);
+      bool? isBalance = true;
 
-      FixedList<VouchersByAccountEntry> voucherEntries = GetVoucherEntries();
+      if (AccountStatementCommand.Command.TrialBalanceType != TrialBalanceType.Balanza) {
+        isBalance = null;
+      }
+
+      Assertion.AssertObject(isBalance, $"Funcionalidad en proceso de desarrollo.");
+
+      FixedList<VouchersByAccountEntry> voucherEntries = helper.GetVoucherEntries();
+      
+      FixedList<VouchersByAccountEntry> orderingVouchers = helper.GetOrderingVouchers(voucherEntries);
+
+      VouchersByAccountEntry initialAccountBalance = helper.GetInitialAccountBalance();
+
+      FixedList<VouchersByAccountEntry> vouchers = helper.CombineInitialAccountBalanceWithVouchers(
+                                                            orderingVouchers, initialAccountBalance);
 
       var returnedVoucherEntries = new FixedList<IVouchersByAccountEntry>(
-                                        voucherEntries.Select(x => (IVouchersByAccountEntry) x));
-      string title = ""; //GetTitle();
+                                        vouchers.Select(x => (IVouchersByAccountEntry) x));
+      
+      string title = helper.GetTitle();
 
       return new VouchersByAccount(AccountStatementCommand.Command, returnedVoucherEntries, title);
     }
 
-    private string GetTitle() {
-      if (AccountStatementCommand.Entry.AccountNumber != string.Empty &&
-          AccountStatementCommand.Entry.SubledgerAccountNumber != string.Empty &&
-          AccountStatementCommand.Entry.SubledgerAccountNumber != "0") {
 
-        return $"{AccountStatementCommand.Entry.AccountNumber}: " +
-               $"{AccountStatementCommand.Entry.AccountName} " +
-               $"({AccountStatementCommand.Entry.SubledgerAccountNumber})";
-
-      } else if (AccountStatementCommand.Entry.AccountNumber != string.Empty) {
-
-        return $"{AccountStatementCommand.Entry.AccountNumber}: " +
-               $"{AccountStatementCommand.Entry.AccountName}";
-
-      } else if (AccountStatementCommand.Entry.AccountNumber == string.Empty &&
-                 AccountStatementCommand.Entry.SubledgerAccountNumber != string.Empty &&
-                 AccountStatementCommand.Entry.SubledgerAccountNumber != "0") {
-
-        return $"{AccountStatementCommand.Entry.SubledgerAccountNumber}";
-      } else {
-        return string.Empty;
-      }
-      
-    }
 
 
 
     #endregion Public methods
 
 
-    private FixedList<VouchersByAccountEntry> GetVoucherEntries() {
-
-      VouchersByAccountCommandData commandData = VouchersByAccountCommandDataMapped();
-
-      return StoredVoucherDataService.GetVouchersByAccountEntries(commandData);
-    }
-
-    private VouchersByAccountCommandData VouchersByAccountCommandDataMapped() {
-
-      var commandExtensions = new VouchersByAccountCommandExtensions(AccountStatementCommand);
-      VouchersByAccountCommandData commandData = commandExtensions.MapToVouchersByAccountCommandData();
-
-      return commandData;
-    }
-
     #region Private methods
 
-    #endregion
+
+    #endregion Private methods
+
 
   } // class VouchersByAccountConstructor
 

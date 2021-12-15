@@ -28,12 +28,12 @@ namespace Empiria.FinancialAccounting.Reporting.Adapters {
       var accountsChart = AccountsChart.Parse(_accountStatementCommand.Command.AccountsChartUID);
 
 
-      commandData.Fields = GetFields();
+      //commandData.Fields = GetFields();
       commandData.AccountsChartId = accountsChart.Id;
       commandData.FromDate = _accountStatementCommand.Command.InitialPeriod.FromDate;
       commandData.ToDate = _accountStatementCommand.Command.InitialPeriod.ToDate;
       commandData.Filters = GetFilters();
-      commandData.Grouping = GetGroupingClause();
+      //commandData.Grouping = GetGroupingClause();
       return commandData;
     }
 
@@ -47,18 +47,18 @@ namespace Empiria.FinancialAccounting.Reporting.Adapters {
     #region Private methods
 
     private string GetFilters() {
+      string accountRangeFilter = GetAccountFilter();
       string ledgerFilter = GetLedgerFilter();
       string currencyFilter = GetCurrencyFilter();
-      string accountRangeFilter = GetAccountFilter();
       string subledgerAccountFilter = GetSubledgerAccountFilter();
 
-      var filter = new Filter(ledgerFilter);
+      var filter = new Filter(accountRangeFilter);
 
+      filter.AppendAnd(ledgerFilter);
       filter.AppendAnd(currencyFilter);
-      filter.AppendAnd(accountRangeFilter);
       filter.AppendAnd(subledgerAccountFilter);
 
-      return filter.ToString().Length > 0 ? $"AND ({filter})" : "";
+      return filter.ToString().Length > 0 ? $"AND {filter}" : "";
     }
 
     private string GetSubledgerAccountFilter() {
