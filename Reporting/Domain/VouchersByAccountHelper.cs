@@ -56,7 +56,8 @@ namespace Empiria.FinancialAccounting.Reporting {
                                                       .ThenBy(a => a.Account.Number)
                                                       .ThenBy(a => a.Sector.Code)
                                                       .ThenBy(a => a.SubledgerAccountNumber)
-                                                      .ThenBy(a => a.VoucherNumber).ToList();
+                                                      .ThenBy(a => a.VoucherNumber)
+                                                      .ThenBy(a => a.VoucherEntryId).ToList();
       return returnedVouchers.ToFixedList();
     }
 

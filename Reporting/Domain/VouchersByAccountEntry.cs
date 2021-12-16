@@ -51,6 +51,12 @@ namespace Empiria.FinancialAccounting.Reporting {
     }
 
 
+    [DataField("ID_MOVIMIENTO", ConvertFrom = typeof(decimal))]
+    public int VoucherEntryId {
+      get; internal set;
+    }
+
+
     [DataField("NUMERO_CUENTA_AUXILIAR")]
     public string SubledgerAccountNumber {
       get; internal set;
