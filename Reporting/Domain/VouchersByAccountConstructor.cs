@@ -64,17 +64,7 @@ namespace Empiria.FinancialAccounting.Reporting {
     }
 
 
-
-
-
     #endregion Public methods
-
-
-    #region Private methods
-
-
-    #endregion Private methods
-
 
   } // class VouchersByAccountConstructor
 

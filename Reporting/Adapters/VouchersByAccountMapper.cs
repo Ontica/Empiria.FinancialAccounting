@@ -81,7 +81,8 @@ namespace Empiria.FinancialAccounting.Reporting.Adapters {
       }
       dto.AccountNumberForBalances = entry.Account.Number;
       dto.SectorCode = entry.ItemType == TrialBalanceItemType.BalanceEntry ? entry.Sector.Code : "";
-      dto.SubledgerAccountNumber = entry.SubledgerAccountNumber;
+      dto.SubledgerAccountNumber = entry.SubledgerAccountNumber.Length > 1 ? 
+                                   entry.SubledgerAccountNumber : "";
       dto.VoucherNumber = entry.VoucherNumber;
       //dto.ElaboratedBy = entry.ElaboratedBy.Name;
       dto.Concept = entry.Concept;

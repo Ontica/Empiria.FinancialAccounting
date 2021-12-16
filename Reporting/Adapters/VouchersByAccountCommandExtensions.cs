@@ -47,27 +47,22 @@ namespace Empiria.FinancialAccounting.Reporting.Adapters {
     #region Private methods
 
     private string GetFilters() {
-      string accountRangeFilter = GetAccountFilter();
-      string subledgerAccountFilter = GetSubledgerAccountFilter();
       string ledgerFilter = GetLedgerFilter();
       string currencyFilter = GetCurrencyFilter();
+      string accountRangeFilter = GetAccountFilter();
+      string sectorFilter = GetSectorFilter();
+      string subledgerAccountFilter = GetSubledgerAccountFilter();
 
-      var filter = new Filter(accountRangeFilter);
+      var filter = new Filter(ledgerFilter);
 
-      filter.AppendAnd(ledgerFilter);
       filter.AppendAnd(currencyFilter);
+      filter.AppendAnd(accountRangeFilter);
+      filter.AppendAnd(sectorFilter);
       filter.AppendAnd(subledgerAccountFilter);
 
       return filter.ToString().Length > 0 ? $"AND {filter}" : "";
     }
 
-    private string GetSubledgerAccountFilter() {
-      if (_accountStatementCommand.Entry.SubledgerAccountNumber.Length == 0 || 
-          _accountStatementCommand.Entry.SubledgerAccountNumber == "0") {
-        return string.Empty;
-      }
-      return $"NUMERO_CUENTA_AUXILIAR = '{_accountStatementCommand.Entry.SubledgerAccountNumber}'";
-    }
 
     private string GetAccountFilter() {
       if (_accountStatementCommand.Entry.AccountNumberForBalances.Length != 0) {
@@ -77,15 +72,16 @@ namespace Empiria.FinancialAccounting.Reporting.Adapters {
       }
     }
 
+
     private string GetCurrencyFilter() {
       if (_accountStatementCommand.Entry.CurrencyCode.Length == 0) {
         return string.Empty;
       }
-      //int[] currencyIds = _accountStatementCommand.Entry.CurrencyCode
-      //                    .Select(uid => Currency.Parse(uid).Id).ToArray();
+
       int currencyId = Currency.Parse(_accountStatementCommand.Entry.CurrencyCode).Id;
       return $"ID_MONEDA IN ({String.Join(", ", currencyId)})";
     }
+
 
     private string GetLedgerFilter() {
       if (_accountStatementCommand.Command.Ledgers.Length == 0) {
@@ -98,10 +94,31 @@ namespace Empiria.FinancialAccounting.Reporting.Adapters {
       return $"ID_MAYOR IN ({String.Join(", ", ledgerIds)})";
     }
 
+
     static private string GetFields() {
       return "ID_MAYOR, ID_MONEDA, ID_CUENTA_ESTANDAR, ID_SECTOR, ID_CUENTA_AUXILIAR, " +
              "ID_TRANSACCION, SUM(DEBE) AS DEBE, SUM(HABER) AS HABER";
     }
+
+
+    private string GetSectorFilter() {
+      if (_accountStatementCommand.Entry.SectorCode.Length == 0) {
+        return string.Empty;
+      }
+
+      int sectorId = Sector.Parse(_accountStatementCommand.Entry.SectorCode).Id;
+      return $"ID_SECTOR = '{sectorId}'";
+    }
+
+
+    private string GetSubledgerAccountFilter() {
+      if (_accountStatementCommand.Entry.SubledgerAccountNumber.Length == 0 || 
+          _accountStatementCommand.Entry.SubledgerAccountNumber == "0") {
+        return string.Empty;
+      }
+      return $"NUMERO_CUENTA_AUXILIAR = '{_accountStatementCommand.Entry.SubledgerAccountNumber}'";
+    }
+
 
     #endregion
 
