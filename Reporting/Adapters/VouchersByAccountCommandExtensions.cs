@@ -48,9 +48,9 @@ namespace Empiria.FinancialAccounting.Reporting.Adapters {
 
     private string GetFilters() {
       string accountRangeFilter = GetAccountFilter();
+      string subledgerAccountFilter = GetSubledgerAccountFilter();
       string ledgerFilter = GetLedgerFilter();
       string currencyFilter = GetCurrencyFilter();
-      string subledgerAccountFilter = GetSubledgerAccountFilter();
 
       var filter = new Filter(accountRangeFilter);
 
@@ -70,8 +70,8 @@ namespace Empiria.FinancialAccounting.Reporting.Adapters {
     }
 
     private string GetAccountFilter() {
-      if (_accountStatementCommand.Entry.AccountNumber.Length != 0) {
-        return $"NUMERO_CUENTA_ESTANDAR = '{_accountStatementCommand.Entry.AccountNumber}'";
+      if (_accountStatementCommand.Entry.AccountNumberForBalances.Length != 0) {
+        return $"NUMERO_CUENTA_ESTANDAR = '{_accountStatementCommand.Entry.AccountNumberForBalances}'";
       } else {
         return string.Empty;
       }

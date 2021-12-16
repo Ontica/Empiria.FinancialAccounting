@@ -45,12 +45,12 @@ namespace Empiria.FinancialAccounting.Reporting.Adapters {
       columns.Add(new DataTableColumn("sectorCode", "Sct", "text"));
       columns.Add(new DataTableColumn("subledgerAccountNumber", "Auxiliar", "text-nowrap"));
       columns.Add(new DataTableColumn("voucherNumber", "No. Poliza", "text-nowrap"));
-      columns.Add(new DataTableColumn("concept", "Concepto", "text"));
       columns.Add(new DataTableColumn("debit", "Cargo", "decimal"));
       columns.Add(new DataTableColumn("credit", "Abono", "decimal"));
       columns.Add(new DataTableColumn("currentBalance", "Saldo actual", "decimal"));
       columns.Add(new DataTableColumn("accountingDate", "Afectación", "date"));
       columns.Add(new DataTableColumn("recordingDate", "Registro", "date"));
+      columns.Add(new DataTableColumn("concept", "Concepto", "text-nowrap"));
 
       return columns.ToFixedList();
     }
@@ -74,7 +74,12 @@ namespace Empiria.FinancialAccounting.Reporting.Adapters {
       dto.CurrencyCode = entry.ItemType == TrialBalanceItemType.BalanceEntry ? entry.Currency.Code : "";
       dto.StandardAccountId = entry.Account.Id;
       dto.AccountName = entry.Account.Name;
-      dto.AccountNumber = entry.ItemType == TrialBalanceItemType.BalanceEntry ? entry.Account.Number : "";
+      if (entry.ItemType == TrialBalanceItemType.BalanceEntry) {
+        dto.AccountNumber = entry.Account.Number;
+      } else {
+        dto.AccountNumber = entry.IsCurrentBalance ? "SALDO ACTUAL" : "SALDO INICIAL";
+      }
+      dto.AccountNumberForBalances = entry.Account.Number;
       dto.SectorCode = entry.ItemType == TrialBalanceItemType.BalanceEntry ? entry.Sector.Code : "";
       dto.SubledgerAccountNumber = entry.SubledgerAccountNumber;
       dto.VoucherNumber = entry.VoucherNumber;

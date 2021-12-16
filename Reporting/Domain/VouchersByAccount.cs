@@ -21,7 +21,7 @@ namespace Empiria.FinancialAccounting.Reporting {
     internal VouchersByAccount(BalanceCommand command, FixedList<IVouchersByAccountEntry> entries, string title) {
       Assertion.AssertObject(command, "command");
       Assertion.AssertObject(entries, "entries");
-      Assertion.AssertObject(title, "title");
+      //Assertion.AssertObject(title, "title");
 
       Command = command;
       Entries = entries;

@@ -31,6 +31,11 @@ namespace Empiria.FinancialAccounting.BalanceEngine.Adapters {
     }
 
 
+    public string AccountNumberForBalances {
+      get; internal set;
+    }
+
+
     public string AccountName {
       get; internal set;
     }
@@ -85,6 +90,11 @@ namespace Empiria.FinancialAccounting.BalanceEngine.Adapters {
     }
 
     public string AccountNumber {
+      get; internal set;
+    }
+
+
+    public string AccountNumberForBalances {
       get; internal set;
     }
 

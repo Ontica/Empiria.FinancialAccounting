@@ -53,6 +53,11 @@ namespace Empiria.FinancialAccounting.BalanceEngine.Adapters {
     }
 
 
+    public string AccountNumberForBalances {
+      get; internal set;
+    }
+
+
     public string AccountName {
       get; internal set;
     }

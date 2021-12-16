@@ -61,7 +61,8 @@ namespace Empiria.FinancialAccounting.Reporting {
     }
 
 
-    internal VouchersByAccountEntry GetInitialAccountBalance() {
+    internal VouchersByAccountEntry GetInitialOrCurrentAccountBalance(
+                                      decimal balance, bool isCurrentBalance = false) {
 
       var initialBalanceEntry = new VouchersByAccountEntry();
 
@@ -71,37 +72,65 @@ namespace Empiria.FinancialAccounting.Reporting {
       initialBalanceEntry.Sector = Sector.Empty;
       initialBalanceEntry.SubledgerAccountNumber = "";
       initialBalanceEntry.VoucherNumber = "";
-      initialBalanceEntry.Concept = "SALDO INICIAL";
-      initialBalanceEntry.CurrentBalance = AccountStatementCommand.Entry.InitialBalance;
+      initialBalanceEntry.Concept = "";
+      initialBalanceEntry.CurrentBalance = balance;
       initialBalanceEntry.ItemType = TrialBalanceItemType.Total;
+      initialBalanceEntry.IsCurrentBalance = isCurrentBalance;
 
       return initialBalanceEntry;
     }
 
 
     internal string GetTitle() {
-      if (AccountStatementCommand.Entry.AccountNumber != "" &&
-          (AccountStatementCommand.Entry.SubledgerAccountNumber != "" &&
-          AccountStatementCommand.Entry.SubledgerAccountNumber != "0")) {
+      var accountNumber = AccountStatementCommand.Entry.AccountNumberForBalances;
+      var accountName = AccountStatementCommand.Entry.AccountName;
+      var subledgerAccountNumber = AccountStatementCommand.Entry.SubledgerAccountNumber;
 
-        return $"{AccountStatementCommand.Entry.AccountNumber}" +
-               $": {AccountStatementCommand.Entry.AccountName} " +
-               $"({AccountStatementCommand.Entry.SubledgerAccountNumber})";
+      if (accountNumber != "" &&
+          subledgerAccountNumber.Length > 1) {
 
-      } else if (AccountStatementCommand.Entry.AccountNumber != "") {
+        accountName = accountName.Length > 0 ? ": " + accountName : "";
 
-        return $"{AccountStatementCommand.Entry.AccountNumber}" +
-               $": {AccountStatementCommand.Entry.AccountName}";
+        return $"{accountNumber} {accountName} ({subledgerAccountNumber})";
 
-      } else if (AccountStatementCommand.Entry.AccountNumber == string.Empty &&
-                 (AccountStatementCommand.Entry.SubledgerAccountNumber != "" &&
-                 AccountStatementCommand.Entry.SubledgerAccountNumber != "0")) {
+      } else if (accountNumber != "") {
 
-        return $"{AccountStatementCommand.Entry.SubledgerAccountNumber}";
+        return $"{accountNumber}" +
+               $": {accountName}";
+
+      } else if (accountNumber.Length == 0 && subledgerAccountNumber.Length > 1) {
+
+        return $"{subledgerAccountNumber}";
+
       } else {
-        return "";
+        return ".";
       }
 
+    }
+
+
+    internal FixedList<VouchersByAccountEntry> GetVouchersListWithCurrentBalance(
+                                                FixedList<VouchersByAccountEntry> orderingVouchers) {
+      
+      List<VouchersByAccountEntry> returnedVouchersWithCurrentBalance =
+                                    new List<VouchersByAccountEntry>(orderingVouchers).ToList();
+
+      decimal initialBalance = AccountStatementCommand.Entry.InitialBalance;
+      decimal currentBalance = initialBalance;
+
+      foreach (var voucher in returnedVouchersWithCurrentBalance) {
+        voucher.CurrentBalance = currentBalance + (voucher.Debit - voucher.Credit);
+        currentBalance = currentBalance + (voucher.Debit - voucher.Credit);
+      }
+
+      VouchersByAccountEntry voucherWithCurrentBalance = GetInitialOrCurrentAccountBalance(
+                                                          currentBalance, true);
+
+      if (voucherWithCurrentBalance != null) {
+        returnedVouchersWithCurrentBalance.Add(voucherWithCurrentBalance);
+      }
+
+      return returnedVouchersWithCurrentBalance.ToFixedList();
     }
 
 

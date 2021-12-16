@@ -98,6 +98,10 @@ namespace Empiria.FinancialAccounting.Reporting {
     }
 
 
+    public bool IsCurrentBalance {
+      get; internal set;
+    } = false;
+
     public TrialBalanceItemType ItemType {
       get; internal set;
     } = TrialBalanceItemType.BalanceEntry;

@@ -49,6 +49,10 @@ namespace Empiria.FinancialAccounting.Reporting.Adapters {
       get; set;
     } = "";
 
+    public string AccountNumberForBalances {
+      get; set;
+    } = "";
+
     public string AccountName {
       get; set;
     } = "";

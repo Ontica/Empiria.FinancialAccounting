@@ -35,24 +35,29 @@ namespace Empiria.FinancialAccounting.Reporting {
       var helper = new VouchersByAccountHelper(AccountStatementCommand);
       bool? isBalance = true;
 
-      if (AccountStatementCommand.Command.TrialBalanceType != TrialBalanceType.Balanza) {
+      if (AccountStatementCommand.Command.TrialBalanceType == TrialBalanceType.BalanzaValorizadaComparativa ||
+          AccountStatementCommand.Command.TrialBalanceType == TrialBalanceType.BalanzaValorizadaEnDolares) {
         isBalance = null;
       }
 
       Assertion.AssertObject(isBalance, $"Funcionalidad en proceso de desarrollo.");
 
       FixedList<VouchersByAccountEntry> voucherEntries = helper.GetVoucherEntries();
-      
+
       FixedList<VouchersByAccountEntry> orderingVouchers = helper.GetOrderingVouchers(voucherEntries);
 
-      VouchersByAccountEntry initialAccountBalance = helper.GetInitialAccountBalance();
+      VouchersByAccountEntry initialAccountBalance = helper.GetInitialOrCurrentAccountBalance(
+                                                      AccountStatementCommand.Entry.InitialBalance);
+
+      FixedList<VouchersByAccountEntry> vouchersWithCurrentBalance =
+                                        helper.GetVouchersListWithCurrentBalance(orderingVouchers);
 
       FixedList<VouchersByAccountEntry> vouchers = helper.CombineInitialAccountBalanceWithVouchers(
-                                                            orderingVouchers, initialAccountBalance);
+                                                            vouchersWithCurrentBalance, initialAccountBalance);
 
       var returnedVoucherEntries = new FixedList<IVouchersByAccountEntry>(
                                         vouchers.Select(x => (IVouchersByAccountEntry) x));
-      
+
       string title = helper.GetTitle();
 
       return new VouchersByAccount(AccountStatementCommand.Command, returnedVoucherEntries, title);

@@ -154,7 +154,7 @@ namespace Empiria.FinancialAccounting.BalanceEngine.Adapters {
         dto.AccountName = entry.Account.Name;
         dto.AccountNumber = entry.Account.Number != "Empty" ? entry.Account.Number : "";
       }
-
+      dto.AccountNumberForBalances = entry.Account.Number;
       dto.AccountRole = entry.Account.Role;
       dto.AccountLevel = entry.Account.Level;
       dto.SectorCode = entry.Sector.Code;
@@ -194,7 +194,19 @@ namespace Empiria.FinancialAccounting.BalanceEngine.Adapters {
         dto.AccountName = subledgerAccount.Name;
         dto.AccountNumber = subledgerAccount.Number;
       }
-      dto.SubledgerAccountNumber = subledgerAccount.Number;
+      dto.AccountNumberForBalances = entry.Account.Number;
+
+      if (command.TrialBalanceType == TrialBalanceType.SaldosPorAuxiliar &&
+          entry.ItemType == TrialBalanceItemType.BalanceEntry && subledgerAccount.IsEmptyInstance) {
+
+        subledgerAccount = SubledgerAccount.Parse(entry.SubledgerAccountIdParent);
+        if (!subledgerAccount.IsEmptyInstance) {
+          dto.SubledgerAccountNumber = subledgerAccount.Number;
+        }
+      } else {
+        dto.SubledgerAccountNumber = subledgerAccount.Number;
+      }
+      
       dto.AccountRole = entry.Account.Role;
       dto.AccountLevel = entry.Account.Level;
       dto.SectorCode = entry.Sector.Code;
@@ -234,6 +246,7 @@ namespace Empiria.FinancialAccounting.BalanceEngine.Adapters {
       dto.AccountParent = entry.Account.FirstLevelAccountNumber;
       dto.AccountNumber = entry.Account.Number;
       dto.AccountName = entry.Account.Name;
+      dto.AccountNumberForBalances = entry.Account.Number;
 
       dto.SubledgerAccountId = entry.SubledgerAccountId;
       dto.SubledgerAccountNumber = entry.SubledgerAccountNumber;
@@ -269,6 +282,7 @@ namespace Empiria.FinancialAccounting.BalanceEngine.Adapters {
       dto.AccountNumber = entry.ItemType == TrialBalanceItemType.BalanceSummary ? entry.Account.Number : "";
       dto.AccountName = entry.ItemType == TrialBalanceItemType.BalanceSummary ? entry.Account.Name :
                         entry.ItemType == TrialBalanceItemType.BalanceTotalCurrency ? entry.GroupName : "";
+      dto.AccountNumberForBalances = entry.Account.Number;
       dto.SectorCode = entry.Sector.Code;
       dto.TotalBalance = entry.TotalBalance;
       dto.ExchangeRate = entry.ExchangeRate;
@@ -287,7 +301,8 @@ namespace Empiria.FinancialAccounting.BalanceEngine.Adapters {
       dto.CurrencyCode = entry.Currency.Code;
       dto.CurrencyName = entry.Currency.Name;
       dto.StandardAccountId = entry.Account.Id;
-      dto.AccountNumber = entry.Account.Number; 
+      dto.AccountNumber = entry.Account.Number;
+      dto.AccountNumberForBalances = entry.Account.Number;
       dto.AccountName = entry.Account.Name;
       dto.SectorCode = entry.Sector.Code;
       dto.DomesticBalance = entry.DomesticBalance;
