@@ -36,7 +36,7 @@ namespace Empiria.FinancialAccounting.WebApi {
 
 
 
-    [HttpGet]
+    [HttpGet, AllowAnonymous]
     [Route("v2/financial-accounting/exchange-rates")]
     public CollectionModel GetExchangeRatesOnADate([FromUri] DateTime date) {
 
