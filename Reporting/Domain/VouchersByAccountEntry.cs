@@ -63,6 +63,12 @@ namespace Empiria.FinancialAccounting.Reporting {
     }
 
 
+    [DataField("NATURALEZA")]
+    public string DebtorCreditor {
+      get; internal set;
+    }
+
+
     [DataField("FECHA_AFECTACION", Default = "ExecutionServer.DateMaxValue")]
     public DateTime AccountingDate {
       get; internal set;

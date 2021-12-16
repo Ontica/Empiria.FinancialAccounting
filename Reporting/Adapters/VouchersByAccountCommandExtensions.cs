@@ -107,6 +107,9 @@ namespace Empiria.FinancialAccounting.Reporting.Adapters {
       }
 
       int sectorId = Sector.Parse(_accountStatementCommand.Entry.SectorCode).Id;
+      if (sectorId == 0 || sectorId == -1) {
+        return $"ID_SECTOR IN (-1, 0)";
+      }
       return $"ID_SECTOR = '{sectorId}'";
     }
 

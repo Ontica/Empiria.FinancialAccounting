@@ -119,8 +119,13 @@ namespace Empiria.FinancialAccounting.Reporting {
       decimal currentBalance = initialBalance;
 
       foreach (var voucher in returnedVouchersWithCurrentBalance) {
-        voucher.CurrentBalance = currentBalance + (voucher.Debit - voucher.Credit);
-        currentBalance = currentBalance + (voucher.Debit - voucher.Credit);
+        if (voucher.DebtorCreditor == "D") {
+          voucher.CurrentBalance = currentBalance + (voucher.Debit - voucher.Credit);
+          currentBalance = currentBalance + (voucher.Debit - voucher.Credit);
+        } else {
+          voucher.CurrentBalance = currentBalance + (voucher.Credit - voucher.Debit);
+          currentBalance = currentBalance + (voucher.Credit - voucher.Debit);
+        }
       }
 
       VouchersByAccountEntry voucherWithCurrentBalance = GetInitialOrCurrentAccountBalance(
