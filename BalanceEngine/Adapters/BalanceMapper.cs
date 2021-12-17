@@ -128,7 +128,9 @@ namespace Empiria.FinancialAccounting.BalanceEngine.Adapters {
       dto.AccountNumber = entry.Account.Number == "Empty" ? "" : entry.Account.Number;
       dto.AccountNumberForBalances = entry.Account.Number;
       dto.AccountName = entry.GroupName == string.Empty ? entry.Account.Name : entry.GroupName;
+      dto.SubledgerAccountNumber = entry.SubledgerAccountNumber;
       dto.SectorCode = entry.Sector.Code;
+      dto.InitialBalance = entry.InitialBalance;
       dto.CurrentBalance = entry.CurrentBalance;
       dto.DebtorCreditor = entry.DebtorCreditor.ToString();
       dto.LastChangeDate = entry.LastChangeDate;

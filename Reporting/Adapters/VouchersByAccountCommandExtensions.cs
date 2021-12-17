@@ -95,9 +95,8 @@ namespace Empiria.FinancialAccounting.Reporting.Adapters {
                         .Select(uid => Ledger.Parse(uid).Id).ToArray();
 
         return $"ID_MAYOR IN ({String.Join(", ", ledgerIds)})";
-      } else {
-        return string.Empty;
       }
+      return string.Empty;
     }
 
 
@@ -121,11 +120,12 @@ namespace Empiria.FinancialAccounting.Reporting.Adapters {
 
 
     private string GetSubledgerAccountFilter() {
-      if (_accountStatementCommand.Entry.SubledgerAccountNumber.Length == 0 || 
-          _accountStatementCommand.Entry.SubledgerAccountNumber == "0") {
-        return string.Empty;
+      if (_accountStatementCommand.Entry.SubledgerAccountNumber.Length > 1) {
+        return $"NUMERO_CUENTA_AUXILIAR = '{_accountStatementCommand.Entry.SubledgerAccountNumber}'";
+      } else if (_accountStatementCommand.Command.SubledgerAccount.Length > 1) {
+        return $"NUMERO_CUENTA_AUXILIAR = '{_accountStatementCommand.Command.SubledgerAccount}'";
       }
-      return $"NUMERO_CUENTA_AUXILIAR = '{_accountStatementCommand.Entry.SubledgerAccountNumber}'";
+      return string.Empty;
     }
 
 
