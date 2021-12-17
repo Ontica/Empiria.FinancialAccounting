@@ -15,6 +15,7 @@ using Empiria.FinancialAccounting.Adapters;
 using Empiria.FinancialAccounting.BalanceEngine.Adapters;
 using Empiria.FinancialAccounting.FinancialReports.Adapters;
 using Empiria.FinancialAccounting.Rules.Adapters;
+using Empiria.FinancialAccounting.Reporting.Adapters;
 
 namespace Empiria.FinancialAccounting.Reporting {
 
@@ -93,6 +94,21 @@ namespace Empiria.FinancialAccounting.Reporting {
       var creator = new StoredBalanceSetExcelExporter(templateConfig);
 
       ExcelFile excelFile = creator.CreateExcelFile(balanceSet);
+
+      return excelFile.ToFileReportDto();
+    }
+
+
+    public FileReportDto Export(VouchersByAccountDto vouchers) {
+      Assertion.AssertObject(vouchers, "vouchers");
+
+      var templateUID = $"VouchersByAccountTemplate";
+
+      var templateConfig = ExcelTemplateConfig.Parse(templateUID);
+
+      var creator = new VouchersByAccountExcelExporter(templateConfig);
+
+      ExcelFile excelFile = creator.CreateExcelFile(vouchers);
 
       return excelFile.ToFileReportDto();
     }

@@ -65,9 +65,28 @@ namespace Empiria.FinancialAccounting.WebApi.Reporting {
 
       using (var usecases = VouchersByAccountUseCases.UseCaseInteractor()) {
 
-        VouchersByAccountDto balance = usecases.BuilVouchersByAccount(accountStatementCommand);
+        VouchersByAccountDto vouchers = usecases.BuilVouchersByAccount(accountStatementCommand);
 
-        return new SingleObjectModel(this.Request, balance);
+        return new SingleObjectModel(this.Request, vouchers);
+      }
+    }
+
+
+    [HttpPost]
+    [Route("v2/financial-accounting/balance-voucher/excel")]
+    public SingleObjectModel GetExcelVouchersByAccount(
+            [FromBody] AccountStatementCommand accountStatementCommand) {
+      base.RequireBody(accountStatementCommand);
+
+      using (var usecases = VouchersByAccountUseCases.UseCaseInteractor()) {
+
+        VouchersByAccountDto vouchers = usecases.BuilVouchersByAccount(accountStatementCommand);
+
+        var excelExporter = new ExcelExporterService();
+
+        FileReportDto excelFileDto = excelExporter.Export(vouchers);
+
+        return new SingleObjectModel(this.Request, excelFileDto);
       }
     }
 
