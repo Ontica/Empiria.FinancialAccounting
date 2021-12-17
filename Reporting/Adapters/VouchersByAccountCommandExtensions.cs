@@ -84,14 +84,20 @@ namespace Empiria.FinancialAccounting.Reporting.Adapters {
 
 
     private string GetLedgerFilter() {
-      if (_accountStatementCommand.Command.Ledgers.Length == 0) {
-        return string.Empty;
-      }
-
-      int[] ledgerIds = _accountStatementCommand.Command.Ledgers
+      if (_accountStatementCommand.Entry.LedgerUID.Length > 0) {
+        
+        int ledgerId = Ledger.Parse(_accountStatementCommand.Entry.LedgerUID).Id;
+        return $"ID_MAYOR = { ledgerId }";
+      
+      } else if (_accountStatementCommand.Command.Ledgers.Length > 0) {
+        
+        int[] ledgerIds = _accountStatementCommand.Command.Ledgers
                         .Select(uid => Ledger.Parse(uid).Id).ToArray();
 
-      return $"ID_MAYOR IN ({String.Join(", ", ledgerIds)})";
+        return $"ID_MAYOR IN ({String.Join(", ", ledgerIds)})";
+      } else {
+        return string.Empty;
+      }
     }
 
 

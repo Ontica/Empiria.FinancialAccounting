@@ -52,6 +52,11 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
     }
 
 
+    public object InitialBalance {
+      get; internal set;
+    }
+
+
     public decimal CurrentBalance {
       get;  internal set;
     }
@@ -95,8 +100,7 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
     public string SubledgerAccountNumber {
       get; internal set;
     } = string.Empty;
-
-
+    
   } // class BalanceEntry 
 
 } // Empiria.FinancialAccounting.BalanceEngine

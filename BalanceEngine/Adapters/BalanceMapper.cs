@@ -73,7 +73,7 @@ namespace Empiria.FinancialAccounting.BalanceEngine.Adapters {
       switch (command.TrialBalanceType) {
         case TrialBalanceType.SaldosPorAuxiliar:
           
-          var mapped = list.Select((x) => MapToBalanceBySubledgerAccount((BalanceEntry) x, command));
+          var mapped = list.Select((x) => MapToBalanceBySubledgerAccount((BalanceEntry) x));
           return new FixedList<IBalanceEntryDto>(mapped);
 
         case TrialBalanceType.SaldosPorCuenta:
@@ -93,6 +93,7 @@ namespace Empiria.FinancialAccounting.BalanceEngine.Adapters {
 
       var dto = new BalanceEntryDto();
       dto.ItemType = entry.ItemType;
+      dto.LedgerUID = entry.Ledger.UID != "Empty" ? entry.Ledger.UID : "";
       dto.LedgerNumber = entry.Ledger.Number;
       dto.LedgerName = entry.Ledger.Number != string.Empty ? entry.Ledger.FullName : "";
       dto.CurrencyCode = entry.Currency.Code;
@@ -107,6 +108,7 @@ namespace Empiria.FinancialAccounting.BalanceEngine.Adapters {
       dto.AccountNumberForBalances = entry.Account.Number;
       dto.AccountName = entry.GroupName == string.Empty ? entry.Account.Name : entry.GroupName;
       dto.SectorCode = entry.Sector.Code;
+      dto.InitialBalance = entry.InitialBalance;
       dto.CurrentBalance = entry.CurrentBalance;
       dto.DebtorCreditor = entry.DebtorCreditor.ToString();
       dto.LastChangeDate = entry.LastChangeDate;
@@ -115,11 +117,11 @@ namespace Empiria.FinancialAccounting.BalanceEngine.Adapters {
     }
 
 
-    static private BalanceEntryDto MapToBalanceBySubledgerAccount(
-                                    BalanceEntry entry, BalanceCommand command) {
+    static private BalanceEntryDto MapToBalanceBySubledgerAccount(BalanceEntry entry) {
 
       var dto = new BalanceEntryDto();
       dto.ItemType = entry.ItemType;
+      dto.LedgerUID = entry.Ledger.UID != "Empty" ? entry.Ledger.UID : "";
       dto.LedgerNumber = entry.Ledger.Number;
       dto.LedgerName = entry.Ledger.Number != string.Empty ? entry.Ledger.FullName : "";
       dto.CurrencyCode = entry.Currency.Code;

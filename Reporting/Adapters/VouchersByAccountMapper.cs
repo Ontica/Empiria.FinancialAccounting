@@ -69,6 +69,7 @@ namespace Empiria.FinancialAccounting.Reporting.Adapters {
       var dto = new VouchersByAccountEntryDto();
 
       dto.ItemType = entry.ItemType;
+      dto.LedgerUID = entry.Ledger.UID != "Empty" ? entry.Ledger.UID : "";
       dto.LedgerName = entry.Ledger.Name;
       dto.LedgerNumber = entry.Ledger.Number;
       dto.CurrencyCode = entry.ItemType == TrialBalanceItemType.BalanceEntry ? entry.Currency.Code : "";

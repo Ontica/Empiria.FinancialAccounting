@@ -40,6 +40,11 @@ namespace Empiria.FinancialAccounting.BalanceEngine.Adapters {
       get; internal set;
     } = TrialBalanceItemType.BalanceEntry;
 
+    public string LedgerUID {
+      get;
+      internal set;
+    }
+
     public string LedgerNumber {
       get; internal set;
     } = "";
@@ -72,6 +77,11 @@ namespace Empiria.FinancialAccounting.BalanceEngine.Adapters {
       get; internal set;
     } = "";
 
+    public object InitialBalance {
+      get;
+      internal set;
+    }
+
     public decimal CurrentBalance {
       get; internal set;
     }
@@ -83,8 +93,7 @@ namespace Empiria.FinancialAccounting.BalanceEngine.Adapters {
     public string DebtorCreditor {
       get; internal set;
     }
-
-
+    
   } // class BalanceEntryDto
 
 } // Empiria.FinancialAccounting.BalanceEngine.Adapters

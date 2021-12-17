@@ -56,6 +56,12 @@ namespace Empiria.FinancialAccounting.Reporting.Adapters {
     }
 
 
+    public string LedgerUID {
+      get;
+      internal set;
+    }
+
+
     public string LedgerNumber {
       get; internal set;
     }

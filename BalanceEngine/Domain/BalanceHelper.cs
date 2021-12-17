@@ -146,6 +146,7 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
         balanceEntry.Account = entry.Account;
         balanceEntry.Sector = entry.Sector;
         balanceEntry.SubledgerAccountId = entry.SubledgerAccountId;
+        balanceEntry.InitialBalance = Math.Round(entry.InitialBalance, 2);
         balanceEntry.CurrentBalance = Math.Round(entry.CurrentBalance, 2);
         balanceEntry.LastChangeDate = entry.LastChangeDate;
         balanceEntry.DebtorCreditor = entry.DebtorCreditor;

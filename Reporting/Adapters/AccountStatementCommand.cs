@@ -33,6 +33,10 @@ namespace Empiria.FinancialAccounting.Reporting.Adapters {
       get; set;
     } = TrialBalanceItemType.BalanceEntry;
 
+    public string LedgerUID {
+      get; set;
+    } = "";
+
     public string LedgerNumber {
       get; set;
     } = "";

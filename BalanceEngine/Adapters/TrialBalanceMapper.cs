@@ -129,7 +129,7 @@ namespace Empiria.FinancialAccounting.BalanceEngine.Adapters {
       SubledgerAccount subledgerAccount = SubledgerAccount.Parse(entry.SubledgerAccountId);
        
       dto.ItemType = entry.ItemType;
-      dto.LedgerUID = entry.Ledger.UID;
+      dto.LedgerUID = entry.Ledger.UID != "Empty" ? entry.Ledger.UID : "";
       dto.LedgerNumber = entry.Ledger.Number;
       dto.StandardAccountId = entry.Account.Id;
       dto.CurrencyCode = entry.Currency.Code;
@@ -179,7 +179,7 @@ namespace Empiria.FinancialAccounting.BalanceEngine.Adapters {
       SubledgerAccount subledgerAccount = SubledgerAccount.Parse(entry.SubledgerAccountId);
 
       dto.ItemType = entry.ItemType;
-      dto.LedgerUID = entry.Ledger.UID;
+      dto.LedgerUID = entry.Ledger.UID != "Empty" ? entry.Ledger.UID : "";
       dto.LedgerNumber = entry.Ledger.Number;
       dto.StandardAccountId = entry.Account.Id;
       dto.CurrencyCode = entry.ItemType == TrialBalanceItemType.BalanceTotalConsolidated ? "" :
@@ -238,7 +238,7 @@ namespace Empiria.FinancialAccounting.BalanceEngine.Adapters {
       dto.AccountRole = entry.Account.Role;
       dto.AccountLevel = entry.Account.Level;
       dto.DebtorCreditor = entry.Account.DebtorCreditor;
-      dto.LedgerUID = entry.Ledger.UID;
+      dto.LedgerUID = entry.Ledger.UID != "Empty" ? entry.Ledger.UID : "";
       dto.LedgerNumber = entry.Ledger.Number;
       dto.StandardAccountId = entry.Account.Id;
       dto.CurrencyCode = entry.Currency.Code;
