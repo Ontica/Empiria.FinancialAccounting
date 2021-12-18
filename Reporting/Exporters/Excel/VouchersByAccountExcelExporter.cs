@@ -36,7 +36,7 @@ namespace Empiria.FinancialAccounting.Reporting.Exporters.Excel {
       _command = voucherDto.Command;
 
       _excelFile = new ExcelFile(_templateConfig);
-
+      
       _excelFile.Open();
 
       SetHeader();
@@ -70,14 +70,17 @@ namespace Empiria.FinancialAccounting.Reporting.Exporters.Excel {
       int i = 5;
 
       foreach (var voucher in vouchers) {
+        var debit = voucher.Debit != null ? voucher.Debit.ToString() : "";
+        var credit = voucher.Credit != null ? voucher.Credit.ToString() : "";
+       
         _excelFile.SetCell($"A{i}", voucher.LedgerNumber);
         _excelFile.SetCell($"B{i}", voucher.CurrencyCode);
-        _excelFile.SetCell($"C{i}", voucher.AccountNumberForBalances);
+        _excelFile.SetCell($"C{i}", voucher.AccountNumber);
         _excelFile.SetCell($"D{i}", voucher.SectorCode);
         _excelFile.SetCell($"E{i}", voucher.SubledgerAccountNumber);
         _excelFile.SetCell($"F{i}", voucher.VoucherNumber);
-        _excelFile.SetCell($"G{i}", voucher.Debit.Value);
-        _excelFile.SetCell($"H{i}", voucher.Credit.Value);
+        _excelFile.SetCell($"G{i}", debit);
+        _excelFile.SetCell($"H{i}", credit);
         _excelFile.SetCell($"I{i}", voucher.CurrentBalance);
         _excelFile.SetCell($"J{i}", voucher.AccountingDate);
         _excelFile.SetCell($"K{i}", voucher.RecordingDate);
