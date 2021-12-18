@@ -315,36 +315,37 @@ namespace Empiria.FinancialAccounting.Reporting.Exporters.Excel {
 
       foreach (var entry in entries) {
         var account = StandardAccount.Parse(entry.StandardAccountId);
-        var subledgerAccount = SubledgerAccount.Parse(entry.SubledgerAccountId);
+        //var subledgerAccount = SubledgerAccount.Parse(entry.SubledgerAccountId);
 
         _excelFile.SetCell($"A{i}", entry.LedgerNumber);
         _excelFile.SetCell($"B{i}", entry.CurrencyCode);
         if (entry.ItemType == TrialBalanceItemType.BalanceEntry) {
           _excelFile.SetCell($"C{i}", "*");
         }
-        if (!subledgerAccount.IsEmptyInstance) {
-          _excelFile.SetCell($"D{i}", subledgerAccount.Number);
-          _excelFile.SetCell($"E{i}", subledgerAccount.Name);
-        }
+        //if (!subledgerAccount.IsEmptyInstance) {
+        //  _excelFile.SetCell($"D{i}", subledgerAccount.Number);
+        //  _excelFile.SetCell($"E{i}", subledgerAccount.Name);
+        //}
 
         if (!account.IsEmptyInstance) {
-          _excelFile.SetCell($"F{i}", account.Number);
-          _excelFile.SetCell($"G{i}", account.Name);
+          _excelFile.SetCell($"D{i}", account.Number);
+          _excelFile.SetCell($"E{i}", account.Name);
         } else {
-          _excelFile.SetCell($"F{i}", entry.AccountNumber);
-          _excelFile.SetCell($"G{i}", entry.AccountName);
+          _excelFile.SetCell($"D{i}", entry.AccountNumber);
+          _excelFile.SetCell($"E{i}", entry.AccountName);
         }
-        _excelFile.SetCell($"H{i}", entry.SectorCode);
+        _excelFile.SetCell($"F{i}", entry.SectorCode);
 
-        _excelFile.SetCell($"I{i}", entry.CurrentBalance);
-        _excelFile.SetCell($"J{i}", Convert.ToString((char) account.DebtorCreditor));
+        _excelFile.SetCell($"G{i}", entry.CurrentBalance);
+        _excelFile.SetCell($"H{i}", entry.DebtorCreditor);
 
         if (MustFillOutAverageBalance(entry.AverageBalance, entry.LastChangeDate)) {
-          _excelFile.SetCell($"K{i}", entry.AverageBalance);
+          _excelFile.SetCell($"I{i}", entry.AverageBalance);
         }
 
-        if (entry.LastChangeDate >= MIN_LAST_CHANGE_DATE_TO_REPORT) {
-          _excelFile.SetCell($"L{i}", entry.LastChangeDate.ToString("dd/MMM/yyyy"));
+        if (entry.LastChangeDate != ExecutionServer.DateMaxValue &&
+            entry.LastChangeDate >= MIN_LAST_CHANGE_DATE_TO_REPORT) {
+          _excelFile.SetCell($"J{i}", entry.LastChangeDate.ToString("dd/MMM/yyyy"));
         }
 
         if (entry.ItemType != TrialBalanceItemType.BalanceEntry &&
@@ -355,7 +356,7 @@ namespace Empiria.FinancialAccounting.Reporting.Exporters.Excel {
       }
 
       if (!_command.WithAverageBalance) {
-        _excelFile.RemoveColumn("K");
+        _excelFile.RemoveColumn("I");
       }
     }
 
@@ -386,13 +387,14 @@ namespace Empiria.FinancialAccounting.Reporting.Exporters.Excel {
           _excelFile.SetCell($"H{i}", subledgerAccount.Name);
         }
         _excelFile.SetCell($"I{i}", entry.CurrentBalance);
-        _excelFile.SetCell($"J{i}", Convert.ToString((char) account.DebtorCreditor));
+        _excelFile.SetCell($"J{i}", entry.DebtorCreditor);
 
         if (MustFillOutAverageBalance(entry.AverageBalance, entry.LastChangeDate)) {
           _excelFile.SetCell($"K{i}", entry.AverageBalance);
         }
 
-        if (entry.LastChangeDate >= MIN_LAST_CHANGE_DATE_TO_REPORT) {
+        if (entry.LastChangeDate != ExecutionServer.DateMaxValue &&
+            entry.LastChangeDate >= MIN_LAST_CHANGE_DATE_TO_REPORT) {
           _excelFile.SetCell($"L{i}", entry.LastChangeDate.ToString("dd/MMM/yyyy"));
         }
 
@@ -434,7 +436,7 @@ namespace Empiria.FinancialAccounting.Reporting.Exporters.Excel {
     // TODO: CLEAN THIS CODE. ISSUE USING NEW CHART OF ACCOUNTS
     private string GetSubAccountNumberWithSector(string accountNumber, string sectorCode) {
       var temp = string.Empty;
-      
+
       if (accountNumber.Contains("-")) {
 
         temp = accountNumber.Substring(4);
