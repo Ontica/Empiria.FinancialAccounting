@@ -484,10 +484,10 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
           var entriesWithSummarySector = summaryEntries.Where(a => a.Ledger.Number == entry.Ledger.Number &&
                                                         a.Currency.Code == entry.Currency.Code &&
                                                         a.Account.Number == entry.Account.Number).ToList();
-          if (entry.Level > 1 && 
-               (entriesWithSummarySector.Count == 2 && 
+          if (entry.Level > 1 &&
+               (entriesWithSummarySector.Count == 2 &&
                 entry.ItemType == TrialBalanceItemType.BalanceSummary) ||
-               (entry.ItemType == TrialBalanceItemType.BalanceEntry && 
+               (entry.ItemType == TrialBalanceItemType.BalanceEntry &&
                entriesWithSummarySector.Count == 2 && entry.Sector.Code != "00")) {
             var entryWithoutSector = entriesWithSummarySector.FirstOrDefault(a => a.Sector.Code == "00");
             entries.Remove(entryWithoutSector);
@@ -522,7 +522,7 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
       return returnedEntries.ToList();
     }
 
-    
+
     private List<TrialBalanceEntry> GetSummaryEntriesWithoutSectorization(
                                     EmpiriaHashTable<TrialBalanceEntry> hashEntries,
                                     List<TrialBalanceEntry> checkSummaryEntries,
@@ -574,8 +574,8 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
           summaryEntry.Credit += entry.Credit;
           summaryEntry.CurrentBalance += entry.CurrentBalance;
 
-        } else if ((sectorParent.Code != "00" || 
-                   (entry.ItemType == TrialBalanceItemType.BalanceEntry && entry.HasSector)) && 
+        } else if ((sectorParent.Code != "00" ||
+                   (entry.ItemType == TrialBalanceItemType.BalanceEntry && entry.HasSector)) &&
                     entry.Level > 1) {
           SummaryByEntry(hashEntries, entry, entry.Account, Sector.Empty, entry.ItemType);
         }
@@ -900,16 +900,6 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
       string hash = $"{targetAccount.Number}||{targetSector.Code}||{entry.Currency.Id}||{entry.Ledger.Id}";
 
       GenerateOrIncreaseEntries(summaryEntries, entry, targetAccount, targetSector, itemType, hash);
-    }
-
-
-    internal void SummaryBySubledgerEntry(EmpiriaHashTable<TrialBalanceEntry> summaryEntries,
-                                 TrialBalanceEntry entry, TrialBalanceItemType itemType) {
-
-      string hash = $"{entry.Ledger.Number}||{entry.Currency.Code}||" +
-                        $"{entry.SubledgerAccountIdParent}||{Sector.Empty.Code}";
-
-      GenerateOrIncreaseEntries(summaryEntries, entry, StandardAccount.Empty, Sector.Empty, itemType, hash);
     }
 
 

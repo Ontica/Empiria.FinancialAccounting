@@ -33,9 +33,9 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
 
       EmpiriaHashTable<TrialBalanceEntry> summaryEntries = BalancesBySubledgerAccounts(trialBalance);
 
-      List<TrialBalanceEntry> orderingtTialBalance = OrderByAccountNumber(summaryEntries);
+      List<TrialBalanceEntry> orderedTrialBalance = OrderByAccountNumber(summaryEntries);
 
-      trialBalance = CombineTotalAndSummaryEntries(orderingtTialBalance, trialBalance);
+      trialBalance = CombineTotalAndSummaryEntries(orderedTrialBalance, trialBalance);
 
       trialBalance = helper.GenerateAverageBalance(trialBalance);
 
@@ -62,8 +62,7 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
 
     #region Helper methods
 
-
-    internal EmpiriaHashTable<TrialBalanceEntry> BalancesBySubledgerAccounts(
+    private EmpiriaHashTable<TrialBalanceEntry> BalancesBySubledgerAccounts(
                                                 List<TrialBalanceEntry> trialBalance) {
 
       var subledgerAccountsEntries = trialBalance.Where(a => a.SubledgerAccountId > 0).ToList();
@@ -115,23 +114,53 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
     private EmpiriaHashTable<TrialBalanceEntry> GenerateEntries(
                         EmpiriaHashTable<TrialBalanceEntry> subledgerAccountEntriesHashTable) {
 
-      var helper = new TrialBalanceHelper(_command);
-
       var hashReturnedEntries = new EmpiriaHashTable<TrialBalanceEntry>();
 
       foreach (var entry in subledgerAccountEntriesHashTable.ToFixedList()) {
         entry.DebtorCreditor = entry.Account.DebtorCreditor;
         entry.SubledgerAccountIdParent = entry.SubledgerAccountId;
 
-        helper.SummaryBySubledgerEntry(hashReturnedEntries, entry, TrialBalanceItemType.BalanceSummary);
+        SummaryBySubledgerEntry(hashReturnedEntries, entry, TrialBalanceItemType.BalanceSummary);
       }
 
       return hashReturnedEntries;
     }
 
 
-    internal List<TrialBalanceEntry> OrderByAccountNumber(
-                                    EmpiriaHashTable<TrialBalanceEntry> summaryEntries) {
+    private void GenerateOrIncreaseEntries(EmpiriaHashTable<TrialBalanceEntry> summaryEntries,
+                                           TrialBalanceEntry entry,
+                                           TrialBalanceItemType itemType,
+                                           string hash) {
+
+      TrialBalanceEntry summaryEntry;
+
+      summaryEntries.TryGetValue(hash, out summaryEntry);
+
+      if (summaryEntry == null) {
+
+        summaryEntry = new TrialBalanceEntry {
+          Ledger = entry.Ledger,
+          Currency = entry.Currency,
+          Sector = Sector.Empty,
+          Account = StandardAccount.Empty,
+          ItemType = itemType,
+          GroupNumber = entry.GroupNumber,
+          GroupName = entry.GroupName,
+          DebtorCreditor = entry.DebtorCreditor,
+          SubledgerAccountIdParent = entry.SubledgerAccountIdParent,
+          LastChangeDate = entry.LastChangeDate
+        };
+        summaryEntry.SumOrSubstractIfDebtorOrCreditor(entry);
+
+        summaryEntries.Insert(hash, summaryEntry);
+
+      } else {
+        summaryEntry.SumOrSubstractIfDebtorOrCreditor(entry);
+      }
+    }
+
+
+    private List<TrialBalanceEntry> OrderByAccountNumber(EmpiriaHashTable<TrialBalanceEntry> summaryEntries) {
 
       var returnedCombineOrdering = new List<TrialBalanceEntry>();
 
@@ -145,11 +174,23 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
         }
         returnedCombineOrdering.Add(entry);
       }
+
       return returnedCombineOrdering.Where(a => !a.SubledgerAccountNumber.Contains("undefined"))
                                     .OrderBy(a => a.Currency.Code)
                                     .ThenBy(a => a.SubledgerNumberOfDigits)
                                     .ThenBy(a => a.SubledgerAccountNumber)
                                     .ToList();
+    }
+
+
+    private void SummaryBySubledgerEntry(EmpiriaHashTable<TrialBalanceEntry> summaryEntries,
+                                     TrialBalanceEntry entry,
+                                     TrialBalanceItemType itemType) {
+
+      string hash = $"{entry.Ledger.Number}||{entry.Currency.Code}||" +
+                    $"{entry.SubledgerAccountIdParent}||{Sector.Empty.Code}";
+
+      GenerateOrIncreaseEntries(summaryEntries, entry, itemType, hash);
     }
 
 
