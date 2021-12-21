@@ -11,8 +11,8 @@ using System;
 
 namespace Empiria.FinancialAccounting.BanobrasIntegration {
 
-  /// <summary>Command data to execute Banobras' external system processes (Marimba).</summary>
-  public class ExternalProcessCommand {
+  /// <summary>Datos para la ejecución del proceso de rentabilidad.</summary>
+  public class RentabilidadExternalProcessCommand {
 
     public int Anio {
       get; set;
@@ -26,6 +26,6 @@ namespace Empiria.FinancialAccounting.BanobrasIntegration {
       get; set;
     }
 
-  }  // class ExternalProcessCommand
+  }  // class RentabilidadExternalProcessCommand
 
 }  // namespace Empiria.FinancialAccounting.BanobrasIntegration

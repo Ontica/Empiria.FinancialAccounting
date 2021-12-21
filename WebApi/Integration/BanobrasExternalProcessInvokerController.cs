@@ -23,7 +23,7 @@ namespace Empiria.FinancialAccounting.WebApi.BanobrasIntegration {
 
     [HttpPost]
     [Route("v2/financial-accounting/integration/external-processes/procesar-rentabilidad")]
-    public SingleObjectModel ProcesarRentabilidad([FromBody] ExternalProcessCommand command) {
+    public SingleObjectModel ProcesarRentabilidad([FromBody] RentabilidadExternalProcessCommand command) {
 
       base.RequireBody(command);
 

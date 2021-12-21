@@ -29,7 +29,7 @@ namespace Empiria.FinancialAccounting.BanobrasIntegration {
     #endregion Constructors and parsers
 
 
-    public string ProcesarRentabilidad(ExternalProcessCommand command) {
+    public string ProcesarRentabilidad(RentabilidadExternalProcessCommand command) {
       Assertion.AssertObject(command, "command");
 
       try {
