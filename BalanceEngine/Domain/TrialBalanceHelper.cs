@@ -423,7 +423,7 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
 
     internal FixedList<TrialBalanceEntry> GenerateTotalSummaryGroups(FixedList<TrialBalanceEntry> entries) {
 
-      var toReturnSummaryGroupEntries = new EmpiriaHashTable<TrialBalanceEntry>(entries.Count);
+      var toReturnSummaryGroupEntries = new EmpiriaHashTable<TrialBalanceEntry>();
 
       foreach (var entry in entries) {
         SummaryByGroupEntries(toReturnSummaryGroupEntries, entry);
@@ -916,14 +916,14 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
 
       string hash;
 
-      if (groupEntry.DebtorCreditor == DebtorCreditorType.Deudora) {
-        hash = $"{balanceEntry.Ledger.Id}||{balanceEntry.Currency.Id}||{balanceEntry.Account.GroupNumber}||D";
+      if (balanceEntry.DebtorCreditor == DebtorCreditorType.Deudora) {
+        hash = $"{balanceEntry.Ledger.Id}||{balanceEntry.Currency.Id}||{groupEntry.GroupNumber}";
 
         GenerateOrIncreaseEntries(summaryEntries, groupEntry, StandardAccount.Empty, Sector.Empty,
                                   TrialBalanceItemType.BalanceTotalGroupDebtor, hash);
 
       } else {
-        hash = $"{balanceEntry.Ledger.Id}||{balanceEntry.Currency.Id}||{balanceEntry.Account.GroupNumber}||A";
+        hash = $"{balanceEntry.Ledger.Id}||{balanceEntry.Currency.Id}||{groupEntry.GroupNumber}";
 
         GenerateOrIncreaseEntries(summaryEntries, groupEntry, StandardAccount.Empty, Sector.Empty,
                                   TrialBalanceItemType.BalanceTotalGroupCreditor, hash);
