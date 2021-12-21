@@ -151,8 +151,7 @@ namespace Empiria.FinancialAccounting.Vouchers.Data {
                                     o.TransactionType.Id, o.VoucherType.Id,
                                     o.Concept, o.AccountingDate, o.RecordingDate,
                                     o.ElaboratedBy.Id,
-                                    o.AuthorizedBy.IsEmptyInstance ? 0 : o.AuthorizedBy.Id,
-                                    1, o.ClosedBy.IsEmptyInstance ? 0 : o.ClosedBy.Id);
+                                    o.AuthorizedBy.IsEmptyInstance ? 0 : o.AuthorizedBy.Id);
 
       DataWriter.Execute(op);
     }
