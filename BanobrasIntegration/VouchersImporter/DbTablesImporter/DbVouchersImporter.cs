@@ -63,6 +63,9 @@ namespace Empiria.FinancialAccounting.BanobrasIntegration.VouchersImporter {
       await Task.Run(() => {
         try {
           ImportVouchers(command);
+
+          SetIsRunningFlag(false);
+
         } catch (Exception e) {
           EmpiriaLog.Error(e);
           SetIsRunningFlag(false);
