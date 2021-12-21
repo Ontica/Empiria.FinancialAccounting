@@ -50,9 +50,9 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
 
       trialBalance = helper.RestrictLevels(trialBalance);
 
-      //var ensureIsValid = new EnsureBalanceValidations();
+      var ensureIsValid = new EnsureBalanceValidations();
 
-      //ensureIsValid.EnsureIsValid(trialBalance, postingEntries);
+      ensureIsValid.EnsureIsValid(trialBalance, postingEntries);
 
       var returnBalance = new FixedList<ITrialBalanceEntry>(
                               trialBalance.Select(x => (ITrialBalanceEntry) x));
