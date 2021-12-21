@@ -28,9 +28,11 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
     internal TrialBalance Build() {
       var helper = new TrialBalanceHelper(_command);
 
-      _command.WithSubledgerAccount = _command.TrialBalanceType == TrialBalanceType.Saldos ? true :
-                                      _command.WithSubledgerAccount;
-      
+
+      if (_command.TrialBalanceType == TrialBalanceType.Saldos) {
+        _command.WithSubledgerAccount = true;
+      }
+
       FixedList<TrialBalanceEntry> postingEntries = helper.GetPostingEntries();
 
       List<TrialBalanceEntry> summaryEntries = helper.GenerateSummaryEntries(postingEntries);
@@ -38,7 +40,7 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
       List<TrialBalanceEntry> _postingEntries = helper.GetSummaryEntriesAndSectorization(
                                                 postingEntries.ToList());
 
-      List<TrialBalanceEntry> summaryEntriesAndSectorization = 
+      List<TrialBalanceEntry> summaryEntriesAndSectorization =
                               helper.GetSummaryEntriesAndSectorization(summaryEntries);
 
       List<TrialBalanceEntry> trialBalance = helper.CombineSummaryAndPostingEntries(
@@ -48,6 +50,8 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
 
       trialBalance = helper.RestrictLevels(trialBalance);
 
+      EnsureIsValid(trialBalance);
+
       var returnBalance = new FixedList<ITrialBalanceEntry>(
                               trialBalance.Select(x => (ITrialBalanceEntry) x));
 
@@ -56,6 +60,30 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
 
 
     #region Private methods
+
+
+    private void EnsureIsValid(List<TrialBalanceEntry> trialBalance) {
+      CheckTotalsByGroupEntries(trialBalance);
+      CheckSumaDeCargosIgualAAbonos(trialBalance);
+    }
+
+    private void CheckSumaDeCargosIgualAAbonos(List<TrialBalanceEntry> trialBalance) {
+
+    }
+
+    private void CheckTotalsByGroupEntries(List<TrialBalanceEntry> trialBalance) {
+      int MAX_BALANCE_DIFFERENCE = 10;
+
+      var balance1 = trialBalance.FindAll(x => x.ItemType == TrialBalanceItemType.BalanceTotalGroupDebtor)
+                                 .Sum(x => x.CurrentBalance);
+      var balance2 = trialBalance.FindAll(x => x.ItemType == TrialBalanceItemType.BalanceTotalGroupCreditor)
+                                 .Sum(x => x.CurrentBalance);
+
+      Assertion.Assert(Math.Abs(balance1 - balance2) <= MAX_BALANCE_DIFFERENCE,
+        "La suma de saldos del total de cuentas deudoras no es igual al de las cuentas acreedoras, o excede el" +
+        $"límite máximo de {MAX_BALANCE_DIFFERENCE} pesos de diferencia.");
+    }
+
 
     private List<TrialBalanceEntry> GetTrialBalanceType(List<TrialBalanceEntry> trialBalance,
                                                         FixedList<TrialBalanceEntry> postingEntries) {
