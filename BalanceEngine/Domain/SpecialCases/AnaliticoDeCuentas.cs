@@ -81,6 +81,9 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
       FixedList<ITrialBalanceEntry> twoColumnsBalance = twoColumnsEntries.Select(x => (ITrialBalanceEntry) x)
                                   .ToList().ToFixedList();
 
+      var ensureIsValid = new EnsureBalanceValidations(_command);
+      ensureIsValid.EnsureIsValid(twoColumnsBalance, postingEntries);
+
       return new TrialBalance(_command, twoColumnsBalance);
     }
 

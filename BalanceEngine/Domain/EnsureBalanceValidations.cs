@@ -25,26 +25,245 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
 
     #region Public methods
 
-    public void EnsureIsValid(List<TrialBalanceEntry> trialBalance,
+    public void EnsureIsValid(FixedList<ITrialBalanceEntry> entriesList,
                               FixedList<TrialBalanceEntry> postingEntries) {
 
       CheckSummaryEntriesIsEqualToTotalByGroup(postingEntries);
-      CheckTotalsByGroupEntries(trialBalance);
+      CheckTotalsByGroupEntries(entriesList);
 
-      CheckEntriesIsEqualToTotalByDebtorOrCreditor(postingEntries);
-      CheckTotalsByDebtorAndCreditorEntries(trialBalance);
+      CheckEntriesEqualToTotalByDebtorOrCreditor(entriesList, postingEntries);
+      CheckTotalsByDebtorAndCreditorEntries(entriesList);
 
-      CheckTotalsConsolidated(trialBalance);
+      CheckTotalsByReport(entriesList);
+
 
     }
 
-
+    
+   
     #endregion Public methods
 
 
     #region Private methods
 
-    private void CheckEntriesIsEqualToTotalByDebtorOrCreditor(FixedList<TrialBalanceEntry> entries) {
+    private void CheckEntriesEqualToTotalByDebtorOrCreditor(FixedList<ITrialBalanceEntry> entriesList, 
+                                                            FixedList<TrialBalanceEntry> entries) {
+
+      if (_command.TrialBalanceType == TrialBalanceType.Balanza ||
+          _command.TrialBalanceType == TrialBalanceType.BalanzaConContabilidadesEnCascada ||
+          _command.TrialBalanceType == TrialBalanceType.SaldosPorCuenta) {
+
+        TotalByDebtorOrCreditorBalanza(entries);
+
+      } else if (_command.TrialBalanceType == TrialBalanceType.AnaliticoDeCuentas) {
+
+        TotalByDebtorOrCreditorAnalitico(entriesList);
+
+      }
+    }
+
+
+    private void CheckSummaryEntriesIsEqualToTotalByGroup(FixedList<TrialBalanceEntry> entries) {
+      if (_command.TrialBalanceType == TrialBalanceType.Balanza ||
+          _command.TrialBalanceType == TrialBalanceType.BalanzaConContabilidadesEnCascada ||
+          _command.TrialBalanceType == TrialBalanceType.SaldosPorCuenta) {
+
+        int MAX_BALANCE_DIFFERENCE = 10;
+
+        foreach (var debtorGroup in entries.Where(x => x.ItemType == TrialBalanceItemType.BalanceTotalGroupDebtor)) {
+          var entriesTotal = entries.FindAll(x => x.Account.GroupNumber == debtorGroup.GroupNumber &&
+                                                  x.Currency.Code == debtorGroup.Currency.Code)
+                                    .Sum(x => x.CurrentBalance);
+
+          Assertion.Assert(Math.Abs(debtorGroup.CurrentBalance - entriesTotal) <= MAX_BALANCE_DIFFERENCE,
+                           $"La suma del saldo actual de las cuentas no es igual al total por grupo " +
+                           $"en {debtorGroup.GroupName} con naturaleza {debtorGroup.DebtorCreditor}, " +
+                           $"Total de cuentas: {entriesTotal}, Total del grupo: {debtorGroup.CurrentBalance}");
+        }
+
+        foreach (var creditorGroup in entries.Where(x => x.ItemType == TrialBalanceItemType.BalanceTotalGroupCreditor)) {
+          var entriesTotal = entries.FindAll(x => x.Account.GroupNumber == creditorGroup.GroupNumber &&
+                                                  x.Currency.Code == creditorGroup.Currency.Code)
+                                    .Sum(x => x.CurrentBalance);
+
+          Assertion.Assert(Math.Abs(creditorGroup.CurrentBalance - entriesTotal) <= MAX_BALANCE_DIFFERENCE,
+                           $"La suma del saldo actual de las cuentas no es igual al total por grupo " +
+                           $"en {creditorGroup.GroupName} con naturaleza {creditorGroup.DebtorCreditor}, " +
+                           $"Total de cuentas: {entriesTotal}, Total del grupo: {creditorGroup.CurrentBalance}");
+        }
+
+      }
+    }
+
+
+    private void CheckTotalsByDebtorAndCreditorEntries(FixedList<ITrialBalanceEntry> entriesList) {
+      if (_command.TrialBalanceType == TrialBalanceType.Balanza ||
+          _command.TrialBalanceType == TrialBalanceType.BalanzaConContabilidadesEnCascada ||
+          _command.TrialBalanceType == TrialBalanceType.SaldosPorCuenta) {
+
+        int MAX_BALANCE_DIFFERENCE = 10;
+        var entries = entriesList.Select(x => (TrialBalanceEntry) x).ToList();
+
+        if (_command.FromAccount == string.Empty && _command.ToAccount == string.Empty) {
+          var totalDebtorDebit = entries.FindAll(
+                                x => x.ItemType == TrialBalanceItemType.BalanceTotalDebtor)
+                                .Sum(x => x.Debit);
+
+          var totalCreditorDebit = entries.FindAll(
+                                    x => x.ItemType == TrialBalanceItemType.BalanceTotalCreditor)
+                                    .Sum(x => x.Debit);
+
+          var totalDebtorCredit = entries.FindAll(
+                                    x => x.ItemType == TrialBalanceItemType.BalanceTotalDebtor)
+                                    .Sum(x => x.Credit);
+
+          var totalCreditorCredit = entries.FindAll(
+                                      x => x.ItemType == TrialBalanceItemType.BalanceTotalCreditor)
+                                      .Sum(x => x.Credit);
+
+          decimal totalDebit = totalDebtorDebit + totalCreditorDebit;
+          decimal totalCredit = totalDebtorCredit + totalCreditorCredit;
+
+          Assertion.Assert(Math.Abs(totalDebit - totalCredit) <= MAX_BALANCE_DIFFERENCE,
+            "La suma de cargos totales no es igual a la suma de abonos totales de la balanza, o excede el " +
+            $"límite máximo de {MAX_BALANCE_DIFFERENCE} pesos de diferencia.");
+        }
+
+      }
+      
+    }
+
+
+    private void CheckTotalsByGroupEntries(FixedList<ITrialBalanceEntry> entriesList) {
+      
+      if (_command.TrialBalanceType == TrialBalanceType.Balanza ||
+          _command.TrialBalanceType == TrialBalanceType.SaldosPorCuenta ||
+          _command.TrialBalanceType == TrialBalanceType.BalanzaConContabilidadesEnCascada) {
+        
+        var entries = entriesList.Select(x => (TrialBalanceEntry) x).ToList();
+        CheckTotalsByGroupEntriesInBalanza(entries);
+      }
+
+    }
+
+
+    private void CheckTotalsByGroupEntriesInBalanza(List<TrialBalanceEntry> entries) {
+      int MAX_BALANCE_DIFFERENCE = 10;
+
+      if (_command.FromAccount == string.Empty && _command.ToAccount == string.Empty &&
+          _command.AccountsChartUID == "b2328e67-3f2e-45b9-b1f6-93ef6292204e") {
+        var totalByGroupDebtor = entries.FindAll(
+                                  x => x.ItemType == TrialBalanceItemType.BalanceTotalGroupDebtor)
+                                  .Sum(x => x.CurrentBalance);
+        var totalByGroupCreditor = entries.FindAll(
+                                    x => x.ItemType == TrialBalanceItemType.BalanceTotalGroupCreditor)
+                                    .Sum(x => x.CurrentBalance);
+
+        Assertion.Assert(Math.Abs(totalByGroupDebtor - totalByGroupCreditor) <= MAX_BALANCE_DIFFERENCE,
+          "La suma de saldos del total de cuentas deudoras no es igual al de las cuentas acreedoras, " +
+          $"o excede el límite máximo de {MAX_BALANCE_DIFFERENCE} pesos de diferencia.");
+      }
+
+    }
+
+
+    private void CheckTotalsConsolidated(FixedList<ITrialBalanceEntry> entriesList) {
+      int MAX_BALANCE_DIFFERENCE = 10;
+
+      var entries = entriesList.Select(x => (TrialBalanceEntry) x).ToList();
+      var totalsByCurrency = entries.FindAll(
+                                x => x.ItemType == TrialBalanceItemType.BalanceTotalCurrency)
+                                .Sum(x => x.CurrentBalance);
+
+      var totalConsolidated = entries.FindAll(
+                                x => x.ItemType == TrialBalanceItemType.BalanceTotalConsolidated)
+                                .Sum(x => x.CurrentBalance);
+
+      Assertion.Assert(Math.Abs(totalConsolidated - totalsByCurrency) <= MAX_BALANCE_DIFFERENCE,
+        "La suma de totales por moneda no es igual al total consolidado, " +
+        $"o excede el límite máximo de {MAX_BALANCE_DIFFERENCE} pesos de diferencia.");
+    }
+
+
+    private void CheckTotalsByReport(FixedList<ITrialBalanceEntry> entriesList) {
+      if (_command.TrialBalanceType == TrialBalanceType.Balanza ||
+          _command.TrialBalanceType == TrialBalanceType.BalanzaConContabilidadesEnCascada ||
+          _command.TrialBalanceType == TrialBalanceType.SaldosPorCuenta) {
+
+        CheckTotalsConsolidated(entriesList);
+
+      } else if (_command.TrialBalanceType == TrialBalanceType.AnaliticoDeCuentas) {
+
+        CheckTotalsInReport(entriesList);
+
+      }
+    }
+
+
+    private void CheckTotalsInReport(FixedList<ITrialBalanceEntry> entriesList) {
+      int MAX_BALANCE_DIFFERENCE = 10;
+
+      var entries = entriesList.Select(x => (TwoCurrenciesBalanceEntry) x).ToList();
+
+      var totalDebtor = entries.FindAll(
+                                x => x.ItemType == TrialBalanceItemType.BalanceTotalDebtor)
+                                .Sum(x => x.TotalBalance);
+
+      var totalCreditor = entries.FindAll(
+                                x => x.ItemType == TrialBalanceItemType.BalanceTotalCreditor)
+                                .Sum(x => x.TotalBalance);
+
+      var totalReport = entries.FindAll(
+                                x => x.ItemType == TrialBalanceItemType.BalanceTotalConsolidated)
+                                .Sum(x => x.TotalBalance);
+
+      Assertion.Assert(Math.Abs(totalReport - (totalDebtor - totalCreditor)) <= MAX_BALANCE_DIFFERENCE,
+        "La suma de total de deudoras menos acreedoras no es igual al total del reporte, " +
+        $"o excede el límite máximo de {MAX_BALANCE_DIFFERENCE} pesos de diferencia.");
+    }
+
+
+    private void TotalByDebtorOrCreditorAnalitico(FixedList<ITrialBalanceEntry> entriesList) {
+      int MAX_BALANCE_DIFFERENCE = 10;
+
+      var entries = entriesList.Select(x => (TwoCurrenciesBalanceEntry) x).ToList();
+
+      foreach (var totalDebtor in entries.Where(x => x.ItemType == TrialBalanceItemType.BalanceTotalDebtor)) {
+        
+        var entriesTotal = entries.FindAll(x => x.DebtorCreditor == DebtorCreditorType.Deudora &&
+                                                x.ItemType == TrialBalanceItemType.BalanceSummary &&
+                                                x.Level == 1 && x.Sector.Code == "00")
+                                  .Sum(x => x.DomesticBalance);
+        
+        if (_command.AccountsChartUID == "b2328e67-3f2e-45b9-b1f6-93ef6292204e") {
+          entriesTotal = entries.FindAll(x => x.DebtorCreditor == DebtorCreditorType.Deudora &&
+                                                x.ItemType == TrialBalanceItemType.BalanceEntry)
+                                  .Sum(x => x.DomesticBalance);
+        }
+
+        Assertion.Assert(Math.Abs(totalDebtor.DomesticBalance - entriesTotal) <= MAX_BALANCE_DIFFERENCE,
+                         $"La suma del saldo actual ({entriesTotal}) de las cuentas deudoras no es " +
+                         $"igual al {totalDebtor.GroupName} ({totalDebtor.DomesticBalance})");
+      }
+
+      foreach (var totalCreditor in entries.Where(a => a.ItemType == TrialBalanceItemType.BalanceTotalCreditor)) {
+        var entriesTotal = entries.FindAll(x => x.DebtorCreditor == DebtorCreditorType.Acreedora &&
+                                                x.ItemType == TrialBalanceItemType.BalanceSummary &&
+                                                x.Level == 1 && x.Sector.Code == "00")
+                                  .Sum(x => x.DomesticBalance);
+        if (_command.AccountsChartUID == "b2328e67-3f2e-45b9-b1f6-93ef6292204e") {
+          entriesTotal = entries.FindAll(x => x.DebtorCreditor == DebtorCreditorType.Acreedora &&
+                                                x.ItemType == TrialBalanceItemType.BalanceEntry)
+                                  .Sum(x => x.DomesticBalance);
+        }
+        Assertion.Assert(Math.Abs(totalCreditor.DomesticBalance - entriesTotal) <= MAX_BALANCE_DIFFERENCE,
+                         $"La suma del saldo actual ({entriesTotal}) de las cuentas acreedoras no es " +
+                         $"igual al {totalCreditor.GroupName} ({totalCreditor.DomesticBalance})");
+      }
+    }
+
+
+    private void TotalByDebtorOrCreditorBalanza(FixedList<TrialBalanceEntry> entries) {
       int MAX_BALANCE_DIFFERENCE = 10;
 
       foreach (var totalDebtor in entries.Where(x => x.ItemType == TrialBalanceItemType.BalanceTotalDebtor)) {
@@ -68,104 +287,6 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
       }
     }
 
-
-    private void CheckSummaryEntriesIsEqualToTotalByGroup(FixedList<TrialBalanceEntry> entries) {
-      int MAX_BALANCE_DIFFERENCE = 10;
-
-      foreach (var debtorGroup in entries.Where(x => x.ItemType == TrialBalanceItemType.BalanceTotalGroupDebtor)) {
-        var entriesTotal = entries.FindAll(x => x.Account.GroupNumber == debtorGroup.GroupNumber &&
-                                                x.Currency.Code == debtorGroup.Currency.Code)
-                                  .Sum(x => x.CurrentBalance);
-
-        Assertion.Assert(Math.Abs(debtorGroup.CurrentBalance - entriesTotal) <= MAX_BALANCE_DIFFERENCE,
-                         $"La suma del saldo actual de las cuentas no es igual al total por grupo " +
-                         $"en {debtorGroup.GroupName} con naturaleza {debtorGroup.DebtorCreditor}, " +
-                         $"Total de cuentas: {entriesTotal}, Total del grupo: {debtorGroup.CurrentBalance}");
-      }
-
-      foreach (var creditorGroup in entries.Where(x => x.ItemType == TrialBalanceItemType.BalanceTotalGroupCreditor)) {
-        var entriesTotal = entries.FindAll(x => x.Account.GroupNumber == creditorGroup.GroupNumber &&
-                                                x.Currency.Code == creditorGroup.Currency.Code)
-                                  .Sum(x => x.CurrentBalance);
-
-        Assertion.Assert(Math.Abs(creditorGroup.CurrentBalance - entriesTotal) <= MAX_BALANCE_DIFFERENCE,
-                         $"La suma del saldo actual de las cuentas no es igual al total por grupo " +
-                         $"en {creditorGroup.GroupName} con naturaleza {creditorGroup.DebtorCreditor}, " +
-                         $"Total de cuentas: {entriesTotal}, Total del grupo: {creditorGroup.CurrentBalance}");
-      }
-    }
-
-
-    private void CheckTotalsByDebtorAndCreditorEntries(List<TrialBalanceEntry> trialBalance) {
-      int MAX_BALANCE_DIFFERENCE = 10;
-
-      if (_command.FromAccount == string.Empty && _command.ToAccount == string.Empty) {
-        var totalDebtorDebit = trialBalance.FindAll(
-                              x => x.ItemType == TrialBalanceItemType.BalanceTotalDebtor)
-                              .Sum(x => x.Debit);
-
-        var totalCreditorDebit = trialBalance.FindAll(
-                                  x => x.ItemType == TrialBalanceItemType.BalanceTotalCreditor)
-                                  .Sum(x => x.Debit);
-
-        var totalDebtorCredit = trialBalance.FindAll(
-                                  x => x.ItemType == TrialBalanceItemType.BalanceTotalDebtor)
-                                  .Sum(x => x.Credit);
-
-        var totalCreditorCredit = trialBalance.FindAll(
-                                    x => x.ItemType == TrialBalanceItemType.BalanceTotalCreditor)
-                                    .Sum(x => x.Credit);
-
-        decimal totalDebit = totalDebtorDebit + totalCreditorDebit;
-        decimal totalCredit = totalDebtorCredit + totalCreditorCredit;
-
-        Assertion.Assert(Math.Abs(totalDebit - totalCredit) <= MAX_BALANCE_DIFFERENCE,
-          "La suma de cargos totales no es igual a la suma de abonos totales de la balanza, o excede el " +
-          $"límite máximo de {MAX_BALANCE_DIFFERENCE} pesos de diferencia.");
-      }
-
-    }
-
-
-    private void CheckTotalsByGroupEntries(List<TrialBalanceEntry> trialBalance) {
-      CheckTotalsByGroupEntriesInBalanza(trialBalance);
-    }
-
-
-    private void CheckTotalsByGroupEntriesInBalanza(List<TrialBalanceEntry> trialBalance) {
-      int MAX_BALANCE_DIFFERENCE = 10;
-
-      if (_command.FromAccount == string.Empty && _command.ToAccount == string.Empty) {
-        var totalByGroupDebtor = trialBalance.FindAll(
-                                  x => x.ItemType == TrialBalanceItemType.BalanceTotalGroupDebtor)
-                                  .Sum(x => x.CurrentBalance);
-        var totalByGroupCreditor = trialBalance.FindAll(
-                                    x => x.ItemType == TrialBalanceItemType.BalanceTotalGroupCreditor)
-                                    .Sum(x => x.CurrentBalance);
-
-        Assertion.Assert(Math.Abs(totalByGroupDebtor - totalByGroupCreditor) <= MAX_BALANCE_DIFFERENCE,
-          "La suma de saldos del total de cuentas deudoras no es igual al de las cuentas acreedoras, " +
-          $"o excede el límite máximo de {MAX_BALANCE_DIFFERENCE} pesos de diferencia.");
-      }
-
-    }
-
-
-    private void CheckTotalsConsolidated(List<TrialBalanceEntry> trialBalance) {
-      int MAX_BALANCE_DIFFERENCE = 10;
-
-      var totalsByCurrency = trialBalance.FindAll(
-                                x => x.ItemType == TrialBalanceItemType.BalanceTotalCurrency)
-                                .Sum(x => x.CurrentBalance);
-
-      var totalConsolidated = trialBalance.FindAll(
-                                x => x.ItemType == TrialBalanceItemType.BalanceTotalConsolidated)
-                                .Sum(x => x.CurrentBalance);
-
-      Assertion.Assert(Math.Abs(totalConsolidated - totalsByCurrency) <= MAX_BALANCE_DIFFERENCE,
-        "La suma de totales por moneda no es igual al total consolidado, " +
-        $"o excede el límite máximo de {MAX_BALANCE_DIFFERENCE} pesos de diferencia.");
-    }
     #endregion Private methods
 
 

@@ -50,14 +50,14 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
 
       trialBalance = helper.RestrictLevels(trialBalance);
 
-      if (_command.TrialBalanceType == TrialBalanceType.Balanza ||
-          _command.TrialBalanceType == TrialBalanceType.SaldosPorCuenta) {
-        var ensureIsValid = new EnsureBalanceValidations(_command);
-        ensureIsValid.EnsureIsValid(trialBalance, postingEntries);
-      }
-      
       var returnBalance = new FixedList<ITrialBalanceEntry>(
                               trialBalance.Select(x => (ITrialBalanceEntry) x));
+
+      if (_command.TrialBalanceType == TrialBalanceType.Balanza ||
+                _command.TrialBalanceType == TrialBalanceType.SaldosPorCuenta) {
+        var ensureIsValid = new EnsureBalanceValidations(_command);
+        ensureIsValid.EnsureIsValid(returnBalance, postingEntries);
+      }
 
       return new TrialBalance(_command, returnBalance);
     }
