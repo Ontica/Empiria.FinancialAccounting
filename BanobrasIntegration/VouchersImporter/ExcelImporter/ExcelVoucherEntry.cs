@@ -113,6 +113,11 @@ namespace Empiria.FinancialAccounting.BanobrasIntegration.VouchersImporter {
     }
 
 
+    private int EventCode {
+      get; set;
+    }
+
+
     internal Currency GetCurrency() {
       if (this.CurrencyCode.Length == 0) {
         return Currency.Empty;
@@ -203,6 +208,24 @@ namespace Empiria.FinancialAccounting.BanobrasIntegration.VouchersImporter {
 
         SetAccountsChart();
       }
+    }
+
+
+    internal EventType GetEventType() {
+      try {
+
+        return EventType.Parse(this.EventCode);
+
+      } catch {
+        AddError($"Ocurrió un problema al leer el tipo de evento {this.EventCode}.");
+
+        return EventType.Empty;
+      }
+    }
+
+
+    internal void SetEventCode(int value) {
+      this.EventCode = value;
     }
 
 
@@ -383,7 +406,6 @@ namespace Empiria.FinancialAccounting.BanobrasIntegration.VouchersImporter {
 
       if (ledger.IsEmptyInstance) {
         return this.SubledgerAccount;
-
       }
       return ledger.FormatSubledgerAccount(this.SubledgerAccount);
     }

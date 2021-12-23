@@ -96,6 +96,7 @@ namespace Empiria.FinancialAccounting.BanobrasIntegration.VouchersImporter {
         SubledgerAccountNo = sourceEntry.GetSubledgerAccountNo(),
         ResponsibilityArea = header.FunctionalArea,
         BudgetConcept = string.Empty,
+        // EventType = sourceEntry.GetEventType(), ToDO IF SIC rule Column I
         EventType = EventType.Empty,
         VerificationNumber = string.Empty,
         VoucherEntryType = sourceEntry.VoucherEntryType,

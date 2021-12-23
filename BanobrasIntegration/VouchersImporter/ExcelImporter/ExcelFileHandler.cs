@@ -144,6 +144,7 @@ namespace Empiria.FinancialAccounting.BanobrasIntegration.VouchersImporter {
       entry.SetDebitOrCredit(debit, credit);
       entry.SetSubledgerAccount(_excelFile.ReadCellValue<string>($"G{row}", string.Empty));
       entry.SetExchangeRate(_excelFile.ReadCellValue<decimal>($"H{row}", 1));
+      // entry.SetEventCode(_excelFile.ReadCellValue<int>($"I{row}", 0)); TODO Enabled for SIC System Créditos
 
       return entry;
     }
