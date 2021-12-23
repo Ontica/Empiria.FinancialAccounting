@@ -9,6 +9,7 @@
 *                                                                                                            *
 ************************* Copyright(c) La Vía Óntica SC, Ontica LLC and contributors. All rights reserved. **/
 using System;
+using System.Collections.Generic;
 
 using Empiria.FinancialAccounting.Vouchers;
 
@@ -17,6 +18,10 @@ namespace Empiria.FinancialAccounting.BanobrasIntegration.VouchersImporter {
   /// <summary>Información de un registro de la tabla MC_MOVIMIENTOS (Banobras) con
   /// movimientos de pólizas por integrar (cargos o abonos).</summary>
   internal class Movimiento {
+
+
+    private readonly List<ToImportVoucherIssue> _issues = new List<ToImportVoucherIssue>();
+
 
     [DataField("MCO_TIPO_CONT", ConvertFrom = typeof(long))]
     public int TipoContabilidad {
@@ -129,6 +134,10 @@ namespace Empiria.FinancialAccounting.BanobrasIntegration.VouchersImporter {
       }
     }
 
+    private string GetEntryID() {
+      return this.NumMovimiento.ToString();
+    }
+
 
     internal StandardAccount GetStandardAccount() {
       string formatted = this.NumeroCuentaEstandar;
@@ -143,11 +152,13 @@ namespace Empiria.FinancialAccounting.BanobrasIntegration.VouchersImporter {
         if (stdAccount != null) {
           return stdAccount;
         } else {
-          EmpiriaLog.Info($"La cuenta '{formatted}' no existe en el catálogo de cuentas. (Sistema {this.IdSistema})");
+          AddError($"La cuenta '{formatted}' no existe en el catálogo de cuentas.");
+
           return StandardAccount.Empty;
         }
       } catch {
-        EmpiriaLog.Info($"Ocurrió un problema al leer el catálogo de cuentas. (Sistema {this.IdSistema})");
+        AddError($"Ocurrió un problema al leer el catálogo de cuentas.");
+
         return StandardAccount.Empty;
       }
     }
@@ -162,39 +173,62 @@ namespace Empiria.FinancialAccounting.BanobrasIntegration.VouchersImporter {
         return Sector.Empty;
       }
 
-      return Sector.Parse(this.ClaveSector);
+      try {
+        return Sector.Parse(this.ClaveSector);
+
+      } catch {
+        AddError($"Ocurrió un problema al leer el sector {this.ClaveSector}.");
+
+        return Sector.Empty;
+      }
     }
 
 
     internal SubledgerAccount GetSubledgerAccount() {
-      Ledger ledger = this.Encabezado.GetLedger();
+      try {
+        Ledger ledger = this.Encabezado.GetLedger();
 
-      var formattedAccountNo = GetSubledgerAccountNo();
+        var formattedSubledgerAccountNo = GetSubledgerAccountNo();
 
-      SubledgerAccount subledgerAccount = ledger.TryGetSubledgerAccount(formattedAccountNo);
+        SubledgerAccount subledgerAccount = ledger.TryGetSubledgerAccount(formattedSubledgerAccountNo);
 
-      if (subledgerAccount != null) {
-        return subledgerAccount;
-      } else {
+        if (subledgerAccount != null) {
+          return subledgerAccount;
+        } else {
+          return SubledgerAccount.Empty;
+        }
+      } catch {
+        AddError($"Ocurrió un problema al leer el auxiliar. Tiene un formato no válido o pertenece a otra contabilidad.");
+
         return SubledgerAccount.Empty;
       }
     }
 
 
     internal string GetSubledgerAccountNo() {
-      Ledger ledger = this.Encabezado.GetLedger();
+      try {
 
-      this.NumeroAuxiliar = ledger.FormatSubledgerAccount(this.NumeroAuxiliar);
+        Ledger ledger = this.Encabezado.GetLedger();
 
-      return this.NumeroAuxiliar;
+        this.NumeroAuxiliar = ledger.FormatSubledgerAccount(this.NumeroAuxiliar);
+
+        return this.NumeroAuxiliar;
+      } catch {
+        AddError($"Ocurrió un problema al leer el auxiliar {this.NumeroAuxiliar}. Tiene un formato no válido o pertenece a otra contabilidad.");
+
+        return String.Empty;
+      }
     }
 
 
     internal FunctionalArea GetResponsibilityArea() {
       try {
+
         return FunctionalArea.Parse(this.AreaMovimiento);
+
       } catch {
-        EmpiriaLog.Info($"Ocurrió un problema al leer el área funcional {this.AreaMovimiento} (Sistema {this.IdSistema})");
+        AddError($"Ocurrió un problema al leer el área funcional {this.AreaMovimiento}.");
+
         return FunctionalArea.Empty;
       }
     }
@@ -206,7 +240,15 @@ namespace Empiria.FinancialAccounting.BanobrasIntegration.VouchersImporter {
 
 
     internal EventType GetEventType() {
-      return EventType.Parse(this.ClaveDisponibilidad);
+      try {
+
+        return EventType.Parse(this.ClaveDisponibilidad);
+
+      } catch {
+        AddError($"Ocurrió un problema al leer la clave de disponibilidad {this.ClaveDisponibilidad}.");
+
+        return EventType.Empty;
+      }
     }
 
 
@@ -218,10 +260,14 @@ namespace Empiria.FinancialAccounting.BanobrasIntegration.VouchersImporter {
     internal VoucherEntryType GetVoucherEntryType() {
       if (this.TipoMovimiento == 1) {
         return VoucherEntryType.Debit;
+
       } else if (this.TipoMovimiento == 2) {
         return VoucherEntryType.Credit;
+
       } else {
-        throw Assertion.AssertNoReachThisCode();
+        AddError($"Ocurrió un problema al leer el tipo de movimiento {this.TipoMovimiento}.");
+
+        return VoucherEntryType.Debit;
       }
     }
 
@@ -242,7 +288,8 @@ namespace Empiria.FinancialAccounting.BanobrasIntegration.VouchersImporter {
       try {
         return Currency.Parse(claveMoneda);
       } catch {
-        EmpiriaLog.Info($"La moneda '{claveMoneda}' no existe en el catálogo de monedas. (Sistema {this.IdSistema})");
+
+        AddError($"La moneda '{claveMoneda}' no existe en el catálogo de monedas.");
 
         return Currency.Empty;
       }
@@ -265,7 +312,15 @@ namespace Empiria.FinancialAccounting.BanobrasIntegration.VouchersImporter {
 
 
     internal FixedList<ToImportVoucherIssue> GetIssues() {
-      return new FixedList<ToImportVoucherIssue>();
+      return _issues.ToFixedList();
+    }
+
+
+    public void AddError(string msg, string column = "") {
+      _issues.Add(new ToImportVoucherIssue(VoucherIssueType.Error,
+                                           this.GetVoucherUniqueID(),
+                                           this.GetEntryID(),
+                                           $"{msg} (Sistema {this.IdSistema})"));
     }
 
 

@@ -55,7 +55,8 @@ namespace Empiria.FinancialAccounting.BanobrasIntegration.VouchersImporter {
         Assertion.AssertFail("DBVouchersImporter is running. Please stop it before call Start() method");
       }
 
-      command.TryToCloseVouchers = true;
+      command.TryToCloseVouchers = true;     // ToDo: OOJJOO
+
       command.CanEditVoucherEntries = false;
 
       SetIsRunningFlag(true);

@@ -61,28 +61,28 @@ namespace Empiria.FinancialAccounting.BanobrasIntegration.VouchersImporter {
 
 
     private ToImportVoucherHeader MapEncabezadoToImportVoucherHeader(Encabezado encabezado) {
-      var header = new ToImportVoucherHeader();
+      return new ToImportVoucherHeader {
 
-      header.ImportationSet = encabezado.GetImportationSet();
-      header.UniqueID = encabezado.GetUniqueID();
-      header.Ledger = encabezado.GetLedger();
-      header.Concept = encabezado.GetConcept();
-      header.AccountingDate = encabezado.GetAccountingDate();
-      header.VoucherType = encabezado.GetVoucherType();
-      header.TransactionType = encabezado.GetTransactionType();
-      header.FunctionalArea = encabezado.GetFunctionalArea();
-      header.RecordingDate = encabezado.GetRecordingDate();
-      header.ElaboratedBy = encabezado.GetElaboratedBy();
+        ImportationSet = encabezado.GetImportationSet(),
+        UniqueID = encabezado.GetUniqueID(),
+        Ledger = encabezado.GetLedger(),
+        Concept = encabezado.GetConcept(),
+        AccountingDate = encabezado.GetAccountingDate(),
+        VoucherType = encabezado.GetVoucherType(),
+        TransactionType = encabezado.GetTransactionType(),
+        FunctionalArea = encabezado.GetFunctionalArea(),
+        RecordingDate = encabezado.GetRecordingDate(),
+        ElaboratedBy = encabezado.GetElaboratedBy(),
 
-      header.Issues = encabezado.GetIssues();
-
-      return header;
+        Issues = encabezado.GetIssues()
+      };
     }
 
 
     private ToImportVoucherEntry MapMovimientoToStandardVoucherEntry(ToImportVoucherHeader header,
                                                                      Movimiento movimiento) {
       var entry = new ToImportVoucherEntry(header) {
+
         StandardAccount = movimiento.GetStandardAccount(),
         Sector = movimiento.GetSector(),
         SubledgerAccount = movimiento.GetSubledgerAccount(),
@@ -100,6 +100,7 @@ namespace Empiria.FinancialAccounting.BanobrasIntegration.VouchersImporter {
         BaseCurrencyAmount = movimiento.GetBaseCurrencyAmount(),
         DataSource = movimiento.GetVoucherUniqueID(),
         Protected = movimiento.GetProtected()
+
       };
 
       entry.AddIssues(movimiento.GetIssues());
