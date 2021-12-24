@@ -53,11 +53,11 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
       var returnBalance = new FixedList<ITrialBalanceEntry>(
                               trialBalance.Select(x => (ITrialBalanceEntry) x));
 
-      if (_command.TrialBalanceType == TrialBalanceType.Balanza ||
-                _command.TrialBalanceType == TrialBalanceType.SaldosPorCuenta) {
-        var ensureIsValid = new EnsureBalanceValidations(_command);
-        ensureIsValid.EnsureIsValid(returnBalance, postingEntries);
-      }
+      //if (_command.TrialBalanceType == TrialBalanceType.Balanza ||
+      //          _command.TrialBalanceType == TrialBalanceType.SaldosPorCuenta) {
+      //  var ensureIsValid = new EnsureBalanceValidations(_command);
+      //  ensureIsValid.EnsureIsValid(returnBalance, postingEntries);
+      //}
 
       return new TrialBalance(_command, returnBalance);
     }

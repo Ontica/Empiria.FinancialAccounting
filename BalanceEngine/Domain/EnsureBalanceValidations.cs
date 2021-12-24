@@ -19,7 +19,7 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
 
     private readonly TrialBalanceCommand _command;
 
-    public EnsureBalanceValidations(TrialBalanceCommand command) {
+    internal EnsureBalanceValidations(TrialBalanceCommand command) {
       _command = command;
     }
 
@@ -63,7 +63,7 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
     }
 
 
-    private void CheckSummaryEntriesIsEqualToTotalByGroup(FixedList<ITrialBalanceEntry> entriesList, 
+    private void CheckSummaryEntriesIsEqualToTotalByGroup(FixedList<ITrialBalanceEntry> entriesList,
                                                           FixedList<TrialBalanceEntry> postingEntries) {
       if (_command.TrialBalanceType == TrialBalanceType.Balanza ||
           _command.TrialBalanceType == TrialBalanceType.BalanzaConContabilidadesEnCascada ||
@@ -72,19 +72,19 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
         int MAX_BALANCE_DIFFERENCE = 10;
 
         var entries = entriesList.Select(x => (TrialBalanceEntry) x).ToList();
-        
+
         foreach (var debtorGroup in entries.Where(x => x.ItemType == TrialBalanceItemType.BalanceTotalGroupDebtor)) {
           var entriesTotal = postingEntries.FindAll(x => x.Account.GroupNumber == debtorGroup.GroupNumber &&
                                                          x.Account.DebtorCreditor == DebtorCreditorType.Deudora &&
                                                          x.Currency.Code == debtorGroup.Currency.Code)
                                            .Sum(x => x.CurrentBalance);
-          
+
           Assertion.Assert(Math.Abs(debtorGroup.CurrentBalance - entriesTotal) <= MAX_BALANCE_DIFFERENCE,
                            $"La suma del saldo actual de las cuentas no es igual al total por grupo " +
                            $"en {debtorGroup.GroupName} con naturaleza {debtorGroup.DebtorCreditor}, " +
                            $"Total de cuentas: {entriesTotal}, Total del grupo: {debtorGroup.CurrentBalance}");
         }
-        
+
         foreach (var creditorGroup in entries.Where(x => x.ItemType == TrialBalanceItemType.BalanceTotalGroupCreditor)) {
           var entriesTotal = postingEntries.FindAll(x => x.Account.GroupNumber == creditorGroup.GroupNumber &&
                                                          x.Account.DebtorCreditor == DebtorCreditorType.Acreedora &&
@@ -270,7 +270,7 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
     }
 
 
-    private void TotalByDebtorOrCreditorBalanza(FixedList<ITrialBalanceEntry> entriesList, 
+    private void TotalByDebtorOrCreditorBalanza(FixedList<ITrialBalanceEntry> entriesList,
                                                 FixedList<TrialBalanceEntry> postingEntries) {
       int MAX_BALANCE_DIFFERENCE = 10;
 
@@ -284,7 +284,7 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
         Assertion.Assert(Math.Abs(totalDebtor.CurrentBalance - entriesTotal) <= MAX_BALANCE_DIFFERENCE,
                          $"La suma del saldo actual ({entriesTotal}) de las cuentas deudoras no es " +
                          $"igual al {totalDebtor.GroupName} ({totalDebtor.CurrentBalance})");
-      } 
+      }
 
       foreach (var totalCreditor in entries.Where(a => a.ItemType == TrialBalanceItemType.BalanceTotalCreditor)) {
         var entriesTotal = postingEntries.FindAll(x => x.DebtorCreditor == DebtorCreditorType.Acreedora &&
