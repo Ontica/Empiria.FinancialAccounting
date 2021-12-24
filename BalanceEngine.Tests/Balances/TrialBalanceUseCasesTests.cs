@@ -65,13 +65,9 @@ namespace Empiria.FinancialAccounting.Tests.Balances {
       command.TrialBalanceType = TrialBalanceType.Balanza;
       command.BalancesType = BalancesType.WithCurrentBalanceOrMovements;
       command.AccountsChartUID = "47ec2ec7-0f4f-482e-9799-c23107b60d8a";
+      //command.ConsolidateBalancesToTargetCurrency = true;
       command.ShowCascadeBalances = false;
       command.UseDefaultValuation = false;
-      command.WithSubledgerAccount = false;
-      command.WithAverageBalance = false;
-      command.WithSectorization = true;
-      command.FromAccount = "1.05";
-      command.ToAccount = "1.05";
       TrialBalanceDto trialBalance = _usecases.BuildTrialBalance(command);
 
       Assert.NotNull(trialBalance);
@@ -119,11 +115,14 @@ namespace Empiria.FinancialAccounting.Tests.Balances {
         Ledgers = TestingConstants.BALANCE_LEDGERS_ARRAY,
         InitialPeriod = new TrialBalanceCommandPeriod() {
           FromDate = TestingConstants.FROM_DATE,
-          ToDate = TestingConstants.TO_DATE
+          ToDate = TestingConstants.TO_DATE,
+          //ExchangeRateDate = new DateTime(2021, 06, 30),
+          //ExchangeRateTypeUID = "96c617f6-8ed9-47f3-8d2d-f1240e446e1d",
+          //ValuateToCurrrencyUID = "01"
         },
         FinalPeriod = new TrialBalanceCommandPeriod() {
-          FromDate = new DateTime(2021, 07, 01),
-          ToDate = new DateTime(2021, 07, 31)
+          FromDate = new DateTime(2021, 06, 01),
+          ToDate = new DateTime(2021, 06, 30)
         }
 
       };

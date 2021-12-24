@@ -90,6 +90,8 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
       List<TrialBalanceEntry> summaryTotalDebtorCreditorEntries =
                               helper.GenerateTotalSummaryDebtorCreditor(postingEntries.ToList());
 
+      var totalDebtors = summaryTotalDebtorCreditorEntries.Where(a => a.Currency.Code == "01" && a.ItemType == TrialBalanceItemType.BalanceTotalCreditor).Sum(a=>a.CurrentBalance);
+
       trialBalance = helper.CombineDebtorCreditorAndPostingEntries(trialBalance,
                                                                    summaryTotalDebtorCreditorEntries);
 

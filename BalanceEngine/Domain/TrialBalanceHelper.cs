@@ -869,7 +869,7 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
         entry.GroupName = "TOTAL ACREEDORAS " + entry.Currency.FullName;
       }
 
-      string hash = $"{entry.GroupName}||{targetSector.Code}||{entry.Currency.Id}||{entry.Ledger.Id}";
+      string hash = $"{entry.GroupName}||{entry.Currency.Id}"; //{targetSector.Code}||||{entry.Ledger.Id}
 
       GenerateOrIncreaseEntries(summaryEntries, entry, targetAccount, targetSector, itemType, hash);
     }
@@ -910,20 +910,20 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
 
       groupEntry.GroupName = $"TOTAL GRUPO {balanceEntry.Account.GroupNumber}";
       groupEntry.GroupNumber = balanceEntry.Account.GroupNumber;
+      groupEntry.DebtorCreditor = balanceEntry.Account.DebtorCreditor;
       groupEntry.Account = StandardAccount.Empty;
       groupEntry.Sector = Sector.Empty;
-      groupEntry.DebtorCreditor = balanceEntry.Account.DebtorCreditor;
 
       string hash;
 
       if (balanceEntry.DebtorCreditor == DebtorCreditorType.Deudora) {
-        hash = $"{balanceEntry.Ledger.Id}||{balanceEntry.Currency.Id}||{groupEntry.GroupNumber}";
+        hash = $"{groupEntry.DebtorCreditor}||{groupEntry.Currency.Id}||{groupEntry.GroupNumber}"; //||{balanceEntry.Ledger.Id}
 
         GenerateOrIncreaseEntries(summaryEntries, groupEntry, StandardAccount.Empty, Sector.Empty,
                                   TrialBalanceItemType.BalanceTotalGroupDebtor, hash);
 
-      } else {
-        hash = $"{balanceEntry.Ledger.Id}||{balanceEntry.Currency.Id}||{groupEntry.GroupNumber}";
+      } else if (balanceEntry.DebtorCreditor == DebtorCreditorType.Acreedora) {
+        hash = $"{groupEntry.DebtorCreditor}||{groupEntry.Currency.Id}||{groupEntry.GroupNumber}"; //||{balanceEntry.Ledger.Id}
 
         GenerateOrIncreaseEntries(summaryEntries, groupEntry, StandardAccount.Empty, Sector.Empty,
                                   TrialBalanceItemType.BalanceTotalGroupCreditor, hash);
