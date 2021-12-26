@@ -79,8 +79,10 @@ namespace Empiria.FinancialAccounting.BanobrasIntegration.VouchersImporter {
     private void ImportVouchers(ImportVouchersCommand command) {
       const int BATCH_SIZE = 50;
 
-      List<Encabezado> encabezados = DbVouchersImporterDataService.GetEncabezados();
-      List<Movimiento> movimientos = DbVouchersImporterDataService.GetMovimientos();
+      Assertion.AssertObject(command.ProcessOnly[0], "ImportationSet");
+
+      List<Encabezado> encabezados = DbVouchersImporterDataService.GetEncabezados(command.ProcessOnly[0]);
+      List<Movimiento> movimientos = DbVouchersImporterDataService.GetMovimientos(command.ProcessOnly[0]);
 
       while (true) {
         if (encabezados.Count == 0 || !this.IsRunning) {
@@ -99,7 +101,6 @@ namespace Empiria.FinancialAccounting.BanobrasIntegration.VouchersImporter {
 
         var voucherImporter = new VoucherImporter(command, toImport);
 
-        // TODO: Db Vouchers importation disabled
         voucherImporter.Import();
 
         foreach (var item in toProcess) {

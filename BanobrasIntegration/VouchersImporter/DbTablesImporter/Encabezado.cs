@@ -112,14 +112,14 @@ namespace Empiria.FinancialAccounting.BanobrasIntegration.VouchersImporter {
 
 
     internal string GetImportationSet() {
-      var system = TransactionalSystem.Get(x => x.SourceSystemId == this.IdSistema);
-
-      return system.Name;
+      return DbVouchersImporterDataService.GetImportationSetUID(this.IdSistema,
+                                                                this.TipoContabilidad,
+                                                                this.FechaAfectacion);
     }
 
 
     internal string GetUniqueID() {
-      if (this.TipoContabilidad == 1 && IdSistema == 23) {
+      if (IdSistema == 23) {
         return $"{this.TipoContabilidad}||{this.IdSistema}||{this.FechaAfectacion.ToString("yyyy-MM-dd")}||" +
                $"{this.NumeroVolante}||{this.Concepto}";
       } else {
