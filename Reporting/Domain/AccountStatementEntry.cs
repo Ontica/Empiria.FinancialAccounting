@@ -18,7 +18,7 @@ namespace Empiria.FinancialAccounting.Reporting {
   }
 
   /// <summary>Represents an entry for vouchers by account.</summary>
-  public class VouchersByAccountEntry : IVouchersByAccountEntry {
+  public class AccountStatementEntry : IVouchersByAccountEntry {
 
 
     [DataField("ID_MAYOR", ConvertFrom = typeof(decimal))]

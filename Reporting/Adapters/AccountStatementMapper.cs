@@ -15,14 +15,14 @@ using Empiria.FinancialAccounting.BalanceEngine.Adapters;
 namespace Empiria.FinancialAccounting.Reporting.Adapters {
 
   /// <summary>Methods used to map vouchers by account.</summary>
-  static internal class VouchersByAccountMapper {
+  static internal class AccountStatementMapper {
 
 
     #region Public mappers
 
 
-    static internal VouchersByAccountDto Map(VouchersByAccount vouchers) {
-      return new VouchersByAccountDto { 
+    static internal AccountStatementDto Map(AccountStatement vouchers) {
+      return new AccountStatementDto { 
         Command = vouchers.Command,
         Columns = MapColumns(vouchers.Command),
         Entries = MapToDto(vouchers.Entries),
@@ -59,12 +59,12 @@ namespace Empiria.FinancialAccounting.Reporting.Adapters {
     private static FixedList<IVouchersByAccountEntryDto> MapToDto(
                     FixedList<IVouchersByAccountEntry> list) {
 
-      var mapped = list.Select((x) => MapToVouchersByAccount((VouchersByAccountEntry) x));
+      var mapped = list.Select((x) => MapToVouchersByAccount((Reporting.AccountStatementEntry) x));
       return new FixedList<IVouchersByAccountEntryDto>(mapped);
     }
 
     static private VouchersByAccountEntryDto MapToVouchersByAccount(
-                                              VouchersByAccountEntry entry) {
+                                              Reporting.AccountStatementEntry entry) {
       
       var dto = new VouchersByAccountEntryDto();
 

@@ -99,7 +99,7 @@ namespace Empiria.FinancialAccounting.Reporting {
     }
 
 
-    public FileReportDto Export(VouchersByAccountDto vouchers) {
+    public FileReportDto Export(AccountStatementDto vouchers) {
       Assertion.AssertObject(vouchers, "vouchers");
 
       var templateUID = $"VouchersByAccountTemplate";

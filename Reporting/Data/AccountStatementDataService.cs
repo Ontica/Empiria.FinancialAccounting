@@ -14,10 +14,10 @@ using Empiria.Data;
 namespace Empiria.FinancialAccounting.Reporting.Data {
 
   /// <summary>Provides data read methods for vouchers by account.</summary>
-  static internal class StoredVoucherDataService {
+  static internal class AccountStatementDataService {
 
-    static internal FixedList<VouchersByAccountEntry> GetVouchersByAccountEntries(
-                                                        VouchersByAccountCommandData commandData) {
+    static internal FixedList<AccountStatementEntry> GetVouchersByAccountEntries(
+                                                        AccountStatementCommandData commandData) {
 
       var operation = DataOperation.Parse("@qryVouchersByAccount",
                                           commandData.AccountsChartId,
@@ -25,7 +25,7 @@ namespace Empiria.FinancialAccounting.Reporting.Data {
                                           CommonMethods.FormatSqlDate(commandData.ToDate),
                                           commandData.Filters);
 
-      return DataReader.GetPlainObjectFixedList<VouchersByAccountEntry>(operation);
+      return DataReader.GetPlainObjectFixedList<AccountStatementEntry>(operation);
     }
 
   } // class StoredVoucherDataService

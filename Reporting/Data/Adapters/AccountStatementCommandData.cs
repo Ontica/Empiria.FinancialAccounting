@@ -11,7 +11,7 @@ using System;
 
 namespace Empiria.FinancialAccounting.Reporting.Data {
   
-  internal class VouchersByAccountCommandData {
+  internal class AccountStatementCommandData {
 
 
     public int AccountsChartId {

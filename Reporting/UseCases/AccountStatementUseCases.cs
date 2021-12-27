@@ -14,16 +14,16 @@ using Empiria.Services;
 namespace Empiria.FinancialAccounting.Reporting.UseCases {
 
   /// <summary>Use cases used to build vouchers by account.</summary>
-  public class VouchersByAccountUseCases : UseCase {
+  public class AccountStatementUseCases : UseCase {
 
     #region Constructors and parsers
 
-    protected VouchersByAccountUseCases() {
+    protected AccountStatementUseCases() {
       // no-op
     }
 
-    static public VouchersByAccountUseCases UseCaseInteractor() {
-      return UseCase.CreateInstance<VouchersByAccountUseCases>();
+    static public AccountStatementUseCases UseCaseInteractor() {
+      return UseCase.CreateInstance<AccountStatementUseCases>();
     }
 
     #endregion Constructors and parsers
@@ -31,15 +31,15 @@ namespace Empiria.FinancialAccounting.Reporting.UseCases {
     #region Use cases
 
 
-    public VouchersByAccountDto BuilVouchersByAccount(AccountStatementCommand accountStatementCommand) {
+    public AccountStatementDto BuilAccountStatement(AccountStatementCommand accountStatementCommand) {
 
       Assertion.AssertObject(accountStatementCommand, "accountStatementCommand");
 
-      var vouchersConstructor = new VouchersByAccountConstructor(accountStatementCommand);
+      var vouchersConstructor = new AccountStatementConstructor(accountStatementCommand);
 
-      VouchersByAccount vouchers = vouchersConstructor.Build();
+      AccountStatement vouchers = vouchersConstructor.Build();
 
-      return VouchersByAccountMapper.Map(vouchers);
+      return AccountStatementMapper.Map(vouchers);
     }
 
 

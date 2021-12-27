@@ -30,7 +30,7 @@ namespace Empiria.FinancialAccounting.Reporting.Exporters.Excel {
     }
 
 
-    internal ExcelFile CreateExcelFile(VouchersByAccountDto voucherDto) {
+    internal ExcelFile CreateExcelFile(AccountStatementDto voucherDto) {
       Assertion.AssertObject(voucherDto, "voucherDto");
 
       _command = voucherDto.Command;
@@ -61,7 +61,7 @@ namespace Empiria.FinancialAccounting.Reporting.Exporters.Excel {
     }
 
 
-    private void SetTable(VouchersByAccountDto voucherDto) {
+    private void SetTable(AccountStatementDto voucherDto) {
       FillOutVouchersByAccount(voucherDto.Entries.Select(x => (VouchersByAccountEntryDto) x));
     } // class VouchersByAccountExcelExporter
 

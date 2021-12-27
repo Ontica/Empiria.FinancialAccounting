@@ -14,11 +14,11 @@ using Empiria.FinancialAccounting.Reporting.Adapters;
 namespace Empiria.FinancialAccounting.Reporting {
 
   /// <summary>Contains the header and entries of vouchers by account.</summary>
-  public class VouchersByAccount {
+  public class AccountStatement {
 
     #region Constructors and parsers
 
-    internal VouchersByAccount(BalanceCommand command, FixedList<IVouchersByAccountEntry> entries, string title) {
+    internal AccountStatement(BalanceCommand command, FixedList<IVouchersByAccountEntry> entries, string title) {
       Assertion.AssertObject(command, "command");
       Assertion.AssertObject(entries, "entries");
       //Assertion.AssertObject(title, "title");

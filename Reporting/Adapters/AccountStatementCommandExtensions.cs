@@ -14,17 +14,17 @@ using Empiria.FinancialAccounting.Reporting.Data;
 namespace Empiria.FinancialAccounting.Reporting.Adapters {
 
   /// <summary>Type extension methods for VouchersByAccountCommand.</summary>
-  internal class VouchersByAccountCommandExtensions {
+  internal class AccountStatementCommandExtensions {
 
     private AccountStatementCommand _accountStatementCommand;
-    internal VouchersByAccountCommandExtensions(AccountStatementCommand accountStatementCommand) {
+    internal AccountStatementCommandExtensions(AccountStatementCommand accountStatementCommand) {
       _accountStatementCommand = accountStatementCommand;
     }
 
     #region Public methods
 
-    internal VouchersByAccountCommandData MapToVouchersByAccountCommandData() {
-      var commandData = new VouchersByAccountCommandData();
+    internal AccountStatementCommandData MapToVouchersByAccountCommandData() {
+      var commandData = new AccountStatementCommandData();
       var accountsChart = AccountsChart.Parse(_accountStatementCommand.Command.AccountsChartUID);
 
 

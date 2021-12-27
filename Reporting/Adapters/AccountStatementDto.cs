@@ -19,7 +19,7 @@ namespace Empiria.FinancialAccounting.Reporting.Adapters {
   }
 
   /// <summary>Output DTO used to return vouchers by account.</summary>
-  public class VouchersByAccountDto {
+  public class AccountStatementDto {
 
     public BalanceCommand Command {
       get; internal set;

@@ -63,9 +63,9 @@ namespace Empiria.FinancialAccounting.WebApi.Reporting {
             [FromBody] AccountStatementCommand accountStatementCommand) {
       base.RequireBody(accountStatementCommand);
 
-      using (var usecases = VouchersByAccountUseCases.UseCaseInteractor()) {
+      using (var usecases = AccountStatementUseCases.UseCaseInteractor()) {
 
-        VouchersByAccountDto vouchers = usecases.BuilVouchersByAccount(accountStatementCommand);
+        AccountStatementDto vouchers = usecases.BuilAccountStatement(accountStatementCommand);
 
         return new SingleObjectModel(this.Request, vouchers);
       }
@@ -78,9 +78,9 @@ namespace Empiria.FinancialAccounting.WebApi.Reporting {
             [FromBody] AccountStatementCommand accountStatementCommand) {
       base.RequireBody(accountStatementCommand);
 
-      using (var usecases = VouchersByAccountUseCases.UseCaseInteractor()) {
+      using (var usecases = AccountStatementUseCases.UseCaseInteractor()) {
 
-        VouchersByAccountDto vouchers = usecases.BuilVouchersByAccount(accountStatementCommand);
+        AccountStatementDto vouchers = usecases.BuilAccountStatement(accountStatementCommand);
 
         var excelExporter = new ExcelExporterService();
 
