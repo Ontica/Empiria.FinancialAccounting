@@ -9,6 +9,7 @@
 ************************* Copyright(c) La Vía Óntica SC, Ontica LLC and contributors. All rights reserved. **/
 using System;
 using System.Linq;
+using Empiria.FinancialAccounting.BalanceEngine;
 using Empiria.FinancialAccounting.Reporting.Data;
 
 namespace Empiria.FinancialAccounting.Reporting.Adapters {
@@ -47,18 +48,18 @@ namespace Empiria.FinancialAccounting.Reporting.Adapters {
     #region Private methods
 
     private string GetFilters() {
-      string ledgerFilter = GetLedgerFilter();
-      string currencyFilter = GetCurrencyFilter();
       string accountRangeFilter = GetAccountFilter();
-      string sectorFilter = GetSectorFilter();
       string subledgerAccountFilter = GetSubledgerAccountFilter();
+      string currencyFilter = GetCurrencyFilter();
+      string ledgerFilter = GetLedgerFilter();
+      string sectorFilter = GetSectorFilter();
 
-      var filter = new Filter(ledgerFilter);
+      var filter = new Filter(accountRangeFilter);
 
-      filter.AppendAnd(currencyFilter);
-      filter.AppendAnd(accountRangeFilter);
-      filter.AppendAnd(sectorFilter);
       filter.AppendAnd(subledgerAccountFilter);
+      filter.AppendAnd(currencyFilter);
+      filter.AppendAnd(ledgerFilter);
+      filter.AppendAnd(sectorFilter);
 
       return filter.ToString().Length > 0 ? $"AND {filter}" : "";
     }
@@ -66,7 +67,12 @@ namespace Empiria.FinancialAccounting.Reporting.Adapters {
 
     private string GetAccountFilter() {
       if (_accountStatementCommand.Entry.AccountNumberForBalances.Length != 0) {
-        return $"NUMERO_CUENTA_ESTANDAR = '{_accountStatementCommand.Entry.AccountNumberForBalances}'";
+        if (_accountStatementCommand.Entry.ItemType == TrialBalanceItemType.BalanceSummary) {
+          return $"NUMERO_CUENTA_ESTANDAR LIKE '{_accountStatementCommand.Entry.AccountNumberForBalances}%'";
+        } else {
+          return $"NUMERO_CUENTA_ESTANDAR = '{_accountStatementCommand.Entry.AccountNumberForBalances}'";
+        }
+        
       } else {
         return string.Empty;
       }
@@ -107,7 +113,9 @@ namespace Empiria.FinancialAccounting.Reporting.Adapters {
 
 
     private string GetSectorFilter() {
-      if (_accountStatementCommand.Entry.SectorCode.Length == 0) {
+      if (_accountStatementCommand.Entry.SectorCode.Length == 0 ||
+          (_accountStatementCommand.Entry.ItemType == TrialBalanceItemType.BalanceSummary &&
+           _accountStatementCommand.Entry.SectorCode == "00")) {
         return string.Empty;
       }
 
