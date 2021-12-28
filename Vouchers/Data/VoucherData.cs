@@ -129,7 +129,7 @@ namespace Empiria.FinancialAccounting.Vouchers.Data {
                                                     voucher.Ledger.Id,
                                                     sqlKeywords);
 
-      return DataReader.GetFixedList<SubledgerAccount>(operation);
+      return DataReader.GetPlainObjectFixedList<SubledgerAccount>(operation);
     }
 
 

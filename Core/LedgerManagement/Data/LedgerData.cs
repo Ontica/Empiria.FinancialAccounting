@@ -101,7 +101,7 @@ namespace Empiria.FinancialAccounting.Data {
 
       var dataOperation = DataOperation.Parse(sql);
 
-      return DataReader.GetObject<SubledgerAccount>(dataOperation, null);
+      return DataReader.GetPlainObject<SubledgerAccount>(dataOperation, null);
     }
 
 
@@ -114,6 +114,7 @@ namespace Empiria.FinancialAccounting.Data {
 
       DataWriter.Execute(dataOperation);
     }
+
 
     static private LedgerAccount GetLedgerAccount(Ledger ledger,
                                                   StandardAccount standardAccount) {

@@ -15,7 +15,7 @@ using Empiria.FinancialAccounting.Data;
 namespace Empiria.FinancialAccounting {
 
   /// <summary>Holds information about a subledger account (cuenta auxiliar).</summary>
-  public class SubledgerAccount : BaseObject {
+  public class SubledgerAccount {
 
     #region Constructors and parsers
 
@@ -39,7 +39,7 @@ namespace Empiria.FinancialAccounting {
       if (id == 0) {
         id = -1;
       }
-      return BaseObject.ParseId<SubledgerAccount>(id);
+      return SubledgerData.GetSubledgerAccount(id);
     }
 
 
@@ -52,16 +52,22 @@ namespace Empiria.FinancialAccounting {
 
 
     static public void Preload() {
-      BaseObject.GetList<SubledgerAccount>();
+      SubledgerData.GetSubledgerAccountsList();
     }
 
 
-    static public SubledgerAccount Empty => BaseObject.ParseEmpty<SubledgerAccount>();
-
+    static public SubledgerAccount Empty => Parse(-1);
 
     #endregion Constructors and parsers
 
     #region Public properties
+
+    [DataField("ID_CUENTA_AUXILIAR", ConvertFrom = typeof(long))]
+    public int Id {
+      get;
+      private set;
+    }
+
 
     public Ledger Ledger {
       get {
@@ -107,6 +113,12 @@ namespace Empiria.FinancialAccounting {
     }
 
 
+    public bool IsEmptyInstance {
+      get {
+        return (this.Id == -1 || this.Id == 0);
+      }
+    }
+
     #endregion Public properties
 
     #region Methods
@@ -115,7 +127,11 @@ namespace Empiria.FinancialAccounting {
       this.Suspended = false;
     }
 
-    protected override void OnSave() {
+
+    public void Save() {
+      if (this.Id == 0) {
+        this.Id = SubledgerData.NextSubledgerAccountId();
+      }
       SubledgerData.WriteSubledgerAccount(this);
     }
 
@@ -130,8 +146,8 @@ namespace Empiria.FinancialAccounting {
 
       fields.EnsureValid();
 
-      this.Name = base.PatchField(fields.Name, this.Name);
-      this.Description = base.PatchField(fields.Description, this.Description);
+      this.Name = FieldPatcher.PatchField(fields.Name, this.Name);
+      this.Description = FieldPatcher.PatchField(fields.Description, this.Description);
 
       UpdateSubledger(fields.SubledgerType());
 
