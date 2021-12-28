@@ -16,7 +16,13 @@ namespace Empiria.FinancialAccounting.Vouchers.Data {
   /// <summary>Data access layer for accounting vouchers.</summary>
   static internal class VoucherData {
 
+    static private readonly bool USE_IFRS_ACCOUNTS_CHART =
+                                            ConfigurationData.Get("Use.IFRS.Accounts.Chart", false);
+
     static internal void CloseVoucher(Voucher o) {
+
+      EnsureIFRSIsActiveGuard(o);
+
       var dataOperation = DataOperation.Parse("do_close_cof_transaccion",
                                               o.Id, o.Ledger.Id, o.Number,
                                               o.AuthorizedBy.IsEmptyInstance ? 0 : o.AuthorizedBy.Id,
@@ -72,13 +78,15 @@ namespace Empiria.FinancialAccounting.Vouchers.Data {
       return DataReader.GetPlainObject<Voucher>(dataOperation);
     }
 
+
     static internal string GetVoucherNumberFor(Voucher voucher) {
+      // Please check do_close_transaction stored procedure validation code
+
       var prefix = $"{voucher.AccountingDate.Year}-{voucher.AccountingDate.Month.ToString("00")}";
 
       var sql = "SELECT MAX(NUMERO_TRANSACCION) " +
                $"FROM COF_TRANSACCION " +
-               //$"WHERE ID_MAYOR = {voucher.Ledger.Id} AND " +
-               $"WHERE " +
+               $"WHERE ID_MAYOR = {voucher.Ledger.Id} AND " +
                $"NUMERO_TRANSACCION LIKE '{prefix}-%' AND ESTA_ABIERTA = 0";
 
       var dataOperation = DataOperation.Parse(sql);
@@ -96,7 +104,7 @@ namespace Empiria.FinancialAccounting.Vouchers.Data {
                   "SELECT * FROM VW_COF_TRANSACCION " +
                   $"WHERE {filter} " +
                   $"ORDER BY {sort}) " +
-                $"WHERE ROWNUM <= {pageSize}";
+               $"WHERE ROWNUM <= {pageSize}";
 
       var dataOperation = DataOperation.Parse(sql);
 
@@ -146,6 +154,8 @@ namespace Empiria.FinancialAccounting.Vouchers.Data {
     static internal void WriteVoucher(Voucher o) {
       Assertion.Assert(o.IsOpened, "Voucher must be opened to be modified in the database.");
 
+      EnsureIFRSIsActiveGuard(o);
+
       var op = DataOperation.Parse("write_cof_transaccion", o.Id, o.Number,
                                     o.Ledger.Id, o.FunctionalArea.Id,
                                     o.TransactionType.Id, o.VoucherType.Id,
@@ -170,6 +180,16 @@ namespace Empiria.FinancialAccounting.Vouchers.Data {
                                     o.Amount, o.BaseCurrencyAmount, o.Protected ? 1 : 0);
 
       DataWriter.Execute(op);
+    }
+
+
+    static private void EnsureIFRSIsActiveGuard(Voucher o) {
+      if (USE_IFRS_ACCOUNTS_CHART) {
+        return;
+      }
+      if (o.Ledger.AccountsChart.Equals(AccountsChart.IFRS)) {
+        Assertion.AssertFail("Por ahora, SICOFIN ha sido configurado para NO permitir el registro de pólizas con el catálogo IFRS9 2022.");
+      }
     }
 
   }  // class VoucherData
