@@ -34,7 +34,7 @@ namespace Empiria.FinancialAccounting.Reporting {
 
 
     [DataField("ID_CUENTA_ESTANDAR", ConvertFrom = typeof(long))]
-    public StandardAccount Account {
+    public int StandardAccountId {
       get; internal set;
     }
 
@@ -53,6 +53,19 @@ namespace Empiria.FinancialAccounting.Reporting {
 
     [DataField("ID_MOVIMIENTO", ConvertFrom = typeof(decimal))]
     public int VoucherEntryId {
+      get; internal set;
+    }
+
+
+
+    [DataField("NUMERO_CUENTA_ESTANDAR")]
+    public string AccountNumber {
+      get; internal set;
+    }
+
+
+    [DataField("NOMBRE_CUENTA_ESTANDAR")]
+    public string AccountName {
       get; internal set;
     }
 

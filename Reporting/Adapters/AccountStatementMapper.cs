@@ -73,14 +73,14 @@ namespace Empiria.FinancialAccounting.Reporting.Adapters {
       dto.LedgerName = entry.Ledger.Name;
       dto.LedgerNumber = entry.Ledger.Number;
       dto.CurrencyCode = entry.ItemType == TrialBalanceItemType.BalanceEntry ? entry.Currency.Code : "";
-      dto.StandardAccountId = entry.Account.Id;
-      dto.AccountName = entry.Account.Name;
+      dto.StandardAccountId = entry.StandardAccountId;
+      dto.AccountName = entry.AccountName;
       if (entry.ItemType == TrialBalanceItemType.BalanceEntry) {
-        dto.AccountNumber = entry.Account.Number;
+        dto.AccountNumber = entry.AccountNumber;
       } else {
         dto.AccountNumber = entry.IsCurrentBalance ? "SALDO ACTUAL" : "SALDO INICIAL";
       }
-      dto.AccountNumberForBalances = entry.Account.Number;
+      dto.AccountNumberForBalances = entry.AccountNumber;
       dto.SectorCode = entry.ItemType == TrialBalanceItemType.BalanceEntry ? entry.Sector.Code : "";
       dto.SubledgerAccountNumber = entry.SubledgerAccountNumber.Length > 1 ? 
                                    entry.SubledgerAccountNumber : "";

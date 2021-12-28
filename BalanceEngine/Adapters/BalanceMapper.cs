@@ -36,7 +36,7 @@ namespace Empiria.FinancialAccounting.BalanceEngine.Adapters {
       trialBalanceCommand.SubledgerAccount = command.SubledgerAccount;
       trialBalanceCommand.TrialBalanceType = command.TrialBalanceType;
       trialBalanceCommand.ShowCascadeBalances = true;
-      trialBalanceCommand.WithSubledgerAccount = command.TrialBalanceType == TrialBalanceType.SaldosPorAuxiliar ?
+      trialBalanceCommand.WithSubledgerAccount = command.TrialBalanceType == TrialBalanceType.SaldosPorAuxiliarConsultaRapida ?
                                                  true : command.WithSubledgerAccount;
 
       return trialBalanceCommand;
@@ -50,10 +50,10 @@ namespace Empiria.FinancialAccounting.BalanceEngine.Adapters {
 
     private static FixedList<DataTableColumn> MapColumns(BalanceCommand command) {
       List<DataTableColumn> columns = new List<DataTableColumn>();
-      if (command.TrialBalanceType == TrialBalanceType.SaldosPorAuxiliar) {
+      if (command.TrialBalanceType == TrialBalanceType.SaldosPorAuxiliarConsultaRapida) {
         columns.Add(new DataTableColumn("ledgerNumber", "Cont", "text"));
       } 
-      if (command.TrialBalanceType == TrialBalanceType.SaldosPorCuenta) {
+      if (command.TrialBalanceType == TrialBalanceType.SaldosPorCuentaConsultaRapida) {
         columns.Add(new DataTableColumn("ledgerName", "Cont", "text"));
       }
       columns.Add(new DataTableColumn("currencyCode", "Mon", "text"));
@@ -71,12 +71,12 @@ namespace Empiria.FinancialAccounting.BalanceEngine.Adapters {
                     FixedList<IBalanceEntry> list, BalanceCommand command) {
 
       switch (command.TrialBalanceType) {
-        case TrialBalanceType.SaldosPorAuxiliar:
+        case TrialBalanceType.SaldosPorAuxiliarConsultaRapida:
           
           var mapped = list.Select((x) => MapToBalanceBySubledgerAccount((BalanceEntry) x));
           return new FixedList<IBalanceEntryDto>(mapped);
 
-        case TrialBalanceType.SaldosPorCuenta:
+        case TrialBalanceType.SaldosPorCuentaConsultaRapida:
 
           var mappedItems = list.Select((x) => MapToBalanceByAccount((BalanceEntry) x, command));
           return new FixedList<IBalanceEntryDto>(mappedItems);

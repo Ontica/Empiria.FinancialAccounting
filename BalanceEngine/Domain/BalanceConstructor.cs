@@ -30,11 +30,11 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
 
       switch (Command.TrialBalanceType) {
         
-        case TrialBalanceType.SaldosPorAuxiliar:
+        case TrialBalanceType.SaldosPorAuxiliarConsultaRapida:
           var saldosPorAuxiliar = new SaldosPorAuxiliarConsultaRapida(Command);
           return saldosPorAuxiliar.Build();
 
-        case TrialBalanceType.SaldosPorCuenta:
+        case TrialBalanceType.SaldosPorCuentaConsultaRapida:
           var saldosPorCuenta = new SaldosPorCuentaConsultaRapida(Command);
           return saldosPorCuenta.Build();
 
