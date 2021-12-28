@@ -53,7 +53,7 @@ namespace Empiria.FinancialAccounting.Reporting {
       List<AccountStatementEntry> returnedVouchers = voucherEntries
                                                       .OrderBy(a => a.Ledger.Number)
                                                       .ThenBy(a => a.Currency.Code)
-                                                      .ThenBy(a => a.Account.Number)
+                                                      .ThenBy(a => a.AccountNumber)
                                                       .ThenBy(a => a.Sector.Code)
                                                       .ThenBy(a => a.SubledgerAccountNumber)
                                                       .ThenBy(a => a.VoucherNumber)
@@ -69,7 +69,8 @@ namespace Empiria.FinancialAccounting.Reporting {
 
       initialBalanceEntry.Ledger = Ledger.Empty;
       initialBalanceEntry.Currency = Currency.Empty;
-      initialBalanceEntry.Account = StandardAccount.Empty;
+      //initialBalanceEntry.Account = StandardAccount.Empty;
+      initialBalanceEntry.StandardAccountId = StandardAccount.Empty.Id;
       initialBalanceEntry.Sector = Sector.Empty;
       initialBalanceEntry.SubledgerAccountNumber = "";
       initialBalanceEntry.VoucherNumber = "";

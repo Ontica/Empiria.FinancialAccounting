@@ -66,7 +66,8 @@ namespace Empiria.FinancialAccounting.Reporting.Adapters {
 
 
     private string GetAccountFilter() {
-      if (_accountStatementCommand.Entry.AccountNumberForBalances.Length != 0) {
+      if (_accountStatementCommand.Entry.AccountNumberForBalances.Length != 0 &&
+          _accountStatementCommand.Entry.AccountNumberForBalances != "Empty") {
         if (_accountStatementCommand.Entry.ItemType == TrialBalanceItemType.BalanceSummary) {
           return $"NUMERO_CUENTA_ESTANDAR LIKE '{_accountStatementCommand.Entry.AccountNumberForBalances}%'";
         } else {
