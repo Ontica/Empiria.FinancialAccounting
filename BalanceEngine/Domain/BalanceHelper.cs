@@ -42,11 +42,12 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
                                         BalanceEntry entry, TrialBalanceItemType balanceType) {
       BalanceEntry newEntry = BalanceMapper.MapToBalanceEntry(entry);
       newEntry.GroupName = $"{newEntry.Account.Name} [{newEntry.Currency.FullName}]";
-
+      newEntry.InitialBalance = entry.InitialBalance;
       string hash = $"{newEntry.Ledger.Number}||{newEntry.Currency.Code}||{newEntry.Account.Number}";
 
       GenerateOrIncreaseBalances(headerByAccount, newEntry, newEntry.Account,
                                  Sector.Empty, balanceType, hash);
+      
     }
 
 
@@ -99,12 +100,17 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
           SubledgerAccountIdParent = entry.SubledgerAccountIdParent,
           LastChangeDate = entry.LastChangeDate
         };
+        returnedEntry.InitialBalance += entry.InitialBalance;
         returnedEntry.CurrentBalance += entry.CurrentBalance;
 
         entries.Insert(hash, returnedEntry);
 
       } else {
+        returnedEntry.InitialBalance += entry.InitialBalance;
         returnedEntry.CurrentBalance += entry.CurrentBalance;
+        if (entry.LastChangeDate > returnedEntry.LastChangeDate) {
+          returnedEntry.LastChangeDate = entry.LastChangeDate;
+        }
       }
     }
 
@@ -140,7 +146,8 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
 
       foreach (var entry in entries) {
         var balanceEntry = new BalanceEntry();
-        balanceEntry.ItemType = entry.ItemType;
+        balanceEntry.ItemType = entry.ItemType == TrialBalanceItemType.BalanceEntry ? 
+                                TrialBalanceItemType.Entry : entry.ItemType;
         balanceEntry.Ledger = entry.Ledger;
         balanceEntry.Currency = entry.Currency;
         balanceEntry.Account = entry.Account;

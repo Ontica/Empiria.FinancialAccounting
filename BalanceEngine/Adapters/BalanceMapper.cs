@@ -100,7 +100,8 @@ namespace Empiria.FinancialAccounting.BalanceEngine.Adapters {
       dto.SubledgerAccountNumber = entry.SubledgerAccountNumber;
       if (entry.ItemType == TrialBalanceItemType.BalanceTotalCurrency) {
         dto.AccountNumber = "";
-      } else if (entry.SubledgerAccountNumber != string.Empty && command.WithSubledgerAccount) {
+      } else 
+      if (entry.SubledgerAccountNumber != string.Empty && command.WithSubledgerAccount) {
         dto.AccountNumber = entry.SubledgerAccountNumber;
       } else {
         dto.AccountNumber = entry.Account.Number == "Empty" ? "" : entry.Account.Number;
@@ -112,6 +113,10 @@ namespace Empiria.FinancialAccounting.BalanceEngine.Adapters {
       dto.CurrentBalance = entry.CurrentBalance;
       dto.DebtorCreditor = entry.DebtorCreditor.ToString();
       dto.LastChangeDate = entry.LastChangeDate;
+
+      dto.HasAccountStatement = entry.ItemType == TrialBalanceItemType.Total ||
+                                entry.ItemType == TrialBalanceItemType.Entry ? true : false;
+      dto.ClickableEntry = dto.HasAccountStatement;
 
       return dto;
     }

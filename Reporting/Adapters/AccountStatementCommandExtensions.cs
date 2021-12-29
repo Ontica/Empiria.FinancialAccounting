@@ -68,7 +68,8 @@ namespace Empiria.FinancialAccounting.Reporting.Adapters {
     private string GetAccountFilter() {
       if (_accountStatementCommand.Entry.AccountNumberForBalances.Length != 0 &&
           _accountStatementCommand.Entry.AccountNumberForBalances != "Empty") {
-        if (_accountStatementCommand.Entry.ItemType == TrialBalanceItemType.BalanceSummary) {
+        if (_accountStatementCommand.Entry.ItemType == TrialBalanceItemType.BalanceSummary ||
+            _accountStatementCommand.Entry.ItemType == TrialBalanceItemType.Summary) {
           return $"NUMERO_CUENTA_ESTANDAR LIKE '{_accountStatementCommand.Entry.AccountNumberForBalances}%'";
         } else {
           return $"NUMERO_CUENTA_ESTANDAR = '{_accountStatementCommand.Entry.AccountNumberForBalances}'";
@@ -115,7 +116,9 @@ namespace Empiria.FinancialAccounting.Reporting.Adapters {
 
     private string GetSectorFilter() {
       if (_accountStatementCommand.Entry.SectorCode.Length == 0 ||
-          (_accountStatementCommand.Entry.ItemType == TrialBalanceItemType.BalanceSummary &&
+          ((_accountStatementCommand.Entry.ItemType == TrialBalanceItemType.BalanceSummary ||
+            _accountStatementCommand.Entry.ItemType == TrialBalanceItemType.Summary ||
+            _accountStatementCommand.Entry.ItemType == TrialBalanceItemType.Total) &&
            _accountStatementCommand.Entry.SectorCode == "00")) {
         return string.Empty;
       }

@@ -53,7 +53,7 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
                       a => a.SubledgerAccountId == entry.SubledgerAccountIdParent &&
                       a.Ledger.Number == entry.Ledger.Number &&
                       a.Currency.Code == entry.Currency.Code &&
-                      a.ItemType == TrialBalanceItemType.BalanceEntry).ToList();
+                      a.ItemType == TrialBalanceItemType.Entry).ToList();
 
         foreach (var summary in summaryAccounts) {
           entry.LastChangeDate = summary.LastChangeDate > entry.LastChangeDate ?
@@ -123,7 +123,7 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
         entry.SubledgerAccountIdParent = entry.SubledgerAccountId;
         entry.DebtorCreditor = entry.Account.DebtorCreditor;
 
-        helper.SummaryBySubledgerAccount(returnedEntries, entry, TrialBalanceItemType.BalanceSummary);
+        helper.SummaryBySubledgerAccount(returnedEntries, entry, TrialBalanceItemType.Summary);
       }
 
       return returnedEntries;
