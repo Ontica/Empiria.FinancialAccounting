@@ -113,6 +113,21 @@ namespace Empiria.FinancialAccounting.Reporting {
       return excelFile.ToFileReportDto();
     }
 
+
+    public FileReportDto Export(BalanceDto balance) {
+      Assertion.AssertObject(balance, "balance");
+
+      var templateUID = $"BalanceTemplate.{balance.Command.TrialBalanceType}";
+
+      var templateConfig = ExcelTemplateConfig.Parse(templateUID);
+
+      var creator = new BalanceExcelExporter(templateConfig);
+
+      ExcelFile excelFile = creator.CreateExcelFile(balance);
+
+      return excelFile.ToFileReportDto();
+    }
+
   }  // class ExcelExporter
 
 } // namespace Empiria.FinancialAccounting.Reporting

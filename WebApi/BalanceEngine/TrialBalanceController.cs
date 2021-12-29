@@ -70,6 +70,23 @@ namespace Empiria.FinancialAccounting.WebApi.BalanceEngine {
     }
 
 
+    [HttpPost]
+    [Route("v2/financial-accounting/balance/excel")]
+    public SingleObjectModel GetExcelBalances([FromBody] BalanceCommand command) {
+      base.RequireBody(command);
+
+      bool? inProcess = null;
+      Assertion.AssertObject(inProcess, $"Funcionalidad en proceso de desarrollo.");
+
+      using (var usecases = TrialBalanceUseCases.UseCaseInteractor()) {
+
+        BalanceDto balance = usecases.BuildBalanceSearch(command);
+
+        return new SingleObjectModel(this.Request, balance);
+      }
+    }
+
+
     #endregion Web Apis
 
   } // class TrialBalanceController
