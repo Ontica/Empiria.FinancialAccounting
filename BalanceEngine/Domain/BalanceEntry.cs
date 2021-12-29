@@ -52,7 +52,7 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
     }
 
 
-    public object InitialBalance {
+    public decimal InitialBalance {
       get; internal set;
     }
 
@@ -94,13 +94,23 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
 
     public TrialBalanceItemType ItemType {
       get; internal set;
-    } = TrialBalanceItemType.BalanceEntry;
+    } = TrialBalanceItemType.Entry;
 
 
     public string SubledgerAccountNumber {
       get; internal set;
     } = string.Empty;
-    
+
+
+    public bool HasAccountStatement {
+      get; internal set;
+    } = false;
+
+
+    public bool ClickableEntry {
+      get; internal set;
+    } = false;
+
   } // class BalanceEntry 
 
 } // Empiria.FinancialAccounting.BalanceEngine

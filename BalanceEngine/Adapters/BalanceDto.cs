@@ -93,7 +93,15 @@ namespace Empiria.FinancialAccounting.BalanceEngine.Adapters {
     public string DebtorCreditor {
       get; internal set;
     }
-    
+
+    public bool HasAccountStatement {
+      get; internal set;
+    } = false;
+
+    public bool ClickableEntry {
+      get; internal set;
+    } = false;
+
   } // class BalanceEntryDto
 
 } // Empiria.FinancialAccounting.BalanceEngine.Adapters
