@@ -59,6 +59,11 @@ namespace Empiria.FinancialAccounting.BalanceEngine.Adapters {
     } = new TrialBalanceCommandPeriod();
 
 
+    public bool UseCache {
+      get; set;
+    } = true;
+
+
   } // class BalanceCommand 
 
 

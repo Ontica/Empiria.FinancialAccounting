@@ -21,6 +21,9 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
   static internal class TrialBalanceCache {
 
     static readonly EmpiriaHashTable<TrialBalance> _cache = new EmpiriaHashTable<TrialBalance>();
+    static readonly EmpiriaHashTable<Balance> _cacheBalance = new EmpiriaHashTable<Balance>();
+
+    #region Consulta de balanzas
 
     static internal string GenerateHash(TrialBalanceCommand command) {
       string json = JsonConverter.ToJson(command);
@@ -41,6 +44,36 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
     static internal void Store(string cacheHashKey, TrialBalance trialBalance) {
       _cache.Insert(cacheHashKey, trialBalance);
     }
+
+
+    #endregion Consulta de balanzas
+
+
+    #region Consulta rapida de saldos
+
+
+    static internal string GenerateBalanceHash(BalanceCommand command) {
+      string json = JsonConverter.ToJson(command);
+
+      return Cryptographer.CreateHashCode(json);
+    }
+
+
+     static internal Balance TryGetBalance(string cacheHashKey) {
+      if (_cacheBalance.ContainsKey(cacheHashKey)) {
+        return _cacheBalance[cacheHashKey];
+      }
+
+      return null;
+    }
+
+
+    static internal void StoreBalance(string cacheHashKey, Balance balance) {
+      _cacheBalance.Insert(cacheHashKey, balance);
+    }
+
+
+    #endregion Consulta rapida de saldos
 
   }  // class TrialBalanceCache
 

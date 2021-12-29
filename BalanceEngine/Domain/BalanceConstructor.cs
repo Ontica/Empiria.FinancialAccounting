@@ -26,7 +26,25 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
       get;
     }
 
+
     internal Balance BuildBalance() {
+      if (!this.Command.UseCache) {
+        return GenerateBalance();
+      }
+
+      string hash = TrialBalanceCache.GenerateBalanceHash(this.Command);
+
+      Balance balance = TrialBalanceCache.TryGetBalance(hash);
+      if (balance == null) {
+        balance = GenerateBalance();
+        TrialBalanceCache.StoreBalance(hash, balance);
+      }
+
+      return balance;
+    }
+
+
+    internal Balance GenerateBalance() {
 
       switch (Command.TrialBalanceType) {
         
