@@ -1,7 +1,7 @@
 ﻿/* Empiria Financial *****************************************************************************************
 *                                                                                                            *
-*  Module   : Balance Engine                             Component : Domain Layer                            *
-*  Assembly : FinancialAccounting.Reporting.dll      Pattern   : Service provider                        *
+*  Module   : Reporting Services                         Component : Domain Layer                            *
+*  Assembly : FinancialAccounting.Reporting.dll          Pattern   : Service provider                        *
 *  Type     : VouchersByAccountConstructor               License   : Please read LICENSE.txt file            *
 *                                                                                                            *
 *  Summary  : Provides services to generate vouchers by account.                                             *
@@ -12,7 +12,6 @@ using System.Collections.Generic;
 using System.Linq;
 using Empiria.FinancialAccounting.BalanceEngine;
 using Empiria.FinancialAccounting.Reporting.Adapters;
-using Empiria.FinancialAccounting.Reporting.Data;
 
 namespace Empiria.FinancialAccounting.Reporting {
 
@@ -31,7 +30,25 @@ namespace Empiria.FinancialAccounting.Reporting {
 
     #region Public methods
 
+
     internal AccountStatement Build() {
+      if (!AccountStatementCommand.Command.UseCache) {
+        return GenerateAccountStatement();
+      }
+
+      string hash = AccountStatementCache.GenerateHash(AccountStatementCommand);
+
+      AccountStatement accountStatement = AccountStatementCache.TryGet(hash);
+      if (accountStatement == null) {
+        accountStatement = GenerateAccountStatement();
+        AccountStatementCache.Store(hash, accountStatement);
+      }
+
+      return accountStatement;
+    }
+
+
+    internal AccountStatement GenerateAccountStatement() {
       var helper = new AccountStatementHelper(AccountStatementCommand);
       bool? isBalance = true;
 
