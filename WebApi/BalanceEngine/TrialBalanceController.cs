@@ -75,14 +75,18 @@ namespace Empiria.FinancialAccounting.WebApi.BalanceEngine {
     public SingleObjectModel GetExcelBalances([FromBody] BalanceCommand command) {
       base.RequireBody(command);
 
-      bool? inProcess = null;
-      Assertion.AssertObject(inProcess, $"Funcionalidad en proceso de desarrollo.");
+      //bool? inProcess = null;
+      //Assertion.AssertObject(inProcess, $"Funcionalidad en proceso de desarrollo.");
 
       using (var usecases = TrialBalanceUseCases.UseCaseInteractor()) {
 
         BalanceDto balance = usecases.BuildBalanceSearch(command);
 
-        return new SingleObjectModel(this.Request, balance);
+        var excelExporter = new ExcelExporterService();
+
+        FileReportDto excelFileDto = excelExporter.Export(balance);
+
+        return new SingleObjectModel(this.Request, excelFileDto);
       }
     }
 
