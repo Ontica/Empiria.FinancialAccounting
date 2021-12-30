@@ -88,26 +88,29 @@ namespace Empiria.FinancialAccounting.Reporting {
       var accountName = AccountStatementCommand.Entry.AccountName;
       var subledgerAccountNumber = AccountStatementCommand.Entry.SubledgerAccountNumber;
 
-      if (accountNumber != "" &&
-          subledgerAccountNumber.Length > 1) {
-
-        accountName = accountName.Length > 0 ? ": " + accountName : "";
-
-        return $"{accountNumber} {accountName} ({subledgerAccountNumber})";
-
-      } else if (accountNumber != "") {
-
-        return $"{accountNumber}" +
-               $": {accountName}";
-
-      } else if (accountNumber.Length == 0 && subledgerAccountNumber.Length > 1) {
-
-        return $"{subledgerAccountNumber}";
-
-      } else {
-        return ".";
+      var title = "";
+      
+      if (accountNumber != string.Empty || accountNumber != "Empty") {
+        title = $"{accountNumber} ";
       }
 
+      if (accountName != string.Empty && accountName != "Empty") {
+        title += $"{accountName} ";
+      }
+
+      if (subledgerAccountNumber.Length > 1) {
+
+        if (accountNumber == string.Empty || accountNumber == "Empty") {
+
+          title = $"{subledgerAccountNumber}: {accountName}";
+
+        } else {
+          title += $"({subledgerAccountNumber})";
+        }
+        
+      }
+
+      return title;
     }
 
 
