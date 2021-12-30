@@ -1,7 +1,7 @@
 ﻿/* Empiria Financial *****************************************************************************************
 *                                                                                                            *
-*  Module   : Balance Engine                             Component : Domain Layer                            *
-*  Assembly : FinancialAccounting.Reporting.dll      Pattern   : Information Holder                      *
+*  Module   : Reporting Services                         Component : Domain Layer                            *
+*  Assembly : FinancialAccounting.Reporting.dll          Pattern   : Information Holder                      *
 *  Type     : VouchersByAccount                          License   : Please read LICENSE.txt file            *
 *                                                                                                            *
 *  Summary  : Contains the header and entries of vouchers by account.                                        *

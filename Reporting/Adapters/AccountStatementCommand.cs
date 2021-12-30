@@ -1,7 +1,7 @@
 ﻿/* Empiria Financial *****************************************************************************************
 *                                                                                                            *
-*  Module   : Balance Engine                             Component : Interface adapters                      *
-*  Assembly : FinancialAccounting.Reporting.dll      Pattern   : Command payload                         *
+*  Module   : Reporting Services                         Component : Interface adapters                      *
+*  Assembly : FinancialAccounting.Reporting.dll          Pattern   : Command payload                         *
 *  Type     : AccountStatementCommand                    License   : Please read LICENSE.txt file            *
 *                                                                                                            *
 *  Summary  : Command payload used to build account statement.                                               *
@@ -25,7 +25,7 @@ namespace Empiria.FinancialAccounting.Reporting.Adapters {
     public AccountStatementEntry Entry {
       get; internal set;
     } = new AccountStatementEntry();
-
+    
   } // class AccountStatementCommand 
 
   public class AccountStatementEntry {
