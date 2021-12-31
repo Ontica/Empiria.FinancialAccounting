@@ -12,8 +12,8 @@ using System.Web.Http;
 
 using Empiria.WebApi;
 
-using Empiria.FinancialAccounting.Vouchers.UseCases;
 using Empiria.FinancialAccounting.Adapters;
+using Empiria.FinancialAccounting.Vouchers.UseCases;
 
 namespace Empiria.FinancialAccounting.WebApi.Vouchers {
 
@@ -55,6 +55,19 @@ namespace Empiria.FinancialAccounting.WebApi.Vouchers {
         FixedList<NamedEntityDto> functionalAreas = usecases.FunctionalAreas();
 
         return new CollectionModel(base.Request, functionalAreas);
+      }
+    }
+
+
+
+    [HttpGet]
+    [Route("v2/financial-accounting/vouchers/transactional-systems")]
+    public CollectionModel GetTransactionalSystems() {
+
+      using (var usecases = VoucherDataUseCases.UseCaseInteractor()) {
+        FixedList<NamedEntityDto> systems = usecases.TransactionalSystems();
+
+        return new CollectionModel(base.Request, systems);
       }
     }
 

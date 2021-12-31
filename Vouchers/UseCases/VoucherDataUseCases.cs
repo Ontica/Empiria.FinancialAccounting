@@ -32,6 +32,12 @@ namespace Empiria.FinancialAccounting.Vouchers.UseCases {
 
     #region Use cases
 
+    public FixedList<NamedEntityDto> EventTypes() {
+      FixedList<EventType> list = EventType.GetList();
+
+      return new FixedList<NamedEntityDto>(list.Select(x => x.MapToNamedEntity()));
+    }
+
 
     public FixedList<NamedEntityDto> FunctionalAreas() {
       FixedList<FunctionalArea> list = FunctionalArea.GetList();
@@ -46,13 +52,6 @@ namespace Empiria.FinancialAccounting.Vouchers.UseCases {
       var accountsChart = AccountsChart.Parse(accountsChartUID);
 
       return accountsChart.OpenedAccountingDates();
-    }
-
-
-    public FixedList<NamedEntityDto> EventTypes() {
-      FixedList<EventType> list = EventType.GetList();
-
-      return new FixedList<NamedEntityDto>(list.Select(x => x.MapToNamedEntity()));
     }
 
 
@@ -87,6 +86,13 @@ namespace Empiria.FinancialAccounting.Vouchers.UseCases {
                             voucher.SearchSubledgerAccountsForEdition(ledgerAccount, keywords);
 
       return SubledgerMapper.MapToSubledgerAccountDescriptor(subledgerAccounts);
+    }
+
+
+    public FixedList<NamedEntityDto> TransactionalSystems() {
+      var systemList = TransactionalSystem.GetList();
+
+      return systemList.MapToNamedEntityList();
     }
 
 
