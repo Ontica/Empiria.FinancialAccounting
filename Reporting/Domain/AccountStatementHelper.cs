@@ -61,6 +61,34 @@ namespace Empiria.FinancialAccounting.Reporting {
       return returnedVouchers.ToFixedList();
     }
 
+    internal AccountStatementEntry GetInitialAccountBalance(FixedList<AccountStatementEntry> orderingVouchers) {
+
+      List<AccountStatementEntry> returnedVouchersWithCurrentBalance =
+                                   new List<AccountStatementEntry>(orderingVouchers).ToList();
+
+      decimal initialBalance = AccountStatementCommand.Entry.CurrentBalance;
+
+      returnedVouchersWithCurrentBalance = returnedVouchersWithCurrentBalance
+                                            .OrderByDescending(a => a.Ledger.Number)
+                                            .ThenByDescending(a => a.Currency.Code)
+                                            .ThenByDescending(a => a.AccountNumber)
+                                            .ThenByDescending(a => a.Sector.Code)
+                                            .ThenByDescending(a => a.SubledgerAccountNumber)
+                                            .ThenByDescending(a => a.VoucherNumber)
+                                            .ThenByDescending(a => a.VoucherEntryId).ToList();
+
+      foreach (var voucher in returnedVouchersWithCurrentBalance) {
+        
+        if (voucher.DebtorCreditor == "A") {
+          initialBalance = initialBalance + (voucher.Debit - voucher.Credit);
+        } else {
+          initialBalance = initialBalance + (voucher.Credit - voucher.Debit);
+        }
+      }
+
+      AccountStatementEntry initialAccountBalance = GetInitialOrCurrentAccountBalance(initialBalance);
+      return initialAccountBalance;
+    }
 
     internal AccountStatementEntry GetInitialOrCurrentAccountBalance(
                                       decimal balance, bool isCurrentBalance = false) {
@@ -115,12 +143,13 @@ namespace Empiria.FinancialAccounting.Reporting {
 
 
     internal FixedList<AccountStatementEntry> GetVouchersListWithCurrentBalance(
-                                                FixedList<AccountStatementEntry> orderingVouchers) {
+                                                FixedList<AccountStatementEntry> orderingVouchers, 
+                                                AccountStatementEntry initialAccountBalance) {
       
       List<AccountStatementEntry> returnedVouchersWithCurrentBalance =
                                     new List<AccountStatementEntry>(orderingVouchers).ToList();
 
-      decimal initialBalance = AccountStatementCommand.Entry.InitialBalance;
+      decimal initialBalance = initialAccountBalance.CurrentBalance;
       decimal currentBalance = initialBalance;
 
       foreach (var voucher in returnedVouchersWithCurrentBalance) {
@@ -132,9 +161,10 @@ namespace Empiria.FinancialAccounting.Reporting {
           currentBalance = currentBalance + (voucher.Credit - voucher.Debit);
         }
       }
+      
 
       AccountStatementEntry voucherWithCurrentBalance = GetInitialOrCurrentAccountBalance(
-                                                          currentBalance, true);
+                                                          AccountStatementCommand.Entry.CurrentBalance, true);
 
       if (voucherWithCurrentBalance != null) {
         returnedVouchersWithCurrentBalance.Add(voucherWithCurrentBalance);
