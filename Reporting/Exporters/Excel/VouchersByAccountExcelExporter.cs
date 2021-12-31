@@ -9,6 +9,7 @@
 ************************* Copyright(c) La Vía Óntica SC, Ontica LLC and contributors. All rights reserved. **/
 using System;
 using System.Collections.Generic;
+
 using Empiria.FinancialAccounting.BalanceEngine;
 using Empiria.FinancialAccounting.BalanceEngine.Adapters;
 using Empiria.FinancialAccounting.Reporting.Adapters;
@@ -36,7 +37,7 @@ namespace Empiria.FinancialAccounting.Reporting.Exporters.Excel {
       _command = voucherDto.Command;
 
       _excelFile = new ExcelFile(_templateConfig);
-      
+
       _excelFile.Open();
 
       SetHeader();
@@ -63,27 +64,32 @@ namespace Empiria.FinancialAccounting.Reporting.Exporters.Excel {
 
     private void SetTable(AccountStatementDto voucherDto) {
       FillOutVouchersByAccount(voucherDto.Entries.Select(x => (VouchersByAccountEntryDto) x));
-    } // class VouchersByAccountExcelExporter
+    }
 
 
     private void FillOutVouchersByAccount(IEnumerable<VouchersByAccountEntryDto> vouchers) {
       int i = 5;
 
       foreach (var voucher in vouchers) {
-        var debit = voucher.Debit != null ? voucher.Debit.ToString() : "";
-        var credit = voucher.Credit != null ? voucher.Credit.ToString() : "";
-       
         _excelFile.SetCell($"A{i}", voucher.LedgerNumber);
         _excelFile.SetCell($"B{i}", voucher.CurrencyCode);
         _excelFile.SetCell($"C{i}", voucher.AccountNumber);
         _excelFile.SetCell($"D{i}", voucher.SectorCode);
         _excelFile.SetCell($"E{i}", voucher.SubledgerAccountNumber);
         _excelFile.SetCell($"F{i}", voucher.VoucherNumber);
-        _excelFile.SetCell($"G{i}", debit);
-        _excelFile.SetCell($"H{i}", credit);
+        if (voucher.Debit.HasValue) {
+          _excelFile.SetCell($"G{i}", voucher.Debit.Value);
+        }
+        if (voucher.Credit.HasValue) {
+          _excelFile.SetCell($"H{i}", voucher.Credit.Value);
+        }
         _excelFile.SetCell($"I{i}", voucher.CurrentBalance);
-        _excelFile.SetCell($"J{i}", voucher.AccountingDate);
-        _excelFile.SetCell($"K{i}", voucher.RecordingDate);
+        if (voucher.AccountingDate != ExecutionServer.DateMaxValue) {
+          _excelFile.SetCell($"J{i}", voucher.AccountingDate);
+        }
+        if (voucher.RecordingDate != ExecutionServer.DateMaxValue) {
+          _excelFile.SetCell($"K{i}", voucher.RecordingDate);
+        }
         _excelFile.SetCell($"L{i}", voucher.Concept);
 
         if (voucher.ItemType == TrialBalanceItemType.Total) {

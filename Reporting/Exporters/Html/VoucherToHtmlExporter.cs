@@ -100,8 +100,8 @@ namespace Empiria.FinancialAccounting.Reporting {
 
         entryHtml = entryHtml.Replace("{{CURRENCY.CODE}}", entry.Currency);
         entryHtml = entryHtml.Replace("{{EXCHANGE.RATE}}", entry.ExchangeRate != 1 ? entry.ExchangeRate.ToString("C2") : string.Empty);
-        entryHtml = entryHtml.Replace("{{CREDIT.AMOUNT}}", entry.Credit.ToString("C2"));
         entryHtml = entryHtml.Replace("{{DEBIT.AMOUNT}}", entry.Debit.ToString("C2"));
+        entryHtml = entryHtml.Replace("{{CREDIT.AMOUNT}}", entry.Credit.ToString("C2"));
 
         entriesHtml = entriesHtml.Append(entryHtml);
       }
@@ -143,8 +143,9 @@ namespace Empiria.FinancialAccounting.Reporting {
 
       foreach (var entry in totalEntries) {
         var totalHtml = TEMPLATE.Replace("{{TOTAL.TITLE}}", entry.AccountName);
-        totalHtml = totalHtml.Replace("{{CREDIT.TOTAL}}", entry.Credit.ToString("C2"));
+
         totalHtml = totalHtml.Replace("{{DEBIT.TOTAL}}", entry.Debit.ToString("C2"));
+        totalHtml = totalHtml.Replace("{{CREDIT.TOTAL}}", entry.Credit.ToString("C2"));
 
         totalsHtml = totalsHtml.Append(totalHtml);
       }

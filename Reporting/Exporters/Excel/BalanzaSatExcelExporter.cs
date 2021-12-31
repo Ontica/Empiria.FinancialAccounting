@@ -50,7 +50,7 @@ namespace Empiria.FinancialAccounting.Reporting.Exporters.Excel {
 
     private void FillOutRows(ExcelFile excelFile, IEnumerable<BalanzaSatEntry> entries) {
       int i = 5;
-      
+
       foreach (var entry in entries) {
         excelFile.SetCell($"A{i}", entry.Cuenta);
         excelFile.SetCell($"B{i}", entry.SaldoInicial);
