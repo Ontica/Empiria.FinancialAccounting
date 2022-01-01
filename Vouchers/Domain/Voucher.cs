@@ -10,7 +10,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
-
+using Empiria.FinancialAccounting.BalanceEngine;
 using Empiria.FinancialAccounting.Vouchers.Adapters;
 using Empiria.FinancialAccounting.Vouchers.Data;
 
@@ -219,7 +219,11 @@ namespace Empiria.FinancialAccounting.Vouchers {
       this.Number = VoucherData.GetVoucherNumberFor(this);
 
       try {
+
         VoucherData.CloseVoucher(this);
+
+        TrialBalanceCache.Invalidate(this.AccountingDate);
+
       } catch {
         this.AuthorizedBy = Participant.Empty;
         this.ClosedBy = Participant.Empty;

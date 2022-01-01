@@ -8,6 +8,7 @@
 *                                                                                                            *
 ************************* Copyright(c) La Vía Óntica SC, Ontica LLC and contributors. All rights reserved. **/
 using System;
+using System.Linq;
 
 using Empiria.Collections;
 using Empiria.Json;
@@ -15,29 +16,53 @@ using Empiria.Security;
 
 using Empiria.FinancialAccounting.BalanceEngine.Adapters;
 
+
 namespace Empiria.FinancialAccounting.BalanceEngine {
 
   /// <summary>Provides a cache of trial balances.</summary>
-  static internal class TrialBalanceCache {
+  static public class TrialBalanceCache {
 
     static readonly EmpiriaHashTable<TrialBalance> _cache = new EmpiriaHashTable<TrialBalance>();
     static readonly EmpiriaHashTable<Balance> _cacheBalance = new EmpiriaHashTable<Balance>();
+
+
+    static public void Invalidate(DateTime date) {
+      InvalidateTrialBalanceCache(date);
+      InvalidateBalancesCache(date);
+    }
+
 
     #region Consulta de balanzas
 
     static internal string GenerateHash(TrialBalanceCommand command) {
       string json = JsonConverter.ToJson(command);
 
-      return Cryptographer.CreateHashCode(json);
+      var hashCode = Cryptographer.CreateHashCode(json);
+
+      DateTime invalidationDate = GetInvalidationDate(command);
+
+      return $"{hashCode}.{ToInvalidationDateString(invalidationDate)}";
     }
 
 
-    static internal TrialBalance TryGet(string cacheHashKey) {
-      if (_cache.ContainsKey(cacheHashKey)) {
-        return _cache[cacheHashKey];
+    static private DateTime GetInvalidationDate(TrialBalanceCommand command) {
+      if (command.TrialBalanceType != TrialBalanceType.BalanzaValorizadaComparativa) {
+        return command.InitialPeriod.ToDate;
+      } else {
+        return command.FinalPeriod.ToDate;
       }
+    }
 
-      return null;
+
+    static private void InvalidateTrialBalanceCache(DateTime date) {
+      string dateKey = ToInvalidationDateString(date);
+
+      var toInvalidateKeys = _cache.Keys.Where(key => key.EndsWith(dateKey))
+                                        .ToArray();
+
+      foreach (string key in toInvalidateKeys) {
+        _cache.Remove(key);
+      }
     }
 
 
@@ -46,25 +71,42 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
     }
 
 
+    static internal TrialBalance TryGet(string cacheHashKey) {
+      TrialBalance trialBalance;
+
+      if (_cache.TryGetValue(cacheHashKey, out trialBalance)) {
+        return trialBalance;
+      }
+
+      return null;
+    }
+
     #endregion Consulta de balanzas
 
 
-    #region Consulta rapida de saldos
+    #region Consulta rápida de saldos
 
 
     static internal string GenerateBalanceHash(BalanceCommand command) {
       string json = JsonConverter.ToJson(command);
 
-      return Cryptographer.CreateHashCode(json);
+      var hashCode = Cryptographer.CreateHashCode(json);
+
+      DateTime invalidationDate = command.InitialPeriod.ToDate;
+
+      return $"{hashCode}.{ToInvalidationDateString(invalidationDate)}";
     }
 
 
-     static internal Balance TryGetBalance(string cacheHashKey) {
-      if (_cacheBalance.ContainsKey(cacheHashKey)) {
-        return _cacheBalance[cacheHashKey];
-      }
+    static private void InvalidateBalancesCache(DateTime date) {
+      string dateKey = ToInvalidationDateString(date);
 
-      return null;
+      var toInvalidateKeys = _cacheBalance.Keys.Where(key => key.EndsWith(dateKey))
+                                               .ToArray();
+
+      foreach (string key in toInvalidateKeys) {
+        _cacheBalance.Remove(key);
+      }
     }
 
 
@@ -73,7 +115,22 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
     }
 
 
-    #endregion Consulta rapida de saldos
+    static internal Balance TryGetBalance(string cacheHashKey) {
+      Balance balance;
+
+      if (_cacheBalance.TryGetValue(cacheHashKey, out balance)) {
+        return balance;
+      }
+
+      return null;
+    }
+
+    #endregion Consulta rápida de saldos
+
+    static private string ToInvalidationDateString(DateTime invalidationDate) {
+      return invalidationDate.ToString("yyyy-MM");
+    }
+
 
   }  // class TrialBalanceCache
 
