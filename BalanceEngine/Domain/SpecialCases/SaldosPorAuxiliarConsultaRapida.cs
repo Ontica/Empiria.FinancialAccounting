@@ -37,14 +37,14 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
       FixedList<BalanceEntry> returnedEntries = CombineSubledgerAccountsWithBalanceEntries(
                                                             orderingBalance, balanceEntries);
 
-      var returnedBalance = new FixedList<IBalanceEntry>(returnedEntries.Select(x => (IBalanceEntry) x));
+      var returnedBalance = new FixedList<BalanceEntry>(returnedEntries);
 
       return new Balance(_command, returnedBalance);
     }
 
 
     private FixedList<BalanceEntry> CombineSubledgerAccountsWithBalanceEntries(
-                                    List<BalanceEntry> orderingBalance, 
+                                    List<BalanceEntry> orderingBalance,
                                     FixedList<BalanceEntry> balanceEntries) {
       var returnedEntries = new List<BalanceEntry>();
 
@@ -119,7 +119,7 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
       var returnedEntries = new EmpiriaHashTable<BalanceEntry>();
 
       foreach (var entry in subledgerAccountListHash.ToFixedList()) {
-        
+
         entry.SubledgerAccountIdParent = entry.SubledgerAccountId;
         entry.DebtorCreditor = entry.Account.DebtorCreditor;
 
@@ -134,4 +134,4 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
 
   } // class SaldosPorAuxiliarConsultaRapida
 
-} // Empiria.FinancialAccounting.BalanceEngine.Domain.SpecialCases 
+} // Empiria.FinancialAccounting.BalanceEngine.Domain.SpecialCases

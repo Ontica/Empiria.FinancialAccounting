@@ -12,6 +12,7 @@ using System.Collections.Generic;
 using System.Linq;
 
 using Empiria.Collections;
+
 using Empiria.FinancialAccounting.BalanceEngine.Adapters;
 
 namespace Empiria.FinancialAccounting.BalanceEngine {
@@ -21,9 +22,11 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
 
     private readonly BalanceCommand _command;
 
-    public SaldosPorCuentaConsultaRapida(BalanceCommand command) {
+
+    internal SaldosPorCuentaConsultaRapida(BalanceCommand command) {
       _command = command;
     }
+
 
     internal Balance Build() {
       var helper = new BalanceHelper(_command);
@@ -42,19 +45,15 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
       FixedList<BalanceEntry> balanceWithHeader = CombineBalanceAndBalanceHeader(
                                                     balancesAndtotalByLedger, balanceHeader);
 
-      var returnedBalance = new FixedList<IBalanceEntry>(
-                                balanceWithHeader.Select(x => (IBalanceEntry) x));
-
-      return new Balance(_command, returnedBalance);
+      return new Balance(_command, balanceWithHeader);
     }
 
 
     #region Private methods
 
 
-    private FixedList<BalanceEntry> CombineBalanceAndBalanceHeader(
-                                     FixedList<BalanceEntry> balancesAndtotalByLedger,
-                                     EmpiriaHashTable<BalanceEntry> balanceHeader) {
+    private FixedList<BalanceEntry> CombineBalanceAndBalanceHeader(FixedList<BalanceEntry> balancesAndtotalByLedger,
+                                                                   EmpiriaHashTable<BalanceEntry> balanceHeader) {
       var balanceWithHeader = new List<BalanceEntry>();
 
       foreach (var header in balanceHeader.ToFixedList()) {
@@ -77,9 +76,8 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
     }
 
 
-    private FixedList<BalanceEntry> CombineBalanceAndtotalByLedger(
-                                      FixedList<BalanceEntry> balanceEntries,
-                                      EmpiriaHashTable<BalanceEntry> totalByLedger) {
+    private FixedList<BalanceEntry> CombineBalanceAndtotalByLedger(FixedList<BalanceEntry> balanceEntries,
+                                                                   EmpiriaHashTable<BalanceEntry> totalByLedger) {
       var combinedEntries = new List<BalanceEntry>();
 
       foreach (var totalLedger in totalByLedger.ToFixedList()) {
@@ -96,8 +94,10 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
 
           combinedEntries.AddRange(balancesByLedger);
         }
+
         combinedEntries.Add(totalLedger);
       }
+
       return combinedEntries.ToFixedList();
     }
 
@@ -111,6 +111,7 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
       foreach (var entry in subledgerAccounts) {
         helper.GetHeaderAccountName(headerByAccount, entry, TrialBalanceItemType.Total);
       }
+
       return headerByAccount;
     }
 
@@ -126,29 +127,26 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
 
 
     private FixedList<BalanceEntry> GetSubledgerAccounts(FixedList<BalanceEntry> balance) {
-
-      var balanceWithSubledgerAccounts = new List<BalanceEntry>();
-
-      if (_command.WithSubledgerAccount) {
-
-        foreach (var entry in balance.Where(a => a.SubledgerAccountId > 0)) {
-          SubledgerAccount subledgerAccount = SubledgerAccount.Parse(entry.SubledgerAccountId);
-          entry.SubledgerAccountNumber = subledgerAccount.Number;
-          balanceWithSubledgerAccounts.Add(entry);
-        }
-
-        balanceWithSubledgerAccounts = GetOrderBySubledgerAccount(balanceWithSubledgerAccounts);
-        return balanceWithSubledgerAccounts.ToFixedList();
-
-      } else {
+      if (!_command.WithSubledgerAccount) {
         return balance;
       }
 
+      var balanceWithSubledgerAccounts = new List<BalanceEntry>();
+
+      foreach (var entry in balance.Where(a => a.SubledgerAccountId > 0)) {
+        SubledgerAccount subledgerAccount = SubledgerAccount.Parse(entry.SubledgerAccountId);
+        entry.SubledgerAccountNumber = subledgerAccount.Number;
+
+        balanceWithSubledgerAccounts.Add(entry);
+      }
+
+      balanceWithSubledgerAccounts = GetOrderBySubledgerAccount(balanceWithSubledgerAccounts);
+
+      return balanceWithSubledgerAccounts.ToFixedList();
     }
 
 
-    private EmpiriaHashTable<BalanceEntry> GetTotalBalanceByLedgerAndCurrency(
-                                            FixedList<BalanceEntry> balanceList) {
+    private EmpiriaHashTable<BalanceEntry> GetTotalBalanceByLedgerAndCurrency(FixedList<BalanceEntry> balanceList) {
       var helper = new BalanceHelper(_command);
 
       var totalByCurrencies = new EmpiriaHashTable<BalanceEntry>();
@@ -156,10 +154,11 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
       foreach (var entry in balanceList) {
         helper.SummaryEntriesByCurrency(totalByCurrencies, entry, TrialBalanceItemType.Group);
       }
+
       return totalByCurrencies;
     }
 
-    #endregion
+    #endregion Private methods
 
   } // class SaldosPorCuentaConsultaRapida
 

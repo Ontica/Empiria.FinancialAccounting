@@ -36,8 +36,10 @@ namespace Empiria.FinancialAccounting.BalanceEngine.Adapters {
       trialBalanceCommand.SubledgerAccount = command.SubledgerAccount;
       trialBalanceCommand.TrialBalanceType = command.TrialBalanceType;
       trialBalanceCommand.ShowCascadeBalances = true;
-      trialBalanceCommand.WithSubledgerAccount = command.TrialBalanceType == TrialBalanceType.SaldosPorAuxiliarConsultaRapida ?
-                                                 true : command.WithSubledgerAccount;
+
+      if (command.TrialBalanceType != TrialBalanceType.SaldosPorAuxiliarConsultaRapida) {
+        trialBalanceCommand.ShowCascadeBalances = command.WithSubledgerAccount;
+      }
 
       return trialBalanceCommand;
     }
@@ -65,45 +67,51 @@ namespace Empiria.FinancialAccounting.BalanceEngine.Adapters {
       return columns.ToFixedList();
     }
 
+
     static private FixedList<IBalanceEntryDto> MapToDto(
-                    FixedList<IBalanceEntry> list, BalanceCommand command) {
+                    FixedList<BalanceEntry> list, BalanceCommand command) {
 
       switch (command.TrialBalanceType) {
         case TrialBalanceType.SaldosPorAuxiliarConsultaRapida:
-          
-          var mapped = list.Select((x) => MapToBalanceBySubledgerAccount((BalanceEntry) x));
+
+          var mapped = list.Select((x) => MapToBalanceBySubledgerAccount(x));
+
           return new FixedList<IBalanceEntryDto>(mapped);
 
         case TrialBalanceType.SaldosPorCuentaConsultaRapida:
 
-          var mappedItems = list.Select((x) => MapToBalanceByAccount((BalanceEntry) x, command));
+          var mappedItems = list.Select((x) => MapToBalanceByAccount(x, command));
+
           return new FixedList<IBalanceEntryDto>(mappedItems);
 
         default:
           throw Assertion.AssertNoReachThisCode(
                 $"Unhandled balance type {command.TrialBalanceType}.");
       }
-      
     }
 
 
     static private BalanceEntryDto MapToBalanceByAccount(BalanceEntry entry, BalanceCommand command) {
 
       var dto = new BalanceEntryDto();
+
       dto.ItemType = entry.ItemType;
       dto.LedgerUID = entry.Ledger.UID != "Empty" ? entry.Ledger.UID : "";
       dto.LedgerNumber = entry.Ledger.Number;
       dto.LedgerName = entry.Ledger.Name != string.Empty ? entry.Ledger.Name : "";
       dto.CurrencyCode = entry.Currency.Code;
       dto.SubledgerAccountNumber = entry.SubledgerAccountNumber;
+
       if (entry.ItemType == TrialBalanceItemType.BalanceTotalCurrency) {
         dto.AccountNumber = "";
-      } else 
-      if (entry.SubledgerAccountNumber != string.Empty && command.WithSubledgerAccount) {
+
+      } else if (entry.SubledgerAccountNumber != string.Empty && command.WithSubledgerAccount) {
         dto.AccountNumber = entry.SubledgerAccountNumber;
+
       } else {
         dto.AccountNumber = entry.Account.Number == "Empty" ? "" : entry.Account.Number;
       }
+
       dto.AccountNumberForBalances = entry.Account.Number;
       dto.AccountName = entry.GroupName == string.Empty ? entry.Account.Name : entry.GroupName;
       dto.SectorCode = entry.Sector.Code;
@@ -112,8 +120,7 @@ namespace Empiria.FinancialAccounting.BalanceEngine.Adapters {
       dto.DebtorCreditor = entry.DebtorCreditor.ToString();
       dto.LastChangeDate = entry.LastChangeDate;
 
-      dto.HasAccountStatement = entry.ItemType == TrialBalanceItemType.Total ||
-                                entry.ItemType == TrialBalanceItemType.Entry ? true : false;
+      dto.HasAccountStatement = entry.ItemType == TrialBalanceItemType.Total || entry.ItemType == TrialBalanceItemType.Entry;
       dto.ClickableEntry = dto.HasAccountStatement;
 
       return dto;
@@ -143,8 +150,7 @@ namespace Empiria.FinancialAccounting.BalanceEngine.Adapters {
 
 
     static internal BalanceEntry MapToBalanceEntry(BalanceEntry entry) {
-      
-      return new BalanceEntry { 
+      return new BalanceEntry {
         ItemType = entry.ItemType,
         Ledger = entry.Ledger,
         Currency = entry.Currency,

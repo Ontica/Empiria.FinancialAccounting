@@ -11,12 +11,8 @@ using System;
 
 namespace Empiria.FinancialAccounting.BalanceEngine {
 
-  public interface IBalanceEntry {
-  
-  }
-
   /// <summary>Represents an entry for balance.</summary>
-  public class BalanceEntry : IBalanceEntry {
+  public class BalanceEntry {
 
     #region Constructors and parsers
 
@@ -111,6 +107,6 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
       get; internal set;
     } = false;
 
-  } // class BalanceEntry 
+  } // class BalanceEntry
 
 } // Empiria.FinancialAccounting.BalanceEngine

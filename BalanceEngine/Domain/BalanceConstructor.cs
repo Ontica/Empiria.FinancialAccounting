@@ -45,9 +45,8 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
 
 
     internal Balance GenerateBalance() {
-
       switch (Command.TrialBalanceType) {
-        
+
         case TrialBalanceType.SaldosPorAuxiliarConsultaRapida:
           var saldosPorAuxiliar = new SaldosPorAuxiliarConsultaRapida(Command);
           return saldosPorAuxiliar.Build();
@@ -61,6 +60,7 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
                     $"Unhandled trial balance type {this.Command.TrialBalanceType}.");
       }
     }
-  } // class BalanceConstructor 
 
-} // Empiria.FinancialAccounting.BalanceEngine.Domain 
+  } // class BalanceConstructor
+
+} // Empiria.FinancialAccounting.BalanceEngine.Domain
