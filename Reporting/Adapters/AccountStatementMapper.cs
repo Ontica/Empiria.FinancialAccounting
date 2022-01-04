@@ -51,6 +51,7 @@ namespace Empiria.FinancialAccounting.Reporting.Adapters {
       columns.Add(new DataTableColumn("accountingDate", "Afectación", "date"));
       columns.Add(new DataTableColumn("recordingDate", "Registro", "date"));
       columns.Add(new DataTableColumn("concept", "Concepto", "text-nowrap"));
+      columns.Add(new DataTableColumn("elaboratedBy", "Elaborado por", "text"));
 
       return columns.ToFixedList();
     }
@@ -85,9 +86,9 @@ namespace Empiria.FinancialAccounting.Reporting.Adapters {
       dto.SubledgerAccountNumber = entry.SubledgerAccountNumber.Length > 1 ? 
                                    entry.SubledgerAccountNumber : "";
       dto.VoucherNumber = entry.VoucherNumber;
-      //dto.ElaboratedBy = entry.ElaboratedBy.Name;
+      dto.ElaboratedBy = entry.ElaboratedBy.Name;
       dto.Concept = entry.Concept;
-      if (entry.ItemType == TrialBalanceItemType.BalanceEntry) {
+      if (entry.ItemType == TrialBalanceItemType.BalanceEntry || entry.IsCurrentBalance) {
         dto.Debit = entry.Debit;
         dto.Credit = entry.Credit;
       }

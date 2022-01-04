@@ -51,6 +51,12 @@ namespace Empiria.FinancialAccounting.Reporting {
     }
 
 
+    [DataField("ID_ELABORADA_POR", ConvertFrom = typeof(long))]
+    public Participant ElaboratedBy {
+      get; internal set;
+    } = Participant.Empty;
+
+
     [DataField("ID_MOVIMIENTO", ConvertFrom = typeof(decimal))]
     public int VoucherEntryId {
       get; internal set;

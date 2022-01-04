@@ -91,6 +91,7 @@ namespace Empiria.FinancialAccounting.Reporting.Exporters.Excel {
           _excelFile.SetCell($"K{i}", voucher.RecordingDate);
         }
         _excelFile.SetCell($"L{i}", voucher.Concept);
+        _excelFile.SetCell($"M{i}", voucher.ElaboratedBy);
 
         if (voucher.ItemType == TrialBalanceItemType.Total) {
           _excelFile.SetRowStyleBold(i);
