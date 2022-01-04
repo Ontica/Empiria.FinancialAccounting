@@ -91,7 +91,8 @@ namespace Empiria.FinancialAccounting.Reporting {
     }
 
     internal AccountStatementEntry GetInitialOrCurrentAccountBalance(
-                                      decimal balance, bool isCurrentBalance = false) {
+                                      decimal balance, bool isCurrentBalance = false,
+                                      decimal debit=0, decimal credit=0) {
 
       var initialBalanceEntry = new AccountStatementEntry();
 
@@ -103,6 +104,10 @@ namespace Empiria.FinancialAccounting.Reporting {
       initialBalanceEntry.SubledgerAccountNumber = "";
       initialBalanceEntry.VoucherNumber = "";
       initialBalanceEntry.Concept = "";
+      if (isCurrentBalance) {
+        initialBalanceEntry.Debit = debit;
+        initialBalanceEntry.Credit = credit;
+      }
       initialBalanceEntry.CurrentBalance = balance;
       initialBalanceEntry.ItemType = TrialBalanceItemType.Total;
       initialBalanceEntry.IsCurrentBalance = isCurrentBalance;
@@ -151,6 +156,7 @@ namespace Empiria.FinancialAccounting.Reporting {
 
       decimal initialBalance = initialAccountBalance.CurrentBalance;
       decimal currentBalance = initialBalance;
+      decimal debit = 0, credit = 0;
 
       foreach (var voucher in returnedVouchersWithCurrentBalance) {
         if (voucher.DebtorCreditor == "D") {
@@ -160,11 +166,14 @@ namespace Empiria.FinancialAccounting.Reporting {
           voucher.CurrentBalance = currentBalance + (voucher.Credit - voucher.Debit);
           currentBalance = currentBalance + (voucher.Credit - voucher.Debit);
         }
+        debit += voucher.Debit;
+        credit += voucher.Credit;
       }
       
 
       AccountStatementEntry voucherWithCurrentBalance = GetInitialOrCurrentAccountBalance(
-                                                          AccountStatementCommand.Entry.CurrentBalance, true);
+                                                          AccountStatementCommand.Entry.CurrentBalance, true,
+                                                          debit, credit);
 
       if (voucherWithCurrentBalance != null) {
         returnedVouchersWithCurrentBalance.Add(voucherWithCurrentBalance);
