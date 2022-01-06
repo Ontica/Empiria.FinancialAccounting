@@ -201,7 +201,9 @@ namespace Empiria.FinancialAccounting.Vouchers.UseCases {
 
       voucher = AppendEntries(voucher.Id, entriesFields);
 
-      if (tryToClose) {
+      Ledger ledger = Ledger.Parse(voucher.Ledger.UID);
+
+      if (tryToClose && ledger.IsAccountingDateOpened(voucher.AccountingDate)) {
         return CloseVoucher(voucher.Id);
       } else {
         return voucher;
