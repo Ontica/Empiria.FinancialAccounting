@@ -15,13 +15,35 @@ using Empiria.FinancialAccounting.Data;
 namespace Empiria.FinancialAccounting {
 
   /// <summary>Holds information about an accounting calendar.</summary>
-  internal class Calendar : BaseObject {
+  internal class Calendar : BaseObject, INamedEntity {
+
+    #region Constructors and parsers
+
+    protected Calendar() {
+
+    }
 
     static public Calendar Parse(int calendarId) {
       return BaseObject.ParseId<Calendar>(calendarId);
     }
 
+
+    static public FixedList<Calendar> GetList() {
+      return BaseObject.GetList<Calendar>()
+                       .ToFixedList();
+    }
+
+
+    #endregion Constructors and parsers
+
     #region Properties
+
+    [DataField("CALENDAR_NAME")]
+    public string Name {
+      get;
+      private set;
+    }
+
 
     public FixedList<CalendarPeriod> OpenedPeriods {
       get {
@@ -40,6 +62,11 @@ namespace Empiria.FinancialAccounting {
 
     #region Methods
 
+    internal void AddAccountingDate(DateTime date) {
+      CalendarData.AddAccountingDate(this, date);
+    }
+
+
     public FixedList<DateTime> OpenedAccountingDates() {
       var list = new List<DateTime>(16);
 
@@ -53,6 +80,11 @@ namespace Empiria.FinancialAccounting {
       list.Sort();
 
       return list.ToFixedList();
+    }
+
+
+    internal void RemoveAccountingDate(DateTime date) {
+      CalendarData.RemoveAccountingDate(this, date);
     }
 
     #endregion Methods

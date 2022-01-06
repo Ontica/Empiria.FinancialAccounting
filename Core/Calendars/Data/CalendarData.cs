@@ -16,15 +16,28 @@ namespace Empiria.FinancialAccounting.Data {
   /// <summary>Data access layer for accounting calendars.</summary>
   static internal class CalendarData {
 
+    static internal void AddAccountingDate(Calendar calendar, DateTime date) {
+      //var dataOperation = DataOperation.Parse("");
+
+      //DataWriter.Execute(dataOperation);
+    }
+
+
     static internal FixedList<CalendarPeriod> CalendarPeriods(Calendar calendar) {
       var sql = "SELECT * FROM AO_PERIODS " +
-          $"WHERE CALENDAR_ID = {calendar.Id} " +
-          $"ORDER BY FROM_DATE";
+               $"WHERE CALENDAR_ID = {calendar.Id} " +
+               $"ORDER BY FROM_DATE";
 
       var dataOperation = DataOperation.Parse(sql);
 
       return DataReader.GetFixedList<CalendarPeriod>(dataOperation);
     }
+
+
+    static internal void RemoveAccountingDate(Calendar calendar, DateTime date) {
+      // throw new NotImplementedException();
+    }
+
 
   }  // class CalendarData
 

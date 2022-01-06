@@ -37,7 +37,7 @@ namespace Empiria.FinancialAccounting.WebApi {
 
 
     [HttpGet]
-    [Route("v2/financial-accounting/catalogues/accounting-calendars/{calendarUID:guid}")]
+    [Route("v2/financial-accounting/catalogues/accounting-calendars/{calendarUID}")]
     public SingleObjectModel GetAcountingCalendar([FromUri] string calendarUID) {
 
       using (var usecases = AccountingCalendarUseCases.UseCaseInteractor()) {
@@ -49,7 +49,7 @@ namespace Empiria.FinancialAccounting.WebApi {
 
 
     [HttpPost]
-    [Route("v2/financial-accounting/catalogues/accounting-calendars/{calendarUID:guid}/add-date/{date}")]
+    [Route("v2/financial-accounting/catalogues/accounting-calendars/{calendarUID}/add-date/{date}")]
     public SingleObjectModel AddDateToAccountingCalendar([FromUri] string calendarUID, [FromUri] DateTime date) {
 
       using (var usecases = AccountingCalendarUseCases.UseCaseInteractor()) {
@@ -61,7 +61,7 @@ namespace Empiria.FinancialAccounting.WebApi {
 
 
     [HttpDelete]
-    [Route("v2/financial-accounting/catalogues/accounting-calendars/{calendarUID:guid}/remove-date/{date}")]
+    [Route("v2/financial-accounting/catalogues/accounting-calendars/{calendarUID}/remove-date/{date}")]
     public SingleObjectModel RemoteDateFromAccountingCalendar([FromUri] string calendarUID, [FromUri] DateTime date) {
 
       using (var usecases = AccountingCalendarUseCases.UseCaseInteractor()) {

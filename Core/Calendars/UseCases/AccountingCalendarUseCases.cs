@@ -32,15 +32,13 @@ namespace Empiria.FinancialAccounting.UseCases {
 
     #region Use cases
 
-    public FixedList<NamedEntityDto> GetExchangeRatesTypes() {
-      var list = ExchangeRateType.GetList();
+
+    public FixedList<NamedEntityDto> GetAccountingCalendars() {
+      var list = Calendar.GetList();
 
       return list.MapToNamedEntityList();
     }
 
-    public FixedList<NamedEntityDto> GetAccountingCalendars() {
-      throw new NotImplementedException();
-    }
 
     public FixedList<ExchangeRateDto> GetExchangeRatesOnADate(DateTime date) {
       FixedList<ExchangeRate> exchangeRates = ExchangeRate.GetList(date);
@@ -48,18 +46,36 @@ namespace Empiria.FinancialAccounting.UseCases {
       return ExchangeRatesMapper.Map(exchangeRates);
     }
 
+
     public AccountingCalendarDto GetAccountingCalendar(string calendarUID) {
-      throw new NotImplementedException();
+      Assertion.AssertObject(calendarUID, "calendarUID");
+
+      var calendar = Calendar.Parse(int.Parse(calendarUID));
+
+      return AccountingCalendarMapper.Map(calendar);
     }
+
 
     public AccountingCalendarDto AddDateToAccountingCalendar(string calendarUID, DateTime date) {
-      throw new NotImplementedException();
+      Assertion.AssertObject(calendarUID, "calendarUID");
+
+      var calendar = Calendar.Parse(int.Parse(calendarUID));
+
+      calendar.AddAccountingDate(date);
+
+      return AccountingCalendarMapper.Map(calendar);
     }
+
 
     public AccountingCalendarDto RemoveDateFromAccountingCalendar(string calendarUID, DateTime date) {
-      throw new NotImplementedException();
-    }
+      Assertion.AssertObject(calendarUID, "calendarUID");
 
+      var calendar = Calendar.Parse(int.Parse(calendarUID));
+
+      calendar.RemoveAccountingDate(date);
+
+      return AccountingCalendarMapper.Map(calendar);
+    }
 
     #endregion Use cases
 
