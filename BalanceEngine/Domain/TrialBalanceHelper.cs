@@ -436,7 +436,7 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
     private List<TrialBalanceEntry> GetEntriesMappedForSectorization(
                                     List<TrialBalanceEntry> entriesList) {
       var returnedEntriesMapped = new List<TrialBalanceEntry>();
-      var isBalanceEntry = entriesList.FirstOrDefault(a => a.ItemType == TrialBalanceItemType.BalanceEntry);
+      var isBalanceEntry = entriesList.FirstOrDefault(a => a.ItemType == TrialBalanceItemType.Entry);
       if (isBalanceEntry != null) {
         foreach (var entry in entriesList) {
           TrialBalanceEntry balanceEntry = TrialBalanceMapper.MapToTrialBalanceEntry(entry);
@@ -487,7 +487,7 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
           if (entry.Level > 1 &&
                (entriesWithSummarySector.Count == 2 &&
                 entry.ItemType == TrialBalanceItemType.BalanceSummary) ||
-               (entry.ItemType == TrialBalanceItemType.BalanceEntry &&
+               (entry.ItemType == TrialBalanceItemType.Entry &&
                entriesWithSummarySector.Count == 2 && entry.Sector.Code != "00")) {
             var entryWithoutSector = entriesWithSummarySector.FirstOrDefault(a => a.Sector.Code == "00");
             entries.Remove(entryWithoutSector);
@@ -575,7 +575,7 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
           summaryEntry.CurrentBalance += entry.CurrentBalance;
 
         } else if ((sectorParent.Code != "00" ||
-                   (entry.ItemType == TrialBalanceItemType.BalanceEntry && entry.HasSector)) &&
+                   (entry.ItemType == TrialBalanceItemType.Entry && entry.HasSector)) &&
                     entry.Level > 1) {
           SummaryByEntry(hashEntries, entry, entry.Account, Sector.Empty, entry.ItemType);
         }
@@ -943,7 +943,7 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
       }
       entry.LastChangeDate = balanceEntry.LastChangeDate;
 
-      TrialBalanceItemType itemType = TrialBalanceItemType.BalanceEntry;
+      TrialBalanceItemType itemType = TrialBalanceItemType.Entry;
 
       string hash = $"{entry.Account.Number}";
 

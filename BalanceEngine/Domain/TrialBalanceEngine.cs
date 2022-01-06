@@ -65,8 +65,6 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
 
     Total,
 
-    BalanceEntry,
-
     BalanceSummary,
 
     BalanceTotalGroupDebtor,

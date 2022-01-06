@@ -129,7 +129,7 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
     public TrialBalanceItemType ItemType {
       get;
       internal set;
-    } = TrialBalanceItemType.BalanceEntry;
+    } = TrialBalanceItemType.Entry;
 
 
     public DebtorCreditorType DebtorCreditor {

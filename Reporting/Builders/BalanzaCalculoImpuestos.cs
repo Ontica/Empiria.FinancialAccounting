@@ -114,7 +114,7 @@ namespace Empiria.FinancialAccounting.Reporting.Builders {
         Debe = entry.Debit,
         Haber = entry.Credit,
         SaldoFinal = entry.CurrentBalance,
-        Movimiento = entry.ItemType == TrialBalanceItemType.BalanceEntry &&
+        Movimiento = entry.ItemType == TrialBalanceItemType.Entry &&
                      (entry.Debit != 0 || entry.Credit != 0) ?
                       "*" : "",
 

@@ -64,7 +64,7 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
         var returnedEntries = new List<TwoCurrenciesBalanceEntry>();
 
         foreach (var summary in twoColumnsEntries) {
-          var balanceEntries = trialBalance.Where(a => a.ItemType == TrialBalanceItemType.BalanceEntry &&
+          var balanceEntries = trialBalance.Where(a => a.ItemType == TrialBalanceItemType.Entry &&
                                                   a.Account.Number == summary.Account.Number &&
                                                   a.Sector.Code == summary.Sector.Code &&
                                                   a.SubledgerAccountIdParent > 0 &&
@@ -150,7 +150,7 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
         //  entry.AverageBalance = (entry.TotalBalance / numberOfDays) + entry.InitialBalance;
         //}
 
-        foreach (var entry in returnedBalances.Where(a=>a.ItemType == TrialBalanceItemType.BalanceEntry ||
+        foreach (var entry in returnedBalances.Where(a=>a.ItemType == TrialBalanceItemType.Entry ||
                                                         a.ItemType == TrialBalanceItemType.BalanceSummary)) {
           decimal debtorCreditor = entry.DebtorCreditor == DebtorCreditorType.Deudora ?
                                    entry.Debit - entry.Credit : entry.Credit - entry.Debit;

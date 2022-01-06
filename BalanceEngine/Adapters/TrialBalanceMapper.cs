@@ -197,7 +197,7 @@ namespace Empiria.FinancialAccounting.BalanceEngine.Adapters {
       dto.AccountNumberForBalances = entry.Account.Number;
 
       if (command.TrialBalanceType == TrialBalanceType.SaldosPorAuxiliar &&
-          entry.ItemType == TrialBalanceItemType.BalanceEntry && subledgerAccount.IsEmptyInstance) {
+          entry.ItemType == TrialBalanceItemType.Entry && subledgerAccount.IsEmptyInstance) {
 
         subledgerAccount = SubledgerAccount.Parse(entry.SubledgerAccountIdParent);
         if (!subledgerAccount.IsEmptyInstance) {
@@ -218,10 +218,10 @@ namespace Empiria.FinancialAccounting.BalanceEngine.Adapters {
       dto.ExchangeRate = entry.ExchangeRate;
       dto.SecondExchangeRate = entry.SecondExchangeRate;
       dto.AverageBalance = entry.AverageBalance;
-      dto.DebtorCreditor = entry.ItemType == TrialBalanceItemType.BalanceEntry ||
+      dto.DebtorCreditor = entry.ItemType == TrialBalanceItemType.Entry ||
                            entry.ItemType == TrialBalanceItemType.BalanceSummary ?
                            entry.DebtorCreditor.ToString() : "";
-      dto.LastChangeDate = entry.ItemType == TrialBalanceItemType.BalanceEntry ||
+      dto.LastChangeDate = entry.ItemType == TrialBalanceItemType.Entry ||
                            entry.ItemType == TrialBalanceItemType.BalanceSummary ||
                            command.TrialBalanceType == TrialBalanceType.BalanzaConContabilidadesEnCascada ?
                            entry.LastChangeDate: ExecutionServer.DateMaxValue;

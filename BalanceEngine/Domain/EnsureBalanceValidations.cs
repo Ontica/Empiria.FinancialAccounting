@@ -244,7 +244,7 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
 
         if (_command.AccountsChartUID == "b2328e67-3f2e-45b9-b1f6-93ef6292204e") {
           entriesTotal = entries.FindAll(x => x.DebtorCreditor == DebtorCreditorType.Deudora &&
-                                                x.ItemType == TrialBalanceItemType.BalanceEntry)
+                                                x.ItemType == TrialBalanceItemType.Entry)
                                   .Sum(x => x.DomesticBalance);
         }
 
@@ -260,7 +260,7 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
                                   .Sum(x => x.DomesticBalance);
         if (_command.AccountsChartUID == "b2328e67-3f2e-45b9-b1f6-93ef6292204e") {
           entriesTotal = entries.FindAll(x => x.DebtorCreditor == DebtorCreditorType.Acreedora &&
-                                                x.ItemType == TrialBalanceItemType.BalanceEntry)
+                                                x.ItemType == TrialBalanceItemType.Entry)
                                   .Sum(x => x.DomesticBalance);
         }
         Assertion.Assert(Math.Abs(totalCreditor.DomesticBalance - entriesTotal) <= MAX_BALANCE_DIFFERENCE,

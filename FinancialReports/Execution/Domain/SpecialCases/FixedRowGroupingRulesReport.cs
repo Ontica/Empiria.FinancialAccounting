@@ -233,7 +233,7 @@ namespace Empiria.FinancialAccounting.FinancialReports {
 
       var converted = new
                 FixedList<TwoColumnsTrialBalanceEntryDto>(balances.Entries.Select(x => (TwoColumnsTrialBalanceEntryDto) x))
-                                    .FindAll(x => x.ItemType == BalanceEngine.TrialBalanceItemType.BalanceEntry ||
+                                    .FindAll(x => x.ItemType == BalanceEngine.TrialBalanceItemType.Entry ||
                                                   x.ItemType == BalanceEngine.TrialBalanceItemType.BalanceSummary);
 
 

@@ -38,7 +38,7 @@ namespace Empiria.FinancialAccounting.BalanceEngine.Adapters {
 
     public TrialBalanceItemType ItemType {
       get; internal set;
-    } = TrialBalanceItemType.BalanceEntry;
+    } = TrialBalanceItemType.Entry;
 
     public string LedgerUID {
       get;

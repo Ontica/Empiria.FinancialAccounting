@@ -132,7 +132,7 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
       foreach (var entry in ledgersList) {
         TrialBalanceItemType itemType = entry.Currency.Code == "02" ?
                                         TrialBalanceItemType.BalanceSummary :
-                                        TrialBalanceItemType.BalanceEntry;
+                                        TrialBalanceItemType.Entry;
         helper.SummaryByEntry(hashAccountEntries, entry, entry.Account,
                               Sector.Empty, itemType);
       }
@@ -153,7 +153,7 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
       foreach (var entry in ledgersList) {
         TrialBalanceItemType itemType = entry.Currency.Code == "01" ?
                                         TrialBalanceItemType.BalanceSummary :
-                                        TrialBalanceItemType.BalanceEntry;
+                                        TrialBalanceItemType.Entry;
         helper.SummaryByEntry(hashAccountEntries, entry, entry.Account,
                               Sector.Empty, itemType);
       }

@@ -146,7 +146,7 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
 
       foreach (var entry in entries) {
         var balanceEntry = new BalanceEntry();
-        balanceEntry.ItemType = entry.ItemType == TrialBalanceItemType.BalanceEntry ? 
+        balanceEntry.ItemType = entry.ItemType == TrialBalanceItemType.Entry ? 
                                 TrialBalanceItemType.Entry : entry.ItemType;
         balanceEntry.Ledger = entry.Ledger;
         balanceEntry.Currency = entry.Currency;
