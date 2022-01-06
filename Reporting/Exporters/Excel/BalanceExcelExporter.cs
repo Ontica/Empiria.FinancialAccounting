@@ -139,7 +139,7 @@ namespace Empiria.FinancialAccounting.Reporting.Exporters.Excel {
           _excelFile.SetCell($"F{i}", entry.CurrentBalance);
           _excelFile.SetCell($"G{i}", entry.LastChangeDate.ToString("dd/MMM/yyyy"));
         }
-        
+
         i++;
       }
     }

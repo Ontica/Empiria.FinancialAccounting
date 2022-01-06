@@ -53,7 +53,7 @@ namespace Empiria.FinancialAccounting.BalanceEngine.UseCases {
       return BalanceMapper.Map(balance);
     }
 
-   
+
     #endregion Use cases
 
   } // class TrialBalanceUseCases

@@ -82,6 +82,7 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
         columns.Add(new DataTableColumn("debtorCreditor", "Naturaleza", "text"));
         if (Command.WithAverageBalance) {
           columns.Add(new DataTableColumn("averageBalance", "Saldo promedio", "decimal"));
+
         }
         columns.Add(new DataTableColumn("lastChangeDate", "Último movimiento", "date"));
       } else {

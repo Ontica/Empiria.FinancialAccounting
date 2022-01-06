@@ -145,7 +145,7 @@ namespace Empiria.FinancialAccounting.BalanceEngine.Adapters {
     public string DebtorCreditor {
       get; internal set;
     }
-    
+
   } // class TrialBalanceEntryDto
 
 } // namespace Empiria.FinancialAccounting.BalanceEngine.Adapters

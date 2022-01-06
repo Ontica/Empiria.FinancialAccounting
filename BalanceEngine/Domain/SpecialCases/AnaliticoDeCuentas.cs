@@ -28,7 +28,7 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
 
     internal TrialBalance Build() {
       var helper = new TrialBalanceHelper(_command);
-      
+
       var twoColumnsHelper = new TwoCurrenciesBalanceHelper(_command);
 
       FixedList<TrialBalanceEntry> postingEntries = helper.GetTrialBalanceEntries(_command.InitialPeriod);
@@ -38,7 +38,7 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
       postingEntries = helper.RoundTrialBalanceEntries(postingEntries);
 
       List<TrialBalanceEntry> summaryEntries = helper.GenerateSummaryEntries(postingEntries);
-      
+
       List<TrialBalanceEntry> _postingEntries = helper.GetSummaryEntriesAndSectorization(
                                                 postingEntries.ToList());
 
