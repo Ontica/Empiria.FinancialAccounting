@@ -35,11 +35,12 @@ namespace Empiria.FinancialAccounting.BalanceEngine.Adapters {
       trialBalanceCommand.InitialPeriod.ToDate = command.InitialPeriod.ToDate;
       trialBalanceCommand.SubledgerAccount = command.SubledgerAccount;
       trialBalanceCommand.TrialBalanceType = command.TrialBalanceType;
-      trialBalanceCommand.ShowCascadeBalances = true;
+      //trialBalanceCommand.ShowCascadeBalances = true;
+      trialBalanceCommand.WithSubledgerAccount = command.WithSubledgerAccount; 
 
-      if (command.TrialBalanceType != TrialBalanceType.SaldosPorAuxiliarConsultaRapida) {
-        trialBalanceCommand.ShowCascadeBalances = command.WithSubledgerAccount;
-      }
+      //if (command.TrialBalanceType != TrialBalanceType.SaldosPorAuxiliarConsultaRapida) {
+      //  trialBalanceCommand.ShowCascadeBalances = command.WithSubledgerAccount;
+      //}
 
       return trialBalanceCommand;
     }
