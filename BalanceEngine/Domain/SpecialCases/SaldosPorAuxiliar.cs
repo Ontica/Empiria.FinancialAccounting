@@ -120,7 +120,7 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
         entry.DebtorCreditor = entry.Account.DebtorCreditor;
         entry.SubledgerAccountIdParent = entry.SubledgerAccountId;
 
-        SummaryBySubledgerEntry(hashReturnedEntries, entry, TrialBalanceItemType.BalanceSummary);
+        SummaryBySubledgerEntry(hashReturnedEntries, entry, TrialBalanceItemType.Summary);
       }
 
       return hashReturnedEntries;

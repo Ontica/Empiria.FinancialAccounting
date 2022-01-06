@@ -238,7 +238,7 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
       foreach (var totalDebtor in entries.Where(x => x.ItemType == TrialBalanceItemType.BalanceTotalDebtor)) {
 
         var entriesTotal = entries.FindAll(x => x.DebtorCreditor == DebtorCreditorType.Deudora &&
-                                                x.ItemType == TrialBalanceItemType.BalanceSummary &&
+                                                x.ItemType == TrialBalanceItemType.Summary &&
                                                 x.Level == 1 && x.Sector.Code == "00")
                                   .Sum(x => x.DomesticBalance);
 
@@ -255,7 +255,7 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
 
       foreach (var totalCreditor in entries.Where(a => a.ItemType == TrialBalanceItemType.BalanceTotalCreditor)) {
         var entriesTotal = entries.FindAll(x => x.DebtorCreditor == DebtorCreditorType.Acreedora &&
-                                                x.ItemType == TrialBalanceItemType.BalanceSummary &&
+                                                x.ItemType == TrialBalanceItemType.Summary &&
                                                 x.Level == 1 && x.Sector.Code == "00")
                                   .Sum(x => x.DomesticBalance);
         if (_command.AccountsChartUID == "b2328e67-3f2e-45b9-b1f6-93ef6292204e") {

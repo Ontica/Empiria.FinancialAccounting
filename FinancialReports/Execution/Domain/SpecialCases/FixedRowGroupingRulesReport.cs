@@ -234,7 +234,7 @@ namespace Empiria.FinancialAccounting.FinancialReports {
       var converted = new
                 FixedList<TwoColumnsTrialBalanceEntryDto>(balances.Entries.Select(x => (TwoColumnsTrialBalanceEntryDto) x))
                                     .FindAll(x => x.ItemType == BalanceEngine.TrialBalanceItemType.Entry ||
-                                                  x.ItemType == BalanceEngine.TrialBalanceItemType.BalanceSummary);
+                                                  x.ItemType == BalanceEngine.TrialBalanceItemType.Summary);
 
 
       var accounts = converted.Select(x => x.StandardAccountNumber).Distinct().ToList();

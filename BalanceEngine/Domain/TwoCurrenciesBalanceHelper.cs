@@ -151,7 +151,7 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
         //}
 
         foreach (var entry in returnedBalances.Where(a=>a.ItemType == TrialBalanceItemType.Entry ||
-                                                        a.ItemType == TrialBalanceItemType.BalanceSummary)) {
+                                                        a.ItemType == TrialBalanceItemType.Summary)) {
           decimal debtorCreditor = entry.DebtorCreditor == DebtorCreditorType.Deudora ?
                                    entry.Debit - entry.Credit : entry.Credit - entry.Debit;
 
@@ -251,7 +251,7 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
       var summaryEntries = new List<TrialBalanceEntry>();
       if (_command.WithSubledgerAccount) {
         summaryEntries = trialBalance.Where(a => a.SubledgerAccountId == 0 && 
-                                            a.ItemType == TrialBalanceItemType.BalanceSummary).ToList();
+                                            a.ItemType == TrialBalanceItemType.Summary).ToList();
       } else {
         summaryEntries = trialBalance.Where(a => a.SubledgerAccountNumber.Length <= 1).ToList();
       }

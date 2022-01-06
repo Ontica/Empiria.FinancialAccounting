@@ -133,7 +133,7 @@ namespace Empiria.FinancialAccounting.Reporting.Exporters.Excel {
         }
 
         if (entry.ItemType != TrialBalanceItemType.Entry &&
-            entry.ItemType != TrialBalanceItemType.BalanceSummary) {
+            entry.ItemType != TrialBalanceItemType.Summary) {
           _excelFile.SetRowStyleBold(i);
         }
         i++;
@@ -297,7 +297,7 @@ namespace Empiria.FinancialAccounting.Reporting.Exporters.Excel {
         }
 
         if (entry.ItemType != TrialBalanceItemType.Entry &&
-            entry.ItemType != TrialBalanceItemType.BalanceSummary) {
+            entry.ItemType != TrialBalanceItemType.Summary) {
           _excelFile.SetRowStyleBold(i);
         }
         i++;
@@ -349,7 +349,7 @@ namespace Empiria.FinancialAccounting.Reporting.Exporters.Excel {
         }
 
         if (entry.ItemType != TrialBalanceItemType.Entry &&
-            entry.ItemType != TrialBalanceItemType.BalanceSummary) {
+            entry.ItemType != TrialBalanceItemType.Summary) {
           _excelFile.SetRowStyleBold(i);
         }
         i++;
@@ -399,7 +399,7 @@ namespace Empiria.FinancialAccounting.Reporting.Exporters.Excel {
         }
 
         if (entry.ItemType != TrialBalanceItemType.Entry &&
-            entry.ItemType != TrialBalanceItemType.BalanceSummary) {
+            entry.ItemType != TrialBalanceItemType.Summary) {
           _excelFile.SetRowStyleBold(i);
         }
         i++;

@@ -219,10 +219,10 @@ namespace Empiria.FinancialAccounting.BalanceEngine.Adapters {
       dto.SecondExchangeRate = entry.SecondExchangeRate;
       dto.AverageBalance = entry.AverageBalance;
       dto.DebtorCreditor = entry.ItemType == TrialBalanceItemType.Entry ||
-                           entry.ItemType == TrialBalanceItemType.BalanceSummary ?
+                           entry.ItemType == TrialBalanceItemType.Summary ?
                            entry.DebtorCreditor.ToString() : "";
       dto.LastChangeDate = entry.ItemType == TrialBalanceItemType.Entry ||
-                           entry.ItemType == TrialBalanceItemType.BalanceSummary ||
+                           entry.ItemType == TrialBalanceItemType.Summary ||
                            command.TrialBalanceType == TrialBalanceType.BalanzaConContabilidadesEnCascada ?
                            entry.LastChangeDate: ExecutionServer.DateMaxValue;
 
@@ -279,8 +279,8 @@ namespace Empiria.FinancialAccounting.BalanceEngine.Adapters {
       dto.CurrencyCode = entry.Currency.Code;
       dto.CurrencyName = entry.Currency.Name;
       dto.StandardAccountId = entry.Account.Id;
-      dto.AccountNumber = entry.ItemType == TrialBalanceItemType.BalanceSummary ? entry.Account.Number : "";
-      dto.AccountName = entry.ItemType == TrialBalanceItemType.BalanceSummary ? entry.Account.Name :
+      dto.AccountNumber = entry.ItemType == TrialBalanceItemType.Summary ? entry.Account.Number : "";
+      dto.AccountName = entry.ItemType == TrialBalanceItemType.Summary ? entry.Account.Name :
                         entry.ItemType == TrialBalanceItemType.BalanceTotalCurrency ? entry.GroupName : "";
       dto.AccountNumberForBalances = entry.Account.Number;
       dto.SectorCode = entry.Sector.Code;

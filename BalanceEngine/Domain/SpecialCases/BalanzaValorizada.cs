@@ -96,7 +96,7 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
       var returnedValuedBalances = new List<ValuedTrialBalanceEntry>();
 
       var headerAccounts = mergeBalancesToToValuedBalances
-                          .Where(a => a.ItemType == TrialBalanceItemType.BalanceSummary).ToList();
+                          .Where(a => a.ItemType == TrialBalanceItemType.Summary).ToList();
 
       foreach (var header in headerAccounts) {
         returnedValuedBalances.Add(header);
@@ -131,7 +131,7 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
 
       foreach (var entry in ledgersList) {
         TrialBalanceItemType itemType = entry.Currency.Code == "02" ?
-                                        TrialBalanceItemType.BalanceSummary :
+                                        TrialBalanceItemType.Summary :
                                         TrialBalanceItemType.Entry;
         helper.SummaryByEntry(hashAccountEntries, entry, entry.Account,
                               Sector.Empty, itemType);
@@ -152,7 +152,7 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
 
       foreach (var entry in ledgersList) {
         TrialBalanceItemType itemType = entry.Currency.Code == "01" ?
-                                        TrialBalanceItemType.BalanceSummary :
+                                        TrialBalanceItemType.Summary :
                                         TrialBalanceItemType.Entry;
         helper.SummaryByEntry(hashAccountEntries, entry, entry.Account,
                               Sector.Empty, itemType);

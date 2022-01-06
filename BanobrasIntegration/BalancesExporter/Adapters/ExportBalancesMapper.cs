@@ -30,7 +30,7 @@ namespace Empiria.FinancialAccounting.BanobrasIntegration.BalancesExporter.Adapt
       var list = new FixedList<TrialBalanceEntryDto>(trialBalance.Entries.Select(x => (TrialBalanceEntryDto) x));
 
       list = list.FindAll(x => x.ItemType == TrialBalanceItemType.Entry ||
-                               x.ItemType == TrialBalanceItemType.BalanceSummary);
+                               x.ItemType == TrialBalanceItemType.Summary);
 
       return list;
     }
