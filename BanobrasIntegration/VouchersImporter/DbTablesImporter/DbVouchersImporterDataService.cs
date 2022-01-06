@@ -13,6 +13,7 @@ using System.Collections.Generic;
 using Empiria.Data;
 using Empiria.FinancialAccounting.BanobrasIntegration.VouchersImporter.Adapters;
 using Empiria.FinancialAccounting.Vouchers;
+using Empiria.FinancialAccounting.Vouchers.Adapters;
 
 namespace Empiria.FinancialAccounting.BanobrasIntegration.VouchersImporter {
 
@@ -92,6 +93,40 @@ namespace Empiria.FinancialAccounting.BanobrasIntegration.VouchersImporter {
       Assertion.AssertObject(system, "system");
 
       return $"{system.Name}, {fechaAfectacion.ToString("yyyy/MM/dd")}, Tipo Cont. {tipoContabilidad}";
+    }
+
+
+    static internal void Reallocate(int idSistema, int tipoContabilidad, DateTime fechaAfectacion) {
+      var operation = DataOperation.Parse("do_store_cof_volantes",
+                                          idSistema, tipoContabilidad, fechaAfectacion);
+
+      DataWriter.Execute(operation);
+    }
+
+    internal static long NextIdVolante() {
+      return CommonMethods.GetNextObjectId("SEC_ID_VOLANTE");
+    }
+
+    internal static long NextIdVolanteIssue() {
+      return CommonMethods.GetNextObjectId("SEC_ID_VOLANTE_ISSUE");
+    }
+
+    internal static void StoreIssues(Encabezado encabezado, ToImportVoucher item, long idVolante) {
+      foreach (var issue in item.AllIssues) {
+        var operation = DataOperation.Parse("apd_cof_volante_issue",
+                                            NextIdVolanteIssue(), idVolante, -1, issue.Description);
+        DataWriter.Execute(operation);
+      }
+      MergeVouchers(encabezado, idVolante, -1);
+    }
+
+
+    internal static void MergeVouchers(Encabezado encabezado, long idVolante, long voucherId) {
+      var operation = DataOperation.Parse("do_merge_cof_volante_poliza",
+                                           encabezado.IdSistema,
+                                           encabezado.TipoContabilidad, encabezado.FechaAfectacion,
+                                           encabezado.NumeroVolante, idVolante, voucherId);
+      DataWriter.Execute(operation);
     }
 
 

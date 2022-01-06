@@ -83,11 +83,50 @@ namespace Empiria.FinancialAccounting.BanobrasIntegration.VouchersImporter {
     }
 
 
+    internal void DryRunImportOne(ToImportVoucher voucher) {
+      using (var usecases = VoucherEditionUseCases.UseCaseInteractor()) {
+
+        if (voucher.HasErrors) {
+          return;
+        }
+
+        VoucherFields voucherFields = MapToVoucherFields(voucher.Header);
+
+        foreach (var entry in voucher.Entries) {
+          var mappedEntry = MapToVoucherEntryFields(entry);
+
+          FixedList<string> entryIssues = usecases.ValidateVoucherEntryToImport(voucherFields, mappedEntry);
+
+          foreach (var issueText in entryIssues) {
+            var issue = new ToImportVoucherIssue(VoucherIssueType.Error,
+                                                  voucher.Header.ImportationSet,
+                                                  entry.DataSource,
+                                                  issueText);
+
+            entry.AddIssue(issue);
+          }
+        }
+
+        if (voucher.HasErrors) {
+          return;
+        }
+
+        FixedList<VoucherEntryFields> entriesFields = MapToVoucherEntriesFields(voucher.Entries);
+
+        FixedList<string> errors = usecases.ValidateVoucherToImport(voucherFields, entriesFields);
+
+        foreach (var error in errors) {
+          voucher.AddError(error);
+        }
+
+      }  // using
+    }
+
+
     internal ImportVouchersResult Import() {
       ImportVouchersResult result = this.DryRunImport();
 
       EmpiriaLog.Info("Dry run importation ends. Actual importation starts ...");
-
       using (var usecases = VoucherEditionUseCases.UseCaseInteractor()) {
 
         foreach (ToImportVoucher voucher in _toImportVouchersList) {
@@ -119,6 +158,33 @@ namespace Empiria.FinancialAccounting.BanobrasIntegration.VouchersImporter {
       return result;
     }
 
+    internal VoucherDto TryImportOne(ToImportVoucher voucher) {
+      this.DryRunImportOne(voucher);
+
+      using (var usecases = VoucherEditionUseCases.UseCaseInteractor()) {
+        VoucherImporterDataService.StoreVoucher(voucher);
+        VoucherImporterDataService.StoreVoucherIssues(voucher);
+
+        if (voucher.HasErrors) {
+          foreach (var issue in voucher.Issues) {
+            EmpiriaLog.Info($"Póliza '{voucher.Header.UniqueID}': {issue.Description}");
+          }
+          return null;
+        }
+
+        VoucherFields voucherFields = MapToVoucherFields(voucher.Header);
+        FixedList<VoucherEntryFields> entriesFields = MapToVoucherEntriesFields(voucher.Entries);
+
+        try {
+          return usecases.ImportVoucher(voucherFields, entriesFields, _command.TryToCloseVouchers);
+
+        } catch (Exception e) {
+          EmpiriaLog.Error(e);
+          EmpiriaLog.Info($"Póliza '{voucher.Header.UniqueID}': {e.Message}");
+          return null;
+        }
+      }  // using
+    }
 
     #endregion Public methods
 

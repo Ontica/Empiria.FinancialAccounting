@@ -88,6 +88,11 @@ namespace Empiria.FinancialAccounting.BanobrasIntegration.VouchersImporter {
     }
 
 
+    [DataField("ENC_TABLA_ORIGEN")]
+    public string TablaOrigen {
+      get; private set;
+    }
+
     //[DataField("ENC_NO_OPERACION", ConvertFrom = typeof(long))]
     //public int NumOperacion {
     //  get; private set;
@@ -119,7 +124,7 @@ namespace Empiria.FinancialAccounting.BanobrasIntegration.VouchersImporter {
 
 
     internal string GetUniqueID() {
-      if (IdSistema == 23) {
+      if (this.TipoContabilidad == 1 && IdSistema == 23) {
         return $"{this.TipoContabilidad}||{this.IdSistema}||{this.FechaAfectacion.ToString("yyyy-MM-dd")}||" +
                $"{this.NumeroVolante}||{this.Concepto}";
       } else {

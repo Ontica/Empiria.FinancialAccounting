@@ -77,34 +77,45 @@ namespace Empiria.FinancialAccounting.BanobrasIntegration.VouchersImporter {
 
 
     private void ImportVouchers(ImportVouchersCommand command) {
-      const int BATCH_SIZE = 50;
-
       Assertion.AssertObject(command.ProcessOnly[0], "ImportationSet");
 
       List<Encabezado> encabezados = DbVouchersImporterDataService.GetEncabezados(command.ProcessOnly[0]);
       List<Movimiento> movimientos = DbVouchersImporterDataService.GetMovimientos(command.ProcessOnly[0]);
 
-      while (true) {
-        if (encabezados.Count == 0 || !this.IsRunning) {
+      EmpiriaLog.Info($"To be processed {encabezados.Count} at {DateTime.Now}.");
+
+      DbVouchersImporterDataService.Reallocate(encabezados[0].IdSistema,
+                                               encabezados[0].TipoContabilidad,
+                                               encabezados[0].FechaAfectacion);
+
+      if (encabezados[0].IdSistema == 24 || encabezados[0].IdSistema == 26) {   // YATLA PATCH
+        command.TryToCloseVouchers = false;
+      }
+
+      foreach (var encabezado in encabezados) {
+        if (!this.IsRunning) {
           EmpiriaLog.Info($"Voucher processing ends at {DateTime.Now}.");
           return;
         }
 
-        EmpiriaLog.Info($"To be processed {encabezados.Count} at {DateTime.Now}.");
+        var asList = new FixedList<Encabezado>(new Encabezado[1] { encabezado });
 
-        var toProcess = encabezados.GetRange(0, encabezados.Count >= BATCH_SIZE ? BATCH_SIZE : encabezados.Count)
-                                   .ToFixedList();
-
-        var structurer = new DbVouchersStructurer(toProcess, movimientos.ToFixedList());
+        var structurer = new DbVouchersStructurer(asList, movimientos.ToFixedList());
 
         FixedList<ToImportVoucher> toImport = structurer.GetToImportVouchersList();
 
         var voucherImporter = new VoucherImporter(command, toImport);
 
-        voucherImporter.Import();
+        foreach (ToImportVoucher item in toImport) {
+          var voucher = voucherImporter.TryImportOne(item);
 
-        foreach (var item in toProcess) {
-          encabezados.Remove(item);
+          long idVolante = DbVouchersImporterDataService.NextIdVolante();
+
+          if (voucher != null) {
+            DbVouchersImporterDataService.MergeVouchers(encabezado, idVolante, voucher.Id);
+          } else {
+            DbVouchersImporterDataService.StoreIssues(encabezado, item, idVolante);
+          }
         }
 
         UpdateImportVouchersResult();

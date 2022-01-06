@@ -118,6 +118,10 @@ namespace Empiria.FinancialAccounting.BanobrasIntegration.VouchersImporter {
       get; private set;
     }
 
+    [DataField("MCO_TABLA_ORIGEN")]
+    public string TablaOrigen {
+      get; private set;
+    }
 
     public Encabezado Encabezado {
       get; private set;
@@ -316,7 +320,7 @@ namespace Empiria.FinancialAccounting.BanobrasIntegration.VouchersImporter {
     }
 
 
-    public void AddError(string msg, string column = "") {
+    private void AddError(string msg, string column = "") {
       _issues.Add(new ToImportVoucherIssue(VoucherIssueType.Error,
                                            this.GetVoucherUniqueID(),
                                            this.GetEntryID(),
