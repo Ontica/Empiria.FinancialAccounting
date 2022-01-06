@@ -31,7 +31,7 @@ namespace Empiria.FinancialAccounting.Reporting.Adapters {
   public class AccountStatementEntry {
     public TrialBalanceItemType ItemType {
       get; set;
-    } = TrialBalanceItemType.BalanceEntry;
+    } = TrialBalanceItemType.Entry;
 
     public string LedgerUID {
       get; set;

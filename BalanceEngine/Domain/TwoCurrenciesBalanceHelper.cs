@@ -64,7 +64,7 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
         var returnedEntries = new List<TwoCurrenciesBalanceEntry>();
 
         foreach (var summary in twoColumnsEntries) {
-          var balanceEntries = trialBalance.Where(a => a.ItemType == TrialBalanceItemType.BalanceEntry &&
+          var balanceEntries = trialBalance.Where(a => a.ItemType == TrialBalanceItemType.Entry &&
                                                   a.Account.Number == summary.Account.Number &&
                                                   a.Sector.Code == summary.Sector.Code &&
                                                   a.SubledgerAccountIdParent > 0 &&
@@ -150,8 +150,8 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
         //  entry.AverageBalance = (entry.TotalBalance / numberOfDays) + entry.InitialBalance;
         //}
 
-        foreach (var entry in returnedBalances.Where(a=>a.ItemType == TrialBalanceItemType.BalanceEntry ||
-                                                        a.ItemType == TrialBalanceItemType.BalanceSummary)) {
+        foreach (var entry in returnedBalances.Where(a=>a.ItemType == TrialBalanceItemType.Entry ||
+                                                        a.ItemType == TrialBalanceItemType.Summary)) {
           decimal debtorCreditor = entry.DebtorCreditor == DebtorCreditorType.Deudora ?
                                    entry.Debit - entry.Credit : entry.Credit - entry.Debit;
 
@@ -251,7 +251,7 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
       var summaryEntries = new List<TrialBalanceEntry>();
       if (_command.WithSubledgerAccount) {
         summaryEntries = trialBalance.Where(a => a.SubledgerAccountId == 0 && 
-                                            a.ItemType == TrialBalanceItemType.BalanceSummary).ToList();
+                                            a.ItemType == TrialBalanceItemType.Summary).ToList();
       } else {
         summaryEntries = trialBalance.Where(a => a.SubledgerAccountNumber.Length <= 1).ToList();
       }

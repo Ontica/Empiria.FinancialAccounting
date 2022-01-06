@@ -204,7 +204,7 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
 
       if (_command.WithAverageBalance) {
 
-        foreach (var entry in returnedEntries.Where(a => a.ItemType == TrialBalanceItemType.BalanceSummary ||
+        foreach (var entry in returnedEntries.Where(a => a.ItemType == TrialBalanceItemType.Summary ||
                   (_command.TrialBalanceType == TrialBalanceType.BalanzaConContabilidadesEnCascada &&
                    (a.ItemType == TrialBalanceItemType.BalanceTotalGroupDebtor ||
                     a.ItemType == TrialBalanceItemType.BalanceTotalGroupCreditor)) ||
@@ -275,7 +275,7 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
 
           if (entry.Level > 1) {
             SummaryByEntry(summaryEntries, entry, currentParent, entry.Sector,
-                                         TrialBalanceItemType.BalanceSummary);
+                                         TrialBalanceItemType.Summary);
 
             SummaryEntryBySectorization(summaryEntries, entry, currentParent);
           }
@@ -294,7 +294,7 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
             if (_command.TrialBalanceType == TrialBalanceType.AnaliticoDeCuentas &&
                 _command.WithSubledgerAccount && !entry.Account.HasParent) {
               SummaryByEntry(summaryEntries, entry, currentParent, Sector.Empty,
-                                           TrialBalanceItemType.BalanceSummary);
+                                           TrialBalanceItemType.Summary);
             }
             break;
           } else {
@@ -320,7 +320,7 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
         if (currentParent.HasParent && entry.HasSector) {
           if (_command.WithSectorization) {
             SummaryByEntry(summaryEntries, entry, currentParent, entry.Sector.Parent,
-                                            TrialBalanceItemType.BalanceSummary);
+                                            TrialBalanceItemType.Summary);
           }
         }
       }
@@ -436,7 +436,7 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
     private List<TrialBalanceEntry> GetEntriesMappedForSectorization(
                                     List<TrialBalanceEntry> entriesList) {
       var returnedEntriesMapped = new List<TrialBalanceEntry>();
-      var isBalanceEntry = entriesList.FirstOrDefault(a => a.ItemType == TrialBalanceItemType.BalanceEntry);
+      var isBalanceEntry = entriesList.FirstOrDefault(a => a.ItemType == TrialBalanceItemType.Entry);
       if (isBalanceEntry != null) {
         foreach (var entry in entriesList) {
           TrialBalanceEntry balanceEntry = TrialBalanceMapper.MapToTrialBalanceEntry(entry);
@@ -486,8 +486,8 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
                                                         a.Account.Number == entry.Account.Number).ToList();
           if (entry.Level > 1 &&
                (entriesWithSummarySector.Count == 2 &&
-                entry.ItemType == TrialBalanceItemType.BalanceSummary) ||
-               (entry.ItemType == TrialBalanceItemType.BalanceEntry &&
+                entry.ItemType == TrialBalanceItemType.Summary) ||
+               (entry.ItemType == TrialBalanceItemType.Entry &&
                entriesWithSummarySector.Count == 2 && entry.Sector.Code != "00")) {
             var entryWithoutSector = entriesWithSummarySector.FirstOrDefault(a => a.Sector.Code == "00");
             entries.Remove(entryWithoutSector);
@@ -575,7 +575,7 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
           summaryEntry.CurrentBalance += entry.CurrentBalance;
 
         } else if ((sectorParent.Code != "00" ||
-                   (entry.ItemType == TrialBalanceItemType.BalanceEntry && entry.HasSector)) &&
+                   (entry.ItemType == TrialBalanceItemType.Entry && entry.HasSector)) &&
                     entry.Level > 1) {
           SummaryByEntry(hashEntries, entry, entry.Account, Sector.Empty, entry.ItemType);
         }
@@ -699,12 +699,12 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
                                            TrialBalanceEntry entry, StandardAccount currentParent) {
       if (!_command.WithSectorization) {
         SummaryByEntry(summaryEntries, entry, currentParent, Sector.Empty,
-                          TrialBalanceItemType.BalanceSummary);
+                          TrialBalanceItemType.Summary);
       } else {
         var parentSector = entry.Sector.Parent;
         while (true) {
           SummaryByEntry(summaryEntries, entry, currentParent, parentSector,
-                                          TrialBalanceItemType.BalanceSummary);
+                                          TrialBalanceItemType.Summary);
           if (parentSector.IsRoot) {
             break;
           } else {
@@ -935,7 +935,7 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
 
       TrialBalanceEntry entry = TrialBalanceMapper.MapToTrialBalanceEntry(balanceEntry);
 
-      if (entry.ItemType == TrialBalanceItemType.BalanceSummary && entry.Level == 1 && entry.HasSector) {
+      if (entry.ItemType == TrialBalanceItemType.Summary && entry.Level == 1 && entry.HasSector) {
         entry.InitialBalance = 0;
         entry.Debit = 0;
         entry.Credit = 0;
@@ -943,7 +943,7 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
       }
       entry.LastChangeDate = balanceEntry.LastChangeDate;
 
-      TrialBalanceItemType itemType = TrialBalanceItemType.BalanceEntry;
+      TrialBalanceItemType itemType = TrialBalanceItemType.Entry;
 
       string hash = $"{entry.Account.Number}";
 

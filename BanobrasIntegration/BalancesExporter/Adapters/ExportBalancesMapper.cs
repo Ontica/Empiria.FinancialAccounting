@@ -29,8 +29,8 @@ namespace Empiria.FinancialAccounting.BanobrasIntegration.BalancesExporter.Adapt
     static private FixedList<TrialBalanceEntryDto> GetEntriesToBeExported(TrialBalanceDto trialBalance) {
       var list = new FixedList<TrialBalanceEntryDto>(trialBalance.Entries.Select(x => (TrialBalanceEntryDto) x));
 
-      list = list.FindAll(x => x.ItemType == TrialBalanceItemType.BalanceEntry ||
-                               x.ItemType == TrialBalanceItemType.BalanceSummary);
+      list = list.FindAll(x => x.ItemType == TrialBalanceItemType.Entry ||
+                               x.ItemType == TrialBalanceItemType.Summary);
 
       return list;
     }

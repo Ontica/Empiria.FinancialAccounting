@@ -118,7 +118,7 @@ namespace Empiria.FinancialAccounting.Reporting.Exporters.Excel {
 
       foreach (var entry in entries) {
         _excelFile.SetCell($"A{i}", entry.LedgerNumber);
-        if (entry.ItemType == TrialBalanceItemType.BalanceEntry) {
+        if (entry.ItemType == TrialBalanceItemType.Entry) {
           _excelFile.SetCell($"B{i}", "*");
         }
         _excelFile.SetCell($"C{i}", entry.AccountNumber);
@@ -132,8 +132,8 @@ namespace Empiria.FinancialAccounting.Reporting.Exporters.Excel {
           _excelFile.SetCell($"I{i}", entry.LastChangeDate.ToString("dd/MMM/yyyy"));
         }
 
-        if (entry.ItemType != TrialBalanceItemType.BalanceEntry &&
-            entry.ItemType != TrialBalanceItemType.BalanceSummary) {
+        if (entry.ItemType != TrialBalanceItemType.Entry &&
+            entry.ItemType != TrialBalanceItemType.Summary) {
           _excelFile.SetRowStyleBold(i);
         }
         i++;
@@ -280,7 +280,7 @@ namespace Empiria.FinancialAccounting.Reporting.Exporters.Excel {
       foreach (var entry in entries) {
         _excelFile.SetCell($"A{i}", entry.LedgerNumber);
         _excelFile.SetCell($"B{i}", entry.CurrencyCode);
-        if (entry.ItemType == TrialBalanceItemType.BalanceEntry) {
+        if (entry.ItemType == TrialBalanceItemType.Entry) {
           _excelFile.SetCell($"C{i}", "*");
         }
         _excelFile.SetCell($"D{i}", entry.AccountNumber);
@@ -296,8 +296,8 @@ namespace Empiria.FinancialAccounting.Reporting.Exporters.Excel {
           _excelFile.SetCell($"L{i}", entry.LastChangeDate.ToString("dd/MMM/yyyy"));
         }
 
-        if (entry.ItemType != TrialBalanceItemType.BalanceEntry &&
-            entry.ItemType != TrialBalanceItemType.BalanceSummary) {
+        if (entry.ItemType != TrialBalanceItemType.Entry &&
+            entry.ItemType != TrialBalanceItemType.Summary) {
           _excelFile.SetRowStyleBold(i);
         }
         i++;
@@ -319,7 +319,7 @@ namespace Empiria.FinancialAccounting.Reporting.Exporters.Excel {
 
         _excelFile.SetCell($"A{i}", entry.LedgerNumber);
         _excelFile.SetCell($"B{i}", entry.CurrencyCode);
-        if (entry.ItemType == TrialBalanceItemType.BalanceEntry) {
+        if (entry.ItemType == TrialBalanceItemType.Entry) {
           _excelFile.SetCell($"C{i}", "*");
         }
         //if (!subledgerAccount.IsEmptyInstance) {
@@ -348,8 +348,8 @@ namespace Empiria.FinancialAccounting.Reporting.Exporters.Excel {
           _excelFile.SetCell($"J{i}", entry.LastChangeDate.ToString("dd/MMM/yyyy"));
         }
 
-        if (entry.ItemType != TrialBalanceItemType.BalanceEntry &&
-            entry.ItemType != TrialBalanceItemType.BalanceSummary) {
+        if (entry.ItemType != TrialBalanceItemType.Entry &&
+            entry.ItemType != TrialBalanceItemType.Summary) {
           _excelFile.SetRowStyleBold(i);
         }
         i++;
@@ -371,7 +371,7 @@ namespace Empiria.FinancialAccounting.Reporting.Exporters.Excel {
 
         _excelFile.SetCell($"A{i}", entry.LedgerNumber);
         _excelFile.SetCell($"B{i}", entry.CurrencyCode);
-        if (entry.ItemType == TrialBalanceItemType.BalanceEntry) {
+        if (entry.ItemType == TrialBalanceItemType.Entry) {
           _excelFile.SetCell($"C{i}", "*");
         }
         if (!account.IsEmptyInstance) {
@@ -398,8 +398,8 @@ namespace Empiria.FinancialAccounting.Reporting.Exporters.Excel {
           _excelFile.SetCell($"L{i}", entry.LastChangeDate.ToString("dd/MMM/yyyy"));
         }
 
-        if (entry.ItemType != TrialBalanceItemType.BalanceEntry &&
-            entry.ItemType != TrialBalanceItemType.BalanceSummary) {
+        if (entry.ItemType != TrialBalanceItemType.Entry &&
+            entry.ItemType != TrialBalanceItemType.Summary) {
           _excelFile.SetRowStyleBold(i);
         }
         i++;
