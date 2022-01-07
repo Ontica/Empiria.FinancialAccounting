@@ -157,7 +157,17 @@ namespace Empiria.FinancialAccounting.BalanceEngine.Adapters {
     public DateTime LastChangeDate {
       get; internal set;
     }
-    
+
+
+    public bool HasAccountStatement {
+      get; internal set;
+    } = false;
+
+
+    public bool ClickableEntry {
+      get; internal set;
+    } = false;
+
   } // class TrialBalanceComparativeDto
 
 } // namespace Empiria.FinancialAccounting.BalanceEngine.Adapters

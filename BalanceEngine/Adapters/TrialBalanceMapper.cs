@@ -226,6 +226,17 @@ namespace Empiria.FinancialAccounting.BalanceEngine.Adapters {
                            command.TrialBalanceType == TrialBalanceType.BalanzaConContabilidadesEnCascada ?
                            entry.LastChangeDate: ExecutionServer.DateMaxValue;
 
+      dto.HasAccountStatement = (entry.ItemType == TrialBalanceItemType.Entry ||
+                                 entry.ItemType == TrialBalanceItemType.Summary) &&
+                                command.UseDefaultValuation == false &&
+                                command.InitialPeriod.ValuateToCurrrencyUID.Length == 0 &&
+                                command.InitialPeriod.ExchangeRateTypeUID.Length == 0 ? true : false;
+      dto.ClickableEntry = (entry.ItemType == TrialBalanceItemType.Entry ||
+                                 entry.ItemType == TrialBalanceItemType.Summary) &&
+                                command.UseDefaultValuation == false &&
+                                command.InitialPeriod.ValuateToCurrrencyUID.Length == 0 &&
+                                command.InitialPeriod.ExchangeRateTypeUID.Length == 0 ? true : false;
+
       return dto;
     }
 

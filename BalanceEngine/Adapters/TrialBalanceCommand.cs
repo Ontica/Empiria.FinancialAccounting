@@ -147,6 +147,7 @@ namespace Empiria.FinancialAccounting.BalanceEngine.Adapters {
       }
     }
 
+
     public bool IsOperationalReport {
       get; set;
     } = false;

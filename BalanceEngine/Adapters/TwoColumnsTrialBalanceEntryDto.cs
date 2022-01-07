@@ -129,7 +129,17 @@ namespace Empiria.FinancialAccounting.BalanceEngine.Adapters {
     public DateTime LastChangeDate {
       get; set;
     }
-    
+
+
+    public bool HasAccountStatement {
+      get; internal set;
+    } = false;
+
+
+    public bool ClickableEntry {
+      get; internal set;
+    } = false;
+
   }  // class TwoColumnsTrialBalanceEntryDto
 
 } // namespace Empiria.FinancialAccounting.BalanceEngine.Adapters

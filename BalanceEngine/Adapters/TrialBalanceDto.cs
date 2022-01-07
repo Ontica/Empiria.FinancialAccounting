@@ -146,6 +146,16 @@ namespace Empiria.FinancialAccounting.BalanceEngine.Adapters {
       get; internal set;
     }
 
+
+    public bool HasAccountStatement {
+      get; internal set;
+    } = false;
+
+
+    public bool ClickableEntry {
+      get; internal set;
+    } = false;
+
   } // class TrialBalanceEntryDto
 
 } // namespace Empiria.FinancialAccounting.BalanceEngine.Adapters
