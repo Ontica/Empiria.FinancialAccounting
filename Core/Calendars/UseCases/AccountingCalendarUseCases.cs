@@ -33,6 +33,17 @@ namespace Empiria.FinancialAccounting.UseCases {
     #region Use cases
 
 
+    public AccountingCalendarDto AddPeriod(string calendarUID, AccountingCalendarPeriodDto period) {
+      Assertion.AssertObject(calendarUID, "calendarUID");
+
+      var calendar = Calendar.Parse(calendarUID);
+
+      calendar.AddPeriod(period.Period, period.FromDate, period.ToDate);
+
+      return AccountingCalendarMapper.Map(calendar);
+    }
+
+
     public FixedList<NamedEntityDto> GetAccountingCalendars() {
       var list = Calendar.GetList();
 
@@ -56,23 +67,15 @@ namespace Empiria.FinancialAccounting.UseCases {
     }
 
 
-    public AccountingCalendarDto AddDateToAccountingCalendar(string calendarUID, DateTime date) {
+    public AccountingCalendarDto RemovePeriod(string calendarUID, string periodUID) {
       Assertion.AssertObject(calendarUID, "calendarUID");
+      Assertion.AssertObject(periodUID, "periodUID");
 
-      var calendar = Calendar.Parse(int.Parse(calendarUID));
+      var calendar = Calendar.Parse(calendarUID);
 
-      calendar.AddAccountingDate(date);
+      CalendarPeriod period = calendar.GetPeriod(periodUID);
 
-      return AccountingCalendarMapper.Map(calendar);
-    }
-
-
-    public AccountingCalendarDto RemoveDateFromAccountingCalendar(string calendarUID, DateTime date) {
-      Assertion.AssertObject(calendarUID, "calendarUID");
-
-      var calendar = Calendar.Parse(int.Parse(calendarUID));
-
-      calendar.RemoveAccountingDate(date);
+      calendar.RemovePeriod(period);
 
       return AccountingCalendarMapper.Map(calendar);
     }

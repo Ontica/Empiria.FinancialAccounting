@@ -23,6 +23,18 @@ namespace Empiria.FinancialAccounting.WebApi {
 
     #region Web Apis
 
+    [HttpPost]
+    [Route("v2/financial-accounting/catalogues/accounting-calendars/{calendarUID}/add-period")]
+    public SingleObjectModel AddPeriodToAccountingCalendar([FromUri] string calendarUID,
+                                                           [FromBody] AccountingCalendarPeriodDto period) {
+
+      using (var usecases = AccountingCalendarUseCases.UseCaseInteractor()) {
+        AccountingCalendarDto calendar = usecases.AddPeriod(calendarUID, period);
+
+        return new SingleObjectModel(base.Request, calendar);
+      }
+    }
+
 
     [HttpGet]
     [Route("v2/financial-accounting/catalogues/accounting-calendars")]
@@ -48,24 +60,13 @@ namespace Empiria.FinancialAccounting.WebApi {
     }
 
 
-    [HttpPost]
-    [Route("v2/financial-accounting/catalogues/accounting-calendars/{calendarUID}/add-date/{date}")]
-    public SingleObjectModel AddDateToAccountingCalendar([FromUri] string calendarUID, [FromUri] DateTime date) {
-
-      using (var usecases = AccountingCalendarUseCases.UseCaseInteractor()) {
-        AccountingCalendarDto calendar = usecases.AddDateToAccountingCalendar(calendarUID, date);
-
-        return new SingleObjectModel(base.Request, calendar);
-      }
-    }
-
-
     [HttpDelete]
-    [Route("v2/financial-accounting/catalogues/accounting-calendars/{calendarUID}/remove-date/{date}")]
-    public SingleObjectModel RemoteDateFromAccountingCalendar([FromUri] string calendarUID, [FromUri] DateTime date) {
+    [Route("v2/financial-accounting/catalogues/accounting-calendars/{calendarUID}/remove-period/{periodUID}")]
+    public SingleObjectModel RemoveDateFromAccountingCalendar([FromUri] string calendarUID,
+                                                              [FromUri] string periodUID) {
 
       using (var usecases = AccountingCalendarUseCases.UseCaseInteractor()) {
-        AccountingCalendarDto calendar = usecases.RemoveDateFromAccountingCalendar(calendarUID, date);
+        AccountingCalendarDto calendar = usecases.RemovePeriod(calendarUID, periodUID);
 
         return new SingleObjectModel(base.Request, calendar);
       }

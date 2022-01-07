@@ -28,6 +28,10 @@ namespace Empiria.FinancialAccounting {
     }
 
 
+    static internal Calendar Parse(string calendarUID) {
+      return Calendar.Parse(int.Parse(calendarUID));
+    }
+
     static public FixedList<Calendar> GetList() {
       return BaseObject.GetList<Calendar>()
                        .ToFixedList();
@@ -62,8 +66,25 @@ namespace Empiria.FinancialAccounting {
 
     #region Methods
 
-    internal void AddAccountingDate(DateTime date) {
-      CalendarData.AddAccountingDate(this, date);
+    internal void AddPeriod(string name, DateTime fromDate, DateTime toDate) {
+      Assertion.AssertObject(name, "name");
+
+      Assertion.Assert(fromDate <= toDate,
+          "La fecha de inicio del período debe ser menor o igual a la fecha final.");
+
+      CalendarData.AppendPeriod(this, name, fromDate, toDate);
+    }
+
+
+    internal CalendarPeriod GetPeriod(string periodUID) {
+      Assertion.AssertObject(periodUID, "periodUID");
+
+      CalendarPeriod period = this.Periods.Find(x => x.UID == periodUID);
+
+      Assertion.AssertObject(period,
+            $"No se encontró un período con identificador {periodUID} en el calendario {this.Name}.");
+
+      return period;
     }
 
 
@@ -83,8 +104,12 @@ namespace Empiria.FinancialAccounting {
     }
 
 
-    internal void RemoveAccountingDate(DateTime date) {
-      CalendarData.RemoveAccountingDate(this, date);
+    internal void RemovePeriod(CalendarPeriod period) {
+      Assertion.AssertObject(period, "period");
+      Assertion.Assert(this.Periods.Contains(period),
+            $"El período {period.Name} no partenece al calendario {this.Name}.");
+
+      CalendarData.RemovePeriod(period);
     }
 
     #endregion Methods

@@ -16,10 +16,18 @@ namespace Empiria.FinancialAccounting.Data {
   /// <summary>Data access layer for accounting calendars.</summary>
   static internal class CalendarData {
 
-    static internal void AddAccountingDate(Calendar calendar, DateTime date) {
-      //var dataOperation = DataOperation.Parse("");
 
-      //DataWriter.Execute(dataOperation);
+    static internal void AppendPeriod(Calendar calendar, string name,
+                                      DateTime fromDate, DateTime toDate) {
+      Assertion.AssertObject(name, "name");
+
+      long periodId = CommonMethods.GetNextObjectId("SEC_PERIOD_ID");
+
+      var operation = DataOperation.Parse("apd_calendar_period",
+                                          periodId, calendar.Id,
+                                          name, fromDate, toDate);
+
+      DataWriter.Execute(operation);
     }
 
 
@@ -34,10 +42,14 @@ namespace Empiria.FinancialAccounting.Data {
     }
 
 
-    static internal void RemoveAccountingDate(Calendar calendar, DateTime date) {
-      // throw new NotImplementedException();
-    }
+    static internal void RemovePeriod(CalendarPeriod period) {
+      Assertion.AssertObject(period, "period");
 
+      var operation = DataOperation.Parse("del_calendar_period",
+                                          period.CalendarId, period.Id);
+
+      DataWriter.Execute(operation);
+    }
 
   }  // class CalendarData
 

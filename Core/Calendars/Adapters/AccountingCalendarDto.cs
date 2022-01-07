@@ -42,10 +42,10 @@ namespace Empiria.FinancialAccounting.Adapters {
 
 
 
-  /// <summary>Output DTO for accounting calendar periods.</summary>
+  /// <summary>Inpout and Output DTO for accounting calendar periods.</summary>
   public class AccountingCalendarPeriodDto {
 
-    internal AccountingCalendarPeriodDto() {
+    public AccountingCalendarPeriodDto() {
       // no-op
     }
 
@@ -56,19 +56,18 @@ namespace Empiria.FinancialAccounting.Adapters {
 
 
     public string Period {
-      get; internal set;
+      get; set;
     }
 
 
     public DateTime FromDate {
-      get; internal set;
+      get; set;
     }
 
 
     public DateTime ToDate {
-      get; internal set;
+      get; set;
     }
-
 
   }  // class AccountingCalendarPeriodDto
 
