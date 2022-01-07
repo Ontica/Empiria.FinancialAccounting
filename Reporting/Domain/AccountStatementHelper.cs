@@ -51,13 +51,8 @@ namespace Empiria.FinancialAccounting.Reporting {
                                               FixedList<AccountStatementEntry> voucherEntries) {
 
       List<AccountStatementEntry> returnedVouchers = voucherEntries
-                                                      .OrderBy(a => a.Ledger.Number)
-                                                      .ThenBy(a => a.Currency.Code)
-                                                      .ThenBy(a => a.AccountNumber)
-                                                      .ThenBy(a => a.Sector.Code)
-                                                      .ThenBy(a => a.SubledgerAccountNumber)
-                                                      .ThenBy(a => a.VoucherNumber)
-                                                      .ThenBy(a => a.VoucherEntryId).ToList();
+                                                      .OrderBy(a => a.AccountingDate)
+                                                      .ToList();
       return returnedVouchers.ToFixedList();
     }
 
