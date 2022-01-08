@@ -462,7 +462,7 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
 
       if ((_command.ValuateBalances || _command.InitialPeriod.UseDefaultValuation) &&
           _command.TrialBalanceType != TrialBalanceType.BalanzaValorizadaEnDolares &&
-          _command.TrialBalanceType != TrialBalanceType.BalanzaConsolidadaPorMoneda) {
+          _command.TrialBalanceType != TrialBalanceType.BalanzaEnColumnasPorMoneda) {
         postingEntries = ValuateToExchangeRate(postingEntries, _command.InitialPeriod);
 
         if (_command.ConsolidateBalancesToTargetCurrency) {

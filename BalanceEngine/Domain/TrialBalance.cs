@@ -42,7 +42,7 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
         case TrialBalanceType.BalanzaConContabilidadesEnCascada:
           return TrialBalanceDataColumns();
 
-        case TrialBalanceType.BalanzaConsolidadaPorMoneda:
+        case TrialBalanceType.BalanzaEnColumnasPorMoneda:
           return TrialBalanceByCurrencyDataColumns();
 
         case TrialBalanceType.BalanzaValorizadaComparativa:

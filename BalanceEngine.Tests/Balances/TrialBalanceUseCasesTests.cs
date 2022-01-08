@@ -97,7 +97,7 @@ namespace Empiria.FinancialAccounting.Tests.Balances {
     public void Should_Build_Balanza_Consolidada_Por_Moneda() {
       TrialBalanceCommand command = GetDefaultTrialBalanceCommand();
 
-      command.TrialBalanceType = TrialBalanceType.BalanzaConsolidadaPorMoneda;
+      command.TrialBalanceType = TrialBalanceType.BalanzaEnColumnasPorMoneda;
       TrialBalanceDto trialBalance = _usecases.BuildTrialBalance(command);
 
       Assert.NotNull(trialBalance);

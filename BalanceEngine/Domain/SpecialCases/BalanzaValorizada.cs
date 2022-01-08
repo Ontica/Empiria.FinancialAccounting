@@ -51,7 +51,7 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
     }
 
 
-    internal TrialBalance BuildBalanceConsolidatedByCurrency() {
+    internal TrialBalance BuildBalanceInColumnsByCurrency() {
       var helper = new TrialBalanceHelper(_command);
 
       List<TrialBalanceEntry> trialBalance = helper.GetPostingEntries().ToList();
@@ -81,7 +81,7 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
 
         returnedBalances = HashAccountsForValuedBalances(hashAccountEntries);
 
-      } else if (_command.TrialBalanceType == TrialBalanceType.BalanzaConsolidadaPorMoneda) {
+      } else if (_command.TrialBalanceType == TrialBalanceType.BalanzaEnColumnasPorMoneda) {
 
         returnedBalances = HashAccountsForBalancesByCurrency(hashAccountEntries);
 

@@ -94,7 +94,7 @@ namespace Empiria.FinancialAccounting.BalanceEngine.Adapters {
           var mappedItems = list.Select((x) => MapToTrialBalance((TrialBalanceEntry) x, command));
           return new FixedList<ITrialBalanceEntryDto>(mappedItems);
 
-        case TrialBalanceType.BalanzaConsolidadaPorMoneda:
+        case TrialBalanceType.BalanzaEnColumnasPorMoneda:
           var currencyMappedItems = list.Select((x) =>
                 MapToTrialBalanceByCurrency((TrialBalanceByCurrencyEntry) x));
           return new FixedList<ITrialBalanceEntryDto>(currencyMappedItems);
