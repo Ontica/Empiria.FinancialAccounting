@@ -262,13 +262,28 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
 
 
     internal TrialBalanceByCurrencyEntry MapToBalanceByCurrencyEntry() {
-      return new TrialBalanceByCurrencyEntry {
-        Currency = this.Currency,
-        Account = this.Account,
-        Sector = this.Sector,
-        DomesticBalance = this.CurrentBalance,
-        ItemType = this.ItemType
-      };
+      TrialBalanceByCurrencyEntry trialBalanceByCurrencyEntry = new TrialBalanceByCurrencyEntry();
+      trialBalanceByCurrencyEntry.Currency = this.Currency;
+      trialBalanceByCurrencyEntry.Account = this.Account;
+      trialBalanceByCurrencyEntry.Sector = this.Sector;
+      if (Currency.Code == "01") {
+        trialBalanceByCurrencyEntry.DomesticBalance = this.CurrentBalance;
+      }
+      if (Currency.Code == "02") {
+        trialBalanceByCurrencyEntry.DollarBalance = this.CurrentBalance;
+      }
+      if (Currency.Code == "06") {
+        trialBalanceByCurrencyEntry.YenBalance = this.CurrentBalance;
+      }
+      if (Currency.Code == "27") {
+        trialBalanceByCurrencyEntry.EuroBalance = this.CurrentBalance;
+      }
+      if (Currency.Code == "44") {
+        trialBalanceByCurrencyEntry.UdisBalance = this.CurrentBalance;
+      }
+      trialBalanceByCurrencyEntry.ItemType = this.ItemType;
+
+      return trialBalanceByCurrencyEntry;
     }
 
 

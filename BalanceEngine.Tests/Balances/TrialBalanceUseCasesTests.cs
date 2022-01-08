@@ -62,10 +62,11 @@ namespace Empiria.FinancialAccounting.Tests.Balances {
     public void Should_Build_A_Traditional_Trial_Balance() {
       TrialBalanceCommand command = GetDefaultTrialBalanceCommand();
 
-      command.TrialBalanceType = TrialBalanceType.SaldosPorCuenta;
+      command.TrialBalanceType = TrialBalanceType.BalanzaEnColumnasPorMoneda;
       command.BalancesType = BalancesType.WithCurrentBalanceOrMovements;
       //command.AccountsChartUID = "47ec2ec7-0f4f-482e-9799-c23107b60d8a";
-      command.FromAccount = "2309-14";
+      command.FromAccount = "2607";
+      command.ToAccount = "2607";
       //command.ConsolidateBalancesToTargetCurrency = true;
       command.ShowCascadeBalances = false;
       command.UseDefaultValuation = false;
