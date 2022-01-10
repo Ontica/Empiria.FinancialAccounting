@@ -22,9 +22,22 @@ namespace Empiria.FinancialAccounting.WebApi.BanobrasIntegration {
 
     #region Query web api
 
+
+    [HttpGet]
+    [Route("v2/financial-accounting/transaction-slips/{transactionSlipUID}")]
+    public SingleObjectModel GetTransactionSlip([FromUri] string transactionSlipUID) {
+
+      using (var usecases = TransactionSlipUseCases.UseCaseInteractor()) {
+        TransactionSlipDto transactionSlip = usecases.GetTransactionSlip(transactionSlipUID);
+
+        return new SingleObjectModel(base.Request, transactionSlip);
+      }
+    }
+
+
     [HttpPost]
     [Route("v2/financial-accounting/transaction-slips")]
-    public CollectionModel GetTransactionSlips([FromBody] SearchTransactionSlipsCommand command) {
+    public CollectionModel SearchTransactionSlips([FromBody] SearchTransactionSlipsCommand command) {
 
       base.RequireBody(command);
 
@@ -32,18 +45,6 @@ namespace Empiria.FinancialAccounting.WebApi.BanobrasIntegration {
         FixedList<TransactionSlipDescriptorDto> result = usecases.SearchTransactionSlips(command);
 
         return new CollectionModel(base.Request, result);
-      }
-    }
-
-
-    [HttpGet]
-    [Route("v2/financial-accounting/transaction-slips/{transactionSlipUID}")]
-    public SingleObjectModel GetTransactionSlips([FromUri] string transactionSlipUID) {
-
-      using (var usecases = TransactionSlipUseCases.UseCaseInteractor()) {
-        TransactionSlipDto transactionSlip = usecases.GetTransactionSlip(transactionSlipUID);
-
-        return new SingleObjectModel(base.Request, transactionSlip);
       }
     }
 

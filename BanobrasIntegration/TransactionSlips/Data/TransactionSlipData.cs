@@ -16,9 +16,19 @@ namespace Empiria.FinancialAccounting.BanobrasIntegration.TransactionSlips {
   static internal class TransactionSlipData {
 
 
+    static internal TransactionSlip GetPendingTransactionSlip(string uid) {
+      string sql = "SELECT * " +
+                   "FROM VW_MC_ENCABEZADOS " +
+                  $"WHERE ENC_UID = '{uid}'";
+
+      var operation = DataOperation.Parse(sql);
+
+      return DataReader.GetPlainObject<TransactionSlip>(operation);
+    }
+
+
     static internal FixedList<TransactionSlip> GetPendingTransactionSlips(string filter, string sort) {
-      string sql = "SELECT VW_MC_ENCABEZADOS.*, -1 AS ID_VOLANTE, -1 AS ID_TRANSACCION, " +
-                   "'1900-01-01' AS FECHA_PROCESO, 'P' AS STATUS " +
+      string sql = "SELECT * " +
                    "FROM VW_MC_ENCABEZADOS";
 
       if (filter.Length > 0) {
@@ -35,8 +45,20 @@ namespace Empiria.FinancialAccounting.BanobrasIntegration.TransactionSlips {
     }
 
 
+    static internal TransactionSlip GetProcessedTransactionSlip(string slipUID) {
+      string sql = "SELECT * " +
+                   "FROM VW_COF_VOLANTES " +
+                  $"WHERE ENC_UID = '{slipUID}'";
+
+      var operation = DataOperation.Parse(sql);
+
+      return DataReader.GetPlainObject<TransactionSlip>(operation);
+    }
+
+
     static internal FixedList<TransactionSlip> GetProcessedTransactionSlips(string filter, string sort) {
-      string sql = "SELECT * FROM COF_VOLANTES";
+      string sql = "SELECT * " +
+                   "FROM VW_COF_VOLANTES";
 
       if (filter.Length > 0) {
         sql += $" WHERE {filter}";

@@ -15,10 +15,19 @@ namespace Empiria.FinancialAccounting.BanobrasIntegration.TransactionSlips.Adapt
   static internal class TransactionSlipMapper {
 
     static internal FixedList<TransactionSlipDescriptorDto> Map(FixedList<TransactionSlip> list) {
-      return new FixedList<TransactionSlipDescriptorDto>(list.Select(x => Map(x)));
+      return new FixedList<TransactionSlipDescriptorDto>(list.Select(x => MapToDescriptor(x)));
     }
 
-    static private TransactionSlipDescriptorDto Map(TransactionSlip slip) {
+
+    static internal TransactionSlipDto Map(TransactionSlip transactionSlip) {
+      return new TransactionSlipDto {
+         Header = MapToDescriptor(transactionSlip),
+         // Entries = transactionSlip.
+      };
+    }
+
+
+    static private TransactionSlipDescriptorDto MapToDescriptor(TransactionSlip slip) {
       return new TransactionSlipDescriptorDto {
          UID = slip.UID,
          SlipNumber = slip.Number.ToString("00000"),
