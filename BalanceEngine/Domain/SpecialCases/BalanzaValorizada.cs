@@ -56,7 +56,11 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
 
       List<TrialBalanceEntry> trialBalance = helper.GetPostingEntries().ToList();
 
-      List<TrialBalanceEntry> summaryEntries = helper.GenerateSummaryEntries(trialBalance.ToFixedList());
+      List<TrialBalanceEntry> entriesWithLevels = trialBalance.Where(a => a.Level > 1).ToList();
+
+      List<TrialBalanceEntry> summaryEntries = helper.GenerateSummaryEntries(entriesWithLevels.ToFixedList());
+
+      summaryEntries = GetFirstLevelAccountsListByCurrency(trialBalance, summaryEntries);
 
       EmpiriaHashTable<TrialBalanceEntry> ledgerAccounts = GetLedgerAccountsListByCurrency(summaryEntries);
 
@@ -67,6 +71,24 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
                                 mergeBalancesToBalanceByCurrency.Select(x => (ITrialBalanceEntry) x));
 
       return new TrialBalance(_command, returnBalance);
+    }
+
+    private List<TrialBalanceEntry> GetFirstLevelAccountsListByCurrency(
+                                    List<TrialBalanceEntry> trialBalance,
+                                    List<TrialBalanceEntry> summaryEntries) {
+      var helper = new TrialBalanceHelper(_command);
+      var firstLevelEntries = trialBalance.Where(a => a.Level == 1).ToList();
+      var hashAccountEntries = new EmpiriaHashTable<TrialBalanceEntry>();
+
+      foreach (var entry in firstLevelEntries) {
+        helper.SummaryByEntry(hashAccountEntries, entry, entry.Account, Sector.Empty,
+                                     TrialBalanceItemType.Summary);
+      }
+      if (hashAccountEntries.ToFixedList().Count > 0) {
+        summaryEntries.AddRange(hashAccountEntries.ToFixedList().ToList());
+      }
+
+      return summaryEntries;
     }
 
 
