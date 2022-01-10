@@ -64,16 +64,10 @@ namespace Empiria.FinancialAccounting.Reporting {
       decimal initialBalance = AccountStatementCommand.Entry.CurrentBalance;
 
       returnedVouchersWithCurrentBalance = returnedVouchersWithCurrentBalance
-                                            .OrderByDescending(a => a.Ledger.Number)
-                                            .ThenByDescending(a => a.Currency.Code)
-                                            .ThenByDescending(a => a.AccountNumber)
-                                            .ThenByDescending(a => a.Sector.Code)
-                                            .ThenByDescending(a => a.SubledgerAccountNumber)
-                                            .ThenByDescending(a => a.VoucherNumber)
-                                            .ThenByDescending(a => a.VoucherEntryId).ToList();
+                                            .OrderBy(a => a.AccountingDate)
+                                            .ToList();
 
       foreach (var voucher in returnedVouchersWithCurrentBalance) {
-        
         if (voucher.DebtorCreditor == "A") {
           initialBalance = initialBalance + (voucher.Debit - voucher.Credit);
         } else {
