@@ -52,6 +52,10 @@ namespace Empiria.FinancialAccounting.Reporting {
 
       List<AccountStatementEntry> returnedVouchers = voucherEntries
                                                       .OrderBy(a => a.AccountingDate)
+                                                      .ThenBy(a=>a.Ledger.Number)
+                                                      .ThenBy(a => a.AccountNumber)
+                                                      .ThenBy(a => a.SubledgerAccountNumber)
+                                                      .ThenBy(a => a.VoucherNumber)
                                                       .ToList();
       return returnedVouchers.ToFixedList();
     }
@@ -60,10 +64,6 @@ namespace Empiria.FinancialAccounting.Reporting {
 
       List<AccountStatementEntry> returnedVouchersWithCurrentBalance =
                                    new List<AccountStatementEntry>(orderingVouchers).ToList();
-
-      returnedVouchersWithCurrentBalance = returnedVouchersWithCurrentBalance
-                                            .OrderBy(a => a.AccountingDate)
-                                            .ToList();
 
       decimal initialBalance = AccountStatementCommand.Entry.CurrentBalance;
 
