@@ -31,7 +31,11 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
 
       List<TrialBalanceEntry> trialBalance = helper.GetPostingEntries().ToList();
 
-      List<TrialBalanceEntry> summaryEntries = helper.GenerateSummaryEntries(trialBalance.ToFixedList());
+      List<TrialBalanceEntry> entriesWithLevels = trialBalance.Where(a => a.Level > 1).ToList();
+
+      List<TrialBalanceEntry> summaryEntries = helper.GenerateSummaryEntries(entriesWithLevels.ToFixedList());
+
+      summaryEntries = GetFirstLevelAccountsListByCurrency(trialBalance, summaryEntries);
 
       EmpiriaHashTable<TrialBalanceEntry> ledgerAccounts = GetLedgerAccountsList(summaryEntries);
 
