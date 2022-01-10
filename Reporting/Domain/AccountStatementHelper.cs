@@ -61,11 +61,11 @@ namespace Empiria.FinancialAccounting.Reporting {
       List<AccountStatementEntry> returnedVouchersWithCurrentBalance =
                                    new List<AccountStatementEntry>(orderingVouchers).ToList();
 
-      decimal initialBalance = AccountStatementCommand.Entry.CurrentBalance;
-
       returnedVouchersWithCurrentBalance = returnedVouchersWithCurrentBalance
                                             .OrderBy(a => a.AccountingDate)
                                             .ToList();
+
+      decimal initialBalance = AccountStatementCommand.Entry.CurrentBalance;
 
       foreach (var voucher in returnedVouchersWithCurrentBalance) {
         if (voucher.DebtorCreditor == "A") {
