@@ -9,6 +9,9 @@
 ************************* Copyright(c) La Vía Óntica SC, Ontica LLC and contributors. All rights reserved. **/
 using System;
 
+using Empiria.FinancialAccounting.Vouchers;
+using Empiria.FinancialAccounting.Vouchers.Adapters;
+
 using Empiria.FinancialAccounting.BanobrasIntegration.TransactionSlips.Adapters;
 
 namespace Empiria.FinancialAccounting.BanobrasIntegration.TransactionSlips {
@@ -37,8 +40,8 @@ namespace Empiria.FinancialAccounting.BanobrasIntegration.TransactionSlips {
     #region Private methods
 
     private FixedList<TransactionSlip> ExecuteSearch() {
-      string filter = BuildFilterString();
-      string sort = BuildSortString();
+      string filter = FilterString();
+      string sort = SortString();
 
       if (_command.Status == TransactionSlipStatus.Pending) {
         return TransactionSlipData.GetPendingTransactionSlips(filter, sort);
@@ -47,12 +50,82 @@ namespace Empiria.FinancialAccounting.BanobrasIntegration.TransactionSlips {
       }
     }
 
-    private string BuildSortString() {
+
+    private string SortString() {
       return string.Empty;
     }
 
-    private string BuildFilterString() {
-      return string.Empty;
+
+    private string FilterString() {
+      string accountsChartFilter = AccountsChartFilter();
+      string transactionalSystemFilter = TransactionalSystemFilter();
+      string datePeriodFilter = DatePeriodFilter();
+      string statusFilter = StatusFilter();
+
+      var filter = new Filter(accountsChartFilter);
+
+      filter.AppendAnd(transactionalSystemFilter);
+      filter.AppendAnd(datePeriodFilter);
+      filter.AppendAnd(statusFilter);
+
+      return filter.ToString();
+    }
+
+
+    private string AccountsChartFilter() {
+      var accountsChart = AccountsChart.Parse(_command.AccountsChartUID);
+
+      return $"ENC_TIPO_CONT = {accountsChart.Id}";
+    }
+
+
+    private string DatePeriodFilter() {
+      string fieldName;
+
+      switch (_command.DateSearchField) {
+        case DateSearchField.AccountingDate:
+          fieldName = "ENC_FECHA_VOL";
+          break;
+        case DateSearchField.RecordingDate:
+          fieldName = "ENC_FECHA_CAP";
+          break;
+
+        case DateSearchField.None:
+          return string.Empty;
+
+        default:
+          throw Assertion.AssertNoReachThisCode();
+      }
+
+      return $"'{CommonMethods.FormatSqlDate(_command.FromDate)}' <= {fieldName} " +
+             $"AND {fieldName} <= '{CommonMethods.FormatSqlDate(_command.ToDate)}'";
+    }
+
+
+    private string StatusFilter() {
+      switch (_command.Status) {
+        case TransactionSlipStatus.Pending:
+          return String.Empty;
+
+        case TransactionSlipStatus.Processed:
+          return String.Empty;
+
+        case TransactionSlipStatus.ProcessedOK:
+          return "STATUS = 'C'";
+
+        case TransactionSlipStatus.ProcessedWithIssues:
+          return "STATUS = 'E'";
+
+        default:
+          throw Assertion.AssertNoReachThisCode();
+      }
+    }
+
+
+    private string TransactionalSystemFilter() {
+      var system = TransactionalSystem.Parse(_command.SystemUID);
+
+      return $"ENC_SISTEMA = {system.SourceSystemId}";
     }
 
     #endregion Private methods

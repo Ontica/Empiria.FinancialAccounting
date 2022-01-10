@@ -21,6 +21,14 @@ namespace Empiria.FinancialAccounting.BanobrasIntegration.TransactionSlips {
                    "'1900-01-01' AS FECHA_PROCESO, 'P' AS STATUS " +
                    "FROM VW_MC_ENCABEZADOS";
 
+      if (filter.Length > 0) {
+        sql += $" WHERE {filter}";
+      }
+
+      if (sort.Length > 0) {
+        sql += $" ORDER BY {sort}";
+      }
+
       var operation = DataOperation.Parse(sql);
 
       return DataReader.GetPlainObjectFixedList<TransactionSlip>(operation);
@@ -29,6 +37,14 @@ namespace Empiria.FinancialAccounting.BanobrasIntegration.TransactionSlips {
 
     static internal FixedList<TransactionSlip> GetProcessedTransactionSlips(string filter, string sort) {
       string sql = "SELECT * FROM COF_VOLANTES";
+
+      if (filter.Length > 0) {
+        sql += $" WHERE {filter}";
+      }
+
+      if (sort.Length > 0) {
+        sql += $" ORDER BY {sort}";
+      }
 
       var operation = DataOperation.Parse(sql);
 
