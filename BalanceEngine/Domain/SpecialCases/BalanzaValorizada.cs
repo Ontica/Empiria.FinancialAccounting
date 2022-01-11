@@ -105,7 +105,7 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
 
       var returnedBalances = new EmpiriaHashTable<TrialBalanceEntry>();
 
-      if (_command.TrialBalanceType == TrialBalanceType.BalanzaValorizadaEnDolares) {
+      if (_command.TrialBalanceType == TrialBalanceType.BalanzaDolarizada) {
 
         returnedBalances = HashAccountsForValuedBalances(hashAccountEntries);
 

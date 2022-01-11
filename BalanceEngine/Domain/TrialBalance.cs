@@ -48,7 +48,7 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
         case TrialBalanceType.BalanzaValorizadaComparativa:
           return TwoBalancesComparativeDataColumns();
 
-        case TrialBalanceType.BalanzaValorizadaEnDolares:
+        case TrialBalanceType.BalanzaDolarizada:
           return ValuedTrialBalanceDataColumns();
 
         default:

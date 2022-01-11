@@ -48,6 +48,7 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
       return returnedEntries;
     }
 
+
     internal List<TrialBalanceEntry> CombineCurrencyTotalsAndPostingEntries(
                                       List<TrialBalanceEntry> trialBalance,
                                       List<TrialBalanceEntry> summaryEntries) {
@@ -461,7 +462,7 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
       FixedList<TrialBalanceEntry> postingEntries = GetTrialBalanceEntries(_command.InitialPeriod);
 
       if ((_command.ValuateBalances || _command.InitialPeriod.UseDefaultValuation) &&
-          _command.TrialBalanceType != TrialBalanceType.BalanzaValorizadaEnDolares &&
+          _command.TrialBalanceType != TrialBalanceType.BalanzaDolarizada &&
           _command.TrialBalanceType != TrialBalanceType.BalanzaEnColumnasPorMoneda) {
         postingEntries = ValuateToExchangeRate(postingEntries, _command.InitialPeriod);
 
@@ -663,7 +664,7 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
           } else {
             entry.ExchangeRate = exchangeRate.Value;
           }
-        } else if ((_command.TrialBalanceType == TrialBalanceType.BalanzaValorizadaEnDolares) ||
+        } else if ((_command.TrialBalanceType == TrialBalanceType.BalanzaDolarizada) ||
                   (_command.IsOperationalReport && !_command.ConsolidateBalancesToTargetCurrency)) {
           entry.ExchangeRate = exchangeRate.Value;
         } else {

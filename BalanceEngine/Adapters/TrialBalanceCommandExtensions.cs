@@ -109,7 +109,7 @@ namespace Empiria.FinancialAccounting.BalanceEngine.Adapters {
 
       private string GetCurrencyFilter() {
         if (_command.Currencies.Length == 0) {
-          if (_command.TrialBalanceType == TrialBalanceType.BalanzaValorizadaEnDolares) {
+          if (_command.TrialBalanceType == TrialBalanceType.BalanzaDolarizada) {
             return $"ID_MONEDA <> 1 AND ID_MONEDA <> 28";
           }
           return string.Empty;

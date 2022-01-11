@@ -53,7 +53,7 @@ namespace Empiria.FinancialAccounting.Reporting {
       bool? isBalance = true;
 
       if (AccountStatementCommand.Command.TrialBalanceType == TrialBalanceType.BalanzaValorizadaComparativa ||
-          AccountStatementCommand.Command.TrialBalanceType == TrialBalanceType.BalanzaValorizadaEnDolares) {
+          AccountStatementCommand.Command.TrialBalanceType == TrialBalanceType.BalanzaDolarizada) {
         isBalance = null;
       }
 
