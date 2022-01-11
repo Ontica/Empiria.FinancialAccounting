@@ -17,8 +17,15 @@ namespace Empiria.FinancialAccounting.BanobrasIntegration.TransactionSlips {
 
     #region Properties
 
-    [DataField("MCO_FOLIO")]
-    public long EntryNumber {
+    public string UID {
+      get {
+        return this.EntryNumber.ToString();
+      }
+    }
+
+
+    [DataField("MCO_FOLIO", ConvertFrom = typeof(long))]
+    public int EntryNumber {
       get;
       private set;
     }
@@ -52,8 +59,8 @@ namespace Empiria.FinancialAccounting.BanobrasIntegration.TransactionSlips {
     }
 
 
-    [DataField("MCO_MONEDA")]
-    public string CurrencyCode {
+    [DataField("MCO_MONEDA", ConvertFrom = typeof(long))]
+    public int CurrencyCode {
       get;
       private set;
     }
@@ -87,7 +94,7 @@ namespace Empiria.FinancialAccounting.BanobrasIntegration.TransactionSlips {
     }
 
 
-    [DataField("MCO_CVE_MOV")]
+    [DataField("MCO_CVE_MOV", ConvertFrom = typeof(long))]
     private int DebitCreditFlag {
       get;
       set;
@@ -102,6 +109,6 @@ namespace Empiria.FinancialAccounting.BanobrasIntegration.TransactionSlips {
 
     #endregion Properties
 
-    }  // class TransactionSlipEntry
+  }  // class TransactionSlipEntry
 
 }  // namespace Empiria.FinancialAccounting.BanobrasIntegration.TransactionSlips

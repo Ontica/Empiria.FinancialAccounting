@@ -8,6 +8,8 @@
 *                                                                                                            *
 ************************* Copyright(c) La Vía Óntica SC, Ontica LLC and contributors. All rights reserved. **/
 using System;
+using Empiria.FinancialAccounting.Vouchers.Adapters;
+using Empiria.FinancialAccounting.Vouchers.UseCases;
 
 namespace Empiria.FinancialAccounting.BanobrasIntegration.TransactionSlips {
 
@@ -30,7 +32,7 @@ namespace Empiria.FinancialAccounting.BanobrasIntegration.TransactionSlips {
 
     #region Properties
 
-    [DataField("ENC_UID")]
+    [DataField("ENC_VOLANTE_UID")]
     public string UID {
       get;
       private set;
@@ -130,7 +132,7 @@ namespace Empiria.FinancialAccounting.BanobrasIntegration.TransactionSlips {
             return "Pendiente";
 
           case TransactionSlipStatus.ProcessedWithIssues:
-            return "Procesada con errores";
+            return "Procesado con errores";
 
           case TransactionSlipStatus.ProcessedOK:
             return "Póliza generada";
@@ -142,7 +144,43 @@ namespace Empiria.FinancialAccounting.BanobrasIntegration.TransactionSlips {
       }
     }
 
+    public bool HasVoucher {
+      get {
+        return this.AccountingVoucherId > 0;
+      }
+    }
+
     #endregion Properties
+
+    #region Methods
+
+
+    internal FixedList<TransactionSlipEntry> Entries() {
+      if (this.UID.Contains("~")) {
+        return TransactionSlipData.GetPendingTransactionSlipEntries(this);
+      } else {
+        return TransactionSlipData.GetProcessedTransactionSlipEntries(this);
+      }
+    }
+
+
+    internal FixedList<TransactionSlipIssue> Issues() {
+      return TransactionSlipData.GetTransactionSlipIssues(this);
+    }
+
+
+    internal VoucherDto GetVoucher() {
+      if (!HasVoucher) {
+        throw Assertion.AssertNoReachThisCode();
+      }
+
+      using (var usecase = VoucherUseCases.UseCaseInteractor()) {
+        return usecase.GetVoucher(this.AccountingVoucherId);
+      }
+    }
+
+
+    #endregion Methods
 
   }  // class TransactionSlip
 

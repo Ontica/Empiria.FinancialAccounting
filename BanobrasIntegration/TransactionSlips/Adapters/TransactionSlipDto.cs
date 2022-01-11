@@ -17,20 +17,30 @@ namespace Empiria.FinancialAccounting.BanobrasIntegration.TransactionSlips.Adapt
       // no-op
     }
 
+
     public TransactionSlipDescriptorDto Header {
       get;
       internal set;
     }
+
 
     public FixedList<TransactionSlipEntryDto> Entries {
       get;
       internal set;
     }
 
+
     public FixedList<TransactionSlipIssueDto> Issues {
       get;
       internal set;
     }
+
+
+    public NamedEntityDto Voucher {
+      get;
+      internal set;
+    }
+
 
   }  // class TransactionSlipDto
 

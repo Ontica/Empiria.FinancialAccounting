@@ -17,6 +17,65 @@ namespace Empiria.FinancialAccounting.BanobrasIntegration.TransactionSlips.Adapt
       // no-op
     }
 
+    public string UID {
+      get; internal set;
+    }
+
+
+    public long EntryNumber {
+      get; internal set;
+    }
+
+
+    public string AccountNumber {
+      get; internal set;
+    }
+
+
+    public string SectorCode {
+      get; internal set;
+    }
+
+
+    public string SubledgerAccount {
+      get; internal set;
+    }
+
+
+    public string CurrencyCode {
+      get; internal set;
+    }
+
+
+    public string FunctionalArea {
+      get; internal set;
+    }
+
+
+    public string Description {
+      get; internal set;
+    }
+
+
+    public decimal ExchangeRate {
+      get; internal set;
+    }
+
+
+    public decimal Debit {
+      get; internal set;
+    }
+
+
+    public decimal Credit {
+      get; internal set;
+    }
+
+    public FixedList<TransactionSlipIssueDto> Issues {
+      get; internal set;
+    } = new FixedList<TransactionSlipIssueDto>();
+
+
   }  // class TransactionSlipEntryDto
 
 }  // namespace Empiria.FinancialAccounting.BanobrasIntegration.TransactionSlips.Adapters

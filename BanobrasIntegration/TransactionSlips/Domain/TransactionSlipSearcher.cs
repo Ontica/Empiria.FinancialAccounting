@@ -41,18 +41,12 @@ namespace Empiria.FinancialAccounting.BanobrasIntegration.TransactionSlips {
 
     private FixedList<TransactionSlip> ExecuteSearch() {
       string filter = FilterString();
-      string sort = SortString();
 
       if (_command.Status == TransactionSlipStatus.Pending) {
-        return TransactionSlipData.GetPendingTransactionSlips(filter, sort);
+        return TransactionSlipData.GetPendingTransactionSlips(filter);
       } else {
-        return TransactionSlipData.GetProcessedTransactionSlips(filter, sort);
+        return TransactionSlipData.GetProcessedTransactionSlips(filter);
       }
-    }
-
-
-    private string SortString() {
-      return string.Empty;
     }
 
 
