@@ -145,7 +145,8 @@ namespace Empiria.FinancialAccounting.BalanceEngine.Adapters {
       dto.CurrentBalance = entry.CurrentBalance;
       dto.DebtorCreditor = entry.DebtorCreditor.ToString();
       dto.LastChangeDate = entry.LastChangeDate;
-
+      dto.HasAccountStatement = true;
+      dto.ClickableEntry = true;
       return dto;
     }
 
