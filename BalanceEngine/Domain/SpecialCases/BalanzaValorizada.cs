@@ -37,7 +37,9 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
 
       summaryEntries = GetFirstLevelAccountsListByCurrency(trialBalance, summaryEntries);
 
-      EmpiriaHashTable<TrialBalanceEntry> ledgerAccounts = GetLedgerAccountsList(summaryEntries);
+      List<TrialBalanceEntry> orderingBalance = OrderingDollarizedBalance(summaryEntries.ToFixedList());
+
+      EmpiriaHashTable<TrialBalanceEntry> ledgerAccounts = GetLedgerAccountsList(orderingBalance);
 
       FixedList<TrialBalanceEntry> valuedEntries = helper.ValuateToExchangeRate(
                                     ledgerAccounts.ToFixedList(), _command.InitialPeriod);
@@ -348,7 +350,15 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
       return returnedValuedBalance;
     }
 
-    #endregion
+
+    private List<TrialBalanceEntry> OrderingDollarizedBalance(
+                                      FixedList<TrialBalanceEntry> trialBalanceEntries) {
+      var orderingBalance = trialBalanceEntries.OrderBy(a => a.Account.Number).ToList();
+
+      return orderingBalance;
+    }
+
+    #endregion Private methods
 
   } // class BalanzaValorizada
 
