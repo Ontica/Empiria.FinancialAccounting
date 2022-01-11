@@ -222,6 +222,11 @@ namespace Empiria.FinancialAccounting.Reporting.Exporters.Excel {
         _excelFile.SetCell($"E{i}", entry.TotalBalance);
         _excelFile.SetCell($"F{i}", entry.ValuedExchangeRate);
         _excelFile.SetCell($"G{i}", entry.TotalEquivalence);
+
+        if (entry.ItemType != TrialBalanceItemType.Entry) {
+          _excelFile.SetRowStyleBold(i);
+        }
+
         i++;
       }
     }
