@@ -295,10 +295,11 @@ namespace Empiria.FinancialAccounting.Reporting.Exporters.Excel {
         _excelFile.SetCell($"H{i}", entry.Debit);
         _excelFile.SetCell($"I{i}", entry.Credit);
         _excelFile.SetCell($"J{i}", entry.CurrentBalance);
+        _excelFile.SetCell($"K{i}", Math.Round(entry.ExchangeRate, 6));
 
         if (MustFillOutAverageBalance(entry.AverageBalance, entry.LastChangeDate)) {
-          _excelFile.SetCell($"K{i}", entry.AverageBalance);
-          _excelFile.SetCell($"L{i}", entry.LastChangeDate.ToString("dd/MMM/yyyy"));
+          _excelFile.SetCell($"L{i}", entry.AverageBalance);
+          _excelFile.SetCell($"M{i}", entry.LastChangeDate.ToString("dd/MMM/yyyy"));
         }
 
         if (entry.ItemType != TrialBalanceItemType.Entry &&
@@ -309,7 +310,12 @@ namespace Empiria.FinancialAccounting.Reporting.Exporters.Excel {
       }
 
       if (!_command.WithAverageBalance) {
+        _excelFile.RemoveColumn("M");
         _excelFile.RemoveColumn("L");
+      }
+      if (!_command.UseDefaultValuation &&
+            (_command.InitialPeriod.ValuateToCurrrencyUID.Length == 0 &&
+             _command.InitialPeriod.ExchangeRateTypeUID.Length == 0)) {
         _excelFile.RemoveColumn("K");
       }
     }
