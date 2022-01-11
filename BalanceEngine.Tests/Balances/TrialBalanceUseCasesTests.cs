@@ -63,33 +63,16 @@ namespace Empiria.FinancialAccounting.Tests.Balances {
     public void Should_Build_A_Traditional_Trial_Balance() {
       TrialBalanceCommand command = GetDefaultTrialBalanceCommand();
 
-      command.TrialBalanceType = TrialBalanceType.Balanza;
+      command.TrialBalanceType = TrialBalanceType.BalanzaDolarizada;
       command.BalancesType = BalancesType.WithCurrentBalanceOrMovements;
       //command.AccountsChartUID = "47ec2ec7-0f4f-482e-9799-c23107b60d8a";
-      //command.FromAccount = "1102";
-      //command.ToAccount = "1102";
+      command.FromAccount = "2607";
+      command.ToAccount = "2607";
       //command.ConsolidateBalancesToTargetCurrency = true;
       command.ShowCascadeBalances = false;
-      command.UseDefaultValuation = false;
+      command.UseDefaultValuation = true;
 
-      //tradicional
       TrialBalanceDto trialBalance = _usecases.BuildTrialBalance(command);
-
-      List<TrialBalanceEntryDto> balanza = new List<TrialBalanceEntryDto>();
-      balanza.AddRange(trialBalance.Entries.Select(x => (TrialBalanceEntryDto) x));
-      balanza = balanza.FindAll(a => a.AccountLevel == 1 &&
-                                (a.ItemType == TrialBalanceItemType.Summary
-                                 || a.ItemType == TrialBalanceItemType.Entry));
-      
-
-
-      command.TrialBalanceType = TrialBalanceType.BalanzaEnColumnasPorMoneda;
-      TrialBalanceDto balanzaPorMoneda = _usecases.BuildTrialBalance(command);
-
-      List<TrialBalanceByCurrencyDto> balanzaMoneda = new List<TrialBalanceByCurrencyDto>();
-      balanzaMoneda.AddRange(balanzaPorMoneda.Entries.Select(x => (TrialBalanceByCurrencyDto) x));
-      balanzaMoneda = balanzaMoneda.FindAll(a => (a.ItemType == TrialBalanceItemType.Summary
-                                               || a.ItemType == TrialBalanceItemType.Entry));
 
       Assert.NotNull(trialBalance);
       Assert.Equal(command, trialBalance.Command);

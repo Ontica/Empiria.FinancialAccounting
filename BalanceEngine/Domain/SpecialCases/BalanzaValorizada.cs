@@ -37,12 +37,12 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
 
       summaryEntries = GetFirstLevelAccountsListByCurrency(trialBalance, summaryEntries);
 
-      List<TrialBalanceEntry> orderingBalance = OrderingDollarizedBalance(summaryEntries.ToFixedList());
+      EmpiriaHashTable<TrialBalanceEntry> ledgerAccounts = GetLedgerAccountsList(summaryEntries);
 
-      EmpiriaHashTable<TrialBalanceEntry> ledgerAccounts = GetLedgerAccountsList(orderingBalance);
+      List<TrialBalanceEntry> orderingBalance = OrderingDollarizedBalance(ledgerAccounts.ToFixedList());
 
       FixedList<TrialBalanceEntry> valuedEntries = helper.ValuateToExchangeRate(
-                                    ledgerAccounts.ToFixedList(), _command.InitialPeriod);
+                                    orderingBalance.ToFixedList(), _command.InitialPeriod);
 
       List<ValuedTrialBalanceEntry> mergeBalancesToValuedBalances =
                                     MergeTrialBalanceIntoValuedBalances(valuedEntries);
@@ -120,7 +120,6 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
 
     private List<ValuedTrialBalanceEntry> GetExchangeRateByValuedEntry(
                                           List<ValuedTrialBalanceEntry> mergeBalancesToToValuedBalances) {
-
       var returnedValuedBalances = new List<ValuedTrialBalanceEntry>();
 
       var headerAccounts = mergeBalancesToToValuedBalances
@@ -248,8 +247,46 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
 
     private EmpiriaHashTable<TrialBalanceEntry> HashAccountsForValuedBalances(
                                                 EmpiriaHashTable<TrialBalanceEntry> hashAccountEntries) {
-
       var returnedBalances = new EmpiriaHashTable<TrialBalanceEntry>();
+
+      HashAccountsWithDollarCurrency(returnedBalances, hashAccountEntries);
+
+      HashAccountsWithoutDollarCurrency(returnedBalances, hashAccountEntries);
+
+      return returnedBalances;
+    }
+
+    private void HashAccountsWithoutDollarCurrency(EmpiriaHashTable<TrialBalanceEntry> returnedBalances, 
+                                                   EmpiriaHashTable<TrialBalanceEntry> hashAccountEntries) {
+      var helper = new TrialBalanceHelper(_command);
+      var secondaryAccounts = hashAccountEntries.ToFixedList().Where(a => a.Currency.Code != "01" &&
+                                                                          a.Currency.Code != "02").ToList();
+      foreach (var secondary in secondaryAccounts) {
+        var existPrimaryAccount = returnedBalances.ToFixedList()
+                    .Where(a => a.Account.Number == secondary.Account.Number &&
+                                a.Currency.Code == "02")
+                    .FirstOrDefault();
+
+        if (existPrimaryAccount == null) {
+          TrialBalanceEntry entry = TrialBalanceMapper.MapToTrialBalanceEntry(secondary);
+          entry.Currency = Currency.Parse("02");
+          entry.InitialBalance = 0;
+          entry.Debit = 0;
+          entry.Credit = 0;
+          entry.CurrentBalance = 0;
+          entry.LastChangeDate = secondary.LastChangeDate;
+          entry.DebtorCreditor = secondary.DebtorCreditor;
+          helper.SummaryByEntry(returnedBalances, entry, entry.Account,
+                              Sector.Empty, TrialBalanceItemType.Summary);
+
+          string hash = $"{secondary.Account.Number}||{secondary.Currency.Code}";
+          returnedBalances.Insert(hash, secondary);
+        }
+      }
+    }
+
+    private void HashAccountsWithDollarCurrency(EmpiriaHashTable<TrialBalanceEntry> returnedBalances, 
+                                                EmpiriaHashTable<TrialBalanceEntry> hashAccountEntries) {
       var headerAccounts = hashAccountEntries.ToFixedList().Where(a => a.Currency.Code == "02").ToList();
 
       foreach (var header in headerAccounts) {
@@ -266,8 +303,6 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
           returnedBalances.Insert(hash, currencyAccount);
         }
       }
-
-      return returnedBalances;
     }
 
     private void MergeDomesticAndForeignCurrenciesByAccount(List<TrialBalanceByCurrencyEntry> returnedBalance,
