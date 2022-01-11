@@ -291,7 +291,8 @@ namespace Empiria.FinancialAccounting.BalanceEngine.Adapters {
       dto.CurrencyName = entry.Currency.Name;
       dto.StandardAccountId = entry.Account.Id;
       dto.AccountNumber = entry.Account.Number;
-      dto.AccountName = entry.ItemType == TrialBalanceItemType.Summary ? entry.Account.Name :
+      dto.AccountName = entry.ItemType == TrialBalanceItemType.Summary ||
+                        entry.ItemType == TrialBalanceItemType.Entry ? entry.Account.Name :
                         entry.ItemType == TrialBalanceItemType.BalanceTotalCurrency ? entry.GroupName : "";
       dto.AccountNumberForBalances = entry.Account.Number;
       dto.SectorCode = entry.Sector.Code;
