@@ -184,7 +184,7 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
       columns.Add(new DataTableColumn("totalBalance", "Importe Mon. Ext.", "decimal"));
       //columns.Add(new DataTableColumn("exchangeRate", "Valor M.N.", "decimal", 6));
       columns.Add(new DataTableColumn("valuedExchangeRate", "Tipo cambio", "decimal", 6));
-      columns.Add(new DataTableColumn("totalEquivalence", "Equivalencia M.N.", "decimal"));
+      columns.Add(new DataTableColumn("totalEquivalence", "Equivalencia en dolares", "decimal"));
 
 
       return columns.ToFixedList();
