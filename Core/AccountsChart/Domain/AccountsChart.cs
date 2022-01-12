@@ -69,7 +69,7 @@ namespace Empiria.FinancialAccounting {
 
 
     static public FixedList<AccountsChart> GetList() {
-      return BaseObject.GetList<AccountsChart>()
+      return BaseObject.GetList<AccountsChart>(String.Empty, "ObjectId DESC")
                        .FindAll(x => x.Status != StateEnums.EntityStatus.Deleted)
                        .ToFixedList();
     }
