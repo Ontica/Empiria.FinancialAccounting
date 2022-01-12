@@ -43,12 +43,21 @@ namespace Empiria.FinancialAccounting.BanobrasIntegration.TransactionSlips.UseCa
     }
 
 
+    public FixedList<TransactionSlipDto> GetTransactionSlipsList(SearchTransactionSlipsCommand command) {
+      Assertion.AssertObject(command, "command");
+
+      FixedList<TransactionSlip> transactionSlipsList = TransactionSlipSearcher.Search(command);
+
+      return TransactionSlipMapper.Map(transactionSlipsList, true);
+    }
+
+
     public FixedList<TransactionSlipDescriptorDto> SearchTransactionSlips(SearchTransactionSlipsCommand command) {
       Assertion.AssertObject(command, "command");
 
       FixedList<TransactionSlip> transactionSlipsList = TransactionSlipSearcher.Search(command);
 
-      return TransactionSlipMapper.Map(transactionSlipsList);
+      return TransactionSlipMapper.MapToDescriptors(transactionSlipsList);
     }
 
 

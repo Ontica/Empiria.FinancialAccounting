@@ -123,6 +123,13 @@ namespace Empiria.FinancialAccounting.BanobrasIntegration.TransactionSlips {
     }
 
 
+    [DataField("FECHA_PROCESO")]
+    public DateTime ProcessingDate {
+      get;
+      private set;
+    }
+
+
     public string StatusName {
       get {
 
@@ -165,6 +172,11 @@ namespace Empiria.FinancialAccounting.BanobrasIntegration.TransactionSlips {
 
 
     internal FixedList<TransactionSlipIssue> Issues() {
+      if (this.Status == TransactionSlipStatus.Pending ||
+          this.Status == TransactionSlipStatus.ProcessedOK) {
+        return new FixedList<TransactionSlipIssue>();
+      }
+
       return TransactionSlipData.GetTransactionSlipIssues(this);
     }
 

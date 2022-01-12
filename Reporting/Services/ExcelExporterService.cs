@@ -16,6 +16,7 @@ using Empiria.FinancialAccounting.BalanceEngine.Adapters;
 using Empiria.FinancialAccounting.FinancialReports.Adapters;
 using Empiria.FinancialAccounting.Rules.Adapters;
 using Empiria.FinancialAccounting.Reporting.Adapters;
+using Empiria.FinancialAccounting.BanobrasIntegration.TransactionSlips.Adapters;
 
 namespace Empiria.FinancialAccounting.Reporting {
 
@@ -109,6 +110,44 @@ namespace Empiria.FinancialAccounting.Reporting {
       var creator = new VouchersByAccountExcelExporter(templateConfig);
 
       ExcelFile excelFile = creator.CreateExcelFile(vouchers);
+
+      return excelFile.ToFileReportDto();
+    }
+
+
+    public FileReportDto Export(FixedList<TransactionSlipDto> transactionSlips,
+                                string exportationType) {
+
+      Assertion.AssertObject(transactionSlips, "transactionSlips");
+      Assertion.AssertObject(exportationType, "exportationType");
+
+      string templateUID;
+
+      if (exportationType == "slips") {
+        templateUID = $"TransactionSlipsTemplate";
+      } else if (exportationType == "issues") {
+        templateUID = $"TransactionSlipsIssuesTemplate";
+      } else {
+        throw Assertion.AssertNoReachThisCode($"Invalid exportation type '{exportationType}'.");
+      }
+
+      var templateConfig = ExcelTemplateConfig.Parse(templateUID);
+
+      var creator = new TransactionSlipExporter(templateConfig);
+
+      ExcelFile excelFile;
+
+      if (exportationType == "slips") {
+        excelFile = creator.CreateExcelFile(transactionSlips);
+
+      } else if (exportationType == "issues") {
+        excelFile = creator.CreateIsuesExcelFile(transactionSlips);
+
+      } else {
+        throw Assertion.AssertNoReachThisCode($"Invalid exportation type '{exportationType}'.");
+      }
+
+
 
       return excelFile.ToFileReportDto();
     }

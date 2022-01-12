@@ -12,6 +12,8 @@ using System.Web.Http;
 
 using Empiria.WebApi;
 
+using Empiria.FinancialAccounting.Reporting;
+
 using Empiria.FinancialAccounting.BanobrasIntegration.TransactionSlips.UseCases;
 using Empiria.FinancialAccounting.BanobrasIntegration.TransactionSlips.Adapters;
 
@@ -21,6 +23,25 @@ namespace Empiria.FinancialAccounting.WebApi.BanobrasIntegration {
   public class BanobrasTransactionSlipsController : WebApiController {
 
     #region Query web api
+
+
+    [HttpPost]
+    [Route("v2/financial-accounting/transaction-slips/export/{exportationType}")]
+    public SingleObjectModel ExportTransactionSlips([FromBody] SearchTransactionSlipsCommand command,
+                                                    [FromUri] string exportationType) {
+
+      base.RequireBody(command);
+
+      using (var usecases = TransactionSlipUseCases.UseCaseInteractor()) {
+        FixedList<TransactionSlipDto> transactionSlips = usecases.GetTransactionSlipsList(command);
+
+        var excelExporter = new ExcelExporterService();
+
+        FileReportDto excelFileDto = excelExporter.Export(transactionSlips, exportationType);
+
+        return new SingleObjectModel(base.Request, excelFileDto);
+      }
+    }
 
 
     [HttpGet]
@@ -47,6 +68,7 @@ namespace Empiria.FinancialAccounting.WebApi.BanobrasIntegration {
         return new CollectionModel(base.Request, result);
       }
     }
+
 
     #endregion Query web api
 

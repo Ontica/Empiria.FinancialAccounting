@@ -64,10 +64,30 @@ namespace Empiria.FinancialAccounting.BanobrasIntegration.TransactionSlips.Adapt
     }
 
 
+    public TransactionSlipStatus Status {
+      get; internal set;
+    }
+
+
     public string StatusName {
       get; internal set;
     }
 
+
+    public int AccountsChartId {
+      get;
+      set;
+    }
+
+    public int SystemId {
+      get;
+      set;
+    }
+
+    public DateTime ProcessingDate {
+      get;
+      set;
+    }
 
   }  // class TransactionSlipDescriptorDto
 
