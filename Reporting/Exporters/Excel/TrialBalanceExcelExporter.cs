@@ -126,10 +126,12 @@ namespace Empiria.FinancialAccounting.Reporting.Exporters.Excel {
         _excelFile.SetCell($"E{i}", entry.SectorCode);
         _excelFile.SetCell($"F{i}", entry.DomesticBalance);
         _excelFile.SetCell($"G{i}", entry.ForeignBalance);
+        _excelFile.SetCell($"H{i}", entry.TotalBalance);
+        _excelFile.SetCell($"I{i}", Math.Round(entry.ExchangeRate, 6));
 
         if (MustFillOutAverageBalance(entry.AverageBalance, entry.LastChangeDate)) {
-          _excelFile.SetCell($"H{i}", entry.AverageBalance);
-          _excelFile.SetCell($"I{i}", entry.LastChangeDate.ToString("dd/MMM/yyyy"));
+          _excelFile.SetCell($"J{i}", entry.AverageBalance);
+          //_excelFile.SetCell($"K{i}", entry.LastChangeDate.ToString("dd/MMM/yyyy"));
         }
 
         if (entry.ItemType != TrialBalanceItemType.Entry &&
@@ -140,8 +142,8 @@ namespace Empiria.FinancialAccounting.Reporting.Exporters.Excel {
       }
 
       if (!_command.WithAverageBalance) {
-        _excelFile.RemoveColumn("I");
-        _excelFile.RemoveColumn("H");
+        //_excelFile.RemoveColumn("K");
+        _excelFile.RemoveColumn("J");
       }
     }
 
