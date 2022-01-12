@@ -326,18 +326,12 @@ namespace Empiria.FinancialAccounting.Reporting.Exporters.Excel {
 
       foreach (var entry in entries) {
         var account = StandardAccount.Parse(entry.StandardAccountId);
-        //var subledgerAccount = SubledgerAccount.Parse(entry.SubledgerAccountId);
 
         _excelFile.SetCell($"A{i}", entry.LedgerNumber);
         _excelFile.SetCell($"B{i}", entry.CurrencyCode);
         if (entry.ItemType == TrialBalanceItemType.Entry) {
           _excelFile.SetCell($"C{i}", "*");
         }
-        //if (!subledgerAccount.IsEmptyInstance) {
-        //  _excelFile.SetCell($"D{i}", subledgerAccount.Number);
-        //  _excelFile.SetCell($"E{i}", subledgerAccount.Name);
-        //}
-
         if (!account.IsEmptyInstance) {
           _excelFile.SetCell($"D{i}", account.Number);
           _excelFile.SetCell($"E{i}", account.Name);
@@ -359,8 +353,7 @@ namespace Empiria.FinancialAccounting.Reporting.Exporters.Excel {
           _excelFile.SetCell($"J{i}", entry.LastChangeDate.ToString("dd/MMM/yyyy"));
         }
 
-        if (entry.ItemType != TrialBalanceItemType.Entry &&
-            entry.ItemType != TrialBalanceItemType.Summary) {
+        if (entry.ItemType == TrialBalanceItemType.Summary) {
           _excelFile.SetRowStyleBold(i);
         }
         i++;

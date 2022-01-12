@@ -218,14 +218,23 @@ namespace Empiria.FinancialAccounting.BalanceEngine.Adapters {
       dto.ExchangeRate = entry.ExchangeRate;
       dto.SecondExchangeRate = entry.SecondExchangeRate;
       dto.AverageBalance = entry.AverageBalance;
-      dto.DebtorCreditor = entry.ItemType == TrialBalanceItemType.Entry ||
+      if (command.TrialBalanceType == TrialBalanceType.SaldosPorAuxiliar) {
+        dto.DebtorCreditor = entry.ItemType == TrialBalanceItemType.Entry ?
+                             entry.DebtorCreditor.ToString() : "";
+
+        dto.LastChangeDate = entry.ItemType == TrialBalanceItemType.Entry ?
+                             entry.LastChangeDate : ExecutionServer.DateMaxValue;
+      } else {
+        dto.DebtorCreditor = entry.ItemType == TrialBalanceItemType.Entry ||
                            entry.ItemType == TrialBalanceItemType.Summary ?
                            entry.DebtorCreditor.ToString() : "";
-      dto.LastChangeDate = entry.ItemType == TrialBalanceItemType.Entry ||
+
+        dto.LastChangeDate = entry.ItemType == TrialBalanceItemType.Entry ||
                            entry.ItemType == TrialBalanceItemType.Summary ||
                            command.TrialBalanceType == TrialBalanceType.BalanzaConContabilidadesEnCascada ?
-                           entry.LastChangeDate: ExecutionServer.DateMaxValue;
-
+                           entry.LastChangeDate : ExecutionServer.DateMaxValue;
+      }
+      
       dto.HasAccountStatement = (entry.ItemType == TrialBalanceItemType.Entry ||
                                  entry.ItemType == TrialBalanceItemType.Summary) &&
                                 command.UseDefaultValuation == false &&
