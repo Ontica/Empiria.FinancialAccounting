@@ -118,8 +118,11 @@ namespace Empiria.FinancialAccounting.BalanceEngine.Adapters {
       dto.SectorCode = entry.Sector.Code;
       dto.InitialBalance = entry.InitialBalance;
       dto.CurrentBalance = entry.CurrentBalance;
-      dto.DebtorCreditor = entry.DebtorCreditor.ToString();
-      dto.LastChangeDate = entry.LastChangeDate;
+      dto.DebtorCreditor = entry.ItemType == TrialBalanceItemType.Entry ?
+                           entry.DebtorCreditor.ToString() : "";
+      dto.LastChangeDate = entry.ItemType == TrialBalanceItemType.Entry ?
+                           entry.LastChangeDate : ExecutionServer.DateMaxValue;
+
 
       dto.HasAccountStatement = entry.ItemType == TrialBalanceItemType.Total || entry.ItemType == TrialBalanceItemType.Entry;
       dto.ClickableEntry = dto.HasAccountStatement;
@@ -143,8 +146,10 @@ namespace Empiria.FinancialAccounting.BalanceEngine.Adapters {
       dto.SectorCode = entry.Sector.Code;
       dto.InitialBalance = entry.InitialBalance;
       dto.CurrentBalance = entry.CurrentBalance;
-      dto.DebtorCreditor = entry.DebtorCreditor.ToString();
-      dto.LastChangeDate = entry.LastChangeDate;
+      dto.DebtorCreditor = entry.ItemType == TrialBalanceItemType.Entry ?
+                           entry.DebtorCreditor.ToString() : "";
+      dto.LastChangeDate = entry.ItemType == TrialBalanceItemType.Entry ?
+                           entry.LastChangeDate : ExecutionServer.DateMaxValue;
       dto.HasAccountStatement = true;
       dto.ClickableEntry = true;
       return dto;

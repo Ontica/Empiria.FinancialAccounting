@@ -218,7 +218,8 @@ namespace Empiria.FinancialAccounting.BalanceEngine.Adapters {
       dto.ExchangeRate = entry.ExchangeRate;
       dto.SecondExchangeRate = entry.SecondExchangeRate;
       dto.AverageBalance = entry.AverageBalance;
-      if (command.TrialBalanceType == TrialBalanceType.SaldosPorAuxiliar) {
+      if (command.TrialBalanceType == TrialBalanceType.SaldosPorAuxiliar ||
+          command.TrialBalanceType == TrialBalanceType.SaldosPorCuenta) {
         dto.DebtorCreditor = entry.ItemType == TrialBalanceItemType.Entry ?
                              entry.DebtorCreditor.ToString() : "";
 
