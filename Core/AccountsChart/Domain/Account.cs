@@ -217,7 +217,7 @@ namespace Empiria.FinancialAccounting {
       Account account = this.GetHistory(accountingDate);
 
       Assertion.Assert(account.Role == AccountRole.Sectorizada,
-          $"La cuenta {account.Number} no maneja sectores, sin embargo se proporcionó el sector {sector.FullName}.");
+          $"La cuenta {account.Number} no requiere sector, sin embargo se proporcionó el sector {sector.FullName}.");
 
       Assertion.Assert(
           SectorRules.Contains(x => x.Sector.Equals(sector) && x.AppliesOn(accountingDate)),
@@ -229,7 +229,7 @@ namespace Empiria.FinancialAccounting {
       Account account = this.GetHistory(accountingDate);
 
       Assertion.Assert(account.Role != AccountRole.Sectorizada,
-                       $"La cuenta {account.Number} maneja sectores, sin embargo no se proporcionó.");
+                       $"La cuenta {account.Number} requiere un sector, sin embargo no se proporcionó.");
     }
 
 
@@ -237,7 +237,7 @@ namespace Empiria.FinancialAccounting {
       Account account = this.GetHistory(accountingDate);
 
       Assertion.Assert(account.Role == AccountRole.Control,
-                      $"La cuenta {account.Number} no maneja auxiliares.");
+                      $"La cuenta {account.Number} no maneja auxiliares para el sector 00.");
     }
 
 
@@ -253,7 +253,7 @@ namespace Empiria.FinancialAccounting {
 
       } else {
         Assertion.Assert(account.Role == AccountRole.Sectorizada && sectorRule.SectorRole == AccountRole.Control,
-            $"La cuenta {account.Number} no maneja auxiliares para el sector ({sector.Code}).");
+            $"La cuenta {account.Number} no requiere un auxiliar para el sector ({sector.Code}).");
       }
     }
 
@@ -262,7 +262,7 @@ namespace Empiria.FinancialAccounting {
       Account account = this.GetHistory(accountingDate);
 
       Assertion.Assert(account.Role == AccountRole.Detalle,
-                       $"La cuenta {account.Number} maneja auxiliares.");
+                       $"La cuenta {account.Number} requiere un auxiliar.");
     }
 
 
