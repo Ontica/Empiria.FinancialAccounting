@@ -43,6 +43,11 @@ namespace Empiria.FinancialAccounting {
     }
 
 
+    static public SubledgerAccount TryParse(string subledgerAccountNumber) {
+      return SubledgerData.TryGetSubledgerAccount(subledgerAccountNumber);
+    }
+
+
     static internal FixedList<SubledgerAccount> Search(AccountsChart accountsChart, string filter) {
       Assertion.AssertObject(accountsChart, "accountsChart");
       Assertion.AssertObject(filter, "filter");
@@ -150,9 +155,8 @@ namespace Empiria.FinancialAccounting {
       this.Description = FieldPatcher.PatchField(fields.Description, this.Description);
 
       UpdateSubledger(fields.SubledgerType());
-
-
     }
+
 
     private void UpdateSubledger(SubledgerType newSubledgerType) {
       Assertion.AssertObject(newSubledgerType, "newSubledgerType");
