@@ -68,8 +68,12 @@ namespace Empiria.FinancialAccounting.Rules {
         } else if (this.ExternalVariableCode.Length != 0) {
           return GroupingRuleItemType.FixedValue;
 
+        } else if (this.IsEmptyInstance) {
+          return GroupingRuleItemType.Agrupation;
+
         } else {
           return GroupingRuleItemType.FixedValue;
+
         }
       }
     }
@@ -192,9 +196,27 @@ namespace Empiria.FinancialAccounting.Rules {
       }
     }
 
+
     public bool HasSubledgerAccount {
       get {
-        return (this.SubledgerAccountNumber.Length > 10);
+        return (this.SubledgerAccountNumber.Length > 4);
+      }
+    }
+
+
+    public string SubledgerAccountName {
+      get {
+        if (!HasSubledgerAccount) {
+          return string.Empty;
+        }
+
+        var subledgerAccount = SubledgerAccount.TryParse(this.SubledgerAccountNumber);
+
+        if (subledgerAccount == null) {
+          return "El auxiliar NO existe en el sistema.";
+        }
+
+        return subledgerAccount.Name;
       }
     }
 

@@ -23,10 +23,13 @@ namespace Empiria.FinancialAccounting.Rules.Adapters {
         ItemCode = item.GroupingRuleItem.Code,
         ItemName = item.GroupingRuleItem.Name,
         Operator = Convert.ToString((char) item.GroupingRuleItem.Operator),
-        ParentCode = item.Parent.GroupingRuleItem.Code,
+        ParentCode = item.Parent.GroupingRuleItem.IsEmptyInstance ?
+                                            string.Empty: item.Parent.GroupingRuleItem.Code,
         Qualification = item.GroupingRuleItem.Qualification,
+        SubledgerAccount = item.GroupingRuleItem.SubledgerAccountNumber,
+        SubledgerAccountName = item.GroupingRuleItem.SubledgerAccountName,
         SectorCode = item.GroupingRuleItem.SectorCode,
-        SubledgerAccount =item.GroupingRuleItem.SubledgerAccountNumber,
+        CurrencyCode = item.GroupingRuleItem.CurrencyCode,
         UID = item.GroupingRuleItem.UID,
         Type = item.GroupingRuleItem.Type,
         Level = item.Level

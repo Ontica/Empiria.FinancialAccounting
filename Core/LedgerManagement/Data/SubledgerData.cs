@@ -20,7 +20,6 @@ namespace Empiria.FinancialAccounting.Data {
                                                              new EmpiriaHashTable<SubledgerAccount>();
 
     static internal SubledgerAccount GetSubledgerAccount(int id) {
-
       SubledgerAccount cachedValue;
 
       if (_subledgerAccountsCache.TryGetValue(id.ToString(), out cachedValue)) {
@@ -64,6 +63,17 @@ namespace Empiria.FinancialAccounting.Data {
     }
 
 
+    static internal SubledgerAccount TryGetSubledgerAccount(string subledgerAccountNumber) {
+      var sql = $"SELECT * FROM " +
+                $"COF_CUENTA_AUXILIAR " +
+                $"WHERE NUMERO_CUENTA_AUXILIAR = '{subledgerAccountNumber}'";
+
+      var dataOperation = DataOperation.Parse(sql);
+
+      return DataReader.GetPlainObject<SubledgerAccount>(dataOperation, null);
+    }
+
+
     static internal void WriteSubledgerAccount(SubledgerAccount o) {
       var op = DataOperation.Parse("write_cof_cuenta_auxiliar",
                                     o.Id, o.Subledger.Id,
@@ -74,6 +84,7 @@ namespace Empiria.FinancialAccounting.Data {
 
       _subledgerAccountsCache.Insert(o.Id.ToString(), o);
     }
+
 
   }  // class SubledgerData
 
