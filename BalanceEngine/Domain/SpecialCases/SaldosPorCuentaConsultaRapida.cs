@@ -136,6 +136,7 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
       foreach (var entry in balance.Where(a => a.SubledgerAccountId > 0)) {
         SubledgerAccount subledgerAccount = SubledgerAccount.Parse(entry.SubledgerAccountId);
         entry.SubledgerAccountNumber = subledgerAccount.Number;
+        entry.SubledgerAccountName = subledgerAccount.Name;
 
         balanceWithSubledgerAccounts.Add(entry);
       }

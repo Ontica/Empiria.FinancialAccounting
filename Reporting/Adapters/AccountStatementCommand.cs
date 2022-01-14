@@ -77,7 +77,7 @@ namespace Empiria.FinancialAccounting.Reporting.Adapters {
       get; set;
     }
 
-    public DateTime LastChangeDate {
+    public DateTime LastChangeDateForBalances {
       get; set;
     } = DateTime.Now;
 

@@ -82,12 +82,17 @@ namespace Empiria.FinancialAccounting.BalanceEngine.Adapters {
       internal set;
     }
 
-    public decimal CurrentBalance {
+    public decimal? CurrentBalance {
       get; internal set;
     }
 
     public DateTime LastChangeDate {
       get; internal set;
+    } = DateTime.Now;
+
+    public DateTime LastChangeDateForBalances {
+      get;
+      internal set;
     } = DateTime.Now;
 
     public string DebtorCreditor {
@@ -101,7 +106,7 @@ namespace Empiria.FinancialAccounting.BalanceEngine.Adapters {
     public bool ClickableEntry {
       get; internal set;
     } = false;
-
+    
   } // class BalanceEntryDto
 
 } // Empiria.FinancialAccounting.BalanceEngine.Adapters

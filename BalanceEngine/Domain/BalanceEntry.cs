@@ -98,6 +98,11 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
     } = string.Empty;
 
 
+    public string SubledgerAccountName {
+      get; internal set;
+    }
+
+
     public bool HasAccountStatement {
       get; internal set;
     } = false;
@@ -106,7 +111,7 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
     public bool ClickableEntry {
       get; internal set;
     } = false;
-
+    
   } // class BalanceEntry
 
 } // Empiria.FinancialAccounting.BalanceEngine

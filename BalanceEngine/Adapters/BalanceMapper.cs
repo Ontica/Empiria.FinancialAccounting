@@ -62,7 +62,9 @@ namespace Empiria.FinancialAccounting.BalanceEngine.Adapters {
       columns.Add(new DataTableColumn("sectorCode", "Sct", "text"));
       columns.Add(new DataTableColumn("accountName", "Nombre", "text"));
       columns.Add(new DataTableColumn("currentBalance", "Saldo actual", "decimal"));
-      columns.Add(new DataTableColumn("debtorCreditor", "Naturaleza", "text"));
+      if (command.TrialBalanceType == TrialBalanceType.SaldosPorAuxiliarConsultaRapida) {
+        columns.Add(new DataTableColumn("debtorCreditor", "Naturaleza", "text"));
+      }
       columns.Add(new DataTableColumn("lastChangeDate", "Último movimiento", "date"));
 
       return columns.ToFixedList();
@@ -93,7 +95,7 @@ namespace Empiria.FinancialAccounting.BalanceEngine.Adapters {
 
 
     static private BalanceEntryDto MapToBalanceByAccount(BalanceEntry entry, BalanceCommand command) {
-
+      
       var dto = new BalanceEntryDto();
 
       dto.ItemType = entry.ItemType;
@@ -114,14 +116,26 @@ namespace Empiria.FinancialAccounting.BalanceEngine.Adapters {
       }
 
       dto.AccountNumberForBalances = entry.Account.Number;
-      dto.AccountName = entry.GroupName == string.Empty ? entry.Account.Name : entry.GroupName;
+
+      if (entry.SubledgerAccountNumber != string.Empty) {
+        dto.AccountName = entry.SubledgerAccountName;
+      } else if (entry.ItemType == TrialBalanceItemType.Group || entry.ItemType == TrialBalanceItemType.Total) {
+        dto.AccountName = entry.ItemType == TrialBalanceItemType.Total ?
+                          $"{entry.GroupName}, Naturaleza: {entry.DebtorCreditor}" : entry.GroupName;
+      } else {
+        dto.AccountName = entry.Account.Name;
+      }
+
       dto.SectorCode = entry.Sector.Code;
       dto.InitialBalance = entry.InitialBalance;
-      dto.CurrentBalance = entry.CurrentBalance;
-      dto.DebtorCreditor = entry.ItemType == TrialBalanceItemType.Entry ?
-                           entry.DebtorCreditor.ToString() : "";
+      if (entry.ItemType != TrialBalanceItemType.Total) {
+        dto.CurrentBalance = entry.CurrentBalance;
+      }
+      //dto.DebtorCreditor = entry.ItemType == TrialBalanceItemType.Entry ?
+      //                     entry.DebtorCreditor.ToString() : "";
       dto.LastChangeDate = entry.ItemType == TrialBalanceItemType.Entry ?
                            entry.LastChangeDate : ExecutionServer.DateMaxValue;
+      dto.LastChangeDateForBalances = entry.LastChangeDate;
 
 
       dto.HasAccountStatement = entry.ItemType == TrialBalanceItemType.Total || entry.ItemType == TrialBalanceItemType.Entry;
@@ -150,6 +164,7 @@ namespace Empiria.FinancialAccounting.BalanceEngine.Adapters {
                            entry.DebtorCreditor.ToString() : "";
       dto.LastChangeDate = entry.ItemType == TrialBalanceItemType.Entry ?
                            entry.LastChangeDate : ExecutionServer.DateMaxValue;
+      dto.LastChangeDateForBalances = entry.LastChangeDate;
       dto.HasAccountStatement = true;
       dto.ClickableEntry = true;
       return dto;
