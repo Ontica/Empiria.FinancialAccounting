@@ -38,7 +38,15 @@ namespace Empiria.FinancialAccounting.Rules.Adapters {
       get; internal set;
     }
 
+    public string SubledgerAccountName {
+      get; internal set;
+    }
+
     public string SectorCode {
+      get; internal set;
+    }
+
+    public string CurrencyCode {
       get; internal set;
     }
 

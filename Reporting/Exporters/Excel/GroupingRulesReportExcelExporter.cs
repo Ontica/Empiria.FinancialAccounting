@@ -33,6 +33,8 @@ namespace Empiria.FinancialAccounting.Reporting.Exporters.Excel {
 
       _excelFile.Open();
 
+      SetHeader(_excelFile);
+
       SetTable(rulesTreeItems);
 
       _excelFile.Save();
@@ -53,18 +55,22 @@ namespace Empiria.FinancialAccounting.Reporting.Exporters.Excel {
           _excelFile.IndentCell($"C{i}", rule.Level - 1);
         }
         _excelFile.SetCell($"D{i}", rule.SubledgerAccount);
-        if (rule.SubledgerAccount.Length != 0) {
-          _excelFile.SetCell($"E{i}", "Nombre del auxiliar");
-        }
+        _excelFile.SetCell($"E{i}", rule.SubledgerAccountName);
         _excelFile.SetCell($"F{i}", rule.SectorCode);
-        _excelFile.SetCell($"G{i}", rule.Operator);
-        _excelFile.SetCell($"H{i}", rule.Qualification);
-        _excelFile.SetCell($"I{i}", rule.Level);
-        _excelFile.SetCell($"J{i}", rule.ParentCode);
+        _excelFile.SetCell($"G{i}", rule.CurrencyCode);
+        _excelFile.SetCell($"H{i}", rule.Operator);
+        _excelFile.SetCell($"I{i}", rule.Qualification);
+        _excelFile.SetCell($"J{i}", rule.Level);
+        _excelFile.SetCell($"K{i}", rule.ParentCode);
 
         i++;
       }
     }
+
+    private void SetHeader(ExcelFile excelFile) {
+      excelFile.SetCell($"A2", _templateConfig.Title);
+    }
+
 
   }  // class GroupingRulesReportExcelExporter
 
