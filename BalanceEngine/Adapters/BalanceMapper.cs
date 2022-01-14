@@ -181,7 +181,7 @@ namespace Empiria.FinancialAccounting.BalanceEngine.Adapters {
         GroupName = entry.GroupName,
         GroupNumber = entry.GroupNumber,
         CurrentBalance = entry.CurrentBalance,
-        DebtorCreditor = entry.DebtorCreditor,
+        DebtorCreditor = entry.Account.DebtorCreditor,
         LastChangeDate = entry.LastChangeDate
       };
     }
