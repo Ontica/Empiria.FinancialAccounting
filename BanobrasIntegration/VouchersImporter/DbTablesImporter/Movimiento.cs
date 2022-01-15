@@ -22,6 +22,7 @@ namespace Empiria.FinancialAccounting.BanobrasIntegration.VouchersImporter {
 
     private readonly List<ToImportVoucherIssue> _issues = new List<ToImportVoucherIssue>();
 
+    #region Properties
 
     [DataField("MCO_TIPO_CONT", ConvertFrom = typeof(long))]
     public int TipoContabilidad {
@@ -127,6 +128,9 @@ namespace Empiria.FinancialAccounting.BanobrasIntegration.VouchersImporter {
       get; private set;
     }
 
+    #endregion Properties
+
+    #region Methods
 
     internal string GetVoucherUniqueID() {
       if (this.TipoContabilidad == 1 && IdSistema == 23) {
@@ -137,6 +141,7 @@ namespace Empiria.FinancialAccounting.BanobrasIntegration.VouchersImporter {
                $"{this.NumeroVolante}";
       }
     }
+
 
     private string GetEntryID() {
       return this.NumMovimiento.ToString();
@@ -282,7 +287,7 @@ namespace Empiria.FinancialAccounting.BanobrasIntegration.VouchersImporter {
 
 
     internal string GetConcept() {
-      return EmpiriaString.TrimAll(this.Descripcion);
+      return EmpiriaString.Clean(this.Descripcion);
     }
 
 
@@ -320,11 +325,11 @@ namespace Empiria.FinancialAccounting.BanobrasIntegration.VouchersImporter {
     }
 
 
-    private void AddError(string msg, string column = "") {
+    private void AddError(string msg) {
       _issues.Add(new ToImportVoucherIssue(VoucherIssueType.Error,
                                            this.GetVoucherUniqueID(),
                                            this.GetEntryID(),
-                                           $"{msg} (Sistema {this.IdSistema})"));
+                                           msg));
     }
 
 
@@ -337,41 +342,7 @@ namespace Empiria.FinancialAccounting.BanobrasIntegration.VouchersImporter {
       this.Encabezado = encabezado;
     }
 
-
-    //[DataField("MCO_NO_OPERACION", ConvertFrom = typeof(long))]
-    //public int NumOperacion {
-    //  get; private set;
-    //}
-
-
-    //[DataField("MCO_STATUS", ConvertFrom = typeof(long))]
-    //public int Status {
-    //  get; private set;
-    //}
-
-
-    //[DataField("MCO_FIDEICOMISO")]
-    //public int NumFideicomiso {
-    //  get; private set;
-    //}
-
-
-    //[DataField("MCO_STATUS_ANT", ConvertFrom = typeof(long))]
-    //public int StatusAnterior {
-    //  get; private set;
-    //}
-
-
-    //[DataField("MCO_GPO_CTLA", ConvertFrom = typeof(long))]
-    //public int StatusAnterior {
-    //  get; private set;
-    //}
-
-
-    //[DataField("MCO_GPO_CTB", ConvertFrom = typeof(long))]
-    //public int StatusAnterior {
-    //  get; private set;
-    //}
+    #endregion Methods
 
   }  // class Movimiento
 

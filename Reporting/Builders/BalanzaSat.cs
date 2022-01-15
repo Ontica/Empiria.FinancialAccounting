@@ -49,7 +49,7 @@ namespace Empiria.FinancialAccounting.Reporting.Builders {
       columns.Add(new DataTableColumn("debe", "Debe", "decimal"));
       columns.Add(new DataTableColumn("haber", "Haber", "decimal"));
       columns.Add(new DataTableColumn("saldoFinal", "Saldo Final", "decimal"));
-      
+
       if (command.SendType == SendType.C) {
         columns.Add(new DataTableColumn("fechaModificacion", "Fecha Modificación", "date"));
       }

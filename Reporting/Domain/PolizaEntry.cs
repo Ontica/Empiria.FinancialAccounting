@@ -13,7 +13,7 @@ using Empiria.FinancialAccounting.Vouchers;
 namespace Empiria.FinancialAccounting.Reporting.Domain {
 
   public interface IPolizaEntry {
-  
+
   }
 
   /// <summary>Represents an entry for a policy.</summary>
@@ -98,10 +98,10 @@ namespace Empiria.FinancialAccounting.Reporting.Domain {
     internal void Sum(PolizaEntry voucher) {
       this.Debit += voucher.Debit;
       this.Credit += voucher.Credit;
-      this.VouchersByLedger += 1; 
+      this.VouchersByLedger += 1;
     }
 
   } // class PolizaEntry
 
-  
+
 } // namespace Empiria.FinancialAccounting.Reporting.Domain

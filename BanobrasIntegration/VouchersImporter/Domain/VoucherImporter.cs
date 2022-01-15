@@ -200,9 +200,9 @@ namespace Empiria.FinancialAccounting.BanobrasIntegration.VouchersImporter {
       result.Errors = GetImportErrors();
       result.Warnings = GetImportWarnings();
 
-
       return result;
     }
+
 
     private FixedList<NamedEntityDto> GetImportErrors() {
       var errors = this._toImportVouchersList.SelectMany(

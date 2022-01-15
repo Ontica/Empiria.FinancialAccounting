@@ -63,7 +63,7 @@ namespace Empiria.FinancialAccounting.BanobrasIntegration.TransactionSlips.Adapt
         SubledgerAccount = entry.SubledgerAccount,
         CurrencyCode = entry.CurrencyCode.ToString("00"),
         FunctionalArea = entry.FunctionalArea,
-        Description = entry.Description,
+        Description = EmpiriaString.Clean(entry.Description),
         ExchangeRate = entry.ExchangeRate,
         Debit  = entry.Debit,
         Credit = entry.Credit
