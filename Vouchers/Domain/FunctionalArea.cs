@@ -20,20 +20,30 @@ namespace Empiria.FinancialAccounting.Vouchers {
       // Required by Empiria Framework.
     }
 
+
     static public FunctionalArea Parse(int id) {
       return BaseObject.ParseId<FunctionalArea>(id);
     }
+
 
     static public FunctionalArea Parse(string uid) {
       return BaseObject.ParseKey<FunctionalArea>(uid);
     }
 
+
+    static public FunctionalArea TryParse(string areaID) {
+      return BaseObject.TryParse<FunctionalArea>($"ParticipantKey = '{areaID}'");
+    }
+
+
     static public FixedList<FunctionalArea> GetList() {
       string filter = "ParticipantType = 'O' AND Status = 'A'";
       string orderBy = "ParticipantKey";
 
-      return BaseObject.GetList<FunctionalArea>(filter, orderBy).ToFixedList();
+      return BaseObject.GetList<FunctionalArea>(filter, orderBy)
+                       .ToFixedList();
     }
+
 
     static public FunctionalArea Empty {
       get {

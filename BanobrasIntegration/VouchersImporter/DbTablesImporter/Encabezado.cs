@@ -8,6 +8,7 @@
 *                                                                                                            *
 ************************* Copyright(c) La Vía Óntica SC, Ontica LLC and contributors. All rights reserved. **/
 using System;
+using System.Collections.Generic;
 
 using Empiria.FinancialAccounting.Vouchers;
 
@@ -15,6 +16,10 @@ namespace Empiria.FinancialAccounting.BanobrasIntegration.VouchersImporter {
 
   /// <summary>Información de un registro de la tabla MC_ENCABEZADOS (Banobras) con pólizas por integrar.</summary>
   internal class Encabezado {
+
+    private readonly List<ToImportVoucherIssue> _headerIssues = new List<ToImportVoucherIssue>();
+
+    #region Properties
 
     [DataField("ENC_TIPO_CONT", ConvertFrom = typeof(long))]
     public int TipoContabilidad {
@@ -58,12 +63,6 @@ namespace Empiria.FinancialAccounting.BanobrasIntegration.VouchersImporter {
     }
 
 
-    //[DataField("ENC_FIDEICOMISO")]
-    //public int NumFideicomiso {
-    //  get; private set;
-    //}
-
-
     [DataField("ENC_FECHA_CAP")]
     public DateTime FechaCaptura {
       get; private set;
@@ -93,23 +92,16 @@ namespace Empiria.FinancialAccounting.BanobrasIntegration.VouchersImporter {
       get; private set;
     }
 
-    //[DataField("ENC_NO_OPERACION", ConvertFrom = typeof(long))]
-    //public int NumOperacion {
-    //  get; private set;
-    //}
+    #endregion Properties
 
 
-    //[DataField("ENC_STATUS", ConvertFrom = typeof(long))]
-    //public int Status {
-    //  get; private set;
-    //}
+    #region Methods
 
-
-    //[DataField("ENC_GRUPO_CTL", ConvertFrom = typeof(long))]
-    //public int GrupoControl {
-    //  get; private set;
-    //}
-
+    public void AddError(string msg) {
+      _headerIssues.Add(new ToImportVoucherIssue(VoucherIssueType.Error,
+                                                 this.GetImportationSet(),
+                                                 msg));
+    }
 
     internal AccountsChart GetAccountsChart() {
       return AccountsChart.Parse(this.TipoContabilidad);
@@ -144,7 +136,7 @@ namespace Empiria.FinancialAccounting.BanobrasIntegration.VouchersImporter {
 
 
     internal string GetConcept() {
-      return EmpiriaString.TrimAll(this.Concepto);
+      return EmpiriaString.Clean(this.Concepto);
     }
 
 
@@ -183,35 +175,39 @@ namespace Empiria.FinancialAccounting.BanobrasIntegration.VouchersImporter {
     internal FunctionalArea GetFunctionalArea() {
       var areaID = EmpiriaString.TrimAll(this.AreaCaptura);
 
-      return FunctionalArea.Parse(areaID);
+      FunctionalArea functionalArea = FunctionalArea.TryParse(areaID);
+
+      if (functionalArea != null) {
+        return functionalArea;
+      }
+
+      AddError($"El área funcional '{areaID}' no está registrada.");
+
+      return FunctionalArea.Empty;
     }
 
 
     internal Participant GetElaboratedBy() {
       var userID = EmpiriaString.TrimAll(this.Usuario);
 
-      try {
-        var participant = Participant.TryParse(userID);
+      var participant = Participant.TryParse(userID);
 
-        if (participant != null) {
-          return participant;
-
-        } else {
-          EmpiriaLog.Info($"No encontré la cuenta de usuario '{userID}'. Sistema ({this.IdSistema})");
-
-          return Participant.Empty;
-        }
-      } catch {
-        EmpiriaLog.Info($"Tuve problemas para encontrar la cuenta de usuario {userID}. Sistema ({this.IdSistema})");
-
-        throw;
+      if (participant != null) {
+        return participant;
       }
+
+      AddError($"No encontré la cuenta de usuario '{userID}'.");
+
+      return Participant.Empty;
     }
 
 
     internal FixedList<ToImportVoucherIssue> GetIssues() {
-      return new FixedList<ToImportVoucherIssue>();
+      return _headerIssues.ToFixedList();
     }
+
+
+    #endregion Methods
 
   }  // class Encabezado
 
