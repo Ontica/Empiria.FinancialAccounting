@@ -35,7 +35,10 @@ namespace Empiria.FinancialAccounting.Vouchers {
       this.Number = "No actualizada";
       this.RecordingDate = DateTime.Today;
       this.IsOpened = true;
-      this.ElaboratedBy = Participant.Current;
+
+      if (this.ElaboratedBy.IsEmptyInstance) {
+        this.ElaboratedBy = Participant.Current;
+      }
 
       RefreshEntries();
     }
