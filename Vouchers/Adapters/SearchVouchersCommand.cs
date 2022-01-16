@@ -172,7 +172,7 @@ namespace Empiria.FinancialAccounting.Vouchers.Adapters {
     public int PageSize {
       get;
       set;
-    } = 500;
+    } = 5000;
 
 
     public int Page {
