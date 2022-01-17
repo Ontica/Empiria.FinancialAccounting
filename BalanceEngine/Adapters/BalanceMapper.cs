@@ -35,6 +35,7 @@ namespace Empiria.FinancialAccounting.BalanceEngine.Adapters {
       trialBalanceCommand.InitialPeriod.ToDate = command.InitialPeriod.ToDate;
       trialBalanceCommand.SubledgerAccount = command.SubledgerAccount;
       trialBalanceCommand.TrialBalanceType = command.TrialBalanceType;
+      trialBalanceCommand.BalancesType = command.BalancesType;
       //trialBalanceCommand.ShowCascadeBalances = true;
       trialBalanceCommand.WithSubledgerAccount = command.WithSubledgerAccount;
 
@@ -99,9 +100,16 @@ namespace Empiria.FinancialAccounting.BalanceEngine.Adapters {
       var dto = new BalanceEntryDto();
 
       dto.ItemType = entry.ItemType;
-      dto.LedgerUID = entry.Ledger.UID != "Empty" ? entry.Ledger.UID : "";
-      dto.LedgerNumber = entry.Ledger.Number;
-      dto.LedgerName = entry.Ledger.Name != string.Empty ? entry.Ledger.Name : "";
+      if (entry.ItemType != TrialBalanceItemType.Total &&
+          entry.ItemType != TrialBalanceItemType.Group) {
+        dto.LedgerUID = entry.Ledger.UID != "Empty" ? entry.Ledger.UID : "";
+        dto.LedgerNumber = entry.Ledger.Number;
+        dto.LedgerName = entry.Ledger.Name != string.Empty ? entry.Ledger.Name : "";
+      } else {
+        dto.LedgerUID = "";
+        dto.LedgerNumber = "";
+        dto.LedgerName = "";
+      }
       dto.CurrencyCode = entry.Currency.Code;
       dto.SubledgerAccountNumber = entry.SubledgerAccountNumber;
 

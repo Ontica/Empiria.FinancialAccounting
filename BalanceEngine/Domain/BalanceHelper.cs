@@ -43,7 +43,8 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
       BalanceEntry newEntry = BalanceMapper.MapToBalanceEntry(entry);
       newEntry.GroupName = $"{newEntry.Account.Name} [{newEntry.Currency.FullName}]";
       newEntry.InitialBalance = entry.InitialBalance;
-      string hash = $"{newEntry.Ledger.Number}||{newEntry.Currency.Code}||{newEntry.Account.Number}";
+      newEntry.Ledger = Ledger.Empty;
+      string hash = $"{newEntry.Currency.Code}||{newEntry.Account.Number}"; //{newEntry.Ledger.Number}||
 
       GenerateOrIncreaseBalances(headerByAccount, newEntry, newEntry.Account,
                                  Sector.Empty, balanceType, hash);
@@ -68,6 +69,20 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
       newEntry.GroupName = $"TOTAL DE LA CUENTA {newEntry.Account.Number} EN {newEntry.Currency.FullName}";
 
       string hash = $"{newEntry.Ledger.Number}||{newEntry.Currency.Code}||{newEntry.Account.Number}";
+
+      GenerateOrIncreaseBalances(totalByCurrencies, newEntry, newEntry.Account,
+                                 Sector.Empty, balanceType, hash);
+
+    }
+
+    internal void SummaryEntriesByAccountAndCurrency(EmpiriaHashTable<BalanceEntry> totalByCurrencies,
+                                           BalanceEntry entry, TrialBalanceItemType balanceType) {
+
+      BalanceEntry newEntry = BalanceMapper.MapToBalanceEntry(entry);
+      newEntry.GroupName = $"TOTAL DE LA CUENTA {newEntry.Account.Number} EN {newEntry.Currency.FullName}";
+      newEntry.Ledger = Ledger.Empty;
+
+      string hash = $"{newEntry.Currency.Code}||{newEntry.Account.Number}";
 
       GenerateOrIncreaseBalances(totalByCurrencies, newEntry, newEntry.Account,
                                  Sector.Empty, balanceType, hash);

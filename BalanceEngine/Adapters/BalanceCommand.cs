@@ -50,13 +50,20 @@ namespace Empiria.FinancialAccounting.BalanceEngine.Adapters {
 
 
     public BalancesType BalancesType {
-      get; set;
-    } = BalancesType.AllAccounts;
+      get {
+        return WithAllAccounts ? BalancesType.AllAccounts : BalancesType.WithCurrentBalance;
+      }
+    }
 
 
     public TrialBalanceCommandPeriod InitialPeriod {
       get; set;
     } = new TrialBalanceCommandPeriod();
+
+
+    public bool WithAllAccounts {
+      get; set;
+    } = false;
 
 
     public bool UseCache {
