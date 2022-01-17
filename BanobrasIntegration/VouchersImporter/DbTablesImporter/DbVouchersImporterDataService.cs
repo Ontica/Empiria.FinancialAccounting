@@ -48,7 +48,7 @@ namespace Empiria.FinancialAccounting.BanobrasIntegration.VouchersImporter {
     static internal ImportVouchersResult GetEncabezadosTotals() {
       var sql = "SELECT ENC_SISTEMA, ENC_TIPO_CONT, ENC_FECHA_VOL, COUNT(*) AS TOTAL " +
                 "FROM VW_MC_ENCABEZADOS " +
-                "GROUP BY ENC_SISTEMA, ENC_TIPO_CONT, ENC_FECHA_VOL ";
+                "GROUP BY ENC_SISTEMA, ENC_TIPO_CONT, ENC_FECHA_VOL";
 
       var op = DataOperation.Parse(sql);
 
@@ -97,40 +97,6 @@ namespace Empiria.FinancialAccounting.BanobrasIntegration.VouchersImporter {
     }
 
 
-    static internal void Reallocate(int idSistema, int tipoContabilidad, DateTime fechaAfectacion) {
-      var operation = DataOperation.Parse("do_store_cof_volantes",
-                                          idSistema, tipoContabilidad, fechaAfectacion);
-
-      DataWriter.Execute(operation);
-    }
-
-    internal static long NextIdVolante() {
-      return CommonMethods.GetNextObjectId("SEC_ID_VOLANTE");
-    }
-
-    internal static long NextIdVolanteIssue() {
-      return CommonMethods.GetNextObjectId("SEC_ID_VOLANTE_ISSUE");
-    }
-
-    internal static void StoreIssues(Encabezado encabezado, ToImportVoucher item, long idVolante) {
-      foreach (var issue in item.AllIssues) {
-        var operation = DataOperation.Parse("apd_cof_volante_issue",
-                                            NextIdVolanteIssue(), idVolante, -1, issue.Description);
-        DataWriter.Execute(operation);
-      }
-      MergeVouchers(encabezado, idVolante, -1);
-    }
-
-
-    internal static void MergeVouchers(Encabezado encabezado, long idVolante, long voucherId) {
-      var operation = DataOperation.Parse("do_merge_cof_volante_poliza",
-                                           encabezado.IdSistema,
-                                           encabezado.TipoContabilidad, encabezado.FechaAfectacion,
-                                           encabezado.NumeroVolante, idVolante, voucherId);
-      DataWriter.Execute(operation);
-    }
-
-
     static private string GetVouchersFilter(string importationSetUID, bool forEncabezados) {
       string[] parts = importationSetUID.Split('|');
 
@@ -154,6 +120,45 @@ namespace Empiria.FinancialAccounting.BanobrasIntegration.VouchersImporter {
                 $"MCO_FECHA_VOL = '{CommonMethods.FormatSqlDate(fechaAfectacion)}')";
 
       }
+    }
+
+
+
+    static internal long NextIdVolante() {
+      return CommonMethods.GetNextObjectId("SEC_ID_VOLANTE");
+    }
+
+
+    static private long NextIdVolanteIssue() {
+      return CommonMethods.GetNextObjectId("SEC_ID_VOLANTE_ISSUE");
+    }
+
+
+    static internal void StoreEncabezadoAsSlip(Encabezado o) {
+      var operation = DataOperation.Parse("do_store_cof_volante",
+                                          o.IdSistema, o.TipoContabilidad,
+                                          o.FechaAfectacion, o.NumeroVolante);
+
+      DataWriter.Execute(operation);
+    }
+
+
+    static internal void StoreIssues(Encabezado encabezado, ToImportVoucher item, long idVolante) {
+      foreach (var issue in item.AllIssues) {
+        var operation = DataOperation.Parse("apd_cof_volante_issue",
+                                            NextIdVolanteIssue(), idVolante, -1, issue.Description);
+        DataWriter.Execute(operation);
+      }
+      MergeVouchers(encabezado, idVolante, -1);
+    }
+
+
+    static internal void MergeVouchers(Encabezado encabezado, long idVolante, long voucherId) {
+      var operation = DataOperation.Parse("do_merge_cof_volante_poliza",
+                                           encabezado.IdSistema,
+                                           encabezado.TipoContabilidad, encabezado.FechaAfectacion,
+                                           encabezado.NumeroVolante, idVolante, voucherId);
+      DataWriter.Execute(operation);
     }
 
 

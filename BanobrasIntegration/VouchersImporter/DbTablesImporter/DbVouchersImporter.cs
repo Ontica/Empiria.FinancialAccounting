@@ -84,10 +84,6 @@ namespace Empiria.FinancialAccounting.BanobrasIntegration.VouchersImporter {
 
       EmpiriaLog.Info($"To be processed {encabezados.Count} at {DateTime.Now}.");
 
-      DbVouchersImporterDataService.Reallocate(encabezados[0].IdSistema,
-                                               encabezados[0].TipoContabilidad,
-                                               encabezados[0].FechaAfectacion);
-
       if (encabezados[0].IdSistema == 24 || encabezados[0].IdSistema == 26) {   // YATLA PATCH
         command.TryToCloseVouchers = false;
       }
@@ -105,6 +101,8 @@ namespace Empiria.FinancialAccounting.BanobrasIntegration.VouchersImporter {
         FixedList<ToImportVoucher> toImport = structurer.GetToImportVouchersList();
 
         var voucherImporter = new VoucherImporter(command, toImport);
+
+        DbVouchersImporterDataService.StoreEncabezadoAsSlip(encabezado);
 
         foreach (ToImportVoucher item in toImport) {
           var voucher = voucherImporter.TryImportOne(item);
