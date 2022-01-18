@@ -167,7 +167,9 @@ namespace Empiria.FinancialAccounting.BalanceEngine.Adapters {
       dto.SubledgerAccountNumber = entry.SubledgerAccountNumber;
       dto.SectorCode = entry.Sector.Code;
       dto.InitialBalance = entry.InitialBalance;
-      dto.CurrentBalance = entry.CurrentBalance;
+      if (entry.ItemType == TrialBalanceItemType.Entry) {
+        dto.CurrentBalance = entry.CurrentBalance;
+      }
       dto.DebtorCreditor = entry.ItemType == TrialBalanceItemType.Entry ?
                            entry.DebtorCreditor.ToString() : "";
       dto.LastChangeDate = entry.ItemType == TrialBalanceItemType.Entry ?
