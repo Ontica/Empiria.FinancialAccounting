@@ -100,6 +100,7 @@ namespace Empiria.FinancialAccounting.Reporting.Exporters.Excel {
       FixedList<TransactionSlipDto> slipsWithIssues = slips.FindAll(x => x.Issues.Count > 0);
 
       foreach (var slip in slipsWithIssues) {
+
         foreach (var issue in slip.Issues) {
           excelFile.SetCell($"A{i}", slip.Header.AccountsChartId);
           excelFile.SetCell($"B{i}", slip.Header.AccountingDate);
@@ -116,8 +117,11 @@ namespace Empiria.FinancialAccounting.Reporting.Exporters.Excel {
           }
 
           excelFile.SetCell($"K{i}", issue.Description);
+
+          i++;
+
         }  // foreach (issue)
-        i++;
+
       }  // foreach (slip)
     }
 
