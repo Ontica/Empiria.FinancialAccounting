@@ -95,7 +95,7 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
 
       List<TrialBalanceEntry> summaryTotalCurrencies = helper.GenerateTotalSummaryCurrency(
                                                               summaryTotalDebtorCreditorEntries);
-
+      
       trialBalance = helper.CombineCurrencyTotalsAndPostingEntries(trialBalance, summaryTotalCurrencies);
 
       List<TrialBalanceEntry> summaryTotalConsolidatedByLedger =
