@@ -389,11 +389,16 @@ namespace Empiria.FinancialAccounting.BanobrasIntegration.VouchersImporter {
 
       SubledgerAccount subledgerAccount = ledger.TryGetSubledgerAccount(formattedAccountNo);
 
-      if (subledgerAccount != null) {
-        return subledgerAccount;
-      } else {
+      if (subledgerAccount == null) {
         return FinancialAccounting.SubledgerAccount.Empty;
       }
+
+      if (subledgerAccount.Suspended) {
+        AddError($"El auxiliar '{formattedAccountNo}' ({subledgerAccount.Name}) está suspendido, " +
+                 $"por lo que no permite operaciones de registro.");
+      }
+
+      return subledgerAccount;
     }
 
 

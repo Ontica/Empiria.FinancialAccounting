@@ -201,11 +201,17 @@ namespace Empiria.FinancialAccounting.BanobrasIntegration.VouchersImporter {
 
         SubledgerAccount subledgerAccount = ledger.TryGetSubledgerAccount(formattedSubledgerAccountNo);
 
-        if (subledgerAccount != null) {
-          return subledgerAccount;
-        } else {
+        if (subledgerAccount == null) {
           return SubledgerAccount.Empty;
         }
+
+        if (subledgerAccount.Suspended) {
+          AddError($"El auxiliar '{formattedSubledgerAccountNo}' ({subledgerAccount.Name}) está suspendido, " +
+                   $"por lo que no permite operaciones de registro.");
+        }
+
+        return subledgerAccount;
+
       } catch {
         AddError($"Ocurrió un problema al leer el auxiliar. Tiene un formato no válido o pertenece a otra contabilidad.");
 

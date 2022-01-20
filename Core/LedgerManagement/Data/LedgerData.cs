@@ -95,9 +95,7 @@ namespace Empiria.FinancialAccounting.Data {
                 "ON COF_CUENTA_AUXILIAR.ID_CUENTA_AUXILIAR = VW_COF_CUENTA_AUXILIAR.ID_CUENTA_AUXILIAR " +
                $"WHERE (VW_COF_CUENTA_AUXILIAR.ID_MAYOR = {ledger.Id} OR " +
                $"VW_COF_CUENTA_AUXILIAR.ID_MAYOR_ADICIONAL = {ledger.Id}) " +
-               $"AND COF_CUENTA_AUXILIAR.NUMERO_CUENTA_AUXILIAR = '{formattedAccountNo}' " +
-               $"AND COF_CUENTA_AUXILIAR.ELIMINADA = 0";
-
+               $"AND COF_CUENTA_AUXILIAR.NUMERO_CUENTA_AUXILIAR = '{formattedAccountNo}'";
 
       var dataOperation = DataOperation.Parse(sql);
 

@@ -128,11 +128,6 @@ namespace Empiria.FinancialAccounting.BanobrasIntegration.VouchersImporter {
     }
 
 
-    //private string AvailabilityCode {
-    //  get; set;
-    //}
-
-
     private string ResponsibilityArea {
       get; set;
     }
@@ -227,11 +222,16 @@ namespace Empiria.FinancialAccounting.BanobrasIntegration.VouchersImporter {
 
       SubledgerAccount subledgerAccount = ledger.TryGetSubledgerAccount(formattedAccountNo);
 
-      if (subledgerAccount != null) {
-        return subledgerAccount;
-      } else {
+      if (subledgerAccount == null) {
         return SubledgerAccount.Empty;
       }
+
+      if (subledgerAccount.Suspended) {
+        AddError($"El auxiliar '{formattedAccountNo}' ({subledgerAccount.Name}) está suspendido, " +
+                 $"por lo que no permite operaciones de registro.");
+      }
+
+      return subledgerAccount;
     }
 
 
