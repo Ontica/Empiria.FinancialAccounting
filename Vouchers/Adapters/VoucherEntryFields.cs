@@ -141,6 +141,11 @@ namespace Empiria.FinancialAccounting.Vouchers.Adapters {
     }
 
 
+    SubledgerAccount IVoucherEntry.GetSubledgerAccount() {
+      return SubledgerAccount.Parse(this.SubledgerAccountId);
+    }
+
+
     Account IVoucherEntry.GetAccount(DateTime accountingDate) {
       if (this.LedgerAccountId > 0) {
         return LedgerAccount.Parse(this.LedgerAccountId)

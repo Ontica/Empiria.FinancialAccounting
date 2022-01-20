@@ -48,6 +48,8 @@ namespace Empiria.FinancialAccounting.Vouchers {
 
     Account GetAccount(DateTime accountingDate);
 
+    SubledgerAccount GetSubledgerAccount();
+
   }  // interface IVoucherEntry
 
 }  // namespace Empiria.FinancialAccounting.Vouchers

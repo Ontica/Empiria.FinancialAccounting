@@ -18,6 +18,7 @@ namespace Empiria.FinancialAccounting.Vouchers {
     Debit = 'D',
 
     Credit = 'H'
+
   }
 
   /// <summary>Represents an accounting voucher entry: a debit or credit movement.</summary>
@@ -250,9 +251,12 @@ namespace Empiria.FinancialAccounting.Vouchers {
       Assertion.Assert(LedgerAccount.Ledger.Equals(ledger),
            $"La cuenta de mayor con id {LedgerAccount.Id} no pertenece a la contabilidad {ledger.FullName}.");
 
-      if (!SubledgerAccount.IsEmptyInstance) {
+      if (HasSubledgerAccount) {
         Assertion.Assert(SubledgerAccount.Subledger.BelongsTo(ledger),
               $"El auxiliar {SubledgerAccount.Number} no pertenece a la contabilidad {ledger.FullName}.");
+
+        Assertion.Assert(!SubledgerAccount.Suspended,
+              $"El auxiliar {SubledgerAccount.Number} ({SubledgerAccount.Name}) está suspendido, por lo que no acepta movimientos.");
       }
 
       Assertion.Assert(Amount > 0, "El importe del cargo o abono debe ser mayor a cero.");
@@ -270,6 +274,9 @@ namespace Empiria.FinancialAccounting.Vouchers {
       return this.LedgerAccount.GetHistoric(accountingDate);
     }
 
+    SubledgerAccount IVoucherEntry.GetSubledgerAccount() {
+      return this.SubledgerAccount;
+    }
 
     private void LoadFields(VoucherEntryFields fields) {
       if (this.Id == 0) {
@@ -281,12 +288,12 @@ namespace Empiria.FinancialAccounting.Vouchers {
       this.SubledgerAccount = fields.GetSubledgerAccount();
       this.ReferenceEntryId = fields.ReferenceEntryId;
       this.ResponsibilityArea = fields.GetResponsibilityArea();
-      this.BudgetConcept = fields.BudgetConcept;
+      this.BudgetConcept = EmpiriaString.TrimAll(fields.BudgetConcept);
       this.EventType = fields.GetEventType();
-      this.VerificationNumber = fields.VerificationNumber;
+      this.VerificationNumber = EmpiriaString.TrimAll(fields.VerificationNumber);
       this.VoucherEntryType = fields.VoucherEntryType;
       this.Date = fields.Date;
-      this.Concept = fields.Concept.ToUpperInvariant();
+      this.Concept = EmpiriaString.TrimAll(fields.Concept.ToUpperInvariant());
       this.Currency = fields.Currency;
       this.Amount = fields.Amount;
 

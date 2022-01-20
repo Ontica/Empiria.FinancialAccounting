@@ -91,6 +91,15 @@ namespace Empiria.FinancialAccounting.Vouchers {
         resultList.Add(e.Message);
       }
 
+      if (entry.HasSubledgerAccount) {
+        SubledgerAccount subledgerAccount = entry.GetSubledgerAccount();
+
+        if (!subledgerAccount.IsEmptyInstance && subledgerAccount.Suspended) {
+          resultList.Add($"El auxiliar '{subledgerAccount.Number}' ({subledgerAccount.Name}) está suspendido, " +
+                         $"por lo que no permite operaciones de registro.");
+        }
+      }
+
       try {
         if (!entry.HasEventType) {
           account.CheckNoEventTypeRule(this.AccountingDate);
