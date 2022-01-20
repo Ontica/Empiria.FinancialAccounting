@@ -139,6 +139,7 @@ namespace Empiria.FinancialAccounting.BalanceEngine.Adapters {
       if (entry.ItemType != TrialBalanceItemType.Total) {
         dto.CurrentBalance = entry.CurrentBalance;
       }
+      dto.CurrentBalanceForBalances = entry.CurrentBalance;
       //dto.DebtorCreditor = entry.ItemType == TrialBalanceItemType.Entry ?
       //                     entry.DebtorCreditor.ToString() : "";
       dto.LastChangeDate = entry.ItemType == TrialBalanceItemType.Entry ?
@@ -170,6 +171,7 @@ namespace Empiria.FinancialAccounting.BalanceEngine.Adapters {
       if (entry.ItemType == TrialBalanceItemType.Entry) {
         dto.CurrentBalance = entry.CurrentBalance;
       }
+      dto.CurrentBalanceForBalances = entry.CurrentBalance;
       dto.DebtorCreditor = entry.ItemType == TrialBalanceItemType.Entry ?
                            entry.DebtorCreditor.ToString() : "";
       dto.LastChangeDate = entry.ItemType == TrialBalanceItemType.Entry ?

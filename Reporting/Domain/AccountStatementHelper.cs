@@ -65,7 +65,7 @@ namespace Empiria.FinancialAccounting.Reporting {
       List<AccountStatementEntry> returnedVouchersWithCurrentBalance =
                                    new List<AccountStatementEntry>(orderingVouchers).ToList();
 
-      decimal initialBalance = AccountStatementCommand.Entry.CurrentBalance;
+      decimal initialBalance = AccountStatementCommand.Entry.CurrentBalanceForBalances;
 
       foreach (var voucher in returnedVouchersWithCurrentBalance) {
         if (voucher.DebtorCreditor == "A") {
@@ -160,9 +160,10 @@ namespace Empiria.FinancialAccounting.Reporting {
       }
       
 
-      AccountStatementEntry voucherWithCurrentBalance = GetInitialOrCurrentAccountBalance(
-                                                          AccountStatementCommand.Entry.CurrentBalance, true,
-                                                          debit, credit);
+      AccountStatementEntry voucherWithCurrentBalance = 
+                              GetInitialOrCurrentAccountBalance(
+                                AccountStatementCommand.Entry.CurrentBalanceForBalances, 
+                                true, debit, credit);
 
       if (voucherWithCurrentBalance != null) {
         returnedVouchersWithCurrentBalance.Add(voucherWithCurrentBalance);

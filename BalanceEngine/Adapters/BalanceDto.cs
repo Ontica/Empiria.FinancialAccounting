@@ -86,6 +86,11 @@ namespace Empiria.FinancialAccounting.BalanceEngine.Adapters {
       get; internal set;
     }
 
+    public decimal CurrentBalanceForBalances {
+      get;
+      internal set;
+    }
+
     public DateTime LastChangeDate {
       get; internal set;
     } = DateTime.Now;

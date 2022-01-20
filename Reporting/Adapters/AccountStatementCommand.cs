@@ -73,7 +73,7 @@ namespace Empiria.FinancialAccounting.Reporting.Adapters {
       get; set;
     }
 
-    public decimal CurrentBalance {
+    public decimal CurrentBalanceForBalances {
       get; set;
     }
 
