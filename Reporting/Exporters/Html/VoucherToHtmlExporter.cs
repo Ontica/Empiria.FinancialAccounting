@@ -99,7 +99,7 @@ namespace Empiria.FinancialAccounting.Reporting {
         entryHtml = entryHtml.Replace("{{RESPONSIBILITY_AREA.CODE}}", entry.ResponsibilityArea);
 
         entryHtml = entryHtml.Replace("{{CURRENCY.CODE}}", entry.Currency);
-        entryHtml = entryHtml.Replace("{{EXCHANGE.RATE}}", entry.ExchangeRate != 1 ? entry.ExchangeRate.ToString("C2") : string.Empty);
+        entryHtml = entryHtml.Replace("{{EXCHANGE.RATE}}", entry.ExchangeRate != 1 ? entry.ExchangeRate.ToString("C6") : string.Empty);
         entryHtml = entryHtml.Replace("{{DEBIT.AMOUNT}}", entry.Debit.ToString("C2"));
         entryHtml = entryHtml.Replace("{{CREDIT.AMOUNT}}", entry.Credit.ToString("C2"));
 
