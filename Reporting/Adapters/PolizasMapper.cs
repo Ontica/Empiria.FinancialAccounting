@@ -20,28 +20,27 @@ namespace Empiria.FinancialAccounting.Reporting.Adapters {
 
       return new PolizasDto {
         Command = polizas.Command,
-        Entries = Map(polizas.Command, polizas.Entries)
+        Entries = Map(polizas.Entries)
       };
 
     }
 
-    static private FixedList<IPolizasDto> Map(ListadoPolizasCommand command, 
-                                              FixedList<IPolizaEntry> list) {
+    static private FixedList<IPolizasDto> Map(FixedList<IPolizaEntry> list) {
 
-      var mappedItems = list.Select((x) => MapToPolizas((PolizaEntry) x, command));
+      var mappedItems = list.Select((x) => MapToPolizas((PolizaEntry) x));
       return new FixedList<IPolizasDto>(mappedItems);
 
     }
 
-    static private PolizasEntryDto MapToPolizas(PolizaEntry entry, ListadoPolizasCommand command) {
+    static private PolizasEntryDto MapToPolizas(PolizaEntry entry) {
 
       var dto = new PolizasEntryDto();
 
         dto.LedgerNumber = entry.Ledger.Number ?? Ledger.Empty.Number;
         dto.LedgerName = entry.Ledger.FullName ?? Ledger.Empty.FullName;
         dto.VoucherNumber = entry.Number;
-        dto.AccountingDate = entry.AccountingDate != null ? entry.AccountingDate : DateTime.Now;
-        dto.RecordingDate = entry.RecordingDate != entry.RecordingDate ? entry.RecordingDate : DateTime.Now;
+        dto.AccountingDate = entry.AccountingDate;
+        dto.RecordingDate = entry.RecordingDate;
         dto.ElaboratedBy = entry.ElaboratedBy.Name;
         dto.Concept = entry.Concept;
         dto.Debit = entry.Debit;
