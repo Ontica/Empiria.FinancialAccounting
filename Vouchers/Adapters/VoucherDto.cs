@@ -171,13 +171,20 @@ namespace Empiria.FinancialAccounting.Vouchers.Adapters {
       // no-op
     }
 
+    public bool EditVoucher {
+      get; internal set;
+    }
+
+
     public bool ReviewVoucher {
       get; internal set;
     }
 
+
     public bool SendToLedger {
       get; internal set;
     }
+
 
     public bool SendToSupervisor {
       get; internal set;

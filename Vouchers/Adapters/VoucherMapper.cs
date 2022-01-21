@@ -46,19 +46,29 @@ namespace Empiria.FinancialAccounting.Vouchers.Adapters {
       if (!voucher.IsOpened) {
         return new VoucherActionsDto();
       }
+
+      bool isAssignedToCurrentUser = voucher.ElaboratedBy.Equals(Participant.Current);
+
+
       if (!voucher.IsValid()) {
         return new VoucherActionsDto {
+          EditVoucher = isAssignedToCurrentUser,
           ReviewVoucher = true
         };
       }
+
       if (voucher.CanBeClosedBy(Participant.Current)) {
         return new VoucherActionsDto {
+          EditVoucher = true,
           SendToLedger = true
         };
-      } else {
+      } else if (isAssignedToCurrentUser) {
         return new VoucherActionsDto {
+          EditVoucher = true,
           SendToSupervisor = true
         };
+      } else {
+        return new VoucherActionsDto();
       }
     }
 
