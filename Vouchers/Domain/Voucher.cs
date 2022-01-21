@@ -188,9 +188,25 @@ namespace Empiria.FinancialAccounting.Vouchers {
 
 
     internal bool CanBeClosedBy(Participant participant) {
+      if (!IsOpened) {
+        return false;
+      }
+
+      Participant supervisor = this.GetSupervisor();
+
+      if (participant.Equals(supervisor)) {
+        return true;
+      }
+
+      if (!(this.ElaboratedBy.Equals(participant) || this.AuthorizedBy.Equals(participant))) {
+        return false;
+      }
+
       if (this.Ledger.IsAccountingDateOpened(this.AccountingDate)) {
         return true;
       }
+
+
       return false;
     }
 
@@ -273,7 +289,7 @@ namespace Empiria.FinancialAccounting.Vouchers {
     internal VoucherEntry GetEntry(long voucherEntryId) {
       var entry = Entries.Find(x => x.Id == voucherEntryId);
 
-      Assertion.AssertObject(entry, $"La póliza no tiene registrado un movimiento con id {voucherEntryId}");
+      Assertion.AssertObject(entry, $"La póliza no tiene registrado un movimiento con id {voucherEntryId}.");
 
       return entry;
     }
@@ -313,7 +329,7 @@ namespace Empiria.FinancialAccounting.Vouchers {
 
       var validator = new VoucherValidator(this.Ledger, this.AccountingDate);
 
-      return validator.Validate(this.Entries).Count == 0;
+      return (validator.Validate(this.Entries).Count == 0);
     }
 
 
@@ -342,6 +358,13 @@ namespace Empiria.FinancialAccounting.Vouchers {
       VoucherData.WriteVoucher(this);
     }
 
+
+
+    private Participant GetSupervisor() {
+      return Participant.Parse(135);
+    }
+
+
     private void RefreshEntries() {
       if (!this.IsEmptyInstance) {
         _entries = new Lazy<FixedList<VoucherEntry>>(() => VoucherData.GetVoucherEntries(this));
@@ -355,12 +378,24 @@ namespace Empiria.FinancialAccounting.Vouchers {
     internal FixedList<SubledgerAccount> SearchSubledgerAccountsForEdition(LedgerAccount account, string keywords) {
       Assertion.Assert(this.IsOpened, "No hay cuentas auxiliares para edición porque la póliza ya está cerrada.");
 
-      Assertion.Assert(account.Ledger.Equals(this.Ledger), "Account do not belong to voucher ledger.");
+      Assertion.Assert(account.Ledger.Equals(this.Ledger), "Account does not belong to voucher ledger.");
 
       Assertion.Assert(account.Role == AccountRole.Control || account.Role == AccountRole.Sectorizada,
                        "The account role is not control. There are not subledger accounts");
 
       return VoucherData.SearchSubledgerAccountsForVoucherEdition(this, keywords);
+    }
+
+
+    internal void SendToSupervisor() {
+      Assertion.Assert(this.IsOpened, "La póliza no se puede enviar al supervisor porque no está abierta.");
+
+      Assertion.Assert(this.IsValid(), "La póliza no puede enviarse al supervisor porque " +
+                                       "tiene datos con inconsistencias o no está balanceada.");
+
+      this.AuthorizedBy = GetSupervisor();
+
+      this.Save();
     }
 
 

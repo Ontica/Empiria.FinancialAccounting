@@ -149,8 +149,13 @@ namespace Empiria.FinancialAccounting.WebApi.Vouchers {
 
         if (operationName == "close") {
           result.Message = usecases.BulkClose(command.Vouchers);
+
         } else if (operationName == "delete") {
           result.Message = usecases.BulkDelete(command.Vouchers);
+
+        } else if (operationName == "send-to-supervisor") {
+          result.Message = usecases.BulkSendToSupervisor(command.Vouchers);
+
         } else {
             result.Message = "Funcionalidad en proceso de desarrollo.";
 
@@ -158,6 +163,18 @@ namespace Empiria.FinancialAccounting.WebApi.Vouchers {
         }
 
         return new SingleObjectModel(base.Request, result);
+      }
+    }
+
+
+    [HttpPost]
+    [Route("v2/financial-accounting/vouchers/{voucherId:int}/send-to-supervisor")]
+    public SingleObjectModel SendVoucherToSupervisor([FromUri] long voucherId) {
+
+      using (var usecases = VoucherEditionUseCases.UseCaseInteractor()) {
+        VoucherDto voucher = usecases.SendVoucherToSupervisor(voucherId);
+
+        return new SingleObjectModel(base.Request, voucher);
       }
     }
 

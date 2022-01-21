@@ -126,7 +126,7 @@ namespace Empiria.FinancialAccounting.Vouchers.UseCases {
           voucher.Close();
           closedCounter++;
         } finally {
-
+          // no-op
         }
       }
 
@@ -155,11 +155,44 @@ namespace Empiria.FinancialAccounting.Vouchers.UseCases {
           voucher.Delete();
           deletedCounter++;
         } finally {
-
+          // no-op
         }
       }
 
       return $"Se eliminaron {deletedCounter} pólizas de {voucherIdsArray.Length} seleccionadas.";
+    }
+
+
+    public string BulkSendToSupervisor(int[] voucherIdsArray) {
+      Assertion.AssertObject(voucherIdsArray, "voucherIdsArray");
+      Assertion.Assert(voucherIdsArray.Length > 0, "voucherIdsArray must have one or more values.");
+
+      int sentCounter = 0;
+
+      foreach (var voucherId in voucherIdsArray) {
+        var voucher = Voucher.Parse(voucherId);
+
+        if (!voucher.IsOpened) {
+          continue;
+        }
+
+        if (!voucher.ElaboratedBy.Equals(Participant.Current)) {
+          continue;
+        }
+
+        if (!voucher.IsValid()) {
+          continue;
+        }
+
+        try {
+          voucher.SendToSupervisor();
+          sentCounter++;
+        } finally {
+          // no-op
+        }
+      }
+
+      return $"Se enviaron {sentCounter} pólizas al supervisor de {voucherIdsArray.Length} seleccionadas.";
     }
 
 
@@ -210,7 +243,6 @@ namespace Empiria.FinancialAccounting.Vouchers.UseCases {
       }
     }
 
-
     public VoucherDto DeleteEntry(long voucherId, long voucherEntryId) {
       Assertion.Assert(voucherId > 0, "voucherId");
       Assertion.Assert(voucherEntryId > 0, "voucherEntryId");
@@ -242,6 +274,17 @@ namespace Empiria.FinancialAccounting.Vouchers.UseCases {
       VoucherEntry copy = voucher.GetCopyOfLastEntry();
 
       return VoucherMapper.MapEntry(copy);
+    }
+
+
+    public VoucherDto SendVoucherToSupervisor(long voucherId) {
+      Assertion.Assert(voucherId > 0, "voucherId");
+
+      var voucher = Voucher.Parse(voucherId);
+
+      voucher.SendToSupervisor();
+
+      return VoucherMapper.Map(voucher);
     }
 
 
