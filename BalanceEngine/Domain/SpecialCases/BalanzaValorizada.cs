@@ -41,9 +41,6 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
 
       List<TrialBalanceEntry> orderingBalance = OrderingDollarizedBalance(ledgerAccounts.ToFixedList());
 
-      //FixedList<TrialBalanceEntry> valuedEntries = helper.ValuateToExchangeRate(
-      //                              orderingBalance.ToFixedList(), _command.InitialPeriod);
-
       FixedList<TrialBalanceEntry> valuedEntries = ValuateToExchangeRate(
                                     orderingBalance.ToFixedList(), _command.InitialPeriod);
 
@@ -200,7 +197,7 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
 
     private EmpiriaHashTable<ValuedTrialBalanceEntry> GetTotalByAccount(
                                                 ValuedTrialBalanceEntry header, decimal totalEquivalence) {
-
+       
       ValuedTrialBalanceEntry valuedEntry = TrialBalanceMapper.MapValuedTrialBalanceEntry(header);
 
       valuedEntry.GroupName = "TOTAL POR CUENTA";

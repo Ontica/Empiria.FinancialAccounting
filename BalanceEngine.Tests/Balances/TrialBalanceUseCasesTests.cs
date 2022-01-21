@@ -47,9 +47,13 @@ namespace Empiria.FinancialAccounting.Tests.Balances {
       TrialBalanceCommand command = GetDefaultTrialBalanceCommand();
 
       command.TrialBalanceType = TrialBalanceType.AnaliticoDeCuentas;
+      command.AccountsChartUID = "47ec2ec7-0f4f-482e-9799-c23107b60d8a";
+      //command.FromAccount = "9.";
+      //command.ToAccount = "9.";
       command.UseDefaultValuation = true;
       command.WithSubledgerAccount = false;
-      command.WithAverageBalance = true;
+      command.WithAverageBalance = false;
+      command.ShowCascadeBalances = false;
 
       TrialBalanceDto trialBalance = _usecases.BuildTrialBalance(command);
 
@@ -63,14 +67,14 @@ namespace Empiria.FinancialAccounting.Tests.Balances {
     public void Should_Build_A_Traditional_Trial_Balance() {
       TrialBalanceCommand command = GetDefaultTrialBalanceCommand();
 
-      command.TrialBalanceType = TrialBalanceType.BalanzaDolarizada;
-      command.BalancesType = BalancesType.WithCurrentBalanceOrMovements;
+      command.TrialBalanceType = TrialBalanceType.SaldosPorAuxiliar;
+      command.BalancesType = BalancesType.WithCurrentBalance;
       //command.AccountsChartUID = "47ec2ec7-0f4f-482e-9799-c23107b60d8a";
-      command.FromAccount = "2607";
-      command.ToAccount = "2607";
-      //command.ConsolidateBalancesToTargetCurrency = true;
-      command.ShowCascadeBalances = false;
-      command.UseDefaultValuation = true;
+      command.FromAccount = "1101";
+      command.ToAccount = "2999";
+      command.ShowCascadeBalances = true;
+      command.WithSubledgerAccount = true;
+      command.UseDefaultValuation = false;
 
       TrialBalanceDto trialBalance = _usecases.BuildTrialBalance(command);
 

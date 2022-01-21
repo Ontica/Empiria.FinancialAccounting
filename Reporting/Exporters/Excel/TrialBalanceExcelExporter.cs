@@ -221,8 +221,10 @@ namespace Empiria.FinancialAccounting.Reporting.Exporters.Excel {
         _excelFile.SetCell($"B{i}", entry.AccountName);
         _excelFile.SetCell($"C{i}", entry.CurrencyName);
         _excelFile.SetCell($"D{i}", entry.CurrencyCode);
-        _excelFile.SetCell($"E{i}", entry.TotalBalance);
-        _excelFile.SetCell($"F{i}", entry.ValuedExchangeRate);
+        if (entry.ItemType != TrialBalanceItemType.BalanceTotalCurrency) {
+          _excelFile.SetCell($"E{i}", (decimal) entry.TotalBalance);
+          _excelFile.SetCell($"F{i}", (decimal) entry.ValuedExchangeRate);
+        }
         _excelFile.SetCell($"G{i}", entry.TotalEquivalence);
 
         if (entry.ItemType != TrialBalanceItemType.Entry) {

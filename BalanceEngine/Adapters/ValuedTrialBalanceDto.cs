@@ -44,7 +44,7 @@ namespace Empiria.FinancialAccounting.BalanceEngine.Adapters {
       get; internal set;
     }
 
-    public decimal TotalBalance {
+    public decimal? TotalBalance {
       get;  internal set;
     }
 
@@ -52,7 +52,7 @@ namespace Empiria.FinancialAccounting.BalanceEngine.Adapters {
       get; internal set;
     }
 
-    public decimal ValuedExchangeRate {
+    public decimal? ValuedExchangeRate {
       get;
       internal set;
     }

@@ -306,9 +306,11 @@ namespace Empiria.FinancialAccounting.BalanceEngine.Adapters {
                         entry.ItemType == TrialBalanceItemType.BalanceTotalCurrency ? entry.GroupName : "";
       dto.AccountNumberForBalances = entry.Account.Number;
       dto.SectorCode = entry.Sector.Code;
-      dto.TotalBalance = entry.TotalBalance;
       dto.ExchangeRate = entry.ExchangeRate;
-      dto.ValuedExchangeRate = entry.ValuedExchangeRate;
+      if (entry.ItemType != TrialBalanceItemType.BalanceTotalCurrency) {
+        dto.TotalBalance = entry.TotalBalance;
+        dto.ValuedExchangeRate = entry.ValuedExchangeRate;
+      }
       dto.TotalEquivalence = entry.TotalEquivalence;
       dto.GroupName = entry.GroupName;
       dto.GroupNumber = entry.GroupNumber;
