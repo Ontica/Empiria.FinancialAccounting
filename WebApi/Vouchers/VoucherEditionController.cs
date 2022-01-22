@@ -119,7 +119,7 @@ namespace Empiria.FinancialAccounting.WebApi.Vouchers {
     public SingleObjectModel CloseVoucher([FromUri] long voucherId) {
 
       using (var usecases = VoucherEditionUseCases.UseCaseInteractor()) {
-        VoucherDto voucher = usecases.CloseVoucher(voucherId);
+        VoucherDto voucher = usecases.CloseVoucher(voucherId, false);
 
         return new SingleObjectModel(base.Request, voucher);
       }

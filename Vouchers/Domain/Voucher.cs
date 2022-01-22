@@ -181,6 +181,12 @@ namespace Empiria.FinancialAccounting.Vouchers {
       }
     }
 
+    internal bool IsAccountingDateOpened {
+      get {
+        return this.Ledger.IsAccountingDateOpened(this.AccountingDate);
+      }
+    }
+
 
     #endregion Public properties
 
@@ -217,7 +223,7 @@ namespace Empiria.FinancialAccounting.Vouchers {
         return true;
       }
 
-      if (this.Ledger.IsAccountingDateOpened(this.AccountingDate)) {
+      if (this.IsAccountingDateOpened) {
         return true;
       }
 
@@ -237,10 +243,6 @@ namespace Empiria.FinancialAccounting.Vouchers {
           msg += error + "\n";
         }
         Assertion.AssertFail(msg);
-      }
-
-      if (!this.CanBeClosedBy(Participant.Current)) {
-        Assertion.AssertFail("La póliza no puede enviarse directamente al diario porque tiene fecha valor.");
       }
 
       DateTime lastRecordingDate = this.RecordingDate;

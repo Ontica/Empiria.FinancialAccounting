@@ -190,10 +190,20 @@ namespace Empiria.FinancialAccounting.Vouchers.UseCases {
     }
 
 
-    public VoucherDto CloseVoucher(long voucherId) {
+    public VoucherDto CloseVoucher(long voucherId, bool fromImporter) {
       Assertion.Assert(voucherId > 0, "voucherId");
 
       var voucher = Voucher.Parse(voucherId);
+
+      if (!fromImporter && !voucher.CanBeClosedBy(Participant.Current)) {
+        Assertion.AssertFail($"La póliza no puede enviarse directamente al diario " +
+                             $"por el usuario {Participant.Current.Name}.");
+
+      } else if (fromImporter && !voucher.IsAccountingDateOpened) {
+        EmpiriaLog.Info($"Se intentó cerrar la póliza {voucherId} desde el importador, pero tiene fecha valor.");
+
+        return VoucherMapper.Map(voucher);
+      }
 
       voucher.Close();
 
@@ -222,16 +232,14 @@ namespace Empiria.FinancialAccounting.Vouchers.UseCases {
 
       FixedList<string> issues = ValidateVoucherToImport(voucherFields, entriesFields);
 
-      Assertion.Assert(issues.Count == 0, "There are one ore more problems with voucher data to be imported");
+      Assertion.Assert(issues.Count == 0, "There are one ore more problems with voucher data to be imported.");
 
       VoucherDto voucher = CreateVoucher(voucherFields);
 
       voucher = AppendEntries(voucher.Id, entriesFields);
 
-      Ledger ledger = Ledger.Parse(voucher.Ledger.UID);
-
-      if (tryToClose && ledger.IsAccountingDateOpened(voucher.AccountingDate)) {
-        return CloseVoucher(voucher.Id);
+      if (tryToClose) {
+        return CloseVoucher(voucher.Id, true);
       } else {
         return voucher;
       }
