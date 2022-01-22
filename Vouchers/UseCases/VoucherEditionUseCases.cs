@@ -115,9 +115,7 @@ namespace Empiria.FinancialAccounting.Vouchers.UseCases {
         if (!voucher.IsOpened) {
           continue;
         }
-        if (!voucher.IsValid()) {
-          continue;
-        }
+
         if (!voucher.CanBeClosedBy(Participant.Current)) {
           continue;
         }
@@ -180,10 +178,6 @@ namespace Empiria.FinancialAccounting.Vouchers.UseCases {
           continue;
         }
 
-        if (!voucher.IsValid()) {
-          continue;
-        }
-
         try {
           voucher.SendToSupervisor();
           sentCounter++;
@@ -242,6 +236,7 @@ namespace Empiria.FinancialAccounting.Vouchers.UseCases {
         return voucher;
       }
     }
+
 
     public VoucherDto DeleteEntry(long voucherId, long voucherEntryId) {
       Assertion.Assert(voucherId > 0, "voucherId");
