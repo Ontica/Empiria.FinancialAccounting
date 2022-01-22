@@ -39,14 +39,14 @@ namespace Empiria.FinancialAccounting.Vouchers {
     internal FixedList<string> Validate(FixedList<VoucherEntry> entries) {
       var converted = new FixedList<IVoucherEntry>(entries.Select(x => (IVoucherEntry) x));
 
-      return Validate(converted);
+      return Validate(converted, false);
     }
 
 
     internal FixedList<string> Validate(FixedList<VoucherEntryFields> entries) {
       var converted = new FixedList<IVoucherEntry>(entries.Select(x => (IVoucherEntry) x));
 
-      return Validate(converted);
+      return Validate(converted, true);
     }
 
 
@@ -101,27 +101,44 @@ namespace Empiria.FinancialAccounting.Vouchers {
     }
 
 
-    private FixedList<string> Validate(FixedList<IVoucherEntry> entries) {
+    private FixedList<string> Validate(FixedList<IVoucherEntry> entries, bool fullValidation) {
       var resultList = new List<string>();
-
-
-      var tempList = VoucherEntriesDataAreValid(entries);
-      if (tempList.Count > 0) {
-        resultList.AddRange(tempList);
-      }
 
       if (entries.Count < 2) {
         resultList.Add("La póliza debe tener cuando menos dos movimientos, un cargo y un abono.");
+
+        if (!fullValidation) {
+          return new FixedList<string>(resultList);
+        }
       }
 
-      tempList = DebitsAndCreditsByCurrencyAreEqual(entries);
+
+      var tempList = DebitsAndCreditsByCurrencyAreEqual(entries);
 
       if (tempList.Count > 0) {
         resultList.AddRange(tempList);
+
+        if (!fullValidation) {
+          return new FixedList<string>(resultList);
+        }
       }
 
       if (!DebitsAndCreditsAreEqual(entries)) {
         resultList.Add("La suma total de cargos y abonos no coincide.");
+
+        if (!fullValidation) {
+          return new FixedList<string>(resultList);
+        }
+      }
+
+      tempList = VoucherEntriesDataAreValid(entries);
+
+      if (tempList.Count > 0) {
+        resultList.AddRange(tempList);
+
+        if (!fullValidation) {
+          return new FixedList<string>(resultList);
+        }
       }
 
       return new FixedList<string>(resultList);
@@ -141,7 +158,7 @@ namespace Empiria.FinancialAccounting.Vouchers {
         }
       }
 
-      return resultList.ToFixedList();
+      return new FixedList<string>(resultList.Distinct());
     }
 
     #endregion Private methods

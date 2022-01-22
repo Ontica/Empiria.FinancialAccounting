@@ -191,22 +191,20 @@ namespace Empiria.FinancialAccounting {
 
     #region Public methods
 
-    public void CheckIsNotSummary(DateTime accountingDate) {
-      Account account = this.GetHistory(accountingDate);
-
-      Assertion.Assert(account.Role != AccountRole.Sumaria,
-          $"La cuenta {account.Number} es sumaria, por lo que no admite movimientos.");
+    public void CheckIsNotSummary() {
+      Assertion.Assert(this.Role != AccountRole.Sumaria,
+          $"La cuenta {this.Number} es sumaria, por lo que no admite movimientos.");
     }
 
 
     public void CheckCurrencyRule(Currency currency, DateTime accountingDate) {
       Assertion.Assert(
           CurrencyRules.Contains(x => x.Currency.Equals(currency) && x.AppliesOn(accountingDate)),
-          $"La moneda {currency.Name} no está definida para la cuenta {this.Number}.");
+          $"La cuenta {this.Number} no permite movimientos en la moneda {currency.FullName}.");
     }
 
 
-    public void CheckNoEventTypeRule(DateTime accountingDate) {
+    public void CheckNoEventTypeRule() {
       if (this.Number.StartsWith("13")) {
         Assertion.AssertFail($"La cuenta {this.Number} necesita un tipo de evento, sin embargo no se proporcionó.");
       }
@@ -214,71 +212,59 @@ namespace Empiria.FinancialAccounting {
 
 
     public void CheckSectorRule(Sector sector, DateTime accountingDate) {
-      Account account = this.GetHistory(accountingDate);
-
-      Assertion.Assert(account.Role == AccountRole.Sectorizada,
-          $"La cuenta {account.Number} no requiere sector, sin embargo se proporcionó el sector {sector.FullName}.");
+      Assertion.Assert(this.Role == AccountRole.Sectorizada,
+          $"La cuenta {this.Number} no requiere sector, sin embargo se proporcionó el sector {sector.FullName}.");
 
       Assertion.Assert(
           SectorRules.Contains(x => x.Sector.Equals(sector) && x.AppliesOn(accountingDate)),
-          $"El sector {sector.Code} no está definido para la cuenta {account.Number}.");
+          $"El sector {sector.Code} no está definido para la cuenta {this.Number}.");
     }
 
 
-    public void CheckNoSectorRule(DateTime accountingDate) {
-      Account account = this.GetHistory(accountingDate);
-
-      Assertion.Assert(account.Role != AccountRole.Sectorizada,
-                       $"La cuenta {account.Number} requiere un sector, sin embargo no se proporcionó.");
+    public void CheckNoSectorRule() {
+      Assertion.Assert(this.Role != AccountRole.Sectorizada,
+                       $"La cuenta {this.Number} requiere un sector, sin embargo no se proporcionó.");
     }
 
 
-    public void CheckSubledgerAccountRule(DateTime accountingDate) {
-      Account account = this.GetHistory(accountingDate);
-
-      Assertion.Assert(account.Role == AccountRole.Control,
-                      $"La cuenta {account.Number} no maneja auxiliares para el sector 00.");
+    public void CheckSubledgerAccountRule() {
+      Assertion.Assert(this.Role == AccountRole.Control,
+                      $"La cuenta {this.Number} no maneja auxiliares para el sector 00.");
     }
 
 
     public void CheckSubledgerAccountRule(Sector sector, DateTime accountingDate) {
       Assertion.AssertObject(sector, "sector");
 
-      Account account = this.GetHistory(accountingDate);
-
-      SectorRule sectorRule = account.GetSectors(accountingDate).Find(x => x.Sector.Equals(sector));
+      SectorRule sectorRule = this.GetSectors(accountingDate).Find(x => x.Sector.Equals(sector));
 
       if (sectorRule == null) {
-        Assertion.AssertFail($"La cuenta {account.Number} no maneja el sector {sector.FullName}.");
+        Assertion.AssertFail($"La cuenta {this.Number} no maneja el sector {sector.FullName}.");
 
       } else {
-        Assertion.Assert(account.Role == AccountRole.Sectorizada && sectorRule.SectorRole == AccountRole.Control,
-            $"La cuenta {account.Number} no requiere un auxiliar para el sector ({sector.Code}).");
+        Assertion.Assert(this.Role == AccountRole.Sectorizada && sectorRule.SectorRole == AccountRole.Control,
+            $"La cuenta {this.Number} no requiere un auxiliar para el sector ({sector.Code}).");
       }
     }
 
 
-    public void CheckNoSubledgerAccountRule(DateTime accountingDate) {
-      Account account = this.GetHistory(accountingDate);
-
-      Assertion.Assert(account.Role == AccountRole.Detalle,
-                       $"La cuenta {account.Number} requiere un auxiliar.");
+    public void CheckNoSubledgerAccountRule() {
+      Assertion.Assert(this.Role == AccountRole.Detalle,
+                       $"La cuenta {this.Number} requiere un auxiliar.");
     }
 
 
     public void CheckNoSubledgerAccountRule(Sector sector, DateTime accountingDate) {
       Assertion.AssertObject(sector, "sector");
 
-      Account account = this.GetHistory(accountingDate);
-
-      SectorRule sectorRule = account.GetSectors(accountingDate).Find(x => x.Sector.Equals(sector));
+      SectorRule sectorRule = this.GetSectors(accountingDate).Find(x => x.Sector.Equals(sector));
 
       if (sectorRule == null) {
-        Assertion.AssertFail($"La cuenta {account.Number} no maneja el sector {sector.FullName}.");
+        Assertion.AssertFail($"La cuenta {this.Number} no maneja el sector {sector.FullName}.");
 
       } else {
-        Assertion.Assert(account.Role == AccountRole.Sectorizada && sectorRule.SectorRole == AccountRole.Detalle,
-                         $"La cuenta {account.Number} maneja auxiliares para el sector ({sector.Code}).");
+        Assertion.Assert(this.Role == AccountRole.Sectorizada && sectorRule.SectorRole == AccountRole.Detalle,
+                         $"La cuenta {this.Number} maneja auxiliares para el sector ({sector.Code}).");
       }
     }
 

@@ -53,9 +53,11 @@ namespace Empiria.FinancialAccounting.Vouchers {
       }
 
       try {
-        account.CheckIsNotSummary(this.AccountingDate);
+        account.CheckIsNotSummary();
       } catch (Exception e) {
         resultList.Add(e.Message);
+
+        return resultList.ToFixedList();
       }
 
       try {
@@ -68,7 +70,7 @@ namespace Empiria.FinancialAccounting.Vouchers {
         if (entry.HasSector) {
           account.CheckSectorRule(entry.Sector, this.AccountingDate);
         } else {
-          account.CheckNoSectorRule(this.AccountingDate);
+          account.CheckNoSectorRule();
         }
       } catch (Exception e) {
         resultList.Add(e.Message);
@@ -79,13 +81,13 @@ namespace Empiria.FinancialAccounting.Vouchers {
           account.CheckSubledgerAccountRule(entry.Sector, this.AccountingDate);
 
         } else if (entry.HasSubledgerAccount && !entry.HasSector) {
-          account.CheckSubledgerAccountRule(this.AccountingDate);
+          account.CheckSubledgerAccountRule();
 
         } else if (!entry.HasSubledgerAccount && entry.HasSector) {
           account.CheckNoSubledgerAccountRule(entry.Sector, this.AccountingDate);
 
         } else if (!entry.HasSubledgerAccount && !entry.HasSector) {
-          account.CheckNoSubledgerAccountRule(this.AccountingDate);
+          account.CheckNoSubledgerAccountRule();
         }
       } catch (Exception e) {
         resultList.Add(e.Message);
@@ -95,14 +97,15 @@ namespace Empiria.FinancialAccounting.Vouchers {
         SubledgerAccount subledgerAccount = entry.GetSubledgerAccount();
 
         if (!subledgerAccount.IsEmptyInstance && subledgerAccount.Suspended) {
-          resultList.Add($"El auxiliar '{subledgerAccount.Number}' ({subledgerAccount.Name}) está suspendido, " +
-                         $"por lo que no permite operaciones de registro.");
+          resultList.Add($"El auxiliar '{subledgerAccount.Number}' ({subledgerAccount.Name}) " +
+                         $"está suspendido, por lo que no permite operaciones de registro.");
         }
+
       }
 
       try {
         if (!entry.HasEventType) {
-          account.CheckNoEventTypeRule(this.AccountingDate);
+          account.CheckNoEventTypeRule();
         }
       } catch (Exception e) {
         resultList.Add(e.Message);
