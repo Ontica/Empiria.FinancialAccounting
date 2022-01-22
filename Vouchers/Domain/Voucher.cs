@@ -161,15 +161,30 @@ namespace Empiria.FinancialAccounting.Vouchers {
       }
     }
 
+
     public bool IsEmptyInstance {
       get {
         return this.Id == -1;
       }
     }
 
+
+    public string StatusName {
+      get {
+        if (!IsOpened) {
+          return "Enviada al diario";
+        }
+        if (this.AuthorizedBy.Equals(GetSupervisor())) {
+          return "Enviada al supervisor";
+        }
+        return "Pendiente";
+      }
+    }
+
+
     #endregion Public properties
 
-      #region Methods
+    #region Methods
 
     internal VoucherEntry AppendEntry(VoucherEntryFields fields) {
       Assertion.AssertObject(fields, "fields");
@@ -192,20 +207,19 @@ namespace Empiria.FinancialAccounting.Vouchers {
         return false;
       }
 
+      if (!(this.ElaboratedBy.Equals(participant) || this.AuthorizedBy.Equals(participant))) {
+        return false;
+      }
+
       Participant supervisor = this.GetSupervisor();
 
       if (participant.Equals(supervisor)) {
         return true;
       }
 
-      if (!(this.ElaboratedBy.Equals(participant) || this.AuthorizedBy.Equals(participant))) {
-        return false;
-      }
-
       if (this.Ledger.IsAccountingDateOpened(this.AccountingDate)) {
         return true;
       }
-
 
       return false;
     }

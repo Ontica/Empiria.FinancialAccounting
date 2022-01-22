@@ -50,7 +50,7 @@ namespace Empiria.FinancialAccounting.Reporting {
       html = html.Replace("{{ELABORATED_BY}}", _voucher.ElaboratedBy);
       html = html.Replace("{{RECORDING_DATE}}", _voucher.RecordingDate.ToString("dd/MMM/yyyy"));
       html = html.Replace("{{AUTHORIZED_BY}}", _voucher.AuthorizedBy);
-      html = html.Replace("{{CLOSED_BY}}", _voucher.IsClosed ? _voucher.ClosedBy : "Pendiente de enviar al diario");
+      html = html.Replace("{{CLOSED_BY}}", _voucher.IsClosed ? _voucher.ClosedBy : _voucher.Status);
 
       return html;
     }

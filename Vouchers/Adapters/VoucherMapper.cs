@@ -32,7 +32,7 @@ namespace Empiria.FinancialAccounting.Vouchers.Adapters {
         ElaboratedBy = voucher.ElaboratedBy.Name,
         AuthorizedBy = voucher.AuthorizedBy.Name,
         ClosedBy = !voucher.IsOpened ? voucher.ClosedBy.Name : string.Empty,
-        Status = voucher.IsOpened ? "Pendiente" : "Enviada al diario",
+        Status = voucher.StatusName,
         IsClosed = !voucher.IsOpened,
         AllEntriesAreInBaseCurrency = !voucher.Entries.Contains(x => !x.Currency.Equals(voucher.Ledger.BaseCurrency)),
         Actions = MapVoucherActions(voucher),
@@ -42,13 +42,13 @@ namespace Empiria.FinancialAccounting.Vouchers.Adapters {
       return dto;
     }
 
+
     static private VoucherActionsDto MapVoucherActions(Voucher voucher) {
       if (!voucher.IsOpened) {
         return new VoucherActionsDto();
       }
 
       bool isAssignedToCurrentUser = voucher.ElaboratedBy.Equals(Participant.Current);
-
 
       if (!voucher.IsValid()) {
         return new VoucherActionsDto {
@@ -62,11 +62,13 @@ namespace Empiria.FinancialAccounting.Vouchers.Adapters {
           EditVoucher = true,
           SendToLedger = true
         };
+
       } else if (isAssignedToCurrentUser) {
         return new VoucherActionsDto {
           EditVoucher = true,
           SendToSupervisor = true
         };
+
       } else {
         return new VoucherActionsDto();
       }
@@ -165,7 +167,7 @@ namespace Empiria.FinancialAccounting.Vouchers.Adapters {
         RecordingDate = voucher.RecordingDate,
         ElaboratedBy = voucher.ElaboratedBy.Name,
         AuthorizedBy = voucher.AuthorizedBy.Name,
-        Status = voucher.IsOpened ? "Pendiente" : "Enviada al diario"
+        Status = voucher.StatusName
       };
     }
 
