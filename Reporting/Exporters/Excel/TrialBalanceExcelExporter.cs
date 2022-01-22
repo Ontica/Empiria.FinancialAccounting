@@ -208,6 +208,9 @@ namespace Empiria.FinancialAccounting.Reporting.Exporters.Excel {
         _excelFile.SetCell($"E{i}", entry.YenBalance);
         _excelFile.SetCell($"F{i}", entry.EuroBalance);
         _excelFile.SetCell($"G{i}", entry.UdisBalance);
+        if (entry.ItemType == TrialBalanceItemType.Summary) {
+          _excelFile.SetRowStyleBold(i);
+        }
         i++;
       }
     }
