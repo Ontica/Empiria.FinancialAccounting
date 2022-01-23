@@ -26,12 +26,23 @@ namespace Empiria.FinancialAccounting.Vouchers {
 
     #region Constructors and parsers
 
-    protected VoucherEntry() {
-      // Required by Empiria Framework.
+    //protected VoucherEntry() {
+    //  // Required by Empiria Framework.
+    //}
+
+
+    internal VoucherEntry(Voucher voucher) {
+      Assertion.AssertObject(voucher, "voucher");
+
+      this.Voucher = voucher;
     }
 
-    internal VoucherEntry(VoucherEntryFields fields) {
+
+    internal VoucherEntry(Voucher voucher, VoucherEntryFields fields) {
+      Assertion.AssertObject(voucher, "voucher");
       Assertion.AssertObject(fields, "fields");
+
+      this.Voucher = voucher;
 
       LoadFields(fields);
     }
@@ -44,13 +55,6 @@ namespace Empiria.FinancialAccounting.Vouchers {
 
     [DataField("ID_MOVIMIENTO")]
     public long Id {
-      get;
-      private set;
-    }
-
-
-    [DataField("ID_TRANSACCION")]
-    public long VoucherId {
       get;
       private set;
     }
@@ -177,9 +181,7 @@ namespace Empiria.FinancialAccounting.Vouchers {
 
 
     public Voucher Voucher {
-      get {
-        return Voucher.Parse(this.VoucherId);
-      }
+      get;
     }
 
     public decimal Debit {
@@ -252,7 +254,7 @@ namespace Empiria.FinancialAccounting.Vouchers {
            $"La cuenta de mayor con id {LedgerAccount.Id} no pertenece a la contabilidad {ledger.FullName}.");
 
       if (HasSubledgerAccount) {
-        Assertion.Assert(SubledgerAccount.Subledger.BelongsTo(ledger),
+        Assertion.Assert(SubledgerAccount.BelongsTo(ledger),
               $"El auxiliar {SubledgerAccount.Number} no pertenece a la contabilidad {ledger.FullName}.");
 
         Assertion.Assert(!SubledgerAccount.Suspended,
@@ -279,10 +281,6 @@ namespace Empiria.FinancialAccounting.Vouchers {
     }
 
     private void LoadFields(VoucherEntryFields fields) {
-      if (this.Id == 0) {
-        this.VoucherId = fields.GetVoucher().Id;
-      }
-
       this.LedgerAccount = fields.GetLedgerAccount();
       this.Sector = fields.Sector;
       this.SubledgerAccount = fields.GetSubledgerAccount();

@@ -16,12 +16,7 @@ namespace Empiria.FinancialAccounting.Vouchers.Data {
   /// <summary>Data access layer for accounting vouchers.</summary>
   static internal class VoucherData {
 
-    static private readonly bool USE_IFRS_ACCOUNTS_CHART =
-                                            ConfigurationData.Get("Use.IFRS.Accounts.Chart", false);
-
     static internal void CloseVoucher(Voucher o) {
-
-      EnsureIFRSIsActiveGuard(o);
 
       var dataOperation = DataOperation.Parse("do_close_cof_transaccion",
                                               o.Id, o.Ledger.Id, o.Number,
@@ -42,7 +37,7 @@ namespace Empiria.FinancialAccounting.Vouchers.Data {
 
     static internal void DeleteVoucherEntry(VoucherEntry voucherEntry) {
       var dataOperation = DataOperation.Parse("do_delete_cof_movimiento_tmp",
-                                              voucherEntry.VoucherId, voucherEntry.Id);
+                                              voucherEntry.Voucher.Id, voucherEntry.Id);
 
       DataWriter.Execute(dataOperation);
     }
@@ -115,7 +110,7 @@ namespace Empiria.FinancialAccounting.Vouchers.Data {
     static internal FixedList<VoucherEntry> GetVoucherEntries(Voucher o) {
       var dataOperation = DataOperation.Parse("qry_cof_movimiento", o.Id, o.IsOpened ? 1 : 0);
 
-      return DataReader.GetPlainObjectFixedList<VoucherEntry>(dataOperation);
+      return DataReader.GetPlainObjectFixedList<VoucherEntry>(dataOperation, () => new VoucherEntry(o));
     }
 
 
@@ -154,8 +149,6 @@ namespace Empiria.FinancialAccounting.Vouchers.Data {
     static internal void WriteVoucher(Voucher o) {
       Assertion.Assert(o.IsOpened, "Voucher must be opened to be modified in the database.");
 
-      EnsureIFRSIsActiveGuard(o);
-
       var op = DataOperation.Parse("write_cof_transaccion", o.Id, o.Number,
                                     o.Ledger.Id, o.FunctionalArea.Id,
                                     o.TransactionType.Id, o.VoucherType.Id,
@@ -170,7 +163,7 @@ namespace Empiria.FinancialAccounting.Vouchers.Data {
     static internal void WriteVoucherEntry(VoucherEntry o) {
       Assertion.Assert(o.Voucher.IsOpened, "Voucher must be opened to be modified in the database.");
 
-      var op = DataOperation.Parse("write_cof_movimiento_tmp", o.Id, o.VoucherId, o.LedgerAccount.Id,
+      var op = DataOperation.Parse("write_cof_movimiento_tmp", o.Id, o.Voucher.Id, o.LedgerAccount.Id,
                                     o.SubledgerAccount.IsEmptyInstance ? 0 : o.SubledgerAccount.Id,
                                     o.Sector.IsEmptyInstance ? 0: o.Sector.Id,
                                     o.ReferenceEntryId,
@@ -180,16 +173,6 @@ namespace Empiria.FinancialAccounting.Vouchers.Data {
                                     o.Amount, o.BaseCurrencyAmount, o.Protected ? 1 : 0);
 
       DataWriter.Execute(op);
-    }
-
-
-    static private void EnsureIFRSIsActiveGuard(Voucher o) {
-      if (USE_IFRS_ACCOUNTS_CHART) {
-        return;
-      }
-      if (o.Ledger.AccountsChart.Equals(AccountsChart.IFRS)) {
-        Assertion.AssertFail("Por ahora, SICOFIN ha sido configurado para NO permitir el registro de pólizas con el catálogo IFRS9 2022.");
-      }
     }
 
   }  // class VoucherData
