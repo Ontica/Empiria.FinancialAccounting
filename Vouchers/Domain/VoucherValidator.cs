@@ -36,10 +36,10 @@ namespace Empiria.FinancialAccounting.Vouchers {
     }
 
 
-    internal FixedList<string> Validate(FixedList<VoucherEntry> entries) {
+    internal FixedList<string> Validate(FixedList<VoucherEntry> entries, bool fullValidation) {
       var converted = new FixedList<IVoucherEntry>(entries.Select(x => (IVoucherEntry) x));
 
-      return Validate(converted, false);
+      return Validate(converted, fullValidation);
     }
 
 
@@ -65,7 +65,8 @@ namespace Empiria.FinancialAccounting.Vouchers {
     private FixedList<string> DebitsAndCreditsByCurrencyAreEqual(FixedList<IVoucherEntry> entries) {
       var resultList = new List<string>();
 
-      IEnumerable<Currency> currencies = entries.Select(x => x.Currency).Distinct();
+      IEnumerable<Currency> currencies = entries.Select(x => x.Currency)
+                                                .Distinct();
 
       foreach (var currency in currencies) {
         var debitsEntries = entries.FindAll(x => x.VoucherEntryType == VoucherEntryType.Debit && x.Currency.Equals(currency));
@@ -84,8 +85,8 @@ namespace Empiria.FinancialAccounting.Vouchers {
 
         if (totalDebits != totalCredits) {
           resultList.Add($"La suma de cargos no es igual a la suma de abonos en la moneda {currency.FullName}. " +
-                          $"Diferencia de ${(totalDebits - totalCredits)}");
-          return resultList.ToFixedList();
+                          $"Diferencia de {(totalDebits - totalCredits).ToString("C2")}");
+          continue;
         }
 
         totalDebits = debitsEntries.Sum(x => x.BaseCurrencyAmount);
@@ -93,7 +94,7 @@ namespace Empiria.FinancialAccounting.Vouchers {
 
         if (totalDebits != totalCredits) {
           resultList.Add($"La suma de cargos y abonos en la moneda base no es igual para la moneda {currency.FullName}. " +
-                         $"Diferencia de ${(totalDebits - totalCredits)}. " +
+                         $"Diferencia de {(totalDebits - totalCredits).ToString("C6")}. " +
                          $"Debe existir una diferencia en los tipos de cambio.");
         }
       }

@@ -315,6 +315,13 @@ namespace Empiria.FinancialAccounting.Vouchers.UseCases {
 
       var voucher = Voucher.Parse(voucherId);
 
+      var validator = new VoucherEntryValidator(voucher.Ledger, voucher.AccountingDate);
+
+      FixedList<string> issues = validator.Validate(fields);
+
+      Assertion.Assert(issues.Count == 0,
+                       "No se pudo guardar el movimiento debido a: " + EmpiriaString.ToString(issues));
+
       VoucherEntry entry = voucher.GetEntry(voucherEntryId);
 
       voucher.UpdateEntry(entry, fields);
@@ -322,12 +329,13 @@ namespace Empiria.FinancialAccounting.Vouchers.UseCases {
       return VoucherMapper.Map(voucher);
     }
 
+
     public FixedList<string> ValidateVoucher(long voucherId) {
       Assertion.Assert(voucherId > 0, "voucherId");
 
       var voucher = Voucher.Parse(voucherId);
 
-      return voucher.ValidationResult();
+      return voucher.ValidationResult(true);
     }
 
 

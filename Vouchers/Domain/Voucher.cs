@@ -198,7 +198,7 @@ namespace Empiria.FinancialAccounting.Vouchers {
 
       fields.EnsureValidFor(this);
 
-      var voucherEntry = new VoucherEntry(fields);
+      var voucherEntry = new VoucherEntry(this, fields);
 
       voucherEntry.Save();
 
@@ -235,15 +235,13 @@ namespace Empiria.FinancialAccounting.Vouchers {
       Assertion.Assert(this.IsOpened, "Esta póliza ya está cerrada.");
 
       if (!this.IsValid()) {
-        var msg = "La póliza no puede enviarse al diario porque tiene datos inconsistentes.\n\n";
+        FixedList<string> validationResult = this.ValidationResult(true);
 
-        FixedList<string> validationResult = this.ValidationResult();
-
-        foreach (var error in validationResult) {
-          msg += error + "\n";
-        }
-        Assertion.AssertFail(msg);
+        Assertion.AssertFail("La póliza no puede enviarse al diario porque tiene datos inconsistentes.\n\n" +
+                             EmpiriaString.ToString(validationResult));
       }
+
+      EnsureAllEntriesAreValidBeforeClose();
 
       DateTime lastRecordingDate = this.RecordingDate;
 
@@ -287,6 +285,26 @@ namespace Empiria.FinancialAccounting.Vouchers {
       entry.Delete();
 
       this.RefreshEntries();
+    }
+
+
+    private void EnsureAllEntriesAreValidBeforeClose() {
+      this.RefreshEntries();
+
+      Assertion.Assert(this.Entries.All(x => x.LedgerAccount.Ledger.Equals(this.Ledger)),
+          $"Cuando menos un movimiento tiene una cuenta que pertenece a otro mayor. (Póliza {this.Id}).");
+
+      Assertion.Assert(this.Entries.All(x => x.Amount > 0),
+          $"Cuando menos un movimiento tiene un importe negativo o igual a cero. (Póliza {this.Id}).");
+
+      Assertion.Assert(this.Entries.All(x => x.BaseCurrencyAmount > 0),
+          $"Cuando menos un movimiento tiene un importe negativo o igual a cero" +
+          $"para la moneda origen (Póliza {this.Id}).");
+
+      Assertion.Assert(this.Entries.All(x => x.SubledgerAccount.IsEmptyInstance ||
+                      (x.SubledgerAccount.BelongsTo(this.Ledger) && !x.SubledgerAccount.Suspended)),
+          $"Cuando menos un movimiento tiene un auxiliar que pertenece " +
+          $"a otra contabilidad o está suspendido. (Póliza {this.Id}).");
     }
 
 
@@ -341,11 +359,7 @@ namespace Empiria.FinancialAccounting.Vouchers {
         return true;
       }
 
-      this.RefreshEntries();
-
-      var validator = new VoucherValidator(this.Ledger, this.AccountingDate);
-
-      return (validator.Validate(this.Entries).Count == 0);
+      return (this.ValidationResult(false).Count == 0);
     }
 
 
@@ -440,12 +454,12 @@ namespace Empiria.FinancialAccounting.Vouchers {
     }
 
 
-    internal FixedList<string> ValidationResult() {
+    internal FixedList<string> ValidationResult(bool fullValidation) {
       this.RefreshEntries();
 
       var validator = new VoucherValidator(this.Ledger, this.AccountingDate);
 
-      return validator.Validate(this.Entries);
+      return validator.Validate(this.Entries, fullValidation);
     }
 
 

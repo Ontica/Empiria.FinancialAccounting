@@ -96,11 +96,18 @@ namespace Empiria.FinancialAccounting.Vouchers {
       if (entry.HasSubledgerAccount) {
         SubledgerAccount subledgerAccount = entry.GetSubledgerAccount();
 
-        if (!subledgerAccount.IsEmptyInstance && subledgerAccount.Suspended) {
-          resultList.Add($"El auxiliar '{subledgerAccount.Number}' ({subledgerAccount.Name}) " +
-                         $"está suspendido, por lo que no permite operaciones de registro.");
-        }
+        if (!subledgerAccount.IsEmptyInstance) {
 
+          if (subledgerAccount.Suspended) {
+            resultList.Add($"El auxiliar '{subledgerAccount.Number}' ({subledgerAccount.Name}) " +
+                           $"está suspendido, por lo que no permite operaciones de registro.");
+          }
+
+          if (!subledgerAccount.BelongsTo(this.Ledger)) {
+            resultList.Add($"El auxiliar '{subledgerAccount.Number}' ({subledgerAccount.Name}) " +
+                           $"no pertenece a la contabilidad {Ledger.FullName}.");
+          }
+        }
       }
 
       try {
