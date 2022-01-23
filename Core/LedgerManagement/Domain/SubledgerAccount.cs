@@ -133,6 +133,11 @@ namespace Empiria.FinancialAccounting {
     }
 
 
+    public bool BelongsTo(Ledger ledger) {
+      return (this.Ledger.Equals(ledger) || this.AdditionalLedger.Equals(ledger));
+    }
+
+
     public void Save() {
       if (this.Id == 0) {
         this.Id = SubledgerData.NextSubledgerAccountId();
