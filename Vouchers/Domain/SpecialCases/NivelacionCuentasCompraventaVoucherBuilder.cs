@@ -21,8 +21,13 @@ namespace Empiria.FinancialAccounting.Vouchers.SpecialCases {
     }
 
 
-    internal override Voucher BuildVoucher() {
-      throw new NotImplementedException("NivelacionCuentasCompraventaVoucherBuilder");
+    internal override FixedList<string> DryRun() {
+      throw new NotImplementedException("DryRun.NivelacionCuentasCompraventaVoucherBuilder");
+    }
+
+
+    internal override Voucher GenerateVoucher() {
+      throw new NotImplementedException("GenerateVoucher.NivelacionCuentasCompraventaVoucherBuilder");
     }
 
 

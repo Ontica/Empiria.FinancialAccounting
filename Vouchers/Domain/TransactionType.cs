@@ -34,6 +34,21 @@ namespace Empiria.FinancialAccounting.Vouchers {
 
     static public TransactionType Empty => BaseObject.ParseEmpty<TransactionType>();
 
+
+    static public TransactionType Automatic {
+      get {
+        return TransactionType.Parse("58892e04-b66c-47f7-8766-799663ea776b");
+      }
+    }
+
+
+    static public TransactionType Manual {
+      get {
+        return TransactionType.Parse("6ea907ee-1534-49ba-9678-a13e90fdf6d2");
+      }
+    }
+
+
   } // class TransactionType
 
 }  // namespace Empiria.FinancialAccounting.Vouchers

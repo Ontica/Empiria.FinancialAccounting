@@ -36,9 +36,9 @@ namespace Empiria.FinancialAccounting.Vouchers.UseCases {
     public VoucherDto CreateSpecialCaseVoucher(VoucherSpecialCaseFields fields) {
       Assertion.AssertObject(fields, "fields");
 
-      var builder = VoucherBuilder.SelectBuilder(fields);
+      var builder = VoucherBuilder.CreateBuilder(fields);
 
-      Voucher voucher = builder.BuildVoucher();
+      Voucher voucher = builder.GenerateVoucher();
 
       return VoucherMapper.Map(voucher);
     }
