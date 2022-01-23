@@ -9,6 +9,8 @@
 ************************* Copyright(c) La Vía Óntica SC, Ontica LLC and contributors. All rights reserved. **/
 using System;
 
+using Empiria.FinancialAccounting.Vouchers.Adapters;
+
 namespace Empiria.FinancialAccounting.Vouchers.SpecialCases {
 
   /// <summary>Builds a voucher that cancels (reverses) the credits and debits
@@ -24,10 +26,74 @@ namespace Empiria.FinancialAccounting.Vouchers.SpecialCases {
     }
 
 
-    internal override Voucher BuildVoucher() {
-      throw new NotImplementedException("CancelacionMovimientosVoucherBuilder");
+    internal override FixedList<string> DryRun() {
+      FixedList<VoucherEntryFields> entries = GetCancelationEntries();
+
+      return ImplementsDryRun(entries);
     }
 
+
+    internal override Voucher GenerateVoucher() {
+      FixedList<VoucherEntryFields> entries = GetCancelationEntries();
+
+      FixedList<string> issues = this.ImplementsDryRun(entries);
+
+      Assertion.Assert(issues.Count == 0,
+          "There were one or more issues generating 'Cancelación de movimientos voucher': " +
+          EmpiriaString.ToString(issues));
+
+
+      var voucher = new Voucher(base.Fields);
+
+      voucher.Save();
+
+      CreateVoucherEntries(voucher, entries);
+
+      return voucher;
+    }
+
+    #region Private methods
+
+
+    private void CreateVoucherEntries(Voucher voucher, FixedList<VoucherEntryFields> entries) {
+      foreach (var entry in entries) {
+
+        entry.VoucherId = voucher.Id;
+
+        VoucherEntry cancelationEntry = voucher.AppendEntry(entry);
+
+        cancelationEntry.Save();
+      }
+    }
+
+
+    private FixedList<VoucherEntryFields> GetCancelationEntries() {
+      return new FixedList<VoucherEntryFields>(_voucherToCancel.Entries.Select(x => MapToCancelationEntry(x)));
+    }
+
+
+    private VoucherEntryFields MapToCancelationEntry(VoucherEntry toCancelEntry) {
+      VoucherEntryFields cancelationEntryFields = VoucherMapper.MapToVoucherEntryFields(toCancelEntry);
+
+      if (cancelationEntryFields.VoucherEntryType == VoucherEntryType.Credit) {
+        cancelationEntryFields.VoucherEntryType = VoucherEntryType.Debit;
+      } else {
+        cancelationEntryFields.VoucherEntryType = VoucherEntryType.Credit;
+      }
+
+      return cancelationEntryFields;
+    }
+
+
+    private FixedList<string> ImplementsDryRun(FixedList<VoucherEntryFields> entries) {
+      var validator = new VoucherValidator(_voucherToCancel.Ledger,
+                                           base.Fields.AccountingDate);
+
+      return validator.Validate(entries);
+    }
+
+
+    #endregion Private methods
 
   }  // class CancelacionMovimientosVoucherBuilder
 

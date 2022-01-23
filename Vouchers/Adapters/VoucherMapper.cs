@@ -43,6 +43,29 @@ namespace Empiria.FinancialAccounting.Vouchers.Adapters {
     }
 
 
+    static internal VoucherEntryFields MapToVoucherEntryFields(VoucherEntry entry) {
+      return new VoucherEntryFields {
+         Amount = entry.Amount,
+         BaseCurrencyAmount = entry.BaseCurrencyAmount,
+         BudgetConcept = entry.BudgetConcept,
+         Concept = entry.Concept,
+         CurrencyUID = entry.Currency.UID,
+         Date = entry.Date,
+         EventTypeId = entry.EventType.Id,
+         ExchangeRate = entry.ExchangeRate,
+         LedgerAccountId = entry.LedgerAccount.Id,
+         Protected = entry.Protected,
+         ReferenceEntryId = entry.ReferenceEntryId,
+         ResponsibilityAreaId = entry.ResponsibilityArea.Id,
+         SectorId = entry.Sector.Id,
+         SubledgerAccountId = entry.SubledgerAccount.Id,
+         VerificationNumber = entry.VerificationNumber,
+         VoucherEntryType = entry.VoucherEntryType,
+         VoucherId = entry.Voucher.Id
+      };
+    }
+
+
     static private VoucherActionsDto MapVoucherActions(Voucher voucher) {
       if (!voucher.IsOpened) {
         return new VoucherActionsDto();
