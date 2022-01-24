@@ -67,12 +67,12 @@ namespace Empiria.FinancialAccounting.Tests.Balances {
     public void Should_Build_A_Traditional_Trial_Balance() {
       TrialBalanceCommand command = GetDefaultTrialBalanceCommand();
 
-      command.TrialBalanceType = TrialBalanceType.BalanzaEnColumnasPorMoneda;
+      command.TrialBalanceType = TrialBalanceType.SaldosPorCuenta;
       command.BalancesType = BalancesType.WithCurrentBalance;
       //command.AccountsChartUID = "47ec2ec7-0f4f-482e-9799-c23107b60d8a";
-      command.FromAccount = "1108";
-      command.ToAccount = "1108";
-      command.ShowCascadeBalances = false;
+      command.FromAccount = "2503-90-00-00-01";
+      command.ToAccount = "2503-90-00-00-01";
+      command.ShowCascadeBalances = true;
       command.WithSubledgerAccount = false;
       command.UseDefaultValuation = false;
 

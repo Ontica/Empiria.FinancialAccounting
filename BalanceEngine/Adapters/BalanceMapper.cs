@@ -55,9 +55,10 @@ namespace Empiria.FinancialAccounting.BalanceEngine.Adapters {
     private static FixedList<DataTableColumn> MapColumns(BalanceCommand command) {
       List<DataTableColumn> columns = new List<DataTableColumn>();
       columns.Add(new DataTableColumn("ledgerNumber", "Deleg", "text"));
-      if (command.TrialBalanceType == TrialBalanceType.SaldosPorCuentaConsultaRapida) {
-        columns.Add(new DataTableColumn("ledgerName", "Delegación", "text"));
-      }
+      columns.Add(new DataTableColumn("ledgerName", "Delegación", "text"));
+      //if (command.TrialBalanceType == TrialBalanceType.SaldosPorCuentaConsultaRapida) {
+      //  columns.Add(new DataTableColumn("ledgerName", "Delegación", "text"));
+      //}
       columns.Add(new DataTableColumn("currencyCode", "Mon", "text"));
       columns.Add(new DataTableColumn("accountNumber", "Cuenta / Auxiliar", "text-nowrap"));
       columns.Add(new DataTableColumn("sectorCode", "Sct", "text"));
@@ -164,7 +165,9 @@ namespace Empiria.FinancialAccounting.BalanceEngine.Adapters {
       dto.CurrencyCode = entry.Currency.Code;
       dto.AccountNumber = entry.Account.Number == "Empty" ? entry.SubledgerAccountNumber : entry.Account.Number;
       dto.AccountNumberForBalances = entry.Account.Number;
-      dto.AccountName = entry.GroupName == string.Empty ? entry.Account.Name : entry.GroupName;
+      dto.AccountName = (entry.GroupName == string.Empty ? 
+                         entry.Account.Name : entry.GroupName) 
+                         +$" ({entry.Currency.Name})";
       dto.SubledgerAccountNumber = entry.SubledgerAccountNumber;
       dto.SectorCode = entry.Sector.Code;
       dto.InitialBalance = entry.InitialBalance;
