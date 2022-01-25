@@ -72,6 +72,7 @@ namespace Empiria.FinancialAccounting.Vouchers.Adapters {
       }
 
       bool isAssignedToCurrentUser = voucher.ElaboratedBy.Equals(Participant.Current);
+      bool wasSentToAnotherUser = !voucher.AuthorizedBy.IsEmptyInstance && !voucher.AuthorizedBy.Equals(Participant.Current);
 
       if (!voucher.IsValid()) {
         return new VoucherActionsDto {
@@ -86,7 +87,7 @@ namespace Empiria.FinancialAccounting.Vouchers.Adapters {
           SendToLedger = true
         };
 
-      } else if (isAssignedToCurrentUser) {
+      } else if (isAssignedToCurrentUser && !wasSentToAnotherUser) {
         return new VoucherActionsDto {
           EditVoucher = true,
           SendToSupervisor = true
