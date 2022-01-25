@@ -226,7 +226,7 @@ namespace Empiria.FinancialAccounting.BalanceEngine.Adapters {
       
       dto.LastChangeDate = entry.ItemType == TrialBalanceItemType.Entry ?
                            entry.LastChangeDate : ExecutionServer.DateMaxValue;
-      dto.LastChangeDateForBalances = dto.LastChangeDate;
+      dto.LastChangeDateForBalances = entry.LastChangeDate;
 
       dto.HasAccountStatement = (entry.ItemType == TrialBalanceItemType.Entry ||
                                  entry.ItemType == TrialBalanceItemType.Summary) &&
@@ -251,7 +251,10 @@ namespace Empiria.FinancialAccounting.BalanceEngine.Adapters {
       dto.ItemType = entry.ItemType;
       dto.LedgerUID = entry.Ledger.UID != "Empty" ? entry.Ledger.UID : "";
       dto.LedgerNumber = entry.Ledger.Number;
-      
+      if (entry.ItemType == TrialBalanceItemType.Summary ||
+          entry.ItemType == TrialBalanceItemType.Entry) {
+        dto.LedgerName = entry.Ledger.Name;
+      }
       dto.StandardAccountId = entry.Account.Id;
       dto.CurrencyCode = entry.ItemType == TrialBalanceItemType.BalanceTotalConsolidated ? "" :
                          entry.Currency.Code;

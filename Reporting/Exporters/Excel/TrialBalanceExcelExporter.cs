@@ -334,30 +334,37 @@ namespace Empiria.FinancialAccounting.Reporting.Exporters.Excel {
       foreach (var entry in entries) {
         var account = StandardAccount.Parse(entry.StandardAccountId);
 
-        _excelFile.SetCell($"A{i}", entry.LedgerNumber);
-        _excelFile.SetCell($"B{i}", entry.CurrencyCode);
+        if ((entry.ItemType == TrialBalanceItemType.Entry ||
+            entry.ItemType == TrialBalanceItemType.Summary) &&
+            (_command.ShowCascadeBalances)) {
+          _excelFile.SetCell($"A{i}", entry.LedgerNumber);
+          _excelFile.SetCell($"B{i}", entry.LedgerName);
+        } else {
+          _excelFile.SetCell($"A{i}", "");
+        }
+        _excelFile.SetCell($"C{i}", entry.CurrencyCode);
         if (entry.ItemType == TrialBalanceItemType.Entry) {
-          _excelFile.SetCell($"C{i}", "*");
+          _excelFile.SetCell($"D{i}", "*");
         }
         if (!account.IsEmptyInstance) {
-          _excelFile.SetCell($"D{i}", account.Number);
-          _excelFile.SetCell($"E{i}", account.Name);
+          _excelFile.SetCell($"E{i}", account.Number);
+          _excelFile.SetCell($"F{i}", account.Name);
         } else {
-          _excelFile.SetCell($"D{i}", entry.AccountNumber);
-          _excelFile.SetCell($"E{i}", entry.AccountName);
+          _excelFile.SetCell($"E{i}", entry.AccountNumber);
+          _excelFile.SetCell($"F{i}", entry.AccountName);
         }
-        _excelFile.SetCell($"F{i}", entry.SectorCode);
+        _excelFile.SetCell($"G{i}", entry.SectorCode);
 
-        _excelFile.SetCell($"G{i}", entry.CurrentBalance);
-        _excelFile.SetCell($"H{i}", entry.DebtorCreditor);
+        _excelFile.SetCell($"H{i}", entry.CurrentBalance);
+        _excelFile.SetCell($"I{i}", entry.DebtorCreditor);
 
         if (MustFillOutAverageBalance(entry.AverageBalance, entry.LastChangeDate)) {
-          _excelFile.SetCell($"I{i}", entry.AverageBalance);
+          _excelFile.SetCell($"J{i}", entry.AverageBalance);
         }
 
         if (entry.LastChangeDate != ExecutionServer.DateMaxValue &&
             entry.LastChangeDate >= MIN_LAST_CHANGE_DATE_TO_REPORT) {
-          _excelFile.SetCell($"J{i}", entry.LastChangeDate.ToString("dd/MMM/yyyy"));
+          _excelFile.SetCell($"K{i}", entry.LastChangeDate.ToString("dd/MMM/yyyy"));
         }
 
         if (entry.ItemType == TrialBalanceItemType.Summary) {
@@ -365,9 +372,11 @@ namespace Empiria.FinancialAccounting.Reporting.Exporters.Excel {
         }
         i++;
       }
-
       if (!_command.WithAverageBalance) {
-        _excelFile.RemoveColumn("I");
+        _excelFile.RemoveColumn("J");
+      }
+      if (!_command.ShowCascadeBalances) {
+        _excelFile.RemoveColumn("B");
       }
     }
 
