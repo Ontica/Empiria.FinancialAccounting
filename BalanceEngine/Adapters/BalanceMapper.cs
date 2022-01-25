@@ -163,11 +163,17 @@ namespace Empiria.FinancialAccounting.BalanceEngine.Adapters {
       dto.LedgerNumber = entry.Ledger.Number;
       dto.LedgerName = entry.Ledger.Name != string.Empty ? entry.Ledger.Name : "";
       dto.CurrencyCode = entry.Currency.Code;
+      dto.CurrencyName = entry.Currency.Name;
       dto.AccountNumber = entry.Account.Number == "Empty" ? entry.SubledgerAccountNumber : entry.Account.Number;
       dto.AccountNumberForBalances = entry.Account.Number;
-      dto.AccountName = (entry.GroupName == string.Empty ? 
-                         entry.Account.Name : entry.GroupName) 
-                         +$" ({entry.Currency.Name})";
+      if (entry.ItemType == TrialBalanceItemType.Entry) {
+        dto.AccountName = entry.GroupName == string.Empty ?
+                          entry.Account.Name : entry.GroupName;
+      } else {
+        dto.AccountName = (entry.GroupName == string.Empty ?
+                         entry.Account.Name : entry.GroupName)
+                         + $" ({entry.Currency.Code} {entry.Currency.Name})";
+      }
       dto.SubledgerAccountNumber = entry.SubledgerAccountNumber;
       dto.SectorCode = entry.Sector.Code;
       dto.InitialBalance = entry.InitialBalance;

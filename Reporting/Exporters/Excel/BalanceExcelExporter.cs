@@ -81,10 +81,10 @@ namespace Empiria.FinancialAccounting.Reporting.Exporters.Excel {
         var entry in entries) {
         if (entry.ItemType == TrialBalanceItemType.Summary) {
           i++;
-          _excelFile.SetCell($"C{i}", entry.AccountNumber);
-          _excelFile.SetCell($"D{i}", $"{entry.AccountName}"/* , Naturaleza {entry.DebtorCreditor}"*/);
-          _excelFile.SetCell($"F{i}", "");
+          _excelFile.SetCell($"D{i}", entry.AccountNumber);
+          _excelFile.SetCell($"E{i}", $"{entry.AccountName}"/* , Naturaleza {entry.DebtorCreditor}"*/);
           _excelFile.SetCell($"G{i}", "");
+          _excelFile.SetCell($"H{i}", "");
           _excelFile.SetRowStyleBold(i);
 
           i++;
@@ -93,11 +93,12 @@ namespace Empiria.FinancialAccounting.Reporting.Exporters.Excel {
         } else {
           _excelFile.SetCell($"A{i}", entry.LedgerNumber);
           _excelFile.SetCell($"B{i}", entry.LedgerName);
-          _excelFile.SetCell($"C{i}", entry.AccountNumber);
-          _excelFile.SetCell($"D{i}", entry.AccountName);
-          _excelFile.SetCell($"E{i}", entry.SectorCode);
-          _excelFile.SetCell($"F{i}", (decimal) entry.CurrentBalance);
-          _excelFile.SetCell($"G{i}", entry.LastChangeDate.ToString("dd/MMM/yyyy"));
+          _excelFile.SetCell($"C{i}", $"{entry.CurrencyCode} {entry.CurrencyName}");
+          _excelFile.SetCell($"D{i}", entry.AccountNumber);
+          _excelFile.SetCell($"E{i}", entry.AccountName);
+          _excelFile.SetCell($"F{i}", entry.SectorCode);
+          _excelFile.SetCell($"G{i}", (decimal) entry.CurrentBalance);
+          _excelFile.SetCell($"H{i}", entry.LastChangeDate.ToString("dd/MMM/yyyy"));
         }
 
         i++;
@@ -140,20 +141,37 @@ namespace Empiria.FinancialAccounting.Reporting.Exporters.Excel {
 
 
     private void SetRowHeaderByAccount(int i) {
-      _excelFile.SetCell($"A{i}", "Deleg");
-      _excelFile.SetCell($"B{i}", "Delegación");
+
       if (_command.TrialBalanceType == TrialBalanceType.SaldosPorAuxiliarConsultaRapida) {
-        _excelFile.SetCell($"C{i}", "Cuenta");
-        _excelFile.SetCell($"D{i}", "Nombre de cuenta");
-      } else {
+        
+        _excelFile.SetCell($"A{i}", "Deleg");
+        _excelFile.SetCell($"B{i}", "Delegación");
+
+        _excelFile.SetCell($"C{i}", "Moneda");
+
+        _excelFile.SetCell($"D{i}", "Cuenta");
+        _excelFile.SetCell($"E{i}", "Nombre de cuenta");
+
+        _excelFile.SetCell($"F{i}", "Sector");
+        _excelFile.SetCell($"G{i}", "Saldo actual");
+        _excelFile.SetCell($"H{i}", "Último movimiento");
+
+      }
+
+      if (_command.TrialBalanceType == TrialBalanceType.SaldosPorCuentaConsultaRapida) {
+        
+        _excelFile.SetCell($"A{i}", "Deleg");
+        _excelFile.SetCell($"B{i}", "Delegación");
+
         _excelFile.SetCell($"C{i}", "Cuenta/Auxiliar");
         _excelFile.SetCell($"D{i}", "Nombre de cuenta/Auxiliar");
+
+        _excelFile.SetCell($"E{i}", "Sector");
+        _excelFile.SetCell($"F{i}", "Saldo actual");
+        _excelFile.SetCell($"G{i}", "Último movimiento");
+
       }
       
-      _excelFile.SetCell($"E{i}", "Sector");
-      _excelFile.SetCell($"F{i}", "Saldo actual");
-      _excelFile.SetCell($"G{i}", "Último movimiento");
-
       _excelFile.SetRowStyleBold(i);
     }
 

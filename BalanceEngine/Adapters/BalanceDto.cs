@@ -57,6 +57,10 @@ namespace Empiria.FinancialAccounting.BalanceEngine.Adapters {
       get; internal set;
     } = "";
 
+    public string CurrencyName {
+      get; internal set;
+    } = "";
+
     public string AccountNumber {
       get; internal set;
     } = "";
