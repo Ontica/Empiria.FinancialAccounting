@@ -130,11 +130,23 @@ namespace Empiria.FinancialAccounting.Reporting.Adapters {
 
 
     private string GetSubledgerAccountFilter() {
-      if (_accountStatementCommand.Entry.SubledgerAccountNumber.Length > 1) {
-        return $"NUMERO_CUENTA_AUXILIAR = '{_accountStatementCommand.Entry.SubledgerAccountNumber}'";
-      } else if (_accountStatementCommand.Command.SubledgerAccount.Length > 1) {
-        return $"NUMERO_CUENTA_AUXILIAR = '{_accountStatementCommand.Command.SubledgerAccount}'";
+      if (_accountStatementCommand.Command.TrialBalanceType == 
+            TrialBalanceType.SaldosPorAuxiliarConsultaRapida) {
+        
+        if (_accountStatementCommand.Entry.SubledgerAccountNumber.Length > 1) {
+          return $"NUMERO_CUENTA_AUXILIAR = '{_accountStatementCommand.Entry.SubledgerAccountNumber}'";
+        }
+
+      } else {
+
+        if (_accountStatementCommand.Entry.SubledgerAccountNumber.Length > 1) {
+          return $"NUMERO_CUENTA_AUXILIAR = '{_accountStatementCommand.Entry.SubledgerAccountNumber}'";
+        } else if (_accountStatementCommand.Command.SubledgerAccount.Length > 1) {
+          return $"NUMERO_CUENTA_AUXILIAR = '{_accountStatementCommand.Command.SubledgerAccount}'";
+        }
+
       }
+      
       return string.Empty;
     }
 
