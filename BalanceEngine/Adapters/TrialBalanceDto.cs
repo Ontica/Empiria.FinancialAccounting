@@ -127,6 +127,11 @@ namespace Empiria.FinancialAccounting.BalanceEngine.Adapters {
     }
 
 
+    public decimal CurrentBalanceForBalances {
+      get; internal set;
+    }
+
+
     public decimal ExchangeRate {
       get; internal set;
     }
@@ -147,6 +152,11 @@ namespace Empiria.FinancialAccounting.BalanceEngine.Adapters {
     }
 
 
+    public DateTime LastChangeDateForBalances {
+      get; internal set;
+    }
+
+
     public string DebtorCreditor {
       get; internal set;
     }
@@ -160,7 +170,7 @@ namespace Empiria.FinancialAccounting.BalanceEngine.Adapters {
     public bool ClickableEntry {
       get; internal set;
     } = false;
-
+    
   } // class TrialBalanceEntryDto
 
 } // namespace Empiria.FinancialAccounting.BalanceEngine.Adapters

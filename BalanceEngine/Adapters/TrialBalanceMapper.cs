@@ -212,6 +212,7 @@ namespace Empiria.FinancialAccounting.BalanceEngine.Adapters {
       dto.Debit = entry.Debit;
       dto.Credit = entry.Credit;
       dto.CurrentBalance = entry.CurrentBalance;
+      dto.CurrentBalanceForBalances = entry.CurrentBalance;
       dto.ExchangeRate = entry.ExchangeRate;
       dto.SecondExchangeRate = entry.SecondExchangeRate;
       dto.AverageBalance = entry.AverageBalance;
@@ -225,6 +226,7 @@ namespace Empiria.FinancialAccounting.BalanceEngine.Adapters {
       
       dto.LastChangeDate = entry.ItemType == TrialBalanceItemType.Entry ?
                            entry.LastChangeDate : ExecutionServer.DateMaxValue;
+      dto.LastChangeDateForBalances = dto.LastChangeDate;
 
       dto.HasAccountStatement = (entry.ItemType == TrialBalanceItemType.Entry ||
                                  entry.ItemType == TrialBalanceItemType.Summary) &&
@@ -284,6 +286,7 @@ namespace Empiria.FinancialAccounting.BalanceEngine.Adapters {
       dto.Debit = entry.Debit;
       dto.Credit = entry.Credit;
       dto.CurrentBalance = entry.CurrentBalance;
+      dto.CurrentBalanceForBalances = entry.CurrentBalance;
       dto.ExchangeRate = entry.ExchangeRate;
       dto.SecondExchangeRate = entry.SecondExchangeRate;
       dto.AverageBalance = entry.AverageBalance;
@@ -303,7 +306,7 @@ namespace Empiria.FinancialAccounting.BalanceEngine.Adapters {
                            command.TrialBalanceType == TrialBalanceType.BalanzaConContabilidadesEnCascada ?
                            entry.LastChangeDate : ExecutionServer.DateMaxValue;
       }
-      
+      dto.LastChangeDateForBalances = dto.LastChangeDate;
       dto.HasAccountStatement = (entry.ItemType == TrialBalanceItemType.Entry ||
                                  entry.ItemType == TrialBalanceItemType.Summary) &&
                                 command.UseDefaultValuation == false &&
