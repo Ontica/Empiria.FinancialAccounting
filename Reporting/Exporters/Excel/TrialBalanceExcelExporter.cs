@@ -266,10 +266,10 @@ namespace Empiria.FinancialAccounting.Reporting.Exporters.Excel {
         _excelFile.SetCell($"G{i}", entry.InitialBalance);
         _excelFile.SetCell($"H{i}", entry.Debit);
         _excelFile.SetCell($"I{i}", entry.Credit);
-        _excelFile.SetCell($"J{i}", entry.CurrentBalance);
+        _excelFile.SetCell($"J{i}", (decimal) entry.CurrentBalance);
 
-        if (MustFillOutAverageBalance(entry.AverageBalance, entry.LastChangeDate)) {
-          _excelFile.SetCell($"K{i}", entry.AverageBalance);
+        if (MustFillOutAverageBalance((decimal) entry.AverageBalance, entry.LastChangeDate)) {
+          _excelFile.SetCell($"K{i}", (decimal) entry.AverageBalance);
           _excelFile.SetCell($"L{i}", entry.LastChangeDate.ToString("dd/MMM/yyyy"));
         }
 
@@ -301,11 +301,11 @@ namespace Empiria.FinancialAccounting.Reporting.Exporters.Excel {
         _excelFile.SetCell($"G{i}", entry.InitialBalance);
         _excelFile.SetCell($"H{i}", entry.Debit);
         _excelFile.SetCell($"I{i}", entry.Credit);
-        _excelFile.SetCell($"J{i}", entry.CurrentBalance);
+        _excelFile.SetCell($"J{i}", (decimal) entry.CurrentBalance);
         _excelFile.SetCell($"K{i}", Math.Round(entry.ExchangeRate, 6));
 
-        if (MustFillOutAverageBalance(entry.AverageBalance, entry.LastChangeDate)) {
-          _excelFile.SetCell($"L{i}", entry.AverageBalance);
+        if (MustFillOutAverageBalance((decimal) entry.AverageBalance, entry.LastChangeDate)) {
+          _excelFile.SetCell($"L{i}", (decimal) entry.AverageBalance);
           _excelFile.SetCell($"M{i}", entry.LastChangeDate.ToString("dd/MMM/yyyy"));
         }
 
@@ -342,8 +342,9 @@ namespace Empiria.FinancialAccounting.Reporting.Exporters.Excel {
         } else {
           _excelFile.SetCell($"A{i}", "");
         }
-        _excelFile.SetCell($"C{i}", entry.CurrencyCode);
+
         if (entry.ItemType == TrialBalanceItemType.Entry) {
+          _excelFile.SetCell($"C{i}", $"({entry.CurrencyCode}) {entry.CurrencyName}");
           _excelFile.SetCell($"D{i}", "*");
         }
         if (!account.IsEmptyInstance) {
@@ -354,21 +355,31 @@ namespace Empiria.FinancialAccounting.Reporting.Exporters.Excel {
           _excelFile.SetCell($"F{i}", entry.AccountName);
         }
         _excelFile.SetCell($"G{i}", entry.SectorCode);
-
-        _excelFile.SetCell($"H{i}", entry.CurrentBalance);
+        if (entry.ItemType == TrialBalanceItemType.Entry ||
+            entry.ItemType == TrialBalanceItemType.Total) {
+          _excelFile.SetCell($"H{i}", (decimal) entry.CurrentBalance);
+        }
+        
         _excelFile.SetCell($"I{i}", entry.DebtorCreditor);
 
-        if (MustFillOutAverageBalance(entry.AverageBalance, entry.LastChangeDate)) {
-          _excelFile.SetCell($"J{i}", entry.AverageBalance);
+        if (entry.ItemType == TrialBalanceItemType.Entry) {
+          if (MustFillOutAverageBalance((decimal) entry.AverageBalance, entry.LastChangeDate)) {
+            _excelFile.SetCell($"J{i}", (decimal) entry.AverageBalance);
+          }
         }
+        
 
         if (entry.LastChangeDate != ExecutionServer.DateMaxValue &&
             entry.LastChangeDate >= MIN_LAST_CHANGE_DATE_TO_REPORT) {
           _excelFile.SetCell($"K{i}", entry.LastChangeDate.ToString("dd/MMM/yyyy"));
         }
 
-        if (entry.ItemType == TrialBalanceItemType.Summary) {
+        if (entry.ItemType == TrialBalanceItemType.Summary ||
+            entry.ItemType == TrialBalanceItemType.Total) {
           _excelFile.SetRowStyleBold(i);
+        }
+        if (entry.ItemType == TrialBalanceItemType.Total) {
+          i++;
         }
         i++;
       }
@@ -415,11 +426,11 @@ namespace Empiria.FinancialAccounting.Reporting.Exporters.Excel {
           _excelFile.SetCell($"H{i}", subledgerAccount.Number);
           _excelFile.SetCell($"I{i}", subledgerAccount.Name);
         }
-        _excelFile.SetCell($"J{i}", entry.CurrentBalance);
+        _excelFile.SetCell($"J{i}", (decimal) entry.CurrentBalance);
         _excelFile.SetCell($"K{i}", entry.DebtorCreditor);
         
-        if (MustFillOutAverageBalance(entry.AverageBalance, entry.LastChangeDate)) {
-          _excelFile.SetCell($"L{i}", entry.AverageBalance);
+        if (MustFillOutAverageBalance((decimal) entry.AverageBalance, entry.LastChangeDate)) {
+          _excelFile.SetCell($"L{i}", (decimal) entry.AverageBalance);
         }
 
         if (entry.LastChangeDate != ExecutionServer.DateMaxValue &&

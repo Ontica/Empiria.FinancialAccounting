@@ -83,7 +83,7 @@ namespace Empiria.FinancialAccounting.Reporting.Builders {
         SaldoInicial = entry.InitialBalance,
         Debe = entry.Debit,
         Haber = entry.Credit,
-        SaldoFinal = entry.CurrentBalance,
+        SaldoFinal = (decimal) entry.CurrentBalance,
         FechaModificacion = entry.LastChangeDate
       };
     }

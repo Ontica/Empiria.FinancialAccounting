@@ -62,6 +62,12 @@ namespace Empiria.FinancialAccounting.BalanceEngine.Adapters {
     }
 
 
+    public string CurrencyName {
+      get;
+      internal set;
+    }
+
+
     public int StandardAccountId {
       get; internal set;
     }
@@ -122,7 +128,7 @@ namespace Empiria.FinancialAccounting.BalanceEngine.Adapters {
     }
 
 
-    public decimal CurrentBalance {
+    public decimal? CurrentBalance {
       get; internal set;
     }
 
@@ -142,7 +148,7 @@ namespace Empiria.FinancialAccounting.BalanceEngine.Adapters {
     }
 
 
-    public decimal AverageBalance {
+    public decimal? AverageBalance {
       get; internal set;
     }
 

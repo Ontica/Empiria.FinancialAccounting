@@ -105,6 +105,9 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
         if (summaryAccounts.Count > 0) {
           returnedOrdering.AddRange(summaryAccounts);
         }
+        var hashTotalEntry = new EmpiriaHashTable<TrialBalanceEntry>();
+        SummaryBySubledgerEntry(hashTotalEntry, entry, TrialBalanceItemType.Total);
+        returnedOrdering.Add(hashTotalEntry.ToFixedList().First());
       }
 
       return returnedOrdering;
@@ -189,6 +192,10 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
 
       string hash = $"{entry.Ledger.Number}||{entry.Currency.Code}||" +
                     $"{entry.SubledgerAccountIdParent}||{Sector.Empty.Code}";
+
+      if (itemType == TrialBalanceItemType.Total) {
+        entry.GroupName = $"TOTAL DEL AUXILIAR: {entry.SubledgerAccountNumber}";
+      }
 
       GenerateOrIncreaseEntries(summaryEntries, entry, itemType, hash);
     }

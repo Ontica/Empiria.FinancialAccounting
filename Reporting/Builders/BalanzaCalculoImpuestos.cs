@@ -113,7 +113,7 @@ namespace Empiria.FinancialAccounting.Reporting.Builders {
         SaldoInicial = entry.InitialBalance,
         Debe = entry.Debit,
         Haber = entry.Credit,
-        SaldoFinal = entry.CurrentBalance,
+        SaldoFinal = (decimal) entry.CurrentBalance,
         Movimiento = entry.ItemType == TrialBalanceItemType.Entry &&
                      (entry.Debit != 0 || entry.Credit != 0) ?
                       "*" : "",
@@ -125,7 +125,7 @@ namespace Empiria.FinancialAccounting.Reporting.Builders {
         VBxcoSaldoInicial = entry.InitialBalance * entry.ExchangeRate,
         VBxcoDebe = entry.Debit * entry.ExchangeRate,
         VBxcoHaber = entry.Credit * entry.ExchangeRate,
-        VBxcoSaldoFinal= entry.CurrentBalance * entry.ExchangeRate
+        VBxcoSaldoFinal= (decimal) entry.CurrentBalance * entry.ExchangeRate
       };
     }
 

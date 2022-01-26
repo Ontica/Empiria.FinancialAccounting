@@ -88,10 +88,15 @@ namespace Empiria.FinancialAccounting.BalanceEngine.Adapters {
         case TrialBalanceType.BalanzaConContabilidadesEnCascada:
         case TrialBalanceType.GeneracionDeSaldos:
         case TrialBalanceType.Saldos:
-        case TrialBalanceType.SaldosPorAuxiliar:
 
           var mappedItems = list.Select((x) => MapToTrialBalance((TrialBalanceEntry) x, command));
           return new FixedList<ITrialBalanceEntryDto>(mappedItems);
+
+
+        case TrialBalanceType.SaldosPorAuxiliar:
+
+          var subledgerItems = list.Select((x) => MapToBalanceBySubledgerAccount((TrialBalanceEntry) x, command));
+          return new FixedList<ITrialBalanceEntryDto>(subledgerItems);
 
         case TrialBalanceType.SaldosPorCuenta:
 
@@ -242,6 +247,79 @@ namespace Empiria.FinancialAccounting.BalanceEngine.Adapters {
       return dto;
     }
 
+    static private TrialBalanceEntryDto MapToBalanceBySubledgerAccount(TrialBalanceEntry entry,
+                                                          TrialBalanceCommand command) {
+      var dto = new TrialBalanceEntryDto();
+      SubledgerAccount subledgerAccount = SubledgerAccount.Parse(entry.SubledgerAccountId);
+
+      dto.ItemType = entry.ItemType;
+      dto.LedgerUID = entry.Ledger.UID != "Empty" ? entry.Ledger.UID : "";
+      dto.LedgerNumber = entry.Ledger.Number;
+      if (entry.ItemType == TrialBalanceItemType.Summary ||
+          entry.ItemType == TrialBalanceItemType.Entry) {
+        dto.LedgerName = entry.Ledger.Name;
+      }
+      dto.StandardAccountId = entry.Account.Id;
+      dto.CurrencyCode = entry.Currency.Code;
+      dto.CurrencyName = entry.Currency.Name;
+      if (subledgerAccount.IsEmptyInstance || subledgerAccount.Number == "0") {
+        dto.AccountName = entry.GroupName != "" ? entry.GroupName :
+                          entry.Account.Name;
+        dto.AccountNumber = entry.GroupNumber != "" ? entry.GroupNumber :
+                            !entry.Account.IsEmptyInstance ?
+                            entry.Account.Number : "";
+      } else {
+        dto.AccountName = subledgerAccount.Name;
+        dto.AccountNumber = subledgerAccount.Number;
+      }
+      dto.AccountNumberForBalances = entry.Account.Number;
+
+      if (entry.ItemType == TrialBalanceItemType.Entry && subledgerAccount.IsEmptyInstance) {
+
+        subledgerAccount = SubledgerAccount.Parse(entry.SubledgerAccountIdParent);
+        if (!subledgerAccount.IsEmptyInstance) {
+          dto.SubledgerAccountNumber = subledgerAccount.Number;
+        }
+      } else {
+        dto.SubledgerAccountNumber = subledgerAccount.Number;
+      }
+
+      dto.AccountRole = entry.Account.Role;
+      dto.AccountLevel = entry.Account.Level;
+      dto.SectorCode = entry.Sector.Code;
+      dto.SubledgerAccountId = entry.SubledgerAccountId;
+      dto.InitialBalance = entry.InitialBalance;
+      dto.Debit = entry.Debit;
+      dto.Credit = entry.Credit;
+      if (entry.ItemType == TrialBalanceItemType.Total ||
+          entry.ItemType == TrialBalanceItemType.Entry) {
+        dto.CurrentBalance = entry.CurrentBalance;
+      }
+      if (entry.ItemType == TrialBalanceItemType.Entry) {
+        dto.AverageBalance = entry.AverageBalance;
+      }
+      dto.CurrentBalanceForBalances = entry.CurrentBalance;
+      dto.ExchangeRate = entry.ExchangeRate;
+      dto.DebtorCreditor = entry.ItemType == TrialBalanceItemType.Entry ?
+                             entry.DebtorCreditor.ToString() : "";
+
+      dto.LastChangeDate = entry.ItemType == TrialBalanceItemType.Entry ?
+                           entry.LastChangeDate : ExecutionServer.DateMaxValue;
+      
+      dto.LastChangeDateForBalances = dto.LastChangeDate;
+      dto.HasAccountStatement = (entry.ItemType == TrialBalanceItemType.Entry ||
+                                 entry.ItemType == TrialBalanceItemType.Summary) &&
+                                command.UseDefaultValuation == false &&
+                                command.InitialPeriod.ValuateToCurrrencyUID.Length == 0 &&
+                                command.InitialPeriod.ExchangeRateTypeUID.Length == 0 ? true : false;
+      dto.ClickableEntry = (entry.ItemType == TrialBalanceItemType.Entry ||
+                                 entry.ItemType == TrialBalanceItemType.Summary) &&
+                                command.UseDefaultValuation == false &&
+                                command.InitialPeriod.ValuateToCurrrencyUID.Length == 0 &&
+                                command.InitialPeriod.ExchangeRateTypeUID.Length == 0 ? true : false;
+
+      return dto;
+    }
 
     static private TrialBalanceEntryDto MapToTrialBalance(TrialBalanceEntry entry,
                                                           TrialBalanceCommand command) {
