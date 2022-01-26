@@ -36,13 +36,18 @@ namespace Empiria.FinancialAccounting.BanobrasIntegration {
       try {
         ExternalProcessDataServices.ProcesarConcilacionSIC(command);
 
-        return "Proceso de concilación SIC fue ejecutado satisfactoriamente.";
+        return "El proceso de concilación con SIC fue ejecutado satisfactoriamente.";
 
       } catch (Exception e) {
-        EmpiriaLog.Error(e);
+        if (e.InnerException != null) {
+          EmpiriaLog.Error(e.InnerException);
+          throw e.InnerException;
 
-        throw;
-      }
+        } else {
+          EmpiriaLog.Error(e);
+          throw;
+        }
+      }  // catch
     }
 
 
@@ -52,13 +57,18 @@ namespace Empiria.FinancialAccounting.BanobrasIntegration {
       try {
         ExternalProcessDataServices.ProcesarRentabilidad(command);
 
-        return "Proceso de rentabilidad fue ejecutado satisfactoriamente.";
+        return "El proceso de rentabilidad fue ejecutado satisfactoriamente.";
 
       } catch (Exception e) {
-        EmpiriaLog.Error(e);
+        if (e.InnerException != null) {
+          EmpiriaLog.Error(e.InnerException);
+          throw e.InnerException;
 
-        throw;
-      }
+        } else {
+          EmpiriaLog.Error(e);
+          throw;
+        }
+      }  // catch
     }
 
   }  // class ExternalProcessInvoker
