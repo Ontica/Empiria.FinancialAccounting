@@ -112,6 +112,7 @@ namespace Empiria.FinancialAccounting.BalanceEngine.Adapters {
         dto.LedgerName = "";
       }
       dto.CurrencyCode = entry.Currency.Code;
+      dto.CurrencyName = entry.Currency.Name;
       dto.SubledgerAccountNumber = entry.SubledgerAccountNumber;
 
       if (entry.ItemType == TrialBalanceItemType.BalanceTotalCurrency) {
@@ -172,7 +173,7 @@ namespace Empiria.FinancialAccounting.BalanceEngine.Adapters {
       } else {
         dto.AccountName = (entry.GroupName == string.Empty ?
                          entry.Account.Name : entry.GroupName)
-                         + $" ({entry.Currency.Code} {entry.Currency.Name})";
+                         + $" [({entry.Currency.Code}) {entry.Currency.Name}]";
       }
       dto.SubledgerAccountNumber = entry.SubledgerAccountNumber;
       dto.SectorCode = entry.Sector.Code;

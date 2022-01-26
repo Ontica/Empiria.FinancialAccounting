@@ -93,7 +93,7 @@ namespace Empiria.FinancialAccounting.Reporting.Exporters.Excel {
         } else {
           _excelFile.SetCell($"A{i}", entry.LedgerNumber);
           _excelFile.SetCell($"B{i}", entry.LedgerName);
-          _excelFile.SetCell($"C{i}", $"{entry.CurrencyCode} {entry.CurrencyName}");
+          _excelFile.SetCell($"C{i}", $"({entry.CurrencyCode}) {entry.CurrencyName}");
           _excelFile.SetCell($"D{i}", entry.AccountNumber);
           _excelFile.SetCell($"E{i}", entry.AccountName);
           _excelFile.SetCell($"F{i}", entry.SectorCode);
@@ -110,29 +110,30 @@ namespace Empiria.FinancialAccounting.Reporting.Exporters.Excel {
       int i = 5;
       foreach (var entry in entries) {
         if (entry.ItemType == TrialBalanceItemType.Total) {
-          _excelFile.SetCell($"C{i}", entry.AccountNumber);
-          _excelFile.SetCell($"D{i}", $"{entry.AccountName}");
-          _excelFile.SetCell($"F{i}", "");
+          _excelFile.SetCell($"D{i}", entry.AccountNumber);
+          _excelFile.SetCell($"E{i}", $"{entry.AccountName}");
           _excelFile.SetCell($"G{i}", "");
+          _excelFile.SetCell($"H{i}", "");
           _excelFile.SetRowStyleBold(i);
 
           i++;
           SetRowHeaderByAccount(i);
 
         } else if (entry.ItemType == TrialBalanceItemType.Group) {
-          _excelFile.SetCell($"D{i}", entry.AccountName);
-          _excelFile.SetCell($"F{i}", (decimal) entry.CurrentBalance);
+          _excelFile.SetCell($"E{i}", entry.AccountName);
+          _excelFile.SetCell($"G{i}", (decimal) entry.CurrentBalance);
           _excelFile.SetRowStyleBold(i);
           i += 3;
 
         } else {
           _excelFile.SetCell($"A{i}", entry.LedgerNumber);
           _excelFile.SetCell($"B{i}", entry.LedgerName);
-          _excelFile.SetCell($"C{i}", entry.AccountNumber);
-          _excelFile.SetCell($"D{i}", entry.AccountName);
-          _excelFile.SetCell($"E{i}", entry.SectorCode);
-          _excelFile.SetCell($"F{i}", (decimal) entry.CurrentBalance);
-          _excelFile.SetCell($"G{i}", entry.LastChangeDate.ToString("dd/MMM/yyyy"));
+          _excelFile.SetCell($"C{i}", $"({entry.CurrencyCode}) {entry.CurrencyName})");
+          _excelFile.SetCell($"D{i}", entry.AccountNumber);
+          _excelFile.SetCell($"E{i}", entry.AccountName);
+          _excelFile.SetCell($"F{i}", entry.SectorCode);
+          _excelFile.SetCell($"G{i}", (decimal) entry.CurrentBalance);
+          _excelFile.SetCell($"H{i}", entry.LastChangeDate.ToString("dd/MMM/yyyy"));
         }
 
         i++;
@@ -163,12 +164,14 @@ namespace Empiria.FinancialAccounting.Reporting.Exporters.Excel {
         _excelFile.SetCell($"A{i}", "Deleg");
         _excelFile.SetCell($"B{i}", "Delegación");
 
-        _excelFile.SetCell($"C{i}", "Cuenta/Auxiliar");
-        _excelFile.SetCell($"D{i}", "Nombre de cuenta/Auxiliar");
+        _excelFile.SetCell($"C{i}", "Moneda");
 
-        _excelFile.SetCell($"E{i}", "Sector");
-        _excelFile.SetCell($"F{i}", "Saldo actual");
-        _excelFile.SetCell($"G{i}", "Último movimiento");
+        _excelFile.SetCell($"D{i}", "Cuenta/Auxiliar");
+        _excelFile.SetCell($"E{i}", "Nombre de cuenta/Auxiliar");
+
+        _excelFile.SetCell($"F{i}", "Sector");
+        _excelFile.SetCell($"G{i}", "Saldo actual");
+        _excelFile.SetCell($"H{i}", "Último movimiento");
 
       }
       
