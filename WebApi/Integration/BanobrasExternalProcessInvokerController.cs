@@ -21,6 +21,21 @@ namespace Empiria.FinancialAccounting.WebApi.BanobrasIntegration {
 
     #region Processes
 
+
+    [HttpPost]
+    [Route("v2/financial-accounting/integration/external-processes/procesar-conciliacion-sic")]
+    public SingleObjectModel ProcesarConciliacionSIC([FromBody] ConcilacionSICExternalProcessCommand command) {
+
+      base.RequireBody(command);
+
+      using (var service = ExternalProcessInvoker.ServiceInteractor()) {
+        string result = service.ProcesarConciliacionSIC(command);
+
+        return new SingleObjectModel(base.Request, result);
+      }
+    }
+
+
     [HttpPost]
     [Route("v2/financial-accounting/integration/external-processes/procesar-rentabilidad")]
     public SingleObjectModel ProcesarRentabilidad([FromBody] RentabilidadExternalProcessCommand command) {

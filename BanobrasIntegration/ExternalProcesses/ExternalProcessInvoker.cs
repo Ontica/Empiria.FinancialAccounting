@@ -29,6 +29,23 @@ namespace Empiria.FinancialAccounting.BanobrasIntegration {
     #endregion Constructors and parsers
 
 
+
+    public string ProcesarConciliacionSIC(ConcilacionSICExternalProcessCommand command) {
+      Assertion.AssertObject(command, "command");
+
+      try {
+        ExternalProcessDataServices.ProcesarConcilacionSIC(command);
+
+        return "Proceso de concilación SIC fue ejecutado satisfactoriamente.";
+
+      } catch (Exception e) {
+        EmpiriaLog.Error(e);
+
+        throw;
+      }
+    }
+
+
     public string ProcesarRentabilidad(RentabilidadExternalProcessCommand command) {
       Assertion.AssertObject(command, "command");
 

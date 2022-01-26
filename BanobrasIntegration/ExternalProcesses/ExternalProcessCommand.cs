@@ -2,7 +2,7 @@
 *                                                                                                            *
 *  Module   : Banobras Integration Services                Component : External Processes Invoker            *
 *  Assembly : FinancialAccounting.BanobrasIntegration.dll  Pattern   : Command payload                       *
-*  Type     : ExternalProcessCommand                       License   : Please read LICENSE.txt file          *
+*  Type     : ExternalProcessCommands                      License   : Please read LICENSE.txt file          *
 *                                                                                                            *
 *  Summary  : Command data to execute Banobras' external system processes (Marimba).                         *
 *                                                                                                            *
@@ -10,6 +10,21 @@
 using System;
 
 namespace Empiria.FinancialAccounting.BanobrasIntegration {
+
+  public class ConcilacionSICExternalProcessCommand {
+
+    public DateTime FechaInicio {
+      get; set;
+    }
+
+
+    public DateTime FechaFin {
+      get; set;
+    }
+
+  }  // ConcilacionSICExternalProcessCommand
+
+
 
   /// <summary>Datos para la ejecución del proceso de rentabilidad.</summary>
   public class RentabilidadExternalProcessCommand {
