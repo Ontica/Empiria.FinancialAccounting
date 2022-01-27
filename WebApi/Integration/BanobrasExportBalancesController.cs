@@ -22,11 +22,47 @@ namespace Empiria.FinancialAccounting.WebApi.BanobrasIntegration {
 
     #region Web Apis
 
+
+    [HttpPost, AllowAnonymous]
+    [Route("v2/financial-accounting/integration/export-balances")]
+    public SingleObjectModel ExportBalances([FromBody] ExportBalancesCommand command) {
+
+      base.RequireBody(command);
+
+      command.GuardarSaldos = true;
+      command.Empresa = AccountsChart.IFRS.Id;
+
+      using (var usecases = ExportBalancesUseCases.UseCaseInteractor()) {
+
+        switch (command.BalanceType) {
+          case "Diario":
+            usecases.ExportBalancesByDay(command);
+            break;
+
+          case "MensualPorMayor":
+            usecases.ExportBalancesByMonthByLedger(command);
+            break;
+
+          case "MensualConsolidado":
+            usecases.ExportBalancesByMonth(command);
+            break;
+
+          default:
+            throw Assertion.AssertNoReachThisCode($"Unrecognized balances type {command.BalanceType}.");
+
+        }
+        return new SingleObjectModel(this.Request, "La exportación de saldos se realizó con éxito.");
+      }
+    }
+
+
     [HttpPost, AllowAnonymous]
     [Route("v2/financial-accounting/integration/balances-by-day")]
     public CollectionModel ExportBalancesByDay([FromBody] ExportBalancesCommand command) {
 
       base.RequireBody(command);
+
+      command.GuardarSaldos = false;
 
       using (var usecases = ExportBalancesUseCases.UseCaseInteractor()) {
 
@@ -43,7 +79,7 @@ namespace Empiria.FinancialAccounting.WebApi.BanobrasIntegration {
 
       base.RequireBody(command);
 
-      // command.GuardarSaldos = true;
+      command.GuardarSaldos = false;
 
       using (var usecases = ExportBalancesUseCases.UseCaseInteractor()) {
 

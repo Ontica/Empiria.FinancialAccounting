@@ -78,6 +78,11 @@ namespace Empiria.FinancialAccounting.BanobrasIntegration.BalancesExporter.UseCa
     }
 
 
+    public FixedList<ExportedBalancesDto> ExportBalancesByMonthByLedger(ExportBalancesCommand command) {
+      return ExportBalancesByMonth(command);
+    }
+
+
     #endregion Use cases
 
   }  // class ExportBalancesUseCases

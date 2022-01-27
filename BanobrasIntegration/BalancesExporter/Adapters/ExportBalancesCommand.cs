@@ -19,6 +19,11 @@ namespace Empiria.FinancialAccounting.BanobrasIntegration.BalancesExporter.Adapt
 
     #region Fields
 
+    public string BalanceType {
+      get; set;
+    }
+
+
     public int Empresa {
       get; set;
     }
@@ -62,7 +67,8 @@ namespace Empiria.FinancialAccounting.BanobrasIntegration.BalancesExporter.Adapt
         WithSubledgerAccount = true,
         InitialPeriod = new TrialBalanceCommandPeriod {
           FromDate = new DateTime(this.Fecha.Year, this.Fecha.Month, 1),
-          ToDate = this.Fecha
+          ToDate = new DateTime(this.Fecha.Year,
+          this.Fecha.Month, DateTime.DaysInMonth(this.Fecha.Year, this.Fecha.Month))
         },
       };
     }
