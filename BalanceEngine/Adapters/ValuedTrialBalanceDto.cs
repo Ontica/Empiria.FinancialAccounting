@@ -74,7 +74,6 @@ namespace Empiria.FinancialAccounting.BalanceEngine.Adapters {
       internal set;
     }
 
-
     public bool HasAccountStatement {
       get; internal set;
     } = false;
@@ -84,7 +83,16 @@ namespace Empiria.FinancialAccounting.BalanceEngine.Adapters {
       get; internal set;
     } = false;
 
+
+    string ITrialBalanceEntryDto.SubledgerAccountNumber {
+      get {
+        return String.Empty;
+      }
+    }
+
   } // class ValuedTrialBalanceDto
+
+
 
   public class TrialBalanceByCurrencyDto : ITrialBalanceEntryDto {
 
@@ -160,6 +168,14 @@ namespace Empiria.FinancialAccounting.BalanceEngine.Adapters {
     public bool ClickableEntry {
       get; internal set;
     } = false;
-  }
+
+
+    string ITrialBalanceEntryDto.SubledgerAccountNumber {
+      get {
+        return String.Empty;
+      }
+    }
+
+  }  // class TrialBalanceByCurrencyDto
 
 } // namespace Empiria.FinancialAccounting.BalanceEngine.Adapters

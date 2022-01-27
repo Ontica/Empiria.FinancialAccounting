@@ -13,7 +13,27 @@ namespace Empiria.FinancialAccounting.BalanceEngine.Adapters {
 
   public interface ITrialBalanceEntryDto {
 
-  }
+
+    TrialBalanceItemType ItemType {
+      get;
+    }
+
+    string AccountNumber {
+      get;
+    }
+
+
+    string SectorCode {
+      get;
+    }
+
+
+    string SubledgerAccountNumber {
+      get;
+    }
+
+  }  // interface ITrialBalanceEntryDto
+
 
   /// <summary>Output DTO used to return trial balances.</summary>
   public class TrialBalanceDto {
@@ -176,7 +196,7 @@ namespace Empiria.FinancialAccounting.BalanceEngine.Adapters {
     public bool ClickableEntry {
       get; internal set;
     } = false;
-    
+
   } // class TrialBalanceEntryDto
 
 } // namespace Empiria.FinancialAccounting.BalanceEngine.Adapters
