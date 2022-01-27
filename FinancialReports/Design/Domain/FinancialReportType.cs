@@ -75,6 +75,12 @@ namespace Empiria.FinancialAccounting.FinancialReports {
     }
 
 
+    public string BalancesSource {
+      get {
+        return base.ExtendedDataField.Get("balancesSource", string.Empty);
+      }
+    }
+
     public FinancialReportDesignType DesignType {
       get {
         return base.ExtendedDataField.Get<FinancialReportDesignType>("designType");
@@ -94,6 +100,7 @@ namespace Empiria.FinancialAccounting.FinancialReports {
         return base.ExtendedDataField.Get("templateFileId", -1);
       }
     }
+
 
     #endregion Properties
 
