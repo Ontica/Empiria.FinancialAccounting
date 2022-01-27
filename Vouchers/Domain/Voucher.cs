@@ -213,9 +213,9 @@ namespace Empiria.FinancialAccounting.Vouchers {
         return false;
       }
 
-      if (!(this.ElaboratedBy.Equals(participant) || this.AuthorizedBy.Equals(participant))) {
-        return false;
-      }
+      //if (!(this.ElaboratedBy.Equals(participant) || this.AuthorizedBy.Equals(participant))) {
+      //  return false;
+      //}
 
       Participant supervisor = this.GetSupervisor();
 
