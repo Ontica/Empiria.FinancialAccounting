@@ -32,14 +32,14 @@ namespace Empiria.FinancialAccounting.FinancialReports.UseCases {
 
     #region Use cases
 
-    public FixedList<NamedEntityDto> FinancialReportTypes(string accountsChartUID) {
+    public FixedList<FinancialReportTypeDto> FinancialReportTypes(string accountsChartUID) {
       Assertion.AssertObject(accountsChartUID, "accountsChartUID");
 
       var accountsChart = AccountsChart.Parse(accountsChartUID);
 
       var list = FinancialReportType.GetList(accountsChart);
 
-      return list.MapToNamedEntityList();
+      return FinancialReportMapper.Map(list);
     }
 
 

@@ -16,13 +16,21 @@ namespace Empiria.FinancialAccounting.FinancialReports.Adapters {
 
     #region Public mappers
 
-    internal static FinancialReportDto Map(FinancialReport financialReport) {
+    static internal FinancialReportDto Map(FinancialReport financialReport) {
       return new FinancialReportDto {
         Command = financialReport.Command,
         Columns = financialReport.DataColumns(),
         Entries = MapEntries(financialReport)
       };
     }
+
+
+    static internal FixedList<FinancialReportTypeDto> Map(FixedList<FinancialReportType> list) {
+      var mappedItems = list.Select((x) => Map(x));
+
+      return new FixedList<FinancialReportTypeDto>(mappedItems);
+    }
+
 
     static internal FinancialReportDto MapBreakdown(FinancialReport breakdownReport) {
       return new FinancialReportDto {
@@ -36,12 +44,20 @@ namespace Empiria.FinancialAccounting.FinancialReports.Adapters {
 
     #region Private mappers
 
-    static private FixedList<DynamicFinancialReportEntryDto> MapBreakdownEntries(FixedList<FinancialReportEntry> list) {
+
+    static private FinancialReportTypeDto Map(FinancialReportType reportType) {
+      return new FinancialReportTypeDto() {
+         UID = reportType.UID,
+         Name = reportType.Name,
+         ExportTo = new string[] { "Excel" }
+      };
+    }
+
+      static private FixedList<DynamicFinancialReportEntryDto> MapBreakdownEntries(FixedList<FinancialReportEntry> list) {
       var mappedItems = list.Select((x) => MapBreakdownEntry((FinancialReportBreakdownEntry) x));
 
       return new FixedList<DynamicFinancialReportEntryDto>(mappedItems);
     }
-
 
     static private DynamicFinancialReportEntryDto MapBreakdownEntry(FinancialReportBreakdownEntry entry) {
       dynamic o = new FinancialReportBreakdownEntryDto {

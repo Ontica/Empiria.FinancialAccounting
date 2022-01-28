@@ -28,7 +28,7 @@ namespace Empiria.FinancialAccounting.WebApi.FinancialReports {
     [Route("v2/financial-accounting/financial-reports/types/{accountsChartUID:guid}")]
     public CollectionModel GetFinancialReportTypes([FromUri] string accountsChartUID) {
       using (var usecases = FinancialReportsUseCases.UseCaseInteractor()) {
-        FixedList<NamedEntityDto> list = usecases.FinancialReportTypes(accountsChartUID);
+        FixedList<FinancialReportTypeDto> list = usecases.FinancialReportTypes(accountsChartUID);
 
         return new CollectionModel(base.Request, list);
       }
