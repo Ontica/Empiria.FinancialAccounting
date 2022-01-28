@@ -71,6 +71,7 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
 
       List<TwoCurrenciesBalanceEntry> summaryTwoColumnsBalanceTotal =
                                     twoColumnsHelper.GenerateTotalSummary(summaryTotalDeptorCreditorEntries);
+
       twoColumnsEntries = twoColumnsHelper.CombineTotalConsolidatedAndPostingEntries(
                                             twoColumnsEntries, summaryTwoColumnsBalanceTotal);
 

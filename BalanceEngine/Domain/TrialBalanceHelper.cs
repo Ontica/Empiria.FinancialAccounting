@@ -328,7 +328,7 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
       } // foreach
 
       var returnedEntries = AssignLastChangeDates(entries, summaryEntries);
-
+      
       if (detailSummaryEntries.Count > 0 && _command.TrialBalanceType == TrialBalanceType.SaldosPorCuenta) {
         return detailSummaryEntries;
       }

@@ -162,9 +162,7 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
       columns.Add(new DataTableColumn("domesticBalance", "Saldo Mon. Nal.", "decimal"));
       columns.Add(new DataTableColumn("foreignBalance", "Saldo Mon. Ext.", "decimal"));
       columns.Add(new DataTableColumn("totalBalance", "Total", "decimal"));
-      if (Command.InitialPeriod.ExchangeRateTypeUID != string.Empty) {
-        columns.Add(new DataTableColumn("exchangeRate", "TC", "decimal", 6));
-      }
+      
       if (Command.TrialBalanceType == TrialBalanceType.AnaliticoDeCuentas &&
           Command.WithAverageBalance) {
         columns.Add(new DataTableColumn("averageBalance", "Saldo promedio", "decimal"));
