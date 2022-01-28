@@ -151,9 +151,7 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
                                   a.Ledger.Id == creditorEntry.Ledger.Id &&
                                   a.Currency.Id == creditorEntry.Currency.Id &&
                                   a.Account.DebtorCreditor == DebtorCreditorType.Acreedora).ToList();
-        if (creditorEntries.Count>1) {
-          string x = string.Empty;
-        }
+        
         creditorEntries.Add(creditorEntry);
         returnedEntries.AddRange(creditorEntries);
       }
@@ -273,7 +271,6 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
       var detailSummaryEntries = new List<TrialBalanceEntry>();
 
       foreach (var entry in entries) {
-
         entry.DebtorCreditor = entry.Account.DebtorCreditor;
         entry.SubledgerAccountNumber = SubledgerAccount.Parse(entry.SubledgerAccountId).Number ?? "";
         StandardAccount currentParent;
@@ -532,7 +529,7 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
 
     internal List<TrialBalanceEntry> GetSummaryEntriesAndSectorization(
                                       List<TrialBalanceEntry> entriesList) {
-
+      
       var entriesMapped = GetEntriesMappedForSectorization(entriesList);
 
       var hashEntries = new EmpiriaHashTable<TrialBalanceEntry>();
@@ -560,6 +557,7 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
                                     List<TrialBalanceEntry> checkSummaryEntries,
                                     List<TrialBalanceEntry> returnedEntries) {
       foreach (var entry in checkSummaryEntries) {
+
         var sectorParent = entry.Sector.Parent;
         var summaryEntry = returnedEntries.FirstOrDefault(a => a.Ledger.Number == entry.Ledger.Number &&
                                                         a.Currency.Code == entry.Currency.Code &&
@@ -934,7 +932,10 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
                                  TrialBalanceItemType itemType) {
 
       string hash = $"{targetAccount.Number}||{targetSector.Code}||{entry.Currency.Id}||{entry.Ledger.Id}";
-
+      if (_command.TrialBalanceType == TrialBalanceType.AnaliticoDeCuentas ||
+          _command.TrialBalanceType == TrialBalanceType.Balanza) {
+        hash = $"{targetAccount.Number}||{targetSector.Code}||{entry.Currency.Id}||{entry.Ledger.Id}||{entry.Account.DebtorCreditor}";
+      }
       GenerateOrIncreaseEntries(summaryEntries, entry, targetAccount, targetSector, itemType, hash);
     }
 

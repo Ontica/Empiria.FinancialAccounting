@@ -48,8 +48,9 @@ namespace Empiria.FinancialAccounting.Tests.Balances {
 
       command.TrialBalanceType = TrialBalanceType.AnaliticoDeCuentas;
       command.AccountsChartUID = "47ec2ec7-0f4f-482e-9799-c23107b60d8a";
-      //command.FromAccount = "9.";
-      //command.ToAccount = "9.";
+      command.BalancesType = BalancesType.WithCurrentBalance;
+      command.FromAccount = "8.";
+      command.ToAccount = "8.";
       command.UseDefaultValuation = true;
       command.WithSubledgerAccount = false;
       command.WithAverageBalance = false;
