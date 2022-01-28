@@ -8,6 +8,8 @@
 *                                                                                                            *
 ************************* Copyright(c) La Vía Óntica SC, Ontica LLC and contributors. All rights reserved. **/
 
+using System;
+
 namespace Empiria.FinancialAccounting.Rules {
 
   public enum GroupingRuleItemType {
@@ -133,6 +135,12 @@ namespace Empiria.FinancialAccounting.Rules {
     }
 
 
+    [DataField("ID_TIPO_INTEGRACION")]
+    public int IntegrationTypeId {
+      get; private set;
+    }
+
+
     [DataField("OPERADOR", Default = OperatorType.Add)]
     public OperatorType Operator {
       get; private set;
@@ -160,16 +168,21 @@ namespace Empiria.FinancialAccounting.Rules {
     public string Name {
       get {
         if (this.Type == GroupingRuleItemType.Account) {
+
           var account = GroupingRule.RulesSet.AccountsChart.TryGetAccount(this.AccountNumber);
+
           if (account != null) {
             return account.Name;
           } else {
             return "La cuenta NO existe en el catálogo de cuentas";
           }
+
         } else if (this.Type == GroupingRuleItemType.Agrupation) {
           return this.Reference.Concept;
+
         } else {
           return "ValorDefault";
+
         }
       }
     }
@@ -179,12 +192,16 @@ namespace Empiria.FinancialAccounting.Rules {
       get {
         if (this.Type == GroupingRuleItemType.Account) {
           return this.AccountNumber;
+
         } else if (this.Type == GroupingRuleItemType.Agrupation) {
           return this.Reference.Code;
+
         } else if (this.Type == GroupingRuleItemType.FixedValue) {
           return "Valor fijo";
+
         } else {
           return string.Empty;
+
         }
       }
     }
@@ -221,6 +238,20 @@ namespace Empiria.FinancialAccounting.Rules {
     }
 
     #endregion Properties
+
+    #region Methods
+
+    internal void Cleanup() {
+      this.CalculationRule = EmpiriaString.Clean(this.CalculationRule);
+      this.AccountNumber = EmpiriaString.Clean(this.AccountNumber);
+      this.SubledgerAccountNumber = EmpiriaString.Clean(this.SubledgerAccountNumber);
+      this.SectorCode = EmpiriaString.Clean(this.SectorCode);
+      this.CurrencyCode = EmpiriaString.Clean(this.CurrencyCode);
+      this.ExternalVariableCode = EmpiriaString.Clean(this.ExternalVariableCode);
+      this.Qualification = EmpiriaString.Clean(this.Qualification);
+    }
+
+    #endregion Methods
 
   }  // class GroupingRuleItem
 

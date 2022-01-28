@@ -86,6 +86,15 @@ namespace Empiria.FinancialAccounting.Rules {
 
     #endregion Properties
 
+    #region Methods
+
+    internal void Cleanup() {
+      this.Code = EmpiriaString.Clean(this.Code);
+      this.Concept = EmpiriaString.Clean(this.Concept);
+    }
+
+    #endregion Methods
+
   } // class GroupingRule
 
 }  // namespace Empiria.FinancialAccounting.Rules

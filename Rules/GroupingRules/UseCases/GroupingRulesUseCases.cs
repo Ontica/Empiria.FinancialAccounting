@@ -32,6 +32,16 @@ namespace Empiria.FinancialAccounting.Rules.UseCases {
 
     #region Use cases
 
+
+    public void CleanupRules(string rulesSetUID) {
+      Assertion.AssertObject(rulesSetUID, "rulesSetUID");
+
+      var rulesSet = RulesSet.Parse(rulesSetUID);
+
+      rulesSet.Cleanup();
+    }
+
+
     public FixedList<GroupingRuleDto> GroupingRules(string rulesSetUID) {
       Assertion.AssertObject(rulesSetUID, "rulesSetUID");
 

@@ -37,6 +37,29 @@ namespace Empiria.FinancialAccounting.Rules.Data {
       return DataReader.GetFixedList<GroupingRuleItem>(dataOperation);
     }
 
+
+    static internal void Write(GroupingRule o) {
+      var op = DataOperation.Parse("write_cof_concepto",
+                      o.Id, o.Code, o.Concept, o.Position,
+                      o.StartDate, o.EndDate, o.UID, o.RulesSet.Id);
+
+
+      DataWriter.Execute(op);
+    }
+
+
+
+    static internal void Write(GroupingRuleItem o) {
+      var op = DataOperation.Parse("write_cof_concepto_integracion",
+                      o.Id, o.UID, o.GroupingRule.Id, o.CalculationRule, o.Reference.Id,
+                      o.AccountNumber, o.SubledgerAccountNumber, o.SectorCode, o.ExternalVariableCode,
+                      (char) o.Operator, o.Qualification, o.IntegrationTypeId, o.Position,
+                      o.RulesSet.Id, o.CurrencyCode, o.AccountsListId);
+
+      DataWriter.Execute(op);
+    }
+
+
   }  // class GroupingRulesData
 
 }  // namespace Empiria.FinancialAccounting.Rules.Data

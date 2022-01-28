@@ -88,6 +88,18 @@ namespace Empiria.FinancialAccounting.WebApi.Rules {
       }
     }
 
+
+    [HttpPost]
+    [Route("v2/financial-accounting/rules/grouping-rules/{rulesSetUID:guid}/clean-up")]
+    public NoDataModel CleanupGroupingRules([FromUri] string rulesSetUID) {
+
+      using (var usecases = GroupingRulesUseCases.UseCaseInteractor()) {
+        usecases.CleanupRules(rulesSetUID);
+
+        return new NoDataModel(base.Request);
+      }
+    }
+
     #endregion Web Apis
 
   }  // class GroupingRulesController

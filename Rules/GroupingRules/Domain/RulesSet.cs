@@ -90,6 +90,23 @@ namespace Empiria.FinancialAccounting.Rules {
 
     #region Methods
 
+    public void Cleanup() {
+      FixedList<GroupingRule> rules = GetGroupingRules();
+
+      foreach (var rule in rules) {
+        rule.Cleanup();
+        GroupingRulesData.Write(rule);
+      }
+
+      FixedList<GroupingRuleItem>  items = GroupingRulesData.GetGroupingRulesItems(this);
+
+      foreach (var item in items) {
+        item.Cleanup();
+        GroupingRulesData.Write(item);
+      }
+    }
+
+
     public FixedList<GroupingRule> GetGroupingRules() {
       return _groupingRules.Value;
     }
