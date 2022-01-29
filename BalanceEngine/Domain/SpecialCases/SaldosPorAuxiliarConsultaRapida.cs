@@ -59,6 +59,7 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
           entry.LastChangeDate = summary.LastChangeDate > entry.LastChangeDate ?
                                  summary.LastChangeDate : entry.LastChangeDate;
           summary.SubledgerAccountId = 0;
+          summary.SubledgerAccountNumber = entry.SubledgerAccountNumber;
         }
 
         returnedEntries.Add(entry);
