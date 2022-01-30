@@ -36,6 +36,7 @@ namespace Empiria.FinancialAccounting.FinancialReports.Adapters {
       internal set;
     } = new string[0];
 
+
   }  // class FinancialReportTypeDto
 
 }  // namespace Empiria.FinancialAccounting.FinancialReports.Adapters

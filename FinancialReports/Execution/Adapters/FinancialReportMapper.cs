@@ -49,7 +49,7 @@ namespace Empiria.FinancialAccounting.FinancialReports.Adapters {
       return new FinancialReportTypeDto() {
          UID = reportType.UID,
          Name = reportType.Name,
-         ExportTo = new string[] { "Excel" }
+         ExportTo = new string[] { "Excel", "SITI" }
       };
     }
 

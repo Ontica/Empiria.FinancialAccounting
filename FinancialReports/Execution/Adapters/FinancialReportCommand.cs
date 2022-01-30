@@ -18,18 +18,25 @@ namespace Empiria.FinancialAccounting.FinancialReports.Adapters {
       get; set;
     }
 
+
     public string AccountsChartUID {
       get; set;
     }
+
 
     public DateTime Date {
       get; set;
     }
 
+
+    public string ExportTo {
+      get; set;
+    }
+
+
     public FinancialReportType GetFinancialReportType() {
       return FinancialReports.FinancialReportType.Parse(this.FinancialReportType);
     }
-
 
   } // class FinancialReportCommand
 
