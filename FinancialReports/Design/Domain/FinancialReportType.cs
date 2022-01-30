@@ -25,7 +25,7 @@ namespace Empiria.FinancialAccounting.FinancialReports {
 
 
   /// <summary>Describes a financial report.</summary>
-  public class FinancialReportType: GeneralObject {
+  public class FinancialReportType : GeneralObject {
 
     #region Constructors and parsers
 
@@ -95,12 +95,18 @@ namespace Empiria.FinancialAccounting.FinancialReports {
     }
 
 
+    public int RoundDecimals {
+      get {
+        return base.ExtendedDataField.Get("roundDecimals", 2);
+      }
+    }
+
+
     public int TemplateFileId {
       get {
         return base.ExtendedDataField.Get("templateFileId", -1);
       }
     }
-
 
     #endregion Properties
 

@@ -29,6 +29,12 @@ namespace Empiria.FinancialAccounting.FinancialReports {
 
     internal FixedRowGroupingRulesReport(FinancialReportCommand command) {
       _command = command;
+      this.FinancialReportType = _command.GetFinancialReportType();
+    }
+
+
+    public FinancialReportType FinancialReportType {
+      get;
     }
 
 
@@ -104,13 +110,18 @@ namespace Empiria.FinancialAccounting.FinancialReports {
         }
       }
 
+      //if (filtered.Count > 1) {
+      //  EmpiriaLog.Info($"More than one balance for account: {groupingRule.AccountNumber},
+                      //  $"{groupingRule.GroupingRule.Concept}, {groupingRule.RulesSet.Name}, {filtered.Count}");
+      //}
+
       var totals = new ReportEntryTotals();
 
       foreach (var balance in filtered) {
         totals = totals.Sum(balance, groupingRule.Qualification);
       }
 
-      totals.Round();
+      totals.Round(FinancialReportType.RoundDecimals);
 
       return totals;
     }
@@ -145,7 +156,7 @@ namespace Empiria.FinancialAccounting.FinancialReports {
           throw Assertion.AssertNoReachThisCode();
         }
 
-        groupingRuleTotals.Round();
+        groupingRuleTotals.Round(FinancialReportType.RoundDecimals);
 
         SetTotalsFields(breakdownItem, groupingRuleTotals);
       }
@@ -182,7 +193,7 @@ namespace Empiria.FinancialAccounting.FinancialReports {
       foreach (var reportEntry in reportEntries) {
         ReportEntryTotals groupingRuleTotals = ProcessGroupingRule(reportEntry.GroupingRule, balances);
 
-        groupingRuleTotals.Round();
+        groupingRuleTotals.Round(FinancialReportType.RoundDecimals);
 
         SetTotalsFields(reportEntry, groupingRuleTotals);
       }

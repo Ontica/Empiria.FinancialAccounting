@@ -38,9 +38,9 @@ namespace Empiria.FinancialAccounting.FinancialReports {
 
     #region Methods
 
-    internal void Round() {
-      this.DomesticCurrencyTotal = Math.Round(this.DomesticCurrencyTotal, 0);
-      this.ForeignCurrencyTotal = Math.Round(this.ForeignCurrencyTotal, 0);
+    internal void Round(int decimals) {
+      this.DomesticCurrencyTotal = Math.Round(this.DomesticCurrencyTotal, decimals);
+      this.ForeignCurrencyTotal = Math.Round(this.ForeignCurrencyTotal, decimals);
     }
 
 
