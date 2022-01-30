@@ -46,7 +46,7 @@ namespace Empiria.FinancialAccounting.Reporting {
 
 
     private string GetFullPath(string filename) {
-      return Path.Combine(ExcelTemplateConfig.GenerationStoragePath + "/vouchers", filename);
+      return Path.Combine(FileTemplateConfig.GenerationStoragePath + "/vouchers", filename);
     }
 
 
@@ -70,7 +70,7 @@ namespace Empiria.FinancialAccounting.Reporting {
     }
 
 
-    private ExcelTemplateConfig GetVoucherTemplateConfig(VoucherDto voucher) {
+    private FileTemplateConfig GetVoucherTemplateConfig(VoucherDto voucher) {
       string templateUID;
 
       if (voucher.AllEntriesAreInBaseCurrency) {
@@ -79,7 +79,7 @@ namespace Empiria.FinancialAccounting.Reporting {
         templateUID = $"OperationalReportTemplate.VoucherHtmlTemplateMultiCurrencies";
       }
 
-      return ExcelTemplateConfig.Parse(templateUID);
+      return FileTemplateConfig.Parse(templateUID);
     }
 
 
@@ -89,7 +89,7 @@ namespace Empiria.FinancialAccounting.Reporting {
       var pdfConverter = new HtmlToPdfConverter();
 
       var options = new PdfConverterOptions {
-        BaseUri = ExcelTemplateConfig.TemplatesStoragePath
+        BaseUri = FileTemplateConfig.TemplatesStoragePath
       };
 
       pdfConverter.Convert(html, fullpath, options);
@@ -97,7 +97,7 @@ namespace Empiria.FinancialAccounting.Reporting {
 
 
     private FileReportDto ToFileReportDto(string filename) {
-      return new FileReportDto(FileType.Pdf, ExcelTemplateConfig.BaseUrl + "/vouchers/" + filename);
+      return new FileReportDto(FileType.Pdf, FileTemplateConfig.BaseUrl + "/vouchers/" + filename);
     }
 
 

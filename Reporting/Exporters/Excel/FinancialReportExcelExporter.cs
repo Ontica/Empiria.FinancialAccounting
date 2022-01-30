@@ -15,19 +15,29 @@ using Empiria.FinancialAccounting.FinancialReports.Adapters;
 namespace Empiria.FinancialAccounting.Reporting.Exporters.Excel {
 
   /// <summary>Creates a Microsoft Excel file with a financial report.</summary>
-  internal class FinancialReportExcelExporter {
+  internal class FinancialReportExcelExporter : IFinancialReportBuilder {
 
-    private readonly ExcelTemplateConfig _templateConfig;
+    private readonly FileTemplateConfig _templateConfig;
     private ExcelFile _excelFile;
 
-    public FinancialReportExcelExporter(ExcelTemplateConfig templateConfig) {
+    public FinancialReportExcelExporter(FileTemplateConfig templateConfig) {
       Assertion.AssertObject(templateConfig, "templateConfig");
 
       _templateConfig = templateConfig;
     }
 
 
-    internal ExcelFile CreateExcelFile(FinancialReportDto financialReport) {
+    public FileReportDto Build(FinancialReportDto financialReportDto) {
+      Assertion.AssertObject(financialReportDto, "financialReportDto");
+
+      return CreateExcelFile(financialReportDto)
+            .ToFileReportDto();
+    }
+
+
+    #region Private methods
+
+    private ExcelFile CreateExcelFile(FinancialReportDto financialReport) {
       Assertion.AssertObject(financialReport, "financialReport");
 
       _excelFile = new ExcelFile(_templateConfig);
@@ -45,8 +55,6 @@ namespace Empiria.FinancialAccounting.Reporting.Exporters.Excel {
       return _excelFile;
     }
 
-
-    #region Private methods
 
     private void SetHeader(FinancialReportCommand command) {
       FinancialReportType reportType = command.GetFinancialReportType();
@@ -109,7 +117,6 @@ namespace Empiria.FinancialAccounting.Reporting.Exporters.Excel {
         i++;
       }
     }
-
 
     #endregion Private methods
 

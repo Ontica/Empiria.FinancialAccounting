@@ -34,15 +34,18 @@ namespace Empiria.FinancialAccounting.Reporting.Exporters {
 
 
     private IExcelExporter GetExcelExporter(ReportDataDto reportData) {
-      ExcelTemplateConfig templateConfig = GetExcelTemplate(reportData);
+      FileTemplateConfig templateConfig = GetExcelTemplate(reportData);
 
       switch (reportData.Command.ReportType) {
         case "BalanzaSAT":
           return new BalanzaSatExcelExporter(reportData, templateConfig);
+
         case "BalanzaDeterminarImpuestos":
           return new BalanzaCalculoImpuestosExcelExporter(reportData, templateConfig);
+
         case "CatalogoCuentasSAT":
           return new CatalogoCuentasSatExcelExporter(reportData, templateConfig);
+
         case "ListadoDePolizas":
           return new ListadoPolizasExcelExporter(reportData, templateConfig);
 
@@ -52,10 +55,10 @@ namespace Empiria.FinancialAccounting.Reporting.Exporters {
     }
 
 
-    private ExcelTemplateConfig GetExcelTemplate(ReportDataDto reportData) {
+    private FileTemplateConfig GetExcelTemplate(ReportDataDto reportData) {
       var templateUID = $"OperationalReportTemplate.{reportData.Command.ReportType}";
 
-      return ExcelTemplateConfig.Parse(templateUID);
+      return FileTemplateConfig.Parse(templateUID);
     }
 
 

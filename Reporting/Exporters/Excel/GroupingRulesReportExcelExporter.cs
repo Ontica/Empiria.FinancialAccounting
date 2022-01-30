@@ -16,10 +16,10 @@ namespace Empiria.FinancialAccounting.Reporting.Exporters.Excel {
   /// <summary>Main service to export grouping rules information to Microsoft Excel.</summary>
   internal class GroupingRulesReportExcelExporter {
 
-    private readonly ExcelTemplateConfig _templateConfig;
+    private readonly FileTemplateConfig _templateConfig;
     private ExcelFile _excelFile;
 
-    public GroupingRulesReportExcelExporter(ExcelTemplateConfig templateConfig) {
+    public GroupingRulesReportExcelExporter(FileTemplateConfig templateConfig) {
       Assertion.AssertObject(templateConfig, "templateConfig");
 
       _templateConfig = templateConfig;

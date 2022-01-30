@@ -18,10 +18,10 @@ namespace Empiria.FinancialAccounting.Reporting.Exporters.Excel {
   internal class BalanceExcelExporter {
 
     private BalanceCommand _command = new BalanceCommand();
-    private readonly ExcelTemplateConfig _templateConfig;
+    private readonly FileTemplateConfig _templateConfig;
     private ExcelFile _excelFile;
 
-    public BalanceExcelExporter(ExcelTemplateConfig templateConfig) {
+    public BalanceExcelExporter(FileTemplateConfig templateConfig) {
       Assertion.AssertObject(templateConfig, "templateConfig");
 
       _templateConfig = templateConfig;

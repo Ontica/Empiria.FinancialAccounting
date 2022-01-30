@@ -2,33 +2,33 @@
 *                                                                                                            *
 *  Module   : Reporting Services                           Component : Excel Exporters                       *
 *  Assembly : FinancialAccounting.Reporting.dll            Pattern   : Information Holder                    *
-*  Type     : ExcelTemplateConfig                          License   : Please read LICENSE.txt file          *
+*  Type     : FileTemplateConfig                           License   : Please read LICENSE.txt file          *
 *                                                                                                            *
-*  Summary  : Holds configuration data about a Microsoft Excel template file.                                *
+*  Summary  : Holds configuration for file templates.                                                        *
 *                                                                                                            *
 ************************* Copyright(c) La Vía Óntica SC, Ontica LLC and contributors. All rights reserved. **/
 using System;
 using System.IO;
 
-namespace Empiria.FinancialAccounting.Reporting.Exporters.Excel {
+namespace Empiria.FinancialAccounting.Reporting {
 
-  /// <summary>Holds configuration data about a Microsoft Excel template file.</summary>
-  internal class ExcelTemplateConfig : GeneralObject {
+  /// <summary>Holds configuration for file templates.</summary>
+  internal class FileTemplateConfig : GeneralObject {
 
     #region Constructors and parsers
 
-    protected ExcelTemplateConfig() {
+    protected FileTemplateConfig() {
       // Required by Empiria Framework
     }
 
 
-    static internal ExcelTemplateConfig Parse(int id) {
-      return BaseObject.ParseId<ExcelTemplateConfig>(id);
+    static internal FileTemplateConfig Parse(int id) {
+      return BaseObject.ParseId<FileTemplateConfig>(id);
     }
 
 
-    static internal ExcelTemplateConfig Parse(string uid) {
-      return BaseObject.ParseKey<ExcelTemplateConfig>(uid);
+    static internal FileTemplateConfig Parse(string uid) {
+      return BaseObject.ParseKey<FileTemplateConfig>(uid);
     }
 
 
@@ -95,6 +95,6 @@ namespace Empiria.FinancialAccounting.Reporting.Exporters.Excel {
 
     #endregion Methods
 
-  }  // class ExcelTemplateConfig
+  }  // class FileTemplateConfig
 
-}  // namespace Empiria.FinancialAccounting.Reporting.Exporters.Excel
+}  // namespace Empiria.FinancialAccounting.Reporting

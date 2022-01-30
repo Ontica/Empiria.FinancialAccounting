@@ -16,9 +16,9 @@ namespace Empiria.FinancialAccounting.Reporting.Exporters.Excel {
   /// <summary>Exports transaction slips (volantes) to Microsoft Excel.</summary>
   internal class TransactionSlipExporter {
 
-    private readonly ExcelTemplateConfig _template;
+    private readonly FileTemplateConfig _template;
 
-    public TransactionSlipExporter(ExcelTemplateConfig template) {
+    public TransactionSlipExporter(FileTemplateConfig template) {
       Assertion.AssertObject(template, "template");
 
       _template = template;

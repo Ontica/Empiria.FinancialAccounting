@@ -13,7 +13,6 @@ using Empiria.FinancialAccounting.Reporting.Exporters.Excel;
 
 using Empiria.FinancialAccounting.Adapters;
 using Empiria.FinancialAccounting.BalanceEngine.Adapters;
-using Empiria.FinancialAccounting.FinancialReports.Adapters;
 using Empiria.FinancialAccounting.Rules.Adapters;
 using Empiria.FinancialAccounting.Reporting.Adapters;
 using Empiria.FinancialAccounting.BanobrasIntegration.TransactionSlips.Adapters;
@@ -28,11 +27,11 @@ namespace Empiria.FinancialAccounting.Reporting {
 
       var templateUID = $"TrialBalanceTemplate.{trialBalance.Command.TrialBalanceType}";
 
-      var templateConfig = ExcelTemplateConfig.Parse(templateUID);
+      var templateConfig = FileTemplateConfig.Parse(templateUID);
 
-      var creator = new TrialBalanceExcelExporter(templateConfig);
+      var exporter = new TrialBalanceExcelExporter(templateConfig);
 
-      ExcelFile excelFile = creator.CreateExcelFile(trialBalance);
+      ExcelFile excelFile = exporter.CreateExcelFile(trialBalance);
 
       return excelFile.ToFileReportDto();
     }
@@ -45,11 +44,11 @@ namespace Empiria.FinancialAccounting.Reporting {
 
       var templateUID = "AccountsChartTemplate";
 
-      var templateConfig = ExcelTemplateConfig.Parse(templateUID);
+      var templateConfig = FileTemplateConfig.Parse(templateUID);
 
-      var creator = new AccountsChartExcelExporter(templateConfig);
+      var exporter = new AccountsChartExcelExporter(templateConfig);
 
-      ExcelFile excelFile = creator.CreateExcelFile(accountsChart);
+      ExcelFile excelFile = exporter.CreateExcelFile(accountsChart);
 
       return excelFile.ToFileReportDto();
     }
@@ -60,26 +59,11 @@ namespace Empiria.FinancialAccounting.Reporting {
 
       var templateUID = $"GroupingRulesReportTemplate";
 
-      var templateConfig = ExcelTemplateConfig.Parse(templateUID);
+      var templateConfig = FileTemplateConfig.Parse(templateUID);
 
-      var creator = new GroupingRulesReportExcelExporter(templateConfig);
+      var exporter = new GroupingRulesReportExcelExporter(templateConfig);
 
-      ExcelFile excelFile = creator.CreateExcelFile(rulesTreeItems);
-
-      return excelFile.ToFileReportDto();
-    }
-
-
-    public FileReportDto Export(FinancialReportDto financialReport) {
-      Assertion.AssertObject(financialReport, "financialReport");
-
-      var templateId = financialReport.Command.GetFinancialReportType().TemplateFileId;
-
-      var templateConfig = ExcelTemplateConfig.Parse(templateId);
-
-      var creator = new FinancialReportExcelExporter(templateConfig);
-
-      ExcelFile excelFile = creator.CreateExcelFile(financialReport);
+      ExcelFile excelFile = exporter.CreateExcelFile(rulesTreeItems);
 
       return excelFile.ToFileReportDto();
     }
@@ -90,11 +74,11 @@ namespace Empiria.FinancialAccounting.Reporting {
 
       var templateUID = "BalanceSetTemplate";
 
-      var templateConfig = ExcelTemplateConfig.Parse(templateUID);
+      var templateConfig = FileTemplateConfig.Parse(templateUID);
 
-      var creator = new StoredBalanceSetExcelExporter(templateConfig);
+      var exporter = new StoredBalanceSetExcelExporter(templateConfig);
 
-      ExcelFile excelFile = creator.CreateExcelFile(balanceSet);
+      ExcelFile excelFile = exporter.CreateExcelFile(balanceSet);
 
       return excelFile.ToFileReportDto();
     }
@@ -105,11 +89,11 @@ namespace Empiria.FinancialAccounting.Reporting {
 
       var templateUID = $"VouchersByAccountTemplate";
 
-      var templateConfig = ExcelTemplateConfig.Parse(templateUID);
+      var templateConfig = FileTemplateConfig.Parse(templateUID);
 
-      var creator = new VouchersByAccountExcelExporter(templateConfig);
+      var exporter = new VouchersByAccountExcelExporter(templateConfig);
 
-      ExcelFile excelFile = creator.CreateExcelFile(vouchers);
+      ExcelFile excelFile = exporter.CreateExcelFile(vouchers);
 
       return excelFile.ToFileReportDto();
     }
@@ -131,23 +115,21 @@ namespace Empiria.FinancialAccounting.Reporting {
         throw Assertion.AssertNoReachThisCode($"Invalid exportation type '{exportationType}'.");
       }
 
-      var templateConfig = ExcelTemplateConfig.Parse(templateUID);
+      var templateConfig = FileTemplateConfig.Parse(templateUID);
 
-      var creator = new TransactionSlipExporter(templateConfig);
+      var exporter = new TransactionSlipExporter(templateConfig);
 
       ExcelFile excelFile;
 
       if (exportationType == "slips") {
-        excelFile = creator.CreateExcelFile(transactionSlips);
+        excelFile = exporter.CreateExcelFile(transactionSlips);
 
       } else if (exportationType == "issues") {
-        excelFile = creator.CreateIsuesExcelFile(transactionSlips);
+        excelFile = exporter.CreateIsuesExcelFile(transactionSlips);
 
       } else {
         throw Assertion.AssertNoReachThisCode($"Invalid exportation type '{exportationType}'.");
       }
-
-
 
       return excelFile.ToFileReportDto();
     }
@@ -158,11 +140,11 @@ namespace Empiria.FinancialAccounting.Reporting {
 
       var templateUID = $"BalanceTemplate.{balance.Command.TrialBalanceType}";
 
-      var templateConfig = ExcelTemplateConfig.Parse(templateUID);
+      var templateConfig = FileTemplateConfig.Parse(templateUID);
 
-      var creator = new BalanceExcelExporter(templateConfig);
+      var exporter = new BalanceExcelExporter(templateConfig);
 
-      ExcelFile excelFile = creator.CreateExcelFile(balance);
+      ExcelFile excelFile = exporter.CreateExcelFile(balance);
 
       return excelFile.ToFileReportDto();
     }

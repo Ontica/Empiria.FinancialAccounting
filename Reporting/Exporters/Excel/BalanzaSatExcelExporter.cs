@@ -18,9 +18,9 @@ namespace Empiria.FinancialAccounting.Reporting.Exporters.Excel {
   internal class BalanzaSatExcelExporter : IExcelExporter {
 
     private readonly ReportDataDto _reportData;
-    private readonly ExcelTemplateConfig _template;
+    private readonly FileTemplateConfig _template;
 
-    public BalanzaSatExcelExporter(ReportDataDto reportData, ExcelTemplateConfig template) {
+    public BalanzaSatExcelExporter(ReportDataDto reportData, FileTemplateConfig template) {
       Assertion.AssertObject(reportData, "reportData");
       Assertion.AssertObject(template, "template");
 

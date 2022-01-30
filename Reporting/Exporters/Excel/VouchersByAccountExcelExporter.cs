@@ -20,11 +20,11 @@ namespace Empiria.FinancialAccounting.Reporting.Exporters.Excel {
   internal class VouchersByAccountExcelExporter {
 
     private BalanceCommand _command = new BalanceCommand();
-    private readonly ExcelTemplateConfig _templateConfig;
+    private readonly FileTemplateConfig _templateConfig;
     private ExcelFile _excelFile;
 
 
-    public VouchersByAccountExcelExporter(ExcelTemplateConfig templateConfig) {
+    public VouchersByAccountExcelExporter(FileTemplateConfig templateConfig) {
       Assertion.AssertObject(templateConfig, "templateConfig");
 
       _templateConfig = templateConfig;

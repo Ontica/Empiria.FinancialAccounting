@@ -16,9 +16,9 @@ namespace Empiria.FinancialAccounting.Reporting.Exporters.Excel {
   /// <summary>Main service used to export charts of accounts to Microsoft Excel.</summary>
   internal class AccountsChartExcelExporter {
 
-    private readonly ExcelTemplateConfig _templateConfig;
+    private readonly FileTemplateConfig _templateConfig;
 
-    public AccountsChartExcelExporter(ExcelTemplateConfig templateConfig) {
+    public AccountsChartExcelExporter(FileTemplateConfig templateConfig) {
       Assertion.AssertObject(templateConfig, "templateConfig");
 
       _templateConfig = templateConfig;

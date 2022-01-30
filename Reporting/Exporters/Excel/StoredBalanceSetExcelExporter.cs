@@ -16,10 +16,10 @@ namespace Empiria.FinancialAccounting.Reporting.Exporters.Excel {
   /// <summary>Creates a Microsoft Excel file for a set of stored balances.</summary>
   internal class StoredBalanceSetExcelExporter {
 
-    private readonly ExcelTemplateConfig _templateConfig;
+    private readonly FileTemplateConfig _templateConfig;
     private ExcelFile _excelFile;
 
-    public StoredBalanceSetExcelExporter(ExcelTemplateConfig templateConfig) {
+    public StoredBalanceSetExcelExporter(FileTemplateConfig templateConfig) {
       Assertion.AssertObject(templateConfig, "templateConfig");
 
       _templateConfig = templateConfig;

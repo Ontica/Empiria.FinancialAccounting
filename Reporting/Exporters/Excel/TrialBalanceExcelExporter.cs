@@ -19,13 +19,13 @@ namespace Empiria.FinancialAccounting.Reporting.Exporters.Excel {
   internal class TrialBalanceExcelExporter {
 
     private TrialBalanceCommand _command = new TrialBalanceCommand();
-    private readonly ExcelTemplateConfig _templateConfig;
+    private readonly FileTemplateConfig _templateConfig;
 
     private readonly DateTime MIN_LAST_CHANGE_DATE_TO_REPORT = DateTime.Parse("01/01/1970");
 
     private ExcelFile _excelFile;
 
-    public TrialBalanceExcelExporter(ExcelTemplateConfig templateConfig) {
+    public TrialBalanceExcelExporter(FileTemplateConfig templateConfig) {
       Assertion.AssertObject(templateConfig, "templateConfig");
 
       _templateConfig = templateConfig;

@@ -19,13 +19,13 @@ namespace Empiria.FinancialAccounting.Reporting.Exporters.Excel {
 
     #region Fields
 
-    private readonly ExcelTemplateConfig _templateConfig;
+    private readonly FileTemplateConfig _templateConfig;
 
     private Spreadsheet _excel;
 
     #endregion Fields
 
-    public ExcelFile(ExcelTemplateConfig templateConfig) {
+    public ExcelFile(FileTemplateConfig templateConfig) {
       Assertion.AssertObject(templateConfig, " templateConfig");
 
       _templateConfig = templateConfig;
@@ -35,7 +35,7 @@ namespace Empiria.FinancialAccounting.Reporting.Exporters.Excel {
 
     public string Url {
       get {
-        return $"{ExcelTemplateConfig.BaseUrl}/{FileInfo.Name}";
+        return $"{FileTemplateConfig.BaseUrl}/{FileInfo.Name}";
       }
     }
 

@@ -17,9 +17,9 @@ namespace Empiria.FinancialAccounting.Reporting.Exporters.Excel {
   /// <summary>Genera los datos de la balanza para calcular impuestos en un archivo Excel.</summary>
   internal class BalanzaCalculoImpuestosExcelExporter : IExcelExporter {
     private readonly ReportDataDto _reportData;
-    private readonly ExcelTemplateConfig _template;
+    private readonly FileTemplateConfig _template;
 
-    public BalanzaCalculoImpuestosExcelExporter(ReportDataDto reportData, ExcelTemplateConfig template) {
+    public BalanzaCalculoImpuestosExcelExporter(ReportDataDto reportData, FileTemplateConfig template) {
       Assertion.AssertObject(reportData, "reportData");
       Assertion.AssertObject(template, "template");
 
