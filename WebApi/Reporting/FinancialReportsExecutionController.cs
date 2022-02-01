@@ -63,21 +63,22 @@ namespace Empiria.FinancialAccounting.WebApi.FinancialReports {
 
 
     [HttpPost]
-    [Route("v2/financial-accounting/financial-reports/generate/excel")]
-    public SingleObjectModel GetExcelFinancialReport([FromBody] FinancialReportCommand command) {
+    [Route("v2/financial-accounting/financial-reports/export")]
+    public SingleObjectModel ExportFinancialReport([FromBody] FinancialReportCommand command) {
+
       base.RequireBody(command);
 
       using (var usecases = FinancialReportsUseCases.UseCaseInteractor()) {
+
         FinancialReportDto financialReport = usecases.GenerateFinancialReport(command);
 
-        var excelExporter = new ExcelExporterService();
+        var exporter = FinancialReportExportService.ServiceInteractor();
 
-        FileReportDto excelFileDto = excelExporter.Export(financialReport);
+        FileReportDto fileReportDto = exporter.Export(financialReport);
 
-        return new SingleObjectModel(this.Request, excelFileDto);
+        return new SingleObjectModel(this.Request, fileReportDto);
       }
     }
-
 
     #endregion Web Apis
 
