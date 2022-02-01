@@ -127,6 +127,7 @@ namespace Empiria.FinancialAccounting.BanobrasIntegration.VouchersImporter {
       ImportVouchersResult result = this.DryRunImport();
 
       EmpiriaLog.Info("Dry run importation ends. Actual importation starts ...");
+
       using (var usecases = VoucherEditionUseCases.UseCaseInteractor()) {
 
         foreach (ToImportVoucher voucher in _toImportVouchersList) {

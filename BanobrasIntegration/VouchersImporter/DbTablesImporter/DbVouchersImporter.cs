@@ -118,6 +118,8 @@ namespace Empiria.FinancialAccounting.BanobrasIntegration.VouchersImporter {
 
         UpdateImportVouchersResult();
       }
+
+      EmpiriaLog.Info($"Voucher processing ends at {DateTime.Now}.");
     }
 
 

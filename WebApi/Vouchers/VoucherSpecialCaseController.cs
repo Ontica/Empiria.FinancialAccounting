@@ -1,7 +1,7 @@
 ﻿/* Empiria Financial *****************************************************************************************
 *                                                                                                            *
 *  Module   : Vouchers Management                          Component : Web Api                               *
-*  Assembly : Empiria.FinancialAccounting.WebApi.dll       Pattern   : Query Controller                      *
+*  Assembly : Empiria.FinancialAccounting.WebApi.dll       Pattern   : Web Api Controller                    *
 *  Type     : VoucherSpecialCaseController                 License   : Please read LICENSE.txt file          *
 *                                                                                                            *
 *  Summary  : Web API used to process voucher special cases.                                                 *
@@ -17,7 +17,7 @@ using Empiria.FinancialAccounting.Vouchers.Adapters;
 
 namespace Empiria.FinancialAccounting.WebApi.Vouchers {
 
-  /// <summary>Query web API used to retrive accounting vouchers.</summary>
+  /// <summary>Web API used to process voucher special cases.</summary>
   public class VoucherSpecialCaseController : WebApiController {
 
     #region Web Apis

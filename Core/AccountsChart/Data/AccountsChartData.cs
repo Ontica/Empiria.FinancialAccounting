@@ -31,9 +31,9 @@ namespace Empiria.FinancialAccounting.Data {
     static internal FixedList<Account> GetAccountHistory(AccountsChart accountsChart,
                                                          string accountNumber) {
       var sql = "SELECT * FROM VW_COF_CUENTA_ESTANDAR_HIST " +
-          $"WHERE ID_TIPO_CUENTAS_STD = {accountsChart.Id} " +
-          $"AND NUMERO_CUENTA_ESTANDAR = '{accountNumber}' " +
-          $"ORDER BY FECHA_INICIO";
+               $"WHERE ID_TIPO_CUENTAS_STD = {accountsChart.Id} " +
+               $"AND NUMERO_CUENTA_ESTANDAR = '{accountNumber}' " +
+               $"ORDER BY FECHA_INICIO";
 
       var dataOperation = DataOperation.Parse(sql);
 
@@ -76,7 +76,7 @@ namespace Empiria.FinancialAccounting.Data {
     }
 
 
-    internal static FixedList<LedgerRule> GetAccountsLedgersRules() {
+    static internal FixedList<LedgerRule> GetAccountsLedgersRules() {
       var sql = "SELECT COF_CUENTA.* " +
                 $"FROM COF_MAYOR INNER JOIN COF_CUENTA " +
                 $"ON COF_MAYOR.ID_MAYOR = COF_CUENTA.ID_MAYOR " +
@@ -90,9 +90,9 @@ namespace Empiria.FinancialAccounting.Data {
 
     static internal FixedList<SectorRule> GetAccountsSectorsRules() {
       var sql = "SELECT COF_MAPEO_SECTOR.* " +
-                $"FROM COF_SECTOR INNER JOIN COF_MAPEO_SECTOR " +
-                $"ON COF_SECTOR.ID_SECTOR = COF_MAPEO_SECTOR.ID_SECTOR " +
-                $"ORDER BY COF_MAPEO_SECTOR.ID_CUENTA_ESTANDAR, COF_SECTOR.CLAVE_SECTOR, FECHA_FIN DESC";
+               $"FROM COF_SECTOR INNER JOIN COF_MAPEO_SECTOR " +
+               $"ON COF_SECTOR.ID_SECTOR = COF_MAPEO_SECTOR.ID_SECTOR " +
+               $"ORDER BY COF_MAPEO_SECTOR.ID_CUENTA_ESTANDAR, COF_SECTOR.CLAVE_SECTOR, FECHA_FIN DESC";
 
       var dataOperation = DataOperation.Parse(sql);
 
@@ -102,8 +102,8 @@ namespace Empiria.FinancialAccounting.Data {
 
     static internal Account GetCurrentAccountWithStandardAccountId(int standardAccountId) {
       var sql = "SELECT * FROM VW_COF_CUENTA_ESTANDAR_HIST " +
-                $"WHERE ID_CUENTA_ESTANDAR = {standardAccountId} " +
-                $"ORDER BY FECHA_FIN DESC";
+               $"WHERE ID_CUENTA_ESTANDAR = {standardAccountId} " +
+               $"ORDER BY FECHA_FIN DESC";
 
       var dataOperation = DataOperation.Parse(sql);
 
@@ -114,9 +114,9 @@ namespace Empiria.FinancialAccounting.Data {
     static internal FixedList<Account> SearchAccounts(AccountsChart accountsChart,
                                                       string filter) {
       var sql = "SELECT * FROM VW_COF_CUENTA_ESTANDAR_HIST " +
-                $"WHERE ID_TIPO_CUENTAS_STD = {accountsChart.Id} " +
-                (filter.Length != 0 ? $" AND ({filter}) " : String.Empty) +
-                $"ORDER BY NUMERO_CUENTA_ESTANDAR";
+               $"WHERE ID_TIPO_CUENTAS_STD = {accountsChart.Id} " +
+               (filter.Length != 0 ? $" AND ({filter}) " : String.Empty) +
+               $"ORDER BY NUMERO_CUENTA_ESTANDAR";
 
       var dataOperation = DataOperation.Parse(sql);
 
