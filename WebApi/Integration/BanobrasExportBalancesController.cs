@@ -39,6 +39,10 @@ namespace Empiria.FinancialAccounting.WebApi.BanobrasIntegration {
             usecases.ExportBalancesByDay(command);
             break;
 
+          case "SaldosSIC":
+            usecases.ExportBalancesByPeriod(command);
+            break;
+
           case "MensualPorMayor":
             usecases.ExportBalancesByMonthByLedger(command);
             break;
