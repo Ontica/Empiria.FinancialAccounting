@@ -32,46 +32,44 @@ namespace Empiria.FinancialAccounting.BanobrasIntegration.BalancesExporter.Data 
     }
 
 
-    static internal void WriteBalancesByDay(DateTime fecha, FixedList<ExportedBalancesDto> balances) {
-      throw new NotImplementedException();
-    }
-
-
-    static internal void WriteBalancesByMonth(ExportBalancesCommand command, FixedList<ExportedBalancesDto> balances) {
-      DeleteStoredBalancesByMonth(command);
+    static internal void StoreBalances(ExportBalancesCommand command,
+                                       FixedList<ExportedBalancesDto> balances) {
+      DeleteStoredBalances(command);
 
       foreach (var balance in balances) {
-        WriteBalancesByMonth(balance);
+        WriteBalances(command, balance);
       }
     }
-
 
     #endregion Public methods
 
     #region Private methods
 
-    static private void DeleteStoredBalancesByMonth(ExportBalancesCommand command) {
-      var dataOperation = DataOperation.Parse("del_scon_saldos_ant",
-                                              command.Empresa,
-                                              command.Fecha.Year,
-                                              command.Fecha.Month);
 
-      DataWriter.Execute(dataOperation);
+    static private void DeleteStoredBalances(ExportBalancesCommand command) {
+      var op = DataOperation.Parse("del_saldos_tabla_intermedia",
+                                    command.BalanceType, command.Empresa,
+                                    command.FechaFin, command.FechaFin.Year,
+                                    command.FechaFin.Month, command.FechaFin.Day);
+
+      DataWriter.Execute(op);
     }
 
 
-    static private void WriteBalancesByMonth(ExportedBalancesDto o) {
+    static private void WriteBalances(ExportBalancesCommand command,
+                                      ExportedBalancesDto o) {
       string nullString = null;
 
-      var dataOperation = DataOperation.Parse("apd_scon_saldos_ant",
-                              o.Anio, o.Mes, o.Area, o.Moneda, o.NumeroMayor,
+      var op = DataOperation.Parse("apd_saldo_tabla_intermedia",
+                              command.BalanceType, o.Empresa,
+                              o.Fecha, o.Anio, o.Mes, o.Dia,
+                              o.Area, o.Moneda, o.NumeroMayor,
                               o.Cuenta, o.Sector, o.Auxiliar, o.FechaUltimoMovimiento,
                               o.Saldo, o.MonedaOrigen, o.NaturalezaCuenta, o.SaldoPromedio,
-                              o.MontoDebito, o.MontoCredito, o.SaldoAnterior, o.Empresa,
-                              o.CalificaMoneda == "null" ? nullString : o.CalificaMoneda,
-                              DBNull.Value);
+                              o.MontoDebito, o.MontoCredito, o.SaldoAnterior,
+                              o.CalificaMoneda == "null" ? nullString : o.CalificaMoneda);
 
-      DataWriter.Execute(dataOperation);
+      DataWriter.Execute(op);
     }
 
     #endregion Private methods
