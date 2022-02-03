@@ -4,21 +4,24 @@
 *  Assembly : FinancialAccounting.BanobrasIntegration.dll  Pattern   : Service provider                      *
 *  Type     : ExternalProcessInvoker                       License   : Please read LICENSE.txt file          *
 *                                                                                                            *
-*  Summary  : Web api para ejecutar servicios de otros sistemas de Banobras desde SICOFIN (Marimba).         *
+*  Summary  : Ejecutor de servicios de otros sistemas de Banobras desde SICOFIN (Marimba).                   *
 *                                                                                                            *
 ************************* Copyright(c) La Vía Óntica SC, Ontica LLC and contributors. All rights reserved. **/
 using System;
 
 using Empiria.Services;
 
+using Empiria.FinancialAccounting.BanobrasIntegration.BalancesExporter.Adapters;
+using Empiria.FinancialAccounting.BanobrasIntegration.BalancesExporter.UseCases;
+
 namespace Empiria.FinancialAccounting.BanobrasIntegration {
 
-  /// <summary>Web api para ejecutar servicios de otros sistemas de Banobras desde SICOFIN (Marimba).</summary>
+  /// <summary>Ejecutor de servicios de otros sistemas de Banobras desde SICOFIN (Marimba).</summary>
   public class ExternalProcessInvoker : Service {
 
     #region Constructors and parsers
 
-    private ExternalProcessInvoker() {
+    protected ExternalProcessInvoker() {
       // no-op
     }
 
@@ -32,6 +35,8 @@ namespace Empiria.FinancialAccounting.BanobrasIntegration {
 
     public string ProcesarConciliacionSIC(ConcilacionSICExternalProcessCommand command) {
       Assertion.AssertObject(command, "command");
+
+      ExportarSaldosSIC(command.FechaInicio, command.FechaFin);
 
       try {
         ExternalProcessDataServices.ProcesarConcilacionSIC(command);
@@ -70,6 +75,26 @@ namespace Empiria.FinancialAccounting.BanobrasIntegration {
         }
       }  // catch
     }
+
+
+    #region Helper methods
+
+    private void ExportarSaldosSIC(DateTime fechaInicio, DateTime fechaFin) {
+      var command = new ExportBalancesCommand {
+        BalanceType = "SaldosSIC",
+        Empresa = AccountsChart.IFRS.Id,
+        BreakdownLedgers = true,
+        FechaInicio = fechaInicio,
+        FechaFin = fechaFin,
+        GuardarSaldos = true
+      };
+
+      using (var usecases = ExportBalancesUseCases.UseCaseInteractor()) {
+        usecases.ExportBalancesByPeriod(command);
+      }
+    }
+
+    #endregion Helper methods
 
   }  // class ExternalProcessInvoker
 
