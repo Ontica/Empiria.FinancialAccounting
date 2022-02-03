@@ -29,8 +29,17 @@ namespace Empiria.FinancialAccounting.BanobrasIntegration.BalancesExporter.Adapt
     }
 
 
-    public DateTime Fecha {
+    public DateTime FechaInicio {
       get; set;
+    }
+
+    public DateTime FechaFin {
+      get; set;
+    }
+
+
+    public bool BreakdownLedgers {
+      get; internal set;
     }
 
 
@@ -47,28 +56,44 @@ namespace Empiria.FinancialAccounting.BanobrasIntegration.BalancesExporter.Adapt
         TrialBalanceType = TrialBalanceType.Balanza,
         AccountsChartUID = AccountsChart.Parse(this.Empresa).UID,
         BalancesType = BalancesType.WithCurrentBalanceOrMovements,
-        ShowCascadeBalances = false,
+        ShowCascadeBalances = BreakdownLedgers,
         WithAverageBalance = true,
         WithSubledgerAccount = true,
         InitialPeriod = new TrialBalanceCommandPeriod {
-          FromDate = this.Fecha,
-          ToDate = this.Fecha
+          FromDate = this.FechaFin,
+          ToDate = this.FechaFin
         },
       };
     }
+
 
     public TrialBalanceCommand MapToTrialBalanceCommandForBalancesByMonth() {
       return new TrialBalanceCommand {
         TrialBalanceType = TrialBalanceType.Balanza,
         AccountsChartUID = AccountsChart.Parse(this.Empresa).UID,
         BalancesType = BalancesType.WithCurrentBalanceOrMovements,
-        ShowCascadeBalances = false,
+        ShowCascadeBalances = BreakdownLedgers,
         WithAverageBalance = true,
         WithSubledgerAccount = true,
         InitialPeriod = new TrialBalanceCommandPeriod {
-          FromDate = new DateTime(this.Fecha.Year, this.Fecha.Month, 1),
-          ToDate = new DateTime(this.Fecha.Year,
-          this.Fecha.Month, DateTime.DaysInMonth(this.Fecha.Year, this.Fecha.Month))
+          FromDate = new DateTime(this.FechaFin.Year, this.FechaFin.Month, 1),
+          ToDate = new DateTime(this.FechaFin.Year, this.FechaFin.Month,
+                                DateTime.DaysInMonth(this.FechaFin.Year, this.FechaFin.Month))
+        },
+      };
+    }
+
+    public TrialBalanceCommand MapToTrialBalanceCommandForBalancesByPeriod() {
+      return new TrialBalanceCommand {
+        TrialBalanceType = TrialBalanceType.Balanza,
+        AccountsChartUID = AccountsChart.Parse(this.Empresa).UID,
+        BalancesType = BalancesType.WithCurrentBalanceOrMovements,
+        ShowCascadeBalances = BreakdownLedgers,
+        WithAverageBalance = true,
+        WithSubledgerAccount = true,
+        InitialPeriod = new TrialBalanceCommandPeriod {
+          FromDate = this.FechaInicio,
+          ToDate = this.FechaFin
         },
       };
     }

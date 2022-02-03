@@ -13,15 +13,11 @@ namespace Empiria.FinancialAccounting.BanobrasIntegration.BalancesExporter.Adapt
 
   public class ExportedBalancesDto {
 
-    public int Anio {
+    public int Empresa {
       get; internal set;
     }
 
-    public int Mes {
-      get; internal set;
-    }
-
-    public int Dia {
+    public DateTime Fecha {
       get; internal set;
     }
 
@@ -81,12 +77,29 @@ namespace Empiria.FinancialAccounting.BanobrasIntegration.BalancesExporter.Adapt
       get; internal set;
     }
 
-    public int Empresa {
+    public string CalificaMoneda {
       get; internal set;
     }
 
-    public string CalificaMoneda {
-      get; internal set;
+
+    public int Anio {
+      get {
+        return this.Fecha.Year;
+      }
+    }
+
+
+    public int Mes {
+      get {
+        return this.Fecha.Month;
+      }
+    }
+
+
+    public int Dia {
+      get {
+        return this.Fecha.Day;
+      }
     }
 
   }  // class ExportedBalancesDto

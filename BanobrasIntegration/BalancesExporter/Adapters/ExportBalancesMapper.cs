@@ -45,12 +45,10 @@ namespace Empiria.FinancialAccounting.BanobrasIntegration.BalancesExporter.Adapt
                                                        entry.SectorCode,
                                                        subledgerAccount.Number);
       return new ExportedBalancesDto {
-        Anio = command.Fecha.Year,
-        Mes = command.Fecha.Month,
-        Dia = command.Fecha.Day,
+        Fecha = command.FechaFin,
         Area = "AREA",
         Moneda = 1,
-        NumeroMayor = "CONSOLIDADO",
+        NumeroMayor = command.BreakdownLedgers ? Ledger.Parse(entry.LedgerUID).Id.ToString(): "CONSOLIDADO",
         Cuenta = account.Number,
         Sector = entry.SectorCode,
         Auxiliar = subledgerAccount.IsEmptyInstance ? "0" : subledgerAccount.Number,

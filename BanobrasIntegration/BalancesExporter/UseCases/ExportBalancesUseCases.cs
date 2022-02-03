@@ -39,8 +39,6 @@ namespace Empiria.FinancialAccounting.BanobrasIntegration.BalancesExporter.UseCa
     public FixedList<ExportedBalancesDto> ExportBalancesByDay(ExportBalancesCommand command) {
       Assertion.AssertObject(command, "command");
 
-      command.GuardarSaldos = false;
-
       TrialBalanceCommand trialBalanceCommand = command.MapToTrialBalanceCommandForBalancesByDay();
 
       using (var usecases = TrialBalanceUseCases.UseCaseInteractor()) {
@@ -50,7 +48,28 @@ namespace Empiria.FinancialAccounting.BanobrasIntegration.BalancesExporter.UseCa
                       ExportBalancesMapper.MapToExportedBalances(command, trialBalance);
 
         if (command.GuardarSaldos) {
-          ExportBalancesDataService.WriteBalancesByDay(command.Fecha, balances);
+          ExportBalancesDataService.StoreBalances(command, balances);
+        }
+
+        return balances;
+      }
+    }
+
+    public FixedList<ExportedBalancesDto> ExportBalancesByPeriod(ExportBalancesCommand command) {
+      Assertion.AssertObject(command, "command");
+
+      command.BreakdownLedgers = true;
+
+      TrialBalanceCommand trialBalanceCommand = command.MapToTrialBalanceCommandForBalancesByPeriod();
+
+      using (var usecases = TrialBalanceUseCases.UseCaseInteractor()) {
+        TrialBalanceDto trialBalance = usecases.BuildTrialBalance(trialBalanceCommand);
+
+        FixedList<ExportedBalancesDto> balances =
+                      ExportBalancesMapper.MapToExportedBalances(command, trialBalance);
+
+        if (command.GuardarSaldos) {
+          ExportBalancesDataService.StoreBalances(command, balances);
         }
 
         return balances;
@@ -70,7 +89,7 @@ namespace Empiria.FinancialAccounting.BanobrasIntegration.BalancesExporter.UseCa
                               ExportBalancesMapper.MapToExportedBalances(command, trialBalance);
 
         if (command.GuardarSaldos) {
-          ExportBalancesDataService.WriteBalancesByMonth(command, balances);
+          ExportBalancesDataService.StoreBalances(command, balances);
         }
 
         return balances;
