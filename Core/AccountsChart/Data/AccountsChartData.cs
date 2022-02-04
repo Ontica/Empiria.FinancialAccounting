@@ -17,6 +17,33 @@ namespace Empiria.FinancialAccounting.Data {
   /// <summary>Data access layer for accounts charts.</summary>
   static internal class AccountsChartData {
 
+
+    internal static void TestViews() {
+
+      for (int i = 0; i < 20; i++) {
+        int DD = EmpiriaMath.GetRandom(1, 28);
+        int MM = EmpiriaMath.GetRandom(1, 12);
+        int YYYY = EmpiriaMath.GetRandom(2019, 2022);
+
+        var date = new DateTime(YYYY, MM, DD);
+
+        var condition = $"FECHA_PRUEBA >= '{CommonMethods.FormatSqlDate(date)}'";
+
+        var sql = $"SELECT COUNT(*) FROM vw_cof_movimiento_test_a where {condition}";
+
+        var dataOperation = DataOperation.Parse(sql);
+
+        DateTime now = DateTime.Now;
+
+        decimal rows = DataReader.GetScalar<decimal>(dataOperation, 0);
+
+        EmpiriaLog.Info($"Ejecución segs: {DateTime.Now.Subtract(now).TotalSeconds} [{condition}], " +
+                        $"days = {DateTime.Today.Subtract(date).TotalDays}, rows = {rows}");
+      }
+    }
+
+
+
     static internal EmpiriaHashTable<Account> GetAccounts(AccountsChart accountsChart) {
       var sql = "SELECT * FROM VW_COF_CUENTA_ESTANDAR_HIST " +
                 $"WHERE ID_TIPO_CUENTAS_STD = {accountsChart.Id} " +
@@ -39,7 +66,6 @@ namespace Empiria.FinancialAccounting.Data {
 
       return DataReader.GetFixedList<Account>(dataOperation);
     }
-
 
     static internal FixedList<Ledger> GetAccountChartLedgers(AccountsChart accountsChart) {
       var sql = "SELECT COF_MAYOR.* " +

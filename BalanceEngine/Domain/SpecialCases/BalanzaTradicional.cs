@@ -33,22 +33,38 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
         _command.WithSubledgerAccount = true;
       }
 
+      var startTime = DateTime.Now;
+
+      EmpiriaLog.Debug($"START BalanzaTradicional: {startTime}");
+
       FixedList<TrialBalanceEntry> postingEntries = helper.GetPostingEntries();
 
       List<TrialBalanceEntry> summaryEntries = helper.GenerateSummaryEntries(postingEntries);
 
+      EmpiriaLog.Debug($"AFTER GenerateSummaryEntries: {DateTime.Now.Subtract(startTime).TotalSeconds} seconds.");
+
       List<TrialBalanceEntry> _postingEntries = helper.GetSummaryEntriesAndSectorization(
                                                 postingEntries.ToList());
+
+      EmpiriaLog.Debug($"AFTER GetSummaryEntriesAndSectorization (postingEntries): {DateTime.Now.Subtract(startTime).TotalSeconds} seconds.");
 
       List<TrialBalanceEntry> summaryEntriesAndSectorization =
                               helper.GetSummaryEntriesAndSectorization(summaryEntries);
 
+      EmpiriaLog.Debug($"AFTER GetSummaryEntriesAndSectorization (summaryEntries): {DateTime.Now.Subtract(startTime).TotalSeconds} seconds.");
+
       List<TrialBalanceEntry> trialBalance = helper.CombineSummaryAndPostingEntries(
                                              summaryEntriesAndSectorization, _postingEntries.ToFixedList());
 
+      EmpiriaLog.Debug($"AFTER CombineSummaryAndPostingEntries: {DateTime.Now.Subtract(startTime).TotalSeconds} seconds.");
+
       trialBalance = GetTrialBalanceType(trialBalance, postingEntries);
 
+      EmpiriaLog.Debug($"AFTER GetTrialBalanceType: {DateTime.Now.Subtract(startTime).TotalSeconds} seconds.");
+
       trialBalance = helper.RestrictLevels(trialBalance);
+
+      EmpiriaLog.Debug($"AFTER RestrictLevels: {DateTime.Now.Subtract(startTime).TotalSeconds} seconds.");
 
       var returnBalance = new FixedList<ITrialBalanceEntry>(
                               trialBalance.Select(x => (ITrialBalanceEntry) x));
@@ -58,6 +74,8 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
       //  var ensureIsValid = new EnsureBalanceValidations(_command);
       //  ensureIsValid.EnsureIsValid(returnBalance, postingEntries);
       //}
+
+      EmpiriaLog.Debug($"END BalanzaTradicional: {DateTime.Now.Subtract(startTime).TotalSeconds} seconds.");
 
       return new TrialBalance(_command, returnBalance);
     }
@@ -95,7 +113,7 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
 
       List<TrialBalanceEntry> summaryTotalCurrencies = helper.GenerateTotalSummaryCurrency(
                                                               summaryTotalDebtorCreditorEntries);
-      
+
       trialBalance = helper.CombineCurrencyTotalsAndPostingEntries(trialBalance, summaryTotalCurrencies);
 
       List<TrialBalanceEntry> summaryTotalConsolidatedByLedger =

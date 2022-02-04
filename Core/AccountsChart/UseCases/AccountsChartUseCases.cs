@@ -8,11 +8,12 @@
 *                                                                                                            *
 ************************* Copyright(c) La Vía Óntica SC, Ontica LLC and contributors. All rights reserved. **/
 using System;
-using System.Linq;
 
 using Empiria.Services;
 
 using Empiria.FinancialAccounting.Adapters;
+
+using Empiria.FinancialAccounting.Data;
 
 namespace Empiria.FinancialAccounting.UseCases {
 
@@ -32,6 +33,11 @@ namespace Empiria.FinancialAccounting.UseCases {
     #endregion Constructors and parsers
 
     #region Use cases
+
+    public void CleanupAccounts() {
+      AccountsChartData.TestViews();
+    }
+
 
     public AccountDto GetAccount(string accountsChartUID, string accountUID) {
       Assertion.AssertObject(accountsChartUID, "accountsChartUID");

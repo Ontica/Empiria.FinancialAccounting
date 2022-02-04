@@ -33,11 +33,19 @@ namespace Empiria.FinancialAccounting.BalanceEngine.Data {
                             commandData.AverageBalance
                             );
 
-      EmpiriaLog.Debug(operation.AsText());
+      string random = EmpiriaString.BuildRandomString(8);
 
-      return DataReader.GetPlainObjectFixedList<TrialBalanceEntry>(operation);
+      DateTime startTime = DateTime.Now;
+
+      EmpiriaLog.Debug($"{random}: {startTime}: {operation.AsText()}");
+
+      var entries = DataReader.GetPlainObjectFixedList<TrialBalanceEntry>(operation);
+
+      EmpiriaLog.Debug($"{random} call returns {entries.Count} parsed entities in " +
+                       $"{DateTime.Now.Subtract(startTime).TotalSeconds} seconds.");
+
+      return entries;
     }
-
 
   } // class TrialBalanceDataService
 

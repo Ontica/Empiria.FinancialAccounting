@@ -71,6 +71,7 @@ namespace Empiria.FinancialAccounting.WebApi {
       }
     }
 
+
     [HttpPost]
     [Route("v2/financial-accounting/accounts-charts/{accountsChartUID:guid}/excel")]
     public SingleObjectModel GetAccountsInExcelFile([FromUri] string accountsChartUID,
@@ -101,6 +102,18 @@ namespace Empiria.FinancialAccounting.WebApi {
         return new SingleObjectModel(base.Request, accountsChart);
       }
     }
+
+
+    [HttpPost]
+    [Route("v2/financial-accounting/accounts-charts/cleanup")]
+    public SingleObjectModel CleanupAccounts() {
+      using (var usecases = AccountsChartUseCases.UseCaseInteractor()) {
+        usecases.CleanupAccounts();
+
+        return new SingleObjectModel(base.Request, "La operación de limpieza se ejecutó satisfactoriamente.");
+      }
+    }
+
 
     #endregion Web Apis
 
