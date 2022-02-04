@@ -37,7 +37,7 @@ namespace Empiria.FinancialAccounting.BanobrasIntegration.BalancesExporter.Data 
       DeleteStoredBalances(command);
 
       foreach (var balance in balances) {
-        WriteBalances(command, balance);
+        WriteBalances(command.StoreInto, balance);
       }
     }
 
@@ -48,20 +48,22 @@ namespace Empiria.FinancialAccounting.BanobrasIntegration.BalancesExporter.Data 
 
     static private void DeleteStoredBalances(ExportBalancesCommand command) {
       var op = DataOperation.Parse("del_saldos_tabla_intermedia",
-                                    command.BalanceType, command.Empresa,
-                                    command.FechaFin, command.FechaFin.Year,
-                                    command.FechaFin.Month, command.FechaFin.Day);
+                                    command.StoreInto.ToString(),
+                                    command.AccountsChartId,
+                                    command.ToDate, command.ToDate.Year,
+                                    command.ToDate.Month, command.ToDate.Day);
 
       DataWriter.Execute(op);
     }
 
 
-    static private void WriteBalances(ExportBalancesCommand command,
+    static private void WriteBalances(StoreBalancesInto storeInto,
                                       ExportedBalancesDto o) {
       string nullString = null;
 
       var op = DataOperation.Parse("apd_saldo_tabla_intermedia",
-                              command.BalanceType, o.Empresa,
+                              storeInto.ToString(),
+                              o.Empresa,
                               o.Fecha, o.Anio, o.Mes, o.Dia,
                               o.Area, o.Moneda, o.NumeroMayor,
                               o.Cuenta, o.Sector, o.Auxiliar, o.FechaUltimoMovimiento,

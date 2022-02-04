@@ -29,32 +29,12 @@ namespace Empiria.FinancialAccounting.WebApi.BanobrasIntegration {
 
       base.RequireBody(command);
 
-      command.GuardarSaldos = true;
-      command.Empresa = AccountsChart.IFRS.Id;
+      command.AccountsChartId = AccountsChart.IFRS.Id;
 
       using (var usecases = ExportBalancesUseCases.UseCaseInteractor()) {
 
-        switch (command.BalanceType) {
-          case "Diario":
-            usecases.ExportBalancesByDay(command);
-            break;
+        usecases.Export(command);
 
-          case "SaldosSIC":
-            usecases.ExportBalancesByPeriod(command);
-            break;
-
-          case "MensualPorMayor":
-            usecases.ExportBalancesByMonthByLedger(command);
-            break;
-
-          case "MensualConsolidado":
-            usecases.ExportBalancesByMonth(command);
-            break;
-
-          default:
-            throw Assertion.AssertNoReachThisCode($"Unrecognized balances type {command.BalanceType}.");
-
-        }
         return new SingleObjectModel(this.Request, "La exportación de saldos se realizó con éxito.");
       }
     }
@@ -62,15 +42,15 @@ namespace Empiria.FinancialAccounting.WebApi.BanobrasIntegration {
 
     [HttpPost, AllowAnonymous]
     [Route("v2/financial-accounting/integration/balances-by-day")]
-    public CollectionModel ExportBalancesByDay([FromBody] ExportBalancesCommand command) {
+    public CollectionModel ExportBalancesByDay([FromBody] ExportBalancesCommandBanobras banobrasCommand) {
 
-      base.RequireBody(command);
+      base.RequireBody(banobrasCommand);
 
-      command.GuardarSaldos = false;
+      ExportBalancesCommand command = banobrasCommand.ConvertToExportBalancesCommandByDay();
 
       using (var usecases = ExportBalancesUseCases.UseCaseInteractor()) {
 
-        FixedList<ExportedBalancesDto> balancesDto = usecases.ExportBalancesByDay(command);
+        FixedList<ExportedBalancesDto> balancesDto = usecases.Export(command);
 
         return new CollectionModel(this.Request, balancesDto);
       }
@@ -79,15 +59,15 @@ namespace Empiria.FinancialAccounting.WebApi.BanobrasIntegration {
 
     [HttpPost, AllowAnonymous]
     [Route("v2/financial-accounting/integration/balances-by-month")]
-    public CollectionModel ExportBalancesByMonth([FromBody] ExportBalancesCommand command) {
+    public CollectionModel ExportBalancesByMonth([FromBody] ExportBalancesCommandBanobras banobrasCommand) {
 
-      base.RequireBody(command);
+      base.RequireBody(banobrasCommand);
 
-      command.GuardarSaldos = false;
+      ExportBalancesCommand command = banobrasCommand.ConvertToExportBalancesCommandByMonth();
 
       using (var usecases = ExportBalancesUseCases.UseCaseInteractor()) {
 
-        FixedList<ExportedBalancesDto> balancesDto = usecases.ExportBalancesByMonth(command);
+        FixedList<ExportedBalancesDto> balancesDto = usecases.Export(command);
 
         return new CollectionModel(this.Request, balancesDto);
       }

@@ -45,7 +45,7 @@ namespace Empiria.FinancialAccounting.BanobrasIntegration.BalancesExporter.Adapt
                                                        entry.SectorCode,
                                                        subledgerAccount.Number);
       return new ExportedBalancesDto {
-        Fecha = command.FechaFin,
+        Fecha = command.ToDate,
         Area = "AREA",
         Moneda = 1,
         NumeroMayor = command.BreakdownLedgers ? Ledger.Parse(entry.LedgerUID).Id.ToString(): "CONSOLIDADO",
@@ -60,7 +60,7 @@ namespace Empiria.FinancialAccounting.BanobrasIntegration.BalancesExporter.Adapt
         MontoDebito = entry.Debit,
         MontoCredito = entry.Credit,
         SaldoAnterior = entry.InitialBalance,
-        Empresa = command.Empresa,
+        Empresa = command.AccountsChartId,
         CalificaMoneda = calificaMoneda != null ? calificaMoneda.CalificaSaldo.ToString() : "null"
       };
     }

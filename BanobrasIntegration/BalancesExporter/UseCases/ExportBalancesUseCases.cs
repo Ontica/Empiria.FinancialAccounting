@@ -36,10 +36,11 @@ namespace Empiria.FinancialAccounting.BanobrasIntegration.BalancesExporter.UseCa
 
     #region Use cases
 
-    public FixedList<ExportedBalancesDto> ExportBalancesByDay(ExportBalancesCommand command) {
+
+    public FixedList<ExportedBalancesDto> Export(ExportBalancesCommand command) {
       Assertion.AssertObject(command, "command");
 
-      TrialBalanceCommand trialBalanceCommand = command.MapToTrialBalanceCommandForBalancesByDay();
+      TrialBalanceCommand trialBalanceCommand = command.MapToTrialBalanceCommand();
 
       using (var usecases = TrialBalanceUseCases.UseCaseInteractor()) {
         TrialBalanceDto trialBalance = usecases.BuildTrialBalance(trialBalanceCommand);
@@ -47,58 +48,12 @@ namespace Empiria.FinancialAccounting.BanobrasIntegration.BalancesExporter.UseCa
         FixedList<ExportedBalancesDto> balances =
                       ExportBalancesMapper.MapToExportedBalances(command, trialBalance);
 
-        if (command.GuardarSaldos) {
+        if (command.StoreInto != StoreBalancesInto.None) {
           ExportBalancesDataService.StoreBalances(command, balances);
         }
 
         return balances;
       }
-    }
-
-    public FixedList<ExportedBalancesDto> ExportBalancesByPeriod(ExportBalancesCommand command) {
-      Assertion.AssertObject(command, "command");
-
-      command.BreakdownLedgers = true;
-
-      TrialBalanceCommand trialBalanceCommand = command.MapToTrialBalanceCommandForBalancesByPeriod();
-
-      using (var usecases = TrialBalanceUseCases.UseCaseInteractor()) {
-        TrialBalanceDto trialBalance = usecases.BuildTrialBalance(trialBalanceCommand);
-
-        FixedList<ExportedBalancesDto> balances =
-                      ExportBalancesMapper.MapToExportedBalances(command, trialBalance);
-
-        if (command.GuardarSaldos) {
-          ExportBalancesDataService.StoreBalances(command, balances);
-        }
-
-        return balances;
-      }
-    }
-
-
-    public FixedList<ExportedBalancesDto> ExportBalancesByMonth(ExportBalancesCommand command) {
-      Assertion.AssertObject(command, "command");
-
-      TrialBalanceCommand trialBalanceCommand = command.MapToTrialBalanceCommandForBalancesByMonth();
-
-      using (var usecases = TrialBalanceUseCases.UseCaseInteractor()) {
-        TrialBalanceDto trialBalance = usecases.BuildTrialBalance(trialBalanceCommand);
-
-        FixedList<ExportedBalancesDto> balances =
-                              ExportBalancesMapper.MapToExportedBalances(command, trialBalance);
-
-        if (command.GuardarSaldos) {
-          ExportBalancesDataService.StoreBalances(command, balances);
-        }
-
-        return balances;
-      }
-    }
-
-
-    public FixedList<ExportedBalancesDto> ExportBalancesByMonthByLedger(ExportBalancesCommand command) {
-      return ExportBalancesByMonth(command);
     }
 
 

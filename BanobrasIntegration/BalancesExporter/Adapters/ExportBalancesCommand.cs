@@ -14,26 +14,30 @@ using Empiria.FinancialAccounting.BalanceEngine.Adapters;
 
 namespace Empiria.FinancialAccounting.BanobrasIntegration.BalancesExporter.Adapters {
 
+  public enum StoreBalancesInto {
+
+    None,
+
+    SaldosSIC
+
+  }
+
   /// <summary>Command payload used to export balances to other systems.</summary>
   public class ExportBalancesCommand {
 
     #region Fields
 
-    public string BalanceType {
+
+    public int AccountsChartId {
       get; set;
     }
 
 
-    public int Empresa {
+    public DateTime FromDate {
       get; set;
     }
 
-
-    public DateTime FechaInicio {
-      get; set;
-    }
-
-    public DateTime FechaFin {
+    public DateTime ToDate {
       get; set;
     }
 
@@ -43,57 +47,27 @@ namespace Empiria.FinancialAccounting.BanobrasIntegration.BalancesExporter.Adapt
     }
 
 
-    public bool GuardarSaldos {
+    public StoreBalancesInto StoreInto {
       get; set;
-    }
+    } = StoreBalancesInto.None;
+
 
     #endregion Fields
 
     #region Methods
 
-    public TrialBalanceCommand MapToTrialBalanceCommandForBalancesByDay() {
+
+    public TrialBalanceCommand MapToTrialBalanceCommand() {
       return new TrialBalanceCommand {
         TrialBalanceType = TrialBalanceType.Balanza,
-        AccountsChartUID = AccountsChart.Parse(this.Empresa).UID,
+        AccountsChartUID = AccountsChart.Parse(this.AccountsChartId).UID,
         BalancesType = BalancesType.WithCurrentBalanceOrMovements,
         ShowCascadeBalances = BreakdownLedgers,
         WithAverageBalance = true,
         WithSubledgerAccount = true,
         InitialPeriod = new TrialBalanceCommandPeriod {
-          FromDate = this.FechaFin,
-          ToDate = this.FechaFin
-        },
-      };
-    }
-
-
-    public TrialBalanceCommand MapToTrialBalanceCommandForBalancesByMonth() {
-      return new TrialBalanceCommand {
-        TrialBalanceType = TrialBalanceType.Balanza,
-        AccountsChartUID = AccountsChart.Parse(this.Empresa).UID,
-        BalancesType = BalancesType.WithCurrentBalanceOrMovements,
-        ShowCascadeBalances = BreakdownLedgers,
-        WithAverageBalance = true,
-        WithSubledgerAccount = true,
-        InitialPeriod = new TrialBalanceCommandPeriod {
-          FromDate = new DateTime(this.FechaFin.Year, this.FechaFin.Month, 1),
-          ToDate = new DateTime(this.FechaFin.Year, this.FechaFin.Month,
-                                DateTime.DaysInMonth(this.FechaFin.Year, this.FechaFin.Month))
-        },
-      };
-    }
-
-    public TrialBalanceCommand MapToTrialBalanceCommandForBalancesByPeriod() {
-      return new TrialBalanceCommand {
-        TrialBalanceType = TrialBalanceType.Balanza,
-        AccountsChartUID = AccountsChart.Parse(this.Empresa).UID,
-        BalancesType = BalancesType.WithCurrentBalanceOrMovements,
-        ShowCascadeBalances = BreakdownLedgers,
-        WithAverageBalance = true,
-        WithSubledgerAccount = true,
-        InitialPeriod = new TrialBalanceCommandPeriod {
-          FromDate = this.FechaInicio,
-          ToDate = this.FechaFin
+          FromDate = this.FromDate,
+          ToDate = this.ToDate
         },
       };
     }
@@ -101,5 +75,40 @@ namespace Empiria.FinancialAccounting.BanobrasIntegration.BalancesExporter.Adapt
     #endregion Methods
 
   } // class ExportBalancesCommand
+
+
+  public class ExportBalancesCommandBanobras {
+
+    public int Empresa {
+      get; set;
+    }
+
+
+    public DateTime Fecha {
+      get; set;
+    }
+
+
+    public ExportBalancesCommand ConvertToExportBalancesCommandByDay() {
+      return new ExportBalancesCommand {
+        AccountsChartId = this.Empresa,
+        BreakdownLedgers = false,
+        FromDate = this.Fecha,
+        ToDate = this.Fecha
+      };
+    }
+
+
+    public ExportBalancesCommand ConvertToExportBalancesCommandByMonth() {
+      return new ExportBalancesCommand {
+        AccountsChartId = this.Empresa,
+        BreakdownLedgers = false,
+        FromDate = new DateTime(this.Fecha.Year, this.Fecha.Month, 1),
+        ToDate = new DateTime(this.Fecha.Year, this.Fecha.Month,
+                                DateTime.DaysInMonth(this.Fecha.Year, this.Fecha.Month)),
+      };
+    }
+
+  }   // ExportBalancesCommandBanobras
 
 }  // namespace Empiria.FinancialAccounting.BanobrasIntegration.BalancesExporter.Adapters

@@ -81,16 +81,15 @@ namespace Empiria.FinancialAccounting.BanobrasIntegration {
 
     private void ExportarSaldosSIC(DateTime fechaInicio, DateTime fechaFin) {
       var command = new ExportBalancesCommand {
-        BalanceType = "SaldosSIC",
-        Empresa = AccountsChart.IFRS.Id,
+        AccountsChartId = AccountsChart.IFRS.Id,
         BreakdownLedgers = true,
-        FechaInicio = fechaInicio,
-        FechaFin = fechaFin,
-        GuardarSaldos = true
+        FromDate = fechaInicio,
+        ToDate = fechaFin,
+        StoreInto = StoreBalancesInto.SaldosSIC
       };
 
       using (var usecases = ExportBalancesUseCases.UseCaseInteractor()) {
-        usecases.ExportBalancesByPeriod(command);
+        usecases.Export(command);
       }
     }
 
