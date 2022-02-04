@@ -67,16 +67,16 @@ namespace Empiria.FinancialAccounting.Reporting.Exporters.Excel {
       foreach (var slip in slips) {
         excelFile.SetCell($"A{i}", slip.Header.AccountsChartId);
         excelFile.SetCell($"B{i}", slip.Header.AccountingDate);
-        excelFile.SetCell($"C{i}", slip.Header.SlipNumber);
-        excelFile.SetCell($"D{i}", slip.Header.Concept);
+        excelFile.SetCell($"C{i}", EmpiriaString.Clean(slip.Header.SlipNumber));
+        excelFile.SetCell($"D{i}", EmpiriaString.Clean(slip.Header.Concept));
         excelFile.SetCell($"E{i}", slip.Header.ControlTotal);
         excelFile.SetCell($"F{i}", slip.Header.RecordingDate);
-        excelFile.SetCell($"G{i}", slip.Header.ElaboratedBy);
-        excelFile.SetCell($"H{i}", slip.Header.FunctionalArea);
+        excelFile.SetCell($"G{i}", EmpiriaString.Clean(slip.Header.ElaboratedBy));
+        excelFile.SetCell($"H{i}", EmpiriaString.Clean(slip.Header.FunctionalArea));
         excelFile.SetCell($"I{i}", slip.Header.SystemId);
 
         if (slip.Voucher != null) {
-          excelFile.SetCell($"J{i}", slip.Voucher.Name);
+          excelFile.SetCell($"J{i}", EmpiriaString.Clean(slip.Voucher.Name));
         }
 
         if (slip.Header.Status != TransactionSlipStatus.Pending) {
@@ -104,19 +104,19 @@ namespace Empiria.FinancialAccounting.Reporting.Exporters.Excel {
         foreach (var issue in slip.Issues) {
           excelFile.SetCell($"A{i}", slip.Header.AccountsChartId);
           excelFile.SetCell($"B{i}", slip.Header.AccountingDate);
-          excelFile.SetCell($"C{i}", slip.Header.SlipNumber);
-          excelFile.SetCell($"D{i}", slip.Header.Concept);
+          excelFile.SetCell($"C{i}", EmpiriaString.Clean(slip.Header.SlipNumber));
+          excelFile.SetCell($"D{i}", EmpiriaString.Clean(slip.Header.Concept));
           excelFile.SetCell($"E{i}", slip.Header.ControlTotal);
           excelFile.SetCell($"F{i}", slip.Header.RecordingDate);
-          excelFile.SetCell($"G{i}", slip.Header.ElaboratedBy);
-          excelFile.SetCell($"H{i}", slip.Header.FunctionalArea);
+          excelFile.SetCell($"G{i}", EmpiriaString.Clean(slip.Header.ElaboratedBy));
+          excelFile.SetCell($"H{i}", EmpiriaString.Clean(slip.Header.FunctionalArea));
           excelFile.SetCell($"I{i}", slip.Header.SystemId);
 
           if (slip.Header.Status != TransactionSlipStatus.Pending) {
             excelFile.SetCell($"J{i}", slip.Header.ProcessingDate);
           }
 
-          excelFile.SetCell($"K{i}", issue.Description);
+          excelFile.SetCell($"K{i}", EmpiriaString.Clean(issue.Description));
 
           i++;
 
