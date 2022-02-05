@@ -47,17 +47,19 @@ namespace Empiria.FinancialAccounting.FinancialReports.Adapters {
 
     static private FinancialReportTypeDto Map(FinancialReportType reportType) {
       return new FinancialReportTypeDto() {
-         UID = reportType.UID,
-         Name = reportType.Name,
-         ExportTo = new string[] { "Excel", "SITI" }
+        UID = reportType.UID,
+        Name = reportType.Name,
+        ExportTo = new FixedList<string>(reportType.ExportTo.Select(x => x.Name))
       };
     }
 
-      static private FixedList<DynamicFinancialReportEntryDto> MapBreakdownEntries(FixedList<FinancialReportEntry> list) {
+
+    static private FixedList<DynamicFinancialReportEntryDto> MapBreakdownEntries(FixedList<FinancialReportEntry> list) {
       var mappedItems = list.Select((x) => MapBreakdownEntry((FinancialReportBreakdownEntry) x));
 
       return new FixedList<DynamicFinancialReportEntryDto>(mappedItems);
     }
+
 
     static private DynamicFinancialReportEntryDto MapBreakdownEntry(FinancialReportBreakdownEntry entry) {
       dynamic o = new FinancialReportBreakdownEntryDto {

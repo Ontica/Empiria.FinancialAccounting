@@ -22,7 +22,7 @@ namespace Empiria.FinancialAccounting.Reporting {
 
     #region Constructors and parsers
 
-    private FinancialReportExportService() {
+    protected FinancialReportExportService() {
       // no-op
     }
 
@@ -51,14 +51,20 @@ namespace Empiria.FinancialAccounting.Reporting {
 
       var reportType = command.GetFinancialReportType();
 
-      switch (command.ExportTo) {
+      var exportTo = reportType.ExportTo.Find(x => x.Name == command.ExportTo);
+
+      switch (exportTo.Name) {
         case "Excel":
 
-          var templateConfig = FileTemplateConfig.Parse(reportType.TemplateFileId);
+          var templateConfig = FileTemplateConfig.Parse(exportTo.TemplateId);
 
           return new FinancialReportExcelExporter(templateConfig);
 
-        case "SITI":
+        case "SITI CNBV":
+
+          return new FinancialReportTextFileExporter();
+
+        case "SAIF Banxico":
 
           return new FinancialReportTextFileExporter();
 

@@ -65,16 +65,16 @@ namespace Empiria.FinancialAccounting.FinancialReports {
     private TrialBalanceCommand DetermineTrialBalanceCommand() {
       FinancialReportType reportType = _command.GetFinancialReportType();
 
-      switch (reportType.BalancesSource) {
-        case "AnaliticoCuentas":
+      switch (reportType.DataSource) {
+        case FinancialReportDataSource.AnaliticoCuentas:
           return GetAnaliticoCuentasCommand();
 
-        case "BalanzaEnColumnasPorMoneda":
+        case FinancialReportDataSource.BalanzaEnColumnasPorMoneda:
           return GetBalanzaEnColumnasPorMonedaCommand();
 
         default:
           throw Assertion.AssertNoReachThisCode(
-              $"Unrecognized balances source {reportType.BalancesSource} for report type {reportType.Name}.");
+              $"Unrecognized balances source {reportType.DataSource} for report type {reportType.Name}.");
       }
     }
 

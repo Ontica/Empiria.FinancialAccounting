@@ -20,21 +20,19 @@ namespace Empiria.FinancialAccounting.FinancialReports.Adapters {
 
 
     public string UID {
-      get;
-      internal set;
+      get; internal set;
     }
 
 
     public string Name {
-      get;
-      internal set;
+      get; internal set;
     }
 
 
-    public string[] ExportTo {
+    public FixedList<string> ExportTo {
       get;
       internal set;
-    } = new string[0];
+    }
 
 
   }  // class FinancialReportTypeDto

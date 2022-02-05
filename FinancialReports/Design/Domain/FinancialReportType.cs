@@ -10,6 +10,7 @@
 using System;
 
 using Empiria.FinancialAccounting.FinancialReports.Data;
+using Empiria.Json;
 
 namespace Empiria.FinancialAccounting.FinancialReports {
 
@@ -22,6 +23,58 @@ namespace Empiria.FinancialAccounting.FinancialReports {
     FixedRows
 
   }
+
+
+  public enum FinancialReportDataSource {
+
+    AnaliticoCuentas,
+
+    BalanzaEnColumnasPorMoneda
+
+  }
+
+
+  public class ExportTo {
+
+    protected internal ExportTo() {
+      // no-op
+    }
+
+
+    static internal ExportTo Parse(JsonObject json) {
+      return new ExportTo {
+        Name = json.Get<string>("name"),
+        FileType = json.Get<string>("fileType"),
+        FileName = json.Get<string>("fileName", string.Empty),
+        TemplateId = json.Get<int>("templateId", -1)
+      };
+    }
+
+
+    [DataField("Name")]
+    public string Name {
+      get; private set;
+    }
+
+
+    [DataField("FileType")]
+    public string FileType {
+      get; private set;
+    }
+
+
+    [DataField("FileName")]
+    public string FileName {
+      get; private set;
+    }
+
+
+    [DataField("TemplateId")]
+    public int TemplateId {
+      get; private set;
+    }
+
+  }  // class ExportTo
 
 
   /// <summary>Describes a financial report.</summary>
@@ -75,11 +128,12 @@ namespace Empiria.FinancialAccounting.FinancialReports {
     }
 
 
-    public string BalancesSource {
+    public FinancialReportDataSource DataSource {
       get {
-        return base.ExtendedDataField.Get("balancesSource", string.Empty);
+        return base.ExtendedDataField.Get<FinancialReportDataSource>("dataSource");
       }
     }
+
 
     public FinancialReportDesignType DesignType {
       get {
@@ -95,16 +149,16 @@ namespace Empiria.FinancialAccounting.FinancialReports {
     }
 
 
-    public int RoundDecimals {
+    public bool RoundDecimals {
       get {
-        return base.ExtendedDataField.Get("roundDecimals", 2);
+        return base.ExtendedDataField.Get("roundDecimals", false);
       }
     }
 
 
-    public int TemplateFileId {
+    public FixedList<ExportTo> ExportTo {
       get {
-        return base.ExtendedDataField.Get("templateFileId", -1);
+        return base.ExtendedDataField.GetFixedList<ExportTo>("exportTo", false);
       }
     }
 
