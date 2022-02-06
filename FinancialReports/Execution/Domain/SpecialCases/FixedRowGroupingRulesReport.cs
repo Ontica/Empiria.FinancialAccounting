@@ -121,7 +121,9 @@ namespace Empiria.FinancialAccounting.FinancialReports {
         totals = totals.Sum(balance, groupingRule.Qualification);
       }
 
-      totals.Round(FinancialReportType.RoundDecimals);
+      if (FinancialReportType.RoundDecimals) {
+        totals.Round();
+      }
 
       return totals;
     }
@@ -156,7 +158,9 @@ namespace Empiria.FinancialAccounting.FinancialReports {
           throw Assertion.AssertNoReachThisCode();
         }
 
-        groupingRuleTotals.Round(FinancialReportType.RoundDecimals);
+        if (FinancialReportType.RoundDecimals) {
+          groupingRuleTotals.Round();
+        }
 
         SetTotalsFields(breakdownItem, groupingRuleTotals);
       }
@@ -193,7 +197,9 @@ namespace Empiria.FinancialAccounting.FinancialReports {
       foreach (var reportEntry in reportEntries) {
         ReportEntryTotals groupingRuleTotals = ProcessGroupingRule(reportEntry.GroupingRule, balances);
 
-        groupingRuleTotals.Round(FinancialReportType.RoundDecimals);
+        if (FinancialReportType.RoundDecimals) {
+          groupingRuleTotals.Round();
+        }
 
         SetTotalsFields(reportEntry, groupingRuleTotals);
       }
