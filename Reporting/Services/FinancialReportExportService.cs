@@ -51,7 +51,7 @@ namespace Empiria.FinancialAccounting.Reporting {
 
       var reportType = command.GetFinancialReportType();
 
-      var exportTo = reportType.ExportTo.Find(x => x.Name == command.ExportTo);
+      var exportTo = reportType.GetExportToConfig(command.ExportTo);
 
       switch (exportTo.Name) {
         case "Excel":

@@ -43,14 +43,17 @@ namespace Empiria.FinancialAccounting.Reporting {
 
 
     private FixedList<string> GetBodyLines(FinancialReportDto financialReport) {
-      string exportTo = financialReport.Command.ExportTo;
+      var financialReportType = financialReport.Command.GetFinancialReportType();
+
+      ExportTo exportTo = financialReportType.GetExportToConfig(financialReport.Command.ExportTo);
 
       var textLines = new List<string>(financialReport.Entries.Count * 2);
 
       foreach (var entry in financialReport.Entries) {
         var convertedEntry = (FinancialReportEntryDto) entry;
 
-        string textLine = GetTextLineCNBV(convertedEntry, FinancialReportTotalField.DomesticCurrencyTotal, "14");
+        string textLine = GetTextLine(exportTo, convertedEntry,
+                                      FinancialReportTotalField.DomesticCurrencyTotal, "14");
 
         if (textLine.Length > 0) {
           textLines.Add(textLine);
@@ -60,7 +63,8 @@ namespace Empiria.FinancialAccounting.Reporting {
       foreach (var entry in financialReport.Entries) {
         var convertedEntry = (FinancialReportEntryDto) entry;
 
-        string textLine = GetTextLineCNBV(convertedEntry, FinancialReportTotalField.ForeignCurrencyTotal, "4");
+        string textLine = GetTextLine(exportTo, convertedEntry,
+                                      FinancialReportTotalField.ForeignCurrencyTotal, "4");
 
         if (textLine.Length > 0) {
           textLines.Add(textLine);
@@ -70,47 +74,55 @@ namespace Empiria.FinancialAccounting.Reporting {
       return textLines.ToFixedList();
     }
 
-    //private string GetTextLine(string exportTo, FinancialReportEntryDto convertedEntry, FinancialReportTotalField domesticCurrencyTotal, string currencyCode) {
-    //  switch (exportTo) {
-    //    case "SITI-CNBV":
-    //      return
-    //    case "SITI-Banxico":
 
-    //    case "SITI-ACM":
+    private string GetTextLine(ExportTo exportTo, FinancialReportEntryDto entry,
+                               FinancialReportTotalField totalField, string currencyCode) {
+      switch (exportTo.CsvBuilder) {
+        case "ACM_SAIF_Banxico":
+          return TextLine_ACM_SAIF_Banxico(entry, totalField, currencyCode);
 
-    //  }
-    //}
+        case "R01_SITI_CNBV":
+          return TextLine_R01_SITI_CNBV(entry, totalField, currencyCode);
 
-    private string GetTextLineBanxico(FinancialReportEntryDto convertedEntry,
-                                      FinancialReportTotalField totalField,
-                                      string currencyCode) {
-      if (convertedEntry.GetTotalField(totalField) == 0) {
-        return String.Empty;
+        case "R01_SAIF_Banxico":
+          return TextLine_R01_SAIF_Banxico(entry, totalField, currencyCode);
+
+        default:
+          throw Assertion.AssertNoReachThisCode($"Unrecognized CSV Builder {exportTo.CsvBuilder}.");
       }
-
-      return $"{convertedEntry.ConceptCode.Replace(" ", string.Empty)};;{currencyCode};" +
-             $"{convertedEntry.GetTotalField(totalField).ToString("F0")}";
     }
 
 
-    private string GetTextLineACMBanxico(FinancialReportEntryDto convertedEntry,
-                                         FinancialReportTotalField totalField,
-                                         string currencyCode) {
-
-      if (convertedEntry.GetTotalField(totalField) == 0) {
+    private string TextLine_ACM_SAIF_Banxico(FinancialReportEntryDto entry,
+                                             FinancialReportTotalField totalField,
+                                             string currencyCode) {
+      if (entry.GetTotalField(totalField) == 0) {
         return String.Empty;
       }
 
-      return $"{convertedEntry.ConceptCode.Replace(" ", string.Empty)};111;{currencyCode};" +
-             $"{convertedEntry.GetTotalField(totalField).ToString("F0")}";
+      return $"{entry.ConceptCode.Replace(" ", string.Empty)};;{currencyCode};" +
+             $"{entry.GetTotalField(totalField).ToString("F0")}";
     }
 
 
-    private string GetTextLineCNBV(FinancialReportEntryDto convertedEntry,
-                                   FinancialReportTotalField totalField,
-                                   string currencyCode) {
-      return $"111;{convertedEntry.ConceptCode.Replace(" ", string.Empty)};{currencyCode};" +
-             $"{convertedEntry.GetTotalField(totalField).ToString("F2")}";
+    private string TextLine_R01_SAIF_Banxico(FinancialReportEntryDto entry,
+                                             FinancialReportTotalField totalField,
+                                             string currencyCode) {
+
+      if (entry.GetTotalField(totalField) == 0) {
+        return String.Empty;
+      }
+
+      return $"{entry.ConceptCode.Replace(" ", string.Empty)};111;{currencyCode};" +
+             $"{entry.GetTotalField(totalField).ToString("F0")}";
+    }
+
+
+    private string TextLine_R01_SITI_CNBV(FinancialReportEntryDto entry,
+                                          FinancialReportTotalField totalField,
+                                          string currencyCode) {
+      return $"111;{entry.ConceptCode.Replace(" ", string.Empty)};{currencyCode};" +
+             $"{entry.GetTotalField(totalField).ToString("F2")}";
     }
 
   }  //class FinancialReportTextFileExporter

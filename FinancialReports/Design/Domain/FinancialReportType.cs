@@ -46,6 +46,7 @@ namespace Empiria.FinancialAccounting.FinancialReports {
         Name = json.Get<string>("name"),
         FileType = json.Get<string>("fileType"),
         FileName = json.Get<string>("fileName", string.Empty),
+        CsvBuilder = json.Get<string>("csvBuilder", string.Empty),
         TemplateId = json.Get<int>("templateId", -1)
       };
     }
@@ -65,6 +66,12 @@ namespace Empiria.FinancialAccounting.FinancialReports {
 
     [DataField("FileName")]
     public string FileName {
+      get; private set;
+    }
+
+
+    [DataField("CsvBuilder")]
+    public string CsvBuilder {
       get; private set;
     }
 
@@ -162,6 +169,7 @@ namespace Empiria.FinancialAccounting.FinancialReports {
       }
     }
 
+
     #endregion Properties
 
     #region Methods
@@ -171,9 +179,15 @@ namespace Empiria.FinancialAccounting.FinancialReports {
     }
 
 
+    public ExportTo GetExportToConfig(string exportToName) {
+      return ExportTo.Find(x => x.Name == exportToName);
+    }
+
+
     internal FinancialReportRow GetRow(string rowUID) {
       return GetRows().Find(x => x.UID == rowUID);
     }
+
 
     #endregion Methods
 

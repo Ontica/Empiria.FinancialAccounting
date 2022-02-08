@@ -33,13 +33,13 @@ namespace Empiria.FinancialAccounting.FinancialReports {
       List<DataTableColumn> columns = new List<DataTableColumn>();
 
       columns.Add(new DataTableColumn("itemCode", "Clave / Cuenta", "text"));
-      columns.Add(new DataTableColumn("itemName", "Concepto / Nombre de la cuenta", "text"));
+      columns.Add(new DataTableColumn("itemName", "Concepto / Nombre", "text"));
       columns.Add(new DataTableColumn("subledgerAccount", "Auxiliar", "text"));
       columns.Add(new DataTableColumn("sectorCode", "Sector", "text"));
       columns.Add(new DataTableColumn("operator", "Operador", "text"));
-      columns.Add(new DataTableColumn("domesticCurrencyTotal", "1 Moneda Nacional", "decimal"));
-      columns.Add(new DataTableColumn("foreignCurrencyTotal", "2 Moneda Extranjera", "decimal"));
-      columns.Add(new DataTableColumn("total", "3 Total", "decimal"));
+      columns.Add(new DataTableColumn("domesticCurrencyTotal", "M. Nal.", "decimal"));
+      columns.Add(new DataTableColumn("foreignCurrencyTotal", "M. Ext.", "decimal"));
+      columns.Add(new DataTableColumn("total", "Total", "decimal"));
 
       return columns.ToFixedList();
     }
@@ -67,9 +67,9 @@ namespace Empiria.FinancialAccounting.FinancialReports {
 
       columns.Add(new DataTableColumn("conceptCode", "Clave CNBV", "text-link"));
       columns.Add(new DataTableColumn("concept", "Concepto", "text"));
-      columns.Add(new DataTableColumn("domesticCurrencyTotal", "1 Moneda Nacional", "decimal"));
-      columns.Add(new DataTableColumn("foreignCurrencyTotal", "2 Moneda Extranjera", "decimal"));
-      columns.Add(new DataTableColumn("total", "3 Total", "decimal"));
+      columns.Add(new DataTableColumn("domesticCurrencyTotal", "Moneda Nacional", "decimal"));
+      columns.Add(new DataTableColumn("foreignCurrencyTotal", "Moneda Extranjera", "decimal"));
+      columns.Add(new DataTableColumn("total", "Total", "decimal"));
 
       return columns.ToFixedList();
     }
