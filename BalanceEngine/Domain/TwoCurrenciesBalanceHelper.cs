@@ -257,7 +257,7 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
       } else {
         summaryEntries = trialBalance.Where(a => a.SubledgerAccountNumber.Length <= 1).ToList();
       }
-      
+
       foreach (var entry in summaryEntries) {
         if (entry.CurrentBalance != 0) {
           string hash = $"{entry.Account.Number}||{entry.Sector.Code}||{targetCurrency.Id}||" +
@@ -265,6 +265,7 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
 
           Currency currentCurrency = entry.Currency;
           MergeAccountsIntoTwoColumns(hashSummaryEntries, entry, hash, currentCurrency);
+
         }
       }
       List<TwoCurrenciesBalanceEntry> twoColumnsEntries = hashSummaryEntries.Values.ToList();
@@ -289,7 +290,7 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
 
       foreach (var summary in isSummary) {
         var summaryWithoutSector = entries.FirstOrDefault(
-                                    a => a.Account.Number == summary.Account.Number && 
+                                    a => a.Account.Number == summary.Account.Number &&
                                     a.DebtorCreditor == summary.DebtorCreditor && a.NotHasSector);
 
         if (summaryWithoutSector != null &&
@@ -380,7 +381,6 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
                                                       List<TrialBalanceEntry> summaryEntries) {
       if (_command.UseNewSectorizationModel) {
         foreach (var entry in twoColumnsEntries.Where(a => a.Sector.Code == "00" && a.DomesticBalance == 0)) {
-
           var balancesWithDomesticCurrency = summaryEntries.Where(
                 a => a.Account.Number == entry.Account.Number && a.Ledger.Number == entry.Ledger.Number &&
                 a.Sector.Code != "00" && a.DebtorCreditor == entry.DebtorCreditor &&
@@ -407,8 +407,7 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
                                                       List<TrialBalanceEntry> summaryEntries) {
 
       if (_command.UseNewSectorizationModel) {
-        foreach (var entry in twoColumnsEntries.Where(a => a.Sector.Code == "00" && a.ForeignBalance == 0)) {
-
+        foreach (var entry in twoColumnsEntries.Where(a => a.Sector.Code == "00" && a.Level > 1)) {
           var balancesWithForeignCurrency = summaryEntries.Where(
                 a => a.Account.Number == entry.Account.Number && a.Ledger.Number == entry.Ledger.Number &&
                 a.Sector.Code != "00" && a.DebtorCreditor == entry.DebtorCreditor &&
@@ -416,12 +415,6 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
 
           if (balancesWithForeignCurrency.Count > 0) {
             entry.ForeignBalance = 0;
-            entry.InitialBalance = 0;
-            entry.Debit = 0;
-            entry.Credit = 0;
-            entry.TotalBalance = 0;
-            entry.AverageBalance = 0;
-
             foreach (var foreignEntry in balancesWithForeignCurrency) {
               SumTwoCurrenciesBalanceEntry(entry, foreignEntry, foreignEntry.Currency);
             }
@@ -437,10 +430,21 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
       if (entry.DebtorCreditor == twoCurrenciesEntry.DebtorCreditor) {
         var targetCurrency = Currency.Parse(_command.InitialPeriod.ValuateToCurrrencyUID);
 
-        if (currentCurrency != targetCurrency && entry.Currency.Code != "44" && currentCurrency.Code != "44") {
+        if (currentCurrency != targetCurrency && entry.Currency.Code != "44" && 
+            currentCurrency.Code != "44" ) {
+
           twoCurrenciesEntry.ForeignBalance += entry.CurrentBalance;
+
         } else {
-          twoCurrenciesEntry.DomesticBalance += entry.CurrentBalance;
+          if (entry.Level == 1 && (currentCurrency.Code == "01" || currentCurrency.Code == "44")) {
+            twoCurrenciesEntry.DomesticBalance += entry.CurrentBalance;
+          } else if (currentCurrency.Code == "01" && entry.Sector.Code == "00") {
+            twoCurrenciesEntry.DomesticBalance = entry.CurrentBalance;
+          } else if (entry.Sector.Code != "00" &&
+                     (currentCurrency.Code == "01" || currentCurrency.Code == "44")) {
+            twoCurrenciesEntry.DomesticBalance += entry.CurrentBalance;
+          }
+          
         }
         twoCurrenciesEntry.InitialBalance += entry.InitialBalance;
         twoCurrenciesEntry.Debit += entry.Debit;
