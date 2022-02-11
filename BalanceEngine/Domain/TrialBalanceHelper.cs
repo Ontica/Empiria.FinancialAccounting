@@ -957,10 +957,13 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
       }
 
       string hash = string.Empty;
-      if (_command.TrialBalanceType == TrialBalanceType.SaldosPorCuenta &&
+      if ((_command.TrialBalanceType == TrialBalanceType.Balanza ||
+           _command.TrialBalanceType == TrialBalanceType.SaldosPorCuenta) &&
           ((_command.WithSubledgerAccount && _command.ShowCascadeBalances) ||
              _command.ShowCascadeBalances)) {
+
         hash = $"{entry.Ledger.Id}||{entry.Currency.Id}||{entry.GroupName}";
+
       } else {
         hash = $"{entry.GroupName}||{entry.Currency.Id}";
       }
@@ -1016,7 +1019,8 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
 
       if (balanceEntry.DebtorCreditor == DebtorCreditorType.Deudora) {
 
-        if (_command.TrialBalanceType == TrialBalanceType.SaldosPorCuenta &&
+        if ((_command.TrialBalanceType == TrialBalanceType.Balanza || 
+             _command.TrialBalanceType == TrialBalanceType.SaldosPorCuenta) &&
             ((_command.WithSubledgerAccount && _command.ShowCascadeBalances) ||
              _command.ShowCascadeBalances)) {
           hash = $"{balanceEntry.Ledger.Id}||{groupEntry.DebtorCreditor}||{groupEntry.Currency.Id}||{groupEntry.GroupNumber}";
@@ -1030,7 +1034,8 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
 
       } else if (balanceEntry.DebtorCreditor == DebtorCreditorType.Acreedora) {
 
-        if (_command.TrialBalanceType == TrialBalanceType.SaldosPorCuenta &&
+        if ((_command.TrialBalanceType == TrialBalanceType.Balanza ||
+             _command.TrialBalanceType == TrialBalanceType.SaldosPorCuenta) &&
             ((_command.WithSubledgerAccount && _command.ShowCascadeBalances) ||
              _command.ShowCascadeBalances)) {
           hash = $"{balanceEntry.Ledger.Id}||{groupEntry.DebtorCreditor}||{groupEntry.Currency.Id}||{groupEntry.GroupNumber}";
