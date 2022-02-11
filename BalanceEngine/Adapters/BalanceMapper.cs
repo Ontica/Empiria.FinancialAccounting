@@ -36,6 +36,7 @@ namespace Empiria.FinancialAccounting.BalanceEngine.Adapters {
       trialBalanceCommand.SubledgerAccount = command.SubledgerAccount;
       trialBalanceCommand.TrialBalanceType = command.TrialBalanceType;
       trialBalanceCommand.BalancesType = command.BalancesType;
+      trialBalanceCommand.Ledgers = command.Ledgers;
       //trialBalanceCommand.ShowCascadeBalances = true;
       trialBalanceCommand.WithSubledgerAccount = command.WithSubledgerAccount;
 
