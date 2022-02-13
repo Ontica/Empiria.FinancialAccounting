@@ -48,11 +48,13 @@ namespace Empiria.FinancialAccounting.Tests.Balances {
 
       command.TrialBalanceType = TrialBalanceType.AnaliticoDeCuentas;
       command.AccountsChartUID = "47ec2ec7-0f4f-482e-9799-c23107b60d8a";
-      command.BalancesType = BalancesType.WithCurrentBalance;
+      command.BalancesType = BalancesType.WithCurrentBalanceOrMovements;
       command.UseDefaultValuation = true;
       command.WithSubledgerAccount = false;
       command.WithAverageBalance = false;
       command.ShowCascadeBalances = false;
+      command.FromAccount = "1.01.02.02";
+      command.ToAccount = "1.01.02.02";
 
       TrialBalanceDto trialBalance = _usecases.BuildTrialBalance(command);
 

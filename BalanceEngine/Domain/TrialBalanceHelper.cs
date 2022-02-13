@@ -291,7 +291,7 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
 
         int cont = 0;
         while (true) {
-
+          
           entry.DebtorCreditor = entry.Account.DebtorCreditor;
           entry.SubledgerAccountIdParent = entry.SubledgerAccountId;
 
@@ -511,7 +511,7 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
         var summaryEntriesList = new List<TrialBalanceEntry>(summaryEntries);
         foreach (var entry in summaryEntriesList) {
           List<TrialBalanceEntry> entriesWithSummarySector;
-
+          
           if (_command.TrialBalanceType == TrialBalanceType.AnaliticoDeCuentas ||
               _command.TrialBalanceType == TrialBalanceType.Balanza) {
 
@@ -533,7 +533,9 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
                (entry.ItemType == TrialBalanceItemType.Entry &&
                entriesWithSummarySector.Count == 2 && entry.Sector.Code != "00")) {
             var entryWithoutSector = entriesWithSummarySector.FirstOrDefault(a => a.Sector.Code == "00");
-            entries.Remove(entryWithoutSector);
+            if (_command.TrialBalanceType != TrialBalanceType.AnaliticoDeCuentas) {
+              entries.Remove(entryWithoutSector);
+            }
           }
         }
       }
@@ -584,6 +586,7 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
                                  .ToList();
 
         foreach (var entry in summaryEntriesList) {
+
           TrialBalanceEntry entryWithSummarySector = summaryEntries.FirstOrDefault(
                                                         a => a.Account.Number == entry.Account.Number &&
                                                         a.Ledger.Number == entry.Ledger.Number &&
@@ -608,7 +611,6 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
                                     List<TrialBalanceEntry> checkSummaryEntries,
                                     List<TrialBalanceEntry> returnedEntries) {
       foreach (var entry in checkSummaryEntries) {
-
         var sectorParent = entry.Sector.Parent;
         var summaryEntry = returnedEntries.FirstOrDefault(a => a.Account.Number == entry.Account.Number &&
                                                                a.Ledger.Number == entry.Ledger.Number &&
