@@ -53,20 +53,17 @@ namespace Empiria.FinancialAccounting.Reporting {
 
       var exportTo = reportType.GetExportToConfig(command.ExportTo);
 
-      switch (exportTo.Name) {
+      switch (exportTo.FileType) {
         case "Excel":
 
           var templateConfig = FileTemplateConfig.Parse(exportTo.TemplateId);
 
           return new FinancialReportExcelExporter(templateConfig);
 
-        case "SITI CNBV":
+        case "CSV":
 
           return new FinancialReportTextFileExporter();
 
-        case "SAIF Banxico":
-
-          return new FinancialReportTextFileExporter();
 
         default:
           throw Assertion.AssertNoReachThisCode($"Unhandled reportType exportTo '{command.ExportTo}'.");
