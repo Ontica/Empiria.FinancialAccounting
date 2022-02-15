@@ -57,9 +57,16 @@ namespace Empiria.FinancialAccounting.BalanceEngine.Adapters {
         StoredBalanceSet balanceSet = StoredBalanceSet.GetBestBalanceSet(
                                         accountsChart, commandPeriod.FromDate);
 
+        commandData.AccountsChart = accountsChart;
         commandData.StoredInitialBalanceSet = balanceSet;
         commandData.FromDate = _command.TrialBalanceType == TrialBalanceType.BalanzaValorizadaComparativa ?
                                commandPeriod.ToDate.AddDays(1) : commandPeriod.FromDate;
+
+        if (commandData.FromDate == new DateTime(2022, 1, 1) &&
+            commandData.AccountsChart.Equals(AccountsChart.IFRS)) {
+          commandData.FromDate = new DateTime(2022, 1, 2);
+        }
+
         commandData.ToDate = _command.TrialBalanceType == TrialBalanceType.BalanzaValorizadaComparativa ?
                                _command.FinalPeriod.ToDate : commandPeriod.ToDate;
         commandData.InitialFields = GetInitialFields();
@@ -69,7 +76,7 @@ namespace Empiria.FinancialAccounting.BalanceEngine.Adapters {
         commandData.InitialGrouping = GetInitialGroupingClause();
         commandData.Where = GetWhereClause();
         commandData.Ordering = GetOrderClause();
-        commandData.AccountsChart = accountsChart;
+
         commandData.AverageBalance = GetAverageBalance();
 
         return commandData;
@@ -204,7 +211,7 @@ namespace Empiria.FinancialAccounting.BalanceEngine.Adapters {
 
 
       private string GetOutputFields() {
-        
+
         if (_command.DoNotReturnSubledgerAccounts && _command.Consolidated) {
 
           return "-1 AS ID_MAYOR, ID_MONEDA, ID_CUENTA_ESTANDAR, " +
@@ -242,11 +249,11 @@ namespace Empiria.FinancialAccounting.BalanceEngine.Adapters {
           return $", SUM(CASE WHEN NATURALEZA = 'D' THEN (((TO_DATE( " +
                  $"'{CommonMethods.FormatSqlDate(_command.InitialPeriod.ToDate)}','DD/MM/YYYY') - " +
                  $"FECHA_AFECTACION + 1) * MOVIMIENTO) / {_command.InitialPeriod.ToDate.Day}) " +
-                 
+
                  $"WHEN NATURALEZA = 'A' THEN (((TO_DATE( " +
                  $"'{CommonMethods.FormatSqlDate(_command.InitialPeriod.ToDate)}','DD/MM/YYYY') - " +
                  $"FECHA_AFECTACION + 1) * MOVIMIENTO) / {_command.InitialPeriod.ToDate.Day}) " +
-                 
+
                  $"END) AS SALDO_PROMEDIO";
         } else {
           return ", 0 AS SALDO_PROMEDIO";
