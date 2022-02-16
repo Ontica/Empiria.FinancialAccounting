@@ -202,8 +202,8 @@ namespace Empiria.FinancialAccounting {
       Account account = history.Find(x => x.StartDate <= date && date <= x.EndDate);
 
       Assertion.AssertObject(account,
-        $"There are not historic information for account {accountNumber} " +
-        $"on date {date.ToString("dd/MMM/yyyy")}.");
+        $"La cuenta {accountNumber} " +
+        $"no existe o no está activa el día {date.ToString("dd/MMM/yyyy")}.");
 
       return account;
     }

@@ -71,7 +71,7 @@ namespace Empiria.FinancialAccounting.BalanceEngine.Adapters {
     } = true;
 
 
-  } // class BalanceCommand 
+  } // class BalanceCommand
 
 
 } // Empiria.FinancialAccounting.BalanceEngine.Adapters
