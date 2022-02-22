@@ -587,7 +587,7 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
 
         foreach (var entry in summaryEntriesList) {
 
-          TrialBalanceEntry entryWithSummarySector = summaryEntries.FirstOrDefault(
+          var entryWithSummarySector = summaryEntries.FirstOrDefault(
                                                         a => a.Account.Number == entry.Account.Number &&
                                                         a.Ledger.Number == entry.Ledger.Number &&
                                                         a.Currency.Code == "01" &&
