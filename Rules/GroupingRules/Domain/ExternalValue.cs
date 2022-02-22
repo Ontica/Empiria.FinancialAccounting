@@ -32,7 +32,7 @@ namespace Empiria.FinancialAccounting.Rules {
 
     static public ExternalValue Empty {
       get {
-        return GroupingRule.ParseEmpty<ExternalValue>();
+        return ExternalValue.ParseEmpty<ExternalValue>();
       }
     }
 

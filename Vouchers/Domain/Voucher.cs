@@ -32,6 +32,7 @@ namespace Empiria.FinancialAccounting.Vouchers {
       Assertion.AssertObject(fields, "fields");
 
       this.LoadFields(fields);
+
       this.Number = "No actualizada";
       this.RecordingDate = DateTime.Today;
       this.IsOpened = true;
@@ -457,9 +458,34 @@ namespace Empiria.FinancialAccounting.Vouchers {
     internal FixedList<string> ValidationResult(bool fullValidation) {
       this.RefreshEntries();
 
+      string exception = string.Empty;
+
+      if (AccountingDate.Date == new DateTime(2022, 1, 1) && VoucherType.UID != "c94bfd2b-84a7-4807-99fc-d4cb23cd43e3") {
+        exception = "El primero de enero de 2022 sólo permite el registro de pólizas de 'Carga de saldos iniciales'.";
+      }
+
+      if (AccountingDate.Date != new DateTime(2022, 1, 1) && VoucherType.UID == "c94bfd2b-84a7-4807-99fc-d4cb23cd43e3") {
+        exception = "Las pólizas de 'Carga de saldos iniciales' deben registrarse con fecha primero de enero de 2022.";
+      }
+
+
+      if (AccountingDate.Date == new DateTime(2022, 1, 2) && VoucherType.UID != "e05e39ed-e744-43e1-b7b1-8e7b6c4e9895") {
+        exception = "El 2 de enero de 2022 sólo permite el registro de pólizas de 'Efectos iniciales de adopción de Norma'.";
+      }
+
+      if (AccountingDate.Date != new DateTime(2022, 1, 2) && VoucherType.UID == "e05e39ed-e744-43e1-b7b1-8e7b6c4e9895") {
+        exception = "Las pólizas de 'Efectos iniciales de adopción de Norma' deben registrarse con fecha 2 de enero de 2022.";
+      }
+
       var validator = new VoucherValidator(this.Ledger, this.AccountingDate);
 
-      return validator.Validate(this.Entries, fullValidation);
+      var list = validator.Validate(this.Entries, fullValidation).ToList();
+
+      if (exception.Length != 0) {
+        list.Insert(0, exception);
+      }
+
+      return list.ToFixedList();
     }
 
 

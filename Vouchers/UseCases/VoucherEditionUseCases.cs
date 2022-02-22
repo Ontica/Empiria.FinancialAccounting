@@ -214,7 +214,7 @@ namespace Empiria.FinancialAccounting.Vouchers.UseCases {
     public VoucherDto CreateVoucher(VoucherFields fields) {
       Assertion.AssertObject(fields, "fields");
 
-      fields.EnsureIsValid();
+      fields.EnsureValid();
 
       var voucher = new Voucher(fields);
 
@@ -295,7 +295,7 @@ namespace Empiria.FinancialAccounting.Vouchers.UseCases {
       Assertion.Assert(voucherId > 0, "voucherId");
       Assertion.AssertObject(fields, "fields");
 
-      fields.EnsureIsValid();
+      fields.EnsureValid();
 
       var voucher = Voucher.Parse(voucherId);
 
@@ -341,6 +341,8 @@ namespace Empiria.FinancialAccounting.Vouchers.UseCases {
 
     public FixedList<string> ValidateVoucherToImport(VoucherFields voucher,
                                                      FixedList<VoucherEntryFields> entries) {
+      voucher.EnsureValid();
+
       Ledger ledger = Ledger.Parse(voucher.LedgerUID);
 
       var validator = new VoucherValidator(ledger, voucher.AccountingDate);

@@ -18,6 +18,10 @@ namespace Empiria.FinancialAccounting.BanobrasIntegration.BalancesExporter.Adapt
 
     None,
 
+    MensualConsolidado,
+
+    SaldosRentabilidad,
+
     SaldosSIC
 
   }

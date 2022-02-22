@@ -252,7 +252,7 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
 
 
     internal List<TrialBalanceEntry> GenerateAverageDailyBalance(List<TrialBalanceEntry> trialBalance,
-                                                            TrialBalanceCommandPeriod commandPeriod) {
+                                                                 TrialBalanceCommandPeriod commandPeriod) {
       List<TrialBalanceEntry> averageBalances = new List<TrialBalanceEntry>(trialBalance);
 
       TimeSpan timeSpan = commandPeriod.ToDate - commandPeriod.FromDate;
@@ -291,7 +291,7 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
 
         int cont = 0;
         while (true) {
-          
+
           entry.DebtorCreditor = entry.Account.DebtorCreditor;
           entry.SubledgerAccountIdParent = entry.SubledgerAccountId;
 
@@ -507,11 +507,12 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
 
     internal List<TrialBalanceEntry> GetSummaryByLevelAndSector(List<TrialBalanceEntry> summaryEntries) {
       var entries = new List<TrialBalanceEntry>(summaryEntries);
+
       if (_command.UseNewSectorizationModel) {
         var summaryEntriesList = new List<TrialBalanceEntry>(summaryEntries);
         foreach (var entry in summaryEntriesList) {
           List<TrialBalanceEntry> entriesWithSummarySector;
-          
+
           if (_command.TrialBalanceType == TrialBalanceType.AnaliticoDeCuentas ||
               _command.TrialBalanceType == TrialBalanceType.Balanza) {
 
@@ -539,6 +540,7 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
           }
         }
       }
+
       return entries;
     }
 
@@ -566,6 +568,7 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
       }
 
       GetSummaryToSectorZeroForPesosAndUdis(returnedEntries.ToList());
+
       returnedEntries = GetSummaryByLevelAndSector(returnedEntries.ToList());
 
       EmpiriaLog.Debug($"INNER GetSummaryByLevelAndSector(): {DateTime.Now.Subtract(startTime).TotalSeconds} seconds.");
@@ -576,8 +579,6 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
 
     private void GetSummaryToSectorZeroForPesosAndUdis(
                                       List<TrialBalanceEntry> summaryEntries) {
-      var entries = new List<TrialBalanceEntry>(summaryEntries);
-
       if (_command.UseNewSectorizationModel &&
           _command.TrialBalanceType == TrialBalanceType.AnaliticoDeCuentas) {
 
@@ -605,6 +606,7 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
         }
       }
     }
+
 
     private List<TrialBalanceEntry> GetSummaryEntriesWithoutSectorization(
                                     EmpiriaHashTable<TrialBalanceEntry> hashEntries,
@@ -1021,7 +1023,7 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
 
       if (balanceEntry.DebtorCreditor == DebtorCreditorType.Deudora) {
 
-        if ((_command.TrialBalanceType == TrialBalanceType.Balanza || 
+        if ((_command.TrialBalanceType == TrialBalanceType.Balanza ||
              _command.TrialBalanceType == TrialBalanceType.SaldosPorCuenta) &&
             ((_command.WithSubledgerAccount && _command.ShowCascadeBalances) ||
              _command.ShowCascadeBalances)) {

@@ -59,6 +59,8 @@ namespace Empiria.FinancialAccounting.BanobrasIntegration {
     public string ProcesarRentabilidad(RentabilidadExternalProcessCommand command) {
       Assertion.AssertObject(command, "command");
 
+      ExportarSaldosRentabilidad(command);
+
       try {
         ExternalProcessDataServices.ProcesarRentabilidad(command);
 
@@ -78,6 +80,23 @@ namespace Empiria.FinancialAccounting.BanobrasIntegration {
 
 
     #region Helper methods
+
+
+    private void ExportarSaldosRentabilidad(RentabilidadExternalProcessCommand command) {
+      var balancesCommand = new ExportBalancesCommand {
+        AccountsChartId = command.Metodologia,
+        BreakdownLedgers = false,
+        FromDate = new DateTime(command.Anio, command.Mes, 1),
+        ToDate = new DateTime(command.Anio, command.Mes,
+                              DateTime.DaysInMonth(command.Anio, command.Mes)),
+        StoreInto = StoreBalancesInto.SaldosRentabilidad
+      };
+
+      using (var usecases = ExportBalancesUseCases.UseCaseInteractor()) {
+        usecases.Export(balancesCommand);
+      }
+    }
+
 
     private void ExportarSaldosSIC(DateTime fechaInicio, DateTime fechaFin) {
       var command = new ExportBalancesCommand {
