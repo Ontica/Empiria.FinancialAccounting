@@ -74,7 +74,7 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
     static internal StoredBalanceSet GetBestBalanceSet(AccountsChart accountsChart,
                                                        DateTime fromDate) {
 
-      var bestBalanceSet = GetList(accountsChart).FindLast(x => x.BalancesDate <= fromDate && x.Calculated);
+      var bestBalanceSet = GetList(accountsChart).FindLast(x => x.BalancesDate < fromDate && x.Calculated);
 
       Assertion.AssertObject(bestBalanceSet,
           $"No hay ningún conjunto de saldos definidos para el catálogo {accountsChart.Name} " +
