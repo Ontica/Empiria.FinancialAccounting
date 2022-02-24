@@ -53,8 +53,8 @@ namespace Empiria.FinancialAccounting.Tests.Balances {
       command.WithSubledgerAccount = false;
       command.WithAverageBalance = false;
       command.ShowCascadeBalances = false;
-      command.FromAccount = "1.01.02.02";
-      command.ToAccount = "1.01.02.02";
+      command.FromAccount = "2.13.01.07";
+      command.ToAccount = "2.13.01.07";
 
       TrialBalanceDto trialBalance = _usecases.BuildTrialBalance(command);
 

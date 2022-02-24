@@ -438,13 +438,14 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
         } else {
           if (entry.Level == 1 && (currentCurrency.Code == "01" || currentCurrency.Code == "44")) {
             twoCurrenciesEntry.DomesticBalance += entry.CurrentBalance;
-          } else if (currentCurrency.Code == "01" && entry.Sector.Code == "00") {
+          } else if (entry.Sector.Code == "00" && currentCurrency.Code == "01") {
             twoCurrenciesEntry.DomesticBalance = entry.CurrentBalance;
           } else if (entry.Sector.Code != "00" &&
                      (currentCurrency.Code == "01" || currentCurrency.Code == "44")) {
             twoCurrenciesEntry.DomesticBalance += entry.CurrentBalance;
+          } else if (currentCurrency.Code == "44" && entry.IsSummaryForAnalytics) {
+            twoCurrenciesEntry.DomesticBalance += entry.CurrentBalance;
           }
-          
         }
         twoCurrenciesEntry.InitialBalance += entry.InitialBalance;
         twoCurrenciesEntry.Debit += entry.Debit;

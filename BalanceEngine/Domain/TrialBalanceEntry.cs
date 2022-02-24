@@ -173,6 +173,11 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
     }
 
 
+    public bool IsSummaryForAnalytics {
+      get; set;
+    } = false;
+
+
     internal void MultiplyBy(decimal value) {
       this.InitialBalance *= value;
       this.Debit *= value;

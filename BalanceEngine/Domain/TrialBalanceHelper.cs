@@ -964,6 +964,8 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
             entryWithSummarySector.Credit += entry.Credit;
             entryWithSummarySector.CurrentBalance += entry.CurrentBalance;
             entryWithSummarySector.AverageBalance += entry.AverageBalance;
+          } else {
+            entry.IsSummaryForAnalytics = true;
           }
         }
       }
