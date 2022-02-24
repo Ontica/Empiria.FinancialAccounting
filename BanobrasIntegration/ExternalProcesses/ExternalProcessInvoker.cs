@@ -59,10 +59,16 @@ namespace Empiria.FinancialAccounting.BanobrasIntegration {
     public string ProcesarRentabilidad(RentabilidadExternalProcessCommand command) {
       Assertion.AssertObject(command, "command");
 
+      EmpiriaLog.Info("Iniciando la exportación de saldos para el proceso de rentabilidad.");
+
       ExportarSaldosRentabilidad(command);
+
+      EmpiriaLog.Info("Terminó la exportación de saldos del proceso de rentabilidad.");
 
       try {
         ExternalProcessDataServices.ProcesarRentabilidad(command);
+
+        EmpiriaLog.Info("El proceso de rentabilidad fue ejecutado satisfactoriamente.");
 
         return "El proceso de rentabilidad fue ejecutado satisfactoriamente.";
 
@@ -85,7 +91,7 @@ namespace Empiria.FinancialAccounting.BanobrasIntegration {
     private void ExportarSaldosRentabilidad(RentabilidadExternalProcessCommand command) {
       var balancesCommand = new ExportBalancesCommand {
         AccountsChartId = command.Metodologia,
-        BreakdownLedgers = false,
+        BreakdownLedgers = true,
         FromDate = new DateTime(command.Anio, command.Mes, 1),
         ToDate = new DateTime(command.Anio, command.Mes,
                               DateTime.DaysInMonth(command.Anio, command.Mes)),
