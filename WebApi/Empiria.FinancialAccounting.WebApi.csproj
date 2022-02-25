@@ -79,6 +79,7 @@
     <ProjectReference Include="..\Core\Empiria.FinancialAccounting.Core.csproj" />
     <ProjectReference Include="..\BalanceEngine\Empiria.FinancialAccounting.BalanceEngine.csproj" />
     <ProjectReference Include="..\FinancialReports\Empiria.FinancialAccounting.FinancialReports.csproj" />
+    <ProjectReference Include="..\Reconciliation\Empiria.FinancialAccounting.Reconciliation.csproj" />
     <ProjectReference Include="..\Reporting\Empiria.FinancialAccounting.Reporting.csproj" />
     <ProjectReference Include="..\Rules\Empiria.FinancialAccounting.Rules.csproj" />
     <ProjectReference Include="..\Vouchers\Empiria.FinancialAccounting.Vouchers.csproj" />
@@ -86,5 +87,8 @@
   </ItemGroup>
   <ItemGroup>
     <Service Include="{508349b6-6b84-4df5-91f0-309beebad82d}" />
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="Reconciliation\" />
   </ItemGroup>
 </Project>
