@@ -18,7 +18,11 @@ namespace Empiria.FinancialAccounting.BanobrasIntegration.BalancesExporter.Adapt
 
     None,
 
+    Diario,
+
     MensualConsolidado,
+
+    MensualPorContabilidad,
 
     SaldosRentabilidad,
 
@@ -39,7 +43,8 @@ namespace Empiria.FinancialAccounting.BanobrasIntegration.BalancesExporter.Adapt
 
     public DateTime FromDate {
       get; set;
-    }
+    } = ExecutionServer.DateMinValue;
+
 
     public DateTime ToDate {
       get; set;
@@ -60,6 +65,18 @@ namespace Empiria.FinancialAccounting.BanobrasIntegration.BalancesExporter.Adapt
 
     #region Methods
 
+    private DateTime DetermineFromDate() {
+      if (this.FromDate != ExecutionServer.DateMinValue) {
+        return this.FromDate;
+      }
+
+      if (StoreInto == StoreBalancesInto.Diario) {
+        return this.ToDate;
+      }
+
+      return new DateTime(this.ToDate.Year, this.ToDate.Month, 1);
+    }
+
 
     public TrialBalanceCommand MapToTrialBalanceCommand() {
       return new TrialBalanceCommand {
@@ -70,7 +87,7 @@ namespace Empiria.FinancialAccounting.BanobrasIntegration.BalancesExporter.Adapt
         WithAverageBalance = true,
         WithSubledgerAccount = true,
         InitialPeriod = new TrialBalanceCommandPeriod {
-          FromDate = this.FromDate,
+          FromDate = DetermineFromDate(),
           ToDate = this.ToDate
         },
       };
@@ -109,7 +126,7 @@ namespace Empiria.FinancialAccounting.BanobrasIntegration.BalancesExporter.Adapt
         BreakdownLedgers = false,
         FromDate = new DateTime(this.Fecha.Year, this.Fecha.Month, 1),
         ToDate = new DateTime(this.Fecha.Year, this.Fecha.Month,
-                                DateTime.DaysInMonth(this.Fecha.Year, this.Fecha.Month)),
+                              DateTime.DaysInMonth(this.Fecha.Year, this.Fecha.Month)),
       };
     }
 
