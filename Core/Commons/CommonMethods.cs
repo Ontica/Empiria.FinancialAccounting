@@ -1,6 +1,6 @@
 ﻿/* Empiria Financial *****************************************************************************************
 *                                                                                                            *
-*  Module   : Financial Accounting                       Component : Root Types                              *
+*  Module   : Financial Accounting                       Component : Common Types                            *
 *  Assembly : FinancialAccounting.Core.dll               Pattern   : Static methods library                  *
 *  Type     : CommonMethods                              License   : Please read LICENSE.txt file            *
 *                                                                                                            *

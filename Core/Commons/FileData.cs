@@ -1,17 +1,17 @@
 ﻿/* Empiria Financial *****************************************************************************************
 *                                                                                                            *
-*  Module   : Banobras Integration Services                Component : Vouchers Importer                     *
-*  Assembly : FinancialAccounting.BanobrasIntegration.dll  Pattern   : Input Data Holder                     *
+*  Module   : Financial Accounting                         Component : Common Types                          *
+*  Assembly : Empiria.FinancialAccounting.dll              Pattern   : Input Data Holder                     *
 *  Type     : FileData                                     License   : Please read LICENSE.txt file          *
 *                                                                                                            *
-*  Summary  : Input data holder for an file stream containing vouchers data.                                 *
+*  Summary  : Input data holder for a file stream.                                                           *
 *                                                                                                            *
 ************************* Copyright(c) La Vía Óntica SC, Ontica LLC and contributors. All rights reserved. **/
 using System.IO;
 
-namespace Empiria.FinancialAccounting.BanobrasIntegration.VouchersImporter.Adapters {
+namespace Empiria.FinancialAccounting {
 
-  /// <summary>Input data holder for an file stream containing vouchers data.</summary>
+  /// <summary>Input data holder for a file stream.</summary>
   public class FileData {
 
     public Stream InputStream {
@@ -32,4 +32,4 @@ namespace Empiria.FinancialAccounting.BanobrasIntegration.VouchersImporter.Adapt
 
   }  // class FileData
 
-}  // namespace Empiria.FinancialAccounting.BanobrasIntegration.VouchersImporter.Adapters
+}  // namespace Empiria.FinancialAccounting
