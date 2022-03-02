@@ -164,6 +164,7 @@ namespace Empiria.FinancialAccounting.BalanceEngine.Adapters {
         dto.AccountNumber = entry.Account.Number != "Empty" ? entry.Account.Number : "";
       }
       dto.AccountNumberForBalances = entry.Account.Number;
+      dto.DebtorCreditor = entry.DebtorCreditor;
       dto.AccountRole = entry.Account.Role;
       dto.AccountLevel = entry.Account.Level;
       dto.SectorCode = entry.Sector.Code;
