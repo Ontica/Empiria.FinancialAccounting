@@ -11,6 +11,8 @@ using System;
 
 using Empiria.Services;
 
+using Empiria.FinancialAccounting.Adapters;
+
 namespace Empiria.FinancialAccounting.UseCases {
 
   /// <summary>Use cases for accounts lists.</summary>
@@ -31,10 +33,17 @@ namespace Empiria.FinancialAccounting.UseCases {
 
     #region Use cases
 
-    public FixedList<NamedEntityDto> GetAccountsLists() {
-      FixedList<AccountsList> list = AccountsList.GetList();
+    public AccountsListDto GetAccountsList(string accountsListUID) {
+      AccountsList list = AccountsList.Parse(accountsListUID);
 
-      return list.MapToNamedEntityList();
+      return AccountsListMapper.Map(list);
+    }
+
+
+    public FixedList<NamedEntityDto> GetAccountsLists() {
+      FixedList<AccountsList> accountsLists = AccountsList.GetList();
+
+      return accountsLists.MapToNamedEntityList();
     }
 
     #endregion Use cases

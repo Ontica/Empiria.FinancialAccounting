@@ -35,7 +35,7 @@ namespace Empiria.FinancialAccounting {
     #region Public methods
 
     public FixedList<AccountsListItem> GetItems() {
-      throw new NotImplementedException();
+      return new FixedList<AccountsListItem>();
     }
 
     #endregion Public methods

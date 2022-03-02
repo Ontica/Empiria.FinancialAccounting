@@ -12,6 +12,7 @@ using System.Web.Http;
 
 using Empiria.WebApi;
 
+using Empiria.FinancialAccounting.Adapters;
 using Empiria.FinancialAccounting.UseCases;
 
 namespace Empiria.FinancialAccounting.WebApi {
@@ -21,15 +22,26 @@ namespace Empiria.FinancialAccounting.WebApi {
 
     #region Web Apis
 
+    [HttpGet]
+    [Route("v2/financial-accounting/accounts-lists/{accountsListUID:guid}")]
+    public SingleObjectModel GetAccountsList([FromUri] string accountsListUID) {
+
+      using (var usecases = AccountsListsUseCases.UseCaseInteractor()) {
+        AccountsListDto list = usecases.GetAccountsList(accountsListUID);
+
+        return new SingleObjectModel(base.Request, list);
+      }
+    }
+
 
     [HttpGet]
     [Route("v2/financial-accounting/accounts-lists")]
     public CollectionModel GetAccountsLists() {
 
       using (var usecases = AccountsListsUseCases.UseCaseInteractor()) {
-        FixedList<NamedEntityDto> types = usecases.GetAccountsLists();
+        FixedList<NamedEntityDto> lists = usecases.GetAccountsLists();
 
-        return new CollectionModel(base.Request, types);
+        return new CollectionModel(base.Request, lists);
       }
     }
 
