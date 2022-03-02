@@ -39,6 +39,7 @@ namespace Empiria.FinancialAccounting.Reporting {
     #region Build header methods
 
     private StringBuilder SetHeaderFields(StringBuilder html) {
+      html = html.Replace("{{VOUCHER.ID}}", _voucher.Id.ToString());
       html = html.Replace("{{VOUCHER.NUMBER}}", _voucher.Number);
       html = html.Replace("{{VOUCHER.CONCEPT}}", _voucher.Concept);
       html = html.Replace("{{ACCOUNTS_CHART.NAME}}", _voucher.AccountsChart.Name);
