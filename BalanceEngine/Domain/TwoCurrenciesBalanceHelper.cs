@@ -445,6 +445,8 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
             twoCurrenciesEntry.DomesticBalance += entry.CurrentBalance;
           } else if (currentCurrency.Code == "44" && entry.IsSummaryForAnalytics) {
             twoCurrenciesEntry.DomesticBalance += entry.CurrentBalance;
+          } else if (!_command.UseNewSectorizationModel && currentCurrency.Code == "44") {
+            twoCurrenciesEntry.DomesticBalance += entry.CurrentBalance;
           }
         }
         twoCurrenciesEntry.InitialBalance += entry.InitialBalance;

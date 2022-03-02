@@ -949,7 +949,6 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
                                  .ToList();
 
         foreach (var entry in summaryEntriesList) {
-
           var entryWithSummarySector = summaryEntries.FirstOrDefault(
                                                         a => a.Account.Number == entry.Account.Number &&
                                                         a.Ledger.Number == entry.Ledger.Number &&
