@@ -9,12 +9,16 @@
 ************************* Copyright(c) La Vía Óntica SC, Ontica LLC and contributors. All rights reserved. **/
 using System;
 
+using Empiria.FinancialAccounting.Reconciliation.Data;
+
 namespace Empiria.FinancialAccounting.Reconciliation {
 
   /// <summary>Describes a reconciliation type.</summary>
   internal class ReconciliationType : GeneralObject {
 
-    private ReconciliationType() {
+    #region Constructors and parsers
+
+    protected ReconciliationType() {
       // Required by Empiria Framework.
     }
 
@@ -27,6 +31,31 @@ namespace Empiria.FinancialAccounting.Reconciliation {
       return BaseObject.GetList<ReconciliationType>()
                        .ToFixedList();
     }
+
+
+    #endregion Constructors and parsers
+
+    #region Properties
+
+    public FixedList<InputDatasetType> DatasetTypes {
+      get {
+        return base.ExtendedDataField.GetFixedList<InputDatasetType>("inputDatasetTypes");
+      }
+    }
+
+    #endregion Properties
+
+    #region Methods
+
+    internal FixedList<InputDataset> GetInputDatasetsList(DateTime date) {
+      return ReconciliationData.GetInputDatasets(this, date);
+    }
+
+    internal FixedList<InputDatasetType> MissingInputDatasetTypes(DateTime date) {
+      return this.DatasetTypes;
+    }
+
+    #endregion Methods
 
   }  // class ReconciliationType
 
