@@ -106,6 +106,17 @@ namespace Empiria.FinancialAccounting.FinancialReports {
       };
     }
 
+
+    internal ReportEntryTotals SumDebitsAndSubstractCredits(ITrialBalanceEntryDto balance, string qualification) {
+      var analiticoBalance = (TwoColumnsTrialBalanceEntryDto) balance;
+
+      if (analiticoBalance.DebtorCreditor == DebtorCreditorType.Deudora) {
+        return Sum(balance, qualification);
+      } else {
+        return Substract(balance, qualification);
+      }
+    }
+
     #endregion Methods
 
   }  // class ReportEntryTotals

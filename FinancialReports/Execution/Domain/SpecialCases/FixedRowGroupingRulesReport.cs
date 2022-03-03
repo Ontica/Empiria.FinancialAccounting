@@ -110,15 +110,14 @@ namespace Empiria.FinancialAccounting.FinancialReports {
         }
       }
 
-      //if (filtered.Count > 1) {
-      //  EmpiriaLog.Info($"More than one balance for account: {groupingRule.AccountNumber},
-                      //  $"{groupingRule.GroupingRule.Concept}, {groupingRule.RulesSet.Name}, {filtered.Count}");
-      //}
-
       var totals = new ReportEntryTotals();
 
       foreach (var balance in filtered) {
-        totals = totals.Sum(balance, groupingRule.Qualification);
+        if (groupingRule.CalculationRule == "SumDebitsAndSubstractCredits") {
+          totals = totals.SumDebitsAndSubstractCredits(balance, groupingRule.Qualification);
+        } else {
+          totals = totals.Sum(balance, groupingRule.Qualification);
+        }
       }
 
       if (FinancialReportType.RoundDecimals) {
