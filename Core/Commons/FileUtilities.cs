@@ -1,8 +1,8 @@
 ﻿/* Empiria Financial *****************************************************************************************
 *                                                                                                            *
-*  Module   : Banobras Integration Services                Component : Vouchers Importer                     *
-*  Assembly : FinancialAccounting.BanobrasIntegration.dll  Pattern   : Static methods library                *
-*  Type     : FileUtilities                                License   : Please read LICENSE.txt file          *
+*  Module   : Financial Accounting                       Component : Common Types                            *
+*  Assembly : FinancialAccounting.Core.dll               Pattern   : Static methods library                  *
+*  Type     : FileUtilities                              License   : Please read LICENSE.txt file            *
 *                                                                                                            *
 *  Summary  : Contains methods for file handling.                                                            *
 *                                                                                                            *
@@ -11,28 +11,25 @@ using System;
 using System.IO;
 using System.Text;
 
-using Empiria.FinancialAccounting.BanobrasIntegration.VouchersImporter.Adapters;
+namespace Empiria.FinancialAccounting {
 
-namespace Empiria.FinancialAccounting.BanobrasIntegration.VouchersImporter {
+  /// <summary>Contains methods for file handling.</summary>
+  static public class FileUtilities {
 
-  static internal class FileUtilities {
-
-    static internal string[] ReadTextFile(FileInfo textFile) {
+    static public string[] ReadTextFile(FileInfo textFile) {
       var ansiEncoding = Encoding.GetEncoding(1252);
 
       return File.ReadAllLines(textFile.FullName, ansiEncoding);
     }
 
 
-    static internal FileInfo SaveFile(FileData file) {
+    static public FileInfo SaveFile(FileData file) {
       string fileFullPath = ImportedFilePath(file);
-
-      //string content = file.InputStream.File.ReadAllText(
-      //File.WriteAllBytes(fileFullPath, Encoding.UTF8.GetBytes(content);
 
       using (FileStream outputStream = File.OpenWrite(fileFullPath)) {
         file.InputStream.CopyTo(outputStream);
       }
+
       return new FileInfo(fileFullPath);
     }
 
@@ -65,4 +62,4 @@ namespace Empiria.FinancialAccounting.BanobrasIntegration.VouchersImporter {
 
   }  // class FileUtilities
 
-}  // namespace Empiria.FinancialAccounting.BanobrasIntegration.VouchersImporter
+}  // namespace Empiria.FinancialAccounting
