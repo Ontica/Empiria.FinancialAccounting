@@ -36,6 +36,20 @@ namespace Empiria.FinancialAccounting.Vouchers {
     #region Properties
 
 
+    public AccountsList AccountsList {
+      get {
+        return base.ExtendedDataField.Get<AccountsList>("accountsListId", AccountsList.Empty);
+      }
+    }
+
+
+    public bool AllowAllLedgersSelection {
+      get {
+        return base.ExtendedDataField.Get("allowAllLedgersSelection", false);
+      }
+    }
+
+
     public bool AskForCalculationDateField {
       get {
         return base.ExtendedDataField.Get("askForCalculationDateField", false);
