@@ -145,7 +145,8 @@ namespace Empiria.FinancialAccounting.Vouchers.UseCases {
           continue;
         }
 
-        if (!voucher.ElaboratedBy.Equals(Participant.Current)) {
+        if (!(voucher.ElaboratedBy.Equals(Participant.Current) ||
+              voucher.AuthorizedBy.Equals(Participant.Current))) {
           continue;
         }
 
@@ -264,6 +265,11 @@ namespace Empiria.FinancialAccounting.Vouchers.UseCases {
       Assertion.Assert(voucherId > 0, "voucherId");
 
       var voucher = Voucher.Parse(voucherId);
+
+      if (!(voucher.ElaboratedBy.Equals(Participant.Current) ||
+            voucher.AuthorizedBy.Equals(Participant.Current))) {
+        Assertion.AssertFail("La póliza no puede ser eliminada debido a que la tiene otro usuario.");
+      }
 
       voucher.Delete();
     }
