@@ -1,7 +1,7 @@
 ﻿Empiria Financial Accounting License
 ====================================
 
-Copyright (C) 2000-2021. La Vía Óntica SC and contributors.
+Copyright (C) 2000-2022. La Vía Óntica SC and contributors.
 -----------------------------------------------------------
 
 These software components are free software: you can redistribute them
