@@ -39,7 +39,7 @@ namespace Empiria.FinancialAccounting.Vouchers.SpecialCases {
       FixedList<string> issues = this.ImplementsDryRun(entries);
 
       Assertion.Assert(issues.Count == 0,
-          "There were one or more issues generating 'Cancelación de movimientos voucher': " +
+          "There were one or more issues generating 'Cancelación de movimientos' voucher: " +
           EmpiriaString.ToString(issues));
 
 
