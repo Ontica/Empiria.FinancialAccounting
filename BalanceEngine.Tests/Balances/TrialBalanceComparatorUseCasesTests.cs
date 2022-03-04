@@ -42,14 +42,9 @@ namespace Empiria.FinancialAccounting.Tests.Balances {
     public void Should_Be_Same_Balance() {
       TrialBalanceCommand command = GetDefaultTrialBalanceCommand();
       command.TrialBalanceType = TrialBalanceType.GeneracionDeSaldos;
-      command.WithSubledgerAccount = false;
-      command.BalancesType = BalancesType.AllAccounts;
       command.ShowCascadeBalances = false;
-      command.FromAccount = "1101";
-      command.ToAccount = "1299";
 
       TrialBalanceDto balances = _usecases.BuildBalancesByAccount(command);
-      
       command.TrialBalanceType = TrialBalanceType.Balanza;
       TrialBalanceDto trialBalance = _usecases.BuildBalancesByAccount(command);
 
@@ -82,15 +77,10 @@ namespace Empiria.FinancialAccounting.Tests.Balances {
       TrialBalanceCommand command = GetDefaultTrialBalanceCommand();
       command.TrialBalanceType = TrialBalanceType.Balanza;
       command.AccountsChartUID = "47ec2ec7-0f4f-482e-9799-c23107b60d8a";
-      command.BalancesType = BalancesType.WithCurrentBalanceOrMovements;
       command.ShowCascadeBalances = false;
-      command.WithSubledgerAccount = false;
       command.UseDefaultValuation = true;
-      command.FromAccount = "1";
-      command.ToAccount = "1";
 
       TrialBalanceDto trialBalance = _usecases.BuildBalancesByAccount(command);
-
       command.TrialBalanceType = TrialBalanceType.AnaliticoDeCuentas;
       TrialBalanceDto twoColumns = _usecases.BuildBalancesByAccount(command);
 
@@ -100,47 +90,22 @@ namespace Empiria.FinancialAccounting.Tests.Balances {
       Assert.NotEmpty(twoColumns.Entries);
 
       var _trialBalance = trialBalance.Entries.Select(x => (TrialBalanceEntryDto) x);
-      var _twoColumns = twoColumns.Entries.Select(x => (TwoColumnsTrialBalanceEntryDto) x);
+      var _twoColumnsEntries = twoColumns.Entries.Select(x => (TwoColumnsTrialBalanceEntryDto) x);
       var domesticWrongEntries = 0;
-      var foreignWrongEntries = 0;
 
-      foreach (var entry in _twoColumns.Where((a => a.ItemType == TrialBalanceItemType.Entry ||
-                                               a.ItemType == TrialBalanceItemType.Summary))) {
-        var Balances = _trialBalance.Where(
+      foreach (var entry in _twoColumnsEntries.Where(a => a.ItemType == TrialBalanceItemType.Entry)) {
+        var balances = _trialBalance.Where(
                                           a => a.AccountNumber == entry.AccountNumber &&
                                           a.AccountNumberForBalances == entry.AccountNumberForBalances &&
                                           (a.CurrencyCode == "01" || a.CurrencyCode == "44") &&
                                           a.LedgerNumber == entry.LedgerNumber &&
                                           a.SectorCode == entry.SectorCode &&
                                           a.DebtorCreditor == entry.DebtorCreditor.ToString()
-                                         ).ToList();
+                                         ).Sum(a => a.CurrentBalance);
 
-        decimal currentBalance = 0;
-        if (Balances.Count > 0) {
-          currentBalance += (decimal) Balances.Sum(a => a.CurrentBalance);
-          domesticWrongEntries = entry.DomesticBalance != currentBalance ? domesticWrongEntries + 1 : domesticWrongEntries;
-        }
+        domesticWrongEntries = entry.DomesticBalance != balances ? domesticWrongEntries + 1 : domesticWrongEntries;
       }
       Assert.True(domesticWrongEntries == 0);
-
-      foreach (var entry in _twoColumns.Where((a => a.ItemType == TrialBalanceItemType.Entry ||
-                                               a.ItemType == TrialBalanceItemType.Summary))) {
-        var foreignBalances = _trialBalance.Where(
-                                          a => a.AccountNumber == entry.AccountNumber &&
-                                          a.AccountNumberForBalances == entry.AccountNumberForBalances &&
-                                          a.CurrencyCode != "01" && a.CurrencyCode != "44" &&
-                                          a.LedgerNumber == entry.LedgerNumber &&
-                                          a.SectorCode == entry.SectorCode &&
-                                          a.DebtorCreditor == entry.DebtorCreditor.ToString()
-                                         ).ToList();
-
-        decimal foreignCurrentBalance = 0;
-        if (foreignBalances.Count > 0) {
-          foreignCurrentBalance += (decimal) foreignBalances.Sum(a => a.CurrentBalance);
-          foreignWrongEntries = entry.ForeignBalance != foreignCurrentBalance ? foreignWrongEntries + 1 : foreignWrongEntries;
-        }
-      }
-      Assert.True(foreignWrongEntries == 0);
     }
 
 
@@ -151,13 +116,9 @@ namespace Empiria.FinancialAccounting.Tests.Balances {
       command.AccountsChartUID = "47ec2ec7-0f4f-482e-9799-c23107b60d8a";
       command.BalancesType = BalancesType.WithCurrentBalanceOrMovements;
       command.ShowCascadeBalances = false;
-      command.WithSubledgerAccount = false;
       command.UseDefaultValuation = true;
-      command.FromAccount = "1";
-      command.ToAccount = "1";
 
       TrialBalanceDto trialBalance = _usecases.BuildBalancesByAccount(command);
-
       command.TrialBalanceType = TrialBalanceType.AnaliticoDeCuentas;
       TrialBalanceDto twoColumns = _usecases.BuildBalancesByAccount(command);
 
@@ -167,11 +128,10 @@ namespace Empiria.FinancialAccounting.Tests.Balances {
       Assert.NotEmpty(twoColumns.Entries);
 
       var _trialBalance = trialBalance.Entries.Select(x => (TrialBalanceEntryDto) x);
-      var _twoColumns = twoColumns.Entries.Select(x => (TwoColumnsTrialBalanceEntryDto) x);
+      var _twoColumnsEntries = twoColumns.Entries.Select(x => (TwoColumnsTrialBalanceEntryDto) x);
       var foreignWrongEntries = 0;
 
-      foreach (var entry in _twoColumns.Where((a => a.ItemType == TrialBalanceItemType.Entry ||
-                                               a.ItemType == TrialBalanceItemType.Summary))) {
+      foreach (var entry in _twoColumnsEntries.Where(a => a.ItemType == TrialBalanceItemType.Entry)) {
         var foreignBalances = _trialBalance.Where(
                                           a => a.AccountNumber == entry.AccountNumber &&
                                           a.AccountNumberForBalances == entry.AccountNumberForBalances &&
@@ -179,15 +139,69 @@ namespace Empiria.FinancialAccounting.Tests.Balances {
                                           a.LedgerNumber == entry.LedgerNumber &&
                                           a.SectorCode == entry.SectorCode &&
                                           a.DebtorCreditor == entry.DebtorCreditor.ToString()
-                                         ).ToList();
+                                         ).Sum(a => a.CurrentBalance);
 
-        decimal foreignCurrentBalance = 0;
-        if (foreignBalances.Count > 0) {
-          foreignCurrentBalance += (decimal) foreignBalances.Sum(a => a.CurrentBalance);
-          foreignWrongEntries = entry.ForeignBalance != foreignCurrentBalance ? foreignWrongEntries + 1 : foreignWrongEntries;
-        }
+        foreignWrongEntries = entry.ForeignBalance != foreignBalances ? foreignWrongEntries + 1 : foreignWrongEntries;
       }
+
       Assert.True(foreignWrongEntries == 0);
+    }
+
+
+    [Fact]
+    public void Should_Match_Currencies_With_Balance() {
+      TrialBalanceCommand command = GetDefaultTrialBalanceCommand();
+      command.TrialBalanceType = TrialBalanceType.Balanza;
+      command.AccountsChartUID = "47ec2ec7-0f4f-482e-9799-c23107b60d8a";
+      command.BalancesType = BalancesType.WithCurrentBalanceOrMovements;
+      command.ShowCascadeBalances = false;
+
+      TrialBalanceDto trialBalance = _usecases.BuildBalancesByAccount(command);
+      command.TrialBalanceType = TrialBalanceType.BalanzaEnColumnasPorMoneda;
+      TrialBalanceDto balancesByCurrency = _usecases.BuildBalancesByAccount(command);
+
+      Assert.NotNull(trialBalance);
+      Assert.NotEmpty(trialBalance.Entries);
+      Assert.NotNull(balancesByCurrency);
+      Assert.NotEmpty(balancesByCurrency.Entries);
+
+      var _trialBalance = trialBalance.Entries.Select(x => (TrialBalanceEntryDto) x);
+      var _balancesByCurrency = balancesByCurrency.Entries.Select(x => (TrialBalanceByCurrencyDto) x);
+      var wrongEntries = 0;
+
+      foreach (var balanceByCurrency in _balancesByCurrency) {
+        var domesticBalance = _trialBalance.Where(a => a.AccountNumber == balanceByCurrency.AccountNumber &&
+                                                       a.CurrencyCode == "01" &&
+                                                       a.SectorCode == balanceByCurrency.SectorCode &&
+                                                       (a.ItemType == TrialBalanceItemType.Entry || a.ItemType == TrialBalanceItemType.Summary))
+                                           .Sum(a=>a.CurrentBalance);
+        wrongEntries = balanceByCurrency.DomesticBalance != domesticBalance ? wrongEntries + 1 : wrongEntries;
+
+        var dollarBalance = _trialBalance.Where(a => a.AccountNumber == balanceByCurrency.AccountNumber &&
+                                                       a.CurrencyCode == "02" &&
+                                                       (a.ItemType == TrialBalanceItemType.Entry || a.ItemType == TrialBalanceItemType.Summary))
+                                           .Sum(a => a.CurrentBalance);
+        wrongEntries = balanceByCurrency.DollarBalance != dollarBalance ? wrongEntries + 1 : wrongEntries;
+
+        var yenBalance = _trialBalance.Where(a => a.AccountNumber == balanceByCurrency.AccountNumber &&
+                                                       a.CurrencyCode == "06" &&
+                                                       (a.ItemType == TrialBalanceItemType.Entry || a.ItemType == TrialBalanceItemType.Summary))
+                                           .Sum(a => a.CurrentBalance);
+        wrongEntries = balanceByCurrency.YenBalance != yenBalance ? wrongEntries + 1 : wrongEntries;
+
+        var euroBalance = _trialBalance.Where(a => a.AccountNumber == balanceByCurrency.AccountNumber &&
+                                                       a.CurrencyCode == "27" &&
+                                                       (a.ItemType == TrialBalanceItemType.Entry || a.ItemType == TrialBalanceItemType.Summary))
+                                           .Sum(a => a.CurrentBalance);
+        wrongEntries = balanceByCurrency.EuroBalance != euroBalance ? wrongEntries + 1 : wrongEntries;
+
+        var udisBalance = _trialBalance.Where(a => a.AccountNumber == balanceByCurrency.AccountNumber &&
+                                                       a.CurrencyCode == "44" &&
+                                                       (a.ItemType == TrialBalanceItemType.Entry || a.ItemType == TrialBalanceItemType.Summary))
+                                           .Sum(a => a.CurrentBalance);
+        wrongEntries = balanceByCurrency.UdisBalance != udisBalance ? wrongEntries + 1 : wrongEntries;
+      }
+      Assert.True(wrongEntries == 0);
     }
 
 
@@ -204,10 +218,7 @@ namespace Empiria.FinancialAccounting.Tests.Balances {
         Ledgers = TestingConstants.BALANCE_LEDGERS_ARRAY,
         InitialPeriod = new TrialBalanceCommandPeriod() {
           FromDate = TestingConstants.FROM_DATE,
-          ToDate = TestingConstants.TO_DATE,
-          //ExchangeRateDate = new DateTime(2021, 06, 30),
-          //ExchangeRateTypeUID = "96c617f6-8ed9-47f3-8d2d-f1240e446e1d",
-          //ValuateToCurrrencyUID = "01"
+          ToDate = TestingConstants.TO_DATE
         },
         FinalPeriod = new TrialBalanceCommandPeriod() {
           FromDate = new DateTime(2021, 06, 01),
