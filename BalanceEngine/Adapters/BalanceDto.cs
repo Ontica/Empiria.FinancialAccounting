@@ -2,7 +2,7 @@
 *                                                                                                            *
 *  Module   : Balance Engine                             Component : Interface adapters                      *
 *  Assembly : FinancialAccounting.BalanceEngine.dll      Pattern   : Data Transfer Object                    *
-*  Type     : BalanceDto                            License   : Please read LICENSE.txt file                 *
+*  Type     : BalanceDto                                 License   : Please read LICENSE.txt file            *
 *                                                                                                            *
 *  Summary  : Output DTO used to return balances.                                                            *
 *                                                                                                            *

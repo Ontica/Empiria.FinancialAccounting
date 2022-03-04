@@ -1,8 +1,8 @@
 ﻿/* Empiria Financial *****************************************************************************************
 *                                                                                                            *
-*  Module   : Reporting Services                            Component : File Exportation Services            *
-*  Assembly : Empiria.FinancialAccounting.dll               Pattern   : Enumeration                          *
-*  Type     : FileType                                      License   : Please read LICENSE.txt file         *
+*  Module   : Financial Accounting                       Component : Common Types                            *
+*  Assembly : FinancialAccounting.Core.dll               Pattern   : Enumeration                             *
+*  Type     : FileType                                   License   : Please read LICENSE.txt file            *
 *                                                                                                            *
 *  Summary  : Enumerates a file technology.                                                                  *
 *                                                                                                            *
@@ -10,6 +10,7 @@
 
 namespace Empiria.FinancialAccounting {
 
+  /// <summary>Enumerates a file technology.</summary>
   public enum FileType {
 
     Csv,

@@ -12,7 +12,7 @@ using System;
 namespace Empiria.FinancialAccounting {
 
   /// <summary>Describes a memeber of a financial accounts list.</summary>
-  internal class AccountsListItem : BaseObject {
+  public class AccountsListItem : BaseObject {
 
     #region Constructors and parsers
 
@@ -34,7 +34,6 @@ namespace Empiria.FinancialAccounting {
     }
 
     #endregion Constructors and parsers
-
 
     #region Properties
 

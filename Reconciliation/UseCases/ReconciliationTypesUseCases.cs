@@ -29,8 +29,6 @@ namespace Empiria.FinancialAccounting.Reconciliation.UseCases {
       return UseCase.CreateInstance<ReconciliationTypesUseCases>();
     }
 
-
-
     #endregion Constructors and parsers
 
     #region Use cases
@@ -40,7 +38,6 @@ namespace Empiria.FinancialAccounting.Reconciliation.UseCases {
 
       return list.MapToNamedEntityList();
     }
-
 
     #endregion Use cases
 
