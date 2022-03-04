@@ -54,8 +54,6 @@ namespace Empiria.FinancialAccounting.Vouchers {
       return builder;
     }
 
-
-
     #endregion Constructors and parsers
 
 
@@ -81,6 +79,20 @@ namespace Empiria.FinancialAccounting.Vouchers {
 
     internal abstract Voucher GenerateVoucher();
 
+    internal bool TryGenerateVoucher(Ledger ledger, out Voucher voucher) {
+      this.Fields.LedgerUID = ledger.UID;
+
+      try {
+        voucher = GenerateVoucher();
+        return true;
+
+      } catch {
+        voucher = null;
+        return false;
+      }
+    }
+
+
     #endregion Abstract methods
 
     #region Factory methods
@@ -93,20 +105,20 @@ namespace Empiria.FinancialAccounting.Vouchers {
     static private VoucherBuilder CreateCancelacionMovimientosBuilder(VoucherSpecialCaseFields fields) {
       Ledger ledger = Ledger.Parse(fields.LedgerUID);
 
-      Voucher voucher = Voucher.TryParse(ledger, fields.OnVoucherNumber);
+      Voucher voucherToCancel = Voucher.TryParse(ledger, fields.OnVoucherNumber);
 
-      if (voucher == null) {
+      if (voucherToCancel == null) {
         Assertion.AssertNoReachThisCode(
           $"La póliza '{fields.OnVoucherNumber}' no existe en la contabilidad {ledger.FullName}."
         );
       }
 
-      return new CancelacionMovimientosVoucherBuilder(voucher);
+      return new CancelacionMovimientosVoucherBuilder(voucherToCancel);
     }
 
 
     static private VoucherBuilder CreateNivelacionCuentasCompraventaBuilder() {
-      throw new NotImplementedException();
+      return new NivelacionCuentasCompraventaVoucherBuilder();
     }
 
     #endregion Factory methods

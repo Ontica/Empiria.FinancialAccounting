@@ -36,6 +36,19 @@ namespace Empiria.FinancialAccounting.WebApi.Vouchers {
     }
 
 
+    [HttpPost]
+    [Route("v2/financial-accounting/vouchers/special-case/create-all-vouchers")]
+    public SingleObjectModel CreateAllApplicableVouchers([FromBody] VoucherSpecialCaseFields fields) {
+      base.RequireBody(fields);
+
+      using (var usecases = VoucherSpecialCasesUseCases.UseCaseInteractor()) {
+        string result = usecases.CreateAllSpecialCaseApplicableVouchers(fields);
+
+        return new SingleObjectModel(base.Request, result);
+      }
+    }
+
+
     [HttpGet]
     [Route("v2/financial-accounting/vouchers/special-case-types")]
     public CollectionModel GetSpecialCases() {
