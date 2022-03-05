@@ -239,6 +239,49 @@ namespace Empiria.FinancialAccounting.Tests.Balances {
     }
 
 
+    [Fact]
+    public void Should_Match_Dollarized_Balance_With_Trial_Balance() {
+      TrialBalanceCommand command = GetDefaultTrialBalanceCommand();
+      command.TrialBalanceType = TrialBalanceType.BalanzaDolarizada;
+      command.AccountsChartUID = "47ec2ec7-0f4f-482e-9799-c23107b60d8a";
+      command.BalancesType = BalancesType.WithCurrentBalanceOrMovements;
+      command.ShowCascadeBalances = false;
+      command.UseDefaultValuation = true;
+      command.FromAccount = "1";
+      command.ToAccount = "1";
+
+      TrialBalanceDto dollarizedBalance = _usecases.BuildBalancesByAccount(command);
+      command.UseDefaultValuation = false;
+      command.InitialPeriod.UseDefaultValuation = false;
+      command.InitialPeriod.ValuateToCurrrencyUID = "";
+      command.InitialPeriod.ExchangeRateTypeUID = "";
+      command.TrialBalanceType = TrialBalanceType.Balanza;
+      TrialBalanceDto trialBalance = _usecases.BuildBalancesByAccount(command);
+
+      Assert.NotNull(trialBalance);
+      Assert.NotEmpty(trialBalance.Entries);
+      Assert.NotNull(dollarizedBalance);
+      Assert.NotEmpty(dollarizedBalance.Entries);
+
+      var _trialBalance = trialBalance.Entries.Select(x => (TrialBalanceEntryDto) x);
+      var _dollarizedBalance = dollarizedBalance.Entries.Select(x => (ValuedTrialBalanceDto) x);
+      var wrongEntries = 0;
+
+      foreach (var cascadeEntry in _dollarizedBalance.Where(a => a.ItemType == TrialBalanceItemType.Summary)) {
+        var balanceEntry = _trialBalance.Where(a => a.AccountNumber == cascadeEntry.AccountNumber &&
+                                                    a.CurrencyCode == cascadeEntry.CurrencyCode &&
+                                                    a.SectorCode == cascadeEntry.SectorCode &&
+                                                    a.ItemType == TrialBalanceItemType.Entry)
+                                        .ToList();
+        if (balanceEntry.Count > 0) {
+          decimal balance = (decimal) balanceEntry.Sum(a => a.CurrentBalance);
+          wrongEntries = cascadeEntry.TotalEquivalence != balance ? wrongEntries + 1 : wrongEntries;
+        }
+      }
+      Assert.True(wrongEntries == 0);
+    }
+
+
     #endregion Facts
 
 
@@ -253,6 +296,9 @@ namespace Empiria.FinancialAccounting.Tests.Balances {
         InitialPeriod = new TrialBalanceCommandPeriod() {
           FromDate = TestingConstants.FROM_DATE,
           ToDate = TestingConstants.TO_DATE
+          //ExchangeRateDate = new DateTime(2021, 06, 30),
+          //ExchangeRateTypeUID = "96c617f6-8ed9-47f3-8d2d-f1240e446e1d",
+          //ValuateToCurrrencyUID = "01"
         },
         FinalPeriod = new TrialBalanceCommandPeriod() {
           FromDate = new DateTime(2021, 06, 01),
