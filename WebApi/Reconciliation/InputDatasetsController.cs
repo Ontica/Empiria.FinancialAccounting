@@ -56,12 +56,12 @@ namespace Empiria.FinancialAccounting.WebApi.Reconciliation {
 
       FileData excelFile = GetFileDataFromRequest(httpRequest);
 
-      GetInputDatasetsCommand command = GetReconciliationDataSetCommandFromRequest(httpRequest);
+      StoreInputDatasetCommand command = GetStoreInputDataSetCommandFromRequest(httpRequest);
 
       using (var usecases = InputDatasetsUseCases.UseCaseInteractor()) {
-        ReconciliationDatasetsDto dataset = usecases.ImportDatasetFromExcelFile(command, excelFile);
+        ReconciliationDatasetsDto datasets = usecases.ImportDatasetFromFile(command, excelFile);
 
-        return new SingleObjectModel(base.Request, dataset);
+        return new SingleObjectModel(base.Request, datasets);
       }
     }
 
@@ -71,9 +71,9 @@ namespace Empiria.FinancialAccounting.WebApi.Reconciliation {
     public SingleObjectModel RemoveInputDataset([FromUri] string inputDatasetUID) {
 
       using (var usecases = InputDatasetsUseCases.UseCaseInteractor()) {
-        InputDatasetDto dataset = usecases.RemoveDataset(inputDatasetUID);
+        ReconciliationDatasetsDto datasets = usecases.RemoveDataset(inputDatasetUID);
 
-        return new SingleObjectModel(base.Request, dataset);
+        return new SingleObjectModel(base.Request, datasets);
       }
     }
 
@@ -95,12 +95,12 @@ namespace Empiria.FinancialAccounting.WebApi.Reconciliation {
       return fileData;
     }
 
-    private GetInputDatasetsCommand GetReconciliationDataSetCommandFromRequest(HttpRequest httpRequest) {
+    private StoreInputDatasetCommand GetStoreInputDataSetCommandFromRequest(HttpRequest httpRequest) {
       NameValueCollection form = httpRequest.Form;
 
       Assertion.AssertObject(form["command"], "'command' form field is required");
 
-      var command = new GetInputDatasetsCommand();
+      var command = new StoreInputDatasetCommand();
 
       return JsonConverter.Merge(form["command"], command);
     }

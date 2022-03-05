@@ -29,6 +29,17 @@ namespace Empiria.FinancialAccounting.Reconciliation.Data {
       return DataReader.GetFixedList<InputDataset>(operation);
     }
 
+
+    static internal void WriteInputDataset(InputDataset o) {
+      var op = DataOperation.Parse("write_cof_conciliacion_dataset",
+                        o.Id, o.UID, o.ReconciliationType.Id,
+                        o.DatasetType.UID, o.Name, o.ReconciliationDate, o.ElaborationDate,
+                        o.ExtData.ToString(), o.ElaboratedBy.Id,
+                        (char) o.Status);
+
+      DataWriter.Execute(op);
+    }
+
   } // class ReconciliationData
 
 } // namespace Empiria.FinancialAccounting.Reconciliation.Data

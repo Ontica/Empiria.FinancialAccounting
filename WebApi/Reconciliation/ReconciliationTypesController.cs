@@ -22,7 +22,6 @@ namespace Empiria.FinancialAccounting.WebApi.Reconciliation {
 
     #region Web Apis
 
-
     [HttpGet]
     [Route("v2/financial-accounting/reconciliation/reconciliation-types")]
     public CollectionModel GetReconciliationTypes() {

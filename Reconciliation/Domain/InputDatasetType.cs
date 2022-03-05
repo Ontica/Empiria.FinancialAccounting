@@ -26,8 +26,8 @@ namespace Empiria.FinancialAccounting.Reconciliation {
 
     static internal InputDatasetType Parse(JsonObject json) {
       return new InputDatasetType {
+        UID = json.Get<string>("uid"),
         Name = json.Get<string>("name"),
-        Type = json.Get<string>("type"),
         FileType = json.Get<FileType>("fileType", FileType.Csv),
         DataFormat = json.Get<InputDatsetFormat>("format", InputDatsetFormat.Standard),
         Optional = json.Get<bool>("optional", false),
@@ -37,25 +37,30 @@ namespace Empiria.FinancialAccounting.Reconciliation {
 
     #region Properties
 
+    public string UID {
+      get; private set;
+    }
+
+
     public string Name {
       get; private set;
     }
 
-    public string Type {
-      get; private set;
-    }
 
     public FileType FileType {
       get; private set;
     }
 
+
     public InputDatsetFormat DataFormat {
       get; private set;
     }
 
+
     public bool Optional {
       get; private set;
     }
+
 
     public int Count {
       get; private set;

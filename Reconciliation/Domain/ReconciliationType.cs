@@ -22,6 +22,12 @@ namespace Empiria.FinancialAccounting.Reconciliation {
       // Required by Empiria Framework.
     }
 
+
+    static internal ReconciliationType Parse(int id) {
+      return BaseObject.ParseId<ReconciliationType>(id);
+    }
+
+
     static public ReconciliationType Parse(string uid) {
       return BaseObject.ParseKey<ReconciliationType>(uid);
     }
@@ -33,11 +39,14 @@ namespace Empiria.FinancialAccounting.Reconciliation {
     }
 
 
+    static internal ReconciliationType Empty => BaseObject.ParseEmpty<ReconciliationType>();
+
+
     #endregion Constructors and parsers
 
     #region Properties
 
-    public FixedList<InputDatasetType> DatasetTypes {
+    internal FixedList<InputDatasetType> DatasetTypes {
       get {
         return base.ExtendedDataField.GetFixedList<InputDatasetType>("inputDatasetTypes");
       }
@@ -50,6 +59,17 @@ namespace Empiria.FinancialAccounting.Reconciliation {
     internal FixedList<InputDataset> GetInputDatasetsList(DateTime date) {
       return ReconciliationData.GetInputDatasets(this, date);
     }
+
+
+    internal InputDatasetType GetInputDatasetType(string uid) {
+      var inputDatasetType = this.DatasetTypes.Find(x => x.UID == uid);
+
+      Assertion.AssertObject(inputDatasetType,
+                           $"There is not defined an input dataset type '{uid}'.");
+
+      return inputDatasetType;
+    }
+
 
     internal FixedList<InputDatasetType> MissingInputDatasetTypes(DateTime date) {
       return this.DatasetTypes;

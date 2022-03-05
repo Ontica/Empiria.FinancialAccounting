@@ -34,17 +34,25 @@ namespace Empiria.FinancialAccounting.Reconciliation.Adapters {
 
     static private InputDatasetDto Map(InputDataset dataset) {
       return new InputDatasetDto() {
-        UID = dataset.UID
+        UID = dataset.UID,
+        DatasetType = dataset.DatasetType.UID,
+        DatasetTypeName = dataset.Name,
+        ElaborationDate = dataset.ElaborationDate,
+        ElaboratedBy = dataset.ElaboratedBy.Alias,
+        FileType = dataset.DatasetType.FileType,
+        FileSize = dataset.FileSize,
+        Url = "http://server/sicofin/files/archivo.xlsx"
       };
     }
 
-    static private InputDatasetTypeDto Map(InputDatasetType x) {
+
+    static private InputDatasetTypeDto Map(InputDatasetType type) {
       return new InputDatasetTypeDto() {
-        Name = x.Name,
-        Type = x.Type,
-        FileType = x.FileType,
-        Optional = x.Optional,
-        Count = x.Count
+        Name = type.Name,
+        Type = type.UID,
+        FileType = type.FileType,
+        Optional = type.Optional,
+        Count = type.Count
       };
     }
 

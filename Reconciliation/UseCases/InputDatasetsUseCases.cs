@@ -8,6 +8,7 @@
 *                                                                                                            *
 ************************* Copyright(c) La Vía Óntica SC, Ontica LLC and contributors. All rights reserved. **/
 using System;
+using System.IO;
 
 using Empiria.Services;
 
@@ -44,27 +45,54 @@ namespace Empiria.FinancialAccounting.Reconciliation.UseCases {
 
       command.EnsureValid();
 
-      var reconciliationType = ReconciliationType.Parse(command.ReconciliationTypeUID);
+      return BuildReconciliationDatasetsDto(command.ReconciliationTypeUID, command.Date);
+    }
 
-      FixedList<InputDataset> datasets = reconciliationType.GetInputDatasetsList(command.Date);
 
-      FixedList<InputDatasetType> missing = reconciliationType.MissingInputDatasetTypes(command.Date);
+    public ReconciliationDatasetsDto ImportDatasetFromFile(StoreInputDatasetCommand command,
+                                                           FileData datasetFileData) {
+      Assertion.AssertObject(command, "command");
+      Assertion.AssertObject(datasetFileData, "datasetFileData");
+
+      command.EnsureValid();
+
+      FileInfo fileInfo = FileUtilities.SaveFile(datasetFileData);
+
+      var inputDataset = new InputDataset(command, fileInfo);
+
+      inputDataset.Save();
+
+      return BuildReconciliationDatasetsDto(command.ReconciliationTypeUID, command.Date);
+    }
+
+
+    public ReconciliationDatasetsDto RemoveDataset(string inputDataSetUID) {
+      Assertion.AssertObject(inputDataSetUID, "inputDataSetUID");
+
+      var inputDataset = InputDataset.Parse(inputDataSetUID);
+
+      inputDataset.Delete();
+
+      return BuildReconciliationDatasetsDto(inputDataset.ReconciliationType.UID,
+                                            inputDataset.ReconciliationDate);
+    }
+
+    #endregion Use cases
+
+    #region Helper methods
+
+    private ReconciliationDatasetsDto BuildReconciliationDatasetsDto(string reconciliationTypeUID,
+                                                                     DateTime reconciliationDate) {
+      var reconciliationType = ReconciliationType.Parse(reconciliationTypeUID);
+
+      FixedList<InputDataset> datasets = reconciliationType.GetInputDatasetsList(reconciliationDate);
+
+      FixedList<InputDatasetType> missing = reconciliationType.MissingInputDatasetTypes(reconciliationDate);
 
       return InputDatasetMapper.Map(datasets, missing);
     }
 
-
-    public ReconciliationDatasetsDto ImportDatasetFromExcelFile(GetInputDatasetsCommand command,
-                                                                FileData excelFile) {
-      return GetDatasetsList(command);
-    }
-
-
-    public InputDatasetDto RemoveDataset(string inputDataSetUID) {
-      throw new NotImplementedException();
-    }
-
-    #endregion Use cases
+    #endregion Helper methods
 
   } // class InputDatasetsUseCases
 

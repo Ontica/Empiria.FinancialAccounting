@@ -22,7 +22,43 @@ namespace Empiria.FinancialAccounting.Reconciliation.Adapters {
       get; internal set;
     }
 
+
     public string Name {
+      get; internal set;
+    }
+
+
+    public string DatasetType {
+      get; internal set;
+    }
+
+
+    public string DatasetTypeName {
+      get; internal set;
+    }
+
+
+    public DateTime ElaborationDate {
+      get; internal set;
+    }
+
+
+    public string ElaboratedBy {
+      get; internal set;
+    }
+
+
+    public FileType FileType {
+      get; internal set;
+    }
+
+
+    public int FileSize {
+      get; internal set;
+    }
+
+
+    public string Url {
       get; internal set;
     }
 
