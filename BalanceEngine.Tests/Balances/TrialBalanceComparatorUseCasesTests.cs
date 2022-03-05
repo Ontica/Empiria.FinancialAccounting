@@ -149,6 +149,40 @@ namespace Empiria.FinancialAccounting.Tests.Balances {
 
 
     [Fact]
+    public void Should_Match_Cascade_Balance_With_Trial_Balance() {
+      TrialBalanceCommand command = GetDefaultTrialBalanceCommand();
+      command.TrialBalanceType = TrialBalanceType.Balanza;
+      command.AccountsChartUID = "47ec2ec7-0f4f-482e-9799-c23107b60d8a";
+      command.BalancesType = BalancesType.WithCurrentBalanceOrMovements;
+      command.ShowCascadeBalances = true;
+
+      TrialBalanceDto trialBalance = _usecases.BuildBalancesByAccount(command);
+      command.TrialBalanceType = TrialBalanceType.BalanzaConContabilidadesEnCascada;
+      TrialBalanceDto cascadeBalance = _usecases.BuildBalancesByAccount(command);
+
+      Assert.NotNull(trialBalance);
+      Assert.NotEmpty(trialBalance.Entries);
+      Assert.NotNull(cascadeBalance);
+      Assert.NotEmpty(cascadeBalance.Entries);
+
+      var _trialBalance = trialBalance.Entries.Select(x => (TrialBalanceEntryDto) x);
+      var _cascadeBalance = cascadeBalance.Entries.Select(x => (TrialBalanceEntryDto) x);
+      var wrongEntries = 0;
+
+      foreach (var cascadeEntry in _cascadeBalance.Where(a => a.ItemType == TrialBalanceItemType.Entry)) {
+        var balanceEntry = _trialBalance.Where(a => a.AccountNumber == cascadeEntry.AccountNumber &&
+                                                    a.CurrencyCode == cascadeEntry.CurrencyCode &&
+                                                    a.LedgerNumber == cascadeEntry.LedgerNumber &&
+                                                    a.SectorCode == cascadeEntry.SectorCode &&
+                                                    a.ItemType == TrialBalanceItemType.Entry)
+                                        .Sum(a => a.CurrentBalance);
+        wrongEntries = cascadeEntry.CurrentBalance != balanceEntry ? wrongEntries + 1 : wrongEntries;
+      }
+      Assert.True(wrongEntries == 0);
+    }
+
+
+    [Fact]
     public void Should_Match_Currencies_With_Balance() {
       TrialBalanceCommand command = GetDefaultTrialBalanceCommand();
       command.TrialBalanceType = TrialBalanceType.Balanza;
