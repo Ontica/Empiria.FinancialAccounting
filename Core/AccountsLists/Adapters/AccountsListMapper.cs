@@ -30,13 +30,14 @@ namespace Empiria.FinancialAccounting.Adapters {
 
     #region Private methods
 
-    private static FixedList<AccountsListItemDto> Map(FixedList<AccountsListItem> items) {
+    static private FixedList<AccountsListItemDto> Map(FixedList<AccountsListItem> items) {
       var mapped = items.Select(x => MapAccountsListItem(x));
 
       return new FixedList<AccountsListItemDto>(mapped);
     }
 
-    private static AccountsListItemDto MapAccountsListItem(AccountsListItem item) {
+
+    static private AccountsListItemDto MapAccountsListItem(AccountsListItem item) {
       return new AccountsListItemDto {
 
       };

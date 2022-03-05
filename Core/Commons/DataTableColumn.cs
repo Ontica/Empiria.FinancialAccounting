@@ -1,7 +1,7 @@
 ﻿/* Empiria Financial *****************************************************************************************
 *                                                                                                            *
-*  Module   : Financial Accounting                       Component : Root Types                              *
-*  Assembly : Empiria.FinancialAccounting.dll            Pattern   : Information Holder                      *
+*  Module   : Financial Accounting                       Component : Common Types                            *
+*  Assembly : FinancialAccounting.Core.dll               Pattern   : Information Holder                      *
 *  Type     : DataTableColumn                            License   : Please read LICENSE.txt file            *
 *                                                                                                            *
 *  Summary  : Describes a data table column.                                                                 *

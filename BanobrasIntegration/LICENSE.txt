@@ -1,7 +1,7 @@
 ﻿Empiria Financial Accounting BANOBRAS Integration Module License
 ================================================================
 
-Copyright (c) 2000-2021. La Vía Óntica SC, Ontica LLC and contributors.
+Copyright (c) 2000-2022. La Vía Óntica SC, Ontica LLC and contributors.
 -----------------------------------------------------------------------
 
 These software components are free software: you can redistribute them

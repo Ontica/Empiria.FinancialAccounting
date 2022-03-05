@@ -21,6 +21,7 @@ namespace Empiria.FinancialAccounting.Vouchers.Adapters {
       return new VoucherSpecialCaseTypeDto {
          UID = x.UID,
          Name = x.Name,
+         AllowAllLedgersSelection = x.AllowAllLedgersSelection,
          AskForCalculationDateField = x.AskForCalculationDateField,
          AskForVoucherNumberField = x.AskForVoucherNumberField,
          CalculationDateFieldName = x.CalculationDateFieldName

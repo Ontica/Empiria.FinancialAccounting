@@ -1,6 +1,6 @@
 ﻿/* Empiria Financial *****************************************************************************************
 *                                                                                                            *
-*  Module   : Financial Accounting                       Component : Root Types                              *
+*  Module   : Financial Accounting                       Component : Common Types                            *
 *  Assembly : FinancialAccounting.Core.dll               Pattern   : Application data preloader              *
 *  Type     : Preloader                                  License   : Please read LICENSE.txt file            *
 *                                                                                                            *

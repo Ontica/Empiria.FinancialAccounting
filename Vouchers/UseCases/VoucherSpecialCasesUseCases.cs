@@ -32,6 +32,28 @@ namespace Empiria.FinancialAccounting.Vouchers.UseCases {
 
     #region Use cases
 
+    public string CreateAllSpecialCaseApplicableVouchers(VoucherSpecialCaseFields fields) {
+      Assertion.AssertObject(fields, "fields");
+
+      var accountsChart = AccountsChart.Parse(fields.AccountsChartUID);
+
+      FixedList<Ledger> ledgers = accountsChart.MasterData.Ledgers;
+
+      var builder = VoucherBuilder.CreateBuilder(fields);
+
+      int count = 0;
+
+      foreach (var ledger in ledgers) {
+        Voucher voucher;
+
+        if (builder.TryGenerateVoucher(ledger, out voucher)) {
+          count++;
+        }
+      }
+
+      return $"Se generaron {count} pólizas de tipo '{builder.SpecialCaseType.Name}.'";
+    }
+
 
     public VoucherDto CreateSpecialCaseVoucher(VoucherSpecialCaseFields fields) {
       Assertion.AssertObject(fields, "fields");
@@ -49,6 +71,7 @@ namespace Empiria.FinancialAccounting.Vouchers.UseCases {
 
       return VoucherSpecialCaseTypeMapper.Map(list);
     }
+
 
     #endregion Use cases
 

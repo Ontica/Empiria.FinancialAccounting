@@ -14,9 +14,14 @@ namespace Empiria.FinancialAccounting.Vouchers.Adapters {
   /// <summary>Data structure that serves as an adapter to create special case vouchers.</summary>
   public class VoucherSpecialCaseFields : VoucherFields {
 
-    public string CalculationDate {
+    public string AccountsChartUID {
       get; set;
-    }
+    } = string.Empty;
+
+
+    public DateTime CalculationDate {
+      get; set;
+    } = ExecutionServer.DateMinValue;
 
 
     public string OnVoucherNumber {

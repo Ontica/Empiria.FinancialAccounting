@@ -1,8 +1,8 @@
 ﻿/* Empiria Financial *****************************************************************************************
 *                                                                                                            *
-*  Module   : Financial Accounting                         Component : Common Types                          *
-*  Assembly : Empiria.FinancialAccounting.dll              Pattern   : Input Data Holder                     *
-*  Type     : FileData                                     License   : Please read LICENSE.txt file          *
+*  Module   : Financial Accounting                       Component : Common Types                            *
+*  Assembly : FinancialAccounting.Core.dll               Pattern   : Input Data Holder                       *
+*  Type     : FileData                                   License   : Please read LICENSE.txt file            *
 *                                                                                                            *
 *  Summary  : Input data holder for a file stream.                                                           *
 *                                                                                                            *

@@ -23,6 +23,11 @@ namespace Empiria.FinancialAccounting.Vouchers.Adapters {
     } = string.Empty;
 
 
+    public bool AllowAllLedgersSelection {
+      get; internal set;
+    }
+
+
     public bool AskForCalculationDateField {
       get; internal set;
     }

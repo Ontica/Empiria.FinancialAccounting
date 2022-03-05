@@ -12,7 +12,7 @@ using System;
 namespace Empiria.FinancialAccounting {
 
   /// <summary>Describes a reconciliation type.</summary>
-  internal class AccountsList : GeneralObject {
+  public class AccountsList : GeneralObject {
 
     #region Constructors and parsers
 
@@ -29,6 +29,8 @@ namespace Empiria.FinancialAccounting {
       return BaseObject.GetList<AccountsList>(string.Empty, "ObjectName")
                        .ToFixedList();
     }
+
+    static public AccountsList Empty => BaseObject.ParseEmpty<AccountsList>();
 
     #endregion Constructors and parsers
 

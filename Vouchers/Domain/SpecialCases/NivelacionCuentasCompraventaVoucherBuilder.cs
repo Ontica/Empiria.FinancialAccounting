@@ -10,6 +10,8 @@
 ************************* Copyright(c) La Vía Óntica SC, Ontica LLC and contributors. All rights reserved. **/
 using System;
 
+using Empiria.FinancialAccounting.Vouchers.Adapters;
+
 namespace Empiria.FinancialAccounting.Vouchers.SpecialCases {
 
   /// <summary>Builds a voucher that mantains the right valued balance for a list of accounts pairs,
@@ -20,16 +22,58 @@ namespace Empiria.FinancialAccounting.Vouchers.SpecialCases {
       // no-op
     }
 
-
     internal override FixedList<string> DryRun() {
-      throw new NotImplementedException("DryRun.NivelacionCuentasCompraventaVoucherBuilder");
+      FixedList<VoucherEntryFields> entries = GetCancelationEntries();
+
+      return ImplementsDryRun(entries);
     }
 
 
     internal override Voucher GenerateVoucher() {
-      throw new NotImplementedException("GenerateVoucher.NivelacionCuentasCompraventaVoucherBuilder");
+      FixedList<VoucherEntryFields> entries = GetCancelationEntries();
+
+      FixedList<string> issues = this.ImplementsDryRun(entries);
+
+      Assertion.Assert(issues.Count == 0,
+          "There were one or more issues generating 'Nivelación de cuentas de compraventa' voucher: " +
+          EmpiriaString.ToString(issues));
+
+      var voucher = new Voucher(base.Fields);
+
+      voucher.Save();
+
+      CreateVoucherEntries(voucher, entries);
+
+      return voucher;
     }
 
+
+    private void CreateVoucherEntries(Voucher voucher, FixedList<VoucherEntryFields> entries) {
+      foreach (var entry in entries) {
+
+        entry.VoucherId = voucher.Id;
+
+        VoucherEntry cancelationEntry = voucher.AppendEntry(entry);
+
+        cancelationEntry.Save();
+      }
+    }
+
+    private AccountsList GetNivelacionAccountsList() {
+      return base.SpecialCaseType.AccountsList;
+    }
+
+
+    private FixedList<VoucherEntryFields> GetCancelationEntries() {
+      return new FixedList<VoucherEntryFields>();
+    }
+
+    private FixedList<string> ImplementsDryRun(FixedList<VoucherEntryFields> entries) {
+      var validator = new VoucherValidator(Ledger.Parse(base.Fields.LedgerUID),
+                                           base.Fields.AccountingDate);
+
+      return validator.Validate(entries);
+    }
 
   }  // class NivelacionCuentasCompraventaVoucherBuilder
 

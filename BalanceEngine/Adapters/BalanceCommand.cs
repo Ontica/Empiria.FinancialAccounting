@@ -2,7 +2,7 @@
 *                                                                                                            *
 *  Module   : Balance Engine                             Component : Interface adapters                      *
 *  Assembly : FinancialAccounting.BalanceEngine.dll      Pattern   : Command payload                         *
-*  Type     : BalanceCommand                        License   : Please read LICENSE.txt file                 *
+*  Type     : BalanceCommand                             License   : Please read LICENSE.txt file            *
 *                                                                                                            *
 *  Summary  : Command payload used to build balances.                                                        *
 *                                                                                                            *
