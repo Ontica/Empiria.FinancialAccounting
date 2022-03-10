@@ -28,9 +28,6 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
     }
 
 
-    
-
-
     internal List<TrialBalanceEntry> CombineCurrencyTotalsAndPostingEntries(
                                       List<TrialBalanceEntry> trialBalance,
                                       List<TrialBalanceEntry> summaryEntries) {
@@ -120,7 +117,6 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
                                       List<TrialBalanceEntry> summaryEntries,
                                       FixedList<TrialBalanceEntry> postingEntries) {
       var returnedEntries = new List<TrialBalanceEntry>(postingEntries);
-
       if (_command.TrialBalanceType == TrialBalanceType.SaldosPorCuenta) {
 
         foreach (var entry in summaryEntries.Where(a => a.SubledgerAccountIdParent > 0)) {
@@ -293,7 +289,6 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
         var summaryEntriesList = new List<TrialBalanceEntry>(summaryEntries);
         foreach (var entry in summaryEntriesList) {
           List<TrialBalanceEntry> entriesWithSummarySector;
-
           if (_command.TrialBalanceType == TrialBalanceType.AnaliticoDeCuentas ||
               _command.TrialBalanceType == TrialBalanceType.Balanza) {
 
@@ -315,7 +310,7 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
                (entry.ItemType == TrialBalanceItemType.Entry &&
                entriesWithSummarySector.Count == 2 && entry.Sector.Code != "00")) {
             var entryWithoutSector = entriesWithSummarySector.FirstOrDefault(a => a.Sector.Code == "00");
-            if (_command.TrialBalanceType != TrialBalanceType.AnaliticoDeCuentas) {
+            if (_command.TrialBalanceType != TrialBalanceType.AnaliticoDeCuentas && _command.TrialBalanceType != TrialBalanceType.Balanza) {
               entries.Remove(entryWithoutSector);
             }
           }
@@ -383,7 +378,6 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
 
         int cont = 0;
         while (true) {
-
           entry.DebtorCreditor = entry.Account.DebtorCreditor;
           entry.SubledgerAccountIdParent = entry.SubledgerAccountId;
 
@@ -866,7 +860,6 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
           }
         }
       }
-
       return returnedEntries;
     }
 
@@ -891,17 +884,23 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
           SummaryByEntry(hashEntries, entry, entry.Account, Sector.Empty, entry.ItemType);
         }
       }
-
+      
       if (hashEntries.Count > 0) {
-        foreach (var entry in hashEntries.ToFixedList().ToList()) {
-
-          var hashEntry = returnedEntries.FirstOrDefault(
-                                      a => a.Account.Number == entry.Account.Number &&
-                                           a.Ledger.Number == entry.Ledger.Number &&
-                                           a.Currency.Code == entry.Currency.Code &&
-                                           a.Sector.Code == entry.Sector.Code && a.Sector.Code == "00");
-          if (hashEntry == null) {
-            returnedEntries.Add(entry);
+        foreach (var hashEntry in hashEntries.ToFixedList().ToList()) {
+          var entry = returnedEntries.FirstOrDefault(
+                                      a => a.Account.Number == hashEntry.Account.Number &&
+                                           a.Ledger.Number == hashEntry.Ledger.Number &&
+                                           a.Currency.Code == hashEntry.Currency.Code &&
+                                           a.Sector.Code == hashEntry.Sector.Code && a.Sector.Code == "00");
+          if (entry == null) {
+            returnedEntries.Add(hashEntry);
+          } else {
+            hashEntry.InitialBalance += entry.InitialBalance;
+            hashEntry.Debit += entry.Debit;
+            hashEntry.Credit += entry.Credit;
+            hashEntry.CurrentBalance += entry.CurrentBalance;
+            returnedEntries.Remove(entry);
+            returnedEntries.Add(hashEntry);
           }
         }
       }
