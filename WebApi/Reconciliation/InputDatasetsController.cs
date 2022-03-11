@@ -15,8 +15,8 @@ using System.Web.Http;
 using Empiria.Json;
 using Empiria.WebApi;
 
-using Empiria.FinancialAccounting.Reconciliation.UseCases;
-using Empiria.FinancialAccounting.Reconciliation.Adapters;
+using Empiria.FinancialAccounting.Datasets.UseCases;
+using Empiria.FinancialAccounting.Datasets.Adapters;
 
 namespace Empiria.FinancialAccounting.WebApi.Reconciliation {
 
@@ -47,6 +47,7 @@ namespace Empiria.FinancialAccounting.WebApi.Reconciliation {
         return new SingleObjectModel(base.Request, datasets);
       }
     }
+
 
     [HttpPost]
     [Route("v2/financial-accounting/reconciliation/input-datasets/import-from-file")]
@@ -94,6 +95,7 @@ namespace Empiria.FinancialAccounting.WebApi.Reconciliation {
 
       return fileData;
     }
+
 
     private StoreInputDatasetCommand GetStoreInputDataSetCommandFromRequest(HttpRequest httpRequest) {
       NameValueCollection form = httpRequest.Form;

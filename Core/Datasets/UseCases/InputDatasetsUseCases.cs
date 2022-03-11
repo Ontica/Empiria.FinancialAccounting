@@ -1,7 +1,7 @@
 ﻿/* Empiria Financial *****************************************************************************************
 *                                                                                                            *
-*  Module   : Reconciliation Services                    Component : Use cases Layer                         *
-*  Assembly : FinancialAccounting.Reconciliation.dll     Pattern   : Use case interactor class               *
+*  Module   : Dataset Services                           Component : Use cases Layer                         *
+*  Assembly : FinancialAccounting.Core.dll               Pattern   : Use case interactor class               *
 *  Type     : InputDatasetsUseCases                      License   : Please read LICENSE.txt file            *
 *                                                                                                            *
 *  Summary  : Use cases used to read and write reconciliation input data sets.                               *
@@ -12,9 +12,9 @@ using System.IO;
 
 using Empiria.Services;
 
-using Empiria.FinancialAccounting.Reconciliation.Adapters;
+using Empiria.FinancialAccounting.Datasets.Adapters;
 
-namespace Empiria.FinancialAccounting.Reconciliation.UseCases {
+namespace Empiria.FinancialAccounting.Datasets.UseCases {
 
   /// <summary>Use cases used to read and write input reconciliation data sets.</summary>
   public class InputDatasetsUseCases : UseCase {
@@ -45,7 +45,7 @@ namespace Empiria.FinancialAccounting.Reconciliation.UseCases {
 
       command.EnsureValid();
 
-      return BuildReconciliationDatasetsDto(command.ReconciliationTypeUID, command.Date);
+      return BuildDatasetDto(command.ReconciliationTypeUID, command.Date);
     }
 
 
@@ -62,7 +62,7 @@ namespace Empiria.FinancialAccounting.Reconciliation.UseCases {
 
       inputDataset.Save();
 
-      return BuildReconciliationDatasetsDto(command.ReconciliationTypeUID, command.Date);
+      return BuildDatasetDto(command.ReconciliationTypeUID, command.Date);
     }
 
 
@@ -73,21 +73,21 @@ namespace Empiria.FinancialAccounting.Reconciliation.UseCases {
 
       inputDataset.Delete();
 
-      return BuildReconciliationDatasetsDto(inputDataset.ReconciliationType.UID,
-                                            inputDataset.ReconciliationDate);
+      inputDataset.Save();
+
+      return BuildDatasetDto(inputDataset.DatasetType.UID, inputDataset.OperationDate);
     }
 
     #endregion Use cases
 
     #region Helper methods
 
-    private ReconciliationDatasetsDto BuildReconciliationDatasetsDto(string reconciliationTypeUID,
-                                                                     DateTime reconciliationDate) {
-      var reconciliationType = ReconciliationType.Parse(reconciliationTypeUID);
+    private ReconciliationDatasetsDto BuildDatasetDto(string datasetTypeUID, DateTime operationDate) {
+      var datasetType = DatasetType.Parse(datasetTypeUID);
 
-      FixedList<InputDataset> datasets = reconciliationType.GetInputDatasetsList(reconciliationDate);
+      FixedList<InputDataset> datasets = datasetType.GetInputDatasetsList(operationDate);
 
-      FixedList<InputDatasetType> missing = reconciliationType.MissingInputDatasetTypes(reconciliationDate);
+      FixedList<InputDatasetType> missing = datasetType.MissingInputDatasetTypes(operationDate);
 
       return InputDatasetMapper.Map(datasets, missing);
     }
@@ -96,4 +96,4 @@ namespace Empiria.FinancialAccounting.Reconciliation.UseCases {
 
   } // class InputDatasetsUseCases
 
-} // Empiria.FinancialAccounting.Reconciliation.UseCases
+} // Empiria.FinancialAccounting.Datasets.UseCases

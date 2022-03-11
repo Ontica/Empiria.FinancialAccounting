@@ -1,7 +1,7 @@
 ﻿/* Empiria Financial *****************************************************************************************
 *                                                                                                            *
-*  Module   : Reconciliation Services                    Component : Interface adapters                      *
-*  Assembly : FinancialAccounting.Reconciliation.dll     Pattern   : Command payload                         *
+*  Module   : Dataset Services                           Component : Interface adapters                      *
+*  Assembly : FinancialAccounting.Core.dll               Pattern   : Command payload                         *
 *  Type     : Command for InputDatasets                  License   : Please read LICENSE.txt file            *
 *                                                                                                            *
 *  Summary  : Command payloads used to retrive and store reconciliation input data sets.                     *
@@ -9,7 +9,7 @@
 ************************* Copyright(c) La Vía Óntica SC, Ontica LLC and contributors. All rights reserved. **/
 using System;
 
-namespace Empiria.FinancialAccounting.Reconciliation.Adapters {
+namespace Empiria.FinancialAccounting.Datasets.Adapters {
 
   /// <summary>Command payload used to retrive reconciliation input datasets.</summary>
   public class GetInputDatasetsCommand {
@@ -65,4 +65,4 @@ namespace Empiria.FinancialAccounting.Reconciliation.Adapters {
   }  // class StoreInputDatasetCommand
 
 
-}  // namespace Empiria.FinancialAccounting.Reconciliation.Adapters
+}  // namespace Empiria.FinancialAccounting.Datasets.Adapters

@@ -1,7 +1,7 @@
 ﻿/* Empiria Financial *****************************************************************************************
 *                                                                                                            *
-*  Module   : Reconciliation Services                    Component : Domain Layer                            *
-*  Assembly : FinancialAccounting.Reconciliation.dll     Pattern   : Empiria Object                          *
+*  Module   : Dataset Services                           Component : Domain Layer                            *
+*  Assembly : FinancialAccounting.Core.dll               Pattern   : Empiria Object                          *
 *  Type     : InputDataset                               License   : Please read LICENSE.txt file            *
 *                                                                                                            *
 *  Summary  : Describes a financial accounting reconciliation input dataset.                                 *
@@ -10,15 +10,16 @@
 using System;
 using System.IO;
 using Empiria.Contacts;
-using Empiria.FinancialAccounting.Reconciliation.Adapters;
-using Empiria.FinancialAccounting.Reconciliation.Data;
+
+using Empiria.FinancialAccounting.Datasets.Adapters;
+using Empiria.FinancialAccounting.Datasets.Data;
 using Empiria.Json;
 using Empiria.StateEnums;
 
-namespace Empiria.FinancialAccounting.Reconciliation {
+namespace Empiria.FinancialAccounting.Datasets {
 
   /// <summary>Describes a financial accounting reconciliation input dataset.</summary>
-  internal class InputDataset : BaseObject {
+  public class InputDataset : BaseObject {
 
     #region Constructors and parsers
 
@@ -26,11 +27,12 @@ namespace Empiria.FinancialAccounting.Reconciliation {
       // Required by Empiria Framework.
     }
 
-    internal InputDataset(StoreInputDatasetCommand command, FileInfo fileInfo) {
+    public InputDataset(StoreInputDatasetCommand command, FileInfo fileInfo) {
       Assertion.AssertObject(command, "command");
       Assertion.AssertObject(fileInfo, "fileInfo");
 
       LoadData(command);
+      LoadFileData(fileInfo);
     }
 
     static public InputDataset Parse(string uid) {
@@ -41,33 +43,24 @@ namespace Empiria.FinancialAccounting.Reconciliation {
 
     #region Properties
 
-    [DataField("ID_TIPO_CONCILIACION")]
-    public ReconciliationType ReconciliationType {
+    [DataField("ID_TIPO_DATASET")]
+    public DatasetType DatasetType {
       get;
       private set;
     }
 
+    [DataField("TIPO_ARCHIVO")]
+    private string _fileType;
 
-    [DataField("TIPO_DATASET")]
-    private string _datasetType;
-
-
-    public InputDatasetType DatasetType {
+    public InputDatasetType FileType {
       get {
-        return this.ReconciliationType.GetInputDatasetType(_datasetType);
+        return this.DatasetType.GetInputDatasetType(_fileType);
       }
     }
 
 
-    [DataField("NOMBRE_DATASET")]
-    public string Name {
-      get;
-      private set;
-    }
-
-
-    [DataField("FECHA_CONCILIACION")]
-    public DateTime ReconciliationDate {
+    [DataField("FECHA_OPERACION")]
+    public DateTime OperationDate {
       get;
       private set;
     }
@@ -80,7 +73,7 @@ namespace Empiria.FinancialAccounting.Reconciliation {
     }
 
 
-    [DataField("ELABORADO_POR_ID")]
+    [DataField("ID_ELABORADO_POR")]
     public Contact ElaboratedBy {
       get;
       private set;
@@ -94,9 +87,29 @@ namespace Empiria.FinancialAccounting.Reconciliation {
     } = JsonObject.Empty;
 
 
-    internal int FileSize {
+    internal long FileSize {
       get {
-        return 0;
+        return this.ExtData.Get("file/length", 0);
+      }
+      set {
+        this.ExtData.Set("file/length", value);
+      }
+    }
+
+
+    internal string FileName {
+      get {
+        return this.ExtData.Get("file/name", string.Empty);
+      }
+      set {
+        this.ExtData.Set("file/name", value);
+      }
+    }
+
+
+    internal string FileUrl {
+      get {
+        return "http://server/sicofin/files/archivo.xlsx";
       }
     }
 
@@ -110,8 +123,6 @@ namespace Empiria.FinancialAccounting.Reconciliation {
 
     internal void Delete() {
       this.Status = EntityStatus.Deleted;
-
-      this.Save();
     }
 
     #endregion Properties
@@ -119,21 +130,26 @@ namespace Empiria.FinancialAccounting.Reconciliation {
     #region Methods
 
     private void LoadData(StoreInputDatasetCommand command) {
-      this.ReconciliationType = ReconciliationType.Parse(command.ReconciliationTypeUID);
-      _datasetType = command.DatasetType;
-      this.ReconciliationDate = command.Date;
+      this.DatasetType = DatasetType.Parse(command.ReconciliationTypeUID);
+      _fileType = command.DatasetType;
+      this.OperationDate = command.Date;
       this.ElaborationDate = DateTime.Today;
       this.ElaboratedBy = ExecutionServer.CurrentIdentity.User.AsContact();
-      this.Name = $"{ReconciliationType.Name}. Fecha: {ReconciliationDate.ToString("yyyy/MM/dd")}. {DatasetType}.";
+    }
+
+
+    private void LoadFileData(FileInfo fileInfo) {
+      this.FileName = fileInfo.Name;
+      this.FileSize = fileInfo.Length;
     }
 
 
     protected override void OnSave() {
-      ReconciliationData.WriteInputDataset(this);
+      DatasetData.WriteInputDataset(this);
     }
 
     #endregion Methods
 
   }  // class InputDataset
 
-}  // namespace Empiria.FinancialAccounting.Reconciliation
+}  // namespace Empiria.FinancialAccounting.Datasets

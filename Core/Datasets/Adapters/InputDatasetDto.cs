@@ -1,17 +1,17 @@
 ﻿/* Empiria Financial *****************************************************************************************
 *                                                                                                            *
-*  Module   : Reconciliation Services                    Component : Interface adapters                      *
-*  Assembly : FinancialAccounting.Reconciliation.dll     Pattern   : Data Transfer Object                    *
+*  Module   : Dataset Services                           Component : Interface adapters                      *
+*  Assembly : FinancialAccounting.Core.dll               Pattern   : Data Transfer Object                    *
 *  Type     : InputDatasetDto                            License   : Please read LICENSE.txt file            *
 *                                                                                                            *
-*  Summary  : Output DTO used to return a reconciliation input data set.                                     *
+*  Summary  : Output DTO used to return an input data set.                                                   *
 *                                                                                                            *
 ************************* Copyright(c) La Vía Óntica SC, Ontica LLC and contributors. All rights reserved. **/
 using System;
 
-namespace Empiria.FinancialAccounting.Reconciliation.Adapters {
+namespace Empiria.FinancialAccounting.Datasets.Adapters {
 
-  /// <summary>Output DTO used to return a reconciliation data set.</summary>
+  /// <summary>Output DTO used to return an input data set.</summary>
   public class InputDatasetDto {
 
     internal InputDatasetDto() {
@@ -53,7 +53,12 @@ namespace Empiria.FinancialAccounting.Reconciliation.Adapters {
     }
 
 
-    public int FileSize {
+    public string FileName {
+      get; internal set;
+    }
+
+
+    public long FileSize {
       get; internal set;
     }
 
@@ -64,4 +69,4 @@ namespace Empiria.FinancialAccounting.Reconciliation.Adapters {
 
   }  // class InputDatasetDto
 
-}  // namespace Empiria.FinancialAccounting.Reconciliation.Adapters
+}  // namespace Empiria.FinancialAccounting.Datasets.Adapters

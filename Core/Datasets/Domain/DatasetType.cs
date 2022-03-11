@@ -1,45 +1,45 @@
 ﻿/* Empiria Financial *****************************************************************************************
 *                                                                                                            *
-*  Module   : Reconciliation Services                    Component : Domain Layer                            *
-*  Assembly : FinancialAccounting.Reconciliation.dll     Pattern   : Empiria General Object                  *
-*  Type     : ReconciliationType                         License   : Please read LICENSE.txt file            *
+*  Module   : Dataset Services                           Component : Domain Layer                            *
+*  Assembly : FinancialAccounting.Core.dll               Pattern   : Empiria General Object                  *
+*  Type     : DatasetType                                License   : Please read LICENSE.txt file            *
 *                                                                                                            *
-*  Summary  : Describes a reconciliation type.                                                               *
+*  Summary  : Describes a dataset, which is a list of dataset file types.                                    *
 *                                                                                                            *
 ************************* Copyright(c) La Vía Óntica SC, Ontica LLC and contributors. All rights reserved. **/
 using System;
 
-using Empiria.FinancialAccounting.Datasets;
+using Empiria.FinancialAccounting.Datasets.Data;
 
-namespace Empiria.FinancialAccounting.Reconciliation {
+namespace Empiria.FinancialAccounting.Datasets {
 
-  /// <summary>Describes a reconciliation type.</summary>
-  internal class ReconciliationType : GeneralObject {
+  /// <summary>Describes a dataset, which is a list of dataset file types.</summary>
+  public class DatasetType : GeneralObject {
 
     #region Constructors and parsers
 
-    protected ReconciliationType() {
+    protected DatasetType() {
       // Required by Empiria Framework.
     }
 
 
-    static internal ReconciliationType Parse(int id) {
-      return BaseObject.ParseId<ReconciliationType>(id);
+    static public DatasetType Parse(int id) {
+      return BaseObject.ParseId<DatasetType>(id);
     }
 
 
-    static public ReconciliationType Parse(string uid) {
-      return BaseObject.ParseKey<ReconciliationType>(uid);
+    static public DatasetType Parse(string uid) {
+      return BaseObject.ParseKey<DatasetType>(uid);
     }
 
 
-    static internal FixedList<ReconciliationType> GetList() {
-      return BaseObject.GetList<ReconciliationType>()
+    static internal FixedList<DatasetType> GetList() {
+      return BaseObject.GetList<DatasetType>()
                        .ToFixedList();
     }
 
 
-    static internal ReconciliationType Empty => BaseObject.ParseEmpty<ReconciliationType>();
+    static internal DatasetType Empty => BaseObject.ParseEmpty<DatasetType>();
 
 
     #endregion Constructors and parsers
@@ -57,9 +57,7 @@ namespace Empiria.FinancialAccounting.Reconciliation {
     #region Methods
 
     internal FixedList<InputDataset> GetInputDatasetsList(DateTime date) {
-      // return DatasetType.GetInputDatasets(this, date);
-
-      throw new NotImplementedException();
+      return DatasetData.GetInputDatasets(this, date);
     }
 
 
@@ -79,6 +77,6 @@ namespace Empiria.FinancialAccounting.Reconciliation {
 
     #endregion Methods
 
-  }  // class ReconciliationType
+  }  // class DatasetType
 
-}  // namespace Empiria.FinancialAccounting.Reconciliation
+}  // namespace Empiria.FinancialAccounting.Datasets

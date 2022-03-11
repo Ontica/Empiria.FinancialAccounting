@@ -1,7 +1,7 @@
 ﻿/* Empiria Financial *****************************************************************************************
 *                                                                                                            *
-*  Module   : Reconciliation Services                    Component : Domain Layer                            *
-*  Assembly : FinancialAccounting.Reconciliation.dll     Pattern   : Information Holder                      *
+*  Module   : Dataset Services                           Component : Domain Layer                            *
+*  Assembly : FinancialAccounting.Core.dll               Pattern   : Information Holder                      *
 *  Type     : InputDatasetType                           License   : Please read LICENSE.txt file            *
 *                                                                                                            *
 *  Summary  : Holds configuration data for a reconciliation input dataset.                                   *
@@ -11,11 +11,7 @@ using System;
 
 using Empiria.Json;
 
-namespace Empiria.FinancialAccounting.Reconciliation {
-
-  public enum InputDatsetFormat {
-    Standard
-  }
+namespace Empiria.FinancialAccounting.Datasets {
 
   /// <summary>Holds configuration data for a reconciliation input dataset.</summary>
   public class InputDatasetType {
@@ -29,7 +25,7 @@ namespace Empiria.FinancialAccounting.Reconciliation {
         UID = json.Get<string>("uid"),
         Name = json.Get<string>("name"),
         FileType = json.Get<FileType>("fileType", FileType.Csv),
-        DataFormat = json.Get<InputDatsetFormat>("format", InputDatsetFormat.Standard),
+        DataFormat = json.Get<string>("format", "Default"),
         Optional = json.Get<bool>("optional", false),
         Count = json.Get<int>("count", 1)
       };
@@ -52,7 +48,7 @@ namespace Empiria.FinancialAccounting.Reconciliation {
     }
 
 
-    public InputDatsetFormat DataFormat {
+    public string DataFormat {
       get; private set;
     }
 
@@ -70,4 +66,4 @@ namespace Empiria.FinancialAccounting.Reconciliation {
 
   }  // class InputDatasetType
 
-}  // namespace Empiria.FinancialAccounting.Reconciliation
+}  // namespace Empiria.FinancialAccounting.Datasets

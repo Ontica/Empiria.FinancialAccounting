@@ -50,13 +50,15 @@ namespace Empiria.FinancialAccounting.Adapters {
 
 
     static private LedgerAccountDto MapUnassignedAccount(Account account, DateTime date) {
+      var historicData = account.GetHistory(date);
+
       return new LedgerAccountDto {
         Id = 0,
         StandardAccountId = account.StandardAccountId,
         Name = account.Name,
         Number = account.Number,
-        Description = account.Description,
-        Role = account.Role,
+        Description = historicData.Description,
+        Role = historicData.Role,
         AccountType = account.AccountType,
         DebtorCreditor = account.DebtorCreditor,
         Level = account.Level,
@@ -66,14 +68,16 @@ namespace Empiria.FinancialAccounting.Adapters {
     }
 
     static public LedgerAccountDto MapAccount(LedgerAccount ledgerAccount, DateTime date) {
+      var historicData = ledgerAccount.GetHistoric(date);
+
       return new LedgerAccountDto {
         Id = ledgerAccount.Id,
         StandardAccountId = ledgerAccount.StandardAccountId,
         Ledger = ledgerAccount.Ledger.MapToNamedEntity(),
         Name = ledgerAccount.Name,
         Number = ledgerAccount.Number,
-        Description = ledgerAccount.Description,
-        Role = ledgerAccount.Role,
+        Description = historicData.Description,
+        Role = historicData.Role,
         AccountType = ledgerAccount.AccountType,
         DebtorCreditor = ledgerAccount.DebtorCreditor,
         Level = ledgerAccount.Level,
