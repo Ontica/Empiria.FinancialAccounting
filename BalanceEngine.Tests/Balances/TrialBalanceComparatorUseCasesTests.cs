@@ -247,8 +247,6 @@ namespace Empiria.FinancialAccounting.Tests.Balances {
       command.BalancesType = BalancesType.WithCurrentBalanceOrMovements;
       command.ShowCascadeBalances = false;
       command.UseDefaultValuation = true;
-      command.FromAccount = "1";
-      command.ToAccount = "1";
 
       TrialBalanceDto dollarizedBalance = _usecases.BuildBalancesByAccount(command);
       command.UseDefaultValuation = false;
@@ -271,7 +269,9 @@ namespace Empiria.FinancialAccounting.Tests.Balances {
         var balanceEntry = _trialBalance.Where(a => a.AccountNumber == cascadeEntry.AccountNumber &&
                                                     a.CurrencyCode == cascadeEntry.CurrencyCode &&
                                                     a.SectorCode == cascadeEntry.SectorCode &&
-                                                    a.ItemType == TrialBalanceItemType.Entry)
+                                                    (a.ItemType == TrialBalanceItemType.Entry || 
+                                                    a.ItemType == TrialBalanceItemType.Summary)
+                                                    )
                                         .ToList();
         if (balanceEntry.Count > 0) {
           decimal balance = (decimal) balanceEntry.Sum(a => a.CurrentBalance);
