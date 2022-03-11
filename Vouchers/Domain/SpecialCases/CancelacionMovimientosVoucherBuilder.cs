@@ -27,14 +27,14 @@ namespace Empiria.FinancialAccounting.Vouchers.SpecialCases {
 
 
     internal override FixedList<string> DryRun() {
-      FixedList<VoucherEntryFields> entries = GetCancelationEntries();
+      FixedList<VoucherEntryFields> entries = BuildVoucherEntries();
 
       return ImplementsDryRun(entries);
     }
 
 
     internal override Voucher GenerateVoucher() {
-      FixedList<VoucherEntryFields> entries = GetCancelationEntries();
+      FixedList<VoucherEntryFields> entries = BuildVoucherEntries();
 
       FixedList<string> issues = this.ImplementsDryRun(entries);
 
@@ -67,7 +67,7 @@ namespace Empiria.FinancialAccounting.Vouchers.SpecialCases {
     }
 
 
-    private FixedList<VoucherEntryFields> GetCancelationEntries() {
+    private FixedList<VoucherEntryFields> BuildVoucherEntries() {
       return new FixedList<VoucherEntryFields>(_voucherToCancel.Entries.Select(x => MapToCancelationEntry(x)));
     }
 

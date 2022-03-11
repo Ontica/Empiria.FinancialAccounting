@@ -9,7 +9,7 @@
 *                                                                                                            *
 ************************* Copyright(c) La Vía Óntica SC, Ontica LLC and contributors. All rights reserved. **/
 using System;
-
+using System.Collections.Generic;
 using Empiria.FinancialAccounting.Vouchers.Adapters;
 
 namespace Empiria.FinancialAccounting.Vouchers.SpecialCases {
@@ -23,14 +23,14 @@ namespace Empiria.FinancialAccounting.Vouchers.SpecialCases {
     }
 
     internal override FixedList<string> DryRun() {
-      FixedList<VoucherEntryFields> entries = GetCancelationEntries();
+      FixedList<VoucherEntryFields> entries = BuildVoucherEntries();
 
       return ImplementsDryRun(entries);
     }
 
 
     internal override Voucher GenerateVoucher() {
-      FixedList<VoucherEntryFields> entries = GetCancelationEntries();
+      FixedList<VoucherEntryFields> entries = BuildVoucherEntries();
 
       FixedList<string> issues = this.ImplementsDryRun(entries);
 
@@ -59,13 +59,24 @@ namespace Empiria.FinancialAccounting.Vouchers.SpecialCases {
       }
     }
 
+
     private AccountsList GetNivelacionAccountsList() {
       return base.SpecialCaseType.AccountsList;
     }
 
 
-    private FixedList<VoucherEntryFields> GetCancelationEntries() {
-      return new FixedList<VoucherEntryFields>();
+    private FixedList<VoucherEntryFields> BuildVoucherEntries() {
+      var accountsListItems = base.SpecialCaseType.AccountsList.GetItems();
+
+      var entries = new List<VoucherEntryFields>();
+
+      foreach (var item in accountsListItems) {
+        var entry = new VoucherEntryFields();
+
+        entries.Add(entry);
+      }
+
+      return entries.ToFixedList();
     }
 
     private FixedList<string> ImplementsDryRun(FixedList<VoucherEntryFields> entries) {

@@ -390,7 +390,6 @@ namespace Empiria.FinancialAccounting.Vouchers {
     }
 
 
-
     private Participant GetSupervisor() {
       return Participant.Parse(135);
     }
@@ -405,13 +404,15 @@ namespace Empiria.FinancialAccounting.Vouchers {
       }
     }
 
-
+    // Ya tenemos el primero asunto de la cuenta 01.09.05.02.02.04 ahora con auxiliares y sin auxiliares hasta el 24 de enero
     internal FixedList<SubledgerAccount> SearchSubledgerAccountsForEdition(LedgerAccount account, string keywords) {
       Assertion.Assert(this.IsOpened, "No hay cuentas auxiliares para edición porque la póliza ya está cerrada.");
 
       Assertion.Assert(account.Ledger.Equals(this.Ledger), "Account does not belong to voucher ledger.");
 
-      Assertion.Assert(account.Role == AccountRole.Control || account.Role == AccountRole.Sectorizada,
+      var historic = account.GetHistoric(this.AccountingDate);
+
+      Assertion.Assert(historic.Role == AccountRole.Control || historic.Role == AccountRole.Sectorizada,
                        "The account role is not control. There are not subledger accounts");
 
       return VoucherData.SearchSubledgerAccountsForVoucherEdition(this, keywords);
