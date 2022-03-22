@@ -32,6 +32,12 @@ namespace Empiria.FinancialAccounting.BalanceEngine.Adapters {
     }
 
 
+    public string LedgerName {
+      get;
+      internal set;
+    }
+
+
     public string CurrencyCode {
       get; internal set;
     }

@@ -133,7 +133,6 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
       returnedTrialBalance = helper.TrialBalanceWithSubledgerAccounts(returnedTrialBalance);
 
       //trialBalance = helper.GenerateAverageBalance(trialBalance);
-
       return returnedTrialBalance;
     }
 

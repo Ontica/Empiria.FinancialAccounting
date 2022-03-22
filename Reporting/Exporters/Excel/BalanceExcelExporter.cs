@@ -51,12 +51,13 @@ namespace Empiria.FinancialAccounting.Reporting.Exporters.Excel {
 
     private void SetHeader() {
       _excelFile.SetCell($"A2", _templateConfig.Title);
-      _excelFile.SetCell($"D2", $"Fecha de consulta: {DateTime.Now.ToString("dd/MMM/yyyy")}");
-
+      _excelFile.SetCell($"E2", $"Fecha de consulta: {DateTime.Now.ToString("dd/MMM/yyyy")}");
+      _excelFile.SetRowStyleBold(2);
       var subTitle = $"Del {_command.InitialPeriod.FromDate.ToString("dd/MMM/yyyy")} " +
                      $"al {_command.InitialPeriod.ToDate.ToString("dd/MMM/yyyy")}";
 
       _excelFile.SetCell($"A3", subTitle);
+      _excelFile.SetRowStyleBold(3);
     }
 
 

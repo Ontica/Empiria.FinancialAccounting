@@ -140,6 +140,7 @@ namespace Empiria.FinancialAccounting.BalanceEngine.Adapters {
       dto.ItemType = entry.ItemType;
       dto.LedgerUID = entry.Ledger.UID != "Empty" ? entry.Ledger.UID : "";
       dto.LedgerNumber = entry.Ledger.Number;
+      dto.LedgerName = entry.Ledger.Name;
       dto.StandardAccountId = entry.Account.Id;
       dto.CurrencyCode = entry.Currency.Code;
       if (entry.GroupName.Length == 0) {
@@ -414,6 +415,7 @@ namespace Empiria.FinancialAccounting.BalanceEngine.Adapters {
       dto.DebtorCreditor = entry.Account.DebtorCreditor;
       dto.LedgerUID = entry.Ledger.UID != "Empty" ? entry.Ledger.UID : "";
       dto.LedgerNumber = entry.Ledger.Number;
+      dto.LedgerName = entry.Ledger.Name;
       dto.StandardAccountId = entry.Account.Id;
       dto.CurrencyCode = entry.Currency.Code;
       dto.SectorCode = entry.Sector.Code;

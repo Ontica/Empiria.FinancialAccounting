@@ -28,6 +28,11 @@ namespace Empiria.FinancialAccounting.BalanceEngine.Adapters {
       get; internal set;
     }
 
+    public string LedgerName {
+      get;
+      internal set;
+    }
+
     public string CurrencyCode {
       get; internal set;
     }
@@ -167,7 +172,7 @@ namespace Empiria.FinancialAccounting.BalanceEngine.Adapters {
     public bool ClickableEntry {
       get; internal set;
     } = false;
-
+    
   } // class TrialBalanceComparativeDto
 
 } // namespace Empiria.FinancialAccounting.BalanceEngine.Adapters
