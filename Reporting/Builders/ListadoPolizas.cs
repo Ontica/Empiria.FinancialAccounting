@@ -136,7 +136,7 @@ namespace Empiria.FinancialAccounting.Reporting.Builders {
 
 
 
-  } // PolizasActualizadas
+  } // ListadoPolizas
 
   public class PolizaReturnedEntry : IReportEntryDto {
 
@@ -194,6 +194,6 @@ namespace Empiria.FinancialAccounting.Reporting.Builders {
       get; internal set;
     } = ItemType.Entry;
 
-  }  // class ListadoPolizas
+  }  // class PolizaReturnedEntry
 
 } // namespace Empiria.FinancialAccounting.Reporting.Builders

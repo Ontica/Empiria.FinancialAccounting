@@ -29,7 +29,11 @@ namespace Empiria.FinancialAccounting.Reporting {
     public string Ledgers {
       get; internal set;
     } = string.Empty;
-    
+
+    public string Filters {
+      get; internal set;
+    } = string.Empty;
+
   } // class PolizaCommandData
 
 } // namespace Empiria.FinancialAccounting.Reporting

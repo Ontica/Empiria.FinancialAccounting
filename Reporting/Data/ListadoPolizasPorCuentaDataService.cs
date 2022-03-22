@@ -2,7 +2,7 @@
 *                                                                                                            *
 *  Module   : Balance Engine                             Component : Data Layer                              *
 *  Assembly : FinancialAccounting.Reporting.dll          Pattern   : Data Service                            *
-*  Type     : StoredVoucherDataService                   License   : Please read LICENSE.txt file            *
+*  Type     : ListadoPolizasPorCuentaDataService         License   : Please read LICENSE.txt file            *
 *                                                                                                            *
 *  Summary  : Provides data read methods for vouchers by account.                                            *
 *                                                                                                            *
@@ -13,14 +13,15 @@ using Empiria.Data;
 
 namespace Empiria.FinancialAccounting.Reporting.Data {
 
-  /// <summary>Provides data read methods for vouchers by account.</summary>
-  static internal class AccountStatementDataService {
+  /// <summary></summary>
+  static class ListadoPolizasPorCuentaDataService {
+
 
     static internal FixedList<AccountStatementEntry> GetVouchersByAccountEntries(
-                                                        AccountStatementCommandData commandData) {
+                                                        PolizaCommandData commandData) {
 
       var operation = DataOperation.Parse("@qryVouchersByAccount",
-                                          commandData.AccountsChartId,
+                                          commandData.AccountsChart.Id,
                                           CommonMethods.FormatSqlDate(commandData.FromDate),
                                           CommonMethods.FormatSqlDate(commandData.ToDate),
                                           commandData.Filters);
@@ -28,6 +29,7 @@ namespace Empiria.FinancialAccounting.Reporting.Data {
       return DataReader.GetPlainObjectFixedList<AccountStatementEntry>(operation);
     }
 
-  } // class StoredVoucherDataService
 
-} // namespace Empiria.FinancialAccounting.BalanceEngine.Data
+  } // class ListadoPolizasPorCuentaDataService
+
+} // namespace Empiria.FinancialAccounting.Reporting.Data

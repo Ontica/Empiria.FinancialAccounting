@@ -71,7 +71,9 @@ namespace Empiria.FinancialAccounting.Reporting.Exporters.Excel {
       int i = 5;
 
       foreach (var voucher in vouchers) {
-        _excelFile.SetCell($"A{i}", voucher.LedgerNumber);
+        if (voucher.ItemType == TrialBalanceItemType.Entry) {
+          _excelFile.SetCell($"A{i}", $"({voucher.LedgerNumber}) {voucher.LedgerName}");
+        }
         _excelFile.SetCell($"B{i}", voucher.CurrencyCode);
         _excelFile.SetCell($"C{i}", voucher.AccountNumber);
         _excelFile.SetCell($"D{i}", voucher.SectorCode);
