@@ -66,6 +66,8 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
 
       List<TrialBalanceEntry> summaryEntries = helper.GenerateSummaryEntries(entriesWithLevels.ToFixedList());
 
+      summaryEntries = GetSummaryByDebtorCreditorEntries(summaryEntries);
+
       summaryEntries = GetFirstLevelAccountsListByCurrency(trialBalance, summaryEntries);
 
       EmpiriaHashTable<TrialBalanceEntry> ledgerAccounts = GetLedgerAccountsListByCurrency(summaryEntries);
@@ -78,6 +80,27 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
 
       return new TrialBalance(_command, returnBalance);
     }
+
+    private List<TrialBalanceEntry> GetSummaryByDebtorCreditorEntries(List<TrialBalanceEntry> summaryEntries) {
+      var returnedEntries = new List<TrialBalanceEntry>(summaryEntries);
+
+      foreach (var debtor in summaryEntries.Where(a=>a.DebtorCreditor == DebtorCreditorType.Deudora)) {
+        var creditor = summaryEntries.FirstOrDefault(a => a.Account.Number == debtor.Account.Number &&
+                                              a.Currency.Code == debtor.Currency.Code &&
+                                              a.Sector.Code == debtor.Sector.Code &&
+                                              a.DebtorCreditor == DebtorCreditorType.Acreedora );
+        if (creditor != null) {
+          debtor.InitialBalance = debtor.InitialBalance - creditor.InitialBalance;
+          debtor.Debit = debtor.Debit - creditor.Debit;
+          debtor.Credit = debtor.Credit - creditor.Credit;
+          debtor.CurrentBalance = debtor.CurrentBalance - creditor.CurrentBalance;
+          returnedEntries.Remove(creditor);
+        }
+      }
+
+      return returnedEntries;
+    }
+
 
     private List<TrialBalanceEntry> GetFirstLevelAccountsListByCurrency(
                                     List<TrialBalanceEntry> trialBalance,
