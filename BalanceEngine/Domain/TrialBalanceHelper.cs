@@ -180,6 +180,11 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
       foreach (var entry in trialBalance) {
         string hash = $"{entry.Account.Number}||{entry.Sector.Code}||{targetCurrency.Id}||{entry.Ledger.Id}";
 
+        if (_command.TrialBalanceType == TrialBalanceType.Balanza && _command.WithSubledgerAccount) {
+          hash = $"{entry.Account.Number}||{entry.SubledgerAccountId}||" +
+                 $"{entry.Sector.Code}||{targetCurrency.Id}||{entry.Ledger.Id}";
+        }
+
         if (entry.Currency.Equals(targetCurrency)) {
           summaryEntries.Insert(hash, entry);
         } else if (summaryEntries.ContainsKey(hash)) {
