@@ -101,7 +101,8 @@ namespace Empiria.FinancialAccounting.Reporting {
         CurrencyCode = voucher.Currency.Code,
         AccountNumber = voucher.AccountNumber,
         AccountName = voucher.AccountName,
-        SubledgerAccountNumber = voucher.SubledgerAccountNumber,
+        SubledgerAccountNumber = voucher.SubledgerAccountNumber != "0" ? 
+                                 voucher.SubledgerAccountNumber : "",
         SectorCode = voucher.Sector.Code,
         Debit = voucher.Debit,
         Credit = voucher.Credit,
