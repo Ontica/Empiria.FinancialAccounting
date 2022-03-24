@@ -17,41 +17,55 @@ namespace Empiria.FinancialAccounting.BanobrasIntegration.VouchersImporter {
   /// InterfazUnica compatible data structure.</summary>
   internal class InterfazUnicaImporter {
 
-    #region Constructors and parsers
-
-    private readonly InterfazUnicaImporterCommand _command;
-
+    private readonly FixedList<EncabezadoDto> _vouchers;
 
     internal InterfazUnicaImporter(InterfazUnicaImporterCommand command) {
       Assertion.AssertObject(command, "command");
 
-      _command = command;
+      _vouchers = new FixedList<EncabezadoDto>(command.ENCABEZADOS);
     }
 
 
-    #endregion Constructors and parsers
-
-    #region Methods
-
     internal ImportVouchersResult DryRunImport() {
-      VoucherImporter voucherImporter = GetVoucherImporter();
-
-      return voucherImporter.DryRunImport();
+      return GetDryRunResult();
     }
 
 
     internal ImportVouchersResult Import() {
-      VoucherImporter voucherImporter = GetVoucherImporter();
+      ImportVouchersResult result = this.DryRunImport();
 
-      return voucherImporter.Import();
+      if (result.HasErrors) {
+        return result;
+      }
+
+      try {
+        foreach (EncabezadoDto voucher in _vouchers) {
+          InterfazUnicaDataService.WriteEncabezado(voucher);
+
+          foreach (MovimientoDto voucherEntry in voucher.MOVIMIENTOS) {
+            InterfazUnicaDataService.WriteMovimiento(voucher, voucherEntry);
+          }
+        }
+      } catch (Exception e) {
+        EmpiriaLog.Error(e);
+        throw;
+      }
+
+      return result;
     }
 
 
-    private VoucherImporter GetVoucherImporter() {
-      throw new NotImplementedException("GetVoucherImporter");
+    #region Private methods
+
+    private ImportVouchersResult GetDryRunResult() {
+      var result = new ImportVouchersResult();
+
+      result.VouchersCount = _vouchers.Count;
+
+      return result;
     }
 
-    #endregion Methods
+    #endregion Private methods
 
   }  // class InterfazUnicaImporter
 

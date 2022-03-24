@@ -18,7 +18,7 @@ namespace Empiria.FinancialAccounting.BanobrasIntegration.VouchersImporter.Adapt
     } = string.Empty;
 
 
-    public EncabezadoDto[] Vouchers {
+    public EncabezadoDto[] ENCABEZADOS {
       get; set;
     } = new EncabezadoDto[0];
 
