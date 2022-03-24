@@ -50,11 +50,12 @@ namespace Empiria.FinancialAccounting.Reporting {
     #region Private methods
 
     private FixedList<AccountStatementEntry> OrderingVouchers(FixedList<AccountStatementEntry> vouchers) {
-      var ordering = vouchers.OrderBy(a => a.AccountingDate)
-                             .ThenBy(a => a.Ledger.Number)
+      var ordering = vouchers.OrderBy(a => a.Ledger.Number)
                              .ThenBy(a => a.AccountNumber)
-                             .ThenBy(a => a.SubledgerAccountNumber)
+                             .ThenBy(a => a.Currency.Code)
                              .ThenBy(a => a.VoucherNumber)
+                             .ThenBy(a => a.AccountingDate)
+                             .ThenBy(a => a.SubledgerAccountNumber)
                              .ToList();
       return ordering.ToFixedList();
     }
