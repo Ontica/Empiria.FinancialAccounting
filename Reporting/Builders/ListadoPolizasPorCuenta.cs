@@ -49,14 +49,16 @@ namespace Empiria.FinancialAccounting.Reporting {
     }
 
 
-    private static FixedList<DataTableColumn> GetReportColumns() {
+    private static FixedList<DataTableColumn> GetReportColumns(BuildReportCommand command) {
       List<DataTableColumn> columns = new List<DataTableColumn>();
 
       columns.Add(new DataTableColumn("ledgerNumber", "Cont", "text"));
       columns.Add(new DataTableColumn("currencyCode", "Mon", "text"));
       columns.Add(new DataTableColumn("accountNumber", "Cuenta", "text-nowrap"));
       columns.Add(new DataTableColumn("sectorCode", "Sct", "text"));
-      columns.Add(new DataTableColumn("subledgerAccountNumber", "Auxiliar", "text-nowrap"));
+      if (command.WithSubledgerAccount) {
+        columns.Add(new DataTableColumn("subledgerAccountNumber", "Auxiliar", "text-nowrap"));
+      }
       columns.Add(new DataTableColumn("voucherNumber", "No. Poliza", "text-nowrap"));
       columns.Add(new DataTableColumn("debit", "Cargo", "decimal"));
       columns.Add(new DataTableColumn("credit", "Abono", "decimal"));
@@ -64,6 +66,7 @@ namespace Empiria.FinancialAccounting.Reporting {
       columns.Add(new DataTableColumn("accountingDate", "Afectación", "date"));
       columns.Add(new DataTableColumn("recordingDate", "Registro", "date"));
       columns.Add(new DataTableColumn("concept", "Concepto", "text-nowrap"));
+      columns.Add(new DataTableColumn("authorizedBy", "Autorizado por", "text-nowrap"));
       columns.Add(new DataTableColumn("elaboratedBy", "Elaborado por", "text-nowrap"));
 
       return columns.ToFixedList();
@@ -75,7 +78,7 @@ namespace Empiria.FinancialAccounting.Reporting {
 
       return new ReportDataDto {
         Command = command,
-        Columns = GetReportColumns(),
+        Columns = GetReportColumns(command),
         Entries = MapToReportDataEntries(vouchers.Entries, command)
       };
     }
@@ -104,6 +107,7 @@ namespace Empiria.FinancialAccounting.Reporting {
         Credit = voucher.Credit,
         VoucherNumber = voucher.VoucherNumber,
         ElaboratedBy = voucher.ElaboratedBy.Name,
+        AuthorizedBy = voucher.AuthorizedBy.Name,
         Concept = voucher.Concept,
         AccountingDate = voucher.AccountingDate,
         RecordingDate = voucher.RecordingDate
@@ -180,6 +184,11 @@ namespace Empiria.FinancialAccounting.Reporting {
 
     public string ElaboratedBy {
       get; internal set;
+    }
+
+    public string AuthorizedBy {
+      get;
+      internal set;
     }
 
     public string Concept {

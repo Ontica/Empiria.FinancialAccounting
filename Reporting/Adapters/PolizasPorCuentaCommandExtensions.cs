@@ -46,6 +46,8 @@ namespace Empiria.FinancialAccounting.Reporting.Adapters {
         commandData.FromDate = _command.FromDate;
         commandData.ToDate = _command.ToDate;
         commandData.Filters = GetFilters();
+        commandData.Fields = GetFields();
+        commandData.Grouping = GetGroupingClause();
 
         return commandData;
       }
@@ -66,25 +68,46 @@ namespace Empiria.FinancialAccounting.Reporting.Adapters {
 
 
       private string GetFields() {
-        
-        return "ID_MAYOR, ID_MONEDA, ID_CUENTA_ESTANDAR, ID_SECTOR,  ID_TRANSACCION, ID_ELABORADA_POR, " +
-               "ID_MOVIMIENTO, NUMERO_CUENTA_ESTANDAR, NOMBRE_CUENTA_ESTANDAR, NUMERO_CUENTA_AUXILIAR, " +
-               "NUMERO_TRANSACCION, NATURALEZA, FECHA_AFECTACION, FECHA_REGISTRO, " +
-               "CONCEPTO_TRANSACCION, SUM(DEBE) AS DEBE, SUM(HABER) AS HABER";
+        if (_command.WithSubledgerAccount) {
+          return "ID_MAYOR, ID_MONEDA, ID_CUENTA_ESTANDAR, ID_SECTOR, ID_TRANSACCION, ID_ELABORADA_POR, " +
+               "ID_AUTORIZADA_POR, ID_MOVIMIENTO, NUMERO_CUENTA_ESTANDAR, NOMBRE_CUENTA_ESTANDAR, " +
+               "NUMERO_CUENTA_AUXILIAR, NUMERO_TRANSACCION, NATURALEZA, FECHA_AFECTACION, FECHA_REGISTRO, " +
+               "CONCEPTO_TRANSACCION,  SUM(DEBE) AS DEBE, SUM(HABER) AS HABER";
+        } else {
+          return "ID_MAYOR, ID_MONEDA, ID_CUENTA_ESTANDAR, ID_SECTOR, ID_TRANSACCION, ID_ELABORADA_POR, " +
+               "ID_AUTORIZADA_POR, ID_MOVIMIENTO, NUMERO_CUENTA_ESTANDAR, NOMBRE_CUENTA_ESTANDAR, " +
+               "'-1' AS NUMERO_CUENTA_AUXILIAR, NUMERO_TRANSACCION, NATURALEZA, FECHA_AFECTACION, FECHA_REGISTRO, " +
+               "CONCEPTO_TRANSACCION,  SUM(DEBE) AS DEBE, SUM(HABER) AS HABER";
+        }
       }
 
 
       private string GetFilters() {
         string account = GetAccountFilter();
-        string subledgerAccount = GetSubledgerAccountFilter();
+        //string subledgerAccount = GetSubledgerAccountFilter();
         string ledgers = GetLedgerFilter();
 
         var filter = new Filter(account);
-        filter.AppendAnd(subledgerAccount);
+        //filter.AppendAnd(subledgerAccount);
         filter.AppendAnd(ledgers);
 
 
         return filter.ToString().Length > 0 ? $"AND {filter}" : "";
+      }
+
+
+      private string GetGroupingClause() {
+        if (_command.WithSubledgerAccount) {
+          return "ID_MAYOR, ID_MONEDA, ID_CUENTA_ESTANDAR, ID_SECTOR, ID_TRANSACCION, ID_ELABORADA_POR, " +
+               "ID_AUTORIZADA_POR, ID_MOVIMIENTO, NUMERO_CUENTA_ESTANDAR, NOMBRE_CUENTA_ESTANDAR, " +
+               "NUMERO_CUENTA_AUXILIAR, NUMERO_TRANSACCION, NATURALEZA, FECHA_AFECTACION, FECHA_REGISTRO, " +
+               "CONCEPTO_TRANSACCION";
+        } else {
+          return "ID_MAYOR, ID_MONEDA, ID_CUENTA_ESTANDAR, ID_SECTOR, ID_TRANSACCION, ID_ELABORADA_POR, " +
+               "ID_AUTORIZADA_POR, ID_MOVIMIENTO, NUMERO_CUENTA_ESTANDAR, NOMBRE_CUENTA_ESTANDAR, " +
+               "NUMERO_TRANSACCION, NATURALEZA, FECHA_AFECTACION, FECHA_REGISTRO, " +
+               "CONCEPTO_TRANSACCION";
+        }
       }
 
 

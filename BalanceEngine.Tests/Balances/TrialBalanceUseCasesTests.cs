@@ -74,7 +74,8 @@ namespace Empiria.FinancialAccounting.Tests.Balances {
       command.ShowCascadeBalances = true;
       command.WithSubledgerAccount = false;
       command.UseDefaultValuation = false;
-
+      command.FromAccount = "2.07.04.06.01.02";
+      command.ToAccount = "2.07.04.06.01.02";
       TrialBalanceDto trialBalance = _usecases.BuildTrialBalance(command);
 
       Assert.NotNull(trialBalance);

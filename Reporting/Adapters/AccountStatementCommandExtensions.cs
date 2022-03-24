@@ -34,18 +34,49 @@ namespace Empiria.FinancialAccounting.Reporting.Adapters {
       commandData.FromDate = _accountStatementCommand.Command.InitialPeriod.FromDate;
       commandData.ToDate = _accountStatementCommand.Command.InitialPeriod.ToDate;
       commandData.Filters = GetFilters();
-      //commandData.Grouping = GetGroupingClause();
+      commandData.Fields = GetFields();
+      commandData.Grouping = GetGroupingClause();
       return commandData;
     }
 
-    private string GetGroupingClause() {
-      return string.Empty;
-    }
 
     #endregion
 
 
     #region Private methods
+
+    private string GetAccountFilter() {
+      if (_accountStatementCommand.Entry.AccountNumberForBalances.Length != 0 &&
+          _accountStatementCommand.Entry.AccountNumberForBalances != "Empty") {
+        if (_accountStatementCommand.Entry.ItemType == TrialBalanceItemType.Summary) {
+          return $"NUMERO_CUENTA_ESTANDAR LIKE '{_accountStatementCommand.Entry.AccountNumberForBalances}%'";
+        } else {
+          return $"NUMERO_CUENTA_ESTANDAR = '{_accountStatementCommand.Entry.AccountNumberForBalances}'";
+        }
+
+      } else {
+        return string.Empty;
+      }
+    }
+
+
+    private string GetCurrencyFilter() {
+      if (_accountStatementCommand.Entry.CurrencyCode.Length == 0) {
+        return string.Empty;
+      }
+
+      int currencyId = Currency.Parse(_accountStatementCommand.Entry.CurrencyCode).Id;
+      return $"ID_MONEDA IN ({String.Join(", ", currencyId)})";
+    }
+
+
+    static private string GetFields() {
+      return "ID_MAYOR, ID_MONEDA, ID_CUENTA_ESTANDAR, ID_SECTOR, ID_TRANSACCION, ID_ELABORADA_POR, " +
+             "-1 AS ID_AUTORIZADA_POR, ID_MOVIMIENTO, NUMERO_CUENTA_ESTANDAR, NOMBRE_CUENTA_ESTANDAR, " +
+             "NUMERO_CUENTA_AUXILIAR, NUMERO_TRANSACCION, NATURALEZA, FECHA_AFECTACION, FECHA_REGISTRO, " +
+             "CONCEPTO_TRANSACCION, SUM(DEBE) AS DEBE, SUM(HABER) AS HABER";
+    }
+
 
     private string GetFilters() {
       string accountRangeFilter = GetAccountFilter();
@@ -64,32 +95,13 @@ namespace Empiria.FinancialAccounting.Reporting.Adapters {
       return filter.ToString().Length > 0 ? $"AND {filter}" : "";
     }
 
-
-    private string GetAccountFilter() {
-      if (_accountStatementCommand.Entry.AccountNumberForBalances.Length != 0 &&
-          _accountStatementCommand.Entry.AccountNumberForBalances != "Empty") {
-        if (_accountStatementCommand.Entry.ItemType == TrialBalanceItemType.Summary) {
-          return $"NUMERO_CUENTA_ESTANDAR LIKE '{_accountStatementCommand.Entry.AccountNumberForBalances}%'";
-        } else {
-          return $"NUMERO_CUENTA_ESTANDAR = '{_accountStatementCommand.Entry.AccountNumberForBalances}'";
-        }
-        
-      } else {
-        return string.Empty;
-      }
+    private string GetGroupingClause() {
+      return "ID_MAYOR, ID_MONEDA, ID_CUENTA_ESTANDAR, ID_SECTOR, ID_TRANSACCION, ID_ELABORADA_POR, " +
+             "ID_MOVIMIENTO, NUMERO_CUENTA_ESTANDAR, NOMBRE_CUENTA_ESTANDAR, NUMERO_CUENTA_AUXILIAR, " +
+             "NUMERO_TRANSACCION, NATURALEZA, FECHA_AFECTACION, FECHA_REGISTRO, CONCEPTO_TRANSACCION";
     }
 
-
-    private string GetCurrencyFilter() {
-      if (_accountStatementCommand.Entry.CurrencyCode.Length == 0) {
-        return string.Empty;
-      }
-
-      int currencyId = Currency.Parse(_accountStatementCommand.Entry.CurrencyCode).Id;
-      return $"ID_MONEDA IN ({String.Join(", ", currencyId)})";
-    }
-
-
+    
     private string GetLedgerFilter() {
       if (_accountStatementCommand.Entry.LedgerUID.Length > 0) {
         
@@ -104,12 +116,6 @@ namespace Empiria.FinancialAccounting.Reporting.Adapters {
         return $"ID_MAYOR IN ({String.Join(", ", ledgerIds)})";
       }
       return string.Empty;
-    }
-
-
-    static private string GetFields() {
-      return "ID_MAYOR, ID_MONEDA, ID_CUENTA_ESTANDAR, ID_SECTOR, ID_CUENTA_AUXILIAR, " +
-             "ID_TRANSACCION, SUM(DEBE) AS DEBE, SUM(HABER) AS HABER";
     }
 
 

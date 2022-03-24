@@ -57,6 +57,12 @@ namespace Empiria.FinancialAccounting.Reporting {
     } = Participant.Empty;
 
 
+    [DataField("ID_AUTORIZADA_POR", ConvertFrom = typeof(long))]
+    public Participant AuthorizedBy {
+      get; internal set;
+    } = Participant.Empty;
+
+
     [DataField("ID_MOVIMIENTO", ConvertFrom = typeof(decimal))]
     public int VoucherEntryId {
       get; internal set;

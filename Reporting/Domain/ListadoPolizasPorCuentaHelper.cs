@@ -8,6 +8,8 @@
 *                                                                                                            *
 ************************* Copyright(c) La Vía Óntica SC, Ontica LLC and contributors. All rights reserved. **/
 using System;
+using System.Collections.Generic;
+using System.Linq;
 using Empiria.FinancialAccounting.Reporting.Adapters;
 using Empiria.FinancialAccounting.Reporting.Data;
 
@@ -36,12 +38,9 @@ namespace Empiria.FinancialAccounting.Reporting {
       FixedList<AccountStatementEntry> vouchers = 
               ListadoPolizasPorCuentaDataService.GetVouchersByAccountEntries(commandData);
 
-      return vouchers;
-    }
+      FixedList<AccountStatementEntry> orderingVouchers = OrderingVouchers(vouchers);
 
-
-    internal FixedList<AccountStatementEntry> GenerateSummaryEntries(FixedList<AccountStatementEntry> entries) {
-      throw new NotImplementedException();
+      return orderingVouchers;
     }
 
 
@@ -50,7 +49,15 @@ namespace Empiria.FinancialAccounting.Reporting {
 
     #region Private methods
 
-
+    private FixedList<AccountStatementEntry> OrderingVouchers(FixedList<AccountStatementEntry> vouchers) {
+      var ordering = vouchers.OrderBy(a => a.AccountingDate)
+                             .ThenBy(a => a.Ledger.Number)
+                             .ThenBy(a => a.AccountNumber)
+                             .ThenBy(a => a.SubledgerAccountNumber)
+                             .ThenBy(a => a.VoucherNumber)
+                             .ToList();
+      return ordering.ToFixedList();
+    }
 
     #endregion Private methods
 

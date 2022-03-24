@@ -23,7 +23,9 @@ namespace Empiria.FinancialAccounting.Reporting.Data {
                                           commandData.AccountsChartId,
                                           CommonMethods.FormatSqlDate(commandData.FromDate),
                                           CommonMethods.FormatSqlDate(commandData.ToDate),
-                                          commandData.Filters);
+                                          commandData.Filters,
+                                          commandData.Fields,
+                                          commandData.Grouping);
 
       return DataReader.GetPlainObjectFixedList<AccountStatementEntry>(operation);
     }

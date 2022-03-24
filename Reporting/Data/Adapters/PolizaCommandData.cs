@@ -30,10 +30,17 @@ namespace Empiria.FinancialAccounting.Reporting {
       get; internal set;
     } = string.Empty;
 
+    public string Fields {
+      get; internal set;
+    } = string.Empty;
+
     public string Filters {
       get; internal set;
     } = string.Empty;
 
+    public string Grouping {
+      get; internal set;
+    } = string.Empty;
   } // class PolizaCommandData
 
 } // namespace Empiria.FinancialAccounting.Reporting

@@ -51,6 +51,9 @@ namespace Empiria.FinancialAccounting.Reporting {
       get; set;
     } = SendType.N;
 
+    public bool WithSubledgerAccount {
+      get; set;
+    } = false;
   } // class BuildReportCommand
 
   public enum SendType {
