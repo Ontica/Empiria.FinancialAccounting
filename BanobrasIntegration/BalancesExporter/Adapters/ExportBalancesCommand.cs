@@ -98,7 +98,7 @@ namespace Empiria.FinancialAccounting.BanobrasIntegration.BalancesExporter.Adapt
   } // class ExportBalancesCommand
 
 
-  public class ExportBalancesCommandBanobras {
+  public class BanobrasExportBalancesCommand {
 
     public int Empresa {
       get; set;
@@ -110,10 +110,15 @@ namespace Empiria.FinancialAccounting.BanobrasIntegration.BalancesExporter.Adapt
     }
 
 
+    public bool Consolidado {
+      get; set;
+    } = true;
+
+
     public ExportBalancesCommand ConvertToExportBalancesCommandByDay() {
       return new ExportBalancesCommand {
         AccountsChartId = this.Empresa,
-        BreakdownLedgers = false,
+        BreakdownLedgers = !this.Consolidado,
         FromDate = this.Fecha,
         ToDate = this.Fecha
       };
@@ -123,13 +128,13 @@ namespace Empiria.FinancialAccounting.BanobrasIntegration.BalancesExporter.Adapt
     public ExportBalancesCommand ConvertToExportBalancesCommandByMonth() {
       return new ExportBalancesCommand {
         AccountsChartId = this.Empresa,
-        BreakdownLedgers = false,
+        BreakdownLedgers = !this.Consolidado,
         FromDate = new DateTime(this.Fecha.Year, this.Fecha.Month, 1),
         ToDate = new DateTime(this.Fecha.Year, this.Fecha.Month,
                               DateTime.DaysInMonth(this.Fecha.Year, this.Fecha.Month)),
       };
     }
 
-  }   // ExportBalancesCommandBanobras
+  }   // BanobrasExportBalancesCommand
 
 }  // namespace Empiria.FinancialAccounting.BanobrasIntegration.BalancesExporter.Adapters

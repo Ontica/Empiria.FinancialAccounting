@@ -42,7 +42,7 @@ namespace Empiria.FinancialAccounting.WebApi.BanobrasIntegration {
 
     [HttpPost, AllowAnonymous]
     [Route("v2/financial-accounting/integration/balances-by-day")]
-    public CollectionModel ExportBalancesByDay([FromBody] ExportBalancesCommandBanobras banobrasCommand) {
+    public CollectionModel ExportBalancesByDay([FromBody] BanobrasExportBalancesCommand banobrasCommand) {
 
       base.RequireBody(banobrasCommand);
 
@@ -59,7 +59,7 @@ namespace Empiria.FinancialAccounting.WebApi.BanobrasIntegration {
 
     [HttpPost, AllowAnonymous]
     [Route("v2/financial-accounting/integration/balances-by-month")]
-    public CollectionModel ExportBalancesByMonth([FromBody] ExportBalancesCommandBanobras banobrasCommand) {
+    public CollectionModel ExportBalancesByMonth([FromBody] BanobrasExportBalancesCommand banobrasCommand) {
 
       base.RequireBody(banobrasCommand);
 
