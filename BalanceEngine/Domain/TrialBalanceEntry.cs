@@ -178,6 +178,16 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
     } = false;
 
 
+    public bool HasParentPostingEntry {
+      get; set;
+    } = false;
+
+
+    public bool IsParentPostingEntry {
+      get; set;
+    } = false;
+
+
     internal void MultiplyBy(decimal value) {
       this.InitialBalance *= value;
       this.Debit *= value;
@@ -228,6 +238,7 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
         ItemType = this.ItemType,
         Sector = this.Sector,
         DebtorCreditor = this.DebtorCreditor,
+        IsParentPostingEntry = this.IsParentPostingEntry,
         LastChangeDate = this.LastChangeDate
       };
     }
