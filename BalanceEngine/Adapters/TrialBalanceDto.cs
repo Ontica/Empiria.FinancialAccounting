@@ -193,6 +193,11 @@ namespace Empiria.FinancialAccounting.BalanceEngine.Adapters {
     } = false;
 
 
+    public bool IsParentPostingEntry {
+      get; set;
+    } = false;
+
+
     public bool ClickableEntry {
       get; internal set;
     } = false;

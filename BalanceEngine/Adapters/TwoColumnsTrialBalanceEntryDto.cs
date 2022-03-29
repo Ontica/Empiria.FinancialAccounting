@@ -150,7 +150,11 @@ namespace Empiria.FinancialAccounting.BalanceEngine.Adapters {
     public bool ClickableEntry {
       get; internal set;
     } = false;
-    
+
+
+    public bool IsParentPostingEntry {
+      get; internal set;
+    }
   }  // class TwoColumnsTrialBalanceEntryDto
 
 } // namespace Empiria.FinancialAccounting.BalanceEngine.Adapters

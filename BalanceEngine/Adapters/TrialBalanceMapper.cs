@@ -178,6 +178,7 @@ namespace Empiria.FinancialAccounting.BalanceEngine.Adapters {
       dto.TotalBalance = entry.TotalBalance;
       dto.ExchangeRate = entry.ExchangeRate;
       dto.AverageBalance = entry.AverageBalance;
+      dto.IsParentPostingEntry = entry.IsParentPostingEntry;
       dto.LastChangeDate = entry.LastChangeDate != null ? entry.LastChangeDate : 
                            ExecutionServer.DateMaxValue;
 
@@ -390,6 +391,7 @@ namespace Empiria.FinancialAccounting.BalanceEngine.Adapters {
                            entry.LastChangeDate : ExecutionServer.DateMaxValue;
       }
       dto.LastChangeDateForBalances = dto.LastChangeDate;
+      dto.IsParentPostingEntry = entry.IsParentPostingEntry;
       dto.HasAccountStatement = (entry.ItemType == TrialBalanceItemType.Entry ||
                                  entry.ItemType == TrialBalanceItemType.Summary) &&
                                 command.UseDefaultValuation == false &&

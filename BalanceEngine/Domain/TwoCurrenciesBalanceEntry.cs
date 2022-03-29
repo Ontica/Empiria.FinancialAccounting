@@ -140,6 +140,10 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
     }
 
 
+    public bool IsParentPostingEntry {
+      get; internal set;
+    }
+
     internal void Sum(TwoCurrenciesBalanceEntry entry) {
       this.DomesticBalance += entry.DomesticBalance;
       this.ForeignBalance += entry.ForeignBalance;

@@ -124,7 +124,11 @@ namespace Empiria.FinancialAccounting.Reporting.Exporters.Excel {
           _excelFile.SetCell($"A{i}", "Consolidada");
         }
         if (entry.ItemType == TrialBalanceItemType.Entry) {
-          _excelFile.SetCell($"C{i}", "*");
+          if (!entry.IsParentPostingEntry) {
+            _excelFile.SetCell($"C{i}", "*");
+          } else {
+            _excelFile.SetCell($"C{i}", "**");
+          }
         }
         _excelFile.SetCell($"D{i}", entry.AccountNumber);
         _excelFile.SetCell($"E{i}", entry.AccountName);
@@ -317,7 +321,11 @@ namespace Empiria.FinancialAccounting.Reporting.Exporters.Excel {
         
         _excelFile.SetCell($"C{i}", entry.CurrencyCode);
         if (entry.ItemType == TrialBalanceItemType.Entry) {
-          _excelFile.SetCell($"D{i}", "*");
+          if (!entry.IsParentPostingEntry) {
+            _excelFile.SetCell($"D{i}", "*");
+          } else {
+            _excelFile.SetCell($"D{i}", "**");
+          }
         }
         _excelFile.SetCell($"E{i}", entry.AccountNumber);
         _excelFile.SetCell($"F{i}", entry.AccountName);
