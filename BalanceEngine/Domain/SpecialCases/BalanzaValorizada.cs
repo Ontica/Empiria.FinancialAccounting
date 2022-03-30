@@ -62,9 +62,9 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
 
       List<TrialBalanceEntry> trialBalance = helper.GetPostingEntries().ToList();
 
-      List<TrialBalanceEntry> entriesWithLevels = trialBalance; //trialBalance.Where(a => a.Level > 1).ToList();
+      trialBalance = helper.GetSummaryToParentEntries(trialBalance.ToFixedList()).ToList();
 
-      List<TrialBalanceEntry> summaryEntries = helper.GenerateSummaryEntries(entriesWithLevels.ToFixedList());
+      List<TrialBalanceEntry> summaryEntries = helper.GenerateSummaryEntries(trialBalance.ToFixedList());
 
       summaryEntries = GetSummaryByDebtorCreditorEntries(summaryEntries);
 
