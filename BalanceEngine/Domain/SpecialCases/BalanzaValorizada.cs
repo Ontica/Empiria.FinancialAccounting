@@ -31,9 +31,9 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
 
       List<TrialBalanceEntry> trialBalance = helper.GetPostingEntries().ToList();
 
-      List<TrialBalanceEntry> entriesWithLevels = trialBalance;//trialBalance.Where(a => a.Level > 1).ToList();
+      trialBalance = helper.GetSummaryToParentEntries(trialBalance.ToFixedList()).ToList();
 
-      List<TrialBalanceEntry> summaryEntries = helper.GenerateSummaryEntries(entriesWithLevels.ToFixedList());
+      List<TrialBalanceEntry> summaryEntries = helper.GenerateSummaryEntries(trialBalance.ToFixedList());
 
       summaryEntries = GetFirstLevelAccountsListByCurrency(trialBalance, summaryEntries);
 
@@ -108,10 +108,6 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
       var helper = new TrialBalanceHelper(_command);
       var firstLevelEntries = trialBalance.ToList();
 
-      //if (_command.TrialBalanceType != TrialBalanceType.BalanzaDolarizada) {
-      //  firstLevelEntries = trialBalance.Where(a => a.Level == 1).ToList();
-      //}
-
       var hashAccountEntries = new EmpiriaHashTable<TrialBalanceEntry>();
 
       foreach (var entry in firstLevelEntries) {
@@ -179,11 +175,9 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
 
       var helper = new TrialBalanceHelper(_command);
 
-      var ledgersList = trialBalance;//.Where(a => a.Level == 1 && a.Sector.Code == "00").ToList();
-
       var hashAccountEntries = new EmpiriaHashTable<TrialBalanceEntry>();
 
-      foreach (var entry in ledgersList) {
+      foreach (var entry in trialBalance) {
         TrialBalanceItemType itemType = entry.Currency.Code == "02" ?
                                         TrialBalanceItemType.Summary :
                                         TrialBalanceItemType.Entry;

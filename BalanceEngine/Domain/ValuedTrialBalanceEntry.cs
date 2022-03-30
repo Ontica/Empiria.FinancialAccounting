@@ -58,8 +58,15 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
     } = string.Empty;
 
     public TrialBalanceItemType ItemType {
-      get;
-      internal set;
+      get; internal set;
+    }
+
+    public bool HasParentPostingEntry {
+      get; internal set;
+    }
+
+    public bool IsParentPostingEntry {
+      get; internal set;
     }
 
     internal void Sum(ValuedTrialBalanceEntry entry) {

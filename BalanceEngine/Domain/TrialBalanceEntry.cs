@@ -274,7 +274,9 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
         TotalBalance = this.CurrentBalance,
         ExchangeRate = this.ExchangeRate,
         TotalEquivalence = this.CurrentBalance,
-        ItemType = this.ItemType
+        ItemType = this.ItemType,
+        HasParentPostingEntry = this.HasParentPostingEntry,
+        IsParentPostingEntry = this.IsParentPostingEntry
       };
     }
 
