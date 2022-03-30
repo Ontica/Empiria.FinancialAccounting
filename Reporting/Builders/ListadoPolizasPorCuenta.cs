@@ -62,7 +62,7 @@ namespace Empiria.FinancialAccounting.Reporting {
       columns.Add(new DataTableColumn("voucherNumber", "No. Poliza", "text-nowrap"));
       columns.Add(new DataTableColumn("debit", "Cargo", "decimal"));
       columns.Add(new DataTableColumn("credit", "Abono", "decimal"));
-      columns.Add(new DataTableColumn("currentBalance", "Saldo actual", "decimal"));
+      //columns.Add(new DataTableColumn("currentBalance", "Saldo actual", "decimal"));
       columns.Add(new DataTableColumn("accountingDate", "Afectación", "date"));
       columns.Add(new DataTableColumn("recordingDate", "Registro", "date"));
       columns.Add(new DataTableColumn("concept", "Concepto", "text-nowrap"));
