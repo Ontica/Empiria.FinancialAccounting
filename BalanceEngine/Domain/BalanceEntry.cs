@@ -108,10 +108,25 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
     } = false;
 
 
+    public bool HasParentPostingEntry {
+      get; internal set;
+    } = false;
+
+
+    public bool IsParentPostingEntry {
+      get; internal set;
+    } = false;
+
+
     public bool ClickableEntry {
       get; internal set;
     } = false;
-    
+
+
+    internal void Sum(BalanceEntry entry) {
+      this.InitialBalance += entry.InitialBalance;
+      this.CurrentBalance += entry.CurrentBalance;
+    }
   } // class BalanceEntry
 
 } // Empiria.FinancialAccounting.BalanceEngine
