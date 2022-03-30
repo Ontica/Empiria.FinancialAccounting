@@ -380,7 +380,11 @@ namespace Empiria.FinancialAccounting.Reporting.Exporters.Excel {
 
         if (entry.ItemType == TrialBalanceItemType.Entry) {
           _excelFile.SetCell($"C{i}", $"({entry.CurrencyCode}) {entry.CurrencyName}");
-          _excelFile.SetCell($"D{i}", "*");
+          if (!entry.IsParentPostingEntry) {
+            _excelFile.SetCell($"D{i}", "*");
+          } else {
+            _excelFile.SetCell($"D{i}", "**");
+          }
         }
         if (!account.IsEmptyInstance) {
           _excelFile.SetCell($"E{i}", account.Number);
@@ -447,7 +451,11 @@ namespace Empiria.FinancialAccounting.Reporting.Exporters.Excel {
         
         _excelFile.SetCell($"C{i}", entry.CurrencyCode);
         if (entry.ItemType == TrialBalanceItemType.Entry) {
-          _excelFile.SetCell($"D{i}", "*");
+          if (!entry.IsParentPostingEntry) {
+            _excelFile.SetCell($"D{i}", "*");
+          } else {
+            _excelFile.SetCell($"D{i}", "**");
+          }
         }
         if (!account.IsEmptyInstance) {
           _excelFile.SetCell($"E{i}", account.Number);

@@ -226,6 +226,7 @@ namespace Empiria.FinancialAccounting.BalanceEngine.Adapters {
       dto.ExchangeRate = entry.ExchangeRate;
       dto.SecondExchangeRate = entry.SecondExchangeRate;
       dto.AverageBalance = entry.AverageBalance;
+      dto.IsParentPostingEntry = entry.IsParentPostingEntry;
       if (command.WithSubledgerAccount) {
         dto.DebtorCreditor = entry.ItemType == TrialBalanceItemType.Summary ?
                              entry.DebtorCreditor.ToString() : "";
@@ -307,11 +308,12 @@ namespace Empiria.FinancialAccounting.BalanceEngine.Adapters {
       dto.ExchangeRate = entry.ExchangeRate;
       dto.DebtorCreditor = entry.ItemType == TrialBalanceItemType.Entry ?
                              entry.DebtorCreditor.ToString() : "";
-
+       
       dto.LastChangeDate = entry.ItemType == TrialBalanceItemType.Entry ?
                            entry.LastChangeDate : ExecutionServer.DateMaxValue;
       
       dto.LastChangeDateForBalances = dto.LastChangeDate;
+      dto.IsParentPostingEntry = entry.IsParentPostingEntry;
       dto.HasAccountStatement = (entry.ItemType == TrialBalanceItemType.Entry ||
                                  entry.ItemType == TrialBalanceItemType.Summary) &&
                                 command.UseDefaultValuation == false &&

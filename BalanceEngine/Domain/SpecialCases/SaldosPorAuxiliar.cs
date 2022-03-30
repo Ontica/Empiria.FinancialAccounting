@@ -31,6 +31,8 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
 
       List<TrialBalanceEntry> trialBalance = helper.GetPostingEntries().ToList();
 
+      trialBalance = helper.GetSummaryToParentEntries(trialBalance.ToFixedList()).ToList();
+
       EmpiriaHashTable<TrialBalanceEntry> summaryEntries = BalancesBySubledgerAccounts(trialBalance);
 
       List<TrialBalanceEntry> orderedTrialBalance = OrderByAccountNumber(summaryEntries);
@@ -69,12 +71,12 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
 
       var subledgerAccountsEntriesHashTable = new EmpiriaHashTable<TrialBalanceEntry>();
 
-      foreach (var item in subledgerAccountsEntries) {
-        string hash = $"{item.Ledger.Number}||{item.Currency.Code}||" +
-                      $"{item.Account.Number}||{item.Sector.Code}||" +
-                      $"{item.SubledgerAccountId}";
+      foreach (var entry in subledgerAccountsEntries) {
+        string hash = $"{entry.Ledger.Number}||{entry.Currency.Code}||" +
+                      $"{entry.Account.Number}||{entry.Sector.Code}||" +
+                      $"{entry.SubledgerAccountId}";
 
-        subledgerAccountsEntriesHashTable.Insert(hash, item);
+        subledgerAccountsEntriesHashTable.Insert(hash, entry);
       }
 
       return GenerateEntries(subledgerAccountsEntriesHashTable);
