@@ -39,6 +39,8 @@ namespace Empiria.FinancialAccounting.BalanceEngine.Adapters {
       newEntry.GroupName = entry.GroupName;
       newEntry.ItemType = entry.ItemType;
       newEntry.ExchangeRate = entry.ExchangeRate;
+      newEntry.HasParentPostingEntry = entry.HasParentPostingEntry;
+      newEntry.IsParentPostingEntry = entry.IsParentPostingEntry;
       //newEntry.LastChangeDate = entry.LastChangeDate;
 
       return newEntry;

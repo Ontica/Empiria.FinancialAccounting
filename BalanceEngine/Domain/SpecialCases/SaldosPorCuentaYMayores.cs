@@ -31,6 +31,8 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
 
       FixedList<TrialBalanceEntry> postingEntries = helper.GetPostingEntries();
 
+      postingEntries = helper.GetSummaryToParentEntries(postingEntries);
+
       List<TrialBalanceEntry> trialBalance = new List<TrialBalanceEntry>(postingEntries);
 
       List<TrialBalanceEntry> orderingTrialBalance = OrderingLedgersByAccount(trialBalance);
@@ -70,7 +72,7 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
       return new TrialBalance(_command, returnBalance);
     }
 
-    
+
 
     #region Helper methods
 
@@ -143,13 +145,14 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
       var helper = new TrialBalanceHelper(_command);
       var totalByCurrencies = new EmpiriaHashTable<TrialBalanceEntry>(entries.Count);
 
-      foreach (var entry in entries.Where(a => a.ItemType == TrialBalanceItemType.BalanceTotalDebtor ||
-                                               a.ItemType == TrialBalanceItemType.BalanceTotalCreditor)) {
+      foreach (var entry in entries.Where(a => !a.HasParentPostingEntry && 
+                                               (a.ItemType == TrialBalanceItemType.BalanceTotalDebtor ||
+                                               a.ItemType == TrialBalanceItemType.BalanceTotalCreditor))) {
 
         helper.SummaryByCurrencyEntries(totalByCurrencies, entry, StandardAccount.Empty,
                             Sector.Empty, TrialBalanceItemType.BalanceTotalCurrency);
       }
-      
+
       return totalByCurrencies.ToFixedList();
     }
 
@@ -157,11 +160,11 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
     private FixedList<TrialBalanceEntry> GenerateTotalSummaryByGroup(List<TrialBalanceEntry> trialBalance) {
       var helper = new TrialBalanceHelper(_command);
       var totalsListByGroupEntries = new EmpiriaHashTable<TrialBalanceEntry>(trialBalance.Count);
-      
+
       foreach (var entry in trialBalance) {
         helper.SummaryByLedgersGroupEntries(totalsListByGroupEntries, entry);
       }
-      
+
       return totalsListByGroupEntries.ToFixedList();
     }
 
@@ -170,7 +173,7 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
       var helper = new TrialBalanceHelper(_command);
       var totalSummaryDebtorCredtor = new EmpiriaHashTable<TrialBalanceEntry>(trialBalance.Count);
 
-      foreach (var entry in trialBalance) {
+      foreach (var entry in trialBalance.Where(a => !a.HasParentPostingEntry)) {
 
         if (entry.DebtorCreditor == DebtorCreditorType.Deudora) {
           helper.SummaryDebtorCreditorLedgersByAccount(totalSummaryDebtorCredtor, entry,
@@ -196,8 +199,8 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
 
     private List<TrialBalanceEntry> OrderingLedgersByAccount(List<TrialBalanceEntry> trialBalance) {
       List<TrialBalanceEntry> returnedList = new List<TrialBalanceEntry>(trialBalance);
-      
-      foreach (var entry in trialBalance) {
+
+      foreach (var entry in returnedList) {
         entry.GroupName = entry.Ledger.Name;
         entry.DebtorCreditor = entry.Account.DebtorCreditor;
       }
