@@ -33,7 +33,7 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
 
       FixedList<BalanceEntry> balance = helper.GetBalanceEntries();
 
-      balance = GetSummaryToParentEntries(balance);
+      balance = helper.GetSummaryToParentEntries(balance);
 
       FixedList<BalanceEntry> subledgerAccounts = GetSubledgerAccounts(balance);
 
@@ -180,28 +180,6 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
       balanceWithSubledgerAccounts = GetOrderBySubledgerAccount(balanceWithSubledgerAccounts);
 
       return balanceWithSubledgerAccounts.ToFixedList();
-    }
-
-
-    internal FixedList<BalanceEntry> GetSummaryToParentEntries(
-                                            FixedList<BalanceEntry> postingEntries) {
-      var returnedEntries = new List<BalanceEntry>(postingEntries);
-      foreach (var entry in postingEntries) {
-        StandardAccount currentParent = entry.Account.GetParent();
-
-        var entryParent = returnedEntries.FirstOrDefault(a => a.Account.Number == currentParent.Number &&
-                                                a.Currency.Code == entry.Currency.Code &&
-                                                a.Ledger.Number == entry.Ledger.Number &&
-                                                a.Sector.Code == entry.Sector.Code &&
-                                                a.Account.DebtorCreditor == entry.Account.DebtorCreditor);
-        if (entryParent != null) {
-          entry.HasParentPostingEntry = true;
-          entryParent.IsParentPostingEntry = true;
-          entryParent.Sum(entry);
-        }
-      }
-
-      return returnedEntries.ToFixedList();
     }
 
 

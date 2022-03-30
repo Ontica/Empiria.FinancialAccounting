@@ -71,7 +71,7 @@ namespace Empiria.FinancialAccounting.Tests.Balances {
       command.TrialBalanceType = TrialBalanceType.Balanza;
       command.BalancesType = BalancesType.WithCurrentBalanceOrMovements;
       command.AccountsChartUID = "47ec2ec7-0f4f-482e-9799-c23107b60d8a";
-      command.ShowCascadeBalances = false;
+      command.ShowCascadeBalances = true;
       command.WithSubledgerAccount = false;
       command.UseDefaultValuation = false;
       command.FromAccount = "4.01.02";
@@ -129,8 +129,8 @@ namespace Empiria.FinancialAccounting.Tests.Balances {
           //ValuateToCurrrencyUID = "01"
         },
         FinalPeriod = new TrialBalanceCommandPeriod() {
-          FromDate = new DateTime(2021, 06, 01),
-          ToDate = new DateTime(2021, 06, 30)
+          FromDate = new DateTime(2022, 03, 01),
+          ToDate = new DateTime(2022, 03, 31)
         }
 
       };

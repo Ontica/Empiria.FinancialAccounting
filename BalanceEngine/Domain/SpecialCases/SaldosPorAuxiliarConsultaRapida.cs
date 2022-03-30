@@ -30,6 +30,8 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
 
       FixedList<BalanceEntry> balanceEntries = helper.GetBalanceEntries();
 
+      balanceEntries = helper.GetSummaryToParentEntries(balanceEntries);
+
       EmpiriaHashTable<BalanceEntry> subledgerAccounts = GetSubledgerAccounts(balanceEntries);
 
       List<BalanceEntry> orderingBalance = OrderBySubledgerAccounts(subledgerAccounts);
