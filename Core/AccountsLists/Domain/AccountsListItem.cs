@@ -8,6 +8,7 @@
 *                                                                                                            *
 ************************* Copyright(c) La Vía Óntica SC, Ontica LLC and contributors. All rights reserved. **/
 using System;
+using Empiria.Json;
 
 namespace Empiria.FinancialAccounting {
 
@@ -37,8 +38,9 @@ namespace Empiria.FinancialAccounting {
 
     #region Properties
 
+    // [DataField("ID_LISTA")]
     public AccountsList List {
-      get;
+      get; private set;
     }
 
 
@@ -62,6 +64,31 @@ namespace Empiria.FinancialAccounting {
 
     [DataField("CLAVE_MONEDA")]
     public string CurrencyCode {
+      get; private set;
+    }
+
+
+    [DataField("NUMERO_CUENTA_ESTANDAR_2")]
+    public string TargetAccountNumber {
+      get; private set;
+    }
+
+
+    public string ProfitAccount {
+      get {
+        return ExtData.Get("additionalAccounts/profitAccount", string.Empty);
+      }
+    }
+
+    public string LossAccount {
+      get {
+        return ExtData.Get("additionalAccounts/lossAccount", string.Empty);
+      }
+    }
+
+
+    [DataField("ELEMENTO_EXT_DATA")]
+    public JsonObject ExtData {
       get; private set;
     }
 

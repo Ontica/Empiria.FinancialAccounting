@@ -8,6 +8,7 @@
 *                                                                                                            *
 ************************* Copyright(c) La Vía Óntica SC, Ontica LLC and contributors. All rights reserved. **/
 using System;
+using Empiria.FinancialAccounting.Data;
 
 namespace Empiria.FinancialAccounting {
 
@@ -19,6 +20,12 @@ namespace Empiria.FinancialAccounting {
     protected AccountsList() {
       // Required by Empiria Framework.
     }
+
+
+    static public AccountsList Parse(int id) {
+      return BaseObject.ParseId<AccountsList>(id);
+    }
+
 
     static public AccountsList Parse(string uid) {
       return BaseObject.ParseKey<AccountsList>(uid);
@@ -37,7 +44,7 @@ namespace Empiria.FinancialAccounting {
     #region Public methods
 
     public FixedList<AccountsListItem> GetItems() {
-      return new FixedList<AccountsListItem>();
+      return AccountsListData.GetAccounts(this);
     }
 
     #endregion Public methods
