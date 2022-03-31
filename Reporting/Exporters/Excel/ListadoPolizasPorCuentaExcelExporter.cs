@@ -68,8 +68,11 @@ namespace Empiria.FinancialAccounting.Reporting.Exporters.Excel {
         excelFile.SetCell($"G{i}", voucher.VoucherNumber);
         excelFile.SetCell($"H{i}", (decimal) voucher.Debit);
         excelFile.SetCell($"I{i}", (decimal) voucher.Credit);
-        excelFile.SetCell($"J{i}", voucher.AccountingDate);
-        excelFile.SetCell($"K{i}", voucher.RecordingDate);
+        if (voucher.ItemType == TrialBalanceItemType.Entry) {
+          excelFile.SetCell($"J{i}", voucher.AccountingDate);
+          excelFile.SetCell($"K{i}", voucher.RecordingDate);
+        }
+        
         excelFile.SetCell($"L{i}", voucher.Concept);
         excelFile.SetCell($"M{i}", voucher.AuthorizedBy);
         excelFile.SetCell($"N{i}", voucher.ElaboratedBy);

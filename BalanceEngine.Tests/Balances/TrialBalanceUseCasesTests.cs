@@ -76,6 +76,7 @@ namespace Empiria.FinancialAccounting.Tests.Balances {
       command.UseDefaultValuation = false;
       command.FromAccount = "4.01.02";
       command.ToAccount = "4.01.02";
+
       TrialBalanceDto trialBalance = _usecases.BuildTrialBalance(command);
 
       Assert.NotNull(trialBalance);

@@ -129,6 +129,7 @@ namespace Empiria.FinancialAccounting.Reporting {
       
         RecordingDate = voucher.ItemType == TrialBalanceItemType.Entry ?
                         voucher.RecordingDate : ExecutionServer.DateMaxValue,
+        ItemType = voucher.ItemType
       };
 
       return voucherEntry;

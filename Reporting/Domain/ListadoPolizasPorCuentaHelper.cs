@@ -153,7 +153,7 @@ namespace Empiria.FinancialAccounting.Reporting {
                                             AccountStatementEntry entry) {
       AccountStatementEntry newEntry = AccountStatementEntry.MapToAccountStatementEntry(entry);
       string hash;
-      newEntry.AccountName = "Suma movimientos moneda " + newEntry.Currency.Code;
+      newEntry.AccountName = "Suma de movimientos moneda " + newEntry.Currency.Code;
 
       if (newEntry.DebtorCreditor.ToString() == "A") {
         newEntry.Debit = -1 * entry.Debit;
