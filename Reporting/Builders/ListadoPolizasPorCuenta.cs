@@ -40,8 +40,16 @@ namespace Empiria.FinancialAccounting.Reporting {
 
       vouchersList = helper.GetSummaryToParentVouchers(vouchersList);
 
+      FixedList<AccountStatementEntry> orderingVouchers = helper.OrderingVouchers(vouchersList);
+
+      FixedList<AccountStatementEntry> totalsByCurrency = helper.GenerateTotalSummaryByCurrency(
+                                                                  orderingVouchers);
+
+      FixedList<AccountStatementEntry> returnedEntries = helper.CombineVouchersWithTotalByCurrency(
+                                                          orderingVouchers, totalsByCurrency);
+
       var returnedVouchers = new FixedList<IVouchersByAccountEntry>(
-                                  vouchersList.Select(x => (IVouchersByAccountEntry) x));
+                                  returnedEntries.Select(x => (IVouchersByAccountEntry) x));
 
       ListadoPolizasPorCuentaBuilder vouchers = new ListadoPolizasPorCuentaBuilder(command, returnedVouchers);
 
