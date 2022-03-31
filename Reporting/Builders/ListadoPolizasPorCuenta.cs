@@ -38,10 +38,10 @@ namespace Empiria.FinancialAccounting.Reporting {
 
       FixedList<AccountStatementEntry> vouchersList = helper.GetVoucherEntries();
 
-      //TODO generar cuentas sumarias
-      //FixedList<AccountStatementEntry> vouchersList = helper.GenerateSummaryEntries(entries);
+      vouchersList = helper.GetSummaryToParentVouchers(vouchersList);
 
-      var returnedVouchers = new FixedList<IVouchersByAccountEntry>(vouchersList.Select(x => (IVouchersByAccountEntry) x));
+      var returnedVouchers = new FixedList<IVouchersByAccountEntry>(
+                                  vouchersList.Select(x => (IVouchersByAccountEntry) x));
 
       ListadoPolizasPorCuentaBuilder vouchers = new ListadoPolizasPorCuentaBuilder(command, returnedVouchers);
 
@@ -96,22 +96,31 @@ namespace Empiria.FinancialAccounting.Reporting {
     static private VoucherByAccountEntry MapToVoucherEntry(AccountStatementEntry voucher) {
       var voucherEntry = new VoucherByAccountEntry {
         LedgerUID = voucher.Ledger.UID,
-        LedgerNumber = voucher.Ledger.Number,
-        LedgerName = voucher.Ledger.Name,
+        LedgerNumber = voucher.ItemType == TrialBalanceItemType.Entry ?
+                       voucher.Ledger.Number : "",
+        LedgerName = voucher.ItemType == TrialBalanceItemType.Entry ?
+                     voucher.Ledger.Name : "",
         CurrencyCode = voucher.Currency.Code,
-        AccountNumber = voucher.AccountNumber,
+        AccountNumber = voucher.ItemType == TrialBalanceItemType.Entry ?
+                        voucher.AccountNumber : voucher.AccountName,
         AccountName = voucher.AccountName,
-        SubledgerAccountNumber = voucher.SubledgerAccountNumber != "0" ? 
+        SubledgerAccountNumber = voucher.SubledgerAccountNumber != "0" && 
+                                 voucher.SubledgerAccountNumber != null ?
                                  voucher.SubledgerAccountNumber : "",
-        SectorCode = voucher.Sector.Code,
+        SectorCode = voucher.ItemType == TrialBalanceItemType.Entry ?
+                     voucher.Sector.Code : "",
         Debit = voucher.Debit,
         Credit = voucher.Credit,
-        VoucherNumber = voucher.VoucherNumber,
+        VoucherNumber = voucher.ItemType == TrialBalanceItemType.Entry ? 
+                        voucher.VoucherNumber : "",
         ElaboratedBy = voucher.ElaboratedBy.Name,
         AuthorizedBy = voucher.AuthorizedBy.Name,
-        Concept = voucher.Concept,
-        AccountingDate = voucher.AccountingDate,
-        RecordingDate = voucher.RecordingDate
+        Concept = voucher.ItemType == TrialBalanceItemType.Entry ? voucher.Concept : "",
+        AccountingDate = voucher.ItemType == TrialBalanceItemType.Entry ?
+                         voucher.AccountingDate : ExecutionServer.DateMaxValue,
+      
+        RecordingDate = voucher.ItemType == TrialBalanceItemType.Entry ?
+                        voucher.RecordingDate : ExecutionServer.DateMaxValue,
       };
 
       return voucherEntry;

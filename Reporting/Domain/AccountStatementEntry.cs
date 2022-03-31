@@ -139,10 +139,58 @@ namespace Empiria.FinancialAccounting.Reporting {
       get; internal set;
     } = false;
 
+
+    public bool HasParentPostingEntry {
+      get; internal set;
+    } = false;
+
+
+    public bool IsParentPostingEntry {
+      get; internal set;
+    } = false;
+
+
     public TrialBalanceItemType ItemType {
       get; internal set;
     } = TrialBalanceItemType.Entry;
 
+
+    internal static AccountStatementEntry MapToAccountStatementEntry(AccountStatementEntry entry) {
+      var newEntry = new AccountStatementEntry();
+
+      newEntry.Ledger = entry.Ledger;
+      newEntry.Currency = entry.Currency;
+      newEntry.StandardAccountId = entry.StandardAccountId;
+      newEntry.Sector = entry.Sector;
+      newEntry.VoucherId = entry.VoucherId;
+      newEntry.ElaboratedBy = entry.ElaboratedBy;
+      newEntry.AuthorizedBy = entry.AuthorizedBy;
+      newEntry.VoucherEntryId = entry.VoucherEntryId;
+      newEntry.AccountNumber = entry.AccountNumber;
+      newEntry.AccountName = entry.AccountName;
+      newEntry.SubledgerAccountNumber = entry.SubledgerAccountNumber;
+      newEntry.VoucherNumber = entry.VoucherNumber;
+      newEntry.Debit = entry.Debit;
+      newEntry.Credit= entry.Credit;
+      newEntry.CurrentBalance = entry.CurrentBalance;
+      newEntry.DebtorCreditor = entry.DebtorCreditor;
+      newEntry.AccountingDate = entry.AccountingDate;
+      newEntry.RecordingDate = entry.RecordingDate;
+      newEntry.Concept = entry.Concept;
+      newEntry.IsCurrentBalance = entry.IsCurrentBalance;
+      newEntry.ItemType = entry.ItemType;
+      newEntry.HasParentPostingEntry = entry.HasParentPostingEntry;
+      newEntry.IsParentPostingEntry = entry.IsParentPostingEntry;
+      newEntry.ItemType = entry.ItemType;
+
+      return newEntry;
+    }
+
+    internal void Sum(AccountStatementEntry entry) {
+      this.Debit += entry.Debit;
+      this.Credit += entry.Credit;
+      this.CurrentBalance += entry.CurrentBalance;
+    }
   } // class VouchersByAccountEntry
 
 } // namespace Empiria.FinancialAccounting.Reporting
