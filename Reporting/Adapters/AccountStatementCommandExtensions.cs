@@ -28,8 +28,6 @@ namespace Empiria.FinancialAccounting.Reporting.Adapters {
       var commandData = new AccountStatementCommandData();
       var accountsChart = AccountsChart.Parse(_accountStatementCommand.Command.AccountsChartUID);
 
-
-      //commandData.Fields = GetFields();
       commandData.AccountsChartId = accountsChart.Id;
       commandData.FromDate = _accountStatementCommand.Command.InitialPeriod.FromDate;
       commandData.ToDate = _accountStatementCommand.Command.InitialPeriod.ToDate;
@@ -46,7 +44,7 @@ namespace Empiria.FinancialAccounting.Reporting.Adapters {
     #region Private methods
 
     private string GetAccountFilter() {
-      if (_accountStatementCommand.Entry.AccountNumberForBalances.Length != 0 &&
+      if (_accountStatementCommand.Entry.AccountNumberForBalances.Length > 0 &&
           _accountStatementCommand.Entry.AccountNumberForBalances != "Empty") {
         if (_accountStatementCommand.Entry.ItemType == TrialBalanceItemType.Summary) {
           return $"NUMERO_CUENTA_ESTANDAR LIKE '{_accountStatementCommand.Entry.AccountNumberForBalances}%'";

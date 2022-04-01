@@ -278,7 +278,7 @@ namespace Empiria.FinancialAccounting.BalanceEngine.Adapters {
         dto.AccountName = subledgerAccount.Name;
         dto.AccountNumber = subledgerAccount.Number;
       }
-      dto.AccountNumberForBalances = entry.Account.Number;
+      dto.AccountNumberForBalances = entry.Account.Number != "Empty" ? entry.Account.Number : "";
 
       if (entry.ItemType == TrialBalanceItemType.Entry && subledgerAccount.IsEmptyInstance) {
 
@@ -308,10 +308,9 @@ namespace Empiria.FinancialAccounting.BalanceEngine.Adapters {
       dto.ExchangeRate = entry.ExchangeRate;
       dto.DebtorCreditor = entry.ItemType == TrialBalanceItemType.Entry ?
                              entry.DebtorCreditor.ToString() : "";
-       
-      dto.LastChangeDate = entry.ItemType == TrialBalanceItemType.Entry ?
-                           entry.LastChangeDate : ExecutionServer.DateMaxValue;
-      
+
+      dto.LastChangeDate = entry.LastChangeDate;
+
       dto.LastChangeDateForBalances = dto.LastChangeDate;
       dto.IsParentPostingEntry = entry.IsParentPostingEntry;
       dto.HasAccountStatement = (entry.ItemType == TrialBalanceItemType.Entry ||
