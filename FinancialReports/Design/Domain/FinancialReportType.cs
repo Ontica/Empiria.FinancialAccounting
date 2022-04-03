@@ -16,7 +16,7 @@ namespace Empiria.FinancialAccounting.FinancialReports {
 
   public enum FinancialReportDesignType {
 
-    ConceptsIntegration,
+    AccountsIntegration,
 
     FixedCells,
 
@@ -131,6 +131,20 @@ namespace Empiria.FinancialAccounting.FinancialReports {
     public AccountsChart AccountsChart {
       get {
         return base.ExtendedDataField.Get<AccountsChart>("accountsChartId");
+      }
+    }
+
+
+    public FixedList<DataTableColumn> DataColumns {
+      get {
+        return base.ExtendedDataField.GetFixedList<DataTableColumn>("dataColumns", false);
+      }
+    }
+
+
+    public FixedList<DataTableColumn> BreakdownColumns {
+      get {
+        return base.ExtendedDataField.GetFixedList<DataTableColumn>("breakdownColumns", false);
       }
     }
 

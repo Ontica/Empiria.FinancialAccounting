@@ -21,10 +21,7 @@ namespace Empiria.FinancialAccounting.FinancialReports {
       return this._fields.Keys;
     }
 
-
-    public decimal GetTotalField(FinancialReportTotalField field) {
-      var fieldName = field.ToString();
-
+    public decimal GetTotalField(string fieldName) {
       if (_fields.ContainsKey(fieldName)) {
         return (decimal) _fields[fieldName];
       } else {
@@ -33,14 +30,22 @@ namespace Empiria.FinancialAccounting.FinancialReports {
     }
 
 
-    public void SetTotalField(FinancialReportTotalField field, decimal value) {
-      var fieldName = field.ToString();
+    public decimal GetTotalField(FinancialReportTotalField field) {
+      return GetTotalField(field.ToString());
+    }
 
+
+    public void SetTotalField(string fieldName, decimal value) {
       if (_fields.ContainsKey(fieldName)) {
         _fields[fieldName] = value;
       } else {
         _fields.Add(fieldName, value);
       }
+    }
+
+
+    public void SetTotalField(FinancialReportTotalField field, decimal value) {
+      SetTotalField(field.ToString(), value);
     }
 
 

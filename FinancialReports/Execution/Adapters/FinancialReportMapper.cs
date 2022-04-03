@@ -16,15 +16,6 @@ namespace Empiria.FinancialAccounting.FinancialReports.Adapters {
 
     #region Public mappers
 
-    static internal FinancialReportDto Map(FinancialReport financialReport) {
-      return new FinancialReportDto {
-        Command = financialReport.Command,
-        Columns = financialReport.DataColumns(),
-        Entries = MapEntries(financialReport)
-      };
-    }
-
-
     static internal FixedList<FinancialReportTypeDto> Map(FixedList<FinancialReportType> list) {
       var mappedItems = list.Select((x) => Map(x));
 
@@ -32,10 +23,19 @@ namespace Empiria.FinancialAccounting.FinancialReports.Adapters {
     }
 
 
+    static internal FinancialReportDto Map(FinancialReport financialReport) {
+      return new FinancialReportDto {
+        Command = financialReport.Command,
+        Columns = financialReport.FinancialReportType.DataColumns,
+        Entries = MapEntries(financialReport)
+      };
+    }
+
+
     static internal FinancialReportDto MapBreakdown(FinancialReport breakdownReport) {
       return new FinancialReportDto {
         Command = breakdownReport.Command,
-        Columns = breakdownReport.BreakdownDataColumns(),
+        Columns = breakdownReport.FinancialReportType.BreakdownColumns,
         Entries = MapBreakdownEntries(breakdownReport.Entries)
       };
     }
@@ -73,6 +73,7 @@ namespace Empiria.FinancialAccounting.FinancialReports.Adapters {
       };
 
       SetTotalsFields(o, entry);
+
       return o;
     }
 
@@ -85,7 +86,7 @@ namespace Empiria.FinancialAccounting.FinancialReports.Adapters {
         case FinancialReportDesignType.FixedRows:
           return MapToFixedRowsReport(financialReport.Entries);
 
-        case FinancialReportDesignType.ConceptsIntegration:
+        case FinancialReportDesignType.AccountsIntegration:
           return MapToFixedRowsReportConceptsIntegration(financialReport.Entries);
 
         default:
@@ -117,11 +118,13 @@ namespace Empiria.FinancialAccounting.FinancialReports.Adapters {
       return o;
     }
 
+
     static private FixedList<DynamicFinancialReportEntryDto> MapToFixedRowsReportConceptsIntegration(FixedList<FinancialReportEntry> list) {
       var mappedItems = list.Select((x) => MapToFixedRowsReportConceptsIntegration((FixedRowFinancialReportEntry) x));
 
       return new FixedList<DynamicFinancialReportEntryDto>(mappedItems);
     }
+
 
     static private FinancialReportEntryDto MapToFixedRowsReportConceptsIntegration(FixedRowFinancialReportEntry entry) {
       dynamic o = new FinancialReportEntryDto {
@@ -143,12 +146,11 @@ namespace Empiria.FinancialAccounting.FinancialReports.Adapters {
     #region Helpers
 
     static private void SetTotalsFields(DynamicFinancialReportEntryDto o, FinancialReportEntry entry) {
-      o.SetTotalField(FinancialReportTotalField.DomesticCurrencyTotal,
-                      entry.GetTotalField(FinancialReportTotalField.DomesticCurrencyTotal));
-      o.SetTotalField(FinancialReportTotalField.ForeignCurrencyTotal,
-                      entry.GetTotalField(FinancialReportTotalField.ForeignCurrencyTotal));
-      o.SetTotalField(FinancialReportTotalField.Total,
-                      entry.GetTotalField(FinancialReportTotalField.Total));
+      var totalsColumns = entry.GetDynamicMemberNames();
+
+      foreach (string column in totalsColumns) {
+        o.SetTotalField(column, entry.GetTotalField(column));
+      }
     }
 
     #endregion Helpers

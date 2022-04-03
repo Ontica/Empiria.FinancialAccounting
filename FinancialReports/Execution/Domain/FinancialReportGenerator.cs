@@ -37,7 +37,7 @@ namespace Empiria.FinancialAccounting.FinancialReports {
 
           return fixedRows.Generate();
 
-        case FinancialReportDesignType.ConceptsIntegration:
+        case FinancialReportDesignType.AccountsIntegration:
           var conceptsIntegration = new FixedRowGroupingRulesReport(this.Command);
 
           return conceptsIntegration.Generate();

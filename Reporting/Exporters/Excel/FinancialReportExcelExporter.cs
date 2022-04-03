@@ -83,7 +83,7 @@ namespace Empiria.FinancialAccounting.Reporting.Exporters.Excel {
           FillOutFixedRowsReport(entries);
           return;
 
-        case FinancialReportDesignType.ConceptsIntegration:
+        case FinancialReportDesignType.AccountsIntegration:
           FillOutConceptsIntegrationReport(entries);
           return;
 
