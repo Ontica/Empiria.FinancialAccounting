@@ -73,12 +73,12 @@ namespace Empiria.FinancialAccounting.FinancialReports {
 
     private ReportEntryTotals ProcessAccount(GroupingRuleItem groupingRule) {
       if (!_balances.ContainsKey(groupingRule.AccountNumber)) {
-        return new ReportEntryTotals();
+        return CreateReportEntryTotalsObject();
       }
 
       FixedList<ITrialBalanceEntryDto> accountBalances = GetAccountBalances(groupingRule);
 
-      var totals = new ReportEntryTotals();
+      var totals = CreateReportEntryTotalsObject();
 
       foreach (var balance in accountBalances) {
         if (groupingRule.CalculationRule == "SumDebitsAndSubstractCredits") {
@@ -97,6 +97,7 @@ namespace Empiria.FinancialAccounting.FinancialReports {
 
 
     private void ProcessBreakdown(FixedList<FinancialReportBreakdownEntry> breakdown) {
+
       foreach (var breakdownItem in breakdown) {
 
         ReportEntryTotals totals;
@@ -144,14 +145,14 @@ namespace Empiria.FinancialAccounting.FinancialReports {
       ExternalValue value = ExternalValue.GetValue(groupingRuleItem.ExternalVariableCode,
                                                    _command.Date);
 
-      var totals = new ReportEntryTotals();
+      var totals = CreateReportEntryTotalsObject();
 
       return totals.Sum(value, groupingRuleItem.Qualification);
     }
 
 
     private ReportEntryTotals ProcessGroupingRule(GroupingRule groupingRule) {
-      var totals = new ReportEntryTotals();
+      var totals = CreateReportEntryTotalsObject();
 
       foreach (var groupingRuleItem in groupingRule.Items) {
         if (groupingRuleItem.Type == GroupingRuleItemType.Agrupation &&
@@ -193,6 +194,20 @@ namespace Empiria.FinancialAccounting.FinancialReports {
     #endregion Private methods
 
     #region Helpers
+
+    private ReportEntryTotals CreateReportEntryTotalsObject() {
+      switch (FinancialReportType.DataSource) {
+        case FinancialReportDataSource.AnaliticoCuentas:
+          return new AnaliticoCuentasReportEntryTotals();
+
+        case FinancialReportDataSource.BalanzaEnColumnasPorMoneda:
+          return new BalanzaEnColumnasPorMonedaReportEntryTotals();
+
+        default:
+          throw Assertion.AssertNoReachThisCode($"Unhandled data source {FinancialReportType.DataSource}.");
+      }
+    }
+
 
     private FixedList<FixedRowFinancialReportEntry> CreateReportEntriesWithoutTotals(FixedList<FinancialReportRow> rows) {
       var converted = rows.Select(x => CreateReportEntryWithoutTotals(x));
