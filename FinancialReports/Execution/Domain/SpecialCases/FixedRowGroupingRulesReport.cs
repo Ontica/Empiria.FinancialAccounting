@@ -24,14 +24,15 @@ namespace Empiria.FinancialAccounting.FinancialReports {
   internal class FixedRowGroupingRulesReport {
 
     private readonly FinancialReportCommand _command;
+    private readonly EmpiriaHashTable<FixedList<ITrialBalanceEntryDto>> _balances;
 
     #region Public methods
 
     internal FixedRowGroupingRulesReport(FinancialReportCommand command) {
       _command = command;
+      _balances = GetBalancesHashTable();
       this.FinancialReportType = _command.GetFinancialReportType();
     }
-
 
     public FinancialReportType FinancialReportType {
       get;
@@ -43,15 +44,9 @@ namespace Empiria.FinancialAccounting.FinancialReports {
 
       FixedList<FixedRowFinancialReportEntry> reportEntries = CreateReportEntriesWithoutTotals(fixedRows);
 
-      var balancesProvider = new AccountBalancesProvider(_command);
+      ProcessEntries(reportEntries);
 
-      EmpiriaHashTable<FixedList<ITrialBalanceEntryDto>> balances = balancesProvider.GetBalancesAsHashTable();
-
-      ProcessEntries(reportEntries, balances);
-
-      var convertedEntries = new FixedList<FinancialReportEntry>(reportEntries.Select(x => (FinancialReportEntry) x));
-
-      return new FinancialReport(_command, convertedEntries);
+      return MapToFinancialReport(reportEntries);
     }
 
 
@@ -60,19 +55,13 @@ namespace Empiria.FinancialAccounting.FinancialReports {
 
       FixedRowFinancialReportEntry reportEntry = CreateReportEntryWithoutTotals(row);
 
-      var balancesProvider = new AccountBalancesProvider(_command);
-
-      EmpiriaHashTable<FixedList<ITrialBalanceEntryDto>> balances = balancesProvider.GetBalancesAsHashTable();
-
       FixedList<FinancialReportBreakdownEntry> breakdownEntries = GetBreakdownEntries(reportEntry);
 
-      ProcessBreakdown(breakdownEntries, balances);
+      ProcessBreakdown(breakdownEntries);
 
       // Add breakdown total row
 
-      var convertedEntries = new FixedList<FinancialReportEntry>(breakdownEntries.Select(x => (FinancialReportEntry) x));
-
-      return new FinancialReport(_command, convertedEntries);
+      return MapToFinancialReport(breakdownEntries);
     }
 
 
@@ -82,8 +71,146 @@ namespace Empiria.FinancialAccounting.FinancialReports {
     #region Private methods
 
 
-    private ReportEntryTotals ProcessAccount(GroupingRuleItem groupingRule,
-                                             FixedList<ITrialBalanceEntryDto> balances) {
+    private ReportEntryTotals ProcessAccount(GroupingRuleItem groupingRule) {
+      if (!_balances.ContainsKey(groupingRule.AccountNumber)) {
+        return new ReportEntryTotals();
+      }
+
+      FixedList<ITrialBalanceEntryDto> accountBalances = GetAccountBalances(groupingRule);
+
+      var totals = new ReportEntryTotals();
+
+      foreach (var balance in accountBalances) {
+        if (groupingRule.CalculationRule == "SumDebitsAndSubstractCredits") {
+          totals = totals.SumDebitsOrSubstractCredits(balance, groupingRule.Qualification);
+        } else {
+          totals = totals.Sum(balance, groupingRule.Qualification);
+        }
+      }
+
+      if (FinancialReportType.RoundDecimals) {
+        totals = totals.Round();
+      }
+
+      return totals;
+    }
+
+
+    private void ProcessBreakdown(FixedList<FinancialReportBreakdownEntry> breakdown) {
+      foreach (var breakdownItem in breakdown) {
+
+        ReportEntryTotals totals;
+
+        if (breakdownItem.GroupingRuleItem.Type == GroupingRuleItemType.Agrupation) {
+
+          totals = ProcessGroupingRule(breakdownItem.GroupingRuleItem.Reference);
+
+        } else if (breakdownItem.GroupingRuleItem.Type == GroupingRuleItemType.Account) {
+
+          totals = ProcessAccount(breakdownItem.GroupingRuleItem);
+
+        } else if (breakdownItem.GroupingRuleItem.Type == GroupingRuleItemType.FixedValue) {
+
+          totals = ProcessFixedValue(breakdownItem.GroupingRuleItem);
+
+        } else {
+          throw Assertion.AssertNoReachThisCode();
+        }
+
+        if (FinancialReportType.RoundDecimals) {
+          totals = totals.Round();
+        }
+
+        totals.CopyTotalsTo(breakdownItem);
+      }
+    }
+
+
+    private void ProcessEntries(FixedList<FixedRowFinancialReportEntry> reportEntries) {
+
+      foreach (var reportEntry in reportEntries) {
+        ReportEntryTotals totals = ProcessGroupingRule(reportEntry.GroupingRule);
+
+        if (FinancialReportType.RoundDecimals) {
+          totals = totals.Round();
+        }
+
+        totals.CopyTotalsTo(reportEntry);
+      }
+    }
+
+
+    private ReportEntryTotals ProcessFixedValue(GroupingRuleItem groupingRuleItem) {
+      ExternalValue value = ExternalValue.GetValue(groupingRuleItem.ExternalVariableCode,
+                                                   _command.Date);
+
+      var totals = new ReportEntryTotals();
+
+      return totals.Sum(value, groupingRuleItem.Qualification);
+    }
+
+
+    private ReportEntryTotals ProcessGroupingRule(GroupingRule groupingRule) {
+      var totals = new ReportEntryTotals();
+
+      foreach (var groupingRuleItem in groupingRule.Items) {
+        if (groupingRuleItem.Type == GroupingRuleItemType.Agrupation &&
+            groupingRuleItem.Operator == OperatorType.Add) {
+
+          totals = totals.Sum(ProcessGroupingRule(groupingRuleItem.Reference),
+                              groupingRuleItem.Qualification);
+
+        } else if (groupingRuleItem.Type == GroupingRuleItemType.Agrupation &&
+                   groupingRuleItem.Operator == OperatorType.Substract) {
+
+          totals = totals.Substract(ProcessGroupingRule(groupingRuleItem.Reference),
+                                    groupingRuleItem.Qualification);
+
+        } else if (groupingRuleItem.Type == GroupingRuleItemType.Account &&
+                   groupingRuleItem.Operator == OperatorType.Add) {
+
+          totals = totals.Sum(ProcessAccount(groupingRuleItem),
+                              groupingRuleItem.Qualification);
+
+        } else if (groupingRuleItem.Type == GroupingRuleItemType.Account &&
+                   groupingRuleItem.Operator == OperatorType.Substract) {
+
+          totals = totals.Substract(ProcessAccount(groupingRuleItem),
+                                    groupingRuleItem.Qualification);
+
+        } else if (groupingRuleItem.Type == GroupingRuleItemType.FixedValue &&
+                   groupingRuleItem.Operator == OperatorType.Add) {
+
+          totals = totals.Sum(ProcessFixedValue(groupingRuleItem), groupingRuleItem.Qualification);
+
+        }
+      }
+
+      return totals;
+    }
+
+
+    #endregion Private methods
+
+    #region Helpers
+
+    private FixedList<FixedRowFinancialReportEntry> CreateReportEntriesWithoutTotals(FixedList<FinancialReportRow> rows) {
+      var converted = rows.Select(x => CreateReportEntryWithoutTotals(x));
+
+      return new FixedList<FixedRowFinancialReportEntry>(converted);
+    }
+
+
+    private FixedRowFinancialReportEntry CreateReportEntryWithoutTotals(FinancialReportRow row) {
+      return new FixedRowFinancialReportEntry {
+        Row = row,
+        GroupingRule = row.GroupingRule
+      };
+    }
+
+    private FixedList<ITrialBalanceEntryDto> GetAccountBalances(GroupingRuleItem groupingRule) {
+      FixedList<ITrialBalanceEntryDto> balances = _balances[groupingRule.AccountNumber];
+
       FixedList<ITrialBalanceEntryDto> filtered;
 
       if (groupingRule.HasSector && groupingRule.HasSubledgerAccount) {
@@ -110,149 +237,9 @@ namespace Empiria.FinancialAccounting.FinancialReports {
         }
       }
 
-      var totals = new ReportEntryTotals();
-
-      foreach (var balance in filtered) {
-        if (groupingRule.CalculationRule == "SumDebitsAndSubstractCredits") {
-          totals = totals.SumDebitsAndSubstractCredits(balance, groupingRule.Qualification);
-        } else {
-          totals = totals.Sum(balance, groupingRule.Qualification);
-        }
-      }
-
-      if (FinancialReportType.RoundDecimals) {
-        totals.Round();
-      }
-
-      return totals;
+      return filtered;
     }
 
-
-    private void ProcessBreakdown(FixedList<FinancialReportBreakdownEntry> breakdown,
-                                  EmpiriaHashTable<FixedList<ITrialBalanceEntryDto>> balances) {
-      foreach (var breakdownItem in breakdown) {
-
-        ReportEntryTotals groupingRuleTotals;
-
-        if (breakdownItem.GroupingRuleItem.Type == GroupingRuleItemType.Agrupation) {
-
-          groupingRuleTotals = ProcessGroupingRule(breakdownItem.GroupingRuleItem.Reference,
-                                                   balances);
-
-        } else if (breakdownItem.GroupingRuleItem.Type == GroupingRuleItemType.Account &&
-                   balances.ContainsKey(breakdownItem.GroupingRuleItem.AccountNumber)) {
-
-          groupingRuleTotals = ProcessAccount(breakdownItem.GroupingRuleItem,
-                                              balances[breakdownItem.GroupingRuleItem.AccountNumber]);
-
-        } else if (breakdownItem.GroupingRuleItem.Type == GroupingRuleItemType.Account) {
-
-          groupingRuleTotals = new ReportEntryTotals();
-
-        } else if (breakdownItem.GroupingRuleItem.Type == GroupingRuleItemType.FixedValue) {
-
-          groupingRuleTotals = GetFixedValue(breakdownItem.GroupingRuleItem);
-
-        } else {
-          throw Assertion.AssertNoReachThisCode();
-        }
-
-        if (FinancialReportType.RoundDecimals) {
-          groupingRuleTotals.Round();
-        }
-
-        SetTotalsFields(breakdownItem, groupingRuleTotals);
-      }
-    }
-
-
-    private ReportEntryTotals GetFixedValue(GroupingRuleItem groupingRuleItem) {
-      ExternalValue value = ExternalValue.GetValue(groupingRuleItem.ExternalVariableCode,
-                                                   _command.Date);
-
-      var groupingRuleTotals = new ReportEntryTotals();
-
-      if (groupingRuleItem.Qualification == "MonedaNacional") {
-
-        groupingRuleTotals.DomesticCurrencyTotal = value.DomesticCurrencyValue + value.ForeignCurrencyValue;
-
-      } else if (groupingRuleItem.Qualification == "MonedaExtranjera") {
-
-        groupingRuleTotals.ForeignCurrencyTotal = value.DomesticCurrencyValue + value.ForeignCurrencyValue;
-
-      } else {
-
-        groupingRuleTotals.DomesticCurrencyTotal = value.DomesticCurrencyValue;
-        groupingRuleTotals.ForeignCurrencyTotal = value.ForeignCurrencyValue;
-      }
-
-      return groupingRuleTotals;
-    }
-
-
-    private void ProcessEntries(FixedList<FixedRowFinancialReportEntry> reportEntries,
-                                EmpiriaHashTable<FixedList<ITrialBalanceEntryDto>> balances) {
-
-      foreach (var reportEntry in reportEntries) {
-        ReportEntryTotals groupingRuleTotals = ProcessGroupingRule(reportEntry.GroupingRule, balances);
-
-        if (FinancialReportType.RoundDecimals) {
-          groupingRuleTotals.Round();
-        }
-
-        SetTotalsFields(reportEntry, groupingRuleTotals);
-      }
-    }
-
-
-
-
-    private ReportEntryTotals ProcessGroupingRule(GroupingRule groupingRule,
-                                                  EmpiriaHashTable<FixedList<ITrialBalanceEntryDto>> balances) {
-      var totals = new ReportEntryTotals();
-
-      foreach (var groupingRuleItem in groupingRule.Items) {
-        if (groupingRuleItem.Type == GroupingRuleItemType.Agrupation &&
-            groupingRuleItem.Operator == OperatorType.Add) {
-
-          totals = totals.Sum(ProcessGroupingRule(groupingRuleItem.Reference, balances),
-                              groupingRuleItem.Qualification);
-
-        } else if (groupingRuleItem.Type == GroupingRuleItemType.Agrupation &&
-                   groupingRuleItem.Operator == OperatorType.Substract) {
-
-          totals = totals.Substract(ProcessGroupingRule(groupingRuleItem.Reference, balances),
-                                    groupingRuleItem.Qualification);
-
-        } else if (groupingRuleItem.Type == GroupingRuleItemType.Account &&
-                   balances.ContainsKey(groupingRuleItem.AccountNumber) &&
-                   groupingRuleItem.Operator == OperatorType.Add) {
-
-          totals = totals.Sum(ProcessAccount(groupingRuleItem, balances[groupingRuleItem.AccountNumber]),
-                              groupingRuleItem.Qualification);
-
-        } else if (groupingRuleItem.Type == GroupingRuleItemType.Account &&
-                   balances.ContainsKey(groupingRuleItem.AccountNumber) &&
-                   groupingRuleItem.Operator == OperatorType.Substract) {
-
-          totals = totals.Substract(ProcessAccount(groupingRuleItem, balances[groupingRuleItem.AccountNumber]),
-                                    groupingRuleItem.Qualification);
-
-        } else if (groupingRuleItem.Type == GroupingRuleItemType.FixedValue &&
-                   groupingRuleItem.Operator == OperatorType.Add) {
-
-          totals = totals.Sum(GetFixedValue(groupingRuleItem), groupingRuleItem.Qualification);
-
-        }
-      }
-
-      return totals;
-    }
-
-
-    #endregion Private methods
-
-    #region Helpers
 
     private FixedList<FinancialReportBreakdownEntry> GetBreakdownEntries(FixedRowFinancialReportEntry reportEntry) {
       var breakdown = new List<FinancialReportBreakdownEntry>();
@@ -268,40 +255,28 @@ namespace Empiria.FinancialAccounting.FinancialReports {
 
 
     private FinancialReportRow GetReportBreakdownRow(string groupingRuleUID) {
-      return _command.GetFinancialReportType()
-                     .GetRow(groupingRuleUID);
-    }
-
-
-    private FixedList<FixedRowFinancialReportEntry> CreateReportEntriesWithoutTotals(FixedList<FinancialReportRow> rows) {
-      var converted = rows.Select(x => CreateReportEntryWithoutTotals(x));
-
-      return new FixedList<FixedRowFinancialReportEntry>(converted);
-    }
-
-
-    private FixedRowFinancialReportEntry CreateReportEntryWithoutTotals(FinancialReportRow row) {
-      return new FixedRowFinancialReportEntry {
-        Row = row,
-        GroupingRule = row.GroupingRule
-      };
+      return FinancialReportType.GetRow(groupingRuleUID);
     }
 
 
     private FixedList<FinancialReportRow> GetReportFixedRows() {
-      return _command.GetFinancialReportType()
-                     .GetRows();
+      return FinancialReportType.GetRows();
     }
 
 
-    private void SetTotalsFields(FinancialReportEntry reportEntry, ReportEntryTotals groupingRuleTotals) {
-      reportEntry.SetTotalField(FinancialReportTotalField.DomesticCurrencyTotal,
-                                groupingRuleTotals.DomesticCurrencyTotal);
-      reportEntry.SetTotalField(FinancialReportTotalField.ForeignCurrencyTotal,
-                                groupingRuleTotals.ForeignCurrencyTotal);
-      reportEntry.SetTotalField(FinancialReportTotalField.Total,
-                                groupingRuleTotals.TotalBalance);
+    private EmpiriaHashTable<FixedList<ITrialBalanceEntryDto>> GetBalancesHashTable() {
+      var balancesProvider = new AccountBalancesProvider(_command);
+
+      return balancesProvider.GetBalancesAsHashTable();
     }
+
+
+    private FinancialReport MapToFinancialReport<T>(FixedList<T> reportEntries) where T : FinancialReportEntry {
+      var convertedEntries = new FixedList<FinancialReportEntry>(reportEntries.Select(x => (FinancialReportEntry) x));
+
+      return new FinancialReport(_command, convertedEntries);
+    }
+
 
     #endregion Helpers
 

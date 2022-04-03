@@ -10,6 +10,7 @@
 using System;
 
 using Empiria.FinancialAccounting.BalanceEngine.Adapters;
+using Empiria.FinancialAccounting.Rules;
 
 namespace Empiria.FinancialAccounting.FinancialReports {
 
@@ -19,12 +20,12 @@ namespace Empiria.FinancialAccounting.FinancialReports {
     #region Fields
 
     public decimal DomesticCurrencyTotal {
-      get; internal set;
+      get; private set;
     }
 
 
     public decimal ForeignCurrencyTotal {
-      get; internal set;
+      get; private set;
     }
 
 
@@ -38,9 +39,11 @@ namespace Empiria.FinancialAccounting.FinancialReports {
 
     #region Methods
 
-    internal void Round() {
-      this.DomesticCurrencyTotal = Math.Round(this.DomesticCurrencyTotal, 0);
-      this.ForeignCurrencyTotal = Math.Round(this.ForeignCurrencyTotal, 0);
+    internal ReportEntryTotals Round() {
+      return new ReportEntryTotals {
+        DomesticCurrencyTotal = Math.Round(this.DomesticCurrencyTotal, 0),
+        ForeignCurrencyTotal = Math.Round(this.ForeignCurrencyTotal, 0)
+      };
     }
 
 
@@ -107,7 +110,26 @@ namespace Empiria.FinancialAccounting.FinancialReports {
     }
 
 
-    internal ReportEntryTotals SumDebitsAndSubstractCredits(ITrialBalanceEntryDto balance, string qualification) {
+    internal ReportEntryTotals Sum(ExternalValue value, string qualification) {
+      if (qualification == "MonedaNacional") {
+        return new ReportEntryTotals {
+          DomesticCurrencyTotal = value.DomesticCurrencyValue + value.ForeignCurrencyValue
+        };
+
+      } else if (qualification == "MonedaExtranjera") {
+        return new ReportEntryTotals {
+          ForeignCurrencyTotal = value.DomesticCurrencyValue + value.ForeignCurrencyValue
+        };
+
+      } else {
+        return new ReportEntryTotals {
+          DomesticCurrencyTotal = value.DomesticCurrencyValue,
+          ForeignCurrencyTotal = value.ForeignCurrencyValue
+        };
+      }
+    }
+
+    internal ReportEntryTotals SumDebitsOrSubstractCredits(ITrialBalanceEntryDto balance, string qualification) {
       var analiticoBalance = (TwoColumnsTrialBalanceEntryDto) balance;
 
       if (analiticoBalance.DebtorCreditor == DebtorCreditorType.Deudora) {
@@ -116,6 +138,17 @@ namespace Empiria.FinancialAccounting.FinancialReports {
         return Substract(balance, qualification);
       }
     }
+
+
+    internal void CopyTotalsTo(FinancialReportEntry reportEntry) {
+      reportEntry.SetTotalField(FinancialReportTotalField.DomesticCurrencyTotal,
+                                this.DomesticCurrencyTotal);
+      reportEntry.SetTotalField(FinancialReportTotalField.ForeignCurrencyTotal,
+                                this.ForeignCurrencyTotal);
+      reportEntry.SetTotalField(FinancialReportTotalField.Total,
+                                this.TotalBalance);
+    }
+
 
     #endregion Methods
 
