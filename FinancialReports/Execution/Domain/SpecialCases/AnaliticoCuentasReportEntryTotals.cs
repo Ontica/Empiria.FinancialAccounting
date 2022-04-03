@@ -39,6 +39,17 @@ namespace Empiria.FinancialAccounting.FinancialReports {
 
     #region Methods
 
+
+    public override void CopyTotalsTo(FinancialReportEntry copyTo) {
+      copyTo.SetTotalField(FinancialReportTotalField.DomesticCurrencyTotal,
+                           this.DomesticCurrencyTotal);
+      copyTo.SetTotalField(FinancialReportTotalField.ForeignCurrencyTotal,
+                           this.ForeignCurrencyTotal);
+      copyTo.SetTotalField(FinancialReportTotalField.Total,
+                           this.TotalBalance);
+    }
+
+
     public override ReportEntryTotals Round() {
       return new AnaliticoCuentasReportEntryTotals {
         DomesticCurrencyTotal = Math.Round(this.DomesticCurrencyTotal, 0),
@@ -142,16 +153,6 @@ namespace Empiria.FinancialAccounting.FinancialReports {
       } else {
         return Substract(balance, qualification);
       }
-    }
-
-
-    public override void CopyTotalsTo(FinancialReportEntry copyTo) {
-      copyTo.SetTotalField(FinancialReportTotalField.DomesticCurrencyTotal,
-                           this.DomesticCurrencyTotal);
-      copyTo.SetTotalField(FinancialReportTotalField.ForeignCurrencyTotal,
-                           this.ForeignCurrencyTotal);
-      copyTo.SetTotalField(FinancialReportTotalField.Total,
-                           this.TotalBalance);
     }
 
 

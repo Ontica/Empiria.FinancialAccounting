@@ -12,6 +12,16 @@ namespace Empiria.FinancialAccounting.FinancialReports {
 
   public enum FinancialReportTotalField {
 
+    PesosTotal,
+
+    DollarTotal,
+
+    YenTotal,
+
+    EuroTotal,
+
+    UdisTotal,
+
     DomesticCurrencyTotal,
 
     ForeignCurrencyTotal,

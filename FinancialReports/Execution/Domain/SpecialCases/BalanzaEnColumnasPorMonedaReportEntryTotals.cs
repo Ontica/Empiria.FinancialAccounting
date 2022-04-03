@@ -19,40 +19,40 @@ namespace Empiria.FinancialAccounting.FinancialReports {
 
     #region Fields
 
-    public decimal DomesticCurrencyTotal {
+    public decimal PesosTotal {
       get; private set;
     }
 
 
-    public decimal DollarBalance {
+    public decimal DollarTotal {
       get; private set;
     }
 
 
-    public decimal YenBalance {
+    public decimal YenTotal {
       get; private set;
     }
 
 
-    public decimal EuroBalance {
+    public decimal EuroTotal {
       get; private set;
     }
 
 
-    public decimal UdisBalance {
+    public decimal UdisTotal {
       get; private set;
     }
 
 
     public decimal ForeignCurrencyTotal {
       get {
-        return DollarBalance + YenBalance + EuroBalance + UdisBalance;
+        return DollarTotal + YenTotal + EuroTotal + UdisTotal;
       }
     }
 
     public decimal TotalBalance {
       get {
-        return DomesticCurrencyTotal + ForeignCurrencyTotal;
+        return PesosTotal + ForeignCurrencyTotal;
       }
     }
 
@@ -60,13 +60,31 @@ namespace Empiria.FinancialAccounting.FinancialReports {
 
     #region Methods
 
+    public override void CopyTotalsTo(FinancialReportEntry copyTo) {
+      copyTo.SetTotalField(FinancialReportTotalField.PesosTotal,
+                           this.PesosTotal);
+
+      copyTo.SetTotalField(FinancialReportTotalField.DollarTotal,
+                           this.DollarTotal);
+
+      copyTo.SetTotalField(FinancialReportTotalField.YenTotal,
+                           this.YenTotal);
+
+      copyTo.SetTotalField(FinancialReportTotalField.EuroTotal,
+                           this.EuroTotal);
+
+      copyTo.SetTotalField(FinancialReportTotalField.UdisTotal,
+                           this.UdisTotal);
+    }
+
+
     public override ReportEntryTotals Round() {
       return new BalanzaEnColumnasPorMonedaReportEntryTotals {
-        DomesticCurrencyTotal = Math.Round(this.DomesticCurrencyTotal, 0),
-        DollarBalance = Math.Round(this.DollarBalance, 0),
-        YenBalance = Math.Round(this.YenBalance, 0),
-        EuroBalance = Math.Round(this.EuroBalance, 0),
-        UdisBalance = Math.Round(this.UdisBalance, 0)
+        PesosTotal = Math.Round(this.PesosTotal, 0),
+        DollarTotal = Math.Round(this.DollarTotal, 0),
+        YenTotal = Math.Round(this.YenTotal, 0),
+        EuroTotal = Math.Round(this.EuroTotal, 0),
+        UdisTotal = Math.Round(this.UdisTotal, 0)
       };
     }
 
@@ -75,11 +93,11 @@ namespace Empiria.FinancialAccounting.FinancialReports {
       var castTotal = (BalanzaEnColumnasPorMonedaReportEntryTotals) total;
 
       return new BalanzaEnColumnasPorMonedaReportEntryTotals {
-        DomesticCurrencyTotal = this.DomesticCurrencyTotal - castTotal.DomesticCurrencyTotal,
-        DollarBalance = this.DollarBalance - castTotal.DollarBalance,
-        YenBalance = this.YenBalance - castTotal.YenBalance,
-        EuroBalance = this.EuroBalance - castTotal.EuroBalance,
-        UdisBalance = this.UdisBalance - castTotal.UdisBalance,
+        PesosTotal = this.PesosTotal - castTotal.PesosTotal,
+        DollarTotal = this.DollarTotal - castTotal.DollarTotal,
+        YenTotal = this.YenTotal - castTotal.YenTotal,
+        EuroTotal = this.EuroTotal - castTotal.EuroTotal,
+        UdisTotal = this.UdisTotal - castTotal.UdisTotal,
       };
     }
 
@@ -88,11 +106,11 @@ namespace Empiria.FinancialAccounting.FinancialReports {
       var castBalance = (TrialBalanceByCurrencyDto) balance;
 
       return new BalanzaEnColumnasPorMonedaReportEntryTotals {
-        DomesticCurrencyTotal = this.DomesticCurrencyTotal - castBalance.DomesticBalance,
-        DollarBalance = this.DollarBalance - castBalance.DollarBalance,
-        YenBalance = this.YenBalance - castBalance.YenBalance,
-        EuroBalance = this.EuroBalance - castBalance.EuroBalance,
-        UdisBalance = this.UdisBalance - castBalance.UdisBalance,
+        PesosTotal = this.PesosTotal - castBalance.DomesticBalance,
+        DollarTotal = this.DollarTotal - castBalance.DollarBalance,
+        YenTotal = this.YenTotal - castBalance.YenBalance,
+        EuroTotal = this.EuroTotal - castBalance.EuroBalance,
+        UdisTotal = this.UdisTotal - castBalance.UdisBalance,
       };
     }
 
@@ -101,11 +119,11 @@ namespace Empiria.FinancialAccounting.FinancialReports {
       var castTotal = (BalanzaEnColumnasPorMonedaReportEntryTotals) total;
 
       return new BalanzaEnColumnasPorMonedaReportEntryTotals {
-        DomesticCurrencyTotal = this.DomesticCurrencyTotal + castTotal.DomesticCurrencyTotal,
-        DollarBalance = this.DollarBalance + castTotal.DollarBalance,
-        YenBalance = this.YenBalance + castTotal.YenBalance,
-        EuroBalance = this.EuroBalance + castTotal.EuroBalance,
-        UdisBalance = this.UdisBalance + castTotal.UdisBalance,
+        PesosTotal = this.PesosTotal + castTotal.PesosTotal,
+        DollarTotal = this.DollarTotal + castTotal.DollarTotal,
+        YenTotal = this.YenTotal + castTotal.YenTotal,
+        EuroTotal = this.EuroTotal + castTotal.EuroTotal,
+        UdisTotal = this.UdisTotal + castTotal.UdisTotal,
       };
     }
 
@@ -114,17 +132,19 @@ namespace Empiria.FinancialAccounting.FinancialReports {
       var castBalance = (TrialBalanceByCurrencyDto) balance;
 
       return new BalanzaEnColumnasPorMonedaReportEntryTotals {
-        DomesticCurrencyTotal = this.DomesticCurrencyTotal + castBalance.DomesticBalance,
-        DollarBalance = this.DollarBalance + castBalance.DollarBalance,
-        YenBalance = this.YenBalance + castBalance.YenBalance,
-        EuroBalance = this.EuroBalance + castBalance.EuroBalance,
-        UdisBalance = this.UdisBalance + castBalance.UdisBalance,
+        PesosTotal = this.PesosTotal + castBalance.DomesticBalance,
+        DollarTotal = this.DollarTotal + castBalance.DollarBalance,
+        YenTotal = this.YenTotal + castBalance.YenBalance,
+        EuroTotal = this.EuroTotal + castBalance.EuroBalance,
+        UdisTotal = this.UdisTotal + castBalance.UdisBalance,
       };
     }
 
 
     public override ReportEntryTotals Sum(ExternalValue value, string qualification) {
-      throw new NotImplementedException();
+      return new BalanzaEnColumnasPorMonedaReportEntryTotals {
+        PesosTotal = this.PesosTotal + value.DomesticCurrencyValue
+      };
     }
 
 
@@ -141,15 +161,6 @@ namespace Empiria.FinancialAccounting.FinancialReports {
       //  return Substract(balance, qualification);
       //}
     }
-
-
-    public override void CopyTotalsTo(FinancialReportEntry copyTo) {
-      copyTo.SetTotalField(FinancialReportTotalField.DomesticCurrencyTotal,
-                           this.DomesticCurrencyTotal);
-      copyTo.SetTotalField(FinancialReportTotalField.Total,
-                           this.TotalBalance);
-    }
-
 
     #endregion Methods
 
