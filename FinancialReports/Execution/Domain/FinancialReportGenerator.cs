@@ -40,7 +40,7 @@ namespace Empiria.FinancialAccounting.FinancialReports {
         case FinancialReportDesignType.AccountsIntegration:
           var conceptsIntegration = new FixedRowGroupingRulesReport(this.Command);
 
-          return conceptsIntegration.Generate();
+          return conceptsIntegration.GenerateIntegration();
 
         default:
           throw Assertion.AssertNoReachThisCode(
@@ -56,7 +56,7 @@ namespace Empiria.FinancialAccounting.FinancialReports {
         case FinancialReportDesignType.FixedRows:
           var fixedRows = new FixedRowGroupingRulesReport(this.Command);
 
-          return fixedRows.GetBreakdown(groupingRuleUID);
+          return fixedRows.GenerateBreakdown(groupingRuleUID);
 
         default:
           throw Assertion.AssertNoReachThisCode(

@@ -9,8 +9,10 @@
 ************************* Copyright(c) La Vía Óntica SC, Ontica LLC and contributors. All rights reserved. **/
 using System;
 
-using Empiria.FinancialAccounting.FinancialReports.Data;
 using Empiria.Json;
+
+using Empiria.FinancialAccounting.FinancialReports.Data;
+
 
 namespace Empiria.FinancialAccounting.FinancialReports {
 
@@ -123,6 +125,7 @@ namespace Empiria.FinancialAccounting.FinancialReports {
       return fullList.FindAll(x => x.AccountsChart.Equals(accountsChart) && x.IsDesignable);
     }
 
+    static readonly FinancialReportType Empty = BaseObject.ParseEmpty<FinancialReportType>();
 
     #endregion Constructors and parsers
 
@@ -183,13 +186,22 @@ namespace Empiria.FinancialAccounting.FinancialReports {
       }
     }
 
+    private FinancialReportType BaseReport {
+      get {
+        return base.ExtendedDataField.Get("baseReportId", FinancialReportType.Empty);
+      }
+    }
 
     #endregion Properties
 
     #region Methods
 
     public FixedList<FinancialReportRow> GetRows() {
-      return FinancialReportsRowData.GetRows(this);
+      if (BaseReport.IsEmptyInstance) {
+        return FinancialReportsRowData.GetRows(this);
+      } else {
+        return BaseReport.GetRows();
+      }
     }
 
 

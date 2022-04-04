@@ -120,20 +120,59 @@ namespace Empiria.FinancialAccounting.FinancialReports.Adapters {
 
 
     static private FixedList<DynamicFinancialReportEntryDto> MapToFixedRowsReportConceptsIntegration(FixedList<FinancialReportEntry> list) {
-      var mappedItems = list.Select((x) => MapToFixedRowsReportConceptsIntegration((FixedRowFinancialReportEntry) x));
+      var mappedItems = list.Select((x) => MapToFixedRowsReportConceptsIntegration(x));
 
       return new FixedList<DynamicFinancialReportEntryDto>(mappedItems);
     }
 
 
-    static private FinancialReportEntryDto MapToFixedRowsReportConceptsIntegration(FixedRowFinancialReportEntry entry) {
-      dynamic o = new FinancialReportEntryDto {
+    static private DynamicFinancialReportEntryDto MapToFixedRowsReportConceptsIntegration(FinancialReportEntry entry) {
+      if (entry is FinancialReportBreakdownEntry entry1) {
+        return MapIntegrationEntry(entry1);
+
+      } else if (entry is FixedRowFinancialReportEntry entry2) {
+        return MapIntegrationEntry(entry2);
+
+      } else {
+        throw Assertion.AssertNoReachThisCode();
+      }
+    }
+
+
+    static private DynamicFinancialReportEntryDto MapIntegrationEntry(FixedRowFinancialReportEntry entry) {
+      dynamic o = new IntegrationReportEntryDto {
         UID = entry.Row.UID,
+        Type = Rules.GroupingRuleItemType.Agrupation,
+        GroupingRuleUID = entry.GroupingRule.UID,
         ConceptCode = entry.GroupingRule.Code,
         Concept = entry.GroupingRule.Concept,
-        GroupingRuleUID = entry.GroupingRule.UID,
-        AccountsChartName = entry.GroupingRule.RulesSet.AccountsChart.Name,
-        RulesSetName = entry.GroupingRule.RulesSet.Name
+        ItemType = FinancialReportItemType.Summary,
+        ItemCode = "TOTAL",
+        ItemName = string.Empty,
+        SubledgerAccount = string.Empty,
+        SectorCode = string.Empty,
+        Operator = string.Empty
+      };
+
+      SetTotalsFields(o, entry);
+
+      return o;
+    }
+
+
+    static private DynamicFinancialReportEntryDto MapIntegrationEntry(FinancialReportBreakdownEntry entry) {
+      dynamic o = new IntegrationReportEntryDto {
+        UID = entry.GroupingRuleItem.UID,
+        Type = entry.GroupingRuleItem.Type,
+        GroupingRuleUID = entry.GroupingRuleItem.GroupingRule.UID,
+        ConceptCode = entry.GroupingRuleItem.GroupingRule.Code,
+        Concept = entry.GroupingRuleItem.GroupingRule.Concept,
+        ItemType = FinancialReportItemType.Entry,
+        ItemCode = entry.GroupingRuleItem.Code,
+        ItemName = entry.GroupingRuleItem.Name,
+        SubledgerAccount = entry.GroupingRuleItem.SubledgerAccountNumber,
+        SectorCode = entry.GroupingRuleItem.SectorCode,
+        Operator = Convert.ToString((char) entry.GroupingRuleItem.Operator)
       };
 
       SetTotalsFields(o, entry);

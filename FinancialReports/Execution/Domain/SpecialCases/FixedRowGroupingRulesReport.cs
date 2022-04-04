@@ -50,7 +50,7 @@ namespace Empiria.FinancialAccounting.FinancialReports {
     }
 
 
-    internal FinancialReport GetBreakdown(string reportRowUID) {
+    internal FinancialReport GenerateBreakdown(string reportRowUID) {
       FinancialReportRow row = GetReportBreakdownRow(reportRowUID);
 
       FixedRowFinancialReportEntry reportEntry = CreateReportEntryWithoutTotals(row);
@@ -59,17 +59,39 @@ namespace Empiria.FinancialAccounting.FinancialReports {
 
       ProcessBreakdown(breakdownEntries);
 
-      // Add breakdown total row
+      // Insert breakdown total row
 
       return MapToFinancialReport(breakdownEntries);
     }
 
 
+    internal FinancialReport GenerateIntegration() {
+      FixedList<FinancialReportRow> integrationRows = GetReportRowsWithIntegrationAccounts();
+
+      var reportEntries = new List<FinancialReportEntry>();
+
+      foreach (var row in integrationRows) {
+        FixedRowFinancialReportEntry reportEntry = CreateReportEntryWithoutTotals(row);
+
+        FixedList<FinancialReportBreakdownEntry> breakdownEntries = GetBreakdownEntries(reportEntry).
+                                                                    FindAll(x => x.GroupingRuleItem.Type == GroupingRuleItemType.Account);
+
+        ReportEntryTotals breakdownTotal = ProcessBreakdown(breakdownEntries);
+
+        reportEntries.AddRange(breakdownEntries);
+
+        breakdownTotal.CopyTotalsTo(reportEntry);
+
+        reportEntries.Add(reportEntry);
+      }
+
+      return MapToFinancialReport(reportEntries.ToFixedList());
+    }
+
     #endregion Public methods
 
 
     #region Private methods
-
 
     private ReportEntryTotals ProcessAccount(GroupingRuleItem groupingRule) {
       if (!_balances.ContainsKey(groupingRule.AccountNumber)) {
@@ -96,34 +118,47 @@ namespace Empiria.FinancialAccounting.FinancialReports {
     }
 
 
-    private void ProcessBreakdown(FixedList<FinancialReportBreakdownEntry> breakdown) {
+    private ReportEntryTotals ProcessBreakdown(FixedList<FinancialReportBreakdownEntry> breakdown) {
+
+      ReportEntryTotals granTotal = CreateReportEntryTotalsObject();
 
       foreach (var breakdownItem in breakdown) {
 
-        ReportEntryTotals totals;
+        ReportEntryTotals breakdownTotals;
 
         if (breakdownItem.GroupingRuleItem.Type == GroupingRuleItemType.Agrupation) {
 
-          totals = ProcessGroupingRule(breakdownItem.GroupingRuleItem.Reference);
+          breakdownTotals = ProcessGroupingRule(breakdownItem.GroupingRuleItem.Reference);
 
         } else if (breakdownItem.GroupingRuleItem.Type == GroupingRuleItemType.Account) {
 
-          totals = ProcessAccount(breakdownItem.GroupingRuleItem);
+          breakdownTotals = ProcessAccount(breakdownItem.GroupingRuleItem);
 
         } else if (breakdownItem.GroupingRuleItem.Type == GroupingRuleItemType.FixedValue) {
 
-          totals = ProcessFixedValue(breakdownItem.GroupingRuleItem);
+          breakdownTotals = ProcessFixedValue(breakdownItem.GroupingRuleItem);
 
         } else {
           throw Assertion.AssertNoReachThisCode();
         }
 
         if (FinancialReportType.RoundDecimals) {
-          totals = totals.Round();
+          breakdownTotals = breakdownTotals.Round();
         }
 
-        totals.CopyTotalsTo(breakdownItem);
+        breakdownTotals.CopyTotalsTo(breakdownItem);
+
+        if (breakdownItem.GroupingRuleItem.Operator == OperatorType.Add) {
+          granTotal = granTotal.Sum(breakdownTotals, breakdownItem.GroupingRuleItem.Qualification);
+
+        } else if (breakdownItem.GroupingRuleItem.Operator == OperatorType.Substract) {
+          granTotal = granTotal.Substract(breakdownTotals, breakdownItem.GroupingRuleItem.Qualification);
+
+        }
+
       }
+
+      return granTotal;
     }
 
 
@@ -223,6 +258,7 @@ namespace Empiria.FinancialAccounting.FinancialReports {
       };
     }
 
+
     private FixedList<ITrialBalanceEntryDto> GetAccountBalances(GroupingRuleItem groupingRule) {
       FixedList<ITrialBalanceEntryDto> balances = _balances[groupingRule.AccountNumber];
 
@@ -271,6 +307,13 @@ namespace Empiria.FinancialAccounting.FinancialReports {
 
     private FinancialReportRow GetReportBreakdownRow(string groupingRuleUID) {
       return FinancialReportType.GetRow(groupingRuleUID);
+    }
+
+
+    private FixedList<FinancialReportRow> GetReportRowsWithIntegrationAccounts() {
+      FixedList<FinancialReportRow> rows = GetReportFixedRows();
+
+      return rows.FindAll(x => x.GroupingRule.Items.Contains(item => item.Type == GroupingRuleItemType.Account));
     }
 
 
