@@ -8,12 +8,13 @@
 *                                                                                                            *
 ************************* Copyright(c) La Vía Óntica SC, Ontica LLC and contributors. All rights reserved. **/
 using System;
+using Empiria.Json;
 
 namespace Empiria.FinancialAccounting.Rules {
 
   /// <summary>Holds data about an external variable or value like a
   /// financial indicator or business income.</summary>
-  public class ExternalVariable : GeneralObject {
+  public class ExternalVariable : BaseObject {
 
     #region Constructors and parsers
 
@@ -29,9 +30,13 @@ namespace Empiria.FinancialAccounting.Rules {
       return BaseObject.ParseKey<ExternalVariable>(uid);
     }
 
+    static internal ExternalVariable TryParseWithCode(string externalVariableCode) {
+      return BaseObject.TryParse<ExternalVariable>($"ETIQUETA_VARIABLE = '{externalVariableCode}'");
+    }
+
     static public ExternalVariable Empty {
       get {
-        return GroupingRule.ParseEmpty<ExternalVariable>();
+        return ExternalVariable.ParseEmpty<ExternalVariable>();
       }
     }
 
@@ -40,23 +45,44 @@ namespace Empiria.FinancialAccounting.Rules {
     #region Properties
 
 
-    public string ConceptCode {
-      get {
-        return ExtendedDataField.Get("conceptCode", string.Empty);
-      }
+    [DataField("ETIQUETA_VARIABLE")]
+    public string Code {
+      get;
+      private set;
+    }
+
+
+    [DataField("NOMBRE_VARIABLE")]
+    public string Name {
+      get;
+      private set;
+    }
+
+
+    [DataField("NOTAS")]
+    public string Notes {
+      get;
+      private set;
+    }
+
+
+    [DataField("CONFIG_VARIABLE")]
+    internal JsonObject ExtData {
+      get;
+      private set;
     }
 
 
     public bool HasDomesticCurrencyValue {
       get {
-        return ExtendedDataField.Get("hasDomesticCurrencyValue", true);
+        return ExtData.Get("hasDomesticCurrencyValue", true);
       }
     }
 
 
     public bool HasForeignCurrencyValue {
       get {
-        return ExtendedDataField.Get("hasForeignCurrencyValue", true);
+        return ExtData.Get("hasForeignCurrencyValue", true);
       }
     }
 
