@@ -180,9 +180,18 @@ namespace Empiria.FinancialAccounting.Rules {
         } else if (this.Type == GroupingRuleItemType.Agrupation) {
           return this.Reference.Concept;
 
-        } else {
-          return "ValorDefault";
+        } else if (this.Type == GroupingRuleItemType.FixedValue) {
 
+          var fixedValue = ExternalVariable.TryParseWithCode(this.ExternalVariableCode);
+
+          if (fixedValue != null) {
+            return fixedValue.Name;
+          } else {
+            return "El valor por defecto no existe en el catálogo de variables";
+          }
+
+        } else {
+          return "";
         }
       }
     }
@@ -197,7 +206,7 @@ namespace Empiria.FinancialAccounting.Rules {
           return this.Reference.Code;
 
         } else if (this.Type == GroupingRuleItemType.FixedValue) {
-          return "Valor fijo";
+          return this.ExternalVariableCode;
 
         } else {
           return string.Empty;
