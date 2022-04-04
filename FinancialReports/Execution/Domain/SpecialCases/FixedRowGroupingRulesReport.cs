@@ -139,7 +139,7 @@ namespace Empiria.FinancialAccounting.FinancialReports {
 
           breakdownTotals = ProcessAccount(breakdownItem.GroupingRuleItem);
 
-        } else if (breakdownItem.GroupingRuleItem.Type == GroupingRuleItemType.FixedValue) {
+        } else if (breakdownItem.GroupingRuleItem.Type == GroupingRuleItemType.ExternalVariable) {
 
           breakdownTotals = ProcessFixedValue(breakdownItem.GroupingRuleItem);
 
@@ -219,7 +219,7 @@ namespace Empiria.FinancialAccounting.FinancialReports {
           totals = totals.Substract(ProcessAccount(groupingRuleItem),
                                     groupingRuleItem.Qualification);
 
-        } else if (groupingRuleItem.Type == GroupingRuleItemType.FixedValue &&
+        } else if (groupingRuleItem.Type == GroupingRuleItemType.ExternalVariable &&
                    groupingRuleItem.Operator == OperatorType.Add) {
 
           totals = totals.Sum(ProcessFixedValue(groupingRuleItem), groupingRuleItem.Qualification);

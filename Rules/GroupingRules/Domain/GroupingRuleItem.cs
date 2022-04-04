@@ -18,7 +18,7 @@ namespace Empiria.FinancialAccounting.Rules {
 
     Account,
 
-    FixedValue
+    ExternalVariable
 
   }  // enum GroupingRuleItemType
 
@@ -68,13 +68,13 @@ namespace Empiria.FinancialAccounting.Rules {
           return GroupingRuleItemType.Account;
 
         } else if (this.ExternalVariableCode.Length != 0) {
-          return GroupingRuleItemType.FixedValue;
+          return GroupingRuleItemType.ExternalVariable;
 
         } else if (this.IsEmptyInstance) {
           return GroupingRuleItemType.Agrupation;
 
         } else {
-          return GroupingRuleItemType.FixedValue;
+          return GroupingRuleItemType.ExternalVariable;
 
         }
       }
@@ -180,7 +180,7 @@ namespace Empiria.FinancialAccounting.Rules {
         } else if (this.Type == GroupingRuleItemType.Agrupation) {
           return this.Reference.Concept;
 
-        } else if (this.Type == GroupingRuleItemType.FixedValue) {
+        } else if (this.Type == GroupingRuleItemType.ExternalVariable) {
 
           var fixedValue = ExternalVariable.TryParseWithCode(this.ExternalVariableCode);
 
@@ -205,7 +205,7 @@ namespace Empiria.FinancialAccounting.Rules {
         } else if (this.Type == GroupingRuleItemType.Agrupation) {
           return this.Reference.Code;
 
-        } else if (this.Type == GroupingRuleItemType.FixedValue) {
+        } else if (this.Type == GroupingRuleItemType.ExternalVariable) {
           return this.ExternalVariableCode;
 
         } else {
