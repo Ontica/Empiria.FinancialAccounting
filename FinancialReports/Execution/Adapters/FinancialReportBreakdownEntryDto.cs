@@ -30,29 +30,28 @@ namespace Empiria.FinancialAccounting.FinancialReports.Adapters {
       get; internal set;
     }
 
-    public string ItemName {
-      get;
-      internal set;
+    public FinancialReportItemType ItemType {
+      get; internal set;
     }
 
     public string ItemCode {
-      get;
-      internal set;
+      get; internal set;
+    }
+
+    public string ItemName {
+      get; internal set;
     }
 
     public string SubledgerAccount {
-      get;
-      internal set;
+      get; internal set;
     }
 
     public string SectorCode {
-      get;
-      internal set;
+      get; internal set;
     }
 
     public string Operator {
-      get;
-      internal set;
+      get; internal set;
     }
 
     public override IEnumerable<string> GetDynamicMemberNames() {
@@ -61,8 +60,9 @@ namespace Empiria.FinancialAccounting.FinancialReports.Adapters {
       members.Add("UID");
       members.Add("Type");
       members.Add("GroupingRuleUID");
-      members.Add("ItemName");
+      members.Add("ItemType");
       members.Add("ItemCode");
+      members.Add("ItemName");
       members.Add("SubledgerAccount");
       members.Add("SectorCode");
       members.Add("Operator");

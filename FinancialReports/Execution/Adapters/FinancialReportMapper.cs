@@ -55,21 +55,53 @@ namespace Empiria.FinancialAccounting.FinancialReports.Adapters {
 
 
     static private FixedList<DynamicFinancialReportEntryDto> MapBreakdownEntries(FixedList<FinancialReportEntry> list) {
-      var mappedItems = list.Select((x) => MapBreakdownEntry((FinancialReportBreakdownEntry) x));
+      var mappedItems = list.Select((x) => MapBreakdownEntry(x));
 
       return new FixedList<DynamicFinancialReportEntryDto>(mappedItems);
+    }
+
+
+    static private DynamicFinancialReportEntryDto MapBreakdownEntry(FinancialReportEntry entry) {
+      if (entry is FinancialReportBreakdownEntry entry1) {
+        return MapBreakdownEntry(entry1);
+
+      } else if (entry is FixedRowFinancialReportEntry entry2) {
+        return MapBreakdownEntry(entry2);
+
+      } else {
+        throw Assertion.AssertNoReachThisCode();
+      }
     }
 
 
     static private DynamicFinancialReportEntryDto MapBreakdownEntry(FinancialReportBreakdownEntry entry) {
       dynamic o = new FinancialReportBreakdownEntryDto {
         UID = entry.GroupingRuleItem.UID,
+        ItemType = FinancialReportItemType.Entry,
         ItemCode = entry.GroupingRuleItem.Code,
         ItemName = entry.GroupingRuleItem.Name,
         SubledgerAccount = entry.GroupingRuleItem.SubledgerAccountNumber,
         SectorCode = entry.GroupingRuleItem.SectorCode,
         Operator = Convert.ToString((char) entry.GroupingRuleItem.Operator),
         GroupingRuleUID = entry.GroupingRuleItem.GroupingRule.UID,
+      };
+
+      SetTotalsFields(o, entry);
+
+      return o;
+    }
+
+    static private DynamicFinancialReportEntryDto MapBreakdownEntry(FixedRowFinancialReportEntry entry) {
+      dynamic o = new FinancialReportBreakdownEntryDto {
+        UID = entry.Row.UID,
+        Type = Rules.GroupingRuleItemType.Agrupation,
+        GroupingRuleUID = entry.GroupingRule.UID,
+        ItemType = FinancialReportItemType.Summary,
+        ItemCode = "TOTAL",
+        ItemName = string.Empty,
+        SubledgerAccount = string.Empty,
+        SectorCode = string.Empty,
+        Operator = string.Empty
       };
 
       SetTotalsFields(o, entry);

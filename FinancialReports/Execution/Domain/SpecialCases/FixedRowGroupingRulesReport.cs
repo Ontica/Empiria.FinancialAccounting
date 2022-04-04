@@ -57,11 +57,16 @@ namespace Empiria.FinancialAccounting.FinancialReports {
 
       FixedList<FinancialReportBreakdownEntry> breakdownEntries = GetBreakdownEntries(reportEntry);
 
-      ProcessBreakdown(breakdownEntries);
+      ReportEntryTotals breakdownTotal = ProcessBreakdown(breakdownEntries);
 
-      // Insert breakdown total row
+      breakdownTotal.CopyTotalsTo(reportEntry);
 
-      return MapToFinancialReport(breakdownEntries);
+      var reportEntries = new List<FinancialReportEntry>();
+
+      reportEntries.AddRange(breakdownEntries);
+      reportEntries.Add(reportEntry);
+
+      return MapToFinancialReport(reportEntries.ToFixedList());
     }
 
 
