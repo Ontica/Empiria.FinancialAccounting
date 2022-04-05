@@ -9,6 +9,7 @@
 ************************* Copyright(c) La Vía Óntica SC, Ontica LLC and contributors. All rights reserved. **/
 using System;
 using System.Collections.Generic;
+
 using Empiria.FinancialAccounting.BalanceEngine;
 using Empiria.FinancialAccounting.BalanceEngine.Adapters;
 
@@ -146,7 +147,7 @@ namespace Empiria.FinancialAccounting.Reporting.Exporters.Excel {
     private void SetRowHeaderByAccount(int i) {
 
       if (_command.TrialBalanceType == TrialBalanceType.SaldosPorAuxiliarConsultaRapida) {
-        
+
         _excelFile.SetCell($"A{i}", "Deleg");
         _excelFile.SetCell($"B{i}", "Delegación");
 
@@ -162,7 +163,7 @@ namespace Empiria.FinancialAccounting.Reporting.Exporters.Excel {
       }
 
       if (_command.TrialBalanceType == TrialBalanceType.SaldosPorCuentaConsultaRapida) {
-        
+
         _excelFile.SetCell($"A{i}", "Deleg");
         _excelFile.SetCell($"B{i}", "Delegación");
 
@@ -176,7 +177,7 @@ namespace Empiria.FinancialAccounting.Reporting.Exporters.Excel {
         _excelFile.SetCell($"H{i}", "Último movimiento");
 
       }
-      
+
       _excelFile.SetRowStyleBold(i);
     }
 

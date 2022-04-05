@@ -7,7 +7,6 @@
 *  Summary  : Contains data about a financial accounting grouping rule item.                                 *
 *                                                                                                            *
 ************************* Copyright(c) La Vía Óntica SC, Ontica LLC and contributors. All rights reserved. **/
-
 using System;
 
 namespace Empiria.FinancialAccounting.Rules {
@@ -23,6 +22,7 @@ namespace Empiria.FinancialAccounting.Rules {
   }  // enum GroupingRuleItemType
 
 
+
   public enum OperatorType {
 
     Add = '+',
@@ -30,6 +30,7 @@ namespace Empiria.FinancialAccounting.Rules {
     Substract = '-'
 
   }
+
 
   /// <summary>Contains data about a financial accounting grouping rule item.</summary>
   public class GroupingRuleItem : BaseObject {

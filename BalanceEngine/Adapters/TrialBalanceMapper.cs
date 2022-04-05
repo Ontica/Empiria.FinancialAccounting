@@ -138,7 +138,7 @@ namespace Empiria.FinancialAccounting.BalanceEngine.Adapters {
       var dto = new TwoColumnsTrialBalanceEntryDto();
 
       SubledgerAccount subledgerAccount = SubledgerAccount.Parse(entry.SubledgerAccountId);
-       
+
       dto.ItemType = entry.ItemType;
       dto.LedgerUID = entry.Ledger.UID != "Empty" ? entry.Ledger.UID : "";
       dto.LedgerNumber = entry.Ledger.Number;
@@ -181,7 +181,7 @@ namespace Empiria.FinancialAccounting.BalanceEngine.Adapters {
       dto.ExchangeRate = entry.ExchangeRate;
       dto.AverageBalance = entry.AverageBalance;
       dto.IsParentPostingEntry = entry.IsParentPostingEntry;
-      dto.LastChangeDate = entry.LastChangeDate != null ? entry.LastChangeDate : 
+      dto.LastChangeDate = entry.LastChangeDate != null ? entry.LastChangeDate :
                            ExecutionServer.DateMaxValue;
 
       return dto;
@@ -234,7 +234,7 @@ namespace Empiria.FinancialAccounting.BalanceEngine.Adapters {
         dto.DebtorCreditor = entry.ItemType == TrialBalanceItemType.Entry ?
                              entry.DebtorCreditor.ToString() : "";
       }
-      
+
       dto.LastChangeDate = entry.ItemType == TrialBalanceItemType.Entry ?
                            entry.LastChangeDate : ExecutionServer.DateMaxValue;
       dto.LastChangeDateForBalances = entry.LastChangeDate;
@@ -364,7 +364,7 @@ namespace Empiria.FinancialAccounting.BalanceEngine.Adapters {
       } else {
         dto.SubledgerAccountNumber = subledgerAccount.Number;
       }
-      
+
       dto.AccountRole = entry.Account.Role;
       dto.AccountLevel = entry.Account.Level;
       dto.SectorCode = entry.Sector.Code;

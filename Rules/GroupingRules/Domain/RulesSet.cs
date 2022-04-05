@@ -41,15 +41,17 @@ namespace Empiria.FinancialAccounting.Rules {
 
 
     static public FixedList<RulesSet> GetList() {
-      return BaseObject.GetList<RulesSet>()
+      return BaseObject.GetList<RulesSet>(String.Empty, "ObjectName")
                        .ToFixedList();
     }
+
 
     static public FixedList<RulesSet> GetList(AccountsChart accountsChart) {
       var list = GetList();
 
       return list.FindAll(x => x.AccountsChart.Equals(accountsChart));
     }
+
 
     static public RulesSet Empty {
       get {
