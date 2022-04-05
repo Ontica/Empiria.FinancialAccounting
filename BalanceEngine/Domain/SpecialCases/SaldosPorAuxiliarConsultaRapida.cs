@@ -62,6 +62,7 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
                                  summary.LastChangeDate : entry.LastChangeDate;
           summary.SubledgerAccountId = 0;
           summary.SubledgerAccountNumber = entry.SubledgerAccountNumber;
+          summary.SubledgerAccountName = entry.SubledgerAccountName;
         }
 
         returnedEntries.Add(entry);
@@ -83,6 +84,7 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
         SubledgerAccount subledgerAccount = SubledgerAccount.Parse(entry.SubledgerAccountIdParent);
         if (subledgerAccount != null) {
           entry.SubledgerAccountNumber = subledgerAccount.Number;
+          entry.SubledgerAccountName = subledgerAccount.Name;
           entry.GroupName = subledgerAccount.Name;
           entry.SubledgerNumberOfDigits = entry.SubledgerAccountNumber.Count();
           entry.SubledgerAccountId = entry.SubledgerAccountIdParent;

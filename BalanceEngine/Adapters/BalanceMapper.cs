@@ -177,6 +177,7 @@ namespace Empiria.FinancialAccounting.BalanceEngine.Adapters {
                          + $" [({entry.Currency.Code}) {entry.Currency.Name}]";
       }
       dto.SubledgerAccountNumber = entry.SubledgerAccountNumber;
+      dto.subledgerAccountName = entry.SubledgerAccountName;
       dto.SectorCode = entry.Sector.Code;
       dto.InitialBalance = entry.InitialBalance;
       if (entry.ItemType == TrialBalanceItemType.Entry) {

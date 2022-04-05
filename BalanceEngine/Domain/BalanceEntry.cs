@@ -100,7 +100,7 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
 
     public string SubledgerAccountName {
       get; internal set;
-    }
+    } = string.Empty;
 
 
     public bool HasAccountStatement {

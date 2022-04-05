@@ -82,6 +82,15 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
   }
 
 
+  public enum FileReportVersion {
+    V1,
+
+    V2,
+
+    V3
+  }
+
+
   /// <summary>Provides services to generate a trial balance.</summary>
   internal class TrialBalanceEngine {
 

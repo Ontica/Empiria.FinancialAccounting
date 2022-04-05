@@ -398,7 +398,7 @@ namespace Empiria.FinancialAccounting.Reporting.Exporters.Excel {
             entry.ItemType == TrialBalanceItemType.Total) {
           _excelFile.SetCell($"H{i}", (decimal) entry.CurrentBalance);
         }
-        
+
         _excelFile.SetCell($"I{i}", entry.DebtorCreditor);
 
         if (entry.ItemType == TrialBalanceItemType.Entry) {
@@ -406,7 +406,7 @@ namespace Empiria.FinancialAccounting.Reporting.Exporters.Excel {
             _excelFile.SetCell($"J{i}", (decimal) entry.AverageBalance);
           }
         }
-        
+
 
         if (entry.LastChangeDate != ExecutionServer.DateMaxValue &&
             entry.LastChangeDate >= MIN_LAST_CHANGE_DATE_TO_REPORT) {
@@ -499,6 +499,7 @@ namespace Empiria.FinancialAccounting.Reporting.Exporters.Excel {
         _excelFile.RemoveColumn("B");
       }
     }
+
 
     #endregion Private methods
 

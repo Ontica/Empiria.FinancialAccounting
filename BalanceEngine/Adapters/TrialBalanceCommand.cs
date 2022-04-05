@@ -115,9 +115,15 @@ namespace Empiria.FinancialAccounting.BalanceEngine.Adapters {
       get; set;
     } = false;
 
+
     public bool WithSectorization {
       get; set;
     } = false;
+
+
+    public FileReportVersion ExportTo {
+      get; set;
+    } = FileReportVersion.V1;
 
 
     public bool UseNewSectorizationModel {

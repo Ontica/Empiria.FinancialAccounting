@@ -140,6 +140,11 @@ namespace Empiria.FinancialAccounting.Reporting {
 
       var templateUID = $"BalanceTemplate.{balance.Command.TrialBalanceType}";
 
+      if (balance.Command.ExportTo != BalanceEngine.FileReportVersion.V1) {
+        templateUID = $"BalanceTemplate.{balance.Command.TrialBalanceType}" +
+                      $"{balance.Command.ExportTo}";
+      }
+
       var templateConfig = FileTemplateConfig.Parse(templateUID);
 
       var exporter = new BalanceExcelExporter(templateConfig);

@@ -56,6 +56,11 @@ namespace Empiria.FinancialAccounting.BalanceEngine.Adapters {
     }
 
 
+    public FileReportVersion ExportTo {
+      get; set;
+    } = FileReportVersion.V1;
+
+
     public TrialBalanceCommandPeriod InitialPeriod {
       get; set;
     } = new TrialBalanceCommandPeriod();
