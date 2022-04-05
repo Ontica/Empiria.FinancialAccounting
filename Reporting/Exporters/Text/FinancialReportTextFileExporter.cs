@@ -53,7 +53,7 @@ namespace Empiria.FinancialAccounting.Reporting {
         var convertedEntry = (FinancialReportEntryDto) entry;
 
         string textLine = GetTextLine(exportTo, convertedEntry,
-                                      FinancialReportTotalField.DomesticCurrencyTotal, "14");
+                                      FinancialReportTotalField.domesticCurrencyTotal, "14");
 
         if (textLine.Length > 0) {
           textLines.Add(textLine);
@@ -64,7 +64,7 @@ namespace Empiria.FinancialAccounting.Reporting {
         var convertedEntry = (FinancialReportEntryDto) entry;
 
         string textLine = GetTextLine(exportTo, convertedEntry,
-                                      FinancialReportTotalField.ForeignCurrencyTotal, "4");
+                                      FinancialReportTotalField.foreignCurrencyTotal, "4");
 
         if (textLine.Length > 0) {
           textLines.Add(textLine);

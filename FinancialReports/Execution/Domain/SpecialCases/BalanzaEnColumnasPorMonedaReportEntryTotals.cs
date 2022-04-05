@@ -61,19 +61,19 @@ namespace Empiria.FinancialAccounting.FinancialReports {
     #region Methods
 
     public override void CopyTotalsTo(FinancialReportEntry copyTo) {
-      copyTo.SetTotalField(FinancialReportTotalField.PesosTotal,
+      copyTo.SetTotalField(FinancialReportTotalField.pesosTotal,
                            this.PesosTotal);
 
-      copyTo.SetTotalField(FinancialReportTotalField.DollarTotal,
+      copyTo.SetTotalField(FinancialReportTotalField.dollarTotal,
                            this.DollarTotal);
 
-      copyTo.SetTotalField(FinancialReportTotalField.YenTotal,
+      copyTo.SetTotalField(FinancialReportTotalField.yenTotal,
                            this.YenTotal);
 
-      copyTo.SetTotalField(FinancialReportTotalField.EuroTotal,
+      copyTo.SetTotalField(FinancialReportTotalField.euroTotal,
                            this.EuroTotal);
 
-      copyTo.SetTotalField(FinancialReportTotalField.UdisTotal,
+      copyTo.SetTotalField(FinancialReportTotalField.udisTotal,
                            this.UdisTotal);
     }
 

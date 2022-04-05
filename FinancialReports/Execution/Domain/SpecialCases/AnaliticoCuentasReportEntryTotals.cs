@@ -41,11 +41,11 @@ namespace Empiria.FinancialAccounting.FinancialReports {
 
 
     public override void CopyTotalsTo(FinancialReportEntry copyTo) {
-      copyTo.SetTotalField(FinancialReportTotalField.DomesticCurrencyTotal,
+      copyTo.SetTotalField(FinancialReportTotalField.domesticCurrencyTotal,
                            this.DomesticCurrencyTotal);
-      copyTo.SetTotalField(FinancialReportTotalField.ForeignCurrencyTotal,
+      copyTo.SetTotalField(FinancialReportTotalField.foreignCurrencyTotal,
                            this.ForeignCurrencyTotal);
-      copyTo.SetTotalField(FinancialReportTotalField.Total,
+      copyTo.SetTotalField(FinancialReportTotalField.total,
                            this.TotalBalance);
     }
 
