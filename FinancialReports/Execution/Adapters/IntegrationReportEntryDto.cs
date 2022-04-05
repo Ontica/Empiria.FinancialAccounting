@@ -2,9 +2,9 @@
 *                                                                                                            *
 *  Module   : Financial Reports                          Component : Interface adapters                      *
 *  Assembly : FinancialAccounting.FinancialReports.dll   Pattern   : Data Transfer Object                    *
-*  Type     : FinancialReportBreakdownEntryDto           License   : Please read LICENSE.txt file            *
+*  Type     : IntegrationReportEntryDto                  License   : Please read LICENSE.txt file            *
 *                                                                                                            *
-*  Summary  : Output DTO used to return the entries of a financial report breakdown.                         *
+*  Summary  : Output DTO used to return the integration entries of a financial report.                       *
 *                                                                                                            *
 ************************* Copyright(c) La Vía Óntica SC, Ontica LLC and contributors. All rights reserved. **/
 using System;
@@ -14,19 +14,26 @@ using Empiria.FinancialAccounting.Rules;
 
 namespace Empiria.FinancialAccounting.FinancialReports.Adapters {
 
-  /// <summary>Output DTO used to return the entries of a financial report breakdown.</summary>
-  public class FinancialReportBreakdownEntryDto : DynamicFinancialReportEntryDto {
+  /// <summary>Output DTO used to return the integration entries of a financial report.</summary>
+  public class IntegrationReportEntryDto : DynamicFinancialReportEntryDto {
 
     public string UID {
       get; internal set;
     }
 
     public GroupingRuleItemType Type {
-      get;
-      internal set;
+      get; internal set;
     }
 
     public string GroupingRuleUID {
+      get; internal set;
+    }
+
+    public string ConceptCode {
+      get; internal set;
+    }
+
+    public string Concept {
       get; internal set;
     }
 
@@ -60,6 +67,8 @@ namespace Empiria.FinancialAccounting.FinancialReports.Adapters {
       members.Add("UID");
       members.Add("Type");
       members.Add("GroupingRuleUID");
+      members.Add("ConceptCode");
+      members.Add("Concept");
       members.Add("ItemType");
       members.Add("ItemCode");
       members.Add("ItemName");
@@ -72,6 +81,6 @@ namespace Empiria.FinancialAccounting.FinancialReports.Adapters {
       return members;
     }
 
-  } // class FinancialReportBreakdownEntryDto
+  } // class IntegrationReportEntryDto
 
 } // namespace Empiria.FinancialAccounting.FinancialReports.Adapters

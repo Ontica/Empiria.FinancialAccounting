@@ -38,8 +38,6 @@ namespace Empiria.FinancialAccounting.Reporting.Exporters.Excel {
     #region Private methods
 
     private ExcelFile CreateExcelFile(FinancialReportDto financialReport) {
-      Assertion.AssertObject(financialReport, "financialReport");
-
       _excelFile = new ExcelFile(_templateConfig);
 
       _excelFile.Open();
@@ -66,6 +64,14 @@ namespace Empiria.FinancialAccounting.Reporting.Exporters.Excel {
                               "Regulatorio R01  Reporte B 0111  Subreporte 1");
           return;
 
+        case FinancialReportDesignType.AccountsIntegration:
+
+          _excelFile.SetCell($"A2", command.GetFinancialReportType().BaseReport.Name);
+          _excelFile.SetCell($"I2", DateTime.Now);
+          _excelFile.SetCell($"I3", command.Date);
+
+          return;
+
         default:
           return;
       }
@@ -75,22 +81,27 @@ namespace Empiria.FinancialAccounting.Reporting.Exporters.Excel {
     private void SetTable(FinancialReportDto financialReport) {
       FinancialReportType reportType = financialReport.Command.GetFinancialReportType();
 
-      var entries = new FixedList<FinancialReportEntryDto>(financialReport.Entries.Select(x => (FinancialReportEntryDto) x));
 
       switch (reportType.DesignType) {
         case FinancialReportDesignType.FixedRows:
 
+          var entries = new FixedList<FinancialReportEntryDto>(financialReport.Entries.Select(x => (FinancialReportEntryDto) x));
+
           FillOutFixedRowsReport(entries);
           return;
 
-        case FinancialReportDesignType.ConceptsIntegration:
-          FillOutConceptsIntegrationReport(entries);
+        case FinancialReportDesignType.AccountsIntegration:
+
+          var entries2 = new FixedList<IntegrationReportEntryDto>(financialReport.Entries.Select(x => (IntegrationReportEntryDto) x));
+
+          FillOutConceptsIntegrationReport(entries2);
           return;
 
         default:
           throw Assertion.AssertNoReachThisCode();
       }
     }
+
 
     private void FillOutFixedRowsReport(FixedList<FinancialReportEntryDto> entries) {
       int i = 8;
@@ -105,15 +116,20 @@ namespace Empiria.FinancialAccounting.Reporting.Exporters.Excel {
       }
     }
 
-    private void FillOutConceptsIntegrationReport(FixedList<FinancialReportEntryDto> entries) {
-      int i = 4;
+
+    private void FillOutConceptsIntegrationReport(FixedList<IntegrationReportEntryDto> entries) {
+      int i = 5;
 
       foreach (var entry in entries) {
         _excelFile.SetCell($"A{i}", entry.ConceptCode.Replace(" ", string.Empty));
         _excelFile.SetCell($"B{i}", entry.Concept);
-        _excelFile.SetCell($"F{i}", entry.GetTotalField(FinancialReportTotalField.DomesticCurrencyTotal));
-        _excelFile.SetCell($"G{i}", entry.GetTotalField(FinancialReportTotalField.ForeignCurrencyTotal));
-        _excelFile.SetCell($"H{i}", entry.GetTotalField(FinancialReportTotalField.Total));
+        _excelFile.SetCell($"C{i}", entry.ItemCode);
+        _excelFile.SetCell($"D{i}", entry.ItemName);
+        _excelFile.SetCell($"E{i}", entry.SectorCode);
+        _excelFile.SetCell($"F{i}", entry.Operator);
+        _excelFile.SetCell($"G{i}", entry.GetTotalField(FinancialReportTotalField.DomesticCurrencyTotal));
+        _excelFile.SetCell($"H{i}", entry.GetTotalField(FinancialReportTotalField.ForeignCurrencyTotal));
+        _excelFile.SetCell($"I{i}", entry.GetTotalField(FinancialReportTotalField.Total));
         i++;
       }
     }

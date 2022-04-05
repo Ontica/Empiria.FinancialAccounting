@@ -91,7 +91,7 @@ namespace Empiria.FinancialAccounting.BanobrasIntegration.VouchersImporter {
     static private string GetImportationSetDescription(int idSistema, int tipoContabilidad, DateTime fechaAfectacion) {
       var system = TransactionalSystem.Get(x => x.SourceSystemId == idSistema);
 
-      Assertion.AssertObject(system, "system");
+      Assertion.AssertObject(system, $"No se ha definido un sistema transversal con identificador {idSistema}.");
 
       return $"{system.Name}, {fechaAfectacion.ToString("yyyy/MM/dd")}, Tipo Cont. {tipoContabilidad}";
     }

@@ -16,15 +16,12 @@ namespace Empiria.FinancialAccounting {
     public DataTableColumn(string field, string title, string type, int digits = 2) {
 
       this.Field = field;
-
       this.Title = title;
-
       this.Type = type;
 
       if (type == "decimal") {
         this.Digits = digits;
       }
-
     }
 
 

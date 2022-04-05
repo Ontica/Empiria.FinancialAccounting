@@ -1,0 +1,163 @@
+﻿/* Empiria Financial *****************************************************************************************
+*                                                                                                            *
+*  Module   : Financial Reports                          Component : Domain Layer                            *
+*  Assembly : FinancialAccounting.FinancialReports.dll   Pattern   : Service provider                        *
+*  Type     : AnaliticoCuentasReportEntryTotals          License   : Please read LICENSE.txt file            *
+*                                                                                                            *
+*  Summary  : ReportEntryTotals for use in reports based on Analítico de cuentas (R01, R10, R12).            *
+*                                                                                                            *
+************************* Copyright(c) La Vía Óntica SC, Ontica LLC and contributors. All rights reserved. **/
+using System;
+
+using Empiria.FinancialAccounting.BalanceEngine.Adapters;
+using Empiria.FinancialAccounting.Rules;
+
+namespace Empiria.FinancialAccounting.FinancialReports {
+
+  /// <summary>ReportEntryTotals for use in reports based on Analítico de cuentas (R01, R10, R12).</summary>
+  internal class AnaliticoCuentasReportEntryTotals : ReportEntryTotals {
+
+    #region Fields
+
+    public decimal DomesticCurrencyTotal {
+      get; private set;
+    }
+
+
+    public decimal ForeignCurrencyTotal {
+      get; private set;
+    }
+
+
+    public decimal TotalBalance {
+      get {
+        return DomesticCurrencyTotal + ForeignCurrencyTotal;
+      }
+    }
+
+    #endregion Fields
+
+    #region Methods
+
+
+    public override void CopyTotalsTo(FinancialReportEntry copyTo) {
+      copyTo.SetTotalField(FinancialReportTotalField.DomesticCurrencyTotal,
+                           this.DomesticCurrencyTotal);
+      copyTo.SetTotalField(FinancialReportTotalField.ForeignCurrencyTotal,
+                           this.ForeignCurrencyTotal);
+      copyTo.SetTotalField(FinancialReportTotalField.Total,
+                           this.TotalBalance);
+    }
+
+
+    public override ReportEntryTotals Round() {
+      return new AnaliticoCuentasReportEntryTotals {
+        DomesticCurrencyTotal = Math.Round(this.DomesticCurrencyTotal, 0),
+        ForeignCurrencyTotal = Math.Round(this.ForeignCurrencyTotal, 0)
+      };
+    }
+
+
+    public override ReportEntryTotals Substract(ReportEntryTotals total, string qualification) {
+      var castTotal = (AnaliticoCuentasReportEntryTotals) total;
+
+      if (qualification == "MonedaExtranjera") {
+        return new AnaliticoCuentasReportEntryTotals {
+          DomesticCurrencyTotal = this.DomesticCurrencyTotal,
+          ForeignCurrencyTotal = this.ForeignCurrencyTotal - (castTotal.DomesticCurrencyTotal + castTotal.ForeignCurrencyTotal)
+        };
+      }
+      return new AnaliticoCuentasReportEntryTotals {
+        DomesticCurrencyTotal = this.DomesticCurrencyTotal - castTotal.DomesticCurrencyTotal,
+        ForeignCurrencyTotal = this.ForeignCurrencyTotal - castTotal.ForeignCurrencyTotal
+      };
+    }
+
+
+    public override ReportEntryTotals Substract(ITrialBalanceEntryDto balance, string qualification) {
+      var analiticoBalance = (TwoColumnsTrialBalanceEntryDto) balance;
+
+      if (qualification == "MonedaExtranjera") {
+        return new AnaliticoCuentasReportEntryTotals {
+          DomesticCurrencyTotal = this.DomesticCurrencyTotal,
+          ForeignCurrencyTotal = this.ForeignCurrencyTotal - (analiticoBalance.DomesticBalance + analiticoBalance.ForeignBalance)
+        };
+      }
+
+      return new AnaliticoCuentasReportEntryTotals {
+        DomesticCurrencyTotal = this.DomesticCurrencyTotal - analiticoBalance.DomesticBalance,
+        ForeignCurrencyTotal = this.ForeignCurrencyTotal - analiticoBalance.ForeignBalance
+      };
+    }
+
+
+    public override ReportEntryTotals Sum(ReportEntryTotals total, string qualification) {
+      var castTotal = (AnaliticoCuentasReportEntryTotals) total;
+
+      if (qualification == "MonedaExtranjera") {
+        return new AnaliticoCuentasReportEntryTotals {
+          DomesticCurrencyTotal = this.DomesticCurrencyTotal,
+          ForeignCurrencyTotal = this.ForeignCurrencyTotal + (castTotal.DomesticCurrencyTotal + castTotal.ForeignCurrencyTotal)
+        };
+      }
+
+      return new AnaliticoCuentasReportEntryTotals {
+        DomesticCurrencyTotal = this.DomesticCurrencyTotal + castTotal.DomesticCurrencyTotal,
+        ForeignCurrencyTotal = this.ForeignCurrencyTotal + castTotal.ForeignCurrencyTotal
+      };
+    }
+
+
+    public override ReportEntryTotals Sum(ITrialBalanceEntryDto balance, string qualification) {
+      var analiticoBalance = (TwoColumnsTrialBalanceEntryDto) balance;
+
+      if (qualification == "MonedaExtranjera") {
+        return new AnaliticoCuentasReportEntryTotals {
+          DomesticCurrencyTotal = this.DomesticCurrencyTotal,
+          ForeignCurrencyTotal = this.ForeignCurrencyTotal + (analiticoBalance.DomesticBalance + analiticoBalance.ForeignBalance)
+        };
+      }
+
+      return new AnaliticoCuentasReportEntryTotals {
+        DomesticCurrencyTotal = this.DomesticCurrencyTotal + analiticoBalance.DomesticBalance,
+        ForeignCurrencyTotal = this.ForeignCurrencyTotal + analiticoBalance.ForeignBalance
+      };
+    }
+
+
+    public override ReportEntryTotals Sum(ExternalValue value, string qualification) {
+      if (qualification == "MonedaNacional") {
+        return new AnaliticoCuentasReportEntryTotals {
+          DomesticCurrencyTotal = value.DomesticCurrencyValue + value.ForeignCurrencyValue
+        };
+
+      } else if (qualification == "MonedaExtranjera") {
+        return new AnaliticoCuentasReportEntryTotals {
+          ForeignCurrencyTotal = value.DomesticCurrencyValue + value.ForeignCurrencyValue
+        };
+
+      } else {
+        return new AnaliticoCuentasReportEntryTotals {
+          DomesticCurrencyTotal = value.DomesticCurrencyValue,
+          ForeignCurrencyTotal = value.ForeignCurrencyValue
+        };
+      }
+    }
+
+
+    public override ReportEntryTotals SumDebitsOrSubstractCredits(ITrialBalanceEntryDto balance, string qualification) {
+      var analiticoBalance = (TwoColumnsTrialBalanceEntryDto) balance;
+
+      if (analiticoBalance.DebtorCreditor == DebtorCreditorType.Deudora) {
+        return Sum(balance, qualification);
+      } else {
+        return Substract(balance, qualification);
+      }
+    }
+
+
+    #endregion Methods
+
+  }  // class AnaliticoCuentasReportEntryTotals
+
+}  // namespace Empiria.FinancialAccounting.FinancialReports

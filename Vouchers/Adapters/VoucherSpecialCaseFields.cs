@@ -26,7 +26,7 @@ namespace Empiria.FinancialAccounting.Vouchers.Adapters {
 
     public string OnVoucherNumber {
       get; set;
-    }
+    } = string.Empty;
 
   }  // class VoucherSpecialCaseFields
 

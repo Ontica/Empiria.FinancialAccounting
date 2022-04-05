@@ -159,6 +159,7 @@ namespace Empiria.FinancialAccounting.BanobrasIntegration.VouchersImporter {
       return result;
     }
 
+
     internal VoucherDto TryImportOne(ToImportVoucher voucher) {
       this.DryRunImportOne(voucher);
 
@@ -206,7 +207,7 @@ namespace Empiria.FinancialAccounting.BanobrasIntegration.VouchersImporter {
 
 
     private FixedList<NamedEntityDto> GetImportErrors() {
-      var errors = this._toImportVouchersList.SelectMany(
+      var errors = _toImportVouchersList.SelectMany(
                               z => z.AllIssues.FindAll(w => w.Type == VoucherIssueType.Error));
 
       return new FixedList<NamedEntityDto>(errors.Select(x => x.ToNamedEntity()));
@@ -214,7 +215,7 @@ namespace Empiria.FinancialAccounting.BanobrasIntegration.VouchersImporter {
 
 
     private FixedList<NamedEntityDto> GetImportWarnings() {
-      var warnings = this._toImportVouchersList.SelectMany(
+      var warnings = _toImportVouchersList.SelectMany(
                               z => z.AllIssues.FindAll(w => w.Type == VoucherIssueType.Warning));
 
       return new FixedList<NamedEntityDto>(warnings.Select(x => x.ToNamedEntity()));
@@ -222,7 +223,7 @@ namespace Empiria.FinancialAccounting.BanobrasIntegration.VouchersImporter {
 
 
     private FixedList<ImportVouchersTotals> GetImportVoucherTotals() {
-      var importationSets = this._toImportVouchersList.Select(x => x.Header.ImportationSet)
+      var importationSets = _toImportVouchersList.Select(x => x.Header.ImportationSet)
                                                       .Distinct();
 
       var list = new List<ImportVouchersTotals>(importationSets.Count());

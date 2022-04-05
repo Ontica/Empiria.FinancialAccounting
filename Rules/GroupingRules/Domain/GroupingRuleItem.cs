@@ -7,7 +7,6 @@
 *  Summary  : Contains data about a financial accounting grouping rule item.                                 *
 *                                                                                                            *
 ************************* Copyright(c) La Vía Óntica SC, Ontica LLC and contributors. All rights reserved. **/
-
 using System;
 
 namespace Empiria.FinancialAccounting.Rules {
@@ -18,9 +17,10 @@ namespace Empiria.FinancialAccounting.Rules {
 
     Account,
 
-    FixedValue
+    ExternalVariable
 
   }  // enum GroupingRuleItemType
+
 
 
   public enum OperatorType {
@@ -30,6 +30,7 @@ namespace Empiria.FinancialAccounting.Rules {
     Substract = '-'
 
   }
+
 
   /// <summary>Contains data about a financial accounting grouping rule item.</summary>
   public class GroupingRuleItem : BaseObject {
@@ -68,13 +69,13 @@ namespace Empiria.FinancialAccounting.Rules {
           return GroupingRuleItemType.Account;
 
         } else if (this.ExternalVariableCode.Length != 0) {
-          return GroupingRuleItemType.FixedValue;
+          return GroupingRuleItemType.ExternalVariable;
 
         } else if (this.IsEmptyInstance) {
           return GroupingRuleItemType.Agrupation;
 
         } else {
-          return GroupingRuleItemType.FixedValue;
+          return GroupingRuleItemType.ExternalVariable;
 
         }
       }
@@ -180,9 +181,18 @@ namespace Empiria.FinancialAccounting.Rules {
         } else if (this.Type == GroupingRuleItemType.Agrupation) {
           return this.Reference.Concept;
 
-        } else {
-          return "ValorDefault";
+        } else if (this.Type == GroupingRuleItemType.ExternalVariable) {
 
+          var fixedValue = ExternalVariable.TryParseWithCode(this.ExternalVariableCode);
+
+          if (fixedValue != null) {
+            return fixedValue.Name;
+          } else {
+            return "El valor por defecto no existe en el catálogo de variables";
+          }
+
+        } else {
+          return "";
         }
       }
     }
@@ -196,8 +206,8 @@ namespace Empiria.FinancialAccounting.Rules {
         } else if (this.Type == GroupingRuleItemType.Agrupation) {
           return this.Reference.Code;
 
-        } else if (this.Type == GroupingRuleItemType.FixedValue) {
-          return "Valor fijo";
+        } else if (this.Type == GroupingRuleItemType.ExternalVariable) {
+          return this.ExternalVariableCode;
 
         } else {
           return string.Empty;
