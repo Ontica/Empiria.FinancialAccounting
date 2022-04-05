@@ -95,38 +95,21 @@ namespace Empiria.FinancialAccounting.Reporting.Exporters.Excel {
 
 
     private void FillOutSaldosCuenta(IEnumerable<BalanceEntryDto> entries) {
-      int i = 5;
-      foreach (var entry in entries) {
-        if (entry.ItemType == TrialBalanceItemType.Total) {
-          _excelFile.SetCell($"D{i}", entry.AccountNumber);
-          _excelFile.SetCell($"E{i}", $"{entry.AccountName}");
-          _excelFile.SetCell($"G{i}", "");
-          _excelFile.SetCell($"H{i}", "");
-          _excelFile.SetRowStyleBold(i);
-
-          i++;
-          SetRowHeaderByAccount(i);
-
-        } else if (entry.ItemType == TrialBalanceItemType.Group) {
-          _excelFile.SetCell($"E{i}", entry.AccountName);
-          _excelFile.SetCell($"G{i}", (decimal) entry.CurrentBalance);
-          _excelFile.SetRowStyleBold(i);
-          i += 3;
-
-        } else {
-          _excelFile.SetCell($"A{i}", entry.LedgerNumber);
-          _excelFile.SetCell($"B{i}", entry.LedgerName);
-          _excelFile.SetCell($"C{i}", $"({entry.CurrencyCode}) {entry.CurrencyName})");
-          _excelFile.SetCell($"D{i}", entry.AccountNumber);
-          _excelFile.SetCell($"E{i}", entry.AccountName);
-          _excelFile.SetCell($"F{i}", entry.SectorCode);
-          _excelFile.SetCell($"G{i}", (decimal) entry.CurrentBalance);
-          _excelFile.SetCell($"H{i}", entry.LastChangeDate.ToString("dd/MMM/yyyy"));
-        }
-
-        i++;
+      switch (_command.ExportTo) {
+        case FileReportVersion.V1:
+          FillOutSaldosCuentaConEncabezado(entries);
+          break;
+        case FileReportVersion.V2:
+          FillOutSaldosCuentaPorColumna(entries);
+          break;
+        case FileReportVersion.V3:
+          break;
+        default:
+          throw Assertion.AssertNoReachThisCode();
       }
     }
+
+
 
 
     private void FillOutSaldosAuxiliarConEncabezado(IEnumerable<BalanceEntryDto> entries) {
@@ -172,10 +155,80 @@ namespace Empiria.FinancialAccounting.Reporting.Exporters.Excel {
           _excelFile.SetCell($"G{i}", entry.subledgerAccountName);
           _excelFile.SetCell($"H{i}", entry.SectorCode);
           _excelFile.SetCell($"I{i}", (decimal) entry.CurrentBalance);
-          _excelFile.SetCell($"J{i}", entry.DebtorCreditor == "Deudora" ? "D" : "A" );
+          _excelFile.SetCell($"J{i}", entry.DebtorCreditor);
           _excelFile.SetCell($"K{i}", entry.LastChangeDate.ToString("dd/MMM/yyyy"));
         }
         i++;
+      }
+    }
+
+
+    private void FillOutSaldosCuentaConEncabezado(IEnumerable<BalanceEntryDto> entries) {
+      int i = 5;
+      foreach (var entry in entries) {
+        if (entry.ItemType == TrialBalanceItemType.Total) {
+          _excelFile.SetCell($"D{i}", entry.AccountNumber);
+          _excelFile.SetCell($"E{i}", $"{entry.AccountName}");
+          _excelFile.SetCell($"G{i}", "");
+          _excelFile.SetCell($"H{i}", "");
+          _excelFile.SetRowStyleBold(i);
+
+          i++;
+          SetRowHeaderByAccount(i);
+
+        } else if (entry.ItemType == TrialBalanceItemType.Group) {
+          _excelFile.SetCell($"E{i}", entry.AccountName);
+          _excelFile.SetCell($"G{i}", (decimal) entry.CurrentBalance);
+          _excelFile.SetRowStyleBold(i);
+          i += 3;
+
+        } else {
+          _excelFile.SetCell($"A{i}", entry.LedgerNumber);
+          _excelFile.SetCell($"B{i}", entry.LedgerName);
+          _excelFile.SetCell($"C{i}", $"({entry.CurrencyCode}) {entry.CurrencyName})");
+          _excelFile.SetCell($"D{i}", entry.AccountNumber);
+          if (!_command.WithSubledgerAccount) {
+            _excelFile.SetCell($"E{i}", entry.AccountName);
+          } else {
+            _excelFile.SetCell($"E{i}", entry.subledgerAccountName);
+          }
+          _excelFile.SetCell($"F{i}", entry.SectorCode);
+          _excelFile.SetCell($"G{i}", (decimal) entry.CurrentBalance);
+          _excelFile.SetCell($"H{i}", entry.LastChangeDate.ToString("dd/MMM/yyyy"));
+        }
+
+        i++;
+      }
+    }
+
+
+    private void FillOutSaldosCuentaPorColumna(IEnumerable<BalanceEntryDto> entries) {
+      int i = 5;
+      foreach (var entry in entries) {
+
+        if (entry.ItemType == TrialBalanceItemType.Entry) {
+          _excelFile.SetCell($"A{i}", entry.LedgerNumber);
+          _excelFile.SetCell($"B{i}", entry.LedgerName);
+          _excelFile.SetCell($"C{i}", $"({entry.CurrencyCode}) {entry.CurrencyName}");
+          _excelFile.SetCell($"D{i}", entry.AccountNumberForBalances);
+          _excelFile.SetCell($"E{i}", entry.AccountName);
+          _excelFile.SetCell($"F{i}", entry.SubledgerAccountNumber);
+          _excelFile.SetCell($"G{i}", entry.subledgerAccountName);
+          _excelFile.SetCell($"H{i}", entry.SectorCode);
+          _excelFile.SetCell($"I{i}", (decimal) entry.CurrentBalance);
+          _excelFile.SetCell($"J{i}", entry.DebtorCreditor);
+          _excelFile.SetCell($"K{i}", entry.LastChangeDate.ToString("dd/MMM/yyyy"));
+          i++;
+        } else if (entry.ItemType == TrialBalanceItemType.Group) {
+          _excelFile.SetCell($"E{i}", entry.AccountName);
+          _excelFile.SetCell($"I{i}", (decimal) entry.CurrentBalance);
+          _excelFile.SetRowStyleBold(i);
+          i++;
+        }
+      }
+      if (!_command.WithSubledgerAccount) {
+        _excelFile.RemoveColumn("G");
+        _excelFile.RemoveColumn("F");
       }
     }
 

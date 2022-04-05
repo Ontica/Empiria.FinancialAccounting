@@ -98,7 +98,7 @@ namespace Empiria.FinancialAccounting.BalanceEngine.Adapters {
 
 
     static private BalanceEntryDto MapToBalanceByAccount(BalanceEntry entry, BalanceCommand command) {
-      
+
       var dto = new BalanceEntryDto();
 
       dto.ItemType = entry.ItemType;
@@ -115,28 +115,28 @@ namespace Empiria.FinancialAccounting.BalanceEngine.Adapters {
       dto.CurrencyCode = entry.Currency.Code;
       dto.CurrencyName = entry.Currency.Name;
       dto.SubledgerAccountNumber = entry.SubledgerAccountNumber;
-
+      dto.subledgerAccountName = entry.SubledgerAccountName;
       if (entry.ItemType == TrialBalanceItemType.BalanceTotalCurrency) {
         dto.AccountNumber = "";
 
       } else if (entry.SubledgerAccountNumber != string.Empty && command.WithSubledgerAccount) {
         dto.AccountNumber = entry.SubledgerAccountNumber;
-
       } else {
         dto.AccountNumber = entry.Account.Number == "Empty" ? "" : entry.Account.Number;
       }
 
       dto.AccountNumberForBalances = entry.Account.Number;
 
-      if (entry.SubledgerAccountNumber != string.Empty) {
-        dto.AccountName = entry.SubledgerAccountName;
-      } else if (entry.ItemType == TrialBalanceItemType.Group || entry.ItemType == TrialBalanceItemType.Total) {
+      //if (entry.SubledgerAccountNumber != string.Empty) {
+      //  dto.AccountName = entry.SubledgerAccountName;
+      //} else 
+      if (entry.ItemType == TrialBalanceItemType.Group || entry.ItemType == TrialBalanceItemType.Total) {
         dto.AccountName = entry.ItemType == TrialBalanceItemType.Total ?
                           $"{entry.GroupName}, Naturaleza: {entry.DebtorCreditor}" : entry.GroupName;
       } else {
         dto.AccountName = entry.Account.Name;
       }
-
+      dto.DebtorCreditor = entry.DebtorCreditor.ToString();
       dto.SectorCode = entry.Sector.Code;
       dto.InitialBalance = entry.InitialBalance;
       if (entry.ItemType != TrialBalanceItemType.Total) {

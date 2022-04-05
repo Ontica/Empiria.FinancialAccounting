@@ -97,6 +97,7 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
         if (balancesByLedger.Count > 0) {
 
           foreach (var balance in balancesByLedger) {
+            balance.DebtorCreditor = balance.Account.DebtorCreditor;
             if (balance.LastChangeDate > totalByAccount.LastChangeDate) {
               totalByAccount.LastChangeDate = balance.LastChangeDate;
             }

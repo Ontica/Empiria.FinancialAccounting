@@ -110,7 +110,7 @@ namespace Empiria.FinancialAccounting.BalanceEngine.Adapters {
 
     public string DebtorCreditor {
       get; internal set;
-    }
+    } = string.Empty;
 
     public bool HasAccountStatement {
       get; internal set;
