@@ -186,7 +186,7 @@ namespace Empiria.FinancialAccounting.FinancialReports {
       }
     }
 
-    private FinancialReportType BaseReport {
+    public FinancialReportType BaseReport {
       get {
         return base.ExtendedDataField.Get("baseReportId", FinancialReportType.Empty);
       }
