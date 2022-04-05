@@ -90,11 +90,15 @@ namespace Empiria.FinancialAccounting.WebApi.Rules {
 
 
     [HttpPost]
-    [Route("v2/financial-accounting/rules/grouping-rules/{rulesSetUID:guid}/clean-up")]
-    public NoDataModel CleanupGroupingRules([FromUri] string rulesSetUID) {
-
+    [Route("v2/financial-accounting/rules/grouping-rules/clean-up")]
+    public NoDataModel CleanupGroupingRules() {
       using (var usecases = GroupingRulesUseCases.UseCaseInteractor()) {
-        usecases.CleanupRules(rulesSetUID);
+
+        var rulesets = usecases.GroupingRulesSetsFor(AccountsChart.IFRS.UID);
+
+        foreach (var ruleset in rulesets) {
+          usecases.CleanupRules(ruleset.UID);
+        }
 
         return new NoDataModel(base.Request);
       }
