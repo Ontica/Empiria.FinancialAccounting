@@ -911,7 +911,7 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
           summaryEntry.Credit += entry.Credit;
           summaryEntry.CurrentBalance += entry.CurrentBalance;
         } else if (entry.HasSector && entry.Level > 1) {
-          SummaryByEntry(hashEntries, entry, entry.Account, Sector.Empty, TrialBalanceItemType.Entry);
+          SummaryByEntry(hashEntries, entry, entry.Account, Sector.Empty, TrialBalanceItemType.Summary);
         }
       }
 
