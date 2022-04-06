@@ -59,16 +59,17 @@ namespace Empiria.FinancialAccounting.Reporting.Exporters.Excel {
 
       switch (reportType.DesignType) {
         case FinancialReportDesignType.FixedRows:
-          _excelFile.SetCell($"A1",
-                             $"Fecha {command.Date.ToString("dd/MMM/yyyy")} " +
-                              "Regulatorio R01  Reporte B 0111  Subreporte 1");
+
+          _excelFile.SetCell($"L2", DateTime.Now);
+          _excelFile.SetCell($"L3", command.ToDate);
+
           return;
 
         case FinancialReportDesignType.AccountsIntegration:
 
           _excelFile.SetCell($"A2", command.GetFinancialReportType().BaseReport.Name);
           _excelFile.SetCell($"I2", DateTime.Now);
-          _excelFile.SetCell($"I3", command.Date);
+          _excelFile.SetCell($"I3", command.ToDate);
 
           return;
 
@@ -81,20 +82,19 @@ namespace Empiria.FinancialAccounting.Reporting.Exporters.Excel {
     private void SetTable(FinancialReportDto financialReport) {
       FinancialReportType reportType = financialReport.Command.GetFinancialReportType();
 
-
       switch (reportType.DesignType) {
         case FinancialReportDesignType.FixedRows:
 
           var entries = new FixedList<FinancialReportEntryDto>(financialReport.Entries.Select(x => (FinancialReportEntryDto) x));
 
-          FillOutFixedRowsReport(entries);
+          FillOutFixedRowsReport(financialReport.Columns, entries);
           return;
 
         case FinancialReportDesignType.AccountsIntegration:
 
           var entries2 = new FixedList<IntegrationReportEntryDto>(financialReport.Entries.Select(x => (IntegrationReportEntryDto) x));
 
-          FillOutConceptsIntegrationReport(entries2);
+          FillOutConceptsIntegrationReport(financialReport.Columns, entries2);
           return;
 
         default:
@@ -103,21 +103,29 @@ namespace Empiria.FinancialAccounting.Reporting.Exporters.Excel {
     }
 
 
-    private void FillOutFixedRowsReport(FixedList<FinancialReportEntryDto> entries) {
-      int i = 8;
+    private void FillOutFixedRowsReport(FixedList<DataTableColumn> columns,
+                                        FixedList<FinancialReportEntryDto> entries) {
+      int i = 10;
 
       foreach (var entry in entries) {
         _excelFile.SetCell($"A{i}", entry.ConceptCode.Replace(" ", string.Empty));
         _excelFile.SetCell($"B{i}", entry.Concept);
-        _excelFile.SetCell($"C{i}", entry.GetTotalField(FinancialReportTotalField.DomesticCurrencyTotal));
-        _excelFile.SetCell($"D{i}", entry.GetTotalField(FinancialReportTotalField.ForeignCurrencyTotal));
-        _excelFile.SetCell($"E{i}", entry.GetTotalField(FinancialReportTotalField.Total));
+        _excelFile.IndentCell($"B{i}", entry.Level - 1);
+
+        foreach (var totalColumn in columns.FindAll(x => x.Type == "decimal")) {
+
+          decimal totalField = entry.GetTotalField(totalColumn.Field);
+
+          _excelFile.SetCell($"{totalColumn.Position}{i}", totalField);
+        }
+
         i++;
       }
     }
 
 
-    private void FillOutConceptsIntegrationReport(FixedList<IntegrationReportEntryDto> entries) {
+    private void FillOutConceptsIntegrationReport(FixedList<DataTableColumn> columns,
+                                                  FixedList<IntegrationReportEntryDto> entries) {
       int i = 5;
 
       foreach (var entry in entries) {
@@ -127,9 +135,18 @@ namespace Empiria.FinancialAccounting.Reporting.Exporters.Excel {
         _excelFile.SetCell($"D{i}", entry.ItemName);
         _excelFile.SetCell($"E{i}", entry.SectorCode);
         _excelFile.SetCell($"F{i}", entry.Operator);
-        _excelFile.SetCell($"G{i}", entry.GetTotalField(FinancialReportTotalField.DomesticCurrencyTotal));
-        _excelFile.SetCell($"H{i}", entry.GetTotalField(FinancialReportTotalField.ForeignCurrencyTotal));
-        _excelFile.SetCell($"I{i}", entry.GetTotalField(FinancialReportTotalField.Total));
+
+        foreach (var totalColumn in columns.FindAll(x => x.Type == "decimal")) {
+
+          decimal totalField = entry.GetTotalField(totalColumn.Field);
+
+          _excelFile.SetCell($"{totalColumn.Position}{i}", totalField);
+        }
+
+        if (entry.ItemType == FinancialReportItemType.Summary) {
+          _excelFile.SetRowStyleBold(i);
+        }
+
         i++;
       }
     }

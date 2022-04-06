@@ -26,22 +26,27 @@ namespace Empiria.FinancialAccounting {
 
 
     public string Field {
-      get;
+      get; set;
     }
 
 
     public string Title {
-      get;
+      get; set;
     }
 
 
     public string Type {
-      get;
+      get; set;
     }
 
 
     public int Digits {
-      get;
+      get; set;
+    }
+
+
+    public string Position {
+      get; set;
     }
 
   }  // class DataTableColumn
