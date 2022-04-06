@@ -74,13 +74,18 @@ namespace Empiria.FinancialAccounting.Rules {
       get; private set;
     }
 
-
     public FixedList<GroupingRuleItem> Items {
       get {
         if (items == null) {
           items = RulesSet.GetGroupingRuleItems(this);
         }
         return items;
+      }
+    }
+
+    public int Level {
+      get {
+        return 1;
       }
     }
 

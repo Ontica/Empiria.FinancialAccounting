@@ -35,6 +35,10 @@ namespace Empiria.FinancialAccounting.FinancialReports.Adapters {
       get; internal set;
     }
 
+    public int Level {
+      get; internal set;
+    } = 1;
+
     public string AccountsChartName {
       get; internal set;
     }
@@ -42,7 +46,6 @@ namespace Empiria.FinancialAccounting.FinancialReports.Adapters {
     public string RulesSetName {
       get; internal set;
     }
-
 
     public override IEnumerable<string> GetDynamicMemberNames() {
       List<string> members = new List<string>();
