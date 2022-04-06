@@ -53,7 +53,6 @@ namespace Empiria.FinancialAccounting.FinancialReports.Adapters {
       };
     }
 
-
     static private FixedList<DynamicFinancialReportEntryDto> MapBreakdownEntries(FixedList<FinancialReportEntry> list) {
       var mappedItems = list.Select((x) => MapBreakdownEntry(x));
 
@@ -136,14 +135,31 @@ namespace Empiria.FinancialAccounting.FinancialReports.Adapters {
 
 
     static private FinancialReportEntryDto MapToFixedRowsReport(FixedRowFinancialReportEntry entry) {
-      dynamic o = new FinancialReportEntryDto {
-         UID = entry.Row.UID,
-         ConceptCode = entry.GroupingRule.Code,
-         Concept = entry.GroupingRule.Concept,
-         GroupingRuleUID = entry.GroupingRule.UID,
-         AccountsChartName = entry.GroupingRule.RulesSet.AccountsChart.Name,
-         RulesSetName = entry.GroupingRule.RulesSet.Name,
-      };
+      bool hasGroupingRule = !entry.GroupingRule.IsEmptyInstance;
+
+      dynamic o;
+
+      if (hasGroupingRule) {
+        o = new FinancialReportEntryDto {
+          UID = entry.Row.UID,
+          ConceptCode = entry.GroupingRule.Code,
+          Concept = entry.GroupingRule.Concept,
+          Level = entry.GroupingRule.Level,
+          GroupingRuleUID = entry.GroupingRule.UID,
+          AccountsChartName = entry.GroupingRule.RulesSet.AccountsChart.Name,
+          RulesSetName = entry.GroupingRule.RulesSet.Name
+        };
+      } else {
+        o = new FinancialReportEntryDto {
+          UID = entry.Row.UID,
+          ConceptCode = entry.Row.Code,
+          Concept = entry.Row.Label,
+          Level = 1,
+          GroupingRuleUID = string.Empty,
+          AccountsChartName = string.Empty,
+          RulesSetName = String.Empty
+        };
+      }
 
       SetTotalsFields(o, entry);
 

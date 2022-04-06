@@ -170,6 +170,11 @@ namespace Empiria.FinancialAccounting.FinancialReports {
     private void ProcessEntries(FixedList<FixedRowFinancialReportEntry> reportEntries) {
 
       foreach (var reportEntry in reportEntries) {
+
+        if (reportEntry.GroupingRule.IsEmptyInstance) {
+          continue;
+        }
+
         ReportEntryTotals totals = ProcessGroupingRule(reportEntry.GroupingRule);
 
         if (FinancialReportType.RoundDecimals) {
@@ -183,7 +188,7 @@ namespace Empiria.FinancialAccounting.FinancialReports {
 
     private ReportEntryTotals ProcessFixedValue(GroupingRuleItem groupingRuleItem) {
       ExternalValue value = ExternalValue.GetValue(groupingRuleItem.ExternalVariableCode,
-                                                   _command.Date);
+                                                   _command.ToDate);
 
       var totals = CreateReportEntryTotalsObject();
 
@@ -192,6 +197,9 @@ namespace Empiria.FinancialAccounting.FinancialReports {
 
 
     private ReportEntryTotals ProcessGroupingRule(GroupingRule groupingRule) {
+      Assertion.Assert(!groupingRule.IsEmptyInstance,
+                       "Cannot process the empty GroupingRule instance.");
+
       var totals = CreateReportEntryTotalsObject();
 
       foreach (var groupingRuleItem in groupingRule.Items) {
@@ -318,7 +326,8 @@ namespace Empiria.FinancialAccounting.FinancialReports {
     private FixedList<FinancialReportRow> GetReportRowsWithIntegrationAccounts() {
       FixedList<FinancialReportRow> rows = GetReportFixedRows();
 
-      return rows.FindAll(x => x.GroupingRule.Items.Contains(item => item.Type == GroupingRuleItemType.Account));
+      return rows.FindAll(x => !x.GroupingRule.IsEmptyInstance &&
+                                x.GroupingRule.Items.Contains(item => item.Type == GroupingRuleItemType.Account));
     }
 
 

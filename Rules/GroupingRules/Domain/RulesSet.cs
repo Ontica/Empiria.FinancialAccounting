@@ -77,7 +77,7 @@ namespace Empiria.FinancialAccounting.Rules {
 
     public AccountsChart AccountsChart {
       get {
-        return base.ExtendedDataField.Get<AccountsChart>("accountsChartId");
+        return base.ExtendedDataField.Get("accountsChartId", AccountsChart.Empty);
       }
     }
 
@@ -115,6 +115,8 @@ namespace Empiria.FinancialAccounting.Rules {
 
 
     internal FixedList<GroupingRuleItem> GetGroupingRuleItems(GroupingRule groupingRule) {
+      Assertion.AssertObject(groupingRule, "groupingRule");
+
       return _groupingRulesItems.Value.FindAll(x => x.GroupingRule.Equals(groupingRule));
     }
 
