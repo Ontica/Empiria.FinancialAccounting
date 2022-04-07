@@ -24,6 +24,7 @@ namespace Empiria.FinancialAccounting.Reporting.Builders {
       Assertion.AssertObject(command, "command");
 
       AccountsSearchCommand searchCommand = GetAccountsSearchCommand(command);
+
       using (var usecases = AccountsChartUseCases.UseCaseInteractor()) {
         AccountsChartDto accountsChart = usecases.SearchAccounts(command.AccountsChartUID, searchCommand);
 
@@ -65,19 +66,24 @@ namespace Empiria.FinancialAccounting.Reporting.Builders {
       return new ReportDataDto {
         Command = command,
         Columns = GetReportColumns(),
-        Entries = MapToReportDataEntries(accounts)
+        Entries = MapToReportDataEntries(accounts, command.ToDate)
       };
     }
 
 
-    static private FixedList<IReportEntryDto> MapToReportDataEntries(FixedList<AccountDescriptorDto> list) {
-      var mappedItems = list.Select((x) => MapAccountsToOperationalReport(x));
+    static private FixedList<IReportEntryDto> MapToReportDataEntries(FixedList<AccountDescriptorDto> list,
+                                                                     DateTime date) {
+      var mappedItems = list.FindAll(x => x.StartDate <= date && date <= x.EndDate)
+                            .Select((x) => MapAccountsToOperationalReport(date, x));
 
       return new FixedList<IReportEntryDto>(mappedItems);
     }
 
 
-    static private IReportEntryDto MapAccountsToOperationalReport(AccountDescriptorDto account) {
+    static private IReportEntryDto MapAccountsToOperationalReport(DateTime date,
+                                                                  AccountDescriptorDto account) {
+      DateTime lastUpdate = date < account.EndDate ? account.StartDate : account.EndDate;
+
       return new CatalogoCuentasSatEntry {
         CodigoAgrupacion = "000",
         NumeroCuenta = account.Number,
@@ -85,11 +91,9 @@ namespace Empiria.FinancialAccounting.Reporting.Builders {
         SubcuentaDe = account.Level > 1 ? account.Parent : account.Number,
         Nivel = account.Level,
         Naturaleza = account.DebtorCreditor == DebtorCreditorType.Deudora ? "D" : "A",
-        FechaModificacion = account.EndDate < new DateTime(2049,12,31) ? 
-                            account.EndDate : account.StartDate,
+        FechaModificacion = lastUpdate,
         Baja = account.SummaryWithNotChildren ? "Sí" : ""
       };
-
     }
 
     #endregion Private methods
