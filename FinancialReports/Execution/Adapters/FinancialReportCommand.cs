@@ -29,11 +29,6 @@ namespace Empiria.FinancialAccounting.FinancialReports.Adapters {
     }
 
 
-    public DateTime Date {
-      get; set;
-    } = ExecutionServer.DateMinValue;
-
-
     public DateTime ToDate {
       get; set;
     } = ExecutionServer.DateMinValue;

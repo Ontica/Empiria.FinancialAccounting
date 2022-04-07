@@ -45,20 +45,17 @@ namespace Empiria.FinancialAccounting.FinancialReports.Adapters {
       get; internal set;
     }
 
+
     public bool HasAccountsIntegration {
       get; internal set;
     }
 
 
-    public FixedList<string> ExportTo {
+    public FixedList<ExportToDto> ExportTo {
       get;
       internal set;
     }
 
-    public FixedList<ExportToDto> ExportTo2 {
-      get;
-      internal set;
-    }
 
     public ShowFields Show {
       get;

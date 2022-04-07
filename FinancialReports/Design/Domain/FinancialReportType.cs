@@ -76,6 +76,11 @@ namespace Empiria.FinancialAccounting.FinancialReports {
       };
     }
 
+    public string UID {
+      get {
+        return $"{Name}.{Dataset}";
+      }
+    }
 
     [DataField("Name")]
     public string Name {
@@ -234,8 +239,8 @@ namespace Empiria.FinancialAccounting.FinancialReports {
     }
 
 
-    public ExportTo GetExportToConfig(string exportToName) {
-      return ExportTo.Find(x => x.Name == exportToName);
+    public ExportTo GetExportToConfig(string exportToUID) {
+      return ExportTo.Find(x => x.UID == exportToUID);
     }
 
 
