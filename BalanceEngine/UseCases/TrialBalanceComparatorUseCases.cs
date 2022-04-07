@@ -30,7 +30,7 @@ namespace Empiria.FinancialAccounting.BalanceEngine.UseCases {
 
     #region Use cases
 
-    public TrialBalanceDto BuildBalancesByAccount(TrialBalanceCommand command) {
+    public TrialBalanceDto BuildBalances(TrialBalanceCommand command) {
       Assertion.AssertObject(command, "command");
 
       var trialBalanceEngine = new TrialBalanceEngine(command);

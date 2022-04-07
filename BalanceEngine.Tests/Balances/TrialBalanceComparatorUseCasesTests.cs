@@ -44,9 +44,9 @@ namespace Empiria.FinancialAccounting.Tests.Balances {
       command.TrialBalanceType = TrialBalanceType.GeneracionDeSaldos;
       command.ShowCascadeBalances = false;
 
-      TrialBalanceDto balances = _usecases.BuildBalancesByAccount(command);
+      TrialBalanceDto balances = _usecases.BuildBalances(command);
       command.TrialBalanceType = TrialBalanceType.Balanza;
-      TrialBalanceDto trialBalance = _usecases.BuildBalancesByAccount(command);
+      TrialBalanceDto trialBalance = _usecases.BuildBalances(command);
 
       Assert.NotNull(balances);
       Assert.NotEmpty(balances.Entries);
@@ -80,9 +80,9 @@ namespace Empiria.FinancialAccounting.Tests.Balances {
       command.ShowCascadeBalances = false;
       command.UseDefaultValuation = true;
 
-      TrialBalanceDto trialBalance = _usecases.BuildBalancesByAccount(command);
+      TrialBalanceDto trialBalance = _usecases.BuildBalances(command);
       command.TrialBalanceType = TrialBalanceType.AnaliticoDeCuentas;
-      TrialBalanceDto twoColumns = _usecases.BuildBalancesByAccount(command);
+      TrialBalanceDto twoColumns = _usecases.BuildBalances(command);
 
       Assert.NotNull(trialBalance);
       Assert.NotEmpty(trialBalance.Entries);
@@ -118,9 +118,9 @@ namespace Empiria.FinancialAccounting.Tests.Balances {
       command.ShowCascadeBalances = false;
       command.UseDefaultValuation = true;
 
-      TrialBalanceDto trialBalance = _usecases.BuildBalancesByAccount(command);
+      TrialBalanceDto trialBalance = _usecases.BuildBalances(command);
       command.TrialBalanceType = TrialBalanceType.AnaliticoDeCuentas;
-      TrialBalanceDto twoColumns = _usecases.BuildBalancesByAccount(command);
+      TrialBalanceDto twoColumns = _usecases.BuildBalances(command);
 
       Assert.NotNull(trialBalance);
       Assert.NotEmpty(trialBalance.Entries);
@@ -156,9 +156,9 @@ namespace Empiria.FinancialAccounting.Tests.Balances {
       command.BalancesType = BalancesType.WithCurrentBalanceOrMovements;
       command.ShowCascadeBalances = true;
 
-      TrialBalanceDto trialBalance = _usecases.BuildBalancesByAccount(command);
+      TrialBalanceDto trialBalance = _usecases.BuildBalances(command);
       command.TrialBalanceType = TrialBalanceType.BalanzaConContabilidadesEnCascada;
-      TrialBalanceDto cascadeBalance = _usecases.BuildBalancesByAccount(command);
+      TrialBalanceDto cascadeBalance = _usecases.BuildBalances(command);
 
       Assert.NotNull(trialBalance);
       Assert.NotEmpty(trialBalance.Entries);
@@ -190,9 +190,9 @@ namespace Empiria.FinancialAccounting.Tests.Balances {
       command.BalancesType = BalancesType.WithCurrentBalanceOrMovements;
       command.ShowCascadeBalances = false;
 
-      TrialBalanceDto trialBalance = _usecases.BuildBalancesByAccount(command);
+      TrialBalanceDto trialBalance = _usecases.BuildBalances(command);
       command.TrialBalanceType = TrialBalanceType.BalanzaEnColumnasPorMoneda;
-      TrialBalanceDto balancesByCurrency = _usecases.BuildBalancesByAccount(command);
+      TrialBalanceDto balancesByCurrency = _usecases.BuildBalances(command);
 
       Assert.NotNull(trialBalance);
       Assert.NotEmpty(trialBalance.Entries);
@@ -248,13 +248,13 @@ namespace Empiria.FinancialAccounting.Tests.Balances {
       command.ShowCascadeBalances = false;
       command.UseDefaultValuation = true;
 
-      TrialBalanceDto dollarizedBalance = _usecases.BuildBalancesByAccount(command);
+      TrialBalanceDto dollarizedBalance = _usecases.BuildBalances(command);
       command.UseDefaultValuation = false;
       command.InitialPeriod.UseDefaultValuation = false;
       command.InitialPeriod.ValuateToCurrrencyUID = "";
       command.InitialPeriod.ExchangeRateTypeUID = "";
       command.TrialBalanceType = TrialBalanceType.Balanza;
-      TrialBalanceDto trialBalance = _usecases.BuildBalancesByAccount(command);
+      TrialBalanceDto trialBalance = _usecases.BuildBalances(command);
 
       Assert.NotNull(trialBalance);
       Assert.NotEmpty(trialBalance.Entries);
@@ -293,9 +293,9 @@ namespace Empiria.FinancialAccounting.Tests.Balances {
       command.FromAccount = "1";
       command.ToAccount = "1";
 
-      TrialBalanceDto balanceBySubledger = _usecases.BuildBalancesByAccount(command);
+      TrialBalanceDto balanceBySubledger = _usecases.BuildBalances(command);
       command.TrialBalanceType = TrialBalanceType.Balanza;
-      TrialBalanceDto trialBalance = _usecases.BuildBalancesByAccount(command);
+      TrialBalanceDto trialBalance = _usecases.BuildBalances(command);
 
       Assert.NotNull(trialBalance);
       Assert.NotEmpty(trialBalance.Entries);
@@ -314,6 +314,47 @@ namespace Empiria.FinancialAccounting.Tests.Balances {
                                                     ).Sum(a => a.CurrentBalance);
         wrongEntries = cascadeEntry.CurrentBalanceForBalances != balanceEntry ?
                        wrongEntries + 1 : wrongEntries;
+      }
+      Assert.True(wrongEntries == 0);
+    }
+
+
+    [Fact]
+    public void Should_Match_BalanceByAccount_With_Trial_Balance() {
+      TrialBalanceCommand command = GetDefaultTrialBalanceCommand();
+      
+      command.AccountsChartUID = "47ec2ec7-0f4f-482e-9799-c23107b60d8a";
+      command.BalancesType = BalancesType.WithCurrentBalance;
+      command.ShowCascadeBalances = false;
+      command.WithSubledgerAccount = false;
+      command.FromAccount = "4";
+      command.ToAccount = "9";
+      command.TrialBalanceType = TrialBalanceType.SaldosPorCuenta;
+      TrialBalanceDto balanceByAccount = _usecases.BuildBalances(command);
+      command.TrialBalanceType = TrialBalanceType.Balanza;
+      TrialBalanceDto trialBalance = _usecases.BuildBalances(command);
+
+      Assert.NotNull(trialBalance);
+      Assert.NotEmpty(trialBalance.Entries);
+      Assert.NotNull(balanceByAccount);
+      Assert.NotEmpty(balanceByAccount.Entries);
+
+      var _trialBalance = trialBalance.Entries.Select(x => (TrialBalanceEntryDto) x);
+      var _balanceByAccount = balanceByAccount.Entries.Select(x => (TrialBalanceEntryDto) x);
+      var wrongEntries = 0;
+
+      foreach (var entry in _balanceByAccount.Where(a => a.ItemType == TrialBalanceItemType.Entry)) {
+        var balanceEntry = _trialBalance.Where(a => a.AccountNumber == entry.AccountNumber &&
+                                                    a.CurrencyCode == entry.CurrencyCode &&
+                                                    a.LedgerNumber == entry.LedgerNumber &&
+                                                    a.SectorCode == entry.SectorCode &&
+                                                    a.ItemType == TrialBalanceItemType.Entry
+                                                    ).Sum(a => a.CurrentBalance);
+        wrongEntries = entry.CurrentBalance != balanceEntry ?
+                       wrongEntries + 1 : wrongEntries;
+        if (wrongEntries > 0) {
+          wrongEntries = 0;
+        }
       }
       Assert.True(wrongEntries == 0);
     }
