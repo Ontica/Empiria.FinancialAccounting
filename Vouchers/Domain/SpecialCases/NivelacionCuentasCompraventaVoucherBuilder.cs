@@ -122,8 +122,11 @@ namespace Empiria.FinancialAccounting.Vouchers.SpecialCases {
 
 
     private VoucherEntryFields BuildVoucherEntryFields(string accountNumber, decimal amount, bool isDebit) {
-      StandardAccount stdAccount = AccountsChart.Parse(base.Fields.AccountsChartUID).GetStandardAccount(accountNumber);
-      LedgerAccount ledgerAccount = Ledger.Parse(base.Fields.LedgerUID).AssignAccount(stdAccount);
+      StandardAccount stdAccount = AccountsChart.Parse(base.Fields.AccountsChartUID)
+                                                .GetStandardAccount(accountNumber);
+
+      LedgerAccount ledgerAccount = Ledger.Parse(base.Fields.LedgerUID)
+                                          .AssignAccount(stdAccount);
 
       return new VoucherEntryFields {
         Amount = amount,
@@ -143,12 +146,14 @@ namespace Empiria.FinancialAccounting.Vouchers.SpecialCases {
                                                                  decimal revaluatedBalance) {
       var entries = new List<VoucherEntryFields>();
 
-      if (registeredBalance > revaluatedBalance) {
-        entries.Add(BuildVoucherEntryFields(item.AccountNumber, registeredBalance - revaluatedBalance, false));
-        entries.Add(BuildVoucherEntryFields(item.LossAccount, registeredBalance - revaluatedBalance, true));
-      } else {
-        entries.Add(BuildVoucherEntryFields(item.AccountNumber, revaluatedBalance - registeredBalance, true));
-        entries.Add(BuildVoucherEntryFields(item.ProfitAccount, revaluatedBalance - registeredBalance, false));
+      decimal amount = (revaluatedBalance * -1) - registeredBalance;
+
+      if (amount > 0) {
+        entries.Add(BuildVoucherEntryFields(item.AccountNumber, amount, true));
+        entries.Add(BuildVoucherEntryFields(item.ProfitAccount, amount, false));
+      } else if (amount < 0) {
+        entries.Add(BuildVoucherEntryFields(item.AccountNumber, Math.Abs(amount), false));
+        entries.Add(BuildVoucherEntryFields(item.LossAccount, Math.Abs(amount), true));
       }
 
       return entries;
