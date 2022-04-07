@@ -49,7 +49,21 @@ namespace Empiria.FinancialAccounting.FinancialReports.Adapters {
       return new FinancialReportTypeDto() {
         UID = reportType.UID,
         Name = reportType.Name,
-        ExportTo = new FixedList<string>(reportType.ExportTo.Select(x => x.Name))
+        ExportTo = new FixedList<string>(reportType.ExportTo.Select(x => x.Name)),
+        ExportTo2 = new FixedList<ExportToDto>(Map(reportType.ExportTo))
+      };
+    }
+
+    private static FixedList<ExportToDto> Map(FixedList<ExportTo> exportTo) {
+      return new FixedList<ExportToDto>(exportTo.Select(x => Map(x)));
+    }
+
+    private static ExportToDto Map(ExportTo exportTo) {
+      return new ExportToDto {
+        UID = $"{exportTo.Name}.{exportTo.Dataset}",
+        Name = exportTo.Name,
+        FileType = exportTo.FileType,
+        Dataset = exportTo.Dataset
       };
     }
 

@@ -98,8 +98,8 @@ namespace Empiria.FinancialAccounting.FinancialReports {
         BalancesType = BalanceEngine.BalancesType.WithCurrentBalanceOrMovements,
         ConsolidateBalancesToTargetCurrency = false,
         InitialPeriod = new TrialBalanceCommandPeriod {
-          FromDate = new DateTime(_command.Date.Year, _command.Date.Month, 1),
-          ToDate = _command.Date,
+          FromDate = new DateTime(_command.ToDate.Year, _command.ToDate.Month, 1),
+          ToDate = _command.ToDate,
           UseDefaultValuation = true
         }
       };
@@ -116,8 +116,8 @@ namespace Empiria.FinancialAccounting.FinancialReports {
         BalancesType = BalanceEngine.BalancesType.WithCurrentBalanceOrMovements,
         ConsolidateBalancesToTargetCurrency = false,
         InitialPeriod = new TrialBalanceCommandPeriod {
-          FromDate = new DateTime(_command.Date.Year, _command.Date.Month, 1),
-          ToDate = _command.Date,
+          FromDate = new DateTime(_command.ToDate.Year, _command.ToDate.Month, 1),
+          ToDate = _command.ToDate,
           UseDefaultValuation = true
         }
       };

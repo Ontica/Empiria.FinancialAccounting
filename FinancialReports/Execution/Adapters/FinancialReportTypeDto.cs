@@ -11,6 +11,23 @@ using System;
 
 namespace Empiria.FinancialAccounting.FinancialReports.Adapters {
 
+  public class ShowFields {
+
+    public bool GetAccountsIntegration {
+      get; set;
+    } = true;
+
+    public bool DatePeriod {
+      get; set;
+    }
+
+    public bool SingleDate {
+      get; set;
+    } = true;
+
+  }
+
+
   /// <summary>Output data transfer object for financial report types.</summary>
   public class FinancialReportTypeDto {
 
@@ -28,12 +45,25 @@ namespace Empiria.FinancialAccounting.FinancialReports.Adapters {
       get; internal set;
     }
 
+    public bool HasAccountsIntegration {
+      get; internal set;
+    }
+
 
     public FixedList<string> ExportTo {
       get;
       internal set;
     }
 
+    public FixedList<ExportToDto> ExportTo2 {
+      get;
+      internal set;
+    }
+
+    public ShowFields Show {
+      get;
+      internal set;
+    } = new ShowFields();
 
   }  // class FinancialReportTypeDto
 

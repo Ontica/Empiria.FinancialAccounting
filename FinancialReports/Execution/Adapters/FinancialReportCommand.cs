@@ -24,7 +24,22 @@ namespace Empiria.FinancialAccounting.FinancialReports.Adapters {
     }
 
 
+    public DateTime FromDate {
+      get; set;
+    }
+
+
     public DateTime Date {
+      get; set;
+    } = ExecutionServer.DateMinValue;
+
+
+    public DateTime ToDate {
+      get; set;
+    } = ExecutionServer.DateMinValue;
+
+
+    public bool GetAccountsIntegration {
       get; set;
     }
 

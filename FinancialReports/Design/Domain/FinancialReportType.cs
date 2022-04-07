@@ -13,7 +13,6 @@ using Empiria.Json;
 
 using Empiria.FinancialAccounting.FinancialReports.Data;
 
-
 namespace Empiria.FinancialAccounting.FinancialReports {
 
   public enum FinancialReportDesignType {
@@ -35,6 +34,29 @@ namespace Empiria.FinancialAccounting.FinancialReports {
 
   }
 
+  public class ExportToDto {
+
+    internal ExportToDto() {
+      // no-op
+    }
+
+    public string UID {
+      get; internal set;
+    }
+
+    public string Name {
+      get; internal set;
+    }
+
+    public string FileType {
+      get; internal set;
+    }
+
+    public string Dataset {
+      get; internal set;
+    }
+
+  }
 
   public class ExportTo {
 
@@ -49,7 +71,8 @@ namespace Empiria.FinancialAccounting.FinancialReports {
         FileType = json.Get<string>("fileType"),
         FileName = json.Get<string>("fileName", string.Empty),
         CsvBuilder = json.Get<string>("csvBuilder", string.Empty),
-        TemplateId = json.Get<int>("templateId", -1)
+        TemplateId = json.Get<int>("templateId", -1),
+        Dataset = json.Get<string>("dataset", "Default")
       };
     }
 
@@ -80,6 +103,12 @@ namespace Empiria.FinancialAccounting.FinancialReports {
 
     [DataField("TemplateId")]
     public int TemplateId {
+      get; private set;
+    }
+
+
+    [DataField("Dataset")]
+    public string Dataset {
       get; private set;
     }
 
