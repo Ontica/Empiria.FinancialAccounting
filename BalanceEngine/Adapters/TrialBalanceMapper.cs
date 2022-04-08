@@ -136,7 +136,6 @@ namespace Empiria.FinancialAccounting.BalanceEngine.Adapters {
 
     static private TwoColumnsTrialBalanceEntryDto MapToAnaliticoCuentas(TwoCurrenciesBalanceEntry entry) {
       var dto = new TwoColumnsTrialBalanceEntryDto();
-
       SubledgerAccount subledgerAccount = SubledgerAccount.Parse(entry.SubledgerAccountId);
 
       dto.ItemType = entry.ItemType;

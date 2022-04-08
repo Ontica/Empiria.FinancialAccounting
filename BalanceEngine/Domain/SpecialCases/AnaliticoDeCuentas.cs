@@ -60,7 +60,7 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
                                             twoColumnsEntries, trialBalance);
 
       FixedList<TwoCurrenciesBalanceEntry> summaryGroupEntries =
-                                            twoColumnsHelper.GetTotalSummaryGroup(twoColumnsEntries);
+                                            twoColumnsHelper.GetTotalSummaryByGroup(twoColumnsEntries);
 
       twoColumnsEntries = twoColumnsHelper.CombineGroupEntriesAndTwoColumnsEntries(
                                             twoColumnsEntries, summaryGroupEntries);

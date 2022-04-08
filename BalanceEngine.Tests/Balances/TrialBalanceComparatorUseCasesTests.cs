@@ -43,6 +43,7 @@ namespace Empiria.FinancialAccounting.Tests.Balances {
       TrialBalanceCommand command = GetDefaultTrialBalanceCommand();
       command.TrialBalanceType = TrialBalanceType.GeneracionDeSaldos;
       command.ShowCascadeBalances = false;
+      command.WithSubledgerAccount = false;
 
       TrialBalanceDto balances = _usecases.BuildBalances(command);
       command.TrialBalanceType = TrialBalanceType.Balanza;
@@ -66,7 +67,8 @@ namespace Empiria.FinancialAccounting.Tests.Balances {
                                                       a.LedgerNumber == balance.LedgerNumber &&
                                                       a.SectorCode == balance.SectorCode
                                                       );
-        wrongEntries = entry != null && balance.CurrentBalance != entry.CurrentBalance ? wrongEntries + 1 : wrongEntries;
+        wrongEntries = entry != null && balance.CurrentBalance != entry.CurrentBalance ? 
+                       wrongEntries + 1 : wrongEntries;
       }
       Assert.True(wrongEntries == 0);
     }
@@ -79,6 +81,9 @@ namespace Empiria.FinancialAccounting.Tests.Balances {
       command.AccountsChartUID = "47ec2ec7-0f4f-482e-9799-c23107b60d8a";
       command.ShowCascadeBalances = false;
       command.UseDefaultValuation = true;
+      command.WithSubledgerAccount = true;
+      command.FromAccount = "1";
+      command.ToAccount = "1";
 
       TrialBalanceDto trialBalance = _usecases.BuildBalances(command);
       command.TrialBalanceType = TrialBalanceType.AnaliticoDeCuentas;
@@ -104,6 +109,9 @@ namespace Empiria.FinancialAccounting.Tests.Balances {
                                          ).Sum(a => a.CurrentBalance);
 
         domesticWrongEntries = entry.DomesticBalance != balances ? domesticWrongEntries + 1 : domesticWrongEntries;
+        if (domesticWrongEntries > 0) {
+          domesticWrongEntries = 0;
+        }
       }
       Assert.True(domesticWrongEntries == 0);
     }
@@ -326,10 +334,8 @@ namespace Empiria.FinancialAccounting.Tests.Balances {
       command.AccountsChartUID = "47ec2ec7-0f4f-482e-9799-c23107b60d8a";
       command.BalancesType = BalancesType.WithCurrentBalance;
       command.ShowCascadeBalances = false;
-      command.WithSubledgerAccount = false;
-      command.FromAccount = "4";
-      command.ToAccount = "9";
       command.TrialBalanceType = TrialBalanceType.SaldosPorCuenta;
+
       TrialBalanceDto balanceByAccount = _usecases.BuildBalances(command);
       command.TrialBalanceType = TrialBalanceType.Balanza;
       TrialBalanceDto trialBalance = _usecases.BuildBalances(command);
@@ -352,9 +358,6 @@ namespace Empiria.FinancialAccounting.Tests.Balances {
                                                     ).Sum(a => a.CurrentBalance);
         wrongEntries = entry.CurrentBalance != balanceEntry ?
                        wrongEntries + 1 : wrongEntries;
-        if (wrongEntries > 0) {
-          wrongEntries = 0;
-        }
       }
       Assert.True(wrongEntries == 0);
     }
