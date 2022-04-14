@@ -181,6 +181,13 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
         TrialBalanceItemType itemType = entry.Currency.Code == "02" ?
                                         TrialBalanceItemType.Summary :
                                         TrialBalanceItemType.Entry;
+        if (entry.Level == 1 && entry.Sector.Code != "00") {
+          entry.InitialBalance = 0;
+          entry.Debit = 0;
+          entry.Credit = 0;
+          entry.CurrentBalance = 0;
+        }
+
         helper.SummaryByEntry(hashAccountEntries, entry, entry.Account,
                               Sector.Empty, itemType);
       }

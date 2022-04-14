@@ -316,7 +316,8 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
                (entry.ItemType == TrialBalanceItemType.Entry &&
                entriesWithSummarySector.Count == 2 && entry.Sector.Code != "00")) {
             var entryWithoutSector = entriesWithSummarySector.FirstOrDefault(a => a.Sector.Code == "00");
-            if (_command.TrialBalanceType != TrialBalanceType.AnaliticoDeCuentas && _command.TrialBalanceType != TrialBalanceType.Balanza) {
+            if (_command.TrialBalanceType != TrialBalanceType.AnaliticoDeCuentas &&
+                _command.TrialBalanceType != TrialBalanceType.Balanza) {
               entries.Remove(entryWithoutSector);
             }
           }
