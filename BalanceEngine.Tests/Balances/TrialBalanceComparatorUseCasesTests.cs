@@ -14,6 +14,7 @@ using Empiria.FinancialAccounting.BalanceEngine.Adapters;
 using Empiria.FinancialAccounting.BalanceEngine.UseCases;
 using Empiria.FinancialAccounting.BalanceEngine;
 using System.Linq;
+using System.Collections.Generic;
 
 namespace Empiria.FinancialAccounting.Tests.Balances {
 
@@ -79,11 +80,11 @@ namespace Empiria.FinancialAccounting.Tests.Balances {
       TrialBalanceCommand command = GetDefaultTrialBalanceCommand();
       command.TrialBalanceType = TrialBalanceType.Balanza;
       command.AccountsChartUID = "47ec2ec7-0f4f-482e-9799-c23107b60d8a";
-      command.ShowCascadeBalances = false;
+      command.ShowCascadeBalances = true;
       command.UseDefaultValuation = true;
-      command.WithSubledgerAccount = true;
-      command.FromAccount = "1";
-      command.ToAccount = "1";
+      command.WithSubledgerAccount = false;
+      command.FromAccount = "1.02.02.01.01.01.01";
+      command.ToAccount = "1.02.02.01.01.01.01";
 
       TrialBalanceDto trialBalance = _usecases.BuildBalances(command);
       command.TrialBalanceType = TrialBalanceType.AnaliticoDeCuentas;
@@ -109,9 +110,6 @@ namespace Empiria.FinancialAccounting.Tests.Balances {
                                          ).Sum(a => a.CurrentBalance);
 
         domesticWrongEntries = entry.DomesticBalance != balances ? domesticWrongEntries + 1 : domesticWrongEntries;
-        if (domesticWrongEntries > 0) {
-          domesticWrongEntries = 0;
-        }
       }
       Assert.True(domesticWrongEntries == 0);
     }
@@ -190,6 +188,80 @@ namespace Empiria.FinancialAccounting.Tests.Balances {
     }
 
 
+
+    [Fact]
+    public void Should_Match_BalanceBySubledger_With_Trial_Balance() {
+      TrialBalanceCommand command = GetDefaultTrialBalanceCommand();
+      command.TrialBalanceType = TrialBalanceType.SaldosPorAuxiliar;
+      command.AccountsChartUID = "47ec2ec7-0f4f-482e-9799-c23107b60d8a";
+      command.BalancesType = BalancesType.WithCurrentBalance;
+      command.ShowCascadeBalances = true;
+      command.WithSubledgerAccount = true;
+      command.FromAccount = "1";
+      command.ToAccount = "1";
+
+      TrialBalanceDto balanceBySubledger = _usecases.BuildBalances(command);
+      command.TrialBalanceType = TrialBalanceType.Balanza;
+      TrialBalanceDto trialBalance = _usecases.BuildBalances(command);
+
+      Assert.NotNull(trialBalance);
+      Assert.NotEmpty(trialBalance.Entries);
+      Assert.NotNull(balanceBySubledger);
+      Assert.NotEmpty(balanceBySubledger.Entries);
+
+      var _trialBalance = trialBalance.Entries.Select(x => (TrialBalanceEntryDto) x);
+      var _balanceBySubledger = balanceBySubledger.Entries.Select(x => (TrialBalanceEntryDto) x);
+      var wrongEntries = 0;
+
+      foreach (var cascadeEntry in _balanceBySubledger.Where(a => a.ItemType == TrialBalanceItemType.Summary)) {
+        var balanceEntry = _trialBalance.Where(a => a.AccountNumber == cascadeEntry.AccountNumber &&
+                                                    a.CurrencyCode == cascadeEntry.CurrencyCode &&
+                                                    a.LedgerNumber == cascadeEntry.LedgerNumber &&
+                                                    a.ItemType == TrialBalanceItemType.Entry
+                                                    ).Sum(a => a.CurrentBalance);
+        wrongEntries = cascadeEntry.CurrentBalanceForBalances != balanceEntry ?
+                       wrongEntries + 1 : wrongEntries;
+      }
+      Assert.True(wrongEntries == 0);
+    }
+
+
+    [Fact]
+    public void Should_Match_BalanceByAccount_With_Trial_Balance() {
+      TrialBalanceCommand command = GetDefaultTrialBalanceCommand();
+
+      command.AccountsChartUID = "47ec2ec7-0f4f-482e-9799-c23107b60d8a";
+      command.BalancesType = BalancesType.WithCurrentBalance;
+      command.ShowCascadeBalances = false;
+      command.TrialBalanceType = TrialBalanceType.SaldosPorCuenta;
+
+      TrialBalanceDto balanceByAccount = _usecases.BuildBalances(command);
+      command.TrialBalanceType = TrialBalanceType.Balanza;
+      TrialBalanceDto trialBalance = _usecases.BuildBalances(command);
+
+      Assert.NotNull(trialBalance);
+      Assert.NotEmpty(trialBalance.Entries);
+      Assert.NotNull(balanceByAccount);
+      Assert.NotEmpty(balanceByAccount.Entries);
+
+      var _trialBalance = trialBalance.Entries.Select(x => (TrialBalanceEntryDto) x);
+      var _balanceByAccount = balanceByAccount.Entries.Select(x => (TrialBalanceEntryDto) x);
+      var wrongEntries = 0;
+
+      foreach (var entry in _balanceByAccount.Where(a => a.ItemType == TrialBalanceItemType.Entry)) {
+        var balanceEntry = _trialBalance.Where(a => a.AccountNumber == entry.AccountNumber &&
+                                                    a.CurrencyCode == entry.CurrencyCode &&
+                                                    a.LedgerNumber == entry.LedgerNumber &&
+                                                    a.SectorCode == entry.SectorCode &&
+                                                    a.ItemType == TrialBalanceItemType.Entry
+                                                    ).Sum(a => a.CurrentBalance);
+        wrongEntries = entry.CurrentBalance != balanceEntry ?
+                       wrongEntries + 1 : wrongEntries;
+      }
+      Assert.True(wrongEntries == 0);
+    }
+
+
     [Fact]
     public void Should_Match_Currencies_With_Balance() {
       TrialBalanceCommand command = GetDefaultTrialBalanceCommand();
@@ -255,6 +327,8 @@ namespace Empiria.FinancialAccounting.Tests.Balances {
       command.BalancesType = BalancesType.WithCurrentBalanceOrMovements;
       command.ShowCascadeBalances = false;
       command.UseDefaultValuation = true;
+      command.FromAccount = "4";
+      command.ToAccount = "9";
 
       TrialBalanceDto dollarizedBalance = _usecases.BuildBalances(command);
       command.UseDefaultValuation = false;
@@ -273,97 +347,71 @@ namespace Empiria.FinancialAccounting.Tests.Balances {
       var _dollarizedBalance = dollarizedBalance.Entries.Select(x => (ValuedTrialBalanceDto) x);
       var wrongEntries = 0;
 
-      foreach (var cascadeEntry in _dollarizedBalance.Where(a => a.ItemType == TrialBalanceItemType.Summary)) {
-        var balanceEntry = _trialBalance.Where(a => a.AccountNumber == cascadeEntry.AccountNumber &&
+      wrongEntries = Should_Match_With_Dollar_Currency(_dollarizedBalance, _trialBalance);
+      wrongEntries = Should_Match_With_Yen_Currency(_dollarizedBalance, _trialBalance);
+      wrongEntries = Should_Match_With_Euro_Currency(_dollarizedBalance, _trialBalance);
+
+
+      Assert.True(wrongEntries == 0);
+    }
+
+    
+    #endregion Facts
+
+
+    #region Private methods
+
+    private int Should_Match_With_Dollar_Currency(IEnumerable<ValuedTrialBalanceDto> dollarizedBalance,
+                                                  IEnumerable<TrialBalanceEntryDto> trialBalance) {
+      int wrongEntries = 0;
+      foreach (var cascadeEntry in dollarizedBalance.Where(a => a.ItemType == TrialBalanceItemType.Summary)) {
+        var balanceEntry = trialBalance.Where(a => a.AccountNumber == cascadeEntry.AccountNumber &&
                                                     a.CurrencyCode == cascadeEntry.CurrencyCode &&
                                                     a.SectorCode == cascadeEntry.SectorCode &&
                                                     (a.ItemType == TrialBalanceItemType.Entry ||
                                                     a.ItemType == TrialBalanceItemType.Summary)
                                                     )
-                                        .ToList();
-        if (balanceEntry.Count > 0) {
-          decimal balance = (decimal) balanceEntry.Sum(a => a.CurrentBalance);
-          wrongEntries = cascadeEntry.TotalEquivalence != balance ? wrongEntries + 1 : wrongEntries;
-        }
+                                        .Sum(a => a.CurrentBalance);
+        wrongEntries = cascadeEntry.TotalBalance != balanceEntry ? wrongEntries + 1 : wrongEntries;
       }
-      Assert.True(wrongEntries == 0);
+      return wrongEntries;
     }
 
 
-    [Fact]
-    public void Should_Match_BalanceBySubledger_With_Trial_Balance() {
-      TrialBalanceCommand command = GetDefaultTrialBalanceCommand();
-      command.TrialBalanceType = TrialBalanceType.SaldosPorAuxiliar;
-      command.AccountsChartUID = "47ec2ec7-0f4f-482e-9799-c23107b60d8a";
-      command.BalancesType = BalancesType.WithCurrentBalance;
-      command.ShowCascadeBalances = true;
-      command.WithSubledgerAccount = true;
-      command.FromAccount = "1";
-      command.ToAccount = "1";
-
-      TrialBalanceDto balanceBySubledger = _usecases.BuildBalances(command);
-      command.TrialBalanceType = TrialBalanceType.Balanza;
-      TrialBalanceDto trialBalance = _usecases.BuildBalances(command);
-
-      Assert.NotNull(trialBalance);
-      Assert.NotEmpty(trialBalance.Entries);
-      Assert.NotNull(balanceBySubledger);
-      Assert.NotEmpty(balanceBySubledger.Entries);
-
-      var _trialBalance = trialBalance.Entries.Select(x => (TrialBalanceEntryDto) x);
-      var _balanceBySubledger = balanceBySubledger.Entries.Select(x => (TrialBalanceEntryDto) x);
-      var wrongEntries = 0;
-
-      foreach (var cascadeEntry in _balanceBySubledger.Where(a => a.ItemType == TrialBalanceItemType.Summary)) {
-        var balanceEntry = _trialBalance.Where(a => a.AccountNumber == cascadeEntry.AccountNumber &&
+    private int Should_Match_With_Euro_Currency(IEnumerable<ValuedTrialBalanceDto> dollarizedBalance,
+                                                IEnumerable<TrialBalanceEntryDto> trialBalance) {
+      int wrongEntries = 0;
+      foreach (var cascadeEntry in dollarizedBalance.Where(a => a.CurrencyCode == "27")) {
+        var balanceEntry = trialBalance.Where(a => a.AccountNumber == cascadeEntry.AccountNumber &&
                                                     a.CurrencyCode == cascadeEntry.CurrencyCode &&
-                                                    a.LedgerNumber == cascadeEntry.LedgerNumber &&
-                                                    a.ItemType == TrialBalanceItemType.Entry
-                                                    ).Sum(a => a.CurrentBalance);
-        wrongEntries = cascadeEntry.CurrentBalanceForBalances != balanceEntry ?
-                       wrongEntries + 1 : wrongEntries;
+                                                    a.SectorCode == cascadeEntry.SectorCode &&
+                                                    (a.ItemType == TrialBalanceItemType.Entry ||
+                                                    a.ItemType == TrialBalanceItemType.Summary)
+                                                    )
+                                        .Sum(a => a.CurrentBalance);
+        wrongEntries = cascadeEntry.TotalBalance != balanceEntry ? wrongEntries + 1 : wrongEntries;
       }
-      Assert.True(wrongEntries == 0);
+      return wrongEntries;
     }
 
 
-    [Fact]
-    public void Should_Match_BalanceByAccount_With_Trial_Balance() {
-      TrialBalanceCommand command = GetDefaultTrialBalanceCommand();
-      
-      command.AccountsChartUID = "47ec2ec7-0f4f-482e-9799-c23107b60d8a";
-      command.BalancesType = BalancesType.WithCurrentBalance;
-      command.ShowCascadeBalances = false;
-      command.TrialBalanceType = TrialBalanceType.SaldosPorCuenta;
-
-      TrialBalanceDto balanceByAccount = _usecases.BuildBalances(command);
-      command.TrialBalanceType = TrialBalanceType.Balanza;
-      TrialBalanceDto trialBalance = _usecases.BuildBalances(command);
-
-      Assert.NotNull(trialBalance);
-      Assert.NotEmpty(trialBalance.Entries);
-      Assert.NotNull(balanceByAccount);
-      Assert.NotEmpty(balanceByAccount.Entries);
-
-      var _trialBalance = trialBalance.Entries.Select(x => (TrialBalanceEntryDto) x);
-      var _balanceByAccount = balanceByAccount.Entries.Select(x => (TrialBalanceEntryDto) x);
-      var wrongEntries = 0;
-
-      foreach (var entry in _balanceByAccount.Where(a => a.ItemType == TrialBalanceItemType.Entry)) {
-        var balanceEntry = _trialBalance.Where(a => a.AccountNumber == entry.AccountNumber &&
-                                                    a.CurrencyCode == entry.CurrencyCode &&
-                                                    a.LedgerNumber == entry.LedgerNumber &&
-                                                    a.SectorCode == entry.SectorCode &&
-                                                    a.ItemType == TrialBalanceItemType.Entry
-                                                    ).Sum(a => a.CurrentBalance);
-        wrongEntries = entry.CurrentBalance != balanceEntry ?
-                       wrongEntries + 1 : wrongEntries;
+    private int Should_Match_With_Yen_Currency(IEnumerable<ValuedTrialBalanceDto> dollarizedBalance, 
+                                               IEnumerable<TrialBalanceEntryDto> trialBalance) {
+      int wrongEntries = 0;
+      foreach (var cascadeEntry in dollarizedBalance.Where(a => a.CurrencyCode == "06")) {
+        var balanceEntry = trialBalance.Where(a => a.AccountNumber == cascadeEntry.AccountNumber &&
+                                                    a.CurrencyCode == cascadeEntry.CurrencyCode &&
+                                                    a.SectorCode == cascadeEntry.SectorCode &&
+                                                    (a.ItemType == TrialBalanceItemType.Entry ||
+                                                    a.ItemType == TrialBalanceItemType.Summary)
+                                                    )
+                                        .Sum(a => a.CurrentBalance);
+        wrongEntries = cascadeEntry.TotalBalance != balanceEntry ? wrongEntries + 1 : wrongEntries;
       }
-      Assert.True(wrongEntries == 0);
+      return wrongEntries;
     }
 
-    #endregion Facts
-
+    #endregion
 
     #region Helpers
 
