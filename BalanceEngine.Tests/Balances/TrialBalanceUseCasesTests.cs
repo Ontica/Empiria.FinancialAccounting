@@ -53,8 +53,6 @@ namespace Empiria.FinancialAccounting.Tests.Balances {
       command.WithSubledgerAccount = true;
       command.WithAverageBalance = false;
       command.ShowCascadeBalances = true;
-      command.FromAccount = "1.05.01.03.02.03.01";
-      command.ToAccount = "1.05.01.03.02.03.01";
 
       TrialBalanceDto trialBalance = _usecases.BuildTrialBalance(command);
 
@@ -109,6 +107,27 @@ namespace Empiria.FinancialAccounting.Tests.Balances {
       Assert.Equal(command, trialBalance.Command);
       Assert.NotEmpty(trialBalance.Entries);
     }
+
+
+    [Fact]
+    public void Should_Build_Balanza_Dolarizada() {
+      TrialBalanceCommand command = GetDefaultTrialBalanceCommand();
+      command.TrialBalanceType = TrialBalanceType.BalanzaDolarizada;
+      command.BalancesType = BalancesType.WithCurrentBalanceOrMovements;
+      command.AccountsChartUID = "47ec2ec7-0f4f-482e-9799-c23107b60d8a";
+      command.UseDefaultValuation = true;
+      command.ShowCascadeBalances = false;
+      command.FromAccount = "1";
+      command.ToAccount = "1";
+      TrialBalanceDto trialBalance = _usecases.BuildTrialBalance(command);
+
+      Assert.NotNull(trialBalance);
+      Assert.Equal(command, trialBalance.Command);
+      Assert.NotEmpty(trialBalance.Entries);
+    }
+
+
+
 
     #endregion Facts
 
