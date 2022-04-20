@@ -146,7 +146,7 @@ namespace Empiria.FinancialAccounting.Adapters {
     static private FixedList<ValuedCurrencyDto> ValuateCurrencies(FixedList<ValuedCurrencyDto> valuedCurrencies,
                                                                   Currency baseCurrency,
                                                                   DateTime date) {
-      FixedList<ExchangeRate> exchangeRates = ExchangeRate.GetList(ExchangeRateType.ForVoucherEntries, date);
+      FixedList<ExchangeRate> exchangeRates = ExchangeRate.GetList(ExchangeRateType.Diario, date);
 
       foreach (var currency in valuedCurrencies) {
         if (currency.UID == baseCurrency.UID) {

@@ -14,6 +14,7 @@ namespace Empiria.FinancialAccounting {
   /// <summary>Represents an exchange rate type.</summary>
   public class ExchangeRateType : GeneralObject {
 
+
     private ExchangeRateType() {
       // Required by Empiria Framework.
     }
@@ -35,12 +36,11 @@ namespace Empiria.FinancialAccounting {
 
     static public ExchangeRateType Empty => BaseObject.ParseEmpty<ExchangeRateType>();
 
+    static public ExchangeRateType Diario => ExchangeRateType.Parse(46);
 
-    static public ExchangeRateType ForVoucherEntries {
-      get {
-        return ExchangeRateType.Parse(46);
-      }
-    }
+    static public ExchangeRateType Dolarizacion => ExchangeRateType.Parse(120);
+
+    static public ExchangeRateType ValorizacionBanxico => ExchangeRateType.Parse(49);
 
 
   } // class ExchangeRateType

@@ -46,7 +46,7 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
       return OrderByLedgerAndCurrency(returnedEntries);
     }
 
-    
+
     internal List<TrialBalanceEntry> CombineDebtorCreditorAndPostingEntries(
                                       List<TrialBalanceEntry> trialBalance,
                                       List<TrialBalanceEntry> summaryEntries) {
@@ -404,7 +404,7 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
         } else {
           throw Assertion.AssertNoReachThisCode();
         }
-        
+
         if (!entry.HasParentPostingEntry) {
           int cont = 0;
           while (true) {
@@ -781,10 +781,11 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
                                                                 TrialBalanceCommandPeriod commandPeriod,
                                                                 bool isSecondPeriod = false) {
       if (commandPeriod.UseDefaultValuation) {
-        commandPeriod.ExchangeRateTypeUID = "96c617f6-8ed9-47f3-8d2d-f1240e446e1d";
+        commandPeriod.ExchangeRateTypeUID = ExchangeRateType.ValorizacionBanxico.UID;
         commandPeriod.ValuateToCurrrencyUID = "01";
         commandPeriod.ExchangeRateDate = commandPeriod.ToDate;
       }
+
       var exchangeRateType = ExchangeRateType.Parse(commandPeriod.ExchangeRateTypeUID);
 
       FixedList<ExchangeRate> exchangeRates = ExchangeRate.GetList(exchangeRateType, commandPeriod.ExchangeRateDate);

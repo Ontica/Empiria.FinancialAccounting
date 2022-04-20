@@ -125,13 +125,14 @@ namespace Empiria.FinancialAccounting.Vouchers.SpecialCases {
       StandardAccount stdAccount = AccountsChart.Parse(base.Fields.AccountsChartUID)
                                                 .GetStandardAccount(accountNumber);
 
-      LedgerAccount ledgerAccount = Ledger.Parse(base.Fields.LedgerUID)
-                                          .AssignAccount(stdAccount);
+      var ledger = Ledger.Parse(base.Fields.LedgerUID);
+
+      LedgerAccount ledgerAccount = ledger.AssignAccount(stdAccount);
 
       return new VoucherEntryFields {
         Amount = amount,
         BaseCurrencyAmount = amount,
-        CurrencyUID = "01",
+        CurrencyUID = ledger.BaseCurrency.UID,
         SectorId = Sector.Empty.Id,
         SubledgerAccountNumber = String.Empty,
         StandardAccountId = stdAccount.Id,
@@ -161,7 +162,8 @@ namespace Empiria.FinancialAccounting.Vouchers.SpecialCases {
 
 
     private decimal GetBalance(string accountNumber, FixedList<TrialBalanceEntryDto> balances) {
-      var balance = balances.Find(x => x.AccountNumber == accountNumber && x.LedgerUID == base.Fields.LedgerUID);
+      var balance = balances.Find(x => x.AccountNumber == accountNumber &&
+                                       x.LedgerUID == base.Fields.LedgerUID);
 
       if (balance == null) {
         return 0;
@@ -176,7 +178,7 @@ namespace Empiria.FinancialAccounting.Vouchers.SpecialCases {
 
 
     private FixedList<ExchangeRate> GetValuationExchangeRates() {
-      var exchangeRateType = ExchangeRateType.Parse("96c617f6-8ed9-47f3-8d2d-f1240e446e1d");
+      var exchangeRateType = ExchangeRateType.ValorizacionBanxico;
 
       return ExchangeRate.GetList(exchangeRateType, base.Fields.CalculationDate);
     }

@@ -56,7 +56,7 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
       return new TrialBalance(_command, returnBalance);
     }
 
-    
+
     internal TrialBalance BuildBalanceInColumnsByCurrency() {
       var helper = new TrialBalanceHelper(_command);
 
@@ -203,7 +203,7 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
 
       var ledgersList = summaryEntries.Where(a => (a.Level == 1 && a.Sector.Code == "00") ||
                                                   (a.Level > 1)).ToList();
-      
+
       var hashAccountEntries = new EmpiriaHashTable<TrialBalanceEntry>();
 
       foreach (var entry in ledgersList) {
@@ -219,7 +219,7 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
 
     private EmpiriaHashTable<ValuedTrialBalanceEntry> GetTotalByAccount(
                                                 ValuedTrialBalanceEntry header, decimal totalEquivalence) {
-       
+
       ValuedTrialBalanceEntry valuedEntry = TrialBalanceMapper.MapValuedTrialBalanceEntry(header);
 
       valuedEntry.GroupName = "TOTAL POR CUENTA";
@@ -283,7 +283,7 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
       return returnedBalances;
     }
 
-    private void HashAccountsWithoutDollarCurrency(EmpiriaHashTable<TrialBalanceEntry> returnedBalances, 
+    private void HashAccountsWithoutDollarCurrency(EmpiriaHashTable<TrialBalanceEntry> returnedBalances,
                                                    EmpiriaHashTable<TrialBalanceEntry> hashAccountEntries) {
       var helper = new TrialBalanceHelper(_command);
       var secondaryAccounts = hashAccountEntries.ToFixedList().Where(a => a.Currency.Code != "01" &&
@@ -312,7 +312,7 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
       }
     }
 
-    private void HashAccountsWithDollarCurrency(EmpiriaHashTable<TrialBalanceEntry> returnedBalances, 
+    private void HashAccountsWithDollarCurrency(EmpiriaHashTable<TrialBalanceEntry> returnedBalances,
                                                 EmpiriaHashTable<TrialBalanceEntry> hashAccountEntries) {
       var headerAccounts = hashAccountEntries.ToFixedList().Where(a => a.Currency.Code == "02").ToList();
 
@@ -425,11 +425,11 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
                                           FixedList<TrialBalanceEntry> entries,
                                           TrialBalanceCommandPeriod commandPeriod) {
 
-      commandPeriod.ExchangeRateTypeUID = "d6ea1b5f-2d1a-4882-a57c-3a4c94495bcd";
+      var exchangeRateType = ExchangeRateType.Dolarizacion;
+
+      commandPeriod.ExchangeRateTypeUID = exchangeRateType.UID;
       commandPeriod.ValuateToCurrrencyUID = "01";
       commandPeriod.ExchangeRateDate = commandPeriod.ToDate;
-
-      var exchangeRateType = ExchangeRateType.Parse(commandPeriod.ExchangeRateTypeUID);
 
       FixedList<ExchangeRate> exchangeRates = ExchangeRate.GetList(exchangeRateType, commandPeriod.ExchangeRateDate);
 
