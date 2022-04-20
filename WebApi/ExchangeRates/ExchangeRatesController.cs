@@ -1,10 +1,10 @@
 ﻿/* Empiria Financial *****************************************************************************************
 *                                                                                                            *
 *  Module   : Exchange Rates                               Component : Web Api                               *
-*  Assembly : Empiria.FinancialAccounting.WebApi.dll       Pattern   : Query Controller                      *
+*  Assembly : Empiria.FinancialAccounting.WebApi.dll       Pattern   : Controller                            *
 *  Type     : ExchangeRatesController                      License   : Please read LICENSE.txt file          *
 *                                                                                                            *
-*  Summary  : Query web API used to get information about exchange rates.                                    *
+*  Summary  : Web apis used to get and update information about exchange rates.                              *
 *                                                                                                            *
 ************************* Copyright(c) La Vía Óntica SC, Ontica LLC and contributors. All rights reserved. **/
 using System;
@@ -17,10 +17,37 @@ using Empiria.FinancialAccounting.Adapters;
 
 namespace Empiria.FinancialAccounting.WebApi {
 
-  /// <summary>Query web API used to get information about exchange rates.</summary>
+  /// <summary>Web apis used to get and update information about exchange rates.</summary>
   public class ExchangeRatesController : WebApiController {
 
-    #region Web Apis
+    #region Web Api
+
+    [HttpPost]
+    [Route("v2/financial-accounting/exchange-rates")]
+    public CollectionModel AppendExchangeRate([FromBody] ExchangeRateFields fields) {
+
+      RequireBody(fields);
+
+      using (var usecases = ExchangeRatesUseCases.UseCaseInteractor()) {
+        FixedList<ExchangeRateDto> exchangeRates = usecases.AppendExchangeRate(fields);
+
+        return new CollectionModel(base.Request, exchangeRates);
+      }
+    }
+
+
+    [HttpGet, AllowAnonymous]
+    [Route("v2/financial-accounting/exchange-rates")]
+    public CollectionModel GetExchangeRates([FromUri] string exchangeRateTypeUID, [FromUri] DateTime date) {
+
+      RequireResource(exchangeRateTypeUID, "exchangeRateTypeUID");
+
+      using (var usecases = ExchangeRatesUseCases.UseCaseInteractor()) {
+        FixedList<ExchangeRateDto> exchangeRates = usecases.GetExchangeRates(exchangeRateTypeUID, date);
+
+        return new CollectionModel(base.Request, exchangeRates);
+      }
+    }
 
 
     [HttpGet]
@@ -35,19 +62,32 @@ namespace Empiria.FinancialAccounting.WebApi {
     }
 
 
-
-    [HttpGet, AllowAnonymous]
-    [Route("v2/financial-accounting/exchange-rates")]
-    public CollectionModel GetExchangeRatesOnADate([FromUri] DateTime date) {
+    [HttpDelete]
+    [Route("v2/financial-accounting/exchange-rates/{exchangeRateId:int}")]
+    public CollectionModel RemoveExchangeRate(int exchangeRateId) {
 
       using (var usecases = ExchangeRatesUseCases.UseCaseInteractor()) {
-        FixedList<ExchangeRateDto> exchangeRates = usecases.GetExchangeRatesOnADate(date);
+        FixedList<ExchangeRateDto> exchangeRatesTypes = usecases.RemoveExchangeRate(exchangeRateId);
+
+        return new CollectionModel(base.Request, exchangeRatesTypes);
+      }
+    }
+
+
+    [HttpPut, HttpPatch]
+    [Route("v2/financial-accounting/exchange-rates/{exchangeRateId:int}")]
+    public CollectionModel UpdateExchangeRate([FromUri] int exchangeRateId, [FromBody] ExchangeRateFields fields) {
+
+      RequireBody(fields);
+
+      using (var usecases = ExchangeRatesUseCases.UseCaseInteractor()) {
+        FixedList<ExchangeRateDto> exchangeRates = usecases.UpdateExchangeRate(exchangeRateId, fields);
 
         return new CollectionModel(base.Request, exchangeRates);
       }
     }
 
-    #endregion Web Apis
+    #endregion Web Api
 
   }  // class ExchangeRatesController
 

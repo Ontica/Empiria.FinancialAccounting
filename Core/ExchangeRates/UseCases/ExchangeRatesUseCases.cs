@@ -4,7 +4,7 @@
 *  Assembly : FinancialAccounting.Core.dll               Pattern   : Use case interactor class               *
 *  Type     : ExchangeRatesUseCases                      License   : Please read LICENSE.txt file            *
 *                                                                                                            *
-*  Summary  : Use cases for exchange rates management.                                                       *
+*  Summary  : Use cases for exchange rates.                                                                  *
 *                                                                                                            *
 ************************* Copyright(c) La Vía Óntica SC, Ontica LLC and contributors. All rights reserved. **/
 using System;
@@ -12,10 +12,11 @@ using System;
 using Empiria.Services;
 
 using Empiria.FinancialAccounting.Adapters;
+using Empiria.FinancialAccounting.Data;
 
 namespace Empiria.FinancialAccounting.UseCases {
 
-  /// <summary>Use cases for accounts chart management.</summary>
+  /// <summary>Use cases for exchange rates.</summary>
   public class ExchangeRatesUseCases : UseCase {
 
     #region Constructors and parsers
@@ -32,6 +33,28 @@ namespace Empiria.FinancialAccounting.UseCases {
 
     #region Use cases
 
+    public FixedList<ExchangeRateDto> AppendExchangeRate(ExchangeRateFields fields) {
+      Assertion.AssertObject(fields, "fields");
+
+      fields.EnsureValid();
+
+      var exchangeRate = new ExchangeRate(fields);
+
+      exchangeRate.Save();
+
+      return GetExchangeRates(exchangeRate.ExchangeRateType.UID, exchangeRate.Date);
+    }
+
+
+    public FixedList<ExchangeRateDto> GetExchangeRates(string exchangeRateTypeUID, DateTime date) {
+      var exchangeRateType = ExchangeRateType.Parse(exchangeRateTypeUID);
+
+      FixedList<ExchangeRate> exchangeRates = ExchangeRate.GetList(exchangeRateType, date);
+
+      return ExchangeRatesMapper.Map(exchangeRates);
+    }
+
+
     public FixedList<NamedEntityDto> GetExchangeRatesTypes() {
       var list = ExchangeRateType.GetList();
 
@@ -39,12 +62,26 @@ namespace Empiria.FinancialAccounting.UseCases {
     }
 
 
-    public FixedList<ExchangeRateDto> GetExchangeRatesOnADate(DateTime date) {
-      FixedList<ExchangeRate> exchangeRates = ExchangeRate.GetList(date);
+    public FixedList<ExchangeRateDto> RemoveExchangeRate(int exchangeRateId) {
+      var exchangeRate = ExchangeRate.Parse(exchangeRateId);
 
-      return ExchangeRatesMapper.Map(exchangeRates);
+      ExchangeRatesData.DeleteExchangeRate(exchangeRate);
+
+      return GetExchangeRates(exchangeRate.ExchangeRateType.UID, exchangeRate.Date);
     }
 
+
+    public FixedList<ExchangeRateDto> UpdateExchangeRate(int exchangeRateId, ExchangeRateFields fields) {
+      Assertion.AssertObject(fields, "fields");
+
+      var exchangeRate = ExchangeRate.Parse(exchangeRateId);
+
+      exchangeRate.Update(fields);
+
+      exchangeRate.Save();
+
+      return GetExchangeRates(exchangeRate.ExchangeRateType.UID, exchangeRate.Date);
+    }
 
     #endregion Use cases
 

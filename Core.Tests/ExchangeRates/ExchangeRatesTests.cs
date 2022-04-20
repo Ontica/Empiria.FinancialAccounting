@@ -36,8 +36,8 @@ namespace Empiria.FinancialAccounting.Tests {
 
       Assert.NotEmpty(list);
 
-      Assert.All(list, x => { Assert.Equal(DATE, x.Date); });
       Assert.All(list, x => { Assert.Equal(EXCHANGE_RATE_TYPE, x.ExchangeRateType); });
+      Assert.All(list, x => { Assert.Equal(DATE, x.Date); });
       Assert.All(list, x => { Assert.True(x.Value > 0); });
     }
 

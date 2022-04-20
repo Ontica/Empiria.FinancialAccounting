@@ -48,10 +48,13 @@ namespace Empiria.FinancialAccounting.Tests {
     [Fact]
     public void Should_Get_Exchange_On_A_Date() {
       var DATE = new DateTime(2019, 08, 31);
+      string exchangeRateTypeUID = "96c617f6-8ed9-47f3-8d2d-f1240e446e1d";
 
-      FixedList<ExchangeRateDto> list = _usecases.GetExchangeRatesOnADate(DATE);
+      FixedList<ExchangeRateDto> list = _usecases.GetExchangeRates(exchangeRateTypeUID, DATE);
 
       Assert.NotEmpty(list);
+
+      Assert.All(list, x => { Assert.Equal(exchangeRateTypeUID, x.ExchangeRateType.UID); });
       Assert.All(list, x => { Assert.Equal(DATE, x.Date); });
       Assert.All(list, x => { Assert.True(x.Value > 0); });
     }

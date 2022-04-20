@@ -9,6 +9,7 @@
 ************************* Copyright(c) La Vía Óntica SC, Ontica LLC and contributors. All rights reserved. **/
 using System;
 
+using Empiria.FinancialAccounting.Adapters;
 using Empiria.FinancialAccounting.Data;
 
 namespace Empiria.FinancialAccounting {
@@ -23,6 +24,15 @@ namespace Empiria.FinancialAccounting {
     }
 
 
+    internal ExchangeRate(ExchangeRateFields fields) {
+      Assertion.AssertObject(fields, "fields");
+
+      fields.EnsureValid();
+
+      LoadFields(fields);
+    }
+
+
     static public ExchangeRate Parse(int id) {
       return BaseObject.ParseId<ExchangeRate>(id);
     }
@@ -32,6 +42,7 @@ namespace Empiria.FinancialAccounting {
       return ExchangeRatesData.GetExchangeRates(date);
     }
 
+
     static public FixedList<ExchangeRate> GetList(ExchangeRateType exchangeRateType, DateTime date) {
       return ExchangeRatesData.GetExchangeRates(exchangeRateType, date);
     }
@@ -39,7 +50,7 @@ namespace Empiria.FinancialAccounting {
 
     #endregion Constructors and parsers
 
-    #region Public properties
+    #region Properties
 
 
     [DataField("EXCHANGE_RATE_TYPE_ID", ConvertFrom = typeof(long))]
@@ -71,7 +82,43 @@ namespace Empiria.FinancialAccounting {
       get; private set;
     }
 
-    #endregion Public properties
+    #endregion Properties
+
+    #region Methods
+
+    private void LoadFields(ExchangeRateFields fields) {
+      this.ExchangeRateType = ExchangeRateType.Parse(fields.ExchangeRateTypeUID);
+      this.FromCurrency = Currency.Parse(fields.FromCurrencyUID);
+      this.ToCurrency = Currency.Parse(fields.ToCurrencyUID);
+      this.Date = fields.Date;
+      this.Value = Math.Round(fields.Value, 6);
+    }
+
+
+    protected override void OnBeforeSave() {
+      if (!this.IsNew) {
+        return;
+      }
+
+      Assertion.Assert(!ExchangeRatesData.ExistsExchangeRate(this),
+                 "Ya tengo registrado un tipo de cambio en esa fecha para las mismas monedas.");
+    }
+
+
+    protected override void OnSave() {
+      ExchangeRatesData.WriteExchangeRate(this);
+    }
+
+
+    internal void Update(ExchangeRateFields fields) {
+      Assertion.AssertObject(fields, "fields");
+
+      fields.EnsureValid();
+
+      LoadFields(fields);
+    }
+
+    #endregion Methods
 
   }  // class ExchangeRate
 
