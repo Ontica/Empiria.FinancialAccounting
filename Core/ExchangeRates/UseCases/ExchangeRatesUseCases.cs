@@ -46,6 +46,13 @@ namespace Empiria.FinancialAccounting.UseCases {
     }
 
 
+    public FixedList<ExchangeRateDto> GetExchangeRates(DateTime date) {
+      FixedList<ExchangeRate> exchangeRates = ExchangeRate.GetList(date);
+
+      return ExchangeRatesMapper.Map(exchangeRates);
+    }
+
+
     public FixedList<ExchangeRateDto> GetExchangeRates(string exchangeRateTypeUID, DateTime date) {
       var exchangeRateType = ExchangeRateType.Parse(exchangeRateTypeUID);
 

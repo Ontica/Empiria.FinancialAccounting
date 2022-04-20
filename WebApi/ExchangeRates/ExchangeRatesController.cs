@@ -38,9 +38,20 @@ namespace Empiria.FinancialAccounting.WebApi {
 
     [HttpGet, AllowAnonymous]
     [Route("v2/financial-accounting/exchange-rates")]
-    public CollectionModel GetExchangeRates([FromUri] string exchangeRateTypeUID, [FromUri] DateTime date) {
+    public CollectionModel GetAllExchangeRates([FromUri] DateTime date) {
 
-      RequireResource(exchangeRateTypeUID, "exchangeRateTypeUID");
+      using (var usecases = ExchangeRatesUseCases.UseCaseInteractor()) {
+        FixedList<ExchangeRateDto> exchangeRates = usecases.GetExchangeRates(date);
+
+        return new CollectionModel(base.Request, exchangeRates);
+      }
+    }
+
+
+    [HttpGet, AllowAnonymous]
+    [Route("v2/financial-accounting/exchange-rates")]
+    public CollectionModel GetExchangeRates([FromUri] string exchangeRateTypeUID,
+                                            [FromUri] DateTime date) {
 
       using (var usecases = ExchangeRatesUseCases.UseCaseInteractor()) {
         FixedList<ExchangeRateDto> exchangeRates = usecases.GetExchangeRates(exchangeRateTypeUID, date);
