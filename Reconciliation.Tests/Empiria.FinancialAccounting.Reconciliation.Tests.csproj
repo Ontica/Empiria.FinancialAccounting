@@ -1,0 +1,91 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <Company>Ontica</Company>
+    <Product>Empiria Financial Accounting Reconciliation Services Tests</Product>
+    <Description>Tests suite for accounting reconciliation services.</Description>
+    <Copyright>(c) 2000-2022. La Vía Óntica SC, Ontica LLC and contributors.</Copyright>
+    <Version>2.0.0</Version>
+    <AssemblyVersion>2.0.0</AssemblyVersion>
+    <FileVersion>2.0.0.0</FileVersion>
+    <GeneratePackageOnBuild>false</GeneratePackageOnBuild>
+    <PackageRequireLicenseAcceptance>true</PackageRequireLicenseAcceptance>
+    <PackageLicenseUrl></PackageLicenseUrl>
+    <PackageProjectUrl>https://github.com/Ontica/Empiria.FinancialAccounting/tree/master/Reconciliation.Tests</PackageProjectUrl>
+    <PackageIconUrl>http://www.ontica.org/logo.ontica.png</PackageIconUrl>
+    <PackageTags>
+      Contabilidad Financiera, SICOFIN, Banobras, Banca de desarrollo, México,
+      pruebas unitarias, pruebas de integración, saldos, balanzas de comprobación
+    </PackageTags>
+    <RepositoryUrl>https://github.com/Ontica/Empiria.FinancialAccounting</RepositoryUrl>
+    <RepositoryType>git</RepositoryType>
+    <Authors>Ontica</Authors>
+    <TargetFramework>net48</TargetFramework>
+    <AppendTargetFrameworkToOutputPath>false</AppendTargetFrameworkToOutputPath>
+    <NeutralLanguage></NeutralLanguage>
+    <Configurations>Debug;Release;Multisolutions</Configurations>
+    <AssemblyName>Empiria.FinancialAccounting.Tests.Reconciliation</AssemblyName>
+    <RootNamespace>Empiria.FinancialAccounting.Tests.Reconciliation</RootNamespace>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' Or '$(Configuration)|$(Platform)' == 'Multisolutions|AnyCPU' ">
+    <OutputPath>bin\</OutputPath>
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+    <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
+    <CheckForOverflowUnderflow>true</CheckForOverflowUnderflow>
+    <AllowUnsafeBlocks>false</AllowUnsafeBlocks>
+    <GenerateSerializationAssemblies>Auto</GenerateSerializationAssemblies>
+    <NoWarn />
+    <WarningsAsErrors />
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <OutputPath>bin\</OutputPath>
+    <DebugType>none</DebugType>
+    <Optimize>true</Optimize>
+    <DefineConstants>TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+    <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
+    <CheckForOverflowUnderflow>true</CheckForOverflowUnderflow>
+    <AllowUnsafeBlocks>false</AllowUnsafeBlocks>
+    <GenerateSerializationAssemblies>Auto</GenerateSerializationAssemblies>
+    <NoWarn />
+    <WarningsAsErrors />
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="System.Net.Http" />
+  </ItemGroup>
+  <ItemGroup>
+    <PackageReference Include="xunit" Version="2.4.1" />
+    <PackageReference Include="xunit.abstractions" Version="2.0.3" />
+    <PackageReference Include="xunit.analyzers" Version="0.10.0" />
+    <PackageReference Include="xunit.assert" Version="2.4.1" />
+    <PackageReference Include="xunit.core" Version="2.4.1" />
+    <PackageReference Include="xunit.extensibility.core" Version="2.4.1" />
+    <PackageReference Include="xunit.extensibility.execution" Version="2.4.1" />
+    <PackageReference Include="xunit.runner.visualstudio" Version="2.4.3">
+      <PrivateAssets>all</PrivateAssets>
+    </PackageReference>
+    <PackageReference Include="Microsoft.NET.Test.Sdk" Version="16.8.0" />
+    <PackageReference Include="MSTest.TestAdapter" Version="2.1.2" />
+    <PackageReference Include="MSTest.TestFramework" Version="2.1.2" />
+  </ItemGroup>
+  <ItemGroup Condition=" '$(Configuration)' != 'Multisolutions' ">
+    <PackageReference Include="Empiria.FinancialAccounting.Reconciliation" Version="2.0.0" />
+  </ItemGroup>
+  <ItemGroup Condition=" '$(Configuration)' == 'Multisolutions' ">
+    <ProjectReference Include="..\..\extensions\Data.Oracle\Empiria.Data.Oracle.csproj" />
+    <ProjectReference Include="..\Reconciliation\Empiria.FinancialAccounting.Reconciliation.csproj" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Update="empiria.config.json">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Update="empiria.environment.vars.json">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+  </ItemGroup>
+</Project>
