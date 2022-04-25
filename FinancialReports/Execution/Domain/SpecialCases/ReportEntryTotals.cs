@@ -19,6 +19,10 @@ namespace Empiria.FinancialAccounting.FinancialReports {
 
     #region Methods
 
+    public abstract ReportEntryTotals AbsoluteValue();
+
+    public abstract void CopyTotalsTo(FinancialReportEntry copyTo);
+
     public abstract ReportEntryTotals Round();
 
     public abstract ReportEntryTotals Substract(ReportEntryTotals total, string qualification);
@@ -32,8 +36,6 @@ namespace Empiria.FinancialAccounting.FinancialReports {
     public abstract ReportEntryTotals Sum(ExternalValue value, string qualification);
 
     public abstract ReportEntryTotals SumDebitsOrSubstractCredits(ITrialBalanceEntryDto balance, string qualification);
-
-    public abstract void CopyTotalsTo(FinancialReportEntry copyTo);
 
     #endregion Methods
 

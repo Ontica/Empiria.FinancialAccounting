@@ -60,6 +60,16 @@ namespace Empiria.FinancialAccounting.FinancialReports {
 
     #region Methods
 
+    public override ReportEntryTotals AbsoluteValue() {
+      return new BalanzaEnColumnasPorMonedaReportEntryTotals {
+        PesosTotal = Math.Abs(this.PesosTotal),
+        DollarTotal = Math.Abs(this.DollarTotal),
+        YenTotal = Math.Abs(this.YenTotal),
+        EuroTotal = Math.Abs(this.EuroTotal),
+        UdisTotal = Math.Abs(this.UdisTotal)
+      };
+    }
+
     public override void CopyTotalsTo(FinancialReportEntry copyTo) {
       copyTo.SetTotalField(FinancialReportTotalField.pesosTotal,
                            this.PesosTotal);

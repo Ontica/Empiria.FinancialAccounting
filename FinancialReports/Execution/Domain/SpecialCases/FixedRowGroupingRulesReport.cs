@@ -119,6 +119,10 @@ namespace Empiria.FinancialAccounting.FinancialReports {
         totals = totals.Round();
       }
 
+      if (groupingRule.Operator == OperatorType.AbsoluteValue) {
+        totals = totals.AbsoluteValue();
+      }
+
       return totals;
     }
 
@@ -153,15 +157,21 @@ namespace Empiria.FinancialAccounting.FinancialReports {
 
         breakdownTotals.CopyTotalsTo(breakdownItem);
 
-        if (breakdownItem.GroupingRuleItem.Operator == OperatorType.Add) {
-          granTotal = granTotal.Sum(breakdownTotals, breakdownItem.GroupingRuleItem.Qualification);
+        switch (breakdownItem.GroupingRuleItem.Operator) {
+          case OperatorType.Add:
+            granTotal = granTotal.Sum(breakdownTotals, breakdownItem.GroupingRuleItem.Qualification);
+            break;
 
-        } else if (breakdownItem.GroupingRuleItem.Operator == OperatorType.Substract) {
-          granTotal = granTotal.Substract(breakdownTotals, breakdownItem.GroupingRuleItem.Qualification);
+          case OperatorType.Substract:
+            granTotal = granTotal.Substract(breakdownTotals, breakdownItem.GroupingRuleItem.Qualification);
+            break;
 
-        }
+          case OperatorType.AbsoluteValue:
+            granTotal = breakdownTotals.AbsoluteValue();
+            break;
+        } // switch
 
-      }
+      } // foreach
 
       return granTotal;
     }
@@ -215,6 +225,14 @@ namespace Empiria.FinancialAccounting.FinancialReports {
           totals = totals.Substract(ProcessGroupingRule(groupingRuleItem.Reference),
                                     groupingRuleItem.Qualification);
 
+        } else if (groupingRuleItem.Type == GroupingRuleItemType.Agrupation &&
+                   groupingRuleItem.Operator == OperatorType.AbsoluteValue) {
+
+          totals = totals.Sum(ProcessGroupingRule(groupingRuleItem.Reference),
+                              groupingRuleItem.Qualification);
+
+          totals = totals.AbsoluteValue();
+
         } else if (groupingRuleItem.Type == GroupingRuleItemType.Account &&
                    groupingRuleItem.Operator == OperatorType.Add) {
 
@@ -227,14 +245,27 @@ namespace Empiria.FinancialAccounting.FinancialReports {
           totals = totals.Substract(ProcessAccount(groupingRuleItem),
                                     groupingRuleItem.Qualification);
 
+        } else if (groupingRuleItem.Type == GroupingRuleItemType.Account &&
+                   groupingRuleItem.Operator == OperatorType.AbsoluteValue) {
+
+          totals = totals.Sum(ProcessAccount(groupingRuleItem),
+                              groupingRuleItem.Qualification);
+
+          totals = totals.AbsoluteValue();
+
         } else if (groupingRuleItem.Type == GroupingRuleItemType.ExternalVariable &&
                    groupingRuleItem.Operator == OperatorType.Add) {
 
           totals = totals.Sum(ProcessFixedValue(groupingRuleItem), groupingRuleItem.Qualification);
 
-        }
-      }
+        } else if (groupingRuleItem.Type == GroupingRuleItemType.ExternalVariable &&
+                   groupingRuleItem.Operator == OperatorType.AbsoluteValue) {
 
+          totals = totals.Sum(ProcessFixedValue(groupingRuleItem), groupingRuleItem.Qualification);
+
+          totals = totals.AbsoluteValue();
+        }  // if
+      }  // foreach
       return totals;
     }
 

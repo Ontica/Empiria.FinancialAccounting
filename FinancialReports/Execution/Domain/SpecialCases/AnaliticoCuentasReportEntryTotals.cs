@@ -40,6 +40,14 @@ namespace Empiria.FinancialAccounting.FinancialReports {
     #region Methods
 
 
+    public override ReportEntryTotals AbsoluteValue() {
+      return new AnaliticoCuentasReportEntryTotals {
+        DomesticCurrencyTotal = Math.Abs(this.DomesticCurrencyTotal),
+        ForeignCurrencyTotal = Math.Abs(this.ForeignCurrencyTotal)
+      };
+    }
+
+
     public override void CopyTotalsTo(FinancialReportEntry copyTo) {
       copyTo.SetTotalField(FinancialReportTotalField.domesticCurrencyTotal,
                            this.DomesticCurrencyTotal);

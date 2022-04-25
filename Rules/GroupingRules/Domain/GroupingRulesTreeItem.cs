@@ -61,6 +61,7 @@ namespace Empiria.FinancialAccounting.Rules {
 
           return new FixedList<GroupingRulesTreeItem>(list.Select(x => new GroupingRulesTreeItem(x, this)));
         }
+
         return new FixedList<GroupingRulesTreeItem>();
       }
     }

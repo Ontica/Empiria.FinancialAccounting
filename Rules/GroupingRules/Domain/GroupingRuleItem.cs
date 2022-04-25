@@ -27,7 +27,9 @@ namespace Empiria.FinancialAccounting.Rules {
 
     Add = '+',
 
-    Substract = '-'
+    Substract = '-',
+
+    AbsoluteValue = '@'
 
   }
 
