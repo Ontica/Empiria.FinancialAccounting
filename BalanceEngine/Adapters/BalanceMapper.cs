@@ -127,12 +127,11 @@ namespace Empiria.FinancialAccounting.BalanceEngine.Adapters {
 
       dto.AccountNumberForBalances = entry.Account.Number;
 
-      //if (entry.SubledgerAccountNumber != string.Empty) {
-      //  dto.AccountName = entry.SubledgerAccountName;
-      //} else 
       if (entry.ItemType == TrialBalanceItemType.Group || entry.ItemType == TrialBalanceItemType.Total) {
         dto.AccountName = entry.ItemType == TrialBalanceItemType.Total ?
                           $"{entry.GroupName}, Naturaleza: {entry.DebtorCreditor}" : entry.GroupName;
+      } else if (entry.SubledgerAccountName != "") {
+        dto.AccountName = entry.SubledgerAccountName;
       } else {
         dto.AccountName = entry.Account.Name;
       }
@@ -143,8 +142,6 @@ namespace Empiria.FinancialAccounting.BalanceEngine.Adapters {
         dto.CurrentBalance = entry.CurrentBalance;
       }
       dto.CurrentBalanceForBalances = entry.CurrentBalance;
-      //dto.DebtorCreditor = entry.ItemType == TrialBalanceItemType.Entry ?
-      //                     entry.DebtorCreditor.ToString() : "";
       dto.LastChangeDate = entry.ItemType == TrialBalanceItemType.Entry ?
                            entry.LastChangeDate : ExecutionServer.DateMaxValue;
       dto.LastChangeDateForBalances = entry.LastChangeDate;
