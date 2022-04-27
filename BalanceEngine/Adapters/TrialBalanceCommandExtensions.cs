@@ -69,6 +69,11 @@ namespace Empiria.FinancialAccounting.BalanceEngine.Adapters {
 
         commandData.ToDate = _command.TrialBalanceType == TrialBalanceType.BalanzaValorizadaComparativa ?
                                _command.FinalPeriod.ToDate : commandPeriod.ToDate;
+
+        if (_command.Ledgers.Count() == 1) {
+          _command.ShowCascadeBalances = true;
+        }
+
         commandData.InitialFields = GetInitialFields();
         commandData.Fields = GetOutputFields();
         commandData.Filters = GetFilterString();

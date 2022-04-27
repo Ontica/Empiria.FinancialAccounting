@@ -47,7 +47,6 @@ namespace Empiria.FinancialAccounting.Tests.Balances {
       TrialBalanceCommand command = GetDefaultTrialBalanceCommand();
 
       command.TrialBalanceType = TrialBalanceType.AnaliticoDeCuentas;
-      command.AccountsChartUID = "47ec2ec7-0f4f-482e-9799-c23107b60d8a";
       command.BalancesType = BalancesType.WithCurrentBalanceOrMovements;
       command.UseDefaultValuation = true;
       command.WithSubledgerAccount = true;
@@ -68,7 +67,6 @@ namespace Empiria.FinancialAccounting.Tests.Balances {
 
       command.TrialBalanceType = TrialBalanceType.Balanza;
       command.BalancesType = BalancesType.WithCurrentBalance;
-      command.AccountsChartUID = "47ec2ec7-0f4f-482e-9799-c23107b60d8a";
       command.ShowCascadeBalances = false;
       command.WithSubledgerAccount = false;
       command.UseDefaultValuation = false;
@@ -114,7 +112,6 @@ namespace Empiria.FinancialAccounting.Tests.Balances {
       TrialBalanceCommand command = GetDefaultTrialBalanceCommand();
       command.TrialBalanceType = TrialBalanceType.BalanzaDolarizada;
       command.BalancesType = BalancesType.WithCurrentBalanceOrMovements;
-      command.AccountsChartUID = "47ec2ec7-0f4f-482e-9799-c23107b60d8a";
       command.UseDefaultValuation = true;
       command.ShowCascadeBalances = false;
       command.FromAccount = "1";
