@@ -24,12 +24,21 @@ namespace Empiria.FinancialAccounting {
     }
 
 
-    internal ExchangeRate(ExchangeRateFields fields) {
-      Assertion.AssertObject(fields, "fields");
+    internal ExchangeRate(ExchangeRateType exchangeRateType, DateTime date,
+                          Currency currency, decimal value) {
+      Assertion.AssertObject(exchangeRateType, "exchangeRateType");
+      Assertion.AssertObject(currency, "currency");
+      Assertion.Assert(exchangeRateType.HasCurrency(currency),
+          $"Currency {currency.FullName} is not defined for exchange rate type {exchangeRateType.Name}");
+      Assertion.Assert(exchangeRateType.EditionValidOn(date),
+          $"Date {date.ToShortDateString()} is not in exchange rate type's valid edition date period.");
+      Assertion.Assert(value > 0, "Exchange rate value must be greater than zero.");
 
-      fields.EnsureValid();
-
-      LoadFields(fields);
+      this.ExchangeRateType = exchangeRateType;
+      this.FromCurrency = Currency.MXN;
+      this.ToCurrency = currency;
+      this.Date = date;
+      this.Value = Math.Round(value, 6);
     }
 
 
@@ -86,19 +95,9 @@ namespace Empiria.FinancialAccounting {
 
     #region Methods
 
-    private void LoadFields(ExchangeRateFields fields) {
-      this.ExchangeRateType = ExchangeRateType.Parse(fields.ExchangeRateTypeUID);
-      this.FromCurrency = Currency.Parse(fields.FromCurrencyUID);
-      this.ToCurrency = Currency.Parse(fields.ToCurrencyUID);
-      this.Date = fields.Date;
-      this.Value = Math.Round(fields.Value, 6);
-    }
-
 
     protected override void OnBeforeSave() {
-      if (!this.IsNew) {
-        return;
-      }
+      Assertion.Assert(this.IsNew, "El método Save() sólo puede invocarse sobre tipos de cambio nuevos.");
 
       Assertion.Assert(!ExchangeRatesData.ExistsExchangeRate(this),
                  "Ya tengo registrado un tipo de cambio en esa fecha para las mismas monedas.");
@@ -106,17 +105,9 @@ namespace Empiria.FinancialAccounting {
 
 
     protected override void OnSave() {
-      ExchangeRatesData.WriteExchangeRate(this);
+      ExchangeRatesData.AppendExchangeRate(this);
     }
 
-
-    internal void Update(ExchangeRateFields fields) {
-      Assertion.AssertObject(fields, "fields");
-
-      fields.EnsureValid();
-
-      LoadFields(fields);
-    }
 
     #endregion Methods
 

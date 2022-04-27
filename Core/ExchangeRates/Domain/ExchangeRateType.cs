@@ -14,8 +14,9 @@ namespace Empiria.FinancialAccounting {
   /// <summary>Represents an exchange rate type.</summary>
   public class ExchangeRateType : GeneralObject {
 
+    #region Constructors and parsers
 
-    private ExchangeRateType() {
+    protected ExchangeRateType() {
       // Required by Empiria Framework.
     }
 
@@ -42,6 +43,26 @@ namespace Empiria.FinancialAccounting {
 
     static public ExchangeRateType ValorizacionBanxico => ExchangeRateType.Parse(49);
 
+    #endregion Constructors and parsers
+
+    #region Methods
+
+    internal bool EditionValidOn(DateTime date) {
+      if (date >= DateTime.Today.AddDays(-20) &&
+          date <= DateTime.Today.AddDays(3)) {
+        return true;
+      }
+      return false;
+    }
+
+
+    internal bool HasCurrency(Currency currency) {
+      Assertion.AssertObject(currency, nameof(currency));
+
+      return !currency.IsEmptyInstance;
+    }
+
+    #endregion Methods
 
   } // class ExchangeRateType
 

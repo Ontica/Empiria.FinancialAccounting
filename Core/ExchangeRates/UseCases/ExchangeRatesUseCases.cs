@@ -8,6 +8,7 @@
 *                                                                                                            *
 ************************* Copyright(c) La Vía Óntica SC, Ontica LLC and contributors. All rights reserved. **/
 using System;
+using System.Collections.Generic;
 
 using Empiria.Services;
 
@@ -33,19 +34,6 @@ namespace Empiria.FinancialAccounting.UseCases {
 
     #region Use cases
 
-    public FixedList<ExchangeRateDto> AppendExchangeRate(ExchangeRateFields fields) {
-      Assertion.AssertObject(fields, "fields");
-
-      fields.EnsureValid();
-
-      var exchangeRate = new ExchangeRate(fields);
-
-      exchangeRate.Save();
-
-      return GetExchangeRates(exchangeRate.ExchangeRateType.UID, exchangeRate.Date);
-    }
-
-
     public FixedList<ExchangeRateDto> GetExchangeRates(DateTime date) {
       FixedList<ExchangeRate> exchangeRates = ExchangeRate.GetList(date);
 
@@ -56,6 +44,11 @@ namespace Empiria.FinancialAccounting.UseCases {
     public FixedList<ExchangeRateDto> GetExchangeRates(string exchangeRateTypeUID, DateTime date) {
       var exchangeRateType = ExchangeRateType.Parse(exchangeRateTypeUID);
 
+      return GetExchangeRates(exchangeRateType, date);
+    }
+
+
+    public FixedList<ExchangeRateDto> GetExchangeRates(ExchangeRateType exchangeRateType, DateTime date) {
       FixedList<ExchangeRate> exchangeRates = ExchangeRate.GetList(exchangeRateType, date);
 
       return ExchangeRatesMapper.Map(exchangeRates);
@@ -69,25 +62,29 @@ namespace Empiria.FinancialAccounting.UseCases {
     }
 
 
-    public FixedList<ExchangeRateDto> RemoveExchangeRate(int exchangeRateId) {
-      var exchangeRate = ExchangeRate.Parse(exchangeRateId);
-
-      ExchangeRatesData.DeleteExchangeRate(exchangeRate);
-
-      return GetExchangeRates(exchangeRate.ExchangeRateType.UID, exchangeRate.Date);
-    }
-
-
-    public FixedList<ExchangeRateDto> UpdateExchangeRate(int exchangeRateId, ExchangeRateFields fields) {
+    public FixedList<ExchangeRateDto> UpdateAllExchangeRates(ExchangeRateFields fields) {
       Assertion.AssertObject(fields, "fields");
 
-      var exchangeRate = ExchangeRate.Parse(exchangeRateId);
+      fields.EnsureValid();
 
-      exchangeRate.Update(fields);
+      var exchangeRateType = ExchangeRateType.Parse(fields.ExchangeRateTypeUID);
 
-      exchangeRate.Save();
+      var toUpdate = new List<ExchangeRate>();
 
-      return GetExchangeRates(exchangeRate.ExchangeRateType.UID, exchangeRate.Date);
+      foreach (var value in fields.Values) {
+        var currency = Currency.Parse(value.ToCurrencyUID);
+
+        var exchangeRate = new ExchangeRate(exchangeRateType, fields.Date,
+                                            currency, value.Value);
+
+        toUpdate.Add(exchangeRate);
+      }
+
+      ExchangeRatesData.DeleteAllExchangeRates(exchangeRateType, fields.Date);
+
+      toUpdate.ForEach(x => x.Save());
+
+      return GetExchangeRates(exchangeRateType, fields.Date);
     }
 
     #endregion Use cases

@@ -26,6 +26,28 @@ namespace Empiria.FinancialAccounting.Data {
 
     #region Public methods
 
+    static internal void AppendExchangeRate(ExchangeRate o) {
+      var op = DataOperation.Parse("apd_ao_exchange_rate",
+                                    o.Id, o.ExchangeRateType.Id,
+                                    o.FromCurrency.Id, o.ToCurrency.Id,
+                                    o.Date, o.Date, o.Value);
+      DataWriter.Execute(op);
+
+      UpdateCacheFor(o);
+    }
+
+
+    static internal void DeleteAllExchangeRates(ExchangeRateType exchangeRateType,
+                                                DateTime date) {
+      var op = DataOperation.Parse("del_all_ao_exchange_rates",
+                                   exchangeRateType.Id, date);
+
+      DataWriter.Execute(op);
+
+      UpdateCacheFor(exchangeRateType, date);
+    }
+
+
     static internal bool ExistsExchangeRate(ExchangeRate exchangeRate) {
       var registered = GetExchangeRates(exchangeRate.ExchangeRateType, exchangeRate.Date);
 
@@ -43,9 +65,9 @@ namespace Empiria.FinancialAccounting.Data {
       }
 
       var sql = "SELECT * FROM AO_EXCHANGE_RATES " +
-                $"WHERE EXCHANGE_RATE_TYPE_ID = {exchangeRateType.Id} " +
-                $"AND FROM_DATE = '{CommonMethods.FormatSqlDate(date)}' " +
-                $"ORDER BY TO_CURRENCY_ID";
+               $"WHERE EXCHANGE_RATE_TYPE_ID = {exchangeRateType.Id} " +
+               $"AND FROM_DATE = '{CommonMethods.FormatSqlDate(date)}' " +
+               $"ORDER BY TO_CURRENCY_ID";
 
       var dataOperation = DataOperation.Parse(sql);
 
@@ -67,27 +89,6 @@ namespace Empiria.FinancialAccounting.Data {
       return DataReader.GetFixedList<ExchangeRate>(dataOperation);
     }
 
-
-    static internal void DeleteExchangeRate(ExchangeRate o) {
-      var op = DataOperation.Parse("del_ao_exchange_rate",
-                                    o.Id, o.ExchangeRateType.Id);
-
-      DataWriter.Execute(op);
-
-      UpdateCacheFor(o);
-    }
-
-
-    static internal void WriteExchangeRate(ExchangeRate o) {
-      var op = DataOperation.Parse("write_ao_exchange_rate",
-                                    o.Id, o.ExchangeRateType.Id,
-                                    o.FromCurrency.Id, o.ToCurrency.Id,
-                                    o.Date, o.Date, o.Value);
-      DataWriter.Execute(op);
-
-      UpdateCacheFor(o);
-    }
-
     #endregion Public methods
 
     #region Helper methods
@@ -98,7 +99,12 @@ namespace Empiria.FinancialAccounting.Data {
 
 
     static private void UpdateCacheFor(ExchangeRate exchangeRate) {
-      string hashKey = GetHashKey(exchangeRate.ExchangeRateType, exchangeRate.Date);
+      UpdateCacheFor(exchangeRate.ExchangeRateType, exchangeRate.Date);
+    }
+
+
+    static private void UpdateCacheFor(ExchangeRateType exchangeRateType, DateTime date) {
+      string hashKey = GetHashKey(exchangeRateType, date);
 
       if (_cache.ContainsKey(hashKey)) {
         _cache.Remove(hashKey);

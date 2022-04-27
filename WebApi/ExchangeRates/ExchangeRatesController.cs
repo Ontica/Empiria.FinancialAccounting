@@ -22,20 +22,6 @@ namespace Empiria.FinancialAccounting.WebApi {
 
     #region Web Api
 
-    [HttpPost]
-    [Route("v2/financial-accounting/exchange-rates")]
-    public CollectionModel AppendExchangeRate([FromBody] ExchangeRateFields fields) {
-
-      RequireBody(fields);
-
-      using (var usecases = ExchangeRatesUseCases.UseCaseInteractor()) {
-        FixedList<ExchangeRateDto> exchangeRates = usecases.AppendExchangeRate(fields);
-
-        return new CollectionModel(base.Request, exchangeRates);
-      }
-    }
-
-
     [HttpGet, AllowAnonymous]
     [Route("v2/financial-accounting/exchange-rates")]
     public CollectionModel GetAllExchangeRates([FromUri] DateTime date) {
@@ -73,26 +59,14 @@ namespace Empiria.FinancialAccounting.WebApi {
     }
 
 
-    [HttpDelete]
-    [Route("v2/financial-accounting/exchange-rates/{exchangeRateId:int}")]
-    public CollectionModel RemoveExchangeRate(int exchangeRateId) {
-
-      using (var usecases = ExchangeRatesUseCases.UseCaseInteractor()) {
-        FixedList<ExchangeRateDto> exchangeRatesTypes = usecases.RemoveExchangeRate(exchangeRateId);
-
-        return new CollectionModel(base.Request, exchangeRatesTypes);
-      }
-    }
-
-
-    [HttpPut, HttpPatch]
-    [Route("v2/financial-accounting/exchange-rates/{exchangeRateId:int}")]
-    public CollectionModel UpdateExchangeRate([FromUri] int exchangeRateId, [FromBody] ExchangeRateFields fields) {
+    [HttpPost]
+    [Route("v2/financial-accounting/exchange-rates")]
+    public CollectionModel UpdateAllExchangeRates([FromBody] ExchangeRateFields fields) {
 
       RequireBody(fields);
 
       using (var usecases = ExchangeRatesUseCases.UseCaseInteractor()) {
-        FixedList<ExchangeRateDto> exchangeRates = usecases.UpdateExchangeRate(exchangeRateId, fields);
+        FixedList<ExchangeRateDto> exchangeRates = usecases.UpdateAllExchangeRates(fields);
 
         return new CollectionModel(base.Request, exchangeRates);
       }
