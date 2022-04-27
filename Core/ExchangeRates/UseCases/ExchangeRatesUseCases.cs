@@ -55,14 +55,23 @@ namespace Empiria.FinancialAccounting.UseCases {
     }
 
 
-    public FixedList<NamedEntityDto> GetExchangeRatesTypes() {
-      var list = ExchangeRateType.GetList();
+    public ExchangeRateFields GetExchangeRatesForEdition(string exchangeRateTypeUID, DateTime date) {
+      var exchangeRateType = ExchangeRateType.Parse(exchangeRateTypeUID);
 
-      return list.MapToNamedEntityList();
+      FixedList<ExchangeRate> exchangeRates = ExchangeRate.GetForEditionList(exchangeRateType, date);
+
+      return ExchangeRatesMapper.MapForEdition(exchangeRateType, date, exchangeRates);
     }
 
 
-    public FixedList<ExchangeRateDto> UpdateAllExchangeRates(ExchangeRateFields fields) {
+    public FixedList<ExchangeRateTypeDto> GetExchangeRatesTypes() {
+      var list = ExchangeRateType.GetList();
+
+      return ExchangeRatesMapper.Map(list);
+    }
+
+
+    public ExchangeRateFields UpdateAllExchangeRates(ExchangeRateFields fields) {
       Assertion.AssertObject(fields, "fields");
 
       fields.EnsureValid();
@@ -84,7 +93,9 @@ namespace Empiria.FinancialAccounting.UseCases {
 
       toUpdate.ForEach(x => x.Save());
 
-      return GetExchangeRates(exchangeRateType, fields.Date);
+      FixedList<ExchangeRate> exchangeRates = ExchangeRate.GetForEditionList(exchangeRateType, fields.Date);
+
+      return ExchangeRatesMapper.MapForEdition(exchangeRateType, fields.Date, exchangeRates);
     }
 
     #endregion Use cases

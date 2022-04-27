@@ -8,8 +8,7 @@
 *                                                                                                            *
 ************************* Copyright(c) La Vía Óntica SC, Ontica LLC and contributors. All rights reserved. **/
 using System;
-
-using Empiria.FinancialAccounting.Adapters;
+using System.Collections.Generic;
 using Empiria.FinancialAccounting.Data;
 
 namespace Empiria.FinancialAccounting {
@@ -24,15 +23,15 @@ namespace Empiria.FinancialAccounting {
     }
 
 
+    private ExchangeRate(ExchangeRateType exchangeRateType, DateTime date,
+                         Currency currency) : this(exchangeRateType, date, currency, 1) {
+      this.Value = 0;
+    }
+
+
     internal ExchangeRate(ExchangeRateType exchangeRateType, DateTime date,
                           Currency currency, decimal value) {
-      Assertion.AssertObject(exchangeRateType, "exchangeRateType");
-      Assertion.AssertObject(currency, "currency");
-      Assertion.Assert(exchangeRateType.HasCurrency(currency),
-          $"Currency {currency.FullName} is not defined for exchange rate type {exchangeRateType.Name}");
-      Assertion.Assert(exchangeRateType.EditionValidOn(date),
-          $"Date {date.ToShortDateString()} is not in exchange rate type's valid edition date period.");
-      Assertion.Assert(value > 0, "Exchange rate value must be greater than zero.");
+      EnsureValid(exchangeRateType, date, currency, value);
 
       this.ExchangeRateType = exchangeRateType;
       this.FromCurrency = Currency.MXN;
@@ -47,6 +46,26 @@ namespace Empiria.FinancialAccounting {
     }
 
 
+    static internal FixedList<ExchangeRate> GetForEditionList(ExchangeRateType exchangeRateType,
+                                                              DateTime date) {
+      FixedList<ExchangeRate> stored = GetList(exchangeRateType, date);
+
+      var forEditionList = new List<ExchangeRate>(stored);
+
+      foreach (var currency in exchangeRateType.Currencies) {
+        if (!stored.Exists(x => x.ToCurrency.Equals(currency))) {
+          var missing = new ExchangeRate(exchangeRateType, date, currency);
+
+          forEditionList.Add(missing);
+        }
+      }
+
+      forEditionList.Sort((x, y) => x.ToCurrency.Code.CompareTo(y.ToCurrency.Code));
+
+      return forEditionList.ToFixedList();
+    }
+
+
     static public FixedList<ExchangeRate> GetList(DateTime date) {
       return ExchangeRatesData.GetExchangeRates(date);
     }
@@ -55,7 +74,6 @@ namespace Empiria.FinancialAccounting {
     static public FixedList<ExchangeRate> GetList(ExchangeRateType exchangeRateType, DateTime date) {
       return ExchangeRatesData.GetExchangeRates(exchangeRateType, date);
     }
-
 
     #endregion Constructors and parsers
 
@@ -94,6 +112,18 @@ namespace Empiria.FinancialAccounting {
     #endregion Properties
 
     #region Methods
+
+
+    private void EnsureValid(ExchangeRateType exchangeRateType, DateTime date,
+                             Currency currency, decimal value) {
+      Assertion.AssertObject(exchangeRateType, "exchangeRateType");
+      Assertion.AssertObject(currency, "currency");
+      Assertion.Assert(exchangeRateType.HasCurrency(currency),
+          $"Currency {currency.FullName} is not defined for exchange rate type {exchangeRateType.Name}");
+      Assertion.Assert(exchangeRateType.EditionValidOn(date),
+          $"Date {date.ToShortDateString()} is not in exchange rate type's valid edition date period.");
+      Assertion.Assert(value > 0, "Exchange rate value must be greater than zero.");
+    }
 
 
     protected override void OnBeforeSave() {

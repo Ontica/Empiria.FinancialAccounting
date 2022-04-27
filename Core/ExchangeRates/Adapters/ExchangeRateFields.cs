@@ -56,8 +56,20 @@ namespace Empiria.FinancialAccounting.Adapters {
     }
 
 
+    public string ToCurrency {
+      get; set;
+    }
+
+
     public decimal Value {
       get; set;
+    }
+
+
+    public bool HasValue {
+      get {
+        return Value != decimal.Zero;
+      }
     }
 
   }  // class ExchangeRateFieldValue

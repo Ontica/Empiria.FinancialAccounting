@@ -8,6 +8,7 @@
 *                                                                                                            *
 ************************* Copyright(c) La Vía Óntica SC, Ontica LLC and contributors. All rights reserved. **/
 using System;
+using System.Collections.Generic;
 
 namespace Empiria.FinancialAccounting.Adapters {
 
@@ -17,6 +18,39 @@ namespace Empiria.FinancialAccounting.Adapters {
     static internal FixedList<ExchangeRateDto> Map(FixedList<ExchangeRate> list) {
       return new FixedList<ExchangeRateDto>(list.Select((x) => Map(x)));
     }
+
+
+    static internal FixedList<ExchangeRateTypeDto> Map(FixedList<ExchangeRateType> list) {
+      return new FixedList<ExchangeRateTypeDto>(list.Select((x) => Map(x)));
+    }
+
+
+    static internal ExchangeRateFields MapForEdition(ExchangeRateType exchangeRateType,
+                                                      DateTime date,
+                                                      FixedList<ExchangeRate> exchangeRates) {
+      return new ExchangeRateFields {
+        ExchangeRateTypeUID = exchangeRateType.UID,
+        Date = date,
+        Values = MapValuesForEdition(exchangeRates)
+      };
+    }
+
+
+    static private ExchangeRateFieldValue[] MapValuesForEdition(FixedList<ExchangeRate> exchangeRates) {
+      var list = new List<ExchangeRateFieldValue>(exchangeRates.Count);
+
+      foreach (var exchangeRate in exchangeRates) {
+        var value = new ExchangeRateFieldValue {
+           ToCurrencyUID = exchangeRate.ToCurrency.UID,
+           ToCurrency = exchangeRate.ToCurrency.FullName,
+           Value = exchangeRate.Value
+        };
+        list.Add(value);
+      }
+
+      return list.ToArray();
+    }
+
 
     static internal ExchangeRateDto Map(ExchangeRate exchangeRate) {
       return new ExchangeRateDto {
@@ -28,6 +62,16 @@ namespace Empiria.FinancialAccounting.Adapters {
         Value = exchangeRate.Value
       };
     }
+
+
+    static private ExchangeRateTypeDto Map(ExchangeRateType exchangeRateType) {
+      return new ExchangeRateTypeDto {
+        UID = exchangeRateType.UID,
+        Name = exchangeRateType.Name,
+        Currencies = exchangeRateType.Currencies.MapToNamedEntityList()
+      };
+    }
+
 
   }  // class ExchangeRatesMapper
 

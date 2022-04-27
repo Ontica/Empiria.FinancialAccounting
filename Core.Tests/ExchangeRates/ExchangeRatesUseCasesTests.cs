@@ -39,7 +39,7 @@ namespace Empiria.FinancialAccounting.Tests {
 
     [Fact]
     public void Should_Get_A_List_Of_Exchange_Rates_Types() {
-      FixedList<NamedEntityDto> list = _usecases.GetExchangeRatesTypes();
+      FixedList<ExchangeRateTypeDto> list = _usecases.GetExchangeRatesTypes();
 
       Assert.NotEmpty(list);
     }

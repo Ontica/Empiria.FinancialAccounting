@@ -48,11 +48,27 @@ namespace Empiria.FinancialAccounting.WebApi {
 
 
     [HttpGet]
+    [Route("v2/financial-accounting/exchange-rates")]
+    public SingleObjectModel GetExchangeRatesForEdition([FromUri] string exchangeRateTypeUID,
+                                                        [FromUri] DateTime date,
+                                                        [FromUri] bool forEdition) {
+
+      Assertion.Assert(forEdition, "forEdition query string parameter must be true.");
+
+      using (var usecases = ExchangeRatesUseCases.UseCaseInteractor()) {
+        ExchangeRateFields exchangeRatesForEdition = usecases.GetExchangeRatesForEdition(exchangeRateTypeUID, date);
+
+        return new SingleObjectModel(base.Request, exchangeRatesForEdition);
+      }
+    }
+
+
+    [HttpGet]
     [Route("v2/financial-accounting/exchange-rates/exchange-rates-types")]
     public CollectionModel GetExchangeRatesTypes() {
 
       using (var usecases = ExchangeRatesUseCases.UseCaseInteractor()) {
-        FixedList<NamedEntityDto> exchangeRatesTypes = usecases.GetExchangeRatesTypes();
+        FixedList<ExchangeRateTypeDto> exchangeRatesTypes = usecases.GetExchangeRatesTypes();
 
         return new CollectionModel(base.Request, exchangeRatesTypes);
       }
@@ -61,14 +77,14 @@ namespace Empiria.FinancialAccounting.WebApi {
 
     [HttpPost]
     [Route("v2/financial-accounting/exchange-rates")]
-    public CollectionModel UpdateAllExchangeRates([FromBody] ExchangeRateFields fields) {
+    public SingleObjectModel UpdateAllExchangeRates([FromBody] ExchangeRateFields fields) {
 
       RequireBody(fields);
 
       using (var usecases = ExchangeRatesUseCases.UseCaseInteractor()) {
-        FixedList<ExchangeRateDto> exchangeRates = usecases.UpdateAllExchangeRates(fields);
+        ExchangeRateFields exchangeRatesforEdition = usecases.UpdateAllExchangeRates(fields);
 
-        return new CollectionModel(base.Request, exchangeRates);
+        return new SingleObjectModel(base.Request, exchangeRatesforEdition);
       }
     }
 

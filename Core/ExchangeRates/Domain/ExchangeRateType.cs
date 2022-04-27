@@ -45,6 +45,16 @@ namespace Empiria.FinancialAccounting {
 
     #endregion Constructors and parsers
 
+    #region Properties
+
+    public FixedList<Currency> Currencies {
+      get {
+        return base.ExtendedDataField.GetFixedList<Currency>("currencies", false);
+      }
+    }
+
+    #endregion Properties
+
     #region Methods
 
     internal bool EditionValidOn(DateTime date) {
