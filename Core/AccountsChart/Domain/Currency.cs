@@ -39,6 +39,15 @@ namespace Empiria.FinancialAccounting {
 
     static public Currency Empty => BaseObject.ParseEmpty<Currency>();
 
+    static public Currency MXN => Parse("01");
+
+    static public Currency USD => Parse("02");
+
+    static public Currency YEN => Parse("06");
+
+    static public Currency EUR => Parse("27");
+
+    static public Currency UDI => Parse("44");
 
     #endregion Constructors and parsers
 
