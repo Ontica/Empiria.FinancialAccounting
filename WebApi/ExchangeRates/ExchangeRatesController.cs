@@ -14,6 +14,7 @@ using Empiria.WebApi;
 
 using Empiria.FinancialAccounting.UseCases;
 using Empiria.FinancialAccounting.Adapters;
+using Empiria.FinancialAccounting.Reporting;
 
 namespace Empiria.FinancialAccounting.WebApi {
 
@@ -80,6 +81,22 @@ namespace Empiria.FinancialAccounting.WebApi {
         ExchangeRateValuesDto exchangeRatesforEdition = usecases.UpdateAllExchangeRates(fields);
 
         return new SingleObjectModel(base.Request, exchangeRatesforEdition);
+      }
+    }
+
+
+    [HttpPost]
+    [Route("v2/financial-accounting/exchange-rates/excel")]
+    public SingleObjectModel GetExcelExchangeRates([FromBody] SearchExchangeRatesCommand command) {
+
+      using (var usecases = ExchangeRatesUseCases.UseCaseInteractor()) {
+        FixedList<ExchangeRateDescriptorDto> exchangeRates = usecases.GetExchangeRates(command);
+
+        var excelExporter = new ExcelExporterService();
+
+        FileReportDto excelFileDto = excelExporter.Export(exchangeRates);
+
+        return new SingleObjectModel(this.Request, excelFileDto);
       }
     }
 

@@ -54,6 +54,21 @@ namespace Empiria.FinancialAccounting.Reporting {
     }
 
 
+    public FileReportDto Export(FixedList<ExchangeRateDescriptorDto> exchangeRates) {
+      Assertion.AssertObject(exchangeRates, "exchangeRates");
+
+      var templateUID = "ExchangeRatesTemplate";
+
+      var templateConfig = FileTemplateConfig.Parse(templateUID);
+
+      var exporter = new ExchangeRateExcelExporter(templateConfig);
+
+      ExcelFile excelFile = exporter.CreateExcelFile(exchangeRates);
+
+      return excelFile.ToFileReportDto();
+    }
+
+
     public FileReportDto Export(FixedList<GroupingRulesTreeItemDto> rulesTreeItems) {
       Assertion.AssertObject(rulesTreeItems, "rulesTreeItems");
 
