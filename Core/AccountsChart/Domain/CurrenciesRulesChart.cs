@@ -54,18 +54,6 @@ namespace Empiria.FinancialAccounting {
       } else {
         return new FixedList<CurrencyRule>();
       }
-
-
-      //var currencies = from rule in _currenciesRules
-      //                 where rule.StandardAccountId == account.StandardAccountId
-      //                 orderby rule.Currency.Code
-      //                 select rule;
-
-      ////var list = _currenciesRules.Select(x => x.StandardAccountId == account.StandardAccountId).;
-
-      //// list.Sort((x, y) => x.Currency.Code.CompareTo(y.Currency.Code));
-
-      //return new FixedList<CurrencyRule>(currencies);
     }
 
     #endregion Methods

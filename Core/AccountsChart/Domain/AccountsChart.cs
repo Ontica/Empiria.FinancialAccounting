@@ -195,7 +195,6 @@ namespace Empiria.FinancialAccounting {
     }
 
 
-
     public Account GetAccountHistory(string accountNumber, DateTime date) {
       FixedList<Account> history = AccountsChartData.GetAccountHistory(this, accountNumber);
 

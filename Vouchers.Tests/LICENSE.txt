@@ -26,8 +26,9 @@ over a network, you are also bound by the copyleft. Other than that, the
 license is virtually the same as GPL v3.
 
 To say this another way: if you modify the Empiria Financial Accounting
-Core Tests Module source code, or any other Empiria-based product, the goal
-is that you have to contribute those modifications back to the community.
+Vouchers Management Tests Module source code, or any other Empiria-based
+product, the goal is that you have to contribute those modifications back
+to the community.
 
 La Vía Óntica SC and Ontica LLC also offer the same software components
 under other licensing terms, for such cases where the GNU Affero General

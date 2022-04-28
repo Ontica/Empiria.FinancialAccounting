@@ -44,26 +44,19 @@ namespace Empiria.FinancialAccounting.UseCases {
     }
 
 
-    public FixedList<NamedEntityDto> GetAccountingCalendars() {
-      var list = Calendar.GetList();
-
-      return list.MapToNamedEntityList();
-    }
-
-
-    public FixedList<ExchangeRateDto> GetExchangeRatesOnADate(DateTime date) {
-      FixedList<ExchangeRate> exchangeRates = ExchangeRate.GetList(date);
-
-      return ExchangeRatesMapper.Map(exchangeRates);
-    }
-
-
     public AccountingCalendarDto GetAccountingCalendar(string calendarUID) {
       Assertion.AssertObject(calendarUID, "calendarUID");
 
       var calendar = Calendar.Parse(int.Parse(calendarUID));
 
       return AccountingCalendarMapper.Map(calendar);
+    }
+
+
+    public FixedList<NamedEntityDto> GetAccountingCalendars() {
+      var list = Calendar.GetList();
+
+      return list.MapToNamedEntityList();
     }
 
 

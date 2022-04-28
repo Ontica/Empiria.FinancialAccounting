@@ -42,7 +42,7 @@ namespace Empiria.FinancialAccounting.Adapters {
 
 
 
-  /// <summary>Inpout and Output DTO for accounting calendar periods.</summary>
+  /// <summary>Input and Output DTO for accounting calendar periods.</summary>
   public class AccountingCalendarPeriodDto {
 
     public AccountingCalendarPeriodDto() {

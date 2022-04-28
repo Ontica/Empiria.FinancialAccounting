@@ -150,11 +150,6 @@ namespace Empiria.FinancialAccounting {
     }
 
 
-    internal FixedList<Account> GetHistory() {
-      return this.AccountsChart.GetAccountHistory(this.Number);
-    }
-
-
     public StandardAccount GetParent() {
       if (!this.HasParent) {
         return StandardAccount.Empty;
