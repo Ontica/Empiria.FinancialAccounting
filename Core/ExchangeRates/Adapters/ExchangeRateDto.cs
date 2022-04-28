@@ -48,4 +48,37 @@ namespace Empiria.FinancialAccounting.Adapters {
 
   }  // public class ExchangeRateDto
 
+
+  /// <summary>Minimal output DTO for exchange rates, typically used in lists.</summary>
+  public class ExchangeRateDescriptorDto {
+
+    internal ExchangeRateDescriptorDto() {
+      // no-op
+    }
+
+    public int Id {
+      get; internal set;
+    }
+
+    public string ExchangeRateType {
+      get; internal set;
+    }
+
+    public DateTime Date {
+      get; internal set;
+    }
+
+
+    public string Currency {
+      get; internal set;
+    }
+
+
+    public decimal Value {
+      get; internal set;
+    }
+
+  }  // class ExchangeRateDescriptorDto
+
+
 }  // namespace Empiria.FinancialAccounting.Adapters

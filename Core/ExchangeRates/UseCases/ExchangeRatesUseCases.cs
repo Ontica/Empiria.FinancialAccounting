@@ -50,12 +50,12 @@ namespace Empiria.FinancialAccounting.UseCases {
     }
 
 
-    public FixedList<ExchangeRateDto> GetExchangeRates(ExchangeRatesSearchCommand command) {
+    public FixedList<ExchangeRateDescriptorDto> GetExchangeRates(SearchExchangeRatesCommand command) {
       Assertion.AssertObject(command, "command");
 
       FixedList<ExchangeRate> exchangeRates = ExchangeRatesData.SearchExchangeRates(command);
 
-      return ExchangeRatesMapper.Map(exchangeRates);
+      return ExchangeRatesMapper.MapToExchangeRateDescriptor(exchangeRates);
     }
 
 

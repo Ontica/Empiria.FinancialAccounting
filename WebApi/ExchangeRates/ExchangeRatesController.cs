@@ -36,10 +36,10 @@ namespace Empiria.FinancialAccounting.WebApi {
 
     [HttpPost]
     [Route("v2/financial-accounting/exchange-rates")]
-    public CollectionModel GetExchangeRates([FromBody] ExchangeRatesSearchCommand command) {
+    public CollectionModel GetExchangeRates([FromBody] SearchExchangeRatesCommand command) {
 
       using (var usecases = ExchangeRatesUseCases.UseCaseInteractor()) {
-        FixedList<ExchangeRateDto> exchangeRates = usecases.GetExchangeRates(command);
+        FixedList<ExchangeRateDescriptorDto> exchangeRates = usecases.GetExchangeRates(command);
 
         return new CollectionModel(base.Request, exchangeRates);
       }

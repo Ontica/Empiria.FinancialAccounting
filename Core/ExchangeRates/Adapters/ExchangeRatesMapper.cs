@@ -19,15 +19,31 @@ namespace Empiria.FinancialAccounting.Adapters {
       return new FixedList<ExchangeRateDto>(list.Select((x) => Map(x)));
     }
 
+    static internal ExchangeRateDto Map(ExchangeRate exchangeRate) {
+      return new ExchangeRateDto {
+        Id = exchangeRate.Id,
+        ExchangeRateType = exchangeRate.ExchangeRateType.MapToNamedEntity(),
+        Date = exchangeRate.Date,
+        FromCurrency = exchangeRate.FromCurrency.MapToNamedEntity(),
+        ToCurrency = exchangeRate.ToCurrency.MapToNamedEntity(),
+        Value = exchangeRate.Value
+      };
+    }
+
 
     static internal FixedList<ExchangeRateTypeDto> Map(FixedList<ExchangeRateType> list) {
       return new FixedList<ExchangeRateTypeDto>(list.Select((x) => Map(x)));
     }
 
 
+    static internal FixedList<ExchangeRateDescriptorDto> MapToExchangeRateDescriptor(FixedList<ExchangeRate> list) {
+      return new FixedList<ExchangeRateDescriptorDto>(list.Select((x) => MapToExchangeRateDescriptor(x)));
+    }
+
+
     static internal ExchangeRateValuesDto MapForEdition(ExchangeRateType exchangeRateType,
-                                                      DateTime date,
-                                                      FixedList<ExchangeRate> exchangeRates) {
+                                                        DateTime date,
+                                                        FixedList<ExchangeRate> exchangeRates) {
       return new ExchangeRateValuesDto {
         ExchangeRateTypeUID = exchangeRateType.UID,
         Date = date,
@@ -41,26 +57,14 @@ namespace Empiria.FinancialAccounting.Adapters {
 
       foreach (var exchangeRate in exchangeRates) {
         var value = new ExchangeRateValue {
-           ToCurrencyUID = exchangeRate.ToCurrency.UID,
-           ToCurrency = exchangeRate.ToCurrency.FullName,
-           Value = exchangeRate.Value
+          ToCurrencyUID = exchangeRate.ToCurrency.UID,
+          ToCurrency = exchangeRate.ToCurrency.FullName,
+          Value = exchangeRate.Value
         };
         list.Add(value);
       }
 
       return list.ToArray();
-    }
-
-
-    static internal ExchangeRateDto Map(ExchangeRate exchangeRate) {
-      return new ExchangeRateDto {
-        Id = exchangeRate.Id,
-        ExchangeRateType = exchangeRate.ExchangeRateType.MapToNamedEntity(),
-        Date = exchangeRate.Date,
-        FromCurrency = exchangeRate.FromCurrency.MapToNamedEntity(),
-        ToCurrency = exchangeRate.ToCurrency.MapToNamedEntity(),
-        Value = exchangeRate.Value
-      };
     }
 
 
@@ -72,6 +76,15 @@ namespace Empiria.FinancialAccounting.Adapters {
       };
     }
 
+    static private ExchangeRateDescriptorDto MapToExchangeRateDescriptor(ExchangeRate x) {
+      return new ExchangeRateDescriptorDto() {
+        Id = x.Id,
+        ExchangeRateType = x.ExchangeRateType.Name,
+        Date = x.Date,
+        Currency = x.ToCurrency.FullName,
+        Value = x.Value
+      };
+    }
 
   }  // class ExchangeRatesMapper
 

@@ -91,7 +91,7 @@ namespace Empiria.FinancialAccounting.Data {
     }
 
 
-    static internal FixedList<ExchangeRate> SearchExchangeRates(ExchangeRatesSearchCommand command) {
+    static internal FixedList<ExchangeRate> SearchExchangeRates(SearchExchangeRatesCommand command) {
       var sql = "SELECT * FROM AO_EXCHANGE_RATES " +
                $"WHERE {command.MapToFilterString()} " +
                $"ORDER BY FROM_DATE DESC, EXCHANGE_RATE_TYPE_ID, TO_CURRENCY_ID";
