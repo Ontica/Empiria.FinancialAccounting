@@ -2,32 +2,34 @@
 *                                                                                                            *
 *  Module   : Dataset Services                           Component : Domain Layer                            *
 *  Assembly : FinancialAccounting.Core.dll               Pattern   : Empiria Object                          *
-*  Type     : InputDataset                               License   : Please read LICENSE.txt file            *
+*  Type     : Dataset                                    License   : Please read LICENSE.txt file            *
 *                                                                                                            *
-*  Summary  : Describes a financial accounting reconciliation input dataset.                                 *
+*  Summary  : Describes a financial accounting dataset.                                                      *
 *                                                                                                            *
 ************************* Copyright(c) La Vía Óntica SC, Ontica LLC and contributors. All rights reserved. **/
 using System;
 using System.IO;
-using Empiria.Contacts;
 
-using Empiria.FinancialAccounting.Datasets.Adapters;
-using Empiria.FinancialAccounting.Datasets.Data;
+using Empiria.Contacts;
 using Empiria.Json;
 using Empiria.StateEnums;
 
+using Empiria.FinancialAccounting.Datasets.Adapters;
+using Empiria.FinancialAccounting.Datasets.Data;
+
 namespace Empiria.FinancialAccounting.Datasets {
 
-  /// <summary>Describes a financial accounting reconciliation input dataset.</summary>
-  public class InputDataset : BaseObject {
+  /// <summary>Describes a financial accounting dataset.</summary>
+  public class Dataset : BaseObject {
 
     #region Constructors and parsers
 
-    private InputDataset() {
+    private Dataset() {
       // Required by Empiria Framework.
     }
 
-    public InputDataset(StoreInputDatasetCommand command, FileInfo fileInfo) {
+
+    public Dataset(DatasetsCommand command, FileInfo fileInfo) {
       Assertion.AssertObject(command, "command");
       Assertion.AssertObject(fileInfo, "fileInfo");
 
@@ -35,8 +37,9 @@ namespace Empiria.FinancialAccounting.Datasets {
       LoadFileData(fileInfo);
     }
 
-    static public InputDataset Parse(string uid) {
-      return BaseObject.ParseKey<InputDataset>(uid);
+
+    static public Dataset Parse(string uid) {
+      return BaseObject.ParseKey<Dataset>(uid);
     }
 
     #endregion Constructors and parsers
@@ -44,7 +47,7 @@ namespace Empiria.FinancialAccounting.Datasets {
     #region Properties
 
     [DataField("ID_TIPO_DATASET")]
-    public DatasetType DatasetType {
+    public DatasetFamily DatasetFamily {
       get;
       private set;
     }
@@ -52,9 +55,9 @@ namespace Empiria.FinancialAccounting.Datasets {
     [DataField("TIPO_ARCHIVO")]
     private string _fileType;
 
-    public InputDatasetType FileType {
+    public DatasetKind FileType {
       get {
-        return this.DatasetType.GetInputDatasetType(_fileType);
+        return this.DatasetFamily.GetDatasetKind(_fileType);
       }
     }
 
@@ -129,9 +132,9 @@ namespace Empiria.FinancialAccounting.Datasets {
 
     #region Methods
 
-    private void LoadData(StoreInputDatasetCommand command) {
-      this.DatasetType = DatasetType.Parse(command.ReconciliationTypeUID);
-      _fileType = command.DatasetType;
+    private void LoadData(DatasetsCommand command) {
+      this.DatasetFamily = DatasetFamily.Parse(command.DatasetFamilyUID);
+      _fileType = command.DatasetKind;
       this.OperationDate = command.Date;
       this.ElaborationDate = DateTime.Today;
       this.ElaboratedBy = ExecutionServer.CurrentIdentity.User.AsContact();
@@ -145,11 +148,11 @@ namespace Empiria.FinancialAccounting.Datasets {
 
 
     protected override void OnSave() {
-      DatasetData.WriteInputDataset(this);
+      DatasetData.WriteDataset(this);
     }
 
     #endregion Methods
 
-  }  // class InputDataset
+  }  // class Dataset
 
 }  // namespace Empiria.FinancialAccounting.Datasets

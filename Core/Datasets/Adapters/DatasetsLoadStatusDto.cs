@@ -2,29 +2,30 @@
 *                                                                                                            *
 *  Module   : Dataset Services                           Component : Interface adapters                      *
 *  Assembly : FinancialAccounting.Core.dll               Pattern   : Data Transfer Object                    *
-*  Type     : ReconciliationDatasetsDto                  License   : Please read LICENSE.txt file            *
+*  Type     : DatasetsLoadStatusDto                      License   : Please read LICENSE.txt file            *
 *                                                                                                            *
-*  Summary  : Methods used to map reconciliation input data sets.                                            *
+*  Summary  : Output DTO that describes the loading status of datasets in a given date.                      *
 *                                                                                                            *
 ************************* Copyright(c) La Vía Óntica SC, Ontica LLC and contributors. All rights reserved. **/
 using System;
 
 namespace Empiria.FinancialAccounting.Datasets.Adapters {
 
-  public class ReconciliationDatasetsDto {
+  /// <summary>Output DTO that describes the loading status of datasets in a given date.</summary>
+  public class DatasetsLoadStatusDto {
 
-    internal ReconciliationDatasetsDto() {
+    internal DatasetsLoadStatusDto() {
       // no-op
     }
 
-    public FixedList<InputDatasetDto> Loaded {
+    public FixedList<DatasetDto> LoadedFiles {
       get; internal set;
     }
 
-    public FixedList<InputDatasetTypeDto> Missing {
+    public FixedList<DatasetKindDto> MissingFileTypes {
       get; internal set;
     }
 
-  }  // class ReconciliationDatasetsDto
+  }  // class DatasetsLoadStatusDto
 
 }  // namespace Empiria.FinancialAccounting.Datasets.Adapters

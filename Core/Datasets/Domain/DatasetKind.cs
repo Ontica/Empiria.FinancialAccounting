@@ -2,9 +2,9 @@
 *                                                                                                            *
 *  Module   : Dataset Services                           Component : Domain Layer                            *
 *  Assembly : FinancialAccounting.Core.dll               Pattern   : Information Holder                      *
-*  Type     : InputDatasetType                           License   : Please read LICENSE.txt file            *
+*  Type     : DatasetKind                                License   : Please read LICENSE.txt file            *
 *                                                                                                            *
-*  Summary  : Holds configuration data for a reconciliation input dataset.                                   *
+*  Summary  : Holds configuration rules and data for a dataset.                                              *
 *                                                                                                            *
 ************************* Copyright(c) La Vía Óntica SC, Ontica LLC and contributors. All rights reserved. **/
 using System;
@@ -13,15 +13,15 @@ using Empiria.Json;
 
 namespace Empiria.FinancialAccounting.Datasets {
 
-  /// <summary>Holds configuration data for a reconciliation input dataset.</summary>
-  public class InputDatasetType {
+  /// <summary>Holds configuration rules and data for a dataset.</summary>
+  public class DatasetKind {
 
-    protected internal InputDatasetType() {
+    protected internal DatasetKind() {
       // no-op
     }
 
-    static internal InputDatasetType Parse(JsonObject json) {
-      return new InputDatasetType {
+    static internal DatasetKind Parse(JsonObject json) {
+      return new DatasetKind {
         UID = json.Get<string>("uid"),
         Name = json.Get<string>("name"),
         FileType = json.Get<FileType>("fileType", FileType.Csv),
@@ -64,6 +64,6 @@ namespace Empiria.FinancialAccounting.Datasets {
 
     #endregion Properties
 
-  }  // class InputDatasetType
+  }  // class DatasetKind
 
 }  // namespace Empiria.FinancialAccounting.Datasets

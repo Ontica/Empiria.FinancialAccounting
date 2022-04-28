@@ -2,36 +2,71 @@
 *                                                                                                            *
 *  Module   : Dataset Services                           Component : Interface adapters                      *
 *  Assembly : FinancialAccounting.Core.dll               Pattern   : Data Transfer Object                    *
-*  Type     : InputDatasetTypeDto                        License   : Please read LICENSE.txt file            *
+*  Type     : DatasetDto                                 License   : Please read LICENSE.txt file            *
 *                                                                                                            *
-*  Summary  : Methods used to map reconciliation input data sets.                                            *
+*  Summary  : Output DTO used to return data sets.                                                           *
 *                                                                                                            *
 ************************* Copyright(c) La Vía Óntica SC, Ontica LLC and contributors. All rights reserved. **/
+using System;
 
 namespace Empiria.FinancialAccounting.Datasets.Adapters {
 
-  public class InputDatasetTypeDto {
+  /// <summary>Output DTO used to return data sets.</summary>
+  public class DatasetDto {
+
+    internal DatasetDto() {
+      // no-op
+    }
+
+    public string UID {
+      get; internal set;
+    }
+
 
     public string Name {
       get; internal set;
     }
 
-    public string Type {
+
+    public string DatasetFamily {
       get; internal set;
     }
+
+
+    public string DatasetFamilyName {
+      get; internal set;
+    }
+
+
+    public DateTime ElaborationDate {
+      get; internal set;
+    }
+
+
+    public string ElaboratedBy {
+      get; internal set;
+    }
+
 
     public FileType FileType {
       get; internal set;
     }
 
-    public bool Optional {
+
+    public string FileName {
       get; internal set;
     }
 
-    public int Count {
+
+    public long FileSize {
       get; internal set;
     }
 
-  }  // class InputDatasetTypeDto
+
+    public string Url {
+      get; internal set;
+    }
+
+  }  // class DatasetDto
 
 }  // namespace Empiria.FinancialAccounting.Datasets.Adapters
