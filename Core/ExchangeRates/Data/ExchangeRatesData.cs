@@ -11,6 +11,7 @@ using System;
 
 using Empiria.Collections;
 using Empiria.Data;
+using Empiria.FinancialAccounting.Adapters;
 
 namespace Empiria.FinancialAccounting.Data {
 
@@ -56,6 +57,17 @@ namespace Empiria.FinancialAccounting.Data {
     }
 
 
+    static internal FixedList<ExchangeRate> GetExchangeRates(DateTime date) {
+      var sql = "SELECT * FROM AO_EXCHANGE_RATES " +
+                $"WHERE FROM_DATE = '{CommonMethods.FormatSqlDate(date)}' " +
+                $"ORDER BY EXCHANGE_RATE_TYPE_ID, TO_CURRENCY_ID";
+
+      var dataOperation = DataOperation.Parse(sql);
+
+      return DataReader.GetFixedList<ExchangeRate>(dataOperation);
+    }
+
+
     static internal FixedList<ExchangeRate> GetExchangeRates(ExchangeRateType exchangeRateType,
                                                              DateTime date) {
       string hashKey = GetHashKey(exchangeRateType, date);
@@ -79,10 +91,10 @@ namespace Empiria.FinancialAccounting.Data {
     }
 
 
-    static internal FixedList<ExchangeRate> GetExchangeRates(DateTime date) {
+    static internal FixedList<ExchangeRate> SearchExchangeRates(ExchangeRatesSearchCommand command) {
       var sql = "SELECT * FROM AO_EXCHANGE_RATES " +
-                $"WHERE FROM_DATE = '{CommonMethods.FormatSqlDate(date)}' " +
-                $"ORDER BY EXCHANGE_RATE_TYPE_ID, TO_CURRENCY_ID";
+               $"WHERE {command.MapToFilterString()} " +
+               $"ORDER BY FROM_DATE DESC, EXCHANGE_RATE_TYPE_ID, TO_CURRENCY_ID";
 
       var dataOperation = DataOperation.Parse(sql);
 

@@ -23,7 +23,7 @@ namespace Empiria.FinancialAccounting.WebApi {
     #region Web Api
 
     [HttpGet, AllowAnonymous]
-    [Route("v2/financial-accounting/exchange-rates")]
+    [Route("v1/financial-accounting/exchange-rates")]
     public CollectionModel GetAllExchangeRates([FromUri] DateTime date) {
 
       using (var usecases = ExchangeRatesUseCases.UseCaseInteractor()) {
@@ -34,29 +34,24 @@ namespace Empiria.FinancialAccounting.WebApi {
     }
 
 
-    [HttpGet, AllowAnonymous]
+    [HttpPost]
     [Route("v2/financial-accounting/exchange-rates")]
-    public CollectionModel GetExchangeRates([FromUri] string exchangeRateTypeUID,
-                                            [FromUri] DateTime date) {
+    public CollectionModel GetExchangeRates([FromBody] ExchangeRatesSearchCommand command) {
 
       using (var usecases = ExchangeRatesUseCases.UseCaseInteractor()) {
-        FixedList<ExchangeRateDto> exchangeRates = usecases.GetExchangeRates(exchangeRateTypeUID, date);
+        FixedList<ExchangeRateDto> exchangeRates = usecases.GetExchangeRates(command);
 
         return new CollectionModel(base.Request, exchangeRates);
       }
     }
 
 
-    [HttpGet]
-    [Route("v2/financial-accounting/exchange-rates")]
-    public SingleObjectModel GetExchangeRatesForEdition([FromUri] string exchangeRateTypeUID,
-                                                        [FromUri] DateTime date,
-                                                        [FromUri] bool forEdition) {
-
-      Assertion.Assert(forEdition, "forEdition query string parameter must be true.");
+    [HttpPost]
+    [Route("v2/financial-accounting/exchange-rates/for-edition")]
+    public SingleObjectModel GetExchangeRatesForEdition([FromBody] ExchangeRateValuesDto fields) {
 
       using (var usecases = ExchangeRatesUseCases.UseCaseInteractor()) {
-        ExchangeRateFields exchangeRatesForEdition = usecases.GetExchangeRatesForEdition(exchangeRateTypeUID, date);
+        ExchangeRateValuesDto exchangeRatesForEdition = usecases.GetExchangeRatesForEdition(fields);
 
         return new SingleObjectModel(base.Request, exchangeRatesForEdition);
       }
@@ -76,13 +71,13 @@ namespace Empiria.FinancialAccounting.WebApi {
 
 
     [HttpPost]
-    [Route("v2/financial-accounting/exchange-rates")]
-    public SingleObjectModel UpdateAllExchangeRates([FromBody] ExchangeRateFields fields) {
+    [Route("v2/financial-accounting/exchange-rates/update-all")]
+    public SingleObjectModel UpdateAllExchangeRates([FromBody] ExchangeRateValuesDto fields) {
 
       RequireBody(fields);
 
       using (var usecases = ExchangeRatesUseCases.UseCaseInteractor()) {
-        ExchangeRateFields exchangeRatesforEdition = usecases.UpdateAllExchangeRates(fields);
+        ExchangeRateValuesDto exchangeRatesforEdition = usecases.UpdateAllExchangeRates(fields);
 
         return new SingleObjectModel(base.Request, exchangeRatesforEdition);
       }

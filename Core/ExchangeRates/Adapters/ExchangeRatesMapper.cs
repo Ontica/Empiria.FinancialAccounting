@@ -25,10 +25,10 @@ namespace Empiria.FinancialAccounting.Adapters {
     }
 
 
-    static internal ExchangeRateFields MapForEdition(ExchangeRateType exchangeRateType,
+    static internal ExchangeRateValuesDto MapForEdition(ExchangeRateType exchangeRateType,
                                                       DateTime date,
                                                       FixedList<ExchangeRate> exchangeRates) {
-      return new ExchangeRateFields {
+      return new ExchangeRateValuesDto {
         ExchangeRateTypeUID = exchangeRateType.UID,
         Date = date,
         Values = MapValuesForEdition(exchangeRates)
@@ -36,11 +36,11 @@ namespace Empiria.FinancialAccounting.Adapters {
     }
 
 
-    static private ExchangeRateFieldValue[] MapValuesForEdition(FixedList<ExchangeRate> exchangeRates) {
-      var list = new List<ExchangeRateFieldValue>(exchangeRates.Count);
+    static private ExchangeRateValue[] MapValuesForEdition(FixedList<ExchangeRate> exchangeRates) {
+      var list = new List<ExchangeRateValue>(exchangeRates.Count);
 
       foreach (var exchangeRate in exchangeRates) {
-        var value = new ExchangeRateFieldValue {
+        var value = new ExchangeRateValue {
            ToCurrencyUID = exchangeRate.ToCurrency.UID,
            ToCurrency = exchangeRate.ToCurrency.FullName,
            Value = exchangeRate.Value

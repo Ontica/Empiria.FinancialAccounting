@@ -44,23 +44,29 @@ namespace Empiria.FinancialAccounting.UseCases {
     public FixedList<ExchangeRateDto> GetExchangeRates(string exchangeRateTypeUID, DateTime date) {
       var exchangeRateType = ExchangeRateType.Parse(exchangeRateTypeUID);
 
-      return GetExchangeRates(exchangeRateType, date);
-    }
-
-
-    public FixedList<ExchangeRateDto> GetExchangeRates(ExchangeRateType exchangeRateType, DateTime date) {
       FixedList<ExchangeRate> exchangeRates = ExchangeRate.GetList(exchangeRateType, date);
 
       return ExchangeRatesMapper.Map(exchangeRates);
     }
 
 
-    public ExchangeRateFields GetExchangeRatesForEdition(string exchangeRateTypeUID, DateTime date) {
-      var exchangeRateType = ExchangeRateType.Parse(exchangeRateTypeUID);
+    public FixedList<ExchangeRateDto> GetExchangeRates(ExchangeRatesSearchCommand command) {
+      Assertion.AssertObject(command, "command");
 
-      FixedList<ExchangeRate> exchangeRates = ExchangeRate.GetForEditionList(exchangeRateType, date);
+      FixedList<ExchangeRate> exchangeRates = ExchangeRatesData.SearchExchangeRates(command);
 
-      return ExchangeRatesMapper.MapForEdition(exchangeRateType, date, exchangeRates);
+      return ExchangeRatesMapper.Map(exchangeRates);
+    }
+
+
+    public ExchangeRateValuesDto GetExchangeRatesForEdition(ExchangeRateValuesDto fields) {
+      Assertion.AssertObject(fields, "fields");
+
+      var exchangeRateType = ExchangeRateType.Parse(fields.ExchangeRateTypeUID);
+
+      FixedList<ExchangeRate> exchangeRates = ExchangeRate.GetForEditionList(exchangeRateType, fields.Date);
+
+      return ExchangeRatesMapper.MapForEdition(exchangeRateType, fields.Date, exchangeRates);
     }
 
 
@@ -71,31 +77,29 @@ namespace Empiria.FinancialAccounting.UseCases {
     }
 
 
-    public ExchangeRateFields UpdateAllExchangeRates(ExchangeRateFields fields) {
-      Assertion.AssertObject(fields, "fields");
+    public ExchangeRateValuesDto UpdateAllExchangeRates(ExchangeRateValuesDto exchangeRates) {
+      Assertion.AssertObject(exchangeRates, "exchangeRates");
 
-      fields.EnsureValid();
+      exchangeRates.EnsureValid();
 
-      var exchangeRateType = ExchangeRateType.Parse(fields.ExchangeRateTypeUID);
+      var exchangeRateType = ExchangeRateType.Parse(exchangeRates.ExchangeRateTypeUID);
 
       var toUpdate = new List<ExchangeRate>();
 
-      foreach (var value in fields.Values) {
+      foreach (var value in exchangeRates.Values) {
         var currency = Currency.Parse(value.ToCurrencyUID);
 
-        var exchangeRate = new ExchangeRate(exchangeRateType, fields.Date,
+        var exchangeRate = new ExchangeRate(exchangeRateType, exchangeRates.Date,
                                             currency, value.Value);
 
         toUpdate.Add(exchangeRate);
       }
 
-      ExchangeRatesData.DeleteAllExchangeRates(exchangeRateType, fields.Date);
+      ExchangeRatesData.DeleteAllExchangeRates(exchangeRateType, exchangeRates.Date);
 
       toUpdate.ForEach(x => x.Save());
 
-      FixedList<ExchangeRate> exchangeRates = ExchangeRate.GetForEditionList(exchangeRateType, fields.Date);
-
-      return ExchangeRatesMapper.MapForEdition(exchangeRateType, fields.Date, exchangeRates);
+      return GetExchangeRatesForEdition(exchangeRates);
     }
 
     #endregion Use cases

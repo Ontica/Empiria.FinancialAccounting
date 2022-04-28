@@ -2,31 +2,30 @@
 *                                                                                                            *
 *  Module   : Exchange Rates                             Component : Interface adapters                      *
 *  Assembly : FinancialAccounting.Core.dll               Pattern   : Data Transfer Object                    *
-*  Type     : ExchangeRateFields                         License   : Please read LICENSE.txt file            *
+*  Type     : ExchangeRateValuesDto                      License   : Please read LICENSE.txt file            *
 *                                                                                                            *
-*  Summary  : Input DTO used to store an exchange rate.                                                      *
+*  Summary  : Input/Output DTO that holds all exchange rates on a date for a given ExchangeRateType.         *
 *                                                                                                            *
 ************************* Copyright(c) La Vía Óntica SC, Ontica LLC and contributors. All rights reserved. **/
 using System;
 
 namespace Empiria.FinancialAccounting.Adapters {
 
-  /// <summary>Input DTO used to store an exchange rate.</summary>
-  public class ExchangeRateFields {
+  /// <summary>Input/Output DTO that holds all exchange rates on a date for a given ExchangeRateType.</summary>
+  public class ExchangeRateValuesDto {
 
     public string ExchangeRateTypeUID {
       get; set;
     }
-
 
     public DateTime Date {
       get; set;
     } = ExecutionServer.DateMinValue;
 
 
-    public ExchangeRateFieldValue[] Values {
+    public ExchangeRateValue[] Values {
       get; set;
-    } = new ExchangeRateFieldValue[0];
+    } = new ExchangeRateValue[0];
 
 
     internal void EnsureValid() {
@@ -45,11 +44,11 @@ namespace Empiria.FinancialAccounting.Adapters {
       }
     }
 
-  }  // public class ExchangeRateFields
+  }  // public class ExchangeRateValuesDto
 
 
 
-  public class ExchangeRateFieldValue {
+  public class ExchangeRateValue {
 
     public string ToCurrencyUID {
       get; set;
