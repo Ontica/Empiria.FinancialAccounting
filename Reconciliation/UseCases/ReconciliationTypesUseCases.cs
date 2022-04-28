@@ -11,8 +11,6 @@ using System;
 
 using Empiria.Services;
 
-using Empiria.FinancialAccounting.Reconciliation.Adapters;
-
 namespace Empiria.FinancialAccounting.Reconciliation.UseCases {
 
   /// <summary>Use cases for financial accounts balances reconciliation types.</summary>

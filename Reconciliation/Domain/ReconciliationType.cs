@@ -46,9 +46,9 @@ namespace Empiria.FinancialAccounting.Reconciliation {
 
     #region Properties
 
-    internal FixedList<InputDatasetType> DatasetTypes {
+    internal FixedList<DatasetKind> DatasetKinds {
       get {
-        return base.ExtendedDataField.GetFixedList<InputDatasetType>("inputDatasetTypes");
+        return base.ExtendedDataField.GetFixedList<DatasetKind>("datasetKinds");
       }
     }
 
@@ -56,25 +56,25 @@ namespace Empiria.FinancialAccounting.Reconciliation {
 
     #region Methods
 
-    internal FixedList<InputDataset> GetInputDatasetsList(DateTime date) {
+    internal FixedList<Dataset> GetDatasetsList(DateTime date) {
       // return DatasetType.GetInputDatasets(this, date);
 
       throw new NotImplementedException();
     }
 
 
-    internal InputDatasetType GetInputDatasetType(string uid) {
-      var inputDatasetType = this.DatasetTypes.Find(x => x.UID == uid);
+    internal DatasetKind GetDatasetKind(string uid) {
+      var datasetKind = this.DatasetKinds.Find(x => x.UID == uid);
 
-      Assertion.AssertObject(inputDatasetType,
-                            $"There is not defined an input dataset type '{uid}'.");
+      Assertion.AssertObject(datasetKind,
+                            $"There is not defined an dataset kind with uid '{uid}'.");
 
-      return inputDatasetType;
+      return datasetKind;
     }
 
 
-    internal FixedList<InputDatasetType> MissingInputDatasetTypes(DateTime date) {
-      return this.DatasetTypes;
+    internal FixedList<DatasetKind> MissingDatasetKinds(DateTime date) {
+      return this.DatasetKinds;
     }
 
     #endregion Methods
