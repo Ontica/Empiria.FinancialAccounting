@@ -25,7 +25,7 @@ namespace Empiria.FinancialAccounting.Reconciliation.Adapters {
       return new ReconciliationResultDto {
         Command = command,
         Columns = MapColumns(),
-        Entries = new FixedList<ReconciliationEntryDto>()
+        Entries = new FixedList<ReconciliationResultEntryDto>()
       };
     }
 

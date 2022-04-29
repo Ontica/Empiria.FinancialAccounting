@@ -28,27 +28,31 @@ namespace Empiria.FinancialAccounting.Reconciliation.Adapters {
     }
 
 
-    public FixedList<ReconciliationEntryDto> Entries {
+    public FixedList<ReconciliationResultEntryDto> Entries {
       get; internal set;
     }
 
   }  // class ReconciliationResultDto
 
 
+  /// <summary>DTO that describes a reconciliation result entry.</summary>
+  public class ReconciliationResultEntryDto {
 
-  public class ReconciliationEntryDto {
-
-    internal ReconciliationEntryDto() {
+    internal ReconciliationResultEntryDto() {
       // no-op
     }
 
-
-    public string CurrencyCode {
+    public string AccountNumber {
       get; internal set;
     }
 
 
-    public string AccountNumber {
+    public string SubledgerAccountNumber {
+      get; internal set;
+    }
+
+
+    public string CurrencyCode {
       get; internal set;
     }
 
@@ -74,6 +78,6 @@ namespace Empiria.FinancialAccounting.Reconciliation.Adapters {
       }
     }
 
-  }  // class ReconciliationEntryDto
+  }  // class ReconciliationResultEntryDto
 
 }  // namespace Empiria.FinancialAccounting.Reconciliation.Adapters
