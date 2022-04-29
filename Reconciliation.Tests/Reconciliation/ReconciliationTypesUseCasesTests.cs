@@ -11,6 +11,7 @@ using System;
 using Xunit;
 
 using Empiria.FinancialAccounting.Reconciliation.UseCases;
+using Empiria.FinancialAccounting.Reconciliation.Adapters;
 
 namespace Empiria.FinancialAccounting.Tests.Reconciliation {
 
@@ -41,7 +42,7 @@ namespace Empiria.FinancialAccounting.Tests.Reconciliation {
 
     [Fact]
     public void Should_Read_Reconciliation_Types() {
-      FixedList<NamedEntityDto> reconciliationTypes = _usecases.GetReconciliationTypes();
+      FixedList<ReconciliationTypeDto> reconciliationTypes = _usecases.GetReconciliationTypes();
 
       Assert.NotEmpty(reconciliationTypes);
     }

@@ -13,6 +13,7 @@ using System.Web.Http;
 using Empiria.WebApi;
 
 using Empiria.FinancialAccounting.Reconciliation.UseCases;
+using Empiria.FinancialAccounting.Reconciliation.Adapters;
 
 namespace Empiria.FinancialAccounting.WebApi.Reconciliation {
 
@@ -26,7 +27,7 @@ namespace Empiria.FinancialAccounting.WebApi.Reconciliation {
     public CollectionModel GetReconciliationTypes() {
 
       using (var usecases = ReconciliationTypesUseCases.UseCaseInteractor()) {
-        FixedList<NamedEntityDto> types = usecases.GetReconciliationTypes();
+        FixedList<ReconciliationTypeDto> types = usecases.GetReconciliationTypes();
 
         return new CollectionModel(base.Request, types);
       }

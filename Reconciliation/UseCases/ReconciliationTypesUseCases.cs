@@ -11,6 +11,8 @@ using System;
 
 using Empiria.Services;
 
+using Empiria.FinancialAccounting.Reconciliation.Adapters;
+
 namespace Empiria.FinancialAccounting.Reconciliation.UseCases {
 
   /// <summary>Use cases for financial accounts balances reconciliation types.</summary>
@@ -31,10 +33,10 @@ namespace Empiria.FinancialAccounting.Reconciliation.UseCases {
 
     #region Use cases
 
-    public FixedList<NamedEntityDto> GetReconciliationTypes() {
+    public FixedList<ReconciliationTypeDto> GetReconciliationTypes() {
       FixedList<ReconciliationType> list = ReconciliationType.GetList();
 
-      return list.MapToNamedEntityList();
+      return ReconciliationMapper.Map(list);
     }
 
     #endregion Use cases

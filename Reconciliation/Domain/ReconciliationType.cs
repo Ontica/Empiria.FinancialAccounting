@@ -46,9 +46,25 @@ namespace Empiria.FinancialAccounting.Reconciliation {
 
     #region Properties
 
-    internal FixedList<DatasetKind> DatasetKinds {
+    public DatasetFamily DatasetFamily {
       get {
-        return base.ExtendedDataField.GetFixedList<DatasetKind>("datasetKinds");
+        return ExtendedDataField.Get<DatasetFamily>("datasetFamilyId");
+      }
+    }
+
+
+    public FixedList<DatasetKind> DatasetKinds {
+      get {
+        return this.DatasetFamily.DatasetKinds;
+      }
+    }
+
+    public FixedList<ExportTo> ExportTo {
+      get {
+        return base.ExtendedDataField.GetFixedList<ExportTo>("exportTo");
+      }
+      private set {
+        base.ExtendedDataField.Set("exportTo", value);
       }
     }
 
@@ -67,7 +83,7 @@ namespace Empiria.FinancialAccounting.Reconciliation {
       var datasetKind = this.DatasetKinds.Find(x => x.UID == uid);
 
       Assertion.AssertObject(datasetKind,
-                            $"There is not defined an dataset kind with uid '{uid}'.");
+                            $"There is not defined a dataset kind with uid '{uid}'.");
 
       return datasetKind;
     }
