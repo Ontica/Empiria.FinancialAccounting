@@ -13,6 +13,7 @@ using System.IO;
 using Empiria.Office;
 
 using Empiria.FinancialAccounting.Vouchers.Adapters;
+using Empiria.FinancialAccounting.Reconciliation.Adapters;
 
 namespace Empiria.FinancialAccounting.Reporting {
 
@@ -69,6 +70,9 @@ namespace Empiria.FinancialAccounting.Reporting {
       }
     }
 
+    public FileReportDto Export(ReconciliationResultDto result) {
+      return new FileReportDto(FileType.Pdf, "http://172.27.207.97/sicofin/files/vouchers/poliza.2022-03-000047.ae98b697-674a-519f-1dba-e1545fe81af7.pdf");
+    }
 
     private FileTemplateConfig GetVoucherTemplateConfig(VoucherDto voucher) {
       string templateUID;

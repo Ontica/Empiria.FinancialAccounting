@@ -81,5 +81,9 @@
   </ItemGroup>
   <ItemGroup>
     <Folder Include="FiscalReports\" />
+    <Folder Include="VoucherRelatedReports\" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\Reconciliation\Empiria.FinancialAccounting.Reconciliation.csproj" />
   </ItemGroup>
 </Project>
