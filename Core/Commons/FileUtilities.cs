@@ -16,6 +16,12 @@ namespace Empiria.FinancialAccounting {
   /// <summary>Contains methods for file handling.</summary>
   static public class FileUtilities {
 
+
+    static public string GetFullPath(string fileName) {
+      return Path.Combine(ImportedFilesStoragePath, fileName);
+    }
+
+
     static public string[] ReadTextFile(FileInfo textFile) {
       var ansiEncoding = Encoding.GetEncoding(1252);
 
@@ -55,7 +61,7 @@ namespace Empiria.FinancialAccounting {
     static private string ImportedFilePath(FileData file) {
       var copyFileName = DateTime.Now.ToString("yyyy.MM.dd-HH.mm.ss-") + file.OriginalFileName;
 
-      return Path.Combine(ImportedFilesStoragePath, copyFileName);
+      return GetFullPath(copyFileName);
     }
 
     #endregion Private members

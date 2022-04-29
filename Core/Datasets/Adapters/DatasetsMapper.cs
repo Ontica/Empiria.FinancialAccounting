@@ -12,11 +12,26 @@ using System;
 namespace Empiria.FinancialAccounting.Datasets.Adapters {
 
   /// <summary>Methods used to map data sets.</summary>
-  static public class DatasetsMapper {
+  static internal class DatasetsMapper {
 
     #region Public mappers
 
-    static public DatasetsLoadStatusDto MapToDatasetsLoadStatusDto(FixedList<Dataset> loadedDatasets,
+    static internal DatasetDto Map(Dataset ds) {
+      return new DatasetDto() {
+        UID = ds.UID,
+        DatasetFamily = ds.DatasetFamily.Name,
+        DatasetKind = ds.DatasetKind.Name,
+        ElaborationDate = ds.UpdatedTime,
+        ElaboratedBy = ds.UploadedBy.Alias,
+        FileType = ds.DatasetKind.FileType,
+        FileSize = ds.MediaLength,
+        FileName = ds.OriginalFileName
+        //  Url = ds.FileUrl
+      };
+    }
+
+
+    static internal DatasetsLoadStatusDto MapToDatasetsLoadStatusDto(FixedList<Dataset> loadedDatasets,
                                                                    FixedList<DatasetKind> missing) {
       var loadedMapped = loadedDatasets.Select(x => Map(x));
 
@@ -31,21 +46,6 @@ namespace Empiria.FinancialAccounting.Datasets.Adapters {
     #endregion Public mappers
 
     #region Private methods
-
-    static private DatasetDto Map(Dataset ds) {
-      return new DatasetDto() {
-        UID = ds.UID,
-        DatasetFamily = ds.DatasetFamily.Name,
-        DatasetKind = ds.DatasetKind.Name,
-        ElaborationDate = ds.UpdatedTime,
-        ElaboratedBy = ds.UploadedBy.Alias,
-        FileType = ds.DatasetKind.FileType,
-        FileSize = ds.MediaLength,
-        FileName = ds.OriginalFileName
-        //  Url = ds.FileUrl
-      };
-    }
-
 
     static private DatasetKindDto Map(DatasetKind dsKind) {
       return new DatasetKindDto() {

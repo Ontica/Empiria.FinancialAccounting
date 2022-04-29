@@ -133,13 +133,20 @@ namespace Empiria.FinancialAccounting.Datasets {
     } = EntityStatus.Pending;
 
 
-    internal void Delete() {
-      this.Status = EntityStatus.Deleted;
+    public string FullPath {
+      get {
+        return FileUtilities.GetFullPath(this.FileName);
+      }
     }
 
     #endregion Properties
 
     #region Methods
+
+    internal void Delete() {
+      this.Status = EntityStatus.Deleted;
+    }
+
 
     private void LoadData(DatasetsCommand command) {
       this.DatasetFamily = DatasetFamily.Parse(command.DatasetFamilyUID);
