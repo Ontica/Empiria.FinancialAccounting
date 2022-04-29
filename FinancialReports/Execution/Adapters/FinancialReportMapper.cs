@@ -49,22 +49,10 @@ namespace Empiria.FinancialAccounting.FinancialReports.Adapters {
       return new FinancialReportTypeDto() {
         UID = reportType.UID,
         Name = reportType.Name,
-        ExportTo = new FixedList<ExportToDto>(Map(reportType.ExportTo))
+        ExportTo = new FixedList<ExportToDto>(ExportToMapper.Map(reportType.ExportTo))
       };
     }
 
-    private static FixedList<ExportToDto> Map(FixedList<ExportTo> exportTo) {
-      return new FixedList<ExportToDto>(exportTo.Select(x => Map(x)));
-    }
-
-    private static ExportToDto Map(ExportTo exportTo) {
-      return new ExportToDto {
-        UID = exportTo.UID,
-        Name = exportTo.Name,
-        FileType = exportTo.FileType,
-        Dataset = exportTo.Dataset
-      };
-    }
 
     static private FixedList<DynamicFinancialReportEntryDto> MapBreakdownEntries(FixedList<FinancialReportEntry> list) {
       var mappedItems = list.Select((x) => MapBreakdownEntry(x));
