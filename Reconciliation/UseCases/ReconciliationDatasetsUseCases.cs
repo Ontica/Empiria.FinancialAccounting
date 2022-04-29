@@ -14,6 +14,7 @@ using Empiria.Services;
 using Empiria.FinancialAccounting.Datasets.UseCases;
 using Empiria.FinancialAccounting.Datasets.Adapters;
 
+using Empiria.FinancialAccounting.Reconciliation.Adapters;
 
 namespace Empiria.FinancialAccounting.Reconciliation.UseCases {
 
@@ -45,18 +46,20 @@ namespace Empiria.FinancialAccounting.Reconciliation.UseCases {
     }
 
 
-    public DatasetsLoadStatusDto GetDatasetsLoadStatus(DatasetsCommand command) {
+    public DatasetsLoadStatusDto GetDatasetsLoadStatus(ReconciliationDatasetsCommand command) {
       Assertion.AssertObject(command, "command");
 
       command.EnsureValid();
 
       using (var usecase = DatasetsUseCases.UseCaseInteractor()) {
-        return usecase.GetDatasetsLoadStatus(command);
+        var coreDatasetCommand = command.MapToCoreDatasetsCommand();
+
+        return usecase.GetDatasetsLoadStatus(coreDatasetCommand);
       }
     }
 
 
-    public DatasetsLoadStatusDto ImportDatasetFromFile(DatasetsCommand command,
+    public DatasetsLoadStatusDto ImportDatasetFromFile(ReconciliationDatasetsCommand command,
                                                        FileData fileData) {
       Assertion.AssertObject(command, "command");
       Assertion.AssertObject(fileData, "fileData");
@@ -64,7 +67,9 @@ namespace Empiria.FinancialAccounting.Reconciliation.UseCases {
       command.EnsureValid();
 
       using (var usecase = DatasetsUseCases.UseCaseInteractor()) {
-        return usecase.ImportDatasetFromFile(command, fileData);
+        var coreDatasetCommand = command.MapToCoreDatasetsCommand();
+
+        return usecase.ImportDatasetFromFile(coreDatasetCommand, fileData);
       }
     }
 

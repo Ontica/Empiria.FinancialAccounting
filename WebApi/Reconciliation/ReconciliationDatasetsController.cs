@@ -17,6 +17,7 @@ using Empiria.WebApi;
 
 using Empiria.FinancialAccounting.Reconciliation.UseCases;
 using Empiria.FinancialAccounting.Datasets.Adapters;
+using Empiria.FinancialAccounting.Reconciliation.Adapters;
 
 namespace Empiria.FinancialAccounting.WebApi.Reconciliation {
 
@@ -39,10 +40,10 @@ namespace Empiria.FinancialAccounting.WebApi.Reconciliation {
 
     [HttpPost]
     [Route("v2/financial-accounting/reconciliation/datasets")]
-    public SingleObjectModel GetDatasetsLoadStatus([FromBody] DatasetsCommand command) {
+    public SingleObjectModel GetDatasetsLoadStatus([FromBody] ReconciliationDatasetsCommand command) {
 
       using (var usecases = ReconciliationDatasetsUseCases.UseCaseInteractor()) {
-         DatasetsLoadStatusDto loadStatus = usecases.GetDatasetsLoadStatus(command);
+        DatasetsLoadStatusDto loadStatus = usecases.GetDatasetsLoadStatus(command);
 
         return new SingleObjectModel(base.Request, loadStatus);
       }
@@ -57,7 +58,7 @@ namespace Empiria.FinancialAccounting.WebApi.Reconciliation {
 
       FileData excelFile = GetFileDataFromRequest(httpRequest);
 
-      DatasetsCommand command = GetDatasetsCommandFromRequest(httpRequest);
+      ReconciliationDatasetsCommand command = GetDatasetsCommandFromRequest(httpRequest);
 
       using (var usecases = ReconciliationDatasetsUseCases.UseCaseInteractor()) {
         DatasetsLoadStatusDto datasets = usecases.ImportDatasetFromFile(command, excelFile);
@@ -95,12 +96,12 @@ namespace Empiria.FinancialAccounting.WebApi.Reconciliation {
     }
 
 
-    private DatasetsCommand GetDatasetsCommandFromRequest(HttpRequest httpRequest) {
+    private ReconciliationDatasetsCommand GetDatasetsCommandFromRequest(HttpRequest httpRequest) {
       NameValueCollection form = httpRequest.Form;
 
       Assertion.AssertObject(form["command"], "'command' form field is required");
 
-      var command = new DatasetsCommand();
+      var command = new ReconciliationDatasetsCommand();
 
       return JsonConverter.Merge(form["command"], command);
     }
