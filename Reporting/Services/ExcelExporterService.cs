@@ -16,6 +16,7 @@ using Empiria.FinancialAccounting.BalanceEngine.Adapters;
 using Empiria.FinancialAccounting.Rules.Adapters;
 using Empiria.FinancialAccounting.Reporting.Adapters;
 using Empiria.FinancialAccounting.BanobrasIntegration.TransactionSlips.Adapters;
+using Empiria.FinancialAccounting.Reconciliation.Adapters;
 
 namespace Empiria.FinancialAccounting.Reporting {
 
@@ -53,6 +54,9 @@ namespace Empiria.FinancialAccounting.Reporting {
       return excelFile.ToFileReportDto();
     }
 
+    public FileReportDto Export(ReconciliationResultDto reconciliationResult) {
+      return new FileReportDto(FileType.Excel, "http://172.27.207.97/sicofin/files/2022.04.29-13.53.06-analitico.cuentas.xlsx");
+    }
 
     public FileReportDto Export(FixedList<ExchangeRateDescriptorDto> exchangeRates) {
       Assertion.AssertObject(exchangeRates, "exchangeRates");

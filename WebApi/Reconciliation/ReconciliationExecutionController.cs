@@ -14,6 +14,7 @@ using Empiria.WebApi;
 
 using Empiria.FinancialAccounting.Reconciliation.UseCases;
 using Empiria.FinancialAccounting.Reconciliation.Adapters;
+using Empiria.FinancialAccounting.Reporting;
 
 namespace Empiria.FinancialAccounting.WebApi.Reconciliation {
 
@@ -32,6 +33,32 @@ namespace Empiria.FinancialAccounting.WebApi.Reconciliation {
         ReconciliationResultDto result = usecases.Execute(command);
 
         return new SingleObjectModel(base.Request, result);
+      }
+    }
+
+
+    [HttpPost]
+    [Route("v2/financial-accounting/reconciliation/export")]
+    public SingleObjectModel ExportReconciliation([FromBody] ReconciliationCommand command) {
+
+      base.RequireBody(command);
+
+      using (var usecases = ReconciliationExecutionUseCases.UseCaseInteractor()) {
+        ReconciliationResultDto result = usecases.Execute(command);
+
+        FileReportDto fileReportDto;
+
+        if (command.ExportTo == "Excel.Default") {
+          var exporter = new ExcelExporterService();
+
+          fileReportDto = exporter.Export(result);
+        } else {
+          var pdfExporter = new PdfExporterService();
+
+          fileReportDto = pdfExporter.Export(result);
+        }
+
+        return new SingleObjectModel(this.Request, fileReportDto);
       }
     }
 

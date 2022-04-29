@@ -79,4 +79,14 @@
     <ProjectReference Include="..\BanobrasIntegration\Empiria.FinancialAccounting.BanobrasIntegration.csproj" />
     <ProjectReference Include="..\Vouchers\Empiria.FinancialAccounting.Vouchers.csproj" />
   </ItemGroup>
+<<<<<<< HEAD
+=======
+  <ItemGroup>
+    <Folder Include="FiscalReports\" />
+    <Folder Include="VoucherRelatedReports\" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\Reconciliation\Empiria.FinancialAccounting.Reconciliation.csproj" />
+  </ItemGroup>
+>>>>>>> c9be3c9109dc0ec904e9d8e6cb850d2d72df6396
 </Project>
