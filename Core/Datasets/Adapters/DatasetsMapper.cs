@@ -16,15 +16,15 @@ namespace Empiria.FinancialAccounting.Datasets.Adapters {
 
     #region Public mappers
 
-    static public DatasetsLoadStatusDto MapToDatasetsLoadStatusDto(FixedList<Dataset> loaded,
+    static public DatasetsLoadStatusDto MapToDatasetsLoadStatusDto(FixedList<Dataset> loadedDatasets,
                                                                    FixedList<DatasetKind> missing) {
-      var loadedMapped = loaded.Select(x => Map(x));
+      var loadedMapped = loadedDatasets.Select(x => Map(x));
 
       var missingMapped = missing.Select(x => Map(x));
 
       return new DatasetsLoadStatusDto {
-        LoadedFiles = new FixedList<DatasetDto>(loadedMapped),
-        MissingFileTypes = new FixedList<DatasetKindDto>(missingMapped)
+        LoadedDatasets = new FixedList<DatasetDto>(loadedMapped),
+        MissingDatasetKinds = new FixedList<DatasetKindDto>(missingMapped)
       };
     }
 
@@ -35,14 +35,14 @@ namespace Empiria.FinancialAccounting.Datasets.Adapters {
     static private DatasetDto Map(Dataset ds) {
       return new DatasetDto() {
         UID = ds.UID,
-        DatasetFamily = ds.DatasetFamily.UID,
-        DatasetFamilyName = ds.DatasetFamily.Name,
-        ElaborationDate = ds.ElaborationDate,
-        ElaboratedBy = ds.ElaboratedBy.Alias,
-        FileType = ds.FileType.FileType,
-        FileSize = ds.FileSize,
-        FileName = ds.FileName,
-        Url = ds.FileUrl
+        DatasetFamily = ds.DatasetFamily.Name,
+        DatasetKind = ds.DatasetKind.Name,
+        ElaborationDate = ds.UpdatedTime,
+        ElaboratedBy = ds.UploadedBy.Alias,
+        FileType = ds.DatasetKind.FileType,
+        FileSize = ds.MediaLength,
+        FileName = ds.OriginalFileName
+        //  Url = ds.FileUrl
       };
     }
 

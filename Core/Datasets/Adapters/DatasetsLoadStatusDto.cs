@@ -18,11 +18,11 @@ namespace Empiria.FinancialAccounting.Datasets.Adapters {
       // no-op
     }
 
-    public FixedList<DatasetDto> LoadedFiles {
+    public FixedList<DatasetDto> LoadedDatasets {
       get; internal set;
     }
 
-    public FixedList<DatasetKindDto> MissingFileTypes {
+    public FixedList<DatasetKindDto> MissingDatasetKinds {
       get; internal set;
     }
 

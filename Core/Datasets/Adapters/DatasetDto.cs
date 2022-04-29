@@ -32,11 +32,9 @@ namespace Empiria.FinancialAccounting.Datasets.Adapters {
       get; internal set;
     }
 
-
-    public string DatasetFamilyName {
+    public string DatasetKind {
       get; internal set;
     }
-
 
     public DateTime ElaborationDate {
       get; internal set;
