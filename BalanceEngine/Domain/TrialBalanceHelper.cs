@@ -528,6 +528,7 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
       return balanceEntries;
     }
 
+
     internal List<TrialBalanceEntry> GenerateTotalSummaryConsolidatedByLedger(
                                       List<TrialBalanceEntry> summaryCurrencies) {
 
@@ -575,6 +576,7 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
 
       return TrialBalanceDataService.GetTrialBalanceEntries(commandData);
     }
+
 
     internal List<TrialBalanceEntry> RestrictLevels(List<TrialBalanceEntry> entries) {
       if (_command.Level == 0) {
@@ -742,19 +744,6 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
       string hash = $"{entry.GroupName}||{entry.Currency.Id}";
 
       GenerateOrIncreaseEntries(summaryEntries, entry, StandardAccount.Empty, Sector.Empty, itemType, hash);
-    }
-
-
-    private void SummaryEntryBySectorization(EmpiriaHashTable<TrialBalanceEntry> summaryEntries,
-                                             TrialBalanceEntry entry, StandardAccount currentParent) {
-      if (_command.UseNewSectorizationModel) {
-        if (currentParent.HasParent && entry.HasSector) {
-          if (_command.WithSectorization) {
-            SummaryByEntry(summaryEntries, entry, currentParent, entry.Sector.Parent,
-                                            TrialBalanceItemType.Summary);
-          }
-        }
-      }
     }
 
 
@@ -1148,6 +1137,19 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
 
         GenerateOrIncreaseEntries(summaryEntries, groupEntry, StandardAccount.Empty, Sector.Empty,
                                   TrialBalanceItemType.BalanceTotalGroupCreditor, hash);
+      }
+    }
+
+
+    private void SummaryEntryBySectorization(EmpiriaHashTable<TrialBalanceEntry> summaryEntries,
+                                             TrialBalanceEntry entry, StandardAccount currentParent) {
+      if (_command.UseNewSectorizationModel) {
+        if (currentParent.HasParent && entry.HasSector) {
+          if (_command.WithSectorization) {
+            SummaryByEntry(summaryEntries, entry, currentParent, entry.Sector.Parent,
+                                            TrialBalanceItemType.Summary);
+          }
+        }
       }
     }
 

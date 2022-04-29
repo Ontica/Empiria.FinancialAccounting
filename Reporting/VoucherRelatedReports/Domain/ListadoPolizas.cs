@@ -50,6 +50,16 @@ namespace Empiria.FinancialAccounting.Reporting.Builders {
     #region Private methods
 
 
+    private ListadoPolizasCommand GetPolizasCommand(BuildReportCommand command) {
+      return new ListadoPolizasCommand {
+        AccountsChartUID = AccountsChart.Parse(command.AccountsChartUID).UID,
+        Ledgers = command.Ledgers,
+        FromDate = command.FromDate,
+        ToDate = command.ToDate
+      };
+    }
+
+
     static private FixedList<DataTableColumn> GetReportColumns() {
       List<DataTableColumn> columns = new List<DataTableColumn>();
 
@@ -66,43 +76,14 @@ namespace Empiria.FinancialAccounting.Reporting.Builders {
     }
 
 
-
-    private ListadoPolizasCommand GetPolizasCommand(BuildReportCommand command) {
-      return new ListadoPolizasCommand {
-        AccountsChartUID = AccountsChart.Parse(command.AccountsChartUID).UID,
-        Ledgers = command.Ledgers,
-        FromDate = command.FromDate,
-        ToDate = command.ToDate
-      };
-    }
-
-
-    static private ReportDataDto MapToReportDataDto(BuildReportCommand command,
-                                                    PolizasDto polizas) {
-      return new ReportDataDto {
-        Command = command,
-        Columns = GetReportColumns(),
-        Entries = MapToReportDataEntries(polizas.Entries, command)
-      };
-    }
-
-
-    static private FixedList<IReportEntryDto> MapToReportDataEntries(FixedList<IPolizasDto> list,
-                                                                     BuildReportCommand command) {
-
-      var mappedItems = list.Select((x) => MapToPolizaEntry((PolizasEntryDto) x, command));
-
-      return new FixedList<IReportEntryDto>(mappedItems);
-    }
-
-    static private PolizaReturnedEntry MapToPolizaEntry(PolizasEntryDto voucher, BuildReportCommand command) {
+    static private PolizaReturnedEntry MapToPolizaEntry(PolizasEntryDto voucher) {
       var polizaEntry = new PolizaReturnedEntry();
 
       polizaEntry.LedgerName = voucher.ItemType == ItemType.Group ||
                                   voucher.ItemType == ItemType.Total ? "" :
                                   voucher.LedgerName;
 
-      polizaEntry.VoucherNumber = voucher.ItemType == ItemType.Group || 
+      polizaEntry.VoucherNumber = voucher.ItemType == ItemType.Group ||
                                   voucher.ItemType == ItemType.Total ? "" :
                                   voucher.VoucherNumber;
 
@@ -132,11 +113,32 @@ namespace Empiria.FinancialAccounting.Reporting.Builders {
 
       return polizaEntry;
     }
+
+
+    static private ReportDataDto MapToReportDataDto(BuildReportCommand command,
+                                                    PolizasDto polizas) {
+      return new ReportDataDto {
+        Command = command,
+        Columns = GetReportColumns(),
+        Entries = MapToReportDataEntries(polizas.Entries)
+      };
+    }
+
+
+    static private FixedList<IReportEntryDto> MapToReportDataEntries(FixedList<IPolizasDto> list) {
+
+      var mappedItems = list.Select((x) => MapToPolizaEntry((PolizasEntryDto) x));
+
+      return new FixedList<IReportEntryDto>(mappedItems);
+    }
+
+
     #endregion Private methods
 
 
 
   } // ListadoPolizas
+
 
   public class PolizaReturnedEntry : IReportEntryDto {
 

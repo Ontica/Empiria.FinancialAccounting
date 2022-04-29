@@ -4,7 +4,7 @@
 *  Assembly : FinancialAccounting.Reporting.dll          Pattern   : Helper methods                          *
 *  Type     : ListadoPolizasHelper                       License   : Please read LICENSE.txt file            *
 *                                                                                                            *
-*  Summary  : Helper methods to build vouchers information.                                                  *
+*  Summary  : Helper methods to build voucher list information.                                              *
 *                                                                                                            *
 ************************* Copyright(c) La Vía Óntica SC, Ontica LLC and contributors. All rights reserved. **/
 using System;
@@ -29,7 +29,7 @@ namespace Empiria.FinancialAccounting.Reporting {
   }
 
 
-  /// <summary>Helper methods to build vouchers information.</summary>
+  /// <summary>Helper methods to build voucher list information.</summary>
   internal class ListadoPolizasHelper {
 
     private readonly ListadoPolizasCommand _command;
@@ -43,16 +43,6 @@ namespace Empiria.FinancialAccounting.Reporting {
 
     #region Public methods
 
-    internal FixedList<PolizaEntry> GetPolizaEntries() {
-      var commandExtensions = new PolizasCommandExtensions();
-
-      PolizaCommandData commandData = commandExtensions.MapToPolizaCommandData(_command);
-
-      FixedList<PolizaEntry> polizas = ListadoPolizasDataService.GetPolizasEntries(commandData);
-
-      return polizas;
-    }
-
     internal FixedList<PolizaEntry> GetListadoPolizasConTotales(FixedList<PolizaEntry> vouchers) {
 
       FixedList<PolizaEntry> totalByLedger = GetTotalByLedger(vouchers);
@@ -65,6 +55,17 @@ namespace Empiria.FinancialAccounting.Reporting {
                                                 vouchersAndTotalByLedger, totalOfVouchers);
 
       return returnedVouchers;
+    }
+
+
+    internal FixedList<PolizaEntry> GetPolizaEntries() {
+      var commandExtensions = new PolizasCommandExtensions();
+
+      PolizaCommandData commandData = commandExtensions.MapToPolizaCommandData(_command);
+
+      FixedList<PolizaEntry> polizas = ListadoPolizasDataService.GetPolizasEntries(commandData);
+
+      return polizas;
     }
 
 

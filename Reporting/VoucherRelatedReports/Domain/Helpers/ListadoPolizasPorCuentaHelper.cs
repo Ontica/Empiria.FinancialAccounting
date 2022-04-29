@@ -4,7 +4,7 @@
 *  Assembly : FinancialAccounting.Reporting.dll          Pattern   : Helper methods                          *
 *  Type     : ListadoPolizasPorCuentaHelper              License   : Please read LICENSE.txt file            *
 *                                                                                                            *
-*  Summary  : Helper methods to build vouchers by account information.                                       *
+*  Summary  : Helper methods to build voucher list by account information.                                   *
 *                                                                                                            *
 ************************* Copyright(c) La Vía Óntica SC, Ontica LLC and contributors. All rights reserved. **/
 using System;
@@ -17,7 +17,7 @@ using Empiria.FinancialAccounting.Reporting.Data;
 
 namespace Empiria.FinancialAccounting.Reporting {
 
-  /// <summary>Helper methods to build vouchers by account information.</summary>
+  /// <summary>Helper methods to build voucher list by account information.</summary>
   internal class ListadoPolizasPorCuentaHelper {
     
     private readonly BuildReportCommand Command;
@@ -32,18 +32,7 @@ namespace Empiria.FinancialAccounting.Reporting {
     #region Public methods
 
 
-    internal FixedList<AccountStatementEntry> GetVoucherEntries() {
-      var commandExtensions = new PolizasPorCuentaCommandExtensions();
-
-      PolizaCommandData commandData = commandExtensions.MapToPolizaCommandData(Command);
-
-      FixedList<AccountStatementEntry> vouchers = 
-              ListadoPolizasPorCuentaDataService.GetVouchersByAccountEntries(commandData);
-
-      return vouchers;
-    }
-
-
+    
     internal FixedList<AccountStatementEntry> CombineVouchersWithTotalByCurrency(
                                               FixedList<AccountStatementEntry> orderingVouchers,
                                               FixedList<AccountStatementEntry> totalsByCurrency) {
@@ -93,6 +82,18 @@ namespace Empiria.FinancialAccounting.Reporting {
       }
 
       return returnedEntries.ToFixedList();
+    }
+
+
+    internal FixedList<AccountStatementEntry> GetVoucherEntries() {
+      var commandExtensions = new PolizasPorCuentaCommandExtensions();
+
+      PolizaCommandData commandData = commandExtensions.MapToPolizaCommandData(Command);
+
+      FixedList<AccountStatementEntry> vouchers =
+              ListadoPolizasPorCuentaDataService.GetVouchersByAccountEntries(commandData);
+
+      return vouchers;
     }
 
 
@@ -149,7 +150,7 @@ namespace Empiria.FinancialAccounting.Reporting {
     }
 
 
-    private void SummaryEntriesByCurrency(EmpiriaHashTable<AccountStatementEntry> totalSummaryByCurrency, 
+    private void SummaryEntriesByCurrency(EmpiriaHashTable<AccountStatementEntry> totalSummaryByCurrency,
                                             AccountStatementEntry entry) {
       AccountStatementEntry newEntry = AccountStatementEntry.MapToAccountStatementEntry(entry);
       string hash;

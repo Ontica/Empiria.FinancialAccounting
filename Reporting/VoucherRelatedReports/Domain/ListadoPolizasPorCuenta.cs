@@ -139,6 +139,7 @@ namespace Empiria.FinancialAccounting.Reporting {
 
   } // class ListadoPolizasPorCuenta
 
+
   public class VoucherByAccountEntry : IReportEntryDto {
 
     public TrialBalanceItemType ItemType {

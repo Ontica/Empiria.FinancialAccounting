@@ -4,7 +4,7 @@
 *  Assembly : FinancialAccounting.Reporting.dll          Pattern   : Empiria Plain Object                    *
 *  Type     : PolizaEntry                                License   : Please read LICENSE.txt file            *
 *                                                                                                            *
-*  Summary  : Represents an entry for a policy.                                                              *
+*  Summary  : Represents an entry for a voucher.                                                             *
 *                                                                                                            *
 ************************* Copyright(c) La Vía Óntica SC, Ontica LLC and contributors. All rights reserved. **/
 using System;
@@ -16,7 +16,7 @@ namespace Empiria.FinancialAccounting.Reporting.Domain {
 
   }
 
-  /// <summary>Represents an entry for a policy.</summary>
+  /// <summary>Represents an entry for a voucher.</summary>
   public class PolizaEntry : IPolizaEntry {
 
 

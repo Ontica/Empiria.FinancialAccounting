@@ -4,14 +4,14 @@
 *  Assembly : FinancialAccounting.Reporting.dll          Pattern   : Command payload                         *
 *  Type     : ListadoPolizasCommand                      License   : Please read LICENSE.txt file            *
 *                                                                                                            *
-*  Summary  : Command payload used to build vouchers report.                                                 *
+*  Summary  : Command payload used to build voucher list report.                                            *
 *                                                                                                            *
 ************************* Copyright(c) La Vía Óntica SC, Ontica LLC and contributors. All rights reserved. **/
 using System;
 
 namespace Empiria.FinancialAccounting.Reporting.Adapters {
 
-  /// <summary>Command payload used to build vouchers report.</summary>
+  /// <summary>Command payload used to build voucher list report.</summary>
   public class ListadoPolizasCommand {
 
 

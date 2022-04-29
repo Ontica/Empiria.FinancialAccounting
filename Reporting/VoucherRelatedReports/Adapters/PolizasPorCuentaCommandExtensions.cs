@@ -15,15 +15,12 @@ namespace Empiria.FinancialAccounting.Reporting.Adapters {
   /// <summary>Type extension methods for PolizasPorCuentaCommand.</summary>
   internal class PolizasPorCuentaCommandExtensions {
 
-    #region Public methods
 
     internal PolizaCommandData MapToPolizaCommandData(BuildReportCommand command) {
       var clauses = new ListadoPolizasPorCuentaClausesHelper(command);
 
       return clauses.GetPolizasCommandData();
     }
-
-    #endregion Public methods
 
 
     private class ListadoPolizasPorCuentaClausesHelper {
@@ -131,6 +128,7 @@ namespace Empiria.FinancialAccounting.Reporting.Adapters {
       }
 
       #endregion Private methods
+
     }
 
   } // class PolizasPorCuentaCommandExtensions

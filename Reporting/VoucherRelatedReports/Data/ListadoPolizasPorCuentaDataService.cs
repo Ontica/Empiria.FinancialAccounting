@@ -4,7 +4,7 @@
 *  Assembly : FinancialAccounting.Reporting.dll          Pattern   : Data Service                            *
 *  Type     : ListadoPolizasPorCuentaDataService         License   : Please read LICENSE.txt file            *
 *                                                                                                            *
-*  Summary  : Provides data read methods for vouchers by account.                                            *
+*  Summary  : Provides data read methods for voucher list by account.                                       *
 *                                                                                                            *
 ************************* Copyright(c) La Vía Óntica SC, Ontica LLC and contributors. All rights reserved. **/
 using System;
@@ -13,7 +13,7 @@ using Empiria.Data;
 
 namespace Empiria.FinancialAccounting.Reporting.Data {
 
-  /// <summary></summary>
+  /// <summary>Provides data read methods for voucher list by account.</summary>
   static class ListadoPolizasPorCuentaDataService {
 
 

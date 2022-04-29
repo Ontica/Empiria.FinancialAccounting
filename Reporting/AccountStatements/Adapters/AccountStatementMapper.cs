@@ -1,8 +1,8 @@
 ﻿/* Empiria Financial *****************************************************************************************
 *                                                                                                            *
 *  Module   : Balance Engine                             Component : Interface adapters                      *
-*  Assembly : FinancialAccounting.Reporting.dll      Pattern   : Mapper class                            *
-*  Type     : VouchersByAccountMapper                              License   : Please read LICENSE.txt file  *
+*  Assembly : FinancialAccounting.Reporting.dll          Pattern   : Mapper class                            *
+*  Type     : AccountStatementMapper                     License   : Please read LICENSE.txt file            *
 *                                                                                                            *
 *  Summary  : Methods used to map vouchers by account.                                                       *
 *                                                                                                            *
@@ -105,6 +105,6 @@ namespace Empiria.FinancialAccounting.Reporting.Adapters {
 
     #endregion Private methods
 
-  } // class VouchersByAccountMapper
+  } // class AccountStatementMapper
 
 } // namespace Empiria.FinancialAccounting.Reporting.Adapters
