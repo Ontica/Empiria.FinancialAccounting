@@ -29,12 +29,13 @@ namespace Empiria.FinancialAccounting.Datasets {
     }
 
 
-    public Dataset(DatasetsCommand command, FileInfo fileInfo) {
+    public Dataset(DatasetsCommand command, FileData fileData, FileInfo fileInfo) {
       Assertion.AssertObject(command, "command");
+      Assertion.AssertObject(fileData, "fileData");
       Assertion.AssertObject(fileInfo, "fileInfo");
 
       LoadData(command);
-      LoadFileData(fileInfo);
+      LoadFileData(fileData, fileInfo);
     }
 
 
@@ -46,18 +47,18 @@ namespace Empiria.FinancialAccounting.Datasets {
 
     #region Properties
 
-    [DataField("ID_TIPO_DATASET")]
+    [DataField("ID_TIPO_ARCHIVO")]
     public DatasetFamily DatasetFamily {
       get;
       private set;
     }
 
-    [DataField("TIPO_ARCHIVO")]
-    private string _fileType;
+    [DataField("SUBTIPO_ARCHIVO")]
+    private string _datasetKind;
 
-    public DatasetKind FileType {
+    public DatasetKind DatasetKind {
       get {
-        return this.DatasetFamily.GetDatasetKind(_fileType);
+        return this.DatasetFamily.GetDatasetKind(_datasetKind);
       }
     }
 
@@ -69,44 +70,52 @@ namespace Empiria.FinancialAccounting.Datasets {
     }
 
 
-    [DataField("FECHA_ELABORACION")]
-    public DateTime ElaborationDate {
+    [DataField("FECHA_ACTUALIZACION")]
+    public DateTime UpdatedTime {
       get;
       private set;
     }
 
 
-    [DataField("ID_ELABORADO_POR")]
-    public Contact ElaboratedBy {
+    [DataField("ID_ACTUALIZADO_POR")]
+    public Contact UploadedBy {
       get;
       private set;
     }
 
 
-    [DataField("DATASET_EXT_DATA")]
+    [DataField("ARCHIVO_EXT_DATA")]
     internal JsonObject ExtData {
       get;
       private set;
     } = JsonObject.Empty;
 
 
-    internal long FileSize {
-      get {
-        return this.ExtData.Get("file/length", 0);
-      }
-      set {
-        this.ExtData.Set("file/length", value);
-      }
+    [DataField("NOMBRE_ORIGINAL")]
+    internal string OriginalFileName {
+      get;
+      private set;
     }
 
 
+    [DataField("RUTA")]
     internal string FileName {
-      get {
-        return this.ExtData.Get("file/name", string.Empty);
-      }
-      set {
-        this.ExtData.Set("file/name", value);
-      }
+      get;
+      private set;
+    }
+
+
+    [DataField("MEDIA_LENGTH")]
+    internal int MediaLength {
+      get;
+      private set;
+    }
+
+
+    [DataField("MEDIA_TYPE")]
+    public string MediaType {
+      get;
+      private set;
     }
 
 
@@ -134,16 +143,18 @@ namespace Empiria.FinancialAccounting.Datasets {
 
     private void LoadData(DatasetsCommand command) {
       this.DatasetFamily = DatasetFamily.Parse(command.DatasetFamilyUID);
-      _fileType = command.DatasetKind;
+      _datasetKind = command.DatasetKind;
       this.OperationDate = command.Date;
-      this.ElaborationDate = DateTime.Today;
-      this.ElaboratedBy = ExecutionServer.CurrentIdentity.User.AsContact();
+      this.UpdatedTime = DateTime.Now;
+      this.UploadedBy = ExecutionServer.CurrentIdentity.User.AsContact();
     }
 
 
-    private void LoadFileData(FileInfo fileInfo) {
+    private void LoadFileData(FileData fileData, FileInfo fileInfo) {
+      this.OriginalFileName = fileData.OriginalFileName;
+      this.MediaType = fileData.MediaType;
       this.FileName = fileInfo.Name;
-      this.FileSize = fileInfo.Length;
+      this.MediaLength = (int) fileInfo.Length;
     }
 
 

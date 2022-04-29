@@ -58,7 +58,7 @@ namespace Empiria.FinancialAccounting.Datasets.UseCases {
 
       FileInfo fileInfo = FileUtilities.SaveFile(fileData);
 
-      var datasetUID = new Dataset(command, fileInfo);
+      var datasetUID = new Dataset(command, fileData, fileInfo);
 
       datasetUID.Save();
 

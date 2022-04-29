@@ -19,10 +19,10 @@ namespace Empiria.FinancialAccounting.Datasets.Data {
     static internal FixedList<Dataset> GetDatasets(DatasetFamily datasetFamily,
                                                    DateTime date) {
       var sql = "SELECT * " +
-                "FROM COF_DATASETS " +
-               $"WHERE ID_TIPO_DATASET = {datasetFamily.Id} AND STATUS <> 'X' " +
-               $"FECHA_OPERACION = '{CommonMethods.FormatSqlDate(date)}' AND " +
-               $"ORDER BY ID_DATASET";
+                "FROM COF_ARCHIVOS " +
+               $"WHERE ID_TIPO_ARCHIVO = {datasetFamily.Id} AND STATUS <> 'X' AND " +
+               $"FECHA_OPERACION = '{CommonMethods.FormatSqlDate(date)}' " +
+               $"ORDER BY ID_ARCHIVO";
 
       var operation = DataOperation.Parse(sql);
 
@@ -31,10 +31,11 @@ namespace Empiria.FinancialAccounting.Datasets.Data {
 
 
     static internal void WriteDataset(Dataset o) {
-      var op = DataOperation.Parse("write_cof_dataset",
+      var op = DataOperation.Parse("write_cof_archivo",
                         o.Id, o.UID, o.DatasetFamily.Id,
-                        o.FileType.UID, o.OperationDate, o.ElaborationDate,
-                        o.ExtData.ToString(), o.ElaboratedBy.Id,
+                        o.DatasetKind.UID, o.OperationDate, o.UpdatedTime,
+                        o.ExtData.ToString(),o.OriginalFileName, o.FileName, -1,
+                        o.MediaType, o.MediaLength, o.UploadedBy.Id,
                         (char) o.Status);
 
       DataWriter.Execute(op);
