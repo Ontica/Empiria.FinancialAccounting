@@ -1,6 +1,6 @@
 ﻿/* Empiria Financial *****************************************************************************************
 *                                                                                                            *
-*  Module   : Balance Engine                             Component : Data Layer                              *
+*  Module   : Reporting Services                         Component : Data Layer                              *
 *  Assembly : FinancialAccounting.Reporting.dll          Pattern   : Data Service                            *
 *  Type     : StoredVoucherDataService                   License   : Please read LICENSE.txt file            *
 *                                                                                                            *

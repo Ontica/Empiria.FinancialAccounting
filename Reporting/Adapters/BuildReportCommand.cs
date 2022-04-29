@@ -39,22 +39,28 @@ namespace Empiria.FinancialAccounting.Reporting {
       get; set;
     } = new string[0];
 
+
     public string AccountNumber {
       get; set;
     } = string.Empty;
+
 
     public string SubledgerAccountNumber {
       get; set;
     } = string.Empty;
 
+
     public SendType SendType {
       get; set;
     } = SendType.N;
 
+
     public bool WithSubledgerAccount {
       get; set;
     } = false;
+
   } // class BuildReportCommand
+
 
   public enum SendType {
 

@@ -2,7 +2,7 @@
 *                                                                                                            *
 *  Module   : Reporting Services                         Component : Domain Layer                            *
 *  Assembly : FinancialAccounting.Reporting.dll          Pattern   : Helper methods                          *
-*  Type     : VouchersByAccountUseCases                       License   : Please read LICENSE.txt file       *
+*  Type     : AccountStatementUseCases                   License   : Please read LICENSE.txt file            *
 *                                                                                                            *
 *  Summary  : Use cases used to build vouchers by account.                                                   *
 *                                                                                                            *
@@ -31,11 +31,10 @@ namespace Empiria.FinancialAccounting.Reporting.UseCases {
     #region Use cases
 
 
-    public AccountStatementDto BuilAccountStatement(AccountStatementCommand accountStatementCommand) {
+    public AccountStatementDto BuildAccountStatement(AccountStatementCommand command) {
+      Assertion.AssertObject(command, "command");
 
-      Assertion.AssertObject(accountStatementCommand, "accountStatementCommand");
-
-      var vouchersConstructor = new AccountStatementConstructor(accountStatementCommand);
+      var vouchersConstructor = new AccountStatementConstructor(command);
 
       AccountStatement vouchers = vouchersConstructor.Build();
 
@@ -45,6 +44,6 @@ namespace Empiria.FinancialAccounting.Reporting.UseCases {
 
     #endregion
 
-  } // class VouchersByAccountUseCases
+  } // class AccountStatementUseCases
 
 } // namespace Empiria.FinancialAccounting.Reporting.UseCases

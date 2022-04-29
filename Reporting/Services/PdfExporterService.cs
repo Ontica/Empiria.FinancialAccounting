@@ -10,9 +10,9 @@
 using System;
 using System.IO;
 
-using Empiria.FinancialAccounting.Reporting.Exporters.Excel;
-using Empiria.FinancialAccounting.Vouchers.Adapters;
 using Empiria.Office;
+
+using Empiria.FinancialAccounting.Vouchers.Adapters;
 
 namespace Empiria.FinancialAccounting.Reporting {
 

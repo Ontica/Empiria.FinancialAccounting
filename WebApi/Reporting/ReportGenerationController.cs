@@ -26,25 +26,9 @@ namespace Empiria.FinancialAccounting.WebApi.Reporting {
 
 
     [HttpPost]
-    [Route("v2/financial-accounting/reporting/{reportType}/export")]
-    public SingleObjectModel ExportReportData([FromUri] string reportType,
-                                              [FromBody] BuildReportCommand command) {
-      base.RequireBody(command);
-
-      command.ReportType = reportType;
-
-      using (var service = ReportingService.ServiceInteractor()) {
-        FileReportDto fileReportDto = service.ExportReport(command);
-
-        return new SingleObjectModel(this.Request, fileReportDto);
-      }
-    }
-
-
-    [HttpPost]
     [Route("v2/financial-accounting/reporting/{reportType}/data")]
-    public SingleObjectModel GenerateReport([FromUri] string reportType,
-                                            [FromBody] BuildReportCommand command) {
+    public SingleObjectModel BuildReport([FromUri] string reportType,
+                                         [FromBody] BuildReportCommand command) {
       base.RequireBody(command);
 
       command.ReportType = reportType;
@@ -58,35 +42,17 @@ namespace Empiria.FinancialAccounting.WebApi.Reporting {
 
 
     [HttpPost]
-    [Route("v2/financial-accounting/balance-voucher")]
-    public SingleObjectModel GetVouchersByAccount(
-            [FromBody] AccountStatementCommand accountStatementCommand) {
-      base.RequireBody(accountStatementCommand);
+    [Route("v2/financial-accounting/reporting/{reportType}/export")]
+    public SingleObjectModel ExportReportData([FromUri] string reportType,
+                                              [FromBody] BuildReportCommand command) {
+      base.RequireBody(command);
 
-      using (var usecases = AccountStatementUseCases.UseCaseInteractor()) {
+      command.ReportType = reportType;
 
-        AccountStatementDto vouchers = usecases.BuilAccountStatement(accountStatementCommand);
+      using (var service = ReportingService.ServiceInteractor()) {
+        FileReportDto fileReportDto = service.ExportReport(command);
 
-        return new SingleObjectModel(this.Request, vouchers);
-      }
-    }
-
-
-    [HttpPost]
-    [Route("v2/financial-accounting/balance-voucher/excel")]
-    public SingleObjectModel GetExcelVouchersByAccount(
-            [FromBody] AccountStatementCommand accountStatementCommand) {
-      base.RequireBody(accountStatementCommand);
-
-      using (var usecases = AccountStatementUseCases.UseCaseInteractor()) {
-
-        AccountStatementDto vouchers = usecases.BuilAccountStatement(accountStatementCommand);
-
-        var excelExporter = new ExcelExporterService();
-
-        FileReportDto excelFileDto = excelExporter.Export(vouchers);
-
-        return new SingleObjectModel(this.Request, excelFileDto);
+        return new SingleObjectModel(this.Request, fileReportDto);
       }
     }
 

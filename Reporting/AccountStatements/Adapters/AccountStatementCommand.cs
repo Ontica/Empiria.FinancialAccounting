@@ -13,7 +13,6 @@ using Empiria.FinancialAccounting.BalanceEngine.Adapters;
 
 namespace Empiria.FinancialAccounting.Reporting.Adapters {
 
-
   /// <summary>Command payload used to build account statement.</summary>
   public class AccountStatementCommand {
 

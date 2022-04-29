@@ -1,18 +1,18 @@
 ﻿/* Empiria Financial *****************************************************************************************
 *                                                                                                            *
-*  Module   : Balance Engine                             Component : Interface adapters                      *
-*  Assembly : FinancialAccounting.Reporting.dll      Pattern   : Command payload                         *
-*  Type     : VouchersByAccountCommandData               License   : Please read LICENSE.txt file            *
+*  Module   : Reporting Services                         Component : Interface adapters                      *
+*  Assembly : FinancialAccounting.Reporting.dll          Pattern   : Command payload                         *
+*  Type     : AccountStatementCommandData                License   : Please read LICENSE.txt file            *
 *                                                                                                            *
-*  Summary  : Command payload used to build vouchers by account.                                             *
+*  Summary  : Command payload used to generate account's statements.                                         *
 *                                                                                                            *
 ************************* Copyright(c) La Vía Óntica SC, Ontica LLC and contributors. All rights reserved. **/
 using System;
 
 namespace Empiria.FinancialAccounting.Reporting.Data {
-  
-  internal class AccountStatementCommandData {
 
+  /// <summary>Command payload used to generate account's statements.</summary>
+  internal class AccountStatementCommandData {
 
     public int AccountsChartId {
       get;
@@ -48,7 +48,8 @@ namespace Empiria.FinancialAccounting.Reporting.Data {
     public string Ordering {
       get; internal set;
     } = string.Empty;
-    
-  } // class VouchersByAccountCommandData
+
+
+  } // class AccountStatementCommandData
 
 } // namespace Empiria.FinancialAccounting.Reporting.Data.Adapters
