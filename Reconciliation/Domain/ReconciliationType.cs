@@ -46,6 +46,13 @@ namespace Empiria.FinancialAccounting.Reconciliation {
 
     #region Properties
 
+    internal AccountsList AccountsList {
+      get {
+        return ExtendedDataField.Get<AccountsList>("accountsListId");
+      }
+    }
+
+
     public DatasetFamily DatasetFamily {
       get {
         return ExtendedDataField.Get<DatasetFamily>("datasetFamilyId");
@@ -73,9 +80,7 @@ namespace Empiria.FinancialAccounting.Reconciliation {
     #region Methods
 
     internal FixedList<Dataset> GetDatasetsList(DateTime date) {
-      // return DatasetType.GetInputDatasets(this, date);
-
-      throw new NotImplementedException();
+      return this.DatasetFamily.GetDatasetsList(date);
     }
 
 
@@ -92,6 +97,7 @@ namespace Empiria.FinancialAccounting.Reconciliation {
     internal FixedList<DatasetKind> MissingDatasetKinds(DateTime date) {
       return this.DatasetKinds;
     }
+
 
     #endregion Methods
 

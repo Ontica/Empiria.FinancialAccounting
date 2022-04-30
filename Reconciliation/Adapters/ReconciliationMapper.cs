@@ -9,7 +9,6 @@
 ************************* Copyright(c) La Vía Óntica SC, Ontica LLC and contributors. All rights reserved. **/
 using System;
 using System.Collections.Generic;
-using System.Linq;
 
 namespace Empiria.FinancialAccounting.Reconciliation.Adapters {
 
@@ -21,9 +20,9 @@ namespace Empiria.FinancialAccounting.Reconciliation.Adapters {
       return new FixedList<ReconciliationTypeDto>(list.Select(x => Map(x)));
     }
 
-    static internal ReconciliationResultDto Map(ReconciliationCommand command) {
+    static internal ReconciliationResultDto Map(ReconciliationResult result) {
       return new ReconciliationResultDto {
-        Command = command,
+        Command = result.Command,
         Columns = MapColumns(),
         Entries = new FixedList<ReconciliationResultEntryDto>()
       };

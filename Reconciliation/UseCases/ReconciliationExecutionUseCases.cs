@@ -38,7 +38,11 @@ namespace Empiria.FinancialAccounting.Reconciliation.UseCases {
 
       command.EnsureValid();
 
-      return ReconciliationMapper.Map(command);
+      var service = new ReconciliationEngine(command);
+
+      ReconciliationResult result = service.Reconciliate();
+
+      return ReconciliationMapper.Map(result);
     }
 
     #endregion Use cases
