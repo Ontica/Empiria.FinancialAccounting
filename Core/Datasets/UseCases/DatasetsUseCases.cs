@@ -36,7 +36,11 @@ namespace Empiria.FinancialAccounting.Datasets.UseCases {
 
 
     public DatasetDto GetDataset(string datasetUID) {
-      throw new NotImplementedException();
+      Assertion.AssertObject(datasetUID, "datasetUID");
+
+      var dataset = Dataset.Parse(datasetUID);
+
+      return DatasetsMapper.Map(dataset);
     }
 
 
@@ -49,8 +53,7 @@ namespace Empiria.FinancialAccounting.Datasets.UseCases {
     }
 
 
-    public DatasetsLoadStatusDto ImportDatasetFromFile(DatasetsCommand command,
-                                                       FileData fileData) {
+    public Dataset ImportDatasetFromFile(DatasetsCommand command, FileData fileData) {
       Assertion.AssertObject(command, "command");
       Assertion.AssertObject(fileData, "fileData");
 
@@ -58,11 +61,11 @@ namespace Empiria.FinancialAccounting.Datasets.UseCases {
 
       FileInfo fileInfo = FileUtilities.SaveFile(fileData);
 
-      var datasetUID = new Dataset(command, fileData, fileInfo);
+      var dataset = new Dataset(command, fileData, fileInfo);
 
-      datasetUID.Save();
+      dataset.Save();
 
-      return BuildDatasetsLoadStatusDto(command.DatasetFamilyUID, command.Date);
+      return dataset;
     }
 
 

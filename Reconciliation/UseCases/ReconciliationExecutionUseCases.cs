@@ -1,7 +1,7 @@
 ﻿/* Empiria Financial *****************************************************************************************
 *                                                                                                            *
-*  Module   : Dataset Services                           Component : Use cases Layer                         *
-*  Assembly : FinancialAccounting.Core.dll               Pattern   : Use case interactor class               *
+*  Module   : Reconciliation Services                    Component : Use cases Layer                         *
+*  Assembly : FinancialAccounting.Reconciliation.dll     Pattern   : Use case interactor class               *
 *  Type     : ReconciliationExecutionUseCases            License   : Please read LICENSE.txt file            *
 *                                                                                                            *
 *  Summary  : Use cases used to execute financial accounting reconciliation processes.                       *
@@ -15,7 +15,7 @@ using Empiria.FinancialAccounting.Reconciliation.Adapters;
 
 namespace Empiria.FinancialAccounting.Reconciliation.UseCases {
 
-  /// <summary>Use cases used to read and write reconciliation data sets.</summary>
+  /// <summary>Use cases used to execute financial accounting reconciliation processes.</summary>
   public class ReconciliationExecutionUseCases : UseCase {
 
     #region Constructors and parsers
@@ -32,7 +32,6 @@ namespace Empiria.FinancialAccounting.Reconciliation.UseCases {
     #endregion Constructors and parsers
 
     #region Use cases
-
 
     public ReconciliationResultDto Execute(ReconciliationCommand command) {
       Assertion.AssertObject(command, "command");

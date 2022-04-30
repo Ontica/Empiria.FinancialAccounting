@@ -35,11 +35,12 @@ namespace Empiria.FinancialAccounting.Reconciliation {
       Load(dto);
     }
 
+
     #region Properties
 
     [DataField("ID_DATASET")]
     public Dataset Dataset {
-      get;
+      get; private set;
     }
 
 
@@ -140,8 +141,14 @@ namespace Empiria.FinancialAccounting.Reconciliation {
       this.Position = dto.Position;
     }
 
+    protected override void OnBeforeSave() {
+      Assertion.Assert(this.IsNew,
+        "El método Save() sólo puede invocarse sobre nuevas entradas de conciliación."
+      );
+    }
+
     protected override void OnSave() {
-      ReconciliationData.WriteEntry(this);
+      ReconciliationData.AppendEntry(this);
     }
 
     #endregion Methods

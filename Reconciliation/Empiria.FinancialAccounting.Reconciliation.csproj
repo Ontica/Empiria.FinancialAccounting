@@ -66,6 +66,6 @@
     <ProjectReference Include="..\Core\Empiria.FinancialAccounting.Core.csproj" />
   </ItemGroup>
   <ItemGroup>
-    <Folder Include="Data\" />
+    <ProjectReference Include="..\..\extensions\Office\Empiria.Office.csproj" />
   </ItemGroup>
 </Project>

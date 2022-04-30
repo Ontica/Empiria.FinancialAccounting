@@ -1,7 +1,7 @@
 ﻿/* Empiria Financial *****************************************************************************************
 *                                                                                                            *
-*  Module   : Dataset Services                           Component : Use cases Layer                         *
-*  Assembly : FinancialAccounting.Core.dll               Pattern   : Use case interactor class               *
+*  Module   : Reconciliation Services                    Component : Use cases Layer                         *
+*  Assembly : FinancialAccounting.Reconciliation.dll     Pattern   : Use case interactor class               *
 *  Type     : ReconciliationDatasetsUseCases             License   : Please read LICENSE.txt file            *
 *                                                                                                            *
 *  Summary  : Use cases used to read and write reconciliation data sets.                                     *
@@ -11,10 +11,12 @@ using System;
 
 using Empiria.Services;
 
+using Empiria.FinancialAccounting.Datasets;
 using Empiria.FinancialAccounting.Datasets.UseCases;
 using Empiria.FinancialAccounting.Datasets.Adapters;
 
 using Empiria.FinancialAccounting.Reconciliation.Adapters;
+
 
 namespace Empiria.FinancialAccounting.Reconciliation.UseCases {
 
@@ -69,8 +71,14 @@ namespace Empiria.FinancialAccounting.Reconciliation.UseCases {
       using (var usecase = DatasetsUseCases.UseCaseInteractor()) {
         var coreDatasetCommand = command.MapToCoreDatasetsCommand();
 
-        return usecase.ImportDatasetFromFile(coreDatasetCommand, fileData);
+        Dataset dataset = usecase.ImportDatasetFromFile(coreDatasetCommand, fileData);
+
+        var entriesImporter = new ReconciliationEntriesImporter(dataset);
+
+        entriesImporter.Import();
       }
+
+      return GetDatasetsLoadStatus(command);
     }
 
 

@@ -43,6 +43,10 @@ namespace Empiria.FinancialAccounting.Datasets {
       return BaseObject.ParseKey<Dataset>(uid);
     }
 
+
+    static public Dataset Empty => BaseObject.ParseEmpty<Dataset>();
+
+
     #endregion Constructors and parsers
 
     #region Properties

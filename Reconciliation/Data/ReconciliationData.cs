@@ -16,8 +16,8 @@ namespace Empiria.FinancialAccounting.Reconciliation.Data {
   /// <summary>Data access layer for reconciliation data.</summary>
   static internal class ReconciliationData {
 
-    static internal void WriteEntry(ReconciliationEntry o) {
-      var op = DataOperation.Parse("write_cof_dato_conciliacion",
+    static internal void AppendEntry(ReconciliationEntry o) {
+      var op = DataOperation.Parse("apd_cof_dato_conciliacion",
               o.Id, o.UID, o.GetEmpiriaType().Id, o.Dataset.Id, o.UniqueKey,
               o.LedgerNumber, o.AccountNumber, o.CurrencyCode, o.SectorCode,
               o.SubledgerAccountNumber, o.TransactionSlip, o.ExtData.ToString(),
