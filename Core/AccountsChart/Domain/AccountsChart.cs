@@ -220,6 +220,15 @@ namespace Empiria.FinancialAccounting {
     }
 
 
+    public Ledger GetLedger(string ledgerNumber) {
+      var ledger = this.TryGetLedger(ledgerNumber);
+
+      Assertion.AssertObject(ledger, "ledger");
+
+      return ledger;
+    }
+
+
     public bool HasChildren(Account account) {
       return this.GetChildren(account).Count > 0;
     }

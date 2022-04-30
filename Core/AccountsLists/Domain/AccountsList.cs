@@ -12,7 +12,7 @@ using Empiria.FinancialAccounting.Data;
 
 namespace Empiria.FinancialAccounting {
 
-  /// <summary>Describes a reconciliation type.</summary>
+  /// <summary>Describes a list of accounts.</summary>
   public class AccountsList : GeneralObject {
 
     #region Constructors and parsers
