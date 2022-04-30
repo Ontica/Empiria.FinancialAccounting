@@ -2,11 +2,12 @@
 *                                                                                                            *
 *  Module   : Reconciliation Services                    Component : Domain Layer                            *
 *  Assembly : FinancialAccounting.Reconciliation.dll     Pattern   : Service provider                        *
-*  Type     : ReconciliationEntriesImporter              License   : Please read LICENSE.txt file            *
+*  Type     : ReconciliationDatasetEntriesReader         License   : Please read LICENSE.txt file            *
 *                                                                                                            *
-*  Summary  : Reads and stores reconciliation data from dataset files.                                       *
+*  Summary  : Reads reconciliation data entries from a dataset file.                                         *
 *                                                                                                            *
 ************************* Copyright(c) La Vía Óntica SC, Ontica LLC and contributors. All rights reserved. **/
+using System;
 using System.Collections.Generic;
 
 using Empiria.Office;
@@ -15,28 +16,35 @@ using Empiria.FinancialAccounting.Datasets;
 
 using Empiria.FinancialAccounting.Reconciliation.Adapters;
 
+
 namespace Empiria.FinancialAccounting.Reconciliation {
 
-  /// <summary>Reads and stores reconciliation data from dataset files.</summary>
-  internal class ReconciliationEntriesImporter {
+  /// <summary>Reads reconciliation data entries from a dataset file.</summary>
+  internal class ReconciliationDatasetEntriesReader {
 
     private readonly Dataset _dataset;
 
-    public ReconciliationEntriesImporter(Dataset dataset) {
+    public ReconciliationDatasetEntriesReader(Dataset dataset) {
       Assertion.AssertObject(dataset, "dataset");
 
       _dataset = dataset;
     }
 
 
-    internal void Import() {
+    internal bool AllEntriesAreValid() {
+      try {
+        this.GetEntries();
+        return true;
+
+      } catch {
+        return false;
+      }
+    }
+
+    internal FixedList<ReconciliationEntryDto> GetEntries() {
       Spreadsheet spreadsheet = OpenSpreadsheet();
 
-      FixedList<ReconciliationEntry> entries = ReadEntries(spreadsheet);
-
-      foreach (ReconciliationEntry entry in entries) {
-        entry.Save();
-      }
+      return ReadEntries(spreadsheet);
     }
 
     #region Private methods
@@ -58,13 +66,13 @@ namespace Empiria.FinancialAccounting.Reconciliation {
     }
 
 
-    private FixedList<ReconciliationEntry> ReadEntries(Spreadsheet spreadsheet) {
+    private FixedList<ReconciliationEntryDto> ReadEntries(Spreadsheet spreadsheet) {
       int row = 2;
 
-      var entriesList = new List<ReconciliationEntry>(4096);
+      var entriesList = new List<ReconciliationEntryDto>(4096);
 
       while (spreadsheet.HasValue($"A{row}")) {
-        ReconciliationEntry entry = ReadReconciliationEntry(spreadsheet, row);
+        ReconciliationEntryDto entry = ReadReconciliationEntry(spreadsheet, row);
 
         entriesList.Add(entry);
 
@@ -79,10 +87,10 @@ namespace Empiria.FinancialAccounting.Reconciliation {
     }
 
 
-    private ReconciliationEntry ReadReconciliationEntry(Spreadsheet spreadsheet, int row) {
+    private ReconciliationEntryDto ReadReconciliationEntry(Spreadsheet spreadsheet, int row) {
       var helper = new ExcelRowReader(spreadsheet, row);
 
-      var dto = new ReconciliationEntryDto {
+      return new ReconciliationEntryDto {
         UniqueKey = helper.GetUniqueKey(),
         LedgerNumber = helper.GetLedger(),
         AccountNumber = helper.GetAccountNumber(),
@@ -97,12 +105,10 @@ namespace Empiria.FinancialAccounting.Reconciliation {
         EndBalance = helper.GetEndBalance(),
         Position = row
       };
-
-      return new ReconciliationEntry(_dataset, dto);
     }
 
     #endregion Private methods
 
-  }  // class ReconciliationEntriesImporter
+  }  // class ReconciliationDatasetEntriesReader
 
 } // namespace Empiria.FinancialAccounting.Reconciliation

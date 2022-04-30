@@ -39,6 +39,34 @@ namespace Empiria.FinancialAccounting.Reconciliation.UseCases {
     #region Use cases
 
 
+    public DatasetsLoadStatusDto CreateDataset(ReconciliationDatasetsCommand command,
+                                           FileData fileData) {
+      Assertion.AssertObject(command, "command");
+      Assertion.AssertObject(fileData, "fileData");
+
+      command.EnsureValid();
+
+      using (var usecase = DatasetsUseCases.UseCaseInteractor()) {
+        var coreDatasetCommand = command.MapToCoreDatasetsCommand();
+
+        Dataset dataset = usecase.CreateDataset(coreDatasetCommand, fileData);
+
+        var reader = new ReconciliationDatasetEntriesReader(dataset);
+
+        if (!reader.AllEntriesAreValid()) {
+
+          usecase.RemoveDataset(dataset.UID);
+
+          Assertion.AssertFail(
+            "El archivo tiene un formato que no reconozco o la información que contiene es incorrecta."
+          );
+        }
+      }
+
+      return GetDatasetsLoadStatus(command);
+    }
+
+
     public DatasetDto GetDataset(string datasetUID) {
       Assertion.AssertObject(datasetUID, "datasetUID");
 
@@ -58,27 +86,6 @@ namespace Empiria.FinancialAccounting.Reconciliation.UseCases {
 
         return usecase.GetDatasetsLoadStatus(coreDatasetCommand);
       }
-    }
-
-
-    public DatasetsLoadStatusDto ImportDatasetFromFile(ReconciliationDatasetsCommand command,
-                                                       FileData fileData) {
-      Assertion.AssertObject(command, "command");
-      Assertion.AssertObject(fileData, "fileData");
-
-      command.EnsureValid();
-
-      using (var usecase = DatasetsUseCases.UseCaseInteractor()) {
-        var coreDatasetCommand = command.MapToCoreDatasetsCommand();
-
-        Dataset dataset = usecase.ImportDatasetFromFile(coreDatasetCommand, fileData);
-
-        var entriesImporter = new ReconciliationEntriesImporter(dataset);
-
-        entriesImporter.Import();
-      }
-
-      return GetDatasetsLoadStatus(command);
     }
 
 

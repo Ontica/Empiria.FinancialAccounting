@@ -61,7 +61,7 @@ namespace Empiria.FinancialAccounting.WebApi.Reconciliation {
       ReconciliationDatasetsCommand command = GetDatasetsCommandFromRequest(httpRequest);
 
       using (var usecases = ReconciliationDatasetsUseCases.UseCaseInteractor()) {
-        DatasetsLoadStatusDto datasets = usecases.ImportDatasetFromFile(command, excelFile);
+        DatasetsLoadStatusDto datasets = usecases.CreateDataset(command, excelFile);
 
         return new SingleObjectModel(base.Request, datasets);
       }

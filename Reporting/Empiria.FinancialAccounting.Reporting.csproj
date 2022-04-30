@@ -68,6 +68,7 @@
     <PackageReference Include="Empiria.FinancialAccounting.FinancialReports" Version="2.0.0" />
     <PackageReference Include="Empiria.FinancialAccounting.BanobrasIntegration" Version="2.0.0" />
     <PackageReference Include="Empiria.FinancialAccounting.Vouchers" Version="2.0.0" />
+    <PackageReference Include="Empiria.FinancialAccounting.Reconciliation" Version="2.0.0" />
   </ItemGroup>
   <ItemGroup Condition=" '$(Configuration)' == 'Multisolutions' ">
     <ProjectReference Include="..\..\core\Core\Empiria.Core.csproj" />
@@ -78,15 +79,10 @@
     <ProjectReference Include="..\FinancialReports\Empiria.FinancialAccounting.FinancialReports.csproj" />
     <ProjectReference Include="..\BanobrasIntegration\Empiria.FinancialAccounting.BanobrasIntegration.csproj" />
     <ProjectReference Include="..\Vouchers\Empiria.FinancialAccounting.Vouchers.csproj" />
+    <ProjectReference Include="..\Reconciliation\Empiria.FinancialAccounting.Reconciliation.csproj" />
   </ItemGroup>
-<<<<<<< HEAD
-=======
   <ItemGroup>
     <Folder Include="FiscalReports\" />
     <Folder Include="VoucherRelatedReports\" />
   </ItemGroup>
-  <ItemGroup>
-    <ProjectReference Include="..\Reconciliation\Empiria.FinancialAccounting.Reconciliation.csproj" />
-  </ItemGroup>
->>>>>>> c9be3c9109dc0ec904e9d8e6cb850d2d72df6396
 </Project>

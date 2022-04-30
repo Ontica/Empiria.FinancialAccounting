@@ -35,6 +35,22 @@ namespace Empiria.FinancialAccounting.Datasets.UseCases {
     #region Use cases
 
 
+    public Dataset CreateDataset(DatasetsCommand command, FileData fileData) {
+      Assertion.AssertObject(command, "command");
+      Assertion.AssertObject(fileData, "fileData");
+
+      command.EnsureValid();
+
+      FileInfo fileInfo = FileUtilities.SaveFile(fileData);
+
+      var dataset = new Dataset(command, fileData, fileInfo);
+
+      dataset.Save();
+
+      return dataset;
+    }
+
+
     public DatasetDto GetDataset(string datasetUID) {
       Assertion.AssertObject(datasetUID, "datasetUID");
 
@@ -50,22 +66,6 @@ namespace Empiria.FinancialAccounting.Datasets.UseCases {
       command.EnsureValid();
 
       return BuildDatasetsLoadStatusDto(command.DatasetFamilyUID, command.Date);
-    }
-
-
-    public Dataset ImportDatasetFromFile(DatasetsCommand command, FileData fileData) {
-      Assertion.AssertObject(command, "command");
-      Assertion.AssertObject(fileData, "fileData");
-
-      command.EnsureValid();
-
-      FileInfo fileInfo = FileUtilities.SaveFile(fileData);
-
-      var dataset = new Dataset(command, fileData, fileInfo);
-
-      dataset.Save();
-
-      return dataset;
     }
 
 
