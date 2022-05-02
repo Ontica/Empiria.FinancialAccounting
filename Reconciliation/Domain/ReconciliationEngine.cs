@@ -36,30 +36,30 @@ namespace Empiria.FinancialAccounting.Reconciliation {
     #region Methods
 
     internal ReconciliationResult Reconciliate() {
-      FixedList<Dataset> sourceDatasets = GetSourceDatasets();
+      FixedList<Dataset> operationalDatasets = GetOperationalDatasets();
 
-      FixedList<ReconciliationEntryDto> sourceEntries = GetReconciliationSourceEntries(sourceDatasets);
+      FixedList<OperationalEntryDto> operationalEntries = GetOperationalEntries(operationalDatasets);
 
       FixedList<AccountsListItem> accountsListItems = GetReconciliationAccountsListItems();
 
       FixedList<TrialBalanceEntryDto> balances = GetBalances();
 
       FixedList<ReconciliationResultEntry> resultEntries = ReconciliateAccounts(accountsListItems,
-                                                                                sourceEntries,
+                                                                                operationalEntries,
                                                                                 balances);
 
-      return BuildReconciliationResult(sourceDatasets, resultEntries);
+      return BuildReconciliationResult(operationalDatasets, resultEntries);
     }
 
 
     private FixedList<ReconciliationResultEntry> ReconciliateAccounts(FixedList<AccountsListItem> accountsListItems,
-                                                                      FixedList<ReconciliationEntryDto> sourceEntries,
+                                                                      FixedList<OperationalEntryDto> operationalEntries,
                                                                       FixedList<TrialBalanceEntryDto> balances) {
 
       FixedList<TrialBalanceEntryDto> filteredBalances =
             balances.FindAll(x => accountsListItems.Exists(y => y.AccountNumber == x.AccountNumber));
 
-      var entriesListBuilder = new ReconciliationResultEntryListBuilder(sourceEntries,
+      var entriesListBuilder = new ReconciliationResultEntryListBuilder(operationalEntries,
                                                                         filteredBalances,
                                                                         2 * accountsListItems.Count);
 
@@ -75,9 +75,9 @@ namespace Empiria.FinancialAccounting.Reconciliation {
 
     #region Helpers
 
-    private ReconciliationResult BuildReconciliationResult(FixedList<Dataset> datasets,
-                                                           FixedList<ReconciliationResultEntry> resultEntries) {
-      return new ReconciliationResult(_command, datasets, resultEntries);
+    private ReconciliationResult BuildReconciliationResult(FixedList<Dataset> operationalDatasets,
+                                                           FixedList<ReconciliationResultEntry> reconciliationEntries) {
+      return new ReconciliationResult(_command, operationalDatasets, reconciliationEntries);
     }
 
 
@@ -94,13 +94,13 @@ namespace Empiria.FinancialAccounting.Reconciliation {
     }
 
 
-    private FixedList<ReconciliationEntryDto> GetReconciliationSourceEntries(FixedList<Dataset> datasets) {
-      var list = new List<ReconciliationEntryDto>(3 * 4096);
+    private FixedList<OperationalEntryDto> GetOperationalEntries(FixedList<Dataset> datasets) {
+      var list = new List<OperationalEntryDto>(3 * 4096);
 
       foreach (var dataset in datasets) {
-        var reader = new ReconciliationDatasetEntriesReader(dataset);
+        var reader = new OperationalEntriesReader(dataset);
 
-        FixedList<ReconciliationEntryDto> entries = reader.GetEntries();
+        FixedList<OperationalEntryDto> entries = reader.GetEntries();
 
         list.AddRange(entries);
       }
@@ -109,7 +109,7 @@ namespace Empiria.FinancialAccounting.Reconciliation {
     }
 
 
-    private FixedList<Dataset> GetSourceDatasets() {
+    private FixedList<Dataset> GetOperationalDatasets() {
       FixedList<Dataset> list = _reconciliationType.GetDatasetsList(_command.Date);
 
       Assertion.Assert(list.Count > 0,

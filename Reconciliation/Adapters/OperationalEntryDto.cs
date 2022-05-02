@@ -2,9 +2,9 @@
 *                                                                                                            *
 *  Module   : Reconciliation Services                    Component : Interface adapters                      *
 *  Assembly : FinancialAccounting.Reconciliation.dll     Pattern   : Data Transfer Object                    *
-*  Type     : ReconciliationEntryDto                     License   : Please read LICENSE.txt file            *
+*  Type     : OperationalEntryDto                        License   : Please read LICENSE.txt file            *
 *                                                                                                            *
-*  Summary  : DTO that describes a reconciliation entry.                                                     *
+*  Summary  : DTO that describes an operational entry used for reconciliation processes.                     *
 *                                                                                                            *
 ************************* Copyright(c) La Vía Óntica SC, Ontica LLC and contributors. All rights reserved. **/
 using System;
@@ -13,10 +13,10 @@ using Empiria.Json;
 
 namespace Empiria.FinancialAccounting.Reconciliation.Adapters {
 
-  /// <summary>DTO that describes a reconciliation entry.</summary>
-  internal class ReconciliationEntryDto {
+  /// <summary>DTO that describes an operational entry used for reconciliation processes.</summary>
+  internal class OperationalEntryDto {
 
-    internal ReconciliationEntryDto() {
+    internal OperationalEntryDto() {
       // no-op
     }
 
@@ -80,6 +80,6 @@ namespace Empiria.FinancialAccounting.Reconciliation.Adapters {
       get; internal set;
     }
 
-  }  // class ReconciliationEntryDto
+  }  // class OperationalEntryDto
 
 }  // namespace Empiria.FinancialAccounting.Reconciliation.Adapters

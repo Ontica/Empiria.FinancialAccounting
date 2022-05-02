@@ -2,9 +2,9 @@
 *                                                                                                            *
 *  Module   : Reconciliation Services                    Component : Domain Layer                            *
 *  Assembly : FinancialAccounting.Reconciliation.dll     Pattern   : Service provider                        *
-*  Type     : ReconciliationDatasetEntriesReader         License   : Please read LICENSE.txt file            *
+*  Type     : OperationalEntriesReader                   License   : Please read LICENSE.txt file            *
 *                                                                                                            *
-*  Summary  : Reads reconciliation data entries from a dataset file.                                         *
+*  Summary  : Reads operational data entries from a dataset file for a reconciliation process.               *
 *                                                                                                            *
 ************************* Copyright(c) La Vía Óntica SC, Ontica LLC and contributors. All rights reserved. **/
 using System;
@@ -19,12 +19,12 @@ using Empiria.FinancialAccounting.Reconciliation.Adapters;
 
 namespace Empiria.FinancialAccounting.Reconciliation {
 
-  /// <summary>Reads reconciliation data entries from a dataset file.</summary>
-  internal class ReconciliationDatasetEntriesReader {
+  /// <summary>Reads operational data entries from a dataset file for a reconciliation process.</summary>
+  internal class OperationalEntriesReader {
 
     private readonly Dataset _dataset;
 
-    public ReconciliationDatasetEntriesReader(Dataset dataset) {
+    public OperationalEntriesReader(Dataset dataset) {
       Assertion.AssertObject(dataset, "dataset");
 
       _dataset = dataset;
@@ -41,7 +41,7 @@ namespace Empiria.FinancialAccounting.Reconciliation {
       }
     }
 
-    internal FixedList<ReconciliationEntryDto> GetEntries() {
+    internal FixedList<OperationalEntryDto> GetEntries() {
       Spreadsheet spreadsheet = OpenSpreadsheet();
 
       return ReadEntries(spreadsheet);
@@ -66,13 +66,13 @@ namespace Empiria.FinancialAccounting.Reconciliation {
     }
 
 
-    private FixedList<ReconciliationEntryDto> ReadEntries(Spreadsheet spreadsheet) {
+    private FixedList<OperationalEntryDto> ReadEntries(Spreadsheet spreadsheet) {
       int row = 2;
 
-      var entriesList = new List<ReconciliationEntryDto>(4096);
+      var entriesList = new List<OperationalEntryDto>(4096);
 
       while (spreadsheet.HasValue($"A{row}")) {
-        ReconciliationEntryDto entry = ReadReconciliationEntry(spreadsheet, row);
+        OperationalEntryDto entry = ReadOperationalEntry(spreadsheet, row);
 
         entriesList.Add(entry);
 
@@ -87,10 +87,10 @@ namespace Empiria.FinancialAccounting.Reconciliation {
     }
 
 
-    private ReconciliationEntryDto ReadReconciliationEntry(Spreadsheet spreadsheet, int row) {
+    private OperationalEntryDto ReadOperationalEntry(Spreadsheet spreadsheet, int row) {
       var helper = new ExcelRowReader(spreadsheet, row);
 
-      return new ReconciliationEntryDto {
+      return new OperationalEntryDto {
         UniqueKey = helper.GetUniqueKey(),
         LedgerNumber = helper.GetLedger(),
         AccountNumber = helper.GetAccountNumber(),
@@ -109,6 +109,6 @@ namespace Empiria.FinancialAccounting.Reconciliation {
 
     #endregion Private methods
 
-  }  // class ReconciliationDatasetEntriesReader
+  }  // class OperationalEntriesReader
 
 } // namespace Empiria.FinancialAccounting.Reconciliation

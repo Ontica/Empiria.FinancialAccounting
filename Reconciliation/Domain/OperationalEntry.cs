@@ -2,9 +2,9 @@
 *                                                                                                            *
 *  Module   : Reconciliation Services                    Component : Domain Layer                            *
 *  Assembly : FinancialAccounting.Reconciliation.dll     Pattern   : Empiria Data Object                     *
-*  Type     : ReconciliationEntry                        License   : Please read LICENSE.txt file            *
+*  Type     : OperationalEntry                           License   : Please read LICENSE.txt file            *
 *                                                                                                            *
-*  Summary  : Domain object that holds data for a reconciliation dataset entry.                              *
+*  Summary  : Domain object that holds data for reconciliation operational entries.                          *
 *                                                                                                            *
 ************************* Copyright(c) La Vía Óntica SC, Ontica LLC and contributors. All rights reserved. **/
 using System;
@@ -18,15 +18,15 @@ using Empiria.FinancialAccounting.Reconciliation.Data;
 
 namespace Empiria.FinancialAccounting.Reconciliation {
 
-  /// <summary>Domain object that holds data for a reconciliation dataset entry.</summary>
-  internal class ReconciliationEntry : BaseObject {
+  /// <summary>Domain object that holds data for reconciliation operational entries.</summary>
+  internal class OperationalEntry : BaseObject {
 
-    private ReconciliationEntry() {
+    private OperationalEntry() {
       // Required by Empiria Framework
     }
 
 
-    internal protected ReconciliationEntry(Dataset dataset, ReconciliationEntryDto dto) {
+    internal protected OperationalEntry(Dataset dataset, OperationalEntryDto dto) {
       Assertion.AssertObject(dataset, "dataset");
       Assertion.AssertObject(dto, "dto");
 
@@ -125,7 +125,7 @@ namespace Empiria.FinancialAccounting.Reconciliation {
 
     #region Methods
 
-    private void Load(ReconciliationEntryDto dto) {
+    private void Load(OperationalEntryDto dto) {
       this.UniqueKey = dto.UniqueKey;
       this.LedgerNumber = dto.LedgerNumber;
       this.AccountNumber = dto.AccountNumber;
@@ -153,6 +153,6 @@ namespace Empiria.FinancialAccounting.Reconciliation {
 
     #endregion Methods
 
-  }  // class ReconciliationEntry
+  }  // class OperationalEntry
 
 }  // namespace Empiria.FinancialAccounting.Reconciliation

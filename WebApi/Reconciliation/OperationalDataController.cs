@@ -2,9 +2,9 @@
 *                                                                                                            *
 *  Module   : Reconciliation Services                      Component : Web Api                               *
 *  Assembly : Empiria.FinancialAccounting.WebApi.dll       Pattern   : Controller                            *
-*  Type     : ReconciliationDatasetsController             License   : Please read LICENSE.txt file          *
+*  Type     : OperationalDataController                    License   : Please read LICENSE.txt file          *
 *                                                                                                            *
-*  Summary  : Web API used to retrive and set reconciliation data sets.                                      *
+*  Summary  : Web API used to retrive and set operational data for reconciliation processes.                 *
 *                                                                                                            *
 ************************* Copyright(c) La Vía Óntica SC, Ontica LLC and contributors. All rights reserved. **/
 using System;
@@ -21,8 +21,8 @@ using Empiria.FinancialAccounting.Reconciliation.Adapters;
 
 namespace Empiria.FinancialAccounting.WebApi.Reconciliation {
 
-  /// <summary>Web API used to retrive and set reconciliation data sets.</summary>
-  public class ReconciliationDatasetsController : WebApiController {
+  /// <summary>Web API used to retrive and set operational data for reconciliation processes.</summary>
+  public class OperationalDataController : WebApiController {
 
     #region Web Apis
 
@@ -30,7 +30,7 @@ namespace Empiria.FinancialAccounting.WebApi.Reconciliation {
     [Route("v2/financial-accounting/reconciliation/datasets/{datasetUID:guid}")]
     public SingleObjectModel GetDataset([FromUri] string datasetUID) {
 
-      using (var usecases = ReconciliationDatasetsUseCases.UseCaseInteractor()) {
+      using (var usecases = OperationalDataUseCases.UseCaseInteractor()) {
         DatasetDto dataset = usecases.GetDataset(datasetUID);
 
         return new SingleObjectModel(base.Request, dataset);
@@ -40,9 +40,9 @@ namespace Empiria.FinancialAccounting.WebApi.Reconciliation {
 
     [HttpPost]
     [Route("v2/financial-accounting/reconciliation/datasets")]
-    public SingleObjectModel GetDatasetsLoadStatus([FromBody] ReconciliationDatasetsCommand command) {
+    public SingleObjectModel GetDatasetsLoadStatus([FromBody] OperationalDataCommand command) {
 
-      using (var usecases = ReconciliationDatasetsUseCases.UseCaseInteractor()) {
+      using (var usecases = OperationalDataUseCases.UseCaseInteractor()) {
         DatasetsLoadStatusDto loadStatus = usecases.GetDatasetsLoadStatus(command);
 
         return new SingleObjectModel(base.Request, loadStatus);
@@ -58,9 +58,9 @@ namespace Empiria.FinancialAccounting.WebApi.Reconciliation {
 
       FileData excelFile = GetFileDataFromRequest(httpRequest);
 
-      ReconciliationDatasetsCommand command = GetDatasetsCommandFromRequest(httpRequest);
+      OperationalDataCommand command = GetDatasetsCommandFromRequest(httpRequest);
 
-      using (var usecases = ReconciliationDatasetsUseCases.UseCaseInteractor()) {
+      using (var usecases = OperationalDataUseCases.UseCaseInteractor()) {
         DatasetsLoadStatusDto datasets = usecases.CreateDataset(command, excelFile);
 
         return new SingleObjectModel(base.Request, datasets);
@@ -72,7 +72,7 @@ namespace Empiria.FinancialAccounting.WebApi.Reconciliation {
     [Route("v2/financial-accounting/reconciliation/datasets/{datasetUID:guid}")]
     public SingleObjectModel RemoveDataset([FromUri] string datasetUID) {
 
-      using (var usecases = ReconciliationDatasetsUseCases.UseCaseInteractor()) {
+      using (var usecases = OperationalDataUseCases.UseCaseInteractor()) {
         DatasetsLoadStatusDto datasets = usecases.RemoveDataset(datasetUID);
 
         return new SingleObjectModel(base.Request, datasets);
@@ -96,12 +96,12 @@ namespace Empiria.FinancialAccounting.WebApi.Reconciliation {
     }
 
 
-    private ReconciliationDatasetsCommand GetDatasetsCommandFromRequest(HttpRequest httpRequest) {
+    private OperationalDataCommand GetDatasetsCommandFromRequest(HttpRequest httpRequest) {
       NameValueCollection form = httpRequest.Form;
 
       Assertion.AssertObject(form["command"], "'command' form field is required");
 
-      var command = new ReconciliationDatasetsCommand();
+      var command = new OperationalDataCommand();
 
       return JsonConverter.Merge(form["command"], command);
     }
@@ -123,6 +123,6 @@ namespace Empiria.FinancialAccounting.WebApi.Reconciliation {
 
     #endregion Helper methods
 
-  }  // class ReconciliationDatasetsController
+  }  // class OperationalDataController
 
 }  // namespace Empiria.FinancialAccounting.WebApi.Reconciliation

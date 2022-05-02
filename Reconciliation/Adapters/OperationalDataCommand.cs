@@ -2,9 +2,9 @@
 *                                                                                                            *
 *  Module   : Reconciliation Services                    Component : Interface adapters                      *
 *  Assembly : FinancialAccounting.Reconciliation.dll     Pattern   : Command payload                         *
-*  Type     : ReconciliationDatasetsCommand              License   : Please read LICENSE.txt file            *
+*  Type     : OperationalDataCommand                     License   : Please read LICENSE.txt file            *
 *                                                                                                            *
-*  Summary  : Command payload used to describe reconciliation datasets.                                      *
+*  Summary  : Command payload used to describe operational data using datasets.                              *
 *                                                                                                            *
 ************************* Copyright(c) La Vía Óntica SC, Ontica LLC and contributors. All rights reserved. **/
 using System;
@@ -13,10 +13,10 @@ using Empiria.FinancialAccounting.Datasets.Adapters;
 
 namespace Empiria.FinancialAccounting.Reconciliation.Adapters {
 
-  /// <summary>Command payload used to describe reconciliation datasets.</summary>
-  public class ReconciliationDatasetsCommand {
+  /// <summary>Command payload used to describe operational data using datasets.</summary>
+  public class OperationalDataCommand {
 
-    public ReconciliationDatasetsCommand() {
+    public OperationalDataCommand() {
       // no-op
     }
 
@@ -51,6 +51,6 @@ namespace Empiria.FinancialAccounting.Reconciliation.Adapters {
       };
     }
 
-  }  // class ReconciliationDatasetsCommand
+  }  // class OperationalDataCommand
 
 }  // namespace Empiria.FinancialAccounting.Reconciliation.Adapters
