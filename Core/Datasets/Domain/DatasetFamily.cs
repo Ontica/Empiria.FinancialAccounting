@@ -72,7 +72,12 @@ namespace Empiria.FinancialAccounting.Datasets {
 
 
     public FixedList<DatasetKind> MissingDatasetKinds(DateTime date) {
-      return this.DatasetKinds;
+      var loadedDataSets = GetDatasetsList(date);
+
+      FixedList<DatasetKind> filtered =
+         this.DatasetKinds.FindAll(x => !loadedDataSets.Exists(loaded => loaded.DatasetKind.UID == x.UID));
+
+      return filtered;
     }
 
     #endregion Methods
