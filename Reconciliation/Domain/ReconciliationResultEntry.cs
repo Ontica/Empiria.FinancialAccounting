@@ -12,7 +12,48 @@ using System;
 namespace Empiria.FinancialAccounting.Reconciliation {
 
   /// <summary>Holds a result entry of a reconciliation process.</summary>
-  internal class ReconciliationResultEntry {
+  public class ReconciliationResultEntry {
+
+    internal string UniqueKey {
+      get; set;
+    }
+
+
+    public string AccountNumber {
+      get; internal set;
+    }
+
+
+    public string SubledgerAccountNumber {
+      get; internal set;
+    }
+
+
+    public string CurrencyCode {
+      get; internal set;
+    }
+
+
+    public string SectorCode {
+      get; internal set;
+    }
+
+
+    public decimal OperationalTotal {
+      get; internal set;
+    }
+
+
+    public decimal AccountingTotal {
+      get; internal set;
+    }
+
+
+    public decimal Difference {
+      get {
+        return this.OperationalTotal - AccountingTotal;
+      }
+    }
 
   }  // class ReconciliationResultEntry
 

@@ -55,8 +55,21 @@ namespace Empiria.FinancialAccounting.Reconciliation {
     private FixedList<ReconciliationResultEntry> ReconciliateAccounts(FixedList<AccountsListItem> accountsListItems,
                                                                       FixedList<ReconciliationEntryDto> sourceEntries,
                                                                       FixedList<TrialBalanceEntryDto> balances) {
-      return new FixedList<ReconciliationResultEntry>();
+
+      FixedList<TrialBalanceEntryDto> filteredBalances =
+            balances.FindAll(x => accountsListItems.Exists(y => y.AccountNumber == x.AccountNumber));
+
+      var entriesListBuilder = new ReconciliationResultEntryListBuilder(sourceEntries,
+                                                                        filteredBalances,
+                                                                        2 * accountsListItems.Count);
+
+      foreach (var account in accountsListItems) {
+        entriesListBuilder.InsertEntriesFor(account);
+      }
+
+      return entriesListBuilder.ToFixedList();
     }
+
 
     #endregion Methods
 

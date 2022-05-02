@@ -28,7 +28,7 @@ namespace Empiria.FinancialAccounting.Reconciliation.Adapters {
     }
 
 
-    public FixedList<ReconciliationResultEntryDto> Entries {
+    public FixedList<ReconciliationResultEntry> Entries {
       get; internal set;
     }
 
