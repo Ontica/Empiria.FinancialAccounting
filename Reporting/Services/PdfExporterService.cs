@@ -21,7 +21,7 @@ namespace Empiria.FinancialAccounting.Reporting {
   public class PdfExporterService {
 
     public FileReportDto Export(VoucherDto voucher) {
-      Assertion.AssertObject(voucher, "voucher");
+      Assertion.AssertObject(voucher, nameof(voucher));
 
       string filename = GetVoucherPdfFileName(voucher);
 
@@ -37,6 +37,23 @@ namespace Empiria.FinancialAccounting.Reporting {
     }
 
 
+    public FileReportDto Export(ReconciliationResultDto reconciliation) {
+      Assertion.AssertObject("reconciliation", nameof(reconciliation));
+
+      string filename = GetPdfFileName(reconciliation);
+
+      if (ExistsFile(filename)) {
+        RemoveFile(filename);
+      }
+
+      string html = GetHtml(reconciliation);
+
+      SaveHtmlAsPdf(html, filename);
+
+      return ToFileReportDto(filename);
+    }
+
+
     #region Private methods
 
     private bool ExistsFile(string filename) {
@@ -45,9 +62,21 @@ namespace Empiria.FinancialAccounting.Reporting {
       return File.Exists(fullPath);
     }
 
-
     private string GetFullPath(string filename) {
       return Path.Combine(FileTemplateConfig.GenerationStoragePath + "/vouchers", filename);
+    }
+
+
+    private string GetHtml(ReconciliationResultDto reconciliation) {
+      string templateUID = "ReconciliationResult.HtmlTemplate";
+
+      var template = FileTemplateConfig.Parse(templateUID);
+
+      string htmlTemplate = File.ReadAllText(template.TemplateFullPath);
+
+      var htmlExporter = new ReconciliationHtmlExporter(reconciliation, htmlTemplate);
+
+      return htmlExporter.GetHtml();
     }
 
 
@@ -62,6 +91,11 @@ namespace Empiria.FinancialAccounting.Reporting {
     }
 
 
+    private string GetPdfFileName(ReconciliationResultDto reconciliation) {
+      return $"conciliacion.derivados.{reconciliation.Command.Date.ToString("yyyy.MM.dd")}.pdf";
+    }
+
+
     private string GetVoucherPdfFileName(VoucherDto voucher) {
       if (voucher.IsClosed) {
         return $"poliza.{voucher.Number}.{voucher.Ledger.UID}.pdf";
@@ -70,9 +104,6 @@ namespace Empiria.FinancialAccounting.Reporting {
       }
     }
 
-    public FileReportDto Export(ReconciliationResultDto result) {
-      return new FileReportDto(FileType.Pdf, "http://172.27.207.97/sicofin/files/vouchers/poliza.2022-03-000047.ae98b697-674a-519f-1dba-e1545fe81af7.pdf");
-    }
 
     private FileTemplateConfig GetVoucherTemplateConfig(VoucherDto voucher) {
       string templateUID;
@@ -86,6 +117,17 @@ namespace Empiria.FinancialAccounting.Reporting {
       return FileTemplateConfig.Parse(templateUID);
     }
 
+
+    private bool RemoveFile(string filename) {
+      string fullPath = GetFullPath(filename);
+
+      if (File.Exists(fullPath)) {
+        File.Delete(fullPath);
+        return true;
+      }
+
+      return false;
+    }
 
     private void SaveHtmlAsPdf(string html, string filename) {
       string fullpath = GetFullPath(filename);

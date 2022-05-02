@@ -58,7 +58,7 @@ namespace Empiria.FinancialAccounting.Reporting {
     public FileReportDto Export(ReconciliationResultDto reconciliationResult) {
       Assertion.AssertObject(reconciliationResult, nameof(reconciliationResult));
 
-      var templateUID = "ReconciliationResultTemplate";
+      var templateUID = "ReconciliationResult.ExcelTemplate";
 
       var templateConfig = FileTemplateConfig.Parse(templateUID);
 
