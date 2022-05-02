@@ -54,9 +54,21 @@ namespace Empiria.FinancialAccounting.Reporting {
       return excelFile.ToFileReportDto();
     }
 
+
     public FileReportDto Export(ReconciliationResultDto reconciliationResult) {
-      return new FileReportDto(FileType.Excel, "http://172.27.207.97/sicofin/files/2022.04.29-13.53.06-analitico.cuentas.xlsx");
+      Assertion.AssertObject(reconciliationResult, nameof(reconciliationResult));
+
+      var templateUID = "ReconciliationResultTemplate";
+
+      var templateConfig = FileTemplateConfig.Parse(templateUID);
+
+      var exporter = new ReconciliationExcelExporter(templateConfig);
+
+      ExcelFile excelFile = exporter.CreateExcelFile(reconciliationResult);
+
+      return excelFile.ToFileReportDto();
     }
+
 
     public FileReportDto Export(FixedList<ExchangeRateDescriptorDto> exchangeRates) {
       Assertion.AssertObject(exchangeRates, "exchangeRates");
