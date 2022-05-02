@@ -113,7 +113,8 @@ namespace Empiria.FinancialAccounting.Reconciliation {
       FixedList<Dataset> list = _reconciliationType.GetDatasetsList(_command.Date);
 
       Assertion.Assert(list.Count > 0,
-        $"No se han cargado conjuntos o archivos de datos para la conciliación del día {_command.Date}.");
+        $"No se han cargado conjuntos o archivos de datos para " +
+        $"la conciliación del día {_command.Date.ToString("dd/MMM/yyyy")}.");
 
       return list;
     }

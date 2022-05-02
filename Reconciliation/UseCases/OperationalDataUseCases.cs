@@ -17,7 +17,6 @@ using Empiria.FinancialAccounting.Datasets.Adapters;
 
 using Empiria.FinancialAccounting.Reconciliation.Adapters;
 
-
 namespace Empiria.FinancialAccounting.Reconciliation.UseCases {
 
   /// <summary>Use cases used to read and write operational data for reconciliation processes.</summary>
@@ -90,7 +89,10 @@ namespace Empiria.FinancialAccounting.Reconciliation.UseCases {
       command.EnsureValid();
 
       using (var usecase = DatasetsUseCases.UseCaseInteractor()) {
+
         var coreDatasetCommand = command.MapToCoreDatasetsCommand();
+
+        usecase.RemoveOldDatasets(coreDatasetCommand.DatasetFamilyUID, TimeSpan.FromHours(2));
 
         return usecase.GetDatasetsLoadStatus(coreDatasetCommand);
       }

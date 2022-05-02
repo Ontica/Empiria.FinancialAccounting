@@ -13,6 +13,7 @@ using System.IO;
 using Empiria.Services;
 
 using Empiria.FinancialAccounting.Datasets.Adapters;
+using Empiria.FinancialAccounting.Datasets.Data;
 
 namespace Empiria.FinancialAccounting.Datasets.UseCases {
 
@@ -79,6 +80,22 @@ namespace Empiria.FinancialAccounting.Datasets.UseCases {
       dataset.Save();
 
       return BuildDatasetsLoadStatusDto(dataset.DatasetFamily.UID, dataset.OperationDate);
+    }
+
+
+    public void RemoveOldDatasets(string datasetFamilyUID, TimeSpan timeSpan) {
+      Assertion.AssertObject(datasetFamilyUID, nameof(datasetFamilyUID));
+      Assertion.AssertObject(timeSpan, nameof(timeSpan));
+
+      var family = DatasetFamily.Parse(datasetFamilyUID);
+
+      FixedList<Dataset> datasetsToRemove =
+                          DatasetData.GetDatasetsBeforeDate(family, DateTime.Now.Subtract(timeSpan));
+
+      foreach (var dataset in datasetsToRemove) {
+        dataset.Delete();
+        dataset.Save();
+      }
     }
 
     #endregion Use cases

@@ -30,6 +30,19 @@ namespace Empiria.FinancialAccounting.Datasets.Data {
     }
 
 
+    static internal FixedList<Dataset> GetDatasetsBeforeDate(DatasetFamily datasetFamily, DateTime date) {
+      var sql = "SELECT * " +
+          "FROM COF_ARCHIVOS " +
+         $"WHERE ID_TIPO_ARCHIVO = {datasetFamily.Id} AND STATUS <> 'X' AND " +
+         $"FECHA_ACTUALIZACION <= '{CommonMethods.FormatSqlDate(date)}' " +
+         $"ORDER BY ID_ARCHIVO";
+
+      var operation = DataOperation.Parse(sql);
+
+      return DataReader.GetFixedList<Dataset>(operation);
+    }
+
+
     static internal void WriteDataset(Dataset o) {
       var op = DataOperation.Parse("write_cof_archivo",
                         o.Id, o.UID, o.DatasetFamily.Id,
@@ -40,6 +53,7 @@ namespace Empiria.FinancialAccounting.Datasets.Data {
 
       DataWriter.Execute(op);
     }
+
 
   } // class DatasetData
 
