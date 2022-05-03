@@ -9,7 +9,7 @@
 ************************* Copyright(c) La Vía Óntica SC, Ontica LLC and contributors. All rights reserved. **/
 using System;
 
-namespace Empiria.FinancialAccounting.BalanceEngine.Adapters {
+namespace Empiria.FinancialAccounting.BalanceEngine.BalanceExplorer.Adapters {
 
   /// <summary>Command payload used to build balances.</summary>
   public class BalanceCommand {
@@ -61,9 +61,9 @@ namespace Empiria.FinancialAccounting.BalanceEngine.Adapters {
     } = FileReportVersion.V1;
 
 
-    public TrialBalanceCommandPeriod InitialPeriod {
+    public BalanceCommandPeriod InitialPeriod {
       get; set;
-    } = new TrialBalanceCommandPeriod();
+    } = new BalanceCommandPeriod();
 
 
     public bool WithAllAccounts {
@@ -77,6 +77,39 @@ namespace Empiria.FinancialAccounting.BalanceEngine.Adapters {
 
 
   } // class BalanceCommand
+
+
+  public class BalanceCommandPeriod {
+
+    public DateTime FromDate {
+      get; set;
+    }
+
+    public DateTime ToDate {
+      get; set;
+    }
+
+    public DateTime ExchangeRateDate {
+      get; set;
+    } = DateTime.Today;
+
+
+    public string ExchangeRateTypeUID {
+      get; set;
+    } = string.Empty;
+
+
+    public string ValuateToCurrrencyUID {
+      get; set;
+    } = string.Empty;
+
+
+    public bool UseDefaultValuation {
+      get; set;
+    } = false;
+
+
+  }  // TrialBalanceCommandPeriod
 
 
 } // Empiria.FinancialAccounting.BalanceEngine.Adapters

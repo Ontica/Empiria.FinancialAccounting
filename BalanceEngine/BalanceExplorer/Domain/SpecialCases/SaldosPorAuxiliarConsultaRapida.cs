@@ -12,7 +12,7 @@ using System.Collections.Generic;
 using System.Linq;
 
 using Empiria.Collections;
-using Empiria.FinancialAccounting.BalanceEngine.Adapters;
+using Empiria.FinancialAccounting.BalanceEngine.BalanceExplorer.Adapters;
 
 namespace Empiria.FinancialAccounting.BalanceEngine {
 

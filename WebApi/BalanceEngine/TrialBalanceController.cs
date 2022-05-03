@@ -16,6 +16,8 @@ using Empiria.FinancialAccounting.BalanceEngine.UseCases;
 using Empiria.FinancialAccounting.BalanceEngine.Adapters;
 
 using Empiria.FinancialAccounting.Reporting;
+using Empiria.FinancialAccounting.BalanceEngine.BalanceExplorer.UseCases;
+using Empiria.FinancialAccounting.BalanceEngine.BalanceExplorer.Adapters;
 
 namespace Empiria.FinancialAccounting.WebApi.BalanceEngine {
 
@@ -61,7 +63,7 @@ namespace Empiria.FinancialAccounting.WebApi.BalanceEngine {
     public SingleObjectModel GetBalances([FromBody] BalanceCommand command) {
       base.RequireBody(command);
 
-      using (var usecases = TrialBalanceUseCases.UseCaseInteractor()) {
+      using (var usecases = BalanceUseCases.UseCaseInteractor()) {
 
         BalanceDto balance = usecases.BuildBalanceSearch(command);
 
@@ -78,7 +80,7 @@ namespace Empiria.FinancialAccounting.WebApi.BalanceEngine {
       //bool? inProcess = null;
       //Assertion.AssertObject(inProcess, $"Funcionalidad en proceso de desarrollo.");
 
-      using (var usecases = TrialBalanceUseCases.UseCaseInteractor()) {
+      using (var usecases = BalanceUseCases.UseCaseInteractor()) {
 
         BalanceDto balance = usecases.BuildBalanceSearch(command);
 

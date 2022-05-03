@@ -10,7 +10,9 @@
 using System;
 using System.Collections.Generic;
 
-namespace Empiria.FinancialAccounting.BalanceEngine.Adapters {
+using Empiria.FinancialAccounting.BalanceEngine.Adapters;
+
+namespace Empiria.FinancialAccounting.BalanceEngine.BalanceExplorer.Adapters {
 
   /// <summary>Methods used to map balances.</summary>
   static internal class BalanceMapper {

@@ -13,8 +13,9 @@ using System.Collections.Generic;
 
 using Empiria.Collections;
 
+using Empiria.FinancialAccounting.BalanceEngine.BalanceExplorer.Adapters;
+using Empiria.FinancialAccounting.BalanceEngine.BalanceExplorer.Data;
 using Empiria.FinancialAccounting.BalanceEngine.Adapters;
-using Empiria.FinancialAccounting.BalanceEngine.Data;
 
 namespace Empiria.FinancialAccounting.BalanceEngine {
 
@@ -165,7 +166,7 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
 
     private FixedList<TrialBalanceEntry> GetTrialBalanceEntries(TrialBalanceCommandData commandData) {
 
-      return TrialBalanceDataService.GetTrialBalanceEntries(commandData);
+      return BalanceDataService.GetBalanceEntries(commandData);
 
     }
 

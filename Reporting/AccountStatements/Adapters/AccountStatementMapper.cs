@@ -10,7 +10,7 @@
 using System;
 using System.Collections.Generic;
 using Empiria.FinancialAccounting.BalanceEngine;
-using Empiria.FinancialAccounting.BalanceEngine.Adapters;
+using Empiria.FinancialAccounting.BalanceEngine.BalanceExplorer.Adapters;
 
 namespace Empiria.FinancialAccounting.Reporting.Adapters {
 
