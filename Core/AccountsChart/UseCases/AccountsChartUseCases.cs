@@ -34,11 +34,6 @@ namespace Empiria.FinancialAccounting.UseCases {
 
     #region Use cases
 
-    public void CleanupAccounts() {
-      AccountsChartData.TestViews();
-    }
-
-
     public AccountDto GetAccount(string accountsChartUID, string accountUID) {
       Assertion.AssertObject(accountsChartUID, "accountsChartUID");
       Assertion.AssertObject(accountUID, "accountUID");

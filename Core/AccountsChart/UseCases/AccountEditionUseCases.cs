@@ -33,10 +33,6 @@ namespace Empiria.FinancialAccounting.UseCases {
 
     #region Use cases
 
-    public void CleanupAccounts() {
-      AccountsChartData.TestViews();
-    }
-
 
     public AccountEditionResult AddCurrencies(string accountsChartUID, AccountEditionCommand command) {
       AccountEditorService editor = GetAccountEditorService(accountsChartUID, command);
