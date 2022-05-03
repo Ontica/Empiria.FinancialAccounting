@@ -28,7 +28,7 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
     internal TrialBalance Build() {
       var helper = new TrialBalanceHelper(_command);
 
-      var twoColumnsHelper = new TwoCurrenciesBalanceHelper(_command);
+      var analyticHelper = new AnalyticHelper(_command);
 
       FixedList<TrialBalanceEntry> postingEntries = helper.GetTrialBalanceEntries(_command.InitialPeriod);
 
@@ -46,41 +46,41 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
       List<TrialBalanceEntry> summaryEntriesAndSectorization =
                               helper.GetSummaryEntriesAndSectorization(summaryEntries);
 
-      List<TrialBalanceEntry> trialBalance = helper.CombineSummaryAndPostingEntries(
+      List<TrialBalanceEntry> trialBalance = analyticHelper.CombineSummaryAndPostingEntries(
                                              summaryEntriesAndSectorization, _postingEntries.ToFixedList());
 
       trialBalance = RemoveCertainAccounts(trialBalance);
 
       trialBalance = helper.RestrictLevels(trialBalance);
 
-      FixedList<TwoCurrenciesBalanceEntry> twoColumnsEntries =
-                                            twoColumnsHelper.MergeSummaryEntriesIntoTwoColumns(trialBalance);
+      FixedList<AnalyticBalanceEntry> analyticEntries =
+                                            analyticHelper.MergeEntriesIntoTwoColumns(trialBalance);
 
-      twoColumnsEntries = twoColumnsHelper.CombineSubledgerAccountsWithSummaryEntries(
-                                            twoColumnsEntries, trialBalance);
+      analyticEntries = analyticHelper.CombineSubledgerAccountsWithSummaryEntries(
+                                            analyticEntries, trialBalance);
 
-      FixedList<TwoCurrenciesBalanceEntry> summaryGroupEntries =
-                                            twoColumnsHelper.GetTotalSummaryByGroup(twoColumnsEntries);
+      FixedList<AnalyticBalanceEntry> summaryGroupEntries =
+                                            analyticHelper.GetTotalSummaryByGroup(analyticEntries);
 
-      twoColumnsEntries = twoColumnsHelper.CombineGroupEntriesAndTwoColumnsEntries(
-                                            twoColumnsEntries, summaryGroupEntries);
+      analyticEntries = analyticHelper.CombineGroupEntriesAndTwoColumnsEntries(
+                                            analyticEntries, summaryGroupEntries);
 
-      List<TwoCurrenciesBalanceEntry> summaryTotalDeptorCreditorEntries =
-                                      twoColumnsHelper.GetTotalDeptorCreditorTwoColumnsEntries(
-                                        twoColumnsEntries);
-      twoColumnsEntries = twoColumnsHelper.CombineTotalDeptorCreditorAndTwoColumnsEntries(
-                                            twoColumnsEntries.ToList(), summaryTotalDeptorCreditorEntries);
+      List<AnalyticBalanceEntry> summaryTotalDeptorCreditorEntries =
+                                      analyticHelper.GetTotalDeptorCreditorTwoColumnsEntries(
+                                        analyticEntries);
+      analyticEntries = analyticHelper.CombineTotalDeptorCreditorAndTwoColumnsEntries(
+                                            analyticEntries.ToList(), summaryTotalDeptorCreditorEntries);
 
-      List<TwoCurrenciesBalanceEntry> summaryTwoColumnsBalanceTotal =
-                                    twoColumnsHelper.GenerateTotalSummary(summaryTotalDeptorCreditorEntries);
+      List<AnalyticBalanceEntry> summaryTwoColumnsBalanceTotal =
+                                    analyticHelper.GenerateTotalSummary(summaryTotalDeptorCreditorEntries);
 
-      twoColumnsEntries = twoColumnsHelper.CombineTotalConsolidatedAndPostingEntries(
-                                            twoColumnsEntries, summaryTwoColumnsBalanceTotal);
+      analyticEntries = analyticHelper.CombineTotalConsolidatedAndPostingEntries(
+                                            analyticEntries, summaryTwoColumnsBalanceTotal);
 
       //twoColumnsEntries = twoColumnsHelper.GenerateAverageTwoColumnsBalance(
       //                                      twoColumnsEntries, _command.InitialPeriod);
 
-      FixedList<ITrialBalanceEntry> twoColumnsBalance = twoColumnsEntries.Select(x => (ITrialBalanceEntry) x)
+      FixedList<ITrialBalanceEntry> twoColumnsBalance = analyticEntries.Select(x => (ITrialBalanceEntry) x)
                                   .ToList().ToFixedList();
 
       //var ensureIsValid = new EnsureBalanceValidations(_command);

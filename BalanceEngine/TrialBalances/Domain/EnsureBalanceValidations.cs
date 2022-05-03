@@ -210,7 +210,7 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
     private void CheckTotalsInReport(FixedList<ITrialBalanceEntry> entriesList) {
       int MAX_BALANCE_DIFFERENCE = 10;
 
-      var entries = entriesList.Select(x => (TwoCurrenciesBalanceEntry) x).ToList();
+      var entries = entriesList.Select(x => (AnalyticBalanceEntry) x).ToList();
 
       var totalDebtor = entries.FindAll(
                                 x => x.ItemType == TrialBalanceItemType.BalanceTotalDebtor)
@@ -233,7 +233,7 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
     private void TotalByDebtorOrCreditorAnalitico(FixedList<ITrialBalanceEntry> entriesList) {
       int MAX_BALANCE_DIFFERENCE = 10;
 
-      var entries = entriesList.Select(x => (TwoCurrenciesBalanceEntry) x).ToList();
+      var entries = entriesList.Select(x => (AnalyticBalanceEntry) x).ToList();
 
       foreach (var totalDebtor in entries.Where(x => x.ItemType == TrialBalanceItemType.BalanceTotalDebtor)) {
 

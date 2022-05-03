@@ -46,9 +46,9 @@ namespace Empiria.FinancialAccounting.BalanceEngine.Adapters {
       return newEntry;
     }
 
-    static internal TwoCurrenciesBalanceEntry MapTwoCurrenciesBalance(
-                                                TwoCurrenciesBalanceEntry balanceEntry) {
-      var entry = new TwoCurrenciesBalanceEntry();
+    static internal AnalyticBalanceEntry MapTwoCurrenciesBalance(
+                                                AnalyticBalanceEntry balanceEntry) {
+      var entry = new AnalyticBalanceEntry();
       entry.Account = balanceEntry.Account;
       entry.AccountId = balanceEntry.AccountId;
       entry.SubledgerAccountId = balanceEntry.SubledgerAccountId;
@@ -128,14 +128,14 @@ namespace Empiria.FinancialAccounting.BalanceEngine.Adapters {
     }
 
     private static FixedList<ITrialBalanceEntryDto> MapToAnaliticoCuentas(FixedList<ITrialBalanceEntry> list) {
-      var mappedItems = list.Select((x) => MapToAnaliticoCuentas((TwoCurrenciesBalanceEntry) x));
+      var mappedItems = list.Select((x) => MapToAnaliticoCuentas((AnalyticBalanceEntry) x));
 
       return new FixedList<ITrialBalanceEntryDto>(mappedItems);
     }
 
 
-    static private TwoColumnsTrialBalanceEntryDto MapToAnaliticoCuentas(TwoCurrenciesBalanceEntry entry) {
-      var dto = new TwoColumnsTrialBalanceEntryDto();
+    static private AnalyticBalanceEntryDto MapToAnaliticoCuentas(AnalyticBalanceEntry entry) {
+      var dto = new AnalyticBalanceEntryDto();
       SubledgerAccount subledgerAccount = SubledgerAccount.Parse(entry.SubledgerAccountId);
 
       dto.ItemType = entry.ItemType;

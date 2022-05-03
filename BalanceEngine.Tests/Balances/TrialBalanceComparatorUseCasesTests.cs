@@ -95,7 +95,7 @@ namespace Empiria.FinancialAccounting.Tests.Balances {
       Assert.NotEmpty(twoColumns.Entries);
 
       var _trialBalance = trialBalance.Entries.Select(x => (TrialBalanceEntryDto) x);
-      var _twoColumnsEntries = twoColumns.Entries.Select(x => (TwoColumnsTrialBalanceEntryDto) x);
+      var _twoColumnsEntries = twoColumns.Entries.Select(x => (AnalyticBalanceEntryDto) x);
       var domesticWrongEntries = 0;
 
       foreach (var entry in _twoColumnsEntries.Where(a => a.ItemType == TrialBalanceItemType.Entry)) {
@@ -132,7 +132,7 @@ namespace Empiria.FinancialAccounting.Tests.Balances {
       Assert.NotEmpty(twoColumns.Entries);
 
       var _trialBalance = trialBalance.Entries.Select(x => (TrialBalanceEntryDto) x);
-      var _twoColumnsEntries = twoColumns.Entries.Select(x => (TwoColumnsTrialBalanceEntryDto) x);
+      var _twoColumnsEntries = twoColumns.Entries.Select(x => (AnalyticBalanceEntryDto) x);
       var foreignWrongEntries = 0;
 
       foreach (var entry in _twoColumnsEntries.Where(a => a.ItemType == TrialBalanceItemType.Entry)) {

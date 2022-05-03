@@ -869,8 +869,7 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
       var returnedEntries = new List<TrialBalanceEntry>(entriesList);
 
       if (_command.WithSubledgerAccount && (_command.TrialBalanceType == TrialBalanceType.Balanza ||
-          _command.TrialBalanceType == TrialBalanceType.SaldosPorCuenta ||
-          _command.TrialBalanceType == TrialBalanceType.AnaliticoDeCuentas)) {
+          _command.TrialBalanceType == TrialBalanceType.SaldosPorCuenta)) {
         foreach (var entry in entriesList) {
           SubledgerAccount subledgerAccount = SubledgerAccount.Parse(entry.SubledgerAccountId);
           if (!subledgerAccount.IsEmptyInstance) {
@@ -1029,8 +1028,7 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
     private List<TrialBalanceEntry> OrderingTrialBalance(List<TrialBalanceEntry> entries) {
 
       if (_command.WithSubledgerAccount && (_command.TrialBalanceType == TrialBalanceType.Balanza ||
-          _command.TrialBalanceType == TrialBalanceType.SaldosPorCuenta ||
-          _command.TrialBalanceType == TrialBalanceType.AnaliticoDeCuentas)) {
+          _command.TrialBalanceType == TrialBalanceType.SaldosPorCuenta)) {
 
         return entries.Where(a => !a.SubledgerAccountNumber.Contains("undefined"))
                                   .OrderBy(a => a.Ledger.Number)

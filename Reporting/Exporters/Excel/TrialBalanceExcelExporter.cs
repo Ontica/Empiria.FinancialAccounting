@@ -72,7 +72,7 @@ namespace Empiria.FinancialAccounting.Reporting.Exporters.Excel {
     private void SetTable(TrialBalanceDto trialBalance) {
       switch (trialBalance.Command.TrialBalanceType) {
         case TrialBalanceType.AnaliticoDeCuentas:
-          FillOutAnaliticoDeCuentas(trialBalance.Entries.Select(x => (TwoColumnsTrialBalanceEntryDto) x));
+          FillOutAnaliticoDeCuentas(trialBalance.Entries.Select(x => (AnalyticBalanceEntryDto) x));
           return;
 
         case TrialBalanceType.BalanzaValorizadaComparativa:
@@ -113,7 +113,7 @@ namespace Empiria.FinancialAccounting.Reporting.Exporters.Excel {
     }
 
 
-    private void FillOutAnaliticoDeCuentas(IEnumerable<TwoColumnsTrialBalanceEntryDto> entries) {
+    private void FillOutAnaliticoDeCuentas(IEnumerable<AnalyticBalanceEntryDto> entries) {
       int i = 5;
 
       foreach (var entry in entries) {

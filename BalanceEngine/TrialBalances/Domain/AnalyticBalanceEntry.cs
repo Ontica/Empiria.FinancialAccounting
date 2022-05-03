@@ -2,7 +2,7 @@
 *                                                                                                            *
 *  Module   : Balance Engine                             Component : Domain Layer                            *
 *  Assembly : FinancialAccounting.BalanceEngine.dll      Pattern   : Information Holder                      *
-*  Type     : TwoCurrenciesBalanceEntry                  License   : Please read LICENSE.txt file            *
+*  Type     : AnalyticBalanceEntry                       License   : Please read LICENSE.txt file            *
 *                                                                                                            *
 *  Summary  : Represents an entry for a two columns balance entry.                                           *
 *                                                                                                            *
@@ -12,7 +12,7 @@ using System;
 namespace Empiria.FinancialAccounting.BalanceEngine {
 
   /// <summary>Represents an entry for a two columns balance entry.</summary>
-  public class TwoCurrenciesBalanceEntry : ITrialBalanceEntry {
+  public class AnalyticBalanceEntry : ITrialBalanceEntry {
 
     public Ledger Ledger {
       get; internal set;
@@ -144,7 +144,7 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
       get; internal set;
     }
 
-    internal void Sum(TwoCurrenciesBalanceEntry entry) {
+    internal void Sum(AnalyticBalanceEntry entry) {
       this.DomesticBalance += entry.DomesticBalance;
       this.ForeignBalance += entry.ForeignBalance;
       this.TotalBalance += entry.TotalBalance;
@@ -152,6 +152,6 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
     }
 
 
-  } // class TwoCurrenciesBalanceEntry
+  } // class AnalyticBalanceEntry
 
 } // namespace Empiria.FinancialAccounting.BalanceEngine

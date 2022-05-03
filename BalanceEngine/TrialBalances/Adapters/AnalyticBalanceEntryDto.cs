@@ -2,9 +2,9 @@
 *                                                                                                            *
 *  Module   : Balance Engine                             Component : Interface adapters                      *
 *  Assembly : FinancialAccounting.BalanceEngine.dll      Pattern   : Data Transfer Object                    *
-*  Type     : TrialBalanceDto                            License   : Please read LICENSE.txt file            *
+*  Type     : AnalyticBalanceEntryDto                    License   : Please read LICENSE.txt file            *
 *                                                                                                            *
-*  Summary  : Output DTO used to return the entries of a trial balance with separated domestic               *
+*  Summary  : Output DTO used to return the entries of a analytic balance with separated domestic            *
 *             and foreign currencies totals                                                                  *
 *                                                                                                            *
 ************************* Copyright(c) La Vía Óntica SC, Ontica LLC and contributors. All rights reserved. **/
@@ -13,9 +13,9 @@ using System;
 
 namespace Empiria.FinancialAccounting.BalanceEngine.Adapters {
 
-  /// <summary>Output DTO used to return the entries of a trial balance with separated domestic
+  /// <summary>Output DTO used to return the entries of a analytic balance with separated domestic
   /// and foreign currencies totals.</summary>
-  public class TwoColumnsTrialBalanceEntryDto : ITrialBalanceEntryDto {
+  public class AnalyticBalanceEntryDto : ITrialBalanceEntryDto {
 
     public TrialBalanceItemType ItemType {
       get; internal set;
@@ -155,6 +155,6 @@ namespace Empiria.FinancialAccounting.BalanceEngine.Adapters {
     public bool IsParentPostingEntry {
       get; internal set;
     }
-  }  // class TwoColumnsTrialBalanceEntryDto
+  }  // class AnalyticBalanceEntryDto
 
 } // namespace Empiria.FinancialAccounting.BalanceEngine.Adapters
