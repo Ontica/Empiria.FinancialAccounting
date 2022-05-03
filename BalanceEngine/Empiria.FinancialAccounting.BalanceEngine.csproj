@@ -69,14 +69,14 @@
     <ProjectReference Include="..\Core\Empiria.FinancialAccounting.Core.csproj" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Remove="Adapters\CreditDebitBalanceMapper.cs" />
-    <Compile Remove="Adapters\CurrentBalanceDto.cs" />
-    <Compile Remove="Adapters\CurrentBalanceMapper.cs" />
-    <Compile Remove="Adapters\DebitCreditBalanceDto.cs" />
-    <Compile Remove="Adapters\InitialBalanceDto.cs" />
-    <Compile Remove="Adapters\InitialBalanceMapper.cs" />
-    <Compile Remove="Domain\CurrentBalance.cs" />
-    <Compile Remove="Domain\DebitCreditBalance.cs" />
-    <Compile Remove="Domain\InitialBalance.cs" />
+    <Compile Remove="TrialBalances\Adapters\CreditDebitBalanceMapper.cs" />
+    <Compile Remove="TrialBalances\Adapters\CurrentBalanceDto.cs" />
+    <Compile Remove="TrialBalances\Adapters\CurrentBalanceMapper.cs" />
+    <Compile Remove="TrialBalances\Adapters\DebitCreditBalanceDto.cs" />
+    <Compile Remove="TrialBalances\Adapters\InitialBalanceDto.cs" />
+    <Compile Remove="TrialBalances\Adapters\InitialBalanceMapper.cs" />
+    <Compile Remove="TrialBalances\Domain\CurrentBalance.cs" />
+    <Compile Remove="TrialBalances\Domain\DebitCreditBalance.cs" />
+    <Compile Remove="TrialBalances\Domain\InitialBalance.cs" />
   </ItemGroup>
 </Project>
