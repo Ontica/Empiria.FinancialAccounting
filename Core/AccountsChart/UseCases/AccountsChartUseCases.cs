@@ -4,7 +4,7 @@
 *  Assembly : FinancialAccounting.Core.dll               Pattern   : Use case interactor class               *
 *  Type     : AccountsChartUseCases                      License   : Please read LICENSE.txt file            *
 *                                                                                                            *
-*  Summary  : Use cases for accounts chart management.                                                       *
+*  Summary  : Use cases for accounts chart searching and retriving.                                          *
 *                                                                                                            *
 ************************* Copyright(c) La Vía Óntica SC, Ontica LLC and contributors. All rights reserved. **/
 using System;
@@ -17,7 +17,7 @@ using Empiria.FinancialAccounting.Data;
 
 namespace Empiria.FinancialAccounting.UseCases {
 
-  /// <summary>Use cases for accounts chart management.</summary>
+  /// <summary>Use cases for accounts chart searching and retriving.</summary>
   public class AccountsChartUseCases : UseCase {
 
     #region Constructors and parsers
@@ -110,6 +110,7 @@ namespace Empiria.FinancialAccounting.UseCases {
         return AccountsChartMapper.Map(accountsChart, accounts);
       }
     }
+
 
     #endregion Use cases
 

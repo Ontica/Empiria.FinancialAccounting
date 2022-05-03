@@ -19,7 +19,7 @@ using Empiria.FinancialAccounting.Reporting;
 namespace Empiria.FinancialAccounting.WebApi {
 
   /// <summary>Query web API used to retrive accounts charts.</summary>
-  public class AccountsChartController : WebApiController {
+  public class AccountEditionController : WebApiController {
 
     #region Web Apis
 
@@ -102,18 +102,6 @@ namespace Empiria.FinancialAccounting.WebApi {
         return new SingleObjectModel(base.Request, accountsChart);
       }
     }
-
-
-    [HttpPost]
-    [Route("v2/financial-accounting/accounts-charts/cleanup")]
-    public SingleObjectModel CleanupAccounts() {
-      using (var usecases = AccountsChartUseCases.UseCaseInteractor()) {
-        usecases.CleanupAccounts();
-
-        return new SingleObjectModel(base.Request, "La operación de limpieza se ejecutó satisfactoriamente.");
-      }
-    }
-
 
     #endregion Web Apis
 
