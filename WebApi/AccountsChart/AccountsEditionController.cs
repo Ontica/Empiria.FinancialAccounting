@@ -7,12 +7,14 @@
 *  Summary  : Command Web Api used to create or update an account in a chart of accounts.                    *
 *                                                                                                            *
 ************************* Copyright(c) La Vía Óntica SC, Ontica LLC and contributors. All rights reserved. **/
+using System;
 using System.Web.Http;
 
 using Empiria.WebApi;
 
-using Empiria.FinancialAccounting.UseCases;
 using Empiria.FinancialAccounting.Adapters;
+using Empiria.FinancialAccounting.UseCases;
+
 
 namespace Empiria.FinancialAccounting.WebApi {
 
@@ -22,14 +24,47 @@ namespace Empiria.FinancialAccounting.WebApi {
     #region Web Apis
 
     [HttpPost]
-    [Route("v2/financial-accounting/accounts-charts/{accountsChartUID:guid}/add-currencies")]
-    public SingleObjectModel AddCurrencies([FromUri] string accountsChartUID,
-                                           [FromBody] AccountEditionCommand command) {
+    [Route("v2/financial-accounting/accounts-charts/process-account-edition-command")]
+    public SingleObjectModel EditAccounts([FromBody] AccountEditionCommand command) {
 
       base.RequireBody(command);
 
       using (var usecases = AccountEditionUseCases.UseCaseInteractor()) {
-        AccountEditionResult result = usecases.AddCurrencies(accountsChartUID, command);
+        AccountEditionResult result;
+
+        switch (command.Type) {
+          case AccountEditionCommandType.AddCurrencies:
+            result = usecases.AddCurrencies(command);
+            break;
+
+          case AccountEditionCommandType.AddSectors:
+            result = usecases.AddSectors(command);
+            break;
+
+          case AccountEditionCommandType.CreateAccount:
+            result = usecases.CreateAccount(command);
+            break;
+
+          case AccountEditionCommandType.RemoveAccount:
+            result = usecases.RemoveAccount(command);
+            break;
+
+          case AccountEditionCommandType.RemoveCurrencies:
+            result = usecases.RemoveCurrencies(command);
+            break;
+
+          case AccountEditionCommandType.RemoveSectors:
+            result = usecases.RemoveSectors(command);
+            break;
+
+          case AccountEditionCommandType.UpdateAccount:
+            result = usecases.UpdateAccount(command);
+            break;
+
+          default:
+            throw Assertion.AssertNoReachThisCode($"Unhandled command type '{command.Type}'.");
+
+        }
 
         return new SingleObjectModel(base.Request, result);
       }
@@ -37,14 +72,31 @@ namespace Empiria.FinancialAccounting.WebApi {
 
 
     [HttpPost]
-    [Route("v2/financial-accounting/accounts-charts/{accountsChartUID:guid}/add-sectors")]
+    [Route("v2/financial-accounting/accounts-charts/{accountsChartUID:guid}/accounts/{accountUID:guid}/add-currencies")]
+    public SingleObjectModel AddCurrencies([FromUri] string accountsChartUID,
+                                           [FromUri] string accountUID,
+                                           [FromBody] AccountEditionCommand command) {
+
+      PrepareCommand(command, AccountEditionCommandType.AddCurrencies, accountsChartUID, accountUID);
+
+      using (var usecases = AccountEditionUseCases.UseCaseInteractor()) {
+        AccountEditionResult result = usecases.AddCurrencies(command);
+
+        return new SingleObjectModel(base.Request, result);
+      }
+    }
+
+
+    [HttpPost]
+    [Route("v2/financial-accounting/accounts-charts/{accountsChartUID:guid}/accounts/{accountUID:guid}/add-sectors")]
     public SingleObjectModel AddSectors([FromUri] string accountsChartUID,
+                                        [FromUri] string accountUID,
                                         [FromBody] AccountEditionCommand command) {
 
-      base.RequireBody(command);
+      PrepareCommand(command, AccountEditionCommandType.AddSectors, accountsChartUID, accountUID);
 
       using (var usecases = AccountEditionUseCases.UseCaseInteractor()) {
-        AccountEditionResult result = usecases.AddSectors(accountsChartUID, command);
+        AccountEditionResult result = usecases.AddSectors(command);
 
         return new SingleObjectModel(base.Request, result);
       }
@@ -52,14 +104,15 @@ namespace Empiria.FinancialAccounting.WebApi {
 
 
     [HttpPost]
-    [Route("v2/financial-accounting/accounts-charts/{accountsChartUID:guid}/create-account")]
+    [Route("v2/financial-accounting/accounts-charts/{accountsChartUID:guid}/accounts/{accountUID:guid}/create-account")]
     public SingleObjectModel CreateAccount([FromUri] string accountsChartUID,
+                                           [FromUri] string accountUID,
                                            [FromBody] AccountEditionCommand command) {
 
-      base.RequireBody(command);
+      PrepareCommand(command, AccountEditionCommandType.CreateAccount, accountsChartUID, accountUID);
 
       using (var usecases = AccountEditionUseCases.UseCaseInteractor()) {
-        AccountEditionResult result = usecases.CreateAccount(accountsChartUID, command);
+        AccountEditionResult result = usecases.CreateAccount(command);
 
         return new SingleObjectModel(base.Request, result);
       }
@@ -67,14 +120,15 @@ namespace Empiria.FinancialAccounting.WebApi {
 
 
     [HttpDelete]
-    [Route("v2/financial-accounting/accounts-charts/{accountsChartUID:guid}/remove-account")]
+    [Route("v2/financial-accounting/accounts-charts/{accountsChartUID:guid}/accounts/{accountUID:guid}/remove-account")]
     public SingleObjectModel RemoveAccount([FromUri] string accountsChartUID,
+                                           [FromUri] string accountUID,
                                            [FromBody] AccountEditionCommand command) {
 
-      base.RequireBody(command);
+      PrepareCommand(command, AccountEditionCommandType.RemoveAccount, accountsChartUID, accountUID);
 
       using (var usecases = AccountEditionUseCases.UseCaseInteractor()) {
-        AccountEditionResult result = usecases.RemoveAccount(accountsChartUID, command);
+        AccountEditionResult result = usecases.RemoveAccount(command);
 
         return new SingleObjectModel(base.Request, result);
       }
@@ -82,14 +136,15 @@ namespace Empiria.FinancialAccounting.WebApi {
 
 
     [HttpDelete]
-    [Route("v2/financial-accounting/accounts-charts/{accountsChartUID:guid}/remove-currencies")]
+    [Route("v2/financial-accounting/accounts-charts/{accountsChartUID:guid}/accounts/{accountUID:guid}/remove-currencies")]
     public SingleObjectModel RemoveCurrencies([FromUri] string accountsChartUID,
+                                              [FromUri] string accountUID,
                                               [FromBody] AccountEditionCommand command) {
 
-      base.RequireBody(command);
+      PrepareCommand(command, AccountEditionCommandType.RemoveCurrencies, accountsChartUID, accountUID);
 
       using (var usecases = AccountEditionUseCases.UseCaseInteractor()) {
-        AccountEditionResult result = usecases.RemoveCurrencies(accountsChartUID, command);
+        AccountEditionResult result = usecases.RemoveCurrencies(command);
 
         return new SingleObjectModel(base.Request, result);
       }
@@ -97,14 +152,15 @@ namespace Empiria.FinancialAccounting.WebApi {
 
 
     [HttpDelete]
-    [Route("v2/financial-accounting/accounts-charts/{accountsChartUID:guid}/remove-sectors")]
+    [Route("v2/financial-accounting/accounts-charts/{accountsChartUID:guid}/accounts/{accountUID:guid}/remove-sectors")]
     public SingleObjectModel RemoveSectors([FromUri] string accountsChartUID,
+                                           [FromUri] string accountUID,
                                            [FromBody] AccountEditionCommand command) {
 
-      base.RequireBody(command);
+      PrepareCommand(command, AccountEditionCommandType.RemoveSectors, accountsChartUID, accountUID);
 
       using (var usecases = AccountEditionUseCases.UseCaseInteractor()) {
-        AccountEditionResult result = usecases.RemoveSectors(accountsChartUID, command);
+        AccountEditionResult result = usecases.RemoveSectors(command);
 
         return new SingleObjectModel(base.Request, result);
       }
@@ -112,14 +168,15 @@ namespace Empiria.FinancialAccounting.WebApi {
 
 
     [HttpPut, HttpPatch]
-    [Route("v2/financial-accounting/accounts-charts/{accountsChartUID:guid}/update-account")]
+    [Route("v2/financial-accounting/accounts-charts/{accountsChartUID:guid}/accounts/{accountUID:guid}/update-account")]
     public SingleObjectModel UpdateAccount([FromUri] string accountsChartUID,
+                                           [FromUri] string accountUID,
                                            [FromBody] AccountEditionCommand command) {
 
-      base.RequireBody(command);
+      PrepareCommand(command, AccountEditionCommandType.UpdateAccount, accountsChartUID, accountUID);
 
       using (var usecases = AccountEditionUseCases.UseCaseInteractor()) {
-        AccountEditionResult result = usecases.UpdateAccount(accountsChartUID, command);
+        AccountEditionResult result = usecases.UpdateAccount(command);
 
         return new SingleObjectModel(base.Request, result);
       }
@@ -127,6 +184,21 @@ namespace Empiria.FinancialAccounting.WebApi {
 
 
     #endregion Web Apis
+
+    #region Helpers
+
+    private void PrepareCommand(AccountEditionCommand command,
+                                AccountEditionCommandType type,
+                                string accountsChartUID,
+                                string accountUID) {
+      base.RequireBody(command);
+
+      command.Type = type;
+      command.AccountsChartUID = accountsChartUID;
+      command.AccountUID = accountUID;
+    }
+
+    #endregion Helpers
 
   }  // class AccountsEditionController
 

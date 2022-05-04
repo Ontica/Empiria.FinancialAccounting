@@ -12,7 +12,6 @@ using System;
 using Empiria.Services;
 
 using Empiria.FinancialAccounting.Adapters;
-using Empiria.FinancialAccounting.Data;
 
 namespace Empiria.FinancialAccounting.UseCases {
 
@@ -34,8 +33,8 @@ namespace Empiria.FinancialAccounting.UseCases {
     #region Use cases
 
 
-    public AccountEditionResult AddCurrencies(string accountsChartUID, AccountEditionCommand command) {
-      AccountEditorService editor = GetAccountEditorService(accountsChartUID, command);
+    public AccountEditionResult AddCurrencies(AccountEditionCommand command) {
+      AccountEditorService editor = GetAccountEditorService(command);
 
       editor.AddCurrencies();
 
@@ -45,8 +44,8 @@ namespace Empiria.FinancialAccounting.UseCases {
     }
 
 
-    public AccountEditionResult AddSectors(string accountsChartUID, AccountEditionCommand command) {
-      AccountEditorService editor = GetAccountEditorService(accountsChartUID, command);
+    public AccountEditionResult AddSectors(AccountEditionCommand command) {
+      AccountEditorService editor = GetAccountEditorService(command);
 
       editor.AddSectors();
 
@@ -56,8 +55,8 @@ namespace Empiria.FinancialAccounting.UseCases {
     }
 
 
-    public AccountEditionResult CreateAccount(string accountsChartUID, AccountEditionCommand command) {
-      AccountEditorService editor = GetAccountEditorService(accountsChartUID, command);
+    public AccountEditionResult CreateAccount(AccountEditionCommand command) {
+      AccountEditorService editor = GetAccountEditorService(command);
 
       editor.CreateAccount();
 
@@ -67,8 +66,8 @@ namespace Empiria.FinancialAccounting.UseCases {
     }
 
 
-    public AccountEditionResult RemoveAccount(string accountsChartUID, AccountEditionCommand command) {
-      AccountEditorService editor = GetAccountEditorService(accountsChartUID, command);
+    public AccountEditionResult RemoveAccount(AccountEditionCommand command) {
+      AccountEditorService editor = GetAccountEditorService(command);
 
       editor.RemoveAccount();
 
@@ -78,8 +77,8 @@ namespace Empiria.FinancialAccounting.UseCases {
     }
 
 
-    public AccountEditionResult RemoveCurrencies(string accountsChartUID, AccountEditionCommand command) {
-      AccountEditorService editor = GetAccountEditorService(accountsChartUID, command);
+    public AccountEditionResult RemoveCurrencies(AccountEditionCommand command) {
+      AccountEditorService editor = GetAccountEditorService(command);
 
       editor.RemoveCurrencies();
 
@@ -89,8 +88,8 @@ namespace Empiria.FinancialAccounting.UseCases {
     }
 
 
-    public AccountEditionResult RemoveSectors(string accountsChartUID, AccountEditionCommand command) {
-      AccountEditorService editor = GetAccountEditorService(accountsChartUID, command);
+    public AccountEditionResult RemoveSectors(AccountEditionCommand command) {
+      AccountEditorService editor = GetAccountEditorService(command);
 
       editor.RemoveSectors();
 
@@ -100,8 +99,8 @@ namespace Empiria.FinancialAccounting.UseCases {
     }
 
 
-    public AccountEditionResult UpdateAccount(string accountsChartUID, AccountEditionCommand command) {
-      AccountEditorService editor = GetAccountEditorService(accountsChartUID, command);
+    public AccountEditionResult UpdateAccount(AccountEditionCommand command) {
+      AccountEditorService editor = GetAccountEditorService(command);
 
       editor.UpdateAccount();
 
@@ -114,14 +113,12 @@ namespace Empiria.FinancialAccounting.UseCases {
 
     #region Helpers
 
-    private AccountEditorService GetAccountEditorService(string accountsChartUID,
-                                                         AccountEditionCommand command) {
-      Assertion.AssertObject(accountsChartUID, nameof(accountsChartUID));
+    private AccountEditorService GetAccountEditorService(AccountEditionCommand command) {
       Assertion.AssertObject(command, nameof(command));
 
-      var accountsChart = AccountsChart.Parse(accountsChartUID);
+      command.EnsureValid();
 
-      return new AccountEditorService(accountsChart, command);
+      return new AccountEditorService(command);
     }
 
     #endregion Helpers

@@ -4,7 +4,7 @@
 *  Assembly : FinancialAccounting.Core.dll               Pattern   : Command payload                         *
 *  Type     : AccountEditionCommand                      License   : Please read LICENSE.txt file            *
 *                                                                                                            *
-*  Summary  : Command payload used for accounts edition.                                                     *
+*  Summary  : Command object used for accounts edition.                                                      *
 *                                                                                                            *
 ************************* Copyright(c) La Vía Óntica SC, Ontica LLC and contributors. All rights reserved. **/
 using System;
@@ -12,12 +12,18 @@ using System.Linq;
 
 namespace Empiria.FinancialAccounting.Adapters {
 
-  /// <summary>Command payload used for accounts edition.</summary>
+  /// <summary>Command object used for accounts edition.</summary>
   public class AccountEditionCommand {
+
+    public AccountEditionCommandType Type {
+      get; set;
+    } = AccountEditionCommandType.Undefined;
+
 
     public bool DryRun {
       get; set;
     }
+
 
     public DateTime ApplicationDate {
       get; set;
@@ -57,6 +63,13 @@ namespace Empiria.FinancialAccounting.Adapters {
   static internal class AccountEditionCommandExtension {
 
     #region Public methods
+
+    static internal AccountsChart GetAccountsChart(this AccountEditionCommand command) {
+      Assertion.AssertObject(command.AccountsChartUID, "command.AccountsChartUID");
+
+      return AccountsChart.Parse(command.AccountsChartUID);
+    }
+
 
     static internal Account GetAccountToEdit(this AccountEditionCommand command) {
       Assertion.AssertObject(command.AccountUID, "command.AccountUID");
