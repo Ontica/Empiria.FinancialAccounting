@@ -89,6 +89,79 @@ namespace Empiria.FinancialAccounting.Adapters {
                             .ToFixedList();
     }
 
+    static internal void EnsureValid(this AccountEditionCommand command) {
+      Assertion.AssertObject(command.AccountsChartUID, "command.AccountsChartUID");
+      Assertion.Assert(command.Type != AccountEditionCommandType.Undefined, "command.Type");
+      Assertion.Assert(command.ApplicationDate != ExecutionServer.DateMinValue, "command.ApplicationDate");
+
+      if (command.Type != AccountEditionCommandType.CreateAccount) {
+        command.EnsureAccountToEditIsValid();
+      }
+
+      switch (command.Type) {
+        case AccountEditionCommandType.AddCurrencies:
+        case AccountEditionCommandType.RemoveCurrencies:
+          command.EnsureIsValidForCurrenciesEdition();
+          break;
+
+        case AccountEditionCommandType.AddSectors:
+        case AccountEditionCommandType.RemoveSectors:
+          command.EnsureIsValidForSectorsEdition();
+          break;
+
+        case AccountEditionCommandType.CreateAccount:
+        case AccountEditionCommandType.UpdateAccount:
+          Assertion.AssertObject(command.AccountFields, "command.AccountFields");
+
+          break;
+      }
+    }
+
+    static private void EnsureAccountToEditIsValid(this AccountEditionCommand command) {
+      AccountsChart accountsChart = command.GetAccountsChart();
+      Account accountToEdit = command.GetAccountToEdit();
+
+      Assertion.AssertObject(command.AccountUID, "command.AccountUID");
+
+      Assertion.Assert(accountToEdit.AccountsChart.Equals(accountsChart),
+                       $"Account to be edited {accountToEdit.Number} does not belong to accounts chart {accountsChart.Name}.");
+
+      Assertion.Assert(accountToEdit.EndDate == ExecutionServer.DateMaxValue,
+                       "The given accountUID corresponds to an historic account, so it can not be edited.");
+
+      Assertion.Assert(accountToEdit.StartDate < command.ApplicationDate,
+                       $"The given accountUID has a start date {accountToEdit.StartDate} which is , so it can not be edited.");
+
+    }
+
+
+    static private void EnsureIsValidForCurrenciesEdition(this AccountEditionCommand command) {
+      Assertion.AssertObject(command.Currencies, "command.Currencies");
+      Assertion.Assert(command.Currencies.Length > 0, "Currencies list must have one or more values.");
+
+      foreach (var currencyUID in command.Currencies) {
+        try {
+          _ = Currency.Parse(currencyUID);
+        } catch {
+          Assertion.AssertFail($"A currency with UID '{currencyUID}' does not exists.");
+        }
+      }
+    }
+
+
+    static private void EnsureIsValidForSectorsEdition(this AccountEditionCommand command) {
+      Assertion.AssertObject(command.Sectors, "command.Sectors");
+      Assertion.Assert(command.Sectors.Length > 0, "Sectors list must have one or more values.");
+
+      foreach (var sectorUID in command.Sectors) {
+        try {
+          _ = Sector.Parse(sectorUID);
+        } catch {
+          Assertion.AssertFail($"A sector with UID '{sectorUID}' does not exists.");
+        }
+      }
+    }
+
     #endregion Public methods
 
   }  // AccountEditionCommandExtension
