@@ -19,7 +19,6 @@ namespace Empiria.FinancialAccounting.BanobrasIntegration.VouchersImporter {
   /// movimientos de pólizas por integrar (cargos o abonos).</summary>
   internal class Movimiento {
 
-
     private readonly List<ToImportVoucherIssue> _issues = new List<ToImportVoucherIssue>();
 
     #region Properties
@@ -110,6 +109,12 @@ namespace Empiria.FinancialAccounting.BanobrasIntegration.VouchersImporter {
 
     [DataField("MCO_CONCEPTO", ConvertFrom = typeof(long))]
     public int ConceptoPresupuestal {
+      get; private set;
+    }
+
+
+    [DataField("MCO_NO_OPERACION", ConvertFrom = typeof(long))]
+    public int NumeroOperacion {
       get; private set;
     }
 
@@ -268,7 +273,7 @@ namespace Empiria.FinancialAccounting.BanobrasIntegration.VouchersImporter {
 
 
     internal string GetVerificationNumber() {
-      return String.Empty;
+      return this.NumeroOperacion.ToString();
     }
 
 
