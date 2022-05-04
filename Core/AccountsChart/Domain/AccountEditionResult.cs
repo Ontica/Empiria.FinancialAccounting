@@ -1,17 +1,57 @@
 ﻿/* Empiria Financial *****************************************************************************************
 *                                                                                                            *
 *  Module   : Accounts Chart                             Component : Domain Layer                            *
-*  Assembly : FinancialAccounting.Core.dll               Pattern   : Service provider                        *
+*  Assembly : FinancialAccounting.Core.dll               Pattern   : Immutable Type                          *
 *  Type     : AccountEditionResult                       License   : Please read LICENSE.txt file            *
 *                                                                                                            *
 *  Summary  : Holds information about the result of an account edition.                                      *
 *                                                                                                            *
 ************************* Copyright(c) La Vía Óntica SC, Ontica LLC and contributors. All rights reserved. **/
 
+using Empiria.FinancialAccounting.Adapters;
+
 namespace Empiria.FinancialAccounting {
 
   /// <summary>Holds information about the result of an account edition.</summary>
   public class AccountEditionResult {
+
+    #region Constructor
+
+    internal AccountEditionResult(AccountEditionCommand command, Account account,
+                                  FixedList<string> actions, FixedList<string> issues) {
+      Assertion.AssertObject(command, nameof(command));
+      Assertion.AssertObject(account, nameof(account));
+      Assertion.AssertObject(actions, nameof(actions));
+      Assertion.AssertObject(issues, nameof(issues));
+
+      this.Command = command;
+      this.Account = AccountsChartMapper.MapAccount(account);
+      this.Actions = actions;
+      this.Issues = issues;
+    }
+
+    #endregion Constructor
+
+    #region Properties
+
+    public AccountDto Account {
+      get;
+    }
+
+    public FixedList<string> Actions {
+      get;
+    }
+
+
+    public FixedList<string> Issues {
+      get;
+    }
+
+    public AccountEditionCommand Command {
+      get;
+    }
+
+    #endregion Properties
 
   }  // class AccountEditionResult
 
