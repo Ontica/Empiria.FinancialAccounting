@@ -91,6 +91,13 @@ namespace Empiria.FinancialAccounting {
       }
     }
 
+    public bool HasChildren {
+      get {
+        return EmpiriaMath.IsMemberOf(this.Id, new []{-1, 4, 10});
+      }
+    }
+
+
     public bool IsRoot {
       get {
         return this.IsEmptyInstance;
