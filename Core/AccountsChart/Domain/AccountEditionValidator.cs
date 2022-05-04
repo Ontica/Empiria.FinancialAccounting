@@ -27,12 +27,11 @@ namespace Empiria.FinancialAccounting {
 
     #region Constructors and parsers
 
-    public AccountEditionValidator(AccountsChart accountsChart, AccountEditionCommand command) {
-      Assertion.AssertObject(accountsChart, nameof(accountsChart));
+    public AccountEditionValidator(AccountEditionCommand command) {
       Assertion.AssertObject(command, nameof(command));
 
-      _accountsChart = accountsChart;
       _command = command;
+      _accountsChart = command.GetAccountsChart();
       _issuesList = new List<string>(16);
     }
 
@@ -58,7 +57,9 @@ namespace Empiria.FinancialAccounting {
 
 
     internal bool EnsureCanAddCurrenciesTo(Account account) {
-      if (_command.Currencies.Length == 0) {
+      FixedList<Currency> currenciesToBeAdded = _command.GetCurrencies();
+
+      if (currenciesToBeAdded.Count == 0) {
         this.AddIssue("No se proporcionó la lista con las nuevas monedas a registrar.");
 
         return false;
@@ -66,7 +67,7 @@ namespace Empiria.FinancialAccounting {
 
       bool isOK = true;
 
-      foreach (Currency currencyToAdd in _command.GetCurrencies()) {
+      foreach (Currency currencyToAdd in currenciesToBeAdded) {
         if (account.CurrencyRules.Contains(x => x.Currency.Equals(currencyToAdd))) {
           this.AddIssue($"La cuenta ya tiene registrada la moneda {currencyToAdd.FullName}.");
           isOK = false;
@@ -83,7 +84,9 @@ namespace Empiria.FinancialAccounting {
 
 
     internal bool EnsureCanAddSectorsTo(Account account) {
-      if (_command.Sectors.Length == 0) {
+      FixedList<Sector> sectorsToBeAdded = _command.GetSectors();
+
+      if (sectorsToBeAdded.Count == 0) {
         this.AddIssue("No se proporcionó la lista con los nuevos sectores a registrar.");
 
         return false;
@@ -91,7 +94,7 @@ namespace Empiria.FinancialAccounting {
 
       bool isOK = true;
 
-      foreach (Sector sectorToAdd in _command.GetSectors()) {
+      foreach (Sector sectorToAdd in sectorsToBeAdded) {
         if (account.SectorRules.Contains(x => x.Sector.Equals(sectorToAdd))) {
           this.AddIssue($"La cuenta ya tiene registrado el sector {sectorToAdd.FullName}.");
           isOK = false;

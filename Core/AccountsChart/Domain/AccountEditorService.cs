@@ -29,14 +29,13 @@ namespace Empiria.FinancialAccounting {
 
     #region Constructor
 
-    internal AccountEditorService(AccountsChart accountsChart, AccountEditionCommand command) {
-      Assertion.AssertObject(accountsChart, nameof(accountsChart));
+    internal AccountEditorService(AccountEditionCommand command) {
       Assertion.AssertObject(command, nameof(command));
 
       _command = command;
 
-      _validator = new AccountEditionValidator(accountsChart, _command);
-      _actionBuilder = new AccountActionFactory(accountsChart, _command);
+      _validator = new AccountEditionValidator(_command);
+      _actionBuilder = new AccountActionFactory(_command);
       _actionsList = new List<AccountAction>(16);
     }
 

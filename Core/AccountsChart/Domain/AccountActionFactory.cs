@@ -20,12 +20,11 @@ namespace Empiria.FinancialAccounting {
     private readonly AccountsChart _accountsChart;
     private readonly AccountEditionCommand _command;
 
-    public AccountActionFactory(AccountsChart accountsChart, AccountEditionCommand command) {
-      Assertion.AssertObject(accountsChart, nameof(accountsChart));
+    public AccountActionFactory(AccountEditionCommand command) {
       Assertion.AssertObject(command, nameof(command));
 
-      _accountsChart = accountsChart;
       _command = command;
+      _accountsChart = _command.GetAccountsChart();
     }
 
     internal AccountAction BuildForAddCurrency(Account account, Currency currency) {
