@@ -8,20 +8,46 @@
 *                                                                                                            *
 ************************* Copyright(c) La Vía Óntica SC, Ontica LLC and contributors. All rights reserved. **/
 using System;
+using System.Linq;
 
 namespace Empiria.FinancialAccounting.Adapters {
 
   /// <summary>Command payload used for accounts edition.</summary>
   public class AccountEditionCommand {
 
-    public string[] Sectors {
+    public bool DryRun {
       get; set;
-    } = new string[0];
+    }
+
+    public DateTime ApplicationDate {
+      get; set;
+    } = ExecutionServer.DateMinValue;
+
+
+    public string AccountsChartUID {
+      get; set;
+    } = string.Empty;
+
+
+    public string AccountUID {
+      get; set;
+    } = string.Empty;
+
+
+    public AccountFieldsDto AccountFields {
+      get; set;
+    } = new AccountFieldsDto();
 
 
     public string[] Currencies {
       get; set;
     } = new string[0];
+
+
+    public string[] Sectors {
+      get; set;
+    } = new string[0];
+
 
   }  // class AccountEditionCommand
 
@@ -32,11 +58,25 @@ namespace Empiria.FinancialAccounting.Adapters {
 
     #region Public methods
 
+    static internal Account GetAccountToEdit(this AccountEditionCommand command) {
+      Assertion.AssertObject(command.AccountUID, "command.AccountUID");
+
+      return Account.Parse(command.AccountUID);
+    }
+
+
+    static internal FixedList<Currency> GetCurrencies(this AccountEditionCommand command) {
+      return command.Currencies.Select(x => Currency.Parse(x))
+                               .ToFixedList();
+    }
+
+
+    static internal FixedList<Sector> GetSectors(this AccountEditionCommand command) {
+      return command.Sectors.Select(x => Sector.Parse(x))
+                            .ToFixedList();
+    }
+
     #endregion Public methods
-
-    #region Private methods
-
-    #endregion Private methods
 
   }  // AccountEditionCommandExtension
 
