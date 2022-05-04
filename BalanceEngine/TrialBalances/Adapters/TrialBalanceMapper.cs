@@ -46,7 +46,7 @@ namespace Empiria.FinancialAccounting.BalanceEngine.Adapters {
       return newEntry;
     }
 
-    static internal AnalyticBalanceEntry MapTwoCurrenciesBalance(
+    static internal AnalyticBalanceEntry MapToAnalyticBalanceEntry(
                                                 AnalyticBalanceEntry balanceEntry) {
       var entry = new AnalyticBalanceEntry();
       entry.Account = balanceEntry.Account;
