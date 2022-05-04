@@ -46,6 +46,8 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
       List<TrialBalanceEntry> summaryEntriesAndSectorization =
                               helper.GetSummaryEntriesAndSectorization(summaryEntries);
 
+      analyticHelper.GetSummaryToSectorZeroForPesosAndUdis(_postingEntries, summaryEntriesAndSectorization);
+
       List<TrialBalanceEntry> trialBalance = analyticHelper.CombineSummaryAndPostingEntries(
                                              summaryEntriesAndSectorization, _postingEntries.ToFixedList());
 

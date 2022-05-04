@@ -75,7 +75,7 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
                                            .ToList();
 
           var hashEntries = new EmpiriaHashTable<AnalyticBalanceEntry>();
-          
+
           foreach (var entry in balanceEntries) {
 
             string hash = $"{entry.Account.Number}||{entry.Sector.Code}||{targetCurrency.Id}||" +
@@ -194,7 +194,6 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
     }
 
 
-
     internal List<AnalyticBalanceEntry> GenerateTotalReport(
                                              List<AnalyticBalanceEntry> balanceEntries) {
       var totalSummary = new EmpiriaHashTable<AnalyticBalanceEntry>();
@@ -218,6 +217,45 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
       }
 
       return totalSummary.Values.ToList();
+    }
+
+
+    private void SummaryToSectorZeroForPesosAndUdis(List<TrialBalanceEntry> entries) {
+      
+      if (_command.UseNewSectorizationModel) {
+
+        var entriesWithUdisCurrency = entries.Where(a => a.Level > 1 &&
+                                                    a.Currency.Code == "44" &&
+                                                    a.Sector.Code == "00")
+                                             .ToList();
+
+        foreach (var entryUdis in entriesWithUdisCurrency) {
+          var entry = entries.FirstOrDefault(a => a.Account.Number == entryUdis.Account.Number &&
+                                             a.Ledger.Number == entryUdis.Ledger.Number &&
+                                             a.Currency.Code == "01" &&
+                                             a.Sector.Code == "00" &&
+                                             a.DebtorCreditor == entryUdis.DebtorCreditor);
+
+          if (entry != null) {
+            entry.InitialBalance += entryUdis.InitialBalance;
+            entry.Debit += entryUdis.Debit;
+            entry.Credit += entryUdis.Credit;
+            entry.CurrentBalance += entryUdis.CurrentBalance;
+            entry.AverageBalance += entryUdis.AverageBalance;
+          } else {
+            entryUdis.IsSummaryForAnalytics = true;
+          }
+        }
+      }
+    }
+
+
+    internal void GetSummaryToSectorZeroForPesosAndUdis(
+                    List<TrialBalanceEntry> postingEntries,
+                    List<TrialBalanceEntry> summaryEntries) {
+
+      SummaryToSectorZeroForPesosAndUdis(postingEntries);
+      SummaryToSectorZeroForPesosAndUdis(summaryEntries);
     }
 
 
@@ -308,7 +346,7 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
 
     private List<AnalyticBalanceEntry> GetFirstLevelEntriesToGroup(
                                               FixedList<AnalyticBalanceEntry> entries) {
-      
+
       var listEntries = new List<AnalyticBalanceEntry>();
 
       foreach (var entry in entries.Where(a => a.Level == 1)) {

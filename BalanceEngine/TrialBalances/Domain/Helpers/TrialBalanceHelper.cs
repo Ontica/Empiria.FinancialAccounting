@@ -293,10 +293,11 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
 
       if (_command.UseNewSectorizationModel) {
         var summaryEntriesList = new List<TrialBalanceEntry>(summaryEntries);
+
         foreach (var entry in summaryEntriesList) {
           List<TrialBalanceEntry> entriesWithSummarySector;
-          if (_command.TrialBalanceType == TrialBalanceType.AnaliticoDeCuentas ||
-              _command.TrialBalanceType == TrialBalanceType.Balanza) {
+
+          if (_command.TrialBalanceType == TrialBalanceType.Balanza) {
 
             entriesWithSummarySector = summaryEntries.Where(a => a.Account.Number == entry.Account.Number &&
                                                                  a.Ledger.Number == entry.Ledger.Number &&
@@ -316,8 +317,7 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
                (entry.ItemType == TrialBalanceItemType.Entry &&
                entriesWithSummarySector.Count == 2 && entry.Sector.Code != "00")) {
             var entryWithoutSector = entriesWithSummarySector.FirstOrDefault(a => a.Sector.Code == "00");
-            if (_command.TrialBalanceType != TrialBalanceType.AnaliticoDeCuentas &&
-                _command.TrialBalanceType != TrialBalanceType.Balanza) {
+            if (_command.TrialBalanceType != TrialBalanceType.Balanza) {
               entries.Remove(entryWithoutSector);
             }
           }
@@ -350,11 +350,13 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
         EmpiriaLog.Debug($"INNER GetSummaryEntriesWithoutSectorization(): {DateTime.Now.Subtract(startTime).TotalSeconds} seconds.");
       }
 
-      GetSummaryToSectorZeroForPesosAndUdis(returnedEntries.ToList());
+      if (_command.TrialBalanceType != TrialBalanceType.AnaliticoDeCuentas) {
+       
+        returnedEntries = GetSummaryByLevelAndSector(returnedEntries.ToList());
 
-      returnedEntries = GetSummaryByLevelAndSector(returnedEntries.ToList());
-
-      EmpiriaLog.Debug($"INNER GetSummaryByLevelAndSector(): {DateTime.Now.Subtract(startTime).TotalSeconds} seconds.");
+        EmpiriaLog.Debug($"INNER GetSummaryByLevelAndSector(): {DateTime.Now.Subtract(startTime).TotalSeconds} seconds.");
+      }
+      
 
       return returnedEntries;
     }
@@ -955,38 +957,6 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
         returnedEntries.AddRange(hashEntries.ToFixedList().ToList());
       }
       return returnedEntries;
-    }
-
-
-    private void GetSummaryToSectorZeroForPesosAndUdis(
-                                      List<TrialBalanceEntry> summaryEntries) {
-      if (_command.UseNewSectorizationModel &&
-          _command.TrialBalanceType == TrialBalanceType.AnaliticoDeCuentas) {
-
-        var summaryEntriesList = summaryEntries.Where(
-                                  a => a.Level > 1 && a.Currency.Code == "44" && a.Sector.Code == "00")
-                                 .ToList();
-
-        foreach (var entry in summaryEntriesList) {
-          var entryWithSummarySector = summaryEntries.FirstOrDefault(
-                                                        a => a.Account.Number == entry.Account.Number &&
-                                                        a.Ledger.Number == entry.Ledger.Number &&
-                                                        a.Currency.Code == "01" &&
-                                                        a.Sector.Code == "00" &&
-                                                        a.DebtorCreditor == entry.DebtorCreditor
-                                                       );
-
-          if (entryWithSummarySector != null) {
-            entryWithSummarySector.InitialBalance += entry.InitialBalance;
-            entryWithSummarySector.Debit += entry.Debit;
-            entryWithSummarySector.Credit += entry.Credit;
-            entryWithSummarySector.CurrentBalance += entry.CurrentBalance;
-            entryWithSummarySector.AverageBalance += entry.AverageBalance;
-          } else {
-            entry.IsSummaryForAnalytics = true;
-          }
-        }
-      }
     }
 
 
