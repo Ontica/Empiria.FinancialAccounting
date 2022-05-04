@@ -8,62 +8,157 @@
 *                                                                                                            *
 ************************* Copyright(c) La Vía Óntica SC, Ontica LLC and contributors. All rights reserved. **/
 using System;
+using System.Collections.Generic;
+using System.Linq;
 using Empiria.FinancialAccounting.Adapters;
+using Empiria.FinancialAccounting.Data;
 
-namespace Empiria.FinancialAccounting.UseCases {
+namespace Empiria.FinancialAccounting {
 
   /// <summary>Provides account edition services.</summary>
   internal class AccountEditorService {
 
-    private readonly AccountsChart _accountsChart;
+    #region Fields
+
     private readonly AccountEditionCommand _command;
+    private readonly AccountEditionValidator _validator;
+    private readonly AccountActionFactory _actionBuilder;
+    private readonly List<AccountAction> _actionsList;
+
+    #endregion Fields
+
+    #region Constructor
 
     internal AccountEditorService(AccountsChart accountsChart, AccountEditionCommand command) {
       Assertion.AssertObject(accountsChart, nameof(accountsChart));
-      Assertion.AssertObject(_command, nameof(command));
+      Assertion.AssertObject(command, nameof(command));
 
-      _accountsChart = accountsChart;
       _command = command;
+
+      _validator = new AccountEditionValidator(accountsChart, _command);
+      _actionBuilder = new AccountActionFactory(accountsChart, _command);
+      _actionsList = new List<AccountAction>(16);
     }
 
+    #endregion Constructor
+
+    #region Operations
 
     internal void AddCurrencies() {
-      throw new NotImplementedException();
+      Account account = _command.GetAccountToEdit();
+
+      if (!_validator.EnsureCanAddCurrenciesTo(account)) {
+        return;
+      }
+
+      foreach (Currency currency in _command.GetCurrencies()) {
+        AccountAction operation = _actionBuilder.BuildForAddCurrency(account, currency);
+
+        _actionsList.Add(operation);
+
+      }  // foreach
     }
+
 
     internal void AddSectors() {
-      throw new NotImplementedException();
+      Account account = _command.GetAccountToEdit();
+
+      if (!_validator.EnsureCanAddSectorsTo(account)) {
+        return;
+      }
+
+      foreach (Sector sector in _command.GetSectors()) {
+        AccountAction action = _actionBuilder.BuildForAddSector(account, sector);
+
+        _actionsList.Add(action);
+
+      }  // foreach
     }
 
+
     internal void CreateAccount() {
-      throw new NotImplementedException();
+      if (!_validator.EnsureCanCreateAccount()) {
+        return;
+      }
+
+      AccountFieldsDto fields = _command.AccountFields;
+
+      AccountAction action = _actionBuilder.BuildForCreateAccount(fields);
+
+      _actionsList.Add(action);
     }
+
 
     internal void RemoveAccount() {
       throw new NotImplementedException();
     }
 
+
     internal void RemoveCurrencies() {
       throw new NotImplementedException();
     }
+
 
     internal void RemoveSectors() {
       throw new NotImplementedException();
     }
 
+
     internal void UpdateAccount() {
       throw new NotImplementedException();
     }
 
-    internal void TryCommit() {
-      throw new NotImplementedException();
+    #endregion Operations
+
+    #region Commit and return result
+
+    public bool Commited {
+      get; private set;
     }
 
 
     internal AccountEditionResult GetResult() {
-      throw new NotImplementedException();
+      FixedList<string> actions = _actionsList.Select(x => x.Description)
+                                              .ToFixedList();
+
+      Account account = _command.GetAccountToEdit();
+
+      return new AccountEditionResult(_command, account, actions, _validator.Issues);
     }
+
+
+    internal void TryCommit() {
+      if (_command.DryRun) {
+        return;
+      }
+
+      Assertion.Assert(_validator.Issues.Count == 0,
+              "There are one or more issues. Please retry sending the same command with a dry run.");
+
+      Assertion.Assert(_actionsList.Count != 0,
+              "Actions list is empty. There are not actions to execute.");
+
+      Assertion.Assert(!this.Commited,
+              "Command operations were already commited.");
+
+      ExecuteCommit();
+
+
+      void ExecuteCommit() {
+
+        foreach (AccountAction action in _actionsList) {
+          AccountEditionDataService.Execute(action.DataOperations);
+        }
+
+        this.Commited = true;
+
+      } // ExecuteCommit()
+
+    }  // TryCommit()
+
+
+    #endregion Commit and return result
 
   }  // AccountEditorService
 
-}  // namespace Empiria.FinancialAccounting.UseCases
+}  // namespace Empiria.FinancialAccounting
