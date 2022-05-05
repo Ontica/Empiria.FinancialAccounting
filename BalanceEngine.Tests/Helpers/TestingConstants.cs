@@ -20,7 +20,7 @@ namespace Empiria.FinancialAccounting.Tests {
     //"b2328e67-3f2e-45b9-b1f6-93ef6292204e";
 
     static internal readonly string[] BALANCE_LEDGERS_ARRAY =
-                                  new string[] { "81816c16-3306-98b0-66bf-a69021e31171" }; // "2584a757-865c-2025-8025-fa633f200c49" 
+                                  new string[] { }; // "2584a757-865c-2025-8025-fa633f200c49" 
 
     static internal readonly DateTime FROM_DATE = new DateTime(2022, 02, 01);
 

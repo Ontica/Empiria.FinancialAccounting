@@ -25,19 +25,26 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
     }
 
 
-    internal FixedList<TrialBalanceEntry> GetComparativePostingEntries() {
-      var helper = new TrialBalanceHelper(_command);
+    internal void GetAverageBalance(List<TrialBalanceEntry> trialBalance) {
+      var returnedEntries = new List<TrialBalanceEntry>(trialBalance);
 
-      FixedList<TrialBalanceEntry> postingEntries = helper.GetPostingEntries();
+      if (_command.WithAverageBalance) {
 
-      postingEntries = helper.GetSummaryToParentEntries(postingEntries);
+        foreach (var entry in returnedEntries) {
 
-      postingEntries = ExchangeRateSecondPeriod(postingEntries);
+          decimal debtorCreditor = entry.DebtorCreditor == DebtorCreditorType.Deudora ?
+                                   entry.Debit - entry.Credit : entry.Credit - entry.Debit;
 
-      postingEntries = helper.RoundTrialBalanceEntries(postingEntries);
+          TimeSpan timeSpan = _command.FinalPeriod.ToDate - entry.LastChangeDate;
+          int numberOfDays = timeSpan.Days + 1;
 
-      return postingEntries;
+          entry.AverageBalance = ((numberOfDays * debtorCreditor) /
+                                   _command.InitialPeriod.ToDate.Day) +
+                                   entry.InitialBalance;
+        }
+      }
     }
+
 
     internal List<TrialBalanceComparativeEntry> MergePeriodsIntoComparativeBalance(
                                       FixedList<TrialBalanceEntry> trialBalance) {
@@ -84,17 +91,6 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
         entry.VariationByER = (entry.FirstTotalBalance * entry.SecondExchangeRate) - entry.FirstValorization;
         entry.RealVariation = entry.Variation - entry.VariationByER;
       }
-    }
-
-
-    private FixedList<TrialBalanceEntry> ExchangeRateSecondPeriod(
-                                          FixedList<TrialBalanceEntry> postingEntries) {
-      var helper = new TrialBalanceHelper(_command);
-
-      FixedList<TrialBalanceEntry> balanceEntries = helper.ValuateToExchangeRate(
-                                                      postingEntries, _command.FinalPeriod, true);
-
-      return balanceEntries;
     }
 
 

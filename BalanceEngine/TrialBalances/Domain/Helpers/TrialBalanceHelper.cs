@@ -208,15 +208,12 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
         foreach (var entry in returnedEntries.Where(a => a.ItemType == TrialBalanceItemType.Summary ||
                   (_command.TrialBalanceType == TrialBalanceType.BalanzaConContabilidadesEnCascada &&
                    (a.ItemType == TrialBalanceItemType.BalanceTotalGroupDebtor ||
-                    a.ItemType == TrialBalanceItemType.BalanceTotalGroupCreditor)) ||
-                  (_command.TrialBalanceType == TrialBalanceType.BalanzaValorizadaComparativa))) {
+                    a.ItemType == TrialBalanceItemType.BalanceTotalGroupCreditor)))) {
 
           decimal debtorCreditor = entry.DebtorCreditor == DebtorCreditorType.Deudora ?
                                    entry.Debit - entry.Credit : entry.Credit - entry.Debit;
 
-          TimeSpan timeSpan = _command.TrialBalanceType == TrialBalanceType.BalanzaValorizadaComparativa ?
-                                                  _command.FinalPeriod.ToDate - entry.LastChangeDate :
-                                                  _command.InitialPeriod.ToDate - entry.LastChangeDate;
+          TimeSpan timeSpan = _command.InitialPeriod.ToDate - entry.LastChangeDate;
           int numberOfDays = timeSpan.Days + 1;
 
           entry.AverageBalance = ((numberOfDays * debtorCreditor) /
@@ -364,7 +361,9 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
 
     internal FixedList<TrialBalanceEntry> GetSummaryToParentEntries(
                                             FixedList<TrialBalanceEntry> postingEntries) {
+
       var returnedEntries = new List<TrialBalanceEntry>(postingEntries);
+
       foreach (var entry in postingEntries) {
         StandardAccount currentParent = entry.Account.GetParent();
 
@@ -597,7 +596,9 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
 
     internal FixedList<TrialBalanceEntry> RoundTrialBalanceEntries(
                                           FixedList<TrialBalanceEntry> postingEntries) {
+
       FixedList<TrialBalanceEntry> roundedEntries = new FixedList<TrialBalanceEntry>(postingEntries);
+
       foreach (var posting in roundedEntries) {
         posting.InitialBalance = Math.Round(posting.InitialBalance, 2);
         posting.Debit = Math.Round(posting.Debit, 2);
