@@ -52,8 +52,25 @@ namespace Empiria.FinancialAccounting.Tests.Balances {
       command.WithSubledgerAccount = false;
       command.WithAverageBalance = false;
       command.ShowCascadeBalances = false;
-      command.FromAccount = "1.05";
-      command.ToAccount = "1.05";
+
+      TrialBalanceDto trialBalance = _usecases.BuildTrialBalance(command);
+
+      Assert.NotNull(trialBalance);
+      Assert.Equal(command, trialBalance.Command);
+      Assert.NotEmpty(trialBalance.Entries);
+    }
+
+
+    [Fact]
+    public void Should_Build_Comparacion_Entre_Periodos() {
+      TrialBalanceCommand command = GetDefaultTrialBalanceCommand();
+
+      command.TrialBalanceType = TrialBalanceType.BalanzaValorizadaComparativa;
+      command.BalancesType = BalancesType.WithCurrentBalanceOrMovements;
+      command.UseDefaultValuation = true;
+      command.WithSubledgerAccount = true;
+      command.WithAverageBalance = false;
+      command.ShowCascadeBalances = false;
 
       TrialBalanceDto trialBalance = _usecases.BuildTrialBalance(command);
 
@@ -72,6 +89,9 @@ namespace Empiria.FinancialAccounting.Tests.Balances {
       command.ShowCascadeBalances = false;
       command.WithSubledgerAccount = false;
       command.UseDefaultValuation = false;
+      command.WithAverageBalance = true;
+      command.FromAccount = "1.05.01.01.05";
+      command.ToAccount = "1.05.01.01.05";
 
       TrialBalanceDto trialBalance = _usecases.BuildTrialBalance(command);
 
@@ -146,8 +166,8 @@ namespace Empiria.FinancialAccounting.Tests.Balances {
           //ValuateToCurrrencyUID = "01"
         },
         FinalPeriod = new TrialBalanceCommandPeriod() {
-          FromDate = new DateTime(2022, 03, 01),
-          ToDate = new DateTime(2022, 03, 31)
+          FromDate = new DateTime(2022, 02, 01),
+          ToDate = new DateTime(2022, 02, 28)
         }
 
       };
