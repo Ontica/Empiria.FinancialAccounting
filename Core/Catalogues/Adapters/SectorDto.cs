@@ -1,19 +1,20 @@
 ﻿/* Empiria Financial *****************************************************************************************
 *                                                                                                            *
-*  Module   : Accounts Chart                             Component : Interface adapters                      *
+*  Module   : Catalogues                                 Component : Interface adapters                      *
 *  Assembly : FinancialAccounting.Core.dll               Pattern   : Data Transfer Object                    *
-*  Type     : CurrencyDto                                License   : Please read LICENSE.txt file            *
+*  Type     : SectorDto                                  License   : Please read LICENSE.txt file            *
 *                                                                                                            *
-*  Summary  : Currency data transfer object.                                                                 *
+*  Summary  : Data transfer object for economic sectors.                                                     *
 *                                                                                                            *
 ************************* Copyright(c) La Vía Óntica SC, Ontica LLC and contributors. All rights reserved. **/
+using System;
 
 namespace Empiria.FinancialAccounting.Adapters {
 
-  /// <summary>Currency data transfer object.</summary>
-  public class CurrencyDto {
+  /// <summary>Data transfer object for economic sectors.</summary>
+  public class SectorDto {
 
-    internal CurrencyDto() {
+    internal SectorDto() {
       // no-op
     }
 
@@ -26,6 +27,7 @@ namespace Empiria.FinancialAccounting.Adapters {
       get; internal set;
     }
 
+
     public string FullName {
       get; internal set;
     }
@@ -35,16 +37,6 @@ namespace Empiria.FinancialAccounting.Adapters {
       get; internal set;
     }
 
-
-    public string Abbrev {
-      get; internal set;
-    }
-
-
-    public string Symbol {
-      get; internal set;
-    }
-
-  }  // class CurrencyDto
+  }  //class SectorDto
 
 }  // namespace Empiria.FinancialAccounting.Adapters
