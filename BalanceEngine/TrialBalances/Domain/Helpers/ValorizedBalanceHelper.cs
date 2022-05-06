@@ -1,0 +1,397 @@
+﻿/* Empiria Financial *****************************************************************************************
+*                                                                                                            *
+*  Module   : Balance Engine                             Component : Domain Layer                            *
+*  Assembly : FinancialAccounting.BalanceEngine.dll      Pattern   : Helper methods                          *
+*  Type     : ValorizedBalanceHelper                     License   : Please read LICENSE.txt file            *
+*                                                                                                            *
+*  Summary  : Helper methods to build valorized balances and related accounting information.                 *
+*                                                                                                            *
+************************* Copyright(c) La Vía Óntica SC, Ontica LLC and contributors. All rights reserved. **/
+using System;
+using System.Linq;
+using System.Collections.Generic;
+using Empiria.Collections;
+
+using Empiria.FinancialAccounting.BalanceEngine.Adapters;
+
+namespace Empiria.FinancialAccounting.BalanceEngine {
+
+  /// <summary>Helper methods to build valorized balances and related accounting information.</summary>
+  internal class ValorizedBalanceHelper {
+
+    private readonly TrialBalanceCommand _command;
+
+    internal ValorizedBalanceHelper(TrialBalanceCommand command) {
+      _command = command;
+    }
+
+
+    #region Public methods
+
+    internal List<TrialBalanceEntry> GetAccountList(
+                                    List<TrialBalanceEntry> trialBalance,
+                                    List<TrialBalanceEntry> summaryEntries) {
+      var helper = new TrialBalanceHelper(_command);
+
+      var hashAccountEntries = new EmpiriaHashTable<TrialBalanceEntry>();
+
+      foreach (var entry in trialBalance) {
+        helper.SummaryByEntry(hashAccountEntries, entry, entry.Account, Sector.Empty, entry.ItemType);
+      }
+      if (hashAccountEntries.ToFixedList().Count > 0) {
+        summaryEntries.AddRange(hashAccountEntries.ToFixedList().ToList());
+      }
+
+      return summaryEntries;
+    }
+
+
+    internal List<ValuedTrialBalanceEntry> GetExchangeRateByValuedEntry(
+                                          List<ValuedTrialBalanceEntry> mergeBalancesToToValuedBalances) {
+      var returnedValuedBalances = new List<ValuedTrialBalanceEntry>();
+
+      var headerAccounts = mergeBalancesToToValuedBalances
+                          .Where(a => a.ItemType == TrialBalanceItemType.Summary).ToList();
+
+      foreach (var header in headerAccounts) {
+        returnedValuedBalances.Add(header);
+        var foreignAccounts = mergeBalancesToToValuedBalances
+                              .Where(a => a.Account.Number == header.Account.Number &&
+                                          a.Currency.Code != header.Currency.Code).ToList();
+
+        decimal totalEquivalence = header.TotalEquivalence;
+
+        foreach (var foreign in foreignAccounts) {
+          foreign.ValuedExchangeRate = foreign.ExchangeRate / header.ExchangeRate;
+          foreign.TotalEquivalence = foreign.TotalBalance * foreign.ValuedExchangeRate;
+
+          returnedValuedBalances.Add(foreign);
+          totalEquivalence += foreign.TotalEquivalence;
+        }
+        var totalByAccount = GetTotalByAccount(header, totalEquivalence);
+        if (totalByAccount.Values.Count > 0) {
+          returnedValuedBalances.Add(totalByAccount.ToFixedList().FirstOrDefault());
+        }
+      }
+      return returnedValuedBalances;
+    }
+
+
+    internal EmpiriaHashTable<TrialBalanceEntry> GetEntriesWithItemType(
+                                                  List<TrialBalanceEntry> trialBalance) {
+
+      var helper = new TrialBalanceHelper(_command);
+
+      var hashAccountEntries = new EmpiriaHashTable<TrialBalanceEntry>();
+
+      foreach (var entry in trialBalance) {
+        TrialBalanceItemType itemType = entry.Currency.Code == "02" ?
+                                        TrialBalanceItemType.Summary :
+                                        TrialBalanceItemType.Entry;
+        if (entry.Level == 1 && entry.Sector.Code != "00") {
+          entry.InitialBalance = 0;
+          entry.Debit = 0;
+          entry.Credit = 0;
+          entry.CurrentBalance = 0;
+        }
+
+        helper.SummaryByEntry(hashAccountEntries, entry, entry.Account,
+                              Sector.Empty, itemType);
+      }
+
+      var hashReturnedEntries = GetAccountsForValuedBalances(hashAccountEntries);
+      
+      return hashReturnedEntries;
+    }
+
+
+    internal List<TrialBalanceEntry> GetSummaryByDebtorCreditorEntries(
+                                      List<TrialBalanceEntry> summaryEntries) {
+
+      var returnedEntries = new List<TrialBalanceEntry>(summaryEntries);
+
+      foreach (var debtor in summaryEntries.Where(a => a.DebtorCreditor == DebtorCreditorType.Deudora)) {
+        var creditor = summaryEntries.FirstOrDefault(a => a.Account.Number == debtor.Account.Number &&
+                                              a.Currency.Code == debtor.Currency.Code &&
+                                              a.Sector.Code == debtor.Sector.Code &&
+                                              a.DebtorCreditor == DebtorCreditorType.Acreedora);
+        if (creditor != null) {
+          debtor.InitialBalance = debtor.InitialBalance - creditor.InitialBalance;
+          debtor.Debit = debtor.Debit - creditor.Debit;
+          debtor.Credit = debtor.Credit - creditor.Credit;
+          debtor.CurrentBalance = debtor.CurrentBalance - creditor.CurrentBalance;
+          returnedEntries.Remove(creditor);
+        }
+      }
+
+      return returnedEntries;
+    }
+
+
+    internal List<ValuedTrialBalanceEntry> MergeTrialBalanceIntoValuedBalances(
+                                          FixedList<TrialBalanceEntry> getLedgerAccounts) {
+
+      List<ValuedTrialBalanceEntry> returnedValuedBalance = new List<ValuedTrialBalanceEntry>();
+      foreach (var entry in getLedgerAccounts) {
+        returnedValuedBalance.Add(entry.MapToValuedBalanceEntry());
+      }
+
+      return returnedValuedBalance;
+    }
+
+
+    internal List<TrialBalanceEntry> OrderingDollarizedBalance(
+                                      FixedList<TrialBalanceEntry> trialBalanceEntries) {
+      var orderingBalance = trialBalanceEntries.OrderBy(a => a.Account.Number).ToList();
+
+      return orderingBalance;
+    }
+
+
+    internal FixedList<TrialBalanceEntry> ValuateToExchangeRate(
+                                          FixedList<TrialBalanceEntry> entries,
+                                          TrialBalanceCommandPeriod commandPeriod) {
+
+      var exchangeRateType = ExchangeRateType.Dolarizacion;
+
+      commandPeriod.ExchangeRateTypeUID = exchangeRateType.UID;
+      commandPeriod.ValuateToCurrrencyUID = "01";
+      commandPeriod.ExchangeRateDate = commandPeriod.ToDate;
+
+      FixedList<ExchangeRate> exchangeRates = ExchangeRate.GetList(exchangeRateType, commandPeriod.ExchangeRateDate);
+
+      foreach (var entry in entries.Where(a => a.Currency.Code != "02")) {
+        var exchangeRate = exchangeRates.FirstOrDefault(a => a.FromCurrency.Code == commandPeriod.ValuateToCurrrencyUID &&
+                                                              a.ToCurrency.Code == entry.Currency.Code);
+
+        Assertion.AssertObject(exchangeRate, $"No hay tipo de cambio para la moneda {entry.Currency.FullName}.");
+
+        entry.ExchangeRate = exchangeRate.Value;
+      }
+      return entries;
+    }
+
+    #endregion Public methods
+
+
+    #region Private methods
+
+    
+    private EmpiriaHashTable<TrialBalanceEntry> GetEntriesForBalancesByCurrency(
+                                                EmpiriaHashTable<TrialBalanceEntry> hashAccountEntries) {
+
+      var returnedBalances = new EmpiriaHashTable<TrialBalanceEntry>();
+      var domesticEntries = hashAccountEntries.ToFixedList().Where(a => a.Currency.Code == "01").ToList();
+
+      foreach (var header in domesticEntries) {
+        var foreignCurrencies = hashAccountEntries.ToFixedList()
+                                .Where(a => a.Currency.Code != "01" &&
+                                            a.Account.Number == header.Account.Number)
+                                .OrderBy(a => a.Currency.Code).ToList();
+
+        string hash = $"{header.Account.Number}||{header.Currency.Code}||{header.ItemType}";
+        returnedBalances.Insert(hash, header);
+
+        foreach (var currencyAccount in foreignCurrencies) {
+          hash = $"{currencyAccount.Account.Number}||{currencyAccount.Currency.Code}";
+          returnedBalances.Insert(hash, currencyAccount);
+        }
+      }
+
+      var secondaryAccounts = hashAccountEntries.ToFixedList().Where(a => a.Currency.Code != "01").ToList();
+
+      foreach (var secondary in secondaryAccounts) {
+
+        var existPrimaryAccount = returnedBalances.ToFixedList()
+                    .Where(a => a.Account.Number == secondary.Account.Number && a.Currency.Code == "01")
+                    .FirstOrDefault();
+
+        if (existPrimaryAccount == null) {
+          string hash = $"{secondary.Account.Number}||{secondary.Currency.Code}";
+          returnedBalances.Insert(hash, secondary);
+        }
+      }
+
+      return returnedBalances;
+    }
+
+
+    private EmpiriaHashTable<TrialBalanceEntry> GetAccountsForValuedBalances(
+                                                EmpiriaHashTable<TrialBalanceEntry> hashAccountEntries) {
+      var returnedBalances = new EmpiriaHashTable<TrialBalanceEntry>();
+
+      GetEntriesWithDollarCurrency(returnedBalances, hashAccountEntries);
+
+      GetEntriesWithoutDollarCurrency(returnedBalances, hashAccountEntries);
+
+      return returnedBalances;
+    }
+
+
+    internal EmpiriaHashTable<TrialBalanceEntry> GetLedgerAccountsListByCurrency(
+                                                List<TrialBalanceEntry> summaryEntries) {
+      var helper = new TrialBalanceHelper(_command);
+
+      var ledgersList = summaryEntries.Where(a => (a.Level == 1 && a.Sector.Code == "00") ||
+                                                  (a.Level > 1)).ToList();
+
+      var hashAccountEntries = new EmpiriaHashTable<TrialBalanceEntry>();
+
+      foreach (var entry in ledgersList) {
+
+        helper.SummaryByEntry(hashAccountEntries, entry, entry.Account,
+                              Sector.Empty, entry.ItemType);
+      }
+
+      var hashReturnedEntries = GetEntriesForBalancesByCurrency(hashAccountEntries);
+      
+      return hashReturnedEntries;
+    }
+
+
+    private EmpiriaHashTable<ValuedTrialBalanceEntry> GetTotalByAccount(
+                                                ValuedTrialBalanceEntry header, decimal totalEquivalence) {
+
+      ValuedTrialBalanceEntry valuedEntry = TrialBalanceMapper.MapValuedTrialBalanceEntry(header);
+
+      valuedEntry.GroupName = "TOTAL POR CUENTA";
+      valuedEntry.TotalEquivalence = totalEquivalence;
+      valuedEntry.ValuedExchangeRate = 0;
+      valuedEntry.ItemType = TrialBalanceItemType.BalanceTotalCurrency;
+      string hash = $"{valuedEntry.GroupName}||{valuedEntry.Account}";
+
+      EmpiriaHashTable<ValuedTrialBalanceEntry> hashdEntry = new EmpiriaHashTable<ValuedTrialBalanceEntry>();
+
+      hashdEntry.Insert(hash, valuedEntry);
+
+      return hashdEntry;
+    }
+
+
+    private void GetEntriesWithoutDollarCurrency(EmpiriaHashTable<TrialBalanceEntry> returnedBalances,
+                                                   EmpiriaHashTable<TrialBalanceEntry> hashAccountEntries) {
+      var helper = new TrialBalanceHelper(_command);
+      var secondaryAccounts = hashAccountEntries.ToFixedList().Where(a => a.Currency.Code != "01" &&
+                                                                          a.Currency.Code != "02").ToList();
+      foreach (var secondary in secondaryAccounts) {
+        var existPrimaryAccount = returnedBalances.ToFixedList()
+                    .Where(a => a.Account.Number == secondary.Account.Number &&
+                                a.Currency.Code == "02")
+                    .FirstOrDefault();
+
+        if (existPrimaryAccount == null) {
+          TrialBalanceEntry entry = TrialBalanceMapper.MapToTrialBalanceEntry(secondary);
+          entry.Currency = Currency.Parse("02");
+          entry.InitialBalance = 0;
+          entry.Debit = 0;
+          entry.Credit = 0;
+          entry.CurrentBalance = 0;
+          entry.LastChangeDate = secondary.LastChangeDate;
+          entry.DebtorCreditor = secondary.DebtorCreditor;
+          helper.SummaryByEntry(returnedBalances, entry, entry.Account,
+                              Sector.Empty, TrialBalanceItemType.Summary);
+
+          string hash = $"{secondary.Account.Number}||{secondary.Currency.Code}";
+          returnedBalances.Insert(hash, secondary);
+        }
+      }
+    }
+
+
+    private void GetEntriesWithDollarCurrency(EmpiriaHashTable<TrialBalanceEntry> returnedBalances,
+                                                EmpiriaHashTable<TrialBalanceEntry> hashAccountEntries) {
+
+      var dollarEntries = hashAccountEntries.ToFixedList().Where(a => a.Currency.Code == "02").ToList();
+
+      foreach (var header in dollarEntries) {
+
+        var foreignEntries = hashAccountEntries.ToFixedList()
+                                .Where(a => a.Currency.Code != "02" &&
+                                            a.Account.Number == header.Account.Number)
+                                .OrderBy(a => a.Currency.Code).ToList();
+
+        string hash = $"{header.Account.Number}||{header.Currency.Code}||{header.ItemType}";
+        returnedBalances.Insert(hash, header);
+
+        foreach (var currencyAccount in foreignEntries) {
+          hash = $"{currencyAccount.Account.Number}||{currencyAccount.Currency.Code}";
+          returnedBalances.Insert(hash, currencyAccount);
+        }
+      }
+    }
+
+
+    private void MergeDomesticAndForeignCurrenciesByAccount(List<TrialBalanceByCurrencyEntry> returnedBalance,
+                                                 FixedList<TrialBalanceEntry> ledgerAccounts) {
+      foreach (var entry in returnedBalance) {
+        foreach (var ledger in ledgerAccounts.Where(a => a.Account.Number == entry.Account.Number)) {
+          if (ledger.Currency.Code == "02") {
+            entry.DollarBalance = ledger.CurrentBalance;
+          }
+          if (ledger.Currency.Code == "06") {
+            entry.YenBalance = ledger.CurrentBalance;
+          }
+          if (ledger.Currency.Code == "27") {
+            entry.EuroBalance = ledger.CurrentBalance;
+          }
+          if (ledger.Currency.Code == "44") {
+            entry.UdisBalance = ledger.CurrentBalance;
+          }
+        }
+      }
+    }
+
+
+    private void MergeOnlyForeignCurrenciesByAccount(List<TrialBalanceByCurrencyEntry> returnedValuedBalance,
+                                                     FixedList<TrialBalanceEntry> ledgerAccounts) {
+      foreach (var ledger in ledgerAccounts) {
+        ledger.ItemType = TrialBalanceItemType.Summary;
+
+        var entry = returnedValuedBalance.Where(a => a.Account.Number == ledger.Account.Number)
+                                         .FirstOrDefault();
+        if (entry == null) {
+          returnedValuedBalance.Add(ledger.MapToBalanceByCurrencyEntry());
+        } else {
+          if (ledger.Currency.Code == "01") {
+            entry.DomesticBalance = ledger.CurrentBalance;
+          }
+          if (ledger.Currency.Code == "02") {
+            entry.DollarBalance = ledger.CurrentBalance;
+          }
+          if (ledger.Currency.Code == "06") {
+            entry.YenBalance = ledger.CurrentBalance;
+          }
+          if (ledger.Currency.Code == "27") {
+            entry.EuroBalance = ledger.CurrentBalance;
+          }
+          if (ledger.Currency.Code == "44") {
+            entry.UdisBalance = ledger.CurrentBalance;
+          }
+        }
+      }
+    }
+
+
+    internal List<TrialBalanceByCurrencyEntry> MergeTrialBalanceIntoBalanceByCurrency(
+                                          FixedList<TrialBalanceEntry> ledgerAccounts) {
+
+      List<TrialBalanceByCurrencyEntry> returnedValuedBalance = new List<TrialBalanceByCurrencyEntry>();
+      foreach (var entry in ledgerAccounts.Where(a => a.Currency.Code == "01")) {
+        returnedValuedBalance.Add(entry.MapToBalanceByCurrencyEntry());
+      }
+
+      MergeDomesticAndForeignCurrenciesByAccount(returnedValuedBalance, ledgerAccounts);
+
+      MergeOnlyForeignCurrenciesByAccount(returnedValuedBalance, ledgerAccounts);
+
+      var returnedOrdering = returnedValuedBalance.OrderBy(a => a.Account.Number).ToList();
+
+      return returnedOrdering;
+    }
+
+
+    #endregion Private methods
+
+  } // class ValorizedBalanceHelper
+
+} // namespace Empiria.FinancialAccounting.BalanceEngine

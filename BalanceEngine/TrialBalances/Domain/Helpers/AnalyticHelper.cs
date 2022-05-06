@@ -220,36 +220,6 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
     }
 
 
-    private void SummaryToSectorZeroForPesosAndUdis(List<TrialBalanceEntry> entries) {
-      
-      if (_command.UseNewSectorizationModel) {
-
-        var entriesWithUdisCurrency = entries.Where(a => a.Level > 1 &&
-                                                    a.Currency.Code == "44" &&
-                                                    a.Sector.Code == "00")
-                                             .ToList();
-
-        foreach (var entryUdis in entriesWithUdisCurrency) {
-          var entry = entries.FirstOrDefault(a => a.Account.Number == entryUdis.Account.Number &&
-                                             a.Ledger.Number == entryUdis.Ledger.Number &&
-                                             a.Currency.Code == "01" &&
-                                             a.Sector.Code == "00" &&
-                                             a.DebtorCreditor == entryUdis.DebtorCreditor);
-
-          if (entry != null) {
-            entry.InitialBalance += entryUdis.InitialBalance;
-            entry.Debit += entryUdis.Debit;
-            entry.Credit += entryUdis.Credit;
-            entry.CurrentBalance += entryUdis.CurrentBalance;
-            entry.AverageBalance += entryUdis.AverageBalance;
-          } else {
-            entryUdis.IsSummaryForAnalytics = true;
-          }
-        }
-      }
-    }
-
-
     internal void GetSummaryToSectorZeroForPesosAndUdis(
                     List<TrialBalanceEntry> postingEntries,
                     List<TrialBalanceEntry> summaryEntries) {
@@ -611,6 +581,34 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
     }
 
 
+    private void SummaryToSectorZeroForPesosAndUdis(List<TrialBalanceEntry> entries) {
+
+      if (_command.UseNewSectorizationModel) {
+
+        var entriesWithUdisCurrency = entries.Where(a => a.Level > 1 &&
+                                                    a.Currency.Code == "44" &&
+                                                    a.Sector.Code == "00")
+                                             .ToList();
+
+        foreach (var entryUdis in entriesWithUdisCurrency) {
+          var entry = entries.FirstOrDefault(a => a.Account.Number == entryUdis.Account.Number &&
+                                             a.Ledger.Number == entryUdis.Ledger.Number &&
+                                             a.Currency.Code == "01" &&
+                                             a.Sector.Code == "00" &&
+                                             a.DebtorCreditor == entryUdis.DebtorCreditor);
+
+          if (entry != null) {
+            entry.InitialBalance += entryUdis.InitialBalance;
+            entry.Debit += entryUdis.Debit;
+            entry.Credit += entryUdis.Credit;
+            entry.CurrentBalance += entryUdis.CurrentBalance;
+            entry.AverageBalance += entryUdis.AverageBalance;
+          } else {
+            entryUdis.IsSummaryForAnalytics = true;
+          }
+        }
+      }
+    }
 
     #endregion Private methods
 
