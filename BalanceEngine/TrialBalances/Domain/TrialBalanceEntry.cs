@@ -208,25 +208,6 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
     }
 
 
-    internal void SumOrSubstractIfDebtorOrCreditor(TrialBalanceEntry entry) {
-      this.InitialBalance += entry.InitialBalance;
-      this.CurrentBalance += entry.CurrentBalance;
-      this.Credit += entry.Credit;
-      this.Debit += entry.Debit;
-
-      this.ExchangeRate = entry.ExchangeRate;
-      this.SecondExchangeRate = entry.SecondExchangeRate;
-      this.AverageBalance += entry.AverageBalance;
-      //if (entry.DebtorCreditor == DebtorCreditorType.Deudora) {
-      //  this.InitialBalance += entry.InitialBalance;
-      //  this.CurrentBalance += entry.CurrentBalance;
-      //} else {
-      //  this.InitialBalance -= entry.InitialBalance;
-      //  this.CurrentBalance -= entry.CurrentBalance;
-      //}
-    }
-
-
     internal AnalyticBalanceEntry MapToAnalyticBalanceEntry() {
       return new AnalyticBalanceEntry {
         Account = this.Account,
