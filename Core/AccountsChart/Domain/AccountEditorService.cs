@@ -120,7 +120,11 @@ namespace Empiria.FinancialAccounting {
       FixedList<string> actions = _actionsList.Select(x => x.Description)
                                               .ToFixedList();
 
-      Account account = _command.GetAccountToEdit();
+      Account account = Account.Empty;
+
+      if (_command.CommandType != AccountEditionCommandType.CreateAccount) {
+        account = _command.GetAccountToEdit();
+      }
 
       return new AccountEditionResult(_command, account, actions, _validator.Issues);
     }

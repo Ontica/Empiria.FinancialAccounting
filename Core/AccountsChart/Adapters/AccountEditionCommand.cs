@@ -15,7 +15,7 @@ namespace Empiria.FinancialAccounting.Adapters {
   /// <summary>Command object used for accounts edition.</summary>
   public class AccountEditionCommand {
 
-    public AccountEditionCommandType Type {
+    public AccountEditionCommandType CommandType {
       get; set;
     } = AccountEditionCommandType.Undefined;
 
@@ -89,16 +89,17 @@ namespace Empiria.FinancialAccounting.Adapters {
                             .ToFixedList();
     }
 
+
     static internal void EnsureValid(this AccountEditionCommand command) {
       Assertion.AssertObject(command.AccountsChartUID, "command.AccountsChartUID");
-      Assertion.Assert(command.Type != AccountEditionCommandType.Undefined, "command.Type");
+      Assertion.Assert(command.CommandType != AccountEditionCommandType.Undefined, "command.Type");
       Assertion.Assert(command.ApplicationDate != ExecutionServer.DateMinValue, "command.ApplicationDate");
 
-      if (command.Type != AccountEditionCommandType.CreateAccount) {
+      if (command.CommandType != AccountEditionCommandType.CreateAccount) {
         command.EnsureAccountToEditIsValid();
       }
 
-      switch (command.Type) {
+      switch (command.CommandType) {
         case AccountEditionCommandType.AddCurrencies:
         case AccountEditionCommandType.RemoveCurrencies:
           command.EnsureIsValidForCurrenciesEdition();
@@ -110,12 +111,40 @@ namespace Empiria.FinancialAccounting.Adapters {
           break;
 
         case AccountEditionCommandType.CreateAccount:
-        case AccountEditionCommandType.UpdateAccount:
-          Assertion.AssertObject(command.AccountFields, "command.AccountFields");
+          command.EnsureIsValidForCreateAccount();
+          break;
 
+        case AccountEditionCommandType.UpdateAccount:
+          command.EnsureIsValidForUpdateAccount();
+          break;
+
+        case AccountEditionCommandType.RemoveAccount:
+          command.EnsureIsValidForRemoveAccount();
           break;
       }
     }
+
+
+    static internal void EnsureAccountFieldsAreValid(this AccountEditionCommand command) {
+      Assertion.AssertObject(command.AccountFields, "command.AccountFields");
+      Assertion.AssertObject(command.AccountFields.AccountNumber, "command.AccountFields.AccountNumber");
+      Assertion.AssertObject(command.AccountFields.Name, "command.AccountFields.Name");
+
+      AccountsChart accountsChart = command.GetAccountsChart();
+
+      Assertion.Assert(accountsChart.IsAccountNumberFormatValid(command.AccountFields.AccountNumber),
+                       $"Account number '{command.AccountFields.AccountNumber}' has an invalid format.");
+
+      _ = command.AccountFields.GetAccountType();
+    }
+
+
+    static internal AccountType GetAccountType(this AccountFieldsDto fields) {
+      Assertion.AssertObject(fields.AccountTypeUID, "AccountTypeUID");
+
+      return AccountType.Parse(fields.AccountTypeUID);
+    }
+
 
     static private void EnsureAccountToEditIsValid(this AccountEditionCommand command) {
       AccountsChart accountsChart = command.GetAccountsChart();
@@ -124,13 +153,16 @@ namespace Empiria.FinancialAccounting.Adapters {
       Assertion.AssertObject(command.AccountUID, "command.AccountUID");
 
       Assertion.Assert(accountToEdit.AccountsChart.Equals(accountsChart),
-                       $"Account to be edited {accountToEdit.Number} does not belong to accounts chart {accountsChart.Name}.");
+                       $"Account to be edited {accountToEdit.Number} does not belong to " +
+                       $"the chart of accounts {accountsChart.Name}.");
 
-      Assertion.Assert(accountToEdit.EndDate == ExecutionServer.DateMaxValue,
+      Assertion.Assert(accountToEdit.EndDate == Account.MAX_END_DATE,
                        "The given accountUID corresponds to an historic account, so it can not be edited.");
 
-      Assertion.Assert(accountToEdit.StartDate < command.ApplicationDate,
-                       $"The given accountUID has a start date {accountToEdit.StartDate} which is , so it can not be edited.");
+      Assertion.Assert(accountToEdit.StartDate <= command.ApplicationDate,
+                       $"ApplicationDate parameter ({command.ApplicationDate.ToString("dd/MMM/yyyy")}) " +
+                       $"must be greater or equal than the given account's " +
+                       $"start date {accountToEdit.StartDate.ToString("dd/MMM/yyyy")}.");
 
     }
 
@@ -149,6 +181,19 @@ namespace Empiria.FinancialAccounting.Adapters {
     }
 
 
+    static private void EnsureIsValidForCreateAccount(this AccountEditionCommand command) {
+      Assertion.Assert(String.IsNullOrEmpty(command.AccountUID),
+                       "command.AccountUID was provided but it's not needed for a CreateAccount command.");
+
+      command.EnsureAccountFieldsAreValid();
+    }
+
+
+    static private void EnsureIsValidForRemoveAccount(this AccountEditionCommand command) {
+      throw new NotImplementedException();
+    }
+
+
     static private void EnsureIsValidForSectorsEdition(this AccountEditionCommand command) {
       Assertion.AssertObject(command.Sectors, "command.Sectors");
       Assertion.Assert(command.Sectors.Length > 0, "Sectors list must have one or more values.");
@@ -161,6 +206,12 @@ namespace Empiria.FinancialAccounting.Adapters {
         }
       }
     }
+
+
+    static private void EnsureIsValidForUpdateAccount(this AccountEditionCommand command) {
+      throw new NotImplementedException();
+    }
+
 
     #endregion Public methods
 

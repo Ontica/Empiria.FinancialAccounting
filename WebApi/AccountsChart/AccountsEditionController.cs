@@ -24,7 +24,7 @@ namespace Empiria.FinancialAccounting.WebApi {
     #region Web Apis
 
     [HttpPost]
-    [Route("v2/financial-accounting/accounts-charts/process-account-edition-command")]
+    [Route("v2/financial-accounting/accounts-charts/process-command")]
     public SingleObjectModel EditAccounts([FromBody] AccountEditionCommand command) {
 
       base.RequireBody(command);
@@ -32,7 +32,8 @@ namespace Empiria.FinancialAccounting.WebApi {
       using (var usecases = AccountEditionUseCases.UseCaseInteractor()) {
         AccountEditionResult result;
 
-        switch (command.Type) {
+        switch (command.CommandType) {
+
           case AccountEditionCommandType.AddCurrencies:
             result = usecases.AddCurrencies(command);
             break;
@@ -62,7 +63,7 @@ namespace Empiria.FinancialAccounting.WebApi {
             break;
 
           default:
-            throw Assertion.AssertNoReachThisCode($"Unhandled command type '{command.Type}'.");
+            throw Assertion.AssertNoReachThisCode($"Unhandled command type '{command.CommandType}'.");
 
         }
 
@@ -193,7 +194,7 @@ namespace Empiria.FinancialAccounting.WebApi {
                                 string accountUID) {
       base.RequireBody(command);
 
-      command.Type = type;
+      command.CommandType = type;
       command.AccountsChartUID = accountsChartUID;
       command.AccountUID = accountUID;
     }

@@ -4,13 +4,14 @@
 *  Assembly : FinancialAccounting.Core.dll               Pattern   : Command payload                         *
 *  Type     : AccountFieldsDto                           License   : Please read LICENSE.txt file            *
 *                                                                                                            *
-*  Summary  : Command payload used for accounts edition.                                                     *
+*  Summary  : Command payload used for account fields edition.                                               *
 *                                                                                                            *
 ************************* Copyright(c) La Vía Óntica SC, Ontica LLC and contributors. All rights reserved. **/
 using System;
 
 namespace Empiria.FinancialAccounting.Adapters {
 
+  /// <summary>Command payload used for account fields edition.</summary>
   public class AccountFieldsDto {
 
     public string AccountNumber {
@@ -35,7 +36,7 @@ namespace Empiria.FinancialAccounting.Adapters {
 
     public string AccountTypeUID {
       get; set;
-    }
+    } = string.Empty;
 
 
     public DebtorCreditorType DebtorCreditor {
