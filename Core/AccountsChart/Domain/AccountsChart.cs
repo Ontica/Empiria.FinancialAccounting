@@ -241,19 +241,27 @@ namespace Empiria.FinancialAccounting {
     }
 
 
+    public bool IsAccountNumberFormatValid(string accountNumber) {
+      var formatted = FormatAccountNumber(accountNumber);
+
+      return (formatted == accountNumber);
+    }
+
+
     public string FormatAccountNumber(string accountNumber) {
-      Assertion.AssertObject(accountNumber, "accountNumber");
+      string temp = EmpiriaString.TrimSpacesAndControl(accountNumber);
+
+      Assertion.AssertObject(temp, "accountNumber");
 
       char separator = this.MasterData.AccountNumberSeparator;
       string pattern = this.MasterData.AccountsPattern;
 
-      string temp = accountNumber.Replace(separator.ToString(), string.Empty);
-      temp = EmpiriaString.TrimAll(temp);
+      temp = temp.Replace(separator.ToString(), string.Empty);
 
       temp = temp.TrimEnd('0');
 
       if (temp.Length > EmpiriaString.CountOccurences(pattern, '0')) {
-        Assertion.AssertFail($"Number of placeholders in pattern ({pattern}) is less than " +
+        Assertion.AssertFail($"Number of placeholders in pattern ({pattern}) is less than the " +
                              $"number of characters in the input string ({accountNumber}).");
       } else {
         temp = temp.PadRight(EmpiriaString.CountOccurences(pattern, '0'), '0');
