@@ -90,8 +90,6 @@ namespace Empiria.FinancialAccounting.Tests.Balances {
       command.WithSubledgerAccount = false;
       command.UseDefaultValuation = false;
       command.WithAverageBalance = true;
-      command.FromAccount = "1.05.01.01.05";
-      command.ToAccount = "1.05.01.01.05";
 
       TrialBalanceDto trialBalance = _usecases.BuildTrialBalance(command);
 
