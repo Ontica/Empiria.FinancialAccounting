@@ -1,6 +1,6 @@
 ﻿/* Empiria Financial *****************************************************************************************
 *                                                                                                            *
-*  Module   : Catalogues Management                      Component : Data Access Layer                       *
+*  Module   : Catalogues                                 Component : Data Access Layer                       *
 *  Assembly : FinancialAccounting.Core.dll               Pattern   : Data Service                            *
 *  Type     : ParticipantData                            License   : Please read LICENSE.txt file            *
 *                                                                                                            *

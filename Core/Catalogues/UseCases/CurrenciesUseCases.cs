@@ -1,6 +1,6 @@
 ﻿/* Empiria Financial *****************************************************************************************
 *                                                                                                            *
-*  Module   : Exchange Rates                             Component : Use cases Layer                         *
+*  Module   : Catalogues                                 Component : Use cases Layer                         *
 *  Assembly : FinancialAccounting.Core.dll               Pattern   : Use case interactor class               *
 *  Type     : CurrenciesUseCases                         License   : Please read LICENSE.txt file            *
 *                                                                                                            *
@@ -8,13 +8,12 @@
 *                                                                                                            *
 ************************* Copyright(c) La Vía Óntica SC, Ontica LLC and contributors. All rights reserved. **/
 using System;
-using System.Collections.Generic;
 
 using Empiria.Services;
 
 namespace Empiria.FinancialAccounting.UseCases {
 
-  /// <summary>Use cases for exchange rates.</summary>
+  /// <summary>Use cases for currencies.</summary>
   public class CurrenciesUseCases : UseCase {
 
     #region Constructors and parsers

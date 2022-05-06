@@ -1,6 +1,6 @@
 ﻿/* Empiria Financial *****************************************************************************************
 *                                                                                                            *
-*  Module   : Exchange Rates                               Component : Web Api                               *
+*  Module   : Catalogues                                   Component : Web Api                               *
 *  Assembly : Empiria.FinancialAccounting.WebApi.dll       Pattern   : Controller                            *
 *  Type     : CurrenciesController                         License   : Please read LICENSE.txt file          *
 *                                                                                                            *
@@ -22,7 +22,7 @@ namespace Empiria.FinancialAccounting.WebApi {
     #region Web Api
 
     [HttpGet]
-    [Route("v2/financial-accounting/currencies")]
+    [Route("v2/financial-accounting/catalogues/currencies")]
     public CollectionModel GetCurrencies() {
 
       using (var usecases = CurrenciesUseCases.UseCaseInteractor()) {

@@ -1,18 +1,18 @@
 ﻿/* Empiria Financial *****************************************************************************************
 *                                                                                                            *
-*  Module   : Accounts Chart                             Component : Interface adapters                      *
+*  Module   : Catalogues                                 Component : Interface adapters                      *
 *  Assembly : FinancialAccounting.Core.dll               Pattern   : Mapper class                            *
-*  Type     : CataloguesMapper                           License   : Please read LICENSE.txt file            *
+*  Type     : CurrenciesMapper                           License   : Please read LICENSE.txt file            *
 *                                                                                                            *
-*  Summary  : Mapping methods for sectors and currencies.                                                    *
+*  Summary  : Mapping methods for currencies.                                                                *
 *                                                                                                            *
 ************************* Copyright(c) La Vía Óntica SC, Ontica LLC and contributors. All rights reserved. **/
 using System;
 
 namespace Empiria.FinancialAccounting.Adapters {
 
-  /// <summary>Mapping methods for sectors and currencies.</summary>
-  static internal class CataloguesMapper {
+  /// <summary>Mapping methods for currencies.</summary>
+  static internal class CurrenciesMapper {
 
 
     static internal FixedList<CurrencyDto> MapCurrencies(FixedList<Currency> list) {
@@ -31,21 +31,6 @@ namespace Empiria.FinancialAccounting.Adapters {
       };
     }
 
-
-    static internal FixedList<SectorDto> MapSectors(FixedList<Sector> list) {
-      return new FixedList<SectorDto>(list.Select((x) => MapSector(x)));
-    }
-
-
-    static internal SectorDto MapSector(Sector sector) {
-      return new SectorDto {
-        UID = sector.UID,
-        Name = sector.Name,
-        FullName = sector.FullName,
-        Code = sector.Code
-      };
-    }
-
-  }  // class CataloguesMapper
+  }  // class CurrenciesMapper
 
 }  // namespace Empiria.FinancialAccounting.Adapters

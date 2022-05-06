@@ -1,10 +1,10 @@
 ﻿/* Empiria Financial *****************************************************************************************
 *                                                                                                            *
-*  Module   : Catalogues Management                      Component : Domain Layer                            *
+*  Module   : Catalogues                                 Component : Domain Layer                            *
 *  Assembly : FinancialAccounting.Core.dll               Pattern   : Empiria Data Object                     *
 *  Type     : Participant                                License   : Please read LICENSE.txt file            *
 *                                                                                                            *
-*  Summary  : Holds data about an accounting system user.                                                    *
+*  Summary  : Legacy entity that describes an accounting system user or organization.                        *
 *                                                                                                            *
 ************************* Copyright(c) La Vía Óntica SC, Ontica LLC and contributors. All rights reserved. **/
 using System;
@@ -13,7 +13,7 @@ using Empiria.FinancialAccounting.Data;
 
 namespace Empiria.FinancialAccounting {
 
-  /// <summary>Holds data about an accounting system user.</summary>
+  /// <summary>Legacy entity that describes an accounting system user or organization.</summary>
   public class Participant : BaseObject {
 
     #region Constructors and parsers

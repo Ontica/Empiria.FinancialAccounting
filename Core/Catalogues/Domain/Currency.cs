@@ -1,6 +1,6 @@
 ﻿/* Empiria Financial *****************************************************************************************
 *                                                                                                            *
-*  Module   : Accounts Chart                             Component : Domain Layer                            *
+*  Module   : Catalogues                                 Component : Domain Layer                            *
 *  Assembly : FinancialAccounting.Core.dll               Pattern   : Empiria Data Object                     *
 *  Type     : Currency                                   License   : Please read LICENSE.txt file            *
 *                                                                                                            *

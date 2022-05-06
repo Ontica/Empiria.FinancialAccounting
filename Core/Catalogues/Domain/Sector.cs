@@ -1,17 +1,17 @@
 ﻿/* Empiria Financial *****************************************************************************************
 *                                                                                                            *
-*  Module   : Accounts Chart                             Component : Domain Layer                            *
+*  Module   : Catalogues                                 Component : Domain Layer                            *
 *  Assembly : FinancialAccounting.Core.dll               Pattern   : Empiria Data Object                     *
 *  Type     : Sector                                     License   : Please read LICENSE.txt file            *
 *                                                                                                            *
-*  Summary  : Holds data about an account's sector.                                                          *
+*  Summary  : Holds data about an ecomomic sector.                                                           *
 *                                                                                                            *
 ************************* Copyright(c) La Vía Óntica SC, Ontica LLC and contributors. All rights reserved. **/
 using System;
 
 namespace Empiria.FinancialAccounting {
 
-  /// <summary>Holds data about an account's sector.</summary>
+  /// <summary>Holds data about an economic sector.</summary>
   public class Sector : BaseObject, INamedEntity {
 
     #region Constructors and parsers

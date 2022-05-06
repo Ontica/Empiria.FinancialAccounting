@@ -35,8 +35,8 @@ namespace Empiria.FinancialAccounting.Adapters {
         AccountRoles = masterData.AccountRoles,
         AccountTypes = masterData.AccountTypes.MapToNamedEntityList(),
 
-        Currencies = CataloguesMapper.MapCurrencies(masterData.Currencies),
-        Sectors = CataloguesMapper.MapSectors(masterData.Sectors),
+        Currencies = CurrenciesMapper.MapCurrencies(masterData.Currencies),
+        Sectors = SectorsMapper.MapSectors(masterData.Sectors),
 
         Ledgers = LedgerMapper.Map(masterData.Ledgers)
       };

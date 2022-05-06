@@ -95,7 +95,7 @@ namespace Empiria.FinancialAccounting.Adapters {
     static public SectorRuleDto MapSectorRule(SectorRule x) {
       return new SectorRuleDto {
         UID = x.Sector.UID,
-        Sector = CataloguesMapper.MapSector(x.Sector),
+        Sector = SectorsMapper.MapSector(x.Sector),
         SectorRole = x.SectorRole,
         StartDate = x.StartDate,
         EndDate = x.EndDate,
