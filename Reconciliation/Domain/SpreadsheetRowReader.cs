@@ -2,7 +2,7 @@
 *                                                                                                            *
 *  Module   : Reconciliation Services                    Component : Domain Layer                            *
 *  Assembly : FinancialAccounting.Reconciliation.dll     Pattern   : Service provider                        *
-*  Type     : ExcelRowReader                             License   : Please read LICENSE.txt file            *
+*  Type     : SpreadsheetRowReader                       License   : Please read LICENSE.txt file            *
 *                                                                                                            *
 *  Summary  : Gets reconciliation data from a spreadsheet row.                                               *
 *                                                                                                            *
@@ -15,19 +15,22 @@ using Empiria.Office;
 namespace Empiria.FinancialAccounting.Reconciliation {
 
   /// <summary>Gets reconciliation data from a spreadsheet row.</summary>
-  sealed internal class ExcelRowReader {
+  sealed internal class SpreadsheetRowReader {
 
     private readonly Spreadsheet _spreadsheet;
-    private readonly int _row;
+    private readonly int _rowIndex;
 
-    public ExcelRowReader(Spreadsheet spreadsheet, int row) {
+    public SpreadsheetRowReader(Spreadsheet spreadsheet, int rowIndex) {
+      Assertion.AssertObject(spreadsheet, nameof(spreadsheet));
+      Assertion.Assert(rowIndex > 0, "rowIndex must be greater than zero.");
+
       _spreadsheet = spreadsheet;
-      _row = row;
+      _rowIndex = rowIndex;
     }
 
 
     public string GetAccountNumber() {
-      string value = GetStringValue("F");
+      string value = ReadStringValueFromColumn("F");
 
       value = EmpiriaString.TrimAll(value);
 
@@ -40,34 +43,24 @@ namespace Empiria.FinancialAccounting.Reconciliation {
 
 
     public decimal GetCredits() {
-      return GetDecimalValue("H");
+      return ReadDecimalValueFromColumn("H");
     }
 
 
     public string GetCurrencyCode() {
-      string value = GetStringValue("O");
+      string value = ReadStringValueFromColumn("O");
 
-      switch (value.ToUpperInvariant()) {
-        case "MXN":
-          return Currency.MXN.Code;
-        case "USD":
-          return Currency.USD.Code;
-        case "JPY":
-          return Currency.YEN.Code;
-        case "UDI":
-          return Currency.UDI.Code;
-        case "EUR":
-          return Currency.EUR.Code;
-        default:
-          throw Assertion.AssertNoReachThisCode(
-            $"El registro número {_row} tiene un valor de moneda que no reconozco: '{value}'."
-          );
-      }
+      var currency = Currency.TryParseByCurrencyCode(value.ToUpperInvariant());
+
+      Assertion.AssertObject(currency,
+                             $"El registro número {_rowIndex} tiene un valor de moneda que no reconozco: '{value}'.");
+
+      return currency.Code;
     }
 
 
     public decimal GetDebits() {
-      return GetDecimalValue("G");
+      return ReadDecimalValueFromColumn("G");
     }
 
 
@@ -79,14 +72,14 @@ namespace Empiria.FinancialAccounting.Reconciliation {
     public JsonObject GetExtensionData() {
       var json = new JsonObject();
 
-      json.Add("parte", GetStringValue("A"));
-      json.Add("mercado", GetStringValue("B"));
-      json.Add("claveoper", GetStringValue("C"));
-      json.Add("fecha", GetStringValue("D"));
-      json.Add("consecutivo", GetStringValue("E"));
-      json.Add("submov", GetStringValue("J"));
-      json.Add("emisor", GetStringValue("L"));
-      json.Add("numcontrato", GetStringValue("M"));
+      json.Add("parte",       ReadStringValueFromColumn("A"));
+      json.Add("mercado",     ReadStringValueFromColumn("B"));
+      json.Add("claveoper",   ReadStringValueFromColumn("C"));
+      json.Add("fecha",       ReadStringValueFromColumn("D"));
+      json.Add("consecutivo", ReadStringValueFromColumn("E"));
+      json.Add("submov",      ReadStringValueFromColumn("J"));
+      json.Add("emisor",      ReadStringValueFromColumn("L"));
+      json.Add("numcontrato", ReadStringValueFromColumn("M"));
 
       return json;
     }
@@ -108,7 +101,7 @@ namespace Empiria.FinancialAccounting.Reconciliation {
 
 
     public string GetSubledgerAccountNumber() {
-      string value = GetStringValue("F");
+      string value = ReadStringValueFromColumn("F");
 
       if (value.Contains(" ")) {
         value = value.Split(' ')[1];
@@ -119,36 +112,36 @@ namespace Empiria.FinancialAccounting.Reconciliation {
 
 
     public string GetTransactionSlip() {
-      return GetStringValue("D") + "-" + GetStringValue("E");
+      return ReadStringValueFromColumn("D") + "-" + ReadStringValueFromColumn("E");
     }
 
 
     public string GetUniqueKey() {
-      string value = GetStringValue("C") + "-" +
-                     GetStringValue("D") + "-" +
-                     GetStringValue("E") + "-" +
-                     GetStringValue("I") + "-" +
-                     GetStringValue("J") + "-" +
-                     GetStringValue("M") + "-" +
-                     GetStringValue("N");
+      string value = ReadStringValueFromColumn("C") + "-" +
+                     ReadStringValueFromColumn("D") + "-" +
+                     ReadStringValueFromColumn("E") + "-" +
+                     ReadStringValueFromColumn("I") + "-" +
+                     ReadStringValueFromColumn("J") + "-" +
+                     ReadStringValueFromColumn("M") + "-" +
+                     ReadStringValueFromColumn("N");
 
       return value;
     }
 
     #region Helpers
 
-    private decimal GetDecimalValue(string column) {
-      return _spreadsheet.ReadCellValue<decimal>($"{column}{_row}");
+    private decimal ReadDecimalValueFromColumn(string column) {
+      return _spreadsheet.ReadCellValue<decimal>($"{column}{_rowIndex}");
     }
 
-    private string GetStringValue(string column) {
-      var value = _spreadsheet.ReadCellValue<string>($"{column}{_row}");
+    private string ReadStringValueFromColumn(string column) {
+      var value = _spreadsheet.ReadCellValue<string>($"{column}{_rowIndex}");
 
       return EmpiriaString.TrimAll(value);
     }
 
     #endregion Helpers
 
-  }  // class ExcelRowReader
+  }  // class SpreadsheetRowReader
 
 } // namespace Empiria.FinancialAccounting.Reconciliation

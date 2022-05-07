@@ -2,7 +2,7 @@
 *                                                                                                            *
 *  Module   : Reconciliation Services                    Component : Domain Layer                            *
 *  Assembly : FinancialAccounting.Reconciliation.dll     Pattern   : Service provider                        *
-*  Type     : ReconciliationResultEntryListBuilder       License   : Please read LICENSE.txt file            *
+*  Type     : ReconciliationResultBuilder                License   : Please read LICENSE.txt file            *
 *                                                                                                            *
 *  Summary  : Builds a list with reconciliation results.                                                     *
 *                                                                                                            *
@@ -17,15 +17,16 @@ using Empiria.FinancialAccounting.Reconciliation.Adapters;
 namespace Empiria.FinancialAccounting.Reconciliation {
 
   /// <summary>Builds a list with reconciliation results.</summary>
-  internal class ReconciliationResultEntryListBuilder {
+  internal class ReconciliationResultBuilder {
 
-    private readonly FixedList<OperationalEntryDto> _operationalEntries;
-    private readonly FixedList<TrialBalanceEntryDto>   _balances;
-    private readonly List<ReconciliationResultEntry>   _resultsList;
+    private readonly FixedList<OperationalEntryDto>  _operationalEntries;
+    private readonly FixedList<TrialBalanceEntryDto> _balances;
+    private readonly List<ReconciliationResultEntry> _resultsList;
 
-    internal ReconciliationResultEntryListBuilder(FixedList<OperationalEntryDto> operationalEntries,
-                                                  FixedList<TrialBalanceEntryDto> balances,
-                                                  int listCapacity = 1024) {
+    internal ReconciliationResultBuilder(FixedList<OperationalEntryDto> operationalEntries,
+                                         FixedList<TrialBalanceEntryDto> balances,
+                                         int listCapacity = 1024) {
+
       Assertion.AssertObject(operationalEntries, nameof(operationalEntries));
       Assertion.AssertObject(balances, nameof(balances));
 
@@ -50,8 +51,8 @@ namespace Empiria.FinancialAccounting.Reconciliation {
 
     internal FixedList<ReconciliationResultEntry> ToFixedList() {
       var sorted = _resultsList.OrderBy(x => x.CurrencyCode)
-                               .ThenBy(x => x.AccountNumber)
-                               .ThenBy(x => x.SectorCode);
+                                .ThenBy(x => x.AccountNumber)
+                                .ThenBy(x => x.SectorCode);
 
       return new FixedList<ReconciliationResultEntry>(sorted);
     }
@@ -172,6 +173,6 @@ namespace Empiria.FinancialAccounting.Reconciliation {
 
     #endregion Helpers
 
-  }  // class ReconciliationResultEntryListBuilder
+  }  // class ReconciliationResultBuilder
 
 }  // namespace Empiria.FinancialAccounting.Reconciliation

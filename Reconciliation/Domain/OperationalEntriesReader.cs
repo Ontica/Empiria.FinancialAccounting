@@ -41,11 +41,13 @@ namespace Empiria.FinancialAccounting.Reconciliation {
       }
     }
 
+
     internal FixedList<OperationalEntryDto> GetEntries() {
       Spreadsheet spreadsheet = OpenSpreadsheet();
 
       return ReadEntries(spreadsheet);
     }
+
 
     #region Private methods
 
@@ -67,16 +69,16 @@ namespace Empiria.FinancialAccounting.Reconciliation {
 
 
     private FixedList<OperationalEntryDto> ReadEntries(Spreadsheet spreadsheet) {
-      int row = 2;
+      int rowIndex = 2;
 
       var entriesList = new List<OperationalEntryDto>(4096);
 
-      while (spreadsheet.HasValue($"A{row}")) {
-        OperationalEntryDto entry = ReadOperationalEntry(spreadsheet, row);
+      while (spreadsheet.HasValue($"A{rowIndex}")) {
+        OperationalEntryDto entry = ReadOperationalEntry(spreadsheet, rowIndex);
 
         entriesList.Add(entry);
 
-        row++;
+        rowIndex++;
       }
 
       EmpiriaLog.Info(
@@ -87,23 +89,23 @@ namespace Empiria.FinancialAccounting.Reconciliation {
     }
 
 
-    private OperationalEntryDto ReadOperationalEntry(Spreadsheet spreadsheet, int row) {
-      var helper = new ExcelRowReader(spreadsheet, row);
+    private OperationalEntryDto ReadOperationalEntry(Spreadsheet spreadsheet, int rowIndex) {
+      var spreadsheetRow = new SpreadsheetRowReader(spreadsheet, rowIndex);
 
       return new OperationalEntryDto {
-        UniqueKey = helper.GetUniqueKey(),
-        LedgerNumber = helper.GetLedger(),
-        AccountNumber = helper.GetAccountNumber(),
-        SubledgerAccountNumber = helper.GetSubledgerAccountNumber(),
-        CurrencyCode = helper.GetCurrencyCode(),
-        SectorCode = helper.GetSectorCode(),
-        TransactionSlip = helper.GetTransactionSlip(),
-        ExtData = helper.GetExtensionData(),
-        InitialBalance = helper.GetInitialBalance(),
-        Debits = helper.GetDebits(),
-        Credits = helper.GetCredits(),
-        EndBalance = helper.GetEndBalance(),
-        Position = row
+        UniqueKey               = spreadsheetRow.GetUniqueKey(),
+        LedgerNumber            = spreadsheetRow.GetLedger(),
+        AccountNumber           = spreadsheetRow.GetAccountNumber(),
+        SubledgerAccountNumber  = spreadsheetRow.GetSubledgerAccountNumber(),
+        CurrencyCode            = spreadsheetRow.GetCurrencyCode(),
+        SectorCode              = spreadsheetRow.GetSectorCode(),
+        TransactionSlip         = spreadsheetRow.GetTransactionSlip(),
+        ExtData                 = spreadsheetRow.GetExtensionData(),
+        InitialBalance          = spreadsheetRow.GetInitialBalance(),
+        Debits                  = spreadsheetRow.GetDebits(),
+        Credits                 = spreadsheetRow.GetCredits(),
+        EndBalance              = spreadsheetRow.GetEndBalance(),
+        Position                = rowIndex
       };
     }
 

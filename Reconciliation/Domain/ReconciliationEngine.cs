@@ -9,10 +9,13 @@
 ************************* Copyright(c) La Vía Óntica SC, Ontica LLC and contributors. All rights reserved. **/
 using System;
 using System.Collections.Generic;
+
 using Empiria.FinancialAccounting.BalanceEngine;
 using Empiria.FinancialAccounting.BalanceEngine.Adapters;
 using Empiria.FinancialAccounting.BalanceEngine.UseCases;
+
 using Empiria.FinancialAccounting.Datasets;
+
 using Empiria.FinancialAccounting.Reconciliation.Adapters;
 
 namespace Empiria.FinancialAccounting.Reconciliation {
@@ -35,53 +38,53 @@ namespace Empiria.FinancialAccounting.Reconciliation {
 
     #region Methods
 
+
     internal ReconciliationResult Reconciliate() {
+
       FixedList<Dataset> operationalDatasets = GetOperationalDatasets();
 
-      FixedList<OperationalEntryDto> operationalEntries = GetOperationalEntries(operationalDatasets);
+      FixedList<OperationalEntryDto> operationalData = GetOperationalData(operationalDatasets);
 
-      FixedList<AccountsListItem> accountsListItems = GetReconciliationAccountsListItems();
+      FixedList<AccountsListItem> involvedAccounts = GetAccountsToReconciliate();
 
-      FixedList<TrialBalanceEntryDto> balances = GetBalances();
+      FixedList<TrialBalanceEntryDto> filteredBalances = GetFilteredBalancesForAccountstoReconciliate(involvedAccounts);
 
-      FixedList<ReconciliationResultEntry> resultEntries = ReconciliateAccounts(accountsListItems,
-                                                                                operationalEntries,
-                                                                                balances);
 
-      return BuildReconciliationResult(operationalDatasets, resultEntries);
+      FixedList<ReconciliationResultEntry> reconciliationResult = PerformReconciliation(involvedAccounts,
+                                                                                        operationalData,
+                                                                                        filteredBalances);
+
+      return MapToReconciliationResult(operationalDatasets, reconciliationResult);
     }
 
 
-    private FixedList<ReconciliationResultEntry> ReconciliateAccounts(FixedList<AccountsListItem> accountsListItems,
-                                                                      FixedList<OperationalEntryDto> operationalEntries,
-                                                                      FixedList<TrialBalanceEntryDto> balances) {
+    private FixedList<ReconciliationResultEntry> PerformReconciliation(FixedList<AccountsListItem> involvedAccounts,
+                                                                       FixedList<OperationalEntryDto> operationalData,
+                                                                       FixedList<TrialBalanceEntryDto> balances) {
 
-      FixedList<TrialBalanceEntryDto> filteredBalances =
-            balances.FindAll(x => accountsListItems.Exists(y => y.AccountNumber == x.AccountNumber));
+      int ESTIMATED_LIST_SIZE = 2 * involvedAccounts.Count;
 
-      var entriesListBuilder = new ReconciliationResultEntryListBuilder(operationalEntries,
-                                                                        filteredBalances,
-                                                                        2 * accountsListItems.Count);
+      var resultBuilder = new ReconciliationResultBuilder(operationalData, balances, ESTIMATED_LIST_SIZE);
 
-      foreach (var account in accountsListItems) {
-        entriesListBuilder.InsertEntriesFor(account);
+      foreach (var account in involvedAccounts) {
+        resultBuilder.InsertEntriesFor(account);
       }
 
-      return entriesListBuilder.ToFixedList();
+      return resultBuilder.ToFixedList();
     }
 
+
+    private ReconciliationResult MapToReconciliationResult(FixedList<Dataset> operationalDatasets,
+                                                           FixedList<ReconciliationResultEntry> reconciliationResult) {
+      return new ReconciliationResult(_command, operationalDatasets, reconciliationResult);
+    }
 
     #endregion Methods
 
     #region Helpers
 
-    private ReconciliationResult BuildReconciliationResult(FixedList<Dataset> operationalDatasets,
-                                                           FixedList<ReconciliationResultEntry> reconciliationEntries) {
-      return new ReconciliationResult(_command, operationalDatasets, reconciliationEntries);
-    }
 
-
-    private FixedList<AccountsListItem> GetReconciliationAccountsListItems() {
+    private FixedList<AccountsListItem> GetAccountsToReconciliate() {
       AccountsList list = _reconciliationType.AccountsList;
 
       FixedList<AccountsListItem> items = list.GetItems();
@@ -94,8 +97,10 @@ namespace Empiria.FinancialAccounting.Reconciliation {
     }
 
 
-    private FixedList<OperationalEntryDto> GetOperationalEntries(FixedList<Dataset> datasets) {
-      var list = new List<OperationalEntryDto>(3 * 4096);
+    private FixedList<OperationalEntryDto> GetOperationalData(FixedList<Dataset> datasets) {
+      int ESTIMATED_LIST_SIZE = datasets.Count * 4096;
+
+      var list = new List<OperationalEntryDto>(ESTIMATED_LIST_SIZE);
 
       foreach (var dataset in datasets) {
         var reader = new OperationalEntriesReader(dataset);
@@ -113,41 +118,57 @@ namespace Empiria.FinancialAccounting.Reconciliation {
       FixedList<Dataset> list = _reconciliationType.GetDatasetsList(_command.Date);
 
       Assertion.Assert(list.Count > 0,
-        $"No se han cargado conjuntos o archivos de datos para " +
-        $"la conciliación del día {_command.Date.ToString("dd/MMM/yyyy")}.");
+            $"No se han cargado conjuntos o archivos de datos para " +
+            $"la conciliación del día {_command.Date.ToString("dd/MMM/yyyy")}.");
 
       return list;
     }
 
 
-    private FixedList<TrialBalanceEntryDto> GetBalances() {
-      TrialBalanceCommand trialBalanceCommand = DetermineTrialBalanceCommand();
+    private FixedList<TrialBalanceEntryDto> GetFilteredBalancesForAccountstoReconciliate(FixedList<AccountsListItem> accountstoReconciliate) {
+      FixedList<TrialBalanceEntryDto> allBalances = GetAllBalances(_command.Date);
 
-      using (var usecases = TrialBalanceUseCases.UseCaseInteractor()) {
-        TrialBalanceDto trialBalance = usecases.BuildTrialBalance(trialBalanceCommand);
-
-        IEnumerable<TrialBalanceEntryDto> balances = trialBalance.Entries.Select(x => (TrialBalanceEntryDto) x);
-
-        return new FixedList<TrialBalanceEntryDto>(balances);
-      }
-    }
+      return allBalances.FindAll(x => accountstoReconciliate.Exists(y => y.AccountNumber == x.AccountNumber));
 
 
-    private TrialBalanceCommand DetermineTrialBalanceCommand() {
-      var ledger = AccountsChart.IFRS.GetLedger("09");
+      #region Local functions
 
-      return new TrialBalanceCommand {
-        TrialBalanceType = TrialBalanceType.Balanza,
-        AccountsChartUID = AccountsChart.IFRS.UID,
-        BalancesType = BalancesType.WithMovements,
-        ShowCascadeBalances = true,
-        Ledgers = new string[] { ledger.UID },
-        InitialPeriod = new TrialBalanceCommandPeriod {
-          FromDate = _command.Date,
-          ToDate = _command.Date
+      FixedList<TrialBalanceEntryDto> GetAllBalances(DateTime reconciliationDate) {
+        TrialBalanceCommand trialBalanceCommand = DetermineTrialBalanceCommand(reconciliationDate);
+
+        using (var usecases = TrialBalanceUseCases.UseCaseInteractor()) {
+          TrialBalanceDto trialBalance = usecases.BuildTrialBalance(trialBalanceCommand);
+
+          IEnumerable<TrialBalanceEntryDto> balances = trialBalance.Entries.Select(x => (TrialBalanceEntryDto) x);
+
+          return new FixedList<TrialBalanceEntryDto>(balances);
         }
-      };
-    }
+
+      }  // GetAllBalances()
+
+
+      TrialBalanceCommand DetermineTrialBalanceCommand(DateTime reconciliationDate) {
+        const string RECONCILIATION_LEDGER_UID = "09";
+
+        var ledger = AccountsChart.IFRS.GetLedger(RECONCILIATION_LEDGER_UID);
+
+        return new TrialBalanceCommand {
+          TrialBalanceType = TrialBalanceType.Balanza,
+          AccountsChartUID = AccountsChart.IFRS.UID,
+          BalancesType = BalancesType.WithMovements,
+          ShowCascadeBalances = true,
+          Ledgers = new string[] { ledger.UID },
+          InitialPeriod = new TrialBalanceCommandPeriod {
+            FromDate = reconciliationDate,
+            ToDate = reconciliationDate
+          }
+        };
+
+      }  // DetermineTrialBalanceCommand()
+
+      #endregion Local functions
+
+    }  // GetFilteredBalancesForAccountstoReconciliate()
 
     #endregion Helpers
 

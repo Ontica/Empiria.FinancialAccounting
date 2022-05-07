@@ -31,6 +31,24 @@ namespace Empiria.FinancialAccounting {
     }
 
 
+    static public Currency TryParseByCurrencyCode(string currencyCode) {
+      switch (currencyCode.ToUpperInvariant()) {
+        case "MXN":
+          return Currency.MXN;
+        case "USD":
+          return Currency.USD;
+        case "JPY":
+          return Currency.YEN;
+        case "UDI":
+          return Currency.UDI;
+        case "EUR":
+          return Currency.EUR;
+        default:
+          return null;
+      }
+    }
+
+
     static public FixedList<Currency> GetList() {
       return BaseObject.GetList<Currency>("CURRENCY_ID <> -1", "O_ID_MONEDA")
                        .ToFixedList();
