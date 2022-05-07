@@ -133,23 +133,7 @@ namespace Empiria.FinancialAccounting.FinancialReports {
 
       foreach (var breakdownItem in breakdown) {
 
-        ReportEntryTotals breakdownTotals;
-
-        if (breakdownItem.GroupingRuleItem.Type == GroupingRuleItemType.Agrupation) {
-
-          breakdownTotals = ProcessGroupingRule(breakdownItem.GroupingRuleItem.Reference);
-
-        } else if (breakdownItem.GroupingRuleItem.Type == GroupingRuleItemType.Account) {
-
-          breakdownTotals = ProcessAccount(breakdownItem.GroupingRuleItem);
-
-        } else if (breakdownItem.GroupingRuleItem.Type == GroupingRuleItemType.ExternalVariable) {
-
-          breakdownTotals = ProcessFixedValue(breakdownItem.GroupingRuleItem);
-
-        } else {
-          throw Assertion.AssertNoReachThisCode();
-        }
+        ReportEntryTotals breakdownTotals = CalculateBreakdown(breakdownItem.GroupingRuleItem);
 
         if (FinancialReportType.RoundDecimals) {
           breakdownTotals = breakdownTotals.Round();
@@ -167,13 +151,33 @@ namespace Empiria.FinancialAccounting.FinancialReports {
             break;
 
           case OperatorType.AbsoluteValue:
-            granTotal = breakdownTotals.AbsoluteValue();
+            granTotal = granTotal.Sum(breakdownTotals, breakdownItem.GroupingRuleItem.Qualification)
+                                 .AbsoluteValue();
             break;
+
         } // switch
 
       } // foreach
 
       return granTotal;
+    }
+
+
+    private ReportEntryTotals CalculateBreakdown(GroupingRuleItem groupingRuleItem) {
+      switch (groupingRuleItem.Type) {
+
+        case GroupingRuleItemType.Agrupation:
+          return ProcessGroupingRule(groupingRuleItem.Reference);
+
+        case GroupingRuleItemType.Account:
+          return ProcessAccount(groupingRuleItem);
+
+        case GroupingRuleItemType.ExternalVariable:
+          return ProcessFixedValue(groupingRuleItem);
+
+        default:
+          throw Assertion.AssertNoReachThisCode();
+      }
     }
 
 
@@ -213,62 +217,112 @@ namespace Empiria.FinancialAccounting.FinancialReports {
       var totals = CreateReportEntryTotalsObject();
 
       foreach (var groupingRuleItem in groupingRule.Items) {
-        if (groupingRuleItem.Type == GroupingRuleItemType.Agrupation &&
-            groupingRuleItem.Operator == OperatorType.Add) {
 
-          totals = totals.Sum(ProcessGroupingRule(groupingRuleItem.Reference),
-                              groupingRuleItem.Qualification);
+        switch (groupingRuleItem.Type) {
+          case GroupingRuleItemType.Agrupation:
 
-        } else if (groupingRuleItem.Type == GroupingRuleItemType.Agrupation &&
-                   groupingRuleItem.Operator == OperatorType.Substract) {
+            totals = CalculateAgrupationTotals(groupingRuleItem, totals);
+            break;
 
-          totals = totals.Substract(ProcessGroupingRule(groupingRuleItem.Reference),
-                                    groupingRuleItem.Qualification);
+          case GroupingRuleItemType.Account:
+            totals = CalculateAccountTotals(groupingRuleItem, totals);
+            break;
 
-        } else if (groupingRuleItem.Type == GroupingRuleItemType.Agrupation &&
-                   groupingRuleItem.Operator == OperatorType.AbsoluteValue) {
+          case GroupingRuleItemType.ExternalVariable:
+            totals = CalculateExternalVariableTotals(groupingRuleItem, totals);
+            break;
 
-          totals = totals.Sum(ProcessGroupingRule(groupingRuleItem.Reference),
-                              groupingRuleItem.Qualification);
+        }
 
-          totals = totals.AbsoluteValue();
-
-        } else if (groupingRuleItem.Type == GroupingRuleItemType.Account &&
-                   groupingRuleItem.Operator == OperatorType.Add) {
-
-          totals = totals.Sum(ProcessAccount(groupingRuleItem),
-                              groupingRuleItem.Qualification);
-
-        } else if (groupingRuleItem.Type == GroupingRuleItemType.Account &&
-                   groupingRuleItem.Operator == OperatorType.Substract) {
-
-          totals = totals.Substract(ProcessAccount(groupingRuleItem),
-                                    groupingRuleItem.Qualification);
-
-        } else if (groupingRuleItem.Type == GroupingRuleItemType.Account &&
-                   groupingRuleItem.Operator == OperatorType.AbsoluteValue) {
-
-          totals = totals.Sum(ProcessAccount(groupingRuleItem),
-                              groupingRuleItem.Qualification);
-
-          totals = totals.AbsoluteValue();
-
-        } else if (groupingRuleItem.Type == GroupingRuleItemType.ExternalVariable &&
-                   groupingRuleItem.Operator == OperatorType.Add) {
-
-          totals = totals.Sum(ProcessFixedValue(groupingRuleItem), groupingRuleItem.Qualification);
-
-        } else if (groupingRuleItem.Type == GroupingRuleItemType.ExternalVariable &&
-                   groupingRuleItem.Operator == OperatorType.AbsoluteValue) {
-
-          totals = totals.Sum(ProcessFixedValue(groupingRuleItem), groupingRuleItem.Qualification);
-
-          totals = totals.AbsoluteValue();
-        }  // if
       }  // foreach
+
       return totals;
     }
 
+
+    private ReportEntryTotals CalculateAccountTotals(GroupingRuleItem groupingRuleItem, ReportEntryTotals totals) {
+      Assertion.Assert(groupingRuleItem.Type == GroupingRuleItemType.Account, "Invalid groupingRuleItem.Type");
+
+      switch (groupingRuleItem.Operator) {
+
+        case OperatorType.Add:
+
+          return totals.Sum(ProcessAccount(groupingRuleItem),
+                            groupingRuleItem.Qualification);
+
+        case OperatorType.Substract:
+
+          return totals.Substract(ProcessAccount(groupingRuleItem),
+                                  groupingRuleItem.Qualification);
+
+        case OperatorType.AbsoluteValue:
+
+          return totals.Sum(ProcessAccount(groupingRuleItem),
+                            groupingRuleItem.Qualification)
+                       .AbsoluteValue();
+
+        default:
+          throw Assertion.AssertNoReachThisCode($"Unhandled operator '{groupingRuleItem.Operator}'.");
+      }
+
+    }
+
+
+    private ReportEntryTotals CalculateAgrupationTotals(GroupingRuleItem groupingRuleItem, ReportEntryTotals totals) {
+      Assertion.Assert(groupingRuleItem.Type == GroupingRuleItemType.Agrupation, "Invalid groupingRuleItem.Type");
+
+      switch (groupingRuleItem.Operator) {
+
+        case OperatorType.Add:
+
+          return totals.Sum(ProcessGroupingRule(groupingRuleItem.Reference),
+                            groupingRuleItem.Qualification);
+
+        case OperatorType.Substract:
+
+          return totals.Substract(ProcessGroupingRule(groupingRuleItem.Reference),
+                                  groupingRuleItem.Qualification);
+
+        case OperatorType.AbsoluteValue:
+
+          return totals.Sum(ProcessGroupingRule(groupingRuleItem.Reference),
+                            groupingRuleItem.Qualification)
+                       .AbsoluteValue();
+
+        default:
+          throw Assertion.AssertNoReachThisCode($"Unhandled operator '{groupingRuleItem.Operator}'.");
+
+      }
+
+    }
+
+
+    private ReportEntryTotals CalculateExternalVariableTotals(GroupingRuleItem groupingRuleItem, ReportEntryTotals totals) {
+      Assertion.Assert(groupingRuleItem.Type == GroupingRuleItemType.ExternalVariable, "Invalid groupingRuleItem.Type");
+
+      switch (groupingRuleItem.Operator) {
+
+        case OperatorType.Add:
+
+          return totals.Sum(ProcessFixedValue(groupingRuleItem),
+                            groupingRuleItem.Qualification);
+
+        case OperatorType.Substract:
+
+          return totals.Substract(ProcessFixedValue(groupingRuleItem),
+                                  groupingRuleItem.Qualification);
+
+        case OperatorType.AbsoluteValue:
+
+          return totals.Sum(ProcessFixedValue(groupingRuleItem),
+                            groupingRuleItem.Qualification)
+                       .AbsoluteValue();
+
+        default:
+          throw Assertion.AssertNoReachThisCode($"Unhandled operator '{groupingRuleItem.Operator}'.");
+      }
+
+    }
 
     #endregion Private methods
 
