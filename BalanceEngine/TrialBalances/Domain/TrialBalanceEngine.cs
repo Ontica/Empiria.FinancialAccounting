@@ -165,7 +165,7 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
 
         case TrialBalanceType.BalanzaConContabilidadesEnCascada:
 
-          var saldosPorCuentaYMayores = new SaldosPorCuentaYMayores(this.Command);
+          var saldosPorCuentaYMayores = new BalanzaContabilidadesCascada(this.Command);
           return saldosPorCuentaYMayores.Build();
 
         default:

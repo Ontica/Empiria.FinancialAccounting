@@ -205,10 +205,7 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
 
       if (_command.WithAverageBalance) {
 
-        foreach (var entry in returnedEntries.Where(a => a.ItemType == TrialBalanceItemType.Summary ||
-                  (_command.TrialBalanceType == TrialBalanceType.BalanzaConContabilidadesEnCascada &&
-                   (a.ItemType == TrialBalanceItemType.BalanceTotalGroupDebtor ||
-                    a.ItemType == TrialBalanceItemType.BalanceTotalGroupCreditor)))) {
+        foreach (var entry in returnedEntries.Where(a => a.ItemType == TrialBalanceItemType.Summary)) {
 
           decimal debtorCreditor = entry.DebtorCreditor == DebtorCreditorType.Deudora ?
                                    entry.Debit - entry.Credit : entry.Credit - entry.Debit;
@@ -502,11 +499,7 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
         entry.GroupName = "TOTAL CONSOLIDADO GENERAL";
 
         string hash;
-        if (_command.TrialBalanceType == TrialBalanceType.BalanzaConContabilidadesEnCascada ||
-             (_command.TrialBalanceType == TrialBalanceType.Balanza && _command.ShowCascadeBalances)) {
-          if (_command.TrialBalanceType == TrialBalanceType.BalanzaConContabilidadesEnCascada) {
-            entry.GroupName = "TOTAL DEL REPORTE";
-          }
+        if (_command.TrialBalanceType == TrialBalanceType.Balanza && _command.ShowCascadeBalances) {
           hash = $"{entry.GroupName}";
           entry.GroupNumber = "";
         } else {
@@ -517,12 +510,11 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
           } else {
             hash = $"{entry.GroupName}||{Sector.Empty.Code}||{entry.Ledger.Id}";
           }
-
         }
 
         GenerateOrIncreaseEntries(totalSummaryConsolidated, entry, StandardAccount.Empty, Sector.Empty,
                                   TrialBalanceItemType.BalanceTotalConsolidated, hash);
-      }
+      } // foreach
 
       balanceEntries.AddRange(totalSummaryConsolidated.Values.ToList());
 
@@ -637,21 +629,15 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
                                           TrialBalanceItemType itemType) {
 
       TrialBalanceEntry entry = TrialBalanceMapper.MapToTrialBalanceEntry(balanceEntry);
-      string hash;
-      entry.GroupName = "TOTAL MONEDA " + entry.Currency.FullName;
-
-      if (_command.TrialBalanceType != TrialBalanceType.BalanzaConContabilidadesEnCascada &&
-           entry.ItemType == TrialBalanceItemType.BalanceTotalCreditor) {
+      
+      if (entry.ItemType == TrialBalanceItemType.BalanceTotalCreditor) {
         entry.InitialBalance = -1 * entry.InitialBalance;
         entry.CurrentBalance = -1 * entry.CurrentBalance;
       }
+      entry.GroupName = "TOTAL MONEDA " + entry.Currency.FullName;
 
-      if (_command.TrialBalanceType == TrialBalanceType.BalanzaConContabilidadesEnCascada) {
-        entry.GroupNumber = "";
-        hash = $"{entry.GroupName}||{entry.Currency.Id}";
-      } else {
-        hash = $"{entry.GroupName}||{targetSector.Code}||{entry.Currency.Id}||{entry.Ledger.Id}";
-      }
+      string hash = $"{entry.GroupName}||{targetSector.Code}||{entry.Currency.Id}||{entry.Ledger.Id}";
+
       GenerateOrIncreaseEntries(summaryEntries, entry, targetAccount, targetSector, itemType, hash);
     }
 
@@ -674,31 +660,6 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
     }
 
 
-    internal void SummaryByLedgersGroupEntries(EmpiriaHashTable<TrialBalanceEntry> totalsListByGroupEntries,
-                                                TrialBalanceEntry balanceEntry) {
-      TrialBalanceEntry groupEntry = TrialBalanceMapper.MapToTrialBalanceEntry(balanceEntry);
-
-      groupEntry.GroupName = $"SUMA DE DELEGACIONES";
-      groupEntry.GroupNumber = balanceEntry.Account.Number;
-      groupEntry.Account = balanceEntry.Account;
-      groupEntry.Sector = balanceEntry.Sector;
-      groupEntry.DebtorCreditor = balanceEntry.Account.DebtorCreditor;
-      groupEntry.Ledger = Ledger.Empty;
-
-      TrialBalanceItemType itemType = TrialBalanceItemType.BalanceTotalGroupDebtor;
-
-      if (balanceEntry.DebtorCreditor == DebtorCreditorType.Acreedora) {
-        itemType = TrialBalanceItemType.BalanceTotalGroupCreditor;
-      }
-
-      string hash = $"{balanceEntry.Currency.Id}||{groupEntry.GroupNumber}||" +
-                    $"{groupEntry.Sector.Code}||{groupEntry.DebtorCreditor}";
-
-      GenerateOrIncreaseEntries(totalsListByGroupEntries, groupEntry, groupEntry.Account,
-                                groupEntry.Sector, itemType, hash);
-    }
-
-
     internal void SummaryBySectorization(EmpiriaHashTable<TrialBalanceEntry> hashSummaryEntries,
                                          TrialBalanceEntry balanceEntry) {
       TrialBalanceEntry entry = TrialBalanceMapper.MapToTrialBalanceEntry(balanceEntry);
@@ -712,7 +673,6 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
       //{targetSector.Code}||
       GenerateOrIncreaseEntries(hashSummaryEntries, entry, entry.Account, Sector.Empty,
                                 TrialBalanceItemType.Summary, hash);
-
     }
 
 
@@ -727,26 +687,6 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
 
       GenerateOrIncreaseEntries(summaryEntries, balanceEntry,
                                 StandardAccount.Empty, Sector.Empty, itemType, hash);
-    }
-
-
-    internal void SummaryDebtorCreditorLedgersByAccount(EmpiriaHashTable<TrialBalanceEntry> summaryEntries,
-                                                TrialBalanceEntry balanceEntry,
-                                                TrialBalanceItemType itemType) {
-
-      TrialBalanceEntry entry = TrialBalanceMapper.MapToTrialBalanceEntry(balanceEntry);
-
-      if (itemType == TrialBalanceItemType.BalanceTotalDebtor) {
-        entry.GroupName = "TOTAL DEUDORAS " + entry.Currency.FullName;
-      } else if (itemType == TrialBalanceItemType.BalanceTotalCreditor) {
-        entry.GroupName = "TOTAL ACREEDORAS " + entry.Currency.FullName;
-      }
-      entry.Ledger = Ledger.Empty;
-      entry.DebtorCreditor = balanceEntry.DebtorCreditor;
-
-      string hash = $"{entry.GroupName}||{entry.Currency.Id}";
-
-      GenerateOrIncreaseEntries(summaryEntries, entry, StandardAccount.Empty, Sector.Empty, itemType, hash);
     }
 
 
