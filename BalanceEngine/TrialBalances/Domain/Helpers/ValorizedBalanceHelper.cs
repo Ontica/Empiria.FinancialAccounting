@@ -36,7 +36,7 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
       var hashAccountEntries = new EmpiriaHashTable<TrialBalanceEntry>();
 
       foreach (var entry in trialBalance) {
-        helper.SummaryByEntry(hashAccountEntries, entry, entry.Account, Sector.Empty, entry.ItemType);
+        SummaryByEntry(hashAccountEntries, entry, entry.ItemType);
       }
       if (hashAccountEntries.ToFixedList().Count > 0) {
         summaryEntries.AddRange(hashAccountEntries.ToFixedList().ToList());
@@ -95,8 +95,7 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
           entry.CurrentBalance = 0;
         }
 
-        helper.SummaryByEntry(hashAccountEntries, entry, entry.Account,
-                              Sector.Empty, itemType);
+        SummaryByEntry(hashAccountEntries, entry, itemType);
       }
 
       var hashReturnedEntries = GetAccountsForValuedBalances(hashAccountEntries);
@@ -239,8 +238,7 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
 
       foreach (var entry in ledgersList) {
 
-        helper.SummaryByEntry(hashAccountEntries, entry, entry.Account,
-                              Sector.Empty, entry.ItemType);
+        SummaryByEntry(hashAccountEntries, entry, entry.ItemType);
       }
 
       var hashReturnedEntries = GetEntriesForBalancesByCurrency(hashAccountEntries);
@@ -288,8 +286,8 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
           entry.CurrentBalance = 0;
           entry.LastChangeDate = secondary.LastChangeDate;
           entry.DebtorCreditor = secondary.DebtorCreditor;
-          helper.SummaryByEntry(returnedBalances, entry, entry.Account,
-                              Sector.Empty, TrialBalanceItemType.Summary);
+
+          SummaryByEntry(returnedBalances, entry, TrialBalanceItemType.Summary);
 
           string hash = $"{secondary.Account.Number}||{secondary.Currency.Code}";
           returnedBalances.Insert(hash, secondary);
@@ -317,6 +315,41 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
           hash = $"{currencyAccount.Account.Number}||{currencyAccount.Currency.Code}";
           returnedBalances.Insert(hash, currencyAccount);
         }
+      }
+    }
+
+
+    private void GetOrIncreaseEntries(EmpiriaHashTable<TrialBalanceEntry> summaryEntries,
+                                           TrialBalanceEntry entry,
+                                           StandardAccount targetAccount, Sector targetSector,
+                                           TrialBalanceItemType itemType, string hash) {
+
+      TrialBalanceEntry summaryEntry;
+
+      summaryEntries.TryGetValue(hash, out summaryEntry);
+
+      if (summaryEntry == null) {
+
+        summaryEntry = new TrialBalanceEntry {
+          Ledger = entry.Ledger,
+          Currency = entry.Currency,
+          Sector = targetSector,
+          Account = targetAccount,
+          ItemType = itemType,
+          GroupNumber = entry.GroupNumber,
+          GroupName = entry.GroupName,
+          DebtorCreditor = entry.DebtorCreditor,
+          SubledgerAccountIdParent = entry.SubledgerAccountIdParent,
+          LastChangeDate = entry.LastChangeDate
+        };
+
+        summaryEntry.Sum(entry);
+
+        summaryEntries.Insert(hash, summaryEntry);
+
+      } else {
+
+        summaryEntry.Sum(entry);
       }
     }
 
@@ -371,6 +404,21 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
       }
     }
 
+
+    private void SummaryByEntry(EmpiriaHashTable<TrialBalanceEntry> summaryEntries,
+                                 TrialBalanceEntry entry,
+                                 TrialBalanceItemType itemType) {
+
+      Sector targetSector = Sector.Empty;
+      string hash = $"{entry.Account.Number}||{targetSector.Code}||{entry.Currency.Id}||{entry.Ledger.Id}";
+
+      if (_command.TrialBalanceType == TrialBalanceType.BalanzaEnColumnasPorMoneda &&
+           _command.UseNewSectorizationModel) {
+
+        hash = $"{entry.Account.Number}||{targetSector.Code}||{entry.Currency.Id}||{entry.Ledger.Id}||{entry.DebtorCreditor}";
+      }
+      GetOrIncreaseEntries(summaryEntries, entry, entry.Account, targetSector, itemType, hash);
+    }
 
     internal List<TrialBalanceByCurrencyEntry> MergeTrialBalanceIntoBalanceByCurrency(
                                           FixedList<TrialBalanceEntry> ledgerAccounts) {

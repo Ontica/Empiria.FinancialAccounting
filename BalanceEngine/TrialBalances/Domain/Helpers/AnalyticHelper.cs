@@ -169,12 +169,6 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
       FixedList<AnalyticBalanceEntry> returnedBalances =
                                             new FixedList<AnalyticBalanceEntry>(analyticEntries);
       if (_command.WithAverageBalance) {
-        //TimeSpan timeSpan = commandPeriod.ToDate - commandPeriod.FromDate;
-        //int numberOfDays = timeSpan.Days + 1;
-
-        //foreach (var entry in returnedBalances) {
-        //  entry.AverageBalance = (entry.TotalBalance / numberOfDays) + entry.InitialBalance;
-        //}
 
         foreach (var entry in returnedBalances.Where(a => a.ItemType == TrialBalanceItemType.Entry ||
                                                         a.ItemType == TrialBalanceItemType.Summary)) {

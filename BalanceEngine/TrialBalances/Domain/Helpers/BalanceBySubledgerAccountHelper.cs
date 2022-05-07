@@ -44,7 +44,7 @@ namespace Empiria.FinancialAccounting.BalanceEngine.Helpers {
       return GenerateEntries(subledgerAccountsEntriesHashTable);
     }
 
-
+    
     internal List<TrialBalanceEntry> CombineTotalAndSummaryEntries(
                                     List<TrialBalanceEntry> orderingtTialBalance,
                                     List<TrialBalanceEntry> trialBalance) {
@@ -77,6 +77,29 @@ namespace Empiria.FinancialAccounting.BalanceEngine.Helpers {
       }
 
       return returnedOrdering;
+    }
+
+
+    internal List<TrialBalanceEntry> GenerateAverageBalance(List<TrialBalanceEntry> trialBalance) {
+      var returnedEntries = new List<TrialBalanceEntry>(trialBalance);
+
+      if (_command.WithAverageBalance) {
+
+        foreach (var entry in returnedEntries.Where(a => a.ItemType == TrialBalanceItemType.Summary)) {
+
+          decimal debtorCreditor = entry.DebtorCreditor == DebtorCreditorType.Deudora ?
+                                   entry.Debit - entry.Credit : entry.Credit - entry.Debit;
+
+          TimeSpan timeSpan = _command.InitialPeriod.ToDate - entry.LastChangeDate;
+          int numberOfDays = timeSpan.Days + 1;
+
+          entry.AverageBalance = ((numberOfDays * debtorCreditor) /
+                                   _command.InitialPeriod.ToDate.Day) +
+                                   entry.InitialBalance;
+        }
+      }
+
+      return returnedEntries;
     }
 
 

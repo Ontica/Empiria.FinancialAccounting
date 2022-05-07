@@ -200,29 +200,6 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
     }
 
 
-    internal List<TrialBalanceEntry> GenerateAverageBalance(List<TrialBalanceEntry> trialBalance) {
-      var returnedEntries = new List<TrialBalanceEntry>(trialBalance);
-
-      if (_command.WithAverageBalance) {
-
-        foreach (var entry in returnedEntries.Where(a => a.ItemType == TrialBalanceItemType.Summary)) {
-
-          decimal debtorCreditor = entry.DebtorCreditor == DebtorCreditorType.Deudora ?
-                                   entry.Debit - entry.Credit : entry.Credit - entry.Debit;
-
-          TimeSpan timeSpan = _command.InitialPeriod.ToDate - entry.LastChangeDate;
-          int numberOfDays = timeSpan.Days + 1;
-
-          entry.AverageBalance = ((numberOfDays * debtorCreditor) /
-                                   _command.InitialPeriod.ToDate.Day) +
-                                   entry.InitialBalance;
-        }
-      }
-
-      return returnedEntries;
-    }
-
-
     internal List<TrialBalanceEntry> GenerateAverageDailyBalance(List<TrialBalanceEntry> trialBalance,
                                                                  TrialBalanceCommandPeriod commandPeriod) {
       List<TrialBalanceEntry> averageBalances = new List<TrialBalanceEntry>(trialBalance);
@@ -660,49 +637,17 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
     }
 
 
-    internal void SummaryBySectorization(EmpiriaHashTable<TrialBalanceEntry> hashSummaryEntries,
-                                         TrialBalanceEntry balanceEntry) {
-      TrialBalanceEntry entry = TrialBalanceMapper.MapToTrialBalanceEntry(balanceEntry);
-      if (entry.NotHasSector) {
-        entry.InitialBalance = 0;
-        entry.Debit = 0;
-        entry.Credit = 0;
-        entry.CurrentBalance = 0;
-      }
-      string hash = $"{entry.Account.Number}||{entry.Currency.Id}||{entry.Ledger.Id}";
-      //{targetSector.Code}||
-      GenerateOrIncreaseEntries(hashSummaryEntries, entry, entry.Account, Sector.Empty,
-                                TrialBalanceItemType.Summary, hash);
-    }
-
-
-    internal void SummaryBySubledgerAccountEntry(EmpiriaHashTable<TrialBalanceEntry> summaryEntries,
-                                                 TrialBalanceEntry entry, TrialBalanceItemType itemType) {
-
-      TrialBalanceEntry balanceEntry = TrialBalanceMapper.MapToTrialBalanceEntry(entry);
-
-      balanceEntry.SubledgerAccountIdParent = entry.SubledgerAccountIdParent;
-
-      string hash = $"{entry.Account.Number}||{entry.Sector.Code}||{entry.Currency.Id}||{entry.Ledger.Id}";
-
-      GenerateOrIncreaseEntries(summaryEntries, balanceEntry,
-                                StandardAccount.Empty, Sector.Empty, itemType, hash);
-    }
-
-
     internal List<TrialBalanceEntry> TrialBalanceWithSubledgerAccounts(List<TrialBalanceEntry> trialBalance) {
       List<TrialBalanceEntry> returnedEntries = new List<TrialBalanceEntry>(trialBalance);
 
       if (!_command.WithSubledgerAccount && _command.TrialBalanceType == TrialBalanceType.SaldosPorCuenta) {
-        returnedEntries = returnedEntries.Where(a => a.SubledgerNumberOfDigits == 0
-                                        //&& a.CurrentBalance != 0
-                                        ).ToList();
+        returnedEntries = returnedEntries.Where(a => a.SubledgerNumberOfDigits == 0).ToList();
       }
       if (_command.TrialBalanceType == TrialBalanceType.SaldosPorCuenta) {
         returnedEntries = returnedEntries.Where(
                             a => a.ItemType != TrialBalanceItemType.BalanceTotalGroupDebtor &&
-                                 a.ItemType != TrialBalanceItemType.BalanceTotalGroupCreditor
-                                        ).ToList();
+                                 a.ItemType != TrialBalanceItemType.BalanceTotalGroupCreditor)
+                                         .ToList();
       }
 
       return returnedEntries;

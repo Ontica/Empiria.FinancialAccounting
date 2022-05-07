@@ -26,21 +26,21 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
 
 
     internal TrialBalance Build() {
-      var helper = new TrialBalanceHelper(_command);
-      var comparativeHelper = new TrialBalanceComparativeHelper(_command);
+      var balanceHelper = new TrialBalanceHelper(_command);
+      var helper = new TrialBalanceComparativeHelper(_command);
 
-      FixedList<TrialBalanceEntry> entries = helper.GetPostingEntries();
+      FixedList<TrialBalanceEntry> entries = balanceHelper.GetPostingEntries();
 
-      entries = helper.GetSummaryToParentEntries(entries);
+      entries = balanceHelper.GetSummaryToParentEntries(entries);
 
-      entries = helper.ValuateToExchangeRate(entries, _command.FinalPeriod, true);
+      entries = balanceHelper.ValuateToExchangeRate(entries, _command.FinalPeriod, true);
 
-      entries = helper.RoundTrialBalanceEntries(entries);
+      entries = balanceHelper.RoundTrialBalanceEntries(entries);
 
-      comparativeHelper.GetAverageBalance(entries.ToList());
+      helper.GetAverageBalance(entries.ToList());
 
       List<TrialBalanceComparativeEntry> comparativeBalance = 
-                                         comparativeHelper.MergePeriodsIntoComparativeBalance(entries);
+                                         helper.MergePeriodsIntoComparativeBalance(entries);
 
       var returnBalance = new FixedList<ITrialBalanceEntry>(
                               comparativeBalance.Select(x => (ITrialBalanceEntry) x));

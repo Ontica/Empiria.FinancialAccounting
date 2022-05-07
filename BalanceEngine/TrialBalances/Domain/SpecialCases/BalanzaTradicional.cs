@@ -71,12 +71,6 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
       var returnBalance = new FixedList<ITrialBalanceEntry>(
                               trialBalance.Select(x => (ITrialBalanceEntry) x));
 
-      //if (_command.TrialBalanceType == TrialBalanceType.Balanza ||
-      //          _command.TrialBalanceType == TrialBalanceType.SaldosPorCuenta) {
-      //  var ensureIsValid = new EnsureBalanceValidations(_command);
-      //  ensureIsValid.EnsureIsValid(returnBalance, postingEntries);
-      //}
-
       EmpiriaLog.Debug($"END BalanzaTradicional: {DateTime.Now.Subtract(startTime).TotalSeconds} seconds.");
 
       return new TrialBalance(_command, returnBalance);
@@ -134,7 +128,6 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
 
       returnedTrialBalance = helper.TrialBalanceWithSubledgerAccounts(returnedTrialBalance);
 
-      //trialBalance = helper.GenerateAverageBalance(trialBalance);
       return returnedTrialBalance;
     }
 

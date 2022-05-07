@@ -117,7 +117,6 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
     internal FixedList<TrialBalanceEntry> GenerateTotalSummaryByCurrency(
                                           List<TrialBalanceEntry> entries) {
 
-      var helper = new TrialBalanceHelper(_command);
       var totalByCurrencies = new EmpiriaHashTable<TrialBalanceEntry>(entries.Count);
 
       foreach (var entry in entries.Where(a => !a.HasParentPostingEntry &&
@@ -169,7 +168,6 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
 
     internal List<TrialBalanceEntry> GetSummaryByDebtorCreditor(List<TrialBalanceEntry> trialBalance) {
       
-      var helper = new TrialBalanceHelper(_command);
       var totalSummaryDebtorCredtor = new EmpiriaHashTable<TrialBalanceEntry>(trialBalance.Count);
 
       foreach (var entry in trialBalance.Where(a => !a.HasParentPostingEntry)) {

@@ -26,57 +26,58 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
 
 
     internal TrialBalance Build() {
-      var helper = new TrialBalanceHelper(_command);
+      var balanceHelper = new TrialBalanceHelper(_command);
 
-      var analyticHelper = new AnalyticHelper(_command);
+      var helper = new AnalyticHelper(_command);
 
-      FixedList<TrialBalanceEntry> postingEntries = helper.GetTrialBalanceEntries(_command.InitialPeriod);
+      FixedList<TrialBalanceEntry> postingEntries = 
+                                   balanceHelper.GetTrialBalanceEntries(_command.InitialPeriod);
 
-      postingEntries = helper.GetSummaryToParentEntries(postingEntries);
+      postingEntries = balanceHelper.GetSummaryToParentEntries(postingEntries);
 
-      postingEntries = helper.ValuateToExchangeRate(postingEntries, _command.InitialPeriod);
+      postingEntries = balanceHelper.ValuateToExchangeRate(postingEntries, _command.InitialPeriod);
 
-      postingEntries = helper.RoundTrialBalanceEntries(postingEntries);
+      postingEntries = balanceHelper.RoundTrialBalanceEntries(postingEntries);
 
-      List<TrialBalanceEntry> summaryEntries = helper.GenerateSummaryEntries(postingEntries);
+      List<TrialBalanceEntry> summaryEntries = balanceHelper.GenerateSummaryEntries(postingEntries);
 
-      List<TrialBalanceEntry> _postingEntries = helper.GetSummaryEntriesAndSectorization(
+      List<TrialBalanceEntry> _postingEntries = balanceHelper.GetSummaryEntriesAndSectorization(
                                                 postingEntries.ToList());
 
       List<TrialBalanceEntry> summaryEntriesAndSectorization =
-                              helper.GetSummaryEntriesAndSectorization(summaryEntries);
+                              balanceHelper.GetSummaryEntriesAndSectorization(summaryEntries);
 
-      analyticHelper.GetSummaryToSectorZeroForPesosAndUdis(_postingEntries, summaryEntriesAndSectorization);
+      helper.GetSummaryToSectorZeroForPesosAndUdis(_postingEntries, summaryEntriesAndSectorization);
 
-      List<TrialBalanceEntry> trialBalance = analyticHelper.CombineSummaryAndPostingEntries(
+      List<TrialBalanceEntry> balanceEntries = helper.CombineSummaryAndPostingEntries(
                                              summaryEntriesAndSectorization, _postingEntries.ToFixedList());
 
-      trialBalance = RemoveCertainAccounts(trialBalance);
+      balanceEntries = RemoveCertainAccounts(balanceEntries);
 
-      trialBalance = helper.RestrictLevels(trialBalance);
+      balanceEntries = balanceHelper.RestrictLevels(balanceEntries);
 
       FixedList<AnalyticBalanceEntry> analyticEntries =
-                                           analyticHelper.MergeTrialBalanceIntoAnalyticColumns(trialBalance);
+                                           helper.MergeTrialBalanceIntoAnalyticColumns(balanceEntries);
 
-      analyticEntries = analyticHelper.CombineSubledgerAccountsWithSummaryEntries(
-                                            analyticEntries, trialBalance);
+      analyticEntries = helper.CombineSubledgerAccountsWithSummaryEntries(
+                                            analyticEntries, balanceEntries);
 
       FixedList<AnalyticBalanceEntry> summaryGroupEntries =
-                                            analyticHelper.GetTotalSummaryByGroup(analyticEntries);
+                                            helper.GetTotalSummaryByGroup(analyticEntries);
 
-      analyticEntries = analyticHelper.CombineSummaryGroupsAndEntries(
+      analyticEntries = helper.CombineSummaryGroupsAndEntries(
                                             analyticEntries, summaryGroupEntries);
 
       List<AnalyticBalanceEntry> summaryTotalDeptorCreditorEntries =
-                                      analyticHelper.GetTotalDeptorCreditorEntries(
+                                      helper.GetTotalDeptorCreditorEntries(
                                         analyticEntries);
-      analyticEntries = analyticHelper.CombineTotalDeptorCreditorAndEntries(
+      analyticEntries = helper.CombineTotalDeptorCreditorAndEntries(
                                             analyticEntries.ToList(), summaryTotalDeptorCreditorEntries);
 
       List<AnalyticBalanceEntry> summaryTotalReport =
-                                    analyticHelper.GenerateTotalReport(summaryTotalDeptorCreditorEntries);
+                                    helper.GenerateTotalReport(summaryTotalDeptorCreditorEntries);
 
-      analyticEntries = analyticHelper.CombineTotalConsolidatedAndEntries(
+      analyticEntries = helper.CombineTotalConsolidatedAndEntries(
                                             analyticEntries, summaryTotalReport);
 
       //analyticEntries = analyticHelper.GenerateAverageBalance(
