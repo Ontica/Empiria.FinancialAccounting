@@ -75,13 +75,11 @@ namespace Empiria.FinancialAccounting {
     } = AccountRole.Sumaria;
 
 
-    [DataField("ID_TIPO_CUENTA", ConvertFrom = typeof(long))]
-    private AccountType _accountType = FinancialAccounting.AccountType.Empty;
 
-    public string AccountType {
-      get {
-        return _accountType.Name;
-      }
+    [DataField("ID_TIPO_CUENTA")]
+    public AccountType AccountType {
+      get;
+      private set;
     }
 
 

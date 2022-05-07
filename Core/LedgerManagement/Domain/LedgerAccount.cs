@@ -75,7 +75,7 @@ namespace Empiria.FinancialAccounting {
       };
     }
 
-    public string AccountType => this.StandardAccount.AccountType;
+    public AccountType AccountType => this.StandardAccount.AccountType;
 
     public DebtorCreditorType DebtorCreditor => this.StandardAccount.DebtorCreditor;
 

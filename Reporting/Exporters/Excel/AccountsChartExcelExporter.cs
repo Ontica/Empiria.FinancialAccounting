@@ -60,7 +60,7 @@ namespace Empiria.FinancialAccounting.Reporting.Exporters.Excel {
         excelFile.SetCell($"G{i}", account.Role.ToString());
         excelFile.SetCell($"H{i}", account.UsesSector ? "Sí": "No");
         excelFile.SetCell($"I{i}", account.UsesSubledger ? "Sí" : "No");
-        excelFile.SetCell($"J{i}", account.Type);
+        excelFile.SetCell($"J{i}", account.Type.Name);
         excelFile.SetCell($"K{i}", account.DebtorCreditor.ToString());
         excelFile.SetCell($"L{i}", account.StartDate);
 

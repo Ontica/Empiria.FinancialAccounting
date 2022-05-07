@@ -79,7 +79,7 @@ namespace Empiria.FinancialAccounting.Adapters {
       dto.UID = account.UID;
       dto.Number = account.Number;
       dto.Name = account.Name;
-      dto.Type = account.AccountType;
+      dto.Type = account.AccountType.MapToNamedEntity();
       dto.Role = MapToDescriptorRole(account.Role);
       dto.UsesSector = account.Role == AccountRole.Sectorizada || account.HasChildrenWithSectors();
       dto.UsesSubledger = account.Role == AccountRole.Control ||
@@ -145,7 +145,7 @@ namespace Empiria.FinancialAccounting.Adapters {
         Name = account.Name,
         Number = account.Number,
         Role = account.Role,
-        Type = account.AccountType,
+        Type = account.AccountType.MapToNamedEntity(),
         DebtorCreditor = account.DebtorCreditor,
         Description = account.Description,
         StartDate = account.StartDate,

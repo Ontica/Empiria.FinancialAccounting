@@ -101,12 +101,9 @@ namespace Empiria.FinancialAccounting {
 
 
     [DataField("ID_TIPO_CUENTA")]
-    private AccountType _accountType = FinancialAccounting.AccountType.Empty;
-
-    public string AccountType {
-      get {
-        return _accountType.Name;
-      }
+    public AccountType AccountType {
+      get;
+      private set;
     }
 
 

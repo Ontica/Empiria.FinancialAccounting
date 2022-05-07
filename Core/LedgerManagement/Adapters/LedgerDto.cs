@@ -101,7 +101,7 @@ namespace Empiria.FinancialAccounting.Adapters {
     }
 
 
-    public string AccountType {
+    public NamedEntityDto AccountType {
       get; internal set;
     }
 
