@@ -60,13 +60,37 @@ namespace Empiria.FinancialAccounting.Reporting.Exporters.Excel {
         excelFile.SetCell($"F{i}", entry.Difference);
         i++;
       }
+
+      SetSignatures(i + 2);
     }
 
 
     private void SetHeader(ReconciliationResultDto reconciliationResult) {
-      excelFile.SetCell($"A2", _templateConfig.Title);
+      excelFile.SetCell($"A3", _templateConfig.Title);
 
-      excelFile.SetCell($"F2", reconciliationResult.Command.Date.ToString("dd/MMM/yyyy"));
+      excelFile.SetCell($"F3", reconciliationResult.Command.Date.ToString("dd/MMM/yyyy"));
+    }
+
+
+    private void SetSignatures(int startIndex) {
+      int index = startIndex;
+
+      excelFile.SetCell($"D{index}", "Firmas");
+
+      index++;
+
+      excelFile.SetCell($"A{index}", "Elaboró:");
+      excelFile.SetCell($"B{index}", "Especialista / Experto Técnico");
+
+      index++;
+
+      excelFile.SetCell($"A{index}", "Revisó:");
+      excelFile.SetCell($"B{index}", "Subgerente de Información Contable");
+
+      index++;
+
+      excelFile.SetCell($"A{index}", "Autorizó:");
+      excelFile.SetCell($"B{index}", "Gerente de Contabilidad");
     }
 
     #endregion Private methods
