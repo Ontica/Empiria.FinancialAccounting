@@ -38,6 +38,8 @@ namespace Empiria.FinancialAccounting.Reconciliation.UseCases {
 
       command.EnsureValid();
 
+      RemoveOldDatasets(command.GetReconciliationType());
+
       var service = new ReconciliationEngine(command);
 
       ReconciliationResult result = service.Reconciliate();
@@ -46,6 +48,18 @@ namespace Empiria.FinancialAccounting.Reconciliation.UseCases {
     }
 
     #endregion Use cases
+
+    #region Helpers
+
+    private void RemoveOldDatasets(ReconciliationType reconciliationType) {
+
+      using (var usecases = OperationalDataUseCases.UseCaseInteractor()) {
+
+        usecases.RemoveOldDatasetsFor(reconciliationType);
+      }
+    }
+
+    #endregion Helpers
 
   } // class ReconciliationExecutionUseCases
 

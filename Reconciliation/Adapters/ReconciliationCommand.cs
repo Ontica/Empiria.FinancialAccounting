@@ -32,6 +32,11 @@ namespace Empiria.FinancialAccounting.Reconciliation.Adapters {
     } = string.Empty;
 
 
+    internal ReconciliationType GetReconciliationType() {
+      return ReconciliationType.Parse(this.ReconciliationTypeUID);
+    }
+
+
     public void EnsureValid() {
       Assertion.AssertObject(ReconciliationTypeUID, "ReconciliationTypeUID");
       Assertion.Assert(Date != ExecutionServer.DateMinValue, "Date");

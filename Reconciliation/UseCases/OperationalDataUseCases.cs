@@ -39,7 +39,7 @@ namespace Empiria.FinancialAccounting.Reconciliation.UseCases {
 
 
     public DatasetsLoadStatusDto CreateDataset(OperationalDataCommand command,
-                                           FileData fileData) {
+                                               FileData fileData) {
       Assertion.AssertObject(command, "command");
       Assertion.AssertObject(fileData, "fileData");
 
@@ -88,13 +88,13 @@ namespace Empiria.FinancialAccounting.Reconciliation.UseCases {
 
       command.EnsureValid();
 
+      RemoveOldDatasetsFor(command.GetReconciliationType());
+
       using (var usecase = DatasetsUseCases.UseCaseInteractor()) {
 
-        var coreDatasetCommand = command.MapToCoreDatasetsCommand();
+        var datasetCommand = command.MapToCoreDatasetsCommand();
 
-        usecase.RemoveOldDatasets(coreDatasetCommand.DatasetFamilyUID, TimeSpan.FromHours(2));
-
-        return usecase.GetDatasetsLoadStatus(coreDatasetCommand);
+        return usecase.GetDatasetsLoadStatus(datasetCommand);
       }
     }
 
@@ -103,7 +103,19 @@ namespace Empiria.FinancialAccounting.Reconciliation.UseCases {
       Assertion.AssertObject(datasetUID, "datasetUID");
 
       using (var usecase = DatasetsUseCases.UseCaseInteractor()) {
+
         return usecase.RemoveDataset(datasetUID);
+      }
+    }
+
+
+    internal void RemoveOldDatasetsFor(ReconciliationType reconciliationType) {
+      Assertion.AssertObject(reconciliationType, "reconciliationType");
+
+      using (var usecase = DatasetsUseCases.UseCaseInteractor()) {
+
+        usecase.RemoveOldDatasets(reconciliationType.DatasetFamily.UID,
+                                  TimeSpan.FromHours(2));
       }
     }
 
