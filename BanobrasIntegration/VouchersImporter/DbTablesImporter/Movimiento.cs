@@ -255,7 +255,7 @@ namespace Empiria.FinancialAccounting.BanobrasIntegration.VouchersImporter {
 
 
     internal string GetBudgetConcept() {
-      return this.ConceptoPresupuestal.ToString();
+      return EmpiriaString.Clean(this.ConceptoPresupuestal.ToString());
     }
 
 
@@ -273,7 +273,7 @@ namespace Empiria.FinancialAccounting.BanobrasIntegration.VouchersImporter {
 
 
     internal string GetVerificationNumber() {
-      return this.NumeroOperacion.ToString();
+      return EmpiriaString.Clean(this.NumeroOperacion.ToString());
     }
 
 

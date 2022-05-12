@@ -182,11 +182,12 @@ namespace Empiria.FinancialAccounting.BanobrasIntegration.VouchersImporter {
 
 
     internal void SetConcept(string value) {
-      value = EmpiriaString.TrimAll(value);
+      value = EmpiriaString.Clean(value);
 
       if (String.IsNullOrWhiteSpace(value)) {
         AddError("El concepto de la póliza no puede ser una cadena vacía.");
       }
+
       this.VoucherConcept = value;
     }
 
