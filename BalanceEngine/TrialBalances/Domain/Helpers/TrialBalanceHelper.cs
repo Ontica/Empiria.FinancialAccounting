@@ -475,19 +475,21 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
 
         entry.GroupName = "TOTAL CONSOLIDADO GENERAL";
 
-        string hash;
+        string hash = $"{entry.GroupName}||{Sector.Empty.Code}||{entry.Ledger.Id}";
+
         if (_command.TrialBalanceType == TrialBalanceType.Balanza && _command.ShowCascadeBalances) {
+          
           hash = $"{entry.GroupName}";
           entry.GroupNumber = "";
-        } else {
-          if (_command.TrialBalanceType == TrialBalanceType.SaldosPorCuenta &&
-              ((_command.WithSubledgerAccount && _command.ShowCascadeBalances) ||
-               _command.ShowCascadeBalances)) {
-            hash = $"{entry.GroupName}||{Sector.Empty.Code}";
-          } else {
-            hash = $"{entry.GroupName}||{Sector.Empty.Code}||{entry.Ledger.Id}";
-          }
         }
+
+        if (_command.TrialBalanceType == TrialBalanceType.SaldosPorCuenta &&
+            ((_command.WithSubledgerAccount && _command.ShowCascadeBalances) ||
+             _command.ShowCascadeBalances)) {
+
+          hash = $"{entry.GroupName}||{Sector.Empty.Code}";
+        }
+
 
         GenerateOrIncreaseEntries(totalSummaryConsolidated, entry, StandardAccount.Empty, Sector.Empty,
                                   TrialBalanceItemType.BalanceTotalConsolidated, hash);
@@ -528,8 +530,8 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
 
       var toReturnSummaryGroupEntries = new EmpiriaHashTable<TrialBalanceEntry>();
 
-      foreach (var entry in entries.Where(a=> !a.HasParentPostingEntry)) {
-          SummaryByGroupEntries(toReturnSummaryGroupEntries, entry);
+      foreach (var entry in entries.Where(a => !a.HasParentPostingEntry)) {
+        SummaryByGroupEntries(toReturnSummaryGroupEntries, entry);
       }
 
       return toReturnSummaryGroupEntries.ToFixedList();

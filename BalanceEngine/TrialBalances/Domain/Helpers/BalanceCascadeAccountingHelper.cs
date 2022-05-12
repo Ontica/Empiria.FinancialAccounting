@@ -35,15 +35,16 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
 
       foreach (var totalGroupDebtorEntry in summaryByAccountEntries) {
 
-        var entries = balanceEntries.Where(
-                                  a => a.Account.Number == totalGroupDebtorEntry.GroupNumber &&
-                                  a.Currency.Id == totalGroupDebtorEntry.Currency.Id &&
-                                  a.Sector.Code == totalGroupDebtorEntry.Sector.Code).ToList();
+        var entries = balanceEntries.Where(a => a.Account.Number == totalGroupDebtorEntry.GroupNumber &&
+                                           a.Currency.Id == totalGroupDebtorEntry.Currency.Id &&
+                                           a.Sector.Code == totalGroupDebtorEntry.Sector.Code)
+                                    .ToList();
         foreach (var entry in entries) {
 
           if (entry.LastChangeDate > totalGroupDebtorEntry.LastChangeDate) {
             totalGroupDebtorEntry.LastChangeDate = entry.LastChangeDate;
           }
+
         }
         totalGroupDebtorEntry.GroupNumber = "";
         entries.Add(totalGroupDebtorEntry);
@@ -82,8 +83,8 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
 
       foreach (var totalGroupDebtorEntry in summaryDebtorCreditorEntries) {
         var entries = balanceEntries.Where(a => a.Currency.Id == totalGroupDebtorEntry.Currency.Id &&
-                                                 a.DebtorCreditor == totalGroupDebtorEntry.DebtorCreditor
-                                                 ).ToList();
+                                           a.DebtorCreditor == totalGroupDebtorEntry.DebtorCreditor)
+                                    .ToList();
 
         entries.Add(totalGroupDebtorEntry);
         returnedEntries.AddRange(entries);
@@ -99,7 +100,7 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
       foreach (var currencyEntry in balanceEntries.Where(
                 a => a.ItemType == TrialBalanceItemType.BalanceTotalCurrency)) {
 
-        TrialBalanceEntry entry = TrialBalanceMapper.MapToTrialBalanceEntry(currencyEntry);
+        var entry = TrialBalanceMapper.MapToTrialBalanceEntry(currencyEntry);
 
         entry.GroupNumber = "";
         entry.GroupName = "TOTAL DEL REPORTE";
@@ -120,8 +121,8 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
       var totalByCurrencies = new EmpiriaHashTable<TrialBalanceEntry>(entries.Count);
 
       foreach (var entry in entries.Where(a => !a.HasParentPostingEntry &&
-                                          (a.ItemType == TrialBalanceItemType.BalanceTotalDebtor ||
-                                          a.ItemType == TrialBalanceItemType.BalanceTotalCreditor))) {
+                            (a.ItemType == TrialBalanceItemType.BalanceTotalDebtor ||
+                            a.ItemType == TrialBalanceItemType.BalanceTotalCreditor))) {
 
         SummaryByCurrency(totalByCurrencies, entry);
       }
@@ -147,11 +148,20 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
       if (_command.WithAverageBalance) {
 
         foreach (var entry in returnedEntries.Where(a => 
-                    a.ItemType == TrialBalanceItemType.BalanceTotalGroupDebtor ||
-                    a.ItemType == TrialBalanceItemType.BalanceTotalGroupCreditor)) {
+                     a.ItemType == TrialBalanceItemType.BalanceTotalGroupDebtor ||
+                     a.ItemType == TrialBalanceItemType.BalanceTotalGroupCreditor)) {
 
-          decimal debtorCreditor = entry.DebtorCreditor == DebtorCreditorType.Deudora ?
-                                   entry.Debit - entry.Credit : entry.Credit - entry.Debit;
+          decimal debtorCreditor = 0;
+
+          if (entry.DebtorCreditor == DebtorCreditorType.Deudora) {
+            debtorCreditor = entry.Debit - entry.Credit;
+
+          }
+
+          if (entry.DebtorCreditor == DebtorCreditorType.Acreedora) {
+            debtorCreditor = entry.Credit - entry.Debit;
+
+          }
 
           TimeSpan timeSpan = _command.InitialPeriod.ToDate - entry.LastChangeDate;
           int numberOfDays = timeSpan.Days + 1;
@@ -174,11 +184,12 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
 
         if (entry.DebtorCreditor == DebtorCreditorType.Deudora) {
           SummaryDebtorCreditorByAccount(totalSummaryDebtorCredtor, entry,
-                                                       TrialBalanceItemType.BalanceTotalDebtor);
+                                         TrialBalanceItemType.BalanceTotalDebtor);
         }
+
         if (entry.DebtorCreditor == DebtorCreditorType.Acreedora) {
           SummaryDebtorCreditorByAccount(totalSummaryDebtorCredtor, entry,
-                                                       TrialBalanceItemType.BalanceTotalCreditor);
+                                         TrialBalanceItemType.BalanceTotalCreditor);
         }
       }
 
@@ -264,6 +275,11 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
 
       TrialBalanceEntry entry = TrialBalanceMapper.MapToTrialBalanceEntry(balanceEntry);
       TrialBalanceItemType itemType = TrialBalanceItemType.BalanceTotalCurrency;
+      
+      if (entry.ItemType == TrialBalanceItemType.BalanceTotalCreditor) {
+        entry.InitialBalance = -1 * entry.InitialBalance;
+        entry.CurrentBalance = -1 * entry.CurrentBalance;
+      }
 
       entry.GroupName = "TOTAL MONEDA " + entry.Currency.FullName;
       entry.GroupNumber = "";
@@ -285,9 +301,17 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
       groupEntry.DebtorCreditor = balanceEntry.Account.DebtorCreditor;
       groupEntry.Ledger = Ledger.Empty;
 
-      TrialBalanceItemType itemType = balanceEntry.DebtorCreditor == DebtorCreditorType.Deudora ?
-                                      TrialBalanceItemType.BalanceTotalGroupDebtor :
-                                      TrialBalanceItemType.BalanceTotalGroupCreditor;
+      var itemType = new TrialBalanceItemType();
+
+      if (balanceEntry.DebtorCreditor == DebtorCreditorType.Deudora) {
+        itemType = TrialBalanceItemType.BalanceTotalGroupDebtor;
+
+      }
+
+      if (balanceEntry.DebtorCreditor == DebtorCreditorType.Acreedora) {
+        itemType = TrialBalanceItemType.BalanceTotalGroupCreditor;
+
+      }
 
       string hash = $"{balanceEntry.Currency.Id}||{groupEntry.GroupNumber}||" +
                     $"{groupEntry.Sector.Code}||{groupEntry.DebtorCreditor}";
@@ -307,11 +331,6 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
                         $"TOTAL DEUDORAS " : $"TOTAL ACREEDORAS ") +
                         entry.Currency.FullName;
 
-      //if (itemType == TrialBalanceItemType.BalanceTotalDebtor) {
-      //  entry.GroupName = "TOTAL DEUDORAS " + entry.Currency.FullName;
-      //} else if (itemType == TrialBalanceItemType.BalanceTotalCreditor) {
-      //  entry.GroupName = "TOTAL ACREEDORAS " + entry.Currency.FullName;
-      //}
       entry.Ledger = Ledger.Empty;
       entry.DebtorCreditor = balanceEntry.DebtorCreditor;
 
