@@ -23,6 +23,13 @@ namespace Empiria.FinancialAccounting {
     }
 
 
+    static public string FormatSqlDateTime(DateTime date) {
+      string dateTimeAsString = date.ToString("yyyy-MM-dd HH:mm:ss");
+
+      return $"TO_DATE('{dateTimeAsString}', 'yyyy-MM-dd hh24:mi:ss')";
+    }
+
+
     static public long GetNextObjectId(string sequenceName) {
       var sql = $"SELECT {sequenceName}.NEXTVAL FROM DUAL";
 
