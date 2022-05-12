@@ -8,8 +8,8 @@
 *                                                                                                            *
 ************************* Copyright(c) La Vía Óntica SC, Ontica LLC and contributors. All rights reserved. **/
 using System;
+
 using Empiria.FinancialAccounting.Reporting.Domain;
-using Empiria.FinancialAccounting.Vouchers;
 
 namespace Empiria.FinancialAccounting.Reporting.Adapters {
 
@@ -36,7 +36,7 @@ namespace Empiria.FinancialAccounting.Reporting.Adapters {
       newEntry.AccountingDate = entry.AccountingDate;
       newEntry.RecordingDate = entry.RecordingDate;
       newEntry.ElaboratedBy = entry.ElaboratedBy;
-      newEntry.Concept = entry.Concept;
+      newEntry.Concept = EmpiriaString.Clean(entry.Concept);
       newEntry.Debit = entry.Debit;
       newEntry.Credit = entry.Credit;
       newEntry.ItemType = entry.ItemType;
@@ -67,7 +67,7 @@ namespace Empiria.FinancialAccounting.Reporting.Adapters {
       dto.AccountingDate = entry.AccountingDate;
       dto.RecordingDate = entry.RecordingDate;
       dto.ElaboratedBy = entry.ElaboratedBy.Name;
-      dto.Concept = entry.Concept;
+      dto.Concept = EmpiriaString.Clean(entry.Concept);
       dto.Debit = entry.Debit;
       dto.Credit = entry.Credit;
       dto.VouchersByLedger = entry.VouchersByLedger;
@@ -78,7 +78,7 @@ namespace Empiria.FinancialAccounting.Reporting.Adapters {
 
     #endregion Private methods
 
-    
+
   } // class PolizasMapper
 
 } // namespace Empiria.FinancialAccounting.Reporting.Adapters

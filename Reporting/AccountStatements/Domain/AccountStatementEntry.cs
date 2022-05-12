@@ -176,7 +176,7 @@ namespace Empiria.FinancialAccounting.Reporting {
       newEntry.DebtorCreditor = entry.DebtorCreditor;
       newEntry.AccountingDate = entry.AccountingDate;
       newEntry.RecordingDate = entry.RecordingDate;
-      newEntry.Concept = entry.Concept;
+      newEntry.Concept = EmpiriaString.Clean(entry.Concept);
       newEntry.IsCurrentBalance = entry.IsCurrentBalance;
       newEntry.ItemType = entry.ItemType;
       newEntry.HasParentPostingEntry = entry.HasParentPostingEntry;

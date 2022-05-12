@@ -72,8 +72,8 @@ namespace Empiria.FinancialAccounting.Reporting.Exporters.Excel {
           excelFile.SetCell($"J{i}", voucher.AccountingDate);
           excelFile.SetCell($"K{i}", voucher.RecordingDate);
         }
-        
-        excelFile.SetCell($"L{i}", voucher.Concept);
+
+        excelFile.SetCell($"L{i}", EmpiriaString.Clean(voucher.Concept));
         excelFile.SetCell($"M{i}", voucher.AuthorizedBy);
         excelFile.SetCell($"N{i}", voucher.ElaboratedBy);
 

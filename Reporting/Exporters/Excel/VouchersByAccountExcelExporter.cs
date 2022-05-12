@@ -92,7 +92,7 @@ namespace Empiria.FinancialAccounting.Reporting.Exporters.Excel {
         if (voucher.RecordingDate != ExecutionServer.DateMaxValue) {
           _excelFile.SetCell($"K{i}", voucher.RecordingDate);
         }
-        _excelFile.SetCell($"L{i}", voucher.Concept);
+        _excelFile.SetCell($"L{i}", EmpiriaString.Clean(voucher.Concept));
         _excelFile.SetCell($"M{i}", voucher.ElaboratedBy);
 
         if (voucher.ItemType == TrialBalanceItemType.Total) {

@@ -9,8 +9,8 @@
 ************************* Copyright(c) La Vía Óntica SC, Ontica LLC and contributors. All rights reserved. **/
 using System;
 using System.Collections.Generic;
+
 using Empiria.FinancialAccounting.BalanceEngine;
-using Empiria.FinancialAccounting.BalanceEngine.BalanceExplorer.Adapters;
 
 namespace Empiria.FinancialAccounting.Reporting.Adapters {
 
@@ -22,9 +22,9 @@ namespace Empiria.FinancialAccounting.Reporting.Adapters {
 
 
     static internal AccountStatementDto Map(AccountStatement vouchers) {
-      return new AccountStatementDto { 
+      return new AccountStatementDto {
         Command = vouchers.Command,
-        Columns = MapColumns(vouchers.Command),
+        Columns = MapColumns(),
         Entries = MapToDto(vouchers.Entries),
         Title = vouchers.Title
       };
@@ -33,11 +33,10 @@ namespace Empiria.FinancialAccounting.Reporting.Adapters {
 
     #endregion Public mappers
 
-
     #region Private methods
 
-    private static FixedList<DataTableColumn> MapColumns(BalanceCommand command) {
-      List<DataTableColumn> columns = new List<DataTableColumn>();
+    private static FixedList<DataTableColumn> MapColumns() {
+      var columns = new List<DataTableColumn>();
 
       columns.Add(new DataTableColumn("ledgerNumber", "Cont", "text"));
       columns.Add(new DataTableColumn("currencyCode", "Mon", "text"));
@@ -61,12 +60,13 @@ namespace Empiria.FinancialAccounting.Reporting.Adapters {
                     FixedList<IVouchersByAccountEntry> list) {
 
       var mapped = list.Select((x) => MapToVouchersByAccount((Reporting.AccountStatementEntry) x));
+
       return new FixedList<IVouchersByAccountEntryDto>(mapped);
     }
 
     static private VouchersByAccountEntryDto MapToVouchersByAccount(
                                               Reporting.AccountStatementEntry entry) {
-      
+
       var dto = new VouchersByAccountEntryDto();
 
       dto.ItemType = entry.ItemType;
@@ -83,19 +83,21 @@ namespace Empiria.FinancialAccounting.Reporting.Adapters {
       }
       dto.AccountNumberForBalances = entry.AccountNumber;
       dto.SectorCode = entry.ItemType == TrialBalanceItemType.Entry ? entry.Sector.Code : "";
-      dto.SubledgerAccountNumber = entry.SubledgerAccountNumber.Length > 1 ? 
+      dto.SubledgerAccountNumber = entry.SubledgerAccountNumber.Length > 1 ?
                                    entry.SubledgerAccountNumber : "";
       dto.VoucherNumber = entry.VoucherNumber;
       dto.ElaboratedBy = entry.ElaboratedBy.Name;
-      dto.Concept = entry.Concept;
+
+      dto.Concept = EmpiriaString.Clean(entry.Concept);
+
       if (entry.ItemType == TrialBalanceItemType.Entry || entry.IsCurrentBalance) {
         dto.Debit = entry.Debit;
         dto.Credit = entry.Credit;
       }
       dto.CurrentBalance = entry.CurrentBalance;
-      dto.AccountingDate = entry.ItemType == TrialBalanceItemType.Entry ? 
+      dto.AccountingDate = entry.ItemType == TrialBalanceItemType.Entry ?
                            entry.AccountingDate : ExecutionServer.DateMaxValue;
-      dto.RecordingDate = entry.ItemType == TrialBalanceItemType.Entry ? 
+      dto.RecordingDate = entry.ItemType == TrialBalanceItemType.Entry ?
                           entry.RecordingDate : ExecutionServer.DateMaxValue;
       dto.VoucherId = entry.VoucherId;
 
