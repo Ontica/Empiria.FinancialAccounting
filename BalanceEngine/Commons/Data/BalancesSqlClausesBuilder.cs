@@ -24,35 +24,24 @@ namespace Empiria.FinancialAccounting.BalanceEngine.Data {
       internal BalancesSqlClausesBuilder(TrialBalanceCommand command) {
         Assertion.AssertObject(command, nameof(command));
 
-        this._command = command;
+        this._command = PrepareCommand(command);
       }
 
-      #region Public methods
+
+      #region Methods
 
       internal BalancesSqlClauses Build() {
         var sqlClauses = new BalancesSqlClauses();
 
         var accountsChart = AccountsChart.Parse(_command.AccountsChartUID);
 
-        StoredBalanceSet balanceSet = StoredBalanceSet.GetBestBalanceSet(
-                                        accountsChart, _command.InitialPeriod.FromDate);
+        StoredBalanceSet balanceSet = StoredBalanceSet.GetBestBalanceSet(accountsChart,
+                                                                         _command.InitialPeriod.FromDate);
 
         sqlClauses.AccountsChart = accountsChart;
         sqlClauses.StoredInitialBalanceSet = balanceSet;
-        sqlClauses.FromDate = _command.TrialBalanceType == TrialBalanceType.BalanzaValorizadaComparativa ?
-                               _command.InitialPeriod.ToDate.AddDays(1) : _command.InitialPeriod.FromDate;
 
-        if (sqlClauses.FromDate == new DateTime(2022, 1, 1) &&
-            sqlClauses.AccountsChart.Equals(AccountsChart.IFRS)) {
-          sqlClauses.FromDate = new DateTime(2022, 1, 2);
-        }
-
-        sqlClauses.ToDate = _command.TrialBalanceType == TrialBalanceType.BalanzaValorizadaComparativa ?
-                               _command.FinalPeriod.ToDate : _command.InitialPeriod.ToDate;
-
-        if (_command.Ledgers.Count() == 1) {
-          _command.ShowCascadeBalances = true;
-        }
+        SetDatesAccordingToRules(sqlClauses);
 
         sqlClauses.InitialFields = GetInitialFields();
         sqlClauses.Fields = GetOutputFields();
@@ -67,9 +56,34 @@ namespace Empiria.FinancialAccounting.BalanceEngine.Data {
         return sqlClauses;
       }
 
-      #endregion Public methods
 
-      #region Private methods
+      private TrialBalanceCommand PrepareCommand(TrialBalanceCommand command) {
+        if (command.Ledgers.Length == 1) {
+          command.ShowCascadeBalances = true;
+        }
+        return command;
+      }
+
+
+      private void SetDatesAccordingToRules(BalancesSqlClauses sqlClauses) {
+        if (_command.TrialBalanceType == TrialBalanceType.BalanzaValorizadaComparativa) {
+          sqlClauses.FromDate = _command.InitialPeriod.ToDate.AddDays(1);
+          sqlClauses.ToDate = _command.FinalPeriod.ToDate;
+        } else {
+          sqlClauses.FromDate = _command.InitialPeriod.FromDate;
+          sqlClauses.ToDate = _command.InitialPeriod.ToDate;
+        }
+
+        // Start on Jan 2nd because Jan 1st 2022 was used for initial balances loading
+        if (sqlClauses.FromDate == new DateTime(2022, 1, 1) &&
+            sqlClauses.AccountsChart.Equals(AccountsChart.IFRS)) {
+          sqlClauses.FromDate = new DateTime(2022, 1, 2);
+        }
+      }
+
+      #endregion Methods
+
+      #region Helpers
 
       private string GetAccountFilterString() {
         string rangeFilter = GetAccountRangeFilter();
@@ -99,98 +113,99 @@ namespace Empiria.FinancialAccounting.BalanceEngine.Data {
 
 
       private string GetCurrencyFilter() {
-        if (_command.Currencies.Length == 0) {
-          if (_command.TrialBalanceType == TrialBalanceType.BalanzaDolarizada) {
-            return $"ID_MONEDA <> 1 AND ID_MONEDA <> 28";
-          }
+        if (_command.Currencies.Length == 0 &&
+            _command.TrialBalanceType == TrialBalanceType.BalanzaDolarizada) {
+
+          return $"ID_MONEDA <> {Currency.MXN.Id} AND ID_MONEDA <> {Currency.UDI.Id}";
+
+        } else if (_command.Currencies.Length == 0) {
           return string.Empty;
+
         }
-        int[] currencyIds = _command.Currencies.Select(uid => Currency.Parse(uid).Id)
-                                          .ToArray();
+
+        var currencyIds = _command.Currencies.Select(uid => Currency.Parse(uid).Id);
 
         return $"ID_MONEDA IN ({String.Join(", ", currencyIds)})";
       }
 
 
       private string GetWhereClause() {
+
         if (_command.BalancesType == BalancesType.AllAccounts) {
           return string.Empty;
         }
 
-        string clause;
-
         if (_command.BalancesType == BalancesType.WithCurrentBalance) {
-          clause = "SALDO_ACTUAL <> 0";
-
-        } else if (_command.BalancesType == BalancesType.WithCurrentBalanceOrMovements) {
-          clause = "SALDO_ACTUAL <> 0 OR DEBE <> 0 OR HABER <> 0";
-
-
-        } else if (_command.BalancesType == BalancesType.WithMovements) {
-          clause = "DEBE <> 0 OR HABER <> 0";
-
-        } else {
-          throw Assertion.AssertNoReachThisCode();
+          return "WHERE SALDO_ACTUAL <> 0";
         }
 
-        return $"WHERE {clause}";
+        if (_command.BalancesType == BalancesType.WithCurrentBalanceOrMovements) {
+          return "WHERE SALDO_ACTUAL <> 0 OR DEBE <> 0 OR HABER <> 0";
+        }
+
+        if (_command.BalancesType == BalancesType.WithMovements) {
+          return "WHERE DEBE <> 0 OR HABER <> 0";
+        }
+
+        throw Assertion.AssertNoReachThisCode();
       }
 
 
       private string GetInitialFields() {
+
         if (_command.DoNotReturnSubledgerAccounts && _command.Consolidated) {
-
           return "-1 AS ID_MAYOR, ID_MONEDA, ID_CUENTA_ESTANDAR, ID_SECTOR, -1 AS ID_CUENTA_AUXILIAR, ";
-
-        } else if (_command.DoNotReturnSubledgerAccounts && _command.ShowCascadeBalances) {
-
-          return "ID_MAYOR, ID_MONEDA, ID_CUENTA_ESTANDAR, ID_SECTOR, -1 AS ID_CUENTA_AUXILIAR, ";
-
-        } else if (_command.WithSubledgerAccount && _command.Consolidated) {
-
-          return "-1 AS ID_MAYOR, ID_MONEDA, ID_CUENTA_ESTANDAR, ID_SECTOR, ID_CUENTA_AUXILIAR, ";
-
-        } else if (_command.WithSubledgerAccount && _command.ShowCascadeBalances) {
-
-          return "ID_MAYOR, ID_MONEDA, ID_CUENTA_ESTANDAR, ID_SECTOR, ID_CUENTA_AUXILIAR, ";
-
-        } else {
-          throw Assertion.AssertNoReachThisCode();
         }
+
+        if (_command.DoNotReturnSubledgerAccounts && _command.ShowCascadeBalances) {
+          return "ID_MAYOR, ID_MONEDA, ID_CUENTA_ESTANDAR, ID_SECTOR, -1 AS ID_CUENTA_AUXILIAR, ";
+        }
+
+        if (_command.WithSubledgerAccount && _command.Consolidated) {
+          return "-1 AS ID_MAYOR, ID_MONEDA, ID_CUENTA_ESTANDAR, ID_SECTOR, ID_CUENTA_AUXILIAR, ";
+        }
+
+        if (_command.WithSubledgerAccount && _command.ShowCascadeBalances) {
+          return "ID_MAYOR, ID_MONEDA, ID_CUENTA_ESTANDAR, ID_SECTOR, ID_CUENTA_AUXILIAR, ";
+        }
+
+        throw Assertion.AssertNoReachThisCode();
       }
 
 
       private string GetInitialGroupingClause() {
-        if (_command.DoNotReturnSubledgerAccounts && _command.Consolidated) {
 
+        if (_command.DoNotReturnSubledgerAccounts && _command.Consolidated) {
           return "GROUP BY ID_MONEDA, ID_CUENTA_ESTANDAR, ID_SECTOR";
 
-        } else if (_command.DoNotReturnSubledgerAccounts && _command.ShowCascadeBalances) {
-
-          return "GROUP BY ID_MAYOR, ID_MONEDA, ID_CUENTA_ESTANDAR, ID_SECTOR";
-
-        } else if (_command.WithSubledgerAccount && _command.Consolidated) {
-
-          return "GROUP BY ID_MONEDA, ID_CUENTA_ESTANDAR, ID_SECTOR, ID_CUENTA_AUXILIAR";
-
-        } else if (_command.WithSubledgerAccount && _command.ShowCascadeBalances) {
-
-          return "GROUP BY ID_MAYOR, ID_MONEDA, ID_CUENTA_ESTANDAR, ID_SECTOR, ID_CUENTA_AUXILIAR";
-
-        } else {
-          throw Assertion.AssertNoReachThisCode();
         }
+
+        if (_command.DoNotReturnSubledgerAccounts && _command.ShowCascadeBalances) {
+          return "GROUP BY ID_MAYOR, ID_MONEDA, ID_CUENTA_ESTANDAR, ID_SECTOR";
+        }
+
+        if (_command.WithSubledgerAccount && _command.Consolidated) {
+          return "GROUP BY ID_MONEDA, ID_CUENTA_ESTANDAR, ID_SECTOR, ID_CUENTA_AUXILIAR";
+        }
+
+        if (_command.WithSubledgerAccount && _command.ShowCascadeBalances) {
+          return "GROUP BY ID_MAYOR, ID_MONEDA, ID_CUENTA_ESTANDAR, ID_SECTOR, ID_CUENTA_AUXILIAR";
+        }
+
+        throw Assertion.AssertNoReachThisCode();
       }
 
 
       private string GetOrderClause() {
         if (_command.Consolidated) {
           return "ORDER BY ID_MONEDA, NUMERO_CUENTA_ESTANDAR, ID_SECTOR";
-        } else if (_command.ShowCascadeBalances) {
-          return "ORDER BY ID_MAYOR, ID_MONEDA, NUMERO_CUENTA_ESTANDAR, ID_SECTOR";
-        } else {
-          throw Assertion.AssertNoReachThisCode();
         }
+
+        if (_command.ShowCascadeBalances) {
+          return "ORDER BY ID_MAYOR, ID_MONEDA, NUMERO_CUENTA_ESTANDAR, ID_SECTOR";
+        }
+
+        throw Assertion.AssertNoReachThisCode();
       }
 
 
@@ -202,63 +217,75 @@ namespace Empiria.FinancialAccounting.BalanceEngine.Data {
                  "NUMERO_CUENTA_ESTANDAR, ID_SECTOR, -1 AS ID_CUENTA_AUXILIAR, " +
                  "SALDO_ANTERIOR, DEBE, HABER, SALDO_ACTUAL, FECHA_ULTIMO_MOVIMIENTO, " +
                  "SALDO_PROMEDIO";
+        }
 
-        } else if (_command.DoNotReturnSubledgerAccounts && _command.ShowCascadeBalances) {
+        if (_command.DoNotReturnSubledgerAccounts && _command.ShowCascadeBalances) {
 
           return "ID_MAYOR, ID_MONEDA, ID_CUENTA_ESTANDAR, NUMERO_CUENTA_ESTANDAR, ID_SECTOR, " +
                  "-1 AS ID_CUENTA_AUXILIAR, SALDO_ANTERIOR, DEBE, HABER, SALDO_ACTUAL, FECHA_ULTIMO_MOVIMIENTO, " +
                  "SALDO_PROMEDIO";
+        }
 
-        } else if (_command.WithSubledgerAccount && _command.Consolidated) {
+        if (_command.WithSubledgerAccount && _command.Consolidated) {
 
           return "-1 AS ID_MAYOR, ID_MONEDA, ID_CUENTA_ESTANDAR, NUMERO_CUENTA_ESTANDAR, ID_SECTOR, " +
                  "ID_CUENTA_AUXILIAR, SALDO_ANTERIOR, DEBE, HABER, SALDO_ACTUAL, FECHA_ULTIMO_MOVIMIENTO, " +
                  "SALDO_PROMEDIO";
 
-        } else if (_command.WithSubledgerAccount && _command.ShowCascadeBalances) {
+        }
+
+        if (_command.WithSubledgerAccount && _command.ShowCascadeBalances) {
 
           return "ID_MAYOR, ID_MONEDA, ID_CUENTA_ESTANDAR, NUMERO_CUENTA_ESTANDAR, ID_SECTOR, " +
                  "ID_CUENTA_AUXILIAR, SALDO_ANTERIOR, DEBE, HABER, SALDO_ACTUAL, FECHA_ULTIMO_MOVIMIENTO, " +
                  "SALDO_PROMEDIO";
 
-        } else {
-          throw Assertion.AssertNoReachThisCode();
         }
 
+        throw Assertion.AssertNoReachThisCode();
       }
 
+
       private string GetAverageBalance() {
-
-        if (_command.WithAverageBalance) {
-          return $", SUM(CASE WHEN NATURALEZA = 'D' THEN (((TO_DATE( " +
-                 $"'{CommonMethods.FormatSqlDate(_command.InitialPeriod.ToDate)}','DD/MM/YYYY') - " +
-                 $"FECHA_AFECTACION + 1) * MOVIMIENTO) / {_command.InitialPeriod.ToDate.Day}) " +
-
-                 $"WHEN NATURALEZA = 'A' THEN (((TO_DATE( " +
-                 $"'{CommonMethods.FormatSqlDate(_command.InitialPeriod.ToDate)}','DD/MM/YYYY') - " +
-                 $"FECHA_AFECTACION + 1) * MOVIMIENTO) / {_command.InitialPeriod.ToDate.Day}) " +
-
-                 $"END) AS SALDO_PROMEDIO";
-        } else {
+        if (!_command.WithAverageBalance) {
           return ", 0 AS SALDO_PROMEDIO";
         }
 
+        return $", SUM(CASE WHEN NATURALEZA = 'D' THEN (((TO_DATE( " +
+                $"'{CommonMethods.FormatSqlDate(_command.InitialPeriod.ToDate)}','DD/MM/YYYY') - " +
+                $"FECHA_AFECTACION + 1) * MOVIMIENTO) / {_command.InitialPeriod.ToDate.Day}) " +
+
+                $"WHEN NATURALEZA = 'A' THEN (((TO_DATE( " +
+                $"'{CommonMethods.FormatSqlDate(_command.InitialPeriod.ToDate)}','DD/MM/YYYY') - " +
+                $"FECHA_AFECTACION + 1) * MOVIMIENTO) / {_command.InitialPeriod.ToDate.Day}) " +
+                $"END) AS SALDO_PROMEDIO";
       }
 
 
       private string GetAccountRangeFilter() {
+
+        if (_command.FromAccount.Length == 0 && _command.ToAccount.Length == 0) {
+          return string.Empty;
+        }
+
+        if (_command.FromAccount.Length != 0 && _command.ToAccount.Length == 0) {
+          return $"NUMERO_CUENTA_ESTANDAR LIKE '{_command.FromAccount}%'";
+        }
+
+        if (_command.FromAccount.Length == 0 && _command.ToAccount.Length != 0) {
+          return $"NUMERO_CUENTA_ESTANDAR <= '{_command.ToAccount}' AND " +
+                 $"NUMERO_CUENTA_ESTANDAR LIKE '{_command.ToAccount}%'";
+
+        }
+
         if (_command.FromAccount.Length != 0 && _command.ToAccount.Length != 0) {
+
           return $"NUMERO_CUENTA_ESTANDAR >= '{_command.FromAccount}' AND " +
                  $"(NUMERO_CUENTA_ESTANDAR <= '{_command.ToAccount}' OR " +
                  $"NUMERO_CUENTA_ESTANDAR LIKE '{_command.ToAccount}%')";
-        } else if (_command.FromAccount.Length != 0 && _command.ToAccount.Length == 0) {
-          return $"NUMERO_CUENTA_ESTANDAR LIKE '{_command.FromAccount}%'";
-        } else if (_command.FromAccount.Length == 0 && _command.ToAccount.Length != 0) {
-          return $"NUMERO_CUENTA_ESTANDAR <= '{_command.ToAccount}' AND " +
-                 $"NUMERO_CUENTA_ESTANDAR LIKE '{_command.ToAccount}%'";
-        } else {
-          return string.Empty;
         }
+
+        throw Assertion.AssertNoReachThisCode();
       }
 
 
@@ -276,8 +303,7 @@ namespace Empiria.FinancialAccounting.BalanceEngine.Data {
           return string.Empty;
         }
 
-        int[] ledgerIds = _command.Ledgers.Select(uid => Ledger.Parse(uid).Id)
-                                          .ToArray();
+        var ledgerIds = _command.Ledgers.Select(uid => Ledger.Parse(uid).Id);
 
         return $"ID_MAYOR IN ({String.Join(", ", ledgerIds)})";
       }
@@ -288,14 +314,12 @@ namespace Empiria.FinancialAccounting.BalanceEngine.Data {
           return string.Empty;
         }
 
-        int[] sectorIds = _command.Sectors.Select(uid => Sector.Parse(uid).Id)
-                                             .ToArray();
+        var sectorIds = _command.Sectors.Select(uid => Sector.Parse(uid).Id);
 
         return $"ID_SECTOR IN ({String.Join(", ", sectorIds)})";
       }
 
-
-      #endregion Private methods
+      #endregion Helpers
 
     } // private class BalancesDataServiceSqlFilters
 
