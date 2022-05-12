@@ -97,11 +97,10 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
     internal TrialBalanceEngine(TrialBalanceCommand command) {
       Assertion.AssertObject(command, "command");
 
-      command.Prepare();
+      SetCommandDefaultValues(command);
 
       this.Command = command;
     }
-
 
     public TrialBalanceCommand Command {
       get;
@@ -171,6 +170,14 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
         default:
           throw Assertion.AssertNoReachThisCode(
                     $"Unhandled trial balance type {this.Command.TrialBalanceType}.");
+      }
+    }
+
+
+    private void SetCommandDefaultValues(TrialBalanceCommand command) {
+      if (command.UseDefaultValuation) {
+        command.InitialPeriod.UseDefaultValuation = true;
+        command.FinalPeriod.UseDefaultValuation = true;
       }
     }
 

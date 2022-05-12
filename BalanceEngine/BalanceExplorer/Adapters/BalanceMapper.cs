@@ -10,8 +10,6 @@
 using System;
 using System.Collections.Generic;
 
-using Empiria.FinancialAccounting.BalanceEngine.Adapters;
-
 namespace Empiria.FinancialAccounting.BalanceEngine.BalanceExplorer.Adapters {
 
   /// <summary>Methods used to map balances.</summary>
@@ -28,27 +26,27 @@ namespace Empiria.FinancialAccounting.BalanceEngine.BalanceExplorer.Adapters {
     }
 
 
-    internal static TrialBalanceCommand MapToTrialBalanceCommand(BalanceCommand command) {
-      var trialBalanceCommand = new TrialBalanceCommand();
+    static internal FixedList<BalanceEntry> MapToBalance(FixedList<TrialBalanceEntry> entries) {
+      var mappedEntries = new List<BalanceEntry>();
 
-      trialBalanceCommand.AccountsChartUID = command.AccountsChartUID;
-      trialBalanceCommand.FromAccount = command.FromAccount;
-      trialBalanceCommand.InitialPeriod.FromDate = command.InitialPeriod.FromDate;
-      trialBalanceCommand.InitialPeriod.ToDate = command.InitialPeriod.ToDate;
-      trialBalanceCommand.SubledgerAccount = command.SubledgerAccount;
-      trialBalanceCommand.TrialBalanceType = command.TrialBalanceType;
-      trialBalanceCommand.BalancesType = command.BalancesType;
-      trialBalanceCommand.Ledgers = command.Ledgers;
-      //trialBalanceCommand.ShowCascadeBalances = true;
-      trialBalanceCommand.WithSubledgerAccount = command.WithSubledgerAccount;
+      foreach (var entry in entries) {
+        var balanceEntry = new BalanceEntry();
+        balanceEntry.ItemType = entry.ItemType == TrialBalanceItemType.Entry ?
+                                TrialBalanceItemType.Entry : entry.ItemType;
+        balanceEntry.Ledger = entry.Ledger;
+        balanceEntry.Currency = entry.Currency;
+        balanceEntry.Account = entry.Account;
+        balanceEntry.Sector = entry.Sector;
+        balanceEntry.SubledgerAccountId = entry.SubledgerAccountId;
+        balanceEntry.InitialBalance = Math.Round(entry.InitialBalance, 2);
+        balanceEntry.CurrentBalance = Math.Round(entry.CurrentBalance, 2);
+        balanceEntry.LastChangeDate = entry.LastChangeDate;
+        balanceEntry.DebtorCreditor = entry.DebtorCreditor;
+        mappedEntries.Add(balanceEntry);
+      }
 
-      //if (command.TrialBalanceType != TrialBalanceType.SaldosPorAuxiliarConsultaRapida) {
-      //  trialBalanceCommand.ShowCascadeBalances = command.WithSubledgerAccount;
-      //}
-
-      return trialBalanceCommand;
+      return mappedEntries.ToFixedList();
     }
-
 
     #endregion Public mappers
 
@@ -59,9 +57,6 @@ namespace Empiria.FinancialAccounting.BalanceEngine.BalanceExplorer.Adapters {
       List<DataTableColumn> columns = new List<DataTableColumn>();
       columns.Add(new DataTableColumn("ledgerNumber", "Deleg", "text"));
       columns.Add(new DataTableColumn("ledgerName", "Delegación", "text"));
-      //if (command.TrialBalanceType == TrialBalanceType.SaldosPorCuentaConsultaRapida) {
-      //  columns.Add(new DataTableColumn("ledgerName", "Delegación", "text"));
-      //}
       columns.Add(new DataTableColumn("currencyCode", "Mon", "text"));
       columns.Add(new DataTableColumn("accountNumber", "Cuenta / Auxiliar", "text-nowrap"));
       columns.Add(new DataTableColumn("sectorCode", "Sct", "text"));

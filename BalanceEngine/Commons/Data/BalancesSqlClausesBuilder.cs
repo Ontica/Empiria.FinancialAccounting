@@ -1,94 +1,73 @@
 ﻿/* Empiria Financial *****************************************************************************************
 *                                                                                                            *
-*  Module   : Balance Engine                             Component : Interface adapters                      *
-*  Assembly : FinancialAccounting.BalanceEngine.dll      Pattern   : Type Extension methods                  *
-*  Type     : TrialBalanceCommandExtensions              License   : Please read LICENSE.txt file            *
+*  Module   : Balance Engine                             Component : Data Layer                              *
+*  Assembly : FinancialAccounting.BalanceEngine.dll      Pattern   : Builder                                 *
+*  Type     : BalancesSqlClausesBuilder                  License   : Please read LICENSE.txt file            *
 *                                                                                                            *
-*  Summary  : Type extension methods for TrialBalanceCommand.                                                *
+*  Summary  : Builds BalancesSqlClauses instances.                                                           *
 *                                                                                                            *
 ************************* Copyright(c) La Vía Óntica SC, Ontica LLC and contributors. All rights reserved. **/
 using System;
 using System.Linq;
 
-namespace Empiria.FinancialAccounting.BalanceEngine.Adapters {
+using Empiria.FinancialAccounting.BalanceEngine.Adapters;
 
-  /// <summary>Type extension methods for TrialBalanceCommand.</summary>
-  static internal class TrialBalanceCommandExtensions {
+namespace Empiria.FinancialAccounting.BalanceEngine.Data {
 
-    #region Public methods
+  sealed internal partial class BalancesSqlClauses {
 
-    static internal TrialBalanceCommandData MapToTrialBalanceCommandData(
-                                              this TrialBalanceCommand command,
-                                              TrialBalanceCommandPeriod commandPeriod) {
-
-      var helper = new TrialBalanceClausesHelper(command);
-
-      return helper.GetTrialBalanceCommandData(commandPeriod);
-    }
-
-
-    static internal void Prepare(this TrialBalanceCommand command) {
-      if (command.UseDefaultValuation) {
-        command.InitialPeriod.UseDefaultValuation = true;
-        command.FinalPeriod.UseDefaultValuation = true;
-      }
-    }
-
-    #endregion Public methods
-
-
-    /// <summary>Private inner class that provides services used to build trial balance sql clauses.</summary>
-    private class TrialBalanceClausesHelper {
+    /// <summary>Builds BalancesSqlClauses instances.</summary>
+    sealed private class BalancesSqlClausesBuilder {
 
       private readonly TrialBalanceCommand _command;
 
-      internal TrialBalanceClausesHelper(TrialBalanceCommand command) {
+      internal BalancesSqlClausesBuilder(TrialBalanceCommand command) {
+        Assertion.AssertObject(command, nameof(command));
+
         this._command = command;
       }
 
-
       #region Public methods
 
-      internal TrialBalanceCommandData GetTrialBalanceCommandData(TrialBalanceCommandPeriod commandPeriod) {
-        var commandData = new TrialBalanceCommandData();
+      internal BalancesSqlClauses Build() {
+        var sqlClauses = new BalancesSqlClauses();
 
         var accountsChart = AccountsChart.Parse(_command.AccountsChartUID);
 
         StoredBalanceSet balanceSet = StoredBalanceSet.GetBestBalanceSet(
-                                        accountsChart, commandPeriod.FromDate);
+                                        accountsChart, _command.InitialPeriod.FromDate);
 
-        commandData.AccountsChart = accountsChart;
-        commandData.StoredInitialBalanceSet = balanceSet;
-        commandData.FromDate = _command.TrialBalanceType == TrialBalanceType.BalanzaValorizadaComparativa ?
-                               commandPeriod.ToDate.AddDays(1) : commandPeriod.FromDate;
+        sqlClauses.AccountsChart = accountsChart;
+        sqlClauses.StoredInitialBalanceSet = balanceSet;
+        sqlClauses.FromDate = _command.TrialBalanceType == TrialBalanceType.BalanzaValorizadaComparativa ?
+                               _command.InitialPeriod.ToDate.AddDays(1) : _command.InitialPeriod.FromDate;
 
-        if (commandData.FromDate == new DateTime(2022, 1, 1) &&
-            commandData.AccountsChart.Equals(AccountsChart.IFRS)) {
-          commandData.FromDate = new DateTime(2022, 1, 2);
+        if (sqlClauses.FromDate == new DateTime(2022, 1, 1) &&
+            sqlClauses.AccountsChart.Equals(AccountsChart.IFRS)) {
+          sqlClauses.FromDate = new DateTime(2022, 1, 2);
         }
 
-        commandData.ToDate = _command.TrialBalanceType == TrialBalanceType.BalanzaValorizadaComparativa ?
-                               _command.FinalPeriod.ToDate : commandPeriod.ToDate;
+        sqlClauses.ToDate = _command.TrialBalanceType == TrialBalanceType.BalanzaValorizadaComparativa ?
+                               _command.FinalPeriod.ToDate : _command.InitialPeriod.ToDate;
 
         if (_command.Ledgers.Count() == 1) {
           _command.ShowCascadeBalances = true;
         }
 
-        commandData.InitialFields = GetInitialFields();
-        commandData.Fields = GetOutputFields();
-        commandData.Filters = GetFilterString();
-        commandData.AccountFilters = GetAccountFilterString();
-        commandData.InitialGrouping = GetInitialGroupingClause();
-        commandData.Where = GetWhereClause();
-        commandData.Ordering = GetOrderClause();
+        sqlClauses.InitialFields = GetInitialFields();
+        sqlClauses.Fields = GetOutputFields();
+        sqlClauses.Filters = GetFilterString();
+        sqlClauses.AccountFilters = GetAccountFilterString();
+        sqlClauses.InitialGrouping = GetInitialGroupingClause();
+        sqlClauses.Where = GetWhereClause();
+        sqlClauses.Ordering = GetOrderClause();
 
-        commandData.AverageBalance = GetAverageBalance();
+        sqlClauses.AverageBalance = GetAverageBalance();
 
-        return commandData;
+        return sqlClauses;
       }
 
       #endregion Public methods
-
 
       #region Private methods
 
@@ -318,10 +297,8 @@ namespace Empiria.FinancialAccounting.BalanceEngine.Adapters {
 
       #endregion Private methods
 
+    } // private class BalancesDataServiceSqlFilters
 
-    } // private inner class TrialBalanceClausesHelper
+  }  // partial class BalancesSqlClauses
 
-
-  }  // class TrialBalanceCommandExtensions
-
-} // namespace Empiria.FinancialAccounting.BalanceEngine.Adapters
+} // namespace Empiria.FinancialAccounting.BalanceEngine.Data

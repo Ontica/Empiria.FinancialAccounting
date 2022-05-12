@@ -241,7 +241,7 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
 
     internal FixedList<TrialBalanceEntry> GetPostingEntries() {
 
-      FixedList<TrialBalanceEntry> postingEntries = GetTrialBalanceEntries(_command.InitialPeriod);
+      FixedList<TrialBalanceEntry> postingEntries = GetTrialBalanceEntries();
 
       if ((_command.ValuateBalances || _command.InitialPeriod.UseDefaultValuation) &&
           _command.TrialBalanceType != TrialBalanceType.BalanzaDolarizada &&
@@ -322,12 +322,12 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
       }
 
       if (_command.TrialBalanceType != TrialBalanceType.AnaliticoDeCuentas) {
-       
+
         returnedEntries = GetSummaryByLevelAndSector(returnedEntries.ToList());
 
         EmpiriaLog.Debug($"INNER GetSummaryByLevelAndSector(): {DateTime.Now.Subtract(startTime).TotalSeconds} seconds.");
       }
-      
+
 
       return returnedEntries;
     }
@@ -536,15 +536,13 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
     }
 
 
-    internal FixedList<TrialBalanceEntry> GetTrialBalanceEntries(TrialBalanceCommandPeriod commandPeriod) {
+    internal FixedList<TrialBalanceEntry> GetTrialBalanceEntries() {
 
       if (_command.TrialBalanceType == TrialBalanceType.BalanzaConContabilidadesEnCascada) {
         _command.ShowCascadeBalances = true;
       }
 
-      TrialBalanceCommandData commandData = _command.MapToTrialBalanceCommandData(commandPeriod);
-
-      return TrialBalanceDataService.GetTrialBalanceEntries(commandData);
+      return BalancesDataService.GetTrialBalanceEntries(_command);
     }
 
 
@@ -606,7 +604,7 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
                                           TrialBalanceItemType itemType) {
 
       TrialBalanceEntry entry = TrialBalanceMapper.MapToTrialBalanceEntry(balanceEntry);
-      
+
       if (entry.ItemType == TrialBalanceItemType.BalanceTotalCreditor) {
         entry.InitialBalance = -1 * entry.InitialBalance;
         entry.CurrentBalance = -1 * entry.CurrentBalance;

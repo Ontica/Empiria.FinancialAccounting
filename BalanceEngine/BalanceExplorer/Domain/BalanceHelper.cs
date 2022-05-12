@@ -13,9 +13,9 @@ using System.Collections.Generic;
 
 using Empiria.Collections;
 
+using Empiria.FinancialAccounting.BalanceEngine.Data;
+
 using Empiria.FinancialAccounting.BalanceEngine.BalanceExplorer.Adapters;
-using Empiria.FinancialAccounting.BalanceEngine.BalanceExplorer.Data;
-using Empiria.FinancialAccounting.BalanceEngine.Adapters;
 
 namespace Empiria.FinancialAccounting.BalanceEngine {
 
@@ -28,12 +28,11 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
       _command = command;
     }
 
+
     internal FixedList<BalanceEntry> GetBalanceEntries() {
+      FixedList<TrialBalanceEntry> entries = BalancesDataService.GetTrialBalanceEntries(_command);
 
-      TrialBalanceCommandData commandData = GetBalanceCommandMapped();
-
-      return GetTrialBalanceMappedToBalance(commandData);
-
+      return BalanceMapper.MapToBalance(entries);
     }
 
 
@@ -49,7 +48,7 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
 
       GenerateOrIncreaseBalances(headerByAccount, newEntry, newEntry.Account,
                                  Sector.Empty, balanceType, hash);
-      
+
     }
 
 
@@ -152,58 +151,8 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
       }
     }
 
-
-    private TrialBalanceCommandData GetBalanceCommandMapped() {
-
-      TrialBalanceCommand trialBalanceCommand = BalanceMapper.MapToTrialBalanceCommand(_command);
-
-      TrialBalanceCommandData commandData = trialBalanceCommand
-                                            .MapToTrialBalanceCommandData(trialBalanceCommand.InitialPeriod);
-
-      return commandData;
-    }
-
-
-    private FixedList<TrialBalanceEntry> GetTrialBalanceEntries(TrialBalanceCommandData commandData) {
-
-      return BalanceDataService.GetBalanceEntries(commandData);
-
-    }
-
-
-    private FixedList<BalanceEntry> GetTrialBalanceMappedToBalance(TrialBalanceCommandData commandData) {
-
-      FixedList<TrialBalanceEntry> entries = GetTrialBalanceEntries(commandData);
-
-      return MapToBalance(entries);
-    }
-
-
-    private FixedList<BalanceEntry> MapToBalance(FixedList<TrialBalanceEntry> entries) {
-      var mappedEntries = new List<BalanceEntry>();
-
-      foreach (var entry in entries) {
-        var balanceEntry = new BalanceEntry();
-        balanceEntry.ItemType = entry.ItemType == TrialBalanceItemType.Entry ? 
-                                TrialBalanceItemType.Entry : entry.ItemType;
-        balanceEntry.Ledger = entry.Ledger;
-        balanceEntry.Currency = entry.Currency;
-        balanceEntry.Account = entry.Account;
-        balanceEntry.Sector = entry.Sector;
-        balanceEntry.SubledgerAccountId = entry.SubledgerAccountId;
-        balanceEntry.InitialBalance = Math.Round(entry.InitialBalance, 2);
-        balanceEntry.CurrentBalance = Math.Round(entry.CurrentBalance, 2);
-        balanceEntry.LastChangeDate = entry.LastChangeDate;
-        balanceEntry.DebtorCreditor = entry.DebtorCreditor;
-        mappedEntries.Add(balanceEntry);
-      }
-      return mappedEntries.ToFixedList();
-    }
-
-    
-    
     #endregion
 
-  } // class BalanceHelper 
+  } // class BalanceHelper
 
 } // Empiria.FinancialAccounting.BalanceEngine

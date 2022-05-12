@@ -30,8 +30,7 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
 
       var helper = new AnalyticHelper(_command);
 
-      FixedList<TrialBalanceEntry> postingEntries = 
-                                   balanceHelper.GetTrialBalanceEntries(_command.InitialPeriod);
+      FixedList<TrialBalanceEntry> postingEntries = balanceHelper.GetTrialBalanceEntries();
 
       postingEntries = balanceHelper.GetSummaryToParentEntries(postingEntries);
 
