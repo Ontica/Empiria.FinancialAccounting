@@ -28,7 +28,7 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
     internal TrialBalance Build() {
       var balanceHelper = new TrialBalanceHelper(_command);
 
-      var helper = new AnalyticHelper(_command);
+      var helper = new AnaliticoDeCuentasHelper(_command);
 
       FixedList<TrialBalanceEntry> postingEntries = balanceHelper.GetTrialBalanceEntries();
 
@@ -55,25 +55,25 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
 
       balanceEntries = balanceHelper.RestrictLevels(balanceEntries);
 
-      FixedList<AnalyticBalanceEntry> analyticEntries =
+      FixedList<AnaliticoDeCuentasEntry> analyticEntries =
                                            helper.MergeTrialBalanceIntoAnalyticColumns(balanceEntries);
 
       analyticEntries = helper.CombineSubledgerAccountsWithSummaryEntries(
                                             analyticEntries, balanceEntries);
 
-      FixedList<AnalyticBalanceEntry> summaryGroupEntries =
+      FixedList<AnaliticoDeCuentasEntry> summaryGroupEntries =
                                             helper.GetTotalSummaryByGroup(analyticEntries);
 
       analyticEntries = helper.CombineSummaryGroupsAndEntries(
                                             analyticEntries, summaryGroupEntries);
 
-      List<AnalyticBalanceEntry> summaryTotalDeptorCreditorEntries =
+      List<AnaliticoDeCuentasEntry> summaryTotalDeptorCreditorEntries =
                                       helper.GetTotalDeptorCreditorEntries(
                                         analyticEntries);
       analyticEntries = helper.CombineTotalDeptorCreditorAndEntries(
                                             analyticEntries.ToList(), summaryTotalDeptorCreditorEntries);
 
-      List<AnalyticBalanceEntry> summaryTotalReport =
+      List<AnaliticoDeCuentasEntry> summaryTotalReport =
                                     helper.GenerateTotalReport(summaryTotalDeptorCreditorEntries);
 
       analyticEntries = helper.CombineTotalConsolidatedAndEntries(

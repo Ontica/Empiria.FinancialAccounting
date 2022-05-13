@@ -12,7 +12,7 @@ using System;
 namespace Empiria.FinancialAccounting.BalanceEngine {
 
   /// <summary>Represents an entry for a two columns balance entry.</summary>
-  public class AnalyticBalanceEntry : ITrialBalanceEntry {
+  public class AnaliticoDeCuentasEntry : ITrialBalanceEntry {
 
     public Ledger Ledger {
       get; internal set;
@@ -144,7 +144,8 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
       get; internal set;
     }
 
-    internal void Sum(AnalyticBalanceEntry entry) {
+
+    internal void Sum(AnaliticoDeCuentasEntry entry) {
       this.DomesticBalance += entry.DomesticBalance;
       this.ForeignBalance += entry.ForeignBalance;
       this.TotalBalance += entry.TotalBalance;

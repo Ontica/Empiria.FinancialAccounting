@@ -83,7 +83,7 @@ namespace Empiria.FinancialAccounting.FinancialReports {
 
 
     public override ReportEntryTotals Substract(ITrialBalanceEntryDto balance, string qualification) {
-      var analiticoBalance = (AnalyticBalanceEntryDto) balance;
+      var analiticoBalance = (AnaliticoDeCuentasEntryDto) balance;
 
       if (qualification == "MonedaExtranjera") {
         return new AnaliticoCuentasReportEntryTotals {
@@ -117,7 +117,7 @@ namespace Empiria.FinancialAccounting.FinancialReports {
 
 
     public override ReportEntryTotals Sum(ITrialBalanceEntryDto balance, string qualification) {
-      var analiticoBalance = (AnalyticBalanceEntryDto) balance;
+      var analiticoBalance = (AnaliticoDeCuentasEntryDto) balance;
 
       if (qualification == "MonedaExtranjera") {
         return new AnaliticoCuentasReportEntryTotals {
@@ -154,7 +154,7 @@ namespace Empiria.FinancialAccounting.FinancialReports {
 
 
     public override ReportEntryTotals SumDebitsOrSubstractCredits(ITrialBalanceEntryDto balance, string qualification) {
-      var analiticoBalance = (AnalyticBalanceEntryDto) balance;
+      var analiticoBalance = (AnaliticoDeCuentasEntryDto) balance;
 
       if (analiticoBalance.DebtorCreditor == DebtorCreditorType.Deudora) {
         return Sum(balance, qualification);

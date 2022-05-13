@@ -205,13 +205,12 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
         entry.DebtorCreditor = entry.Account.DebtorCreditor;
       }
 
-      returnedList = returnedList.OrderBy(a => a.Currency.Code)
+      return returnedList.OrderBy(a => a.Currency.Code)
                                  .ThenBy(a => a.Account.Number)
                                  .ThenBy(a => a.Sector.Code)
                                  .ThenByDescending(a => a.Account.DebtorCreditor)
                                  .ThenBy(a => a.Ledger.Number)
                                  .ToList();
-      return returnedList;
     }
 
 

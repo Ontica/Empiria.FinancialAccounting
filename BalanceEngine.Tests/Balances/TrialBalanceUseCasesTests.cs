@@ -13,7 +13,6 @@ using Xunit;
 using Empiria.FinancialAccounting.BalanceEngine.Adapters;
 using Empiria.FinancialAccounting.BalanceEngine.UseCases;
 using Empiria.FinancialAccounting.BalanceEngine;
-using System.Collections.Generic;
 
 namespace Empiria.FinancialAccounting.Tests.Balances {
 

@@ -15,7 +15,7 @@ namespace Empiria.FinancialAccounting.BalanceEngine.Adapters {
 
   /// <summary>Output DTO used to return the entries of a analytic balance with separated domestic
   /// and foreign currencies totals.</summary>
-  public class AnalyticBalanceEntryDto : ITrialBalanceEntryDto {
+  public class AnaliticoDeCuentasEntryDto : ITrialBalanceEntryDto {
 
     public TrialBalanceItemType ItemType {
       get; internal set;
@@ -61,11 +61,6 @@ namespace Empiria.FinancialAccounting.BalanceEngine.Adapters {
     public string AccountNumberForBalances {
       get; internal set;
     }
-
-
-    public string StandardAccountNumber {
-      get; internal set;
-    } = string.Empty;
 
 
     public string SubledgerAccountNumber {

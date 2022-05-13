@@ -46,9 +46,9 @@ namespace Empiria.FinancialAccounting.BalanceEngine.Adapters {
       return newEntry;
     }
 
-    static internal AnalyticBalanceEntry MapToAnalyticBalanceEntry(
-                                                AnalyticBalanceEntry balanceEntry) {
-      var entry = new AnalyticBalanceEntry();
+    static internal AnaliticoDeCuentasEntry MapToAnalyticBalanceEntry(
+                                                AnaliticoDeCuentasEntry balanceEntry) {
+      var entry = new AnaliticoDeCuentasEntry();
       entry.Account = balanceEntry.Account;
       entry.AccountId = balanceEntry.AccountId;
       entry.SubledgerAccountId = balanceEntry.SubledgerAccountId;
@@ -84,7 +84,7 @@ namespace Empiria.FinancialAccounting.BalanceEngine.Adapters {
                                                         FixedList<ITrialBalanceEntry> list) {
       switch (command.TrialBalanceType) {
         case TrialBalanceType.AnaliticoDeCuentas:
-          return MapToAnaliticoCuentas(list);
+          return AnaliticoDeCuentasMapper.MapToAnaliticoDeCuentas(list);
 
         case TrialBalanceType.Balanza:
         case TrialBalanceType.BalanzaConContabilidadesEnCascada:
@@ -127,66 +127,7 @@ namespace Empiria.FinancialAccounting.BalanceEngine.Adapters {
       }
     }
 
-    private static FixedList<ITrialBalanceEntryDto> MapToAnaliticoCuentas(FixedList<ITrialBalanceEntry> list) {
-      var mappedItems = list.Select((x) => MapToAnaliticoCuentas((AnalyticBalanceEntry) x));
-
-      return new FixedList<ITrialBalanceEntryDto>(mappedItems);
-    }
-
-
-    static private AnalyticBalanceEntryDto MapToAnaliticoCuentas(AnalyticBalanceEntry entry) {
-      var dto = new AnalyticBalanceEntryDto();
-      SubledgerAccount subledgerAccount = SubledgerAccount.Parse(entry.SubledgerAccountId);
-
-      dto.ItemType = entry.ItemType;
-      dto.LedgerUID = entry.Ledger.UID != "Empty" ? entry.Ledger.UID : "";
-      dto.LedgerNumber = entry.Ledger.Number;
-      dto.LedgerName = entry.Ledger.Name;
-      dto.StandardAccountId = entry.Account.Id;
-      dto.CurrencyCode = entry.Currency.Code;
-      if (entry.GroupName.Length == 0) {
-        dto.StandardAccountNumber = entry.Account.Number;
-      } else {
-        dto.StandardAccountNumber = entry.GroupNumber;
-      }
-      if (!subledgerAccount.IsEmptyInstance) {
-        dto.AccountName = subledgerAccount.Name;
-        dto.AccountNumber = subledgerAccount.Number;
-        dto.SubledgerAccountNumber = subledgerAccount.Number;
-
-      } else if (entry.HasSector) {
-        dto.AccountName = entry.Sector.Name;
-        dto.AccountNumber = entry.Account.Number;
-
-      } else if (entry.GroupName.Length != 0) {
-        dto.AccountName = entry.GroupName;
-        dto.AccountNumber = entry.GroupNumber;
-      } else {
-        dto.AccountName = entry.Account.Name;
-        dto.AccountNumber = entry.Account.Number != "Empty" ? entry.Account.Number : "";
-      }
-      dto.AccountNumberForBalances = entry.Account.Number;
-      dto.DebtorCreditor = entry.DebtorCreditor;
-      dto.AccountRole = entry.Account.Role;
-      dto.AccountLevel = entry.Account.Level;
-      dto.SectorCode = entry.Sector.Code;
-      dto.SubledgerAccountId = entry.SubledgerAccountId;
-      dto.InitialBalance = entry.InitialBalance;
-      dto.Debit = entry.Debit;
-      dto.Credit = entry.Credit;
-      dto.DomesticBalance = entry.DomesticBalance;
-      dto.ForeignBalance = entry.ForeignBalance;
-      dto.TotalBalance = entry.TotalBalance;
-      dto.ExchangeRate = entry.ExchangeRate;
-      dto.AverageBalance = entry.AverageBalance;
-      dto.IsParentPostingEntry = entry.IsParentPostingEntry;
-      dto.LastChangeDate = entry.LastChangeDate != null ? entry.LastChangeDate :
-                           ExecutionServer.DateMaxValue;
-
-      return dto;
-    }
-
-
+    
     static private TrialBalanceEntryDto MapToBalancesByAccount(TrialBalanceEntry entry,
                                                           TrialBalanceCommand command) {
       var dto = new TrialBalanceEntryDto();

@@ -82,8 +82,6 @@ namespace Empiria.FinancialAccounting.Tests.Balances {
       command.ShowCascadeBalances = true;
       command.UseDefaultValuation = true;
       command.WithSubledgerAccount = false;
-      command.FromAccount = "1.02.02.01.01.01.01";
-      command.ToAccount = "1.02.02.01.01.01.01";
 
       TrialBalanceDto trialBalance = _usecases.BuildBalances(command);
       command.TrialBalanceType = TrialBalanceType.AnaliticoDeCuentas;
@@ -95,7 +93,7 @@ namespace Empiria.FinancialAccounting.Tests.Balances {
       Assert.NotEmpty(twoColumns.Entries);
 
       var _trialBalance = trialBalance.Entries.Select(x => (TrialBalanceEntryDto) x);
-      var _twoColumnsEntries = twoColumns.Entries.Select(x => (AnalyticBalanceEntryDto) x);
+      var _twoColumnsEntries = twoColumns.Entries.Select(x => (AnaliticoDeCuentasEntryDto) x);
       var domesticWrongEntries = 0;
 
       foreach (var entry in _twoColumnsEntries.Where(a => a.ItemType == TrialBalanceItemType.Entry)) {
@@ -132,7 +130,7 @@ namespace Empiria.FinancialAccounting.Tests.Balances {
       Assert.NotEmpty(twoColumns.Entries);
 
       var _trialBalance = trialBalance.Entries.Select(x => (TrialBalanceEntryDto) x);
-      var _twoColumnsEntries = twoColumns.Entries.Select(x => (AnalyticBalanceEntryDto) x);
+      var _twoColumnsEntries = twoColumns.Entries.Select(x => (AnaliticoDeCuentasEntryDto) x);
       var foreignWrongEntries = 0;
 
       foreach (var entry in _twoColumnsEntries.Where(a => a.ItemType == TrialBalanceItemType.Entry)) {
@@ -185,7 +183,34 @@ namespace Empiria.FinancialAccounting.Tests.Balances {
     }
 
 
+    [Fact]
+    public void Should_Match_Totals_In_Balanza_Contabilidades_Cascada() {
+      TrialBalanceCommand command = GetDefaultTrialBalanceCommand();
 
+      command.TrialBalanceType = TrialBalanceType.BalanzaConContabilidadesEnCascada;
+      command.BalancesType = BalancesType.WithCurrentBalanceOrMovements;
+      command.UseDefaultValuation = false;
+      command.WithSubledgerAccount = false;
+      command.WithAverageBalance = false;
+      command.ShowCascadeBalances = true;
+
+      TrialBalanceDto trialBalance = _usecases.BuildBalances(command);
+
+      Assert.NotNull(trialBalance);
+      Assert.Equal(command, trialBalance.Command);
+      Assert.NotEmpty(trialBalance.Entries);
+
+      var _trialBalance = trialBalance.Entries.Select(x => (TrialBalanceEntryDto) x);
+
+      var totalDebtorsCreditors = GetTotalDebtorsCreditors(_trialBalance);
+
+      var totalCurrencies = _trialBalance.Where(a => a.ItemType == TrialBalanceItemType.BalanceTotalCurrency)
+                                         .Sum(a => a.CurrentBalance);
+
+      Assert.True(totalDebtorsCreditors == totalCurrencies);
+    }
+
+    
     [Fact]
     public void Should_Match_BalanceBySubledger_With_Trial_Balance() {
       TrialBalanceCommand command = GetDefaultTrialBalanceCommand();
@@ -193,8 +218,6 @@ namespace Empiria.FinancialAccounting.Tests.Balances {
       command.BalancesType = BalancesType.WithCurrentBalance;
       command.ShowCascadeBalances = true;
       command.WithSubledgerAccount = true;
-      command.FromAccount = "1";
-      command.ToAccount = "1";
 
       TrialBalanceDto balanceBySubledger = _usecases.BuildBalances(command);
       command.TrialBalanceType = TrialBalanceType.Balanza;
@@ -230,8 +253,6 @@ namespace Empiria.FinancialAccounting.Tests.Balances {
       command.ShowCascadeBalances = true;
       command.TrialBalanceType = TrialBalanceType.SaldosPorCuenta;
       command.WithSubledgerAccount = true;
-      command.FromAccount = "2";
-      command.ToAccount = "3";
 
       TrialBalanceDto balanceByAccount = _usecases.BuildBalances(command);
       command.TrialBalanceType = TrialBalanceType.Balanza;
@@ -355,6 +376,19 @@ namespace Empiria.FinancialAccounting.Tests.Balances {
 
 
     #region Private methods
+
+
+    private decimal GetTotalDebtorsCreditors(IEnumerable<TrialBalanceEntryDto> _trialBalance) {
+
+      var totalDeptors = _trialBalance.Where(a => a.ItemType == TrialBalanceItemType.BalanceTotalDebtor)
+                                      .Sum(a => a.CurrentBalance);
+
+      var totalCreditors = _trialBalance.Where(a => a.ItemType == TrialBalanceItemType.BalanceTotalCreditor)
+                                        .Sum(a => a.CurrentBalance);
+
+      return (decimal) (totalDeptors - totalCreditors);
+    }
+
 
     private int Should_Match_With_Dollar_Currency(IEnumerable<ValuedTrialBalanceDto> dollarizedBalance,
                                                   IEnumerable<TrialBalanceEntryDto> trialBalance) {

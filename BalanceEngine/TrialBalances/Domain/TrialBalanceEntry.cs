@@ -208,8 +208,8 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
     }
 
 
-    internal AnalyticBalanceEntry MapToAnalyticBalanceEntry() {
-      return new AnalyticBalanceEntry {
+    internal AnaliticoDeCuentasEntry MapToAnalyticBalanceEntry() {
+      return new AnaliticoDeCuentasEntry {
         Account = this.Account,
         SubledgerAccountId = this.SubledgerAccountId,
         SubledgerAccountNumber = this.SubledgerAccountNumber,
