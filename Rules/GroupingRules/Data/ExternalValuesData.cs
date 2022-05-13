@@ -40,7 +40,7 @@ namespace Empiria.FinancialAccounting.Rules.Data {
     static internal ExternalValue GetValue(string externalVariableCode, DateTime date) {
       var sql = "SELECT * FROM COF_CONCEPTOS_VALORES " +
                $"WHERE CLAVE_VARIABLE = '{externalVariableCode}' " +
-               $"AND FECHA = '{CommonMethods.FormatSqlDate(date)}'";
+               $"AND FECHA = {CommonMethods.FormatSqlDbDate(date)}";
 
       var dataOperation = DataOperation.Parse(sql);
 

@@ -91,8 +91,8 @@ namespace Empiria.FinancialAccounting.BanobrasIntegration.TransactionSlips {
           throw Assertion.AssertNoReachThisCode();
       }
 
-      return $"'{CommonMethods.FormatSqlDate(_command.FromDate)}' <= {fieldName} " +
-             $"AND {fieldName} <= '{CommonMethods.FormatSqlDate(_command.ToDate)}'";
+      return $"{CommonMethods.FormatSqlDbDate(_command.FromDate)} <= {fieldName} " +
+             $"AND {fieldName} <= {CommonMethods.FormatSqlDbDate(_command.ToDate)}";
     }
 
 

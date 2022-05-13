@@ -250,15 +250,9 @@ namespace Empiria.FinancialAccounting.BalanceEngine.Data {
         if (!_command.WithAverageBalance) {
           return ", 0 AS SALDO_PROMEDIO";
         }
-
-        return $", SUM(CASE WHEN NATURALEZA = 'D' THEN (((TO_DATE( " +
-                $"'{CommonMethods.FormatSqlDate(_command.InitialPeriod.ToDate)}','DD/MM/YYYY') - " +
-                $"FECHA_AFECTACION + 1) * MOVIMIENTO) / {_command.InitialPeriod.ToDate.Day}) " +
-
-                $"WHEN NATURALEZA = 'A' THEN (((TO_DATE( " +
-                $"'{CommonMethods.FormatSqlDate(_command.InitialPeriod.ToDate)}','DD/MM/YYYY') - " +
-                $"FECHA_AFECTACION + 1) * MOVIMIENTO) / {_command.InitialPeriod.ToDate.Day}) " +
-                $"END) AS SALDO_PROMEDIO";
+        return $", SUM((({CommonMethods.FormatSqlDbDate(_command.InitialPeriod.ToDate)} - " +
+                        $"FECHA_AFECTACION + 1) * MOVIMIENTO) / {_command.InitialPeriod.ToDate.Day}) " +
+                $" AS SALDO_PROMEDIO";
       }
 
 

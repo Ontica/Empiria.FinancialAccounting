@@ -112,12 +112,12 @@ namespace Empiria.FinancialAccounting.BanobrasIntegration.VouchersImporter {
       if (forEncabezados) {
         return $"(ENC_SISTEMA = {idSistema} AND " +
                 $"ENC_TIPO_CONT = {tipoContabilidad} AND " +
-                $"ENC_FECHA_VOL = '{CommonMethods.FormatSqlDate(fechaAfectacion)}')";
+                $"ENC_FECHA_VOL = {CommonMethods.FormatSqlDbDate(fechaAfectacion)})";
 
       } else {
         return $"(MCO_SISTEMA = {idSistema} AND " +
                 $"MCO_TIPO_CONT = {tipoContabilidad} AND " +
-                $"MCO_FECHA_VOL = '{CommonMethods.FormatSqlDate(fechaAfectacion)}')";
+                $"MCO_FECHA_VOL = {CommonMethods.FormatSqlDbDate(fechaAfectacion)})";
 
       }
     }

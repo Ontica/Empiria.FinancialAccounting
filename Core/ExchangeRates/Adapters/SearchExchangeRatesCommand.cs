@@ -81,9 +81,8 @@ namespace Empiria.FinancialAccounting.Adapters {
 
 
     private static string BuildPeriodFilter(SearchExchangeRatesCommand command) {
-      return SearchExpression.ParseBetweenValues("FROM_DATE",
-                                                 CommonMethods.FormatSqlDate(command.FromDate),
-                                                 CommonMethods.FormatSqlDate(command.ToDate));
+      return $"({CommonMethods.FormatSqlDbDate(command.FromDate)} <= FROM_DATE AND " +
+             $"FROM_DATE <= {CommonMethods.FormatSqlDbDate(command.ToDate)})";
     }
 
 

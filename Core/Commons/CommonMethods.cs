@@ -18,12 +18,14 @@ namespace Empiria.FinancialAccounting {
 
     #region Public methods
 
-    static public string FormatSqlDate(DateTime date) {
-      return $"{date.Date.ToString("dd/MMM/yyyy")}";
+    static public string FormatSqlDbDate(DateTime date) {
+      string dateAsString = date.Date.ToString("yyyy-MM-dd");
+
+      return $"TO_DATE('{dateAsString}', 'yyyy-MM-dd')";
     }
 
 
-    static public string FormatSqlDateTime(DateTime date) {
+    static public string FormatSqlDbDateTime(DateTime date) {
       string dateTimeAsString = date.ToString("yyyy-MM-dd HH:mm:ss");
 
       return $"TO_DATE('{dateTimeAsString}', 'yyyy-MM-dd hh24:mi:ss')";

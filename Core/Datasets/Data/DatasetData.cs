@@ -21,7 +21,7 @@ namespace Empiria.FinancialAccounting.Datasets.Data {
       var sql = "SELECT * " +
                 "FROM COF_ARCHIVOS " +
                $"WHERE ID_TIPO_ARCHIVO = {datasetFamily.Id} AND STATUS <> 'X' AND " +
-               $"FECHA_OPERACION = '{CommonMethods.FormatSqlDate(date)}' " +
+               $"FECHA_OPERACION = {CommonMethods.FormatSqlDbDate(date)} " +
                $"ORDER BY ID_ARCHIVO";
 
       var operation = DataOperation.Parse(sql);
@@ -34,7 +34,7 @@ namespace Empiria.FinancialAccounting.Datasets.Data {
       var sql = "SELECT * " +
           "FROM COF_ARCHIVOS " +
          $"WHERE ID_TIPO_ARCHIVO = {datasetFamily.Id} AND STATUS <> 'X' AND " +
-         $"FECHA_ACTUALIZACION <= {CommonMethods.FormatSqlDateTime(date)} " +
+         $"FECHA_ACTUALIZACION <= {CommonMethods.FormatSqlDbDateTime(date)} " +
          $"ORDER BY ID_ARCHIVO";
 
       var operation = DataOperation.Parse(sql);

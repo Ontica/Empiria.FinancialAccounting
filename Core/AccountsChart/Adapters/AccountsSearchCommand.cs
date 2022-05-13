@@ -167,9 +167,9 @@ namespace Empiria.FinancialAccounting.Adapters {
         date = DateTime.Today;
       }
 
-      string formattedDate = CommonMethods.FormatSqlDate(date.Value);
+      string formattedDate = CommonMethods.FormatSqlDbDate(date.Value);
 
-      return $"FECHA_INICIO <= '{formattedDate}' AND '{formattedDate}' <= FECHA_FIN";
+      return $"FECHA_INICIO <= {formattedDate} AND {formattedDate} <= FECHA_FIN";
     }
 
 

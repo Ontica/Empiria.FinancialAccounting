@@ -65,7 +65,9 @@ namespace Empiria.FinancialAccounting.Data {
 
     static internal FixedList<LedgerAccount> SearchAssignedAccountsForEdition(Ledger ledger, DateTime date, string filter) {
       var dataOperation = DataOperation.Parse("@qry_cof_busca_cuentas_para_edicion",
-                                              ledger.Id, CommonMethods.FormatSqlDate(date), filter);
+                                              ledger.Id,
+                                              CommonMethods.FormatSqlDbDate(date),
+                                              filter);
 
       return DataReader.GetFixedList<LedgerAccount>(dataOperation);
     }
@@ -76,8 +78,8 @@ namespace Empiria.FinancialAccounting.Data {
       string sql = "SELECT * FROM VW_COF_CUENTA_ESTANDAR_HIST WHERE " +
                   $"id_tipo_cuentas_std = {ledger.AccountsChart.Id} AND " +
                   $"rol_cuenta <> 'S' AND " +
-                  $"fecha_inicio <= '{CommonMethods.FormatSqlDate(date)}' AND " +
-                  $"'{CommonMethods.FormatSqlDate(date)}' <= fecha_fin AND " +
+                  $"fecha_inicio <= {CommonMethods.FormatSqlDbDate(date)} AND " +
+                  $"{CommonMethods.FormatSqlDbDate(date)} <= fecha_fin AND " +
                   $"{filter} AND " +
                   $"id_cuenta_estandar NOT IN " +
                         $"(SELECT id_cuenta_estandar FROM COF_CUENTA WHERE id_mayor = {ledger.Id}) " +

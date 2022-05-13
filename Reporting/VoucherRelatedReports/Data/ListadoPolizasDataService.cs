@@ -19,8 +19,8 @@ namespace Empiria.FinancialAccounting.Reporting.Data {
 
     static internal FixedList<PolizaEntry> GetPolizasEntries(PolizaCommandData command) {
       var operation = DataOperation.Parse("@qryVouchers",
-                                          CommonMethods.FormatSqlDate(command.FromDate),
-                                          CommonMethods.FormatSqlDate(command.ToDate),
+                                          CommonMethods.FormatSqlDbDate(command.FromDate),
+                                          CommonMethods.FormatSqlDbDate(command.ToDate),
                                           command.Ledgers,
                                           command.AccountsChart.Id);
 

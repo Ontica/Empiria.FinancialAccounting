@@ -68,8 +68,8 @@ namespace Empiria.FinancialAccounting.Vouchers.Adapters {
         return string.Empty;
       }
 
-      string filter = $"'{CommonMethods.FormatSqlDate(command.FromDate)}' <= @DATE_FIELD@ AND " +
-                      $"@DATE_FIELD@ < '{CommonMethods.FormatSqlDate(command.ToDate.Date.AddDays(1))}'";
+      string filter = $"{CommonMethods.FormatSqlDbDate(command.FromDate)} <= @DATE_FIELD@ AND " +
+                      $"@DATE_FIELD@ < {CommonMethods.FormatSqlDbDate(command.ToDate.Date.AddDays(1))}";
 
       if (command.DateSearchField == DateSearchField.AccountingDate) {
         return filter.Replace("@DATE_FIELD@", "FECHA_AFECTACION");

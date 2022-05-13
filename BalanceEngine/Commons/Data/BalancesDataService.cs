@@ -40,9 +40,9 @@ namespace Empiria.FinancialAccounting.BalanceEngine.Data {
 
     static private FixedList<TrialBalanceEntry> GetTrialBalanceEntries(BalancesSqlClauses clauses) {
       var operation = DataOperation.Parse("@qryTrialBalance",
-                            CommonMethods.FormatSqlDate(clauses.StoredInitialBalanceSet.BalancesDate),
-                            CommonMethods.FormatSqlDate(clauses.FromDate),
-                            CommonMethods.FormatSqlDate(clauses.ToDate),
+                            CommonMethods.FormatSqlDbDate(clauses.StoredInitialBalanceSet.BalancesDate),
+                            CommonMethods.FormatSqlDbDate(clauses.FromDate),
+                            CommonMethods.FormatSqlDbDate(clauses.ToDate),
                             clauses.StoredInitialBalanceSet.Id,
                             clauses.Fields,
                             clauses.Filters,
