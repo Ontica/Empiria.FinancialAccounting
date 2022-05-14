@@ -14,26 +14,17 @@ using System.Collections.Generic;
 using Xunit;
 
 using Empiria.FinancialAccounting.BalanceEngine.Adapters;
-using Empiria.FinancialAccounting.BalanceEngine.UseCases;
 using Empiria.FinancialAccounting.BalanceEngine;
 
-namespace Empiria.FinancialAccounting.Tests.Balances {
+namespace Empiria.FinancialAccounting.Tests.BalanceEngine {
 
   /// <summary>Test cases for comparison between trial balance reports.</summary>
   public class TrialBalanceComparatorUseCasesTests {
-
-    #region Fields
-
-    private readonly TrialBalanceComparatorUseCases _usecases;
-
-    #endregion Fields
 
     #region Initialization
 
     public TrialBalanceComparatorUseCasesTests() {
       CommonMethods.Authenticate();
-
-      _usecases = TrialBalanceComparatorUseCases.UseCaseInteractor();
     }
 
     #endregion Initialization
@@ -46,10 +37,10 @@ namespace Empiria.FinancialAccounting.Tests.Balances {
       command.TrialBalanceType = TrialBalanceType.GeneracionDeSaldos;
       command.ShowCascadeBalances = false;
       command.WithSubledgerAccount = false;
-
-      TrialBalanceDto balances = _usecases.BuildBalances(command);
+      
+      TrialBalanceDto balances = BalanceEngineUseCaseProxy.BuildTrialBalance(command);
       command.TrialBalanceType = TrialBalanceType.Balanza;
-      TrialBalanceDto trialBalance = _usecases.BuildBalances(command);
+      TrialBalanceDto trialBalance = BalanceEngineUseCaseProxy.BuildTrialBalance(command);
 
       Assert.NotNull(balances);
       Assert.NotEmpty(balances.Entries);
@@ -84,9 +75,9 @@ namespace Empiria.FinancialAccounting.Tests.Balances {
       command.UseDefaultValuation = true;
       command.WithSubledgerAccount = false;
 
-      TrialBalanceDto trialBalance = _usecases.BuildBalances(command);
+      TrialBalanceDto trialBalance = BalanceEngineUseCaseProxy.BuildTrialBalance(command);
       command.TrialBalanceType = TrialBalanceType.AnaliticoDeCuentas;
-      TrialBalanceDto twoColumns = _usecases.BuildBalances(command);
+      TrialBalanceDto twoColumns = BalanceEngineUseCaseProxy.BuildTrialBalance(command);
 
       Assert.NotNull(trialBalance);
       Assert.NotEmpty(trialBalance.Entries);
@@ -121,9 +112,9 @@ namespace Empiria.FinancialAccounting.Tests.Balances {
       command.ShowCascadeBalances = false;
       command.UseDefaultValuation = true;
 
-      TrialBalanceDto trialBalance = _usecases.BuildBalances(command);
+      TrialBalanceDto trialBalance = BalanceEngineUseCaseProxy.BuildTrialBalance(command);
       command.TrialBalanceType = TrialBalanceType.AnaliticoDeCuentas;
-      TrialBalanceDto twoColumns = _usecases.BuildBalances(command);
+      TrialBalanceDto twoColumns = BalanceEngineUseCaseProxy.BuildTrialBalance(command);
 
       Assert.NotNull(trialBalance);
       Assert.NotEmpty(trialBalance.Entries);
@@ -158,9 +149,9 @@ namespace Empiria.FinancialAccounting.Tests.Balances {
       command.BalancesType = BalancesType.WithCurrentBalanceOrMovements;
       command.ShowCascadeBalances = true;
 
-      TrialBalanceDto trialBalance = _usecases.BuildBalances(command);
+      TrialBalanceDto trialBalance = BalanceEngineUseCaseProxy.BuildTrialBalance(command);
       command.TrialBalanceType = TrialBalanceType.BalanzaConContabilidadesEnCascada;
-      TrialBalanceDto cascadeBalance = _usecases.BuildBalances(command);
+      TrialBalanceDto cascadeBalance = BalanceEngineUseCaseProxy.BuildTrialBalance(command);
 
       Assert.NotNull(trialBalance);
       Assert.NotEmpty(trialBalance.Entries);
@@ -195,7 +186,7 @@ namespace Empiria.FinancialAccounting.Tests.Balances {
       command.WithAverageBalance = false;
       command.ShowCascadeBalances = true;
 
-      TrialBalanceDto trialBalance = _usecases.BuildBalances(command);
+      TrialBalanceDto trialBalance = BalanceEngineUseCaseProxy.BuildTrialBalance(command);
 
       Assert.NotNull(trialBalance);
       Assert.Equal(command, trialBalance.Command);
@@ -220,9 +211,9 @@ namespace Empiria.FinancialAccounting.Tests.Balances {
       command.ShowCascadeBalances = true;
       command.WithSubledgerAccount = true;
 
-      TrialBalanceDto balanceBySubledger = _usecases.BuildBalances(command);
+      TrialBalanceDto balanceBySubledger = BalanceEngineUseCaseProxy.BuildTrialBalance(command);
       command.TrialBalanceType = TrialBalanceType.Balanza;
-      TrialBalanceDto trialBalance = _usecases.BuildBalances(command);
+      TrialBalanceDto trialBalance = BalanceEngineUseCaseProxy.BuildTrialBalance(command);
 
       Assert.NotNull(trialBalance);
       Assert.NotEmpty(trialBalance.Entries);
@@ -255,9 +246,9 @@ namespace Empiria.FinancialAccounting.Tests.Balances {
       command.TrialBalanceType = TrialBalanceType.SaldosPorCuenta;
       command.WithSubledgerAccount = true;
 
-      TrialBalanceDto balanceByAccount = _usecases.BuildBalances(command);
+      TrialBalanceDto balanceByAccount = BalanceEngineUseCaseProxy.BuildTrialBalance(command);
       command.TrialBalanceType = TrialBalanceType.Balanza;
-      TrialBalanceDto trialBalance = _usecases.BuildBalances(command);
+      TrialBalanceDto trialBalance = BalanceEngineUseCaseProxy.BuildTrialBalance(command);
 
       Assert.NotNull(trialBalance);
       Assert.NotEmpty(trialBalance.Entries);
@@ -290,9 +281,9 @@ namespace Empiria.FinancialAccounting.Tests.Balances {
       command.BalancesType = BalancesType.WithCurrentBalanceOrMovements;
       command.ShowCascadeBalances = false;
 
-      TrialBalanceDto trialBalance = _usecases.BuildBalances(command);
+      TrialBalanceDto trialBalance = BalanceEngineUseCaseProxy.BuildTrialBalance(command);
       command.TrialBalanceType = TrialBalanceType.BalanzaEnColumnasPorMoneda;
-      TrialBalanceDto balancesByCurrency = _usecases.BuildBalances(command);
+      TrialBalanceDto balancesByCurrency = BalanceEngineUseCaseProxy.BuildTrialBalance(command);
 
       Assert.NotNull(trialBalance);
       Assert.NotEmpty(trialBalance.Entries);
@@ -347,13 +338,13 @@ namespace Empiria.FinancialAccounting.Tests.Balances {
       command.ShowCascadeBalances = false;
       command.UseDefaultValuation = true;
 
-      TrialBalanceDto dollarizedBalance = _usecases.BuildBalances(command);
+      TrialBalanceDto dollarizedBalance = BalanceEngineUseCaseProxy.BuildTrialBalance(command);
       command.UseDefaultValuation = false;
       command.InitialPeriod.UseDefaultValuation = false;
       command.InitialPeriod.ValuateToCurrrencyUID = "";
       command.InitialPeriod.ExchangeRateTypeUID = "";
       command.TrialBalanceType = TrialBalanceType.Balanza;
-      TrialBalanceDto trialBalance = _usecases.BuildBalances(command);
+      TrialBalanceDto trialBalance = BalanceEngineUseCaseProxy.BuildTrialBalance(command);
 
       Assert.NotNull(trialBalance);
       Assert.NotEmpty(trialBalance.Entries);
