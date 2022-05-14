@@ -8,13 +8,14 @@
 *                                                                                                            *
 ************************* Copyright(c) La Vía Óntica SC, Ontica LLC and contributors. All rights reserved. **/
 using System;
+using System.Linq;
+using System.Collections.Generic;
+
 using Xunit;
 
 using Empiria.FinancialAccounting.BalanceEngine.Adapters;
 using Empiria.FinancialAccounting.BalanceEngine.UseCases;
 using Empiria.FinancialAccounting.BalanceEngine;
-using System.Linq;
-using System.Collections.Generic;
 
 namespace Empiria.FinancialAccounting.Tests.Balances {
 
@@ -210,7 +211,7 @@ namespace Empiria.FinancialAccounting.Tests.Balances {
       Assert.True(totalDebtorsCreditors == totalCurrencies);
     }
 
-    
+
     [Fact]
     public void Should_Match_BalanceBySubledger_With_Trial_Balance() {
       TrialBalanceCommand command = GetDefaultTrialBalanceCommand();
@@ -373,7 +374,6 @@ namespace Empiria.FinancialAccounting.Tests.Balances {
 
 
     #endregion Facts
-
 
     #region Private methods
 

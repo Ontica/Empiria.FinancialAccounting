@@ -42,25 +42,6 @@ namespace Empiria.FinancialAccounting.Tests.Balances {
     #region Facts
 
     [Fact]
-    public void Should_Build_Analitico_De_Cuentas() {
-      TrialBalanceCommand command = GetDefaultTrialBalanceCommand();
-
-      command.TrialBalanceType = TrialBalanceType.AnaliticoDeCuentas;
-      command.BalancesType = BalancesType.WithCurrentBalanceOrMovements;
-      command.UseDefaultValuation = true;
-      command.WithSubledgerAccount = false;
-      command.WithAverageBalance = false;
-      command.ShowCascadeBalances = false;
-
-      TrialBalanceDto trialBalance = _usecases.BuildTrialBalance(command);
-
-      Assert.NotNull(trialBalance);
-      Assert.Equal(command, trialBalance.Command);
-      Assert.NotEmpty(trialBalance.Entries);
-    }
-
-
-    [Fact]
     public void Should_Build_Balanza_Contabilidades_Cascada() {
       TrialBalanceCommand command = GetDefaultTrialBalanceCommand();
 
