@@ -11,45 +11,43 @@ using System;
 
 namespace Empiria.FinancialAccounting.BalanceEngine.Adapters {
 
-  public interface ITrialBalanceEntryDto {
+  /// <summary>Output DTO used to return trial balances.</summary>
+  public class TrialBalanceDto<T> where T : ITrialBalanceEntryDto {
+
+    public TrialBalanceCommand Command {
+      get; set;
+    } = new TrialBalanceCommand();
 
 
-    TrialBalanceItemType ItemType {
-      get;
-    }
-
-    string AccountNumber {
-      get;
-    }
+    public FixedList<DataTableColumn> Columns {
+      get; set;
+    } = new FixedList<DataTableColumn>();
 
 
-    string SectorCode {
-      get;
-    }
+    public FixedList<T> Entries {
+      get; set;
+    } = new FixedList<T>();
 
-
-    string SubledgerAccountNumber {
-      get;
-    }
-
-  }  // interface ITrialBalanceEntryDto
+  }
 
 
   /// <summary>Output DTO used to return trial balances.</summary>
   public class TrialBalanceDto {
 
+    //  ToDo: Set sets to internal. parse using JSONs
+
     public TrialBalanceCommand Command {
-      get; internal set;
+      get; set;
     } = new TrialBalanceCommand();
 
 
     public FixedList<DataTableColumn> Columns {
-      get; internal set;
+      get; set;
     } = new FixedList<DataTableColumn>();
 
 
     public FixedList<ITrialBalanceEntryDto> Entries {
-      get; internal set;
+      get; set;
     } = new FixedList<ITrialBalanceEntryDto>();
 
   }  // class TrialBalanceDto
@@ -203,5 +201,29 @@ namespace Empiria.FinancialAccounting.BalanceEngine.Adapters {
     } = false;
 
   } // class TrialBalanceEntryDto
+
+
+
+  public interface ITrialBalanceEntryDto {
+
+    TrialBalanceItemType ItemType {
+      get;
+    }
+
+    string AccountNumber {
+      get;
+    }
+
+
+    string SectorCode {
+      get;
+    }
+
+
+    string SubledgerAccountNumber {
+      get;
+    }
+
+  }  // interface ITrialBalanceEntryDto
 
 } // namespace Empiria.FinancialAccounting.BalanceEngine.Adapters
