@@ -97,7 +97,7 @@ namespace Empiria.FinancialAccounting.FinancialReports {
         WithSubledgerAccount = false,  // true
         BalancesType = BalanceEngine.BalancesType.WithCurrentBalanceOrMovements,
         ConsolidateBalancesToTargetCurrency = false,
-        InitialPeriod = new TrialBalanceCommandPeriod {
+        InitialPeriod = new BalanceEngineCommandPeriod {
           FromDate = new DateTime(_command.ToDate.Year, _command.ToDate.Month, 1),
           ToDate = _command.ToDate,
           UseDefaultValuation = true
@@ -115,7 +115,7 @@ namespace Empiria.FinancialAccounting.FinancialReports {
         WithSubledgerAccount = false,
         BalancesType = BalanceEngine.BalancesType.WithCurrentBalanceOrMovements,
         ConsolidateBalancesToTargetCurrency = false,
-        InitialPeriod = new TrialBalanceCommandPeriod {
+        InitialPeriod = new BalanceEngineCommandPeriod {
           FromDate = new DateTime(_command.ToDate.Year, _command.ToDate.Month, 1),
           ToDate = _command.ToDate,
           UseDefaultValuation = true

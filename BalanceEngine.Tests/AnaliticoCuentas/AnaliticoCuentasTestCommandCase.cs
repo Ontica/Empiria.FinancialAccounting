@@ -36,7 +36,7 @@ namespace Empiria.FinancialAccounting.Tests.BalanceEngine {
         Ledgers = TestingConstants.BALANCE_LEDGERS_ARRAY,
         UseDefaultValuation = true,
         ShowCascadeBalances = false,
-        InitialPeriod = new TrialBalanceCommandPeriod() {
+        InitialPeriod = new BalanceEngineCommandPeriod() {
           FromDate = TestingConstants.FROM_DATE,
           ToDate = TestingConstants.TO_DATE
         }

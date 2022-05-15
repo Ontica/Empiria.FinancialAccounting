@@ -4,14 +4,14 @@
 *  Assembly : FinancialAccounting.BalanceEngine.dll      Pattern   : Command payload                         *
 *  Type     : TrialBalanceCommand                        License   : Please read LICENSE.txt file            *
 *                                                                                                            *
-*  Summary  : Command payload used to build trial balances                                                   *
+*  Summary  : Command payload used to generate trial balances                                                *
 *                                                                                                            *
 ************************* Copyright(c) La Vía Óntica SC, Ontica LLC and contributors. All rights reserved. **/
-using System;
+using Empiria.Json;
 
 namespace Empiria.FinancialAccounting.BalanceEngine.Adapters {
 
-  /// <summary>Command payload used to build trial balances.</summary>
+  /// <summary>Command payload used to generate trial balances.</summary>
   public class TrialBalanceCommand {
 
     public TrialBalanceType TrialBalanceType {
@@ -68,14 +68,14 @@ namespace Empiria.FinancialAccounting.BalanceEngine.Adapters {
     } = BalancesType.AllAccounts;
 
 
-    public TrialBalanceCommandPeriod InitialPeriod {
+    public BalanceEngineCommandPeriod InitialPeriod {
       get; set;
-    } = new TrialBalanceCommandPeriod();
+    } = new BalanceEngineCommandPeriod();
 
 
-    public TrialBalanceCommandPeriod FinalPeriod {
+    public BalanceEngineCommandPeriod FinalPeriod {
       get; set;
-    } = new TrialBalanceCommandPeriod();
+    } = new BalanceEngineCommandPeriod();
 
 
     public bool ConsolidateBalancesToTargetCurrency {
@@ -132,12 +132,14 @@ namespace Empiria.FinancialAccounting.BalanceEngine.Adapters {
       }
     }
 
+
     public bool ValuateBalances {
       get {
         return this.InitialPeriod.ValuateToCurrrencyUID.Length != 0 &&
                this.InitialPeriod.ExchangeRateTypeUID.Length != 0;
       }
     }
+
 
     public bool ValuateFinalBalances {
       get {
@@ -159,41 +161,20 @@ namespace Empiria.FinancialAccounting.BalanceEngine.Adapters {
       get; set;
     } = false;
 
+
+    public override bool Equals(object obj) {
+      return obj is TrialBalanceCommand command &&
+             command.GetHashCode() == this.GetHashCode();
+    }
+
+
+    public override int GetHashCode() {
+      var json = JsonObject.Parse(this);
+
+      return json.GetHashCode();
+    }
+
+
   } // class TrialBalanceCommand
-
-
-
-  public class TrialBalanceCommandPeriod {
-
-    public DateTime FromDate {
-      get; set;
-    }
-
-    public DateTime ToDate {
-      get; set;
-    }
-
-    public DateTime ExchangeRateDate {
-      get;  set;
-    } = DateTime.Today;
-
-
-    public string ExchangeRateTypeUID {
-      get; set;
-    } = string.Empty;
-
-
-    public string ValuateToCurrrencyUID {
-      get; set;
-    } = string.Empty;
-
-
-    public bool UseDefaultValuation {
-      get; set;
-    } = false;
-
-
-  }  // TrialBalanceCommandPeriod
-
 
 } // namespace Empiria.FinancialAccounting.BalanceEngine.Adapters

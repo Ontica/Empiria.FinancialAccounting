@@ -144,14 +144,14 @@ namespace Empiria.FinancialAccounting.Tests.BalanceEngine {
         BalancesType = BalancesType.WithCurrentBalanceOrMovements,
         TrialBalanceType = TrialBalanceType.Balanza,
         Ledgers = TestingConstants.BALANCE_LEDGERS_ARRAY,
-        InitialPeriod = new TrialBalanceCommandPeriod() {
+        InitialPeriod = new BalanceEngineCommandPeriod() {
           FromDate = TestingConstants.FROM_DATE,
           ToDate = TestingConstants.TO_DATE,
           //ExchangeRateDate = new DateTime(2021, 06, 30),
           //ExchangeRateTypeUID = "96c617f6-8ed9-47f3-8d2d-f1240e446e1d",
           //ValuateToCurrrencyUID = "01"
         },
-        FinalPeriod = new TrialBalanceCommandPeriod() {
+        FinalPeriod = new BalanceEngineCommandPeriod() {
           FromDate = new DateTime(2022, 02, 01),
           ToDate = new DateTime(2022, 02, 28)
         }

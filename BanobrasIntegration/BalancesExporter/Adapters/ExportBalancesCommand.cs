@@ -86,7 +86,7 @@ namespace Empiria.FinancialAccounting.BanobrasIntegration.BalancesExporter.Adapt
         ShowCascadeBalances = BreakdownLedgers,
         WithAverageBalance = true,
         WithSubledgerAccount = true,
-        InitialPeriod = new TrialBalanceCommandPeriod {
+        InitialPeriod = new BalanceEngineCommandPeriod {
           FromDate = DetermineFromDate(),
           ToDate = this.ToDate
         },

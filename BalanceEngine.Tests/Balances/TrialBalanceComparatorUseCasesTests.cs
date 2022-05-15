@@ -37,7 +37,7 @@ namespace Empiria.FinancialAccounting.Tests.BalanceEngine {
       command.TrialBalanceType = TrialBalanceType.GeneracionDeSaldos;
       command.ShowCascadeBalances = false;
       command.WithSubledgerAccount = false;
-      
+
       TrialBalanceDto balances = BalanceEngineUseCaseProxy.BuildTrialBalance(command);
       command.TrialBalanceType = TrialBalanceType.Balanza;
       TrialBalanceDto trialBalance = BalanceEngineUseCaseProxy.BuildTrialBalance(command);
@@ -371,13 +371,13 @@ namespace Empiria.FinancialAccounting.Tests.BalanceEngine {
 
     private decimal GetTotalDebtorsCreditors(IEnumerable<TrialBalanceEntryDto> _trialBalance) {
 
-      var totalDeptors = _trialBalance.Where(a => a.ItemType == TrialBalanceItemType.BalanceTotalDebtor)
+      var totalDebtors = _trialBalance.Where(a => a.ItemType == TrialBalanceItemType.BalanceTotalDebtor)
                                       .Sum(a => a.CurrentBalance);
 
       var totalCreditors = _trialBalance.Where(a => a.ItemType == TrialBalanceItemType.BalanceTotalCreditor)
                                         .Sum(a => a.CurrentBalance);
 
-      return (decimal) (totalDeptors - totalCreditors);
+      return (decimal) (totalDebtors - totalCreditors);
     }
 
 
@@ -441,14 +441,14 @@ namespace Empiria.FinancialAccounting.Tests.BalanceEngine {
         BalancesType = BalancesType.WithCurrentBalanceOrMovements,
         TrialBalanceType = TrialBalanceType.Balanza,
         Ledgers = TestingConstants.BALANCE_LEDGERS_ARRAY,
-        InitialPeriod = new TrialBalanceCommandPeriod() {
+        InitialPeriod = new BalanceEngineCommandPeriod() {
           FromDate = TestingConstants.FROM_DATE,
           ToDate = TestingConstants.TO_DATE
           //ExchangeRateDate = new DateTime(2021, 06, 30),
           //ExchangeRateTypeUID = "96c617f6-8ed9-47f3-8d2d-f1240e446e1d",
           //ValuateToCurrrencyUID = "01"
         },
-        FinalPeriod = new TrialBalanceCommandPeriod() {
+        FinalPeriod = new BalanceEngineCommandPeriod() {
           FromDate = new DateTime(2021, 06, 01),
           ToDate = new DateTime(2021, 06, 30)
         }

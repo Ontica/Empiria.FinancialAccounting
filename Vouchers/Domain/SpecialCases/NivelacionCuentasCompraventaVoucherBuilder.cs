@@ -77,7 +77,7 @@ namespace Empiria.FinancialAccounting.Vouchers.SpecialCases {
         AccountsChartUID = base.Fields.AccountsChartUID,
         BalancesType = BalanceEngine.BalancesType.WithCurrentBalanceOrMovements,
         ShowCascadeBalances = true,
-        InitialPeriod = new TrialBalanceCommandPeriod {
+        InitialPeriod = new BalanceEngineCommandPeriod {
           FromDate = base.Fields.CalculationDate,
           ToDate = base.Fields.CalculationDate
         }

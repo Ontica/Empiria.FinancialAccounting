@@ -74,7 +74,7 @@ namespace Empiria.FinancialAccounting.Reporting.Builders {
         UseDefaultValuation = true,
         ConsolidateBalancesToTargetCurrency = false,
         ShowCascadeBalances = false,
-        InitialPeriod = new TrialBalanceCommandPeriod {
+        InitialPeriod = new BalanceEngineCommandPeriod {
           FromDate = new DateTime(command.ToDate.Year, command.ToDate.Month, 1),
           ToDate = command.ToDate
         },

@@ -9,9 +9,13 @@
 ************************* Copyright(c) La Vía Óntica SC, Ontica LLC and contributors. All rights reserved. **/
 using System;
 
+using Empiria.Json;
+
+using Empiria.FinancialAccounting.BalanceEngine.Adapters;
+
 namespace Empiria.FinancialAccounting.BalanceEngine.BalanceExplorer.Adapters {
 
-  /// <summary>Command payload used to build balances.</summary>
+  /// <summary>Command payload used to generate balances.</summary>
   public class BalanceCommand {
 
     public TrialBalanceType TrialBalanceType {
@@ -61,9 +65,9 @@ namespace Empiria.FinancialAccounting.BalanceEngine.BalanceExplorer.Adapters {
     } = FileReportVersion.V1;
 
 
-    public BalanceCommandPeriod InitialPeriod {
+    public BalanceEngineCommandPeriod InitialPeriod {
       get; set;
-    } = new BalanceCommandPeriod();
+    } = new BalanceEngineCommandPeriod();
 
 
     public bool WithAllAccounts {
@@ -76,40 +80,18 @@ namespace Empiria.FinancialAccounting.BalanceEngine.BalanceExplorer.Adapters {
     } = true;
 
 
+    public override bool Equals(object obj) {
+      return obj is BalanceCommand balance &&
+             balance.GetHashCode() == this.GetHashCode();
+    }
+
+
+    public override int GetHashCode() {
+      var json = JsonObject.Parse(this);
+
+      return json.GetHashCode();
+    }
+
   } // class BalanceCommand
-
-
-  public class BalanceCommandPeriod {
-
-    public DateTime FromDate {
-      get; set;
-    }
-
-    public DateTime ToDate {
-      get; set;
-    }
-
-    public DateTime ExchangeRateDate {
-      get; set;
-    } = DateTime.Today;
-
-
-    public string ExchangeRateTypeUID {
-      get; set;
-    } = string.Empty;
-
-
-    public string ValuateToCurrrencyUID {
-      get; set;
-    } = string.Empty;
-
-
-    public bool UseDefaultValuation {
-      get; set;
-    } = false;
-
-
-  }  // TrialBalanceCommandPeriod
-
 
 } // Empiria.FinancialAccounting.BalanceEngine.Adapters

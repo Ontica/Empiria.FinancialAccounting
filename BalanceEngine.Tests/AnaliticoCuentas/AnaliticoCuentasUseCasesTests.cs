@@ -37,6 +37,10 @@ namespace Empiria.FinancialAccounting.Tests.BalanceEngine {
       TrialBalanceDto<AnaliticoDeCuentasEntryDto> sut =
                           BalanceEngineUseCaseProxy.BuildTrialBalance<AnaliticoDeCuentasEntryDto>(command);
 
+      //EmpiriaLog.Trace(commandCase + "=> Expected => " + Json.JsonObject.Parse(command).ToString());
+      //EmpiriaLog.Trace(commandCase + "=> Actual   => " + Json.JsonObject.Parse(sut.Command).ToString());
+
+      Assert.Equal(command.GetHashCode(), sut.Command.GetHashCode());
       Assert.Equal(command, sut.Command);
     }
 

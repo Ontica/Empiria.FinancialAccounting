@@ -158,7 +158,7 @@ namespace Empiria.FinancialAccounting.Reconciliation {
           BalancesType = BalancesType.WithMovements,
           ShowCascadeBalances = true,
           Ledgers = new string[] { ledger.UID },
-          InitialPeriod = new TrialBalanceCommandPeriod {
+          InitialPeriod = new BalanceEngineCommandPeriod {
             FromDate = reconciliationDate,
             ToDate = reconciliationDate
           }

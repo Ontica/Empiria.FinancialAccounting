@@ -35,9 +35,7 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
     #region Consulta de balanzas
 
     static internal string GenerateHash(TrialBalanceCommand command) {
-      string json = JsonConverter.ToJson(command);
-
-      var hashCode = Cryptographer.CreateHashCode(json);
+      int hashCode = command.GetHashCode();
 
       DateTime invalidationDate = GetInvalidationDate(command);
 
@@ -46,11 +44,10 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
 
 
     static private DateTime GetInvalidationDate(TrialBalanceCommand command) {
-      if (command.TrialBalanceType != TrialBalanceType.BalanzaValorizadaComparativa) {
-        return command.InitialPeriod.ToDate;
-      } else {
+      if (command.TrialBalanceType == TrialBalanceType.BalanzaValorizadaComparativa) {
         return command.FinalPeriod.ToDate;
       }
+      return command.InitialPeriod.ToDate;
     }
 
 

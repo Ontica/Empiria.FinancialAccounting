@@ -171,7 +171,7 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
 
     internal FixedList<TrialBalanceEntry> ConsolidateToTargetCurrency(
                                           FixedList<TrialBalanceEntry> trialBalance,
-                                          TrialBalanceCommandPeriod commandPeriod) {
+                                          BalanceEngineCommandPeriod commandPeriod) {
 
       var targetCurrency = Currency.Parse(commandPeriod.ValuateToCurrrencyUID);
 
@@ -201,7 +201,7 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
 
 
     internal List<TrialBalanceEntry> GenerateAverageDailyBalance(List<TrialBalanceEntry> trialBalance,
-                                                                 TrialBalanceCommandPeriod commandPeriod) {
+                                                                 BalanceEngineCommandPeriod commandPeriod) {
       List<TrialBalanceEntry> averageBalances = new List<TrialBalanceEntry>(trialBalance);
 
       TimeSpan timeSpan = commandPeriod.ToDate - commandPeriod.FromDate;
@@ -478,7 +478,7 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
         string hash = $"{entry.GroupName}||{Sector.Empty.Code}||{entry.Ledger.Id}";
 
         if (_command.TrialBalanceType == TrialBalanceType.Balanza && _command.ShowCascadeBalances) {
-          
+
           hash = $"{entry.GroupName}";
           entry.GroupNumber = "";
         }
@@ -655,7 +655,7 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
 
 
     internal FixedList<TrialBalanceEntry> ValuateToExchangeRate(FixedList<TrialBalanceEntry> entries,
-                                                                TrialBalanceCommandPeriod commandPeriod,
+                                                                BalanceEngineCommandPeriod commandPeriod,
                                                                 bool isSecondPeriod = false) {
       if (commandPeriod.UseDefaultValuation) {
         commandPeriod.ExchangeRateTypeUID = ExchangeRateType.ValorizacionBanxico.UID;

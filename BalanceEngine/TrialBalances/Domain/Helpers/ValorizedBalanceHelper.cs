@@ -149,7 +149,7 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
 
     internal FixedList<TrialBalanceEntry> ValuateToExchangeRate(
                                           FixedList<TrialBalanceEntry> entries,
-                                          TrialBalanceCommandPeriod commandPeriod) {
+                                          BalanceEngineCommandPeriod commandPeriod) {
 
       var exchangeRateType = ExchangeRateType.Dolarizacion;
 

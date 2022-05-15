@@ -168,7 +168,7 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
 
     internal FixedList<AnaliticoDeCuentasEntry> GenerateAverageBalance(
                                                     FixedList<AnaliticoDeCuentasEntry> analyticEntries,
-                                                    TrialBalanceCommandPeriod commandPeriod) {
+                                                    BalanceEngineCommandPeriod commandPeriod) {
       if (!_command.WithAverageBalance) {
         return analyticEntries;
       }
