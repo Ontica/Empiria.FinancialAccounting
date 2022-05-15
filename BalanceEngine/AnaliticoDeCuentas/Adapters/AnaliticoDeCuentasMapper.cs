@@ -17,7 +17,7 @@ namespace Empiria.FinancialAccounting.BalanceEngine.Adapters {
     #region Public methods
 
     static internal FixedList<ITrialBalanceEntryDto> MapToAnaliticoDeCuentas(
-                                                    FixedList<ITrialBalanceEntry> list) {
+                                                     FixedList<ITrialBalanceEntry> list) {
 
       var mappedItems = list.Select((x) => MapToAnaliticoDeCuentas((AnaliticoDeCuentasEntry) x));
 
@@ -26,12 +26,11 @@ namespace Empiria.FinancialAccounting.BalanceEngine.Adapters {
 
     #endregion Public methods
 
-
     #region Private methods
 
     static private AnaliticoDeCuentasEntryDto MapToAnaliticoDeCuentas(AnaliticoDeCuentasEntry entry) {
       var dto = new AnaliticoDeCuentasEntryDto();
-      
+
       dto.ItemType = entry.ItemType;
       dto.LedgerUID = entry.Ledger.UID != "Empty" ? entry.Ledger.UID : "";
       dto.LedgerNumber = entry.Ledger.Number;
@@ -62,7 +61,7 @@ namespace Empiria.FinancialAccounting.BalanceEngine.Adapters {
     }
 
 
-    static private void AssignLabelNameAndNumber(AnaliticoDeCuentasEntryDto dto, 
+    static private void AssignLabelNameAndNumber(AnaliticoDeCuentasEntryDto dto,
                                                  AnaliticoDeCuentasEntry entry) {
 
       SubledgerAccount subledgerAccount = SubledgerAccount.Parse(entry.SubledgerAccountId);
@@ -92,6 +91,7 @@ namespace Empiria.FinancialAccounting.BalanceEngine.Adapters {
     }
 
     #endregion Private methods
+
   } // class AnaliticoDeCuentasMapper
 
 } // namespace Empiria.FinancialAccounting.BalanceEngine.AnaliticoDeCuentas.Adapters

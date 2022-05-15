@@ -67,14 +67,15 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
       analyticEntries = helper.CombineSummaryGroupsAndEntries(
                                             analyticEntries, summaryGroupEntries);
 
-      List<AnaliticoDeCuentasEntry> summaryTotalDeptorCreditorEntries =
-                                      helper.GetTotalDeptorCreditorEntries(
+      List<AnaliticoDeCuentasEntry> summaryTotalDebtorCreditorEntries =
+                                      helper.GetTotalDebtorCreditorEntries(
                                         analyticEntries);
-      analyticEntries = helper.CombineTotalDeptorCreditorAndEntries(
-                                            analyticEntries.ToList(), summaryTotalDeptorCreditorEntries);
+
+      analyticEntries = helper.CombineTotalDebtorCreditorAndEntries(
+                                            analyticEntries.ToList(), summaryTotalDebtorCreditorEntries);
 
       List<AnaliticoDeCuentasEntry> summaryTotalReport =
-                                    helper.GenerateTotalReport(summaryTotalDeptorCreditorEntries);
+                                    helper.GenerateTotalReport(summaryTotalDebtorCreditorEntries);
 
       analyticEntries = helper.CombineTotalConsolidatedAndEntries(
                                             analyticEntries, summaryTotalReport);
@@ -83,7 +84,7 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
       //                                      analyticEntries, _command.InitialPeriod);
 
       FixedList<ITrialBalanceEntry> analyticBalance = analyticEntries.Select(x => (ITrialBalanceEntry) x)
-                                  .ToList().ToFixedList();
+                                                                     .ToFixedList();
 
       //var ensureIsValid = new EnsureBalanceValidations(_command);
       //ensureIsValid.EnsureIsValid(twoColumnsBalance, postingEntries);

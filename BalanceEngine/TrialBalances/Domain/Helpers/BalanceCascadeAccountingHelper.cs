@@ -147,7 +147,7 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
 
       if (_command.WithAverageBalance) {
 
-        foreach (var entry in returnedEntries.Where(a => 
+        foreach (var entry in returnedEntries.Where(a =>
                      a.ItemType == TrialBalanceItemType.BalanceTotalGroupDebtor ||
                      a.ItemType == TrialBalanceItemType.BalanceTotalGroupCreditor)) {
 
@@ -177,23 +177,23 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
 
 
     internal List<TrialBalanceEntry> GetSummaryByDebtorCreditor(List<TrialBalanceEntry> trialBalance) {
-      
-      var totalSummaryDebtorCredtor = new EmpiriaHashTable<TrialBalanceEntry>(trialBalance.Count);
+
+      var totalSummaryDebtorCreditor = new EmpiriaHashTable<TrialBalanceEntry>(trialBalance.Count);
 
       foreach (var entry in trialBalance.Where(a => !a.HasParentPostingEntry)) {
 
         if (entry.DebtorCreditor == DebtorCreditorType.Deudora) {
-          SummaryDebtorCreditorByAccount(totalSummaryDebtorCredtor, entry,
+          SummaryDebtorCreditorByAccount(totalSummaryDebtorCreditor, entry,
                                          TrialBalanceItemType.BalanceTotalDebtor);
         }
 
         if (entry.DebtorCreditor == DebtorCreditorType.Acreedora) {
-          SummaryDebtorCreditorByAccount(totalSummaryDebtorCredtor, entry,
+          SummaryDebtorCreditorByAccount(totalSummaryDebtorCreditor, entry,
                                          TrialBalanceItemType.BalanceTotalCreditor);
         }
       }
 
-      return OrderingDeptorCreditorEntries(totalSummaryDebtorCredtor.Values.ToList());
+      return OrderingDebtorCreditorEntries(totalSummaryDebtorCreditor.Values.ToList());
     }
 
 
@@ -206,17 +206,17 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
       }
 
       return returnedList.OrderBy(a => a.Currency.Code)
-                                 .ThenBy(a => a.Account.Number)
-                                 .ThenBy(a => a.Sector.Code)
-                                 .ThenByDescending(a => a.Account.DebtorCreditor)
-                                 .ThenBy(a => a.Ledger.Number)
-                                 .ToList();
+                         .ThenBy(a => a.Account.Number)
+                         .ThenBy(a => a.Sector.Code)
+                         .ThenByDescending(a => a.Account.DebtorCreditor)
+                         .ThenBy(a => a.Ledger.Number)
+                         .ToList();
     }
 
 
     #region Private methods
 
-    private List<TrialBalanceEntry> OrderingDeptorCreditorEntries(
+    private List<TrialBalanceEntry> OrderingDebtorCreditorEntries(
                                      List<TrialBalanceEntry> trialBalanceEntries) {
       return trialBalanceEntries.OrderBy(a => a.Currency.Code)
                                 .ThenByDescending(a => a.DebtorCreditor)
@@ -274,7 +274,7 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
 
       TrialBalanceEntry entry = TrialBalanceMapper.MapToTrialBalanceEntry(balanceEntry);
       TrialBalanceItemType itemType = TrialBalanceItemType.BalanceTotalCurrency;
-      
+
       if (entry.ItemType == TrialBalanceItemType.BalanceTotalCreditor) {
         entry.InitialBalance = -1 * entry.InitialBalance;
         entry.CurrentBalance = -1 * entry.CurrentBalance;
@@ -326,9 +326,12 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
 
       TrialBalanceEntry entry = TrialBalanceMapper.MapToTrialBalanceEntry(balanceEntry);
 
-      entry.GroupName = (itemType == TrialBalanceItemType.BalanceTotalDebtor ?
-                        $"TOTAL DEUDORAS " : $"TOTAL ACREEDORAS ") +
-                        entry.Currency.FullName;
+
+      if (itemType == TrialBalanceItemType.BalanceTotalDebtor) {
+        entry.GroupName = $"TOTAL DEUDORAS {entry.Currency.FullName}";
+      } else {
+        entry.GroupName = $"TOTAL ACREEDORAS {entry.Currency.FullName}";
+      }
 
       entry.Ledger = Ledger.Empty;
       entry.DebtorCreditor = balanceEntry.DebtorCreditor;

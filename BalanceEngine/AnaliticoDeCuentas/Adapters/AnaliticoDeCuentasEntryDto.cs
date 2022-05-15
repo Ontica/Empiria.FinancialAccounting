@@ -94,18 +94,19 @@ namespace Empiria.FinancialAccounting.BalanceEngine.Adapters {
 
 
     public decimal InitialBalance {
-      get;
-      internal set;
+      get; internal set;
     }
 
+
     public decimal Debit {
-      get;
-      internal set;
+      get; internal set;
     }
+
+
     public decimal Credit {
-      get;
-      internal set;
+      get; internal set;
     }
+
 
     public decimal DomesticBalance {
       get; internal set;
@@ -150,6 +151,7 @@ namespace Empiria.FinancialAccounting.BalanceEngine.Adapters {
     public bool IsParentPostingEntry {
       get; internal set;
     }
+
   }  // class AnalyticBalanceEntryDto
 
 } // namespace Empiria.FinancialAccounting.BalanceEngine.Adapters
