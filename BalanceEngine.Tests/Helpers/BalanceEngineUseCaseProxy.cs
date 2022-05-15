@@ -9,6 +9,8 @@
 ************************* Copyright(c) La Vía Óntica SC, Ontica LLC and contributors. All rights reserved. **/
 using System;
 
+using Empiria.WebApi.Client;
+
 using Empiria.FinancialAccounting.BalanceEngine.Adapters;
 using Empiria.FinancialAccounting.BalanceEngine.UseCases;
 
@@ -19,10 +21,61 @@ namespace Empiria.FinancialAccounting.Tests.BalanceEngine {
     /// <summary>Use case proxy based on Http remote calls to TrialBalanceUseCases methods.</summary>
     static internal TrialBalanceDto BuildTrialBalance(TrialBalanceCommand command) {
 
+      if (TestingConstants.INVOKE_USE_CASES_THROUGH_THE_WEB_API) {
+        return BuildRemoteTrialBalanceUseCase(command);
+
+      } else {
+        return BuildLocalTrialBalanceUseCase(command);
+
+      }
+    }
+
+
+    /// <summary>Use case proxy based on Http remote calls to TrialBalanceUseCases methods.</summary>
+    static internal TrialBalanceDto<T> BuildTrialBalance<T>(TrialBalanceCommand command)
+                                                            where T : ITrialBalanceEntryDto {
+
+      if (TestingConstants.INVOKE_USE_CASES_THROUGH_THE_WEB_API) {
+        return BuildRemoteTrialBalanceUseCase<T>(command);
+
+      } else {
+        return BuildLocalTrialBalanceUseCase<T>(command);
+
+      }
+    }
+
+    static private TrialBalanceDto BuildLocalTrialBalanceUseCase(TrialBalanceCommand command) {
       using (var usecase = TrialBalanceUseCases.UseCaseInteractor()) {
         return usecase.BuildTrialBalance(command);
       }
+    }
 
+
+    static private TrialBalanceDto<T> BuildLocalTrialBalanceUseCase<T>(TrialBalanceCommand command)
+                                                                       where T : ITrialBalanceEntryDto {
+      using (var usecase = TrialBalanceUseCases.UseCaseInteractor()) {
+        throw new NotImplementedException();
+        //  return usecase.BuildTrialBalance<T>(command);
+      }
+    }
+
+
+    static private TrialBalanceDto BuildRemoteTrialBalanceUseCase(TrialBalanceCommand command) {
+      var http = new HttpApiClient(TestingConstants.WEB_API_BASE_ADDRESS);
+
+      return http.PostAsync<ResponseModel<TrialBalanceDto>>(command, "v2/financial-accounting/trial-balance")
+                 .Result
+                 .Data;
+    }
+
+
+    static private TrialBalanceDto<T> BuildRemoteTrialBalanceUseCase<T>(TrialBalanceCommand command)
+                                                                        where T : ITrialBalanceEntryDto {
+      var http = new HttpApiClient(TestingConstants.WEB_API_BASE_ADDRESS);
+
+      return http.PostAsync<ResponseModel<TrialBalanceDto<T>>>(command, "v2/financial-accounting/trial-balance")
+                 .Result
+                 .Data;
     }
 
   }  // class BalanceEngineUseCaseProxy

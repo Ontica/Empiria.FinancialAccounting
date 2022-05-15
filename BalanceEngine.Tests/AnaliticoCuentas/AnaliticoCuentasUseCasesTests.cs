@@ -34,7 +34,8 @@ namespace Empiria.FinancialAccounting.Tests.BalanceEngine {
     public void CommandsMustBeEqual(AnaliticoCuentasTestCommandCase commandCase) {
       TrialBalanceCommand command = commandCase.BuildCommand();
 
-      TrialBalanceDto sut = BalanceEngineUseCaseProxy.BuildTrialBalance(command);
+      TrialBalanceDto<AnaliticoDeCuentasEntryDto> sut =
+                          BalanceEngineUseCaseProxy.BuildTrialBalance<AnaliticoDeCuentasEntryDto>(command);
 
       Assert.Equal(command, sut.Command);
     }
@@ -46,7 +47,8 @@ namespace Empiria.FinancialAccounting.Tests.BalanceEngine {
     public void MustHaveEntries(AnaliticoCuentasTestCommandCase commandCase) {
       TrialBalanceCommand command = commandCase.BuildCommand();
 
-      TrialBalanceDto sut = BalanceEngineUseCaseProxy.BuildTrialBalance(command);
+      TrialBalanceDto<AnaliticoDeCuentasEntryDto> sut =
+                          BalanceEngineUseCaseProxy.BuildTrialBalance<AnaliticoDeCuentasEntryDto>(command);
 
       Assert.NotNull(sut.Entries);
     }
