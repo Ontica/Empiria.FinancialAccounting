@@ -9,6 +9,8 @@
 ************************* Copyright(c) La Vía Óntica SC, Ontica LLC and contributors. All rights reserved. **/
 using System;
 
+using Empiria.FinancialAccounting.FinancialConcepts;
+
 namespace Empiria.FinancialAccounting.FinancialReports.Adapters {
 
   /// <summary>Methods used to map financial reports data.</summary>
@@ -94,7 +96,7 @@ namespace Empiria.FinancialAccounting.FinancialReports.Adapters {
     static private DynamicFinancialReportEntryDto MapBreakdownEntry(FixedRowFinancialReportEntry entry) {
       dynamic o = new FinancialReportBreakdownEntryDto {
         UID = entry.Row.UID,
-        Type = Rules.GroupingRuleItemType.Agrupation,
+        Type = GroupingRuleItemType.Agrupation,
         GroupingRuleUID = entry.GroupingRule.UID,
         ItemType = FinancialReportItemType.Summary,
         ItemCode = "TOTAL",
@@ -191,7 +193,7 @@ namespace Empiria.FinancialAccounting.FinancialReports.Adapters {
     static private DynamicFinancialReportEntryDto MapIntegrationEntry(FixedRowFinancialReportEntry entry) {
       dynamic o = new IntegrationReportEntryDto {
         UID = entry.Row.UID,
-        Type = Rules.GroupingRuleItemType.Agrupation,
+        Type = GroupingRuleItemType.Agrupation,
         GroupingRuleUID = entry.GroupingRule.UID,
         ConceptCode = entry.GroupingRule.Code,
         Concept = entry.GroupingRule.Concept,

@@ -1,7 +1,7 @@
 ﻿/* Empiria Financial *****************************************************************************************
 *                                                                                                            *
-*  Module   : Financial Accounting Rules                 Component : Data Access Layer                       *
-*  Assembly : FinancialAccounting.Rules.dll              Pattern   : Data Service                            *
+*  Module   : Financial Concepts                         Component : Data Access Layer                       *
+*  Assembly : FinancialAccounting.FinancialConcepts.dll  Pattern   : Data Service                            *
 *  Type     : GroupingRulesData                          License   : Please read LICENSE.txt file            *
 *                                                                                                            *
 *  Summary  : Data access layer for financial accounting grouping rules.                                     *
@@ -11,10 +11,10 @@ using System;
 
 using Empiria.Data;
 
-namespace Empiria.FinancialAccounting.Rules.Data {
+namespace Empiria.FinancialAccounting.FinancialConcepts.Data {
 
   /// <summary>Data access layer for financial accounting grouping rules.</summary>
-  static internal class ExternalValuesData {
+  static internal class GroupingRulesData {
 
     static internal FixedList<GroupingRule> GetGroupingRules(RulesSet rulesSet) {
       var sql = "SELECT * FROM COF_CONCEPTOS " +
@@ -37,16 +37,29 @@ namespace Empiria.FinancialAccounting.Rules.Data {
       return DataReader.GetFixedList<GroupingRuleItem>(dataOperation);
     }
 
-    static internal ExternalValue GetValue(string externalVariableCode, DateTime date) {
-      var sql = "SELECT * FROM COF_CONCEPTOS_VALORES " +
-               $"WHERE CLAVE_VARIABLE = '{externalVariableCode}' " +
-               $"AND FECHA = {CommonMethods.FormatSqlDbDate(date)}";
 
-      var dataOperation = DataOperation.Parse(sql);
+    static internal void Write(GroupingRule o) {
+      var op = DataOperation.Parse("write_cof_concepto",
+                      o.Id, o.Code, o.Concept, o.Position,
+                      o.StartDate, o.EndDate, o.UID, o.RulesSet.Id);
 
-      return DataReader.GetObject<ExternalValue>(dataOperation, ExternalValue.Empty);
+
+      DataWriter.Execute(op);
     }
+
+
+
+    static internal void Write(GroupingRuleItem o) {
+      var op = DataOperation.Parse("write_cof_concepto_integracion",
+                      o.Id, o.UID, o.GroupingRule.Id, o.CalculationRule, o.Reference.Id,
+                      o.AccountNumber, o.SubledgerAccountNumber, o.SectorCode, o.ExternalVariableCode,
+                      (char) o.Operator, o.Qualification, o.IntegrationTypeId, o.Position,
+                      o.RulesSet.Id, o.CurrencyCode, o.AccountsListId);
+
+      DataWriter.Execute(op);
+    }
+
 
   }  // class GroupingRulesData
 
-}  // namespace Empiria.FinancialAccounting.Rules.Data
+}  // namespace Empiria.FinancialAccounting.FinancialConcepts.Data

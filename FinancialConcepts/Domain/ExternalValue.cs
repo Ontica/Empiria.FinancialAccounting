@@ -1,7 +1,7 @@
 ﻿/* Empiria Financial *****************************************************************************************
 *                                                                                                            *
-*  Module   : Financial Accounting Rules                 Component : Domain Layer                            *
-*  Assembly : FinancialAccounting.Rules.dll              Pattern   : Empiria Data Object                     *
+*  Module   : Financial Concepts                         Component : Domain Layer                            *
+*  Assembly : FinancialAccounting.FinancialConcepts.dll  Pattern   : Empiria Data Object                     *
 *  Type     : ExternalVariable                           License   : Please read LICENSE.txt file            *
 *                                                                                                            *
 *  Summary  : Defines an external variable like a financial indicator or business income.                    *
@@ -11,9 +11,9 @@ using System;
 
 using Empiria.Contacts;
 
-using Empiria.FinancialAccounting.Rules.Data;
+using Empiria.FinancialAccounting.FinancialConcepts.Data;
 
-namespace Empiria.FinancialAccounting.Rules {
+namespace Empiria.FinancialAccounting.FinancialConcepts {
 
   /// <summary>Holds data about an external variable or value like a
   /// financial indicator or business income.</summary>
@@ -104,4 +104,4 @@ namespace Empiria.FinancialAccounting.Rules {
 
   } // class ExternalValue
 
-}  // namespace Empiria.FinancialAccounting.Rules
+}  // namespace Empiria.FinancialAccounting.FinancialConcepts

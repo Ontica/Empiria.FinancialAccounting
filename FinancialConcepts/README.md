@@ -1,6 +1,6 @@
-﻿# Empiria Financial Accounting Rules Module
+﻿# Empiria Financial Concepts Module
 
-This module provides services that manage financial accounting rules.
+This module provides services that manage financial concepts and their grouping rules.
 
 ## License
 

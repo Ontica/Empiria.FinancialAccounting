@@ -12,11 +12,16 @@ using System;
 using Empiria.FinancialAccounting.Reporting.Exporters.Excel;
 
 using Empiria.FinancialAccounting.Adapters;
+
 using Empiria.FinancialAccounting.BalanceEngine.Adapters;
 using Empiria.FinancialAccounting.BalanceEngine.BalanceExplorer.Adapters;
-using Empiria.FinancialAccounting.Rules.Adapters;
+
+using Empiria.FinancialAccounting.FinancialConcepts.Adapters;
+
 using Empiria.FinancialAccounting.Reporting.Adapters;
+
 using Empiria.FinancialAccounting.BanobrasIntegration.TransactionSlips.Adapters;
+
 using Empiria.FinancialAccounting.Reconciliation.Adapters;
 
 namespace Empiria.FinancialAccounting.Reporting {

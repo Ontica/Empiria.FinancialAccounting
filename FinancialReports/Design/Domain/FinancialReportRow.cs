@@ -8,7 +8,7 @@
 *                                                                                                            *
 ************************* Copyright(c) La Vía Óntica SC, Ontica LLC and contributors. All rights reserved. **/
 
-using Empiria.FinancialAccounting.Rules;
+using Empiria.FinancialAccounting.FinancialConcepts;
 
 namespace Empiria.FinancialAccounting.FinancialReports {
 

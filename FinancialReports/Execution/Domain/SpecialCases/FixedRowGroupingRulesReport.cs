@@ -15,7 +15,7 @@ using Empiria.Collections;
 using Empiria.FinancialAccounting.BalanceEngine.Adapters;
 
 using Empiria.FinancialAccounting.FinancialReports.Adapters;
-using Empiria.FinancialAccounting.Rules;
+using Empiria.FinancialAccounting.FinancialConcepts;
 
 namespace Empiria.FinancialAccounting.FinancialReports {
 

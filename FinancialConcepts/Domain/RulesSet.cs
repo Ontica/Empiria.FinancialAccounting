@@ -1,7 +1,7 @@
 ﻿/* Empiria Financial *****************************************************************************************
 *                                                                                                            *
-*  Module   : Financial Accounting Rules                 Component : Domain Layer                            *
-*  Assembly : FinancialAccounting.Rules.dll              Pattern   : Empiria Data Object                     *
+*  Module   : Financial Concepts                         Component : Domain Layer                            *
+*  Assembly : FinancialAccounting.FinancialConcepts.dll  Pattern   : Empiria Data Object                     *
 *  Type     : RulesSet                                   License   : Please read LICENSE.txt file            *
 *                                                                                                            *
 *  Summary  : Holds a set of financial accounting rules.                                                     *
@@ -9,9 +9,9 @@
 ************************* Copyright(c) La Vía Óntica SC, Ontica LLC and contributors. All rights reserved. **/
 using System;
 
-using Empiria.FinancialAccounting.Rules.Data;
+using Empiria.FinancialAccounting.FinancialConcepts.Data;
 
-namespace Empiria.FinancialAccounting.Rules {
+namespace Empiria.FinancialAccounting.FinancialConcepts {
 
   /// <summary>Holds a set of financial accounting rules.</summary>
   public class RulesSet : GeneralObject {
@@ -134,4 +134,4 @@ namespace Empiria.FinancialAccounting.Rules {
 
   } // class RulesSet
 
-}  // namespace Empiria.FinancialAccounting.Rules
+}  // namespace Empiria.FinancialAccounting.FinancialConcepts

@@ -1,7 +1,7 @@
 ﻿/* Empiria Financial *****************************************************************************************
 *                                                                                                            *
-*  Module   : Financial Accounting Rules                 Component : Interface adapters                      *
-*  Assembly : FinancialAccounting.Rules.dll              Pattern   : Information Holder                      *
+*  Module   : Financial Concepts                         Component : Interface adapters                      *
+*  Assembly : FinancialAccounting.FinancialConcepts.dll  Pattern   : Information Holder                      *
 *  Type     : GroupingRuleItemDto                        License   : Please read LICENSE.txt file            *
 *                                                                                                            *
 *  Summary  : Financial accounting grouping rule item data transfer object.                                  *
@@ -9,7 +9,7 @@
 ************************* Copyright(c) La Vía Óntica SC, Ontica LLC and contributors. All rights reserved. **/
 using System;
 
-namespace Empiria.FinancialAccounting.Rules.Adapters {
+namespace Empiria.FinancialAccounting.FinancialConcepts.Adapters {
 
   /// <summary>Financial accounting rule item data transfer object.</summary>
   public class GroupingRuleItemDto {
@@ -55,4 +55,4 @@ namespace Empiria.FinancialAccounting.Rules.Adapters {
 
   }  // class GroupingRuleItemDto
 
-}  // namespace Empiria.FinancialAccounting.Rules.Adapters
+}  // namespace Empiria.FinancialAccounting.FinancialConcepts.Adapters

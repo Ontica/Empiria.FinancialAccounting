@@ -1,10 +1,10 @@
 ﻿/* Empiria Financial *****************************************************************************************
 *                                                                                                            *
-*  Module   : Financial Accounting Rules                   Component : Web Api                               *
+*  Module   : Financial Concepts                           Component : Web Api                               *
 *  Assembly : Empiria.FinancialAccounting.WebApi.dll       Pattern   : Query Controller                      *
-*  Type     : GroupingRulesController                      License   : Please read LICENSE.txt file          *
+*  Type     : FinancialConceptsController                  License   : Please read LICENSE.txt file          *
 *                                                                                                            *
-*  Summary  : Query web API used to retrive financial accounting grouping rules.                             *
+*  Summary  : Query web API used to retrive financial concepts grouping rules.                               *
 *                                                                                                            *
 ************************* Copyright(c) La Vía Óntica SC, Ontica LLC and contributors. All rights reserved. **/
 using System;
@@ -12,15 +12,15 @@ using System.Web.Http;
 
 using Empiria.WebApi;
 
-using Empiria.FinancialAccounting.Rules.UseCases;
-using Empiria.FinancialAccounting.Rules.Adapters;
+using Empiria.FinancialAccounting.FinancialConcepts.UseCases;
+using Empiria.FinancialAccounting.FinancialConcepts.Adapters;
 
 using Empiria.FinancialAccounting.Reporting;
 
 namespace Empiria.FinancialAccounting.WebApi.Rules {
 
-  /// <summary>Query web API used to retrive financial accounting grouping rules.</summary>
-  public class GroupingRulesController : WebApiController {
+  /// <summary>Query web API used to retrive financial concepts grouping rules.</summary>
+  public class FinancialConceptsController : WebApiController {
 
     #region Web Apis
 
@@ -89,23 +89,8 @@ namespace Empiria.FinancialAccounting.WebApi.Rules {
     }
 
 
-    [HttpPost]
-    [Route("v2/financial-accounting/rules/grouping-rules/clean-up")]
-    public NoDataModel CleanupGroupingRules() {
-      using (var usecases = GroupingRulesUseCases.UseCaseInteractor()) {
-
-        var rulesets = usecases.GroupingRulesSetsFor(AccountsChart.IFRS.UID);
-
-        foreach (var ruleset in rulesets) {
-          usecases.CleanupRules(ruleset.UID);
-        }
-
-        return new NoDataModel(base.Request);
-      }
-    }
-
     #endregion Web Apis
 
-  }  // class GroupingRulesController
+  }  // class FinancialConceptsController
 
 }  // namespace Empiria.FinancialAccounting.WebApi.Rules

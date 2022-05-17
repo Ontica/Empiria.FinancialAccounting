@@ -1,7 +1,7 @@
 ﻿/* Empiria Financial *****************************************************************************************
 *                                                                                                            *
-*  Module   : Financial Accounting Rules                 Component : Domain Layer                            *
-*  Assembly : FinancialAccounting.Rules.dll              Pattern   : Structurer                              *
+*  Module   : Financial Concepts                         Component : Domain Layer                            *
+*  Assembly : FinancialAccounting.FinancialConcepts.dll  Pattern   : Structurer                              *
 *  Type     : GroupingRulesTree                          License   : Please read LICENSE.txt file            *
 *                                                                                                            *
 *  Summary  : Tree data structure for financial accounting grouping rules.                                   *
@@ -10,7 +10,7 @@
 using System;
 using System.Collections.Generic;
 
-namespace Empiria.FinancialAccounting.Rules {
+namespace Empiria.FinancialAccounting.FinancialConcepts {
 
   /// <summary>Tree data structure for financial accounting grouping rules.</summary>
   public class GroupingRulesTree {
@@ -67,4 +67,4 @@ namespace Empiria.FinancialAccounting.Rules {
 
   }  // class GroupingRulesTree
 
-}  // namespace Empiria.FinancialAccounting.Rules
+}  // namespace Empiria.FinancialAccounting.FinancialConcepts

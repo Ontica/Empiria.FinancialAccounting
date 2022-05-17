@@ -1,7 +1,7 @@
 ﻿/* Empiria Financial *****************************************************************************************
 *                                                                                                            *
-*  Module   : Financial Accounting Rules                 Component : Domain Layer                            *
-*  Assembly : FinancialAccounting.Rules.dll              Pattern   : Empiria Data Object                     *
+*  Module   : Financial Concepts                         Component : Domain Layer                            *
+*  Assembly : FinancialAccounting.FinancialConcepts.dll  Pattern   : Empiria Data Object                     *
 *  Type     : GroupingRule                               License   : Please read LICENSE.txt file            *
 *                                                                                                            *
 *  Summary  : Contains data about a financial accounting grouping rule.                                      *
@@ -9,7 +9,7 @@
 ************************* Copyright(c) La Vía Óntica SC, Ontica LLC and contributors. All rights reserved. **/
 using System;
 
-namespace Empiria.FinancialAccounting.Rules {
+namespace Empiria.FinancialAccounting.FinancialConcepts {
 
   /// <summary>Contains data about a financial accounting grouping rule.</summary>
   public class GroupingRule : BaseObject {
@@ -102,4 +102,4 @@ namespace Empiria.FinancialAccounting.Rules {
 
   } // class GroupingRule
 
-}  // namespace Empiria.FinancialAccounting.Rules
+}  // namespace Empiria.FinancialAccounting.FinancialConcepts

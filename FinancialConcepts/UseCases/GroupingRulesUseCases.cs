@@ -1,7 +1,7 @@
 ﻿/* Empiria Financial *****************************************************************************************
 *                                                                                                            *
-*  Module   : Financial Accounting Rules                 Component : Use cases Layer                         *
-*  Assembly : FinancialAccounting.Rules.dll              Pattern   : Use case interactor class               *
+*  Module   : Financial Concepts                         Component : Use cases Layer                         *
+*  Assembly : FinancialAccounting.FinancialConcepts.dll  Pattern   : Use case interactor class               *
 *  Type     : RulesUseCases                              License   : Please read LICENSE.txt file            *
 *                                                                                                            *
 *  Summary  : Use cases used to retrive financial accounting rules.                                          *
@@ -11,9 +11,9 @@ using System;
 
 using Empiria.Services;
 
-using Empiria.FinancialAccounting.Rules.Adapters;
+using Empiria.FinancialAccounting.FinancialConcepts.Adapters;
 
-namespace Empiria.FinancialAccounting.Rules.UseCases {
+namespace Empiria.FinancialAccounting.FinancialConcepts.UseCases {
 
   /// <summary>Use cases used to retrive financial accounting rules.</summary>
   public class GroupingRulesUseCases : UseCase {
@@ -88,4 +88,4 @@ namespace Empiria.FinancialAccounting.Rules.UseCases {
 
   }  // class GroupingRulesUseCases
 
-}  // namespace Empiria.FinancialAccounting.Rules.UseCases
+}  // namespace Empiria.FinancialAccounting.FinancialConcepts.UseCases

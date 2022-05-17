@@ -1,14 +1,14 @@
 ﻿/* Empiria Financial *****************************************************************************************
 *                                                                                                            *
-*  Module   : Financial Accounting Rules                 Component : Domain Layer                            *
-*  Assembly : FinancialAccounting.Rules.dll              Pattern   : Structurer                              *
+*  Module   : Financial Concepts                         Component : Domain Layer                            *
+*  Assembly : FinancialAccounting.FinancialConcepts.dll  Pattern   : Structurer                              *
 *  Type     : GroupingRulesTreeItem                      License   : Please read LICENSE.txt file            *
 *                                                                                                            *
 *  Summary  : A tree item data structure for financial accounting grouping rules.                            *
 *                                                                                                            *
 ************************* Copyright(c) La Vía Óntica SC, Ontica LLC and contributors. All rights reserved. **/
 
-namespace Empiria.FinancialAccounting.Rules {
+namespace Empiria.FinancialAccounting.FinancialConcepts {
 
   /// <summary>A tree item data structure for financial accounting grouping rules.</summary>
   public class GroupingRulesTreeItem {
@@ -95,4 +95,4 @@ namespace Empiria.FinancialAccounting.Rules {
 
   }  // class GroupingRulesTreeItem
 
-}  // namespace Empiria.FinancialAccounting.Rules
+}  // namespace Empiria.FinancialAccounting.FinancialConcepts

@@ -1,7 +1,7 @@
 ﻿/* Empiria Financial *****************************************************************************************
 *                                                                                                            *
-*  Module   : Financial Accounting Rules                 Component : Interface adapters                      *
-*  Assembly : FinancialAccounting.Rules.dll              Pattern   : Mapper class                            *
+*  Module   : Financial Concepts                         Component : Interface adapters                      *
+*  Assembly : FinancialAccounting.FinancialConcepts.dll  Pattern   : Mapper class                            *
 *  Type     : GroupingRulesMapper                        License   : Please read LICENSE.txt file            *
 *                                                                                                            *
 *  Summary  : Mapping methods for financial accounting grouping rules.                                       *
@@ -9,7 +9,7 @@
 ************************* Copyright(c) La Vía Óntica SC, Ontica LLC and contributors. All rights reserved. **/
 using System;
 
-namespace Empiria.FinancialAccounting.Rules.Adapters {
+namespace Empiria.FinancialAccounting.FinancialConcepts.Adapters {
 
   /// <summary>Mapping methods for financial accounting grouping rules.</summary>
   static public class GroupingRulesMapper {
@@ -51,4 +51,4 @@ namespace Empiria.FinancialAccounting.Rules.Adapters {
 
   }  // class GroupingRulesMapper
 
-}  // namespace Empiria.FinancialAccounting.Rules.Adapters
+}  // namespace Empiria.FinancialAccounting.FinancialConcepts.Adapters

@@ -10,7 +10,7 @@
 using System;
 using System.Collections.Generic;
 
-using Empiria.FinancialAccounting.Rules;
+using Empiria.FinancialAccounting.FinancialConcepts;
 
 namespace Empiria.FinancialAccounting.FinancialReports {
 

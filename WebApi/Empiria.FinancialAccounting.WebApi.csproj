@@ -81,7 +81,6 @@
     <ProjectReference Include="..\FinancialReports\Empiria.FinancialAccounting.FinancialReports.csproj" />
     <ProjectReference Include="..\Reconciliation\Empiria.FinancialAccounting.Reconciliation.csproj" />
     <ProjectReference Include="..\Reporting\Empiria.FinancialAccounting.Reporting.csproj" />
-    <ProjectReference Include="..\Rules\Empiria.FinancialAccounting.Rules.csproj" />
     <ProjectReference Include="..\Vouchers\Empiria.FinancialAccounting.Vouchers.csproj" />
     <ProjectReference Include="..\BanobrasIntegration\Empiria.FinancialAccounting.BanobrasIntegration.csproj" />
   </ItemGroup>

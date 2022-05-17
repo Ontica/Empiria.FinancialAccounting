@@ -1,19 +1,19 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup>
     <Company>Ontica</Company>
-    <Product>Empiria Financial Accounting Rules Module</Product>
-    <Description>This module provides services that manage financial accounting rules.</Description>
+    <Product>Empiria Financial Concepts Module</Product>
+    <Description>This module provides services that manage financial concepts and their grouping rules.</Description>
     <Copyright>(c) 2000-2022. La Vía Óntica SC, Ontica LLC and contributors.</Copyright>
     <Version>2.0.0</Version>
     <AssemblyVersion>2.0.0</AssemblyVersion>
     <FileVersion>2.0.0.0</FileVersion>
     <GeneratePackageOnBuild>false</GeneratePackageOnBuild>
     <PackageRequireLicenseAcceptance>true</PackageRequireLicenseAcceptance>
-    <PackageLicenseUrl>https://github.com/Ontica/Empiria.FinancialAccounting/blob/master/Rules/LICENSE.txt</PackageLicenseUrl>
-    <PackageProjectUrl>https://github.com/Ontica/Empiria.FinancialAccounting/tree/master/Rules</PackageProjectUrl>
+    <PackageLicenseUrl>https://github.com/Ontica/Empiria.FinancialAccounting/blob/master/FinancialConcepts/LICENSE.txt</PackageLicenseUrl>
+    <PackageProjectUrl>https://github.com/Ontica/Empiria.FinancialAccounting/tree/master/FinancialConcepts</PackageProjectUrl>
     <PackageIconUrl>http://www.ontica.org/logo.ontica.png</PackageIconUrl>
     <PackageTags>
-      Contabilidad Financiera, SICOFIN, Banobras, Banca de desarrollo, México, Estados financieros, IFRS
+      Contabilidad Financiera, SICOFIN, Banobras, Banca de desarrollo, México, Estados financieros, conceptos financieros, IFRS
     </PackageTags>
     <RepositoryUrl>https://github.com/Ontica/Empiria.FinancialAccounting</RepositoryUrl>
     <RepositoryType>git</RepositoryType>
@@ -22,8 +22,8 @@
     <AppendTargetFrameworkToOutputPath>false</AppendTargetFrameworkToOutputPath>
     <NeutralLanguage></NeutralLanguage>
     <Configurations>Debug;Release;Multisolutions</Configurations>
-    <AssemblyName>Empiria.FinancialAccounting.Rules</AssemblyName>
-    <RootNamespace>Empiria.FinancialAccounting.Rules</RootNamespace>
+    <AssemblyName>Empiria.FinancialAccounting.FinancialConcepts</AssemblyName>
+    <RootNamespace>Empiria.FinancialAccounting.FinancialConcepts</RootNamespace>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' Or '$(Configuration)|$(Platform)'=='Multisolutions|AnyCPU' ">
     <OutputPath>bin\</OutputPath>
@@ -64,8 +64,5 @@
     <ProjectReference Include="..\..\core\Core\Empiria.Core.csproj" />
     <ProjectReference Include="..\..\extensions\Services\Empiria.Services.csproj" />
     <ProjectReference Include="..\Core\Empiria.FinancialAccounting.Core.csproj" />
-  </ItemGroup>
-  <ItemGroup>
-    <Folder Include="VoucherRules\" />
   </ItemGroup>
 </Project>
