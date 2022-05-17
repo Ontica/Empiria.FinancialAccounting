@@ -16,6 +16,15 @@ namespace Empiria.FinancialAccounting.BalanceEngine.Adapters {
 
     #region Public methods
 
+    static internal AnaliticoDeCuentasDto Map(TrialBalance trialBalance) {
+      return new AnaliticoDeCuentasDto {
+        Command = trialBalance.Command,
+        Columns = trialBalance.DataColumns(),
+        Entries = trialBalance.Entries.Select(x => MapToAnaliticoDeCuentas((AnaliticoDeCuentasEntry) x))
+                                      .ToFixedList()
+      };
+    }
+
     static internal FixedList<ITrialBalanceEntryDto> MapToAnaliticoDeCuentas(
                                                      FixedList<ITrialBalanceEntry> list) {
 

@@ -13,6 +13,7 @@ using Empiria.WebApi.Client;
 
 using Empiria.FinancialAccounting.BalanceEngine.Adapters;
 using Empiria.FinancialAccounting.BalanceEngine.UseCases;
+using System.Threading.Tasks;
 
 namespace Empiria.FinancialAccounting.Tests.BalanceEngine {
 
@@ -59,6 +60,31 @@ namespace Empiria.FinancialAccounting.Tests.BalanceEngine {
       }
     }
 
+
+    static internal Task<AnaliticoDeCuentasDto> BuildAnaliticoDeCuentas(TrialBalanceCommand command) {
+      if (TestingConstants.INVOKE_USE_CASES_THROUGH_THE_WEB_API) {
+        return BuildRemoteAnaliticoDeCuentasUseCase(command);
+
+      } else {
+        return BuildLocalAnaliticoDeCuentasUseCase(command);
+
+      }
+    }
+
+    private static Task<AnaliticoDeCuentasDto> BuildLocalAnaliticoDeCuentasUseCase(TrialBalanceCommand command) {
+      using (var usecase = TrialBalanceUseCases.UseCaseInteractor()) {
+        return usecase.BuildAnaliticoDeCuentas(command);
+      }
+    }
+
+    private static async Task<AnaliticoDeCuentasDto> BuildRemoteAnaliticoDeCuentasUseCase(TrialBalanceCommand command) {
+      var http = new HttpApiClient(TestingConstants.WEB_API_BASE_ADDRESS);
+
+      var dto = await http.PostAsync<ResponseModel<AnaliticoDeCuentasDto>>(command, "v2/financial-accounting/balance-engine/analitico-de-cuentas")
+                          .ConfigureAwait(false);
+
+      return dto.Data;
+    }
 
     static private TrialBalanceDto BuildRemoteTrialBalanceUseCase(TrialBalanceCommand command) {
       var http = new HttpApiClient(TestingConstants.WEB_API_BASE_ADDRESS);

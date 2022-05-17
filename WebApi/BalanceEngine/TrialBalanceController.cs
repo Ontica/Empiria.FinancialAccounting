@@ -8,6 +8,7 @@
 *                                                                                                            *
 ************************* Copyright(c) La Vía Óntica SC, Ontica LLC and contributors. All rights reserved. **/
 using System;
+using System.Threading.Tasks;
 using System.Web.Http;
 
 using Empiria.WebApi;
@@ -19,12 +20,28 @@ using Empiria.FinancialAccounting.Reporting;
 using Empiria.FinancialAccounting.BalanceEngine.BalanceExplorer.UseCases;
 using Empiria.FinancialAccounting.BalanceEngine.BalanceExplorer.Adapters;
 
+
 namespace Empiria.FinancialAccounting.WebApi.BalanceEngine {
 
   /// <summary>Query web API used to retrive trial balances.</summary>
   public class TrialBalanceController : WebApiController {
 
     #region Web Apis
+
+    [HttpPost]
+    [Route("v2/financial-accounting/balance-engine/analitico-de-cuentas")]
+    public async Task<SingleObjectModel> GetAnaliticoCuentas([FromBody] TrialBalanceCommand command) {
+      base.RequireBody(command);
+
+      using (var usecases = TrialBalanceUseCases.UseCaseInteractor()) {
+
+        AnaliticoDeCuentasDto dto = await usecases.BuildAnaliticoDeCuentas(command)
+                                                  .ConfigureAwait(false);
+
+        return new SingleObjectModel(this.Request, dto);
+      }
+    }
+
 
     [HttpPost]
     [Route("v2/financial-accounting/trial-balance")]
@@ -76,9 +93,6 @@ namespace Empiria.FinancialAccounting.WebApi.BalanceEngine {
     [Route("v2/financial-accounting/balance/excel")]
     public SingleObjectModel GetExcelBalances([FromBody] BalanceCommand command) {
       base.RequireBody(command);
-
-      //bool? inProcess = null;
-      //Assertion.AssertObject(inProcess, $"Funcionalidad en proceso de desarrollo.");
 
       using (var usecases = BalanceUseCases.UseCaseInteractor()) {
 

@@ -8,6 +8,7 @@
 *                                                                                                            *
 ************************* Copyright(c) La Vía Óntica SC, Ontica LLC and contributors. All rights reserved. **/
 using System;
+using System.Threading.Tasks;
 
 using Empiria.Services;
 
@@ -31,6 +32,21 @@ namespace Empiria.FinancialAccounting.BalanceEngine.UseCases {
     #endregion Constructors and parsers
 
     #region Use cases
+
+    public async Task<AnaliticoDeCuentasDto> BuildAnaliticoDeCuentas(TrialBalanceCommand command) {
+      Assertion.AssertObject(command, "command");
+
+      Assertion.Assert(command.TrialBalanceType == TrialBalanceType.AnaliticoDeCuentas,
+                       "command.TrialBalanceType must be 'AnaliticoDeCuentas'.");
+
+      var trialBalanceEngine = new TrialBalanceEngine(command);
+
+      TrialBalance trialBalance = await Task.Run(() => trialBalanceEngine.BuildTrialBalance())
+                                            .ConfigureAwait(false);
+
+      return AnaliticoDeCuentasMapper.Map(trialBalance);
+    }
+
 
     public TrialBalanceDto BuildTrialBalance(TrialBalanceCommand command) {
       Assertion.AssertObject(command, "command");

@@ -8,6 +8,7 @@
 *                                                                                                            *
 ************************* Copyright(c) La Vía Óntica SC, Ontica LLC and contributors. All rights reserved. **/
 using System;
+using System.Threading.Tasks;
 
 using Xunit;
 
@@ -31,11 +32,10 @@ namespace Empiria.FinancialAccounting.Tests.BalanceEngine {
     [Theory]
     [InlineData(AnaliticoCuentasTestCommandCase.Default)]
     [InlineData(AnaliticoCuentasTestCommandCase.EnCascada)]
-    public void CommandsMustBeEqual(AnaliticoCuentasTestCommandCase commandCase) {
+    public async Task CommandsMustBeEqual(AnaliticoCuentasTestCommandCase commandCase) {
       TrialBalanceCommand command = commandCase.BuildCommand();
 
-      TrialBalanceDto<AnaliticoDeCuentasEntryDto> sut =
-                          BalanceEngineUseCaseProxy.BuildTrialBalance<AnaliticoDeCuentasEntryDto>(command);
+      AnaliticoDeCuentasDto sut = await BalanceEngineUseCaseProxy.BuildAnaliticoDeCuentas(command);
 
       //EmpiriaLog.Trace(commandCase + "=> Expected => " + Json.JsonObject.Parse(command).ToString());
       //EmpiriaLog.Trace(commandCase + "=> Actual   => " + Json.JsonObject.Parse(sut.Command).ToString());
@@ -48,11 +48,10 @@ namespace Empiria.FinancialAccounting.Tests.BalanceEngine {
     [Theory]
     [InlineData(AnaliticoCuentasTestCommandCase.Default)]
     [InlineData(AnaliticoCuentasTestCommandCase.EnCascada)]
-    public void MustHaveEntries(AnaliticoCuentasTestCommandCase commandCase) {
+    public async Task MustHaveEntries(AnaliticoCuentasTestCommandCase commandCase) {
       TrialBalanceCommand command = commandCase.BuildCommand();
 
-      TrialBalanceDto<AnaliticoDeCuentasEntryDto> sut =
-                          BalanceEngineUseCaseProxy.BuildTrialBalance<AnaliticoDeCuentasEntryDto>(command);
+      AnaliticoDeCuentasDto sut = await BalanceEngineUseCaseProxy.BuildAnaliticoDeCuentas(command);
 
       Assert.NotNull(sut.Entries);
     }

@@ -8,10 +8,31 @@
 *             and foreign currencies totals                                                                  *
 *                                                                                                            *
 ************************* Copyright(c) La Vía Óntica SC, Ontica LLC and contributors. All rights reserved. **/
-
 using System;
 
 namespace Empiria.FinancialAccounting.BalanceEngine.Adapters {
+
+
+  /// <summary>Output DTO used to return the 'Analitico de cuentas' report.</summary>
+  public class AnaliticoDeCuentasDto {
+
+    public TrialBalanceCommand Command {
+      get; set;
+    } = new TrialBalanceCommand();
+
+
+    public FixedList<DataTableColumn> Columns {
+      get; set;
+    } = new FixedList<DataTableColumn>();
+
+
+    public FixedList<AnaliticoDeCuentasEntryDto> Entries {
+      get; set;
+    } = new FixedList<AnaliticoDeCuentasEntryDto>();
+
+  }
+
+
 
   /// <summary>Output DTO used to return the entries of a analytic balance with separated domestic
   /// and foreign currencies totals.</summary>
