@@ -655,8 +655,7 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
 
 
     internal FixedList<TrialBalanceEntry> ValuateToExchangeRate(FixedList<TrialBalanceEntry> entries,
-                                                                BalanceEngineCommandPeriod commandPeriod,
-                                                                bool isSecondPeriod = false) {
+                                                                BalanceEngineCommandPeriod commandPeriod) {
       if (commandPeriod.UseDefaultValuation) {
         commandPeriod.ExchangeRateTypeUID = ExchangeRateType.ValorizacionBanxico.UID;
         commandPeriod.ValuateToCurrrencyUID = "01";
@@ -675,7 +674,7 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
                                              $"moneda {entry.Currency.FullName} en la fecha proporcionada.");
 
         if (_command.TrialBalanceType == TrialBalanceType.BalanzaValorizadaComparativa) {
-          if (isSecondPeriod) {
+          if (commandPeriod.IsSecondPeriod) {
             entry.SecondExchangeRate = exchangeRate.Value;
           } else {
             entry.ExchangeRate = exchangeRate.Value;

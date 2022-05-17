@@ -44,6 +44,11 @@ namespace Empiria.FinancialAccounting.BalanceEngine.Adapters {
     } = false;
 
 
+    public bool IsSecondPeriod {
+      get; set;
+    } = false;
+
+
     public override bool Equals(object obj) {
       return obj is BalanceEngineCommandPeriod period &&
              period.GetHashCode() == this.GetHashCode();

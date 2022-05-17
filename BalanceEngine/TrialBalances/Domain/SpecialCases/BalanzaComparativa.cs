@@ -29,11 +29,13 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
       var balanceHelper = new TrialBalanceHelper(_command);
       var helper = new TrialBalanceComparativeHelper(_command);
 
+      _command.FinalPeriod.IsSecondPeriod = true;
+
       FixedList<TrialBalanceEntry> entries = balanceHelper.GetPostingEntries();
 
       entries = balanceHelper.GetSummaryToParentEntries(entries);
 
-      entries = balanceHelper.ValuateToExchangeRate(entries, _command.FinalPeriod, true);
+      entries = balanceHelper.ValuateToExchangeRate(entries, _command.FinalPeriod);
 
       entries = balanceHelper.RoundTrialBalanceEntries(entries);
 

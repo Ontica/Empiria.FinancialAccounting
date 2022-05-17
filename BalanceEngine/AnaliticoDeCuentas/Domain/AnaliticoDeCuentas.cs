@@ -80,14 +80,8 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
       analyticEntries = helper.CombineTotalConsolidatedAndEntries(
                                             analyticEntries, summaryTotalReport);
 
-      //analyticEntries = analyticHelper.GenerateAverageBalance(
-      //                                      analyticEntries, _command.InitialPeriod);
-
       FixedList<ITrialBalanceEntry> analyticBalance = analyticEntries.Select(x => (ITrialBalanceEntry) x)
                                                                      .ToFixedList();
-
-      //var ensureIsValid = new EnsureBalanceValidations(_command);
-      //ensureIsValid.EnsureIsValid(twoColumnsBalance, postingEntries);
 
       return new TrialBalance(_command, analyticBalance);
     }
