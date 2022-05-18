@@ -8,16 +8,18 @@
 *                                                                                                            *
 ************************* Copyright(c) La Vía Óntica SC, Ontica LLC and contributors. All rights reserved. **/
 using System;
+using System.Threading.Tasks;
 
 using Empiria.WebApi.Client;
 
 using Empiria.FinancialAccounting.BalanceEngine.Adapters;
 using Empiria.FinancialAccounting.BalanceEngine.UseCases;
-using System.Threading.Tasks;
 
 namespace Empiria.FinancialAccounting.Tests.BalanceEngine {
 
   static class BalanceEngineUseCaseProxy {
+
+    private const int WEB_API_TIMEOUT_SECONDS = 50;
 
     /// <summary>Use case proxy based on Http remote calls to TrialBalanceUseCases methods.</summary>
     static internal TrialBalanceDto BuildTrialBalance(TrialBalanceCommand command) {
@@ -71,14 +73,16 @@ namespace Empiria.FinancialAccounting.Tests.BalanceEngine {
       }
     }
 
+
     private static Task<AnaliticoDeCuentasDto> BuildLocalAnaliticoDeCuentasUseCase(TrialBalanceCommand command) {
       using (var usecase = TrialBalanceUseCases.UseCaseInteractor()) {
         return usecase.BuildAnaliticoDeCuentas(command);
       }
     }
 
+
     private static async Task<AnaliticoDeCuentasDto> BuildRemoteAnaliticoDeCuentasUseCase(TrialBalanceCommand command) {
-      var http = new HttpApiClient(TestingConstants.WEB_API_BASE_ADDRESS);
+      HttpApiClient http = CreateHttpApiClient();
 
       var dto = await http.PostAsync<ResponseModel<AnaliticoDeCuentasDto>>(command, "v2/financial-accounting/balance-engine/analitico-de-cuentas")
                           .ConfigureAwait(false);
@@ -86,8 +90,9 @@ namespace Empiria.FinancialAccounting.Tests.BalanceEngine {
       return dto.Data;
     }
 
+
     static private TrialBalanceDto BuildRemoteTrialBalanceUseCase(TrialBalanceCommand command) {
-      var http = new HttpApiClient(TestingConstants.WEB_API_BASE_ADDRESS);
+      HttpApiClient http = CreateHttpApiClient();
 
       return http.PostAsync<ResponseModel<TrialBalanceDto>>(command, "v2/financial-accounting/trial-balance")
                  .Result
@@ -97,11 +102,17 @@ namespace Empiria.FinancialAccounting.Tests.BalanceEngine {
 
     static private TrialBalanceDto<T> BuildRemoteTrialBalanceUseCase<T>(TrialBalanceCommand command)
                                                                         where T : ITrialBalanceEntryDto {
-      var http = new HttpApiClient(TestingConstants.WEB_API_BASE_ADDRESS);
+      HttpApiClient http = CreateHttpApiClient();
 
       return http.PostAsync<ResponseModel<TrialBalanceDto<T>>>(command, "v2/financial-accounting/trial-balance")
                  .Result
                  .Data;
+    }
+
+
+    static private HttpApiClient CreateHttpApiClient() {
+      return new HttpApiClient(TestingConstants.WEB_API_BASE_ADDRESS,
+                               TimeSpan.FromSeconds(WEB_API_TIMEOUT_SECONDS));
     }
 
   }  // class BalanceEngineUseCaseProxy
