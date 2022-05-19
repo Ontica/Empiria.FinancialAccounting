@@ -4,7 +4,7 @@
 *  Assembly : FinancialAccounting.BalanceEngine.Tests    Pattern   : Use cases tests                         *
 *  Type     : AnaliticoCuentasUseCasesTests              License   : Please read LICENSE.txt file            *
 *                                                                                                            *
-*  Summary  : Test cases for Analitico de Cuentas report.                                                    *
+*  Summary  : Use case tests for 'Analitico de cuentas' report                                               *
 *                                                                                                            *
 ************************* Copyright(c) La Vía Óntica SC, Ontica LLC and contributors. All rights reserved. **/
 using System;
@@ -13,10 +13,11 @@ using System.Threading.Tasks;
 using Xunit;
 
 using Empiria.FinancialAccounting.BalanceEngine.Adapters;
+using Empiria.FinancialAccounting.BalanceEngine.UseCases;
 
-namespace Empiria.FinancialAccounting.Tests.BalanceEngine {
+namespace Empiria.FinancialAccounting.Tests.BalanceEngine.AnaliticoCuentas {
 
-  /// <summary>Test cases for trial balance reports.</summary>
+  /// <summary>Use case tests for 'Analitico de cuentas' report.</summary>
   public class AnaliticoCuentasUseCasesTests {
 
     #region Initialization
@@ -35,28 +36,16 @@ namespace Empiria.FinancialAccounting.Tests.BalanceEngine {
     public async Task CommandsMustBeEqual(AnaliticoCuentasTestCommandCase commandCase) {
       TrialBalanceCommand command = commandCase.BuildCommand();
 
-      AnaliticoDeCuentasDto sut = await BalanceEngineUseCaseProxy.BuildAnaliticoDeCuentas(command);
+      using (var usecase = TrialBalanceUseCases.UseCaseInteractor()) {
+        AnaliticoDeCuentasDto sut = await usecase.BuildAnaliticoDeCuentas(command);
 
-      //EmpiriaLog.Trace(commandCase + "=> Expected => " + Json.JsonObject.Parse(command).ToString());
-      //EmpiriaLog.Trace(commandCase + "=> Actual   => " + Json.JsonObject.Parse(sut.Command).ToString());
+        Assert.Equal(command.GetHashCode(), sut.Command.GetHashCode());
+        Assert.Equal(command, sut.Command);
+      }
 
-      Assert.Equal(command.GetHashCode(), sut.Command.GetHashCode());
-      Assert.Equal(command, sut.Command);
     }
 
-
-    [Theory]
-    [InlineData(AnaliticoCuentasTestCommandCase.Default)]
-    [InlineData(AnaliticoCuentasTestCommandCase.EnCascada)]
-    public async Task MustHaveEntries(AnaliticoCuentasTestCommandCase commandCase) {
-      TrialBalanceCommand command = commandCase.BuildCommand();
-
-      AnaliticoDeCuentasDto sut = await BalanceEngineUseCaseProxy.BuildAnaliticoDeCuentas(command);
-
-      Assert.NotNull(sut.Entries);
-    }
-
-    #endregion Theories
+     #endregion Theories
 
   } // class AnaliticoCuentasUseCasesTests
 
