@@ -34,7 +34,7 @@ namespace Empiria.FinancialAccounting.Tests.BalanceEngine.AnaliticoCuentas {
     [Theory]
     [InlineData(AnaliticoCuentasTestCommandCase.Default)]
     [InlineData(AnaliticoCuentasTestCommandCase.EnCascada)]
-    public async Task BaseEntriesAreOk(AnaliticoCuentasTestCommandCase commandCase) {
+    public async Task AccountEntriesAreOk(AnaliticoCuentasTestCommandCase commandCase) {
       FixedList<AnaliticoDeCuentasEntryDto> expectedEntries = commandCase.GetExpectedEntries(TrialBalanceItemType.Entry);
 
       FixedList<AnaliticoDeCuentasEntryDto> sut = await GetFilteredAnaliticoCuentasEntries(commandCase,
@@ -45,7 +45,7 @@ namespace Empiria.FinancialAccounting.Tests.BalanceEngine.AnaliticoCuentas {
       foreach (var sutEntry in sut) {
         var expected = expectedEntries.Find(x => x.Equals(sutEntry));
 
-        Assert.True(expected != null, $"Expected entries do not have this base sut entry: {sutEntry.ToJson()}");
+        Assert.True(expected != null, $"Expected entries do not have this AccountEntry: {sutEntry.ToJson()}");
       }
     }
 
@@ -53,7 +53,7 @@ namespace Empiria.FinancialAccounting.Tests.BalanceEngine.AnaliticoCuentas {
     [Theory]
     [InlineData(AnaliticoCuentasTestCommandCase.Default)]
     [InlineData(AnaliticoCuentasTestCommandCase.EnCascada)]
-    public async Task SummaryEntriesAreOk(AnaliticoCuentasTestCommandCase commandCase) {
+    public async Task AccountSummaryEntriesAreOk(AnaliticoCuentasTestCommandCase commandCase) {
 
       FixedList<AnaliticoDeCuentasEntryDto> expectedEntries = commandCase.GetExpectedEntries(TrialBalanceItemType.Summary);
 
@@ -65,7 +65,7 @@ namespace Empiria.FinancialAccounting.Tests.BalanceEngine.AnaliticoCuentas {
       foreach (var sutEntry in sut) {
         var expected = expectedEntries.Find(x => x.Equals(sutEntry));
 
-        Assert.True(expected != null, $"Expected entries do not have this summary sut entry: {sutEntry.ToJson()}");
+        Assert.True(expected != null, $"Expected entries do not have this AccountSummary entry: {sutEntry.ToJson()}");
       }
     }
 
@@ -73,18 +73,95 @@ namespace Empiria.FinancialAccounting.Tests.BalanceEngine.AnaliticoCuentas {
     [Theory]
     [InlineData(AnaliticoCuentasTestCommandCase.Default)]
     [InlineData(AnaliticoCuentasTestCommandCase.EnCascada)]
-    public async Task BalanceTotalConsolidatedEntryIsOk(AnaliticoCuentasTestCommandCase commandCase) {
+    public async Task GroupTotalEntriesAreOk(AnaliticoCuentasTestCommandCase commandCase) {
+
+      // ToDo: No distinguir entre grupos deudores y acreedores. Usar el dato debtorCreditor
+      // Check Debtor account groups
+      FixedList<AnaliticoDeCuentasEntryDto> expectedEntries = commandCase.GetExpectedEntries(TrialBalanceItemType.BalanceTotalGroupDebtor);
+
+      FixedList<AnaliticoDeCuentasEntryDto> sut = await GetFilteredAnaliticoCuentasEntries(commandCase,
+                                                                                           TrialBalanceItemType.BalanceTotalGroupDebtor);
+
+      Assert.Equal(expectedEntries.Count, sut.Count);
+
+      foreach (var sutEntry in sut) {
+        var expected = expectedEntries.Find(x => x.Equals(sutEntry));
+
+        Assert.True(expected != null, $"Expected entries do not have this GroupTotalEntry (debtor) entry: {sutEntry.ToJson()}");
+      }
+
+
+      // Check Creditor account groups
+      expectedEntries = commandCase.GetExpectedEntries(TrialBalanceItemType.BalanceTotalGroupCreditor);
+
+      sut = await GetFilteredAnaliticoCuentasEntries(commandCase, TrialBalanceItemType.BalanceTotalGroupCreditor);
+
+      Assert.Equal(expectedEntries.Count, sut.Count);
+
+      foreach (var sutEntry in sut) {
+        var expected = expectedEntries.Find(x => x.Equals(sutEntry));
+
+        Assert.True(expected != null, $"Expected entries do not have this GroupTotalEntry entry: (creditor) {sutEntry.ToJson()}");
+      }
+
+    }
+
+    [Theory]
+    [InlineData(AnaliticoCuentasTestCommandCase.Default)]
+    [InlineData(AnaliticoCuentasTestCommandCase.EnCascada)]
+    public async Task LedgerDebtorCreditorTotalEntriesAreOk(AnaliticoCuentasTestCommandCase commandCase) {
+
+      // ToDo: No distinguir entre totales deudores y acreedores por ledger. Usar el dato debtorCreditor
+
+      // Check Debtor totals
+      FixedList<AnaliticoDeCuentasEntryDto> expectedEntries = commandCase.GetExpectedEntries(TrialBalanceItemType.BalanceTotalDebtor);
+
+      FixedList<AnaliticoDeCuentasEntryDto> sut = await GetFilteredAnaliticoCuentasEntries(commandCase,
+                                                                                           TrialBalanceItemType.BalanceTotalDebtor);
+
+      Assert.Equal(expectedEntries.Count, sut.Count);
+
+      foreach (var sutEntry in sut) {
+        var expected = expectedEntries.Find(x => x.Equals(sutEntry));
+
+        Assert.True(expected != null, $"Expected entries do not have this  LedgerDebtorCreditorTotal (debtor) entry: {sutEntry.ToJson()}");
+      }
+
+
+      // Check Creditor totals
+      expectedEntries = commandCase.GetExpectedEntries(TrialBalanceItemType.BalanceTotalCreditor);
+
+      sut = await GetFilteredAnaliticoCuentasEntries(commandCase, TrialBalanceItemType.BalanceTotalCreditor);
+
+      Assert.Equal(expectedEntries.Count, sut.Count);
+
+      foreach (var sutEntry in sut) {
+        var expected = expectedEntries.Find(x => x.Equals(sutEntry));
+
+        Assert.True(expected != null, $"Expected entries do not have this  LedgerDebtorCreditorTotal entry: (creditor) {sutEntry.ToJson()}");
+      }
+
+    }
+
+
+
+    [Theory]
+    [InlineData(AnaliticoCuentasTestCommandCase.Default)]
+    [InlineData(AnaliticoCuentasTestCommandCase.EnCascada)]
+    public async Task LedgerTotalEntriesAreOk(AnaliticoCuentasTestCommandCase commandCase) {
 
       FixedList<AnaliticoDeCuentasEntryDto> expectedEntries = commandCase.GetExpectedEntries(TrialBalanceItemType.BalanceTotalConsolidated);
 
       FixedList<AnaliticoDeCuentasEntryDto> sut = await GetFilteredAnaliticoCuentasEntries(commandCase,
                                                                                            TrialBalanceItemType.BalanceTotalConsolidated);
 
-      Assert.Single(sut);
+      Assert.Equal(expectedEntries.Count, sut.Count);
 
-      var expected = expectedEntries.Find(x => x.Equals(sut[0]));
+      foreach (var sutEntry in sut) {
+        var expected = expectedEntries.Find(x => x.Equals(sutEntry));
 
-      Assert.True(expected != null, $"Expected entries do not have this sut balance total consolidated entry: {sut[0].ToJson()}");
+        Assert.True(expected != null, $"Expected entries do not have this LedgerTotal entry: {sutEntry.ToJson()}");
+      }
     }
 
 
