@@ -41,7 +41,7 @@ namespace Empiria.FinancialAccounting.Tests.BalanceEngine {
       command.WithAverageBalance = false;
       command.ShowCascadeBalances = true;
 
-      TrialBalanceDto sut = BalanceEngineUseCaseProxy.BuildTrialBalance(command);
+      TrialBalanceDto sut = BalanceEngineProxy.BuildTrialBalance(command);
 
       Assert.NotNull(sut);
       Assert.Equal(command, sut.Command);
@@ -60,7 +60,7 @@ namespace Empiria.FinancialAccounting.Tests.BalanceEngine {
       command.WithAverageBalance = false;
       command.ShowCascadeBalances = false;
 
-      TrialBalanceDto sut = BalanceEngineUseCaseProxy.BuildTrialBalance(command);
+      TrialBalanceDto sut = BalanceEngineProxy.BuildTrialBalance(command);
 
       Assert.NotNull(sut);
       Assert.Equal(command, sut.Command);
@@ -79,7 +79,7 @@ namespace Empiria.FinancialAccounting.Tests.BalanceEngine {
       command.UseDefaultValuation = false;
       command.WithAverageBalance = true;
 
-      TrialBalanceDto sut = BalanceEngineUseCaseProxy.BuildTrialBalance(command);
+      TrialBalanceDto sut = BalanceEngineProxy.BuildTrialBalance(command);
 
       Assert.NotNull(sut);
       Assert.Equal(command, sut.Command);
@@ -94,7 +94,7 @@ namespace Empiria.FinancialAccounting.Tests.BalanceEngine {
       command.TrialBalanceType = TrialBalanceType.Balanza;
       command.ShowCascadeBalances = true;
 
-      TrialBalanceDto sut = BalanceEngineUseCaseProxy.BuildTrialBalance(command);
+      TrialBalanceDto sut = BalanceEngineProxy.BuildTrialBalance(command);
 
       Assert.NotNull(sut);
       Assert.Equal(command, sut.Command);
@@ -108,7 +108,7 @@ namespace Empiria.FinancialAccounting.Tests.BalanceEngine {
 
       command.TrialBalanceType = TrialBalanceType.BalanzaEnColumnasPorMoneda;
 
-      TrialBalanceDto sut = BalanceEngineUseCaseProxy.BuildTrialBalance(command);
+      TrialBalanceDto sut = BalanceEngineProxy.BuildTrialBalance(command);
 
       Assert.NotNull(sut);
       Assert.Equal(command, sut.Command);
@@ -126,7 +126,7 @@ namespace Empiria.FinancialAccounting.Tests.BalanceEngine {
       command.FromAccount = "1";
       command.ToAccount = "1";
 
-      TrialBalanceDto sut = BalanceEngineUseCaseProxy.BuildTrialBalance(command);
+      TrialBalanceDto sut = BalanceEngineProxy.BuildTrialBalance(command);
 
       Assert.NotNull(sut);
       Assert.Equal(command, sut.Command);

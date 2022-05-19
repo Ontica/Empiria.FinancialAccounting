@@ -2,7 +2,7 @@
 *                                                                                                            *
 *  Module   : Balance Engine                             Component : Test cases                              *
 *  Assembly : FinancialAccounting.BalanceEngine.Tests    Pattern   : Http Proxy                              *
-*  Type     : BalanceEngineUseCaseProxy                  License   : Please read LICENSE.txt file            *
+*  Type     : BalanceEngineProxy                         License   : Please read LICENSE.txt file            *
 *                                                                                                            *
 *  Summary  : Use Http proxy based on Http remote calls to TrialBalanceUseCases.                             *
 *                                                                                                            *
@@ -17,9 +17,7 @@ using Empiria.FinancialAccounting.BalanceEngine.UseCases;
 
 namespace Empiria.FinancialAccounting.Tests.BalanceEngine {
 
-  static class BalanceEngineUseCaseProxy {
-
-    private const int WEB_API_TIMEOUT_SECONDS = 50;
+  static class BalanceEngineProxy {
 
     /// <summary>Use case proxy based on Http remote calls to TrialBalanceUseCases methods.</summary>
     static internal TrialBalanceDto BuildTrialBalance(TrialBalanceCommand command) {
@@ -112,9 +110,9 @@ namespace Empiria.FinancialAccounting.Tests.BalanceEngine {
 
     static private HttpApiClient CreateHttpApiClient() {
       return new HttpApiClient(TestingConstants.WEB_API_BASE_ADDRESS,
-                               TimeSpan.FromSeconds(WEB_API_TIMEOUT_SECONDS));
+                               TimeSpan.FromSeconds(TestingConstants.WEB_API_TIMEOUT_SECONDS));
     }
 
-  }  // class BalanceEngineUseCaseProxy
+  }  // class BalanceEngineProxy
 
 }  // namespace Empiria.FinancialAccounting.Tests.BalanceEngine
