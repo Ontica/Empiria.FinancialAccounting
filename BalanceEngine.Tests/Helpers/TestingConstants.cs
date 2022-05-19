@@ -15,10 +15,8 @@ namespace Empiria.FinancialAccounting.Tests {
   static public class TestingConstants {
 
     static internal readonly string ACCOUNTS_CHART_UID = "47ec2ec7-0f4f-482e-9799-c23107b60d8a";
-    //"b2328e67-3f2e-45b9-b1f6-93ef6292204e";
 
     static internal readonly string[] BALANCE_LEDGERS_ARRAY = new string[] { };
-    // "2584a757-865c-2025-8025-fa633f200c49"
 
     static internal readonly DateTime FROM_DATE = new DateTime(2022, 02, 01);
 
@@ -29,6 +27,8 @@ namespace Empiria.FinancialAccounting.Tests {
     static internal readonly string SESSION_TOKEN = ConfigurationData.GetString("Testing.SessionToken");
 
     static internal readonly string WEB_API_BASE_ADDRESS = "http://172.27.207.97/sicofin/api";
+
+    static public int WEB_API_TIMEOUT_SECONDS = 30;
 
   }  // class TestingConstants
 
