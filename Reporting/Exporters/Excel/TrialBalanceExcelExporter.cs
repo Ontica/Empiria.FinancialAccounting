@@ -73,6 +73,7 @@ namespace Empiria.FinancialAccounting.Reporting.Exporters.Excel {
       switch (trialBalance.Command.TrialBalanceType) {
         case TrialBalanceType.AnaliticoDeCuentas:
           FillOutAnaliticoDeCuentas(trialBalance.Entries.Select(x => (AnaliticoDeCuentasEntryDto) x));
+
           return;
 
         case TrialBalanceType.BalanzaValorizadaComparativa:
@@ -123,13 +124,8 @@ namespace Empiria.FinancialAccounting.Reporting.Exporters.Excel {
         } else {
           _excelFile.SetCell($"A{i}", "Consolidada");
         }
-        if (entry.ItemType == TrialBalanceItemType.Entry) {
-          if (!entry.IsParentPostingEntry) {
-            _excelFile.SetCell($"C{i}", "*");
-          } else {
-            _excelFile.SetCell($"C{i}", "**");
-          }
-        }
+
+        _excelFile.SetCell($"C{i}", entry.AccountMark);
         _excelFile.SetCell($"D{i}", entry.AccountNumber);
         _excelFile.SetCell($"E{i}", entry.AccountName);
         _excelFile.SetCell($"F{i}", entry.SectorCode);
@@ -168,7 +164,7 @@ namespace Empiria.FinancialAccounting.Reporting.Exporters.Excel {
         } else {
           _excelFile.SetCell($"A{i}", "Consolidada");
         }
-        
+
         _excelFile.SetCell($"C{i}", entry.CurrencyCode);
         _excelFile.SetCell($"D{i}", GetLedgerLevelAccountNumber(entry.AccountNumber));
         _excelFile.SetCell($"E{i}", GetSubAccountNumberWithSector(entry.AccountNumber, entry.SectorCode));
@@ -318,7 +314,7 @@ namespace Empiria.FinancialAccounting.Reporting.Exporters.Excel {
         } else {
           _excelFile.SetCell($"A{i}", "Consolidada");
         }
-        
+
         _excelFile.SetCell($"C{i}", entry.CurrencyCode);
         if (entry.ItemType == TrialBalanceItemType.Entry) {
           if (!entry.IsParentPostingEntry) {
@@ -448,7 +444,7 @@ namespace Empiria.FinancialAccounting.Reporting.Exporters.Excel {
         } else {
           _excelFile.SetCell($"A{i}", "Consolidada");
         }
-        
+
         _excelFile.SetCell($"C{i}", entry.CurrencyCode);
         if (entry.ItemType == TrialBalanceItemType.Entry) {
           if (!entry.IsParentPostingEntry) {
@@ -465,14 +461,14 @@ namespace Empiria.FinancialAccounting.Reporting.Exporters.Excel {
           _excelFile.SetCell($"F{i}", entry.AccountName);
         }
         _excelFile.SetCell($"G{i}", entry.SectorCode);
-        
+
         if (includeSubledgerAccounts && !subledgerAccount.IsEmptyInstance) {
           _excelFile.SetCell($"H{i}", subledgerAccount.Number);
           _excelFile.SetCell($"I{i}", subledgerAccount.Name);
         }
         _excelFile.SetCell($"J{i}", (decimal) entry.CurrentBalance);
         _excelFile.SetCell($"K{i}", entry.DebtorCreditor);
-        
+
         if (MustFillOutAverageBalance((decimal) entry.AverageBalance, entry.LastChangeDate)) {
           _excelFile.SetCell($"L{i}", (decimal) entry.AverageBalance);
         }

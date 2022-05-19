@@ -91,7 +91,6 @@ namespace Empiria.FinancialAccounting.Tests.BalanceEngine {
       foreach (var entry in _twoColumnsEntries.Where(a => a.ItemType == TrialBalanceItemType.Entry)) {
         var balances = _trialBalance.Where(
                                           a => a.AccountNumber == entry.AccountNumber &&
-                                          a.AccountNumberForBalances == entry.AccountNumberForBalances &&
                                           (a.CurrencyCode == "01" || a.CurrencyCode == "44") &&
                                           a.LedgerNumber == entry.LedgerNumber &&
                                           a.SectorCode == entry.SectorCode &&
@@ -128,7 +127,6 @@ namespace Empiria.FinancialAccounting.Tests.BalanceEngine {
       foreach (var entry in _twoColumnsEntries.Where(a => a.ItemType == TrialBalanceItemType.Entry)) {
         var foreignBalances = _trialBalance.Where(
                                           a => a.AccountNumber == entry.AccountNumber &&
-                                          a.AccountNumberForBalances == entry.AccountNumberForBalances &&
                                           a.CurrencyCode != "01" && a.CurrencyCode != "44" &&
                                           a.LedgerNumber == entry.LedgerNumber &&
                                           a.SectorCode == entry.SectorCode &&

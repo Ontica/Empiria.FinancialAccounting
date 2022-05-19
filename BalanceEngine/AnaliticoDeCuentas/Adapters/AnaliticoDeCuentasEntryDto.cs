@@ -9,8 +9,10 @@
 *                                                                                                            *
 ************************* Copyright(c) La Vía Óntica SC, Ontica LLC and contributors. All rights reserved. **/
 using System;
-using Empiria.Json;
+
 using Newtonsoft.Json;
+
+using Empiria.Json;
 
 namespace Empiria.FinancialAccounting.BalanceEngine.Adapters {
 
@@ -18,27 +20,31 @@ namespace Empiria.FinancialAccounting.BalanceEngine.Adapters {
   /// <summary>Output DTO used to return the 'Analitico de cuentas' report.</summary>
   public class AnaliticoDeCuentasDto {
 
+    [JsonProperty]
     public TrialBalanceCommand Command {
-      get; set;
-    } = new TrialBalanceCommand();
+      get; internal set;
+    }
 
 
+    [JsonProperty]
     public FixedList<DataTableColumn> Columns {
-      get; set;
-    } = new FixedList<DataTableColumn>();
+      get; internal set;
+    }
 
 
+    [JsonProperty]
     public FixedList<AnaliticoDeCuentasEntryDto> Entries {
-      get; set;
-    } = new FixedList<AnaliticoDeCuentasEntryDto>();
+      get; internal set;
+    }
 
-  }
+  }  // class AnaliticoDeCuentasDto
 
 
 
   /// <summary>Output DTO used to return the entries of an analytic balance with separated domestic
   /// and foreign currencies totals.</summary>
-  public class AnaliticoDeCuentasEntryDto : ITrialBalanceEntryDto {
+  public sealed class AnaliticoDeCuentasEntryDto : ITrialBalanceEntryDto,
+                                                   IEquatable<AnaliticoDeCuentasEntryDto> {
 
     [JsonProperty]
     public TrialBalanceItemType ItemType {
@@ -65,12 +71,6 @@ namespace Empiria.FinancialAccounting.BalanceEngine.Adapters {
 
 
     [JsonProperty]
-    public string CurrencyCode {
-      get; internal set;
-    }
-
-
-    [JsonProperty]
     public int StandardAccountId {
       get; internal set;
     }
@@ -89,7 +89,7 @@ namespace Empiria.FinancialAccounting.BalanceEngine.Adapters {
 
 
     [JsonProperty]
-    public string AccountNumberForBalances {
+    public string AccountName {
       get; internal set;
     }
 
@@ -98,12 +98,6 @@ namespace Empiria.FinancialAccounting.BalanceEngine.Adapters {
     public string SubledgerAccountNumber {
       get; internal set;
     } = string.Empty;
-
-
-    [JsonProperty]
-    public string AccountName {
-      get; internal set;
-    }
 
 
     [JsonProperty]
@@ -125,24 +119,13 @@ namespace Empiria.FinancialAccounting.BalanceEngine.Adapters {
 
 
     [JsonProperty]
+    public string AccountMark {
+      get; internal set;
+    }
+
+
+    [JsonProperty]
     public string SectorCode {
-      get; internal set;
-    }
-
-    [JsonProperty]
-    public decimal InitialBalance {
-      get; internal set;
-    }
-
-
-    [JsonProperty]
-    public decimal Debit {
-      get; internal set;
-    }
-
-
-    [JsonProperty]
-    public decimal Credit {
       get; internal set;
     }
 
@@ -164,13 +147,6 @@ namespace Empiria.FinancialAccounting.BalanceEngine.Adapters {
       get; internal set;
     }
 
-
-    [JsonProperty]
-    public decimal ExchangeRate {
-      get; internal set;
-    }
-
-
     [JsonProperty]
     public decimal AverageBalance {
       get; internal set;
@@ -183,26 +159,10 @@ namespace Empiria.FinancialAccounting.BalanceEngine.Adapters {
     }
 
 
-    [JsonProperty]
-    public bool HasAccountStatement {
-      get; internal set;
-    } = false;
-
-
-    [JsonProperty]
-    public bool ClickableEntry {
-      get; internal set;
-    } = false;
-
-
-    [JsonProperty]
-    public bool IsParentPostingEntry {
-      get; internal set;
-    }
-
     public bool Equals(AnaliticoDeCuentasEntryDto entry) {
       return entry.GetHashCode() == this.GetHashCode();
     }
+
 
     public override bool Equals(object obj) {
       return obj is AnaliticoDeCuentasEntryDto entry &&
@@ -221,10 +181,11 @@ namespace Empiria.FinancialAccounting.BalanceEngine.Adapters {
         ItemType,
         LedgerNumber,
         AccountNumber,
-        CurrencyCode,
+        // AccountMark,
         SectorCode,
         StandardAccountId,
         SubledgerAccountNumber,
+        DebtorCreditor,
         DomesticBalance.ToString("C2"),
         ForeignBalance.ToString("C2"),
         TotalBalance.ToString("C2")

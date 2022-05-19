@@ -45,24 +45,23 @@ namespace Empiria.FinancialAccounting.BalanceEngine.Adapters {
       dto.LedgerNumber = entry.Ledger.Number;
       dto.LedgerName = entry.Ledger.Name;
       dto.StandardAccountId = entry.Account.Id;
-      dto.CurrencyCode = entry.Currency.Code;
-      dto.AccountNumberForBalances = entry.Account.Number;
       dto.DebtorCreditor = entry.DebtorCreditor;
       dto.AccountRole = entry.Account.Role;
       dto.AccountLevel = entry.Account.Level;
+      if (entry.ItemType == TrialBalanceItemType.Entry) {
+        if (!entry.IsParentPostingEntry) {
+          dto.AccountMark = "*";
+        } else {
+          dto.AccountMark = "**";
+        }
+      }
       dto.SectorCode = entry.Sector.Code;
       dto.SubledgerAccountId = entry.SubledgerAccountId;
-      dto.InitialBalance = entry.InitialBalance;
-      dto.Debit = entry.Debit;
-      dto.Credit = entry.Credit;
       dto.DomesticBalance = entry.DomesticBalance;
       dto.ForeignBalance = entry.ForeignBalance;
       dto.TotalBalance = entry.TotalBalance;
-      dto.ExchangeRate = entry.ExchangeRate;
       dto.AverageBalance = entry.AverageBalance;
-      dto.IsParentPostingEntry = entry.IsParentPostingEntry;
-      dto.LastChangeDate = entry.LastChangeDate != null ? entry.LastChangeDate :
-                           ExecutionServer.DateMaxValue;
+      dto.LastChangeDate = entry.LastChangeDate;
 
       AssignLabelNameAndNumber(dto, entry);
 
