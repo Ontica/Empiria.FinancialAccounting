@@ -31,10 +31,10 @@ namespace Empiria.FinancialAccounting.Tests.BalanceEngine.AnaliticoCuentas {
     #region Theories
 
     [Theory]
-    [InlineData(AnaliticoCuentasTestCommandCase.Default)]
-    [InlineData(AnaliticoCuentasTestCommandCase.EnCascada)]
-    public async Task CommandsMustBeEqual(AnaliticoCuentasTestCommandCase commandCase) {
-      TrialBalanceCommand command = commandCase.BuildCommand();
+    [InlineData(AnaliticoDeCuentasTestCase.Default)]
+    [InlineData(AnaliticoDeCuentasTestCase.EnCascada)]
+    public async Task CommandsMustBeEqual(AnaliticoDeCuentasTestCase testcase) {
+      TrialBalanceCommand command = testcase.GetInvocationCommand();
 
       using (var usecase = TrialBalanceUseCases.UseCaseInteractor()) {
         AnaliticoDeCuentasDto sut = await usecase.BuildAnaliticoDeCuentas(command);

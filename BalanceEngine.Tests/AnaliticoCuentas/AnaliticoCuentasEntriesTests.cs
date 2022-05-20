@@ -12,6 +12,8 @@ using System.Threading.Tasks;
 
 using Xunit;
 
+using Empiria.Collections;
+
 using Empiria.FinancialAccounting.BalanceEngine.Adapters;
 using Empiria.FinancialAccounting.BalanceEngine;
 
@@ -19,6 +21,9 @@ namespace Empiria.FinancialAccounting.Tests.BalanceEngine.AnaliticoCuentas {
 
   /// <summary>Unit test cases for 'Analítico de cuentas' report entries.</summary>
   public class AnaliticoCuentasEntriesTests {
+
+    private readonly EmpiriaHashTable<AnaliticoDeCuentasDto> _cache =
+                                        new EmpiriaHashTable<AnaliticoDeCuentasDto>(16);
 
     #region Initialization
 
@@ -32,13 +37,17 @@ namespace Empiria.FinancialAccounting.Tests.BalanceEngine.AnaliticoCuentas {
 
 
     [Theory]
-    [InlineData(AnaliticoCuentasTestCommandCase.Default)]
-    [InlineData(AnaliticoCuentasTestCommandCase.EnCascada)]
-    public async Task AccountEntriesAreOk(AnaliticoCuentasTestCommandCase commandCase) {
-      FixedList<AnaliticoDeCuentasEntryDto> expectedEntries = commandCase.GetExpectedEntries(TrialBalanceItemType.Entry);
+    [InlineData(AnaliticoDeCuentasTestCase.CatalogoAnterior)]
+    [InlineData(AnaliticoDeCuentasTestCase.ConAuxiliares)]
+    [InlineData(AnaliticoDeCuentasTestCase.Default)]
+    [InlineData(AnaliticoDeCuentasTestCase.EnCascada)]
+    [InlineData(AnaliticoDeCuentasTestCase.EnCascadaConAuxiliares)]
+    [InlineData(AnaliticoDeCuentasTestCase.Sectorizado)]
+    public async Task AccountEntriesAreOk(AnaliticoDeCuentasTestCase testcase) {
+      FixedList<AnaliticoDeCuentasEntryDto> expectedEntries = testcase.GetExpectedEntries(TrialBalanceItemType.Entry);
 
-      FixedList<AnaliticoDeCuentasEntryDto> sut = await GetFilteredAnaliticoCuentasEntries(commandCase,
-                                                                                           TrialBalanceItemType.Entry);
+      FixedList<AnaliticoDeCuentasEntryDto> sut = await GetAnaliticoDeCuentasEntries(testcase,
+                                                                                     TrialBalanceItemType.Entry);
 
       Assert.Equal(expectedEntries.Count, sut.Count);
 
@@ -51,14 +60,18 @@ namespace Empiria.FinancialAccounting.Tests.BalanceEngine.AnaliticoCuentas {
 
 
     [Theory]
-    [InlineData(AnaliticoCuentasTestCommandCase.Default)]
-    [InlineData(AnaliticoCuentasTestCommandCase.EnCascada)]
-    public async Task AccountSummaryEntriesAreOk(AnaliticoCuentasTestCommandCase commandCase) {
+    [InlineData(AnaliticoDeCuentasTestCase.CatalogoAnterior)]
+    [InlineData(AnaliticoDeCuentasTestCase.ConAuxiliares)]
+    [InlineData(AnaliticoDeCuentasTestCase.Default)]
+    [InlineData(AnaliticoDeCuentasTestCase.EnCascada)]
+    [InlineData(AnaliticoDeCuentasTestCase.EnCascadaConAuxiliares)]
+    [InlineData(AnaliticoDeCuentasTestCase.Sectorizado)]
+    public async Task AccountSummaryEntriesAreOk(AnaliticoDeCuentasTestCase testcase) {
 
-      FixedList<AnaliticoDeCuentasEntryDto> expectedEntries = commandCase.GetExpectedEntries(TrialBalanceItemType.Summary);
+      FixedList<AnaliticoDeCuentasEntryDto> expectedEntries = testcase.GetExpectedEntries(TrialBalanceItemType.Summary);
 
-      FixedList<AnaliticoDeCuentasEntryDto> sut = await GetFilteredAnaliticoCuentasEntries(commandCase,
-                                                                                           TrialBalanceItemType.Summary);
+      FixedList<AnaliticoDeCuentasEntryDto> sut = await GetAnaliticoDeCuentasEntries(testcase,
+                                                                                     TrialBalanceItemType.Summary);
 
       Assert.Equal(expectedEntries.Count, sut.Count);
 
@@ -71,16 +84,20 @@ namespace Empiria.FinancialAccounting.Tests.BalanceEngine.AnaliticoCuentas {
 
 
     [Theory]
-    [InlineData(AnaliticoCuentasTestCommandCase.Default)]
-    [InlineData(AnaliticoCuentasTestCommandCase.EnCascada)]
-    public async Task GroupTotalEntriesAreOk(AnaliticoCuentasTestCommandCase commandCase) {
+    [InlineData(AnaliticoDeCuentasTestCase.CatalogoAnterior)]
+    [InlineData(AnaliticoDeCuentasTestCase.ConAuxiliares)]
+    [InlineData(AnaliticoDeCuentasTestCase.Default)]
+    [InlineData(AnaliticoDeCuentasTestCase.EnCascada)]
+    [InlineData(AnaliticoDeCuentasTestCase.EnCascadaConAuxiliares)]
+    [InlineData(AnaliticoDeCuentasTestCase.Sectorizado)]
+    public async Task GroupTotalEntriesAreOk(AnaliticoDeCuentasTestCase testcase) {
 
       // ToDo: No distinguir entre grupos deudores y acreedores. Usar el dato debtorCreditor
       // Check Debtor account groups
-      FixedList<AnaliticoDeCuentasEntryDto> expectedEntries = commandCase.GetExpectedEntries(TrialBalanceItemType.BalanceTotalGroupDebtor);
+      FixedList<AnaliticoDeCuentasEntryDto> expectedEntries = testcase.GetExpectedEntries(TrialBalanceItemType.BalanceTotalGroupDebtor);
 
-      FixedList<AnaliticoDeCuentasEntryDto> sut = await GetFilteredAnaliticoCuentasEntries(commandCase,
-                                                                                           TrialBalanceItemType.BalanceTotalGroupDebtor);
+      FixedList<AnaliticoDeCuentasEntryDto> sut = await GetAnaliticoDeCuentasEntries(testcase,
+                                                                                     TrialBalanceItemType.BalanceTotalGroupDebtor);
 
       Assert.Equal(expectedEntries.Count, sut.Count);
 
@@ -92,9 +109,9 @@ namespace Empiria.FinancialAccounting.Tests.BalanceEngine.AnaliticoCuentas {
 
 
       // Check Creditor account groups
-      expectedEntries = commandCase.GetExpectedEntries(TrialBalanceItemType.BalanceTotalGroupCreditor);
+      expectedEntries = testcase.GetExpectedEntries(TrialBalanceItemType.BalanceTotalGroupCreditor);
 
-      sut = await GetFilteredAnaliticoCuentasEntries(commandCase, TrialBalanceItemType.BalanceTotalGroupCreditor);
+      sut = await GetAnaliticoDeCuentasEntries(testcase, TrialBalanceItemType.BalanceTotalGroupCreditor);
 
       Assert.Equal(expectedEntries.Count, sut.Count);
 
@@ -107,17 +124,21 @@ namespace Empiria.FinancialAccounting.Tests.BalanceEngine.AnaliticoCuentas {
     }
 
     [Theory]
-    [InlineData(AnaliticoCuentasTestCommandCase.Default)]
-    [InlineData(AnaliticoCuentasTestCommandCase.EnCascada)]
-    public async Task LedgerDebtorCreditorTotalEntriesAreOk(AnaliticoCuentasTestCommandCase commandCase) {
+    [InlineData(AnaliticoDeCuentasTestCase.CatalogoAnterior)]
+    [InlineData(AnaliticoDeCuentasTestCase.ConAuxiliares)]
+    [InlineData(AnaliticoDeCuentasTestCase.Default)]
+    [InlineData(AnaliticoDeCuentasTestCase.EnCascada)]
+    [InlineData(AnaliticoDeCuentasTestCase.EnCascadaConAuxiliares)]
+    [InlineData(AnaliticoDeCuentasTestCase.Sectorizado)]
+    public async Task LedgerDebtorCreditorTotalEntriesAreOk(AnaliticoDeCuentasTestCase testcase) {
 
       // ToDo: No distinguir entre totales deudores y acreedores por ledger. Usar el dato debtorCreditor
 
       // Check Debtor totals
-      FixedList<AnaliticoDeCuentasEntryDto> expectedEntries = commandCase.GetExpectedEntries(TrialBalanceItemType.BalanceTotalDebtor);
+      FixedList<AnaliticoDeCuentasEntryDto> expectedEntries = testcase.GetExpectedEntries(TrialBalanceItemType.BalanceTotalDebtor);
 
-      FixedList<AnaliticoDeCuentasEntryDto> sut = await GetFilteredAnaliticoCuentasEntries(commandCase,
-                                                                                           TrialBalanceItemType.BalanceTotalDebtor);
+      FixedList<AnaliticoDeCuentasEntryDto> sut = await GetAnaliticoDeCuentasEntries(testcase,
+                                                                                     TrialBalanceItemType.BalanceTotalDebtor);
 
       Assert.Equal(expectedEntries.Count, sut.Count);
 
@@ -129,9 +150,9 @@ namespace Empiria.FinancialAccounting.Tests.BalanceEngine.AnaliticoCuentas {
 
 
       // Check Creditor totals
-      expectedEntries = commandCase.GetExpectedEntries(TrialBalanceItemType.BalanceTotalCreditor);
+      expectedEntries = testcase.GetExpectedEntries(TrialBalanceItemType.BalanceTotalCreditor);
 
-      sut = await GetFilteredAnaliticoCuentasEntries(commandCase, TrialBalanceItemType.BalanceTotalCreditor);
+      sut = await GetAnaliticoDeCuentasEntries(testcase, TrialBalanceItemType.BalanceTotalCreditor);
 
       Assert.Equal(expectedEntries.Count, sut.Count);
 
@@ -146,14 +167,18 @@ namespace Empiria.FinancialAccounting.Tests.BalanceEngine.AnaliticoCuentas {
 
 
     [Theory]
-    [InlineData(AnaliticoCuentasTestCommandCase.Default)]
-    [InlineData(AnaliticoCuentasTestCommandCase.EnCascada)]
-    public async Task LedgerTotalEntriesAreOk(AnaliticoCuentasTestCommandCase commandCase) {
+    [InlineData(AnaliticoDeCuentasTestCase.CatalogoAnterior)]
+    [InlineData(AnaliticoDeCuentasTestCase.ConAuxiliares)]
+    [InlineData(AnaliticoDeCuentasTestCase.Default)]
+    [InlineData(AnaliticoDeCuentasTestCase.EnCascada)]
+    [InlineData(AnaliticoDeCuentasTestCase.EnCascadaConAuxiliares)]
+    [InlineData(AnaliticoDeCuentasTestCase.Sectorizado)]
+    public async Task LedgerTotalEntriesAreOk(AnaliticoDeCuentasTestCase testcase) {
 
-      FixedList<AnaliticoDeCuentasEntryDto> expectedEntries = commandCase.GetExpectedEntries(TrialBalanceItemType.BalanceTotalConsolidated);
+      FixedList<AnaliticoDeCuentasEntryDto> expectedEntries = testcase.GetExpectedEntries(TrialBalanceItemType.BalanceTotalConsolidated);
 
-      FixedList<AnaliticoDeCuentasEntryDto> sut = await GetFilteredAnaliticoCuentasEntries(commandCase,
-                                                                                           TrialBalanceItemType.BalanceTotalConsolidated);
+      FixedList<AnaliticoDeCuentasEntryDto> sut = await GetAnaliticoDeCuentasEntries(testcase,
+                                                                                     TrialBalanceItemType.BalanceTotalConsolidated);
 
       Assert.Equal(expectedEntries.Count, sut.Count);
 
@@ -169,15 +194,40 @@ namespace Empiria.FinancialAccounting.Tests.BalanceEngine.AnaliticoCuentas {
 
     #region Helpers
 
-    private async Task<FixedList<AnaliticoDeCuentasEntryDto>> GetFilteredAnaliticoCuentasEntries(AnaliticoCuentasTestCommandCase commandCase,
-                                                                                                 TrialBalanceItemType entriesFilter) {
-      TrialBalanceCommand command = commandCase.BuildCommand();
+    private async Task<FixedList<AnaliticoDeCuentasEntryDto>> GetAnaliticoDeCuentasEntries(AnaliticoDeCuentasTestCase testcase,
+                                                                                           TrialBalanceItemType entriesFilter) {
+      TrialBalanceCommand command = testcase.GetInvocationCommand();
 
-      AnaliticoDeCuentasDto dto = await BalanceEngineProxy.BuildAnaliticoDeCuentas(command)
+      AnaliticoDeCuentasDto dto = TryReadAnaliticoDeCuentasFromCache(command);
+
+      if (dto != null) {
+        return dto.Entries.FindAll(x => x.ItemType == entriesFilter);
+      }
+
+      dto = await BalanceEngineProxy.BuildAnaliticoDeCuentas(command)
                                                           .ConfigureAwait(false);
 
+      StoreAnaliticoDeCuentasIntoCache(command, dto);
 
       return dto.Entries.FindAll(x => x.ItemType == entriesFilter);
+    }
+
+
+    private void StoreAnaliticoDeCuentasIntoCache(TrialBalanceCommand command,
+                                                  AnaliticoDeCuentasDto dto) {
+      string key = command.ToString();
+
+      _cache.Insert(key, dto);
+    }
+
+    private AnaliticoDeCuentasDto TryReadAnaliticoDeCuentasFromCache(TrialBalanceCommand command) {
+      string key = command.ToString();
+
+      if (_cache.ContainsKey(key)) {
+        return _cache[key];
+      }
+
+      return null;
     }
 
     #endregion Helpers

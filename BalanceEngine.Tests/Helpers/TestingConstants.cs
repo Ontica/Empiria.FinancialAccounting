@@ -28,7 +28,7 @@ namespace Empiria.FinancialAccounting.Tests {
 
     static internal readonly string WEB_API_BASE_ADDRESS = "http://172.27.207.97/sicofin/api";
 
-    static public int WEB_API_TIMEOUT_SECONDS = 30;
+    static public int WEB_API_TIMEOUT_SECONDS = 240;
 
   }  // class TestingConstants
 

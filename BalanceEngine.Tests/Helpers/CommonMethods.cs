@@ -8,11 +8,13 @@
 *                                                                                                            *
 ************************* Copyright(c) La Vía Óntica SC, Ontica LLC and contributors. All rights reserved. **/
 using System;
-
+using System.IO;
 using System.Threading;
 
 using Empiria.Contacts;
+using Empiria.Json;
 using Empiria.Security;
+
 
 namespace Empiria.FinancialAccounting.Tests {
 
@@ -30,6 +32,24 @@ namespace Empiria.FinancialAccounting.Tests {
 
     static public Contact GetCurrentUser() {
       return Contact.Parse(ExecutionServer.CurrentUserId);
+    }
+
+
+    static public void SetDefaultJsonSettings() {
+      Newtonsoft.Json.JsonConvert.DefaultSettings = () => JsonConverter.JsonSerializerDefaultSettings();
+    }
+
+
+    static public T ReadTestDataFromFile<T>(string fileNamePrefix) {
+      var directory = new DirectoryInfo(AppDomain.CurrentDomain.BaseDirectory);
+
+      string path = Path.Combine(directory.Parent.FullName,
+                                @"tests-data",
+                                $"{fileNamePrefix}.test-data.json");
+
+      var jsonString = File.ReadAllText(path);
+
+      return JsonConverter.ToObject<T>(jsonString);
     }
 
 

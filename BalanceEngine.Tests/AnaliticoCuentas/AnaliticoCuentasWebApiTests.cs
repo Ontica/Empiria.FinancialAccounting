@@ -32,10 +32,10 @@ namespace Empiria.FinancialAccounting.Tests.BalanceEngine.AnaliticoCuentas {
     #region Theories
 
     [Theory]
-    [InlineData(AnaliticoCuentasTestCommandCase.Default)]
-    [InlineData(AnaliticoCuentasTestCommandCase.EnCascada)]
-    public async Task WebServiceReturnsData(AnaliticoCuentasTestCommandCase commandCase) {
-      TrialBalanceCommand command = commandCase.BuildCommand();
+    [InlineData(AnaliticoDeCuentasTestCase.Default)]
+    [InlineData(AnaliticoDeCuentasTestCase.EnCascada)]
+    public async Task WebServiceReturnsData(AnaliticoDeCuentasTestCase testcase) {
+      TrialBalanceCommand command = testcase.GetInvocationCommand();
 
 
       var http = new HttpApiClient(TestingConstants.WEB_API_BASE_ADDRESS,
