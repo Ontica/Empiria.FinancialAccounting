@@ -23,29 +23,6 @@ namespace Empiria.FinancialAccounting.BalanceEngine.Adapters {
       };
     }
 
-    static internal TrialBalanceEntry MapToTrialBalanceEntry(TrialBalanceEntry entry) {
-      var newEntry = new TrialBalanceEntry();
-
-      newEntry.Account = entry.Account;
-      newEntry.Ledger = entry.Ledger;
-      newEntry.Currency = entry.Currency;
-      newEntry.Sector = entry.Sector;
-      newEntry.SubledgerAccountId = entry.SubledgerAccountId;
-      newEntry.InitialBalance = entry.InitialBalance;
-      newEntry.Debit = entry.Debit;
-      newEntry.Credit = entry.Credit;
-      newEntry.CurrentBalance = entry.CurrentBalance;
-      newEntry.GroupNumber = entry.GroupNumber;
-      newEntry.GroupName = entry.GroupName;
-      newEntry.ItemType = entry.ItemType;
-      newEntry.ExchangeRate = entry.ExchangeRate;
-      newEntry.HasParentPostingEntry = entry.HasParentPostingEntry;
-      newEntry.IsParentPostingEntry = entry.IsParentPostingEntry;
-      //newEntry.LastChangeDate = entry.LastChangeDate;
-
-      return newEntry;
-    }
-
     static internal AnaliticoDeCuentasEntry MapToAnalyticBalanceEntry(
                                                 AnaliticoDeCuentasEntry balanceEntry) {
       var entry = new AnaliticoDeCuentasEntry();
@@ -84,7 +61,9 @@ namespace Empiria.FinancialAccounting.BalanceEngine.Adapters {
                                                         FixedList<ITrialBalanceEntry> list) {
       switch (command.TrialBalanceType) {
         case TrialBalanceType.AnaliticoDeCuentas:
-          return AnaliticoDeCuentasMapper.MapToAnaliticoDeCuentas(list);
+          var analitico = list.Select((x) => AnaliticoDeCuentasMapper.MapEntry((AnaliticoDeCuentasEntry) x));
+
+          return new FixedList<ITrialBalanceEntryDto>(analitico);
 
         case TrialBalanceType.Balanza:
         case TrialBalanceType.BalanzaConContabilidadesEnCascada:
@@ -127,7 +106,7 @@ namespace Empiria.FinancialAccounting.BalanceEngine.Adapters {
       }
     }
 
-    
+
     static private TrialBalanceEntryDto MapToBalancesByAccount(TrialBalanceEntry entry,
                                                           TrialBalanceCommand command) {
       var dto = new TrialBalanceEntryDto();

@@ -8,6 +8,7 @@
 *                                                                                                            *
 ************************* Copyright(c) La Vía Óntica SC, Ontica LLC and contributors. All rights reserved. **/
 using System;
+using System.Collections.Generic;
 
 namespace Empiria.FinancialAccounting.BalanceEngine.Adapters {
 
@@ -16,28 +17,23 @@ namespace Empiria.FinancialAccounting.BalanceEngine.Adapters {
 
     #region Public methods
 
-    static internal AnaliticoDeCuentasDto Map(TrialBalance trialBalance) {
+
+    static internal AnaliticoDeCuentasDto Map(TrialBalanceCommand command,
+                                              FixedList<AnaliticoDeCuentasEntry> entries) {
       return new AnaliticoDeCuentasDto {
-        Command = trialBalance.Command,
-        Columns = trialBalance.DataColumns(),
-        Entries = trialBalance.Entries.Select(x => MapToAnaliticoDeCuentas((AnaliticoDeCuentasEntry) x))
-                                      .ToFixedList()
+        Command = command,
+        Columns = DataColumns(command),
+        Entries = entries.Select(x => MapEntry(x))
+                         .ToFixedList()
       };
     }
 
-    static internal FixedList<ITrialBalanceEntryDto> MapToAnaliticoDeCuentas(
-                                                     FixedList<ITrialBalanceEntry> list) {
-
-      var mappedItems = list.Select((x) => MapToAnaliticoDeCuentas((AnaliticoDeCuentasEntry) x));
-
-      return new FixedList<ITrialBalanceEntryDto>(mappedItems);
-    }
 
     #endregion Public methods
 
     #region Private methods
 
-    static private AnaliticoDeCuentasEntryDto MapToAnaliticoDeCuentas(AnaliticoDeCuentasEntry entry) {
+    static public AnaliticoDeCuentasEntryDto MapEntry(AnaliticoDeCuentasEntry entry) {
       var dto = new AnaliticoDeCuentasEntryDto();
 
       dto.ItemType = entry.ItemType;
@@ -48,13 +44,7 @@ namespace Empiria.FinancialAccounting.BalanceEngine.Adapters {
       dto.DebtorCreditor = entry.DebtorCreditor;
       dto.AccountRole = entry.Account.Role;
       dto.AccountLevel = entry.Account.Level;
-      if (entry.ItemType == TrialBalanceItemType.Entry) {
-        if (!entry.IsParentPostingEntry) {
-          dto.AccountMark = "*";
-        } else {
-          dto.AccountMark = "**";
-        }
-      }
+      dto.AccountMark = entry.AccountMark;
       dto.SectorCode = entry.Sector.Code;
       dto.SubledgerAccountId = entry.SubledgerAccountId;
       dto.DomesticBalance = entry.DomesticBalance;
@@ -96,6 +86,35 @@ namespace Empiria.FinancialAccounting.BalanceEngine.Adapters {
         dto.AccountNumber = entry.Account.Number != "Empty" ? entry.Account.Number : "";
 
       }
+    }
+
+
+    static public FixedList<DataTableColumn> DataColumns(TrialBalanceCommand command) {
+      List<DataTableColumn> columns = new List<DataTableColumn>();
+
+      if (command.ReturnLedgerColumn) {
+        columns.Add(new DataTableColumn("ledgerNumber", "Cont", "text"));
+      }
+
+      columns.Add(new DataTableColumn("currencyCode", "Mon", "text"));
+
+      if (command.WithSubledgerAccount) {
+        columns.Add(new DataTableColumn("accountNumber", "Cuenta / Auxiliar", "text-nowrap"));
+      } else {
+        columns.Add(new DataTableColumn("accountNumber", "Cuenta", "text-nowrap"));
+      }
+
+      columns.Add(new DataTableColumn("sectorCode", "Sct", "text"));
+      columns.Add(new DataTableColumn("accountName", "Nombre", "text"));
+      columns.Add(new DataTableColumn("domesticBalance", "Saldo Mon. Nal.", "decimal"));
+      columns.Add(new DataTableColumn("foreignBalance", "Saldo Mon. Ext.", "decimal"));
+      columns.Add(new DataTableColumn("totalBalance", "Total", "decimal"));
+
+      if (command.WithAverageBalance) {
+        columns.Add(new DataTableColumn("averageBalance", "Saldo promedio", "decimal"));
+      }
+
+      return columns.ToFixedList();
     }
 
     #endregion Private methods

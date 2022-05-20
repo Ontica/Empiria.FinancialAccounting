@@ -196,6 +196,25 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
       this.ExchangeRate = value;
     }
 
+    internal TrialBalanceEntry CreateCopy() {
+      return new TrialBalanceEntry {
+        Account = this.Account,
+        Ledger = this.Ledger,
+        Currency = this.Currency,
+        Sector = this.Sector,
+        SubledgerAccountId = this.SubledgerAccountId,
+        InitialBalance = this.InitialBalance,
+        Debit = this.Debit,
+        Credit = this.Credit,
+        CurrentBalance = this.CurrentBalance,
+        GroupNumber = this.GroupNumber,
+        GroupName = this.GroupName,
+        ItemType = this.ItemType,
+        ExchangeRate = this.ExchangeRate,
+        HasParentPostingEntry = this.HasParentPostingEntry,
+        IsParentPostingEntry = this.IsParentPostingEntry
+      };
+    }
 
     internal void Sum(TrialBalanceEntry entry) {
       this.InitialBalance += entry.InitialBalance;
@@ -213,7 +232,6 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
         Account = this.Account,
         SubledgerAccountId = this.SubledgerAccountId,
         SubledgerAccountNumber = this.SubledgerAccountNumber,
-        SubledgerNumberOfDigits = this.SubledgerNumberOfDigits,
         Ledger = this.Ledger,
         Currency = this.Currency,
         ItemType = this.ItemType,

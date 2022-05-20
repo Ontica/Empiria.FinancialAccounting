@@ -37,7 +37,7 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
 
       entries = balanceHelper.ValuateToExchangeRate(entries, _command.FinalPeriod);
 
-      entries = balanceHelper.RoundTrialBalanceEntries(entries);
+      balanceHelper.RoundDecimals(entries);
 
       helper.GetAverageBalance(entries.ToList());
 

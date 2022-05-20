@@ -99,7 +99,7 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
       }
 
       var hashReturnedEntries = GetAccountsForValuedBalances(hashAccountEntries);
-      
+
       return hashReturnedEntries;
     }
 
@@ -175,7 +175,7 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
 
     #region Private methods
 
-    
+
     private EmpiriaHashTable<TrialBalanceEntry> GetEntriesForBalancesByCurrency(
                                                 EmpiriaHashTable<TrialBalanceEntry> hashAccountEntries) {
 
@@ -242,7 +242,7 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
       }
 
       var hashReturnedEntries = GetEntriesForBalancesByCurrency(hashAccountEntries);
-      
+
       return hashReturnedEntries;
     }
 
@@ -267,31 +267,33 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
 
 
     private void GetEntriesWithoutDollarCurrency(EmpiriaHashTable<TrialBalanceEntry> returnedBalances,
-                                                   EmpiriaHashTable<TrialBalanceEntry> hashAccountEntries) {
-      var helper = new TrialBalanceHelper(_command);
-      var secondaryAccounts = hashAccountEntries.ToFixedList().Where(a => a.Currency.Code != "01" &&
-                                                                          a.Currency.Code != "02").ToList();
+                                                 EmpiriaHashTable<TrialBalanceEntry> hashAccountEntries) {
+
+      var secondaryAccounts = hashAccountEntries.Values.Where(a => a.Currency.Code != "01" &&
+                                                                   a.Currency.Code != "02");
       foreach (var secondary in secondaryAccounts) {
-        var existPrimaryAccount = returnedBalances.ToFixedList()
-                    .Where(a => a.Account.Number == secondary.Account.Number &&
-                                a.Currency.Code == "02")
-                    .FirstOrDefault();
+        var existPrimaryAccount = returnedBalances.Values
+                                                  .FirstOrDefault(a => a.Account.Number == secondary.Account.Number &&
+                                                                  a.Currency.Code == "02");
 
         if (existPrimaryAccount == null) {
-          TrialBalanceEntry entry = TrialBalanceMapper.MapToTrialBalanceEntry(secondary);
-          entry.Currency = Currency.Parse("02");
-          entry.InitialBalance = 0;
-          entry.Debit = 0;
-          entry.Credit = 0;
-          entry.CurrentBalance = 0;
-          entry.LastChangeDate = secondary.LastChangeDate;
-          entry.DebtorCreditor = secondary.DebtorCreditor;
-
-          SummaryByEntry(returnedBalances, entry, TrialBalanceItemType.Summary);
-
-          string hash = $"{secondary.Account.Number}||{secondary.Currency.Code}";
-          returnedBalances.Insert(hash, secondary);
+          continue;
         }
+
+        TrialBalanceEntry entry = secondary.CreateCopy();
+
+        entry.Currency = Currency.Parse("02");
+        entry.InitialBalance = 0;
+        entry.Debit = 0;
+        entry.Credit = 0;
+        entry.CurrentBalance = 0;
+        entry.LastChangeDate = secondary.LastChangeDate;
+        entry.DebtorCreditor = secondary.DebtorCreditor;
+
+        SummaryByEntry(returnedBalances, entry, TrialBalanceItemType.Summary);
+
+        string hash = $"{secondary.Account.Number}||{secondary.Currency.Code}";
+        returnedBalances.Insert(hash, secondary);
       }
     }
 

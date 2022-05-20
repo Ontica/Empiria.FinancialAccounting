@@ -100,17 +100,18 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
       foreach (var currencyEntry in balanceEntries.Where(
                 a => a.ItemType == TrialBalanceItemType.BalanceTotalCurrency)) {
 
-        var entry = TrialBalanceMapper.MapToTrialBalanceEntry(currencyEntry);
+        var entry = currencyEntry.CreateCopy();
 
         entry.GroupNumber = "";
         entry.GroupName = "TOTAL DEL REPORTE";
         string hash = $"{entry.GroupName}";
 
         GetOrIncreaseEntries(totalReport, entry, StandardAccount.Empty, Sector.Empty,
-                                  TrialBalanceItemType.BalanceTotalConsolidated, hash);
+                             TrialBalanceItemType.BalanceTotalConsolidated, hash);
       } // foreach
 
       balanceEntries.AddRange(totalReport.Values.ToList());
+
       return balanceEntries;
     }
 
@@ -272,7 +273,8 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
     private void SummaryByCurrency(EmpiriaHashTable<TrialBalanceEntry> summaryEntries,
                                           TrialBalanceEntry balanceEntry) {
 
-      TrialBalanceEntry entry = TrialBalanceMapper.MapToTrialBalanceEntry(balanceEntry);
+      TrialBalanceEntry entry = balanceEntry.CreateCopy();
+
       TrialBalanceItemType itemType = TrialBalanceItemType.BalanceTotalCurrency;
 
       if (entry.ItemType == TrialBalanceItemType.BalanceTotalCreditor) {
@@ -291,7 +293,8 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
 
     private void SummaryByLedgerGroupEntries(EmpiriaHashTable<TrialBalanceEntry> totalsListByGroupEntries,
                                                 TrialBalanceEntry balanceEntry) {
-      TrialBalanceEntry groupEntry = TrialBalanceMapper.MapToTrialBalanceEntry(balanceEntry);
+
+      TrialBalanceEntry groupEntry = balanceEntry.CreateCopy();
 
       groupEntry.GroupName = $"SUMA DE DELEGACIONES";
       groupEntry.GroupNumber = balanceEntry.Account.Number;
@@ -324,7 +327,7 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
                                                 TrialBalanceEntry balanceEntry,
                                                 TrialBalanceItemType itemType) {
 
-      TrialBalanceEntry entry = TrialBalanceMapper.MapToTrialBalanceEntry(balanceEntry);
+      TrialBalanceEntry entry = balanceEntry.CreateCopy();
 
 
       if (itemType == TrialBalanceItemType.BalanceTotalDebtor) {

@@ -32,8 +32,7 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
     internal FixedList<DataTableColumn> DataColumns() {
       switch (this.Command.TrialBalanceType) {
         case TrialBalanceType.AnaliticoDeCuentas:
-          return TwoCurrenciesDataColumns();
-
+          return AnaliticoDeCuentasMapper.DataColumns(this.Command);
         case TrialBalanceType.Balanza:
         case TrialBalanceType.GeneracionDeSaldos:
         case TrialBalanceType.Saldos:
@@ -137,36 +136,6 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
         columns.Add(new DataTableColumn("lastChangeDate", "Último movimiento", "date"));
       }
 
-      return columns.ToFixedList();
-    }
-
-
-    private FixedList<DataTableColumn> TwoCurrenciesDataColumns() {
-      List<DataTableColumn> columns = new List<DataTableColumn>();
-
-      if (Command.ReturnLedgerColumn) {
-        columns.Add(new DataTableColumn("ledgerNumber", "Cont", "text"));
-      }
-
-      columns.Add(new DataTableColumn("currencyCode", "Mon", "text"));
-
-      if (Command.WithSubledgerAccount) {
-        columns.Add(new DataTableColumn("accountNumber", "Cuenta / Auxiliar", "text-nowrap"));
-      } else {
-        columns.Add(new DataTableColumn("accountNumber", "Cuenta", "text-nowrap"));
-      }
-      if (Command.TrialBalanceType == TrialBalanceType.AnaliticoDeCuentas) {
-        columns.Add(new DataTableColumn("sectorCode", "Sct", "text"));
-      }
-      columns.Add(new DataTableColumn("accountName", "Nombre", "text"));
-      columns.Add(new DataTableColumn("domesticBalance", "Saldo Mon. Nal.", "decimal"));
-      columns.Add(new DataTableColumn("foreignBalance", "Saldo Mon. Ext.", "decimal"));
-      columns.Add(new DataTableColumn("totalBalance", "Total", "decimal"));
-      
-      if (Command.TrialBalanceType == TrialBalanceType.AnaliticoDeCuentas &&
-          Command.WithAverageBalance) {
-        columns.Add(new DataTableColumn("averageBalance", "Saldo promedio", "decimal"));
-      }
       return columns.ToFixedList();
     }
 

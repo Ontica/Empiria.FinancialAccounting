@@ -64,7 +64,7 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
 
       EmpiriaLog.Debug($"AFTER GetTrialBalanceType: {DateTime.Now.Subtract(startTime).TotalSeconds} seconds.");
 
-      trialBalance = helper.RestrictLevels(trialBalance);
+      helper.RestrictLevels(trialBalance);
 
       EmpiriaLog.Debug($"AFTER RestrictLevels: {DateTime.Now.Subtract(startTime).TotalSeconds} seconds.");
 
