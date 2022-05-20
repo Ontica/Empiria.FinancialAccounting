@@ -32,16 +32,17 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
 
       List<TrialBalanceEntry> trialBalance = balanceHelper.GetPostingEntries().ToList();
 
-      trialBalance = balanceHelper.GetSummaryToParentEntries(trialBalance.ToFixedList()).ToList();
-
-      List<TrialBalanceEntry> summaryEntries = 
-                               balanceHelper.GenerateSummaryEntries(trialBalance.ToFixedList());
+      // Special case summaries y posting al mismo tiempo.
+      balanceHelper.SetSummaryToParentEntries(trialBalance);
+      
+      List<TrialBalanceEntry> summaryEntries =
+                               balanceHelper.GetCalculatedParentAccounts(trialBalance.ToFixedList());
 
       summaryEntries = helper.GetAccountList(trialBalance, summaryEntries);
 
       EmpiriaHashTable<TrialBalanceEntry> ledgerAccounts = helper.GetEntriesWithItemType(summaryEntries);
 
-      List<TrialBalanceEntry> orderingBalance = 
+      List<TrialBalanceEntry> orderingBalance =
                                 helper.OrderingDollarizedBalance(ledgerAccounts.ToFixedList());
 
       FixedList<TrialBalanceEntry> valuedEntries = helper.ValuateToExchangeRate(
@@ -66,17 +67,17 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
 
       List<TrialBalanceEntry> trialBalance = balanceHelper.GetPostingEntries().ToList();
 
-      trialBalance = balanceHelper.GetSummaryToParentEntries(trialBalance.ToFixedList()).ToList();
+      balanceHelper.SetSummaryToParentEntries(trialBalance);
 
-      List<TrialBalanceEntry> summaryEntries = 
-                                balanceHelper.GenerateSummaryEntries(trialBalance.ToFixedList());
+      List<TrialBalanceEntry> parentAccountsEntries =
+                                balanceHelper.GetCalculatedParentAccounts(trialBalance.ToFixedList());
 
-      summaryEntries = helper.GetSummaryByDebtorCreditorEntries(summaryEntries);
+      parentAccountsEntries = helper.GetSummaryByDebtorCreditorEntries(parentAccountsEntries);
 
-      summaryEntries = helper.GetAccountList(trialBalance, summaryEntries);
+      parentAccountsEntries = helper.GetAccountList(trialBalance, parentAccountsEntries);
 
-      EmpiriaHashTable<TrialBalanceEntry> ledgerAccounts = 
-                                          helper.GetLedgerAccountsListByCurrency(summaryEntries);
+      EmpiriaHashTable<TrialBalanceEntry> ledgerAccounts =
+                                          helper.GetLedgerAccountsListByCurrency(parentAccountsEntries);
 
       List<TrialBalanceByCurrencyEntry> mergeBalancesToBalanceByCurrency =
                       helper.MergeTrialBalanceIntoBalanceByCurrency(ledgerAccounts.ToFixedList());
@@ -87,7 +88,7 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
       return new TrialBalance(_command, returnBalance);
     }
 
-    
+
   } // class BalanzaValorizada
 
 } // namespace Empiria.FinancialAccounting.BalanceEngine

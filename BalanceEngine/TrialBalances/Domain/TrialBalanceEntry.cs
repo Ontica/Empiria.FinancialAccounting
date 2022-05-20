@@ -28,6 +28,12 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
     #endregion Constructors and parsers
 
 
+    public TrialBalanceItemType ItemType {
+      get;
+      internal set;
+    } = TrialBalanceItemType.Entry;
+
+
     [DataField("ID_MAYOR", ConvertFrom = typeof(decimal))]
     public Ledger Ledger {
       get;
@@ -126,12 +132,6 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
     } = string.Empty;
 
 
-    public TrialBalanceItemType ItemType {
-      get;
-      internal set;
-    } = TrialBalanceItemType.Entry;
-
-
     public DebtorCreditorType DebtorCreditor {
       get; internal set;
     } = DebtorCreditorType.Deudora;
@@ -196,7 +196,7 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
       this.ExchangeRate = value;
     }
 
-    internal TrialBalanceEntry CreateCopy() {
+    internal TrialBalanceEntry CreatePartialCopy() {
       return new TrialBalanceEntry {
         Account = this.Account,
         Ledger = this.Ledger,
@@ -282,25 +282,27 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
 
     internal TrialBalanceByCurrencyEntry MapToBalanceByCurrencyEntry() {
       TrialBalanceByCurrencyEntry trialBalanceByCurrencyEntry = new TrialBalanceByCurrencyEntry();
+
+      trialBalanceByCurrencyEntry.ItemType = this.ItemType;
       trialBalanceByCurrencyEntry.Currency = this.Currency;
       trialBalanceByCurrencyEntry.Account = this.Account;
       trialBalanceByCurrencyEntry.Sector = this.Sector;
-      if (Currency.Code == "01") {
+
+      if (Currency.Equals(Currency.MXN)) {
         trialBalanceByCurrencyEntry.DomesticBalance = this.CurrentBalance;
       }
-      if (Currency.Code == "02") {
+      if (Currency.Equals(Currency.USD)) {
         trialBalanceByCurrencyEntry.DollarBalance = this.CurrentBalance;
       }
-      if (Currency.Code == "06") {
+      if (Currency.Equals(Currency.YEN)) {
         trialBalanceByCurrencyEntry.YenBalance = this.CurrentBalance;
       }
-      if (Currency.Code == "27") {
+      if (Currency.Equals(Currency.EUR)) {
         trialBalanceByCurrencyEntry.EuroBalance = this.CurrentBalance;
       }
-      if (Currency.Code == "44") {
+      if (Currency.Equals(Currency.UDI)) {
         trialBalanceByCurrencyEntry.UdisBalance = this.CurrentBalance;
       }
-      trialBalanceByCurrencyEntry.ItemType = this.ItemType;
 
       return trialBalanceByCurrencyEntry;
     }

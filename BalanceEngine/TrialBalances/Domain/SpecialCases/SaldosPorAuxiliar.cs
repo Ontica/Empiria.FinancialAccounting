@@ -33,7 +33,7 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
 
       List<TrialBalanceEntry> trialBalance = balanceHelper.GetPostingEntries().ToList();
 
-      trialBalance = balanceHelper.GetSummaryToParentEntries(trialBalance.ToFixedList()).ToList();
+      balanceHelper.SetSummaryToParentEntries(trialBalance);
 
       EmpiriaHashTable<TrialBalanceEntry> summaryEntries = helper.BalancesBySubledgerAccounts(trialBalance);
 

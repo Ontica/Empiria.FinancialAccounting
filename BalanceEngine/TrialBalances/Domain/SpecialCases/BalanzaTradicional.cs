@@ -39,9 +39,9 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
 
       FixedList<TrialBalanceEntry> postingEntries = helper.GetPostingEntries();
 
-      postingEntries = helper.GetSummaryToParentEntries(postingEntries);
+      helper.SetSummaryToParentEntries(postingEntries);
 
-      List<TrialBalanceEntry> summaryEntries = helper.GenerateSummaryEntries(postingEntries);
+      List<TrialBalanceEntry> summaryEntries = helper.GetCalculatedParentAccounts(postingEntries);
 
       EmpiriaLog.Debug($"AFTER GenerateSummaryEntries: {DateTime.Now.Subtract(startTime).TotalSeconds} seconds.");
 

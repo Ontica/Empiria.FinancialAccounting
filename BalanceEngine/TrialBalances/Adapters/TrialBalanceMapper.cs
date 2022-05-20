@@ -160,14 +160,14 @@ namespace Empiria.FinancialAccounting.BalanceEngine.Adapters {
 
       dto.HasAccountStatement = (entry.ItemType == TrialBalanceItemType.Entry ||
                                  entry.ItemType == TrialBalanceItemType.Summary) &&
-                                command.UseDefaultValuation == false &&
+                                !command.UseDefaultValuation &&
                                 command.InitialPeriod.ValuateToCurrrencyUID.Length == 0 &&
-                                command.InitialPeriod.ExchangeRateTypeUID.Length == 0 ? true : false;
+                                command.InitialPeriod.ExchangeRateTypeUID.Length == 0;
       dto.ClickableEntry = (entry.ItemType == TrialBalanceItemType.Entry ||
-                                 entry.ItemType == TrialBalanceItemType.Summary) &&
-                                command.UseDefaultValuation == false &&
-                                command.InitialPeriod.ValuateToCurrrencyUID.Length == 0 &&
-                                command.InitialPeriod.ExchangeRateTypeUID.Length == 0 ? true : false;
+                            entry.ItemType == TrialBalanceItemType.Summary) &&
+                            !command.UseDefaultValuation &&
+                            command.InitialPeriod.ValuateToCurrrencyUID.Length == 0 &&
+                            command.InitialPeriod.ExchangeRateTypeUID.Length == 0;
 
       return dto;
     }
@@ -234,14 +234,14 @@ namespace Empiria.FinancialAccounting.BalanceEngine.Adapters {
       dto.IsParentPostingEntry = entry.IsParentPostingEntry;
       dto.HasAccountStatement = (entry.ItemType == TrialBalanceItemType.Entry ||
                                  entry.ItemType == TrialBalanceItemType.Summary) &&
-                                command.UseDefaultValuation == false &&
+                                !command.UseDefaultValuation &&
                                 command.InitialPeriod.ValuateToCurrrencyUID.Length == 0 &&
-                                command.InitialPeriod.ExchangeRateTypeUID.Length == 0 ? true : false;
+                                command.InitialPeriod.ExchangeRateTypeUID.Length == 0;
       dto.ClickableEntry = (entry.ItemType == TrialBalanceItemType.Entry ||
-                                 entry.ItemType == TrialBalanceItemType.Summary) &&
-                                command.UseDefaultValuation == false &&
-                                command.InitialPeriod.ValuateToCurrrencyUID.Length == 0 &&
-                                command.InitialPeriod.ExchangeRateTypeUID.Length == 0 ? true : false;
+                            entry.ItemType == TrialBalanceItemType.Summary) &&
+                            !command.UseDefaultValuation &&
+                            command.InitialPeriod.ValuateToCurrrencyUID.Length == 0 &&
+                            command.InitialPeriod.ExchangeRateTypeUID.Length == 0;
 
       return dto;
     }
@@ -316,14 +316,14 @@ namespace Empiria.FinancialAccounting.BalanceEngine.Adapters {
       dto.IsParentPostingEntry = entry.IsParentPostingEntry;
       dto.HasAccountStatement = (entry.ItemType == TrialBalanceItemType.Entry ||
                                  entry.ItemType == TrialBalanceItemType.Summary) &&
-                                command.UseDefaultValuation == false &&
+                                !command.UseDefaultValuation &&
                                 command.InitialPeriod.ValuateToCurrrencyUID.Length == 0 &&
-                                command.InitialPeriod.ExchangeRateTypeUID.Length == 0 ? true : false;
+                                command.InitialPeriod.ExchangeRateTypeUID.Length == 0;
       dto.ClickableEntry = (entry.ItemType == TrialBalanceItemType.Entry ||
-                                 entry.ItemType == TrialBalanceItemType.Summary) &&
-                                command.UseDefaultValuation == false &&
-                                command.InitialPeriod.ValuateToCurrrencyUID.Length == 0 &&
-                                command.InitialPeriod.ExchangeRateTypeUID.Length == 0 ? true : false;
+                            entry.ItemType == TrialBalanceItemType.Summary) &&
+                            !command.UseDefaultValuation &&
+                            command.InitialPeriod.ValuateToCurrrencyUID.Length == 0 &&
+                            command.InitialPeriod.ExchangeRateTypeUID.Length == 0;
 
       return dto;
     }
@@ -415,6 +415,7 @@ namespace Empiria.FinancialAccounting.BalanceEngine.Adapters {
       dto.UdisBalance = entry.UdisBalance;
       dto.GroupName = entry.GroupName;
       dto.GroupNumber = entry.GroupNumber;
+
       return dto;
     }
 

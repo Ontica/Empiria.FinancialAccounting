@@ -32,7 +32,7 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
 
       FixedList<TrialBalanceEntry> postingEntries = balanceHelper.GetPostingEntries();
 
-      postingEntries = balanceHelper.GetSummaryToParentEntries(postingEntries);
+      balanceHelper.SetSummaryToParentEntries(postingEntries);
 
       List<TrialBalanceEntry> balanceEntries = new List<TrialBalanceEntry>(postingEntries);
 

@@ -280,7 +280,7 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
           continue;
         }
 
-        TrialBalanceEntry entry = secondary.CreateCopy();
+        TrialBalanceEntry entry = secondary.CreatePartialCopy();
 
         entry.Currency = Currency.Parse("02");
         entry.InitialBalance = 0;

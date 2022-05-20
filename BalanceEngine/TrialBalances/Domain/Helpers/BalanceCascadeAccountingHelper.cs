@@ -100,7 +100,7 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
       foreach (var currencyEntry in balanceEntries.Where(
                 a => a.ItemType == TrialBalanceItemType.BalanceTotalCurrency)) {
 
-        var entry = currencyEntry.CreateCopy();
+        var entry = currencyEntry.CreatePartialCopy();
 
         entry.GroupNumber = "";
         entry.GroupName = "TOTAL DEL REPORTE";
@@ -273,7 +273,7 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
     private void SummaryByCurrency(EmpiriaHashTable<TrialBalanceEntry> summaryEntries,
                                           TrialBalanceEntry balanceEntry) {
 
-      TrialBalanceEntry entry = balanceEntry.CreateCopy();
+      TrialBalanceEntry entry = balanceEntry.CreatePartialCopy();
 
       TrialBalanceItemType itemType = TrialBalanceItemType.BalanceTotalCurrency;
 
@@ -294,7 +294,7 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
     private void SummaryByLedgerGroupEntries(EmpiriaHashTable<TrialBalanceEntry> totalsListByGroupEntries,
                                                 TrialBalanceEntry balanceEntry) {
 
-      TrialBalanceEntry groupEntry = balanceEntry.CreateCopy();
+      TrialBalanceEntry groupEntry = balanceEntry.CreatePartialCopy();
 
       groupEntry.GroupName = $"SUMA DE DELEGACIONES";
       groupEntry.GroupNumber = balanceEntry.Account.Number;
@@ -327,7 +327,7 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
                                                 TrialBalanceEntry balanceEntry,
                                                 TrialBalanceItemType itemType) {
 
-      TrialBalanceEntry entry = balanceEntry.CreateCopy();
+      TrialBalanceEntry entry = balanceEntry.CreatePartialCopy();
 
 
       if (itemType == TrialBalanceItemType.BalanceTotalDebtor) {
