@@ -40,9 +40,9 @@ namespace Empiria.FinancialAccounting.BalanceEngine.UseCases {
       Assertion.Assert(command.TrialBalanceType == TrialBalanceType.AnaliticoDeCuentas,
                        "command.TrialBalanceType must be 'AnaliticoDeCuentas'.");
 
-      FixedList<TrialBalanceEntry> baseAccountEntries = BalancesDataService.GetTrialBalanceEntries(command);
-
       var builder = new AnaliticoDeCuentasBuilder(command);
+
+      FixedList<TrialBalanceEntry> baseAccountEntries = BalancesDataService.GetTrialBalanceEntries(command);
 
       FixedList<AnaliticoDeCuentasEntry> entries = await Task.Run(() => builder.Build(baseAccountEntries))
                                                              .ConfigureAwait(false);

@@ -96,8 +96,6 @@ namespace Empiria.FinancialAccounting.BalanceEngine.Adapters {
         columns.Add(new DataTableColumn("ledgerNumber", "Cont", "text"));
       }
 
-      columns.Add(new DataTableColumn("currencyCode", "Mon", "text"));
-
       if (command.WithSubledgerAccount) {
         columns.Add(new DataTableColumn("accountNumber", "Cuenta / Auxiliar", "text-nowrap"));
       } else {

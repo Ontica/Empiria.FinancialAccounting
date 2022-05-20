@@ -35,14 +35,14 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
 
 
     internal FixedList<AnaliticoDeCuentasEntry> Build(FixedList<TrialBalanceEntry> baseAccountEntries) {
-      FixedList<TrialBalanceEntry> balanzaValorizada = GetBalanzaTradicionalValorizada(baseAccountEntries);
+      FixedList<TrialBalanceEntry> saldosValorizados = SaldosDeCuentasValorizados(baseAccountEntries);
 
       var balanceHelper = new TrialBalanceHelper(_command);
 
-      List<TrialBalanceEntry> summaryEntries = balanceHelper.GenerateSummaryEntries(balanzaValorizada);
+      List<TrialBalanceEntry> summaryEntries = balanceHelper.GetCalculatedParentAccounts(saldosValorizados);
 
       List<TrialBalanceEntry> postingEntries = balanceHelper.GetSummaryEntriesAndSectorization(
-                                               balanzaValorizada.ToList());
+                                               saldosValorizados.ToList());
 
       List<TrialBalanceEntry> summaryEntriesAndSectorization =
                               balanceHelper.GetSummaryEntriesAndSectorization(summaryEntries);
@@ -87,18 +87,14 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
     }
 
 
-    private FixedList<TrialBalanceEntry> GetBalanzaTradicionalValorizada(FixedList<TrialBalanceEntry> baseAccountEntries) {
+    private FixedList<TrialBalanceEntry> SaldosDeCuentasValorizados(FixedList<TrialBalanceEntry> baseAccountEntries) {
       var balanceHelper = new TrialBalanceHelper(_command);
 
-      // balanceHelper.SummarizeParentPostingEntryAccounts(baseAccountEntries);
-
-      baseAccountEntries = balanceHelper.GetSummaryToParentEntries(baseAccountEntries);
+      balanceHelper.SetSummaryToParentEntries(baseAccountEntries);
 
       // balanceHelper.ApplyExchangeRates(baseAccountEntries);
 
       baseAccountEntries = balanceHelper.ValuateToExchangeRate(baseAccountEntries, _command.InitialPeriod);
-
-      // balanceHelper.RoundDecimals(baseAccountEntries);
 
       balanceHelper.RoundDecimals(baseAccountEntries);
 
