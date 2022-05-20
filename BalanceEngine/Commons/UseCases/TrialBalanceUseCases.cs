@@ -13,6 +13,7 @@ using System.Threading.Tasks;
 using Empiria.Services;
 
 using Empiria.FinancialAccounting.BalanceEngine.Adapters;
+using Empiria.FinancialAccounting.BalanceEngine.Data;
 
 namespace Empiria.FinancialAccounting.BalanceEngine.UseCases {
 
@@ -39,12 +40,14 @@ namespace Empiria.FinancialAccounting.BalanceEngine.UseCases {
       Assertion.Assert(command.TrialBalanceType == TrialBalanceType.AnaliticoDeCuentas,
                        "command.TrialBalanceType must be 'AnaliticoDeCuentas'.");
 
-      var trialBalanceEngine = new TrialBalanceEngine(command);
+      FixedList<TrialBalanceEntry> baseAccountEntries = BalancesDataService.GetTrialBalanceEntries(command);
 
-      TrialBalance trialBalance = await Task.Run(() => trialBalanceEngine.BuildTrialBalance())
-                                            .ConfigureAwait(false);
+      var builder = new AnaliticoDeCuentasBuilder(command);
 
-      return AnaliticoDeCuentasMapper.Map(trialBalance);
+      FixedList<AnaliticoDeCuentasEntry> entries = await Task.Run(() => builder.Build(baseAccountEntries))
+                                                             .ConfigureAwait(false);
+
+      return AnaliticoDeCuentasMapper.Map(command, entries);
     }
 
 

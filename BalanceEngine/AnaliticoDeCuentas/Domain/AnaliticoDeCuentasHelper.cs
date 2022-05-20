@@ -89,7 +89,7 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
           MergeEntriesIntoTwoColumns(hashEntries, entry, hash, currentCurrency);
         }
 
-        var balanceEntriesList = hashEntries.Values.OrderBy(a => a.SubledgerNumberOfDigits)
+        var balanceEntriesList = hashEntries.Values.OrderBy(a => a.SubledgerAccountNumber.Length)
                                                    .ThenBy(a => a.SubledgerAccountNumber)
                                                    .ToList();
         returnedEntries.Add(analyticEntry);
@@ -123,8 +123,8 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
       var returnedEntries = new List<AnaliticoDeCuentasEntry>();
 
       foreach (var totalByLedger in totalsByLedgerList) {
-        var entriesByLedger = analyticEntries.Where(a => a.Currency == totalByLedger.Currency &&
-                                                         a.Ledger == totalByLedger.Ledger)
+        var entriesByLedger = analyticEntries.Where(a => a.Currency.Code == totalByLedger.Currency.Code &&
+                                                         a.Ledger.Number == totalByLedger.Ledger.Number)
                                              .ToList();
         if (entriesByLedger.Count > 0) {
           entriesByLedger.Add(totalByLedger);

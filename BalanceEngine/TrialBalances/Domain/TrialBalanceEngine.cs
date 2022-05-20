@@ -126,9 +126,14 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
       switch (this.Command.TrialBalanceType) {
 
         case TrialBalanceType.AnaliticoDeCuentas:
-          var analiticoDeCuentas = new AnaliticoDeCuentas(this.Command);
+          var builder = new AnaliticoDeCuentasBuilder(this.Command);
 
-          return analiticoDeCuentas.Build();
+          var entries = builder.Build();
+
+          FixedList<ITrialBalanceEntry> analyticBalance = entries.Select(x => (ITrialBalanceEntry) x)
+                                                           .ToFixedList();
+
+          return new TrialBalance(this.Command, analyticBalance);
 
         case TrialBalanceType.Balanza:
         case TrialBalanceType.Saldos:

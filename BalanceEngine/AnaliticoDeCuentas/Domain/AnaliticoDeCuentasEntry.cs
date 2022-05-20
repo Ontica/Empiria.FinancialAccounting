@@ -14,6 +14,11 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
   /// <summary>Represents an entry for a two columns balance entry.</summary>
   public class AnaliticoDeCuentasEntry : ITrialBalanceEntry {
 
+    public TrialBalanceItemType ItemType {
+      get; internal set;
+    }
+
+
     public Ledger Ledger {
       get; internal set;
     }
@@ -26,6 +31,16 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
 
     public StandardAccount Account {
       get; internal set;
+    }
+
+
+    public string AccountMark {
+      get {
+        if (this.ItemType != TrialBalanceItemType.Entry) {
+          return string.Empty;
+        }
+        return IsParentPostingEntry ? "**" : "*";
+      }
     }
 
 
@@ -99,11 +114,6 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
     } = string.Empty;
 
 
-    public int SubledgerNumberOfDigits {
-      get; internal set;
-    } = 0;
-
-
     public bool HasSector {
       get {
         return this.Sector.Code != "00";
@@ -128,11 +138,6 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
     } = DebtorCreditorType.Deudora;
 
 
-    public TrialBalanceItemType ItemType {
-      get; internal set;
-    }
-
-
     public int Level {
       get {
         return this.Account.Level;
@@ -143,7 +148,6 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
     public bool IsParentPostingEntry {
       get; internal set;
     }
-
 
     internal void Sum(AnaliticoDeCuentasEntry entry) {
       this.DomesticBalance += entry.DomesticBalance;
