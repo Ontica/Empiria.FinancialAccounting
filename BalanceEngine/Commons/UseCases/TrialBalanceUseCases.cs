@@ -51,6 +51,15 @@ namespace Empiria.FinancialAccounting.BalanceEngine.UseCases {
     }
 
 
+    public async Task<BalanzaTradicionalDto> BuildBalanzaTradicional(TrialBalanceCommand command) {
+
+      var builder = new BalanzaTradicionalBuilder(command);
+      TrialBalance entries = await Task.Run(() => builder.Build()).ConfigureAwait(false);
+
+      return BalanzaTradicionalMapper.Map(entries);
+    }
+
+
     public TrialBalanceDto BuildTrialBalance(TrialBalanceCommand command) {
       Assertion.AssertObject(command, "command");
 
@@ -61,6 +70,7 @@ namespace Empiria.FinancialAccounting.BalanceEngine.UseCases {
       return TrialBalanceMapper.Map(trialBalance);
     }
 
+    
     #endregion Use cases
 
   } // class TrialBalanceUseCases

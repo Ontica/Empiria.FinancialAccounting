@@ -139,7 +139,7 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
         case TrialBalanceType.Saldos:
         case TrialBalanceType.SaldosPorCuenta:
 
-          var balanzaTradicional = new BalanzaTradicional(this.Command);
+          var balanzaTradicional = new BalanzaTradicionalBuilder(this.Command);
           return balanzaTradicional.Build();
 
         case TrialBalanceType.BalanzaEnColumnasPorMoneda:

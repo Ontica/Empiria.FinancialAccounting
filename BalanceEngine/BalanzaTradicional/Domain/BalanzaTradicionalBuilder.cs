@@ -16,11 +16,11 @@ using Empiria.FinancialAccounting.BalanceEngine.Adapters;
 namespace Empiria.FinancialAccounting.BalanceEngine {
 
   /// <summary>Genera los datos para el reporte de balanzas tradicionales.</summary>
-  internal class BalanzaTradicional {
+  internal class BalanzaTradicionalBuilder {
 
     private readonly TrialBalanceCommand _command;
 
-    public BalanzaTradicional(TrialBalanceCommand command) {
+    public BalanzaTradicionalBuilder(TrialBalanceCommand command) {
       _command = command;
     }
 

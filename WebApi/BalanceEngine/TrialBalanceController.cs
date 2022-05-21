@@ -44,6 +44,21 @@ namespace Empiria.FinancialAccounting.WebApi.BalanceEngine {
 
 
     [HttpPost]
+    [Route("v2/financial-accounting/balance-engine/balanza-tradicional")]
+    public async Task<SingleObjectModel> GetBalanzaTradicional([FromBody] TrialBalanceCommand command) {
+      base.RequireBody(command);
+
+      using (var usecases = TrialBalanceUseCases.UseCaseInteractor()) {
+
+        BalanzaTradicionalDto dto = await usecases.BuildBalanzaTradicional(command)
+                                                  .ConfigureAwait(false);
+
+        return new SingleObjectModel(this.Request, dto);
+      }
+    }
+
+
+    [HttpPost]
     [Route("v2/financial-accounting/trial-balance")]
     public SingleObjectModel GetTrialBalance([FromBody] TrialBalanceCommand command) {
       base.RequireBody(command);

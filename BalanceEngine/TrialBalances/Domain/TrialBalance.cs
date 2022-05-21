@@ -33,7 +33,10 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
       switch (this.Command.TrialBalanceType) {
         case TrialBalanceType.AnaliticoDeCuentas:
           return AnaliticoDeCuentasMapper.DataColumns(this.Command);
+
         case TrialBalanceType.Balanza:
+          return BalanzaTradicionalMapper.DataColumns(this.Command);
+
         case TrialBalanceType.GeneracionDeSaldos:
         case TrialBalanceType.Saldos:
         case TrialBalanceType.SaldosPorAuxiliar:
