@@ -11,6 +11,8 @@ using System;
 
 using Xunit;
 
+using Empiria.Tests;
+
 using Empiria.FinancialAccounting.BalanceEngine.Adapters;
 using Empiria.FinancialAccounting.BalanceEngine.UseCases;
 
@@ -28,7 +30,7 @@ namespace Empiria.FinancialAccounting.Tests.Balances {
     #region Initialization
 
     public BalanceStorageUseCasesTests() {
-      CommonMethods.Authenticate();
+      TestsCommonMethods.Authenticate();
 
       _usecases = BalanceStorageUseCases.UseCaseInteractor();
     }

@@ -7,7 +7,10 @@
 *  Summary  : Use case tests for subledgers and their accounts.                                              *
 *                                                                                                            *
 ************************* Copyright(c) La Vía Óntica SC, Ontica LLC and contributors. All rights reserved. **/
+using System;
 using Xunit;
+
+using Empiria.Tests;
 
 using Empiria.FinancialAccounting.UseCases;
 using Empiria.FinancialAccounting.Adapters;
@@ -22,7 +25,7 @@ namespace Empiria.FinancialAccounting.Tests {
     private readonly SubledgerUseCases _usecases;
 
     public SubledgerUseCasesTests() {
-      CommonMethods.Authenticate();
+      TestsCommonMethods.Authenticate();
 
       _usecases = SubledgerUseCases.UseCaseInteractor();
     }

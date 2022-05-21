@@ -10,6 +10,8 @@
 using System;
 using Xunit;
 
+using Empiria.Tests;
+
 using Empiria.FinancialAccounting.Vouchers.UseCases;
 using Empiria.FinancialAccounting.Vouchers.Adapters;
 
@@ -27,7 +29,7 @@ namespace Empiria.FinancialAccounting.Tests.Vouchers {
     #region Initialization
 
     public VoucherUseCasesTests() {
-      CommonMethods.Authenticate();
+      TestsCommonMethods.Authenticate();
 
       _usecases = VoucherUseCases.UseCaseInteractor();
     }

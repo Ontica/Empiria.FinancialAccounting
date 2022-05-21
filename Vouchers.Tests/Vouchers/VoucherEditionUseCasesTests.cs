@@ -7,7 +7,10 @@
 *  Summary  : Test cases for vouchers and postings edition.                                                  *
 *                                                                                                            *
 ************************* Copyright(c) La Vía Óntica SC, Ontica LLC and contributors. All rights reserved. **/
+using System;
 using Xunit;
+
+using Empiria.Tests;
 
 using Empiria.FinancialAccounting.Vouchers.Adapters;
 using Empiria.FinancialAccounting.Vouchers.UseCases;
@@ -26,7 +29,7 @@ namespace Empiria.FinancialAccounting.Tests.Vouchers {
     #region Initialization
 
     public VoucherEditionUseCasesTests() {
-      CommonMethods.Authenticate();
+      TestsCommonMethods.Authenticate();
 
       _usecases = VoucherEditionUseCases.UseCaseInteractor();
     }

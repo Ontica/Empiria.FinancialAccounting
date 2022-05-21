@@ -10,6 +10,8 @@
 using System;
 using Xunit;
 
+using Empiria.Tests;
+
 using Empiria.FinancialAccounting.Adapters;
 using Empiria.FinancialAccounting.UseCases;
 
@@ -23,7 +25,7 @@ namespace Empiria.FinancialAccounting.Tests {
     private readonly AccountsChartUseCases _usecases;
 
     public AccountsChartUseCasesTests() {
-      CommonMethods.Authenticate();
+      TestsCommonMethods.Authenticate();
 
       _usecases = AccountsChartUseCases.UseCaseInteractor();
     }

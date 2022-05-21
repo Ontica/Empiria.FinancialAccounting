@@ -24,8 +24,6 @@ namespace Empiria.FinancialAccounting.Tests {
 
     static public bool INVOKE_USE_CASES_THROUGH_THE_WEB_API = true;
 
-    static internal readonly string SESSION_TOKEN = ConfigurationData.GetString("Testing.SessionToken");
-
     static internal readonly string WEB_API_BASE_ADDRESS = "http://172.27.207.97/sicofin/api";
 
     static public int WEB_API_TIMEOUT_SECONDS = 240;

@@ -11,6 +11,8 @@ using System;
 
 using Xunit;
 
+using Empiria.Tests;
+
 using Empiria.FinancialAccounting.BalanceEngine.Adapters;
 using Empiria.FinancialAccounting.BalanceEngine;
 
@@ -22,7 +24,7 @@ namespace Empiria.FinancialAccounting.Tests.BalanceEngine {
     #region Initialization
 
     public TrialBalanceUseCasesTests() {
-      CommonMethods.Authenticate();
+      TestsCommonMethods.Authenticate();
     }
 
 

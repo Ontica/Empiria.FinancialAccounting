@@ -33,8 +33,6 @@ namespace Empiria.FinancialAccounting.Tests {
 
     static readonly internal int LEDGER_ACCOUNT_ID = ConfigurationData.Get<int>("LEDGER_ACCOUNT_ID");
 
-    static readonly internal string SESSION_TOKEN = ConfigurationData.GetString("SESSION_TOKEN");
-
     static readonly internal string SUBLEDGER_UID = ConfigurationData.GetString("SUBLEDGER_UID");
 
   }  // class TestingConstants

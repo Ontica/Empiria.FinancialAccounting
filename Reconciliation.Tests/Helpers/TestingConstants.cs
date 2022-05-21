@@ -13,8 +13,6 @@ namespace Empiria.FinancialAccounting.Tests {
   /// <summary>Provides testing constants.</summary>
   static public class TestingConstants {
 
-    static readonly internal string SESSION_TOKEN = ConfigurationData.GetString("SESSION_TOKEN");
-
   }  // class TestingConstants
 
 }  // namespace Empiria.FinancialAccounting.Tests

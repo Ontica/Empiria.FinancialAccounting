@@ -8,7 +8,10 @@
 *                                                                                                            *
 ************************* Copyright(c) La Vía Óntica SC, Ontica LLC and contributors. All rights reserved. **/
 using System;
+
 using Xunit;
+
+using Empiria.Tests;
 
 using Empiria.FinancialAccounting.UseCases;
 using Empiria.FinancialAccounting.Adapters;
@@ -23,7 +26,7 @@ namespace Empiria.FinancialAccounting.Tests {
     private readonly ExchangeRatesUseCases _usecases;
 
     public ExchangeRatesUseCasesTests() {
-      CommonMethods.Authenticate();
+      TestsCommonMethods.Authenticate();
 
       _usecases = ExchangeRatesUseCases.UseCaseInteractor();
     }
@@ -33,7 +36,6 @@ namespace Empiria.FinancialAccounting.Tests {
     }
 
     #endregion Use cases initialization
-
 
     #region Facts
 

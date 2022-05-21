@@ -85,6 +85,7 @@
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\..\extensions\Data.Oracle\Empiria.Data.Oracle.csproj" />
+    <ProjectReference Include="..\..\extensions\Tests\Empiria.Tests.csproj" />
     <ProjectReference Include="..\Vouchers\Empiria.FinancialAccounting.Vouchers.csproj" />
   </ItemGroup>
   <ItemGroup>

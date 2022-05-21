@@ -8,7 +8,10 @@
 *                                                                                                            *
 ************************* Copyright(c) La Vía Óntica SC, Ontica LLC and contributors. All rights reserved. **/
 using System;
+
 using Xunit;
+
+using Empiria.Tests;
 
 using Empiria.FinancialAccounting.Adapters;
 using Empiria.FinancialAccounting.Vouchers;
@@ -28,7 +31,7 @@ namespace Empiria.FinancialAccounting.Tests.Vouchers {
     #region Initialization
 
     public VoucherDataUseCasesTests() {
-      CommonMethods.Authenticate();
+      TestsCommonMethods.Authenticate();
 
       _usecases = VoucherDataUseCases.UseCaseInteractor();
     }

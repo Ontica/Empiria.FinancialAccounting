@@ -13,9 +13,11 @@ using System.Threading.Tasks;
 using Xunit;
 
 using Empiria.Collections;
+using Empiria.Tests;
 
 using Empiria.FinancialAccounting.BalanceEngine.Adapters;
 using Empiria.FinancialAccounting.BalanceEngine;
+
 
 namespace Empiria.FinancialAccounting.Tests.BalanceEngine.AnaliticoCuentas {
 
@@ -28,7 +30,7 @@ namespace Empiria.FinancialAccounting.Tests.BalanceEngine.AnaliticoCuentas {
     #region Initialization
 
     public AnaliticoCuentasEntriesTests() {
-      CommonMethods.Authenticate();
+      TestsCommonMethods.Authenticate();
     }
 
     #endregion Initialization

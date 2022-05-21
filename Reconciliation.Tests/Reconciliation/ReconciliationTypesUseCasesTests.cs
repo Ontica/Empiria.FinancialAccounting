@@ -8,7 +8,10 @@
 *                                                                                                            *
 ************************* Copyright(c) La Vía Óntica SC, Ontica LLC and contributors. All rights reserved. **/
 using System;
+
 using Xunit;
+
+using Empiria.Tests;
 
 using Empiria.FinancialAccounting.Reconciliation.UseCases;
 using Empiria.FinancialAccounting.Reconciliation.Adapters;
@@ -27,7 +30,7 @@ namespace Empiria.FinancialAccounting.Tests.Reconciliation {
     #region Initialization
 
     public ReconciliationTypesUseCasesTests() {
-      CommonMethods.Authenticate();
+      TestsCommonMethods.Authenticate();
 
       _usecases = ReconciliationTypesUseCases.UseCaseInteractor();
     }

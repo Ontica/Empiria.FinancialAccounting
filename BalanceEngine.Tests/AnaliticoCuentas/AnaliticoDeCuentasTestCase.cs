@@ -11,6 +11,7 @@ using System;
 
 using Empiria.FinancialAccounting.BalanceEngine;
 using Empiria.FinancialAccounting.BalanceEngine.Adapters;
+using Empiria.Tests;
 
 namespace Empiria.FinancialAccounting.Tests.BalanceEngine {
 
@@ -61,7 +62,7 @@ namespace Empiria.FinancialAccounting.Tests.BalanceEngine {
     static private AnaliticoDeCuentasDto ReadAnaliticoDeCuentasFromFile(AnaliticoDeCuentasTestCase testcase) {
       string fileNamePrefix = $"{TrialBalanceType.AnaliticoDeCuentas}.{testcase}";
 
-      return CommonMethods.ReadTestDataFromFile<AnaliticoDeCuentasDto>(fileNamePrefix);
+      return TestsCommonMethods.ReadTestDataFromFile<AnaliticoDeCuentasDto>(fileNamePrefix);
     }
 
     #endregion Helpers
