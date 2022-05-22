@@ -49,13 +49,13 @@ namespace Empiria.FinancialAccounting.WebApi.FinancialReports {
 
 
     [HttpPost]
-    [Route("v2/financial-accounting/financial-reports/generate/breakdown/{groupingRuleUID:guid}")]
-    public SingleObjectModel GetFinancialReportBreakdown([FromUri] string groupingRuleUID,
+    [Route("v2/financial-accounting/financial-reports/generate/breakdown/{reportRowUID:guid}")]
+    public SingleObjectModel GetFinancialReportBreakdown([FromUri] string reportRowUID,
                                                          [FromBody] FinancialReportCommand command) {
       base.RequireBody(command);
 
       using (var usecases = FinancialReportsUseCases.UseCaseInteractor()) {
-        FinancialReportDto financialReport = usecases.GetFinancialReportBreakdown(groupingRuleUID, command);
+        FinancialReportDto financialReport = usecases.GetFinancialReportBreakdown(reportRowUID, command);
 
         return new SingleObjectModel(base.Request, financialReport);
       }

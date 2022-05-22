@@ -49,14 +49,14 @@ namespace Empiria.FinancialAccounting.FinancialReports {
     }
 
 
-    internal FinancialReport GetBreakdown(string groupingRuleUID) {
+    internal FinancialReport GetBreakdown(string reportRowUID) {
       FinancialReportType reportType = this.Command.GetFinancialReportType();
 
       switch (reportType.DesignType) {
         case FinancialReportDesignType.FixedRows:
           var fixedRows = new FixedRowGroupingRulesReport(this.Command);
 
-          return fixedRows.GenerateBreakdown(groupingRuleUID);
+          return fixedRows.GenerateBreakdown(reportRowUID);
 
         default:
           throw Assertion.AssertNoReachThisCode(

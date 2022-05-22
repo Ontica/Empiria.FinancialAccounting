@@ -2,41 +2,46 @@
 *                                                                                                            *
 *  Module   : Financial Concepts                         Component : Domain Layer                            *
 *  Assembly : FinancialAccounting.FinancialConcepts.dll  Pattern   : Empiria Data Object                     *
-*  Type     : GroupingRule                               License   : Please read LICENSE.txt file            *
+*  Type     : FinancialConcept                           License   : Please read LICENSE.txt file            *
 *                                                                                                            *
-*  Summary  : Contains data about a financial accounting grouping rule.                                      *
+*  Summary  : Contains data about a financial concept, which has an arithmetic integration of other          *
+*             financial concepts, financial accounting accounts or external financial values.                *
 *                                                                                                            *
 ************************* Copyright(c) La Vía Óntica SC, Ontica LLC and contributors. All rights reserved. **/
 using System;
 
 namespace Empiria.FinancialAccounting.FinancialConcepts {
 
-  /// <summary>Contains data about a financial accounting grouping rule.</summary>
-  public class GroupingRule : BaseObject {
+  /// <summary>Contains data about a financial concept, which has an arithmetic integration of other
+  /// financial concepts, financial accounting accounts or external financial values.</summary>
+  public class FinancialConcept : BaseObject {
 
     #region Fields
 
-    private FixedList<GroupingRuleItem> items;
+    private FixedList<GroupingRuleItem> _integration;
 
     #endregion Fields
 
     #region Constructors and parsers
 
-    protected GroupingRule() {
+    protected FinancialConcept() {
       // Required by Empiria Framework.
     }
 
-    static public GroupingRule Parse(int id) {
-      return BaseObject.ParseId<GroupingRule>(id);
+
+    static public FinancialConcept Parse(int id) {
+      return BaseObject.ParseId<FinancialConcept>(id);
     }
 
-    static public GroupingRule Parse(string uid) {
-      return BaseObject.ParseKey<GroupingRule>(uid);
+
+    static public FinancialConcept Parse(string uid) {
+      return BaseObject.ParseKey<FinancialConcept>(uid);
     }
 
-    static public GroupingRule Empty {
+
+    static public FinancialConcept Empty {
       get {
-        return GroupingRule.ParseEmpty<GroupingRule>();
+        return FinancialConcept.ParseEmpty<FinancialConcept>();
       }
     }
 
@@ -55,7 +60,7 @@ namespace Empiria.FinancialAccounting.FinancialConcepts {
     }
 
     [DataField("NOMBRE_CONCEPTO")]
-    public string Concept {
+    public string Name {
       get; private set;
     }
 
@@ -74,12 +79,12 @@ namespace Empiria.FinancialAccounting.FinancialConcepts {
       get; private set;
     }
 
-    public FixedList<GroupingRuleItem> Items {
+    public FixedList<GroupingRuleItem> Integration {
       get {
-        if (items == null) {
-          items = Group.GetGroupingRuleItems(this);
+        if (_integration == null) {
+          _integration = Group.GetGroupingRuleItems(this);
         }
-        return items;
+        return _integration;
       }
     }
 
@@ -95,11 +100,11 @@ namespace Empiria.FinancialAccounting.FinancialConcepts {
 
     internal void Cleanup() {
       this.Code = EmpiriaString.Clean(this.Code);
-      this.Concept = EmpiriaString.Clean(this.Concept);
+      this.Name = EmpiriaString.Clean(this.Name);
     }
 
     #endregion Methods
 
-  } // class GroupingRule
+  } // class FinancialConcept
 
 }  // namespace Empiria.FinancialAccounting.FinancialConcepts

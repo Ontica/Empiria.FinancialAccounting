@@ -4,7 +4,7 @@
 *  Assembly : Empiria.FinancialAccounting.WebApi.dll       Pattern   : Query Controller                      *
 *  Type     : FinancialConceptsController                  License   : Please read LICENSE.txt file          *
 *                                                                                                            *
-*  Summary  : Query web API used to retrive financial concepts grouping rules.                               *
+*  Summary  : Query web API used to retrive financial concepts.                                              *
 *                                                                                                            *
 ************************* Copyright(c) La Vía Óntica SC, Ontica LLC and contributors. All rights reserved. **/
 using System;
@@ -19,19 +19,19 @@ using Empiria.FinancialAccounting.Reporting;
 
 namespace Empiria.FinancialAccounting.WebApi.FinancialConcepts {
 
-  /// <summary>Query web API used to retrive financial concepts grouping rules.</summary>
+  /// <summary>Query web API used to retrive financial concepts.</summary>
   public class FinancialConceptsController : WebApiController {
 
     #region Web Apis
 
     [HttpGet]
-    [Route("v2/financial-accounting/rules/grouping-rules/{groupUID:guid}")]
-    public CollectionModel GetGroupingRules([FromUri] string groupUID) {
+    [Route("v2/financial-accounting/financial-concepts/in-group/{groupUID:guid}")]
+    public CollectionModel GeFinancialConceptsInGroup([FromUri] string groupUID) {
 
       using (var usecases = FinancialConceptsUseCases.UseCaseInteractor()) {
-        FixedList<GroupingRuleDto> rules = usecases.GroupingRules(groupUID);
+        FixedList<FinancialConceptDto> concepts = usecases.FinancialConceptsInGroup(groupUID);
 
-        return new CollectionModel(base.Request, rules);
+        return new CollectionModel(base.Request, concepts);
       }
     }
 
@@ -66,11 +66,11 @@ namespace Empiria.FinancialAccounting.WebApi.FinancialConcepts {
 
 
     [HttpGet]
-    [Route("v2/financial-accounting/rules/grouping-rule-items/{groupingRuleUID:guid}")]
-    public CollectionModel GetGroupingRuleItems([FromUri] string groupingRuleUID) {
+    [Route("v2/financial-accounting/rules/grouping-rule-items/{financialConceptUID:guid}")]
+    public CollectionModel GetGroupingRuleItems([FromUri] string financialConceptUID) {
 
       using (var usecases = FinancialConceptsUseCases.UseCaseInteractor()) {
-        FixedList<GroupingRuleItemDto> rules = usecases.GroupingRuleItems(groupingRuleUID);
+        FixedList<GroupingRuleItemDto> rules = usecases.GroupingRuleItems(financialConceptUID);
 
         return new CollectionModel(base.Request, rules);
       }

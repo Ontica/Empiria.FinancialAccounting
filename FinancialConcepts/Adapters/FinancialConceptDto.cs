@@ -2,19 +2,19 @@
 *                                                                                                            *
 *  Module   : Financial Concepts                         Component : Interface adapters                      *
 *  Assembly : FinancialAccounting.FinancialConcepts.dll  Pattern   : Information Holder                      *
-*  Type     : GroupingRuleDto                            License   : Please read LICENSE.txt file            *
+*  Type     : FinancialConceptDto                        License   : Please read LICENSE.txt file            *
 *                                                                                                            *
-*  Summary  : Financial accounting grouping rule data transfer object.                                       *
+*  Summary  : Financial concept data transfer object.                                                        *
 *                                                                                                            *
 ************************* Copyright(c) La Vía Óntica SC, Ontica LLC and contributors. All rights reserved. **/
 using System;
 
 namespace Empiria.FinancialAccounting.FinancialConcepts.Adapters {
 
-  /// <summary>Financial accounting rule data transfer object.</summary>
-  public class GroupingRuleDto {
+  /// <summary>Financial concept data transfer object.</summary>
+  public class FinancialConceptDto {
 
-    internal GroupingRuleDto() {
+    internal FinancialConceptDto() {
       // no-op
     }
 
@@ -42,6 +42,6 @@ namespace Empiria.FinancialAccounting.FinancialConcepts.Adapters {
       get; internal set;
     }
 
-  }  // class GroupingRuleDto
+  }  // class FinancialConceptDto
 
 }  // namespace Empiria.FinancialAccounting.FinancialConcepts.Adapters

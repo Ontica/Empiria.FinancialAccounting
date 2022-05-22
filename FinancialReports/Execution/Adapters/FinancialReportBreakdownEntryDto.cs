@@ -26,7 +26,7 @@ namespace Empiria.FinancialAccounting.FinancialReports.Adapters {
       internal set;
     }
 
-    public string GroupingRuleUID {
+    public string FinancialConceptUID {
       get; internal set;
     }
 

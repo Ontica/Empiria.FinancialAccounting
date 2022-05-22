@@ -167,7 +167,7 @@ namespace Empiria.FinancialAccounting.FinancialReports {
       switch (groupingRuleItem.Type) {
 
         case GroupingRuleItemType.Agrupation:
-          return ProcessGroupingRule(groupingRuleItem.Reference);
+          return ProcessFinancialConcept(groupingRuleItem.Reference);
 
         case GroupingRuleItemType.Account:
           return ProcessAccount(groupingRuleItem);
@@ -185,11 +185,11 @@ namespace Empiria.FinancialAccounting.FinancialReports {
 
       foreach (var reportEntry in reportEntries) {
 
-        if (reportEntry.GroupingRule.IsEmptyInstance) {
+        if (reportEntry.FinancialConcept.IsEmptyInstance) {
           continue;
         }
 
-        ReportEntryTotals totals = ProcessGroupingRule(reportEntry.GroupingRule);
+        ReportEntryTotals totals = ProcessFinancialConcept(reportEntry.FinancialConcept);
 
         if (FinancialReportType.RoundDecimals) {
           totals = totals.Round();
@@ -210,26 +210,26 @@ namespace Empiria.FinancialAccounting.FinancialReports {
     }
 
 
-    private ReportEntryTotals ProcessGroupingRule(GroupingRule groupingRule) {
-      Assertion.Assert(!groupingRule.IsEmptyInstance,
-                       "Cannot process the empty GroupingRule instance.");
+    private ReportEntryTotals ProcessFinancialConcept(FinancialConcept financialConcept) {
+      Assertion.Assert(!financialConcept.IsEmptyInstance,
+                       "Cannot process the empty FinancialConcept instance.");
 
       var totals = CreateReportEntryTotalsObject();
 
-      foreach (var groupingRuleItem in groupingRule.Items) {
+      foreach (var integrationItem in financialConcept.Integration) {
 
-        switch (groupingRuleItem.Type) {
+        switch (integrationItem.Type) {
           case GroupingRuleItemType.Agrupation:
 
-            totals = CalculateAgrupationTotals(groupingRuleItem, totals);
+            totals = CalculateAgrupationTotals(integrationItem, totals);
             break;
 
           case GroupingRuleItemType.Account:
-            totals = CalculateAccountTotals(groupingRuleItem, totals);
+            totals = CalculateAccountTotals(integrationItem, totals);
             break;
 
           case GroupingRuleItemType.ExternalVariable:
-            totals = CalculateExternalVariableTotals(groupingRuleItem, totals);
+            totals = CalculateExternalVariableTotals(integrationItem, totals);
             break;
 
         }
@@ -275,17 +275,17 @@ namespace Empiria.FinancialAccounting.FinancialReports {
 
         case OperatorType.Add:
 
-          return totals.Sum(ProcessGroupingRule(groupingRuleItem.Reference),
+          return totals.Sum(ProcessFinancialConcept(groupingRuleItem.Reference),
                             groupingRuleItem.Qualification);
 
         case OperatorType.Substract:
 
-          return totals.Substract(ProcessGroupingRule(groupingRuleItem.Reference),
+          return totals.Substract(ProcessFinancialConcept(groupingRuleItem.Reference),
                                   groupingRuleItem.Qualification);
 
         case OperatorType.AbsoluteValue:
 
-          return totals.Sum(ProcessGroupingRule(groupingRuleItem.Reference),
+          return totals.Sum(ProcessFinancialConcept(groupingRuleItem.Reference),
                             groupingRuleItem.Qualification)
                        .AbsoluteValue();
 
@@ -352,7 +352,7 @@ namespace Empiria.FinancialAccounting.FinancialReports {
     private FixedRowFinancialReportEntry CreateReportEntryWithoutTotals(FinancialReportRow row) {
       return new FixedRowFinancialReportEntry {
         Row = row,
-        GroupingRule = row.GroupingRule
+        FinancialConcept = row.FinancialConcept
       };
     }
 
@@ -393,9 +393,9 @@ namespace Empiria.FinancialAccounting.FinancialReports {
     private FixedList<FinancialReportBreakdownEntry> GetBreakdownEntries(FixedRowFinancialReportEntry reportEntry) {
       var breakdown = new List<FinancialReportBreakdownEntry>();
 
-      var groupingRule = reportEntry.GroupingRule;
+      var groupingRule = reportEntry.FinancialConcept;
 
-      foreach (var item in groupingRule.Items) {
+      foreach (var item in groupingRule.Integration) {
         breakdown.Add(new FinancialReportBreakdownEntry { GroupingRuleItem = item });
       }
 
@@ -411,8 +411,8 @@ namespace Empiria.FinancialAccounting.FinancialReports {
     private FixedList<FinancialReportRow> GetReportRowsWithIntegrationAccounts() {
       FixedList<FinancialReportRow> rows = GetReportFixedRows();
 
-      return rows.FindAll(x => !x.GroupingRule.IsEmptyInstance &&
-                                x.GroupingRule.Items.Contains(item => item.Type == GroupingRuleItemType.Account));
+      return rows.FindAll(x => !x.FinancialConcept.IsEmptyInstance &&
+                                x.FinancialConcept.Integration.Contains(item => item.Type == GroupingRuleItemType.Account));
     }
 
 

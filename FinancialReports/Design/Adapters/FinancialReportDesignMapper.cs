@@ -53,7 +53,7 @@ namespace Empiria.FinancialAccounting.FinancialReports.Adapters {
         Label = row.Label,
         Format = row.Format,
         Position = row.Position,
-        GroupingRuleUID = row.GroupingRule.UID
+        FinancialConceptUID = row.FinancialConcept.UID
       };
     }
 

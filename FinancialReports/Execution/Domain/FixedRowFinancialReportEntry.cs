@@ -38,7 +38,7 @@ namespace Empiria.FinancialAccounting.FinancialReports {
     } = FinancialReportItemType.Entry;
 
 
-    public GroupingRule GroupingRule {
+    public FinancialConcept FinancialConcept {
       get;
       internal set;
     }

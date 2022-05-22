@@ -36,7 +36,7 @@ namespace Empiria.FinancialAccounting.FinancialReports {
     #region Properties
 
     [DataField("ID_CONCEPTO")]
-    public GroupingRule GroupingRule {
+    public FinancialConcept FinancialConcept {
       get; private set;
     }
 

@@ -42,23 +42,23 @@ namespace Empiria.FinancialAccounting.FinancialConcepts.UseCases {
     }
 
 
-    public FixedList<GroupingRuleDto> GroupingRules(string groupUID) {
+    public FixedList<FinancialConceptDto> FinancialConceptsInGroup(string groupUID) {
       Assertion.AssertObject(groupUID, "groupUID");
 
       var group = FinancialConceptGroup.Parse(groupUID);
 
-      FixedList<GroupingRule> concepts = group.GetGroupingRules();
+      FixedList<FinancialConcept> concepts = group.FinancialConcepts();
 
-      return GroupingRulesMapper.Map(concepts);
+      return FinancialConceptMapper.Map(concepts);
     }
 
 
-    public FixedList<GroupingRuleItemDto> GroupingRuleItems(string groupingRuleUID) {
-      Assertion.AssertObject(groupingRuleUID, "groupingRuleUID");
+    public FixedList<GroupingRuleItemDto> GroupingRuleItems(string financialConceptUID) {
+      Assertion.AssertObject(financialConceptUID, nameof(financialConceptUID));
 
-      var groupingRule = GroupingRule.Parse(groupingRuleUID);
+      var financialConcept = FinancialConcept.Parse(financialConceptUID);
 
-      return GroupingRulesMapper.Map(groupingRule.Items);
+      return FinancialConceptMapper.Map(financialConcept.Integration);
     }
 
 

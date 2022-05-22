@@ -85,7 +85,7 @@ namespace Empiria.FinancialAccounting.FinancialReports.Adapters {
         SubledgerAccount = entry.GroupingRuleItem.SubledgerAccountNumber,
         SectorCode = entry.GroupingRuleItem.SectorCode,
         Operator = Convert.ToString((char) entry.GroupingRuleItem.Operator),
-        GroupingRuleUID = entry.GroupingRuleItem.GroupingRule.UID,
+        FinancialConceptUID = entry.GroupingRuleItem.FinancialConcept.UID,
       };
 
       SetTotalsFields(o, entry);
@@ -97,7 +97,7 @@ namespace Empiria.FinancialAccounting.FinancialReports.Adapters {
       dynamic o = new FinancialReportBreakdownEntryDto {
         UID = entry.Row.UID,
         Type = GroupingRuleItemType.Agrupation,
-        GroupingRuleUID = entry.GroupingRule.UID,
+        FinancialConceptUID = entry.FinancialConcept.UID,
         ItemType = FinancialReportItemType.Summary,
         ItemCode = "TOTAL",
         ItemName = string.Empty,
@@ -138,19 +138,19 @@ namespace Empiria.FinancialAccounting.FinancialReports.Adapters {
 
 
     static private FinancialReportEntryDto MapToFixedRowsReport(FixedRowFinancialReportEntry entry) {
-      bool hasGroupingRule = !entry.GroupingRule.IsEmptyInstance;
+      bool hasGroupingRule = !entry.FinancialConcept.IsEmptyInstance;
 
       dynamic o;
 
       if (hasGroupingRule) {
         o = new FinancialReportEntryDto {
           UID = entry.Row.UID,
-          ConceptCode = entry.GroupingRule.Code,
-          Concept = entry.GroupingRule.Concept,
-          Level = entry.GroupingRule.Level,
-          GroupingRuleUID = entry.GroupingRule.UID,
-          AccountsChartName = entry.GroupingRule.Group.AccountsChart.Name,
-          GroupName = entry.GroupingRule.Group.Name
+          ConceptCode = entry.FinancialConcept.Code,
+          Concept = entry.FinancialConcept.Name,
+          Level = entry.FinancialConcept.Level,
+          GroupingRuleUID = entry.FinancialConcept.UID,
+          AccountsChartName = entry.FinancialConcept.Group.AccountsChart.Name,
+          GroupName = entry.FinancialConcept.Group.Name
         };
       } else {
         o = new FinancialReportEntryDto {
@@ -194,9 +194,9 @@ namespace Empiria.FinancialAccounting.FinancialReports.Adapters {
       dynamic o = new IntegrationReportEntryDto {
         UID = entry.Row.UID,
         Type = GroupingRuleItemType.Agrupation,
-        GroupingRuleUID = entry.GroupingRule.UID,
-        ConceptCode = entry.GroupingRule.Code,
-        Concept = entry.GroupingRule.Concept,
+        FinancialConceptUID = entry.FinancialConcept.UID,
+        ConceptCode = entry.FinancialConcept.Code,
+        Concept = entry.FinancialConcept.Name,
         ItemType = FinancialReportItemType.Summary,
         ItemCode = "TOTAL",
         ItemName = string.Empty,
@@ -215,9 +215,9 @@ namespace Empiria.FinancialAccounting.FinancialReports.Adapters {
       dynamic o = new IntegrationReportEntryDto {
         UID = entry.GroupingRuleItem.UID,
         Type = entry.GroupingRuleItem.Type,
-        GroupingRuleUID = entry.GroupingRuleItem.GroupingRule.UID,
-        ConceptCode = entry.GroupingRuleItem.GroupingRule.Code,
-        Concept = entry.GroupingRuleItem.GroupingRule.Concept,
+        FinancialConceptUID = entry.GroupingRuleItem.FinancialConcept.UID,
+        ConceptCode = entry.GroupingRuleItem.FinancialConcept.Code,
+        Concept = entry.GroupingRuleItem.FinancialConcept.Name,
         ItemType = FinancialReportItemType.Entry,
         ItemCode = entry.GroupingRuleItem.Code,
         ItemName = entry.GroupingRuleItem.Name,

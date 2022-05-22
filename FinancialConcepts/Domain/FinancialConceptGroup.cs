@@ -20,7 +20,7 @@ namespace Empiria.FinancialAccounting.FinancialConcepts {
 
     #region Fields
 
-    private Lazy<FixedList<GroupingRule>> _groupingRules;
+    private Lazy<FixedList<FinancialConcept>> _financialConcepts;
 
     private Lazy<FixedList<GroupingRuleItem>> _groupingRulesItems;
 
@@ -69,8 +69,8 @@ namespace Empiria.FinancialAccounting.FinancialConcepts {
         return;
       }
 
-      _groupingRules = new Lazy<FixedList<GroupingRule>>(() => GroupingRulesData.GetGroupingRules(this));
-      _groupingRulesItems = new Lazy<FixedList<GroupingRuleItem>>(() => GroupingRulesData.GetGroupingRulesItems(this));
+      _financialConcepts = new Lazy<FixedList<FinancialConcept>>(() => FinancialConceptsData.GetFinancialConcepts(this));
+      _groupingRulesItems = new Lazy<FixedList<GroupingRuleItem>>(() => FinancialConceptsData.GetGroupingRulesItems(this));
     }
 
 
@@ -96,36 +96,36 @@ namespace Empiria.FinancialAccounting.FinancialConcepts {
     #region Methods
 
     public void Cleanup() {
-      FixedList<GroupingRule> rules = GetGroupingRules();
+      FixedList<FinancialConcept> concepts = FinancialConcepts();
 
-      foreach (var rule in rules) {
-        rule.Cleanup();
-        GroupingRulesData.Write(rule);
+      foreach (var concept in concepts) {
+        concept.Cleanup();
+        FinancialConceptsData.Write(concept);
       }
 
-      FixedList<GroupingRuleItem>  items = GroupingRulesData.GetGroupingRulesItems(this);
+      FixedList<GroupingRuleItem> items = FinancialConceptsData.GetGroupingRulesItems(this);
 
       foreach (var item in items) {
         item.Cleanup();
-        GroupingRulesData.Write(item);
+        FinancialConceptsData.Write(item);
       }
     }
 
 
-    public FixedList<GroupingRule> GetGroupingRules() {
-      return _groupingRules.Value;
+    public FixedList<FinancialConcept> FinancialConcepts() {
+      return _financialConcepts.Value;
     }
 
 
-    internal FixedList<GroupingRuleItem> GetGroupingRuleItems(GroupingRule groupingRule) {
-      Assertion.AssertObject(groupingRule, "groupingRule");
+    internal FixedList<GroupingRuleItem> GetGroupingRuleItems(FinancialConcept financialConcept) {
+      Assertion.AssertObject(financialConcept, nameof(financialConcept));
 
-      return _groupingRulesItems.Value.FindAll(x => x.GroupingRule.Equals(groupingRule));
+      return _groupingRulesItems.Value.FindAll(x => x.FinancialConcept.Equals(financialConcept));
     }
 
 
     internal FixedList<GroupingRuleItem> GetGroupingRulesRoots() {
-      return _groupingRulesItems.Value.FindAll(x => x.GroupingRule.IsEmptyInstance);
+      return _groupingRulesItems.Value.FindAll(x => x.FinancialConcept.IsEmptyInstance);
     }
 
 

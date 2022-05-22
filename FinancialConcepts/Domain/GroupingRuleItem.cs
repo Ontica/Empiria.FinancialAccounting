@@ -85,7 +85,7 @@ namespace Empiria.FinancialAccounting.FinancialConcepts {
 
 
     [DataField("ID_CONCEPTO")]
-    public GroupingRule GroupingRule {
+    public FinancialConcept FinancialConcept {
       get; private set;
     }
 
@@ -97,7 +97,7 @@ namespace Empiria.FinancialAccounting.FinancialConcepts {
 
 
     [DataField("REF_ID_CONCEPTO")]
-    public GroupingRule Reference {
+    public FinancialConcept Reference {
       get; private set;
     }
 
@@ -172,7 +172,7 @@ namespace Empiria.FinancialAccounting.FinancialConcepts {
       get {
         if (this.Type == GroupingRuleItemType.Account) {
 
-          var account = GroupingRule.Group.AccountsChart.TryGetAccount(this.AccountNumber);
+          var account = FinancialConcept.Group.AccountsChart.TryGetAccount(this.AccountNumber);
 
           if (account != null) {
             return account.Name;
@@ -181,7 +181,7 @@ namespace Empiria.FinancialAccounting.FinancialConcepts {
           }
 
         } else if (this.Type == GroupingRuleItemType.Agrupation) {
-          return this.Reference.Concept;
+          return this.Reference.Name;
 
         } else if (this.Type == GroupingRuleItemType.ExternalVariable) {
 

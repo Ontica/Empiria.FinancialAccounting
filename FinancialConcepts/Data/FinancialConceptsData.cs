@@ -2,9 +2,9 @@
 *                                                                                                            *
 *  Module   : Financial Concepts                         Component : Data Access Layer                       *
 *  Assembly : FinancialAccounting.FinancialConcepts.dll  Pattern   : Data Service                            *
-*  Type     : GroupingRulesData                          License   : Please read LICENSE.txt file            *
+*  Type     : FinancialConceptsData                      License   : Please read LICENSE.txt file            *
 *                                                                                                            *
-*  Summary  : Data access layer for financial accounting grouping rules.                                     *
+*  Summary  : Data access layer for financial concepts.                                                      *
 *                                                                                                            *
 ************************* Copyright(c) La Vía Óntica SC, Ontica LLC and contributors. All rights reserved. **/
 using System;
@@ -14,17 +14,18 @@ using Empiria.Data;
 namespace Empiria.FinancialAccounting.FinancialConcepts.Data {
 
   /// <summary>Data access layer for financial accounting grouping rules.</summary>
-  static internal class GroupingRulesData {
+  static internal class FinancialConceptsData {
 
-    static internal FixedList<GroupingRule> GetGroupingRules(FinancialConceptGroup group) {
+    static internal FixedList<FinancialConcept> GetFinancialConcepts(FinancialConceptGroup group) {
       var sql = "SELECT * FROM COF_CONCEPTOS " +
                 $"WHERE ID_GRUPO = {group.Id} " +
                 "ORDER BY POSICION";
 
-      var dataOperation = DataOperation.Parse(sql);
+      var op = DataOperation.Parse(sql);
 
-      return DataReader.GetFixedList<GroupingRule>(dataOperation);
+      return DataReader.GetFixedList<FinancialConcept>(op);
     }
+
 
     static internal FixedList<GroupingRuleItem> GetGroupingRulesItems(FinancialConceptGroup group) {
       var sql = "SELECT COF_CONCEPTOS_INTEGRACION.* " +
@@ -32,16 +33,17 @@ namespace Empiria.FinancialAccounting.FinancialConcepts.Data {
                $"WHERE ID_GRUPO = {group.Id} " +
                 "ORDER BY POSICION";
 
-      var dataOperation = DataOperation.Parse(sql);
+      var op = DataOperation.Parse(sql);
 
-      return DataReader.GetFixedList<GroupingRuleItem>(dataOperation);
+      return DataReader.GetFixedList<GroupingRuleItem>(op);
     }
 
 
-    static internal void Write(GroupingRule o) {
+    static internal void Write(FinancialConcept o) {
       var op = DataOperation.Parse("write_cof_concepto",
-                      o.Id, o.Code, o.Concept, o.Position,
-                      o.StartDate, o.EndDate, o.UID, o.Group.Id);
+                                   o.Id, o.Code, o.Name, o.Position,
+                                   o.StartDate, o.EndDate, o.UID,
+                                   o.Group.Id);
 
 
       DataWriter.Execute(op);
@@ -51,7 +53,7 @@ namespace Empiria.FinancialAccounting.FinancialConcepts.Data {
 
     static internal void Write(GroupingRuleItem o) {
       var op = DataOperation.Parse("write_cof_concepto_integracion",
-                      o.Id, o.UID, o.GroupingRule.Id, o.CalculationRule, o.Reference.Id,
+                      o.Id, o.UID, o.FinancialConcept.Id, o.CalculationRule, o.Reference.Id,
                       o.AccountNumber, o.SubledgerAccountNumber, o.SectorCode, o.ExternalVariableCode,
                       (char) o.Operator, o.Qualification, o.IntegrationTypeId, o.Position,
                       o.Group.Id, o.CurrencyCode, o.AccountsListId);
@@ -60,6 +62,6 @@ namespace Empiria.FinancialAccounting.FinancialConcepts.Data {
     }
 
 
-  }  // class GroupingRulesData
+  }  // class FinancialConceptsData
 
 }  // namespace Empiria.FinancialAccounting.FinancialConcepts.Data

@@ -54,13 +54,13 @@ namespace Empiria.FinancialAccounting.FinancialReports.UseCases {
     }
 
 
-    public FinancialReportDto GetFinancialReportBreakdown(string groupingRuleUID, FinancialReportCommand command) {
-      Assertion.AssertObject(groupingRuleUID, "groupingRuleUID");
-      Assertion.AssertObject(command, "command");
+    public FinancialReportDto GetFinancialReportBreakdown(string reportRowUID, FinancialReportCommand command) {
+      Assertion.AssertObject(reportRowUID, nameof(reportRowUID));
+      Assertion.AssertObject(command, nameof(command));
 
       var financialReportGenerator = new FinancialReportGenerator(command);
 
-      FinancialReport breakdownReport = financialReportGenerator.GetBreakdown(groupingRuleUID);
+      FinancialReport breakdownReport = financialReportGenerator.GetBreakdown(reportRowUID);
 
       return FinancialReportMapper.MapBreakdown(breakdownReport);
     }
