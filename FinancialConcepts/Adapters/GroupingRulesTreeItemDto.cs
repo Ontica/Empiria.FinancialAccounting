@@ -1,7 +1,7 @@
 ﻿/* Empiria Financial *****************************************************************************************
 *                                                                                                            *
 *  Module   : Financial Concepts                         Component : Interface adapters                      *
-*  Assembly : FinancialAccounting.FinancialConcepts.dll  Pattern   : Information Holder                      *
+*  Assembly : FinancialAccounting.FinancialConcepts.dll  Pattern   : Data Transfer Object                    *
 *  Type     : GroupingRuleTreeItemDto                    License   : Please read LICENSE.txt file            *
 *                                                                                                            *
 *  Summary  : Data transfer object for grouping rules tree items.                                            *
@@ -22,7 +22,7 @@ namespace Empiria.FinancialAccounting.FinancialConcepts.Adapters {
       get; internal set;
     }
 
-    public GroupingRuleItemType Type {
+    public IntegrationEntryType Type {
       get; internal set;
     }
 

@@ -31,6 +31,7 @@ namespace Empiria.FinancialAccounting.FinancialReports {
     internal FixedRowGroupingRulesReport(FinancialReportCommand command) {
       _command = command;
       _balances = GetBalancesHashTable();
+
       this.FinancialReportType = _command.GetFinancialReportType();
     }
 
@@ -79,7 +80,7 @@ namespace Empiria.FinancialAccounting.FinancialReports {
         FixedRowFinancialReportEntry reportEntry = CreateReportEntryWithoutTotals(row);
 
         FixedList<FinancialReportBreakdownEntry> breakdownEntries = GetBreakdownEntries(reportEntry).
-                                                                    FindAll(x => x.GroupingRuleItem.Type == GroupingRuleItemType.Account);
+                                                                    FindAll(x => x.IntegrationEntry.Type == IntegrationEntryType.Account);
 
         ReportEntryTotals breakdownTotal = ProcessBreakdown(breakdownEntries);
 
@@ -98,20 +99,20 @@ namespace Empiria.FinancialAccounting.FinancialReports {
 
     #region Private methods
 
-    private ReportEntryTotals ProcessAccount(GroupingRuleItem groupingRule) {
-      if (!_balances.ContainsKey(groupingRule.AccountNumber)) {
+    private ReportEntryTotals ProcessAccount(FinancialConceptIntegrationEntry integrationEntry) {
+      if (!_balances.ContainsKey(integrationEntry.AccountNumber)) {
         return CreateReportEntryTotalsObject();
       }
 
-      FixedList<ITrialBalanceEntryDto> accountBalances = GetAccountBalances(groupingRule);
+      FixedList<ITrialBalanceEntryDto> accountBalances = GetAccountBalances(integrationEntry);
 
       var totals = CreateReportEntryTotalsObject();
 
       foreach (var balance in accountBalances) {
-        if (groupingRule.CalculationRule == "SumDebitsAndSubstractCredits") {
-          totals = totals.SumDebitsOrSubstractCredits(balance, groupingRule.Qualification);
+        if (integrationEntry.CalculationRule == "SumDebitsAndSubstractCredits") {
+          totals = totals.SumDebitsOrSubstractCredits(balance, integrationEntry.Qualification);
         } else {
-          totals = totals.Sum(balance, groupingRule.Qualification);
+          totals = totals.Sum(balance, integrationEntry.Qualification);
         }
       }
 
@@ -119,7 +120,7 @@ namespace Empiria.FinancialAccounting.FinancialReports {
         totals = totals.Round();
       }
 
-      if (groupingRule.Operator == OperatorType.AbsoluteValue) {
+      if (integrationEntry.Operator == OperatorType.AbsoluteValue) {
         totals = totals.AbsoluteValue();
       }
 
@@ -133,7 +134,7 @@ namespace Empiria.FinancialAccounting.FinancialReports {
 
       foreach (var breakdownItem in breakdown) {
 
-        ReportEntryTotals breakdownTotals = CalculateBreakdown(breakdownItem.GroupingRuleItem);
+        ReportEntryTotals breakdownTotals = CalculateBreakdown(breakdownItem.IntegrationEntry);
 
         if (FinancialReportType.RoundDecimals) {
           breakdownTotals = breakdownTotals.Round();
@@ -141,17 +142,17 @@ namespace Empiria.FinancialAccounting.FinancialReports {
 
         breakdownTotals.CopyTotalsTo(breakdownItem);
 
-        switch (breakdownItem.GroupingRuleItem.Operator) {
+        switch (breakdownItem.IntegrationEntry.Operator) {
           case OperatorType.Add:
-            granTotal = granTotal.Sum(breakdownTotals, breakdownItem.GroupingRuleItem.Qualification);
+            granTotal = granTotal.Sum(breakdownTotals, breakdownItem.IntegrationEntry.Qualification);
             break;
 
           case OperatorType.Substract:
-            granTotal = granTotal.Substract(breakdownTotals, breakdownItem.GroupingRuleItem.Qualification);
+            granTotal = granTotal.Substract(breakdownTotals, breakdownItem.IntegrationEntry.Qualification);
             break;
 
           case OperatorType.AbsoluteValue:
-            granTotal = granTotal.Sum(breakdownTotals, breakdownItem.GroupingRuleItem.Qualification)
+            granTotal = granTotal.Sum(breakdownTotals, breakdownItem.IntegrationEntry.Qualification)
                                  .AbsoluteValue();
             break;
 
@@ -163,17 +164,18 @@ namespace Empiria.FinancialAccounting.FinancialReports {
     }
 
 
-    private ReportEntryTotals CalculateBreakdown(GroupingRuleItem groupingRuleItem) {
-      switch (groupingRuleItem.Type) {
+    private ReportEntryTotals CalculateBreakdown(FinancialConceptIntegrationEntry integrationEntry) {
 
-        case GroupingRuleItemType.Agrupation:
-          return ProcessFinancialConcept(groupingRuleItem.Reference);
+      switch (integrationEntry.Type) {
 
-        case GroupingRuleItemType.Account:
-          return ProcessAccount(groupingRuleItem);
+        case IntegrationEntryType.FinancialConceptReference:
+          return ProcessFinancialConcept(integrationEntry.ReferencedFinancialConcept);
 
-        case GroupingRuleItemType.ExternalVariable:
-          return ProcessFixedValue(groupingRuleItem);
+        case IntegrationEntryType.Account:
+          return ProcessAccount(integrationEntry);
+
+        case IntegrationEntryType.ExternalVariable:
+          return ProcessFixedValue(integrationEntry);
 
         default:
           throw Assertion.AssertNoReachThisCode();
@@ -200,13 +202,13 @@ namespace Empiria.FinancialAccounting.FinancialReports {
     }
 
 
-    private ReportEntryTotals ProcessFixedValue(GroupingRuleItem groupingRuleItem) {
-      ExternalValue value = ExternalValue.GetValue(groupingRuleItem.ExternalVariableCode,
+    private ReportEntryTotals ProcessFixedValue(FinancialConceptIntegrationEntry integrationEntry) {
+      ExternalValue value = ExternalValue.GetValue(integrationEntry.ExternalVariableCode,
                                                    _command.ToDate);
 
       var totals = CreateReportEntryTotalsObject();
 
-      return totals.Sum(value, groupingRuleItem.Qualification);
+      return totals.Sum(value, integrationEntry.Qualification);
     }
 
 
@@ -219,16 +221,16 @@ namespace Empiria.FinancialAccounting.FinancialReports {
       foreach (var integrationItem in financialConcept.Integration) {
 
         switch (integrationItem.Type) {
-          case GroupingRuleItemType.Agrupation:
+          case IntegrationEntryType.FinancialConceptReference:
 
-            totals = CalculateAgrupationTotals(integrationItem, totals);
+            totals = CalculateFinancialConceptTotals(integrationItem, totals);
             break;
 
-          case GroupingRuleItemType.Account:
+          case IntegrationEntryType.Account:
             totals = CalculateAccountTotals(integrationItem, totals);
             break;
 
-          case GroupingRuleItemType.ExternalVariable:
+          case IntegrationEntryType.ExternalVariable:
             totals = CalculateExternalVariableTotals(integrationItem, totals);
             break;
 
@@ -240,86 +242,95 @@ namespace Empiria.FinancialAccounting.FinancialReports {
     }
 
 
-    private ReportEntryTotals CalculateAccountTotals(GroupingRuleItem groupingRuleItem, ReportEntryTotals totals) {
-      Assertion.Assert(groupingRuleItem.Type == GroupingRuleItemType.Account, "Invalid groupingRuleItem.Type");
+    private ReportEntryTotals CalculateAccountTotals(FinancialConceptIntegrationEntry integrationEntry,
+                                                     ReportEntryTotals totals) {
 
-      switch (groupingRuleItem.Operator) {
+      Assertion.Assert(integrationEntry.Type == IntegrationEntryType.Account,
+                       "Invalid integrationEntry.Type");
+
+      switch (integrationEntry.Operator) {
 
         case OperatorType.Add:
 
-          return totals.Sum(ProcessAccount(groupingRuleItem),
-                            groupingRuleItem.Qualification);
+          return totals.Sum(ProcessAccount(integrationEntry),
+                            integrationEntry.Qualification);
 
         case OperatorType.Substract:
 
-          return totals.Substract(ProcessAccount(groupingRuleItem),
-                                  groupingRuleItem.Qualification);
+          return totals.Substract(ProcessAccount(integrationEntry),
+                                  integrationEntry.Qualification);
 
         case OperatorType.AbsoluteValue:
 
-          return totals.Sum(ProcessAccount(groupingRuleItem),
-                            groupingRuleItem.Qualification)
+          return totals.Sum(ProcessAccount(integrationEntry),
+                            integrationEntry.Qualification)
                        .AbsoluteValue();
 
         default:
-          throw Assertion.AssertNoReachThisCode($"Unhandled operator '{groupingRuleItem.Operator}'.");
+          throw Assertion.AssertNoReachThisCode($"Unhandled operator '{integrationEntry.Operator}'.");
       }
 
     }
 
 
-    private ReportEntryTotals CalculateAgrupationTotals(GroupingRuleItem groupingRuleItem, ReportEntryTotals totals) {
-      Assertion.Assert(groupingRuleItem.Type == GroupingRuleItemType.Agrupation, "Invalid groupingRuleItem.Type");
+    private ReportEntryTotals CalculateFinancialConceptTotals(FinancialConceptIntegrationEntry integrationEntry,
+                                                              ReportEntryTotals totals) {
 
-      switch (groupingRuleItem.Operator) {
+      Assertion.Assert(integrationEntry.Type == IntegrationEntryType.FinancialConceptReference,
+                      "Invalid integrationEntry.Type");
+
+      switch (integrationEntry.Operator) {
 
         case OperatorType.Add:
 
-          return totals.Sum(ProcessFinancialConcept(groupingRuleItem.Reference),
-                            groupingRuleItem.Qualification);
+          return totals.Sum(ProcessFinancialConcept(integrationEntry.ReferencedFinancialConcept),
+                            integrationEntry.Qualification);
 
         case OperatorType.Substract:
 
-          return totals.Substract(ProcessFinancialConcept(groupingRuleItem.Reference),
-                                  groupingRuleItem.Qualification);
+          return totals.Substract(ProcessFinancialConcept(integrationEntry.ReferencedFinancialConcept),
+                                  integrationEntry.Qualification);
 
         case OperatorType.AbsoluteValue:
 
-          return totals.Sum(ProcessFinancialConcept(groupingRuleItem.Reference),
-                            groupingRuleItem.Qualification)
+          return totals.Sum(ProcessFinancialConcept(integrationEntry.ReferencedFinancialConcept),
+                            integrationEntry.Qualification)
                        .AbsoluteValue();
 
         default:
-          throw Assertion.AssertNoReachThisCode($"Unhandled operator '{groupingRuleItem.Operator}'.");
+          throw Assertion.AssertNoReachThisCode($"Unhandled operator '{integrationEntry.Operator}'.");
 
       }
 
     }
 
 
-    private ReportEntryTotals CalculateExternalVariableTotals(GroupingRuleItem groupingRuleItem, ReportEntryTotals totals) {
-      Assertion.Assert(groupingRuleItem.Type == GroupingRuleItemType.ExternalVariable, "Invalid groupingRuleItem.Type");
+    private ReportEntryTotals CalculateExternalVariableTotals(FinancialConceptIntegrationEntry integrationEntry,
+                                                              ReportEntryTotals totals) {
 
-      switch (groupingRuleItem.Operator) {
+      Assertion.Assert(integrationEntry.Type == IntegrationEntryType.ExternalVariable,
+                       "Invalid integrationEntry.Type");
+
+      switch (integrationEntry.Operator) {
 
         case OperatorType.Add:
 
-          return totals.Sum(ProcessFixedValue(groupingRuleItem),
-                            groupingRuleItem.Qualification);
+          return totals.Sum(ProcessFixedValue(integrationEntry),
+                            integrationEntry.Qualification);
 
         case OperatorType.Substract:
 
-          return totals.Substract(ProcessFixedValue(groupingRuleItem),
-                                  groupingRuleItem.Qualification);
+          return totals.Substract(ProcessFixedValue(integrationEntry),
+                                  integrationEntry.Qualification);
 
         case OperatorType.AbsoluteValue:
 
-          return totals.Sum(ProcessFixedValue(groupingRuleItem),
-                            groupingRuleItem.Qualification)
+          return totals.Sum(ProcessFixedValue(integrationEntry),
+                            integrationEntry.Qualification)
                        .AbsoluteValue();
 
         default:
-          throw Assertion.AssertNoReachThisCode($"Unhandled operator '{groupingRuleItem.Operator}'.");
+          throw Assertion.AssertNoReachThisCode($"Unhandled operator '{integrationEntry.Operator}'.");
       }
 
     }
@@ -357,25 +368,25 @@ namespace Empiria.FinancialAccounting.FinancialReports {
     }
 
 
-    private FixedList<ITrialBalanceEntryDto> GetAccountBalances(GroupingRuleItem groupingRule) {
-      FixedList<ITrialBalanceEntryDto> balances = _balances[groupingRule.AccountNumber];
+    private FixedList<ITrialBalanceEntryDto> GetAccountBalances(FinancialConceptIntegrationEntry integrationEntry) {
+      FixedList<ITrialBalanceEntryDto> balances = _balances[integrationEntry.AccountNumber];
 
       FixedList<ITrialBalanceEntryDto> filtered;
 
-      if (groupingRule.HasSector && groupingRule.HasSubledgerAccount) {
-        filtered = balances.FindAll(x => x.SectorCode == groupingRule.SectorCode &&
-                                         x.SubledgerAccountNumber == groupingRule.SubledgerAccountNumber);
+      if (integrationEntry.HasSector && integrationEntry.HasSubledgerAccount) {
+        filtered = balances.FindAll(x => x.SectorCode == integrationEntry.SectorCode &&
+                                         x.SubledgerAccountNumber == integrationEntry.SubledgerAccountNumber);
 
-      } else if (groupingRule.HasSector && !groupingRule.HasSubledgerAccount) {
-        filtered = balances.FindAll(x => x.SectorCode == groupingRule.SectorCode &&
+      } else if (integrationEntry.HasSector && !integrationEntry.HasSubledgerAccount) {
+        filtered = balances.FindAll(x => x.SectorCode == integrationEntry.SectorCode &&
                                          x.SubledgerAccountNumber.Length == 0);
 
-      } else if (!groupingRule.HasSector && groupingRule.HasSubledgerAccount) {
+      } else if (!integrationEntry.HasSector && integrationEntry.HasSubledgerAccount) {
         filtered = balances.FindAll(x => x.SectorCode == "00" &&
-                                         x.SubledgerAccountNumber == groupingRule.SubledgerAccountNumber);
+                                         x.SubledgerAccountNumber == integrationEntry.SubledgerAccountNumber);
         if (filtered.Count == 0) {
           filtered = balances.FindAll(x => x.SectorCode != "00" &&
-                                           x.SubledgerAccountNumber == groupingRule.SubledgerAccountNumber);
+                                           x.SubledgerAccountNumber == integrationEntry.SubledgerAccountNumber);
         }
       } else {
         filtered = balances.FindAll(x => x.SectorCode == "00" &&
@@ -393,18 +404,18 @@ namespace Empiria.FinancialAccounting.FinancialReports {
     private FixedList<FinancialReportBreakdownEntry> GetBreakdownEntries(FixedRowFinancialReportEntry reportEntry) {
       var breakdown = new List<FinancialReportBreakdownEntry>();
 
-      var groupingRule = reportEntry.FinancialConcept;
+      var financialConcept = reportEntry.FinancialConcept;
 
-      foreach (var item in groupingRule.Integration) {
-        breakdown.Add(new FinancialReportBreakdownEntry { GroupingRuleItem = item });
+      foreach (var integrationEntry in financialConcept.Integration) {
+        breakdown.Add(new FinancialReportBreakdownEntry { IntegrationEntry = integrationEntry });
       }
 
       return breakdown.ToFixedList();
     }
 
 
-    private FinancialReportRow GetReportBreakdownRow(string groupingRuleUID) {
-      return FinancialReportType.GetRow(groupingRuleUID);
+    private FinancialReportRow GetReportBreakdownRow(string reportRowUID) {
+      return FinancialReportType.GetRow(reportRowUID);
     }
 
 
@@ -412,7 +423,7 @@ namespace Empiria.FinancialAccounting.FinancialReports {
       FixedList<FinancialReportRow> rows = GetReportFixedRows();
 
       return rows.FindAll(x => !x.FinancialConcept.IsEmptyInstance &&
-                                x.FinancialConcept.Integration.Contains(item => item.Type == GroupingRuleItemType.Account));
+                                x.FinancialConcept.Integration.Contains(item => item.Type == IntegrationEntryType.Account));
     }
 
 

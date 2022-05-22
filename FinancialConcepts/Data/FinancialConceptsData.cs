@@ -13,7 +13,7 @@ using Empiria.Data;
 
 namespace Empiria.FinancialAccounting.FinancialConcepts.Data {
 
-  /// <summary>Data access layer for financial accounting grouping rules.</summary>
+  /// <summary>Data access layer for financial concepts.</summary>
   static internal class FinancialConceptsData {
 
     static internal FixedList<FinancialConcept> GetFinancialConcepts(FinancialConceptGroup group) {
@@ -27,7 +27,7 @@ namespace Empiria.FinancialAccounting.FinancialConcepts.Data {
     }
 
 
-    static internal FixedList<GroupingRuleItem> GetGroupingRulesItems(FinancialConceptGroup group) {
+    static internal FixedList<FinancialConceptIntegrationEntry> GetAllIntegrationEntriesForAGroup(FinancialConceptGroup group) {
       var sql = "SELECT COF_CONCEPTOS_INTEGRACION.* " +
                 "FROM COF_CONCEPTOS_INTEGRACION " +
                $"WHERE ID_GRUPO = {group.Id} " +
@@ -35,7 +35,7 @@ namespace Empiria.FinancialAccounting.FinancialConcepts.Data {
 
       var op = DataOperation.Parse(sql);
 
-      return DataReader.GetFixedList<GroupingRuleItem>(op);
+      return DataReader.GetFixedList<FinancialConceptIntegrationEntry>(op);
     }
 
 
@@ -51,9 +51,9 @@ namespace Empiria.FinancialAccounting.FinancialConcepts.Data {
 
 
 
-    static internal void Write(GroupingRuleItem o) {
+    static internal void Write(FinancialConceptIntegrationEntry o) {
       var op = DataOperation.Parse("write_cof_concepto_integracion",
-                      o.Id, o.UID, o.FinancialConcept.Id, o.CalculationRule, o.Reference.Id,
+                      o.Id, o.UID, o.FinancialConcept.Id, o.CalculationRule, o.ReferencedFinancialConcept.Id,
                       o.AccountNumber, o.SubledgerAccountNumber, o.SectorCode, o.ExternalVariableCode,
                       (char) o.Operator, o.Qualification, o.IntegrationTypeId, o.Position,
                       o.Group.Id, o.CurrencyCode, o.AccountsListId);

@@ -21,7 +21,7 @@ namespace Empiria.FinancialAccounting.FinancialReports.Adapters {
       get; internal set;
     }
 
-    public GroupingRuleItemType Type {
+    public IntegrationEntryType Type {
       get;
       internal set;
     }
@@ -59,7 +59,7 @@ namespace Empiria.FinancialAccounting.FinancialReports.Adapters {
 
       members.Add("UID");
       members.Add("Type");
-      members.Add("GroupingRuleUID");
+      members.Add("FinancialConceptUID");
       members.Add("ItemType");
       members.Add("ItemCode");
       members.Add("ItemName");

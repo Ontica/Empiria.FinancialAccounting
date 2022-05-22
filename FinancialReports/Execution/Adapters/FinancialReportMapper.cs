@@ -78,14 +78,14 @@ namespace Empiria.FinancialAccounting.FinancialReports.Adapters {
 
     static private DynamicFinancialReportEntryDto MapBreakdownEntry(FinancialReportBreakdownEntry entry) {
       dynamic o = new FinancialReportBreakdownEntryDto {
-        UID = entry.GroupingRuleItem.UID,
+        UID = entry.IntegrationEntry.UID,
         ItemType = FinancialReportItemType.Entry,
-        ItemCode = entry.GroupingRuleItem.Code,
-        ItemName = entry.GroupingRuleItem.Name,
-        SubledgerAccount = entry.GroupingRuleItem.SubledgerAccountNumber,
-        SectorCode = entry.GroupingRuleItem.SectorCode,
-        Operator = Convert.ToString((char) entry.GroupingRuleItem.Operator),
-        FinancialConceptUID = entry.GroupingRuleItem.FinancialConcept.UID,
+        ItemCode = entry.IntegrationEntry.Code,
+        ItemName = entry.IntegrationEntry.Name,
+        SubledgerAccount = entry.IntegrationEntry.SubledgerAccountNumber,
+        SectorCode = entry.IntegrationEntry.SectorCode,
+        Operator = Convert.ToString((char) entry.IntegrationEntry.Operator),
+        FinancialConceptUID = entry.IntegrationEntry.FinancialConcept.UID,
       };
 
       SetTotalsFields(o, entry);
@@ -96,7 +96,7 @@ namespace Empiria.FinancialAccounting.FinancialReports.Adapters {
     static private DynamicFinancialReportEntryDto MapBreakdownEntry(FixedRowFinancialReportEntry entry) {
       dynamic o = new FinancialReportBreakdownEntryDto {
         UID = entry.Row.UID,
-        Type = GroupingRuleItemType.Agrupation,
+        Type = IntegrationEntryType.FinancialConceptReference,
         FinancialConceptUID = entry.FinancialConcept.UID,
         ItemType = FinancialReportItemType.Summary,
         ItemCode = "TOTAL",
@@ -138,17 +138,17 @@ namespace Empiria.FinancialAccounting.FinancialReports.Adapters {
 
 
     static private FinancialReportEntryDto MapToFixedRowsReport(FixedRowFinancialReportEntry entry) {
-      bool hasGroupingRule = !entry.FinancialConcept.IsEmptyInstance;
+      bool hasFinancialConcept = !entry.FinancialConcept.IsEmptyInstance;
 
       dynamic o;
 
-      if (hasGroupingRule) {
+      if (hasFinancialConcept) {
         o = new FinancialReportEntryDto {
           UID = entry.Row.UID,
           ConceptCode = entry.FinancialConcept.Code,
           Concept = entry.FinancialConcept.Name,
           Level = entry.FinancialConcept.Level,
-          GroupingRuleUID = entry.FinancialConcept.UID,
+          FinancialConceptUID = entry.FinancialConcept.UID,
           AccountsChartName = entry.FinancialConcept.Group.AccountsChart.Name,
           GroupName = entry.FinancialConcept.Group.Name
         };
@@ -158,7 +158,7 @@ namespace Empiria.FinancialAccounting.FinancialReports.Adapters {
           ConceptCode = entry.Row.Code,
           Concept = entry.Row.Label,
           Level = 1,
-          GroupingRuleUID = string.Empty,
+          FinancialConceptUID = string.Empty,
           AccountsChartName = string.Empty,
           GroupName = String.Empty
         };
@@ -193,7 +193,7 @@ namespace Empiria.FinancialAccounting.FinancialReports.Adapters {
     static private DynamicFinancialReportEntryDto MapIntegrationEntry(FixedRowFinancialReportEntry entry) {
       dynamic o = new IntegrationReportEntryDto {
         UID = entry.Row.UID,
-        Type = GroupingRuleItemType.Agrupation,
+        Type = IntegrationEntryType.FinancialConceptReference,
         FinancialConceptUID = entry.FinancialConcept.UID,
         ConceptCode = entry.FinancialConcept.Code,
         Concept = entry.FinancialConcept.Name,
@@ -213,17 +213,17 @@ namespace Empiria.FinancialAccounting.FinancialReports.Adapters {
 
     static private DynamicFinancialReportEntryDto MapIntegrationEntry(FinancialReportBreakdownEntry entry) {
       dynamic o = new IntegrationReportEntryDto {
-        UID = entry.GroupingRuleItem.UID,
-        Type = entry.GroupingRuleItem.Type,
-        FinancialConceptUID = entry.GroupingRuleItem.FinancialConcept.UID,
-        ConceptCode = entry.GroupingRuleItem.FinancialConcept.Code,
-        Concept = entry.GroupingRuleItem.FinancialConcept.Name,
+        UID = entry.IntegrationEntry.UID,
+        Type = entry.IntegrationEntry.Type,
+        FinancialConceptUID = entry.IntegrationEntry.FinancialConcept.UID,
+        ConceptCode = entry.IntegrationEntry.FinancialConcept.Code,
+        Concept = entry.IntegrationEntry.FinancialConcept.Name,
         ItemType = FinancialReportItemType.Entry,
-        ItemCode = entry.GroupingRuleItem.Code,
-        ItemName = entry.GroupingRuleItem.Name,
-        SubledgerAccount = entry.GroupingRuleItem.SubledgerAccountNumber,
-        SectorCode = entry.GroupingRuleItem.SectorCode,
-        Operator = Convert.ToString((char) entry.GroupingRuleItem.Operator)
+        ItemCode = entry.IntegrationEntry.Code,
+        ItemName = entry.IntegrationEntry.Name,
+        SubledgerAccount = entry.IntegrationEntry.SubledgerAccountNumber,
+        SectorCode = entry.IntegrationEntry.SectorCode,
+        Operator = Convert.ToString((char) entry.IntegrationEntry.Operator)
       };
 
       SetTotalsFields(o, entry);

@@ -49,7 +49,7 @@ namespace Empiria.FinancialAccounting.FinancialReports {
 
       members.Add("Row");
       members.Add("ItemType");
-      members.Add("GroupingRule");
+      members.Add("FinancialConcept");
 
       members.AddRange(base.GetDynamicMemberNames());
 

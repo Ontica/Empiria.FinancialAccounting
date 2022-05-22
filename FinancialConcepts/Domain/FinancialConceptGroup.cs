@@ -22,7 +22,7 @@ namespace Empiria.FinancialAccounting.FinancialConcepts {
 
     private Lazy<FixedList<FinancialConcept>> _financialConcepts;
 
-    private Lazy<FixedList<GroupingRuleItem>> _groupingRulesItems;
+    private Lazy<FixedList<FinancialConceptIntegrationEntry>> _financialConceptsIntegrationEntries;
 
     #endregion Fields
 
@@ -69,8 +69,11 @@ namespace Empiria.FinancialAccounting.FinancialConcepts {
         return;
       }
 
-      _financialConcepts = new Lazy<FixedList<FinancialConcept>>(() => FinancialConceptsData.GetFinancialConcepts(this));
-      _groupingRulesItems = new Lazy<FixedList<GroupingRuleItem>>(() => FinancialConceptsData.GetGroupingRulesItems(this));
+      _financialConcepts =
+            new Lazy<FixedList<FinancialConcept>>(() => FinancialConceptsData.GetFinancialConcepts(this));
+
+      _financialConceptsIntegrationEntries =
+            new Lazy<FixedList<FinancialConceptIntegrationEntry>>(() => FinancialConceptsData.GetAllIntegrationEntriesForAGroup(this));
     }
 
 
@@ -103,7 +106,7 @@ namespace Empiria.FinancialAccounting.FinancialConcepts {
         FinancialConceptsData.Write(concept);
       }
 
-      FixedList<GroupingRuleItem> items = FinancialConceptsData.GetGroupingRulesItems(this);
+      FixedList<FinancialConceptIntegrationEntry> items = FinancialConceptsData.GetAllIntegrationEntriesForAGroup(this);
 
       foreach (var item in items) {
         item.Cleanup();
@@ -117,15 +120,15 @@ namespace Empiria.FinancialAccounting.FinancialConcepts {
     }
 
 
-    internal FixedList<GroupingRuleItem> GetGroupingRuleItems(FinancialConcept financialConcept) {
+    internal FixedList<FinancialConceptIntegrationEntry> FinancialConceptIntegrationEntries(FinancialConcept financialConcept) {
       Assertion.AssertObject(financialConcept, nameof(financialConcept));
 
-      return _groupingRulesItems.Value.FindAll(x => x.FinancialConcept.Equals(financialConcept));
+      return _financialConceptsIntegrationEntries.Value.FindAll(x => x.FinancialConcept.Equals(financialConcept));
     }
 
 
-    internal FixedList<GroupingRuleItem> GetGroupingRulesRoots() {
-      return _groupingRulesItems.Value.FindAll(x => x.FinancialConcept.IsEmptyInstance);
+    internal FixedList<FinancialConceptIntegrationEntry> RootIntegrationEntries() {
+      return _financialConceptsIntegrationEntries.Value.FindAll(x => x.FinancialConcept.IsEmptyInstance);
     }
 
 

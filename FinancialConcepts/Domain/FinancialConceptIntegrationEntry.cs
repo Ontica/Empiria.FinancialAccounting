@@ -2,25 +2,25 @@
 *                                                                                                            *
 *  Module   : Financial Concepts                         Component : Domain Layer                            *
 *  Assembly : FinancialAccounting.FinancialConcepts.dll  Pattern   : Empiria Data Object                     *
-*  Type     : GroupingRuleItem                           License   : Please read LICENSE.txt file            *
+*  Type     : FinancialConceptIntegrationEntry           License   : Please read LICENSE.txt file            *
 *                                                                                                            *
-*  Summary  : Contains data about a financial accounting grouping rule item.                                 *
+*  Summary  : Describes an integration entry for a financial concept. Each integration entry is referenced   *
+*             to another financial concept, to a financial account or to an external financial value.        *
 *                                                                                                            *
 ************************* Copyright(c) La Vía Óntica SC, Ontica LLC and contributors. All rights reserved. **/
 using System;
 
 namespace Empiria.FinancialAccounting.FinancialConcepts {
 
-  public enum GroupingRuleItemType {
-
-    Agrupation,
+  public enum IntegrationEntryType {
 
     Account,
 
-    ExternalVariable
+    ExternalVariable,
 
-  }  // enum GroupingRuleItemType
+    FinancialConceptReference,
 
+  }  // enum IntegrationEntryType
 
 
   public enum OperatorType {
@@ -34,26 +34,30 @@ namespace Empiria.FinancialAccounting.FinancialConcepts {
   }
 
 
-  /// <summary>Contains data about a financial accounting grouping rule item.</summary>
-  public class GroupingRuleItem : BaseObject {
+  /// <summary>Describes an integration entry for a financial concept. Each integration entry is referenced
+  /// to another financial concept, to a financial account or to an external financial value.</summary>
+  public class FinancialConceptIntegrationEntry : BaseObject {
 
     #region Constructors and parsers
 
-    protected GroupingRuleItem() {
+    protected FinancialConceptIntegrationEntry() {
       // Required by Empiria Framework.
     }
 
-    static public GroupingRuleItem Parse(int id) {
-      return BaseObject.ParseId<GroupingRuleItem>(id);
+
+    static public FinancialConceptIntegrationEntry Parse(int id) {
+      return BaseObject.ParseId<FinancialConceptIntegrationEntry>(id);
     }
 
-    static public GroupingRuleItem Parse(string uid) {
-      return BaseObject.ParseKey<GroupingRuleItem>(uid);
+
+    static public FinancialConceptIntegrationEntry Parse(string uid) {
+      return BaseObject.ParseKey<FinancialConceptIntegrationEntry>(uid);
     }
 
-    static public GroupingRuleItem Empty {
+
+    static public FinancialConceptIntegrationEntry Empty {
       get {
-        return GroupingRuleItem.ParseEmpty<GroupingRuleItem>();
+        return FinancialConceptIntegrationEntry.ParseEmpty<FinancialConceptIntegrationEntry>();
       }
     }
 
@@ -62,22 +66,22 @@ namespace Empiria.FinancialAccounting.FinancialConcepts {
     #region Properties
 
 
-    public GroupingRuleItemType Type {
+    public IntegrationEntryType Type {
       get {
-        if (!this.Reference.IsEmptyInstance) {
-          return GroupingRuleItemType.Agrupation;
+        if (!this.ReferencedFinancialConcept.IsEmptyInstance) {
+          return IntegrationEntryType.FinancialConceptReference;
 
         } else if (this.AccountNumber.Length != 0) {
-          return GroupingRuleItemType.Account;
+          return IntegrationEntryType.Account;
 
         } else if (this.ExternalVariableCode.Length != 0) {
-          return GroupingRuleItemType.ExternalVariable;
+          return IntegrationEntryType.ExternalVariable;
 
         } else if (this.IsEmptyInstance) {
-          return GroupingRuleItemType.Agrupation;
+          return IntegrationEntryType.FinancialConceptReference;
 
         } else {
-          return GroupingRuleItemType.ExternalVariable;
+          return IntegrationEntryType.ExternalVariable;
 
         }
       }
@@ -97,7 +101,7 @@ namespace Empiria.FinancialAccounting.FinancialConcepts {
 
 
     [DataField("REF_ID_CONCEPTO")]
-    public FinancialConcept Reference {
+    public FinancialConcept ReferencedFinancialConcept {
       get; private set;
     }
 
@@ -170,27 +174,27 @@ namespace Empiria.FinancialAccounting.FinancialConcepts {
 
     public string Name {
       get {
-        if (this.Type == GroupingRuleItemType.Account) {
+        if (this.Type == IntegrationEntryType.Account) {
 
           var account = FinancialConcept.Group.AccountsChart.TryGetAccount(this.AccountNumber);
 
           if (account != null) {
             return account.Name;
           } else {
-            return "La cuenta NO existe en el catálogo de cuentas";
+            return "La cuenta NO existe en el catálogo de cuentas.";
           }
 
-        } else if (this.Type == GroupingRuleItemType.Agrupation) {
-          return this.Reference.Name;
+        } else if (this.Type == IntegrationEntryType.FinancialConceptReference) {
+          return this.ReferencedFinancialConcept.Name;
 
-        } else if (this.Type == GroupingRuleItemType.ExternalVariable) {
+        } else if (this.Type == IntegrationEntryType.ExternalVariable) {
 
           var fixedValue = ExternalVariable.TryParseWithCode(this.ExternalVariableCode);
 
           if (fixedValue != null) {
             return fixedValue.Name;
           } else {
-            return "El valor por defecto no existe en el catálogo de variables";
+            return "El valor por defecto no existe en el catálogo de variables.";
           }
 
         } else {
@@ -202,13 +206,13 @@ namespace Empiria.FinancialAccounting.FinancialConcepts {
 
     public string Code {
       get {
-        if (this.Type == GroupingRuleItemType.Account) {
+        if (this.Type == IntegrationEntryType.Account) {
           return this.AccountNumber;
 
-        } else if (this.Type == GroupingRuleItemType.Agrupation) {
-          return this.Reference.Code;
+        } else if (this.Type == IntegrationEntryType.FinancialConceptReference) {
+          return this.ReferencedFinancialConcept.Code;
 
-        } else if (this.Type == GroupingRuleItemType.ExternalVariable) {
+        } else if (this.Type == IntegrationEntryType.ExternalVariable) {
           return this.ExternalVariableCode;
 
         } else {
@@ -265,6 +269,6 @@ namespace Empiria.FinancialAccounting.FinancialConcepts {
 
     #endregion Methods
 
-  }  // class GroupingRuleItem
+  }  // class FinancialConceptIntegrationEntry
 
 }  // namespace Empiria.FinancialAccounting.FinancialConcepts

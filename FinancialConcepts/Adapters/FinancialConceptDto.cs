@@ -1,7 +1,7 @@
 ﻿/* Empiria Financial *****************************************************************************************
 *                                                                                                            *
 *  Module   : Financial Concepts                         Component : Interface adapters                      *
-*  Assembly : FinancialAccounting.FinancialConcepts.dll  Pattern   : Information Holder                      *
+*  Assembly : FinancialAccounting.FinancialConcepts.dll  Pattern   : Data Transfer Object                    *
 *  Type     : FinancialConceptDto                        License   : Please read LICENSE.txt file            *
 *                                                                                                            *
 *  Summary  : Financial concept data transfer object.                                                        *

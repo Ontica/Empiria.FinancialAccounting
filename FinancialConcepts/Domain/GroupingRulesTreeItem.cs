@@ -16,19 +16,20 @@ namespace Empiria.FinancialAccounting.FinancialConcepts {
     #region Constructors and parsers
 
     private GroupingRulesTreeItem() {
-      this.GroupingRuleItem = GroupingRuleItem.Empty;
+      this.IntegrationEntry = FinancialConceptIntegrationEntry.Empty;
       this.Parent = this;
     }
 
 
-    internal GroupingRulesTreeItem(GroupingRuleItem groupingRuleItem) {
-      this.GroupingRuleItem = groupingRuleItem;
+    internal GroupingRulesTreeItem(FinancialConceptIntegrationEntry integrationEntry) {
+      this.IntegrationEntry = integrationEntry;
       this.Parent = Empty;
     }
 
 
-    internal GroupingRulesTreeItem(GroupingRuleItem groupingRuleItem, GroupingRulesTreeItem parent) {
-      this.GroupingRuleItem = groupingRuleItem;
+    internal GroupingRulesTreeItem(FinancialConceptIntegrationEntry integrationEntry,
+                                   GroupingRulesTreeItem parent) {
+      this.IntegrationEntry = integrationEntry;
       this.Parent = parent;
     }
 
@@ -44,7 +45,7 @@ namespace Empiria.FinancialAccounting.FinancialConcepts {
 
     #region Properties
 
-    public GroupingRuleItem GroupingRuleItem {
+    public FinancialConceptIntegrationEntry IntegrationEntry {
       get;
     }
 
@@ -56,8 +57,8 @@ namespace Empiria.FinancialAccounting.FinancialConcepts {
 
     public FixedList<GroupingRulesTreeItem> Children {
       get {
-        if (this.GroupingRuleItem.Type == GroupingRuleItemType.Agrupation) {
-          var list = this.GroupingRuleItem.Group.GetGroupingRuleItems(this.GroupingRuleItem.Reference);
+        if (this.IntegrationEntry.Type == IntegrationEntryType.FinancialConceptReference) {
+          var list = this.IntegrationEntry.Group.FinancialConceptIntegrationEntries(this.IntegrationEntry.ReferencedFinancialConcept);
 
           return new FixedList<GroupingRulesTreeItem>(list.Select(x => new GroupingRulesTreeItem(x, this)));
         }
@@ -80,7 +81,7 @@ namespace Empiria.FinancialAccounting.FinancialConcepts {
 
     public bool IsRoot {
       get {
-        return this.Parent.GroupingRuleItem.IsEmptyInstance;
+        return this.Parent.IntegrationEntry.IsEmptyInstance;
       }
     }
 

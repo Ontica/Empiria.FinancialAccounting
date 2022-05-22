@@ -42,7 +42,7 @@ namespace Empiria.FinancialAccounting.FinancialConcepts.UseCases {
     }
 
 
-    public FixedList<FinancialConceptDto> FinancialConceptsInGroup(string groupUID) {
+    public FixedList<FinancialConceptDto> GetGroupFinancialConcepts(string groupUID) {
       Assertion.AssertObject(groupUID, "groupUID");
 
       var group = FinancialConceptGroup.Parse(groupUID);
@@ -53,7 +53,7 @@ namespace Empiria.FinancialAccounting.FinancialConcepts.UseCases {
     }
 
 
-    public FixedList<GroupingRuleItemDto> GroupingRuleItems(string financialConceptUID) {
+    public FixedList<FinancialConceptIntegrationEntryDto> GetFinancialConceptIntegration(string financialConceptUID) {
       Assertion.AssertObject(financialConceptUID, nameof(financialConceptUID));
 
       var financialConcept = FinancialConcept.Parse(financialConceptUID);
@@ -62,7 +62,7 @@ namespace Empiria.FinancialAccounting.FinancialConcepts.UseCases {
     }
 
 
-    public FixedList<NamedEntityDto> FinancialConceptsGroups(string accountsChartUID) {
+    public FixedList<NamedEntityDto> GetFinancialConceptsGroups(string accountsChartUID) {
       Assertion.AssertObject(accountsChartUID, "accountsChartUID");
 
       var accountsChart = AccountsChart.Parse(accountsChartUID);

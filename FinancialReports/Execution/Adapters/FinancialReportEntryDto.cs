@@ -23,7 +23,7 @@ namespace Empiria.FinancialAccounting.FinancialReports.Adapters {
       get; internal set;
     }
 
-    public string GroupingRuleUID {
+    public string FinancialConceptUID {
       get; internal set;
     }
 
@@ -52,7 +52,7 @@ namespace Empiria.FinancialAccounting.FinancialReports.Adapters {
 
       members.Add("UID");
       members.Add("ItemType");
-      members.Add("GroupingRuleUID");
+      members.Add("FinancialConceptUID");
       members.Add("ConceptCode");
       members.Add("Concept");
       members.Add("AccountsChartName");

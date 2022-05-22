@@ -1,20 +1,20 @@
 ﻿/* Empiria Financial *****************************************************************************************
 *                                                                                                            *
 *  Module   : Financial Concepts                         Component : Interface adapters                      *
-*  Assembly : FinancialAccounting.FinancialConcepts.dll  Pattern   : Information Holder                      *
-*  Type     : GroupingRuleItemDto                        License   : Please read LICENSE.txt file            *
+*  Assembly : FinancialAccounting.FinancialConcepts.dll  Pattern   : Data Transfer Object                    *
+*  Type     : FinancialConceptIntegrationEntryDto        License   : Please read LICENSE.txt file            *
 *                                                                                                            *
-*  Summary  : Financial accounting grouping rule item data transfer object.                                  *
+*  Summary  : Data transfer object for FinancialConceptIntegrationEntry instances.                           *
 *                                                                                                            *
 ************************* Copyright(c) La Vía Óntica SC, Ontica LLC and contributors. All rights reserved. **/
 using System;
 
 namespace Empiria.FinancialAccounting.FinancialConcepts.Adapters {
 
-  /// <summary>Financial accounting rule item data transfer object.</summary>
-  public class GroupingRuleItemDto {
+  /// <summary>Data transfer object for FinancialConceptIntegrationEntry instances.</summary>
+  public class FinancialConceptIntegrationEntryDto {
 
-    internal GroupingRuleItemDto() {
+    internal FinancialConceptIntegrationEntryDto() {
       // no-op
     }
 
@@ -23,7 +23,7 @@ namespace Empiria.FinancialAccounting.FinancialConcepts.Adapters {
     }
 
 
-    public GroupingRuleItemType Type {
+    public IntegrationEntryType Type {
       get;
       internal set;
     }
@@ -53,6 +53,6 @@ namespace Empiria.FinancialAccounting.FinancialConcepts.Adapters {
       internal set;
     }
 
-  }  // class GroupingRuleItemDto
+  }  // class FinancialConceptIntegrationEntryDto
 
 }  // namespace Empiria.FinancialAccounting.FinancialConcepts.Adapters

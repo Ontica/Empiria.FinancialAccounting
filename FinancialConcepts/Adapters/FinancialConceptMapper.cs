@@ -12,15 +12,15 @@ using System;
 namespace Empiria.FinancialAccounting.FinancialConcepts.Adapters {
 
   /// <summary>Mapping methods for financial concepts.</summary>
-  static public class FinancialConceptMapper {
+  static internal class FinancialConceptMapper {
 
     static internal FixedList<FinancialConceptDto> Map(FixedList<FinancialConcept> list) {
       return new FixedList<FinancialConceptDto>(list.Select(financialConcept => Map(financialConcept)));
     }
 
 
-    static internal FixedList<GroupingRuleItemDto> Map(FixedList<GroupingRuleItem> list) {
-      return new FixedList<GroupingRuleItemDto>(list.Select(x => Map(x)));
+    static internal FixedList<FinancialConceptIntegrationEntryDto> Map(FixedList<FinancialConceptIntegrationEntry> integration) {
+      return new FixedList<FinancialConceptIntegrationEntryDto>(integration.Select(entry => Map(entry)));
     }
 
 
@@ -36,15 +36,15 @@ namespace Empiria.FinancialAccounting.FinancialConcepts.Adapters {
     }
 
 
-    static private GroupingRuleItemDto Map(GroupingRuleItem item) {
-      return new GroupingRuleItemDto {
-        UID = item.UID,
-        Type = item.Type,
-        ItemCode = item.Code,
-        ItemName = item.Name,
-        SubledgerAccount = item.SubledgerAccountNumber,
-        SectorCode = item.SectorCode,
-        Operator = Convert.ToString((char) item.Operator)
+    static private FinancialConceptIntegrationEntryDto Map(FinancialConceptIntegrationEntry integrationEntry) {
+      return new FinancialConceptIntegrationEntryDto {
+        UID = integrationEntry.UID,
+        Type = integrationEntry.Type,
+        ItemCode = integrationEntry.Code,
+        ItemName = integrationEntry.Name,
+        SubledgerAccount = integrationEntry.SubledgerAccountNumber,
+        SectorCode = integrationEntry.SectorCode,
+        Operator = Convert.ToString((char) integrationEntry.Operator)
       };
     }
 

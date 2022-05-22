@@ -26,10 +26,10 @@ namespace Empiria.FinancialAccounting.WebApi.FinancialConcepts {
 
     [HttpGet]
     [Route("v2/financial-accounting/financial-concepts/in-group/{groupUID:guid}")]
-    public CollectionModel GeFinancialConceptsInGroup([FromUri] string groupUID) {
+    public CollectionModel GetFinancialConceptsInGroup([FromUri] string groupUID) {
 
       using (var usecases = FinancialConceptsUseCases.UseCaseInteractor()) {
-        FixedList<FinancialConceptDto> concepts = usecases.FinancialConceptsInGroup(groupUID);
+        FixedList<FinancialConceptDto> concepts = usecases.GetGroupFinancialConcepts(groupUID);
 
         return new CollectionModel(base.Request, concepts);
       }
@@ -66,13 +66,13 @@ namespace Empiria.FinancialAccounting.WebApi.FinancialConcepts {
 
 
     [HttpGet]
-    [Route("v2/financial-accounting/rules/grouping-rule-items/{financialConceptUID:guid}")]
-    public CollectionModel GetGroupingRuleItems([FromUri] string financialConceptUID) {
+    [Route("v2/financial-accounting/financial-concepts/{financialConceptUID:guid}/integration")]
+    public CollectionModel GetFinancialConceptIntegration([FromUri] string financialConceptUID) {
 
       using (var usecases = FinancialConceptsUseCases.UseCaseInteractor()) {
-        FixedList<GroupingRuleItemDto> rules = usecases.GroupingRuleItems(financialConceptUID);
+        FixedList<FinancialConceptIntegrationEntryDto> integration = usecases.GetFinancialConceptIntegration(financialConceptUID);
 
-        return new CollectionModel(base.Request, rules);
+        return new CollectionModel(base.Request, integration);
       }
     }
 
@@ -82,7 +82,7 @@ namespace Empiria.FinancialAccounting.WebApi.FinancialConcepts {
     public CollectionModel GetFinancialConceptsGroups([FromUri] string accountsChartUID) {
 
       using (var usecases = FinancialConceptsUseCases.UseCaseInteractor()) {
-        FixedList<NamedEntityDto> rules = usecases.FinancialConceptsGroups(accountsChartUID);
+        FixedList<NamedEntityDto> rules = usecases.GetFinancialConceptsGroups(accountsChartUID);
 
         return new CollectionModel(base.Request, rules);
       }

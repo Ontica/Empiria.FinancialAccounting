@@ -21,7 +21,7 @@ namespace Empiria.FinancialAccounting.FinancialReports.Adapters {
       get; internal set;
     }
 
-    public GroupingRuleItemType Type {
+    public IntegrationEntryType Type {
       get; internal set;
     }
 

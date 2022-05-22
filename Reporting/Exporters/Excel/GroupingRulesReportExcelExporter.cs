@@ -50,7 +50,7 @@ namespace Empiria.FinancialAccounting.Reporting.Exporters.Excel {
 
       foreach (var rule in rulesTreeItems) {
         _excelFile.SetCell($"A{i}", rule.ItemCode);
-        _excelFile.SetCell($"B{i}", rule.Type == GroupingRuleItemType.Agrupation ? "Concepto": "Cuenta");
+        _excelFile.SetCell($"B{i}", rule.Type == IntegrationEntryType.FinancialConceptReference ? "Concepto": "Cuenta");
         _excelFile.SetCell($"C{i}", rule.ItemName);
         if (rule.Level > 1) {
           _excelFile.IndentCell($"C{i}", rule.Level - 1);

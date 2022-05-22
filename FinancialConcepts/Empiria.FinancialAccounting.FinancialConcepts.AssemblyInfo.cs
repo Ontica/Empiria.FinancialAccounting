@@ -4,7 +4,7 @@
 *  Assembly : FinancialAccounting.FinancialConcepts.dll    Pattern : Assembly Attributes File                *
 *                                                          License : Please read LICENSE.txt file            *
 *                                                                                                            *
-*  Summary  : This module provides services that manage financial concepts rules.                            *
+*  Summary  : This module provides services that manage financial concepts and their integrations.           *
 *                                                                                                            *
 ************************* Copyright(c) La Vía Óntica SC, Ontica LLC and contributors. All rights reserved. **/
 using System;

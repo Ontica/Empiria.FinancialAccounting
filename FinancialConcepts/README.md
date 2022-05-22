@@ -1,6 +1,6 @@
 ﻿# Empiria Financial Concepts Module
 
-This module provides services that manage financial concepts and their grouping rules.
+This module provides services that manage financial concepts and their integrations.
 
 ## License
 

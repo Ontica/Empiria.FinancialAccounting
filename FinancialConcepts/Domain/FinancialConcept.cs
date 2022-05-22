@@ -18,7 +18,7 @@ namespace Empiria.FinancialAccounting.FinancialConcepts {
 
     #region Fields
 
-    private FixedList<GroupingRuleItem> _integration;
+    private FixedList<FinancialConceptIntegrationEntry> _integration;
 
     #endregion Fields
 
@@ -79,10 +79,10 @@ namespace Empiria.FinancialAccounting.FinancialConcepts {
       get; private set;
     }
 
-    public FixedList<GroupingRuleItem> Integration {
+    public FixedList<FinancialConceptIntegrationEntry> Integration {
       get {
         if (_integration == null) {
-          _integration = Group.GetGroupingRuleItems(this);
+          _integration = Group.FinancialConceptIntegrationEntries(this);
         }
         return _integration;
       }

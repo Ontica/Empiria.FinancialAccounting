@@ -36,7 +36,7 @@ namespace Empiria.FinancialAccounting.FinancialConcepts {
 
     public FixedList<GroupingRulesTreeItem> Roots {
       get {
-        return new FixedList<GroupingRulesTreeItem>(_group.GetGroupingRulesRoots()
+        return new FixedList<GroupingRulesTreeItem>(_group.RootIntegrationEntries()
                                                           .Select(y => new GroupingRulesTreeItem(y)));
       }
     }

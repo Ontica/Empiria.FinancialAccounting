@@ -24,7 +24,7 @@ namespace Empiria.FinancialAccounting.FinancialReports {
 
     #endregion Constructors and parsers
 
-    public GroupingRuleItem GroupingRuleItem {
+    public FinancialConceptIntegrationEntry IntegrationEntry {
       get;
       internal set;
     }
@@ -32,7 +32,7 @@ namespace Empiria.FinancialAccounting.FinancialReports {
     public override IEnumerable<string> GetDynamicMemberNames() {
       var members = new List<string>();
 
-      members.Add("GroupingRuleItem");
+      members.Add("IntegrationEntry");
 
       members.AddRange(base.GetDynamicMemberNames());
 
