@@ -57,7 +57,7 @@ namespace Empiria.FinancialAccounting.FinancialConcepts {
     public FixedList<GroupingRulesTreeItem> Children {
       get {
         if (this.GroupingRuleItem.Type == GroupingRuleItemType.Agrupation) {
-          var list = this.GroupingRuleItem.RulesSet.GetGroupingRuleItems(this.GroupingRuleItem.Reference);
+          var list = this.GroupingRuleItem.Group.GetGroupingRuleItems(this.GroupingRuleItem.Reference);
 
           return new FixedList<GroupingRulesTreeItem>(list.Select(x => new GroupingRulesTreeItem(x, this)));
         }

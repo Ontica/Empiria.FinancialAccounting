@@ -16,9 +16,9 @@ namespace Empiria.FinancialAccounting.FinancialConcepts.Data {
   /// <summary>Data access layer for financial accounting grouping rules.</summary>
   static internal class ExternalValuesData {
 
-    static internal FixedList<GroupingRule> GetGroupingRules(RulesSet rulesSet) {
+    static internal FixedList<GroupingRule> GetGroupingRules(FinancialConceptGroup group) {
       var sql = "SELECT * FROM COF_CONCEPTOS " +
-                $"WHERE ID_GRUPO = {rulesSet.Id} " +
+                $"WHERE ID_GRUPO = {group.Id} " +
                 "ORDER BY POSICION";
 
       var dataOperation = DataOperation.Parse(sql);
@@ -26,10 +26,10 @@ namespace Empiria.FinancialAccounting.FinancialConcepts.Data {
       return DataReader.GetFixedList<GroupingRule>(dataOperation);
     }
 
-    static internal FixedList<GroupingRuleItem> GetGroupingRulesItems(RulesSet rulesSet) {
+    static internal FixedList<GroupingRuleItem> GetGroupingRulesItems(FinancialConceptGroup group) {
       var sql = "SELECT COF_CONCEPTOS_INTEGRACION.* " +
                 "FROM COF_CONCEPTOS_INTEGRACION " +
-               $"WHERE ID_GRUPO = {rulesSet.Id} " +
+               $"WHERE ID_GRUPO = {group.Id} " +
                 "ORDER BY POSICION";
 
       var dataOperation = DataOperation.Parse(sql);

@@ -149,8 +149,8 @@ namespace Empiria.FinancialAccounting.FinancialReports.Adapters {
           Concept = entry.GroupingRule.Concept,
           Level = entry.GroupingRule.Level,
           GroupingRuleUID = entry.GroupingRule.UID,
-          AccountsChartName = entry.GroupingRule.RulesSet.AccountsChart.Name,
-          RulesSetName = entry.GroupingRule.RulesSet.Name
+          AccountsChartName = entry.GroupingRule.Group.AccountsChart.Name,
+          GroupName = entry.GroupingRule.Group.Name
         };
       } else {
         o = new FinancialReportEntryDto {
@@ -160,7 +160,7 @@ namespace Empiria.FinancialAccounting.FinancialReports.Adapters {
           Level = 1,
           GroupingRuleUID = string.Empty,
           AccountsChartName = string.Empty,
-          RulesSetName = String.Empty
+          GroupName = String.Empty
         };
       }
 

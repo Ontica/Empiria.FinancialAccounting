@@ -17,7 +17,7 @@ using Empiria.FinancialAccounting.FinancialConcepts.Adapters;
 
 using Empiria.FinancialAccounting.Reporting;
 
-namespace Empiria.FinancialAccounting.WebApi.Rules {
+namespace Empiria.FinancialAccounting.WebApi.FinancialConcepts {
 
   /// <summary>Query web API used to retrive financial concepts grouping rules.</summary>
   public class FinancialConceptsController : WebApiController {
@@ -25,11 +25,11 @@ namespace Empiria.FinancialAccounting.WebApi.Rules {
     #region Web Apis
 
     [HttpGet]
-    [Route("v2/financial-accounting/rules/grouping-rules/{rulesSetUID:guid}")]
-    public CollectionModel GetGroupingRules([FromUri] string rulesSetUID) {
+    [Route("v2/financial-accounting/rules/grouping-rules/{groupUID:guid}")]
+    public CollectionModel GetGroupingRules([FromUri] string groupUID) {
 
-      using (var usecases = GroupingRulesUseCases.UseCaseInteractor()) {
-        FixedList<GroupingRuleDto> rules = usecases.GroupingRules(rulesSetUID);
+      using (var usecases = FinancialConceptsUseCases.UseCaseInteractor()) {
+        FixedList<GroupingRuleDto> rules = usecases.GroupingRules(groupUID);
 
         return new CollectionModel(base.Request, rules);
       }
@@ -37,11 +37,11 @@ namespace Empiria.FinancialAccounting.WebApi.Rules {
 
 
     [HttpGet]
-    [Route("v2/financial-accounting/rules/grouping-rules/{rulesSetUID:guid}/flat-tree")]
-    public CollectionModel GetGroupingRulesFlatTree([FromUri] string rulesSetUID) {
+    [Route("v2/financial-accounting/rules/grouping-rules/{groupUID:guid}/flat-tree")]
+    public CollectionModel GetGroupingRulesFlatTree([FromUri] string groupUID) {
 
-      using (var usecases = GroupingRulesUseCases.UseCaseInteractor()) {
-        FixedList<GroupingRulesTreeItemDto> rulesTreeItems = usecases.GroupingRulesFlatTree(rulesSetUID);
+      using (var usecases = FinancialConceptsUseCases.UseCaseInteractor()) {
+        FixedList<GroupingRulesTreeItemDto> rulesTreeItems = usecases.GroupingRulesFlatTree(groupUID);
 
         return new CollectionModel(base.Request, rulesTreeItems);
       }
@@ -49,12 +49,12 @@ namespace Empiria.FinancialAccounting.WebApi.Rules {
 
 
     [HttpGet]
-    [Route("v2/financial-accounting/rules/grouping-rules/{rulesSetUID:guid}/excel")]
-    [Route("v2/financial-accounting/rules/grouping-rules/{rulesSetUID:guid}/flat-tree/excel")]
-    public SingleObjectModel ExportGroupingRulesFlatTreeToExcel([FromUri] string rulesSetUID) {
+    [Route("v2/financial-accounting/rules/grouping-rules/{groupUID:guid}/excel")]
+    [Route("v2/financial-accounting/rules/grouping-rules/{groupUID:guid}/flat-tree/excel")]
+    public SingleObjectModel ExportGroupingRulesFlatTreeToExcel([FromUri] string groupUID) {
 
-      using (var usecases = GroupingRulesUseCases.UseCaseInteractor()) {
-        FixedList<GroupingRulesTreeItemDto> rulesTreeItems = usecases.GroupingRulesFlatTree(rulesSetUID);
+      using (var usecases = FinancialConceptsUseCases.UseCaseInteractor()) {
+        FixedList<GroupingRulesTreeItemDto> rulesTreeItems = usecases.GroupingRulesFlatTree(groupUID);
 
         var excelExporter = new ExcelExporterService();
 
@@ -69,7 +69,7 @@ namespace Empiria.FinancialAccounting.WebApi.Rules {
     [Route("v2/financial-accounting/rules/grouping-rule-items/{groupingRuleUID:guid}")]
     public CollectionModel GetGroupingRuleItems([FromUri] string groupingRuleUID) {
 
-      using (var usecases = GroupingRulesUseCases.UseCaseInteractor()) {
+      using (var usecases = FinancialConceptsUseCases.UseCaseInteractor()) {
         FixedList<GroupingRuleItemDto> rules = usecases.GroupingRuleItems(groupingRuleUID);
 
         return new CollectionModel(base.Request, rules);
@@ -78,11 +78,11 @@ namespace Empiria.FinancialAccounting.WebApi.Rules {
 
 
     [HttpGet]
-    [Route("v2/financial-accounting/rules/rules-sets-for/{accountsChartUID:guid}/grouping-rules")]
-    public CollectionModel GetRulesSetsFor([FromUri] string accountsChartUID) {
+    [Route("v2/financial-accounting/financial-concepts/groups/{accountsChartUID:guid}")]
+    public CollectionModel GetFinancialConceptsGroups([FromUri] string accountsChartUID) {
 
-      using (var usecases = GroupingRulesUseCases.UseCaseInteractor()) {
-        FixedList<NamedEntityDto> rules = usecases.GroupingRulesSetsFor(accountsChartUID);
+      using (var usecases = FinancialConceptsUseCases.UseCaseInteractor()) {
+        FixedList<NamedEntityDto> rules = usecases.FinancialConceptsGroups(accountsChartUID);
 
         return new CollectionModel(base.Request, rules);
       }
@@ -93,4 +93,4 @@ namespace Empiria.FinancialAccounting.WebApi.Rules {
 
   }  // class FinancialConceptsController
 
-}  // namespace Empiria.FinancialAccounting.WebApi.Rules
+}  // namespace Empiria.FinancialAccounting.WebApi.FinancialConcepts

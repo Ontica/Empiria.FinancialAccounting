@@ -38,7 +38,7 @@ namespace Empiria.FinancialAccounting.FinancialConcepts.Adapters {
       get; internal set;
     }
 
-    public string RulesSetName {
+    public string GroupName {
       get; internal set;
     }
 

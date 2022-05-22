@@ -45,7 +45,7 @@ namespace Empiria.FinancialAccounting.FinancialConcepts {
     #region Properties
 
     [DataField("ID_GRUPO")]
-    public RulesSet RulesSet {
+    public FinancialConceptGroup Group {
       get; private set;
     }
 
@@ -77,7 +77,7 @@ namespace Empiria.FinancialAccounting.FinancialConcepts {
     public FixedList<GroupingRuleItem> Items {
       get {
         if (items == null) {
-          items = RulesSet.GetGroupingRuleItems(this);
+          items = Group.GetGroupingRuleItems(this);
         }
         return items;
       }

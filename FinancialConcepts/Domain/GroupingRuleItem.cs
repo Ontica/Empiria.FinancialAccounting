@@ -157,7 +157,7 @@ namespace Empiria.FinancialAccounting.FinancialConcepts {
 
 
     [DataField("ID_GRUPO")]
-    public RulesSet RulesSet {
+    public FinancialConceptGroup Group {
       get; private set;
     }
 
@@ -172,7 +172,7 @@ namespace Empiria.FinancialAccounting.FinancialConcepts {
       get {
         if (this.Type == GroupingRuleItemType.Account) {
 
-          var account = GroupingRule.RulesSet.AccountsChart.TryGetAccount(this.AccountNumber);
+          var account = GroupingRule.Group.AccountsChart.TryGetAccount(this.AccountNumber);
 
           if (account != null) {
             return account.Name;

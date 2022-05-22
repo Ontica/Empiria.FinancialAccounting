@@ -43,7 +43,7 @@ namespace Empiria.FinancialAccounting.FinancialReports.Adapters {
       get; internal set;
     }
 
-    public string RulesSetName {
+    public string GroupName {
       get; internal set;
     }
 
@@ -56,7 +56,7 @@ namespace Empiria.FinancialAccounting.FinancialReports.Adapters {
       members.Add("ConceptCode");
       members.Add("Concept");
       members.Add("AccountsChartName");
-      members.Add("RulesSetName");
+      members.Add("GroupName");
 
       members.AddRange(base.GetDynamicMemberNames());
 

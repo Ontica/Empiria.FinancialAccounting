@@ -31,8 +31,8 @@ namespace Empiria.FinancialAccounting.FinancialConcepts.Adapters {
         Code = rule.Code,
         Concept = rule.Concept,
         Position = rule.Position,
-        AccountsChartName = rule.RulesSet.AccountsChart.Name,
-        RulesSetName = rule.RulesSet.Name
+        AccountsChartName = rule.Group.AccountsChart.Name,
+        GroupName = rule.Group.Name
       };
     }
 

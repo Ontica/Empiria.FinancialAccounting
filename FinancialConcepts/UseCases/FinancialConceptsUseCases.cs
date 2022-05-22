@@ -2,9 +2,9 @@
 *                                                                                                            *
 *  Module   : Financial Concepts                         Component : Use cases Layer                         *
 *  Assembly : FinancialAccounting.FinancialConcepts.dll  Pattern   : Use case interactor class               *
-*  Type     : RulesUseCases                              License   : Please read LICENSE.txt file            *
+*  Type     : FinancialConceptsUseCases                  License   : Please read LICENSE.txt file            *
 *                                                                                                            *
-*  Summary  : Use cases used to retrive financial accounting rules.                                          *
+*  Summary  : Use cases that handles financial concepts.                                                     *
 *                                                                                                            *
 ************************* Copyright(c) La Vía Óntica SC, Ontica LLC and contributors. All rights reserved. **/
 using System;
@@ -15,17 +15,17 @@ using Empiria.FinancialAccounting.FinancialConcepts.Adapters;
 
 namespace Empiria.FinancialAccounting.FinancialConcepts.UseCases {
 
-  /// <summary>Use cases used to retrive financial accounting rules.</summary>
-  public class GroupingRulesUseCases : UseCase {
+  /// <summary>Use cases that handles financial concepts.</summary>
+  public class FinancialConceptsUseCases : UseCase {
 
     #region Constructors and parsers
 
-    protected GroupingRulesUseCases() {
+    protected FinancialConceptsUseCases() {
       // no-op
     }
 
-    static public GroupingRulesUseCases UseCaseInteractor() {
-      return UseCase.CreateInstance<GroupingRulesUseCases>();
+    static public FinancialConceptsUseCases UseCaseInteractor() {
+      return UseCase.CreateInstance<FinancialConceptsUseCases>();
     }
 
     #endregion Constructors and parsers
@@ -33,23 +33,23 @@ namespace Empiria.FinancialAccounting.FinancialConcepts.UseCases {
     #region Use cases
 
 
-    public void CleanupRules(string rulesSetUID) {
-      Assertion.AssertObject(rulesSetUID, "rulesSetUID");
+    public void CleanupFinancialConceptGroup(string groupUID) {
+      Assertion.AssertObject(groupUID, "groupUID");
 
-      var rulesSet = RulesSet.Parse(rulesSetUID);
+      var group = FinancialConceptGroup.Parse(groupUID);
 
-      rulesSet.Cleanup();
+      group.Cleanup();
     }
 
 
-    public FixedList<GroupingRuleDto> GroupingRules(string rulesSetUID) {
-      Assertion.AssertObject(rulesSetUID, "rulesSetUID");
+    public FixedList<GroupingRuleDto> GroupingRules(string groupUID) {
+      Assertion.AssertObject(groupUID, "groupUID");
 
-      var rulesSet = RulesSet.Parse(rulesSetUID);
+      var group = FinancialConceptGroup.Parse(groupUID);
 
-      FixedList<GroupingRule> rules = rulesSet.GetGroupingRules();
+      FixedList<GroupingRule> concepts = group.GetGroupingRules();
 
-      return GroupingRulesMapper.Map(rules);
+      return GroupingRulesMapper.Map(concepts);
     }
 
 
@@ -62,23 +62,23 @@ namespace Empiria.FinancialAccounting.FinancialConcepts.UseCases {
     }
 
 
-    public FixedList<NamedEntityDto> GroupingRulesSetsFor(string accountsChartUID) {
+    public FixedList<NamedEntityDto> FinancialConceptsGroups(string accountsChartUID) {
       Assertion.AssertObject(accountsChartUID, "accountsChartUID");
 
       var accountsChart = AccountsChart.Parse(accountsChartUID);
 
-      FixedList<RulesSet> rulesSets = RulesSet.GetList(accountsChart);
+      FixedList<FinancialConceptGroup> groups = FinancialConceptGroup.GetList(accountsChart);
 
-      return rulesSets.MapToNamedEntityList();
+      return groups.MapToNamedEntityList();
     }
 
 
-    public FixedList<GroupingRulesTreeItemDto> GroupingRulesFlatTree(string rulesSetUID) {
-      Assertion.AssertObject(rulesSetUID, "rulesSetUID");
+    public FixedList<GroupingRulesTreeItemDto> GroupingRulesFlatTree(string groupUID) {
+      Assertion.AssertObject(groupUID, "groupUID");
 
-      var rulesSet = RulesSet.Parse(rulesSetUID);
+      var group = FinancialConceptGroup.Parse(groupUID);
 
-      GroupingRulesTree rulesTree = rulesSet.GetGroupingRulesTree();
+      GroupingRulesTree rulesTree = group.GetGroupingRulesTree();
 
       return GroupingRulesTreeMapper.MapFlat(rulesTree.GetItemsList());
     }
@@ -86,6 +86,6 @@ namespace Empiria.FinancialAccounting.FinancialConcepts.UseCases {
 
     #endregion Use cases
 
-  }  // class GroupingRulesUseCases
+  }  // class FinancialConceptsUseCases
 
 }  // namespace Empiria.FinancialAccounting.FinancialConcepts.UseCases

@@ -16,9 +16,9 @@ namespace Empiria.FinancialAccounting.FinancialConcepts.Data {
   /// <summary>Data access layer for financial accounting grouping rules.</summary>
   static internal class GroupingRulesData {
 
-    static internal FixedList<GroupingRule> GetGroupingRules(RulesSet rulesSet) {
+    static internal FixedList<GroupingRule> GetGroupingRules(FinancialConceptGroup group) {
       var sql = "SELECT * FROM COF_CONCEPTOS " +
-                $"WHERE ID_GRUPO = {rulesSet.Id} " +
+                $"WHERE ID_GRUPO = {group.Id} " +
                 "ORDER BY POSICION";
 
       var dataOperation = DataOperation.Parse(sql);
@@ -26,10 +26,10 @@ namespace Empiria.FinancialAccounting.FinancialConcepts.Data {
       return DataReader.GetFixedList<GroupingRule>(dataOperation);
     }
 
-    static internal FixedList<GroupingRuleItem> GetGroupingRulesItems(RulesSet rulesSet) {
+    static internal FixedList<GroupingRuleItem> GetGroupingRulesItems(FinancialConceptGroup group) {
       var sql = "SELECT COF_CONCEPTOS_INTEGRACION.* " +
                 "FROM COF_CONCEPTOS_INTEGRACION " +
-               $"WHERE ID_GRUPO = {rulesSet.Id} " +
+               $"WHERE ID_GRUPO = {group.Id} " +
                 "ORDER BY POSICION";
 
       var dataOperation = DataOperation.Parse(sql);
@@ -41,7 +41,7 @@ namespace Empiria.FinancialAccounting.FinancialConcepts.Data {
     static internal void Write(GroupingRule o) {
       var op = DataOperation.Parse("write_cof_concepto",
                       o.Id, o.Code, o.Concept, o.Position,
-                      o.StartDate, o.EndDate, o.UID, o.RulesSet.Id);
+                      o.StartDate, o.EndDate, o.UID, o.Group.Id);
 
 
       DataWriter.Execute(op);
@@ -54,7 +54,7 @@ namespace Empiria.FinancialAccounting.FinancialConcepts.Data {
                       o.Id, o.UID, o.GroupingRule.Id, o.CalculationRule, o.Reference.Id,
                       o.AccountNumber, o.SubledgerAccountNumber, o.SectorCode, o.ExternalVariableCode,
                       (char) o.Operator, o.Qualification, o.IntegrationTypeId, o.Position,
-                      o.RulesSet.Id, o.CurrencyCode, o.AccountsListId);
+                      o.Group.Id, o.CurrencyCode, o.AccountsListId);
 
       DataWriter.Execute(op);
     }

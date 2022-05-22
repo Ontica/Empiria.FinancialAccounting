@@ -2,9 +2,10 @@
 *                                                                                                            *
 *  Module   : Financial Concepts                         Component : Domain Layer                            *
 *  Assembly : FinancialAccounting.FinancialConcepts.dll  Pattern   : Empiria Data Object                     *
-*  Type     : RulesSet                                   License   : Please read LICENSE.txt file            *
+*  Type     : FinancialConceptGroup                      License   : Please read LICENSE.txt file            *
 *                                                                                                            *
-*  Summary  : Holds a set of financial accounting rules.                                                     *
+*  Summary  : Holds a set of financial concepts, which unique purpose is to classify concepts.               *
+*             A given financial concept always belongs to a single group.                                    *
 *                                                                                                            *
 ************************* Copyright(c) La Vía Óntica SC, Ontica LLC and contributors. All rights reserved. **/
 using System;
@@ -13,8 +14,9 @@ using Empiria.FinancialAccounting.FinancialConcepts.Data;
 
 namespace Empiria.FinancialAccounting.FinancialConcepts {
 
-  /// <summary>Holds a set of financial accounting rules.</summary>
-  public class RulesSet : GeneralObject {
+  /// <summary>Holds a set of financial concepts, which unique purpose is to classify concepts.
+  /// A given financial concept always belongs to a single group.</summary>
+  public class FinancialConceptGroup : GeneralObject {
 
     #region Fields
 
@@ -26,38 +28,39 @@ namespace Empiria.FinancialAccounting.FinancialConcepts {
 
     #region Constructors and parsers
 
-    protected RulesSet() {
+    protected FinancialConceptGroup() {
       // Required by Empiria Framework.
     }
 
-    static public RulesSet Parse(int id) {
-      return BaseObject.ParseId<RulesSet>(id);
+    static public FinancialConceptGroup Parse(int id) {
+      return BaseObject.ParseId<FinancialConceptGroup>(id);
     }
 
 
-    static public RulesSet Parse(string uid) {
-      return BaseObject.ParseKey<RulesSet>(uid);
+    static public FinancialConceptGroup Parse(string uid) {
+      return BaseObject.ParseKey<FinancialConceptGroup>(uid);
     }
 
 
-    static public FixedList<RulesSet> GetList() {
-      return BaseObject.GetList<RulesSet>(String.Empty, "ObjectName")
+    static public FixedList<FinancialConceptGroup> GetList() {
+      return BaseObject.GetList<FinancialConceptGroup>(String.Empty, "ObjectName")
                        .ToFixedList();
     }
 
 
-    static public FixedList<RulesSet> GetList(AccountsChart accountsChart) {
+    static public FixedList<FinancialConceptGroup> GetList(AccountsChart accountsChart) {
       var list = GetList();
 
       return list.FindAll(x => x.AccountsChart.Equals(accountsChart));
     }
 
 
-    static public RulesSet Empty {
+    static public FinancialConceptGroup Empty {
       get {
-        return RulesSet.ParseEmpty<RulesSet>();
+        return FinancialConceptGroup.ParseEmpty<FinancialConceptGroup>();
       }
     }
+
 
     protected override void OnLoad() {
       base.OnLoad();
@@ -132,6 +135,6 @@ namespace Empiria.FinancialAccounting.FinancialConcepts {
 
     #endregion Methods
 
-  } // class RulesSet
+  } // class FinancialConceptGroup
 
 }  // namespace Empiria.FinancialAccounting.FinancialConcepts

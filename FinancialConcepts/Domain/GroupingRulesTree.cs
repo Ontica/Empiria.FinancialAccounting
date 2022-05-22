@@ -15,29 +15,29 @@ namespace Empiria.FinancialAccounting.FinancialConcepts {
   /// <summary>Tree data structure for financial accounting grouping rules.</summary>
   public class GroupingRulesTree {
 
-    private readonly RulesSet _rulesSet;
+    private readonly FinancialConceptGroup _group;
 
     #region Constructors and parsers
 
-    protected internal GroupingRulesTree(RulesSet rulesSet) {
-      _rulesSet = rulesSet;
+    protected internal GroupingRulesTree(FinancialConceptGroup group) {
+      _group = group;
     }
 
     #endregion Constructors and parsers
 
     #region Properties
 
-    public RulesSet RulesSet {
+    public FinancialConceptGroup Group {
       get {
-        return _rulesSet;
+        return _group;
       }
     }
 
 
     public FixedList<GroupingRulesTreeItem> Roots {
       get {
-        return new FixedList<GroupingRulesTreeItem>(_rulesSet.GetGroupingRulesRoots()
-                                                             .Select(y => new GroupingRulesTreeItem(y)));
+        return new FixedList<GroupingRulesTreeItem>(_group.GetGroupingRulesRoots()
+                                                          .Select(y => new GroupingRulesTreeItem(y)));
       }
     }
 
