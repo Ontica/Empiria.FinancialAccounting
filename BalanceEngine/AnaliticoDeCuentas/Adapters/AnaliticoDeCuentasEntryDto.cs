@@ -184,6 +184,7 @@ namespace Empiria.FinancialAccounting.BalanceEngine.Adapters {
         // AccountMark,
         SectorCode,
         StandardAccountId,
+        SubledgerAccountId,
         SubledgerAccountNumber,
         DebtorCreditor,
         DomesticBalance.ToString("C2"),

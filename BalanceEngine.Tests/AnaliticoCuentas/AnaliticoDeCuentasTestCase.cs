@@ -9,9 +9,10 @@
 ************************* Copyright(c) La Vía Óntica SC, Ontica LLC and contributors. All rights reserved. **/
 using System;
 
+using Empiria.Tests;
+
 using Empiria.FinancialAccounting.BalanceEngine;
 using Empiria.FinancialAccounting.BalanceEngine.Adapters;
-using Empiria.Tests;
 
 namespace Empiria.FinancialAccounting.Tests.BalanceEngine {
 
@@ -41,6 +42,13 @@ namespace Empiria.FinancialAccounting.Tests.BalanceEngine {
       AnaliticoDeCuentasDto dto = ReadAnaliticoDeCuentasFromFile(testcase);
 
       return dto.Command;
+    }
+
+
+    static public FixedList<AnaliticoDeCuentasEntryDto> GetExpectedEntries(this AnaliticoDeCuentasTestCase testcase) {
+      AnaliticoDeCuentasDto dto = ReadAnaliticoDeCuentasFromFile(testcase);
+
+      return dto.Entries;
     }
 
 
