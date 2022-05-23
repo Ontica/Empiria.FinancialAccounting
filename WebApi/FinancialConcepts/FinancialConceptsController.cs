@@ -37,28 +37,30 @@ namespace Empiria.FinancialAccounting.WebApi.FinancialConcepts {
 
 
     [HttpGet]
-    [Route("v2/financial-accounting/rules/grouping-rules/{groupUID:guid}/flat-tree")]
-    public CollectionModel GetGroupingRulesFlatTree([FromUri] string groupUID) {
+    [Route("v2/financial-accounting/financial-concepts/groups/{groupUID:guid}/flat-tree")]
+    public CollectionModel GetGroupFinancialConceptsEntriesAsTree([FromUri] string groupUID) {
 
       using (var usecases = FinancialConceptsUseCases.UseCaseInteractor()) {
-        FixedList<GroupingRulesTreeItemDto> rulesTreeItems = usecases.GroupingRulesFlatTree(groupUID);
+        FixedList<FinancialConceptEntryAsTreeNodeDto> treeNodes =
+                            usecases.GetGroupFinancialConceptsEntriesAsTree(groupUID);
 
-        return new CollectionModel(base.Request, rulesTreeItems);
+        return new CollectionModel(base.Request, treeNodes);
       }
     }
 
 
     [HttpGet]
-    [Route("v2/financial-accounting/rules/grouping-rules/{groupUID:guid}/excel")]
-    [Route("v2/financial-accounting/rules/grouping-rules/{groupUID:guid}/flat-tree/excel")]
-    public SingleObjectModel ExportGroupingRulesFlatTreeToExcel([FromUri] string groupUID) {
+    [Route("v2/financial-accounting/financial-concepts/groups/{groupUID:guid}/excel")]
+    [Route("v2/financial-accounting/financial-concepts/groups/{groupUID:guid}/flat-tree/excel")]
+    public SingleObjectModel ExportGroupFinancialConceptsEntriesAsTree([FromUri] string groupUID) {
 
       using (var usecases = FinancialConceptsUseCases.UseCaseInteractor()) {
-        FixedList<GroupingRulesTreeItemDto> rulesTreeItems = usecases.GroupingRulesFlatTree(groupUID);
+        FixedList<FinancialConceptEntryAsTreeNodeDto> treeNodes =
+                             usecases.GetGroupFinancialConceptsEntriesAsTree(groupUID);
 
         var excelExporter = new ExcelExporterService();
 
-        FileReportDto excelFileDto = excelExporter.Export(rulesTreeItems);
+        FileReportDto excelFileDto = excelExporter.Export(treeNodes);
 
         return new SingleObjectModel(this.Request, excelFileDto);
       }
@@ -70,7 +72,8 @@ namespace Empiria.FinancialAccounting.WebApi.FinancialConcepts {
     public CollectionModel GetFinancialConceptIntegration([FromUri] string financialConceptUID) {
 
       using (var usecases = FinancialConceptsUseCases.UseCaseInteractor()) {
-        FixedList<FinancialConceptIntegrationEntryDto> integration = usecases.GetFinancialConceptIntegration(financialConceptUID);
+        FixedList<FinancialConceptIntegrationEntryDto> integration =
+                             usecases.GetFinancialConceptIntegration(financialConceptUID);
 
         return new CollectionModel(base.Request, integration);
       }
@@ -78,7 +81,7 @@ namespace Empiria.FinancialAccounting.WebApi.FinancialConcepts {
 
 
     [HttpGet]
-    [Route("v2/financial-accounting/financial-concepts/groups/{accountsChartUID:guid}")]
+    [Route("v2/financial-accounting/financial-concepts/account-chart-groups/{accountsChartUID:guid}")]
     public CollectionModel GetFinancialConceptsGroups([FromUri] string accountsChartUID) {
 
       using (var usecases = FinancialConceptsUseCases.UseCaseInteractor()) {

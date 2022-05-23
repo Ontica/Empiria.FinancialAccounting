@@ -127,14 +127,15 @@ namespace Empiria.FinancialAccounting.FinancialConcepts {
     }
 
 
+    internal FinancialConceptEntriesTree GetFinancialConceptsEntriesAsTree() {
+      return new FinancialConceptEntriesTree(this);
+    }
+
+
     internal FixedList<FinancialConceptIntegrationEntry> RootIntegrationEntries() {
       return _financialConceptsIntegrationEntries.Value.FindAll(x => x.FinancialConcept.IsEmptyInstance);
     }
 
-
-    internal GroupingRulesTree GetGroupingRulesTree() {
-      return new GroupingRulesTree(this);
-    }
 
     #endregion Methods
 

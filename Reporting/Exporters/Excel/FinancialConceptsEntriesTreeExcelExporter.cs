@@ -2,9 +2,9 @@
 *                                                                                                            *
 *  Module   : Reporting Services                           Component : Excel Exporters                       *
 *  Assembly : FinancialAccounting.Reporting.dll            Pattern   : IExcelExporter                        *
-*  Type     : GroupingRulesReportExcelExporter             License   : Please read LICENSE.txt file          *
+*  Type     : FinancialConceptsEntriesTreeExcelExporter    License   : Please read LICENSE.txt file          *
 *                                                                                                            *
-*  Summary  : Main service to export grouping rules information to Microsoft Excel.                          *
+*  Summary  : Exports financial concepts integration entries as tree to Microsoft Excel.                     *
 *                                                                                                            *
 ************************* Copyright(c) La Vía Óntica SC, Ontica LLC and contributors. All rights reserved. **/
 using System;
@@ -14,21 +14,21 @@ using Empiria.FinancialAccounting.FinancialConcepts.Adapters;
 
 namespace Empiria.FinancialAccounting.Reporting.Exporters.Excel {
 
-  /// <summary>Main service to export grouping rules information to Microsoft Excel.</summary>
-  internal class GroupingRulesReportExcelExporter {
+  /// <summary>Exports financial concepts integration entries as tree to Microsoft Excel.</summary>
+  internal class FinancialConceptsEntriesTreeExcelExporter {
 
     private readonly FileTemplateConfig _templateConfig;
     private ExcelFile _excelFile;
 
-    public GroupingRulesReportExcelExporter(FileTemplateConfig templateConfig) {
+    public FinancialConceptsEntriesTreeExcelExporter(FileTemplateConfig templateConfig) {
       Assertion.AssertObject(templateConfig, "templateConfig");
 
       _templateConfig = templateConfig;
     }
 
 
-    internal ExcelFile CreateExcelFile(FixedList<GroupingRulesTreeItemDto> rulesTreeItems) {
-      Assertion.AssertObject(rulesTreeItems, "rulesTreeItems");
+    internal ExcelFile CreateExcelFile(FixedList<FinancialConceptEntryAsTreeNodeDto> treeNodes) {
+      Assertion.AssertObject(treeNodes, nameof(treeNodes));
 
       _excelFile = new ExcelFile(_templateConfig);
 
@@ -36,7 +36,7 @@ namespace Empiria.FinancialAccounting.Reporting.Exporters.Excel {
 
       SetHeader(_excelFile);
 
-      SetTable(rulesTreeItems);
+      SetTable(treeNodes);
 
       _excelFile.Save();
 
@@ -45,34 +45,38 @@ namespace Empiria.FinancialAccounting.Reporting.Exporters.Excel {
       return _excelFile;
     }
 
-    private void SetTable(FixedList<GroupingRulesTreeItemDto> rulesTreeItems) {
+
+    private void SetTable(FixedList<FinancialConceptEntryAsTreeNodeDto> treeNodes) {
       int i = 5;
 
-      foreach (var rule in rulesTreeItems) {
-        _excelFile.SetCell($"A{i}", rule.ItemCode);
-        _excelFile.SetCell($"B{i}", rule.Type == IntegrationEntryType.FinancialConceptReference ? "Concepto": "Cuenta");
-        _excelFile.SetCell($"C{i}", rule.ItemName);
-        if (rule.Level > 1) {
-          _excelFile.IndentCell($"C{i}", rule.Level - 1);
+      foreach (var node in treeNodes) {
+        _excelFile.SetCell($"A{i}", node.ItemCode);
+        _excelFile.SetCell($"B{i}", node.Type == IntegrationEntryType.FinancialConceptReference ? "Concepto": "Cuenta");
+        _excelFile.SetCell($"C{i}", node.ItemName);
+
+        if (node.Level > 1) {
+          _excelFile.IndentCell($"C{i}", node.Level - 1);
         }
-        _excelFile.SetCell($"D{i}", rule.SubledgerAccount);
-        _excelFile.SetCell($"E{i}", rule.SubledgerAccountName);
-        _excelFile.SetCell($"F{i}", rule.SectorCode);
-        _excelFile.SetCell($"G{i}", rule.CurrencyCode);
-        _excelFile.SetCell($"H{i}", rule.Operator);
-        _excelFile.SetCell($"I{i}", rule.Qualification);
-        _excelFile.SetCell($"J{i}", rule.Level);
-        _excelFile.SetCell($"K{i}", rule.ParentCode);
+
+        _excelFile.SetCell($"D{i}", node.SubledgerAccount);
+        _excelFile.SetCell($"E{i}", node.SubledgerAccountName);
+        _excelFile.SetCell($"F{i}", node.SectorCode);
+        _excelFile.SetCell($"G{i}", node.CurrencyCode);
+        _excelFile.SetCell($"H{i}", node.Operator);
+        _excelFile.SetCell($"I{i}", node.Qualification);
+        _excelFile.SetCell($"J{i}", node.Level);
+        _excelFile.SetCell($"K{i}", node.ParentCode);
 
         i++;
       }
     }
+
 
     private void SetHeader(ExcelFile excelFile) {
       excelFile.SetCell($"A2", _templateConfig.Title);
     }
 
 
-  }  // class GroupingRulesReportExcelExporter
+  }  // class FinancialConceptsEntriesTreeExcelExporter
 
 }  // namespace Empiria.FinancialAccounting.Reporting.Exporters.Excel

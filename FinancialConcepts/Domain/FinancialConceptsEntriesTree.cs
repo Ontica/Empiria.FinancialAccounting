@@ -2,9 +2,9 @@
 *                                                                                                            *
 *  Module   : Financial Concepts                         Component : Domain Layer                            *
 *  Assembly : FinancialAccounting.FinancialConcepts.dll  Pattern   : Structurer                              *
-*  Type     : GroupingRulesTree                          License   : Please read LICENSE.txt file            *
+*  Type     : FinancialConceptsEntriesTree               License   : Please read LICENSE.txt file            *
 *                                                                                                            *
-*  Summary  : Tree data structure for financial accounting grouping rules.                                   *
+*  Summary  : Tree data structure with the integration entries of all financial concepts in a group.         *
 *                                                                                                            *
 ************************* Copyright(c) La Vía Óntica SC, Ontica LLC and contributors. All rights reserved. **/
 using System;
@@ -12,14 +12,14 @@ using System.Collections.Generic;
 
 namespace Empiria.FinancialAccounting.FinancialConcepts {
 
-  /// <summary>Tree data structure for financial accounting grouping rules.</summary>
-  public class GroupingRulesTree {
+  /// <summary>Tree data structure with the integration entries of all financial concepts in a group.</summary>
+  public class FinancialConceptsEntriesTree {
 
     private readonly FinancialConceptGroup _group;
 
     #region Constructors and parsers
 
-    protected internal GroupingRulesTree(FinancialConceptGroup group) {
+    protected internal FinancialConceptsEntriesTree(FinancialConceptGroup group) {
       _group = group;
     }
 
@@ -34,37 +34,40 @@ namespace Empiria.FinancialAccounting.FinancialConcepts {
     }
 
 
-    public FixedList<GroupingRulesTreeItem> Roots {
+    public FixedList<FinancialConceptEntryAsTreeNode> Roots {
       get {
-        return new FixedList<GroupingRulesTreeItem>(_group.RootIntegrationEntries()
-                                                          .Select(y => new GroupingRulesTreeItem(y)));
+        return new FixedList<FinancialConceptEntryAsTreeNode>(_group.RootIntegrationEntries()
+                                                              .Select(root => new FinancialConceptEntryAsTreeNode(root)));
       }
     }
 
 
-    internal FixedList<GroupingRulesTreeItem> GetItemsList() {
-      var list = new List<GroupingRulesTreeItem>();
+    internal FixedList<FinancialConceptEntryAsTreeNode> GetNodes() {
+      var list = new List<FinancialConceptEntryAsTreeNode>();
 
       foreach (var root in this.Roots) {
-        list.AddRange(GetItemsList(root));
+        list.AddRange(GetNode(root));
       }
+
       return list.ToFixedList();
     }
 
 
-    private FixedList<GroupingRulesTreeItem> GetItemsList(GroupingRulesTreeItem item) {
-      var list = new List<GroupingRulesTreeItem>();
+    private FixedList<FinancialConceptEntryAsTreeNode> GetNode(FinancialConceptEntryAsTreeNode parent) {
+      var list = new List<FinancialConceptEntryAsTreeNode>();
 
-      list.Add(item);
-      foreach (var child in item.Children) {
-        list.AddRange(GetItemsList(child));
+      list.Add(parent);
+
+      foreach (var child in parent.ChildrenNodes) {
+        list.AddRange(GetNode(child));
       }
+
       return list.ToFixedList();
     }
 
 
     #endregion Properties
 
-  }  // class GroupingRulesTree
+  }  // class FinancialConceptsEntriesTree
 
 }  // namespace Empiria.FinancialAccounting.FinancialConcepts

@@ -2,19 +2,19 @@
 *                                                                                                            *
 *  Module   : Financial Concepts                         Component : Interface adapters                      *
 *  Assembly : FinancialAccounting.FinancialConcepts.dll  Pattern   : Data Transfer Object                    *
-*  Type     : GroupingRuleTreeItemDto                    License   : Please read LICENSE.txt file            *
+*  Type     : FinancialConceptEntryAsTreeNodeDto         License   : Please read LICENSE.txt file            *
 *                                                                                                            *
-*  Summary  : Data transfer object for grouping rules tree items.                                            *
+*  Summary  : Data transfer object for a financial concept integration entry as a tree node.                 *
 *                                                                                                            *
 ************************* Copyright(c) La Vía Óntica SC, Ontica LLC and contributors. All rights reserved. **/
 using System;
 
 namespace Empiria.FinancialAccounting.FinancialConcepts.Adapters {
 
-  /// <summary>Data transfer object for grouping rules tree items.</summary>
-  public class GroupingRulesTreeItemDto {
+  /// <summary>Data transfer object for a financial concept integration entry as a tree node.</summary>
+  public class FinancialConceptEntryAsTreeNodeDto {
 
-    internal GroupingRulesTreeItemDto() {
+    internal FinancialConceptEntryAsTreeNodeDto() {
       // no-op
     }
 
@@ -22,50 +22,61 @@ namespace Empiria.FinancialAccounting.FinancialConcepts.Adapters {
       get; internal set;
     }
 
+
     public IntegrationEntryType Type {
       get; internal set;
     }
+
 
     public string ItemName {
       get; internal set;
     }
 
+
     public string ItemCode {
       get; internal set;
     }
+
 
     public string SubledgerAccount {
       get; internal set;
     }
 
+
     public string SubledgerAccountName {
       get; internal set;
     }
+
 
     public string SectorCode {
       get; internal set;
     }
 
+
     public string CurrencyCode {
       get; internal set;
     }
+
 
     public string Operator {
       get; internal set;
     }
 
+
     public string Qualification {
       get; internal set;
     }
+
 
     public string ParentCode {
       get; internal set;
     }
 
+
     public int Level {
       get; internal set;
     }
 
-  }  // class GroupingRuleTreeItemDto
+  }  // class FinancialConceptEntryAsTreeNodeDto
 
 }  // namespace Empiria.FinancialAccounting.FinancialConcepts.Adapters

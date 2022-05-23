@@ -42,17 +42,6 @@ namespace Empiria.FinancialAccounting.FinancialConcepts.UseCases {
     }
 
 
-    public FixedList<FinancialConceptDto> GetGroupFinancialConcepts(string groupUID) {
-      Assertion.AssertObject(groupUID, "groupUID");
-
-      var group = FinancialConceptGroup.Parse(groupUID);
-
-      FixedList<FinancialConcept> concepts = group.FinancialConcepts();
-
-      return FinancialConceptMapper.Map(concepts);
-    }
-
-
     public FixedList<FinancialConceptIntegrationEntryDto> GetFinancialConceptIntegration(string financialConceptUID) {
       Assertion.AssertObject(financialConceptUID, nameof(financialConceptUID));
 
@@ -73,14 +62,25 @@ namespace Empiria.FinancialAccounting.FinancialConcepts.UseCases {
     }
 
 
-    public FixedList<GroupingRulesTreeItemDto> GroupingRulesFlatTree(string groupUID) {
+    public FixedList<FinancialConceptDto> GetGroupFinancialConcepts(string groupUID) {
       Assertion.AssertObject(groupUID, "groupUID");
 
       var group = FinancialConceptGroup.Parse(groupUID);
 
-      GroupingRulesTree rulesTree = group.GetGroupingRulesTree();
+      FixedList<FinancialConcept> concepts = group.FinancialConcepts();
 
-      return GroupingRulesTreeMapper.MapFlat(rulesTree.GetItemsList());
+      return FinancialConceptMapper.Map(concepts);
+    }
+
+
+    public FixedList<FinancialConceptEntryAsTreeNodeDto> GetGroupFinancialConceptsEntriesAsTree(string groupUID) {
+      Assertion.AssertObject(groupUID, "groupUID");
+
+      var group = FinancialConceptGroup.Parse(groupUID);
+
+      FinancialConceptEntriesTree tree = group.GetFinancialConceptsEntriesAsTree();
+
+      return FinancialConceptsTreeMapper.MapFlat(tree.GetNodes());
     }
 
 

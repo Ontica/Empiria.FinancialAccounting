@@ -91,16 +91,16 @@ namespace Empiria.FinancialAccounting.Reporting {
     }
 
 
-    public FileReportDto Export(FixedList<GroupingRulesTreeItemDto> rulesTreeItems) {
-      Assertion.AssertObject(rulesTreeItems, "rulesTreeItems");
+    public FileReportDto Export(FixedList<FinancialConceptEntryAsTreeNodeDto> treeNodes) {
+      Assertion.AssertObject(treeNodes, "treeNodes");
 
       var templateUID = $"GroupingRulesReportTemplate";
 
       var templateConfig = FileTemplateConfig.Parse(templateUID);
 
-      var exporter = new GroupingRulesReportExcelExporter(templateConfig);
+      var exporter = new FinancialConceptsEntriesTreeExcelExporter(templateConfig);
 
-      ExcelFile excelFile = exporter.CreateExcelFile(rulesTreeItems);
+      ExcelFile excelFile = exporter.CreateExcelFile(treeNodes);
 
       return excelFile.ToFileReportDto();
     }

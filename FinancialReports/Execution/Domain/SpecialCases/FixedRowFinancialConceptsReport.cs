@@ -2,9 +2,9 @@
 *                                                                                                            *
 *  Module   : Financial Reports                          Component : Domain Layer                            *
 *  Assembly : FinancialAccounting.FinancialReports.dll   Pattern   : Service provider                        *
-*  Type     : FixedRowGroupingRulesReport                License   : Please read LICENSE.txt file            *
+*  Type     : FixedRowFinancialConceptsReport            License   : Please read LICENSE.txt file            *
 *                                                                                                            *
-*  Summary  : Generates a fixed row defined report which rows are linked to grouping rules (R01, R10, R12).  *
+*  Summary  : Generates a report with fixed rows linked to financial concepts (e.g. R01, R10, R12).          *
 *                                                                                                            *
 ************************* Copyright(c) La Vía Óntica SC, Ontica LLC and contributors. All rights reserved. **/
 using System;
@@ -19,16 +19,15 @@ using Empiria.FinancialAccounting.FinancialConcepts;
 
 namespace Empiria.FinancialAccounting.FinancialReports {
 
-  /// <summary>Generates a fixed row defined report which rows are linked to
-  /// grouping rules (R01, R10, R12).</summary>
-  internal class FixedRowGroupingRulesReport {
+  /// <summary>Generates a report with fixed rows linked to financial concepts (e.g. R01, R10, R12).</summary>
+  internal class FixedRowFinancialConceptsReport {
 
     private readonly FinancialReportCommand _command;
     private readonly EmpiriaHashTable<FixedList<ITrialBalanceEntryDto>> _balances;
 
     #region Public methods
 
-    internal FixedRowGroupingRulesReport(FinancialReportCommand command) {
+    internal FixedRowFinancialConceptsReport(FinancialReportCommand command) {
       _command = command;
       _balances = GetBalancesHashTable();
 
