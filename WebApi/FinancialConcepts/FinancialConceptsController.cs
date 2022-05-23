@@ -25,11 +25,23 @@ namespace Empiria.FinancialAccounting.WebApi.FinancialConcepts {
     #region Web Apis
 
     [HttpGet]
+    [Route("v2/financial-accounting/financial-concepts/{financialConceptUID:guid}")]
+    public SingleObjectModel GetFinancialConcept([FromUri] string financialConceptUID) {
+
+      using (var usecases = FinancialConceptsUseCases.UseCaseInteractor()) {
+        FinancialConceptDto concept = usecases.GetFinancialConcept(financialConceptUID);
+
+        return new SingleObjectModel(base.Request, concept);
+      }
+    }
+
+
+    [HttpGet]
     [Route("v2/financial-accounting/financial-concepts/in-group/{groupUID:guid}")]
     public CollectionModel GetFinancialConceptsInGroup([FromUri] string groupUID) {
 
       using (var usecases = FinancialConceptsUseCases.UseCaseInteractor()) {
-        FixedList<FinancialConceptDto> concepts = usecases.GetGroupFinancialConcepts(groupUID);
+        FixedList<FinancialConceptDescriptorDto> concepts = usecases.GetGroupFinancialConcepts(groupUID);
 
         return new CollectionModel(base.Request, concepts);
       }

@@ -4,7 +4,7 @@
 *  Assembly : FinancialAccounting.FinancialConcepts.dll  Pattern   : Use case interactor class               *
 *  Type     : FinancialConceptsUseCases                  License   : Please read LICENSE.txt file            *
 *                                                                                                            *
-*  Summary  : Use cases that handles financial concepts.                                                     *
+*  Summary  : Use cases for retrieve financial concepts.                                                     *
 *                                                                                                            *
 ************************* Copyright(c) La Vía Óntica SC, Ontica LLC and contributors. All rights reserved. **/
 using System;
@@ -15,7 +15,7 @@ using Empiria.FinancialAccounting.FinancialConcepts.Adapters;
 
 namespace Empiria.FinancialAccounting.FinancialConcepts.UseCases {
 
-  /// <summary>Use cases that handles financial concepts.</summary>
+  /// <summary>Use cases for retrieve financial concepts.</summary>
   public class FinancialConceptsUseCases : UseCase {
 
     #region Constructors and parsers
@@ -42,6 +42,15 @@ namespace Empiria.FinancialAccounting.FinancialConcepts.UseCases {
     }
 
 
+    public FinancialConceptDto GetFinancialConcept(string financialConceptUID) {
+      Assertion.AssertObject(financialConceptUID, nameof(financialConceptUID));
+
+      var financialConcept = FinancialConcept.Parse(financialConceptUID);
+
+      return FinancialConceptMapper.Map(financialConcept);
+    }
+
+
     public FixedList<FinancialConceptEntryDto> GetFinancialConceptIntegration(string financialConceptUID) {
       Assertion.AssertObject(financialConceptUID, nameof(financialConceptUID));
 
@@ -62,7 +71,7 @@ namespace Empiria.FinancialAccounting.FinancialConcepts.UseCases {
     }
 
 
-    public FixedList<FinancialConceptDto> GetGroupFinancialConcepts(string groupUID) {
+    public FixedList<FinancialConceptDescriptorDto> GetGroupFinancialConcepts(string groupUID) {
       Assertion.AssertObject(groupUID, "groupUID");
 
       var group = FinancialConceptGroup.Parse(groupUID);

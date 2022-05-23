@@ -14,25 +14,30 @@ namespace Empiria.FinancialAccounting.FinancialConcepts.Adapters {
   /// <summary>Mapping methods for financial concepts.</summary>
   static internal class FinancialConceptMapper {
 
-    static internal FixedList<FinancialConceptDto> Map(FixedList<FinancialConcept> list) {
-      return new FixedList<FinancialConceptDto>(list.Select(financialConcept => Map(financialConcept)));
-    }
-
-
-    static internal FixedList<FinancialConceptEntryDto> Map(FixedList<FinancialConceptEntry> integration) {
-      return new FixedList<FinancialConceptEntryDto>(integration.Select(entry => Map(entry)));
-    }
-
-
     static internal FinancialConceptDto Map(FinancialConcept concept) {
       return new FinancialConceptDto {
         UID = concept.UID,
         Code = concept.Code,
-        Concept = concept.Name,
+        Name = concept.Name,
+        Group = concept.Group.MapToNamedEntity(),
         Position = concept.Position,
-        AccountsChartName = concept.Group.AccountsChart.Name,
-        GroupName = concept.Group.Name
+        Level = concept.Level,
+        StartDate = concept.StartDate,
+        EndDate = concept.EndDate,
+        Integration = Map(concept.Integration),
       };
+    }
+
+
+    static internal FixedList<FinancialConceptDescriptorDto> Map(FixedList<FinancialConcept> list) {
+      return list.Select(financialConcept => MapToDescriptor(financialConcept))
+                 .ToFixedList();
+    }
+
+
+    static internal FixedList<FinancialConceptEntryDto> Map(FixedList<FinancialConceptEntry> integration) {
+      return integration.Select(entry => Map(entry))
+                        .ToFixedList();
     }
 
 
@@ -47,6 +52,20 @@ namespace Empiria.FinancialAccounting.FinancialConcepts.Adapters {
         Operator = Convert.ToString((char) integrationEntry.Operator)
       };
     }
+
+
+    static private FinancialConceptDescriptorDto MapToDescriptor(FinancialConcept concept) {
+      return new FinancialConceptDescriptorDto {
+        UID = concept.UID,
+        Code = concept.Code,
+        Name = concept.Name,
+        Position = concept.Position,
+        Level = concept.Level,
+        AccountsChartName = concept.Group.AccountsChart.Name,
+        GroupName = concept.Group.Name
+      };
+    }
+
 
   }  // class FinancialConceptMapper
 

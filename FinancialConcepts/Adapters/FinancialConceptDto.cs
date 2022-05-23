@@ -14,7 +14,50 @@ namespace Empiria.FinancialAccounting.FinancialConcepts.Adapters {
   /// <summary>Financial concept data transfer object.</summary>
   public class FinancialConceptDto {
 
-    internal FinancialConceptDto() {
+    public string UID {
+      get; internal set;
+    }
+
+    public string Code {
+      get; internal set;
+    }
+
+    public string Name {
+      get; internal set;
+    }
+
+    public int Position {
+      get; internal set;
+    }
+
+    public int Level {
+      get; internal set;
+    }
+
+    public DateTime StartDate {
+      get; internal set;
+    }
+
+    public DateTime EndDate {
+      get; internal set;
+    }
+
+    public NamedEntityDto Group {
+      get; internal set;
+    }
+
+    public FixedList<FinancialConceptEntryDto> Integration {
+      get; internal set;
+    }
+
+  }  // class FinancialConceptDto
+
+
+
+  /// <summary>Financial concept descriptor DTO for use in lists.</summary>
+  public class FinancialConceptDescriptorDto {
+
+    internal FinancialConceptDescriptorDto() {
       // no-op
     }
 
@@ -26,11 +69,15 @@ namespace Empiria.FinancialAccounting.FinancialConcepts.Adapters {
       get; internal set;
     }
 
-    public string Concept {
+    public string Name {
       get; internal set;
     }
 
     public int Position {
+      get; internal set;
+    }
+
+    public int Level {
       get; internal set;
     }
 
@@ -42,6 +89,6 @@ namespace Empiria.FinancialAccounting.FinancialConcepts.Adapters {
       get; internal set;
     }
 
-  }  // class FinancialConceptDto
+  }  // class FinancialConceptDescriptorDto
 
 }  // namespace Empiria.FinancialAccounting.FinancialConcepts.Adapters
