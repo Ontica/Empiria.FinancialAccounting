@@ -72,7 +72,7 @@ namespace Empiria.FinancialAccounting.WebApi.FinancialConcepts {
     public CollectionModel GetFinancialConceptIntegration([FromUri] string financialConceptUID) {
 
       using (var usecases = FinancialConceptsUseCases.UseCaseInteractor()) {
-        FixedList<FinancialConceptIntegrationEntryDto> integration =
+        FixedList<FinancialConceptEntryDto> integration =
                              usecases.GetFinancialConceptIntegration(financialConceptUID);
 
         return new CollectionModel(base.Request, integration);

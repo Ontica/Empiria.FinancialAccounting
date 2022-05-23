@@ -22,7 +22,7 @@ namespace Empiria.FinancialAccounting.FinancialConcepts {
 
     private Lazy<FixedList<FinancialConcept>> _financialConcepts;
 
-    private Lazy<FixedList<FinancialConceptIntegrationEntry>> _financialConceptsIntegrationEntries;
+    private Lazy<FixedList<FinancialConceptEntry>> _financialConceptsIntegrationEntries;
 
     #endregion Fields
 
@@ -73,7 +73,7 @@ namespace Empiria.FinancialAccounting.FinancialConcepts {
             new Lazy<FixedList<FinancialConcept>>(() => FinancialConceptsData.GetFinancialConcepts(this));
 
       _financialConceptsIntegrationEntries =
-            new Lazy<FixedList<FinancialConceptIntegrationEntry>>(() => FinancialConceptsData.GetAllIntegrationEntriesForAGroup(this));
+            new Lazy<FixedList<FinancialConceptEntry>>(() => FinancialConceptsData.GetAllIntegrationEntriesForAGroup(this));
     }
 
 
@@ -106,7 +106,7 @@ namespace Empiria.FinancialAccounting.FinancialConcepts {
         FinancialConceptsData.Write(concept);
       }
 
-      FixedList<FinancialConceptIntegrationEntry> items = FinancialConceptsData.GetAllIntegrationEntriesForAGroup(this);
+      FixedList<FinancialConceptEntry> items = FinancialConceptsData.GetAllIntegrationEntriesForAGroup(this);
 
       foreach (var item in items) {
         item.Cleanup();
@@ -120,19 +120,19 @@ namespace Empiria.FinancialAccounting.FinancialConcepts {
     }
 
 
-    internal FixedList<FinancialConceptIntegrationEntry> FinancialConceptIntegrationEntries(FinancialConcept financialConcept) {
+    internal FixedList<FinancialConceptEntry> FinancialConceptIntegrationEntries(FinancialConcept financialConcept) {
       Assertion.AssertObject(financialConcept, nameof(financialConcept));
 
       return _financialConceptsIntegrationEntries.Value.FindAll(x => x.FinancialConcept.Equals(financialConcept));
     }
 
 
-    internal FinancialConceptEntriesTree GetFinancialConceptsEntriesAsTree() {
-      return new FinancialConceptEntriesTree(this);
+    internal FinancialConceptsEntriesTree GetFinancialConceptsEntriesAsTree() {
+      return new FinancialConceptsEntriesTree(this);
     }
 
 
-    internal FixedList<FinancialConceptIntegrationEntry> RootIntegrationEntries() {
+    internal FixedList<FinancialConceptEntry> RootIntegrationEntries() {
       return _financialConceptsIntegrationEntries.Value.FindAll(x => x.FinancialConcept.IsEmptyInstance);
     }
 

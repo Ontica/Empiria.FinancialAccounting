@@ -42,7 +42,7 @@ namespace Empiria.FinancialAccounting.FinancialConcepts.UseCases {
     }
 
 
-    public FixedList<FinancialConceptIntegrationEntryDto> GetFinancialConceptIntegration(string financialConceptUID) {
+    public FixedList<FinancialConceptEntryDto> GetFinancialConceptIntegration(string financialConceptUID) {
       Assertion.AssertObject(financialConceptUID, nameof(financialConceptUID));
 
       var financialConcept = FinancialConcept.Parse(financialConceptUID);
@@ -78,7 +78,7 @@ namespace Empiria.FinancialAccounting.FinancialConcepts.UseCases {
 
       var group = FinancialConceptGroup.Parse(groupUID);
 
-      FinancialConceptEntriesTree tree = group.GetFinancialConceptsEntriesAsTree();
+      FinancialConceptsEntriesTree tree = group.GetFinancialConceptsEntriesAsTree();
 
       return FinancialConceptsTreeMapper.MapFlat(tree.GetNodes());
     }

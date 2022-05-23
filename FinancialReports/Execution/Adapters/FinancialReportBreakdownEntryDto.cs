@@ -21,7 +21,7 @@ namespace Empiria.FinancialAccounting.FinancialReports.Adapters {
       get; internal set;
     }
 
-    public IntegrationEntryType Type {
+    public FinancialConceptEntryType Type {
       get;
       internal set;
     }

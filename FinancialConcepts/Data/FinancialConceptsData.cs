@@ -27,7 +27,7 @@ namespace Empiria.FinancialAccounting.FinancialConcepts.Data {
     }
 
 
-    static internal FixedList<FinancialConceptIntegrationEntry> GetAllIntegrationEntriesForAGroup(FinancialConceptGroup group) {
+    static internal FixedList<FinancialConceptEntry> GetAllIntegrationEntriesForAGroup(FinancialConceptGroup group) {
       var sql = "SELECT COF_CONCEPTOS_INTEGRACION.* " +
                 "FROM COF_CONCEPTOS_INTEGRACION " +
                $"WHERE ID_GRUPO = {group.Id} " +
@@ -35,7 +35,7 @@ namespace Empiria.FinancialAccounting.FinancialConcepts.Data {
 
       var op = DataOperation.Parse(sql);
 
-      return DataReader.GetFixedList<FinancialConceptIntegrationEntry>(op);
+      return DataReader.GetFixedList<FinancialConceptEntry>(op);
     }
 
 
@@ -51,7 +51,7 @@ namespace Empiria.FinancialAccounting.FinancialConcepts.Data {
 
 
 
-    static internal void Write(FinancialConceptIntegrationEntry o) {
+    static internal void Write(FinancialConceptEntry o) {
       var op = DataOperation.Parse("write_cof_concepto_integracion",
                       o.Id, o.UID, o.FinancialConcept.Id, o.CalculationRule, o.ReferencedFinancialConcept.Id,
                       o.AccountNumber, o.SubledgerAccountNumber, o.SectorCode, o.ExternalVariableCode,

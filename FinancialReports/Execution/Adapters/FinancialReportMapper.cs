@@ -96,7 +96,7 @@ namespace Empiria.FinancialAccounting.FinancialReports.Adapters {
     static private DynamicFinancialReportEntryDto MapBreakdownEntry(FixedRowFinancialReportEntry entry) {
       dynamic o = new FinancialReportBreakdownEntryDto {
         UID = entry.Row.UID,
-        Type = IntegrationEntryType.FinancialConceptReference,
+        Type = FinancialConceptEntryType.FinancialConceptReference,
         FinancialConceptUID = entry.FinancialConcept.UID,
         ItemType = FinancialReportItemType.Summary,
         ItemCode = "TOTAL",
@@ -193,7 +193,7 @@ namespace Empiria.FinancialAccounting.FinancialReports.Adapters {
     static private DynamicFinancialReportEntryDto MapIntegrationEntry(FixedRowFinancialReportEntry entry) {
       dynamic o = new IntegrationReportEntryDto {
         UID = entry.Row.UID,
-        Type = IntegrationEntryType.FinancialConceptReference,
+        Type = FinancialConceptEntryType.FinancialConceptReference,
         FinancialConceptUID = entry.FinancialConcept.UID,
         ConceptCode = entry.FinancialConcept.Code,
         Concept = entry.FinancialConcept.Name,

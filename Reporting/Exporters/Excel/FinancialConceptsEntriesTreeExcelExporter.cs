@@ -51,7 +51,7 @@ namespace Empiria.FinancialAccounting.Reporting.Exporters.Excel {
 
       foreach (var node in treeNodes) {
         _excelFile.SetCell($"A{i}", node.ItemCode);
-        _excelFile.SetCell($"B{i}", node.Type == IntegrationEntryType.FinancialConceptReference ? "Concepto": "Cuenta");
+        _excelFile.SetCell($"B{i}", node.Type == FinancialConceptEntryType.FinancialConceptReference ? "Concepto": "Cuenta");
         _excelFile.SetCell($"C{i}", node.ItemName);
 
         if (node.Level > 1) {

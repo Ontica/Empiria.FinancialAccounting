@@ -19,8 +19,8 @@ namespace Empiria.FinancialAccounting.FinancialConcepts.Adapters {
     }
 
 
-    static internal FixedList<FinancialConceptIntegrationEntryDto> Map(FixedList<FinancialConceptIntegrationEntry> integration) {
-      return new FixedList<FinancialConceptIntegrationEntryDto>(integration.Select(entry => Map(entry)));
+    static internal FixedList<FinancialConceptEntryDto> Map(FixedList<FinancialConceptEntry> integration) {
+      return new FixedList<FinancialConceptEntryDto>(integration.Select(entry => Map(entry)));
     }
 
 
@@ -36,8 +36,8 @@ namespace Empiria.FinancialAccounting.FinancialConcepts.Adapters {
     }
 
 
-    static private FinancialConceptIntegrationEntryDto Map(FinancialConceptIntegrationEntry integrationEntry) {
-      return new FinancialConceptIntegrationEntryDto {
+    static private FinancialConceptEntryDto Map(FinancialConceptEntry integrationEntry) {
+      return new FinancialConceptEntryDto {
         UID = integrationEntry.UID,
         Type = integrationEntry.Type,
         ItemCode = integrationEntry.Code,

@@ -16,18 +16,18 @@ namespace Empiria.FinancialAccounting.FinancialConcepts {
     #region Constructors and parsers
 
     private FinancialConceptEntryAsTreeNode() {
-      this.IntegrationEntry = FinancialConceptIntegrationEntry.Empty;
+      this.IntegrationEntry = FinancialConceptEntry.Empty;
       this.ParentNode = this;
     }
 
 
-    internal FinancialConceptEntryAsTreeNode(FinancialConceptIntegrationEntry integrationEntry) {
+    internal FinancialConceptEntryAsTreeNode(FinancialConceptEntry integrationEntry) {
       this.IntegrationEntry = integrationEntry;
       this.ParentNode = Empty;
     }
 
 
-    internal FinancialConceptEntryAsTreeNode(FinancialConceptIntegrationEntry integrationEntry,
+    internal FinancialConceptEntryAsTreeNode(FinancialConceptEntry integrationEntry,
                                              FinancialConceptEntryAsTreeNode parentNode) {
       this.IntegrationEntry = integrationEntry;
       this.ParentNode = parentNode;
@@ -45,7 +45,7 @@ namespace Empiria.FinancialAccounting.FinancialConcepts {
 
     #region Properties
 
-    public FinancialConceptIntegrationEntry IntegrationEntry {
+    public FinancialConceptEntry IntegrationEntry {
       get;
     }
 
@@ -57,7 +57,7 @@ namespace Empiria.FinancialAccounting.FinancialConcepts {
 
     public FixedList<FinancialConceptEntryAsTreeNode> ChildrenNodes {
       get {
-        if (this.IntegrationEntry.Type != IntegrationEntryType.FinancialConceptReference) {
+        if (this.IntegrationEntry.Type != FinancialConceptEntryType.FinancialConceptReference) {
           return new FixedList<FinancialConceptEntryAsTreeNode>();
         }
 

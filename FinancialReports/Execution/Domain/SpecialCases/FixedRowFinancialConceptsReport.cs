@@ -79,7 +79,7 @@ namespace Empiria.FinancialAccounting.FinancialReports {
         FixedRowFinancialReportEntry reportEntry = CreateReportEntryWithoutTotals(row);
 
         FixedList<FinancialReportBreakdownEntry> breakdownEntries = GetBreakdownEntries(reportEntry).
-                                                                    FindAll(x => x.IntegrationEntry.Type == IntegrationEntryType.Account);
+                                                                    FindAll(x => x.IntegrationEntry.Type == FinancialConceptEntryType.Account);
 
         ReportEntryTotals breakdownTotal = ProcessBreakdown(breakdownEntries);
 
@@ -98,7 +98,7 @@ namespace Empiria.FinancialAccounting.FinancialReports {
 
     #region Private methods
 
-    private ReportEntryTotals ProcessAccount(FinancialConceptIntegrationEntry integrationEntry) {
+    private ReportEntryTotals ProcessAccount(FinancialConceptEntry integrationEntry) {
       if (!_balances.ContainsKey(integrationEntry.AccountNumber)) {
         return CreateReportEntryTotalsObject();
       }
@@ -142,6 +142,7 @@ namespace Empiria.FinancialAccounting.FinancialReports {
         breakdownTotals.CopyTotalsTo(breakdownItem);
 
         switch (breakdownItem.IntegrationEntry.Operator) {
+
           case OperatorType.Add:
             granTotal = granTotal.Sum(breakdownTotals, breakdownItem.IntegrationEntry.Qualification);
             break;
@@ -163,17 +164,17 @@ namespace Empiria.FinancialAccounting.FinancialReports {
     }
 
 
-    private ReportEntryTotals CalculateBreakdown(FinancialConceptIntegrationEntry integrationEntry) {
+    private ReportEntryTotals CalculateBreakdown(FinancialConceptEntry integrationEntry) {
 
       switch (integrationEntry.Type) {
 
-        case IntegrationEntryType.FinancialConceptReference:
+        case FinancialConceptEntryType.FinancialConceptReference:
           return ProcessFinancialConcept(integrationEntry.ReferencedFinancialConcept);
 
-        case IntegrationEntryType.Account:
+        case FinancialConceptEntryType.Account:
           return ProcessAccount(integrationEntry);
 
-        case IntegrationEntryType.ExternalVariable:
+        case FinancialConceptEntryType.ExternalVariable:
           return ProcessFixedValue(integrationEntry);
 
         default:
@@ -201,7 +202,7 @@ namespace Empiria.FinancialAccounting.FinancialReports {
     }
 
 
-    private ReportEntryTotals ProcessFixedValue(FinancialConceptIntegrationEntry integrationEntry) {
+    private ReportEntryTotals ProcessFixedValue(FinancialConceptEntry integrationEntry) {
       ExternalValue value = ExternalValue.GetValue(integrationEntry.ExternalVariableCode,
                                                    _command.ToDate);
 
@@ -220,16 +221,16 @@ namespace Empiria.FinancialAccounting.FinancialReports {
       foreach (var integrationItem in financialConcept.Integration) {
 
         switch (integrationItem.Type) {
-          case IntegrationEntryType.FinancialConceptReference:
+          case FinancialConceptEntryType.FinancialConceptReference:
 
             totals = CalculateFinancialConceptTotals(integrationItem, totals);
             break;
 
-          case IntegrationEntryType.Account:
+          case FinancialConceptEntryType.Account:
             totals = CalculateAccountTotals(integrationItem, totals);
             break;
 
-          case IntegrationEntryType.ExternalVariable:
+          case FinancialConceptEntryType.ExternalVariable:
             totals = CalculateExternalVariableTotals(integrationItem, totals);
             break;
 
@@ -241,10 +242,10 @@ namespace Empiria.FinancialAccounting.FinancialReports {
     }
 
 
-    private ReportEntryTotals CalculateAccountTotals(FinancialConceptIntegrationEntry integrationEntry,
+    private ReportEntryTotals CalculateAccountTotals(FinancialConceptEntry integrationEntry,
                                                      ReportEntryTotals totals) {
 
-      Assertion.Assert(integrationEntry.Type == IntegrationEntryType.Account,
+      Assertion.Assert(integrationEntry.Type == FinancialConceptEntryType.Account,
                        "Invalid integrationEntry.Type");
 
       switch (integrationEntry.Operator) {
@@ -272,10 +273,10 @@ namespace Empiria.FinancialAccounting.FinancialReports {
     }
 
 
-    private ReportEntryTotals CalculateFinancialConceptTotals(FinancialConceptIntegrationEntry integrationEntry,
+    private ReportEntryTotals CalculateFinancialConceptTotals(FinancialConceptEntry integrationEntry,
                                                               ReportEntryTotals totals) {
 
-      Assertion.Assert(integrationEntry.Type == IntegrationEntryType.FinancialConceptReference,
+      Assertion.Assert(integrationEntry.Type == FinancialConceptEntryType.FinancialConceptReference,
                       "Invalid integrationEntry.Type");
 
       switch (integrationEntry.Operator) {
@@ -304,10 +305,10 @@ namespace Empiria.FinancialAccounting.FinancialReports {
     }
 
 
-    private ReportEntryTotals CalculateExternalVariableTotals(FinancialConceptIntegrationEntry integrationEntry,
+    private ReportEntryTotals CalculateExternalVariableTotals(FinancialConceptEntry integrationEntry,
                                                               ReportEntryTotals totals) {
 
-      Assertion.Assert(integrationEntry.Type == IntegrationEntryType.ExternalVariable,
+      Assertion.Assert(integrationEntry.Type == FinancialConceptEntryType.ExternalVariable,
                        "Invalid integrationEntry.Type");
 
       switch (integrationEntry.Operator) {
@@ -367,7 +368,7 @@ namespace Empiria.FinancialAccounting.FinancialReports {
     }
 
 
-    private FixedList<ITrialBalanceEntryDto> GetAccountBalances(FinancialConceptIntegrationEntry integrationEntry) {
+    private FixedList<ITrialBalanceEntryDto> GetAccountBalances(FinancialConceptEntry integrationEntry) {
       FixedList<ITrialBalanceEntryDto> balances = _balances[integrationEntry.AccountNumber];
 
       FixedList<ITrialBalanceEntryDto> filtered;
@@ -422,7 +423,7 @@ namespace Empiria.FinancialAccounting.FinancialReports {
       FixedList<FinancialReportRow> rows = GetReportFixedRows();
 
       return rows.FindAll(x => !x.FinancialConcept.IsEmptyInstance &&
-                                x.FinancialConcept.Integration.Contains(item => item.Type == IntegrationEntryType.Account));
+                                x.FinancialConcept.Integration.Contains(item => item.Type == FinancialConceptEntryType.Account));
     }
 
 

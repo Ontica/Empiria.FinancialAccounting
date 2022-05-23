@@ -24,7 +24,7 @@ namespace Empiria.FinancialAccounting.FinancialReports {
 
     #endregion Constructors and parsers
 
-    public FinancialConceptIntegrationEntry IntegrationEntry {
+    public FinancialConceptEntry IntegrationEntry {
       get;
       internal set;
     }

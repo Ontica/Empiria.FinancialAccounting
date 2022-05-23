@@ -12,7 +12,7 @@ using System;
 
 namespace Empiria.FinancialAccounting.FinancialConcepts {
 
-  public enum IntegrationEntryType {
+  public enum FinancialConceptEntryType {
 
     Account,
 
@@ -20,7 +20,7 @@ namespace Empiria.FinancialAccounting.FinancialConcepts {
 
     FinancialConceptReference,
 
-  }  // enum IntegrationEntryType
+  }  // enum FinancialConceptEntryType
 
 
   public enum OperatorType {
@@ -36,28 +36,28 @@ namespace Empiria.FinancialAccounting.FinancialConcepts {
 
   /// <summary>Describes an integration entry for a financial concept. Each integration entry is referenced
   /// to another financial concept, to a financial account or to an external financial value.</summary>
-  public class FinancialConceptIntegrationEntry : BaseObject {
+  public class FinancialConceptEntry : BaseObject {
 
     #region Constructors and parsers
 
-    protected FinancialConceptIntegrationEntry() {
+    protected FinancialConceptEntry() {
       // Required by Empiria Framework.
     }
 
 
-    static public FinancialConceptIntegrationEntry Parse(int id) {
-      return BaseObject.ParseId<FinancialConceptIntegrationEntry>(id);
+    static public FinancialConceptEntry Parse(int id) {
+      return BaseObject.ParseId<FinancialConceptEntry>(id);
     }
 
 
-    static public FinancialConceptIntegrationEntry Parse(string uid) {
-      return BaseObject.ParseKey<FinancialConceptIntegrationEntry>(uid);
+    static public FinancialConceptEntry Parse(string uid) {
+      return BaseObject.ParseKey<FinancialConceptEntry>(uid);
     }
 
 
-    static public FinancialConceptIntegrationEntry Empty {
+    static public FinancialConceptEntry Empty {
       get {
-        return FinancialConceptIntegrationEntry.ParseEmpty<FinancialConceptIntegrationEntry>();
+        return FinancialConceptEntry.ParseEmpty<FinancialConceptEntry>();
       }
     }
 
@@ -66,22 +66,22 @@ namespace Empiria.FinancialAccounting.FinancialConcepts {
     #region Properties
 
 
-    public IntegrationEntryType Type {
+    public FinancialConceptEntryType Type {
       get {
         if (!this.ReferencedFinancialConcept.IsEmptyInstance) {
-          return IntegrationEntryType.FinancialConceptReference;
+          return FinancialConceptEntryType.FinancialConceptReference;
 
         } else if (this.AccountNumber.Length != 0) {
-          return IntegrationEntryType.Account;
+          return FinancialConceptEntryType.Account;
 
         } else if (this.ExternalVariableCode.Length != 0) {
-          return IntegrationEntryType.ExternalVariable;
+          return FinancialConceptEntryType.ExternalVariable;
 
         } else if (this.IsEmptyInstance) {
-          return IntegrationEntryType.FinancialConceptReference;
+          return FinancialConceptEntryType.FinancialConceptReference;
 
         } else {
-          return IntegrationEntryType.ExternalVariable;
+          return FinancialConceptEntryType.ExternalVariable;
 
         }
       }
@@ -174,7 +174,7 @@ namespace Empiria.FinancialAccounting.FinancialConcepts {
 
     public string Name {
       get {
-        if (this.Type == IntegrationEntryType.Account) {
+        if (this.Type == FinancialConceptEntryType.Account) {
 
           var account = FinancialConcept.Group.AccountsChart.TryGetAccount(this.AccountNumber);
 
@@ -184,10 +184,10 @@ namespace Empiria.FinancialAccounting.FinancialConcepts {
             return "La cuenta NO existe en el catálogo de cuentas.";
           }
 
-        } else if (this.Type == IntegrationEntryType.FinancialConceptReference) {
+        } else if (this.Type == FinancialConceptEntryType.FinancialConceptReference) {
           return this.ReferencedFinancialConcept.Name;
 
-        } else if (this.Type == IntegrationEntryType.ExternalVariable) {
+        } else if (this.Type == FinancialConceptEntryType.ExternalVariable) {
 
           var fixedValue = ExternalVariable.TryParseWithCode(this.ExternalVariableCode);
 
@@ -206,13 +206,13 @@ namespace Empiria.FinancialAccounting.FinancialConcepts {
 
     public string Code {
       get {
-        if (this.Type == IntegrationEntryType.Account) {
+        if (this.Type == FinancialConceptEntryType.Account) {
           return this.AccountNumber;
 
-        } else if (this.Type == IntegrationEntryType.FinancialConceptReference) {
+        } else if (this.Type == FinancialConceptEntryType.FinancialConceptReference) {
           return this.ReferencedFinancialConcept.Code;
 
-        } else if (this.Type == IntegrationEntryType.ExternalVariable) {
+        } else if (this.Type == FinancialConceptEntryType.ExternalVariable) {
           return this.ExternalVariableCode;
 
         } else {
@@ -269,6 +269,6 @@ namespace Empiria.FinancialAccounting.FinancialConcepts {
 
     #endregion Methods
 
-  }  // class FinancialConceptIntegrationEntry
+  }  // class FinancialConceptEntry
 
 }  // namespace Empiria.FinancialAccounting.FinancialConcepts

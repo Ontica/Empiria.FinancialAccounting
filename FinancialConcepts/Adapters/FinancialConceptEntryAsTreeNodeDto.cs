@@ -23,7 +23,7 @@ namespace Empiria.FinancialAccounting.FinancialConcepts.Adapters {
     }
 
 
-    public IntegrationEntryType Type {
+    public FinancialConceptEntryType Type {
       get; internal set;
     }
 
