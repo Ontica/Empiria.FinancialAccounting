@@ -52,6 +52,10 @@ namespace Empiria.FinancialAccounting.BalanceEngine.UseCases {
 
 
     public async Task<BalanzaTradicionalDto> BuildBalanzaTradicional(TrialBalanceCommand command) {
+      Assertion.AssertObject(command, "command");
+
+      Assertion.Assert(command.TrialBalanceType == TrialBalanceType.Balanza,
+                       "command.TrialBalanceType must be 'Balanza'.");
 
       var builder = new BalanzaTradicionalBuilder(command);
       TrialBalance entries = await Task.Run(() => builder.Build()).ConfigureAwait(false);
