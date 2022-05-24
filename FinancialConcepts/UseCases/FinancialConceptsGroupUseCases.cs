@@ -58,9 +58,7 @@ namespace Empiria.FinancialAccounting.FinancialConcepts.UseCases {
 
       var group = FinancialConceptGroup.Parse(groupUID);
 
-      FixedList<FinancialConcept> concepts = group.FinancialConcepts();
-
-      return FinancialConceptMapper.Map(concepts);
+      return FinancialConceptMapper.Map(group.FinancialConcepts);
     }
 
 
@@ -69,7 +67,7 @@ namespace Empiria.FinancialAccounting.FinancialConcepts.UseCases {
 
       var group = FinancialConceptGroup.Parse(groupUID);
 
-      FinancialConceptsEntriesTree tree = group.GetFinancialConceptsEntriesAsTree();
+      var tree = new FinancialConceptsEntriesTree(group);
 
       return FinancialConceptsTreeMapper.Map(tree.GetNodes());
     }

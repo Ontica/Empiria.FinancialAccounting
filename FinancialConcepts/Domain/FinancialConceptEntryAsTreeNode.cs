@@ -61,12 +61,10 @@ namespace Empiria.FinancialAccounting.FinancialConcepts {
           return new FixedList<FinancialConceptEntryAsTreeNode>();
         }
 
-        var referencedConcept =  this.IntegrationEntry.ReferencedFinancialConcept;
+        FinancialConcept referencedConcept = this.IntegrationEntry.ReferencedFinancialConcept;
 
-        var list = this.IntegrationEntry.Group.FinancialConceptIntegrationEntries(referencedConcept);
-
-        return list.Select(x => new FinancialConceptEntryAsTreeNode(x, this))
-                   .ToFixedList();
+        return referencedConcept.Integration.Select(x => new FinancialConceptEntryAsTreeNode(x, this))
+                                            .ToFixedList();
       }
     }
 
