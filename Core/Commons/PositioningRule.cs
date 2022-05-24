@@ -28,4 +28,20 @@ namespace Empiria.FinancialAccounting {
 
   }  // enum PositioningRule
 
+
+
+  /// <summary>Extension methods for PositioningRule.</summary>
+  public static class PositioningRuleExtensions {
+
+    static public bool UsesOffset(this PositioningRule rule) {
+      return rule == PositioningRule.AfterOffset || rule == PositioningRule.BeforeOffset;
+    }
+
+
+    static public bool UsesPosition(this PositioningRule rule) {
+      return rule == PositioningRule.ByPositionValue;
+    }
+
+  }  // class PositioningRuleExtensions
+
 }  // namespace Empiria.FinancialAccounting
