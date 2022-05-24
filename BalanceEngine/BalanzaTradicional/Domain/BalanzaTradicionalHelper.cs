@@ -8,8 +8,12 @@
 *                                                                                                            *
 ************************* Copyright(c) La Vía Óntica SC, Ontica LLC and contributors. All rights reserved. **/
 using System;
+using System.Collections.Generic;
+using Empiria.Collections;
 
+using Empiria.FinancialAccounting.BalanceEngine.Data;
 using Empiria.FinancialAccounting.BalanceEngine.Adapters;
+using System.Linq;
 
 namespace Empiria.FinancialAccounting.BalanceEngine {
 
@@ -17,16 +21,98 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
   /// <summary>Helper methods to build traditional trial balances.</summary>
   internal class BalanzaTradicionalHelper {
 
-    private readonly TrialBalanceCommand command;
+    private readonly TrialBalanceCommand _command;
 
     public BalanzaTradicionalHelper(TrialBalanceCommand Command) {
 
-      command = Command;
+      _command = Command;
     }
 
 
     #region Public methods
 
+
+    internal FixedList<TrialBalanceEntry> GetCalculatedParentAccounts(
+                                     FixedList<TrialBalanceEntry> accountEntries) {
+      
+      var trialBalanceHelper = new TrialBalanceHelper(_command);
+      var parentAccounts = new EmpiriaHashTable<TrialBalanceEntry>(accountEntries.Count);
+
+      foreach (var entry in accountEntries) {
+
+        entry.DebtorCreditor = entry.Account.DebtorCreditor;
+        entry.SubledgerAccountNumber = SubledgerAccount.Parse(entry.SubledgerAccountId).Number ?? "";
+
+        StandardAccount currentParent = ValidateEntryForSummaryParentAccount(entry);
+
+        if (entry.HasParentPostingEntry) {
+          continue;
+        }
+
+        while (true) {
+          entry.DebtorCreditor = entry.Account.DebtorCreditor;
+          entry.SubledgerAccountIdParent = entry.SubledgerAccountId;
+
+          if (entry.Level > 1) {
+            SummaryByAccountEntry(parentAccounts, entry, currentParent,
+                            entry.Sector, TrialBalanceItemType.Summary);
+
+            ValidateSectorizationForSummaryParentEntry(parentAccounts, entry, currentParent);
+          }
+
+          if (!currentParent.HasParent && entry.HasSector) {
+            trialBalanceHelper.GetEntriesAndParentSector(parentAccounts, entry, currentParent);
+            break;
+
+          } else if (!currentParent.HasParent) {
+            break;
+
+          } else {
+            currentParent = currentParent.GetParent();
+          }
+
+        } // while
+
+      } // foreach
+
+      trialBalanceHelper.AssignLastChangeDatesToSummaryEntries(accountEntries, parentAccounts);
+
+      return parentAccounts.ToFixedList();
+    }
+
+
+    internal FixedList<TrialBalanceEntry> GetPostingEntries() {
+
+      FixedList<TrialBalanceEntry> accountEntries = BalancesDataService.GetTrialBalanceEntries(_command);
+
+      if (_command.ValuateBalances || _command.InitialPeriod.UseDefaultValuation) {
+        ValuateAccountEntriesToExchangeRate(accountEntries);
+
+        if (_command.ConsolidateBalancesToTargetCurrency) {
+          accountEntries = ConsolidateAccountEntriesToTargetCurrency(accountEntries);
+        }
+      }
+
+      var trialBalanceHelper = new TrialBalanceHelper(_command);
+      trialBalanceHelper.RoundDecimals(accountEntries);
+
+      return accountEntries;
+    }
+
+
+    internal void SummaryByAccountEntry(EmpiriaHashTable<TrialBalanceEntry> summaryEntries,
+                                 TrialBalanceEntry entry,
+                                 StandardAccount targetAccount, Sector targetSector,
+                                 TrialBalanceItemType itemType) {
+
+      var trialBalanceHelper = new TrialBalanceHelper(_command);
+
+      string hash = $"{targetAccount.Number}||{targetSector.Code}||{entry.Currency.Id}||" +
+                    $"{entry.Ledger.Id}||{entry.DebtorCreditor}";
+
+      trialBalanceHelper.GenerateOrIncreaseEntries(summaryEntries, entry, targetAccount,
+                                                   targetSector, itemType, hash);
+    }
 
 
     #endregion Public methods
@@ -34,6 +120,102 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
 
     #region Private methods
 
+
+    private FixedList<TrialBalanceEntry> ConsolidateAccountEntriesToTargetCurrency(
+                                          FixedList<TrialBalanceEntry> trialBalance) {
+
+      var targetCurrency = Currency.Parse(_command.InitialPeriod.ValuateToCurrrencyUID);
+      var AccountEntriesToConsolidate = new EmpiriaHashTable<TrialBalanceEntry>();
+
+      foreach (var entry in trialBalance) {
+        string hash = $"{entry.Account.Number}||{entry.Sector.Code}||" +
+                      $"{targetCurrency.Id}||{entry.Ledger.Id}";
+
+        if (_command.WithSubledgerAccount) {
+          hash = $"{entry.Account.Number}||{entry.SubledgerAccountId}||" +
+                 $"{entry.Sector.Code}||{targetCurrency.Id}||{entry.Ledger.Id}";
+
+        }
+
+        if (entry.Currency.Equals(targetCurrency)) {
+          AccountEntriesToConsolidate.Insert(hash, entry);
+        } else if (AccountEntriesToConsolidate.ContainsKey(hash)) {
+          AccountEntriesToConsolidate[hash].Sum(entry);
+        } else {
+          entry.Currency = targetCurrency;
+          AccountEntriesToConsolidate.Insert(hash, entry);
+        }
+      }
+
+      return AccountEntriesToConsolidate.Values.ToFixedList();
+    }
+
+
+    private StandardAccount ValidateEntryForSummaryParentAccount(TrialBalanceEntry entry) {
+
+      StandardAccount currentParent;
+
+      while (true) {
+        if ((entry.Account.NotHasParent) || _command.WithSubledgerAccount) {
+          currentParent = entry.Account;
+
+        } else if (_command.DoNotReturnSubledgerAccounts && entry.Account.HasParent) {
+          currentParent = entry.Account.GetParent();
+
+        } else if (_command.DoNotReturnSubledgerAccounts && entry.Account.NotHasParent) {
+          continue;
+
+        } else {
+          throw Assertion.AssertNoReachThisCode();
+        }
+        break;
+      }
+        
+      return currentParent;
+    }
+
+
+    private void ValidateSectorizationForSummaryParentEntry(
+                  EmpiriaHashTable<TrialBalanceEntry> parentAccounts,
+                  TrialBalanceEntry entry, StandardAccount currentParent) {
+
+      if (!_command.UseNewSectorizationModel || !_command.WithSectorization) {
+        return;
+      }
+
+      if (!currentParent.HasParent || !entry.HasSector) {
+        return;
+      }
+
+      SummaryByAccountEntry(parentAccounts, entry, currentParent,
+                            entry.Sector.Parent, TrialBalanceItemType.Summary);
+    }
+
+
+    private void ValuateAccountEntriesToExchangeRate(FixedList<TrialBalanceEntry> entries) {
+
+      if (_command.InitialPeriod.UseDefaultValuation) {
+        _command.InitialPeriod.ExchangeRateTypeUID = ExchangeRateType.ValorizacionBanxico.UID;
+        _command.InitialPeriod.ValuateToCurrrencyUID = "01";
+        _command.InitialPeriod.ExchangeRateDate = _command.InitialPeriod.ToDate;
+      }
+
+      var exchangeRateType = ExchangeRateType.Parse(_command.InitialPeriod.ExchangeRateTypeUID);
+      FixedList<ExchangeRate> exchangeRates = ExchangeRate.GetList(exchangeRateType,
+                                                                   _command.InitialPeriod.ExchangeRateDate);
+
+      foreach (var entry in entries.Where(a => a.Currency.Code != "01")) {
+
+        var exchangeRate = exchangeRates.FirstOrDefault(
+                            a => a.FromCurrency.Code == _command.InitialPeriod.ValuateToCurrrencyUID &&
+                            a.ToCurrency.Code == entry.Currency.Code);
+
+        Assertion.AssertObject(exchangeRate, $"No se ha registrado el tipo de cambio para la " +
+                                             $"moneda {entry.Currency.FullName} con la fecha proporcionada.");
+
+        entry.MultiplyBy(exchangeRate.Value);
+      }
+    }
 
 
     #endregion Private methods

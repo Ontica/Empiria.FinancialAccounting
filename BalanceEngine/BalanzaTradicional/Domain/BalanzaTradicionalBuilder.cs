@@ -27,7 +27,7 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
 
     internal TrialBalance Build() {
       var helper = new TrialBalanceHelper(_command);
-
+      var balanzaHelper = new BalanzaTradicionalHelper(_command);
 
       if (_command.TrialBalanceType == TrialBalanceType.Saldos) {
         _command.WithSubledgerAccount = true;
@@ -37,11 +37,11 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
 
       EmpiriaLog.Debug($"START BalanzaTradicional: {startTime}");
 
-      FixedList<TrialBalanceEntry> postingEntries = helper.GetPostingEntries();
+      FixedList<TrialBalanceEntry> postingEntries = balanzaHelper.GetPostingEntries();
 
       helper.SetSummaryToParentEntries(postingEntries);
 
-      List<TrialBalanceEntry> summaryEntries = helper.GetCalculatedParentAccounts(postingEntries);
+      FixedList<TrialBalanceEntry> summaryEntries = balanzaHelper.GetCalculatedParentAccounts(postingEntries);
 
       EmpiriaLog.Debug($"AFTER GenerateSummaryEntries: {DateTime.Now.Subtract(startTime).TotalSeconds} seconds.");
 
@@ -51,7 +51,7 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
       EmpiriaLog.Debug($"AFTER GetSummaryEntriesAndSectorization (postingEntries): {DateTime.Now.Subtract(startTime).TotalSeconds} seconds.");
 
       List<TrialBalanceEntry> summaryEntriesAndSectorization =
-                              helper.GetSummaryEntriesAndSectorization(summaryEntries);
+                              helper.GetSummaryEntriesAndSectorization(summaryEntries.ToList());
 
       EmpiriaLog.Debug($"AFTER GetSummaryEntriesAndSectorization (summaryEntries): {DateTime.Now.Subtract(startTime).TotalSeconds} seconds.");
 

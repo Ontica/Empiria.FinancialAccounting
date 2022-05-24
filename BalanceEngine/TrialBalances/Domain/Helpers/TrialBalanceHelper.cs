@@ -424,12 +424,12 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
 
       } // foreach
 
-      var returnedEntries = AssignLastChangeDatesToSummaryEntries(accountEntries, parentAccounts);
+      AssignLastChangeDatesToSummaryEntries(accountEntries, parentAccounts);
 
       if (detailSummaryEntries.Count > 0 && _command.TrialBalanceType == TrialBalanceType.SaldosPorCuenta) {
         return detailSummaryEntries;
       }
-      return returnedEntries;
+      return parentAccounts.ToFixedList().ToList();
     }
 
 
@@ -695,7 +695,7 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
 
     #region Private methods
 
-    private List<TrialBalanceEntry> AssignLastChangeDatesToSummaryEntries(
+    internal void AssignLastChangeDatesToSummaryEntries(
                                       FixedList<TrialBalanceEntry> entries,
                                       EmpiriaHashTable<TrialBalanceEntry> summaryEntries) {
 
@@ -706,12 +706,10 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
 
         SetLastChangeDateToParentEntries(entry, summaryEntriesList);
       }
-
-      return summaryEntriesList;
     }
 
 
-    private void GetEntriesAndParentSector(EmpiriaHashTable<TrialBalanceEntry> summaryEntries,
+    internal void GetEntriesAndParentSector(EmpiriaHashTable<TrialBalanceEntry> summaryEntries,
                                           TrialBalanceEntry entry, StandardAccount currentParent) {
       if (!_command.WithSectorization) {
         SummaryByEntry(summaryEntries, entry, currentParent, Sector.Empty,
@@ -739,6 +737,7 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
       string key = $"{currentParent.Number}||{entry.Sector.Code}||{entry.Currency.Id}||{entry.Ledger.Id}";
 
       summaryEntries.TryGetValue(key, out detailsEntry);
+
       if (detailsEntry != null) {
         var existEntry = detailSummaryEntries.FirstOrDefault(a =>
                                                        a.Account.Number == detailsEntry.Account.Number &&
@@ -997,7 +996,7 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
     }
 
 
-    private void SummaryEntryBySectorization(EmpiriaHashTable<TrialBalanceEntry> summaryEntries,
+    internal void SummaryEntryBySectorization(EmpiriaHashTable<TrialBalanceEntry> summaryEntries,
                                              TrialBalanceEntry entry, StandardAccount currentParent) {
       if (!_command.UseNewSectorizationModel || !_command.WithSectorization) {
         return;
@@ -1012,7 +1011,7 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
     }
 
 
-    private void GenerateOrIncreaseEntries(EmpiriaHashTable<TrialBalanceEntry> summaryEntries,
+    internal void GenerateOrIncreaseEntries(EmpiriaHashTable<TrialBalanceEntry> summaryEntries,
                                            TrialBalanceEntry entry,
                                            StandardAccount targetAccount, Sector targetSector,
                                            TrialBalanceItemType itemType, string hash) {
