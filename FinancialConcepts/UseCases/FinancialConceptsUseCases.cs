@@ -42,40 +42,48 @@ namespace Empiria.FinancialAccounting.FinancialConcepts.UseCases {
     }
 
 
-    public FixedList<FinancialConceptDescriptorDto> InsertFinancialConcept(FinancialConceptEditionCommand command) {
+    public FinancialConceptDto InsertFinancialConcept(FinancialConceptEditionCommand command) {
       Assertion.AssertObject(command, nameof(command));
 
       command.EnsureIsValid();
 
       var group = FinancialConceptGroup.Parse(command.GroupUID);
 
-      FixedList<FinancialConcept> concepts = group.FinancialConcepts();
+      FinancialConcept concept = group.InsertFrom(command);
 
-      return FinancialConceptMapper.Map(concepts);
+      concept.Save();
+
+      return FinancialConceptMapper.Map(concept);
     }
 
 
     public FixedList<FinancialConceptDescriptorDto> RemoveFinancialConcept(string financialConceptUID) {
       Assertion.AssertObject(financialConceptUID, nameof(financialConceptUID));
 
-      FinancialConceptGroup group = FinancialConcept.Parse(financialConceptUID).Group;
+      FinancialConcept concept = FinancialConcept.Parse(financialConceptUID);
 
-      FixedList<FinancialConcept> concepts = group.FinancialConcepts();
+      FinancialConceptGroup group = concept.Group;
 
-      return FinancialConceptMapper.Map(concepts);
+      group.Remove(concept);
+
+      concept.Save();
+
+      return FinancialConceptMapper.Map(group.FinancialConcepts);
     }
 
 
-    public FixedList<FinancialConceptDescriptorDto> UpdateFinancialConcept(FinancialConceptEditionCommand command) {
+    public FinancialConceptDto UpdateFinancialConcept(FinancialConceptEditionCommand command) {
       Assertion.AssertObject(command, nameof(command));
 
       command.EnsureIsValid();
 
       var group = FinancialConceptGroup.Parse(command.GroupUID);
 
-      FixedList<FinancialConcept> concepts = group.FinancialConcepts();
+      FinancialConcept concept = group.UpdateFrom(command);
 
-      return FinancialConceptMapper.Map(concepts);
+      concept.Save();
+
+      return FinancialConceptMapper.Map(concept);
     }
 
     #endregion Use cases
