@@ -15,12 +15,12 @@ namespace Empiria.FinancialAccounting.FinancialConcepts.Adapters {
   static public class FinancialConceptsTreeMapper {
 
 
-    static internal FixedList<FinancialConceptEntryAsTreeNodeDto> MapFlat(FixedList<FinancialConceptEntryAsTreeNode> nodes) {
-      return new FixedList<FinancialConceptEntryAsTreeNodeDto>(nodes.Select(node => MapFlat(node)));
+    static internal FixedList<FinancialConceptEntryAsTreeNodeDto> Map(FixedList<FinancialConceptEntryAsTreeNode> nodes) {
+      return new FixedList<FinancialConceptEntryAsTreeNodeDto>(nodes.Select(node => Map(node)));
     }
 
 
-    static private FinancialConceptEntryAsTreeNodeDto MapFlat(FinancialConceptEntryAsTreeNode node) {
+    static private FinancialConceptEntryAsTreeNodeDto Map(FinancialConceptEntryAsTreeNode node) {
       return new FinancialConceptEntryAsTreeNodeDto {
         ItemCode = node.IntegrationEntry.Code,
         ItemName = node.IntegrationEntry.Name,

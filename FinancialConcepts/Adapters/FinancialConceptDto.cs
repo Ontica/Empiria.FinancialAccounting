@@ -46,6 +46,10 @@ namespace Empiria.FinancialAccounting.FinancialConcepts.Adapters {
       get; internal set;
     }
 
+    public NamedEntityDto AccountsChart {
+      get; internal set;
+    }
+
     public FixedList<FinancialConceptEntryDto> Integration {
       get; internal set;
     }

@@ -4,7 +4,7 @@
 *  Assembly : FinancialAccounting.FinancialConcepts.dll  Pattern   : Use case interactor class               *
 *  Type     : FinancialConceptsUseCases                  License   : Please read LICENSE.txt file            *
 *                                                                                                            *
-*  Summary  : Use cases for retrieve financial concepts.                                                     *
+*  Summary  : Use cases used to create and update financial concepts.                                        *
 *                                                                                                            *
 ************************* Copyright(c) La Vía Óntica SC, Ontica LLC and contributors. All rights reserved. **/
 using System;
@@ -15,7 +15,7 @@ using Empiria.FinancialAccounting.FinancialConcepts.Adapters;
 
 namespace Empiria.FinancialAccounting.FinancialConcepts.UseCases {
 
-  /// <summary>Use cases for retrieve financial concepts.</summary>
+  /// <summary>Use cases used to create and update financial concepts.</summary>
   public class FinancialConceptsUseCases : UseCase {
 
     #region Constructors and parsers
@@ -33,15 +33,6 @@ namespace Empiria.FinancialAccounting.FinancialConcepts.UseCases {
     #region Use cases
 
 
-    public void CleanupFinancialConceptGroup(string groupUID) {
-      Assertion.AssertObject(groupUID, "groupUID");
-
-      var group = FinancialConceptGroup.Parse(groupUID);
-
-      group.Cleanup();
-    }
-
-
     public FinancialConceptDto GetFinancialConcept(string financialConceptUID) {
       Assertion.AssertObject(financialConceptUID, nameof(financialConceptUID));
 
@@ -51,30 +42,12 @@ namespace Empiria.FinancialAccounting.FinancialConcepts.UseCases {
     }
 
 
-    public FixedList<FinancialConceptEntryDto> GetFinancialConceptIntegration(string financialConceptUID) {
-      Assertion.AssertObject(financialConceptUID, nameof(financialConceptUID));
+    public FixedList<FinancialConceptDescriptorDto> InsertFinancialConcept(FinancialConceptEditionCommand command) {
+      Assertion.AssertObject(command, nameof(command));
 
-      var financialConcept = FinancialConcept.Parse(financialConceptUID);
+      command.EnsureIsValid();
 
-      return FinancialConceptMapper.Map(financialConcept.Integration);
-    }
-
-
-    public FixedList<NamedEntityDto> GetFinancialConceptsGroups(string accountsChartUID) {
-      Assertion.AssertObject(accountsChartUID, "accountsChartUID");
-
-      var accountsChart = AccountsChart.Parse(accountsChartUID);
-
-      FixedList<FinancialConceptGroup> groups = FinancialConceptGroup.GetList(accountsChart);
-
-      return groups.MapToNamedEntityList();
-    }
-
-
-    public FixedList<FinancialConceptDescriptorDto> GetGroupFinancialConcepts(string groupUID) {
-      Assertion.AssertObject(groupUID, "groupUID");
-
-      var group = FinancialConceptGroup.Parse(groupUID);
+      var group = FinancialConceptGroup.Parse(command.GroupUID);
 
       FixedList<FinancialConcept> concepts = group.FinancialConcepts();
 
@@ -82,16 +55,28 @@ namespace Empiria.FinancialAccounting.FinancialConcepts.UseCases {
     }
 
 
-    public FixedList<FinancialConceptEntryAsTreeNodeDto> GetGroupFinancialConceptsEntriesAsTree(string groupUID) {
-      Assertion.AssertObject(groupUID, "groupUID");
+    public FixedList<FinancialConceptDescriptorDto> RemoveFinancialConcept(string financialConceptUID) {
+      Assertion.AssertObject(financialConceptUID, nameof(financialConceptUID));
 
-      var group = FinancialConceptGroup.Parse(groupUID);
+      FinancialConceptGroup group = FinancialConcept.Parse(financialConceptUID).Group;
 
-      FinancialConceptsEntriesTree tree = group.GetFinancialConceptsEntriesAsTree();
+      FixedList<FinancialConcept> concepts = group.FinancialConcepts();
 
-      return FinancialConceptsTreeMapper.MapFlat(tree.GetNodes());
+      return FinancialConceptMapper.Map(concepts);
     }
 
+
+    public FixedList<FinancialConceptDescriptorDto> UpdateFinancialConcept(FinancialConceptEditionCommand command) {
+      Assertion.AssertObject(command, nameof(command));
+
+      command.EnsureIsValid();
+
+      var group = FinancialConceptGroup.Parse(command.GroupUID);
+
+      FixedList<FinancialConcept> concepts = group.FinancialConcepts();
+
+      return FinancialConceptMapper.Map(concepts);
+    }
 
     #endregion Use cases
 

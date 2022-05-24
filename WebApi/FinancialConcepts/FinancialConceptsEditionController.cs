@@ -2,7 +2,7 @@
 *                                                                                                            *
 *  Module   : Financial Concepts                           Component : Web Api                               *
 *  Assembly : Empiria.FinancialAccounting.WebApi.dll       Pattern   : Command Controller                    *
-*  Type     : FinancialConceptEditionController            License   : Please read LICENSE.txt file          *
+*  Type     : FinancialConceptsEditionController           License   : Please read LICENSE.txt file          *
 *                                                                                                            *
 *  Summary  : Command web API used to edit financial concepts.                                               *
 *                                                                                                            *
@@ -18,9 +18,21 @@ using Empiria.FinancialAccounting.FinancialConcepts.Adapters;
 namespace Empiria.FinancialAccounting.WebApi.FinancialConcepts {
 
   /// <summary>Command web API used to edit financial concepts.</summary>
-  public class FinancialConceptEditionController : WebApiController {
+  public class FinancialConceptsEditionController : WebApiController {
 
     #region Web Apis
+
+    [HttpGet]
+    [Route("v2/financial-accounting/financial-concepts/{financialConceptUID:guid}")]
+    public SingleObjectModel GetFinancialConcept([FromUri] string financialConceptUID) {
+
+      using (var usecases = FinancialConceptsUseCases.UseCaseInteractor()) {
+        FinancialConceptDto concept = usecases.GetFinancialConcept(financialConceptUID);
+
+        return new SingleObjectModel(base.Request, concept);
+      }
+    }
+
 
     [HttpPost]
     [Route("v2/financial-accounting/financial-concepts")]
@@ -28,7 +40,7 @@ namespace Empiria.FinancialAccounting.WebApi.FinancialConcepts {
 
       base.RequireBody(command);
 
-      using (var usecases = FinancialConceptEditionUseCases.UseCaseInteractor()) {
+      using (var usecases = FinancialConceptsUseCases.UseCaseInteractor()) {
         FixedList<FinancialConceptDescriptorDto> concepts = usecases.InsertFinancialConcept(command);
 
         return new CollectionModel(base.Request, concepts);
@@ -40,7 +52,7 @@ namespace Empiria.FinancialAccounting.WebApi.FinancialConcepts {
     [Route("v2/financial-accounting/financial-concepts/{financialConceptUID:guid}")]
     public CollectionModel RemoveFinancialConcept([FromUri] string financialConceptUID) {
 
-      using (var usecases = FinancialConceptEditionUseCases.UseCaseInteractor()) {
+      using (var usecases = FinancialConceptsUseCases.UseCaseInteractor()) {
         FixedList<FinancialConceptDescriptorDto> concepts = usecases.RemoveFinancialConcept(financialConceptUID);
 
         return new CollectionModel(base.Request, concepts);
@@ -58,7 +70,7 @@ namespace Empiria.FinancialAccounting.WebApi.FinancialConcepts {
       Assertion.Assert(financialConceptUID == command.FinancialConceptUID,
                        "command.FinancialConceptUID does not match url.");
 
-      using (var usecases = FinancialConceptEditionUseCases.UseCaseInteractor()) {
+      using (var usecases = FinancialConceptsUseCases.UseCaseInteractor()) {
         FixedList<FinancialConceptDescriptorDto> concepts = usecases.UpdateFinancialConcept(command);
 
         return new CollectionModel(base.Request, concepts);
@@ -69,7 +81,7 @@ namespace Empiria.FinancialAccounting.WebApi.FinancialConcepts {
     [HttpPost]
     [Route("v2/financial-accounting/financial-concepts/clean-up")]
     public NoDataModel CleanupAllRules() {
-      using (var usecases = FinancialConceptsUseCases.UseCaseInteractor()) {
+      using (var usecases = FinancialConceptsGroupUseCases.UseCaseInteractor()) {
 
         var groups = usecases.GetFinancialConceptsGroups(AccountsChart.IFRS.UID);
 
@@ -83,6 +95,6 @@ namespace Empiria.FinancialAccounting.WebApi.FinancialConcepts {
 
     #endregion Web Apis
 
-  }  // class FinancialConceptEditionController
+  }  // class FinancialConceptsEditionController
 
 }  // namespace Empiria.FinancialAccounting.WebApi.FinancialConcepts

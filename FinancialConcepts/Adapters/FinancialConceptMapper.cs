@@ -19,11 +19,12 @@ namespace Empiria.FinancialAccounting.FinancialConcepts.Adapters {
         UID = concept.UID,
         Code = concept.Code,
         Name = concept.Name,
-        Group = concept.Group.MapToNamedEntity(),
         Position = concept.Position,
         Level = concept.Level,
         StartDate = concept.StartDate,
         EndDate = concept.EndDate,
+        Group = concept.Group.MapToNamedEntity(),
+        AccountsChart = concept.Group.AccountsChart.MapToNamedEntity(),
         Integration = Map(concept.Integration),
       };
     }
@@ -35,7 +36,7 @@ namespace Empiria.FinancialAccounting.FinancialConcepts.Adapters {
     }
 
 
-    static internal FixedList<FinancialConceptEntryDto> Map(FixedList<FinancialConceptEntry> integration) {
+    static private FixedList<FinancialConceptEntryDto> Map(FixedList<FinancialConceptEntry> integration) {
       return integration.Select(entry => Map(entry))
                         .ToFixedList();
     }
