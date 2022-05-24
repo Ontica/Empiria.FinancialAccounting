@@ -125,6 +125,11 @@ namespace Empiria.FinancialAccounting.FinancialConcepts {
     }
 
 
+    protected override void OnSave() {
+      FinancialConceptsData.Write(this);
+    }
+
+
     internal void SetPosition(int position) {
       Assertion.Assert(position > 0, "Position must be greater than zero.");
 

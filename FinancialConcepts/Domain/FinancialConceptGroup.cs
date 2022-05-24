@@ -1,7 +1,7 @@
 ﻿/* Empiria Financial *****************************************************************************************
 *                                                                                                            *
 *  Module   : Financial Concepts                         Component : Domain Layer                            *
-*  Assembly : FinancialAccounting.FinancialConcepts.dll  Pattern   : Empiria Data Object                     *
+*  Assembly : FinancialAccounting.FinancialConcepts.dll  Pattern   : Empiria Aggregate Object                *
 *  Type     : FinancialConceptGroup                      License   : Please read LICENSE.txt file            *
 *                                                                                                            *
 *  Summary  : Holds a set of financial concepts, which unique purpose is to classify concepts.               *
@@ -242,7 +242,7 @@ namespace Empiria.FinancialAccounting.FinancialConcepts {
       for (int i = 0; i < this.FinancialConcepts.Count; i++) {
         FinancialConcept item = this.FinancialConcepts[i];
 
-        item.SetPosition(i++);
+        item.SetPosition(i + 1);
       }
     }
 
