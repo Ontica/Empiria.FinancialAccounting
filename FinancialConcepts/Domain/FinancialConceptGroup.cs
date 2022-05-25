@@ -1,7 +1,7 @@
 ﻿/* Empiria Financial *****************************************************************************************
 *                                                                                                            *
 *  Module   : Financial Concepts                         Component : Domain Layer                            *
-*  Assembly : FinancialAccounting.FinancialConcepts.dll  Pattern   : Empiria Data Object                     *
+*  Assembly : FinancialAccounting.FinancialConcepts.dll  Pattern   : Empiria Aggregate Object                *
 *  Type     : FinancialConceptGroup                      License   : Please read LICENSE.txt file            *
 *                                                                                                            *
 *  Summary  : Holds a set of financial concepts, which unique purpose is to classify concepts.               *
@@ -9,7 +9,9 @@
 *                                                                                                            *
 ************************* Copyright(c) La Vía Óntica SC, Ontica LLC and contributors. All rights reserved. **/
 using System;
+using System.Collections.Generic;
 
+using Empiria.FinancialAccounting.FinancialConcepts.Adapters;
 using Empiria.FinancialAccounting.FinancialConcepts.Data;
 
 namespace Empiria.FinancialAccounting.FinancialConcepts {
@@ -20,9 +22,7 @@ namespace Empiria.FinancialAccounting.FinancialConcepts {
 
     #region Fields
 
-    private Lazy<FixedList<FinancialConcept>> _financialConcepts;
-
-    private Lazy<FixedList<FinancialConceptEntry>> _financialConceptsIntegrationEntries;
+    private Lazy<List<FinancialConcept>> _financialConcepts;
 
     #endregion Fields
 
@@ -70,12 +70,9 @@ namespace Empiria.FinancialAccounting.FinancialConcepts {
       }
 
       _financialConcepts =
-            new Lazy<FixedList<FinancialConcept>>(() => FinancialConceptsData.GetFinancialConcepts(this));
+            new Lazy<List<FinancialConcept>>(() => FinancialConceptsData.GetFinancialConcepts(this));
 
-      _financialConceptsIntegrationEntries =
-            new Lazy<FixedList<FinancialConceptEntry>>(() => FinancialConceptsData.GetAllIntegrationEntriesForAGroup(this));
     }
-
 
     #endregion Constructors and parsers
 
@@ -94,19 +91,29 @@ namespace Empiria.FinancialAccounting.FinancialConcepts {
       }
     }
 
+
+    public FixedList<FinancialConcept> FinancialConcepts {
+      get {
+        return _financialConcepts.Value
+                                 .ToFixedList();
+      }
+    }
+
+
     #endregion Properties
 
     #region Methods
 
     public void Cleanup() {
-      FixedList<FinancialConcept> concepts = FinancialConcepts();
+      FixedList<FinancialConcept> concepts = this.FinancialConcepts;
 
       foreach (var concept in concepts) {
         concept.Cleanup();
         FinancialConceptsData.Write(concept);
       }
 
-      FixedList<FinancialConceptEntry> items = FinancialConceptsData.GetAllIntegrationEntriesForAGroup(this);
+      FixedList<FinancialConceptEntry> items = FinancialConceptsData.GetAllIntegrationEntriesForAGroup(this)
+                                                                    .ToFixedList();
 
       foreach (var item in items) {
         item.Cleanup();
@@ -115,29 +122,144 @@ namespace Empiria.FinancialAccounting.FinancialConcepts {
     }
 
 
-    public FixedList<FinancialConcept> FinancialConcepts() {
-      return _financialConcepts.Value;
+    private FinancialConcept GetFinancialConcept(string conceptUID) {
+      Assertion.AssertObject(conceptUID, nameof(conceptUID));
+
+      var concept = this.FinancialConcepts.Find(x => x.UID == conceptUID);
+
+      Assertion.AssertObject(concept,
+                            $"Este grupo no contiene un concepto con UID '{conceptUID}'.");
+
+      return concept;
     }
 
 
-    internal FixedList<FinancialConceptEntry> FinancialConceptIntegrationEntries(FinancialConcept financialConcept) {
-      Assertion.AssertObject(financialConcept, nameof(financialConcept));
+    internal FinancialConcept InsertFrom(FinancialConceptEditionCommand command) {
+      Assertion.AssertObject(command, nameof(command));
 
-      return _financialConceptsIntegrationEntries.Value.FindAll(x => x.FinancialConcept.Equals(financialConcept));
+      if (IsFinancialConceptCodeRegistered(command.Code, FinancialConcept.Empty)) {
+        Assertion.AssertFail($"Ya existe otro concepto con la clave '{command.Code}'.");
+      }
+
+      int position = CalculatePositionFrom(command);
+
+      FinancialConceptFields fields = command.MapToFinancialConceptFields(position);
+
+      FinancialConcept concept = FinancialConcept.Create(fields);
+
+      UpdateList(concept);
+
+      return concept;
     }
 
 
-    internal FinancialConceptsEntriesTree GetFinancialConceptsEntriesAsTree() {
-      return new FinancialConceptsEntriesTree(this);
+    internal void Remove(FinancialConcept concept) {
+      Assertion.AssertObject(concept, nameof(concept));
+
+      Assertion.Assert(concept.Group.Equals(this),
+              $"El concepto que se desea eliminar no pertenece al grupo de conceptos '{this.Name}'.");
+
+      throw new NotImplementedException("Remove");
     }
 
 
-    internal FixedList<FinancialConceptEntry> RootIntegrationEntries() {
-      return _financialConceptsIntegrationEntries.Value.FindAll(x => x.FinancialConcept.IsEmptyInstance);
+    internal FinancialConcept UpdateFrom(FinancialConceptEditionCommand command) {
+      Assertion.AssertObject(command, nameof(command));
+
+      FinancialConcept concept = GetFinancialConcept(command.FinancialConceptUID);
+
+      if (IsFinancialConceptCodeRegistered(command.Code, concept)) {
+        Assertion.AssertFail($"Ya existe otro concepto con la clave '{command.Code}'.");
+      }
+
+      int newPosition = CalculatePositionFrom(command, concept.Position);
+
+      FinancialConceptFields fields = command.MapToFinancialConceptFields(newPosition);
+
+      concept.Update(fields);
+
+      UpdateList(concept);
+
+      return concept;
     }
 
 
     #endregion Methods
+
+    #region Helpers
+
+    private int CalculatePositionFrom(FinancialConceptEditionCommand command,
+                                      int currentPosition = -1) {
+
+      switch (command.PositioningRule) {
+
+        case PositioningRule.AfterOffset:
+          var afterOffset = GetFinancialConcept(command.PositioningOffsetConceptUID);
+
+          if (currentPosition != -1 &&
+              currentPosition < afterOffset.Position) {
+            return afterOffset.Position;
+          } else {
+            return afterOffset.Position + 1;
+          }
+
+
+        case PositioningRule.AtEnd:
+          return this.FinancialConcepts.Count;
+
+        case PositioningRule.AtStart:
+          return 1;
+
+        case PositioningRule.BeforeOffset:
+          var beforeOffset = GetFinancialConcept(command.PositioningOffsetConceptUID);
+
+          if (currentPosition != -1 &&
+              currentPosition < beforeOffset.Position) {
+            return beforeOffset.Position - 1;
+          } else {
+            return beforeOffset.Position;
+          }
+
+        case PositioningRule.ByPositionValue:
+          Assertion.Assert(1 <= command.Position &&
+                                command.Position <= this.FinancialConcepts.Count + 1,
+            $"Position value is {command.Position}, but must be between 1 and {this.FinancialConcepts.Count + 1}.");
+
+          return command.Position;
+
+        default:
+          throw Assertion.AssertNoReachThisCode($"Unhandled PositioningRule '{command.PositioningRule}'.");
+      }
+    }
+
+
+    private bool IsFinancialConceptCodeRegistered(string code, FinancialConcept excluding) {
+      return this.FinancialConcepts.Contains(x => x.Code == code && !x.Equals(excluding));
+    }
+
+
+    private void UpdateList(FinancialConcept concept) {
+      int listIndex = FinancialConcepts.IndexOf(concept);
+
+      if (listIndex != -1) {
+        _financialConcepts.Value.RemoveAt(listIndex);
+      }
+
+      if (listIndex + 1 == concept.Position) {
+        // what to do?
+      }
+
+      _financialConcepts.Value.Insert(concept.Position - 1, concept);
+
+      for (int i = 0; i < this.FinancialConcepts.Count; i++) {
+        FinancialConcept item = this.FinancialConcepts[i];
+
+        item.SetPosition(i + 1);
+      }
+    }
+
+
+    #endregion Helpers
 
   } // class FinancialConceptGroup
 

@@ -8,6 +8,7 @@
 *                                                                                                            *
 ************************* Copyright(c) La Vía Óntica SC, Ontica LLC and contributors. All rights reserved. **/
 using System;
+using System.Collections.Generic;
 
 using Empiria.Data;
 
@@ -16,16 +17,27 @@ namespace Empiria.FinancialAccounting.FinancialConcepts.Data {
   /// <summary>Data access layer for financial concepts.</summary>
   static internal class FinancialConceptsData {
 
-    static internal FixedList<FinancialConcept> GetFinancialConcepts(FinancialConceptGroup group) {
+    static internal List<FinancialConcept> GetFinancialConcepts(FinancialConceptGroup group) {
       var sql = "SELECT * FROM COF_CONCEPTOS " +
                 $"WHERE ID_GRUPO = {group.Id} " +
                 "ORDER BY POSICION";
 
       var op = DataOperation.Parse(sql);
 
-      return DataReader.GetFixedList<FinancialConcept>(op);
+      return DataReader.GetList<FinancialConcept>(op);
     }
 
+
+    internal static FixedList<FinancialConceptEntry> GetFinancialConceptEntries(FinancialConcept concept) {
+      var sql = "SELECT COF_CONCEPTOS_INTEGRACION.* " +
+                "FROM COF_CONCEPTOS_INTEGRACION " +
+               $"WHERE ID_CONCEPTO = {concept.Id} " +
+                "ORDER BY POSICION";
+
+      var op = DataOperation.Parse(sql);
+
+      return DataReader.GetFixedList<FinancialConceptEntry>(op);
+    }
 
     static internal FixedList<FinancialConceptEntry> GetAllIntegrationEntriesForAGroup(FinancialConceptGroup group) {
       var sql = "SELECT COF_CONCEPTOS_INTEGRACION.* " +
@@ -48,7 +60,6 @@ namespace Empiria.FinancialAccounting.FinancialConcepts.Data {
 
       DataWriter.Execute(op);
     }
-
 
 
     static internal void Write(FinancialConceptEntry o) {

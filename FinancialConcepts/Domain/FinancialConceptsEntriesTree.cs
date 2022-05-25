@@ -10,6 +10,8 @@
 using System;
 using System.Collections.Generic;
 
+using Empiria.FinancialAccounting.FinancialConcepts.Data;
+
 namespace Empiria.FinancialAccounting.FinancialConcepts {
 
   /// <summary>Tree data structure with the integration entries of all financial concepts in a group.</summary>
@@ -17,10 +19,14 @@ namespace Empiria.FinancialAccounting.FinancialConcepts {
 
     private readonly FinancialConceptGroup _group;
 
+    private readonly FixedList<FinancialConceptEntry> _financialConceptsEntries;
+
     #region Constructors and parsers
 
     protected internal FinancialConceptsEntriesTree(FinancialConceptGroup group) {
       _group = group;
+
+      _financialConceptsEntries = FinancialConceptsData.GetAllIntegrationEntriesForAGroup(_group);
     }
 
     #endregion Constructors and parsers
@@ -36,7 +42,7 @@ namespace Empiria.FinancialAccounting.FinancialConcepts {
 
     public FixedList<FinancialConceptEntryAsTreeNode> Roots {
       get {
-        return new FixedList<FinancialConceptEntryAsTreeNode>(_group.RootIntegrationEntries()
+        return new FixedList<FinancialConceptEntryAsTreeNode>(this.GetRoots()
                                                               .Select(root => new FinancialConceptEntryAsTreeNode(root)));
       }
     }
@@ -64,6 +70,12 @@ namespace Empiria.FinancialAccounting.FinancialConcepts {
 
       return list.ToFixedList();
     }
+
+    internal FixedList<FinancialConceptEntry> GetRoots() {
+      return _financialConceptsEntries.FindAll(x => x.FinancialConcept.IsEmptyInstance)
+                                                     .ToFixedList();
+    }
+
 
 
     #endregion Properties

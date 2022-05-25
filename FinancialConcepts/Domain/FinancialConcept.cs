@@ -9,6 +9,7 @@
 *                                                                                                            *
 ************************* Copyright(c) La Vía Óntica SC, Ontica LLC and contributors. All rights reserved. **/
 using System;
+using Empiria.FinancialAccounting.FinancialConcepts.Data;
 
 namespace Empiria.FinancialAccounting.FinancialConcepts {
 
@@ -39,6 +40,20 @@ namespace Empiria.FinancialAccounting.FinancialConcepts {
     }
 
 
+    static internal FinancialConcept Create(FinancialConceptFields fields) {
+      Assertion.AssertObject(fields, nameof(fields));
+
+      return new FinancialConcept {
+        Group = fields.Group,
+        Code = fields.Code,
+        Name = fields.Name,
+        Position = fields.Position,
+        StartDate = fields.StartDate,
+        EndDate = fields.EndDate,
+      };
+    }
+
+
     static public FinancialConcept Empty {
       get {
         return FinancialConcept.ParseEmpty<FinancialConcept>();
@@ -59,34 +74,40 @@ namespace Empiria.FinancialAccounting.FinancialConcepts {
       get; private set;
     }
 
+
     [DataField("NOMBRE_CONCEPTO")]
     public string Name {
       get; private set;
     }
+
 
     [DataField("POSICION")]
     public int Position {
       get; private set;
     }
 
+
     [DataField("FECHA_INICIO")]
     public DateTime StartDate {
       get; private set;
     }
+
 
     [DataField("FECHA_FIN")]
     public DateTime EndDate {
       get; private set;
     }
 
+
     public FixedList<FinancialConceptEntry> Integration {
       get {
         if (_integration == null) {
-          _integration = Group.FinancialConceptIntegrationEntries(this);
+          _integration = FinancialConceptsData.GetFinancialConceptEntries(this);
         }
         return _integration;
       }
     }
+
 
     public int Level {
       get {
@@ -103,8 +124,63 @@ namespace Empiria.FinancialAccounting.FinancialConcepts {
       this.Name = EmpiriaString.Clean(this.Name);
     }
 
+
+    protected override void OnSave() {
+      FinancialConceptsData.Write(this);
+    }
+
+
+    internal void SetPosition(int position) {
+      Assertion.Assert(position > 0, "Position must be greater than zero.");
+
+      this.Position = position;
+    }
+
+
+    internal void Update(FinancialConceptFields fields) {
+      Assertion.AssertObject(fields, nameof(fields));
+
+      this.Code = fields.Code;
+      this.Name = fields.Name;
+      this.Position = fields.Position;
+      this.StartDate = fields.StartDate;
+      this.EndDate = fields.EndDate;
+    }
+
+
     #endregion Methods
 
   } // class FinancialConcept
+
+
+
+  /// <summary>Fields structure used to update financial concepts.</summary>
+  internal class FinancialConceptFields {
+
+    internal FinancialConceptGroup Group {
+      get; set;
+    }
+
+    internal string Code {
+      get; set;
+    }
+
+    internal string Name {
+      get; set;
+    }
+
+    internal int Position {
+      get; set;
+    }
+
+    internal DateTime StartDate {
+      get; set;
+    }
+
+    internal DateTime EndDate {
+      get; set;
+    }
+
+  }  // class FinancialConceptFields
 
 }  // namespace Empiria.FinancialAccounting.FinancialConcepts

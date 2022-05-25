@@ -36,14 +36,14 @@ namespace Empiria.FinancialAccounting.WebApi.FinancialConcepts {
 
     [HttpPost]
     [Route("v2/financial-accounting/financial-concepts")]
-    public CollectionModel InsertFinancialConcept([FromBody] FinancialConceptEditionCommand command) {
+    public SingleObjectModel InsertFinancialConcept([FromBody] FinancialConceptEditionCommand command) {
 
       base.RequireBody(command);
 
       using (var usecases = FinancialConceptsUseCases.UseCaseInteractor()) {
-        FixedList<FinancialConceptDescriptorDto> concepts = usecases.InsertFinancialConcept(command);
+        FinancialConceptDto concept = usecases.InsertFinancialConcept(command);
 
-        return new CollectionModel(base.Request, concepts);
+        return new SingleObjectModel(base.Request, concept);
       }
     }
 
@@ -62,8 +62,8 @@ namespace Empiria.FinancialAccounting.WebApi.FinancialConcepts {
 
     [HttpPut, HttpPatch]
     [Route("v2/financial-accounting/financial-concepts/{financialConceptUID:guid}")]
-    public CollectionModel UpdateFinancialConcept([FromUri] string financialConceptUID,
-                                                  [FromBody] FinancialConceptEditionCommand command) {
+    public SingleObjectModel UpdateFinancialConcept([FromUri] string financialConceptUID,
+                                                    [FromBody] FinancialConceptEditionCommand command) {
 
       base.RequireBody(command);
 
@@ -71,9 +71,9 @@ namespace Empiria.FinancialAccounting.WebApi.FinancialConcepts {
                        "command.FinancialConceptUID does not match url.");
 
       using (var usecases = FinancialConceptsUseCases.UseCaseInteractor()) {
-        FixedList<FinancialConceptDescriptorDto> concepts = usecases.UpdateFinancialConcept(command);
+        FinancialConceptDto concept = usecases.UpdateFinancialConcept(command);
 
-        return new CollectionModel(base.Request, concepts);
+        return new SingleObjectModel(base.Request, concept);
       }
     }
 
