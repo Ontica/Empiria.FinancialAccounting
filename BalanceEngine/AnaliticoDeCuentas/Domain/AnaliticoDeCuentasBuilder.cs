@@ -41,8 +41,11 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
 
       List<TrialBalanceEntry> summaryEntries = balanceHelper.GetCalculatedParentAccounts(saldosValorizados);
 
+      List<TrialBalanceEntry> saldosValorizadosMapped = balanceHelper.GetEntriesMappedForSectorization(
+                                                     saldosValorizados.ToList());
+
       List<TrialBalanceEntry> postingEntries = balanceHelper.GetSummaryEntriesAndSectorization(
-                                               saldosValorizados.ToList());
+                                               saldosValorizadosMapped);
 
       List<TrialBalanceEntry> summaryEntriesAndSectorization =
                               balanceHelper.GetSummaryEntriesAndSectorization(summaryEntries);

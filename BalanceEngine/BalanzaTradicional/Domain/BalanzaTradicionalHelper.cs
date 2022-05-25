@@ -34,7 +34,7 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
 
     internal FixedList<TrialBalanceEntry> GetCalculatedParentAccounts(
                                      FixedList<TrialBalanceEntry> accountEntries) {
-      
+
       var trialBalanceHelper = new TrialBalanceHelper(_command);
       var parentAccounts = new EmpiriaHashTable<TrialBalanceEntry>(accountEntries.Count);
 
@@ -43,7 +43,13 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
         entry.DebtorCreditor = entry.Account.DebtorCreditor;
         entry.SubledgerAccountNumber = SubledgerAccount.Parse(entry.SubledgerAccountId).Number ?? "";
 
-        StandardAccount currentParent = ValidateEntryForSummaryParentAccount(entry);
+        StandardAccount currentParent;
+        
+        bool isCalculatedAccount = ValidateEntryForSummaryParentAccount(entry, out currentParent);
+
+        if (!isCalculatedAccount) {
+          continue;
+        }
 
         if (entry.HasParentPostingEntry) {
           continue;
@@ -78,6 +84,22 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
       trialBalanceHelper.AssignLastChangeDatesToSummaryEntries(accountEntries, parentAccounts);
 
       return parentAccounts.ToFixedList();
+    }
+
+
+    internal List<TrialBalanceEntry> CombineParentAndPostingAccountEntries(
+                                      List<TrialBalanceEntry> summaryEntries,
+                                      FixedList<TrialBalanceEntry> postingEntries) {
+
+      var returnedEntries = new List<TrialBalanceEntry>(postingEntries);
+
+      returnedEntries.AddRange(summaryEntries);
+
+      SetSubledgerAccountInfo(returnedEntries);
+
+      returnedEntries = OrderingParentAndPostingAccountEntries(returnedEntries);
+
+      return returnedEntries;
     }
 
 
@@ -151,27 +173,63 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
     }
 
 
-    private StandardAccount ValidateEntryForSummaryParentAccount(TrialBalanceEntry entry) {
+    private List<TrialBalanceEntry> OrderingParentAndPostingAccountEntries(List<TrialBalanceEntry> entries) {
 
-      StandardAccount currentParent;
+      if (_command.WithSubledgerAccount) {
 
-      while (true) {
-        if ((entry.Account.NotHasParent) || _command.WithSubledgerAccount) {
-          currentParent = entry.Account;
-
-        } else if (_command.DoNotReturnSubledgerAccounts && entry.Account.HasParent) {
-          currentParent = entry.Account.GetParent();
-
-        } else if (_command.DoNotReturnSubledgerAccounts && entry.Account.NotHasParent) {
-          continue;
-
-        } else {
-          throw Assertion.AssertNoReachThisCode();
-        }
-        break;
+        return entries.OrderBy(a => a.Ledger.Number)
+                      .ThenBy(a => a.Currency.Code)
+                      .ThenByDescending(a => a.Account.DebtorCreditor)
+                      .ThenBy(a => a.Account.Number)
+                      .ThenBy(a => a.Sector.Code)
+                      .ThenBy(a => a.SubledgerNumberOfDigits)
+                      .ThenBy(a => a.SubledgerAccountNumber)
+                      .ToList();
+      } else {
+        return entries.OrderBy(a => a.Ledger.Number)
+                      .ThenBy(a => a.Currency.Code)
+                      .ThenByDescending(a => a.Account.DebtorCreditor)
+                      .ThenBy(a => a.Account.Number)
+                      .ThenBy(a => a.Sector.Code)
+                      .ThenBy(a => a.SubledgerAccountNumber)
+                      .ToList();
       }
-        
-      return currentParent;
+    }
+
+
+    private void SetSubledgerAccountInfo(List<TrialBalanceEntry> entries) {
+      if (!_command.WithSubledgerAccount) {
+        return;
+      }
+
+      foreach (var entry in entries) {
+        SubledgerAccount subledgerAccount = SubledgerAccount.Parse(entry.SubledgerAccountId);
+        if (subledgerAccount.IsEmptyInstance) {
+          continue;
+        }
+        entry.SubledgerAccountNumber = subledgerAccount.Number != "0" ?
+                                        subledgerAccount.Number : "";
+        entry.SubledgerNumberOfDigits = entry.SubledgerAccountNumber.Length;
+      }
+    }
+
+
+    private bool ValidateEntryForSummaryParentAccount(TrialBalanceEntry entry, out StandardAccount currentParent) {
+
+      if ((entry.Account.NotHasParent) || _command.WithSubledgerAccount) {
+        currentParent = entry.Account;
+
+      } else if (_command.DoNotReturnSubledgerAccounts && entry.Account.HasParent) {
+        currentParent = entry.Account.GetParent();
+
+      } else if (_command.DoNotReturnSubledgerAccounts && entry.Account.NotHasParent) {
+        currentParent = entry.Account;
+        return false;
+
+      } else {
+        throw Assertion.AssertNoReachThisCode();
+      }
+      return true;
     }
 
 

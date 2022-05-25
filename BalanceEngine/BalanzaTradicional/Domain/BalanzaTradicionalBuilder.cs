@@ -26,7 +26,6 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
 
 
     internal TrialBalance Build() {
-      var helper = new TrialBalanceHelper(_command);
       var balanzaHelper = new BalanzaTradicionalHelper(_command);
 
       if (_command.TrialBalanceType == TrialBalanceType.Saldos) {
@@ -39,14 +38,20 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
 
       FixedList<TrialBalanceEntry> postingEntries = balanzaHelper.GetPostingEntries();
 
+      var helper = new TrialBalanceHelper(_command);
+
       helper.SetSummaryToParentEntries(postingEntries);
 
-      FixedList<TrialBalanceEntry> summaryEntries = balanzaHelper.GetCalculatedParentAccounts(postingEntries);
+      FixedList<TrialBalanceEntry> summaryEntries = balanzaHelper.GetCalculatedParentAccounts(
+                                                    postingEntries);
 
       EmpiriaLog.Debug($"AFTER GenerateSummaryEntries: {DateTime.Now.Subtract(startTime).TotalSeconds} seconds.");
 
+      List<TrialBalanceEntry> postingEntriesMapped = helper.GetEntriesMappedForSectorization(
+                                              postingEntries.ToList());
+
       List<TrialBalanceEntry> _postingEntries = helper.GetSummaryEntriesAndSectorization(
-                                                postingEntries.ToList());
+                                                postingEntriesMapped);
 
       EmpiriaLog.Debug($"AFTER GetSummaryEntriesAndSectorization (postingEntries): {DateTime.Now.Subtract(startTime).TotalSeconds} seconds.");
 
@@ -55,7 +60,7 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
 
       EmpiriaLog.Debug($"AFTER GetSummaryEntriesAndSectorization (summaryEntries): {DateTime.Now.Subtract(startTime).TotalSeconds} seconds.");
 
-      List<TrialBalanceEntry> trialBalance = helper.CombineSummaryAndPostingEntries(
+      List<TrialBalanceEntry> trialBalance = balanzaHelper.CombineParentAndPostingAccountEntries(
                                              summaryEntriesAndSectorization, _postingEntries.ToFixedList());
 
       EmpiriaLog.Debug($"AFTER CombineSummaryAndPostingEntries: {DateTime.Now.Subtract(startTime).TotalSeconds} seconds.");
