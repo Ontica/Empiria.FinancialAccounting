@@ -66,10 +66,10 @@ namespace Empiria.FinancialAccounting.FinancialReports {
     }
 
 
-    public override ReportEntryTotals Substract(ReportEntryTotals total, string qualification) {
+    public override ReportEntryTotals Substract(ReportEntryTotals total, string dataColumn) {
       var castTotal = (AnaliticoCuentasReportEntryTotals) total;
 
-      if (qualification == "MonedaExtranjera") {
+      if (dataColumn == "MonedaExtranjera") {
         return new AnaliticoCuentasReportEntryTotals {
           DomesticCurrencyTotal = this.DomesticCurrencyTotal,
           ForeignCurrencyTotal = this.ForeignCurrencyTotal - (castTotal.DomesticCurrencyTotal + castTotal.ForeignCurrencyTotal)
@@ -82,10 +82,10 @@ namespace Empiria.FinancialAccounting.FinancialReports {
     }
 
 
-    public override ReportEntryTotals Substract(ITrialBalanceEntryDto balance, string qualification) {
+    public override ReportEntryTotals Substract(ITrialBalanceEntryDto balance, string dataColumn) {
       var analiticoBalance = (AnaliticoDeCuentasEntryDto) balance;
 
-      if (qualification == "MonedaExtranjera") {
+      if (dataColumn == "MonedaExtranjera") {
         return new AnaliticoCuentasReportEntryTotals {
           DomesticCurrencyTotal = this.DomesticCurrencyTotal,
           ForeignCurrencyTotal = this.ForeignCurrencyTotal - (analiticoBalance.DomesticBalance + analiticoBalance.ForeignBalance)
@@ -99,10 +99,10 @@ namespace Empiria.FinancialAccounting.FinancialReports {
     }
 
 
-    public override ReportEntryTotals Sum(ReportEntryTotals total, string qualification) {
+    public override ReportEntryTotals Sum(ReportEntryTotals total, string dataColumn) {
       var castTotal = (AnaliticoCuentasReportEntryTotals) total;
 
-      if (qualification == "MonedaExtranjera") {
+      if (dataColumn == "MonedaExtranjera") {
         return new AnaliticoCuentasReportEntryTotals {
           DomesticCurrencyTotal = this.DomesticCurrencyTotal,
           ForeignCurrencyTotal = this.ForeignCurrencyTotal + (castTotal.DomesticCurrencyTotal + castTotal.ForeignCurrencyTotal)
@@ -116,10 +116,10 @@ namespace Empiria.FinancialAccounting.FinancialReports {
     }
 
 
-    public override ReportEntryTotals Sum(ITrialBalanceEntryDto balance, string qualification) {
+    public override ReportEntryTotals Sum(ITrialBalanceEntryDto balance, string dataColumn) {
       var analiticoBalance = (AnaliticoDeCuentasEntryDto) balance;
 
-      if (qualification == "MonedaExtranjera") {
+      if (dataColumn == "MonedaExtranjera") {
         return new AnaliticoCuentasReportEntryTotals {
           DomesticCurrencyTotal = this.DomesticCurrencyTotal,
           ForeignCurrencyTotal = this.ForeignCurrencyTotal + (analiticoBalance.DomesticBalance + analiticoBalance.ForeignBalance)
@@ -133,13 +133,13 @@ namespace Empiria.FinancialAccounting.FinancialReports {
     }
 
 
-    public override ReportEntryTotals Sum(ExternalValue value, string qualification) {
-      if (qualification == "MonedaNacional") {
+    public override ReportEntryTotals Sum(ExternalValue value, string dataColumn) {
+      if (dataColumn == "MonedaNacional") {
         return new AnaliticoCuentasReportEntryTotals {
           DomesticCurrencyTotal = value.DomesticCurrencyValue + value.ForeignCurrencyValue
         };
 
-      } else if (qualification == "MonedaExtranjera") {
+      } else if (dataColumn == "MonedaExtranjera") {
         return new AnaliticoCuentasReportEntryTotals {
           ForeignCurrencyTotal = value.DomesticCurrencyValue + value.ForeignCurrencyValue
         };
@@ -153,13 +153,13 @@ namespace Empiria.FinancialAccounting.FinancialReports {
     }
 
 
-    public override ReportEntryTotals SumDebitsOrSubstractCredits(ITrialBalanceEntryDto balance, string qualification) {
+    public override ReportEntryTotals SumDebitsOrSubstractCredits(ITrialBalanceEntryDto balance, string dataColumn) {
       var analiticoBalance = (AnaliticoDeCuentasEntryDto) balance;
 
       if (analiticoBalance.DebtorCreditor == DebtorCreditorType.Deudora) {
-        return Sum(balance, qualification);
+        return Sum(balance, dataColumn);
       } else {
-        return Substract(balance, qualification);
+        return Substract(balance, dataColumn);
       }
     }
 

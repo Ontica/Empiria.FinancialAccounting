@@ -19,7 +19,7 @@ namespace Empiria.FinancialAccounting.FinancialConcepts.Data {
 
     static internal List<FinancialConcept> GetFinancialConcepts(FinancialConceptGroup group) {
       var sql = "SELECT * FROM COF_CONCEPTOS " +
-                $"WHERE ID_GRUPO = {group.Id} " +
+                $"WHERE ID_GRUPO = {group.Id} AND STATUS_CONCEPTO <> 'X' " +
                 "ORDER BY POSICION";
 
       var op = DataOperation.Parse(sql);
@@ -28,10 +28,10 @@ namespace Empiria.FinancialAccounting.FinancialConcepts.Data {
     }
 
 
-    internal static FixedList<FinancialConceptEntry> GetFinancialConceptEntries(FinancialConcept concept) {
+    static internal FixedList<FinancialConceptEntry> GetFinancialConceptEntries(FinancialConcept concept) {
       var sql = "SELECT COF_CONCEPTOS_INTEGRACION.* " +
                 "FROM COF_CONCEPTOS_INTEGRACION " +
-               $"WHERE ID_CONCEPTO = {concept.Id} " +
+               $"WHERE ID_CONCEPTO = {concept.Id} AND STATUS_INTEGRACION <> 'X' " +
                 "ORDER BY POSICION";
 
       var op = DataOperation.Parse(sql);
@@ -39,10 +39,11 @@ namespace Empiria.FinancialAccounting.FinancialConcepts.Data {
       return DataReader.GetFixedList<FinancialConceptEntry>(op);
     }
 
+
     static internal FixedList<FinancialConceptEntry> GetAllIntegrationEntriesForAGroup(FinancialConceptGroup group) {
       var sql = "SELECT COF_CONCEPTOS_INTEGRACION.* " +
                 "FROM COF_CONCEPTOS_INTEGRACION " +
-               $"WHERE ID_GRUPO = {group.Id} " +
+               $"WHERE ID_GRUPO = {group.Id} AND STATUS_INTEGRACION <> 'X' " +
                 "ORDER BY POSICION";
 
       var op = DataOperation.Parse(sql);
@@ -53,10 +54,10 @@ namespace Empiria.FinancialAccounting.FinancialConcepts.Data {
 
     static internal void Write(FinancialConcept o) {
       var op = DataOperation.Parse("write_cof_concepto",
-                                   o.Id, o.Code, o.Name, o.Position,
-                                   o.StartDate, o.EndDate, o.UID,
-                                   o.Group.Id);
-
+                                   o.Id, o.UID, o.Group.Id,
+                                   o.Code, o.Name, o.Position,
+                                   o.StartDate, o.EndDate,
+                                   (char) o.Status, o.UpdatedBy.Id);
 
       DataWriter.Execute(op);
     }
@@ -64,10 +65,11 @@ namespace Empiria.FinancialAccounting.FinancialConcepts.Data {
 
     static internal void Write(FinancialConceptEntry o) {
       var op = DataOperation.Parse("write_cof_concepto_integracion",
-                      o.Id, o.UID, o.FinancialConcept.Id, o.CalculationRule, o.ReferencedFinancialConcept.Id,
-                      o.AccountNumber, o.SubledgerAccountNumber, o.SectorCode, o.ExternalVariableCode,
-                      (char) o.Operator, o.Qualification, o.IntegrationTypeId, o.Position,
-                      o.Group.Id, o.CurrencyCode, o.AccountsListId);
+                      o.Id, o.UID, o.IntegrationTypeId, o.FinancialConcept.Id,
+                      o.ReferencedFinancialConcept.Id, o.AccountNumber, o.SubledgerAccountNumber,
+                      o.SectorCode, o.ExternalVariableCode, o.CurrencyCode, o.AccountsListId,
+                      (char) o.Operator, o.CalculationRule, o.DataColumn,
+                      o.Position, o.Group.Id, (char) o.Status, o.UpdatedBy.Id);
 
       DataWriter.Execute(op);
     }

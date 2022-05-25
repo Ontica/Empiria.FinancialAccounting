@@ -27,7 +27,7 @@ namespace Empiria.FinancialAccounting.FinancialConcepts.Adapters {
         Operator = Convert.ToString((char) node.IntegrationEntry.Operator),
         ParentCode = node.ParentNode.IntegrationEntry.IsEmptyInstance ?
                                             string.Empty: node.ParentNode.IntegrationEntry.Code,
-        Qualification = node.IntegrationEntry.Qualification,
+        DataColumn = node.IntegrationEntry.DataColumn,
         SubledgerAccount = node.IntegrationEntry.SubledgerAccountNumber,
         SubledgerAccountName = node.IntegrationEntry.SubledgerAccountName,
         SectorCode = node.IntegrationEntry.SectorCode,

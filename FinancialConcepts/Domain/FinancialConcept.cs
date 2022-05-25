@@ -9,6 +9,10 @@
 *                                                                                                            *
 ************************* Copyright(c) La Vía Óntica SC, Ontica LLC and contributors. All rights reserved. **/
 using System;
+
+using Empiria.Contacts;
+using Empiria.StateEnums;
+
 using Empiria.FinancialAccounting.FinancialConcepts.Data;
 
 namespace Empiria.FinancialAccounting.FinancialConcepts {
@@ -50,7 +54,8 @@ namespace Empiria.FinancialAccounting.FinancialConcepts {
         Position = fields.Position,
         StartDate = fields.StartDate,
         EndDate = fields.EndDate,
-      };
+        UpdatedBy = ExecutionServer.CurrentIdentity.User.AsContact()
+    };
     }
 
 
@@ -95,6 +100,18 @@ namespace Empiria.FinancialAccounting.FinancialConcepts {
 
     [DataField("FECHA_FIN")]
     public DateTime EndDate {
+      get; private set;
+    }
+
+
+    [DataField("STATUS_CONCEPTO", Default = EntityStatus.Active)]
+    public EntityStatus Status {
+      get; private set;
+    }
+
+
+    [DataField("ID_EDITADO_POR")]
+    public Contact UpdatedBy {
       get; private set;
     }
 
@@ -145,6 +162,7 @@ namespace Empiria.FinancialAccounting.FinancialConcepts {
       this.Position = fields.Position;
       this.StartDate = fields.StartDate;
       this.EndDate = fields.EndDate;
+      this.UpdatedBy = ExecutionServer.CurrentIdentity.User.AsContact();
     }
 
 

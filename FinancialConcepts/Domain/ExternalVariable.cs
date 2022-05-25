@@ -9,7 +9,9 @@
 ************************* Copyright(c) La Vía Óntica SC, Ontica LLC and contributors. All rights reserved. **/
 using System;
 
+using Empiria.Contacts;
 using Empiria.Json;
+using Empiria.StateEnums;
 
 namespace Empiria.FinancialAccounting.FinancialConcepts {
 
@@ -69,6 +71,41 @@ namespace Empiria.FinancialAccounting.FinancialConcepts {
 
     [DataField("CONFIG_VARIABLE")]
     internal JsonObject ExtData {
+      get;
+      private set;
+    }
+
+
+    [DataField("POSICION")]
+    public int Position {
+      get;
+      private set;
+    }
+
+
+    [DataField("FECHA_INICIO")]
+    public DateTime StartDate {
+      get;
+      private set;
+    }
+
+
+    [DataField("FECHA_FIN")]
+    public DateTime EndDate {
+      get;
+      private set;
+    }
+
+
+    [DataField("STATUS_VARIABLE", Default = EntityStatus.Active)]
+    public EntityStatus Status {
+      get;
+      private set;
+    }
+
+
+    [DataField("ID_EDITADA_POR")]
+    public Contact UpdatedBy {
       get;
       private set;
     }

@@ -10,6 +10,7 @@
 using System;
 
 using Empiria.Contacts;
+using Empiria.StateEnums;
 
 using Empiria.FinancialAccounting.FinancialConcepts.Data;
 
@@ -53,7 +54,7 @@ namespace Empiria.FinancialAccounting.FinancialConcepts {
     }
 
 
-    [DataField("FECHA")]
+    [DataField("FECHA_APLICACION")]
     public DateTime ValueDate {
       get;
       private set;
@@ -81,7 +82,7 @@ namespace Empiria.FinancialAccounting.FinancialConcepts {
     }
 
 
-    [DataField("ID_ACTUALIZO")]
+    [DataField("ID_EDITADO_POR")]
     public Contact UpdatedBy {
       get;
       private set;
@@ -93,6 +94,14 @@ namespace Empiria.FinancialAccounting.FinancialConcepts {
       get;
       private set;
     }
+
+
+    [DataField("STATUS_VALOR_VARIABLE", Default = EntityStatus.Active)]
+    public EntityStatus Status {
+      get;
+      private set;
+    }
+
 
     public decimal Total {
       get {

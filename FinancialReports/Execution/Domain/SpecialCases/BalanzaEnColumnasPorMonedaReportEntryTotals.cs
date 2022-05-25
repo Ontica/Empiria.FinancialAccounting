@@ -99,7 +99,7 @@ namespace Empiria.FinancialAccounting.FinancialReports {
     }
 
 
-    public override ReportEntryTotals Substract(ReportEntryTotals total, string qualification) {
+    public override ReportEntryTotals Substract(ReportEntryTotals total, string dataColumn) {
       var castTotal = (BalanzaEnColumnasPorMonedaReportEntryTotals) total;
 
       return new BalanzaEnColumnasPorMonedaReportEntryTotals {
@@ -112,7 +112,7 @@ namespace Empiria.FinancialAccounting.FinancialReports {
     }
 
 
-    public override ReportEntryTotals Substract(ITrialBalanceEntryDto balance, string qualification) {
+    public override ReportEntryTotals Substract(ITrialBalanceEntryDto balance, string dataColumn) {
       var castBalance = (TrialBalanceByCurrencyDto) balance;
 
       return new BalanzaEnColumnasPorMonedaReportEntryTotals {
@@ -125,7 +125,7 @@ namespace Empiria.FinancialAccounting.FinancialReports {
     }
 
 
-    public override ReportEntryTotals Sum(ReportEntryTotals total, string qualification) {
+    public override ReportEntryTotals Sum(ReportEntryTotals total, string dataColumn) {
       var castTotal = (BalanzaEnColumnasPorMonedaReportEntryTotals) total;
 
       return new BalanzaEnColumnasPorMonedaReportEntryTotals {
@@ -138,7 +138,7 @@ namespace Empiria.FinancialAccounting.FinancialReports {
     }
 
 
-    public override ReportEntryTotals Sum(ITrialBalanceEntryDto balance, string qualification) {
+    public override ReportEntryTotals Sum(ITrialBalanceEntryDto balance, string dataColumn) {
       var castBalance = (TrialBalanceByCurrencyDto) balance;
 
       return new BalanzaEnColumnasPorMonedaReportEntryTotals {
@@ -151,14 +151,14 @@ namespace Empiria.FinancialAccounting.FinancialReports {
     }
 
 
-    public override ReportEntryTotals Sum(ExternalValue value, string qualification) {
+    public override ReportEntryTotals Sum(ExternalValue value, string dataColumn) {
       return new BalanzaEnColumnasPorMonedaReportEntryTotals {
         PesosTotal = this.PesosTotal + value.DomesticCurrencyValue
       };
     }
 
 
-    public override ReportEntryTotals SumDebitsOrSubstractCredits(ITrialBalanceEntryDto balance, string qualification) {
+    public override ReportEntryTotals SumDebitsOrSubstractCredits(ITrialBalanceEntryDto balance, string dataColumn) {
       throw new NotImplementedException();
 
       // var castBalance = (TrialBalanceByCurrencyDto) balance;
@@ -166,9 +166,9 @@ namespace Empiria.FinancialAccounting.FinancialReports {
       // ToDo: Add DebtorCreditor property to TrialBalanceByCurrencyDto
 
       //if (castBalance.DebtorCreditor == DebtorCreditorType.Deudora) {
-      //  return Sum(balance, qualification);
+      //  return Sum(balance, dataColumn);
       //} else {
-      //  return Substract(balance, qualification);
+      //  return Substract(balance, dataColumn);
       //}
     }
 

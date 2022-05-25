@@ -63,7 +63,7 @@ namespace Empiria.FinancialAccounting.FinancialConcepts.Adapters {
     }
 
 
-    public string Qualification {
+    public string DataColumn {
       get; internal set;
     }
 

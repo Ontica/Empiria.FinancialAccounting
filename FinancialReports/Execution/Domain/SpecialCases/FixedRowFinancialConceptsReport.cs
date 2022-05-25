@@ -109,9 +109,9 @@ namespace Empiria.FinancialAccounting.FinancialReports {
 
       foreach (var balance in accountBalances) {
         if (integrationEntry.CalculationRule == "SumDebitsAndSubstractCredits") {
-          totals = totals.SumDebitsOrSubstractCredits(balance, integrationEntry.Qualification);
+          totals = totals.SumDebitsOrSubstractCredits(balance, integrationEntry.DataColumn);
         } else {
-          totals = totals.Sum(balance, integrationEntry.Qualification);
+          totals = totals.Sum(balance, integrationEntry.DataColumn);
         }
       }
 
@@ -144,15 +144,15 @@ namespace Empiria.FinancialAccounting.FinancialReports {
         switch (breakdownItem.IntegrationEntry.Operator) {
 
           case OperatorType.Add:
-            granTotal = granTotal.Sum(breakdownTotals, breakdownItem.IntegrationEntry.Qualification);
+            granTotal = granTotal.Sum(breakdownTotals, breakdownItem.IntegrationEntry.DataColumn);
             break;
 
           case OperatorType.Substract:
-            granTotal = granTotal.Substract(breakdownTotals, breakdownItem.IntegrationEntry.Qualification);
+            granTotal = granTotal.Substract(breakdownTotals, breakdownItem.IntegrationEntry.DataColumn);
             break;
 
           case OperatorType.AbsoluteValue:
-            granTotal = granTotal.Sum(breakdownTotals, breakdownItem.IntegrationEntry.Qualification)
+            granTotal = granTotal.Sum(breakdownTotals, breakdownItem.IntegrationEntry.DataColumn)
                                  .AbsoluteValue();
             break;
 
@@ -208,7 +208,7 @@ namespace Empiria.FinancialAccounting.FinancialReports {
 
       var totals = CreateReportEntryTotalsObject();
 
-      return totals.Sum(value, integrationEntry.Qualification);
+      return totals.Sum(value, integrationEntry.DataColumn);
     }
 
 
@@ -253,17 +253,17 @@ namespace Empiria.FinancialAccounting.FinancialReports {
         case OperatorType.Add:
 
           return totals.Sum(ProcessAccount(integrationEntry),
-                            integrationEntry.Qualification);
+                            integrationEntry.DataColumn);
 
         case OperatorType.Substract:
 
           return totals.Substract(ProcessAccount(integrationEntry),
-                                  integrationEntry.Qualification);
+                                  integrationEntry.DataColumn);
 
         case OperatorType.AbsoluteValue:
 
           return totals.Sum(ProcessAccount(integrationEntry),
-                            integrationEntry.Qualification)
+                            integrationEntry.DataColumn)
                        .AbsoluteValue();
 
         default:
@@ -284,17 +284,17 @@ namespace Empiria.FinancialAccounting.FinancialReports {
         case OperatorType.Add:
 
           return totals.Sum(ProcessFinancialConcept(integrationEntry.ReferencedFinancialConcept),
-                            integrationEntry.Qualification);
+                            integrationEntry.DataColumn);
 
         case OperatorType.Substract:
 
           return totals.Substract(ProcessFinancialConcept(integrationEntry.ReferencedFinancialConcept),
-                                  integrationEntry.Qualification);
+                                  integrationEntry.DataColumn);
 
         case OperatorType.AbsoluteValue:
 
           return totals.Sum(ProcessFinancialConcept(integrationEntry.ReferencedFinancialConcept),
-                            integrationEntry.Qualification)
+                            integrationEntry.DataColumn)
                        .AbsoluteValue();
 
         default:
@@ -316,17 +316,17 @@ namespace Empiria.FinancialAccounting.FinancialReports {
         case OperatorType.Add:
 
           return totals.Sum(ProcessFixedValue(integrationEntry),
-                            integrationEntry.Qualification);
+                            integrationEntry.DataColumn);
 
         case OperatorType.Substract:
 
           return totals.Substract(ProcessFixedValue(integrationEntry),
-                                  integrationEntry.Qualification);
+                                  integrationEntry.DataColumn);
 
         case OperatorType.AbsoluteValue:
 
           return totals.Sum(ProcessFixedValue(integrationEntry),
-                            integrationEntry.Qualification)
+                            integrationEntry.DataColumn)
                        .AbsoluteValue();
 
         default:

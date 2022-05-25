@@ -25,17 +25,17 @@ namespace Empiria.FinancialAccounting.FinancialReports {
 
     public abstract ReportEntryTotals Round();
 
-    public abstract ReportEntryTotals Substract(ReportEntryTotals total, string qualification);
+    public abstract ReportEntryTotals Substract(ReportEntryTotals total, string dataColumn);
 
-    public abstract ReportEntryTotals Substract(ITrialBalanceEntryDto balance, string qualification);
+    public abstract ReportEntryTotals Substract(ITrialBalanceEntryDto balance, string dataColumn);
 
-    public abstract ReportEntryTotals Sum(ReportEntryTotals total, string qualification);
+    public abstract ReportEntryTotals Sum(ReportEntryTotals total, string dataColumn);
 
-    public abstract ReportEntryTotals Sum(ITrialBalanceEntryDto balance, string qualification);
+    public abstract ReportEntryTotals Sum(ITrialBalanceEntryDto balance, string dataColumn);
 
-    public abstract ReportEntryTotals Sum(ExternalValue value, string qualification);
+    public abstract ReportEntryTotals Sum(ExternalValue value, string dataColumn);
 
-    public abstract ReportEntryTotals SumDebitsOrSubstractCredits(ITrialBalanceEntryDto balance, string qualification);
+    public abstract ReportEntryTotals SumDebitsOrSubstractCredits(ITrialBalanceEntryDto balance, string dataColumn);
 
     #endregion Methods
 

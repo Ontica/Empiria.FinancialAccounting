@@ -10,6 +10,9 @@
 ************************* Copyright(c) La Vía Óntica SC, Ontica LLC and contributors. All rights reserved. **/
 using System;
 
+using Empiria.Contacts;
+using Empiria.StateEnums;
+
 namespace Empiria.FinancialAccounting.FinancialConcepts {
 
   public enum FinancialConceptEntryType {
@@ -88,19 +91,19 @@ namespace Empiria.FinancialAccounting.FinancialConcepts {
     }
 
 
+    [DataField("ID_TIPO_INTEGRACION")]
+    public int IntegrationTypeId {
+      get; private set;
+    }
+
+
     [DataField("ID_CONCEPTO")]
     public FinancialConcept FinancialConcept {
       get; private set;
     }
 
 
-    [DataField("REGLA_CALCULO")]
-    public string CalculationRule {
-      get; private set;
-    }
-
-
-    [DataField("REF_ID_CONCEPTO")]
+    [DataField("REFERENCIA_ID_CONCEPTO")]
     public FinancialConcept ReferencedFinancialConcept {
       get; private set;
     }
@@ -124,14 +127,14 @@ namespace Empiria.FinancialAccounting.FinancialConcepts {
     }
 
 
-    [DataField("CLAVE_MONEDA")]
-    public string CurrencyCode {
+    [DataField("CLAVE_VARIABLE")]
+    public string ExternalVariableCode {
       get; private set;
     }
 
 
-    [DataField("CLAVE_VARIABLE")]
-    public string ExternalVariableCode {
+    [DataField("CLAVE_MONEDA")]
+    public string CurrencyCode {
       get; private set;
     }
 
@@ -142,20 +145,20 @@ namespace Empiria.FinancialAccounting.FinancialConcepts {
     }
 
 
-    [DataField("ID_TIPO_INTEGRACION")]
-    public int IntegrationTypeId {
-      get; private set;
-    }
-
-
     [DataField("OPERADOR", Default = OperatorType.Add)]
     public OperatorType Operator {
       get; private set;
     }
 
 
-    [DataField("CALIFICACION")]
-    public string Qualification {
+    [DataField("REGLA_CALCULO")]
+    public string CalculationRule {
+      get; private set;
+    }
+
+
+    [DataField("COLUMNA")]
+    public string DataColumn {
       get; private set;
     }
 
@@ -168,6 +171,18 @@ namespace Empiria.FinancialAccounting.FinancialConcepts {
 
     [DataField("POSICION")]
     public int Position {
+      get; private set;
+    }
+
+
+    [DataField("STATUS_INTEGRACION", Default = EntityStatus.Active)]
+    public EntityStatus Status {
+      get; private set;
+    }
+
+
+    [DataField("ID_EDITADA_POR")]
+    public Contact UpdatedBy {
       get; private set;
     }
 
@@ -264,7 +279,7 @@ namespace Empiria.FinancialAccounting.FinancialConcepts {
       this.SectorCode = EmpiriaString.Clean(this.SectorCode);
       this.CurrencyCode = EmpiriaString.Clean(this.CurrencyCode);
       this.ExternalVariableCode = EmpiriaString.Clean(this.ExternalVariableCode);
-      this.Qualification = EmpiriaString.Clean(this.Qualification);
+      this.DataColumn = EmpiriaString.Clean(this.DataColumn);
     }
 
     #endregion Methods

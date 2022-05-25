@@ -63,7 +63,7 @@ namespace Empiria.FinancialAccounting.Reporting.Exporters.Excel {
         _excelFile.SetCell($"F{i}", node.SectorCode);
         _excelFile.SetCell($"G{i}", node.CurrencyCode);
         _excelFile.SetCell($"H{i}", node.Operator);
-        _excelFile.SetCell($"I{i}", node.Qualification);
+        _excelFile.SetCell($"I{i}", node.DataColumn);
         _excelFile.SetCell($"J{i}", node.Level);
         _excelFile.SetCell($"K{i}", node.ParentCode);
 
