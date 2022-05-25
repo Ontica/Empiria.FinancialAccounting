@@ -172,7 +172,7 @@ namespace Empiria.FinancialAccounting.FinancialConcepts {
         Assertion.AssertFail($"Ya existe otro concepto con la clave '{command.Code}'.");
       }
 
-      int newPosition = CalculatePositionFrom(command);
+      int newPosition = CalculatePositionFrom(command, concept.Position);
 
       FinancialConceptFields fields = command.MapToFinancialConceptFields(newPosition);
 
@@ -188,17 +188,24 @@ namespace Empiria.FinancialAccounting.FinancialConcepts {
 
     #region Helpers
 
-    private int CalculatePositionFrom(FinancialConceptEditionCommand command) {
+    private int CalculatePositionFrom(FinancialConceptEditionCommand command,
+                                      int currentPosition = -1) {
 
       switch (command.PositioningRule) {
 
         case PositioningRule.AfterOffset:
           var afterOffset = GetFinancialConcept(command.PositioningOffsetConceptUID);
 
-          return afterOffset.Position + 1;
+          if (currentPosition != -1 &&
+              currentPosition < afterOffset.Position) {
+            return afterOffset.Position;
+          } else {
+            return afterOffset.Position + 1;
+          }
+
 
         case PositioningRule.AtEnd:
-          return this.FinancialConcepts.Count + 1;
+          return this.FinancialConcepts.Count;
 
         case PositioningRule.AtStart:
           return 1;
@@ -206,7 +213,12 @@ namespace Empiria.FinancialAccounting.FinancialConcepts {
         case PositioningRule.BeforeOffset:
           var beforeOffset = GetFinancialConcept(command.PositioningOffsetConceptUID);
 
-          return beforeOffset.Position;
+          if (currentPosition != -1 &&
+              currentPosition < beforeOffset.Position) {
+            return beforeOffset.Position - 1;
+          } else {
+            return beforeOffset.Position;
+          }
 
         case PositioningRule.ByPositionValue:
           Assertion.Assert(1 <= command.Position &&
