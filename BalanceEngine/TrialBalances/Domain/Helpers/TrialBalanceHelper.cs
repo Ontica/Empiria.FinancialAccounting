@@ -766,7 +766,7 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
                                                                a.Currency.Code == entry.Currency.Code &&
                                                                a.Sector.Code == "00");
 
-        if (returnedEntry != null && sectorParent.Code != "00" && 
+        if (returnedEntry != null && sectorParent.Code != "00" &&
             entry.HasSector && entry.Level > 1) {
 
           returnedEntry.Sum(entry);
@@ -796,7 +796,7 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
 
     private void GetSummaryEntriesWithSectorization(
                                     List<TrialBalanceEntry> returnedEntries) {
-      
+
       var hashEntries = new EmpiriaHashTable<TrialBalanceEntry>();
       var checkSummaryEntries = new List<TrialBalanceEntry>(returnedEntries);
 
@@ -810,7 +810,7 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
           returnedEntry.Sum(entry);
 
         } else if (entry.Level > 1 && (sectorParent.Code != "00" ||
-             (entry.ItemType == TrialBalanceItemType.Entry && 
+             (entry.ItemType == TrialBalanceItemType.Entry &&
               entry.HasSector))) {
 
           SummaryByEntry(hashEntries, entry, entry.Account, Sector.Empty, entry.ItemType);
@@ -820,7 +820,7 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
       returnedEntries.AddRange(hashEntries.ToFixedList().ToList());
     }
 
-
+    
     private void SetLastChangeDateToParentEntries(TrialBalanceEntry entry,
                                                   List<TrialBalanceEntry> summaryEntriesList) {
       StandardAccount currentParentAccount = entry.Account.GetParent();

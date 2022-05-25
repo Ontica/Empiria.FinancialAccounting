@@ -45,6 +45,7 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
 
       EmpiriaLog.Debug($"AFTER GenerateSummaryEntries: {DateTime.Now.Subtract(startTime).TotalSeconds} seconds.");
 
+
       List<TrialBalanceEntry> postingEntriesMapped = helper.GetEntriesMappedForSectorization(
                                               postingEntries.ToList());
 

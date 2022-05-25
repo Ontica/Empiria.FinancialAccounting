@@ -44,7 +44,7 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
         entry.SubledgerAccountNumber = SubledgerAccount.Parse(entry.SubledgerAccountId).Number ?? "";
 
         StandardAccount currentParent;
-        
+
         bool isCalculatedAccount = ValidateEntryForSummaryParentAccount(entry, out currentParent);
 
         if (!isCalculatedAccount) {

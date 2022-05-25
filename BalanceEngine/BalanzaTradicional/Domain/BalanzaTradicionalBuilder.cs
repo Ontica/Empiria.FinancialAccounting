@@ -60,6 +60,7 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
 
       EmpiriaLog.Debug($"AFTER GetSummaryEntriesAndSectorization (summaryEntries): {DateTime.Now.Subtract(startTime).TotalSeconds} seconds.");
 
+
       List<TrialBalanceEntry> trialBalance = balanzaHelper.CombineParentAndPostingAccountEntries(
                                              summaryEntriesAndSectorization, _postingEntries.ToFixedList());
 
