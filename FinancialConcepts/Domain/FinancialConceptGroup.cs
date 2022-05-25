@@ -205,7 +205,12 @@ namespace Empiria.FinancialAccounting.FinancialConcepts {
 
 
         case PositioningRule.AtEnd:
-          return this.FinancialConcepts.Count;
+
+          if (currentPosition != -1) {
+            return this.FinancialConcepts.Count;
+          } else {
+            return this.FinancialConcepts.Count + 1;
+          }
 
         case PositioningRule.AtStart:
           return 1;
