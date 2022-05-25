@@ -50,12 +50,12 @@ namespace Empiria.FinancialAccounting.WebApi.FinancialConcepts {
 
     [HttpDelete]
     [Route("v2/financial-accounting/financial-concepts/{financialConceptUID:guid}")]
-    public CollectionModel RemoveFinancialConcept([FromUri] string financialConceptUID) {
+    public NoDataModel RemoveFinancialConcept([FromUri] string financialConceptUID) {
 
       using (var usecases = FinancialConceptsUseCases.UseCaseInteractor()) {
-        FixedList<FinancialConceptDescriptorDto> concepts = usecases.RemoveFinancialConcept(financialConceptUID);
+        usecases.RemoveFinancialConcept(financialConceptUID);
 
-        return new CollectionModel(base.Request, concepts);
+        return new NoDataModel(base.Request);
       }
     }
 

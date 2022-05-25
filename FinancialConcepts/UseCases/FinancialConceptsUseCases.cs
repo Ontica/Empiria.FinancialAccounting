@@ -57,7 +57,7 @@ namespace Empiria.FinancialAccounting.FinancialConcepts.UseCases {
     }
 
 
-    public FixedList<FinancialConceptDescriptorDto> RemoveFinancialConcept(string financialConceptUID) {
+    public void RemoveFinancialConcept(string financialConceptUID) {
       Assertion.AssertObject(financialConceptUID, nameof(financialConceptUID));
 
       FinancialConcept concept = FinancialConcept.Parse(financialConceptUID);
@@ -67,8 +67,6 @@ namespace Empiria.FinancialAccounting.FinancialConcepts.UseCases {
       group.Remove(concept);
 
       concept.Save();
-
-      return FinancialConceptMapper.Map(group.FinancialConcepts);
     }
 
 

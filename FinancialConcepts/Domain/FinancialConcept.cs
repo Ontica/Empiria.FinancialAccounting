@@ -142,6 +142,11 @@ namespace Empiria.FinancialAccounting.FinancialConcepts {
     }
 
 
+    internal void Remove() {
+      this.Status = EntityStatus.Deleted;
+    }
+
+
     protected override void OnSave() {
       FinancialConceptsData.Write(this);
     }
@@ -164,7 +169,6 @@ namespace Empiria.FinancialAccounting.FinancialConcepts {
       this.EndDate = fields.EndDate;
       this.UpdatedBy = ExecutionServer.CurrentIdentity.User.AsContact();
     }
-
 
     #endregion Methods
 

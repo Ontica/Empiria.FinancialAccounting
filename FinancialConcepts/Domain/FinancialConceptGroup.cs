@@ -11,6 +11,8 @@
 using System;
 using System.Collections.Generic;
 
+using Empiria.StateEnums;
+
 using Empiria.FinancialAccounting.FinancialConcepts.Adapters;
 using Empiria.FinancialAccounting.FinancialConcepts.Data;
 
@@ -159,7 +161,9 @@ namespace Empiria.FinancialAccounting.FinancialConcepts {
       Assertion.Assert(concept.Group.Equals(this),
               $"El concepto que se desea eliminar no pertenece al grupo de conceptos '{this.Name}'.");
 
-      throw new NotImplementedException("Remove");
+      concept.Remove();
+
+      UpdateList(concept);
     }
 
 
@@ -250,11 +254,9 @@ namespace Empiria.FinancialAccounting.FinancialConcepts {
         _financialConcepts.Value.RemoveAt(listIndex);
       }
 
-      if (listIndex + 1 == concept.Position) {
-        // what to do?
+      if (concept.Status != EntityStatus.Deleted) {
+        _financialConcepts.Value.Insert(concept.Position - 1, concept);
       }
-
-      _financialConcepts.Value.Insert(concept.Position - 1, concept);
 
       for (int i = 0; i < this.FinancialConcepts.Count; i++) {
         FinancialConcept item = this.FinancialConcepts[i];
