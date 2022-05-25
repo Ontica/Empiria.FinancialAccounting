@@ -36,13 +36,13 @@ namespace Empiria.FinancialAccounting.FinancialConcepts.Adapters {
     }
 
 
-    static private FixedList<FinancialConceptEntryDto> Map(FixedList<FinancialConceptEntry> integration) {
+    static internal FixedList<FinancialConceptEntryDto> Map(FixedList<FinancialConceptEntry> integration) {
       return integration.Select(entry => Map(entry))
                         .ToFixedList();
     }
 
 
-    static private FinancialConceptEntryDto Map(FinancialConceptEntry integrationEntry) {
+    static internal FinancialConceptEntryDto Map(FinancialConceptEntry integrationEntry) {
       return new FinancialConceptEntryDto {
         UID = integrationEntry.UID,
         Type = integrationEntry.Type,

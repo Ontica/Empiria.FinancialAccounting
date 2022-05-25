@@ -161,7 +161,7 @@ namespace Empiria.FinancialAccounting.FinancialConcepts {
       Assertion.Assert(concept.Group.Equals(this),
               $"El concepto que se desea eliminar no pertenece al grupo de conceptos '{this.Name}'.");
 
-      concept.Remove();
+      concept.Delete();
 
       UpdateList(concept);
     }

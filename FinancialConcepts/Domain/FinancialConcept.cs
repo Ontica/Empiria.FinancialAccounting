@@ -1,7 +1,7 @@
 ﻿/* Empiria Financial *****************************************************************************************
 *                                                                                                            *
 *  Module   : Financial Concepts                         Component : Domain Layer                            *
-*  Assembly : FinancialAccounting.FinancialConcepts.dll  Pattern   : Empiria Data Object                     *
+*  Assembly : FinancialAccounting.FinancialConcepts.dll  Pattern   : Empiria Aggregate Object                *
 *  Type     : FinancialConcept                           License   : Please read LICENSE.txt file            *
 *                                                                                                            *
 *  Summary  : Contains data about a financial concept, which has an arithmetic integration of other          *
@@ -14,6 +14,7 @@ using Empiria.Contacts;
 using Empiria.StateEnums;
 
 using Empiria.FinancialAccounting.FinancialConcepts.Data;
+using Empiria.FinancialAccounting.FinancialConcepts.Adapters;
 
 namespace Empiria.FinancialAccounting.FinancialConcepts {
 
@@ -55,7 +56,7 @@ namespace Empiria.FinancialAccounting.FinancialConcepts {
         StartDate = fields.StartDate,
         EndDate = fields.EndDate,
         UpdatedBy = ExecutionServer.CurrentIdentity.User.AsContact()
-    };
+      };
     }
 
 
@@ -64,6 +65,7 @@ namespace Empiria.FinancialAccounting.FinancialConcepts {
         return FinancialConcept.ParseEmpty<FinancialConcept>();
       }
     }
+
 
     #endregion Constructors and parsers
 
@@ -142,8 +144,23 @@ namespace Empiria.FinancialAccounting.FinancialConcepts {
     }
 
 
-    internal void Remove() {
+    internal void Delete() {
       this.Status = EntityStatus.Deleted;
+    }
+
+
+    internal FinancialConceptEntry GetEntry(string financialConceptEntryUID) {
+      throw new NotImplementedException();
+    }
+
+
+    internal FinancialConceptEntry InsertFrom(FinancialConceptEntryEditionCommand command) {
+      throw new NotImplementedException();
+    }
+
+
+    internal void Remove(FinancialConceptEntry entry) {
+      throw new NotImplementedException();
     }
 
 
