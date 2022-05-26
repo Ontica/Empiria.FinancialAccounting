@@ -28,7 +28,7 @@ namespace Empiria.FinancialAccounting.FinancialConcepts.Data {
     }
 
 
-    static internal FixedList<FinancialConceptEntry> GetFinancialConceptEntries(FinancialConcept concept) {
+    static internal List<FinancialConceptEntry> GetFinancialConceptEntries(FinancialConcept concept) {
       var sql = "SELECT COF_CONCEPTOS_INTEGRACION.* " +
                 "FROM COF_CONCEPTOS_INTEGRACION " +
                $"WHERE ID_CONCEPTO = {concept.Id} AND STATUS_INTEGRACION <> 'X' " +
@@ -36,7 +36,7 @@ namespace Empiria.FinancialAccounting.FinancialConcepts.Data {
 
       var op = DataOperation.Parse(sql);
 
-      return DataReader.GetFixedList<FinancialConceptEntry>(op);
+      return DataReader.GetList<FinancialConceptEntry>(op);
     }
 
 
@@ -53,6 +53,8 @@ namespace Empiria.FinancialAccounting.FinancialConcepts.Data {
 
 
     static internal void Write(FinancialConcept o) {
+      EnsureGroupIsUpdatable(o.Group);
+
       var op = DataOperation.Parse("write_cof_concepto",
                                    o.Id, o.UID, o.Group.Id,
                                    o.Code, o.Name, o.Position,
@@ -64,6 +66,8 @@ namespace Empiria.FinancialAccounting.FinancialConcepts.Data {
 
 
     static internal void Write(FinancialConceptEntry o) {
+      EnsureGroupIsUpdatable(o.Group);
+
       var op = DataOperation.Parse("write_cof_concepto_integracion",
                       o.Id, o.UID, o.IntegrationTypeId, o.FinancialConcept.Id,
                       o.ReferencedFinancialConcept.Id, o.AccountNumber, o.SubledgerAccountNumber,
@@ -72,6 +76,12 @@ namespace Empiria.FinancialAccounting.FinancialConcepts.Data {
                       o.Position, o.Group.Id, (char) o.Status, o.UpdatedBy.Id);
 
       DataWriter.Execute(op);
+    }
+
+
+    static private void EnsureGroupIsUpdatable(FinancialConceptGroup group) {
+      Assertion.Assert(group.UID == "88cbdf33-c01c-4d44-bd8e-c67fcf4c87a6",
+                       $"Group '{group.Name}' is not updatable.");
     }
 
 

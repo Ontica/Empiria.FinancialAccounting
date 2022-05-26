@@ -76,8 +76,6 @@ namespace Empiria.FinancialAccounting.FinancialConcepts.Adapters {
 
       EnsurePositioningRuleIsValid(command);
       EnsureDatesAreValid(command);
-
-      EnsureGroupIsUpdatable(command.GroupUID);
     }
 
 
@@ -107,12 +105,6 @@ namespace Empiria.FinancialAccounting.FinancialConcepts.Adapters {
 
       Assertion.Assert(command.StartDate <= command.EndDate,
                        $"command.StartDate can not be greater than command.EndDate.");
-    }
-
-
-    static private void EnsureGroupIsUpdatable(string groupUID) {
-      Assertion.Assert(groupUID == "88cbdf33-c01c-4d44-bd8e-c67fcf4c87a6",
-                       $"Group '{groupUID}' is not updatable.");
     }
 
 
