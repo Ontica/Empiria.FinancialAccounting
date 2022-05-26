@@ -23,6 +23,16 @@ namespace Empiria.FinancialAccounting.FinancialConcepts {
     }
 
 
+    internal FinancialConcept FinancialConcept {
+      get; set;
+    }
+
+
+    internal OperatorType Operator {
+      get; set;
+    }
+
+
     internal string CalculationRule {
       get; set;
     }

@@ -11,6 +11,7 @@
 using System;
 
 using Empiria.Contacts;
+using Empiria.FinancialAccounting.FinancialConcepts.Data;
 using Empiria.StateEnums;
 
 namespace Empiria.FinancialAccounting.FinancialConcepts {
@@ -48,6 +49,11 @@ namespace Empiria.FinancialAccounting.FinancialConcepts {
     }
 
 
+    private FinancialConceptEntry(FinancialConceptEntryFields fields) {
+      Base_Load(fields);
+    }
+
+
     static public FinancialConceptEntry Parse(int id) {
       return BaseObject.ParseId<FinancialConceptEntry>(id);
     }
@@ -63,6 +69,18 @@ namespace Empiria.FinancialAccounting.FinancialConcepts {
         return FinancialConceptEntry.ParseEmpty<FinancialConceptEntry>();
       }
     }
+
+
+    static internal FinancialConceptEntry Create(AccountEntryTypeFields fields) {
+      Assertion.AssertObject(fields, nameof(fields));
+
+      var entry = new FinancialConceptEntry(fields);
+
+      entry.Load(fields);
+
+      return entry;
+    }
+
 
     #endregion Constructors and parsers
 
@@ -90,7 +108,6 @@ namespace Empiria.FinancialAccounting.FinancialConcepts {
       }
     }
 
-
     [DataField("ID_TIPO_INTEGRACION")]
     public int IntegrationTypeId {
       get; private set;
@@ -106,43 +123,43 @@ namespace Empiria.FinancialAccounting.FinancialConcepts {
     [DataField("REFERENCIA_ID_CONCEPTO")]
     public FinancialConcept ReferencedFinancialConcept {
       get; private set;
-    }
+    } = FinancialConcept.Empty;
 
 
     [DataField("NUMERO_CUENTA_ESTANDAR")]
     public string AccountNumber {
       get; private set;
-    }
+    } = string.Empty;
 
 
     [DataField("NUMERO_CUENTA_AUXILIAR")]
     public string SubledgerAccountNumber {
       get; private set;
-    }
+    } = string.Empty;
 
 
     [DataField("CLAVE_SECTOR")]
     public string SectorCode {
       get; private set;
-    }
+    } = string.Empty;
 
 
     [DataField("CLAVE_VARIABLE")]
     public string ExternalVariableCode {
       get; private set;
-    }
+    } = string.Empty;
 
 
     [DataField("CLAVE_MONEDA")]
     public string CurrencyCode {
       get; private set;
-    }
+    } = string.Empty;
 
 
     [DataField("ID_LISTA_CUENTAS")]
     public int AccountsListId {
       get; private set;
-    }
+    } = -1;
 
 
     [DataField("OPERADOR", Default = OperatorType.Add)]
@@ -154,18 +171,19 @@ namespace Empiria.FinancialAccounting.FinancialConcepts {
     [DataField("REGLA_CALCULO")]
     public string CalculationRule {
       get; private set;
-    }
+    } = "Default";
 
 
     [DataField("COLUMNA")]
     public string DataColumn {
       get; private set;
-    }
+    } = "Default";
 
 
-    [DataField("ID_GRUPO")]
     public FinancialConceptGroup Group {
-      get; private set;
+      get {
+        return this.FinancialConcept.Group;
+      }
     }
 
 
@@ -178,7 +196,7 @@ namespace Empiria.FinancialAccounting.FinancialConcepts {
     [DataField("STATUS_INTEGRACION", Default = EntityStatus.Active)]
     public EntityStatus Status {
       get; private set;
-    }
+    } = EntityStatus.Active;
 
 
     [DataField("ID_EDITADA_POR")]
@@ -280,6 +298,68 @@ namespace Empiria.FinancialAccounting.FinancialConcepts {
       this.CurrencyCode = EmpiriaString.Clean(this.CurrencyCode);
       this.ExternalVariableCode = EmpiriaString.Clean(this.ExternalVariableCode);
       this.DataColumn = EmpiriaString.Clean(this.DataColumn);
+    }
+
+
+    internal void Delete() {
+      this.Status = EntityStatus.Deleted;
+    }
+
+    protected override void OnSave() {
+      FinancialConceptsData.Write(this);
+    }
+
+
+    internal void SetPosition(int position) {
+      Assertion.Assert(position > 0, "Position must be greater than zero.");
+
+      this.Position = position;
+    }
+
+
+    private void SetIntegrationType(FinancialConceptEntryType entryType) {
+      switch (entryType) {
+        case FinancialConceptEntryType.Account:
+          this.IntegrationTypeId = 3075;
+          return;
+
+        case FinancialConceptEntryType.ExternalVariable:
+          this.IntegrationTypeId = 3076;
+          return;
+
+        case FinancialConceptEntryType.FinancialConceptReference:
+          this.IntegrationTypeId = 3074;
+          return;
+        default:
+          throw Assertion.AssertNoReachThisCode();
+      }
+    }
+
+
+    internal void Update(AccountEntryTypeFields fields) {
+      Assertion.AssertObject(fields, nameof(fields));
+
+      Base_Load(fields);
+      Load(fields);
+    }
+
+
+    private void Load(AccountEntryTypeFields fields) {
+      AccountNumber = fields.AccountNumber;
+      SubledgerAccountNumber = fields.SubledgerAccountNumber;
+      SectorCode = fields.SectorCode;
+      CurrencyCode = fields.CurrencyCode;
+    }
+
+
+    private void Base_Load(FinancialConceptEntryFields fields) {
+      SetIntegrationType(fields.EntryType);
+      FinancialConcept = fields.FinancialConcept;
+      Operator = fields.Operator;
+      CalculationRule = fields.CalculationRule;
+      DataColumn = fields.DataColumn;
+      Position = fields.Position;
+      UpdatedBy = ExecutionServer.CurrentIdentity.User.AsContact();
     }
 
     #endregion Methods

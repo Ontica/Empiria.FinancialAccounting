@@ -113,6 +113,8 @@ namespace Empiria.FinancialAccounting.FinancialConcepts.Adapters {
     static internal AccountEntryTypeFields MapToAccountEntryTypeFields(this FinancialConceptEntryEditionCommand command,
                                                                        int position) {
       return new AccountEntryTypeFields {
+        FinancialConcept       = FinancialConcept.Parse(command.FinancialConceptUID),
+        Operator               = command.Operator,
         CalculationRule        = command.CalculationRule,
         DataColumn             = command.DataColumn,
         Position               = position,
