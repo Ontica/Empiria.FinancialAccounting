@@ -110,19 +110,43 @@ namespace Empiria.FinancialAccounting.FinancialConcepts.Adapters {
     }
 
 
-    static internal AccountEntryTypeFields MapToAccountEntryTypeFields(this FinancialConceptEntryEditionCommand command,
-                                                                       int position) {
-      return new AccountEntryTypeFields {
-        FinancialConcept       = FinancialConcept.Parse(command.FinancialConceptUID),
-        Operator               = command.Operator,
-        CalculationRule        = command.CalculationRule,
-        DataColumn             = command.DataColumn,
-        Position               = position,
-        AccountNumber          = command.AccountNumber,
-        SubledgerAccountNumber = command.SubledgerAccountNumber,
-        SectorCode             = command.SectorCode,
-        CurrencyCode           = command.CurrencyCode
-      };
+    static internal FinancialConceptEntryFields MapToFields(this FinancialConceptEntryEditionCommand command,
+                                                            int position) {
+
+      FinancialConceptEntryFields fields;
+
+      switch (command.EntryType) {
+        case FinancialConceptEntryType.Account:
+          fields = new AccountEntryTypeFields {
+            AccountNumber = command.AccountNumber,
+            SubledgerAccountNumber = command.SubledgerAccountNumber,
+            SectorCode = command.SectorCode,
+            CurrencyCode = command.CurrencyCode
+          };
+          break;
+
+        case FinancialConceptEntryType.ExternalVariable:
+          fields = new ExternalVariableEntryTypeFields(command.ExternalVariableCode);
+          break;
+
+        case FinancialConceptEntryType.FinancialConceptReference:
+          var reference = FinancialConcept.Parse(command.ReferencedFinancialConceptUID);
+
+          fields = new FinancialConceptReferenceEntryTypeFields(reference);
+          break;
+
+        default:
+          throw Assertion.AssertNoReachThisCode();
+
+      }
+
+      fields.FinancialConcept = FinancialConcept.Parse(command.FinancialConceptUID);
+      fields.Operator = command.Operator;
+      fields.CalculationRule = command.CalculationRule;
+      fields.DataColumn = command.DataColumn;
+      fields.Position = position;
+
+      return fields;
     }
 
     #endregion Methods

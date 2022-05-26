@@ -176,7 +176,7 @@ namespace Empiria.FinancialAccounting.FinancialConcepts {
 
       int position = CalculatePositionFrom(command);
 
-      AccountEntryTypeFields fields = command.MapToAccountEntryTypeFields(position);
+      FinancialConceptEntryFields fields = command.MapToFields(position);
 
       FinancialConceptEntry entry = FinancialConceptEntry.Create(fields);
 
@@ -229,7 +229,7 @@ namespace Empiria.FinancialAccounting.FinancialConcepts {
 
       int newPosition = CalculatePositionFrom(command, entry.Position);
 
-      AccountEntryTypeFields fields = command.MapToAccountEntryTypeFields(newPosition);
+      FinancialConceptEntryFields fields = command.MapToFields(newPosition);
 
       entry.Update(fields);
 

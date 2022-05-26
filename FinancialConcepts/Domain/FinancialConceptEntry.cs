@@ -50,7 +50,7 @@ namespace Empiria.FinancialAccounting.FinancialConcepts {
 
 
     private FinancialConceptEntry(FinancialConceptEntryFields fields) {
-      Base_Load(fields);
+      Load(fields);
     }
 
 
@@ -71,14 +71,10 @@ namespace Empiria.FinancialAccounting.FinancialConcepts {
     }
 
 
-    static internal FinancialConceptEntry Create(AccountEntryTypeFields fields) {
+    static internal FinancialConceptEntry Create(FinancialConceptEntryFields fields) {
       Assertion.AssertObject(fields, nameof(fields));
 
-      var entry = new FinancialConceptEntry(fields);
-
-      entry.Load(fields);
-
-      return entry;
+      return new FinancialConceptEntry(fields);
     }
 
 
@@ -336,11 +332,28 @@ namespace Empiria.FinancialAccounting.FinancialConcepts {
     }
 
 
-    internal void Update(AccountEntryTypeFields fields) {
+    internal void Update(FinancialConceptEntryFields fields) {
       Assertion.AssertObject(fields, nameof(fields));
 
-      Base_Load(fields);
       Load(fields);
+    }
+
+
+    private void Load(FinancialConceptEntryFields fields) {
+      Base_Load(fields);
+
+      if (fields is AccountEntryTypeFields accountFields) {
+        this.Load(accountFields);
+
+      } else if (fields is ExternalVariableEntryTypeFields variableFields) {
+        this.Load(variableFields);
+
+      } else if (fields is FinancialConceptReferenceEntryTypeFields referenceFields) {
+        this.Load(referenceFields);
+
+      } else {
+        throw Assertion.AssertNoReachThisCode();
+      }
     }
 
 
@@ -349,6 +362,16 @@ namespace Empiria.FinancialAccounting.FinancialConcepts {
       SubledgerAccountNumber = fields.SubledgerAccountNumber;
       SectorCode = fields.SectorCode;
       CurrencyCode = fields.CurrencyCode;
+    }
+
+
+    private void Load(FinancialConceptReferenceEntryTypeFields fields) {
+      this.ReferencedFinancialConcept = fields.ReferencedFinancialConcept;
+    }
+
+
+    private void Load(ExternalVariableEntryTypeFields fields) {
+      this.ExternalVariableCode = fields.ExternalVariableCode;
     }
 
 

@@ -79,4 +79,38 @@ namespace Empiria.FinancialAccounting.FinancialConcepts {
 
   }  // class AccountEntryTypeFields
 
+
+
+  internal class ExternalVariableEntryTypeFields : FinancialConceptEntryFields {
+
+    public ExternalVariableEntryTypeFields(string externalVariableCode) : base(FinancialConceptEntryType.ExternalVariable) {
+      Assertion.AssertObject(externalVariableCode, nameof(externalVariableCode));
+
+      this.ExternalVariableCode = externalVariableCode;
+    }
+
+    public string ExternalVariableCode {
+      get;
+    }
+
+  }  // class ExternalVariableEntryTypeFields
+
+
+
+  internal class FinancialConceptReferenceEntryTypeFields : FinancialConceptEntryFields {
+
+    public FinancialConceptReferenceEntryTypeFields(FinancialConcept referencedFinancialConcept)
+                                            : base(FinancialConceptEntryType.FinancialConceptReference) {
+      Assertion.AssertObject(referencedFinancialConcept, nameof(referencedFinancialConcept));
+
+      this.ReferencedFinancialConcept = referencedFinancialConcept;
+    }
+
+
+    public FinancialConcept ReferencedFinancialConcept {
+      get;
+    }
+
+  }  //class FinancialConceptReferenceEntryTypeFields
+
 }  // namespace Empiria.FinancialAccounting.FinancialConcepts
