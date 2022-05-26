@@ -9,6 +9,7 @@
 *                                                                                                            *
 ************************* Copyright(c) La Vía Óntica SC, Ontica LLC and contributors. All rights reserved. **/
 using System;
+using System.Collections.Generic;
 
 using Empiria.Contacts;
 using Empiria.StateEnums;
@@ -24,7 +25,7 @@ namespace Empiria.FinancialAccounting.FinancialConcepts {
 
     #region Fields
 
-    private FixedList<FinancialConceptEntry> _integration;
+    private Lazy<List<FinancialConceptEntry>> _integration;
 
     #endregion Fields
 
@@ -67,6 +68,16 @@ namespace Empiria.FinancialAccounting.FinancialConcepts {
     }
 
 
+    protected override void OnLoad() {
+      if (this.IsEmptyInstance) {
+        return;
+      }
+
+      _integration = new Lazy<List<FinancialConceptEntry>>(
+                        () => FinancialConceptsData.GetFinancialConceptEntries(this)
+                     );
+    }
+
     #endregion Constructors and parsers
 
     #region Properties
@@ -75,6 +86,7 @@ namespace Empiria.FinancialAccounting.FinancialConcepts {
     public FinancialConceptGroup Group {
       get; private set;
     }
+
 
     [DataField("CLAVE_CONCEPTO")]
     public string Code {
@@ -120,10 +132,8 @@ namespace Empiria.FinancialAccounting.FinancialConcepts {
 
     public FixedList<FinancialConceptEntry> Integration {
       get {
-        if (_integration == null) {
-          _integration = FinancialConceptsData.GetFinancialConceptEntries(this);
-        }
-        return _integration;
+        return _integration.Value
+                           .ToFixedList();
       }
     }
 
@@ -150,17 +160,41 @@ namespace Empiria.FinancialAccounting.FinancialConcepts {
 
 
     internal FinancialConceptEntry GetEntry(string financialConceptEntryUID) {
-      throw new NotImplementedException();
+      Assertion.AssertObject(financialConceptEntryUID, nameof(financialConceptEntryUID));
+
+      var entry = _integration.Value.Find(x => x.UID == financialConceptEntryUID);
+
+      Assertion.AssertObject(entry,
+                            $"Este concepto no contiene la regla de integración '{financialConceptEntryUID}'.");
+
+      return entry;
     }
 
 
-    internal FinancialConceptEntry InsertFrom(FinancialConceptEntryEditionCommand command) {
-      throw new NotImplementedException();
+    internal FinancialConceptEntry InsertEntryFrom(FinancialConceptEntryEditionCommand command) {
+      Assertion.AssertObject(command, nameof(command));
+
+      int position = CalculatePositionFrom(command);
+
+      AccountEntryTypeFields fields = command.MapToAccountEntryTypeFields(position);
+
+      FinancialConceptEntry entry = FinancialConceptEntry.Create(fields);
+
+      UpdateList(entry);
+
+      return entry;
     }
 
 
-    internal void Remove(FinancialConceptEntry entry) {
-      throw new NotImplementedException();
+    internal void RemoveEntry(FinancialConceptEntry entry) {
+      Assertion.AssertObject(entry, nameof(entry));
+
+      Assertion.Assert(entry.FinancialConcept.Equals(this),
+              $"La regla de integración que se desea eliminar no pertenece al concepto '{this.Name}'.");
+
+      entry.Delete();
+
+      UpdateList(entry);
     }
 
 
@@ -187,7 +221,97 @@ namespace Empiria.FinancialAccounting.FinancialConcepts {
       this.UpdatedBy = ExecutionServer.CurrentIdentity.User.AsContact();
     }
 
+
+    internal FinancialConceptEntry UpdateEntryFrom(FinancialConceptEntryEditionCommand command) {
+      Assertion.AssertObject(command, nameof(command));
+
+      FinancialConceptEntry entry = GetEntry(command.FinancialConceptEntryUID);
+
+      int newPosition = CalculatePositionFrom(command, entry.Position);
+
+      AccountEntryTypeFields fields = command.MapToAccountEntryTypeFields(newPosition);
+
+      entry.Update(fields);
+
+      UpdateList(entry);
+
+      return entry;
+    }
+
     #endregion Methods
+
+    #region Helpers
+
+    private int CalculatePositionFrom(FinancialConceptEntryEditionCommand command,
+                                      int currentPosition = -1) {
+
+      switch (command.PositioningRule) {
+
+        case PositioningRule.AfterOffset:
+          var afterOffset = GetEntry(command.PositioningOffsetEntryUID);
+
+          if (currentPosition != -1 &&
+              currentPosition < afterOffset.Position) {
+            return afterOffset.Position;
+          } else {
+            return afterOffset.Position + 1;
+          }
+
+
+        case PositioningRule.AtEnd:
+
+          if (currentPosition != -1) {
+            return _integration.Value.Count;
+          } else {
+            return _integration.Value.Count + 1;
+          }
+
+        case PositioningRule.AtStart:
+          return 1;
+
+        case PositioningRule.BeforeOffset:
+          var beforeOffset = GetEntry(command.PositioningOffsetEntryUID);
+
+          if (currentPosition != -1 &&
+              currentPosition < beforeOffset.Position) {
+            return beforeOffset.Position - 1;
+          } else {
+            return beforeOffset.Position;
+          }
+
+        case PositioningRule.ByPositionValue:
+          Assertion.Assert(1 <= command.Position &&
+                                command.Position <= _integration.Value.Count + 1,
+            $"Position value is {command.Position}, but must be between 1 and {_integration.Value.Count + 1}.");
+
+          return command.Position;
+
+        default:
+          throw Assertion.AssertNoReachThisCode($"Unhandled PositioningRule '{command.PositioningRule}'.");
+      }
+    }
+
+
+    private void UpdateList(FinancialConceptEntry entry) {
+      int listIndex = Integration.IndexOf(entry);
+
+      if (listIndex != -1) {
+        _integration.Value.RemoveAt(listIndex);
+      }
+
+      if (entry.Status != EntityStatus.Deleted) {
+        _integration.Value.Insert(entry.Position - 1, entry);
+      }
+
+      for (int i = 0; i < _integration.Value.Count; i++) {
+        FinancialConceptEntry item = _integration.Value[i];
+
+        item.SetPosition(i + 1);
+      }
+    }
+
+
+    #endregion Helpers
 
   } // class FinancialConcept
 

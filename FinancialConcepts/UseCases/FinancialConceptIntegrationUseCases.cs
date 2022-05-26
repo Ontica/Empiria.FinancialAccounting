@@ -49,7 +49,7 @@ namespace Empiria.FinancialAccounting.FinancialConcepts.UseCases {
 
       var concept = FinancialConcept.Parse(command.FinancialConceptUID);
 
-      FinancialConceptEntry entry = concept.InsertFrom(command);
+      FinancialConceptEntry entry = concept.InsertEntryFrom(command);
 
       entry.Save();
 
@@ -65,7 +65,7 @@ namespace Empiria.FinancialAccounting.FinancialConcepts.UseCases {
 
       FinancialConceptEntry entry = concept.GetEntry(financialConceptEntryUID);
 
-      concept.Remove(entry);
+      concept.RemoveEntry(entry);
 
       entry.Save();
     }
@@ -78,9 +78,9 @@ namespace Empiria.FinancialAccounting.FinancialConcepts.UseCases {
 
       var concept = FinancialConcept.Parse(command.FinancialConceptUID);
 
-      FinancialConceptEntry entry = concept.GetEntry(command.FinancialConceptEntryUID);
+      FinancialConceptEntry entry = concept.UpdateEntryFrom(command);
 
-      concept.Save();
+      entry.Save();
 
       return FinancialConceptMapper.Map(entry);
     }
