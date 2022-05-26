@@ -79,8 +79,6 @@ namespace Empiria.FinancialAccounting {
 
 
     protected override void OnLoad() {
-      base.OnLoad();
-
       if (!this.IsEmptyInstance) {
         this.MasterData = new AccountsChartMasterData(this, this.ExtendedDataField);
         _accounts = new Lazy<EmpiriaHashTable<Account>>(() => AccountsChartData.GetAccounts(this));

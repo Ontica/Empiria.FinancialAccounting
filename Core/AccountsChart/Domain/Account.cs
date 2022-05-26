@@ -50,8 +50,6 @@ namespace Empiria.FinancialAccounting {
 
 
     protected override void OnLoad() {
-      base.OnLoad();
-
       this.ResetAreaRules();
       this.ResetCurrencyRules();
       this.ResetLedgerRules();

@@ -65,8 +65,6 @@ namespace Empiria.FinancialAccounting.FinancialConcepts {
 
 
     protected override void OnLoad() {
-      base.OnLoad();
-
       if (this.IsEmptyInstance) {
         return;
       }

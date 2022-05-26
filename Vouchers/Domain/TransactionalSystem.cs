@@ -48,7 +48,6 @@ namespace Empiria.FinancialAccounting.Vouchers {
     static public TransactionalSystem Empty => BaseObject.ParseEmpty<TransactionalSystem>();
 
     protected override void OnInitialize() {
-      base.OnLoad();
       LoadRules();
     }
 
