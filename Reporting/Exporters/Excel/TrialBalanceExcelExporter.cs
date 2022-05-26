@@ -96,7 +96,7 @@ namespace Empiria.FinancialAccounting.Reporting.Exporters.Excel {
 
         case TrialBalanceType.Balanza:
         case TrialBalanceType.Saldos:
-          FillOutBalanza(trialBalance.Entries.Select(x => (TrialBalanceEntryDto) x));
+          FillOutBalanza(trialBalance.Entries.Select(x => (BalanzaTradicionalEntryDto) x));
           return;
 
         case TrialBalanceType.SaldosPorAuxiliar:
@@ -301,7 +301,7 @@ namespace Empiria.FinancialAccounting.Reporting.Exporters.Excel {
     }
 
 
-    private void FillOutBalanza(IEnumerable<TrialBalanceEntryDto> entries) {
+    private void FillOutBalanza(IEnumerable<BalanzaTradicionalEntryDto> entries) {
       int i = 5;
 
       foreach (var entry in entries) {
