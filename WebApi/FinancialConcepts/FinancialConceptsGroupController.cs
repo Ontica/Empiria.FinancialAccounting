@@ -29,9 +29,9 @@ namespace Empiria.FinancialAccounting.WebApi.FinancialConcepts {
     public CollectionModel GetFinancialConceptsGroups([FromUri] string accountsChartUID) {
 
       using (var usecases = FinancialConceptsGroupUseCases.UseCaseInteractor()) {
-        FixedList<NamedEntityDto> rules = usecases.GetFinancialConceptsGroups(accountsChartUID);
+        FixedList<FinancialConceptsGroupDto> groups = usecases.GetFinancialConceptsGroups(accountsChartUID);
 
-        return new CollectionModel(base.Request, rules);
+        return new CollectionModel(base.Request, groups);
       }
     }
 

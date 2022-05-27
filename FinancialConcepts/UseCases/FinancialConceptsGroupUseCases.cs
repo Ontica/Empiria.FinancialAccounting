@@ -42,14 +42,14 @@ namespace Empiria.FinancialAccounting.FinancialConcepts.UseCases {
     }
 
 
-    public FixedList<NamedEntityDto> GetFinancialConceptsGroups(string accountsChartUID) {
+    public FixedList<FinancialConceptsGroupDto> GetFinancialConceptsGroups(string accountsChartUID) {
       Assertion.AssertObject(accountsChartUID, "accountsChartUID");
 
       var accountsChart = AccountsChart.Parse(accountsChartUID);
 
       FixedList<FinancialConceptGroup> groups = FinancialConceptGroup.GetList(accountsChart);
 
-      return groups.MapToNamedEntityList();
+      return FinancialConceptMapper.Map(groups);
     }
 
 

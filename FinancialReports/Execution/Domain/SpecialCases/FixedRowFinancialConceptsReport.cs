@@ -108,7 +108,8 @@ namespace Empiria.FinancialAccounting.FinancialReports {
       var totals = CreateReportEntryTotalsObject();
 
       foreach (var balance in accountBalances) {
-        if (integrationEntry.CalculationRule == "SumDebitsAndSubstractCredits") {
+
+        if (integrationEntry.CalculationRule == "SaldoDeudorasMenosSaldoAcreedoras") {
           totals = totals.SumDebitsOrSubstractCredits(balance, integrationEntry.DataColumn);
         } else {
           totals = totals.Sum(balance, integrationEntry.DataColumn);

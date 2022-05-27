@@ -14,6 +14,12 @@ namespace Empiria.FinancialAccounting.FinancialConcepts.Adapters {
   /// <summary>Mapping methods for financial concepts.</summary>
   static internal class FinancialConceptMapper {
 
+    internal static FixedList<FinancialConceptsGroupDto> Map(FixedList<FinancialConceptGroup> list) {
+      return list.Select(group => Map(group))
+                 .ToFixedList();
+    }
+
+
     static internal FinancialConceptDto Map(FinancialConcept concept) {
       return new FinancialConceptDto {
         UID = concept.UID,
@@ -29,6 +35,19 @@ namespace Empiria.FinancialAccounting.FinancialConcepts.Adapters {
       };
     }
 
+
+    static private FinancialConceptsGroupDto Map(FinancialConceptGroup group) {
+      return new FinancialConceptsGroupDto {
+        UID = group.UID,
+        Name = group.Name,
+        AccountsChart = group.AccountsChart.MapToNamedEntity(),
+        StartDate = group.StartDate,
+        EndDate = group.EndDate,
+        CalculationRules = group.CalculationRules,
+        DataColumns = group.DataColumns,
+        ExternalVariablesSets = group.ExternalVariablesSets.MapToNamedEntityList()
+      };
+    }
 
     static internal FixedList<FinancialConceptDescriptorDto> Map(FixedList<FinancialConcept> list) {
       return list.Select(financialConcept => MapToDescriptor(financialConcept))

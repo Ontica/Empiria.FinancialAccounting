@@ -99,6 +99,52 @@ namespace Empiria.FinancialAccounting.FinancialConcepts {
       }
     }
 
+    public DateTime StartDate {
+      get {
+        return base.ExtendedDataField.Get("startDate", AccountsChart.MasterData.StartDate);
+      }
+    }
+
+
+    public DateTime EndDate {
+      get {
+        return base.ExtendedDataField.Get("endDate", AccountsChart.MasterData.EndDate);
+      }
+    }
+
+
+    public FixedList<string> CalculationRules {
+      get {
+        var rules = base.ExtendedDataField.GetFixedList<string>("calculationRules", false);
+
+        if (rules.Count != 0) {
+          return rules;
+        }
+
+        return new[] { "Default" }.ToFixedList();
+      }
+    }
+
+
+    public FixedList<string> DataColumns {
+      get {
+        var columns = base.ExtendedDataField.GetFixedList<string>("dataColumns", false);
+
+        if (columns.Count != 0) {
+          return columns;
+        }
+
+        return new[] { "Default" }.ToFixedList();
+      }
+    }
+
+
+    public FixedList<ExternalVariablesSet> ExternalVariablesSets {
+      get {
+        return base.ExtendedDataField.GetFixedList<ExternalVariablesSet>("externalVariablesSets", false);
+      }
+    }
+
 
     #endregion Properties
 
