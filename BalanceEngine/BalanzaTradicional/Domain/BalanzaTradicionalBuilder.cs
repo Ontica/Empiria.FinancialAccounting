@@ -36,46 +36,47 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
 
       EmpiriaLog.Debug($"START BalanzaTradicional: {startTime}");
 
-      FixedList<TrialBalanceEntry> postingEntries = balanzaHelper.GetPostingEntries();
+      FixedList<TrialBalanceEntry> accountEntries = balanzaHelper.GetPostingEntries();
 
       var helper = new TrialBalanceHelper(_command);
 
-      helper.SetSummaryToParentEntries(postingEntries);
+      helper.SetSummaryToParentEntries(accountEntries);
 
-      FixedList<TrialBalanceEntry> summaryEntries = balanzaHelper.GetCalculatedParentAccounts(
-                                                    postingEntries);
+      FixedList<TrialBalanceEntry> parentAccounts = balanzaHelper.GetCalculatedParentAccounts(
+                                                    accountEntries);
 
       EmpiriaLog.Debug($"AFTER GenerateSummaryEntries: {DateTime.Now.Subtract(startTime).TotalSeconds} seconds.");
 
-      List<TrialBalanceEntry> postingEntriesMapped = helper.GetEntriesMappedForSectorization(
-                                              postingEntries.ToList());
+      List<TrialBalanceEntry> accountEntriesMapped = helper.GetEntriesMappedForSectorization(
+                                                     accountEntries.ToList());
 
-      List<TrialBalanceEntry> _postingEntries = helper.GetSummaryEntriesAndSectorization(
-                                                postingEntriesMapped);
+      List<TrialBalanceEntry> accountEntriesAndSectorization = 
+                              helper.GetSummaryAccountEntriesAndSectorization(accountEntriesMapped);
 
       EmpiriaLog.Debug($"AFTER GetSummaryEntriesAndSectorization (postingEntries): {DateTime.Now.Subtract(startTime).TotalSeconds} seconds.");
 
-      List<TrialBalanceEntry> summaryEntriesAndSectorization =
-                              helper.GetSummaryEntriesAndSectorization(summaryEntries.ToList());
+      List<TrialBalanceEntry> parentAccountEntriesAndSectorization =
+                              helper.GetSummaryAccountEntriesAndSectorization(parentAccounts.ToList());
 
       EmpiriaLog.Debug($"AFTER GetSummaryEntriesAndSectorization (summaryEntries): {DateTime.Now.Subtract(startTime).TotalSeconds} seconds.");
 
 
-      List<TrialBalanceEntry> trialBalance = balanzaHelper.CombineParentAndPostingAccountEntries(
-                                             summaryEntriesAndSectorization, _postingEntries.ToFixedList());
+      List<TrialBalanceEntry> balanzaTradicional = balanzaHelper.CombineParentsAndAccountEntries(
+                                                   parentAccountEntriesAndSectorization, 
+                                                   accountEntriesAndSectorization);
 
       EmpiriaLog.Debug($"AFTER CombineSummaryAndPostingEntries: {DateTime.Now.Subtract(startTime).TotalSeconds} seconds.");
 
-      trialBalance = GetTrialBalanceType(trialBalance, postingEntries);
+      balanzaTradicional = GenerateBalanzaTradicional(balanzaTradicional, accountEntries);
 
       EmpiriaLog.Debug($"AFTER GetTrialBalanceType: {DateTime.Now.Subtract(startTime).TotalSeconds} seconds.");
 
-      helper.RestrictLevels(trialBalance);
+      helper.RestrictLevels(balanzaTradicional);
 
       EmpiriaLog.Debug($"AFTER RestrictLevels: {DateTime.Now.Subtract(startTime).TotalSeconds} seconds.");
 
       var returnBalance = new FixedList<ITrialBalanceEntry>(
-                              trialBalance.Select(x => (ITrialBalanceEntry) x));
+                              balanzaTradicional.Select(x => (ITrialBalanceEntry) x));
 
       EmpiriaLog.Debug($"END BalanzaTradicional: {DateTime.Now.Subtract(startTime).TotalSeconds} seconds.");
 
@@ -86,31 +87,22 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
     #region Private methods
 
 
-    private List<TrialBalanceEntry> GetTrialBalanceType(List<TrialBalanceEntry> trialBalance,
-                                                        FixedList<TrialBalanceEntry> postingEntries) {
-      if (!_command.IsOperationalReport) {
+    private List<TrialBalanceEntry> GenerateBalanzaTradicional(
+                                    List<TrialBalanceEntry> balanzaTradicional,
+                                    FixedList<TrialBalanceEntry> accountEntries) {
 
-        trialBalance = GenerateTrialBalance(trialBalance, postingEntries);
-
-      } else {
-        trialBalance = GenerateOperationalBalance(trialBalance);
-      }
-      return trialBalance;
-    }
-
-
-    private List<TrialBalanceEntry> GenerateTrialBalance(List<TrialBalanceEntry> trialBalance,
-                                     FixedList<TrialBalanceEntry> postingEntries) {
       var helper = new TrialBalanceHelper(_command);
+      var balanzaHelper = new BalanzaTradicionalHelper(_command);
 
-      List<TrialBalanceEntry> returnedTrialBalance = new List<TrialBalanceEntry>();
+      FixedList<TrialBalanceEntry> groupTotalsEntries = balanzaHelper.GenerateTotalGroupEntries(
+                                                         accountEntries);
 
-      FixedList<TrialBalanceEntry> summaryGroupEntries = helper.GenerateTotalSummaryGroups(postingEntries);
-
-      returnedTrialBalance = helper.CombineGroupEntriesAndPostingEntries(trialBalance, summaryGroupEntries);
+      List<TrialBalanceEntry> returnedTrialBalance = 
+                              balanzaHelper.CombineTotalGroupEntriesAndAccountEntries(
+                              balanzaTradicional, groupTotalsEntries);
 
       List<TrialBalanceEntry> summaryTotalDebtorCreditorEntries =
-                              helper.GenerateTotalSummaryDebtorCreditor(postingEntries.ToList());
+                              helper.GenerateTotalSummaryDebtorCreditor(accountEntries.ToList());
 
       returnedTrialBalance = helper.CombineDebtorCreditorAndPostingEntries(returnedTrialBalance,
                                                                    summaryTotalDebtorCreditorEntries);
@@ -136,6 +128,9 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
 
       return returnedTrialBalance;
     }
+
+
+
 
     private List<TrialBalanceEntry> GenerateOperationalBalance(List<TrialBalanceEntry> trialBalance) {
       var helper = new TrialBalanceHelper(_command);

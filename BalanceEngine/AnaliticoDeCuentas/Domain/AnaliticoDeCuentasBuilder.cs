@@ -44,11 +44,11 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
       List<TrialBalanceEntry> saldosValorizadosMapped = balanceHelper.GetEntriesMappedForSectorization(
                                                      saldosValorizados.ToList());
 
-      List<TrialBalanceEntry> postingEntries = balanceHelper.GetSummaryEntriesAndSectorization(
+      List<TrialBalanceEntry> postingEntries = balanceHelper.GetSummaryAccountEntriesAndSectorization(
                                                saldosValorizadosMapped);
 
       List<TrialBalanceEntry> summaryEntriesAndSectorization =
-                              balanceHelper.GetSummaryEntriesAndSectorization(summaryEntries);
+                              balanceHelper.GetSummaryAccountEntriesAndSectorization(summaryEntries);
 
       var analiticoHelper = new AnaliticoDeCuentasHelper(_command);
 

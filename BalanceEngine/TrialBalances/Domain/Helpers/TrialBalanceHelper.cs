@@ -288,7 +288,7 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
     }
 
 
-    internal List<TrialBalanceEntry> GetSummaryEntriesAndSectorization(
+    internal List<TrialBalanceEntry> GetSummaryAccountEntriesAndSectorization(
                                       List<TrialBalanceEntry> entriesList) {
 
       var startTime = DateTime.Now;
@@ -940,8 +940,7 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
 
       if (balanceEntry.DebtorCreditor == DebtorCreditorType.Deudora) {
 
-        if ((_command.TrialBalanceType == TrialBalanceType.Balanza ||
-             _command.TrialBalanceType == TrialBalanceType.SaldosPorCuenta) &&
+        if (_command.TrialBalanceType == TrialBalanceType.SaldosPorCuenta &&
             ((_command.WithSubledgerAccount && _command.ShowCascadeBalances) ||
              _command.ShowCascadeBalances)) {
           hash = $"{balanceEntry.Ledger.Id}||{groupEntry.DebtorCreditor}||{groupEntry.Currency.Id}||{groupEntry.GroupNumber}";
@@ -955,8 +954,7 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
 
       } else if (balanceEntry.DebtorCreditor == DebtorCreditorType.Acreedora) {
 
-        if ((_command.TrialBalanceType == TrialBalanceType.Balanza ||
-             _command.TrialBalanceType == TrialBalanceType.SaldosPorCuenta) &&
+        if (_command.TrialBalanceType == TrialBalanceType.SaldosPorCuenta &&
             ((_command.WithSubledgerAccount && _command.ShowCascadeBalances) ||
              _command.ShowCascadeBalances)) {
           hash = $"{balanceEntry.Ledger.Id}||{groupEntry.DebtorCreditor}||{groupEntry.Currency.Id}||{groupEntry.GroupNumber}";
