@@ -50,13 +50,6 @@ namespace Empiria.FinancialAccounting.FinancialConcepts {
     }
 
 
-    static public FixedList<FinancialConceptGroup> GetList(AccountsChart accountsChart) {
-      var list = GetList();
-
-      return list.FindAll(x => x.AccountsChart.Equals(accountsChart));
-    }
-
-
     static public FinancialConceptGroup Empty {
       get {
         return FinancialConceptGroup.ParseEmpty<FinancialConceptGroup>();

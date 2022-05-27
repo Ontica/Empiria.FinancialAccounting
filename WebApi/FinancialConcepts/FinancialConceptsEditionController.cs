@@ -83,7 +83,7 @@ namespace Empiria.FinancialAccounting.WebApi.FinancialConcepts {
     public NoDataModel CleanupAllRules() {
       using (var usecases = FinancialConceptsGroupUseCases.UseCaseInteractor()) {
 
-        var groups = usecases.GetFinancialConceptsGroups(AccountsChart.IFRS.UID);
+        var groups = usecases.GetFinancialConceptsGroups();
 
         foreach (var group in groups) {
           usecases.CleanupFinancialConceptGroup(group.UID);

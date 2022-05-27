@@ -42,12 +42,8 @@ namespace Empiria.FinancialAccounting.FinancialConcepts.UseCases {
     }
 
 
-    public FixedList<FinancialConceptsGroupDto> GetFinancialConceptsGroups(string accountsChartUID) {
-      Assertion.AssertObject(accountsChartUID, "accountsChartUID");
-
-      var accountsChart = AccountsChart.Parse(accountsChartUID);
-
-      FixedList<FinancialConceptGroup> groups = FinancialConceptGroup.GetList(accountsChart);
+    public FixedList<FinancialConceptsGroupDto> GetFinancialConceptsGroups() {
+      FixedList<FinancialConceptGroup> groups = FinancialConceptGroup.GetList();
 
       return FinancialConceptMapper.Map(groups);
     }

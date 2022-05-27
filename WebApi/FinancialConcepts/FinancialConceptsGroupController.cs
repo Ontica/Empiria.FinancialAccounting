@@ -25,11 +25,11 @@ namespace Empiria.FinancialAccounting.WebApi.FinancialConcepts {
     #region Web Apis
 
     [HttpGet]
-    [Route("v2/financial-accounting/financial-concepts/account-chart-groups/{accountsChartUID:guid}")]
-    public CollectionModel GetFinancialConceptsGroups([FromUri] string accountsChartUID) {
+    [Route("v2/financial-accounting/financial-concepts/groups")]
+    public CollectionModel GetFinancialConceptsGroups() {
 
       using (var usecases = FinancialConceptsGroupUseCases.UseCaseInteractor()) {
-        FixedList<FinancialConceptsGroupDto> groups = usecases.GetFinancialConceptsGroups(accountsChartUID);
+        FixedList<FinancialConceptsGroupDto> groups = usecases.GetFinancialConceptsGroups();
 
         return new CollectionModel(base.Request, groups);
       }
