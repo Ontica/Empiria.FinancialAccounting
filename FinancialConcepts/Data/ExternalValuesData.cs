@@ -8,7 +8,7 @@
 *                                                                                                            *
 ************************* Copyright(c) La Vía Óntica SC, Ontica LLC and contributors. All rights reserved. **/
 using System;
-
+using System.Collections.Generic;
 using Empiria.Data;
 
 namespace Empiria.FinancialAccounting.FinancialConcepts.Data {
@@ -24,6 +24,17 @@ namespace Empiria.FinancialAccounting.FinancialConcepts.Data {
       var dataOperation = DataOperation.Parse(sql);
 
       return DataReader.GetObject<ExternalValue>(dataOperation, ExternalValue.Empty);
+    }
+
+
+    static internal FixedList<ExternalVariable> GetExternalVariables(ExternalVariablesSet set) {
+      var sql = "SELECT * FROM COF_CONCEPTOS_VARIABLES " +
+         $"WHERE ID_CONJUNTO_BASE = {set.Id} " +
+         $"AND STATUS_VARIABLE <> 'X'";
+
+      var dataOperation = DataOperation.Parse(sql);
+
+      return DataReader.GetFixedList<ExternalVariable>(dataOperation);
     }
 
   }  // class ExternalValuesData
