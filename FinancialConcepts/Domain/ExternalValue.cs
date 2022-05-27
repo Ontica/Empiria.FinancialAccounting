@@ -40,7 +40,7 @@ namespace Empiria.FinancialAccounting.FinancialConcepts {
 
     static public ExternalValue GetValue(string externalVariableCode,
                                          DateTime date) {
-      return ExternalValuesData.GetValue(externalVariableCode, date);
+      return ExternalVariablesData.GetValue(externalVariableCode, date);
     }
 
     #endregion Constructors and parsers

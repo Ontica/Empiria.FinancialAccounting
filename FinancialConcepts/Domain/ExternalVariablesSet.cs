@@ -31,6 +31,7 @@ namespace Empiria.FinancialAccounting.FinancialConcepts {
       // Required by Empiria Framework.
     }
 
+
     static public ExternalVariablesSet Parse(int id) {
       return BaseObject.ParseId<ExternalVariablesSet>(id);
     }
@@ -47,9 +48,9 @@ namespace Empiria.FinancialAccounting.FinancialConcepts {
     }
 
 
-    static public FinancialConceptGroup Empty {
+    static public ExternalVariablesSet Empty {
       get {
-        return FinancialConceptGroup.ParseEmpty<FinancialConceptGroup>();
+        return FinancialConceptGroup.ParseEmpty<ExternalVariablesSet>();
       }
     }
 
@@ -60,7 +61,7 @@ namespace Empiria.FinancialAccounting.FinancialConcepts {
       }
 
       _externalVariables =
-            new Lazy<FixedList<ExternalVariable>>(() => ExternalValuesData.GetExternalVariables(this));
+            new Lazy<FixedList<ExternalVariable>>(() => ExternalVariablesData.GetExternalVariables(this));
 
     }
 

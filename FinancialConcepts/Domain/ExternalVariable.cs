@@ -48,7 +48,14 @@ namespace Empiria.FinancialAccounting.FinancialConcepts {
     #region Properties
 
 
-    [DataField("ETIQUETA_VARIABLE")]
+    [DataField("ID_CONJUNTO_BASE")]
+    public ExternalVariablesSet Set {
+      get;
+      private set;
+    }
+
+
+    [DataField("CLAVE_VARIABLE")]
     public string Code {
       get;
       private set;
