@@ -35,7 +35,6 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
     internal FixedList<TrialBalanceEntry> GetCalculatedParentAccounts(
                                      FixedList<TrialBalanceEntry> accountEntries) {
 
-      var trialBalanceHelper = new TrialBalanceHelper(_command);
       var parentAccounts = new EmpiriaHashTable<TrialBalanceEntry>(accountEntries.Count);
 
       foreach (var entry in accountEntries) {
@@ -51,42 +50,17 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
           continue;
         }
 
-        if (entry.HasParentPostingEntry) {
-          continue;
-        }
-
-        while (true) {
-          entry.DebtorCreditor = entry.Account.DebtorCreditor;
-          entry.SubledgerAccountIdParent = entry.SubledgerAccountId;
-
-          if (entry.Level > 1) {
-            SummaryByAccountEntry(parentAccounts, entry, currentParent,
-                            entry.Sector, TrialBalanceItemType.Summary);
-
-            ValidateSectorizationForSummaryParentEntry(parentAccounts, entry, currentParent);
-          }
-
-          if (!currentParent.HasParent && entry.HasSector) {
-            trialBalanceHelper.GetEntriesAndParentSector(parentAccounts, entry, currentParent);
-            break;
-
-          } else if (!currentParent.HasParent) {
-            break;
-
-          } else {
-            currentParent = currentParent.GetParent();
-          }
-
-        } // while
+        GenerateOrIncreaseParentAccounts(parentAccounts, entry, currentParent);
 
       } // foreach
 
+      var trialBalanceHelper = new TrialBalanceHelper(_command);
       trialBalanceHelper.AssignLastChangeDatesToSummaryEntries(accountEntries, parentAccounts);
 
       return parentAccounts.ToFixedList();
     }
 
-
+    
     internal List<TrialBalanceEntry> CombineTotalGroupEntriesAndAccountEntries(
                                       List<TrialBalanceEntry> balanzaEntries,
                                       FixedList<TrialBalanceEntry> groupTotalsEntries) {
@@ -159,8 +133,7 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
     
     internal void SummaryByAccountEntry(EmpiriaHashTable<TrialBalanceEntry> summaryEntries,
                                  TrialBalanceEntry entry,
-                                 StandardAccount targetAccount, Sector targetSector,
-                                 TrialBalanceItemType itemType) {
+                                 StandardAccount targetAccount, Sector targetSector) {
 
       var trialBalanceHelper = new TrialBalanceHelper(_command);
 
@@ -168,7 +141,7 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
                     $"{entry.Ledger.Id}||{entry.DebtorCreditor}";
 
       trialBalanceHelper.GenerateOrIncreaseEntries(summaryEntries, entry, targetAccount,
-                                                   targetSector, itemType, hash);
+                                                   targetSector, TrialBalanceItemType.Summary, hash);
     }
 
 
@@ -205,6 +178,35 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
       }
 
       return AccountEntriesToConsolidate.Values.ToFixedList();
+    }
+
+
+    private void GenerateOrIncreaseParentAccounts(EmpiriaHashTable<TrialBalanceEntry> parentAccounts,
+                                                  TrialBalanceEntry entry, StandardAccount currentParent) {
+
+      var trialBalanceHelper = new TrialBalanceHelper(_command);
+
+      while (true) {
+        entry.SubledgerAccountIdParent = entry.SubledgerAccountId;
+
+        if (entry.Level > 1) {
+          SummaryByAccountEntry(parentAccounts, entry, currentParent, entry.Sector);
+
+          ValidateSectorizationForSummaryParentEntry(parentAccounts, entry, currentParent);
+        }
+
+        if (!currentParent.HasParent && entry.HasSector) {
+          trialBalanceHelper.GetEntriesAndParentSector(parentAccounts, entry, currentParent);
+          break;
+
+        } else if (!currentParent.HasParent) {
+          break;
+
+        } else {
+          currentParent = currentParent.GetParent();
+        }
+
+      } // while
     }
 
 
@@ -314,8 +316,7 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
         return;
       }
 
-      SummaryByAccountEntry(parentAccounts, entry, currentParent,
-                            entry.Sector.Parent, TrialBalanceItemType.Summary);
+      SummaryByAccountEntry(parentAccounts, entry, currentParent, entry.Sector.Parent);
     }
 
 

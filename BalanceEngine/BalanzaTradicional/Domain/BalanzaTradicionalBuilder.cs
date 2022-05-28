@@ -38,14 +38,14 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
 
       FixedList<TrialBalanceEntry> accountEntries = balanzaHelper.GetPostingEntries();
 
-      var helper = new TrialBalanceHelper(_command);
-
-      helper.SetSummaryToParentEntries(accountEntries);
-
       FixedList<TrialBalanceEntry> parentAccounts = balanzaHelper.GetCalculatedParentAccounts(
                                                     accountEntries);
 
-      EmpiriaLog.Debug($"AFTER GenerateSummaryEntries: {DateTime.Now.Subtract(startTime).TotalSeconds} seconds.");
+      EmpiriaLog.Debug($"AFTER GetCalculatedParentAccounts: {DateTime.Now.Subtract(startTime).TotalSeconds} seconds.");
+
+      var helper = new TrialBalanceHelper(_command);
+
+      helper.SetSummaryToParentEntries(accountEntries);
 
       List<TrialBalanceEntry> accountEntriesMapped = helper.GetEntriesMappedForSectorization(
                                                      accountEntries.ToList());
@@ -53,12 +53,12 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
       List<TrialBalanceEntry> accountEntriesAndSectorization = 
                               helper.GetSummaryAccountEntriesAndSectorization(accountEntriesMapped);
 
-      EmpiriaLog.Debug($"AFTER GetSummaryEntriesAndSectorization (postingEntries): {DateTime.Now.Subtract(startTime).TotalSeconds} seconds.");
+      EmpiriaLog.Debug($"AFTER GetSummaryAccountEntriesAndSectorization (postingEntries): {DateTime.Now.Subtract(startTime).TotalSeconds} seconds.");
 
       List<TrialBalanceEntry> parentAccountEntriesAndSectorization =
                               helper.GetSummaryAccountEntriesAndSectorization(parentAccounts.ToList());
 
-      EmpiriaLog.Debug($"AFTER GetSummaryEntriesAndSectorization (summaryEntries): {DateTime.Now.Subtract(startTime).TotalSeconds} seconds.");
+      EmpiriaLog.Debug($"AFTER GetSummaryAccountEntriesAndSectorization (summaryEntries): {DateTime.Now.Subtract(startTime).TotalSeconds} seconds.");
 
 
       List<TrialBalanceEntry> balanzaTradicional = balanzaHelper.CombineParentsAndAccountEntries(
