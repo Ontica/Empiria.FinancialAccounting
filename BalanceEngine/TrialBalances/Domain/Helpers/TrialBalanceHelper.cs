@@ -151,26 +151,6 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
     }
 
 
-    internal List<TrialBalanceEntry> CombineTotalConsolidatedByLedgerAndPostingEntries(
-                                      List<TrialBalanceEntry> trialBalance,
-                                      List<TrialBalanceEntry> totalConsolidatedByLedger) {
-      if (totalConsolidatedByLedger.Count == 0) {
-        return trialBalance;
-      }
-
-      var returnedEntries = new List<TrialBalanceEntry>();
-
-      foreach (var consolidatedByLedger in totalConsolidatedByLedger) {
-        var listSummaryByLedger = trialBalance.Where(a => a.Ledger.Id == consolidatedByLedger.Ledger.Id).ToList();
-        if (listSummaryByLedger.Count > 0) {
-          listSummaryByLedger.Add(consolidatedByLedger);
-          returnedEntries.AddRange(listSummaryByLedger);
-        }
-      }
-      return returnedEntries;
-    }
-
-
     internal FixedList<TrialBalanceEntry> ConsolidateToTargetCurrency(
                                           FixedList<TrialBalanceEntry> trialBalance,
                                           BalanceEngineCommandPeriod commandPeriod) {
@@ -486,31 +466,6 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
       balanceEntries.AddRange(totalSummaryConsolidated.Values.ToList());
 
       return balanceEntries;
-    }
-
-
-    internal List<TrialBalanceEntry> GenerateTotalSummaryConsolidatedByLedger(
-                                      List<TrialBalanceEntry> summaryCurrencies) {
-
-      var summaryConsolidatedByLedger = new EmpiriaHashTable<TrialBalanceEntry>(summaryCurrencies.Count);
-      List<TrialBalanceEntry> returnedListEntries = new List<TrialBalanceEntry>();
-      if (_command.TrialBalanceType == TrialBalanceType.Balanza && _command.ShowCascadeBalances) {
-        foreach (var currencyEntry in summaryCurrencies.Where(
-                        a => a.ItemType == TrialBalanceItemType.BalanceTotalCurrency)) {
-
-          TrialBalanceEntry entry = currencyEntry.CreatePartialCopy();
-
-          entry.GroupName = $"TOTAL CONSOLIDADO {entry.Ledger.FullName}";
-          entry.Currency = Currency.Empty;
-          string hash = $"{entry.Ledger.Id}||{entry.GroupName}||{Sector.Empty.Code}";
-
-          GenerateOrIncreaseEntries(summaryConsolidatedByLedger, entry, StandardAccount.Empty, Sector.Empty,
-                                    TrialBalanceItemType.BalanceTotalConsolidatedByLedger, hash);
-        }
-
-        returnedListEntries.AddRange(summaryConsolidatedByLedger.Values.ToList());
-      }
-      return returnedListEntries.OrderBy(a => a.Ledger.Number).ToList();
     }
 
 

@@ -37,17 +37,62 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
                                       List<TrialBalanceEntry> totalsByCurrency) {
       var returnedEntries = new List<TrialBalanceEntry>();
 
-      foreach (var currencyEntry in totalsByCurrency.Where(
-                a => a.ItemType == TrialBalanceItemType.BalanceTotalCurrency)) {
-        
+      foreach (var currencyEntry in totalsByCurrency) {
+
         var entriesByCurrency = balanceEntries.Where(a => a.Ledger.Id == currencyEntry.Ledger.Id &&
-                                                         a.Currency.Code == currencyEntry.Currency.Code)
-                                                  .ToList();
+                                                     a.Currency.Code == currencyEntry.Currency.Code)
+                                              .ToList();
         if (entriesByCurrency.Count > 0) {
           entriesByCurrency.Add(currencyEntry);
           returnedEntries.AddRange(entriesByCurrency);
         }
       }
+      return returnedEntries.OrderBy(a => a.Ledger.Number)
+                            .ThenBy(a => a.Currency.Code)
+                            .ToList();
+    }
+
+
+    internal List<TrialBalanceEntry> CombineTotalConsolidatedByLedgerAndAccountEntries(
+                                      List<TrialBalanceEntry> balanceEntries,
+                                      List<TrialBalanceEntry> totalConsolidatedByLedger) {
+      if (totalConsolidatedByLedger.Count == 0) {
+        return balanceEntries;
+      }
+
+      var returnedEntries = new List<TrialBalanceEntry>();
+
+      foreach (var totalByLedger in totalConsolidatedByLedger) {
+        var entries = balanceEntries.Where(a => a.Ledger.Id == totalByLedger.Ledger.Id)
+                                     .ToList();
+
+        if (entries.Count > 0) {
+          entries.Add(totalByLedger);
+          returnedEntries.AddRange(entries);
+
+        }
+      }
+      return returnedEntries;
+    }
+
+
+    internal List<TrialBalanceEntry> CombineTotalDebtorCreditorsByCurrencyAndAccountEntries(
+                                     List<TrialBalanceEntry> balanceEntries,
+                                     List<TrialBalanceEntry> totalDebtorCreditors) {
+
+      var returnedEntries = new List<TrialBalanceEntry>();
+
+      foreach (var debtorCreditorEntry in totalDebtorCreditors) {
+
+        var entries = balanceEntries.Where(a => a.Ledger.Id == debtorCreditorEntry.Ledger.Id &&
+                                           a.Currency.Code == debtorCreditorEntry.Currency.Code &&
+                                           a.DebtorCreditor == debtorCreditorEntry.DebtorCreditor).ToList();
+        if (entries.Count > 0) {
+          entries.Add(debtorCreditorEntry);
+          returnedEntries.AddRange(entries);
+        }
+      }
+
       return returnedEntries.OrderBy(a => a.Ledger.Number)
                             .ThenBy(a => a.Currency.Code)
                             .ToList();
@@ -93,19 +138,42 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
     }
 
 
-    internal List<TrialBalanceEntry> GenerateTotalByCurrency(List<TrialBalanceEntry> entries) {
+    internal List<TrialBalanceEntry> GenerateTotalByCurrency(
+                                      List<TrialBalanceEntry> totalDebtorCreditorEntries) {
+
       var totalCurrenciesEntries = new EmpiriaHashTable<TrialBalanceEntry>();
 
-      foreach (var debtorCreditorEntry in entries.Where(
+      foreach (var debtorCreditorEntry in totalDebtorCreditorEntries.Where(
                 a => a.ItemType == TrialBalanceItemType.BalanceTotalDebtor ||
                      a.ItemType == TrialBalanceItemType.BalanceTotalCreditor)) {
 
         SummaryByCurrencyEntries(totalCurrenciesEntries, debtorCreditorEntry);
       }
 
-      entries.AddRange(totalCurrenciesEntries.Values.ToList());
+      return totalCurrenciesEntries.Values.ToList();
+    }
 
-      return entries;
+
+    internal List<TrialBalanceEntry> GenerateTotalsConsolidatedByLedger(
+                                      List<TrialBalanceEntry> totalsByCurrency) {
+
+      var totalsConsolidatedByLedger = new EmpiriaHashTable<TrialBalanceEntry>();
+
+      foreach (var currencyEntry in totalsByCurrency) {
+
+        TrialBalanceEntry entry = currencyEntry.CreatePartialCopy();
+
+        entry.GroupName = $"TOTAL CONSOLIDADO {entry.Ledger.FullName}";
+        entry.Currency = Currency.Empty;
+        string hash = $"{entry.Ledger.Id}||{entry.GroupName}||{Sector.Empty.Code}";
+
+        var trialBalanceHelper = new TrialBalanceHelper(_command);
+
+        trialBalanceHelper.GenerateOrIncreaseEntries(totalsConsolidatedByLedger, entry,
+                            StandardAccount.Empty, Sector.Empty,
+                            TrialBalanceItemType.BalanceTotalConsolidatedByLedger, hash);
+      }
+      return totalsConsolidatedByLedger.Values.OrderBy(a => a.Ledger.Number).ToList();
     }
 
 
@@ -121,7 +189,6 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
       }
       return totalSummaryDebtorCredtor.Values.ToList();
     }
-
 
 
     internal FixedList<TrialBalanceEntry> GenerateTotalGroupEntries(FixedList<TrialBalanceEntry> accountEntries) {
@@ -316,7 +383,6 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
                            TrialBalanceItemType.BalanceTotalGroupCreditor;
 
       var trialBalanceHelper = new TrialBalanceHelper(_command);
-
       trialBalanceHelper.GenerateOrIncreaseEntries(totalGroupEntries, totalGroupEntry,
                                                    StandardAccount.Empty, Sector.Empty,
                                                    debtorCreditor, hash);
@@ -347,7 +413,7 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
       }
       entry.GroupName = "TOTAL MONEDA " + entry.Currency.FullName;
       string hash = $"{entry.GroupName}||{Sector.Empty.Code}||{entry.Currency.Id}||{entry.Ledger.Id}";
-      
+
       var trialBalanceHelper = new TrialBalanceHelper(_command);
       trialBalanceHelper.GenerateOrIncreaseEntries(totalsByCurrency, entry,
                                                    StandardAccount.Empty, Sector.Empty,
@@ -368,7 +434,7 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
         entry.GroupName = "TOTAL DEUDORAS " + entry.Currency.FullName;
         itemType = TrialBalanceItemType.BalanceTotalDebtor;
       }
-      
+
       if (balanceEntry.DebtorCreditor == DebtorCreditorType.Acreedora) {
         entry.GroupName = "TOTAL ACREEDORAS " + entry.Currency.FullName;
         itemType = TrialBalanceItemType.BalanceTotalCreditor;
@@ -387,7 +453,7 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
     }
 
 
-    private bool ValidateEntryForSummaryParentAccount(TrialBalanceEntry entry, 
+    private bool ValidateEntryForSummaryParentAccount(TrialBalanceEntry entry,
                                                       out StandardAccount currentParent) {
 
       if ((entry.Account.NotHasParent) || _command.WithSubledgerAccount) {

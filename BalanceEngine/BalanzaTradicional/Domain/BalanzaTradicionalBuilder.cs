@@ -104,19 +104,23 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
       List<TrialBalanceEntry> totalDebtorCreditorEntries =
                               balanzaHelper.GenerateTotalDebtorCreditorsByCurrency(accountEntries.ToList());
 
-      returnedBalance = helper.CombineDebtorCreditorAndPostingEntries(returnedBalance,
-                                                                      totalDebtorCreditorEntries);
+      returnedBalance = balanzaHelper.CombineTotalDebtorCreditorsByCurrencyAndAccountEntries(
+                        returnedBalance, totalDebtorCreditorEntries);
 
       List<TrialBalanceEntry> totalsByCurrency = balanzaHelper.GenerateTotalByCurrency(
                                                 totalDebtorCreditorEntries);
 
-      returnedBalance = balanzaHelper.CombineTotalsByCurrencyAndAccountEntries(returnedBalance, totalsByCurrency);
+      returnedBalance = balanzaHelper.CombineTotalsByCurrencyAndAccountEntries(
+                        returnedBalance, totalsByCurrency);
 
-      List<TrialBalanceEntry> summaryTotalConsolidatedByLedger =
-                              helper.GenerateTotalSummaryConsolidatedByLedger(totalsByCurrency);
+      if (_command.ShowCascadeBalances) {
+        List<TrialBalanceEntry> totalsConsolidatedByLedger =
+                              balanzaHelper.GenerateTotalsConsolidatedByLedger(totalsByCurrency);
 
-      returnedBalance = helper.CombineTotalConsolidatedByLedgerAndPostingEntries(
-                            returnedBalance, summaryTotalConsolidatedByLedger);
+        returnedBalance = balanzaHelper.CombineTotalConsolidatedByLedgerAndAccountEntries(
+                              returnedBalance, totalsConsolidatedByLedger);
+
+      }
 
       List<TrialBalanceEntry> summaryTrialBalanceConsolidated = helper.GenerateTotalSummaryConsolidated(
                                                                      totalsByCurrency);
@@ -129,27 +133,6 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
       return returnedBalance;
     }
 
-
-
-
-    private List<TrialBalanceEntry> GenerateOperationalBalance(List<TrialBalanceEntry> trialBalance) {
-      var helper = new TrialBalanceHelper(_command);
-      var totalByAccountEntries = new EmpiriaHashTable<TrialBalanceEntry>(trialBalance.Count);
-
-      if (_command.ConsolidateBalancesToTargetCurrency == true) {
-
-        foreach (var entry in trialBalance) {
-          helper.SummaryByAccount(totalByAccountEntries, entry);
-        }
-
-        return totalByAccountEntries.ToFixedList().ToList();
-
-      } else {
-
-        return trialBalance;
-
-      }
-    }
 
     #endregion
 

@@ -118,12 +118,6 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
 
       returnedTrialBalance = helper.CombineCurrencyTotalsAndPostingEntries(returnedTrialBalance, summaryTotalCurrencies);
 
-      List<TrialBalanceEntry> summaryTotalConsolidatedByLedger =
-                              helper.GenerateTotalSummaryConsolidatedByLedger(summaryTotalCurrencies);
-
-      returnedTrialBalance = helper.CombineTotalConsolidatedByLedgerAndPostingEntries(
-                            returnedTrialBalance, summaryTotalConsolidatedByLedger);
-
       List<TrialBalanceEntry> summaryTrialBalanceConsolidated = helper.GenerateTotalSummaryConsolidated(
                                                                      summaryTotalCurrencies);
 
