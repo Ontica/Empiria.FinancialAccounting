@@ -67,7 +67,7 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
 
       EmpiriaLog.Debug($"AFTER CombineSummaryAndPostingEntries: {DateTime.Now.Subtract(startTime).TotalSeconds} seconds.");
 
-      balanzaTradicional = GenerateBalanzaTradicional(balanzaTradicional, accountEntries);
+      balanzaTradicional = GenerateTotalsAndCombineWithAccountEntries(balanzaTradicional, accountEntries);
 
       EmpiriaLog.Debug($"AFTER GetTrialBalanceType: {DateTime.Now.Subtract(startTime).TotalSeconds} seconds.");
 
@@ -87,7 +87,7 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
     #region Private methods
 
 
-    private List<TrialBalanceEntry> GenerateBalanzaTradicional(
+    private List<TrialBalanceEntry> GenerateTotalsAndCombineWithAccountEntries(
                                     List<TrialBalanceEntry> balanzaTradicional,
                                     FixedList<TrialBalanceEntry> accountEntries) {
 
@@ -97,36 +97,36 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
       FixedList<TrialBalanceEntry> groupTotalsEntries = balanzaHelper.GenerateTotalGroupEntries(
                                                          accountEntries);
 
-      List<TrialBalanceEntry> returnedTrialBalance = 
+      List<TrialBalanceEntry> returnedBalance = 
                               balanzaHelper.CombineTotalGroupEntriesAndAccountEntries(
                               balanzaTradicional, groupTotalsEntries);
 
-      List<TrialBalanceEntry> summaryTotalDebtorCreditorEntries =
-                              helper.GenerateTotalSummaryDebtorCreditor(accountEntries.ToList());
+      List<TrialBalanceEntry> totalDebtorCreditorEntries =
+                              balanzaHelper.GenerateTotalDebtorCreditorsByCurrency(accountEntries.ToList());
 
-      returnedTrialBalance = helper.CombineDebtorCreditorAndPostingEntries(returnedTrialBalance,
-                                                                   summaryTotalDebtorCreditorEntries);
+      returnedBalance = helper.CombineDebtorCreditorAndPostingEntries(returnedBalance,
+                                                                      totalDebtorCreditorEntries);
 
-      List<TrialBalanceEntry> summaryTotalCurrencies = helper.GenerateTotalSummaryCurrency(
-                                                              summaryTotalDebtorCreditorEntries);
+      List<TrialBalanceEntry> totalsByCurrency = balanzaHelper.GenerateTotalByCurrency(
+                                                totalDebtorCreditorEntries);
 
-      returnedTrialBalance = helper.CombineCurrencyTotalsAndPostingEntries(returnedTrialBalance, summaryTotalCurrencies);
+      returnedBalance = balanzaHelper.CombineTotalsByCurrencyAndAccountEntries(returnedBalance, totalsByCurrency);
 
       List<TrialBalanceEntry> summaryTotalConsolidatedByLedger =
-                              helper.GenerateTotalSummaryConsolidatedByLedger(summaryTotalCurrencies);
+                              helper.GenerateTotalSummaryConsolidatedByLedger(totalsByCurrency);
 
-      returnedTrialBalance = helper.CombineTotalConsolidatedByLedgerAndPostingEntries(
-                            returnedTrialBalance, summaryTotalConsolidatedByLedger);
+      returnedBalance = helper.CombineTotalConsolidatedByLedgerAndPostingEntries(
+                            returnedBalance, summaryTotalConsolidatedByLedger);
 
       List<TrialBalanceEntry> summaryTrialBalanceConsolidated = helper.GenerateTotalSummaryConsolidated(
-                                                                     summaryTotalCurrencies);
+                                                                     totalsByCurrency);
 
-      returnedTrialBalance = helper.CombineTotalConsolidatedAndPostingEntries(
-                            returnedTrialBalance, summaryTrialBalanceConsolidated);
+      returnedBalance = helper.CombineTotalConsolidatedAndPostingEntries(
+                            returnedBalance, summaryTrialBalanceConsolidated);
 
-      returnedTrialBalance = helper.TrialBalanceWithSubledgerAccounts(returnedTrialBalance);
+      returnedBalance = helper.TrialBalanceWithSubledgerAccounts(returnedBalance);
 
-      return returnedTrialBalance;
+      return returnedBalance;
     }
 
 
