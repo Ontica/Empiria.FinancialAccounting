@@ -88,7 +88,7 @@ namespace Empiria.FinancialAccounting.BanobrasIntegration.TransactionSlips {
           return string.Empty;
 
         default:
-          throw Assertion.AssertNoReachThisCode();
+          throw Assertion.EnsureNoReachThisCode();
       }
 
       return $"{CommonMethods.FormatSqlDbDate(_command.FromDate)} <= {fieldName} " +
@@ -111,7 +111,7 @@ namespace Empiria.FinancialAccounting.BanobrasIntegration.TransactionSlips {
           return "STATUS = 'E'";
 
         default:
-          throw Assertion.AssertNoReachThisCode();
+          throw Assertion.EnsureNoReachThisCode();
       }
     }
 

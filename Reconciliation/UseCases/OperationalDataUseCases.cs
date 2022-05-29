@@ -40,8 +40,8 @@ namespace Empiria.FinancialAccounting.Reconciliation.UseCases {
 
     public DatasetsLoadStatusDto CreateDataset(OperationalDataCommand command,
                                                FileData fileData) {
-      Assertion.AssertObject(command, "command");
-      Assertion.AssertObject(fileData, "fileData");
+      Assertion.Require(command, "command");
+      Assertion.Require(fileData, "fileData");
 
       command.EnsureValid();
 
@@ -56,7 +56,7 @@ namespace Empiria.FinancialAccounting.Reconciliation.UseCases {
 
           usecase.RemoveDataset(dataset.UID);
 
-          Assertion.AssertFail(
+          Assertion.RequireFail(
             "El archivo tiene un formato que no reconozco o la información que contiene es incorrecta."
           );
         }
@@ -75,7 +75,7 @@ namespace Empiria.FinancialAccounting.Reconciliation.UseCases {
 
 
     public DatasetDto GetDataset(string datasetUID) {
-      Assertion.AssertObject(datasetUID, "datasetUID");
+      Assertion.Require(datasetUID, "datasetUID");
 
       using (var usecase = DatasetsUseCases.UseCaseInteractor()) {
         return usecase.GetDataset(datasetUID);
@@ -84,7 +84,7 @@ namespace Empiria.FinancialAccounting.Reconciliation.UseCases {
 
 
     public DatasetsLoadStatusDto GetDatasetsLoadStatus(OperationalDataCommand command) {
-      Assertion.AssertObject(command, "command");
+      Assertion.Require(command, "command");
 
       command.EnsureValid();
 
@@ -100,7 +100,7 @@ namespace Empiria.FinancialAccounting.Reconciliation.UseCases {
 
 
     public DatasetsLoadStatusDto RemoveDataset(string datasetUID) {
-      Assertion.AssertObject(datasetUID, "datasetUID");
+      Assertion.Require(datasetUID, "datasetUID");
 
       using (var usecase = DatasetsUseCases.UseCaseInteractor()) {
 
@@ -110,7 +110,7 @@ namespace Empiria.FinancialAccounting.Reconciliation.UseCases {
 
 
     internal void RemoveOldDatasetsFor(ReconciliationType reconciliationType) {
-      Assertion.AssertObject(reconciliationType, "reconciliationType");
+      Assertion.Require(reconciliationType, "reconciliationType");
 
       using (var usecase = DatasetsUseCases.UseCaseInteractor()) {
 

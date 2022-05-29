@@ -18,8 +18,8 @@ namespace Empiria.FinancialAccounting.Reporting {
 
 
     internal ListadoPolizasBuilder(ListadoPolizasCommand command, FixedList<IPolizaEntry> entries) {
-      Assertion.AssertObject(command, "command");
-      Assertion.AssertObject(entries, "entries");
+      Assertion.Require(command, "command");
+      Assertion.Require(entries, "entries");
 
       Command = command;
       Entries = entries;

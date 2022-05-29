@@ -33,7 +33,7 @@ namespace Empiria.FinancialAccounting.Vouchers {
       FixedList<string> resultList = Validate(fields);
 
       if (resultList.Count > 0) {
-        Assertion.AssertFail(resultList[0]);
+        Assertion.RequireFail(resultList[0]);
       }
     }
 

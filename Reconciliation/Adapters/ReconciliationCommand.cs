@@ -38,8 +38,8 @@ namespace Empiria.FinancialAccounting.Reconciliation.Adapters {
 
 
     public void EnsureValid() {
-      Assertion.AssertObject(ReconciliationTypeUID, "ReconciliationTypeUID");
-      Assertion.Assert(Date != ExecutionServer.DateMinValue, "Date");
+      Assertion.Require(ReconciliationTypeUID, "ReconciliationTypeUID");
+      Assertion.Require(Date != ExecutionServer.DateMinValue, "Date");
     }
 
   }  // class ReconciliationCommand

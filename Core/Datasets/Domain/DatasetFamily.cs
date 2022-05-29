@@ -64,8 +64,8 @@ namespace Empiria.FinancialAccounting.Datasets {
     public DatasetKind GetDatasetKind(string uid) {
       var datasetKind = this.DatasetKinds.Find(x => x.UID == uid);
 
-      Assertion.AssertObject(datasetKind,
-                            $"There is not defined a dataset kind with uid '{uid}'.");
+      Assertion.Require(datasetKind,
+                        $"There is not defined a dataset kind with uid '{uid}'.");
 
       return datasetKind;
     }

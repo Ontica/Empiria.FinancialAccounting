@@ -27,8 +27,8 @@ namespace Empiria.FinancialAccounting.Reconciliation {
                                          FixedList<TrialBalanceEntryDto> balances,
                                          int listCapacity = 1024) {
 
-      Assertion.AssertObject(operationalEntries, nameof(operationalEntries));
-      Assertion.AssertObject(balances, nameof(balances));
+      Assertion.Require(operationalEntries, nameof(operationalEntries));
+      Assertion.Require(balances, nameof(balances));
 
       _operationalEntries = operationalEntries;
       _balances = balances;
@@ -37,7 +37,7 @@ namespace Empiria.FinancialAccounting.Reconciliation {
 
 
     internal void InsertEntriesFor(AccountsListItem account) {
-      Assertion.AssertObject(account, nameof(account));
+      Assertion.Require(account, nameof(account));
 
       FixedList<OperationalEntryDto> operationalEntries = GetOperationalEntriesFor(account);
 

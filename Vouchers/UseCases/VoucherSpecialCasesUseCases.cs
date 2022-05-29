@@ -33,7 +33,7 @@ namespace Empiria.FinancialAccounting.Vouchers.UseCases {
     #region Use cases
 
     public string CreateAllSpecialCaseApplicableVouchers(VoucherSpecialCaseFields fields) {
-      Assertion.AssertObject(fields, "fields");
+      Assertion.Require(fields, "fields");
 
       var accountsChart = AccountsChart.Parse(fields.AccountsChartUID);
 
@@ -56,7 +56,7 @@ namespace Empiria.FinancialAccounting.Vouchers.UseCases {
 
 
     public VoucherDto CreateSpecialCaseVoucher(VoucherSpecialCaseFields fields) {
-      Assertion.AssertObject(fields, "fields");
+      Assertion.Require(fields, "fields");
 
       var builder = VoucherBuilder.CreateBuilder(fields);
 

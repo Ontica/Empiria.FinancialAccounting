@@ -21,14 +21,14 @@ namespace Empiria.FinancialAccounting.Reporting.Exporters.Excel {
     private ExcelFile _excelFile;
 
     public FinancialReportExcelExporter(FileTemplateConfig templateConfig) {
-      Assertion.AssertObject(templateConfig, "templateConfig");
+      Assertion.Require(templateConfig, "templateConfig");
 
       _templateConfig = templateConfig;
     }
 
 
     public FileReportDto Build(FinancialReportDto financialReportDto) {
-      Assertion.AssertObject(financialReportDto, "financialReportDto");
+      Assertion.Require(financialReportDto, "financialReportDto");
 
       return CreateExcelFile(financialReportDto)
             .ToFileReportDto();
@@ -98,7 +98,7 @@ namespace Empiria.FinancialAccounting.Reporting.Exporters.Excel {
           return;
 
         default:
-          throw Assertion.AssertNoReachThisCode();
+          throw Assertion.EnsureNoReachThisCode();
       }
     }
 

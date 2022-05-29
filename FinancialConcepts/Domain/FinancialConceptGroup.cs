@@ -162,22 +162,21 @@ namespace Empiria.FinancialAccounting.FinancialConcepts {
 
 
     private FinancialConcept GetFinancialConcept(string conceptUID) {
-      Assertion.AssertObject(conceptUID, nameof(conceptUID));
+      Assertion.Require(conceptUID, nameof(conceptUID));
 
       var concept = this.FinancialConcepts.Find(x => x.UID == conceptUID);
 
-      Assertion.AssertObject(concept,
-                            $"Este grupo no contiene un concepto con UID '{conceptUID}'.");
+      Assertion.Require(concept, $"Este grupo no contiene un concepto con UID '{conceptUID}'.");
 
       return concept;
     }
 
 
     internal FinancialConcept InsertFrom(FinancialConceptEditionCommand command) {
-      Assertion.AssertObject(command, nameof(command));
+      Assertion.Require(command, nameof(command));
 
       if (IsFinancialConceptCodeRegistered(command.Code, FinancialConcept.Empty)) {
-        Assertion.AssertFail($"Ya existe otro concepto con la clave '{command.Code}'.");
+        Assertion.RequireFail($"Ya existe otro concepto con la clave '{command.Code}'.");
       }
 
       int position = CalculatePositionFrom(command);
@@ -193,24 +192,28 @@ namespace Empiria.FinancialAccounting.FinancialConcepts {
 
 
     internal void Remove(FinancialConcept concept) {
-      Assertion.AssertObject(concept, nameof(concept));
+      Assertion.Require(concept, nameof(concept));
 
-      Assertion.Assert(concept.Group.Equals(this),
-              $"El concepto que se desea eliminar no pertenece al grupo de conceptos '{this.Name}'.");
+      Assertion.Require(concept.Group.Equals(this),
+                        $"El concepto que se desea eliminar no pertenece al grupo de conceptos '{this.Name}'.");
 
       concept.Delete();
 
+      int oldCount = _financialConcepts.Value.Count;
+
       UpdateList(concept);
+
+      Assertion.Ensure(_financialConcepts.Value.Count == oldCount - 1);
     }
 
 
     internal FinancialConcept UpdateFrom(FinancialConceptEditionCommand command) {
-      Assertion.AssertObject(command, nameof(command));
+      Assertion.Require(command, nameof(command));
 
       FinancialConcept concept = GetFinancialConcept(command.FinancialConceptUID);
 
       if (IsFinancialConceptCodeRegistered(command.Code, concept)) {
-        Assertion.AssertFail($"Ya existe otro concepto con la clave '{command.Code}'.");
+        Assertion.RequireFail($"Ya existe otro concepto con la clave '{command.Code}'.");
       }
 
       int newPosition = CalculatePositionFrom(command, concept.Position);
@@ -267,14 +270,14 @@ namespace Empiria.FinancialAccounting.FinancialConcepts {
           }
 
         case PositioningRule.ByPositionValue:
-          Assertion.Assert(1 <= command.Position &&
+          Assertion.Require(1 <= command.Position &&
                                 command.Position <= this.FinancialConcepts.Count + 1,
             $"Position value is {command.Position}, but must be between 1 and {this.FinancialConcepts.Count + 1}.");
 
           return command.Position;
 
         default:
-          throw Assertion.AssertNoReachThisCode($"Unhandled PositioningRule '{command.PositioningRule}'.");
+          throw Assertion.EnsureNoReachThisCode($"Unhandled PositioningRule '{command.PositioningRule}'.");
       }
     }
 

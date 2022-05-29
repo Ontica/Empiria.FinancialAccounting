@@ -13,8 +13,6 @@ using Empiria.Services;
 
 using Empiria.FinancialAccounting.Adapters;
 
-using Empiria.FinancialAccounting.Data;
-
 namespace Empiria.FinancialAccounting.UseCases {
 
   /// <summary>Use cases for accounts chart searching and retriving.</summary>
@@ -35,23 +33,23 @@ namespace Empiria.FinancialAccounting.UseCases {
     #region Use cases
 
     public AccountDto GetAccount(string accountsChartUID, string accountUID) {
-      Assertion.AssertObject(accountsChartUID, "accountsChartUID");
-      Assertion.AssertObject(accountUID, "accountUID");
+      Assertion.Require(accountsChartUID, "accountsChartUID");
+      Assertion.Require(accountUID, "accountUID");
 
       var accountsChart = AccountsChart.Parse(accountsChartUID);
 
       Account account = Account.Parse(accountUID);
 
-      Assertion.Assert(account.AccountsChart.Equals(accountsChart),
+      Assertion.Require(account.AccountsChart.Equals(accountsChart),
           $"The account with uid {account.UID} does not belong " +
-          $"to accounts chart {accountsChart.Name}");
+          $"to accounts chart {accountsChart.Name}.");
 
       return AccountsChartMapper.MapAccount(account);
     }
 
 
     public AccountsChartDto GetAccounts(string accountsChartUID) {
-      Assertion.AssertObject(accountsChartUID, "accountsChartUID");
+      Assertion.Require(accountsChartUID, "accountsChartUID");
 
       var accountsChart = AccountsChart.Parse(accountsChartUID);
 
@@ -60,7 +58,7 @@ namespace Empiria.FinancialAccounting.UseCases {
 
 
     public AccountsChartDto GetAccountsInADate(string accountsChartUID, DateTime date) {
-      Assertion.AssertObject(accountsChartUID, "accountsChartUID");
+      Assertion.Require(accountsChartUID, "accountsChartUID");
 
       var accountsChart = AccountsChart.Parse(accountsChartUID);
 
@@ -88,8 +86,8 @@ namespace Empiria.FinancialAccounting.UseCases {
 
     public AccountsChartDto SearchAccounts(string accountsChartUID,
                                            AccountsSearchCommand command) {
-      Assertion.AssertObject(accountsChartUID, "accountsChartUID");
-      Assertion.AssertObject(command, "command");
+      Assertion.Require(accountsChartUID, "accountsChartUID");
+      Assertion.Require(command, "command");
 
       var accountsChart = AccountsChart.Parse(accountsChartUID);
 

@@ -20,8 +20,8 @@ namespace Empiria.FinancialAccounting.BanobrasIntegration.VouchersImporter {
     private readonly FileInfo _textFile;
 
     internal TextFileImporter(ImportVouchersCommand command, FileInfo textFile) {
-      Assertion.AssertObject(command, "command");
-      Assertion.AssertObject(textFile, "textFile");
+      Assertion.Require(command, "command");
+      Assertion.Require(textFile, "textFile");
 
       _command = command;
       _textFile = textFile;

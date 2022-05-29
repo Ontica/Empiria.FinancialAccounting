@@ -65,14 +65,14 @@ namespace Empiria.FinancialAccounting.Adapters {
     #region Public methods
 
     static internal AccountsChart GetAccountsChart(this AccountEditionCommand command) {
-      Assertion.AssertObject(command.AccountsChartUID, "command.AccountsChartUID");
+      Assertion.Require(command.AccountsChartUID, "command.AccountsChartUID");
 
       return AccountsChart.Parse(command.AccountsChartUID);
     }
 
 
     static internal Account GetAccountToEdit(this AccountEditionCommand command) {
-      Assertion.AssertObject(command.AccountUID, "command.AccountUID");
+      Assertion.Require(command.AccountUID, "command.AccountUID");
 
       return Account.Parse(command.AccountUID);
     }
@@ -91,9 +91,9 @@ namespace Empiria.FinancialAccounting.Adapters {
 
 
     static internal void EnsureValid(this AccountEditionCommand command) {
-      Assertion.AssertObject(command.AccountsChartUID, "command.AccountsChartUID");
-      Assertion.Assert(command.CommandType != AccountEditionCommandType.Undefined, "command.Type");
-      Assertion.Assert(command.ApplicationDate != ExecutionServer.DateMinValue, "command.ApplicationDate");
+      Assertion.Require(command.AccountsChartUID, "command.AccountsChartUID");
+      Assertion.Require(command.CommandType != AccountEditionCommandType.Undefined, "command.Type");
+      Assertion.Require(command.ApplicationDate != ExecutionServer.DateMinValue, "command.ApplicationDate");
 
       if (command.CommandType != AccountEditionCommandType.CreateAccount) {
         command.EnsureAccountToEditIsValid();
@@ -126,13 +126,13 @@ namespace Empiria.FinancialAccounting.Adapters {
 
 
     static internal void EnsureAccountFieldsAreValid(this AccountEditionCommand command) {
-      Assertion.AssertObject(command.AccountFields, "command.AccountFields");
-      Assertion.AssertObject(command.AccountFields.AccountNumber, "command.AccountFields.AccountNumber");
-      Assertion.AssertObject(command.AccountFields.Name, "command.AccountFields.Name");
+      Assertion.Require(command.AccountFields, "command.AccountFields");
+      Assertion.Require(command.AccountFields.AccountNumber, "command.AccountFields.AccountNumber");
+      Assertion.Require(command.AccountFields.Name, "command.AccountFields.Name");
 
       AccountsChart accountsChart = command.GetAccountsChart();
 
-      Assertion.Assert(accountsChart.IsAccountNumberFormatValid(command.AccountFields.AccountNumber),
+      Assertion.Require(accountsChart.IsAccountNumberFormatValid(command.AccountFields.AccountNumber),
                        $"Account number '{command.AccountFields.AccountNumber}' has an invalid format.");
 
       _ = command.AccountFields.GetAccountType();
@@ -140,7 +140,7 @@ namespace Empiria.FinancialAccounting.Adapters {
 
 
     static internal AccountType GetAccountType(this AccountFieldsDto fields) {
-      Assertion.AssertObject(fields.AccountTypeUID, "AccountTypeUID");
+      Assertion.Require(fields.AccountTypeUID, "AccountTypeUID");
 
       return AccountType.Parse(fields.AccountTypeUID);
     }
@@ -150,16 +150,16 @@ namespace Empiria.FinancialAccounting.Adapters {
       AccountsChart accountsChart = command.GetAccountsChart();
       Account accountToEdit = command.GetAccountToEdit();
 
-      Assertion.AssertObject(command.AccountUID, "command.AccountUID");
+      Assertion.Require(command.AccountUID, "command.AccountUID");
 
-      Assertion.Assert(accountToEdit.AccountsChart.Equals(accountsChart),
+      Assertion.Require(accountToEdit.AccountsChart.Equals(accountsChart),
                        $"Account to be edited {accountToEdit.Number} does not belong to " +
                        $"the chart of accounts {accountsChart.Name}.");
 
-      Assertion.Assert(accountToEdit.EndDate == Account.MAX_END_DATE,
+      Assertion.Require(accountToEdit.EndDate == Account.MAX_END_DATE,
                        "The given accountUID corresponds to an historic account, so it can not be edited.");
 
-      Assertion.Assert(accountToEdit.StartDate <= command.ApplicationDate,
+      Assertion.Require(accountToEdit.StartDate <= command.ApplicationDate,
                        $"ApplicationDate parameter ({command.ApplicationDate.ToString("dd/MMM/yyyy")}) " +
                        $"must be greater or equal than the given account's " +
                        $"start date {accountToEdit.StartDate.ToString("dd/MMM/yyyy")}.");
@@ -168,21 +168,21 @@ namespace Empiria.FinancialAccounting.Adapters {
 
 
     static private void EnsureIsValidForCurrenciesEdition(this AccountEditionCommand command) {
-      Assertion.AssertObject(command.Currencies, "command.Currencies");
-      Assertion.Assert(command.Currencies.Length > 0, "Currencies list must have one or more values.");
+      Assertion.Require(command.Currencies, "command.Currencies");
+      Assertion.Require(command.Currencies.Length > 0, "Currencies list must have one or more values.");
 
       foreach (var currencyUID in command.Currencies) {
         try {
           _ = Currency.Parse(currencyUID);
         } catch {
-          Assertion.AssertFail($"A currency with UID '{currencyUID}' does not exists.");
+          Assertion.RequireFail($"A currency with UID '{currencyUID}' does not exists.");
         }
       }
     }
 
 
     static private void EnsureIsValidForCreateAccount(this AccountEditionCommand command) {
-      Assertion.Assert(String.IsNullOrEmpty(command.AccountUID),
+      Assertion.Require(String.IsNullOrEmpty(command.AccountUID),
                        "command.AccountUID was provided but it's not needed for a CreateAccount command.");
 
       command.EnsureAccountFieldsAreValid();
@@ -195,14 +195,14 @@ namespace Empiria.FinancialAccounting.Adapters {
 
 
     static private void EnsureIsValidForSectorsEdition(this AccountEditionCommand command) {
-      Assertion.AssertObject(command.Sectors, "command.Sectors");
-      Assertion.Assert(command.Sectors.Length > 0, "Sectors list must have one or more values.");
+      Assertion.Require(command.Sectors, "command.Sectors");
+      Assertion.Require(command.Sectors.Length > 0, "Sectors list must have one or more values.");
 
       foreach (var sectorUID in command.Sectors) {
         try {
           _ = Sector.Parse(sectorUID);
         } catch {
-          Assertion.AssertFail($"A sector with UID '{sectorUID}' does not exists.");
+          Assertion.RequireFail($"A sector with UID '{sectorUID}' does not exists.");
         }
       }
     }

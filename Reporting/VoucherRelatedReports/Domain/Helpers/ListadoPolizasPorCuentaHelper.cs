@@ -23,7 +23,7 @@ namespace Empiria.FinancialAccounting.Reporting {
     private readonly BuildReportCommand Command;
 
     public ListadoPolizasPorCuentaHelper(BuildReportCommand command) {
-      Assertion.AssertObject(command, "command");
+      Assertion.Require(command, "command");
 
       Command = command;
     }

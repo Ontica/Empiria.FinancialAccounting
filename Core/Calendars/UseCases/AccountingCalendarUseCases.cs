@@ -34,7 +34,7 @@ namespace Empiria.FinancialAccounting.UseCases {
 
 
     public AccountingCalendarDto AddPeriod(string calendarUID, AccountingCalendarPeriodDto period) {
-      Assertion.AssertObject(calendarUID, "calendarUID");
+      Assertion.Require((object) calendarUID, "calendarUID");
 
       var calendar = Calendar.Parse(calendarUID);
 
@@ -45,7 +45,7 @@ namespace Empiria.FinancialAccounting.UseCases {
 
 
     public AccountingCalendarDto GetAccountingCalendar(string calendarUID) {
-      Assertion.AssertObject(calendarUID, "calendarUID");
+      Assertion.Require((object) calendarUID, "calendarUID");
 
       var calendar = Calendar.Parse(int.Parse(calendarUID));
 
@@ -61,8 +61,8 @@ namespace Empiria.FinancialAccounting.UseCases {
 
 
     public AccountingCalendarDto RemovePeriod(string calendarUID, string periodUID) {
-      Assertion.AssertObject(calendarUID, "calendarUID");
-      Assertion.AssertObject(periodUID, "periodUID");
+      Assertion.Require((object) calendarUID, "calendarUID");
+      Assertion.Require((object) periodUID, "periodUID");
 
       var calendar = Calendar.Parse(calendarUID);
 

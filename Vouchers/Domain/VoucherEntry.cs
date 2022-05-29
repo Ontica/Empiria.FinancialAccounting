@@ -32,15 +32,15 @@ namespace Empiria.FinancialAccounting.Vouchers {
 
 
     internal VoucherEntry(Voucher voucher) {
-      Assertion.AssertObject(voucher, "voucher");
+      Assertion.Require(voucher, "voucher");
 
       this.Voucher = voucher;
     }
 
 
     internal VoucherEntry(Voucher voucher, VoucherEntryFields fields) {
-      Assertion.AssertObject(voucher, "voucher");
-      Assertion.AssertObject(fields, "fields");
+      Assertion.Require(voucher, "voucher");
+      Assertion.Require(fields, "fields");
 
       this.Voucher = voucher;
 
@@ -250,24 +250,24 @@ namespace Empiria.FinancialAccounting.Vouchers {
     private void EnsureIsValidAfterLoad() {
       Ledger ledger = Voucher.Ledger;
 
-      Assertion.Assert(LedgerAccount.Ledger.Equals(ledger),
+      Assertion.Require(LedgerAccount.Ledger.Equals(ledger),
            $"La cuenta de mayor con id {LedgerAccount.Id} no pertenece a la contabilidad {ledger.FullName}.");
 
       if (HasSubledgerAccount) {
-        Assertion.Assert(SubledgerAccount.BelongsTo(ledger),
+        Assertion.Require(SubledgerAccount.BelongsTo(ledger),
               $"El auxiliar {SubledgerAccount.Number} no pertenece a la contabilidad {ledger.FullName}.");
 
-        Assertion.Assert(!SubledgerAccount.Suspended,
+        Assertion.Require(!SubledgerAccount.Suspended,
               $"El auxiliar {SubledgerAccount.Number} ({SubledgerAccount.Name}) está suspendido, por lo que no acepta movimientos.");
       }
 
-      Assertion.Assert(Amount > 0, "El importe del cargo o abono debe ser mayor a cero.");
+      Assertion.Require(Amount > 0, "El importe del cargo o abono debe ser mayor a cero.");
 
-      Assertion.Assert(Math.Round(Amount, 2) == Amount, "El movimiento tiene un importe con más de dos decimales.");
+      Assertion.Require(Math.Round(Amount, 2) == Amount, "El movimiento tiene un importe con más de dos decimales.");
 
-      Assertion.Assert(BaseCurrencyAmount > 0, "El importe en moneda base debe ser mayor a cero.");
+      Assertion.Require(BaseCurrencyAmount > 0, "El importe en moneda base debe ser mayor a cero.");
 
-      Assertion.Assert(Math.Round(BaseCurrencyAmount, 8) == BaseCurrencyAmount,
+      Assertion.Require(Math.Round(BaseCurrencyAmount, 8) == BaseCurrencyAmount,
           "El movimiento en moneda base tiene un importe con más de ocho decimales. El tipo de cambio debe estar incorrecto.");
     }
 
@@ -316,7 +316,7 @@ namespace Empiria.FinancialAccounting.Vouchers {
 
 
     internal void Update(VoucherEntryFields fields) {
-      Assertion.AssertObject(fields, "fields");
+      Assertion.Require(fields, "fields");
 
       LoadFields(fields);
 

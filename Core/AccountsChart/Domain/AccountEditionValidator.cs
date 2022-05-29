@@ -28,7 +28,7 @@ namespace Empiria.FinancialAccounting {
     #region Constructors and parsers
 
     public AccountEditionValidator(AccountEditionCommand command) {
-      Assertion.AssertObject(command, nameof(command));
+      Assertion.Require(command, nameof(command));
 
       _command = command;
       _accountsChart = command.GetAccountsChart();
@@ -50,7 +50,7 @@ namespace Empiria.FinancialAccounting {
     #region Methods
 
     internal void AddIssue(string issue) {
-      Assertion.AssertObject(issue, nameof(issue));
+      Assertion.Require(issue, nameof(issue));
 
       _issuesList.Add(issue);
     }

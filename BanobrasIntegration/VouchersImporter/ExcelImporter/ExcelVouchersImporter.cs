@@ -22,8 +22,8 @@ namespace Empiria.FinancialAccounting.BanobrasIntegration.VouchersImporter {
     private readonly FixedList<ExcelVoucherEntry> _excelFileEntries;
 
     internal ExcelVouchersImporter(ImportVouchersCommand command, FileInfo excelFile) {
-      Assertion.AssertObject(command, "command");
-      Assertion.AssertObject(excelFile, "excelFile");
+      Assertion.Require(command, "command");
+      Assertion.Require(excelFile, "excelFile");
 
       _command = command;
 
@@ -61,7 +61,7 @@ namespace Empiria.FinancialAccounting.BanobrasIntegration.VouchersImporter {
 
       string[] worksheets = excelFile.SelectCandidateWorksheets();
 
-      Assertion.Assert(worksheets.Length > 0,
+      Assertion.Require(worksheets.Length > 0,
                       "El archivo Excel NO tiene información de pólizas para importar en ninguna de sus hojas");
 
       foreach (var worksheet in worksheets) {
@@ -72,14 +72,14 @@ namespace Empiria.FinancialAccounting.BanobrasIntegration.VouchersImporter {
 
       AccountsChart accountsChart = _command.GetAccountsChart();
 
-      EnsureEntriesHaveRequestedAccountsChart(allEntries, accountsChart);
+      RequireEntriesHaveRequestedAccountsChart(allEntries, accountsChart);
 
       return allEntries.ToFixedList();
     }
 
 
-    private void EnsureEntriesHaveRequestedAccountsChart(List<ExcelVoucherEntry> entries, AccountsChart accountsChart) {
-      Assertion.Assert(entries.TrueForAll(x => x.AccountsChart.Equals(accountsChart)),
+    private void RequireEntriesHaveRequestedAccountsChart(List<ExcelVoucherEntry> entries, AccountsChart accountsChart) {
+      Assertion.Require(entries.TrueForAll(x => x.AccountsChart.Equals(accountsChart)),
         $"El archivo Excel tiene pólizas o movimientos que no coresponden al catálogo de cuentas {accountsChart.Name}.");
     }
 

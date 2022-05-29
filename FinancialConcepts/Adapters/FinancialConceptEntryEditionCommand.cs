@@ -14,6 +14,11 @@ namespace Empiria.FinancialAccounting.FinancialConcepts.Adapters {
   /// <summary>The command used to create or update financial concept's integration entries.</summary>
   public class FinancialConceptEntryEditionCommand {
 
+    public bool DryRun {
+      get; set;
+    }
+
+
     public string FinancialConceptEntryUID {
       get; set;
     } = string.Empty;
@@ -104,7 +109,7 @@ namespace Empiria.FinancialAccounting.FinancialConcepts.Adapters {
     static internal void EnsureIsValid(this FinancialConceptEntryEditionCommand command) {
       command.Clean();
 
-      Assertion.AssertObject(command.FinancialConceptUID, "command.FinancialConceptUID");
+      Assertion.Require(command.FinancialConceptUID, "command.FinancialConceptUID");
 
       EnsurePositioningRuleIsValid(command);
     }
@@ -136,7 +141,7 @@ namespace Empiria.FinancialAccounting.FinancialConcepts.Adapters {
           break;
 
         default:
-          throw Assertion.AssertNoReachThisCode();
+          throw Assertion.EnsureNoReachThisCode();
 
       }
 
@@ -170,17 +175,17 @@ namespace Empiria.FinancialAccounting.FinancialConcepts.Adapters {
 
 
     static private void EnsurePositioningRuleIsValid(FinancialConceptEntryEditionCommand command) {
-      Assertion.Assert(command.PositioningRule != PositioningRule.Undefined,
+      Assertion.Require(command.PositioningRule != PositioningRule.Undefined,
                        "command.PositioningRule can not be 'Undefined'.");
 
       if (command.PositioningRule.UsesOffset() && command.PositioningOffsetEntryUID.Length == 0) {
-        Assertion.AssertFail($"command.PositioningRule is '{command.PositioningRule}', " +
-                             $"so command.PositioningOffsetEntryUID can not be empty.");
+        Assertion.RequireFail($"command.PositioningRule is '{command.PositioningRule}', " +
+                              $"so command.PositioningOffsetEntryUID can not be empty.");
       }
 
       if (command.PositioningRule.UsesPosition() && command.Position == -1) {
-        Assertion.AssertFail($"command.PositioningRule is '{command.PositioningRule}', " +
-                              "so command.Position is required.");
+        Assertion.RequireFail($"command.PositioningRule is '{command.PositioningRule}', " +
+                             "so command.Position is required.");
       }
     }
 

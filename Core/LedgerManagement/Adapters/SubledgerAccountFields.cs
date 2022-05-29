@@ -47,15 +47,15 @@ namespace Empiria.FinancialAccounting.Adapters {
 
 
     static public void EnsureValid(this SubledgerAccountFields fields) {
-      Assertion.AssertObject(fields.LedgerUID, "fields.LedgerUID");
-      Assertion.AssertObject(fields.TypeUID, "fields.TypeUID");
-      Assertion.AssertObject(fields.Number, "fields.Number");
-      Assertion.AssertObject(fields.Name, "fields.Name");
+      Assertion.Require(fields.LedgerUID, "fields.LedgerUID");
+      Assertion.Require(fields.TypeUID, "fields.TypeUID");
+      Assertion.Require(fields.Number, "fields.Number");
+      Assertion.Require(fields.Name, "fields.Name");
     }
 
 
     static public SubledgerType SubledgerType(this SubledgerAccountFields fields) {
-      Assertion.AssertObject(fields.TypeUID, "fields.TypeUID");
+      Assertion.Require(fields.TypeUID, "fields.TypeUID");
 
       return Empiria.FinancialAccounting.SubledgerType.Parse(fields.TypeUID);
     }

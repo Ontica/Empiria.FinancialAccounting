@@ -26,7 +26,7 @@ namespace Empiria.FinancialAccounting.Reporting.Exporters.Xml {
 
 
     public BalanzaSatXmlExporter(ReportDataDto reportData) {
-      Assertion.AssertObject(reportData, "reportData");
+      Assertion.Require(reportData, "reportData");
 
       _reportData = reportData;
     }

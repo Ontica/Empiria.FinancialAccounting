@@ -155,7 +155,7 @@ namespace Empiria.FinancialAccounting {
         return account;
       }
 
-      throw Assertion.AssertNoReachThisCode($"Account {accountNumber} was not found.");
+      throw Assertion.EnsureNoReachThisCode($"Account {accountNumber} was not found.");
     }
 
 
@@ -198,7 +198,7 @@ namespace Empiria.FinancialAccounting {
 
       Account account = history.Find(x => x.StartDate <= date && date <= x.EndDate);
 
-      Assertion.AssertObject(account,
+      Assertion.Require(account,
         $"La cuenta {accountNumber} " +
         $"no existe o no está activa el día {date.ToString("dd/MMM/yyyy")}.");
 
@@ -221,7 +221,7 @@ namespace Empiria.FinancialAccounting {
     public Ledger GetLedger(string ledgerNumber) {
       var ledger = this.TryGetLedger(ledgerNumber);
 
-      Assertion.AssertObject(ledger, "ledger");
+      Assertion.Require(ledger, "ledger");
 
       return ledger;
     }
@@ -249,7 +249,7 @@ namespace Empiria.FinancialAccounting {
     public string FormatAccountNumber(string accountNumber) {
       string temp = EmpiriaString.TrimSpacesAndControl(accountNumber);
 
-      Assertion.AssertObject(temp, "accountNumber");
+      Assertion.Require(temp, nameof(accountNumber));
 
       char separator = this.MasterData.AccountNumberSeparator;
       string pattern = this.MasterData.AccountsPattern;
@@ -259,8 +259,8 @@ namespace Empiria.FinancialAccounting {
       temp = temp.TrimEnd('0');
 
       if (temp.Length > EmpiriaString.CountOccurences(pattern, '0')) {
-        Assertion.AssertFail($"Number of placeholders in pattern ({pattern}) is less than the " +
-                             $"number of characters in the input string ({accountNumber}).");
+        Assertion.RequireFail($"Number of placeholders in pattern ({pattern}) is less than the " +
+                              $"number of characters in the input string ({accountNumber}).");
       } else {
         temp = temp.PadRight(EmpiriaString.CountOccurences(pattern, '0'), '0');
       }
@@ -305,7 +305,7 @@ namespace Empiria.FinancialAccounting {
 
 
     public Ledger TryGetLedger(string ledgerNumber) {
-      Assertion.AssertObject(ledgerNumber, "ledgerNumber");
+      Assertion.Require(ledgerNumber, "ledgerNumber");
 
       return this.MasterData.Ledgers.Find(x => x.Number.Equals(ledgerNumber));
     }

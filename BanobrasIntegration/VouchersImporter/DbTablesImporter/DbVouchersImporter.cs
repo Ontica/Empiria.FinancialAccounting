@@ -51,9 +51,8 @@ namespace Empiria.FinancialAccounting.BanobrasIntegration.VouchersImporter {
 
 
     internal async Task Start(ImportVouchersCommand command) {
-      if (this.IsRunning) {
-        Assertion.AssertFail("DBVouchersImporter is running. Please stop it before call Start() method");
-      }
+      Assertion.Require(this.IsRunning,
+                       "DBVouchersImporter is running. Please stop it before call Start() method.");
 
       command.TryToCloseVouchers = true;     // ToDo: OOJJOO
 
@@ -77,14 +76,14 @@ namespace Empiria.FinancialAccounting.BanobrasIntegration.VouchersImporter {
 
 
     private void ImportVouchers(ImportVouchersCommand command) {
-      Assertion.AssertObject(command.ProcessOnly[0], "ImportationSet");
+      Assertion.Require(command.ProcessOnly[0], "ImportationSet");
 
       List<Encabezado> encabezados = DbVouchersImporterDataService.GetEncabezados(command.ProcessOnly[0]);
       List<Movimiento> movimientos = DbVouchersImporterDataService.GetMovimientos(command.ProcessOnly[0]);
 
       EmpiriaLog.Info($"To be processed {encabezados.Count} at {DateTime.Now}.");
 
-      if (encabezados[0].IdSistema == 24 || encabezados[0].IdSistema == 26) {   // YATLA PATCH
+      if (EmpiriaMath.IsMemberOf(encabezados[0].IdSistema, new[] { 24, 26, 60 })) {   // YATLA PATCH
         command.TryToCloseVouchers = false;
       }
 

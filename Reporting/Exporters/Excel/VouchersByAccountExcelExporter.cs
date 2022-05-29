@@ -25,14 +25,14 @@ namespace Empiria.FinancialAccounting.Reporting.Exporters.Excel {
 
 
     public VouchersByAccountExcelExporter(FileTemplateConfig templateConfig) {
-      Assertion.AssertObject(templateConfig, "templateConfig");
+      Assertion.Require(templateConfig, "templateConfig");
 
       _templateConfig = templateConfig;
     }
 
 
     internal ExcelFile CreateExcelFile(AccountStatementDto voucherDto) {
-      Assertion.AssertObject(voucherDto, "voucherDto");
+      Assertion.Require(voucherDto, "voucherDto");
 
       _command = voucherDto.Command;
 

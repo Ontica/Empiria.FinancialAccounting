@@ -19,9 +19,9 @@ namespace Empiria.FinancialAccounting.Reconciliation {
     internal ReconciliationResult(ReconciliationCommand command,
                                   FixedList<Dataset> datasets,
                                   FixedList<ReconciliationResultEntry> resultEntries) {
-      Assertion.AssertObject(command, "command");
-      Assertion.AssertObject(datasets, "datasets");
-      Assertion.AssertObject(resultEntries, "resultEntries");
+      Assertion.Require(command, "command");
+      Assertion.Require(datasets, "datasets");
+      Assertion.Require(resultEntries, "resultEntries");
 
       this.Command = command;
       this.Datasets = datasets;

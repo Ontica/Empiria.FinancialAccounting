@@ -92,7 +92,7 @@ namespace Empiria.FinancialAccounting.WebApi.BanobrasIntegration {
     private ImportVouchersCommand GetImportVoucherCommandFromRequest(HttpRequest httpRequest) {
       NameValueCollection form = httpRequest.Form;
 
-      Assertion.AssertObject(form["command"], "'command' form field is required");
+      Assertion.Require(form["command"], "'command' form field is required");
 
       var command = new ImportVouchersCommand();
 
@@ -118,12 +118,12 @@ namespace Empiria.FinancialAccounting.WebApi.BanobrasIntegration {
     static private HttpRequest GetValidatedHttpRequest() {
       var httpRequest = HttpContext.Current.Request;
 
-      Assertion.AssertObject(httpRequest, "httpRequest");
-      Assertion.Assert(httpRequest.Files.Count == 1, "The request does not have the file to be imported.");
+      Assertion.Require(httpRequest, "httpRequest");
+      Assertion.Require(httpRequest.Files.Count == 1, "The request does not have the file to be imported.");
 
       var form = httpRequest.Form;
 
-      Assertion.AssertObject(form, "The request must be of type 'multipart/form-data'.");
+      Assertion.Require(form, "The request must be of type 'multipart/form-data'.");
 
       return httpRequest;
     }

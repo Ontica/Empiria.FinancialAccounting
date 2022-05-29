@@ -34,7 +34,7 @@ namespace Empiria.FinancialAccounting.FinancialReports.UseCases {
 
 
     public FinancialReportDesignDto FinancialReportDesign(string financialReportTypeUID) {
-      Assertion.AssertObject(financialReportTypeUID, "financialReportTypeUID");
+      Assertion.Require(financialReportTypeUID, "financialReportTypeUID");
 
       var financialReportType = FinancialReportType.Parse(financialReportTypeUID);
 
@@ -43,7 +43,7 @@ namespace Empiria.FinancialAccounting.FinancialReports.UseCases {
 
 
     public FixedList<NamedEntityDto> FinancialReportTypesForDesign(string accountsChartUID) {
-      Assertion.AssertObject(accountsChartUID, "accountsChartUID");
+      Assertion.Require(accountsChartUID, "accountsChartUID");
 
       var accountsChart = AccountsChart.Parse(accountsChartUID);
 

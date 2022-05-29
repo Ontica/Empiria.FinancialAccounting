@@ -67,9 +67,9 @@ namespace Empiria.FinancialAccounting {
     #region Methods
 
     internal void AddPeriod(string name, DateTime fromDate, DateTime toDate) {
-      Assertion.AssertObject(name, "name");
+      Assertion.Require(name, "name");
 
-      Assertion.Assert(fromDate <= toDate,
+      Assertion.Require(fromDate <= toDate,
           "La fecha de inicio del período debe ser menor o igual a la fecha final.");
 
       CalendarData.AppendPeriod(this, name, fromDate, toDate);
@@ -77,11 +77,11 @@ namespace Empiria.FinancialAccounting {
 
 
     internal CalendarPeriod GetPeriod(string periodUID) {
-      Assertion.AssertObject(periodUID, "periodUID");
+      Assertion.Require(periodUID, "periodUID");
 
       CalendarPeriod period = this.Periods.Find(x => x.UID == periodUID);
 
-      Assertion.AssertObject(period,
+      Assertion.Require(period,
             $"No se encontró un período con identificador {periodUID} en el calendario {this.Name}.");
 
       return period;
@@ -105,8 +105,8 @@ namespace Empiria.FinancialAccounting {
 
 
     internal void RemovePeriod(CalendarPeriod period) {
-      Assertion.AssertObject(period, "period");
-      Assertion.Assert(this.Periods.Contains(period),
+      Assertion.Require(period, "period");
+      Assertion.Require(this.Periods.Contains(period),
             $"El período {period.Name} no partenece al calendario {this.Name}.");
 
       CalendarData.RemovePeriod(period);

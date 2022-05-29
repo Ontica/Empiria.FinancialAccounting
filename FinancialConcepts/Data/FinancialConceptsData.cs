@@ -80,7 +80,7 @@ namespace Empiria.FinancialAccounting.FinancialConcepts.Data {
 
 
     static private void EnsureGroupIsUpdatable(FinancialConceptGroup group) {
-      Assertion.Assert(group.UID == "88cbdf33-c01c-4d44-bd8e-c67fcf4c87a6",
+      Assertion.Require(group.UID == "88cbdf33-c01c-4d44-bd8e-c67fcf4c87a6",
                        $"Group '{group.Name}' is not updatable.");
     }
 

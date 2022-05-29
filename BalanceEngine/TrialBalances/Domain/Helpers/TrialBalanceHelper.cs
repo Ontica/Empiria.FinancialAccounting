@@ -340,7 +340,7 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
         } else if (_command.DoNotReturnSubledgerAccounts && entry.Account.NotHasParent) {
           continue;
         } else {
-          throw Assertion.AssertNoReachThisCode();
+          throw Assertion.EnsureNoReachThisCode();
         }
 
         if (entry.HasParentPostingEntry) {
@@ -497,11 +497,16 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
       }
 
       if (_command.DoNotReturnSubledgerAccounts) {
+
         entries.RemoveAll(x => x.Level <= _command.Level);
+
       } else if (_command.WithSubledgerAccount) {
+
         entries.RemoveAll(x => x.Level <= _command.Level);
+
       } else {
-        throw Assertion.AssertNoReachThisCode();
+
+        throw Assertion.EnsureNoReachThisCode();
       }
     }
 
@@ -608,8 +613,9 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
         var exchangeRate = exchangeRates.FirstOrDefault(a => a.FromCurrency.Code == commandPeriod.ValuateToCurrrencyUID &&
                                                              a.ToCurrency.Code == entry.Currency.Code);
 
-        Assertion.AssertObject(exchangeRate, $"No se ha registrado el tipo de cambio para la " +
-                                             $"moneda {entry.Currency.FullName} en la fecha proporcionada.");
+        // ToDo: URGENT This require must be checked before any state
+        Assertion.Require(exchangeRate, $"No se ha registrado el tipo de cambio para la " +
+                                        $"moneda {entry.Currency.FullName} en la fecha proporcionada.");
 
         if (_command.TrialBalanceType == TrialBalanceType.BalanzaValorizadaComparativa) {
           if (commandPeriod.IsSecondPeriod) {
@@ -775,7 +781,7 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
       returnedEntries.AddRange(hashEntries.ToFixedList().ToList());
     }
 
-    
+
     private void SetLastChangeDateToParentEntries(TrialBalanceEntry entry,
                                                   List<TrialBalanceEntry> summaryEntriesList) {
       StandardAccount currentParentAccount = entry.Account.GetParent();

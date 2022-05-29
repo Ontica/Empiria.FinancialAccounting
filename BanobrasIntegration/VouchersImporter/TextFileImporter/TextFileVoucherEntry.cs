@@ -30,8 +30,8 @@ namespace Empiria.FinancialAccounting.BanobrasIntegration.VouchersImporter {
 
 
     internal TextFileVoucherEntry(AccountsChart accountsChart, string textLine, int textLineIndex) {
-      Assertion.AssertObject(accountsChart, "accountsChart");
-      Assertion.AssertObject(textLine, "textLine");
+      Assertion.Require(accountsChart, "accountsChart");
+      Assertion.Require(textLine, "textLine");
 
       AccountsChart = accountsChart;
       TextLine = textLine;
@@ -141,9 +141,9 @@ namespace Empiria.FinancialAccounting.BanobrasIntegration.VouchersImporter {
 
 
     private void CheckTextLineLength(string textLine) {
-      Assertion.AssertObject(textLine, "textLine");
+      Assertion.Require(textLine, "textLine");
 
-      Assertion.Assert(textLine.Length == STANDARD_TEXT_LINE_LENGTH ||
+      Assertion.Require(textLine.Length == STANDARD_TEXT_LINE_LENGTH ||
                        textLine.Length == WIDE_TEXT_LINE_LENGTH,
                        $"La línea de texto {this.TextLineIndex} tiene una longitud " +
                        $"({textLine.Length}) que no reconozco.");
@@ -158,7 +158,7 @@ namespace Empiria.FinancialAccounting.BanobrasIntegration.VouchersImporter {
       } else if (textLine.Length == WIDE_TEXT_LINE_LENGTH) {
         lineLengthExcess = WIDE_TEXT_LINE_LENGTH - STANDARD_TEXT_LINE_LENGTH;
       } else {
-        throw Assertion.AssertNoReachThisCode($"Invalid text line length of {textLine.Length}");
+        throw Assertion.EnsureNoReachThisCode($"Invalid text line length of {textLine.Length}");
       }
 
       this.Source = textLine.Substring(0, 6);

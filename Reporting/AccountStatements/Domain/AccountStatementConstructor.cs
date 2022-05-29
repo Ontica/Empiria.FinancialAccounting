@@ -21,7 +21,7 @@ namespace Empiria.FinancialAccounting.Reporting {
     private readonly AccountStatementCommand AccountStatementCommand;
 
     internal AccountStatementConstructor(AccountStatementCommand accountStatementCommand) {
-      Assertion.AssertObject(accountStatementCommand, "accountStatementCommand");
+      Assertion.Require(accountStatementCommand, "accountStatementCommand");
 
       AccountStatementCommand = accountStatementCommand;
     }
@@ -57,7 +57,7 @@ namespace Empiria.FinancialAccounting.Reporting {
         isBalance = null;
       }
 
-      Assertion.AssertObject(isBalance, $"Funcionalidad en proceso de desarrollo.");
+      Assertion.Require(isBalance, $"Funcionalidad en proceso de desarrollo.");
 
       FixedList<AccountStatementEntry> voucherEntries = helper.GetVoucherEntries();
 

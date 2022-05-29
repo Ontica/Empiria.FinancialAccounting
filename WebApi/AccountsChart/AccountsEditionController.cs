@@ -63,7 +63,7 @@ namespace Empiria.FinancialAccounting.WebApi {
             break;
 
           default:
-            throw Assertion.AssertNoReachThisCode($"Unhandled command type '{command.CommandType}'.");
+            throw Assertion.EnsureNoReachThisCode($"Unhandled command type '{command.CommandType}'.");
 
         }
 

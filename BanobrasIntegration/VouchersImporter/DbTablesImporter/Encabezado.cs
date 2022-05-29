@@ -155,7 +155,7 @@ namespace Empiria.FinancialAccounting.BanobrasIntegration.VouchersImporter {
 
       TransactionalSystemRule rule = system.Rules.Find(x => x.SourceVoucherTypeId == this.IdTipoPoliza);
 
-      Assertion.AssertObject(rule, "rule");
+      Assertion.Require(rule, "rule");
 
       return rule.TargetVoucherType;
     }
@@ -166,7 +166,7 @@ namespace Empiria.FinancialAccounting.BanobrasIntegration.VouchersImporter {
 
       TransactionalSystemRule rule = system.Rules.Find(x => x.SourceVoucherTypeId == this.IdTipoPoliza);
 
-      Assertion.AssertObject(rule, "rule");
+      Assertion.Require(rule, "rule");
 
       return rule.TargetTransactionType;
     }

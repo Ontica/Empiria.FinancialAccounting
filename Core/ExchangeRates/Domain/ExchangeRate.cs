@@ -116,21 +116,21 @@ namespace Empiria.FinancialAccounting {
 
     private void EnsureValid(ExchangeRateType exchangeRateType, DateTime date,
                              Currency currency, decimal value) {
-      Assertion.AssertObject(exchangeRateType, "exchangeRateType");
-      Assertion.AssertObject(currency, "currency");
-      Assertion.Assert(exchangeRateType.HasCurrency(currency),
+      Assertion.Require(exchangeRateType, "exchangeRateType");
+      Assertion.Require(currency, "currency");
+      Assertion.Require(exchangeRateType.HasCurrency(currency),
           $"Currency {currency.FullName} is not defined for exchange rate type {exchangeRateType.Name}");
-      Assertion.Assert(exchangeRateType.EditionValidOn(date),
+      Assertion.Require(exchangeRateType.EditionValidOn(date),
           $"Date {date.ToShortDateString()} is not in exchange rate type's valid edition date period.");
-      Assertion.Assert(value > 0, "Exchange rate value must be greater than zero.");
+      Assertion.Require(value > 0, "Exchange rate value must be greater than zero.");
     }
 
 
     protected override void OnBeforeSave() {
-      Assertion.Assert(this.IsNew, "El método Save() sólo puede invocarse sobre tipos de cambio nuevos.");
+      Assertion.Require(this.IsNew, "El método Save() sólo puede invocarse sobre tipos de cambio nuevos.");
 
-      Assertion.Assert(!ExchangeRatesData.ExistsExchangeRate(this),
-                 "Ya tengo registrado un tipo de cambio en esa fecha para las mismas monedas.");
+      Assertion.Require(!ExchangeRatesData.ExistsExchangeRate(this),
+                        "Ya tengo registrado un tipo de cambio en esa fecha para las mismas monedas.");
     }
 
 

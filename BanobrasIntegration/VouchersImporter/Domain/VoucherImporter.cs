@@ -29,8 +29,8 @@ namespace Empiria.FinancialAccounting.BanobrasIntegration.VouchersImporter {
 
     internal VoucherImporter(ImportVouchersCommand command,
                              FixedList<ToImportVoucher> toImportVouchersList) {
-      Assertion.AssertObject(command, "command");
-      Assertion.AssertObject(toImportVouchersList, "toImportVouchersList");
+      Assertion.Require(command, "command");
+      Assertion.Require(toImportVouchersList, "toImportVouchersList");
 
       _command = command;
       _toImportVouchersList = toImportVouchersList;

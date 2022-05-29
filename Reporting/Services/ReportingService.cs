@@ -35,7 +35,7 @@ namespace Empiria.FinancialAccounting.Reporting {
     #region Services
 
     public FileReportDto ExportReport(BuildReportCommand command) {
-      Assertion.AssertObject(command, "command");
+      Assertion.Require(command, "command");
 
       ReportDataDto reportData = GenerateReport(command);
 
@@ -46,7 +46,7 @@ namespace Empiria.FinancialAccounting.Reporting {
 
 
     public ReportDataDto GenerateReport(BuildReportCommand command) {
-      Assertion.AssertObject(command, "command");
+      Assertion.Require(command, "command");
 
       IReportBuilder reportBuilder = GetReportBuilder(command);
 
@@ -82,7 +82,7 @@ namespace Empiria.FinancialAccounting.Reporting {
           return new ListadoPolizasPorCuenta();
 
         default:
-          throw Assertion.AssertNoReachThisCode($"Unhandled reportType '{command.ReportType}'.");
+          throw Assertion.EnsureNoReachThisCode($"Unhandled reportType '{command.ReportType}'.");
       }
     }
 
@@ -96,7 +96,7 @@ namespace Empiria.FinancialAccounting.Reporting {
           return new XmlExporter();
 
         default:
-          throw Assertion.AssertNoReachThisCode($"Unhandled exportTo file type '{command.ExportTo}'.");
+          throw Assertion.EnsureNoReachThisCode($"Unhandled exportTo file type '{command.ExportTo}'.");
       }
     }
 

@@ -32,7 +32,7 @@ namespace Empiria.FinancialAccounting.Reporting.UseCases {
 
 
     public AccountStatementDto BuildAccountStatement(AccountStatementCommand command) {
-      Assertion.AssertObject(command, "command");
+      Assertion.Require(command, "command");
 
       var vouchersConstructor = new AccountStatementConstructor(command);
 

@@ -120,7 +120,7 @@ namespace Empiria.FinancialAccounting.Data {
                                                   StandardAccount standardAccount) {
       LedgerAccount ledgerAccount = TryGetLedgerAccount(ledger, standardAccount);
 
-      Assertion.AssertObject(ledgerAccount, "ledgerAccount");
+      Assertion.Require(ledgerAccount, "ledgerAccount");
 
       return ledgerAccount;
     }

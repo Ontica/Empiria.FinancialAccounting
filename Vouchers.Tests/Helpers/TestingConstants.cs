@@ -13,8 +13,6 @@ namespace Empiria.FinancialAccounting.Tests {
   /// <summary>Provides testing constants.</summary>
   static public class TestingConstants {
 
-    static readonly internal string SESSION_TOKEN = ConfigurationData.GetString("SESSION_TOKEN");
-
     static readonly internal string LEDGER_UID = ConfigurationData.GetString("LEDGER_UID");
 
     static readonly internal long VOUCHER_ID = ConfigurationData.Get<long>("VOUCHER_ID");

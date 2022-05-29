@@ -16,7 +16,7 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
   internal class BalanceConstructor {
 
     internal BalanceConstructor(BalanceCommand command){
-      Assertion.AssertObject(command, "command");
+      Assertion.Require(command, "command");
 
       Command = command;
     }
@@ -56,7 +56,7 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
           return saldosPorCuenta.Build();
 
         default:
-          throw Assertion.AssertNoReachThisCode(
+          throw Assertion.EnsureNoReachThisCode(
                     $"Unhandled trial balance type {this.Command.TrialBalanceType}.");
       }
     }

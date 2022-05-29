@@ -19,14 +19,14 @@ namespace Empiria.FinancialAccounting.Reporting.Exporters.Excel {
     private readonly FileTemplateConfig _templateConfig;
 
     public AccountsChartExcelExporter(FileTemplateConfig templateConfig) {
-      Assertion.AssertObject(templateConfig, "templateConfig");
+      Assertion.Require(templateConfig, "templateConfig");
 
       _templateConfig = templateConfig;
     }
 
 
     internal ExcelFile CreateExcelFile(AccountsChartDto accountsChart) {
-      Assertion.AssertObject(accountsChart, "accountsChart");
+      Assertion.Require(accountsChart, "accountsChart");
 
       var excelFile = new ExcelFile(_templateConfig);
 

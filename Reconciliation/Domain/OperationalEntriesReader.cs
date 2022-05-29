@@ -25,7 +25,7 @@ namespace Empiria.FinancialAccounting.Reconciliation {
     private readonly Dataset _dataset;
 
     public OperationalEntriesReader(Dataset dataset) {
-      Assertion.AssertObject(dataset, "dataset");
+      Assertion.Require(dataset, "dataset");
 
       _dataset = dataset;
     }
@@ -61,7 +61,7 @@ namespace Empiria.FinancialAccounting.Reconciliation {
           return Spreadsheet.Open(_dataset.FullPath);
 
         default:
-          throw Assertion.AssertNoReachThisCode(
+          throw Assertion.EnsureNoReachThisCode(
             $"Unhandled dataset file type '{_dataset.DatasetKind.FileType}'."
           );
       }

@@ -26,7 +26,7 @@ namespace Empiria.FinancialAccounting.FinancialReports {
     #region Constructors and parsers
 
     internal AccountBalancesProvider(FinancialReportCommand command) {
-      Assertion.AssertObject(command, "command");
+      Assertion.Require(command, "command");
 
       _command = command;
     }
@@ -73,7 +73,7 @@ namespace Empiria.FinancialAccounting.FinancialReports {
           return GetBalanzaEnColumnasPorMonedaCommand();
 
         default:
-          throw Assertion.AssertNoReachThisCode(
+          throw Assertion.EnsureNoReachThisCode(
               $"Unrecognized balances source {reportType.DataSource} for report type {reportType.Name}.");
       }
     }

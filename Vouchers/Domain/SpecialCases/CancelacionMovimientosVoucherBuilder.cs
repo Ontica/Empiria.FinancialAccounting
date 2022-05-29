@@ -20,7 +20,7 @@ namespace Empiria.FinancialAccounting.Vouchers.SpecialCases {
     private readonly Voucher _voucherToCancel;
 
     internal CancelacionMovimientosVoucherBuilder(Voucher voucherToCancel) {
-      Assertion.AssertObject(voucherToCancel, "voucherToCancel");
+      Assertion.Require(voucherToCancel, "voucherToCancel");
 
       _voucherToCancel = voucherToCancel;
     }
@@ -38,7 +38,7 @@ namespace Empiria.FinancialAccounting.Vouchers.SpecialCases {
 
       FixedList<string> issues = this.ImplementsDryRun(entries);
 
-      Assertion.Assert(issues.Count == 0,
+      Assertion.Require(issues.Count == 0,
           "There were one or more issues generating 'Cancelación de movimientos' voucher: " +
           EmpiriaString.ToString(issues));
 

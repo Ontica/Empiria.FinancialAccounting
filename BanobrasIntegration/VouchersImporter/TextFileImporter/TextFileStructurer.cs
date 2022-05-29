@@ -25,8 +25,8 @@ namespace Empiria.FinancialAccounting.BanobrasIntegration.VouchersImporter {
     private readonly FixedList<TextFileVoucherEntry> _entries;
 
     public TextFileStructurer(ImportVouchersCommand command, string[] textFileLines) {
-      Assertion.AssertObject(command, "command");
-      Assertion.AssertObject(textFileLines, "textFileLines");
+      Assertion.Require(command, "command");
+      Assertion.Require(textFileLines, "textFileLines");
 
       _command = command;
       _textFileLines = textFileLines;
@@ -143,7 +143,7 @@ namespace Empiria.FinancialAccounting.BanobrasIntegration.VouchersImporter {
       int textFileLineLengthForAccountsChart = accountsChart.Equals(AccountsChart.IFRS) ?
                                                   TextFileVoucherEntry.WIDE_TEXT_LINE_LENGTH : TextFileVoucherEntry.STANDARD_TEXT_LINE_LENGTH;
 
-      Assertion.Assert(_textFileLines.All(x => x.Length == textFileLineLengthForAccountsChart),
+      Assertion.Require(_textFileLines.All(x => x.Length == textFileLineLengthForAccountsChart),
             $"El archivo de texto tiene líneas de longitud distinta a {textFileLineLengthForAccountsChart}, " +
             $"tamaño definido para importar pólizas para el catálogo de cuentas {accountsChart.Name}.");
     }

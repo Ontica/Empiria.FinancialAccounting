@@ -33,7 +33,7 @@ namespace Empiria.FinancialAccounting.FinancialReports.UseCases {
     #region Use cases
 
     public FixedList<FinancialReportTypeDto> FinancialReportTypes(string accountsChartUID) {
-      Assertion.AssertObject(accountsChartUID, "accountsChartUID");
+      Assertion.Require(accountsChartUID, "accountsChartUID");
 
       var accountsChart = AccountsChart.Parse(accountsChartUID);
 
@@ -44,7 +44,7 @@ namespace Empiria.FinancialAccounting.FinancialReports.UseCases {
 
 
     public FinancialReportDto GenerateFinancialReport(FinancialReportCommand command) {
-      Assertion.AssertObject(command, "command");
+      Assertion.Require(command, "command");
 
       var financialReportGenerator = new FinancialReportGenerator(command);
 
@@ -55,8 +55,8 @@ namespace Empiria.FinancialAccounting.FinancialReports.UseCases {
 
 
     public FinancialReportDto GetFinancialReportBreakdown(string reportRowUID, FinancialReportCommand command) {
-      Assertion.AssertObject(reportRowUID, nameof(reportRowUID));
-      Assertion.AssertObject(command, nameof(command));
+      Assertion.Require(reportRowUID, nameof(reportRowUID));
+      Assertion.Require(command, nameof(command));
 
       var financialReportGenerator = new FinancialReportGenerator(command);
 

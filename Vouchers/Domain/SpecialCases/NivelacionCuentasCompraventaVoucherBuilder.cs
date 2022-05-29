@@ -37,7 +37,7 @@ namespace Empiria.FinancialAccounting.Vouchers.SpecialCases {
 
       FixedList<string> issues = this.ImplementsDryRun(entries);
 
-      Assertion.Assert(issues.Count == 0,
+      Assertion.Require(issues.Count == 0,
           "There were one or more issues generating 'Nivelación de cuentas de compraventa' voucher: " +
           EmpiriaString.ToString(issues));
 
@@ -115,7 +115,7 @@ namespace Empiria.FinancialAccounting.Vouchers.SpecialCases {
         }
       }
 
-      Assertion.Assert(entries.Count >= 2, "Las cuentas de compraventa ya están niveladas en la fecha proporcionada.");
+      Assertion.Require(entries.Count >= 2, "Las cuentas de compraventa ya están niveladas en la fecha proporcionada.");
 
       return entries.ToFixedList();
     }

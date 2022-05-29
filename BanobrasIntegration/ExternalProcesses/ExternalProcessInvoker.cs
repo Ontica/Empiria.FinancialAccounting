@@ -34,7 +34,7 @@ namespace Empiria.FinancialAccounting.BanobrasIntegration {
 
 
     public string ProcesarConciliacionSIC(ConcilacionSICExternalProcessCommand command) {
-      Assertion.AssertObject(command, "command");
+      Assertion.Require(command, "command");
 
       ExportarSaldosSIC(command.FechaInicio, command.FechaFin);
 
@@ -57,7 +57,7 @@ namespace Empiria.FinancialAccounting.BanobrasIntegration {
 
 
     public string ProcesarRentabilidad(RentabilidadExternalProcessCommand command) {
-      Assertion.AssertObject(command, "command");
+      Assertion.Require(command, "command");
 
       EmpiriaLog.Info("Iniciando la exportación de saldos para el proceso de rentabilidad.");
 

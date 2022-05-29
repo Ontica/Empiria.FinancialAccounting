@@ -35,8 +35,8 @@ namespace Empiria.FinancialAccounting.Vouchers.UseCases {
 
 
     public VoucherDto AppendEntry(long voucherId, VoucherEntryFields fields) {
-      Assertion.Assert(voucherId > 0, "voucherId");
-      Assertion.AssertObject(fields, "fields");
+      Assertion.Require(voucherId > 0, "voucherId");
+      Assertion.Require(fields, "fields");
 
       var voucher = Voucher.Parse(voucherId);
 
@@ -49,8 +49,8 @@ namespace Empiria.FinancialAccounting.Vouchers.UseCases {
 
 
     public VoucherDto AppendEntries(long voucherId, FixedList<VoucherEntryFields> entries) {
-      Assertion.Assert(voucherId > 0, "voucherId");
-      Assertion.AssertObject(entries, "entries");
+      Assertion.Require(voucherId > 0, "voucherId");
+      Assertion.Require(entries, "entries");
 
       var voucher = Voucher.Parse(voucherId);
 
@@ -81,13 +81,13 @@ namespace Empiria.FinancialAccounting.Vouchers.UseCases {
 
     public LedgerAccountDto AssignVoucherLedgerStandardAccount(long voucherId,
                                                                int standardAccountId) {
-      Assertion.Assert(voucherId > 0, "voucherId");
-      Assertion.Assert(standardAccountId > 0, "standardAccountId");
+      Assertion.Require(voucherId > 0, "voucherId");
+      Assertion.Require(standardAccountId > 0, "standardAccountId");
 
       var voucher = Voucher.Parse(voucherId);
 
-      Assertion.Assert(voucher.IsOpened,
-          "Esta operación sólo está disponible para pólizas abiertas.");
+      Assertion.Require(voucher.IsOpened,
+                        "Esta operación sólo está disponible para pólizas abiertas.");
 
       var standardAccount = StandardAccount.Parse(standardAccountId);
 
@@ -104,8 +104,8 @@ namespace Empiria.FinancialAccounting.Vouchers.UseCases {
 
 
     public string BulkClose(int[] voucherIdsArray) {
-      Assertion.AssertObject(voucherIdsArray, "voucherIdsArray");
-      Assertion.Assert(voucherIdsArray.Length > 0, "voucherIdsArray must have one or more values.");
+      Assertion.Require(voucherIdsArray, "voucherIdsArray");
+      Assertion.Require(voucherIdsArray.Length > 0, "voucherIdsArray must have one or more values.");
 
       int closedCounter = 0;
 
@@ -133,8 +133,8 @@ namespace Empiria.FinancialAccounting.Vouchers.UseCases {
 
 
     public string BulkDelete(int[] voucherIdsArray) {
-      Assertion.AssertObject(voucherIdsArray, "voucherIdsArray");
-      Assertion.Assert(voucherIdsArray.Length > 0, "voucherIdsArray must have one or more values.");
+      Assertion.Require(voucherIdsArray, "voucherIdsArray");
+      Assertion.Require(voucherIdsArray.Length > 0, "voucherIdsArray must have one or more values.");
 
       int deletedCounter = 0;
 
@@ -163,8 +163,8 @@ namespace Empiria.FinancialAccounting.Vouchers.UseCases {
 
 
     public string BulkSendToSupervisor(int[] voucherIdsArray) {
-      Assertion.AssertObject(voucherIdsArray, "voucherIdsArray");
-      Assertion.Assert(voucherIdsArray.Length > 0, "voucherIdsArray must have one or more values.");
+      Assertion.Require(voucherIdsArray, "voucherIdsArray");
+      Assertion.Require(voucherIdsArray.Length > 0, "voucherIdsArray must have one or more values.");
 
       int sentCounter = 0;
 
@@ -192,13 +192,13 @@ namespace Empiria.FinancialAccounting.Vouchers.UseCases {
 
 
     public VoucherDto CloseVoucher(long voucherId, bool fromImporter) {
-      Assertion.Assert(voucherId > 0, "voucherId");
+      Assertion.Require(voucherId > 0, "voucherId");
 
       var voucher = Voucher.Parse(voucherId);
 
       if (!fromImporter && !voucher.CanBeClosedBy(Participant.Current)) {
-        Assertion.AssertFail($"La póliza no puede enviarse directamente al diario " +
-                             $"por el usuario {Participant.Current.Name}.");
+        Assertion.RequireFail($"La póliza no puede enviarse directamente al diario " +
+                              $"por el usuario {Participant.Current.Name}.");
 
       } else if (fromImporter && !voucher.IsAccountingDateOpened) {
         EmpiriaLog.Info($"Se intentó cerrar la póliza {voucherId} desde el importador, pero tiene fecha valor.");
@@ -213,7 +213,7 @@ namespace Empiria.FinancialAccounting.Vouchers.UseCases {
 
 
     public VoucherDto CreateVoucher(VoucherFields fields) {
-      Assertion.AssertObject(fields, "fields");
+      Assertion.Require(fields, "fields");
 
       fields.EnsureValid();
 
@@ -228,12 +228,12 @@ namespace Empiria.FinancialAccounting.Vouchers.UseCases {
     public VoucherDto ImportVoucher(VoucherFields voucherFields,
                                     FixedList<VoucherEntryFields> entriesFields,
                                     bool tryToClose) {
-      Assertion.AssertObject(voucherFields, "voucherFields");
-      Assertion.AssertObject(entriesFields, "entriesFields");
+      Assertion.Require(voucherFields, "voucherFields");
+      Assertion.Require(entriesFields, "entriesFields");
 
       FixedList<string> issues = ValidateVoucherToImport(voucherFields, entriesFields);
 
-      Assertion.Assert(issues.Count == 0, "There are one ore more problems with voucher data to be imported.");
+      Assertion.Require(issues.Count == 0, "There are one ore more problems with voucher data to be imported.");
 
       VoucherDto voucher = CreateVoucher(voucherFields);
 
@@ -248,8 +248,8 @@ namespace Empiria.FinancialAccounting.Vouchers.UseCases {
 
 
     public VoucherDto DeleteEntry(long voucherId, long voucherEntryId) {
-      Assertion.Assert(voucherId > 0, "voucherId");
-      Assertion.Assert(voucherEntryId > 0, "voucherEntryId");
+      Assertion.Require(voucherId > 0, "voucherId");
+      Assertion.Require(voucherEntryId > 0, "voucherEntryId");
 
       var voucher = Voucher.Parse(voucherId);
 
@@ -262,13 +262,13 @@ namespace Empiria.FinancialAccounting.Vouchers.UseCases {
 
 
     public void DeleteVoucher(long voucherId) {
-      Assertion.Assert(voucherId > 0, "voucherId");
+      Assertion.Require(voucherId > 0, "voucherId");
 
       var voucher = Voucher.Parse(voucherId);
 
       if (!(voucher.ElaboratedBy.Equals(Participant.Current) ||
             voucher.AuthorizedBy.Equals(Participant.Current))) {
-        Assertion.AssertFail("La póliza no puede ser eliminada debido a que la tiene otro usuario.");
+        Assertion.RequireFail("La póliza no puede ser eliminada debido a que la tiene otro usuario.");
       }
 
       voucher.Delete();
@@ -276,7 +276,7 @@ namespace Empiria.FinancialAccounting.Vouchers.UseCases {
 
 
     public VoucherEntryDto GetCopyOfLastEntry(long voucherId) {
-      Assertion.Assert(voucherId > 0, "voucherId");
+      Assertion.Require(voucherId > 0, "voucherId");
 
       var voucher = Voucher.Parse(voucherId);
 
@@ -287,7 +287,7 @@ namespace Empiria.FinancialAccounting.Vouchers.UseCases {
 
 
     public VoucherDto SendVoucherToSupervisor(long voucherId) {
-      Assertion.Assert(voucherId > 0, "voucherId");
+      Assertion.Require(voucherId > 0, "voucherId");
 
       var voucher = Voucher.Parse(voucherId);
 
@@ -298,8 +298,8 @@ namespace Empiria.FinancialAccounting.Vouchers.UseCases {
 
 
     public VoucherDto UpdateVoucher(long voucherId, VoucherFields fields) {
-      Assertion.Assert(voucherId > 0, "voucherId");
-      Assertion.AssertObject(fields, "fields");
+      Assertion.Require(voucherId > 0, "voucherId");
+      Assertion.Require(fields, "fields");
 
       fields.EnsureValid();
 
@@ -315,9 +315,9 @@ namespace Empiria.FinancialAccounting.Vouchers.UseCases {
 
     public VoucherDto UpdateEntry(long voucherId, long voucherEntryId,
                                   VoucherEntryFields fields) {
-      Assertion.Assert(voucherId > 0, "voucherId");
-      Assertion.Assert(voucherEntryId > 0, "voucherEntryId");
-      Assertion.AssertObject(fields, "fields");
+      Assertion.Require(voucherId > 0, "voucherId");
+      Assertion.Require(voucherEntryId > 0, "voucherEntryId");
+      Assertion.Require(fields, "fields");
 
       var voucher = Voucher.Parse(voucherId);
 
@@ -325,7 +325,7 @@ namespace Empiria.FinancialAccounting.Vouchers.UseCases {
 
       FixedList<string> issues = validator.Validate(fields);
 
-      Assertion.Assert(issues.Count == 0,
+      Assertion.Require(issues.Count == 0,
                        "No se pudo guardar el movimiento debido a: " + EmpiriaString.ToString(issues));
 
       VoucherEntry entry = voucher.GetEntry(voucherEntryId);
@@ -337,7 +337,7 @@ namespace Empiria.FinancialAccounting.Vouchers.UseCases {
 
 
     public FixedList<string> ValidateVoucher(long voucherId) {
-      Assertion.Assert(voucherId > 0, "voucherId");
+      Assertion.Require(voucherId > 0, "voucherId");
 
       var voucher = Voucher.Parse(voucherId);
 

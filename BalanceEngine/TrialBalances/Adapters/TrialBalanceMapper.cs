@@ -105,7 +105,7 @@ namespace Empiria.FinancialAccounting.BalanceEngine.Adapters {
           return new FixedList<ITrialBalanceEntryDto>(mappedItemsComparative);
 
         default:
-          throw Assertion.AssertNoReachThisCode(
+          throw Assertion.EnsureNoReachThisCode(
                 $"Unhandled trial balance type {command.TrialBalanceType}.");
       }
     }

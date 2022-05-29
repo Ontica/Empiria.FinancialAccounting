@@ -35,7 +35,7 @@ namespace Empiria.FinancialAccounting.Reporting {
     #region Services
 
     public FileReportDto Export(FinancialReportDto financialReport) {
-      Assertion.AssertObject(financialReport, "financialReport");
+      Assertion.Require(financialReport, "financialReport");
 
       IFinancialReportBuilder reportBuilder = GetReportBuilder(financialReport.Command);
 
@@ -47,7 +47,7 @@ namespace Empiria.FinancialAccounting.Reporting {
     #region Helpers
 
     private IFinancialReportBuilder GetReportBuilder(FinancialReportCommand command) {
-      Assertion.AssertObject(command, "command");
+      Assertion.Require(command, "command");
 
       var reportType = command.GetFinancialReportType();
 
@@ -66,7 +66,7 @@ namespace Empiria.FinancialAccounting.Reporting {
 
 
         default:
-          throw Assertion.AssertNoReachThisCode($"Unhandled reportType exportTo '{command.ExportTo}'.");
+          throw Assertion.EnsureNoReachThisCode($"Unhandled reportType exportTo '{command.ExportTo}'.");
       }
     }
 

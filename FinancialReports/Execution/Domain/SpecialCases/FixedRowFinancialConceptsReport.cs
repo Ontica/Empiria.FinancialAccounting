@@ -179,7 +179,7 @@ namespace Empiria.FinancialAccounting.FinancialReports {
           return ProcessFixedValue(integrationEntry);
 
         default:
-          throw Assertion.AssertNoReachThisCode();
+          throw Assertion.EnsureNoReachThisCode();
       }
     }
 
@@ -214,7 +214,7 @@ namespace Empiria.FinancialAccounting.FinancialReports {
 
 
     private ReportEntryTotals ProcessFinancialConcept(FinancialConcept financialConcept) {
-      Assertion.Assert(!financialConcept.IsEmptyInstance,
+      Assertion.Require(!financialConcept.IsEmptyInstance,
                        "Cannot process the empty FinancialConcept instance.");
 
       var totals = CreateReportEntryTotalsObject();
@@ -246,8 +246,8 @@ namespace Empiria.FinancialAccounting.FinancialReports {
     private ReportEntryTotals CalculateAccountTotals(FinancialConceptEntry integrationEntry,
                                                      ReportEntryTotals totals) {
 
-      Assertion.Assert(integrationEntry.Type == FinancialConceptEntryType.Account,
-                       "Invalid integrationEntry.Type");
+      Assertion.Require(integrationEntry.Type == FinancialConceptEntryType.Account,
+                        "Invalid integrationEntry.Type");
 
       switch (integrationEntry.Operator) {
 
@@ -268,7 +268,7 @@ namespace Empiria.FinancialAccounting.FinancialReports {
                        .AbsoluteValue();
 
         default:
-          throw Assertion.AssertNoReachThisCode($"Unhandled operator '{integrationEntry.Operator}'.");
+          throw Assertion.EnsureNoReachThisCode($"Unhandled operator '{integrationEntry.Operator}'.");
       }
 
     }
@@ -277,7 +277,7 @@ namespace Empiria.FinancialAccounting.FinancialReports {
     private ReportEntryTotals CalculateFinancialConceptTotals(FinancialConceptEntry integrationEntry,
                                                               ReportEntryTotals totals) {
 
-      Assertion.Assert(integrationEntry.Type == FinancialConceptEntryType.FinancialConceptReference,
+      Assertion.Require(integrationEntry.Type == FinancialConceptEntryType.FinancialConceptReference,
                       "Invalid integrationEntry.Type");
 
       switch (integrationEntry.Operator) {
@@ -299,7 +299,7 @@ namespace Empiria.FinancialAccounting.FinancialReports {
                        .AbsoluteValue();
 
         default:
-          throw Assertion.AssertNoReachThisCode($"Unhandled operator '{integrationEntry.Operator}'.");
+          throw Assertion.EnsureNoReachThisCode($"Unhandled operator '{integrationEntry.Operator}'.");
 
       }
 
@@ -309,7 +309,7 @@ namespace Empiria.FinancialAccounting.FinancialReports {
     private ReportEntryTotals CalculateExternalVariableTotals(FinancialConceptEntry integrationEntry,
                                                               ReportEntryTotals totals) {
 
-      Assertion.Assert(integrationEntry.Type == FinancialConceptEntryType.ExternalVariable,
+      Assertion.Require(integrationEntry.Type == FinancialConceptEntryType.ExternalVariable,
                        "Invalid integrationEntry.Type");
 
       switch (integrationEntry.Operator) {
@@ -331,7 +331,7 @@ namespace Empiria.FinancialAccounting.FinancialReports {
                        .AbsoluteValue();
 
         default:
-          throw Assertion.AssertNoReachThisCode($"Unhandled operator '{integrationEntry.Operator}'.");
+          throw Assertion.EnsureNoReachThisCode($"Unhandled operator '{integrationEntry.Operator}'.");
       }
 
     }
@@ -349,7 +349,7 @@ namespace Empiria.FinancialAccounting.FinancialReports {
           return new BalanzaEnColumnasPorMonedaReportEntryTotals();
 
         default:
-          throw Assertion.AssertNoReachThisCode($"Unhandled data source {FinancialReportType.DataSource}.");
+          throw Assertion.EnsureNoReachThisCode($"Unhandled data source {FinancialReportType.DataSource}.");
       }
     }
 

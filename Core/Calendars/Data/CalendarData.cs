@@ -19,7 +19,7 @@ namespace Empiria.FinancialAccounting.Data {
 
     static internal void AppendPeriod(Calendar calendar, string name,
                                       DateTime fromDate, DateTime toDate) {
-      Assertion.AssertObject(name, "name");
+      Assertion.Require(name, "name");
 
       long periodId = CommonMethods.GetNextObjectId("SEC_PERIOD_ID");
 
@@ -43,7 +43,7 @@ namespace Empiria.FinancialAccounting.Data {
 
 
     static internal void RemovePeriod(CalendarPeriod period) {
-      Assertion.AssertObject(period, "period");
+      Assertion.Require(period, "period");
 
       var operation = DataOperation.Parse("del_calendar_period",
                                           period.CalendarId, period.Id);

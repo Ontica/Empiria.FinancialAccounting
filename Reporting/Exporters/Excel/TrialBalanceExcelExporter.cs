@@ -26,14 +26,14 @@ namespace Empiria.FinancialAccounting.Reporting.Exporters.Excel {
     private ExcelFile _excelFile;
 
     public TrialBalanceExcelExporter(FileTemplateConfig templateConfig) {
-      Assertion.AssertObject(templateConfig, "templateConfig");
+      Assertion.Require(templateConfig, "templateConfig");
 
       _templateConfig = templateConfig;
     }
 
 
     internal ExcelFile CreateExcelFile(TrialBalanceDto trialBalance) {
-      Assertion.AssertObject(trialBalance, "trialBalance");
+      Assertion.Require(trialBalance, "trialBalance");
 
       _command = trialBalance.Command;
 
@@ -109,7 +109,7 @@ namespace Empiria.FinancialAccounting.Reporting.Exporters.Excel {
           return;
 
         default:
-          throw Assertion.AssertNoReachThisCode();
+          throw Assertion.EnsureNoReachThisCode();
       }
     }
 

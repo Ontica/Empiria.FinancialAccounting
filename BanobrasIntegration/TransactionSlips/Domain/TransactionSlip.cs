@@ -19,7 +19,7 @@ namespace Empiria.FinancialAccounting.BanobrasIntegration.TransactionSlips {
     #region Constructors and parsers
 
     static public TransactionSlip Parse(string uid) {
-      Assertion.AssertObject(uid, "uid");
+      Assertion.Require(uid, "uid");
 
       if (uid.Contains("~")) {
         return TransactionSlipData.GetPendingTransactionSlip(uid);
@@ -145,7 +145,7 @@ namespace Empiria.FinancialAccounting.BanobrasIntegration.TransactionSlips {
             return "Póliza generada";
 
           default:
-            throw Assertion.AssertNoReachThisCode();
+            throw Assertion.EnsureNoReachThisCode();
 
         }
       }
@@ -183,7 +183,7 @@ namespace Empiria.FinancialAccounting.BanobrasIntegration.TransactionSlips {
 
     internal VoucherDto GetVoucher() {
       if (!HasVoucher) {
-        throw Assertion.AssertNoReachThisCode();
+        throw Assertion.EnsureNoReachThisCode();
       }
 
       using (var usecase = VoucherUseCases.UseCaseInteractor()) {

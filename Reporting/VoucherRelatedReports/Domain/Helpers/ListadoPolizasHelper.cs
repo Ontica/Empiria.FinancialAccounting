@@ -35,7 +35,7 @@ namespace Empiria.FinancialAccounting.Reporting {
     private readonly ListadoPolizasCommand _command;
 
     internal ListadoPolizasHelper(ListadoPolizasCommand command) {
-      Assertion.AssertObject(command, "command");
+      Assertion.Require(command, "command");
 
       _command = command;
     }

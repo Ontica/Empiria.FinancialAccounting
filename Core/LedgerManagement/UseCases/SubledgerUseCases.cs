@@ -33,7 +33,7 @@ namespace Empiria.FinancialAccounting.UseCases {
     #region Use cases
 
     public SubledgerAccountDto ActivateSubledgerAccount(int subledgerAccountId) {
-      Assertion.Assert(subledgerAccountId > 0, "subledgerAccountId");
+      Assertion.Require(subledgerAccountId > 0, "subledgerAccountId");
 
       var subledgerAccount = SubledgerAccount.Parse(subledgerAccountId);
 
@@ -46,7 +46,7 @@ namespace Empiria.FinancialAccounting.UseCases {
 
 
     public SubledgerAccountDto CreateSubledgerAccount(SubledgerAccountFields fields) {
-      Assertion.AssertObject(fields, "fields");
+      Assertion.Require(fields, "fields");
 
       fields.EnsureValid();
 
@@ -58,11 +58,9 @@ namespace Empiria.FinancialAccounting.UseCases {
 
       var subledgerAccount = ledger.TryGetSubledgerAccount(fields.Number);
 
-      if (subledgerAccount != null) {
-        Assertion.AssertFail($"Ya existe un auxiliar con número {subledgerAccount.Number}, " +
-                             $"y corresponde a {subledgerAccount.Name}.");
-      }
-
+      Assertion.Require(subledgerAccount == null,
+                        $"Ya existe un auxiliar con número {subledgerAccount.Number}, " +
+                        $"y corresponde a {subledgerAccount.Name}.");
 
       SubledgerAccount createdSubledgerAccount = ledger.CreateSubledgerAccount(fields.Number,
                                                                                fields.SubledgerType(),
@@ -75,7 +73,7 @@ namespace Empiria.FinancialAccounting.UseCases {
 
 
     public SubledgerDto GetSubledger(string subledgerUID) {
-      Assertion.AssertObject(subledgerUID, "subledgerUID");
+      Assertion.Require(subledgerUID, "subledgerUID");
 
       var subledger = Subledger.Parse(subledgerUID);
 
@@ -84,7 +82,7 @@ namespace Empiria.FinancialAccounting.UseCases {
 
 
     public SubledgerAccountDto GetSubledgerAccount(int subledgerAccountId) {
-      Assertion.Assert(subledgerAccountId > 0, "subledgerAccountId");
+      Assertion.Require(subledgerAccountId > 0, "subledgerAccountId");
 
       var subledgerAccount = SubledgerAccount.Parse(subledgerAccountId);
 
@@ -93,7 +91,7 @@ namespace Empiria.FinancialAccounting.UseCases {
 
 
     public FixedList<SubledgerAccountDescriptorDto> SearchSubledgerAccounts(SearchSubledgerAccountCommand command) {
-      Assertion.AssertObject(command, "command");
+      Assertion.Require(command, "command");
 
       string filter = command.BuildFilter();
 
@@ -104,7 +102,7 @@ namespace Empiria.FinancialAccounting.UseCases {
 
 
     public SubledgerAccountDto SuspendSubledgerAccount(int subledgerAccountId) {
-      Assertion.Assert(subledgerAccountId > 0, "subledgerAccountId");
+      Assertion.Require(subledgerAccountId > 0, "subledgerAccountId");
 
       var subledgerAccount = SubledgerAccount.Parse(subledgerAccountId);
 
@@ -118,8 +116,8 @@ namespace Empiria.FinancialAccounting.UseCases {
 
     public SubledgerAccountDto UpdateSubledgerAccount(int subledgerAccountId,
                                                       SubledgerAccountFields fields) {
-      Assertion.Assert(subledgerAccountId > 0, "subledgerAccountId");
-      Assertion.AssertObject(fields, "fields");
+      Assertion.Require(subledgerAccountId > 0, "subledgerAccountId");
+      Assertion.Require(fields, "fields");
 
       fields.EnsureValid();
 

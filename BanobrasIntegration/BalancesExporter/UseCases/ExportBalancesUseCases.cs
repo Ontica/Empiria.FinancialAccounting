@@ -38,7 +38,7 @@ namespace Empiria.FinancialAccounting.BanobrasIntegration.BalancesExporter.UseCa
 
 
     public FixedList<ExportedBalancesDto> Export(ExportBalancesCommand command) {
-      Assertion.AssertObject(command, "command");
+      Assertion.Require(command, "command");
 
       TrialBalanceCommand trialBalanceCommand = command.MapToTrialBalanceCommand();
 

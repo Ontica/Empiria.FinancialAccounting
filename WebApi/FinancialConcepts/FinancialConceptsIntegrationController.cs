@@ -42,7 +42,7 @@ namespace Empiria.FinancialAccounting.WebApi.FinancialConcepts {
 
       base.RequireBody(command);
 
-      Assertion.Assert(financialConceptUID == command.FinancialConceptUID,
+      Assertion.Require(financialConceptUID == command.FinancialConceptUID,
                        "command.FinancialConceptUID does not match url.");
 
       using (var usecases = FinancialConceptIntegrationUseCases.UseCaseInteractor()) {
@@ -74,10 +74,10 @@ namespace Empiria.FinancialAccounting.WebApi.FinancialConcepts {
 
       base.RequireBody(command);
 
-      Assertion.Assert(financialConceptUID == command.FinancialConceptUID,
+      Assertion.Require(financialConceptUID == command.FinancialConceptUID,
                        "command.FinancialConceptUID does not match url.");
 
-      Assertion.Assert(financialConceptEntryUID == command.FinancialConceptEntryUID,
+      Assertion.Require(financialConceptEntryUID == command.FinancialConceptEntryUID,
                  "command.financialConceptEntryUID does not match url.");
 
       using (var usecases = FinancialConceptIntegrationUseCases.UseCaseInteractor()) {

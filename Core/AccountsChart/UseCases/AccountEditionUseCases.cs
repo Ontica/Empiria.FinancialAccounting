@@ -114,7 +114,7 @@ namespace Empiria.FinancialAccounting.UseCases {
     #region Helpers
 
     private AccountEditorService GetAccountEditorService(AccountEditionCommand command) {
-      Assertion.AssertObject(command, nameof(command));
+      Assertion.Require(command, nameof(command));
 
       command.EnsureValid();
 

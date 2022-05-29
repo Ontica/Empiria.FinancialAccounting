@@ -70,9 +70,9 @@ namespace Empiria.FinancialAccounting.FinancialConcepts.Adapters {
     static internal void EnsureIsValid(this FinancialConceptEditionCommand command) {
       command.Clean();
 
-      Assertion.AssertObject(command.GroupUID, "command.GroupUID");
-      Assertion.AssertObject(command.Code, "command.Code");
-      Assertion.AssertObject(command.Name, "command.Name");
+      Assertion.Require(command.GroupUID, "command.GroupUID");
+      Assertion.Require(command.Code, "command.Code");
+      Assertion.Require(command.Name, "command.Name");
 
       EnsurePositioningRuleIsValid(command);
       EnsureDatesAreValid(command);
@@ -97,28 +97,28 @@ namespace Empiria.FinancialAccounting.FinancialConcepts.Adapters {
     #region Helpers
 
     static private void EnsureDatesAreValid(FinancialConceptEditionCommand command) {
-      Assertion.Assert(command.StartDate != ExecutionServer.DateMinValue,
+      Assertion.Require(command.StartDate != ExecutionServer.DateMinValue,
                        "command.StartDate can not be empty.");
 
-      Assertion.Assert(command.EndDate <= Account.MAX_END_DATE,
+      Assertion.Require(command.EndDate <= Account.MAX_END_DATE,
                        $"command.EndDate max value must be {Account.MAX_END_DATE.ToString("yyyy/MM/dd")}.");
 
-      Assertion.Assert(command.StartDate <= command.EndDate,
+      Assertion.Require(command.StartDate <= command.EndDate,
                        $"command.StartDate can not be greater than command.EndDate.");
     }
 
 
     static private void EnsurePositioningRuleIsValid(FinancialConceptEditionCommand command) {
-      Assertion.Assert(command.PositioningRule != PositioningRule.Undefined,
+      Assertion.Require(command.PositioningRule != PositioningRule.Undefined,
                        "command.PositioningRule can not be 'Undefined'.");
 
       if (command.PositioningRule.UsesOffset() && command.PositioningOffsetConceptUID.Length == 0) {
-        Assertion.AssertFail($"command.PositioningRule is '{command.PositioningRule}', " +
-                             $"so command.PositioningOffsetConceptUID can not be empty.");
+        Assertion.RequireFail($"command.PositioningRule is '{command.PositioningRule}', " +
+                              $"so command.PositioningOffsetConceptUID can not be empty.");
       }
 
       if (command.PositioningRule.UsesPosition() && command.Position == -1) {
-        Assertion.AssertFail($"command.PositioningRule is '{command.PositioningRule}', " +
+        Assertion.RequireFail($"command.PositioningRule is '{command.PositioningRule}', " +
                               "so command.Position is required.");
       }
     }

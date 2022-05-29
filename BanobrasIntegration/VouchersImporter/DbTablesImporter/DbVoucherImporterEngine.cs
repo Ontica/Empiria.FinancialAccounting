@@ -38,13 +38,11 @@ namespace Empiria.FinancialAccounting.BanobrasIntegration.VouchersImporter.UseCa
 
 
     public ImportVouchersResult Start(ImportVouchersCommand command) {
-      Assertion.AssertObject(command, "command");
+      Assertion.Require(command, "command");
 
       var importer = DbVouchersImporter.Instance;
 
-      if (importer.IsRunning) {
-        Assertion.AssertFail("El importador de pólizas ya está en ejecución.");
-      }
+      Assertion.Require(!importer.IsRunning, "El importador de pólizas ya está en ejecución.");
 
       importer.Start(command)
               .ConfigureAwait(false);
@@ -56,9 +54,7 @@ namespace Empiria.FinancialAccounting.BanobrasIntegration.VouchersImporter.UseCa
     public ImportVouchersResult Stop() {
       var importer = DbVouchersImporter.Instance;
 
-      if (!importer.IsRunning) {
-        Assertion.AssertFail("El importador de pólizas no está en ejecución.");
-      }
+      Assertion.Require(importer.IsRunning, "El importador de pólizas no está en ejecución.");
 
       importer.Stop();
 

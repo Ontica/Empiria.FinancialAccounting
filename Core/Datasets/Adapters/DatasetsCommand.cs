@@ -34,8 +34,8 @@ namespace Empiria.FinancialAccounting.Datasets.Adapters {
 
 
     public void EnsureValid() {
-      Assertion.AssertObject(DatasetFamilyUID, "DatasetFamilyUID");
-      Assertion.Assert(Date != ExecutionServer.DateMinValue, "Date");
+      Assertion.Require(DatasetFamilyUID, "DatasetFamilyUID");
+      Assertion.Require(Date != ExecutionServer.DateMinValue, "Date");
     }
 
   }  // class DatasetsCommand

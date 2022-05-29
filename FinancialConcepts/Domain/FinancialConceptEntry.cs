@@ -72,7 +72,7 @@ namespace Empiria.FinancialAccounting.FinancialConcepts {
 
 
     static internal FinancialConceptEntry Create(FinancialConceptEntryFields fields) {
-      Assertion.AssertObject(fields, nameof(fields));
+      Assertion.Require(fields, nameof(fields));
 
       return new FinancialConceptEntry(fields);
     }
@@ -307,7 +307,7 @@ namespace Empiria.FinancialAccounting.FinancialConcepts {
 
 
     internal void SetPosition(int position) {
-      Assertion.Assert(position > 0, "Position must be greater than zero.");
+      Assertion.Require(position > 0, "Position must be greater than zero.");
 
       this.Position = position;
     }
@@ -327,13 +327,13 @@ namespace Empiria.FinancialAccounting.FinancialConcepts {
           this.IntegrationTypeId = 3074;
           return;
         default:
-          throw Assertion.AssertNoReachThisCode();
+          throw Assertion.EnsureNoReachThisCode();
       }
     }
 
 
     internal void Update(FinancialConceptEntryFields fields) {
-      Assertion.AssertObject(fields, nameof(fields));
+      Assertion.Require(fields, nameof(fields));
 
       Load(fields);
     }
@@ -352,7 +352,7 @@ namespace Empiria.FinancialAccounting.FinancialConcepts {
         this.Load(referenceFields);
 
       } else {
-        throw Assertion.AssertNoReachThisCode();
+        throw Assertion.EnsureNoReachThisCode();
       }
     }
 

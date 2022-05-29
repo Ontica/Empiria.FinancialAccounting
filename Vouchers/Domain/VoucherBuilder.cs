@@ -42,7 +42,7 @@ namespace Empiria.FinancialAccounting.Vouchers {
           break;
 
         default:
-          throw Assertion.AssertNoReachThisCode($"Unrecognized voucher special case {fields.VoucherTypeUID}.");
+          throw Assertion.EnsureNoReachThisCode($"Unrecognized voucher special case {fields.VoucherTypeUID}.");
       }
 
       builder.Fields = fields;
@@ -108,7 +108,7 @@ namespace Empiria.FinancialAccounting.Vouchers {
       Voucher voucherToCancel = Voucher.TryParse(ledger, fields.OnVoucherNumber);
 
       if (voucherToCancel == null) {
-        Assertion.AssertNoReachThisCode(
+        Assertion.EnsureNoReachThisCode(
           $"La póliza '{fields.OnVoucherNumber}' no existe en la contabilidad {ledger.FullName}."
         );
       }

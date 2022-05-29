@@ -79,7 +79,7 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
                                                          x.Currency.Code == debtorGroup.Currency.Code)
                                            .Sum(x => x.CurrentBalance);
 
-          Assertion.Assert(Math.Abs(debtorGroup.CurrentBalance - entriesTotal) <= MAX_BALANCE_DIFFERENCE,
+          Assertion.Require(Math.Abs(debtorGroup.CurrentBalance - entriesTotal) <= MAX_BALANCE_DIFFERENCE,
                            $"La suma del saldo actual de las cuentas no es igual al total por grupo " +
                            $"en {debtorGroup.GroupName} con naturaleza {debtorGroup.DebtorCreditor}, " +
                            $"Total de cuentas: {entriesTotal}, Total del grupo: {debtorGroup.CurrentBalance}");
@@ -91,7 +91,7 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
                                                          x.Currency.Code == creditorGroup.Currency.Code)
                                            .Sum(x => x.CurrentBalance);
 
-          Assertion.Assert(Math.Abs(creditorGroup.CurrentBalance - entriesTotal) <= MAX_BALANCE_DIFFERENCE,
+          Assertion.Require(Math.Abs(creditorGroup.CurrentBalance - entriesTotal) <= MAX_BALANCE_DIFFERENCE,
                            $"La suma del saldo actual de las cuentas no es igual al total por grupo " +
                            $"en {creditorGroup.GroupName} con naturaleza {creditorGroup.DebtorCreditor}, " +
                            $"Total de cuentas: {entriesTotal}, Total del grupo: {creditorGroup.CurrentBalance}");
@@ -130,7 +130,7 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
           decimal totalDebit = totalDebtorDebit + totalCreditorDebit;
           decimal totalCredit = totalDebtorCredit + totalCreditorCredit;
 
-          Assertion.Assert(Math.Abs(totalDebit - totalCredit) <= MAX_BALANCE_DIFFERENCE,
+          Assertion.Require(Math.Abs(totalDebit - totalCredit) <= MAX_BALANCE_DIFFERENCE,
             $"La suma de cargos totales ({totalDebit}) no es igual a la suma de abonos totales ({totalCredit}) de la balanza, o excede el " +
             $"límite máximo de {MAX_BALANCE_DIFFERENCE} pesos de diferencia.");
         }
@@ -166,7 +166,7 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
                                     x => x.ItemType == TrialBalanceItemType.BalanceTotalGroupCreditor)
                                     .Sum(x => x.CurrentBalance);
 
-        Assertion.Assert(Math.Abs(totalByGroupDebtor - totalByGroupCreditor) <= MAX_BALANCE_DIFFERENCE,
+        Assertion.Require(Math.Abs(totalByGroupDebtor - totalByGroupCreditor) <= MAX_BALANCE_DIFFERENCE,
           "La suma de saldos del total de cuentas deudoras no es igual al de las cuentas acreedoras, " +
           $"o excede el límite máximo de {MAX_BALANCE_DIFFERENCE} pesos de diferencia.");
       }
@@ -186,7 +186,7 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
                                 x => x.ItemType == TrialBalanceItemType.BalanceTotalConsolidated)
                                 .Sum(x => x.CurrentBalance);
 
-      Assertion.Assert(Math.Abs(totalConsolidated - totalsByCurrency) <= MAX_BALANCE_DIFFERENCE,
+      Assertion.Require(Math.Abs(totalConsolidated - totalsByCurrency) <= MAX_BALANCE_DIFFERENCE,
         "La suma de totales por moneda no es igual al total consolidado, " +
         $"o excede el límite máximo de {MAX_BALANCE_DIFFERENCE} pesos de diferencia.");
     }
@@ -224,7 +224,7 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
                                 x => x.ItemType == TrialBalanceItemType.BalanceTotalConsolidated)
                                 .Sum(x => x.TotalBalance);
 
-      Assertion.Assert(Math.Abs(totalReport - (totalDebtor - totalCreditor)) <= MAX_BALANCE_DIFFERENCE,
+      Assertion.Require(Math.Abs(totalReport - (totalDebtor - totalCreditor)) <= MAX_BALANCE_DIFFERENCE,
         "La suma de total de deudoras menos acreedoras no es igual al total del reporte, " +
         $"o excede el límite máximo de {MAX_BALANCE_DIFFERENCE} pesos de diferencia.");
     }
@@ -248,7 +248,7 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
                                   .Sum(x => x.DomesticBalance);
         }
 
-        Assertion.Assert(Math.Abs(totalDebtor.DomesticBalance - entriesTotal) <= MAX_BALANCE_DIFFERENCE,
+        Assertion.Require(Math.Abs(totalDebtor.DomesticBalance - entriesTotal) <= MAX_BALANCE_DIFFERENCE,
                          $"La suma del saldo actual ({entriesTotal}) de las cuentas deudoras no es " +
                          $"igual al {totalDebtor.GroupName} ({totalDebtor.DomesticBalance})");
       }
@@ -263,7 +263,7 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
                                                 x.ItemType == TrialBalanceItemType.Entry)
                                   .Sum(x => x.DomesticBalance);
         }
-        Assertion.Assert(Math.Abs(totalCreditor.DomesticBalance - entriesTotal) <= MAX_BALANCE_DIFFERENCE,
+        Assertion.Require(Math.Abs(totalCreditor.DomesticBalance - entriesTotal) <= MAX_BALANCE_DIFFERENCE,
                          $"La suma del saldo actual ({entriesTotal}) de las cuentas acreedoras no es " +
                          $"igual al {totalCreditor.GroupName} ({totalCreditor.DomesticBalance})");
       }
@@ -281,7 +281,7 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
                                                 x.Currency.Code == totalDebtor.Currency.Code)
                                   .Sum(x => x.CurrentBalance);
 
-        Assertion.Assert(Math.Abs(totalDebtor.CurrentBalance - entriesTotal) <= MAX_BALANCE_DIFFERENCE,
+        Assertion.Require(Math.Abs(totalDebtor.CurrentBalance - entriesTotal) <= MAX_BALANCE_DIFFERENCE,
                          $"La suma del saldo actual ({entriesTotal}) de las cuentas deudoras no es " +
                          $"igual al {totalDebtor.GroupName} ({totalDebtor.CurrentBalance})");
       }
@@ -291,7 +291,7 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
                                                 x.Currency.Code == totalCreditor.Currency.Code)
                                   .Sum(x => x.CurrentBalance);
 
-        Assertion.Assert(Math.Abs(totalCreditor.CurrentBalance - entriesTotal) <= MAX_BALANCE_DIFFERENCE,
+        Assertion.Require(Math.Abs(totalCreditor.CurrentBalance - entriesTotal) <= MAX_BALANCE_DIFFERENCE,
                          $"La suma del saldo actual ({entriesTotal}) de las cuentas acreedoras no es " +
                          $"igual al {totalCreditor.GroupName} ({totalCreditor.CurrentBalance})");
       }

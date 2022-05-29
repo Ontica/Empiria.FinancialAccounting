@@ -67,7 +67,7 @@ namespace Empiria.FinancialAccounting {
 
 
     internal bool HasCurrency(Currency currency) {
-      Assertion.AssertObject(currency, nameof(currency));
+      Assertion.Require(currency, nameof(currency));
 
       return !currency.IsEmptyInstance;
     }

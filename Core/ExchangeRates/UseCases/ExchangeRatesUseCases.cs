@@ -51,7 +51,7 @@ namespace Empiria.FinancialAccounting.UseCases {
 
 
     public FixedList<ExchangeRateDescriptorDto> GetExchangeRates(SearchExchangeRatesCommand command) {
-      Assertion.AssertObject(command, "command");
+      Assertion.Require(command, "command");
 
       FixedList<ExchangeRate> exchangeRates = ExchangeRatesData.SearchExchangeRates(command);
 
@@ -60,7 +60,7 @@ namespace Empiria.FinancialAccounting.UseCases {
 
 
     public ExchangeRateValuesDto GetExchangeRatesForEdition(ExchangeRateValuesDto fields) {
-      Assertion.AssertObject(fields, "fields");
+      Assertion.Require(fields, "fields");
 
       var exchangeRateType = ExchangeRateType.Parse(fields.ExchangeRateTypeUID);
 
@@ -78,7 +78,7 @@ namespace Empiria.FinancialAccounting.UseCases {
 
 
     public ExchangeRateValuesDto UpdateAllExchangeRates(ExchangeRateValuesDto exchangeRates) {
-      Assertion.AssertObject(exchangeRates, "exchangeRates");
+      Assertion.Require(exchangeRates, "exchangeRates");
 
       exchangeRates.EnsureValid();
 

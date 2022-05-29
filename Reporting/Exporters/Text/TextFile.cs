@@ -24,7 +24,7 @@ namespace Empiria.FinancialAccounting.Reporting.Exporters.Text {
     #endregion Fields
 
     internal TextFile(string baseFileName) {
-      Assertion.AssertObject(baseFileName, "baseFileName");
+      Assertion.Require(baseFileName, "baseFileName");
 
       this.BaseFileName = baseFileName;
     }
@@ -65,14 +65,14 @@ namespace Empiria.FinancialAccounting.Reporting.Exporters.Text {
 
 
     internal void AppendLine(string textLine) {
-      Assertion.AssertObject(textLine, "textLine");
+      Assertion.Require(textLine, "textLine");
 
       _textLines.Add(textLine);
     }
 
 
     internal void AppendLines(FixedList<string> textLines) {
-      Assertion.AssertObject(textLines, "textLines");
+      Assertion.Require(textLines, "textLines");
 
       _textLines.AddRange(textLines);
     }

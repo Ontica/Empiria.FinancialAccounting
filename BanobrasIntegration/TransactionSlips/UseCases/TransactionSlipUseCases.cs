@@ -35,7 +35,7 @@ namespace Empiria.FinancialAccounting.BanobrasIntegration.TransactionSlips.UseCa
     #region Importers
 
     public TransactionSlipDto GetTransactionSlip(string transactionSlipUID) {
-      Assertion.AssertObject(transactionSlipUID, "transactionSlipUID");
+      Assertion.Require(transactionSlipUID, "transactionSlipUID");
 
       TransactionSlip transactionSlip = TransactionSlip.Parse(transactionSlipUID);
 
@@ -44,7 +44,7 @@ namespace Empiria.FinancialAccounting.BanobrasIntegration.TransactionSlips.UseCa
 
 
     public FixedList<TransactionSlipDto> GetTransactionSlipsList(SearchTransactionSlipsCommand command) {
-      Assertion.AssertObject(command, "command");
+      Assertion.Require(command, "command");
 
       FixedList<TransactionSlip> transactionSlipsList = TransactionSlipSearcher.Search(command);
 
@@ -53,7 +53,7 @@ namespace Empiria.FinancialAccounting.BanobrasIntegration.TransactionSlips.UseCa
 
 
     public FixedList<TransactionSlipDescriptorDto> SearchTransactionSlips(SearchTransactionSlipsCommand command) {
-      Assertion.AssertObject(command, "command");
+      Assertion.Require(command, "command");
 
       FixedList<TransactionSlip> transactionSlipsList = TransactionSlipSearcher.Search(command);
 

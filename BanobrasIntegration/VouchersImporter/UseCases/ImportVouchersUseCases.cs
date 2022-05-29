@@ -53,7 +53,7 @@ namespace Empiria.FinancialAccounting.BanobrasIntegration.VouchersImporter.UseCa
 
     public ImportVouchersResult ImportVouchersFromInterfazUnica(InterfazUnicaImporterCommand command,
                                                                 bool dryRun) {
-      Assertion.AssertObject(command, "command");
+      Assertion.Require(command, "command");
 
       var importer = new InterfazUnicaImporter(command);
 
@@ -87,8 +87,8 @@ namespace Empiria.FinancialAccounting.BanobrasIntegration.VouchersImporter.UseCa
 
     private FileInfo AssertParametersAreValidAndGetFileInfo(ImportVouchersCommand command,
                                                             FileData fileData) {
-      Assertion.AssertObject(command, "command");
-      Assertion.AssertObject(fileData, "fileData");
+      Assertion.Require(command, "command");
+      Assertion.Require(fileData, "fileData");
 
       return FileUtilities.SaveFile(fileData);
     }

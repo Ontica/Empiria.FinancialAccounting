@@ -93,21 +93,21 @@ namespace Empiria.FinancialAccounting {
 
 
     internal SubledgerAccount CreateAccount(string subledgerAccountNo) {
-      Assertion.AssertObject(subledgerAccountNo, "subledgerAccountNo");
+      Assertion.Require(subledgerAccountNo, "subledgerAccountNo");
 
       return this.CreateAccount(subledgerAccountNo, "Sin nombre. Pendiente de clasificar.");
     }
 
 
     internal SubledgerAccount CreateAccount(string subledgerAccountNo, string subledgerAccountName) {
-      Assertion.AssertObject(subledgerAccountNo, "subledgerAccountNo");
-      Assertion.AssertObject(subledgerAccountName, "subledgerAccountName");
+      Assertion.Require(subledgerAccountNo, "subledgerAccountNo");
+      Assertion.Require(subledgerAccountName, "subledgerAccountName");
 
       return new SubledgerAccount(this, subledgerAccountNo, subledgerAccountName);
     }
 
     internal string FormatSubledgerAccount(string number) {
-      Assertion.AssertObject(number, "number");
+      Assertion.Require(number, "number");
 
       return this.BaseLedger.FormatSubledgerAccount(number);
     }
@@ -116,7 +116,7 @@ namespace Empiria.FinancialAccounting {
     public SubledgerAccount GetAccountWithId(int subledgerAccountId) {
       var subledgerAccount = SubledgerAccount.Parse(subledgerAccountId);
 
-      Assertion.Assert(subledgerAccount.Subledger.Equals(this),
+      Assertion.Require(subledgerAccount.Subledger.Equals(this),
           $"The subledger account with id {subledgerAccountId} does not " +
           $"belong to subledger '{this.Name}'.");
 

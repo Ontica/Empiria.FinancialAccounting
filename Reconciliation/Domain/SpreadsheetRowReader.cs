@@ -21,8 +21,8 @@ namespace Empiria.FinancialAccounting.Reconciliation {
     private readonly int _rowIndex;
 
     public SpreadsheetRowReader(Spreadsheet spreadsheet, int rowIndex) {
-      Assertion.AssertObject(spreadsheet, nameof(spreadsheet));
-      Assertion.Assert(rowIndex > 0, "rowIndex must be greater than zero.");
+      Assertion.Require(spreadsheet, nameof(spreadsheet));
+      Assertion.Require(rowIndex > 0, "rowIndex must be greater than zero.");
 
       _spreadsheet = spreadsheet;
       _rowIndex = rowIndex;
@@ -52,8 +52,8 @@ namespace Empiria.FinancialAccounting.Reconciliation {
 
       var currency = Currency.TryParseByCurrencyCode(value.ToUpperInvariant());
 
-      Assertion.AssertObject(currency,
-                             $"El registro número {_rowIndex} tiene un valor de moneda que no reconozco: '{value}'.");
+      Assertion.Require(currency,
+                        $"El registro número {_rowIndex} tiene un valor de moneda que no reconozco: '{value}'.");
 
       return currency.Code;
     }

@@ -21,15 +21,15 @@ namespace Empiria.FinancialAccounting {
     #region Constructors and parsers
 
     internal AccountsChartMasterData(AccountsChart accountsChart) {
-      Assertion.AssertObject(accountsChart, "accountsChart");
+      Assertion.Require(accountsChart, "accountsChart");
 
       this.AccountsChart = accountsChart;
     }
 
 
     internal AccountsChartMasterData(AccountsChart accountsChart, JsonObject fields) {
-      Assertion.AssertObject(accountsChart, "accountsChart");
-      Assertion.AssertObject(fields, "fields");
+      Assertion.Require(accountsChart, "accountsChart");
+      Assertion.Require(fields, "fields");
 
       this.AccountsChart = accountsChart;
 

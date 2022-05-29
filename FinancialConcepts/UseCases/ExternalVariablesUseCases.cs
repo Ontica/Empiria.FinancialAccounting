@@ -34,7 +34,7 @@ namespace Empiria.FinancialAccounting.FinancialConcepts.UseCases {
 
 
     public FixedList<ExternalVariableDto> GetExternalVariables(string setUID) {
-      Assertion.AssertObject(setUID, nameof(setUID));
+      Assertion.Require(setUID, nameof(setUID));
 
       ExternalVariablesSet set = ExternalVariablesSet.Parse(setUID);
 

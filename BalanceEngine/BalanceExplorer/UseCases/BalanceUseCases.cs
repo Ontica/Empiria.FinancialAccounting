@@ -29,7 +29,7 @@ namespace Empiria.FinancialAccounting.BalanceEngine.BalanceExplorer.UseCases {
     #endregion Constructors and parsers
 
     public BalanceDto BuildBalanceSearch(BalanceCommand command) {
-      Assertion.AssertObject(command, "command");
+      Assertion.Require(command, "command");
 
       var balanceConstructor = new BalanceConstructor(command);
 

@@ -27,7 +27,7 @@ namespace Empiria.FinancialAccounting.Reconciliation {
     private readonly ReconciliationType _reconciliationType;
 
     public ReconciliationEngine(ReconciliationCommand command) {
-      Assertion.AssertObject(command, "command");
+      Assertion.Require(command, "command");
 
       command.EnsureValid();
 
@@ -89,7 +89,7 @@ namespace Empiria.FinancialAccounting.Reconciliation {
 
       FixedList<AccountsListItem> items = list.GetItems();
 
-      Assertion.Assert(items.Count > 0,
+      Assertion.Require(items.Count > 0,
         $"No se han definido las cuentas a conciliar del tipo '{_reconciliationType.Name}'."
       );
 
@@ -117,7 +117,7 @@ namespace Empiria.FinancialAccounting.Reconciliation {
     private FixedList<Dataset> GetOperationalDatasets() {
       FixedList<Dataset> list = _reconciliationType.GetDatasetsList(_command.Date);
 
-      Assertion.Assert(list.Count > 0,
+      Assertion.Require(list.Count > 0,
             $"No se han cargado conjuntos o archivos de datos para " +
             $"la conciliación del día {_command.Date.ToString("dd/MMM/yyyy")}.");
 

@@ -21,8 +21,8 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
 
     internal TrialBalance(TrialBalanceCommand command,
                           FixedList<ITrialBalanceEntry> entries) {
-      Assertion.AssertObject(command, "command");
-      Assertion.AssertObject(entries, "entries");
+      Assertion.Require(command, "command");
+      Assertion.Require(entries, "entries");
 
       this.Command = command;
       this.Entries = entries;
@@ -54,7 +54,7 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
           return ValuedTrialBalanceDataColumns();
 
         default:
-          throw Assertion.AssertNoReachThisCode(
+          throw Assertion.EnsureNoReachThisCode(
                 $"Unhandled trial balance type {this.Command.TrialBalanceType}.");
       }
     }

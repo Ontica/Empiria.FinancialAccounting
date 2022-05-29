@@ -47,7 +47,7 @@ namespace Empiria.FinancialAccounting.Vouchers.UseCases {
 
 
     public FixedList<DateTime> OpenedAccountingDates(string accountsChartUID) {
-      Assertion.AssertObject(accountsChartUID, "accountsChartUID");
+      Assertion.Require(accountsChartUID, "accountsChartUID");
 
       var accountsChart = AccountsChart.Parse(accountsChartUID);
 
@@ -56,12 +56,12 @@ namespace Empiria.FinancialAccounting.Vouchers.UseCases {
 
 
     public FixedList<LedgerAccountDto> SearchAccountsForVoucherEdition(long voucherId, string keywords) {
-      Assertion.Assert(voucherId > 0, "voucherId must be a positive number.");
-      Assertion.AssertObject(keywords, "keywords");
+      Assertion.Require(voucherId > 0, "voucherId must be a positive number.");
+      Assertion.Require(keywords, "keywords");
 
       var voucher = Voucher.Parse(voucherId);
 
-      Assertion.Assert(voucher.IsOpened, "No se pueden regresar cuentas para edición porque la póliza ya está cerrada.");
+      Assertion.Require(voucher.IsOpened, "No se pueden regresar cuentas para edición porque la póliza ya está cerrada.");
 
       FixedList<LedgerAccount> accounts = voucher.Ledger.SearchAssignedAccounts(keywords, voucher.AccountingDate);
 
@@ -74,9 +74,9 @@ namespace Empiria.FinancialAccounting.Vouchers.UseCases {
     public FixedList<SubledgerAccountDescriptorDto> SearchSubledgerAccountsForVoucherEdition(long voucherId,
                                                                                              int accountId,
                                                                                              string keywords) {
-      Assertion.Assert(voucherId > 0, "voucherId must be a positive number.");
-      Assertion.Assert(accountId > 0, "accountId must be a positive number.");
-      Assertion.AssertObject(keywords, "keywords");
+      Assertion.Require(voucherId > 0, "voucherId must be a positive number.");
+      Assertion.Require(accountId > 0, "accountId must be a positive number.");
+      Assertion.Require(keywords, "keywords");
 
       var voucher = Voucher.Parse(voucherId);
 
@@ -103,7 +103,7 @@ namespace Empiria.FinancialAccounting.Vouchers.UseCases {
 
 
     public FixedList<NamedEntityDto> VoucherEditors(string keywords) {
-      Assertion.AssertObject(keywords, "keywords");
+      Assertion.Require(keywords, "keywords");
 
       FixedList<Participant> list = Participant.GetList(keywords);
 

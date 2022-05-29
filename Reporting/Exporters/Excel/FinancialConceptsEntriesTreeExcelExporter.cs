@@ -21,14 +21,14 @@ namespace Empiria.FinancialAccounting.Reporting.Exporters.Excel {
     private ExcelFile _excelFile;
 
     public FinancialConceptsEntriesTreeExcelExporter(FileTemplateConfig templateConfig) {
-      Assertion.AssertObject(templateConfig, "templateConfig");
+      Assertion.Require(templateConfig, "templateConfig");
 
       _templateConfig = templateConfig;
     }
 
 
     internal ExcelFile CreateExcelFile(FixedList<FinancialConceptEntryAsTreeNodeDto> treeNodes) {
-      Assertion.AssertObject(treeNodes, nameof(treeNodes));
+      Assertion.Require(treeNodes, nameof(treeNodes));
 
       _excelFile = new ExcelFile(_templateConfig);
 

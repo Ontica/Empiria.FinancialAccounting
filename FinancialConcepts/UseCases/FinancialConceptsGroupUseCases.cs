@@ -34,7 +34,7 @@ namespace Empiria.FinancialAccounting.FinancialConcepts.UseCases {
 
 
     public void CleanupFinancialConceptGroup(string groupUID) {
-      Assertion.AssertObject(groupUID, "groupUID");
+      Assertion.Require(groupUID, "groupUID");
 
       var group = FinancialConceptGroup.Parse(groupUID);
 
@@ -50,7 +50,7 @@ namespace Empiria.FinancialAccounting.FinancialConcepts.UseCases {
 
 
     public FixedList<FinancialConceptDescriptorDto> GetFinancialConceptsInGroup(string groupUID) {
-      Assertion.AssertObject(groupUID, "groupUID");
+      Assertion.Require(groupUID, "groupUID");
 
       var group = FinancialConceptGroup.Parse(groupUID);
 
@@ -59,7 +59,7 @@ namespace Empiria.FinancialAccounting.FinancialConcepts.UseCases {
 
 
     public FixedList<FinancialConceptEntryAsTreeNodeDto> GetGroupIntegrationEntriesAsTree(string groupUID) {
-      Assertion.AssertObject(groupUID, "groupUID");
+      Assertion.Require(groupUID, "groupUID");
 
       var group = FinancialConceptGroup.Parse(groupUID);
 

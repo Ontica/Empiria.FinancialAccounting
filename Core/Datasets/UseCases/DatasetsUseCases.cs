@@ -37,8 +37,8 @@ namespace Empiria.FinancialAccounting.Datasets.UseCases {
 
 
     public Dataset CreateDataset(DatasetsCommand command, FileData fileData) {
-      Assertion.AssertObject(command, "command");
-      Assertion.AssertObject(fileData, "fileData");
+      Assertion.Require(command, "command");
+      Assertion.Require(fileData, "fileData");
 
       command.EnsureValid();
 
@@ -53,7 +53,7 @@ namespace Empiria.FinancialAccounting.Datasets.UseCases {
 
 
     public DatasetDto GetDataset(string datasetUID) {
-      Assertion.AssertObject(datasetUID, "datasetUID");
+      Assertion.Require(datasetUID, "datasetUID");
 
       var dataset = Dataset.Parse(datasetUID);
 
@@ -62,7 +62,7 @@ namespace Empiria.FinancialAccounting.Datasets.UseCases {
 
 
     public DatasetsLoadStatusDto GetDatasetsLoadStatus(DatasetsCommand command) {
-      Assertion.AssertObject(command, "command");
+      Assertion.Require(command, "command");
 
       command.EnsureValid();
 
@@ -71,7 +71,7 @@ namespace Empiria.FinancialAccounting.Datasets.UseCases {
 
 
     public DatasetsLoadStatusDto RemoveDataset(string datasetUID) {
-      Assertion.AssertObject(datasetUID, "datasetUID");
+      Assertion.Require(datasetUID, "datasetUID");
 
       var dataset = Dataset.Parse(datasetUID);
 
@@ -84,8 +84,8 @@ namespace Empiria.FinancialAccounting.Datasets.UseCases {
 
 
     public void RemoveOldDatasets(string datasetFamilyUID, TimeSpan timeSpan) {
-      Assertion.AssertObject(datasetFamilyUID, nameof(datasetFamilyUID));
-      Assertion.AssertObject(timeSpan, nameof(timeSpan));
+      Assertion.Require(datasetFamilyUID, nameof(datasetFamilyUID));
+      Assertion.Require(timeSpan, nameof(timeSpan));
 
       var family = DatasetFamily.Parse(datasetFamilyUID);
 

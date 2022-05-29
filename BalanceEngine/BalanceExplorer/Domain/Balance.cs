@@ -18,8 +18,8 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
     #region Constructors and parsers
 
     internal Balance(BalanceCommand command, FixedList<BalanceEntry> entries) {
-      Assertion.AssertObject(command, "command");
-      Assertion.AssertObject(entries, "entries");
+      Assertion.Require(command, "command");
+      Assertion.Require(entries, "entries");
 
       Command = command;
       Entries = entries;

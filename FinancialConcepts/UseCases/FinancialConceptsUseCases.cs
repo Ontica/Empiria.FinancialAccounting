@@ -34,7 +34,7 @@ namespace Empiria.FinancialAccounting.FinancialConcepts.UseCases {
 
 
     public FinancialConceptDto GetFinancialConcept(string financialConceptUID) {
-      Assertion.AssertObject(financialConceptUID, nameof(financialConceptUID));
+      Assertion.Require(financialConceptUID, nameof(financialConceptUID));
 
       var financialConcept = FinancialConcept.Parse(financialConceptUID);
 
@@ -43,7 +43,7 @@ namespace Empiria.FinancialAccounting.FinancialConcepts.UseCases {
 
 
     public FinancialConceptDto InsertFinancialConcept(FinancialConceptEditionCommand command) {
-      Assertion.AssertObject(command, nameof(command));
+      Assertion.Require(command, nameof(command));
 
       command.EnsureIsValid();
 
@@ -58,7 +58,7 @@ namespace Empiria.FinancialAccounting.FinancialConcepts.UseCases {
 
 
     public void RemoveFinancialConcept(string financialConceptUID) {
-      Assertion.AssertObject(financialConceptUID, nameof(financialConceptUID));
+      Assertion.Require(financialConceptUID, nameof(financialConceptUID));
 
       FinancialConcept concept = FinancialConcept.Parse(financialConceptUID);
 
@@ -71,7 +71,7 @@ namespace Empiria.FinancialAccounting.FinancialConcepts.UseCases {
 
 
     public FinancialConceptDto UpdateFinancialConcept(FinancialConceptEditionCommand command) {
-      Assertion.AssertObject(command, nameof(command));
+      Assertion.Require(command, nameof(command));
 
       command.EnsureIsValid();
 

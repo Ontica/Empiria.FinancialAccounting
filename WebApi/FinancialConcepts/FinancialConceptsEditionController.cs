@@ -67,7 +67,7 @@ namespace Empiria.FinancialAccounting.WebApi.FinancialConcepts {
 
       base.RequireBody(command);
 
-      Assertion.Assert(financialConceptUID == command.FinancialConceptUID,
+      Assertion.Require(financialConceptUID == command.FinancialConceptUID,
                        "command.FinancialConceptUID does not match url.");
 
       using (var usecases = FinancialConceptsUseCases.UseCaseInteractor()) {

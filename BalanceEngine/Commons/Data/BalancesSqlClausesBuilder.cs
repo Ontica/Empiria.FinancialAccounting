@@ -22,7 +22,7 @@ namespace Empiria.FinancialAccounting.BalanceEngine.Data {
       private readonly TrialBalanceCommand _command;
 
       internal BalancesSqlClausesBuilder(TrialBalanceCommand command) {
-        Assertion.AssertObject(command, nameof(command));
+        Assertion.Require(command, nameof(command));
 
         this._command = PrepareCommand(command);
       }
@@ -147,7 +147,7 @@ namespace Empiria.FinancialAccounting.BalanceEngine.Data {
           return "WHERE DEBE <> 0 OR HABER <> 0";
         }
 
-        throw Assertion.AssertNoReachThisCode();
+        throw Assertion.EnsureNoReachThisCode();
       }
 
 
@@ -169,7 +169,7 @@ namespace Empiria.FinancialAccounting.BalanceEngine.Data {
           return "ID_MAYOR, ID_MONEDA, ID_CUENTA_ESTANDAR, ID_SECTOR, ID_CUENTA_AUXILIAR, ";
         }
 
-        throw Assertion.AssertNoReachThisCode();
+        throw Assertion.EnsureNoReachThisCode();
       }
 
 
@@ -192,7 +192,7 @@ namespace Empiria.FinancialAccounting.BalanceEngine.Data {
           return "GROUP BY ID_MAYOR, ID_MONEDA, ID_CUENTA_ESTANDAR, ID_SECTOR, ID_CUENTA_AUXILIAR";
         }
 
-        throw Assertion.AssertNoReachThisCode();
+        throw Assertion.EnsureNoReachThisCode();
       }
 
 
@@ -205,7 +205,7 @@ namespace Empiria.FinancialAccounting.BalanceEngine.Data {
           return "ORDER BY ID_MAYOR, ID_MONEDA, NUMERO_CUENTA_ESTANDAR, ID_SECTOR";
         }
 
-        throw Assertion.AssertNoReachThisCode();
+        throw Assertion.EnsureNoReachThisCode();
       }
 
 
@@ -242,7 +242,7 @@ namespace Empiria.FinancialAccounting.BalanceEngine.Data {
 
         }
 
-        throw Assertion.AssertNoReachThisCode();
+        throw Assertion.EnsureNoReachThisCode();
       }
 
 
@@ -279,7 +279,7 @@ namespace Empiria.FinancialAccounting.BalanceEngine.Data {
                  $"NUMERO_CUENTA_ESTANDAR LIKE '{_command.ToAccount}%')";
         }
 
-        throw Assertion.AssertNoReachThisCode();
+        throw Assertion.EnsureNoReachThisCode();
       }
 
 

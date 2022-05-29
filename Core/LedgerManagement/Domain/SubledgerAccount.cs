@@ -25,9 +25,9 @@ namespace Empiria.FinancialAccounting {
 
 
     internal SubledgerAccount(Subledger subledger, string number, string name) {
-      Assertion.AssertObject(subledger, "subledger");
-      Assertion.AssertObject(number, "number");
-      Assertion.AssertObject(name, "name");
+      Assertion.Require(subledger, "subledger");
+      Assertion.Require(number, "number");
+      Assertion.Require(name, "name");
 
       this.Subledger = subledger;
       this.Number = number;
@@ -49,8 +49,8 @@ namespace Empiria.FinancialAccounting {
 
 
     static internal FixedList<SubledgerAccount> Search(AccountsChart accountsChart, string filter) {
-      Assertion.AssertObject(accountsChart, "accountsChart");
-      Assertion.AssertObject(filter, "filter");
+      Assertion.Require(accountsChart, "accountsChart");
+      Assertion.Require(filter, "filter");
 
       return SubledgerData.GetSubledgerAccountsList(accountsChart, filter);
     }
@@ -152,7 +152,7 @@ namespace Empiria.FinancialAccounting {
 
 
     internal void Update(SubledgerAccountFields fields) {
-      Assertion.AssertObject(fields, "fields");
+      Assertion.Require(fields, "fields");
 
       fields.EnsureValid();
 
@@ -164,7 +164,7 @@ namespace Empiria.FinancialAccounting {
 
 
     private void UpdateSubledger(SubledgerType newSubledgerType) {
-      Assertion.AssertObject(newSubledgerType, "newSubledgerType");
+      Assertion.Require(newSubledgerType, "newSubledgerType");
 
       if (newSubledgerType.Equals(this.Subledger.SubledgerType)) {
         return;
@@ -172,7 +172,7 @@ namespace Empiria.FinancialAccounting {
 
       var newSubledger = this.Ledger.Subledgers().Find(x => x.SubledgerType == newSubledgerType);
 
-      Assertion.AssertObject(newSubledger,
+      Assertion.Require(newSubledger,
             $"No existe un libro auxiliar de tipo {newSubledgerType.Name} para la " +
             $"contabilidad {this.Ledger.FullName}.");
 

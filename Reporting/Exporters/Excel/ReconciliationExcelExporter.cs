@@ -21,14 +21,14 @@ namespace Empiria.FinancialAccounting.Reporting.Exporters.Excel {
     private ExcelFile excelFile;
 
     public ReconciliationExcelExporter(FileTemplateConfig templateConfig) {
-      Assertion.AssertObject(templateConfig, nameof(templateConfig));
+      Assertion.Require(templateConfig, nameof(templateConfig));
 
       _templateConfig = templateConfig;
     }
 
 
     internal ExcelFile CreateExcelFile(ReconciliationResultDto reconciliationResult) {
-      Assertion.AssertObject(reconciliationResult, nameof(reconciliationResult));
+      Assertion.Require(reconciliationResult, nameof(reconciliationResult));
 
       excelFile = new ExcelFile(_templateConfig);
 

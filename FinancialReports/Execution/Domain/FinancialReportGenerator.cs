@@ -17,7 +17,7 @@ namespace Empiria.FinancialAccounting.FinancialReports {
   internal class FinancialReportGenerator {
 
     internal FinancialReportGenerator(FinancialReportCommand command) {
-      Assertion.AssertObject(command, "command");
+      Assertion.Require(command, "command");
 
       this.Command = command;
     }
@@ -43,7 +43,7 @@ namespace Empiria.FinancialAccounting.FinancialReports {
           return conceptsIntegration.GenerateIntegration();
 
         default:
-          throw Assertion.AssertNoReachThisCode(
+          throw Assertion.EnsureNoReachThisCode(
                     $"Unhandled financial report design type {reportType.DesignType}.");
       }
     }
@@ -59,7 +59,7 @@ namespace Empiria.FinancialAccounting.FinancialReports {
           return fixedRows.GenerateBreakdown(reportRowUID);
 
         default:
-          throw Assertion.AssertNoReachThisCode(
+          throw Assertion.EnsureNoReachThisCode(
                     $"Unhandled financial report design type {reportType.DesignType}.");
       }
     }

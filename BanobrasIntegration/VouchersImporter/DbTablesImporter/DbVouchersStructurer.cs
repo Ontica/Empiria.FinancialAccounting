@@ -19,8 +19,8 @@ namespace Empiria.FinancialAccounting.BanobrasIntegration.VouchersImporter {
     private readonly FixedList<Movimiento> _movimientos;
 
     internal DbVouchersStructurer(FixedList<Encabezado> encabezados, FixedList<Movimiento> movimientos) {
-      Assertion.AssertObject(encabezados, "encabezados");
-      Assertion.AssertObject(movimientos, "movimientos");
+      Assertion.Require(encabezados, "encabezados");
+      Assertion.Require(movimientos, "movimientos");
 
       _encabezados = encabezados;
       _movimientos = movimientos;

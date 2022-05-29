@@ -43,7 +43,7 @@ namespace Empiria.FinancialAccounting {
 
 
     static public FixedList<Participant> GetList(string keywords) {
-      Assertion.AssertObject(keywords, "keywords");
+      Assertion.Require(keywords, "keywords");
 
       string filter = "ParticipantType = 'U' AND Status = 'A' AND "+
                       SearchExpression.ParseAndLike("Keywords", keywords);

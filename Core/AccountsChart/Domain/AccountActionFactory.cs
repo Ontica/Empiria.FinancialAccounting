@@ -21,15 +21,15 @@ namespace Empiria.FinancialAccounting {
     private readonly AccountEditionCommand _command;
 
     public AccountActionFactory(AccountEditionCommand command) {
-      Assertion.AssertObject(command, nameof(command));
+      Assertion.Require(command, nameof(command));
 
       _command = command;
       _accountsChart = _command.GetAccountsChart();
     }
 
     internal AccountAction BuildForAddCurrency(Account account, Currency currency) {
-      Assertion.AssertObject(account, nameof(account));
-      Assertion.AssertObject(currency, nameof(currency));
+      Assertion.Require(account, nameof(account));
+      Assertion.Require(currency, nameof(currency));
 
       DataOperation operation = GetAddCurrencyOperation(account, currency);
 
@@ -38,8 +38,8 @@ namespace Empiria.FinancialAccounting {
 
 
     internal AccountAction BuildForAddSector(Account account, Sector sector) {
-      Assertion.AssertObject(account, nameof(account));
-      Assertion.AssertObject(sector, nameof(sector));
+      Assertion.Require(account, nameof(account));
+      Assertion.Require(sector, nameof(sector));
 
       DataOperation operation = GetAddSectorOperation(account, sector);
 
@@ -48,7 +48,7 @@ namespace Empiria.FinancialAccounting {
 
 
     internal AccountAction BuildForCreateAccount(AccountFieldsDto fields) {
-      Assertion.AssertObject(fields, nameof(fields));
+      Assertion.Require(fields, nameof(fields));
 
       throw new NotImplementedException();
     }

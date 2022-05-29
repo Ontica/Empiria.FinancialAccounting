@@ -163,7 +163,8 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
         var exchangeRate = exchangeRates.FirstOrDefault(a => a.FromCurrency.Code == commandPeriod.ValuateToCurrrencyUID &&
                                                               a.ToCurrency.Code == entry.Currency.Code);
 
-        Assertion.AssertObject(exchangeRate, $"No hay tipo de cambio para la moneda {entry.Currency.FullName}.");
+        // ToDo: URGENT This require must be checked before any state
+        Assertion.Require(exchangeRate, $"No hay tipo de cambio para la moneda {entry.Currency.FullName}.");
 
         entry.ExchangeRate = exchangeRate.Value;
       }

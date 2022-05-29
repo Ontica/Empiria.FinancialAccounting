@@ -24,7 +24,7 @@ namespace Empiria.FinancialAccounting.Reporting {
     private readonly AccountStatementCommand AccountStatementCommand;
 
     internal AccountStatementHelper(AccountStatementCommand accountStatementCommand) {
-      Assertion.AssertObject(accountStatementCommand, "accountStatementCommand");
+      Assertion.Require(accountStatementCommand, "accountStatementCommand");
 
       AccountStatementCommand = accountStatementCommand;
     }

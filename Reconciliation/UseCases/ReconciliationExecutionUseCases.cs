@@ -34,7 +34,7 @@ namespace Empiria.FinancialAccounting.Reconciliation.UseCases {
     #region Use cases
 
     public ReconciliationResultDto Execute(ReconciliationCommand command) {
-      Assertion.AssertObject(command, "command");
+      Assertion.Require(command, "command");
 
       command.EnsureValid();
 

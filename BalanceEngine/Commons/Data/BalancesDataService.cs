@@ -21,7 +21,7 @@ namespace Empiria.FinancialAccounting.BalanceEngine.Data {
 
 
     static internal FixedList<TrialBalanceEntry> GetTrialBalanceEntries(BalanceCommand command) {
-      Assertion.AssertObject(command, nameof(command));
+      Assertion.Require(command, nameof(command));
 
       BalancesSqlClauses sqlClauses = BalancesSqlClauses.BuildFrom(command);
 
@@ -30,7 +30,7 @@ namespace Empiria.FinancialAccounting.BalanceEngine.Data {
 
 
     static internal FixedList<TrialBalanceEntry> GetTrialBalanceEntries(TrialBalanceCommand command) {
-      Assertion.AssertObject(command, nameof(command));
+      Assertion.Require(command, nameof(command));
 
       BalancesSqlClauses sqlClauses = BalancesSqlClauses.BuildFrom(command);
 

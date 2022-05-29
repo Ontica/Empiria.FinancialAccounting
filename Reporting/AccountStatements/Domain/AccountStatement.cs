@@ -19,8 +19,8 @@ namespace Empiria.FinancialAccounting.Reporting {
     #region Constructors and parsers
 
     internal AccountStatement(BalanceCommand command, FixedList<IVouchersByAccountEntry> entries, string title) {
-      Assertion.AssertObject(command, "command");
-      Assertion.AssertObject(entries, "entries");
+      Assertion.Require(command, "command");
+      Assertion.Require(entries, "entries");
       //Assertion.AssertObject(title, "title");
 
       Command = command;

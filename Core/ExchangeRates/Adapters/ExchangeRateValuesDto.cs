@@ -29,17 +29,17 @@ namespace Empiria.FinancialAccounting.Adapters {
 
 
     internal void EnsureValid() {
-      Assertion.AssertObject(ExchangeRateTypeUID, "ExchangeRateTypeUID");
+      Assertion.Require(ExchangeRateTypeUID, "ExchangeRateTypeUID");
 
-      Assertion.Assert(Date != ExecutionServer.DateMinValue,
+      Assertion.Require(Date != ExecutionServer.DateMinValue,
           "Exchange rate date must be provided.");
-      Assertion.AssertObject(Values, "Values array can not be null.");
-      Assertion.Assert(Values.Length != 0, "Values array must have one or more values.");
+      Assertion.Require(Values, "Values array can not be null.");
+      Assertion.Require(Values.Length != 0, "Values array must have one or more values.");
 
       for (int i = 0; i < Values.Length; i++) {
-        Assertion.AssertObject(Values[i].ToCurrencyUID,
+        Assertion.Require(Values[i].ToCurrencyUID,
                                $"Exchange rate currency is missed for values element {i}.");
-        Assertion.Assert(Values[i].Value > 0,
+        Assertion.Require(Values[i].Value > 0,
                          $"Exchange rate value must be a positive decimal for values element {i}.");
       }
     }

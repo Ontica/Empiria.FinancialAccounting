@@ -22,7 +22,7 @@ namespace Empiria.FinancialAccounting.Reporting {
 
 
     public FileReportDto Build(FinancialReportDto financialReportDto) {
-      Assertion.AssertObject(financialReportDto, "financialReportDto");
+      Assertion.Require(financialReportDto, "financialReportDto");
 
       return CreateTextFile(financialReportDto)
             .ToFileReportDto();
@@ -88,7 +88,7 @@ namespace Empiria.FinancialAccounting.Reporting {
           return TextLine_R01_SAIF_Banxico(entry, totalField, currencyCode);
 
         default:
-          throw Assertion.AssertNoReachThisCode($"Unrecognized CSV Builder {exportTo.CsvBuilder}.");
+          throw Assertion.EnsureNoReachThisCode($"Unrecognized CSV Builder {exportTo.CsvBuilder}.");
       }
     }
 

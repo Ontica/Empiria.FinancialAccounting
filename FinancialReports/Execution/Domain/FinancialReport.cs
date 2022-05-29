@@ -20,8 +20,8 @@ namespace Empiria.FinancialAccounting.FinancialReports {
 
     internal FinancialReport(FinancialReportCommand command,
                              FixedList<FinancialReportEntry> entries) {
-      Assertion.AssertObject(command, "command");
-      Assertion.AssertObject(entries, "entries");
+      Assertion.Require(command, "command");
+      Assertion.Require(entries, "entries");
 
       this.Command = command;
       this.FinancialReportType = command.GetFinancialReportType();

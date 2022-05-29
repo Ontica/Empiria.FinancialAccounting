@@ -35,9 +35,9 @@ namespace Empiria.FinancialAccounting.BalanceEngine.UseCases {
     #region Use cases
 
     public async Task<AnaliticoDeCuentasDto> BuildAnaliticoDeCuentas(TrialBalanceCommand command) {
-      Assertion.AssertObject(command, "command");
+      Assertion.Require(command, "command");
 
-      Assertion.Assert(command.TrialBalanceType == TrialBalanceType.AnaliticoDeCuentas,
+      Assertion.Require(command.TrialBalanceType == TrialBalanceType.AnaliticoDeCuentas,
                        "command.TrialBalanceType must be 'AnaliticoDeCuentas'.");
 
       var builder = new AnaliticoDeCuentasBuilder(command);
@@ -52,9 +52,9 @@ namespace Empiria.FinancialAccounting.BalanceEngine.UseCases {
 
 
     public async Task<BalanzaTradicionalDto> BuildBalanzaTradicional(TrialBalanceCommand command) {
-      Assertion.AssertObject(command, "command");
+      Assertion.Require(command, "command");
 
-      Assertion.Assert(command.TrialBalanceType == TrialBalanceType.Balanza,
+      Assertion.Require(command.TrialBalanceType == TrialBalanceType.Balanza,
                        "command.TrialBalanceType must be 'Balanza'.");
 
       var builder = new BalanzaTradicionalBuilder(command);
@@ -65,7 +65,7 @@ namespace Empiria.FinancialAccounting.BalanceEngine.UseCases {
 
 
     public TrialBalanceDto BuildTrialBalance(TrialBalanceCommand command) {
-      Assertion.AssertObject(command, "command");
+      Assertion.Require(command, "command");
 
       var trialBalanceEngine = new TrialBalanceEngine(command);
 

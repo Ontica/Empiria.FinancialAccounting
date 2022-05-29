@@ -26,7 +26,7 @@ namespace Empiria.FinancialAccounting.Reporting.Exporters.Excel {
     #endregion Fields
 
     public ExcelFile(FileTemplateConfig templateConfig) {
-      Assertion.AssertObject(templateConfig, " templateConfig");
+      Assertion.Require(templateConfig, " templateConfig");
 
       _templateConfig = templateConfig;
     }

@@ -19,7 +19,7 @@ namespace Empiria.FinancialAccounting.Reporting.Exporters.Excel {
     private readonly FileTemplateConfig _template;
 
     public TransactionSlipExporter(FileTemplateConfig template) {
-      Assertion.AssertObject(template, "template");
+      Assertion.Require(template, "template");
 
       _template = template;
     }

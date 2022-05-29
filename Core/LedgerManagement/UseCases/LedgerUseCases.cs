@@ -33,7 +33,7 @@ namespace Empiria.FinancialAccounting.UseCases {
     #region Use cases
 
     public LedgerDto GetLedger(string ledgerUID) {
-      Assertion.AssertObject(ledgerUID, "ledgerUID");
+      Assertion.Require(ledgerUID, "ledgerUID");
 
       var ledger = Ledger.Parse(ledgerUID);
 
@@ -42,8 +42,8 @@ namespace Empiria.FinancialAccounting.UseCases {
 
 
     public LedgerAccountDto GetLedgerAccount(string ledgerUID, int accountId) {
-      Assertion.AssertObject(ledgerUID, "ledgerUID");
-      Assertion.Assert(accountId > 0, "accountId");
+      Assertion.Require(ledgerUID, "ledgerUID");
+      Assertion.Require(accountId > 0, "accountId");
 
       var ledger = Ledger.Parse(ledgerUID);
 
@@ -54,7 +54,7 @@ namespace Empiria.FinancialAccounting.UseCases {
 
 
     public FixedList<SubledgerDto> GetSubledgers(string ledgerUID) {
-      Assertion.AssertObject(ledgerUID, "ledgerUID");
+      Assertion.Require(ledgerUID, "ledgerUID");
 
       var ledger = Ledger.Parse(ledgerUID);
 

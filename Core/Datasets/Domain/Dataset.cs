@@ -30,9 +30,9 @@ namespace Empiria.FinancialAccounting.Datasets {
 
 
     public Dataset(DatasetsCommand command, FileData fileData, FileInfo fileInfo) {
-      Assertion.AssertObject(command, "command");
-      Assertion.AssertObject(fileData, "fileData");
-      Assertion.AssertObject(fileInfo, "fileInfo");
+      Assertion.Require(command, "command");
+      Assertion.Require(fileData, "fileData");
+      Assertion.Require(fileInfo, "fileInfo");
 
       LoadData(command);
       LoadFileData(fileData, fileInfo);

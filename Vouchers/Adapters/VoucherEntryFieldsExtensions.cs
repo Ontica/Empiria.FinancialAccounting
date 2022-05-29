@@ -39,27 +39,27 @@ namespace Empiria.FinancialAccounting.Vouchers.Adapters {
 
 
     static private void EnsureValidData(this VoucherEntryFields fields) {
-      Assertion.Assert(fields.LedgerAccountId > 0, "fields.LedgerAccountId");
+      Assertion.Require(fields.LedgerAccountId > 0, "fields.LedgerAccountId");
 
-      Assertion.AssertObject(fields.CurrencyUID, "fields.CurrencyUID");
+      Assertion.Require(fields.CurrencyUID, "fields.CurrencyUID");
 
-      Assertion.Assert(fields.VoucherEntryType == VoucherEntryType.Credit ||
+      Assertion.Require(fields.VoucherEntryType == VoucherEntryType.Credit ||
                        fields.VoucherEntryType == VoucherEntryType.Debit,
                        "fields.VoucherEntryType");
 
-      Assertion.Assert(fields.Amount > 0, "fields.Amount");
+      Assertion.Require(fields.Amount > 0, "fields.Amount");
 
       if (fields.UsesBaseCurrency()) {
-        Assertion.Assert(
+        Assertion.Require(
             fields.BaseCurrencyAmount == 0 || fields.BaseCurrencyAmount == fields.Amount,
             "Invalid value for fields.BaseCurrencyAmount. Must be zero or equals to fields.Amount.");
 
       } else {
-        Assertion.Assert(fields.BaseCurrencyAmount > 0,
+        Assertion.Require(fields.BaseCurrencyAmount > 0,
                          "fields.BaseCurrencyAmount must be greater than zero");
       }
 
-      Assertion.Assert(fields.Amount > 0, "fields.Amount");
+      Assertion.Require(fields.Amount > 0, "fields.Amount");
     }
 
 
@@ -96,9 +96,9 @@ namespace Empiria.FinancialAccounting.Vouchers.Adapters {
 
     static private void EnsureVoucherIsAssigned(this VoucherEntryFields fields,
                                                 Voucher voucher) {
-      Assertion.Assert(fields.VoucherId > 0, "fields.VoucherId");
+      Assertion.Require(fields.VoucherId > 0, "fields.VoucherId");
 
-      Assertion.Assert(fields.GetVoucher().Id == voucher.Id,
+      Assertion.Require(fields.GetVoucher().Id == voucher.Id,
                        "fields.VoucherId does not match the given voucher.");
 
    }

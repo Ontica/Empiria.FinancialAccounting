@@ -23,7 +23,7 @@ namespace Empiria.FinancialAccounting.Reporting.Exporters.Xml {
 
 
     public XmlFile(XmlDocument xmlDocument) {
-      Assertion.AssertObject(xmlDocument, "xmlDocument");
+      Assertion.Require(xmlDocument, "xmlDocument");
 
       this.XmlDocument = xmlDocument;
     }

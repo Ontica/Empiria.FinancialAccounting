@@ -21,7 +21,7 @@ namespace Empiria.FinancialAccounting.Reporting {
   public class PdfExporterService {
 
     public FileReportDto Export(VoucherDto voucher) {
-      Assertion.AssertObject(voucher, nameof(voucher));
+      Assertion.Require(voucher, nameof(voucher));
 
       string filename = GetVoucherPdfFileName(voucher);
 
@@ -38,7 +38,7 @@ namespace Empiria.FinancialAccounting.Reporting {
 
 
     public FileReportDto Export(ReconciliationResultDto reconciliation) {
-      Assertion.AssertObject("reconciliation", nameof(reconciliation));
+      Assertion.Require("reconciliation", nameof(reconciliation));
 
       string filename = GetPdfFileName(reconciliation);
 

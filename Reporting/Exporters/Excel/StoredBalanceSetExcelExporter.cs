@@ -20,14 +20,14 @@ namespace Empiria.FinancialAccounting.Reporting.Exporters.Excel {
     private ExcelFile _excelFile;
 
     public StoredBalanceSetExcelExporter(FileTemplateConfig templateConfig) {
-      Assertion.AssertObject(templateConfig, "templateConfig");
+      Assertion.Require(templateConfig, "templateConfig");
 
       _templateConfig = templateConfig;
     }
 
 
     internal ExcelFile CreateExcelFile(StoredBalanceSetDto balanceSet) {
-      Assertion.AssertObject(balanceSet, "balanceSet");
+      Assertion.Require(balanceSet, "balanceSet");
 
       _excelFile = new ExcelFile(_templateConfig);
 

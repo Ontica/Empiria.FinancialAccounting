@@ -467,7 +467,7 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
         return false;
 
       } else {
-        throw Assertion.AssertNoReachThisCode();
+        throw Assertion.EnsureNoReachThisCode();
       }
       return true;
     }
@@ -507,8 +507,9 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
                             a => a.FromCurrency.Code == _command.InitialPeriod.ValuateToCurrrencyUID &&
                             a.ToCurrency.Code == entry.Currency.Code);
 
-        Assertion.AssertObject(exchangeRate, $"No se ha registrado el tipo de cambio para la " +
-                                             $"moneda {entry.Currency.FullName} con la fecha proporcionada.");
+        // ToDo: URGENT This require must be checked before any state change
+        Assertion.Require(exchangeRate, $"No se ha registrado el tipo de cambio para la " +
+                                        $"moneda {entry.Currency.FullName} con la fecha proporcionada.");
 
         entry.MultiplyBy(exchangeRate.Value);
       }

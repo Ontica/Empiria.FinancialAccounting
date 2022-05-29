@@ -76,7 +76,7 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
 
       var bestBalanceSet = GetList(accountsChart).FindLast(x => x.BalancesDate < fromDate && x.Calculated);
 
-      Assertion.AssertObject(bestBalanceSet,
+      Assertion.Require(bestBalanceSet,
           $"No hay ningún conjunto de saldos definidos para el catálogo {accountsChart.Name} " +
           $"para la fecha {fromDate.ToString("dd/MMM/yyyy")}.");
 
@@ -161,7 +161,7 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
     #region Methods
 
     internal void Calculate() {
-      Assertion.Assert(this.Unprotected,
+      Assertion.Require(this.Unprotected,
         "This balance set is protected. It can not be recalculated.");
 
       this.Calculated = false;

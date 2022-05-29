@@ -27,8 +27,8 @@ namespace Empiria.FinancialAccounting.Reconciliation {
 
 
     internal protected OperationalEntry(Dataset dataset, OperationalEntryDto dto) {
-      Assertion.AssertObject(dataset, "dataset");
-      Assertion.AssertObject(dto, "dto");
+      Assertion.Require(dataset, "dataset");
+      Assertion.Require(dto, "dto");
 
       this.Dataset = dataset;
 
@@ -142,7 +142,7 @@ namespace Empiria.FinancialAccounting.Reconciliation {
     }
 
     protected override void OnBeforeSave() {
-      Assertion.Assert(this.IsNew,
+      Assertion.Require(this.IsNew,
         "El método Save() sólo puede invocarse sobre nuevas entradas de conciliación."
       );
     }

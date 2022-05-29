@@ -29,7 +29,7 @@ namespace Empiria.FinancialAccounting.Vouchers {
     }
 
     internal Voucher(VoucherFields fields) {
-      Assertion.AssertObject(fields, "fields");
+      Assertion.Require(fields, "fields");
 
       this.LoadFields(fields);
 
@@ -194,8 +194,8 @@ namespace Empiria.FinancialAccounting.Vouchers {
     #region Methods
 
     internal VoucherEntry AppendEntry(VoucherEntryFields fields) {
-      Assertion.AssertObject(fields, "fields");
-      Assertion.Assert(this.IsOpened, "No se puede agregar el movimiento porque la póliza ya está cerrada.");
+      Assertion.Require(fields, "fields");
+      Assertion.Require(this.IsOpened, "No se puede agregar el movimiento porque la póliza ya está cerrada.");
 
       fields.EnsureValidFor(this);
 
@@ -233,16 +233,16 @@ namespace Empiria.FinancialAccounting.Vouchers {
 
 
     internal void Close() {
-      Assertion.Assert(this.IsOpened, "Esta póliza ya está cerrada.");
+      Assertion.Require(this.IsOpened, "Esta póliza ya está cerrada.");
 
       if (!this.IsValid()) {
         FixedList<string> validationResult = this.ValidationResult(true);
 
-        Assertion.AssertFail("La póliza no puede enviarse al diario porque tiene datos inconsistentes.\n\n" +
-                             EmpiriaString.ToString(validationResult));
+        Assertion.RequireFail("La póliza no puede enviarse al diario porque tiene datos inconsistentes.\n\n" +
+                              EmpiriaString.ToString(validationResult));
       }
 
-      EnsureAllEntriesAreValidBeforeClose();
+      RequireAllEntriesAreValidBeforeClose();
 
       DateTime lastRecordingDate = this.RecordingDate;
 
@@ -272,16 +272,17 @@ namespace Empiria.FinancialAccounting.Vouchers {
 
 
     internal void Delete() {
-      Assertion.Assert(this.IsOpened, "Esta póliza no puede eliminarse porque ya está cerrada.");
+      Assertion.Require(this.IsOpened, "Esta póliza no puede eliminarse porque ya está cerrada.");
 
       VoucherData.DeleteVoucher(this);
     }
 
 
     internal void DeleteEntry(VoucherEntry entry) {
-      Assertion.AssertObject(entry, "entry");
-      Assertion.Assert(this.IsOpened, "No se puede eliminar el movimiento porque la póliza ya está cerrada.");
-      Assertion.Assert(this.Entries.Contains(entry), "El movimiento que se desea eliminar no pertenece a esta póliza");
+      Assertion.Require(entry, "entry");
+
+      Assertion.Require(this.IsOpened, "No se puede eliminar el movimiento porque la póliza ya está cerrada.");
+      Assertion.Require(this.Entries.Contains(entry), "El movimiento que se desea eliminar no pertenece a esta póliza");
 
       entry.Delete();
 
@@ -289,28 +290,28 @@ namespace Empiria.FinancialAccounting.Vouchers {
     }
 
 
-    private void EnsureAllEntriesAreValidBeforeClose() {
+    private void RequireAllEntriesAreValidBeforeClose() {
       this.RefreshEntries();
 
-      Assertion.Assert(this.Entries.All(x => x.LedgerAccount.Ledger.Equals(this.Ledger)),
+      Assertion.Require(this.Entries.All(x => x.LedgerAccount.Ledger.Equals(this.Ledger)),
           $"Cuando menos un movimiento tiene una cuenta que pertenece a otro mayor. (Póliza {this.Id}).");
 
-      Assertion.Assert(this.Entries.All(x => x.Amount > 0),
+      Assertion.Require(this.Entries.All(x => x.Amount > 0),
           $"Cuando menos un movimiento tiene un importe negativo o igual a cero. (Póliza {this.Id}).");
 
-      Assertion.Assert(this.Entries.All(x => x.BaseCurrencyAmount > 0),
+      Assertion.Require(this.Entries.All(x => x.BaseCurrencyAmount > 0),
           $"Cuando menos un movimiento tiene un importe negativo o igual a cero" +
           $"para la moneda origen (Póliza {this.Id}).");
 
-      Assertion.Assert(this.Entries.All(x => x.SubledgerAccount.IsEmptyInstance ||
-                      (x.SubledgerAccount.BelongsTo(this.Ledger) && !x.SubledgerAccount.Suspended)),
+      Assertion.Require(this.Entries.All(x => x.SubledgerAccount.IsEmptyInstance ||
+                        (x.SubledgerAccount.BelongsTo(this.Ledger) && !x.SubledgerAccount.Suspended)),
           $"Cuando menos un movimiento tiene un auxiliar que pertenece " +
           $"a otra contabilidad o está suspendido. (Póliza {this.Id}).");
     }
 
 
     internal VoucherEntry GetCopyOfLastEntry() {
-      Assertion.Assert(this.Entries.Count > 0, "Esta póliza aún no tiene movimientos.");
+      Assertion.Require(this.Entries.Count > 0, "Esta póliza aún no tiene movimientos.");
 
       var list = new List<VoucherEntry>(this.Entries);
 
@@ -324,7 +325,7 @@ namespace Empiria.FinancialAccounting.Vouchers {
     internal VoucherEntry GetEntry(long voucherEntryId) {
       var entry = Entries.Find(x => x.Id == voucherEntryId);
 
-      Assertion.AssertObject(entry, $"La póliza no tiene registrado un movimiento con id {voucherEntryId}.");
+      Assertion.Require(entry, $"La póliza no tiene registrado un movimiento con id {voucherEntryId}.");
 
       return entry;
     }
@@ -406,13 +407,13 @@ namespace Empiria.FinancialAccounting.Vouchers {
 
     // Ya tenemos el primero asunto de la cuenta 01.09.05.02.02.04 ahora con auxiliares y sin auxiliares hasta el 24 de enero
     internal FixedList<SubledgerAccount> SearchSubledgerAccountsForEdition(LedgerAccount account, string keywords) {
-      Assertion.Assert(this.IsOpened, "No hay cuentas auxiliares para edición porque la póliza ya está cerrada.");
+      Assertion.Require(this.IsOpened, "No hay cuentas auxiliares para edición porque la póliza ya está cerrada.");
 
-      Assertion.Assert(account.Ledger.Equals(this.Ledger), "Account does not belong to voucher ledger.");
+      Assertion.Require(account.Ledger.Equals(this.Ledger), "Account does not belong to voucher ledger.");
 
       var historic = account.GetHistoric(this.AccountingDate);
 
-      Assertion.Assert(historic.Role == AccountRole.Control || historic.Role == AccountRole.Sectorizada,
+      Assertion.Require(historic.Role == AccountRole.Control || historic.Role == AccountRole.Sectorizada,
                        "The account role is not control. There are not subledger accounts");
 
       return VoucherData.SearchSubledgerAccountsForVoucherEdition(this, keywords);
@@ -420,9 +421,9 @@ namespace Empiria.FinancialAccounting.Vouchers {
 
 
     internal void SendToSupervisor() {
-      Assertion.Assert(this.IsOpened, "La póliza no se puede enviar al supervisor porque no está abierta.");
+      Assertion.Require(this.IsOpened, "La póliza no se puede enviar al supervisor porque no está abierta.");
 
-      Assertion.Assert(this.IsValid(), "La póliza no puede enviarse al supervisor porque " +
+      Assertion.Require(this.IsValid(), "La póliza no puede enviarse al supervisor porque " +
                                        "tiene datos con inconsistencias o no está balanceada.");
 
       this.AuthorizedBy = GetSupervisor();
@@ -432,7 +433,7 @@ namespace Empiria.FinancialAccounting.Vouchers {
 
 
     internal void Update(VoucherFields fields) {
-      Assertion.AssertObject(fields, "fields");
+      Assertion.Require(fields, "fields");
 
       this.Ledger = FieldPatcher.PatchField(fields.LedgerUID, this.Ledger);
       this.AccountingDate = FieldPatcher.PatchField(fields.AccountingDate, this.AccountingDate);
@@ -446,9 +447,9 @@ namespace Empiria.FinancialAccounting.Vouchers {
 
 
     internal void UpdateEntry(VoucherEntry entry, VoucherEntryFields fields) {
-      Assertion.AssertObject(entry, "entry");
-      Assertion.Assert(this.IsOpened, "No se puede actualizar el movimiento porque la póliza ya está cerrada.");
-      Assertion.Assert(this.Entries.Contains(entry), "El movimiento que se desea modificar no pertenece a esta póliza");
+      Assertion.Require(entry, "entry");
+      Assertion.Require(this.IsOpened, "No se puede actualizar el movimiento porque la póliza ya está cerrada.");
+      Assertion.Require(this.Entries.Contains(entry), "El movimiento que se desea modificar no pertenece a esta póliza");
 
       entry.Update(fields);
 

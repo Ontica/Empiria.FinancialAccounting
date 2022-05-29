@@ -25,8 +25,8 @@ namespace Empiria.FinancialAccounting.BanobrasIntegration.VouchersImporter {
 
     public ExcelFileStructurer(ImportVouchersCommand command,
                                FixedList<ExcelVoucherEntry> excelEntries) {
-      Assertion.AssertObject(command, "command");
-      Assertion.AssertObject(excelEntries, "excelEntries");
+      Assertion.Require(command, "command");
+      Assertion.Require(excelEntries, "excelEntries");
 
       _command = command;
       _entries = excelEntries;

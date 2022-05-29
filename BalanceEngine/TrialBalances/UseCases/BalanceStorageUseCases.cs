@@ -33,7 +33,7 @@ namespace Empiria.FinancialAccounting.BalanceEngine.UseCases {
     #region Use cases
 
     public FixedList<StoredBalanceSetDto> BalanceSetsList(string accountsChartUID) {
-      Assertion.AssertObject(accountsChartUID, "accountsChartUID");
+      Assertion.Require(accountsChartUID, "accountsChartUID");
 
       var accountsChart = AccountsChart.Parse(accountsChartUID);
 
@@ -45,8 +45,8 @@ namespace Empiria.FinancialAccounting.BalanceEngine.UseCases {
 
     public StoredBalanceSetDto CreateOrGetBalanceSet(string accountsChartUID,
                                                     BalanceStorageCommand command) {
-      Assertion.AssertObject(accountsChartUID, "accountsChartUID");
-      Assertion.AssertObject(command, "command");
+      Assertion.Require(accountsChartUID, "accountsChartUID");
+      Assertion.Require(command, "command");
 
       var accountsChart = AccountsChart.Parse(accountsChartUID);
 
@@ -79,13 +79,13 @@ namespace Empiria.FinancialAccounting.BalanceEngine.UseCases {
     #region Helper methods
 
     private StoredBalanceSet ParseBalanceSet(string accountsChartUID, string balanceSetUID) {
-      Assertion.AssertObject(accountsChartUID, "accountsChartUID");
-      Assertion.AssertObject(balanceSetUID, "balanceSetUID");
+      Assertion.Require(accountsChartUID, "accountsChartUID");
+      Assertion.Require(balanceSetUID, "balanceSetUID");
 
       var accountsChart = AccountsChart.Parse(accountsChartUID);
       var balanceSet = StoredBalanceSet.Parse(balanceSetUID);
 
-      Assertion.Assert(balanceSet.AccountsChart.Equals(accountsChart),
+      Assertion.Require(balanceSet.AccountsChart.Equals(accountsChart),
                        "The requested balance set does not belong to the given accounts chart.");
 
       return balanceSet;

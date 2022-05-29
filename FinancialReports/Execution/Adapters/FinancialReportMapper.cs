@@ -71,7 +71,7 @@ namespace Empiria.FinancialAccounting.FinancialReports.Adapters {
         return MapBreakdownEntry(entry2);
 
       } else {
-        throw Assertion.AssertNoReachThisCode();
+        throw Assertion.EnsureNoReachThisCode();
       }
     }
 
@@ -124,7 +124,7 @@ namespace Empiria.FinancialAccounting.FinancialReports.Adapters {
           return MapToFixedRowsReportConceptsIntegration(financialReport.Entries);
 
         default:
-          throw Assertion.AssertNoReachThisCode(
+          throw Assertion.EnsureNoReachThisCode(
                 $"Unhandled financial report type {financialReport.Command.FinancialReportType}.");
       }
     }
@@ -185,7 +185,7 @@ namespace Empiria.FinancialAccounting.FinancialReports.Adapters {
         return MapIntegrationEntry(entry2);
 
       } else {
-        throw Assertion.AssertNoReachThisCode();
+        throw Assertion.EnsureNoReachThisCode();
       }
     }
 

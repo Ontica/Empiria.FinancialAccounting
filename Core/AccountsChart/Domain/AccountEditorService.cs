@@ -30,7 +30,7 @@ namespace Empiria.FinancialAccounting {
     #region Constructor
 
     internal AccountEditorService(AccountEditionCommand command) {
-      Assertion.AssertObject(command, nameof(command));
+      Assertion.Require(command, nameof(command));
 
       _command = command;
 
@@ -135,13 +135,13 @@ namespace Empiria.FinancialAccounting {
         return;
       }
 
-      Assertion.Assert(_validator.Issues.Count == 0,
+      Assertion.Require(_validator.Issues.Count == 0,
               "There are one or more issues. Please retry sending the same command with a dry run.");
 
-      Assertion.Assert(_actionsList.Count != 0,
+      Assertion.Require(_actionsList.Count != 0,
               "Actions list is empty. There are not actions to execute.");
 
-      Assertion.Assert(!this.Commited,
+      Assertion.Require(!this.Commited,
               "Command operations were already commited.");
 
       ExecuteCommit();

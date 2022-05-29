@@ -19,10 +19,10 @@ namespace Empiria.FinancialAccounting {
 
     internal AccountEditionResult(AccountEditionCommand command, Account account,
                                   FixedList<string> actions, FixedList<string> issues) {
-      Assertion.AssertObject(command, nameof(command));
-      Assertion.AssertObject(account, nameof(account));
-      Assertion.AssertObject(actions, nameof(actions));
-      Assertion.AssertObject(issues, nameof(issues));
+      Assertion.Require(command, nameof(command));
+      Assertion.Require(account, nameof(account));
+      Assertion.Require(actions, nameof(actions));
+      Assertion.Require(issues, nameof(issues));
 
       this.Command = command;
       this.Account = AccountsChartMapper.MapAccount(account);
@@ -41,7 +41,6 @@ namespace Empiria.FinancialAccounting {
     public FixedList<string> Actions {
       get;
     }
-
 
     public FixedList<string> Issues {
       get;

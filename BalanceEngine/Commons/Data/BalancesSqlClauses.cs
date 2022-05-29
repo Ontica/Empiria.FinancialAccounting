@@ -25,7 +25,7 @@ namespace Empiria.FinancialAccounting.BalanceEngine.Data {
 
 
     static internal BalancesSqlClauses BuildFrom(TrialBalanceCommand command) {
-      Assertion.AssertObject(command, nameof(command));
+      Assertion.Require(command, nameof(command));
 
       var builder = new BalancesSqlClausesBuilder(command);
 
@@ -34,7 +34,7 @@ namespace Empiria.FinancialAccounting.BalanceEngine.Data {
 
 
     static internal BalancesSqlClauses BuildFrom(BalanceCommand command) {
-      Assertion.AssertObject(command, nameof(command));
+      Assertion.Require(command, nameof(command));
 
       TrialBalanceCommand trialBalanceCommand = CopyToTrialBalanceCommand(command);
 

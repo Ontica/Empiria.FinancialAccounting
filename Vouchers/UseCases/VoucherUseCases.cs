@@ -33,7 +33,7 @@ namespace Empiria.FinancialAccounting.Vouchers.UseCases {
     #region Use cases
 
     public VoucherDto GetVoucher(long voucherId) {
-      Assertion.Assert(voucherId > 0, "Unrecognized voucherId.");
+      Assertion.Require(voucherId > 0, "Unrecognized voucherId.");
 
       Voucher voucher = Voucher.Parse(voucherId);
 
@@ -42,8 +42,8 @@ namespace Empiria.FinancialAccounting.Vouchers.UseCases {
 
 
     public VoucherEntryDto GetVoucherEntry(long voucherId, long voucherEntryId) {
-      Assertion.Assert(voucherId > 0, "Unrecognized voucherId.");
-      Assertion.Assert(voucherEntryId > 0, "Unrecognized voucherEntryId.");
+      Assertion.Require(voucherId > 0, "Unrecognized voucherId.");
+      Assertion.Require(voucherEntryId > 0, "Unrecognized voucherEntryId.");
 
       Voucher voucher = Voucher.Parse(voucherId);
       VoucherEntry voucherEntry = voucher.GetEntry(voucherEntryId);
@@ -52,7 +52,7 @@ namespace Empiria.FinancialAccounting.Vouchers.UseCases {
     }
 
     public FixedList<VoucherDescriptorDto> SearchVouchers(SearchVouchersCommand searchCommand) {
-      Assertion.AssertObject(searchCommand, "searchCommand");
+      Assertion.Require(searchCommand, "searchCommand");
 
       searchCommand.EnsureIsValid();
 

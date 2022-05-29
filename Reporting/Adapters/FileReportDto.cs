@@ -15,7 +15,7 @@ namespace Empiria.FinancialAccounting.Reporting {
   public class FileReportDto {
 
     public FileReportDto(FileType fileType, string url) {
-      Assertion.AssertObject(url, "url");
+      Assertion.Require(url, "url");
 
       this.Type = fileType;
       this.Url = url;

@@ -19,8 +19,8 @@ namespace Empiria.FinancialAccounting {
     #region Constructors
 
     internal AccountAction(DataOperation operation, string description) {
-      Assertion.AssertObject(operation, nameof(operation));
-      Assertion.AssertObject(description, nameof(description));
+      Assertion.Require(operation, nameof(operation));
+      Assertion.Require(description, nameof(description));
 
       this.DataOperations = new FixedList<DataOperation>(new[] { operation });
       this.Description = description;
@@ -28,8 +28,8 @@ namespace Empiria.FinancialAccounting {
 
 
     internal AccountAction(IEnumerable<DataOperation> operations, string description) {
-      Assertion.AssertObject(operations, nameof(operations));
-      Assertion.AssertObject(description, nameof(description));
+      Assertion.Require(operations, nameof(operations));
+      Assertion.Require(description, nameof(description));
 
       this.DataOperations = new FixedList<DataOperation>(operations);
       this.Description = description;

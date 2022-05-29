@@ -20,7 +20,7 @@ namespace Empiria.FinancialAccounting.BanobrasIntegration.VouchersImporter {
     private readonly FixedList<EncabezadoDto> _vouchers;
 
     internal InterfazUnicaImporter(InterfazUnicaImporterCommand command) {
-      Assertion.AssertObject(command, "command");
+      Assertion.Require(command, "command");
 
       _vouchers = new FixedList<EncabezadoDto>(command.ENCABEZADOS);
     }

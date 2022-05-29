@@ -78,7 +78,7 @@ namespace Empiria.FinancialAccounting.Vouchers.Adapters {
         return filter.Replace("@DATE_FIELD@", "FECHA_REGISTRO");
 
       } else {
-        throw Assertion.AssertNoReachThisCode();
+        throw Assertion.EnsureNoReachThisCode();
       }
     }
 
@@ -161,7 +161,7 @@ namespace Empiria.FinancialAccounting.Vouchers.Adapters {
                  $" ID_AUTORIZADA_POR = {ExecutionServer.CurrentUserId})";
 
         default:
-          throw Assertion.AssertNoReachThisCode();
+          throw Assertion.EnsureNoReachThisCode();
       }
     }
 

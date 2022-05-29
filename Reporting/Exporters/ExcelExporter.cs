@@ -25,7 +25,7 @@ namespace Empiria.FinancialAccounting.Reporting.Exporters {
   internal class ExcelExporter : IReportExporter {
 
     public FileReportDto Export(ReportDataDto reportData) {
-      Assertion.AssertObject(reportData, "reportData");
+      Assertion.Require(reportData, "reportData");
 
       IExcelExporter excelExporter = GetExcelExporter(reportData);
 
@@ -53,7 +53,7 @@ namespace Empiria.FinancialAccounting.Reporting.Exporters {
           return new ListadoPolizasPorCuentaExcelExporter(reportData, templateConfig);
 
         default:
-          throw Assertion.AssertNoReachThisCode($"Unhandled reportType '{reportData.Command.ReportType}'.");
+          throw Assertion.EnsureNoReachThisCode($"Unhandled reportType '{reportData.Command.ReportType}'.");
       }
     }
 

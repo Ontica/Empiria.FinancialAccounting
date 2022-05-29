@@ -113,14 +113,14 @@ namespace Empiria.FinancialAccounting {
     #region Public methods
 
     public LedgerAccount AssignAccount(StandardAccount standardAccount) {
-      Assertion.AssertObject(standardAccount, "standardAccount");
+      Assertion.Require(standardAccount, "standardAccount");
 
-      Assertion.Assert(standardAccount.AccountsChart.Equals(this.AccountsChart),
+      Assertion.Require(standardAccount.AccountsChart.Equals(this.AccountsChart),
           $"La cuenta estandar con id {standardAccount.Id} " +
           $"pertenece al catálogo de cuentas de cuentas {standardAccount.AccountsChart.Name}, " +
           $"el cual no corresponde al catálogo asignado a la contabilidad {this.FullName}.");
 
-      Assertion.Assert(standardAccount.Role != AccountRole.Sumaria,
+      Assertion.Require(standardAccount.Role != AccountRole.Sumaria,
              $"La cuenta estandar con id {standardAccount.Id} es sumaria. " +
              $"No se puede agregar a la lista de cuentas de la contabilidad {this.FullName}.");
 
@@ -149,7 +149,7 @@ namespace Empiria.FinancialAccounting {
       Subledger subLedger = this.Subledgers().Find(x => x.SubledgerType.Equals(subledgerType));
 
       if (subLedger == null) {
-        throw Assertion.AssertNoReachThisCode(
+        throw Assertion.EnsureNoReachThisCode(
             $"No se ha definido una lista de auxiliares pendientes para la contabilidad {this.FullName}.");
       }
 
@@ -169,7 +169,7 @@ namespace Empiria.FinancialAccounting {
       Subledger subLedger = this.Subledgers().Find(x => x.SubledgerType.Equals(subledgerType));
 
       if (subLedger == null) {
-        throw Assertion.AssertNoReachThisCode(
+        throw Assertion.EnsureNoReachThisCode(
             $"No se ha definido una lista de auxiliares pendientes para la contabilidad {this.FullName}.");
       }
 
@@ -198,14 +198,14 @@ namespace Empiria.FinancialAccounting {
 
       } else if (temp.Length == prefixLength + accountPartLength &&
                  !temp.StartsWith(this.SubledgerAccountsPrefix)) {
-        Assertion.AssertFail($"El auxiliar '{subledgerAccountNo}' tiene un formato que no " +
-                             $"es válido para la contabilidad {this.FullName}.");
+        Assertion.RequireFail($"El auxiliar '{subledgerAccountNo}' tiene un formato que no " +
+                              $"es válido para la contabilidad {this.FullName}.");
 
       } else if (temp.Length < accountPartLength) {
         return this.SubledgerAccountsPrefix + temp.PadLeft(SUBLEDGER_ACCOUNT_FIXED_LENGTH, '0');
 
       } else if (temp.Length > prefixLength + accountPartLength) {
-        Assertion.AssertNoReachThisCode($"El auxiliar '{subledgerAccountNo}'" +
+        Assertion.EnsureNoReachThisCode($"El auxiliar '{subledgerAccountNo}'" +
                                         $"tiene una longitud que excede el formato determinado.");
       }
 
@@ -216,7 +216,7 @@ namespace Empiria.FinancialAccounting {
     public LedgerAccount GetAccount(StandardAccount standardAccount) {
       LedgerAccount account = LedgerData.TryGetLedgerAccount(this, standardAccount);
 
-      Assertion.AssertObject(account, "account");
+      Assertion.Require(account, "account");
 
       return account;
     }
@@ -237,7 +237,7 @@ namespace Empiria.FinancialAccounting {
     public LedgerAccount GetAccountWithId(int ledgerAccountId) {
       var ledgerAccount = LedgerAccount.Parse(ledgerAccountId);
 
-      Assertion.Assert(ledgerAccount.Ledger.Equals(this),
+      Assertion.Require(ledgerAccount.Ledger.Equals(this),
           $"The ledger account with id {ledgerAccountId} does not belong to ledger '{this.Name}'.");
 
       return ledgerAccount;

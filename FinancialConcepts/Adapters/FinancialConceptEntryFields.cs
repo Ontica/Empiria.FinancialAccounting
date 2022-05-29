@@ -84,7 +84,7 @@ namespace Empiria.FinancialAccounting.FinancialConcepts {
   internal class ExternalVariableEntryTypeFields : FinancialConceptEntryFields {
 
     public ExternalVariableEntryTypeFields(string externalVariableCode) : base(FinancialConceptEntryType.ExternalVariable) {
-      Assertion.AssertObject(externalVariableCode, nameof(externalVariableCode));
+      Assertion.Require(externalVariableCode, nameof(externalVariableCode));
 
       this.ExternalVariableCode = externalVariableCode;
     }
@@ -101,7 +101,7 @@ namespace Empiria.FinancialAccounting.FinancialConcepts {
 
     public FinancialConceptReferenceEntryTypeFields(FinancialConcept referencedFinancialConcept)
                                             : base(FinancialConceptEntryType.FinancialConceptReference) {
-      Assertion.AssertObject(referencedFinancialConcept, nameof(referencedFinancialConcept));
+      Assertion.Require(referencedFinancialConcept, nameof(referencedFinancialConcept));
 
       this.ReferencedFinancialConcept = referencedFinancialConcept;
     }

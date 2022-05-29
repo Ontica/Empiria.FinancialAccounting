@@ -30,7 +30,7 @@ namespace Empiria.FinancialAccounting.Reporting {
   public class ExcelExporterService {
 
     public FileReportDto Export(TrialBalanceDto trialBalance) {
-      Assertion.AssertObject(trialBalance, "trialBalance");
+      Assertion.Require(trialBalance, "trialBalance");
 
       var templateUID = $"TrialBalanceTemplate.{trialBalance.Command.TrialBalanceType}";
 
@@ -46,8 +46,8 @@ namespace Empiria.FinancialAccounting.Reporting {
 
     public FileReportDto Export(AccountsChartDto accountsChart,
                                 AccountsSearchCommand searchCommand) {
-      Assertion.AssertObject(accountsChart, "accountsChart");
-      Assertion.AssertObject(searchCommand, "searchCommand");
+      Assertion.Require(accountsChart, "accountsChart");
+      Assertion.Require(searchCommand, "searchCommand");
 
       var templateUID = "AccountsChartTemplate";
 
@@ -62,7 +62,7 @@ namespace Empiria.FinancialAccounting.Reporting {
 
 
     public FileReportDto Export(ReconciliationResultDto reconciliationResult) {
-      Assertion.AssertObject(reconciliationResult, nameof(reconciliationResult));
+      Assertion.Require(reconciliationResult, nameof(reconciliationResult));
 
       var templateUID = "ReconciliationResult.ExcelTemplate";
 
@@ -77,7 +77,7 @@ namespace Empiria.FinancialAccounting.Reporting {
 
 
     public FileReportDto Export(FixedList<ExchangeRateDescriptorDto> exchangeRates) {
-      Assertion.AssertObject(exchangeRates, "exchangeRates");
+      Assertion.Require(exchangeRates, "exchangeRates");
 
       var templateUID = "ExchangeRatesTemplate";
 
@@ -92,7 +92,7 @@ namespace Empiria.FinancialAccounting.Reporting {
 
 
     public FileReportDto Export(FixedList<FinancialConceptEntryAsTreeNodeDto> treeNodes) {
-      Assertion.AssertObject(treeNodes, "treeNodes");
+      Assertion.Require(treeNodes, "treeNodes");
 
       var templateUID = $"GroupingRulesReportTemplate";
 
@@ -107,7 +107,7 @@ namespace Empiria.FinancialAccounting.Reporting {
 
 
     public FileReportDto Export(StoredBalanceSetDto balanceSet) {
-      Assertion.AssertObject(balanceSet, "balanceSet");
+      Assertion.Require(balanceSet, "balanceSet");
 
       var templateUID = "BalanceSetTemplate";
 
@@ -122,7 +122,7 @@ namespace Empiria.FinancialAccounting.Reporting {
 
 
     public FileReportDto Export(AccountStatementDto vouchers) {
-      Assertion.AssertObject(vouchers, "vouchers");
+      Assertion.Require(vouchers, "vouchers");
 
       var templateUID = $"VouchersByAccountTemplate";
 
@@ -139,8 +139,8 @@ namespace Empiria.FinancialAccounting.Reporting {
     public FileReportDto Export(FixedList<TransactionSlipDto> transactionSlips,
                                 string exportationType) {
 
-      Assertion.AssertObject(transactionSlips, "transactionSlips");
-      Assertion.AssertObject(exportationType, "exportationType");
+      Assertion.Require(transactionSlips, "transactionSlips");
+      Assertion.Require(exportationType, "exportationType");
 
       string templateUID;
 
@@ -149,7 +149,7 @@ namespace Empiria.FinancialAccounting.Reporting {
       } else if (exportationType == "issues") {
         templateUID = $"TransactionSlipsIssuesTemplate";
       } else {
-        throw Assertion.AssertNoReachThisCode($"Invalid exportation type '{exportationType}'.");
+        throw Assertion.EnsureNoReachThisCode($"Invalid exportation type '{exportationType}'.");
       }
 
       var templateConfig = FileTemplateConfig.Parse(templateUID);
@@ -165,7 +165,7 @@ namespace Empiria.FinancialAccounting.Reporting {
         excelFile = exporter.CreateIsuesExcelFile(transactionSlips);
 
       } else {
-        throw Assertion.AssertNoReachThisCode($"Invalid exportation type '{exportationType}'.");
+        throw Assertion.EnsureNoReachThisCode($"Invalid exportation type '{exportationType}'.");
       }
 
       return excelFile.ToFileReportDto();
@@ -173,7 +173,7 @@ namespace Empiria.FinancialAccounting.Reporting {
 
 
     public FileReportDto Export(BalanceDto balance) {
-      Assertion.AssertObject(balance, "balance");
+      Assertion.Require(balance, "balance");
 
       var templateUID = $"BalanceTemplate.{balance.Command.TrialBalanceType}";
 

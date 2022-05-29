@@ -32,7 +32,7 @@ namespace Empiria.FinancialAccounting.BanobrasIntegration.VouchersImporter {
 
 
     public FixedList<ExcelVoucherEntry> GetWorksheetEntries(string worksheetName) {
-      Assertion.AssertObject(worksheetName, "worksheetName");
+      Assertion.Require(worksheetName, "worksheetName");
 
       _excelFile.SelectWorksheet(worksheetName);
 

@@ -20,14 +20,14 @@ namespace Empiria.FinancialAccounting.Reporting.Exporters.Excel {
     private ExcelFile excelFile;
 
     public ExchangeRateExcelExporter(FileTemplateConfig templateConfig) {
-      Assertion.AssertObject(templateConfig, "templateConfig");
+      Assertion.Require(templateConfig, "templateConfig");
 
       _templateConfig = templateConfig;
     }
 
 
     internal ExcelFile CreateExcelFile(FixedList<ExchangeRateDescriptorDto> exchangeRates) {
-      Assertion.AssertObject(exchangeRates, "exchangeRates");
+      Assertion.Require(exchangeRates, "exchangeRates");
 
       excelFile = new ExcelFile(_templateConfig);
 

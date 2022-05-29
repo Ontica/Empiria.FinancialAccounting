@@ -20,7 +20,7 @@ namespace Empiria.FinancialAccounting.Reporting {
     #region Public methods
 
     public ReportDataDto Build(BuildReportCommand command) {
-      Assertion.AssertObject(command, "command");
+      Assertion.Require(command, "command");
 
       ListadoPolizasPorCuentaBuilder vouchers = BuildVouchersByAccount(command);
 
