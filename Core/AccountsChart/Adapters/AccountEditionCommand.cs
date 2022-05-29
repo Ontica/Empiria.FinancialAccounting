@@ -12,6 +12,28 @@ using System.Linq;
 
 namespace Empiria.FinancialAccounting.Adapters {
 
+  /// <summary>Enumerated constants type used to classify AccountEditionCommand types.</summary>
+  public enum AccountEditionCommandType {
+
+    AddCurrencies,
+
+    AddSectors,
+
+    CreateAccount,
+
+    RemoveAccount,
+
+    RemoveCurrencies,
+
+    RemoveSectors,
+
+    UpdateAccount,
+
+    Undefined
+
+  }  // enum AccountEditionCommandType
+
+
   /// <summary>Command object used for accounts edition.</summary>
   public class AccountEditionCommand {
 
@@ -91,8 +113,8 @@ namespace Empiria.FinancialAccounting.Adapters {
 
 
     static internal void EnsureValid(this AccountEditionCommand command) {
-      Assertion.Require(command.AccountsChartUID, "command.AccountsChartUID");
       Assertion.Require(command.CommandType != AccountEditionCommandType.Undefined, "command.Type");
+      Assertion.Require(command.AccountsChartUID, "command.AccountsChartUID");
       Assertion.Require(command.ApplicationDate != ExecutionServer.DateMinValue, "command.ApplicationDate");
 
       if (command.CommandType != AccountEditionCommandType.CreateAccount) {
@@ -211,7 +233,6 @@ namespace Empiria.FinancialAccounting.Adapters {
     static private void EnsureIsValidForUpdateAccount(this AccountEditionCommand command) {
       throw new NotImplementedException();
     }
-
 
     #endregion Public methods
 

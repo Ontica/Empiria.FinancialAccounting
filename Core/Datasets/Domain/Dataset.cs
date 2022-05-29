@@ -29,12 +29,12 @@ namespace Empiria.FinancialAccounting.Datasets {
     }
 
 
-    public Dataset(DatasetsCommand command, FileData fileData, FileInfo fileInfo) {
-      Assertion.Require(command, "command");
+    public Dataset(DatasetInputDto baseData, FileData fileData, FileInfo fileInfo) {
+      Assertion.Require(baseData, "baseData");
       Assertion.Require(fileData, "fileData");
       Assertion.Require(fileInfo, "fileInfo");
 
-      LoadData(command);
+      LoadData(baseData);
       LoadFileData(fileData, fileInfo);
     }
 
@@ -152,20 +152,20 @@ namespace Empiria.FinancialAccounting.Datasets {
     }
 
 
-    private void LoadData(DatasetsCommand command) {
-      this.DatasetFamily = DatasetFamily.Parse(command.DatasetFamilyUID);
-      _datasetKind = command.DatasetKind;
-      this.OperationDate = command.Date;
-      this.UpdatedTime = DateTime.Now;
-      this.UploadedBy = ExecutionServer.CurrentIdentity.User.AsContact();
+    private void LoadData(DatasetInputDto baseData) {
+      this.DatasetFamily  = DatasetFamily.Parse(baseData.DatasetFamilyUID);
+      _datasetKind        = baseData.DatasetKind;
+      this.OperationDate  = baseData.Date;
+      this.UpdatedTime    = DateTime.Now;
+      this.UploadedBy     = ExecutionServer.CurrentIdentity.User.AsContact();
     }
 
 
     private void LoadFileData(FileData fileData, FileInfo fileInfo) {
       this.OriginalFileName = fileData.OriginalFileName;
-      this.MediaType = fileData.MediaType;
-      this.FileName = fileInfo.Name;
-      this.MediaLength = (int) fileInfo.Length;
+      this.MediaType        = fileData.MediaType;
+      this.FileName         = fileInfo.Name;
+      this.MediaLength      = (int) fileInfo.Length;
     }
 
 

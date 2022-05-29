@@ -1,8 +1,8 @@
 ﻿/* Empiria Financial *****************************************************************************************
 *                                                                                                            *
 *  Module   : Dataset Services                           Component : Interface adapters                      *
-*  Assembly : FinancialAccounting.Core.dll               Pattern   : Data Transfer Object                    *
-*  Type     : DatasetDto                                 License   : Please read LICENSE.txt file            *
+*  Assembly : FinancialAccounting.Core.dll               Pattern   : Output DTO                              *
+*  Type     : DatasetOutputDto                           License   : Please read LICENSE.txt file            *
 *                                                                                                            *
 *  Summary  : Output DTO used to return data sets.                                                           *
 *                                                                                                            *
@@ -12,9 +12,9 @@ using System;
 namespace Empiria.FinancialAccounting.Datasets.Adapters {
 
   /// <summary>Output DTO used to return data sets.</summary>
-  public class DatasetDto {
+  public class DatasetOutputDto {
 
-    internal DatasetDto() {
+    internal DatasetOutputDto() {
       // no-op
     }
 
@@ -65,6 +65,6 @@ namespace Empiria.FinancialAccounting.Datasets.Adapters {
       get; internal set;
     }
 
-  }  // class DatasetDto
+  }  // class DatasetOutputDto
 
 }  // namespace Empiria.FinancialAccounting.Datasets.Adapters

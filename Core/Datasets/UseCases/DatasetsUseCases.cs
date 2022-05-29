@@ -36,15 +36,15 @@ namespace Empiria.FinancialAccounting.Datasets.UseCases {
     #region Use cases
 
 
-    public Dataset CreateDataset(DatasetsCommand command, FileData fileData) {
-      Assertion.Require(command, "command");
-      Assertion.Require(fileData, "fileData");
+    public Dataset CreateDataset(DatasetInputDto baseData, FileData fileData) {
+      Assertion.Require(baseData, nameof(baseData));
+      Assertion.Require(fileData, nameof(fileData));
 
-      command.EnsureValid();
+      baseData.EnsureIsValid();
 
       FileInfo fileInfo = FileUtilities.SaveFile(fileData);
 
-      var dataset = new Dataset(command, fileData, fileInfo);
+      var dataset = new Dataset(baseData, fileData, fileInfo);
 
       dataset.Save();
 
@@ -52,8 +52,8 @@ namespace Empiria.FinancialAccounting.Datasets.UseCases {
     }
 
 
-    public DatasetDto GetDataset(string datasetUID) {
-      Assertion.Require(datasetUID, "datasetUID");
+    public DatasetOutputDto GetDataset(string datasetUID) {
+      Assertion.Require(datasetUID, nameof(datasetUID));
 
       var dataset = Dataset.Parse(datasetUID);
 
@@ -61,17 +61,17 @@ namespace Empiria.FinancialAccounting.Datasets.UseCases {
     }
 
 
-    public DatasetsLoadStatusDto GetDatasetsLoadStatus(DatasetsCommand command) {
-      Assertion.Require(command, "command");
+    public DatasetsLoadStatusDto GetDatasetsLoadStatus(DatasetInputDto dto) {
+      Assertion.Require(dto, nameof(dto));
 
-      command.EnsureValid();
+      dto.EnsureIsValid();
 
-      return BuildDatasetsLoadStatusDto(command.DatasetFamilyUID, command.Date);
+      return MapToDatasetsLoadStatusDto(dto.DatasetFamilyUID, dto.Date);
     }
 
 
     public DatasetsLoadStatusDto RemoveDataset(string datasetUID) {
-      Assertion.Require(datasetUID, "datasetUID");
+      Assertion.Require(datasetUID, nameof(datasetUID));
 
       var dataset = Dataset.Parse(datasetUID);
 
@@ -79,7 +79,7 @@ namespace Empiria.FinancialAccounting.Datasets.UseCases {
 
       dataset.Save();
 
-      return BuildDatasetsLoadStatusDto(dataset.DatasetFamily.UID, dataset.OperationDate);
+      return MapToDatasetsLoadStatusDto(dataset.DatasetFamily.UID, dataset.OperationDate);
     }
 
 
@@ -102,7 +102,7 @@ namespace Empiria.FinancialAccounting.Datasets.UseCases {
 
     #region Helper methods
 
-    private DatasetsLoadStatusDto BuildDatasetsLoadStatusDto(string datasetFamilyUID,
+    private DatasetsLoadStatusDto MapToDatasetsLoadStatusDto(string datasetFamilyUID,
                                                              DateTime operationDate) {
 
       var datasetFamily = DatasetFamily.Parse(datasetFamilyUID);

@@ -33,7 +33,7 @@ namespace Empiria.FinancialAccounting.UseCases {
     #region Use cases
 
     public SubledgerAccountDto ActivateSubledgerAccount(int subledgerAccountId) {
-      Assertion.Require(subledgerAccountId > 0, "subledgerAccountId");
+      Assertion.Require(subledgerAccountId > 0, nameof(subledgerAccountId));
 
       var subledgerAccount = SubledgerAccount.Parse(subledgerAccountId);
 
@@ -46,7 +46,7 @@ namespace Empiria.FinancialAccounting.UseCases {
 
 
     public SubledgerAccountDto CreateSubledgerAccount(SubledgerAccountFields fields) {
-      Assertion.Require(fields, "fields");
+      Assertion.Require(fields, nameof(fields));
 
       fields.EnsureValid();
 
@@ -54,7 +54,6 @@ namespace Empiria.FinancialAccounting.UseCases {
 
       fields.Number = ledger.FormatSubledgerAccount(fields.Number);
       fields.Name = EmpiriaString.TrimAll(fields.Name);
-
 
       var subledgerAccount = ledger.TryGetSubledgerAccount(fields.Number);
 
@@ -65,7 +64,6 @@ namespace Empiria.FinancialAccounting.UseCases {
       SubledgerAccount createdSubledgerAccount = ledger.CreateSubledgerAccount(fields.Number,
                                                                                fields.SubledgerType(),
                                                                                fields.Name);
-
       createdSubledgerAccount.Save();
 
       return SubledgerMapper.Map(createdSubledgerAccount);
@@ -73,7 +71,7 @@ namespace Empiria.FinancialAccounting.UseCases {
 
 
     public SubledgerDto GetSubledger(string subledgerUID) {
-      Assertion.Require(subledgerUID, "subledgerUID");
+      Assertion.Require(subledgerUID, nameof(subledgerUID));
 
       var subledger = Subledger.Parse(subledgerUID);
 
@@ -82,7 +80,7 @@ namespace Empiria.FinancialAccounting.UseCases {
 
 
     public SubledgerAccountDto GetSubledgerAccount(int subledgerAccountId) {
-      Assertion.Require(subledgerAccountId > 0, "subledgerAccountId");
+      Assertion.Require(subledgerAccountId > 0, nameof(subledgerAccountId));
 
       var subledgerAccount = SubledgerAccount.Parse(subledgerAccountId);
 
@@ -90,19 +88,22 @@ namespace Empiria.FinancialAccounting.UseCases {
     }
 
 
-    public FixedList<SubledgerAccountDescriptorDto> SearchSubledgerAccounts(SearchSubledgerAccountCommand command) {
-      Assertion.Require(command, "command");
+    public FixedList<SubledgerAccountDescriptorDto> SearchSubledgerAccounts(SubledgerAccountQuery query) {
+      Assertion.Require(query, nameof(query));
+      Assertion.Require(query.AccountsChartUID, "query.AccountsChartUID");
 
-      string filter = command.BuildFilter();
+      var accountsChart = AccountsChart.Parse(query.AccountsChartUID);
 
-      FixedList<SubledgerAccount> subledgerAccounts = SubledgerAccount.Search(command.AccountsChart(), filter);
+      string filter = query.MapToFilterString();
+
+      FixedList<SubledgerAccount> subledgerAccounts = SubledgerAccount.Search(accountsChart, filter);
 
       return SubledgerMapper.MapToSubledgerAccountDescriptor(subledgerAccounts);
     }
 
 
     public SubledgerAccountDto SuspendSubledgerAccount(int subledgerAccountId) {
-      Assertion.Require(subledgerAccountId > 0, "subledgerAccountId");
+      Assertion.Require(subledgerAccountId > 0, nameof(subledgerAccountId));
 
       var subledgerAccount = SubledgerAccount.Parse(subledgerAccountId);
 
@@ -116,8 +117,8 @@ namespace Empiria.FinancialAccounting.UseCases {
 
     public SubledgerAccountDto UpdateSubledgerAccount(int subledgerAccountId,
                                                       SubledgerAccountFields fields) {
-      Assertion.Require(subledgerAccountId > 0, "subledgerAccountId");
-      Assertion.Require(fields, "fields");
+      Assertion.Require(subledgerAccountId > 0, nameof(subledgerAccountId));
+      Assertion.Require(fields, nameof(fields));
 
       fields.EnsureValid();
 

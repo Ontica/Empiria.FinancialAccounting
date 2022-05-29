@@ -78,7 +78,7 @@ namespace Empiria.FinancialAccounting.Tests {
 
     [Fact]
     public void Should_Search_Accounts() {
-      var searchCommand = new AccountsSearchCommand {
+      var query = new AccountsQuery {
         Date = new DateTime(2005, 10, 23),
         FromAccount = "1000",
         ToAccount = "5000",
@@ -86,7 +86,7 @@ namespace Empiria.FinancialAccounting.Tests {
       };
 
       AccountsChartDto accountsChart = _usecases.SearchAccounts(TestingConstants.ACCOUNTS_CHART_UID,
-                                                                searchCommand);
+                                                                query);
 
       Assert.Equal(TestingConstants.ACCOUNTS_CHART_UID, accountsChart.UID);
     }

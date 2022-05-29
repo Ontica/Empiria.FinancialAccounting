@@ -85,19 +85,19 @@ namespace Empiria.FinancialAccounting.UseCases {
 
 
     public AccountsChartDto SearchAccounts(string accountsChartUID,
-                                           AccountsSearchCommand command) {
-      Assertion.Require(accountsChartUID, "accountsChartUID");
-      Assertion.Require(command, "command");
+                                           AccountsQuery query) {
+      Assertion.Require(accountsChartUID, nameof(accountsChartUID));
+      Assertion.Require(query, nameof(query));
 
       var accountsChart = AccountsChart.Parse(accountsChartUID);
 
-      string filter = command.MapToFilterString(accountsChart);
+      string filter = query.MapToFilterString(accountsChart);
 
       FixedList<Account> accounts = accountsChart.Search(filter);
 
-      accounts = command.Restrict(accounts);
+      accounts = query.ApplyTo(accounts);
 
-      if (command.WithSectors) {
+      if (query.WithSectors) {
         return AccountsChartMapper.MapWithSectors(accountsChart, accounts);
       } else {
         return AccountsChartMapper.Map(accountsChart, accounts);

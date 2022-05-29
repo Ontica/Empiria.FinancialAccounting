@@ -1,10 +1,10 @@
 ﻿/* Empiria Financial *****************************************************************************************
 *                                                                                                            *
 *  Module   : Accounts Chart                             Component : Interface adapters                      *
-*  Assembly : FinancialAccounting.Core.dll               Pattern   : Command payload                         *
-*  Type     : AccountsSearchCommand                      License   : Please read LICENSE.txt file            *
+*  Assembly : FinancialAccounting.Core.dll               Pattern   : Query payload                           *
+*  Type     : AccountsQuery                              License   : Please read LICENSE.txt file            *
 *                                                                                                            *
-*  Summary  : Command payload used for accounts searching.                                                   *
+*  Summary  : Query payload used for accounts searching.                                                     *
 *                                                                                                            *
 ************************* Copyright(c) La Vía Óntica SC, Ontica LLC and contributors. All rights reserved. **/
 using System;
@@ -13,8 +13,8 @@ using System.Linq;
 
 namespace Empiria.FinancialAccounting.Adapters {
 
-  /// <summary>Command payload used for accounts searching.</summary>
-  public class AccountsSearchCommand {
+  /// <summary>Query payload used for accounts searching.</summary>
+  public class AccountsQuery {
 
     public string Keywords {
       get; set;
@@ -70,23 +70,38 @@ namespace Empiria.FinancialAccounting.Adapters {
       get; set;
     }
 
-  }  // class AccountsSearchCommand
+  }  // class AccountsQuery
 
 
 
-  /// <summary>Extension methods for AccountsSearchCommand interface adapter.</summary>
-  static public class AccountsSearchCommandExtension {
+  /// <summary>Extension methods for AccountsQuery interface adapter.</summary>
+  static public class AccountsQueryExtension {
 
     #region Public methods
 
-    static public string MapToFilterString(this AccountsSearchCommand command,
-                                           AccountsChart accountsChart) {
-      string keywordsFilter = BuildKeywordsFilter(command.Keywords, accountsChart);
-      string rangeFilter = BuildAccountsRangeFilter(command.FromAccount, command.ToAccount);
-      string typeFilter = BuildAccountsTypeFilter(command.Types);
-      string roleFilter = BuildAccountsRoleFilter(command.Roles);
 
-      string dateFilter = BuildDateFilter(command.Date);
+    static internal FixedList<Account> ApplyTo(this AccountsQuery query,
+                                               FixedList<Account> accounts) {
+      FixedList<Account> restricted;
+
+      restricted = RestrictLedger(query.Ledger, accounts);
+      restricted = RestrictLevels(query.Level, restricted);
+      restricted = RestrictSectors(query.Sectors, restricted);
+      restricted = RestrictCurrencies(query.Currencies, restricted);
+
+      return restricted;
+    }
+
+
+    static public string MapToFilterString(this AccountsQuery query,
+                                           AccountsChart accountsChart) {
+
+      string keywordsFilter = BuildKeywordsFilter(query.Keywords, accountsChart);
+      string rangeFilter    = BuildAccountsRangeFilter(query.FromAccount, query.ToAccount);
+      string typeFilter     = BuildAccountsTypeFilter(query.Types);
+      string roleFilter     = BuildAccountsRoleFilter(query.Roles);
+
+      string dateFilter = BuildDateFilter(query.Date);
 
       var filter = new Filter(keywordsFilter);
 
@@ -96,19 +111,6 @@ namespace Empiria.FinancialAccounting.Adapters {
       filter.AppendAnd(dateFilter);
 
       return filter.ToString();
-    }
-
-
-    static internal FixedList<Account> Restrict(this AccountsSearchCommand command,
-                                                FixedList<Account> accounts) {
-      FixedList<Account> restricted;
-
-      restricted = RestrictLedger(command.Ledger, accounts);
-      restricted = RestrictLevels(command.Level, restricted);
-      restricted = RestrictSectors(command.Sectors, restricted);
-      restricted = RestrictCurrencies(command.Currencies, restricted);
-
-      return restricted;
     }
 
 
@@ -226,6 +228,6 @@ namespace Empiria.FinancialAccounting.Adapters {
 
     #endregion Private methods
 
-  }  // AccountsSearchCommandExtension
+  }  // AccountsQueryExtension
 
 }  // namespace Empiria.FinancialAccounting.Adapters

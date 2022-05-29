@@ -18,7 +18,7 @@ namespace Empiria.FinancialAccounting.Datasets.Adapters {
       // no-op
     }
 
-    public FixedList<DatasetDto> LoadedDatasets {
+    public FixedList<DatasetOutputDto> LoadedDatasets {
       get; internal set;
     }
 

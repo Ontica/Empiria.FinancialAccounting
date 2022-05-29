@@ -1,17 +1,17 @@
 ﻿/* Empiria Financial *****************************************************************************************
 *                                                                                                            *
 *  Module   : Accounts Chart                             Component : Interface adapters                      *
-*  Assembly : FinancialAccounting.Core.dll               Pattern   : Command payload                         *
+*  Assembly : FinancialAccounting.Core.dll               Pattern   : Fields DTO                              *
 *  Type     : AccountFieldsDto                           License   : Please read LICENSE.txt file            *
 *                                                                                                            *
-*  Summary  : Command payload used for account fields edition.                                               *
+*  Summary  : Fields DTO used for account fields edition.                                                    *
 *                                                                                                            *
 ************************* Copyright(c) La Vía Óntica SC, Ontica LLC and contributors. All rights reserved. **/
 using System;
 
 namespace Empiria.FinancialAccounting.Adapters {
 
-  /// <summary>Command payload used for account fields edition.</summary>
+  /// <summary>Fields DTO used for account fields edition.</summary>
   public class AccountFieldsDto {
 
     public string AccountNumber {

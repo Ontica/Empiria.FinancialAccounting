@@ -144,6 +144,7 @@ namespace Empiria.FinancialAccounting {
       Assertion.Require(!this.Commited,
               "Command operations were already commited.");
 
+
       ExecuteCommit();
 
 

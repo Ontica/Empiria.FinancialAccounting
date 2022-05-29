@@ -23,10 +23,10 @@ namespace Empiria.FinancialAccounting.Reporting.Builders {
     public ReportDataDto Build(BuildReportCommand command) {
       Assertion.Require(command, "command");
 
-      AccountsSearchCommand searchCommand = GetAccountsSearchCommand(command);
+      AccountsQuery accountsQuery = MapToAccountsQuery(command);
 
       using (var usecases = AccountsChartUseCases.UseCaseInteractor()) {
-        AccountsChartDto accountsChart = usecases.SearchAccounts(command.AccountsChartUID, searchCommand);
+        AccountsChartDto accountsChart = usecases.SearchAccounts(command.AccountsChartUID, accountsQuery);
 
         return MapToReportDataDto(command, accountsChart.Accounts);
       }
@@ -38,8 +38,8 @@ namespace Empiria.FinancialAccounting.Reporting.Builders {
 
     #region Private methods
 
-    static private AccountsSearchCommand GetAccountsSearchCommand(BuildReportCommand command) {
-      return new AccountsSearchCommand {
+    static private AccountsQuery MapToAccountsQuery(BuildReportCommand command) {
+      return new AccountsQuery {
         Date = command.ToDate
       };
     }

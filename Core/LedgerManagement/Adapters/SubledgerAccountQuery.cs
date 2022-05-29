@@ -1,23 +1,22 @@
 ﻿/* Empiria Financial *****************************************************************************************
 *                                                                                                            *
 *  Module   : Ledger Management                            Component : Interface adapters                    *
-*  Assembly : FinancialAccounting.Core.dll                 Pattern   : Command payload                       *
-*  Type     : SearchSubledgerAccountCommand                License   : Please read LICENSE.txt file          *
+*  Assembly : FinancialAccounting.Core.dll                 Pattern   : Query payload                         *
+*  Type     : SubledgerAccountQuery                        License   : Please read LICENSE.txt file          *
 *                                                                                                            *
-*  Summary  : Command payload used to search subledger accounts (cuentas auxiliares).                        *
+*  Summary  : Query payload used to search subledger accounts (cuentas auxiliares).                          *
 *                                                                                                            *
 ************************* Copyright(c) La Vía Óntica SC, Ontica LLC and contributors. All rights reserved. **/
 using System;
 
 namespace Empiria.FinancialAccounting.Adapters {
 
-  /// <summary>Command payload used to search subledger accounts (cuentas auxiliares).</summary>
-  public class SearchSubledgerAccountCommand {
+  /// <summary> Query payload used to search subledger accounts (cuentas auxiliares).</summary>
+  public class SubledgerAccountQuery {
 
     public string AccountsChartUID {
       get; set;
     }
-
 
     public string LedgerUID {
       get; set;
@@ -39,21 +38,16 @@ namespace Empiria.FinancialAccounting.Adapters {
     } = string.Empty;
 
 
-  }  // SearchSubledgerAccountCommand
+  }  // SubledgerAccountQuery
 
 
-  static internal class SearchSubledgerAccountCommandExtensions {
+  static internal class SubledgerAccountQueryExtensions {
 
-    static internal AccountsChart AccountsChart(this SearchSubledgerAccountCommand command) {
-      return FinancialAccounting.AccountsChart.Parse(command.AccountsChartUID);
-    }
+    static internal string MapToFilterString(this SubledgerAccountQuery query) {
 
-
-    static internal string BuildFilter(this SearchSubledgerAccountCommand command) {
-      string keywordsFilter = BuildKeywordsFilter(command.Keywords);
-
-      string typeFilter = BuildTypeFilter(command.TypeUID);
-      string ledgerFilter = BuildLedgerFilter(command.LedgerUID);
+      string keywordsFilter = BuildKeywordsFilter(query.Keywords);
+      string typeFilter     = BuildTypeFilter(query.TypeUID);
+      string ledgerFilter   = BuildLedgerFilter(query.LedgerUID);
 
       var filter = new Filter(keywordsFilter);
 
@@ -90,7 +84,6 @@ namespace Empiria.FinancialAccounting.Adapters {
       return $"ID_TIPO_MAYOR_AUXILIAR = {subledgerType.Id}";
     }
 
-  }  // class SearchSubledgerAccountCommandExtensions
-
+  }  // class SubledgerAccountQueryExtensions
 
 }  // namespace Empiria.FinancialAccounting.Adapters

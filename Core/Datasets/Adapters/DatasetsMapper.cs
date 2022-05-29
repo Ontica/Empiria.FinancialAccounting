@@ -16,8 +16,8 @@ namespace Empiria.FinancialAccounting.Datasets.Adapters {
 
     #region Public mappers
 
-    static internal DatasetDto Map(Dataset ds) {
-      return new DatasetDto() {
+    static internal DatasetOutputDto Map(Dataset ds) {
+      return new DatasetOutputDto() {
         UID = ds.UID,
         DatasetFamily = ds.DatasetFamily.Name,
         DatasetKind = ds.DatasetKind.Name,
@@ -38,7 +38,7 @@ namespace Empiria.FinancialAccounting.Datasets.Adapters {
       var missingMapped = missing.Select(x => Map(x));
 
       return new DatasetsLoadStatusDto {
-        LoadedDatasets = new FixedList<DatasetDto>(loadedMapped),
+        LoadedDatasets = new FixedList<DatasetOutputDto>(loadedMapped),
         MissingDatasetKinds = new FixedList<DatasetKindDto>(missingMapped)
       };
     }

@@ -67,18 +67,18 @@ namespace Empiria.FinancialAccounting.Tests {
     public void Should_Search_An_Account_Range_In_An_AccountsChart() {
       var chart = AccountsChart.Parse(TestingConstants.ACCOUNTS_CHART_UID);
 
-      var searchCommand = new AccountsSearchCommand {
+      var query = new AccountsQuery {
         FromAccount = "1101",
         ToAccount = "2699"
       };
 
-      string filter = searchCommand.MapToFilterString(chart);
+      string filter = query.MapToFilterString(chart);
 
       FixedList<Account> accounts = chart.Search(filter);
 
       Assert.NotNull(accounts);
 
-      Assert.DoesNotContain(accounts, x => searchCommand.FromAccount.CompareTo(x.Number) > 0);
+      Assert.DoesNotContain(accounts, x => query.FromAccount.CompareTo(x.Number) > 0);
     }
 
 

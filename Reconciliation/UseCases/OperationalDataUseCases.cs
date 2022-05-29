@@ -38,17 +38,17 @@ namespace Empiria.FinancialAccounting.Reconciliation.UseCases {
     #region Use cases
 
 
-    public DatasetsLoadStatusDto CreateDataset(OperationalDataCommand command,
+    public DatasetsLoadStatusDto CreateDataset(OperationalDataDto dto,
                                                FileData fileData) {
-      Assertion.Require(command, "command");
-      Assertion.Require(fileData, "fileData");
+      Assertion.Require(dto,      nameof(dto));
+      Assertion.Require(fileData, nameof(fileData));
 
-      command.EnsureValid();
+      dto.EnsureIsValid();
 
       using (var usecase = DatasetsUseCases.UseCaseInteractor()) {
-        var coreDatasetCommand = command.MapToCoreDatasetsCommand();
+        var mappedDto = dto.MapToCoreDatasetInputDto();
 
-        Dataset dataset = usecase.CreateDataset(coreDatasetCommand, fileData);
+        Dataset dataset = usecase.CreateDataset(mappedDto, fileData);
 
         var reader = new OperationalEntriesReader(dataset);
 
@@ -60,22 +60,14 @@ namespace Empiria.FinancialAccounting.Reconciliation.UseCases {
             "El archivo tiene un formato que no reconozco o la información que contiene es incorrecta."
           );
         }
-
-        //var entries = reader.GetEntries();
-
-        //foreach (var entry in entries) {
-        //  var re = new ReconciliationEntry(dataset, entry);
-        //  re.Save();
-        //}
-
       }
 
-      return GetDatasetsLoadStatus(command);
+      return GetDatasetsLoadStatus(dto);
     }
 
 
-    public DatasetDto GetDataset(string datasetUID) {
-      Assertion.Require(datasetUID, "datasetUID");
+    public DatasetOutputDto GetDataset(string datasetUID) {
+      Assertion.Require(datasetUID, nameof(datasetUID));
 
       using (var usecase = DatasetsUseCases.UseCaseInteractor()) {
         return usecase.GetDataset(datasetUID);
@@ -83,24 +75,24 @@ namespace Empiria.FinancialAccounting.Reconciliation.UseCases {
     }
 
 
-    public DatasetsLoadStatusDto GetDatasetsLoadStatus(OperationalDataCommand command) {
-      Assertion.Require(command, "command");
+    public DatasetsLoadStatusDto GetDatasetsLoadStatus(OperationalDataDto dto) {
+      Assertion.Require(dto, nameof(dto));
 
-      command.EnsureValid();
+      dto.EnsureIsValid();
 
-      RemoveOldDatasetsFor(command.GetReconciliationType());
+      RemoveOldDatasetsFor(dto.GetReconciliationType());
 
       using (var usecase = DatasetsUseCases.UseCaseInteractor()) {
 
-        var datasetCommand = command.MapToCoreDatasetsCommand();
+        var mappedDto = dto.MapToCoreDatasetInputDto();
 
-        return usecase.GetDatasetsLoadStatus(datasetCommand);
+        return usecase.GetDatasetsLoadStatus(mappedDto);
       }
     }
 
 
     public DatasetsLoadStatusDto RemoveDataset(string datasetUID) {
-      Assertion.Require(datasetUID, "datasetUID");
+      Assertion.Require(datasetUID, nameof(datasetUID));
 
       using (var usecase = DatasetsUseCases.UseCaseInteractor()) {
 
@@ -110,12 +102,14 @@ namespace Empiria.FinancialAccounting.Reconciliation.UseCases {
 
 
     internal void RemoveOldDatasetsFor(ReconciliationType reconciliationType) {
-      Assertion.Require(reconciliationType, "reconciliationType");
+      int REMOVE_EVERY_TWO_HOURS = 2;
+
+      Assertion.Require(reconciliationType, nameof(reconciliationType));
 
       using (var usecase = DatasetsUseCases.UseCaseInteractor()) {
 
         usecase.RemoveOldDatasets(reconciliationType.DatasetFamily.UID,
-                                  TimeSpan.FromHours(2));
+                                  TimeSpan.FromHours(REMOVE_EVERY_TWO_HOURS));
       }
     }
 

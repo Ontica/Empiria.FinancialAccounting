@@ -37,10 +37,10 @@ namespace Empiria.FinancialAccounting.WebApi {
 
     [HttpPost]
     [Route("v2/financial-accounting/exchange-rates")]
-    public CollectionModel GetExchangeRates([FromBody] SearchExchangeRatesCommand command) {
+    public CollectionModel GetExchangeRates([FromBody] ExchangeRatesQuery query) {
 
       using (var usecases = ExchangeRatesUseCases.UseCaseInteractor()) {
-        FixedList<ExchangeRateDescriptorDto> exchangeRates = usecases.GetExchangeRates(command);
+        FixedList<ExchangeRateDescriptorDto> exchangeRates = usecases.SearchExchangeRates(query);
 
         return new CollectionModel(base.Request, exchangeRates);
       }
@@ -49,10 +49,12 @@ namespace Empiria.FinancialAccounting.WebApi {
 
     [HttpPost]
     [Route("v2/financial-accounting/exchange-rates/for-edition")]
-    public SingleObjectModel GetExchangeRatesForEdition([FromBody] ExchangeRateValuesDto fields) {
+    public SingleObjectModel GetExchangeRatesForEdition([FromBody] ExchangeRateValuesDto query) {
 
       using (var usecases = ExchangeRatesUseCases.UseCaseInteractor()) {
-        ExchangeRateValuesDto exchangeRatesForEdition = usecases.GetExchangeRatesForEdition(fields);
+
+        ExchangeRateValuesDto exchangeRatesForEdition =
+                        usecases.GetExchangeRatesForEdition(query.ExchangeRateTypeUID, query.Date);
 
         return new SingleObjectModel(base.Request, exchangeRatesForEdition);
       }
@@ -87,10 +89,10 @@ namespace Empiria.FinancialAccounting.WebApi {
 
     [HttpPost]
     [Route("v2/financial-accounting/exchange-rates/excel")]
-    public SingleObjectModel GetExcelExchangeRates([FromBody] SearchExchangeRatesCommand command) {
+    public SingleObjectModel GetExcelExchangeRates([FromBody] ExchangeRatesQuery query) {
 
       using (var usecases = ExchangeRatesUseCases.UseCaseInteractor()) {
-        FixedList<ExchangeRateDescriptorDto> exchangeRates = usecases.GetExchangeRates(command);
+        FixedList<ExchangeRateDescriptorDto> exchangeRates = usecases.SearchExchangeRates(query);
 
         var excelExporter = new ExcelExporterService();
 

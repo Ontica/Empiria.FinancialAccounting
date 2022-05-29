@@ -31,7 +31,7 @@ namespace Empiria.FinancialAccounting.WebApi.Reconciliation {
     public SingleObjectModel GetDataset([FromUri] string datasetUID) {
 
       using (var usecases = OperationalDataUseCases.UseCaseInteractor()) {
-        DatasetDto dataset = usecases.GetDataset(datasetUID);
+        DatasetOutputDto dataset = usecases.GetDataset(datasetUID);
 
         return new SingleObjectModel(base.Request, dataset);
       }
@@ -40,10 +40,10 @@ namespace Empiria.FinancialAccounting.WebApi.Reconciliation {
 
     [HttpPost]
     [Route("v2/financial-accounting/reconciliation/datasets")]
-    public SingleObjectModel GetDatasetsLoadStatus([FromBody] OperationalDataCommand command) {
+    public SingleObjectModel GetDatasetsLoadStatus([FromBody] OperationalDataDto dto) {
 
       using (var usecases = OperationalDataUseCases.UseCaseInteractor()) {
-        DatasetsLoadStatusDto loadStatus = usecases.GetDatasetsLoadStatus(command);
+        DatasetsLoadStatusDto loadStatus = usecases.GetDatasetsLoadStatus(dto);
 
         return new SingleObjectModel(base.Request, loadStatus);
       }
@@ -58,10 +58,10 @@ namespace Empiria.FinancialAccounting.WebApi.Reconciliation {
 
       FileData excelFile = GetFileDataFromRequest(httpRequest);
 
-      OperationalDataCommand command = GetDatasetsCommandFromRequest(httpRequest);
+      OperationalDataDto dto = BuildOperationalDataDtoFromRequest(httpRequest);
 
       using (var usecases = OperationalDataUseCases.UseCaseInteractor()) {
-        DatasetsLoadStatusDto datasets = usecases.CreateDataset(command, excelFile);
+        DatasetsLoadStatusDto datasets = usecases.CreateDataset(dto, excelFile);
 
         return new SingleObjectModel(base.Request, datasets);
       }
@@ -83,6 +83,18 @@ namespace Empiria.FinancialAccounting.WebApi.Reconciliation {
 
     #region Helper methods
 
+
+    private OperationalDataDto BuildOperationalDataDtoFromRequest(HttpRequest httpRequest) {
+      NameValueCollection form = httpRequest.Form;
+
+      Assertion.Require(form["command"], "'command' form field is required");
+
+      var command = new OperationalDataDto();
+
+      return JsonConverter.Merge(form["command"], command);
+    }
+
+
     static private FileData GetFileDataFromRequest(HttpRequest httpRequest) {
       HttpPostedFile file = httpRequest.Files[0];
 
@@ -93,17 +105,6 @@ namespace Empiria.FinancialAccounting.WebApi.Reconciliation {
         MediaLength = file.ContentLength,
         OriginalFileName = file.FileName,
       };
-    }
-
-
-    private OperationalDataCommand GetDatasetsCommandFromRequest(HttpRequest httpRequest) {
-      NameValueCollection form = httpRequest.Form;
-
-      Assertion.Require(form["command"], "'command' form field is required");
-
-      var command = new OperationalDataCommand();
-
-      return JsonConverter.Merge(form["command"], command);
     }
 
 

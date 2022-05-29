@@ -44,10 +44,8 @@ namespace Empiria.FinancialAccounting.Reporting {
     }
 
 
-    public FileReportDto Export(AccountsChartDto accountsChart,
-                                AccountsSearchCommand searchCommand) {
-      Assertion.Require(accountsChart, "accountsChart");
-      Assertion.Require(searchCommand, "searchCommand");
+    public FileReportDto Export(AccountsChartDto accountsChart) {
+      Assertion.Require(accountsChart, nameof(accountsChart));
 
       var templateUID = "AccountsChartTemplate";
 

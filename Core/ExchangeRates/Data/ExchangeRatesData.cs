@@ -11,7 +11,6 @@ using System;
 
 using Empiria.Collections;
 using Empiria.Data;
-using Empiria.FinancialAccounting.Adapters;
 
 namespace Empiria.FinancialAccounting.Data {
 
@@ -91,9 +90,9 @@ namespace Empiria.FinancialAccounting.Data {
     }
 
 
-    static internal FixedList<ExchangeRate> SearchExchangeRates(SearchExchangeRatesCommand command) {
+    static internal FixedList<ExchangeRate> SearchExchangeRates(string filter) {
       var sql = "SELECT * FROM AO_EXCHANGE_RATES " +
-               $"WHERE {command.MapToFilterString()} " +
+               $"WHERE {filter} " +
                $"ORDER BY FROM_DATE DESC, EXCHANGE_RATE_TYPE_ID, TO_CURRENCY_ID";
 
       var dataOperation = DataOperation.Parse(sql);

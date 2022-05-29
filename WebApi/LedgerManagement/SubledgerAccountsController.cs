@@ -61,12 +61,12 @@ namespace Empiria.FinancialAccounting.WebApi {
 
     [HttpPost, AllowAnonymous]
     [Route("v2/financial-accounting/subledger-accounts/search")]
-    public CollectionModel SearchSubledgerAccounts([FromBody] SearchSubledgerAccountCommand command) {
+    public CollectionModel SearchSubledgerAccounts([FromBody] SubledgerAccountQuery query) {
 
-      base.RequireBody(command);
+      base.RequireBody(query);
 
       using (var usecases = SubledgerUseCases.UseCaseInteractor()) {
-        FixedList<SubledgerAccountDescriptorDto> list = usecases.SearchSubledgerAccounts(command);
+        FixedList<SubledgerAccountDescriptorDto> list = usecases.SearchSubledgerAccounts(query);
 
         return new CollectionModel(base.Request, list);
       }

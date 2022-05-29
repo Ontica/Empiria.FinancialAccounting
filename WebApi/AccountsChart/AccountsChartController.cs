@@ -74,16 +74,16 @@ namespace Empiria.FinancialAccounting.WebApi {
 
     [HttpPost]
     [Route("v2/financial-accounting/accounts-charts/{accountsChartUID:guid}/excel")]
-    public SingleObjectModel GetAccountsInExcelFile([FromUri] string accountsChartUID,
-                                                    [FromBody] AccountsSearchCommand searchCommand) {
-      base.RequireBody(searchCommand);
+    public SingleObjectModel GetAccountsInExcelFile([FromUri]  string accountsChartUID,
+                                                    [FromBody] AccountsQuery query) {
+      base.RequireBody(query);
 
       using (var usecases = AccountsChartUseCases.UseCaseInteractor()) {
-        AccountsChartDto accountsChart = usecases.SearchAccounts(accountsChartUID, searchCommand);
+        AccountsChartDto accountsChart = usecases.SearchAccounts(accountsChartUID, query);
 
         var excelExporter = new ExcelExporterService();
 
-        FileReportDto excelFileDto = excelExporter.Export(accountsChart, searchCommand);
+        FileReportDto excelFileDto = excelExporter.Export(accountsChart);
 
         return new SingleObjectModel(base.Request, excelFileDto);
       }
@@ -93,11 +93,11 @@ namespace Empiria.FinancialAccounting.WebApi {
     [HttpPost]
     [Route("v2/financial-accounting/accounts-charts/{accountsChartUID:guid}")]
     public SingleObjectModel SearchAccounts([FromUri] string accountsChartUID,
-                                            [FromBody] AccountsSearchCommand searchCommand) {
-      base.RequireBody(searchCommand);
+                                            [FromBody] AccountsQuery query) {
+      base.RequireBody(query);
 
       using (var usecases = AccountsChartUseCases.UseCaseInteractor()) {
-        AccountsChartDto accountsChart = usecases.SearchAccounts(accountsChartUID, searchCommand);
+        AccountsChartDto accountsChart = usecases.SearchAccounts(accountsChartUID, query);
 
         return new SingleObjectModel(base.Request, accountsChart);
       }

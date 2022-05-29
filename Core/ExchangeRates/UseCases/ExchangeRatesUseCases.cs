@@ -42,6 +42,8 @@ namespace Empiria.FinancialAccounting.UseCases {
 
 
     public FixedList<ExchangeRateDto> GetExchangeRates(string exchangeRateTypeUID, DateTime date) {
+      Assertion.Require(exchangeRateTypeUID, nameof(exchangeRateTypeUID));
+
       var exchangeRateType = ExchangeRateType.Parse(exchangeRateTypeUID);
 
       FixedList<ExchangeRate> exchangeRates = ExchangeRate.GetList(exchangeRateType, date);
@@ -50,23 +52,14 @@ namespace Empiria.FinancialAccounting.UseCases {
     }
 
 
-    public FixedList<ExchangeRateDescriptorDto> GetExchangeRates(SearchExchangeRatesCommand command) {
-      Assertion.Require(command, "command");
+    public ExchangeRateValuesDto GetExchangeRatesForEdition(string exchangeRateTypeUID, DateTime date) {
+      Assertion.Require(exchangeRateTypeUID, nameof(exchangeRateTypeUID));
 
-      FixedList<ExchangeRate> exchangeRates = ExchangeRatesData.SearchExchangeRates(command);
+      var exchangeRateType = ExchangeRateType.Parse(exchangeRateTypeUID);
 
-      return ExchangeRatesMapper.MapToExchangeRateDescriptor(exchangeRates);
-    }
+      FixedList<ExchangeRate> exchangeRates = ExchangeRate.GetForEditionList(exchangeRateType, date);
 
-
-    public ExchangeRateValuesDto GetExchangeRatesForEdition(ExchangeRateValuesDto fields) {
-      Assertion.Require(fields, "fields");
-
-      var exchangeRateType = ExchangeRateType.Parse(fields.ExchangeRateTypeUID);
-
-      FixedList<ExchangeRate> exchangeRates = ExchangeRate.GetForEditionList(exchangeRateType, fields.Date);
-
-      return ExchangeRatesMapper.MapForEdition(exchangeRateType, fields.Date, exchangeRates);
+      return ExchangeRatesMapper.MapForEdition(exchangeRateType, date, exchangeRates);
     }
 
 
@@ -77,8 +70,19 @@ namespace Empiria.FinancialAccounting.UseCases {
     }
 
 
+    public FixedList<ExchangeRateDescriptorDto> SearchExchangeRates(ExchangeRatesQuery query) {
+      Assertion.Require(query, nameof(query));
+
+      string filter = query.MapToFilterString();
+
+      FixedList<ExchangeRate> exchangeRates = ExchangeRatesData.SearchExchangeRates(filter);
+
+      return ExchangeRatesMapper.MapToExchangeRateDescriptor(exchangeRates);
+    }
+
+
     public ExchangeRateValuesDto UpdateAllExchangeRates(ExchangeRateValuesDto exchangeRates) {
-      Assertion.Require(exchangeRates, "exchangeRates");
+      Assertion.Require(exchangeRates, nameof(exchangeRates));
 
       exchangeRates.EnsureValid();
 
@@ -99,7 +103,7 @@ namespace Empiria.FinancialAccounting.UseCases {
 
       toUpdate.ForEach(x => x.Save());
 
-      return GetExchangeRatesForEdition(exchangeRates);
+      return GetExchangeRatesForEdition(exchangeRates.ExchangeRateTypeUID, exchangeRates.Date);
     }
 
     #endregion Use cases
