@@ -36,7 +36,7 @@ namespace Empiria.FinancialAccounting.Reporting.Exporters {
     private IExcelExporter GetExcelExporter(ReportDataDto reportData) {
       FileTemplateConfig templateConfig = GetExcelTemplate(reportData);
 
-      switch (reportData.Command.ReportType) {
+      switch (reportData.Query.ReportType) {
         case "BalanzaSAT":
           return new BalanzaSatExcelExporter(reportData, templateConfig);
 
@@ -53,13 +53,13 @@ namespace Empiria.FinancialAccounting.Reporting.Exporters {
           return new ListadoPolizasPorCuentaExcelExporter(reportData, templateConfig);
 
         default:
-          throw Assertion.EnsureNoReachThisCode($"Unhandled reportType '{reportData.Command.ReportType}'.");
+          throw Assertion.EnsureNoReachThisCode($"Unhandled reportType '{reportData.Query.ReportType}'.");
       }
     }
 
 
     private FileTemplateConfig GetExcelTemplate(ReportDataDto reportData) {
-      var templateUID = $"OperationalReportTemplate.{reportData.Command.ReportType}";
+      var templateUID = $"OperationalReportTemplate.{reportData.Query.ReportType}";
 
       return FileTemplateConfig.Parse(templateUID);
     }

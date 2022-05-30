@@ -47,11 +47,11 @@ namespace Empiria.FinancialAccounting.WebApi.Vouchers {
 
     [HttpPost]
     [Route("v2/financial-accounting/vouchers")]
-    public CollectionModel SearchVouchers([FromBody] SearchVouchersCommand command) {
-      base.RequireBody(command);
+    public CollectionModel SearchVouchers([FromBody] VouchersQuery query) {
+      base.RequireBody(query);
 
       using (var usecases = VoucherUseCases.UseCaseInteractor()) {
-        FixedList<VoucherDescriptorDto> vouchers = usecases.SearchVouchers(command);
+        FixedList<VoucherDescriptorDto> vouchers = usecases.SearchVouchers(query);
 
         return new CollectionModel(base.Request, vouchers);
       }

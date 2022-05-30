@@ -2,35 +2,35 @@
 *                                                                                                            *
 *  Module   : Vouchers Management                        Component : Interface adapters                      *
 *  Assembly : FinancialAccounting.Vouchers.dll           Pattern   : Type Extension methods                  *
-*  Type     : SearchVoucherCommandExtensions             License   : Please read LICENSE.txt file            *
+*  Type     : VouchersQueryExtensions                    License   : Please read LICENSE.txt file            *
 *                                                                                                            *
-*  Summary  : Extension methods for SearchVoucherCommand interface adapter.                                  *
+*  Summary  : Extension methods for VouchersQuery interface adapter.                                         *
 *                                                                                                            *
 ************************* Copyright(c) La Vía Óntica SC, Ontica LLC and contributors. All rights reserved. **/
 using System;
 
 namespace Empiria.FinancialAccounting.Vouchers.Adapters {
 
-  /// <summary>Extension methods for SearchVoucherCommand interface adapter.</summary>
-  static internal class SearchVoucherCommandExtensions {
+  /// <summary>Extension methods for VouchersQuery interface adapter.</summary>
+  static internal class VouchersQueryExtensions {
 
     #region Extension methods
 
-    static internal void EnsureIsValid(this SearchVouchersCommand command) {
+    static internal void EnsureIsValid(this VouchersQuery query) {
       // no-op
     }
 
 
-    static internal string MapToFilterString(this SearchVouchersCommand command) {
-      string ledgerFilter = BuildLedgerFilter(command);
-      string editedByFilter = BuildEditedByFilter(command);
-      string dateRangeFilter = BuildDateRangerFilter(command);
-      string transactionTypeFilter = BuildTransactionTypeFilter(command);
-      string voucherTypeFilter = BuildVoucherTypeFilter(command);
-      string stageStatusFilter = BuildStageStatusFilter(command);
-      string keywordsFilter = BuildKeywordsFilter(command.Keywords);
-      string conceptsFilter = BuildConceptFilter(command.Concept);
-      string numberFilter = BuildNumberFilter(command.Number);
+    static internal string MapToFilterString(this VouchersQuery query) {
+      string ledgerFilter = BuildLedgerFilter(query);
+      string editedByFilter = BuildEditedByFilter(query);
+      string dateRangeFilter = BuildDateRangerFilter(query);
+      string transactionTypeFilter = BuildTransactionTypeFilter(query);
+      string voucherTypeFilter = BuildVoucherTypeFilter(query);
+      string stageStatusFilter = BuildStageStatusFilter(query);
+      string keywordsFilter = BuildKeywordsFilter(query.Keywords);
+      string conceptsFilter = BuildConceptFilter(query.Concept);
+      string numberFilter = BuildNumberFilter(query.Number);
 
       var filter = new Filter(ledgerFilter);
       filter.AppendAnd(editedByFilter);
@@ -43,7 +43,7 @@ namespace Empiria.FinancialAccounting.Vouchers.Adapters {
 
       filter.AppendAnd(keywordsFilter);
 
-      string transactionEntriesFilter = BuildTransactionEntriesFilter(command, filter.ToString());
+      string transactionEntriesFilter = BuildTransactionEntriesFilter(query, filter.ToString());
 
       filter.AppendAnd(transactionEntriesFilter);
 
@@ -51,9 +51,9 @@ namespace Empiria.FinancialAccounting.Vouchers.Adapters {
     }
 
 
-    static internal string MapToSortString(this SearchVouchersCommand command) {
-      if (command.OrderBy.Length != 0) {
-        return command.OrderBy;
+    static internal string MapToSortString(this VouchersQuery query) {
+      if (query.OrderBy.Length != 0) {
+        return query.OrderBy;
       } else {
         return "ID_MAYOR, NUMERO_TRANSACCION DESC, FECHA_REGISTRO DESC, FECHA_AFECTACION DESC, CONCEPTO_TRANSACCION";
       }
@@ -63,18 +63,18 @@ namespace Empiria.FinancialAccounting.Vouchers.Adapters {
 
     #region Private methods
 
-    static private string BuildDateRangerFilter(SearchVouchersCommand command) {
-      if (command.DateSearchField == DateSearchField.None) {
+    static private string BuildDateRangerFilter(VouchersQuery query) {
+      if (query.DateSearchField == DateSearchField.None) {
         return string.Empty;
       }
 
-      string filter = $"{CommonMethods.FormatSqlDbDate(command.FromDate)} <= @DATE_FIELD@ AND " +
-                      $"@DATE_FIELD@ < {CommonMethods.FormatSqlDbDate(command.ToDate.Date.AddDays(1))}";
+      string filter = $"{CommonMethods.FormatSqlDbDate(query.FromDate)} <= @DATE_FIELD@ AND " +
+                      $"@DATE_FIELD@ < {CommonMethods.FormatSqlDbDate(query.ToDate.Date.AddDays(1))}";
 
-      if (command.DateSearchField == DateSearchField.AccountingDate) {
+      if (query.DateSearchField == DateSearchField.AccountingDate) {
         return filter.Replace("@DATE_FIELD@", "FECHA_AFECTACION");
 
-      } else if (command.DateSearchField == DateSearchField.RecordingDate) {
+      } else if (query.DateSearchField == DateSearchField.RecordingDate) {
         return filter.Replace("@DATE_FIELD@", "FECHA_REGISTRO");
 
       } else {
@@ -83,39 +83,39 @@ namespace Empiria.FinancialAccounting.Vouchers.Adapters {
     }
 
 
-    static private string BuildEditedByFilter(SearchVouchersCommand command) {
-      if (command.EditorType.Length == 0 || command.EditorUID.Length == 0) {
+    static private string BuildEditedByFilter(VouchersQuery query) {
+      if (query.EditorType.Length == 0 || query.EditorUID.Length == 0) {
         return string.Empty;
       }
 
-      switch (command.EditorType) {
+      switch (query.EditorType) {
         case "ElaboratedBy":
-          return $"ID_ELABORADA_POR = {command.EditorUID}";
+          return $"ID_ELABORADA_POR = {query.EditorUID}";
         case "AuthorizedBy":
-          return $"ID_AUTORIZADA_POR = {command.EditorUID}";
+          return $"ID_AUTORIZADA_POR = {query.EditorUID}";
         case "PostedBy":
-          return $"ID_ENVIADA_DIARIO_POR = {command.EditorUID}";
+          return $"ID_ENVIADA_DIARIO_POR = {query.EditorUID}";
         default:
-          return $"ID_ELABORADA_POR = {command.EditorUID} OR " +
-                 $"ID_AUTORIZADA_POR = {command.EditorUID} OR " +
-                 $"ID_ENVIADA_DIARIO_POR = {command.EditorUID}";
+          return $"ID_ELABORADA_POR = {query.EditorUID} OR " +
+                 $"ID_AUTORIZADA_POR = {query.EditorUID} OR " +
+                 $"ID_ENVIADA_DIARIO_POR = {query.EditorUID}";
       }
     }
 
 
-    static private string BuildLedgerFilter(SearchVouchersCommand command) {
+    static private string BuildLedgerFilter(VouchersQuery query) {
       string filter = string.Empty;
 
-      if (command.LedgerUID.Length != 0) {
-        var ledger = Ledger.Parse(command.LedgerUID);
+      if (query.LedgerUID.Length != 0) {
+        var ledger = Ledger.Parse(query.LedgerUID);
 
         filter += $"ID_MAYOR = {ledger.Id}";
 
         return filter;
       }
 
-      if (command.AccountsChartUID.Length != 0) {
-        var accountsChart = AccountsChart.Parse(command.AccountsChartUID);
+      if (query.AccountsChartUID.Length != 0) {
+        var accountsChart = AccountsChart.Parse(query.AccountsChartUID);
         if (filter.Length != 0) {
           filter += " AND ";
         }
@@ -141,8 +141,8 @@ namespace Empiria.FinancialAccounting.Vouchers.Adapters {
     }
 
 
-    static private string BuildStageStatusFilter(SearchVouchersCommand command) {
-      switch(command.Stage) {
+    static private string BuildStageStatusFilter(VouchersQuery query) {
+      switch(query.Stage) {
         case VoucherStage.All:
           return string.Empty;
 
@@ -166,22 +166,22 @@ namespace Empiria.FinancialAccounting.Vouchers.Adapters {
     }
 
 
-    static private string BuildTransactionEntriesFilter(SearchVouchersCommand command, string nestedFilter) {
-      if (command.AccountKeywords.Length == 0 && command.SubledgerAccountKeywords.Length == 0) {
+    static private string BuildTransactionEntriesFilter(VouchersQuery query, string nestedFilter) {
+      if (query.AccountKeywords.Length == 0 && query.SubledgerAccountKeywords.Length == 0) {
         return string.Empty;
       }
       string filter = string.Empty;
 
-      if (command.AccountKeywords.Length != 0) {
+      if (query.AccountKeywords.Length != 0) {
         filter = SearchExpression.ParseAndLikeKeywords("CUENTA_ESTANDAR_KEYWORDS",
-                                                       command.AccountKeywords);
+                                                       query.AccountKeywords);
       }
-      if (command.SubledgerAccountKeywords.Length != 0) {
+      if (query.SubledgerAccountKeywords.Length != 0) {
         if (filter.Length != 0) {
           filter += " AND ";
         }
         filter += SearchExpression.ParseAndLikeKeywords("CUENTA_AUXILIAR_KEYWORDS",
-                                                        command.SubledgerAccountKeywords);
+                                                        query.SubledgerAccountKeywords);
       }
 
       if (nestedFilter.Length != 0) {
@@ -192,29 +192,29 @@ namespace Empiria.FinancialAccounting.Vouchers.Adapters {
 
     }
 
-    static private string BuildTransactionTypeFilter(SearchVouchersCommand command) {
-      if (command.TransactionTypeUID.Length == 0) {
+    static private string BuildTransactionTypeFilter(VouchersQuery query) {
+      if (query.TransactionTypeUID.Length == 0) {
         return string.Empty;
       }
 
-      var transactionType = TransactionType.Parse(command.TransactionTypeUID);
+      var transactionType = TransactionType.Parse(query.TransactionTypeUID);
 
       return $"ID_TIPO_TRANSACCION = {transactionType.Id}";
     }
 
 
-    static private string BuildVoucherTypeFilter(SearchVouchersCommand command) {
-      if (command.VoucherTypeUID.Length == 0) {
+    static private string BuildVoucherTypeFilter(VouchersQuery query) {
+      if (query.VoucherTypeUID.Length == 0) {
         return string.Empty;
       }
 
-      var vocherType = VoucherType.Parse(command.VoucherTypeUID);
+      var vocherType = VoucherType.Parse(query.VoucherTypeUID);
 
       return $"ID_TIPO_POLIZA = {vocherType.Id}";
     }
 
     #endregion Private methods
 
-  }  // class SearchVoucherCommandExtensions
+  }  // class VouchersQueryExtensions
 
 } // namespace Empiria.FinancialAccounting.Vouchers.Adapters

@@ -16,7 +16,7 @@ namespace Empiria.FinancialAccounting.BanobrasIntegration {
   /// <summary>Invokes Banobras' external processes through stored procedures calls (Marimba).</summary>
   static internal class ExternalProcessDataServices {
 
-    static internal void ProcesarConcilacionSIC(ConcilacionSICExternalProcessCommand command) {
+    static internal void ProcesarConcilacionSIC(ExecuteConcilacionSICCommand command) {
       var dataOperation = DataOperation.Parse("do_procesar_conciliacion_sic",
                                               command.FechaInicio, command.FechaFin);
 
@@ -24,7 +24,7 @@ namespace Empiria.FinancialAccounting.BanobrasIntegration {
     }
 
 
-    static internal void ProcesarRentabilidad(RentabilidadExternalProcessCommand command) {
+    static internal void ProcesarRentabilidad(ExecuteRentabilidadCommand command) {
       var dataOperation = DataOperation.Parse("do_procesar_rentabilidad",
                                               command.Anio, command.Mes, command.Metodologia);
 

@@ -2,32 +2,17 @@
 *                                                                                                            *
 *  Module   : Banobras Integration Services                Component : External Processes Invoker            *
 *  Assembly : FinancialAccounting.BanobrasIntegration.dll  Pattern   : Command payload                       *
-*  Type     : ExternalProcessCommands                      License   : Please read LICENSE.txt file          *
+*  Type     : ExecuteRentabilidadCommand                   License   : Please read LICENSE.txt file          *
 *                                                                                                            *
-*  Summary  : Command data to execute Banobras' external system processes (Marimba).                         *
+*  Summary  : Command payload used to execute 'Rentabilidad' external process (from Marimba).                *
 *                                                                                                            *
 ************************* Copyright(c) La Vía Óntica SC, Ontica LLC and contributors. All rights reserved. **/
 using System;
 
 namespace Empiria.FinancialAccounting.BanobrasIntegration {
 
-  public class ConcilacionSICExternalProcessCommand {
-
-    public DateTime FechaInicio {
-      get; set;
-    }
-
-
-    public DateTime FechaFin {
-      get; set;
-    }
-
-  }  // ConcilacionSICExternalProcessCommand
-
-
-
-  /// <summary>Datos para la ejecución del proceso de rentabilidad.</summary>
-  public class RentabilidadExternalProcessCommand {
+  /// <summary>Command payload used to execute 'Rentabilidad' external process (from Marimba).</summary>
+  public class ExecuteRentabilidadCommand {
 
     public int Anio {
       get; set;
@@ -41,6 +26,6 @@ namespace Empiria.FinancialAccounting.BanobrasIntegration {
       get; set;
     }
 
-  }  // class RentabilidadExternalProcessCommand
+  }  // class ExecuteRentabilidadCommand
 
 }  // namespace Empiria.FinancialAccounting.BanobrasIntegration

@@ -42,7 +42,7 @@ namespace Empiria.FinancialAccounting.Reporting.Exporters {
 
 
     private IXmlDocumentExporter GetXmlConverter(ReportDataDto reportData) {
-      switch (reportData.Command.ReportType) {
+      switch (reportData.Query.ReportType) {
         case "BalanzaSAT":
           return new BalanzaSatXmlExporter(reportData);
 
@@ -50,7 +50,7 @@ namespace Empiria.FinancialAccounting.Reporting.Exporters {
           return new CatalogoCuentasSatXmlExporter(reportData);
 
         default:
-          throw Assertion.EnsureNoReachThisCode($"Unhandled reportType '{reportData.Command.ReportType}'.");
+          throw Assertion.EnsureNoReachThisCode($"Unhandled reportType '{reportData.Query.ReportType}'.");
       }
     }
 

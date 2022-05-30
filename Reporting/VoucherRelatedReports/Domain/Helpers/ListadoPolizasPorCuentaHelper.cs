@@ -19,20 +19,18 @@ namespace Empiria.FinancialAccounting.Reporting {
 
   /// <summary>Helper methods to build voucher list by account information.</summary>
   internal class ListadoPolizasPorCuentaHelper {
-    
-    private readonly BuildReportCommand Command;
 
-    public ListadoPolizasPorCuentaHelper(BuildReportCommand command) {
-      Assertion.Require(command, "command");
+    private readonly ReportBuilderQuery _query;
 
-      Command = command;
+    public ListadoPolizasPorCuentaHelper(ReportBuilderQuery query) {
+      Assertion.Require(query, nameof(query));
+
+      _query = query;
     }
 
 
     #region Public methods
 
-
-    
     internal FixedList<AccountStatementEntry> CombineVouchersWithTotalByCurrency(
                                               FixedList<AccountStatementEntry> orderingVouchers,
                                               FixedList<AccountStatementEntry> totalsByCurrency) {
@@ -88,7 +86,7 @@ namespace Empiria.FinancialAccounting.Reporting {
     internal FixedList<AccountStatementEntry> GetVoucherEntries() {
       var commandExtensions = new PolizasPorCuentaCommandExtensions();
 
-      PolizaCommandData commandData = commandExtensions.MapToPolizaCommandData(Command);
+      PolizaCommandData commandData = commandExtensions.MapToPolizaCommandData(_query);
 
       FixedList<AccountStatementEntry> vouchers =
               ListadoPolizasPorCuentaDataService.GetVouchersByAccountEntries(commandData);
@@ -151,9 +149,10 @@ namespace Empiria.FinancialAccounting.Reporting {
 
 
     private void SummaryEntriesByCurrency(EmpiriaHashTable<AccountStatementEntry> totalSummaryByCurrency,
-                                            AccountStatementEntry entry) {
+                                          AccountStatementEntry entry) {
+
       AccountStatementEntry newEntry = AccountStatementEntry.MapToAccountStatementEntry(entry);
-      string hash;
+
       newEntry.AccountName = "Suma de movimientos moneda " + newEntry.Currency.Code;
 
       if (newEntry.DebtorCreditor.ToString() == "A") {
@@ -162,7 +161,7 @@ namespace Empiria.FinancialAccounting.Reporting {
         newEntry.CurrentBalance = -1 * entry.CurrentBalance;
       }
 
-      hash = $"{newEntry.Currency.Code}";
+      string hash = $"{newEntry.Currency.Code}";
 
       GenerateOrIncreaseTotals(totalSummaryByCurrency, newEntry, hash, TrialBalanceItemType.Total);
     }

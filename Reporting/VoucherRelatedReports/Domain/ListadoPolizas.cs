@@ -21,28 +21,27 @@ namespace Empiria.FinancialAccounting.Reporting.Builders {
 
     #region Public methods
 
-    public ReportDataDto Build(BuildReportCommand command) {
-      Assertion.Require(command, "command");
+    public ReportDataDto Build(ReportBuilderQuery query) {
+      Assertion.Require(query, nameof(query));
 
-      ListadoPolizasCommand voucherCommand = GetPolizasCommand(command);
+      ListadoPolizasQuery listadoPolizasQuery = MapToListadoPolizasQuery(query);
 
-      PolizasDto polizas = BuildPolizasReport(voucherCommand);
+      PolizasDto polizas = BuildPolizasReport(listadoPolizasQuery);
 
-      return MapToReportDataDto(command, polizas);
+      return MapToReportDataDto(query, polizas);
     }
 
-    private PolizasDto BuildPolizasReport(ListadoPolizasCommand voucherCommand) {
+    private PolizasDto BuildPolizasReport(ListadoPolizasQuery query) {
 
-      var helper = new ListadoPolizasHelper(voucherCommand);
+      var helper = new ListadoPolizasHelper(query);
+
       FixedList<PolizaEntry> entries = helper.GetPolizaEntries();
 
-      FixedList<PolizaEntry> listadoPolizas = helper.GetListadoPolizasConTotales(entries);
+      FixedList<PolizaEntry> polizasConTotales = helper.SetTotalsRows(entries);
 
-      var returnPolizas = new FixedList<IPolizaEntry>(listadoPolizas.Select(x => (IPolizaEntry) x));
+      var polizasToReturn = new FixedList<IPolizaEntry>(polizasConTotales.Select(x => (IPolizaEntry) x));
 
-      ListadoPolizasBuilder polizas = new ListadoPolizasBuilder(voucherCommand, returnPolizas);
-
-      return PolizasMapper.Map(polizas);
+      return PolizasMapper.Map(polizasToReturn, query);
     }
 
     #endregion
@@ -50,18 +49,18 @@ namespace Empiria.FinancialAccounting.Reporting.Builders {
     #region Private methods
 
 
-    private ListadoPolizasCommand GetPolizasCommand(BuildReportCommand command) {
-      return new ListadoPolizasCommand {
-        AccountsChartUID = AccountsChart.Parse(command.AccountsChartUID).UID,
-        Ledgers = command.Ledgers,
-        FromDate = command.FromDate,
-        ToDate = command.ToDate
+    private ListadoPolizasQuery MapToListadoPolizasQuery(ReportBuilderQuery reportBuilderQuery) {
+      return new ListadoPolizasQuery {
+        AccountsChartUID = reportBuilderQuery.AccountsChartUID,
+        Ledgers = reportBuilderQuery.Ledgers,
+        FromDate = reportBuilderQuery.FromDate,
+        ToDate = reportBuilderQuery.ToDate
       };
     }
 
 
     static private FixedList<DataTableColumn> GetReportColumns() {
-      List<DataTableColumn> columns = new List<DataTableColumn>();
+      var columns = new List<DataTableColumn>();
 
       columns.Add(new DataTableColumn("ledgerName", "Mayor", "text-nowrap"));
       columns.Add(new DataTableColumn("voucherNumber", "No. Póliza", "text-nowrap"));
@@ -101,10 +100,13 @@ namespace Empiria.FinancialAccounting.Reporting.Builders {
 
       if (voucher.ItemType == ItemType.Group) {
         polizaEntry.Concept = $"POLIZAS POR CONTABILIDAD: {voucher.VouchersByLedger}";
+
       } else if (voucher.ItemType == ItemType.Total) {
         polizaEntry.Concept = $"TOTAL DE POLIZAS: {voucher.VouchersByLedger}";
+
       } else {
         polizaEntry.Concept = voucher.Concept;
+
       }
 
       polizaEntry.Debit = voucher.Debit;
@@ -115,10 +117,10 @@ namespace Empiria.FinancialAccounting.Reporting.Builders {
     }
 
 
-    static private ReportDataDto MapToReportDataDto(BuildReportCommand command,
+    static private ReportDataDto MapToReportDataDto(ReportBuilderQuery query,
                                                     PolizasDto polizas) {
       return new ReportDataDto {
-        Command = command,
+        Query = query,
         Columns = GetReportColumns(),
         Entries = MapToReportDataEntries(polizas.Entries)
       };
@@ -195,6 +197,7 @@ namespace Empiria.FinancialAccounting.Reporting.Builders {
     public ItemType ItemType {
       get; internal set;
     } = ItemType.Entry;
+
 
   }  // class PolizaReturnedEntry
 

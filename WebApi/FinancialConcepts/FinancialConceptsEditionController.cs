@@ -36,7 +36,7 @@ namespace Empiria.FinancialAccounting.WebApi.FinancialConcepts {
 
     [HttpPost]
     [Route("v2/financial-accounting/financial-concepts")]
-    public SingleObjectModel InsertFinancialConcept([FromBody] FinancialConceptEditionCommand command) {
+    public SingleObjectModel InsertFinancialConcept([FromBody] EditFinancialConceptCommand command) {
 
       base.RequireBody(command);
 
@@ -63,7 +63,7 @@ namespace Empiria.FinancialAccounting.WebApi.FinancialConcepts {
     [HttpPut, HttpPatch]
     [Route("v2/financial-accounting/financial-concepts/{financialConceptUID:guid}")]
     public SingleObjectModel UpdateFinancialConcept([FromUri] string financialConceptUID,
-                                                    [FromBody] FinancialConceptEditionCommand command) {
+                                                    [FromBody] EditFinancialConceptCommand command) {
 
       base.RequireBody(command);
 

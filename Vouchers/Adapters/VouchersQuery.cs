@@ -58,7 +58,7 @@ namespace Empiria.FinancialAccounting.Vouchers.Adapters {
   }
 
 
-  public class SearchVouchersCommand {
+  public class VouchersQuery {
 
     public VoucherStage Stage {
       get;

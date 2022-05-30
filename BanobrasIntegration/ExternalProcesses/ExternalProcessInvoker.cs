@@ -32,8 +32,7 @@ namespace Empiria.FinancialAccounting.BanobrasIntegration {
     #endregion Constructors and parsers
 
 
-
-    public string ProcesarConciliacionSIC(ConcilacionSICExternalProcessCommand command) {
+    public string ProcesarConciliacionSIC(ExecuteConcilacionSICCommand command) {
       Assertion.Require(command, "command");
 
       ExportarSaldosSIC(command.FechaInicio, command.FechaFin);
@@ -56,7 +55,7 @@ namespace Empiria.FinancialAccounting.BanobrasIntegration {
     }
 
 
-    public string ProcesarRentabilidad(RentabilidadExternalProcessCommand command) {
+    public string ProcesarRentabilidad(ExecuteRentabilidadCommand command) {
       Assertion.Require(command, "command");
 
       EmpiriaLog.Info("Iniciando la exportación de saldos para el proceso de rentabilidad.");
@@ -88,7 +87,7 @@ namespace Empiria.FinancialAccounting.BanobrasIntegration {
     #region Helper methods
 
 
-    private void ExportarSaldosRentabilidad(RentabilidadExternalProcessCommand command) {
+    private void ExportarSaldosRentabilidad(ExecuteRentabilidadCommand command) {
       var balancesCommand = new ExportBalancesCommand {
         AccountsChartId = command.Metodologia,
         BreakdownLedgers = true,

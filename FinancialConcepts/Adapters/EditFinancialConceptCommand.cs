@@ -2,7 +2,7 @@
 *                                                                                                            *
 *  Module   : Financial Concepts                         Component : Interface adapters                      *
 *  Assembly : FinancialAccounting.FinancialConcepts.dll  Pattern   : Command                                 *
-*  Type     : FinancialConceptEditionCommand             License   : Please read LICENSE.txt file            *
+*  Type     : EditFinancialConceptCommand                License   : Please read LICENSE.txt file            *
 *                                                                                                            *
 *  Summary  : The command used to create or update financial concepts.                                       *
 *                                                                                                            *
@@ -12,7 +12,7 @@ using System;
 namespace Empiria.FinancialAccounting.FinancialConcepts.Adapters {
 
   /// <summary>The command used to create or update financial concepts.</summary>
-  public class FinancialConceptEditionCommand {
+  public class EditFinancialConceptCommand {
 
     public string FinancialConceptUID {
       get; set;
@@ -59,15 +59,15 @@ namespace Empiria.FinancialAccounting.FinancialConcepts.Adapters {
     } = Account.MAX_END_DATE;
 
 
-  }  // class FinancialConceptEditionCommand
+  }  // class EditFinancialConceptCommand
 
 
-  /// <summary>Extension methods for FinancialConceptEditionCommand.</summary>
-  static class FinancialConceptEditionCommandExtensions {
+  /// <summary>Extension methods for EditFinancialConceptCommand.</summary>
+  static class EditFinancialConceptCommandExtensions {
 
     #region Methods
 
-    static internal void EnsureIsValid(this FinancialConceptEditionCommand command) {
+    static internal void EnsureIsValid(this EditFinancialConceptCommand command) {
       command.Clean();
 
       Assertion.Require(command.GroupUID, "command.GroupUID");
@@ -79,7 +79,7 @@ namespace Empiria.FinancialAccounting.FinancialConcepts.Adapters {
     }
 
 
-    static internal FinancialConceptFields MapToFinancialConceptFields(this FinancialConceptEditionCommand command,
+    static internal FinancialConceptFields MapToFinancialConceptFields(this EditFinancialConceptCommand command,
                                                                        int position) {
       return new FinancialConceptFields {
         Group = FinancialConceptGroup.Parse(command.GroupUID),
@@ -96,7 +96,7 @@ namespace Empiria.FinancialAccounting.FinancialConcepts.Adapters {
 
     #region Helpers
 
-    static private void EnsureDatesAreValid(FinancialConceptEditionCommand command) {
+    static private void EnsureDatesAreValid(EditFinancialConceptCommand command) {
       Assertion.Require(command.StartDate != ExecutionServer.DateMinValue,
                        "command.StartDate can not be empty.");
 
@@ -108,7 +108,7 @@ namespace Empiria.FinancialAccounting.FinancialConcepts.Adapters {
     }
 
 
-    static private void EnsurePositioningRuleIsValid(FinancialConceptEditionCommand command) {
+    static private void EnsurePositioningRuleIsValid(EditFinancialConceptCommand command) {
       Assertion.Require(command.PositioningRule != PositioningRule.Undefined,
                        "command.PositioningRule can not be 'Undefined'.");
 
@@ -124,7 +124,7 @@ namespace Empiria.FinancialAccounting.FinancialConcepts.Adapters {
     }
 
 
-    static private void Clean(this FinancialConceptEditionCommand command) {
+    static private void Clean(this EditFinancialConceptCommand command) {
       command.FinancialConceptUID = EmpiriaString.Clean(command.FinancialConceptUID);
       command.GroupUID = EmpiriaString.Clean(command.GroupUID);
       command.Code = EmpiriaString.Clean(command.Code);
@@ -134,6 +134,6 @@ namespace Empiria.FinancialAccounting.FinancialConcepts.Adapters {
 
     #endregion Helpers
 
-  }  // class FinancialConceptEditionCommandExtensions
+  }  // class EditFinancialConceptCommandExtensions
 
 }  // namespace Empiria.FinancialAccounting.FinancialConcepts.Adapters

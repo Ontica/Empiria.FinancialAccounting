@@ -18,29 +18,37 @@ namespace Empiria.FinancialAccounting.Reporting {
       get; internal set;
     }
 
+
     public DateTime FromDate {
       get; internal set;
     }
+
 
     public DateTime ToDate {
       get; internal set;
     }
 
+
     public string Ledgers {
       get; internal set;
     } = string.Empty;
+
 
     public string Fields {
       get; internal set;
     } = string.Empty;
 
+
     public string Filters {
       get; internal set;
     } = string.Empty;
 
+
     public string Grouping {
       get; internal set;
     } = string.Empty;
+
+
   } // class PolizaCommandData
 
 } // namespace Empiria.FinancialAccounting.Reporting

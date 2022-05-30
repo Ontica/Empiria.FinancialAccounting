@@ -9,6 +9,8 @@
 ************************* Copyright(c) La Vía Óntica SC, Ontica LLC and contributors. All rights reserved. **/
 using System;
 
+using Newtonsoft.Json;
+
 namespace Empiria.FinancialAccounting.Reporting.Adapters {
 
   public interface IPolizasDto {
@@ -18,16 +20,19 @@ namespace Empiria.FinancialAccounting.Reporting.Adapters {
   /// <summary>Output DTO used to return vouchers report data.</summary>
   public class PolizasDto {
 
-    public ListadoPolizasCommand Command {
+    [JsonProperty(PropertyName = "Command")]
+    public ListadoPolizasQuery Query {
       get; internal set;
-    } = new ListadoPolizasCommand();
+    } = new ListadoPolizasQuery();
 
 
+    [JsonProperty]
     public FixedList<DataTableColumn> Columns {
       get; internal set;
     } = new FixedList<DataTableColumn>();
 
 
+    [JsonProperty]
     public FixedList<IPolizasDto> Entries {
       get; internal set;
     } = new FixedList<IPolizasDto>();
@@ -35,8 +40,9 @@ namespace Empiria.FinancialAccounting.Reporting.Adapters {
   } // class PolizasDto
 
 
+  /// <summary>DTO for each poliza entry report.</summary>
   public class PolizasEntryDto : IPolizasDto {
-    
+
 
     public string LedgerNumber {
       get; internal set;

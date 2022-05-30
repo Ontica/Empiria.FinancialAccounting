@@ -1,7 +1,7 @@
 ﻿/* Empiria Financial *****************************************************************************************
 *                                                                                                            *
 *  Module   : Financial Concepts                         Component : Interface adapters                      *
-*  Assembly : FinancialAccounting.FinancialConcepts.dll  Pattern   : Command                                 *
+*  Assembly : FinancialAccounting.FinancialConcepts.dll  Pattern   : Command payload                         *
 *  Type     : FinancialConceptEntryEditionCommand        License   : Please read LICENSE.txt file            *
 *                                                                                                            *
 *  Summary  : The command used to create or update financial concept's integration entries.                  *
@@ -12,7 +12,7 @@ using System;
 namespace Empiria.FinancialAccounting.FinancialConcepts.Adapters {
 
   /// <summary>The command used to create or update financial concept's integration entries.</summary>
-  public class FinancialConceptEntryEditionCommand {
+  public class EditFinancialConceptEntryCommand {
 
     public bool DryRun {
       get; set;
@@ -98,15 +98,15 @@ namespace Empiria.FinancialAccounting.FinancialConcepts.Adapters {
       get; set;
     } = -1;
 
-  }  // class FinancialConceptEditionCommand
+  }  // class EditFinancialConceptEntryCommand
 
 
-  /// <summary>Extension methods for FinancialConceptEntryEditionCommand.</summary>
-  static class FinancialConceptEntryEditionCommandExtensions {
+  /// <summary>Extension methods for EditFinancialConceptEntryCommand.</summary>
+  static class EditFinancialConceptEntryCommandExtensions {
 
     #region Methods
 
-    static internal void EnsureIsValid(this FinancialConceptEntryEditionCommand command) {
+    static internal void EnsureIsValid(this EditFinancialConceptEntryCommand command) {
       command.Clean();
 
       Assertion.Require(command.FinancialConceptUID, "command.FinancialConceptUID");
@@ -115,7 +115,7 @@ namespace Empiria.FinancialAccounting.FinancialConcepts.Adapters {
     }
 
 
-    static internal FinancialConceptEntryFields MapToFields(this FinancialConceptEntryEditionCommand command,
+    static internal FinancialConceptEntryFields MapToFields(this EditFinancialConceptEntryCommand command,
                                                             int position) {
 
       FinancialConceptEntryFields fields;
@@ -158,7 +158,7 @@ namespace Empiria.FinancialAccounting.FinancialConcepts.Adapters {
 
     #region Helpers
 
-    static private void Clean(this FinancialConceptEntryEditionCommand command) {
+    static private void Clean(this EditFinancialConceptEntryCommand command) {
       command.FinancialConceptEntryUID      = EmpiriaString.Clean(command.FinancialConceptEntryUID);
       command.FinancialConceptUID           = EmpiriaString.Clean(command.FinancialConceptUID);
       command.ReferencedFinancialConceptUID = EmpiriaString.Clean(command.ReferencedFinancialConceptUID);
@@ -174,7 +174,7 @@ namespace Empiria.FinancialAccounting.FinancialConcepts.Adapters {
     }
 
 
-    static private void EnsurePositioningRuleIsValid(FinancialConceptEntryEditionCommand command) {
+    static private void EnsurePositioningRuleIsValid(EditFinancialConceptEntryCommand command) {
       Assertion.Require(command.PositioningRule != PositioningRule.Undefined,
                        "command.PositioningRule can not be 'Undefined'.");
 
@@ -191,6 +191,6 @@ namespace Empiria.FinancialAccounting.FinancialConcepts.Adapters {
 
     #endregion Helpers
 
-  }  // class FinancialConceptEntryEditionCommandExtensions
+  }  // class EditFinancialConceptEntryCommand
 
 }  // namespace Empiria.FinancialAccounting.FinancialConcepts.Adapters

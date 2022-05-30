@@ -8,7 +8,6 @@
 *                                                                                                            *
 ************************* Copyright(c) La Vía Óntica SC, Ontica LLC and contributors. All rights reserved. **/
 using System;
-using Empiria.FinancialAccounting.Vouchers;
 
 namespace Empiria.FinancialAccounting.Reporting.Domain {
 
@@ -27,6 +26,11 @@ namespace Empiria.FinancialAccounting.Reporting.Domain {
     }
 
     #endregion Constructors and parsers
+
+    public ItemType ItemType {
+      get; internal set;
+    } = ItemType.Entry;
+
 
     [DataField("ID_MAYOR", ConvertFrom = typeof(decimal))]
     public Ledger Ledger {
@@ -87,12 +91,6 @@ namespace Empiria.FinancialAccounting.Reporting.Domain {
     public int VouchersByLedger {
       get; internal set;
     }
-
-
-    public ItemType ItemType {
-      get; internal set;
-    } = ItemType.Entry;
-
 
 
     internal void Sum(PolizaEntry voucher) {

@@ -23,7 +23,7 @@ namespace Empiria.FinancialAccounting.Reporting {
     static readonly EmpiriaHashTable<AccountStatement> _cache = new EmpiriaHashTable<AccountStatement>();
 
 
-    static internal string GenerateHash(AccountStatementCommand command) {
+    static internal string GenerateHash(AccountStatementQuery command) {
       string json = JsonConverter.ToJson(command);
 
       return Cryptographer.CreateHashCode(json);

@@ -8,12 +8,13 @@
 *                                                                                                            *
 ************************* Copyright(c) La Vía Óntica SC, Ontica LLC and contributors. All rights reserved. **/
 using System;
+
 using Empiria.FinancialAccounting.BalanceEngine;
-using Empiria.FinancialAccounting.Reporting;
 
 namespace Empiria.FinancialAccounting.Reporting {
 
   public interface IVouchersByAccountEntry {
+
 
   }
 
@@ -156,34 +157,31 @@ namespace Empiria.FinancialAccounting.Reporting {
 
 
     internal static AccountStatementEntry MapToAccountStatementEntry(AccountStatementEntry entry) {
-      var newEntry = new AccountStatementEntry();
-
-      newEntry.Ledger = entry.Ledger;
-      newEntry.Currency = entry.Currency;
-      newEntry.StandardAccountId = entry.StandardAccountId;
-      newEntry.Sector = entry.Sector;
-      newEntry.VoucherId = entry.VoucherId;
-      newEntry.ElaboratedBy = entry.ElaboratedBy;
-      newEntry.AuthorizedBy = entry.AuthorizedBy;
-      newEntry.VoucherEntryId = entry.VoucherEntryId;
-      newEntry.AccountNumber = entry.AccountNumber;
-      newEntry.AccountName = entry.AccountName;
-      newEntry.SubledgerAccountNumber = entry.SubledgerAccountNumber;
-      newEntry.VoucherNumber = entry.VoucherNumber;
-      newEntry.Debit = entry.Debit;
-      newEntry.Credit= entry.Credit;
-      newEntry.CurrentBalance = entry.CurrentBalance;
-      newEntry.DebtorCreditor = entry.DebtorCreditor;
-      newEntry.AccountingDate = entry.AccountingDate;
-      newEntry.RecordingDate = entry.RecordingDate;
-      newEntry.Concept = EmpiriaString.Clean(entry.Concept);
-      newEntry.IsCurrentBalance = entry.IsCurrentBalance;
-      newEntry.ItemType = entry.ItemType;
-      newEntry.HasParentPostingEntry = entry.HasParentPostingEntry;
-      newEntry.IsParentPostingEntry = entry.IsParentPostingEntry;
-      newEntry.ItemType = entry.ItemType;
-
-      return newEntry;
+      return new AccountStatementEntry {
+        ItemType = entry.ItemType,
+        Ledger = entry.Ledger,
+        Currency = entry.Currency,
+        StandardAccountId = entry.StandardAccountId,
+        Sector = entry.Sector,
+        VoucherId = entry.VoucherId,
+        ElaboratedBy = entry.ElaboratedBy,
+        AuthorizedBy = entry.AuthorizedBy,
+        VoucherEntryId = entry.VoucherEntryId,
+        AccountNumber = entry.AccountNumber,
+        AccountName = entry.AccountName,
+        SubledgerAccountNumber = entry.SubledgerAccountNumber,
+        VoucherNumber = entry.VoucherNumber,
+        Debit = entry.Debit,
+        Credit = entry.Credit,
+        CurrentBalance = entry.CurrentBalance,
+        DebtorCreditor = entry.DebtorCreditor,
+        AccountingDate = entry.AccountingDate,
+        RecordingDate = entry.RecordingDate,
+        Concept = EmpiriaString.Clean(entry.Concept),
+        IsCurrentBalance = entry.IsCurrentBalance,
+        HasParentPostingEntry = entry.HasParentPostingEntry,
+        IsParentPostingEntry = entry.IsParentPostingEntry,
+      };
     }
 
     internal void Sum(AccountStatementEntry entry) {

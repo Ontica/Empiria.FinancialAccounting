@@ -35,29 +35,29 @@ namespace Empiria.FinancialAccounting.BanobrasIntegration.TransactionSlips.UseCa
     #region Importers
 
     public TransactionSlipDto GetTransactionSlip(string transactionSlipUID) {
-      Assertion.Require(transactionSlipUID, "transactionSlipUID");
+      Assertion.Require(transactionSlipUID, nameof(transactionSlipUID));
 
-      TransactionSlip transactionSlip = TransactionSlip.Parse(transactionSlipUID);
+      TransactionSlip slips = TransactionSlip.Parse(transactionSlipUID);
 
-      return TransactionSlipMapper.Map(transactionSlip);
+      return TransactionSlipMapper.Map(slips);
     }
 
 
-    public FixedList<TransactionSlipDto> GetTransactionSlipsList(SearchTransactionSlipsCommand command) {
-      Assertion.Require(command, "command");
+    public FixedList<TransactionSlipDto> GetTransactionSlipsList(TransactionSlipsQuery query) {
+      Assertion.Require(query, nameof(query));
 
-      FixedList<TransactionSlip> transactionSlipsList = TransactionSlipSearcher.Search(command);
+      FixedList<TransactionSlip> slips = TransactionSlipSearcher.Search(query);
 
-      return TransactionSlipMapper.Map(transactionSlipsList, true);
+      return TransactionSlipMapper.Map(slips, true);
     }
 
 
-    public FixedList<TransactionSlipDescriptorDto> SearchTransactionSlips(SearchTransactionSlipsCommand command) {
-      Assertion.Require(command, "command");
+    public FixedList<TransactionSlipDescriptorDto> SearchTransactionSlips(TransactionSlipsQuery query) {
+      Assertion.Require(query, nameof(query));
 
-      FixedList<TransactionSlip> transactionSlipsList = TransactionSlipSearcher.Search(command);
+      FixedList<TransactionSlip> slips = TransactionSlipSearcher.Search(query);
 
-      return TransactionSlipMapper.MapToDescriptors(transactionSlipsList);
+      return TransactionSlipMapper.MapToDescriptors(slips);
     }
 
 

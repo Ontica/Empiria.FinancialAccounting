@@ -12,7 +12,7 @@ using System;
 namespace Empiria.FinancialAccounting.Reporting.Adapters {
 
   /// <summary>Command payload used to build voucher list report.</summary>
-  public class ListadoPolizasCommand {
+  public class ListadoPolizasQuery {
 
 
     public string AccountsChartUID {

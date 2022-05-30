@@ -19,17 +19,19 @@ namespace Empiria.FinancialAccounting.BanobrasIntegration.TransactionSlips {
   /// <summary>Provides search services over transaction slips (volantes).</summary>
   internal class TransactionSlipSearcher {
 
-    private readonly SearchTransactionSlipsCommand _command;
+    private readonly TransactionSlipsQuery _query;
 
     #region Constructors and parsers
 
-    private TransactionSlipSearcher(SearchTransactionSlipsCommand command) {
-      _command = command;
+    private TransactionSlipSearcher(TransactionSlipsQuery query) {
+      _query = query;
     }
 
 
-    static internal FixedList<TransactionSlip> Search(SearchTransactionSlipsCommand command) {
-      var searcher = new TransactionSlipSearcher(command);
+    static internal FixedList<TransactionSlip> Search(TransactionSlipsQuery query) {
+      Assertion.Require("query", nameof(query));
+
+      var searcher = new TransactionSlipSearcher(query);
 
       return searcher.ExecuteSearch();
     }
@@ -42,7 +44,7 @@ namespace Empiria.FinancialAccounting.BanobrasIntegration.TransactionSlips {
     private FixedList<TransactionSlip> ExecuteSearch() {
       string filter = FilterString();
 
-      if (_command.Status == TransactionSlipStatus.Pending) {
+      if (_query.Status == TransactionSlipStatus.Pending) {
         return TransactionSlipData.GetPendingTransactionSlips(filter);
       } else {
         return TransactionSlipData.GetProcessedTransactionSlips(filter);
@@ -67,7 +69,7 @@ namespace Empiria.FinancialAccounting.BanobrasIntegration.TransactionSlips {
 
 
     private string AccountsChartFilter() {
-      var accountsChart = AccountsChart.Parse(_command.AccountsChartUID);
+      var accountsChart = AccountsChart.Parse(_query.AccountsChartUID);
 
       return $"ENC_TIPO_CONT = {accountsChart.Id}";
     }
@@ -76,7 +78,7 @@ namespace Empiria.FinancialAccounting.BanobrasIntegration.TransactionSlips {
     private string DatePeriodFilter() {
       string fieldName;
 
-      switch (_command.DateSearchField) {
+      switch (_query.DateSearchField) {
         case DateSearchField.AccountingDate:
           fieldName = "ENC_FECHA_VOL";
           break;
@@ -91,13 +93,13 @@ namespace Empiria.FinancialAccounting.BanobrasIntegration.TransactionSlips {
           throw Assertion.EnsureNoReachThisCode();
       }
 
-      return $"{CommonMethods.FormatSqlDbDate(_command.FromDate)} <= {fieldName} " +
-             $"AND {fieldName} <= {CommonMethods.FormatSqlDbDate(_command.ToDate)}";
+      return $"{CommonMethods.FormatSqlDbDate(_query.FromDate)} <= {fieldName} " +
+             $"AND {fieldName} <= {CommonMethods.FormatSqlDbDate(_query.ToDate)}";
     }
 
 
     private string StatusFilter() {
-      switch (_command.Status) {
+      switch (_query.Status) {
         case TransactionSlipStatus.Pending:
           return String.Empty;
 
@@ -117,7 +119,7 @@ namespace Empiria.FinancialAccounting.BanobrasIntegration.TransactionSlips {
 
 
     private string TransactionalSystemFilter() {
-      var system = TransactionalSystem.Parse(_command.SystemUID);
+      var system = TransactionalSystem.Parse(_query.SystemUID);
 
       return $"ENC_SISTEMA = {system.SourceSystemId}";
     }

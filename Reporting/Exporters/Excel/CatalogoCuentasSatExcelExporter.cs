@@ -69,7 +69,7 @@ namespace Empiria.FinancialAccounting.Reporting.Exporters.Excel {
     private void SetHeader(ExcelFile excelFile) {
       excelFile.SetCell($"A2", _template.Title);
 
-      DateTime toDate = _reportData.Command.ToDate;
+      DateTime toDate = _reportData.Query.ToDate;
 
       var subTitle = $"Al {toDate.ToString("dd/MMM/yyyy")}";
 

@@ -51,15 +51,15 @@ namespace Empiria.FinancialAccounting.Vouchers.UseCases {
       return VoucherMapper.MapEntry(voucherEntry);
     }
 
-    public FixedList<VoucherDescriptorDto> SearchVouchers(SearchVouchersCommand searchCommand) {
-      Assertion.Require(searchCommand, "searchCommand");
+    public FixedList<VoucherDescriptorDto> SearchVouchers(VouchersQuery query) {
+      Assertion.Require(query, nameof(query));
 
-      searchCommand.EnsureIsValid();
+      query.EnsureIsValid();
 
-      string filter = searchCommand.MapToFilterString();
-      string sort = searchCommand.MapToSortString();
+      string filter = query.MapToFilterString();
+      string sort = query.MapToSortString();
 
-      FixedList<Voucher> list = Voucher.GetList(filter, sort, searchCommand.PageSize);
+      FixedList<Voucher> list = Voucher.GetList(filter, sort, query.PageSize);
 
       return VoucherMapper.MapToVoucherDescriptor(list);
     }

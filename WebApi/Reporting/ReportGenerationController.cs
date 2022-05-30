@@ -28,7 +28,7 @@ namespace Empiria.FinancialAccounting.WebApi.Reporting {
     [HttpPost]
     [Route("v2/financial-accounting/reporting/{reportType}/data")]
     public SingleObjectModel BuildReport([FromUri] string reportType,
-                                         [FromBody] BuildReportCommand command) {
+                                         [FromBody] ReportBuilderQuery command) {
       base.RequireBody(command);
 
       command.ReportType = reportType;
@@ -44,7 +44,7 @@ namespace Empiria.FinancialAccounting.WebApi.Reporting {
     [HttpPost]
     [Route("v2/financial-accounting/reporting/{reportType}/export")]
     public SingleObjectModel ExportReportData([FromUri] string reportType,
-                                              [FromBody] BuildReportCommand command) {
+                                              [FromBody] ReportBuilderQuery command) {
       base.RequireBody(command);
 
       command.ReportType = reportType;

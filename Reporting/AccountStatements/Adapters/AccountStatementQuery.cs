@@ -15,9 +15,9 @@ using Empiria.FinancialAccounting.BalanceEngine.BalanceExplorer.Adapters;
 namespace Empiria.FinancialAccounting.Reporting.Adapters {
 
   /// <summary>Command payload used to build account statement.</summary>
-  public class AccountStatementCommand {
+  public class AccountStatementQuery {
 
-    public BalancesQuery Command {
+    public BalancesQuery BalancesQuery {
       get; internal set;
     } = new BalancesQuery();
 

@@ -19,12 +19,12 @@ namespace Empiria.FinancialAccounting.Reporting {
 
     #region Public methods
 
-    public ReportDataDto Build(BuildReportCommand command) {
-      Assertion.Require(command, "command");
+    public ReportDataDto Build(ReportBuilderQuery query) {
+      Assertion.Require(query, nameof(query));
 
-      ListadoPolizasPorCuentaBuilder vouchers = BuildVouchersByAccount(command);
+      FixedList<IVouchersByAccountEntry> vouchersByAccount = BuildVouchersByAccount(query);
 
-      return MapToReportDataDto(command, vouchers);
+      return MapToReportDataDto(query, vouchersByAccount);
     }
 
 
@@ -32,9 +32,9 @@ namespace Empiria.FinancialAccounting.Reporting {
 
     #region Private methods
 
-    private ListadoPolizasPorCuentaBuilder BuildVouchersByAccount(BuildReportCommand command) {
+    private FixedList<IVouchersByAccountEntry> BuildVouchersByAccount(ReportBuilderQuery query) {
 
-      var helper = new ListadoPolizasPorCuentaHelper(command);
+      var helper = new ListadoPolizasPorCuentaHelper(query);
 
       FixedList<AccountStatementEntry> vouchersList = helper.GetVoucherEntries();
 
@@ -48,29 +48,24 @@ namespace Empiria.FinancialAccounting.Reporting {
       FixedList<AccountStatementEntry> returnedEntries = helper.CombineVouchersWithTotalByCurrency(
                                                           orderingVouchers, totalsByCurrency);
 
-      var returnedVouchers = new FixedList<IVouchersByAccountEntry>(
-                                  returnedEntries.Select(x => (IVouchersByAccountEntry) x));
-
-      ListadoPolizasPorCuentaBuilder vouchers = new ListadoPolizasPorCuentaBuilder(command, returnedVouchers);
-
-      return vouchers;
+      return returnedEntries.Select(x => (IVouchersByAccountEntry) x)
+                            .ToFixedList();
     }
 
 
-    private static FixedList<DataTableColumn> GetReportColumns(BuildReportCommand command) {
-      List<DataTableColumn> columns = new List<DataTableColumn>();
+    private static FixedList<DataTableColumn> GetReportColumns(ReportBuilderQuery query) {
+      var columns = new List<DataTableColumn>();
 
       columns.Add(new DataTableColumn("ledgerNumber", "Cont", "text"));
       columns.Add(new DataTableColumn("currencyCode", "Mon", "text"));
       columns.Add(new DataTableColumn("accountNumber", "Cuenta", "text-nowrap"));
       columns.Add(new DataTableColumn("sectorCode", "Sct", "text"));
-      if (command.WithSubledgerAccount) {
+      if (query.WithSubledgerAccount) {
         columns.Add(new DataTableColumn("subledgerAccountNumber", "Auxiliar", "text-nowrap"));
       }
       columns.Add(new DataTableColumn("voucherNumber", "No. Poliza", "text-nowrap"));
       columns.Add(new DataTableColumn("debit", "Cargo", "decimal"));
       columns.Add(new DataTableColumn("credit", "Abono", "decimal"));
-      //columns.Add(new DataTableColumn("currentBalance", "Saldo actual", "decimal"));
       columns.Add(new DataTableColumn("accountingDate", "Afectación", "date"));
       columns.Add(new DataTableColumn("recordingDate", "Registro", "date"));
       columns.Add(new DataTableColumn("concept", "Concepto", "text-nowrap"));
@@ -81,20 +76,17 @@ namespace Empiria.FinancialAccounting.Reporting {
     }
 
 
-    static private ReportDataDto MapToReportDataDto(BuildReportCommand command, 
-                                                    ListadoPolizasPorCuentaBuilder vouchers) {
-
+    static private ReportDataDto MapToReportDataDto(ReportBuilderQuery query,
+                                                    FixedList<IVouchersByAccountEntry> vouchers) {
       return new ReportDataDto {
-        Command = command,
-        Columns = GetReportColumns(command),
-        Entries = MapToReportDataEntries(vouchers.Entries, command)
+        Query = query,
+        Columns = GetReportColumns(query),
+        Entries = MapToReportDataEntries(vouchers)
       };
     }
 
 
-    private static FixedList<IReportEntryDto> MapToReportDataEntries(
-                                                FixedList<IVouchersByAccountEntry> entries,
-                                                BuildReportCommand command) {
+    private static FixedList<IReportEntryDto> MapToReportDataEntries(FixedList<IVouchersByAccountEntry> entries) {
       var mappedItems = entries.Select((x) => MapToVoucherEntry((AccountStatementEntry) x));
 
       return new FixedList<IReportEntryDto>(mappedItems);
@@ -112,21 +104,21 @@ namespace Empiria.FinancialAccounting.Reporting {
         AccountNumber = voucher.ItemType == TrialBalanceItemType.Entry ?
                         voucher.AccountNumber : voucher.AccountName,
         AccountName = voucher.AccountName,
-        SubledgerAccountNumber = voucher.SubledgerAccountNumber != "0" && 
+        SubledgerAccountNumber = voucher.SubledgerAccountNumber != "0" &&
                                  voucher.SubledgerAccountNumber != null ?
                                  voucher.SubledgerAccountNumber : "",
         SectorCode = voucher.ItemType == TrialBalanceItemType.Entry ?
                      voucher.Sector.Code : "",
         Debit = voucher.Debit,
         Credit = voucher.Credit,
-        VoucherNumber = voucher.ItemType == TrialBalanceItemType.Entry ? 
+        VoucherNumber = voucher.ItemType == TrialBalanceItemType.Entry ?
                         voucher.VoucherNumber : "",
         ElaboratedBy = voucher.ElaboratedBy.Name,
         AuthorizedBy = voucher.AuthorizedBy.Name,
         Concept = voucher.ItemType == TrialBalanceItemType.Entry ? voucher.Concept : "",
         AccountingDate = voucher.ItemType == TrialBalanceItemType.Entry ?
                          voucher.AccountingDate : ExecutionServer.DateMaxValue,
-      
+
         RecordingDate = voucher.ItemType == TrialBalanceItemType.Entry ?
                         voucher.RecordingDate : ExecutionServer.DateMaxValue,
         ItemType = voucher.ItemType

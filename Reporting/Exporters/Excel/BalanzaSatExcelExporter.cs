@@ -61,7 +61,7 @@ namespace Empiria.FinancialAccounting.Reporting.Exporters.Excel {
         i++;
       }
 
-      if (_reportData.Command.SendType == SendType.N) {
+      if (_reportData.Query.SendType == SendType.N) {
         excelFile.RemoveColumn("F");
       }
     }
@@ -70,8 +70,8 @@ namespace Empiria.FinancialAccounting.Reporting.Exporters.Excel {
     private void SetHeader(ExcelFile excelFile) {
       excelFile.SetCell($"A2", _template.Title);
 
-      DateTime fromDate = new DateTime(_reportData.Command.ToDate.Year, _reportData.Command.ToDate.Month, 1);
-      DateTime toDate = _reportData.Command.ToDate;
+      DateTime fromDate = new DateTime(_reportData.Query.ToDate.Year, _reportData.Query.ToDate.Month, 1);
+      DateTime toDate = _reportData.Query.ToDate;
 
       var subTitle = $"Del {fromDate.ToString("dd/MMM/yyyy")} al {toDate.ToString("dd/MMM/yyyy")}";
 

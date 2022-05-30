@@ -20,15 +20,15 @@ namespace Empiria.FinancialAccounting.Reporting.Builders {
 
     #region Public methods
 
-    public ReportDataDto Build(BuildReportCommand command) {
-      Assertion.Require(command, "command");
+    public ReportDataDto Build(ReportBuilderQuery query) {
+      Assertion.Require(query, nameof(query));
 
-      AccountsQuery accountsQuery = MapToAccountsQuery(command);
+      AccountsQuery accountsQuery = MapToAccountsQuery(query);
 
       using (var usecases = AccountsChartUseCases.UseCaseInteractor()) {
-        AccountsChartDto accountsChart = usecases.SearchAccounts(command.AccountsChartUID, accountsQuery);
+        AccountsChartDto accountsChart = usecases.SearchAccounts(query.AccountsChartUID, accountsQuery);
 
-        return MapToReportDataDto(command, accountsChart.Accounts);
+        return MapToReportDataDto(query, accountsChart.Accounts);
       }
     }
 
@@ -38,9 +38,9 @@ namespace Empiria.FinancialAccounting.Reporting.Builders {
 
     #region Private methods
 
-    static private AccountsQuery MapToAccountsQuery(BuildReportCommand command) {
+    static private AccountsQuery MapToAccountsQuery(ReportBuilderQuery query) {
       return new AccountsQuery {
-        Date = command.ToDate
+        Date = query.ToDate
       };
     }
 
@@ -61,12 +61,12 @@ namespace Empiria.FinancialAccounting.Reporting.Builders {
     }
 
 
-    static private ReportDataDto MapToReportDataDto(BuildReportCommand command,
+    static private ReportDataDto MapToReportDataDto(ReportBuilderQuery query,
                                                     FixedList<AccountDescriptorDto> accounts) {
       return new ReportDataDto {
-        Command = command,
+        Query = query,
         Columns = GetReportColumns(),
-        Entries = MapToReportDataEntries(accounts, command.ToDate)
+        Entries = MapToReportDataEntries(accounts, query.ToDate)
       };
     }
 

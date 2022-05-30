@@ -48,8 +48,8 @@ namespace Empiria.FinancialAccounting.Reporting.Exporters.Excel {
     private void SetHeader(ExcelFile excelFile) {
       excelFile.SetCell($"A2", _template.Title);
 
-      var subTitle = $"Del {_reportData.Command.FromDate.ToString("dd/MMM/yyyy")} al " +
-                     $"{_reportData.Command.ToDate.ToString("dd/MMM/yyyy")}";
+      var subTitle = $"Del {_reportData.Query.FromDate.ToString("dd/MMM/yyyy")} al " +
+                     $"{_reportData.Query.ToDate.ToString("dd/MMM/yyyy")}";
 
       excelFile.SetCell($"A3", subTitle);
     }
@@ -84,7 +84,7 @@ namespace Empiria.FinancialAccounting.Reporting.Exporters.Excel {
 
         i++;
       }
-      if (!_reportData.Command.WithSubledgerAccount) {
+      if (!_reportData.Query.WithSubledgerAccount) {
         excelFile.RemoveColumn("F");
       }
     }

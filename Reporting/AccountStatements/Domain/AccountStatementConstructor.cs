@@ -18,9 +18,9 @@ namespace Empiria.FinancialAccounting.Reporting {
   /// <summary>Provides services to generate vouchers by account.</summary>
   internal class AccountStatementConstructor {
 
-    private readonly AccountStatementCommand AccountStatementCommand;
+    private readonly AccountStatementQuery AccountStatementCommand;
 
-    internal AccountStatementConstructor(AccountStatementCommand accountStatementCommand) {
+    internal AccountStatementConstructor(AccountStatementQuery accountStatementCommand) {
       Assertion.Require(accountStatementCommand, "accountStatementCommand");
 
       AccountStatementCommand = accountStatementCommand;
@@ -32,7 +32,7 @@ namespace Empiria.FinancialAccounting.Reporting {
 
 
     internal AccountStatement Build() {
-      if (!AccountStatementCommand.Command.UseCache) {
+      if (!AccountStatementCommand.BalancesQuery.UseCache) {
         return GenerateAccountStatement();
       }
 
@@ -52,8 +52,8 @@ namespace Empiria.FinancialAccounting.Reporting {
       var helper = new AccountStatementHelper(AccountStatementCommand);
       bool? isBalance = true;
 
-      if (AccountStatementCommand.Command.TrialBalanceType == TrialBalanceType.BalanzaValorizadaComparativa ||
-          AccountStatementCommand.Command.TrialBalanceType == TrialBalanceType.BalanzaDolarizada) {
+      if (AccountStatementCommand.BalancesQuery.TrialBalanceType == TrialBalanceType.BalanzaValorizadaComparativa ||
+          AccountStatementCommand.BalancesQuery.TrialBalanceType == TrialBalanceType.BalanzaDolarizada) {
         isBalance = null;
       }
 
@@ -76,7 +76,7 @@ namespace Empiria.FinancialAccounting.Reporting {
 
       string title = helper.GetTitle();
 
-      return new AccountStatement(AccountStatementCommand.Command, returnedVoucherEntries, title);
+      return new AccountStatement(AccountStatementCommand.BalancesQuery, returnedVoucherEntries, title);
     }
 
 

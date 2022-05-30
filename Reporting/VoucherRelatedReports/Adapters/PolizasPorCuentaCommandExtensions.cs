@@ -16,8 +16,8 @@ namespace Empiria.FinancialAccounting.Reporting.Adapters {
   internal class PolizasPorCuentaCommandExtensions {
 
 
-    internal PolizaCommandData MapToPolizaCommandData(BuildReportCommand command) {
-      var clauses = new ListadoPolizasPorCuentaClausesHelper(command);
+    internal PolizaCommandData MapToPolizaCommandData(ReportBuilderQuery query) {
+      var clauses = new ListadoPolizasPorCuentaClausesHelper(query);
 
       return clauses.GetPolizasCommandData();
     }
@@ -25,10 +25,10 @@ namespace Empiria.FinancialAccounting.Reporting.Adapters {
 
     private class ListadoPolizasPorCuentaClausesHelper {
 
-      private readonly BuildReportCommand _command;
+      private readonly ReportBuilderQuery _query;
 
-      internal ListadoPolizasPorCuentaClausesHelper(BuildReportCommand command) {
-        _command = command;
+      internal ListadoPolizasPorCuentaClausesHelper(ReportBuilderQuery query) {
+        _query = query;
       }
 
 
@@ -36,12 +36,12 @@ namespace Empiria.FinancialAccounting.Reporting.Adapters {
 
 
       internal PolizaCommandData GetPolizasCommandData() {
-        var accountsChart = AccountsChart.Parse(_command.AccountsChartUID);
+        var accountsChart = AccountsChart.Parse(_query.AccountsChartUID);
         var commandData = new PolizaCommandData();
 
         commandData.AccountsChart = accountsChart;
-        commandData.FromDate = _command.FromDate;
-        commandData.ToDate = _command.ToDate;
+        commandData.FromDate = _query.FromDate;
+        commandData.ToDate = _query.ToDate;
         commandData.Filters = GetFilters();
         commandData.Fields = GetFields();
         commandData.Grouping = GetGroupingClause();
@@ -57,15 +57,15 @@ namespace Empiria.FinancialAccounting.Reporting.Adapters {
 
 
       private string GetAccountFilter() {
-        if (_command.AccountNumber != string.Empty) {
-          return $"NUMERO_CUENTA_ESTANDAR LIKE '{_command.AccountNumber}%'";
+        if (_query.AccountNumber != string.Empty) {
+          return $"NUMERO_CUENTA_ESTANDAR LIKE '{_query.AccountNumber}%'";
         }
         return string.Empty;
       }
 
 
       private string GetFields() {
-        if (_command.WithSubledgerAccount) {
+        if (_query.WithSubledgerAccount) {
           return "ID_MAYOR, ID_MONEDA, ID_CUENTA_ESTANDAR, ID_SECTOR, ID_TRANSACCION, ID_ELABORADA_POR, " +
                "ID_AUTORIZADA_POR, ID_MOVIMIENTO, NUMERO_CUENTA_ESTANDAR, NOMBRE_CUENTA_ESTANDAR, " +
                "NUMERO_CUENTA_AUXILIAR, NUMERO_TRANSACCION, NATURALEZA, FECHA_AFECTACION, FECHA_REGISTRO, " +
@@ -81,20 +81,18 @@ namespace Empiria.FinancialAccounting.Reporting.Adapters {
 
       private string GetFilters() {
         string account = GetAccountFilter();
-        //string subledgerAccount = GetSubledgerAccountFilter();
         string ledgers = GetLedgerFilter();
 
         var filter = new Filter(account);
-        //filter.AppendAnd(subledgerAccount);
-        filter.AppendAnd(ledgers);
 
+        filter.AppendAnd(ledgers);
 
         return filter.ToString().Length > 0 ? $"AND {filter}" : "";
       }
 
 
       private string GetGroupingClause() {
-        if (_command.WithSubledgerAccount) {
+        if (_query.WithSubledgerAccount) {
           return "ID_MAYOR, ID_MONEDA, ID_CUENTA_ESTANDAR, ID_SECTOR, ID_TRANSACCION, ID_ELABORADA_POR, " +
                "ID_AUTORIZADA_POR, ID_MOVIMIENTO, NUMERO_CUENTA_ESTANDAR, NOMBRE_CUENTA_ESTANDAR, " +
                "NUMERO_CUENTA_AUXILIAR, NUMERO_TRANSACCION, NATURALEZA, FECHA_AFECTACION, FECHA_REGISTRO, " +
@@ -109,8 +107,8 @@ namespace Empiria.FinancialAccounting.Reporting.Adapters {
 
 
       private string GetLedgerFilter() {
-        if (_command.Ledgers.Length > 0) {
-          int[] ledgerIds = _command.Ledgers
+        if (_query.Ledgers.Length > 0) {
+          int[] ledgerIds = _query.Ledgers
                         .Select(uid => Ledger.Parse(uid).Id).ToArray();
 
           return $"ID_MAYOR IN ({String.Join(", ", ledgerIds)})";
@@ -120,8 +118,8 @@ namespace Empiria.FinancialAccounting.Reporting.Adapters {
 
 
       private string GetSubledgerAccountFilter() {
-        if (_command.SubledgerAccountNumber != string.Empty) {
-          return $"NUMERO_CUENTA_AUXILIAR = '{_command.SubledgerAccountNumber}'";
+        if (_query.SubledgerAccountNumber != string.Empty) {
+          return $"NUMERO_CUENTA_AUXILIAR = '{_query.SubledgerAccountNumber}'";
         }
 
         return string.Empty;

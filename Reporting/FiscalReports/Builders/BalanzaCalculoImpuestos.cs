@@ -21,15 +21,15 @@ namespace Empiria.FinancialAccounting.Reporting.Builders {
 
     #region Public methods
 
-    public ReportDataDto Build(BuildReportCommand command) {
-      Assertion.Require(command, "command");
+    public ReportDataDto Build(ReportBuilderQuery query) {
+      Assertion.Require(query, nameof(query));
 
       using (var usecases = TrialBalanceUseCases.UseCaseInteractor()) {
-        TrialBalanceQuery query = MapToTrialBalanceQuery(command);
+        TrialBalanceQuery trialBalanceQuery = MapToTrialBalanceQuery(query);
 
-        TrialBalanceDto trialBalance = usecases.BuildTrialBalance(query);
+        TrialBalanceDto trialBalance = usecases.BuildTrialBalance(trialBalanceQuery);
 
-        return MapToReportDataDto(command, trialBalance);
+        return MapToReportDataDto(query, trialBalance);
       }
     }
 
@@ -64,43 +64,43 @@ namespace Empiria.FinancialAccounting.Reporting.Builders {
     }
 
 
-    static private TrialBalanceQuery MapToTrialBalanceQuery(BuildReportCommand command) {
+    static private TrialBalanceQuery MapToTrialBalanceQuery(ReportBuilderQuery query) {
       return new TrialBalanceQuery {
         TrialBalanceType = TrialBalanceType.Balanza,
-        AccountsChartUID = AccountsChart.Parse(command.AccountsChartUID).UID,
+        AccountsChartUID = AccountsChart.Parse(query.AccountsChartUID).UID,
         BalancesType = BalancesType.WithCurrentBalanceOrMovements,
         UseDefaultValuation = true,
         ConsolidateBalancesToTargetCurrency = false,
         ShowCascadeBalances = false,
         InitialPeriod = new BalancesPeriod {
-          FromDate = new DateTime(command.ToDate.Year, command.ToDate.Month, 1),
-          ToDate = command.ToDate
+          FromDate = new DateTime(query.ToDate.Year, query.ToDate.Month, 1),
+          ToDate = query.ToDate
         },
         IsOperationalReport = true,
       };
     }
 
 
-    static private ReportDataDto MapToReportDataDto(BuildReportCommand command,
+    static private ReportDataDto MapToReportDataDto(ReportBuilderQuery query,
                                                     TrialBalanceDto trialBalance) {
       return new ReportDataDto {
-        Command = command,
+        Query = query,
         Columns = GetReportColumns(),
-        Entries = MapToReportDataEntries(trialBalance.Entries, command)
+        Entries = MapToReportDataEntries(trialBalance.Entries, query)
       };
     }
 
 
     static private FixedList<IReportEntryDto> MapToReportDataEntries(FixedList<ITrialBalanceEntryDto> list,
-                                                                     BuildReportCommand command) {
-      var mappedItems = list.Select((x) => MapToBalanzaCalculoImpuestosEntry((TrialBalanceEntryDto) x, command));
+                                                                     ReportBuilderQuery query) {
+      var mappedItems = list.Select((x) => MapToBalanzaCalculoImpuestosEntry((TrialBalanceEntryDto) x, query));
 
       return new FixedList<IReportEntryDto>(mappedItems);
     }
 
 
     static private BalanzaCalculoImpuestosEntry MapToBalanzaCalculoImpuestosEntry(TrialBalanceEntryDto entry,
-                                                                                  BuildReportCommand command) {
+                                                                                  ReportBuilderQuery query) {
       return new BalanzaCalculoImpuestosEntry {
 
         Moneda = entry.CurrencyCode,
@@ -116,7 +116,7 @@ namespace Empiria.FinancialAccounting.Reporting.Builders {
                      (entry.Debit != 0 || entry.Credit != 0) ?
                       "*" : "",
 
-        Contabilidad = AccountsChart.Parse(command.AccountsChartUID).Name,
+        Contabilidad = AccountsChart.Parse(query.AccountsChartUID).Name,
         FechaConsulta = DateTime.Now,
 
         VBxcoEquivalencia = entry.ExchangeRate,

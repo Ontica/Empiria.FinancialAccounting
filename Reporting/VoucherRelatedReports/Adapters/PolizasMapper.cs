@@ -18,66 +18,57 @@ namespace Empiria.FinancialAccounting.Reporting.Adapters {
 
     #region Public methods
 
-    static internal PolizasDto Map(ListadoPolizasBuilder polizas) {
-
+    static internal PolizasDto Map(FixedList<IPolizaEntry> polizas, ListadoPolizasQuery query) {
       return new PolizasDto {
-        Command = polizas.Command,
-        Entries = Map(polizas.Entries)
+        Query = query,
+        Entries = Map(polizas)
       };
-
     }
 
 
     static internal PolizaEntry MapToPolizaEntry(PolizaEntry entry) {
-      var newEntry = new PolizaEntry();
-
-      newEntry.Ledger = entry.Ledger;
-      newEntry.Number = entry.Number;
-      newEntry.AccountingDate = entry.AccountingDate;
-      newEntry.RecordingDate = entry.RecordingDate;
-      newEntry.ElaboratedBy = entry.ElaboratedBy;
-      newEntry.Concept = EmpiriaString.Clean(entry.Concept);
-      newEntry.Debit = entry.Debit;
-      newEntry.Credit = entry.Credit;
-      newEntry.ItemType = entry.ItemType;
-
-      return newEntry;
+      return new PolizaEntry {
+        ItemType = entry.ItemType,
+        Ledger = entry.Ledger,
+        Number = entry.Number,
+        AccountingDate = entry.AccountingDate,
+        RecordingDate = entry.RecordingDate,
+        ElaboratedBy = entry.ElaboratedBy,
+        Concept = EmpiriaString.Clean(entry.Concept),
+        Debit = entry.Debit,
+        Credit = entry.Credit
+      };
     }
 
     #endregion Public methods
 
 
-    #region Private methods
+    #region Helpers
 
     static private FixedList<IPolizasDto> Map(FixedList<IPolizaEntry> list) {
-
       var mappedItems = list.Select((x) => MapToPolizas((PolizaEntry) x));
-      return new FixedList<IPolizasDto>(mappedItems);
 
+      return new FixedList<IPolizasDto>(mappedItems);
     }
 
 
     static private PolizasEntryDto MapToPolizas(PolizaEntry entry) {
-
-      var dto = new PolizasEntryDto();
-
-      dto.LedgerNumber = entry.Ledger.Number ?? Ledger.Empty.Number;
-      dto.LedgerName = entry.Ledger.FullName ?? Ledger.Empty.FullName;
-      dto.VoucherNumber = entry.Number;
-      dto.AccountingDate = entry.AccountingDate;
-      dto.RecordingDate = entry.RecordingDate;
-      dto.ElaboratedBy = entry.ElaboratedBy.Name;
-      dto.Concept = EmpiriaString.Clean(entry.Concept);
-      dto.Debit = entry.Debit;
-      dto.Credit = entry.Credit;
-      dto.VouchersByLedger = entry.VouchersByLedger;
-      dto.ItemType = entry.ItemType;
-
-      return dto;
+      return new PolizasEntryDto() {
+        LedgerNumber = entry.Ledger.Number ?? Ledger.Empty.Number,
+        LedgerName = entry.Ledger.FullName ?? Ledger.Empty.FullName,
+        VoucherNumber = entry.Number,
+        AccountingDate = entry.AccountingDate,
+        RecordingDate = entry.RecordingDate,
+        ElaboratedBy = entry.ElaboratedBy.Name,
+        Concept = EmpiriaString.Clean(entry.Concept),
+        Debit = entry.Debit,
+        Credit = entry.Credit,
+        VouchersByLedger = entry.VouchersByLedger,
+        ItemType = entry.ItemType,
+      };
     }
 
-    #endregion Private methods
-
+    #endregion Helpers
 
   } // class PolizasMapper
 

@@ -1,18 +1,18 @@
 ﻿/* Empiria Financial *****************************************************************************************
 *                                                                                                            *
 *  Module   : Reporting Services                            Component : Interface adapters                   *
-*  Assembly : FinancialAccounting.Reporting.dll             Pattern   : Command payload                      *
-*  Type     : BuildReportCommand                            License   : Please read LICENSE.txt file         *
+*  Assembly : FinancialAccounting.Reporting.dll             Pattern   : Query payload                        *
+*  Type     : ReportBuilderQuery                            License   : Please read LICENSE.txt file         *
 *                                                                                                            *
-*  Summary  : Command payload used to generate financial accounting reports.                                 *
+*  Summary  : Query payload used to generate financial accounting reports.                                   *
 *                                                                                                            *
 ************************* Copyright(c) La Vía Óntica SC, Ontica LLC and contributors. All rights reserved. **/
 using System;
 
 namespace Empiria.FinancialAccounting.Reporting {
 
-  /// <summary>Command payload used to generate financial accounting reports.</summary>
-  public class BuildReportCommand {
+  /// <summary>Query payload used to generate financial accounting reports.</summary>
+  public class ReportBuilderQuery {
 
     public string ReportType {
       get; set;
@@ -59,7 +59,7 @@ namespace Empiria.FinancialAccounting.Reporting {
       get; set;
     } = false;
 
-  } // class BuildReportCommand
+  } // class ReportBuilderQuery
 
 
   public enum SendType {

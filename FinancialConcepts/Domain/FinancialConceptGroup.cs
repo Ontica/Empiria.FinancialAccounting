@@ -172,7 +172,7 @@ namespace Empiria.FinancialAccounting.FinancialConcepts {
     }
 
 
-    internal FinancialConcept InsertFrom(FinancialConceptEditionCommand command) {
+    internal FinancialConcept InsertFrom(EditFinancialConceptCommand command) {
       Assertion.Require(command, nameof(command));
 
       if (IsFinancialConceptCodeRegistered(command.Code, FinancialConcept.Empty)) {
@@ -207,7 +207,7 @@ namespace Empiria.FinancialAccounting.FinancialConcepts {
     }
 
 
-    internal FinancialConcept UpdateFrom(FinancialConceptEditionCommand command) {
+    internal FinancialConcept UpdateFrom(EditFinancialConceptCommand command) {
       Assertion.Require(command, nameof(command));
 
       FinancialConcept concept = GetFinancialConcept(command.FinancialConceptUID);
@@ -232,7 +232,7 @@ namespace Empiria.FinancialAccounting.FinancialConcepts {
 
     #region Helpers
 
-    private int CalculatePositionFrom(FinancialConceptEditionCommand command,
+    private int CalculatePositionFrom(EditFinancialConceptCommand command,
                                       int currentPosition = -1) {
 
       switch (command.PositioningRule) {

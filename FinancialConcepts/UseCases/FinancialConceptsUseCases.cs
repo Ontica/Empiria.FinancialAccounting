@@ -42,7 +42,7 @@ namespace Empiria.FinancialAccounting.FinancialConcepts.UseCases {
     }
 
 
-    public FinancialConceptDto InsertFinancialConcept(FinancialConceptEditionCommand command) {
+    public FinancialConceptDto InsertFinancialConcept(EditFinancialConceptCommand command) {
       Assertion.Require(command, nameof(command));
 
       command.EnsureIsValid();
@@ -70,7 +70,7 @@ namespace Empiria.FinancialAccounting.FinancialConcepts.UseCases {
     }
 
 
-    public FinancialConceptDto UpdateFinancialConcept(FinancialConceptEditionCommand command) {
+    public FinancialConceptDto UpdateFinancialConcept(EditFinancialConceptCommand command) {
       Assertion.Require(command, nameof(command));
 
       command.EnsureIsValid();

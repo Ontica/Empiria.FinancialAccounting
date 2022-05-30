@@ -14,7 +14,7 @@ namespace Empiria.FinancialAccounting.Reporting {
   /// <summary>Common interface for all report data builders.</summary>
   internal interface IReportBuilder {
 
-    ReportDataDto Build(BuildReportCommand command);
+    ReportDataDto Build(ReportBuilderQuery query);
 
   }  // interface IReportBuilder
 

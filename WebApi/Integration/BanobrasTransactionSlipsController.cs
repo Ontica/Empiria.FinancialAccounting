@@ -27,17 +27,17 @@ namespace Empiria.FinancialAccounting.WebApi.BanobrasIntegration {
 
     [HttpPost]
     [Route("v2/financial-accounting/transaction-slips/export/{exportationType}")]
-    public SingleObjectModel ExportTransactionSlips([FromBody] SearchTransactionSlipsCommand command,
+    public SingleObjectModel ExportTransactionSlips([FromBody] TransactionSlipsQuery query,
                                                     [FromUri] string exportationType) {
 
-      base.RequireBody(command);
+      base.RequireBody(query);
 
       using (var usecases = TransactionSlipUseCases.UseCaseInteractor()) {
-        FixedList<TransactionSlipDto> transactionSlips = usecases.GetTransactionSlipsList(command);
+        FixedList<TransactionSlipDto> slips = usecases.GetTransactionSlipsList(query);
 
         var excelExporter = new ExcelExporterService();
 
-        FileReportDto excelFileDto = excelExporter.Export(transactionSlips, exportationType);
+        FileReportDto excelFileDto = excelExporter.Export(slips, exportationType);
 
         return new SingleObjectModel(base.Request, excelFileDto);
       }
@@ -49,23 +49,23 @@ namespace Empiria.FinancialAccounting.WebApi.BanobrasIntegration {
     public SingleObjectModel GetTransactionSlip([FromUri] string transactionSlipUID) {
 
       using (var usecases = TransactionSlipUseCases.UseCaseInteractor()) {
-        TransactionSlipDto transactionSlip = usecases.GetTransactionSlip(transactionSlipUID);
+        TransactionSlipDto slip = usecases.GetTransactionSlip(transactionSlipUID);
 
-        return new SingleObjectModel(base.Request, transactionSlip);
+        return new SingleObjectModel(base.Request, slip);
       }
     }
 
 
     [HttpPost]
     [Route("v2/financial-accounting/transaction-slips")]
-    public CollectionModel SearchTransactionSlips([FromBody] SearchTransactionSlipsCommand command) {
+    public CollectionModel SearchTransactionSlips([FromBody] TransactionSlipsQuery query) {
 
-      base.RequireBody(command);
+      base.RequireBody(query);
 
       using (var usecases = TransactionSlipUseCases.UseCaseInteractor()) {
-        FixedList<TransactionSlipDescriptorDto> result = usecases.SearchTransactionSlips(command);
+        FixedList<TransactionSlipDescriptorDto> slips = usecases.SearchTransactionSlips(query);
 
-        return new CollectionModel(base.Request, result);
+        return new CollectionModel(base.Request, slips);
       }
     }
 

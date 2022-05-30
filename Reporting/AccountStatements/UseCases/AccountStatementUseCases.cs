@@ -31,7 +31,7 @@ namespace Empiria.FinancialAccounting.Reporting.UseCases {
     #region Use cases
 
 
-    public AccountStatementDto BuildAccountStatement(AccountStatementCommand command) {
+    public AccountStatementDto BuildAccountStatement(AccountStatementQuery command) {
       Assertion.Require(command, "command");
 
       var vouchersConstructor = new AccountStatementConstructor(command);

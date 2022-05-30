@@ -32,19 +32,18 @@ namespace Empiria.FinancialAccounting.Reporting {
   /// <summary>Helper methods to build voucher list information.</summary>
   internal class ListadoPolizasHelper {
 
-    private readonly ListadoPolizasCommand _command;
+    private readonly ListadoPolizasQuery _query;
 
-    internal ListadoPolizasHelper(ListadoPolizasCommand command) {
-      Assertion.Require(command, "command");
+    internal ListadoPolizasHelper(ListadoPolizasQuery query) {
+      Assertion.Require(query, nameof(query));
 
-      _command = command;
+      _query = query;
     }
 
 
     #region Public methods
 
-    internal FixedList<PolizaEntry> GetListadoPolizasConTotales(FixedList<PolizaEntry> vouchers) {
-
+    internal FixedList<PolizaEntry> SetTotalsRows(FixedList<PolizaEntry> vouchers) {
       FixedList<PolizaEntry> totalByLedger = GetTotalByLedger(vouchers);
 
       FixedList<PolizaEntry> vouchersAndTotalByLedger = CombineTotalByLedgerAndVouchers(vouchers, totalByLedger);
@@ -59,9 +58,9 @@ namespace Empiria.FinancialAccounting.Reporting {
 
 
     internal FixedList<PolizaEntry> GetPolizaEntries() {
-      var commandExtensions = new PolizasCommandExtensions();
+      var commandExtensions = new ListadoPolizasQueryExtensions();
 
-      PolizaCommandData commandData = commandExtensions.MapToPolizaCommandData(_command);
+      PolizaCommandData commandData = commandExtensions.MapToPolizaCommandData(_query);
 
       FixedList<PolizaEntry> polizas = ListadoPolizasDataService.GetPolizasEntries(commandData);
 
@@ -99,7 +98,7 @@ namespace Empiria.FinancialAccounting.Reporting {
       if (totalOfVouchers != null) {
         returnedVouchers.Add(totalOfVouchers);
       }
-      
+
       return returnedVouchers.ToFixedList();
     }
 

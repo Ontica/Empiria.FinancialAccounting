@@ -54,7 +54,7 @@ namespace Empiria.FinancialAccounting.Tests.Vouchers {
 
     [Fact]
     public void Should_Search_Vouchers_With_Keywords() {
-      var command = new SearchVouchersCommand {
+      var command = new VouchersQuery {
         Keywords = "intereses"
       };
 

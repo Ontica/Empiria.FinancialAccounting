@@ -21,9 +21,9 @@ namespace Empiria.FinancialAccounting.Reporting {
   /// <summary>Helper methods to build vouchers by account information.</summary>
   internal class AccountStatementHelper {
 
-    private readonly AccountStatementCommand AccountStatementCommand;
+    private readonly AccountStatementQuery AccountStatementCommand;
 
-    internal AccountStatementHelper(AccountStatementCommand accountStatementCommand) {
+    internal AccountStatementHelper(AccountStatementQuery accountStatementCommand) {
       Assertion.Require(accountStatementCommand, "accountStatementCommand");
 
       AccountStatementCommand = accountStatementCommand;
@@ -183,7 +183,7 @@ namespace Empiria.FinancialAccounting.Reporting {
 
     private AccountStatementCommandData VouchersByAccountCommandDataMapped() {
 
-      var commandExtensions = new AccountStatementCommandExtensions(AccountStatementCommand);
+      var commandExtensions = new AccountStatementQueryExtensions(AccountStatementCommand);
       AccountStatementCommandData commandData = commandExtensions.MapToVouchersByAccountCommandData();
 
       return commandData;

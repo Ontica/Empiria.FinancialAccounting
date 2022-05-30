@@ -9,39 +9,41 @@
 ************************* Copyright(c) La Vía Óntica SC, Ontica LLC and contributors. All rights reserved. **/
 using System;
 using System.Linq;
+
 using Empiria.FinancialAccounting.BalanceEngine;
 using Empiria.FinancialAccounting.Reporting.Data;
 
 namespace Empiria.FinancialAccounting.Reporting.Adapters {
 
   /// <summary>Type extension methods for VouchersByAccountCommand.</summary>
-  internal class AccountStatementCommandExtensions {
+  internal class AccountStatementQueryExtensions {
 
-    private AccountStatementCommand _accountStatementCommand;
-    internal AccountStatementCommandExtensions(AccountStatementCommand accountStatementCommand) {
+    private readonly AccountStatementQuery _accountStatementCommand;
+
+    internal AccountStatementQueryExtensions(AccountStatementQuery accountStatementCommand) {
       _accountStatementCommand = accountStatementCommand;
     }
 
-    #region Public methods
+    #region Methods
 
     internal AccountStatementCommandData MapToVouchersByAccountCommandData() {
       var commandData = new AccountStatementCommandData();
-      var accountsChart = AccountsChart.Parse(_accountStatementCommand.Command.AccountsChartUID);
+
+      var accountsChart = AccountsChart.Parse(_accountStatementCommand.BalancesQuery.AccountsChartUID);
 
       commandData.AccountsChartId = accountsChart.Id;
-      commandData.FromDate = _accountStatementCommand.Command.InitialPeriod.FromDate;
-      commandData.ToDate = _accountStatementCommand.Command.InitialPeriod.ToDate;
+      commandData.FromDate = _accountStatementCommand.BalancesQuery.InitialPeriod.FromDate;
+      commandData.ToDate = _accountStatementCommand.BalancesQuery.InitialPeriod.ToDate;
       commandData.Filters = GetFilters();
       commandData.Fields = GetFields();
       commandData.Grouping = GetGroupingClause();
+
       return commandData;
     }
 
+    #endregion Methods
 
-    #endregion
-
-
-    #region Private methods
+    #region Helpers
 
     private string GetAccountFilter() {
       if (_accountStatementCommand.Entry.AccountNumberForBalances.Length > 0 &&
@@ -99,16 +101,16 @@ namespace Empiria.FinancialAccounting.Reporting.Adapters {
              "NUMERO_TRANSACCION, NATURALEZA, FECHA_AFECTACION, FECHA_REGISTRO, CONCEPTO_TRANSACCION";
     }
 
-    
+
     private string GetLedgerFilter() {
       if (_accountStatementCommand.Entry.LedgerUID.Length > 0) {
-        
+
         int ledgerId = Ledger.Parse(_accountStatementCommand.Entry.LedgerUID).Id;
         return $"ID_MAYOR = { ledgerId }";
-      
-      } else if (_accountStatementCommand.Command.Ledgers.Length > 0) {
-        
-        int[] ledgerIds = _accountStatementCommand.Command.Ledgers
+
+      } else if (_accountStatementCommand.BalancesQuery.Ledgers.Length > 0) {
+
+        int[] ledgerIds = _accountStatementCommand.BalancesQuery.Ledgers
                         .Select(uid => Ledger.Parse(uid).Id).ToArray();
 
         return $"ID_MAYOR IN ({String.Join(", ", ledgerIds)})";
@@ -134,9 +136,9 @@ namespace Empiria.FinancialAccounting.Reporting.Adapters {
 
 
     private string GetSubledgerAccountFilter() {
-      if (_accountStatementCommand.Command.TrialBalanceType == 
+      if (_accountStatementCommand.BalancesQuery.TrialBalanceType ==
             TrialBalanceType.SaldosPorAuxiliarConsultaRapida) {
-        
+
         if (_accountStatementCommand.Entry.SubledgerAccountNumber.Length > 1) {
           return $"NUMERO_CUENTA_AUXILIAR = '{_accountStatementCommand.Entry.SubledgerAccountNumber}'";
         }
@@ -145,19 +147,16 @@ namespace Empiria.FinancialAccounting.Reporting.Adapters {
 
         if (_accountStatementCommand.Entry.SubledgerAccountNumber.Length > 1) {
           return $"NUMERO_CUENTA_AUXILIAR = '{_accountStatementCommand.Entry.SubledgerAccountNumber}'";
-        } else if (_accountStatementCommand.Command.SubledgerAccount.Length > 1) {
-          return $"NUMERO_CUENTA_AUXILIAR = '{_accountStatementCommand.Command.SubledgerAccount}'";
+        } else if (_accountStatementCommand.BalancesQuery.SubledgerAccount.Length > 1) {
+          return $"NUMERO_CUENTA_AUXILIAR = '{_accountStatementCommand.BalancesQuery.SubledgerAccount}'";
         }
 
       }
-      
+
       return string.Empty;
     }
 
-
-    #endregion
-
-
+    #endregion Helpers
 
   } // class VouchersByAccountCommandExtensions
 

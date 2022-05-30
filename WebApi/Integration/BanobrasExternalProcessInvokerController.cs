@@ -24,7 +24,7 @@ namespace Empiria.FinancialAccounting.WebApi.BanobrasIntegration {
 
     [HttpPost]
     [Route("v2/financial-accounting/integration/external-processes/procesar-conciliacion-sic")]
-    public SingleObjectModel ProcesarConciliacionSIC([FromBody] ConcilacionSICExternalProcessCommand command) {
+    public SingleObjectModel ProcesarConciliacionSIC([FromBody] ExecuteConcilacionSICCommand command) {
 
       base.RequireBody(command);
 
@@ -38,7 +38,7 @@ namespace Empiria.FinancialAccounting.WebApi.BanobrasIntegration {
 
     [HttpPost]
     [Route("v2/financial-accounting/integration/external-processes/procesar-rentabilidad")]
-    public SingleObjectModel ProcesarRentabilidad([FromBody] RentabilidadExternalProcessCommand command) {
+    public SingleObjectModel ProcesarRentabilidad([FromBody] ExecuteRentabilidadCommand command) {
 
       base.RequireBody(command);
 

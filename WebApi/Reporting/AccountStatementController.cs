@@ -25,7 +25,7 @@ namespace Empiria.FinancialAccounting.WebApi.Reporting {
 
     [HttpPost]
     [Route("v2/financial-accounting/account-statement")]
-    public SingleObjectModel BuildAccountStatement([FromBody] AccountStatementCommand command) {
+    public SingleObjectModel BuildAccountStatement([FromBody] AccountStatementQuery command) {
 
       base.RequireBody(command);
 
@@ -40,7 +40,7 @@ namespace Empiria.FinancialAccounting.WebApi.Reporting {
 
     [HttpPost]
     [Route("v2/financial-accounting/account-statement/excel")]
-    public SingleObjectModel ExportAccountStatementToExcel([FromBody] AccountStatementCommand command) {
+    public SingleObjectModel ExportAccountStatementToExcel([FromBody] AccountStatementQuery command) {
 
       base.RequireBody(command);
 
