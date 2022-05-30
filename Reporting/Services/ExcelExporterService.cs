@@ -32,7 +32,7 @@ namespace Empiria.FinancialAccounting.Reporting {
     public FileReportDto Export(TrialBalanceDto trialBalance) {
       Assertion.Require(trialBalance, "trialBalance");
 
-      var templateUID = $"TrialBalanceTemplate.{trialBalance.Command.TrialBalanceType}";
+      var templateUID = $"TrialBalanceTemplate.{trialBalance.Query.TrialBalanceType}";
 
       var templateConfig = FileTemplateConfig.Parse(templateUID);
 
@@ -170,21 +170,21 @@ namespace Empiria.FinancialAccounting.Reporting {
     }
 
 
-    public FileReportDto Export(BalanceDto balance) {
-      Assertion.Require(balance, "balance");
+    public FileReportDto Export(BalancesDto dto) {
+      Assertion.Require(dto, nameof(dto));
 
-      var templateUID = $"BalanceTemplate.{balance.Command.TrialBalanceType}";
+      var templateUID = $"BalanceTemplate.{dto.Query.TrialBalanceType}";
 
-      if (balance.Command.ExportTo != BalanceEngine.FileReportVersion.V1) {
-        templateUID = $"BalanceTemplate.{balance.Command.TrialBalanceType}" +
-                      $"{balance.Command.ExportTo}";
+      if (dto.Query.ExportTo != BalanceEngine.FileReportVersion.V1) {
+        templateUID = $"BalanceTemplate.{dto.Query.TrialBalanceType}" +
+                      $"{dto.Query.ExportTo}";
       }
 
       var templateConfig = FileTemplateConfig.Parse(templateUID);
 
       var exporter = new BalanceExcelExporter(templateConfig);
 
-      ExcelFile excelFile = exporter.CreateExcelFile(balance);
+      ExcelFile excelFile = exporter.CreateExcelFile(dto);
 
       return excelFile.ToFileReportDto();
     }

@@ -10,7 +10,9 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+
 using Empiria.Collections;
+
 using Empiria.FinancialAccounting.BalanceEngine.Adapters;
 
 namespace Empiria.FinancialAccounting.BalanceEngine {
@@ -18,10 +20,10 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
   /// <summary>Helper methods to build balance with cascade accounting.</summary>
   internal class BalanceCascadeAccountingHelper {
 
-    private readonly TrialBalanceCommand _command;
+    private readonly TrialBalanceQuery _query;
 
-    public BalanceCascadeAccountingHelper(TrialBalanceCommand command) {
-      _command = command;
+    public BalanceCascadeAccountingHelper(TrialBalanceQuery query) {
+      _query = query;
     }
 
 
@@ -146,7 +148,7 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
     internal List<TrialBalanceEntry> GetAverageBalance(List<TrialBalanceEntry> trialBalance) {
       var returnedEntries = new List<TrialBalanceEntry>(trialBalance);
 
-      if (_command.WithAverageBalance) {
+      if (_query.WithAverageBalance) {
 
         foreach (var entry in returnedEntries.Where(a =>
                      a.ItemType == TrialBalanceItemType.BalanceTotalGroupDebtor ||
@@ -164,11 +166,11 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
 
           }
 
-          TimeSpan timeSpan = _command.InitialPeriod.ToDate - entry.LastChangeDate;
+          TimeSpan timeSpan = _query.InitialPeriod.ToDate - entry.LastChangeDate;
           int numberOfDays = timeSpan.Days + 1;
 
           entry.AverageBalance = ((numberOfDays * debtorCreditor) /
-                                   _command.InitialPeriod.ToDate.Day) +
+                                   _query.InitialPeriod.ToDate.Day) +
                                    entry.InitialBalance;
         }
       }

@@ -19,14 +19,14 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
   /// <summary>Genera los datos para el reporte de saldos por auxiliar de consulta rápida.</summary>
   internal class SaldosPorAuxiliarConsultaRapida {
 
-    private readonly BalanceCommand _command;
+    private readonly BalancesQuery _query;
 
-    public SaldosPorAuxiliarConsultaRapida(BalanceCommand command) {
-      _command = command;
+    public SaldosPorAuxiliarConsultaRapida(BalancesQuery query) {
+      _query = query;
     }
 
-    internal Balance Build() {
-      var helper = new BalanceHelper(_command);
+    internal Balances Build() {
+      var helper = new BalanceHelper(_query);
 
       FixedList<BalanceEntry> balanceEntries = helper.GetBalanceEntries();
 
@@ -39,9 +39,9 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
       FixedList<BalanceEntry> returnedEntries = CombineSubledgerAccountsWithBalanceEntries(
                                                             orderingBalance, balanceEntries);
 
-      var returnedBalance = new FixedList<BalanceEntry>(returnedEntries);
+      var balancesToReturn = new FixedList<BalanceEntry>(returnedEntries);
 
-      return new Balance(_command, returnedBalance);
+      return new Balances(_query, balancesToReturn);
     }
 
 
@@ -119,7 +119,7 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
 
     private EmpiriaHashTable<BalanceEntry> GenerateSubledgerAccount(
                         EmpiriaHashTable<BalanceEntry> subledgerAccountListHash) {
-      var helper = new BalanceHelper(_command);
+      var helper = new BalanceHelper(_query);
 
       var returnedEntries = new EmpiriaHashTable<BalanceEntry>();
 

@@ -1,10 +1,10 @@
 ﻿/* Empiria Financial *****************************************************************************************
 *                                                                                                            *
 *  Module   : Balance Engine                             Component : Interface adapters                      *
-*  Assembly : FinancialAccounting.BalanceEngine.dll      Pattern   : Command payload                         *
-*  Type     : BalanceEngineCommandPeriod                 License   : Please read LICENSE.txt file            *
+*  Assembly : FinancialAccounting.BalanceEngine.dll      Pattern   : Query payload                           *
+*  Type     : BalancesPeriod                             License   : Please read LICENSE.txt file            *
 *                                                                                                            *
-*  Summary  : Command payload that describes balances' date periods.                                         *
+*  Summary  : Describes balances' date periods.                                                              *
 *                                                                                                            *
 ************************* Copyright(c) La Vía Óntica SC, Ontica LLC and contributors. All rights reserved. **/
 using System;
@@ -13,8 +13,8 @@ using Empiria.Json;
 
 namespace Empiria.FinancialAccounting.BalanceEngine.Adapters {
 
-  /// <summary>Command payload that describes balances' date periods.</summary>
-  public class BalanceEngineCommandPeriod {
+  /// <summary>Describes balances' date periods.</summary>
+  public class BalancesPeriod {
 
     public DateTime FromDate {
       get; set;
@@ -50,7 +50,7 @@ namespace Empiria.FinancialAccounting.BalanceEngine.Adapters {
 
 
     public override bool Equals(object obj) {
-      return obj is BalanceEngineCommandPeriod period &&
+      return obj is BalancesPeriod period &&
              period.GetHashCode() == this.GetHashCode();
     }
 
@@ -61,7 +61,6 @@ namespace Empiria.FinancialAccounting.BalanceEngine.Adapters {
       return json.GetHashCode();
     }
 
-  }  // BalanceEngineCommandPeriod
-
+  }  // BalancesPeriod
 
 } // namespace Empiria.FinancialAccounting.BalanceEngine.Adapters

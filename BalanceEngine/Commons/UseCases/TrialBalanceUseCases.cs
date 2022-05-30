@@ -34,47 +34,47 @@ namespace Empiria.FinancialAccounting.BalanceEngine.UseCases {
 
     #region Use cases
 
-    public async Task<AnaliticoDeCuentasDto> BuildAnaliticoDeCuentas(TrialBalanceCommand command) {
-      Assertion.Require(command, "command");
+    public async Task<AnaliticoDeCuentasDto> BuildAnaliticoDeCuentas(TrialBalanceQuery query) {
+      Assertion.Require(query, nameof(query));
 
-      Assertion.Require(command.TrialBalanceType == TrialBalanceType.AnaliticoDeCuentas,
-                       "command.TrialBalanceType must be 'AnaliticoDeCuentas'.");
+      Assertion.Require(query.TrialBalanceType == TrialBalanceType.AnaliticoDeCuentas,
+                       "query.TrialBalanceType must be 'AnaliticoDeCuentas'.");
 
-      var builder = new AnaliticoDeCuentasBuilder(command);
+      var builder = new AnaliticoDeCuentasBuilder(query);
 
-      FixedList<TrialBalanceEntry> baseAccountEntries = BalancesDataService.GetTrialBalanceEntries(command);
+      FixedList<TrialBalanceEntry> baseAccountEntries = BalancesDataService.GetTrialBalanceEntries(query);
 
       FixedList<AnaliticoDeCuentasEntry> entries = await Task.Run(() => builder.Build(baseAccountEntries))
                                                              .ConfigureAwait(false);
 
-      return AnaliticoDeCuentasMapper.Map(command, entries);
+      return AnaliticoDeCuentasMapper.Map(query, entries);
     }
 
 
-    public async Task<BalanzaTradicionalDto> BuildBalanzaTradicional(TrialBalanceCommand command) {
-      Assertion.Require(command, "command");
+    public async Task<BalanzaTradicionalDto> BuildBalanzaTradicional(TrialBalanceQuery query) {
+      Assertion.Require(query, nameof(query));
 
-      Assertion.Require(command.TrialBalanceType == TrialBalanceType.Balanza,
-                       "command.TrialBalanceType must be 'Balanza'.");
+      Assertion.Require(query.TrialBalanceType == TrialBalanceType.Balanza,
+                       "query.TrialBalanceType must be 'Balanza'.");
 
-      var builder = new BalanzaTradicionalBuilder(command);
+      var builder = new BalanzaTradicionalBuilder(query);
       TrialBalance entries = await Task.Run(() => builder.Build()).ConfigureAwait(false);
 
       return BalanzaTradicionalMapper.Map(entries);
     }
 
 
-    public TrialBalanceDto BuildTrialBalance(TrialBalanceCommand command) {
-      Assertion.Require(command, "command");
+    public TrialBalanceDto BuildTrialBalance(TrialBalanceQuery query) {
+      Assertion.Require(query, nameof(query));
 
-      var trialBalanceEngine = new TrialBalanceEngine(command);
+      var trialBalanceEngine = new TrialBalanceEngine(query);
 
       TrialBalance trialBalance = trialBalanceEngine.BuildTrialBalance();
 
       return TrialBalanceMapper.Map(trialBalance);
     }
 
-    
+
     #endregion Use cases
 
   } // class TrialBalanceUseCases

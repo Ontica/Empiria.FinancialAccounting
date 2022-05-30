@@ -22,8 +22,8 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
   /// <summary>Provides a cache of trial balances.</summary>
   static public class TrialBalanceCache {
 
-    static readonly EmpiriaHashTable<TrialBalance> _cache = new EmpiriaHashTable<TrialBalance>();
-    static readonly EmpiriaHashTable<Balance> _cacheBalance = new EmpiriaHashTable<Balance>();
+    static readonly EmpiriaHashTable<TrialBalance> _trialBalancesCache = new EmpiriaHashTable<TrialBalance>();
+    static readonly EmpiriaHashTable<Balances>     _balancesCache = new EmpiriaHashTable<Balances>();
 
 
     static public void Invalidate(DateTime date) {
@@ -34,44 +34,45 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
 
     #region Consulta de balanzas
 
-    static internal string GenerateHash(TrialBalanceCommand command) {
-      int hashCode = command.GetHashCode();
+    static internal string GenerateHash(TrialBalanceQuery query) {
+      int hashCode = query.GetHashCode();
 
-      DateTime invalidationDate = GetInvalidationDate(command);
+      DateTime invalidationDate = GetInvalidationDate(query);
 
       return $"{hashCode}.{ToInvalidationDateString(invalidationDate)}";
     }
 
 
-    static private DateTime GetInvalidationDate(TrialBalanceCommand command) {
-      if (command.TrialBalanceType == TrialBalanceType.BalanzaValorizadaComparativa) {
-        return command.FinalPeriod.ToDate;
+    static private DateTime GetInvalidationDate(TrialBalanceQuery query) {
+      if (query.TrialBalanceType == TrialBalanceType.BalanzaValorizadaComparativa) {
+        return query.FinalPeriod.ToDate;
       }
-      return command.InitialPeriod.ToDate;
+      return query.InitialPeriod.ToDate;
     }
 
 
     static private void InvalidateTrialBalanceCache(DateTime date) {
       string dateKey = ToInvalidationDateString(date);
 
-      var toInvalidateKeys = _cache.Keys.Where(key => key.EndsWith(dateKey))
-                                        .ToArray();
+      var toInvalidateKeys = _trialBalancesCache.Keys
+                                                .Where(key => key.EndsWith(dateKey))
+                                                .ToArray();
 
       foreach (string key in toInvalidateKeys) {
-        _cache.Remove(key);
+        _trialBalancesCache.Remove(key);
       }
     }
 
 
-    static internal void Store(string cacheHashKey, TrialBalance trialBalance) {
-      _cache.Insert(cacheHashKey, trialBalance);
+    static internal void StoreTrialBalance(string cacheHashKey, TrialBalance trialBalance) {
+      _trialBalancesCache.Insert(cacheHashKey, trialBalance);
     }
 
 
-    static internal TrialBalance TryGet(string cacheHashKey) {
+    static internal TrialBalance TryGetTrialBalance(string cacheHashKey) {
       TrialBalance trialBalance;
 
-      if (_cache.TryGetValue(cacheHashKey, out trialBalance)) {
+      if (_trialBalancesCache.TryGetValue(cacheHashKey, out trialBalance)) {
         return trialBalance;
       }
 
@@ -84,12 +85,12 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
     #region Consulta rápida de saldos
 
 
-    static internal string GenerateBalanceHash(BalanceCommand command) {
-      string json = JsonConverter.ToJson(command);
+    static internal string GenerateBalanceHash(BalancesQuery query) {
+      string json = JsonConverter.ToJson(query);
 
       var hashCode = Cryptographer.CreateHashCode(json);
 
-      DateTime invalidationDate = command.InitialPeriod.ToDate;
+      DateTime invalidationDate = query.InitialPeriod.ToDate;
 
       return $"{hashCode}.{ToInvalidationDateString(invalidationDate)}";
     }
@@ -98,25 +99,25 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
     static private void InvalidateBalancesCache(DateTime date) {
       string dateKey = ToInvalidationDateString(date);
 
-      var toInvalidateKeys = _cacheBalance.Keys.Where(key => key.EndsWith(dateKey))
+      var toInvalidateKeys = _balancesCache.Keys.Where(key => key.EndsWith(dateKey))
                                                .ToArray();
 
       foreach (string key in toInvalidateKeys) {
-        _cacheBalance.Remove(key);
+        _balancesCache.Remove(key);
       }
     }
 
 
-    static internal void StoreBalance(string cacheHashKey, Balance balance) {
-      _cacheBalance.Insert(cacheHashKey, balance);
+    static internal void StoreBalances(string cacheHashKey, Balances balances) {
+      _balancesCache.Insert(cacheHashKey, balances);
     }
 
 
-    static internal Balance TryGetBalance(string cacheHashKey) {
-      Balance balance;
+    static internal Balances TryGetBalances(string cacheHashKey) {
+      Balances balances;
 
-      if (_cacheBalance.TryGetValue(cacheHashKey, out balance)) {
-        return balance;
+      if (_balancesCache.TryGetValue(cacheHashKey, out balances)) {
+        return balances;
       }
 
       return null;

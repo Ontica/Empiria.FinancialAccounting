@@ -20,22 +20,21 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
   /// <summary>Genera los datos para el reporte de saldos por cuenta de consulta rápida.</summary>
   internal class SaldosPorCuentaConsultaRapida {
 
-    private readonly BalanceCommand _command;
+    private readonly BalancesQuery _query;
 
-
-    internal SaldosPorCuentaConsultaRapida(BalanceCommand command) {
-      _command = command;
+    internal SaldosPorCuentaConsultaRapida(BalancesQuery query) {
+      _query = query;
     }
 
 
-    internal Balance Build() {
-      var helper = new BalanceHelper(_command);
+    internal Balances Build() {
+      var helper = new BalanceHelper(_query);
 
-      FixedList<BalanceEntry> balance = helper.GetBalanceEntries();
+      FixedList<BalanceEntry> balances = helper.GetBalanceEntries();
 
-      balance = helper.GetSummaryToParentEntries(balance);
+      balances = helper.GetSummaryToParentEntries(balances);
 
-      FixedList<BalanceEntry> subledgerAccounts = GetSubledgerAccounts(balance);
+      FixedList<BalanceEntry> subledgerAccounts = GetSubledgerAccounts(balances);
 
       //EmpiriaHashTable<BalanceEntry> totalByLedger = GetTotalBalanceByLedgerAndCurrency(subledgerAccounts);
 
@@ -45,19 +44,19 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
       EmpiriaHashTable<BalanceEntry> totalByAccountAndCurrency = GetTotalBalanceByAccountAndCurrency(
                                                                   subledgerAccounts);
 
-      FixedList<BalanceEntry> balancesAndtotalByAccountAndCurrency = 
+      FixedList<BalanceEntry> balancesAndtotalByAccountAndCurrency =
                                 CombineBalanceAndtotalByAccountAndCurrency(
                                   subledgerAccounts, totalByAccountAndCurrency);
 
       EmpiriaHashTable<BalanceEntry> balanceHeader = GetBalanceHeaderByAccount(subledgerAccounts);
 
-      FixedList<BalanceEntry> balanceWithHeader = CombineBalanceAndBalanceHeader(
+      FixedList<BalanceEntry> balancesWithHeader = CombineBalanceAndBalanceHeader(
                                                     balancesAndtotalByAccountAndCurrency, balanceHeader);
 
-      return new Balance(_command, balanceWithHeader);
+      return new Balances(_query, balancesWithHeader);
     }
 
-    
+
 
     #region Private methods
 
@@ -141,7 +140,7 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
 
     private EmpiriaHashTable<BalanceEntry> GetBalanceHeaderByAccount(
                                             FixedList<BalanceEntry> subledgerAccounts) {
-      var helper = new BalanceHelper(_command);
+      var helper = new BalanceHelper(_query);
 
       var headerByAccount = new EmpiriaHashTable<BalanceEntry>();
 
@@ -164,7 +163,7 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
 
 
     private FixedList<BalanceEntry> GetSubledgerAccounts(FixedList<BalanceEntry> balance) {
-      if (!_command.WithSubledgerAccount) {
+      if (!_query.WithSubledgerAccount) {
         return balance;
       }
 
@@ -186,7 +185,7 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
 
     private EmpiriaHashTable<BalanceEntry> GetTotalBalanceByAccountAndCurrency(
                                             FixedList<BalanceEntry> subledgerAccounts) {
-      var helper = new BalanceHelper(_command);
+      var helper = new BalanceHelper(_query);
 
       var totalByCurrencies = new EmpiriaHashTable<BalanceEntry>();
 
@@ -199,7 +198,7 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
 
 
     private EmpiriaHashTable<BalanceEntry> GetTotalBalanceByLedgerAndCurrency(FixedList<BalanceEntry> balanceList) {
-      var helper = new BalanceHelper(_command);
+      var helper = new BalanceHelper(_query);
 
       var totalByCurrencies = new EmpiriaHashTable<BalanceEntry>();
 

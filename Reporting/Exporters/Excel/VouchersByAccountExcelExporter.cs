@@ -19,7 +19,7 @@ namespace Empiria.FinancialAccounting.Reporting.Exporters.Excel {
   /// <summary>Creates a Microsoft Excel file with vouchers by account information.</summary>
   internal class VouchersByAccountExcelExporter {
 
-    private BalanceCommand _command = new BalanceCommand();
+    private BalancesQuery _query = new BalancesQuery();
     private readonly FileTemplateConfig _templateConfig;
     private ExcelFile _excelFile;
 
@@ -34,7 +34,7 @@ namespace Empiria.FinancialAccounting.Reporting.Exporters.Excel {
     internal ExcelFile CreateExcelFile(AccountStatementDto voucherDto) {
       Assertion.Require(voucherDto, "voucherDto");
 
-      _command = voucherDto.Command;
+      _query = voucherDto.Command;
 
       _excelFile = new ExcelFile(_templateConfig);
 
@@ -55,8 +55,8 @@ namespace Empiria.FinancialAccounting.Reporting.Exporters.Excel {
     private void SetHeader() {
       _excelFile.SetCell($"A2", _templateConfig.Title);
 
-      var subTitle = $"Del {_command.InitialPeriod.FromDate.ToString("dd/MMM/yyyy")} " +
-                      $"al {_command.InitialPeriod.ToDate.ToString("dd/MMM/yyyy")}";
+      var subTitle = $"Del {_query.InitialPeriod.FromDate.ToString("dd/MMM/yyyy")} " +
+                      $"al {_query.InitialPeriod.ToDate.ToString("dd/MMM/yyyy")}";
 
       _excelFile.SetCell($"A3", subTitle);
     }

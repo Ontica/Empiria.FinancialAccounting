@@ -36,17 +36,17 @@ namespace Empiria.FinancialAccounting.Tests.BalanceEngine.AnaliticoCuentas {
     [InlineData(AnaliticoDeCuentasTestCase.Default)]
     [InlineData(AnaliticoDeCuentasTestCase.EnCascada)]
     public async Task WebServiceReturnsData(AnaliticoDeCuentasTestCase testcase) {
-      TrialBalanceCommand command = testcase.GetInvocationCommand();
+      TrialBalanceQuery query = testcase.GetInvocationQuery();
 
 
       var http = new HttpApiClient(TestingConstants.WEB_API_BASE_ADDRESS,
                                    TimeSpan.FromSeconds(TestingConstants.WEB_API_TIMEOUT_SECONDS));
 
-      var sut = await http.PostAsync<ResponseModel<AnaliticoDeCuentasDto>>(command, "v2/financial-accounting/balance-engine/analitico-de-cuentas")
+      var sut = await http.PostAsync<ResponseModel<AnaliticoDeCuentasDto>>(query, "v2/financial-accounting/balance-engine/analitico-de-cuentas")
                           .ConfigureAwait(false);
 
       Assert.NotNull(sut.Data);
-      Assert.NotNull(sut.Data.Command);
+      Assert.NotNull(sut.Data.Query);
       Assert.NotNull(sut.Data.Columns);
       Assert.NotNull(sut.Data.Entries);
     }

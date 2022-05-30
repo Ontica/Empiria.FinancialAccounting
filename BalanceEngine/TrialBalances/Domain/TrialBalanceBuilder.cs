@@ -18,19 +18,19 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
   /// <summary>Genera los datos para el reporte de balanzas tradicionales.</summary>
   internal class TrialBalanceBuilder {
 
-    private readonly TrialBalanceCommand _command;
+    private readonly TrialBalanceQuery _query;
 
-    public TrialBalanceBuilder(TrialBalanceCommand command) {
-      _command = command;
+    internal TrialBalanceBuilder(TrialBalanceQuery query) {
+      _query = query;
     }
 
 
     internal TrialBalance Build() {
-      var helper = new TrialBalanceHelper(_command);
+      var helper = new TrialBalanceHelper(_query);
 
 
-      if (_command.TrialBalanceType == TrialBalanceType.Saldos) {
-        _command.WithSubledgerAccount = true;
+      if (_query.TrialBalanceType == TrialBalanceType.Saldos) {
+        _query.WithSubledgerAccount = true;
       }
 
       var startTime = DateTime.Now;
@@ -77,7 +77,7 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
 
       EmpiriaLog.Debug($"END BalanzaTradicional: {DateTime.Now.Subtract(startTime).TotalSeconds} seconds.");
 
-      return new TrialBalance(_command, returnBalance);
+      return new TrialBalance(_query, returnBalance);
     }
 
 
@@ -86,7 +86,7 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
 
     private List<TrialBalanceEntry> GetTrialBalanceType(List<TrialBalanceEntry> trialBalance,
                                                         FixedList<TrialBalanceEntry> postingEntries) {
-      if (!_command.IsOperationalReport) {
+      if (!_query.IsOperationalReport) {
 
         trialBalance = GenerateTrialBalance(trialBalance, postingEntries);
 
@@ -99,7 +99,7 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
 
     private List<TrialBalanceEntry> GenerateTrialBalance(List<TrialBalanceEntry> trialBalance,
                                      FixedList<TrialBalanceEntry> postingEntries) {
-      var helper = new TrialBalanceHelper(_command);
+      var helper = new TrialBalanceHelper(_query);
 
       List<TrialBalanceEntry> returnedTrialBalance = new List<TrialBalanceEntry>();
 
@@ -130,10 +130,10 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
     }
 
     private List<TrialBalanceEntry> GenerateOperationalBalance(List<TrialBalanceEntry> trialBalance) {
-      var helper = new TrialBalanceHelper(_command);
+      var helper = new TrialBalanceHelper(_query);
       var totalByAccountEntries = new EmpiriaHashTable<TrialBalanceEntry>(trialBalance.Count);
 
-      if (_command.ConsolidateBalancesToTargetCurrency == true) {
+      if (_query.ConsolidateBalancesToTargetCurrency == true) {
 
         foreach (var entry in trialBalance) {
           helper.SummaryByAccount(totalByAccountEntries, entry);

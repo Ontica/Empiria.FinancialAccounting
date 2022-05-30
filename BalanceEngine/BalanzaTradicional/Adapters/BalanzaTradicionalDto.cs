@@ -4,28 +4,31 @@
 *  Assembly : FinancialAccounting.BalanceEngine.dll      Pattern   : Data Transfer Object                    *
 *  Type     : BalanzaTradicionalDto                      License   : Please read LICENSE.txt file            *
 *                                                                                                            *
-*  Summary  : Output DTO used to return command, columns and entries of a balanza tradicional.               *
+*  Summary  : Output DTO used to return a Balanza Tradicional.                                               *
 *                                                                                                            *
 ************************* Copyright(c) La Vía Óntica SC, Ontica LLC and contributors. All rights reserved. **/
 using System;
 
+using Newtonsoft.Json;
+
 namespace Empiria.FinancialAccounting.BalanceEngine.Adapters {
 
-
-  /// <summary>Output DTO used to return command, columns and entries of a balanza tradicional.</summary>
+  /// <summary>Output DTO used to return a 'Balanza Tradicional'.</summary>
   public class BalanzaTradicionalDto {
 
-
-    public TrialBalanceCommand Command {
+    [JsonProperty(PropertyName = "Command")]
+    public TrialBalanceQuery Query {
       get; internal set;
     }
 
 
+    [JsonProperty]
     public FixedList<DataTableColumn> Columns {
       get; internal set;
     }
 
 
+    [JsonProperty]
     public FixedList<BalanzaTradicionalEntryDto> Entries {
       get; internal set;
     }
@@ -34,7 +37,7 @@ namespace Empiria.FinancialAccounting.BalanceEngine.Adapters {
   } // class BalanzaTradicionalDto
 
 
-  /// <summary>Output DTO used to return the entries of a balanza tradicional</summary>
+  /// <summary>Output DTO used to return the entries of a 'Balanza Tradicional'.</summary>
   public sealed class BalanzaTradicionalEntryDto : ITrialBalanceEntryDto {
 
     public TrialBalanceItemType ItemType {

@@ -18,11 +18,11 @@ namespace Empiria.FinancialAccounting.BalanceEngine.Adapters {
     #region Public methods
 
 
-    static internal AnaliticoDeCuentasDto Map(TrialBalanceCommand command,
+    static internal AnaliticoDeCuentasDto Map(TrialBalanceQuery query,
                                               FixedList<AnaliticoDeCuentasEntry> entries) {
       return new AnaliticoDeCuentasDto {
-        Command = command,
-        Columns = DataColumns(command),
+        Query = query,
+        Columns = DataColumns(query),
         Entries = entries.Select(x => MapEntry(x))
                          .ToFixedList()
       };
@@ -89,14 +89,14 @@ namespace Empiria.FinancialAccounting.BalanceEngine.Adapters {
     }
 
 
-    static public FixedList<DataTableColumn> DataColumns(TrialBalanceCommand command) {
+    static public FixedList<DataTableColumn> DataColumns(TrialBalanceQuery query) {
       List<DataTableColumn> columns = new List<DataTableColumn>();
 
-      if (command.ReturnLedgerColumn) {
+      if (query.ReturnLedgerColumn) {
         columns.Add(new DataTableColumn("ledgerNumber", "Cont", "text"));
       }
 
-      if (command.WithSubledgerAccount) {
+      if (query.WithSubledgerAccount) {
         columns.Add(new DataTableColumn("accountNumber", "Cuenta / Auxiliar", "text-nowrap"));
       } else {
         columns.Add(new DataTableColumn("accountNumber", "Cuenta", "text-nowrap"));
@@ -108,7 +108,7 @@ namespace Empiria.FinancialAccounting.BalanceEngine.Adapters {
       columns.Add(new DataTableColumn("foreignBalance", "Saldo Mon. Ext.", "decimal"));
       columns.Add(new DataTableColumn("totalBalance", "Total", "decimal"));
 
-      if (command.WithAverageBalance) {
+      if (query.WithAverageBalance) {
         columns.Add(new DataTableColumn("averageBalance", "Saldo promedio", "decimal"));
       }
 

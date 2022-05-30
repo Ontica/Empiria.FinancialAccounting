@@ -19,22 +19,22 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
   /// <summary>Genera los datos para el reporte de balanza valorizada en dolares.</summary>
   internal class BalanzaValorizada {
 
-    private readonly TrialBalanceCommand _command;
+    private readonly TrialBalanceQuery _query;
 
-    public BalanzaValorizada(TrialBalanceCommand command) {
-      _command = command;
+    internal BalanzaValorizada(TrialBalanceQuery query) {
+      _query = query;
     }
 
 
     internal TrialBalance Build() {
-      var balanceHelper = new TrialBalanceHelper(_command);
-      var helper = new ValorizedBalanceHelper(_command);
+      var balanceHelper = new TrialBalanceHelper(_query);
+      var helper = new ValorizedBalanceHelper(_query);
 
       List<TrialBalanceEntry> trialBalance = balanceHelper.GetPostingEntries().ToList();
 
       // Special case summaries y posting al mismo tiempo.
       balanceHelper.SetSummaryToParentEntries(trialBalance);
-      
+
       List<TrialBalanceEntry> summaryEntries =
                                balanceHelper.GetCalculatedParentAccounts(trialBalance.ToFixedList());
 
@@ -46,7 +46,7 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
                                 helper.OrderingDollarizedBalance(ledgerAccounts.ToFixedList());
 
       FixedList<TrialBalanceEntry> valuedEntries = helper.ValuateToExchangeRate(
-                                    orderingBalance.ToFixedList(), _command.InitialPeriod);
+                                    orderingBalance.ToFixedList(), _query.InitialPeriod);
 
       List<ValuedTrialBalanceEntry> mergeBalancesToValuedBalances =
                                       helper.MergeTrialBalanceIntoValuedBalances(valuedEntries);
@@ -57,13 +57,13 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
       var returnBalance = new FixedList<ITrialBalanceEntry>(
                                 asignExchageRateAndTotalToBalances.Select(x => (ITrialBalanceEntry) x));
 
-      return new TrialBalance(_command, returnBalance);
+      return new TrialBalance(_query, returnBalance);
     }
 
 
     internal TrialBalance BuildBalanceInColumnsByCurrency() {
-      var balanceHelper = new TrialBalanceHelper(_command);
-      var helper = new ValorizedBalanceHelper(_command);
+      var balanceHelper = new TrialBalanceHelper(_query);
+      var helper = new ValorizedBalanceHelper(_query);
 
       List<TrialBalanceEntry> trialBalance = balanceHelper.GetPostingEntries().ToList();
 
@@ -85,7 +85,7 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
       var returnBalance = new FixedList<ITrialBalanceEntry>(
                             mergeBalancesToBalanceByCurrency.Select(x => (ITrialBalanceEntry) x));
 
-      return new TrialBalance(_command, returnBalance);
+      return new TrialBalance(_query, returnBalance);
     }
 
 

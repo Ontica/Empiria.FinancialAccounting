@@ -28,14 +28,14 @@ namespace Empiria.FinancialAccounting.BalanceEngine.BalanceExplorer.UseCases {
 
     #endregion Constructors and parsers
 
-    public BalanceDto BuildBalanceSearch(BalanceCommand command) {
-      Assertion.Require(command, "command");
+    public BalancesDto BuildBalanceSearch(BalancesQuery query) {
+      Assertion.Require(query, nameof(query));
 
-      var balanceConstructor = new BalanceConstructor(command);
+      var balanceConstructor = new BalanceConstructor(query);
 
-      Balance balance = balanceConstructor.BuildBalance();
+      Balances balances = balanceConstructor.BuildBalances();
 
-      return BalanceMapper.Map(balance);
+      return BalanceMapper.Map(balances);
     }
 
     #region Use cases

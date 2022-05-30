@@ -18,21 +18,21 @@ namespace Empiria.FinancialAccounting.Reporting.Exporters.Excel {
   /// <summary>Creates a Microsoft Excel file with balance information.</summary>
   internal class BalanceExcelExporter {
 
-    private BalanceCommand _command = new BalanceCommand();
+    private BalancesQuery _query = new BalancesQuery();
     private readonly FileTemplateConfig _templateConfig;
     private ExcelFile _excelFile;
 
     public BalanceExcelExporter(FileTemplateConfig templateConfig) {
-      Assertion.Require(templateConfig, "templateConfig");
+      Assertion.Require(templateConfig, nameof(templateConfig));
 
       _templateConfig = templateConfig;
     }
 
 
-    internal ExcelFile CreateExcelFile(BalanceDto balance) {
-      Assertion.Require(balance, "balance");
+    internal ExcelFile CreateExcelFile(BalancesDto dto) {
+      Assertion.Require(dto, nameof(dto));
 
-      _command = balance.Command;
+      _query = dto.Query;
 
       _excelFile = new ExcelFile(_templateConfig);
 
@@ -40,7 +40,7 @@ namespace Empiria.FinancialAccounting.Reporting.Exporters.Excel {
 
       SetHeader();
 
-      SetTable(balance);
+      SetTable(dto);
 
       _excelFile.Save();
 
@@ -54,22 +54,22 @@ namespace Empiria.FinancialAccounting.Reporting.Exporters.Excel {
       _excelFile.SetCell($"A2", _templateConfig.Title);
       _excelFile.SetCell($"E2", $"Fecha de consulta: {DateTime.Now.ToString("dd/MMM/yyyy")}");
       _excelFile.SetRowStyleBold(2);
-      var subTitle = $"Del {_command.InitialPeriod.FromDate.ToString("dd/MMM/yyyy")} " +
-                     $"al {_command.InitialPeriod.ToDate.ToString("dd/MMM/yyyy")}";
+      var subTitle = $"Del {_query.InitialPeriod.FromDate.ToString("dd/MMM/yyyy")} " +
+                     $"al {_query.InitialPeriod.ToDate.ToString("dd/MMM/yyyy")}";
 
       _excelFile.SetCell($"A3", subTitle);
       _excelFile.SetRowStyleBold(3);
     }
 
 
-    private void SetTable(BalanceDto balance) {
-      switch (balance.Command.TrialBalanceType) {
+    private void SetTable(BalancesDto dto) {
+      switch (dto.Query.TrialBalanceType) {
         case TrialBalanceType.SaldosPorAuxiliarConsultaRapida:
-          FillOutSaldosAuxiliar(balance.Entries.Select(x => (BalanceEntryDto) x));
+          FillOutSaldosAuxiliar(dto.Entries.Select(x => (BalanceEntryDto) x));
           return;
 
         case TrialBalanceType.SaldosPorCuentaConsultaRapida:
-          FillOutSaldosCuenta(balance.Entries.Select(x => (BalanceEntryDto) x));
+          FillOutSaldosCuenta(dto.Entries.Select(x => (BalanceEntryDto) x));
           return;
 
         default:
@@ -79,7 +79,7 @@ namespace Empiria.FinancialAccounting.Reporting.Exporters.Excel {
 
 
     private void FillOutSaldosAuxiliar(IEnumerable<BalanceEntryDto> entries) {
-      switch (_command.ExportTo) {
+      switch (_query.ExportTo) {
         case FileReportVersion.V1:
           FillOutSaldosAuxiliarConEncabezado(entries);
           break;
@@ -95,7 +95,7 @@ namespace Empiria.FinancialAccounting.Reporting.Exporters.Excel {
 
 
     private void FillOutSaldosCuenta(IEnumerable<BalanceEntryDto> entries) {
-      switch (_command.ExportTo) {
+      switch (_query.ExportTo) {
         case FileReportVersion.V1:
           FillOutSaldosCuentaConEncabezado(entries);
           break;
@@ -187,7 +187,7 @@ namespace Empiria.FinancialAccounting.Reporting.Exporters.Excel {
           _excelFile.SetCell($"B{i}", entry.LedgerName);
           _excelFile.SetCell($"C{i}", $"({entry.CurrencyCode}) {entry.CurrencyName})");
           _excelFile.SetCell($"D{i}", entry.AccountNumber);
-          if (!_command.WithSubledgerAccount) {
+          if (!_query.WithSubledgerAccount) {
             _excelFile.SetCell($"E{i}", entry.AccountName);
           } else {
             _excelFile.SetCell($"E{i}", entry.subledgerAccountName);
@@ -226,7 +226,7 @@ namespace Empiria.FinancialAccounting.Reporting.Exporters.Excel {
           i++;
         }
       }
-      if (!_command.WithSubledgerAccount) {
+      if (!_query.WithSubledgerAccount) {
         _excelFile.RemoveColumn("G");
         _excelFile.RemoveColumn("F");
       }
@@ -235,7 +235,7 @@ namespace Empiria.FinancialAccounting.Reporting.Exporters.Excel {
 
     private void SetRowHeaderByAccount(int i) {
 
-      if (_command.TrialBalanceType == TrialBalanceType.SaldosPorAuxiliarConsultaRapida) {
+      if (_query.TrialBalanceType == TrialBalanceType.SaldosPorAuxiliarConsultaRapida) {
 
         _excelFile.SetCell($"A{i}", "Deleg");
         _excelFile.SetCell($"B{i}", "Delegación");
@@ -251,7 +251,7 @@ namespace Empiria.FinancialAccounting.Reporting.Exporters.Excel {
 
       }
 
-      if (_command.TrialBalanceType == TrialBalanceType.SaldosPorCuentaConsultaRapida) {
+      if (_query.TrialBalanceType == TrialBalanceType.SaldosPorCuentaConsultaRapida) {
 
         _excelFile.SetCell($"A{i}", "Deleg");
         _excelFile.SetCell($"B{i}", "Delegación");

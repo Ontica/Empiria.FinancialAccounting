@@ -21,11 +21,10 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
   /// <summary>Helper methods to build traditional trial balances.</summary>
   internal class BalanzaTradicionalHelper {
 
-    private readonly TrialBalanceCommand _command;
+    private readonly TrialBalanceQuery _query;
 
-    public BalanzaTradicionalHelper(TrialBalanceCommand Command) {
-
-      _command = Command;
+    internal BalanzaTradicionalHelper(TrialBalanceQuery query) {
+      _query = query;
     }
 
 
@@ -167,7 +166,7 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
         entry.Currency = Currency.Empty;
         string hash = $"{entry.Ledger.Id}||{entry.GroupName}||{Sector.Empty.Code}";
 
-        var trialBalanceHelper = new TrialBalanceHelper(_command);
+        var trialBalanceHelper = new TrialBalanceHelper(_query);
 
         trialBalanceHelper.GenerateOrIncreaseEntries(totalsConsolidatedByLedger, entry,
                             StandardAccount.Empty, Sector.Empty,
@@ -225,7 +224,7 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
 
       } // foreach
 
-      var trialBalanceHelper = new TrialBalanceHelper(_command);
+      var trialBalanceHelper = new TrialBalanceHelper(_query);
       trialBalanceHelper.AssignLastChangeDatesToSummaryEntries(accountEntries, parentAccounts);
 
       return parentAccounts.ToFixedList();
@@ -234,17 +233,17 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
 
     internal FixedList<TrialBalanceEntry> GetPostingEntries() {
 
-      FixedList<TrialBalanceEntry> accountEntries = BalancesDataService.GetTrialBalanceEntries(_command);
+      FixedList<TrialBalanceEntry> accountEntries = BalancesDataService.GetTrialBalanceEntries(_query);
 
-      if (_command.ValuateBalances || _command.InitialPeriod.UseDefaultValuation) {
+      if (_query.ValuateBalances || _query.InitialPeriod.UseDefaultValuation) {
         ValuateAccountEntriesToExchangeRate(accountEntries);
 
-        if (_command.ConsolidateBalancesToTargetCurrency) {
+        if (_query.ConsolidateBalancesToTargetCurrency) {
           accountEntries = ConsolidateAccountEntriesToTargetCurrency(accountEntries);
         }
       }
 
-      var trialBalanceHelper = new TrialBalanceHelper(_command);
+      var trialBalanceHelper = new TrialBalanceHelper(_query);
       trialBalanceHelper.RoundDecimals(accountEntries);
 
       return accountEntries;
@@ -260,14 +259,14 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
     private FixedList<TrialBalanceEntry> ConsolidateAccountEntriesToTargetCurrency(
                                           FixedList<TrialBalanceEntry> trialBalance) {
 
-      var targetCurrency = Currency.Parse(_command.InitialPeriod.ValuateToCurrrencyUID);
+      var targetCurrency = Currency.Parse(_query.InitialPeriod.ValuateToCurrrencyUID);
       var AccountEntriesToConsolidate = new EmpiriaHashTable<TrialBalanceEntry>();
 
       foreach (var entry in trialBalance) {
         string hash = $"{entry.Account.Number}||{entry.Sector.Code}||" +
                       $"{targetCurrency.Id}||{entry.Ledger.Id}";
 
-        if (_command.WithSubledgerAccount) {
+        if (_query.WithSubledgerAccount) {
           hash = $"{entry.Account.Number}||{entry.SubledgerAccountId}||" +
                  $"{entry.Sector.Code}||{targetCurrency.Id}||{entry.Ledger.Id}";
 
@@ -290,7 +289,7 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
     private void GenerateOrIncreaseParentAccounts(EmpiriaHashTable<TrialBalanceEntry> parentAccounts,
                                                   TrialBalanceEntry entry, StandardAccount currentParent) {
 
-      var trialBalanceHelper = new TrialBalanceHelper(_command);
+      var trialBalanceHelper = new TrialBalanceHelper(_query);
 
       while (true) {
         entry.SubledgerAccountIdParent = entry.SubledgerAccountId;
@@ -318,7 +317,7 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
 
     private List<TrialBalanceEntry> OrderingParentAndPostingAccountEntries(List<TrialBalanceEntry> entries) {
 
-      if (_command.WithSubledgerAccount) {
+      if (_query.WithSubledgerAccount) {
 
         return entries.OrderBy(a => a.Ledger.Number)
                       .ThenBy(a => a.Currency.Code)
@@ -341,7 +340,7 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
 
 
     private void SetSubledgerAccountInfo(List<TrialBalanceEntry> entries) {
-      if (!_command.WithSubledgerAccount) {
+      if (!_query.WithSubledgerAccount) {
         return;
       }
 
@@ -371,8 +370,8 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
       string hash = $"{totalGroupEntry.DebtorCreditor}||{totalGroupEntry.Currency.Id}||" +
                     $"{totalGroupEntry.GroupNumber}";
 
-      if ((_command.WithSubledgerAccount && _command.ShowCascadeBalances) ||
-             _command.ShowCascadeBalances) {
+      if ((_query.WithSubledgerAccount && _query.ShowCascadeBalances) ||
+             _query.ShowCascadeBalances) {
 
         hash = $"{accountEntry.Ledger.Id}||{totalGroupEntry.DebtorCreditor}||" +
                $"{totalGroupEntry.Currency.Id}||{totalGroupEntry.GroupNumber}";
@@ -382,7 +381,7 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
                            TrialBalanceItemType.BalanceTotalGroupDebtor :
                            TrialBalanceItemType.BalanceTotalGroupCreditor;
 
-      var trialBalanceHelper = new TrialBalanceHelper(_command);
+      var trialBalanceHelper = new TrialBalanceHelper(_query);
       trialBalanceHelper.GenerateOrIncreaseEntries(totalGroupEntries, totalGroupEntry,
                                                    StandardAccount.Empty, Sector.Empty,
                                                    debtorCreditor, hash);
@@ -396,7 +395,7 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
       string hash = $"{targetAccount.Number}||{targetSector.Code}||{entry.Currency.Id}||" +
                     $"{entry.Ledger.Id}||{entry.DebtorCreditor}";
 
-      var trialBalanceHelper = new TrialBalanceHelper(_command);
+      var trialBalanceHelper = new TrialBalanceHelper(_query);
       trialBalanceHelper.GenerateOrIncreaseEntries(summaryEntries, entry, targetAccount,
                                                    targetSector, TrialBalanceItemType.Summary, hash);
     }
@@ -414,7 +413,7 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
       entry.GroupName = "TOTAL MONEDA " + entry.Currency.FullName;
       string hash = $"{entry.GroupName}||{Sector.Empty.Code}||{entry.Currency.Id}||{entry.Ledger.Id}";
 
-      var trialBalanceHelper = new TrialBalanceHelper(_command);
+      var trialBalanceHelper = new TrialBalanceHelper(_query);
       trialBalanceHelper.GenerateOrIncreaseEntries(totalsByCurrency, entry,
                                                    StandardAccount.Empty, Sector.Empty,
                                                    TrialBalanceItemType.BalanceTotalCurrency, hash);
@@ -441,13 +440,13 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
       }
 
       string hash = $"{entry.GroupName}||{entry.Currency.Id}";
-      if ((_command.WithSubledgerAccount && _command.ShowCascadeBalances) ||
-           _command.ShowCascadeBalances) {
+      if ((_query.WithSubledgerAccount && _query.ShowCascadeBalances) ||
+           _query.ShowCascadeBalances) {
 
         hash = $"{entry.Ledger.Id}||{entry.Currency.Id}||{entry.GroupName}";
       }
 
-      var trialBalanceHelper = new TrialBalanceHelper(_command);
+      var trialBalanceHelper = new TrialBalanceHelper(_query);
       trialBalanceHelper.GenerateOrIncreaseEntries(summaryEntries, entry, targetAccount,
                                                    targetSector, itemType, hash);
     }
@@ -456,13 +455,13 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
     private bool ValidateEntryForSummaryParentAccount(TrialBalanceEntry entry,
                                                       out StandardAccount currentParent) {
 
-      if ((entry.Account.NotHasParent) || _command.WithSubledgerAccount) {
+      if ((entry.Account.NotHasParent) || _query.WithSubledgerAccount) {
         currentParent = entry.Account;
 
-      } else if (_command.DoNotReturnSubledgerAccounts && entry.Account.HasParent) {
+      } else if (_query.DoNotReturnSubledgerAccounts && entry.Account.HasParent) {
         currentParent = entry.Account.GetParent();
 
-      } else if (_command.DoNotReturnSubledgerAccounts && entry.Account.NotHasParent) {
+      } else if (_query.DoNotReturnSubledgerAccounts && entry.Account.NotHasParent) {
         currentParent = entry.Account;
         return false;
 
@@ -477,7 +476,7 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
                   EmpiriaHashTable<TrialBalanceEntry> parentAccounts,
                   TrialBalanceEntry entry, StandardAccount currentParent) {
 
-      if (!_command.UseNewSectorizationModel || !_command.WithSectorization) {
+      if (!_query.UseNewSectorizationModel || !_query.WithSectorization) {
         return;
       }
 
@@ -491,20 +490,20 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
 
     private void ValuateAccountEntriesToExchangeRate(FixedList<TrialBalanceEntry> entries) {
 
-      if (_command.InitialPeriod.UseDefaultValuation) {
-        _command.InitialPeriod.ExchangeRateTypeUID = ExchangeRateType.ValorizacionBanxico.UID;
-        _command.InitialPeriod.ValuateToCurrrencyUID = "01";
-        _command.InitialPeriod.ExchangeRateDate = _command.InitialPeriod.ToDate;
+      if (_query.InitialPeriod.UseDefaultValuation) {
+        _query.InitialPeriod.ExchangeRateTypeUID = ExchangeRateType.ValorizacionBanxico.UID;
+        _query.InitialPeriod.ValuateToCurrrencyUID = "01";
+        _query.InitialPeriod.ExchangeRateDate = _query.InitialPeriod.ToDate;
       }
 
-      var exchangeRateType = ExchangeRateType.Parse(_command.InitialPeriod.ExchangeRateTypeUID);
+      var exchangeRateType = ExchangeRateType.Parse(_query.InitialPeriod.ExchangeRateTypeUID);
       FixedList<ExchangeRate> exchangeRates = ExchangeRate.GetList(exchangeRateType,
-                                                                   _command.InitialPeriod.ExchangeRateDate);
+                                                                   _query.InitialPeriod.ExchangeRateDate);
 
       foreach (var entry in entries.Where(a => a.Currency.Code != "01")) {
 
         var exchangeRate = exchangeRates.FirstOrDefault(
-                            a => a.FromCurrency.Code == _command.InitialPeriod.ValuateToCurrrencyUID &&
+                            a => a.FromCurrency.Code == _query.InitialPeriod.ValuateToCurrrencyUID &&
                             a.ToCurrency.Code == entry.Currency.Code);
 
         // ToDo: URGENT This require must be checked before any state change

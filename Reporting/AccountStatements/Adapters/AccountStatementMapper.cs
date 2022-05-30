@@ -17,9 +17,7 @@ namespace Empiria.FinancialAccounting.Reporting.Adapters {
   /// <summary>Methods used to map vouchers by account.</summary>
   static internal class AccountStatementMapper {
 
-
     #region Public mappers
-
 
     static internal AccountStatementDto Map(AccountStatement vouchers) {
       return new AccountStatementDto {
@@ -29,7 +27,6 @@ namespace Empiria.FinancialAccounting.Reporting.Adapters {
         Title = vouchers.Title
       };
     }
-
 
     #endregion Public mappers
 

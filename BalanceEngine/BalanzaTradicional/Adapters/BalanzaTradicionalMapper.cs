@@ -21,9 +21,9 @@ namespace Empiria.FinancialAccounting.BalanceEngine.Adapters {
 
     static internal BalanzaTradicionalDto Map(TrialBalance entries) {
       return new BalanzaTradicionalDto {
-        Command = entries.Command,
-        Columns = DataColumns(entries.Command),
-        Entries = Map(entries.Entries, entries.Command)
+        Query = entries.Query,
+        Columns = DataColumns(entries.Query),
+        Entries = Map(entries.Entries, entries.Query)
       };
     }
 
@@ -34,16 +34,16 @@ namespace Empiria.FinancialAccounting.BalanceEngine.Adapters {
 
 
 
-    static public FixedList<DataTableColumn> DataColumns(TrialBalanceCommand command) {
+    static public FixedList<DataTableColumn> DataColumns(TrialBalanceQuery query) {
       List<DataTableColumn> columns = new List<DataTableColumn>();
 
-      if (command.ReturnLedgerColumn) {
+      if (query.ReturnLedgerColumn) {
         columns.Add(new DataTableColumn("ledgerNumber", "Cont", "text"));
       }
 
       columns.Add(new DataTableColumn("currencyCode", "Mon", "text"));
 
-      if (command.WithSubledgerAccount) {
+      if (query.WithSubledgerAccount) {
         columns.Add(new DataTableColumn("accountNumber", "Cuenta / Auxiliar", "text-nowrap"));
       } else {
         columns.Add(new DataTableColumn("accountNumber", "Cuenta", "text-nowrap"));
@@ -56,11 +56,11 @@ namespace Empiria.FinancialAccounting.BalanceEngine.Adapters {
       columns.Add(new DataTableColumn("debit", "Cargos", "decimal"));
       columns.Add(new DataTableColumn("credit", "Abonos", "decimal"));
       columns.Add(new DataTableColumn("currentBalance", "Saldo actual", "decimal"));
-      if (command.InitialPeriod.ExchangeRateTypeUID != string.Empty ||
-          command.InitialPeriod.UseDefaultValuation) {
+      if (query.InitialPeriod.ExchangeRateTypeUID != string.Empty ||
+          query.InitialPeriod.UseDefaultValuation) {
         columns.Add(new DataTableColumn("exchangeRate", "TC", "decimal", 6));
       }
-      if (command.WithAverageBalance) {
+      if (query.WithAverageBalance) {
         columns.Add(new DataTableColumn("averageBalance", "Saldo promedio", "decimal"));
         columns.Add(new DataTableColumn("lastChangeDate", "Último movimiento", "date"));
       }
@@ -70,21 +70,21 @@ namespace Empiria.FinancialAccounting.BalanceEngine.Adapters {
 
 
     static private FixedList<BalanzaTradicionalEntryDto> Map(FixedList<ITrialBalanceEntry> entries,
-                                                             TrialBalanceCommand command) {
+                                                             TrialBalanceQuery query) {
 
-      var mappedItems = entries.Select((x) => MapEntry((TrialBalanceEntry) x, command));
+      var mappedItems = entries.Select((x) => MapEntry((TrialBalanceEntry) x, query));
 
       return new FixedList<BalanzaTradicionalEntryDto>(mappedItems);
     }
 
 
     static public BalanzaTradicionalEntryDto MapEntry(TrialBalanceEntry entry,
-                                                       TrialBalanceCommand command) {
+                                                      TrialBalanceQuery query) {
       var dto = new BalanzaTradicionalEntryDto();
 
       AssignLedgerCurrencyLabelNameAndNumber(dto, entry);
       AssignDebtorCreditorAndLastChangeDate(dto, entry);
-      AssignHasAccountStatementAndClickableEntry(dto, entry, command);
+      AssignHasAccountStatementAndClickableEntry(dto, entry, query);
 
       dto.ItemType = entry.ItemType;
       dto.StandardAccountId = entry.Account.Id;
@@ -129,10 +129,10 @@ namespace Empiria.FinancialAccounting.BalanceEngine.Adapters {
 
     private static void AssignHasAccountStatementAndClickableEntry(BalanzaTradicionalEntryDto dto,
                                                                    TrialBalanceEntry entry,
-                                                                   TrialBalanceCommand command) {
+                                                                   TrialBalanceQuery query) {
       if ((entry.ItemType == TrialBalanceItemType.Entry ||
           entry.ItemType == TrialBalanceItemType.Summary) &&
-          !command.UseDefaultValuation && !command.ValuateBalances) {
+          !query.UseDefaultValuation && !query.ValuateBalances) {
 
         dto.HasAccountStatement = true;
         dto.ClickableEntry = true;

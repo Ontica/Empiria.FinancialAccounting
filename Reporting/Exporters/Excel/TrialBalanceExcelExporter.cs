@@ -18,7 +18,8 @@ namespace Empiria.FinancialAccounting.Reporting.Exporters.Excel {
   /// <summary>Creates a Microsoft Excel file with trial balance information.</summary>
   internal class TrialBalanceExcelExporter {
 
-    private TrialBalanceCommand _command = new TrialBalanceCommand();
+    private TrialBalanceQuery _query = new TrialBalanceQuery();
+
     private readonly FileTemplateConfig _templateConfig;
 
     private readonly DateTime MIN_LAST_CHANGE_DATE_TO_REPORT = DateTime.Parse("01/01/1970");
@@ -35,7 +36,7 @@ namespace Empiria.FinancialAccounting.Reporting.Exporters.Excel {
     internal ExcelFile CreateExcelFile(TrialBalanceDto trialBalance) {
       Assertion.Require(trialBalance, "trialBalance");
 
-      _command = trialBalance.Command;
+      _query = trialBalance.Query;
 
       _excelFile = new ExcelFile(_templateConfig);
 
@@ -58,11 +59,11 @@ namespace Empiria.FinancialAccounting.Reporting.Exporters.Excel {
     private void SetHeader() {
       _excelFile.SetCell($"A2", _templateConfig.Title);
 
-      var subTitle = $"Del {_command.InitialPeriod.FromDate.ToString("dd/MMM/yyyy")} " +
-                     $"al {_command.InitialPeriod.ToDate.ToString("dd/MMM/yyyy")}";
+      var subTitle = $"Del {_query.InitialPeriod.FromDate.ToString("dd/MMM/yyyy")} " +
+                     $"al {_query.InitialPeriod.ToDate.ToString("dd/MMM/yyyy")}";
 
-      if (_command.ValuateBalances) {
-        subTitle += $". Saldos valorizados al {_command.InitialPeriod.ExchangeRateDate.ToString("dd/MMM/yyyy")}.";
+      if (_query.ValuateBalances) {
+        subTitle += $". Saldos valorizados al {_query.InitialPeriod.ExchangeRateDate.ToString("dd/MMM/yyyy")}.";
       }
 
       _excelFile.SetCell($"A3", subTitle);
@@ -70,7 +71,7 @@ namespace Empiria.FinancialAccounting.Reporting.Exporters.Excel {
 
 
     private void SetTable(TrialBalanceDto trialBalance) {
-      switch (trialBalance.Command.TrialBalanceType) {
+      switch (trialBalance.Query.TrialBalanceType) {
         case TrialBalanceType.AnaliticoDeCuentas:
           FillOutAnaliticoDeCuentas(trialBalance.Entries.Select(x => (AnaliticoDeCuentasEntryDto) x));
 
@@ -105,7 +106,7 @@ namespace Empiria.FinancialAccounting.Reporting.Exporters.Excel {
 
         case TrialBalanceType.SaldosPorCuenta:
           FillOutSaldosCuenta(trialBalance.Entries.Select(x => (TrialBalanceEntryDto) x),
-                              trialBalance.Command.WithSubledgerAccount);
+                              trialBalance.Query.WithSubledgerAccount);
           return;
 
         default:
@@ -118,7 +119,7 @@ namespace Empiria.FinancialAccounting.Reporting.Exporters.Excel {
       int i = 5;
 
       foreach (var entry in entries) {
-        if (_command.ShowCascadeBalances) {
+        if (_query.ShowCascadeBalances) {
           _excelFile.SetCell($"A{i}", entry.LedgerNumber);
           _excelFile.SetCell($"B{i}", entry.LedgerName);
         } else {
@@ -144,11 +145,11 @@ namespace Empiria.FinancialAccounting.Reporting.Exporters.Excel {
         }
         i++;
       }
-      if (!_command.WithAverageBalance) {
+      if (!_query.WithAverageBalance) {
         _excelFile.RemoveColumn("K");
         _excelFile.RemoveColumn("J");
       }
-      if (!_command.ShowCascadeBalances) {
+      if (!_query.ShowCascadeBalances) {
         _excelFile.RemoveColumn("B");
       }
     }
@@ -158,7 +159,7 @@ namespace Empiria.FinancialAccounting.Reporting.Exporters.Excel {
       int i = 5;
 
       foreach (var entry in entries) {
-        if (_command.ShowCascadeBalances) {
+        if (_query.ShowCascadeBalances) {
           _excelFile.SetCell($"A{i}", entry.LedgerNumber);
           _excelFile.SetCell($"B{i}", entry.LedgerName);
         } else {
@@ -194,21 +195,21 @@ namespace Empiria.FinancialAccounting.Reporting.Exporters.Excel {
         i++;
       }
 
-      if (!_command.WithAverageBalance) {
+      if (!_query.WithAverageBalance) {
         _excelFile.RemoveColumn("X");
         _excelFile.RemoveColumn("W");
       }
-      if (!_command.ShowCascadeBalances) {
+      if (!_query.ShowCascadeBalances) {
         _excelFile.RemoveColumn("B");
       }
     }
 
 
     private void SetBalanzaComparativaHeaders() {
-      _excelFile.SetCell($"I4", $"{_command.InitialPeriod.ToDate.ToString("MMM_yyyy")}");
-      _excelFile.SetCell($"K4", $"{_command.InitialPeriod.ToDate.ToString("MMM")}_VAL_A");
-      _excelFile.SetCell($"N4", $"{_command.FinalPeriod.ToDate.ToString("MMM_yyyy")}");
-      _excelFile.SetCell($"P4", $"{_command.FinalPeriod.ToDate.ToString("MMM")}_VAL_B");
+      _excelFile.SetCell($"I4", $"{_query.InitialPeriod.ToDate.ToString("MMM_yyyy")}");
+      _excelFile.SetCell($"K4", $"{_query.InitialPeriod.ToDate.ToString("MMM")}_VAL_A");
+      _excelFile.SetCell($"N4", $"{_query.FinalPeriod.ToDate.ToString("MMM_yyyy")}");
+      _excelFile.SetCell($"P4", $"{_query.FinalPeriod.ToDate.ToString("MMM")}_VAL_B");
     }
 
 
@@ -294,7 +295,7 @@ namespace Empiria.FinancialAccounting.Reporting.Exporters.Excel {
         i++;
       }
 
-      if (!_command.WithAverageBalance) {
+      if (!_query.WithAverageBalance) {
         _excelFile.RemoveColumn("L");
         _excelFile.RemoveColumn("K");
       }
@@ -305,7 +306,7 @@ namespace Empiria.FinancialAccounting.Reporting.Exporters.Excel {
       int i = 5;
 
       foreach (var entry in entries) {
-        if (_command.ShowCascadeBalances) {
+        if (_query.ShowCascadeBalances) {
           _excelFile.SetCell($"A{i}", entry.LedgerNumber);
           if (entry.ItemType == TrialBalanceItemType.Entry ||
               entry.ItemType == TrialBalanceItemType.Summary) {
@@ -344,16 +345,16 @@ namespace Empiria.FinancialAccounting.Reporting.Exporters.Excel {
         i++;
       }
 
-      if (!_command.WithAverageBalance) {
+      if (!_query.WithAverageBalance) {
         _excelFile.RemoveColumn("N");
         _excelFile.RemoveColumn("M");
       }
-      if (!_command.UseDefaultValuation &&
-            (_command.InitialPeriod.ValuateToCurrrencyUID.Length == 0 &&
-             _command.InitialPeriod.ExchangeRateTypeUID.Length == 0)) {
+      if (!_query.UseDefaultValuation &&
+            (_query.InitialPeriod.ValuateToCurrrencyUID.Length == 0 &&
+             _query.InitialPeriod.ExchangeRateTypeUID.Length == 0)) {
         _excelFile.RemoveColumn("L");
       }
-      if (!_command.ShowCascadeBalances) {
+      if (!_query.ShowCascadeBalances) {
         _excelFile.RemoveColumn("B");
       }
     }
@@ -367,7 +368,7 @@ namespace Empiria.FinancialAccounting.Reporting.Exporters.Excel {
 
         if ((entry.ItemType == TrialBalanceItemType.Entry ||
             entry.ItemType == TrialBalanceItemType.Summary) &&
-            (_command.ShowCascadeBalances)) {
+            (_query.ShowCascadeBalances)) {
           _excelFile.SetCell($"A{i}", entry.LedgerNumber);
           _excelFile.SetCell($"B{i}", entry.LedgerName);
         } else {
@@ -418,10 +419,10 @@ namespace Empiria.FinancialAccounting.Reporting.Exporters.Excel {
         }
         i++;
       }
-      if (!_command.WithAverageBalance) {
+      if (!_query.WithAverageBalance) {
         _excelFile.RemoveColumn("J");
       }
-      if (!_command.ShowCascadeBalances) {
+      if (!_query.ShowCascadeBalances) {
         _excelFile.RemoveColumn("B");
       }
     }
@@ -435,7 +436,7 @@ namespace Empiria.FinancialAccounting.Reporting.Exporters.Excel {
         var account = StandardAccount.Parse(entry.StandardAccountId);
         var subledgerAccount = SubledgerAccount.Parse(entry.SubledgerAccountId);
 
-        if (_command.ShowCascadeBalances) {
+        if (_query.ShowCascadeBalances) {
           _excelFile.SetCell($"A{i}", entry.LedgerNumber);
           if (entry.ItemType == TrialBalanceItemType.Entry ||
             entry.ItemType == TrialBalanceItemType.Summary) {
@@ -484,14 +485,14 @@ namespace Empiria.FinancialAccounting.Reporting.Exporters.Excel {
         }
         i++;
       }
-      if (!_command.WithAverageBalance) {
+      if (!_query.WithAverageBalance) {
         _excelFile.RemoveColumn("L");
       }
       if (!includeSubledgerAccounts) {
         _excelFile.RemoveColumn("I");
         _excelFile.RemoveColumn("H");
       }
-      if (!_command.ShowCascadeBalances) {
+      if (!_query.ShowCascadeBalances) {
         _excelFile.RemoveColumn("B");
       }
     }
@@ -541,7 +542,7 @@ namespace Empiria.FinancialAccounting.Reporting.Exporters.Excel {
 
 
     private bool MustFillOutAverageBalance(decimal averageBalance, DateTime lastChangeDate) {
-      if (!_command.WithAverageBalance) {
+      if (!_query.WithAverageBalance) {
         return false;
       }
       if (averageBalance != 0) {

@@ -2,26 +2,27 @@
 *                                                                                                            *
 *  Module   : Balance Engine                             Component : Domain Layer                            *
 *  Assembly : FinancialAccounting.BalanceEngine.dll      Pattern   : Information Holder                      *
-*  Type     : Balance                               License   : Please read LICENSE.txt file                 *
+*  Type     : Balances                                   License   : Please read LICENSE.txt file            *
 *                                                                                                            *
 *  Summary  : Contains the header and entries of a balance                                                   *
 *                                                                                                            *
 ************************* Copyright(c) La Vía Óntica SC, Ontica LLC and contributors. All rights reserved. **/
 using System;
+
 using Empiria.FinancialAccounting.BalanceEngine.BalanceExplorer.Adapters;
 
 namespace Empiria.FinancialAccounting.BalanceEngine {
 
   /// <summary>Contains the header and entries of a balance.</summary>
-  public class Balance {
+  public class Balances {
 
     #region Constructors and parsers
 
-    internal Balance(BalanceCommand command, FixedList<BalanceEntry> entries) {
-      Assertion.Require(command, "command");
-      Assertion.Require(entries, "entries");
+    internal Balances(BalancesQuery query, FixedList<BalanceEntry> entries) {
+      Assertion.Require(query, nameof(query));
+      Assertion.Require(entries, nameof(entries));
 
-      Command = command;
+      Query = query;
       Entries = entries;
     }
 
@@ -30,7 +31,7 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
 
     #region Properties
 
-    public BalanceCommand Command {
+    public BalancesQuery Query {
       get;
     }
 
@@ -41,6 +42,6 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
 
     #endregion
 
-  } // class Balance
+  } // class Balances
 
 } // Empiria.FinancialAccounting.BalanceEngine

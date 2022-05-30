@@ -18,36 +18,36 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
   /// <summary>Genera los datos para el reporte de balanza valorizada comparativa.</summary>
   internal class BalanzaComparativa {
 
-    private readonly TrialBalanceCommand _command;
+    private readonly TrialBalanceQuery _query;
 
-    public BalanzaComparativa(TrialBalanceCommand command) {
-      _command = command;
+    public BalanzaComparativa(TrialBalanceQuery query) {
+      _query = query;
     }
 
 
     internal TrialBalance Build() {
-      var balanceHelper = new TrialBalanceHelper(_command);
-      var helper = new TrialBalanceComparativeHelper(_command);
+      var balanceHelper = new TrialBalanceHelper(_query);
+      var helper = new TrialBalanceComparativeHelper(_query);
 
-      _command.FinalPeriod.IsSecondPeriod = true;
+      _query.FinalPeriod.IsSecondPeriod = true;
 
       FixedList<TrialBalanceEntry> entries = balanceHelper.GetPostingEntries();
 
       balanceHelper.SetSummaryToParentEntries(entries);
 
-      entries = balanceHelper.ValuateToExchangeRate(entries, _command.FinalPeriod);
+      entries = balanceHelper.ValuateToExchangeRate(entries, _query.FinalPeriod);
 
       balanceHelper.RoundDecimals(entries);
 
       helper.GetAverageBalance(entries.ToList());
 
-      List<TrialBalanceComparativeEntry> comparativeBalance = 
+      List<TrialBalanceComparativeEntry> comparativeBalance =
                                          helper.MergePeriodsIntoComparativeBalance(entries);
 
       var returnBalance = new FixedList<ITrialBalanceEntry>(
                               comparativeBalance.Select(x => (ITrialBalanceEntry) x));
 
-      return new TrialBalance(_command, returnBalance);
+      return new TrialBalance(_query, returnBalance);
     }
 
   }  // class BalanzaComparativa

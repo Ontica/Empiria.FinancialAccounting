@@ -19,23 +19,23 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
 
     #region Constructors and parsers
 
-    internal TrialBalance(TrialBalanceCommand command,
+    internal TrialBalance(TrialBalanceQuery query,
                           FixedList<ITrialBalanceEntry> entries) {
-      Assertion.Require(command, "command");
-      Assertion.Require(entries, "entries");
+      Assertion.Require(query,nameof(query));
+      Assertion.Require(entries, nameof(entries));
 
-      this.Command = command;
+      this.Query = query;
       this.Entries = entries;
     }
 
 
     internal FixedList<DataTableColumn> DataColumns() {
-      switch (this.Command.TrialBalanceType) {
+      switch (this.Query.TrialBalanceType) {
         case TrialBalanceType.AnaliticoDeCuentas:
-          return AnaliticoDeCuentasMapper.DataColumns(this.Command);
+          return AnaliticoDeCuentasMapper.DataColumns(this.Query);
 
         case TrialBalanceType.Balanza:
-          return BalanzaTradicionalMapper.DataColumns(this.Command);
+          return BalanzaTradicionalMapper.DataColumns(this.Query);
 
         case TrialBalanceType.GeneracionDeSaldos:
         case TrialBalanceType.Saldos:
@@ -55,7 +55,7 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
 
         default:
           throw Assertion.EnsureNoReachThisCode(
-                $"Unhandled trial balance type {this.Command.TrialBalanceType}.");
+                $"Unhandled trial balance type {this.Query.TrialBalanceType}.");
       }
     }
 
@@ -63,13 +63,13 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
     private FixedList<DataTableColumn> TrialBalanceDataColumns() {
       List<DataTableColumn> columns = new List<DataTableColumn>();
 
-      if (Command.ReturnLedgerColumn) {
+      if (Query.ReturnLedgerColumn) {
         columns.Add(new DataTableColumn("ledgerNumber", "Cont", "text"));
       }
 
       columns.Add(new DataTableColumn("currencyCode", "Mon", "text"));
 
-      if (Command.WithSubledgerAccount) {
+      if (Query.WithSubledgerAccount) {
         columns.Add(new DataTableColumn("accountNumber", "Cuenta / Auxiliar", "text-nowrap"));
       } else {
         columns.Add(new DataTableColumn("accountNumber", "Cuenta", "text-nowrap"));
@@ -78,11 +78,11 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
       columns.Add(new DataTableColumn("sectorCode", "Sct", "text"));
       columns.Add(new DataTableColumn("accountName", "Nombre", "text"));
 
-      if (Command.TrialBalanceType == TrialBalanceType.SaldosPorCuenta ||
-          Command.TrialBalanceType == TrialBalanceType.SaldosPorAuxiliar) {
+      if (Query.TrialBalanceType == TrialBalanceType.SaldosPorCuenta ||
+          Query.TrialBalanceType == TrialBalanceType.SaldosPorAuxiliar) {
         columns.Add(new DataTableColumn("currentBalance", "Saldo actual", "decimal"));
         columns.Add(new DataTableColumn("debtorCreditor", "Naturaleza", "text"));
-        if (Command.WithAverageBalance) {
+        if (Query.WithAverageBalance) {
           columns.Add(new DataTableColumn("averageBalance", "Saldo promedio", "decimal"));
 
         }
@@ -92,11 +92,11 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
         columns.Add(new DataTableColumn("debit", "Cargos", "decimal"));
         columns.Add(new DataTableColumn("credit", "Abonos", "decimal"));
         columns.Add(new DataTableColumn("currentBalance", "Saldo actual", "decimal"));
-        if (Command.InitialPeriod.ExchangeRateTypeUID != string.Empty ||
-            Command.InitialPeriod.UseDefaultValuation) {
+        if (Query.InitialPeriod.ExchangeRateTypeUID != string.Empty ||
+            Query.InitialPeriod.UseDefaultValuation) {
           columns.Add(new DataTableColumn("exchangeRate", "TC", "decimal", 6));
         }
-        if (Command.WithAverageBalance) {
+        if (Query.WithAverageBalance) {
           columns.Add(new DataTableColumn("averageBalance", "Saldo promedio", "decimal"));
           columns.Add(new DataTableColumn("lastChangeDate", "Último movimiento", "date"));
         }
@@ -109,7 +109,7 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
     private FixedList<DataTableColumn> TwoBalancesComparativeDataColumns() {
       List<DataTableColumn> columns = new List<DataTableColumn>();
 
-      if (Command.ReturnLedgerColumn) {
+      if (Query.ReturnLedgerColumn) {
         columns.Add(new DataTableColumn("ledgerNumber", "Cont", "text"));
       }
       columns.Add(new DataTableColumn("currencyCode", "Mon", "text"));
@@ -119,22 +119,22 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
       columns.Add(new DataTableColumn("subledgerAccountNumber", "Auxiliar", "text-nowrap"));
       columns.Add(new DataTableColumn("subledgerAccountName", "Nombre", "text"));
 
-      columns.Add(new DataTableColumn("firstTotalBalance", $"{Command.InitialPeriod.FromDate:MMM_yyyy}", "decimal"));
+      columns.Add(new DataTableColumn("firstTotalBalance", $"{Query.InitialPeriod.FromDate:MMM_yyyy}", "decimal"));
       columns.Add(new DataTableColumn("firstExchangeRate", "Tc_Ini", "decimal", 6));
-      columns.Add(new DataTableColumn("firstValorization", $"{Command.InitialPeriod.FromDate:MMM}_VAL_A", "decimal"));
+      columns.Add(new DataTableColumn("firstValorization", $"{Query.InitialPeriod.FromDate:MMM}_VAL_A", "decimal"));
 
       columns.Add(new DataTableColumn("debit", "Cargos", "decimal"));
       columns.Add(new DataTableColumn("credit", "Abonos", "decimal"));
-      columns.Add(new DataTableColumn("secondTotalBalance", $"{Command.FinalPeriod.FromDate:MMM_yyyy}", "decimal"));
+      columns.Add(new DataTableColumn("secondTotalBalance", $"{Query.FinalPeriod.FromDate:MMM_yyyy}", "decimal"));
       columns.Add(new DataTableColumn("secondExchangeRate", "Tc_Fin", "decimal", 6));
-      columns.Add(new DataTableColumn("secondValorization", $"{Command.FinalPeriod.FromDate:MMM}_VAL_B", "decimal"));
+      columns.Add(new DataTableColumn("secondValorization", $"{Query.FinalPeriod.FromDate:MMM}_VAL_B", "decimal"));
 
       columns.Add(new DataTableColumn("accountName", "Nom_Cta", "text"));
       columns.Add(new DataTableColumn("debtorCreditor", "Nat", "text"));
       columns.Add(new DataTableColumn("variation", "Variación", "decimal"));
       columns.Add(new DataTableColumn("variationByER", "Variación por TC", "decimal"));
       columns.Add(new DataTableColumn("realVariation", "Variación por TC", "decimal"));
-      if (Command.WithAverageBalance) {
+      if (Query.WithAverageBalance) {
         columns.Add(new DataTableColumn("averageBalance", "Saldo promedio", "decimal"));
         columns.Add(new DataTableColumn("lastChangeDate", "Último movimiento", "date"));
       }
@@ -177,7 +177,7 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
 
     #region Properties
 
-    public TrialBalanceCommand Command {
+    public TrialBalanceQuery Query {
       get;
     }
 

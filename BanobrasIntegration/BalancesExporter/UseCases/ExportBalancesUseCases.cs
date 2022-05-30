@@ -40,10 +40,10 @@ namespace Empiria.FinancialAccounting.BanobrasIntegration.BalancesExporter.UseCa
     public FixedList<ExportedBalancesDto> Export(ExportBalancesCommand command) {
       Assertion.Require(command, "command");
 
-      TrialBalanceCommand trialBalanceCommand = command.MapToTrialBalanceCommand();
-
       using (var usecases = TrialBalanceUseCases.UseCaseInteractor()) {
-        TrialBalanceDto trialBalance = usecases.BuildTrialBalance(trialBalanceCommand);
+        TrialBalanceQuery query = command.MapToTrialBalanceQuery();
+
+        TrialBalanceDto trialBalance = usecases.BuildTrialBalance(query);
 
         FixedList<ExportedBalancesDto> balances =
                       ExportBalancesMapper.MapToExportedBalances(command, trialBalance);

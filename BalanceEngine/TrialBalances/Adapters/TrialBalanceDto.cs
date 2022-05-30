@@ -9,23 +9,28 @@
 ************************* Copyright(c) La Vía Óntica SC, Ontica LLC and contributors. All rights reserved. **/
 using System;
 
+using Newtonsoft.Json;
+
 namespace Empiria.FinancialAccounting.BalanceEngine.Adapters {
 
   /// <summary>Output DTO used to return trial balances.</summary>
   public class TrialBalanceDto<T> where T : ITrialBalanceEntryDto {
 
-    public TrialBalanceCommand Command {
-      get; set;
-    } = new TrialBalanceCommand();
+    [JsonProperty(PropertyName = "Command")]
+    public TrialBalanceQuery Query {
+      get; internal set;
+    } = new TrialBalanceQuery();
 
 
+    [JsonProperty]
     public FixedList<DataTableColumn> Columns {
-      get; set;
+      get; internal set;
     } = new FixedList<DataTableColumn>();
 
 
+    [JsonProperty]
     public FixedList<T> Entries {
-      get; set;
+      get; internal set;
     } = new FixedList<T>();
 
   }
@@ -34,20 +39,21 @@ namespace Empiria.FinancialAccounting.BalanceEngine.Adapters {
   /// <summary>Output DTO used to return trial balances.</summary>
   public class TrialBalanceDto {
 
-    //  ToDo: Set sets to internal. parse using JSONs
+    [JsonProperty(PropertyName = "Command")]
+    public TrialBalanceQuery Query {
+      get; internal set;
+    } = new TrialBalanceQuery();
 
-    public TrialBalanceCommand Command {
-      get; set;
-    } = new TrialBalanceCommand();
 
-
+    [JsonProperty]
     public FixedList<DataTableColumn> Columns {
-      get; set;
+      get; internal set;
     } = new FixedList<DataTableColumn>();
 
 
+    [JsonProperty]
     public FixedList<ITrialBalanceEntryDto> Entries {
-      get; set;
+      get; internal set;
     } = new FixedList<ITrialBalanceEntryDto>();
 
   }  // class TrialBalanceDto

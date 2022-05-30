@@ -24,21 +24,22 @@ namespace Empiria.FinancialAccounting.BalanceEngine.Data {
     }
 
 
-    static internal BalancesSqlClauses BuildFrom(TrialBalanceCommand command) {
-      Assertion.Require(command, nameof(command));
+    // This builder uses the trial balances query to generate balances sql clauses
+    static internal BalancesSqlClauses BuildFrom(TrialBalanceQuery query) {
+      Assertion.Require(query, nameof(query));
 
-      var builder = new BalancesSqlClausesBuilder(command);
+      var builder = new BalancesSqlClausesBuilder(query);
 
       return builder.Build();
     }
 
 
-    static internal BalancesSqlClauses BuildFrom(BalanceCommand command) {
-      Assertion.Require(command, nameof(command));
+    static internal BalancesSqlClauses BuildFrom(BalancesQuery query) {
+      Assertion.Require(query, nameof(query));
 
-      TrialBalanceCommand trialBalanceCommand = CopyToTrialBalanceCommand(command);
+      TrialBalanceQuery convertedToTrialBalanceQuery = ConvertToTrialBalanceQuery(query);
 
-      return BalancesSqlClauses.BuildFrom(trialBalanceCommand);
+      return BalancesSqlClauses.BuildFrom(convertedToTrialBalanceQuery);
     }
 
     #endregion Constructors and parsers
@@ -122,20 +123,20 @@ namespace Empiria.FinancialAccounting.BalanceEngine.Data {
 
     #region Helpers
 
-    static private TrialBalanceCommand CopyToTrialBalanceCommand(BalanceCommand command) {
-      var trialBalanceCommand = new TrialBalanceCommand();
-
-      trialBalanceCommand.AccountsChartUID = command.AccountsChartUID;
-      trialBalanceCommand.FromAccount = command.FromAccount;
-      trialBalanceCommand.InitialPeriod.FromDate = command.InitialPeriod.FromDate;
-      trialBalanceCommand.InitialPeriod.ToDate = command.InitialPeriod.ToDate;
-      trialBalanceCommand.SubledgerAccount = command.SubledgerAccount;
-      trialBalanceCommand.TrialBalanceType = command.TrialBalanceType;
-      trialBalanceCommand.BalancesType = command.BalancesType;
-      trialBalanceCommand.Ledgers = command.Ledgers;
-      trialBalanceCommand.WithSubledgerAccount = command.WithSubledgerAccount;
-
-      return trialBalanceCommand;
+    static private TrialBalanceQuery ConvertToTrialBalanceQuery(BalancesQuery query) {
+      return new TrialBalanceQuery {
+        AccountsChartUID      = query.AccountsChartUID,
+        FromAccount           = query.FromAccount,
+        SubledgerAccount      = query.SubledgerAccount,
+        TrialBalanceType      = query.TrialBalanceType,
+        BalancesType          = query.BalancesType,
+        Ledgers               = query.Ledgers,
+        WithSubledgerAccount  = query.WithSubledgerAccount,
+        InitialPeriod = new BalancesPeriod {
+          FromDate = query.InitialPeriod.FromDate,
+          ToDate = query.InitialPeriod.ToDate,
+        }
+      };
     }
 
     #endregion Helpers

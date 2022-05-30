@@ -134,10 +134,10 @@ namespace Empiria.FinancialAccounting.Reconciliation {
       #region Local functions
 
       FixedList<TrialBalanceEntryDto> GetAllBalances(DateTime reconciliationDate) {
-        TrialBalanceCommand trialBalanceCommand = DetermineTrialBalanceCommand(reconciliationDate);
-
         using (var usecases = TrialBalanceUseCases.UseCaseInteractor()) {
-          TrialBalanceDto trialBalance = usecases.BuildTrialBalance(trialBalanceCommand);
+          TrialBalanceQuery query = DetermineTrialBalanceQuery(reconciliationDate);
+
+          TrialBalanceDto trialBalance = usecases.BuildTrialBalance(query);
 
           IEnumerable<TrialBalanceEntryDto> balances = trialBalance.Entries.Select(x => (TrialBalanceEntryDto) x);
 
@@ -147,24 +147,24 @@ namespace Empiria.FinancialAccounting.Reconciliation {
       }  // GetAllBalances()
 
 
-      TrialBalanceCommand DetermineTrialBalanceCommand(DateTime reconciliationDate) {
+      TrialBalanceQuery DetermineTrialBalanceQuery(DateTime reconciliationDate) {
         const string RECONCILIATION_LEDGER_UID = "09";
 
         var ledger = AccountsChart.IFRS.GetLedger(RECONCILIATION_LEDGER_UID);
 
-        return new TrialBalanceCommand {
+        return new TrialBalanceQuery {
           TrialBalanceType = TrialBalanceType.Balanza,
           AccountsChartUID = AccountsChart.IFRS.UID,
           BalancesType = BalancesType.WithMovements,
           ShowCascadeBalances = true,
           Ledgers = new string[] { ledger.UID },
-          InitialPeriod = new BalanceEngineCommandPeriod {
+          InitialPeriod = new BalancesPeriod {
             FromDate = reconciliationDate,
             ToDate = reconciliationDate
           }
         };
 
-      }  // DetermineTrialBalanceCommand()
+      }  // DetermineTrialBalanceQuery()
 
       #endregion Local functions
 

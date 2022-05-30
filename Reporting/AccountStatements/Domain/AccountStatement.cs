@@ -2,30 +2,31 @@
 *                                                                                                            *
 *  Module   : Reporting Services                         Component : Domain Layer                            *
 *  Assembly : FinancialAccounting.Reporting.dll          Pattern   : Information Holder                      *
-*  Type     : VouchersByAccount                          License   : Please read LICENSE.txt file            *
+*  Type     : AccountStatement                           License   : Please read LICENSE.txt file            *
 *                                                                                                            *
-*  Summary  : Contains the header and entries of vouchers by account.                                        *
+*  Summary  : Represents an account statement.                                                               *
 *                                                                                                            *
 ************************* Copyright(c) La Vía Óntica SC, Ontica LLC and contributors. All rights reserved. **/
 using System;
+
 using Empiria.FinancialAccounting.BalanceEngine.BalanceExplorer.Adapters;
-using Empiria.FinancialAccounting.Reporting.Adapters;
 
 namespace Empiria.FinancialAccounting.Reporting {
 
-  /// <summary>Contains the header and entries of vouchers by account.</summary>
+  /// <summary>Represents an account statement.</summary>
   public class AccountStatement {
 
     #region Constructors and parsers
 
-    internal AccountStatement(BalanceCommand command, FixedList<IVouchersByAccountEntry> entries, string title) {
-      Assertion.Require(command, "command");
-      Assertion.Require(entries, "entries");
-      //Assertion.AssertObject(title, "title");
+    internal AccountStatement(BalancesQuery query,
+                              FixedList<IVouchersByAccountEntry> entries,
+                              string title) {
+      Assertion.Require(query,    nameof(query));
+      Assertion.Require(entries,  nameof(entries));
 
-      Command = command;
+      Command = query;
       Entries = entries;
-      Title = title;
+      Title   = title;
     }
 
 
@@ -33,7 +34,7 @@ namespace Empiria.FinancialAccounting.Reporting {
 
     #region Properties
 
-    public BalanceCommand Command {
+    public BalancesQuery Command {
       get;
     }
 
@@ -49,6 +50,6 @@ namespace Empiria.FinancialAccounting.Reporting {
 
     #endregion
 
-  } // class VouchersByAccount 
+  } // class AccountStatement
 
 } // namespace Empiria.FinancialAccounting.Reporting

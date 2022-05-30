@@ -18,28 +18,28 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
   /// <summary>Helper methods to build comparative balances.</summary>
   internal class TrialBalanceComparativeHelper {
 
-    private readonly TrialBalanceCommand _command;
+    private readonly TrialBalanceQuery _query;
 
-    internal TrialBalanceComparativeHelper(TrialBalanceCommand command) {
-      _command = command;
+    internal TrialBalanceComparativeHelper(TrialBalanceQuery query) {
+      _query = query;
     }
 
 
     internal void GetAverageBalance(List<TrialBalanceEntry> trialBalance) {
       var returnedEntries = new List<TrialBalanceEntry>(trialBalance);
 
-      if (_command.WithAverageBalance) {
+      if (_query.WithAverageBalance) {
 
         foreach (var entry in returnedEntries) {
 
           decimal debtorCreditor = entry.DebtorCreditor == DebtorCreditorType.Deudora ?
                                    entry.Debit - entry.Credit : entry.Credit - entry.Debit;
 
-          TimeSpan timeSpan = _command.FinalPeriod.ToDate - entry.LastChangeDate;
+          TimeSpan timeSpan = _query.FinalPeriod.ToDate - entry.LastChangeDate;
           int numberOfDays = timeSpan.Days + 1;
 
           entry.AverageBalance = ((numberOfDays * debtorCreditor) /
-                                   _command.InitialPeriod.ToDate.Day) +
+                                   _query.InitialPeriod.ToDate.Day) +
                                    entry.InitialBalance;
         }
       }

@@ -20,89 +20,88 @@ namespace Empiria.FinancialAccounting.Tests.BalanceEngine {
   static class BalanceEngineProxy {
 
     /// <summary>Use case proxy based on Http remote calls to TrialBalanceUseCases methods.</summary>
-    static internal TrialBalanceDto BuildTrialBalance(TrialBalanceCommand command) {
+    static internal TrialBalanceDto BuildTrialBalance(TrialBalanceQuery query) {
 
       if (TestingConstants.INVOKE_USE_CASES_THROUGH_THE_WEB_API) {
-        return BuildRemoteTrialBalanceUseCase(command);
+        return BuildRemoteTrialBalanceUseCase(query);
 
       } else {
-        return BuildLocalTrialBalanceUseCase(command);
+        return BuildLocalTrialBalanceUseCase(query);
 
       }
     }
 
 
     /// <summary>Use case proxy based on Http remote calls to TrialBalanceUseCases methods.</summary>
-    static internal TrialBalanceDto<T> BuildTrialBalance<T>(TrialBalanceCommand command)
+    static internal TrialBalanceDto<T> BuildTrialBalance<T>(TrialBalanceQuery query)
                                                             where T : ITrialBalanceEntryDto {
 
       if (TestingConstants.INVOKE_USE_CASES_THROUGH_THE_WEB_API) {
-        return BuildRemoteTrialBalanceUseCase<T>(command);
+        return BuildRemoteTrialBalanceUseCase<T>(query);
 
       } else {
-        return BuildLocalTrialBalanceUseCase<T>(command);
+        return BuildLocalTrialBalanceUseCase<T>(query);
 
       }
     }
 
-    static private TrialBalanceDto BuildLocalTrialBalanceUseCase(TrialBalanceCommand command) {
+    static private TrialBalanceDto BuildLocalTrialBalanceUseCase(TrialBalanceQuery query) {
       using (var usecase = TrialBalanceUseCases.UseCaseInteractor()) {
-        return usecase.BuildTrialBalance(command);
+        return usecase.BuildTrialBalance(query);
       }
     }
 
 
-    static private TrialBalanceDto<T> BuildLocalTrialBalanceUseCase<T>(TrialBalanceCommand command)
+    static private TrialBalanceDto<T> BuildLocalTrialBalanceUseCase<T>(TrialBalanceQuery query)
                                                                        where T : ITrialBalanceEntryDto {
       using (var usecase = TrialBalanceUseCases.UseCaseInteractor()) {
         throw new NotImplementedException();
-        //  return usecase.BuildTrialBalance<T>(command);
       }
     }
 
 
-    static internal Task<AnaliticoDeCuentasDto> BuildAnaliticoDeCuentas(TrialBalanceCommand command) {
+    static internal Task<AnaliticoDeCuentasDto> BuildAnaliticoDeCuentas(TrialBalanceQuery query) {
       if (TestingConstants.INVOKE_USE_CASES_THROUGH_THE_WEB_API) {
-        return BuildRemoteAnaliticoDeCuentasUseCase(command);
+        return BuildRemoteAnaliticoDeCuentasUseCase(query);
 
       } else {
-        return BuildLocalAnaliticoDeCuentasUseCase(command);
+        return BuildLocalAnaliticoDeCuentasUseCase(query);
 
       }
     }
 
 
-    private static Task<AnaliticoDeCuentasDto> BuildLocalAnaliticoDeCuentasUseCase(TrialBalanceCommand command) {
+    private static Task<AnaliticoDeCuentasDto> BuildLocalAnaliticoDeCuentasUseCase(TrialBalanceQuery query) {
       using (var usecase = TrialBalanceUseCases.UseCaseInteractor()) {
-        return usecase.BuildAnaliticoDeCuentas(command);
+        return usecase.BuildAnaliticoDeCuentas(query);
       }
     }
 
 
-    private static async Task<AnaliticoDeCuentasDto> BuildRemoteAnaliticoDeCuentasUseCase(TrialBalanceCommand command) {
+    private static async Task<AnaliticoDeCuentasDto> BuildRemoteAnaliticoDeCuentasUseCase(TrialBalanceQuery query) {
       HttpApiClient http = CreateHttpApiClient();
 
-      var dto = await http.PostAsync<ResponseModel<AnaliticoDeCuentasDto>>(command, "v2/financial-accounting/balance-engine/analitico-de-cuentas")
+      var dto = await http.PostAsync<ResponseModel<AnaliticoDeCuentasDto>>(query, "v2/financial-accounting/balance-engine/analitico-de-cuentas")
                           .ConfigureAwait(false);
 
       return dto.Data;
     }
 
 
-    static private TrialBalanceDto BuildRemoteTrialBalanceUseCase(TrialBalanceCommand command) {
+    static private TrialBalanceDto BuildRemoteTrialBalanceUseCase(TrialBalanceQuery query) {
       HttpApiClient http = CreateHttpApiClient();
 
-      return http.PostAsync<ResponseModel<TrialBalanceDto>>(command, "v2/financial-accounting/trial-balance")
+      return http.PostAsync<ResponseModel<TrialBalanceDto>>(query, "v2/financial-accounting/trial-balance")
                  .Result
                  .Data;
     }
 
 
-    static private TrialBalanceDto<T> BuildRemoteTrialBalanceUseCase<T>(TrialBalanceCommand command)
+    static private TrialBalanceDto<T> BuildRemoteTrialBalanceUseCase<T>(TrialBalanceQuery query)
                                                                         where T : ITrialBalanceEntryDto {
       HttpApiClient http = CreateHttpApiClient();
 
-      return http.PostAsync<ResponseModel<TrialBalanceDto<T>>>(command, "v2/financial-accounting/trial-balance")
+      return http.PostAsync<ResponseModel<TrialBalanceDto<T>>>(query, "v2/financial-accounting/trial-balance")
                  .Result
                  .Data;
     }

@@ -1,10 +1,10 @@
 ﻿/* Empiria Financial *****************************************************************************************
 *                                                                                                            *
 *  Module   : Balance Engine                             Component : Interface adapters                      *
-*  Assembly : FinancialAccounting.BalanceEngine.dll      Pattern   : Command payload                         *
-*  Type     : BalanceCommand                             License   : Please read LICENSE.txt file            *
+*  Assembly : FinancialAccounting.BalanceEngine.dll      Pattern   : Query payload                           *
+*  Type     : BalancesQuery                              License   : Please read LICENSE.txt file            *
 *                                                                                                            *
-*  Summary  : Command payload used to build balances.                                                        *
+*  Summary  : Query payload used to build balances.                                                          *
 *                                                                                                            *
 ************************* Copyright(c) La Vía Óntica SC, Ontica LLC and contributors. All rights reserved. **/
 using System;
@@ -15,8 +15,8 @@ using Empiria.FinancialAccounting.BalanceEngine.Adapters;
 
 namespace Empiria.FinancialAccounting.BalanceEngine.BalanceExplorer.Adapters {
 
-  /// <summary>Command payload used to generate balances.</summary>
-  public class BalanceCommand {
+  /// <summary>Query payload used to generate balances.</summary>
+  public class BalancesQuery {
 
     public TrialBalanceType TrialBalanceType {
       get; set;
@@ -65,9 +65,9 @@ namespace Empiria.FinancialAccounting.BalanceEngine.BalanceExplorer.Adapters {
     } = FileReportVersion.V1;
 
 
-    public BalanceEngineCommandPeriod InitialPeriod {
+    public BalancesPeriod InitialPeriod {
       get; set;
-    } = new BalanceEngineCommandPeriod();
+    } = new BalancesPeriod();
 
 
     public bool WithAllAccounts {
@@ -81,8 +81,8 @@ namespace Empiria.FinancialAccounting.BalanceEngine.BalanceExplorer.Adapters {
 
 
     public override bool Equals(object obj) {
-      return obj is BalanceCommand balance &&
-             balance.GetHashCode() == this.GetHashCode();
+      return obj is BalancesQuery query &&
+             query.GetHashCode() == this.GetHashCode();
     }
 
 
@@ -92,6 +92,6 @@ namespace Empiria.FinancialAccounting.BalanceEngine.BalanceExplorer.Adapters {
       return json.GetHashCode();
     }
 
-  } // class BalanceCommand
+  } // class BalancesQuery
 
 } // Empiria.FinancialAccounting.BalanceEngine.Adapters

@@ -18,15 +18,15 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
   /// <summary>Genera los datos para el reporte Analítico de Cuentas.</summary>
   internal class AnaliticoDeCuentasBuilder {
 
-    private readonly TrialBalanceCommand _command;
+    private readonly TrialBalanceQuery _query;
 
-    public AnaliticoDeCuentasBuilder(TrialBalanceCommand command) {
-      _command = command;
+    internal AnaliticoDeCuentasBuilder(TrialBalanceQuery query) {
+      _query = query;
     }
 
 
     internal FixedList<AnaliticoDeCuentasEntry> Build() {
-      var balanceHelper = new TrialBalanceHelper(_command);
+      var balanceHelper = new TrialBalanceHelper(_query);
 
       FixedList<TrialBalanceEntry> baseAccountEntries = balanceHelper.ReadAccountEntriesFromDataService();
 
@@ -37,7 +37,7 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
     internal FixedList<AnaliticoDeCuentasEntry> Build(FixedList<TrialBalanceEntry> baseAccountEntries) {
       FixedList<TrialBalanceEntry> saldosValorizados = SaldosDeCuentasValorizados(baseAccountEntries);
 
-      var balanceHelper = new TrialBalanceHelper(_command);
+      var balanceHelper = new TrialBalanceHelper(_query);
 
       List<TrialBalanceEntry> summaryEntries = balanceHelper.GetCalculatedParentAccounts(saldosValorizados);
 
@@ -50,7 +50,7 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
       List<TrialBalanceEntry> summaryEntriesAndSectorization =
                               balanceHelper.GetSummaryAccountEntriesAndSectorization(summaryEntries);
 
-      var analiticoHelper = new AnaliticoDeCuentasHelper(_command);
+      var analiticoHelper = new AnaliticoDeCuentasHelper(_query);
 
       analiticoHelper.GetSummaryToSectorZeroForPesosAndUdis(postingEntries, summaryEntriesAndSectorization);
 
@@ -91,13 +91,13 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
 
 
     private FixedList<TrialBalanceEntry> SaldosDeCuentasValorizados(FixedList<TrialBalanceEntry> baseAccountEntries) {
-      var balanceHelper = new TrialBalanceHelper(_command);
+      var balanceHelper = new TrialBalanceHelper(_query);
 
       balanceHelper.SetSummaryToParentEntries(baseAccountEntries);
 
       // balanceHelper.ApplyExchangeRates(baseAccountEntries);
 
-      baseAccountEntries = balanceHelper.ValuateToExchangeRate(baseAccountEntries, _command.InitialPeriod);
+      baseAccountEntries = balanceHelper.ValuateToExchangeRate(baseAccountEntries, _query.InitialPeriod);
 
       balanceHelper.RoundDecimals(baseAccountEntries);
 

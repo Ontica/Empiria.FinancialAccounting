@@ -17,11 +17,11 @@ namespace Empiria.FinancialAccounting.BalanceEngine.BalanceExplorer.Adapters {
 
     #region Public mappers
 
-    static internal BalanceDto Map(Balance balance) {
-      return new BalanceDto {
-        Command = balance.Command,
-        Columns = MapColumns(balance.Command),
-        Entries = MapToDto(balance.Entries, balance.Command)
+    static internal BalancesDto Map(Balances balances) {
+      return new BalancesDto {
+        Query = balances.Query,
+        Columns = MapColumns(balances.Query),
+        Entries = MapToDto(balances.Entries, balances.Query)
       };
     }
 
@@ -53,7 +53,7 @@ namespace Empiria.FinancialAccounting.BalanceEngine.BalanceExplorer.Adapters {
 
     #region Private methods
 
-    private static FixedList<DataTableColumn> MapColumns(BalanceCommand command) {
+    private static FixedList<DataTableColumn> MapColumns(BalancesQuery query) {
       List<DataTableColumn> columns = new List<DataTableColumn>();
       columns.Add(new DataTableColumn("ledgerNumber", "Deleg", "text"));
       columns.Add(new DataTableColumn("ledgerName", "Delegación", "text"));
@@ -62,7 +62,7 @@ namespace Empiria.FinancialAccounting.BalanceEngine.BalanceExplorer.Adapters {
       columns.Add(new DataTableColumn("sectorCode", "Sct", "text"));
       columns.Add(new DataTableColumn("accountName", "Nombre", "text"));
       columns.Add(new DataTableColumn("currentBalance", "Saldo actual", "decimal"));
-      if (command.TrialBalanceType == TrialBalanceType.SaldosPorAuxiliarConsultaRapida) {
+      if (query.TrialBalanceType == TrialBalanceType.SaldosPorAuxiliarConsultaRapida) {
         columns.Add(new DataTableColumn("debtorCreditor", "Naturaleza", "text"));
       }
       columns.Add(new DataTableColumn("lastChangeDate", "Último movimiento", "date"));
@@ -72,9 +72,9 @@ namespace Empiria.FinancialAccounting.BalanceEngine.BalanceExplorer.Adapters {
 
 
     static private FixedList<IBalanceEntryDto> MapToDto(
-                    FixedList<BalanceEntry> list, BalanceCommand command) {
+                    FixedList<BalanceEntry> list, BalancesQuery query) {
 
-      switch (command.TrialBalanceType) {
+      switch (query.TrialBalanceType) {
         case TrialBalanceType.SaldosPorAuxiliarConsultaRapida:
 
           var mapped = list.Select((x) => MapToBalanceBySubledgerAccount(x));
@@ -83,18 +83,18 @@ namespace Empiria.FinancialAccounting.BalanceEngine.BalanceExplorer.Adapters {
 
         case TrialBalanceType.SaldosPorCuentaConsultaRapida:
 
-          var mappedItems = list.Select((x) => MapToBalanceByAccount(x, command));
+          var mappedItems = list.Select((x) => MapToBalanceByAccount(x, query));
 
           return new FixedList<IBalanceEntryDto>(mappedItems);
 
         default:
           throw Assertion.EnsureNoReachThisCode(
-                $"Unhandled balance type {command.TrialBalanceType}.");
+                $"Unhandled balance type {query.TrialBalanceType}.");
       }
     }
 
 
-    static private BalanceEntryDto MapToBalanceByAccount(BalanceEntry entry, BalanceCommand command) {
+    static private BalanceEntryDto MapToBalanceByAccount(BalanceEntry entry, BalancesQuery query) {
 
       var dto = new BalanceEntryDto();
 
@@ -116,7 +116,7 @@ namespace Empiria.FinancialAccounting.BalanceEngine.BalanceExplorer.Adapters {
       if (entry.ItemType == TrialBalanceItemType.BalanceTotalCurrency) {
         dto.AccountNumber = "";
 
-      } else if (entry.SubledgerAccountNumber != string.Empty && command.WithSubledgerAccount) {
+      } else if (entry.SubledgerAccountNumber != string.Empty && query.WithSubledgerAccount) {
         dto.AccountNumber = entry.SubledgerAccountNumber;
       } else {
         dto.AccountNumber = entry.Account.Number == "Empty" ? "" : entry.Account.Number;

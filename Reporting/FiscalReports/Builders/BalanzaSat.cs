@@ -25,10 +25,10 @@ namespace Empiria.FinancialAccounting.Reporting.Builders {
     public ReportDataDto Build(BuildReportCommand command) {
       Assertion.Require(command, "command");
 
-      TrialBalanceCommand trialBalanceCommand = this.GetTrialBalanceCommand(command);
+      TrialBalanceQuery query = this.MapToTrialBalanceQuery(command);
 
       using (var usecases = TrialBalanceUseCases.UseCaseInteractor()) {
-        TrialBalanceDto trialBalance = usecases.BuildTrialBalance(trialBalanceCommand);
+        TrialBalanceDto trialBalance = usecases.BuildTrialBalance(query);
 
         return MapToReportDataDto(command, trialBalance);
       }
@@ -59,8 +59,8 @@ namespace Empiria.FinancialAccounting.Reporting.Builders {
 
 
 
-    private TrialBalanceCommand GetTrialBalanceCommand(BuildReportCommand command) {
-      return new TrialBalanceCommand {
+    private TrialBalanceQuery MapToTrialBalanceQuery(BuildReportCommand command) {
+      return new TrialBalanceQuery {
         TrialBalanceType = TrialBalanceType.Balanza,
         AccountsChartUID = AccountsChart.Parse(command.AccountsChartUID).UID,
         BalancesType = BalancesType.WithCurrentBalanceOrMovements,
@@ -68,7 +68,7 @@ namespace Empiria.FinancialAccounting.Reporting.Builders {
         ConsolidateBalancesToTargetCurrency = true,
         ShowCascadeBalances = false,
         WithAverageBalance = true,
-        InitialPeriod = new BalanceEngineCommandPeriod {
+        InitialPeriod = new BalancesPeriod {
           FromDate = new DateTime(command.ToDate.Year, command.ToDate.Month, 1),
           ToDate = command.ToDate
         },

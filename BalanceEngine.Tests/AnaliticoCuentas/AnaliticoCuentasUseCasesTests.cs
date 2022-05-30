@@ -35,14 +35,14 @@ namespace Empiria.FinancialAccounting.Tests.BalanceEngine.AnaliticoCuentas {
     [Theory]
     [InlineData(AnaliticoDeCuentasTestCase.Default)]
     [InlineData(AnaliticoDeCuentasTestCase.EnCascada)]
-    public async Task CommandsMustBeEqual(AnaliticoDeCuentasTestCase testcase) {
-      TrialBalanceCommand command = testcase.GetInvocationCommand();
+    public async Task QueriesMustBeEqual(AnaliticoDeCuentasTestCase testcase) {
+      TrialBalanceQuery query = testcase.GetInvocationQuery();
 
       using (var usecase = TrialBalanceUseCases.UseCaseInteractor()) {
-        AnaliticoDeCuentasDto sut = await usecase.BuildAnaliticoDeCuentas(command);
+        AnaliticoDeCuentasDto sut = await usecase.BuildAnaliticoDeCuentas(query);
 
-        Assert.Equal(command.GetHashCode(), sut.Command.GetHashCode());
-        Assert.Equal(command, sut.Command);
+        Assert.Equal(query.GetHashCode(), sut.Query.GetHashCode());
+        Assert.Equal(query, sut.Query);
       }
 
     }

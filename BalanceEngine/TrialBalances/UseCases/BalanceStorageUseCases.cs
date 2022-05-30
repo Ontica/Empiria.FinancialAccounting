@@ -43,8 +43,9 @@ namespace Empiria.FinancialAccounting.BalanceEngine.UseCases {
     }
 
 
+    // ToDo: review this double intention
     public StoredBalanceSetDto CreateOrGetBalanceSet(string accountsChartUID,
-                                                    BalanceStorageCommand command) {
+                                                     BalanceStorageCommand command) {
       Assertion.Require(accountsChartUID, "accountsChartUID");
       Assertion.Require(command, "command");
 

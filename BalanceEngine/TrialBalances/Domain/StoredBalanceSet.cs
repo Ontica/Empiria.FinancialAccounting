@@ -167,16 +167,19 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
       this.Calculated = false;
       this.Save();
 
-      var command = new TrialBalanceCommand {
+      var query = new TrialBalanceQuery {
         AccountsChartUID = this.AccountsChart.UID,
         TrialBalanceType = TrialBalanceType.GeneracionDeSaldos,
-        InitialPeriod = { FromDate = this.BalancesDate, ToDate = this.BalancesDate },
+        InitialPeriod = {
+          FromDate = this.BalancesDate,
+          ToDate = this.BalancesDate
+        },
         WithSubledgerAccount = true,
         BalancesType = BalancesType.AllAccounts,
         ShowCascadeBalances = true
       };
 
-      var balanceEngine = new TrialBalanceEngine(command);
+      var balanceEngine = new TrialBalanceEngine(query);
 
       TrialBalance trialBalance = balanceEngine.BuildTrialBalance();
 

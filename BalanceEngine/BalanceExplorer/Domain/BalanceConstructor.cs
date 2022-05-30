@@ -15,49 +15,50 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
   /// <summary>Provides services to generate a balance.</summary>
   internal class BalanceConstructor {
 
-    internal BalanceConstructor(BalanceCommand command){
-      Assertion.Require(command, "command");
+    internal BalanceConstructor(BalancesQuery query){
+      Assertion.Require(query, nameof(query));
 
-      Command = command;
+      Query = query;
     }
 
 
-    public BalanceCommand Command {
+    public BalancesQuery Query {
       get;
     }
 
 
-    internal Balance BuildBalance() {
-      if (!this.Command.UseCache) {
+    internal Balances BuildBalances() {
+      if (!this.Query.UseCache) {
         return GenerateBalance();
       }
 
-      string hash = TrialBalanceCache.GenerateBalanceHash(this.Command);
+      string hash = TrialBalanceCache.GenerateBalanceHash(this.Query);
 
-      Balance balance = TrialBalanceCache.TryGetBalance(hash);
-      if (balance == null) {
-        balance = GenerateBalance();
-        TrialBalanceCache.StoreBalance(hash, balance);
+      Balances balances = TrialBalanceCache.TryGetBalances(hash);
+
+      if (balances == null) {
+        balances = GenerateBalance();
+        TrialBalanceCache.StoreBalances(hash, balances);
       }
 
-      return balance;
+      return balances;
     }
 
 
-    internal Balance GenerateBalance() {
-      switch (Command.TrialBalanceType) {
+    internal Balances GenerateBalance() {
+      switch (Query.TrialBalanceType) {
 
         case TrialBalanceType.SaldosPorAuxiliarConsultaRapida:
-          var saldosPorAuxiliar = new SaldosPorAuxiliarConsultaRapida(Command);
+          var saldosPorAuxiliar = new SaldosPorAuxiliarConsultaRapida(Query);
           return saldosPorAuxiliar.Build();
 
         case TrialBalanceType.SaldosPorCuentaConsultaRapida:
-          var saldosPorCuenta = new SaldosPorCuentaConsultaRapida(Command);
+          var saldosPorCuenta = new SaldosPorCuentaConsultaRapida(Query);
           return saldosPorCuenta.Build();
 
         default:
           throw Assertion.EnsureNoReachThisCode(
-                    $"Unhandled trial balance type {this.Command.TrialBalanceType}.");
+                    $"Unhandled trial balance type {this.Query.TrialBalanceType}.");
       }
     }
 

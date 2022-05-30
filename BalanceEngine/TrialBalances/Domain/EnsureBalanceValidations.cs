@@ -17,10 +17,10 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
   /// <summary>Ensures that the balance data is correct.</summary>
   internal class EnsureBalanceValidations {
 
-    private readonly TrialBalanceCommand _command;
+    private readonly TrialBalanceQuery _query;
 
-    internal EnsureBalanceValidations(TrialBalanceCommand command) {
-      _command = command;
+    internal EnsureBalanceValidations(TrialBalanceQuery query) {
+      _query = query;
     }
 
     #region Public methods
@@ -49,13 +49,13 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
     private void CheckEntriesEqualToTotalByDebtorOrCreditor(FixedList<ITrialBalanceEntry> entriesList,
                                                             FixedList<TrialBalanceEntry> postingEntries) {
 
-      if (_command.TrialBalanceType == TrialBalanceType.Balanza ||
-          _command.TrialBalanceType == TrialBalanceType.BalanzaConContabilidadesEnCascada ||
-          _command.TrialBalanceType == TrialBalanceType.SaldosPorCuenta) {
+      if (_query.TrialBalanceType == TrialBalanceType.Balanza ||
+          _query.TrialBalanceType == TrialBalanceType.BalanzaConContabilidadesEnCascada ||
+          _query.TrialBalanceType == TrialBalanceType.SaldosPorCuenta) {
 
         TotalByDebtorOrCreditorBalanza(entriesList, postingEntries);
 
-      } else if (_command.TrialBalanceType == TrialBalanceType.AnaliticoDeCuentas) {
+      } else if (_query.TrialBalanceType == TrialBalanceType.AnaliticoDeCuentas) {
 
         TotalByDebtorOrCreditorAnalitico(entriesList);
 
@@ -65,9 +65,9 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
 
     private void CheckSummaryEntriesIsEqualToTotalByGroup(FixedList<ITrialBalanceEntry> entriesList,
                                                           FixedList<TrialBalanceEntry> postingEntries) {
-      if (_command.TrialBalanceType == TrialBalanceType.Balanza ||
-          _command.TrialBalanceType == TrialBalanceType.BalanzaConContabilidadesEnCascada ||
-          _command.TrialBalanceType == TrialBalanceType.SaldosPorCuenta) {
+      if (_query.TrialBalanceType == TrialBalanceType.Balanza ||
+          _query.TrialBalanceType == TrialBalanceType.BalanzaConContabilidadesEnCascada ||
+          _query.TrialBalanceType == TrialBalanceType.SaldosPorCuenta) {
 
         int MAX_BALANCE_DIFFERENCE = 10;
 
@@ -102,15 +102,15 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
 
 
     private void CheckTotalsByDebtorAndCreditorEntries(FixedList<ITrialBalanceEntry> entriesList) {
-      if ((_command.TrialBalanceType == TrialBalanceType.Balanza ||
-          _command.TrialBalanceType == TrialBalanceType.BalanzaConContabilidadesEnCascada ||
-          _command.TrialBalanceType == TrialBalanceType.SaldosPorCuenta) &&
-          (_command.ConsolidateBalancesToTargetCurrency == false)) { //cambiar esta condicion
+      if ((_query.TrialBalanceType == TrialBalanceType.Balanza ||
+          _query.TrialBalanceType == TrialBalanceType.BalanzaConContabilidadesEnCascada ||
+          _query.TrialBalanceType == TrialBalanceType.SaldosPorCuenta) &&
+          (_query.ConsolidateBalancesToTargetCurrency == false)) { //cambiar esta condicion
 
         int MAX_BALANCE_DIFFERENCE = 10;
         var entries = entriesList.Select(x => (TrialBalanceEntry) x).ToList();
 
-        if (_command.FromAccount == string.Empty && _command.ToAccount == string.Empty) {
+        if (_query.FromAccount == string.Empty && _query.ToAccount == string.Empty) {
           var totalDebtorDebit = entries.FindAll(
                                 x => x.ItemType == TrialBalanceItemType.BalanceTotalDebtor)
                                 .Sum(x => x.Debit);
@@ -142,9 +142,9 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
 
     private void CheckTotalsByGroupEntries(FixedList<ITrialBalanceEntry> entriesList) {
 
-      if (_command.TrialBalanceType == TrialBalanceType.Balanza ||
-          _command.TrialBalanceType == TrialBalanceType.SaldosPorCuenta ||
-          _command.TrialBalanceType == TrialBalanceType.BalanzaConContabilidadesEnCascada) {
+      if (_query.TrialBalanceType == TrialBalanceType.Balanza ||
+          _query.TrialBalanceType == TrialBalanceType.SaldosPorCuenta ||
+          _query.TrialBalanceType == TrialBalanceType.BalanzaConContabilidadesEnCascada) {
 
         var entries = entriesList.Select(x => (TrialBalanceEntry) x).ToList();
         CheckTotalsByGroupEntriesInBalanza(entries);
@@ -156,9 +156,9 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
     private void CheckTotalsByGroupEntriesInBalanza(List<TrialBalanceEntry> entries) {
       int MAX_BALANCE_DIFFERENCE = 10;
 
-      if (_command.FromAccount == string.Empty && _command.ToAccount == string.Empty &&
-          _command.ConsolidateBalancesToTargetCurrency == false &&
-          _command.AccountsChartUID == "b2328e67-3f2e-45b9-b1f6-93ef6292204e") {
+      if (_query.FromAccount == string.Empty && _query.ToAccount == string.Empty &&
+          _query.ConsolidateBalancesToTargetCurrency == false &&
+          _query.AccountsChartUID == "b2328e67-3f2e-45b9-b1f6-93ef6292204e") {
         var totalByGroupDebtor = entries.FindAll(
                                   x => x.ItemType == TrialBalanceItemType.BalanceTotalGroupDebtor)
                                   .Sum(x => x.CurrentBalance);
@@ -193,13 +193,13 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
 
 
     private void CheckTotalsByReport(FixedList<ITrialBalanceEntry> entriesList) {
-      if (_command.TrialBalanceType == TrialBalanceType.Balanza ||
-          _command.TrialBalanceType == TrialBalanceType.BalanzaConContabilidadesEnCascada ||
-          _command.TrialBalanceType == TrialBalanceType.SaldosPorCuenta) {
+      if (_query.TrialBalanceType == TrialBalanceType.Balanza ||
+          _query.TrialBalanceType == TrialBalanceType.BalanzaConContabilidadesEnCascada ||
+          _query.TrialBalanceType == TrialBalanceType.SaldosPorCuenta) {
 
         CheckTotalsConsolidated(entriesList);
 
-      } else if (_command.TrialBalanceType == TrialBalanceType.AnaliticoDeCuentas) {
+      } else if (_query.TrialBalanceType == TrialBalanceType.AnaliticoDeCuentas) {
 
         CheckTotalsInReport(entriesList);
 
@@ -242,7 +242,7 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
                                                 x.Level == 1 && x.Sector.Code == "00")
                                   .Sum(x => x.DomesticBalance);
 
-        if (_command.AccountsChartUID == "b2328e67-3f2e-45b9-b1f6-93ef6292204e") {
+        if (_query.AccountsChartUID == "b2328e67-3f2e-45b9-b1f6-93ef6292204e") {
           entriesTotal = entries.FindAll(x => x.DebtorCreditor == DebtorCreditorType.Deudora &&
                                                 x.ItemType == TrialBalanceItemType.Entry)
                                   .Sum(x => x.DomesticBalance);
@@ -258,7 +258,7 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
                                                 x.ItemType == TrialBalanceItemType.Summary &&
                                                 x.Level == 1 && x.Sector.Code == "00")
                                   .Sum(x => x.DomesticBalance);
-        if (_command.AccountsChartUID == "b2328e67-3f2e-45b9-b1f6-93ef6292204e") {
+        if (_query.AccountsChartUID == "b2328e67-3f2e-45b9-b1f6-93ef6292204e") {
           entriesTotal = entries.FindAll(x => x.DebtorCreditor == DebtorCreditorType.Acreedora &&
                                                 x.ItemType == TrialBalanceItemType.Entry)
                                   .Sum(x => x.DomesticBalance);

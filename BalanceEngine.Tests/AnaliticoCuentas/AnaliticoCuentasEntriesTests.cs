@@ -245,33 +245,33 @@ namespace Empiria.FinancialAccounting.Tests.BalanceEngine.AnaliticoCuentas {
     #region Helpers
 
     private async Task<FixedList<AnaliticoDeCuentasEntryDto>> GetAnaliticoDeCuentasEntries(AnaliticoDeCuentasTestCase testcase) {
-      TrialBalanceCommand command = testcase.GetInvocationCommand();
+      TrialBalanceQuery query = testcase.GetInvocationQuery();
 
-      AnaliticoDeCuentasDto dto = TryReadAnaliticoDeCuentasFromCache(command);
+      AnaliticoDeCuentasDto dto = TryReadAnaliticoDeCuentasFromCache(query);
 
       if (dto != null) {
         return dto.Entries;
       }
 
-      dto = await BalanceEngineProxy.BuildAnaliticoDeCuentas(command)
+      dto = await BalanceEngineProxy.BuildAnaliticoDeCuentas(query)
                                     .ConfigureAwait(false);
 
-      StoreAnaliticoDeCuentasIntoCache(command, dto);
+      StoreAnaliticoDeCuentasIntoCache(query, dto);
 
       return dto.Entries;
     }
 
 
-    private void StoreAnaliticoDeCuentasIntoCache(TrialBalanceCommand command,
+    private void StoreAnaliticoDeCuentasIntoCache(TrialBalanceQuery query,
                                                   AnaliticoDeCuentasDto dto) {
-      string key = command.ToString();
+      string key = query.ToString();
 
       _cache.Insert(key, dto);
     }
 
 
-    private AnaliticoDeCuentasDto TryReadAnaliticoDeCuentasFromCache(TrialBalanceCommand command) {
-      string key = command.ToString();
+    private AnaliticoDeCuentasDto TryReadAnaliticoDeCuentasFromCache(TrialBalanceQuery query) {
+      string key = query.ToString();
 
       if (_cache.ContainsKey(key)) {
         return _cache[key];

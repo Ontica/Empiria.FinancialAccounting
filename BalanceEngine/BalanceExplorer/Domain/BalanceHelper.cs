@@ -22,15 +22,15 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
   /// <summary>Helper methods to build balances.</summary>
   internal class BalanceHelper {
 
-    private readonly BalanceCommand _command;
+    private readonly BalancesQuery _query;
 
-    internal BalanceHelper(BalanceCommand command) {
-      _command = command;
+    internal BalanceHelper(BalancesQuery query) {
+      _query = query;
     }
 
 
     internal FixedList<BalanceEntry> GetBalanceEntries() {
-      FixedList<TrialBalanceEntry> entries = BalancesDataService.GetTrialBalanceEntries(_command);
+      FixedList<TrialBalanceEntry> entries = BalancesDataService.GetTrialBalanceEntries(_query);
 
       return BalanceMapper.MapToBalance(entries);
     }

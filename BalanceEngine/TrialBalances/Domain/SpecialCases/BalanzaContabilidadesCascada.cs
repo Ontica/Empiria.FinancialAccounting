@@ -11,7 +11,6 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 
-using Empiria.Collections;
 using Empiria.FinancialAccounting.BalanceEngine.Adapters;
 
 namespace Empiria.FinancialAccounting.BalanceEngine {
@@ -19,16 +18,16 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
   /// <summary>Genera los datos para el reporte de balanza con contabilidades en cascada.</summary>
   internal class BalanzaContabilidadesCascada {
 
-    private readonly TrialBalanceCommand _command;
+    private readonly TrialBalanceQuery _query;
 
-    public BalanzaContabilidadesCascada(TrialBalanceCommand command) {
-      _command = command;
+    public BalanzaContabilidadesCascada(TrialBalanceQuery query) {
+      _query = query;
     }
 
 
     internal TrialBalance Build() {
-      var balanceHelper = new TrialBalanceHelper(_command);
-      var helper = new BalanceCascadeAccountingHelper(_command);
+      var balanceHelper = new TrialBalanceHelper(_query);
+      var helper = new BalanceCascadeAccountingHelper(_query);
 
       FixedList<TrialBalanceEntry> postingEntries = balanceHelper.GetPostingEntries();
 
@@ -38,7 +37,7 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
 
       List<TrialBalanceEntry> orderingEntries = helper.OrderingLedgersByAccount(balanceEntries);
 
-      FixedList<TrialBalanceEntry> summaryByAccountEntries = 
+      FixedList<TrialBalanceEntry> summaryByAccountEntries =
                                     helper.GenerateTotalSummaryByGroup(orderingEntries);
 
       balanceEntries = helper.CombineGroupAndBalanceEntries(balanceEntries,
@@ -64,14 +63,14 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
       var returnBalance = new FixedList<ITrialBalanceEntry>(
                                 balanceEntries.Select(x => (ITrialBalanceEntry) x));
 
-      return new TrialBalance(_command, returnBalance);
+      return new TrialBalance(_query, returnBalance);
     }
 
 
 
     #region Helper methods
 
-    
+
 
     #endregion Helper methods
 

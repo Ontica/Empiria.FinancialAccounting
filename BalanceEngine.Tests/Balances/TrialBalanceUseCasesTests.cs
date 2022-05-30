@@ -34,104 +34,104 @@ namespace Empiria.FinancialAccounting.Tests.BalanceEngine {
 
     [Fact]
     public void Should_Build_Balanza_Contabilidades_Cascada() {
-      TrialBalanceCommand command = GetDefaultTrialBalanceCommand();
+      TrialBalanceQuery query = GetDefaultTrialBalanceQuery();
 
-      command.TrialBalanceType = TrialBalanceType.BalanzaConContabilidadesEnCascada;
-      command.BalancesType = BalancesType.WithCurrentBalanceOrMovements;
-      command.UseDefaultValuation = false;
-      command.WithSubledgerAccount = false;
-      command.WithAverageBalance = false;
-      command.ShowCascadeBalances = true;
+      query.TrialBalanceType = TrialBalanceType.BalanzaConContabilidadesEnCascada;
+      query.BalancesType = BalancesType.WithCurrentBalanceOrMovements;
+      query.UseDefaultValuation = false;
+      query.WithSubledgerAccount = false;
+      query.WithAverageBalance = false;
+      query.ShowCascadeBalances = true;
 
-      TrialBalanceDto sut = BalanceEngineProxy.BuildTrialBalance(command);
+      TrialBalanceDto sut = BalanceEngineProxy.BuildTrialBalance(query);
 
       Assert.NotNull(sut);
-      Assert.Equal(command, sut.Command);
+      Assert.Equal(query, sut.Query);
       Assert.NotEmpty(sut.Entries);
     }
 
 
     [Fact]
     public void Should_Build_Comparacion_Entre_Periodos() {
-      TrialBalanceCommand command = GetDefaultTrialBalanceCommand();
+      TrialBalanceQuery query = GetDefaultTrialBalanceQuery();
 
-      command.TrialBalanceType = TrialBalanceType.BalanzaValorizadaComparativa;
-      command.BalancesType = BalancesType.WithCurrentBalanceOrMovements;
-      command.UseDefaultValuation = true;
-      command.WithSubledgerAccount = true;
-      command.WithAverageBalance = false;
-      command.ShowCascadeBalances = false;
+      query.TrialBalanceType = TrialBalanceType.BalanzaValorizadaComparativa;
+      query.BalancesType = BalancesType.WithCurrentBalanceOrMovements;
+      query.UseDefaultValuation = true;
+      query.WithSubledgerAccount = true;
+      query.WithAverageBalance = false;
+      query.ShowCascadeBalances = false;
 
-      TrialBalanceDto sut = BalanceEngineProxy.BuildTrialBalance(command);
+      TrialBalanceDto sut = BalanceEngineProxy.BuildTrialBalance(query);
 
       Assert.NotNull(sut);
-      Assert.Equal(command, sut.Command);
+      Assert.Equal(query, sut.Query);
       Assert.NotEmpty(sut.Entries);
     }
 
 
     [Fact]
     public void Should_Build_A_Traditional_Trial_Balance() {
-      TrialBalanceCommand command = GetDefaultTrialBalanceCommand();
+      TrialBalanceQuery query = GetDefaultTrialBalanceQuery();
 
-      command.TrialBalanceType = TrialBalanceType.Balanza;
-      command.BalancesType = BalancesType.WithCurrentBalance;
-      command.ShowCascadeBalances = false;
-      command.WithSubledgerAccount = false;
-      command.UseDefaultValuation = false;
-      command.WithAverageBalance = true;
+      query.TrialBalanceType = TrialBalanceType.Balanza;
+      query.BalancesType = BalancesType.WithCurrentBalance;
+      query.ShowCascadeBalances = false;
+      query.WithSubledgerAccount = false;
+      query.UseDefaultValuation = false;
+      query.WithAverageBalance = true;
 
-      TrialBalanceDto sut = BalanceEngineProxy.BuildTrialBalance(command);
+      TrialBalanceDto sut = BalanceEngineProxy.BuildTrialBalance(query);
 
       Assert.NotNull(sut);
-      Assert.Equal(command, sut.Command);
+      Assert.Equal(query, sut.Query);
       Assert.NotEmpty(sut.Entries);
     }
 
 
     [Fact]
     public void Should_Build_A_Traditional_No_Consolidated_Trial_Balance() {
-      TrialBalanceCommand command = GetDefaultTrialBalanceCommand();
+      TrialBalanceQuery query = GetDefaultTrialBalanceQuery();
 
-      command.TrialBalanceType = TrialBalanceType.Balanza;
-      command.ShowCascadeBalances = true;
+      query.TrialBalanceType = TrialBalanceType.Balanza;
+      query.ShowCascadeBalances = true;
 
-      TrialBalanceDto sut = BalanceEngineProxy.BuildTrialBalance(command);
+      TrialBalanceDto sut = BalanceEngineProxy.BuildTrialBalance(query);
 
       Assert.NotNull(sut);
-      Assert.Equal(command, sut.Command);
+      Assert.Equal(query, sut.Query);
       Assert.NotEmpty(sut.Entries);
     }
 
 
     [Fact]
     public void Should_Build_Balanza_Consolidada_Por_Moneda() {
-      TrialBalanceCommand command = GetDefaultTrialBalanceCommand();
+      TrialBalanceQuery query = GetDefaultTrialBalanceQuery();
 
-      command.TrialBalanceType = TrialBalanceType.BalanzaEnColumnasPorMoneda;
+      query.TrialBalanceType = TrialBalanceType.BalanzaEnColumnasPorMoneda;
 
-      TrialBalanceDto sut = BalanceEngineProxy.BuildTrialBalance(command);
+      TrialBalanceDto sut = BalanceEngineProxy.BuildTrialBalance(query);
 
       Assert.NotNull(sut);
-      Assert.Equal(command, sut.Command);
+      Assert.Equal(query, sut.Query);
       Assert.NotEmpty(sut.Entries);
     }
 
 
     [Fact]
     public void Should_Build_Balanza_Dolarizada() {
-      TrialBalanceCommand command = GetDefaultTrialBalanceCommand();
-      command.TrialBalanceType = TrialBalanceType.BalanzaDolarizada;
-      command.BalancesType = BalancesType.WithCurrentBalanceOrMovements;
-      command.UseDefaultValuation = true;
-      command.ShowCascadeBalances = false;
-      command.FromAccount = "1";
-      command.ToAccount = "1";
+      TrialBalanceQuery query = GetDefaultTrialBalanceQuery();
+      query.TrialBalanceType = TrialBalanceType.BalanzaDolarizada;
+      query.BalancesType = BalancesType.WithCurrentBalanceOrMovements;
+      query.UseDefaultValuation = true;
+      query.ShowCascadeBalances = false;
+      query.FromAccount = "1";
+      query.ToAccount = "1";
 
-      TrialBalanceDto sut = BalanceEngineProxy.BuildTrialBalance(command);
+      TrialBalanceDto sut = BalanceEngineProxy.BuildTrialBalance(query);
 
       Assert.NotNull(sut);
-      Assert.Equal(command, sut.Command);
+      Assert.Equal(query, sut.Query);
       Assert.NotEmpty(sut.Entries);
     }
 
@@ -140,24 +140,20 @@ namespace Empiria.FinancialAccounting.Tests.BalanceEngine {
 
     #region Helpers
 
-    private TrialBalanceCommand GetDefaultTrialBalanceCommand() {
-      return new TrialBalanceCommand() {
+    private TrialBalanceQuery GetDefaultTrialBalanceQuery() {
+      return new TrialBalanceQuery() {
         AccountsChartUID = TestingConstants.ACCOUNTS_CHART_UID,
         BalancesType = BalancesType.WithCurrentBalanceOrMovements,
         TrialBalanceType = TrialBalanceType.Balanza,
         Ledgers = TestingConstants.BALANCE_LEDGERS_ARRAY,
-        InitialPeriod = new BalanceEngineCommandPeriod() {
+        InitialPeriod = new BalancesPeriod {
           FromDate = TestingConstants.FROM_DATE,
           ToDate = TestingConstants.TO_DATE,
-          //ExchangeRateDate = new DateTime(2021, 06, 30),
-          //ExchangeRateTypeUID = "96c617f6-8ed9-47f3-8d2d-f1240e446e1d",
-          //ValuateToCurrrencyUID = "01"
         },
-        FinalPeriod = new BalanceEngineCommandPeriod() {
+        FinalPeriod = new BalancesPeriod {
           FromDate = new DateTime(2022, 02, 01),
           ToDate = new DateTime(2022, 02, 28)
         }
-
       };
     }
 

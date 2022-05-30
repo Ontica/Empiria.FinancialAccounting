@@ -8,8 +8,10 @@
 *                                                                                                            *
 ************************* Copyright(c) La Vía Óntica SC, Ontica LLC and contributors. All rights reserved. **/
 using System;
-using Empiria.FinancialAccounting.BalanceEngine.Adapters;
+
 using Empiria.Services;
+
+using Empiria.FinancialAccounting.BalanceEngine.Adapters;
 
 namespace Empiria.FinancialAccounting.BalanceEngine.UseCases {
 
@@ -30,10 +32,10 @@ namespace Empiria.FinancialAccounting.BalanceEngine.UseCases {
 
     #region Use cases
 
-    public TrialBalanceDto BuildBalances(TrialBalanceCommand command) {
-      Assertion.Require(command, "command");
+    public TrialBalanceDto BuildBalances(TrialBalanceQuery query) {
+      Assertion.Require(query, nameof(query));
 
-      var trialBalanceEngine = new TrialBalanceEngine(command);
+      var trialBalanceEngine = new TrialBalanceEngine(query);
 
       TrialBalance trialBalance = trialBalanceEngine.BuildTrialBalance();
 

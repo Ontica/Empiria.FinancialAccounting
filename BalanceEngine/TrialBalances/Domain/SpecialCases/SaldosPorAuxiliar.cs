@@ -12,6 +12,7 @@ using System.Collections.Generic;
 using System.Linq;
 
 using Empiria.Collections;
+
 using Empiria.FinancialAccounting.BalanceEngine.Adapters;
 using Empiria.FinancialAccounting.BalanceEngine.Helpers;
 
@@ -20,16 +21,16 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
   /// <summary>Genera los datos para el reporte de saldos por auxiliar.</summary>
   internal class SaldosPorAuxiliar {
 
-    private readonly TrialBalanceCommand _command;
+    private readonly TrialBalanceQuery _query;
 
-    public SaldosPorAuxiliar(TrialBalanceCommand command) {
-      _command = command;
+    internal SaldosPorAuxiliar(TrialBalanceQuery query) {
+      _query = query;
     }
 
 
     internal TrialBalance Build() {
-      var balanceHelper = new TrialBalanceHelper(_command);
-      var helper = new BalanceBySubledgerAccountHelper(_command);
+      var balanceHelper = new TrialBalanceHelper(_query);
+      var helper = new BalanceBySubledgerAccountHelper(_query);
 
       List<TrialBalanceEntry> trialBalance = balanceHelper.GetPostingEntries().ToList();
 
@@ -47,20 +48,20 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
 
       var returnBalance = new FixedList<ITrialBalanceEntry>(trialBalance.Select(x => (ITrialBalanceEntry) x));
 
-      return new TrialBalance(_command, returnBalance);
+      return new TrialBalance(_query, returnBalance);
     }
 
 
     internal TrialBalance BuildForBalancesGeneration() {
-      var helper = new TrialBalanceHelper(_command);
+      var helper = new TrialBalanceHelper(_query);
 
-      _command.WithSubledgerAccount = true;
+      _query.WithSubledgerAccount = true;
 
       FixedList<TrialBalanceEntry> trialBalance = helper.GetPostingEntries();
 
       var returnBalance = new FixedList<ITrialBalanceEntry>(trialBalance.Select(x => (ITrialBalanceEntry) x));
 
-      return new TrialBalance(_command, returnBalance);
+      return new TrialBalance(_query, returnBalance);
     }
 
 

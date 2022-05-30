@@ -71,13 +71,13 @@ namespace Empiria.FinancialAccounting.Vouchers.SpecialCases {
     }
 
 
-    private TrialBalanceCommand BuildBalancesCommand() {
-      return new TrialBalanceCommand {
+    private TrialBalanceQuery BuildBalancesQuery() {
+      return new TrialBalanceQuery {
         TrialBalanceType = BalanceEngine.TrialBalanceType.Balanza,
         AccountsChartUID = base.Fields.AccountsChartUID,
         BalancesType = BalanceEngine.BalancesType.WithCurrentBalanceOrMovements,
         ShowCascadeBalances = true,
-        InitialPeriod = new BalanceEngineCommandPeriod {
+        InitialPeriod = new BalancesPeriod {
           FromDate = base.Fields.CalculationDate,
           ToDate = base.Fields.CalculationDate
         }
@@ -87,11 +87,13 @@ namespace Empiria.FinancialAccounting.Vouchers.SpecialCases {
 
     private FixedList<TrialBalanceEntryDto> BuildTrialBalanceEntries() {
       using (var usecases = TrialBalanceUseCases.UseCaseInteractor()) {
-        TrialBalanceCommand command = BuildBalancesCommand();
+        TrialBalanceQuery query = BuildBalancesQuery();
 
-        var entries = usecases.BuildTrialBalance(command).Entries;
+        var entries = usecases.BuildTrialBalance(query)
+                              .Entries;
 
-        return new FixedList<TrialBalanceEntryDto>(entries.Select(x => (TrialBalanceEntryDto) x));
+        return entries.Select(x => (TrialBalanceEntryDto) x)
+                      .ToFixedList();
       }
     }
 

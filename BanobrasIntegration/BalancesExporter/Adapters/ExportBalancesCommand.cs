@@ -78,15 +78,15 @@ namespace Empiria.FinancialAccounting.BanobrasIntegration.BalancesExporter.Adapt
     }
 
 
-    public TrialBalanceCommand MapToTrialBalanceCommand() {
-      return new TrialBalanceCommand {
+    public TrialBalanceQuery MapToTrialBalanceQuery() {
+      return new TrialBalanceQuery {
         TrialBalanceType = TrialBalanceType.Balanza,
         AccountsChartUID = AccountsChart.Parse(this.AccountsChartId).UID,
         BalancesType = BalancesType.WithCurrentBalanceOrMovements,
         ShowCascadeBalances = BreakdownLedgers,
         WithAverageBalance = true,
         WithSubledgerAccount = true,
-        InitialPeriod = new BalanceEngineCommandPeriod {
+        InitialPeriod = new BalancesPeriod {
           FromDate = DetermineFromDate(),
           ToDate = this.ToDate
         },

@@ -19,10 +19,10 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
   /// <summary>Helper methods to build valorized balances and related accounting information.</summary>
   internal class ValorizedBalanceHelper {
 
-    private readonly TrialBalanceCommand _command;
+    private readonly TrialBalanceQuery _query;
 
-    internal ValorizedBalanceHelper(TrialBalanceCommand command) {
-      _command = command;
+    internal ValorizedBalanceHelper(TrialBalanceQuery query) {
+      _query = query;
     }
 
 
@@ -31,7 +31,7 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
     internal List<TrialBalanceEntry> GetAccountList(
                                     List<TrialBalanceEntry> trialBalance,
                                     List<TrialBalanceEntry> summaryEntries) {
-      var helper = new TrialBalanceHelper(_command);
+      var helper = new TrialBalanceHelper(_query);
 
       var hashAccountEntries = new EmpiriaHashTable<TrialBalanceEntry>();
 
@@ -80,7 +80,7 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
     internal EmpiriaHashTable<TrialBalanceEntry> GetEntriesWithItemType(
                                                   List<TrialBalanceEntry> trialBalance) {
 
-      var helper = new TrialBalanceHelper(_command);
+      var helper = new TrialBalanceHelper(_query);
 
       var hashAccountEntries = new EmpiriaHashTable<TrialBalanceEntry>();
 
@@ -149,18 +149,18 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
 
     internal FixedList<TrialBalanceEntry> ValuateToExchangeRate(
                                           FixedList<TrialBalanceEntry> entries,
-                                          BalanceEngineCommandPeriod commandPeriod) {
+                                          BalancesPeriod period) {
 
       var exchangeRateType = ExchangeRateType.Dolarizacion;
 
-      commandPeriod.ExchangeRateTypeUID = exchangeRateType.UID;
-      commandPeriod.ValuateToCurrrencyUID = "01";
-      commandPeriod.ExchangeRateDate = commandPeriod.ToDate;
+      period.ExchangeRateTypeUID = exchangeRateType.UID;
+      period.ValuateToCurrrencyUID = "01";
+      period.ExchangeRateDate = period.ToDate;
 
-      FixedList<ExchangeRate> exchangeRates = ExchangeRate.GetList(exchangeRateType, commandPeriod.ExchangeRateDate);
+      FixedList<ExchangeRate> exchangeRates = ExchangeRate.GetList(exchangeRateType, period.ExchangeRateDate);
 
       foreach (var entry in entries.Where(a => a.Currency.Code != "02")) {
-        var exchangeRate = exchangeRates.FirstOrDefault(a => a.FromCurrency.Code == commandPeriod.ValuateToCurrrencyUID &&
+        var exchangeRate = exchangeRates.FirstOrDefault(a => a.FromCurrency.Code == period.ValuateToCurrrencyUID &&
                                                               a.ToCurrency.Code == entry.Currency.Code);
 
         // ToDo: URGENT This require must be checked before any state
@@ -230,7 +230,7 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
 
     internal EmpiriaHashTable<TrialBalanceEntry> GetLedgerAccountsListByCurrency(
                                                 List<TrialBalanceEntry> summaryEntries) {
-      var helper = new TrialBalanceHelper(_command);
+      var helper = new TrialBalanceHelper(_query);
 
       var ledgersList = summaryEntries.Where(a => (a.Level == 1 && a.Sector.Code == "00") ||
                                                   (a.Level > 1)).ToList();
@@ -415,8 +415,8 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
       Sector targetSector = Sector.Empty;
       string hash = $"{entry.Account.Number}||{targetSector.Code}||{entry.Currency.Id}||{entry.Ledger.Id}";
 
-      if (_command.TrialBalanceType == TrialBalanceType.BalanzaEnColumnasPorMoneda &&
-           _command.UseNewSectorizationModel) {
+      if (_query.TrialBalanceType == TrialBalanceType.BalanzaEnColumnasPorMoneda &&
+           _query.UseNewSectorizationModel) {
 
         hash = $"{entry.Account.Number}||{targetSector.Code}||{entry.Currency.Id}||{entry.Ledger.Id}||{entry.DebtorCreditor}";
       }

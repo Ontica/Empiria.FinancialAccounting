@@ -21,18 +21,17 @@ namespace Empiria.FinancialAccounting.FinancialReports {
   /// <summary>Provides accounts balances for their use in financial reports.</summary>
   internal class AccountBalancesProvider {
 
-    private readonly FinancialReportCommand _command;
+    private readonly FinancialReportCommand _query;
 
     #region Constructors and parsers
 
-    internal AccountBalancesProvider(FinancialReportCommand command) {
-      Assertion.Require(command, "command");
+    internal AccountBalancesProvider(FinancialReportCommand query) {
+      Assertion.Require(query, nameof(query));
 
-      _command = command;
+      _query = query;
     }
 
     #endregion Constructors and parsers
-
 
     #region Public methods
 
@@ -62,15 +61,15 @@ namespace Empiria.FinancialAccounting.FinancialReports {
 
     #region Helper methods
 
-    private TrialBalanceCommand DetermineTrialBalanceCommand() {
-      FinancialReportType reportType = _command.GetFinancialReportType();
+    private TrialBalanceQuery DetermineTrialBalanceQuery() {
+      FinancialReportType reportType = _query.GetFinancialReportType();
 
       switch (reportType.DataSource) {
         case FinancialReportDataSource.AnaliticoCuentas:
-          return GetAnaliticoCuentasCommand();
+          return GetAnaliticoCuentasQuery();
 
         case FinancialReportDataSource.BalanzaEnColumnasPorMoneda:
-          return GetBalanzaEnColumnasPorMonedaCommand();
+          return GetBalanzaEnColumnasPorMonedaQuery();
 
         default:
           throw Assertion.EnsureNoReachThisCode(
@@ -80,44 +79,44 @@ namespace Empiria.FinancialAccounting.FinancialReports {
 
 
     private TrialBalanceDto GetBalances() {
-      TrialBalanceCommand trialBalanceCommand = DetermineTrialBalanceCommand();
+      TrialBalanceQuery query = DetermineTrialBalanceQuery();
 
       using (var usecases = TrialBalanceUseCases.UseCaseInteractor()) {
-        return usecases.BuildTrialBalance(trialBalanceCommand);
+        return usecases.BuildTrialBalance(query);
       }
     }
 
 
-    private TrialBalanceCommand GetAnaliticoCuentasCommand() {
-      return new TrialBalanceCommand {
-        AccountsChartUID = _command.AccountsChartUID,
+    private TrialBalanceQuery GetAnaliticoCuentasQuery() {
+      return new TrialBalanceQuery {
+        AccountsChartUID = _query.AccountsChartUID,
         TrialBalanceType = BalanceEngine.TrialBalanceType.AnaliticoDeCuentas,
         UseDefaultValuation = true,
         ShowCascadeBalances = false,
         WithSubledgerAccount = false,  // true
         BalancesType = BalanceEngine.BalancesType.WithCurrentBalanceOrMovements,
         ConsolidateBalancesToTargetCurrency = false,
-        InitialPeriod = new BalanceEngineCommandPeriod {
-          FromDate = new DateTime(_command.ToDate.Year, _command.ToDate.Month, 1),
-          ToDate = _command.ToDate,
+        InitialPeriod = new BalancesPeriod {
+          FromDate = new DateTime(_query.ToDate.Year, _query.ToDate.Month, 1),
+          ToDate = _query.ToDate,
           UseDefaultValuation = true
         }
       };
     }
 
 
-    private TrialBalanceCommand GetBalanzaEnColumnasPorMonedaCommand() {
-      return new TrialBalanceCommand {
-        AccountsChartUID = _command.AccountsChartUID,
+    private TrialBalanceQuery GetBalanzaEnColumnasPorMonedaQuery() {
+      return new TrialBalanceQuery {
+        AccountsChartUID = _query.AccountsChartUID,
         TrialBalanceType = BalanceEngine.TrialBalanceType.BalanzaEnColumnasPorMoneda,
         UseDefaultValuation = true,
         ShowCascadeBalances = false,
         WithSubledgerAccount = false,
         BalancesType = BalanceEngine.BalancesType.WithCurrentBalanceOrMovements,
         ConsolidateBalancesToTargetCurrency = false,
-        InitialPeriod = new BalanceEngineCommandPeriod {
-          FromDate = new DateTime(_command.ToDate.Year, _command.ToDate.Month, 1),
-          ToDate = _command.ToDate,
+        InitialPeriod = new BalancesPeriod {
+          FromDate = new DateTime(_query.ToDate.Year, _query.ToDate.Month, 1),
+          ToDate = _query.ToDate,
           UseDefaultValuation = true
         }
       };

@@ -24,15 +24,13 @@ namespace Empiria.FinancialAccounting.Reporting.Builders {
     public ReportDataDto Build(BuildReportCommand command) {
       Assertion.Require(command, "command");
 
-      TrialBalanceCommand trialBalanceCommand = GetTrialBalanceCommand(command);
-
       using (var usecases = TrialBalanceUseCases.UseCaseInteractor()) {
-        TrialBalanceDto trialBalance = usecases.BuildTrialBalance(trialBalanceCommand);
+        TrialBalanceQuery query = MapToTrialBalanceQuery(command);
+
+        TrialBalanceDto trialBalance = usecases.BuildTrialBalance(query);
 
         return MapToReportDataDto(command, trialBalance);
       }
-
-      throw new NotImplementedException();
     }
 
     #endregion Public methods
@@ -46,7 +44,7 @@ namespace Empiria.FinancialAccounting.Reporting.Builders {
       columns.Add(new DataTableColumn("cuenta", "Cuenta", "text-nowrap"));
       columns.Add(new DataTableColumn("sector", "Sector", "text"));
       columns.Add(new DataTableColumn("descripcion", "Descripcion", "text"));
-      
+
       columns.Add(new DataTableColumn("saldoInicial", "Saldo anterior", "decimal"));
       columns.Add(new DataTableColumn("debe", "Cargo", "decimal"));
       columns.Add(new DataTableColumn("haber", "Abono", "decimal"));
@@ -66,15 +64,15 @@ namespace Empiria.FinancialAccounting.Reporting.Builders {
     }
 
 
-    static private TrialBalanceCommand GetTrialBalanceCommand(BuildReportCommand command) {
-      return new TrialBalanceCommand {
+    static private TrialBalanceQuery MapToTrialBalanceQuery(BuildReportCommand command) {
+      return new TrialBalanceQuery {
         TrialBalanceType = TrialBalanceType.Balanza,
         AccountsChartUID = AccountsChart.Parse(command.AccountsChartUID).UID,
         BalancesType = BalancesType.WithCurrentBalanceOrMovements,
         UseDefaultValuation = true,
         ConsolidateBalancesToTargetCurrency = false,
         ShowCascadeBalances = false,
-        InitialPeriod = new BalanceEngineCommandPeriod {
+        InitialPeriod = new BalancesPeriod {
           FromDate = new DateTime(command.ToDate.Year, command.ToDate.Month, 1),
           ToDate = command.ToDate
         },

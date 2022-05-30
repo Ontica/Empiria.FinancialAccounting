@@ -19,10 +19,10 @@ namespace Empiria.FinancialAccounting.BalanceEngine.Helpers {
   /// <summary>Helper methods to build valorized balances.</summary>
   internal class BalanceBySubledgerAccountHelper {
 
-    private readonly TrialBalanceCommand _command;
+    private readonly TrialBalanceQuery _query;
 
-    internal BalanceBySubledgerAccountHelper(TrialBalanceCommand command) {
-      _command = command;
+    internal BalanceBySubledgerAccountHelper(TrialBalanceQuery query) {
+      _query = query;
     }
 
 
@@ -44,7 +44,7 @@ namespace Empiria.FinancialAccounting.BalanceEngine.Helpers {
       return GenerateEntries(subledgerAccountsEntriesHashTable);
     }
 
-    
+
     internal List<TrialBalanceEntry> CombineTotalAndSummaryEntries(
                                     List<TrialBalanceEntry> orderingtTialBalance,
                                     List<TrialBalanceEntry> trialBalance) {
@@ -83,18 +83,18 @@ namespace Empiria.FinancialAccounting.BalanceEngine.Helpers {
     internal List<TrialBalanceEntry> GenerateAverageBalance(List<TrialBalanceEntry> trialBalance) {
       var returnedEntries = new List<TrialBalanceEntry>(trialBalance);
 
-      if (_command.WithAverageBalance) {
+      if (_query.WithAverageBalance) {
 
         foreach (var entry in returnedEntries.Where(a => a.ItemType == TrialBalanceItemType.Summary)) {
 
           decimal debtorCreditor = entry.DebtorCreditor == DebtorCreditorType.Deudora ?
                                    entry.Debit - entry.Credit : entry.Credit - entry.Debit;
 
-          TimeSpan timeSpan = _command.InitialPeriod.ToDate - entry.LastChangeDate;
+          TimeSpan timeSpan = _query.InitialPeriod.ToDate - entry.LastChangeDate;
           int numberOfDays = timeSpan.Days + 1;
 
           entry.AverageBalance = ((numberOfDays * debtorCreditor) /
-                                   _command.InitialPeriod.ToDate.Day) +
+                                   _query.InitialPeriod.ToDate.Day) +
                                    entry.InitialBalance;
         }
       }

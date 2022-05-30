@@ -38,10 +38,10 @@ namespace Empiria.FinancialAccounting.Tests.BalanceEngine {
   /// <summary>Extension methods for AnaliticoDeCuentasTestCase.</summary>
   static public class AnaliticoDeCuentasTestCaseExtensions {
 
-    static public TrialBalanceCommand GetInvocationCommand(this AnaliticoDeCuentasTestCase testcase) {
+    static public TrialBalanceQuery GetInvocationQuery(this AnaliticoDeCuentasTestCase testcase) {
       AnaliticoDeCuentasDto dto = ReadAnaliticoDeCuentasFromFile(testcase);
 
-      return dto.Command;
+      return dto.Query;
     }
 
 
