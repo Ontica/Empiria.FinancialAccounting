@@ -47,7 +47,7 @@ namespace Empiria.FinancialAccounting.FinancialConcepts {
 
 
     static internal FinancialConcept Create(FinancialConceptFields fields) {
-      Assertion.AssertObject(fields, nameof(fields));
+      Assertion.Require(fields, nameof(fields));
 
       return new FinancialConcept {
         Group = fields.Group,
@@ -60,6 +60,9 @@ namespace Empiria.FinancialAccounting.FinancialConcepts {
       };
     }
 
+    internal ExecutionResult InsertEntryFrom2(EditFinancialConceptEntryCommand command) {
+      throw new NotImplementedException();
+    }
 
     static public FinancialConcept Empty {
       get {
@@ -67,6 +70,13 @@ namespace Empiria.FinancialAccounting.FinancialConcepts {
       }
     }
 
+    internal ExecutionResult RemoveEntry(EditFinancialConceptEntryCommand command) {
+      throw new NotImplementedException();
+    }
+
+    internal ExecutionResult UpdateEntryFrom2(EditFinancialConceptEntryCommand command) {
+      throw new NotImplementedException();
+    }
 
     protected override void OnLoad() {
       if (this.IsEmptyInstance) {
@@ -160,19 +170,19 @@ namespace Empiria.FinancialAccounting.FinancialConcepts {
 
 
     internal FinancialConceptEntry GetEntry(string financialConceptEntryUID) {
-      Assertion.AssertObject(financialConceptEntryUID, nameof(financialConceptEntryUID));
+      Assertion.Require(financialConceptEntryUID, nameof(financialConceptEntryUID));
 
       var entry = _integration.Value.Find(x => x.UID == financialConceptEntryUID);
 
-      Assertion.AssertObject(entry,
-                            $"Este concepto no contiene la regla de integración '{financialConceptEntryUID}'.");
+      Assertion.Require(entry,
+        $"El concepto no contiene la regla de integración '{financialConceptEntryUID}'.");
 
       return entry;
     }
 
 
-    internal FinancialConceptEntry InsertEntryFrom(FinancialConceptEntryEditionCommand command) {
-      Assertion.AssertObject(command, nameof(command));
+    internal FinancialConceptEntry InsertEntryFrom(EditFinancialConceptEntryCommand command) {
+      Assertion.Require(command, nameof(command));
 
       int position = CalculatePositionFrom(command);
 
@@ -187,10 +197,10 @@ namespace Empiria.FinancialAccounting.FinancialConcepts {
 
 
     internal void RemoveEntry(FinancialConceptEntry entry) {
-      Assertion.AssertObject(entry, nameof(entry));
+      Assertion.Require(entry, nameof(entry));
 
-      Assertion.Assert(entry.FinancialConcept.Equals(this),
-              $"La regla de integración que se desea eliminar no pertenece al concepto '{this.Name}'.");
+      Assertion.Require(entry.FinancialConcept.Equals(this),
+          $"La regla de integración que se desea eliminar no pertenece al concepto '{this.Name}'.");
 
       entry.Delete();
 
@@ -204,14 +214,14 @@ namespace Empiria.FinancialAccounting.FinancialConcepts {
 
 
     internal void SetPosition(int position) {
-      Assertion.Assert(position > 0, "Position must be greater than zero.");
+      Assertion.Require(position > 0, "Position must be greater than zero.");
 
       this.Position = position;
     }
 
 
     internal void Update(FinancialConceptFields fields) {
-      Assertion.AssertObject(fields, nameof(fields));
+      Assertion.Require(fields, nameof(fields));
 
       this.Code = fields.Code;
       this.Name = fields.Name;
@@ -222,8 +232,8 @@ namespace Empiria.FinancialAccounting.FinancialConcepts {
     }
 
 
-    internal FinancialConceptEntry UpdateEntryFrom(FinancialConceptEntryEditionCommand command) {
-      Assertion.AssertObject(command, nameof(command));
+    internal FinancialConceptEntry UpdateEntryFrom(EditFinancialConceptEntryCommand command) {
+      Assertion.Require(command, nameof(command));
 
       FinancialConceptEntry entry = GetEntry(command.FinancialConceptEntryUID);
 
@@ -242,7 +252,7 @@ namespace Empiria.FinancialAccounting.FinancialConcepts {
 
     #region Helpers
 
-    private int CalculatePositionFrom(FinancialConceptEntryEditionCommand command,
+    private int CalculatePositionFrom(EditFinancialConceptEntryCommand command,
                                       int currentPosition = -1) {
 
       switch (command.PositioningRule) {
@@ -280,14 +290,14 @@ namespace Empiria.FinancialAccounting.FinancialConcepts {
           }
 
         case PositioningRule.ByPositionValue:
-          Assertion.Assert(1 <= command.Position &&
+          Assertion.Require(1 <= command.Position &&
                                 command.Position <= _integration.Value.Count + 1,
             $"Position value is {command.Position}, but must be between 1 and {_integration.Value.Count + 1}.");
 
           return command.Position;
 
         default:
-          throw Assertion.AssertNoReachThisCode($"Unhandled PositioningRule '{command.PositioningRule}'.");
+          throw Assertion.EnsureNoReachThisCode($"Unhandled PositioningRule '{command.PositioningRule}'.");
       }
     }
 

@@ -34,7 +34,7 @@ namespace Empiria.FinancialAccounting.FinancialConcepts.UseCases {
 
 
     public FixedList<FinancialConceptEntryDto> GetFinancialConceptEntries(string financialConceptUID) {
-      Assertion.AssertObject(financialConceptUID, nameof(financialConceptUID));
+      Assertion.Require(financialConceptUID, nameof(financialConceptUID));
 
       var financialConcept = FinancialConcept.Parse(financialConceptUID);
 
@@ -42,8 +42,59 @@ namespace Empiria.FinancialAccounting.FinancialConcepts.UseCases {
     }
 
 
-    public FinancialConceptEntryDto InsertFinancialConceptEntry(FinancialConceptEntryEditionCommand command) {
-      Assertion.AssertObject(command, nameof(command));
+    public ExecutionResult InsertEntry(EditFinancialConceptEntryCommand command) {
+      Assertion.Require(command, nameof(command));
+
+      command.EnsureIsValid();
+
+      var concept = FinancialConcept.Parse(command.FinancialConceptUID);
+
+      ExecutionResult result = concept.InsertEntryFrom2(command);
+
+      if (command.DryRun) {
+        return result;
+      }
+
+      return CommitChanges(result);
+    }
+
+
+    public ExecutionResult RemoveEntry(EditFinancialConceptEntryCommand command) {
+      Assertion.Require(command, nameof(command));
+
+      command.EnsureIsValid();
+
+      var concept = FinancialConcept.Parse(command.FinancialConceptUID);
+
+      ExecutionResult result = concept.RemoveEntry(command);
+
+      if (command.DryRun) {
+        return result;
+      }
+
+      return CommitChanges(result);
+    }
+
+
+    public ExecutionResult UpdateEntry(EditFinancialConceptEntryCommand command) {
+      Assertion.Require(command, nameof(command));
+
+      command.EnsureIsValid();
+
+      var concept = FinancialConcept.Parse(command.FinancialConceptUID);
+
+      ExecutionResult result = concept.UpdateEntryFrom2(command);
+
+      if (command.DryRun) {
+        return result;
+      }
+
+      return CommitChanges(result);
+    }
+
+
+    public FinancialConceptEntryDto InsertFinancialConceptEntry(EditFinancialConceptEntryCommand command) {
+      Assertion.Require(command, nameof(command));
 
       command.EnsureIsValid();
 
@@ -58,8 +109,8 @@ namespace Empiria.FinancialAccounting.FinancialConcepts.UseCases {
 
 
     public void RemoveFinancialConceptEntry(string financialConceptUID, string financialConceptEntryUID) {
-      Assertion.AssertObject(financialConceptUID, nameof(financialConceptUID));
-      Assertion.AssertObject(financialConceptEntryUID, nameof(financialConceptEntryUID));
+      Assertion.Require(financialConceptUID, nameof(financialConceptUID));
+      Assertion.Require(financialConceptEntryUID, nameof(financialConceptEntryUID));
 
       FinancialConcept concept = FinancialConcept.Parse(financialConceptUID);
 
@@ -71,8 +122,8 @@ namespace Empiria.FinancialAccounting.FinancialConcepts.UseCases {
     }
 
 
-    public FinancialConceptEntryDto UpdateFinancialConceptEntry(FinancialConceptEntryEditionCommand command) {
-      Assertion.AssertObject(command, nameof(command));
+    public FinancialConceptEntryDto UpdateFinancialConceptEntry(EditFinancialConceptEntryCommand command) {
+      Assertion.Require(command, nameof(command));
 
       command.EnsureIsValid();
 
@@ -86,6 +137,37 @@ namespace Empiria.FinancialAccounting.FinancialConcepts.UseCases {
     }
 
     #endregion Use cases
+
+    #region Helpers
+
+    private ExecutionResult CommitChanges(ExecutionResult result) {
+      result.EnsureCanBeCommited();
+
+      FinancialConceptEntry entry = result.GetEntity<FinancialConceptEntry>();
+
+      string msg;
+
+      if (entry.IsNew) {
+        msg = $"Se agregó la regla de integración al concepto " +
+              $"{entry.FinancialConcept.Code} - {entry.FinancialConcept.Name}.";
+
+      } else if (entry.Status == StateEnums.EntityStatus.Deleted) {
+        msg = "La regla de integración fue eliminada con éxito.";
+
+      } else {
+        msg = "La regla de integración fue modificada con éxito.";
+      }
+
+      entry.Save();
+
+      FinancialConceptEntryDto dto = FinancialConceptMapper.Map(entry);
+
+      result.MarkAsCommited(dto, msg);
+
+      return result;
+    }
+
+    #endregion Helpers
 
   }  // class FinancialConceptIntegrationUseCases
 

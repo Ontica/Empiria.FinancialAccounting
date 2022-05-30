@@ -12,7 +12,7 @@ using System;
 namespace Empiria.FinancialAccounting.FinancialConcepts.Adapters {
 
   /// <summary>Data transfer object for FinancialConceptEntry instances.</summary>
-  public class FinancialConceptEntryDto {
+  public class FinancialConceptEntryDto : IDto {
 
     internal FinancialConceptEntryDto() {
       // no-op
