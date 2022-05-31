@@ -30,15 +30,15 @@ namespace Empiria.FinancialAccounting.Reconciliation {
 
 
     public string GetAccountNumber() {
-      string value = ReadStringValueFromColumn("F");
+      string accountNumber = ReadStringValueFromColumn("F");
 
-      value = EmpiriaString.TrimAll(value);
+      accountNumber = EmpiriaString.TrimAll(accountNumber);
 
-      if (value.Contains(" ")) {
-        value = value.Split(' ')[0];
+      if (accountNumber.Contains(" ")) {
+        accountNumber = accountNumber.Split(' ')[0];
       }
 
-      return AccountsChart.IFRS.FormatAccountNumber(value);
+      return AccountsChart.IFRS.FormatAccountNumber(accountNumber);
     }
 
 
@@ -48,12 +48,12 @@ namespace Empiria.FinancialAccounting.Reconciliation {
 
 
     public string GetCurrencyCode() {
-      string value = ReadStringValueFromColumn("O");
+      string isoCode = ReadStringValueFromColumn("O");
 
-      var currency = Currency.TryParseByCurrencyCode(value.ToUpperInvariant());
+      var currency = Currency.TryParseISOCode(isoCode.ToUpperInvariant());
 
       Assertion.Require(currency,
-                        $"El registro número {_rowIndex} tiene un valor de moneda que no reconozco: '{value}'.");
+                        $"El registro número {_rowIndex} tiene una clave de moneda que no reconozco: '{isoCode}'.");
 
       return currency.Code;
     }
@@ -101,13 +101,13 @@ namespace Empiria.FinancialAccounting.Reconciliation {
 
 
     public string GetSubledgerAccountNumber() {
-      string value = ReadStringValueFromColumn("F");
+      string subledgerAccountNumber = ReadStringValueFromColumn("F");
 
-      if (value.Contains(" ")) {
-        value = value.Split(' ')[1];
+      if (subledgerAccountNumber.Contains(" ")) {
+        subledgerAccountNumber = subledgerAccountNumber.Split(' ')[1];
       }
 
-      return value.TrimStart('0');
+      return subledgerAccountNumber.TrimStart('0');
     }
 
 

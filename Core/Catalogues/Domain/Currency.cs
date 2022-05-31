@@ -31,14 +31,20 @@ namespace Empiria.FinancialAccounting {
     }
 
 
-    static public Currency TryParseByCurrencyCode(string currencyCode) {
-      switch (currencyCode.ToUpperInvariant()) {
+    public static bool Exists(string code) {
+      return BaseObject.TryParse<Currency>($"O_ID_MONEDA = '{code}'") != null;
+    }
+
+
+    static public Currency TryParseISOCode(string isoCode) {
+      switch (isoCode.ToUpperInvariant()) {
         case "MXN":
           return Currency.MXN;
         case "USD":
           return Currency.USD;
         case "JPY":
           return Currency.YEN;
+        case "MXV":
         case "UDI":
           return Currency.UDI;
         case "EUR":
