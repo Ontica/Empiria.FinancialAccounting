@@ -31,6 +31,11 @@ namespace Empiria.FinancialAccounting {
     }
 
 
+    public static bool Exists(string uid) {
+      return BaseObject.TryParse<Sector>($"CLAVE_SECTOR = '{uid}'") != null;
+    }
+
+
     static public FixedList<Sector> GetList() {
       return BaseObject.GetList<Sector>("ID_SECTOR > 0", "CLAVE_SECTOR")
                        .ToFixedList();

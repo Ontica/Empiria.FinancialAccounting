@@ -33,8 +33,12 @@ namespace Empiria.FinancialAccounting.FinancialConcepts {
       return BaseObject.ParseKey<ExternalVariable>(uid);
     }
 
-    static internal ExternalVariable TryParseWithCode(string externalVariableCode) {
-      return BaseObject.TryParse<ExternalVariable>($"ETIQUETA_VARIABLE = '{externalVariableCode}'");
+    public static bool ExistsCode(string code) {
+      return TryParseWithCode(code) != null;
+    }
+
+    static internal ExternalVariable TryParseWithCode(string code) {
+      return BaseObject.TryParse<ExternalVariable>($"CLAVE_VARIABLE = '{code}'");
     }
 
     static public ExternalVariable Empty {
