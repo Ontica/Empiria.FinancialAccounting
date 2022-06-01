@@ -20,11 +20,13 @@ namespace Empiria.FinancialAccounting.FinancialConcepts {
 
   /// <summary>Holds a set of financial concepts, which unique purpose is to classify concepts.
   /// A given financial concept always belongs to a single group.</summary>
-  public class FinancialConceptGroup : GeneralObject {
+  public class FinancialConceptGroup : GeneralObject, IInvariant {
 
     #region Fields
 
     private Lazy<List<FinancialConcept>> _financialConcepts;
+
+    private readonly object _locker = new object();
 
     #endregion Fields
 
@@ -158,6 +160,8 @@ namespace Empiria.FinancialAccounting.FinancialConcepts {
         item.Cleanup();
         FinancialConceptsData.Write(item);
       }
+
+      AssertInvariant();
     }
 
 
@@ -187,23 +191,32 @@ namespace Empiria.FinancialAccounting.FinancialConcepts {
 
       UpdateList(concept);
 
+      AssertInvariant();
+
       return concept;
     }
 
 
-    internal void Remove(FinancialConcept concept) {
-      Assertion.Require(concept, nameof(concept));
+    internal void Remove(FinancialConcept removeThis) {
+      Assertion.Require(removeThis, nameof(removeThis));
 
-      Assertion.Require(concept.Group.Equals(this),
+      Assertion.Require(removeThis.Group.Equals(this),
                         $"El concepto que se desea eliminar no pertenece al grupo de conceptos '{this.Name}'.");
 
-      concept.Delete();
+      lock (_locker) {
+        Assertion.Require(_financialConcepts.Value.Contains(removeThis),
+                          $"El concepto que se desea eliminar no está en la lista.");
 
-      int oldCount = _financialConcepts.Value.Count;
+        int oldCount = _financialConcepts.Value.Count;
 
-      UpdateList(concept);
+        removeThis.Delete();
+        UpdateList(removeThis);
 
-      Assertion.Ensure(_financialConcepts.Value.Count == oldCount - 1);
+        Assertion.Ensure(_financialConcepts.Value.Count == oldCount - 1);
+        Assertion.Ensure(!_financialConcepts.Value.Contains(removeThis));
+      }  // lock
+
+      AssertInvariant();
     }
 
 
@@ -223,6 +236,8 @@ namespace Empiria.FinancialAccounting.FinancialConcepts {
       concept.Update(fields);
 
       UpdateList(concept);
+
+      AssertInvariant();
 
       return concept;
     }
@@ -305,6 +320,30 @@ namespace Empiria.FinancialAccounting.FinancialConcepts {
       }
     }
 
+
+    private void AssertInvariant() {
+      ((IInvariant) this).AssertInvariant();
+    }
+
+    void IInvariant.AssertInvariant() {
+      var concepts = _financialConcepts.Value;
+
+      Assertion.Ensure(concepts, nameof(concepts));
+
+      Assertion.Ensure(_locker, nameof(_locker));
+
+      Assertion.Ensure(!concepts.Exists(x => x == null),
+                       "concepts list can not have null items.");
+
+      Assertion.Ensure(!concepts.Exists(x => x.Status == EntityStatus.Deleted || x.IsEmptyInstance),
+                       "concepts list can not have deleted or empty intance items.");
+
+      Assertion.Ensure(concepts.TrueForAll(x => x.Group.Equals(this)),
+                       $"All concepts must belong to the group ({this.Name}).");
+
+      Assertion.Ensure(concepts.TrueForAll(x => x.Position == concepts.IndexOf(x) + 1),
+                       $"For all concepts, Position property must coincide with their index in the list.");
+    }
 
     #endregion Helpers
 
