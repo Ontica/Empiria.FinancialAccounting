@@ -20,24 +20,23 @@ namespace Empiria.FinancialAccounting.BanobrasIntegration.BalancesExporter.Adapt
 
     static public FixedList<ExportedBalancesDto> MapToExportedBalances(ExportBalancesCommand command,
                                                                        TrialBalanceDto trialBalance) {
-      FixedList<TrialBalanceEntryDto> entries = GetEntriesToBeExported(trialBalance);
+      FixedList<BalanzaTradicionalEntryDto> entries = GetEntriesToBeExported(trialBalance);
 
       return new FixedList<ExportedBalancesDto>(entries.Select(x => MapTrialBalanceEntry(command, x)));
     }
 
 
-    static private FixedList<TrialBalanceEntryDto> GetEntriesToBeExported(TrialBalanceDto trialBalance) {
-      var list = new FixedList<TrialBalanceEntryDto>(trialBalance.Entries.Select(x => (TrialBalanceEntryDto) x));
+    static private FixedList<BalanzaTradicionalEntryDto> GetEntriesToBeExported(TrialBalanceDto trialBalance) {
+      var list = trialBalance.Entries.FindAll(x => x.ItemType == TrialBalanceItemType.Entry ||
+                                                   x.ItemType == TrialBalanceItemType.Summary)
+                                      .Select(x => (BalanzaTradicionalEntryDto) x);
 
-      list = list.FindAll(x => x.ItemType == TrialBalanceItemType.Entry ||
-                               x.ItemType == TrialBalanceItemType.Summary);
-
-      return list;
+      return list.ToFixedList();
     }
 
 
     static private ExportedBalancesDto MapTrialBalanceEntry(ExportBalancesCommand command,
-                                                            TrialBalanceEntryDto entry) {
+                                                            BalanzaTradicionalEntryDto entry) {
       var account = StandardAccount.Parse(entry.StandardAccountId);
       var subledgerAccount = SubledgerAccount.Parse(entry.SubledgerAccountId);
 
