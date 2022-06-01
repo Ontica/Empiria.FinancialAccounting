@@ -42,63 +42,36 @@ namespace Empiria.FinancialAccounting.FinancialConcepts.UseCases {
     }
 
 
-    public ExecutionResult InsertEntry(EditFinancialConceptEntryCommand command) {
+    public ExecutionResult<FinancialConceptEntryDto> InsertFinancialConceptEntry(EditFinancialConceptEntryCommand command) {
       Assertion.Require(command, nameof(command));
 
-      command.EnsureIsValid();
+      command.Arrange();
 
-      var concept = FinancialConcept.Parse(command.FinancialConceptUID);
-
-      ExecutionResult result = concept.InsertEntryFrom2(command);
-
-      if (command.DryRun) {
-        return result;
+      if (!command.IsValid || command.DryRun) {
+        return command.MapToExecutionResult<FinancialConceptEntryDto>();
       }
 
-      return CommitChanges(result);
+      FinancialConcept concept = command.Entities.FinancialConcept;
+
+      FinancialConceptEntry entry = concept.InsertEntryFrom(command);
+
+      entry.Save();
+
+      var outcome = FinancialConceptMapper.Map(entry);
+
+      command.Done(outcome, $"Se agregó la regla de integración al concepto " +
+                            $"{entry.FinancialConcept.Code} - {entry.FinancialConcept.Name}.");
+
+      return command.MapToExecutionResult<FinancialConceptEntryDto>();
     }
 
 
-    public ExecutionResult RemoveEntry(EditFinancialConceptEntryCommand command) {
+    public FinancialConceptEntryDto InsertFinancialConceptEntryOld(EditFinancialConceptEntryCommand command) {
       Assertion.Require(command, nameof(command));
 
-      command.EnsureIsValid();
+      command.Arrange();
 
-      var concept = FinancialConcept.Parse(command.FinancialConceptUID);
-
-      ExecutionResult result = concept.RemoveEntry(command);
-
-      if (command.DryRun) {
-        return result;
-      }
-
-      return CommitChanges(result);
-    }
-
-
-    public ExecutionResult UpdateEntry(EditFinancialConceptEntryCommand command) {
-      Assertion.Require(command, nameof(command));
-
-      command.EnsureIsValid();
-
-      var concept = FinancialConcept.Parse(command.FinancialConceptUID);
-
-      ExecutionResult result = concept.UpdateEntryFrom2(command);
-
-      if (command.DryRun) {
-        return result;
-      }
-
-      return CommitChanges(result);
-    }
-
-
-    public FinancialConceptEntryDto InsertFinancialConceptEntry(EditFinancialConceptEntryCommand command) {
-      Assertion.Require(command, nameof(command));
-
-      command.EnsureIsValid();
-
-      var concept = FinancialConcept.Parse(command.FinancialConceptUID);
+      var concept = FinancialConcept.Parse(command.Payload.FinancialConceptUID);
 
       FinancialConceptEntry entry = concept.InsertEntryFrom(command);
 
@@ -125,9 +98,9 @@ namespace Empiria.FinancialAccounting.FinancialConcepts.UseCases {
     public FinancialConceptEntryDto UpdateFinancialConceptEntry(EditFinancialConceptEntryCommand command) {
       Assertion.Require(command, nameof(command));
 
-      command.EnsureIsValid();
+      command.Arrange();
 
-      var concept = FinancialConcept.Parse(command.FinancialConceptUID);
+      var concept = FinancialConcept.Parse(command.Payload.FinancialConceptUID);
 
       FinancialConceptEntry entry = concept.UpdateEntryFrom(command);
 
@@ -140,32 +113,30 @@ namespace Empiria.FinancialAccounting.FinancialConcepts.UseCases {
 
     #region Helpers
 
-    private ExecutionResult CommitChanges(ExecutionResult result) {
-      result.EnsureCanBeCommited();
+    //private ExecutionResult CommitChanges(ExecutionResult result) {
+    //  result.EnsureCanBeCommited();
 
-      FinancialConceptEntry entry = result.GetEntity<FinancialConceptEntry>();
+    //  string msg;
 
-      string msg;
+    //  if (entry.IsNew) {
+    //    msg = $"Se agregó la regla de integración al concepto " +
+    //          $"{entry.FinancialConcept.Code} - {entry.FinancialConcept.Name}.";
 
-      if (entry.IsNew) {
-        msg = $"Se agregó la regla de integración al concepto " +
-              $"{entry.FinancialConcept.Code} - {entry.FinancialConcept.Name}.";
+    //  } else if (entry.Status == StateEnums.EntityStatus.Deleted) {
+    //    msg = "La regla de integración fue eliminada con éxito.";
 
-      } else if (entry.Status == StateEnums.EntityStatus.Deleted) {
-        msg = "La regla de integración fue eliminada con éxito.";
+    //  } else {
+    //    msg = "La regla de integración fue modificada con éxito.";
+    //  }
 
-      } else {
-        msg = "La regla de integración fue modificada con éxito.";
-      }
+    //  entry.Save();
 
-      entry.Save();
+    //  FinancialConceptEntryDto dto = FinancialConceptMapper.Map(entry);
 
-      FinancialConceptEntryDto dto = FinancialConceptMapper.Map(entry);
+    //  result.MarkAsCommited(dto, msg);
 
-      result.MarkAsCommited(dto, msg);
-
-      return result;
-    }
+    //  return result;
+    //}
 
     #endregion Helpers
 

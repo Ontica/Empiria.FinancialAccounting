@@ -60,9 +60,6 @@ namespace Empiria.FinancialAccounting.FinancialConcepts {
       };
     }
 
-    internal ExecutionResult InsertEntryFrom2(EditFinancialConceptEntryCommand command) {
-      throw new NotImplementedException();
-    }
 
     static public FinancialConcept Empty {
       get {
@@ -70,13 +67,6 @@ namespace Empiria.FinancialAccounting.FinancialConcepts {
       }
     }
 
-    internal ExecutionResult RemoveEntry(EditFinancialConceptEntryCommand command) {
-      throw new NotImplementedException();
-    }
-
-    internal ExecutionResult UpdateEntryFrom2(EditFinancialConceptEntryCommand command) {
-      throw new NotImplementedException();
-    }
 
     protected override void OnLoad() {
       if (this.IsEmptyInstance) {
@@ -184,7 +174,7 @@ namespace Empiria.FinancialAccounting.FinancialConcepts {
     internal FinancialConceptEntry InsertEntryFrom(EditFinancialConceptEntryCommand command) {
       Assertion.Require(command, nameof(command));
 
-      int position = CalculatePositionFrom(command);
+      int position = CalculatePositionFrom(command.Payload.Positioning);
 
       FinancialConceptEntryFields fields = command.MapToFields(position);
 
@@ -193,6 +183,11 @@ namespace Empiria.FinancialAccounting.FinancialConcepts {
       UpdateList(entry);
 
       return entry;
+    }
+
+
+    internal ExecutionResult RemoveEntry(EditFinancialConceptEntryCommand command) {
+      throw new NotImplementedException();
     }
 
 
@@ -231,13 +226,17 @@ namespace Empiria.FinancialAccounting.FinancialConcepts {
       this.UpdatedBy = ExecutionServer.CurrentIdentity.User.AsContact();
     }
 
+    internal ExecutionResult UpdateEntryFrom2(EditFinancialConceptEntryCommand command) {
+      throw new NotImplementedException();
+    }
+
 
     internal FinancialConceptEntry UpdateEntryFrom(EditFinancialConceptEntryCommand command) {
       Assertion.Require(command, nameof(command));
 
-      FinancialConceptEntry entry = GetEntry(command.FinancialConceptEntryUID);
+      FinancialConceptEntry entry = GetEntry(command.Payload.FinancialConceptEntryUID);
 
-      int newPosition = CalculatePositionFrom(command, entry.Position);
+      int newPosition = CalculatePositionFrom(command.Payload.Positioning, entry.Position);
 
       FinancialConceptEntryFields fields = command.MapToFields(newPosition);
 
@@ -252,13 +251,13 @@ namespace Empiria.FinancialAccounting.FinancialConcepts {
 
     #region Helpers
 
-    private int CalculatePositionFrom(EditFinancialConceptEntryCommand command,
+    private int CalculatePositionFrom(ItemPositioning positioning,
                                       int currentPosition = -1) {
 
-      switch (command.PositioningRule) {
+      switch (positioning.Rule) {
 
         case PositioningRule.AfterOffset:
-          var afterOffset = GetEntry(command.PositioningOffsetEntryUID);
+          var afterOffset = GetEntry(positioning.OffsetUID);
 
           if (currentPosition != -1 &&
               currentPosition < afterOffset.Position) {
@@ -280,7 +279,7 @@ namespace Empiria.FinancialAccounting.FinancialConcepts {
           return 1;
 
         case PositioningRule.BeforeOffset:
-          var beforeOffset = GetEntry(command.PositioningOffsetEntryUID);
+          var beforeOffset = GetEntry(positioning.OffsetUID);
 
           if (currentPosition != -1 &&
               currentPosition < beforeOffset.Position) {
@@ -290,14 +289,14 @@ namespace Empiria.FinancialAccounting.FinancialConcepts {
           }
 
         case PositioningRule.ByPositionValue:
-          Assertion.Require(1 <= command.Position &&
-                                command.Position <= _integration.Value.Count + 1,
-            $"Position value is {command.Position}, but must be between 1 and {_integration.Value.Count + 1}.");
+          Assertion.Require(1 <= positioning.Position &&
+                                positioning.Position <= _integration.Value.Count + 1,
+            $"Position value is {positioning.Position}, but must be between 1 and {_integration.Value.Count + 1}.");
 
-          return command.Position;
+          return positioning.Position;
 
         default:
-          throw Assertion.EnsureNoReachThisCode($"Unhandled PositioningRule '{command.PositioningRule}'.");
+          throw Assertion.EnsureNoReachThisCode($"Unhandled PositioningRule '{positioning.Rule}'.");
       }
     }
 

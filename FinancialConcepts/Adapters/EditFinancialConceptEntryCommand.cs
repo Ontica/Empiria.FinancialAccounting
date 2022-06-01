@@ -12,132 +12,77 @@ using System;
 namespace Empiria.FinancialAccounting.FinancialConcepts.Adapters {
 
   /// <summary>The command used to create or update financial concept's integration entries.</summary>
-  public class EditFinancialConceptEntryCommand {
+  public class EditFinancialConceptEntryCommand : Command {
 
-    public bool DryRun {
+    public PayloadType Payload {
       get; set;
+    } = new PayloadType();
+
+
+    internal EntitiesType Entities {
+      get; private set;
+    } = new EntitiesType();
+
+
+
+    protected override void Clean() {
+      Payload.Clean();
     }
 
 
-    public string FinancialConceptEntryUID {
-      get; set;
-    } = string.Empty;
+    protected override void Require() {
+      Assertion.Require(Type == "InsertFinancialConceptEntry" || Type == "UpdateFinancialConceptEntry",
+                        $"Unrecognized command type '{Type}'.");
 
+      Assertion.Require(Payload, "Payload");
 
-    public string FinancialConceptUID {
-      get; set;
-    } = string.Empty;
-
-
-    public FinancialConceptEntryType EntryType {
-      get; set;
+      Payload.Require(Type);
     }
 
 
-    public string ReferencedFinancialConceptUID {
-      get; set;
-    } = string.Empty;
+    protected override void SetEntities() {
+      this.Entities.FinancialConcept = FinancialConcept.Parse(this.Payload.FinancialConceptUID);
 
+      if (Payload.FinancialConceptEntryUID.Length != 0) {
+        this.Entities.FinancialConceptEntry = FinancialConceptEntry.Parse(Payload.FinancialConceptEntryUID);
+      }
 
-    public string AccountNumber {
-      get; set;
-    } = string.Empty;
-
-
-    public string SubledgerAccountNumber {
-      get; set;
-    } = string.Empty;
-
-
-    public string SectorCode {
-      get; set;
-    } = string.Empty;
-
-
-    public string ExternalVariableCode {
-      get; set;
-    } = string.Empty;
-
-
-    public string CurrencyCode {
-      get; set;
-    } = string.Empty;
-
-
-    public string AccountsListUID {
-      get; set;
-    } = string.Empty;
-
-
-    public OperatorType Operator {
-      get; set;
-    } = OperatorType.Add;
-
-
-    public string CalculationRule {
-      get; set;
-    } = "Default";
-
-
-    public string DataColumn {
-      get; set;
-    } = "Default";
-
-
-    public PositioningRule PositioningRule {
-      get; set;
-    } = PositioningRule.Undefined;
-
-
-    public string PositioningOffsetEntryUID {
-      get; set;
-    } = string.Empty;
-
-
-    public int Position {
-      get; set;
-    } = -1;
-
-  }  // class EditFinancialConceptEntryCommand
-
-
-  /// <summary>Extension methods for EditFinancialConceptEntryCommand.</summary>
-  static class EditFinancialConceptEntryCommandExtensions {
-
-    #region Methods
-
-    static internal void EnsureIsValid(this EditFinancialConceptEntryCommand command) {
-      command.Clean();
-
-      Assertion.Require(command.FinancialConceptUID, "command.FinancialConceptUID");
-
-      EnsurePositioningRuleIsValid(command);
+      if (Payload.ReferencedFinancialConceptUID.Length != 0) {
+        this.Entities.ReferencedFinancialConcept = FinancialConcept.Parse(Payload.ReferencedFinancialConceptUID);
+      }
     }
 
 
-    static internal FinancialConceptEntryFields MapToFields(this EditFinancialConceptEntryCommand command,
-                                                            int position) {
+    protected override void SetIssues() {
+      Payload.SetIssues(this.ExecutionResult);
+    }
+
+
+    protected override void SetWarnings() {
+      Payload.SetWarnings(this.ExecutionResult);
+    }
+
+
+    internal FinancialConceptEntryFields MapToFields(int position) {
 
       FinancialConceptEntryFields fields;
 
-      switch (command.EntryType) {
+      switch (Payload.EntryType) {
         case FinancialConceptEntryType.Account:
           fields = new AccountEntryTypeFields {
-            AccountNumber = command.AccountNumber,
-            SubledgerAccountNumber = command.SubledgerAccountNumber,
-            SectorCode = command.SectorCode,
-            CurrencyCode = command.CurrencyCode
+            AccountNumber           = Payload.AccountNumber,
+            SubledgerAccountNumber  = Payload.SubledgerAccountNumber,
+            SectorCode              = Payload.SectorCode,
+            CurrencyCode            = Payload.CurrencyCode
           };
           break;
 
         case FinancialConceptEntryType.ExternalVariable:
-          fields = new ExternalVariableEntryTypeFields(command.ExternalVariableCode);
+          fields = new ExternalVariableEntryTypeFields(Payload.ExternalVariableCode);
           break;
 
         case FinancialConceptEntryType.FinancialConceptReference:
-          var reference = FinancialConcept.Parse(command.ReferencedFinancialConceptUID);
-
-          fields = new FinancialConceptReferenceEntryTypeFields(reference);
+          fields = new FinancialConceptReferenceEntryTypeFields(Entities.ReferencedFinancialConcept);
           break;
 
         default:
@@ -145,51 +90,168 @@ namespace Empiria.FinancialAccounting.FinancialConcepts.Adapters {
 
       }
 
-      fields.FinancialConcept = FinancialConcept.Parse(command.FinancialConceptUID);
-      fields.Operator = command.Operator;
-      fields.CalculationRule = command.CalculationRule;
-      fields.DataColumn = command.DataColumn;
-      fields.Position = position;
+      fields.FinancialConcept = FinancialConcept.Parse(Payload.FinancialConceptUID);
+      fields.Operator         = Payload.Operator;
+      fields.CalculationRule  = Payload.CalculationRule;
+      fields.DataColumn       = Payload.DataColumn;
+      fields.Position         = position;
 
       return fields;
     }
 
-    #endregion Methods
 
-    #region Helpers
+    public class PayloadType {
 
-    static private void Clean(this EditFinancialConceptEntryCommand command) {
-      command.FinancialConceptEntryUID      = EmpiriaString.Clean(command.FinancialConceptEntryUID);
-      command.FinancialConceptUID           = EmpiriaString.Clean(command.FinancialConceptUID);
-      command.ReferencedFinancialConceptUID = EmpiriaString.Clean(command.ReferencedFinancialConceptUID);
-      command.AccountNumber                 = EmpiriaString.Clean(command.AccountNumber);
-      command.SubledgerAccountNumber        = EmpiriaString.Clean(command.SubledgerAccountNumber);
-      command.SectorCode                    = EmpiriaString.Clean(command.SectorCode);
-      command.ExternalVariableCode          = EmpiriaString.Clean(command.ExternalVariableCode);
-      command.CurrencyCode                  = EmpiriaString.Clean(command.CurrencyCode);
-      command.AccountsListUID               = EmpiriaString.Clean(command.AccountsListUID);
-      command.CalculationRule               = EmpiriaString.Clean(command.CalculationRule);
-      command.DataColumn                    = EmpiriaString.Clean(command.DataColumn);
-      command.PositioningOffsetEntryUID     = EmpiriaString.Clean(command.PositioningOffsetEntryUID);
-    }
+      public string FinancialConceptUID {
+        get; set;
+      } = string.Empty;
 
 
-    static private void EnsurePositioningRuleIsValid(EditFinancialConceptEntryCommand command) {
-      Assertion.Require(command.PositioningRule != PositioningRule.Undefined,
-                       "command.PositioningRule can not be 'Undefined'.");
+      public string FinancialConceptEntryUID {
+        get; set;
+      } = string.Empty;
 
-      if (command.PositioningRule.UsesOffset() && command.PositioningOffsetEntryUID.Length == 0) {
-        Assertion.RequireFail($"command.PositioningRule is '{command.PositioningRule}', " +
-                              $"so command.PositioningOffsetEntryUID can not be empty.");
+
+      public FinancialConceptEntryType EntryType {
+        get; set;
       }
 
-      if (command.PositioningRule.UsesPosition() && command.Position == -1) {
-        Assertion.RequireFail($"command.PositioningRule is '{command.PositioningRule}', " +
-                             "so command.Position is required.");
-      }
-    }
 
-    #endregion Helpers
+      public string ReferencedFinancialConceptUID {
+        get; set;
+      } = string.Empty;
+
+
+      public string AccountNumber {
+        get; set;
+      } = string.Empty;
+
+
+      public string SubledgerAccountNumber {
+        get; set;
+      } = string.Empty;
+
+
+      public string SectorCode {
+        get; set;
+      } = string.Empty;
+
+
+      public string ExternalVariableCode {
+        get; set;
+      } = string.Empty;
+
+
+      public string CurrencyCode {
+        get; set;
+      } = string.Empty;
+
+
+      //public string AccountsListUID {
+      //  get; set;
+      //} = string.Empty;
+
+
+      public OperatorType Operator {
+        get; set;
+      } = OperatorType.Add;
+
+
+      public string CalculationRule {
+        get; set;
+      } = "Default";
+
+
+      public string DataColumn {
+        get; set;
+      } = "Default";
+
+
+      public ItemPositioning Positioning {
+        get; set;
+      } = new ItemPositioning();
+
+
+      internal void Clean() {
+        AccountNumber           = EmpiriaString.Clean(AccountNumber);
+        SubledgerAccountNumber  = EmpiriaString.Clean(SubledgerAccountNumber);
+        SectorCode              = EmpiriaString.Clean(SectorCode);
+        ExternalVariableCode    = EmpiriaString.Clean(ExternalVariableCode);
+        CurrencyCode            = EmpiriaString.Clean(CurrencyCode);
+        CalculationRule         = EmpiriaString.Clean(CalculationRule);
+        DataColumn              = EmpiriaString.Clean(DataColumn);
+        Positioning.Clean();
+      }
+
+
+      internal void Require(string commandType) {
+        Assertion.Require(FinancialConceptUID, "payload.FinancialConceptUID");
+
+        Assertion.Require(CalculationRule,     "payload.CalculationRule");
+        Assertion.Require(DataColumn,          "payload.DataColumn");
+
+        if (commandType == "InsertFinancialConceptEntry") {
+          Assertion.Require(Positioning.Rule != PositioningRule.Undefined,
+                            "payload.Positioning.Rule is required for insertion.");
+
+        } else if (commandType == "UpdateFinancialConceptEntry") {
+          Assertion.Require(FinancialConceptEntryUID, "payload.FinancialConceptEntryUID");
+        }
+
+        if (EntryType == FinancialConceptEntryType.Account) {
+          Assertion.Require(DataColumn, "payload.AccountNumber");
+
+          Assertion.Require(SectorCode.Length == 0 || Sector.Exists(SectorCode),
+                           $"Unrecognized payload.SectorCode value '{SectorCode}'.");
+
+          Assertion.Require(CurrencyCode.Length == 0 || Currency.Exists(CurrencyCode),
+                           $"Unrecognized payload.CurencyCode value '{CurrencyCode}'.");
+
+        } else if (EntryType == FinancialConceptEntryType.ExternalVariable) {
+          Assertion.Require(ExternalVariableCode, "payload.ExternalVariableCode");
+
+          Assertion.Require(ExternalVariableCode.Length == 0 || ExternalVariable.ExistsCode(ExternalVariableCode),
+                           $"Unrecognized payload.ExternalVariableCode value '{ExternalVariableCode}'.");
+
+        } else if (EntryType == FinancialConceptEntryType.FinancialConceptReference) {
+          Assertion.Require(ReferencedFinancialConceptUID, "payload.ReferencedFinancialConceptUID");
+        }
+
+
+        Positioning.Require();
+      }
+
+
+      internal void SetIssues(ExecutionResult executionResult) {
+        Positioning.SetIssues(executionResult);
+      }
+
+
+      internal void SetWarnings(ExecutionResult executionResult) {
+        Positioning.SetWarnings(executionResult);
+      }
+
+    }  // class PayloadType
+
+
+    internal class EntitiesType {
+
+      internal FinancialConcept FinancialConcept {
+        get; set;
+      } = FinancialConcept.Empty;
+
+
+      internal FinancialConceptEntry FinancialConceptEntry {
+        get; set;
+      } = FinancialConceptEntry.Empty;
+
+
+      public FinancialConcept ReferencedFinancialConcept {
+        get; internal set;
+      } = FinancialConcept.Empty;
+
+
+    }  // class EntitiesType
 
   }  // class EditFinancialConceptEntryCommand
 
