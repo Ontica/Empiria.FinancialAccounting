@@ -18,7 +18,7 @@ namespace Empiria.FinancialAccounting {
   }
 
 
-  public interface IExecutionCommand : IDto {
+  public interface IExecutionCommand {
 
     string Type {
       get;
@@ -44,6 +44,61 @@ namespace Empiria.FinancialAccounting {
   }  // class EmptyDto
 
 
+  public class ExecutionResult<T> {
+
+    public ExecutionResult(ExecutionResult result) {
+      Assertion.Require(result, nameof(result));
+
+      this.Command  = result.Command;
+      this.Commited = result.Commited;
+      this.Message  = result.Message;
+      this.Actions  = result.Actions;
+      this.Issues   = result.Issues;
+      this.Warnings = result.Warnings;
+
+      if (result.Commited) {
+        this.Outcome = (T) result.Outcome;
+      }
+    }
+
+
+    public IExecutionCommand Command {
+      get;
+    }
+
+
+    public bool Commited {
+      get;
+    }
+
+
+    public T Outcome {
+      get;
+    }
+
+
+    public string Message {
+      get;
+    }
+
+
+    public FixedList<string> Actions {
+      get;
+    }
+
+
+    public FixedList<string> Issues {
+      get;
+    }
+
+
+    public FixedList<string> Warnings {
+      get;
+    }
+
+  }  // class ExecutionResult<T>
+
+
   /// <summary>Holds information about the result of an account edition.</summary>
   public class ExecutionResult : IInvariant {
 
@@ -53,35 +108,18 @@ namespace Empiria.FinancialAccounting {
     private readonly List<string> _issues   = new List<string>();
     private readonly List<string> _warnings = new List<string>();
 
-    private readonly object _entity = null;
-
-
     #endregion Fields
 
     #region Constructor
 
-    internal ExecutionResult(IExecutionCommand command) {
+    public ExecutionResult(IExecutionCommand command) {
       Assertion.Require(command, nameof(command));
-      Assertion.Require(command.DryRun, "Constructor only allows dry-run commands.");
 
       this.Command  = command;
-      this.DryRun   = true;
 
-      Assertion.CheckInvariant(this);
+      AssertInvariant();
     }
 
-
-    internal ExecutionResult(IExecutionCommand command, object entity) {
-      Assertion.Require(command, nameof(command));
-      Assertion.Require(entity,  nameof(entity));
-
-      Assertion.Require(!command.DryRun, "This constructor only allows none dry-run commands.");
-
-      this.Command  = command;
-      _entity = entity;
-
-      Assertion.CheckInvariant(this);
-    }
 
     #endregion Constructor
 
@@ -92,7 +130,7 @@ namespace Empiria.FinancialAccounting {
     }
 
 
-    public IDto Instance {
+    public IDto Outcome {
       get; private set;
     }
 
@@ -103,13 +141,7 @@ namespace Empiria.FinancialAccounting {
 
 
     public bool Commited {
-      get;
-      private set;
-    }
-
-
-    public bool DryRun {
-      get;
+      get; private set;
     }
 
 
@@ -144,9 +176,15 @@ namespace Empiria.FinancialAccounting {
 
       _actions.Add(action);
 
-      Assertion.CheckInvariant(this);
+      AssertInvariant();
     }
 
+
+    public void AddActionIf(bool condition, string issue) {
+      if (condition) {
+        AddAction(issue);
+      }
+    }
 
     public void AddIssue(string issue) {
       Assertion.Require(issue, nameof(issue));
@@ -155,9 +193,15 @@ namespace Empiria.FinancialAccounting {
 
       _issues.Add(issue);
 
-      Assertion.CheckInvariant(this);
+      AssertInvariant();
     }
 
+
+    public void AddIssueIf(bool condition, string issue) {
+      if (condition) {
+        AddIssue(issue);
+      }
+    }
 
     public void AddWarning(string warning) {
       Assertion.Require(warning, nameof(warning));
@@ -166,20 +210,23 @@ namespace Empiria.FinancialAccounting {
 
       _warnings.Add(warning);
 
-      Assertion.CheckInvariant(this);
+      AssertInvariant();
     }
 
 
-    public void EnsureCanBeCommited() {
+    public void AddWarningIf(bool condition, string issue) {
+      if (condition) {
+        AddWarning(issue);
+      }
+    }
+
+
+    private void EnsureCanBeCommited() {
       EnsureNotCommited();
 
-      Assertion.Require(!this.DryRun,
+      Assertion.Require(!this.Command.DryRun,
         $"I can not commit command '{this.Command.Type}' " +
         $"because it was marked as dry-run.");
-
-      Assertion.Require(_entity,
-        $"I can not commit command '{this.Command.Type}' " +
-        $"because this commitable entity was not assigned.");
 
       Assertion.Require(this.Issues.Count == 0,
         $"There were one or more issues executing command '{this.Command.Type}'. " +
@@ -187,31 +234,30 @@ namespace Empiria.FinancialAccounting {
     }
 
 
-    public T GetEntity<T>() {
-      Assertion.Require(_entity, "Entity object was not provided.");
+    public void DryRunCompleted(string message) {
+      Assertion.Require(message, nameof(message));
 
-      return (T) _entity;
+      this.Message = message;
     }
 
 
-    public void MarkAsCommited(IDto instance) {
-      MarkAsCommited(instance, "La operación fue ejecutada con éxito.");
+    public void MarkAsCommited(IDto outcome) {
+      MarkAsCommited(outcome, "La operación fue ejecutada con éxito.");
     }
 
 
-    public void MarkAsCommited(IDto instance, string message) {
-      Assertion.Require(instance,  nameof(instance));
-      Assertion.Require(message,   nameof(message));
+    public void MarkAsCommited(IDto outcome, string message) {
+      Assertion.Require(outcome,  nameof(outcome));
+      Assertion.Require(message,  nameof(message));
 
       EnsureCanBeCommited();
 
-      this.Instance = instance;
+      this.Outcome = outcome;
       this.Message  = message;
       this.Commited = true;
 
-      Assertion.CheckInvariant(this);
+      AssertInvariant();
     }
-
 
     private void EnsureNotCommited() {
       Assertion.Require(!this.Commited,
@@ -219,8 +265,12 @@ namespace Empiria.FinancialAccounting {
     }
 
 
-    bool IInvariant.Invariant() {
-      return true;
+    private void AssertInvariant() {
+      ((IInvariant) this).AssertInvariant();
+    }
+
+    void IInvariant.AssertInvariant() {
+      Assertion.Ensure(Command, nameof(Command));
     }
 
     #endregion Methods
