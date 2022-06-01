@@ -210,7 +210,8 @@ namespace Empiria.FinancialAccounting.BanobrasIntegration.VouchersImporter {
       var errors = _toImportVouchersList.SelectMany(
                               z => z.AllIssues.FindAll(w => w.Type == VoucherIssueType.Error));
 
-      return new FixedList<NamedEntityDto>(errors.Select(x => x.ToNamedEntity()));
+      return errors.Select(x => x.ToNamedEntity())
+                   .ToFixedList();
     }
 
 
@@ -218,7 +219,8 @@ namespace Empiria.FinancialAccounting.BanobrasIntegration.VouchersImporter {
       var warnings = _toImportVouchersList.SelectMany(
                               z => z.AllIssues.FindAll(w => w.Type == VoucherIssueType.Warning));
 
-      return new FixedList<NamedEntityDto>(warnings.Select(x => x.ToNamedEntity()));
+      return warnings.Select(x => x.ToNamedEntity())
+                     .ToFixedList();
     }
 
 
@@ -247,7 +249,8 @@ namespace Empiria.FinancialAccounting.BanobrasIntegration.VouchersImporter {
 
 
     private FixedList<VoucherEntryFields> MapToVoucherEntriesFields(FixedList<ToImportVoucherEntry> entries) {
-      return new FixedList<VoucherEntryFields>(entries.Select(x => MapToVoucherEntryFields(x)));
+      return entries.Select(x => MapToVoucherEntryFields(x))
+                    .ToFixedList();
     }
 
 

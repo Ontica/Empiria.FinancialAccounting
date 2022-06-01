@@ -19,27 +19,21 @@ namespace Empiria.FinancialAccounting.BanobrasIntegration.VouchersImporter {
     }
 
     static internal void StoreVoucherIssues(ToImportVoucher voucher) {
-      var issuesList = voucher.AllIssues;
-
-      foreach (var issue in issuesList) {
+      foreach (var issue in voucher.AllIssues) {
         StoreVoucherIssues(voucher, issue, 'V');
       }
 
-      issuesList = voucher.Header.Issues;
-
-      foreach (var issue in issuesList) {
+      foreach (var issue in voucher.Header.Issues) {
         StoreVoucherIssues(voucher, issue, 'H');
       }
 
       foreach (var entry in voucher.Entries) {
-        issuesList = entry.Issues;
-
-        foreach (var issue in issuesList) {
+        foreach (var issue in entry.Issues) {
           StoreVoucherIssues(voucher, issue, 'E');
         }
       }
-
     }
+
 
     static private void StoreVoucherIssues(ToImportVoucher voucher,
                                            ToImportVoucherIssue issue,

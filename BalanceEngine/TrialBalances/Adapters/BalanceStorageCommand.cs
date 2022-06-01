@@ -24,5 +24,4 @@ namespace Empiria.FinancialAccounting.BalanceEngine.Adapters {
 
   } // class BalanceStorageCommand
 
-
 } // namespace Empiria.FinancialAccounting.BalanceEngine.Adapters
