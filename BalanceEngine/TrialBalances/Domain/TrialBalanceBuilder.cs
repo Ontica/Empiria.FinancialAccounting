@@ -45,7 +45,6 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
 
       EmpiriaLog.Debug($"AFTER GenerateSummaryEntries: {DateTime.Now.Subtract(startTime).TotalSeconds} seconds.");
 
-
       List<TrialBalanceEntry> postingEntriesMapped = helper.GetEntriesMappedForSectorization(
                                               postingEntries.ToList());
 
@@ -121,7 +120,7 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
       List<TrialBalanceEntry> summaryTrialBalanceConsolidated = helper.GenerateTotalSummaryConsolidated(
                                                                      summaryTotalCurrencies);
 
-      returnedTrialBalance = helper.CombineTotalConsolidatedAndPostingEntries(
+      returnedTrialBalance = helper.CombineTotalConsolidatedAndAccountEntries(
                             returnedTrialBalance, summaryTrialBalanceConsolidated);
 
       returnedTrialBalance = helper.TrialBalanceWithSubledgerAccounts(returnedTrialBalance);

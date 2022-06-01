@@ -152,6 +152,38 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
       return totalCurrenciesEntries.Values.ToList();
     }
 
+    internal List<TrialBalanceEntry> CombineTotalConsolidatedAndAccountEntries(
+                                      List<TrialBalanceEntry> balanceAccountEntries,
+                                      TrialBalanceEntry totalConsolidated) {
+
+      var returnedEntries = new List<TrialBalanceEntry>(balanceAccountEntries);
+
+      if (totalConsolidated != null) {
+        returnedEntries.Add(totalConsolidated);
+      }
+
+      return returnedEntries;
+    }
+
+    internal TrialBalanceEntry GenerateTotalConsolidated(
+                                      List<TrialBalanceEntry> totalByCurrencyEntries) {
+
+      var totalConsolidated = new EmpiriaHashTable<TrialBalanceEntry>();
+
+      foreach (var totalByCurrency in totalByCurrencyEntries) {
+
+        TrialBalanceEntry entry = totalByCurrency.CreatePartialCopy();
+        entry.GroupName = "TOTAL CONSOLIDADO GENERAL";
+        string hash = $"{entry.GroupName}";
+
+        var trialBalanceHelper = new TrialBalanceHelper(_query);
+        trialBalanceHelper.GenerateOrIncreaseEntries(totalConsolidated, entry, StandardAccount.Empty,
+                            Sector.Empty, TrialBalanceItemType.BalanceTotalConsolidated, hash);
+      } // foreach
+
+      return totalConsolidated.Values.FirstOrDefault();
+    }
+
 
     internal List<TrialBalanceEntry> GenerateTotalsConsolidatedByLedger(
                                       List<TrialBalanceEntry> totalsByCurrency) {

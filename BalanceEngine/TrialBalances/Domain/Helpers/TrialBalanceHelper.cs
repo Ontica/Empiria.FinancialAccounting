@@ -135,7 +135,7 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
     }
 
 
-    internal List<TrialBalanceEntry> CombineTotalConsolidatedAndPostingEntries(
+    internal List<TrialBalanceEntry> CombineTotalConsolidatedAndAccountEntries(
                                       List<TrialBalanceEntry> trialBalance,
                                       List<TrialBalanceEntry> summaryEntries) {
       var entries = new List<TrialBalanceEntry>(trialBalance);
