@@ -10,10 +10,10 @@
 using System;
 using System.Collections.Generic;
 using Empiria.Collections;
+using System.Linq;
 
 using Empiria.FinancialAccounting.BalanceEngine.Data;
 using Empiria.FinancialAccounting.BalanceEngine.Adapters;
-using System.Linq;
 
 namespace Empiria.FinancialAccounting.BalanceEngine {
 
