@@ -42,13 +42,14 @@ namespace Empiria.FinancialAccounting.WebApi.FinancialConcepts {
 
       base.RequireBody(command);
 
-      Assertion.Require(financialConceptUID == command.FinancialConceptUID,
-                       "command.FinancialConceptUID does not match url.");
+      command.Type = "InsertFinancialConceptEntry";
+
+      command.Payload.FinancialConceptUID = financialConceptUID;
 
       using (var usecases = FinancialConceptIntegrationUseCases.UseCaseInteractor()) {
-        FinancialConceptEntryDto entry = usecases.InsertFinancialConceptEntry(command);
+        ExecutionResult<FinancialConceptEntryDto> result = usecases.InsertFinancialConceptEntry(command);
 
-        return new SingleObjectModel(base.Request, entry);
+        return new SingleObjectModel(base.Request, result);
       }
     }
 
@@ -74,11 +75,10 @@ namespace Empiria.FinancialAccounting.WebApi.FinancialConcepts {
 
       base.RequireBody(command);
 
-      Assertion.Require(financialConceptUID == command.FinancialConceptUID,
-                       "command.FinancialConceptUID does not match url.");
+      command.Type = "UpdateFinancialConceptEntry";
 
-      Assertion.Require(financialConceptEntryUID == command.FinancialConceptEntryUID,
-                 "command.financialConceptEntryUID does not match url.");
+      command.Payload.FinancialConceptUID       = financialConceptUID;
+      command.Payload.FinancialConceptEntryUID  = financialConceptEntryUID;
 
       using (var usecases = FinancialConceptIntegrationUseCases.UseCaseInteractor()) {
         FinancialConceptEntryDto entry = usecases.UpdateFinancialConceptEntry(command);
