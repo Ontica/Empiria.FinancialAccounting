@@ -66,15 +66,6 @@ namespace Empiria.FinancialAccounting {
 
     public AccountRole Role => this.StandardAccount.Role;
 
-    public NumberedNamedEntityDto MapToNumberedNamedEntity() {
-      return new NumberedNamedEntityDto {
-        UID = this.UID,
-        Number = this.Number,
-        Name = this.Name,
-        FullName = $"{this.Number} - {this.Name}"
-      };
-    }
-
     public AccountType AccountType => this.StandardAccount.AccountType;
 
     public DebtorCreditorType DebtorCreditor => this.StandardAccount.DebtorCreditor;
@@ -103,6 +94,16 @@ namespace Empiria.FinancialAccounting {
 
     private Account GetStandardAccount() {
       return AccountsChartData.GetCurrentAccountWithStandardAccountId(this.StandardAccountId);
+    }
+
+
+    public ShortFlexibleEntityDto MapToShortFlexibleEntity() {
+      return new ShortFlexibleEntityDto {
+        UID = this.UID,
+        Number = this.Number,
+        Name = this.Name,
+        FullName = $"{this.Number} - {this.Name}"
+      };
     }
 
 

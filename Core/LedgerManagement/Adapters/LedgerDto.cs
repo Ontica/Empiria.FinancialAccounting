@@ -216,32 +216,6 @@ namespace Empiria.FinancialAccounting.Adapters {
   }  // class LedgerRuleDto
 
 
-  /// <summary>Output DTO for a numbered named entity.</summary>
-  public class NumberedNamedEntityDto {
-
-    internal NumberedNamedEntityDto() {
-      // no-op
-    }
-
-    public string UID {
-      get; internal set;
-    }
-
-    public string Number {
-      get; internal set;
-    }
-
-    public string Name {
-      get; internal set;
-    }
-
-    public string FullName {
-      get; internal set;
-    }
-
-  }  // class NumberedNamedEntityDto
-
-
   /// <summary>Output DTO for currencies with an exchange rate value.</summary>
   public class ValuedCurrencyDto {
 
