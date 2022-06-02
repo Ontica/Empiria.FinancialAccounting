@@ -33,22 +33,35 @@ namespace Empiria.FinancialAccounting.FinancialConcepts.UseCases {
     #region Use cases
 
 
-    public FixedList<FinancialConceptEntryDto> GetFinancialConceptEntries(string financialConceptUID) {
+    public FixedList<FinancialConceptEntryDescriptorDto> GetFinancialConceptEntries(string financialConceptUID) {
       Assertion.Require(financialConceptUID, nameof(financialConceptUID));
 
-      var financialConcept = FinancialConcept.Parse(financialConceptUID);
+      var concept = FinancialConcept.Parse(financialConceptUID);
 
-      return FinancialConceptMapper.Map(financialConcept.Integration);
+      return FinancialConceptMapper.Map(concept.Integration);
     }
 
 
-    public ExecutionResult<FinancialConceptEntryDto> InsertFinancialConceptEntry(EditFinancialConceptEntryCommand command) {
+    public FinancialConceptEntryDto GetFinancialConceptEntry(string financialConceptUID,
+                                                              string financialConceptEntryUID) {
+      Assertion.Require(financialConceptUID, nameof(financialConceptUID));
+      Assertion.Require(financialConceptEntryUID, nameof(financialConceptEntryUID));
+
+      var concept = FinancialConcept.Parse(financialConceptUID);
+
+      FinancialConceptEntry entry = concept.GetEntry(financialConceptEntryUID);
+
+      return FinancialConceptMapper.Map(entry);
+    }
+
+
+    public ExecutionResult<FinancialConceptEntryDescriptorDto> InsertFinancialConceptEntry(EditFinancialConceptEntryCommand command) {
       Assertion.Require(command, nameof(command));
 
       command.Arrange();
 
       if (!command.IsValid || command.DryRun) {
-        return command.MapToExecutionResult<FinancialConceptEntryDto>();
+        return command.MapToExecutionResult<FinancialConceptEntryDescriptorDto>();
       }
 
       FinancialConcept concept = command.Entities.FinancialConcept;
@@ -57,27 +70,12 @@ namespace Empiria.FinancialAccounting.FinancialConcepts.UseCases {
 
       entry.Save();
 
-      var outcome = FinancialConceptMapper.Map(entry);
+      var outcome = FinancialConceptMapper.MapToDescriptor(entry);
 
       command.Done(outcome, $"Se agregó la regla de integración al concepto " +
                             $"{entry.FinancialConcept.Code} - {entry.FinancialConcept.Name}.");
 
-      return command.MapToExecutionResult<FinancialConceptEntryDto>();
-    }
-
-
-    public FinancialConceptEntryDto InsertFinancialConceptEntryOld(EditFinancialConceptEntryCommand command) {
-      Assertion.Require(command, nameof(command));
-
-      command.Arrange();
-
-      var concept = FinancialConcept.Parse(command.Payload.FinancialConceptUID);
-
-      FinancialConceptEntry entry = concept.InsertEntryFrom(command);
-
-      entry.Save();
-
-      return FinancialConceptMapper.Map(entry);
+      return command.MapToExecutionResult<FinancialConceptEntryDescriptorDto>();
     }
 
 
@@ -95,7 +93,7 @@ namespace Empiria.FinancialAccounting.FinancialConcepts.UseCases {
     }
 
 
-    public FinancialConceptEntryDto UpdateFinancialConceptEntry(EditFinancialConceptEntryCommand command) {
+    public FinancialConceptEntryDescriptorDto UpdateFinancialConceptEntry(EditFinancialConceptEntryCommand command) {
       Assertion.Require(command, nameof(command));
 
       command.Arrange();
@@ -106,39 +104,10 @@ namespace Empiria.FinancialAccounting.FinancialConcepts.UseCases {
 
       entry.Save();
 
-      return FinancialConceptMapper.Map(entry);
+      return FinancialConceptMapper.MapToDescriptor(entry);
     }
 
     #endregion Use cases
-
-    #region Helpers
-
-    //private ExecutionResult CommitChanges(ExecutionResult result) {
-    //  result.EnsureCanBeCommited();
-
-    //  string msg;
-
-    //  if (entry.IsNew) {
-    //    msg = $"Se agregó la regla de integración al concepto " +
-    //          $"{entry.FinancialConcept.Code} - {entry.FinancialConcept.Name}.";
-
-    //  } else if (entry.Status == StateEnums.EntityStatus.Deleted) {
-    //    msg = "La regla de integración fue eliminada con éxito.";
-
-    //  } else {
-    //    msg = "La regla de integración fue modificada con éxito.";
-    //  }
-
-    //  entry.Save();
-
-    //  FinancialConceptEntryDto dto = FinancialConceptMapper.Map(entry);
-
-    //  result.MarkAsCommited(dto, msg);
-
-    //  return result;
-    //}
-
-    #endregion Helpers
 
   }  // class FinancialConceptIntegrationUseCases
 

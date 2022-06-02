@@ -27,12 +27,26 @@ namespace Empiria.FinancialAccounting.WebApi.FinancialConcepts {
     public CollectionModel GetFinancialConceptEntries([FromUri] string financialConceptUID) {
 
       using (var usecases = FinancialConceptIntegrationUseCases.UseCaseInteractor()) {
-        FixedList<FinancialConceptEntryDto> entries =
+        FixedList<FinancialConceptEntryDescriptorDto> entries =
                                   usecases.GetFinancialConceptEntries(financialConceptUID);
 
         return new CollectionModel(base.Request, entries);
       }
     }
+
+
+    [HttpGet]
+    [Route("v2/financial-accounting/financial-concepts/{financialConceptUID:guid}/integration/{financialConceptEntryUID:guid}")]
+    public SingleObjectModel GetConceptEntry([FromUri] string financialConceptUID,
+                                       [FromUri] string financialConceptEntryUID) {
+
+      using (var usecases = FinancialConceptIntegrationUseCases.UseCaseInteractor()) {
+        FinancialConceptEntryDto entry = usecases.GetFinancialConceptEntry(financialConceptUID, financialConceptEntryUID);
+
+        return new SingleObjectModel(base.Request, entry);
+      }
+    }
+
 
 
     [HttpPost]
@@ -47,7 +61,7 @@ namespace Empiria.FinancialAccounting.WebApi.FinancialConcepts {
       command.Payload.FinancialConceptUID = financialConceptUID;
 
       using (var usecases = FinancialConceptIntegrationUseCases.UseCaseInteractor()) {
-        ExecutionResult<FinancialConceptEntryDto> result = usecases.InsertFinancialConceptEntry(command);
+        ExecutionResult<FinancialConceptEntryDescriptorDto> result = usecases.InsertFinancialConceptEntry(command);
 
         return new SingleObjectModel(base.Request, result);
       }
@@ -81,7 +95,7 @@ namespace Empiria.FinancialAccounting.WebApi.FinancialConcepts {
       command.Payload.FinancialConceptEntryUID  = financialConceptEntryUID;
 
       using (var usecases = FinancialConceptIntegrationUseCases.UseCaseInteractor()) {
-        FinancialConceptEntryDto entry = usecases.UpdateFinancialConceptEntry(command);
+        FinancialConceptEntryDescriptorDto entry = usecases.UpdateFinancialConceptEntry(command);
 
         return new SingleObjectModel(base.Request, entry);
       }

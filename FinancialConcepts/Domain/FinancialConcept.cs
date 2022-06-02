@@ -226,10 +226,6 @@ namespace Empiria.FinancialAccounting.FinancialConcepts {
       this.UpdatedBy = ExecutionServer.CurrentIdentity.User.AsContact();
     }
 
-    internal ExecutionResult UpdateEntryFrom2(EditFinancialConceptEntryCommand command) {
-      throw new NotImplementedException();
-    }
-
 
     internal FinancialConceptEntry UpdateEntryFrom(EditFinancialConceptEntryCommand command) {
       Assertion.Require(command, nameof(command));

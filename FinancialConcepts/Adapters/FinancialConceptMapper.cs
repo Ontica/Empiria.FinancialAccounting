@@ -20,7 +20,7 @@ namespace Empiria.FinancialAccounting.FinancialConcepts.Adapters {
     }
 
 
-    static internal FinancialConceptDto Map(FinancialConcept concept) {
+    static internal FinancialConceptDto Map(FinancialConcept concept, bool withIntegration = true) {
       return new FinancialConceptDto {
         UID = concept.UID,
         Code = concept.Code,
@@ -31,7 +31,7 @@ namespace Empiria.FinancialAccounting.FinancialConcepts.Adapters {
         EndDate = concept.EndDate,
         Group = concept.Group.MapToNamedEntity(),
         AccountsChart = concept.Group.AccountsChart.MapToNamedEntity(),
-        Integration = Map(concept.Integration),
+        Integration = withIntegration ? Map(concept.Integration) : null,
       };
     }
 
@@ -54,22 +54,53 @@ namespace Empiria.FinancialAccounting.FinancialConcepts.Adapters {
                  .ToFixedList();
     }
 
+    static internal FinancialConceptEntryDto Map(FinancialConceptEntry entry) {
+      var dto = new FinancialConceptEntryDto {
+        UID = entry.UID,
+        Type = entry.Type,
+        CalculationRule = entry.CalculationRule,
+        DataColumn = entry.DataColumn,
+        Operator = entry.Operator,
+        Positioning = new ItemPositioning {
+          Rule = PositioningRule.ByPositionValue,
+          Position = entry.Position,
+          OffsetUID = null
+        },
+      };
 
-    static internal FixedList<FinancialConceptEntryDto> Map(FixedList<FinancialConceptEntry> integration) {
-      return integration.Select(entry => Map(entry))
+      if (entry.Type == FinancialConceptEntryType.Account) {
+
+        dto.AccountNumber           = entry.AccountNumber;
+        dto.SubledgerAccountNumber  = entry.SubledgerAccountNumber;
+        dto.SectorCode              = entry.SectorCode;
+        dto.CurrencyCode            = entry.CurrencyCode;
+
+      } else if (entry.Type == FinancialConceptEntryType.FinancialConceptReference) {
+        dto.ReferencedFinancialConcept = FinancialConceptMapper.Map(entry.ReferencedFinancialConcept, false);
+
+      } else if (entry.Type == FinancialConceptEntryType.ExternalVariable) {
+        dto.ExternalVariableCode = entry.ExternalVariableCode;
+      }
+
+      return dto;
+    }
+
+
+    static internal FixedList<FinancialConceptEntryDescriptorDto> Map(FixedList<FinancialConceptEntry> integration) {
+      return integration.Select(entry => MapToDescriptor(entry))
                         .ToFixedList();
     }
 
 
-    static internal FinancialConceptEntryDto Map(FinancialConceptEntry integrationEntry) {
-      return new FinancialConceptEntryDto {
-        UID = integrationEntry.UID,
-        Type = integrationEntry.Type,
-        ItemCode = integrationEntry.Code,
-        ItemName = integrationEntry.Name,
-        SubledgerAccount = integrationEntry.SubledgerAccountNumber,
-        SectorCode = integrationEntry.SectorCode,
-        Operator = Convert.ToString((char) integrationEntry.Operator)
+    static internal FinancialConceptEntryDescriptorDto MapToDescriptor(FinancialConceptEntry entry) {
+      return new FinancialConceptEntryDescriptorDto {
+        UID               = entry.UID,
+        Type              = entry.Type,
+        ItemCode          = entry.Code,
+        ItemName          = entry.Name,
+        SubledgerAccount  = entry.SubledgerAccountNumber,
+        SectorCode        = entry.SectorCode,
+        Operator          = Convert.ToString((char) entry.Operator)
       };
     }
 
