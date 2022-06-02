@@ -34,7 +34,7 @@ namespace Empiria.FinancialAccounting.FinancialConcepts.Adapters {
       get; internal set;
     }
 
-    public int Position {
+    public int? Position {
       get; internal set;
     }
 

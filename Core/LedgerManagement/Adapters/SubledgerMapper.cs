@@ -50,6 +50,14 @@ namespace Empiria.FinancialAccounting.Adapters {
     }
 
 
+    static public ShortFlexibleEntityDto MapToShortFlexibleEntityDto(SubledgerAccount subledgerAccount) {
+      return new ShortFlexibleEntityDto {
+        Id = subledgerAccount.Id,
+        Number = subledgerAccount.Number,
+        Name = subledgerAccount.Name
+      };
+    }
+
     static public FixedList<SubledgerAccountDescriptorDto> MapToSubledgerAccountDescriptor(FixedList<SubledgerAccount> list) {
       return new FixedList<SubledgerAccountDescriptorDto>(list.Select(x => MapToSubledgerAccountDescriptor(x)));
     }

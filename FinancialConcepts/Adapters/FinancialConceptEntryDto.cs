@@ -12,7 +12,7 @@ using System;
 namespace Empiria.FinancialAccounting.FinancialConcepts.Adapters {
 
   /// <summary>Data transfer object for FinancialConceptEntry instances.</summary>
-  public class FinancialConceptEntryDto {
+  public class FinancialConceptEntryDto : IDto {
 
     internal FinancialConceptEntryDto() {
       // no-op
@@ -28,12 +28,12 @@ namespace Empiria.FinancialAccounting.FinancialConcepts.Adapters {
     }
 
 
-    public string AccountNumber {
+    public ShortFlexibleEntityDto Account {
       get; internal set;
     }
 
 
-    public string SubledgerAccountNumber {
+    public ShortFlexibleEntityDto SubledgerAccount {
       get; internal set;
     }
 
@@ -53,7 +53,7 @@ namespace Empiria.FinancialAccounting.FinancialConcepts.Adapters {
     }
 
 
-    public string ExternalVariableCode {
+    public ExternalVariableDto ExternalVariable {
       get; internal set;
     }
 

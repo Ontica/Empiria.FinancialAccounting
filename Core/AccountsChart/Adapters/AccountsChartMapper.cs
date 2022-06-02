@@ -63,6 +63,15 @@ namespace Empiria.FinancialAccounting.Adapters {
     }
 
 
+    static public ShortFlexibleEntityDto MapToShortFlexibleEntityDto(Account account) {
+      return new ShortFlexibleEntityDto {
+        UID = account.UID,
+        Number = account.Number,
+        Name = account.Name
+      };
+    }
+
+
     static internal AccountsChartDto MapWithSectors(AccountsChart accountsChart,
                                                     FixedList<Account> accounts) {
       return new AccountsChartDto {

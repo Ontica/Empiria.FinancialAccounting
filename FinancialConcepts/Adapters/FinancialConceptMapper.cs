@@ -8,6 +8,7 @@
 *                                                                                                            *
 ************************* Copyright(c) La Vía Óntica SC, Ontica LLC and contributors. All rights reserved. **/
 using System;
+using Empiria.FinancialAccounting.Adapters;
 
 namespace Empiria.FinancialAccounting.FinancialConcepts.Adapters {
 
@@ -69,21 +70,21 @@ namespace Empiria.FinancialAccounting.FinancialConcepts.Adapters {
       };
 
       if (entry.Type == FinancialConceptEntryType.Account) {
-
-        dto.AccountNumber           = entry.AccountNumber;
-        dto.SubledgerAccountNumber  = entry.SubledgerAccountNumber;
-        dto.SectorCode              = entry.SectorCode;
-        dto.CurrencyCode            = entry.CurrencyCode;
+        dto.Account           = MapAccount(entry);
+        dto.SubledgerAccount  = MapSubledgerAccount(entry);
+        dto.SectorCode        = entry.SectorCode;
+        dto.CurrencyCode      = entry.CurrencyCode;
 
       } else if (entry.Type == FinancialConceptEntryType.FinancialConceptReference) {
         dto.ReferencedFinancialConcept = FinancialConceptMapper.Map(entry.ReferencedFinancialConcept, false);
 
       } else if (entry.Type == FinancialConceptEntryType.ExternalVariable) {
-        dto.ExternalVariableCode = entry.ExternalVariableCode;
+        dto.ExternalVariable = MapExternalVariable(entry);
       }
 
       return dto;
     }
+
 
 
     static internal FixedList<FinancialConceptEntryDescriptorDto> Map(FixedList<FinancialConceptEntry> integration) {
@@ -117,6 +118,52 @@ namespace Empiria.FinancialAccounting.FinancialConcepts.Adapters {
       };
     }
 
+
+    #region Helpers
+
+    static private ShortFlexibleEntityDto MapAccount(FinancialConceptEntry entry) {
+      var account = entry.TryGetAccount();
+
+      if (account != null) {
+        return AccountsChartMapper.MapToShortFlexibleEntityDto(account);
+      }
+
+      return new ShortFlexibleEntityDto {
+        Number = entry.AccountNumber,
+        Name = entry.Name
+      };
+    }
+
+
+    static private ExternalVariableDto MapExternalVariable(FinancialConceptEntry entry) {
+      var externalVariable = entry.TryGetExternalVariable();
+
+      if (externalVariable != null) {
+        return ExternalVariableMapper.Map(externalVariable);
+      }
+
+      return new ExternalVariableDto {
+        Code = entry.ExternalVariableCode,
+        Name = entry.Name
+      };
+
+    }
+
+
+    static private ShortFlexibleEntityDto MapSubledgerAccount(FinancialConceptEntry entry) {
+      var subledgerAccount = entry.TryGetSubledgerAccount();
+
+      if (subledgerAccount != null) {
+        return SubledgerMapper.MapToShortFlexibleEntityDto(subledgerAccount);
+      }
+
+      return new ShortFlexibleEntityDto {
+        Number = entry.SubledgerAccountNumber,
+        Name = entry.SubledgerAccountName
+      };
+    }
+
+    #endregion Helpers
 
   }  // class FinancialConceptMapper
 

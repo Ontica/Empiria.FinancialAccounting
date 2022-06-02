@@ -14,13 +14,12 @@ namespace Empiria.FinancialAccounting.FinancialConcepts.Adapters {
   /// <summary>Mapping methods for financial external variables.</summary>
   static internal class ExternalVariableMapper {
 
-    internal static FixedList<ExternalVariableDto> Map(FixedList<ExternalVariable> list) {
+    static internal FixedList<ExternalVariableDto> Map(FixedList<ExternalVariable> list) {
       return list.Select(variable => Map(variable))
                  .ToFixedList();
     }
 
-
-    private static ExternalVariableDto Map(ExternalVariable variable) {
+    static internal ExternalVariableDto Map(ExternalVariable variable) {
       return new ExternalVariableDto {
         UID = variable.UID,
         Code = variable.Code,
