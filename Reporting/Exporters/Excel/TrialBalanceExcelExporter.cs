@@ -105,7 +105,7 @@ namespace Empiria.FinancialAccounting.Reporting.Exporters.Excel {
           return;
 
         case TrialBalanceType.SaldosPorCuenta:
-          FillOutSaldosCuenta(trialBalance.Entries.Select(x => (TrialBalanceEntryDto) x),
+          FillOutSaldosCuenta(trialBalance.Entries.Select(x => (SaldosPorCuentaEntryDto) x),
                               trialBalance.Query.WithSubledgerAccount);
           return;
 
@@ -428,7 +428,7 @@ namespace Empiria.FinancialAccounting.Reporting.Exporters.Excel {
     }
 
 
-    private void FillOutSaldosCuenta(IEnumerable<TrialBalanceEntryDto> entries,
+    private void FillOutSaldosCuenta(IEnumerable<SaldosPorCuentaEntryDto> entries,
                                      bool includeSubledgerAccounts) {
       int i = 5;
 

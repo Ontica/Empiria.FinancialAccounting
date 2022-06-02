@@ -61,6 +61,22 @@ namespace Empiria.FinancialAccounting.WebApi.BalanceEngine {
 
 
     [HttpPost]
+    [Route("v2/financial-accounting/balance-engine/saldos-por-cuenta")]
+    public async Task<SingleObjectModel> GetSaldosPorCuenta([FromBody] TrialBalanceQuery query) {
+
+      base.RequireBody(query);
+
+      using (var usecases = TrialBalanceUseCases.UseCaseInteractor()) {
+
+        SaldosPorCuentaDto dto = await usecases.BuildSaldosPorCuenta(query)
+                                                  .ConfigureAwait(false);
+
+        return new SingleObjectModel(this.Request, dto);
+      }
+    }
+
+
+    [HttpPost]
     [Route("v2/financial-accounting/trial-balance")]
     public SingleObjectModel GetTrialBalance([FromBody] TrialBalanceQuery query) {
 

@@ -64,6 +64,19 @@ namespace Empiria.FinancialAccounting.BalanceEngine.UseCases {
     }
 
 
+    public async Task<SaldosPorCuentaDto> BuildSaldosPorCuenta(TrialBalanceQuery query) {
+      Assertion.Require(query, nameof(query));
+
+      Assertion.Require(query.TrialBalanceType == TrialBalanceType.SaldosPorCuenta,
+                       "query.TrialBalanceType must be 'SaldosPorCuenta'.");
+
+      var builder = new SaldosPorCuentaBuilder(query);
+      TrialBalance entries = await Task.Run(() => builder.Build()).ConfigureAwait(false);
+
+      return SaldosPorCuentaMapper.Map(entries);
+    }
+
+
     public TrialBalanceDto BuildTrialBalance(TrialBalanceQuery query) {
       Assertion.Require(query, nameof(query));
 

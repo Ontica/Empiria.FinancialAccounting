@@ -85,8 +85,11 @@ namespace Empiria.FinancialAccounting.BalanceEngine.Adapters {
 
         case TrialBalanceType.SaldosPorCuenta:
 
-          var balanceItems = list.Select((x) => MapToBalancesByAccount((TrialBalanceEntry) x, query));
-          return new FixedList<ITrialBalanceEntryDto>(balanceItems);
+          var saldosPorCuenta = list.Select((x) => SaldosPorCuentaMapper.MapEntry((TrialBalanceEntry) x, query));
+          return new FixedList<ITrialBalanceEntryDto>(saldosPorCuenta);
+
+          //var balanceItems = list.Select((x) => MapToBalancesByAccount((TrialBalanceEntry) x, query));
+          //return new FixedList<ITrialBalanceEntryDto>(balanceItems);
 
         case TrialBalanceType.BalanzaEnColumnasPorMoneda:
           var currencyMappedItems = list.Select((x) =>
