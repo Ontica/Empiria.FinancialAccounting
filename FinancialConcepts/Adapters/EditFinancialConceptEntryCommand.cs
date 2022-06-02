@@ -11,8 +11,15 @@ using System;
 
 namespace Empiria.FinancialAccounting.FinancialConcepts.Adapters {
 
+
   /// <summary>The command used to create or update financial concept's integration entries.</summary>
   public class EditFinancialConceptEntryCommand : Command {
+
+
+    public EditFinancialConceptEntryCommandType Type {
+      get; set;
+    } = EditFinancialConceptEntryCommandType.Unknown;
+
 
     public PayloadType Payload {
       get; set;
@@ -30,9 +37,13 @@ namespace Empiria.FinancialAccounting.FinancialConcepts.Adapters {
     }
 
 
+    protected override string GetCommandTypeName() {
+      return Type.ToString();
+    }
+
+
     protected override void Require() {
-      Assertion.Require(Type == "InsertFinancialConceptEntry" || Type == "UpdateFinancialConceptEntry",
-                        $"Unrecognized command type '{Type}'.");
+      Assertion.Require(Type != EditFinancialConceptEntryCommandType.Unknown, "type");
 
       Assertion.Require(Payload, "Payload");
 
@@ -67,27 +78,22 @@ namespace Empiria.FinancialAccounting.FinancialConcepts.Adapters {
 
       FinancialConceptEntryFields fields;
 
-      switch (Payload.EntryType) {
-        case FinancialConceptEntryType.Account:
-          fields = new AccountEntryTypeFields {
-            AccountNumber           = Payload.AccountNumber,
-            SubledgerAccountNumber  = Payload.SubledgerAccountNumber,
-            SectorCode              = Payload.SectorCode,
-            CurrencyCode            = Payload.CurrencyCode
-          };
-          break;
+      if (Type.OverAccount()) {
 
-        case FinancialConceptEntryType.ExternalVariable:
-          fields = new ExternalVariableEntryTypeFields(Payload.ExternalVariableCode);
-          break;
+        fields = new AccountEntryTypeFields(Payload.AccountNumber) {
+          SubledgerAccountNumber = Payload.SubledgerAccountNumber,
+          SectorCode = Payload.SectorCode,
+          CurrencyCode = Payload.CurrencyCode
+        };
 
-        case FinancialConceptEntryType.FinancialConceptReference:
-          fields = new FinancialConceptReferenceEntryTypeFields(Entities.ReferencedFinancialConcept);
-          break;
+      } else if (Type.OverExternalVariable()) {
+        fields = new ExternalVariableEntryTypeFields(Payload.ExternalVariableCode);
 
-        default:
-          throw Assertion.EnsureNoReachThisCode();
+      } else if (Type.OverConceptReference()) {
+        fields = new FinancialConceptReferenceEntryTypeFields(Entities.ReferencedFinancialConcept);
 
+      } else {
+        throw Assertion.EnsureNoReachThisCode($"Unhandled command type '{Type}'.");
       }
 
       fields.FinancialConcept = FinancialConcept.Parse(Payload.FinancialConceptUID);
@@ -110,11 +116,6 @@ namespace Empiria.FinancialAccounting.FinancialConcepts.Adapters {
       public string FinancialConceptEntryUID {
         get; set;
       } = string.Empty;
-
-
-      public FinancialConceptEntryType EntryType {
-        get; set;
-      }
 
 
       public string ReferencedFinancialConceptUID {
@@ -145,11 +146,6 @@ namespace Empiria.FinancialAccounting.FinancialConcepts.Adapters {
       public string CurrencyCode {
         get; set;
       } = string.Empty;
-
-
-      //public string AccountsListUID {
-      //  get; set;
-      //} = string.Empty;
 
 
       public OperatorType Operator {
@@ -184,21 +180,21 @@ namespace Empiria.FinancialAccounting.FinancialConcepts.Adapters {
       }
 
 
-      internal void Require(string commandType) {
+      internal void Require(EditFinancialConceptEntryCommandType commandType) {
         Assertion.Require(FinancialConceptUID, "payload.FinancialConceptUID");
 
         Assertion.Require(CalculationRule,     "payload.CalculationRule");
         Assertion.Require(DataColumn,          "payload.DataColumn");
 
-        if (commandType == "InsertFinancialConceptEntry") {
+        if (commandType.ForInsert()) {
           Assertion.Require(Positioning.Rule != PositioningRule.Undefined,
                             "payload.Positioning.Rule is required for insertion.");
 
-        } else if (commandType == "UpdateFinancialConceptEntry") {
+        } else if (commandType.ForUpdate()) {
           Assertion.Require(FinancialConceptEntryUID, "payload.FinancialConceptEntryUID");
         }
 
-        if (EntryType == FinancialConceptEntryType.Account) {
+        if (commandType.OverAccount()) {
           Assertion.Require(DataColumn, "payload.AccountNumber");
 
           Assertion.Require(SectorCode.Length == 0 || Sector.Exists(SectorCode),
@@ -207,16 +203,18 @@ namespace Empiria.FinancialAccounting.FinancialConcepts.Adapters {
           Assertion.Require(CurrencyCode.Length == 0 || Currency.Exists(CurrencyCode),
                            $"Unrecognized payload.CurencyCode value '{CurrencyCode}'.");
 
-        } else if (EntryType == FinancialConceptEntryType.ExternalVariable) {
+        } else if (commandType.OverExternalVariable()) {
           Assertion.Require(ExternalVariableCode, "payload.ExternalVariableCode");
 
-          Assertion.Require(ExternalVariableCode.Length == 0 || ExternalVariable.ExistsCode(ExternalVariableCode),
+          Assertion.Require(ExternalVariable.ExistsCode(ExternalVariableCode),
                            $"Unrecognized payload.ExternalVariableCode value '{ExternalVariableCode}'.");
 
-        } else if (EntryType == FinancialConceptEntryType.FinancialConceptReference) {
+        } else if (commandType.OverConceptReference()) {
           Assertion.Require(ReferencedFinancialConceptUID, "payload.ReferencedFinancialConceptUID");
-        }
 
+        } else {
+          throw Assertion.EnsureNoReachThisCode($"Unhandled command type '{commandType}'.");
+        }
 
         Positioning.Require();
       }

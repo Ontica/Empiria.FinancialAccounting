@@ -12,20 +12,21 @@ using System;
 namespace Empiria.FinancialAccounting {
 
   /// <summary>Command base payload.</summary>
-  public class Command : IExecutionCommand {
+  public abstract class Command : IExecutionCommand {
 
     private readonly ExecutionResult _executionResult;
 
-    public Command() {
+    protected Command() {
       _executionResult = new ExecutionResult(this);
     }
 
     #region Properties
 
-    public string Type {
-      get; set;
-    } = string.Empty;
-
+    string IExecutionCommand.Type {
+      get {
+        return GetCommandTypeName();
+      }
+    }
 
     public bool DryRun {
       get; set;
@@ -55,6 +56,8 @@ namespace Empiria.FinancialAccounting {
     protected virtual void Clean() {
       // no-op
     }
+
+    protected abstract string GetCommandTypeName();
 
 
     protected virtual void Require() {

@@ -53,13 +53,15 @@ namespace Empiria.FinancialAccounting.FinancialConcepts {
   /// <summary>Edition fields for FinancialConceptEntry of type Account.</summary>
   internal class AccountEntryTypeFields : FinancialConceptEntryFields {
 
-    public AccountEntryTypeFields() : base(FinancialConceptEntryType.Account) {
-      // no-op
+    public AccountEntryTypeFields(string accountNumber) : base(FinancialConceptEntryType.Account) {
+      Assertion.Require(accountNumber, nameof(accountNumber));
+
+      this.AccountNumber = accountNumber;
     }
 
 
     internal string AccountNumber {
-      get; set;
+      get;
     }
 
 
@@ -88,6 +90,7 @@ namespace Empiria.FinancialAccounting.FinancialConcepts {
 
       this.ExternalVariableCode = externalVariableCode;
     }
+
 
     public string ExternalVariableCode {
       get;

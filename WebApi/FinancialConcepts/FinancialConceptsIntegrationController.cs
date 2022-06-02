@@ -56,8 +56,6 @@ namespace Empiria.FinancialAccounting.WebApi.FinancialConcepts {
 
       base.RequireBody(command);
 
-      command.Type = "InsertFinancialConceptEntry";
-
       command.Payload.FinancialConceptUID = financialConceptUID;
 
       using (var usecases = FinancialConceptIntegrationUseCases.UseCaseInteractor()) {
@@ -88,8 +86,6 @@ namespace Empiria.FinancialAccounting.WebApi.FinancialConcepts {
                                                          [FromBody] EditFinancialConceptEntryCommand command) {
 
       base.RequireBody(command);
-
-      command.Type = "UpdateFinancialConceptEntry";
 
       command.Payload.FinancialConceptUID       = financialConceptUID;
       command.Payload.FinancialConceptEntryUID  = financialConceptEntryUID;
