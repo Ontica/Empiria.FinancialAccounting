@@ -50,7 +50,7 @@ namespace Empiria.FinancialAccounting.FinancialConcepts.Adapters {
       get; internal set;
     }
 
-    public FixedList<FinancialConceptEntryDto> Integration {
+    public FixedList<FinancialConceptEntryDescriptorDto> Integration {
       get; internal set;
     }
 
