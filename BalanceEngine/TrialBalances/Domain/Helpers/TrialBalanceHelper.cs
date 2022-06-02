@@ -156,28 +156,22 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
                                           BalancesPeriod period) {
 
       var targetCurrency = Currency.Parse(period.ValuateToCurrrencyUID);
-
-      var summaryEntries = new EmpiriaHashTable<TrialBalanceEntry>();
+      var accountEntriesConsolidated = new EmpiriaHashTable<TrialBalanceEntry>();
 
       foreach (var entry in trialBalance) {
         string hash = $"{entry.Account.Number}||{entry.Sector.Code}||{targetCurrency.Id}||{entry.Ledger.Id}";
 
-        if (_query.TrialBalanceType == TrialBalanceType.Balanza && _query.WithSubledgerAccount) {
-          hash = $"{entry.Account.Number}||{entry.SubledgerAccountId}||" +
-                 $"{entry.Sector.Code}||{targetCurrency.Id}||{entry.Ledger.Id}";
-        }
-
         if (entry.Currency.Equals(targetCurrency)) {
-          summaryEntries.Insert(hash, entry);
-        } else if (summaryEntries.ContainsKey(hash)) {
-          summaryEntries[hash].Sum(entry);
+          accountEntriesConsolidated.Insert(hash, entry);
+        } else if (accountEntriesConsolidated.ContainsKey(hash)) {
+          accountEntriesConsolidated[hash].Sum(entry);
         } else {
           entry.Currency = targetCurrency;
-          summaryEntries.Insert(hash, entry);
+          accountEntriesConsolidated.Insert(hash, entry);
         }
       }
 
-      return summaryEntries.Values.ToFixedList();
+      return accountEntriesConsolidated.Values.ToFixedList();
     }
 
 
@@ -594,6 +588,33 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
       }
 
       return returnedEntries;
+    }
+
+
+    internal void ValuateAccountEntriesToExchangeRate(FixedList<TrialBalanceEntry> entries) {
+
+      if (_query.InitialPeriod.UseDefaultValuation) {
+        _query.InitialPeriod.ExchangeRateTypeUID = ExchangeRateType.ValorizacionBanxico.UID;
+        _query.InitialPeriod.ValuateToCurrrencyUID = "01";
+        _query.InitialPeriod.ExchangeRateDate = _query.InitialPeriod.ToDate;
+      }
+
+      var exchangeRateType = ExchangeRateType.Parse(_query.InitialPeriod.ExchangeRateTypeUID);
+      FixedList<ExchangeRate> exchangeRates = ExchangeRate.GetList(exchangeRateType,
+                                                                   _query.InitialPeriod.ExchangeRateDate);
+
+      foreach (var entry in entries.Where(a => a.Currency.Code != "01")) {
+
+        var exchangeRate = exchangeRates.FirstOrDefault(
+                            a => a.FromCurrency.Code == _query.InitialPeriod.ValuateToCurrrencyUID &&
+                            a.ToCurrency.Code == entry.Currency.Code);
+
+        // ToDo: URGENT This require must be checked before any state change
+        Assertion.Require(exchangeRate, $"No se ha registrado el tipo de cambio para la " +
+                                        $"moneda {entry.Currency.FullName} con la fecha proporcionada.");
+
+        entry.MultiplyBy(exchangeRate.Value);
+      }
     }
 
 

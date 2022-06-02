@@ -28,20 +28,10 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
     internal TrialBalance Build() {
       var balanzaHelper = new BalanzaTradicionalHelper(_query);
 
-      if (_query.TrialBalanceType == TrialBalanceType.Saldos) {
-        _query.WithSubledgerAccount = true;
-      }
-
-      var startTime = DateTime.Now;
-
-      EmpiriaLog.Debug($"START BalanzaTradicional: {startTime}");
-
       FixedList<TrialBalanceEntry> accountEntries = balanzaHelper.GetPostingEntries();
 
       FixedList<TrialBalanceEntry> parentAccounts = balanzaHelper.GetCalculatedParentAccounts(
                                                     accountEntries);
-
-      EmpiriaLog.Debug($"AFTER GetCalculatedParentAccounts: {DateTime.Now.Subtract(startTime).TotalSeconds} seconds.");
 
       var trialBalanceHelper = new TrialBalanceHelper(_query);
 
@@ -53,33 +43,21 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
       List<TrialBalanceEntry> accountEntriesAndSectorization =
         trialBalanceHelper.GetSummaryAccountEntriesAndSectorization(accountEntriesMapped);
 
-      EmpiriaLog.Debug($"AFTER GetSummaryAccountEntriesAndSectorization (postingEntries): {DateTime.Now.Subtract(startTime).TotalSeconds} seconds.");
-
       List<TrialBalanceEntry> parentAccountEntriesAndSectorization =
         trialBalanceHelper.GetSummaryAccountEntriesAndSectorization(parentAccounts.ToList());
-
-      EmpiriaLog.Debug($"AFTER GetSummaryAccountEntriesAndSectorization (summaryEntries): {DateTime.Now.Subtract(startTime).TotalSeconds} seconds.");
 
 
       List<TrialBalanceEntry> parentsAndAccountEntries = balanzaHelper.CombineParentsAndAccountEntries(
                                                          parentAccountEntriesAndSectorization,
                                                          accountEntriesAndSectorization);
 
-      EmpiriaLog.Debug($"AFTER CombineSummaryAndPostingEntries: {DateTime.Now.Subtract(startTime).TotalSeconds} seconds.");
-
       List<TrialBalanceEntry> balanzaTradicional = GenerateTotalsAndCombineWithAccountEntries(
                                                    parentsAndAccountEntries, accountEntries);
 
-      EmpiriaLog.Debug($"AFTER GetTrialBalanceType: {DateTime.Now.Subtract(startTime).TotalSeconds} seconds.");
-
       trialBalanceHelper.RestrictLevels(balanzaTradicional);
-
-      EmpiriaLog.Debug($"AFTER RestrictLevels: {DateTime.Now.Subtract(startTime).TotalSeconds} seconds.");
 
       var returnBalance = new FixedList<ITrialBalanceEntry>(
                               balanzaTradicional.Select(x => (ITrialBalanceEntry) x));
-
-      EmpiriaLog.Debug($"END BalanzaTradicional: {DateTime.Now.Subtract(startTime).TotalSeconds} seconds.");
 
       return new TrialBalance(_query, returnBalance);
     }

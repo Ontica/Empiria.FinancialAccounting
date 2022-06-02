@@ -267,15 +267,16 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
 
       FixedList<TrialBalanceEntry> accountEntries = BalancesDataService.GetTrialBalanceEntries(_query);
 
+      var trialBalanceHelper = new TrialBalanceHelper(_query);
+
       if (_query.ValuateBalances || _query.InitialPeriod.UseDefaultValuation) {
-        ValuateAccountEntriesToExchangeRate(accountEntries);
+        trialBalanceHelper.ValuateAccountEntriesToExchangeRate(accountEntries);
 
         if (_query.ConsolidateBalancesToTargetCurrency) {
           accountEntries = ConsolidateAccountEntriesToTargetCurrency(accountEntries);
         }
       }
 
-      var trialBalanceHelper = new TrialBalanceHelper(_query);
       trialBalanceHelper.RoundDecimals(accountEntries);
 
       return accountEntries;
@@ -295,14 +296,7 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
       var AccountEntriesToConsolidate = new EmpiriaHashTable<TrialBalanceEntry>();
 
       foreach (var entry in trialBalance) {
-        string hash = $"{entry.Account.Number}||{entry.Sector.Code}||" +
-                      $"{targetCurrency.Id}||{entry.Ledger.Id}";
-
-        if (_query.WithSubledgerAccount) {
-          hash = $"{entry.Account.Number}||{entry.SubledgerAccountId}||" +
-                 $"{entry.Sector.Code}||{targetCurrency.Id}||{entry.Ledger.Id}";
-
-        }
+        string hash = GetHashCodeToConsolidateAccountEntries(targetCurrency, entry);
 
         if (entry.Currency.Equals(targetCurrency)) {
           AccountEntriesToConsolidate.Insert(hash, entry);
@@ -317,7 +311,7 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
       return AccountEntriesToConsolidate.Values.ToFixedList();
     }
 
-
+    
     private void GenerateOrIncreaseParentAccounts(EmpiriaHashTable<TrialBalanceEntry> parentAccounts,
                                                   TrialBalanceEntry entry, StandardAccount currentParent) {
 
@@ -344,6 +338,19 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
         }
 
       } // while
+    }
+
+
+    private string GetHashCodeToConsolidateAccountEntries(Currency targetCurrency, TrialBalanceEntry entry) {
+
+      if (_query.WithSubledgerAccount) {
+        return $"{entry.Account.Number}||{entry.SubledgerAccountId}||" +
+               $"{entry.Sector.Code}||{targetCurrency.Id}||{entry.Ledger.Id}";
+
+      }
+
+      return $"{entry.Account.Number}||{entry.Sector.Code}||" +
+             $"{targetCurrency.Id}||{entry.Ledger.Id}";
     }
 
 
@@ -517,33 +524,6 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
       }
 
       SummaryByAccountEntry(parentAccounts, entry, currentParent, entry.Sector.Parent);
-    }
-
-
-    private void ValuateAccountEntriesToExchangeRate(FixedList<TrialBalanceEntry> entries) {
-
-      if (_query.InitialPeriod.UseDefaultValuation) {
-        _query.InitialPeriod.ExchangeRateTypeUID = ExchangeRateType.ValorizacionBanxico.UID;
-        _query.InitialPeriod.ValuateToCurrrencyUID = "01";
-        _query.InitialPeriod.ExchangeRateDate = _query.InitialPeriod.ToDate;
-      }
-
-      var exchangeRateType = ExchangeRateType.Parse(_query.InitialPeriod.ExchangeRateTypeUID);
-      FixedList<ExchangeRate> exchangeRates = ExchangeRate.GetList(exchangeRateType,
-                                                                   _query.InitialPeriod.ExchangeRateDate);
-
-      foreach (var entry in entries.Where(a => a.Currency.Code != "01")) {
-
-        var exchangeRate = exchangeRates.FirstOrDefault(
-                            a => a.FromCurrency.Code == _query.InitialPeriod.ValuateToCurrrencyUID &&
-                            a.ToCurrency.Code == entry.Currency.Code);
-
-        // ToDo: URGENT This require must be checked before any state change
-        Assertion.Require(exchangeRate, $"No se ha registrado el tipo de cambio para la " +
-                                        $"moneda {entry.Currency.FullName} con la fecha proporcionada.");
-
-        entry.MultiplyBy(exchangeRate.Value);
-      }
     }
 
 

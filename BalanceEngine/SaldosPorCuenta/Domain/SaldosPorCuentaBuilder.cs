@@ -26,55 +26,33 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
 
 
     internal TrialBalance Build() {
-      var helper = new TrialBalanceHelper(_query);
+      var trialBalanceHelper = new TrialBalanceHelper(_query);
+      var helper = new SaldosPorCuentaHelper(_query);
 
+      FixedList<TrialBalanceEntry> accountEntries = helper.GetAccountEntries();
 
-      if (_query.TrialBalanceType == TrialBalanceType.Saldos) {
-        _query.WithSubledgerAccount = true;
-      }
+      trialBalanceHelper.SetSummaryToParentEntries(accountEntries);
 
-      var startTime = DateTime.Now;
+      List<TrialBalanceEntry> summaryEntries = trialBalanceHelper.GetCalculatedParentAccounts(accountEntries);
 
-      EmpiriaLog.Debug($"START BalanzaTradicional: {startTime}");
+      List<TrialBalanceEntry> postingEntriesMapped = trialBalanceHelper.GetEntriesMappedForSectorization(
+                                              accountEntries.ToList());
 
-      FixedList<TrialBalanceEntry> postingEntries = helper.GetPostingEntries();
-
-      helper.SetSummaryToParentEntries(postingEntries);
-
-      List<TrialBalanceEntry> summaryEntries = helper.GetCalculatedParentAccounts(postingEntries);
-
-      EmpiriaLog.Debug($"AFTER GenerateSummaryEntries: {DateTime.Now.Subtract(startTime).TotalSeconds} seconds.");
-
-      List<TrialBalanceEntry> postingEntriesMapped = helper.GetEntriesMappedForSectorization(
-                                              postingEntries.ToList());
-
-      List<TrialBalanceEntry> _postingEntries = helper.GetSummaryAccountEntriesAndSectorization(
+      List<TrialBalanceEntry> _postingEntries = trialBalanceHelper.GetSummaryAccountEntriesAndSectorization(
                                                 postingEntriesMapped);
 
-      EmpiriaLog.Debug($"AFTER GetSummaryEntriesAndSectorization (postingEntries): {DateTime.Now.Subtract(startTime).TotalSeconds} seconds.");
-
       List<TrialBalanceEntry> summaryEntriesAndSectorization =
-                              helper.GetSummaryAccountEntriesAndSectorization(summaryEntries);
+                              trialBalanceHelper.GetSummaryAccountEntriesAndSectorization(summaryEntries);
 
-      EmpiriaLog.Debug($"AFTER GetSummaryEntriesAndSectorization (summaryEntries): {DateTime.Now.Subtract(startTime).TotalSeconds} seconds.");
-
-      List<TrialBalanceEntry> trialBalance = helper.CombineSummaryAndPostingEntries(
+      List<TrialBalanceEntry> trialBalance = trialBalanceHelper.CombineSummaryAndPostingEntries(
                                              summaryEntriesAndSectorization, _postingEntries.ToFixedList());
 
-      EmpiriaLog.Debug($"AFTER CombineSummaryAndPostingEntries: {DateTime.Now.Subtract(startTime).TotalSeconds} seconds.");
+      trialBalance = GenerateTrialBalance(trialBalance, accountEntries);
 
-      trialBalance = GenerateTrialBalance(trialBalance, postingEntries);
-
-      EmpiriaLog.Debug($"AFTER GetTrialBalanceType: {DateTime.Now.Subtract(startTime).TotalSeconds} seconds.");
-
-      helper.RestrictLevels(trialBalance);
-
-      EmpiriaLog.Debug($"AFTER RestrictLevels: {DateTime.Now.Subtract(startTime).TotalSeconds} seconds.");
+      trialBalanceHelper.RestrictLevels(trialBalance);
 
       var returnBalance = new FixedList<ITrialBalanceEntry>(
                               trialBalance.Select(x => (ITrialBalanceEntry) x));
-
-      EmpiriaLog.Debug($"END BalanzaTradicional: {DateTime.Now.Subtract(startTime).TotalSeconds} seconds.");
 
       return new TrialBalance(_query, returnBalance);
     }
