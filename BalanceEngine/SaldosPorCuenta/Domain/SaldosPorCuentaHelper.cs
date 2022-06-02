@@ -46,7 +46,9 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
     }
 
 
-    internal List<TrialBalanceEntry> GetCalculatedParentAccounts(FixedList<TrialBalanceEntry> accountEntries) {
+    internal List<TrialBalanceEntry> GetCalculatedParentAccounts(
+                                     FixedList<TrialBalanceEntry> accountEntries) {
+
       var parentAccounts = new EmpiriaHashTable<TrialBalanceEntry>(accountEntries.Count);
 
       var detailParentAccount = new List<TrialBalanceEntry>();
@@ -65,10 +67,6 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
           continue;
         }
 
-        if (entry.HasParentPostingEntry) {
-          continue;
-        }
-
         GenOrSumParentAccounts(detailParentAccount, parentAccounts, entry, currentParent);
         
       } // foreach
@@ -77,6 +75,27 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
 
       return detailParentAccount;
     }
+
+
+    internal List<TrialBalanceEntry> CombineSummaryAndPostingEntries(
+                                      List<TrialBalanceEntry> parentAccounts,
+                                      FixedList<TrialBalanceEntry> accountEntries) {
+      var returnedAccountEntries = new List<TrialBalanceEntry>(accountEntries);
+      
+      foreach (var entry in parentAccounts.Where(a => a.SubledgerAccountIdParent > 0)) {
+        returnedAccountEntries.Add(entry);
+      }
+
+      var trialBalanceHelper = new TrialBalanceHelper(_query);
+      trialBalanceHelper.SetSubledgerAccountInfoByEntry(returnedAccountEntries);
+      List<TrialBalanceEntry> orderingAccountEntries = 
+         trialBalanceHelper.OrderingParentsAndAccountEntries(returnedAccountEntries);
+
+      return orderingAccountEntries;
+    }
+
+
+    
 
 
     #region Public methods

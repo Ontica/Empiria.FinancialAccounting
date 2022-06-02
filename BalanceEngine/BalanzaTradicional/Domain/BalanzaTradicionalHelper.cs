@@ -129,11 +129,14 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
 
       returnedCombineEntries.AddRange(parentAccountEntries);
 
-      SetSubledgerAccountInfo(returnedCombineEntries);
+      var trialBalanceHelper = new TrialBalanceHelper(_query);
 
-      returnedCombineEntries = OrderingParentAndPostingAccountEntries(returnedCombineEntries);
+      trialBalanceHelper.SetSubledgerAccountInfoByEntry(returnedCombineEntries);
 
-      return returnedCombineEntries;
+      List<TrialBalanceEntry> orderingAccountEntries =
+        trialBalanceHelper.OrderingParentsAndAccountEntries(returnedCombineEntries);
+
+      return orderingAccountEntries;
     }
 
 
@@ -352,47 +355,6 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
 
       return $"{entry.Account.Number}||{entry.Sector.Code}||" +
              $"{targetCurrency.Id}||{entry.Ledger.Id}";
-    }
-
-
-    private List<TrialBalanceEntry> OrderingParentAndPostingAccountEntries(List<TrialBalanceEntry> entries) {
-
-      if (_query.WithSubledgerAccount) {
-
-        return entries.OrderBy(a => a.Ledger.Number)
-                      .ThenBy(a => a.Currency.Code)
-                      .ThenByDescending(a => a.Account.DebtorCreditor)
-                      .ThenBy(a => a.Account.Number)
-                      .ThenBy(a => a.Sector.Code)
-                      .ThenBy(a => a.SubledgerNumberOfDigits)
-                      .ThenBy(a => a.SubledgerAccountNumber)
-                      .ToList();
-      } else {
-        return entries.OrderBy(a => a.Ledger.Number)
-                      .ThenBy(a => a.Currency.Code)
-                      .ThenByDescending(a => a.Account.DebtorCreditor)
-                      .ThenBy(a => a.Account.Number)
-                      .ThenBy(a => a.Sector.Code)
-                      .ThenBy(a => a.SubledgerAccountNumber)
-                      .ToList();
-      }
-    }
-
-
-    private void SetSubledgerAccountInfo(List<TrialBalanceEntry> entries) {
-      if (!_query.WithSubledgerAccount) {
-        return;
-      }
-
-      foreach (var entry in entries) {
-        SubledgerAccount subledgerAccount = SubledgerAccount.Parse(entry.SubledgerAccountId);
-        if (subledgerAccount.IsEmptyInstance) {
-          continue;
-        }
-        entry.SubledgerAccountNumber = subledgerAccount.Number != "0" ?
-                                        subledgerAccount.Number : "";
-        entry.SubledgerNumberOfDigits = entry.SubledgerAccountNumber.Length;
-      }
     }
 
 

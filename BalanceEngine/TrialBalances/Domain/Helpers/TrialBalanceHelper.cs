@@ -28,6 +28,20 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
     }
 
 
+    internal void AssignLastChangeDatesToSummaryEntries(
+                                      FixedList<TrialBalanceEntry> entries,
+                                      EmpiriaHashTable<TrialBalanceEntry> summaryEntries) {
+
+      var summaryEntriesList = new List<TrialBalanceEntry>(summaryEntries.Values);
+
+      foreach (var entry in entries) {
+        SetLastChangeDateToSummaryEntries(entry, summaryEntriesList);
+
+        SetLastChangeDateToParentEntries(entry, summaryEntriesList);
+      }
+    }
+
+
     internal List<TrialBalanceEntry> CombineCurrencyTotalsAndPostingEntries(
                                       List<TrialBalanceEntry> trialBalance,
                                       List<TrialBalanceEntry> summaryEntries) {
@@ -515,6 +529,23 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
     }
 
 
+    internal void SetSubledgerAccountInfoByEntry(List<TrialBalanceEntry> entries) {
+      if (!_query.WithSubledgerAccount) {
+        return;
+      }
+
+      foreach (var entry in entries) {
+        SubledgerAccount subledgerAccount = SubledgerAccount.Parse(entry.SubledgerAccountId);
+        if (subledgerAccount.IsEmptyInstance) {
+          continue;
+        }
+        entry.SubledgerAccountNumber = subledgerAccount.Number != "0" ?
+                                        subledgerAccount.Number : "";
+        entry.SubledgerNumberOfDigits = entry.SubledgerAccountNumber.Length;
+      }
+    }
+
+
     internal void SummaryByAccount(EmpiriaHashTable<TrialBalanceEntry> entries, TrialBalanceEntry balanceEntry) {
 
       TrialBalanceEntry entry = balanceEntry.CreatePartialCopy();
@@ -678,20 +709,7 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
 
     #region Private methods
 
-    internal void AssignLastChangeDatesToSummaryEntries(
-                                      FixedList<TrialBalanceEntry> entries,
-                                      EmpiriaHashTable<TrialBalanceEntry> summaryEntries) {
-
-      var summaryEntriesList = new List<TrialBalanceEntry>(summaryEntries.Values);
-
-      foreach (var entry in entries) {
-        SetLastChangeDateToSummaryEntries(entry, summaryEntriesList);
-
-        SetLastChangeDateToParentEntries(entry, summaryEntriesList);
-      }
-    }
-
-
+    
     internal void GetEntriesAndParentSector(EmpiriaHashTable<TrialBalanceEntry> summaryEntries,
                                           TrialBalanceEntry entry, StandardAccount currentParent) {
       if (!_query.WithSectorization) {
@@ -858,6 +876,31 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
       return entries.OrderBy(a => a.Ledger.Number)
                     .ThenBy(a => a.Currency.Code)
                     .ToList();
+    }
+
+
+    internal List<TrialBalanceEntry> OrderingParentsAndAccountEntries(
+                                     List<TrialBalanceEntry> entries) {
+
+      if (_query.WithSubledgerAccount) {
+
+        return entries.OrderBy(a => a.Ledger.Number)
+                     .ThenBy(a => a.Currency.Code)
+                     .ThenByDescending(a => a.Account.DebtorCreditor)
+                     .ThenBy(a => a.Account.Number)
+                     .ThenBy(a => a.Sector.Code)
+                     .ThenBy(a => a.SubledgerNumberOfDigits)
+                     .ThenBy(a => a.SubledgerAccountNumber)
+                     .ToList();
+      } else {
+        return entries.OrderBy(a => a.Ledger.Number)
+                      .ThenBy(a => a.Currency.Code)
+                      .ThenByDescending(a => a.Account.DebtorCreditor)
+                      .ThenBy(a => a.Account.Number)
+                      .ThenBy(a => a.Sector.Code)
+                      .ThenBy(a => a.SubledgerAccountNumber)
+                      .ToList();
+      }
     }
 
 
