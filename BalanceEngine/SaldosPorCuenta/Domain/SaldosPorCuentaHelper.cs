@@ -45,7 +45,40 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
       return accountEntries;
     }
 
-    
+
+    internal List<TrialBalanceEntry> GetCalculatedParentAccounts(FixedList<TrialBalanceEntry> accountEntries) {
+      var parentAccounts = new EmpiriaHashTable<TrialBalanceEntry>(accountEntries.Count);
+
+      var detailParentAccount = new List<TrialBalanceEntry>();
+      var trialBalanceHelper = new TrialBalanceHelper(_query);
+
+      foreach (var entry in accountEntries) {
+        entry.DebtorCreditor = entry.Account.DebtorCreditor;
+        entry.SubledgerAccountNumber = SubledgerAccount.Parse(entry.SubledgerAccountId).Number ?? "";
+
+        StandardAccount currentParent;
+
+        bool isCalculatedAccount = trialBalanceHelper.ValidateEntryForSummaryParentAccount(
+                                                      entry, out currentParent);
+
+        if (!isCalculatedAccount) {
+          continue;
+        }
+
+        if (entry.HasParentPostingEntry) {
+          continue;
+        }
+
+        GenOrSumParentAccounts(detailParentAccount, parentAccounts, entry, currentParent);
+        
+      } // foreach
+
+      trialBalanceHelper.AssignLastChangeDatesToSummaryEntries(accountEntries, parentAccounts);
+
+      return detailParentAccount;
+    }
+
+
     #region Public methods
 
 
@@ -54,6 +87,104 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
 
 
     #region Private methods
+
+
+    private void GenOrSumParentAccounts(List<TrialBalanceEntry> detailParentAccount,
+                                        EmpiriaHashTable<TrialBalanceEntry> parentAccounts,
+                                        TrialBalanceEntry entry,
+                                        StandardAccount currentParent) {
+      int cont = 0;
+      while (true) {
+        entry.SubledgerAccountIdParent = entry.SubledgerAccountId;
+
+        if (entry.Level > 1) {
+          SummaryByAccountEntry(parentAccounts, entry, currentParent,
+                          entry.Sector);
+
+          ValidateSectorizationForSummaryAccountEntry(parentAccounts, entry, currentParent);
+        }
+
+        cont++;
+        if (cont == 1) {
+          GetDetailParentAccounts(detailParentAccount, parentAccounts, currentParent, entry);
+        }
+        if (!currentParent.HasParent && entry.HasSector) {
+          GetAccountEntriesWithParentSector(parentAccounts, entry, currentParent);
+          break;
+
+        } else if (!currentParent.HasParent) {
+          break;
+
+        } else {
+          currentParent = currentParent.GetParent();
+        }
+
+      } // while
+    }
+
+
+    private void GetAccountEntriesWithParentSector(EmpiriaHashTable<TrialBalanceEntry> summaryEntries,
+                                          TrialBalanceEntry entry, StandardAccount currentParent) {
+      if (!_query.WithSectorization) {
+        SummaryByAccountEntry(summaryEntries, entry, currentParent, Sector.Empty);
+      } else {
+        var parentSector = entry.Sector.Parent;
+        while (true) {
+          SummaryByAccountEntry(summaryEntries, entry, currentParent, parentSector);
+          if (parentSector.IsRoot) {
+            break;
+          } else {
+            parentSector = parentSector.Parent;
+          }
+        }
+      }
+    }
+
+
+    private void GetDetailParentAccounts(List<TrialBalanceEntry> detailSummaryEntries,
+                                         EmpiriaHashTable<TrialBalanceEntry> summaryEntries,
+                                         StandardAccount currentParent, TrialBalanceEntry entry) {
+
+      TrialBalanceEntry detailsEntry;
+      string key = $"{currentParent.Number}||{entry.Sector.Code}||{entry.Currency.Id}||{entry.Ledger.Id}";
+
+      summaryEntries.TryGetValue(key, out detailsEntry);
+
+      if (detailsEntry != null) {
+        var existEntry = detailSummaryEntries.Contains(detailsEntry);
+
+        if (!existEntry) {
+          detailSummaryEntries.Add(detailsEntry);
+        }
+      }
+    }
+
+
+    private void SummaryByAccountEntry(EmpiriaHashTable<TrialBalanceEntry> parentAccounts,
+                                 TrialBalanceEntry entry,
+                                 StandardAccount targetAccount, Sector targetSector) {
+
+      string hash = $"{targetAccount.Number}||{targetSector.Code}||{entry.Currency.Id}||{entry.Ledger.Id}";
+
+      var trialBalanceHelper = new TrialBalanceHelper(_query);
+      trialBalanceHelper.GenerateOrIncreaseEntries(parentAccounts, entry, targetAccount,
+                                                   targetSector, TrialBalanceItemType.Summary, hash);
+    }
+
+
+    private void ValidateSectorizationForSummaryAccountEntry(
+                  EmpiriaHashTable<TrialBalanceEntry> parentAccounts,
+                  TrialBalanceEntry entry, StandardAccount currentParent) {
+      if (!_query.UseNewSectorizationModel || !_query.WithSectorization) {
+        return;
+      }
+
+      if (!currentParent.HasParent || !entry.HasSector) {
+        return;
+      }
+
+      SummaryByAccountEntry(parentAccounts, entry, currentParent, entry.Sector.Parent);
+    }
 
 
 

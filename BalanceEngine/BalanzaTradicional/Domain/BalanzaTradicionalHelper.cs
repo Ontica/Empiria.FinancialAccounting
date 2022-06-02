@@ -238,6 +238,7 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
                                      FixedList<TrialBalanceEntry> accountEntries) {
 
       var parentAccounts = new EmpiriaHashTable<TrialBalanceEntry>(accountEntries.Count);
+      var trialBalanceHelper = new TrialBalanceHelper(_query);
 
       foreach (var entry in accountEntries) {
 
@@ -246,7 +247,8 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
 
         StandardAccount currentParent;
 
-        bool isCalculatedAccount = ValidateEntryForSummaryParentAccount(entry, out currentParent);
+        bool isCalculatedAccount = trialBalanceHelper.ValidateEntryForSummaryParentAccount(
+                                                      entry, out currentParent);
 
         if (!isCalculatedAccount) {
           continue;
@@ -256,7 +258,6 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
 
       } // foreach
 
-      var trialBalanceHelper = new TrialBalanceHelper(_query);
       trialBalanceHelper.AssignLastChangeDatesToSummaryEntries(accountEntries, parentAccounts);
 
       return parentAccounts.ToFixedList();
@@ -488,26 +489,6 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
       var trialBalanceHelper = new TrialBalanceHelper(_query);
       trialBalanceHelper.GenerateOrIncreaseEntries(summaryEntries, entry, targetAccount,
                                                    targetSector, itemType, hash);
-    }
-
-
-    private bool ValidateEntryForSummaryParentAccount(TrialBalanceEntry entry,
-                                                      out StandardAccount currentParent) {
-
-      if ((entry.Account.NotHasParent) || _query.WithSubledgerAccount) {
-        currentParent = entry.Account;
-
-      } else if (_query.DoNotReturnSubledgerAccounts && entry.Account.HasParent) {
-        currentParent = entry.Account.GetParent();
-
-      } else if (_query.DoNotReturnSubledgerAccounts && entry.Account.NotHasParent) {
-        currentParent = entry.Account;
-        return false;
-
-      } else {
-        throw Assertion.EnsureNoReachThisCode();
-      }
-      return true;
     }
 
 

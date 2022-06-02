@@ -26,23 +26,23 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
 
 
     internal TrialBalance Build() {
-      var trialBalanceHelper = new TrialBalanceHelper(_query);
       var helper = new SaldosPorCuentaHelper(_query);
 
       FixedList<TrialBalanceEntry> accountEntries = helper.GetAccountEntries();
 
+      var trialBalanceHelper = new TrialBalanceHelper(_query);
       trialBalanceHelper.SetSummaryToParentEntries(accountEntries);
 
-      List<TrialBalanceEntry> summaryEntries = trialBalanceHelper.GetCalculatedParentAccounts(accountEntries);
+      List<TrialBalanceEntry> parentAccounts = helper.GetCalculatedParentAccounts(accountEntries);
 
-      List<TrialBalanceEntry> postingEntriesMapped = trialBalanceHelper.GetEntriesMappedForSectorization(
+      List<TrialBalanceEntry> accountEntriesMapped = trialBalanceHelper.GetEntriesMappedForSectorization(
                                               accountEntries.ToList());
 
       List<TrialBalanceEntry> _postingEntries = trialBalanceHelper.GetSummaryAccountEntriesAndSectorization(
-                                                postingEntriesMapped);
+                                                accountEntriesMapped);
 
       List<TrialBalanceEntry> summaryEntriesAndSectorization =
-                              trialBalanceHelper.GetSummaryAccountEntriesAndSectorization(summaryEntries);
+                              trialBalanceHelper.GetSummaryAccountEntriesAndSectorization(parentAccounts);
 
       List<TrialBalanceEntry> trialBalance = trialBalanceHelper.CombineSummaryAndPostingEntries(
                                              summaryEntriesAndSectorization, _postingEntries.ToFixedList());

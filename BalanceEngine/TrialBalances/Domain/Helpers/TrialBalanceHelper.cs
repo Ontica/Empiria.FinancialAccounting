@@ -591,6 +591,26 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
     }
 
 
+    internal bool ValidateEntryForSummaryParentAccount(TrialBalanceEntry entry,
+                                                      out StandardAccount currentParent) {
+
+      if ((entry.Account.NotHasParent) || _query.WithSubledgerAccount) {
+        currentParent = entry.Account;
+
+      } else if (_query.DoNotReturnSubledgerAccounts && entry.Account.HasParent) {
+        currentParent = entry.Account.GetParent();
+
+      } else if (_query.DoNotReturnSubledgerAccounts && entry.Account.NotHasParent) {
+        currentParent = entry.Account;
+        return false;
+
+      } else {
+        throw Assertion.EnsureNoReachThisCode();
+      }
+      return true;
+    }
+
+
     internal void ValuateAccountEntriesToExchangeRate(FixedList<TrialBalanceEntry> entries) {
 
       if (_query.InitialPeriod.UseDefaultValuation) {
@@ -654,6 +674,7 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
       }
       return entries;
     }
+
 
     #region Private methods
 
@@ -950,7 +971,7 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
     }
 
 
-    internal void SummaryEntryBySectorization(EmpiriaHashTable<TrialBalanceEntry> summaryEntries,
+    internal void SummaryEntryBySectorization(EmpiriaHashTable<TrialBalanceEntry> parentAccounts,
                                              TrialBalanceEntry entry, StandardAccount currentParent) {
       if (!_query.UseNewSectorizationModel || !_query.WithSectorization) {
         return;
@@ -960,7 +981,7 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
         return;
       }
 
-      SummaryByEntry(summaryEntries, entry, currentParent, entry.Sector.Parent,
+      SummaryByEntry(parentAccounts, entry, currentParent, entry.Sector.Parent,
                      TrialBalanceItemType.Summary);
     }
 
