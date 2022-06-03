@@ -93,14 +93,17 @@ namespace Empiria.FinancialAccounting.Reporting.Builders {
 
     static private FixedList<IReportEntryDto> MapToReportDataEntries(FixedList<ITrialBalanceEntryDto> list,
                                                                      ReportBuilderQuery query) {
-      var mappedItems = list.Select((x) => MapToBalanzaCalculoImpuestosEntry((TrialBalanceEntryDto) x, query));
+
+      var mappedItems = list.Select((x) => MapToBalanzaCalculoImpuestosEntry(
+                                            (BalanzaTradicionalEntryDto) x, query));
 
       return new FixedList<IReportEntryDto>(mappedItems);
     }
 
 
-    static private BalanzaCalculoImpuestosEntry MapToBalanzaCalculoImpuestosEntry(TrialBalanceEntryDto entry,
-                                                                                  ReportBuilderQuery query) {
+    static private BalanzaCalculoImpuestosEntry MapToBalanzaCalculoImpuestosEntry(
+                                                BalanzaTradicionalEntryDto entry,
+                                                ReportBuilderQuery query) {
       return new BalanzaCalculoImpuestosEntry {
 
         Moneda = entry.CurrencyCode,

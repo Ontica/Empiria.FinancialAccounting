@@ -128,6 +128,7 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
       return returnedTrialBalance;
     }
 
+
     private List<TrialBalanceEntry> GenerateOperationalBalance(List<TrialBalanceEntry> trialBalance) {
       var helper = new TrialBalanceHelper(_query);
       var totalByAccountEntries = new EmpiriaHashTable<TrialBalanceEntry>(trialBalance.Count);

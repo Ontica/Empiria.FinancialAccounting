@@ -664,8 +664,19 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
         Assertion.Require(exchangeRate, $"No se ha registrado el tipo de cambio para la " +
                                         $"moneda {entry.Currency.FullName} con la fecha proporcionada.");
 
+        ValuateExchangeRateByReportType(entry, exchangeRate);
+      }
+    }
+
+
+    private void ValuateExchangeRateByReportType(TrialBalanceEntry entry, ExchangeRate exchangeRate) {
+
+      if ((_query.IsOperationalReport && !_query.ConsolidateBalancesToTargetCurrency)) {
+        entry.ExchangeRate = exchangeRate.Value;
+      } else {
         entry.MultiplyBy(exchangeRate.Value);
       }
+
     }
 
 
