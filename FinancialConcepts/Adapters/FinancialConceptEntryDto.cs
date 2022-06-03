@@ -73,7 +73,7 @@ namespace Empiria.FinancialAccounting.FinancialConcepts.Adapters {
     }
 
 
-    public ItemPositioning Positioning {
+    public Positioning Positioning {
       get; internal set;
     }
 

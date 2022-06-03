@@ -66,7 +66,7 @@ namespace Empiria.FinancialAccounting.FinancialConcepts.UseCases {
 
       FinancialConcept concept = command.Entities.FinancialConcept;
 
-      FinancialConceptEntry entry = concept.InsertEntry(command.MapToFields(0),
+      FinancialConceptEntry entry = concept.InsertEntry(command.MapToFields(),
                                                         command.Payload.Positioning);
 
       entry.Save();
@@ -94,18 +94,30 @@ namespace Empiria.FinancialAccounting.FinancialConcepts.UseCases {
     }
 
 
-    public FinancialConceptEntryDescriptorDto UpdateFinancialConceptEntry(EditFinancialConceptEntryCommand command) {
+    public ExecutionResult<FinancialConceptEntryDto> UpdateFinancialConceptEntry(EditFinancialConceptEntryCommand command) {
       Assertion.Require(command, nameof(command));
 
       command.Arrange();
 
-      var concept = FinancialConcept.Parse(command.Payload.FinancialConceptUID);
+      if (!command.IsValid || command.DryRun) {
+        return command.MapToExecutionResult<FinancialConceptEntryDto>();
+      }
 
-      FinancialConceptEntry entry = concept.UpdateEntryFrom(command);
+      FinancialConcept concept = command.Entities.FinancialConcept;
+
+      FinancialConceptEntry entry = command.Entities.FinancialConceptEntry;
+
+      concept.UpdateEntry(entry, command.MapToFields(),
+                          command.Payload.Positioning);
 
       entry.Save();
 
-      return FinancialConceptMapper.MapToDescriptor(entry);
+      FinancialConceptEntryDto outcome = FinancialConceptMapper.Map(entry);
+
+      command.Done(outcome, $"Se modificó la regla de integración del concepto " +
+                            $"{entry.FinancialConcept.Code} - {entry.FinancialConcept.Name}.");
+
+      return command.MapToExecutionResult<FinancialConceptEntryDto>();
     }
 
     #endregion Use cases

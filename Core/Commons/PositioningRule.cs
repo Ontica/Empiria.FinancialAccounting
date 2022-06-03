@@ -35,8 +35,8 @@ namespace Empiria.FinancialAccounting {
 
   }
 
-  /// <summary>Payload that describes an item positioning rule to store it in an ordered list.</summary>
-  public class ItemPositioning {
+  /// <summary>Payload that describes an entity positioning rule to store it in an ordered list.</summary>
+  public class Positioning {
 
     public PositioningRule Rule {
       get; set;

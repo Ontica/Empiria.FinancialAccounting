@@ -62,7 +62,7 @@ namespace Empiria.FinancialAccounting.FinancialConcepts.Adapters {
         CalculationRule = entry.CalculationRule,
         DataColumn = entry.DataColumn,
         Operator = entry.Operator,
-        Positioning = new ItemPositioning {
+        Positioning = new Positioning {
           Rule = PositioningRule.ByPositionValue,
           Position = entry.Position,
           OffsetUID = null

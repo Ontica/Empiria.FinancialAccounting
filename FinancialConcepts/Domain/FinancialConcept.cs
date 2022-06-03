@@ -15,7 +15,6 @@ using Empiria.Contacts;
 using Empiria.StateEnums;
 
 using Empiria.FinancialAccounting.FinancialConcepts.Data;
-using Empiria.FinancialAccounting.FinancialConcepts.Adapters;
 
 namespace Empiria.FinancialAccounting.FinancialConcepts {
 
@@ -68,7 +67,7 @@ namespace Empiria.FinancialAccounting.FinancialConcepts {
     }
 
 
-    protected override void OnLoad() {
+    protected override void OnInitialize() {
       if (this.IsEmptyInstance) {
         return;
       }
@@ -77,6 +76,7 @@ namespace Empiria.FinancialAccounting.FinancialConcepts {
                         () => FinancialConceptsData.GetFinancialConceptEntries(this)
                      );
     }
+
 
     #endregion Constructors and parsers
 
@@ -164,24 +164,22 @@ namespace Empiria.FinancialAccounting.FinancialConcepts {
       var entry = _integration.Value.Find(x => x.UID == financialConceptEntryUID);
 
       Assertion.Require(entry,
-        $"El concepto no contiene la regla de integración '{financialConceptEntryUID}'.");
+        $"El concepto {Name} no contiene la regla de integración '{financialConceptEntryUID}'.");
 
       return entry;
     }
 
 
     internal FinancialConceptEntry InsertEntry(FinancialConceptEntryFields fields,
-                                               ItemPositioning positioning) {
+                                               Positioning positioning) {
       Assertion.Require(fields,      nameof(fields));
       Assertion.Require(positioning, nameof(positioning));
 
       FinancialConceptEntry entry = FinancialConceptEntry.Create(fields);
 
-      int position = CalculatePositionFrom(positioning);
+      int position = CalculatePosition(positioning);
 
-      entry.SetPosition(position);
-
-      UpdateList(entry);
+      UpdateList(entry, position);
 
       return entry;
     }
@@ -191,11 +189,11 @@ namespace Empiria.FinancialAccounting.FinancialConcepts {
       Assertion.Require(entry, nameof(entry));
 
       Assertion.Require(entry.FinancialConcept.Equals(this),
-          $"La regla de integración que se desea eliminar no pertenece al concepto '{this.Name}'.");
+          $"La regla de integración que se desea eliminar no pertenece al concepto '{Name}'.");
 
       entry.Delete();
 
-      UpdateList(entry);
+      UpdateList(entry, entry.Position);
     }
 
 
@@ -207,34 +205,33 @@ namespace Empiria.FinancialAccounting.FinancialConcepts {
     internal void SetPosition(int position) {
       Assertion.Require(position > 0, "Position must be greater than zero.");
 
-      this.Position = position;
+      Position = position;
     }
 
 
     internal void Update(FinancialConceptFields fields) {
       Assertion.Require(fields, nameof(fields));
 
-      this.Code = fields.Code;
-      this.Name = fields.Name;
-      this.Position = fields.Position;
-      this.StartDate = fields.StartDate;
-      this.EndDate = fields.EndDate;
-      this.UpdatedBy = ExecutionServer.CurrentIdentity.User.AsContact();
+      Code = fields.Code;
+      Name = fields.Name;
+      Position = fields.Position;
+      StartDate = fields.StartDate;
+      EndDate = fields.EndDate;
+      UpdatedBy = ExecutionServer.CurrentIdentity.User.AsContact();
     }
 
 
-    internal FinancialConceptEntry UpdateEntryFrom(EditFinancialConceptEntryCommand command) {
-      Assertion.Require(command, nameof(command));
-
-      FinancialConceptEntry entry = GetEntry(command.Payload.FinancialConceptEntryUID);
-
-      int newPosition = CalculatePositionFrom(command.Payload.Positioning, entry.Position);
-
-      FinancialConceptEntryFields fields = command.MapToFields(newPosition);
+    internal FinancialConceptEntry UpdateEntry(FinancialConceptEntry entry,
+                                               FinancialConceptEntryFields fields,
+                                               Positioning positioning) {
+      Assertion.Require(fields, nameof(fields));
+      Assertion.Require(positioning, nameof(positioning));
 
       entry.Update(fields);
 
-      UpdateList(entry);
+      int newPosition = CalculatePosition(positioning, entry.Position);
+
+      UpdateList(entry, newPosition);
 
       return entry;
     }
@@ -243,8 +240,8 @@ namespace Empiria.FinancialAccounting.FinancialConcepts {
 
     #region Helpers
 
-    private int CalculatePositionFrom(ItemPositioning positioning,
-                                      int currentPosition = -1) {
+    private int CalculatePosition(Positioning positioning,
+                                  int currentPosition = -1) {
 
       switch (positioning.Rule) {
 
@@ -286,7 +283,8 @@ namespace Empiria.FinancialAccounting.FinancialConcepts {
         case PositioningRule.ByPositionValue:
           Assertion.Require(1 <= positioning.Position &&
                                 positioning.Position <= _integration.Value.Count + 1,
-            $"Position value is {positioning.Position}, but must be between 1 and {_integration.Value.Count + 1}.");
+            $"Position value is {positioning.Position}, " +
+            $"but must be between 1 and {_integration.Value.Count + 1}.");
 
           return positioning.Position;
 
@@ -296,12 +294,14 @@ namespace Empiria.FinancialAccounting.FinancialConcepts {
     }
 
 
-    private void UpdateList(FinancialConceptEntry entry) {
+    private void UpdateList(FinancialConceptEntry entry, int position) {
       int listIndex = Integration.IndexOf(entry);
 
       if (listIndex != -1) {
         _integration.Value.RemoveAt(listIndex);
       }
+
+      entry.SetPosition(position);
 
       if (entry.Status != EntityStatus.Deleted) {
         _integration.Value.Insert(entry.Position - 1, entry);

@@ -88,7 +88,7 @@ namespace Empiria.FinancialAccounting.FinancialConcepts.Adapters {
       }
     }
 
-    internal FinancialConceptEntryFields MapToFields(int position) {
+    internal FinancialConceptEntryFields MapToFields() {
 
       FinancialConceptEntryFields fields;
 
@@ -114,7 +114,6 @@ namespace Empiria.FinancialAccounting.FinancialConcepts.Adapters {
       fields.Operator         = Payload.Operator;
       fields.CalculationRule  = Payload.CalculationRule;
       fields.DataColumn       = Payload.DataColumn;
-      fields.Position         = position;
 
       return fields;
     }
@@ -177,9 +176,9 @@ namespace Empiria.FinancialAccounting.FinancialConcepts.Adapters {
       } = "Default";
 
 
-      public ItemPositioning Positioning {
+      public Positioning Positioning {
         get; set;
-      } = new ItemPositioning();
+      } = new Positioning();
 
 
       internal void Initialize(EditFinancialConceptEntryCommandType commandType) {
@@ -192,7 +191,7 @@ namespace Empiria.FinancialAccounting.FinancialConcepts.Adapters {
         DataColumn              = EmpiriaString.Clean(DataColumn);
 
         if (commandType.ForInsert() && Positioning.Rule == PositioningRule.Undefined) {
-          Positioning = new ItemPositioning {
+          Positioning = new Positioning {
             Rule = PositioningRule.AtEnd
           };
         }

@@ -43,10 +43,6 @@ namespace Empiria.FinancialAccounting.FinancialConcepts {
     }
 
 
-    internal int Position {
-      get; set;
-    }
-
   }  // class FinancialConceptEntryFields
 
 

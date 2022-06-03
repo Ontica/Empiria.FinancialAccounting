@@ -186,7 +186,7 @@ namespace Empiria.FinancialAccounting.FinancialConcepts {
     [DataField("POSICION")]
     public int Position {
       get; private set;
-    }
+    } = -1;
 
 
     [DataField("STATUS_INTEGRACION", Default = EntityStatus.Active)]
@@ -396,7 +396,6 @@ namespace Empiria.FinancialAccounting.FinancialConcepts {
       Operator          = fields.Operator;
       CalculationRule   = fields.CalculationRule;
       DataColumn        = fields.DataColumn;
-      Position          = fields.Position;
       UpdatedBy         = ExecutionServer.CurrentIdentity.User.AsContact();
     }
 
