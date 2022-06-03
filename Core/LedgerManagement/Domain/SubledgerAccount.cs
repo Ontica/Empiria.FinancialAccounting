@@ -25,9 +25,9 @@ namespace Empiria.FinancialAccounting {
 
 
     internal SubledgerAccount(Subledger subledger, string number, string name) {
-      Assertion.Require(subledger, "subledger");
-      Assertion.Require(number, "number");
-      Assertion.Require(name, "name");
+      Assertion.Require(subledger, nameof(subledger));
+      Assertion.Require(number, nameof(number));
+      Assertion.Require(name, nameof(name));
 
       this.Subledger = subledger;
       this.Number = number;
@@ -43,8 +43,23 @@ namespace Empiria.FinancialAccounting {
     }
 
 
-    static public SubledgerAccount TryParse(string subledgerAccountNumber) {
-      return SubledgerData.TryGetSubledgerAccount(subledgerAccountNumber);
+    static public SubledgerAccount TryParse(AccountsChart accountsChart,
+                                            string subledgerAccountNumber) {
+
+      Assertion.Require(accountsChart, nameof(accountsChart));
+      Assertion.Require(subledgerAccountNumber, nameof(subledgerAccountNumber));
+
+      SubledgerAccount subledgerAccount = SubledgerData.TryGetSubledgerAccount(subledgerAccountNumber);
+
+      if (subledgerAccount == null) {
+        return null;
+      }
+
+      if (!subledgerAccount.BelongsTo(accountsChart)) {
+        return null;
+      }
+
+      return subledgerAccount;
     }
 
 
@@ -130,6 +145,12 @@ namespace Empiria.FinancialAccounting {
 
     internal void Activate() {
       this.Suspended = false;
+    }
+
+
+    public bool BelongsTo(AccountsChart chart) {
+      return (this.Ledger.AccountsChart.Equals(chart) ||
+              this.AdditionalLedger.AccountsChart.Equals(chart));
     }
 
 

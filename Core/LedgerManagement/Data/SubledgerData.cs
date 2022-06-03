@@ -27,7 +27,8 @@ namespace Empiria.FinancialAccounting.Data {
         return cachedValue;
       }
 
-      var sql = $"SELECT * FROM COF_CUENTA_AUXILIAR WHERE ID_CUENTA_AUXILIAR = {id}";
+      var sql = $"SELECT * FROM COF_CUENTA_AUXILIAR " +
+                $"WHERE ID_CUENTA_AUXILIAR = {id}";
 
       var dataOperation = DataOperation.Parse(sql);
 
@@ -67,7 +68,8 @@ namespace Empiria.FinancialAccounting.Data {
     static internal SubledgerAccount TryGetSubledgerAccount(string subledgerAccountNumber) {
       var sql = $"SELECT * FROM " +
                 $"COF_CUENTA_AUXILIAR " +
-                $"WHERE NUMERO_CUENTA_AUXILIAR = '{subledgerAccountNumber}'";
+                $"WHERE NUMERO_CUENTA_AUXILIAR = '{subledgerAccountNumber}' " +
+                $"ORDER BY ID_CUENTA_AUXILIAR DESC";
 
       var dataOperation = DataOperation.Parse(sql);
 
