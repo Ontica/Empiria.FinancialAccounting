@@ -26,7 +26,7 @@ namespace Empiria.FinancialAccounting.FinancialConcepts.Adapters {
 
     UpdateExternalValueRule,
 
-    Unknown
+    Undefined
 
   }  // enum EditFinancialConceptEntryCommandType
 

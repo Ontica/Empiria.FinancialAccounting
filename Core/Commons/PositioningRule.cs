@@ -29,6 +29,12 @@ namespace Empiria.FinancialAccounting {
   }  // enum PositioningRule
 
 
+  public interface IPositionable : IIdentifiable {
+
+    int Position { get; }
+
+  }
+
   /// <summary>Payload that describes an item positioning rule to store it in an ordered list.</summary>
   public class ItemPositioning {
 
@@ -47,9 +53,22 @@ namespace Empiria.FinancialAccounting {
     } = -1;
 
 
-    public void Clean() {
-      // no-op
+    private IPositionable OffsetObject;
+
+    public IIdentifiable GetOffsetObject<T>() where T : IPositionable {
+      Assertion.Require(OffsetObject, "OffsetObject was not provieded." +
+                        "Please before call method SetOffsetObject().");
+
+      return (T) OffsetObject;
     }
+
+
+    public void SetOffsetObject(IPositionable offsetObject) {
+      Assertion.Require(offsetObject, nameof(offsetObject));
+
+      this.OffsetObject = offsetObject;
+    }
+
 
     public void Require() {
       if (Rule.UsesOffset()) {
@@ -68,22 +87,19 @@ namespace Empiria.FinancialAccounting {
 
 
     public void SetIssues(ExecutionResult result) {
-      // no-op
-    }
-
-
-    public void SetWarnings(ExecutionResult result) {
       result.AddWarningIf(Rule == PositioningRule.Undefined && OffsetUID.Length != 0,
-         $"payload.Positioning.Rule is '{Rule}', but Positioning.OffsetUID value was supplied.");
+          $"payload.Positioning.Rule is '{Rule}', but Positioning.OffsetUID value was supplied.");
 
       result.AddWarningIf(Rule == PositioningRule.Undefined && Position > 0,
-        $"payload.Positioning.Rule is '{Rule}', but Positioning.Position value was supplied.");
+          $"payload.Positioning.Rule is '{Rule}', but Positioning.Position value was supplied.");
 
-      result.AddWarningIf(Rule.UsesOffset() && Position != -1,
-        $"payload.Positioning.Rule is '{Rule}', but Positioning.Position value was supplied.");
+      result.AddWarningIf((Rule.UsesOffset() || Rule.IsAbsolute()) && Position != -1,
+          $"payload.Positioning.Rule is '{Rule}', but Positioning.Position value was supplied.");
 
-      result.AddWarningIf(Rule.UsesPosition() && OffsetUID.Length != 0,
-        $"payload.Positioning.Rule is '{Rule}', but Positioning.OffsetUID value was supplied.");
+      result.AddWarningIf((Rule.UsesPosition() || Rule.IsAbsolute()) && OffsetUID.Length != 0,
+          $"payload.Positioning.Rule is '{Rule}', but Positioning.OffsetUID value was supplied.");
+
+
     }
 
   }  // class ItemPositioning
@@ -92,6 +108,10 @@ namespace Empiria.FinancialAccounting {
 
   /// <summary>Extension methods for PositioningRule enumeration.</summary>
   public static class PositioningRuleExtensions {
+
+    static public bool IsAbsolute(this PositioningRule rule) {
+      return rule == PositioningRule.AtStart || rule == PositioningRule.AtEnd;
+    }
 
     static public bool UsesOffset(this PositioningRule rule) {
       return rule == PositioningRule.AfterOffset || rule == PositioningRule.BeforeOffset;
@@ -102,6 +122,5 @@ namespace Empiria.FinancialAccounting {
     }
 
   }  // class PositioningRuleExtensions
-
 
 }  // namespace Empiria.FinancialAccounting

@@ -53,14 +53,19 @@ namespace Empiria.FinancialAccounting {
 
     #region Methods
 
-    protected virtual void Clean() {
+    protected virtual void Initialize() {
       // no-op
     }
+
+    protected virtual void InitialRequire() {
+      // no-op
+    }
+
 
     protected abstract string GetCommandTypeName();
 
 
-    protected virtual void Require() {
+    protected virtual void FinalRequire() {
       // no-op
     }
 
@@ -80,11 +85,6 @@ namespace Empiria.FinancialAccounting {
     }
 
 
-    protected virtual void SetWarnings() {
-      // no-op
-    }
-
-
     public void Done(IDto outcome, string message) {
       Assertion.Require(outcome, nameof(outcome));
       Assertion.Require(message, nameof(message));
@@ -94,12 +94,12 @@ namespace Empiria.FinancialAccounting {
 
 
     public void Arrange() {
-      Clean();
-      Require();
-      SetIssues();
-      SetWarnings();
+      Initialize();
+      InitialRequire();
       SetEntities();
+      SetIssues();
       SetActions();
+      FinalRequire();
     }
 
     #endregion Methods

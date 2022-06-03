@@ -132,8 +132,7 @@ namespace Empiria.FinancialAccounting.FinancialConcepts {
 
     public FixedList<FinancialConceptEntry> Integration {
       get {
-        return _integration.Value
-                           .ToFixedList();
+        return _integration.Value.ToFixedList();
       }
     }
 
@@ -171,23 +170,20 @@ namespace Empiria.FinancialAccounting.FinancialConcepts {
     }
 
 
-    internal FinancialConceptEntry InsertEntryFrom(EditFinancialConceptEntryCommand command) {
-      Assertion.Require(command, nameof(command));
-
-      int position = CalculatePositionFrom(command.Payload.Positioning);
-
-      FinancialConceptEntryFields fields = command.MapToFields(position);
+    internal FinancialConceptEntry InsertEntry(FinancialConceptEntryFields fields,
+                                               ItemPositioning positioning) {
+      Assertion.Require(fields,      nameof(fields));
+      Assertion.Require(positioning, nameof(positioning));
 
       FinancialConceptEntry entry = FinancialConceptEntry.Create(fields);
+
+      int position = CalculatePositionFrom(positioning);
+
+      entry.SetPosition(position);
 
       UpdateList(entry);
 
       return entry;
-    }
-
-
-    internal ExecutionResult RemoveEntry(EditFinancialConceptEntryCommand command) {
-      throw new NotImplementedException();
     }
 
 
@@ -271,8 +267,10 @@ namespace Empiria.FinancialAccounting.FinancialConcepts {
             return _integration.Value.Count + 1;
           }
 
+
         case PositioningRule.AtStart:
           return 1;
+
 
         case PositioningRule.BeforeOffset:
           var beforeOffset = GetEntry(positioning.OffsetUID);
@@ -283,6 +281,7 @@ namespace Empiria.FinancialAccounting.FinancialConcepts {
           } else {
             return beforeOffset.Position;
           }
+
 
         case PositioningRule.ByPositionValue:
           Assertion.Require(1 <= positioning.Position &&

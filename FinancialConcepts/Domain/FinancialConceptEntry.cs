@@ -24,7 +24,7 @@ namespace Empiria.FinancialAccounting.FinancialConcepts {
 
     FinancialConceptReference,
 
-  }  // enum FinancialConceptEntryType
+  }
 
 
   public enum OperatorType {
@@ -40,7 +40,7 @@ namespace Empiria.FinancialAccounting.FinancialConcepts {
 
   /// <summary>Describes an integration entry for a financial concept. Each integration entry is referenced
   /// to another financial concept, to a financial account or to an external financial value.</summary>
-  public class FinancialConceptEntry : BaseObject {
+  public class FinancialConceptEntry : BaseObject, IPositionable {
 
     #region Constructors and parsers
 
@@ -205,7 +205,7 @@ namespace Empiria.FinancialAccounting.FinancialConcepts {
       get {
         if (this.Type == FinancialConceptEntryType.Account) {
 
-          var account = FinancialConcept.Group.AccountsChart.TryGetAccount(this.AccountNumber);
+          Account account = TryGetAccount();
 
           if (account != null) {
             return account.Name;
@@ -218,16 +218,16 @@ namespace Empiria.FinancialAccounting.FinancialConcepts {
 
         } else if (this.Type == FinancialConceptEntryType.ExternalVariable) {
 
-          var fixedValue = ExternalVariable.TryParseWithCode(this.ExternalVariableCode);
+          ExternalVariable externalVariable = TryGetExternalVariable();
 
-          if (fixedValue != null) {
-            return fixedValue.Name;
+          if (externalVariable != null) {
+            return externalVariable.Name;
           } else {
             return "El valor por defecto no existe en el catálogo de variables.";
           }
 
         } else {
-          return "";
+          return string.Empty;
         }
       }
     }
@@ -261,24 +261,20 @@ namespace Empiria.FinancialAccounting.FinancialConcepts {
 
     public bool HasSubledgerAccount {
       get {
-        return (this.SubledgerAccountNumber.Length > 4);
+        return (this.SubledgerAccountNumber.Length != 0);
       }
     }
 
 
     public string SubledgerAccountName {
       get {
-        if (!HasSubledgerAccount) {
-          return string.Empty;
+        SubledgerAccount subledgerAccount = TryGetSubledgerAccount();
+
+        if (subledgerAccount != null) {
+          return subledgerAccount.Name;
         }
 
-        var subledgerAccount = SubledgerAccount.TryParse(this.SubledgerAccountNumber);
-
-        if (subledgerAccount == null) {
-          return "El auxiliar NO existe en el sistema.";
-        }
-
-        return subledgerAccount.Name;
+        return string.Empty;
       }
     }
 
@@ -332,6 +328,25 @@ namespace Empiria.FinancialAccounting.FinancialConcepts {
     }
 
 
+    public Account TryGetAccount() {
+      return FinancialConcept.Group.AccountsChart.TryGetAccount(this.AccountNumber);
+    }
+
+
+    public ExternalVariable TryGetExternalVariable() {
+      return ExternalVariable.TryParseWithCode(this.ExternalVariableCode);
+    }
+
+
+    public SubledgerAccount TryGetSubledgerAccount() {
+      if (!HasSubledgerAccount) {
+        return null;
+      }
+      return SubledgerAccount.TryParse(FinancialConcept.Group.AccountsChart,
+                                       SubledgerAccountNumber);
+    }
+
+
     internal void Update(FinancialConceptEntryFields fields) {
       Assertion.Require(fields, nameof(fields));
 
@@ -377,12 +392,12 @@ namespace Empiria.FinancialAccounting.FinancialConcepts {
 
     private void Base_Load(FinancialConceptEntryFields fields) {
       SetIntegrationType(fields.EntryType);
-      FinancialConcept = fields.FinancialConcept;
-      Operator = fields.Operator;
-      CalculationRule = fields.CalculationRule;
-      DataColumn = fields.DataColumn;
-      Position = fields.Position;
-      UpdatedBy = ExecutionServer.CurrentIdentity.User.AsContact();
+      FinancialConcept  = fields.FinancialConcept;
+      Operator          = fields.Operator;
+      CalculationRule   = fields.CalculationRule;
+      DataColumn        = fields.DataColumn;
+      Position          = fields.Position;
+      UpdatedBy         = ExecutionServer.CurrentIdentity.User.AsContact();
     }
 
     #endregion Methods

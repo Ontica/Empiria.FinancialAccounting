@@ -18,7 +18,7 @@ namespace Empiria.FinancialAccounting.FinancialConcepts.Adapters {
 
     public EditFinancialConceptEntryCommandType Type {
       get; set;
-    } = EditFinancialConceptEntryCommandType.Unknown;
+    } = EditFinancialConceptEntryCommandType.Undefined;
 
 
     public PayloadType Payload {
@@ -32,8 +32,8 @@ namespace Empiria.FinancialAccounting.FinancialConcepts.Adapters {
 
 
 
-    protected override void Clean() {
-      Payload.Clean();
+    protected override void Initialize() {
+      Payload.Initialize(this.Type);
     }
 
 
@@ -42,37 +42,51 @@ namespace Empiria.FinancialAccounting.FinancialConcepts.Adapters {
     }
 
 
-    protected override void Require() {
-      Assertion.Require(Type != EditFinancialConceptEntryCommandType.Unknown, "type");
+    protected override void InitialRequire() {
+      Assertion.Require(this.Type != EditFinancialConceptEntryCommandType.Undefined, "Type");
 
-      Assertion.Require(Payload, "Payload");
+      Assertion.Require(this.Payload, "Payload");
 
-      Payload.Require(Type);
+      Payload.Require(this.Type);
     }
 
 
     protected override void SetEntities() {
-      this.Entities.FinancialConcept = FinancialConcept.Parse(this.Payload.FinancialConceptUID);
+      Entities.FinancialConcept = FinancialConcept.Parse(Payload.FinancialConceptUID);
 
       if (Payload.FinancialConceptEntryUID.Length != 0) {
-        this.Entities.FinancialConceptEntry = FinancialConceptEntry.Parse(Payload.FinancialConceptEntryUID);
+        Entities.FinancialConceptEntry = Entities.FinancialConcept.GetEntry(Payload.FinancialConceptEntryUID);
       }
 
       if (Payload.ReferencedFinancialConceptUID.Length != 0) {
-        this.Entities.ReferencedFinancialConcept = FinancialConcept.Parse(Payload.ReferencedFinancialConceptUID);
+        Entities.ReferencedFinancialConcept = FinancialConcept.Parse(Payload.ReferencedFinancialConceptUID);
+      }
+      if (Payload.Positioning.Rule.UsesOffset()) {
+        Payload.Positioning.SetOffsetObject(Entities.FinancialConcept.GetEntry(Payload.Positioning.OffsetUID));
       }
     }
 
 
     protected override void SetIssues() {
       Payload.SetIssues(this.ExecutionResult);
+
+      if (Payload.Positioning.Rule.UsesPosition()) {
+        int maxPosition = Entities.FinancialConcept.Integration.Count;
+
+        ExecutionResult.AddIssueIf(Payload.Positioning.Position >= maxPosition,
+                                   $"La posición no puede ser mayor a {maxPosition}.");
+      }
     }
 
 
-    protected override void SetWarnings() {
-      Payload.SetWarnings(this.ExecutionResult);
-    }
+    protected override void FinalRequire() {
+      if (Payload.SubledgerAccountNumber.Length != 0) {
+        AccountsChart chart = Entities.FinancialConcept.Group.AccountsChart;
 
+        Assertion.Require(SubledgerAccount.TryParse(chart, Payload.SubledgerAccountNumber),
+              $"No existe ningún auxiliar con número '{Payload.SubledgerAccountNumber}'.");
+      }
+    }
 
     internal FinancialConceptEntryFields MapToFields(int position) {
 
@@ -168,7 +182,7 @@ namespace Empiria.FinancialAccounting.FinancialConcepts.Adapters {
       } = new ItemPositioning();
 
 
-      internal void Clean() {
+      internal void Initialize(EditFinancialConceptEntryCommandType commandType) {
         AccountNumber           = EmpiriaString.Clean(AccountNumber);
         SubledgerAccountNumber  = EmpiriaString.Clean(SubledgerAccountNumber);
         SectorCode              = EmpiriaString.Clean(SectorCode);
@@ -176,7 +190,12 @@ namespace Empiria.FinancialAccounting.FinancialConcepts.Adapters {
         CurrencyCode            = EmpiriaString.Clean(CurrencyCode);
         CalculationRule         = EmpiriaString.Clean(CalculationRule);
         DataColumn              = EmpiriaString.Clean(DataColumn);
-        Positioning.Clean();
+
+        if (commandType.ForInsert() && Positioning.Rule == PositioningRule.Undefined) {
+          Positioning = new ItemPositioning {
+            Rule = PositioningRule.AtEnd
+          };
+        }
       }
 
 
@@ -195,7 +214,7 @@ namespace Empiria.FinancialAccounting.FinancialConcepts.Adapters {
         }
 
         if (commandType.OverAccount()) {
-          Assertion.Require(DataColumn, "payload.AccountNumber");
+          Assertion.Require(AccountNumber, "payload.AccountNumber");
 
           Assertion.Require(SectorCode.Length == 0 || Sector.Exists(SectorCode),
                            $"Unrecognized payload.SectorCode value '{SectorCode}'.");
@@ -224,10 +243,6 @@ namespace Empiria.FinancialAccounting.FinancialConcepts.Adapters {
         Positioning.SetIssues(executionResult);
       }
 
-
-      internal void SetWarnings(ExecutionResult executionResult) {
-        Positioning.SetWarnings(executionResult);
-      }
 
     }  // class PayloadType
 
