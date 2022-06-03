@@ -59,7 +59,7 @@ namespace Empiria.FinancialAccounting.WebApi.FinancialConcepts {
       command.Payload.FinancialConceptUID = financialConceptUID;
 
       using (var usecases = FinancialConceptIntegrationUseCases.UseCaseInteractor()) {
-        ExecutionResult<FinancialConceptEntryDescriptorDto> result = usecases.InsertFinancialConceptEntry(command);
+        ExecutionResult<FinancialConceptEntryDto> result = usecases.InsertFinancialConceptEntry(command);
 
         return new SingleObjectModel(base.Request, result);
       }

@@ -55,27 +55,28 @@ namespace Empiria.FinancialAccounting.FinancialConcepts.UseCases {
     }
 
 
-    public ExecutionResult<FinancialConceptEntryDescriptorDto> InsertFinancialConceptEntry(EditFinancialConceptEntryCommand command) {
+    public ExecutionResult<FinancialConceptEntryDto> InsertFinancialConceptEntry(EditFinancialConceptEntryCommand command) {
       Assertion.Require(command, nameof(command));
 
       command.Arrange();
 
       if (!command.IsValid || command.DryRun) {
-        return command.MapToExecutionResult<FinancialConceptEntryDescriptorDto>();
+        return command.MapToExecutionResult<FinancialConceptEntryDto>();
       }
 
       FinancialConcept concept = command.Entities.FinancialConcept;
 
-      FinancialConceptEntry entry = concept.InsertEntryFrom(command);
+      FinancialConceptEntry entry = concept.InsertEntry(command.MapToFields(0),
+                                                        command.Payload.Positioning);
 
       entry.Save();
 
-      var outcome = FinancialConceptMapper.MapToDescriptor(entry);
+      FinancialConceptEntryDto outcome = FinancialConceptMapper.Map(entry);
 
       command.Done(outcome, $"Se agregó la regla de integración al concepto " +
                             $"{entry.FinancialConcept.Code} - {entry.FinancialConcept.Name}.");
 
-      return command.MapToExecutionResult<FinancialConceptEntryDescriptorDto>();
+      return command.MapToExecutionResult<FinancialConceptEntryDto>();
     }
 
 
