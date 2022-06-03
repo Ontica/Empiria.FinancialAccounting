@@ -28,11 +28,6 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
     internal TrialBalance Build() {
       var helper = new TrialBalanceHelper(_query);
 
-
-      if (_query.TrialBalanceType == TrialBalanceType.Saldos) {
-        _query.WithSubledgerAccount = true;
-      }
-
       var startTime = DateTime.Now;
 
       EmpiriaLog.Debug($"START BalanzaTradicional: {startTime}");

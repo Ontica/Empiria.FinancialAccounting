@@ -72,7 +72,6 @@ namespace Empiria.FinancialAccounting.BalanceEngine.Adapters {
 
         case TrialBalanceType.BalanzaConContabilidadesEnCascada:
         case TrialBalanceType.GeneracionDeSaldos:
-        case TrialBalanceType.Saldos:
 
           var mappedItems = list.Select((x) => MapToTrialBalance((TrialBalanceEntry) x, query));
           return new FixedList<ITrialBalanceEntryDto>(mappedItems);

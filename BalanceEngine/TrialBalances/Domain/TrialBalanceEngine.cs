@@ -29,8 +29,6 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
 
     GeneracionDeSaldos,
 
-    Saldos,
-
     SaldosPorAuxiliar,
 
     SaldosPorCuenta,
@@ -139,11 +137,6 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
 
           var balanzaTradicional = new BalanzaTradicionalBuilder(this.Query);
           return balanzaTradicional.Build();
-
-        case TrialBalanceType.Saldos:
-
-          var trialBalance = new TrialBalanceBuilder(this.Query);
-          return trialBalance.Build();
 
         case TrialBalanceType.SaldosPorCuenta:
           

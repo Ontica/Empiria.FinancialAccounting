@@ -41,7 +41,6 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
           return SaldosPorCuentaMapper.DataColumns(this.Query);
 
         case TrialBalanceType.GeneracionDeSaldos:
-        case TrialBalanceType.Saldos:
         case TrialBalanceType.SaldosPorAuxiliar:
         case TrialBalanceType.BalanzaConContabilidadesEnCascada:
           return TrialBalanceDataColumns();
