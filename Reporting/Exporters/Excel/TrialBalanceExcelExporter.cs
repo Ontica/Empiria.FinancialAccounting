@@ -96,7 +96,7 @@ namespace Empiria.FinancialAccounting.Reporting.Exporters.Excel {
           return;
 
         case TrialBalanceType.Balanza:
-        case TrialBalanceType.Saldos:
+        //case TrialBalanceType.Saldos:
           FillOutBalanza(trialBalance.Entries.Select(x => (BalanzaTradicionalEntryDto) x));
           return;
 

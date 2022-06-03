@@ -10,7 +10,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
-
+using Empiria.Collections;
 using Empiria.FinancialAccounting.BalanceEngine.Adapters;
 
 namespace Empiria.FinancialAccounting.BalanceEngine {
@@ -51,22 +51,58 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
                                                          parentAccountEntriesAndSectorization,
                                                          accountEntriesAndSectorization);
 
-      List<TrialBalanceEntry> balanzaTradicional = GenerateTotalsAndCombineWithAccountEntries(
-                                                   parentsAndAccountEntries, accountEntries);
+      List<TrialBalanceEntry> balanza = GetBalanzaOrOperationalReport(
+                                        parentsAndAccountEntries, accountEntries);
 
-      trialBalanceHelper.RestrictLevels(balanzaTradicional);
+      trialBalanceHelper.RestrictLevels(balanza);
 
       var returnBalance = new FixedList<ITrialBalanceEntry>(
-                              balanzaTradicional.Select(x => (ITrialBalanceEntry) x));
+                              balanza.Select(x => (ITrialBalanceEntry) x));
 
       return new TrialBalance(_query, returnBalance);
     }
 
 
+    private List<TrialBalanceEntry> GetBalanzaOrOperationalReport(
+                                    List<TrialBalanceEntry> parentsAndAccountEntries,
+                                    FixedList<TrialBalanceEntry> accountEntries) {
+
+      List<TrialBalanceEntry> balanza;
+
+      if (!_query.IsOperationalReport) {
+        balanza = GenerateTotalsForBalanza(
+                  parentsAndAccountEntries, accountEntries);
+
+      } else {
+        balanza = GetOperationalReports(parentsAndAccountEntries);
+      }
+
+      return balanza;
+    }
+
+
     #region Private methods
+    private List<TrialBalanceEntry> GetOperationalReports(List<TrialBalanceEntry> trialBalance) {
+      var helper = new TrialBalanceHelper(_query);
+      var totalByAccountEntries = new EmpiriaHashTable<TrialBalanceEntry>(trialBalance.Count);
+
+      if (_query.ConsolidateBalancesToTargetCurrency == true) {
+
+        foreach (var entry in trialBalance) {
+          helper.SummaryByAccount(totalByAccountEntries, entry);
+        }
+
+        return totalByAccountEntries.ToFixedList().ToList();
+
+      } else {
+
+        return trialBalance;
+
+      }
+    }
 
 
-    private List<TrialBalanceEntry> GenerateTotalsAndCombineWithAccountEntries(
+    private List<TrialBalanceEntry> GenerateTotalsForBalanza(
                                     List<TrialBalanceEntry> balanceEntries,
                                     FixedList<TrialBalanceEntry> accountEntries) {
 

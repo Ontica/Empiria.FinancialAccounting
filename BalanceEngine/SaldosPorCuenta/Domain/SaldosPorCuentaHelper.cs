@@ -88,7 +88,8 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
 
       var trialBalanceHelper = new TrialBalanceHelper(_query);
       trialBalanceHelper.SetSubledgerAccountInfoByEntry(returnedAccountEntries);
-      List<TrialBalanceEntry> orderingAccountEntries = 
+
+      List<TrialBalanceEntry> orderingAccountEntries =
          trialBalanceHelper.OrderingParentsAndAccountEntries(returnedAccountEntries);
 
       return orderingAccountEntries;

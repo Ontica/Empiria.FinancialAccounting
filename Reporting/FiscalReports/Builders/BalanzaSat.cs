@@ -76,7 +76,7 @@ namespace Empiria.FinancialAccounting.Reporting.Builders {
     }
 
 
-    static private BalanzaSatEntry MapToBalanzaSATEntry(TrialBalanceEntryDto entry) {
+    static private BalanzaSatEntry MapToBalanzaSATEntry(BalanzaTradicionalEntryDto entry) {
       return new BalanzaSatEntry {
         Cuenta = entry.AccountNumber,
         SaldoInicial = entry.InitialBalance,
@@ -99,7 +99,7 @@ namespace Empiria.FinancialAccounting.Reporting.Builders {
 
 
     static private FixedList<IReportEntryDto> MapToReportDataEntries(FixedList<ITrialBalanceEntryDto> list) {
-      var mappedItems = list.Select((x) => MapToBalanzaSATEntry((TrialBalanceEntryDto) x));
+      var mappedItems = list.Select((x) => MapToBalanzaSATEntry((BalanzaTradicionalEntryDto) x));
 
       return new FixedList<IReportEntryDto>(mappedItems);
     }
