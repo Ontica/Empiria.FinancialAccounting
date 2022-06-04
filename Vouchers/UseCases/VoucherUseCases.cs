@@ -61,7 +61,7 @@ namespace Empiria.FinancialAccounting.Vouchers.UseCases {
 
       FixedList<Voucher> list = Voucher.GetList(filter, sort, query.PageSize);
 
-      return VoucherMapper.MapToVoucherDescriptor(list);
+      return VoucherMapper.MapToDescriptor(list);
     }
 
     #endregion Use cases

@@ -22,16 +22,16 @@ namespace Empiria.FinancialAccounting.Reporting.Builders {
 
     #region Public methods
 
-    public ReportDataDto Build(ReportBuilderQuery query) {
-      Assertion.Require(query, nameof(query));
+    public ReportDataDto Build(ReportBuilderQuery buildQuery) {
+      Assertion.Require(buildQuery, nameof(buildQuery));
 
       using (var usecases = TrialBalanceUseCases.UseCaseInteractor()) {
 
-        TrialBalanceQuery trialBalanceQuery = this.MapToTrialBalanceQuery(query);
+        TrialBalanceQuery trialBalanceQuery = this.MapToTrialBalanceQuery(buildQuery);
 
         TrialBalanceDto trialBalance = usecases.BuildTrialBalance(trialBalanceQuery);
 
-        return MapToReportDataDto(query, trialBalance);
+        return MapToReportDataDto(buildQuery, trialBalance);
       }
     }
 
@@ -40,7 +40,7 @@ namespace Empiria.FinancialAccounting.Reporting.Builders {
     #region Private methods
 
 
-    static private FixedList<DataTableColumn> GetReportColumns(ReportBuilderQuery query) {
+    static private FixedList<DataTableColumn> GetReportColumns(ReportBuilderQuery buildQuery) {
       var columns = new List<DataTableColumn>();
 
       columns.Add(new DataTableColumn("cuenta", "Cuenta", "text-nowrap"));
@@ -49,7 +49,7 @@ namespace Empiria.FinancialAccounting.Reporting.Builders {
       columns.Add(new DataTableColumn("haber", "Haber", "decimal"));
       columns.Add(new DataTableColumn("saldoFinal", "Saldo Final", "decimal"));
 
-      if (query.SendType == SendType.C) {
+      if (buildQuery.SendType == SendType.C) {
         columns.Add(new DataTableColumn("fechaModificacion", "Fecha Modificación", "date"));
       }
 
@@ -58,18 +58,18 @@ namespace Empiria.FinancialAccounting.Reporting.Builders {
 
 
 
-    private TrialBalanceQuery MapToTrialBalanceQuery(ReportBuilderQuery query) {
+    private TrialBalanceQuery MapToTrialBalanceQuery(ReportBuilderQuery buildQuery) {
       return new TrialBalanceQuery {
         TrialBalanceType = TrialBalanceType.Balanza,
-        AccountsChartUID = AccountsChart.Parse(query.AccountsChartUID).UID,
+        AccountsChartUID = AccountsChart.Parse(buildQuery.AccountsChartUID).UID,
         BalancesType = BalancesType.WithCurrentBalanceOrMovements,
         UseDefaultValuation = true,
         ConsolidateBalancesToTargetCurrency = true,
         ShowCascadeBalances = false,
         WithAverageBalance = true,
         InitialPeriod = new BalancesPeriod {
-          FromDate = new DateTime(query.ToDate.Year, query.ToDate.Month, 1),
-          ToDate = query.ToDate
+          FromDate = new DateTime(buildQuery.ToDate.Year, buildQuery.ToDate.Month, 1),
+          ToDate = buildQuery.ToDate
         },
         IsOperationalReport = true,
       };
@@ -88,11 +88,11 @@ namespace Empiria.FinancialAccounting.Reporting.Builders {
     }
 
 
-    static private ReportDataDto MapToReportDataDto(ReportBuilderQuery query,
+    static private ReportDataDto MapToReportDataDto(ReportBuilderQuery buildQuery,
                                                     TrialBalanceDto trialBalance) {
       return new ReportDataDto {
-        Query = query,
-        Columns = GetReportColumns(query),
+        Query = buildQuery,
+        Columns = GetReportColumns(buildQuery),
         Entries = MapToReportDataEntries(trialBalance.Entries)
       };
     }

@@ -16,7 +16,7 @@ namespace Empiria.FinancialAccounting.BalanceEngine.Adapters {
   /// <summary>Output DTO used to return Saldos por cuenta.</summary>
   public class SaldosPorCuentaDto {
 
-    [JsonProperty(PropertyName = "Command")]
+    [JsonProperty]
     public TrialBalanceQuery Query {
       get; internal set;
     }

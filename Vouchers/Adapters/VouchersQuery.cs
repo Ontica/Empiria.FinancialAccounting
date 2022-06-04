@@ -1,10 +1,10 @@
 ﻿/* Empiria Financial *****************************************************************************************
 *                                                                                                            *
 *  Module   : Vouchers Management                        Component : Interface adapters                      *
-*  Assembly : FinancialAccounting.Vouchers.dll           Pattern   : Command payload                         *
-*  Type     : SearchVouchersCommand                      License   : Please read LICENSE.txt file            *
+*  Assembly : FinancialAccounting.Vouchers.dll           Pattern   : Query payload                           *
+*  Type     : VouchersQuery                              License   : Please read LICENSE.txt file            *
 *                                                                                                            *
-*  Summary  : Command payload used to search accounting vouchers.                                            *
+*  Summary  : Quer payload used to search accounting vouchers.                                               *
 *                                                                                                            *
 ************************* Copyright(c) La Vía Óntica SC, Ontica LLC and contributors. All rights reserved. **/
 using System;
@@ -181,6 +181,6 @@ namespace Empiria.FinancialAccounting.Vouchers.Adapters {
     } = 1;
 
 
-  }  // class SearchVouchersCommand
+  }  // class VouchersQuery
 
 } // namespace Empiria.FinancialAccounting.Vouchers.Adapters

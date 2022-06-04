@@ -34,23 +34,23 @@ namespace Empiria.FinancialAccounting.Reporting {
 
     #region Services
 
-    public FileReportDto ExportReport(ReportBuilderQuery query) {
-      Assertion.Require(query, nameof(query));
+    public FileReportDto ExportReport(ReportBuilderQuery buildQuery) {
+      Assertion.Require(buildQuery, nameof(buildQuery));
 
-      ReportDataDto reportData = GenerateReport(query);
+      ReportDataDto reportData = GenerateReport(buildQuery);
 
-      IReportExporter exporter = GetReportExporter(query);
+      IReportExporter exporter = GetReportExporter(buildQuery.ExportTo);
 
       return exporter.Export(reportData);
     }
 
 
-    public ReportDataDto GenerateReport(ReportBuilderQuery query) {
-      Assertion.Require(query, nameof(query));
+    public ReportDataDto GenerateReport(ReportBuilderQuery buildQuery) {
+      Assertion.Require(buildQuery, nameof(buildQuery));
 
-      IReportBuilder reportBuilder = GetReportBuilder(query);
+      IReportBuilder reportBuilder = GetReportBuilder(buildQuery.ReportType);
 
-      return reportBuilder.Build(query);
+      return reportBuilder.Build(buildQuery);
     }
 
 
@@ -64,8 +64,8 @@ namespace Empiria.FinancialAccounting.Reporting {
 
     #region Helpers
 
-    private IReportBuilder GetReportBuilder(ReportBuilderQuery query) {
-      switch (query.ReportType) {
+    private IReportBuilder GetReportBuilder(string reportType) {
+      switch (reportType) {
         case "BalanzaSAT":
           return new BalanzaSat();
 
@@ -82,13 +82,13 @@ namespace Empiria.FinancialAccounting.Reporting {
           return new ListadoPolizasPorCuenta();
 
         default:
-          throw Assertion.EnsureNoReachThisCode($"Unhandled reportType '{query.ReportType}'.");
+          throw Assertion.EnsureNoReachThisCode($"Unhandled reportType '{reportType}'.");
       }
     }
 
 
-    private IReportExporter GetReportExporter(ReportBuilderQuery query) {
-      switch (query.ExportTo) {
+    private IReportExporter GetReportExporter(FileType fileType) {
+      switch (fileType) {
         case FileType.Excel:
           return new ExcelExporter();
 
@@ -96,7 +96,7 @@ namespace Empiria.FinancialAccounting.Reporting {
           return new XmlExporter();
 
         default:
-          throw Assertion.EnsureNoReachThisCode($"Unhandled exportTo file type '{query.ExportTo}'.");
+          throw Assertion.EnsureNoReachThisCode($"Unhandled exportTo file type '{fileType}'.");
       }
     }
 

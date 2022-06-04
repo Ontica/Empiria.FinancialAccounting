@@ -19,7 +19,7 @@ namespace Empiria.FinancialAccounting.BalanceEngine.Adapters {
   /// <summary>Output DTO used to return the 'Analitico de cuentas' report.</summary>
   public class AnaliticoDeCuentasDto {
 
-    [JsonProperty(PropertyName = "Command")]
+    [JsonProperty]
     public TrialBalanceQuery Query {
       get; internal set;
     }

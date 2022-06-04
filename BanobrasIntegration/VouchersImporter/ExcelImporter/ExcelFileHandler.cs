@@ -1,7 +1,7 @@
 ﻿/* Empiria Financial *****************************************************************************************
 *                                                                                                            *
 *  Module   : Banobras Integration Services                 Component : Vouchers Importer                    *
-*  Assembly : FinancialAccounting.BanobrasIntegration.dll   Pattern   : Command Controller                   *
+*  Assembly : FinancialAccounting.BanobrasIntegration.dll   Pattern   : Structurer                           *
 *  Type     : ExcelFileHandler                              License   : Please read LICENSE.txt file         *
 *                                                                                                            *
 *  Summary  : Provides read services for vouchers data imported from Excel files.                            *

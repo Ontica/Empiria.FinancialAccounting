@@ -4,7 +4,7 @@
 *  Assembly : FinancialAccounting.BanobrasIntegration.dll   Pattern   : Query payload                        *
 *  Type     : TransactionSlipsQuery                         License   : Please read LICENSE.txt file         *
 *                                                                                                            *
-*  Summary  : Command payload used to search transaction slips (volantes).                                   *
+*  Summary  : Query payload used to search transaction slips (volantes).                                     *
 *                                                                                                            *
 ************************* Copyright(c) La Vía Óntica SC, Ontica LLC and contributors. All rights reserved. **/
 using System;

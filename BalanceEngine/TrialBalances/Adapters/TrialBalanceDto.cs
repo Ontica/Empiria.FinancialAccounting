@@ -16,7 +16,7 @@ namespace Empiria.FinancialAccounting.BalanceEngine.Adapters {
   /// <summary>Output DTO used to return trial balances.</summary>
   public class TrialBalanceDto<T> where T : ITrialBalanceEntryDto {
 
-    [JsonProperty(PropertyName = "Command")]
+    [JsonProperty]
     public TrialBalanceQuery Query {
       get; internal set;
     } = new TrialBalanceQuery();
@@ -39,7 +39,7 @@ namespace Empiria.FinancialAccounting.BalanceEngine.Adapters {
   /// <summary>Output DTO used to return trial balances.</summary>
   public class TrialBalanceDto {
 
-    [JsonProperty(PropertyName = "Command")]
+    [JsonProperty]
     public TrialBalanceQuery Query {
       get; internal set;
     } = new TrialBalanceQuery();

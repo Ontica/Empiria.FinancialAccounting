@@ -1,7 +1,7 @@
 ﻿/* Empiria Financial *****************************************************************************************
 *                                                                                                            *
 *  Module   : Balance Engine                             Component : Data Layer                              *
-*  Assembly : FinancialAccounting.BalanceEngine.dll      Pattern   : Information Holder                      *
+*  Assembly : FinancialAccounting.BalanceEngine.dll      Pattern   : Data Holder                             *
 *  Type     : BalancesSqlClauses                         License   : Please read LICENSE.txt file            *
 *                                                                                                            *
 *  Summary  : Holds Sql clauses used in balances data service.                                               *
@@ -133,8 +133,8 @@ namespace Empiria.FinancialAccounting.BalanceEngine.Data {
         Ledgers               = query.Ledgers,
         WithSubledgerAccount  = query.WithSubledgerAccount,
         InitialPeriod = new BalancesPeriod {
-          FromDate = query.InitialPeriod.FromDate,
-          ToDate = query.InitialPeriod.ToDate,
+          FromDate  = query.InitialPeriod.FromDate,
+          ToDate    = query.InitialPeriod.ToDate,
         }
       };
     }

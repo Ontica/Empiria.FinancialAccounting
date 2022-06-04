@@ -66,6 +66,77 @@ namespace Empiria.FinancialAccounting.Vouchers.Adapters {
     }
 
 
+    static internal VoucherEntryDto MapEntry(VoucherEntry entry) {
+      return new VoucherEntryDto {
+        Id = entry.Id,
+        VoucherEntryType = entry.VoucherEntryType,
+        LedgerAccount = LedgerMapper.MapAccount(entry.LedgerAccount, entry.Voucher.AccountingDate),
+        Sector = entry.HasSector ?
+                 LedgerMapper.MapSectorRulesShort(entry.SectorRule) : null,
+        SubledgerAccount = entry.HasSubledgerAccount ?
+                           SubledgerMapper.MapToSubledgerAccountDescriptor(entry.SubledgerAccount) : null,
+        Concept = entry.Concept,
+        Date = entry.Date,
+        ResponsibilityArea = !entry.ResponsibilityArea.IsEmptyInstance ?
+                              entry.ResponsibilityArea.MapToNamedEntity() : null,
+        BudgetConcept = entry.BudgetConcept,
+        EventType = !entry.EventType.IsEmptyInstance ?
+                     entry.EventType.MapToNamedEntity() : null,
+        VerificationNumber = entry.VerificationNumber,
+        Currency = entry.Currency.MapToNamedEntity(),
+        Amount = entry.Amount,
+        BaseCurrencyAmount = entry.BaseCurrencyAmount,
+        ExchangeRate = entry.ExchangeRate
+      };
+    }
+
+
+    static internal FixedList<VoucherDescriptorDto> MapToDescriptor(FixedList<Voucher> list) {
+      return new FixedList<VoucherDescriptorDto>(list.Select((x) => MapToDescriptor(x)));
+    }
+
+
+    static private VoucherDescriptorDto MapToDescriptor(Voucher voucher) {
+      return new VoucherDescriptorDto {
+        Id = voucher.Id,
+        LedgerName = voucher.Ledger.FullName,
+        Number = voucher.Number,
+        Concept = voucher.Concept,
+        TransactionTypeName = voucher.TransactionType.Name,
+        VoucherTypeName = voucher.VoucherType.Name,
+        SourceName = voucher.FunctionalArea.FullName,
+        AccountingDate = voucher.AccountingDate,
+        RecordingDate = voucher.RecordingDate,
+        ElaboratedBy = voucher.ElaboratedBy.Name,
+        AuthorizedBy = voucher.AuthorizedBy.Name,
+        Status = voucher.StatusName
+      };
+    }
+
+
+    static private VoucherEntryDescriptorDto MapToDescriptor(VoucherEntry entry) {
+      return new VoucherEntryDescriptorDto {
+        Id = entry.Id,
+        VoucherEntryType = entry.VoucherEntryType,
+        AccountNumber = entry.LedgerAccount.Number,
+        AccountName = entry.LedgerAccount.Name,
+        Sector = entry.Sector.Code,
+        SubledgerAccountNumber = entry.HasSubledgerAccount ? entry.SubledgerAccount.Number : string.Empty,
+        SubledgerAccountName = entry.HasSubledgerAccount ? entry.SubledgerAccount.Name : string.Empty,
+        ResponsibilityArea = entry.ResponsibilityArea.Code == "NULL" ? string.Empty : entry.ResponsibilityArea.Code,
+        VerificationNumber = entry.VerificationNumber,
+        Currency = $"{entry.Currency.Code} / {entry.Currency.Abbrev}",
+        ExchangeRate = entry.ExchangeRate,
+        Debit = entry.Debit,
+        Credit = entry.Credit,
+        ItemType = VoucherEntryItemType.AccountEntry
+      };
+    }
+
+
+    #region Helpers
+
+
     static private VoucherActionsDto MapVoucherActions(Voucher voucher) {
       if (!voucher.IsOpened) {
         return new VoucherActionsDto();
@@ -101,7 +172,7 @@ namespace Empiria.FinancialAccounting.Vouchers.Adapters {
 
 
     static private FixedList<VoucherEntryDescriptorDto> MapToVoucherEntriesDescriptorWithTotals(Voucher voucher) {
-      var list = new List<VoucherEntryDescriptorDto>(voucher.Entries.Select((x) => MapToVoucherEntryDescriptor(x)));
+      var list = new List<VoucherEntryDescriptorDto>(voucher.Entries.Select((x) => MapToDescriptor(x)));
 
       FixedList<VoucherTotal> totals = voucher.GetTotals();
 
@@ -129,73 +200,9 @@ namespace Empiria.FinancialAccounting.Vouchers.Adapters {
     }
 
 
-    static private VoucherEntryDescriptorDto MapToVoucherEntryDescriptor(VoucherEntry entry) {
-      return new VoucherEntryDescriptorDto {
-        Id = entry.Id,
-        VoucherEntryType = entry.VoucherEntryType,
-        AccountNumber = entry.LedgerAccount.Number,
-        AccountName = entry.LedgerAccount.Name,
-        Sector = entry.Sector.Code,
-        SubledgerAccountNumber = entry.HasSubledgerAccount ? entry.SubledgerAccount.Number : string.Empty,
-        SubledgerAccountName = entry.HasSubledgerAccount ? entry.SubledgerAccount.Name : string.Empty,
-        ResponsibilityArea = entry.ResponsibilityArea.Code == "NULL" ? string.Empty : entry.ResponsibilityArea.Code,
-        VerificationNumber = entry.VerificationNumber,
-        Currency = $"{entry.Currency.Code} / {entry.Currency.Abbrev}",
-        ExchangeRate = entry.ExchangeRate,
-        Debit = entry.Debit,
-        Credit = entry.Credit,
-        ItemType = VoucherEntryItemType.AccountEntry
-      };
-    }
-
-
-    static internal VoucherEntryDto MapEntry(VoucherEntry entry) {
-      return new VoucherEntryDto {
-        Id = entry.Id,
-        VoucherEntryType = entry.VoucherEntryType,
-        LedgerAccount = LedgerMapper.MapAccount(entry.LedgerAccount, entry.Voucher.AccountingDate),
-        Sector = entry.HasSector ?
-                 LedgerMapper.MapSectorRulesShort(entry.SectorRule) : null,
-        SubledgerAccount = entry.HasSubledgerAccount ?
-                           SubledgerMapper.MapToSubledgerAccountDescriptor(entry.SubledgerAccount) : null,
-        Concept = entry.Concept,
-        Date = entry.Date,
-        ResponsibilityArea = !entry.ResponsibilityArea.IsEmptyInstance ?
-                              entry.ResponsibilityArea.MapToNamedEntity() : null,
-        BudgetConcept = entry.BudgetConcept,
-        EventType = !entry.EventType.IsEmptyInstance ?
-                     entry.EventType.MapToNamedEntity() : null,
-        VerificationNumber = entry.VerificationNumber,
-        Currency = entry.Currency.MapToNamedEntity(),
-        Amount = entry.Amount,
-        BaseCurrencyAmount = entry.BaseCurrencyAmount,
-        ExchangeRate = entry.ExchangeRate
-      };
-    }
-
-
-    static internal FixedList<VoucherDescriptorDto> MapToVoucherDescriptor(FixedList<Voucher> list) {
-      return new FixedList<VoucherDescriptorDto>(list.Select((x) => MapToVoucherDescriptor(x)));
-    }
-
-
-    static internal VoucherDescriptorDto MapToVoucherDescriptor(Voucher voucher) {
-      return new VoucherDescriptorDto {
-        Id = voucher.Id,
-        LedgerName = voucher.Ledger.FullName,
-        Number = voucher.Number,
-        Concept = voucher.Concept,
-        TransactionTypeName = voucher.TransactionType.Name,
-        VoucherTypeName = voucher.VoucherType.Name,
-        SourceName = voucher.FunctionalArea.FullName,
-        AccountingDate = voucher.AccountingDate,
-        RecordingDate = voucher.RecordingDate,
-        ElaboratedBy = voucher.ElaboratedBy.Name,
-        AuthorizedBy = voucher.AuthorizedBy.Name,
-        Status = voucher.StatusName
-      };
-    }
+    #endregion Helpers
 
   }  // class VoucherMapper
+
 
 }  // namespace Empiria.FinancialAccounting.Vouchers.Adapters

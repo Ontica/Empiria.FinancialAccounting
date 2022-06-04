@@ -28,13 +28,13 @@ namespace Empiria.FinancialAccounting.WebApi.Reporting {
     [HttpPost]
     [Route("v2/financial-accounting/reporting/{reportType}/data")]
     public SingleObjectModel BuildReport([FromUri] string reportType,
-                                         [FromBody] ReportBuilderQuery command) {
-      base.RequireBody(command);
+                                         [FromBody] ReportBuilderQuery buildQuery) {
+      base.RequireBody(buildQuery);
 
-      command.ReportType = reportType;
+      buildQuery.ReportType = reportType;
 
       using (var service = ReportingService.ServiceInteractor()) {
-        ReportDataDto reportData = service.GenerateReport(command);
+        ReportDataDto reportData = service.GenerateReport(buildQuery);
 
         return new SingleObjectModel(this.Request, reportData);
       }
@@ -44,13 +44,13 @@ namespace Empiria.FinancialAccounting.WebApi.Reporting {
     [HttpPost]
     [Route("v2/financial-accounting/reporting/{reportType}/export")]
     public SingleObjectModel ExportReportData([FromUri] string reportType,
-                                              [FromBody] ReportBuilderQuery command) {
-      base.RequireBody(command);
+                                              [FromBody] ReportBuilderQuery buildQuery) {
+      base.RequireBody(buildQuery);
 
-      command.ReportType = reportType;
+      buildQuery.ReportType = reportType;
 
       using (var service = ReportingService.ServiceInteractor()) {
-        FileReportDto fileReportDto = service.ExportReport(command);
+        FileReportDto fileReportDto = service.ExportReport(buildQuery);
 
         return new SingleObjectModel(this.Request, fileReportDto);
       }

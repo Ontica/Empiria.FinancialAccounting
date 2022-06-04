@@ -35,7 +35,7 @@ namespace Empiria.FinancialAccounting.Reconciliation.Adapters {
     } = ExecutionServer.DateMinValue;
 
 
-  }  // class OperationalDataCommand
+  }  // class OperationalDataDto
 
 
   /// <summary>OperationalDataDto type extension methods.</summary>

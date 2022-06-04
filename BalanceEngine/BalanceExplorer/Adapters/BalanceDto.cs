@@ -20,7 +20,7 @@ namespace Empiria.FinancialAccounting.BalanceEngine.BalanceExplorer.Adapters {
   /// <summary>Output DTO used to return balances.</summary>
   public class BalancesDto {
 
-    [JsonProperty(PropertyName = "Command")]
+    [JsonProperty]
     public BalancesQuery Query {
       get; internal set;
     } = new BalancesQuery();

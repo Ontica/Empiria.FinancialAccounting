@@ -43,9 +43,9 @@ namespace Empiria.FinancialAccounting.Reporting {
 
 
     private FixedList<string> GetBodyLines(FinancialReportDto financialReport) {
-      var financialReportType = financialReport.Command.GetFinancialReportType();
+      var financialReportType = financialReport.Query.GetFinancialReportType();
 
-      ExportTo exportTo = financialReportType.GetExportToConfig(financialReport.Command.ExportTo);
+      ExportTo exportTo = financialReportType.GetExportToConfig(financialReport.Query.ExportTo);
 
       var textLines = new List<string>(financialReport.Entries.Count * 2);
 

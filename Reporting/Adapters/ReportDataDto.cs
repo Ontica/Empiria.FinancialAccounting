@@ -20,7 +20,7 @@ namespace Empiria.FinancialAccounting.Reporting {
   /// <summary>Output DTO used to return financial accounting report's data.</summary>
   public class ReportDataDto {
 
-    [JsonProperty(PropertyName = "Command")]
+    [JsonProperty]
     public ReportBuilderQuery Query {
       get; internal set;
     } = new ReportBuilderQuery();
