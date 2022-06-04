@@ -18,13 +18,13 @@ namespace Empiria.FinancialAccounting.FinancialReports {
 
     #region Constructors and parsers
 
-    internal FinancialReport(FinancialReportCommand command,
+    internal FinancialReport(FinancialReportQuery buildQuery,
                              FixedList<FinancialReportEntry> entries) {
-      Assertion.Require(command, "command");
-      Assertion.Require(entries, "entries");
+      Assertion.Require(buildQuery, nameof(buildQuery));
+      Assertion.Require(entries, nameof(entries));
 
-      this.Command = command;
-      this.FinancialReportType = command.GetFinancialReportType();
+      this.BuildQuery = buildQuery;
+      this.FinancialReportType = buildQuery.GetFinancialReportType();
       this.Entries = entries;
     }
 
@@ -36,7 +36,7 @@ namespace Empiria.FinancialAccounting.FinancialReports {
       get;
     }
 
-    public FinancialReportCommand Command {
+    public FinancialReportQuery BuildQuery {
       get;
     }
 

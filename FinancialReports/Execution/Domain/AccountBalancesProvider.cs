@@ -21,14 +21,14 @@ namespace Empiria.FinancialAccounting.FinancialReports {
   /// <summary>Provides accounts balances for their use in financial reports.</summary>
   internal class AccountBalancesProvider {
 
-    private readonly FinancialReportCommand _query;
+    private readonly FinancialReportQuery _buildQuery;
 
     #region Constructors and parsers
 
-    internal AccountBalancesProvider(FinancialReportCommand query) {
-      Assertion.Require(query, nameof(query));
+    internal AccountBalancesProvider(FinancialReportQuery buildQuery) {
+      Assertion.Require(buildQuery, nameof(buildQuery));
 
-      _query = query;
+      _buildQuery = buildQuery;
     }
 
     #endregion Constructors and parsers
@@ -62,7 +62,7 @@ namespace Empiria.FinancialAccounting.FinancialReports {
     #region Helper methods
 
     private TrialBalanceQuery DetermineTrialBalanceQuery() {
-      FinancialReportType reportType = _query.GetFinancialReportType();
+      FinancialReportType reportType = _buildQuery.GetFinancialReportType();
 
       switch (reportType.DataSource) {
         case FinancialReportDataSource.AnaliticoCuentas:
@@ -89,7 +89,7 @@ namespace Empiria.FinancialAccounting.FinancialReports {
 
     private TrialBalanceQuery GetAnaliticoCuentasQuery() {
       return new TrialBalanceQuery {
-        AccountsChartUID = _query.AccountsChartUID,
+        AccountsChartUID = _buildQuery.AccountsChartUID,
         TrialBalanceType = BalanceEngine.TrialBalanceType.AnaliticoDeCuentas,
         UseDefaultValuation = true,
         ShowCascadeBalances = false,
@@ -97,8 +97,8 @@ namespace Empiria.FinancialAccounting.FinancialReports {
         BalancesType = BalanceEngine.BalancesType.WithCurrentBalanceOrMovements,
         ConsolidateBalancesToTargetCurrency = false,
         InitialPeriod = new BalancesPeriod {
-          FromDate = new DateTime(_query.ToDate.Year, _query.ToDate.Month, 1),
-          ToDate = _query.ToDate,
+          FromDate = new DateTime(_buildQuery.ToDate.Year, _buildQuery.ToDate.Month, 1),
+          ToDate = _buildQuery.ToDate,
           UseDefaultValuation = true
         }
       };
@@ -107,7 +107,7 @@ namespace Empiria.FinancialAccounting.FinancialReports {
 
     private TrialBalanceQuery GetBalanzaEnColumnasPorMonedaQuery() {
       return new TrialBalanceQuery {
-        AccountsChartUID = _query.AccountsChartUID,
+        AccountsChartUID = _buildQuery.AccountsChartUID,
         TrialBalanceType = BalanceEngine.TrialBalanceType.BalanzaEnColumnasPorMoneda,
         UseDefaultValuation = true,
         ShowCascadeBalances = false,
@@ -115,8 +115,8 @@ namespace Empiria.FinancialAccounting.FinancialReports {
         BalancesType = BalanceEngine.BalancesType.WithCurrentBalanceOrMovements,
         ConsolidateBalancesToTargetCurrency = false,
         InitialPeriod = new BalancesPeriod {
-          FromDate = new DateTime(_query.ToDate.Year, _query.ToDate.Month, 1),
-          ToDate = _query.ToDate,
+          FromDate = new DateTime(_buildQuery.ToDate.Year, _buildQuery.ToDate.Month, 1),
+          ToDate = _buildQuery.ToDate,
           UseDefaultValuation = true
         }
       };

@@ -42,7 +42,7 @@ namespace Empiria.FinancialAccounting.Reporting.Exporters.Excel {
 
       _excelFile.Open();
 
-      SetHeader(financialReport.Command);
+      SetHeader(financialReport.Query);
 
       SetTable(financialReport);
 
@@ -54,22 +54,22 @@ namespace Empiria.FinancialAccounting.Reporting.Exporters.Excel {
     }
 
 
-    private void SetHeader(FinancialReportCommand command) {
-      FinancialReportType reportType = command.GetFinancialReportType();
+    private void SetHeader(FinancialReportQuery buildQuery) {
+      FinancialReportType reportType = buildQuery.GetFinancialReportType();
 
       switch (reportType.DesignType) {
         case FinancialReportDesignType.FixedRows:
 
           _excelFile.SetCell($"L2", DateTime.Now);
-          _excelFile.SetCell($"L3", command.ToDate);
+          _excelFile.SetCell($"L3", buildQuery.ToDate);
 
           return;
 
         case FinancialReportDesignType.AccountsIntegration:
 
-          _excelFile.SetCell($"A2", command.GetFinancialReportType().BaseReport.Name);
+          _excelFile.SetCell($"A2", buildQuery.GetFinancialReportType().BaseReport.Name);
           _excelFile.SetCell($"I2", DateTime.Now);
-          _excelFile.SetCell($"I3", command.ToDate);
+          _excelFile.SetCell($"I3", buildQuery.ToDate);
 
           return;
 
@@ -80,7 +80,7 @@ namespace Empiria.FinancialAccounting.Reporting.Exporters.Excel {
 
 
     private void SetTable(FinancialReportDto financialReport) {
-      FinancialReportType reportType = financialReport.Command.GetFinancialReportType();
+      FinancialReportType reportType = financialReport.Query.GetFinancialReportType();
 
       switch (reportType.DesignType) {
         case FinancialReportDesignType.FixedRows:

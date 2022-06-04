@@ -37,7 +37,7 @@ namespace Empiria.FinancialAccounting.Reporting {
     public FileReportDto Export(FinancialReportDto financialReport) {
       Assertion.Require(financialReport, "financialReport");
 
-      IFinancialReportBuilder reportBuilder = GetReportBuilder(financialReport.Command);
+      IFinancialReportBuilder reportBuilder = GetReportBuilder(financialReport.Query);
 
       return reportBuilder.Build(financialReport);
     }
@@ -46,12 +46,12 @@ namespace Empiria.FinancialAccounting.Reporting {
 
     #region Helpers
 
-    private IFinancialReportBuilder GetReportBuilder(FinancialReportCommand command) {
-      Assertion.Require(command, "command");
+    private IFinancialReportBuilder GetReportBuilder(FinancialReportQuery buildQuery) {
+      Assertion.Require(buildQuery, nameof(buildQuery));
 
-      var reportType = command.GetFinancialReportType();
+      var reportType = buildQuery.GetFinancialReportType();
 
-      var exportTo = reportType.GetExportToConfig(command.ExportTo);
+      var exportTo = reportType.GetExportToConfig(buildQuery.ExportTo);
 
       switch (exportTo.FileType) {
         case "Excel":
@@ -66,7 +66,7 @@ namespace Empiria.FinancialAccounting.Reporting {
 
 
         default:
-          throw Assertion.EnsureNoReachThisCode($"Unhandled reportType exportTo '{command.ExportTo}'.");
+          throw Assertion.EnsureNoReachThisCode($"Unhandled reportType exportTo '{buildQuery.ExportTo}'.");
       }
     }
 

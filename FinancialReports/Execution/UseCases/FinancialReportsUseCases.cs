@@ -33,7 +33,7 @@ namespace Empiria.FinancialAccounting.FinancialReports.UseCases {
     #region Use cases
 
     public FixedList<FinancialReportTypeDto> FinancialReportTypes(string accountsChartUID) {
-      Assertion.Require(accountsChartUID, "accountsChartUID");
+      Assertion.Require(accountsChartUID, nameof(accountsChartUID));
 
       var accountsChart = AccountsChart.Parse(accountsChartUID);
 
@@ -43,22 +43,22 @@ namespace Empiria.FinancialAccounting.FinancialReports.UseCases {
     }
 
 
-    public FinancialReportDto GenerateFinancialReport(FinancialReportCommand command) {
-      Assertion.Require(command, "command");
+    public FinancialReportDto GenerateFinancialReport(FinancialReportQuery buildQuery) {
+      Assertion.Require(buildQuery, nameof(buildQuery));
 
-      var financialReportGenerator = new FinancialReportGenerator(command);
+      var financialReportGenerator = new FinancialReportBuilder(buildQuery);
 
-      FinancialReport financialReport = financialReportGenerator.BuildFinancialReport();
+      FinancialReport financialReport = financialReportGenerator.Build();
 
       return FinancialReportMapper.Map(financialReport);
     }
 
 
-    public FinancialReportDto GetFinancialReportBreakdown(string reportRowUID, FinancialReportCommand command) {
+    public FinancialReportDto GetFinancialReportBreakdown(string reportRowUID, FinancialReportQuery buildQuery) {
       Assertion.Require(reportRowUID, nameof(reportRowUID));
-      Assertion.Require(command, nameof(command));
+      Assertion.Require(buildQuery, nameof(buildQuery));
 
-      var financialReportGenerator = new FinancialReportGenerator(command);
+      var financialReportGenerator = new FinancialReportBuilder(buildQuery);
 
       FinancialReport breakdownReport = financialReportGenerator.GetBreakdown(reportRowUID);
 

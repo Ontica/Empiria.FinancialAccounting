@@ -22,16 +22,16 @@ namespace Empiria.FinancialAccounting.FinancialReports {
   /// <summary>Generates a report with fixed rows linked to financial concepts (e.g. R01, R10, R12).</summary>
   internal class FixedRowFinancialConceptsReport {
 
-    private readonly FinancialReportCommand _command;
+    private readonly FinancialReportQuery _buildQuery;
     private readonly EmpiriaHashTable<FixedList<ITrialBalanceEntryDto>> _balances;
 
     #region Public methods
 
-    internal FixedRowFinancialConceptsReport(FinancialReportCommand command) {
-      _command = command;
+    internal FixedRowFinancialConceptsReport(FinancialReportQuery buildQuery) {
+      _buildQuery = buildQuery;
       _balances = GetBalancesHashTable();
 
-      this.FinancialReportType = _command.GetFinancialReportType();
+      this.FinancialReportType = _buildQuery.GetFinancialReportType();
     }
 
     public FinancialReportType FinancialReportType {
@@ -94,7 +94,6 @@ namespace Empiria.FinancialAccounting.FinancialReports {
     }
 
     #endregion Public methods
-
 
     #region Private methods
 
@@ -205,7 +204,7 @@ namespace Empiria.FinancialAccounting.FinancialReports {
 
     private ReportEntryTotals ProcessFixedValue(FinancialConceptEntry integrationEntry) {
       ExternalValue value = ExternalValue.GetValue(integrationEntry.ExternalVariableCode,
-                                                   _command.ToDate);
+                                                   _buildQuery.ToDate);
 
       var totals = CreateReportEntryTotalsObject();
 
@@ -434,7 +433,7 @@ namespace Empiria.FinancialAccounting.FinancialReports {
 
 
     private EmpiriaHashTable<FixedList<ITrialBalanceEntryDto>> GetBalancesHashTable() {
-      var balancesProvider = new AccountBalancesProvider(_command);
+      var balancesProvider = new AccountBalancesProvider(_buildQuery);
 
       return balancesProvider.GetBalancesAsHashTable();
     }
@@ -443,7 +442,7 @@ namespace Empiria.FinancialAccounting.FinancialReports {
     private FinancialReport MapToFinancialReport<T>(FixedList<T> reportEntries) where T : FinancialReportEntry {
       var convertedEntries = new FixedList<FinancialReportEntry>(reportEntries.Select(x => (FinancialReportEntry) x));
 
-      return new FinancialReport(_command, convertedEntries);
+      return new FinancialReport(_buildQuery, convertedEntries);
     }
 
 

@@ -2,9 +2,9 @@
 *                                                                                                            *
 *  Module   : Financial Reports                          Component : Domain Layer                            *
 *  Assembly : FinancialAccounting.FinancialReports.dll   Pattern   : Service provider                        *
-*  Type     : FinancialReportGenerator                   License   : Please read LICENSE.txt file            *
+*  Type     : FinancialReportBuilder                     License   : Please read LICENSE.txt file            *
 *                                                                                                            *
-*  Summary  : Provides services to generate a trial balance.                                                 *
+*  Summary  : Provides services to generate financial and regulatory reports.                                *
 *                                                                                                            *
 ************************* Copyright(c) La Vía Óntica SC, Ontica LLC and contributors. All rights reserved. **/
 using System;
@@ -13,32 +13,32 @@ using Empiria.FinancialAccounting.FinancialReports.Adapters;
 
 namespace Empiria.FinancialAccounting.FinancialReports {
 
-  /// <summary>Provides services to generate a trial balance.</summary>
-  internal class FinancialReportGenerator {
+  /// <summary>Provides services to generate financial and regulatory reports.</summary>
+  internal class FinancialReportBuilder {
 
-    internal FinancialReportGenerator(FinancialReportCommand command) {
-      Assertion.Require(command, "command");
+    internal FinancialReportBuilder(FinancialReportQuery buildQuery) {
+      Assertion.Require(buildQuery, nameof(buildQuery));
 
-      this.Command = command;
+      this.BuildQuery = buildQuery;
     }
 
 
-    public FinancialReportCommand Command {
+    public FinancialReportQuery BuildQuery {
       get;
     }
 
 
-    internal FinancialReport BuildFinancialReport() {
-      FinancialReportType reportType = this.Command.GetFinancialReportType();
+    internal FinancialReport Build() {
+      FinancialReportType reportType = this.BuildQuery.GetFinancialReportType();
 
       switch (reportType.DesignType) {
         case FinancialReportDesignType.FixedRows:
-          var fixedRows = new FixedRowFinancialConceptsReport(this.Command);
+          var fixedRows = new FixedRowFinancialConceptsReport(this.BuildQuery);
 
           return fixedRows.Generate();
 
         case FinancialReportDesignType.AccountsIntegration:
-          var conceptsIntegration = new FixedRowFinancialConceptsReport(this.Command);
+          var conceptsIntegration = new FixedRowFinancialConceptsReport(this.BuildQuery);
 
           return conceptsIntegration.GenerateIntegration();
 
@@ -50,11 +50,11 @@ namespace Empiria.FinancialAccounting.FinancialReports {
 
 
     internal FinancialReport GetBreakdown(string reportRowUID) {
-      FinancialReportType reportType = this.Command.GetFinancialReportType();
+      FinancialReportType reportType = this.BuildQuery.GetFinancialReportType();
 
       switch (reportType.DesignType) {
         case FinancialReportDesignType.FixedRows:
-          var fixedRows = new FixedRowFinancialConceptsReport(this.Command);
+          var fixedRows = new FixedRowFinancialConceptsReport(this.BuildQuery);
 
           return fixedRows.GenerateBreakdown(reportRowUID);
 
@@ -64,6 +64,6 @@ namespace Empiria.FinancialAccounting.FinancialReports {
       }
     }
 
-  } // class FinancialReportGenerator
+  } // class FinancialReportBuilder
 
 } // namespace Empiria.FinancialAccounting.FinancialReports

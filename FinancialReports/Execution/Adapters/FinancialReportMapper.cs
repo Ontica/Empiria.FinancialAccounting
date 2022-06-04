@@ -27,7 +27,7 @@ namespace Empiria.FinancialAccounting.FinancialReports.Adapters {
 
     static internal FinancialReportDto Map(FinancialReport financialReport) {
       return new FinancialReportDto {
-        Command = financialReport.Command,
+        Query = financialReport.BuildQuery,
         Columns = financialReport.FinancialReportType.DataColumns,
         Entries = MapEntries(financialReport)
       };
@@ -36,7 +36,7 @@ namespace Empiria.FinancialAccounting.FinancialReports.Adapters {
 
     static internal FinancialReportDto MapBreakdown(FinancialReport breakdownReport) {
       return new FinancialReportDto {
-        Command = breakdownReport.Command,
+        Query = breakdownReport.BuildQuery,
         Columns = breakdownReport.FinancialReportType.BreakdownColumns,
         Entries = MapBreakdownEntries(breakdownReport.Entries)
       };
@@ -113,7 +113,7 @@ namespace Empiria.FinancialAccounting.FinancialReports.Adapters {
 
 
     static private FixedList<DynamicFinancialReportEntryDto> MapEntries(FinancialReport financialReport) {
-      FinancialReportType reportType = financialReport.Command.GetFinancialReportType();
+      FinancialReportType reportType = financialReport.BuildQuery.GetFinancialReportType();
 
       switch (reportType.DesignType) {
 
@@ -125,7 +125,7 @@ namespace Empiria.FinancialAccounting.FinancialReports.Adapters {
 
         default:
           throw Assertion.EnsureNoReachThisCode(
-                $"Unhandled financial report type {financialReport.Command.FinancialReportType}.");
+                $"Unhandled financial report type {financialReport.BuildQuery.FinancialReportType}.");
       }
     }
 

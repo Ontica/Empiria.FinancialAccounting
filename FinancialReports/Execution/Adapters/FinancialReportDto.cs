@@ -14,9 +14,9 @@ namespace Empiria.FinancialAccounting.FinancialReports.Adapters {
   /// <summary>Output DTO used to return financial reports.</summary>
   public class FinancialReportDto {
 
-    public FinancialReportCommand Command {
+    public FinancialReportQuery Query {
       get; internal set;
-    } = new FinancialReportCommand();
+    } = new FinancialReportQuery();
 
 
     public FixedList<DataTableColumn> Columns {

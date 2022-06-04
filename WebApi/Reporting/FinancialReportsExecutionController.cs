@@ -37,11 +37,11 @@ namespace Empiria.FinancialAccounting.WebApi.FinancialReports {
 
     [HttpPost]
     [Route("v2/financial-accounting/financial-reports/generate")]
-    public SingleObjectModel GetFinancialReport([FromBody] FinancialReportCommand command) {
-      base.RequireBody(command);
+    public SingleObjectModel GetFinancialReport([FromBody] FinancialReportQuery buildQuery) {
+      base.RequireBody(buildQuery);
 
       using (var usecases = FinancialReportsUseCases.UseCaseInteractor()) {
-        FinancialReportDto financialReport = usecases.GenerateFinancialReport(command);
+        FinancialReportDto financialReport = usecases.GenerateFinancialReport(buildQuery);
 
         return new SingleObjectModel(base.Request, financialReport);
       }
@@ -51,11 +51,11 @@ namespace Empiria.FinancialAccounting.WebApi.FinancialReports {
     [HttpPost]
     [Route("v2/financial-accounting/financial-reports/generate/breakdown/{reportRowUID:guid}")]
     public SingleObjectModel GetFinancialReportBreakdown([FromUri] string reportRowUID,
-                                                         [FromBody] FinancialReportCommand command) {
-      base.RequireBody(command);
+                                                         [FromBody] FinancialReportQuery buildQuery) {
+      base.RequireBody(buildQuery);
 
       using (var usecases = FinancialReportsUseCases.UseCaseInteractor()) {
-        FinancialReportDto financialReport = usecases.GetFinancialReportBreakdown(reportRowUID, command);
+        FinancialReportDto financialReport = usecases.GetFinancialReportBreakdown(reportRowUID, buildQuery);
 
         return new SingleObjectModel(base.Request, financialReport);
       }
@@ -64,13 +64,13 @@ namespace Empiria.FinancialAccounting.WebApi.FinancialReports {
 
     [HttpPost]
     [Route("v2/financial-accounting/financial-reports/export")]
-    public SingleObjectModel ExportFinancialReport([FromBody] FinancialReportCommand command) {
+    public SingleObjectModel ExportFinancialReport([FromBody] FinancialReportQuery buildQuery) {
 
-      base.RequireBody(command);
+      base.RequireBody(buildQuery);
 
       using (var usecases = FinancialReportsUseCases.UseCaseInteractor()) {
 
-        FinancialReportDto financialReport = usecases.GenerateFinancialReport(command);
+        FinancialReportDto financialReport = usecases.GenerateFinancialReport(buildQuery);
 
         var exporter = FinancialReportExportService.ServiceInteractor();
 
