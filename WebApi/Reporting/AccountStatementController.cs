@@ -25,32 +25,32 @@ namespace Empiria.FinancialAccounting.WebApi.Reporting {
 
     [HttpPost]
     [Route("v2/financial-accounting/account-statement")]
-    public SingleObjectModel BuildAccountStatement([FromBody] AccountStatementQuery command) {
+    public SingleObjectModel BuildAccountStatement([FromBody] AccountStatementQuery buildQuery) {
 
-      base.RequireBody(command);
+      base.RequireBody(buildQuery);
 
       using (var usecases = AccountStatementUseCases.UseCaseInteractor()) {
 
-        AccountStatementDto vouchers = usecases.BuildAccountStatement(command);
+        AccountStatementDto accountStatement = usecases.BuildAccountStatement(buildQuery);
 
-        return new SingleObjectModel(this.Request, vouchers);
+        return new SingleObjectModel(this.Request, accountStatement);
       }
     }
 
 
     [HttpPost]
     [Route("v2/financial-accounting/account-statement/excel")]
-    public SingleObjectModel ExportAccountStatementToExcel([FromBody] AccountStatementQuery command) {
+    public SingleObjectModel ExportAccountStatementToExcel([FromBody] AccountStatementQuery buildQuery) {
 
-      base.RequireBody(command);
+      base.RequireBody(buildQuery);
 
       using (var usecases = AccountStatementUseCases.UseCaseInteractor()) {
 
-        AccountStatementDto vouchers = usecases.BuildAccountStatement(command);
+        AccountStatementDto accountStatement = usecases.BuildAccountStatement(buildQuery);
 
         var excelExporter = new ExcelExporterService();
 
-        FileReportDto excelFileDto = excelExporter.Export(vouchers);
+        FileReportDto excelFileDto = excelExporter.Export(accountStatement);
 
         return new SingleObjectModel(this.Request, excelFileDto);
       }

@@ -2,31 +2,30 @@
 *                                                                                                            *
 *  Module   : Reporting Services                         Component : Domain Layer                            *
 *  Assembly : FinancialAccounting.Reporting.dll          Pattern   : Helper methods                          *
-*  Type     : VouchersByAccountHelper                       License   : Please read LICENSE.txt file         *
+*  Type     : AccountStatementHelper                     License   : Please read LICENSE.txt file            *
 *                                                                                                            *
-*  Summary  : Helper methods to build vouchers by account information.                                       *
+*  Summary  : Provides helper methods to build acount statements.                                            *
 *                                                                                                            *
 ************************* Copyright(c) La Vía Óntica SC, Ontica LLC and contributors. All rights reserved. **/
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using Empiria.Collections;
+
 using Empiria.FinancialAccounting.BalanceEngine;
 using Empiria.FinancialAccounting.Reporting.Adapters;
 using Empiria.FinancialAccounting.Reporting.Data;
-using Empiria.FinancialAccounting.Reporting.Domain;
 
 namespace Empiria.FinancialAccounting.Reporting {
 
-  /// <summary>Helper methods to build vouchers by account information.</summary>
+  /// <summary>Provides helper methods to build acount statements.</summary>
   internal class AccountStatementHelper {
 
-    private readonly AccountStatementQuery AccountStatementCommand;
+    private readonly AccountStatementQuery _buildQuery;
 
-    internal AccountStatementHelper(AccountStatementQuery accountStatementCommand) {
-      Assertion.Require(accountStatementCommand, "accountStatementCommand");
+    internal AccountStatementHelper(AccountStatementQuery buildQuery) {
+      Assertion.Require(buildQuery, nameof(buildQuery));
 
-      AccountStatementCommand = accountStatementCommand;
+      _buildQuery = buildQuery;
     }
 
 
@@ -60,12 +59,13 @@ namespace Empiria.FinancialAccounting.Reporting {
       return returnedVouchers.ToFixedList();
     }
 
+
     internal AccountStatementEntry GetInitialAccountBalance(FixedList<AccountStatementEntry> orderingVouchers) {
 
       List<AccountStatementEntry> returnedVouchersWithCurrentBalance =
                                    new List<AccountStatementEntry>(orderingVouchers).ToList();
 
-      decimal initialBalance = AccountStatementCommand.Entry.CurrentBalanceForBalances;
+      decimal initialBalance = _buildQuery.Entry.CurrentBalanceForBalances;
 
       foreach (var voucher in returnedVouchersWithCurrentBalance) {
         if (voucher.DebtorCreditor == "A") {
@@ -79,6 +79,7 @@ namespace Empiria.FinancialAccounting.Reporting {
       return initialAccountBalance;
     }
 
+
     internal AccountStatementEntry GetInitialOrCurrentAccountBalance(
                                       decimal balance, bool isCurrentBalance = false,
                                       decimal debit=0, decimal credit=0) {
@@ -87,7 +88,6 @@ namespace Empiria.FinancialAccounting.Reporting {
 
       initialBalanceEntry.Ledger = Ledger.Empty;
       initialBalanceEntry.Currency = Currency.Empty;
-      //initialBalanceEntry.Account = StandardAccount.Empty;
       initialBalanceEntry.StandardAccountId = StandardAccount.Empty.Id;
       initialBalanceEntry.Sector = Sector.Empty;
       initialBalanceEntry.SubledgerAccountNumber = "";
@@ -106,9 +106,12 @@ namespace Empiria.FinancialAccounting.Reporting {
 
 
     internal string GetTitle() {
-      var accountNumber = AccountStatementCommand.Entry.AccountNumberForBalances;
-      var accountName = AccountStatementCommand.Entry.AccountName;
-      var subledgerAccountNumber = AccountStatementCommand.Entry.SubledgerAccountNumber;
+
+      var accountNumber = _buildQuery.Entry.AccountNumberForBalances;
+
+      var accountName = _buildQuery.Entry.AccountName;
+
+      var subledgerAccountNumber = _buildQuery.Entry.SubledgerAccountNumber;
 
       var title = "";
 
@@ -145,25 +148,27 @@ namespace Empiria.FinancialAccounting.Reporting {
 
       decimal initialBalance = initialAccountBalance.CurrentBalance;
       decimal currentBalance = initialBalance;
-      decimal debit = 0, credit = 0;
+      decimal debit = 0;
+      decimal credit = 0;
 
       foreach (var voucher in returnedVouchersWithCurrentBalance) {
         if (voucher.DebtorCreditor == "D") {
           voucher.CurrentBalance = currentBalance + (voucher.Debit - voucher.Credit);
           currentBalance = currentBalance + (voucher.Debit - voucher.Credit);
+
         } else {
           voucher.CurrentBalance = currentBalance + (voucher.Credit - voucher.Debit);
           currentBalance = currentBalance + (voucher.Credit - voucher.Debit);
+
         }
+
         debit += voucher.Debit;
         credit += voucher.Credit;
       }
 
 
-      AccountStatementEntry voucherWithCurrentBalance =
-                              GetInitialOrCurrentAccountBalance(
-                                AccountStatementCommand.Entry.CurrentBalanceForBalances,
-                                true, debit, credit);
+      AccountStatementEntry voucherWithCurrentBalance = GetInitialOrCurrentAccountBalance(
+                               _buildQuery.Entry.CurrentBalanceForBalances, true, debit, credit);
 
       if (voucherWithCurrentBalance != null) {
         returnedVouchersWithCurrentBalance.Add(voucherWithCurrentBalance);
@@ -174,24 +179,15 @@ namespace Empiria.FinancialAccounting.Reporting {
 
 
     internal FixedList<AccountStatementEntry> GetVoucherEntries() {
-      var builder = new AccountStatementSqlClausesBuilder(AccountStatementCommand);
+      var builder = new AccountStatementSqlClausesBuilder(_buildQuery);
 
       var sqlClauses = builder.BuildSqlClauses();
 
       return AccountStatementDataService.GetVouchersWithAccounts(sqlClauses);
     }
 
-
-
     #endregion Public methods
 
-
-    #region Private methods
-
-
-
-    #endregion Private methods
-
-  } // class VouchersByAccountHelper
+  } // class AccountStatementHelper
 
 } // namespace Empiria.FinancialAccounting.Reporting.Domain

@@ -1,22 +1,25 @@
 ﻿/* Empiria Financial *****************************************************************************************
 *                                                                                                            *
 *  Module   : Reporting Services                         Component : Interface adapters                      *
-*  Assembly : FinancialAccounting.Reporting.dll          Pattern   : Command payload                         *
-*  Type     : AccountStatementCommand                    License   : Please read LICENSE.txt file            *
+*  Assembly : FinancialAccounting.Reporting.dll          Pattern   : Query payload                           *
+*  Type     : AccountStatementQuery                      License   : Please read LICENSE.txt file            *
 *                                                                                                            *
-*  Summary  : Command payload used to build account statement.                                               *
+*  Summary  : Query payload used to build account statements.                                                *
 *                                                                                                            *
 ************************* Copyright(c) La Vía Óntica SC, Ontica LLC and contributors. All rights reserved. **/
 using System;
+
+using Newtonsoft.Json;
 
 using Empiria.FinancialAccounting.BalanceEngine;
 using Empiria.FinancialAccounting.BalanceEngine.BalanceExplorer.Adapters;
 
 namespace Empiria.FinancialAccounting.Reporting.Adapters {
 
-  /// <summary>Command payload used to build account statement.</summary>
+  /// <summary>Query payload used to build account statement.</summary>
   public class AccountStatementQuery {
 
+    [JsonProperty("Query")]
     public BalancesQuery BalancesQuery {
       get; internal set;
     } = new BalancesQuery();
@@ -26,7 +29,7 @@ namespace Empiria.FinancialAccounting.Reporting.Adapters {
       get; internal set;
     } = new AccountStatementEntry();
 
-  } // class AccountStatementCommand
+  } // class AccountStatementQuery
 
 
 

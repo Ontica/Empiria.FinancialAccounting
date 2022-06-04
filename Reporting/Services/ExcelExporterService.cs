@@ -119,16 +119,16 @@ namespace Empiria.FinancialAccounting.Reporting {
     }
 
 
-    public FileReportDto Export(AccountStatementDto vouchers) {
-      Assertion.Require(vouchers, "vouchers");
+    public FileReportDto Export(AccountStatementDto accountStatement) {
+      Assertion.Require(accountStatement, nameof(accountStatement));
 
       var templateUID = $"VouchersByAccountTemplate";
 
       var templateConfig = FileTemplateConfig.Parse(templateUID);
 
-      var exporter = new VouchersByAccountExcelExporter(templateConfig);
+      var exporter = new AccountStatementExcelExporter(templateConfig);
 
-      ExcelFile excelFile = exporter.CreateExcelFile(vouchers);
+      ExcelFile excelFile = exporter.CreateExcelFile(accountStatement);
 
       return excelFile.ToFileReportDto();
     }

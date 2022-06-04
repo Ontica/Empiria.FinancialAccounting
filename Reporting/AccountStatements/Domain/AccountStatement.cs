@@ -24,7 +24,7 @@ namespace Empiria.FinancialAccounting.Reporting {
       Assertion.Require(query,    nameof(query));
       Assertion.Require(entries,  nameof(entries));
 
-      Command = query;
+      Query = query;
       Entries = entries;
       Title   = title;
     }
@@ -34,7 +34,7 @@ namespace Empiria.FinancialAccounting.Reporting {
 
     #region Properties
 
-    public BalancesQuery Command {
+    public BalancesQuery Query {
       get;
     }
 

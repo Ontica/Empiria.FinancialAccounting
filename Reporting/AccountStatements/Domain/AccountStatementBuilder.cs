@@ -2,9 +2,9 @@
 *                                                                                                            *
 *  Module   : Reporting Services                         Component : Domain Layer                            *
 *  Assembly : FinancialAccounting.Reporting.dll          Pattern   : Service provider                        *
-*  Type     : VouchersByAccountConstructor               License   : Please read LICENSE.txt file            *
+*  Type     : AccountStatementBuilder                    License   : Please read LICENSE.txt file            *
 *                                                                                                            *
-*  Summary  : Provides services to generate vouchers by account.                                             *
+*  Summary  : Provides the services that is used to generate account statements (estados de cuenta).         *
 *                                                                                                            *
 ************************* Copyright(c) La Vía Óntica SC, Ontica LLC and contributors. All rights reserved. **/
 using System;
@@ -14,28 +14,27 @@ using Empiria.FinancialAccounting.Reporting.Adapters;
 
 namespace Empiria.FinancialAccounting.Reporting {
 
-  /// <summary>Provides services to generate vouchers by account.</summary>
-  internal class AccountStatementConstructor {
+  /// <summary>Provides the services that is used to generate account statements (estados de cuenta).</summary>
+  internal class AccountStatementBuilder {
 
-    private readonly AccountStatementQuery AccountStatementCommand;
+    private readonly AccountStatementQuery _buildQuery;
 
-    internal AccountStatementConstructor(AccountStatementQuery accountStatementCommand) {
-      Assertion.Require(accountStatementCommand, "accountStatementCommand");
+    internal AccountStatementBuilder(AccountStatementQuery buildQuery) {
+      Assertion.Require(buildQuery, nameof(buildQuery));
 
-      AccountStatementCommand = accountStatementCommand;
+      _buildQuery = buildQuery;
     }
 
 
-
-    #region Public methods
-
+    #region Methods
 
     internal AccountStatement Build() {
-      if (!AccountStatementCommand.BalancesQuery.UseCache) {
+
+      if (!_buildQuery.BalancesQuery.UseCache) {
         return GenerateAccountStatement();
       }
 
-      string hash = AccountStatementCache.GenerateHash(AccountStatementCommand);
+      string hash = AccountStatementCache.GenerateHash(_buildQuery);
 
       AccountStatement accountStatement = AccountStatementCache.TryGet(hash);
       if (accountStatement == null) {
@@ -47,12 +46,12 @@ namespace Empiria.FinancialAccounting.Reporting {
     }
 
 
-    internal AccountStatement GenerateAccountStatement() {
-      var helper = new AccountStatementHelper(AccountStatementCommand);
+    private AccountStatement GenerateAccountStatement() {
+      var helper = new AccountStatementHelper(_buildQuery);
       bool? isBalance = true;
 
-      if (AccountStatementCommand.BalancesQuery.TrialBalanceType == TrialBalanceType.BalanzaValorizadaComparativa ||
-          AccountStatementCommand.BalancesQuery.TrialBalanceType == TrialBalanceType.BalanzaDolarizada) {
+      if (_buildQuery.BalancesQuery.TrialBalanceType == TrialBalanceType.BalanzaValorizadaComparativa ||
+          _buildQuery.BalancesQuery.TrialBalanceType == TrialBalanceType.BalanzaDolarizada) {
         isBalance = null;
       }
 
@@ -75,12 +74,12 @@ namespace Empiria.FinancialAccounting.Reporting {
 
       string title = helper.GetTitle();
 
-      return new AccountStatement(AccountStatementCommand.BalancesQuery, returnedVoucherEntries, title);
+      return new AccountStatement(_buildQuery.BalancesQuery, returnedVoucherEntries, title);
     }
 
 
-    #endregion Public methods
+    #endregion Methods
 
-  } // class VouchersByAccountConstructor
+  } // class AccountStatementBuilder
 
 } // namespace Empiria.FinancialAccounting.Reporting

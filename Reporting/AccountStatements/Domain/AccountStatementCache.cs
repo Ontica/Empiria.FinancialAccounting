@@ -43,6 +43,6 @@ namespace Empiria.FinancialAccounting.Reporting {
       _cache.Insert(cacheHashKey, accountStatement);
     }
 
-  } // class AccountStatementCache 
+  } // class AccountStatementCache
 
 } // namespace Empiria.FinancialAccounting.Reporting

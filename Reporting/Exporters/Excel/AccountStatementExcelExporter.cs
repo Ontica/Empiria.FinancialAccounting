@@ -2,9 +2,9 @@
 *                                                                                                            *
 *  Module   : Reporting Services                           Component : Excel Exporters                       *
 *  Assembly : FinancialAccounting.Reporting.dll            Pattern   : IExcelExporter                        *
-*  Type     : VouchersByAccountExcelExporter               License   : Please read LICENSE.txt file          *
+*  Type     : AccountStatementExcelExporter                License   : Please read LICENSE.txt file          *
 *                                                                                                            *
-*  Summary  : Creates a Microsoft Excel file with vouchers by account information.                           *
+*  Summary  : Creates a Microsoft Excel file with an account statement.                                      *
 *                                                                                                            *
 ************************* Copyright(c) La Vía Óntica SC, Ontica LLC and contributors. All rights reserved. **/
 using System;
@@ -16,25 +16,25 @@ using Empiria.FinancialAccounting.Reporting.Adapters;
 
 namespace Empiria.FinancialAccounting.Reporting.Exporters.Excel {
 
-  /// <summary>Creates a Microsoft Excel file with vouchers by account information.</summary>
-  internal class VouchersByAccountExcelExporter {
+  /// <summary>Creates a Microsoft Excel file with an account statement.</summary>
+  internal class AccountStatementExcelExporter {
 
     private BalancesQuery _query = new BalancesQuery();
     private readonly FileTemplateConfig _templateConfig;
     private ExcelFile _excelFile;
 
 
-    public VouchersByAccountExcelExporter(FileTemplateConfig templateConfig) {
-      Assertion.Require(templateConfig, "templateConfig");
+    public AccountStatementExcelExporter(FileTemplateConfig templateConfig) {
+      Assertion.Require(templateConfig, nameof(templateConfig));
 
       _templateConfig = templateConfig;
     }
 
 
-    internal ExcelFile CreateExcelFile(AccountStatementDto voucherDto) {
-      Assertion.Require(voucherDto, "voucherDto");
+    internal ExcelFile CreateExcelFile(AccountStatementDto accountStatement) {
+      Assertion.Require(accountStatement, nameof(accountStatement));
 
-      _query = voucherDto.Command;
+      _query = accountStatement.Query;
 
       _excelFile = new ExcelFile(_templateConfig);
 
@@ -42,7 +42,7 @@ namespace Empiria.FinancialAccounting.Reporting.Exporters.Excel {
 
       SetHeader();
 
-      SetTable(voucherDto);
+      SetTable(accountStatement);
 
       _excelFile.Save();
 
@@ -62,12 +62,12 @@ namespace Empiria.FinancialAccounting.Reporting.Exporters.Excel {
     }
 
 
-    private void SetTable(AccountStatementDto voucherDto) {
-      FillOutVouchersByAccount(voucherDto.Entries.Select(x => (VouchersByAccountEntryDto) x));
+    private void SetTable(AccountStatementDto accountStatement) {
+      FillOut(accountStatement.Entries.Select(x => (VouchersByAccountEntryDto) x));
     }
 
 
-    private void FillOutVouchersByAccount(IEnumerable<VouchersByAccountEntryDto> vouchers) {
+    private void FillOut(IEnumerable<VouchersByAccountEntryDto> vouchers) {
       int i = 5;
 
       foreach (var voucher in vouchers) {
@@ -102,6 +102,6 @@ namespace Empiria.FinancialAccounting.Reporting.Exporters.Excel {
       }
     }
 
-  } // class VouchersByAccountExcelExporter
+  } // class AccountStatementExcelExporter
 
 } // namespace Empiria.FinancialAccounting.Reporting.Exporters.Excel

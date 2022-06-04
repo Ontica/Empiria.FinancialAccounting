@@ -8,8 +8,10 @@
 *                                                                                                            *
 ************************* Copyright(c) La Vía Óntica SC, Ontica LLC and contributors. All rights reserved. **/
 using System;
-using Empiria.FinancialAccounting.Reporting.Adapters;
+
 using Empiria.Services;
+
+using Empiria.FinancialAccounting.Reporting.Adapters;
 
 namespace Empiria.FinancialAccounting.Reporting.UseCases {
 
@@ -30,19 +32,17 @@ namespace Empiria.FinancialAccounting.Reporting.UseCases {
 
     #region Use cases
 
+    public AccountStatementDto BuildAccountStatement(AccountStatementQuery buildQuery) {
+      Assertion.Require(buildQuery, nameof(buildQuery));
 
-    public AccountStatementDto BuildAccountStatement(AccountStatementQuery command) {
-      Assertion.Require(command, "command");
+      var builder = new AccountStatementBuilder(buildQuery);
 
-      var vouchersConstructor = new AccountStatementConstructor(command);
+      AccountStatement accountStatement = builder.Build();
 
-      AccountStatement vouchers = vouchersConstructor.Build();
-
-      return AccountStatementMapper.Map(vouchers);
+      return AccountStatementMapper.Map(accountStatement);
     }
 
-
-    #endregion
+    #endregion Use cases
 
   } // class AccountStatementUseCases
 

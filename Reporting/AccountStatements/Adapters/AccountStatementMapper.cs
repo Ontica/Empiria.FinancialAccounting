@@ -4,7 +4,7 @@
 *  Assembly : FinancialAccounting.Reporting.dll          Pattern   : Mapper class                            *
 *  Type     : AccountStatementMapper                     License   : Please read LICENSE.txt file            *
 *                                                                                                            *
-*  Summary  : Methods used to map vouchers by account.                                                       *
+*  Summary  : Mapping methods for account statements (estados de cuenta).                                    *
 *                                                                                                            *
 ************************* Copyright(c) La Vía Óntica SC, Ontica LLC and contributors. All rights reserved. **/
 using System;
@@ -14,17 +14,17 @@ using Empiria.FinancialAccounting.BalanceEngine;
 
 namespace Empiria.FinancialAccounting.Reporting.Adapters {
 
-  /// <summary>Methods used to map vouchers by account.</summary>
+  /// <summary>Mapping methods for account statements (estados de cuenta).</summary>
   static internal class AccountStatementMapper {
 
     #region Public mappers
 
-    static internal AccountStatementDto Map(AccountStatement vouchers) {
+    static internal AccountStatementDto Map(AccountStatement accountStatement) {
       return new AccountStatementDto {
-        Command = vouchers.Command,
+        Query = accountStatement.Query,
         Columns = MapColumns(),
-        Entries = MapToDto(vouchers.Entries),
-        Title = vouchers.Title
+        Entries = MapToDto(accountStatement.Entries),
+        Title = accountStatement.Title
       };
     }
 
@@ -53,7 +53,7 @@ namespace Empiria.FinancialAccounting.Reporting.Adapters {
     }
 
 
-    private static FixedList<IVouchersByAccountEntryDto> MapToDto(
+    private static FixedList<IVouchersByAccountEntryDto> MapToDto (
                     FixedList<IVouchersByAccountEntry> list) {
 
       var mapped = list.Select((x) => MapToVouchersByAccount((Reporting.AccountStatementEntry) x));

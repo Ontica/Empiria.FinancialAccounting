@@ -2,7 +2,7 @@
 *                                                                                                            *
 *  Module   : Balance Engine                             Component : Interface adapters                      *
 *  Assembly : FinancialAccounting.Reporting.dll          Pattern   : Type Extension methods                  *
-*  Type     : VouchersByAccountCommandExtensions         License   : Please read LICENSE.txt file            *
+*  Type     : AccountStatementSqlClausesBuilder          License   : Please read LICENSE.txt file            *
 *                                                                                                            *
 *  Summary  : Type extension methods for AccountStatementQueryExtensions.                                    *
 *                                                                                                            *
@@ -159,6 +159,6 @@ namespace Empiria.FinancialAccounting.Reporting.Data {
 
     #endregion Helpers
 
-  } // class AccountStatementQueryExtensions
+  } // class AccountStatementSqlClausesBuilder
 
 } // namespace Empiria.FinancialAccounting.Reporting.Adapters
