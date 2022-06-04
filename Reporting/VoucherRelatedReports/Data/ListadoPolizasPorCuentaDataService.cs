@@ -18,7 +18,7 @@ namespace Empiria.FinancialAccounting.Reporting.Data {
 
 
     static internal FixedList<AccountStatementEntry> GetVouchersByAccountEntries(
-                                                        PolizaCommandData commandData) {
+                                                        ListadoPolizasSqlClauses commandData) {
 
       var operation = DataOperation.Parse("@qryVouchersByAccount",
                                           commandData.AccountsChart.Id,

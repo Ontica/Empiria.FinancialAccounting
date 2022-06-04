@@ -20,7 +20,7 @@ namespace Empiria.FinancialAccounting.Reporting.Adapters {
   /// <summary>Output DTO used to return vouchers report data.</summary>
   public class PolizasDto {
 
-    [JsonProperty(PropertyName = "Command")]
+    [JsonProperty]
     public ListadoPolizasQuery Query {
       get; internal set;
     } = new ListadoPolizasQuery();

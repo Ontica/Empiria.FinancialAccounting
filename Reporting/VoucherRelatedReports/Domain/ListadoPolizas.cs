@@ -21,14 +21,14 @@ namespace Empiria.FinancialAccounting.Reporting.Builders {
 
     #region Public methods
 
-    public ReportDataDto Build(ReportBuilderQuery query) {
-      Assertion.Require(query, nameof(query));
+    public ReportDataDto Build(ReportBuilderQuery buildQuery) {
+      Assertion.Require(buildQuery, nameof(buildQuery));
 
-      ListadoPolizasQuery listadoPolizasQuery = MapToListadoPolizasQuery(query);
+      ListadoPolizasQuery listadoPolizasQuery = MapToListadoPolizasQuery(buildQuery);
 
       PolizasDto polizas = BuildPolizasReport(listadoPolizasQuery);
 
-      return MapToReportDataDto(query, polizas);
+      return MapToReportDataDto(buildQuery, polizas);
     }
 
     private PolizasDto BuildPolizasReport(ListadoPolizasQuery query) {
@@ -49,12 +49,12 @@ namespace Empiria.FinancialAccounting.Reporting.Builders {
     #region Private methods
 
 
-    private ListadoPolizasQuery MapToListadoPolizasQuery(ReportBuilderQuery reportBuilderQuery) {
+    private ListadoPolizasQuery MapToListadoPolizasQuery(ReportBuilderQuery buildQuery) {
       return new ListadoPolizasQuery {
-        AccountsChartUID = reportBuilderQuery.AccountsChartUID,
-        Ledgers = reportBuilderQuery.Ledgers,
-        FromDate = reportBuilderQuery.FromDate,
-        ToDate = reportBuilderQuery.ToDate
+        AccountsChartUID = buildQuery.AccountsChartUID,
+        Ledgers = buildQuery.Ledgers,
+        FromDate = buildQuery.FromDate,
+        ToDate = buildQuery.ToDate
       };
     }
 
@@ -117,10 +117,10 @@ namespace Empiria.FinancialAccounting.Reporting.Builders {
     }
 
 
-    static private ReportDataDto MapToReportDataDto(ReportBuilderQuery query,
+    static private ReportDataDto MapToReportDataDto(ReportBuilderQuery buildQuery,
                                                     PolizasDto polizas) {
       return new ReportDataDto {
-        Query = query,
+        Query = buildQuery,
         Columns = GetReportColumns(),
         Entries = MapToReportDataEntries(polizas.Entries)
       };
@@ -140,65 +140,5 @@ namespace Empiria.FinancialAccounting.Reporting.Builders {
 
 
   } // ListadoPolizas
-
-
-  public class PolizaReturnedEntry : IReportEntryDto {
-
-    public string LedgerNumber {
-      get; internal set;
-    }
-
-
-    public string LedgerName {
-      get; internal set;
-    }
-
-
-    public string VoucherNumber {
-      get;
-      internal set;
-    }
-
-
-    public string AccountingDate {
-      get; internal set;
-    }
-
-
-    public string RecordingDate {
-      get; internal set;
-    }
-
-
-    public string ElaboratedBy {
-      get; internal set;
-    }
-
-
-    public string Concept {
-      get; internal set;
-    }
-
-
-    public decimal Debit {
-      get; internal set;
-    }
-
-
-    public decimal Credit {
-      get; internal set;
-    }
-
-    public int VouchersByLedger {
-      get; internal set;
-    }
-
-
-    public ItemType ItemType {
-      get; internal set;
-    } = ItemType.Entry;
-
-
-  }  // class PolizaReturnedEntry
 
 } // namespace Empiria.FinancialAccounting.Reporting.Builders

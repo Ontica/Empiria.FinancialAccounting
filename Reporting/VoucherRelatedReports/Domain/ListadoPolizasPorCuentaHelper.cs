@@ -10,9 +10,10 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+
 using Empiria.Collections;
+
 using Empiria.FinancialAccounting.BalanceEngine;
-using Empiria.FinancialAccounting.Reporting.Adapters;
 using Empiria.FinancialAccounting.Reporting.Data;
 
 namespace Empiria.FinancialAccounting.Reporting {
@@ -20,12 +21,12 @@ namespace Empiria.FinancialAccounting.Reporting {
   /// <summary>Helper methods to build voucher list by account information.</summary>
   internal class ListadoPolizasPorCuentaHelper {
 
-    private readonly ReportBuilderQuery _query;
+    private readonly ReportBuilderQuery _buildQuery;
 
-    public ListadoPolizasPorCuentaHelper(ReportBuilderQuery query) {
-      Assertion.Require(query, nameof(query));
+    public ListadoPolizasPorCuentaHelper(ReportBuilderQuery buildQuery) {
+      Assertion.Require(buildQuery, nameof(buildQuery));
 
-      _query = query;
+      _buildQuery = buildQuery;
     }
 
 
@@ -84,14 +85,11 @@ namespace Empiria.FinancialAccounting.Reporting {
 
 
     internal FixedList<AccountStatementEntry> GetVoucherEntries() {
-      var commandExtensions = new PolizasPorCuentaCommandExtensions();
+      var builder = new PolizasPorCuentaSqlClausesBuilder(_buildQuery);
 
-      PolizaCommandData commandData = commandExtensions.MapToPolizaCommandData(_query);
+      ListadoPolizasSqlClauses sqlClauses = builder.Build();
 
-      FixedList<AccountStatementEntry> vouchers =
-              ListadoPolizasPorCuentaDataService.GetVouchersByAccountEntries(commandData);
-
-      return vouchers;
+      return ListadoPolizasPorCuentaDataService.GetVouchersByAccountEntries(sqlClauses);
     }
 
 

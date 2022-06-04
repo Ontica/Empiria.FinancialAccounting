@@ -19,12 +19,12 @@ namespace Empiria.FinancialAccounting.Reporting {
 
     #region Public methods
 
-    public ReportDataDto Build(ReportBuilderQuery query) {
-      Assertion.Require(query, nameof(query));
+    public ReportDataDto Build(ReportBuilderQuery buildQuery) {
+      Assertion.Require(buildQuery, nameof(buildQuery));
 
-      FixedList<IVouchersByAccountEntry> vouchersByAccount = BuildVouchersByAccount(query);
+      FixedList<IVouchersByAccountEntry> vouchersByAccount = BuildVouchersByAccount(buildQuery);
 
-      return MapToReportDataDto(query, vouchersByAccount);
+      return MapToReportDataDto(buildQuery, vouchersByAccount);
     }
 
 
@@ -32,9 +32,9 @@ namespace Empiria.FinancialAccounting.Reporting {
 
     #region Private methods
 
-    private FixedList<IVouchersByAccountEntry> BuildVouchersByAccount(ReportBuilderQuery query) {
+    private FixedList<IVouchersByAccountEntry> BuildVouchersByAccount(ReportBuilderQuery buildQuery) {
 
-      var helper = new ListadoPolizasPorCuentaHelper(query);
+      var helper = new ListadoPolizasPorCuentaHelper(buildQuery);
 
       FixedList<AccountStatementEntry> vouchersList = helper.GetVoucherEntries();
 
@@ -53,14 +53,14 @@ namespace Empiria.FinancialAccounting.Reporting {
     }
 
 
-    private static FixedList<DataTableColumn> GetReportColumns(ReportBuilderQuery query) {
+    private static FixedList<DataTableColumn> GetReportColumns(ReportBuilderQuery buildQuery) {
       var columns = new List<DataTableColumn>();
 
       columns.Add(new DataTableColumn("ledgerNumber", "Cont", "text"));
       columns.Add(new DataTableColumn("currencyCode", "Mon", "text"));
       columns.Add(new DataTableColumn("accountNumber", "Cuenta", "text-nowrap"));
       columns.Add(new DataTableColumn("sectorCode", "Sct", "text"));
-      if (query.WithSubledgerAccount) {
+      if (buildQuery.WithSubledgerAccount) {
         columns.Add(new DataTableColumn("subledgerAccountNumber", "Auxiliar", "text-nowrap"));
       }
       columns.Add(new DataTableColumn("voucherNumber", "No. Poliza", "text-nowrap"));
@@ -76,11 +76,11 @@ namespace Empiria.FinancialAccounting.Reporting {
     }
 
 
-    static private ReportDataDto MapToReportDataDto(ReportBuilderQuery query,
+    static private ReportDataDto MapToReportDataDto(ReportBuilderQuery buildQuery,
                                                     FixedList<IVouchersByAccountEntry> vouchers) {
       return new ReportDataDto {
-        Query = query,
-        Columns = GetReportColumns(query),
+        Query = buildQuery,
+        Columns = GetReportColumns(buildQuery),
         Entries = MapToReportDataEntries(vouchers)
       };
     }

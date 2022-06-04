@@ -10,7 +10,9 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+
 using Empiria.Collections;
+
 using Empiria.FinancialAccounting.Reporting.Adapters;
 using Empiria.FinancialAccounting.Reporting.Data;
 using Empiria.FinancialAccounting.Reporting.Domain;
@@ -58,21 +60,17 @@ namespace Empiria.FinancialAccounting.Reporting {
 
 
     internal FixedList<PolizaEntry> GetPolizaEntries() {
-      var commandExtensions = new ListadoPolizasQueryExtensions();
+      var builder = new ListadoPolizasSqlClausesBuilder(_query);
 
-      PolizaCommandData commandData = commandExtensions.MapToPolizaCommandData(_query);
+      ListadoPolizasSqlClauses sqlClauses = builder.Build();
 
-      FixedList<PolizaEntry> polizas = ListadoPolizasDataService.GetPolizasEntries(commandData);
-
-      return polizas;
+      return ListadoPolizasDataService.GetPolizasEntries(sqlClauses);
     }
 
 
-    #endregion
-
+    #endregion Public methods
 
     #region Private methods
-
 
     private FixedList<PolizaEntry> CombineTotalByLedgerAndVouchers(
                                     FixedList<PolizaEntry> list, FixedList<PolizaEntry> totalByLedger) {
@@ -165,9 +163,7 @@ namespace Empiria.FinancialAccounting.Reporting {
 
     }
 
-
-    #endregion
-
+    #endregion Private methods
 
   } // class ListadoPolizasHelper
 

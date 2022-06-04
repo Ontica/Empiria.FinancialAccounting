@@ -17,7 +17,7 @@ namespace Empiria.FinancialAccounting.Reporting.Data {
   /// <summary>Provides data read methods for voucher list.</summary>
   static internal class ListadoPolizasDataService {
 
-    static internal FixedList<PolizaEntry> GetPolizasEntries(PolizaCommandData command) {
+    static internal FixedList<PolizaEntry> GetPolizasEntries(ListadoPolizasSqlClauses command) {
       var operation = DataOperation.Parse("@qryVouchers",
                                           CommonMethods.FormatSqlDbDate(command.FromDate),
                                           CommonMethods.FormatSqlDbDate(command.ToDate),
