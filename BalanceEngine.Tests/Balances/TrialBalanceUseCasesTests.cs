@@ -90,6 +90,27 @@ namespace Empiria.FinancialAccounting.Tests.BalanceEngine {
 
 
     [Fact]
+    public void Should_Build_Saldos_Por_Cuenta() {
+      TrialBalanceQuery query = GetDefaultTrialBalanceQuery();
+
+      query.TrialBalanceType = TrialBalanceType.SaldosPorCuenta;
+      query.BalancesType = BalancesType.WithCurrentBalance;
+      query.ShowCascadeBalances = false;
+      query.WithSubledgerAccount = false;
+      query.UseDefaultValuation = false;
+      query.WithAverageBalance = false;
+      query.FromAccount = "2";
+      query.ToAccount = "2";
+
+      TrialBalanceDto sut = BalanceEngineProxy.BuildTrialBalance(query);
+
+      Assert.NotNull(sut);
+      Assert.Equal(query, sut.Query);
+      Assert.NotEmpty(sut.Entries);
+    }
+
+
+    [Fact]
     public void Should_Build_A_Traditional_No_Consolidated_Trial_Balance() {
       TrialBalanceQuery query = GetDefaultTrialBalanceQuery();
 
@@ -151,8 +172,8 @@ namespace Empiria.FinancialAccounting.Tests.BalanceEngine {
           ToDate = TestingConstants.TO_DATE,
         },
         FinalPeriod = new BalancesPeriod {
-          FromDate = new DateTime(2022, 02, 01),
-          ToDate = new DateTime(2022, 02, 28)
+          FromDate = new DateTime(2022, 03, 01),
+          ToDate = new DateTime(2022, 03, 31)
         }
       };
     }
