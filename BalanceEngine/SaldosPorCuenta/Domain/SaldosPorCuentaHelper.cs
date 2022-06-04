@@ -77,25 +77,6 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
     }
 
 
-    internal List<TrialBalanceEntry> CombineSummaryAndPostingEntries(
-                                      List<TrialBalanceEntry> parentAccounts,
-                                      FixedList<TrialBalanceEntry> accountEntries) {
-
-      var returnedAccountEntries = new List<TrialBalanceEntry>(accountEntries);
-
-      foreach (var entry in parentAccounts.Where(a => a.SubledgerAccountIdParent > 0)) {
-        returnedAccountEntries.Add(entry);
-      }
-
-      var trialBalanceHelper = new TrialBalanceHelper(_query);
-      trialBalanceHelper.SetSubledgerAccountInfoByEntry(returnedAccountEntries);
-
-      List<TrialBalanceEntry> orderingAccountEntries =
-         trialBalanceHelper.OrderingParentsAndAccountEntries(returnedAccountEntries);
-
-      return orderingAccountEntries;
-    }
-
     internal List<TrialBalanceEntry> CombineCurrencyTotalsAndPostingEntries(
                                       List<TrialBalanceEntry> accountEntries,
                                       List<TrialBalanceEntry> totalsByCurrency) {
@@ -115,40 +96,6 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
       return returnedEntries.OrderBy(a => a.Ledger.Number)
                             .ThenBy(a => a.Currency.Code)
                             .ToList();
-    }
-
-    internal List<TrialBalanceEntry> GenerateTotalsByCurrency(
-                                     List<TrialBalanceEntry> totalsByDebtorCreditorEntries) {
-      
-      var totalsByCurrency = new EmpiriaHashTable<TrialBalanceEntry>();
-
-      foreach (var debtorOrCreditorEntry in totalsByDebtorCreditorEntries) {
-
-        SummaryByCurrencyEntries(totalsByCurrency, debtorOrCreditorEntry);
-      }
-
-      totalsByDebtorCreditorEntries.AddRange(totalsByCurrency.Values.ToList());
-
-      return totalsByDebtorCreditorEntries;
-    }
-
-
-    internal void SummaryByCurrencyEntries(EmpiriaHashTable<TrialBalanceEntry> summaryEntries,
-                                          TrialBalanceEntry balanceEntry) {
-
-      TrialBalanceEntry entry = balanceEntry.CreatePartialCopy();
-
-      if (entry.ItemType == TrialBalanceItemType.BalanceTotalCreditor) {
-        entry.InitialBalance = -1 * entry.InitialBalance;
-        entry.CurrentBalance = -1 * entry.CurrentBalance;
-      }
-      entry.GroupName = "TOTAL MONEDA " + entry.Currency.FullName;
-
-      string hash = $"{entry.GroupName}||{Sector.Empty.Code}||{entry.Currency.Id}||{entry.Ledger.Id}";
-
-      var trialBalanceHelper = new TrialBalanceHelper(_query);
-      trialBalanceHelper.GenerateOrIncreaseEntries(summaryEntries, entry, StandardAccount.Empty, 
-                         Sector.Empty, TrialBalanceItemType.BalanceTotalCurrency, hash);
     }
 
 
@@ -176,6 +123,42 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
     }
 
 
+    internal List<TrialBalanceEntry> CombineSummaryAndPostingEntries(
+                                      List<TrialBalanceEntry> parentAccounts,
+                                      FixedList<TrialBalanceEntry> accountEntries) {
+
+      var returnedAccountEntries = new List<TrialBalanceEntry>(accountEntries);
+
+      foreach (var entry in parentAccounts.Where(a => a.SubledgerAccountIdParent > 0)) {
+        returnedAccountEntries.Add(entry);
+      }
+
+      var trialBalanceHelper = new TrialBalanceHelper(_query);
+      trialBalanceHelper.SetSubledgerAccountInfoByEntry(returnedAccountEntries);
+
+      List<TrialBalanceEntry> orderingAccountEntries =
+         trialBalanceHelper.OrderingParentsAndAccountEntries(returnedAccountEntries);
+
+      return orderingAccountEntries;
+    }
+
+
+    internal List<TrialBalanceEntry> GenerateTotalsByCurrency(
+                                     List<TrialBalanceEntry> totalsByDebtorCreditorEntries) {
+      
+      var totalsByCurrency = new EmpiriaHashTable<TrialBalanceEntry>();
+
+      foreach (var debtorOrCreditorEntry in totalsByDebtorCreditorEntries) {
+
+        SummaryByCurrencyEntries(totalsByCurrency, debtorOrCreditorEntry);
+      }
+
+      //totalsByDebtorCreditorEntries.AddRange(totalsByCurrency.Values.ToList());
+
+      return totalsByCurrency.ToFixedList().ToList();
+    }
+
+
     internal List<TrialBalanceEntry> GenerateTotalsDebtorOrCreditor(
                                       FixedList<TrialBalanceEntry> accountEntries) {
 
@@ -189,38 +172,24 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
     }
 
 
-    private void SummaryByDebtorCreditorEntries(EmpiriaHashTable<TrialBalanceEntry> totalsByDebtorOrCredtor,
-                                                TrialBalanceEntry balanceEntry) {
+    internal void SummaryByCurrencyEntries(EmpiriaHashTable<TrialBalanceEntry> summaryEntries,
+                                          TrialBalanceEntry balanceEntry) {
 
       TrialBalanceEntry entry = balanceEntry.CreatePartialCopy();
-      entry.DebtorCreditor = balanceEntry.DebtorCreditor;
-      TrialBalanceItemType itemType = TrialBalanceItemType.BalanceTotalDebtor;
 
-      if (entry.Account.DebtorCreditor == DebtorCreditorType.Deudora) {
-        entry.GroupName = "TOTAL DEUDORAS ";
+      if (entry.ItemType == TrialBalanceItemType.BalanceTotalCreditor) {
+        entry.InitialBalance = -1 * entry.InitialBalance;
+        entry.CurrentBalance = -1 * entry.CurrentBalance;
       }
+      entry.GroupName = "TOTAL MONEDA " + entry.Currency.FullName;
 
-      if (entry.Account.DebtorCreditor == DebtorCreditorType.Acreedora) {
-        entry.GroupName = "TOTAL ACREEDORAS ";
-        itemType = TrialBalanceItemType.BalanceTotalCreditor;
-      }
-
-      entry.GroupName += entry.Currency.FullName;
-      string hash = $"{entry.GroupName}||{entry.Currency.Id}";
-
-      if ((_query.WithSubledgerAccount && _query.ShowCascadeBalances) ||
-           _query.ShowCascadeBalances) {
-
-        hash = $"{entry.Ledger.Id}||{entry.Currency.Id}||{entry.GroupName}";
-      }
+      string hash = $"{entry.GroupName}||{Sector.Empty.Code}||{entry.Currency.Id}||{entry.Ledger.Id}";
 
       var trialBalanceHelper = new TrialBalanceHelper(_query);
-      trialBalanceHelper.GenerateOrIncreaseEntries(totalsByDebtorOrCredtor, entry, StandardAccount.Empty,
-                                                   Sector.Empty, itemType, hash);
+
+      trialBalanceHelper.GenerateOrIncreaseEntries(summaryEntries, entry, StandardAccount.Empty, 
+                         Sector.Empty, TrialBalanceItemType.BalanceTotalCurrency, hash);
     }
-
-
-
 
 
     #region Public methods
@@ -313,6 +282,37 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
       var trialBalanceHelper = new TrialBalanceHelper(_query);
       trialBalanceHelper.GenerateOrIncreaseEntries(parentAccounts, entry, targetAccount,
                                                    targetSector, TrialBalanceItemType.Summary, hash);
+    }
+
+
+    private void SummaryByDebtorCreditorEntries(EmpiriaHashTable<TrialBalanceEntry> totalsByDebtorOrCredtor,
+                                                TrialBalanceEntry balanceEntry) {
+
+      TrialBalanceEntry entry = balanceEntry.CreatePartialCopy();
+      entry.DebtorCreditor = balanceEntry.DebtorCreditor;
+      TrialBalanceItemType itemType = TrialBalanceItemType.BalanceTotalDebtor;
+
+      if (entry.Account.DebtorCreditor == DebtorCreditorType.Deudora) {
+        entry.GroupName = "TOTAL DEUDORAS ";
+      }
+
+      if (entry.Account.DebtorCreditor == DebtorCreditorType.Acreedora) {
+        entry.GroupName = "TOTAL ACREEDORAS ";
+        itemType = TrialBalanceItemType.BalanceTotalCreditor;
+      }
+
+      entry.GroupName += entry.Currency.FullName;
+      string hash = $"{entry.GroupName}||{entry.Currency.Id}";
+
+      if ((_query.WithSubledgerAccount && _query.ShowCascadeBalances) ||
+           _query.ShowCascadeBalances) {
+
+        hash = $"{entry.Ledger.Id}||{entry.Currency.Id}||{entry.GroupName}";
+      }
+
+      var trialBalanceHelper = new TrialBalanceHelper(_query);
+      trialBalanceHelper.GenerateOrIncreaseEntries(totalsByDebtorOrCredtor, entry, StandardAccount.Empty,
+                                                   Sector.Empty, itemType, hash);
     }
 
 
