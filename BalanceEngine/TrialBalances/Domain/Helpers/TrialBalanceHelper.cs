@@ -28,16 +28,14 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
     }
 
 
-    internal void AssignLastChangeDatesToSummaryEntries(
-                                      FixedList<TrialBalanceEntry> entries,
-                                      EmpiriaHashTable<TrialBalanceEntry> summaryEntries) {
+    internal void AssignLastChangeDatesToParentEntries(
+                                      FixedList<TrialBalanceEntry> AccountEntries,
+                                      FixedList<TrialBalanceEntry> parentAccounts) {
 
-      var summaryEntriesList = new List<TrialBalanceEntry>(summaryEntries.Values);
+      foreach (var entry in AccountEntries) {
+        SetLastChangeDateToSummaryEntries(entry, parentAccounts);
 
-      foreach (var entry in entries) {
-        SetLastChangeDateToSummaryEntries(entry, summaryEntriesList);
-
-        SetLastChangeDateToParentEntries(entry, summaryEntriesList);
+        SetLastChangeDateToParentEntries(entry, parentAccounts);
       }
     }
 
@@ -64,6 +62,7 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
     internal List<TrialBalanceEntry> CombineDebtorCreditorAndPostingEntries(
                                       List<TrialBalanceEntry> trialBalance,
                                       List<TrialBalanceEntry> summaryEntries) {
+
       var returnedEntries = new List<TrialBalanceEntry>();
 
       foreach (var debtorSummaryEntry in summaryEntries
@@ -392,7 +391,7 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
 
       } // foreach
 
-      AssignLastChangeDatesToSummaryEntries(accountEntries, parentAccounts);
+      AssignLastChangeDatesToParentEntries(accountEntries, parentAccounts.ToFixedList());
 
       if (detailSummaryEntries.Count > 0 && _query.TrialBalanceType == TrialBalanceType.SaldosPorCuenta) {
         return detailSummaryEntries;
@@ -401,7 +400,7 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
     }
 
 
-    internal List<TrialBalanceEntry> GenerateTotalSummaryDebtorCreditor(
+    internal List<TrialBalanceEntry> GenerateTotalsDebtorOrCreditor(
                                       List<TrialBalanceEntry> postingEntries) {
 
       var totalSummaryDebtorCredtor = new EmpiriaHashTable<TrialBalanceEntry>(postingEntries.Count);
@@ -786,14 +785,15 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
 
 
     private void GetSummaryEntriesWithoutSectorization(
-                                    List<TrialBalanceEntry> returnedEntries) {
+                                    List<TrialBalanceEntry> entriesList) {
 
       var hashEntries = new EmpiriaHashTable<TrialBalanceEntry>();
-      var checkSummaryEntries = new List<TrialBalanceEntry>(returnedEntries);
+      var checkSummaryEntries = new List<TrialBalanceEntry>(entriesList);
 
       foreach (var entry in checkSummaryEntries) {
+
         var sectorParent = entry.Sector.Parent;
-        var returnedEntry = returnedEntries.FirstOrDefault(a => a.Account.Number == entry.Account.Number &&
+        var returnedEntry = entriesList.FirstOrDefault(a => a.Account.Number == entry.Account.Number &&
                                                                a.Ledger.Number == entry.Ledger.Number &&
                                                                a.Currency.Code == entry.Currency.Code &&
                                                                a.Sector.Code == "00");
@@ -803,23 +803,26 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
 
           returnedEntry.Sum(entry);
         } else if (entry.HasSector && entry.Level > 1) {
+
           SummaryByEntry(hashEntries, entry, entry.Account, Sector.Empty, TrialBalanceItemType.Summary);
         }
       }
 
       if (hashEntries.Count > 0) {
+
         foreach (var hashEntry in hashEntries.ToFixedList().ToList()) {
-          var entry = returnedEntries.FirstOrDefault(
+          
+          var entry = entriesList.FirstOrDefault(
                                       a => a.Account.Number == hashEntry.Account.Number &&
                                            a.Ledger.Number == hashEntry.Ledger.Number &&
                                            a.Currency.Code == hashEntry.Currency.Code &&
                                            a.Sector.Code == hashEntry.Sector.Code && a.Sector.Code == "00");
           if (entry == null) {
-            returnedEntries.Add(hashEntry);
+            entriesList.Add(hashEntry);
           } else {
             hashEntry.Sum(entry);
-            returnedEntries.Remove(entry);
-            returnedEntries.Add(hashEntry);
+            entriesList.Remove(entry);
+            entriesList.Add(hashEntry);
           }
         }
       }
@@ -854,26 +857,30 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
 
 
     private void SetLastChangeDateToParentEntries(TrialBalanceEntry entry,
-                                                  List<TrialBalanceEntry> summaryEntriesList) {
+                                                  FixedList<TrialBalanceEntry> parentAccounts) {
       StandardAccount currentParentAccount = entry.Account.GetParent();
 
       while (true) {
-        var parentEntry = summaryEntriesList.FirstOrDefault(
+        var parentToChange = parentAccounts.FirstOrDefault(
                                                 a => a.Account.Number == currentParentAccount.Number &&
                                                 a.Currency.Code == entry.Currency.Code &&
                                                 a.Sector.Code == entry.Sector.Code);
 
-        if (parentEntry != null && entry.LastChangeDate > parentEntry.LastChangeDate) {
-          parentEntry.LastChangeDate = entry.LastChangeDate;
+        if (parentToChange != null && entry.LastChangeDate > parentToChange.LastChangeDate) {
+          parentToChange.LastChangeDate = entry.LastChangeDate;
         }
 
         if (!currentParentAccount.HasParent) {
-          var entryWithoutSector = summaryEntriesList.FirstOrDefault(
+
+          var parentToChangeWithoutSector = parentAccounts.FirstOrDefault(
                                     a => a.Account.Number == currentParentAccount.Number &&
                                     a.Currency.Code == entry.Currency.Code &&
                                     a.Sector.Code == "00");
-          if (entryWithoutSector != null && entry.LastChangeDate > entryWithoutSector.LastChangeDate) {
-            entryWithoutSector.LastChangeDate = entry.LastChangeDate;
+
+          if (parentToChangeWithoutSector != null &&
+              entry.LastChangeDate > parentToChangeWithoutSector.LastChangeDate) {
+
+            parentToChangeWithoutSector.LastChangeDate = entry.LastChangeDate;
           }
           break;
         } else {
@@ -900,7 +907,7 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
                      .ThenByDescending(a => a.Account.DebtorCreditor)
                      .ThenBy(a => a.Account.Number)
                      .ThenBy(a => a.Sector.Code)
-                     .ThenBy(a => a.SubledgerNumberOfDigits)
+                     .ThenBy(a => a.SubledgerAccountNumber.Length)
                      .ThenBy(a => a.SubledgerAccountNumber)
                      .ToList();
       } else {
@@ -941,15 +948,15 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
 
 
     private void SetLastChangeDateToSummaryEntries(TrialBalanceEntry entry,
-                                                   List<TrialBalanceEntry> summaryEntries) {
+                                                   FixedList<TrialBalanceEntry> parentAccounts) {
 
-      var filtered = summaryEntries.Where(a => a.Account.Number == entry.Account.Number &&
+      var filtered = parentAccounts.Where(a => a.Account.Number == entry.Account.Number &&
                                                a.Currency.Code == entry.Currency.Code &&
                                                a.Sector.Code == entry.Sector.Code &&
                                                entry.LastChangeDate > a.LastChangeDate);
 
-      foreach (var summaryToChange in filtered) {
-        summaryToChange.LastChangeDate = entry.LastChangeDate;
+      foreach (var parentToChange in filtered) {
+        parentToChange.LastChangeDate = entry.LastChangeDate;
       }
     }
 

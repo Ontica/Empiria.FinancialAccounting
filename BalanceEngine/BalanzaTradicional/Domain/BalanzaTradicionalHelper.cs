@@ -261,7 +261,7 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
 
       } // foreach
 
-      trialBalanceHelper.AssignLastChangeDatesToSummaryEntries(accountEntries, parentAccounts);
+      trialBalanceHelper.AssignLastChangeDatesToParentEntries(accountEntries, parentAccounts.ToFixedList());
 
       return parentAccounts.ToFixedList();
     }

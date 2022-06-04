@@ -49,7 +49,7 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
     internal List<TrialBalanceEntry> GetCalculatedParentAccounts(
                                      FixedList<TrialBalanceEntry> accountEntries) {
 
-      var parentAccounts = new EmpiriaHashTable<TrialBalanceEntry>(accountEntries.Count);
+      var parentAccounts = new EmpiriaHashTable<TrialBalanceEntry>();
 
       var detailParentAccount = new List<TrialBalanceEntry>();
       var trialBalanceHelper = new TrialBalanceHelper(_query);
@@ -68,10 +68,10 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
         }
 
         GenOrSumParentAccounts(detailParentAccount, parentAccounts, entry, currentParent);
-        
+
       } // foreach
 
-      trialBalanceHelper.AssignLastChangeDatesToSummaryEntries(accountEntries, parentAccounts);
+      trialBalanceHelper.AssignLastChangeDatesToParentEntries(accountEntries, parentAccounts.ToFixedList());
 
       return detailParentAccount;
     }
@@ -80,8 +80,9 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
     internal List<TrialBalanceEntry> CombineSummaryAndPostingEntries(
                                       List<TrialBalanceEntry> parentAccounts,
                                       FixedList<TrialBalanceEntry> accountEntries) {
+
       var returnedAccountEntries = new List<TrialBalanceEntry>(accountEntries);
-      
+
       foreach (var entry in parentAccounts.Where(a => a.SubledgerAccountIdParent > 0)) {
         returnedAccountEntries.Add(entry);
       }
@@ -96,7 +97,75 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
     }
 
 
-    
+    internal List<TrialBalanceEntry> CombineDebtorCreditorAndPostingEntries(
+                                      List<TrialBalanceEntry> accountEntries,
+                                      List<TrialBalanceEntry> totalsByDebtorOrCreditor) {
+
+      var returnedEntries = new List<TrialBalanceEntry>();
+
+      foreach (var debtorSummaryEntry in totalsByDebtorOrCreditor) {
+        var debtorsSummaryList = accountEntries.Where(a => a.Ledger.Id == debtorSummaryEntry.Ledger.Id &&
+                                                  a.Currency.Code == debtorSummaryEntry.Currency.Code &&
+                                                  a.DebtorCreditor == debtorSummaryEntry.DebtorCreditor)
+                                               .ToList();
+
+        if (debtorsSummaryList.Count > 0) {
+          debtorsSummaryList.Add(debtorSummaryEntry);
+          returnedEntries.AddRange(debtorsSummaryList);
+        }
+      }
+
+      return returnedEntries.OrderBy(a => a.Ledger.Number)
+                            .ThenBy(a => a.Currency.Code)
+                            .ToList();
+    }
+
+
+    internal List<TrialBalanceEntry> GenerateTotalsDebtorOrCreditor(
+                                      FixedList<TrialBalanceEntry> accountEntries) {
+
+      var totalsByDebtorOrCredtor = new EmpiriaHashTable<TrialBalanceEntry>();
+
+      foreach (var entry in accountEntries.Where(a => !a.HasParentPostingEntry)) {
+
+        SummaryByDebtorCreditorEntries(totalsByDebtorOrCredtor, entry);
+      }
+      return totalsByDebtorOrCredtor.Values.ToList();
+    }
+
+
+    private void SummaryByDebtorCreditorEntries(EmpiriaHashTable<TrialBalanceEntry> totalsByDebtorOrCredtor,
+                                                TrialBalanceEntry balanceEntry) {
+
+      TrialBalanceEntry entry = balanceEntry.CreatePartialCopy();
+      entry.DebtorCreditor = balanceEntry.DebtorCreditor;
+      TrialBalanceItemType itemType = TrialBalanceItemType.BalanceTotalDebtor;
+
+      if (entry.Account.DebtorCreditor == DebtorCreditorType.Deudora) {
+        entry.GroupName = "TOTAL DEUDORAS ";
+      }
+
+      if (entry.Account.DebtorCreditor == DebtorCreditorType.Acreedora) {
+        entry.GroupName = "TOTAL ACREEDORAS ";
+        itemType = TrialBalanceItemType.BalanceTotalCreditor;
+      }
+
+      entry.GroupName += entry.Currency.FullName;
+      string hash = $"{entry.GroupName}||{entry.Currency.Id}";
+
+      if ((_query.WithSubledgerAccount && _query.ShowCascadeBalances) ||
+           _query.ShowCascadeBalances) {
+
+        hash = $"{entry.Ledger.Id}||{entry.Currency.Id}||{entry.GroupName}";
+      }
+
+      var trialBalanceHelper = new TrialBalanceHelper(_query);
+      trialBalanceHelper.GenerateOrIncreaseEntries(totalsByDebtorOrCredtor, entry, StandardAccount.Empty,
+                                                   Sector.Empty, itemType, hash);
+    }
+
+
+
 
 
     #region Public methods
