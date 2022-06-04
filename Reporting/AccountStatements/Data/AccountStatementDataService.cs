@@ -2,9 +2,9 @@
 *                                                                                                            *
 *  Module   : Reporting Services                         Component : Data Layer                              *
 *  Assembly : FinancialAccounting.Reporting.dll          Pattern   : Data Service                            *
-*  Type     : StoredVoucherDataService                   License   : Please read LICENSE.txt file            *
+*  Type     : AccountStatementDataService                License   : Please read LICENSE.txt file            *
 *                                                                                                            *
-*  Summary  : Provides data read methods for vouchers by account.                                            *
+*  Summary  : Data services that gets information used to build account statements.                          *
 *                                                                                                            *
 ************************* Copyright(c) La Vía Óntica SC, Ontica LLC and contributors. All rights reserved. **/
 using System;
@@ -13,23 +13,22 @@ using Empiria.Data;
 
 namespace Empiria.FinancialAccounting.Reporting.Data {
 
-  /// <summary>Provides data read methods for vouchers by account.</summary>
+  /// <summary>Data services that gets information used to build account statements. </summary>
   static internal class AccountStatementDataService {
 
-    static internal FixedList<AccountStatementEntry> GetVouchersByAccountEntries(
-                                                        AccountStatementCommandData commandData) {
+    static internal FixedList<AccountStatementEntry> GetVouchersWithAccounts(AccountStatementSqlClauses sqlClauses) {
 
       var operation = DataOperation.Parse("@qryVouchersByAccount",
-                                          commandData.AccountsChartId,
-                                          CommonMethods.FormatSqlDbDate(commandData.FromDate),
-                                          CommonMethods.FormatSqlDbDate(commandData.ToDate),
-                                          commandData.Filters,
-                                          commandData.Fields,
-                                          commandData.Grouping);
+                                          sqlClauses.AccountsChartId,
+                                          CommonMethods.FormatSqlDbDate(sqlClauses.FromDate),
+                                          CommonMethods.FormatSqlDbDate(sqlClauses.ToDate),
+                                          sqlClauses.Filters,
+                                          sqlClauses.Fields,
+                                          sqlClauses.Grouping);
 
       return DataReader.GetPlainObjectFixedList<AccountStatementEntry>(operation);
     }
 
-  } // class StoredVoucherDataService
+  } // class AccountStatementDataService
 
 } // namespace Empiria.FinancialAccounting.BalanceEngine.Data

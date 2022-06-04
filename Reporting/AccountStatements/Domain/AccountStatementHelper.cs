@@ -111,7 +111,7 @@ namespace Empiria.FinancialAccounting.Reporting {
       var subledgerAccountNumber = AccountStatementCommand.Entry.SubledgerAccountNumber;
 
       var title = "";
-      
+
       if (accountNumber != string.Empty || accountNumber != "Empty") {
         title = $"{accountNumber} ";
       }
@@ -129,7 +129,7 @@ namespace Empiria.FinancialAccounting.Reporting {
         } else {
           title += $"({subledgerAccountNumber})";
         }
-        
+
       }
 
       return title;
@@ -137,9 +137,9 @@ namespace Empiria.FinancialAccounting.Reporting {
 
 
     internal FixedList<AccountStatementEntry> GetVouchersListWithCurrentBalance(
-                                                FixedList<AccountStatementEntry> orderingVouchers, 
+                                                FixedList<AccountStatementEntry> orderingVouchers,
                                                 AccountStatementEntry initialAccountBalance) {
-      
+
       List<AccountStatementEntry> returnedVouchersWithCurrentBalance =
                                     new List<AccountStatementEntry>(orderingVouchers).ToList();
 
@@ -158,11 +158,11 @@ namespace Empiria.FinancialAccounting.Reporting {
         debit += voucher.Debit;
         credit += voucher.Credit;
       }
-      
 
-      AccountStatementEntry voucherWithCurrentBalance = 
+
+      AccountStatementEntry voucherWithCurrentBalance =
                               GetInitialOrCurrentAccountBalance(
-                                AccountStatementCommand.Entry.CurrentBalanceForBalances, 
+                                AccountStatementCommand.Entry.CurrentBalanceForBalances,
                                 true, debit, credit);
 
       if (voucherWithCurrentBalance != null) {
@@ -174,20 +174,14 @@ namespace Empiria.FinancialAccounting.Reporting {
 
 
     internal FixedList<AccountStatementEntry> GetVoucherEntries() {
+      var builder = new AccountStatementSqlClausesBuilder(AccountStatementCommand);
 
-      AccountStatementCommandData commandData = VouchersByAccountCommandDataMapped();
+      var sqlClauses = builder.BuildSqlClauses();
 
-      return AccountStatementDataService.GetVouchersByAccountEntries(commandData);
+      return AccountStatementDataService.GetVouchersWithAccounts(sqlClauses);
     }
 
 
-    private AccountStatementCommandData VouchersByAccountCommandDataMapped() {
-
-      var commandExtensions = new AccountStatementQueryExtensions(AccountStatementCommand);
-      AccountStatementCommandData commandData = commandExtensions.MapToVouchersByAccountCommandData();
-
-      return commandData;
-    }
 
     #endregion Public methods
 
