@@ -96,6 +96,61 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
       return orderingAccountEntries;
     }
 
+    internal List<TrialBalanceEntry> CombineCurrencyTotalsAndPostingEntries(
+                                      List<TrialBalanceEntry> accountEntries,
+                                      List<TrialBalanceEntry> totalsByCurrency) {
+
+      var returnedEntries = new List<TrialBalanceEntry>();
+
+      foreach (var currencyEntry in totalsByCurrency) {
+        var listSummaryByCurrency = accountEntries.Where(a => a.Ledger.Id == currencyEntry.Ledger.Id &&
+                                                         a.Currency.Code == currencyEntry.Currency.Code)
+                                                  .ToList();
+
+        if (listSummaryByCurrency.Count > 0) {
+          listSummaryByCurrency.Add(currencyEntry);
+          returnedEntries.AddRange(listSummaryByCurrency);
+        }
+      }
+      return returnedEntries.OrderBy(a => a.Ledger.Number)
+                            .ThenBy(a => a.Currency.Code)
+                            .ToList();
+    }
+
+    internal List<TrialBalanceEntry> GenerateTotalsByCurrency(
+                                     List<TrialBalanceEntry> totalsByDebtorCreditorEntries) {
+      
+      var totalsByCurrency = new EmpiriaHashTable<TrialBalanceEntry>();
+
+      foreach (var debtorOrCreditorEntry in totalsByDebtorCreditorEntries) {
+
+        SummaryByCurrencyEntries(totalsByCurrency, debtorOrCreditorEntry);
+      }
+
+      totalsByDebtorCreditorEntries.AddRange(totalsByCurrency.Values.ToList());
+
+      return totalsByDebtorCreditorEntries;
+    }
+
+
+    internal void SummaryByCurrencyEntries(EmpiriaHashTable<TrialBalanceEntry> summaryEntries,
+                                          TrialBalanceEntry balanceEntry) {
+
+      TrialBalanceEntry entry = balanceEntry.CreatePartialCopy();
+
+      if (entry.ItemType == TrialBalanceItemType.BalanceTotalCreditor) {
+        entry.InitialBalance = -1 * entry.InitialBalance;
+        entry.CurrentBalance = -1 * entry.CurrentBalance;
+      }
+      entry.GroupName = "TOTAL MONEDA " + entry.Currency.FullName;
+
+      string hash = $"{entry.GroupName}||{Sector.Empty.Code}||{entry.Currency.Id}||{entry.Ledger.Id}";
+
+      var trialBalanceHelper = new TrialBalanceHelper(_query);
+      trialBalanceHelper.GenerateOrIncreaseEntries(summaryEntries, entry, StandardAccount.Empty, 
+                         Sector.Empty, TrialBalanceItemType.BalanceTotalCurrency, hash);
+    }
+
 
     internal List<TrialBalanceEntry> CombineDebtorCreditorAndPostingEntries(
                                       List<TrialBalanceEntry> accountEntries,
