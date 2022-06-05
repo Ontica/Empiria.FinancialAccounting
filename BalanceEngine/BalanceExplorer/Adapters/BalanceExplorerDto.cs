@@ -2,9 +2,9 @@
 *                                                                                                            *
 *  Module   : Balance Engine                             Component : Interface adapters                      *
 *  Assembly : FinancialAccounting.BalanceEngine.dll      Pattern   : Data Transfer Object                    *
-*  Type     : BalanceDto                                 License   : Please read LICENSE.txt file            *
+*  Type     : BalanceExplorerDto                         License   : Please read LICENSE.txt file            *
 *                                                                                                            *
-*  Summary  : Output DTO used to return balances.                                                            *
+*  Summary  : Output DTO used to return balances for the balances explorer.                                  *
 *                                                                                                            *
 ************************* Copyright(c) La Vía Óntica SC, Ontica LLC and contributors. All rights reserved. **/
 using System;
@@ -13,17 +13,13 @@ using Newtonsoft.Json;
 
 namespace Empiria.FinancialAccounting.BalanceEngine.BalanceExplorer.Adapters {
 
-  public interface IBalanceEntryDto {
-
-  }
-
-  /// <summary>Output DTO used to return balances.</summary>
-  public class BalancesDto {
+    /// <summary>Output DTO used to return balances for the balances explorer.</summary>
+  public class BalanceExplorerDto {
 
     [JsonProperty]
-    public BalancesQuery Query {
+    public BalanceExplorerQuery Query {
       get; internal set;
-    } = new BalancesQuery();
+    } = new BalanceExplorerQuery();
 
 
     [JsonProperty]
@@ -33,15 +29,15 @@ namespace Empiria.FinancialAccounting.BalanceEngine.BalanceExplorer.Adapters {
 
 
     [JsonProperty]
-    public FixedList<IBalanceEntryDto> Entries {
+    public FixedList<BalanceExplorerEntryDto> Entries {
       get; internal set;
-    } = new FixedList<IBalanceEntryDto>();
+    } = new FixedList<BalanceExplorerEntryDto>();
 
-  } // class BalanceDto
+  } // class BalanceExplorerDto
 
 
-  /// <summary>Output DTO used to return balance entries.</summary>
-  public class BalanceEntryDto : IBalanceEntryDto {
+  /// <summary>Output DTO used to return balance explorer entries.</summary>
+  public class BalanceExplorerEntryDto {
 
     public TrialBalanceItemType ItemType {
       get; internal set;
@@ -52,7 +48,6 @@ namespace Empiria.FinancialAccounting.BalanceEngine.BalanceExplorer.Adapters {
       get;
       internal set;
     }
-
 
     public string LedgerNumber {
       get; internal set;
@@ -137,13 +132,13 @@ namespace Empiria.FinancialAccounting.BalanceEngine.BalanceExplorer.Adapters {
 
     public bool HasAccountStatement {
       get; internal set;
-    } = false;
+    }
 
 
     public bool ClickableEntry {
       get; internal set;
-    } = false;
+    }
 
-  } // class BalanceEntryDto
+  } // class BalanceExplorerEntryDto
 
-} // Empiria.FinancialAccounting.BalanceEngine.Adapters
+} // Empiria.FinancialAccounting.BalanceEngine.BalanceExplorer.Adapters

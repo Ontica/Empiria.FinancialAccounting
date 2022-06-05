@@ -34,7 +34,7 @@ namespace Empiria.FinancialAccounting.BalanceEngine.Data {
     }
 
 
-    static internal BalancesSqlClauses BuildFrom(BalancesQuery query) {
+    static internal BalancesSqlClauses BuildFrom(BalanceExplorerQuery query) {
       Assertion.Require(query, nameof(query));
 
       TrialBalanceQuery convertedToTrialBalanceQuery = ConvertToTrialBalanceQuery(query);
@@ -123,7 +123,7 @@ namespace Empiria.FinancialAccounting.BalanceEngine.Data {
 
     #region Helpers
 
-    static private TrialBalanceQuery ConvertToTrialBalanceQuery(BalancesQuery query) {
+    static private TrialBalanceQuery ConvertToTrialBalanceQuery(BalanceExplorerQuery query) {
       return new TrialBalanceQuery {
         AccountsChartUID      = query.AccountsChartUID,
         FromAccount           = query.FromAccount,

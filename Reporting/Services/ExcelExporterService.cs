@@ -170,7 +170,7 @@ namespace Empiria.FinancialAccounting.Reporting {
     }
 
 
-    public FileReportDto Export(BalancesDto dto) {
+    public FileReportDto Export(BalanceExplorerDto dto) {
       Assertion.Require(dto, nameof(dto));
 
       var templateUID = $"BalanceTemplate.{dto.Query.TrialBalanceType}";
@@ -182,7 +182,7 @@ namespace Empiria.FinancialAccounting.Reporting {
 
       var templateConfig = FileTemplateConfig.Parse(templateUID);
 
-      var exporter = new BalanceExcelExporter(templateConfig);
+      var exporter = new BalanceExplorerExcelExporter(templateConfig);
 
       ExcelFile excelFile = exporter.CreateExcelFile(dto);
 

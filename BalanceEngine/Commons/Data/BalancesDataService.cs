@@ -20,7 +20,7 @@ namespace Empiria.FinancialAccounting.BalanceEngine.Data {
   static internal class BalancesDataService {
 
 
-    static internal FixedList<TrialBalanceEntry> GetTrialBalanceEntries(BalancesQuery query) {
+    static internal FixedList<TrialBalanceEntry> GetTrialBalanceEntries(TrialBalanceQuery query) {
       Assertion.Require(query, nameof(query));
 
       BalancesSqlClauses sqlClauses = BalancesSqlClauses.BuildFrom(query);
@@ -29,7 +29,7 @@ namespace Empiria.FinancialAccounting.BalanceEngine.Data {
     }
 
 
-    static internal FixedList<TrialBalanceEntry> GetTrialBalanceEntries(TrialBalanceQuery query) {
+    static internal FixedList<TrialBalanceEntry> GetTrialBalanceForBalancesExplorer(BalanceExplorerQuery query) {
       Assertion.Require(query, nameof(query));
 
       BalancesSqlClauses sqlClauses = BalancesSqlClauses.BuildFrom(query);

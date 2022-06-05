@@ -19,7 +19,7 @@ namespace Empiria.FinancialAccounting.Reporting.Exporters.Excel {
   /// <summary>Creates a Microsoft Excel file with an account statement.</summary>
   internal class AccountStatementExcelExporter {
 
-    private BalancesQuery _query = new BalancesQuery();
+    private BalanceExplorerQuery _query = new BalanceExplorerQuery();
     private readonly FileTemplateConfig _templateConfig;
     private ExcelFile _excelFile;
 

@@ -1,43 +1,45 @@
 ﻿/* Empiria Financial *****************************************************************************************
 *                                                                                                            *
 *  Module   : Balance Engine                             Component : Domain Layer                            *
-*  Assembly : FinancialAccounting.BalanceEngine.dll      Pattern   : Service provider                        *
-*  Type     : BalanceConstructor                         License   : Please read LICENSE.txt file            *
+*  Assembly : FinancialAccounting.BalanceEngine.dll      Pattern   : Builder                                 *
+*  Type     : BalanceExplorerResultBuilder               License   : Please read LICENSE.txt file            *
 *                                                                                                            *
-*  Summary  : Provides services to generate a balance.                                                       *
+*  Summary  : Builds BalanceExplorerResult instances.                                                        *
 *                                                                                                            *
 ************************* Copyright(c) La Vía Óntica SC, Ontica LLC and contributors. All rights reserved. **/
 using System;
+
 using Empiria.FinancialAccounting.BalanceEngine.BalanceExplorer.Adapters;
 
-namespace Empiria.FinancialAccounting.BalanceEngine {
+namespace Empiria.FinancialAccounting.BalanceEngine.BalanceExplorer {
 
-  /// <summary>Provides services to generate a balance.</summary>
-  internal class BalanceConstructor {
+  /// <summary>Builds BalanceExplorerResult instances.</summary>
+  internal class BalanceExplorerResultBuilder {
 
-    internal BalanceConstructor(BalancesQuery query){
+    internal BalanceExplorerResultBuilder(BalanceExplorerQuery query){
       Assertion.Require(query, nameof(query));
 
       Query = query;
     }
 
 
-    public BalancesQuery Query {
+    public BalanceExplorerQuery Query {
       get;
     }
 
 
-    internal Balances BuildBalances() {
+    internal BalanceExplorerResult Build() {
       if (!this.Query.UseCache) {
-        return GenerateBalance();
+        return BuildBalanceResult();
       }
 
       string hash = TrialBalanceCache.GenerateBalanceHash(this.Query);
 
-      Balances balances = TrialBalanceCache.TryGetBalances(hash);
+      BalanceExplorerResult balances = TrialBalanceCache.TryGetBalances(hash);
 
       if (balances == null) {
-        balances = GenerateBalance();
+        balances = BuildBalanceResult();
+
         TrialBalanceCache.StoreBalances(hash, balances);
       }
 
@@ -45,15 +47,15 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
     }
 
 
-    internal Balances GenerateBalance() {
+    private BalanceExplorerResult BuildBalanceResult() {
       switch (Query.TrialBalanceType) {
 
         case TrialBalanceType.SaldosPorAuxiliarConsultaRapida:
-          var saldosPorAuxiliar = new SaldosPorAuxiliarConsultaRapida(Query);
+          var saldosPorAuxiliar = new SaldosPorAuxiliarBuilder(Query);
           return saldosPorAuxiliar.Build();
 
         case TrialBalanceType.SaldosPorCuentaConsultaRapida:
-          var saldosPorCuenta = new SaldosPorCuentaConsultaRapida(Query);
+          var saldosPorCuenta = new SaldosPorCuentaBuilder(Query);
           return saldosPorCuenta.Build();
 
         default:
@@ -64,4 +66,4 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
 
   } // class BalanceConstructor
 
-} // Empiria.FinancialAccounting.BalanceEngine.Domain
+} // Empiria.FinancialAccounting.BalanceEngine.BalanceExplorer

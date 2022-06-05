@@ -18,7 +18,7 @@ namespace Empiria.FinancialAccounting.Reporting {
 
     #region Constructors and parsers
 
-    internal AccountStatement(BalancesQuery query,
+    internal AccountStatement(BalanceExplorerQuery query,
                               FixedList<IVouchersByAccountEntry> entries,
                               string title) {
       Assertion.Require(query,    nameof(query));
@@ -34,7 +34,7 @@ namespace Empiria.FinancialAccounting.Reporting {
 
     #region Properties
 
-    public BalancesQuery Query {
+    public BalanceExplorerQuery Query {
       get;
     }
 

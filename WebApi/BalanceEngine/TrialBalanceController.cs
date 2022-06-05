@@ -13,12 +13,10 @@ using System.Web.Http;
 
 using Empiria.WebApi;
 
+using Empiria.FinancialAccounting.Reporting;
+
 using Empiria.FinancialAccounting.BalanceEngine.UseCases;
 using Empiria.FinancialAccounting.BalanceEngine.Adapters;
-
-using Empiria.FinancialAccounting.Reporting;
-using Empiria.FinancialAccounting.BalanceEngine.BalanceExplorer.UseCases;
-using Empiria.FinancialAccounting.BalanceEngine.BalanceExplorer.Adapters;
 
 
 namespace Empiria.FinancialAccounting.WebApi.BalanceEngine {
@@ -77,7 +75,7 @@ namespace Empiria.FinancialAccounting.WebApi.BalanceEngine {
 
 
     [HttpPost]
-    [Route("v2/financial-accounting/trial-balance")]
+    [Route("v2/financial-accounting/balance-engine/trial-balance")]
     public SingleObjectModel GetTrialBalance([FromBody] TrialBalanceQuery query) {
 
       base.RequireBody(query);
@@ -92,8 +90,8 @@ namespace Empiria.FinancialAccounting.WebApi.BalanceEngine {
 
 
     [HttpPost]
-    [Route("v2/financial-accounting/trial-balance/excel")]
-    public SingleObjectModel GetExcelTrialBalance([FromBody] TrialBalanceQuery query) {
+    [Route("v2/financial-accounting/balance-engine/trial-balance/excel")]
+    public SingleObjectModel ExportTrialBalanceToExcel([FromBody] TrialBalanceQuery query) {
 
       base.RequireBody(query);
 
@@ -108,39 +106,6 @@ namespace Empiria.FinancialAccounting.WebApi.BalanceEngine {
         return new SingleObjectModel(this.Request, excelFileDto);
       }
     }
-
-
-    [HttpPost]
-    [Route("v2/financial-accounting/balance")]
-    public SingleObjectModel GetBalances([FromBody] BalancesQuery query) {
-      base.RequireBody(query);
-
-      using (var usecases = BalanceUseCases.UseCaseInteractor()) {
-
-        BalancesDto balances = usecases.BuildBalanceSearch(query);
-
-        return new SingleObjectModel(this.Request, balances);
-      }
-    }
-
-
-    [HttpPost]
-    [Route("v2/financial-accounting/balance/excel")]
-    public SingleObjectModel GetExcelBalances([FromBody] BalancesQuery query) {
-      base.RequireBody(query);
-
-      using (var usecases = BalanceUseCases.UseCaseInteractor()) {
-
-        BalancesDto balances = usecases.BuildBalanceSearch(query);
-
-        var excelExporter = new ExcelExporterService();
-
-        FileReportDto excelFileDto = excelExporter.Export(balances);
-
-        return new SingleObjectModel(this.Request, excelFileDto);
-      }
-    }
-
 
     #endregion Web Apis
 

@@ -20,9 +20,9 @@ namespace Empiria.FinancialAccounting.Reporting.Adapters {
   public class AccountStatementQuery {
 
     [JsonProperty("Query")]
-    public BalancesQuery BalancesQuery {
+    public BalanceExplorerQuery BalancesQuery {
       get; internal set;
-    } = new BalancesQuery();
+    } = new BalanceExplorerQuery();
 
 
     public AccountStatementEntry Entry {

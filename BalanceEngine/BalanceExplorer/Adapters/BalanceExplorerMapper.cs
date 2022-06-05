@@ -2,9 +2,9 @@
 *                                                                                                            *
 *  Module   : Balance Engine                             Component : Interface adapters                      *
 *  Assembly : FinancialAccounting.BalanceEngine.dll      Pattern   : Mapper class                            *
-*  Type     : BalanceMapper                              License   : Please read LICENSE.txt file            *
+*  Type     : BalanceExplorerMapper                      License   : Please read LICENSE.txt file            *
 *                                                                                                            *
-*  Summary  : Methods used to map balances.                                                                  *
+*  Summary  : Methods used to map balances for the balances explorer.                                        *
 *                                                                                                            *
 ************************* Copyright(c) La Vía Óntica SC, Ontica LLC and contributors. All rights reserved. **/
 using System;
@@ -12,13 +12,13 @@ using System.Collections.Generic;
 
 namespace Empiria.FinancialAccounting.BalanceEngine.BalanceExplorer.Adapters {
 
-  /// <summary>Methods used to map balances.</summary>
-  static internal class BalanceMapper {
+  /// <summary>Methods used to map balances for the balances explorer.</summary>
+  static internal class BalanceExplorerMapper {
 
     #region Public mappers
 
-    static internal BalancesDto Map(Balances balances) {
-      return new BalancesDto {
+    static internal BalanceExplorerDto Map(BalanceExplorerResult balances) {
+      return new BalanceExplorerDto {
         Query = balances.Query,
         Columns = MapColumns(balances.Query),
         Entries = MapToDto(balances.Entries, balances.Query)
@@ -26,11 +26,11 @@ namespace Empiria.FinancialAccounting.BalanceEngine.BalanceExplorer.Adapters {
     }
 
 
-    static internal FixedList<BalanceEntry> MapToBalance(FixedList<TrialBalanceEntry> entries) {
-      var mappedEntries = new List<BalanceEntry>();
+    static internal FixedList<BalanceExplorerEntry> MapToBalance(FixedList<TrialBalanceEntry> entries) {
+      var mappedEntries = new List<BalanceExplorerEntry>();
 
       foreach (var entry in entries) {
-        var balanceEntry = new BalanceEntry();
+        var balanceEntry = new BalanceExplorerEntry();
         balanceEntry.ItemType = entry.ItemType == TrialBalanceItemType.Entry ?
                                 TrialBalanceItemType.Entry : entry.ItemType;
         balanceEntry.Ledger = entry.Ledger;
@@ -48,12 +48,27 @@ namespace Empiria.FinancialAccounting.BalanceEngine.BalanceExplorer.Adapters {
       return mappedEntries.ToFixedList();
     }
 
-    #endregion Public mappers
 
+    static internal BalanceExplorerEntry MapToBalanceEntry(BalanceExplorerEntry entry) {
+      return new BalanceExplorerEntry {
+        ItemType = entry.ItemType,
+        Ledger = entry.Ledger,
+        Currency = entry.Currency,
+        Sector = entry.Sector,
+        Account = entry.Account,
+        GroupName = entry.GroupName,
+        GroupNumber = entry.GroupNumber,
+        CurrentBalance = entry.CurrentBalance,
+        DebtorCreditor = entry.Account.DebtorCreditor,
+        LastChangeDate = entry.LastChangeDate
+      };
+    }
+
+    #endregion Public mappers
 
     #region Private methods
 
-    private static FixedList<DataTableColumn> MapColumns(BalancesQuery query) {
+    private static FixedList<DataTableColumn> MapColumns(BalanceExplorerQuery query) {
       List<DataTableColumn> columns = new List<DataTableColumn>();
       columns.Add(new DataTableColumn("ledgerNumber", "Deleg", "text"));
       columns.Add(new DataTableColumn("ledgerName", "Delegación", "text"));
@@ -71,21 +86,19 @@ namespace Empiria.FinancialAccounting.BalanceEngine.BalanceExplorer.Adapters {
     }
 
 
-    static private FixedList<IBalanceEntryDto> MapToDto(
-                    FixedList<BalanceEntry> list, BalancesQuery query) {
+    static private FixedList<BalanceExplorerEntryDto> MapToDto(
+                    FixedList<BalanceExplorerEntry> list, BalanceExplorerQuery query) {
 
       switch (query.TrialBalanceType) {
         case TrialBalanceType.SaldosPorAuxiliarConsultaRapida:
 
-          var mapped = list.Select((x) => MapToBalanceBySubledgerAccount(x));
-
-          return new FixedList<IBalanceEntryDto>(mapped);
+          return list.Select((x) => MapToBalanceBySubledgerAccount(x))
+                     .ToFixedList();
 
         case TrialBalanceType.SaldosPorCuentaConsultaRapida:
 
-          var mappedItems = list.Select((x) => MapToBalanceByAccount(x, query));
-
-          return new FixedList<IBalanceEntryDto>(mappedItems);
+          return list.Select((x) => MapToBalanceByAccount(x, query))
+                     .ToFixedList();
 
         default:
           throw Assertion.EnsureNoReachThisCode(
@@ -94,9 +107,9 @@ namespace Empiria.FinancialAccounting.BalanceEngine.BalanceExplorer.Adapters {
     }
 
 
-    static private BalanceEntryDto MapToBalanceByAccount(BalanceEntry entry, BalancesQuery query) {
+    static private BalanceExplorerEntryDto MapToBalanceByAccount(BalanceExplorerEntry entry, BalanceExplorerQuery query) {
 
-      var dto = new BalanceEntryDto();
+      var dto = new BalanceExplorerEntryDto();
 
       dto.ItemType = entry.ItemType;
       if (entry.ItemType != TrialBalanceItemType.Total &&
@@ -151,9 +164,9 @@ namespace Empiria.FinancialAccounting.BalanceEngine.BalanceExplorer.Adapters {
     }
 
 
-    static private BalanceEntryDto MapToBalanceBySubledgerAccount(BalanceEntry entry) {
+    static private BalanceExplorerEntryDto MapToBalanceBySubledgerAccount(BalanceExplorerEntry entry) {
 
-      var dto = new BalanceEntryDto();
+      var dto = new BalanceExplorerEntryDto();
       dto.ItemType = entry.ItemType;
       dto.LedgerUID = entry.Ledger.UID != "Empty" ? entry.Ledger.UID : "";
       dto.LedgerNumber = entry.Ledger.Number;
@@ -189,23 +202,8 @@ namespace Empiria.FinancialAccounting.BalanceEngine.BalanceExplorer.Adapters {
     }
 
 
-    static internal BalanceEntry MapToBalanceEntry(BalanceEntry entry) {
-      return new BalanceEntry {
-        ItemType = entry.ItemType,
-        Ledger = entry.Ledger,
-        Currency = entry.Currency,
-        Sector = entry.Sector,
-        Account = entry.Account,
-        GroupName = entry.GroupName,
-        GroupNumber = entry.GroupNumber,
-        CurrentBalance = entry.CurrentBalance,
-        DebtorCreditor = entry.Account.DebtorCreditor,
-        LastChangeDate = entry.LastChangeDate
-      };
-    }
-
     #endregion Private methods
 
-  } // class BalanceMapper
+  } // class BalanceExplorerMapper
 
-} // Empiria.FinancialAccounting.BalanceEngine.Adapters
+} // Empiria.FinancialAccounting.BalanceEngine.BalanceExplorer.Adapters

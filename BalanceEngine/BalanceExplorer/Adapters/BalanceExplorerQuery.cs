@@ -2,9 +2,9 @@
 *                                                                                                            *
 *  Module   : Balance Engine                             Component : Interface adapters                      *
 *  Assembly : FinancialAccounting.BalanceEngine.dll      Pattern   : Query payload                           *
-*  Type     : BalancesQuery                              License   : Please read LICENSE.txt file            *
+*  Type     : BalanceExplorerQuery                       License   : Please read LICENSE.txt file            *
 *                                                                                                            *
-*  Summary  : Query payload used to build balances.                                                          *
+*  Summary  : Query payload used to build balances for the balances explorer.                                *
 *                                                                                                            *
 ************************* Copyright(c) La Vía Óntica SC, Ontica LLC and contributors. All rights reserved. **/
 using System;
@@ -15,8 +15,8 @@ using Empiria.FinancialAccounting.BalanceEngine.Adapters;
 
 namespace Empiria.FinancialAccounting.BalanceEngine.BalanceExplorer.Adapters {
 
-  /// <summary>Query payload used to generate balances.</summary>
-  public class BalancesQuery {
+  /// <summary>Query payload used to build balances for the balances explorer.</summary>
+  public class BalanceExplorerQuery {
 
     public TrialBalanceType TrialBalanceType {
       get; set;
@@ -40,7 +40,7 @@ namespace Empiria.FinancialAccounting.BalanceEngine.BalanceExplorer.Adapters {
 
     public bool WithSubledgerAccount {
       get; set;
-    } = false;
+    }
 
 
     public string[] Ledgers {
@@ -72,7 +72,7 @@ namespace Empiria.FinancialAccounting.BalanceEngine.BalanceExplorer.Adapters {
 
     public bool WithAllAccounts {
       get; set;
-    } = false;
+    }
 
 
     public bool UseCache {
@@ -81,7 +81,7 @@ namespace Empiria.FinancialAccounting.BalanceEngine.BalanceExplorer.Adapters {
 
 
     public override bool Equals(object obj) {
-      return obj is BalancesQuery query &&
+      return obj is BalanceExplorerQuery query &&
              query.GetHashCode() == this.GetHashCode();
     }
 
@@ -92,6 +92,6 @@ namespace Empiria.FinancialAccounting.BalanceEngine.BalanceExplorer.Adapters {
       return json.GetHashCode();
     }
 
-  } // class BalancesQuery
+  } // class BalanceExplorerQuery
 
 } // Empiria.FinancialAccounting.BalanceEngine.Adapters

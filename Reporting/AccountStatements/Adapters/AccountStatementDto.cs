@@ -21,9 +21,9 @@ namespace Empiria.FinancialAccounting.Reporting.Adapters {
   /// <summary>Output DTO used to return vouchers by account.</summary>
   public class AccountStatementDto {
 
-    public BalancesQuery Query {
+    public BalanceExplorerQuery Query {
       get; internal set;
-    } = new BalancesQuery();
+    } = new BalanceExplorerQuery();
 
 
     public FixedList<DataTableColumn> Columns {

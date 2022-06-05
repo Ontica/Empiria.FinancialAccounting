@@ -2,9 +2,9 @@
 *                                                                                                            *
 *  Module   : Reporting Services                           Component : Excel Exporters                       *
 *  Assembly : FinancialAccounting.Reporting.dll            Pattern   : IExcelExporter                        *
-*  Type     : BalanceExcelExporter                         License   : Please read LICENSE.txt file          *
+*  Type     : BalanceExplorerExcelExporter                 License   : Please read LICENSE.txt file          *
 *                                                                                                            *
-*  Summary  : Creates a Microsoft Excel file with balance information.                                       *
+*  Summary  : Creates a Microsoft Excel file with the results of a balance explorer query execution.         *
 *                                                                                                            *
 ************************* Copyright(c) La Vía Óntica SC, Ontica LLC and contributors. All rights reserved. **/
 using System;
@@ -15,21 +15,24 @@ using Empiria.FinancialAccounting.BalanceEngine.BalanceExplorer.Adapters;
 
 namespace Empiria.FinancialAccounting.Reporting.Exporters.Excel {
 
-  /// <summary>Creates a Microsoft Excel file with balance information.</summary>
-  internal class BalanceExcelExporter {
+  /// <summary>Creates a Microsoft Excel file with the results of a balance explorer query execution.</summary>
+  internal class BalanceExplorerExcelExporter {
 
-    private BalancesQuery _query = new BalancesQuery();
+    private BalanceExplorerQuery _query = new BalanceExplorerQuery();
+
     private readonly FileTemplateConfig _templateConfig;
+
     private ExcelFile _excelFile;
 
-    public BalanceExcelExporter(FileTemplateConfig templateConfig) {
+
+    public BalanceExplorerExcelExporter(FileTemplateConfig templateConfig) {
       Assertion.Require(templateConfig, nameof(templateConfig));
 
       _templateConfig = templateConfig;
     }
 
 
-    internal ExcelFile CreateExcelFile(BalancesDto dto) {
+    internal ExcelFile CreateExcelFile(BalanceExplorerDto dto) {
       Assertion.Require(dto, nameof(dto));
 
       _query = dto.Query;
@@ -62,14 +65,14 @@ namespace Empiria.FinancialAccounting.Reporting.Exporters.Excel {
     }
 
 
-    private void SetTable(BalancesDto dto) {
+    private void SetTable(BalanceExplorerDto dto) {
       switch (dto.Query.TrialBalanceType) {
         case TrialBalanceType.SaldosPorAuxiliarConsultaRapida:
-          FillOutSaldosAuxiliar(dto.Entries.Select(x => (BalanceEntryDto) x));
+          FillOutSaldosAuxiliar(dto.Entries);
           return;
 
         case TrialBalanceType.SaldosPorCuentaConsultaRapida:
-          FillOutSaldosCuenta(dto.Entries.Select(x => (BalanceEntryDto) x));
+          FillOutSaldosCuenta(dto.Entries);
           return;
 
         default:
@@ -78,7 +81,7 @@ namespace Empiria.FinancialAccounting.Reporting.Exporters.Excel {
     }
 
 
-    private void FillOutSaldosAuxiliar(IEnumerable<BalanceEntryDto> entries) {
+    private void FillOutSaldosAuxiliar(IEnumerable<BalanceExplorerEntryDto> entries) {
       switch (_query.ExportTo) {
         case FileReportVersion.V1:
           FillOutSaldosAuxiliarConEncabezado(entries);
@@ -94,7 +97,7 @@ namespace Empiria.FinancialAccounting.Reporting.Exporters.Excel {
     }
 
 
-    private void FillOutSaldosCuenta(IEnumerable<BalanceEntryDto> entries) {
+    private void FillOutSaldosCuenta(IEnumerable<BalanceExplorerEntryDto> entries) {
       switch (_query.ExportTo) {
         case FileReportVersion.V1:
           FillOutSaldosCuentaConEncabezado(entries);
@@ -112,7 +115,7 @@ namespace Empiria.FinancialAccounting.Reporting.Exporters.Excel {
 
 
 
-    private void FillOutSaldosAuxiliarConEncabezado(IEnumerable<BalanceEntryDto> entries) {
+    private void FillOutSaldosAuxiliarConEncabezado(IEnumerable<BalanceExplorerEntryDto> entries) {
       int i = 4;
       foreach (var entry in entries) {
         if (entry.ItemType == TrialBalanceItemType.Summary) {
@@ -142,7 +145,7 @@ namespace Empiria.FinancialAccounting.Reporting.Exporters.Excel {
     }
 
 
-    private void FillOutSaldosAuxiliarPorColumna(IEnumerable<BalanceEntryDto> entries) {
+    private void FillOutSaldosAuxiliarPorColumna(IEnumerable<BalanceExplorerEntryDto> entries) {
       int i = 4;
       foreach (var entry in entries) {
         if (entry.ItemType == TrialBalanceItemType.Entry) {
@@ -163,7 +166,7 @@ namespace Empiria.FinancialAccounting.Reporting.Exporters.Excel {
     }
 
 
-    private void FillOutSaldosCuentaConEncabezado(IEnumerable<BalanceEntryDto> entries) {
+    private void FillOutSaldosCuentaConEncabezado(IEnumerable<BalanceExplorerEntryDto> entries) {
       int i = 5;
       foreach (var entry in entries) {
         if (entry.ItemType == TrialBalanceItemType.Total) {
@@ -202,7 +205,7 @@ namespace Empiria.FinancialAccounting.Reporting.Exporters.Excel {
     }
 
 
-    private void FillOutSaldosCuentaPorColumna(IEnumerable<BalanceEntryDto> entries) {
+    private void FillOutSaldosCuentaPorColumna(IEnumerable<BalanceExplorerEntryDto> entries) {
       int i = 5;
       foreach (var entry in entries) {
 
@@ -270,6 +273,6 @@ namespace Empiria.FinancialAccounting.Reporting.Exporters.Excel {
       _excelFile.SetRowStyleBold(i);
     }
 
-  } // class BalanceExcelExporter
+  } // class BalanceExplorerExcelExporter
 
 } // namespace Empiria.FinancialAccounting.Reporting.Exporters.Excel

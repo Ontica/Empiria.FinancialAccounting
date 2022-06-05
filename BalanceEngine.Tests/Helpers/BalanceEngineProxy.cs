@@ -91,7 +91,7 @@ namespace Empiria.FinancialAccounting.Tests.BalanceEngine {
     static private TrialBalanceDto BuildRemoteTrialBalanceUseCase(TrialBalanceQuery query) {
       HttpApiClient http = CreateHttpApiClient();
 
-      return http.PostAsync<ResponseModel<TrialBalanceDto>>(query, "v2/financial-accounting/trial-balance")
+      return http.PostAsync<ResponseModel<TrialBalanceDto>>(query, "v2/financial-accounting/balance-engine/trial-balance")
                  .Result
                  .Data;
     }
@@ -101,7 +101,7 @@ namespace Empiria.FinancialAccounting.Tests.BalanceEngine {
                                                                         where T : ITrialBalanceEntryDto {
       HttpApiClient http = CreateHttpApiClient();
 
-      return http.PostAsync<ResponseModel<TrialBalanceDto<T>>>(query, "v2/financial-accounting/trial-balance")
+      return http.PostAsync<ResponseModel<TrialBalanceDto<T>>>(query, "v2/financial-accounting/balance-engine/trial-balance")
                  .Result
                  .Data;
     }

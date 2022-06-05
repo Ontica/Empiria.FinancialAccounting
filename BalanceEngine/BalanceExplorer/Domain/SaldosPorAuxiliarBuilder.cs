@@ -1,10 +1,10 @@
 ﻿/* Empiria Financial *****************************************************************************************
 *                                                                                                            *
 *  Module   : Balance Engine                             Component : Domain Layer                            *
-*  Assembly : FinancialAccounting.BalanceEngine.dll      Pattern   : Service provider                        *
-*  Type     : SaldosPorAuxiliarConsultaRapida            License   : Please read LICENSE.txt file            *
+*  Assembly : FinancialAccounting.BalanceEngine.dll      Pattern   : Builder                                 *
+*  Type     : SaldosPorAuxiliarBuilder                   License   : Please read LICENSE.txt file            *
 *                                                                                                            *
-*  Summary  : Genera los datos para el reporte de saldos por auxiliar de consulta rápida.                    *
+*  Summary  : Genera los datos para el reporte de saldos por auxiliar para el explorador de saldos.          *
 *                                                                                                            *
 ************************* Copyright(c) La Vía Óntica SC, Ontica LLC and contributors. All rights reserved. **/
 using System;
@@ -14,41 +14,43 @@ using System.Linq;
 using Empiria.Collections;
 using Empiria.FinancialAccounting.BalanceEngine.BalanceExplorer.Adapters;
 
-namespace Empiria.FinancialAccounting.BalanceEngine {
+namespace Empiria.FinancialAccounting.BalanceEngine.BalanceExplorer {
 
-  /// <summary>Genera los datos para el reporte de saldos por auxiliar de consulta rápida.</summary>
-  internal class SaldosPorAuxiliarConsultaRapida {
+  /// <summary>Genera los datos para el reporte de saldos por auxiliar para el explorador de saldos.</summary>
+  internal class SaldosPorAuxiliarBuilder {
 
-    private readonly BalancesQuery _query;
+    private readonly BalanceExplorerQuery _query;
 
-    public SaldosPorAuxiliarConsultaRapida(BalancesQuery query) {
+    public SaldosPorAuxiliarBuilder(BalanceExplorerQuery query) {
       _query = query;
     }
 
-    internal Balances Build() {
-      var helper = new BalanceHelper(_query);
 
-      FixedList<BalanceEntry> balanceEntries = helper.GetBalanceEntries();
+    internal BalanceExplorerResult Build() {
+      var helper = new BalanceExplorerHelper(_query);
+
+      FixedList<BalanceExplorerEntry> balanceEntries = helper.GetBalanceExplorerEntries();
 
       balanceEntries = helper.GetSummaryToParentEntries(balanceEntries);
 
-      EmpiriaHashTable<BalanceEntry> subledgerAccounts = GetSubledgerAccounts(balanceEntries);
+      EmpiriaHashTable<BalanceExplorerEntry> subledgerAccounts = GetSubledgerAccounts(balanceEntries);
 
-      List<BalanceEntry> orderingBalance = OrderBySubledgerAccounts(subledgerAccounts);
+      List<BalanceExplorerEntry> orderingBalance = OrderBySubledgerAccounts(subledgerAccounts);
 
-      FixedList<BalanceEntry> returnedEntries = CombineSubledgerAccountsWithBalanceEntries(
+      FixedList<BalanceExplorerEntry> returnedEntries = CombineSubledgerAccountsWithBalanceEntries(
                                                             orderingBalance, balanceEntries);
 
-      var balancesToReturn = new FixedList<BalanceEntry>(returnedEntries);
+      var balancesToReturn = new FixedList<BalanceExplorerEntry>(returnedEntries);
 
-      return new Balances(_query, balancesToReturn);
+      return new BalanceExplorerResult(_query, balancesToReturn);
     }
 
+    #region Private methods
 
-    private FixedList<BalanceEntry> CombineSubledgerAccountsWithBalanceEntries(
-                                    List<BalanceEntry> orderingBalance,
-                                    FixedList<BalanceEntry> balanceEntries) {
-      var returnedEntries = new List<BalanceEntry>();
+    private FixedList<BalanceExplorerEntry> CombineSubledgerAccountsWithBalanceEntries(
+                                    List<BalanceExplorerEntry> orderingBalance,
+                                    FixedList<BalanceExplorerEntry> balanceEntries) {
+      var returnedEntries = new List<BalanceExplorerEntry>();
 
       foreach (var entry in orderingBalance) {
         var summaryAccounts = balanceEntries.Where(
@@ -75,10 +77,10 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
       return returnedEntries.ToFixedList();
     }
 
-    private List<BalanceEntry> OrderBySubledgerAccounts(
-                                    EmpiriaHashTable<BalanceEntry> subledgerAccounts) {
+    private List<BalanceExplorerEntry> OrderBySubledgerAccounts(
+                                    EmpiriaHashTable<BalanceExplorerEntry> subledgerAccounts) {
 
-      var returnedCombineOrdering = new List<BalanceEntry>();
+      var returnedCombineOrdering = new List<BalanceExplorerEntry>();
 
       foreach (var entry in subledgerAccounts.ToFixedList()) {
         SubledgerAccount subledgerAccount = SubledgerAccount.Parse(entry.SubledgerAccountIdParent);
@@ -97,14 +99,15 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
                                     .ToList();
     }
 
+    #endregion Private methods
 
-    #region Helper methods
+    #region Helpers
 
-    private EmpiriaHashTable<BalanceEntry> GetSubledgerAccounts(FixedList<BalanceEntry> balance) {
+    private EmpiriaHashTable<BalanceExplorerEntry> GetSubledgerAccounts(FixedList<BalanceExplorerEntry> balance) {
 
       var subledgerAccountList = balance.Where(a => a.SubledgerAccountId > 0).ToList();
 
-      var subledgerAccountListHashTable = new EmpiriaHashTable<BalanceEntry>();
+      var subledgerAccountListHashTable = new EmpiriaHashTable<BalanceExplorerEntry>();
 
       foreach (var entry in subledgerAccountList) {
         string hash = $"{entry.Ledger.Number}||{entry.Currency.Code}||" +
@@ -117,11 +120,11 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
       return GenerateSubledgerAccount(subledgerAccountListHashTable);
     }
 
-    private EmpiriaHashTable<BalanceEntry> GenerateSubledgerAccount(
-                        EmpiriaHashTable<BalanceEntry> subledgerAccountListHash) {
-      var helper = new BalanceHelper(_query);
+    private EmpiriaHashTable<BalanceExplorerEntry> GenerateSubledgerAccount(
+                        EmpiriaHashTable<BalanceExplorerEntry> subledgerAccountListHash) {
+      var helper = new BalanceExplorerHelper(_query);
 
-      var returnedEntries = new EmpiriaHashTable<BalanceEntry>();
+      var returnedEntries = new EmpiriaHashTable<BalanceExplorerEntry>();
 
       foreach (var entry in subledgerAccountListHash.ToFixedList()) {
 
@@ -134,9 +137,8 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
       return returnedEntries;
     }
 
-    #endregion
+    #endregion Helpers
 
+  } // class SaldosPorAuxiliarBuilder
 
-  } // class SaldosPorAuxiliarConsultaRapida
-
-} // Empiria.FinancialAccounting.BalanceEngine.Domain.SpecialCases
+} // Empiria.FinancialAccounting.BalanceEngine.BalanceExplorer

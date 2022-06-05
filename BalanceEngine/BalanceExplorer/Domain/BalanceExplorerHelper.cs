@@ -2,9 +2,9 @@
 *                                                                                                            *
 *  Module   : Balance Engine                             Component : Domain Layer                            *
 *  Assembly : FinancialAccounting.BalanceEngine.dll      Pattern   : Helper methods                          *
-*  Type     : BalanceHelper                              License   : Please read LICENSE.txt file            *
+*  Type     : BalanceExplorerHelper                      License   : Please read LICENSE.txt file            *
 *                                                                                                            *
-*  Summary  : Helper methods to build balances.                                                              *
+*  Summary  : Helper methods to build balances for the balances explorer.                                    *
 *                                                                                                            *
 ************************* Copyright(c) La Vía Óntica SC, Ontica LLC and contributors. All rights reserved. **/
 using System;
@@ -17,30 +17,30 @@ using Empiria.FinancialAccounting.BalanceEngine.Data;
 
 using Empiria.FinancialAccounting.BalanceEngine.BalanceExplorer.Adapters;
 
-namespace Empiria.FinancialAccounting.BalanceEngine {
+namespace Empiria.FinancialAccounting.BalanceEngine.BalanceExplorer {
 
-  /// <summary>Helper methods to build balances.</summary>
-  internal class BalanceHelper {
+  /// <summary>Helper methods to build balances for the balances explorer.</summary>
+  internal class BalanceExplorerHelper {
 
-    private readonly BalancesQuery _query;
+    private readonly BalanceExplorerQuery _query;
 
-    internal BalanceHelper(BalancesQuery query) {
+    internal BalanceExplorerHelper(BalanceExplorerQuery query) {
       _query = query;
     }
 
 
-    internal FixedList<BalanceEntry> GetBalanceEntries() {
-      FixedList<TrialBalanceEntry> entries = BalancesDataService.GetTrialBalanceEntries(_query);
+    internal FixedList<BalanceExplorerEntry> GetBalanceExplorerEntries() {
+      FixedList<TrialBalanceEntry> entries = BalancesDataService.GetTrialBalanceForBalancesExplorer(_query);
 
-      return BalanceMapper.MapToBalance(entries);
+      return BalanceExplorerMapper.MapToBalance(entries);
     }
 
 
     #region Public methods
 
-    internal void GetHeaderAccountName(EmpiriaHashTable<BalanceEntry> headerByAccount,
-                                        BalanceEntry entry, TrialBalanceItemType balanceType) {
-      BalanceEntry newEntry = BalanceMapper.MapToBalanceEntry(entry);
+    internal void GetHeaderAccountName(EmpiriaHashTable<BalanceExplorerEntry> headerByAccount,
+                                        BalanceExplorerEntry entry, TrialBalanceItemType balanceType) {
+      BalanceExplorerEntry newEntry = BalanceExplorerMapper.MapToBalanceEntry(entry);
       newEntry.GroupName = $"{newEntry.Account.Name} [{newEntry.Currency.FullName}]";
       newEntry.InitialBalance = entry.InitialBalance;
       newEntry.Ledger = Ledger.Empty;
@@ -52,9 +52,9 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
     }
 
 
-    internal FixedList<BalanceEntry> GetSummaryToParentEntries(
-                                            FixedList<BalanceEntry> postingEntries) {
-      var returnedEntries = new List<BalanceEntry>(postingEntries);
+    internal FixedList<BalanceExplorerEntry> GetSummaryToParentEntries(
+                                            FixedList<BalanceExplorerEntry> postingEntries) {
+      var returnedEntries = new List<BalanceExplorerEntry>(postingEntries);
       foreach (var entry in postingEntries) {
         StandardAccount currentParent = entry.Account.GetParent();
 
@@ -74,8 +74,8 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
     }
 
 
-    internal void SummaryBySubledgerAccount(EmpiriaHashTable<BalanceEntry> entries,
-                                    BalanceEntry entry, TrialBalanceItemType balanceType) {
+    internal void SummaryBySubledgerAccount(EmpiriaHashTable<BalanceExplorerEntry> entries,
+                                    BalanceExplorerEntry entry, TrialBalanceItemType balanceType) {
 
       string hash = $"{entry.Ledger.Number}||{entry.Currency.Code}||" +
                     $"{entry.SubledgerAccountIdParent}||{Sector.Empty.Code}";
@@ -84,10 +84,10 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
     }
 
 
-    internal void SummaryEntriesByCurrency(EmpiriaHashTable<BalanceEntry> totalByCurrencies,
-                                           BalanceEntry entry, TrialBalanceItemType balanceType) {
+    internal void SummaryEntriesByCurrency(EmpiriaHashTable<BalanceExplorerEntry> totalByCurrencies,
+                                           BalanceExplorerEntry entry, TrialBalanceItemType balanceType) {
 
-      BalanceEntry newEntry = BalanceMapper.MapToBalanceEntry(entry);
+      BalanceExplorerEntry newEntry = BalanceExplorerMapper.MapToBalanceEntry(entry);
       newEntry.GroupName = $"TOTAL DE LA CUENTA {newEntry.Account.Number} EN {newEntry.Currency.FullName}";
 
       string hash = $"{newEntry.Ledger.Number}||{newEntry.Currency.Code}||{newEntry.Account.Number}";
@@ -97,10 +97,10 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
 
     }
 
-    internal void SummaryEntriesByAccountAndCurrency(EmpiriaHashTable<BalanceEntry> totalByCurrencies,
-                                           BalanceEntry entry, TrialBalanceItemType balanceType) {
+    internal void SummaryEntriesByAccountAndCurrency(EmpiriaHashTable<BalanceExplorerEntry> totalByCurrencies,
+                                           BalanceExplorerEntry entry, TrialBalanceItemType balanceType) {
 
-      BalanceEntry newEntry = BalanceMapper.MapToBalanceEntry(entry);
+      BalanceExplorerEntry newEntry = BalanceExplorerMapper.MapToBalanceEntry(entry);
       newEntry.GroupName = $"TOTAL DE LA CUENTA {newEntry.Account.Number} EN {newEntry.Currency.FullName}";
       newEntry.Ledger = Ledger.Empty;
 
@@ -116,16 +116,16 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
     #region Private methods
 
 
-    private void GenerateOrIncreaseBalances(EmpiriaHashTable<BalanceEntry> entries,
-                                            BalanceEntry entry, StandardAccount account,
+    private void GenerateOrIncreaseBalances(EmpiriaHashTable<BalanceExplorerEntry> entries,
+                                            BalanceExplorerEntry entry, StandardAccount account,
                                             Sector sector, TrialBalanceItemType balanceType, string hash) {
-      BalanceEntry returnedEntry;
+      BalanceExplorerEntry returnedEntry;
 
       entries.TryGetValue(hash, out returnedEntry);
 
       if (returnedEntry == null) {
 
-        returnedEntry = new BalanceEntry {
+        returnedEntry = new BalanceExplorerEntry {
           Ledger = entry.Ledger,
           Currency = entry.Currency,
           Sector = sector,
@@ -153,6 +153,6 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
 
     #endregion
 
-  } // class BalanceHelper
+  } // class BalanceExplorerHelper
 
-} // Empiria.FinancialAccounting.BalanceEngine
+} // Empiria.FinancialAccounting.BalanceEngine.BalanceExplorer

@@ -2,23 +2,23 @@
 *                                                                                                            *
 *  Module   : Balance Engine                             Component : Domain Layer                            *
 *  Assembly : FinancialAccounting.BalanceEngine.dll      Pattern   : Information Holder                      *
-*  Type     : Balances                                   License   : Please read LICENSE.txt file            *
+*  Type     : BalanceExplorerResult                      License   : Please read LICENSE.txt file            *
 *                                                                                                            *
-*  Summary  : Contains the header and entries of a balance                                                   *
+*  Summary  : Holds result data for a balance explorer query.                                                *
 *                                                                                                            *
 ************************* Copyright(c) La Vía Óntica SC, Ontica LLC and contributors. All rights reserved. **/
 using System;
 
 using Empiria.FinancialAccounting.BalanceEngine.BalanceExplorer.Adapters;
 
-namespace Empiria.FinancialAccounting.BalanceEngine {
+namespace Empiria.FinancialAccounting.BalanceEngine.BalanceExplorer {
 
-  /// <summary>Contains the header and entries of a balance.</summary>
-  public class Balances {
+  /// <summary>Holds result data for a balance explorer query.</summary>
+  public class BalanceExplorerResult {
 
     #region Constructors and parsers
 
-    internal Balances(BalancesQuery query, FixedList<BalanceEntry> entries) {
+    internal BalanceExplorerResult(BalanceExplorerQuery query, FixedList<BalanceExplorerEntry> entries) {
       Assertion.Require(query, nameof(query));
       Assertion.Require(entries, nameof(entries));
 
@@ -31,17 +31,17 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
 
     #region Properties
 
-    public BalancesQuery Query {
+    public BalanceExplorerQuery Query {
       get;
     }
 
-    public FixedList<BalanceEntry> Entries {
+    public FixedList<BalanceExplorerEntry> Entries {
       get;
     }
 
 
     #endregion
 
-  } // class Balances
+  } // class BalanceExplorerResult
 
-} // Empiria.FinancialAccounting.BalanceEngine
+} // Empiria.FinancialAccounting.BalanceEngine.BalanceExplorer

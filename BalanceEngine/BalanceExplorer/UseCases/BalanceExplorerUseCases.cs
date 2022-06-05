@@ -2,7 +2,7 @@
 *                                                                                                            *
 *  Module   : Balance Engine                             Component : Use cases Layer                         *
 *  Assembly : FinancialAccounting.BalanceEngine.dll      Pattern   : Use case interactor class               *
-*  Type     : BalanceUseCases                            License   : Please read LICENSE.txt file            *
+*  Type     : BalanceExplorerUseCases                    License   : Please read LICENSE.txt file            *
 *                                                                                                            *
 *  Summary  : Use cases used to build balances.                                                              *
 *                                                                                                            *
@@ -14,36 +14,34 @@ using Empiria.Services;
 namespace Empiria.FinancialAccounting.BalanceEngine.BalanceExplorer.UseCases {
 
   /// <summary>Use cases used to build balances.</summary>
-  public class BalanceUseCases : UseCase {
+  public class BalanceExplorerUseCases : UseCase {
 
     #region Constructors and parsers
 
-    protected BalanceUseCases() {
+    protected BalanceExplorerUseCases() {
       // no-op
     }
 
-    static public BalanceUseCases UseCaseInteractor() {
-      return UseCase.CreateInstance<BalanceUseCases>();
+    static public BalanceExplorerUseCases UseCaseInteractor() {
+      return UseCase.CreateInstance<BalanceExplorerUseCases>();
     }
 
     #endregion Constructors and parsers
 
-    public BalancesDto BuildBalanceSearch(BalancesQuery query) {
-      Assertion.Require(query, nameof(query));
-
-      var balanceConstructor = new BalanceConstructor(query);
-
-      Balances balances = balanceConstructor.BuildBalances();
-
-      return BalanceMapper.Map(balances);
-    }
-
     #region Use cases
 
+    public BalanceExplorerDto GetBalances(BalanceExplorerQuery query) {
+      Assertion.Require(query, nameof(query));
 
+      var builder = new BalanceExplorerResultBuilder(query);
+
+      BalanceExplorerResult balances = builder.Build();
+
+      return BalanceExplorerMapper.Map(balances);
+    }
 
     #endregion Use cases
 
-  } // class BalanceUseCases
+  } // class BalanceExplorerUseCases
 
 } // namespace Empiria.FinancialAccounting.BalanceEngine.BalanceExplorer.UseCases

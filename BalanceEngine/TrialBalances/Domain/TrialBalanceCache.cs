@@ -16,6 +16,7 @@ using Empiria.Security;
 
 using Empiria.FinancialAccounting.BalanceEngine.Adapters;
 using Empiria.FinancialAccounting.BalanceEngine.BalanceExplorer.Adapters;
+using Empiria.FinancialAccounting.BalanceEngine.BalanceExplorer;
 
 namespace Empiria.FinancialAccounting.BalanceEngine {
 
@@ -23,7 +24,7 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
   static public class TrialBalanceCache {
 
     static readonly EmpiriaHashTable<TrialBalance> _trialBalancesCache = new EmpiriaHashTable<TrialBalance>();
-    static readonly EmpiriaHashTable<Balances>     _balancesCache = new EmpiriaHashTable<Balances>();
+    static readonly EmpiriaHashTable<BalanceExplorerResult>     _balancesCache = new EmpiriaHashTable<BalanceExplorerResult>();
 
 
     static public void Invalidate(DateTime date) {
@@ -85,7 +86,7 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
     #region Consulta rápida de saldos
 
 
-    static internal string GenerateBalanceHash(BalancesQuery query) {
+    static internal string GenerateBalanceHash(BalanceExplorerQuery query) {
       string json = JsonConverter.ToJson(query);
 
       var hashCode = Cryptographer.CreateHashCode(json);
@@ -108,13 +109,13 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
     }
 
 
-    static internal void StoreBalances(string cacheHashKey, Balances balances) {
+    static internal void StoreBalances(string cacheHashKey, BalanceExplorerResult balances) {
       _balancesCache.Insert(cacheHashKey, balances);
     }
 
 
-    static internal Balances TryGetBalances(string cacheHashKey) {
-      Balances balances;
+    static internal BalanceExplorerResult TryGetBalances(string cacheHashKey) {
+      BalanceExplorerResult balances;
 
       if (_balancesCache.TryGetValue(cacheHashKey, out balances)) {
         return balances;

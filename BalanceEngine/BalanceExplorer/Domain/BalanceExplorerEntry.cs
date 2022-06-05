@@ -2,21 +2,21 @@
 *                                                                                                            *
 *  Module   : Balance Engine                             Component : Domain Layer                            *
 *  Assembly : FinancialAccounting.BalanceEngine.dll      Pattern   : Empiria Plain Object                    *
-*  Type     : BalanceEntry                               License   : Please read LICENSE.txt file            *
+*  Type     : BalanceExplorerEntry                       License   : Please read LICENSE.txt file            *
 *                                                                                                            *
-*  Summary  : Represents an entry for balance.                                                               *
+*  Summary  : Contains a balance entry for the balance explorer.                                             *
 *                                                                                                            *
 ************************* Copyright(c) La Vía Óntica SC, Ontica LLC and contributors. All rights reserved. **/
 using System;
 
-namespace Empiria.FinancialAccounting.BalanceEngine {
+namespace Empiria.FinancialAccounting.BalanceEngine.BalanceExplorer {
 
-  /// <summary>Represents an entry for balance.</summary>
-  public class BalanceEntry {
+  /// <summary>Contains a balance entry for the balance explorer.</summary>
+  public class BalanceExplorerEntry {
 
     #region Constructors and parsers
 
-    internal BalanceEntry() {
+    internal BalanceExplorerEntry() {
       // Required by Empiria Framework.
     }
 
@@ -123,10 +123,11 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
     } = false;
 
 
-    internal void Sum(BalanceEntry entry) {
+    internal void Sum(BalanceExplorerEntry entry) {
       this.InitialBalance += entry.InitialBalance;
       this.CurrentBalance += entry.CurrentBalance;
     }
-  } // class BalanceEntry
 
-} // Empiria.FinancialAccounting.BalanceEngine
+  } // class BalanceExplorerEntry
+
+} // Empiria.FinancialAccounting.BalanceEngine.BalanceExplorer
