@@ -123,6 +123,18 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
     }
 
 
+    internal List<TrialBalanceEntry> AccountEntriesWithSubledgerAccounts(
+                                     List<TrialBalanceEntry> trialBalance) {
+      
+      List<TrialBalanceEntry> returnedEntries = new List<TrialBalanceEntry>(trialBalance);
+
+      if (!_query.WithSubledgerAccount) {
+        returnedEntries = returnedEntries.Where(a => a.SubledgerNumberOfDigits == 0).ToList();
+      }
+      return returnedEntries;
+    }
+
+
     internal List<TrialBalanceEntry> CombineSummaryAndPostingEntries(
                                       List<TrialBalanceEntry> parentAccounts,
                                       FixedList<TrialBalanceEntry> accountEntries) {
@@ -156,6 +168,33 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
       //totalsByDebtorCreditorEntries.AddRange(totalsByCurrency.Values.ToList());
 
       return totalsByCurrency.ToFixedList().ToList();
+    }
+
+
+    internal TrialBalanceEntry GenerateTotalConsolidated(
+                                      List<TrialBalanceEntry> totalsByCurrency) {
+
+      var totalConsolidated = new EmpiriaHashTable<TrialBalanceEntry>();
+
+      foreach (var currencyEntry in totalsByCurrency) {
+
+        TrialBalanceEntry entry = currencyEntry.CreatePartialCopy();
+        entry.GroupName = "TOTAL CONSOLIDADO GENERAL";
+        string hash = $"{entry.GroupName}||{Sector.Empty.Code}||{entry.Ledger.Id}";
+
+        if ((_query.WithSubledgerAccount && _query.ShowCascadeBalances) ||
+             _query.ShowCascadeBalances) {
+
+          hash = $"{entry.GroupName}||{Sector.Empty.Code}";
+        }
+
+        var trialBalanceHelper = new TrialBalanceHelper(_query);
+        trialBalanceHelper.GenerateOrIncreaseEntries(totalConsolidated, entry,
+                                                     StandardAccount.Empty, Sector.Empty,
+                                                     TrialBalanceItemType.BalanceTotalConsolidated, hash);
+      } // foreach
+
+      return totalConsolidated.Values.FirstOrDefault();
     }
 
 
@@ -254,20 +293,20 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
     }
 
 
-    private void GetDetailParentAccounts(List<TrialBalanceEntry> detailSummaryEntries,
-                                         EmpiriaHashTable<TrialBalanceEntry> summaryEntries,
+    private void GetDetailParentAccounts(List<TrialBalanceEntry> detailParentAccount,
+                                         EmpiriaHashTable<TrialBalanceEntry> parentAccounts,
                                          StandardAccount currentParent, TrialBalanceEntry entry) {
 
       TrialBalanceEntry detailsEntry;
       string key = $"{currentParent.Number}||{entry.Sector.Code}||{entry.Currency.Id}||{entry.Ledger.Id}";
 
-      summaryEntries.TryGetValue(key, out detailsEntry);
+      parentAccounts.TryGetValue(key, out detailsEntry);
 
       if (detailsEntry != null) {
-        var existEntry = detailSummaryEntries.Contains(detailsEntry);
+        var existEntry = detailParentAccount.Contains(detailsEntry);
 
         if (!existEntry) {
-          detailSummaryEntries.Add(detailsEntry);
+          detailParentAccount.Add(detailsEntry);
         }
       }
     }
