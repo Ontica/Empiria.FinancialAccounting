@@ -96,12 +96,11 @@ namespace Empiria.FinancialAccounting.Reporting.Exporters.Excel {
           return;
 
         case TrialBalanceType.Balanza:
-        //case TrialBalanceType.Saldos:
           FillOutBalanza(trialBalance.Entries.Select(x => (BalanzaTradicionalEntryDto) x));
           return;
 
         case TrialBalanceType.SaldosPorAuxiliar:
-          FillOutSaldosAuxiliar(trialBalance.Entries.Select(x => (TrialBalanceEntryDto) x));
+          FillOutSaldosAuxiliar(trialBalance.Entries.Select(x => (SaldosPorAuxiliarEntryDto) x));
           return;
 
         case TrialBalanceType.SaldosPorCuenta:
@@ -360,48 +359,57 @@ namespace Empiria.FinancialAccounting.Reporting.Exporters.Excel {
     }
 
 
-    private void FillOutSaldosAuxiliar(IEnumerable<TrialBalanceEntryDto> entries) {
+    private void FillOutSaldosAuxiliar(IEnumerable<SaldosPorAuxiliarEntryDto> entries) {
       int i = 5;
 
       foreach (var entry in entries) {
         var account = StandardAccount.Parse(entry.StandardAccountId);
 
-        if ((entry.ItemType == TrialBalanceItemType.Entry ||
-            entry.ItemType == TrialBalanceItemType.Summary) &&
-            (_query.ShowCascadeBalances)) {
+        if (entry.ItemType != TrialBalanceItemType.Total) {
           _excelFile.SetCell($"A{i}", entry.LedgerNumber);
           _excelFile.SetCell($"B{i}", entry.LedgerName);
+
         } else {
           _excelFile.SetCell($"A{i}", "");
         }
 
         if (entry.ItemType == TrialBalanceItemType.Entry) {
           _excelFile.SetCell($"C{i}", $"({entry.CurrencyCode}) {entry.CurrencyName}");
+
           if (!entry.IsParentPostingEntry) {
             _excelFile.SetCell($"D{i}", "*");
+
           } else {
             _excelFile.SetCell($"D{i}", "**");
+
           }
         }
         if (!account.IsEmptyInstance) {
           _excelFile.SetCell($"E{i}", account.Number);
           _excelFile.SetCell($"F{i}", account.Name);
+
         } else {
           _excelFile.SetCell($"E{i}", entry.AccountNumber);
           _excelFile.SetCell($"F{i}", entry.AccountName);
+
         }
+
         _excelFile.SetCell($"G{i}", entry.SectorCode);
+
         if (entry.ItemType == TrialBalanceItemType.Entry ||
             entry.ItemType == TrialBalanceItemType.Total) {
+
           _excelFile.SetCell($"H{i}", (decimal) entry.CurrentBalance);
         }
 
         _excelFile.SetCell($"I{i}", entry.DebtorCreditor);
 
         if (entry.ItemType == TrialBalanceItemType.Entry) {
+
           if (MustFillOutAverageBalance((decimal) entry.AverageBalance, entry.LastChangeDate)) {
             _excelFile.SetCell($"J{i}", (decimal) entry.AverageBalance);
           }
+
         }
 
 
