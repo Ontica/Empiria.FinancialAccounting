@@ -19,18 +19,18 @@ using Empiria.FinancialAccounting.BalanceEngine.Helpers;
 namespace Empiria.FinancialAccounting.BalanceEngine {
 
   /// <summary>Genera los datos para el reporte de saldos por auxiliar.</summary>
-  internal class SaldosPorAuxiliar {
+  internal class SaldosPorAuxiliarBuilder {
 
     private readonly TrialBalanceQuery _query;
 
-    internal SaldosPorAuxiliar(TrialBalanceQuery query) {
+    internal SaldosPorAuxiliarBuilder(TrialBalanceQuery query) {
       _query = query;
     }
 
 
     internal TrialBalance Build() {
       var balanceHelper = new TrialBalanceHelper(_query);
-      var helper = new BalanceBySubledgerAccountHelper(_query);
+      var helper = new SaldosPorAuxiliarHelper(_query);
 
       List<TrialBalanceEntry> trialBalance = balanceHelper.GetPostingEntries().ToList();
 

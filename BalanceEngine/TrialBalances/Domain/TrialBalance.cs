@@ -40,8 +40,10 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
         case TrialBalanceType.SaldosPorCuenta:
           return SaldosPorCuentaMapper.DataColumns(this.Query);
 
-        case TrialBalanceType.GeneracionDeSaldos:
         case TrialBalanceType.SaldosPorAuxiliar:
+          return SaldosPorAuxiliarMapper.DataColumns(this.Query);
+
+        case TrialBalanceType.GeneracionDeSaldos:
         case TrialBalanceType.BalanzaConContabilidadesEnCascada:
           return TrialBalanceDataColumns();
 

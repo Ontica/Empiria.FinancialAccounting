@@ -17,11 +17,11 @@ using Empiria.FinancialAccounting.BalanceEngine.Adapters;
 namespace Empiria.FinancialAccounting.BalanceEngine.Helpers {
 
   /// <summary>Helper methods to build valorized balances.</summary>
-  internal class BalanceBySubledgerAccountHelper {
+  internal class SaldosPorAuxiliarHelper {
 
     private readonly TrialBalanceQuery _query;
 
-    internal BalanceBySubledgerAccountHelper(TrialBalanceQuery query) {
+    internal SaldosPorAuxiliarHelper(TrialBalanceQuery query) {
       _query = query;
     }
 

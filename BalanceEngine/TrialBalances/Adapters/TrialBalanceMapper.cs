@@ -65,13 +65,13 @@ namespace Empiria.FinancialAccounting.BalanceEngine.Adapters {
                                                         FixedList<ITrialBalanceEntry> list) {
       switch (query.TrialBalanceType) {
         case TrialBalanceType.AnaliticoDeCuentas:
-          var analitico = list.Select((x) => AnaliticoDeCuentasMapper.MapEntry((AnaliticoDeCuentasEntry) x));
 
+          var analitico = list.Select((x) => AnaliticoDeCuentasMapper.MapEntry((AnaliticoDeCuentasEntry) x));
           return new FixedList<ITrialBalanceEntryDto>(analitico);
 
         case TrialBalanceType.Balanza:
-          var balanza = list.Select((x) => BalanzaTradicionalMapper.MapEntry((TrialBalanceEntry) x, query));
 
+          var balanza = list.Select((x) => BalanzaTradicionalMapper.MapEntry((TrialBalanceEntry) x, query));
           return new FixedList<ITrialBalanceEntryDto>(balanza);
 
         case TrialBalanceType.BalanzaConContabilidadesEnCascada:
@@ -83,8 +83,12 @@ namespace Empiria.FinancialAccounting.BalanceEngine.Adapters {
 
         case TrialBalanceType.SaldosPorAuxiliar:
 
-          var subledgerItems = list.Select((x) => MapToBalanceBySubledgerAccount((TrialBalanceEntry) x, query));
-          return new FixedList<ITrialBalanceEntryDto>(subledgerItems);
+          var saldosPorAuxiliar = list.Select((x) => 
+                                  SaldosPorAuxiliarMapper.MapEntry((TrialBalanceEntry) x, query));
+          return new FixedList<ITrialBalanceEntryDto>(saldosPorAuxiliar);
+
+          //var subledgerItems = list.Select((x) => MapToBalanceBySubledgerAccount((TrialBalanceEntry) x, query));
+          //return new FixedList<ITrialBalanceEntryDto>(subledgerItems);
 
         case TrialBalanceType.SaldosPorCuenta:
 
