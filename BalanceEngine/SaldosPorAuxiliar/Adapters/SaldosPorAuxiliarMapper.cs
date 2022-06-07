@@ -38,17 +38,9 @@ namespace Empiria.FinancialAccounting.BalanceEngine.Adapters {
     static public FixedList<DataTableColumn> DataColumns(TrialBalanceQuery Query) {
       List<DataTableColumn> columns = new List<DataTableColumn>();
 
-      if (Query.ReturnLedgerColumn) {
-        columns.Add(new DataTableColumn("ledgerNumber", "Cont", "text"));
-      }
-
+      columns.Add(new DataTableColumn("ledgerNumber", "Cont", "text"));
       columns.Add(new DataTableColumn("currencyCode", "Mon", "text"));
-
-      if (Query.WithSubledgerAccount) {
-        columns.Add(new DataTableColumn("accountNumber", "Cuenta / Auxiliar", "text-nowrap"));
-      } else {
-        columns.Add(new DataTableColumn("accountNumber", "Cuenta", "text-nowrap"));
-      }
+      columns.Add(new DataTableColumn("accountNumber", "Cuenta / Auxiliar", "text-nowrap"));
 
       columns.Add(new DataTableColumn("sectorCode", "Sct", "text"));
       columns.Add(new DataTableColumn("accountName", "Nombre", "text"));
@@ -59,6 +51,8 @@ namespace Empiria.FinancialAccounting.BalanceEngine.Adapters {
       if (Query.WithAverageBalance) {
         columns.Add(new DataTableColumn("averageBalance", "Saldo promedio", "decimal"));
       }
+
+      columns.Add(new DataTableColumn("lastChangeDate", "Último movimiento", "date"));
 
       return columns.ToFixedList();
     }

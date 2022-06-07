@@ -29,24 +29,24 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
 
 
     internal TrialBalance Build() {
-      var balanceHelper = new TrialBalanceHelper(_query);
+      var trialBalanceHelper = new TrialBalanceHelper(_query);
       var helper = new SaldosPorAuxiliarHelper(_query);
 
-      List<TrialBalanceEntry> trialBalance = balanceHelper.GetPostingEntries().ToList();
+      List<TrialBalanceEntry> accountEntries = trialBalanceHelper.GetPostingEntries().ToList();
 
-      balanceHelper.SetSummaryToParentEntries(trialBalance);
+      trialBalanceHelper.SetSummaryToParentEntries(accountEntries);
 
-      EmpiriaHashTable<TrialBalanceEntry> summaryEntries = helper.BalancesBySubledgerAccounts(trialBalance);
+      EmpiriaHashTable<TrialBalanceEntry> summaryEntries = helper.BalancesBySubledgerAccounts(accountEntries);
 
       List<TrialBalanceEntry> orderedTrialBalance = helper.OrderByAccountNumber(summaryEntries);
 
-      trialBalance = helper.CombineTotalAndSummaryEntries(orderedTrialBalance, trialBalance);
+      accountEntries = helper.CombineTotalAndSummaryEntries(orderedTrialBalance, accountEntries);
 
-      trialBalance = helper.GenerateAverageBalance(trialBalance);
+      accountEntries = helper.GenerateAverageBalance(accountEntries);
 
-      balanceHelper.RestrictLevels(trialBalance);
+      trialBalanceHelper.RestrictLevels(accountEntries);
 
-      var returnBalance = new FixedList<ITrialBalanceEntry>(trialBalance.Select(x => (ITrialBalanceEntry) x));
+      var returnBalance = new FixedList<ITrialBalanceEntry>(accountEntries.Select(x => (ITrialBalanceEntry) x));
 
       return new TrialBalance(_query, returnBalance);
     }

@@ -708,11 +708,15 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
 
       if (_query.TrialBalanceType == TrialBalanceType.BalanzaDolarizada) {
         entry.ExchangeRate = exchangeRate.Value;
+
       }
+
       if ((_query.IsOperationalReport && !_query.ConsolidateBalancesToTargetCurrency)) {
         entry.ExchangeRate = exchangeRate.Value;
+
       } else {
         entry.MultiplyBy(exchangeRate.Value);
+
       }
 
     }
