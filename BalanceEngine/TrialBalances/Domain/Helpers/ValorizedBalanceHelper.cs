@@ -148,20 +148,20 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
 
 
     internal FixedList<TrialBalanceEntry> ValuateToExchangeRate(
-                                          FixedList<TrialBalanceEntry> entries,
-                                          BalancesPeriod period) {
+                                          FixedList<TrialBalanceEntry> entries) {
 
       var exchangeRateType = ExchangeRateType.Dolarizacion;
 
-      period.ExchangeRateTypeUID = exchangeRateType.UID;
-      period.ValuateToCurrrencyUID = "01";
-      period.ExchangeRateDate = period.ToDate;
+      _query.InitialPeriod.ExchangeRateTypeUID = exchangeRateType.UID;
+      _query.InitialPeriod.ValuateToCurrrencyUID = "01";
+      _query.InitialPeriod.ExchangeRateDate = _query.InitialPeriod.ToDate;
 
-      FixedList<ExchangeRate> exchangeRates = ExchangeRate.GetList(exchangeRateType, period.ExchangeRateDate);
+      FixedList<ExchangeRate> exchangeRates = ExchangeRate.GetList(exchangeRateType, _query.InitialPeriod.ExchangeRateDate);
 
       foreach (var entry in entries.Where(a => a.Currency.Code != "02")) {
-        var exchangeRate = exchangeRates.FirstOrDefault(a => a.FromCurrency.Code == period.ValuateToCurrrencyUID &&
-                                                              a.ToCurrency.Code == entry.Currency.Code);
+        var exchangeRate = exchangeRates.FirstOrDefault(
+                            a => a.FromCurrency.Code == _query.InitialPeriod.ValuateToCurrrencyUID &&
+                            a.ToCurrency.Code == entry.Currency.Code);
 
         // ToDo: URGENT This require must be checked before any state
         Assertion.Require(exchangeRate, $"No hay tipo de cambio para la moneda {entry.Currency.FullName}.");

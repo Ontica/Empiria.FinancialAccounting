@@ -82,25 +82,7 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
 
 
     #region Private methods
-    private List<TrialBalanceEntry> GetOperationalReports(List<TrialBalanceEntry> trialBalance) {
-      var helper = new TrialBalanceHelper(_query);
-      var totalByAccountEntries = new EmpiriaHashTable<TrialBalanceEntry>(trialBalance.Count);
-
-      if (_query.ConsolidateBalancesToTargetCurrency == true) {
-
-        foreach (var entry in trialBalance) {
-          helper.SummaryByAccount(totalByAccountEntries, entry);
-        }
-
-        return totalByAccountEntries.ToFixedList().ToList();
-
-      } else {
-
-        return trialBalance;
-
-      }
-    }
-
+    
 
     private List<TrialBalanceEntry> GenerateTotalsForBalanza(
                                     List<TrialBalanceEntry> balanceEntries,
@@ -143,6 +125,26 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
       returnedBalance.Add(totalConsolidated);
 
       return returnedBalance;
+    }
+
+
+    private List<TrialBalanceEntry> GetOperationalReports(List<TrialBalanceEntry> trialBalance) {
+      var helper = new TrialBalanceHelper(_query);
+      var totalByAccountEntries = new EmpiriaHashTable<TrialBalanceEntry>(trialBalance.Count);
+
+      if (_query.ConsolidateBalancesToTargetCurrency == true) {
+
+        foreach (var entry in trialBalance) {
+          helper.SummaryByAccount(totalByAccountEntries, entry);
+        }
+
+        return totalByAccountEntries.ToFixedList().ToList();
+
+      } else {
+
+        return trialBalance;
+
+      }
     }
 
 

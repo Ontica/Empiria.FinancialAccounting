@@ -46,7 +46,7 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
                                 helper.OrderingDollarizedBalance(ledgerAccounts.ToFixedList());
 
       FixedList<TrialBalanceEntry> valuedEntries = helper.ValuateToExchangeRate(
-                                    orderingBalance.ToFixedList(), _query.InitialPeriod);
+                                                   orderingBalance.ToFixedList());
 
       List<ValuedTrialBalanceEntry> mergeBalancesToValuedBalances =
                                       helper.MergeTrialBalanceIntoValuedBalances(valuedEntries);
