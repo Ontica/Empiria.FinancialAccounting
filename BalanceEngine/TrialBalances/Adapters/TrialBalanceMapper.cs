@@ -23,6 +23,7 @@ namespace Empiria.FinancialAccounting.BalanceEngine.Adapters {
       };
     }
 
+
     static internal AnaliticoDeCuentasEntry MapToAnalyticBalanceEntry(
                                                 AnaliticoDeCuentasEntry balanceEntry) {
       var entry = new AnaliticoDeCuentasEntry();
@@ -53,9 +54,12 @@ namespace Empiria.FinancialAccounting.BalanceEngine.Adapters {
 
       return entry;
     }
+
+
     #endregion Public mappers
 
     #region Helpers
+
 
     static private FixedList<ITrialBalanceEntryDto> Map(TrialBalanceQuery query,
                                                         FixedList<ITrialBalanceEntry> list) {
@@ -109,71 +113,6 @@ namespace Empiria.FinancialAccounting.BalanceEngine.Adapters {
       }
     }
 
-
-    static private TrialBalanceEntryDto MapToBalancesByAccount(TrialBalanceEntry entry,
-                                                               TrialBalanceQuery query) {
-      var dto = new TrialBalanceEntryDto();
-      SubledgerAccount subledgerAccount = SubledgerAccount.Parse(entry.SubledgerAccountId);
-
-      dto.ItemType = entry.ItemType;
-      dto.LedgerUID = entry.Ledger.UID != "Empty" ? entry.Ledger.UID : "";
-      dto.LedgerNumber = entry.Ledger.Number;
-      if (entry.ItemType == TrialBalanceItemType.Summary ||
-          entry.ItemType == TrialBalanceItemType.Entry) {
-        dto.LedgerName = entry.Ledger.Name;
-      }
-      dto.StandardAccountId = entry.Account.Id;
-      dto.CurrencyCode = entry.Currency.Code;
-      if (subledgerAccount.IsEmptyInstance || subledgerAccount.Number == "0") {
-        dto.AccountName = entry.GroupName != "" ? entry.GroupName :
-                          entry.Account.Name;
-        dto.AccountNumber = entry.GroupNumber != "" ? entry.GroupNumber :
-                            !entry.Account.IsEmptyInstance ?
-                            entry.Account.Number : "";
-      } else {
-        dto.AccountName = subledgerAccount.Name;
-        dto.AccountNumber = subledgerAccount.Number;
-      }
-      dto.AccountNumberForBalances = entry.Account.Number;
-      dto.SubledgerAccountNumber = subledgerAccount.Number;
-      dto.AccountRole = entry.Account.Role;
-      dto.AccountLevel = entry.Account.Level;
-      dto.SectorCode = entry.Sector.Code;
-      dto.SubledgerAccountId = entry.SubledgerAccountId;
-      dto.InitialBalance = entry.InitialBalance;
-      dto.Debit = entry.Debit;
-      dto.Credit = entry.Credit;
-      dto.CurrentBalance = entry.CurrentBalance;
-      dto.CurrentBalanceForBalances = entry.CurrentBalance;
-      dto.ExchangeRate = entry.ExchangeRate;
-      dto.SecondExchangeRate = entry.SecondExchangeRate;
-      dto.AverageBalance = entry.AverageBalance;
-      dto.IsParentPostingEntry = entry.IsParentPostingEntry;
-      if (query.WithSubledgerAccount) {
-        dto.DebtorCreditor = entry.ItemType == TrialBalanceItemType.Summary ?
-                             entry.DebtorCreditor.ToString() : "";
-      } else {
-        dto.DebtorCreditor = entry.ItemType == TrialBalanceItemType.Entry ?
-                             entry.DebtorCreditor.ToString() : "";
-      }
-
-      dto.LastChangeDate = entry.ItemType == TrialBalanceItemType.Entry ?
-                           entry.LastChangeDate : ExecutionServer.DateMaxValue;
-      dto.LastChangeDateForBalances = entry.LastChangeDate;
-
-      dto.HasAccountStatement = (entry.ItemType == TrialBalanceItemType.Entry ||
-                                 entry.ItemType == TrialBalanceItemType.Summary) &&
-                                !query.UseDefaultValuation &&
-                                query.InitialPeriod.ValuateToCurrrencyUID.Length == 0 &&
-                                query.InitialPeriod.ExchangeRateTypeUID.Length == 0;
-      dto.ClickableEntry = (entry.ItemType == TrialBalanceItemType.Entry ||
-                            entry.ItemType == TrialBalanceItemType.Summary) &&
-                            !query.UseDefaultValuation &&
-                            query.InitialPeriod.ValuateToCurrrencyUID.Length == 0 &&
-                            query.InitialPeriod.ExchangeRateTypeUID.Length == 0;
-
-      return dto;
-    }
 
     static private TrialBalanceEntryDto MapToBalanceBySubledgerAccount(TrialBalanceEntry entry,
                                                                        TrialBalanceQuery query) {
@@ -248,6 +187,7 @@ namespace Empiria.FinancialAccounting.BalanceEngine.Adapters {
 
       return dto;
     }
+
 
     static private TrialBalanceEntryDto MapToTrialBalance(TrialBalanceEntry entry,
                                                           TrialBalanceQuery query) {
@@ -375,6 +315,7 @@ namespace Empiria.FinancialAccounting.BalanceEngine.Adapters {
       return dto;
     }
 
+
     static private ValuedTrialBalanceDto MapToValuedTrialBalance(
                                               ValuedTrialBalanceEntry entry) {
       var dto = new ValuedTrialBalanceDto();
@@ -399,6 +340,7 @@ namespace Empiria.FinancialAccounting.BalanceEngine.Adapters {
 
       return dto;
     }
+
 
     static private TrialBalanceByCurrencyDto MapToTrialBalanceByCurrency(
                                               TrialBalanceByCurrencyEntry entry) {
