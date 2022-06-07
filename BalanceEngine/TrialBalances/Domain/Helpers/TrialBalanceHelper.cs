@@ -34,7 +34,6 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
 
       foreach (var entry in AccountEntries) {
         SetLastChangeDateToAccountEntries(entry, parentAccounts);
-
         SetLastChangeDateToParentEntries(entry, parentAccounts);
       }
     }
@@ -61,6 +60,41 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
       }
 
       return accountEntriesConsolidated.Values.ToFixedList();
+    }
+
+
+    internal void GenerateOrIncreaseEntries(EmpiriaHashTable<TrialBalanceEntry> summaryEntries,
+                                           TrialBalanceEntry entry,
+                                           StandardAccount targetAccount, Sector targetSector,
+                                           TrialBalanceItemType itemType, string hash) {
+
+      TrialBalanceEntry summaryEntry;
+
+      summaryEntries.TryGetValue(hash, out summaryEntry);
+
+      if (summaryEntry == null) {
+
+        summaryEntry = new TrialBalanceEntry {
+          Ledger = entry.Ledger,
+          Currency = entry.Currency,
+          Sector = targetSector,
+          Account = targetAccount,
+          ItemType = itemType,
+          GroupNumber = entry.GroupNumber,
+          GroupName = entry.GroupName,
+          DebtorCreditor = entry.DebtorCreditor,
+          SubledgerAccountIdParent = entry.SubledgerAccountIdParent,
+          LastChangeDate = entry.LastChangeDate
+        };
+
+        summaryEntry.Sum(entry);
+
+        summaryEntries.Insert(hash, summaryEntry);
+
+      } else {
+
+        summaryEntry.Sum(entry);
+      }
     }
 
 
@@ -380,6 +414,23 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
     }
 
 
+
+
+    internal void SummaryEntryBySectorization(EmpiriaHashTable<TrialBalanceEntry> parentAccounts,
+                                             TrialBalanceEntry entry, StandardAccount currentParent) {
+      if (!_query.UseNewSectorizationModel || !_query.WithSectorization) {
+        return;
+      }
+
+      if (!currentParent.HasParent || !entry.HasSector) {
+        return;
+      }
+
+      SummaryByEntry(parentAccounts, entry, currentParent, entry.Sector.Parent,
+                     TrialBalanceItemType.Summary);
+    }
+
+
     internal bool ValidateEntryForSummaryParentAccount(TrialBalanceEntry entry,
                                                       out StandardAccount currentParent) {
 
@@ -468,41 +519,6 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
     #region Private methods
 
 
-    internal void GenerateOrIncreaseEntries(EmpiriaHashTable<TrialBalanceEntry> summaryEntries,
-                                           TrialBalanceEntry entry,
-                                           StandardAccount targetAccount, Sector targetSector,
-                                           TrialBalanceItemType itemType, string hash) {
-
-      TrialBalanceEntry summaryEntry;
-
-      summaryEntries.TryGetValue(hash, out summaryEntry);
-
-      if (summaryEntry == null) {
-
-        summaryEntry = new TrialBalanceEntry {
-          Ledger = entry.Ledger,
-          Currency = entry.Currency,
-          Sector = targetSector,
-          Account = targetAccount,
-          ItemType = itemType,
-          GroupNumber = entry.GroupNumber,
-          GroupName = entry.GroupName,
-          DebtorCreditor = entry.DebtorCreditor,
-          SubledgerAccountIdParent = entry.SubledgerAccountIdParent,
-          LastChangeDate = entry.LastChangeDate
-        };
-
-        summaryEntry.Sum(entry);
-
-        summaryEntries.Insert(hash, summaryEntry);
-
-      } else {
-
-        summaryEntry.Sum(entry);
-      }
-    }
-
-
     private void GetDetailSummaryEntries(List<TrialBalanceEntry> detailSummaryEntries,
                                          EmpiriaHashTable<TrialBalanceEntry> summaryEntries,
                                          StandardAccount currentParent, TrialBalanceEntry entry) {
@@ -552,7 +568,7 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
       if (hashEntries.Count > 0) {
 
         foreach (var hashEntry in hashEntries.ToFixedList().ToList()) {
-          
+
           var entry = entriesList.FirstOrDefault(
                                       a => a.Account.Number == hashEntry.Account.Number &&
                                            a.Ledger.Number == hashEntry.Ledger.Number &&
@@ -597,44 +613,6 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
     }
 
 
-    private void SetLastChangeDateToParentEntries(TrialBalanceEntry entry,
-                                                  FixedList<TrialBalanceEntry> parentAccounts) {
-      StandardAccount currentParentAccount = entry.Account.GetParent();
-
-      while (true) {
-        var parentToChange = parentAccounts.FirstOrDefault(
-                                                a => a.Account.Number == currentParentAccount.Number &&
-                                                a.Currency.Code == entry.Currency.Code &&
-                                                a.Ledger.Number == entry.Ledger.Number &&
-                                                a.Sector.Code == entry.Sector.Code &&
-                                                entry.LastChangeDate > a.LastChangeDate);
-
-        if (parentToChange != null) {
-          parentToChange.LastChangeDate = entry.LastChangeDate;
-        }
-
-        if (currentParentAccount.NotHasParent) {
-
-          var parentToChangeWithoutSector = parentAccounts.FirstOrDefault(
-                                    a => a.Account.Number == currentParentAccount.Number &&
-                                    a.Currency.Code == entry.Currency.Code &&
-                                    a.Ledger.Number == entry.Ledger.Number &&
-                                    a.Sector.Code == "00" &&
-                                    entry.LastChangeDate > a.LastChangeDate);
-
-          if (parentToChangeWithoutSector != null) {
-
-            parentToChangeWithoutSector.LastChangeDate = entry.LastChangeDate;
-          }
-          break;
-
-        } else {
-          currentParentAccount = currentParentAccount.GetParent();
-        }
-      }
-    }
-
-
     internal List<TrialBalanceEntry> OrderingParentsAndAccountEntries(
                                      List<TrialBalanceEntry> entries) {
 
@@ -660,12 +638,63 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
     }
 
 
+    private void SetLastChangeDateToParentEntries(TrialBalanceEntry entry,
+                                                  FixedList<TrialBalanceEntry> parentAccounts) {
+      StandardAccount currentParentAccount = entry.Account.GetParent();
+
+      while (true) {
+        SetLastChangeDateToEntryWithSector(entry, parentAccounts, currentParentAccount);
+
+        if (currentParentAccount.NotHasParent) {
+
+          SetLastChangeDateToEntryWithoutSector(entry, parentAccounts, currentParentAccount);
+          break;
+
+        } else {
+          currentParentAccount = currentParentAccount.GetParent();
+        }
+
+      } // while
+    }
+
+
+    private void SetLastChangeDateToEntryWithSector(TrialBalanceEntry entry,
+                                                    FixedList<TrialBalanceEntry> parentAccounts,
+                                                    StandardAccount currentParentAccount) {
+
+      var parentToChange = parentAccounts.FirstOrDefault(
+                          a => a.Account.Number == currentParentAccount.Number &&
+                          a.Currency.Code == entry.Currency.Code &&
+                          a.Sector.Code == entry.Sector.Code &&
+                          entry.LastChangeDate > a.LastChangeDate);
+
+      if (parentToChange != null) {
+        parentToChange.LastChangeDate = entry.LastChangeDate;
+      }
+    }
+
+
+    private void SetLastChangeDateToEntryWithoutSector(TrialBalanceEntry entry,
+                                                       FixedList<TrialBalanceEntry> parentAccounts,
+                                                       StandardAccount currentParentAccount) {
+
+      var parentToChangeWithoutSector = parentAccounts.FirstOrDefault(
+                                    a => a.Account.Number == currentParentAccount.Number &&
+                                    a.Currency.Code == entry.Currency.Code &&
+                                    a.Sector.Code == "00" &&
+                                    entry.LastChangeDate > a.LastChangeDate);
+
+      if (parentToChangeWithoutSector != null) {
+        parentToChangeWithoutSector.LastChangeDate = entry.LastChangeDate;
+      }
+    }
+
+
     private void SetLastChangeDateToAccountEntries(TrialBalanceEntry entry,
                                                    FixedList<TrialBalanceEntry> parentAccounts) {
 
       var filtered = parentAccounts.Where(a => a.Account.Number == entry.Account.Number &&
                                                a.Currency.Code == entry.Currency.Code &&
-                                               a.Ledger.Number == entry.Ledger.Number &&
                                                a.Sector.Code == entry.Sector.Code &&
                                                entry.LastChangeDate > a.LastChangeDate);
 
@@ -675,23 +704,11 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
     }
 
 
-    internal void SummaryEntryBySectorization(EmpiriaHashTable<TrialBalanceEntry> parentAccounts,
-                                             TrialBalanceEntry entry, StandardAccount currentParent) {
-      if (!_query.UseNewSectorizationModel || !_query.WithSectorization) {
-        return;
-      }
-
-      if (!currentParent.HasParent || !entry.HasSector) {
-        return;
-      }
-
-      SummaryByEntry(parentAccounts, entry, currentParent, entry.Sector.Parent,
-                     TrialBalanceItemType.Summary);
-    }
-
-
     private void ValuateExchangeRateByReportType(TrialBalanceEntry entry, ExchangeRate exchangeRate) {
 
+      if (_query.TrialBalanceType == TrialBalanceType.BalanzaDolarizada) {
+        entry.ExchangeRate = exchangeRate.Value;
+      }
       if ((_query.IsOperationalReport && !_query.ConsolidateBalancesToTargetCurrency)) {
         entry.ExchangeRate = exchangeRate.Value;
       } else {
