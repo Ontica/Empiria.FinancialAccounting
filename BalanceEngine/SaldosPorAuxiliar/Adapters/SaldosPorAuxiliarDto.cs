@@ -46,7 +46,7 @@ namespace Empiria.FinancialAccounting.BalanceEngine.Adapters {
 
     public string LedgerUID {
       get; internal set;
-    }
+    } = string.Empty;
 
 
     public string LedgerNumber {
@@ -167,7 +167,7 @@ namespace Empiria.FinancialAccounting.BalanceEngine.Adapters {
 
     public string DebtorCreditor {
       get; internal set;
-    }
+    } = string.Empty;
 
 
     public bool HasAccountStatement {

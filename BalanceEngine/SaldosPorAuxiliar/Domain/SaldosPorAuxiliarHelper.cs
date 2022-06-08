@@ -13,6 +13,7 @@ using System.Linq;
 using Empiria.Collections;
 
 using Empiria.FinancialAccounting.BalanceEngine.Adapters;
+using Empiria.FinancialAccounting.BalanceEngine.Data;
 
 namespace Empiria.FinancialAccounting.BalanceEngine.Helpers {
 
@@ -26,10 +27,30 @@ namespace Empiria.FinancialAccounting.BalanceEngine.Helpers {
     }
 
 
-    internal EmpiriaHashTable<TrialBalanceEntry> BalancesBySubledgerAccounts(
-                                                List<TrialBalanceEntry> trialBalance) {
+    internal void GenerateAverageBalance(List<TrialBalanceEntry> accountEntries) {
 
-      var subledgerAccountsEntries = trialBalance.Where(a => a.SubledgerAccountId > 0).ToList();
+      if (_query.WithAverageBalance) {
+
+        foreach (var entry in accountEntries.Where(a => a.ItemType == TrialBalanceItemType.Summary)) {
+
+          decimal debtorCreditor = entry.DebtorCreditor == DebtorCreditorType.Deudora ?
+                                   entry.Debit - entry.Credit : entry.Credit - entry.Debit;
+
+          TimeSpan timeSpan = _query.InitialPeriod.ToDate - entry.LastChangeDate;
+          int numberOfDays = timeSpan.Days + 1;
+
+          entry.AverageBalance = ((numberOfDays * debtorCreditor) /
+                                   _query.InitialPeriod.ToDate.Day) +
+                                   entry.InitialBalance;
+        }
+      }
+    }
+
+
+    internal EmpiriaHashTable<TrialBalanceEntry> GetBalancesBySubledgerAccounts(
+                                                FixedList<TrialBalanceEntry> accountEntries) {
+
+      var subledgerAccountsEntries = accountEntries.Where(a => a.SubledgerAccountId > 0).ToList();
 
       var subledgerAccountsEntriesHashTable = new EmpiriaHashTable<TrialBalanceEntry>();
 
@@ -45,65 +66,28 @@ namespace Empiria.FinancialAccounting.BalanceEngine.Helpers {
     }
 
 
-    internal List<TrialBalanceEntry> CombineTotalAndSummaryEntries(
-                                    List<TrialBalanceEntry> orderingtTialBalance,
-                                    List<TrialBalanceEntry> trialBalance) {
+    internal List<TrialBalanceEntry> GetTotalsAndCombineWithAccountEntries(
+                                    List<TrialBalanceEntry> orderedParentAccounts,
+                                    FixedList<TrialBalanceEntry> accountEntries) {
 
       var returnedOrdering = new List<TrialBalanceEntry>();
 
-      foreach (var entry in orderingtTialBalance) {
+      foreach (var parentAccountEntry in orderedParentAccounts) {
 
-        var summaryAccounts = trialBalance.Where(
-                      a => a.SubledgerAccountId == entry.SubledgerAccountIdParent &&
-                      a.Ledger.Number == entry.Ledger.Number &&
-                      a.Currency.Code == entry.Currency.Code &&
-                      a.ItemType == TrialBalanceItemType.Entry).ToList();
+        List<TrialBalanceEntry> parentAccountsWithLastChangeDate =
+                                AssingnLastChangeDateToParentAccounts(parentAccountEntry, accountEntries);
+        
+        returnedOrdering.Add(parentAccountEntry);
+        returnedOrdering.AddRange(parentAccountsWithLastChangeDate);
 
-        foreach (var summary in summaryAccounts) {
-          entry.LastChangeDate = summary.LastChangeDate > entry.LastChangeDate ?
-                                 summary.LastChangeDate : entry.LastChangeDate;
-          summary.SubledgerAccountId = 0;
-        }
-
-        returnedOrdering.Add(entry);
-
-        if (summaryAccounts.Count > 0) {
-          returnedOrdering.AddRange(summaryAccounts);
-        }
-
-        var hashTotalEntry = new EmpiriaHashTable<TrialBalanceEntry>();
-        SummaryBySubledgerEntry(hashTotalEntry, entry, TrialBalanceItemType.Total);
-        returnedOrdering.Add(hashTotalEntry.ToFixedList().First());
+        GenerateTotalBySubledgerAccount(parentAccountEntry, returnedOrdering);
       }
 
       return returnedOrdering;
     }
 
 
-    internal List<TrialBalanceEntry> GenerateAverageBalance(List<TrialBalanceEntry> trialBalance) {
-      var returnedEntries = new List<TrialBalanceEntry>(trialBalance);
-
-      if (_query.WithAverageBalance) {
-
-        foreach (var entry in returnedEntries.Where(a => a.ItemType == TrialBalanceItemType.Summary)) {
-
-          decimal debtorCreditor = entry.DebtorCreditor == DebtorCreditorType.Deudora ?
-                                   entry.Debit - entry.Credit : entry.Credit - entry.Debit;
-
-          TimeSpan timeSpan = _query.InitialPeriod.ToDate - entry.LastChangeDate;
-          int numberOfDays = timeSpan.Days + 1;
-
-          entry.AverageBalance = ((numberOfDays * debtorCreditor) /
-                                   _query.InitialPeriod.ToDate.Day) +
-                                   entry.InitialBalance;
-        }
-      }
-
-      return returnedEntries;
-    }
-
-
-    internal List<TrialBalanceEntry> OrderByAccountNumber(
+    internal List<TrialBalanceEntry> OrderingAndAssingnSubledgerAccountInfoToParent(
                                       EmpiriaHashTable<TrialBalanceEntry> summaryEntries) {
 
       var returnedCombineOrdering = new List<TrialBalanceEntry>();
@@ -128,6 +112,32 @@ namespace Empiria.FinancialAccounting.BalanceEngine.Helpers {
 
 
     #region Private methods
+
+
+    private List<TrialBalanceEntry> AssingnLastChangeDateToParentAccounts(
+            TrialBalanceEntry parentAccountEntry, FixedList<TrialBalanceEntry> accountEntries) {
+
+      var accountEntriesByParentAccount = accountEntries.Where(
+                      a => a.SubledgerAccountId == parentAccountEntry.SubledgerAccountIdParent &&
+                      a.Ledger.Number == parentAccountEntry.Ledger.Number &&
+                      a.Currency.Code == parentAccountEntry.Currency.Code &&
+                      a.ItemType == TrialBalanceItemType.Entry).ToList();
+
+      foreach (var entryToCompare in accountEntriesByParentAccount) {
+
+        if (entryToCompare.LastChangeDate > parentAccountEntry.LastChangeDate) {
+          parentAccountEntry.LastChangeDate = entryToCompare.LastChangeDate;
+
+        } else {
+          parentAccountEntry.LastChangeDate = parentAccountEntry.LastChangeDate;
+
+        }
+        entryToCompare.SubledgerAccountId = 0;
+      }
+
+      return accountEntriesByParentAccount;
+    }
+
 
     private EmpiriaHashTable<TrialBalanceEntry> GenerateEntries(
                         EmpiriaHashTable<TrialBalanceEntry> subledgerAccountEntriesHashTable) {
@@ -175,6 +185,16 @@ namespace Empiria.FinancialAccounting.BalanceEngine.Helpers {
       } else {
         summaryEntry.Sum(entry);
       }
+    }
+
+
+    private void GenerateTotalBySubledgerAccount(TrialBalanceEntry entry,
+                                                 List<TrialBalanceEntry> returnedOrdering) {
+
+      var totalBySubledgerAccountEntry = new EmpiriaHashTable<TrialBalanceEntry>();
+
+      SummaryBySubledgerEntry(totalBySubledgerAccountEntry, entry, TrialBalanceItemType.Total);
+      returnedOrdering.Add(totalBySubledgerAccountEntry.ToFixedList().First());
     }
 
 
