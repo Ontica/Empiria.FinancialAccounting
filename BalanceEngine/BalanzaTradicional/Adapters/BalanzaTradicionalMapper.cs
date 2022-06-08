@@ -26,12 +26,10 @@ namespace Empiria.FinancialAccounting.BalanceEngine.Adapters {
         Entries = Map(entries.Entries, entries.Query)
       };
     }
+    #endregion Public methods
 
 
     #region Private methods
-
-    #endregion Private methods
-
 
 
     static public FixedList<DataTableColumn> DataColumns(TrialBalanceQuery query) {
@@ -104,12 +102,6 @@ namespace Empiria.FinancialAccounting.BalanceEngine.Adapters {
       dto.IsParentPostingEntry = entry.IsParentPostingEntry;
       return dto;
     }
-
-
-    #endregion Public methods
-
-
-    #region Private methods
 
 
     static private void AssignDebtorCreditorAndLastChangeDate(BalanzaTradicionalEntryDto dto,

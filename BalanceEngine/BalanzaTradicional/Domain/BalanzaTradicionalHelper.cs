@@ -155,19 +155,7 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
       return totalCurrenciesEntries.Values.ToList();
     }
 
-    internal List<TrialBalanceEntry> CombineTotalConsolidatedAndAccountEntries(
-                                      List<TrialBalanceEntry> balanceAccountEntries,
-                                      TrialBalanceEntry totalConsolidated) {
-
-      var returnedEntries = new List<TrialBalanceEntry>(balanceAccountEntries);
-
-      if (totalConsolidated != null) {
-        returnedEntries.Add(totalConsolidated);
-      }
-
-      return returnedEntries;
-    }
-
+    
     internal TrialBalanceEntry GenerateTotalConsolidated(
                                       List<TrialBalanceEntry> totalByCurrencyEntries) {
 
