@@ -8,7 +8,6 @@
 *                                                                                                            *
 ************************* Copyright(c) La Vía Óntica SC, Ontica LLC and contributors. All rights reserved. **/
 using System;
-using System.Collections.Generic;
 
 namespace Empiria.FinancialAccounting.FinancialReports.Adapters {
 
@@ -17,40 +16,30 @@ namespace Empiria.FinancialAccounting.FinancialReports.Adapters {
 
     #region Public mappers
 
-    static internal FinancialReportDesignDto Map(FinancialReportType financialReportType) {
+    static internal FinancialReportDesignDto Map(FinancialReportType reportType) {
       return new FinancialReportDesignDto {
-        Columns = MapColumns(financialReportType),
-        Rows = MapRows(financialReportType),
+        Columns = reportType.DataColumns,
+        Rows = MapRows(reportType),
       };
     }
 
-    private static FixedList<DataTableColumn> MapColumns(FinancialReportType financialReportType) {
-      List<DataTableColumn> columns = new List<DataTableColumn>();
-
-      columns.Add(new DataTableColumn("position", "#", "text"));
-      columns.Add(new DataTableColumn("code", "Clave CNBV", "text"));
-      columns.Add(new DataTableColumn("label", "Concepto", "text"));
-
-      return columns.ToFixedList();
-    }
 
     #endregion Public mappers
 
     #region Helpers
 
-    static private FixedList<FinancialReportRowDto> MapRows(FinancialReportType financialReportType) {
-      var rows = financialReportType.GetRows();
+    static private FixedList<FinancialReportRowDto> MapRows(FinancialReportType reportType) {
+      var rows = reportType.GetRows();
 
-      var mappedRows = rows.Select((x) => MapRow(x));
-
-      return new FixedList<FinancialReportRowDto>(mappedRows);
+      return rows.Select((x) => MapRow(x))
+                 .ToFixedList();
     }
 
     static private FinancialReportRowDto MapRow(FinancialReportRow row) {
       return new FinancialReportRowDto {
         UID = row.UID,
-        Code = row.Code,
-        Label = row.Label,
+        ConceptCode = row.Code,
+        Concept = row.Label,
         Format = row.Format,
         Position = row.Position,
         FinancialConceptUID = row.FinancialConcept.UID

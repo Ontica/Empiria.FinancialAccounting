@@ -2,45 +2,19 @@
 *                                                                                                            *
 *  Module   : Financial Reports                          Component : Interface adapters                      *
 *  Assembly : FinancialAccounting.FinancialReports.dll   Pattern   : Data Transfer Object                    *
-*  Type     : FinancialReportRowDto                      License   : Please read LICENSE.txt file            *
+*  Type     : ReportDesignConfigDto                      License   : Please read LICENSE.txt file            *
 *                                                                                                            *
-*  Summary  : Output DTO used to return a row definition of a fixed rows type financial report.              *
+*  Summary  : Output DTO that returns a report configuration.                                                *
 *                                                                                                            *
 ************************* Copyright(c) La Vía Óntica SC, Ontica LLC and contributors. All rights reserved. **/
+using System;
 
 namespace Empiria.FinancialAccounting.FinancialReports.Adapters {
 
-  /// <summary>Output DTO used to return a row definition of a fixed rows type financial report.</summary>
-  public class FinancialReportRowDto {
-
-    public string UID {
-      get; internal set;
-    }
-
-    public string ConceptCode {
-      get; internal set;
-    }
+  public class ReportDesignConfigDto {
 
 
-    public string Concept {
-      get; internal set;
-    }
 
+  }  // class ReportDesignConfigDto
 
-    public string Format {
-      get; internal set;
-    }
-
-
-    public int Position {
-      get; internal set;
-    }
-
-
-    public string FinancialConceptUID {
-      get; internal set;
-    }
-
-  } // class FinancialReportRowDto
-
-} // namespace Empiria.FinancialAccounting.FinancialReports.Adapters
+}  // namespace Empiria.FinancialAccounting.FinancialReports.Adapters

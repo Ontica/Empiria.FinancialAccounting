@@ -14,14 +14,25 @@ namespace Empiria.FinancialAccounting.FinancialReports.Adapters {
   /// <summary>Output DTO used to return financial reports designs.</summary>
   public class FinancialReportDesignDto {
 
-    public FixedList<FinancialReportRowDto> Rows {
+
+    public ReportDesignConfigDto Configuration {
       get; internal set;
-    } = new FixedList<FinancialReportRowDto>();
+    }
 
 
     public FixedList<DataTableColumn> Columns {
       get; internal set;
-    } = new FixedList<DataTableColumn>();
+    }
+
+
+    public FixedList<FinancialReportRowDto> Rows {
+      get; internal set;
+    }
+
+
+    public FixedList<FinancialReportCellDto> Cells {
+      get; internal set;
+    }
 
 
   }  // class FinancialReportDesignDto
