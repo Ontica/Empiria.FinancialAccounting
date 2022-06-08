@@ -26,25 +26,6 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
       _query = query;
     }
 
-    internal FixedList<TrialBalanceEntry> GetAccountEntries() {
-
-      FixedList<TrialBalanceEntry> accountEntries = BalancesDataService.GetTrialBalanceEntries(_query);
-
-      var trialBalanceHelper = new TrialBalanceHelper(_query);
-
-      if (_query.ValuateBalances || _query.InitialPeriod.UseDefaultValuation) {
-        trialBalanceHelper.ValuateAccountEntriesToExchangeRate(accountEntries);
-
-        if (_query.ConsolidateBalancesToTargetCurrency) {
-
-          accountEntries = trialBalanceHelper.ConsolidateToTargetCurrency(
-                                              accountEntries, _query.InitialPeriod);
-        }
-      }
-      trialBalanceHelper.RoundDecimals(accountEntries);
-      return accountEntries;
-    }
-
 
     internal List<TrialBalanceEntry> GetCalculatedParentAccounts(
                                      FixedList<TrialBalanceEntry> accountEntries) {

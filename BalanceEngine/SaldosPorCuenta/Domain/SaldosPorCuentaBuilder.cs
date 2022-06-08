@@ -27,12 +27,12 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
 
     internal TrialBalance Build() {
       var helper = new SaldosPorCuentaHelper(_query);
+      var trialBalanceHelper = new TrialBalanceHelper(_query);
 
-      FixedList<TrialBalanceEntry> accountEntries = helper.GetAccountEntries();
+      FixedList<TrialBalanceEntry> accountEntries = trialBalanceHelper.GetAccountEntries();
 
       List<TrialBalanceEntry> parentAccounts = helper.GetCalculatedParentAccounts(accountEntries);
 
-      var trialBalanceHelper = new TrialBalanceHelper(_query);
 
       trialBalanceHelper.SetSummaryToParentEntries(accountEntries);
 
