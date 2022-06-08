@@ -117,7 +117,7 @@ namespace Empiria.FinancialAccounting.FinancialReports {
 
     public bool IsDesignable {
       get {
-        return this.DesignType == FinancialReportDesignType.FixedRows;
+        return this.DesignType != FinancialReportDesignType.AccountsIntegration;
       }
     }
 
