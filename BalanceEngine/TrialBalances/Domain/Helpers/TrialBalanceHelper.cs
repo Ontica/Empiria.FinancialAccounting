@@ -98,8 +98,27 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
     }
 
 
+    internal FixedList<TrialBalanceEntry> GetAccountEntries() {
+
+      FixedList<TrialBalanceEntry> accountEntries = BalancesDataService.GetTrialBalanceEntries(_query);
+
+      if (_query.ValuateBalances || _query.InitialPeriod.UseDefaultValuation) {
+        ValuateAccountEntriesToExchangeRate(accountEntries);
+
+        if (_query.ConsolidateBalancesToTargetCurrency) {
+          accountEntries = ConsolidateToTargetCurrency(accountEntries, _query.InitialPeriod);
+        }
+      }
+
+      RoundDecimals(accountEntries);
+
+      return accountEntries;
+
+    }
+
+
     internal void GetEntriesAndParentSector(EmpiriaHashTable<TrialBalanceEntry> summaryEntries,
-                                          TrialBalanceEntry entry, StandardAccount currentParent) {
+                                        TrialBalanceEntry entry, StandardAccount currentParent) {
       if (!_query.WithSectorization) {
         SummaryByEntry(summaryEntries, entry, currentParent, Sector.Empty,
                           TrialBalanceItemType.Summary);
@@ -473,7 +492,7 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
         Assertion.Require(exchangeRate, $"No se ha registrado el tipo de cambio para la " +
                                         $"moneda {entry.Currency.FullName} con la fecha proporcionada.");
 
-        ValuateExchangeRateByReportType(entry, exchangeRate);
+        ClausesToExchangeRate(entry, exchangeRate);
       }
     }
 
@@ -704,7 +723,7 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
     }
 
 
-    private void ValuateExchangeRateByReportType(TrialBalanceEntry entry, ExchangeRate exchangeRate) {
+    private void ClausesToExchangeRate(TrialBalanceEntry entry, ExchangeRate exchangeRate) {
 
       if (_query.TrialBalanceType == TrialBalanceType.BalanzaDolarizada) {
         entry.ExchangeRate = exchangeRate.Value;

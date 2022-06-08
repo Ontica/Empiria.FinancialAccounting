@@ -163,6 +163,7 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
       return columns.ToFixedList();
     }
 
+
     private FixedList<DataTableColumn> TrialBalanceByCurrencyDataColumns() {
       List<DataTableColumn> columns = new List<DataTableColumn>();
       columns.Add(new DataTableColumn("accountNumber", "Cuenta", "text-nowrap"));
@@ -175,6 +176,7 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
 
       return columns.ToFixedList();
     }
+
 
     #endregion Constructors and parsers
 
