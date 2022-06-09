@@ -32,7 +32,7 @@ namespace Empiria.FinancialAccounting.BalanceEngine.Adapters {
     #region Private methods
 
 
-    static private FixedList<DataTableColumn> DataColumns(TrialBalanceQuery Query) {
+    static public FixedList<DataTableColumn> DataColumns(TrialBalanceQuery Query) {
 
       List<DataTableColumn> columns = new List<DataTableColumn>();
 
@@ -64,13 +64,13 @@ namespace Empiria.FinancialAccounting.BalanceEngine.Adapters {
     static public FixedList<BalanzaContabilidadesCascadaEntryDto> Map(
                     FixedList<ITrialBalanceEntry> entries, TrialBalanceQuery query) {
 
-      var mappedItems = entries.Select((x) => MapToBalanzaEnCascada((TrialBalanceEntry) x, query));
+      var mappedItems = entries.Select((x) => MapEntry((TrialBalanceEntry) x, query));
       
       return new FixedList<BalanzaContabilidadesCascadaEntryDto>(mappedItems);
     }
 
 
-    static public BalanzaContabilidadesCascadaEntryDto MapToBalanzaEnCascada(
+    static public BalanzaContabilidadesCascadaEntryDto MapEntry(
                                                         TrialBalanceEntry entry, TrialBalanceQuery query) {
 
       
