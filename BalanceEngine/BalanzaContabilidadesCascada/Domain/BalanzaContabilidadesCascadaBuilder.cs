@@ -16,18 +16,18 @@ using Empiria.FinancialAccounting.BalanceEngine.Adapters;
 namespace Empiria.FinancialAccounting.BalanceEngine {
 
   /// <summary>Genera los datos para el reporte de balanza con contabilidades en cascada.</summary>
-  internal class BalanzaContabilidadesCascada {
+  internal class BalanzaContabilidadesCascadaBuilder {
 
     private readonly TrialBalanceQuery _query;
 
-    public BalanzaContabilidadesCascada(TrialBalanceQuery query) {
+    public BalanzaContabilidadesCascadaBuilder(TrialBalanceQuery query) {
       _query = query;
     }
 
 
     internal TrialBalance Build() {
       var balanceHelper = new TrialBalanceHelper(_query);
-      var helper = new BalanceCascadeAccountingHelper(_query);
+      var helper = new BalanzaContabilidadesCascadaHelper(_query);
 
       FixedList<TrialBalanceEntry> postingEntries = balanceHelper.GetPostingEntries();
 

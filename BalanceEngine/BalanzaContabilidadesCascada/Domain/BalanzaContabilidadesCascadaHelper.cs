@@ -18,11 +18,11 @@ using Empiria.FinancialAccounting.BalanceEngine.Adapters;
 namespace Empiria.FinancialAccounting.BalanceEngine {
 
   /// <summary>Helper methods to build balance with cascade accounting.</summary>
-  internal class BalanceCascadeAccountingHelper {
+  internal class BalanzaContabilidadesCascadaHelper {
 
     private readonly TrialBalanceQuery _query;
 
-    public BalanceCascadeAccountingHelper(TrialBalanceQuery query) {
+    public BalanzaContabilidadesCascadaHelper(TrialBalanceQuery query) {
       _query = query;
     }
 

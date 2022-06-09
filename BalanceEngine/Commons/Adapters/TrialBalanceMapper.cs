@@ -80,15 +80,11 @@ namespace Empiria.FinancialAccounting.BalanceEngine.Adapters {
           var mappedItems = list.Select((x) => MapToTrialBalance((TrialBalanceEntry) x, query));
           return new FixedList<ITrialBalanceEntryDto>(mappedItems);
 
-
         case TrialBalanceType.SaldosPorAuxiliar:
 
           var saldosPorAuxiliar = list.Select((x) => 
                                   SaldosPorAuxiliarMapper.MapEntry((TrialBalanceEntry) x, query));
           return new FixedList<ITrialBalanceEntryDto>(saldosPorAuxiliar);
-
-          //var subledgerItems = list.Select((x) => MapToBalanceBySubledgerAccount((TrialBalanceEntry) x, query));
-          //return new FixedList<ITrialBalanceEntryDto>(subledgerItems);
 
         case TrialBalanceType.SaldosPorCuenta:
 

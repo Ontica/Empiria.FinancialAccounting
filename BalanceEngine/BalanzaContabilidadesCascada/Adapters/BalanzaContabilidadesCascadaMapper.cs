@@ -2,9 +2,9 @@
 *                                                                                                            *
 *  Module   : Balance Engine                             Component : Interface adapters                      *
 *  Assembly : FinancialAccounting.BalanceEngine.dll      Pattern   : Mapper class                            *
-*  Type     : BalanzaTradicionalMapper                   License   : Please read LICENSE.txt file            *
+*  Type     : BalanzaContabilidadesCascadaMapper         License   : Please read LICENSE.txt file            *
 *                                                                                                            *
-*  Summary  : Methods used to map balanza tradicional.                                                       *
+*  Summary  : Methods used to map balanza con contabilidades en cascada.                                     *
 *                                                                                                            *
 ************************* Copyright(c) La Vía Óntica SC, Ontica LLC and contributors. All rights reserved. **/
 using System;
@@ -13,20 +13,18 @@ using System.Collections.Generic;
 namespace Empiria.FinancialAccounting.BalanceEngine.Adapters {
 
 
-  /// <summary>Methods used to map balanza tradicional.</summary>
-  static internal class BalanzaTradicionalMapper {
+  /// <summary>Methods used to map balanza con contabilidades en cascada.</summary>
+  static internal class BalanzaContabilidadesCascadaMapper {
 
     #region Public methods
 
-
-    static internal BalanzaTradicionalDto Map(TrialBalance entries) {
-      return new BalanzaTradicionalDto {
+    static internal BalanzaContabilidadesCascadaDto Map(TrialBalance entries) {
+      return new BalanzaContabilidadesCascadaDto {
         Query = entries.Query,
         Columns = DataColumns(entries.Query),
         Entries = Map(entries.Entries, entries.Query)
       };
     }
-
 
     #endregion Public methods
 
@@ -34,33 +32,27 @@ namespace Empiria.FinancialAccounting.BalanceEngine.Adapters {
     #region Private methods
 
 
-    static public FixedList<DataTableColumn> DataColumns(TrialBalanceQuery query) {
+    static private FixedList<DataTableColumn> DataColumns(TrialBalanceQuery Query) {
+
       List<DataTableColumn> columns = new List<DataTableColumn>();
 
-      if (query.ReturnLedgerColumn) {
+      if (Query.ReturnLedgerColumn) {
         columns.Add(new DataTableColumn("ledgerNumber", "Cont", "text"));
       }
 
       columns.Add(new DataTableColumn("currencyCode", "Mon", "text"));
-
-      if (query.WithSubledgerAccount) {
-        columns.Add(new DataTableColumn("accountNumber", "Cuenta / Auxiliar", "text-nowrap"));
-      } else {
-        columns.Add(new DataTableColumn("accountNumber", "Cuenta", "text-nowrap"));
-      }
-
+      columns.Add(new DataTableColumn("accountNumber", "Cuenta", "text-nowrap"));
       columns.Add(new DataTableColumn("sectorCode", "Sct", "text"));
       columns.Add(new DataTableColumn("accountName", "Nombre", "text"));
-
       columns.Add(new DataTableColumn("initialBalance", "Saldo anterior", "decimal"));
       columns.Add(new DataTableColumn("debit", "Cargos", "decimal"));
       columns.Add(new DataTableColumn("credit", "Abonos", "decimal"));
       columns.Add(new DataTableColumn("currentBalance", "Saldo actual", "decimal"));
-      if (query.InitialPeriod.ExchangeRateTypeUID != string.Empty ||
-          query.InitialPeriod.UseDefaultValuation) {
+      if (Query.InitialPeriod.ExchangeRateTypeUID != string.Empty ||
+          Query.InitialPeriod.UseDefaultValuation) {
         columns.Add(new DataTableColumn("exchangeRate", "TC", "decimal", 6));
       }
-      if (query.WithAverageBalance) {
+      if (Query.WithAverageBalance) {
         columns.Add(new DataTableColumn("averageBalance", "Saldo promedio", "decimal"));
         columns.Add(new DataTableColumn("lastChangeDate", "Último movimiento", "date"));
       }
@@ -69,26 +61,27 @@ namespace Empiria.FinancialAccounting.BalanceEngine.Adapters {
     }
 
 
-    static private FixedList<BalanzaTradicionalEntryDto> Map(FixedList<ITrialBalanceEntry> entries,
-                                                             TrialBalanceQuery query) {
+    static public FixedList<BalanzaContabilidadesCascadaEntryDto> Map(
+                    FixedList<ITrialBalanceEntry> entries, TrialBalanceQuery query) {
 
-      var mappedItems = entries.Select((x) => MapEntry((TrialBalanceEntry) x, query));
-
-      return new FixedList<BalanzaTradicionalEntryDto>(mappedItems);
+      var mappedItems = entries.Select((x) => MapToBalanzaEnCascada((TrialBalanceEntry) x, query));
+      
+      return new FixedList<BalanzaContabilidadesCascadaEntryDto>(mappedItems);
     }
 
 
-    static public BalanzaTradicionalEntryDto MapEntry(TrialBalanceEntry entry,
-                                                      TrialBalanceQuery query) {
-      var dto = new BalanzaTradicionalEntryDto();
+    static public BalanzaContabilidadesCascadaEntryDto MapToBalanzaEnCascada(
+                                                        TrialBalanceEntry entry, TrialBalanceQuery query) {
 
-      AssignLedgerCurrencyLabelNameAndNumber(dto, entry);
-      AssignDebtorCreditorAndLastChangeDate(dto, entry);
+      
+      var dto = new BalanzaContabilidadesCascadaEntryDto();
+      
+      AssignLedgerAndCurrencyAndDebtorCreditorInfo(dto, entry);
+      AssignLabelNameAndNumberInfo(dto, entry);
       AssignHasAccountStatementAndClickableEntry(dto, entry, query);
 
       dto.ItemType = entry.ItemType;
       dto.StandardAccountId = entry.Account.Id;
-      dto.AccountNumberForBalances = entry.Account.Number;
       dto.AccountRole = entry.Account.Role;
       dto.AccountLevel = entry.Account.Level;
       dto.SectorCode = entry.Sector.Code;
@@ -102,28 +95,17 @@ namespace Empiria.FinancialAccounting.BalanceEngine.Adapters {
       dto.SecondExchangeRate = entry.SecondExchangeRate;
       dto.AverageBalance = entry.AverageBalance;
       dto.IsParentPostingEntry = entry.IsParentPostingEntry;
+      dto.LastChangeDate = entry.LastChangeDate;
+      dto.LastChangeDateForBalances = dto.LastChangeDate;
+
       return dto;
     }
 
 
-    static private void AssignDebtorCreditorAndLastChangeDate(BalanzaTradicionalEntryDto dto,
-                                                              TrialBalanceEntry entry) {
-
-      dto.DebtorCreditor = entry.ItemType == TrialBalanceItemType.Entry ||
-                           entry.ItemType == TrialBalanceItemType.Summary ?
-                           entry.DebtorCreditor.ToString() : "";
-
-      dto.LastChangeDate = entry.ItemType == TrialBalanceItemType.Entry ||
-                           entry.ItemType == TrialBalanceItemType.Summary ?
-                           entry.LastChangeDate : ExecutionServer.DateMaxValue;
-
-      dto.LastChangeDateForBalances = dto.LastChangeDate;
-    }
-
-
-    private static void AssignHasAccountStatementAndClickableEntry(BalanzaTradicionalEntryDto dto,
-                                                                   TrialBalanceEntry entry,
-                                                                   TrialBalanceQuery query) {
+    private static void AssignHasAccountStatementAndClickableEntry(
+                        BalanzaContabilidadesCascadaEntryDto dto,
+                        TrialBalanceEntry entry, TrialBalanceQuery query) {
+      
       if ((entry.ItemType == TrialBalanceItemType.Entry ||
           entry.ItemType == TrialBalanceItemType.Summary) &&
           !query.UseDefaultValuation && !query.ValuateBalances) {
@@ -134,26 +116,10 @@ namespace Empiria.FinancialAccounting.BalanceEngine.Adapters {
     }
 
 
-    static private void AssignLedgerCurrencyLabelNameAndNumber(BalanzaTradicionalEntryDto dto,
-                                                               TrialBalanceEntry entry) {
-
+    static private void AssignLabelNameAndNumberInfo(BalanzaContabilidadesCascadaEntryDto dto,
+                                                     TrialBalanceEntry entry) {
+      
       SubledgerAccount subledgerAccount = SubledgerAccount.Parse(entry.SubledgerAccountId);
-
-      dto.SubledgerAccountNumber = subledgerAccount.Number;
-      dto.LedgerNumber = entry.Ledger.Number;
-
-      if (entry.Ledger.UID != "Empty") {
-        dto.LedgerUID = entry.Ledger.UID;
-      }
-
-      if (entry.ItemType == TrialBalanceItemType.Summary ||
-          entry.ItemType == TrialBalanceItemType.Entry) {
-        dto.LedgerName = entry.Ledger.Name;
-      }
-
-      if (entry.ItemType != TrialBalanceItemType.BalanceTotalConsolidated) {
-        dto.CurrencyCode = entry.Currency.Code;
-      }
 
       if (subledgerAccount.IsEmptyInstance || subledgerAccount.Number == "0") {
         dto.AccountName = entry.GroupName != "" ? entry.GroupName :
@@ -164,12 +130,34 @@ namespace Empiria.FinancialAccounting.BalanceEngine.Adapters {
       } else {
         dto.AccountName = subledgerAccount.Name;
         dto.AccountNumber = subledgerAccount.Number;
+        dto.SubledgerAccountNumber = subledgerAccount.Number;
+      }
+
+      dto.AccountNumberForBalances = entry.Account.Number;
+    }
+
+
+    static private void AssignLedgerAndCurrencyAndDebtorCreditorInfo(
+                        BalanzaContabilidadesCascadaEntryDto dto, TrialBalanceEntry entry) {
+
+      dto.LedgerUID = entry.Ledger.UID != "Empty" ? entry.Ledger.UID : "";
+      dto.LedgerNumber = entry.Ledger.Number;
+
+      if (entry.ItemType == TrialBalanceItemType.Summary ||
+          entry.ItemType == TrialBalanceItemType.Entry) {
+
+        dto.LedgerName = entry.Ledger.Name;
+        dto.DebtorCreditor = entry.DebtorCreditor.ToString();
+      }
+
+      if (entry.ItemType != TrialBalanceItemType.BalanceTotalConsolidated) {
+        dto.CurrencyCode = entry.Currency.Code;
       }
     }
 
 
     #endregion Private methods
 
-  } // class BalanzaTradicionalMapper
+  } // class BalanzaContabilidadesCascadaMapper
 
 } // namespace Empiria.FinancialAccounting.BalanceEngine.Adapters
