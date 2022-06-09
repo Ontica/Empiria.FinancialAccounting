@@ -16,15 +16,15 @@ namespace Empiria.FinancialAccounting.FinancialReports.Data {
   /// <summary>Data services for financial reports row definition objects.</summary>
   static internal class FinancialReportsRowData {
 
-    static internal FixedList<FinancialReportRow> GetRows(FinancialReportType financialReportType) {
+    static internal FixedList<FinancialReportRow> GetRows(FinancialReportType reportType) {
       var sql = "SELECT * " +
-                "FROM COF_REPORTES_ELEMENTOS " +
-                $"WHERE ID_REPORTE = {financialReportType.Id} " +
-                $"ORDER BY POSICION";
+                "FROM COF_CONCEPTOS_REPORTES " +
+                $"WHERE ID_REPORTE = {reportType.Id} " +
+                $"ORDER BY FILA";
 
-      var dataOperation = DataOperation.Parse(sql);
+      var op = DataOperation.Parse(sql);
 
-      return DataReader.GetFixedList<FinancialReportRow>(dataOperation);
+      return DataReader.GetFixedList<FinancialReportRow>(op);
     }
 
   }  // class FinancialReportsRowData

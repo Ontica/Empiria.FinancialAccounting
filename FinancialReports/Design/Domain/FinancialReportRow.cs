@@ -40,11 +40,6 @@ namespace Empiria.FinancialAccounting.FinancialReports {
       get; private set;
     }
 
-    [DataField("CLAVE_CONCEPTO")]
-    public string Code {
-      get; private set;
-    }
-
     [DataField("ETIQUETA")]
     public string Label {
       get; private set;
@@ -55,8 +50,8 @@ namespace Empiria.FinancialAccounting.FinancialReports {
       get; private set;
     }
 
-    [DataField("POSICION")]
-    public int Position {
+    [DataField("FILA")]
+    public int Row {
       get; private set;
     }
 

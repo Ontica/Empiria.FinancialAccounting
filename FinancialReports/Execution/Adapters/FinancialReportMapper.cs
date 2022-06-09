@@ -19,9 +19,8 @@ namespace Empiria.FinancialAccounting.FinancialReports.Adapters {
     #region Public mappers
 
     static internal FixedList<FinancialReportTypeDto> Map(FixedList<FinancialReportType> list) {
-      var mappedItems = list.Select((x) => Map(x));
-
-      return new FixedList<FinancialReportTypeDto>(mappedItems);
+      return list.Select((x) => Map(x))
+                 .ToFixedList();
     }
 
 
@@ -51,7 +50,7 @@ namespace Empiria.FinancialAccounting.FinancialReports.Adapters {
       return new FinancialReportTypeDto() {
         UID = reportType.UID,
         Name = reportType.Name,
-        ExportTo = new FixedList<ExportToDto>(ExportToMapper.Map(reportType.ExportTo))
+        ExportTo = ExportToMapper.Map(reportType.ExportTo)
       };
     }
 
@@ -112,6 +111,27 @@ namespace Empiria.FinancialAccounting.FinancialReports.Adapters {
     }
 
 
+    static private DynamicFinancialReportEntryDto MapBreakdownEntry2(FinancialReportBreakdownEntry entry) {
+      dynamic o = new IntegrationReportEntryDto {
+        UID = entry.IntegrationEntry.UID,
+        Type = entry.IntegrationEntry.Type,
+        FinancialConceptUID = entry.IntegrationEntry.FinancialConcept.UID,
+        ConceptCode = entry.IntegrationEntry.FinancialConcept.Code,
+        Concept = entry.IntegrationEntry.FinancialConcept.Name,
+        ItemType = FinancialReportItemType.Entry,
+        ItemCode = entry.IntegrationEntry.Code,
+        ItemName = entry.IntegrationEntry.Name,
+        SubledgerAccount = entry.IntegrationEntry.SubledgerAccountNumber,
+        SectorCode = entry.IntegrationEntry.SectorCode,
+        Operator = Convert.ToString((char) entry.IntegrationEntry.Operator)
+      };
+
+      SetTotalsFields(o, entry);
+
+      return o;
+    }
+
+
     static private FixedList<DynamicFinancialReportEntryDto> MapEntries(FinancialReport financialReport) {
       FinancialReportType reportType = financialReport.BuildQuery.GetFinancialReportType();
 
@@ -125,7 +145,7 @@ namespace Empiria.FinancialAccounting.FinancialReports.Adapters {
 
         default:
           throw Assertion.EnsureNoReachThisCode(
-                $"Unhandled financial report type {financialReport.BuildQuery.FinancialReportType}.");
+                $"Unhandled financial report type '{financialReport.BuildQuery.FinancialReportType}'.");
       }
     }
 
@@ -155,7 +175,7 @@ namespace Empiria.FinancialAccounting.FinancialReports.Adapters {
       } else {
         o = new FinancialReportEntryDto {
           UID = entry.Row.UID,
-          ConceptCode = entry.Row.Code,
+          ConceptCode = string.Empty,
           Concept = entry.Row.Label,
           Level = 1,
           FinancialConceptUID = string.Empty,
@@ -178,11 +198,11 @@ namespace Empiria.FinancialAccounting.FinancialReports.Adapters {
 
 
     static private DynamicFinancialReportEntryDto MapToFixedRowsReportConceptsIntegration(FinancialReportEntry entry) {
-      if (entry is FinancialReportBreakdownEntry entry1) {
-        return MapIntegrationEntry(entry1);
+      if (entry is FinancialReportBreakdownEntry breakdownEntry) {
+        return MapBreakdownEntry2(breakdownEntry);
 
-      } else if (entry is FixedRowFinancialReportEntry entry2) {
-        return MapIntegrationEntry(entry2);
+      } else if (entry is FixedRowFinancialReportEntry fixedRowEntry) {
+        return MapFixedRowEntry(fixedRowEntry);
 
       } else {
         throw Assertion.EnsureNoReachThisCode();
@@ -190,7 +210,7 @@ namespace Empiria.FinancialAccounting.FinancialReports.Adapters {
     }
 
 
-    static private DynamicFinancialReportEntryDto MapIntegrationEntry(FixedRowFinancialReportEntry entry) {
+    static private DynamicFinancialReportEntryDto MapFixedRowEntry(FixedRowFinancialReportEntry entry) {
       dynamic o = new IntegrationReportEntryDto {
         UID = entry.Row.UID,
         Type = FinancialConceptEntryType.FinancialConceptReference,
@@ -210,26 +230,6 @@ namespace Empiria.FinancialAccounting.FinancialReports.Adapters {
       return o;
     }
 
-
-    static private DynamicFinancialReportEntryDto MapIntegrationEntry(FinancialReportBreakdownEntry entry) {
-      dynamic o = new IntegrationReportEntryDto {
-        UID = entry.IntegrationEntry.UID,
-        Type = entry.IntegrationEntry.Type,
-        FinancialConceptUID = entry.IntegrationEntry.FinancialConcept.UID,
-        ConceptCode = entry.IntegrationEntry.FinancialConcept.Code,
-        Concept = entry.IntegrationEntry.FinancialConcept.Name,
-        ItemType = FinancialReportItemType.Entry,
-        ItemCode = entry.IntegrationEntry.Code,
-        ItemName = entry.IntegrationEntry.Name,
-        SubledgerAccount = entry.IntegrationEntry.SubledgerAccountNumber,
-        SectorCode = entry.IntegrationEntry.SectorCode,
-        Operator = Convert.ToString((char) entry.IntegrationEntry.Operator)
-      };
-
-      SetTotalsFields(o, entry);
-
-      return o;
-    }
 
     #endregion Private mappers
 

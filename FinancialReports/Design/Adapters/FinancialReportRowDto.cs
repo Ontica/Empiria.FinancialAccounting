@@ -32,7 +32,7 @@ namespace Empiria.FinancialAccounting.FinancialReports.Adapters {
     }
 
 
-    public int Position {
+    public int Row {
       get; internal set;
     }
 

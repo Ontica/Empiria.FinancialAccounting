@@ -38,10 +38,10 @@ namespace Empiria.FinancialAccounting.FinancialReports.Adapters {
     static private FinancialReportRowDto MapRow(FinancialReportRow row) {
       return new FinancialReportRowDto {
         UID = row.UID,
-        ConceptCode = row.Code,
-        Concept = row.Label,
+        ConceptCode = row.FinancialConcept.Code,
+        Concept = row.FinancialConcept.Name,
         Format = row.Format,
-        Position = row.Position,
+        Row = row.Row,
         FinancialConceptUID = row.FinancialConcept.UID
       };
     }
