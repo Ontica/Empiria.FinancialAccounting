@@ -92,7 +92,8 @@ namespace Empiria.FinancialAccounting.Reporting.Exporters.Excel {
           return;
 
         case TrialBalanceType.BalanzaConContabilidadesEnCascada:
-          FillOutSaldosPorCuentayMayor(trialBalance.Entries.Select(x => (TrialBalanceEntryDto) x));
+          FillOutSaldosPorCuentayMayor(trialBalance.Entries.Select(
+                                        x => (BalanzaContabilidadesCascadaEntryDto) x));
           return;
 
         case TrialBalanceType.Balanza:
@@ -254,7 +255,7 @@ namespace Empiria.FinancialAccounting.Reporting.Exporters.Excel {
     }
 
 
-    private void FillOutSaldosPorCuentayMayor(IEnumerable<TrialBalanceEntryDto> entries) {
+    private void FillOutSaldosPorCuentayMayor(IEnumerable<BalanzaContabilidadesCascadaEntryDto> entries) {
       int i = 5;
 
       foreach (var entry in entries) {
