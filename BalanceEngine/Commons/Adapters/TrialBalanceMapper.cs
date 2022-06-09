@@ -75,6 +75,11 @@ namespace Empiria.FinancialAccounting.BalanceEngine.Adapters {
           return new FixedList<ITrialBalanceEntryDto>(balanza);
 
         case TrialBalanceType.BalanzaConContabilidadesEnCascada:
+
+          var balanzaCascada = list.Select((x) => BalanzaContabilidadesCascadaMapper
+                                   .MapEntry((TrialBalanceEntry) x, query));
+          return new FixedList<ITrialBalanceEntryDto>(balanzaCascada);
+
         case TrialBalanceType.GeneracionDeSaldos:
 
           var mappedItems = list.Select((x) => MapToTrialBalance((TrialBalanceEntry) x, query));
@@ -92,11 +97,13 @@ namespace Empiria.FinancialAccounting.BalanceEngine.Adapters {
           return new FixedList<ITrialBalanceEntryDto>(saldosPorCuenta);
 
         case TrialBalanceType.BalanzaEnColumnasPorMoneda:
+
           var currencyMappedItems = list.Select((x) =>
                 MapToTrialBalanceByCurrency((TrialBalanceByCurrencyEntry) x));
           return new FixedList<ITrialBalanceEntryDto>(currencyMappedItems);
 
         case TrialBalanceType.BalanzaDolarizada:
+
           var valuedMappedItems = list.Select((x) =>
                 MapToValuedTrialBalance((ValuedTrialBalanceEntry) x));
           return new FixedList<ITrialBalanceEntryDto>(valuedMappedItems);
