@@ -730,7 +730,7 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
 
       }
 
-      if ((_query.IsOperationalReport && !_query.ConsolidateBalancesToTargetCurrency)) {
+      if (_query.IsOperationalReport && !_query.ConsolidateBalancesToTargetCurrency) {
         entry.ExchangeRate = exchangeRate.Value;
 
       } else {

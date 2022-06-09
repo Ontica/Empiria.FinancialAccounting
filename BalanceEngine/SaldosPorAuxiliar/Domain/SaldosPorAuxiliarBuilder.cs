@@ -49,7 +49,8 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
 
       trialBalanceHelper.RestrictLevels(returnedAccountEntries);
 
-      var returnBalance = new FixedList<ITrialBalanceEntry>(returnedAccountEntries.Select(x => (ITrialBalanceEntry) x));
+      var returnBalance = new FixedList<ITrialBalanceEntry>(
+                              returnedAccountEntries.Select(x => (ITrialBalanceEntry) x));
 
       return new TrialBalance(_query, returnBalance);
     }
