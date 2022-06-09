@@ -59,6 +59,22 @@ namespace Empiria.FinancialAccounting.WebApi.BalanceEngine {
 
 
     [HttpPost]
+    [Route("v2/financial-accounting/balance-engine/balanza-cascada")]
+    public async Task<SingleObjectModel> GetBalanzaContabilidadesCascada([FromBody] TrialBalanceQuery query) {
+
+      base.RequireBody(query);
+
+      using (var usecases = TrialBalanceUseCases.UseCaseInteractor()) {
+
+        BalanzaContabilidadesCascadaDto dto = await usecases.BuildBalanzaContabilidadesCascada(query)
+                                                            .ConfigureAwait(false);
+
+        return new SingleObjectModel(this.Request, dto);
+      }
+    }
+
+
+    [HttpPost]
     [Route("v2/financial-accounting/balance-engine/saldos-por-cuenta")]
     public async Task<SingleObjectModel> GetSaldosPorCuenta([FromBody] TrialBalanceQuery query) {
 
