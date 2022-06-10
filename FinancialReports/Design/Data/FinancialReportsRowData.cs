@@ -19,12 +19,25 @@ namespace Empiria.FinancialAccounting.FinancialReports.Data {
     static internal FixedList<FinancialReportRow> GetRows(FinancialReportType reportType) {
       var sql = "SELECT * " +
                 "FROM COF_CONCEPTOS_REPORTES " +
-                $"WHERE ID_REPORTE = {reportType.Id} " +
+                $"WHERE ID_REPORTE = {reportType.Id} AND " +
+                $"ID_TIPO_ELEMENTO_REPORTE = 3085 " +
                 $"ORDER BY FILA";
 
       var op = DataOperation.Parse(sql);
 
       return DataReader.GetFixedList<FinancialReportRow>(op);
+    }
+
+    internal static FixedList<FinancialReportCell> GetCells(FinancialReportType reportType) {
+      var sql = "SELECT * " +
+                "FROM COF_CONCEPTOS_REPORTES " +
+                $"WHERE ID_REPORTE = {reportType.Id} AND " +
+                $"ID_TIPO_ELEMENTO_REPORTE = 3088 " +
+                $"ORDER BY FILA";
+
+      var op = DataOperation.Parse(sql);
+
+      return DataReader.GetFixedList<FinancialReportCell>(op);
     }
 
   }  // class FinancialReportsRowData

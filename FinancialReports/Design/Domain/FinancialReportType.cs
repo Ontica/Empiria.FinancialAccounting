@@ -74,6 +74,7 @@ namespace Empiria.FinancialAccounting.FinancialReports {
       return fullList.FindAll(x => x.AccountsChart.Equals(accountsChart) && x.IsDesignable);
     }
 
+
     static readonly FinancialReportType Empty = BaseObject.ParseEmpty<FinancialReportType>();
 
     #endregion Constructors and parsers
@@ -144,6 +145,14 @@ namespace Empiria.FinancialAccounting.FinancialReports {
     #endregion Properties
 
     #region Methods
+
+    public FixedList<FinancialReportCell> GetCells() {
+      if (BaseReport.IsEmptyInstance) {
+        return FinancialReportsRowData.GetCells(this);
+      } else {
+        return BaseReport.GetCells();
+      }
+    }
 
     public FixedList<FinancialReportRow> GetRows() {
       if (BaseReport.IsEmptyInstance) {

@@ -19,6 +19,16 @@ namespace Empiria.FinancialAccounting.FinancialReports.Adapters {
     }
 
 
+    public string DataField {
+      get; internal set;
+    }
+
+
+    public string Label {
+      get; internal set;
+    }
+
+
     public string Column {
       get; internal set;
     }
@@ -29,7 +39,7 @@ namespace Empiria.FinancialAccounting.FinancialReports.Adapters {
     }
 
 
-    public string Label {
+    public string Format {
       get; internal set;
     }
 
@@ -39,7 +49,7 @@ namespace Empiria.FinancialAccounting.FinancialReports.Adapters {
     }
 
 
-    public string Format {
+    public string FinancialConceptGroupUID {
       get; internal set;
     }
 

@@ -21,6 +21,7 @@ namespace Empiria.FinancialAccounting.FinancialReports.Adapters {
         Config = MapConfig(reportType),
         Columns = reportType.DataColumns,
         Rows = MapRows(reportType),
+        Cells = MapCells(reportType),
       };
     }
 
@@ -48,8 +49,29 @@ namespace Empiria.FinancialAccounting.FinancialReports.Adapters {
 
     #region Helpers
 
+
+    private static FixedList<FinancialReportCellDto> MapCells(FinancialReportType reportType) {
+      FixedList<FinancialReportCell> cells = reportType.GetCells();
+
+      return cells.Select((x) => MapCell(x))
+                 .ToFixedList();
+    }
+
+    private static FinancialReportCellDto MapCell(FinancialReportCell cell) {
+      return new FinancialReportCellDto {
+        UID = cell.UID,
+        Label = cell.Label,
+        DataField = cell.DataField,
+        Column = cell.Column,
+        Row = cell.Row,
+        Format = cell.Format,
+        FinancialConceptUID = cell.FinancialConcept.UID,
+        FinancialConceptGroupUID = cell.FinancialConcept.Group.UID
+      };
+    }
+
     static private FixedList<FinancialReportRowDto> MapRows(FinancialReportType reportType) {
-      var rows = reportType.GetRows();
+      FixedList<FinancialReportRow> rows = reportType.GetRows();
 
       return rows.Select((x) => MapRow(x))
                  .ToFixedList();
