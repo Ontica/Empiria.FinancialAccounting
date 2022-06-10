@@ -64,15 +64,15 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
 
       var returnedEntries = new List<TrialBalanceEntry>();
 
-      foreach (var totalByCurrency in totalsByCurrency
-                    .Where(a => a.ItemType == TrialBalanceItemType.BalanceTotalCurrency)) {
+      foreach (var totalByCurrency in totalsByCurrency) {
 
-        var entriesByCurrency = accountEntries.Where(
-                                a => a.Currency.Code == totalByCurrency.Currency.Code).ToList();
+        var accountEntriesByCurrency = accountEntries.Where(
+                                        a => a.Currency.Code == totalByCurrency.Currency.Code)
+                                                     .ToList();
 
-        if (entriesByCurrency.Count > 0) {
-          entriesByCurrency.Add(totalByCurrency);
-          returnedEntries.AddRange(entriesByCurrency);
+        if (accountEntriesByCurrency.Count > 0) {
+          accountEntriesByCurrency.Add(totalByCurrency);
+          returnedEntries.AddRange(accountEntriesByCurrency);
         }
       }
       return returnedEntries;
@@ -90,13 +90,13 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
     }
 
     internal List<TrialBalanceEntry> CombineTotalDebtorCreditorAndEntries(
-                                    List<TrialBalanceEntry> balanceEntries,
-                                     List<TrialBalanceEntry> summaryDebtorCreditorEntries) {
+                                    List<TrialBalanceEntry> accountEntries,
+                                     List<TrialBalanceEntry> totalsByDebtorCreditor) {
 
       var returnedEntries = new List<TrialBalanceEntry>();
 
-      foreach (var totalGroupDebtorEntry in summaryDebtorCreditorEntries) {
-        var entries = balanceEntries.Where(a => a.Currency.Id == totalGroupDebtorEntry.Currency.Id &&
+      foreach (var totalGroupDebtorEntry in totalsByDebtorCreditor) {
+        var entries = accountEntries.Where(a => a.Currency.Id == totalGroupDebtorEntry.Currency.Id &&
                                            a.DebtorCreditor == totalGroupDebtorEntry.DebtorCreditor)
                                     .ToList();
 
@@ -129,15 +129,13 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
 
 
     internal FixedList<TrialBalanceEntry> GenerateTotalsByCurrency(
-                                          List<TrialBalanceEntry> entries) {
+                                          List<TrialBalanceEntry> totalsByDebtorCreditor) {
 
       var totalByCurrencies = new EmpiriaHashTable<TrialBalanceEntry>();
 
-      foreach (var entry in entries.Where(a => !a.HasParentPostingEntry &&
-                            (a.ItemType == TrialBalanceItemType.BalanceTotalDebtor ||
-                            a.ItemType == TrialBalanceItemType.BalanceTotalCreditor))) {
+      foreach (var totalDebtorCreditor in totalsByDebtorCreditor) {
 
-        SummaryByCurrency(totalByCurrencies, entry);
+        SummaryByCurrency(totalByCurrencies, totalDebtorCreditor);
       }
       return totalByCurrencies.ToFixedList();
     }
@@ -156,8 +154,8 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
     }
 
 
-    internal List<TrialBalanceEntry> GetAverageBalance(List<TrialBalanceEntry> trialBalance) {
-      var returnedEntries = new List<TrialBalanceEntry>(trialBalance);
+    internal List<TrialBalanceEntry> GetAverageBalance(List<TrialBalanceEntry> accountEntries) {
+      var returnedEntries = new List<TrialBalanceEntry>(accountEntries);
 
       if (_query.WithAverageBalance) {
 
@@ -190,25 +188,16 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
     }
 
 
-    internal List<TrialBalanceEntry> GenerateTotalsByDebtorCreditor(List<TrialBalanceEntry> trialBalance) {
+    internal List<TrialBalanceEntry> GenerateTotalsByDebtorCreditor(List<TrialBalanceEntry> accountEntries) {
 
-      var totalSummaryDebtorCreditor = new EmpiriaHashTable<TrialBalanceEntry>(trialBalance.Count);
+      var totalsByDebtorCreditor = new EmpiriaHashTable<TrialBalanceEntry>();
 
-      foreach (var entry in trialBalance.Where(a => !a.HasParentPostingEntry)) {
-
-
-        if (entry.DebtorCreditor == DebtorCreditorType.Deudora) {
-          SummaryDebtorCreditorByAccount(totalSummaryDebtorCreditor, entry,
-                                         TrialBalanceItemType.BalanceTotalDebtor);
-        }
-
-        if (entry.DebtorCreditor == DebtorCreditorType.Acreedora) {
-          SummaryDebtorCreditorByAccount(totalSummaryDebtorCreditor, entry,
-                                         TrialBalanceItemType.BalanceTotalCreditor);
-        }
+      foreach (var accountEntry in accountEntries.Where(a => !a.HasParentPostingEntry)) {
+      
+        SummaryDebtorCreditorByAccount(accountEntry, totalsByDebtorCreditor);
       }
 
-      return OrderingDebtorCreditorEntries(totalSummaryDebtorCreditor.Values.ToList());
+      return OrderingDebtorCreditorEntries(totalsByDebtorCreditor.Values.ToList());
     }
 
 
@@ -288,24 +277,23 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
     }
 
 
-    private void SummaryByCurrency(EmpiriaHashTable<TrialBalanceEntry> summaryEntries,
-                                          TrialBalanceEntry balanceEntry) {
+    private void SummaryByCurrency(EmpiriaHashTable<TrialBalanceEntry> totalByCurrencies,
+                                   TrialBalanceEntry totalDebtorCreditor) {
 
-      TrialBalanceEntry entry = balanceEntry.CreatePartialCopy();
+      TrialBalanceEntry entry = totalDebtorCreditor.CreatePartialCopy();
 
-      TrialBalanceItemType itemType = TrialBalanceItemType.BalanceTotalCurrency;
+      entry.GroupName = $"TOTAL MONEDA {entry.Currency.FullName}";
+      entry.GroupNumber = "";
 
       if (entry.ItemType == TrialBalanceItemType.BalanceTotalCreditor) {
         entry.InitialBalance = -1 * entry.InitialBalance;
         entry.CurrentBalance = -1 * entry.CurrentBalance;
       }
 
-      entry.GroupName = "TOTAL MONEDA " + entry.Currency.FullName;
-      entry.GroupNumber = "";
-
       string hash = $"{entry.GroupName}||{entry.Currency.Id}";
 
-      GetOrIncreaseEntries(summaryEntries, entry, StandardAccount.Empty, Sector.Empty, itemType, hash);
+      GetOrIncreaseEntries(totalByCurrencies, entry, StandardAccount.Empty, Sector.Empty,
+                           TrialBalanceItemType.BalanceTotalCurrency, hash);
     }
 
 
@@ -341,25 +329,28 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
     }
 
 
-    private void SummaryDebtorCreditorByAccount(EmpiriaHashTable<TrialBalanceEntry> summaryEntries,
-                                                TrialBalanceEntry balanceEntry,
-                                                TrialBalanceItemType itemType) {
+    private void SummaryDebtorCreditorByAccount(TrialBalanceEntry accountEntry,
+                                                EmpiriaHashTable<TrialBalanceEntry> totalsByDebtorCreditor) {
 
-      TrialBalanceEntry entry = balanceEntry.CreatePartialCopy();
-
-
-      if (itemType == TrialBalanceItemType.BalanceTotalDebtor) {
-        entry.GroupName = $"TOTAL DEUDORAS {entry.Currency.FullName}";
-      } else {
-        entry.GroupName = $"TOTAL ACREEDORAS {entry.Currency.FullName}";
-      }
+      TrialBalanceEntry entry = accountEntry.CreatePartialCopy();
+      TrialBalanceItemType itemType = TrialBalanceItemType.BalanceTotalDebtor;
 
       entry.Ledger = Ledger.Empty;
-      entry.DebtorCreditor = balanceEntry.DebtorCreditor;
+      entry.DebtorCreditor = accountEntry.DebtorCreditor;
+      entry.GroupName = $"TOTAL DEUDORAS ";
+
+      if (entry.DebtorCreditor == DebtorCreditorType.Acreedora) {
+        
+        entry.GroupName = $"TOTAL ACREEDORAS ";
+        itemType = TrialBalanceItemType.BalanceTotalCreditor;
+      }
+
+      entry.GroupName += entry.Currency.FullName;
+
 
       string hash = $"{entry.GroupName}||{entry.Currency.Id}";
 
-      GetOrIncreaseEntries(summaryEntries, entry, StandardAccount.Empty, Sector.Empty, itemType, hash);
+      GetOrIncreaseEntries(totalsByDebtorCreditor, entry, StandardAccount.Empty, Sector.Empty, itemType, hash);
     }
 
 

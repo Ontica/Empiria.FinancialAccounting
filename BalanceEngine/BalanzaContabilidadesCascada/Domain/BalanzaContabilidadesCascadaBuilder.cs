@@ -53,7 +53,7 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
 
       List<TrialBalanceEntry> accountEntriesAndTotalsByCurrency = 
         helper.CombineTotalsByCurrencyAndAccountEntries(accountEntriesAndTotalsByDebtorCreditor,
-                                                       totalsByCurrency);
+                                                        totalsByCurrency);
 
       TrialBalanceEntry totalReport = helper.GenerateTotalReport(totalsByCurrency);
       accountEntriesAndTotalsByCurrency.Add(totalReport);
