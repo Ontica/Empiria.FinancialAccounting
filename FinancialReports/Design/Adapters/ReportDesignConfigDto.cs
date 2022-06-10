@@ -11,10 +11,44 @@ using System;
 
 namespace Empiria.FinancialAccounting.FinancialReports.Adapters {
 
+  /// <summary>Output DTO that returns a report configuration.</summary>
   public class ReportDesignConfigDto {
 
+    public FinancialReportDesignType Type {
+      get; internal set;
+    }
 
+    public NamedEntityDto AccountsChart {
+      get; internal set;
+    }
+
+
+    public ReportGridDto Grid {
+      get; internal set;
+    }
 
   }  // class ReportDesignConfigDto
+
+
+
+  /// <summary>Output DTO with a report grid configuration.</summary>
+  public class ReportGridDto {
+
+    public FixedList<string> Columns {
+      get;
+      internal set;
+    }
+
+    public int StartRow {
+      get;
+      internal set;
+    }
+
+    public int EndRow {
+      get;
+      internal set;
+    }
+
+  }  // class ReportGrid
 
 }  // namespace Empiria.FinancialAccounting.FinancialReports.Adapters

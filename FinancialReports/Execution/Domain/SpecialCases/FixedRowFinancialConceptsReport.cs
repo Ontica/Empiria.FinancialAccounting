@@ -354,9 +354,8 @@ namespace Empiria.FinancialAccounting.FinancialReports {
 
 
     private FixedList<FixedRowFinancialReportEntry> CreateReportEntriesWithoutTotals(FixedList<FinancialReportRow> rows) {
-      var converted = rows.Select(x => CreateReportEntryWithoutTotals(x));
-
-      return new FixedList<FixedRowFinancialReportEntry>(converted);
+      return rows.Select(x => CreateReportEntryWithoutTotals(x))
+                 .ToFixedList();
     }
 
 

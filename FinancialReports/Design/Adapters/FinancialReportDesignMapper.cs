@@ -18,9 +18,29 @@ namespace Empiria.FinancialAccounting.FinancialReports.Adapters {
 
     static internal FinancialReportDesignDto Map(FinancialReportType reportType) {
       return new FinancialReportDesignDto {
+        Config = MapConfig(reportType),
         Columns = reportType.DataColumns,
         Rows = MapRows(reportType),
       };
+    }
+
+
+    static private ReportDesignConfigDto MapConfig(FinancialReportType reportType) {
+      return new ReportDesignConfigDto {
+        Type = reportType.DesignType,
+        AccountsChart = reportType.AccountsChart.MapToNamedEntity(),
+        Grid = new ReportGridDto {
+          Columns = MapToReportColumn(reportType.DataColumns),
+          StartRow = 1,
+          EndRow = 64
+        }
+      };
+    }
+
+
+    static private FixedList<string> MapToReportColumn(FixedList<DataTableColumn> dataColumns) {
+      return dataColumns.Select(x => x.Column)
+                        .ToFixedList();
     }
 
 
@@ -38,6 +58,7 @@ namespace Empiria.FinancialAccounting.FinancialReports.Adapters {
     static private FinancialReportRowDto MapRow(FinancialReportRow row) {
       return new FinancialReportRowDto {
         UID = row.UID,
+        FinancialConceptGroupUID = row.FinancialConcept.Group.UID,
         ConceptCode = row.FinancialConcept.Code,
         Concept = row.FinancialConcept.Name,
         Format = row.Format,

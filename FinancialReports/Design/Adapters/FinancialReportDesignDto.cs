@@ -15,7 +15,7 @@ namespace Empiria.FinancialAccounting.FinancialReports.Adapters {
   public class FinancialReportDesignDto {
 
 
-    public ReportDesignConfigDto Configuration {
+    public ReportDesignConfigDto Config {
       get; internal set;
     }
 

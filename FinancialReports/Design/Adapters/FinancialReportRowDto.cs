@@ -41,6 +41,11 @@ namespace Empiria.FinancialAccounting.FinancialReports.Adapters {
       get; internal set;
     }
 
+
+    public string FinancialConceptGroupUID {
+      get; internal set;
+    }
+
   } // class FinancialReportRowDto
 
 } // namespace Empiria.FinancialAccounting.FinancialReports.Adapters
