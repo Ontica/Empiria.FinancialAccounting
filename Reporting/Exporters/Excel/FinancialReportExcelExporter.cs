@@ -116,7 +116,7 @@ namespace Empiria.FinancialAccounting.Reporting.Exporters.Excel {
 
           decimal totalField = entry.GetTotalField(totalColumn.Field);
 
-          _excelFile.SetCell($"{totalColumn.Position}{i}", totalField);
+          _excelFile.SetCell($"{totalColumn.Column}{i}", totalField);
         }
 
         i++;
@@ -140,7 +140,7 @@ namespace Empiria.FinancialAccounting.Reporting.Exporters.Excel {
 
           decimal totalField = entry.GetTotalField(totalColumn.Field);
 
-          _excelFile.SetCell($"{totalColumn.Position}{i}", totalField);
+          _excelFile.SetCell($"{totalColumn.Column}{i}", totalField);
         }
 
         if (entry.ItemType == FinancialReportItemType.Summary) {

@@ -24,8 +24,7 @@ namespace Empiria.FinancialAccounting {
       }
     }
 
-
-    public string Field {
+    public string Column {
       get; set;
     }
 
@@ -34,18 +33,15 @@ namespace Empiria.FinancialAccounting {
       get; set;
     }
 
+    public string Field {
+      get; set;
+    }
 
     public string Type {
       get; set;
     }
 
-
     public int Digits {
-      get; set;
-    }
-
-
-    public string Position {
       get; set;
     }
 
