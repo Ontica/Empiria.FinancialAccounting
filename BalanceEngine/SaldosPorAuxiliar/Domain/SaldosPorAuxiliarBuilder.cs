@@ -61,7 +61,7 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
 
       _query.WithSubledgerAccount = true;
 
-      FixedList<TrialBalanceEntry> trialBalance = helper.GetPostingEntries();
+      FixedList<TrialBalanceEntry> trialBalance = helper.GetAccountEntries();
 
       var returnBalance = new FixedList<ITrialBalanceEntry>(trialBalance.Select(x => (ITrialBalanceEntry) x));
 

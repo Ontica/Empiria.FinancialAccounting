@@ -433,8 +433,6 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
     }
 
 
-
-
     internal void SummaryEntryBySectorization(EmpiriaHashTable<TrialBalanceEntry> parentAccounts,
                                              TrialBalanceEntry entry, StandardAccount currentParent) {
       if (!_query.UseNewSectorizationModel || !_query.WithSectorization) {
@@ -536,6 +534,24 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
 
 
     #region Private methods
+
+
+    private void ClausesToExchangeRate(TrialBalanceEntry entry, ExchangeRate exchangeRate) {
+
+      if (_query.TrialBalanceType == TrialBalanceType.BalanzaDolarizada) {
+        entry.ExchangeRate = exchangeRate.Value;
+
+      }
+
+      if (_query.IsOperationalReport && !_query.ConsolidateBalancesToTargetCurrency) {
+        entry.ExchangeRate = exchangeRate.Value;
+
+      } else {
+        entry.MultiplyBy(exchangeRate.Value);
+
+      }
+
+    }
 
 
     private void GetDetailSummaryEntries(List<TrialBalanceEntry> detailSummaryEntries,
@@ -720,24 +736,6 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
       foreach (var parentToChange in filtered) {
         parentToChange.LastChangeDate = entry.LastChangeDate;
       }
-    }
-
-
-    private void ClausesToExchangeRate(TrialBalanceEntry entry, ExchangeRate exchangeRate) {
-
-      if (_query.TrialBalanceType == TrialBalanceType.BalanzaDolarizada) {
-        entry.ExchangeRate = exchangeRate.Value;
-
-      }
-
-      if (_query.IsOperationalReport && !_query.ConsolidateBalancesToTargetCurrency) {
-        entry.ExchangeRate = exchangeRate.Value;
-
-      } else {
-        entry.MultiplyBy(exchangeRate.Value);
-
-      }
-
     }
 
 
