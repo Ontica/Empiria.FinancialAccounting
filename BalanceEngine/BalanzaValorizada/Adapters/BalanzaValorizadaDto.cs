@@ -4,7 +4,7 @@
 *  Assembly : FinancialAccounting.BalanceEngine.dll      Pattern   : Data Transfer Object                    *
 *  Type     : BalanzaComparativaDto                      License   : Please read LICENSE.txt file            *
 *                                                                                                            *
-*  Summary  : Output DTO used to return a Balanza comparativa.                                               *
+*  Summary  : Output DTO used to return a Balanza valorizada.                                                *
 *                                                                                                            *
 ************************* Copyright(c) La Vía Óntica SC, Ontica LLC and contributors. All rights reserved. **/
 using System;
@@ -14,8 +14,8 @@ using Newtonsoft.Json;
 namespace Empiria.FinancialAccounting.BalanceEngine.Adapters {
 
 
-  /// <summary>Output DTO used to return a Balanza comparativa.</summary>
-  public class BalanzaComparativaDto {
+  /// <summary>Output DTO used to return a Balanza valorizada.</summary>
+  public class BalanzaValorizadaDto {
 
 
     [JsonProperty]
@@ -31,11 +31,11 @@ namespace Empiria.FinancialAccounting.BalanceEngine.Adapters {
 
 
     [JsonProperty]
-    public FixedList<BalanzaComparativaEntryDto> Entries {
+    public FixedList<BalanzaValorizadaEntryDto> Entries {
       get; internal set;
     }
 
 
-  } // class BalanzaComparativaDto
+  } // class BalanzaValorizadaDto
 
 } // namespace Empiria.FinancialAccounting.BalanceEngine.Adapters

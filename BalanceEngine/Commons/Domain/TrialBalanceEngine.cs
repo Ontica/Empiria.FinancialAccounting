@@ -145,7 +145,7 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
 
         case TrialBalanceType.BalanzaEnColumnasPorMoneda:
 
-          var balanzaPorMoneda = new BalanzaValorizada(this.Query);
+          var balanzaPorMoneda = new BalanzaValorizadaBuilder(this.Query);
           return balanzaPorMoneda.BuildBalanceInColumnsByCurrency();
 
         case TrialBalanceType.BalanzaValorizadaComparativa:
@@ -155,7 +155,7 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
 
         case TrialBalanceType.BalanzaDolarizada:
 
-          var balanzaDolarizada = new BalanzaValorizada(this.Query);
+          var balanzaDolarizada = new BalanzaValorizadaBuilder(this.Query);
           return balanzaDolarizada.Build();
 
         case TrialBalanceType.GeneracionDeSaldos:

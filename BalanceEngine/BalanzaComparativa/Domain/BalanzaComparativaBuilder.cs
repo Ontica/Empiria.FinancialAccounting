@@ -27,7 +27,7 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
 
     internal TrialBalance Build() {
       var balanceHelper = new TrialBalanceHelper(_query);
-      var helper = new TrialBalanceComparativeHelper(_query);
+      var helper = new BalanzaComparativaHelper(_query);
 
       _query.FinalPeriod.IsSecondPeriod = true;
 

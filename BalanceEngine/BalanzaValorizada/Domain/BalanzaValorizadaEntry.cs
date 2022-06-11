@@ -12,7 +12,7 @@ using System;
 namespace Empiria.FinancialAccounting.BalanceEngine {
 
   /// <summary>Represents an entry for a valued balance entry.</summary>
-  public class ValuedTrialBalanceEntry : ITrialBalanceEntry {
+  public class BalanzaValorizadaEntry : ITrialBalanceEntry {
 
     public Currency Currency {
       get;
@@ -69,7 +69,7 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
       get; internal set;
     }
 
-    internal void Sum(ValuedTrialBalanceEntry entry) {
+    internal void Sum(BalanzaValorizadaEntry entry) {
       this.TotalEquivalence += entry.TotalEquivalence;
       this.ExchangeRate = entry.ExchangeRate;
     }
@@ -131,7 +131,7 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
       internal set;
     }
 
-    internal void Sum(ValuedTrialBalanceEntry entry) {
+    internal void Sum(BalanzaValorizadaEntry entry) {
       
     }
 

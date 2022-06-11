@@ -17,11 +17,11 @@ using Empiria.FinancialAccounting.BalanceEngine.Adapters;
 namespace Empiria.FinancialAccounting.BalanceEngine {
 
   /// <summary>Helper methods to build valorized balances and related accounting information.</summary>
-  internal class ValorizedBalanceHelper {
+  internal class BalanzaValorizadaHelper {
 
     private readonly TrialBalanceQuery _query;
 
-    internal ValorizedBalanceHelper(TrialBalanceQuery query) {
+    internal BalanzaValorizadaHelper(TrialBalanceQuery query) {
       _query = query;
     }
 
@@ -46,9 +46,9 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
     }
 
 
-    internal List<ValuedTrialBalanceEntry> GetExchangeRateByValuedEntry(
-                                          List<ValuedTrialBalanceEntry> mergeBalancesToToValuedBalances) {
-      var returnedValuedBalances = new List<ValuedTrialBalanceEntry>();
+    internal List<BalanzaValorizadaEntry> GetExchangeRateByValuedEntry(
+                                          List<BalanzaValorizadaEntry> mergeBalancesToToValuedBalances) {
+      var returnedValuedBalances = new List<BalanzaValorizadaEntry>();
 
       var headerAccounts = mergeBalancesToToValuedBalances
                           .Where(a => a.ItemType == TrialBalanceItemType.Summary).ToList();
@@ -127,10 +127,10 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
     }
 
 
-    internal List<ValuedTrialBalanceEntry> MergeTrialBalanceIntoValuedBalances(
+    internal List<BalanzaValorizadaEntry> MergeTrialBalanceIntoValuedBalances(
                                           FixedList<TrialBalanceEntry> getLedgerAccounts) {
 
-      List<ValuedTrialBalanceEntry> returnedValuedBalance = new List<ValuedTrialBalanceEntry>();
+      List<BalanzaValorizadaEntry> returnedValuedBalance = new List<BalanzaValorizadaEntry>();
       foreach (var entry in getLedgerAccounts) {
         returnedValuedBalance.Add(entry.MapToValuedBalanceEntry());
       }
@@ -248,10 +248,10 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
     }
 
 
-    private EmpiriaHashTable<ValuedTrialBalanceEntry> GetTotalByAccount(
-                                                ValuedTrialBalanceEntry header, decimal totalEquivalence) {
+    private EmpiriaHashTable<BalanzaValorizadaEntry> GetTotalByAccount(
+                                                BalanzaValorizadaEntry header, decimal totalEquivalence) {
 
-      ValuedTrialBalanceEntry valuedEntry = TrialBalanceMapper.MapValuedTrialBalanceEntry(header);
+      BalanzaValorizadaEntry valuedEntry = TrialBalanceMapper.MapValuedTrialBalanceEntry(header);
 
       valuedEntry.GroupName = "TOTAL POR CUENTA";
       valuedEntry.TotalEquivalence = totalEquivalence;
@@ -259,7 +259,7 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
       valuedEntry.ItemType = TrialBalanceItemType.BalanceTotalCurrency;
       string hash = $"{valuedEntry.GroupName}||{valuedEntry.Account}";
 
-      EmpiriaHashTable<ValuedTrialBalanceEntry> hashdEntry = new EmpiriaHashTable<ValuedTrialBalanceEntry>();
+      EmpiriaHashTable<BalanzaValorizadaEntry> hashdEntry = new EmpiriaHashTable<BalanzaValorizadaEntry>();
 
       hashdEntry.Insert(hash, valuedEntry);
 

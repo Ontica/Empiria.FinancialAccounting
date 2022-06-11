@@ -16,11 +16,11 @@ using Empiria.FinancialAccounting.BalanceEngine.Adapters;
 namespace Empiria.FinancialAccounting.BalanceEngine {
 
   /// <summary>Helper methods to build comparative balances.</summary>
-  internal class TrialBalanceComparativeHelper {
+  internal class BalanzaComparativaHelper {
 
     private readonly TrialBalanceQuery _query;
 
-    internal TrialBalanceComparativeHelper(TrialBalanceQuery query) {
+    internal BalanzaComparativaHelper(TrialBalanceQuery query) {
       _query = query;
     }
 
