@@ -12,7 +12,7 @@ using System;
 namespace Empiria.FinancialAccounting.BalanceEngine.Adapters {
 
   /// <summary>Output DTO used to return valued trial balances.</summary>
-  public class ValuedTrialBalanceDto : ITrialBalanceEntryDto {
+  public class BalanzaValorizadaEntryDto : ITrialBalanceEntryDto {
 
     public string CurrencyCode {
       get; internal set;

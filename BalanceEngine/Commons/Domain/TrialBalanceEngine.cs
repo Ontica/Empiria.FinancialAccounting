@@ -150,7 +150,7 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
 
         case TrialBalanceType.BalanzaValorizadaComparativa:
 
-          var balanzaComparativa = new BalanzaComparativa(this.Query);
+          var balanzaComparativa = new BalanzaComparativaBuilder(this.Query);
           return balanzaComparativa.Build();
 
         case TrialBalanceType.BalanzaDolarizada:

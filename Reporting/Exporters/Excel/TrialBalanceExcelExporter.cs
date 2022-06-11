@@ -79,7 +79,7 @@ namespace Empiria.FinancialAccounting.Reporting.Exporters.Excel {
 
         case TrialBalanceType.BalanzaValorizadaComparativa:
           SetBalanzaComparativaHeaders();
-          FillOutBalanzaComparativa(trialBalance.Entries.Select(x => (TrialBalanceComparativeDto) x));
+          FillOutBalanzaComparativa(trialBalance.Entries.Select(x => (BalanzaComparativaEntryDto) x));
           return;
 
 
@@ -88,7 +88,7 @@ namespace Empiria.FinancialAccounting.Reporting.Exporters.Excel {
           return;
 
         case TrialBalanceType.BalanzaDolarizada:
-          FillOutBalanzaDolarizada(trialBalance.Entries.Select(x => (ValuedTrialBalanceDto) x));
+          FillOutBalanzaDolarizada(trialBalance.Entries.Select(x => (BalanzaValorizadaEntryDto) x));
           return;
 
         case TrialBalanceType.BalanzaConContabilidadesEnCascada:
@@ -155,7 +155,7 @@ namespace Empiria.FinancialAccounting.Reporting.Exporters.Excel {
     }
 
 
-    private void FillOutBalanzaComparativa(IEnumerable<TrialBalanceComparativeDto> entries) {
+    private void FillOutBalanzaComparativa(IEnumerable<BalanzaComparativaEntryDto> entries) {
       int i = 5;
 
       foreach (var entry in entries) {
@@ -232,7 +232,7 @@ namespace Empiria.FinancialAccounting.Reporting.Exporters.Excel {
     }
 
 
-    private void FillOutBalanzaDolarizada(IEnumerable<ValuedTrialBalanceDto> entries) {
+    private void FillOutBalanzaDolarizada(IEnumerable<BalanzaValorizadaEntryDto> entries) {
       int i = 5;
 
       foreach (var entry in entries) {

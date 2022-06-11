@@ -16,11 +16,11 @@ using Empiria.FinancialAccounting.BalanceEngine.Adapters;
 namespace Empiria.FinancialAccounting.BalanceEngine {
 
   /// <summary>Genera los datos para el reporte de balanza valorizada comparativa.</summary>
-  internal class BalanzaComparativa {
+  internal class BalanzaComparativaBuilder {
 
     private readonly TrialBalanceQuery _query;
 
-    public BalanzaComparativa(TrialBalanceQuery query) {
+    public BalanzaComparativaBuilder(TrialBalanceQuery query) {
       _query = query;
     }
 
@@ -41,7 +41,7 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
 
       helper.GetAverageBalance(entries.ToList());
 
-      List<TrialBalanceComparativeEntry> comparativeBalance =
+      List<BalanzaComparativaEntry> comparativeBalance =
                                          helper.MergePeriodsIntoComparativeBalance(entries);
 
       var returnBalance = new FixedList<ITrialBalanceEntry>(

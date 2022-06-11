@@ -243,8 +243,8 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
     }
 
 
-    internal TrialBalanceComparativeEntry MapToComparativeBalanceEntry() {
-      return new TrialBalanceComparativeEntry {
+    internal BalanzaComparativaEntry MapToComparativeBalanceEntry() {
+      return new BalanzaComparativaEntry {
         Ledger = this.Ledger,
         Currency = this.Currency,
         Sector = this.Sector,

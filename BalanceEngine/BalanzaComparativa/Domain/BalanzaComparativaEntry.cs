@@ -12,7 +12,7 @@ using System;
 namespace Empiria.FinancialAccounting.BalanceEngine {
 
   /// <summary>Represents an entry for a comparative balance between periods.</summary>
-  public class TrialBalanceComparativeEntry : ITrialBalanceEntry {
+  public class BalanzaComparativaEntry : ITrialBalanceEntry {
 
     public Ledger Ledger {
       get;

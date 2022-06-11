@@ -352,7 +352,7 @@ namespace Empiria.FinancialAccounting.Tests.BalanceEngine {
       Assert.NotEmpty(dollarizedBalance.Entries);
 
       var _trialBalance = trialBalance.Entries.Select(x => (TrialBalanceEntryDto) x);
-      var _dollarizedBalance = dollarizedBalance.Entries.Select(x => (ValuedTrialBalanceDto) x);
+      var _dollarizedBalance = dollarizedBalance.Entries.Select(x => (BalanzaValorizadaEntryDto) x);
       var wrongEntries = 0;
 
       wrongEntries = Should_Match_With_Dollar_Currency(_dollarizedBalance, _trialBalance);
@@ -381,7 +381,7 @@ namespace Empiria.FinancialAccounting.Tests.BalanceEngine {
     }
 
 
-    private int Should_Match_With_Dollar_Currency(IEnumerable<ValuedTrialBalanceDto> dollarizedBalance,
+    private int Should_Match_With_Dollar_Currency(IEnumerable<BalanzaValorizadaEntryDto> dollarizedBalance,
                                                   IEnumerable<TrialBalanceEntryDto> trialBalance) {
       int wrongEntries = 0;
       foreach (var cascadeEntry in dollarizedBalance.Where(a => a.ItemType == TrialBalanceItemType.Summary)) {
@@ -398,7 +398,7 @@ namespace Empiria.FinancialAccounting.Tests.BalanceEngine {
     }
 
 
-    private int Should_Match_With_Euro_Currency(IEnumerable<ValuedTrialBalanceDto> dollarizedBalance,
+    private int Should_Match_With_Euro_Currency(IEnumerable<BalanzaValorizadaEntryDto> dollarizedBalance,
                                                 IEnumerable<TrialBalanceEntryDto> trialBalance) {
       int wrongEntries = 0;
       foreach (var cascadeEntry in dollarizedBalance.Where(a => a.CurrencyCode == "27")) {
@@ -415,7 +415,7 @@ namespace Empiria.FinancialAccounting.Tests.BalanceEngine {
     }
 
 
-    private int Should_Match_With_Yen_Currency(IEnumerable<ValuedTrialBalanceDto> dollarizedBalance,
+    private int Should_Match_With_Yen_Currency(IEnumerable<BalanzaValorizadaEntryDto> dollarizedBalance,
                                                IEnumerable<TrialBalanceEntryDto> trialBalance) {
       int wrongEntries = 0;
       foreach (var cascadeEntry in dollarizedBalance.Where(a => a.CurrencyCode == "06")) {

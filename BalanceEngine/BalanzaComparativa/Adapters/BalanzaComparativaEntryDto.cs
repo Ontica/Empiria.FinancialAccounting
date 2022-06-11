@@ -14,7 +14,7 @@ namespace Empiria.FinancialAccounting.BalanceEngine.Adapters {
 
 
   /// <summary>Output DTO used to return comparative trial balances. </summary>
-  public class TrialBalanceComparativeDto : ITrialBalanceEntryDto {
+  public class BalanzaComparativaEntryDto : ITrialBalanceEntryDto {
     public TrialBalanceItemType ItemType {
       get; internal set;
     }

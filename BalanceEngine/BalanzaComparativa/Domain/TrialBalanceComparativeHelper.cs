@@ -46,10 +46,10 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
     }
 
 
-    internal List<TrialBalanceComparativeEntry> MergePeriodsIntoComparativeBalance(
+    internal List<BalanzaComparativaEntry> MergePeriodsIntoComparativeBalance(
                                       FixedList<TrialBalanceEntry> trialBalance) {
 
-      List<TrialBalanceComparativeEntry> comparativeEntries = new List<TrialBalanceComparativeEntry>();
+      List<BalanzaComparativaEntry> comparativeEntries = new List<BalanzaComparativaEntry>();
 
       foreach (var entry in trialBalance) {
         comparativeEntries.Add(entry.MapToComparativeBalanceEntry());
@@ -67,9 +67,9 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
 
     #region Private methods
 
-    private void AssingSubledgerAccountInfo(List<TrialBalanceComparativeEntry> comparativeEntries) {
-      List<TrialBalanceComparativeEntry> returnedEntries =
-                                          new List<TrialBalanceComparativeEntry>(comparativeEntries);
+    private void AssingSubledgerAccountInfo(List<BalanzaComparativaEntry> comparativeEntries) {
+      List<BalanzaComparativaEntry> returnedEntries =
+                                          new List<BalanzaComparativaEntry>(comparativeEntries);
 
       foreach (var entry in returnedEntries) {
         SubledgerAccount subledgerAccount = SubledgerAccount.Parse(entry.SubledgerAccountId);
@@ -82,9 +82,9 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
     }
 
 
-    private void CalculateVariationFields(List<TrialBalanceComparativeEntry> comparativeEntries) {
-      List<TrialBalanceComparativeEntry> calculatedEntries =
-                                          new List<TrialBalanceComparativeEntry>(comparativeEntries);
+    private void CalculateVariationFields(List<BalanzaComparativaEntry> comparativeEntries) {
+      List<BalanzaComparativaEntry> calculatedEntries =
+                                          new List<BalanzaComparativaEntry>(comparativeEntries);
 
       foreach (var entry in calculatedEntries) {
         entry.Variation = entry.SecondValorization - entry.FirstValorization;
@@ -94,10 +94,10 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
     }
 
 
-    private List<TrialBalanceComparativeEntry> OrderingComparativeBalance(
-                                                List<TrialBalanceComparativeEntry> comparativeEntries) {
-      List<TrialBalanceComparativeEntry> orderingEntries =
-                                          new List<TrialBalanceComparativeEntry>(comparativeEntries);
+    private List<BalanzaComparativaEntry> OrderingComparativeBalance(
+                                                List<BalanzaComparativaEntry> comparativeEntries) {
+      List<BalanzaComparativaEntry> orderingEntries =
+                                          new List<BalanzaComparativaEntry>(comparativeEntries);
 
       foreach (var entry in orderingEntries) {
         SubledgerAccount subledgerAccount = SubledgerAccount.Parse(entry.SubledgerAccountId);
