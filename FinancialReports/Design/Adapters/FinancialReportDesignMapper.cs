@@ -28,8 +28,9 @@ namespace Empiria.FinancialAccounting.FinancialReports.Adapters {
 
     static private ReportDesignConfigDto MapConfig(FinancialReportType reportType) {
       return new ReportDesignConfigDto {
-        Type = reportType.DesignType,
+        DesignType = reportType.DesignType,
         AccountsChart = reportType.AccountsChart.MapToNamedEntity(),
+        ReportType = reportType.MapToNamedEntity(),
         Grid = new ReportGridDto {
           Columns = MapToReportColumn(reportType.DataColumns),
           StartRow = 1,

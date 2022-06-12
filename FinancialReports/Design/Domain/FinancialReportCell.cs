@@ -42,8 +42,7 @@ namespace Empiria.FinancialAccounting.FinancialReports {
 
     [DataField("DATA_FIELD")]
     public string DataField {
-      get;
-      internal set;
+      get; internal set;
     }
 
     [DataField("ETIQUETA")]

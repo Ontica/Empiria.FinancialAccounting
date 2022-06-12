@@ -4,24 +4,28 @@
 *  Assembly : FinancialAccounting.FinancialReports.dll   Pattern   : Data Transfer Object                    *
 *  Type     : ReportDesignConfigDto                      License   : Please read LICENSE.txt file            *
 *                                                                                                            *
-*  Summary  : Output DTO that returns a report configuration.                                                *
+*  Summary  : Output DTO that returns a financial report configuration.                                      *
 *                                                                                                            *
 ************************* Copyright(c) La Vía Óntica SC, Ontica LLC and contributors. All rights reserved. **/
 using System;
 
 namespace Empiria.FinancialAccounting.FinancialReports.Adapters {
 
-  /// <summary>Output DTO that returns a report configuration.</summary>
+  /// <summary>Output DTO that returns financial report configuration.</summary>
   public class ReportDesignConfigDto {
 
-    public FinancialReportDesignType Type {
+    public FinancialReportDesignType DesignType {
       get; internal set;
     }
+
+    public NamedEntityDto ReportType {
+      get; internal set;
+    }
+
 
     public NamedEntityDto AccountsChart {
       get; internal set;
     }
-
 
     public ReportGridDto Grid {
       get; internal set;
@@ -49,6 +53,6 @@ namespace Empiria.FinancialAccounting.FinancialReports.Adapters {
       internal set;
     }
 
-  }  // class ReportGrid
+  }  // class ReportGridDto
 
 }  // namespace Empiria.FinancialAccounting.FinancialReports.Adapters
