@@ -148,7 +148,7 @@ namespace Empiria.FinancialAccounting.FinancialReports {
 
     public FixedList<FinancialReportCell> GetCells() {
       if (BaseReport.IsEmptyInstance) {
-        return FinancialReportsRowData.GetCells(this);
+        return FinancialReportsData.GetCells(this);
       } else {
         return BaseReport.GetCells();
       }
@@ -156,7 +156,7 @@ namespace Empiria.FinancialAccounting.FinancialReports {
 
     public FixedList<FinancialReportRow> GetRows() {
       if (BaseReport.IsEmptyInstance) {
-        return FinancialReportsRowData.GetRows(this);
+        return FinancialReportsData.GetRows(this);
       } else {
         return BaseReport.GetRows();
       }
