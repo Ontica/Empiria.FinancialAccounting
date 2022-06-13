@@ -22,12 +22,11 @@ namespace Empiria.FinancialAccounting.WebApi.FinancialReports {
 
     #region Web Apis
 
-
     [HttpGet]
-    [Route("v2/financial-accounting/financial-reports/design/{financialReportTypeUID}")]
-    public SingleObjectModel GetFinancialReportDesign([FromUri] string financialReportTypeUID) {
+    [Route("v2/financial-accounting/financial-reports/design/{reportTypeUID}")]
+    public SingleObjectModel GetFinancialReportDesign([FromUri] string reportTypeUID) {
       using (var usecases = FinancialReportDesignUseCases.UseCaseInteractor()) {
-        FinancialReportDesignDto design = usecases.FinancialReportDesign(financialReportTypeUID);
+        FinancialReportDesignDto design = usecases.FinancialReportDesign(reportTypeUID);
 
         return new SingleObjectModel(base.Request, design);
       }
@@ -41,6 +40,104 @@ namespace Empiria.FinancialAccounting.WebApi.FinancialReports {
         FixedList<NamedEntityDto> list = usecases.FinancialReportTypesForDesign(accountsChartUID);
 
         return new CollectionModel(base.Request, list);
+      }
+    }
+
+
+    [HttpPost]
+    [Route("v2/financial-accounting/financial-reports/design/{reportTypeUID}/cells")]
+    public SingleObjectModel InsertCell([FromUri] string reportTypeUID,
+                                        [FromBody] EditFinancialReportCommand command) {
+
+      base.RequireBody(command);
+
+      command.Payload.ReportTypeUID = reportTypeUID;
+
+      using (var usecases = FinancialReportDesignUseCases.UseCaseInteractor()) {
+        FinancialReportCellDto cell = usecases.InsertCell(command);
+
+        return new SingleObjectModel(base.Request, cell);
+      }
+    }
+
+
+    [HttpPost]
+    [Route("v2/financial-accounting/financial-reports/design/{reportTypeUID}/rows")]
+    public SingleObjectModel InsertRow([FromUri] string reportTypeUID,
+                                       [FromBody] EditFinancialReportCommand command) {
+
+      base.RequireBody(command);
+
+      command.Payload.ReportTypeUID = reportTypeUID;
+
+      using (var usecases = FinancialReportDesignUseCases.UseCaseInteractor()) {
+        FinancialReportRowDto row = usecases.InsertRow(command);
+
+        return new SingleObjectModel(base.Request, row);
+      }
+    }
+
+
+    [HttpDelete]
+    [Route("v2/financial-accounting/financial-reports/design/{reportTypeUID}/cells/{cellUID:guid}")]
+    public NoDataModel RemoveCell([FromUri] string reportTypeUID,
+                                  [FromUri] string cellUID) {
+
+      using (var usecases = FinancialReportDesignUseCases.UseCaseInteractor()) {
+        usecases.RemoveCell(reportTypeUID, cellUID);
+
+        return new NoDataModel(base.Request);
+      }
+    }
+
+
+    [HttpDelete]
+    [Route("v2/financial-accounting/financial-reports/design/{reportTypeUID}/rows/{rowUID:guid}")]
+    public NoDataModel RemoveRow([FromUri] string reportTypeUID,
+                                       [FromUri] string rowUID) {
+
+      using (var usecases = FinancialReportDesignUseCases.UseCaseInteractor()) {
+        usecases.RemoveRow(reportTypeUID, rowUID);
+
+        return new NoDataModel(base.Request);
+      }
+    }
+
+
+    [HttpPut, HttpPatch]
+    [Route("2/financial-accounting/financial-reports/design/{reportTypeUID}/cells/{cellUID:guid}")]
+    public SingleObjectModel UpdateCell([FromUri] string reportTypeUID,
+                                        [FromUri] string cellUID,
+                                        [FromBody] EditFinancialReportCommand command) {
+
+      base.RequireBody(command);
+
+      command.Payload.ReportTypeUID = reportTypeUID;
+      command.Payload.CellUID = cellUID;
+
+      using (var usecases = FinancialReportDesignUseCases.UseCaseInteractor()) {
+        FinancialReportCellDto cell = usecases.UpdateCell(command);
+
+        return new SingleObjectModel(base.Request, cell);
+      }
+    }
+
+
+    [HttpPut, HttpPatch]
+    [Route("2/financial-accounting/financial-reports/design/{reportTypeUID}/rows/{rowUID:guid}")]
+    public SingleObjectModel UpdateRow([FromUri] string reportTypeUID,
+                                       [FromUri] string rowUID,
+                                       [FromBody] EditFinancialReportCommand command) {
+
+      base.RequireBody(command);
+
+      command.Payload.ReportTypeUID = reportTypeUID;
+      command.Payload.RowUID = rowUID;
+
+      using (var usecases = FinancialReportDesignUseCases.UseCaseInteractor()) {
+        FinancialReportRowDto row = usecases.UpdateRow(command);
+
+        return new SingleObjectModel(base.Request, row);
       }
     }
 
