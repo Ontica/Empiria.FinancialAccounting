@@ -33,24 +33,78 @@ namespace Empiria.FinancialAccounting.FinancialReports.UseCases {
     #region Use cases
 
 
-    public FinancialReportDesignDto FinancialReportDesign(string financialReportTypeUID) {
-      Assertion.Require(financialReportTypeUID, "financialReportTypeUID");
+    public FinancialReportDesignDto FinancialReportDesign(string reportTypeUID) {
+      Assertion.Require(reportTypeUID, nameof(reportTypeUID));
 
-      var financialReportType = FinancialReportType.Parse(financialReportTypeUID);
+      var reportType = FinancialReportType.Parse(reportTypeUID);
 
-      return FinancialReportDesignMapper.Map(financialReportType);
+      return FinancialReportDesignMapper.Map(reportType);
     }
 
 
-    public FixedList<NamedEntityDto> FinancialReportTypesForDesign(string accountsChartUID) {
-      Assertion.Require(accountsChartUID, "accountsChartUID");
+    public FixedList<NamedEntityDto> FinancialReportTypesForDesign(string chartUID) {
+      Assertion.Require(chartUID, nameof(chartUID));
 
-      var accountsChart = AccountsChart.Parse(accountsChartUID);
+      var accountsChart = AccountsChart.Parse(chartUID);
 
       var list = FinancialReportType.GetListForDesign(accountsChart);
 
       return list.MapToNamedEntityList();
     }
+
+
+    public FinancialReportCellDto InsertCell(EditFinancialReportCommand command) {
+      throw new NotImplementedException();
+    }
+
+
+    public FinancialReportRowDto InsertRow(EditFinancialReportCommand command) {
+      Assertion.Require(command, nameof(command));
+
+      command.Arrange();
+
+      command.EnsureIsValid();
+
+      FinancialReportType reportType = command.Entities.FinancialReportType;
+
+      FinancialReportRow row = reportType.InsertRow(command.MapToRowEditionField(),
+                                                    command.Payload.Positioning);
+
+      return FinancialReportDesignMapper.Map(row);
+    }
+
+
+    public void RemoveCell(string reportTypeUID, string cellUID) {
+      Assertion.Require(reportTypeUID, nameof(reportTypeUID));
+      Assertion.Require(cellUID, nameof(cellUID));
+
+      throw new NotImplementedException();
+    }
+
+
+    public void RemoveRow(string reportTypeUID, string rowUID) {
+      Assertion.Require(reportTypeUID, nameof(reportTypeUID));
+      Assertion.Require(rowUID, nameof(rowUID));
+
+      throw new NotImplementedException();
+    }
+
+
+    public FinancialReportCellDto UpdateCell(EditFinancialReportCommand command) {
+      throw new NotImplementedException();
+    }
+
+
+    public FinancialReportRowDto UpdateRow(EditFinancialReportCommand command) {
+      Assertion.Require(command, nameof(command));
+
+      command.Arrange();
+
+      command.EnsureIsValid();
+
+      throw new NotImplementedException();
+    }
+
 
     #endregion Use cases
 
