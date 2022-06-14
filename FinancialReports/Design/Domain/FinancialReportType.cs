@@ -12,6 +12,7 @@ using System;
 using Empiria.Json;
 
 using Empiria.FinancialAccounting.FinancialReports.Data;
+using Empiria.FinancialAccounting.FinancialConcepts;
 
 namespace Empiria.FinancialAccounting.FinancialReports {
 
@@ -76,6 +77,7 @@ namespace Empiria.FinancialAccounting.FinancialReports {
 
 
     static readonly FinancialReportType Empty = BaseObject.ParseEmpty<FinancialReportType>();
+
 
     #endregion Constructors and parsers
 
@@ -142,6 +144,22 @@ namespace Empiria.FinancialAccounting.FinancialReports {
       }
     }
 
+
+    public FixedList<FinancialConceptGroup> FinancialConceptGroups {
+      get {
+        return base.ExtendedDataField.GetFixedList<FinancialConceptGroup>("groupingRules", false);
+      }
+    }
+
+
+    public FixedList<NamedEntity> DataFields {
+      get {
+        return DataColumns.Select(x => new NamedEntity(x.Field, x.Title))
+                          .ToFixedList();
+      }
+    }
+
+
     #endregion Properties
 
     #region Methods
@@ -170,6 +188,11 @@ namespace Empiria.FinancialAccounting.FinancialReports {
 
     internal FinancialReportRow GetRow(string rowUID) {
       return GetRows().Find(x => x.UID == rowUID);
+    }
+
+
+    internal FinancialReportRow InsertRow(ReportRowFields rowFields, Positioning positioning) {
+      throw new NotImplementedException();
     }
 
 

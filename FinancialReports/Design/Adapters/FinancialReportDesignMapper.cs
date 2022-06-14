@@ -19,46 +19,15 @@ namespace Empiria.FinancialAccounting.FinancialReports.Adapters {
     static internal FinancialReportDesignDto Map(FinancialReportType reportType) {
       return new FinancialReportDesignDto {
         Config = MapConfig(reportType),
-        Columns = reportType.DataColumns,
+        Columns = reportType.DesignType == FinancialReportDesignType.FixedRows
+                                        ? reportType.DataColumns : null,
         Rows = MapRows(reportType),
         Cells = MapCells(reportType),
       };
     }
 
 
-    static private ReportDesignConfigDto MapConfig(FinancialReportType reportType) {
-      return new ReportDesignConfigDto {
-        DesignType = reportType.DesignType,
-        AccountsChart = reportType.AccountsChart.MapToNamedEntity(),
-        ReportType = reportType.MapToNamedEntity(),
-        Grid = new ReportGridDto {
-          Columns = MapToReportColumn(reportType.DataColumns),
-          StartRow = 1,
-          EndRow = 64
-        }
-      };
-    }
-
-
-    static private FixedList<string> MapToReportColumn(FixedList<DataTableColumn> dataColumns) {
-      return dataColumns.Select(x => x.Column)
-                        .ToFixedList();
-    }
-
-
-    #endregion Public mappers
-
-    #region Helpers
-
-
-    private static FixedList<FinancialReportCellDto> MapCells(FinancialReportType reportType) {
-      FixedList<FinancialReportCell> cells = reportType.GetCells();
-
-      return cells.Select((x) => MapCell(x))
-                 .ToFixedList();
-    }
-
-    private static FinancialReportCellDto MapCell(FinancialReportCell cell) {
+    static internal FinancialReportCellDto Map(FinancialReportCell cell) {
       return new FinancialReportCellDto {
         UID = cell.UID,
         Label = cell.Label,
@@ -71,14 +40,8 @@ namespace Empiria.FinancialAccounting.FinancialReports.Adapters {
       };
     }
 
-    static private FixedList<FinancialReportRowDto> MapRows(FinancialReportType reportType) {
-      FixedList<FinancialReportRow> rows = reportType.GetRows();
 
-      return rows.Select((x) => MapRow(x))
-                 .ToFixedList();
-    }
-
-    static private FinancialReportRowDto MapRow(FinancialReportRow row) {
+    static internal FinancialReportRowDto Map(FinancialReportRow row) {
       return new FinancialReportRowDto {
         UID = row.UID,
         FinancialConceptGroupUID = row.FinancialConcept.Group.UID,
@@ -88,6 +51,49 @@ namespace Empiria.FinancialAccounting.FinancialReports.Adapters {
         Row = row.Row,
         FinancialConceptUID = row.FinancialConcept.UID
       };
+    }
+
+
+    #endregion Public mappers
+
+    #region Helpers
+
+
+    private static FixedList<FinancialReportCellDto> MapCells(FinancialReportType reportType) {
+      FixedList<FinancialReportCell> cells = reportType.GetCells();
+
+      return cells.Select((x) => Map(x))
+                 .ToFixedList();
+    }
+
+
+    static private ReportDesignConfigDto MapConfig(FinancialReportType reportType) {
+      return new ReportDesignConfigDto {
+        DesignType = reportType.DesignType,
+        AccountsChart = reportType.AccountsChart.MapToNamedEntity(),
+        ReportType = reportType.MapToNamedEntity(),
+        FinancialConceptGroups = reportType.FinancialConceptGroups.MapToNamedEntityList(),
+        DataFields = reportType.DataFields.MapToNamedEntityList(),
+        Grid = new ReportGridDto {
+          Columns = MapToReportColumn(reportType.DataColumns),
+          StartRow = 1,
+          EndRow = 64
+        }
+      };
+    }
+
+
+    static private FixedList<FinancialReportRowDto> MapRows(FinancialReportType reportType) {
+      FixedList<FinancialReportRow> rows = reportType.GetRows();
+
+      return rows.Select((x) => Map(x))
+                 .ToFixedList();
+    }
+
+
+    static private FixedList<string> MapToReportColumn(FixedList<DataTableColumn> dataColumns) {
+      return dataColumns.Select(x => x.Column)
+                        .ToFixedList();
     }
 
     #endregion Helpers

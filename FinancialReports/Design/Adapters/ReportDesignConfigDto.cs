@@ -27,6 +27,16 @@ namespace Empiria.FinancialAccounting.FinancialReports.Adapters {
       get; internal set;
     }
 
+
+    public FixedList<NamedEntityDto> FinancialConceptGroups {
+      get; internal set;
+    }
+
+
+    public FixedList<NamedEntityDto> DataFields {
+      get; internal set;
+    }
+
     public ReportGridDto Grid {
       get; internal set;
     }
