@@ -43,15 +43,15 @@ namespace Empiria.FinancialAccounting.WebApi.BalanceEngine {
 
 
     [HttpPost]
-    [Route("v2/financial-accounting/balance-engine/balanza-tradicional")]
-    public async Task<SingleObjectModel> GetBalanzaTradicional([FromBody] TrialBalanceQuery query) {
+    [Route("v2/financial-accounting/balance-engine/balanza-comparativa")]
+    public async Task<SingleObjectModel> GetBalanzaComparativa([FromBody] TrialBalanceQuery query) {
 
       base.RequireBody(query);
 
       using (var usecases = TrialBalanceUseCases.UseCaseInteractor()) {
 
-        BalanzaTradicionalDto dto = await usecases.BuildBalanzaTradicional(query)
-                                                  .ConfigureAwait(false);
+        BalanzaComparativaDto dto = await usecases.BuildBalanzaComparativa(query)
+                                                            .ConfigureAwait(false);
 
         return new SingleObjectModel(this.Request, dto);
       }
@@ -68,6 +68,38 @@ namespace Empiria.FinancialAccounting.WebApi.BalanceEngine {
 
         BalanzaContabilidadesCascadaDto dto = await usecases.BuildBalanzaContabilidadesCascada(query)
                                                             .ConfigureAwait(false);
+
+        return new SingleObjectModel(this.Request, dto);
+      }
+    }
+
+
+    [HttpPost]
+    [Route("v2/financial-accounting/balance-engine/balanza-tradicional")]
+    public async Task<SingleObjectModel> GetBalanzaTradicional([FromBody] TrialBalanceQuery query) {
+
+      base.RequireBody(query);
+
+      using (var usecases = TrialBalanceUseCases.UseCaseInteractor()) {
+
+        BalanzaTradicionalDto dto = await usecases.BuildBalanzaTradicional(query)
+                                                  .ConfigureAwait(false);
+
+        return new SingleObjectModel(this.Request, dto);
+      }
+    }
+
+
+    [HttpPost]
+    [Route("v2/financial-accounting/balance-engine/saldos-por-auxiliar")]
+    public async Task<SingleObjectModel> GetSaldosPorAuxiliar([FromBody] TrialBalanceQuery query) {
+
+      base.RequireBody(query);
+
+      using (var usecases = TrialBalanceUseCases.UseCaseInteractor()) {
+
+        SaldosPorAuxiliarDto dto = await usecases.BuildSaldosPorAuxiliar(query)
+                                                  .ConfigureAwait(false);
 
         return new SingleObjectModel(this.Request, dto);
       }
