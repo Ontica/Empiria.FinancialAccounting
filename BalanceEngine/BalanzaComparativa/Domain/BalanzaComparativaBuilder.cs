@@ -12,6 +12,7 @@ using System.Collections.Generic;
 using System.Linq;
 
 using Empiria.FinancialAccounting.BalanceEngine.Adapters;
+using Empiria.FinancialAccounting.BalanceEngine.Data;
 
 namespace Empiria.FinancialAccounting.BalanceEngine {
 
@@ -26,9 +27,8 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
 
 
     internal FixedList<BalanzaComparativaEntry> Build() {
-      var balanceHelper = new TrialBalanceHelper(_query);
 
-      FixedList<TrialBalanceEntry> baseAccountEntries = balanceHelper.ReadAccountEntriesFromDataService();
+      FixedList<TrialBalanceEntry> baseAccountEntries = BalancesDataService.GetTrialBalanceEntries(_query);
 
       return Build(baseAccountEntries);
     }

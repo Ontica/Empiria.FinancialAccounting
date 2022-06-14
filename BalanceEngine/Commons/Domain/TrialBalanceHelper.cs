@@ -162,7 +162,7 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
 
     internal FixedList<TrialBalanceEntry> GetPostingEntries() {
 
-      FixedList<TrialBalanceEntry> accountEntries = ReadAccountEntriesFromDataService();
+      FixedList<TrialBalanceEntry> accountEntries = BalancesDataService.GetTrialBalanceEntries(_query);
 
       if ((_query.ValuateBalances || _query.InitialPeriod.UseDefaultValuation) &&
           _query.TrialBalanceType != TrialBalanceType.BalanzaDolarizada &&
@@ -333,16 +333,6 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
         return detailSummaryEntries;
       }
       return parentAccounts.ToFixedList().ToList();
-    }
-
-
-    internal FixedList<TrialBalanceEntry> ReadAccountEntriesFromDataService() {
-
-      if (_query.TrialBalanceType == TrialBalanceType.BalanzaConContabilidadesEnCascada) {
-        _query.ShowCascadeBalances = true;
-      }
-
-      return BalancesDataService.GetTrialBalanceEntries(_query);
     }
 
 

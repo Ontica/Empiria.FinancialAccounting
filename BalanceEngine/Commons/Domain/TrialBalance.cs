@@ -53,7 +53,7 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
           return TrialBalanceByCurrencyDataColumns();
 
         case TrialBalanceType.BalanzaValorizadaComparativa:
-          return TwoBalancesComparativeDataColumns();
+          return BalanzaComparativaMapper.DataColumns(this.Query);
 
         case TrialBalanceType.BalanzaDolarizada:
           return ValuedTrialBalanceDataColumns();
@@ -105,43 +105,6 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
           columns.Add(new DataTableColumn("averageBalance", "Saldo promedio", "decimal"));
           columns.Add(new DataTableColumn("lastChangeDate", "Último movimiento", "date"));
         }
-      }
-
-      return columns.ToFixedList();
-    }
-
-
-    private FixedList<DataTableColumn> TwoBalancesComparativeDataColumns() {
-      List<DataTableColumn> columns = new List<DataTableColumn>();
-
-      if (Query.ReturnLedgerColumn) {
-        columns.Add(new DataTableColumn("ledgerNumber", "Cont", "text"));
-      }
-      columns.Add(new DataTableColumn("currencyCode", "Mon", "text"));
-      columns.Add(new DataTableColumn("accountParent", "Cta", "text-nowrap"));
-      columns.Add(new DataTableColumn("accountNumber", "Cuenta", "text-nowrap"));
-      columns.Add(new DataTableColumn("sectorCode", "Sct", "text"));
-      columns.Add(new DataTableColumn("subledgerAccountNumber", "Auxiliar", "text-nowrap"));
-      columns.Add(new DataTableColumn("subledgerAccountName", "Nombre", "text"));
-
-      columns.Add(new DataTableColumn("firstTotalBalance", $"{Query.InitialPeriod.FromDate:MMM_yyyy}", "decimal"));
-      columns.Add(new DataTableColumn("firstExchangeRate", "Tc_Ini", "decimal", 6));
-      columns.Add(new DataTableColumn("firstValorization", $"{Query.InitialPeriod.FromDate:MMM}_VAL_A", "decimal"));
-
-      columns.Add(new DataTableColumn("debit", "Cargos", "decimal"));
-      columns.Add(new DataTableColumn("credit", "Abonos", "decimal"));
-      columns.Add(new DataTableColumn("secondTotalBalance", $"{Query.FinalPeriod.FromDate:MMM_yyyy}", "decimal"));
-      columns.Add(new DataTableColumn("secondExchangeRate", "Tc_Fin", "decimal", 6));
-      columns.Add(new DataTableColumn("secondValorization", $"{Query.FinalPeriod.FromDate:MMM}_VAL_B", "decimal"));
-
-      columns.Add(new DataTableColumn("accountName", "Nom_Cta", "text"));
-      columns.Add(new DataTableColumn("debtorCreditor", "Nat", "text"));
-      columns.Add(new DataTableColumn("variation", "Variación", "decimal"));
-      columns.Add(new DataTableColumn("variationByER", "Variación por TC", "decimal"));
-      columns.Add(new DataTableColumn("realVariation", "Variación por TC", "decimal"));
-      if (Query.WithAverageBalance) {
-        columns.Add(new DataTableColumn("averageBalance", "Saldo promedio", "decimal"));
-        columns.Add(new DataTableColumn("lastChangeDate", "Último movimiento", "date"));
       }
 
       return columns.ToFixedList();

@@ -54,8 +54,8 @@ namespace Empiria.FinancialAccounting.BalanceEngine.UseCases {
     public async Task<BalanzaComparativaDto> BuildBalanzaComparativa(TrialBalanceQuery query) {
       Assertion.Require(query, nameof(query));
 
-      Assertion.Require(query.TrialBalanceType == TrialBalanceType.AnaliticoDeCuentas,
-                       "query.TrialBalanceType must be 'AnaliticoDeCuentas'.");
+      Assertion.Require(query.TrialBalanceType == TrialBalanceType.BalanzaValorizadaComparativa,
+                       "query.TrialBalanceType must be 'BalanzaValorizadaComparativa'.");
 
       var builder = new BalanzaComparativaBuilder(query);
 
