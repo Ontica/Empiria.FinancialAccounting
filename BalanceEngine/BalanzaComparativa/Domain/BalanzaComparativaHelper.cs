@@ -12,6 +12,7 @@ using System.Collections.Generic;
 using System.Linq;
 
 using Empiria.FinancialAccounting.BalanceEngine.Adapters;
+using Empiria.FinancialAccounting.BalanceEngine.Data;
 
 namespace Empiria.FinancialAccounting.BalanceEngine {
 
@@ -45,6 +46,52 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
       }
     }
 
+
+    internal FixedList<TrialBalanceEntry> AccountEntriesValorized(
+                                          FixedList<TrialBalanceEntry> accountEntries) {
+
+      var trialBalanceHelper = new TrialBalanceHelper(_query);
+
+      if ((_query.ValuateBalances || _query.InitialPeriod.UseDefaultValuation) ) {
+        accountEntries = GetExchangeRateByPeriod(accountEntries, _query.InitialPeriod);
+
+        if (_query.ConsolidateBalancesToTargetCurrency) {
+          accountEntries = trialBalanceHelper.ConsolidateToTargetCurrency(
+                                              accountEntries, _query.InitialPeriod);
+        }
+      }
+
+      trialBalanceHelper.RoundDecimals(accountEntries);
+
+      return accountEntries;
+    }
+
+
+    internal FixedList<TrialBalanceEntry> GetExchangeRateByPeriod(FixedList<TrialBalanceEntry> entries,
+                                                                BalancesPeriod period) {
+      if (period.UseDefaultValuation) {
+        period.ExchangeRateTypeUID = ExchangeRateType.ValorizacionBanxico.UID;
+        period.ValuateToCurrrencyUID = "01";
+        period.ExchangeRateDate = period.ToDate;
+      }
+
+      var exchangeRateType = ExchangeRateType.Parse(period.ExchangeRateTypeUID);
+
+      FixedList<ExchangeRate> exchangeRates = ExchangeRate.GetList(exchangeRateType, period.ExchangeRateDate);
+
+      foreach (var entry in entries.Where(a => a.Currency.Code != "01")) {
+        var exchangeRate = exchangeRates.FirstOrDefault(a => a.FromCurrency.Code == period.ValuateToCurrrencyUID &&
+                                                             a.ToCurrency.Code == entry.Currency.Code);
+
+        if (period.IsSecondPeriod) {
+          entry.SecondExchangeRate = exchangeRate.Value;
+        } else {
+          entry.ExchangeRate = exchangeRate.Value;
+        }
+
+      }
+      return entries;
+    }
 
     internal List<BalanzaComparativaEntry> MergePeriodsIntoComparativeBalance(
                                       FixedList<TrialBalanceEntry> trialBalance) {

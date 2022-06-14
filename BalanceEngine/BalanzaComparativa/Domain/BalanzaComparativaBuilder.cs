@@ -25,17 +25,28 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
     }
 
 
-    internal TrialBalance Build() {
+    internal FixedList<BalanzaComparativaEntry> Build() {
       var balanceHelper = new TrialBalanceHelper(_query);
-      var helper = new BalanzaComparativaHelper(_query);
+
+      FixedList<TrialBalanceEntry> baseAccountEntries = balanceHelper.ReadAccountEntriesFromDataService();
+
+      return Build(baseAccountEntries);
+    }
+
+
+    internal FixedList<BalanzaComparativaEntry> Build(FixedList<TrialBalanceEntry> baseAccountEntries) {
 
       _query.FinalPeriod.IsSecondPeriod = true;
 
-      FixedList<TrialBalanceEntry> entries = balanceHelper.GetPostingEntries();
+      var helper = new BalanzaComparativaHelper(_query);
+
+      FixedList<TrialBalanceEntry> entries = helper.AccountEntriesValorized(baseAccountEntries);
+
+      var balanceHelper = new TrialBalanceHelper(_query);
 
       balanceHelper.SetSummaryToParentEntries(entries);
 
-      entries = balanceHelper.ValuateToExchangeRate(entries, _query.FinalPeriod);
+      entries = helper.GetExchangeRateByPeriod(entries, _query.FinalPeriod);
 
       balanceHelper.RoundDecimals(entries);
 
@@ -44,10 +55,12 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
       List<BalanzaComparativaEntry> comparativeBalance =
                                          helper.MergePeriodsIntoComparativeBalance(entries);
 
-      var returnBalance = new FixedList<ITrialBalanceEntry>(
-                              comparativeBalance.Select(x => (ITrialBalanceEntry) x));
+      return comparativeBalance.ToFixedList();
 
-      return new TrialBalance(_query, returnBalance);
+      //var returnBalance = new FixedList<ITrialBalanceEntry>(
+      //                        comparativeBalance.Select(x => (ITrialBalanceEntry) x));
+
+      //return new TrialBalance(_query, returnBalance);
     }
 
   }  // class BalanzaComparativa
