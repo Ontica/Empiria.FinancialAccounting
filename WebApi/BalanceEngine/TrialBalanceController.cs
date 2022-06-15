@@ -43,6 +43,22 @@ namespace Empiria.FinancialAccounting.WebApi.BalanceEngine {
 
 
     [HttpPost]
+    [Route("v2/financial-accounting/balance-engine/balanza-columnas-moneda")]
+    public async Task<SingleObjectModel> GetBalanzaColumnasMoneda([FromBody] TrialBalanceQuery query) {
+
+      base.RequireBody(query);
+
+      using (var usecases = TrialBalanceUseCases.UseCaseInteractor()) {
+
+        BalanzaColumnasMonedaDto dto = await usecases.BuildBalanzaColumnasMoneda(query)
+                                                            .ConfigureAwait(false);
+
+        return new SingleObjectModel(this.Request, dto);
+      }
+    }
+
+
+    [HttpPost]
     [Route("v2/financial-accounting/balance-engine/balanza-comparativa")]
     public async Task<SingleObjectModel> GetBalanzaComparativa([FromBody] TrialBalanceQuery query) {
 
