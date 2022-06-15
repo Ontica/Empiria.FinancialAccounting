@@ -92,6 +92,7 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
   /// <summary>Provides services to generate a trial balance.</summary>
   internal class TrialBalanceEngine {
 
+
     internal TrialBalanceEngine(TrialBalanceQuery query) {
       Assertion.Require(query, nameof(query));
 
@@ -100,9 +101,11 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
       this.Query = query;
     }
 
+
     public TrialBalanceQuery Query {
       get;
     }
+
 
     internal TrialBalance BuildTrialBalance() {
       if (!this.Query.UseCache) {
@@ -119,6 +122,7 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
 
       return trialBalance;
     }
+
 
     private TrialBalance GenerateTrialBalance() {
       switch (this.Query.TrialBalanceType) {
@@ -144,10 +148,14 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
           
 
         case TrialBalanceType.BalanzaEnColumnasPorMoneda:
+          
+          var balanzaColumnasBuilder = new BalanzaColumnasMonedaBuilder(this.Query);
+          var balanzaColumnasEntries = balanzaColumnasBuilder.Build();
+          FixedList<ITrialBalanceEntry> balanzaColumnas = balanzaColumnasEntries.Select(x =>
+                                                            (ITrialBalanceEntry) x).ToFixedList();
 
-          var balanzaPorMoneda = new BalanzaColumnasMonedaBuilder(this.Query);
-          return balanzaPorMoneda.Build();
-
+          return new TrialBalance(this.Query, balanzaColumnas);
+        
         case TrialBalanceType.BalanzaValorizadaComparativa:
 
           var comparativaBuilder = new BalanzaComparativaBuilder(this.Query);

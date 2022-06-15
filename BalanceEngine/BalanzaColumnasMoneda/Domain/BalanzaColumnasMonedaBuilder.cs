@@ -12,6 +12,7 @@ using System.Collections.Generic;
 using System.Linq;
 using Empiria.Collections;
 using Empiria.FinancialAccounting.BalanceEngine.Adapters;
+using Empiria.FinancialAccounting.BalanceEngine.Data;
 
 namespace Empiria.FinancialAccounting.BalanceEngine {
 
@@ -26,33 +27,38 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
     }
 
 
-    internal TrialBalance Build() {
+    internal FixedList<BalanzaColumnasMonedaEntry> Build() {
 
-      var balanceHelper = new TrialBalanceHelper(Query);
+      FixedList<TrialBalanceEntry> baseAccountEntries = BalancesDataService.GetTrialBalanceEntries(Query);
+      
+      return Build(baseAccountEntries);
+    }
+
+
+    internal FixedList<BalanzaColumnasMonedaEntry> Build(FixedList<TrialBalanceEntry> accountEntries) {
+
+      var trialBalanceHelper = new TrialBalanceHelper(Query);
       var helper = new BalanzaColumnasMonedaHelper(Query);
 
-      List<TrialBalanceEntry> accountEntries = balanceHelper.GetPostingEntries().ToList();
+      trialBalanceHelper.RoundDecimals(accountEntries);
 
-      balanceHelper.SetSummaryToParentEntries(accountEntries);
+      trialBalanceHelper.SetSummaryToParentEntries(accountEntries);
 
-      List<TrialBalanceEntry> parentAccountsEntries =
-                                balanceHelper.GetCalculatedParentAccounts(accountEntries.ToFixedList());
+      List<TrialBalanceEntry> parentAccountsEntries = trialBalanceHelper.GetCalculatedParentAccounts(
+                                                                          accountEntries.ToFixedList());
 
       List<TrialBalanceEntry> debtorAccounts = helper.GetSumFromCreditorToDebtorAccounts(
                                                         parentAccountsEntries);
 
-      helper.CombineAccountEntriesAndDebtorAccounts(accountEntries, debtorAccounts);
+      helper.CombineAccountEntriesAndDebtorAccounts(accountEntries.ToList(), debtorAccounts);
 
       FixedList<TrialBalanceEntry> accountEntriesByCurrency =
                                           helper.GetAccountEntriesByCurrency(debtorAccounts);
 
-      List<BalanzaColumnasMonedaEntry> mergeBalancesToBalanceByCurrency =
+      List<BalanzaColumnasMonedaEntry> balanceByCurrency =
                       helper.MergeTrialBalanceIntoBalanceByCurrency(accountEntriesByCurrency);
 
-      var returnBalance = new FixedList<ITrialBalanceEntry>(
-                            mergeBalancesToBalanceByCurrency.Select(x => (ITrialBalanceEntry) x));
-
-      return new TrialBalance(Query, returnBalance);
+      return balanceByCurrency.ToFixedList();
     }
 
 

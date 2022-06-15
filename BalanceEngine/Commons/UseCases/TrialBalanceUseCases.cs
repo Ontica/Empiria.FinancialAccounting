@@ -68,6 +68,23 @@ namespace Empiria.FinancialAccounting.BalanceEngine.UseCases {
     }
 
 
+    public async Task<BalanzaColumnasMonedaDto> BuildBalanzaColumnasMoneda(TrialBalanceQuery query) {
+      Assertion.Require(query, nameof(query));
+
+      Assertion.Require(query.TrialBalanceType == TrialBalanceType.BalanzaValorizadaComparativa,
+                       "query.TrialBalanceType must be 'BalanzaValorizadaComparativa'.");
+
+      var builder = new BalanzaColumnasMonedaBuilder(query);
+
+      FixedList<TrialBalanceEntry> baseAccountEntries = BalancesDataService.GetTrialBalanceEntries(query);
+
+      FixedList<BalanzaColumnasMonedaEntry> entries = await Task.Run(() => builder.Build(baseAccountEntries))
+                                                             .ConfigureAwait(false);
+
+      return BalanzaColumnasMonedaMapper.Map(query, entries);
+    }
+
+
     public async Task<BalanzaTradicionalDto> BuildBalanzaTradicional(TrialBalanceQuery query) {
       Assertion.Require(query, nameof(query));
 

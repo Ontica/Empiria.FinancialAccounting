@@ -101,7 +101,7 @@ namespace Empiria.FinancialAccounting.BalanceEngine.Adapters {
         case TrialBalanceType.BalanzaEnColumnasPorMoneda:
 
           var currencyMappedItems = list.Select((x) =>
-                MapToTrialBalanceByCurrency((BalanzaColumnasMonedaEntry) x));
+                BalanzaColumnasMonedaMapper.MapEntry((BalanzaColumnasMonedaEntry) x));
           return new FixedList<ITrialBalanceEntryDto>(currencyMappedItems);
 
         case TrialBalanceType.BalanzaDolarizada:
@@ -232,28 +232,6 @@ namespace Empiria.FinancialAccounting.BalanceEngine.Adapters {
       return dto;
     }
 
-
-    static private BalanzaColumnasMonedaEntryDto MapToTrialBalanceByCurrency(
-                                              BalanzaColumnasMonedaEntry entry) {
-      var dto = new BalanzaColumnasMonedaEntryDto();
-      dto.ItemType = entry.ItemType;
-      dto.CurrencyCode = entry.Currency.Code;
-      dto.CurrencyName = entry.Currency.Name;
-      dto.StandardAccountId = entry.Account.Id;
-      dto.AccountNumber = entry.Account.Number;
-      dto.AccountNumberForBalances = entry.Account.Number;
-      dto.AccountName = entry.Account.Name;
-      dto.SectorCode = entry.Sector.Code;
-      dto.DomesticBalance = entry.DomesticBalance;
-      dto.DollarBalance = entry.DollarBalance;
-      dto.YenBalance = entry.YenBalance;
-      dto.EuroBalance = entry.EuroBalance;
-      dto.UdisBalance = entry.UdisBalance;
-      dto.GroupName = entry.GroupName;
-      dto.GroupNumber = entry.GroupNumber;
-
-      return dto;
-    }
 
     #endregion Helpers
 

@@ -2,7 +2,7 @@
 *                                                                                                            *
 *  Module   : Balance Engine                             Component : Interface adapters                      *
 *  Assembly : FinancialAccounting.BalanceEngine.dll      Pattern   : Mapper class                            *
-*  Type     : BalanzaComparativaMapper                         License   : Please read LICENSE.txt file      *
+*  Type     : BalanzaComparativaMapper                   License   : Please read LICENSE.txt file            *
 *                                                                                                            *
 *  Summary  : Methods used to map balanza comparativa.                                                       *
 *                                                                                                            *
@@ -13,7 +13,7 @@ using System.Collections.Generic;
 namespace Empiria.FinancialAccounting.BalanceEngine.Adapters {
 
 
-  /// <summary></summary>
+  /// <summary>Methods used to map balanza comparativa.</summary>
   static internal class BalanzaComparativaMapper {
 
 
