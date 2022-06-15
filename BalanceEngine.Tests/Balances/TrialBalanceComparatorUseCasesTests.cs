@@ -291,7 +291,7 @@ namespace Empiria.FinancialAccounting.Tests.BalanceEngine {
       Assert.NotEmpty(balancesByCurrency.Entries);
 
       var _trialBalance = trialBalance.Entries.Select(x => (TrialBalanceEntryDto) x);
-      var _balancesByCurrency = balancesByCurrency.Entries.Select(x => (TrialBalanceByCurrencyDto) x);
+      var _balancesByCurrency = balancesByCurrency.Entries.Select(x => (BalanzaColumnasMonedaEntryDto) x);
       var wrongEntries = 0;
 
       foreach (var balanceByCurrency in _balancesByCurrency) {

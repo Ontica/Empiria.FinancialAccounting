@@ -2,9 +2,9 @@
 *                                                                                                            *
 *  Module   : Balance Engine                             Component : Domain Layer                            *
 *  Assembly : FinancialAccounting.BalanceEngine.dll      Pattern   : Empiria Plain Object                    *
-*  Type     : ValuedTrialBalanceEntry                  License   : Please read LICENSE.txt file              *
+*  Type     : BalanzaColumnasMonedaEntry                 License   : Please read LICENSE.txt file            *
 *                                                                                                            *
-*  Summary  : Represents an entry for a valued balance entry.                                                *
+*  Summary  : Represents an entry for a Balanza en columnas por moneda entry.                                *
 *                                                                                                            *
 ************************* Copyright(c) La Vía Óntica SC, Ontica LLC and contributors. All rights reserved. **/
 using System;
@@ -12,8 +12,8 @@ using System;
 namespace Empiria.FinancialAccounting.BalanceEngine {
 
 
-  /// <summary>Represents an entry for a valued balance entry.</summary>
-  public class BalanzaValorizadaEntry : ITrialBalanceEntry {
+  /// <summary>Represents an entry for a Balanza en columnas por moneda entry.</summary>
+  public class BalanzaColumnasMonedaEntry : ITrialBalanceEntry {
 
     public Currency Currency {
       get;
@@ -30,22 +30,27 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
       internal set;
     }
 
-    public decimal TotalBalance {
+    public decimal DomesticBalance {
       get;
       internal set;
     }
 
-    public decimal ExchangeRate {
+    public decimal DollarBalance {
       get;
       internal set;
     }
 
-    public decimal ValuedExchangeRate {
+    public decimal YenBalance {
       get;
       internal set;
-    } = 1;
+    }
 
-    public decimal TotalEquivalence {
+    public decimal EuroBalance {
+      get;
+      internal set;
+    }
+
+    public decimal UdisBalance {
       get;
       internal set;
     }
@@ -59,23 +64,14 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
     } = string.Empty;
 
     public TrialBalanceItemType ItemType {
-      get; internal set;
-    }
-
-    public bool HasParentPostingEntry {
-      get; internal set;
-    }
-
-    public bool IsParentPostingEntry {
-      get; internal set;
+      get;
+      internal set;
     }
 
     internal void Sum(BalanzaValorizadaEntry entry) {
-      this.TotalEquivalence += entry.TotalEquivalence;
-      this.ExchangeRate = entry.ExchangeRate;
+
     }
 
-  } // class ValuedTrialBalanceEntry
+  } // BalanzaColumnasMonedaEntry
 
-  
 } // namespace Empiria.FinancialAccounting.BalanceEngine

@@ -280,8 +280,8 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
     }
 
 
-    internal TrialBalanceByCurrencyEntry MapToBalanceByCurrencyEntry() {
-      TrialBalanceByCurrencyEntry trialBalanceByCurrencyEntry = new TrialBalanceByCurrencyEntry();
+    internal BalanzaColumnasMonedaEntry MapToBalanceByCurrencyEntry() {
+      BalanzaColumnasMonedaEntry trialBalanceByCurrencyEntry = new BalanzaColumnasMonedaEntry();
 
       trialBalanceByCurrencyEntry.ItemType = this.ItemType;
       trialBalanceByCurrencyEntry.Currency = this.Currency;

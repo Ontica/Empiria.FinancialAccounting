@@ -61,34 +61,6 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
     }
 
 
-    internal TrialBalance BuildBalanceInColumnsByCurrency() {
-      var balanceHelper = new TrialBalanceHelper(_query);
-      var helper = new BalanzaValorizadaHelper(_query);
-
-      List<TrialBalanceEntry> trialBalance = balanceHelper.GetPostingEntries().ToList();
-
-      balanceHelper.SetSummaryToParentEntries(trialBalance);
-
-      List<TrialBalanceEntry> parentAccountsEntries =
-                                balanceHelper.GetCalculatedParentAccounts(trialBalance.ToFixedList());
-
-      parentAccountsEntries = helper.GetSummaryByDebtorCreditorEntries(parentAccountsEntries);
-
-      parentAccountsEntries = helper.GetAccountList(trialBalance, parentAccountsEntries);
-
-      EmpiriaHashTable<TrialBalanceEntry> ledgerAccounts =
-                                          helper.GetLedgerAccountsListByCurrency(parentAccountsEntries);
-
-      List<TrialBalanceByCurrencyEntry> mergeBalancesToBalanceByCurrency =
-                      helper.MergeTrialBalanceIntoBalanceByCurrency(ledgerAccounts.ToFixedList());
-
-      var returnBalance = new FixedList<ITrialBalanceEntry>(
-                            mergeBalancesToBalanceByCurrency.Select(x => (ITrialBalanceEntry) x));
-
-      return new TrialBalance(_query, returnBalance);
-    }
-
-
   } // class BalanzaValorizada
 
 } // namespace Empiria.FinancialAccounting.BalanceEngine

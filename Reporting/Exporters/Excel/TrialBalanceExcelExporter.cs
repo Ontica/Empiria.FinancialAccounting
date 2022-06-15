@@ -84,7 +84,7 @@ namespace Empiria.FinancialAccounting.Reporting.Exporters.Excel {
 
 
         case TrialBalanceType.BalanzaEnColumnasPorMoneda:
-          FillOutBalanzaColumnasPorMoneda(trialBalance.Entries.Select(x => (TrialBalanceByCurrencyDto) x));
+          FillOutBalanzaColumnasPorMoneda(trialBalance.Entries.Select(x => (BalanzaColumnasMonedaEntryDto) x));
           return;
 
         case TrialBalanceType.BalanzaDolarizada:
@@ -213,7 +213,7 @@ namespace Empiria.FinancialAccounting.Reporting.Exporters.Excel {
     }
 
 
-    private void FillOutBalanzaColumnasPorMoneda(IEnumerable<TrialBalanceByCurrencyDto> entries) {
+    private void FillOutBalanzaColumnasPorMoneda(IEnumerable<BalanzaColumnasMonedaEntryDto> entries) {
       int i = 5;
 
       foreach (var entry in entries) {

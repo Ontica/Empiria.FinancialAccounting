@@ -113,7 +113,7 @@ namespace Empiria.FinancialAccounting.FinancialReports {
 
 
     public override ReportEntryTotals Substract(ITrialBalanceEntryDto balance, string dataColumn) {
-      var castBalance = (TrialBalanceByCurrencyDto) balance;
+      var castBalance = (BalanzaColumnasMonedaEntryDto) balance;
 
       return new BalanzaEnColumnasPorMonedaReportEntryTotals {
         PesosTotal = this.PesosTotal - castBalance.DomesticBalance,
@@ -139,7 +139,7 @@ namespace Empiria.FinancialAccounting.FinancialReports {
 
 
     public override ReportEntryTotals Sum(ITrialBalanceEntryDto balance, string dataColumn) {
-      var castBalance = (TrialBalanceByCurrencyDto) balance;
+      var castBalance = (BalanzaColumnasMonedaEntryDto) balance;
 
       return new BalanzaEnColumnasPorMonedaReportEntryTotals {
         PesosTotal = this.PesosTotal + castBalance.DomesticBalance,

@@ -101,7 +101,7 @@ namespace Empiria.FinancialAccounting.BalanceEngine.Adapters {
         case TrialBalanceType.BalanzaEnColumnasPorMoneda:
 
           var currencyMappedItems = list.Select((x) =>
-                MapToTrialBalanceByCurrency((TrialBalanceByCurrencyEntry) x));
+                MapToTrialBalanceByCurrency((BalanzaColumnasMonedaEntry) x));
           return new FixedList<ITrialBalanceEntryDto>(currencyMappedItems);
 
         case TrialBalanceType.BalanzaDolarizada:
@@ -233,9 +233,9 @@ namespace Empiria.FinancialAccounting.BalanceEngine.Adapters {
     }
 
 
-    static private TrialBalanceByCurrencyDto MapToTrialBalanceByCurrency(
-                                              TrialBalanceByCurrencyEntry entry) {
-      var dto = new TrialBalanceByCurrencyDto();
+    static private BalanzaColumnasMonedaEntryDto MapToTrialBalanceByCurrency(
+                                              BalanzaColumnasMonedaEntry entry) {
+      var dto = new BalanzaColumnasMonedaEntryDto();
       dto.ItemType = entry.ItemType;
       dto.CurrencyCode = entry.Currency.Code;
       dto.CurrencyName = entry.Currency.Name;

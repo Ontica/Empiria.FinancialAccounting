@@ -104,29 +104,6 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
     }
 
 
-    internal List<TrialBalanceEntry> GetSummaryByDebtorCreditorEntries(
-                                      List<TrialBalanceEntry> summaryEntries) {
-
-      var returnedEntries = new List<TrialBalanceEntry>(summaryEntries);
-
-      foreach (var debtor in summaryEntries.Where(a => a.DebtorCreditor == DebtorCreditorType.Deudora)) {
-        var creditor = summaryEntries.FirstOrDefault(a => a.Account.Number == debtor.Account.Number &&
-                                              a.Currency.Code == debtor.Currency.Code &&
-                                              a.Sector.Code == debtor.Sector.Code &&
-                                              a.DebtorCreditor == DebtorCreditorType.Acreedora);
-        if (creditor != null) {
-          debtor.InitialBalance = debtor.InitialBalance - creditor.InitialBalance;
-          debtor.Debit = debtor.Debit - creditor.Debit;
-          debtor.Credit = debtor.Credit - creditor.Credit;
-          debtor.CurrentBalance = debtor.CurrentBalance - creditor.CurrentBalance;
-          returnedEntries.Remove(creditor);
-        }
-      }
-
-      return returnedEntries;
-    }
-
-
     internal List<BalanzaValorizadaEntry> MergeTrialBalanceIntoValuedBalances(
                                           FixedList<TrialBalanceEntry> getLedgerAccounts) {
 
@@ -420,6 +397,7 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
       }
       GetOrIncreaseEntries(summaryEntries, entry, entry.Account, targetSector, itemType, hash);
     }
+
 
     internal List<BalanzaColumnasMonedaEntry> MergeTrialBalanceIntoBalanceByCurrency(
                                           FixedList<TrialBalanceEntry> ledgerAccounts) {
