@@ -15,6 +15,7 @@ namespace Empiria.FinancialAccounting {
   public abstract class Command : IExecutionCommand {
 
     private readonly ExecutionResult _executionResult;
+    private bool _arranged = false;
 
     protected Command() {
       _executionResult = new ExecutionResult(this);
@@ -42,6 +43,7 @@ namespace Empiria.FinancialAccounting {
     public ExecutionResult<T> MapToExecutionResult<T>() {
       return new ExecutionResult<T>(this.ExecutionResult);
     }
+
 
     public bool IsValid {
       get {
@@ -85,6 +87,17 @@ namespace Empiria.FinancialAccounting {
     }
 
 
+    public void Arrange() {
+      Initialize();
+      InitialRequire();
+      SetEntities();
+      SetIssues();
+      SetActions();
+      FinalRequire();
+      _arranged = true;
+    }
+
+
     public void Done(IDto outcome, string message) {
       Assertion.Require(outcome, nameof(outcome));
       Assertion.Require(message, nameof(message));
@@ -93,13 +106,16 @@ namespace Empiria.FinancialAccounting {
     }
 
 
-    public void Arrange() {
-      Initialize();
-      InitialRequire();
-      SetEntities();
-      SetIssues();
-      SetActions();
-      FinalRequire();
+    public void EnsureIsValid() {
+      Assertion.Require(_arranged,
+          "The command was not arranged. " +
+          "Please call the Arrange() method before invoking EnsureIsValid()");
+
+      if (this.IsValid) {
+        return;
+      }
+
+      Assertion.RequireFail(_executionResult.Issues[0]);
     }
 
     #endregion Methods
