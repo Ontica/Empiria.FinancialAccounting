@@ -154,45 +154,6 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
     #region Private methods
 
 
-    private EmpiriaHashTable<TrialBalanceEntry> GetEntriesForBalancesByCurrency(
-                                                EmpiriaHashTable<TrialBalanceEntry> hashAccountEntries) {
-
-      var returnedBalances = new EmpiriaHashTable<TrialBalanceEntry>();
-      var domesticEntries = hashAccountEntries.ToFixedList().Where(a => a.Currency.Code == "01").ToList();
-
-      foreach (var header in domesticEntries) {
-        var foreignCurrencies = hashAccountEntries.ToFixedList()
-                                .Where(a => a.Currency.Code != "01" &&
-                                            a.Account.Number == header.Account.Number)
-                                .OrderBy(a => a.Currency.Code).ToList();
-
-        string hash = $"{header.Account.Number}||{header.Currency.Code}||{header.ItemType}";
-        returnedBalances.Insert(hash, header);
-
-        foreach (var currencyAccount in foreignCurrencies) {
-          hash = $"{currencyAccount.Account.Number}||{currencyAccount.Currency.Code}";
-          returnedBalances.Insert(hash, currencyAccount);
-        }
-      }
-
-      var secondaryAccounts = hashAccountEntries.ToFixedList().Where(a => a.Currency.Code != "01").ToList();
-
-      foreach (var secondary in secondaryAccounts) {
-
-        var existPrimaryAccount = returnedBalances.ToFixedList()
-                    .Where(a => a.Account.Number == secondary.Account.Number && a.Currency.Code == "01")
-                    .FirstOrDefault();
-
-        if (existPrimaryAccount == null) {
-          string hash = $"{secondary.Account.Number}||{secondary.Currency.Code}";
-          returnedBalances.Insert(hash, secondary);
-        }
-      }
-
-      return returnedBalances;
-    }
-
-
     private EmpiriaHashTable<TrialBalanceEntry> GetAccountsForValuedBalances(
                                                 EmpiriaHashTable<TrialBalanceEntry> hashAccountEntries) {
       var returnedBalances = new EmpiriaHashTable<TrialBalanceEntry>();
@@ -202,26 +163,6 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
       GetEntriesWithoutDollarCurrency(returnedBalances, hashAccountEntries);
 
       return returnedBalances;
-    }
-
-
-    internal EmpiriaHashTable<TrialBalanceEntry> GetLedgerAccountsListByCurrency(
-                                                List<TrialBalanceEntry> summaryEntries) {
-      var helper = new TrialBalanceHelper(_query);
-
-      var ledgersList = summaryEntries.Where(a => (a.Level == 1 && a.Sector.Code == "00") ||
-                                                  (a.Level > 1)).ToList();
-
-      var hashAccountEntries = new EmpiriaHashTable<TrialBalanceEntry>();
-
-      foreach (var entry in ledgersList) {
-
-        SummaryByEntry(hashAccountEntries, entry, entry.ItemType);
-      }
-
-      var hashReturnedEntries = GetEntriesForBalancesByCurrency(hashAccountEntries);
-
-      return hashReturnedEntries;
     }
 
 
@@ -332,57 +273,6 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
     }
 
 
-    private void MergeDomesticAndForeignCurrenciesByAccount(List<BalanzaColumnasMonedaEntry> returnedBalance,
-                                                 FixedList<TrialBalanceEntry> ledgerAccounts) {
-      foreach (var entry in returnedBalance) {
-        foreach (var ledger in ledgerAccounts.Where(a => a.Account.Number == entry.Account.Number)) {
-          if (ledger.Currency.Code == "02") {
-            entry.DollarBalance = ledger.CurrentBalance;
-          }
-          if (ledger.Currency.Code == "06") {
-            entry.YenBalance = ledger.CurrentBalance;
-          }
-          if (ledger.Currency.Code == "27") {
-            entry.EuroBalance = ledger.CurrentBalance;
-          }
-          if (ledger.Currency.Code == "44") {
-            entry.UdisBalance = ledger.CurrentBalance;
-          }
-        }
-      }
-    }
-
-
-    private void MergeOnlyForeignCurrenciesByAccount(List<BalanzaColumnasMonedaEntry> returnedValuedBalance,
-                                                     FixedList<TrialBalanceEntry> ledgerAccounts) {
-      foreach (var ledger in ledgerAccounts) {
-        ledger.ItemType = TrialBalanceItemType.Summary;
-
-        var entry = returnedValuedBalance.Where(a => a.Account.Number == ledger.Account.Number)
-                                         .FirstOrDefault();
-        if (entry == null) {
-          returnedValuedBalance.Add(ledger.MapToBalanceByCurrencyEntry());
-        } else {
-          if (ledger.Currency.Code == "01") {
-            entry.DomesticBalance = ledger.CurrentBalance;
-          }
-          if (ledger.Currency.Code == "02") {
-            entry.DollarBalance = ledger.CurrentBalance;
-          }
-          if (ledger.Currency.Code == "06") {
-            entry.YenBalance = ledger.CurrentBalance;
-          }
-          if (ledger.Currency.Code == "27") {
-            entry.EuroBalance = ledger.CurrentBalance;
-          }
-          if (ledger.Currency.Code == "44") {
-            entry.UdisBalance = ledger.CurrentBalance;
-          }
-        }
-      }
-    }
-
-
     private void SummaryByEntry(EmpiriaHashTable<TrialBalanceEntry> summaryEntries,
                                  TrialBalanceEntry entry,
                                  TrialBalanceItemType itemType) {
@@ -396,24 +286,6 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
         hash = $"{entry.Account.Number}||{targetSector.Code}||{entry.Currency.Id}||{entry.Ledger.Id}||{entry.DebtorCreditor}";
       }
       GetOrIncreaseEntries(summaryEntries, entry, entry.Account, targetSector, itemType, hash);
-    }
-
-
-    internal List<BalanzaColumnasMonedaEntry> MergeTrialBalanceIntoBalanceByCurrency(
-                                          FixedList<TrialBalanceEntry> ledgerAccounts) {
-
-      List<BalanzaColumnasMonedaEntry> returnedValuedBalance = new List<BalanzaColumnasMonedaEntry>();
-      foreach (var entry in ledgerAccounts.Where(a => a.Currency.Code == "01")) {
-        returnedValuedBalance.Add(entry.MapToBalanceByCurrencyEntry());
-      }
-
-      MergeDomesticAndForeignCurrenciesByAccount(returnedValuedBalance, ledgerAccounts);
-
-      MergeOnlyForeignCurrenciesByAccount(returnedValuedBalance, ledgerAccounts);
-
-      var returnedOrdering = returnedValuedBalance.OrderBy(a => a.Account.Number).ToList();
-
-      return returnedOrdering;
     }
 
 
