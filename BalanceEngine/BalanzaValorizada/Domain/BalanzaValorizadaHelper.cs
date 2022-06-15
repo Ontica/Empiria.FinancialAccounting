@@ -274,27 +274,25 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
                                                                    a.Currency.Code != "02");
       foreach (var secondary in secondaryAccounts) {
         var existPrimaryAccount = returnedBalances.Values
-                                                  .FirstOrDefault(a => a.Account.Number == secondary.Account.Number &&
-                                                                  a.Currency.Code == "02");
+                                    .FirstOrDefault(a => a.Account.Number == secondary.Account.Number &&
+                                     a.Currency.Code == "02");
 
         if (existPrimaryAccount == null) {
-          continue;
+          TrialBalanceEntry entry = secondary.CreatePartialCopy();
+
+          entry.Currency = Currency.Parse("02");
+          entry.InitialBalance = 0;
+          entry.Debit = 0;
+          entry.Credit = 0;
+          entry.CurrentBalance = 0;
+          entry.LastChangeDate = secondary.LastChangeDate;
+          entry.DebtorCreditor = secondary.DebtorCreditor;
+
+          SummaryByEntry(returnedBalances, entry, TrialBalanceItemType.Summary);
+
+          string hash = $"{secondary.Account.Number}||{secondary.Currency.Code}";
+          returnedBalances.Insert(hash, secondary);
         }
-
-        TrialBalanceEntry entry = secondary.CreatePartialCopy();
-
-        entry.Currency = Currency.Parse("02");
-        entry.InitialBalance = 0;
-        entry.Debit = 0;
-        entry.Credit = 0;
-        entry.CurrentBalance = 0;
-        entry.LastChangeDate = secondary.LastChangeDate;
-        entry.DebtorCreditor = secondary.DebtorCreditor;
-
-        SummaryByEntry(returnedBalances, entry, TrialBalanceItemType.Summary);
-
-        string hash = $"{secondary.Account.Number}||{secondary.Currency.Code}";
-        returnedBalances.Insert(hash, secondary);
       }
     }
 
@@ -357,7 +355,7 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
     }
 
 
-    private void MergeDomesticAndForeignCurrenciesByAccount(List<TrialBalanceByCurrencyEntry> returnedBalance,
+    private void MergeDomesticAndForeignCurrenciesByAccount(List<BalanzaColumnasMonedaEntry> returnedBalance,
                                                  FixedList<TrialBalanceEntry> ledgerAccounts) {
       foreach (var entry in returnedBalance) {
         foreach (var ledger in ledgerAccounts.Where(a => a.Account.Number == entry.Account.Number)) {
@@ -378,7 +376,7 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
     }
 
 
-    private void MergeOnlyForeignCurrenciesByAccount(List<TrialBalanceByCurrencyEntry> returnedValuedBalance,
+    private void MergeOnlyForeignCurrenciesByAccount(List<BalanzaColumnasMonedaEntry> returnedValuedBalance,
                                                      FixedList<TrialBalanceEntry> ledgerAccounts) {
       foreach (var ledger in ledgerAccounts) {
         ledger.ItemType = TrialBalanceItemType.Summary;
@@ -423,10 +421,10 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
       GetOrIncreaseEntries(summaryEntries, entry, entry.Account, targetSector, itemType, hash);
     }
 
-    internal List<TrialBalanceByCurrencyEntry> MergeTrialBalanceIntoBalanceByCurrency(
+    internal List<BalanzaColumnasMonedaEntry> MergeTrialBalanceIntoBalanceByCurrency(
                                           FixedList<TrialBalanceEntry> ledgerAccounts) {
 
-      List<TrialBalanceByCurrencyEntry> returnedValuedBalance = new List<TrialBalanceByCurrencyEntry>();
+      List<BalanzaColumnasMonedaEntry> returnedValuedBalance = new List<BalanzaColumnasMonedaEntry>();
       foreach (var entry in ledgerAccounts.Where(a => a.Currency.Code == "01")) {
         returnedValuedBalance.Add(entry.MapToBalanceByCurrencyEntry());
       }
