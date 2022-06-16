@@ -106,9 +106,9 @@ namespace Empiria.FinancialAccounting.BalanceEngine.Adapters {
 
         case TrialBalanceType.BalanzaDolarizada:
 
-          var valuedMappedItems = list.Select((x) =>
-                MapToValuedTrialBalance((BalanzaDolarizadaEntry) x));
-          return new FixedList<ITrialBalanceEntryDto>(valuedMappedItems);
+          var balanzaDolarizada = list.Select((x) =>
+                BalanzaDolarizadaMapper.MapEntry((BalanzaDolarizadaEntry) x));
+          return new FixedList<ITrialBalanceEntryDto>(balanzaDolarizada);
 
         case TrialBalanceType.BalanzaValorizadaComparativa:
 

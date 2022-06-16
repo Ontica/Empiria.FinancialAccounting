@@ -24,22 +24,74 @@ namespace Empiria.FinancialAccounting.BalanceEngine.Adapters {
     static internal BalanzaDolarizadaDto Map(TrialBalanceQuery query,
                                              FixedList<BalanzaDolarizadaEntry> entries) {
 
-      throw new NotImplementedException();
-      
+      return new BalanzaDolarizadaDto {
+        Query = query,
+        Columns = DataColumns(),
+        Entries = entries.Select(x => MapEntry(x))
+                         .ToFixedList()
+      };
     }
-
 
 
     #region Private methods
 
 
     static public FixedList<DataTableColumn> DataColumns() {
-      throw new NotImplementedException();
+
+      List<DataTableColumn> columns = new List<DataTableColumn>();
+      columns.Add(new DataTableColumn("accountNumber", "Cuenta", "text-nowrap"));
+      columns.Add(new DataTableColumn("accountName", "Nombre", "text"));
+      columns.Add(new DataTableColumn("currencyName", "Moneda", "text"));
+      columns.Add(new DataTableColumn("currencyCode", "Clave Mon.", "text"));
+      columns.Add(new DataTableColumn("totalBalance", "Importe Mon. Ext.", "decimal"));
+      columns.Add(new DataTableColumn("valuedExchangeRate", "Tipo cambio", "decimal", 6));
+      columns.Add(new DataTableColumn("totalEquivalence", "Equivalencia en dólares", "decimal"));
+
+      return columns.ToFixedList();
     }
 
 
-    static public BalanzaDolarizadaEntryDto MapEntry(BalanzaDolarizadaEntry x) {
-      throw new NotImplementedException();
+    static public BalanzaDolarizadaEntryDto MapEntry(BalanzaDolarizadaEntry entry) {
+
+      var dto = new BalanzaDolarizadaEntryDto();
+
+      dto.ItemType = entry.ItemType;
+      dto.CurrencyCode = entry.Currency.Code;
+      dto.CurrencyName = entry.Currency.Name;
+      dto.StandardAccountId = entry.Account.Id;
+      dto.AccountNumber = entry.Account.Number;
+      dto.AccountNumberForBalances = entry.Account.Number;
+      dto.SectorCode = entry.Sector.Code;
+      dto.ExchangeRate = entry.ExchangeRate;
+      dto.TotalEquivalence = entry.TotalEquivalence;
+      dto.GroupName = entry.GroupName;
+      dto.GroupNumber = entry.GroupNumber;
+
+      AssignAccountName(dto, entry);
+      AssignTotalBalanceAndExchangeRate(dto, entry);
+
+      return dto;
+    }
+
+    private static void AssignTotalBalanceAndExchangeRate(BalanzaDolarizadaEntryDto dto,
+                                                          BalanzaDolarizadaEntry entry) {
+      
+      if (entry.ItemType != TrialBalanceItemType.BalanceTotalCurrency) {
+        dto.TotalBalance = entry.TotalBalance;
+        dto.ValuedExchangeRate = entry.ValuedExchangeRate;
+      }
+
+    }
+
+    static private void AssignAccountName(BalanzaDolarizadaEntryDto dto, BalanzaDolarizadaEntry entry) {
+
+      if (entry.ItemType == TrialBalanceItemType.BalanceTotalCurrency) {
+        dto.AccountName = entry.GroupName;
+
+      } else {
+        dto.AccountName = entry.Account.Name;
+
+      }
     }
 
 
