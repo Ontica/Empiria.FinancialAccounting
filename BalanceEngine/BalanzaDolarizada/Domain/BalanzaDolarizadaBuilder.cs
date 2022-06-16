@@ -41,27 +41,29 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
 
       List<TrialBalanceEntry> parentAccountEntries = GetSummaryParentAccountEntries(accountEntries);
 
-      parentAccountEntries = helper.GetAccountList(accountEntries, parentAccountEntries);
+      helper.GetAccountList(accountEntries, parentAccountEntries);
 
-      EmpiriaHashTable<TrialBalanceEntry> ledgerAccounts = helper.GetEntriesWithItemType(parentAccountEntries);
+      List<TrialBalanceEntry> accountEntriesWithItemType = 
+                              helper.AssignItemTypeToAccountEntries(parentAccountEntries);
 
-      List<TrialBalanceEntry> orderingBalance =
-                                helper.OrderingDollarizedBalance(ledgerAccounts.ToFixedList());
+      List<TrialBalanceEntry> foreignAccountEntries = 
+                              helper.GetForeignAccountEntries(accountEntriesWithItemType);
 
-      FixedList<TrialBalanceEntry> valuedEntries = helper.ValuateToExchangeRate(
-                                                   orderingBalance.ToFixedList());
+      List<TrialBalanceEntry> valuedAccountEntries = helper.GetDollarizedExchangeRate(
+                                                   foreignAccountEntries);
 
-      List<BalanzaDolarizadaEntry> mergeBalancesToValuedBalances =
-                                      helper.MergeTrialBalanceIntoValuedBalances(valuedEntries);
+      List<BalanzaDolarizadaEntry> balanzaDolarizada =
+                                   helper.MergeAccountsIntoBalanzaDolarizada(valuedAccountEntries);
+      
+      List<BalanzaDolarizadaEntry> returnedAccountEntries =
+                                   helper.GetExchangeRateByAccountEntry(balanzaDolarizada);
 
-      List<BalanzaDolarizadaEntry> asignExchageRateAndTotalToBalances =
-                                      helper.GetExchangeRateByValuedEntry(mergeBalancesToValuedBalances);
-
-      return asignExchageRateAndTotalToBalances.ToFixedList();
+      return returnedAccountEntries.ToFixedList();
     }
 
 
-    private List<TrialBalanceEntry> GetSummaryParentAccountEntries(FixedList<TrialBalanceEntry> accountEntries) {
+    private List<TrialBalanceEntry> GetSummaryParentAccountEntries(
+                                    FixedList<TrialBalanceEntry> accountEntries) {
 
       var trialBalanceHelper = new TrialBalanceHelper(Query);
 
