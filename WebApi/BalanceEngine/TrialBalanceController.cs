@@ -91,6 +91,22 @@ namespace Empiria.FinancialAccounting.WebApi.BalanceEngine {
 
 
     [HttpPost]
+    [Route("v2/financial-accounting/balance-engine/balanza-dolarizada")]
+    public async Task<SingleObjectModel> GetBalanzaDolarizada([FromBody] TrialBalanceQuery query) {
+
+      base.RequireBody(query);
+
+      using (var usecases = TrialBalanceUseCases.UseCaseInteractor()) {
+
+        BalanzaDolarizadaDto dto = await usecases.BuildBalanzaDolarizada(query)
+                                                            .ConfigureAwait(false);
+
+        return new SingleObjectModel(this.Request, dto);
+      }
+    }
+
+
+    [HttpPost]
     [Route("v2/financial-accounting/balance-engine/balanza-tradicional")]
     public async Task<SingleObjectModel> GetBalanzaTradicional([FromBody] TrialBalanceQuery query) {
 
