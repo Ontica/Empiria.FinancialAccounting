@@ -13,34 +13,37 @@ using System.Linq;
 
 using Empiria.Collections;
 using Empiria.FinancialAccounting.BalanceEngine.Adapters;
+using Empiria.FinancialAccounting.BalanceEngine.Data;
 
 namespace Empiria.FinancialAccounting.BalanceEngine {
 
   /// <summary>Genera los datos para el reporte de balanza valorizada en dolares.</summary>
   internal class BalanzaDolarizadaBuilder {
 
-    private readonly TrialBalanceQuery _query;
+    private readonly TrialBalanceQuery Query;
 
     internal BalanzaDolarizadaBuilder(TrialBalanceQuery query) {
-      _query = query;
+      Query = query;
     }
 
 
-    internal TrialBalance Build() {
-      var balanceHelper = new TrialBalanceHelper(_query);
-      var helper = new BalanzaDolarizadaHelper(_query);
+    internal FixedList<BalanzaDolarizadaEntry> Build() {
 
-      List<TrialBalanceEntry> trialBalance = balanceHelper.GetPostingEntries().ToList();
+      FixedList<TrialBalanceEntry> baseAccountEntries = BalancesDataService.GetTrialBalanceEntries(Query);
 
-      // Special case summaries y posting al mismo tiempo.
-      balanceHelper.SetSummaryToParentEntries(trialBalance);
+      return Build(baseAccountEntries);
+    }
 
-      List<TrialBalanceEntry> summaryEntries =
-                               balanceHelper.GetCalculatedParentAccounts(trialBalance.ToFixedList());
 
-      summaryEntries = helper.GetAccountList(trialBalance, summaryEntries);
+    internal FixedList<BalanzaDolarizadaEntry> Build(FixedList<TrialBalanceEntry> accountEntries) {
 
-      EmpiriaHashTable<TrialBalanceEntry> ledgerAccounts = helper.GetEntriesWithItemType(summaryEntries);
+      var helper = new BalanzaDolarizadaHelper(Query);
+
+      List<TrialBalanceEntry> parentAccountEntries = GetSummaryParentAccountEntries(accountEntries);
+
+      parentAccountEntries = helper.GetAccountList(accountEntries, parentAccountEntries);
+
+      EmpiriaHashTable<TrialBalanceEntry> ledgerAccounts = helper.GetEntriesWithItemType(parentAccountEntries);
 
       List<TrialBalanceEntry> orderingBalance =
                                 helper.OrderingDollarizedBalance(ledgerAccounts.ToFixedList());
@@ -54,13 +57,25 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
       List<BalanzaDolarizadaEntry> asignExchageRateAndTotalToBalances =
                                       helper.GetExchangeRateByValuedEntry(mergeBalancesToValuedBalances);
 
-      var returnBalance = new FixedList<ITrialBalanceEntry>(
-                                asignExchageRateAndTotalToBalances.Select(x => (ITrialBalanceEntry) x));
-
-      return new TrialBalance(_query, returnBalance);
+      return asignExchageRateAndTotalToBalances.ToFixedList();
     }
 
 
+    private List<TrialBalanceEntry> GetSummaryParentAccountEntries(FixedList<TrialBalanceEntry> accountEntries) {
+
+      var trialBalanceHelper = new TrialBalanceHelper(Query);
+
+      trialBalanceHelper.RoundDecimals(accountEntries);
+
+      // Special case summaries y posting al mismo tiempo.
+      trialBalanceHelper.SetSummaryToParentEntries(accountEntries);
+
+      List<TrialBalanceEntry> parentAccounts =trialBalanceHelper.GetCalculatedParentAccounts(
+                                                                  accountEntries.ToFixedList());
+
+      return parentAccounts;
+
+    }
   } // class BalanzaDolarizadaBuilder
 
 } // namespace Empiria.FinancialAccounting.BalanceEngine

@@ -29,7 +29,7 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
     #region Public methods
 
     internal List<TrialBalanceEntry> GetAccountList(
-                                    List<TrialBalanceEntry> trialBalance,
+                                    FixedList<TrialBalanceEntry> trialBalance,
                                     List<TrialBalanceEntry> summaryEntries) {
       var helper = new TrialBalanceHelper(_query);
 
