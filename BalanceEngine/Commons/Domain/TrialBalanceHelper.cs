@@ -160,26 +160,6 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
     }
 
 
-    internal FixedList<TrialBalanceEntry> GetPostingEntries() {
-
-      FixedList<TrialBalanceEntry> accountEntries = BalancesDataService.GetTrialBalanceEntries(_query);
-
-      if ((_query.ValuateBalances || _query.InitialPeriod.UseDefaultValuation) &&
-          _query.TrialBalanceType != TrialBalanceType.BalanzaDolarizada &&
-          _query.TrialBalanceType != TrialBalanceType.BalanzaEnColumnasPorMoneda) {
-        accountEntries = ValuateToExchangeRate(accountEntries, _query.InitialPeriod);
-
-        if (_query.ConsolidateBalancesToTargetCurrency) {
-          accountEntries = ConsolidateToTargetCurrency(accountEntries, _query.InitialPeriod);
-        }
-      }
-
-      RoundDecimals(accountEntries);
-
-      return accountEntries;
-    }
-
-
     internal void GetSummarySectorizedAccountByLevel(List<TrialBalanceEntry> summaryEntries) {
 
       var EntriesList = new List<TrialBalanceEntry>(summaryEntries);

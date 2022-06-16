@@ -207,32 +207,6 @@ namespace Empiria.FinancialAccounting.BalanceEngine.Adapters {
     }
 
 
-    static private BalanzaDolarizadaEntryDto MapToValuedTrialBalance(
-                                              BalanzaDolarizadaEntry entry) {
-      var dto = new BalanzaDolarizadaEntryDto();
-      dto.ItemType = entry.ItemType;
-      dto.CurrencyCode = entry.Currency.Code;
-      dto.CurrencyName = entry.Currency.Name;
-      dto.StandardAccountId = entry.Account.Id;
-      dto.AccountNumber = entry.Account.Number;
-      dto.AccountName = entry.ItemType == TrialBalanceItemType.Summary ||
-                        entry.ItemType == TrialBalanceItemType.Entry ? entry.Account.Name :
-                        entry.ItemType == TrialBalanceItemType.BalanceTotalCurrency ? entry.GroupName : "";
-      dto.AccountNumberForBalances = entry.Account.Number;
-      dto.SectorCode = entry.Sector.Code;
-      dto.ExchangeRate = entry.ExchangeRate;
-      if (entry.ItemType != TrialBalanceItemType.BalanceTotalCurrency) {
-        dto.TotalBalance = entry.TotalBalance;
-        dto.ValuedExchangeRate = entry.ValuedExchangeRate;
-      }
-      dto.TotalEquivalence = entry.TotalEquivalence;
-      dto.GroupName = entry.GroupName;
-      dto.GroupNumber = entry.GroupNumber;
-
-      return dto;
-    }
-
-
     #endregion Helpers
 
   } // class TrialBalanceMapper

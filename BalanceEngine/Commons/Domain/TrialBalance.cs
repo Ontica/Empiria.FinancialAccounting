@@ -111,24 +111,6 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
     }
 
 
-    private FixedList<DataTableColumn> ValuedTrialBalanceDataColumns() {
-      List<DataTableColumn> columns = new List<DataTableColumn>();
-      columns.Add(new DataTableColumn("accountNumber", "Cuenta", "text-nowrap"));
-      columns.Add(new DataTableColumn("accountName", "Nombre", "text"));
-
-      columns.Add(new DataTableColumn("currencyName", "Moneda", "text"));
-      columns.Add(new DataTableColumn("currencyCode", "Clave Mon.", "text"));
-
-      columns.Add(new DataTableColumn("totalBalance", "Importe Mon. Ext.", "decimal"));
-      //columns.Add(new DataTableColumn("exchangeRate", "Valor M.N.", "decimal", 6));
-      columns.Add(new DataTableColumn("valuedExchangeRate", "Tipo cambio", "decimal", 6));
-      columns.Add(new DataTableColumn("totalEquivalence", "Equivalencia en dólares", "decimal"));
-
-
-      return columns.ToFixedList();
-    }
-
-
     #endregion Constructors and parsers
 
     #region Properties
