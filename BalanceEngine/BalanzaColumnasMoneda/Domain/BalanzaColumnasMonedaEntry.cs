@@ -68,7 +68,7 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
       internal set;
     }
 
-    internal void Sum(BalanzaValorizadaEntry entry) {
+    internal void Sum(BalanzaDolarizadaEntry entry) {
 
     }
 

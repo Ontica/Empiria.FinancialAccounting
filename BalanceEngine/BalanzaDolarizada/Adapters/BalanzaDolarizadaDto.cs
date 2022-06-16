@@ -2,17 +2,44 @@
 *                                                                                                            *
 *  Module   : Balance Engine                             Component : Interface adapters                      *
 *  Assembly : FinancialAccounting.BalanceEngine.dll      Pattern   : Data Transfer Object                    *
-*  Type     : ValuedTrialBalanceDto                      License   : Please read LICENSE.txt file            *
+*  Type     : BalanzaDolarizadaDto                       License   : Please read LICENSE.txt file            *
 *                                                                                                            *
-*  Summary  : Output DTO used to return valued trial balances.                                               *
+*  Summary  : Output DTO used to return a Balanza dolarizada.                                                *
 *                                                                                                            *
 ************************* Copyright(c) La Vía Óntica SC, Ontica LLC and contributors. All rights reserved. **/
 using System;
 
+using Newtonsoft.Json;
+
 namespace Empiria.FinancialAccounting.BalanceEngine.Adapters {
 
-  /// <summary>Output DTO used to return valued trial balances.</summary>
-  public class BalanzaValorizadaEntryDto : ITrialBalanceEntryDto {
+
+  /// <summary>Output DTO used to return a Balanza dolarizada.</summary>
+  public class BalanzaDolarizadaDto {
+
+
+    [JsonProperty]
+    public TrialBalanceQuery Query {
+      get; internal set;
+    }
+
+
+    [JsonProperty]
+    public FixedList<DataTableColumn> Columns {
+      get; internal set;
+    }
+
+
+    [JsonProperty]
+    public FixedList<BalanzaDolarizadaEntryDto> Entries {
+      get; internal set;
+    }
+
+
+  } // class BalanzaDolarizadaDto
+
+
+  public class BalanzaDolarizadaEntryDto : ITrialBalanceEntryDto {
 
     public string CurrencyCode {
       get; internal set;
@@ -45,7 +72,7 @@ namespace Empiria.FinancialAccounting.BalanceEngine.Adapters {
     }
 
     public decimal? TotalBalance {
-      get;  internal set;
+      get; internal set;
     }
 
     public decimal ExchangeRate {
@@ -58,7 +85,7 @@ namespace Empiria.FinancialAccounting.BalanceEngine.Adapters {
     }
 
     public decimal TotalEquivalence {
-      get;  internal set;
+      get; internal set;
     }
 
     public string GroupName {
@@ -90,7 +117,7 @@ namespace Empiria.FinancialAccounting.BalanceEngine.Adapters {
       }
     }
 
-  } // class ValuedTrialBalanceDto
+  } // class BalanzaDolarizadaEntryDto
 
 
 } // namespace Empiria.FinancialAccounting.BalanceEngine.Adapters

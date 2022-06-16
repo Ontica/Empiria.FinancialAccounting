@@ -167,7 +167,7 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
 
         case TrialBalanceType.BalanzaDolarizada:
 
-          var balanzaDolarizada = new BalanzaValorizadaBuilder(this.Query);
+          var balanzaDolarizada = new BalanzaDolarizadaBuilder(this.Query);
           return balanzaDolarizada.Build();
 
         case TrialBalanceType.GeneracionDeSaldos:

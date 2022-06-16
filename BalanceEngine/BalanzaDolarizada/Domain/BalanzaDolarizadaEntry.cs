@@ -2,9 +2,9 @@
 *                                                                                                            *
 *  Module   : Balance Engine                             Component : Domain Layer                            *
 *  Assembly : FinancialAccounting.BalanceEngine.dll      Pattern   : Empiria Plain Object                    *
-*  Type     : ValuedTrialBalanceEntry                  License   : Please read LICENSE.txt file              *
+*  Type     : BalanzaDolarizadaEntry                     License   : Please read LICENSE.txt file            *
 *                                                                                                            *
-*  Summary  : Represents an entry for a valued balance entry.                                                *
+*  Summary  : Represents an entry for a dollarized balance entry.                                            *
 *                                                                                                            *
 ************************* Copyright(c) La Vía Óntica SC, Ontica LLC and contributors. All rights reserved. **/
 using System;
@@ -12,8 +12,8 @@ using System;
 namespace Empiria.FinancialAccounting.BalanceEngine {
 
 
-  /// <summary>Represents an entry for a valued balance entry.</summary>
-  public class BalanzaValorizadaEntry : ITrialBalanceEntry {
+  /// <summary>Represents an entry for a dollarized balance entry.</summary>
+  public class BalanzaDolarizadaEntry : ITrialBalanceEntry {
 
     public Currency Currency {
       get;
@@ -70,12 +70,12 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
       get; internal set;
     }
 
-    internal void Sum(BalanzaValorizadaEntry entry) {
+    internal void Sum(BalanzaDolarizadaEntry entry) {
       this.TotalEquivalence += entry.TotalEquivalence;
       this.ExchangeRate = entry.ExchangeRate;
     }
 
-  } // class ValuedTrialBalanceEntry
+  } // class BalanzaDolarizadaEntry
 
-  
+
 } // namespace Empiria.FinancialAccounting.BalanceEngine

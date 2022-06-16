@@ -2,7 +2,7 @@
 *                                                                                                            *
 *  Module   : Balance Engine                             Component : Domain Layer                            *
 *  Assembly : FinancialAccounting.BalanceEngine.dll      Pattern   : Service provider                        *
-*  Type     : BalanzaValorizada                          License   : Please read LICENSE.txt file            *
+*  Type     : BalanzaDolarizadaBuilder                   License   : Please read LICENSE.txt file            *
 *                                                                                                            *
 *  Summary  : Genera los datos para el reporte de balanza valorizada en dolares.                             *
 *                                                                                                            *
@@ -17,18 +17,18 @@ using Empiria.FinancialAccounting.BalanceEngine.Adapters;
 namespace Empiria.FinancialAccounting.BalanceEngine {
 
   /// <summary>Genera los datos para el reporte de balanza valorizada en dolares.</summary>
-  internal class BalanzaValorizadaBuilder {
+  internal class BalanzaDolarizadaBuilder {
 
     private readonly TrialBalanceQuery _query;
 
-    internal BalanzaValorizadaBuilder(TrialBalanceQuery query) {
+    internal BalanzaDolarizadaBuilder(TrialBalanceQuery query) {
       _query = query;
     }
 
 
     internal TrialBalance Build() {
       var balanceHelper = new TrialBalanceHelper(_query);
-      var helper = new BalanzaValorizadaHelper(_query);
+      var helper = new BalanzaDolarizadaHelper(_query);
 
       List<TrialBalanceEntry> trialBalance = balanceHelper.GetPostingEntries().ToList();
 
@@ -48,10 +48,10 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
       FixedList<TrialBalanceEntry> valuedEntries = helper.ValuateToExchangeRate(
                                                    orderingBalance.ToFixedList());
 
-      List<BalanzaValorizadaEntry> mergeBalancesToValuedBalances =
+      List<BalanzaDolarizadaEntry> mergeBalancesToValuedBalances =
                                       helper.MergeTrialBalanceIntoValuedBalances(valuedEntries);
 
-      List<BalanzaValorizadaEntry> asignExchageRateAndTotalToBalances =
+      List<BalanzaDolarizadaEntry> asignExchageRateAndTotalToBalances =
                                       helper.GetExchangeRateByValuedEntry(mergeBalancesToValuedBalances);
 
       var returnBalance = new FixedList<ITrialBalanceEntry>(
@@ -61,6 +61,6 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
     }
 
 
-  } // class BalanzaValorizada
+  } // class BalanzaDolarizadaBuilder
 
 } // namespace Empiria.FinancialAccounting.BalanceEngine

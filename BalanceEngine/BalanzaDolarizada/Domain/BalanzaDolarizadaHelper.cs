@@ -2,9 +2,9 @@
 *                                                                                                            *
 *  Module   : Balance Engine                             Component : Domain Layer                            *
 *  Assembly : FinancialAccounting.BalanceEngine.dll      Pattern   : Helper methods                          *
-*  Type     : ValorizedBalanceHelper                     License   : Please read LICENSE.txt file            *
+*  Type     : BalanzaDolarizadaHelper                    License   : Please read LICENSE.txt file            *
 *                                                                                                            *
-*  Summary  : Helper methods to build valorized balances and related accounting information.                 *
+*  Summary  : Helper methods to build balanza dolarizada.                                                    *
 *                                                                                                            *
 ************************* Copyright(c) La Vía Óntica SC, Ontica LLC and contributors. All rights reserved. **/
 using System;
@@ -16,12 +16,12 @@ using Empiria.FinancialAccounting.BalanceEngine.Adapters;
 
 namespace Empiria.FinancialAccounting.BalanceEngine {
 
-  /// <summary>Helper methods to build valorized balances and related accounting information.</summary>
-  internal class BalanzaValorizadaHelper {
+  /// <summary>Helper methods to build balanza dolarizada.</summary>
+  internal class BalanzaDolarizadaHelper {
 
     private readonly TrialBalanceQuery _query;
 
-    internal BalanzaValorizadaHelper(TrialBalanceQuery query) {
+    internal BalanzaDolarizadaHelper(TrialBalanceQuery query) {
       _query = query;
     }
 
@@ -46,9 +46,9 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
     }
 
 
-    internal List<BalanzaValorizadaEntry> GetExchangeRateByValuedEntry(
-                                          List<BalanzaValorizadaEntry> mergeBalancesToToValuedBalances) {
-      var returnedValuedBalances = new List<BalanzaValorizadaEntry>();
+    internal List<BalanzaDolarizadaEntry> GetExchangeRateByValuedEntry(
+                                          List<BalanzaDolarizadaEntry> mergeBalancesToToValuedBalances) {
+      var returnedValuedBalances = new List<BalanzaDolarizadaEntry>();
 
       var headerAccounts = mergeBalancesToToValuedBalances
                           .Where(a => a.ItemType == TrialBalanceItemType.Summary).ToList();
@@ -104,10 +104,10 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
     }
 
 
-    internal List<BalanzaValorizadaEntry> MergeTrialBalanceIntoValuedBalances(
+    internal List<BalanzaDolarizadaEntry> MergeTrialBalanceIntoValuedBalances(
                                           FixedList<TrialBalanceEntry> getLedgerAccounts) {
 
-      List<BalanzaValorizadaEntry> returnedValuedBalance = new List<BalanzaValorizadaEntry>();
+      List<BalanzaDolarizadaEntry> returnedValuedBalance = new List<BalanzaDolarizadaEntry>();
       foreach (var entry in getLedgerAccounts) {
         returnedValuedBalance.Add(entry.MapToValuedBalanceEntry());
       }
@@ -166,10 +166,10 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
     }
 
 
-    private EmpiriaHashTable<BalanzaValorizadaEntry> GetTotalByAccount(
-                                                BalanzaValorizadaEntry header, decimal totalEquivalence) {
+    private EmpiriaHashTable<BalanzaDolarizadaEntry> GetTotalByAccount(
+                                                BalanzaDolarizadaEntry header, decimal totalEquivalence) {
 
-      BalanzaValorizadaEntry valuedEntry = TrialBalanceMapper.MapValuedTrialBalanceEntry(header);
+      BalanzaDolarizadaEntry valuedEntry = TrialBalanceMapper.MapValuedTrialBalanceEntry(header);
 
       valuedEntry.GroupName = "TOTAL POR CUENTA";
       valuedEntry.TotalEquivalence = totalEquivalence;
@@ -177,7 +177,7 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
       valuedEntry.ItemType = TrialBalanceItemType.BalanceTotalCurrency;
       string hash = $"{valuedEntry.GroupName}||{valuedEntry.Account}";
 
-      EmpiriaHashTable<BalanzaValorizadaEntry> hashdEntry = new EmpiriaHashTable<BalanzaValorizadaEntry>();
+      EmpiriaHashTable<BalanzaDolarizadaEntry> hashdEntry = new EmpiriaHashTable<BalanzaDolarizadaEntry>();
 
       hashdEntry.Insert(hash, valuedEntry);
 
@@ -291,6 +291,6 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
 
     #endregion Private methods
 
-  } // class ValorizedBalanceHelper
+  } // class BalanzaDolarizadaHelper
 
 } // namespace Empiria.FinancialAccounting.BalanceEngine

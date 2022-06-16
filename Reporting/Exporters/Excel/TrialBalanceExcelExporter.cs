@@ -88,7 +88,7 @@ namespace Empiria.FinancialAccounting.Reporting.Exporters.Excel {
           return;
 
         case TrialBalanceType.BalanzaDolarizada:
-          FillOutBalanzaDolarizada(trialBalance.Entries.Select(x => (BalanzaValorizadaEntryDto) x));
+          FillOutBalanzaDolarizada(trialBalance.Entries.Select(x => (BalanzaDolarizadaEntryDto) x));
           return;
 
         case TrialBalanceType.BalanzaConContabilidadesEnCascada:
@@ -232,7 +232,7 @@ namespace Empiria.FinancialAccounting.Reporting.Exporters.Excel {
     }
 
 
-    private void FillOutBalanzaDolarizada(IEnumerable<BalanzaValorizadaEntryDto> entries) {
+    private void FillOutBalanzaDolarizada(IEnumerable<BalanzaDolarizadaEntryDto> entries) {
       int i = 5;
 
       foreach (var entry in entries) {

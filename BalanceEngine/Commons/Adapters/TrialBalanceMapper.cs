@@ -44,8 +44,8 @@ namespace Empiria.FinancialAccounting.BalanceEngine.Adapters {
       return entry;
     }
 
-    static internal BalanzaValorizadaEntry MapValuedTrialBalanceEntry(BalanzaValorizadaEntry valuedEntry) {
-      var entry = new BalanzaValorizadaEntry();
+    static internal BalanzaDolarizadaEntry MapValuedTrialBalanceEntry(BalanzaDolarizadaEntry valuedEntry) {
+      var entry = new BalanzaDolarizadaEntry();
       entry.Account = valuedEntry.Account;
       entry.Currency = valuedEntry.Currency;
       entry.Sector = Sector.Empty;
@@ -107,7 +107,7 @@ namespace Empiria.FinancialAccounting.BalanceEngine.Adapters {
         case TrialBalanceType.BalanzaDolarizada:
 
           var valuedMappedItems = list.Select((x) =>
-                MapToValuedTrialBalance((BalanzaValorizadaEntry) x));
+                MapToValuedTrialBalance((BalanzaDolarizadaEntry) x));
           return new FixedList<ITrialBalanceEntryDto>(valuedMappedItems);
 
         case TrialBalanceType.BalanzaValorizadaComparativa:
@@ -207,9 +207,9 @@ namespace Empiria.FinancialAccounting.BalanceEngine.Adapters {
     }
 
 
-    static private BalanzaValorizadaEntryDto MapToValuedTrialBalance(
-                                              BalanzaValorizadaEntry entry) {
-      var dto = new BalanzaValorizadaEntryDto();
+    static private BalanzaDolarizadaEntryDto MapToValuedTrialBalance(
+                                              BalanzaDolarizadaEntry entry) {
+      var dto = new BalanzaDolarizadaEntryDto();
       dto.ItemType = entry.ItemType;
       dto.CurrencyCode = entry.Currency.Code;
       dto.CurrencyName = entry.Currency.Name;

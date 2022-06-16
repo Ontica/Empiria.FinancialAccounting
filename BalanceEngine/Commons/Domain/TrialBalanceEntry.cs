@@ -265,8 +265,8 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
     }
 
 
-    internal BalanzaValorizadaEntry MapToValuedBalanceEntry() {
-      return new BalanzaValorizadaEntry {
+    internal BalanzaDolarizadaEntry MapToValuedBalanceEntry() {
+      return new BalanzaDolarizadaEntry {
         Currency = this.Currency,
         Account = this.Account,
         Sector = this.Sector,
