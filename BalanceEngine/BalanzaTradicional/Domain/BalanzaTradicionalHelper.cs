@@ -379,19 +379,6 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
     }
 
 
-    private void SummaryByAccountEntry(EmpiriaHashTable<TrialBalanceEntry> summaryEntries,
-                                       TrialBalanceEntry entry, StandardAccount targetAccount,
-                                       Sector targetSector) {
-
-      string hash = $"{targetAccount.Number}||{targetSector.Code}||{entry.Currency.Id}||" +
-                    $"{entry.Ledger.Id}||{entry.DebtorCreditor}";
-
-      var trialBalanceHelper = new TrialBalanceHelper(_query);
-      trialBalanceHelper.GenerateOrIncreaseEntries(summaryEntries, entry, targetAccount,
-                                                   targetSector, TrialBalanceItemType.Summary, hash);
-    }
-
-
     internal void SummaryByCurrencyEntries(EmpiriaHashTable<TrialBalanceEntry> totalsByCurrency,
                                            TrialBalanceEntry balanceEntry) {
 

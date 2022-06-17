@@ -337,23 +337,6 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
     }
 
 
-    internal void ValidateSectorizationForSummaryParentEntry(
-                  EmpiriaHashTable<TrialBalanceEntry> parentAccounts,
-                  TrialBalanceEntry entry, StandardAccount currentParent) {
-
-      if (!_query.UseNewSectorizationModel || !_query.WithSectorization) {
-        return;
-      }
-
-      if (!currentParent.HasParent || !entry.HasSector) {
-        return;
-      }
-
-      var trialBalanceHelper = new TrialBalanceHelper(_query);
-      trialBalanceHelper.SummaryByAccountEntry(parentAccounts, entry, currentParent, entry.Sector.Parent);
-    }
-
-
     internal void RestrictLevels(List<TrialBalanceEntry> entries) {
       if (_query.Level == 0) {
         return;
@@ -487,6 +470,23 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
         throw Assertion.EnsureNoReachThisCode();
       }
       return true;
+    }
+
+
+    internal void ValidateSectorizationForSummaryParentEntry(
+                  EmpiriaHashTable<TrialBalanceEntry> parentAccounts,
+                  TrialBalanceEntry entry, StandardAccount currentParent) {
+
+      if (!_query.UseNewSectorizationModel || !_query.WithSectorization) {
+        return;
+      }
+
+      if (!currentParent.HasParent || !entry.HasSector) {
+        return;
+      }
+
+      var trialBalanceHelper = new TrialBalanceHelper(_query);
+      trialBalanceHelper.SummaryByAccountEntry(parentAccounts, entry, currentParent, entry.Sector.Parent);
     }
 
 
