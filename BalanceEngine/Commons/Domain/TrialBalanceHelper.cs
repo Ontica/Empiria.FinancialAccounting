@@ -117,6 +117,29 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
     }
 
 
+    internal void GetAccountEntriesAndParentSector(EmpiriaHashTable<TrialBalanceEntry> summaryEntries,
+                                        TrialBalanceEntry entry, StandardAccount currentParent) {
+
+      if (!_query.WithSectorization) {
+        SummaryByAccountEntry(summaryEntries, entry, currentParent, Sector.Empty);
+
+      } else {
+
+        var parentSector = entry.Sector.Parent;
+        while (true) {
+
+          SummaryByAccountEntry(summaryEntries, entry, currentParent, parentSector);
+
+          if (parentSector.IsRoot) {
+            break;
+          } else {
+            parentSector = parentSector.Parent;
+          }
+        }
+      }
+    }
+
+
     internal void GetEntriesAndParentSector(EmpiriaHashTable<TrialBalanceEntry> summaryEntries,
                                         TrialBalanceEntry entry, StandardAccount currentParent) {
       if (!_query.WithSectorization) {
@@ -252,9 +275,7 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
         entry.SubledgerAccountNumber = SubledgerAccount.Parse(entry.SubledgerAccountId).Number ?? "";
         StandardAccount currentParent;
 
-        if ((entry.Account.NotHasParent) ||
-            _query.WithSubledgerAccount ||
-            _query.TrialBalanceType == TrialBalanceType.SaldosPorCuenta) {
+        if (entry.Account.NotHasParent || _query.WithSubledgerAccount) {
           currentParent = entry.Account;
 
         } else if (_query.DoNotReturnSubledgerAccounts && entry.Account.HasParent) {
@@ -316,6 +337,23 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
     }
 
 
+    internal void ValidateSectorizationForSummaryParentEntry(
+                  EmpiriaHashTable<TrialBalanceEntry> parentAccounts,
+                  TrialBalanceEntry entry, StandardAccount currentParent) {
+
+      if (!_query.UseNewSectorizationModel || !_query.WithSectorization) {
+        return;
+      }
+
+      if (!currentParent.HasParent || !entry.HasSector) {
+        return;
+      }
+
+      var trialBalanceHelper = new TrialBalanceHelper(_query);
+      trialBalanceHelper.SummaryByAccountEntry(parentAccounts, entry, currentParent, entry.Sector.Parent);
+    }
+
+
     internal void RestrictLevels(List<TrialBalanceEntry> entries) {
       if (_query.Level == 0) {
         return;
@@ -363,7 +401,8 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
     }
 
 
-    internal void SummaryByAccount(EmpiriaHashTable<TrialBalanceEntry> entries, TrialBalanceEntry balanceEntry) {
+    internal void SummaryByAccountForOperationalReport(EmpiriaHashTable<TrialBalanceEntry> entries,
+                                                       TrialBalanceEntry balanceEntry) {
 
       TrialBalanceEntry entry = balanceEntry.CreatePartialCopy();
 
@@ -381,7 +420,20 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
 
       GenerateOrIncreaseEntries(entries, entry, entry.Account,
                                 entry.Sector, itemType, hash);
+    }
 
+
+
+    internal void SummaryByAccountEntry(EmpiriaHashTable<TrialBalanceEntry> summaryEntries,
+                                 TrialBalanceEntry entry,
+                                 StandardAccount targetAccount, Sector targetSector) {
+
+      string hash = $"{targetAccount.Number}||{targetSector.Code}||{entry.Currency.Id}" +
+                    $"||{entry.Ledger.Id}||{entry.DebtorCreditor}";
+
+      var balanceHelper = new TrialBalanceHelper(_query);
+      balanceHelper.GenerateOrIncreaseEntries(summaryEntries, entry, targetAccount,
+                                              targetSector, TrialBalanceItemType.Summary, hash);
     }
 
 

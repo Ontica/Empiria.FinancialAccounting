@@ -313,13 +313,14 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
         entry.SubledgerAccountIdParent = entry.SubledgerAccountId;
 
         if (entry.Level > 1) {
-          SummaryByAccountEntry(parentAccounts, entry, currentParent, entry.Sector);
+          trialBalanceHelper.SummaryByAccountEntry(parentAccounts, entry, currentParent, entry.Sector);
 
-          ValidateSectorizationForSummaryParentEntry(parentAccounts, entry, currentParent);
+          trialBalanceHelper.ValidateSectorizationForSummaryParentEntry(
+                             parentAccounts, entry, currentParent);
         }
 
         if (!currentParent.HasParent && entry.HasSector) {
-          trialBalanceHelper.GetEntriesAndParentSector(parentAccounts, entry, currentParent);
+          trialBalanceHelper.GetAccountEntriesAndParentSector(parentAccounts, entry, currentParent);
           break;
 
         } else if (!currentParent.HasParent) {
@@ -439,22 +440,6 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
       var trialBalanceHelper = new TrialBalanceHelper(_query);
       trialBalanceHelper.GenerateOrIncreaseEntries(summaryEntries, entry, targetAccount,
                                                    targetSector, itemType, hash);
-    }
-
-
-    private void ValidateSectorizationForSummaryParentEntry(
-                  EmpiriaHashTable<TrialBalanceEntry> parentAccounts,
-                  TrialBalanceEntry entry, StandardAccount currentParent) {
-
-      if (!_query.UseNewSectorizationModel || !_query.WithSectorization) {
-        return;
-      }
-
-      if (!currentParent.HasParent || !entry.HasSector) {
-        return;
-      }
-
-      SummaryByAccountEntry(parentAccounts, entry, currentParent, entry.Sector.Parent);
     }
 
 

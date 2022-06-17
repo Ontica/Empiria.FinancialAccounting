@@ -135,7 +135,7 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
       if (_query.ConsolidateBalancesToTargetCurrency == true) {
 
         foreach (var entry in trialBalance) {
-          helper.SummaryByAccount(totalByAccountEntries, entry);
+          helper.SummaryByAccountForOperationalReport(totalByAccountEntries, entry);
         }
 
         return totalByAccountEntries.ToFixedList().ToList();

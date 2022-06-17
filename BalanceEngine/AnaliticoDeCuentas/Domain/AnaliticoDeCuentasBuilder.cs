@@ -35,11 +35,13 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
 
 
     internal FixedList<AnaliticoDeCuentasEntry> Build(FixedList<TrialBalanceEntry> baseAccountEntries) {
+
       FixedList<TrialBalanceEntry> saldosValorizados = SaldosDeCuentasValorizados(baseAccountEntries);
 
       var balanceHelper = new TrialBalanceHelper(_query);
+      var analiticoHelper = new AnaliticoDeCuentasHelper(_query);
 
-      List<TrialBalanceEntry> summaryEntries = balanceHelper.GetCalculatedParentAccounts(saldosValorizados);
+      List<TrialBalanceEntry> summaryEntries = analiticoHelper.GetCalculatedParentAccounts(saldosValorizados);
 
       List<TrialBalanceEntry> saldosValorizadosMapped = balanceHelper.GetEntriesMappedForSectorization(
                                                      saldosValorizados.ToList());
@@ -50,7 +52,6 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
       List<TrialBalanceEntry> summaryEntriesAndSectorization =
                               balanceHelper.GetSummaryAccountEntriesAndSectorization(summaryEntries);
 
-      var analiticoHelper = new AnaliticoDeCuentasHelper(_query);
 
       analiticoHelper.GetSummaryToSectorZeroForPesosAndUdis(postingEntries, summaryEntriesAndSectorization);
 

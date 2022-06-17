@@ -58,6 +58,76 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
     }
 
 
+    internal List<TrialBalanceEntry> GetCalculatedParentAccounts(
+                                     FixedList<TrialBalanceEntry> accountEntries) {
+
+      var parentAccounts = new EmpiriaHashTable<TrialBalanceEntry>(accountEntries.Count);
+      var trialBalanceHelper = new TrialBalanceHelper(_query);
+
+      foreach (var entry in accountEntries) {
+
+        entry.DebtorCreditor = entry.Account.DebtorCreditor;
+        entry.SubledgerAccountNumber = SubledgerAccount.Parse(entry.SubledgerAccountId).Number ?? "";
+
+        StandardAccount currentParent;
+
+        bool isCalculatedAccount = trialBalanceHelper.ValidateEntryForSummaryParentAccount(
+                                                      entry, out currentParent);
+
+        if (!isCalculatedAccount) {
+          continue;
+        }
+
+        GenerateOrIncreaseParentAccountEntries(parentAccounts, entry, currentParent);
+        
+      } // foreach
+
+      trialBalanceHelper.AssignLastChangeDatesToParentEntries(accountEntries, parentAccounts.ToFixedList());
+
+      return parentAccounts.ToFixedList().ToList();
+    }
+
+
+    private void GenerateOrIncreaseParentAccountEntries(EmpiriaHashTable<TrialBalanceEntry> parentAccounts,
+                                                        TrialBalanceEntry entry,
+                                                        StandardAccount currentParent) {
+
+      var trialBalanceHelper = new TrialBalanceHelper(_query);
+
+      while (true) {
+        entry.DebtorCreditor = entry.Account.DebtorCreditor;
+        entry.SubledgerAccountIdParent = entry.SubledgerAccountId;
+
+        if (entry.Level > 1) {
+          trialBalanceHelper.SummaryByAccountEntry(parentAccounts, entry, currentParent,entry.Sector);
+
+          trialBalanceHelper.ValidateSectorizationForSummaryParentEntry(
+                             parentAccounts, entry, currentParent);
+        }
+
+        if (!currentParent.HasParent && entry.HasSector) {
+
+          trialBalanceHelper.GetAccountEntriesAndParentSector(parentAccounts, entry, currentParent);
+          break;
+
+        } else if (!currentParent.HasParent) {
+
+          if (_query.WithSubledgerAccount && !entry.Account.HasParent) {
+
+            trialBalanceHelper.SummaryByAccountEntry(parentAccounts, entry, currentParent,
+                                                      Sector.Empty);
+
+          }
+          break;
+
+        } else {
+          currentParent = currentParent.GetParent();
+        }
+
+      } // while
+    }
+
+
     internal FixedList<AnaliticoDeCuentasEntry> CombineSubledgerAccountsWithSummaryEntries(
                                                   FixedList<AnaliticoDeCuentasEntry> analyticEntries,
                                                   List<TrialBalanceEntry> trialBalance) {
