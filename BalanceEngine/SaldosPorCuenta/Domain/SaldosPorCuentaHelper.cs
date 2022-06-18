@@ -36,19 +36,17 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
       var trialBalanceHelper = new TrialBalanceHelper(_query);
 
       foreach (var entry in accountEntries) {
-        entry.DebtorCreditor = entry.Account.DebtorCreditor;
-        entry.SubledgerAccountNumber = SubledgerAccount.Parse(entry.SubledgerAccountId).Number ?? "";
 
         StandardAccount currentParent;
 
-        bool isCalculatedAccount = trialBalanceHelper.ValidateEntryForSummaryParentAccount(
+        bool isCalculatedAccount = trialBalanceHelper.ValidateEntryToAssignCurrentParentAccount(
                                                       entry, out currentParent);
 
-        if (!isCalculatedAccount) {
+        if (!trialBalanceHelper.ValidateEntryForSummaryParentAccount(entry, isCalculatedAccount)) {
           continue;
         }
 
-        GenOrSumParentAccounts(detailParentAccount, parentAccounts, entry, currentParent);
+        GetOrSumParentAccounts(detailParentAccount, parentAccounts, entry, currentParent);
 
       } // foreach
 
@@ -222,7 +220,7 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
     #region Private methods
 
 
-    private void GenOrSumParentAccounts(List<TrialBalanceEntry> detailParentAccount,
+    private void GetOrSumParentAccounts(List<TrialBalanceEntry> detailParentAccount,
                                         EmpiriaHashTable<TrialBalanceEntry> parentAccounts,
                                         TrialBalanceEntry entry,
                                         StandardAccount currentParent) {

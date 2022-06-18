@@ -96,9 +96,7 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
 
       balanceHelper.SetSummaryToParentEntries(baseAccountEntries);
 
-      // balanceHelper.ApplyExchangeRates(baseAccountEntries);
-
-      baseAccountEntries = balanceHelper.ValuateToExchangeRate(baseAccountEntries, _query.InitialPeriod);
+      balanceHelper.ValuateAccountEntriesToExchangeRate(baseAccountEntries);
 
       balanceHelper.RoundDecimals(baseAccountEntries);
 

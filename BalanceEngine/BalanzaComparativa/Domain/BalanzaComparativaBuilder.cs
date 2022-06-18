@@ -57,10 +57,6 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
 
       return comparativeBalance.ToFixedList();
 
-      //var returnBalance = new FixedList<ITrialBalanceEntry>(
-      //                        comparativeBalance.Select(x => (ITrialBalanceEntry) x));
-
-      //return new TrialBalance(_query, returnBalance);
     }
 
   }  // class BalanzaComparativa

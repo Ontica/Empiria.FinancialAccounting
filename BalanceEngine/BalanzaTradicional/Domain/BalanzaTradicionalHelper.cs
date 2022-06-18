@@ -233,15 +233,12 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
 
       foreach (var entry in accountEntries) {
 
-        entry.DebtorCreditor = entry.Account.DebtorCreditor;
-        entry.SubledgerAccountNumber = SubledgerAccount.Parse(entry.SubledgerAccountId).Number ?? "";
-
         StandardAccount currentParent;
 
-        bool isCalculatedAccount = trialBalanceHelper.ValidateEntryForSummaryParentAccount(
+        bool isCalculatedAccount = trialBalanceHelper.ValidateEntryToAssignCurrentParentAccount(
                                                       entry, out currentParent);
 
-        if (!isCalculatedAccount) {
+        if (!trialBalanceHelper.ValidateEntryForSummaryParentAccount(entry, isCalculatedAccount)) {
           continue;
         }
 

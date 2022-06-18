@@ -175,15 +175,12 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
 
       foreach (var entry in accountEntries) {
 
-        entry.DebtorCreditor = entry.Account.DebtorCreditor;
-        entry.SubledgerAccountNumber = SubledgerAccount.Parse(entry.SubledgerAccountId).Number ?? "";
-
         StandardAccount currentParent;
 
-        bool isCalculatedAccount = trialBalanceHelper.ValidateEntryForSummaryParentAccount(
+        bool isCalculatedAccount = trialBalanceHelper.ValidateEntryToAssignCurrentParentAccount(
                                                       entry, out currentParent);
 
-        if (!isCalculatedAccount) {
+        if (!trialBalanceHelper.ValidateEntryForSummaryParentAccount(entry, isCalculatedAccount)) {
           continue;
         }
 
@@ -347,9 +344,6 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
     internal FixedList<AnaliticoDeCuentasEntry> MergeTrialBalanceIntoAnalyticColumns(
                                                   List<TrialBalanceEntry> trialBalance) {
 
-      var hashSummaryEntries = new EmpiriaHashTable<AnaliticoDeCuentasEntry>();
-      var targetCurrency = Currency.Parse(_query.InitialPeriod.ValuateToCurrrencyUID);
-
       IEnumerable<TrialBalanceEntry> entryList;
 
       if (_query.WithSubledgerAccount) {
@@ -358,6 +352,9 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
       } else {
         entryList = trialBalance.Where(a => a.SubledgerAccountNumber.Length <= 1);
       }
+
+      var hashSummaryEntries = new EmpiriaHashTable<AnaliticoDeCuentasEntry>();
+      var targetCurrency = Currency.Parse(_query.InitialPeriod.ValuateToCurrrencyUID);
 
       foreach (var entry in entryList) {
         if (entry.CurrentBalance != 0) {
@@ -481,8 +478,7 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
         if (!subledgerAccount.IsEmptyInstance) {
           entry.SubledgerAccountNumber = subledgerAccount.Number != "0" ?
                                           subledgerAccount.Number : "";
-          entry.SubledgerNumberOfDigits = entry.SubledgerAccountNumber != "" ?
-                                          entry.SubledgerAccountNumber.Count() : 0;
+          entry.SubledgerNumberOfDigits = entry.SubledgerAccountNumber.Length;
         }
       }
 
@@ -692,16 +688,23 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
                                             a.Sector.Code == "00" &&
                                             a.DebtorCreditor == entryUdis.DebtorCreditor);
 
-        if (entry != null) {
-          entry.InitialBalance += entryUdis.InitialBalance;
-          entry.Debit += entryUdis.Debit;
-          entry.Credit += entryUdis.Credit;
-          entry.CurrentBalance += entryUdis.CurrentBalance;
-          entry.AverageBalance += entryUdis.AverageBalance;
-        } else {
-          entryUdis.IsSummaryForAnalytics = true;
-        }
+        SummaryBalancesByEntry(entry, entryUdis);
       }
+    }
+
+
+    private void SummaryBalancesByEntry(TrialBalanceEntry entry, TrialBalanceEntry entryUdis) {
+      
+      if (entry != null) {
+        entry.InitialBalance += entryUdis.InitialBalance;
+        entry.Debit += entryUdis.Debit;
+        entry.Credit += entryUdis.Credit;
+        entry.CurrentBalance += entryUdis.CurrentBalance;
+        entry.AverageBalance += entryUdis.AverageBalance;
+      } else {
+        entryUdis.IsSummaryForAnalytics = true;
+      }
+
     }
 
     #endregion Private methods

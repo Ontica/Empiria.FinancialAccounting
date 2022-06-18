@@ -268,75 +268,27 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
 
       var parentAccounts = new EmpiriaHashTable<TrialBalanceEntry>(accountEntries.Count);
 
-      var detailSummaryEntries = new List<TrialBalanceEntry>();
-
       foreach (var entry in accountEntries) {
-        entry.DebtorCreditor = entry.Account.DebtorCreditor;
-        entry.SubledgerAccountNumber = SubledgerAccount.Parse(entry.SubledgerAccountId).Number ?? "";
+
         StandardAccount currentParent;
 
-        if (entry.Account.NotHasParent || _query.WithSubledgerAccount) {
-          currentParent = entry.Account;
+        bool isCalculatedAccount = ValidateEntryToAssignCurrentParentAccount(
+                                                      entry, out currentParent);
 
-        } else if (_query.DoNotReturnSubledgerAccounts && entry.Account.HasParent) {
-          currentParent = entry.Account.GetParent();
-
-        } else if (_query.DoNotReturnSubledgerAccounts && entry.Account.NotHasParent) {
-          continue;
-        } else {
-          throw Assertion.EnsureNoReachThisCode();
-        }
-
-        if (entry.HasParentPostingEntry) {
+        if (!ValidateEntryForSummaryParentAccount(entry, isCalculatedAccount)) {
           continue;
         }
 
-        int cont = 0;
-
-        while (true) {
-          entry.DebtorCreditor = entry.Account.DebtorCreditor;
-          entry.SubledgerAccountIdParent = entry.SubledgerAccountId;
-
-          if (entry.Level > 1) {
-            SummaryByEntry(parentAccounts, entry, currentParent,
-                            entry.Sector, TrialBalanceItemType.Summary);
-
-            SummaryEntryBySectorization(parentAccounts, entry, currentParent);
-          }
-
-          cont++;
-
-          if (cont == 1 && _query.TrialBalanceType == TrialBalanceType.SaldosPorCuenta) {
-            GetDetailSummaryEntries(detailSummaryEntries, parentAccounts, currentParent, entry);
-          }
-          if (!currentParent.HasParent && entry.HasSector) {
-            GetEntriesAndParentSector(parentAccounts, entry, currentParent);
-            break;
-
-          } else if (!currentParent.HasParent) {
-            if (_query.TrialBalanceType == TrialBalanceType.AnaliticoDeCuentas &&
-                _query.WithSubledgerAccount && !entry.Account.HasParent) {
-              SummaryByEntry(parentAccounts, entry, currentParent,
-                              Sector.Empty, TrialBalanceItemType.Summary);
-            }
-            break;
-          } else {
-            currentParent = currentParent.GetParent();
-          }
-
-        } // while
+        GetSummaryToParentAccountEntry(parentAccounts, entry, currentParent);
 
       } // foreach
 
       AssignLastChangeDatesToParentEntries(accountEntries, parentAccounts.ToFixedList());
 
-      if (detailSummaryEntries.Count > 0 && _query.TrialBalanceType == TrialBalanceType.SaldosPorCuenta) {
-        return detailSummaryEntries;
-      }
       return parentAccounts.ToFixedList().ToList();
     }
 
-
+    
     internal void RestrictLevels(List<TrialBalanceEntry> entries) {
       if (_query.Level == 0) {
         return;
@@ -426,6 +378,7 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
                                  TrialBalanceItemType itemType) {
 
       string hash = $"{targetAccount.Number}||{targetSector.Code}||{entry.Currency.Id}||{entry.Ledger.Id}";
+
       if (_query.TrialBalanceType == TrialBalanceType.AnaliticoDeCuentas ||
           _query.TrialBalanceType == TrialBalanceType.Balanza ||
           (_query.TrialBalanceType == TrialBalanceType.BalanzaEnColumnasPorMoneda &&
@@ -453,10 +406,27 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
     }
 
 
-    internal bool ValidateEntryForSummaryParentAccount(TrialBalanceEntry entry,
-                                                      out StandardAccount currentParent) {
+    internal bool ValidateEntryForSummaryParentAccount(TrialBalanceEntry entry, bool isCalculatedAccount) {
 
-      if ((entry.Account.NotHasParent) || _query.WithSubledgerAccount) {
+      if (!isCalculatedAccount) {
+        return false;
+      }
+
+      if (entry.HasParentPostingEntry) {
+        return false;
+      }
+
+      return true;
+    }
+
+
+    internal bool ValidateEntryToAssignCurrentParentAccount(TrialBalanceEntry entry,
+                                                      out StandardAccount currentParent) {
+      entry.DebtorCreditor = entry.Account.DebtorCreditor;
+      entry.SubledgerAccountNumber = SubledgerAccount.Parse(entry.SubledgerAccountId).Number ?? "";
+
+      if (entry.Account.NotHasParent || _query.WithSubledgerAccount ||
+          _query.TrialBalanceType == TrialBalanceType.SaldosPorCuenta) {
         currentParent = entry.Account;
 
       } else if (_query.DoNotReturnSubledgerAccounts && entry.Account.HasParent) {
@@ -492,21 +462,13 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
 
     internal void ValuateAccountEntriesToExchangeRate(FixedList<TrialBalanceEntry> entries) {
 
-      if (_query.InitialPeriod.UseDefaultValuation) {
-        _query.InitialPeriod.ExchangeRateTypeUID = ExchangeRateType.ValorizacionBanxico.UID;
-        _query.InitialPeriod.ValuateToCurrrencyUID = "01";
-        _query.InitialPeriod.ExchangeRateDate = _query.InitialPeriod.ToDate;
-      }
-
-      var exchangeRateType = ExchangeRateType.Parse(_query.InitialPeriod.ExchangeRateTypeUID);
-      FixedList<ExchangeRate> exchangeRates = ExchangeRate.GetList(exchangeRateType,
-                                                                   _query.InitialPeriod.ExchangeRateDate);
+      FixedList<ExchangeRate> exchangeRates = GetExchangeRateListForDate();
 
       foreach (var entry in entries.Where(a => a.Currency.Code != "01")) {
 
         var exchangeRate = exchangeRates.FirstOrDefault(
-                            a => a.FromCurrency.Code == _query.InitialPeriod.ValuateToCurrrencyUID &&
-                            a.ToCurrency.Code == entry.Currency.Code);
+                            a => a.ToCurrency.Code == entry.Currency.Code &&
+                            a.FromCurrency.Code == _query.InitialPeriod.ValuateToCurrrencyUID);
 
         // ToDo: URGENT This require must be checked before any state change
         Assertion.Require(exchangeRate, $"No se ha registrado el tipo de cambio para la " +
@@ -517,53 +479,10 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
     }
 
 
-    internal FixedList<TrialBalanceEntry> ValuateToExchangeRate(FixedList<TrialBalanceEntry> entries,
-                                                                BalancesPeriod period) {
-      if (period.UseDefaultValuation) {
-        period.ExchangeRateTypeUID = ExchangeRateType.ValorizacionBanxico.UID;
-        period.ValuateToCurrrencyUID = "01";
-        period.ExchangeRateDate = period.ToDate;
-      }
-
-      var exchangeRateType = ExchangeRateType.Parse(period.ExchangeRateTypeUID);
-
-      FixedList<ExchangeRate> exchangeRates = ExchangeRate.GetList(exchangeRateType, period.ExchangeRateDate);
-
-      foreach (var entry in entries.Where(a => a.Currency.Code != "01")) {
-        var exchangeRate = exchangeRates.FirstOrDefault(a => a.FromCurrency.Code == period.ValuateToCurrrencyUID &&
-                                                             a.ToCurrency.Code == entry.Currency.Code);
-
-        // ToDo: URGENT This require must be checked before any state
-        Assertion.Require(exchangeRate, $"No se ha registrado el tipo de cambio para la " +
-                                        $"moneda {entry.Currency.FullName} en la fecha proporcionada.");
-
-        if (_query.TrialBalanceType == TrialBalanceType.BalanzaValorizadaComparativa) {
-          if (period.IsSecondPeriod) {
-            entry.SecondExchangeRate = exchangeRate.Value;
-          } else {
-            entry.ExchangeRate = exchangeRate.Value;
-          }
-        } else if ((_query.TrialBalanceType == TrialBalanceType.BalanzaDolarizada) ||
-                  (_query.IsOperationalReport && !_query.ConsolidateBalancesToTargetCurrency)) {
-          entry.ExchangeRate = exchangeRate.Value;
-        } else {
-          entry.MultiplyBy(exchangeRate.Value);
-        }
-
-      }
-      return entries;
-    }
-
-
     #region Private methods
 
 
     private void ClausesToExchangeRate(TrialBalanceEntry entry, ExchangeRate exchangeRate) {
-
-      if (_query.TrialBalanceType == TrialBalanceType.BalanzaDolarizada) {
-        entry.ExchangeRate = exchangeRate.Value;
-
-      }
 
       if (_query.IsOperationalReport && !_query.ConsolidateBalancesToTargetCurrency) {
         entry.ExchangeRate = exchangeRate.Value;
@@ -595,6 +514,21 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
           detailSummaryEntries.Add(detailsEntry);
         }
       }
+    }
+
+
+    private FixedList<ExchangeRate> GetExchangeRateListForDate() {
+      if (_query.InitialPeriod.UseDefaultValuation) {
+        _query.InitialPeriod.ExchangeRateTypeUID = ExchangeRateType.ValorizacionBanxico.UID;
+        _query.InitialPeriod.ValuateToCurrrencyUID = "01";
+        _query.InitialPeriod.ExchangeRateDate = _query.InitialPeriod.ToDate;
+      }
+
+      var exchangeRateType = ExchangeRateType.Parse(_query.InitialPeriod.ExchangeRateTypeUID);
+      FixedList<ExchangeRate> exchangeRates = ExchangeRate.GetList(exchangeRateType,
+                                                                   _query.InitialPeriod.ExchangeRateDate);
+      return exchangeRates;
+
     }
 
 
@@ -667,6 +601,35 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
       }
 
       returnedEntries.AddRange(hashEntries.ToFixedList().ToList());
+    }
+
+
+    private void GetSummaryToParentAccountEntry(EmpiriaHashTable<TrialBalanceEntry> parentAccounts,
+                                                TrialBalanceEntry entry, StandardAccount currentParent) {
+
+      while (true) {
+        entry.DebtorCreditor = entry.Account.DebtorCreditor;
+        entry.SubledgerAccountIdParent = entry.SubledgerAccountId;
+
+        if (entry.Level > 1) {
+          SummaryByEntry(parentAccounts, entry, currentParent,
+                          entry.Sector, TrialBalanceItemType.Summary);
+
+          SummaryEntryBySectorization(parentAccounts, entry, currentParent);
+        }
+
+        if (!currentParent.HasParent && entry.HasSector) {
+          GetEntriesAndParentSector(parentAccounts, entry, currentParent);
+          break;
+
+        } else if (!currentParent.HasParent) {
+          break;
+
+        } else {
+          currentParent = currentParent.GetParent();
+        }
+
+      } // while
     }
 
 
