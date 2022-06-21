@@ -41,31 +41,24 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
       var balanceHelper = new TrialBalanceHelper(_query);
       var analiticoHelper = new AnaliticoDeCuentasHelper(_query);
 
-      List<TrialBalanceEntry> summaryEntries = analiticoHelper.GetCalculatedParentAccounts(saldosValorizados);
+      List<TrialBalanceEntry> parentAccounts = analiticoHelper.GetCalculatedParentAccounts(saldosValorizados);
 
-      List<TrialBalanceEntry> saldosValorizadosMapped = balanceHelper.GetEntriesMappedForSectorization(
-                                                     saldosValorizados.ToList());
+      List<TrialBalanceEntry> parentAndAccountEntries = analiticoHelper.CombineSummaryAndPostingEntries(
+                                             parentAccounts, saldosValorizados.ToFixedList());
 
-      List<TrialBalanceEntry> postingEntries = balanceHelper.GetSummaryAccountEntriesAndSectorization(
-                                               saldosValorizadosMapped);
+      List<TrialBalanceEntry> balanceEntries = balanceHelper.GetSummaryAccountsAndSectorization(
+                                               parentAndAccountEntries.ToList());
 
-      List<TrialBalanceEntry> summaryEntriesAndSectorization =
-                              balanceHelper.GetSummaryAccountEntriesAndSectorization(summaryEntries);
-
-
-      analiticoHelper.GetSummaryToSectorZeroForPesosAndUdis(postingEntries, summaryEntriesAndSectorization);
-
-      List<TrialBalanceEntry> balanceEntries = analiticoHelper.CombineSummaryAndPostingEntries(
-                                             summaryEntriesAndSectorization, postingEntries.ToFixedList());
+      analiticoHelper.GetSummaryToSectorZeroForPesosAndUdis(balanceEntries);
 
       balanceEntries = RemoveUnneededAccounts(balanceEntries);
 
       balanceHelper.RestrictLevels(balanceEntries);
 
       FixedList<AnaliticoDeCuentasEntry> analyticEntries =
-                                           analiticoHelper.MergeTrialBalanceIntoAnalyticColumns(balanceEntries);
+                                        analiticoHelper.MergeTrialBalanceIntoAnalyticColumns(balanceEntries);
 
-      analyticEntries = analiticoHelper.CombineSubledgerAccountsWithSummaryEntries(
+      analyticEntries = analiticoHelper.CombineSubledgerAccountsWithSummaryAnalyticEntries(
                                             analyticEntries, balanceEntries);
 
       FixedList<AnaliticoDeCuentasEntry> summaryGroupEntries =

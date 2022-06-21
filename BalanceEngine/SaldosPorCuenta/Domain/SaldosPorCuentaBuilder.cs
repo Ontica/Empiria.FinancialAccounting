@@ -39,11 +39,11 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
       List<TrialBalanceEntry> accountEntriesMapped = trialBalanceHelper.GetEntriesMappedForSectorization(
                                               accountEntries.ToList());
 
-      List<TrialBalanceEntry> _accountEntries = trialBalanceHelper.GetSummaryAccountEntriesAndSectorization(
+      List<TrialBalanceEntry> _accountEntries = trialBalanceHelper.GetSummaryAccountsAndSectorization(
                                                 accountEntriesMapped);
 
       List<TrialBalanceEntry> parentEntriesAndSectorization =
-                              trialBalanceHelper.GetSummaryAccountEntriesAndSectorization(parentAccounts);
+                              trialBalanceHelper.GetSummaryAccountsAndSectorization(parentAccounts);
 
       List<TrialBalanceEntry> parentsAndAccountEntries = helper.CombineSummaryAndPostingEntries(
                                              parentEntriesAndSectorization, _accountEntries.ToFixedList());

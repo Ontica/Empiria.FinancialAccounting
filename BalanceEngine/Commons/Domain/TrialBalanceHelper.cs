@@ -187,54 +187,56 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
 
       var EntriesList = new List<TrialBalanceEntry>(summaryEntries);
 
-      if (_query.UseNewSectorizationModel) {
-        var summaryEntriesList = new List<TrialBalanceEntry>(summaryEntries);
+      var summaryEntriesList = new List<TrialBalanceEntry>(summaryEntries);
 
-        foreach (var entry in summaryEntriesList) {
+      foreach (var entry in summaryEntriesList) {
 
-          var entriesWithSummarySector = EntriesList
-                                    .Where(a => a.Account.Number == entry.Account.Number &&
-                                           a.Ledger.Number == entry.Ledger.Number &&
-                                           a.Currency.Code == entry.Currency.Code)
-                                    .ToList();
+        var entriesWithSummarySector = EntriesList
+                                  .Where(a => a.Account.Number == entry.Account.Number &&
+                                         a.Ledger.Number == entry.Ledger.Number &&
+                                         a.Currency.Code == entry.Currency.Code)
+                                  .ToList();
 
-          if (entry.Level > 1 &&
-               (entriesWithSummarySector.Count == 2 &&
-                entry.ItemType == TrialBalanceItemType.Summary) ||
-               (entry.ItemType == TrialBalanceItemType.Entry &&
-               entriesWithSummarySector.Count == 2 && entry.Sector.Code != "00")) {
+        if (entry.Level > 1 &&
+             (entriesWithSummarySector.Count == 2 &&
+              entry.ItemType == TrialBalanceItemType.Summary) ||
+             (entry.ItemType == TrialBalanceItemType.Entry &&
+             entriesWithSummarySector.Count == 2 && entry.Sector.Code != "00")) {
 
-            var entryWithoutSector = entriesWithSummarySector.FirstOrDefault(a => a.Sector.Code == "00");
-            summaryEntries.Remove(entryWithoutSector);
-          }
+          var entryWithoutSector = entriesWithSummarySector.FirstOrDefault(a => a.Sector.Code == "00");
+          summaryEntries.Remove(entryWithoutSector);
         }
       }
+
     }
 
 
-    internal List<TrialBalanceEntry> GetSummaryAccountEntriesAndSectorization(
-                                      List<TrialBalanceEntry> entriesList) {
+    internal List<TrialBalanceEntry> GetSummaryAccountsAndSectorization(
+                                      List<TrialBalanceEntry> accountEntries) {
 
       var startTime = DateTime.Now;
-      var returnedEntries = new List<TrialBalanceEntry>(entriesList);
+      var returnedAccountEntries = new List<TrialBalanceEntry>(accountEntries);
 
-      if (_query.UseNewSectorizationModel && _query.WithSectorization) {
+      if (_query.UseNewSectorizationModel) {
 
-        GetSummaryEntriesWithSectorization(returnedEntries);
-        EmpiriaLog.Debug($"INNER GetSummaryEntriesWithSectorization(): {DateTime.Now.Subtract(startTime).TotalSeconds} seconds.");
+        if (_query.WithSectorization) {
+          GetAccountsWithSectorization(returnedAccountEntries);
+          EmpiriaLog.Debug($"INNER GetSummaryEntriesWithSectorization(): {DateTime.Now.Subtract(startTime).TotalSeconds} seconds.");
+        }
 
-      } else if (_query.UseNewSectorizationModel && !_query.WithSectorization) {
+        if (!_query.WithSectorization) {
+          GetAccountsWithoutSectorization(returnedAccountEntries);
+          EmpiriaLog.Debug($"INNER GetSummaryEntriesWithoutSectorization(): {DateTime.Now.Subtract(startTime).TotalSeconds} seconds.");
+        }
 
-        GetSummaryEntriesWithoutSectorization(returnedEntries);
-        EmpiriaLog.Debug($"INNER GetSummaryEntriesWithoutSectorization(): {DateTime.Now.Subtract(startTime).TotalSeconds} seconds.");
+        if (_query.TrialBalanceType != TrialBalanceType.AnaliticoDeCuentas &&
+            _query.TrialBalanceType != TrialBalanceType.Balanza) {
+
+          GetSummarySectorizedAccountByLevel(returnedAccountEntries);
+        }
       }
-      if (_query.TrialBalanceType != TrialBalanceType.AnaliticoDeCuentas &&
-          _query.TrialBalanceType != TrialBalanceType.Balanza) {
 
-        GetSummarySectorizedAccountByLevel(returnedEntries);
-      }
-
-      return returnedEntries;
+      return returnedAccountEntries;
     }
 
 
@@ -288,7 +290,7 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
       return parentAccounts.ToFixedList().ToList();
     }
 
-    
+
     internal void RestrictLevels(List<TrialBalanceEntry> entries) {
       if (_query.Level == 0) {
         return;
@@ -384,7 +386,8 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
           (_query.TrialBalanceType == TrialBalanceType.BalanzaEnColumnasPorMoneda &&
            _query.UseNewSectorizationModel)) {
 
-        hash = $"{targetAccount.Number}||{targetSector.Code}||{entry.Currency.Id}||{entry.Ledger.Id}||{entry.DebtorCreditor}";
+        hash = $"{targetAccount.Number}||{targetSector.Code}||{entry.Currency.Id}" +
+               $"||{entry.Ledger.Id}||{entry.DebtorCreditor}";
 
       }
       GenerateOrIncreaseEntries(summaryEntries, entry, targetAccount, targetSector, itemType, hash);
@@ -482,6 +485,80 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
     #region Private methods
 
 
+    private void AddOrSumAccountsWithSectorization(List<TrialBalanceEntry> accountEntries,
+                                                    EmpiriaHashTable<TrialBalanceEntry> hashEntries) {
+
+      var checkAccountEntries = new List<TrialBalanceEntry>(accountEntries);
+      foreach (var entry in checkAccountEntries) {
+
+        var accountEntry = accountEntries.FirstOrDefault(a => a.Account.Number == entry.Account.Number &&
+                                                               a.Ledger.Number == entry.Ledger.Number &&
+                                                               a.Currency.Code == entry.Currency.Code &&
+                                                               a.Sector.Code == "00");
+
+        var sectorParent = entry.Sector.Parent;
+
+        if (accountEntry != null && sectorParent.Code != "00" && entry.Level > 1) {
+          accountEntry.Sum(entry);
+
+        } else if (entry.Level > 1 && (sectorParent.Code != "00" ||
+             (entry.ItemType == TrialBalanceItemType.Entry &&
+              entry.HasSector))) {
+
+          SummaryByEntry(hashEntries, entry, entry.Account, Sector.Empty, entry.ItemType);
+        }
+      }
+    }
+
+
+    private void AddOrSumAccountsWithoutSectorization(List<TrialBalanceEntry> accountEntries,
+                                                      EmpiriaHashTable<TrialBalanceEntry> hashEntries) {
+
+      var checkSummaryEntries = new List<TrialBalanceEntry>(accountEntries);
+      foreach (var entry in checkSummaryEntries) {
+
+        var sectorParent = entry.Sector.Parent;
+        var returnedEntry = accountEntries.FirstOrDefault(a => a.Account.Number == entry.Account.Number &&
+                                                            a.Ledger.Number == entry.Ledger.Number &&
+                                                            a.Currency.Code == entry.Currency.Code &&
+                                                            a.Sector.Code == "00");
+
+        if (returnedEntry != null && sectorParent.Code != "00" &&
+            entry.HasSector && entry.Level > 1) {
+
+          returnedEntry.Sum(entry);
+        } else if (entry.HasSector && entry.Level > 1) {
+
+          SummaryByEntry(hashEntries, entry, entry.Account, Sector.Empty, TrialBalanceItemType.Summary);
+        }
+      }
+    }
+
+
+    private void AddOrSumHashEntryIntoAccountsWithoutSectorization(
+                              List<TrialBalanceEntry> accountEntries,
+                              EmpiriaHashTable<TrialBalanceEntry> hashEntries) {
+
+      foreach (var hashEntry in hashEntries.Values.ToList()) {
+
+        var entry = accountEntries.FirstOrDefault(
+                                    a => a.Account.Number == hashEntry.Account.Number &&
+                                         a.Ledger.Number == hashEntry.Ledger.Number &&
+                                         a.Currency.Code == hashEntry.Currency.Code &&
+                                         a.Sector.Code == hashEntry.Sector.Code && a.Sector.Code == "00");
+        if (entry == null) {
+          accountEntries.Add(hashEntry);
+
+        } else {
+          hashEntry.Sum(entry);
+          accountEntries.Remove(entry);
+          accountEntries.Add(hashEntry);
+
+        }
+      }
+    }
+
+
     private void ClausesToExchangeRate(TrialBalanceEntry entry, ExchangeRate exchangeRate) {
 
       if (_query.IsOperationalReport && !_query.ConsolidateBalancesToTargetCurrency) {
@@ -492,28 +569,6 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
 
       }
 
-    }
-
-
-    private void GetDetailSummaryEntries(List<TrialBalanceEntry> detailSummaryEntries,
-                                         EmpiriaHashTable<TrialBalanceEntry> summaryEntries,
-                                         StandardAccount currentParent, TrialBalanceEntry entry) {
-
-      TrialBalanceEntry detailsEntry;
-      string key = $"{currentParent.Number}||{entry.Sector.Code}||{entry.Currency.Id}||{entry.Ledger.Id}";
-
-      summaryEntries.TryGetValue(key, out detailsEntry);
-
-      if (detailsEntry != null) {
-        var existEntry = detailSummaryEntries.FirstOrDefault(a =>
-                                                       a.Account.Number == detailsEntry.Account.Number &&
-                                                       a.Ledger.Id == detailsEntry.Ledger.Id &&
-                                                       a.Currency.Id == detailsEntry.Currency.Id &&
-                                                       a.Sector.Code == detailsEntry.Sector.Code);
-        if (existEntry == null) {
-          detailSummaryEntries.Add(detailsEntry);
-        }
-      }
     }
 
 
@@ -532,75 +587,24 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
     }
 
 
-    private void GetSummaryEntriesWithoutSectorization(
-                                    List<TrialBalanceEntry> entriesList) {
+    private void GetAccountsWithoutSectorization(
+                                    List<TrialBalanceEntry> accountEntries) {
 
       var hashEntries = new EmpiriaHashTable<TrialBalanceEntry>();
-      var checkSummaryEntries = new List<TrialBalanceEntry>(entriesList);
 
-      foreach (var entry in checkSummaryEntries) {
-
-        var sectorParent = entry.Sector.Parent;
-        var returnedEntry = entriesList.FirstOrDefault(a => a.Account.Number == entry.Account.Number &&
-                                                               a.Ledger.Number == entry.Ledger.Number &&
-                                                               a.Currency.Code == entry.Currency.Code &&
-                                                               a.Sector.Code == "00");
-
-        if (returnedEntry != null && sectorParent.Code != "00" &&
-            entry.HasSector && entry.Level > 1) {
-
-          returnedEntry.Sum(entry);
-        } else if (entry.HasSector && entry.Level > 1) {
-
-          SummaryByEntry(hashEntries, entry, entry.Account, Sector.Empty, TrialBalanceItemType.Summary);
-        }
-      }
-
-      if (hashEntries.Count > 0) {
-
-        foreach (var hashEntry in hashEntries.ToFixedList().ToList()) {
-
-          var entry = entriesList.FirstOrDefault(
-                                      a => a.Account.Number == hashEntry.Account.Number &&
-                                           a.Ledger.Number == hashEntry.Ledger.Number &&
-                                           a.Currency.Code == hashEntry.Currency.Code &&
-                                           a.Sector.Code == hashEntry.Sector.Code && a.Sector.Code == "00");
-          if (entry == null) {
-            entriesList.Add(hashEntry);
-          } else {
-            hashEntry.Sum(entry);
-            entriesList.Remove(entry);
-            entriesList.Add(hashEntry);
-          }
-        }
-      }
+      AddOrSumAccountsWithoutSectorization(accountEntries, hashEntries);
+      AddOrSumHashEntryIntoAccountsWithoutSectorization(accountEntries, hashEntries);
     }
 
 
-    private void GetSummaryEntriesWithSectorization(
-                                    List<TrialBalanceEntry> returnedEntries) {
+    private void GetAccountsWithSectorization(
+                                    List<TrialBalanceEntry> accountEntries) {
 
       var hashEntries = new EmpiriaHashTable<TrialBalanceEntry>();
-      var checkSummaryEntries = new List<TrialBalanceEntry>(returnedEntries);
 
-      foreach (var entry in checkSummaryEntries) {
-        var sectorParent = entry.Sector.Parent;
-        var returnedEntry = returnedEntries.FirstOrDefault(a => a.Account.Number == entry.Account.Number &&
-                                                               a.Ledger.Number == entry.Ledger.Number &&
-                                                               a.Currency.Code == entry.Currency.Code &&
-                                                               a.Sector.Code == "00");
-        if (returnedEntry != null && sectorParent.Code != "00" && entry.Level > 1) {
-          returnedEntry.Sum(entry);
+      AddOrSumAccountsWithSectorization(accountEntries, hashEntries);
 
-        } else if (entry.Level > 1 && (sectorParent.Code != "00" ||
-             (entry.ItemType == TrialBalanceItemType.Entry &&
-              entry.HasSector))) {
-
-          SummaryByEntry(hashEntries, entry, entry.Account, Sector.Empty, entry.ItemType);
-        }
-      }
-
-      returnedEntries.AddRange(hashEntries.ToFixedList().ToList());
+      accountEntries.AddRange(hashEntries.ToFixedList().ToList());
     }
 
 

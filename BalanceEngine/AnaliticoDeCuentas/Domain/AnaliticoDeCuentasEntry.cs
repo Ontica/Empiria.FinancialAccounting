@@ -157,6 +157,14 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
     }
 
 
+    internal void ResetBalances() {
+      this.DomesticBalance = 0;
+      this.InitialBalance = 0;
+      this.Debit = 0;
+      this.Credit = 0;
+      this.TotalBalance = 0;
+      this.AverageBalance = 0;
+    }
   } // class AnalyticBalanceEntry
 
 } // namespace Empiria.FinancialAccounting.BalanceEngine
