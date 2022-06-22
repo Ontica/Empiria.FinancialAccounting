@@ -24,26 +24,6 @@ namespace Empiria.FinancialAccounting.BalanceEngine.Adapters {
     }
 
 
-    static internal AnaliticoDeCuentasEntry MapToAnalyticBalanceEntry(
-                                                AnaliticoDeCuentasEntry balanceEntry) {
-      var entry = new AnaliticoDeCuentasEntry();
-      entry.Account = balanceEntry.Account;
-      entry.AccountId = balanceEntry.AccountId;
-      entry.SubledgerAccountId = balanceEntry.SubledgerAccountId;
-      entry.Ledger = balanceEntry.Ledger;
-      entry.Currency = balanceEntry.Currency;
-      entry.ItemType = balanceEntry.ItemType;
-      entry.Sector = balanceEntry.Sector;
-      entry.DebtorCreditor = balanceEntry.DebtorCreditor;
-      entry.DomesticBalance = balanceEntry.DomesticBalance;
-      entry.ForeignBalance = balanceEntry.ForeignBalance;
-      entry.TotalBalance = balanceEntry.TotalBalance;
-      entry.ExchangeRate = balanceEntry.ExchangeRate;
-      //entry.LastChangeDate = balanceEntry.LastChangeDate;
-
-      return entry;
-    }
-
     static internal BalanzaDolarizadaEntry MapValuedTrialBalanceEntry(BalanzaDolarizadaEntry valuedEntry) {
       var entry = new BalanzaDolarizadaEntry();
       entry.Account = valuedEntry.Account;

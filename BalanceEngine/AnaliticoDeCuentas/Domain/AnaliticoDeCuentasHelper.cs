@@ -26,40 +26,30 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
       _query = query;
     }
 
+    #region Public methods
 
-    internal FixedList<AnaliticoDeCuentasEntry> CombineSummaryGroupsAndEntries(
-                                                  FixedList<AnaliticoDeCuentasEntry> entries,
-                                                  FixedList<AnaliticoDeCuentasEntry> totalByGroup) {
+
+    internal List<AnaliticoDeCuentasEntry> CombineTotalsByGroupAndAccountEntries(
+                                                  List<AnaliticoDeCuentasEntry> analyticEntries,
+                                                  List<AnaliticoDeCuentasEntry> totalByGroup) {
       List<AnaliticoDeCuentasEntry> returnedEntries = new List<AnaliticoDeCuentasEntry>();
 
-      foreach (var debtorsGroup in totalByGroup
-                    .Where(a => a.DebtorCreditor == DebtorCreditorType.Deudora)) {
-        var debtorEntries = entries.Where(a => a.Account.GroupNumber == debtorsGroup.GroupNumber &&
+      foreach (var debtorsGroup in totalByGroup) {
+        var debtorEntries = analyticEntries.Where(a => a.Account.GroupNumber == debtorsGroup.GroupNumber &&
                                           a.Ledger.Id == debtorsGroup.Ledger.Id &&
-                                          a.DebtorCreditor == DebtorCreditorType.Deudora).ToList();
+                                          a.DebtorCreditor == debtorsGroup.DebtorCreditor).ToList();
         if (debtorEntries.Count > 0) {
           debtorEntries.Add(debtorsGroup);
           returnedEntries.AddRange(debtorEntries);
         }
       }
 
-      foreach (var creditorsGroup in totalByGroup
-                    .Where(a => a.DebtorCreditor == DebtorCreditorType.Acreedora)) {
-        var creditorEntries = entries.Where(a => a.Account.GroupNumber == creditorsGroup.GroupNumber &&
-                                          a.Ledger.Id == creditorsGroup.Ledger.Id &&
-                                          a.DebtorCreditor == DebtorCreditorType.Acreedora).ToList();
-        if (creditorEntries.Count > 0) {
-          creditorEntries.Add(creditorsGroup);
-          returnedEntries.AddRange(creditorEntries);
-        }
-      }
-
-      return returnedEntries.ToFixedList();
+      return returnedEntries;
     }
 
 
-    internal FixedList<AnaliticoDeCuentasEntry> CombineSubledgerAccountsWithSummaryAnalyticEntries(
-                                                  FixedList<AnaliticoDeCuentasEntry> analyticEntries,
+    internal List<AnaliticoDeCuentasEntry> CombineSubledgerAccountsWithAnalyticEntries(
+                                                  List<AnaliticoDeCuentasEntry> analyticEntries,
                                                   List<TrialBalanceEntry> balanceEntries) {
       if (!_query.WithSubledgerAccount) {
         return analyticEntries;
@@ -69,8 +59,6 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
       var returnedEntries = new List<AnaliticoDeCuentasEntry>();
 
       foreach (var analyticEntry in analyticEntries) {
-
-
         var hashEntries = new EmpiriaHashTable<AnaliticoDeCuentasEntry>();
 
         MergeSubledgerAccountsWithAnaliticEntry(balanceEntries, targetCurrency, analyticEntry, hashEntries);
@@ -82,7 +70,7 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
         returnedEntries.AddRange(balanceEntriesList);
       }
 
-      return returnedEntries.ToFixedList();
+      return returnedEntries;
     }
 
 
@@ -99,8 +87,8 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
     }
 
 
-    internal FixedList<AnaliticoDeCuentasEntry> CombineTotalConsolidatedAndEntries(
-                                     FixedList<AnaliticoDeCuentasEntry> analyticEntries,
+    internal List<AnaliticoDeCuentasEntry> CombineTotalReportAndEntries(
+                                     List<AnaliticoDeCuentasEntry> analyticEntries,
                                      List<AnaliticoDeCuentasEntry> totalsByLedgerList) {
       if (totalsByLedgerList.Count == 0 || analyticEntries.Count == 0) {
         return analyticEntries;
@@ -117,40 +105,73 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
           returnedEntries.AddRange(entriesByLedger);
         }
       }
-      return returnedEntries.ToFixedList();
+      return returnedEntries;
     }
 
 
-    internal FixedList<AnaliticoDeCuentasEntry> CombineTotalDebtorCreditorAndEntries
-                            (List<AnaliticoDeCuentasEntry> entries,
-                             List<AnaliticoDeCuentasEntry> totalByDebtorCreditorEntries) {
+    internal List<AnaliticoDeCuentasEntry> CombineTotalDebtorCreditorAndEntries(
+                                                List<AnaliticoDeCuentasEntry> analyticEntries,
+                                                List<AnaliticoDeCuentasEntry> totalByDebtorsCreditors) {
       List<AnaliticoDeCuentasEntry> returnedEntries = new List<AnaliticoDeCuentasEntry>();
 
-      foreach (var debtorEntry in totalByDebtorCreditorEntries
-                    .Where(a => a.ItemType == TrialBalanceItemType.BalanceTotalDebtor)) {
+      CombineEntriesWithTotalDebtors(returnedEntries, analyticEntries, totalByDebtorsCreditors);
+      CombineEntriesWithTotalCreditors(returnedEntries, analyticEntries, totalByDebtorsCreditors);
 
-        var listSummaryDebtors = entries.Where(a => a.Ledger.Id == debtorEntry.Ledger.Id &&
-                                               a.Currency.Code == debtorEntry.Currency.Code &&
-                                               a.DebtorCreditor == DebtorCreditorType.Deudora).ToList();
-        if (listSummaryDebtors.Count > 0) {
-          listSummaryDebtors.Add(debtorEntry);
-          returnedEntries.AddRange(listSummaryDebtors);
-        }
-      }
-      foreach (var creditorEntry in totalByDebtorCreditorEntries
-                    .Where(a => a.ItemType == TrialBalanceItemType.BalanceTotalCreditor)) {
-
-        var listSummaryCreditros = entries.Where(a => a.Ledger.Id == creditorEntry.Ledger.Id &&
-                                                 a.Currency.Code == creditorEntry.Currency.Code &&
-                                                 a.DebtorCreditor == DebtorCreditorType.Acreedora).ToList();
-        if (listSummaryCreditros.Count > 0) {
-          listSummaryCreditros.Add(creditorEntry);
-          returnedEntries.AddRange(listSummaryCreditros);
-        }
-      }
-      return returnedEntries.ToFixedList();
+      return returnedEntries;
     }
 
+
+    internal FixedList<AnaliticoDeCuentasEntry> GenerateAverageBalance(
+                                                    FixedList<AnaliticoDeCuentasEntry> analyticEntries,
+                                                    BalancesPeriod period) {
+      if (!_query.WithAverageBalance) {
+        return analyticEntries;
+      }
+
+      FixedList<AnaliticoDeCuentasEntry> returnedBalances =
+                                      new FixedList<AnaliticoDeCuentasEntry>(analyticEntries);
+
+      foreach (var entry in returnedBalances.Where(a => a.ItemType == TrialBalanceItemType.Entry ||
+                                                        a.ItemType == TrialBalanceItemType.Summary)) {
+          decimal debtorCreditor = entry.DebtorCreditor == DebtorCreditorType.Deudora ?
+                                    entry.Debit - entry.Credit : entry.Credit - entry.Debit;
+
+          TimeSpan timeSpan = period.ToDate - entry.LastChangeDate;
+          int numberOfDays = timeSpan.Days + 1;
+
+          entry.AverageBalance = ((numberOfDays * debtorCreditor) /
+                                    _query.InitialPeriod.ToDate.Day) +
+                                    entry.InitialBalance;
+      }
+
+      return returnedBalances;
+    }
+
+
+    internal List<AnaliticoDeCuentasEntry> GenerateTotalReport(
+                                             List<AnaliticoDeCuentasEntry> balanceEntries) {
+      var totalSummary = new EmpiriaHashTable<AnaliticoDeCuentasEntry>();
+
+      foreach (var balanceEntry in balanceEntries) {
+        AnaliticoDeCuentasEntry analyticEntry = AnaliticoDeCuentasMapper.CreatePartialCopy(balanceEntry);
+
+        if (balanceEntry.DebtorCreditor == DebtorCreditorType.Acreedora) {
+          analyticEntry.DomesticBalance = -1 * analyticEntry.DomesticBalance;
+          analyticEntry.ForeignBalance = -1 * analyticEntry.ForeignBalance;
+          analyticEntry.TotalBalance = -1 * analyticEntry.TotalBalance;
+        }
+        analyticEntry.Account = StandardAccount.Empty;
+        analyticEntry.Sector = Sector.Empty;
+        analyticEntry.GroupName = "TOTAL DEL REPORTE";
+
+        string hash = $"{analyticEntry.GroupName}||{Sector.Empty.Code}||{analyticEntry.Currency.Id}||{analyticEntry.Ledger.Id}";
+
+        GenerateOrIncreaseTotalBalance(totalSummary, analyticEntry,
+                                                    TrialBalanceItemType.BalanceTotalConsolidated, hash);
+      }
+
+      return totalSummary.Values.ToList();
+    }
 
 
     internal List<TrialBalanceEntry> GetCalculatedParentAccounts(
@@ -180,30 +201,149 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
     }
 
 
-    internal FixedList<AnaliticoDeCuentasEntry> GenerateAverageBalance(
-                                                    FixedList<AnaliticoDeCuentasEntry> analyticEntries,
-                                                    BalancesPeriod period) {
-      if (!_query.WithAverageBalance) {
-        return analyticEntries;
+    internal void GetSummaryToSectorZeroForPesosAndUdis(
+                    List<TrialBalanceEntry> accountEntries) {
+
+      if (!_query.UseNewSectorizationModel) {
+        return;
       }
 
-      FixedList<AnaliticoDeCuentasEntry> returnedBalances =
-                                      new FixedList<AnaliticoDeCuentasEntry>(analyticEntries);
+      SummaryToSectorZeroForPesosAndUdis(accountEntries);
+    }
 
-      foreach (var entry in returnedBalances.Where(a => a.ItemType == TrialBalanceItemType.Entry ||
-                                                        a.ItemType == TrialBalanceItemType.Summary)) {
-          decimal debtorCreditor = entry.DebtorCreditor == DebtorCreditorType.Deudora ?
-                                    entry.Debit - entry.Credit : entry.Credit - entry.Debit;
 
-          TimeSpan timeSpan = period.ToDate - entry.LastChangeDate;
-          int numberOfDays = timeSpan.Days + 1;
+    internal List<AnaliticoDeCuentasEntry> GetTotalsByDebtorOrCreditorEntries(
+                                           List<AnaliticoDeCuentasEntry> analyticEntries) {
 
-          entry.AverageBalance = ((numberOfDays * debtorCreditor) /
-                                    _query.InitialPeriod.ToDate.Day) +
-                                    entry.InitialBalance;
+      List<AnaliticoDeCuentasEntry> listEntries = GetFirstLevelEntriesToGroup(analyticEntries);
+      var totalSummaryDebtorCredtor = new EmpiriaHashTable<AnaliticoDeCuentasEntry>();
+
+      foreach (var entry in listEntries) {
+        
+        SummaryByDebtorCreditorEntries(totalSummaryDebtorCredtor, entry);
+
       }
 
-      return returnedBalances;
+      return totalSummaryDebtorCredtor.Values.ToList();
+    }
+
+
+    internal List<AnaliticoDeCuentasEntry> GetTotalByGroup(List<AnaliticoDeCuentasEntry> analyticEntries) {
+
+      var totalsByGroup = new EmpiriaHashTable<AnaliticoDeCuentasEntry>();
+      List<AnaliticoDeCuentasEntry> listEntries = GetFirstLevelEntriesToGroup(analyticEntries);
+
+      foreach (var entry in listEntries) {
+
+        SummaryByGroupEntries(totalsByGroup, entry);
+      }
+
+      return totalsByGroup.Values.ToList();
+    }
+
+
+    internal List<AnaliticoDeCuentasEntry> MergeTrialBalanceIntoAnalyticColumns(
+                                                  List<TrialBalanceEntry> balanceEntries) {
+
+      IEnumerable<TrialBalanceEntry> accountEntries = GetFilteredAccountEntries(balanceEntries);
+
+      var hashAnaliticoEntries = new EmpiriaHashTable<AnaliticoDeCuentasEntry>();
+
+      ConvertIntoAnaliticoDeCuentasEntry(accountEntries, hashAnaliticoEntries);
+
+      ICollection<AnaliticoDeCuentasEntry> analyticEntries = hashAnaliticoEntries.Values;
+
+      MergeDomesticBalancesIntoSectorZero(analyticEntries, accountEntries);
+      MergeForeignBalancesIntoSectorZero(analyticEntries, accountEntries);
+
+      return analyticEntries.OrderBy(a => a.Ledger.Number)
+                            .ThenByDescending(a => a.DebtorCreditor)
+                            .ThenBy(a => a.Account.Number)
+                            .ThenBy(a => a.Sector.Code)
+                            .ThenBy(a => a.SubledgerAccountId)
+                            .ToList();
+    }
+
+
+    #endregion Public methods
+
+
+    #region Private methods
+
+
+    private void BalanceEntryByCurrencyToSumTwoColumnEntry(AnaliticoDeCuentasEntry analyticEntry,
+                                                           TrialBalanceEntry balanceEntry,
+                                                           Currency currentCurrency) {
+
+      if (balanceEntry.Level == 1 && (currentCurrency.Equals(Currency.MXN) || currentCurrency.Equals(Currency.UDI))) {
+        analyticEntry.DomesticBalance += balanceEntry.CurrentBalance;
+
+      } else if (balanceEntry.Sector.Code == "00" && currentCurrency.Equals(Currency.MXN)) {
+        analyticEntry.DomesticBalance = balanceEntry.CurrentBalance;
+
+      } else if (balanceEntry.Sector.Code != "00" &&
+                  (currentCurrency.Equals(Currency.MXN) || currentCurrency.Equals(Currency.UDI))) {
+        analyticEntry.DomesticBalance += balanceEntry.CurrentBalance;
+
+      } else if (currentCurrency.Equals(Currency.UDI) && balanceEntry.IsSummaryForAnalytics) {
+        analyticEntry.DomesticBalance += balanceEntry.CurrentBalance;
+
+      } else if (!_query.UseNewSectorizationModel && currentCurrency.Equals(Currency.UDI)) {
+        analyticEntry.DomesticBalance += balanceEntry.CurrentBalance;
+
+      }
+    }
+
+
+    private void CombineEntriesWithTotalDebtors(List<AnaliticoDeCuentasEntry> returnedEntries,
+                                                List<AnaliticoDeCuentasEntry> analyticEntries,
+                                                List<AnaliticoDeCuentasEntry> totalByDebtorsCreditors) {
+
+      foreach (var totalDebtor in totalByDebtorsCreditors
+                    .Where(a => a.DebtorCreditor == DebtorCreditorType.Deudora)) {
+
+        var debtorEntries = analyticEntries.Where(a => a.Ledger.Id == totalDebtor.Ledger.Id &&
+                                               a.Currency.Code == totalDebtor.Currency.Code &&
+                                               a.DebtorCreditor == totalDebtor.DebtorCreditor).ToList();
+        debtorEntries.Add(totalDebtor);
+        returnedEntries.AddRange(debtorEntries);
+      }
+
+    }
+
+
+    private void CombineEntriesWithTotalCreditors(List<AnaliticoDeCuentasEntry> returnedEntries,
+                                                  List<AnaliticoDeCuentasEntry> analyticEntries,
+                                                  List<AnaliticoDeCuentasEntry> totalByDebtorsCreditors) {
+
+      foreach (var totalCreditor in totalByDebtorsCreditors
+                    .Where(a => a.DebtorCreditor == DebtorCreditorType.Acreedora)) {
+
+        var creditorEntries = analyticEntries.Where(a => a.Ledger.Id == totalCreditor.Ledger.Id &&
+                                                 a.Currency.Code == totalCreditor.Currency.Code &&
+                                                 a.DebtorCreditor == totalCreditor.DebtorCreditor).ToList();
+        creditorEntries.Add(totalCreditor);
+        returnedEntries.AddRange(creditorEntries);
+      }
+
+    }
+
+
+    private void ConvertIntoAnaliticoDeCuentasEntry(IEnumerable<TrialBalanceEntry> accountEntries,
+                                   EmpiriaHashTable<AnaliticoDeCuentasEntry> hashAnaliticoEntries) {
+
+      var targetCurrency = Currency.Parse(_query.InitialPeriod.ValuateToCurrrencyUID);
+
+      foreach (var entry in accountEntries) {
+        if (entry.CurrentBalance != 0) {
+          string hash = $"{entry.Account.Number}||{entry.Sector.Code}||{targetCurrency.Id}||" +
+                        $"{entry.Ledger.Id}||{entry.DebtorCreditor}";
+
+          Currency currentCurrency = entry.Currency;
+          MergeEntriesIntoTwoColumns(hashAnaliticoEntries, entry, hash, currentCurrency);
+
+        }
+      }
     }
 
 
@@ -244,152 +384,6 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
         }
 
       } // while
-    }
-
-
-    internal List<AnaliticoDeCuentasEntry> GenerateTotalReport(
-                                             List<AnaliticoDeCuentasEntry> balanceEntries) {
-      var totalSummary = new EmpiriaHashTable<AnaliticoDeCuentasEntry>();
-
-      foreach (var balanceEntry in balanceEntries) {
-        AnaliticoDeCuentasEntry analyticEntry = TrialBalanceMapper.MapToAnalyticBalanceEntry(balanceEntry);
-
-        if (balanceEntry.DebtorCreditor == DebtorCreditorType.Acreedora) {
-          analyticEntry.DomesticBalance = -1 * analyticEntry.DomesticBalance;
-          analyticEntry.ForeignBalance = -1 * analyticEntry.ForeignBalance;
-          analyticEntry.TotalBalance = -1 * analyticEntry.TotalBalance;
-        }
-        analyticEntry.Account = StandardAccount.Empty;
-        analyticEntry.Sector = Sector.Empty;
-        analyticEntry.GroupName = "TOTAL DEL REPORTE";
-
-        string hash = $"{analyticEntry.GroupName}||{Sector.Empty.Code}||{analyticEntry.Currency.Id}||{analyticEntry.Ledger.Id}";
-
-        GenerateOrIncreaseTotalBalance(totalSummary, analyticEntry,
-                                                    TrialBalanceItemType.BalanceTotalConsolidated, hash);
-      }
-
-      return totalSummary.Values.ToList();
-    }
-
-
-    internal void GetSummaryToSectorZeroForPesosAndUdis(
-                    List<TrialBalanceEntry> accountEntries) {
-
-      SummaryToSectorZeroForPesosAndUdis(accountEntries);
-    }
-
-
-    internal List<AnaliticoDeCuentasEntry> GetTotalDebtorCreditorEntries(
-                                                  FixedList<AnaliticoDeCuentasEntry> entries) {
-
-      var totalSummaryDebtorCredtor = new EmpiriaHashTable<AnaliticoDeCuentasEntry>(entries.Count);
-      var summaryEntries = entries.Where(a => a.ItemType != TrialBalanceItemType.BalanceTotalGroupDebtor &&
-                                              a.ItemType != TrialBalanceItemType.BalanceTotalGroupCreditor)
-                                  .ToFixedList();
-
-      List<AnaliticoDeCuentasEntry> listEntries = GetFirstLevelEntriesToGroup(summaryEntries);
-
-      foreach (var entry in listEntries) {
-
-        if (entry.DebtorCreditor == DebtorCreditorType.Deudora) {
-          SummaryByDebtorCreditorEntries(totalSummaryDebtorCredtor, entry,
-                                         TrialBalanceItemType.BalanceTotalDebtor);
-        } else if (entry.DebtorCreditor == DebtorCreditorType.Acreedora) {
-          SummaryByDebtorCreditorEntries(totalSummaryDebtorCredtor, entry,
-                                         TrialBalanceItemType.BalanceTotalCreditor);
-        }
-      }
-
-      return totalSummaryDebtorCredtor.Values.ToList();
-    }
-
-
-    internal FixedList<AnaliticoDeCuentasEntry> GetTotalSummaryByGroup(
-                                                   FixedList<AnaliticoDeCuentasEntry> entries) {
-
-      var totalsByGroup = new EmpiriaHashTable<AnaliticoDeCuentasEntry>();
-
-      List<AnaliticoDeCuentasEntry> listEntries = GetFirstLevelEntriesToGroup(entries);
-
-      foreach (var entry in listEntries) {
-        if (entry.DebtorCreditor == DebtorCreditorType.Deudora) {
-          SummaryByGroupEntries(totalsByGroup, entry,
-                                          TrialBalanceItemType.BalanceTotalGroupDebtor);
-        } else if (entry.DebtorCreditor == DebtorCreditorType.Acreedora) {
-          SummaryByGroupEntries(totalsByGroup, entry,
-                                          TrialBalanceItemType.BalanceTotalGroupCreditor);
-        }
-      }
-      return totalsByGroup.ToFixedList();
-    }
-
-
-    internal FixedList<AnaliticoDeCuentasEntry> MergeTrialBalanceIntoAnalyticColumns(
-                                                  List<TrialBalanceEntry> balanceEntries) {
-
-      IEnumerable<TrialBalanceEntry> accountEntries = GetFilteredAccountEntries(balanceEntries);
-
-      var hashAnaliticoEntries = new EmpiriaHashTable<AnaliticoDeCuentasEntry>();
-
-      ConvertIntoAnaliticoDeCuentasEntry(accountEntries, hashAnaliticoEntries);
-
-      ICollection<AnaliticoDeCuentasEntry> analyticEntries = hashAnaliticoEntries.Values;
-
-      MergeDomesticBalancesIntoSectorZero(analyticEntries, accountEntries);
-      MergeForeignBalancesIntoSectorZero(analyticEntries, accountEntries);
-
-      return analyticEntries.OrderBy(a => a.Ledger.Number)
-                            .ThenByDescending(a => a.DebtorCreditor)
-                            .ThenBy(a => a.Account.Number)
-                            .ThenBy(a => a.Sector.Code)
-                            .ThenBy(a => a.SubledgerAccountId)
-                            .ToFixedList();
-    }
-
-
-    #region Private methods
-
-
-    private void BalanceEntryByCurrencyToSumTwoColumnEntry(AnaliticoDeCuentasEntry analyticEntry,
-                                                           TrialBalanceEntry balanceEntry,
-                                                           Currency currentCurrency) {
-
-      if (balanceEntry.Level == 1 && (currentCurrency.Equals(Currency.MXN) || currentCurrency.Equals(Currency.UDI))) {
-        analyticEntry.DomesticBalance += balanceEntry.CurrentBalance;
-
-      } else if (balanceEntry.Sector.Code == "00" && currentCurrency.Equals(Currency.MXN)) {
-        analyticEntry.DomesticBalance = balanceEntry.CurrentBalance;
-
-      } else if (balanceEntry.Sector.Code != "00" &&
-                  (currentCurrency.Equals(Currency.MXN) || currentCurrency.Equals(Currency.UDI))) {
-        analyticEntry.DomesticBalance += balanceEntry.CurrentBalance;
-
-      } else if (currentCurrency.Equals(Currency.UDI) && balanceEntry.IsSummaryForAnalytics) {
-        analyticEntry.DomesticBalance += balanceEntry.CurrentBalance;
-
-      } else if (!_query.UseNewSectorizationModel && currentCurrency.Equals(Currency.UDI)) {
-        analyticEntry.DomesticBalance += balanceEntry.CurrentBalance;
-
-      }
-    }
-
-
-    private void ConvertIntoAnaliticoDeCuentasEntry(IEnumerable<TrialBalanceEntry> accountEntries,
-                                   EmpiriaHashTable<AnaliticoDeCuentasEntry> hashAnaliticoEntries) {
-
-      var targetCurrency = Currency.Parse(_query.InitialPeriod.ValuateToCurrrencyUID);
-
-      foreach (var entry in accountEntries) {
-        if (entry.CurrentBalance != 0) {
-          string hash = $"{entry.Account.Number}||{entry.Sector.Code}||{targetCurrency.Id}||" +
-                        $"{entry.Ledger.Id}||{entry.DebtorCreditor}";
-
-          Currency currentCurrency = entry.Currency;
-          MergeEntriesIntoTwoColumns(hashAnaliticoEntries, entry, hash, currentCurrency);
-
-        }
-      }
     }
 
 
@@ -459,31 +453,33 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
 
 
     private List<AnaliticoDeCuentasEntry> GetFirstLevelEntriesToGroup(
-                                              FixedList<AnaliticoDeCuentasEntry> entries) {
+                                          List<AnaliticoDeCuentasEntry> analyticEntries) {
 
       var listEntries = new List<AnaliticoDeCuentasEntry>();
 
-      foreach (var entry in entries.Where(a => a.Level == 1)) {
-        var entryWithoutSector = entries.FirstOrDefault(
+      foreach (var entry in analyticEntries.Where(a => a.Level == 1)) {
+
+        var entryWithoutSector = analyticEntries.FirstOrDefault(
                                     a => a.Account.Number == entry.Account.Number &&
                                     a.Ledger.Number == entry.Ledger.Number &&
                                     a.DebtorCreditor == entry.DebtorCreditor && a.NotHasSector);
 
-        if (entryWithoutSector != null &&
-              listEntries.FirstOrDefault(a =>
-                          a.Account.Number == entryWithoutSector.Account.Number &&
-                          a.Ledger.Number == entryWithoutSector.Ledger.Number &&
-                          a.DebtorCreditor == entryWithoutSector.DebtorCreditor &&
-                          a.NotHasSector) == null) {
+        if (entryWithoutSector != null) {
 
-          listEntries.Add(entryWithoutSector);
+          var existInList = listEntries.FirstOrDefault(a =>
+                       a.Account.Number == entryWithoutSector.Account.Number &&
+                       a.Ledger.Number == entryWithoutSector.Ledger.Number &&
+                       a.DebtorCreditor == entryWithoutSector.DebtorCreditor &&
+                       a.NotHasSector);
 
-        } else if (entryWithoutSector == null) {
+          if (existInList == null) {
+            listEntries.Add(entryWithoutSector);
+          }
+
+        } else {
 
           listEntries.Add(entry);
-        } else {
-          // no-op
-        }
+        } 
       }
 
       return listEntries;
@@ -629,7 +625,7 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
     }
 
 
-    private void SummaryBalancesByAnalyticEntry(AnaliticoDeCuentasEntry analyticEntry,
+    private void SumBalanceEntryIntoAnalyticEntry(AnaliticoDeCuentasEntry analyticEntry,
                                                 TrialBalanceEntry balanceEntry) {
 
       analyticEntry.InitialBalance += balanceEntry.InitialBalance;
@@ -644,17 +640,21 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
 
     private void SummaryByDebtorCreditorEntries(
                   EmpiriaHashTable<AnaliticoDeCuentasEntry> summaryEntries,
-                  AnaliticoDeCuentasEntry balanceEntry, TrialBalanceItemType itemType) {
+                  AnaliticoDeCuentasEntry balanceEntry) {
 
-      AnaliticoDeCuentasEntry entry = TrialBalanceMapper.MapToAnalyticBalanceEntry(balanceEntry);
+      AnaliticoDeCuentasEntry entry = AnaliticoDeCuentasMapper.CreatePartialCopy(balanceEntry);
 
-      if (itemType == TrialBalanceItemType.BalanceTotalDebtor) {
-        entry.GroupName = "TOTAL DEUDORAS";
-      } else if (itemType == TrialBalanceItemType.BalanceTotalCreditor) {
-        entry.GroupName = "TOTAL ACREEDORAS";
-      }
       entry.Account = StandardAccount.Empty;
-      entry.DebtorCreditor = balanceEntry.DebtorCreditor;
+      entry.GroupName = "TOTAL DEUDORAS";
+
+      TrialBalanceItemType itemType = TrialBalanceItemType.BalanceTotalDebtor;
+
+      if (entry.DebtorCreditor == DebtorCreditorType.Acreedora) {
+
+        entry.GroupName = "TOTAL ACREEDORAS";
+        itemType = TrialBalanceItemType.BalanceTotalCreditor;
+
+      } 
 
       string hash = $"{entry.GroupName}||{Sector.Empty.Code}||{entry.Ledger.Id}||{entry.DebtorCreditor}";
 
@@ -663,13 +663,18 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
 
 
     private void SummaryByGroupEntries(EmpiriaHashTable<AnaliticoDeCuentasEntry> summaryEntries,
-                                                 AnaliticoDeCuentasEntry balanceEntry,
-                                                 TrialBalanceItemType itemType) {
+                                                 AnaliticoDeCuentasEntry balanceEntry) {
 
-      AnaliticoDeCuentasEntry entry = TrialBalanceMapper.MapToAnalyticBalanceEntry(balanceEntry);
+      AnaliticoDeCuentasEntry entry = AnaliticoDeCuentasMapper.CreatePartialCopy(balanceEntry);
 
       entry.GroupName = $"TOTAL GRUPO {entry.Account.GroupNumber}";
       entry.GroupNumber = $"{entry.Account.GroupNumber}";
+
+      TrialBalanceItemType itemType = TrialBalanceItemType.BalanceTotalGroupDebtor;
+
+      if (entry.DebtorCreditor == DebtorCreditorType.Acreedora) {
+        itemType = TrialBalanceItemType.BalanceTotalGroupCreditor;
+      }
 
       string hash = $"{entry.GroupNumber}||{Sector.Empty.Code}||{entry.Currency.Id}||" +
                     $"{entry.Ledger.Id}||{entry.DebtorCreditor}";
@@ -679,10 +684,6 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
 
 
     private void SummaryToSectorZeroForPesosAndUdis(List<TrialBalanceEntry> entries) {
-
-      if (!_query.UseNewSectorizationModel) {
-        return;
-      }
 
       var entriesWithUdisCurrency = entries.Where(a => a.Level > 1 &&
                                                   a.Currency.Code == "44" &&
@@ -736,7 +737,7 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
         BalanceEntryByCurrencyToSumTwoColumnEntry(analyticEntry, balanceEntry, currentCurrency);
       }
 
-      SummaryBalancesByAnalyticEntry(analyticEntry, balanceEntry);
+      SumBalanceEntryIntoAnalyticEntry(analyticEntry, balanceEntry);
 
       if (_query.UseNewSectorizationModel) {
         balanceEntry.Currency = currentCurrency;

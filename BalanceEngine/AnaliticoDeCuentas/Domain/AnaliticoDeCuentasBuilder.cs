@@ -55,32 +55,33 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
 
       balanceHelper.RestrictLevels(balanceEntries);
 
-      FixedList<AnaliticoDeCuentasEntry> analyticEntries =
+      List<AnaliticoDeCuentasEntry> analyticEntries =
                                         analiticoHelper.MergeTrialBalanceIntoAnalyticColumns(balanceEntries);
 
-      analyticEntries = analiticoHelper.CombineSubledgerAccountsWithSummaryAnalyticEntries(
-                                            analyticEntries, balanceEntries);
+      List<AnaliticoDeCuentasEntry> analyticEntriesAndSubledgerAccounts = 
+        analiticoHelper.CombineSubledgerAccountsWithAnalyticEntries(analyticEntries, balanceEntries);
 
-      FixedList<AnaliticoDeCuentasEntry> summaryGroupEntries =
-                                            analiticoHelper.GetTotalSummaryByGroup(analyticEntries);
+      List<AnaliticoDeCuentasEntry> totalsByGroup =
+                                    analiticoHelper.GetTotalByGroup(analyticEntriesAndSubledgerAccounts);
 
-      analyticEntries = analiticoHelper.CombineSummaryGroupsAndEntries(
-                                            analyticEntries, summaryGroupEntries);
+      List<AnaliticoDeCuentasEntry> analyticEntriesAndTotalsByGroup = 
+        analiticoHelper.CombineTotalsByGroupAndAccountEntries(
+                        analyticEntriesAndSubledgerAccounts, totalsByGroup);
 
-      List<AnaliticoDeCuentasEntry> summaryTotalDebtorCreditorEntries =
-                                      analiticoHelper.GetTotalDebtorCreditorEntries(
-                                        analyticEntries);
+      List<AnaliticoDeCuentasEntry> totalByDebtorsCreditors =
+        analiticoHelper.GetTotalsByDebtorOrCreditorEntries(analyticEntriesAndSubledgerAccounts);
 
-      analyticEntries = analiticoHelper.CombineTotalDebtorCreditorAndEntries(
-                                            analyticEntries.ToList(), summaryTotalDebtorCreditorEntries);
+      List<AnaliticoDeCuentasEntry> analyticEntriesAndTotalDebtorCreditor = 
+        analiticoHelper.CombineTotalDebtorCreditorAndEntries(
+                        analyticEntriesAndTotalsByGroup, totalByDebtorsCreditors);
 
-      List<AnaliticoDeCuentasEntry> summaryTotalReport =
-                                    analiticoHelper.GenerateTotalReport(summaryTotalDebtorCreditorEntries);
+      List<AnaliticoDeCuentasEntry> totalReport =
+                                    analiticoHelper.GenerateTotalReport(totalByDebtorsCreditors);
 
-      analyticEntries = analiticoHelper.CombineTotalConsolidatedAndEntries(
-                                            analyticEntries, summaryTotalReport);
+      List<AnaliticoDeCuentasEntry> analyticReport = analiticoHelper.CombineTotalReportAndEntries(
+                                            analyticEntriesAndTotalDebtorCreditor, totalReport);
 
-      return analyticEntries.ToFixedList();
+      return analyticReport.ToFixedList();
     }
 
 
