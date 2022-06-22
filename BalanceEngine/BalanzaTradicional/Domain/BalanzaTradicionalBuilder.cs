@@ -46,7 +46,6 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
       List<TrialBalanceEntry> parentAccountEntriesAndSectorization =
         trialBalanceHelper.GetSummaryAccountsAndSectorization(parentAccounts.ToList());
 
-
       List<TrialBalanceEntry> parentsAndAccountEntries = balanzaHelper.CombineParentsAndAccountEntries(
                                                          parentAccountEntriesAndSectorization,
                                                          accountEntriesAndSectorization);

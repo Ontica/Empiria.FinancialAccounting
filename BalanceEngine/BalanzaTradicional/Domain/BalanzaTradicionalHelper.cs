@@ -125,16 +125,16 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
                                       List<TrialBalanceEntry> parentAccountEntries,
                                       List<TrialBalanceEntry> accountEntries) {
 
-      var returnedCombineEntries = new List<TrialBalanceEntry>(accountEntries);
+      var returnedEntries = new List<TrialBalanceEntry>(accountEntries);
 
-      returnedCombineEntries.AddRange(parentAccountEntries);
+      returnedEntries.AddRange(parentAccountEntries);
 
       var trialBalanceHelper = new TrialBalanceHelper(_query);
 
-      trialBalanceHelper.SetSubledgerAccountInfoByEntry(returnedCombineEntries);
+      trialBalanceHelper.SetSubledgerAccountInfoByEntry(returnedEntries);
 
       List<TrialBalanceEntry> orderingAccountEntries =
-        trialBalanceHelper.OrderingParentsAndAccountEntries(returnedCombineEntries);
+        trialBalanceHelper.OrderingParentsAndAccountEntries(returnedEntries);
 
       return orderingAccountEntries;
     }
