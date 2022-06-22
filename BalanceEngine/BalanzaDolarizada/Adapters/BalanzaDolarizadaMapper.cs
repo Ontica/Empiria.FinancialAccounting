@@ -36,6 +36,20 @@ namespace Empiria.FinancialAccounting.BalanceEngine.Adapters {
     #region Private methods
 
 
+    static internal BalanzaDolarizadaEntry BalanzaDolarizadaPartialCopy(
+                                           BalanzaDolarizadaEntry valuedEntry) {
+
+      var entry = new BalanzaDolarizadaEntry();
+      entry.Account = valuedEntry.Account;
+      entry.Currency = valuedEntry.Currency;
+      entry.Sector = Sector.Empty;
+      entry.GroupName = valuedEntry.GroupName;
+      entry.ItemType = valuedEntry.ItemType;
+
+      return entry;
+    }
+
+
     static public FixedList<DataTableColumn> DataColumns() {
 
       List<DataTableColumn> columns = new List<DataTableColumn>();
@@ -73,6 +87,7 @@ namespace Empiria.FinancialAccounting.BalanceEngine.Adapters {
       return dto;
     }
 
+
     private static void AssignTotalBalanceAndExchangeRate(BalanzaDolarizadaEntryDto dto,
                                                           BalanzaDolarizadaEntry entry) {
       
@@ -82,6 +97,7 @@ namespace Empiria.FinancialAccounting.BalanceEngine.Adapters {
       }
 
     }
+
 
     static private void AssignAccountName(BalanzaDolarizadaEntryDto dto, BalanzaDolarizadaEntry entry) {
 

@@ -24,18 +24,6 @@ namespace Empiria.FinancialAccounting.BalanceEngine.Adapters {
     }
 
 
-    static internal BalanzaDolarizadaEntry MapValuedTrialBalanceEntry(BalanzaDolarizadaEntry valuedEntry) {
-      var entry = new BalanzaDolarizadaEntry();
-      entry.Account = valuedEntry.Account;
-      entry.Currency = valuedEntry.Currency;
-      entry.Sector = Sector.Empty;
-      entry.GroupName = valuedEntry.GroupName;
-      entry.ItemType = valuedEntry.ItemType;
-
-      return entry;
-    }
-
-
     #endregion Public mappers
 
     #region Helpers

@@ -237,7 +237,7 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
     private EmpiriaHashTable<BalanzaDolarizadaEntry> GetTotalByAccount(
                                                 BalanzaDolarizadaEntry header, decimal totalEquivalence) {
 
-      BalanzaDolarizadaEntry valuedEntry = TrialBalanceMapper.MapValuedTrialBalanceEntry(header);
+      BalanzaDolarizadaEntry valuedEntry = BalanzaDolarizadaMapper.BalanzaDolarizadaPartialCopy(header);
 
       valuedEntry.GroupName = "TOTAL POR CUENTA";
       valuedEntry.TotalEquivalence = totalEquivalence;
