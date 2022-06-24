@@ -71,6 +71,17 @@ namespace Empiria.FinancialAccounting.Tests.BalanceEngine {
     }
 
 
+    static internal Task<BalanzaTradicionalDto> BuildBalanzaTradicional(TrialBalanceQuery query) {
+      if (TestingConstants.INVOKE_USE_CASES_THROUGH_THE_WEB_API) {
+        return BuildRemoteBalanzaTradicionalUseCase(query);
+
+      } else {
+        return BuildLocalBalanzaTradicionalUseCase(query);
+
+      }
+    }
+
+
     private static Task<AnaliticoDeCuentasDto> BuildLocalAnaliticoDeCuentasUseCase(TrialBalanceQuery query) {
       using (var usecase = TrialBalanceUseCases.UseCaseInteractor()) {
         return usecase.BuildAnaliticoDeCuentas(query);
@@ -82,6 +93,23 @@ namespace Empiria.FinancialAccounting.Tests.BalanceEngine {
       HttpApiClient http = CreateHttpApiClient();
 
       var dto = await http.PostAsync<ResponseModel<AnaliticoDeCuentasDto>>(query, "v2/financial-accounting/balance-engine/analitico-de-cuentas")
+                          .ConfigureAwait(false);
+
+      return dto.Data;
+    }
+
+
+    private static Task<BalanzaTradicionalDto> BuildLocalBalanzaTradicionalUseCase(TrialBalanceQuery query) {
+      using (var usecase = TrialBalanceUseCases.UseCaseInteractor()) {
+        return usecase.BuildBalanzaTradicional(query);
+      }
+    }
+
+
+    private static async Task<BalanzaTradicionalDto> BuildRemoteBalanzaTradicionalUseCase(TrialBalanceQuery query) {
+      HttpApiClient http = CreateHttpApiClient();
+
+      var dto = await http.PostAsync<ResponseModel<BalanzaTradicionalDto>>(query, "v2/financial-accounting/balance-engine/balanza-tradicional")
                           .ConfigureAwait(false);
 
       return dto.Data;

@@ -45,6 +45,13 @@ namespace Empiria.FinancialAccounting.Tests {
     }
 
 
+    static public FixedList<BalanzaTradicionalEntryDto> GetExpectedEntries(this BalanzaTradicionalTestCase testcase) {
+      BalanzaTradicionalDto dto = ReadBalanzaTradicionalFromFile(testcase);
+
+      return dto.Entries;
+    }
+
+
     #region Helpers
 
     static private BalanzaTradicionalDto ReadBalanzaTradicionalFromFile(BalanzaTradicionalTestCase testcase) {
