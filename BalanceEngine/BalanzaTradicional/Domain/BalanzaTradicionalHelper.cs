@@ -365,14 +365,16 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
                $"{totalGroupEntry.Currency.Id}||{totalGroupEntry.GroupNumber}";
       }
 
-      var debtorCreditor = accountEntry.DebtorCreditor == DebtorCreditorType.Deudora ?
-                           TrialBalanceItemType.BalanceTotalGroupDebtor :
-                           TrialBalanceItemType.BalanceTotalGroupCreditor;
+      TrialBalanceItemType itemType = TrialBalanceItemType.BalanceTotalGroupDebtor;
+
+      if (accountEntry.DebtorCreditor == DebtorCreditorType.Acreedora) {
+        itemType = TrialBalanceItemType.BalanceTotalGroupCreditor;
+      }
 
       var trialBalanceHelper = new TrialBalanceHelper(_query);
       trialBalanceHelper.GenerateOrIncreaseEntries(totalGroupEntries, totalGroupEntry,
                                                    StandardAccount.Empty, Sector.Empty,
-                                                   debtorCreditor, hash);
+                                                   itemType, hash);
     }
 
 
