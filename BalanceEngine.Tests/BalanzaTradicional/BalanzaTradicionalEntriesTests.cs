@@ -190,6 +190,41 @@ namespace Empiria.FinancialAccounting.Tests.BalanceEngine.BalanzaTradicional {
     }
 
 
+    [Theory]
+    [InlineData(BalanzaTradicionalTestCase.CatalogoAnterior)]
+    [InlineData(BalanzaTradicionalTestCase.ConAuxiliares)]
+    [InlineData(BalanzaTradicionalTestCase.Default)]
+    [InlineData(BalanzaTradicionalTestCase.EnCascada)]
+    [InlineData(BalanzaTradicionalTestCase.EnCascadaConAuxiliares)]
+    [InlineData(BalanzaTradicionalTestCase.Sectorizada)]
+    public async Task TotalByCurrency_must_be_the_sum_of_totalDebtors_minus_totalCreditors(BalanzaTradicionalTestCase testcase) {
+      FixedList<BalanzaTradicionalEntryDto> sut = await GetBalanzaTradicionalEntries(testcase)
+                                                       .ConfigureAwait(false);
+
+      var totalsByCurrency = sut.FindAll(x => x.ItemType == TrialBalanceItemType.BalanceTotalCurrency)
+                          .Distinct();
+
+      foreach (var totalByCurrency in totalsByCurrency) {
+
+        decimal totalDebtor = (decimal) sut.FindAll(x => x.ItemType == TrialBalanceItemType.BalanceTotalDebtor &&
+                                                 x.CurrencyCode == totalByCurrency.CurrencyCode)
+                                        .Sum(x => x.CurrentBalance);
+
+        decimal totalCreditor = (decimal) sut.FindAll(x => x.ItemType == TrialBalanceItemType.BalanceTotalCreditor &&
+                                                 x.CurrencyCode == totalByCurrency.CurrencyCode)
+                                        .Sum(x => x.CurrentBalance);
+
+        decimal expected = totalDebtor - totalCreditor;
+
+        decimal actual = (decimal) totalByCurrency.CurrentBalance;
+
+        Assert.True(expected == actual,
+                    $"The sum between total debtors minus total creditors for Total by currency '{totalByCurrency}' " +
+                    $"was {expected}, but it is not equals to the Total by currency entry value {actual}.");
+      }
+    }
+
+
     #endregion Theories
 
 
