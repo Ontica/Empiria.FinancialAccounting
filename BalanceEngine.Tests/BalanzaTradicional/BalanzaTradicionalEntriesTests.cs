@@ -44,7 +44,7 @@ namespace Empiria.FinancialAccounting.Tests.BalanceEngine.BalanzaTradicional {
     [InlineData(BalanzaTradicionalTestCase.Default)]
     [InlineData(BalanzaTradicionalTestCase.EnCascada)]
     [InlineData(BalanzaTradicionalTestCase.EnCascadaConAuxiliares)]
-    [InlineData(BalanzaTradicionalTestCase.Sectorizado)]
+    [InlineData(BalanzaTradicionalTestCase.Sectorizada)]
     public async Task ContainsTheSameEntries_Than_TestData(BalanzaTradicionalTestCase testcase) {
       FixedList<BalanzaTradicionalEntryDto> expectedEntries = testcase.GetExpectedEntries();
 
@@ -76,7 +76,7 @@ namespace Empiria.FinancialAccounting.Tests.BalanceEngine.BalanzaTradicional {
     [InlineData(BalanzaTradicionalTestCase.Default)]
     [InlineData(BalanzaTradicionalTestCase.EnCascada)]
     [InlineData(BalanzaTradicionalTestCase.EnCascadaConAuxiliares)]
-    [InlineData(BalanzaTradicionalTestCase.Sectorizado)]
+    [InlineData(BalanzaTradicionalTestCase.Sectorizada)]
     public async Task DebtorTotalsByGroup_Must_Be_The_Sum_Of_Its_DebtorAccounts(BalanzaTradicionalTestCase testcase) {
       FixedList<BalanzaTradicionalEntryDto> sut = await GetBalanzaTradicionalEntries(testcase)
                                                        .ConfigureAwait(false);
@@ -107,8 +107,8 @@ namespace Empiria.FinancialAccounting.Tests.BalanceEngine.BalanzaTradicional {
     [InlineData(BalanzaTradicionalTestCase.Default)]
     [InlineData(BalanzaTradicionalTestCase.EnCascada)]
     [InlineData(BalanzaTradicionalTestCase.EnCascadaConAuxiliares)]
-    [InlineData(BalanzaTradicionalTestCase.Sectorizado)]
-    public async Task CreditorTotalsByGroup_Must_Be_The_Sum_Of_Its_DebtorAccounts(BalanzaTradicionalTestCase testcase) {
+    [InlineData(BalanzaTradicionalTestCase.Sectorizada)]
+    public async Task CreditorTotalsByGroup_Must_Be_The_Sum_Of_Its_CreditorAccounts(BalanzaTradicionalTestCase testcase) {
       FixedList<BalanzaTradicionalEntryDto> sut = await GetBalanzaTradicionalEntries(testcase)
                                                        .ConfigureAwait(false);
 
@@ -130,6 +130,65 @@ namespace Empiria.FinancialAccounting.Tests.BalanceEngine.BalanzaTradicional {
                     $"but it is not equals to the creditor total entry value {actual}.");
       }
     }
+
+
+    [Theory]
+    [InlineData(BalanzaTradicionalTestCase.CatalogoAnterior)]
+    [InlineData(BalanzaTradicionalTestCase.ConAuxiliares)]
+    [InlineData(BalanzaTradicionalTestCase.Default)]
+    [InlineData(BalanzaTradicionalTestCase.EnCascada)]
+    [InlineData(BalanzaTradicionalTestCase.EnCascadaConAuxiliares)]
+    [InlineData(BalanzaTradicionalTestCase.Sectorizada)]
+    public async Task DebtorTotals_Must_Be_The_Sum_Of_Its_TotalGroupDebtors(BalanzaTradicionalTestCase testcase) {
+      FixedList<BalanzaTradicionalEntryDto> sut = await GetBalanzaTradicionalEntries(testcase)
+                                                       .ConfigureAwait(false);
+
+      var debtorTotals = sut.FindAll(x => x.ItemType == TrialBalanceItemType.BalanceTotalDebtor)
+                          .Distinct();
+
+      foreach (var debtorTotal in debtorTotals) {
+
+        decimal expected = (decimal) sut.FindAll(x => x.ItemType == TrialBalanceItemType.BalanceTotalGroupDebtor &&
+                                                 x.CurrencyCode == debtorTotal.CurrencyCode)
+                                        .Sum(x => x.CurrentBalance);
+
+        decimal actual = (decimal) debtorTotal.CurrentBalance;
+
+        Assert.True(expected == actual,
+                    $"The sum of all debtor groups for Total debtors '{debtorTotal}' was {expected}, " +
+                    $"but it is not equals to the Total debtors entry value {actual}.");
+      }
+    }
+
+
+    [Theory]
+    [InlineData(BalanzaTradicionalTestCase.CatalogoAnterior)]
+    [InlineData(BalanzaTradicionalTestCase.ConAuxiliares)]
+    [InlineData(BalanzaTradicionalTestCase.Default)]
+    [InlineData(BalanzaTradicionalTestCase.EnCascada)]
+    [InlineData(BalanzaTradicionalTestCase.EnCascadaConAuxiliares)]
+    [InlineData(BalanzaTradicionalTestCase.Sectorizada)]
+    public async Task CreditorTotals_Must_Be_The_Sum_Of_Its_TotalGroupCreditors(BalanzaTradicionalTestCase testcase) {
+      FixedList<BalanzaTradicionalEntryDto> sut = await GetBalanzaTradicionalEntries(testcase)
+                                                       .ConfigureAwait(false);
+
+      var debtorTotals = sut.FindAll(x => x.ItemType == TrialBalanceItemType.BalanceTotalCreditor)
+                          .Distinct();
+
+      foreach (var debtorTotal in debtorTotals) {
+
+        decimal expected = (decimal) sut.FindAll(x => x.ItemType == TrialBalanceItemType.BalanceTotalGroupCreditor &&
+                                                 x.CurrencyCode == debtorTotal.CurrencyCode)
+                                        .Sum(x => x.CurrentBalance);
+
+        decimal actual = (decimal) debtorTotal.CurrentBalance;
+
+        Assert.True(expected == actual,
+                    $"The sum of all creditor groups for Total creditors '{debtorTotal}' was {expected}, " +
+                    $"but it is not equals to the Total creditors entry value {actual}.");
+      }
+    }
+
 
     #endregion Theories
 
