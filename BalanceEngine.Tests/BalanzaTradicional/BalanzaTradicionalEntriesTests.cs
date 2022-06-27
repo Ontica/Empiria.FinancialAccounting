@@ -225,6 +225,29 @@ namespace Empiria.FinancialAccounting.Tests.BalanceEngine.BalanzaTradicional {
     }
 
 
+    [Theory]
+    [InlineData(BalanzaTradicionalTestCase.CatalogoAnterior)]
+    [InlineData(BalanzaTradicionalTestCase.ConAuxiliares)]
+    [InlineData(BalanzaTradicionalTestCase.Default)]
+    [InlineData(BalanzaTradicionalTestCase.EnCascada)]
+    [InlineData(BalanzaTradicionalTestCase.EnCascadaConAuxiliares)]
+    [InlineData(BalanzaTradicionalTestCase.Sectorizada)]
+    public async Task TotalConsolidated_must_be_the_sum_of_Currencies(BalanzaTradicionalTestCase testcase) {
+      FixedList<BalanzaTradicionalEntryDto> sut = await GetBalanzaTradicionalEntries(testcase)
+                                                       .ConfigureAwait(false);
+
+      var expected = sut.FindAll(x => x.ItemType == TrialBalanceItemType.BalanceTotalCurrency)
+                                .Sum(x => x.CurrentBalance);
+
+      var actual = sut.FindAll(x => x.ItemType == TrialBalanceItemType.BalanceTotalCurrency)
+                                .Sum(x => x.CurrentBalance);
+
+      Assert.True(expected == actual,
+                    $"The sum of Total by currency was '{expected}', " +
+                    $"but it is not equals to the Total consolidated value {actual}.");
+    }
+
+
     #endregion Theories
 
 
