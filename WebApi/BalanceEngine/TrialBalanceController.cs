@@ -75,7 +75,7 @@ namespace Empiria.FinancialAccounting.WebApi.BalanceEngine {
 
 
     [HttpPost]
-    [Route("v2/financial-accounting/balance-engine/balanza-cascada")]
+    [Route("v2/financial-accounting/balance-engine/balanza-contabilidades-cascada")]
     public async Task<SingleObjectModel> GetBalanzaContabilidadesCascada([FromBody] TrialBalanceQuery query) {
 
       base.RequireBody(query);

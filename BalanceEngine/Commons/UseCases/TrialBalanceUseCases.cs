@@ -85,6 +85,20 @@ namespace Empiria.FinancialAccounting.BalanceEngine.UseCases {
     }
 
 
+    public async Task<BalanzaContabilidadesCascadaDto> BuildBalanzaContabilidadesCascada(
+                                                       TrialBalanceQuery query) {
+      Assertion.Require(query, nameof(query));
+
+      Assertion.Require(query.TrialBalanceType == TrialBalanceType.BalanzaConContabilidadesEnCascada,
+                       "query.TrialBalanceType must be 'BalanzaConContabilidadesEnCascada'.");
+
+      var builder = new BalanzaContabilidadesCascadaBuilder(query);
+      TrialBalance entries = await Task.Run(() => builder.Build()).ConfigureAwait(false);
+
+      return BalanzaContabilidadesCascadaMapper.Map(entries);
+    }
+
+
     public async Task<BalanzaDolarizadaDto> BuildBalanzaDolarizada(TrialBalanceQuery query) {
       Assertion.Require(query, nameof(query));
 
@@ -112,20 +126,6 @@ namespace Empiria.FinancialAccounting.BalanceEngine.UseCases {
       TrialBalance entries = await Task.Run(() => builder.Build()).ConfigureAwait(false);
 
       return BalanzaTradicionalMapper.Map(entries);
-    }
-
-
-    public async Task<BalanzaContabilidadesCascadaDto> BuildBalanzaContabilidadesCascada(
-                                                       TrialBalanceQuery query) {
-      Assertion.Require(query, nameof(query));
-
-      Assertion.Require(query.TrialBalanceType == TrialBalanceType.BalanzaConContabilidadesEnCascada,
-                       "query.TrialBalanceType must be 'BalanzaConContabilidadesEnCascada'.");
-
-      var builder = new BalanzaContabilidadesCascadaBuilder(query);
-      TrialBalance entries = await Task.Run(() => builder.Build()).ConfigureAwait(false);
-
-      return BalanzaContabilidadesCascadaMapper.Map(entries);
     }
 
 
