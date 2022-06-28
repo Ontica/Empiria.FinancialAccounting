@@ -36,9 +36,51 @@ namespace Empiria.FinancialAccounting.Tests.BalanceEngine.BalanzaContabilidadesC
 
     #region Theories
 
-    
+
 
     #endregion Theories
+
+    #region Helpers
+
+    private async Task<FixedList<BalanzaContabilidadesCascadaEntryDto>> GetBalanzaTradicionalEntries(
+                                                        BalanzaContabilidadesCascadaTestCase testcase) {
+      TrialBalanceQuery query = testcase.GetInvocationQuery();
+
+      BalanzaContabilidadesCascadaDto dto = TryReadBalanzaContabilidadesCascadaFromCache(query);
+
+      if (dto != null) {
+        return dto.Entries;
+      }
+
+      dto = await BalanceEngineProxy.BuildBalanzaContabilidadesCascada(query)
+                                    .ConfigureAwait(false);
+
+      StoreContabilidadesCascadaIntoCache(query, dto);
+
+      return dto.Entries;
+    }
+
+
+    private void StoreContabilidadesCascadaIntoCache(TrialBalanceQuery query,
+                                                  BalanzaContabilidadesCascadaDto dto) {
+      string key = query.ToString();
+
+      _cache.Insert(key, dto);
+    }
+
+
+    private BalanzaContabilidadesCascadaDto TryReadBalanzaContabilidadesCascadaFromCache(
+                                            TrialBalanceQuery query) {
+      string key = query.ToString();
+
+      if (_cache.ContainsKey(key)) {
+        return _cache[key];
+      }
+
+      return null;
+    }
+
+    #endregion Helpers
 
   } // class BalanzaContabilidadesCascadaEntriesTests
 

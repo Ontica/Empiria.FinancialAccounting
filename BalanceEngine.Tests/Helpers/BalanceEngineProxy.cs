@@ -71,6 +71,29 @@ namespace Empiria.FinancialAccounting.Tests.BalanceEngine {
     }
 
 
+    static internal Task<BalanzaColumnasMonedaDto> BuildBalanzaColumnasMoneda(TrialBalanceQuery query) {
+      if (TestingConstants.INVOKE_USE_CASES_THROUGH_THE_WEB_API) {
+        return BuildRemoteBalanzaColumnasMonedaUseCase(query);
+
+      } else {
+        return BuildLocalBalanzaColumnasMonedaUseCase(query);
+
+      }
+    }
+
+
+    static internal Task<BalanzaContabilidadesCascadaDto> BuildBalanzaContabilidadesCascada(
+                                                TrialBalanceQuery query) {
+      if (TestingConstants.INVOKE_USE_CASES_THROUGH_THE_WEB_API) {
+        return BuildLocalBalanzaContabilidadesCascadaUseCase(query);
+
+      } else {
+        return BuildRemoteBalanzaContabilidadesCascadaUseCase(query);
+
+      }
+    }
+
+
     static internal Task<BalanzaTradicionalDto> BuildBalanzaTradicional(TrialBalanceQuery query) {
       if (TestingConstants.INVOKE_USE_CASES_THROUGH_THE_WEB_API) {
         return BuildRemoteBalanzaTradicionalUseCase(query);
@@ -93,6 +116,44 @@ namespace Empiria.FinancialAccounting.Tests.BalanceEngine {
       HttpApiClient http = CreateHttpApiClient();
 
       var dto = await http.PostAsync<ResponseModel<AnaliticoDeCuentasDto>>(query, "v2/financial-accounting/balance-engine/analitico-de-cuentas")
+                          .ConfigureAwait(false);
+
+      return dto.Data;
+    }
+
+
+    private static Task<BalanzaColumnasMonedaDto> BuildLocalBalanzaColumnasMonedaUseCase(TrialBalanceQuery query) {
+      using (var usecase = TrialBalanceUseCases.UseCaseInteractor()) {
+        return usecase.BuildBalanzaColumnasMoneda(query);
+      }
+    }
+
+
+    private static async Task<BalanzaColumnasMonedaDto> BuildRemoteBalanzaColumnasMonedaUseCase(TrialBalanceQuery query) {
+      HttpApiClient http = CreateHttpApiClient();
+
+      var dto = await http.PostAsync<ResponseModel<BalanzaColumnasMonedaDto>>(
+                            query, "v2/financial-accounting/balance-engine/balanza-columnas-moneda")
+                          .ConfigureAwait(false);
+
+      return dto.Data;
+    }
+
+
+    private static Task<BalanzaContabilidadesCascadaDto> BuildLocalBalanzaContabilidadesCascadaUseCase(
+                                                TrialBalanceQuery query) {
+      using (var usecase = TrialBalanceUseCases.UseCaseInteractor()) {
+        return usecase.BuildBalanzaContabilidadesCascada(query);
+      }
+    }
+
+
+    private static async Task<BalanzaContabilidadesCascadaDto> BuildRemoteBalanzaContabilidadesCascadaUseCase(
+                                                      TrialBalanceQuery query) {
+      HttpApiClient http = CreateHttpApiClient();
+
+      var dto = await http.PostAsync<ResponseModel<BalanzaContabilidadesCascadaDto>>(
+                            query, "v2/financial-accounting/balance-engine/balanza-contabilidades-cascada")
                           .ConfigureAwait(false);
 
       return dto.Data;
