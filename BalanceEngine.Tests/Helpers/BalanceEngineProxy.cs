@@ -82,6 +82,17 @@ namespace Empiria.FinancialAccounting.Tests.BalanceEngine {
     }
 
 
+    static internal Task<BalanzaComparativaDto> BuildBalanzaComparativa(TrialBalanceQuery query) {
+      if (TestingConstants.INVOKE_USE_CASES_THROUGH_THE_WEB_API) {
+        return BuildRemoteBalanzaComparativaUseCase(query);
+
+      } else {
+        return BuildLocalBalanzaComparativaUseCase(query);
+
+      }
+    }
+
+
     static internal Task<BalanzaContabilidadesCascadaDto> BuildBalanzaContabilidadesCascada(
                                                 TrialBalanceQuery query) {
       if (TestingConstants.INVOKE_USE_CASES_THROUGH_THE_WEB_API) {
@@ -134,6 +145,24 @@ namespace Empiria.FinancialAccounting.Tests.BalanceEngine {
 
       var dto = await http.PostAsync<ResponseModel<BalanzaColumnasMonedaDto>>(
                             query, "v2/financial-accounting/balance-engine/balanza-columnas-moneda")
+                          .ConfigureAwait(false);
+
+      return dto.Data;
+    }
+
+
+    private static Task<BalanzaComparativaDto> BuildLocalBalanzaComparativaUseCase(TrialBalanceQuery query) {
+      using (var usecase = TrialBalanceUseCases.UseCaseInteractor()) {
+        return usecase.BuildBalanzaComparativa(query);
+      }
+    }
+
+
+    private static async Task<BalanzaComparativaDto> BuildRemoteBalanzaComparativaUseCase(TrialBalanceQuery query) {
+      HttpApiClient http = CreateHttpApiClient();
+
+      var dto = await http.PostAsync<ResponseModel<BalanzaComparativaDto>>(
+                            query, "v2/financial-accounting/balance-engine/balanza-comparativa")
                           .ConfigureAwait(false);
 
       return dto.Data;
