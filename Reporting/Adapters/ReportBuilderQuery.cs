@@ -9,6 +9,8 @@
 ************************* Copyright(c) La Vía Óntica SC, Ontica LLC and contributors. All rights reserved. **/
 using System;
 
+using Empiria.Storage;
+
 namespace Empiria.FinancialAccounting.Reporting {
 
   /// <summary>Query payload used to generate financial accounting reports.</summary>

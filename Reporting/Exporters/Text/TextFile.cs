@@ -11,6 +11,7 @@ using System;
 using System.Collections.Generic;
 
 using System.IO;
+using Empiria.Storage;
 
 namespace Empiria.FinancialAccounting.Reporting.Exporters.Text {
 

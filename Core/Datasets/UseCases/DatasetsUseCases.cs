@@ -11,6 +11,7 @@ using System;
 using System.IO;
 
 using Empiria.Services;
+using Empiria.Storage;
 
 using Empiria.FinancialAccounting.Datasets.Adapters;
 using Empiria.FinancialAccounting.Datasets.Data;
@@ -36,7 +37,7 @@ namespace Empiria.FinancialAccounting.Datasets.UseCases {
     #region Use cases
 
 
-    public Dataset CreateDataset(DatasetInputDto baseData, FileData fileData) {
+    public Dataset CreateDataset(DatasetInputDto baseData, InputFile fileData) {
       Assertion.Require(baseData, nameof(baseData));
       Assertion.Require(fileData, nameof(fileData));
 

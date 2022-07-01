@@ -10,6 +10,7 @@
 using System;
 
 using Empiria.Services;
+using Empiria.Storage;
 
 using Empiria.FinancialAccounting.Datasets;
 using Empiria.FinancialAccounting.Datasets.UseCases;
@@ -39,7 +40,7 @@ namespace Empiria.FinancialAccounting.Reconciliation.UseCases {
 
 
     public DatasetsLoadStatusDto CreateDataset(OperationalDataDto dto,
-                                               FileData fileData) {
+                                               InputFile fileData) {
       Assertion.Require(dto,      nameof(dto));
       Assertion.Require(fileData, nameof(fileData));
 

@@ -11,6 +11,7 @@ using System;
 using System.IO;
 
 using Empiria.Services;
+using Empiria.Storage;
 
 using Empiria.FinancialAccounting.BanobrasIntegration.VouchersImporter.Adapters;
 
@@ -36,7 +37,7 @@ namespace Empiria.FinancialAccounting.BanobrasIntegration.VouchersImporter.UseCa
 
 
     public ImportVouchersResult ImportVouchersFromExcelFile(ImportVouchersCommand command,
-                                                            FileData excelFileData, bool dryRun) {
+                                                            InputFile excelFileData, bool dryRun) {
       FileInfo excelFile = AssertParametersAreValidAndGetFileInfo(command, excelFileData);
 
       PrepareCommandForFileImportation(command);
@@ -66,7 +67,7 @@ namespace Empiria.FinancialAccounting.BanobrasIntegration.VouchersImporter.UseCa
 
 
     public ImportVouchersResult ImportVouchersFromTextFile(ImportVouchersCommand command,
-                                                           FileData textFileData, bool dryRun) {
+                                                           InputFile textFileData, bool dryRun) {
       FileInfo textFile = AssertParametersAreValidAndGetFileInfo(command, textFileData);
 
       PrepareCommandForFileImportation(command);
@@ -86,7 +87,7 @@ namespace Empiria.FinancialAccounting.BanobrasIntegration.VouchersImporter.UseCa
     #region Helpers
 
     private FileInfo AssertParametersAreValidAndGetFileInfo(ImportVouchersCommand command,
-                                                            FileData fileData) {
+                                                            InputFile fileData) {
       Assertion.Require(command, "command");
       Assertion.Require(fileData, "fileData");
 

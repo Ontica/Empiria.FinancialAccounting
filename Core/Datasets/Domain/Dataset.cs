@@ -12,6 +12,7 @@ using System.IO;
 
 using Empiria.Contacts;
 using Empiria.Json;
+using Empiria.Storage;
 using Empiria.StateEnums;
 
 using Empiria.FinancialAccounting.Datasets.Adapters;
@@ -29,7 +30,7 @@ namespace Empiria.FinancialAccounting.Datasets {
     }
 
 
-    public Dataset(DatasetInputDto baseData, FileData fileData, FileInfo fileInfo) {
+    public Dataset(DatasetInputDto baseData, InputFile fileData, FileInfo fileInfo) {
       Assertion.Require(baseData, "baseData");
       Assertion.Require(fileData, "fileData");
       Assertion.Require(fileInfo, "fileInfo");
@@ -161,7 +162,7 @@ namespace Empiria.FinancialAccounting.Datasets {
     }
 
 
-    private void LoadFileData(FileData fileData, FileInfo fileInfo) {
+    private void LoadFileData(InputFile fileData, FileInfo fileInfo) {
       this.OriginalFileName = fileData.OriginalFileName;
       this.MediaType        = fileData.MediaType;
       this.FileName         = fileInfo.Name;

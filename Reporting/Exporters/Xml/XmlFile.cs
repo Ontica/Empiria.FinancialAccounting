@@ -11,6 +11,8 @@ using System;
 using System.IO;
 using System.Xml;
 
+using Empiria.Storage;
+
 namespace Empiria.FinancialAccounting.Reporting.Exporters.Xml {
 
   /// <summary>Provides edition services for operational report files.</summary>

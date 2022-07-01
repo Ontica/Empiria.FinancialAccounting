@@ -14,6 +14,7 @@ using System.Web;
 using System.Web.Http;
 
 using Empiria.Json;
+using Empiria.Storage;
 using Empiria.WebApi;
 
 using Empiria.FinancialAccounting.BanobrasIntegration.VouchersImporter.Adapters;
@@ -34,7 +35,7 @@ namespace Empiria.FinancialAccounting.WebApi.BanobrasIntegration {
 
       HttpRequest httpRequest = GetValidatedHttpRequest();
 
-      FileData excelFile = GetFileDataFromRequest(httpRequest);
+      InputFile excelFile = base.GetInputFileFromHttpRequest();
 
       ImportVouchersCommand command = GetImportVoucherCommandFromRequest(httpRequest);
 
@@ -72,7 +73,8 @@ namespace Empiria.FinancialAccounting.WebApi.BanobrasIntegration {
 
       HttpRequest httpRequest = GetValidatedHttpRequest();
 
-      FileData textFile = GetFileDataFromRequest(httpRequest);
+      InputFile textFile = base.GetInputFileFromHttpRequest();
+
       ImportVouchersCommand command = GetImportVoucherCommandFromRequest(httpRequest);
 
       bool dryRun = RouteContainsDryRunFlag();
@@ -97,21 +99,6 @@ namespace Empiria.FinancialAccounting.WebApi.BanobrasIntegration {
       var command = new ImportVouchersCommand();
 
       return JsonConverter.Merge(form["command"], command);
-    }
-
-
-    static private FileData GetFileDataFromRequest(HttpRequest httpRequest) {
-      HttpPostedFile file = httpRequest.Files[0];
-
-      var fileData = new FileData();
-
-      fileData.InputStream = httpRequest.Files[0].InputStream;
-
-      fileData.MediaType = file.ContentType;
-      fileData.MediaLength = file.ContentLength;
-      fileData.OriginalFileName = file.FileName;
-
-      return fileData;
     }
 
 

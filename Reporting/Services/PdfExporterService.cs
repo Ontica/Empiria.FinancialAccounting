@@ -11,6 +11,7 @@ using System;
 using System.IO;
 
 using Empiria.Office;
+using Empiria.Storage;
 
 using Empiria.FinancialAccounting.Vouchers.Adapters;
 using Empiria.FinancialAccounting.Reconciliation.Adapters;

@@ -9,6 +9,8 @@
 ************************* Copyright(c) La Vía Óntica SC, Ontica LLC and contributors. All rights reserved. **/
 using System;
 
+using Empiria.Storage;
+
 namespace Empiria.FinancialAccounting.Datasets.Adapters {
 
   /// <summary>Output DTO used to return data sets.</summary>

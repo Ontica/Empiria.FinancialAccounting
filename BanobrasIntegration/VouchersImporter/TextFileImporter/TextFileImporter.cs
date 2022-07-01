@@ -10,6 +10,8 @@
 using System;
 using System.IO;
 
+using Empiria.Storage;
+
 using Empiria.FinancialAccounting.BanobrasIntegration.VouchersImporter.Adapters;
 
 namespace Empiria.FinancialAccounting.BanobrasIntegration.VouchersImporter {

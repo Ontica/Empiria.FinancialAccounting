@@ -13,6 +13,7 @@ using System.Web;
 using System.Web.Http;
 
 using Empiria.Json;
+using Empiria.Storage;
 using Empiria.WebApi;
 
 using Empiria.FinancialAccounting.Reconciliation.UseCases;
@@ -56,7 +57,7 @@ namespace Empiria.FinancialAccounting.WebApi.Reconciliation {
 
       HttpRequest httpRequest = GetValidatedHttpRequest();
 
-      FileData excelFile = GetFileDataFromRequest(httpRequest);
+      InputFile excelFile = base.GetInputFileFromHttpRequest();
 
       OperationalDataDto dto = BuildOperationalDataDtoFromRequest(httpRequest);
 
@@ -92,19 +93,6 @@ namespace Empiria.FinancialAccounting.WebApi.Reconciliation {
       var command = new OperationalDataDto();
 
       return JsonConverter.Merge(form["command"], command);
-    }
-
-
-    static private FileData GetFileDataFromRequest(HttpRequest httpRequest) {
-      HttpPostedFile file = httpRequest.Files[0];
-
-      return new FileData() {
-        InputStream = httpRequest.Files[0].InputStream,
-
-        MediaType = file.ContentType,
-        MediaLength = file.ContentLength,
-        OriginalFileName = file.FileName,
-      };
     }
 
 
