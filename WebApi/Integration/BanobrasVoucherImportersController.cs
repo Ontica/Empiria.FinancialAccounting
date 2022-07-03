@@ -9,11 +9,8 @@
 *                                                                                                            *
 ************************* Copyright(c) La Vía Óntica SC, Ontica LLC and contributors. All rights reserved. **/
 using System;
-using System.Collections.Specialized;
-using System.Web;
 using System.Web.Http;
 
-using Empiria.Json;
 using Empiria.Storage;
 using Empiria.WebApi;
 
@@ -33,11 +30,9 @@ namespace Empiria.FinancialAccounting.WebApi.BanobrasIntegration {
     [Route("v2/financial-accounting/vouchers/import-from-excel/dry-run")]
     public SingleObjectModel ImportVouchersFromExcelFile() {
 
-      HttpRequest httpRequest = GetValidatedHttpRequest();
-
       InputFile excelFile = base.GetInputFileFromHttpRequest();
 
-      ImportVouchersCommand command = GetImportVoucherCommandFromRequest(httpRequest);
+      ImportVouchersCommand command = base.GetFormDataFromHttpRequest<ImportVouchersCommand>("command");
 
       bool dryRun = RouteContainsDryRunFlag();
 
@@ -71,11 +66,9 @@ namespace Empiria.FinancialAccounting.WebApi.BanobrasIntegration {
     [Route("v2/financial-accounting/vouchers/import-from-text-file/dry-run")]
     public SingleObjectModel ImportVouchersFromTextFile() {
 
-      HttpRequest httpRequest = GetValidatedHttpRequest();
-
       InputFile textFile = base.GetInputFileFromHttpRequest();
 
-      ImportVouchersCommand command = GetImportVoucherCommandFromRequest(httpRequest);
+      ImportVouchersCommand command = base.GetFormDataFromHttpRequest<ImportVouchersCommand>("command");
 
       bool dryRun = RouteContainsDryRunFlag();
 
@@ -90,31 +83,6 @@ namespace Empiria.FinancialAccounting.WebApi.BanobrasIntegration {
     #endregion Voucher importers
 
     #region Helper methods
-
-    private ImportVouchersCommand GetImportVoucherCommandFromRequest(HttpRequest httpRequest) {
-      NameValueCollection form = httpRequest.Form;
-
-      Assertion.Require(form["command"], "'command' form field is required");
-
-      var command = new ImportVouchersCommand();
-
-      return JsonConverter.Merge(form["command"], command);
-    }
-
-
-    static private HttpRequest GetValidatedHttpRequest() {
-      var httpRequest = HttpContext.Current.Request;
-
-      Assertion.Require(httpRequest, "httpRequest");
-      Assertion.Require(httpRequest.Files.Count == 1, "The request does not have the file to be imported.");
-
-      var form = httpRequest.Form;
-
-      Assertion.Require(form, "The request must be of type 'multipart/form-data'.");
-
-      return httpRequest;
-    }
-
 
     private bool RouteContainsDryRunFlag() {
       return base.Request.RequestUri.PathAndQuery.EndsWith("/dry-run");

@@ -8,11 +8,8 @@
 *                                                                                                            *
 ************************* Copyright(c) La Vía Óntica SC, Ontica LLC and contributors. All rights reserved. **/
 using System;
-using System.Collections.Specialized;
-using System.Web;
 using System.Web.Http;
 
-using Empiria.Json;
 using Empiria.Storage;
 using Empiria.WebApi;
 
@@ -55,11 +52,8 @@ namespace Empiria.FinancialAccounting.WebApi.Reconciliation {
     [Route("v2/financial-accounting/reconciliation/datasets/import-from-file")]
     public SingleObjectModel ImportDatasetFromFile() {
 
-      HttpRequest httpRequest = GetValidatedHttpRequest();
-
       InputFile excelFile = base.GetInputFileFromHttpRequest();
-
-      OperationalDataDto dto = BuildOperationalDataDtoFromRequest(httpRequest);
+      OperationalDataDto dto = base.GetFormDataFromHttpRequest<OperationalDataDto>("command");
 
       using (var usecases = OperationalDataUseCases.UseCaseInteractor()) {
         DatasetsLoadStatusDto datasets = usecases.CreateDataset(dto, excelFile);
@@ -81,36 +75,6 @@ namespace Empiria.FinancialAccounting.WebApi.Reconciliation {
     }
 
     #endregion Web Apis
-
-    #region Helper methods
-
-
-    private OperationalDataDto BuildOperationalDataDtoFromRequest(HttpRequest httpRequest) {
-      NameValueCollection form = httpRequest.Form;
-
-      Assertion.Require(form["command"], "'command' form field is required");
-
-      var command = new OperationalDataDto();
-
-      return JsonConverter.Merge(form["command"], command);
-    }
-
-
-    static private HttpRequest GetValidatedHttpRequest() {
-      var httpRequest = HttpContext.Current.Request;
-
-      Assertion.Require(httpRequest, "httpRequest");
-      Assertion.Require(httpRequest.Files.Count == 1,
-                       "The request does not have the dataset file to be imported.");
-
-      var form = httpRequest.Form;
-
-      Assertion.Require(form, "The request must be of type 'multipart/form-data'.");
-
-      return httpRequest;
-    }
-
-    #endregion Helper methods
 
   }  // class OperationalDataController
 
