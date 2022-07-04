@@ -30,7 +30,7 @@ namespace Empiria.FinancialAccounting.WebApi.BanobrasIntegration {
     [Route("v2/financial-accounting/vouchers/import-from-excel/dry-run")]
     public SingleObjectModel ImportVouchersFromExcelFile() {
 
-      InputFile excelFile = base.GetInputFileFromHttpRequest();
+      InputFile excelFile = base.GetInputFileFromHttpRequest("VoucherImporterExcelFile");
 
       ImportVouchersCommand command = base.GetFormDataFromHttpRequest<ImportVouchersCommand>("command");
 
@@ -66,7 +66,7 @@ namespace Empiria.FinancialAccounting.WebApi.BanobrasIntegration {
     [Route("v2/financial-accounting/vouchers/import-from-text-file/dry-run")]
     public SingleObjectModel ImportVouchersFromTextFile() {
 
-      InputFile textFile = base.GetInputFileFromHttpRequest();
+      InputFile textFile = base.GetInputFileFromHttpRequest("VoucherImporterTextFile");
 
       ImportVouchersCommand command = base.GetFormDataFromHttpRequest<ImportVouchersCommand>("command");
 

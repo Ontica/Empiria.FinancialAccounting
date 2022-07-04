@@ -52,8 +52,9 @@ namespace Empiria.FinancialAccounting.WebApi.Reconciliation {
     [Route("v2/financial-accounting/reconciliation/datasets/import-from-file")]
     public SingleObjectModel ImportDatasetFromFile() {
 
-      InputFile excelFile = base.GetInputFileFromHttpRequest();
       OperationalDataDto dto = base.GetFormDataFromHttpRequest<OperationalDataDto>("command");
+
+      InputFile excelFile = base.GetInputFileFromHttpRequest(dto.DatasetKind);
 
       using (var usecases = OperationalDataUseCases.UseCaseInteractor()) {
         DatasetsLoadStatusDto datasets = usecases.CreateDataset(dto, excelFile);
