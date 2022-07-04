@@ -105,6 +105,17 @@ namespace Empiria.FinancialAccounting.Tests.BalanceEngine {
     }
 
 
+    static internal Task<BalanzaDolarizadaDto> BuildBalanzaDolarizada(TrialBalanceQuery query) {
+      if (TestingConstants.INVOKE_USE_CASES_THROUGH_THE_WEB_API) {
+        return BuildRemoteBalanzaDolarizadaUseCase(query);
+
+      } else {
+        return BuildLocalBalanzaDolarizadaUseCase(query);
+
+      }
+    }
+
+
     static internal Task<BalanzaTradicionalDto> BuildBalanzaTradicional(TrialBalanceQuery query) {
       if (TestingConstants.INVOKE_USE_CASES_THROUGH_THE_WEB_API) {
         return BuildRemoteBalanzaTradicionalUseCase(query);
@@ -183,6 +194,24 @@ namespace Empiria.FinancialAccounting.Tests.BalanceEngine {
 
       var dto = await http.PostAsync<ResponseModel<BalanzaContabilidadesCascadaDto>>(
                             query, "v2/financial-accounting/balance-engine/balanza-contabilidades-cascada")
+                          .ConfigureAwait(false);
+
+      return dto.Data;
+    }
+
+
+    private static Task<BalanzaDolarizadaDto> BuildLocalBalanzaDolarizadaUseCase(TrialBalanceQuery query) {
+      using (var usecase = TrialBalanceUseCases.UseCaseInteractor()) {
+        return usecase.BuildBalanzaDolarizada(query);
+      }
+    }
+
+
+    private static async Task<BalanzaDolarizadaDto> BuildRemoteBalanzaDolarizadaUseCase(TrialBalanceQuery query) {
+      HttpApiClient http = CreateHttpApiClient();
+
+      var dto = await http.PostAsync<ResponseModel<BalanzaDolarizadaDto>>(
+                            query, "v2/financial-accounting/balance-engine/balanza-dolarizada")
                           .ConfigureAwait(false);
 
       return dto.Data;
