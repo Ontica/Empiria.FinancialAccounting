@@ -138,6 +138,17 @@ namespace Empiria.FinancialAccounting.Tests.BalanceEngine {
     }
 
 
+    static internal Task<SaldosPorCuentaDto> BuildSaldosPorCuenta(TrialBalanceQuery query) {
+      if (TestingConstants.INVOKE_USE_CASES_THROUGH_THE_WEB_API) {
+        return BuildRemoteSaldosPorCuentaUseCase(query);
+
+      } else {
+        return BuildLocalSaldosPorCuentaUseCase(query);
+
+      }
+    }
+
+
     private static Task<AnaliticoDeCuentasDto> BuildLocalAnaliticoDeCuentasUseCase(TrialBalanceQuery query) {
       using (var usecase = TrialBalanceUseCases.UseCaseInteractor()) {
         return usecase.BuildAnaliticoDeCuentas(query);
@@ -279,6 +290,24 @@ namespace Empiria.FinancialAccounting.Tests.BalanceEngine {
 
       var dto = await http.PostAsync<ResponseModel<SaldosPorAuxiliarDto>>(
                             query, "v2/financial-accounting/balance-engine/saldos-por-auxiliar")
+                          .ConfigureAwait(false);
+
+      return dto.Data;
+    }
+
+
+    private static Task<SaldosPorCuentaDto> BuildLocalSaldosPorCuentaUseCase(TrialBalanceQuery query) {
+      using (var usecase = TrialBalanceUseCases.UseCaseInteractor()) {
+        return usecase.BuildSaldosPorCuenta(query);
+      }
+    }
+
+
+    private static async Task<SaldosPorCuentaDto> BuildRemoteSaldosPorCuentaUseCase(TrialBalanceQuery query) {
+      HttpApiClient http = CreateHttpApiClient();
+
+      var dto = await http.PostAsync<ResponseModel<SaldosPorCuentaDto>>(
+                            query, "v2/financial-accounting/balance-engine/saldos-por-cuenta")
                           .ConfigureAwait(false);
 
       return dto.Data;
