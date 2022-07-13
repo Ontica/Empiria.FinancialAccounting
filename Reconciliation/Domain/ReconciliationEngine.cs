@@ -47,7 +47,7 @@ namespace Empiria.FinancialAccounting.Reconciliation {
 
       FixedList<AccountsListItem> involvedAccounts = GetAccountsToReconciliate();
 
-      FixedList<TrialBalanceEntryDto> filteredBalances = GetFilteredBalancesForAccountstoReconciliate(involvedAccounts);
+      FixedList<BalanzaTradicionalEntryDto> filteredBalances = GetFilteredBalancesForAccountstoReconciliate(involvedAccounts);
 
 
       FixedList<ReconciliationResultEntry> reconciliationResult = PerformReconciliation(involvedAccounts,
@@ -60,7 +60,7 @@ namespace Empiria.FinancialAccounting.Reconciliation {
 
     private FixedList<ReconciliationResultEntry> PerformReconciliation(FixedList<AccountsListItem> involvedAccounts,
                                                                        FixedList<OperationalEntryDto> operationalData,
-                                                                       FixedList<TrialBalanceEntryDto> balances) {
+                                                                       FixedList<BalanzaTradicionalEntryDto> balances) {
 
       int ESTIMATED_LIST_SIZE = 2 * involvedAccounts.Count;
 
@@ -125,23 +125,22 @@ namespace Empiria.FinancialAccounting.Reconciliation {
     }
 
 
-    private FixedList<TrialBalanceEntryDto> GetFilteredBalancesForAccountstoReconciliate(FixedList<AccountsListItem> accountstoReconciliate) {
-      FixedList<TrialBalanceEntryDto> allBalances = GetAllBalances(_command.Date);
+    private FixedList<BalanzaTradicionalEntryDto> GetFilteredBalancesForAccountstoReconciliate(FixedList<AccountsListItem> accountstoReconciliate) {
+      FixedList<BalanzaTradicionalEntryDto> allBalances = GetAllBalances(_command.Date);
 
       return allBalances.FindAll(x => accountstoReconciliate.Exists(y => y.AccountNumber == x.AccountNumber));
 
 
       #region Local functions
 
-      FixedList<TrialBalanceEntryDto> GetAllBalances(DateTime reconciliationDate) {
+      FixedList<BalanzaTradicionalEntryDto> GetAllBalances(DateTime reconciliationDate) {
         using (var usecases = TrialBalanceUseCases.UseCaseInteractor()) {
           TrialBalanceQuery query = DetermineTrialBalanceQuery(reconciliationDate);
 
           TrialBalanceDto trialBalance = usecases.BuildTrialBalance(query);
 
-          IEnumerable<TrialBalanceEntryDto> balances = trialBalance.Entries.Select(x => (TrialBalanceEntryDto) x);
+          return trialBalance.Entries.Select(x => (BalanzaTradicionalEntryDto) x).ToFixedList();
 
-          return new FixedList<TrialBalanceEntryDto>(balances);
         }
 
       }  // GetAllBalances()

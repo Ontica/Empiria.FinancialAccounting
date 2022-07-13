@@ -20,11 +20,11 @@ namespace Empiria.FinancialAccounting.Reconciliation {
   internal class ReconciliationResultBuilder {
 
     private readonly FixedList<OperationalEntryDto>  _operationalEntries;
-    private readonly FixedList<TrialBalanceEntryDto> _balances;
+    private readonly FixedList<BalanzaTradicionalEntryDto> _balances;
     private readonly List<ReconciliationResultEntry> _resultsList;
 
     internal ReconciliationResultBuilder(FixedList<OperationalEntryDto> operationalEntries,
-                                         FixedList<TrialBalanceEntryDto> balances,
+                                         FixedList<BalanzaTradicionalEntryDto> balances,
                                          int listCapacity = 1024) {
 
       Assertion.Require(operationalEntries, nameof(operationalEntries));
@@ -43,7 +43,7 @@ namespace Empiria.FinancialAccounting.Reconciliation {
 
       InsertOrUpdateOperationalEntries(operationalEntries);
 
-      FixedList<TrialBalanceEntryDto> accountingEntries = GetAccountingEntriesFor(account);
+      FixedList<BalanzaTradicionalEntryDto> accountingEntries = GetAccountingEntriesFor(account);
 
       InsertOrUpdateAccountingEntries(accountingEntries);
     }
@@ -61,7 +61,7 @@ namespace Empiria.FinancialAccounting.Reconciliation {
     #region Helpers
 
 
-    private FixedList<TrialBalanceEntryDto> GetAccountingEntriesFor(AccountsListItem account) {
+    private FixedList<BalanzaTradicionalEntryDto> GetAccountingEntriesFor(AccountsListItem account) {
       return _balances.FindAll(x => x.AccountNumber == account.AccountNumber &&
                                     x.SectorCode == "00");
     }
@@ -72,7 +72,7 @@ namespace Empiria.FinancialAccounting.Reconciliation {
     }
 
 
-    private void InsertOrUpdateAccountingEntries(FixedList<TrialBalanceEntryDto> accountingEntries) {
+    private void InsertOrUpdateAccountingEntries(FixedList<BalanzaTradicionalEntryDto> accountingEntries) {
       foreach (var accountingEntry in accountingEntries) {
 
         if (this.ResultListContains(accountingEntry)) {
@@ -105,7 +105,7 @@ namespace Empiria.FinancialAccounting.Reconciliation {
     }
 
 
-    private string BuildReconciliationEntryKey(TrialBalanceEntryDto entry) {
+    private string BuildReconciliationEntryKey(BalanzaTradicionalEntryDto entry) {
       return entry.AccountNumber + "_" + entry.CurrencyCode;
     }
 
@@ -125,7 +125,7 @@ namespace Empiria.FinancialAccounting.Reconciliation {
     }
 
 
-    private void InsertResultEntry(TrialBalanceEntryDto accountingEntry) {
+    private void InsertResultEntry(BalanzaTradicionalEntryDto accountingEntry) {
       string entryKey = BuildReconciliationEntryKey(accountingEntry);
 
       var newEntry = new ReconciliationResultEntry {
@@ -147,7 +147,7 @@ namespace Empiria.FinancialAccounting.Reconciliation {
     }
 
 
-    private bool ResultListContains(TrialBalanceEntryDto accountingEntry) {
+    private bool ResultListContains(BalanzaTradicionalEntryDto accountingEntry) {
       string key = BuildReconciliationEntryKey(accountingEntry);
 
       return _resultsList.Exists(x => x.UniqueKey == key);
@@ -163,7 +163,7 @@ namespace Empiria.FinancialAccounting.Reconciliation {
     }
 
 
-    private void UpdateResultEntry(TrialBalanceEntryDto accountingEntry) {
+    private void UpdateResultEntry(BalanzaTradicionalEntryDto accountingEntry) {
       string entryKey = BuildReconciliationEntryKey(accountingEntry);
 
       int index = _resultsList.FindIndex(x => x.UniqueKey == entryKey);
