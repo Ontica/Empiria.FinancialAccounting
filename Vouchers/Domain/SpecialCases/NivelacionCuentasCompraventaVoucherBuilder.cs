@@ -85,14 +85,14 @@ namespace Empiria.FinancialAccounting.Vouchers.SpecialCases {
     }
 
 
-    private FixedList<TrialBalanceEntryDto> BuildTrialBalanceEntries() {
+    private FixedList<BalanzaTradicionalEntryDto> BuildTrialBalanceEntries() {
       using (var usecases = TrialBalanceUseCases.UseCaseInteractor()) {
         TrialBalanceQuery query = BuildBalancesQuery();
 
         var entries = usecases.BuildTrialBalance(query)
                               .Entries;
 
-        return entries.Select(x => (TrialBalanceEntryDto) x)
+        return entries.Select(x => (BalanzaTradicionalEntryDto) x)
                       .ToFixedList();
       }
     }
@@ -101,7 +101,7 @@ namespace Empiria.FinancialAccounting.Vouchers.SpecialCases {
     private FixedList<VoucherEntryFields> BuildVoucherEntries() {
       FixedList<AccountsListItem> accountsListItems = GetNivelacionAccountsList();
 
-      FixedList<TrialBalanceEntryDto> balances = BuildTrialBalanceEntries();
+      FixedList<BalanzaTradicionalEntryDto> balances = BuildTrialBalanceEntries();
 
       FixedList<ExchangeRate> exchangeRates = GetValuationExchangeRates();
 
@@ -163,7 +163,7 @@ namespace Empiria.FinancialAccounting.Vouchers.SpecialCases {
     }
 
 
-    private decimal GetBalance(string accountNumber, FixedList<TrialBalanceEntryDto> balances) {
+    private decimal GetBalance(string accountNumber, FixedList<BalanzaTradicionalEntryDto> balances) {
       var balance = balances.Find(x => x.AccountNumber == accountNumber &&
                                        x.LedgerUID == base.Fields.LedgerUID);
 
@@ -187,10 +187,12 @@ namespace Empiria.FinancialAccounting.Vouchers.SpecialCases {
 
 
     private decimal RevaluateForeignCurrencyBalances(string foreignCurrencyAccountNumber,
-                                                     FixedList<TrialBalanceEntryDto> balances,
+                                                     FixedList<BalanzaTradicionalEntryDto> balances,
                                                      FixedList<ExchangeRate> exchangeRates) {
-      FixedList<TrialBalanceEntryDto> foreignBalances = balances.FindAll(x => x.AccountNumber == foreignCurrencyAccountNumber &&
-                                                                              x.LedgerUID == base.Fields.LedgerUID);
+
+      FixedList<BalanzaTradicionalEntryDto> foreignBalances =
+                        balances.FindAll(x => x.AccountNumber == foreignCurrencyAccountNumber &&
+                                              x.LedgerUID == base.Fields.LedgerUID);
 
       decimal revaluatedForeignBalance = 0;
 
