@@ -79,14 +79,21 @@ namespace Empiria.FinancialAccounting.Reporting {
         var entryHtml = TEMPLATE.Replace("{{ACCOUNT.NUMBER}}", entry.AccountNumber);
         entryHtml = entryHtml.Replace("{{CURRENCY.CODE}}", entry.CurrencyCode);
         entryHtml = entryHtml.Replace("{{SECTOR.CODE}}", entry.SectorCode);
-        entryHtml = entryHtml.Replace("{{OPERATIONAL_TOTAL}}", entry.OperationalTotal.ToString("N2"));
-        entryHtml = entryHtml.Replace("{{ACCOUNTING_TOTAL}}", entry.AccountingTotal.ToString("N2"));
-        entryHtml = entryHtml.Replace("{{DIFFERENCE}}", entry.Difference.ToString("N2"));
+        entryHtml = entryHtml.Replace("{{OPERATIONAL_TOTAL}}", ToCurrencyString(entry.OperationalTotal));
+        entryHtml = entryHtml.Replace("{{ACCOUNTING_TOTAL}}", ToCurrencyString(entry.AccountingTotal));
+        entryHtml = entryHtml.Replace("{{DIFFERENCE}}", ToCurrencyString(entry.Difference));
 
         entriesHtml = entriesHtml.Append(entryHtml);
       }
 
       return ReplaceEntriesTemplate(html, entriesHtml);
+    }
+
+    private string ToCurrencyString(decimal amount) {
+      if (amount >= 0) {
+        return amount.ToString("N2");
+      }
+      return $"({Math.Abs(amount).ToString("N2")})";
     }
 
     #endregion Build entries methods
