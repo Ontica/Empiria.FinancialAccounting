@@ -21,15 +21,9 @@ namespace Empiria.FinancialAccounting.Tests.BalanceEngine.BalanzaContabilidadesC
 
     CatalogoAnterior,
 
-    ConAuxiliares,
-
     Default,
 
-    EnCascada,
-
-    EnCascadaConAuxiliares,
-
-    Sectorizado
+    Valorizada
 
   }  // enum BalanzaContabilidadesCascadaTestCase
 
