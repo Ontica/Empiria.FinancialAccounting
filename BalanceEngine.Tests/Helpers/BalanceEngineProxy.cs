@@ -96,16 +96,17 @@ namespace Empiria.FinancialAccounting.Tests.BalanceEngine {
     static internal Task<BalanzaContabilidadesCascadaDto> BuildBalanzaContabilidadesCascada(
                                                 TrialBalanceQuery query) {
       if (TestingConstants.INVOKE_USE_CASES_THROUGH_THE_WEB_API) {
-        return BuildLocalBalanzaContabilidadesCascadaUseCase(query);
+        return BuildRemoteBalanzaContabilidadesCascadaUseCase(query);
 
       } else {
-        return BuildRemoteBalanzaContabilidadesCascadaUseCase(query);
+        return BuildLocalBalanzaContabilidadesCascadaUseCase(query);
 
       }
     }
 
 
     static internal Task<BalanzaDolarizadaDto> BuildBalanzaDolarizada(TrialBalanceQuery query) {
+
       if (TestingConstants.INVOKE_USE_CASES_THROUGH_THE_WEB_API) {
         return BuildRemoteBalanzaDolarizadaUseCase(query);
 
@@ -117,6 +118,7 @@ namespace Empiria.FinancialAccounting.Tests.BalanceEngine {
 
 
     static internal Task<BalanzaTradicionalDto> BuildBalanzaTradicional(TrialBalanceQuery query) {
+
       if (TestingConstants.INVOKE_USE_CASES_THROUGH_THE_WEB_API) {
         return BuildRemoteBalanzaTradicionalUseCase(query);
 

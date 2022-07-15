@@ -197,7 +197,7 @@ namespace Empiria.FinancialAccounting.Tests.BalanceEngine.BalanzaTradicional {
     [InlineData(BalanzaTradicionalTestCase.EnCascada)]
     [InlineData(BalanzaTradicionalTestCase.EnCascadaConAuxiliares)]
     [InlineData(BalanzaTradicionalTestCase.Sectorizada)]
-    public async Task TotalByCurrency_must_be_the_sum_of_totalDebtors_minus_totalCreditors(BalanzaTradicionalTestCase testcase) {
+    public async Task TotalByCurrency_Must_Be_The_Sum_Of_TotalDebtors_Minus_TotalCreditors(BalanzaTradicionalTestCase testcase) {
       FixedList<BalanzaTradicionalEntryDto> sut = await GetBalanzaTradicionalEntries(testcase)
                                                        .ConfigureAwait(false);
 
@@ -232,14 +232,14 @@ namespace Empiria.FinancialAccounting.Tests.BalanceEngine.BalanzaTradicional {
     [InlineData(BalanzaTradicionalTestCase.EnCascada)]
     [InlineData(BalanzaTradicionalTestCase.EnCascadaConAuxiliares)]
     [InlineData(BalanzaTradicionalTestCase.Sectorizada)]
-    public async Task TotalConsolidated_must_be_the_sum_of_Currencies(BalanzaTradicionalTestCase testcase) {
+    public async Task TotalConsolidated_Must_Be_The_Sum_Of_Currencies(BalanzaTradicionalTestCase testcase) {
       FixedList<BalanzaTradicionalEntryDto> sut = await GetBalanzaTradicionalEntries(testcase)
                                                        .ConfigureAwait(false);
 
       var expected = sut.FindAll(x => x.ItemType == TrialBalanceItemType.BalanceTotalCurrency)
                                 .Sum(x => x.CurrentBalance);
 
-      var actual = sut.FindAll(x => x.ItemType == TrialBalanceItemType.BalanceTotalCurrency)
+      var actual = sut.FindAll(x => x.ItemType == TrialBalanceItemType.BalanceTotalConsolidated)
                                 .Sum(x => x.CurrentBalance);
 
       Assert.True(expected == actual,

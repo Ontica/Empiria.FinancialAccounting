@@ -2,9 +2,9 @@
 *                                                                                                            *
 *  Module   : Balance Engine                             Component : Test cases                              *
 *  Assembly : FinancialAccounting.BalanceEngine.Tests    Pattern   : Enumerated type with extensions         *
-*  Type     : SaldosPorCuentaTestCase                    License   : Please read LICENSE.txt file            *
+*  Type     : SaldosPorCuentaTestCaseExtensions          License   : Please read LICENSE.txt file            *
 *                                                                                                            *
-*  Summary  : Test cases for the 'Saldos por cuenta' report.                                                 *
+*  Summary  : Test case extension methods for the 'Saldos por cuenta' report.                                *
 *                                                                                                            *
 ************************* Copyright(c) La Vía Óntica SC, Ontica LLC and contributors. All rights reserved. **/
 using System;
@@ -16,62 +16,62 @@ using Empiria.FinancialAccounting.BalanceEngine.Adapters;
 
 namespace Empiria.FinancialAccounting.Tests.BalanceEngine {
 
-    /// <summary>Test cases for the 'Saldos por cuenta' report.</summary>
-    public enum SaldosPorCuentaTestCase {
 
-      CatalogoAnterior,
+  /// <summary>Test cases for the 'Saldos por cuenta' report.</summary>
+  public enum SaldosPorCuentaTestCase {
 
-      ConAuxiliares,
+    CatalogoAnterior,
 
-      Default,
+    ConAuxiliares,
 
-      EnCascada,
+    Default,
 
-      EnCascadaConAuxiliares,
+    EnCascada,
 
-      Sectorizado
+    EnCascadaConAuxiliares,
 
-    }  // enum SaldosPorCuentaTestCase
+    Sectorizado
 
-
-
-    /// <summary>Extension methods for SaldosPorCuentaTestCase.</summary>
-    static public class SaldosPorCuentaTestCaseExtensions {
-
-      static public TrialBalanceQuery GetInvocationQuery(this SaldosPorCuentaTestCase testcase) {
-        SaldosPorCuentaDto dto = ReadSaldosPorCuentaFromFile(testcase);
-
-        return dto.Query;
-      }
+  }  // enum SaldosPorCuentaTestCase
 
 
-      static public FixedList<SaldosPorCuentaEntryDto> GetExpectedEntries(this SaldosPorCuentaTestCase testcase) {
-        SaldosPorCuentaDto dto = ReadSaldosPorCuentaFromFile(testcase);
+  /// <summary>Test case extension methods for the 'Saldos por cuenta' report.</summary>
+  static public class SaldosPorCuentaTestCaseExtensions {
 
-        return dto.Entries;
-      }
+    static public TrialBalanceQuery GetInvocationQuery(this SaldosPorCuentaTestCase testcase) {
+      SaldosPorCuentaDto dto = ReadSaldosPorCuentaFromFile(testcase);
 
-
-      static public FixedList<SaldosPorCuentaEntryDto> GetExpectedEntries(this SaldosPorCuentaTestCase testcase,
-                                                                             TrialBalanceItemType filteredBy) {
-
-        SaldosPorCuentaDto dto = ReadSaldosPorCuentaFromFile(testcase);
-
-        return dto.Entries.FindAll(x => x.ItemType == filteredBy);
-      }
+      return dto.Query;
+    }
 
 
-      static public bool SkipTest(this SaldosPorCuentaTestCase testcase) {
-        return false;
-      }
+    static public FixedList<SaldosPorCuentaEntryDto> GetExpectedEntries(this SaldosPorCuentaTestCase testcase) {
+      SaldosPorCuentaDto dto = ReadSaldosPorCuentaFromFile(testcase);
 
-      #region Helpers
+      return dto.Entries;
+    }
 
-      static private SaldosPorCuentaDto ReadSaldosPorCuentaFromFile(SaldosPorCuentaTestCase testcase) {
-        string fileNamePrefix = $"{TrialBalanceType.SaldosPorCuenta}.{testcase}";
 
-        return TestsCommonMethods.ReadTestDataFromFile<SaldosPorCuentaDto>(fileNamePrefix);
-      }
+    static public FixedList<SaldosPorCuentaEntryDto> GetExpectedEntries(this SaldosPorCuentaTestCase testcase,
+                                                                           TrialBalanceItemType filteredBy) {
+
+      SaldosPorCuentaDto dto = ReadSaldosPorCuentaFromFile(testcase);
+
+      return dto.Entries.FindAll(x => x.ItemType == filteredBy);
+    }
+
+
+    static public bool SkipTest(this SaldosPorCuentaTestCase testcase) {
+      return false;
+    }
+
+    #region Helpers
+
+    static private SaldosPorCuentaDto ReadSaldosPorCuentaFromFile(SaldosPorCuentaTestCase testcase) {
+      string fileNamePrefix = $"{TrialBalanceType.SaldosPorCuenta}.{testcase}";
+
+      return TestsCommonMethods.ReadTestDataFromFile<SaldosPorCuentaDto>(fileNamePrefix);
+    }
 
     #endregion Helpers
 

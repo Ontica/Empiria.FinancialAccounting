@@ -30,4 +30,5 @@ namespace Empiria.FinancialAccounting.Tests {
 
   }  // class TestingConstants
 
+
 }  // namespace Empiria.FinancialAccounting.Tests
