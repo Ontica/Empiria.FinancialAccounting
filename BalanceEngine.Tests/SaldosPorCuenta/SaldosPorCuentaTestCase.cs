@@ -24,13 +24,17 @@ namespace Empiria.FinancialAccounting.Tests.BalanceEngine {
 
     ConAuxiliares,
 
+    ConAuxiliaresValorizados,
+
     Default,
 
     EnCascada,
 
     EnCascadaConAuxiliares,
 
-    Sectorizado
+    Sectorizado,
+
+    Valorizados
 
   }  // enum SaldosPorCuentaTestCase
 

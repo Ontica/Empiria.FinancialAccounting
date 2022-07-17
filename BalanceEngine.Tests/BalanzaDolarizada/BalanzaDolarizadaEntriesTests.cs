@@ -37,7 +37,96 @@ namespace Empiria.FinancialAccounting.Tests.BalanceEngine.BalanzaDolarizada {
 
     #region Theories
 
-    //TODO Theories for entries
+    [Theory]
+    [InlineData(BalanzaDolarizadaTestCase.CatalogoAnterior)]
+    [InlineData(BalanzaDolarizadaTestCase.Default)]
+    [InlineData(BalanzaDolarizadaTestCase.OficinasCentrales)]
+    public async Task ContainsTheSameEntries_Than_TestData(BalanzaDolarizadaTestCase testcase) {
+      FixedList<BalanzaDolarizadaEntryDto> expectedEntries = testcase.GetExpectedEntries();
+
+      FixedList<BalanzaDolarizadaEntryDto> sut = await GetBalanzaDolarizadaEntries(testcase)
+                                                       .ConfigureAwait(false);
+
+      foreach (var expectedEntry in expectedEntries) {
+        var actualEntryFound = sut.Contains(x => x.Equals(expectedEntry));
+
+        Assert.True(actualEntryFound,
+          $"Actual entries do not have this '{expectedEntry.ItemType}'" +
+          $"expected entry: {expectedEntry.ToJson()}");
+      }
+
+
+      foreach (var actualEntry in sut) {
+        var expectedEntryFound = expectedEntries.Contains(x => x.Equals(actualEntry));
+
+        Assert.True(expectedEntryFound,
+          $"Expected entries do not have this '{actualEntry.ItemType}' " +
+          $"actual entry: {actualEntry.ToJson()}");
+      }
+    }
+
+
+    [Theory]
+    [InlineData(BalanzaDolarizadaTestCase.CatalogoAnterior)]
+    [InlineData(BalanzaDolarizadaTestCase.Default)]
+    [InlineData(BalanzaDolarizadaTestCase.OficinasCentrales)]
+    public async Task TotalEquivalence_Must_Be_The_Multiplication_Of_TotalBalance_And_ExchangeRate(
+                        BalanzaDolarizadaTestCase testcase) {
+
+      FixedList<BalanzaDolarizadaEntryDto> sut = await GetBalanzaDolarizadaEntries(testcase)
+                                                       .ConfigureAwait(false);
+
+      var entriesEquivalence = sut.FindAll(x => x.ItemType == TrialBalanceItemType.Entry ||
+                                                 x.ItemType == TrialBalanceItemType.Summary)
+                                   .Distinct();
+
+      foreach (var totalEquivalence in entriesEquivalence) {
+
+        var sutEntry = sut.FirstOrDefault(x => x.ItemType == TrialBalanceItemType.Entry ||
+                                                 x.ItemType == TrialBalanceItemType.Summary &&
+                                                 x.CurrencyCode == totalEquivalence.CurrencyCode &&
+                                                 x.AccountNumber == totalEquivalence.AccountNumber);
+
+        decimal expected = (decimal)sutEntry.TotalBalance * sutEntry.ExchangeRate;
+
+        decimal actual = (decimal) totalEquivalence.TotalEquivalence;
+
+        Assert.True(expected == actual,
+                    $"The total equivalence '{totalEquivalence}' was {expected}, " +
+                    $"but it is not equals to the entry value {actual}.");
+      }
+    }
+
+
+    [Theory]
+    [InlineData(BalanzaDolarizadaTestCase.CatalogoAnterior)]
+    [InlineData(BalanzaDolarizadaTestCase.Default)]
+    [InlineData(BalanzaDolarizadaTestCase.OficinasCentrales)]
+    public async Task TotalByAccount_Must_Be_The_Sum_Of_TotalEquivalence_By_Currency(
+                        BalanzaDolarizadaTestCase testcase) {
+
+      FixedList<BalanzaDolarizadaEntryDto> sut = await GetBalanzaDolarizadaEntries(testcase)
+                                                       .ConfigureAwait(false);
+
+      var totalByAccounts = sut.FindAll(x => x.ItemType == TrialBalanceItemType.BalanceTotalCurrency)
+                                   .Distinct();
+
+      foreach (var totalByAccount in totalByAccounts) {
+
+        decimal expected = sut.FindAll(x => x.ItemType == TrialBalanceItemType.Entry ||
+                                        x.ItemType == TrialBalanceItemType.Summary &&
+                                        x.AccountNumber == totalByAccount.AccountNumber)
+                                  .Sum(x => x.TotalEquivalence);
+
+        
+
+        decimal actual = totalByAccount.TotalEquivalence;
+
+        Assert.True(expected == actual,
+                    $"The total equivalence by account '{totalByAccount}' was {expected}, " +
+                    $"but it is not equals to the expected entry value {actual}.");
+      }
+    }
 
     #endregion Theories
 

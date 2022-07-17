@@ -29,8 +29,8 @@ namespace Empiria.FinancialAccounting.Tests {
 
     EnCascadaConAuxiliares,
 
-    Sectorizada
-
+    Sectorizada,
+    
   }  // enum BalanzaTradicionalTestCase 
 
 

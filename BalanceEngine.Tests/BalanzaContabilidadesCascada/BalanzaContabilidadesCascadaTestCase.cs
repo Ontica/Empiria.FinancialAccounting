@@ -39,7 +39,7 @@ namespace Empiria.FinancialAccounting.Tests.BalanceEngine.BalanzaContabilidadesC
 
 
     static public FixedList<BalanzaContabilidadesCascadaEntryDto> GetExpectedEntries(
-                                       BalanzaContabilidadesCascadaTestCase testcase) {
+                                       this BalanzaContabilidadesCascadaTestCase testcase) {
       BalanzaContabilidadesCascadaDto dto = ReadBalanzaContabilidadesCascadaFromFile(testcase);
 
       return dto.Entries;

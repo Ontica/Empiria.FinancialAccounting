@@ -37,7 +37,34 @@ namespace Empiria.FinancialAccounting.Tests.BalanceEngine.SaldosPorAuxiliar {
 
     #region Theories
 
-    //TODO Theories for entries
+    [Theory]
+    [InlineData(SaldosPorAuxiliarTestCase.CatalogoAnterior)]
+    [InlineData(SaldosPorAuxiliarTestCase.Default)]
+    [InlineData(SaldosPorAuxiliarTestCase.Valorizados)]
+    public async Task ContainsTheSameEntries_Than_TestData(SaldosPorAuxiliarTestCase testcase) {
+      FixedList<SaldosPorAuxiliarEntryDto> expectedEntries = testcase.GetExpectedEntries();
+
+      FixedList<SaldosPorAuxiliarEntryDto> sut = await GetSaldosPorAuxiliarEntries(testcase)
+                                                       .ConfigureAwait(false);
+
+      foreach (var expectedEntry in expectedEntries) {
+        var actualEntryFound = sut.Contains(x => x.Equals(expectedEntry));
+
+        Assert.True(actualEntryFound,
+          $"Actual entries do not have this '{expectedEntry.ItemType}'" +
+          $"expected entry: {expectedEntry.ToJson()}");
+      }
+
+
+      foreach (var actualEntry in sut) {
+        var expectedEntryFound = expectedEntries.Contains(x => x.Equals(actualEntry));
+
+        Assert.True(expectedEntryFound,
+          $"Expected entries do not have this '{actualEntry.ItemType}' " +
+          $"actual entry: {actualEntry.ToJson()}");
+      }
+    }
+
 
     #endregion Theories
 

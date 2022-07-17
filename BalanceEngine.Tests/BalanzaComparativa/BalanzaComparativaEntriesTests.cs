@@ -37,7 +37,34 @@ namespace Empiria.FinancialAccounting.Tests.BalanceEngine.BalanzaComparativa {
 
     #region Theories
 
-    //TODO Theories for Balanza comparativa entries
+    [Theory]
+    [InlineData(BalanzaComparativaTestCase.CatalogoAnterior)]
+    [InlineData(BalanzaComparativaTestCase.Default)]
+    [InlineData(BalanzaComparativaTestCase.EnCascada)]
+    public async Task ContainsTheSameEntries_Than_TestData(BalanzaComparativaTestCase testcase) {
+      FixedList<BalanzaComparativaEntryDto> expectedEntries = testcase.GetExpectedEntries();
+
+      FixedList<BalanzaComparativaEntryDto> sut = await GetBalanzaComparativaEntries(testcase)
+                                                       .ConfigureAwait(false);
+
+      foreach (var expectedEntry in expectedEntries) {
+        var actualEntryFound = sut.Contains(x => x.Equals(expectedEntry));
+
+        Assert.True(actualEntryFound,
+          $"Actual entries do not have this '{expectedEntry.ItemType}'" +
+          $"expected entry: {expectedEntry.ToJson()}");
+      }
+
+
+      foreach (var actualEntry in sut) {
+        var expectedEntryFound = expectedEntries.Contains(x => x.Equals(actualEntry));
+
+        Assert.True(expectedEntryFound,
+          $"Expected entries do not have this '{actualEntry.ItemType}' " +
+          $"actual entry: {actualEntry.ToJson()}");
+      }
+    }
+
 
     #endregion Theories
 

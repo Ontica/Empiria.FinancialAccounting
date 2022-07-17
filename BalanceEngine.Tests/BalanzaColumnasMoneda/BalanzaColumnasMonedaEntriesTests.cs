@@ -37,6 +37,35 @@ namespace Empiria.FinancialAccounting.Tests.BalanceEngine.BalanzaColumnasMoneda 
 
     #region Theories
 
+    [Theory]
+    [InlineData(BalanzaColumnasMonedaTestCase.CatalogoAnterior)]
+    [InlineData(BalanzaColumnasMonedaTestCase.Default)]
+    [InlineData(BalanzaColumnasMonedaTestCase.Filtrada)]
+    public async Task ContainsTheSameEntries_Than_TestData(BalanzaColumnasMonedaTestCase testcase) {
+      FixedList<BalanzaColumnasMonedaEntryDto> expectedEntries = testcase.GetExpectedEntries();
+
+      FixedList<BalanzaColumnasMonedaEntryDto> sut = await GetBalanzaColumnasMonedaEntries(testcase)
+                                                       .ConfigureAwait(false);
+
+      foreach (var expectedEntry in expectedEntries) {
+        var actualEntryFound = sut.Contains(x => x.Equals(expectedEntry));
+
+        Assert.True(actualEntryFound,
+          $"Actual entries do not have this '{expectedEntry.ItemType}'" +
+          $"expected entry: {expectedEntry.ToJson()}");
+      }
+
+
+      foreach (var actualEntry in sut) {
+        var expectedEntryFound = expectedEntries.Contains(x => x.Equals(actualEntry));
+
+        Assert.True(expectedEntryFound,
+          $"Expected entries do not have this '{actualEntry.ItemType}' " +
+          $"actual entry: {actualEntry.ToJson()}");
+      }
+    }
+
+
 
 
     #endregion Theories

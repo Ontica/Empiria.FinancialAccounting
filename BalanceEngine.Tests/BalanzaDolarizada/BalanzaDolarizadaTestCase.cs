@@ -21,15 +21,9 @@ namespace Empiria.FinancialAccounting.Tests.BalanceEngine {
 
     CatalogoAnterior,
 
-    ConAuxiliares,
-
     Default,
 
-    EnCascada,
-
-    EnCascadaConAuxiliares,
-
-    Sectorizado
+    OficinasCentrales
 
   } // enum BalanzaDolarizadaTestCase
 

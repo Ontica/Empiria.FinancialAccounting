@@ -41,6 +41,35 @@ namespace Empiria.FinancialAccounting.Tests.BalanceEngine.BalanzaContabilidadesC
     [InlineData(BalanzaContabilidadesCascadaTestCase.CatalogoAnterior)]
     [InlineData(BalanzaContabilidadesCascadaTestCase.Default)]
     [InlineData(BalanzaContabilidadesCascadaTestCase.Valorizada)]
+    public async Task ContainsTheSameEntries_Than_TestData(BalanzaContabilidadesCascadaTestCase testcase) {
+      FixedList<BalanzaContabilidadesCascadaEntryDto> expectedEntries = testcase.GetExpectedEntries();
+
+      FixedList<BalanzaContabilidadesCascadaEntryDto> sut = await GetBalanzaContabilidadesCascadaEntries(testcase)
+                                                       .ConfigureAwait(false);
+
+      foreach (var expectedEntry in expectedEntries) {
+        var actualEntryFound = sut.Contains(x => x.Equals(expectedEntry));
+
+        Assert.True(actualEntryFound,
+          $"Actual entries do not have this '{expectedEntry.ItemType}'" +
+          $"expected entry: {expectedEntry.ToJson()}");
+      }
+
+
+      foreach (var actualEntry in sut) {
+        var expectedEntryFound = expectedEntries.Contains(x => x.Equals(actualEntry));
+
+        Assert.True(expectedEntryFound,
+          $"Expected entries do not have this '{actualEntry.ItemType}' " +
+          $"actual entry: {actualEntry.ToJson()}");
+      }
+    }
+
+
+    [Theory]
+    [InlineData(BalanzaContabilidadesCascadaTestCase.CatalogoAnterior)]
+    [InlineData(BalanzaContabilidadesCascadaTestCase.Default)]
+    [InlineData(BalanzaContabilidadesCascadaTestCase.Valorizada)]
     public async Task TotalLedgersByCurrency_Must_Be_The_Sum_Of_Its_DebtorAccounts(
                                       BalanzaContabilidadesCascadaTestCase testcase) {
 

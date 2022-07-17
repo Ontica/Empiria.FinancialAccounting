@@ -22,15 +22,9 @@ namespace Empiria.FinancialAccounting.Tests.BalanceEngine.BalanzaColumnasMoneda 
 
     CatalogoAnterior,
 
-    ConAuxiliares,
-
     Default,
 
-    EnCascada,
-
-    EnCascadaConAuxiliares,
-
-    Sectorizada
+    Filtrada
 
   }  // enum BalanzaColumnasMonedaTestCase 
 
@@ -46,7 +40,7 @@ namespace Empiria.FinancialAccounting.Tests.BalanceEngine.BalanzaColumnasMoneda 
 
 
     static public FixedList<BalanzaColumnasMonedaEntryDto> GetExpectedEntries(
-                                                           BalanzaColumnasMonedaTestCase testcase) {
+                                                           this BalanzaColumnasMonedaTestCase testcase) {
       BalanzaColumnasMonedaDto dto = ReadBalanzaColumnasMonedaFromFile(testcase);
 
       return dto.Entries;

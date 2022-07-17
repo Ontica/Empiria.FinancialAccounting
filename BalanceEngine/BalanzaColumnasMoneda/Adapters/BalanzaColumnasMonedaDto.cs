@@ -9,6 +9,7 @@
 ************************* Copyright(c) La Vía Óntica SC, Ontica LLC and contributors. All rights reserved. **/
 using System;
 using Empiria.FinancialAccounting.BalanceEngine.Adapters;
+using Empiria.Json;
 using Newtonsoft.Json;
 
 namespace Empiria.FinancialAccounting.BalanceEngine.Adapters {
@@ -119,6 +120,12 @@ namespace Empiria.FinancialAccounting.BalanceEngine.Adapters {
       get {
         return String.Empty;
       }
+    }
+
+
+    public string ToJson() {
+      return JsonObject.Parse(this)
+                       .ToString();
     }
 
   }  // class BalanzaColumnasMonedaEntryDto
