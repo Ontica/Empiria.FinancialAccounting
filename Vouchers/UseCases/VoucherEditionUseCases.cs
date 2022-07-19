@@ -54,6 +54,9 @@ namespace Empiria.FinancialAccounting.Vouchers.UseCases {
 
       var voucher = Voucher.Parse(voucherId);
 
+      Assertion.Require(voucher.IsOpened,
+                        "Esta operación sólo está disponible para pólizas abiertas.");
+
       foreach (var entryFields in entries) {
         entryFields.VoucherId = voucherId;
 

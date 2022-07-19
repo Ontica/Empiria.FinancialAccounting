@@ -123,6 +123,7 @@ namespace Empiria.FinancialAccounting.BalanceEngine.UseCases {
                        "query.TrialBalanceType must be 'Balanza'.");
 
       var builder = new BalanzaTradicionalBuilder(query);
+
       TrialBalance entries = await Task.Run(() => builder.Build()).ConfigureAwait(false);
 
       return BalanzaTradicionalMapper.Map(entries);

@@ -47,7 +47,7 @@ namespace Empiria.FinancialAccounting.Datasets.Data {
       var op = DataOperation.Parse("write_cof_archivo",
                         o.Id, o.UID, o.DatasetFamily.Id,
                         o.DatasetKind.UID, o.OperationDate, o.UpdatedTime,
-                        o.ExtData.ToString(),o.OriginalFileName, o.FileName, -1,
+                        o.ExtData.ToString(), o.OriginalFileName, o.FileName, -1,
                         o.MediaType, o.MediaLength, o.UploadedBy.Id,
                         (char) o.Status);
 

@@ -414,7 +414,7 @@ namespace Empiria.FinancialAccounting.Vouchers {
       var historic = account.GetHistoric(this.AccountingDate);
 
       Assertion.Require(historic.Role == AccountRole.Control || historic.Role == AccountRole.Sectorizada,
-                       "The account role is not control. There are not subledger accounts");
+                       "The account role is not 'Control', so there are not subledger accounts to return.");
 
       return VoucherData.SearchSubledgerAccountsForVoucherEdition(this, keywords);
     }
@@ -424,7 +424,7 @@ namespace Empiria.FinancialAccounting.Vouchers {
       Assertion.Require(this.IsOpened, "La póliza no se puede enviar al supervisor porque no está abierta.");
 
       Assertion.Require(this.IsValid(), "La póliza no puede enviarse al supervisor porque " +
-                                       "tiene datos con inconsistencias o no está balanceada.");
+                                        "tiene datos con inconsistencias o no está balanceada.");
 
       this.AuthorizedBy = GetSupervisor();
 
@@ -462,20 +462,23 @@ namespace Empiria.FinancialAccounting.Vouchers {
 
       string exception = string.Empty;
 
-      if (AccountingDate.Date == new DateTime(2022, 1, 1) && VoucherType.UID != "c94bfd2b-84a7-4807-99fc-d4cb23cd43e3") {
+      string UID_POLIZA_CARGA_SALDOS_INICIALES = "c94bfd2b-84a7-4807-99fc-d4cb23cd43e3";
+      string UID_POLIZA_EFECTOS_INICIALES_ADOPCION_NORMA = "e05e39ed-e744-43e1-b7b1-8e7b6c4e9895";
+
+      if (AccountingDate.Date == new DateTime(2022, 1, 1) && VoucherType.UID != UID_POLIZA_CARGA_SALDOS_INICIALES) {
         exception = "El primero de enero de 2022 sólo permite el registro de pólizas de 'Carga de saldos iniciales'.";
       }
 
-      if (AccountingDate.Date != new DateTime(2022, 1, 1) && VoucherType.UID == "c94bfd2b-84a7-4807-99fc-d4cb23cd43e3") {
+      if (AccountingDate.Date != new DateTime(2022, 1, 1) && VoucherType.UID == UID_POLIZA_CARGA_SALDOS_INICIALES) {
         exception = "Las pólizas de 'Carga de saldos iniciales' deben registrarse con fecha primero de enero de 2022.";
       }
 
 
-      if (AccountingDate.Date == new DateTime(2022, 1, 2) && VoucherType.UID != "e05e39ed-e744-43e1-b7b1-8e7b6c4e9895") {
+      if (AccountingDate.Date == new DateTime(2022, 1, 2) && VoucherType.UID != UID_POLIZA_EFECTOS_INICIALES_ADOPCION_NORMA) {
         exception = "El 2 de enero de 2022 sólo permite el registro de pólizas de 'Efectos iniciales de adopción de Norma'.";
       }
 
-      if (AccountingDate.Date != new DateTime(2022, 1, 2) && VoucherType.UID == "e05e39ed-e744-43e1-b7b1-8e7b6c4e9895") {
+      if (AccountingDate.Date != new DateTime(2022, 1, 2) && VoucherType.UID == UID_POLIZA_EFECTOS_INICIALES_ADOPCION_NORMA) {
         exception = "Las pólizas de 'Efectos iniciales de adopción de Norma' deben registrarse con fecha 2 de enero de 2022.";
       }
 

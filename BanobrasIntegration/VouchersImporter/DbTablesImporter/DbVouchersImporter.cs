@@ -51,7 +51,7 @@ namespace Empiria.FinancialAccounting.BanobrasIntegration.VouchersImporter {
 
 
     internal async Task Start(ImportVouchersCommand command) {
-      Assertion.Require(this.IsRunning,
+      Assertion.Require(!this.IsRunning,
                        "DBVouchersImporter is running. Please stop it before call Start() method.");
 
       command.TryToCloseVouchers = true;     // ToDo: OOJJOO

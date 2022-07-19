@@ -154,12 +154,10 @@ namespace Empiria.FinancialAccounting.BanobrasIntegration.VouchersImporter {
 
 
     internal StandardAccount GetStandardAccount() {
-      string formatted = this.NumeroCuentaEstandar;
-
       try {
         var accountsChart = this.Encabezado.GetAccountsChart();
 
-        formatted = accountsChart.FormatAccountNumber(this.NumeroCuentaEstandar);
+        string formatted = accountsChart.FormatAccountNumber(this.NumeroCuentaEstandar);
 
         StandardAccount stdAccount = accountsChart.TryGetStandardAccount(formatted);
 

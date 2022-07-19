@@ -128,7 +128,7 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
       switch (this.Query.TrialBalanceType) {
 
         case TrialBalanceType.AnaliticoDeCuentas:
-          
+
           var builder = new AnaliticoDeCuentasBuilder(this.Query);
           var entries = builder.Build();
           FixedList<ITrialBalanceEntry> analyticBalance = entries.Select(x => (ITrialBalanceEntry) x)
@@ -142,20 +142,20 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
           return balanzaTradicional.Build();
 
         case TrialBalanceType.SaldosPorCuenta:
-          
+
           var saldosPorCuenta = new SaldosPorCuentaBuilder(this.Query);
           return saldosPorCuenta.Build();
-          
+
 
         case TrialBalanceType.BalanzaEnColumnasPorMoneda:
-          
+
           var balanzaColumnasBuilder = new BalanzaColumnasMonedaBuilder(this.Query);
           var balanzaColumnasEntries = balanzaColumnasBuilder.Build();
           FixedList<ITrialBalanceEntry> balanzaColumnas = balanzaColumnasEntries.Select(x =>
                                                             (ITrialBalanceEntry) x).ToFixedList();
 
           return new TrialBalance(this.Query, balanzaColumnas);
-        
+
         case TrialBalanceType.BalanzaValorizadaComparativa:
 
           var comparativaBuilder = new BalanzaComparativaBuilder(this.Query);

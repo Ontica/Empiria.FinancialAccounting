@@ -38,7 +38,7 @@ namespace Empiria.FinancialAccounting.WebApi.FinancialConcepts {
     [HttpGet]
     [Route("v2/financial-accounting/financial-concepts/{financialConceptUID:guid}/integration/{financialConceptEntryUID:guid}")]
     public SingleObjectModel GetConceptEntry([FromUri] string financialConceptUID,
-                                       [FromUri] string financialConceptEntryUID) {
+                                             [FromUri] string financialConceptEntryUID) {
 
       using (var usecases = FinancialConceptIntegrationUseCases.UseCaseInteractor()) {
         FinancialConceptEntryDto entry = usecases.GetFinancialConceptEntry(financialConceptUID, financialConceptEntryUID);
