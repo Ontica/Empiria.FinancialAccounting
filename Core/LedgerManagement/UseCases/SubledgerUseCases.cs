@@ -55,11 +55,11 @@ namespace Empiria.FinancialAccounting.UseCases {
       fields.Number = ledger.FormatSubledgerAccount(fields.Number);
       fields.Name = EmpiriaString.TrimAll(fields.Name);
 
-      var subledgerAccount = ledger.TryGetSubledgerAccount(fields.Number);
+      var existingAccount = ledger.TryGetSubledgerAccount(fields.Number);
 
-      Assertion.Require(subledgerAccount == null,
-                        $"Ya existe un auxiliar con número {subledgerAccount.Number}, " +
-                        $"y corresponde a {subledgerAccount.Name}.");
+      Assertion.Require(existingAccount == null,
+                        $"Ya existe un auxiliar con número {fields.Number}, " +
+                        $"y corresponde a {fields.Name}.");
 
       SubledgerAccount createdSubledgerAccount = ledger.CreateSubledgerAccount(fields.Number,
                                                                                fields.SubledgerType(),
