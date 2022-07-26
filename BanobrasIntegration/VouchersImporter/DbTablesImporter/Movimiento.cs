@@ -177,7 +177,7 @@ namespace Empiria.FinancialAccounting.BanobrasIntegration.VouchersImporter {
 
 
     internal Sector GetSector() {
-      this.ClaveSector = EmpiriaString.TrimAll(this.ClaveSector);
+      this.ClaveSector = EmpiriaString.Clean(this.ClaveSector);
 
       if (this.ClaveSector.Length == 0 ||
           this.ClaveSector == "00" ||
