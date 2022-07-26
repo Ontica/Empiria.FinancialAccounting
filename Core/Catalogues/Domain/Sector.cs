@@ -22,11 +22,17 @@ namespace Empiria.FinancialAccounting {
 
 
     static public Sector Parse(int id) {
+      if (id == 0) {
+        id = -1;
+      }
       return BaseObject.ParseId<Sector>(id);
     }
 
 
     static public Sector Parse(string uid) {
+      if (uid == "00") {
+        return Sector.Empty;
+      }
       return BaseObject.ParseKey<Sector>(uid);
     }
 
@@ -55,6 +61,12 @@ namespace Empiria.FinancialAccounting {
 
     #region Public properties
 
+
+    public new bool IsEmptyInstance {
+      get {
+        return this.Id <= 0;
+      }
+    }
 
     [DataField("NOMBRE_SECTOR")]
     public string Name {
@@ -95,6 +107,7 @@ namespace Empiria.FinancialAccounting {
         return !IsRoot;
       }
     }
+
 
     public bool HasChildren {
       get {
