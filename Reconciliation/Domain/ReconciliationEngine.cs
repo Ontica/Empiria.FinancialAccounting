@@ -98,7 +98,7 @@ namespace Empiria.FinancialAccounting.Reconciliation {
 
 
     private FixedList<OperationalEntryDto> GetOperationalData(FixedList<Dataset> datasets) {
-      int ESTIMATED_LIST_SIZE = datasets.Count * 4096;
+      int ESTIMATED_LIST_SIZE = datasets.Count * 7680;
 
       var list = new List<OperationalEntryDto>(ESTIMATED_LIST_SIZE);
 
@@ -109,6 +109,8 @@ namespace Empiria.FinancialAccounting.Reconciliation {
 
         list.AddRange(entries);
       }
+
+      list.TrimExcess();
 
       return list.ToFixedList();
     }
