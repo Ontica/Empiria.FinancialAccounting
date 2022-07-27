@@ -34,16 +34,20 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
     internal List<TrialBalanceEntry> CombineTotalsByCurrencyAndAccountEntries(
                                       List<TrialBalanceEntry> balanceEntries,
                                       List<TrialBalanceEntry> totalsByCurrency) {
+      
       var returnedEntries = new List<TrialBalanceEntry>();
+      var entriesValidator = new TrialBalanceEntriesValidator();
 
       foreach (var currencyEntry in totalsByCurrency) {
 
         var entriesByCurrency = balanceEntries.Where(a => a.Ledger.Id == currencyEntry.Ledger.Id &&
                                                      a.Currency.Code == currencyEntry.Currency.Code)
                                               .ToList();
-        if (entriesByCurrency.Count > 0) {
+        if (entriesValidator.ValidateToCountEntries(entriesByCurrency)) { //  entriesByCurrency.Count > 0
+          
           entriesByCurrency.Add(currencyEntry);
           returnedEntries.AddRange(entriesByCurrency);
+
         }
       }
       return returnedEntries.OrderBy(a => a.Ledger.Number)
@@ -60,12 +64,13 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
       }
 
       var returnedEntries = new List<TrialBalanceEntry>();
+      var entriesValidator = new TrialBalanceEntriesValidator();
 
       foreach (var totalByLedger in totalConsolidatedByLedger) {
         var entries = balanceEntries.Where(a => a.Ledger.Id == totalByLedger.Ledger.Id)
                                      .ToList();
 
-        if (entries.Count > 0) {
+        if (entriesValidator.ValidateToCountEntries(entries)) { // entries.Count > 0
           entries.Add(totalByLedger);
           returnedEntries.AddRange(entries);
 
@@ -80,13 +85,14 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
                                      List<TrialBalanceEntry> totalDebtorCreditors) {
 
       var returnedEntries = new List<TrialBalanceEntry>();
+      var entriesValidator = new TrialBalanceEntriesValidator();
 
       foreach (var debtorCreditorEntry in totalDebtorCreditors) {
 
         var entries = balanceEntries.Where(a => a.Ledger.Id == debtorCreditorEntry.Ledger.Id &&
                                            a.Currency.Code == debtorCreditorEntry.Currency.Code &&
                                            a.DebtorCreditor == debtorCreditorEntry.DebtorCreditor).ToList();
-        if (entries.Count > 0) {
+        if (entriesValidator.ValidateToCountEntries(entries)) { // entries.Count > 0
           entries.Add(debtorCreditorEntry);
           returnedEntries.AddRange(entries);
         }
@@ -102,6 +108,7 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
                                       List<TrialBalanceEntry> balanzaEntries,
                                       FixedList<TrialBalanceEntry> groupTotalsEntries) {
       var returnedEntries = new List<TrialBalanceEntry>();
+      var entriesValidator = new TrialBalanceEntriesValidator();
 
       foreach (var totalGroupEntry in groupTotalsEntries) {
 
@@ -111,8 +118,10 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
                                   a.Currency.Id == totalGroupEntry.Currency.Id &&
                                   a.Account.DebtorCreditor == totalGroupEntry.DebtorCreditor).ToList();
 
-        accountEntries.Add(totalGroupEntry);
-        returnedEntries.AddRange(accountEntries);
+        if (entriesValidator.ValidateToCountEntries(accountEntries)) {
+          accountEntries.Add(totalGroupEntry);
+          returnedEntries.AddRange(accountEntries);
+        }
       }
 
       return returnedEntries.OrderBy(a => a.Ledger.Number)
@@ -126,9 +135,12 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
                                       List<TrialBalanceEntry> accountEntries) {
 
       var returnedEntries = new List<TrialBalanceEntry>(accountEntries);
+      var entriesValidator = new TrialBalanceEntriesValidator();
 
-      returnedEntries.AddRange(parentAccountEntries);
-
+      if (entriesValidator.ValidateToCountEntries(parentAccountEntries)) {
+        returnedEntries.AddRange(parentAccountEntries);
+      }
+      
       var trialBalanceHelper = new TrialBalanceHelper(_query);
 
       trialBalanceHelper.SetSubledgerAccountInfoByEntry(returnedEntries);

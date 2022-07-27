@@ -121,8 +121,13 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
       List<TrialBalanceEntry> returnedBalance = new List<TrialBalanceEntry>(totalByCurrencyAndAccountEntries);
 
       TrialBalanceEntry totalConsolidated = helper.GenerateTotalConsolidated(totalsByCurrency);
-      returnedBalance.Add(totalConsolidated);
 
+      var entriesValidator = new TrialBalanceEntriesValidator();
+
+      if (entriesValidator.CheckIfIsNullEntry(totalConsolidated)) {
+        returnedBalance.Add(totalConsolidated);
+      }
+      
       return returnedBalance;
     }
 
