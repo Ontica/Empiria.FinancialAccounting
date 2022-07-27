@@ -61,6 +61,25 @@ namespace Empiria.FinancialAccounting.Reconciliation {
     #region Helpers
 
 
+    private decimal CalculateTotal(OperationalEntryDto operationalEntry) {
+      var account = AccountsChart.IFRS.TryGetAccount(operationalEntry.AccountNumber);
+
+      if (account == null || account.DebtorCreditor == DebtorCreditorType.Deudora) {
+        return operationalEntry.Debits - operationalEntry.Credits;
+      } else {
+        return operationalEntry.Credits - operationalEntry.Debits;
+      }
+    }
+
+
+    private decimal CalculateTotal(BalanzaTradicionalEntryDto accountingEntry) {
+      if (accountingEntry.DebtorCreditor == "Deudora") {
+        return accountingEntry.Debit - accountingEntry.Credit;
+      } else {
+        return accountingEntry.Credit - accountingEntry.Debit;
+      }
+    }
+
     private FixedList<BalanzaTradicionalEntryDto> GetAccountingEntriesFor(AccountsListItem account) {
       return _balances.FindAll(x => x.AccountNumber == account.AccountNumber &&
                                     x.SectorCode == "00");
@@ -118,7 +137,7 @@ namespace Empiria.FinancialAccounting.Reconciliation {
         AccountNumber = operationalEntry.AccountNumber,
         CurrencyCode = operationalEntry.CurrencyCode,
         SectorCode = operationalEntry.SectorCode,
-        OperationalTotal = operationalEntry.Debits - operationalEntry.Credits
+        OperationalTotal = CalculateTotal(operationalEntry)
       };
 
       _resultsList.Add(newEntry);
@@ -133,7 +152,7 @@ namespace Empiria.FinancialAccounting.Reconciliation {
         AccountNumber = accountingEntry.AccountNumber,
         CurrencyCode = accountingEntry.CurrencyCode,
         SectorCode = accountingEntry.SectorCode,
-        AccountingTotal = accountingEntry.Debit - accountingEntry.Credit
+        AccountingTotal = CalculateTotal(accountingEntry)
       };
 
       _resultsList.Add(newEntry);
@@ -159,7 +178,7 @@ namespace Empiria.FinancialAccounting.Reconciliation {
 
       int index = _resultsList.FindIndex(x => x.UniqueKey == entryKey);
 
-      _resultsList[index].OperationalTotal += operationalEntry.Debits - operationalEntry.Credits;
+      _resultsList[index].OperationalTotal += CalculateTotal(operationalEntry);
     }
 
 
@@ -168,7 +187,7 @@ namespace Empiria.FinancialAccounting.Reconciliation {
 
       int index = _resultsList.FindIndex(x => x.UniqueKey == entryKey);
 
-      _resultsList[index].AccountingTotal += accountingEntry.Debit - accountingEntry.Credit;
+      _resultsList[index].AccountingTotal += CalculateTotal(accountingEntry);
     }
 
     #endregion Helpers
