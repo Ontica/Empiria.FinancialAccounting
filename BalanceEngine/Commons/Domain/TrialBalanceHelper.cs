@@ -102,6 +102,10 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
 
       FixedList<TrialBalanceEntry> accountEntries = BalancesDataService.GetTrialBalanceEntries(_query);
 
+      if (accountEntries.Count == 0) {
+        return accountEntries;
+      }
+
       if (_query.ValuateBalances || _query.InitialPeriod.UseDefaultValuation) {
         ValuateAccountEntriesToExchangeRate(accountEntries);
 

@@ -31,9 +31,13 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
 
       FixedList<TrialBalanceEntry> accountEntries = trialBalanceHelper.GetAccountEntries();
 
+      if (accountEntries.Count == 0) {
+        return new TrialBalance(_query, new FixedList<ITrialBalanceEntry>());
+      }
+
       trialBalanceHelper.SetSummaryToParentEntries(accountEntries);
 
-      List<TrialBalanceEntry> accountEntriesOrdered = 
+      List<TrialBalanceEntry> accountEntriesOrdered =
                               helper.OrderingAccountEntries(accountEntries);
 
       FixedList<TrialBalanceEntry> totalByAccountEntries =
@@ -51,7 +55,7 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
       FixedList<TrialBalanceEntry> totalsByCurrency = helper.GenerateTotalsByCurrency(
                                                             totalsByDebtorCreditor);
 
-      List<TrialBalanceEntry> accountEntriesAndTotalsByCurrency = 
+      List<TrialBalanceEntry> accountEntriesAndTotalsByCurrency =
         helper.CombineTotalsByCurrencyAndAccountEntries(accountEntriesAndTotalsByDebtorCreditor,
                                                         totalsByCurrency);
 

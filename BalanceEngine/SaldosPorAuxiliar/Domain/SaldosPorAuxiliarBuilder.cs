@@ -34,12 +34,16 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
 
       FixedList<TrialBalanceEntry> accountEntries = trialBalanceHelper.GetAccountEntries();
 
+      if (accountEntries.Count == 0) {
+        return new TrialBalance(_query, new FixedList<ITrialBalanceEntry>());
+      }
+
       trialBalanceHelper.SetSummaryToParentEntries(accountEntries);
 
-      EmpiriaHashTable<TrialBalanceEntry> parentAccounts = 
+      EmpiriaHashTable<TrialBalanceEntry> parentAccounts =
                                           saldosHelper.GetBalancesBySubledgerAccounts(accountEntries);
 
-      List<TrialBalanceEntry> orderedParentAccounts = 
+      List<TrialBalanceEntry> orderedParentAccounts =
                               saldosHelper.OrderingAndAssingnSubledgerAccountInfoToParent(parentAccounts);
 
       List<TrialBalanceEntry> returnedAccountEntries = saldosHelper.GetTotalsAndCombineWithAccountEntries(

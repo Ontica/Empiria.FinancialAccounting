@@ -31,6 +31,10 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
 
       FixedList<TrialBalanceEntry> accountEntries = trialBalanceHelper.GetAccountEntries();
 
+      if (accountEntries.Count == 0) {
+        return new TrialBalance(_query, new FixedList<ITrialBalanceEntry>());
+      }
+
       List<TrialBalanceEntry> parentAccounts = helper.GetCalculatedParentAccounts(accountEntries);
 
 
@@ -73,7 +77,7 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
       List<TrialBalanceEntry> summaryTotalDebtorCreditorEntries =
                               helper.GenerateTotalsDebtorOrCreditor(accountEntries);
 
-      List<TrialBalanceEntry> totalDebtorCreditorAndAccountEntries = 
+      List<TrialBalanceEntry> totalDebtorCreditorAndAccountEntries =
                               helper.CombineDebtorCreditorAndPostingEntries(
                               parentsAndAccountEntries, summaryTotalDebtorCreditorEntries);
 
@@ -93,7 +97,7 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
       return returnedBalances;
     }
 
-    
+
     #endregion
 
   } // class SaldosPorCuentaBuilder
