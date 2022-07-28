@@ -75,11 +75,13 @@ namespace Empiria.FinancialAccounting.Tests.BalanceEngine {
       TrialBalanceQuery query = GetDefaultTrialBalanceQuery();
 
       query.TrialBalanceType = TrialBalanceType.Balanza;
-      query.BalancesType = BalancesType.WithCurrentBalance;
+      query.BalancesType = BalancesType.WithCurrentBalanceOrMovements;
       query.ShowCascadeBalances = false;
       query.WithSubledgerAccount = false;
       query.UseDefaultValuation = false;
-      query.WithAverageBalance = true;
+      query.WithAverageBalance = false;
+      query.FromAccount = "1";
+      query.ToAccount = "1";
 
       TrialBalanceDto sut = BalanceEngineProxy.BuildTrialBalance(query);
 
