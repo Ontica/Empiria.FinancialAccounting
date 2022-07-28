@@ -440,7 +440,7 @@ namespace Empiria.FinancialAccounting.Vouchers {
       this.RecordingDate = FieldPatcher.PatchField(fields.RecordingDate, this.RecordingDate);
       this.ElaboratedBy = FieldPatcher.PatchField(fields.ElaboratedByUID, this.ElaboratedBy);
       this.Concept = FieldPatcher.PatchField(EmpiriaString.TrimAll(fields.Concept), this.Concept);
-      this.TransactionType = FieldPatcher.PatchField(fields.TransactionTypeUID, this.TransactionType);
+      // this.TransactionType = FieldPatcher.PatchField(fields.TransactionTypeUID, this.TransactionType);
       this.VoucherType = FieldPatcher.PatchField(fields.VoucherTypeUID, this.VoucherType);
       this.FunctionalArea = FieldPatcher.PatchField(fields.FunctionalAreaId, this.FunctionalArea);
     }
