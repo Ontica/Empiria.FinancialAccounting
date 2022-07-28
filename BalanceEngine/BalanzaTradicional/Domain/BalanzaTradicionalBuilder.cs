@@ -30,6 +30,10 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
 
       FixedList<TrialBalanceEntry> accountEntries = balanzaHelper.GetPostingEntries();
 
+      if (accountEntries.Count == 0) {
+        return new TrialBalance(_query, new FixedList<ITrialBalanceEntry>());
+      }
+
       FixedList<TrialBalanceEntry> parentAccounts = balanzaHelper.GetCalculatedParentAccounts(
                                                     accountEntries);
 
@@ -81,13 +85,14 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
 
 
     #region Private methods
-    
+
 
     private List<TrialBalanceEntry> GenerateTotalsForBalanza(
                                     List<TrialBalanceEntry> balanceEntries,
                                     FixedList<TrialBalanceEntry> accountEntries) {
 
       var helper = new BalanzaTradicionalHelper(_query);
+
 
       FixedList<TrialBalanceEntry> groupTotalsEntries = helper.GenerateTotalGroupEntries(
                                                          accountEntries);
@@ -99,14 +104,14 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
       List<TrialBalanceEntry> totalDebtorCreditorEntries =
                               helper.GenerateTotalDebtorCreditorsByCurrency(accountEntries.ToList());
 
-      List<TrialBalanceEntry> totalDebtorCreditorsAndAccountEntries = 
+      List<TrialBalanceEntry> totalDebtorCreditorsAndAccountEntries =
                               helper.CombineTotalDebtorCreditorsByCurrencyAndAccountEntries(
                               totalGroupAndAccountEntries, totalDebtorCreditorEntries);
 
       List<TrialBalanceEntry> totalsByCurrency = helper.GenerateTotalByCurrency(
                                                 totalDebtorCreditorEntries);
 
-      List<TrialBalanceEntry> totalByCurrencyAndAccountEntries = 
+      List<TrialBalanceEntry> totalByCurrencyAndAccountEntries =
                               helper.CombineTotalsByCurrencyAndAccountEntries(
                               totalDebtorCreditorsAndAccountEntries, totalsByCurrency);
 
@@ -120,14 +125,12 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
 
       List<TrialBalanceEntry> returnedBalance = new List<TrialBalanceEntry>(totalByCurrencyAndAccountEntries);
 
-      TrialBalanceEntry totalConsolidated = helper.GenerateTotalConsolidated(totalsByCurrency);
+      TrialBalanceEntry totalConsolidated = helper.TryGenerateTotalConsolidated(totalsByCurrency);
 
-      var entriesValidator = new TrialBalanceEntriesValidator();
-
-      if (entriesValidator.CheckIfIsNullEntry(totalConsolidated)) {
+      if (totalConsolidated != null) {
         returnedBalance.Add(totalConsolidated);
       }
-      
+
       return returnedBalance;
     }
 
@@ -136,7 +139,7 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
       var helper = new TrialBalanceHelper(_query);
       var totalByAccountEntries = new EmpiriaHashTable<TrialBalanceEntry>(trialBalance.Count);
 
-      if (_query.ConsolidateBalancesToTargetCurrency == true) {
+      if (_query.ConsolidateBalancesToTargetCurrency) {
 
         foreach (var entry in trialBalance) {
           helper.SummaryByAccountForOperationalReport(totalByAccountEntries, entry);

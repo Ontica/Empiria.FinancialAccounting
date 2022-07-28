@@ -34,7 +34,7 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
     internal List<TrialBalanceEntry> CombineTotalsByCurrencyAndAccountEntries(
                                       List<TrialBalanceEntry> balanceEntries,
                                       List<TrialBalanceEntry> totalsByCurrency) {
-      
+
       var returnedEntries = new List<TrialBalanceEntry>();
       var entriesValidator = new TrialBalanceEntriesValidator();
 
@@ -44,12 +44,12 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
                                                      a.Currency.Code == currencyEntry.Currency.Code)
                                               .ToList();
         if (entriesValidator.ValidateToCountEntries(entriesByCurrency)) { //  entriesByCurrency.Count > 0
-          
+
           entriesByCurrency.Add(currencyEntry);
           returnedEntries.AddRange(entriesByCurrency);
-
         }
       }
+
       return returnedEntries.OrderBy(a => a.Ledger.Number)
                             .ThenBy(a => a.Currency.Code)
                             .ToList();
@@ -140,7 +140,7 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
       if (entriesValidator.ValidateToCountEntries(parentAccountEntries)) {
         returnedEntries.AddRange(parentAccountEntries);
       }
-      
+
       var trialBalanceHelper = new TrialBalanceHelper(_query);
 
       trialBalanceHelper.SetSubledgerAccountInfoByEntry(returnedEntries);
@@ -167,9 +167,14 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
       return totalCurrenciesEntries.Values.ToList();
     }
 
-    
-    internal TrialBalanceEntry GenerateTotalConsolidated(
+
+    internal TrialBalanceEntry TryGenerateTotalConsolidated(
                                       List<TrialBalanceEntry> totalByCurrencyEntries) {
+      Assertion.Require(totalByCurrencyEntries, nameof(totalByCurrencyEntries));
+
+      if (totalByCurrencyEntries.Count == 0) {
+        return null;
+      }
 
       var totalConsolidated = new EmpiriaHashTable<TrialBalanceEntry>();
 
@@ -184,7 +189,7 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
                             Sector.Empty, TrialBalanceItemType.BalanceTotalConsolidated, hash);
       } // foreach
 
-      return totalConsolidated.Values.FirstOrDefault();
+      return totalConsolidated.Values.First();
     }
 
 
@@ -238,7 +243,10 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
 
 
     internal FixedList<TrialBalanceEntry> GetCalculatedParentAccounts(
-                                     FixedList<TrialBalanceEntry> accountEntries) {
+                                          FixedList<TrialBalanceEntry> accountEntries) {
+      if (accountEntries.Count == 0) {
+        return new FixedList<TrialBalanceEntry>();
+      }
 
       var parentAccounts = new EmpiriaHashTable<TrialBalanceEntry>(accountEntries.Count);
       var trialBalanceHelper = new TrialBalanceHelper(_query);
@@ -312,7 +320,7 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
       return AccountEntriesToConsolidate.Values.ToFixedList();
     }
 
-    
+
     private void GenerateOrIncreaseParentAccounts(EmpiriaHashTable<TrialBalanceEntry> parentAccounts,
                                                   TrialBalanceEntry entry, StandardAccount currentParent) {
 
