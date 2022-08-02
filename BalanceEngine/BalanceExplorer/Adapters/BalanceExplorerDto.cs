@@ -78,7 +78,13 @@ namespace Empiria.FinancialAccounting.BalanceEngine.BalanceExplorer.Adapters {
       get; internal set;
     }
 
+
     public string AccountName {
+      get; internal set;
+    } = string.Empty;
+
+
+    public string AccountNameToExport {
       get; internal set;
     } = string.Empty;
 

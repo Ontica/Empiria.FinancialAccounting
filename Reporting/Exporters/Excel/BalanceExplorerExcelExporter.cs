@@ -214,7 +214,7 @@ namespace Empiria.FinancialAccounting.Reporting.Exporters.Excel {
           _excelFile.SetCell($"B{i}", entry.LedgerName);
           _excelFile.SetCell($"C{i}", $"({entry.CurrencyCode}) {entry.CurrencyName}");
           _excelFile.SetCell($"D{i}", entry.AccountNumberForBalances);
-          _excelFile.SetCell($"E{i}", entry.AccountName);
+          _excelFile.SetCell($"E{i}", entry.AccountNameToExport);
           _excelFile.SetCell($"F{i}", entry.SubledgerAccountNumber);
           _excelFile.SetCell($"G{i}", entry.subledgerAccountName);
           _excelFile.SetCell($"H{i}", entry.SectorCode);

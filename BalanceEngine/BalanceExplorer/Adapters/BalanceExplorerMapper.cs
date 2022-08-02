@@ -145,6 +145,7 @@ namespace Empiria.FinancialAccounting.BalanceEngine.BalanceExplorer.Adapters {
       } else {
         dto.AccountName = entry.Account.Name;
       }
+      dto.AccountNameToExport = entry.Account.Name;
       dto.DebtorCreditor = entry.DebtorCreditor.ToString();
       dto.SectorCode = entry.Sector.Code;
       dto.InitialBalance = entry.InitialBalance;
