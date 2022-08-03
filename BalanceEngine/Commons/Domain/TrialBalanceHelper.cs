@@ -218,6 +218,9 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
     internal List<TrialBalanceEntry> GetSummaryAccountsAndSectorization(
                                       List<TrialBalanceEntry> accountEntries) {
 
+      if (accountEntries.Count == 0) {
+        return new List<TrialBalanceEntry>();
+      }
       var startTime = DateTime.Now;
       var returnedAccountEntries = new List<TrialBalanceEntry>(accountEntries);
 

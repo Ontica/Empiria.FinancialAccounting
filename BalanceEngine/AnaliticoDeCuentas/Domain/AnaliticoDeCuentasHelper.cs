@@ -32,6 +32,10 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
     internal List<AnaliticoDeCuentasEntry> CombineTotalsByGroupAndAccountEntries(
                                                   List<AnaliticoDeCuentasEntry> analyticEntries,
                                                   List<AnaliticoDeCuentasEntry> totalByGroup) {
+      if (totalByGroup.Count == 0) {
+        return analyticEntries;
+      }
+
       List<AnaliticoDeCuentasEntry> returnedEntries = new List<AnaliticoDeCuentasEntry>();
 
       foreach (var debtorsGroup in totalByGroup) {
@@ -51,6 +55,9 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
     internal List<AnaliticoDeCuentasEntry> CombineSubledgerAccountsWithAnalyticEntries(
                                                   List<AnaliticoDeCuentasEntry> analyticEntries,
                                                   List<TrialBalanceEntry> balanceEntries) {
+      if (analyticEntries.Count == 0 || balanceEntries.Count == 0) {
+        return new List<AnaliticoDeCuentasEntry>();
+      }
       if (!_query.WithSubledgerAccount) {
         return analyticEntries;
       }
@@ -77,9 +84,16 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
     internal List<TrialBalanceEntry> CombineSummaryAndPostingEntries(
                                       List<TrialBalanceEntry> parentAccounts,
                                       FixedList<TrialBalanceEntry> accountEntries) {
+      if (accountEntries.Count == 0) {
+        return new List<TrialBalanceEntry>();
+      }
+
       var returnedEntries = new List<TrialBalanceEntry>(accountEntries);
 
-      returnedEntries.AddRange(parentAccounts);
+      if (parentAccounts.Count > 0) {
+        returnedEntries.AddRange(parentAccounts);
+      }
+
       returnedEntries = GetSubledgerAccountInfo(returnedEntries);
       returnedEntries = OrderingEntries(returnedEntries);
 
@@ -112,6 +126,10 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
     internal List<AnaliticoDeCuentasEntry> CombineTotalDebtorCreditorAndEntries(
                                                 List<AnaliticoDeCuentasEntry> analyticEntries,
                                                 List<AnaliticoDeCuentasEntry> totalByDebtorsCreditors) {
+      if (totalByDebtorsCreditors.Count == 0) {
+        return analyticEntries;
+      }
+
       List<AnaliticoDeCuentasEntry> returnedEntries = new List<AnaliticoDeCuentasEntry>();
 
       CombineEntriesWithTotalDebtors(returnedEntries, analyticEntries, totalByDebtorsCreditors);
@@ -150,6 +168,10 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
 
     internal List<AnaliticoDeCuentasEntry> GenerateTotalReport(
                                              List<AnaliticoDeCuentasEntry> balanceEntries) {
+      if (balanceEntries.Count == 0) {
+        return new List<AnaliticoDeCuentasEntry>();
+      }
+
       var totalSummary = new EmpiriaHashTable<AnaliticoDeCuentasEntry>();
 
       foreach (var balanceEntry in balanceEntries) {
@@ -176,6 +198,10 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
 
     internal List<TrialBalanceEntry> GetCalculatedParentAccounts(
                                      FixedList<TrialBalanceEntry> accountEntries) {
+     
+      if (accountEntries.Count == 0) {
+        return new List<TrialBalanceEntry>();
+      }
 
       var parentAccounts = new EmpiriaHashTable<TrialBalanceEntry>(accountEntries.Count);
       var trialBalanceHelper = new TrialBalanceHelper(_query);
@@ -203,6 +229,9 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
 
     internal void GetSummaryToSectorZeroForPesosAndUdis(
                     List<TrialBalanceEntry> accountEntries) {
+      if (accountEntries.Count == 0) {
+        return; 
+      }
 
       if (!_query.UseNewSectorizationModel) {
         return;
@@ -214,7 +243,9 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
 
     internal List<AnaliticoDeCuentasEntry> GetTotalsByDebtorOrCreditorEntries(
                                            List<AnaliticoDeCuentasEntry> analyticEntries) {
-
+      if (analyticEntries.Count == 0) {
+        return new List<AnaliticoDeCuentasEntry>();
+      }
       List<AnaliticoDeCuentasEntry> listEntries = GetFirstLevelEntriesToGroup(analyticEntries);
       var totalSummaryDebtorCredtor = new EmpiriaHashTable<AnaliticoDeCuentasEntry>();
 
@@ -230,6 +261,10 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
 
     internal List<AnaliticoDeCuentasEntry> GetTotalByGroup(List<AnaliticoDeCuentasEntry> analyticEntries) {
 
+      if (analyticEntries.Count==0) {
+        return new List<AnaliticoDeCuentasEntry>();
+      }
+
       var totalsByGroup = new EmpiriaHashTable<AnaliticoDeCuentasEntry>();
       List<AnaliticoDeCuentasEntry> listEntries = GetFirstLevelEntriesToGroup(analyticEntries);
 
@@ -244,6 +279,10 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
 
     internal List<AnaliticoDeCuentasEntry> MergeTrialBalanceIntoAnalyticColumns(
                                                   List<TrialBalanceEntry> balanceEntries) {
+
+      if (balanceEntries.Count == 0) {
+        return new List<AnaliticoDeCuentasEntry>();
+      }
 
       IEnumerable<TrialBalanceEntry> accountEntries = GetFilteredAccountEntries(balanceEntries);
 

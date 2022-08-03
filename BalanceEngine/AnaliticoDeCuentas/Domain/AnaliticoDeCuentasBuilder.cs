@@ -36,6 +36,10 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
 
     internal FixedList<AnaliticoDeCuentasEntry> Build(FixedList<TrialBalanceEntry> baseAccountEntries) {
 
+      if (baseAccountEntries.Count == 0) {
+        return new FixedList<AnaliticoDeCuentasEntry>();
+      }
+
       FixedList<TrialBalanceEntry> saldosValorizados = SaldosDeCuentasValorizados(baseAccountEntries);
 
       var balanceHelper = new TrialBalanceHelper(_query);
