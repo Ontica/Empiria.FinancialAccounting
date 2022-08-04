@@ -37,6 +37,10 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
 
     internal FixedList<BalanzaColumnasMonedaEntry> Build(FixedList<TrialBalanceEntry> accountEntries) {
 
+      if (accountEntries.Count == 0) {
+        return new FixedList<BalanzaColumnasMonedaEntry>();
+      }
+
       var trialBalanceHelper = new TrialBalanceHelper(Query);
       var helper = new BalanzaColumnasMonedaHelper(Query);
 

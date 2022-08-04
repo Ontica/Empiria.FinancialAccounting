@@ -26,7 +26,7 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
     }
 
 
-    internal void GetAverageBalance(List<TrialBalanceEntry> trialBalance) {
+    internal void GetAverageBalance(FixedList<TrialBalanceEntry> trialBalance) {
       var returnedEntries = new List<TrialBalanceEntry>(trialBalance);
 
       if (_query.WithAverageBalance) {
@@ -49,6 +49,10 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
 
     internal FixedList<TrialBalanceEntry> AccountEntriesValorized(
                                           FixedList<TrialBalanceEntry> accountEntries) {
+
+      if (accountEntries.Count == 0) {
+        return new FixedList<TrialBalanceEntry>();
+      }
 
       var trialBalanceHelper = new TrialBalanceHelper(_query);
 
@@ -93,12 +97,15 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
       return entries;
     }
 
-    internal List<BalanzaComparativaEntry> MergePeriodsIntoComparativeBalance(
-                                      FixedList<TrialBalanceEntry> trialBalance) {
+    internal FixedList<BalanzaComparativaEntry> MergePeriodsIntoComparativeBalance(
+                                      FixedList<TrialBalanceEntry> entriesWithExchangeRate) {
+      if (entriesWithExchangeRate.Count == 0) {
+        return new FixedList<BalanzaComparativaEntry>();
+      }
 
       List<BalanzaComparativaEntry> comparativeEntries = new List<BalanzaComparativaEntry>();
 
-      foreach (var entry in trialBalance) {
+      foreach (var entry in entriesWithExchangeRate) {
         comparativeEntries.Add(entry.MapToComparativeBalanceEntry());
       }
 
@@ -108,7 +115,7 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
 
       comparativeEntries = OrderingComparativeBalance(comparativeEntries);
 
-      return comparativeEntries;
+      return comparativeEntries.ToFixedList();
     }
 
 

@@ -50,6 +50,10 @@ namespace Empiria.FinancialAccounting.BalanceEngine.Helpers {
     internal EmpiriaHashTable<TrialBalanceEntry> GetBalancesBySubledgerAccounts(
                                                 FixedList<TrialBalanceEntry> accountEntries) {
 
+      if (accountEntries.Count == 0) {
+        return new EmpiriaHashTable<TrialBalanceEntry>();
+      }
+
       var subledgerAccountsEntries = accountEntries.Where(a => a.SubledgerAccountId > 0).ToList();
 
       var subledgerAccountsEntriesHashTable = new EmpiriaHashTable<TrialBalanceEntry>();
@@ -69,6 +73,10 @@ namespace Empiria.FinancialAccounting.BalanceEngine.Helpers {
     internal List<TrialBalanceEntry> GetTotalsAndCombineWithAccountEntries(
                                     List<TrialBalanceEntry> orderedParentAccounts,
                                     FixedList<TrialBalanceEntry> accountEntries) {
+
+      if (orderedParentAccounts.Count == 0 || accountEntries.Count == 0) {
+        return new List<TrialBalanceEntry>();
+      }
 
       var returnedOrdering = new List<TrialBalanceEntry>();
 

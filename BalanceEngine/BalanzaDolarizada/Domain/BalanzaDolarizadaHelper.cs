@@ -50,7 +50,7 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
 
     internal void GetAccountList(FixedList<TrialBalanceEntry> accountEntries,
                                  List<TrialBalanceEntry> parentAccountEntries) {
-      
+
       var hashAccountEntries = new EmpiriaHashTable<TrialBalanceEntry>();
 
       foreach (var entry in accountEntries) {
@@ -58,7 +58,7 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
       }
 
       parentAccountEntries.AddRange(hashAccountEntries.Values.ToList());
-      
+
     }
 
 
@@ -90,7 +90,10 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
 
     internal List<BalanzaDolarizadaEntry> GetExchangeRateByAccountEntry(
                                           List<BalanzaDolarizadaEntry> balanzaDolarizada) {
-      
+      if (balanzaDolarizada.Count == 0) {
+        return balanzaDolarizada;
+      }
+
       var returnedValuedBalances = new List<BalanzaDolarizadaEntry>();
       var accountsWithDollarCurrency = balanzaDolarizada.Where(
                                        a => a.ItemType == TrialBalanceItemType.Summary).ToList();
@@ -151,6 +154,9 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
 
     internal List<BalanzaDolarizadaEntry> MergeAccountsIntoBalanzaDolarizada(
                                           List<TrialBalanceEntry> valuedAccountEntries) {
+      if (valuedAccountEntries.Count == 0) {
+        return new List<BalanzaDolarizadaEntry>();
+      }
 
       var returnedValuedBalance = new List<BalanzaDolarizadaEntry>();
 
@@ -258,7 +264,7 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
                                        TrialBalanceItemType itemType) {
 
       string hash = $"{entry.Account.Number}||{Sector.Empty.Code}||{entry.Currency.Id}||{entry.Ledger.Id}";
-      
+
       var trialBalanceHelper = new TrialBalanceHelper(Query);
       trialBalanceHelper.GenerateOrIncreaseEntries(summaryEntries, entry, entry.Account,
                                                    Sector.Empty, itemType, hash);

@@ -30,6 +30,10 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
     internal List<TrialBalanceEntry> GetCalculatedParentAccounts(
                                      FixedList<TrialBalanceEntry> accountEntries) {
 
+      if (accountEntries.Count == 0) {
+        return new List<TrialBalanceEntry>();
+      }
+
       var parentAccounts = new EmpiriaHashTable<TrialBalanceEntry>();
 
       var detailParentAccount = new List<TrialBalanceEntry>();
@@ -60,6 +64,10 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
                                       List<TrialBalanceEntry> accountEntries,
                                       List<TrialBalanceEntry> totalsByCurrency) {
 
+      if (totalsByCurrency.Count == 0) {
+        return accountEntries;
+      }
+
       var returnedEntries = new List<TrialBalanceEntry>();
 
       foreach (var currencyEntry in totalsByCurrency) {
@@ -82,6 +90,10 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
                                       List<TrialBalanceEntry> accountEntries,
                                       List<TrialBalanceEntry> totalsByDebtorOrCreditor) {
 
+      if (totalsByDebtorOrCreditor.Count == 0) {
+        return accountEntries;
+      }
+
       var returnedEntries = new List<TrialBalanceEntry>();
 
       foreach (var debtorSummaryEntry in totalsByDebtorOrCreditor) {
@@ -103,9 +115,9 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
 
 
     internal List<TrialBalanceEntry> AccountEntriesWithSubledgerAccounts(
-                                     List<TrialBalanceEntry> trialBalance) {
-      
-      List<TrialBalanceEntry> returnedEntries = new List<TrialBalanceEntry>(trialBalance);
+                                     List<TrialBalanceEntry> accountEntries) {
+
+      List<TrialBalanceEntry> returnedEntries = new List<TrialBalanceEntry>(accountEntries);
 
       if (!_query.WithSubledgerAccount) {
         returnedEntries = returnedEntries.Where(a => a.SubledgerNumberOfDigits == 0).ToList();
@@ -117,6 +129,10 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
     internal List<TrialBalanceEntry> CombineSummaryAndPostingEntries(
                                       List<TrialBalanceEntry> parentAccounts,
                                       FixedList<TrialBalanceEntry> accountEntries) {
+
+      if (parentAccounts.Count == 0) {
+        return accountEntries.ToList();
+      }
 
       var returnedAccountEntries = new List<TrialBalanceEntry>(accountEntries);
 
@@ -136,7 +152,11 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
 
     internal List<TrialBalanceEntry> GenerateTotalsByCurrency(
                                      List<TrialBalanceEntry> totalsByDebtorCreditorEntries) {
-      
+
+      if (totalsByDebtorCreditorEntries.Count == 0) {
+        return new List<TrialBalanceEntry>();
+      }
+
       var totalsByCurrency = new EmpiriaHashTable<TrialBalanceEntry>();
 
       foreach (var debtorOrCreditorEntry in totalsByDebtorCreditorEntries) {
@@ -144,14 +164,16 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
         SummaryByCurrencyEntries(totalsByCurrency, debtorOrCreditorEntry);
       }
 
-      //totalsByDebtorCreditorEntries.AddRange(totalsByCurrency.Values.ToList());
-
       return totalsByCurrency.ToFixedList().ToList();
     }
 
 
     internal TrialBalanceEntry GenerateTotalConsolidated(
                                       List<TrialBalanceEntry> totalsByCurrency) {
+
+      if (totalsByCurrency.Count == 0) {
+        return null;
+      }
 
       var totalConsolidated = new EmpiriaHashTable<TrialBalanceEntry>();
 
@@ -179,6 +201,10 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
 
     internal List<TrialBalanceEntry> GenerateTotalsDebtorOrCreditor(
                                       FixedList<TrialBalanceEntry> accountEntries) {
+      
+      if (accountEntries.Count == 0) {
+        return new List<TrialBalanceEntry>();
+      }
 
       var totalsByDebtorOrCredtor = new EmpiriaHashTable<TrialBalanceEntry>();
 
@@ -205,7 +231,7 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
 
       var trialBalanceHelper = new TrialBalanceHelper(_query);
 
-      trialBalanceHelper.GenerateOrIncreaseEntries(summaryEntries, entry, StandardAccount.Empty, 
+      trialBalanceHelper.GenerateOrIncreaseEntries(summaryEntries, entry, StandardAccount.Empty,
                          Sector.Empty, TrialBalanceItemType.BalanceTotalCurrency, hash);
     }
 

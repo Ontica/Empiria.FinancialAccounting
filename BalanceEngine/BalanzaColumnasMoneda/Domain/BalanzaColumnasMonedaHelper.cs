@@ -34,6 +34,9 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
     internal void CombineAccountEntriesAndDebtorAccounts(List<TrialBalanceEntry> accountEntries,
                                                          List<TrialBalanceEntry> debtorAccounts) {
 
+      if (accountEntries.Count == 0) {
+        return;
+      }
       var summaryAccountEntries = new EmpiriaHashTable<TrialBalanceEntry>();
 
       foreach (var entry in accountEntries) {
@@ -46,6 +49,10 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
 
     internal List<TrialBalanceEntry> GetSumFromCreditorToDebtorAccounts(
                                       List<TrialBalanceEntry> parentAccounts) {
+
+      if (parentAccounts.Count == 0) {
+        return new List<TrialBalanceEntry>();
+      }
 
       var returnedAccounts = new List<TrialBalanceEntry>(parentAccounts);
 
@@ -67,6 +74,10 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
 
     internal FixedList<TrialBalanceEntry> GetAccountEntriesByCurrency(
                                                 List<TrialBalanceEntry> accountEntries) {
+      if (accountEntries.Count == 0) {
+        return new FixedList<TrialBalanceEntry>();
+      }
+
       var helper = new TrialBalanceHelper(Query);
 
       var filteredAccountList = accountEntries.Where(a => (a.Level == 1 && a.Sector.Code == "00") ||
@@ -85,6 +96,10 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
 
     internal List<BalanzaColumnasMonedaEntry> MergeTrialBalanceIntoBalanceByCurrency(
                                           FixedList<TrialBalanceEntry> accountEntriesByCurrency) {
+
+      if (accountEntriesByCurrency.Count == 0) {
+        return new List<BalanzaColumnasMonedaEntry>();
+      }
 
       var returnedValuedBalance = new List<BalanzaColumnasMonedaEntry>();
 

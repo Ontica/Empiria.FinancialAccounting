@@ -66,13 +66,16 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
     #region Private methods
 
 
-    private List<TrialBalanceEntry> GenerateTotalsForBalances(List<TrialBalanceEntry> entriesList,
+    private List<TrialBalanceEntry> GenerateTotalsForBalances(List<TrialBalanceEntry> parentsAccountEntries,
                                      FixedList<TrialBalanceEntry> accountEntries) {
 
-      var trialBalanceHelper = new TrialBalanceHelper(_query);
+      if (accountEntries.Count == 0) {
+        return parentsAccountEntries;
+      }
+
       var helper = new SaldosPorCuentaHelper(_query);
 
-      List<TrialBalanceEntry> parentsAndAccountEntries = new List<TrialBalanceEntry>(entriesList);
+      List<TrialBalanceEntry> parentsAndAccountEntries = new List<TrialBalanceEntry>(parentsAccountEntries);
 
       List<TrialBalanceEntry> summaryTotalDebtorCreditorEntries =
                               helper.GenerateTotalsDebtorOrCreditor(accountEntries);
@@ -89,8 +92,11 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
                               totalDebtorCreditorAndAccountEntries, totalsByCurrency);
 
       TrialBalanceEntry totalConsolidated = helper.GenerateTotalConsolidated(totalsByCurrency);
-      totalsByCurrencyAndAccountEntries.Add(totalConsolidated);
 
+      if (totalConsolidated != null) {
+        totalsByCurrencyAndAccountEntries.Add(totalConsolidated);
+      }
+      
       List<TrialBalanceEntry> returnedBalances = helper.AccountEntriesWithSubledgerAccounts(
                                                        totalsByCurrencyAndAccountEntries);
 

@@ -54,7 +54,7 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
                                                          parentAccountEntriesAndSectorization,
                                                          accountEntriesAndSectorization);
 
-      List<TrialBalanceEntry> balanza = GetBalanzaOrOperationalReport(
+      List<TrialBalanceEntry> balanza = GetTotalsForBalanzaOrOperationalReport(
                                         parentsAndAccountEntries, accountEntries);
 
       trialBalanceHelper.RestrictLevels(balanza);
@@ -66,7 +66,7 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
     }
 
 
-    private List<TrialBalanceEntry> GetBalanzaOrOperationalReport(
+    private List<TrialBalanceEntry> GetTotalsForBalanzaOrOperationalReport(
                                     List<TrialBalanceEntry> parentsAndAccountEntries,
                                     FixedList<TrialBalanceEntry> accountEntries) {
 
@@ -88,8 +88,12 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
 
 
     private List<TrialBalanceEntry> GenerateTotalsForBalanza(
-                                    List<TrialBalanceEntry> balanceEntries,
+                                    List<TrialBalanceEntry> parentsAndAccountEntries,
                                     FixedList<TrialBalanceEntry> accountEntries) {
+
+      if (parentsAndAccountEntries.Count == 0 || accountEntries.Count == 0) {
+        return new List<TrialBalanceEntry>();
+      }
 
       var helper = new BalanzaTradicionalHelper(_query);
 
@@ -99,7 +103,7 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
 
       List<TrialBalanceEntry> totalGroupAndAccountEntries =
                               helper.CombineTotalGroupEntriesAndAccountEntries(
-                              balanceEntries, groupTotalsEntries);
+                              parentsAndAccountEntries, groupTotalsEntries);
 
       List<TrialBalanceEntry> totalDebtorCreditorEntries =
                               helper.GenerateTotalDebtorCreditorsByCurrency(accountEntries.ToList());

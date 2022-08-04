@@ -221,6 +221,7 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
       if (accountEntries.Count == 0) {
         return new List<TrialBalanceEntry>();
       }
+
       var startTime = DateTime.Now;
       var returnedAccountEntries = new List<TrialBalanceEntry>(accountEntries);
 
@@ -274,6 +275,9 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
 
     internal List<TrialBalanceEntry> GetCalculatedParentAccounts(
                                      FixedList<TrialBalanceEntry> accountEntries) {
+      if (accountEntries.Count == 0) {
+        return new List<TrialBalanceEntry>();
+      }
 
       var parentAccounts = new EmpiriaHashTable<TrialBalanceEntry>(accountEntries.Count);
 

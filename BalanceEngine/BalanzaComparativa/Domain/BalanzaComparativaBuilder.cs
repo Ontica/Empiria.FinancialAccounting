@@ -36,26 +36,31 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
 
     internal FixedList<BalanzaComparativaEntry> Build(FixedList<TrialBalanceEntry> baseAccountEntries) {
 
+      if (baseAccountEntries.Count == 0) {
+        return new FixedList<BalanzaComparativaEntry>();
+      }
+
       _query.FinalPeriod.IsSecondPeriod = true;
 
       var helper = new BalanzaComparativaHelper(_query);
 
-      FixedList<TrialBalanceEntry> entries = helper.AccountEntriesValorized(baseAccountEntries);
+      FixedList<TrialBalanceEntry> accountEntries = helper.AccountEntriesValorized(baseAccountEntries);
 
       var balanceHelper = new TrialBalanceHelper(_query);
 
-      balanceHelper.SetSummaryToParentEntries(entries);
+      balanceHelper.SetSummaryToParentEntries(accountEntries);
 
-      entries = helper.GetExchangeRateByPeriod(entries, _query.FinalPeriod);
+      FixedList<TrialBalanceEntry> entriesWithExchangeRate = 
+                              helper.GetExchangeRateByPeriod(accountEntries, _query.FinalPeriod);
 
-      balanceHelper.RoundDecimals(entries);
+      balanceHelper.RoundDecimals(entriesWithExchangeRate);
 
-      helper.GetAverageBalance(entries.ToList());
+      helper.GetAverageBalance(entriesWithExchangeRate);
 
-      List<BalanzaComparativaEntry> comparativeBalance =
-                                         helper.MergePeriodsIntoComparativeBalance(entries);
+      FixedList<BalanzaComparativaEntry> comparativeBalance =
+                                    helper.MergePeriodsIntoComparativeBalance(entriesWithExchangeRate);
 
-      return comparativeBalance.ToFixedList();
+      return comparativeBalance;
 
     }
 

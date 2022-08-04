@@ -30,7 +30,9 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
     internal List<TrialBalanceEntry> CombineTotalsWithAccountEntries(
                                       FixedList<TrialBalanceEntry> accountEntries,
                                       FixedList<TrialBalanceEntry> totalByAccountEntries) {
-
+      if (totalByAccountEntries.Count == 0) {
+        return accountEntries.ToList();
+      }
       var returnedEntries = new List<TrialBalanceEntry>();
 
       totalByAccountEntries = OrderingTotalsByAccountEntries(totalByAccountEntries).ToFixedList();
@@ -61,6 +63,9 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
     internal List<TrialBalanceEntry> CombineTotalsByCurrencyAndAccountEntries(
                                      List<TrialBalanceEntry> accountEntries,
                                      FixedList<TrialBalanceEntry> totalsByCurrency) {
+      if (totalsByCurrency.Count == 0) {
+        return accountEntries;
+      }
 
       var returnedEntries = new List<TrialBalanceEntry>();
 
@@ -93,6 +98,10 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
                                     List<TrialBalanceEntry> accountEntries,
                                      List<TrialBalanceEntry> totalsByDebtorCreditor) {
 
+      if (totalsByDebtorCreditor.Count == 0) {
+        return accountEntries;
+      }
+
       var returnedEntries = new List<TrialBalanceEntry>();
 
       foreach (var totalGroupDebtorEntry in totalsByDebtorCreditor) {
@@ -109,6 +118,10 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
 
     internal TrialBalanceEntry GenerateTotalReport(
                                FixedList<TrialBalanceEntry> totalsByCurrency) {
+
+      if (totalsByCurrency.Count == 0) {
+        return new TrialBalanceEntry();
+      }
 
       var totalReport = new EmpiriaHashTable<TrialBalanceEntry>();
 
@@ -130,6 +143,9 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
 
     internal FixedList<TrialBalanceEntry> GenerateTotalsByCurrency(
                                           List<TrialBalanceEntry> totalsByDebtorCreditor) {
+      if (totalsByDebtorCreditor.Count == 0) {
+        return new FixedList<TrialBalanceEntry>();
+      }
 
       var totalByCurrencies = new EmpiriaHashTable<TrialBalanceEntry>();
 
@@ -142,11 +158,13 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
 
 
     internal FixedList<TrialBalanceEntry> GenerateTotalsByAccountAndLedger(
-                                          List<TrialBalanceEntry> trialBalance) {
-
+                                          List<TrialBalanceEntry> accountEntries) {
+      if (accountEntries.Count == 0) {
+        return new FixedList<TrialBalanceEntry>();
+      }
       var totalsByAccountAndLedger = new EmpiriaHashTable<TrialBalanceEntry>();
 
-      foreach (var entry in trialBalance) {
+      foreach (var entry in accountEntries) {
         SummaryAccountEntryByLedger(totalsByAccountAndLedger, entry);
       }
 
@@ -189,6 +207,10 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
 
 
     internal List<TrialBalanceEntry> GenerateTotalsByDebtorCreditor(List<TrialBalanceEntry> accountEntries) {
+
+      if (accountEntries.Count == 0) {
+        return new List<TrialBalanceEntry>();
+      }
 
       var totalsByDebtorCreditor = new EmpiriaHashTable<TrialBalanceEntry>();
 
