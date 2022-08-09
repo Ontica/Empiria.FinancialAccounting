@@ -30,38 +30,49 @@ namespace Empiria.FinancialAccounting.BalanceEngine.BalanceExplorer {
     internal BalanceExplorerResult Build() {
       var helper = new BalanceExplorerHelper(_query);
 
-      FixedList<BalanceExplorerEntry> entries = helper.GetBalanceExplorerEntries();
+      FixedList<BalanceExplorerEntry> balanceEntries = helper.GetBalanceExplorerEntries();
 
-      entries = helper.GetSummaryToParentEntries(entries);
+      if (balanceEntries.Count == 0) {
+        return new BalanceExplorerResult(_query, new FixedList<BalanceExplorerEntry>());
+      }
 
-      FixedList<BalanceExplorerEntry> subledgerAccounts = GetSubledgerAccounts(entries);
+      balanceEntries = helper.GetSummaryToParentEntries(balanceEntries);
 
-      EmpiriaHashTable<BalanceExplorerEntry> totalByAccountAndCurrency = GetTotalBalanceByAccountAndCurrency(
-                                                                  subledgerAccounts);
+      FixedList<BalanceExplorerEntry> subledgerAccounts = GetSubledgerAccounts(balanceEntries);
 
-      FixedList<BalanceExplorerEntry> balancesAndtotalByAccountAndCurrency =
+      FixedList<BalanceExplorerEntry> totalByAccountAndCurrency =
+                    GetTotalBalanceByAccountAndCurrency(subledgerAccounts);
+
+      FixedList<BalanceExplorerEntry> accountEntries =
                                 CombineBalanceAndtotalByAccountAndCurrency(
                                   subledgerAccounts, totalByAccountAndCurrency);
 
-      EmpiriaHashTable<BalanceExplorerEntry> balanceHeader = GetBalanceHeaderByAccount(subledgerAccounts);
+      FixedList<BalanceExplorerEntry> balanceHeader = GetBalanceHeaderByAccount(subledgerAccounts);
 
       FixedList<BalanceExplorerEntry> balancesWithHeader = CombineBalanceAndBalanceHeader(
-                                                    balancesAndtotalByAccountAndCurrency, balanceHeader);
+                                                    accountEntries, balanceHeader);
 
       return new BalanceExplorerResult(_query, balancesWithHeader);
     }
 
+
     #region Private methods
 
 
-    private FixedList<BalanceExplorerEntry> CombineBalanceAndBalanceHeader(FixedList<BalanceExplorerEntry> balancesAndtotalByLedger,
-                                                                           EmpiriaHashTable<BalanceExplorerEntry> balanceHeader) {
+    private FixedList<BalanceExplorerEntry> CombineBalanceAndBalanceHeader(
+      FixedList<BalanceExplorerEntry> accountEntries,
+      FixedList<BalanceExplorerEntry> balanceHeader) {
+
+      if (balanceHeader.Count == 0) {
+        return accountEntries;
+      }
+
       var balanceWithHeader = new List<BalanceExplorerEntry>();
 
-      foreach (var header in balanceHeader.ToFixedList()) {
-        var balance = balancesAndtotalByLedger.Where(a =>
-                                                     a.Currency.Code == header.Currency.Code &&
-                                                     a.Account.Number == header.Account.Number).ToList();
+      foreach (var header in balanceHeader) {
+        var balance = accountEntries.Where(a =>
+                                    a.Currency.Code == header.Currency.Code &&
+                                    a.Account.Number == header.Account.Number).ToList();
         balanceWithHeader.Add(header);
         if (balance.Count > 0) {
 
@@ -80,10 +91,14 @@ namespace Empiria.FinancialAccounting.BalanceEngine.BalanceExplorer {
 
     private FixedList<BalanceExplorerEntry> CombineBalanceAndtotalByAccountAndCurrency(
                                       FixedList<BalanceExplorerEntry> subledgerAccounts,
-                                      EmpiriaHashTable<BalanceExplorerEntry> totalByAccountAndCurrency) {
+                                      FixedList<BalanceExplorerEntry> totalByAccountAndCurrency) {
+      if (totalByAccountAndCurrency.Count == 0) {
+        return subledgerAccounts;
+      }
+
       var combinedEntries = new List<BalanceExplorerEntry>();
 
-      foreach (var totalByAccount in totalByAccountAndCurrency.ToFixedList()) {
+      foreach (var totalByAccount in totalByAccountAndCurrency) {
         var balancesByLedger = subledgerAccounts.Where(a => a.Currency.Code == totalByAccount.Currency.Code &&
                                                     a.Account.Number == totalByAccount.Account.Number).ToList();
         if (balancesByLedger.Count > 0) {
@@ -105,8 +120,12 @@ namespace Empiria.FinancialAccounting.BalanceEngine.BalanceExplorer {
     }
 
 
-    private EmpiriaHashTable<BalanceExplorerEntry> GetBalanceHeaderByAccount(
+    private FixedList<BalanceExplorerEntry> GetBalanceHeaderByAccount(
                                             FixedList<BalanceExplorerEntry> subledgerAccounts) {
+      if (subledgerAccounts.Count == 0) {
+        return new FixedList<BalanceExplorerEntry>();
+      }
+
       var helper = new BalanceExplorerHelper(_query);
 
       var headerByAccount = new EmpiriaHashTable<BalanceExplorerEntry>();
@@ -115,7 +134,7 @@ namespace Empiria.FinancialAccounting.BalanceEngine.BalanceExplorer {
         helper.GetHeaderAccountName(headerByAccount, entry, TrialBalanceItemType.Total);
       }
 
-      return headerByAccount;
+      return headerByAccount.ToFixedList();
     }
 
 
@@ -129,14 +148,20 @@ namespace Empiria.FinancialAccounting.BalanceEngine.BalanceExplorer {
     }
 
 
-    private FixedList<BalanceExplorerEntry> GetSubledgerAccounts(FixedList<BalanceExplorerEntry> balance) {
+    private FixedList<BalanceExplorerEntry> GetSubledgerAccounts(
+                                      FixedList<BalanceExplorerEntry> balanceEntries) {
+
+      if (balanceEntries.Count == 0) {
+        return new FixedList<BalanceExplorerEntry>();
+      }
+
       if (!_query.WithSubledgerAccount) {
-        return balance;
+        return balanceEntries;
       }
 
       var balanceWithSubledgerAccounts = new List<BalanceExplorerEntry>();
 
-      foreach (var entry in balance.Where(a => a.SubledgerAccountId > 0)) {
+      foreach (var entry in balanceEntries.Where(a => a.SubledgerAccountId > 0)) {
         SubledgerAccount subledgerAccount = SubledgerAccount.Parse(entry.SubledgerAccountId);
         entry.SubledgerAccountNumber = subledgerAccount.Number;
         entry.SubledgerAccountName = subledgerAccount.Name;
@@ -150,8 +175,12 @@ namespace Empiria.FinancialAccounting.BalanceEngine.BalanceExplorer {
     }
 
 
-    private EmpiriaHashTable<BalanceExplorerEntry> GetTotalBalanceByAccountAndCurrency(
+    private FixedList<BalanceExplorerEntry> GetTotalBalanceByAccountAndCurrency(
                                             FixedList<BalanceExplorerEntry> subledgerAccounts) {
+      if (subledgerAccounts.Count == 0) {
+        return new FixedList<BalanceExplorerEntry>();
+      }
+
       var helper = new BalanceExplorerHelper(_query);
 
       var totalByCurrencies = new EmpiriaHashTable<BalanceExplorerEntry>();
@@ -160,7 +189,7 @@ namespace Empiria.FinancialAccounting.BalanceEngine.BalanceExplorer {
         helper.SummaryEntriesByAccountAndCurrency(totalByCurrencies, entry, TrialBalanceItemType.Group);
       }
 
-      return totalByCurrencies;
+      return totalByCurrencies.ToFixedList();
     }
 
 

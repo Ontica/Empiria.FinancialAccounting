@@ -42,28 +42,26 @@ namespace Empiria.FinancialAccounting.BalanceEngine.BalanceExplorer {
     internal FixedList<BalanceExplorerEntry> CombineSubledgerAccountsWithBalanceEntries(
                                     List<BalanceExplorerEntry> orderingBalance,
                                     FixedList<BalanceExplorerEntry> balanceEntries) {
+      if (orderingBalance.Count == 0) {
+        return balanceEntries;
+      }
+
       var returnedEntries = new List<BalanceExplorerEntry>();
 
-      foreach (var entry in orderingBalance) {
-        var summaryAccounts = balanceEntries.Where(
-                      a => a.SubledgerAccountId == entry.SubledgerAccountIdParent &&
-                      a.Ledger.Number == entry.Ledger.Number &&
-                      a.Currency.Code == entry.Currency.Code &&
+      foreach (var subledgerAccount in orderingBalance) {
+
+        var entries = balanceEntries.Where(
+                      a => a.SubledgerAccountId == subledgerAccount.SubledgerAccountIdParent &&
+                      a.Ledger.Number == subledgerAccount.Ledger.Number &&
+                      a.Currency.Code == subledgerAccount.Currency.Code &&
                       a.ItemType == TrialBalanceItemType.Entry).ToList();
 
-        foreach (var summary in summaryAccounts) {
-          entry.LastChangeDate = summary.LastChangeDate > entry.LastChangeDate ?
-                                 summary.LastChangeDate : entry.LastChangeDate;
-          summary.SubledgerAccountId = 0;
-          summary.SubledgerAccountNumber = entry.SubledgerAccountNumber;
-          summary.SubledgerAccountName = entry.SubledgerAccountName;
-        }
 
-        returnedEntries.Add(entry);
+        returnedEntries.Add(subledgerAccount);
 
-        if (summaryAccounts.Count > 0) {
-          returnedEntries.AddRange(summaryAccounts);
-        }
+        AssignLastChangeDateToSubledgerAccount(subledgerAccount, entries);
+
+        returnedEntries.AddRange(entries);
       }
 
       return returnedEntries.ToFixedList();
@@ -84,9 +82,14 @@ namespace Empiria.FinancialAccounting.BalanceEngine.BalanceExplorer {
     }
 
 
-    internal FixedList<BalanceExplorerEntry> GetSubledgerAccounts(FixedList<BalanceExplorerEntry> balance) {
+    internal FixedList<BalanceExplorerEntry> GetSubledgerAccounts(
+              FixedList<BalanceExplorerEntry> balanceEntries) {
+      
+      if (balanceEntries.Count == 0) {
+        return new FixedList<BalanceExplorerEntry>();
+      }
 
-      var subledgerAccountList = balance.Where(a => a.SubledgerAccountId > 0).ToList();
+      var subledgerAccountList = balanceEntries.Where(a => a.SubledgerAccountId > 0).ToList();
 
       var subledgerAccountListHashTable = new EmpiriaHashTable<BalanceExplorerEntry>();
 
@@ -103,9 +106,14 @@ namespace Empiria.FinancialAccounting.BalanceEngine.BalanceExplorer {
 
 
     internal FixedList<BalanceExplorerEntry> GetSummaryToParentEntries(
-                                            FixedList<BalanceExplorerEntry> postingEntries) {
-      var returnedEntries = new List<BalanceExplorerEntry>(postingEntries);
-      foreach (var entry in postingEntries) {
+                                            FixedList<BalanceExplorerEntry> balanceEntries) {
+      if (balanceEntries.Count == 0) {
+        return new FixedList<BalanceExplorerEntry>();
+      }
+
+      var returnedEntries = new List<BalanceExplorerEntry>(balanceEntries);
+
+      foreach (var entry in balanceEntries) {
         StandardAccount currentParent = entry.Account.GetParent();
 
         var entryParent = returnedEntries.FirstOrDefault(a => a.Account.Number == currentParent.Number &&
@@ -126,6 +134,10 @@ namespace Empiria.FinancialAccounting.BalanceEngine.BalanceExplorer {
 
     internal List<BalanceExplorerEntry> OrderBySubledgerAccounts(
                                     FixedList<BalanceExplorerEntry> subledgerAccounts) {
+
+      if (subledgerAccounts.Count == 0) {
+        return new List<BalanceExplorerEntry>();
+      }
 
       var returnedCombineOrdering = new List<BalanceExplorerEntry>();
 
@@ -189,6 +201,21 @@ namespace Empiria.FinancialAccounting.BalanceEngine.BalanceExplorer {
     #region Private methods
 
 
+    private void AssignLastChangeDateToSubledgerAccount(BalanceExplorerEntry subledgerAccount,
+                                               List<BalanceExplorerEntry> entries) {
+
+      foreach (var entry in entries) {
+        if (entry.LastChangeDate > subledgerAccount.LastChangeDate) {
+          subledgerAccount.LastChangeDate = entry.LastChangeDate;
+        }
+
+        entry.SubledgerAccountId = 0;
+        entry.SubledgerAccountNumber = subledgerAccount.SubledgerAccountNumber;
+        entry.SubledgerAccountName = subledgerAccount.SubledgerAccountName;
+      }
+    }
+
+
     private void GenerateOrIncreaseBalances(EmpiriaHashTable<BalanceExplorerEntry> entries,
                                             BalanceExplorerEntry entry, StandardAccount account,
                                             Sector sector, TrialBalanceItemType balanceType, string hash) {
@@ -227,7 +254,7 @@ namespace Empiria.FinancialAccounting.BalanceEngine.BalanceExplorer {
 
     private EmpiriaHashTable<BalanceExplorerEntry> GenerateSubledgerAccount(
                         EmpiriaHashTable<BalanceExplorerEntry> subledgerAccountListHash) {
-      
+
       var returnedEntries = new EmpiriaHashTable<BalanceExplorerEntry>();
 
       foreach (var entry in subledgerAccountListHash.ToFixedList()) {
