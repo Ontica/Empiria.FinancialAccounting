@@ -38,6 +38,38 @@ namespace Empiria.FinancialAccounting.BalanceEngine.BalanceExplorer {
 
     #region Public methods
 
+
+    internal FixedList<BalanceExplorerEntry> CombineSubledgerAccountsWithBalanceEntries(
+                                    List<BalanceExplorerEntry> orderingBalance,
+                                    FixedList<BalanceExplorerEntry> balanceEntries) {
+      var returnedEntries = new List<BalanceExplorerEntry>();
+
+      foreach (var entry in orderingBalance) {
+        var summaryAccounts = balanceEntries.Where(
+                      a => a.SubledgerAccountId == entry.SubledgerAccountIdParent &&
+                      a.Ledger.Number == entry.Ledger.Number &&
+                      a.Currency.Code == entry.Currency.Code &&
+                      a.ItemType == TrialBalanceItemType.Entry).ToList();
+
+        foreach (var summary in summaryAccounts) {
+          entry.LastChangeDate = summary.LastChangeDate > entry.LastChangeDate ?
+                                 summary.LastChangeDate : entry.LastChangeDate;
+          summary.SubledgerAccountId = 0;
+          summary.SubledgerAccountNumber = entry.SubledgerAccountNumber;
+          summary.SubledgerAccountName = entry.SubledgerAccountName;
+        }
+
+        returnedEntries.Add(entry);
+
+        if (summaryAccounts.Count > 0) {
+          returnedEntries.AddRange(summaryAccounts);
+        }
+      }
+
+      return returnedEntries.ToFixedList();
+    }
+
+
     internal void GetHeaderAccountName(EmpiriaHashTable<BalanceExplorerEntry> headerByAccount,
                                         BalanceExplorerEntry entry, TrialBalanceItemType balanceType) {
       BalanceExplorerEntry newEntry = BalanceExplorerMapper.MapToBalanceEntry(entry);
@@ -49,6 +81,24 @@ namespace Empiria.FinancialAccounting.BalanceEngine.BalanceExplorer {
       GenerateOrIncreaseBalances(headerByAccount, newEntry, newEntry.Account,
                                  Sector.Empty, balanceType, hash);
 
+    }
+
+
+    internal FixedList<BalanceExplorerEntry> GetSubledgerAccounts(FixedList<BalanceExplorerEntry> balance) {
+
+      var subledgerAccountList = balance.Where(a => a.SubledgerAccountId > 0).ToList();
+
+      var subledgerAccountListHashTable = new EmpiriaHashTable<BalanceExplorerEntry>();
+
+      foreach (var entry in subledgerAccountList) {
+        string hash = $"{entry.Ledger.Number}||{entry.Currency.Code}||" +
+                      $"{entry.Account.Number}||{entry.Sector.Code}||" +
+                      $"{entry.SubledgerAccountId}";
+
+        subledgerAccountListHashTable.Insert(hash, entry);
+      }
+
+      return GenerateSubledgerAccount(subledgerAccountListHashTable).ToFixedList();
     }
 
 
@@ -71,6 +121,29 @@ namespace Empiria.FinancialAccounting.BalanceEngine.BalanceExplorer {
       }
 
       return returnedEntries.ToFixedList();
+    }
+
+
+    internal List<BalanceExplorerEntry> OrderBySubledgerAccounts(
+                                    FixedList<BalanceExplorerEntry> subledgerAccounts) {
+
+      var returnedCombineOrdering = new List<BalanceExplorerEntry>();
+
+      foreach (var entry in subledgerAccounts) {
+        SubledgerAccount subledgerAccount = SubledgerAccount.Parse(entry.SubledgerAccountIdParent);
+        if (subledgerAccount != null) {
+          entry.SubledgerAccountNumber = subledgerAccount.Number;
+          entry.SubledgerAccountName = subledgerAccount.Name;
+          entry.GroupName = subledgerAccount.Name;
+          entry.SubledgerNumberOfDigits = entry.SubledgerAccountNumber.Count();
+          entry.SubledgerAccountId = entry.SubledgerAccountIdParent;
+        }
+        returnedCombineOrdering.Add(entry);
+      }
+      return returnedCombineOrdering.OrderBy(a => a.Currency.Code)
+                                    .ThenBy(a => a.SubledgerNumberOfDigits)
+                                    .ThenBy(a => a.SubledgerAccountNumber)
+                                    .ToList();
     }
 
 
@@ -150,6 +223,24 @@ namespace Empiria.FinancialAccounting.BalanceEngine.BalanceExplorer {
         }
       }
     }
+
+
+    private EmpiriaHashTable<BalanceExplorerEntry> GenerateSubledgerAccount(
+                        EmpiriaHashTable<BalanceExplorerEntry> subledgerAccountListHash) {
+      
+      var returnedEntries = new EmpiriaHashTable<BalanceExplorerEntry>();
+
+      foreach (var entry in subledgerAccountListHash.ToFixedList()) {
+
+        entry.SubledgerAccountIdParent = entry.SubledgerAccountId;
+        entry.DebtorCreditor = entry.Account.DebtorCreditor;
+
+        SummaryBySubledgerAccount(returnedEntries, entry, TrialBalanceItemType.Summary);
+      }
+
+      return returnedEntries;
+    }
+
 
     #endregion
 
