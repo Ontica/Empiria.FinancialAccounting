@@ -35,10 +35,10 @@ namespace Empiria.FinancialAccounting.Reporting {
 
     #region Services
 
-    public FileReportDto ExportReport(ReportBuilderQuery buildQuery) {
+    public FileReportDto ExportReport(ReportBuilderQuery buildQuery, ReportDataDto reportData) {
+      
       Assertion.Require(buildQuery, nameof(buildQuery));
-
-      ReportDataDto reportData = GenerateReport(buildQuery);
+      Assertion.Require(reportData, nameof(reportData));
 
       IReportExporter exporter = GetReportExporter(buildQuery.ExportTo);
 

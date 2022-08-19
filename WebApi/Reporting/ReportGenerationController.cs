@@ -50,7 +50,10 @@ namespace Empiria.FinancialAccounting.WebApi.Reporting {
       buildQuery.ReportType = reportType;
 
       using (var service = ReportingService.ServiceInteractor()) {
-        FileReportDto fileReportDto = service.ExportReport(buildQuery);
+
+        ReportDataDto reportData = service.GenerateReport(buildQuery);
+
+        FileReportDto fileReportDto = service.ExportReport(buildQuery, reportData);
 
         return new SingleObjectModel(this.Request, fileReportDto);
       }
