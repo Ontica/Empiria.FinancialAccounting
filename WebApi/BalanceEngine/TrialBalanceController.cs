@@ -179,7 +179,7 @@ namespace Empiria.FinancialAccounting.WebApi.BalanceEngine {
 
         TrialBalanceDto trialBalance = usecases.BuildTrialBalance(query);
 
-        var excelExporter = new ExcelExporterService();
+        var excelExporter = new BalancesExcelExporterService();
 
         FileReportDto excelFileDto = excelExporter.Export(trialBalance);
 

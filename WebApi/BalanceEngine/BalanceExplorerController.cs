@@ -48,7 +48,7 @@ namespace Empiria.FinancialAccounting.WebApi.BalanceEngine {
 
         BalanceExplorerDto balanceExplorerBalances = usecases.GetBalances(query);
 
-        var excelExporter = new ExcelExporterService();
+        var excelExporter = new BalancesExcelExporterService();
 
         FileReportDto excelFileDto = excelExporter.Export(balanceExplorerBalances);
 

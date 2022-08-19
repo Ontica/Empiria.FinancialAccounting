@@ -29,20 +29,6 @@ namespace Empiria.FinancialAccounting.Reporting {
   /// <summary>Main service to export accounting information to Microsoft Excel.</summary>
   public class ExcelExporterService {
 
-    public FileReportDto Export(TrialBalanceDto trialBalance) {
-      Assertion.Require(trialBalance, "trialBalance");
-
-      var templateUID = $"TrialBalanceTemplate.{trialBalance.Query.TrialBalanceType}";
-
-      var templateConfig = FileTemplateConfig.Parse(templateUID);
-
-      var exporter = new TrialBalanceExcelExporter(templateConfig);
-
-      ExcelFile excelFile = exporter.CreateExcelFile(trialBalance);
-
-      return excelFile.ToFileReportDto();
-    }
-
 
     public FileReportDto Export(AccountsChartDto accountsChart) {
       Assertion.Require(accountsChart, nameof(accountsChart));
@@ -169,25 +155,6 @@ namespace Empiria.FinancialAccounting.Reporting {
       return excelFile.ToFileReportDto();
     }
 
-
-    public FileReportDto Export(BalanceExplorerDto dto) {
-      Assertion.Require(dto, nameof(dto));
-
-      var templateUID = $"BalanceTemplate.{dto.Query.TrialBalanceType}";
-
-      if (dto.Query.ExportTo != BalanceEngine.FileReportVersion.V1) {
-        templateUID = $"BalanceTemplate.{dto.Query.TrialBalanceType}" +
-                      $"{dto.Query.ExportTo}";
-      }
-
-      var templateConfig = FileTemplateConfig.Parse(templateUID);
-
-      var exporter = new BalanceExplorerExcelExporter(templateConfig);
-
-      ExcelFile excelFile = exporter.CreateExcelFile(dto);
-
-      return excelFile.ToFileReportDto();
-    }
 
   }  // class ExcelExporter
 
