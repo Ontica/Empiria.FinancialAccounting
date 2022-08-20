@@ -11,8 +11,10 @@ using System;
 using System.Collections.Generic;
 
 using Empiria.FinancialAccounting.Reporting.Builders;
+using Empiria.FinancialAccounting.Reporting.Exporters;
+using Empiria.FinancialAccounting.Reporting.Exporters.Excel;
 
-namespace Empiria.FinancialAccounting.Reporting.Exporters.Excel {
+namespace Empiria.FinancialAccounting.Reporting {
 
   /// <summary>Creates a Microsoft Excel file with operational report from balance information.</summary>
   internal class CatalogoCuentasSatExcelExporter : IExcelExporter {
