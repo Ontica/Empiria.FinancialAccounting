@@ -17,8 +17,6 @@ using Empiria.FinancialAccounting.BalanceEngine.Adapters;
 
 using Empiria.FinancialAccounting.FinancialConcepts.Adapters;
 
-using Empiria.FinancialAccounting.Reporting.Adapters;
-
 using Empiria.FinancialAccounting.BanobrasIntegration.TransactionSlips.Adapters;
 
 using Empiria.FinancialAccounting.Reconciliation.Adapters;

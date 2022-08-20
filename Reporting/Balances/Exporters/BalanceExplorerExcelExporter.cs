@@ -12,7 +12,6 @@ using System.Collections.Generic;
 
 using Empiria.FinancialAccounting.BalanceEngine;
 using Empiria.FinancialAccounting.BalanceEngine.BalanceExplorer.Adapters;
-using Empiria.FinancialAccounting.Reporting.Exporters.Excel;
 
 namespace Empiria.FinancialAccounting.Reporting {
 

@@ -12,8 +12,6 @@ using System;
 using Empiria.FinancialAccounting.BalanceEngine.Adapters;
 using Empiria.FinancialAccounting.BalanceEngine.BalanceExplorer.Adapters;
 
-using Empiria.FinancialAccounting.Reporting.Exporters.Excel;
-
 namespace Empiria.FinancialAccounting.Reporting {
 
   /// <summary>Main service to export balances information to Microsoft Excel.</summary>

@@ -12,7 +12,7 @@ using System.Collections.Generic;
 
 using Empiria.FinancialAccounting.Reporting.Builders;
 
-namespace Empiria.FinancialAccounting.Reporting.Exporters.Excel {
+namespace Empiria.FinancialAccounting.Reporting {
 
   /// <summary></summary>
   internal class ListadoPolizasExcelExporter : IExcelExporter {

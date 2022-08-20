@@ -11,7 +11,7 @@ using System;
 using System.Collections.Generic;
 using Empiria.FinancialAccounting.BalanceEngine;
 
-namespace Empiria.FinancialAccounting.Reporting.Exporters.Excel {
+namespace Empiria.FinancialAccounting.Reporting {
 
   /// <summary>Genera los datos de las polizas por cuenta en un archivo Excel.</summary>
   internal class ListadoPolizasPorCuentaExcelExporter : IExcelExporter {

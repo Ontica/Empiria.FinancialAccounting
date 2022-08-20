@@ -9,9 +9,7 @@
 ************************* Copyright(c) La Vía Óntica SC, Ontica LLC and contributors. All rights reserved. **/
 using System;
 
-using Empiria.FinancialAccounting.Reporting.Exporters.Excel;
-
-namespace Empiria.FinancialAccounting.Reporting.Exporters {
+namespace Empiria.FinancialAccounting.Reporting {
 
   internal interface IExcelExporter {
 

@@ -13,7 +13,7 @@ using System.IO;
 using Empiria.Office;
 using Empiria.Storage;
 
-namespace Empiria.FinancialAccounting.Reporting.Exporters.Excel {
+namespace Empiria.FinancialAccounting.Reporting {
 
   /// <summary>Provides edition services for Microsoft Excel files.</summary>
   internal class ExcelFile {
