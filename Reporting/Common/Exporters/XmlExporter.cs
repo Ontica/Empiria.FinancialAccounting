@@ -23,7 +23,6 @@ namespace Empiria.FinancialAccounting.Reporting.Exporters {
   }  // interface IXmlDocumentExporter
 
 
-
   internal class XmlExporter : IReportExporter {
 
     public FileReportDto Export(ReportDataDto reportData) {
