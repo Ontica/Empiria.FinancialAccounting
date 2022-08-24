@@ -16,7 +16,7 @@ namespace Empiria.FinancialAccounting.Reporting {
   /// <summary>Query payload used to generate financial accounting reports.</summary>
   public class ReportBuilderQuery {
 
-    public string ReportType {
+    public ReportTypes ReportType {
       get; set;
     }
 
@@ -64,12 +64,27 @@ namespace Empiria.FinancialAccounting.Reporting {
   } // class ReportBuilderQuery
 
 
+  public enum ReportTypes {
+
+    BalanzaSAT,
+
+    BalanzaDeterminarImpuestos,
+
+    CatalogoCuentasSAT,
+
+    ListadoDePolizas,
+
+    ListadoDePolizasPorCuenta
+
+  } // enum ReportTypes
+
+
   public enum SendType {
 
     N,
 
     C
 
-  }
+  } // enum SendType
 
 } // namespace Empiria.FinancialAccounting.Reporting

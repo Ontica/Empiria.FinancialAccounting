@@ -35,19 +35,19 @@ namespace Empiria.FinancialAccounting.Reporting {
       FileTemplateConfig templateConfig = GetExcelTemplate(reportData);
 
       switch (reportData.Query.ReportType) {
-        case "BalanzaSAT":
+        case ReportTypes.BalanzaSAT:
           return new BalanzaSatExcelExporter(reportData, templateConfig);
 
-        case "BalanzaDeterminarImpuestos":
+        case ReportTypes.BalanzaDeterminarImpuestos:
           return new BalanzaCalculoImpuestosExcelExporter(reportData, templateConfig);
 
-        case "CatalogoCuentasSAT":
+        case ReportTypes.CatalogoCuentasSAT:
           return new CatalogoCuentasSatExcelExporter(reportData, templateConfig);
 
-        case "ListadoDePolizas":
+        case ReportTypes.ListadoDePolizas:
           return new ListadoPolizasExcelExporter(reportData, templateConfig);
 
-        case "ListadoDePolizasPorCuenta":
+        case ReportTypes.ListadoDePolizasPorCuenta:
           return new ListadoPolizasPorCuentaExcelExporter(reportData, templateConfig);
 
         default:

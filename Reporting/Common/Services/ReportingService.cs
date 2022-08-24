@@ -65,21 +65,21 @@ namespace Empiria.FinancialAccounting.Reporting {
 
     #region Helpers
 
-    private IReportBuilder GetReportBuilder(string reportType) {
+    private IReportBuilder GetReportBuilder(ReportTypes reportType) {
       switch (reportType) {
-        case "BalanzaSAT":
+        case ReportTypes.BalanzaSAT:
           return new BalanzaSat();
 
-        case "CatalogoCuentasSAT":
+        case ReportTypes.CatalogoCuentasSAT:
           return new CatalogoCuentasSat();
 
-        case "BalanzaDeterminarImpuestos":
+        case ReportTypes.BalanzaDeterminarImpuestos:
           return new BalanzaCalculoImpuestos();
 
-        case "ListadoDePolizas":
+        case ReportTypes.ListadoDePolizas:
           return new ListadoPolizas();
 
-        case "ListadoDePolizasPorCuenta":
+        case ReportTypes.ListadoDePolizasPorCuenta:
           return new ListadoPolizasPorCuenta();
 
         default:

@@ -46,4 +46,5 @@ namespace Empiria.FinancialAccounting.Reporting {
 
   } // class ReportTypeDto
 
+
 } // namespace Empiria.FinancialAccounting.Reporting

@@ -42,10 +42,10 @@ namespace Empiria.FinancialAccounting.Reporting.Exporters {
 
     private IXmlDocumentExporter GetXmlConverter(ReportDataDto reportData) {
       switch (reportData.Query.ReportType) {
-        case "BalanzaSAT":
+        case ReportTypes.BalanzaSAT:
           return new BalanzaSatXmlExporter(reportData);
 
-        case "CatalogoCuentasSAT":
+        case ReportTypes.CatalogoCuentasSAT:
           return new CatalogoCuentasSatXmlExporter(reportData);
 
         default:
