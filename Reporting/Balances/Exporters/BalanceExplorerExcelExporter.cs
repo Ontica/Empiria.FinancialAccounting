@@ -275,4 +275,4 @@ namespace Empiria.FinancialAccounting.Reporting {
 
   } // class BalanceExplorerExcelExporter
 
-} // namespace Empiria.FinancialAccounting.Reporting.Exporters.Excel
+} // namespace Empiria.FinancialAccounting.Reporting

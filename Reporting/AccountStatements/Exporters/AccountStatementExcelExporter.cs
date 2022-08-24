@@ -104,4 +104,4 @@ namespace Empiria.FinancialAccounting.Reporting {
 
   } // class AccountStatementExcelExporter
 
-} // namespace Empiria.FinancialAccounting.Reporting.Exporters.Excel
+} // namespace Empiria.FinancialAccounting.Reporting

@@ -2,120 +2,34 @@
 *                                                                                                            *
 *  Module   : Reporting Services                           Component : Excel Exporters                       *
 *  Assembly : FinancialAccounting.Reporting.dll            Pattern   : IExcelExporter                        *
-*  Type     : TrialBalanceExcelExporter                    License   : Please read LICENSE.txt file          *
+*  Type     : BalancesFillOutExcelExporter                 License   : Please read LICENSE.txt file          *
 *                                                                                                            *
-*  Summary  : Creates a Microsoft Excel file with trial balance information.                                 *
+*  Summary  : Fill out table info for a Microsoft Excel file with trial balance information.                 *
 *                                                                                                            *
 ************************* Copyright(c) La Vía Óntica SC, Ontica LLC and contributors. All rights reserved. **/
 using System;
 using System.Collections.Generic;
-
 using Empiria.FinancialAccounting.BalanceEngine;
 using Empiria.FinancialAccounting.BalanceEngine.Adapters;
 
 namespace Empiria.FinancialAccounting.Reporting {
 
-  /// <summary>Creates a Microsoft Excel file with trial balance information.</summary>
-  internal class TrialBalanceExcelExporter {
+  /// <summary>Fill out table info for a Microsoft Excel file with trial balance information.</summary>
+  internal class BalancesFillOutExcelExporter {
 
-    private TrialBalanceQuery _query = new TrialBalanceQuery();
-
-    private readonly FileTemplateConfig _templateConfig;
+    private TrialBalanceQuery _query;
 
     private readonly DateTime MIN_LAST_CHANGE_DATE_TO_REPORT = DateTime.Parse("01/01/1970");
 
-    private ExcelFile _excelFile;
-
-    public TrialBalanceExcelExporter(FileTemplateConfig templateConfig) {
-      Assertion.Require(templateConfig, "templateConfig");
-
-      _templateConfig = templateConfig;
+    public BalancesFillOutExcelExporter(TrialBalanceQuery query) {
+      _query = query;
     }
 
 
-    internal ExcelFile CreateExcelFile(TrialBalanceDto trialBalance) {
-      Assertion.Require(trialBalance, "trialBalance");
+    #region Public methods
 
-      _query = trialBalance.Query;
-
-      _excelFile = new ExcelFile(_templateConfig);
-
-      _excelFile.Open();
-
-      SetHeader();
-
-      SetTable(trialBalance);
-
-      _excelFile.Save();
-
-      _excelFile.Close();
-
-      return _excelFile;
-    }
-
-
-    #region Private methods
-
-    private void SetHeader() {
-      _excelFile.SetCell($"A2", _templateConfig.Title);
-
-      var subTitle = $"Del {_query.InitialPeriod.FromDate.ToString("dd/MMM/yyyy")} " +
-                     $"al {_query.InitialPeriod.ToDate.ToString("dd/MMM/yyyy")}";
-
-      if (_query.ValuateBalances) {
-        subTitle += $". Saldos valorizados al {_query.InitialPeriod.ExchangeRateDate.ToString("dd/MMM/yyyy")}.";
-      }
-
-      _excelFile.SetCell($"A3", subTitle);
-    }
-
-
-    private void SetTable(TrialBalanceDto trialBalance) {
-      switch (trialBalance.Query.TrialBalanceType) {
-        case TrialBalanceType.AnaliticoDeCuentas:
-          FillOutAnaliticoDeCuentas(trialBalance.Entries.Select(x => (AnaliticoDeCuentasEntryDto) x));
-
-          return;
-
-        case TrialBalanceType.BalanzaValorizadaComparativa:
-          SetBalanzaComparativaHeaders();
-          FillOutBalanzaComparativa(trialBalance.Entries.Select(x => (BalanzaComparativaEntryDto) x));
-          return;
-
-
-        case TrialBalanceType.BalanzaEnColumnasPorMoneda:
-          FillOutBalanzaColumnasPorMoneda(trialBalance.Entries.Select(x => (BalanzaColumnasMonedaEntryDto) x));
-          return;
-
-        case TrialBalanceType.BalanzaDolarizada:
-          FillOutBalanzaDolarizada(trialBalance.Entries.Select(x => (BalanzaDolarizadaEntryDto) x));
-          return;
-
-        case TrialBalanceType.BalanzaConContabilidadesEnCascada:
-          FillOutSaldosPorCuentayMayor(trialBalance.Entries.Select(
-                                        x => (BalanzaContabilidadesCascadaEntryDto) x));
-          return;
-
-        case TrialBalanceType.Balanza:
-          FillOutBalanza(trialBalance.Entries.Select(x => (BalanzaTradicionalEntryDto) x));
-          return;
-
-        case TrialBalanceType.SaldosPorAuxiliar:
-          FillOutSaldosAuxiliar(trialBalance.Entries.Select(x => (SaldosPorAuxiliarEntryDto) x));
-          return;
-
-        case TrialBalanceType.SaldosPorCuenta:
-          FillOutSaldosCuenta(trialBalance.Entries.Select(x => (SaldosPorCuentaEntryDto) x),
-                              trialBalance.Query.WithSubledgerAccount);
-          return;
-
-        default:
-          throw Assertion.EnsureNoReachThisCode();
-      }
-    }
-
-
-    private void FillOutAnaliticoDeCuentas(IEnumerable<AnaliticoDeCuentasEntryDto> entries) {
+    public void FillOutAnaliticoDeCuentas(ExcelFile _excelFile, 
+                                          IEnumerable<AnaliticoDeCuentasEntryDto> entries) {
       int i = 5;
 
       foreach (var entry in entries) {
@@ -155,7 +69,8 @@ namespace Empiria.FinancialAccounting.Reporting {
     }
 
 
-    private void FillOutBalanzaComparativa(IEnumerable<BalanzaComparativaEntryDto> entries) {
+    public void FillOutBalanzaComparativa(ExcelFile _excelFile,
+                                          IEnumerable<BalanzaComparativaEntryDto> entries) {
       int i = 5;
 
       foreach (var entry in entries) {
@@ -205,15 +120,8 @@ namespace Empiria.FinancialAccounting.Reporting {
     }
 
 
-    private void SetBalanzaComparativaHeaders() {
-      _excelFile.SetCell($"I4", $"{_query.InitialPeriod.ToDate.ToString("MMM_yyyy")}");
-      _excelFile.SetCell($"K4", $"{_query.InitialPeriod.ToDate.ToString("MMM")}_VAL_A");
-      _excelFile.SetCell($"N4", $"{_query.FinalPeriod.ToDate.ToString("MMM_yyyy")}");
-      _excelFile.SetCell($"P4", $"{_query.FinalPeriod.ToDate.ToString("MMM")}_VAL_B");
-    }
-
-
-    private void FillOutBalanzaColumnasPorMoneda(IEnumerable<BalanzaColumnasMonedaEntryDto> entries) {
+    public void FillOutBalanzaColumnasPorMoneda(ExcelFile _excelFile,
+                                                IEnumerable<BalanzaColumnasMonedaEntryDto> entries) {
       int i = 5;
 
       foreach (var entry in entries) {
@@ -232,7 +140,8 @@ namespace Empiria.FinancialAccounting.Reporting {
     }
 
 
-    private void FillOutBalanzaDolarizada(IEnumerable<BalanzaDolarizadaEntryDto> entries) {
+    public void FillOutBalanzaDolarizada(ExcelFile _excelFile,
+                                         IEnumerable<BalanzaDolarizadaEntryDto> entries) {
       int i = 5;
 
       foreach (var entry in entries) {
@@ -255,7 +164,8 @@ namespace Empiria.FinancialAccounting.Reporting {
     }
 
 
-    private void FillOutSaldosPorCuentayMayor(IEnumerable<BalanzaContabilidadesCascadaEntryDto> entries) {
+    public void FillOutSaldosPorCuentayMayor(ExcelFile _excelFile,
+                                             IEnumerable<BalanzaContabilidadesCascadaEntryDto> entries) {
       int i = 5;
 
       foreach (var entry in entries) {
@@ -302,7 +212,8 @@ namespace Empiria.FinancialAccounting.Reporting {
     }
 
 
-    private void FillOutBalanza(IEnumerable<BalanzaTradicionalEntryDto> entries) {
+    public void FillOutBalanza(ExcelFile _excelFile,
+                               IEnumerable<BalanzaTradicionalEntryDto> entries) {
       int i = 5;
 
       foreach (var entry in entries) {
@@ -360,7 +271,8 @@ namespace Empiria.FinancialAccounting.Reporting {
     }
 
 
-    private void FillOutSaldosAuxiliar(IEnumerable<SaldosPorAuxiliarEntryDto> entries) {
+    public void FillOutSaldosAuxiliar(ExcelFile _excelFile,
+                                      IEnumerable<SaldosPorAuxiliarEntryDto> entries) {
       int i = 5;
 
       foreach (var entry in entries) {
@@ -426,8 +338,10 @@ namespace Empiria.FinancialAccounting.Reporting {
         if (entry.ItemType == TrialBalanceItemType.Total) {
           i++;
         }
+
         i++;
-      }
+      } // foreach
+
       if (!_query.WithAverageBalance) {
         _excelFile.RemoveColumn("J");
       }
@@ -437,8 +351,9 @@ namespace Empiria.FinancialAccounting.Reporting {
     }
 
 
-    private void FillOutSaldosCuenta(IEnumerable<SaldosPorCuentaEntryDto> entries,
-                                     bool includeSubledgerAccounts) {
+    public void FillOutSaldosCuenta(ExcelFile _excelFile,
+                                    IEnumerable<SaldosPorCuentaEntryDto> entries,
+                                    bool includeSubledgerAccounts) {
       int i = 5;
 
       foreach (var entry in entries) {
@@ -507,7 +422,8 @@ namespace Empiria.FinancialAccounting.Reporting {
     }
 
 
-    #endregion Private methods
+    #endregion Public methods
+
 
     #region Utility methods
 
@@ -568,6 +484,6 @@ namespace Empiria.FinancialAccounting.Reporting {
 
     #endregion Utility methods
 
-  }  // class TrialBalanceExcelExporter
+  } // class BalancesFillOutExcelExporter
 
-}  // namespace Empiria.FinancialAccounting.Reporting.Exporters.Excel
+} // namespace Empiria.FinancialAccounting.Reporting

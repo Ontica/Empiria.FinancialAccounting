@@ -181,4 +181,4 @@ namespace Empiria.FinancialAccounting.Reporting {
 
   } // class BalanzaSatExcelExporter
 
-} // Empiria.FinancialAccounting.Reporting.Exporters.Excel
+} // Empiria.FinancialAccounting.Reporting

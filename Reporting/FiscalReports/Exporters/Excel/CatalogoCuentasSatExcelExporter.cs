@@ -80,4 +80,4 @@ namespace Empiria.FinancialAccounting.Reporting {
 
   } // class CatalogoCuentasSatExcelExporter
 
-} // Empiria.FinancialAccounting.Reporting.Exporters.Excel
+} // Empiria.FinancialAccounting.Reporting

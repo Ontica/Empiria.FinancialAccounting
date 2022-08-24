@@ -24,7 +24,7 @@ namespace Empiria.FinancialAccounting.Reporting {
 
       var templateConfig = FileTemplateConfig.Parse(templateUID);
 
-      var exporter = new TrialBalanceExcelExporter(templateConfig);
+      var exporter = new BalancesExcelExporter(templateConfig);
 
       ExcelFile excelFile = exporter.CreateExcelFile(trialBalance);
 
