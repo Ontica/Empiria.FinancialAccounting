@@ -73,8 +73,11 @@ namespace Empiria.FinancialAccounting.FinancialConcepts.Adapters {
       if (Payload.Positioning.Rule.UsesPosition()) {
         int maxPosition = Entities.FinancialConcept.Integration.Count;
 
-        ExecutionResult.AddIssueIf(Payload.Positioning.Position >= maxPosition,
+        ExecutionResult.AddIssueIf(Type.ForUpdate() && Payload.Positioning.Position > maxPosition,
                                    $"La posición no puede ser mayor a {maxPosition}.");
+
+        ExecutionResult.AddIssueIf(Type.ForInsert() && Payload.Positioning.Position > maxPosition + 1,
+                                  $"La posición no puede ser mayor a {maxPosition + 1}.");
       }
     }
 
