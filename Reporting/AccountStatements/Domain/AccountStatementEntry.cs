@@ -30,7 +30,7 @@ namespace Empiria.FinancialAccounting.Reporting {
 
     [DataField("ID_MONEDA", ConvertFrom = typeof(decimal))]
     public Currency Currency {
-      get;  internal set;
+      get; internal set;
     }
 
 
@@ -121,7 +121,7 @@ namespace Empiria.FinancialAccounting.Reporting {
 
     [DataField("DEBE")]
     public decimal Debit {
-      get;  internal set;
+      get; internal set;
     }
 
 
@@ -184,11 +184,34 @@ namespace Empiria.FinancialAccounting.Reporting {
       };
     }
 
+
+    internal static AccountStatementEntry SetTotalAccountBalance(decimal balance) {
+
+      var returnedEntry = new AccountStatementEntry {
+        Ledger = Ledger.Empty,
+        Currency = Currency.Empty,
+        StandardAccountId = StandardAccount.Empty.Id,
+        Sector = Sector.Empty,
+        SubledgerAccountNumber = "",
+        VoucherNumber = "",
+        Concept = "",
+        CurrentBalance = balance,
+        ItemType = TrialBalanceItemType.Total
+      };
+
+
+
+      return returnedEntry;
+    }
+
+
     internal void Sum(AccountStatementEntry entry) {
       this.Debit += entry.Debit;
       this.Credit += entry.Credit;
       this.CurrentBalance += entry.CurrentBalance;
     }
+
+
   } // class VouchersByAccountEntry
 
 } // namespace Empiria.FinancialAccounting.Reporting

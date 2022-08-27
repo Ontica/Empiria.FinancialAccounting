@@ -48,26 +48,26 @@ namespace Empiria.FinancialAccounting.Reporting {
 
     private AccountStatement GenerateAccountStatement() {
       var helper = new AccountStatementHelper(_buildQuery);
-      bool? isBalance = true;
+      //bool? isBalance = true;
 
-      if (_buildQuery.BalancesQuery.TrialBalanceType == TrialBalanceType.BalanzaValorizadaComparativa ||
-          _buildQuery.BalancesQuery.TrialBalanceType == TrialBalanceType.BalanzaDolarizada) {
-        isBalance = null;
-      }
+      //if (_buildQuery.BalancesQuery.TrialBalanceType == TrialBalanceType.BalanzaValorizadaComparativa ||
+      //    _buildQuery.BalancesQuery.TrialBalanceType == TrialBalanceType.BalanzaDolarizada) {
+      //  isBalance = null;
+      //}
 
-      Assertion.Require(isBalance, $"Funcionalidad en proceso de desarrollo.");
+      //Assertion.Require(isBalance, $"Funcionalidad en proceso de desarrollo.");
 
       FixedList<AccountStatementEntry> voucherEntries = helper.GetVoucherEntries();
 
       FixedList<AccountStatementEntry> orderingVouchers = helper.GetOrderingVouchers(voucherEntries);
 
-      AccountStatementEntry initialAccountBalance = helper.GetInitialAccountBalance(orderingVouchers);
+      AccountStatementEntry initialBalance = helper.GetInitialBalance(orderingVouchers);
 
       FixedList<AccountStatementEntry> vouchersWithCurrentBalance =
-                                        helper.GetVouchersListWithCurrentBalance(orderingVouchers, initialAccountBalance);
+                                        helper.GetVouchersListWithCurrentBalance(orderingVouchers, initialBalance);
 
-      FixedList<AccountStatementEntry> vouchers = helper.CombineInitialAccountBalanceWithVouchers(
-                                                            vouchersWithCurrentBalance, initialAccountBalance);
+      FixedList<AccountStatementEntry> vouchers = helper.CombineInitialBalanceWithVouchers(
+                                                            vouchersWithCurrentBalance, initialBalance);
 
       var returnedVoucherEntries = new FixedList<IVouchersByAccountEntry>(
                                         vouchers.Select(x => (IVouchersByAccountEntry) x));
