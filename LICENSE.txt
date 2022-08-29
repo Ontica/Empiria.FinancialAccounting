@@ -4,6 +4,24 @@
 Copyright (C) 2000-2022. La Vía Óntica SC and contributors.
 -----------------------------------------------------------
 
+Este producto y sus partes se distribuyen mediante una licencia
+GNU AFFERO GENERAL PUBLIC LICENSE, para uso exclusivo de BANOBRAS
+y de su personal, así como para su uso, parcial o total, por cualquier 
+otro organismo en México perteneciente a la Administración Pública Federal.
+
+Para cualquier otro uso (con excepción a lo estipulado en los Términos
+de Servicio de GitHub), es indispensable contar con un acuerdo de licencia
+específico con nuestra organización.
+
+Esto incluye cualquier uso por terceros o empresas privadas proveedoras de 
+servicios de las entidades públicas mencionadas o de su personal.
+
+
+El desarrollo de este producto fue pagado en su totalidad
+con recursos públicos.
+
+-----------------------------------------------------------------------
+
 These software components are free software: you can redistribute them
 and/or modify them under the terms of the GNU Affero General Public License
 as published by the Free Software Foundation, either version 3 of the

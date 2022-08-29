@@ -5,7 +5,7 @@
 [![Maintainability](https://api.codeclimate.com/v1/badges/3982e4436bbd2779606f/maintainability)](https://codeclimate.com/github/Ontica/Empiria.FinancialAccounting/maintainability)
 
 This repository contains the Empiria Financial Accounting System's backend modules,
-in C# 8.0 and .NET Framework 4.8, with a Http/Json Web Api integration module
+in C# 7.0 and .NET Framework 4.8, with a Http/Json Web Api integration module
 tailored with ASP .NET.
 
 As other Empiria products, this backend runs over [Empiria Framework](https://github.com/Ontica/Empiria.Core),
@@ -20,51 +20,60 @@ developed by our organization in 2000-2002, for Banco Nacional de Obras y Servic
 
 Empiria Financial Accounting comprises the following modules:
 
-1.  **Core**  
+1.  **Core**
     Financial Accounting core domain classes and types.
 
-2.  **Core Tests**  
+2.  **Core Tests**
     Test suite for Financial Accounting core domain classes, types and services.
 
-3.  **Balance Engine**  
+3.  **Balance Engine**
     Provides account's balances and trial balances services.
 
-4.  **Balance Engine Tests**  
+4.  **Balance Engine Tests**
     Tests suite for the Balance Engine services.
 
-5.  **Financial Reports**  
+5.  **Financial Reports**
     Generates information for financial reports based on accounts balance data structures and financial concepts and rules.
 
-6.  **Reconciliation**  
+6.  **Reconciliation**
     Provides services for account's balance reconciliation.
 
-7.  **Reporting**  
+7.  **Reporting**
     Generate financial accounting reports and export them to files.
 
-8.  **Rules**  
+8.  **Rules**
     Manages the repository of financial concepts and their integration rules.
 
-9.  **Banobras Integration**  
+9.  **Banobras Integration**
     Import and export data services according to Banobras data models and data infrastructure.
 
-10.  **Vouchers Management**  
+10.  **Vouchers Management**
     Provides services for vouchers edition, importation and management.
 
-11. **Vouchers Management Tests**  
+11. **Vouchers Management Tests**
     Tests suite for vouchers edition, importation and management.
 
-12. **Web API**  
+12. **Web API**
     Http/Json RESTful interface for Financial Accounting system.
 
 Each single project can be compiled using Visual Studio 2019 Community Edition.
 
-## License
+## Licencia
 
-This system is distributed by the GNU AFFERO GENERAL PUBLIC LICENSE.
+Este producto y sus partes se distribuyen mediante una licencia GNU AFFERO GENERAL PUBLIC LICENSE,
+para uso exclusivo de BANOBRAS y de su personal, así como para su uso, parcial o total, por cualquier
+otro organismo en México perteneciente a la Administración Pública Federal.
 
-Óntica always delivers open source information systems, and we consider that it is specially
-important in the case of public utility or government systems.
+Para cualquier otro uso (con excepción a lo estipulado en los Términos de Servicio de GitHub),
+es indispensable contar con un acuerdo de licencia específico con nuestra organización.
+
+Esto incluye cualquier uso por terceros o empresas privadas proveedoras de servicios de
+las entidades públicas mencionadas o de su personal.
+
+
+El desarrollo de este producto fue pagado en su totalidad con recursos públicos.
+
 
 ## Copyright
 
-Copyright © 2000-2022. La Vía Óntica SC, Ontica LLC and colaborators.
+Copyright © 2000-2022. La Vía Óntica SC, Ontica LLC y colaboradores. Todos los derechos reservados.
