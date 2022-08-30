@@ -5,8 +5,8 @@
     <Description>
       This module is part of the Financial Accounting System, and provides information
       models and services that manage accounting vouchers, their edition and importation.
-</Description>
-    <Copyright>(c) 2000-2022. La Vía Óntica SC, Ontica LLC and contributors.</Copyright>
+    </Description>
+    <Copyright>(c) 2021-2022. La Vía Óntica SC, Ontica LLC y de los autores. Todos los derechos reservados.</Copyright>
     <Version>2.0.0</Version>
     <AssemblyVersion>2.0.0</AssemblyVersion>
     <FileVersion>2.0.0.0</FileVersion>
