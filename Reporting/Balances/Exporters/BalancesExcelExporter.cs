@@ -70,6 +70,7 @@ namespace Empiria.FinancialAccounting.Reporting {
     private void SetTable(TrialBalanceDto trialBalance) {
 
       var balaceSetTable = new BalancesFillOutExcelExporter(_query);
+      var saldosSetTable = new SaldosFillOutExcelExporter(_query);
 
       switch (trialBalance.Query.TrialBalanceType) {
         case TrialBalanceType.AnaliticoDeCuentas:
@@ -95,7 +96,7 @@ namespace Empiria.FinancialAccounting.Reporting {
           return;
 
         case TrialBalanceType.BalanzaConContabilidadesEnCascada:
-          balaceSetTable.FillOutSaldosPorCuentayMayor(_excelFile,
+          balaceSetTable.FillOutBalanzaConContabilidadesEnCascada(_excelFile,
                           trialBalance.Entries.Select(x => (BalanzaContabilidadesCascadaEntryDto) x));
           return;
 
@@ -105,12 +106,12 @@ namespace Empiria.FinancialAccounting.Reporting {
           return;
 
         case TrialBalanceType.SaldosPorAuxiliar:
-          balaceSetTable.FillOutSaldosAuxiliar(_excelFile,
+          saldosSetTable.FillOutSaldosPorAuxiliar(_excelFile,
                           trialBalance.Entries.Select(x => (SaldosPorAuxiliarEntryDto) x));
           return;
 
         case TrialBalanceType.SaldosPorCuenta:
-          balaceSetTable.FillOutSaldosCuenta(_excelFile,
+          saldosSetTable.FillOutSaldosPorCuenta(_excelFile,
                           trialBalance.Entries.Select(x => (SaldosPorCuentaEntryDto) x),
                           trialBalance.Query.WithSubledgerAccount);
           return;

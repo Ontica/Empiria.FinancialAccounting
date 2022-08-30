@@ -48,15 +48,7 @@ namespace Empiria.FinancialAccounting.Reporting {
 
     private AccountStatement GenerateAccountStatement() {
       var helper = new AccountStatementHelper(_buildQuery);
-      //bool? isBalance = true;
-
-      //if (_buildQuery.BalancesQuery.TrialBalanceType == TrialBalanceType.BalanzaValorizadaComparativa ||
-      //    _buildQuery.BalancesQuery.TrialBalanceType == TrialBalanceType.BalanzaDolarizada) {
-      //  isBalance = null;
-      //}
-
-      //Assertion.Require(isBalance, $"Funcionalidad en proceso de desarrollo.");
-
+      
       FixedList<AccountStatementEntry> voucherEntries = helper.GetVoucherEntries();
 
       FixedList<AccountStatementEntry> orderingVouchers = helper.GetOrderingVouchers(voucherEntries);

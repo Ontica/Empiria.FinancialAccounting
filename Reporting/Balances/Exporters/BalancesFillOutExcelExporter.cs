@@ -164,7 +164,7 @@ namespace Empiria.FinancialAccounting.Reporting {
     }
 
 
-    public void FillOutSaldosPorCuentayMayor(ExcelFile _excelFile,
+    public void FillOutBalanzaConContabilidadesEnCascada(ExcelFile _excelFile,
                                              IEnumerable<BalanzaContabilidadesCascadaEntryDto> entries) {
       int i = 5;
 
@@ -271,161 +271,11 @@ namespace Empiria.FinancialAccounting.Reporting {
     }
 
 
-    public void FillOutSaldosAuxiliar(ExcelFile _excelFile,
-                                      IEnumerable<SaldosPorAuxiliarEntryDto> entries) {
-      int i = 5;
-
-      foreach (var entry in entries) {
-        var account = StandardAccount.Parse(entry.StandardAccountId);
-
-        if (entry.ItemType != TrialBalanceItemType.Total) {
-          _excelFile.SetCell($"A{i}", entry.LedgerNumber);
-          _excelFile.SetCell($"B{i}", entry.LedgerName);
-
-        } else {
-          _excelFile.SetCell($"A{i}", "");
-        }
-
-        if (entry.ItemType == TrialBalanceItemType.Entry) {
-          _excelFile.SetCell($"C{i}", $"({entry.CurrencyCode}) {entry.CurrencyName}");
-
-          if (!entry.IsParentPostingEntry) {
-            _excelFile.SetCell($"D{i}", "*");
-
-          } else {
-            _excelFile.SetCell($"D{i}", "**");
-
-          }
-        }
-        if (!account.IsEmptyInstance) {
-          _excelFile.SetCell($"E{i}", account.Number);
-          _excelFile.SetCell($"F{i}", account.Name);
-
-        } else {
-          _excelFile.SetCell($"E{i}", entry.AccountNumber);
-          _excelFile.SetCell($"F{i}", entry.AccountName);
-
-        }
-
-        _excelFile.SetCell($"G{i}", entry.SectorCode);
-
-        if (entry.ItemType == TrialBalanceItemType.Entry ||
-            entry.ItemType == TrialBalanceItemType.Total) {
-
-          _excelFile.SetCell($"H{i}", (decimal) entry.CurrentBalance);
-        }
-
-        _excelFile.SetCell($"I{i}", entry.DebtorCreditor);
-
-        if (entry.ItemType == TrialBalanceItemType.Entry) {
-
-          if (MustFillOutAverageBalance((decimal) entry.AverageBalance, entry.LastChangeDate)) {
-            _excelFile.SetCell($"J{i}", (decimal) entry.AverageBalance);
-          }
-
-        }
-
-
-        if (entry.LastChangeDate != ExecutionServer.DateMaxValue &&
-            entry.LastChangeDate >= MIN_LAST_CHANGE_DATE_TO_REPORT) {
-          _excelFile.SetCell($"K{i}", entry.LastChangeDate.ToString("dd/MMM/yyyy"));
-        }
-
-        if (entry.ItemType == TrialBalanceItemType.Summary ||
-            entry.ItemType == TrialBalanceItemType.Total) {
-          _excelFile.SetRowStyleBold(i);
-        }
-        if (entry.ItemType == TrialBalanceItemType.Total) {
-          i++;
-        }
-
-        i++;
-      } // foreach
-
-      if (!_query.WithAverageBalance) {
-        _excelFile.RemoveColumn("J");
-      }
-      if (!_query.ShowCascadeBalances) {
-        _excelFile.RemoveColumn("B");
-      }
-    }
-
-
-    public void FillOutSaldosCuenta(ExcelFile _excelFile,
-                                    IEnumerable<SaldosPorCuentaEntryDto> entries,
-                                    bool includeSubledgerAccounts) {
-      int i = 5;
-
-      foreach (var entry in entries) {
-        var account = StandardAccount.Parse(entry.StandardAccountId);
-        var subledgerAccount = SubledgerAccount.Parse(entry.SubledgerAccountId);
-
-        if (_query.ShowCascadeBalances) {
-          _excelFile.SetCell($"A{i}", entry.LedgerNumber);
-          if (entry.ItemType == TrialBalanceItemType.Entry ||
-            entry.ItemType == TrialBalanceItemType.Summary) {
-            _excelFile.SetCell($"B{i}", entry.LedgerName);
-          }
-        } else {
-          _excelFile.SetCell($"A{i}", "Consolidada");
-        }
-
-        _excelFile.SetCell($"C{i}", entry.CurrencyCode);
-        if (entry.ItemType == TrialBalanceItemType.Entry) {
-          if (!entry.IsParentPostingEntry) {
-            _excelFile.SetCell($"D{i}", "*");
-          } else {
-            _excelFile.SetCell($"D{i}", "**");
-          }
-        }
-        if (!account.IsEmptyInstance) {
-          _excelFile.SetCell($"E{i}", account.Number);
-          _excelFile.SetCell($"F{i}", account.Name);
-        } else {
-          _excelFile.SetCell($"E{i}", entry.AccountNumber);
-          _excelFile.SetCell($"F{i}", entry.AccountName);
-        }
-        _excelFile.SetCell($"G{i}", entry.SectorCode);
-
-        if (includeSubledgerAccounts && !subledgerAccount.IsEmptyInstance) {
-          _excelFile.SetCell($"H{i}", subledgerAccount.Number);
-          _excelFile.SetCell($"I{i}", subledgerAccount.Name);
-        }
-        _excelFile.SetCell($"J{i}", (decimal) entry.CurrentBalance);
-        _excelFile.SetCell($"K{i}", entry.DebtorCreditor);
-
-        if (MustFillOutAverageBalance((decimal) entry.AverageBalance, entry.LastChangeDate)) {
-          _excelFile.SetCell($"L{i}", (decimal) entry.AverageBalance);
-        }
-
-        if (entry.LastChangeDate != ExecutionServer.DateMaxValue &&
-            entry.LastChangeDate >= MIN_LAST_CHANGE_DATE_TO_REPORT) {
-          _excelFile.SetCell($"M{i}", entry.LastChangeDate.ToString("dd/MMM/yyyy"));
-        }
-
-        if (entry.ItemType != TrialBalanceItemType.Entry &&
-            entry.ItemType != TrialBalanceItemType.Summary) {
-          _excelFile.SetRowStyleBold(i);
-        }
-        i++;
-      }
-      if (!_query.WithAverageBalance) {
-        _excelFile.RemoveColumn("L");
-      }
-      if (!includeSubledgerAccounts) {
-        _excelFile.RemoveColumn("I");
-        _excelFile.RemoveColumn("H");
-      }
-      if (!_query.ShowCascadeBalances) {
-        _excelFile.RemoveColumn("B");
-      }
-    }
-
-
     #endregion Public methods
 
 
     #region Utility methods
+
 
     // TODO: CLEAN THIS CODE. ISSUE USING NEW CHART OF ACCOUNTS
     private string GetLedgerLevelAccountNumber(string accountNumber) {
@@ -466,7 +316,7 @@ namespace Empiria.FinancialAccounting.Reporting {
     }
 
 
-    private bool MustFillOutAverageBalance(decimal averageBalance, DateTime lastChangeDate) {
+    internal bool MustFillOutAverageBalance(decimal averageBalance, DateTime lastChangeDate) {
       if (!_query.WithAverageBalance) {
         return false;
       }
