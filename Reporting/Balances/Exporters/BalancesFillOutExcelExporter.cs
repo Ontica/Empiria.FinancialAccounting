@@ -30,8 +30,10 @@ namespace Empiria.FinancialAccounting.Reporting {
 
     public void FillOutAnaliticoDeCuentas(ExcelFile _excelFile, 
                                           IEnumerable<AnaliticoDeCuentasEntryDto> entries) {
-      int i = 5;
 
+      var utility = new UtilityToFillOutExcelExporter(_query);
+
+      int i = 5;
       foreach (var entry in entries) {
         if (_query.ShowCascadeBalances) {
           _excelFile.SetCell($"A{i}", entry.LedgerNumber);
@@ -48,7 +50,7 @@ namespace Empiria.FinancialAccounting.Reporting {
         _excelFile.SetCell($"H{i}", entry.ForeignBalance);
         _excelFile.SetCell($"I{i}", entry.TotalBalance);
 
-        if (MustFillOutAverageBalance(entry.AverageBalance, entry.LastChangeDate)) {
+        if (utility.MustFillOutAverageBalance(entry.AverageBalance, entry.LastChangeDate)) {
           _excelFile.SetCell($"J{i}", entry.AverageBalance);
           _excelFile.SetCell($"K{i}", entry.LastChangeDate);
         }
@@ -71,8 +73,10 @@ namespace Empiria.FinancialAccounting.Reporting {
 
     public void FillOutBalanzaComparativa(ExcelFile _excelFile,
                                           IEnumerable<BalanzaComparativaEntryDto> entries) {
-      int i = 5;
+      
+      var utility = new UtilityToFillOutExcelExporter(_query);
 
+      int i = 5;
       foreach (var entry in entries) {
         if (_query.ShowCascadeBalances) {
           _excelFile.SetCell($"A{i}", entry.LedgerNumber);
@@ -82,8 +86,8 @@ namespace Empiria.FinancialAccounting.Reporting {
         }
 
         _excelFile.SetCell($"C{i}", entry.CurrencyCode);
-        _excelFile.SetCell($"D{i}", GetLedgerLevelAccountNumber(entry.AccountNumber));
-        _excelFile.SetCell($"E{i}", GetSubAccountNumberWithSector(entry.AccountNumber, entry.SectorCode));
+        _excelFile.SetCell($"D{i}", utility.GetLedgerLevelAccountNumber(entry.AccountNumber));
+        _excelFile.SetCell($"E{i}", utility.GetSubAccountNumberWithSector(entry.AccountNumber, entry.SectorCode));
         _excelFile.SetCell($"F{i}", entry.AccountNumber);
         _excelFile.SetCell($"G{i}", entry.SectorCode);
         _excelFile.SetCell($"H{i}", entry.SubledgerAccountNumber);
@@ -102,7 +106,7 @@ namespace Empiria.FinancialAccounting.Reporting {
         _excelFile.SetCell($"U{i}", entry.VariationByER);
         _excelFile.SetCell($"V{i}", entry.RealVariation);
 
-        if (MustFillOutAverageBalance(entry.AverageBalance, entry.LastChangeDate)) {
+        if (utility.MustFillOutAverageBalance(entry.AverageBalance, entry.LastChangeDate)) {
           _excelFile.SetCell($"W{i}", entry.AverageBalance);
           _excelFile.SetCell($"X{i}", entry.LastChangeDate.ToString("dd/MMM/yyyy"));
         }
@@ -166,8 +170,10 @@ namespace Empiria.FinancialAccounting.Reporting {
 
     public void FillOutBalanzaConContabilidadesEnCascada(ExcelFile _excelFile,
                                              IEnumerable<BalanzaContabilidadesCascadaEntryDto> entries) {
-      int i = 5;
+      
+      var utility = new UtilityToFillOutExcelExporter(_query);
 
+      int i = 5;
       foreach (var entry in entries) {
         var account = StandardAccount.Parse(entry.StandardAccountId);
 
@@ -194,7 +200,7 @@ namespace Empiria.FinancialAccounting.Reporting {
         _excelFile.SetCell($"I{i}", entry.Credit);
         _excelFile.SetCell($"J{i}", (decimal) entry.CurrentBalance);
 
-        if (MustFillOutAverageBalance((decimal) entry.AverageBalance, entry.LastChangeDate)) {
+        if (utility.MustFillOutAverageBalance((decimal) entry.AverageBalance, entry.LastChangeDate)) {
           _excelFile.SetCell($"K{i}", (decimal) entry.AverageBalance);
           _excelFile.SetCell($"L{i}", entry.LastChangeDate.ToString("dd/MMM/yyyy"));
         }
@@ -214,8 +220,10 @@ namespace Empiria.FinancialAccounting.Reporting {
 
     public void FillOutBalanza(ExcelFile _excelFile,
                                IEnumerable<BalanzaTradicionalEntryDto> entries) {
-      int i = 5;
+      
+      var utility = new UtilityToFillOutExcelExporter(_query);
 
+      int i = 5;
       foreach (var entry in entries) {
         if (_query.ShowCascadeBalances) {
           _excelFile.SetCell($"A{i}", entry.LedgerNumber);
@@ -244,7 +252,7 @@ namespace Empiria.FinancialAccounting.Reporting {
         _excelFile.SetCell($"K{i}", (decimal) entry.CurrentBalance);
         _excelFile.SetCell($"L{i}", Math.Round(entry.ExchangeRate, 6));
 
-        if (MustFillOutAverageBalance((decimal) entry.AverageBalance, entry.LastChangeDate)) {
+        if (utility.MustFillOutAverageBalance((decimal) entry.AverageBalance, entry.LastChangeDate)) {
           _excelFile.SetCell($"M{i}", (decimal) entry.AverageBalance);
           _excelFile.SetCell($"N{i}", entry.LastChangeDate.ToString("dd/MMM/yyyy"));
         }
@@ -273,66 +281,6 @@ namespace Empiria.FinancialAccounting.Reporting {
 
     #endregion Public methods
 
-
-    #region Utility methods
-
-
-    // TODO: CLEAN THIS CODE. ISSUE USING NEW CHART OF ACCOUNTS
-    private string GetLedgerLevelAccountNumber(string accountNumber) {
-      var temp = string.Empty;
-
-      if (accountNumber.Contains("-")) {
-        temp = accountNumber.Substring(0, 4);
-      } else if (accountNumber.Contains(".")) {
-        temp = accountNumber.Substring(0, 1);
-      }
-
-      return temp;
-    }
-
-
-    // TODO: CLEAN THIS CODE. ISSUE USING NEW CHART OF ACCOUNTS
-    private string GetSubAccountNumberWithSector(string accountNumber, string sectorCode) {
-      var temp = string.Empty;
-
-      if (accountNumber.Contains("-")) {
-
-        temp = accountNumber.Substring(4);
-
-        temp = temp.Replace("-", String.Empty);
-
-        temp = temp.PadRight(12, '0');
-
-      } else if (accountNumber.Contains(".")) {
-
-        temp = accountNumber.Substring(2);
-
-        temp = temp.Replace(".", String.Empty);
-
-        temp = temp.PadRight(20, '0');
-      }
-
-      return temp + sectorCode;
-    }
-
-
-    internal bool MustFillOutAverageBalance(decimal averageBalance, DateTime lastChangeDate) {
-      if (!_query.WithAverageBalance) {
-        return false;
-      }
-      if (averageBalance != 0) {
-        return true;
-      }
-      if (lastChangeDate < MIN_LAST_CHANGE_DATE_TO_REPORT) {
-        return false;
-      }
-      if (lastChangeDate == ExecutionServer.DateMaxValue) {
-        return false;
-      }
-      return true;
-    }
-
-    #endregion Utility methods
 
   } // class BalancesFillOutExcelExporter
 
