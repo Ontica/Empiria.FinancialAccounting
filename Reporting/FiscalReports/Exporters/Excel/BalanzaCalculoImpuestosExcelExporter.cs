@@ -84,11 +84,9 @@ namespace Empiria.FinancialAccounting.Reporting {
       excelFile.SetCell($"F{i}", entry.Debe);
       excelFile.SetCell($"G{i}", entry.Haber);
       excelFile.SetCell($"H{i}", entry.SaldoFinal);
-
       excelFile.SetCell($"I{i}", entry.Movimiento);
       excelFile.SetCell($"J{i}", entry.Contabilidad);
       excelFile.SetCell($"K{i}", entry.FechaConsulta);
-
       excelFile.SetCell($"L{i}", cuentaSinSector.Substring(0, 1));
       excelFile.SetCell($"M{i}", cuentaSinSector.Substring(0, 2));
       excelFile.SetCell($"N{i}", cuentaSinSector.Substring(2, 2));
@@ -102,7 +100,6 @@ namespace Empiria.FinancialAccounting.Reporting {
       excelFile.SetCell($"V{i}", cuentaSector.Substring(16, 2));
       excelFile.SetCell($"AA{i}", cuentaSector);
       excelFile.SetCell($"AB{i}", cuentaSinSector);
-
       excelFile.SetCell($"AC{i}", entry.Moneda);
       excelFile.SetCell($"AD{i}", entry.Cuenta);
       excelFile.SetCell($"AE{i}", entry.Sector);
@@ -112,7 +109,6 @@ namespace Empiria.FinancialAccounting.Reporting {
       excelFile.SetCell($"AI{i}", entry.Haber);
       excelFile.SetCell($"AJ{i}", entry.SaldoFinal);
       excelFile.SetCell($"AK{i}", entry.Movimiento);
-
       excelFile.SetCell($"AL{i}", entry.VBxcoEquivalencia);
       excelFile.SetCell($"AM{i}", entry.VBxcoSaldoInicial);
       excelFile.SetCell($"AN{i}", entry.VBxcoDebe);
@@ -134,12 +130,9 @@ namespace Empiria.FinancialAccounting.Reporting {
       excelFile.SetCell($"F{i}", entry.Debe);
       excelFile.SetCell($"G{i}", entry.Haber);
       excelFile.SetCell($"H{i}", entry.SaldoFinal);
-
       excelFile.SetCell($"I{i}", entry.Movimiento);
       excelFile.SetCell($"J{i}", entry.Contabilidad);
       excelFile.SetCell($"K{i}", entry.FechaConsulta);
-
-      // TODO
       excelFile.SetCell($"L{i}", cuentaSinSector.Substring(0, 1));
       excelFile.SetCell($"M{i}", cuentaSinSector.Substring(0, 1));
       excelFile.SetCell($"N{i}", cuentaSinSector.Substring(0, 1));
@@ -157,7 +150,6 @@ namespace Empiria.FinancialAccounting.Reporting {
       excelFile.SetCell($"Z{i}", cuentaSector.Substring(21, 2));
       excelFile.SetCell($"AA{i}", cuentaSector);
       excelFile.SetCell($"AB{i}", cuentaSinSector);
-
       excelFile.SetCell($"AC{i}", entry.Moneda);
       excelFile.SetCell($"AD{i}", entry.Cuenta);
       excelFile.SetCell($"AE{i}", entry.Sector);
@@ -167,7 +159,6 @@ namespace Empiria.FinancialAccounting.Reporting {
       excelFile.SetCell($"AI{i}", entry.Haber);
       excelFile.SetCell($"AJ{i}", entry.SaldoFinal);
       excelFile.SetCell($"AK{i}", entry.Movimiento);
-
       excelFile.SetCell($"AL{i}", entry.VBxcoEquivalencia);
       excelFile.SetCell($"AM{i}", entry.VBxcoSaldoInicial);
       excelFile.SetCell($"AN{i}", entry.VBxcoDebe);

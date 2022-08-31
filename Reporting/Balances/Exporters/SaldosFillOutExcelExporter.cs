@@ -33,27 +33,12 @@ namespace Empiria.FinancialAccounting.Reporting {
 
       int i = 5;
       foreach (var entry in entries) {
-        var account = StandardAccount.Parse(entry.StandardAccountId);
-
+        
         SetRowByItemType(_excelFile, entry, i);
-
-        if (!account.IsEmptyInstance) {
-          _excelFile.SetCell($"E{i}", account.Number);
-          _excelFile.SetCell($"F{i}", account.Name);
-
-        } else {
-          _excelFile.SetCell($"E{i}", entry.AccountNumber);
-          _excelFile.SetCell($"F{i}", entry.AccountName);
-
-        }
+        SetRowConditionsForSaldosPorAuxiliar(_excelFile, entry, i);
 
         _excelFile.SetCell($"G{i}", entry.SectorCode);
         _excelFile.SetCell($"I{i}", entry.DebtorCreditor);
-
-        if (entry.LastChangeDate != ExecutionServer.DateMaxValue &&
-            entry.LastChangeDate >= MIN_LAST_CHANGE_DATE_TO_REPORT) {
-          _excelFile.SetCell($"K{i}", entry.LastChangeDate.ToString("dd/MMM/yyyy"));
-        }
 
         if (entry.ItemType == TrialBalanceItemType.Summary ||
             entry.ItemType == TrialBalanceItemType.Total) {
@@ -75,38 +60,24 @@ namespace Empiria.FinancialAccounting.Reporting {
       }
     }
 
-
+    
     public void FillOutSaldosPorCuenta(ExcelFile _excelFile,
                                     IEnumerable<SaldosPorCuentaEntryDto> entries,
-                                    bool includeSubledgerAccounts) {
+                                    bool withSubledgerAccounts) {
 
       var utility = new UtilityToFillOutExcelExporter(_query);
 
       int i = 5;
       foreach (var entry in entries) {
 
-        var account = StandardAccount.Parse(entry.StandardAccountId);
-        var subledgerAccount = SubledgerAccount.Parse(entry.SubledgerAccountId);
-
         SetShowCascadeBalances(_excelFile, entry, i);
 
         _excelFile.SetCell($"C{i}", entry.CurrencyCode);
 
         SetByItemTypeAndRowStyle(_excelFile, entry, i);
-
-        if (!account.IsEmptyInstance) {
-          _excelFile.SetCell($"E{i}", account.Number);
-          _excelFile.SetCell($"F{i}", account.Name);
-        } else {
-          _excelFile.SetCell($"E{i}", entry.AccountNumber);
-          _excelFile.SetCell($"F{i}", entry.AccountName);
-        }
+        SetRowConditionsForSaldosPorCuenta(_excelFile,entry, withSubledgerAccounts, i);
+        
         _excelFile.SetCell($"G{i}", entry.SectorCode);
-
-        if (includeSubledgerAccounts && !subledgerAccount.IsEmptyInstance) {
-          _excelFile.SetCell($"H{i}", subledgerAccount.Number);
-          _excelFile.SetCell($"I{i}", subledgerAccount.Name);
-        }
         _excelFile.SetCell($"J{i}", (decimal) entry.CurrentBalance);
         _excelFile.SetCell($"K{i}", entry.DebtorCreditor);
 
@@ -125,7 +96,7 @@ namespace Empiria.FinancialAccounting.Reporting {
       if (!_query.WithAverageBalance) {
         _excelFile.RemoveColumn("L");
       }
-      if (!includeSubledgerAccounts) {
+      if (!withSubledgerAccounts) {
         _excelFile.RemoveColumn("I");
         _excelFile.RemoveColumn("H");
       }
@@ -192,6 +163,49 @@ namespace Empiria.FinancialAccounting.Reporting {
         _excelFile.SetCell($"H{i}", (decimal) entry.CurrentBalance);
       }
 
+    }
+
+
+    private void SetRowConditionsForSaldosPorAuxiliar(
+      ExcelFile _excelFile, SaldosPorAuxiliarEntryDto entry, int i) {
+
+      var account = StandardAccount.Parse(entry.StandardAccountId);
+
+      if (!account.IsEmptyInstance) {
+        _excelFile.SetCell($"E{i}", account.Number);
+        _excelFile.SetCell($"F{i}", account.Name);
+
+      } else {
+        _excelFile.SetCell($"E{i}", entry.AccountNumber);
+        _excelFile.SetCell($"F{i}", entry.AccountName);
+
+      }
+
+      if (entry.LastChangeDate != ExecutionServer.DateMaxValue &&
+            entry.LastChangeDate >= MIN_LAST_CHANGE_DATE_TO_REPORT) {
+        _excelFile.SetCell($"K{i}", entry.LastChangeDate.ToString("dd/MMM/yyyy"));
+      }
+    }
+
+
+    private void SetRowConditionsForSaldosPorCuenta(
+      ExcelFile _excelFile, SaldosPorCuentaEntryDto entry, bool withSubledgerAccounts, int i) {
+
+      var account = StandardAccount.Parse(entry.StandardAccountId);
+      var subledgerAccount = SubledgerAccount.Parse(entry.SubledgerAccountId);
+
+      if (!account.IsEmptyInstance) {
+        _excelFile.SetCell($"E{i}", account.Number);
+        _excelFile.SetCell($"F{i}", account.Name);
+      } else {
+        _excelFile.SetCell($"E{i}", entry.AccountNumber);
+        _excelFile.SetCell($"F{i}", entry.AccountName);
+      }
+
+      if (withSubledgerAccounts && !subledgerAccount.IsEmptyInstance) {
+        _excelFile.SetCell($"H{i}", subledgerAccount.Number);
+        _excelFile.SetCell($"I{i}", subledgerAccount.Name);
+      }
     }
 
 

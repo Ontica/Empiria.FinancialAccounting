@@ -169,6 +169,7 @@ namespace Empiria.FinancialAccounting.Reporting {
     private void FillOutSaldosCuentaConEncabezado(IEnumerable<BalanceExplorerEntryDto> entries) {
       int i = 5;
       foreach (var entry in entries) {
+        
         if (entry.ItemType == TrialBalanceItemType.Total) {
           _excelFile.SetCell($"D{i}", entry.AccountNumber);
           _excelFile.SetCell($"E{i}", $"{entry.AccountName}");
@@ -186,18 +187,7 @@ namespace Empiria.FinancialAccounting.Reporting {
           i += 3;
 
         } else {
-          _excelFile.SetCell($"A{i}", entry.LedgerNumber);
-          _excelFile.SetCell($"B{i}", entry.LedgerName);
-          _excelFile.SetCell($"C{i}", $"({entry.CurrencyCode}) {entry.CurrencyName})");
-          _excelFile.SetCell($"D{i}", entry.AccountNumber);
-          if (!_query.WithSubledgerAccount) {
-            _excelFile.SetCell($"E{i}", entry.AccountName);
-          } else {
-            _excelFile.SetCell($"E{i}", entry.subledgerAccountName);
-          }
-          _excelFile.SetCell($"F{i}", entry.SectorCode);
-          _excelFile.SetCell($"G{i}", (decimal) entry.CurrentBalance);
-          _excelFile.SetCell($"H{i}", entry.LastChangeDate.ToString("dd/MMM/yyyy"));
+          SetRowsForSaldosCuentaConEncabezado(entry, i);
         }
 
         i++;
@@ -233,6 +223,24 @@ namespace Empiria.FinancialAccounting.Reporting {
         _excelFile.RemoveColumn("G");
         _excelFile.RemoveColumn("F");
       }
+    }
+
+
+    private void SetRowsForSaldosCuentaConEncabezado(BalanceExplorerEntryDto entry, int i) {
+
+      _excelFile.SetCell($"A{i}", entry.LedgerNumber);
+      _excelFile.SetCell($"B{i}", entry.LedgerName);
+      _excelFile.SetCell($"C{i}", $"({entry.CurrencyCode}) {entry.CurrencyName})");
+      _excelFile.SetCell($"D{i}", entry.AccountNumber);
+      if (!_query.WithSubledgerAccount) {
+        _excelFile.SetCell($"E{i}", entry.AccountName);
+      } else {
+        _excelFile.SetCell($"E{i}", entry.subledgerAccountName);
+      }
+      _excelFile.SetCell($"F{i}", entry.SectorCode);
+      _excelFile.SetCell($"G{i}", (decimal) entry.CurrentBalance);
+      _excelFile.SetCell($"H{i}", entry.LastChangeDate.ToString("dd/MMM/yyyy"));
+
     }
 
 
