@@ -19,8 +19,6 @@ namespace Empiria.FinancialAccounting.Reporting {
 
     private TrialBalanceQuery _query;
 
-    private readonly DateTime MIN_LAST_CHANGE_DATE_TO_REPORT = DateTime.Parse("01/01/1970");
-
     public BalancesFillOutExcelExporter(TrialBalanceQuery query) {
       _query = query;
     }
@@ -36,6 +34,8 @@ namespace Empiria.FinancialAccounting.Reporting {
       int i = 5;
       foreach (var entry in entries) {
 
+        _excelFile.SetCell($"A{i}", "Consolidada");
+
         SetRowClausesForAnalitico(_excelFile, entry, utility, i);
 
         _excelFile.SetCell($"C{i}", entry.AccountMark);
@@ -46,8 +46,11 @@ namespace Empiria.FinancialAccounting.Reporting {
         _excelFile.SetCell($"H{i}", entry.ForeignBalance);
         _excelFile.SetCell($"I{i}", entry.TotalBalance);
 
+        SetRowStyleBoldForAnaliticoAndBalanza(_excelFile, entry, i);
+
         i++;
       }
+
       if (!_query.WithAverageBalance) {
         _excelFile.RemoveColumn("K");
         _excelFile.RemoveColumn("J");
@@ -57,7 +60,62 @@ namespace Empiria.FinancialAccounting.Reporting {
       }
     }
 
-    
+
+    public void FillOutBalanza(ExcelFile _excelFile,
+                               IEnumerable<BalanzaTradicionalEntryDto> entries) {
+
+      var utility = new UtilityToFillOutExcelExporter(_query);
+
+      int i = 5;
+      foreach (var entry in entries) {
+
+        SetRowClausesForBalanza(_excelFile, entry, i);
+
+        _excelFile.SetCell($"C{i}", entry.CurrencyCode);
+        _excelFile.SetCell($"E{i}", entry.AccountNumber);
+        _excelFile.SetCell($"F{i}", entry.AccountName);
+        _excelFile.SetCell($"G{i}", entry.SectorCode);
+        _excelFile.SetCell($"H{i}", entry.InitialBalance);
+        _excelFile.SetCell($"I{i}", entry.Debit);
+        _excelFile.SetCell($"J{i}", entry.Credit);
+        _excelFile.SetCell($"K{i}", (decimal) entry.CurrentBalance);
+        _excelFile.SetCell($"L{i}", Math.Round(entry.ExchangeRate, 6));
+
+        if (utility.MustFillOutAverageBalance((decimal) entry.AverageBalance, entry.LastChangeDate)) {
+          _excelFile.SetCell($"M{i}", (decimal) entry.AverageBalance);
+          _excelFile.SetCell($"N{i}", entry.LastChangeDate.ToString("dd/MMM/yyyy"));
+        }
+
+        SetRowStyleBoldForAnaliticoAndBalanza(_excelFile, entry, i);
+
+        i++;
+      }
+
+      SetColumnClausesForBalanza(_excelFile);
+
+    }
+
+
+    public void FillOutBalanzaColumnasPorMoneda(ExcelFile _excelFile,
+                                                IEnumerable<BalanzaColumnasMonedaEntryDto> entries) {
+      int i = 5;
+
+      foreach (var entry in entries) {
+        _excelFile.SetCell($"A{i}", entry.AccountNumber);
+        _excelFile.SetCell($"B{i}", entry.AccountName);
+        _excelFile.SetCell($"C{i}", entry.DomesticBalance);
+        _excelFile.SetCell($"D{i}", entry.DollarBalance);
+        _excelFile.SetCell($"E{i}", entry.YenBalance);
+        _excelFile.SetCell($"F{i}", entry.EuroBalance);
+        _excelFile.SetCell($"G{i}", entry.UdisBalance);
+        if (entry.ItemType == TrialBalanceItemType.Summary) {
+          _excelFile.SetRowStyleBold(i);
+        }
+        i++;
+      }
+    }
+
+
     public void FillOutBalanzaComparativa(ExcelFile _excelFile,
                                           IEnumerable<BalanzaComparativaEntryDto> entries) {
 
@@ -66,7 +124,9 @@ namespace Empiria.FinancialAccounting.Reporting {
       int i = 5;
       foreach (var entry in entries) {
 
-        SetRowConditionsForBalanzaComparativa(_excelFile, entry, utility, i);
+        _excelFile.SetCell($"A{i}", "Consolidada");
+
+        SetRowClausesForBalanzaComparativa(_excelFile, entry, utility, i);
 
         _excelFile.SetCell($"C{i}", entry.CurrencyCode);
         _excelFile.SetCell($"D{i}", utility.GetLedgerLevelAccountNumber(entry.AccountNumber));
@@ -91,51 +151,7 @@ namespace Empiria.FinancialAccounting.Reporting {
 
         i++;
       }
-      SetColumnConditionsForBalanzaComparativa(_excelFile);
-    }
-
-    
-    public void FillOutBalanzaColumnasPorMoneda(ExcelFile _excelFile,
-                                                IEnumerable<BalanzaColumnasMonedaEntryDto> entries) {
-      int i = 5;
-
-      foreach (var entry in entries) {
-        _excelFile.SetCell($"A{i}", entry.AccountNumber);
-        _excelFile.SetCell($"B{i}", entry.AccountName);
-        _excelFile.SetCell($"C{i}", entry.DomesticBalance);
-        _excelFile.SetCell($"D{i}", entry.DollarBalance);
-        _excelFile.SetCell($"E{i}", entry.YenBalance);
-        _excelFile.SetCell($"F{i}", entry.EuroBalance);
-        _excelFile.SetCell($"G{i}", entry.UdisBalance);
-        if (entry.ItemType == TrialBalanceItemType.Summary) {
-          _excelFile.SetRowStyleBold(i);
-        }
-        i++;
-      }
-    }
-
-
-    public void FillOutBalanzaDolarizada(ExcelFile _excelFile,
-                                         IEnumerable<BalanzaDolarizadaEntryDto> entries) {
-      int i = 5;
-
-      foreach (var entry in entries) {
-        _excelFile.SetCell($"A{i}", entry.AccountNumber);
-        _excelFile.SetCell($"B{i}", entry.AccountName);
-        _excelFile.SetCell($"C{i}", entry.CurrencyName);
-        _excelFile.SetCell($"D{i}", entry.CurrencyCode);
-        if (entry.ItemType != TrialBalanceItemType.BalanceTotalCurrency) {
-          _excelFile.SetCell($"E{i}", (decimal) entry.TotalBalance);
-          _excelFile.SetCell($"F{i}", (decimal) entry.ValuedExchangeRate);
-        }
-        _excelFile.SetCell($"G{i}", entry.TotalEquivalence);
-
-        if (entry.ItemType != TrialBalanceItemType.Entry) {
-          _excelFile.SetRowStyleBold(i);
-        }
-
-        i++;
-      }
+      SetColumnClausesForBalanzaComparativa(_excelFile);
     }
 
 
@@ -170,41 +186,29 @@ namespace Empiria.FinancialAccounting.Reporting {
       }
     }
 
-    
-    public void FillOutBalanza(ExcelFile _excelFile,
-                               IEnumerable<BalanzaTradicionalEntryDto> entries) {
 
-      var utility = new UtilityToFillOutExcelExporter(_query);
-
+    public void FillOutBalanzaDolarizada(ExcelFile _excelFile,
+                                         IEnumerable<BalanzaDolarizadaEntryDto> entries) {
       int i = 5;
+
       foreach (var entry in entries) {
+        _excelFile.SetCell($"A{i}", entry.AccountNumber);
+        _excelFile.SetCell($"B{i}", entry.AccountName);
+        _excelFile.SetCell($"C{i}", entry.CurrencyName);
+        _excelFile.SetCell($"D{i}", entry.CurrencyCode);
+        if (entry.ItemType != TrialBalanceItemType.BalanceTotalCurrency) {
+          _excelFile.SetCell($"E{i}", (decimal) entry.TotalBalance);
+          _excelFile.SetCell($"F{i}", (decimal) entry.ValuedExchangeRate);
+        }
+        _excelFile.SetCell($"G{i}", entry.TotalEquivalence);
 
-        SetShowCascadeBalancesForBalanza(_excelFile, entry, i);
-        SetRowByItemTypeForBalanza(_excelFile, entry, i);
-
-        _excelFile.SetCell($"C{i}", entry.CurrencyCode);
-
-        _excelFile.SetCell($"E{i}", entry.AccountNumber);
-        _excelFile.SetCell($"F{i}", entry.AccountName);
-        _excelFile.SetCell($"G{i}", entry.SectorCode);
-        _excelFile.SetCell($"H{i}", entry.InitialBalance);
-        _excelFile.SetCell($"I{i}", entry.Debit);
-        _excelFile.SetCell($"J{i}", entry.Credit);
-        _excelFile.SetCell($"K{i}", (decimal) entry.CurrentBalance);
-        _excelFile.SetCell($"L{i}", Math.Round(entry.ExchangeRate, 6));
-
-        if (utility.MustFillOutAverageBalance((decimal) entry.AverageBalance, entry.LastChangeDate)) {
-          _excelFile.SetCell($"M{i}", (decimal) entry.AverageBalance);
-          _excelFile.SetCell($"N{i}", entry.LastChangeDate.ToString("dd/MMM/yyyy"));
+        if (entry.ItemType != TrialBalanceItemType.Entry) {
+          _excelFile.SetRowStyleBold(i);
         }
 
         i++;
       }
-
-      SetRowClausesForBalanza(_excelFile);
-
     }
-
 
     #endregion Public methods
 
@@ -212,59 +216,7 @@ namespace Empiria.FinancialAccounting.Reporting {
     #region Private methods
 
 
-    private void SetColumnConditionsForBalanzaComparativa(ExcelFile _excelFile) {
-      if (!_query.WithAverageBalance) {
-        _excelFile.RemoveColumn("X");
-        _excelFile.RemoveColumn("W");
-      }
-      if (!_query.ShowCascadeBalances) {
-        _excelFile.RemoveColumn("B");
-      }
-    }
-
-
-    private void SetRowByItemTypeForBalanza(ExcelFile _excelFile, BalanzaTradicionalEntryDto entry, int i) {
-
-      if (entry.ItemType == TrialBalanceItemType.Entry) {
-        if (!entry.IsParentPostingEntry) {
-          _excelFile.SetCell($"D{i}", "*");
-        } else {
-          _excelFile.SetCell($"D{i}", "**");
-        }
-      }
-
-      if (entry.ItemType != TrialBalanceItemType.Entry &&
-            entry.ItemType != TrialBalanceItemType.Summary) {
-        _excelFile.SetRowStyleBold(i);
-      }
-
-    }
-
-
-    private void SetRowClausesForAnalitico(ExcelFile _excelFile,
-      AnaliticoDeCuentasEntryDto entry, UtilityToFillOutExcelExporter utility, int i) {
-
-      if (_query.ShowCascadeBalances) {
-        _excelFile.SetCell($"A{i}", entry.LedgerNumber);
-        _excelFile.SetCell($"B{i}", entry.LedgerName);
-      } else {
-        _excelFile.SetCell($"A{i}", "Consolidada");
-      }
-
-      if (utility.MustFillOutAverageBalance(entry.AverageBalance, entry.LastChangeDate)) {
-        _excelFile.SetCell($"J{i}", entry.AverageBalance);
-        _excelFile.SetCell($"K{i}", entry.LastChangeDate);
-      }
-
-      if (entry.ItemType != TrialBalanceItemType.Entry &&
-          entry.ItemType != TrialBalanceItemType.Summary) {
-        _excelFile.SetRowStyleBold(i);
-      }
-
-    }
-
-
-    private void SetRowClausesForBalanza(ExcelFile _excelFile) {
+    private void SetColumnClausesForBalanza(ExcelFile _excelFile) {
 
       if (!_query.WithAverageBalance) {
         _excelFile.RemoveColumn("N");
@@ -284,14 +236,62 @@ namespace Empiria.FinancialAccounting.Reporting {
     }
 
 
-    private void SetRowConditionsForBalanzaComparativa(ExcelFile _excelFile,
+    private void SetColumnClausesForBalanzaComparativa(ExcelFile _excelFile) {
+      if (!_query.WithAverageBalance) {
+        _excelFile.RemoveColumn("X");
+        _excelFile.RemoveColumn("W");
+      }
+      if (!_query.ShowCascadeBalances) {
+        _excelFile.RemoveColumn("B");
+      }
+    }
+
+
+    private void SetRowClausesForAnalitico(ExcelFile _excelFile,
+      AnaliticoDeCuentasEntryDto entry, UtilityToFillOutExcelExporter utility, int i) {
+
+      if (_query.ShowCascadeBalances) {
+        _excelFile.SetCell($"A{i}", entry.LedgerNumber);
+        _excelFile.SetCell($"B{i}", entry.LedgerName);
+      }
+
+      if (utility.MustFillOutAverageBalance(entry.AverageBalance, entry.LastChangeDate)) {
+        _excelFile.SetCell($"J{i}", entry.AverageBalance);
+        _excelFile.SetCell($"K{i}", entry.LastChangeDate);
+      }
+
+    }
+
+
+    private void SetRowClausesForBalanza(ExcelFile _excelFile, BalanzaTradicionalEntryDto entry, int i) {
+
+      if (_query.ShowCascadeBalances) {
+        _excelFile.SetCell($"A{i}", entry.LedgerNumber);
+        if (entry.ItemType == TrialBalanceItemType.Entry ||
+            entry.ItemType == TrialBalanceItemType.Summary) {
+          _excelFile.SetCell($"B{i}", entry.LedgerName);
+        }
+      } else {
+        _excelFile.SetCell($"A{i}", "Consolidada");
+      }
+
+      if (entry.ItemType == TrialBalanceItemType.Entry) {
+        if (!entry.IsParentPostingEntry) {
+          _excelFile.SetCell($"D{i}", "*");
+        } else {
+          _excelFile.SetCell($"D{i}", "**");
+        }
+      }
+
+    }
+
+
+    private void SetRowClausesForBalanzaComparativa(ExcelFile _excelFile,
       BalanzaComparativaEntryDto entry, UtilityToFillOutExcelExporter utility, int i) {
 
       if (_query.ShowCascadeBalances) {
         _excelFile.SetCell($"A{i}", entry.LedgerNumber);
         _excelFile.SetCell($"B{i}", entry.LedgerName);
-      } else {
-        _excelFile.SetCell($"A{i}", "Consolidada");
       }
 
       if (utility.MustFillOutAverageBalance(entry.AverageBalance, entry.LastChangeDate)) {
@@ -329,19 +329,15 @@ namespace Empiria.FinancialAccounting.Reporting {
     }
 
 
-    private void SetShowCascadeBalancesForBalanza(ExcelFile _excelFile,
-                              BalanzaTradicionalEntryDto entry, int i) {
+    private void SetRowStyleBoldForAnaliticoAndBalanza(ExcelFile _excelFile,
+                                                       ITrialBalanceEntryDto entry, int i) {
 
-      if (_query.ShowCascadeBalances) {
-        _excelFile.SetCell($"A{i}", entry.LedgerNumber);
-        if (entry.ItemType == TrialBalanceItemType.Entry ||
-            entry.ItemType == TrialBalanceItemType.Summary) {
-          _excelFile.SetCell($"B{i}", entry.LedgerName);
-        }
-      } else {
-        _excelFile.SetCell($"A{i}", "Consolidada");
+      if (entry.ItemType != TrialBalanceItemType.Entry && entry.ItemType != TrialBalanceItemType.Summary) {
+        _excelFile.SetRowStyleBold(i);
       }
+
     }
+
 
     #endregion Private methods
 

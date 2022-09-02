@@ -70,35 +70,42 @@ namespace Empiria.FinancialAccounting.Reporting.Adapters {
       dto.LedgerUID = entry.Ledger.UID != "Empty" ? entry.Ledger.UID : "";
       dto.LedgerName = entry.Ledger.Name;
       dto.LedgerNumber = entry.Ledger.Number;
-      dto.CurrencyCode = entry.ItemType == TrialBalanceItemType.Entry ? entry.Currency.Code : "";
       dto.StandardAccountId = entry.StandardAccountId;
       dto.AccountName = entry.AccountName;
-      if (entry.ItemType == TrialBalanceItemType.Entry) {
-        dto.AccountNumber = entry.AccountNumber;
-      } else {
-        dto.AccountNumber = entry.IsCurrentBalance ? "SALDO ACTUAL" : "SALDO INICIAL";
-      }
       dto.AccountNumberForBalances = entry.AccountNumber;
-      dto.SectorCode = entry.ItemType == TrialBalanceItemType.Entry ? entry.Sector.Code : "";
       dto.SubledgerAccountNumber = entry.SubledgerAccountNumber.Length > 1 ?
                                    entry.SubledgerAccountNumber : "";
       dto.VoucherNumber = entry.VoucherNumber;
       dto.ElaboratedBy = entry.ElaboratedBy.Name;
-
       dto.Concept = EmpiriaString.Clean(entry.Concept);
+      dto.CurrentBalance = entry.CurrentBalance;
+      dto.VoucherId = entry.VoucherId;
+
+      ItemTypeClausesForDto(dto, entry);
+
+      return dto;
+    }
+
+    private static void ItemTypeClausesForDto(VouchersByAccountEntryDto dto,
+                                             Reporting.AccountStatementEntry entry) {
+
+      if (entry.ItemType == TrialBalanceItemType.Entry) {
+        dto.AccountNumber = entry.AccountNumber;
+        dto.AccountingDate = entry.AccountingDate;
+        dto.RecordingDate = entry.RecordingDate;
+        dto.CurrencyCode = entry.Currency.Code;
+        dto.SectorCode = entry.Sector.Code;
+      } else {
+        dto.AccountNumber = entry.IsCurrentBalance ? "SALDO ACTUAL" : "SALDO INICIAL";
+        dto.AccountingDate = ExecutionServer.DateMaxValue;
+        dto.RecordingDate = ExecutionServer.DateMaxValue;
+      }
 
       if (entry.ItemType == TrialBalanceItemType.Entry || entry.IsCurrentBalance) {
         dto.Debit = entry.Debit;
         dto.Credit = entry.Credit;
       }
-      dto.CurrentBalance = entry.CurrentBalance;
-      dto.AccountingDate = entry.ItemType == TrialBalanceItemType.Entry ?
-                           entry.AccountingDate : ExecutionServer.DateMaxValue;
-      dto.RecordingDate = entry.ItemType == TrialBalanceItemType.Entry ?
-                          entry.RecordingDate : ExecutionServer.DateMaxValue;
-      dto.VoucherId = entry.VoucherId;
 
-      return dto;
     }
 
 

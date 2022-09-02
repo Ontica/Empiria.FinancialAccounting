@@ -79,29 +79,40 @@ namespace Empiria.FinancialAccounting.Reporting {
         _excelFile.SetCell($"D{i}", voucher.SectorCode);
         _excelFile.SetCell($"E{i}", voucher.SubledgerAccountNumber);
         _excelFile.SetCell($"F{i}", voucher.VoucherNumber);
-        if (voucher.Debit.HasValue) {
-          _excelFile.SetCell($"G{i}", voucher.Debit.Value);
-        }
-        if (voucher.Credit.HasValue) {
-          _excelFile.SetCell($"H{i}", voucher.Credit.Value);
-        }
         _excelFile.SetCell($"I{i}", voucher.CurrentBalance);
-        if (voucher.AccountingDate != ExecutionServer.DateMaxValue) {
-          _excelFile.SetCell($"J{i}", voucher.AccountingDate);
-        }
-        if (voucher.RecordingDate != ExecutionServer.DateMaxValue) {
-          _excelFile.SetCell($"K{i}", voucher.RecordingDate);
-        }
         _excelFile.SetCell($"L{i}", EmpiriaString.Clean(voucher.Concept));
         _excelFile.SetCell($"M{i}", voucher.ElaboratedBy);
 
-        if (voucher.ItemType == TrialBalanceItemType.Total) {
-          _excelFile.SetRowStyleBold(i);
-        }
+        SetCellClauses(_excelFile,voucher,i);
+
         i++;
       }
     }
 
+
+    private void SetCellClauses(ExcelFile excelFile, VouchersByAccountEntryDto voucher, int i) {
+
+      if (voucher.Debit.HasValue) {
+        _excelFile.SetCell($"G{i}", voucher.Debit.Value);
+      }
+
+      if (voucher.Credit.HasValue) {
+        _excelFile.SetCell($"H{i}", voucher.Credit.Value);
+      }
+
+      if (voucher.AccountingDate != ExecutionServer.DateMaxValue) {
+        _excelFile.SetCell($"J{i}", voucher.AccountingDate);
+      }
+
+      if (voucher.RecordingDate != ExecutionServer.DateMaxValue) {
+        _excelFile.SetCell($"K{i}", voucher.RecordingDate);
+      }
+
+      if (voucher.ItemType == TrialBalanceItemType.Total) {
+        _excelFile.SetRowStyleBold(i);
+      }
+
+    }
   } // class AccountStatementExcelExporter
 
 } // namespace Empiria.FinancialAccounting.Reporting

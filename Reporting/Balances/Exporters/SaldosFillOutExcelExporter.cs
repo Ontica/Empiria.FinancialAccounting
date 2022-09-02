@@ -74,8 +74,8 @@ namespace Empiria.FinancialAccounting.Reporting {
 
         _excelFile.SetCell($"C{i}", entry.CurrencyCode);
 
-        SetByItemTypeAndRowStyle(_excelFile, entry, i);
-        SetRowConditionsForSaldosPorCuenta(_excelFile,entry, withSubledgerAccounts, i);
+        SetCellByItemTypeAndRowStyle(_excelFile, entry, i);
+        SetCellClausesForSaldosPorCuenta(_excelFile,entry, withSubledgerAccounts, i);
         
         _excelFile.SetCell($"G{i}", entry.SectorCode);
         _excelFile.SetCell($"J{i}", (decimal) entry.CurrentBalance);
@@ -93,24 +93,17 @@ namespace Empiria.FinancialAccounting.Reporting {
         i++;
       }
 
-      if (!_query.WithAverageBalance) {
-        _excelFile.RemoveColumn("L");
-      }
-      if (!withSubledgerAccounts) {
-        _excelFile.RemoveColumn("I");
-        _excelFile.RemoveColumn("H");
-      }
-      if (!_query.ShowCascadeBalances) {
-        _excelFile.RemoveColumn("B");
-      }
+      SetColumnClausesForSaldosPorCuenta(_excelFile, withSubledgerAccounts);
+      
     }
+
 
     #endregion Public methods
 
     #region Private methods
 
 
-    private void SetByItemTypeAndRowStyle(ExcelFile _excelFile, SaldosPorCuentaEntryDto entry, int i) {
+    private void SetCellByItemTypeAndRowStyle(ExcelFile _excelFile, SaldosPorCuentaEntryDto entry, int i) {
 
       if (entry.ItemType == TrialBalanceItemType.Entry) {
 
@@ -125,6 +118,43 @@ namespace Empiria.FinancialAccounting.Reporting {
       if (entry.ItemType != TrialBalanceItemType.Entry &&
           entry.ItemType != TrialBalanceItemType.Summary) {
         _excelFile.SetRowStyleBold(i);
+      }
+
+    }
+
+
+    private void SetCellClausesForSaldosPorCuenta(
+      ExcelFile _excelFile, SaldosPorCuentaEntryDto entry, bool withSubledgerAccounts, int i) {
+
+      var account = StandardAccount.Parse(entry.StandardAccountId);
+      var subledgerAccount = SubledgerAccount.Parse(entry.SubledgerAccountId);
+
+      if (!account.IsEmptyInstance) {
+        _excelFile.SetCell($"E{i}", account.Number);
+        _excelFile.SetCell($"F{i}", account.Name);
+      } else {
+        _excelFile.SetCell($"E{i}", entry.AccountNumber);
+        _excelFile.SetCell($"F{i}", entry.AccountName);
+      }
+
+      if (withSubledgerAccounts && !subledgerAccount.IsEmptyInstance) {
+        _excelFile.SetCell($"H{i}", subledgerAccount.Number);
+        _excelFile.SetCell($"I{i}", subledgerAccount.Name);
+      }
+    }
+
+
+    private void SetColumnClausesForSaldosPorCuenta(ExcelFile _excelFile, bool withSubledgerAccounts) {
+
+      if (!_query.WithAverageBalance) {
+        _excelFile.RemoveColumn("L");
+      }
+      if (!withSubledgerAccounts) {
+        _excelFile.RemoveColumn("I");
+        _excelFile.RemoveColumn("H");
+      }
+      if (!_query.ShowCascadeBalances) {
+        _excelFile.RemoveColumn("B");
       }
 
     }
@@ -184,27 +214,6 @@ namespace Empiria.FinancialAccounting.Reporting {
       if (entry.LastChangeDate != ExecutionServer.DateMaxValue &&
             entry.LastChangeDate >= MIN_LAST_CHANGE_DATE_TO_REPORT) {
         _excelFile.SetCell($"K{i}", entry.LastChangeDate.ToString("dd/MMM/yyyy"));
-      }
-    }
-
-
-    private void SetRowConditionsForSaldosPorCuenta(
-      ExcelFile _excelFile, SaldosPorCuentaEntryDto entry, bool withSubledgerAccounts, int i) {
-
-      var account = StandardAccount.Parse(entry.StandardAccountId);
-      var subledgerAccount = SubledgerAccount.Parse(entry.SubledgerAccountId);
-
-      if (!account.IsEmptyInstance) {
-        _excelFile.SetCell($"E{i}", account.Number);
-        _excelFile.SetCell($"F{i}", account.Name);
-      } else {
-        _excelFile.SetCell($"E{i}", entry.AccountNumber);
-        _excelFile.SetCell($"F{i}", entry.AccountName);
-      }
-
-      if (withSubledgerAccounts && !subledgerAccount.IsEmptyInstance) {
-        _excelFile.SetCell($"H{i}", subledgerAccount.Number);
-        _excelFile.SetCell($"I{i}", subledgerAccount.Name);
       }
     }
 

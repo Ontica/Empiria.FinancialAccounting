@@ -53,9 +53,9 @@ namespace Empiria.FinancialAccounting.Reporting.Exporters.Excel {
       foreach (var account in accountsChart.Accounts) {
         excelFile.SetCell($"C{i}", account.Number);
         excelFile.SetCell($"D{i}", account.Name);
-        if (account.LastLevel) {
-          excelFile.SetCell($"E{i}", "*");
-        }
+
+        SetRowClauses(excelFile, account, hasEndDateData, i);
+
         excelFile.SetCell($"F{i}", account.Sector);
         excelFile.SetCell($"G{i}", account.Role.ToString());
         excelFile.SetCell($"H{i}", account.UsesSector ? "Sí": "No");
@@ -63,17 +63,8 @@ namespace Empiria.FinancialAccounting.Reporting.Exporters.Excel {
         excelFile.SetCell($"J{i}", account.Type.Name);
         excelFile.SetCell($"K{i}", account.DebtorCreditor.ToString());
         excelFile.SetCell($"L{i}", account.StartDate);
-
-        if (account.EndDate < Account.MAX_END_DATE) {
-          excelFile.SetCell($"M{i}", account.EndDate);
-          hasEndDateData = true;
-        }
-
-        if (account.SummaryWithNotChildren) {
-          excelFile.SetCellStyleLineThrough($"D{i}");
-          excelFile.SetCell($"N{i}", "Sumaria sin hijas");
-        }
-
+        
+        
         i++;
       }
 
@@ -83,6 +74,26 @@ namespace Empiria.FinancialAccounting.Reporting.Exporters.Excel {
       if (!hasEndDateData) {
         excelFile.RemoveColumn("M");
       }
+    }
+
+
+    private void SetRowClauses(ExcelFile excelFile, AccountDescriptorDto account,
+                               bool hasEndDateData, int i) {
+
+      if (account.LastLevel) {
+        excelFile.SetCell($"E{i}", "*");
+      }
+
+      if (account.EndDate < Account.MAX_END_DATE) {
+        excelFile.SetCell($"M{i}", account.EndDate);
+        hasEndDateData = true;
+      }
+
+      if (account.SummaryWithNotChildren) {
+        excelFile.SetCellStyleLineThrough($"D{i}");
+        excelFile.SetCell($"N{i}", "Sumaria sin hijas");
+      }
+
     }
 
     #endregion Private methods

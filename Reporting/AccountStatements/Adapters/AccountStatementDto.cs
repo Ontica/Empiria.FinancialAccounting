@@ -74,7 +74,7 @@ namespace Empiria.FinancialAccounting.Reporting.Adapters {
 
     public string CurrencyCode {
       get; internal set;
-    }
+    } = string.Empty;
 
 
     public int StandardAccountId {
@@ -99,7 +99,7 @@ namespace Empiria.FinancialAccounting.Reporting.Adapters {
 
     public string SectorCode {
       get; internal set;
-    }
+    } = string.Empty;
 
 
     public decimal? Debit {
