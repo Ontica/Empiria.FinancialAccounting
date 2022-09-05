@@ -69,9 +69,10 @@ namespace Empiria.FinancialAccounting.Vouchers.UseCases {
     public FixedList<VoucherSpecialCaseTypeDto> GetSpecialCaseTypes() {
       FixedList<VoucherSpecialCaseType> list = VoucherSpecialCaseType.GetList();
 
+      list = base.RestrictUserDataAccessTo(list);
+
       return VoucherSpecialCaseTypeMapper.Map(list);
     }
-
 
     #endregion Use cases
 
