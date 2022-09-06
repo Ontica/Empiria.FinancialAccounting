@@ -12,6 +12,7 @@ using System;
 using Empiria.Services;
 
 using Empiria.FinancialAccounting.FinancialConcepts.Adapters;
+using System.Collections.Generic;
 
 namespace Empiria.FinancialAccounting.FinancialConcepts.UseCases {
 
@@ -44,6 +45,8 @@ namespace Empiria.FinancialAccounting.FinancialConcepts.UseCases {
 
     public FixedList<FinancialConceptsGroupDto> GetFinancialConceptsGroups() {
       FixedList<FinancialConceptGroup> groups = FinancialConceptGroup.GetList();
+
+      groups = base.RestrictUserDataAccessTo(groups);
 
       return FinancialConceptMapper.Map(groups);
     }
