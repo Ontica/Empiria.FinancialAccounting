@@ -15,7 +15,6 @@ namespace Empiria.FinancialAccounting.Reporting {
 
   public interface IVouchersByAccountEntry {
 
-
   }
 
   /// <summary>Represents an entry for vouchers by account.</summary>

@@ -68,25 +68,31 @@ namespace Empiria.FinancialAccounting.Reporting {
         excelFile.SetCell($"G{i}", voucher.VoucherNumber);
         excelFile.SetCell($"H{i}", (decimal) voucher.Debit);
         excelFile.SetCell($"I{i}", (decimal) voucher.Credit);
-        if (voucher.ItemType == TrialBalanceItemType.Entry) {
-          excelFile.SetCell($"J{i}", voucher.AccountingDate);
-          excelFile.SetCell($"K{i}", voucher.RecordingDate);
-        }
+
+        SetCellByItemTypeAndRowStyle(excelFile, voucher, i);
 
         excelFile.SetCell($"L{i}", EmpiriaString.Clean(voucher.Concept));
         excelFile.SetCell($"M{i}", voucher.AuthorizedBy);
         excelFile.SetCell($"N{i}", voucher.ElaboratedBy);
-
-
-        if (voucher.ItemType != TrialBalanceItemType.Entry) {
-          excelFile.SetRowStyleBold(i);
-        }
 
         i++;
       }
       if (!_reportData.Query.WithSubledgerAccount) {
         excelFile.RemoveColumn("F");
       }
+    }
+
+    private void SetCellByItemTypeAndRowStyle(ExcelFile excelFile, VoucherByAccountEntry voucher, int i) {
+
+      if (voucher.ItemType == TrialBalanceItemType.Entry) {
+        excelFile.SetCell($"J{i}", voucher.AccountingDate);
+        excelFile.SetCell($"K{i}", voucher.RecordingDate);
+      }
+
+      if (voucher.ItemType != TrialBalanceItemType.Entry) {
+        excelFile.SetRowStyleBold(i);
+      }
+
     }
 
 

@@ -135,6 +135,37 @@ namespace Empiria.FinancialAccounting.Reporting {
       decimal flagBalance = initialBalance.CurrentBalance;
       decimal totalDebit = 0, totalCredit = 0;
 
+      SumTotalByDebitCredit(returnedVouchers, flagBalance, totalDebit,totalCredit);
+
+      AccountStatementEntry currentBalance = AccountStatementEntry.SetTotalAccountBalance(
+                                                    _buildQuery.Entry.CurrentBalanceForBalances);
+
+      if (currentBalance != null) {
+        currentBalance.Debit = totalDebit;
+        currentBalance.Credit = totalCredit;
+        currentBalance.IsCurrentBalance = true;
+        returnedVouchers.Add(currentBalance);
+      }
+
+      return returnedVouchers.ToFixedList();
+    }
+
+    
+    internal FixedList<AccountStatementEntry> GetVoucherEntries() {
+      var builder = new AccountStatementSqlClausesBuilder(_buildQuery);
+
+      var sqlClauses = builder.BuildSqlClauses();
+
+      return AccountStatementDataService.GetVouchersWithAccounts(sqlClauses);
+    }
+
+    #endregion Public methods
+
+    #region Private methods
+
+    private void SumTotalByDebitCredit(List<AccountStatementEntry> returnedVouchers,
+                        decimal flagBalance, decimal totalDebit, decimal totalCredit) {
+
       foreach (var voucher in returnedVouchers) {
         if (voucher.DebtorCreditor == "D") {
           voucher.CurrentBalance = flagBalance + (voucher.Debit - voucher.Credit);
@@ -150,29 +181,9 @@ namespace Empiria.FinancialAccounting.Reporting {
         totalCredit += voucher.Credit;
       }
 
-      AccountStatementEntry currentBalance = AccountStatementEntry.SetTotalAccountBalance(
-                                                    _buildQuery.Entry.CurrentBalanceForBalances);
-
-      if (currentBalance != null) {
-        currentBalance.Debit = totalDebit;
-        currentBalance.Credit = totalCredit;
-        currentBalance.IsCurrentBalance = true;
-        returnedVouchers.Add(currentBalance);
-      }
-
-      return returnedVouchers.ToFixedList();
     }
 
-
-    internal FixedList<AccountStatementEntry> GetVoucherEntries() {
-      var builder = new AccountStatementSqlClausesBuilder(_buildQuery);
-
-      var sqlClauses = builder.BuildSqlClauses();
-
-      return AccountStatementDataService.GetVouchersWithAccounts(sqlClauses);
-    }
-
-    #endregion Public methods
+    #endregion Private methods
 
   } // class AccountStatementHelper
 

@@ -78,25 +78,13 @@ namespace Empiria.FinancialAccounting.Reporting.Builders {
     static private PolizaReturnedEntry MapToPolizaEntry(PolizasEntryDto voucher) {
       var polizaEntry = new PolizaReturnedEntry();
 
-      polizaEntry.LedgerName = voucher.ItemType == ItemType.Group ||
-                                  voucher.ItemType == ItemType.Total ? "" :
-                                  voucher.LedgerName;
-
-      polizaEntry.VoucherNumber = voucher.ItemType == ItemType.Group ||
-                                  voucher.ItemType == ItemType.Total ? "" :
-                                  voucher.VoucherNumber;
-
-      polizaEntry.AccountingDate = voucher.ItemType == ItemType.Group ||
-                                   voucher.ItemType == ItemType.Total ? "" :
-                                   voucher.AccountingDate.ToString("dd/MM/yyyy");
-
-      polizaEntry.RecordingDate = voucher.ItemType == ItemType.Group ||
-                                  voucher.ItemType == ItemType.Total ? "" :
-                                  voucher.RecordingDate.ToString("dd/MM/yyyy");
-
-      polizaEntry.ElaboratedBy = voucher.ItemType == ItemType.Group ||
-                                 voucher.ItemType == ItemType.Total ? "" :
-                                 voucher.ElaboratedBy;
+      if (voucher.ItemType != ItemType.Group && voucher.ItemType != ItemType.Total) {
+        polizaEntry.LedgerName = voucher.LedgerName;
+        polizaEntry.VoucherNumber = voucher.VoucherNumber;
+        polizaEntry.AccountingDate = voucher.AccountingDate.ToString("dd/MM/yyyy");
+        polizaEntry.RecordingDate = voucher.RecordingDate.ToString("dd/MM/yyyy");
+        polizaEntry.ElaboratedBy = voucher.ElaboratedBy;
+      }
 
       if (voucher.ItemType == ItemType.Group) {
         polizaEntry.Concept = $"POLIZAS POR CONTABILIDAD: {voucher.VouchersByLedger}";

@@ -28,7 +28,7 @@ namespace Empiria.FinancialAccounting.Reporting {
     }
 
 
-    #endregion
+    #endregion Public methods
 
     #region Private methods
 
@@ -93,41 +93,53 @@ namespace Empiria.FinancialAccounting.Reporting {
     }
 
 
-    static private VoucherByAccountEntry MapToVoucherEntry(AccountStatementEntry voucher) {
-      var voucherEntry = new VoucherByAccountEntry {
-        LedgerUID = voucher.Ledger.UID,
-        LedgerNumber = voucher.ItemType == TrialBalanceItemType.Entry ?
-                       voucher.Ledger.Number : "",
-        LedgerName = voucher.ItemType == TrialBalanceItemType.Entry ?
-                     voucher.Ledger.Name : "",
-        CurrencyCode = voucher.Currency.Code,
-        AccountNumber = voucher.ItemType == TrialBalanceItemType.Entry ?
-                        voucher.AccountNumber : voucher.AccountName,
-        AccountName = voucher.AccountName,
-        SubledgerAccountNumber = voucher.SubledgerAccountNumber != "0" &&
-                                 voucher.SubledgerAccountNumber != null ?
-                                 voucher.SubledgerAccountNumber : "",
-        SectorCode = voucher.ItemType == TrialBalanceItemType.Entry ?
-                     voucher.Sector.Code : "",
-        Debit = voucher.Debit,
-        Credit = voucher.Credit,
-        VoucherNumber = voucher.ItemType == TrialBalanceItemType.Entry ?
-                        voucher.VoucherNumber : "",
-        ElaboratedBy = voucher.ElaboratedBy.Name,
-        AuthorizedBy = voucher.AuthorizedBy.Name,
-        Concept = voucher.ItemType == TrialBalanceItemType.Entry ? voucher.Concept : "",
-        AccountingDate = voucher.ItemType == TrialBalanceItemType.Entry ?
-                         voucher.AccountingDate : ExecutionServer.DateMaxValue,
+    static private VoucherByAccountEntry MapToVoucherEntry(AccountStatementEntry entry) {
+      var returnedVoucher = new VoucherByAccountEntry();
 
-        RecordingDate = voucher.ItemType == TrialBalanceItemType.Entry ?
-                        voucher.RecordingDate : ExecutionServer.DateMaxValue,
-        ItemType = voucher.ItemType
-      };
+      ItemTypeClausesForVoucher(returnedVoucher, entry);
+      
+      returnedVoucher.LedgerUID = entry.Ledger.UID;
+      returnedVoucher.CurrencyCode = entry.Currency.Code;
+      returnedVoucher.AccountName = entry.AccountName;
 
-      return voucherEntry;
+      if (entry.SubledgerAccountNumber != "0" && entry.SubledgerAccountNumber != null) {
+        returnedVoucher.SubledgerAccountNumber = entry.SubledgerAccountNumber;
+      }
+      
+      returnedVoucher.Debit = entry.Debit;
+      returnedVoucher.Credit = entry.Credit;
+      returnedVoucher.ElaboratedBy = entry.ElaboratedBy.Name;
+      returnedVoucher.AuthorizedBy = entry.AuthorizedBy.Name;
+      returnedVoucher.ItemType = entry.ItemType;
+
+      return returnedVoucher;
     }
 
-    #endregion
+
+    private static void ItemTypeClausesForVoucher(VoucherByAccountEntry returnedVoucher,
+                                                  AccountStatementEntry entry) {
+
+      if (entry.ItemType == TrialBalanceItemType.Entry) {
+        returnedVoucher.LedgerNumber = entry.Ledger.Number;
+        returnedVoucher.LedgerName = entry.Ledger.Name;
+        returnedVoucher.AccountNumber = entry.AccountNumber;
+        returnedVoucher.SectorCode = entry.Sector.Code;
+        returnedVoucher.VoucherNumber = entry.VoucherNumber;
+        returnedVoucher.Concept = entry.Concept;
+        returnedVoucher.AccountingDate = entry.AccountingDate;
+        returnedVoucher.RecordingDate = entry.RecordingDate;
+      } else {
+        returnedVoucher.AccountNumber = entry.AccountName;
+        returnedVoucher.AccountingDate = ExecutionServer.DateMaxValue;
+        returnedVoucher.RecordingDate = ExecutionServer.DateMaxValue;
+      }
+
+    }
+
+
+
+
+    #endregion Private methods
 
   } // class ListadoPolizasPorCuenta
 
@@ -148,11 +160,12 @@ namespace Empiria.FinancialAccounting.Reporting {
 
     public string LedgerNumber {
       get; internal set;
-    }
+    } = string.Empty;
+
 
     public string LedgerName {
       get; internal set;
-    }
+    } = string.Empty;
 
     public string CurrencyCode {
       get; internal set;
@@ -176,7 +189,7 @@ namespace Empiria.FinancialAccounting.Reporting {
 
     public string SectorCode {
       get; internal set;
-    }
+    } = string.Empty;
 
     public decimal? Debit {
       get; internal set;
@@ -192,7 +205,7 @@ namespace Empiria.FinancialAccounting.Reporting {
 
     public string VoucherNumber {
       get; internal set;
-    }
+    } = string.Empty;
 
     public string ElaboratedBy {
       get; internal set;
@@ -205,11 +218,11 @@ namespace Empiria.FinancialAccounting.Reporting {
 
     public string Concept {
       get; internal set;
-    }
+    } = string.Empty;
 
     public string SubledgerAccountNumber {
       get; internal set;
-    }
+    } = string.Empty;
 
     public DateTime AccountingDate {
       get; internal set;

@@ -20,23 +20,23 @@ namespace Empiria.FinancialAccounting.Reporting.Builders {
 
     public string LedgerName {
       get; internal set;
-    }
+    } = string.Empty;
 
 
     public string VoucherNumber {
       get;
       internal set;
-    }
+    } = string.Empty;
 
 
     public string AccountingDate {
       get; internal set;
-    }
+    } = string.Empty;
 
 
     public string RecordingDate {
       get; internal set;
-    }
+    } = string.Empty;
 
 
     public string ElaboratedBy {
