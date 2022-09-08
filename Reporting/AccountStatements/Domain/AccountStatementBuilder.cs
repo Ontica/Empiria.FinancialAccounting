@@ -51,6 +51,10 @@ namespace Empiria.FinancialAccounting.Reporting {
       
       FixedList<AccountStatementEntry> voucherEntries = helper.GetVoucherEntries();
 
+      if (voucherEntries.Count == 0) {
+        return new AccountStatement(_buildQuery.BalancesQuery, new FixedList<IVouchersByAccountEntry>(), "");
+      }
+
       FixedList<AccountStatementEntry> orderingVouchers = helper.GetOrderingVouchers(voucherEntries);
 
       AccountStatementEntry initialBalance = helper.GetInitialBalance(orderingVouchers);

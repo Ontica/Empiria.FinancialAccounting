@@ -84,7 +84,7 @@ namespace Empiria.FinancialAccounting.Reporting.Adapters {
 
     public string AccountNumber {
       get; internal set;
-    }
+    } = string.Empty;
 
 
     public string AccountNumberForBalances {
@@ -133,7 +133,7 @@ namespace Empiria.FinancialAccounting.Reporting.Adapters {
     public string Concept {
       get;
       internal set;
-    }
+    } = string.Empty;
 
 
     public string SubledgerAccountNumber {

@@ -66,6 +66,8 @@ namespace Empiria.FinancialAccounting.Reporting.Adapters {
 
       var dto = new VouchersByAccountEntryDto();
 
+      ItemTypeClausesForDto(dto, entry);
+
       dto.ItemType = entry.ItemType;
       dto.LedgerUID = entry.Ledger.UID != "Empty" ? entry.Ledger.UID : "";
       dto.LedgerName = entry.Ledger.Name;
@@ -80,8 +82,6 @@ namespace Empiria.FinancialAccounting.Reporting.Adapters {
       dto.Concept = EmpiriaString.Clean(entry.Concept);
       dto.CurrentBalance = entry.CurrentBalance;
       dto.VoucherId = entry.VoucherId;
-
-      ItemTypeClausesForDto(dto, entry);
 
       return dto;
     }
