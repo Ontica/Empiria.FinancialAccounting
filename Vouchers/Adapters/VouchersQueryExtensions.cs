@@ -136,6 +136,22 @@ namespace Empiria.FinancialAccounting.Vouchers.Adapters {
     }
 
 
+    static private string BuildMyInboxFilter() {
+      string baseFilter = $"ESTA_ABIERTA <> 0 AND " +
+                          $"(ID_ELABORADA_POR = {ExecutionServer.CurrentUserId} OR " +
+                          $"ID_AUTORIZADA_POR = {ExecutionServer.CurrentUserId} " +
+                           "{{WORKGROUP.CONDITION}})";
+
+      string workgroupCondition = BuildWorkgroupConditionFilter();
+
+      if (workgroupCondition.Length == 0) {
+        return baseFilter.Replace("{{WORKGROUP.CONDITION}}", string.Empty);
+      } else {
+        return baseFilter.Replace("{{WORKGROUP.CONDITION}}", $" OR ({workgroupCondition})");
+      }
+    }
+
+
     static private string BuildNumberFilter(string number) {
       return SearchExpression.ParseLike("NUMERO_TRANSACCION", number.ToUpperInvariant());
     }
@@ -156,9 +172,7 @@ namespace Empiria.FinancialAccounting.Vouchers.Adapters {
           return $"ESTA_ABIERTA <> 0";
 
         case VoucherStage.MyInbox:
-          return $"ESTA_ABIERTA <> 0 AND " +
-                 $"(ID_ELABORADA_POR = {ExecutionServer.CurrentUserId} OR" +
-                 $" ID_AUTORIZADA_POR = {ExecutionServer.CurrentUserId})";
+          return BuildMyInboxFilter();
 
         default:
           throw Assertion.EnsureNoReachThisCode();
@@ -211,6 +225,21 @@ namespace Empiria.FinancialAccounting.Vouchers.Adapters {
       var vocherType = VoucherType.Parse(query.VoucherTypeUID);
 
       return $"ID_TIPO_POLIZA = {vocherType.Id}";
+    }
+
+
+    static private string BuildWorkgroupConditionFilter() {
+      var currentUser = Participant.Parse(ExecutionServer.CurrentUserId);
+
+      FixedList<VoucherWorkgroup> userWorkgroups = VoucherWorkgroup.GetListFor(currentUser);
+
+      var filter = new Filter();
+
+      foreach (VoucherWorkgroup workgroup in userWorkgroups) {
+        filter.AppendOr(workgroup.VouchersCondition);
+      }
+
+      return filter.ToString();
     }
 
     #endregion Private methods
