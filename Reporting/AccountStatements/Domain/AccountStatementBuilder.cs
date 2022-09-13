@@ -12,7 +12,7 @@ using System;
 using Empiria.FinancialAccounting.BalanceEngine;
 using Empiria.FinancialAccounting.Reporting.Adapters;
 
-namespace Empiria.FinancialAccounting.Reporting {
+namespace Empiria.FinancialAccounting.Reporting.AccountStatements {
 
   /// <summary>Provides the services that is used to generate account statements (estados de cuenta).</summary>
   internal class AccountStatementBuilder {

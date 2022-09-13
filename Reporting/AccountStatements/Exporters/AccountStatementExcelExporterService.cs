@@ -11,7 +11,7 @@ using System;
 
 using Empiria.FinancialAccounting.Reporting.Adapters;
 
-namespace Empiria.FinancialAccounting.Reporting {
+namespace Empiria.FinancialAccounting.Reporting.AccountStatements {
 
   /// <summary>Main service to export account statement information to Microsoft Excel.</summary>
   public class AccountStatementExcelExporterService {

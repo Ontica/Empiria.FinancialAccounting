@@ -15,7 +15,7 @@ using Empiria.FinancialAccounting.BalanceEngine;
 using Empiria.FinancialAccounting.Reporting.Adapters;
 using Empiria.FinancialAccounting.Reporting.Data;
 
-namespace Empiria.FinancialAccounting.Reporting {
+namespace Empiria.FinancialAccounting.Reporting.AccountStatements {
 
   /// <summary>Provides helper methods to build acount statements.</summary>
   internal class AccountStatementHelper {

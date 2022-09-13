@@ -12,7 +12,7 @@ using System.Collections.Generic;
 
 using Empiria.FinancialAccounting.BalanceEngine;
 
-namespace Empiria.FinancialAccounting.Reporting.Adapters {
+namespace Empiria.FinancialAccounting.Reporting.AccountStatements {
 
   /// <summary>Mapping methods for account statements (estados de cuenta).</summary>
   static internal class AccountStatementMapper {
@@ -56,13 +56,13 @@ namespace Empiria.FinancialAccounting.Reporting.Adapters {
     private static FixedList<IVouchersByAccountEntryDto> MapToDto (
                     FixedList<IVouchersByAccountEntry> list) {
 
-      var mapped = list.Select((x) => MapToVouchersByAccount((Reporting.AccountStatementEntry) x));
+      var mapped = list.Select((x) => MapToVouchersByAccount((AccountStatementEntry) x));
 
       return new FixedList<IVouchersByAccountEntryDto>(mapped);
     }
 
     static private VouchersByAccountEntryDto MapToVouchersByAccount(
-                                              Reporting.AccountStatementEntry entry) {
+                                              AccountStatementEntry entry) {
 
       var dto = new VouchersByAccountEntryDto();
 
@@ -87,7 +87,7 @@ namespace Empiria.FinancialAccounting.Reporting.Adapters {
     }
 
     private static void ItemTypeClausesForDto(VouchersByAccountEntryDto dto,
-                                             Reporting.AccountStatementEntry entry) {
+                                             AccountStatementEntry entry) {
 
       if (entry.ItemType == TrialBalanceItemType.Entry) {
         dto.AccountNumber = entry.AccountNumber;

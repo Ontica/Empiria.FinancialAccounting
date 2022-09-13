@@ -15,7 +15,7 @@ using Empiria.Security;
 
 using Empiria.FinancialAccounting.Reporting.Adapters;
 
-namespace Empiria.FinancialAccounting.Reporting {
+namespace Empiria.FinancialAccounting.Reporting.AccountStatements {
 
   /// <summary>Provides a cache of account statements.</summary>
   static internal class AccountStatementCache {

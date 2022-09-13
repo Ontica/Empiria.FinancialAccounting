@@ -11,7 +11,7 @@ using System;
 
 using Empiria.FinancialAccounting.BalanceEngine.BalanceExplorer.Adapters;
 
-namespace Empiria.FinancialAccounting.Reporting {
+namespace Empiria.FinancialAccounting.Reporting.AccountStatements {
 
   /// <summary>Represents an account statement.</summary>
   public class AccountStatement {

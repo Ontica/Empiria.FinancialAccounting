@@ -14,7 +14,7 @@ using Empiria.WebApi;
 
 using Empiria.FinancialAccounting.Reporting;
 using Empiria.FinancialAccounting.Reporting.Adapters;
-using Empiria.FinancialAccounting.Reporting.UseCases;
+using Empiria.FinancialAccounting.Reporting.AccountStatements;
 
 namespace Empiria.FinancialAccounting.WebApi.Reporting {
 

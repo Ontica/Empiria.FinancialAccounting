@@ -11,7 +11,7 @@ using System;
 using Empiria.FinancialAccounting.BalanceEngine;
 using Empiria.FinancialAccounting.BalanceEngine.BalanceExplorer.Adapters;
 
-namespace Empiria.FinancialAccounting.Reporting.Adapters {
+namespace Empiria.FinancialAccounting.Reporting.AccountStatements {
 
 
   public interface IVouchersByAccountEntryDto {

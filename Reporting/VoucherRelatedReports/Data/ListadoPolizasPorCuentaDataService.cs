@@ -10,8 +10,9 @@
 using System;
 
 using Empiria.Data;
+using Empiria.FinancialAccounting.Reporting.Data;
 
-namespace Empiria.FinancialAccounting.Reporting.Data {
+namespace Empiria.FinancialAccounting.Reporting.AccountStatements {
 
   /// <summary>Provides data read methods for voucher list by account.</summary>
   static class ListadoPolizasPorCuentaDataService {

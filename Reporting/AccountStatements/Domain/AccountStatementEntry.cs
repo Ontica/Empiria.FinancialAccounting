@@ -11,7 +11,7 @@ using System;
 
 using Empiria.FinancialAccounting.BalanceEngine;
 
-namespace Empiria.FinancialAccounting.Reporting {
+namespace Empiria.FinancialAccounting.Reporting.AccountStatements {
 
   public interface IVouchersByAccountEntry {
 

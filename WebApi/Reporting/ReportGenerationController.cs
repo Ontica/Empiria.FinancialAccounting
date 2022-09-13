@@ -13,8 +13,6 @@ using System.Web.Http;
 using Empiria.WebApi;
 
 using Empiria.FinancialAccounting.Reporting;
-using Empiria.FinancialAccounting.Reporting.Adapters;
-using Empiria.FinancialAccounting.Reporting.UseCases;
 
 namespace Empiria.FinancialAccounting.WebApi.Reporting {
 

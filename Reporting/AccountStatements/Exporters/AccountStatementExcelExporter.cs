@@ -14,7 +14,7 @@ using Empiria.FinancialAccounting.BalanceEngine;
 using Empiria.FinancialAccounting.BalanceEngine.BalanceExplorer.Adapters;
 using Empiria.FinancialAccounting.Reporting.Adapters;
 
-namespace Empiria.FinancialAccounting.Reporting {
+namespace Empiria.FinancialAccounting.Reporting.AccountStatements {
 
   /// <summary>Creates a Microsoft Excel file with an account statement.</summary>
   internal class AccountStatementExcelExporter {

@@ -11,7 +11,7 @@ using System;
 
 using Empiria.Data;
 
-namespace Empiria.FinancialAccounting.Reporting.Data {
+namespace Empiria.FinancialAccounting.Reporting.AccountStatements {
 
   /// <summary>Data services that gets information used to build account statements. </summary>
   static internal class AccountStatementDataService {

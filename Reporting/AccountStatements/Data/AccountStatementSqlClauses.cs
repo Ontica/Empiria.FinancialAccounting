@@ -9,7 +9,7 @@
 ************************* Copyright(c) La Vía Óntica SC, Ontica LLC and contributors. All rights reserved. **/
 using System;
 
-namespace Empiria.FinancialAccounting.Reporting.Data {
+namespace Empiria.FinancialAccounting.Reporting.AccountStatements {
 
   /// <summary>Contains data used to seek accounts statements information through Sql commands.</summary>
   internal class AccountStatementSqlClauses {

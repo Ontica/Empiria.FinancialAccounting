@@ -11,6 +11,7 @@ using System;
 using System.Collections.Generic;
 
 using Empiria.FinancialAccounting.BalanceEngine;
+using Empiria.FinancialAccounting.Reporting.AccountStatements;
 
 namespace Empiria.FinancialAccounting.Reporting {
 

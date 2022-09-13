@@ -15,6 +15,7 @@ using Empiria.Collections;
 
 using Empiria.FinancialAccounting.BalanceEngine;
 using Empiria.FinancialAccounting.Reporting.Data;
+using Empiria.FinancialAccounting.Reporting.AccountStatements;
 
 namespace Empiria.FinancialAccounting.Reporting {
 

@@ -13,7 +13,7 @@ using System.Linq;
 using Empiria.FinancialAccounting.BalanceEngine;
 using Empiria.FinancialAccounting.Reporting.Adapters;
 
-namespace Empiria.FinancialAccounting.Reporting.Data {
+namespace Empiria.FinancialAccounting.Reporting.AccountStatements {
 
   /// <summary>Type extension methods for AccountStatementQueryExtensions.</summary>
   internal class AccountStatementSqlClausesBuilder {

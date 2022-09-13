@@ -13,7 +13,7 @@ using Empiria.Services;
 
 using Empiria.FinancialAccounting.Reporting.Adapters;
 
-namespace Empiria.FinancialAccounting.Reporting.UseCases {
+namespace Empiria.FinancialAccounting.Reporting.AccountStatements {
 
   /// <summary>Use cases used to build vouchers by account.</summary>
   public class AccountStatementUseCases : UseCase {
