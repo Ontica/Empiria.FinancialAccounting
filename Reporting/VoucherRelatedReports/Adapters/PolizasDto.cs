@@ -8,10 +8,10 @@
 *                                                                                                            *
 ************************* Copyright(c) La Vía Óntica SC, Ontica LLC and contributors. All rights reserved. **/
 using System;
-
+using Empiria.FinancialAccounting.Reporting.VoucherRelatedReports.Domain;
 using Newtonsoft.Json;
 
-namespace Empiria.FinancialAccounting.Reporting.Adapters {
+namespace Empiria.FinancialAccounting.Reporting.VoucherRelatedReports.Adapters {
 
   public interface IPolizasDto {
 
@@ -101,4 +101,4 @@ namespace Empiria.FinancialAccounting.Reporting.Adapters {
 
   } // class PolizasEntryDto
 
-} // namespace Empiria.FinancialAccounting.Reporting.Adapters
+} // namespace Empiria.FinancialAccounting.Reporting.VoucherRelatedReports.Adapters

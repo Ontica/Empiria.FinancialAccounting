@@ -12,7 +12,7 @@ using System.Collections.Generic;
 using Empiria.FinancialAccounting.BalanceEngine;
 using Empiria.FinancialAccounting.BalanceEngine.Adapters;
 
-namespace Empiria.FinancialAccounting.Reporting {
+namespace Empiria.FinancialAccounting.Reporting.Balances {
 
   /// <summary>Utility methods to fill out table info for a 
   /// Microsoft Excel file with balances information.</summary>
@@ -90,4 +90,4 @@ namespace Empiria.FinancialAccounting.Reporting {
 
   } // class UtilityToFillOutExcelExporter
 
-} // namespace Empiria.FinancialAccounting.Reporting
+} // namespace Empiria.FinancialAccounting.Reporting.Balances

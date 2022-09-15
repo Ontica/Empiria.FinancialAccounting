@@ -10,6 +10,7 @@
 using System;
 
 using Empiria.Data;
+using Empiria.FinancialAccounting.Reporting.AccountStatements.Domain;
 
 namespace Empiria.FinancialAccounting.Reporting.AccountStatements {
 
@@ -31,4 +32,4 @@ namespace Empiria.FinancialAccounting.Reporting.AccountStatements {
 
   } // class AccountStatementDataService
 
-} // namespace Empiria.FinancialAccounting.BalanceEngine.Data
+} // namespace Empiria.FinancialAccounting.Reporting.AccountStatements

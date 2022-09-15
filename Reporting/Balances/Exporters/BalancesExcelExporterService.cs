@@ -12,7 +12,7 @@ using System;
 using Empiria.FinancialAccounting.BalanceEngine.Adapters;
 using Empiria.FinancialAccounting.BalanceEngine.BalanceExplorer.Adapters;
 
-namespace Empiria.FinancialAccounting.Reporting {
+namespace Empiria.FinancialAccounting.Reporting.Balances {
 
   /// <summary>Main service to export balances information to Microsoft Excel.</summary>
   public class BalancesExcelExporterService {
@@ -54,4 +54,4 @@ namespace Empiria.FinancialAccounting.Reporting {
 
   } // class BalancesExcelExporterService
 
-} // namespace Empiria.FinancialAccounting.Reporting
+} // namespace Empiria.FinancialAccounting.Reporting.Balances

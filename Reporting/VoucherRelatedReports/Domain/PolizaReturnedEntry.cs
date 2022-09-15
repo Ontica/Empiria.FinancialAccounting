@@ -8,7 +8,7 @@
 *                                                                                                            *
 ************************* Copyright(c) La Vía Óntica SC, Ontica LLC and contributors. All rights reserved. **/
 
-namespace Empiria.FinancialAccounting.Reporting.Builders {
+namespace Empiria.FinancialAccounting.Reporting.VoucherRelatedReports.Domain {
 
   /// <summary>Entry in 'Listado de Pólizas' report.</summary>
   public class PolizaReturnedEntry : IReportEntryDto {
@@ -41,7 +41,7 @@ namespace Empiria.FinancialAccounting.Reporting.Builders {
 
     public string ElaboratedBy {
       get; internal set;
-    }
+    } = string.Empty;
 
 
     public string Concept {
@@ -70,4 +70,4 @@ namespace Empiria.FinancialAccounting.Reporting.Builders {
 
   }  // class PolizaReturnedEntry
 
-} // namespace Empiria.FinancialAccounting.Reporting.Builders
+} // namespace Empiria.FinancialAccounting.Reporting.VoucherRelatedReports.Domain

@@ -9,10 +9,9 @@
 ************************* Copyright(c) La Vía Óntica SC, Ontica LLC and contributors. All rights reserved. **/
 using System;
 
-using Empiria.FinancialAccounting.BalanceEngine;
-using Empiria.FinancialAccounting.Reporting.Adapters;
+using Empiria.FinancialAccounting.Reporting.AccountStatements.Adapters;
 
-namespace Empiria.FinancialAccounting.Reporting.AccountStatements {
+namespace Empiria.FinancialAccounting.Reporting.AccountStatements.Domain {
 
   /// <summary>Provides the services that is used to generate account statements (estados de cuenta).</summary>
   internal class AccountStatementBuilder {
@@ -78,4 +77,4 @@ namespace Empiria.FinancialAccounting.Reporting.AccountStatements {
 
   } // class AccountStatementBuilder
 
-} // namespace Empiria.FinancialAccounting.Reporting
+} // namespace Empiria.FinancialAccounting.Reporting.AccountStatements.Domain

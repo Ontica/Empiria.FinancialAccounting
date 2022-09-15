@@ -12,9 +12,9 @@ using System.Collections.Generic;
 
 using Empiria.FinancialAccounting.BalanceEngine;
 using Empiria.FinancialAccounting.BalanceEngine.BalanceExplorer.Adapters;
-using Empiria.FinancialAccounting.Reporting.Adapters;
+using Empiria.FinancialAccounting.Reporting.AccountStatements.Adapters;
 
-namespace Empiria.FinancialAccounting.Reporting.AccountStatements {
+namespace Empiria.FinancialAccounting.Reporting.AccountStatements.Exporters {
 
   /// <summary>Creates a Microsoft Excel file with an account statement.</summary>
   internal class AccountStatementExcelExporter {
@@ -115,4 +115,4 @@ namespace Empiria.FinancialAccounting.Reporting.AccountStatements {
     }
   } // class AccountStatementExcelExporter
 
-} // namespace Empiria.FinancialAccounting.Reporting
+} // namespace Empiria.FinancialAccounting.Reporting.AccountStatements.Exporters

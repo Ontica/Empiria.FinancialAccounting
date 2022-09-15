@@ -13,7 +13,7 @@ using System.Collections.Generic;
 using Empiria.FinancialAccounting.BalanceEngine;
 using Empiria.FinancialAccounting.BalanceEngine.BalanceExplorer.Adapters;
 
-namespace Empiria.FinancialAccounting.Reporting {
+namespace Empiria.FinancialAccounting.Reporting.Balances {
 
   /// <summary>Creates a Microsoft Excel file with the results of a balance explorer query execution.</summary>
   internal class BalanceExplorerExcelExporter {
@@ -283,4 +283,4 @@ namespace Empiria.FinancialAccounting.Reporting {
 
   } // class BalanceExplorerExcelExporter
 
-} // namespace Empiria.FinancialAccounting.Reporting
+} // namespace Empiria.FinancialAccounting.Reporting.Balances

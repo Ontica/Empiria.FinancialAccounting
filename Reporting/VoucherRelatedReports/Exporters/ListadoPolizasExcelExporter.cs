@@ -10,7 +10,7 @@
 using System;
 using System.Collections.Generic;
 
-using Empiria.FinancialAccounting.Reporting.Builders;
+using Empiria.FinancialAccounting.Reporting.VoucherRelatedReports.Domain;
 
 namespace Empiria.FinancialAccounting.Reporting {
 
@@ -52,6 +52,7 @@ namespace Empiria.FinancialAccounting.Reporting {
       int i = 5;
 
       foreach (var voucher in vouchers) {
+
         excelFile.SetCell($"A{i}", voucher.LedgerName);
         excelFile.SetCell($"B{i}", voucher.VoucherNumber);
         excelFile.SetCell($"C{i}", voucher.AccountingDate);
@@ -66,6 +67,7 @@ namespace Empiria.FinancialAccounting.Reporting {
         }
 
         i++;
+
       }
     }
 

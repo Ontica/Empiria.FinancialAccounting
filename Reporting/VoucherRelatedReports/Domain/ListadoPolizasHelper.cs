@@ -13,11 +13,11 @@ using System.Linq;
 
 using Empiria.Collections;
 
-using Empiria.FinancialAccounting.Reporting.Adapters;
 using Empiria.FinancialAccounting.Reporting.Data;
-using Empiria.FinancialAccounting.Reporting.Domain;
 
-namespace Empiria.FinancialAccounting.Reporting {
+using Empiria.FinancialAccounting.Reporting.VoucherRelatedReports.Adapters;
+
+namespace Empiria.FinancialAccounting.Reporting.VoucherRelatedReports.Domain {
 
 
   public enum ItemType {
@@ -167,4 +167,4 @@ namespace Empiria.FinancialAccounting.Reporting {
 
   } // class ListadoPolizasHelper
 
-} // namespace Empiria.FinancialAccounting.Reporting
+} // namespace Empiria.FinancialAccounting.Reporting.VoucherRelatedReports.Domain

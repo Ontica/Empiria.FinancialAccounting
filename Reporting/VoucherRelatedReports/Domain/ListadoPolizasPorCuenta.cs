@@ -11,9 +11,9 @@ using System;
 using System.Collections.Generic;
 
 using Empiria.FinancialAccounting.BalanceEngine;
-using Empiria.FinancialAccounting.Reporting.AccountStatements;
+using Empiria.FinancialAccounting.Reporting.AccountStatements.Domain;
 
-namespace Empiria.FinancialAccounting.Reporting {
+namespace Empiria.FinancialAccounting.Reporting.VoucherRelatedReports.Domain {
 
   ///<summary>Listado de polizas por cuenta para reporte operativo.</summary>
   internal class ListadoPolizasPorCuenta : IReportBuilder {
@@ -236,4 +236,4 @@ namespace Empiria.FinancialAccounting.Reporting {
 
   } // class VoucherByAccountEntry
 
-} // namespace Empiria.FinancialAccounting.Reporting.Builders
+} // namespace Empiria.FinancialAccounting.Reporting.VoucherRelatedReports.Domain

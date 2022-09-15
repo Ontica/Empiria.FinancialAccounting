@@ -10,10 +10,9 @@
 using System;
 using System.Collections.Generic;
 
-using Empiria.FinancialAccounting.Reporting.Adapters;
-using Empiria.FinancialAccounting.Reporting.Domain;
+using Empiria.FinancialAccounting.Reporting.VoucherRelatedReports.Adapters;
 
-namespace Empiria.FinancialAccounting.Reporting.Builders {
+namespace Empiria.FinancialAccounting.Reporting.VoucherRelatedReports.Domain {
 
   /// <summary>Listado de Polizas para reporte operativo.</summary>
   internal class ListadoPolizas : IReportBuilder {
@@ -129,4 +128,4 @@ namespace Empiria.FinancialAccounting.Reporting.Builders {
 
   } // ListadoPolizas
 
-} // namespace Empiria.FinancialAccounting.Reporting.Builders
+} // namespace Empiria.FinancialAccounting.Reporting.VoucherRelatedReports.Domain

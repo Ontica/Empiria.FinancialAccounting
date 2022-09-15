@@ -12,7 +12,7 @@ using System.Collections.Generic;
 
 using System.Xml;
 
-using Empiria.FinancialAccounting.Reporting.Builders;
+using Empiria.FinancialAccounting.Reporting.FiscalReports.Builders;
 
 namespace Empiria.FinancialAccounting.Reporting.Exporters.Xml {
 

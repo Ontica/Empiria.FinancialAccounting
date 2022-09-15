@@ -16,8 +16,9 @@ using Empiria.Collections;
 using Empiria.FinancialAccounting.BalanceEngine;
 using Empiria.FinancialAccounting.Reporting.Data;
 using Empiria.FinancialAccounting.Reporting.AccountStatements;
+using Empiria.FinancialAccounting.Reporting.AccountStatements.Domain;
 
-namespace Empiria.FinancialAccounting.Reporting {
+namespace Empiria.FinancialAccounting.Reporting.VoucherRelatedReports.Domain {
 
   /// <summary>Helper methods to build voucher list by account information.</summary>
   internal class ListadoPolizasPorCuentaHelper {
@@ -170,4 +171,4 @@ namespace Empiria.FinancialAccounting.Reporting {
 
   } // class ListadoPolizasPorCuentaHelper
 
-} // namespace Empiria.FinancialAccounting.Reporting
+} // namespace Empiria.FinancialAccounting.Reporting.VoucherRelatedReports.Domain

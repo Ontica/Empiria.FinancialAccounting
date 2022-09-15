@@ -14,7 +14,7 @@ using Empiria.FinancialAccounting.BalanceEngine;
 using Empiria.FinancialAccounting.BalanceEngine.Adapters;
 using Empiria.FinancialAccounting.BalanceEngine.UseCases;
 
-namespace Empiria.FinancialAccounting.Reporting.Builders {
+namespace Empiria.FinancialAccounting.Reporting.FiscalReports.Builders {
 
   /// <summary>Balanza para el cálculo de impuestos.</summary>
   internal class BalanzaCalculoImpuestos : IReportBuilder {
@@ -204,4 +204,4 @@ namespace Empiria.FinancialAccounting.Reporting.Builders {
 
   }  // class BalanzaCalculoImpuestosEntry
 
-}  // namespace Empiria.FinancialAccounting.Reporting.Builders
+}  // namespace Empiria.FinancialAccounting.Reporting.FiscalReports.Builders

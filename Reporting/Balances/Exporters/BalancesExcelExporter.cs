@@ -12,7 +12,7 @@ using System;
 using Empiria.FinancialAccounting.BalanceEngine;
 using Empiria.FinancialAccounting.BalanceEngine.Adapters;
 
-namespace Empiria.FinancialAccounting.Reporting {
+namespace Empiria.FinancialAccounting.Reporting.Balances {
 
   /// <summary>Creates a Microsoft Excel file with trial balance information.</summary>
   internal class BalancesExcelExporter {
@@ -135,4 +135,4 @@ namespace Empiria.FinancialAccounting.Reporting {
 
   }  // class BalancesExcelExporter
 
-}  // namespace Empiria.FinancialAccounting.Reporting
+}  // namespace Empiria.FinancialAccounting.Reporting.Balances

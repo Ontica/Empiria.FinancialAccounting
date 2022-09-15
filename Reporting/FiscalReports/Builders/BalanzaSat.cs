@@ -14,7 +14,7 @@ using Empiria.FinancialAccounting.BalanceEngine;
 using Empiria.FinancialAccounting.BalanceEngine.Adapters;
 using Empiria.FinancialAccounting.BalanceEngine.UseCases;
 
-namespace Empiria.FinancialAccounting.Reporting.Builders {
+namespace Empiria.FinancialAccounting.Reporting.FiscalReports.Builders {
 
 
   /// <summary>Balanza para la contabilidad electrónica del SAT.</summary>
@@ -143,4 +143,4 @@ namespace Empiria.FinancialAccounting.Reporting.Builders {
 
   }  // class BalanzaSatEntry
 
-}  // namespace Empiria.FinancialAccounting.Reporting.Builders
+}  // namespace Empiria.FinancialAccounting.Reporting.FiscalReports.Builders

@@ -11,7 +11,7 @@ using System;
 using System.Linq;
 
 using Empiria.FinancialAccounting.BalanceEngine;
-using Empiria.FinancialAccounting.Reporting.Adapters;
+using Empiria.FinancialAccounting.Reporting.AccountStatements.Adapters;
 
 namespace Empiria.FinancialAccounting.Reporting.AccountStatements {
 
@@ -161,4 +161,4 @@ namespace Empiria.FinancialAccounting.Reporting.AccountStatements {
 
   } // class AccountStatementSqlClausesBuilder
 
-} // namespace Empiria.FinancialAccounting.Reporting.Adapters
+} // namespace Empiria.FinancialAccounting.Reporting.AccountStatements

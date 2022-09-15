@@ -10,7 +10,7 @@
 using System;
 using System.Linq;
 
-using Empiria.FinancialAccounting.Reporting.Adapters;
+using Empiria.FinancialAccounting.Reporting.VoucherRelatedReports.Adapters;
 
 namespace Empiria.FinancialAccounting.Reporting.Data {
 

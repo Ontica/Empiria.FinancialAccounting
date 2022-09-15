@@ -10,7 +10,7 @@
 using System;
 
 using Empiria.Data;
-using Empiria.FinancialAccounting.Reporting.Domain;
+using Empiria.FinancialAccounting.Reporting.VoucherRelatedReports.Domain;
 
 namespace Empiria.FinancialAccounting.Reporting.Data {
 

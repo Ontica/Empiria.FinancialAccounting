@@ -10,9 +10,9 @@
 using System;
 using System.Collections.Generic;
 
-using Empiria.FinancialAccounting.Reporting.Builders;
+using Empiria.FinancialAccounting.Reporting.FiscalReports.Builders;
 
-namespace Empiria.FinancialAccounting.Reporting {
+namespace Empiria.FinancialAccounting.Reporting.FiscalReports.Exporters {
 
   /// <summary>Genera los datos de la balanza de comprobación en un archivo Excel.</summary>
   internal class BalanzaSatExcelExporter : IExcelExporter {
@@ -82,4 +82,4 @@ namespace Empiria.FinancialAccounting.Reporting {
 
   } // class BalanzaSatExcelExporter
 
-} // Empiria.FinancialAccounting.Reporting
+} // Empiria.FinancialAccounting.Reporting.FiscalReports.Exporters

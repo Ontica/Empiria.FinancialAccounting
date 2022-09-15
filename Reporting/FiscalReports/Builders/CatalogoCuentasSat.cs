@@ -13,7 +13,7 @@ using System.Collections.Generic;
 using Empiria.FinancialAccounting.Adapters;
 using Empiria.FinancialAccounting.UseCases;
 
-namespace Empiria.FinancialAccounting.Reporting.Builders {
+namespace Empiria.FinancialAccounting.Reporting.FiscalReports.Builders {
 
   /// <summary>Catálolgo de cuentas para la contabilidad electrónica del SAT.</summary>
   internal class CatalogoCuentasSat : IReportBuilder {
@@ -146,4 +146,4 @@ namespace Empiria.FinancialAccounting.Reporting.Builders {
   }  // class CatalogoCuentasSatEntry
 
 
-}  // namespace Empiria.FinancialAccounting.Reporting.Builders
+}  // namespace Empiria.FinancialAccounting.Reporting.FiscalReports.Builders

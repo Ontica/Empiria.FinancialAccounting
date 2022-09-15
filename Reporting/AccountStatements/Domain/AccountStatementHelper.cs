@@ -11,11 +11,9 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 
-using Empiria.FinancialAccounting.BalanceEngine;
-using Empiria.FinancialAccounting.Reporting.Adapters;
-using Empiria.FinancialAccounting.Reporting.Data;
+using Empiria.FinancialAccounting.Reporting.AccountStatements.Adapters;
 
-namespace Empiria.FinancialAccounting.Reporting.AccountStatements {
+namespace Empiria.FinancialAccounting.Reporting.AccountStatements.Domain {
 
   /// <summary>Provides helper methods to build acount statements.</summary>
   internal class AccountStatementHelper {
@@ -187,4 +185,4 @@ namespace Empiria.FinancialAccounting.Reporting.AccountStatements {
 
   } // class AccountStatementHelper
 
-} // namespace Empiria.FinancialAccounting.Reporting.Domain
+} // namespace Empiria.FinancialAccounting.Reporting.AccountStatements.Domain

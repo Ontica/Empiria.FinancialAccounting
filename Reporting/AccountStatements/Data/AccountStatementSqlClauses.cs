@@ -51,4 +51,4 @@ namespace Empiria.FinancialAccounting.Reporting.AccountStatements {
 
   } // class AccountStatementSqlClauses
 
-} // namespace Empiria.FinancialAccounting.Reporting.Data.Adapters
+} // namespace Empiria.FinancialAccounting.Reporting.AccountStatements

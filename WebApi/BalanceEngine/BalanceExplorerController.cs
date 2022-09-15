@@ -13,10 +13,10 @@ using System.Web.Http;
 using Empiria.WebApi;
 
 using Empiria.FinancialAccounting.Reporting;
+using Empiria.FinancialAccounting.Reporting.Balances;
 
 using Empiria.FinancialAccounting.BalanceEngine.BalanceExplorer.UseCases;
 using Empiria.FinancialAccounting.BalanceEngine.BalanceExplorer.Adapters;
-
 
 namespace Empiria.FinancialAccounting.WebApi.BalanceEngine {
 

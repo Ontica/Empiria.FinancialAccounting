@@ -14,7 +14,7 @@ using Newtonsoft.Json;
 using Empiria.FinancialAccounting.BalanceEngine;
 using Empiria.FinancialAccounting.BalanceEngine.BalanceExplorer.Adapters;
 
-namespace Empiria.FinancialAccounting.Reporting.AccountStatements {
+namespace Empiria.FinancialAccounting.Reporting.AccountStatements.Adapters {
 
   /// <summary>Query payload used to build account statement.</summary>
   public class AccountStatementQuery {
@@ -106,4 +106,4 @@ namespace Empiria.FinancialAccounting.Reporting.AccountStatements {
 
   }  // class AccountStatementEntry
 
-} // namespace Empiria.FinancialAccounting.Reporting.Adapters
+} // namespace Empiria.FinancialAccounting.Reporting.AccountStatements.Adapters

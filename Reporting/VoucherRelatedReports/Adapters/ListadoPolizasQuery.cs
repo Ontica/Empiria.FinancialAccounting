@@ -9,7 +9,7 @@
 ************************* Copyright(c) La Vía Óntica SC, Ontica LLC and contributors. All rights reserved. **/
 using System;
 
-namespace Empiria.FinancialAccounting.Reporting.Adapters {
+namespace Empiria.FinancialAccounting.Reporting.VoucherRelatedReports.Adapters {
 
   /// <summary> Query payload used to build voucher list report.</summary>
   public class ListadoPolizasQuery {
@@ -37,4 +37,4 @@ namespace Empiria.FinancialAccounting.Reporting.Adapters {
 
   } // class ListadoPolizasQuery
 
-} // namespace Empiria.FinancialAccounting.Reporting.Adapters
+} // namespace Empiria.FinancialAccounting.Reporting.VoucherRelatedReports.Adapters

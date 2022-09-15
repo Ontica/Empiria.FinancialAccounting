@@ -8,10 +8,9 @@
 *                                                                                                            *
 ************************* Copyright(c) La Vía Óntica SC, Ontica LLC and contributors. All rights reserved. **/
 using System;
+using Empiria.FinancialAccounting.Reporting.AccountStatements.Adapters;
 
-using Empiria.FinancialAccounting.Reporting.Adapters;
-
-namespace Empiria.FinancialAccounting.Reporting.AccountStatements {
+namespace Empiria.FinancialAccounting.Reporting.AccountStatements.Exporters {
 
   /// <summary>Main service to export account statement information to Microsoft Excel.</summary>
   public class AccountStatementExcelExporterService {
@@ -32,4 +31,4 @@ namespace Empiria.FinancialAccounting.Reporting.AccountStatements {
 
   } // class AccountStatementExcelExporterService
 
-} // namespace Empiria.FinancialAccounting.Reporting
+} // namespace Empiria.FinancialAccounting.Reporting.AccountStatements.Exporters

@@ -11,7 +11,8 @@ using System;
 
 using Empiria.Services;
 
-using Empiria.FinancialAccounting.Reporting.Adapters;
+using Empiria.FinancialAccounting.Reporting.AccountStatements.Adapters;
+using Empiria.FinancialAccounting.Reporting.AccountStatements.Domain;
 
 namespace Empiria.FinancialAccounting.Reporting.AccountStatements {
 

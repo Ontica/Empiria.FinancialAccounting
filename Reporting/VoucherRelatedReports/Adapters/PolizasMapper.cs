@@ -9,9 +9,9 @@
 ************************* Copyright(c) La Vía Óntica SC, Ontica LLC and contributors. All rights reserved. **/
 using System;
 
-using Empiria.FinancialAccounting.Reporting.Domain;
+using Empiria.FinancialAccounting.Reporting.VoucherRelatedReports.Domain;
 
-namespace Empiria.FinancialAccounting.Reporting.Adapters {
+namespace Empiria.FinancialAccounting.Reporting.VoucherRelatedReports.Adapters {
 
   /// <summary>Methods used to map vouchers.</summary>
   static internal class PolizasMapper {
@@ -54,8 +54,8 @@ namespace Empiria.FinancialAccounting.Reporting.Adapters {
 
     static private PolizasEntryDto MapToPolizas(PolizaEntry entry) {
       return new PolizasEntryDto() {
-        LedgerNumber = entry.Ledger.Number ?? Ledger.Empty.Number,
-        LedgerName = entry.Ledger.FullName ?? Ledger.Empty.FullName,
+        LedgerNumber = entry.Ledger?.Number ?? "",
+        LedgerName = entry.Ledger?.FullName ?? "",
         VoucherNumber = entry.Number,
         AccountingDate = entry.AccountingDate,
         RecordingDate = entry.RecordingDate,
@@ -72,4 +72,4 @@ namespace Empiria.FinancialAccounting.Reporting.Adapters {
 
   } // class PolizasMapper
 
-} // namespace Empiria.FinancialAccounting.Reporting.Adapters
+} // namespace Empiria.FinancialAccounting.Reporting.VoucherRelatedReports.Adapters

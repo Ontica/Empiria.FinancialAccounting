@@ -13,9 +13,9 @@ using Empiria.Collections;
 using Empiria.Json;
 using Empiria.Security;
 
-using Empiria.FinancialAccounting.Reporting.Adapters;
+using Empiria.FinancialAccounting.Reporting.AccountStatements.Adapters;
 
-namespace Empiria.FinancialAccounting.Reporting.AccountStatements {
+namespace Empiria.FinancialAccounting.Reporting.AccountStatements.Domain {
 
   /// <summary>Provides a cache of account statements.</summary>
   static internal class AccountStatementCache {
@@ -45,4 +45,4 @@ namespace Empiria.FinancialAccounting.Reporting.AccountStatements {
 
   } // class AccountStatementCache
 
-} // namespace Empiria.FinancialAccounting.Reporting
+} // namespace Empiria.FinancialAccounting.Reporting.AccountStatements.Domain

@@ -11,8 +11,9 @@ using System;
 using System.Collections.Generic;
 
 using Empiria.FinancialAccounting.BalanceEngine;
+using Empiria.FinancialAccounting.Reporting.AccountStatements.Domain;
 
-namespace Empiria.FinancialAccounting.Reporting.AccountStatements {
+namespace Empiria.FinancialAccounting.Reporting.AccountStatements.Adapters {
 
   /// <summary>Mapping methods for account statements (estados de cuenta).</summary>
   static internal class AccountStatementMapper {
@@ -113,4 +114,4 @@ namespace Empiria.FinancialAccounting.Reporting.AccountStatements {
 
   } // class AccountStatementMapper
 
-} // namespace Empiria.FinancialAccounting.Reporting.Adapters
+} // namespace Empiria.FinancialAccounting.Reporting.AccountStatements.Adapters
