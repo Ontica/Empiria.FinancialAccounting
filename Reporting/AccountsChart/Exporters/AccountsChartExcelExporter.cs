@@ -11,7 +11,7 @@ using System;
 
 using Empiria.FinancialAccounting.Adapters;
 
-namespace Empiria.FinancialAccounting.Reporting.Exporters.Excel {
+namespace Empiria.FinancialAccounting.Reporting {
 
   /// <summary>Main service used to export charts of accounts to Microsoft Excel.</summary>
   internal class AccountsChartExcelExporter {

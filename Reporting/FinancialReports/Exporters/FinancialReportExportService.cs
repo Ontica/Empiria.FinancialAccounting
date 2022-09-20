@@ -13,9 +13,7 @@ using Empiria.Services;
 
 using Empiria.FinancialAccounting.FinancialReports.Adapters;
 
-using Empiria.FinancialAccounting.Reporting.Exporters.Excel;
-
-namespace Empiria.FinancialAccounting.Reporting {
+namespace Empiria.FinancialAccounting.Reporting.FinancialReports.Exporters {
 
   /// <summary>Provides services used to export financial reports to files. </summary>
   public class FinancialReportExportService : Service {
@@ -74,4 +72,4 @@ namespace Empiria.FinancialAccounting.Reporting {
 
   } // class FinancialReportExportService
 
-} // namespace Empiria.FinancialAccounting.Reporting
+} // namespace Empiria.FinancialAccounting.Reporting.FinancialReports.Exporters

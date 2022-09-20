@@ -21,6 +21,14 @@ using Empiria.FinancialAccounting.BanobrasIntegration.TransactionSlips.Adapters;
 
 using Empiria.FinancialAccounting.Reconciliation.Adapters;
 
+using Empiria.FinancialAccounting.Reporting.FinancialConceptsEntriesTree.Exporters;
+
+using Empiria.FinancialAccounting.Reporting.Reconciliation.Exporters;
+
+using Empiria.FinancialAccounting.Reporting.StoredBalanceSet.Exporters;
+
+using Empiria.FinancialAccounting.Reporting.TransactionSlip.Exporters;
+
 namespace Empiria.FinancialAccounting.Reporting {
 
   /// <summary>Main service to export accounting information to Microsoft Excel.</summary>

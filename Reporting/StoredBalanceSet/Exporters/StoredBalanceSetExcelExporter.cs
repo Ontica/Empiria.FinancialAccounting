@@ -11,7 +11,7 @@ using System;
 
 using Empiria.FinancialAccounting.BalanceEngine.Adapters;
 
-namespace Empiria.FinancialAccounting.Reporting.Exporters.Excel {
+namespace Empiria.FinancialAccounting.Reporting.StoredBalanceSet.Exporters {
 
   /// <summary>Creates a Microsoft Excel file for a set of stored balances.</summary>
   internal class StoredBalanceSetExcelExporter {
@@ -83,4 +83,4 @@ namespace Empiria.FinancialAccounting.Reporting.Exporters.Excel {
 
   }  // class StoredBalanceSetExcelExporter
 
-}  // namespace Empiria.FinancialAccounting.Reporting.Exporters.Excel
+}  // namespace Empiria.FinancialAccounting.Reporting.StoredBalanceSet.Exporters

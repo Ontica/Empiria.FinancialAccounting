@@ -11,7 +11,7 @@ using System;
 
 using Empiria.FinancialAccounting.Reconciliation.Adapters;
 
-namespace Empiria.FinancialAccounting.Reporting.Exporters.Excel {
+namespace Empiria.FinancialAccounting.Reporting.Reconciliation.Exporters {
 
   /// <summary>Exports a reconciliation result to Microsoft Excel.</summary>
   internal class ReconciliationExcelExporter {
@@ -98,4 +98,4 @@ namespace Empiria.FinancialAccounting.Reporting.Exporters.Excel {
 
   } // class ReconciliationExcelExporter
 
-} // namespace Empiria.FinancialAccounting.Reporting.Exporters.Excel
+} // namespace Empiria.FinancialAccounting.Reporting.Reconciliation.Exporters

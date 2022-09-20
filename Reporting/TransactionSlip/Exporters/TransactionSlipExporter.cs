@@ -11,7 +11,7 @@ using System;
 using Empiria.FinancialAccounting.BanobrasIntegration.TransactionSlips;
 using Empiria.FinancialAccounting.BanobrasIntegration.TransactionSlips.Adapters;
 
-namespace Empiria.FinancialAccounting.Reporting.Exporters.Excel {
+namespace Empiria.FinancialAccounting.Reporting.TransactionSlip.Exporters {
 
   /// <summary>Exports transaction slips (volantes) to Microsoft Excel.</summary>
   internal class TransactionSlipExporter {
@@ -135,4 +135,4 @@ namespace Empiria.FinancialAccounting.Reporting.Exporters.Excel {
 
   }  // class TransactionSlipExporter
 
-}  // namespace Empiria.FinancialAccounting.Reporting.Exporters.Excel
+}  // namespace Empiria.FinancialAccounting.Reporting.TransactionSlip.Exporters

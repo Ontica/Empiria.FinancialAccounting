@@ -12,7 +12,7 @@ using System;
 using Empiria.FinancialAccounting.FinancialConcepts;
 using Empiria.FinancialAccounting.FinancialConcepts.Adapters;
 
-namespace Empiria.FinancialAccounting.Reporting.Exporters.Excel {
+namespace Empiria.FinancialAccounting.Reporting.FinancialConceptsEntriesTree.Exporters {
 
   /// <summary>Exports financial concepts integration entries as tree to Microsoft Excel.</summary>
   internal class FinancialConceptsEntriesTreeExcelExporter {
@@ -79,4 +79,4 @@ namespace Empiria.FinancialAccounting.Reporting.Exporters.Excel {
 
   }  // class FinancialConceptsEntriesTreeExcelExporter
 
-}  // namespace Empiria.FinancialAccounting.Reporting.Exporters.Excel
+}  // namespace Empiria.FinancialAccounting.Reporting.FinancialConceptsEntriesTree.Exporters

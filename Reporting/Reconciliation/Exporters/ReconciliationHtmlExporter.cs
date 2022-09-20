@@ -12,7 +12,7 @@ using System.Text;
 
 using Empiria.FinancialAccounting.Reconciliation.Adapters;
 
-namespace Empiria.FinancialAccounting.Reporting {
+namespace Empiria.FinancialAccounting.Reporting.Reconciliation.Exporters {
 
   /// <summary>Generates an HTML document with the reconciliation results.</summary>
   internal class ReconciliationHtmlExporter {
@@ -100,4 +100,4 @@ namespace Empiria.FinancialAccounting.Reporting {
 
   }  // class ReconciliationHtmlExporter
 
-}  // namespace Empiria.FinancialAccounting.Reporting
+}  // namespace Empiria.FinancialAccounting.Reporting.Reconciliation.Exporters

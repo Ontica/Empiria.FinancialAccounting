@@ -12,7 +12,7 @@ using System.Text;
 
 using Empiria.FinancialAccounting.Vouchers.Adapters;
 
-namespace Empiria.FinancialAccounting.Reporting {
+namespace Empiria.FinancialAccounting.Reporting.VouchersToHtml.Exporters {
 
   /// <summary>Generates an HTML document with voucher data.</summary>
   internal class VoucherToHtmlExporter {
@@ -161,4 +161,4 @@ namespace Empiria.FinancialAccounting.Reporting {
 
   }  // class VoucherToHtmlExporter
 
-}  // namespace Empiria.FinancialAccounting.Reporting
+}  // namespace Empiria.FinancialAccounting.Reporting.VouchersToHtml.Exporters

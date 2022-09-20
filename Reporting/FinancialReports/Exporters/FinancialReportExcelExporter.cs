@@ -12,7 +12,7 @@ using System;
 using Empiria.FinancialAccounting.FinancialReports;
 using Empiria.FinancialAccounting.FinancialReports.Adapters;
 
-namespace Empiria.FinancialAccounting.Reporting.Exporters.Excel {
+namespace Empiria.FinancialAccounting.Reporting.FinancialReports.Exporters {
 
   /// <summary>Creates a Microsoft Excel file with a financial report.</summary>
   internal class FinancialReportExcelExporter : IFinancialReportBuilder {
@@ -155,4 +155,4 @@ namespace Empiria.FinancialAccounting.Reporting.Exporters.Excel {
 
   }  // class FinancialReportExcelExporter
 
-}  // namespace Empiria.FinancialAccounting.Reporting.Exporters.Excel
+}  // namespace Empiria.FinancialAccounting.Reporting.FinancialReports.Exporters

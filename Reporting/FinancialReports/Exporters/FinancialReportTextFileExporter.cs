@@ -15,7 +15,7 @@ using Empiria.FinancialAccounting.FinancialReports.Adapters;
 
 using Empiria.FinancialAccounting.Reporting.Exporters.Text;
 
-namespace Empiria.FinancialAccounting.Reporting {
+namespace Empiria.FinancialAccounting.Reporting.FinancialReports.Exporters {
 
   /// <summary>Provides services used to export financial reports to text-based files.</summary>
   internal class FinancialReportTextFileExporter : IFinancialReportBuilder {
@@ -127,4 +127,4 @@ namespace Empiria.FinancialAccounting.Reporting {
 
   }  //class FinancialReportTextFileExporter
 
-}  // namespace Empiria.FinancialAccounting.Reporting
+}  // namespace Empiria.FinancialAccounting.Reporting.FinancialReports.Exporters

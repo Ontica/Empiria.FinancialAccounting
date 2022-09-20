@@ -10,7 +10,7 @@
 
 using Empiria.FinancialAccounting.FinancialReports.Adapters;
 
-namespace Empiria.FinancialAccounting.Reporting {
+namespace Empiria.FinancialAccounting.Reporting.FinancialReports {
 
   internal interface IFinancialReportBuilder {
 
@@ -18,4 +18,4 @@ namespace Empiria.FinancialAccounting.Reporting {
 
   }  // interface IFinancialReportBuilder
 
-}  // namespace Empiria.FinancialAccounting.Reporting
+}  // namespace Empiria.FinancialAccounting.Reporting.FinancialReports

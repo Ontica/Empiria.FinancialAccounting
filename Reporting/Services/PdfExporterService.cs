@@ -14,7 +14,12 @@ using Empiria.Office;
 using Empiria.Storage;
 
 using Empiria.FinancialAccounting.Vouchers.Adapters;
+
 using Empiria.FinancialAccounting.Reconciliation.Adapters;
+
+using Empiria.FinancialAccounting.Reporting.Reconciliation.Exporters;
+
+using Empiria.FinancialAccounting.Reporting.VouchersToHtml.Exporters;
 
 namespace Empiria.FinancialAccounting.Reporting {
 
