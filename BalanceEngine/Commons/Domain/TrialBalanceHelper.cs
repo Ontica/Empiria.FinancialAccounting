@@ -229,12 +229,12 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
 
         if (_query.WithSectorization) {
           GetAccountsWithSectorization(returnedAccountEntries);
-          EmpiriaLog.Debug($"INNER GetSummaryEntriesWithSectorization(): {DateTime.Now.Subtract(startTime).TotalSeconds} seconds.");
+          EmpiriaLog.Debug($"INNER GetAccountsWithSectorization(): {DateTime.Now.Subtract(startTime).TotalSeconds} seconds.");
         }
 
         if (!_query.WithSectorization) {
           GetAccountsWithoutSectorization(returnedAccountEntries);
-          EmpiriaLog.Debug($"INNER GetSummaryEntriesWithoutSectorization(): {DateTime.Now.Subtract(startTime).TotalSeconds} seconds.");
+          EmpiriaLog.Debug($"INNER GetAccountsWithoutSectorization(): {DateTime.Now.Subtract(startTime).TotalSeconds} seconds.");
         }
 
         if (_query.TrialBalanceType != TrialBalanceType.AnaliticoDeCuentas &&

@@ -42,47 +42,35 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
 
       FixedList<TrialBalanceEntry> saldosValorizados = SaldosDeCuentasValorizados(baseAccountEntries);
 
-      var balanceHelper = new TrialBalanceHelper(_query);
-      var analiticoHelper = new AnaliticoDeCuentasHelper(_query);
+      List<TrialBalanceEntry> balanceEntries = SummariesAndAccountEntries(saldosValorizados);
 
-      List<TrialBalanceEntry> parentAccounts = analiticoHelper.GetCalculatedParentAccounts(saldosValorizados);
-
-      List<TrialBalanceEntry> parentAndAccountEntries = analiticoHelper.CombineSummaryAndPostingEntries(
-                                             parentAccounts, saldosValorizados.ToFixedList());
-
-      List<TrialBalanceEntry> balanceEntries = balanceHelper.GetSummaryAccountsAndSectorization(
-                                               parentAndAccountEntries.ToList());
-
-      analiticoHelper.GetSummaryToSectorZeroForPesosAndUdis(balanceEntries);
-
-      balanceEntries = RemoveUnneededAccounts(balanceEntries);
-
-      balanceHelper.RestrictLevels(balanceEntries);
+      var helper = new AnaliticoDeCuentasHelper(_query);
+      var utility = new AnaliticoDeCuentasUtility(_query);
 
       List<AnaliticoDeCuentasEntry> analyticEntries =
-                                        analiticoHelper.MergeTrialBalanceIntoAnalyticColumns(balanceEntries);
+                                        helper.MergeTrialBalanceIntoAnalyticColumns(balanceEntries);
 
       List<AnaliticoDeCuentasEntry> analyticEntriesAndSubledgerAccounts = 
-        analiticoHelper.CombineSubledgerAccountsWithAnalyticEntries(analyticEntries, balanceEntries);
+        helper.MergeSubledgerAccountsWithAnalyticEntries(analyticEntries, balanceEntries);
 
       List<AnaliticoDeCuentasEntry> totalsByGroup =
-                                    analiticoHelper.GetTotalByGroup(analyticEntriesAndSubledgerAccounts);
+                                    helper.GetTotalByGroup(analyticEntriesAndSubledgerAccounts);
 
       List<AnaliticoDeCuentasEntry> analyticEntriesAndTotalsByGroup = 
-        analiticoHelper.CombineTotalsByGroupAndAccountEntries(
+        utility.CombineTotalsByGroupAndAccountEntries(
                         analyticEntriesAndSubledgerAccounts, totalsByGroup);
 
       List<AnaliticoDeCuentasEntry> totalByDebtorsCreditors =
-        analiticoHelper.GetTotalsByDebtorOrCreditorEntries(analyticEntriesAndSubledgerAccounts);
+        helper.GetTotalsByDebtorOrCreditorEntries(analyticEntriesAndSubledgerAccounts);
 
-      List<AnaliticoDeCuentasEntry> analyticEntriesAndTotalDebtorCreditor = 
-        analiticoHelper.CombineTotalDebtorCreditorAndEntries(
+      List<AnaliticoDeCuentasEntry> analyticEntriesAndTotalDebtorCreditor =
+        utility.CombineTotalDebtorCreditorAndEntries(
                         analyticEntriesAndTotalsByGroup, totalByDebtorsCreditors);
 
       List<AnaliticoDeCuentasEntry> totalReport =
-                                    analiticoHelper.GenerateTotalReport(totalByDebtorsCreditors);
+                                    helper.GenerateTotalReport(totalByDebtorsCreditors);
 
-      List<AnaliticoDeCuentasEntry> analyticReport = analiticoHelper.CombineTotalReportAndEntries(
+      List<AnaliticoDeCuentasEntry> analyticReport = utility.CombineTotalReportAndEntries(
                                             analyticEntriesAndTotalDebtorCreditor, totalReport);
 
       return analyticReport.ToFixedList();
@@ -102,55 +90,31 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
     }
 
 
-    private List<TrialBalanceEntry> RemoveUnneededAccounts(List<TrialBalanceEntry> summaryEntries) {
-      List<TrialBalanceEntry> returnedSummaryEntries = new List<TrialBalanceEntry>();
+    private List<TrialBalanceEntry> SummariesAndAccountEntries(FixedList<TrialBalanceEntry> saldosValorizados) {
 
-      foreach (var entry in summaryEntries) {
-        if (MustRemoveAccount(entry.Account)) {
-          continue;
-        }
-        returnedSummaryEntries.Add(entry);
-      }
-      return returnedSummaryEntries;
+      var helper = new AnaliticoDeCuentasHelper(_query);
+
+      List<TrialBalanceEntry> parentAccounts = helper.GetCalculatedParentAccounts(saldosValorizados);
+
+      var utility = new AnaliticoDeCuentasUtility(_query);
+
+      List<TrialBalanceEntry> parentAndAccountEntries = utility.CombineSummaryAndPostingEntries(
+                                             parentAccounts, saldosValorizados.ToFixedList());
+
+      var balanceHelper = new TrialBalanceHelper(_query);
+
+      List<TrialBalanceEntry> balanceEntries = balanceHelper.GetSummaryAccountsAndSectorization(
+                                               parentAndAccountEntries.ToList());
+
+      helper.GetSummaryToSectorZeroForPesosAndUdis(balanceEntries);
+
+      balanceEntries = utility.RemoveUnneededAccounts(balanceEntries);
+
+      balanceHelper.RestrictLevels(balanceEntries);
+
+      return balanceEntries;
     }
 
-
-    private bool MustRemoveAccount(StandardAccount account) {
-      if (account.Number.EndsWith("-00")) {
-        return true;
-      }
-      if (account.Number.StartsWith("1503")) {
-        return true;
-      }
-      if (account.Number.StartsWith("50")) {
-        return true;
-      }
-      if (account.Number.StartsWith("90")) {
-        return true;
-      }
-      if (account.Number.StartsWith("91")) {
-        return true;
-      }
-      if (account.Number.StartsWith("92")) {
-        return true;
-      }
-      if (account.Number.StartsWith("93")) {
-        return true;
-      }
-      if (account.Number.StartsWith("94")) {
-        return true;
-      }
-      if (account.Number.StartsWith("95")) {
-        return true;
-      }
-      if (account.Number.StartsWith("96")) {
-        return true;
-      }
-      if (account.Number.StartsWith("97")) {
-        return true;
-      }
-      return false;
-    }
 
   }  // class AnaliticoDeCuentas
 
