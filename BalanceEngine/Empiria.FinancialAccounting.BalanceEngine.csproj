@@ -68,8 +68,4 @@
     <ProjectReference Include="..\..\extensions\Services\Empiria.Services.csproj" />
     <ProjectReference Include="..\Core\Empiria.FinancialAccounting.Core.csproj" />
   </ItemGroup>
-  <ItemGroup>
-    <Folder Include="TrialBalances\Domain\Helpers\" />
-    <Folder Include="TrialBalances\Domain\SpecialCases\" />
-  </ItemGroup>
 </Project>

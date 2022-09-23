@@ -125,7 +125,7 @@ namespace Empiria.FinancialAccounting.BalanceEngine.BalanceExplorer.Adapters {
       dto.CurrencyCode = entry.Currency.Code;
       dto.CurrencyName = entry.Currency.Name;
       dto.SubledgerAccountNumber = entry.SubledgerAccountNumber;
-      dto.subledgerAccountName = entry.SubledgerAccountName;
+      dto.SubledgerAccountName = entry.SubledgerAccountName;
       if (entry.ItemType == TrialBalanceItemType.BalanceTotalCurrency) {
         dto.AccountNumber = "";
 
@@ -185,7 +185,7 @@ namespace Empiria.FinancialAccounting.BalanceEngine.BalanceExplorer.Adapters {
                          + $" [({entry.Currency.Code}) {entry.Currency.Name}]";
       }
       dto.SubledgerAccountNumber = entry.SubledgerAccountNumber;
-      dto.subledgerAccountName = entry.SubledgerAccountName;
+      dto.SubledgerAccountName = entry.SubledgerAccountName;
       dto.SectorCode = entry.Sector.Code;
       dto.InitialBalance = entry.InitialBalance;
       if (entry.ItemType == TrialBalanceItemType.Entry) {

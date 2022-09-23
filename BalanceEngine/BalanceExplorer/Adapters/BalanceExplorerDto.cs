@@ -94,7 +94,7 @@ namespace Empiria.FinancialAccounting.BalanceEngine.BalanceExplorer.Adapters {
     } = string.Empty;
 
 
-    public string subledgerAccountName {
+    public string SubledgerAccountName {
       get; internal set;
     } = string.Empty;
 

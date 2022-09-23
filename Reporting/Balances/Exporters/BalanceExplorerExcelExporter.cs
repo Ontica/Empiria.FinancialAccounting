@@ -155,7 +155,7 @@ namespace Empiria.FinancialAccounting.Reporting.Balances {
           _excelFile.SetCell($"D{i}", entry.AccountNumber);
           _excelFile.SetCell($"E{i}", entry.AccountName);
           _excelFile.SetCell($"F{i}", entry.SubledgerAccountNumber);
-          _excelFile.SetCell($"G{i}", entry.subledgerAccountName);
+          _excelFile.SetCell($"G{i}", entry.SubledgerAccountName);
           _excelFile.SetCell($"H{i}", entry.SectorCode);
           _excelFile.SetCell($"I{i}", (decimal) entry.CurrentBalance);
           _excelFile.SetCell($"J{i}", entry.DebtorCreditor);
@@ -206,7 +206,7 @@ namespace Empiria.FinancialAccounting.Reporting.Balances {
           _excelFile.SetCell($"D{i}", entry.AccountNumberForBalances);
           _excelFile.SetCell($"E{i}", entry.AccountNameToExport);
           _excelFile.SetCell($"F{i}", entry.SubledgerAccountNumber);
-          _excelFile.SetCell($"G{i}", entry.subledgerAccountName);
+          _excelFile.SetCell($"G{i}", entry.SubledgerAccountName);
           _excelFile.SetCell($"H{i}", entry.SectorCode);
           _excelFile.SetCell($"I{i}", (decimal) entry.CurrentBalance);
           _excelFile.SetCell($"J{i}", entry.DebtorCreditor);
@@ -235,7 +235,7 @@ namespace Empiria.FinancialAccounting.Reporting.Balances {
       if (!_query.WithSubledgerAccount) {
         _excelFile.SetCell($"E{i}", entry.AccountName);
       } else {
-        _excelFile.SetCell($"E{i}", entry.subledgerAccountName);
+        _excelFile.SetCell($"E{i}", entry.SubledgerAccountName);
       }
       _excelFile.SetCell($"F{i}", entry.SectorCode);
       _excelFile.SetCell($"G{i}", (decimal) entry.CurrentBalance);
