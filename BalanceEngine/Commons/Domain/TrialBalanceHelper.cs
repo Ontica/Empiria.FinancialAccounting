@@ -362,12 +362,10 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
       }
       entry.LastChangeDate = balanceEntry.LastChangeDate;
 
-      TrialBalanceItemType itemType = TrialBalanceItemType.Entry;
-
       string hash = $"{entry.Account.Number}";
 
       GenerateOrIncreaseEntries(entries, entry, entry.Account,
-                                entry.Sector, itemType, hash);
+                                entry.Sector, TrialBalanceItemType.Entry, hash);
     }
 
 

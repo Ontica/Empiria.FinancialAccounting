@@ -2,7 +2,7 @@
 *                                                                                                            *
 *  Module   : Reporting Services                           Component : Excel Exporters                       *
 *  Assembly : FinancialAccounting.Reporting.dll            Pattern   : IExcelExporter                        *
-*  Type     : AnaliticoDeCuentasUtility                License   : Please read LICENSE.txt file              *
+*  Type     : AnaliticoDeCuentasUtility                    License   : Please read LICENSE.txt file          *
 *                                                                                                            *
 *  Summary  : Utility methods to manage accounts information for analitico de cuentas.                       *
 *                                                                                                            *

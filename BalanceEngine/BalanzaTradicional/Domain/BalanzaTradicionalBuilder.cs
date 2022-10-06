@@ -37,6 +37,26 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
       FixedList<TrialBalanceEntry> parentAccounts = helper.GetCalculatedParentAccounts(
                                                     accountEntries);
 
+      List<TrialBalanceEntry> parentsAndAccountEntries = GetAccountsAndParentsWithSectorization(
+                                                         accountEntries, parentAccounts);
+
+      List<TrialBalanceEntry> balanza = GetTotalsForBalanzaOrOperationalReport(
+                                        parentsAndAccountEntries, accountEntries);
+
+      var balanceHelper = new TrialBalanceHelper(_query);
+      balanceHelper.RestrictLevels(balanza);
+
+      var returnBalance = new FixedList<ITrialBalanceEntry>(
+                              balanza.Select(x => (ITrialBalanceEntry) x));
+
+      return new TrialBalance(_query, returnBalance);
+    }
+
+
+    private List<TrialBalanceEntry> GetAccountsAndParentsWithSectorization(
+                                    FixedList<TrialBalanceEntry> accountEntries,
+                                    FixedList<TrialBalanceEntry> parentAccounts) {
+
       var balanceHelper = new TrialBalanceHelper(_query);
 
       balanceHelper.SetSummaryToParentEntries(accountEntries);
@@ -44,25 +64,20 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
       List<TrialBalanceEntry> accountEntriesMapped = balanceHelper.GetEntriesMappedForSectorization(
                                                      accountEntries.ToList());
 
-      List<TrialBalanceEntry> accountEntriesAndSectorization =
+      List<TrialBalanceEntry> accountAndSectorization =
         balanceHelper.GetSummaryAccountsAndSectorization(accountEntriesMapped);
 
-      List<TrialBalanceEntry> parentAccountEntriesAndSectorization =
+      List<TrialBalanceEntry> parentAccountsAndSectorization =
         balanceHelper.GetSummaryAccountsAndSectorization(parentAccounts.ToList());
 
-      List<TrialBalanceEntry> parentsAndAccountEntries = helper.CombineParentsAndAccountEntries(
-                                                         parentAccountEntriesAndSectorization,
-                                                         accountEntriesAndSectorization);
+      var utility = new BalanzaTradicionalUtility(_query);
 
-      List<TrialBalanceEntry> balanza = GetTotalsForBalanzaOrOperationalReport(
-                                        parentsAndAccountEntries, accountEntries);
+      List<TrialBalanceEntry> parentsAndAccountEntries = utility.CombineParentsAndAccountEntries(
+                                                         parentAccountsAndSectorization,
+                                                         accountAndSectorization);
 
-      balanceHelper.RestrictLevels(balanza);
+      return parentsAndAccountEntries;
 
-      var returnBalance = new FixedList<ITrialBalanceEntry>(
-                              balanza.Select(x => (ITrialBalanceEntry) x));
-
-      return new TrialBalance(_query, returnBalance);
     }
 
 
@@ -101,29 +116,31 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
       FixedList<TrialBalanceEntry> groupTotalsEntries = helper.GenerateTotalGroupEntries(
                                                          accountEntries);
 
+      var utility = new BalanzaTradicionalUtility(_query);
+
       List<TrialBalanceEntry> totalGroupAndAccountEntries =
-                              helper.CombineTotalGroupEntriesAndAccountEntries(
+                              utility.CombineTotalGroupEntriesAndAccountEntries(
                               parentsAndAccountEntries, groupTotalsEntries);
 
       List<TrialBalanceEntry> totalDebtorCreditorEntries =
                               helper.GenerateTotalDebtorCreditorsByCurrency(accountEntries.ToList());
 
       List<TrialBalanceEntry> totalDebtorCreditorsAndAccountEntries =
-                              helper.CombineTotalDebtorCreditorsByCurrencyAndAccountEntries(
+                              utility.CombineTotalDebtorCreditorsByCurrencyAndAccountEntries(
                               totalGroupAndAccountEntries, totalDebtorCreditorEntries);
 
       List<TrialBalanceEntry> totalsByCurrency = helper.GenerateTotalByCurrency(
                                                 totalDebtorCreditorEntries);
 
       List<TrialBalanceEntry> totalByCurrencyAndAccountEntries =
-                              helper.CombineTotalsByCurrencyAndAccountEntries(
+                              utility.CombineTotalsByCurrencyAndAccountEntries(
                               totalDebtorCreditorsAndAccountEntries, totalsByCurrency);
 
       if (_query.ShowCascadeBalances) {
         List<TrialBalanceEntry> totalsConsolidatedByLedger =
                               helper.GenerateTotalsConsolidatedByLedger(totalsByCurrency);
 
-        totalByCurrencyAndAccountEntries = helper.CombineTotalConsolidatedByLedgerAndAccountEntries(
+        totalByCurrencyAndAccountEntries = utility.CombineTotalConsolidatedByLedgerAndAccountEntries(
                                            totalByCurrencyAndAccountEntries, totalsConsolidatedByLedger);
       }
 
