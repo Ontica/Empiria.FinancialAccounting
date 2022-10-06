@@ -10,7 +10,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
-
+using Empiria.Collections;
 using Empiria.FinancialAccounting.BalanceEngine.Adapters;
 using Empiria.FinancialAccounting.BalanceEngine.Data;
 
@@ -45,16 +45,18 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
       List<TrialBalanceEntry> balanceEntries = SummariesAndAccountEntries(saldosValorizados);
 
       var helper = new AnaliticoDeCuentasHelper(_query);
-      var utility = new AnaliticoDeCuentasUtility(_query);
 
       List<AnaliticoDeCuentasEntry> analyticEntries =
-                                        helper.MergeTrialBalanceIntoAnalyticColumns(balanceEntries);
+                                          MergeTrialBalanceIntoAnalyticColumns(balanceEntries);
+      //helper.MergeTrialBalanceIntoAnalyticColumns(balanceEntries);
 
       List<AnaliticoDeCuentasEntry> analyticEntriesAndSubledgerAccounts = 
         helper.MergeSubledgerAccountsWithAnalyticEntries(analyticEntries, balanceEntries);
 
       List<AnaliticoDeCuentasEntry> totalsByGroup =
                                     helper.GetTotalByGroup(analyticEntriesAndSubledgerAccounts);
+
+      var utility = new AnaliticoDeCuentasUtility(_query);
 
       List<AnaliticoDeCuentasEntry> analyticEntriesAndTotalsByGroup = 
         utility.CombineTotalsByGroupAndAccountEntries(
@@ -74,6 +76,123 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
                                             analyticEntriesAndTotalDebtorCreditor, totalReport);
 
       return analyticReport.ToFixedList();
+    }
+
+
+    #region Private methods
+
+
+    private IEnumerable<TrialBalanceEntry> GetFilteredAccountEntries(List<TrialBalanceEntry> balanceEntries) {
+
+      var accountEntries = new List<TrialBalanceEntry>(balanceEntries);
+
+      if (_query.WithSubledgerAccount) {
+        accountEntries = balanceEntries.Where(a => a.SubledgerAccountId == 0 &&
+                                        a.ItemType == TrialBalanceItemType.Summary).ToList();
+
+      } else {
+        accountEntries = balanceEntries.Where(a => a.SubledgerAccountNumber.Length <= 1).ToList();
+      }
+      return accountEntries;
+    }
+
+
+    private void MergeDomesticBalancesIntoSectorZero(IEnumerable<AnaliticoDeCuentasEntry> analyticEntries,
+                                                     IEnumerable<TrialBalanceEntry> accountEntries) {
+      if (!_query.UseNewSectorizationModel) {
+        return;
+      }
+
+      var helper = new AnaliticoDeCuentasHelper(_query);
+
+      foreach (var entry in analyticEntries.Where(a => a.Sector.Code == "00" && a.DomesticBalance == 0)) {
+
+        var accountsWithDomesticCurrency = accountEntries.Where(
+              a => a.Account.Number == entry.Account.Number && a.Ledger.Number == entry.Ledger.Number &&
+              a.Sector.Code != "00" && a.DebtorCreditor == entry.DebtorCreditor &&
+              (a.Currency == Currency.MXN || a.Currency == Currency.UDI)).ToList();
+
+        if (accountsWithDomesticCurrency.Count > 0) {
+
+          entry.ResetBalances();
+
+          foreach (var foreignEntry in accountsWithDomesticCurrency) {
+            helper.SumTwoColumnEntry(entry, foreignEntry, foreignEntry.Currency);
+          }
+        }
+      }
+    }
+
+
+    private void MergeForeignBalancesIntoSectorZero(IEnumerable<AnaliticoDeCuentasEntry> analyticEntries,
+                                                    IEnumerable<TrialBalanceEntry> accountEntries) {
+
+      if (!_query.UseNewSectorizationModel) {
+        return;
+      }
+
+      var helper = new AnaliticoDeCuentasHelper(_query);
+
+      foreach (var entry in analyticEntries.Where(a => a.Sector.Code == "00" && a.Level > 1)) {
+
+        var entriesWithForeignCurrency = accountEntries.Where(
+              a => a.Account.Number == entry.Account.Number && a.Ledger.Number == entry.Ledger.Number &&
+              a.Sector.Code != "00" && a.DebtorCreditor == entry.DebtorCreditor &&
+              a.Currency != Currency.MXN && a.Currency != Currency.UDI).ToList();
+
+        if (entriesWithForeignCurrency.Count > 0) {
+
+          entry.ForeignBalance = 0;
+          foreach (var foreignEntry in entriesWithForeignCurrency) {
+            helper.SumTwoColumnEntry(entry, foreignEntry, foreignEntry.Currency);
+          }
+        }
+      }
+    }
+
+
+    private List<AnaliticoDeCuentasEntry> MergeTrialBalanceIntoAnalyticColumns(
+                                            List<TrialBalanceEntry> balanceEntries) {
+      if (balanceEntries.Count == 0) {
+        return new List<AnaliticoDeCuentasEntry>();
+      }
+
+      IEnumerable<TrialBalanceEntry> accountEntries = GetFilteredAccountEntries(balanceEntries);
+
+      var hashAnaliticoEntries = new EmpiriaHashTable<AnaliticoDeCuentasEntry>();
+
+      ConvertIntoAnaliticoDeCuentasEntry(accountEntries, hashAnaliticoEntries);
+
+      ICollection<AnaliticoDeCuentasEntry> analyticEntries = hashAnaliticoEntries.Values;
+
+      MergeDomesticBalancesIntoSectorZero(analyticEntries, accountEntries);
+      MergeForeignBalancesIntoSectorZero(analyticEntries, accountEntries);
+
+      return analyticEntries.OrderBy(a => a.Ledger.Number)
+                            .ThenByDescending(a => a.DebtorCreditor)
+                            .ThenBy(a => a.Account.Number)
+                            .ThenBy(a => a.Sector.Code)
+                            .ThenBy(a => a.SubledgerAccountId)
+                            .ToList();
+    }
+
+
+    private void ConvertIntoAnaliticoDeCuentasEntry(IEnumerable<TrialBalanceEntry> accountEntries,
+                                   EmpiriaHashTable<AnaliticoDeCuentasEntry> hashAnaliticoEntries) {
+      
+      var helper = new AnaliticoDeCuentasHelper(_query);
+      var targetCurrency = Currency.Parse(_query.InitialPeriod.ValuateToCurrrencyUID);
+
+      foreach (var entry in accountEntries) {
+        if (entry.CurrentBalance != 0) {
+          string hash = $"{entry.Account.Number}||{entry.Sector.Code}||{targetCurrency.Id}||" +
+                        $"{entry.Ledger.Id}||{entry.DebtorCreditor}";
+
+          Currency currentCurrency = entry.Currency;
+          helper.MergeEntriesIntoTwoColumns(hashAnaliticoEntries, entry, hash, currentCurrency);
+
+        }
+      }
     }
 
 
@@ -114,6 +233,9 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
 
       return balanceEntries;
     }
+
+
+    #endregion Private methods
 
 
   }  // class AnaliticoDeCuentas

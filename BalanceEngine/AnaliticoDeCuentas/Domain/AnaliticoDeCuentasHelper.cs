@@ -29,35 +29,6 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
     #region Public methods
 
 
-    internal List<AnaliticoDeCuentasEntry> MergeSubledgerAccountsWithAnalyticEntries(
-                                                  List<AnaliticoDeCuentasEntry> analyticEntries,
-                                                  List<TrialBalanceEntry> balanceEntries) {
-      if (analyticEntries.Count == 0 || balanceEntries.Count == 0) {
-        return new List<AnaliticoDeCuentasEntry>();
-      }
-      if (!_query.WithSubledgerAccount) {
-        return analyticEntries;
-      }
-
-      var targetCurrency = Currency.Parse(_query.InitialPeriod.ValuateToCurrrencyUID);
-      var returnedEntries = new List<AnaliticoDeCuentasEntry>();
-
-      foreach (var analyticEntry in analyticEntries) {
-        var hashEntries = new EmpiriaHashTable<AnaliticoDeCuentasEntry>();
-
-        MergeSubledgerAccountsWithAnaliticEntry(balanceEntries, targetCurrency, analyticEntry, hashEntries);
-
-        var balanceEntriesList = hashEntries.Values.OrderBy(a => a.SubledgerAccountNumber.Length)
-                                                   .ThenBy(a => a.SubledgerAccountNumber)
-                                                   .ToList();
-        returnedEntries.Add(analyticEntry);
-        returnedEntries.AddRange(balanceEntriesList);
-      }
-
-      return returnedEntries;
-    }
-
-
     internal List<AnaliticoDeCuentasEntry> GenerateTotalReport(
                                              List<AnaliticoDeCuentasEntry> balanceEntries) {
       if (balanceEntries.Count == 0) {
@@ -133,6 +104,24 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
     }
 
 
+    internal List<AnaliticoDeCuentasEntry> GetTotalByGroup(List<AnaliticoDeCuentasEntry> analyticEntries) {
+
+      if (analyticEntries.Count == 0) {
+        return new List<AnaliticoDeCuentasEntry>();
+      }
+
+      var totalsByGroup = new EmpiriaHashTable<AnaliticoDeCuentasEntry>();
+      List<AnaliticoDeCuentasEntry> listEntries = GetFirstLevelEntriesToGroup(analyticEntries);
+
+      foreach (var entry in listEntries) {
+
+        SummaryByGroupEntries(totalsByGroup, entry);
+      }
+
+      return totalsByGroup.Values.ToList();
+    }
+
+
     internal List<AnaliticoDeCuentasEntry> GetTotalsByDebtorOrCreditorEntries(
                                            List<AnaliticoDeCuentasEntry> analyticEntries) {
       if (analyticEntries.Count == 0) {
@@ -151,48 +140,82 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
     }
 
 
-    internal List<AnaliticoDeCuentasEntry> GetTotalByGroup(List<AnaliticoDeCuentasEntry> analyticEntries) {
+    internal void MergeEntriesIntoTwoColumns(EmpiriaHashTable<AnaliticoDeCuentasEntry> hashAnaliticoEntries,
+                                            TrialBalanceEntry entry, string hash, Currency currentCurrency) {
 
-      if (analyticEntries.Count==0) {
-        return new List<AnaliticoDeCuentasEntry>();
+      var targetCurrency = Currency.Parse(_query.InitialPeriod.ValuateToCurrrencyUID);
+
+      if (entry.Currency.Equals(targetCurrency)) {
+
+        GenerateOrIncreaseTwoColumnEntry(hashAnaliticoEntries, entry, hash, currentCurrency);
+
+      } else if (hashAnaliticoEntries.ContainsKey(hash)) {
+
+        SumTwoColumnEntry(hashAnaliticoEntries[hash], entry, currentCurrency);
+
+      } else {
+
+        entry.Currency = targetCurrency;
+        GenerateOrIncreaseTwoColumnEntry(hashAnaliticoEntries, entry, hash, currentCurrency);
       }
-
-      var totalsByGroup = new EmpiriaHashTable<AnaliticoDeCuentasEntry>();
-      List<AnaliticoDeCuentasEntry> listEntries = GetFirstLevelEntriesToGroup(analyticEntries);
-
-      foreach (var entry in listEntries) {
-
-        SummaryByGroupEntries(totalsByGroup, entry);
-      }
-
-      return totalsByGroup.Values.ToList();
     }
 
 
-    internal List<AnaliticoDeCuentasEntry> MergeTrialBalanceIntoAnalyticColumns(
+    internal List<AnaliticoDeCuentasEntry> MergeSubledgerAccountsWithAnalyticEntries(
+                                                  List<AnaliticoDeCuentasEntry> analyticEntries,
                                                   List<TrialBalanceEntry> balanceEntries) {
-
-      if (balanceEntries.Count == 0) {
+      if (analyticEntries.Count == 0 || balanceEntries.Count == 0) {
         return new List<AnaliticoDeCuentasEntry>();
       }
+      if (!_query.WithSubledgerAccount) {
+        return analyticEntries;
+      }
 
-      IEnumerable<TrialBalanceEntry> accountEntries = GetFilteredAccountEntries(balanceEntries);
+      var targetCurrency = Currency.Parse(_query.InitialPeriod.ValuateToCurrrencyUID);
+      var returnedEntries = new List<AnaliticoDeCuentasEntry>();
 
-      var hashAnaliticoEntries = new EmpiriaHashTable<AnaliticoDeCuentasEntry>();
+      foreach (var analyticEntry in analyticEntries) {
+        var hashEntries = new EmpiriaHashTable<AnaliticoDeCuentasEntry>();
 
-      ConvertIntoAnaliticoDeCuentasEntry(accountEntries, hashAnaliticoEntries);
+        MergeSubledgerAccountsWithAnaliticEntry(balanceEntries, targetCurrency, analyticEntry, hashEntries);
 
-      ICollection<AnaliticoDeCuentasEntry> analyticEntries = hashAnaliticoEntries.Values;
+        var balanceEntriesList = hashEntries.Values.OrderBy(a => a.SubledgerAccountNumber.Length)
+                                                   .ThenBy(a => a.SubledgerAccountNumber)
+                                                   .ToList();
+        returnedEntries.Add(analyticEntry);
+        returnedEntries.AddRange(balanceEntriesList);
+      }
 
-      MergeDomesticBalancesIntoSectorZero(analyticEntries, accountEntries);
-      MergeForeignBalancesIntoSectorZero(analyticEntries, accountEntries);
+      return returnedEntries;
+    }
 
-      return analyticEntries.OrderBy(a => a.Ledger.Number)
-                            .ThenByDescending(a => a.DebtorCreditor)
-                            .ThenBy(a => a.Account.Number)
-                            .ThenBy(a => a.Sector.Code)
-                            .ThenBy(a => a.SubledgerAccountId)
-                            .ToList();
+
+    internal void SumTwoColumnEntry(AnaliticoDeCuentasEntry analyticEntry,
+                                   TrialBalanceEntry balanceEntry,
+                                   Currency currentCurrency) {
+
+      if (balanceEntry.DebtorCreditor != analyticEntry.DebtorCreditor) {
+        return;
+      }
+
+      var targetCurrency = Currency.Parse(_query.InitialPeriod.ValuateToCurrrencyUID);
+
+      if (currentCurrency != targetCurrency && !balanceEntry.Currency.Equals(Currency.UDI) &&
+          !currentCurrency.Equals(Currency.UDI)) {
+
+        analyticEntry.ForeignBalance += balanceEntry.CurrentBalance;
+
+      } else {
+
+        BalanceEntryByCurrencyToSumTwoColumnEntry(analyticEntry, balanceEntry, currentCurrency);
+      }
+
+      SumBalanceEntryIntoAnalyticEntry(analyticEntry, balanceEntry);
+
+      if (_query.UseNewSectorizationModel) {
+        balanceEntry.Currency = currentCurrency;
+      }
+
     }
 
 
@@ -222,24 +245,6 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
       } else if (!_query.UseNewSectorizationModel && currentCurrency.Equals(Currency.UDI)) {
         analyticEntry.DomesticBalance += balanceEntry.CurrentBalance;
 
-      }
-    }
-
-
-    private void ConvertIntoAnaliticoDeCuentasEntry(IEnumerable<TrialBalanceEntry> accountEntries,
-                                   EmpiriaHashTable<AnaliticoDeCuentasEntry> hashAnaliticoEntries) {
-
-      var targetCurrency = Currency.Parse(_query.InitialPeriod.ValuateToCurrrencyUID);
-
-      foreach (var entry in accountEntries) {
-        if (entry.CurrentBalance != 0) {
-          string hash = $"{entry.Account.Number}||{entry.Sector.Code}||{targetCurrency.Id}||" +
-                        $"{entry.Ledger.Id}||{entry.DebtorCreditor}";
-
-          Currency currentCurrency = entry.Currency;
-          MergeEntriesIntoTwoColumns(hashAnaliticoEntries, entry, hash, currentCurrency);
-
-        }
       }
     }
 
@@ -334,21 +339,6 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
     }
 
 
-    private IEnumerable<TrialBalanceEntry> GetFilteredAccountEntries(List<TrialBalanceEntry> balanceEntries) {
-
-      var accountEntries = new List<TrialBalanceEntry>(balanceEntries);
-
-      if (_query.WithSubledgerAccount) {
-        accountEntries = balanceEntries.Where(a => a.SubledgerAccountId == 0 &&
-                                        a.ItemType == TrialBalanceItemType.Summary).ToList();
-
-      } else {
-        accountEntries = balanceEntries.Where(a => a.SubledgerAccountNumber.Length <= 1).ToList();
-      }
-      return accountEntries;
-    }
-
-
     private List<AnaliticoDeCuentasEntry> GetFirstLevelEntriesToGroup(
                                           List<AnaliticoDeCuentasEntry> analyticEntries) {
 
@@ -380,77 +370,6 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
       }
 
       return listEntries;
-    }
-
-
-    private void MergeDomesticBalancesIntoSectorZero(IEnumerable<AnaliticoDeCuentasEntry> analyticEntries,
-                                                     IEnumerable<TrialBalanceEntry> accountEntries) {
-      if (!_query.UseNewSectorizationModel) {
-        return;
-      }
-
-      foreach (var entry in analyticEntries.Where(a => a.Sector.Code == "00" && a.DomesticBalance == 0)) {
-
-        var accountsWithDomesticCurrency = accountEntries.Where(
-              a => a.Account.Number == entry.Account.Number && a.Ledger.Number == entry.Ledger.Number &&
-              a.Sector.Code != "00" && a.DebtorCreditor == entry.DebtorCreditor &&
-              (a.Currency == Currency.MXN || a.Currency == Currency.UDI)).ToList();
-
-        if (accountsWithDomesticCurrency.Count > 0) {
-
-          entry.ResetBalances();
-          
-          foreach (var foreignEntry in accountsWithDomesticCurrency) {
-            SumTwoColumnEntry(entry, foreignEntry, foreignEntry.Currency);
-          }
-        }
-      }
-    }
-
-
-    private void MergeEntriesIntoTwoColumns(EmpiriaHashTable<AnaliticoDeCuentasEntry> hashAnaliticoEntries,
-                                            TrialBalanceEntry entry, string hash, Currency currentCurrency) {
-
-      var targetCurrency = Currency.Parse(_query.InitialPeriod.ValuateToCurrrencyUID);
-
-      if (entry.Currency.Equals(targetCurrency)) {
-
-        GenerateOrIncreaseTwoColumnEntry(hashAnaliticoEntries, entry, hash, currentCurrency);
-
-      } else if (hashAnaliticoEntries.ContainsKey(hash)) {
-
-        SumTwoColumnEntry(hashAnaliticoEntries[hash], entry, currentCurrency);
-
-      } else {
-
-        entry.Currency = targetCurrency;
-        GenerateOrIncreaseTwoColumnEntry(hashAnaliticoEntries, entry, hash, currentCurrency);
-      }
-    }
-
-
-    private void MergeForeignBalancesIntoSectorZero(IEnumerable<AnaliticoDeCuentasEntry> analyticEntries,
-                                                    IEnumerable<TrialBalanceEntry> accountEntries) {
-
-      if (!_query.UseNewSectorizationModel) {
-        return;
-      }
-
-      foreach (var entry in analyticEntries.Where(a => a.Sector.Code == "00" && a.Level > 1)) {
-
-        var entriesWithForeignCurrency = accountEntries.Where(
-              a => a.Account.Number == entry.Account.Number && a.Ledger.Number == entry.Ledger.Number &&
-              a.Sector.Code != "00" && a.DebtorCreditor == entry.DebtorCreditor &&
-              a.Currency != Currency.MXN && a.Currency != Currency.UDI).ToList();
-
-        if (entriesWithForeignCurrency.Count > 0) {
-
-          entry.ForeignBalance = 0;
-          foreach (var foreignEntry in entriesWithForeignCurrency) {
-            SumTwoColumnEntry(entry, foreignEntry, foreignEntry.Currency);
-          }
-        }
-      }
     }
 
 
@@ -565,35 +484,6 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
         entry.AverageBalance += entryUdis.AverageBalance;
       } else {
         entryUdis.IsSummaryForAnalytics = true;
-      }
-
-    }
-
-
-    private void SumTwoColumnEntry(AnaliticoDeCuentasEntry analyticEntry,
-                                   TrialBalanceEntry balanceEntry,
-                                   Currency currentCurrency) {
-
-      if (balanceEntry.DebtorCreditor != analyticEntry.DebtorCreditor) {
-        return;
-      }
-
-      var targetCurrency = Currency.Parse(_query.InitialPeriod.ValuateToCurrrencyUID);
-
-      if (currentCurrency != targetCurrency && !balanceEntry.Currency.Equals(Currency.UDI) &&
-          !currentCurrency.Equals(Currency.UDI)) {
-
-        analyticEntry.ForeignBalance += balanceEntry.CurrentBalance;
-
-      } else {
-
-        BalanceEntryByCurrencyToSumTwoColumnEntry(analyticEntry, balanceEntry, currentCurrency);
-      }
-
-      SumBalanceEntryIntoAnalyticEntry(analyticEntry, balanceEntry);
-
-      if (_query.UseNewSectorizationModel) {
-        balanceEntry.Currency = currentCurrency;
       }
 
     }
