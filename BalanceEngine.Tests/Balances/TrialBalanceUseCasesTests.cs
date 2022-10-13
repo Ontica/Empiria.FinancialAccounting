@@ -154,6 +154,26 @@ namespace Empiria.FinancialAccounting.Tests.BalanceEngine {
     }
 
 
+    [Fact]
+    public void Should_Build_Valorizacion() {
+      TrialBalanceQuery query = GetDefaultTrialBalanceQuery();
+
+      query.TrialBalanceType = TrialBalanceType.Valorizacion;
+      query.BalancesType = BalancesType.WithCurrentBalance;
+      query.ShowCascadeBalances = false;
+      query.UseDefaultValuation = true;
+      query.WithAverageBalance = false;
+      query.FromAccount = "3.02.01";
+      query.ToAccount = "3.02.01";
+
+      TrialBalanceDto sut = BalanceEngineProxy.BuildTrialBalance(query);
+
+      Assert.NotNull(sut);
+      Assert.Equal(query, sut.Query);
+      Assert.NotEmpty(sut.Entries);
+    }
+
+
     #endregion Facts
 
     #region Helpers

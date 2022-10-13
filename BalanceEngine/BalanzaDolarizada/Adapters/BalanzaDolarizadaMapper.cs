@@ -19,8 +19,6 @@ namespace Empiria.FinancialAccounting.BalanceEngine.Adapters {
 
     #region Public methods
 
-    #endregion Public methods
-
     static internal BalanzaDolarizadaDto Map(TrialBalanceQuery query,
                                              FixedList<BalanzaDolarizadaEntry> entries) {
 
@@ -31,9 +29,6 @@ namespace Empiria.FinancialAccounting.BalanceEngine.Adapters {
                          .ToFixedList()
       };
     }
-
-
-    #region Private methods
 
 
     static internal BalanzaDolarizadaEntry BalanzaDolarizadaPartialCopy(
@@ -86,6 +81,12 @@ namespace Empiria.FinancialAccounting.BalanceEngine.Adapters {
 
       return dto;
     }
+
+
+    #endregion Public methods
+
+
+    #region Private methods
 
 
     private static void AssignTotalBalanceAndExchangeRate(BalanzaDolarizadaEntryDto dto,

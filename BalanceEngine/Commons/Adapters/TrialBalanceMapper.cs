@@ -70,6 +70,7 @@ namespace Empiria.FinancialAccounting.BalanceEngine.Adapters {
 
           var currencyMappedItems = list.Select((x) =>
                 BalanzaColumnasMonedaMapper.MapEntry((BalanzaColumnasMonedaEntry) x));
+
           return new FixedList<ITrialBalanceEntryDto>(currencyMappedItems);
 
         case TrialBalanceType.BalanzaDolarizada:
@@ -84,6 +85,13 @@ namespace Empiria.FinancialAccounting.BalanceEngine.Adapters {
                                        .MapEntry((BalanzaComparativaEntry) x));
 
           return new FixedList<ITrialBalanceEntryDto>(balanzaComparativa);
+
+        case TrialBalanceType.Valorizacion:
+          
+          var valorizacion = list.Select((x) =>
+                ValorizacionMapper.MapEntry((ValorizacionEntry) x, query));
+
+          return new FixedList<ITrialBalanceEntryDto>(valorizacion);
 
         default:
           throw Assertion.EnsureNoReachThisCode(

@@ -12,7 +12,7 @@ using System;
 namespace Empiria.FinancialAccounting.BalanceEngine {
 
   /// <summary>Represents an entry for a valorized report entry.</summary>
-  internal class ValorizacionEntry {
+  internal class ValorizacionEntry : ITrialBalanceEntry {
 
     public Currency Currency {
       get;
@@ -53,6 +53,28 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
       get;
       internal set;
     }
+
+
+    public decimal DollarBalance {
+      get;
+      internal set;
+    }
+
+    public decimal YenBalance {
+      get;
+      internal set;
+    }
+
+    public decimal EuroBalance {
+      get;
+      internal set;
+    }
+
+    public decimal UdisBalance {
+      get;
+      internal set;
+    }
+
 
     public decimal ExchangeRate {
       get;

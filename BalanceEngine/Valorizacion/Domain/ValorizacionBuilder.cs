@@ -8,7 +8,10 @@
 *                                                                                                            *
 ************************* Copyright(c) La Vía Óntica SC, Ontica LLC and contributors. All rights reserved. **/
 using System;
+using System.Collections.Generic;
+using System.Linq;
 using Empiria.FinancialAccounting.BalanceEngine.Adapters;
+using Empiria.FinancialAccounting.BalanceEngine.Data;
 
 namespace Empiria.FinancialAccounting.BalanceEngine {
 
@@ -29,8 +32,26 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
 
     internal FixedList<ValorizacionEntry> Build() {
 
-      throw new NotImplementedException();
-       
+      FixedList<TrialBalanceEntry> baseAccountEntries = BalancesDataService.GetTrialBalanceEntries(_query);
+
+      return Build(baseAccountEntries);
+    }
+
+
+    internal FixedList<ValorizacionEntry> Build(FixedList<TrialBalanceEntry> accountEntries) {
+
+      if (accountEntries.Count == 0) {
+        return new FixedList<ValorizacionEntry>();
+      }
+
+      var helper = new ValorizacionHelper(_query);
+
+      FixedList<TrialBalanceEntry> accountsByCurrency = helper.GetAccountsByCurrency(accountEntries);
+
+      List <ValorizacionEntry> balanceByCurrency =
+                      helper.MergeAccountsIntoAccountsByCurrency(accountsByCurrency);
+
+      return balanceByCurrency.ToFixedList();
     }
 
 

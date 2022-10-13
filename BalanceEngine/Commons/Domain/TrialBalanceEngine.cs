@@ -35,7 +35,9 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
 
     SaldosPorAuxiliarConsultaRapida,
 
-    SaldosPorCuentaConsultaRapida
+    SaldosPorCuentaConsultaRapida,
+
+    Valorizacion
 
   }
 
@@ -188,6 +190,15 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
 
           var saldosPorCuentaYMayores = new BalanzaContabilidadesCascadaBuilder(this.Query);
           return saldosPorCuentaYMayores.Build();
+
+        case TrialBalanceType.Valorizacion:
+
+          var build = new ValorizacionBuilder(this.Query).Build();
+
+          FixedList<ITrialBalanceEntry> valorizacion = build.Select(x => (ITrialBalanceEntry) x)
+                                                      .ToFixedList();
+
+          return new TrialBalance(this.Query, valorizacion);
 
         default:
           throw Assertion.EnsureNoReachThisCode(

@@ -78,6 +78,28 @@ namespace Empiria.FinancialAccounting.BalanceEngine.Adapters {
       internal set;
     }
 
+
+    public decimal DollarBalance {
+      get;
+      internal set;
+    }
+
+    public decimal YenBalance {
+      get;
+      internal set;
+    }
+
+    public decimal EuroBalance {
+      get;
+      internal set;
+    }
+
+    public decimal UdisBalance {
+      get;
+      internal set;
+    }
+
+
     public decimal ExchangeRate {
       get;
       internal set;

@@ -58,6 +58,9 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
         case TrialBalanceType.BalanzaDolarizada:
           return BalanzaDolarizadaMapper.DataColumns();
 
+        case TrialBalanceType.Valorizacion:
+          return ValorizacionMapper.DataColumns();
+
         default:
           throw Assertion.EnsureNoReachThisCode(
                 $"Unhandled trial balance type {this.Query.TrialBalanceType}.");
