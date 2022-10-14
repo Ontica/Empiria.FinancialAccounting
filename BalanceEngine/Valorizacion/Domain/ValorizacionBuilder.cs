@@ -48,8 +48,12 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
 
       FixedList<TrialBalanceEntry> accountsByCurrency = helper.GetAccountsByCurrency(accountEntries);
 
+      helper.ExchangeRateByCurrency(accountsByCurrency);
+
       List <ValorizacionEntry> balanceByCurrency =
                       helper.MergeAccountsIntoAccountsByCurrency(accountsByCurrency);
+
+
 
       return balanceByCurrency.ToFixedList();
     }

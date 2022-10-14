@@ -27,6 +27,33 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
     #region Public methods
 
 
+    internal void ExchangeRateByCurrency(FixedList<TrialBalanceEntry> entries, bool isLastMonth = false) {
+
+      DateTime toDate = _query.InitialPeriod.ToDate;
+
+      if (isLastMonth == true) {
+        DateTime flagMonth = new DateTime(toDate.Year, toDate.Month, 1);
+        DateTime lastMonth = flagMonth.AddDays(-1);
+        toDate = lastMonth;
+      }
+
+      var exchangeRateType = ExchangeRateType.Parse(ExchangeRateType.ValorizacionBanxico.UID);
+      FixedList<ExchangeRate> exchangeRates = ExchangeRate.GetList(exchangeRateType, toDate);
+
+      foreach (var entry in entries) {
+        var exchangeRate = exchangeRates.FirstOrDefault(a => a.FromCurrency.Code == "01" &&
+                                                             a.ToCurrency.Code == entry.Currency.Code);
+
+        if (isLastMonth == true) {
+          entry.SecondExchangeRate = exchangeRate.Value;
+        } else {
+          entry.ExchangeRate = exchangeRate.Value;
+        }
+      }
+
+    }
+
+
     internal FixedList<TrialBalanceEntry> GetAccountsByCurrency(FixedList<TrialBalanceEntry> accountEntries) {
       var trialBalanceHelper = new TrialBalanceHelper(_query);
       var balanzaColumnasHelper = new BalanzaColumnasMonedaHelper(_query);
@@ -52,11 +79,18 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
 
     internal List<ValorizacionEntry> MergeAccountsIntoAccountsByCurrency(
                                     FixedList<TrialBalanceEntry> accountEntries) {
+
+      if (accountEntries.Count == 0) {
+        return new List<ValorizacionEntry>();
+      }
+
+      ExchangeRateByCurrency(accountEntries, true);
+
       var returnedEntries = new List<ValorizacionEntry>();
 
-      foreach (var entry in accountEntries.Where(a => a.Currency.Equals(Currency.USD))) {
+      foreach (var usdEntry in accountEntries.Where(a => a.Currency.Equals(Currency.USD))) {
 
-        returnedEntries.Add(MapToValorizedReport(entry));
+        returnedEntries.Add(new ValorizacionEntry().MapToValorizedReport(usdEntry));
 
       }
 
@@ -72,59 +106,22 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
     #region Private methods
 
 
-    private ValorizacionEntry MapToValorizedReport(TrialBalanceEntry entry) {
-      ValorizacionEntry valorizacion = new ValorizacionEntry();
-
-      valorizacion.ItemType = entry.ItemType;
-      valorizacion.Account = entry.Account;
-      valorizacion.Currency = entry.Currency;
-      valorizacion.Sector = entry.Sector;
-
-      valorizacion.CurrentBalance = entry.CurrentBalance;
-      valorizacion.InitialBalance = entry.InitialBalance;
-      valorizacion.ExchangeRate = entry.ExchangeRate;
-
-      ValidateCurrencyByEntry(valorizacion, entry);
-
-      valorizacion.HasParentPostingEntry = entry.HasParentPostingEntry;
-      valorizacion.IsParentPostingEntry = entry.IsParentPostingEntry;
-
-      return valorizacion;
-    }
-
-
     private void MergeForeignBalancesByAccount(List<ValorizacionEntry> returnedEntries, FixedList<TrialBalanceEntry> accountEntries) {
 
       foreach (var entry in accountEntries) {
 
-        var returnedEntry = returnedEntries.Find(a => a.Account.Number == entry.Account.Number);
+        var valorizacion = returnedEntries.Find(a => a.Account.Number == entry.Account.Number);
 
-        if (returnedEntry == null) {
-          returnedEntries.Add(MapToValorizedReport(entry));
+        if (valorizacion == null) {
+          returnedEntries.Add(new ValorizacionEntry().MapToValorizedReport(entry));
         } else {
 
-          ValidateCurrencyByEntry(returnedEntry, entry);
+          valorizacion.AssingValues(entry);
 
         }
 
       } // foreach
 
-    }
-
-
-    private void ValidateCurrencyByEntry(ValorizacionEntry returnedEntry, TrialBalanceEntry entry) {
-      if (entry.Currency.Equals(Currency.USD)) {
-        returnedEntry.DollarBalance = entry.CurrentBalance;
-      }
-      if (entry.Currency.Equals(Currency.YEN)) {
-        returnedEntry.YenBalance = entry.CurrentBalance;
-      }
-      if (entry.Currency.Equals(Currency.EUR)) {
-        returnedEntry.EuroBalance = entry.CurrentBalance;
-      }
-      if (entry.Currency.Equals(Currency.UDI)) {
-        returnedEntry.UdisBalance = entry.CurrentBalance;
-      }
     }
 
 

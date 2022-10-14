@@ -36,13 +36,15 @@ namespace Empiria.FinancialAccounting.BalanceEngine.Adapters {
       columns.Add(new DataTableColumn("accountNumber", "Cuenta", "text-nowrap"));
       columns.Add(new DataTableColumn("accountName", "Nombre", "text-nowrap"));
 
-      columns.Add(new DataTableColumn("initialBalance", "Saldo inicial", "text-nowrap"));
+      columns.Add(new DataTableColumn("usd", "USD", "text-nowrap"));
+      columns.Add(new DataTableColumn("yen", "YEN", "text-nowrap"));
+      columns.Add(new DataTableColumn("eur", "EUR", "text-nowrap"));
+      columns.Add(new DataTableColumn("udi", "UDI", "text-nowrap"));
 
-      //columns.Add(new DataTableColumn("mesAnterior", "Mes anterior", "text-nowrap"));
-      columns.Add(new DataTableColumn("currentBalance", "Mes actual", "text-nowrap"));
-      columns.Add(new DataTableColumn("effectVal", "Efecto de valorización", "text-nowrap"));
+      //columns.Add(new DataTableColumn("currentBalance", "Mes actual", "text-nowrap"));
+      //columns.Add(new DataTableColumn("effectVal", "Efecto de valorización", "text-nowrap"));
 
-      columns.Add(new DataTableColumn("ValuedEffects", "Efecto de valorización", "text-nowrap"));
+      //columns.Add(new DataTableColumn("ValuedEffects", "Efecto de valorización", "text-nowrap"));
       columns.Add(new DataTableColumn("TotalValued", "TOTAL", "text-nowrap"));
 
       //columns.Add(new DataTableColumn("meses", "Meses", "text-nowrap"));
@@ -54,37 +56,60 @@ namespace Empiria.FinancialAccounting.BalanceEngine.Adapters {
 
     public static ValorizacionEntryDto MapEntry(ValorizacionEntry entry, TrialBalanceQuery query) {
 
-      var dto = new ValorizacionEntryDto() {
+      var dto = new ValorizacionEntryDto();
 
-        ItemType = entry.ItemType,
+      dto.ItemType = entry.ItemType;
 
-        StandardAccountId = entry.Account.Id,
-        AccountName = entry.Account.Name,
-        AccountNumber = entry.Account.Number,
-        SectorCode = entry.Sector.Code,
-        CurrencyCode = entry.Currency.Code,
+      dto.StandardAccountId = entry.Account.Id;
+      dto.AccountName = entry.Account.Name;
+      dto.AccountNumber = entry.Account.Number;
+      dto.CurrencyCode = entry.Currency.Code;
 
-        InitialBalance = entry.InitialBalance,
-        CurrentBalance = entry.CurrentBalance,
-        ValuedEffects = entry.ValuedEffects,
-        TotalValued = entry.TotalValued,
-        TotalBalance = entry.TotalBalance,
+      //dto.TotalBalance = entry.TotalBalance;
 
-        DollarBalance = entry.DollarBalance,
-        EuroBalance = entry.EuroBalance,
-        YenBalance = entry.YenBalance,
-        UdisBalance = entry.UdisBalance,
-        
-        ExchangeRate = entry.ExchangeRate,
-        ValuedExchangeRate = entry.ValuedExchangeRate
+      AssignValuesByCurrency(dto, entry);
 
-      };
+      dto.ValuedExchangeRate = entry.ValuedExchangeRate;
+
 
       return dto;
     }
 
 
     #endregion Public methods
+
+
+    #region Private methods
+
+
+    static private void AssignValuesByCurrency(ValorizacionEntryDto dto, ValorizacionEntry entry) {
+      
+      dto.USD = entry.USD;
+      dto.EUR = entry.EUR;
+      dto.YEN = entry.YEN;
+      dto.UDI = entry.UDI;
+
+      dto.LastUSD = entry.USD * entry.LastExchangeRateUSD;
+      dto.LastYEN = entry.YEN * entry.LastExchangeRateYEN;
+      dto.LastEUR = entry.EUR * entry.LastExchangeRateEUR;
+      dto.LastUDI = entry.UDI * entry.LastExchangeRateUDI;
+
+      dto.CurrentUSD = entry.USD * entry.ExchangeRateUSD;
+      dto.CurrentYEN = entry.YEN * entry.ExchangeRateYEN;
+      dto.CurrentEUR = entry.EUR * entry.ExchangeRateEUR;
+      dto.CurrentUDI = entry.UDI * entry.ExchangeRateUDI;
+
+      dto.ValuedEffectUSD = dto.LastUSD - dto.CurrentUSD;
+      dto.ValuedEffectYEN = dto.LastYEN - dto.CurrentYEN;
+      dto.ValuedEffectEUR = dto.LastEUR - dto.CurrentEUR;
+      dto.ValuedEffectUDI = dto.LastUDI - dto.CurrentUDI;
+
+      dto.TotalValued = dto.ValuedEffectUSD + dto.ValuedEffectYEN + dto.ValuedEffectEUR + dto.ValuedEffectUDI;
+    }
+
+
+    #endregion Private methods
+
 
 
   } // class ValorizacionMapper

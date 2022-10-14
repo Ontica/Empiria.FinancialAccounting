@@ -16,7 +16,7 @@ namespace Empiria.FinancialAccounting.BalanceEngine.Adapters {
   /// with foreign currencies totals and UDIS</summary>
   public class ValorizacionDto {
 
-    
+
     public TrialBalanceQuery Query {
       get; internal set;
     }
@@ -53,15 +53,6 @@ namespace Empiria.FinancialAccounting.BalanceEngine.Adapters {
       get; internal set;
     }
 
-    public decimal InitialBalance {
-      get;
-      internal set;
-    }
-
-    public decimal CurrentBalance {
-      get;
-      internal set;
-    }
 
     public decimal ValuedEffects {
       get;
@@ -79,31 +70,146 @@ namespace Empiria.FinancialAccounting.BalanceEngine.Adapters {
     }
 
 
-    public decimal DollarBalance {
+    public decimal USD {
       get;
       internal set;
     }
 
-    public decimal YenBalance {
+    public decimal YEN {
       get;
       internal set;
     }
 
-    public decimal EuroBalance {
+    public decimal EUR {
       get;
       internal set;
     }
 
-    public decimal UdisBalance {
+    public decimal UDI {
       get;
       internal set;
     }
 
 
-    public decimal ExchangeRate {
+    public decimal LastUSD {
       get;
       internal set;
     }
+
+
+    public decimal LastYEN {
+      get;
+      internal set;
+    }
+
+
+    public decimal LastEUR {
+      get;
+      internal set;
+    }
+
+
+    public decimal LastUDI {
+      get;
+      internal set;
+    }
+
+
+    public decimal CurrentUSD {
+      get;
+      internal set;
+    }
+
+
+    public decimal CurrentYEN {
+      get;
+      internal set;
+    }
+
+
+    public decimal CurrentEUR {
+      get;
+      internal set;
+    }
+
+
+    public decimal CurrentUDI {
+      get;
+      internal set;
+    }
+
+
+    public decimal ValuedEffectUSD {
+      get;
+      internal set;
+    }
+
+
+    public decimal ValuedEffectYEN {
+      get;
+      internal set;
+    }
+
+
+    public decimal ValuedEffectEUR {
+      get;
+      internal set;
+    }
+
+
+    public decimal ValuedEffectUDI {
+      get;
+      internal set;
+    }
+
+
+    public decimal LastExchangeRateUSD {
+      get;
+      internal set;
+    }
+
+
+    public decimal LastExchangeRateYEN {
+      get;
+      internal set;
+    }
+
+
+    public decimal LastExchangeRateEUR {
+      get;
+      internal set;
+    }
+
+
+    public decimal LastExchangeRateUDI {
+      get;
+      internal set;
+    }
+
+
+    public decimal ExchangeRateUSD {
+      get;
+      internal set;
+    }
+
+
+    public decimal ExchangeRateYEN {
+      get;
+      internal set;
+    }
+
+
+    public decimal ExchangeRateEUR {
+      get;
+      internal set;
+    }
+
+
+    public decimal ExchangeRateUDI {
+      get;
+      internal set;
+    }
+
 
     public decimal ValuedExchangeRate {
       get;
