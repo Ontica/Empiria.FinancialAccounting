@@ -32,7 +32,7 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
 
     internal FixedList<ValorizacionEntry> Build() {
 
-      FixedList<TrialBalanceEntry> baseAccountEntries = BalancesDataService.GetTrialBalanceEntries(_query);
+      FixedList <TrialBalanceEntry> baseAccountEntries = BalancesDataService.GetTrialBalanceEntries(_query);
 
       return Build(baseAccountEntries);
     }
@@ -53,9 +53,22 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
       List <ValorizacionEntry> balanceByCurrency =
                       helper.MergeAccountsIntoAccountsByCurrency(accountsByCurrency);
 
-
+      //FixedList<TrialBalanceEntry> accountsByMonth = GetAccountsByFilteredMonth();
 
       return balanceByCurrency.ToFixedList();
+    }
+
+
+    private FixedList<TrialBalanceEntry> GetAccountsByFilteredMonth() {
+
+      //foreach (var item in Month) {
+
+        FixedList<TrialBalanceEntry> baseAccountEntries = BalancesDataService.GetTrialBalanceEntries(_query);
+
+      //}
+      
+
+      throw new NotImplementedException();
     }
 
 
