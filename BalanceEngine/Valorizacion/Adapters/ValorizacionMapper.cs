@@ -88,6 +88,7 @@ namespace Empiria.FinancialAccounting.BalanceEngine.Adapters {
       AssignValuesByCurrency(dto, entry);
 
       dto.ValuedExchangeRate = entry.ValuedExchangeRate;
+      dto.LastChangeDate = entry.LastChangeDate;
 
 
       return dto;

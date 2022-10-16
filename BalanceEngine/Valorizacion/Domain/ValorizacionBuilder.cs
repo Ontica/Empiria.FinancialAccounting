@@ -46,29 +46,12 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
 
       var helper = new ValorizacionHelper(_query);
 
-      FixedList<TrialBalanceEntry> accountsByCurrency = helper.GetAccountsByCurrency(accountEntries);
+      FixedList<ValorizacionEntry> returnedAccounts = helper.GetAccountsWithCurrencies(accountEntries,
+                                                        _query.InitialPeriod.ToDate);
 
-      helper.ExchangeRateByCurrency(accountsByCurrency);
-
-      List <ValorizacionEntry> balanceByCurrency =
-                      helper.MergeAccountsIntoAccountsByCurrency(accountsByCurrency);
-
-      //FixedList<TrialBalanceEntry> accountsByMonth = GetAccountsByFilteredMonth();
-
-      return balanceByCurrency.ToFixedList();
-    }
-
-
-    private FixedList<TrialBalanceEntry> GetAccountsByFilteredMonth() {
-
-      //foreach (var item in Month) {
-
-        FixedList<TrialBalanceEntry> baseAccountEntries = BalancesDataService.GetTrialBalanceEntries(_query);
-
-      //}
+      //FixedList<ValorizacionEntry> accountsInfoByMonth = helper.GetAccountsByFilteredMonth();
       
-
-      throw new NotImplementedException();
+      return returnedAccounts;
     }
 
 

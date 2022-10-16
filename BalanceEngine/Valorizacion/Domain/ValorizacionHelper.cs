@@ -11,6 +11,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using Empiria.FinancialAccounting.BalanceEngine.Adapters;
+using Empiria.FinancialAccounting.BalanceEngine.Data;
 
 namespace Empiria.FinancialAccounting.BalanceEngine {
 
@@ -27,9 +28,9 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
     #region Public methods
 
 
-    internal void ExchangeRateByCurrency(FixedList<TrialBalanceEntry> entries, bool isLastMonth = false) {
+    internal void ExchangeRateByCurrency(FixedList<TrialBalanceEntry> entries, DateTime date, bool isLastMonth = false) {
 
-      DateTime toDate = _query.InitialPeriod.ToDate;
+      DateTime toDate = date;
 
       if (isLastMonth == true) {
         DateTime flagMonth = new DateTime(toDate.Year, toDate.Month, 1);
@@ -51,6 +52,54 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
         }
       }
 
+    }
+
+    internal FixedList<ValorizacionEntry> GetAccountsWithCurrencies(
+                                          FixedList<TrialBalanceEntry> accountEntries,
+                                          DateTime date) {
+      
+      FixedList<TrialBalanceEntry> accountsByCurrency = GetAccountsByCurrency(accountEntries);
+
+      ExchangeRateByCurrency(accountsByCurrency, date);
+
+      List<ValorizacionEntry> balanceByCurrency = MergeAccountsIntoAccountsByCurrency(
+                                                    accountsByCurrency, date);
+
+      return balanceByCurrency.ToFixedList();
+    }
+
+    internal FixedList<ValorizacionEntry> GetAccountsByFilteredMonth() {
+
+      DateTime fromDate = _query.InitialPeriod.FromDate;
+      DateTime toDate = _query.InitialPeriod.ToDate;
+
+      var returnedEntries = new List<ValorizacionEntry>();
+      
+      var totalMonths = Math.Abs((_query.InitialPeriod.ToDate.Month - _query.InitialPeriod.FromDate.Month) +
+                        12 * (_query.InitialPeriod.ToDate.Year - _query.InitialPeriod.FromDate.Year));
+
+      DateTime initialDate = _query.InitialPeriod.FromDate;
+      var daysInMonth = DateTime.DaysInMonth(initialDate.Year, initialDate.Month);
+      DateTime lastDate = new DateTime(initialDate.Year, initialDate.Month, daysInMonth);
+
+      for (int i = 1; i <= totalMonths; i++) {
+
+        List<ValorizacionEntry> accountsByMonth = GetAccountsByMonth(initialDate, lastDate);
+
+        if (accountsByMonth.Count>0) {
+          returnedEntries.AddRange(accountsByMonth);
+        }
+
+        initialDate = initialDate.AddMonths(1);
+        daysInMonth = DateTime.DaysInMonth(initialDate.Year, initialDate.Month);
+        lastDate = new DateTime(initialDate.Year, initialDate.Month, daysInMonth);
+
+      }
+
+      _query.InitialPeriod.FromDate = fromDate;
+      _query.InitialPeriod.ToDate= toDate;
+
+      return returnedEntries.ToFixedList();
     }
 
 
@@ -78,19 +127,20 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
 
 
     internal List<ValorizacionEntry> MergeAccountsIntoAccountsByCurrency(
-                                    FixedList<TrialBalanceEntry> accountEntries) {
+                                    FixedList<TrialBalanceEntry> accountEntries,
+                                    DateTime date) {
 
       if (accountEntries.Count == 0) {
         return new List<ValorizacionEntry>();
       }
 
-      ExchangeRateByCurrency(accountEntries, true);
+      ExchangeRateByCurrency(accountEntries, date, true);
 
       var returnedEntries = new List<ValorizacionEntry>();
 
       foreach (var usdEntry in accountEntries.Where(a => a.Currency.Equals(Currency.USD))) {
 
-        returnedEntries.Add(new ValorizacionEntry().MapToValorizedReport(usdEntry));
+        returnedEntries.Add(new ValorizacionEntry().MapToValorizedReport(usdEntry, date));
 
       }
 
@@ -106,14 +156,30 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
     #region Private methods
 
 
-    private void MergeForeignBalancesByAccount(List<ValorizacionEntry> returnedEntries, FixedList<TrialBalanceEntry> accountEntries) {
+    private List<ValorizacionEntry> GetAccountsByMonth(
+                                          DateTime initialDate, DateTime lastDate) {
+
+      _query.InitialPeriod.FromDate = initialDate;
+      _query.InitialPeriod.ToDate = lastDate;
+
+      FixedList<TrialBalanceEntry> baseAccountEntries = BalancesDataService.GetTrialBalanceEntries(_query);
+
+      FixedList<ValorizacionEntry> returnedAccounts = GetAccountsWithCurrencies(baseAccountEntries, lastDate);
+
+      return returnedAccounts.ToList();
+    }
+
+
+    private void MergeForeignBalancesByAccount(List<ValorizacionEntry> returnedEntries,
+                                               FixedList<TrialBalanceEntry> accountEntries) {
 
       foreach (var entry in accountEntries) {
 
         var valorizacion = returnedEntries.Find(a => a.Account.Number == entry.Account.Number);
 
         if (valorizacion == null) {
-          returnedEntries.Add(new ValorizacionEntry().MapToValorizedReport(entry));
+          returnedEntries.Add(new ValorizacionEntry().MapToValorizedReport(entry,
+                                                        _query.InitialPeriod.ToDate));
         } else {
 
           valorizacion.AssingValues(entry);

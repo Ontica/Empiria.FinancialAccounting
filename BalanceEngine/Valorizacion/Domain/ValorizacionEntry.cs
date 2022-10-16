@@ -122,6 +122,18 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
     }
 
 
+    public DateTime LastChangeDate {
+      get;
+      private set;
+    }
+
+
+    public DateTime ConsultingDate {
+      get;
+      private set;
+    }
+
+
     public bool HasParentPostingEntry {
       get; internal set;
     }
@@ -132,13 +144,15 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
     }
 
 
-    internal ValorizacionEntry MapToValorizedReport(TrialBalanceEntry entry) {
+    internal ValorizacionEntry MapToValorizedReport(TrialBalanceEntry entry, DateTime date) {
 
       this.ItemType = entry.ItemType;
       this.Account = entry.Account;
       this.Currency = entry.Currency;
       this.Sector = entry.Sector;
 
+      this.LastChangeDate = entry.LastChangeDate;
+      this.ConsultingDate = date;
       this.HasParentPostingEntry = entry.HasParentPostingEntry;
       this.IsParentPostingEntry = entry.IsParentPostingEntry;
 

@@ -216,6 +216,19 @@ namespace Empiria.FinancialAccounting.BalanceEngine.Adapters {
       internal set;
     } = 1;
 
+
+    public DateTime LastChangeDate {
+      get;
+      internal set;
+    }
+
+
+    public DateTime ConsultingDate {
+      get;
+      private set;
+    }
+
+
     public TrialBalanceItemType ItemType {
       get;
       internal set;
