@@ -33,78 +33,6 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
     }
 
 
-    public decimal USD {
-      get;
-      internal set;
-    }
-
-
-    public decimal YEN {
-      get;
-      internal set;
-    }
-
-
-    public decimal EUR {
-      get;
-      internal set;
-    }
-
-
-    public decimal UDI {
-      get;
-      internal set;
-    }
-
-
-    public decimal LastExchangeRateUSD {
-      get;
-      internal set;
-    }
-
-
-    public decimal LastExchangeRateYEN {
-      get;
-      internal set;
-    }
-
-
-    public decimal LastExchangeRateEUR {
-      get;
-      internal set;
-    }
-
-
-    public decimal LastExchangeRateUDI {
-      get;
-      internal set;
-    }
-
-
-    public decimal ExchangeRateUSD {
-      get;
-      internal set;
-    }
-
-
-    public decimal ExchangeRateYEN {
-      get;
-      internal set;
-    }
-
-
-    public decimal ExchangeRateEUR {
-      get;
-      internal set;
-    }
-
-
-    public decimal ExchangeRateUDI {
-      get;
-      internal set;
-    }
-
-
     public decimal TotalBalance {
       get;
       internal set;
@@ -117,20 +45,27 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
     } = 1;
 
 
+    public ValorizationByCurrency ValuesByCurrency {
+      get;
+      internal set;
+    } = new ValorizationByCurrency();
+
+
     public TrialBalanceItemType ItemType {
-      get; internal set;
+      get;
+      internal set;
     }
 
 
     public DateTime LastChangeDate {
       get;
-      private set;
+      internal set;
     }
 
 
     public DateTime ConsultingDate {
       get;
-      private set;
+      internal set;
     }
 
 
@@ -166,24 +101,28 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
 
     internal void AssingValues(TrialBalanceEntry entry) {
       if (entry.Currency.Equals(Currency.USD)) {
-        this.USD = entry.InitialBalance;
-        this.ExchangeRateUSD = entry.ExchangeRate;
-        this.LastExchangeRateUSD = entry.SecondExchangeRate;
+        
+        this.ValuesByCurrency.USD = entry.InitialBalance;
+        this.ValuesByCurrency.ExchangeRateUSD = entry.ExchangeRate;
+        this.ValuesByCurrency.LastExchangeRateUSD = entry.SecondExchangeRate;
       }
       if (entry.Currency.Equals(Currency.YEN)) {
-        this.YEN = entry.InitialBalance;
-        this.ExchangeRateYEN = entry.ExchangeRate;
-        this.LastExchangeRateYEN = entry.SecondExchangeRate;
+        
+        this.ValuesByCurrency.YEN = entry.InitialBalance;
+        this.ValuesByCurrency.ExchangeRateYEN = entry.ExchangeRate;
+        this.ValuesByCurrency.LastExchangeRateYEN = entry.SecondExchangeRate;
       }
       if (entry.Currency.Equals(Currency.EUR)) {
-        this.EUR = entry.InitialBalance;
-        this.ExchangeRateEUR = entry.ExchangeRate;
-        this.LastExchangeRateEUR = entry.SecondExchangeRate;
+
+        this.ValuesByCurrency.EUR = entry.InitialBalance;
+        this.ValuesByCurrency.ExchangeRateEUR = entry.ExchangeRate;
+        this.ValuesByCurrency.LastExchangeRateEUR = entry.SecondExchangeRate;
       }
       if (entry.Currency.Equals(Currency.UDI)) {
-        this.UDI = entry.InitialBalance;
-        this.ExchangeRateUDI = entry.ExchangeRate;
-        this.LastExchangeRateUDI = entry.SecondExchangeRate;
+
+        this.ValuesByCurrency.UDI = entry.InitialBalance;
+        this.ValuesByCurrency.ExchangeRateUDI = entry.ExchangeRate;
+        this.ValuesByCurrency.LastExchangeRateUDI = entry.SecondExchangeRate;
       }
     }
 

@@ -59,13 +59,12 @@ namespace Empiria.FinancialAccounting.BalanceEngine.Adapters {
       columns.Add(new DataTableColumn("valuedEffectEUR", "Efecto valorización EUR", "decimal"));
       columns.Add(new DataTableColumn("valuedEffectUDI", "Efecto valorización UDI", "decimal"));
 
-      //columns.Add(new DataTableColumn("currentBalance", "Mes actual", "text-nowrap"));
-      //columns.Add(new DataTableColumn("effectVal", "Efecto de valorización", "text-nowrap"));
-
-      //columns.Add(new DataTableColumn("ValuedEffects", "Efecto de valorización", "text-nowrap"));
       columns.Add(new DataTableColumn("totalValued", "TOTAL", "decimal"));
 
-      //columns.Add(new DataTableColumn("meses", "Meses", "text-nowrap"));
+      //for (int i = 1; i <= 12; i++) {
+      //  columns.Add(new DataTableColumn("meses", $"Mes {i}", "decimal"));
+      //}
+
       columns.Add(new DataTableColumn("totalBalance", "ACUMULADO", "decimal"));
 
       return columns.ToFixedList();
@@ -103,20 +102,20 @@ namespace Empiria.FinancialAccounting.BalanceEngine.Adapters {
 
     static private void AssignValuesByCurrency(ValorizacionEntryDto dto, ValorizacionEntry entry) {
       
-      dto.USD = entry.USD;
-      dto.EUR = entry.EUR;
-      dto.YEN = entry.YEN;
-      dto.UDI = entry.UDI;
+      dto.USD = entry.ValuesByCurrency.USD;
+      dto.EUR = entry.ValuesByCurrency.EUR;
+      dto.YEN = entry.ValuesByCurrency.YEN;
+      dto.UDI = entry.ValuesByCurrency.UDI;
 
-      dto.LastUSD = entry.USD * entry.LastExchangeRateUSD;
-      dto.LastYEN = entry.YEN * entry.LastExchangeRateYEN;
-      dto.LastEUR = entry.EUR * entry.LastExchangeRateEUR;
-      dto.LastUDI = entry.UDI * entry.LastExchangeRateUDI;
+      dto.LastUSD = entry.ValuesByCurrency.USD * entry.ValuesByCurrency.LastExchangeRateUSD;
+      dto.LastYEN = entry.ValuesByCurrency.YEN * entry.ValuesByCurrency.LastExchangeRateYEN;
+      dto.LastEUR = entry.ValuesByCurrency.EUR * entry.ValuesByCurrency.LastExchangeRateEUR;
+      dto.LastUDI = entry.ValuesByCurrency.UDI * entry.ValuesByCurrency.LastExchangeRateUDI;
 
-      dto.CurrentUSD = entry.USD * entry.ExchangeRateUSD;
-      dto.CurrentYEN = entry.YEN * entry.ExchangeRateYEN;
-      dto.CurrentEUR = entry.EUR * entry.ExchangeRateEUR;
-      dto.CurrentUDI = entry.UDI * entry.ExchangeRateUDI;
+      dto.CurrentUSD = entry.ValuesByCurrency.USD * entry.ValuesByCurrency.ExchangeRateUSD;
+      dto.CurrentYEN = entry.ValuesByCurrency.YEN * entry.ValuesByCurrency.ExchangeRateYEN;
+      dto.CurrentEUR = entry.ValuesByCurrency.EUR * entry.ValuesByCurrency.ExchangeRateEUR;
+      dto.CurrentUDI = entry.ValuesByCurrency.UDI * entry.ValuesByCurrency.ExchangeRateUDI;
 
       dto.ValuedEffectUSD = dto.LastUSD - dto.CurrentUSD;
       dto.ValuedEffectYEN = dto.LastYEN - dto.CurrentYEN;
@@ -131,10 +130,10 @@ namespace Empiria.FinancialAccounting.BalanceEngine.Adapters {
 
       var columns = new ColumnsByCurrency();
 
-      columns.USD = entries.Sum(a => a.USD) > 0 ? true : false;
-      columns.YEN = entries.Sum(a => a.YEN) > 0 ? true : false;
-      columns.EUR = entries.Sum(a => a.EUR) > 0 ? true : false;
-      columns.UDI = entries.Sum(a => a.UDI) > 0 ? true : false;
+      columns.USD = entries.Sum(a => a.ValuesByCurrency.USD) > 0 ? true : false;
+      columns.YEN = entries.Sum(a => a.ValuesByCurrency.YEN) > 0 ? true : false;
+      columns.EUR = entries.Sum(a => a.ValuesByCurrency.EUR) > 0 ? true : false;
+      columns.UDI = entries.Sum(a => a.ValuesByCurrency.UDI) > 0 ? true : false;
 
       return columns;
     }
