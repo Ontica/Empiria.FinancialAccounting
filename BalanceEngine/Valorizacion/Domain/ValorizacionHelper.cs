@@ -54,10 +54,63 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
 
     }
 
+
+    internal FixedList<ValorizacionEntry> MergeAccountsByMonth(
+                                          FixedList<ValorizacionEntry> accountsByCurrency,
+                                          FixedList<ValorizacionEntry> accountsInfoByMonth) {
+      var returnedAccounts = new List<ValorizacionEntry>(accountsByCurrency);
+
+      foreach (var account in returnedAccounts) {
+
+        var months = accountsInfoByMonth.FindAll(a => a.Account.Number == account.Account.Number)
+                                        .OrderBy(a => a.ConsultingDate);
+
+        GetValueByMonth(account, months);
+
+      }
+
+      return returnedAccounts.ToFixedList();
+    }
+
+
+    private void GetValueByMonth(ValorizacionEntry account, IOrderedEnumerable<ValorizacionEntry> months) {
+
+      decimal totalByMonth = 0;
+
+      var utility = new ValorizacionUtility();
+
+      foreach (var month in months) {
+
+        ValuesByMonth values = new ValuesByMonth {
+          AccountNumber = month.Account.Number,
+          ConsultingDate = month.ConsultingDate,
+          CurrentBalance = month.TotalValued
+        };
+        account.ValuesByMonth.Add(values);
+
+        account.SetTotalField($"{utility.GetMonthNameAndYear(month.ConsultingDate)}", month.TotalValued);
+        totalByMonth += month.TotalValued;
+      }
+
+      account.ValuesByMonth.Add(new ValuesByMonth {
+        AccountNumber = account.Account.Number,
+        ConsultingDate = account.ConsultingDate,
+        CurrentBalance = account.TotalValued
+      });
+
+      account.SetTotalField($"{utility.GetMonthNameAndYear(account.ConsultingDate)}", account.TotalValued);
+
+      account.TotalAccumulated = totalByMonth += account.TotalValued;
+
+
+
+    }
+
+
     internal FixedList<ValorizacionEntry> GetAccountsWithCurrencies(
                                           FixedList<TrialBalanceEntry> accountEntries,
                                           DateTime date) {
-      
+
       FixedList<TrialBalanceEntry> accountsByCurrency = GetAccountsByCurrency(accountEntries);
 
       ExchangeRateByCurrency(accountsByCurrency, date);
@@ -65,29 +118,30 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
       List<ValorizacionEntry> balanceByCurrency = MergeAccountsIntoAccountsByCurrency(
                                                     accountsByCurrency, date);
 
+      GetTotalValuedByAccount(balanceByCurrency);
+
       return balanceByCurrency.ToFixedList();
     }
 
     internal FixedList<ValorizacionEntry> GetAccountsByFilteredMonth() {
 
+      var accountBalanceByMonth = new List<ValorizacionEntry>();
+
+      DateTime initialDate = new DateTime();
+      DateTime lastDate = new DateTime();
+      int daysInMonth = 0, totalMonths = 0;
+
       DateTime fromDate = _query.InitialPeriod.FromDate;
       DateTime toDate = _query.InitialPeriod.ToDate;
 
-      var returnedEntries = new List<ValorizacionEntry>();
-      
-      var totalMonths = Math.Abs((_query.InitialPeriod.ToDate.Month - _query.InitialPeriod.FromDate.Month) +
-                        12 * (_query.InitialPeriod.ToDate.Year - _query.InitialPeriod.FromDate.Year));
-
-      DateTime initialDate = _query.InitialPeriod.FromDate;
-      var daysInMonth = DateTime.DaysInMonth(initialDate.Year, initialDate.Month);
-      DateTime lastDate = new DateTime(initialDate.Year, initialDate.Month, daysInMonth);
+      GetInitialDate(out daysInMonth, out totalMonths, out initialDate, out lastDate);
 
       for (int i = 1; i <= totalMonths; i++) {
 
         List<ValorizacionEntry> accountsByMonth = GetAccountsByMonth(initialDate, lastDate);
 
-        if (accountsByMonth.Count>0) {
-          returnedEntries.AddRange(accountsByMonth);
+        if (accountsByMonth.Count > 0) {
+          accountBalanceByMonth.AddRange(accountsByMonth);
         }
 
         initialDate = initialDate.AddMonths(1);
@@ -97,9 +151,31 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
       }
 
       _query.InitialPeriod.FromDate = fromDate;
-      _query.InitialPeriod.ToDate= toDate;
+      _query.InitialPeriod.ToDate = toDate;
 
-      return returnedEntries.ToFixedList();
+      return accountBalanceByMonth.ToFixedList();
+    }
+
+    private void GetInitialDate(out int daysInMonth, out int totalMonths,
+                                out DateTime initialDate, out DateTime lastDate) {
+
+      initialDate = _query.InitialPeriod.FromDate;
+      daysInMonth = DateTime.DaysInMonth(initialDate.Year, initialDate.Month);
+      lastDate = new DateTime(initialDate.Year, initialDate.Month, daysInMonth);
+      totalMonths = Math.Abs((_query.InitialPeriod.ToDate.Month - _query.InitialPeriod.FromDate.Month) +
+                              12 * (_query.InitialPeriod.ToDate.Year - _query.InitialPeriod.FromDate.Year));
+
+    }
+
+    private void GetTotalValuedByAccount(List<ValorizacionEntry> returnedEntries) {
+
+      foreach (var account in returnedEntries) {
+        account.TotalValued = account.ValuesByCurrency.ValuedEffectUSD +
+                               account.ValuesByCurrency.ValuedEffectYEN +
+                               account.ValuesByCurrency.ValuedEffectEUR +
+                               account.ValuesByCurrency.ValuedEffectUDI;
+      }
+
     }
 
 

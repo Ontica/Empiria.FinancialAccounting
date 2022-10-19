@@ -89,7 +89,7 @@ namespace Empiria.FinancialAccounting.BalanceEngine.Adapters {
         case TrialBalanceType.Valorizacion:
           
           var valorizacion = list.Select((x) =>
-                ValorizacionMapper.MapEntry((ValorizacionEntry) x, query));
+                ValorizacionMapper.MapEntry((ValorizacionEntry) x));
 
           return new FixedList<ITrialBalanceEntryDto>(valorizacion);
 

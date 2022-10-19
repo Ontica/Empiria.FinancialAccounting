@@ -19,78 +19,59 @@ namespace Empiria.FinancialAccounting.BalanceEngine.Adapters {
     #region Public methods
 
     static internal ValorizacionDto Map(TrialBalanceQuery query,
-                                             FixedList<ValorizacionEntry> entries) {
+                                        FixedList<ValorizacionEntry> entries) {
 
-      //var columnsByCurrency = GetColumnsByCurrency(entries);
+      var iEntries = new FixedList<ITrialBalanceEntry>(entries);
 
       return new ValorizacionDto {
         Query = query,
-        Columns = DataColumns(),
-        Entries = entries.Select(x => MapEntry(x, query))
+        Columns = DataColumns(iEntries),
+        Entries = entries.Select(x => MapEntry(x))
                          .ToFixedList()
       };
     }
 
 
-    public static FixedList<DataTableColumn> DataColumns() {
+    public static FixedList<DataTableColumn> DataColumns(FixedList<ITrialBalanceEntry> entries) {
 
       List<DataTableColumn> columns = new List<DataTableColumn>();
 
       columns.Add(new DataTableColumn("accountNumber", "Cuenta", "text-nowrap"));
       columns.Add(new DataTableColumn("accountName", "Nombre", "text-nowrap"));
 
-      columns.Add(new DataTableColumn("usd", "USD", "decimal"));
-      columns.Add(new DataTableColumn("yen", "YEN", "decimal"));
-      columns.Add(new DataTableColumn("eur", "EUR", "decimal"));
-      columns.Add(new DataTableColumn("udi", "UDI", "decimal"));
+      var columnsByCurrency = GetColumnsByCurrency(entries);
 
-      columns.Add(new DataTableColumn("lastUSD", "Mes anterior USD", "decimal"));
-      columns.Add(new DataTableColumn("lastYEN", "Mes anterior YEN", "decimal"));
-      columns.Add(new DataTableColumn("lastEUR", "Mes anterior EUR", "decimal"));
-      columns.Add(new DataTableColumn("lastUDI", "Mes anterior UDI", "decimal"));
-
-      columns.Add(new DataTableColumn("currentUSD", "Mes actual USD", "decimal"));
-      columns.Add(new DataTableColumn("currentYEN", "Mes actual YEN", "decimal"));
-      columns.Add(new DataTableColumn("currentEUR", "Mes actual EUR", "decimal"));
-      columns.Add(new DataTableColumn("currentUDI", "Mes actual UDI", "decimal"));
-
-      columns.Add(new DataTableColumn("valuedEffectUSD", "Efecto valorización USD", "decimal"));
-      columns.Add(new DataTableColumn("valuedEffectYEN", "Efecto valorización YEN", "decimal"));
-      columns.Add(new DataTableColumn("valuedEffectEUR", "Efecto valorización EUR", "decimal"));
-      columns.Add(new DataTableColumn("valuedEffectUDI", "Efecto valorización UDI", "decimal"));
+      CurrenciesColumns(columns, columnsByCurrency);
+      LastMonthColumns(columns, columnsByCurrency);
+      CurrentMonthColumns(columns, columnsByCurrency);
+      ValuedEffectColumns(columns, columnsByCurrency);
 
       columns.Add(new DataTableColumn("totalValued", "TOTAL", "decimal"));
-
-      //for (int i = 1; i <= 12; i++) {
-      //  columns.Add(new DataTableColumn("meses", $"Mes {i}", "decimal"));
-      //}
-
-      columns.Add(new DataTableColumn("totalBalance", "ACUMULADO", "decimal"));
+      columns.Add(new DataTableColumn("totalAccumulated", "ACUMULADO", "decimal"));
 
       return columns.ToFixedList();
     }
 
-    
-    public static ValorizacionEntryDto MapEntry(ValorizacionEntry entry, TrialBalanceQuery query) {
+
+    public static ValorizacionEntryDto MapEntry(ValorizacionEntry entry) {
 
       var dto = new ValorizacionEntryDto();
 
       dto.ItemType = entry.ItemType;
-
       dto.StandardAccountId = entry.Account.Id;
       dto.AccountName = entry.Account.Name;
       dto.AccountNumber = entry.Account.Number;
       dto.CurrencyCode = entry.Currency.Code;
-
-      //dto.TotalBalance = entry.TotalBalance;
-
-      AssignValuesByCurrency(dto, entry);
-
       dto.ValuedExchangeRate = entry.ValuedExchangeRate;
       dto.LastChangeDate = entry.LastChangeDate;
 
+      AssignValuesByCurrency(dto, entry);
 
-      return dto;
+      dynamic obj = dto;
+
+      SetTotalsFields(obj, entry);
+
+      return obj;
     }
 
 
@@ -101,68 +82,140 @@ namespace Empiria.FinancialAccounting.BalanceEngine.Adapters {
 
 
     static private void AssignValuesByCurrency(ValorizacionEntryDto dto, ValorizacionEntry entry) {
-      
+
       dto.USD = entry.ValuesByCurrency.USD;
       dto.EUR = entry.ValuesByCurrency.EUR;
       dto.YEN = entry.ValuesByCurrency.YEN;
       dto.UDI = entry.ValuesByCurrency.UDI;
 
-      dto.LastUSD = entry.ValuesByCurrency.USD * entry.ValuesByCurrency.LastExchangeRateUSD;
-      dto.LastYEN = entry.ValuesByCurrency.YEN * entry.ValuesByCurrency.LastExchangeRateYEN;
-      dto.LastEUR = entry.ValuesByCurrency.EUR * entry.ValuesByCurrency.LastExchangeRateEUR;
-      dto.LastUDI = entry.ValuesByCurrency.UDI * entry.ValuesByCurrency.LastExchangeRateUDI;
+      dto.LastUSD = entry.ValuesByCurrency.LastUSD;
+      dto.LastYEN = entry.ValuesByCurrency.LastYEN;
+      dto.LastEUR = entry.ValuesByCurrency.LastEUR;
+      dto.LastUDI = entry.ValuesByCurrency.LastUDI;
 
-      dto.CurrentUSD = entry.ValuesByCurrency.USD * entry.ValuesByCurrency.ExchangeRateUSD;
-      dto.CurrentYEN = entry.ValuesByCurrency.YEN * entry.ValuesByCurrency.ExchangeRateYEN;
-      dto.CurrentEUR = entry.ValuesByCurrency.EUR * entry.ValuesByCurrency.ExchangeRateEUR;
-      dto.CurrentUDI = entry.ValuesByCurrency.UDI * entry.ValuesByCurrency.ExchangeRateUDI;
+      dto.CurrentUSD = entry.ValuesByCurrency.CurrentUSD;
+      dto.CurrentYEN = entry.ValuesByCurrency.CurrentYEN;
+      dto.CurrentEUR = entry.ValuesByCurrency.CurrentEUR;
+      dto.CurrentUDI = entry.ValuesByCurrency.CurrentUDI;
 
-      dto.ValuedEffectUSD = dto.LastUSD - dto.CurrentUSD;
-      dto.ValuedEffectYEN = dto.LastYEN - dto.CurrentYEN;
-      dto.ValuedEffectEUR = dto.LastEUR - dto.CurrentEUR;
-      dto.ValuedEffectUDI = dto.LastUDI - dto.CurrentUDI;
+      dto.ValuedEffectUSD = entry.ValuesByCurrency.ValuedEffectUSD;
+      dto.ValuedEffectYEN = entry.ValuesByCurrency.ValuedEffectYEN;
+      dto.ValuedEffectEUR = entry.ValuesByCurrency.ValuedEffectEUR;
+      dto.ValuedEffectUDI = entry.ValuesByCurrency.ValuedEffectUDI;
 
-      dto.TotalValued = dto.ValuedEffectUSD + dto.ValuedEffectYEN + dto.ValuedEffectEUR + dto.ValuedEffectUDI;
+      dto.TotalValued = entry.TotalValued;
+      dto.TotalAccumulated = entry.TotalAccumulated;
     }
 
 
-    private static ColumnsByCurrency GetColumnsByCurrency(FixedList<ValorizacionEntry> entries) {
+    private static void CurrenciesColumns(List<DataTableColumn> columns,
+                                          ColumnsByCurrency columnsByCurrency) {
+      if (columnsByCurrency.USDColumn) {
+        columns.Add(new DataTableColumn("usd", "USD", "decimal"));
+      }
+      if (columnsByCurrency.YENColumn) {
+        columns.Add(new DataTableColumn("yen", "YEN", "decimal"));
+      }
+      if (columnsByCurrency.EURColumn) {
+        columns.Add(new DataTableColumn("eur", "EUR", "decimal"));
+      }
+      if (columnsByCurrency.UDIColumn) {
+        columns.Add(new DataTableColumn("udi", "UDI", "decimal"));
+      }
+    }
+
+
+    private static void CurrentMonthColumns(List<DataTableColumn> columns,
+                                          ColumnsByCurrency columnsByCurrency) {
+      if (columnsByCurrency.USDColumn) {
+        columns.Add(new DataTableColumn("currentUSD", "Mes actual USD", "decimal"));
+      }
+      if (columnsByCurrency.YENColumn) {
+        columns.Add(new DataTableColumn("currentYEN", "Mes actual YEN", "decimal"));
+      }
+      if (columnsByCurrency.EURColumn) {
+        columns.Add(new DataTableColumn("currentEUR", "Mes actual EUR", "decimal"));
+      }
+      if (columnsByCurrency.UDIColumn) {
+        columns.Add(new DataTableColumn("currentUDI", "Mes actual UDI", "decimal"));
+      }
+    }
+
+
+    static private ColumnsByCurrency GetColumnsByCurrency(FixedList<ITrialBalanceEntry> entries) {
+
+      var valorizations = entries.Select(x => (ValorizacionEntry) x);
 
       var columns = new ColumnsByCurrency();
 
-      columns.USD = entries.Sum(a => a.ValuesByCurrency.USD) > 0 ? true : false;
-      columns.YEN = entries.Sum(a => a.ValuesByCurrency.YEN) > 0 ? true : false;
-      columns.EUR = entries.Sum(a => a.ValuesByCurrency.EUR) > 0 ? true : false;
-      columns.UDI = entries.Sum(a => a.ValuesByCurrency.UDI) > 0 ? true : false;
+      columns.USDColumn = valorizations.Sum(a => a.ValuesByCurrency.USD) > 0 ? true : false;
+      columns.YENColumn = valorizations.Sum(a => a.ValuesByCurrency.YEN) > 0 ? true : false;
+      columns.EURColumn = valorizations.Sum(a => a.ValuesByCurrency.EUR) > 0 ? true : false;
+      columns.UDIColumn = valorizations.Sum(a => a.ValuesByCurrency.UDI) > 0 ? true : false;
 
       return columns;
     }
 
 
-    private class ColumnsByCurrency {
-      
-      public bool USD {
-        get; internal set;
+    private static void LastMonthColumns(List<DataTableColumn> columns,
+                                          ColumnsByCurrency columnsByCurrency) {
+      if (columnsByCurrency.USDColumn) {
+        columns.Add(new DataTableColumn("lastUSD", "Mes anterior USD", "decimal"));
       }
-
-      public bool YEN {
-        get; internal set;
+      if (columnsByCurrency.YENColumn) {
+        columns.Add(new DataTableColumn("lastYEN", "Mes anterior YEN", "decimal"));
       }
-
-      public bool EUR {
-        get; internal set;
+      if (columnsByCurrency.EURColumn) {
+        columns.Add(new DataTableColumn("lastEUR", "Mes anterior EUR", "decimal"));
       }
-
-      public bool UDI {
-        get; internal set;
+      if (columnsByCurrency.UDIColumn) {
+        columns.Add(new DataTableColumn("lastUDI", "Mes anterior UDI", "decimal"));
       }
-
     }
 
+
+    private static void ValuedEffectColumns(List<DataTableColumn> columns,
+                                          ColumnsByCurrency columnsByCurrency) {
+      if (columnsByCurrency.USDColumn) {
+        columns.Add(new DataTableColumn("valuedEffectUSD", "Efecto valorización USD", "decimal"));
+      }
+      if (columnsByCurrency.YENColumn) {
+        columns.Add(new DataTableColumn("valuedEffectYEN", "Efecto valorización YEN", "decimal"));
+      }
+      if (columnsByCurrency.EURColumn) {
+        columns.Add(new DataTableColumn("valuedEffectEUR", "Efecto valorización EUR", "decimal"));
+      }
+      if (columnsByCurrency.UDIColumn) {
+        columns.Add(new DataTableColumn("valuedEffectUDI", "Efecto valorización UDI", "decimal"));
+      }
+    }
+
+
+
+    static private DynamicValorizacionEntryDto MapDynamicFields(ValorizacionEntryDto dto, ValorizacionEntry entry) {
+
+      dynamic obj = dto;
+
+      SetTotalsFields(obj, entry);
+
+      return obj;
+
+    }
 
     #endregion Private methods
 
 
+    #region Helpers
+
+    static private void SetTotalsFields(DynamicValorizacionEntryDto o, ValorizacionEntry entry) {
+      var totalsColumns = entry.GetDynamicMemberNames();
+
+      foreach (string column in totalsColumns) {
+        o.SetTotalField(column, entry.GetTotalField(column));
+      }
+    }
+
+    #endregion Helpers
 
   } // class ValorizacionMapper
 

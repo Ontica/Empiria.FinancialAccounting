@@ -9,6 +9,7 @@
 *                                                                                                            *
 ************************* Copyright(c) La Vía Óntica SC, Ontica LLC and contributors. All rights reserved. **/
 using System;
+using System.Collections.Generic;
 
 namespace Empiria.FinancialAccounting.BalanceEngine.Adapters {
 
@@ -35,7 +36,7 @@ namespace Empiria.FinancialAccounting.BalanceEngine.Adapters {
   } // class ValorizacionDto
 
 
-  public class ValorizacionEntryDto : ITrialBalanceEntryDto {
+  public class ValorizacionEntryDto : DynamicValorizacionEntryDto, ITrialBalanceEntryDto {
 
     public string CurrencyCode {
       get; internal set;
@@ -64,7 +65,7 @@ namespace Empiria.FinancialAccounting.BalanceEngine.Adapters {
       internal set;
     }
 
-    public decimal TotalBalance {
+    public decimal TotalAccumulated {
       get;
       internal set;
     }
@@ -163,54 +164,6 @@ namespace Empiria.FinancialAccounting.BalanceEngine.Adapters {
     }
 
 
-    public decimal LastExchangeRateUSD {
-      get;
-      internal set;
-    }
-
-
-    public decimal LastExchangeRateYEN {
-      get;
-      internal set;
-    }
-
-
-    public decimal LastExchangeRateEUR {
-      get;
-      internal set;
-    }
-
-
-    public decimal LastExchangeRateUDI {
-      get;
-      internal set;
-    }
-
-
-    public decimal ExchangeRateUSD {
-      get;
-      internal set;
-    }
-
-
-    public decimal ExchangeRateYEN {
-      get;
-      internal set;
-    }
-
-
-    public decimal ExchangeRateEUR {
-      get;
-      internal set;
-    }
-
-
-    public decimal ExchangeRateUDI {
-      get;
-      internal set;
-    }
-
-
     public decimal ValuedExchangeRate {
       get;
       internal set;
@@ -244,7 +197,46 @@ namespace Empiria.FinancialAccounting.BalanceEngine.Adapters {
       }
     }
 
+
+    public override IEnumerable<string> GetDynamicMemberNames() {
+      List<string> members = new List<string>();
+
+      members.Add("CurrencyCode");
+      members.Add("StandardAccountId");
+      members.Add("AccountNumber");
+      members.Add("AccountName");
+      members.Add("USD");
+      members.Add("YEN");
+      members.Add("EUR");
+      members.Add("UDI");
+      members.Add("LastUSD");
+      members.Add("LastYEN");
+      members.Add("LastEUR");
+      members.Add("LastUDI");
+      members.Add("CurrentUSD");
+      members.Add("CurrentYEN");
+      members.Add("CurrentEUR");
+      members.Add("CurrentUDI");
+      members.Add("ValuedEffectUSD");
+      members.Add("ValuedEffectYEN");
+      members.Add("ValuedEffectEUR");
+      members.Add("ValuedEffectUDI");
+      members.Add("ValuedEffects");
+      members.Add("TotalValued");
+      members.Add("TotalAccumulated");
+
+      members.AddRange(base.GetDynamicMemberNames());
+
+      return members;
+    }
+
+
   } // class ValorizacionEntryDto
+
+
+  public class DynamicValorizacionEntryDto : DynamicEntry {
+
+  } // class DynamicValorizacionEntryDto
 
 
 } // namespace Empiria.FinancialAccounting.BalanceEngine.Adapters

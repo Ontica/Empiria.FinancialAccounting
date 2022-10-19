@@ -38,6 +38,78 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
     }
 
 
+    public decimal LastUSD {
+      get;
+      internal set;
+    }
+
+
+    public decimal LastYEN {
+      get;
+      internal set;
+    }
+
+
+    public decimal LastEUR {
+      get;
+      internal set;
+    }
+
+
+    public decimal LastUDI {
+      get;
+      internal set;
+    }
+
+
+    public decimal CurrentUSD {
+      get;
+      internal set;
+    }
+
+
+    public decimal CurrentYEN {
+      get;
+      internal set;
+    }
+
+
+    public decimal CurrentEUR {
+      get;
+      internal set;
+    }
+
+
+    public decimal CurrentUDI {
+      get;
+      internal set;
+    }
+
+
+    public decimal ValuedEffectUSD {
+      get;
+      internal set;
+    }
+
+
+    public decimal ValuedEffectYEN {
+      get;
+      internal set;
+    }
+
+
+    public decimal ValuedEffectEUR {
+      get;
+      internal set;
+    }
+
+
+    public decimal ValuedEffectUDI {
+      get;
+      internal set;
+    }
+
+
     public decimal LastExchangeRateUSD {
       get;
       internal set;
@@ -86,6 +158,65 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
     }
 
   } // class ValorizationByCurrency
+
+
+  internal class ColumnsByCurrency {
+
+    public bool USDColumn {
+      get; internal set;
+    }
+
+    public bool YENColumn {
+      get; internal set;
+    }
+
+    public bool EURColumn {
+      get; internal set;
+    }
+
+    public bool UDIColumn {
+      get; internal set;
+    }
+
+  } // class ColumnsByCurrency
+
+
+  internal class ValuesByMonth {
+
+
+    public string AccountNumber {
+      get;
+      internal set;
+    }
+
+
+    public DateTime ConsultingDate {
+      get;
+      internal set;
+    }
+
+
+    public decimal CurrentBalance {
+      get;
+      internal set;
+    }
+
+
+    public int Month {
+      get {
+        return ConsultingDate.Month;
+      }
+    }
+
+
+    public int Year {
+      get {
+        return ConsultingDate.Year;
+      }
+    }
+
+
+  } // class ValuesByMonth
 
 
 } // namespace Empiria.FinancialAccounting.BalanceEngine
