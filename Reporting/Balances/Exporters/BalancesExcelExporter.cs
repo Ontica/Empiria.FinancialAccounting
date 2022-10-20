@@ -71,6 +71,7 @@ namespace Empiria.FinancialAccounting.Reporting.Balances {
 
       var balaceSetTable = new BalancesFillOutExcelExporter(_query);
       var saldosSetTable = new SaldosFillOutExcelExporter(_query);
+      var valorizacionTable = new ValorizacionFillOutExcelExporter(_query);
 
       switch (trialBalance.Query.TrialBalanceType) {
         case TrialBalanceType.AnaliticoDeCuentas:
@@ -114,6 +115,11 @@ namespace Empiria.FinancialAccounting.Reporting.Balances {
           saldosSetTable.FillOutSaldosPorCuenta(_excelFile,
                           trialBalance.Entries.Select(x => (SaldosPorCuentaEntryDto) x),
                           trialBalance.Query.WithSubledgerAccount);
+          return;
+
+        case TrialBalanceType.Valorizacion:
+          valorizacionTable.FillOutValorizacion(_excelFile,
+                          trialBalance.Entries.Select(x => (ValorizacionEntryDto) x));
           return;
 
         default:

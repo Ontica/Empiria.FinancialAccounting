@@ -32,7 +32,14 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
 
     internal FixedList<ValorizacionEntry> Build() {
 
+      DateTime initialDate = _query.InitialPeriod.FromDate;
+      _query.InitialPeriod.FromDate = new DateTime(
+                  _query.InitialPeriod.ToDate.Year,
+                  _query.InitialPeriod.ToDate.Month, 1);
+
       FixedList <TrialBalanceEntry> baseAccountEntries = BalancesDataService.GetTrialBalanceEntries(_query);
+
+      _query.InitialPeriod.FromDate = initialDate;
 
       return Build(baseAccountEntries);
     }

@@ -201,6 +201,7 @@ namespace Empiria.FinancialAccounting.BalanceEngine.Adapters {
     public override IEnumerable<string> GetDynamicMemberNames() {
       List<string> members = new List<string>();
 
+      members.Add("ItemType");
       members.Add("CurrencyCode");
       members.Add("StandardAccountId");
       members.Add("AccountNumber");
@@ -223,9 +224,11 @@ namespace Empiria.FinancialAccounting.BalanceEngine.Adapters {
       members.Add("ValuedEffectUDI");
       members.Add("ValuedEffects");
       members.Add("TotalValued");
-      members.Add("TotalAccumulated");
 
       members.AddRange(base.GetDynamicMemberNames());
+
+      members.Add("TotalAccumulated");
+
 
       return members;
     }
