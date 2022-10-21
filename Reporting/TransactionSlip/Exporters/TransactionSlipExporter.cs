@@ -8,6 +8,7 @@
 *                                                                                                            *
 ************************* Copyright(c) La Vía Óntica SC, Ontica LLC and contributors. All rights reserved. **/
 using System;
+
 using Empiria.FinancialAccounting.BanobrasIntegration.TransactionSlips;
 using Empiria.FinancialAccounting.BanobrasIntegration.TransactionSlips.Adapters;
 
@@ -73,17 +74,18 @@ namespace Empiria.FinancialAccounting.Reporting.TransactionSlip.Exporters {
         excelFile.SetCell($"F{i}", slip.Header.RecordingDate);
         excelFile.SetCell($"G{i}", EmpiriaString.Clean(slip.Header.ElaboratedBy));
         excelFile.SetCell($"H{i}", EmpiriaString.Clean(slip.Header.FunctionalArea));
-        excelFile.SetCell($"I{i}", slip.Header.SystemId);
+        excelFile.SetCell($"I{i}", EmpiriaString.Clean(slip.Header.VerificationNumber));
+        excelFile.SetCell($"J{i}", slip.Header.SystemId);
 
         if (slip.Voucher != null) {
-          excelFile.SetCell($"J{i}", EmpiriaString.Clean(slip.Voucher.Name));
+          excelFile.SetCell($"K{i}", EmpiriaString.Clean(slip.Voucher.Name));
         }
 
         if (slip.Header.Status != TransactionSlipStatus.Pending) {
-          excelFile.SetCell($"K{i}", slip.Header.ProcessingDate);
+          excelFile.SetCell($"L{i}", slip.Header.ProcessingDate);
         }
 
-        excelFile.SetCell($"L{i}", slip.Header.StatusName);
+        excelFile.SetCell($"M{i}", slip.Header.StatusName);
 
         if (slip.Issues.Count != 0) {
           excelFile.SetRowStyleBold(i);
@@ -110,13 +112,14 @@ namespace Empiria.FinancialAccounting.Reporting.TransactionSlip.Exporters {
           excelFile.SetCell($"F{i}", slip.Header.RecordingDate);
           excelFile.SetCell($"G{i}", EmpiriaString.Clean(slip.Header.ElaboratedBy));
           excelFile.SetCell($"H{i}", EmpiriaString.Clean(slip.Header.FunctionalArea));
-          excelFile.SetCell($"I{i}", slip.Header.SystemId);
+          excelFile.SetCell($"I{i}", EmpiriaString.Clean(slip.Header.VerificationNumber));
+          excelFile.SetCell($"J{i}", slip.Header.SystemId);
 
           if (slip.Header.Status != TransactionSlipStatus.Pending) {
-            excelFile.SetCell($"J{i}", slip.Header.ProcessingDate);
+            excelFile.SetCell($"K{i}", slip.Header.ProcessingDate);
           }
 
-          excelFile.SetCell($"K{i}", EmpiriaString.Clean(issue.Description));
+          excelFile.SetCell($"L{i}", EmpiriaString.Clean(issue.Description));
 
           i++;
 
