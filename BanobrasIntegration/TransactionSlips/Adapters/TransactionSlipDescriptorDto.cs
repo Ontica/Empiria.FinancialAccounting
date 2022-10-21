@@ -49,6 +49,11 @@ namespace Empiria.FinancialAccounting.BanobrasIntegration.TransactionSlips.Adapt
     }
 
 
+    public string VerificationNumber {
+      get; internal set;
+    }
+
+
     public string ElaboratedBy {
       get; internal set;
     }

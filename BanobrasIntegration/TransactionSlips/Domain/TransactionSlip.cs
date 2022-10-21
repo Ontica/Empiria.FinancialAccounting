@@ -95,6 +95,13 @@ namespace Empiria.FinancialAccounting.BanobrasIntegration.TransactionSlips {
     }
 
 
+    [DataField("ENC_NO_OPERACION")]
+    public int VerificationNumber {
+      get;
+      private set;
+    }
+
+
     [DataField("ID_TRANSACCION", ConvertFrom = typeof(long))]
     public long AccountingVoucherId {
       get;
