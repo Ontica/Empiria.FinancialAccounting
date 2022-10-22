@@ -35,7 +35,6 @@ namespace Empiria.FinancialAccounting.BanobrasIntegration.VouchersImporter.UseCa
 
     #region Importers
 
-
     public ImportVouchersResult ImportVouchersFromExcelFile(ImportVouchersCommand command,
                                                             InputFile excelFileData, bool dryRun) {
       FileInfo excelFile = AssertParametersAreValidAndGetFileInfo(command, excelFileData);
