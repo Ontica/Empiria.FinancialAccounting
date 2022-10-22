@@ -32,35 +32,18 @@ namespace Empiria.FinancialAccounting {
 
     static private void DoPreload() {
 
-      EmpiriaLog.Info($"Application preloading starts at {DateTime.Now}.");
-
       _alreadyExecuted = true;
 
       try {
+        EmpiriaLog.Info($"Application preloading starts at {DateTime.Now}.");
         Subledger.Preload();
-      } catch (Exception e) {
-        EmpiriaLog.Error(e);
-      }
-
-      try {
         SubledgerAccount.Preload();
-      } catch (Exception e) {
-        EmpiriaLog.Error(e);
-      }
-
-      try {
         StandardAccount.Preload();
-      } catch (Exception e) {
-        EmpiriaLog.Error(e);
-      }
-
-      try {
         AccountsChart.Preload();
-      } catch (Exception e) {
-        EmpiriaLog.Error(e);
+        EmpiriaLog.Info($"Application preloading ends at {DateTime.Now}.");
+      } catch {
+        //  no-op
       }
-
-      EmpiriaLog.Info($"Application preloading ends at {DateTime.Now}.");
     }
 
   }  // class Preloader
