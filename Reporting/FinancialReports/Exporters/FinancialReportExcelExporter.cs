@@ -60,8 +60,8 @@ namespace Empiria.FinancialAccounting.Reporting.FinancialReports.Exporters {
       switch (reportType.DesignType) {
         case FinancialReportDesignType.FixedRows:
 
-          _excelFile.SetCell($"L2", DateTime.Now);
-          _excelFile.SetCell($"L3", buildQuery.ToDate);
+          _excelFile.SetCell(_templateConfig.CurrentTimeCell, DateTime.Now);
+          _excelFile.SetCell(_templateConfig.ReportDateCell, buildQuery.ToDate);
 
           return;
 
@@ -105,7 +105,7 @@ namespace Empiria.FinancialAccounting.Reporting.FinancialReports.Exporters {
 
     private void FillOutFixedRowsReport(FixedList<DataTableColumn> columns,
                                         FixedList<FinancialReportEntryDto> entries) {
-      int i = 10;
+      int i = _templateConfig.FirstRowIndex;
 
       foreach (var entry in entries) {
         _excelFile.SetCell($"A{i}", entry.ConceptCode.Replace(" ", string.Empty));
