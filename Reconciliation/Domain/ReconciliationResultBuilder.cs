@@ -54,7 +54,7 @@ namespace Empiria.FinancialAccounting.Reconciliation {
                                 .ThenBy(x => x.AccountNumber)
                                 .ThenBy(x => x.SectorCode);
 
-      return new FixedList<ReconciliationResultEntry>(sorted);
+      return sorted.ToFixedList();
     }
 
 

@@ -13,9 +13,10 @@ using System.Web.Http;
 using Empiria.Storage;
 using Empiria.WebApi;
 
-using Empiria.FinancialAccounting.Reconciliation.UseCases;
 using Empiria.FinancialAccounting.Datasets.Adapters;
+
 using Empiria.FinancialAccounting.Reconciliation.Adapters;
+using Empiria.FinancialAccounting.Reconciliation.UseCases;
 
 namespace Empiria.FinancialAccounting.WebApi.Reconciliation {
 

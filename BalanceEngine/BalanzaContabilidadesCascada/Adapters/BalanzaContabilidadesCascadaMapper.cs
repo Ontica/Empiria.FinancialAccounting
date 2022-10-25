@@ -65,7 +65,7 @@ namespace Empiria.FinancialAccounting.BalanceEngine.Adapters {
                     FixedList<ITrialBalanceEntry> entries, TrialBalanceQuery query) {
 
       var mappedItems = entries.Select((x) => MapEntry((TrialBalanceEntry) x, query));
-      
+
       return new FixedList<BalanzaContabilidadesCascadaEntryDto>(mappedItems);
     }
 
@@ -73,9 +73,9 @@ namespace Empiria.FinancialAccounting.BalanceEngine.Adapters {
     static public BalanzaContabilidadesCascadaEntryDto MapEntry(
                                                         TrialBalanceEntry entry, TrialBalanceQuery query) {
 
-      
+
       var dto = new BalanzaContabilidadesCascadaEntryDto();
-      
+
       AssignLedgerAndCurrencyAndDebtorCreditorInfo(dto, entry);
       AssignLabelNameAndNumberInfo(dto, entry);
       AssignHasAccountStatementAndClickableEntry(dto, entry, query);
@@ -105,7 +105,7 @@ namespace Empiria.FinancialAccounting.BalanceEngine.Adapters {
     private static void AssignHasAccountStatementAndClickableEntry(
                         BalanzaContabilidadesCascadaEntryDto dto,
                         TrialBalanceEntry entry, TrialBalanceQuery query) {
-      
+
       if ((entry.ItemType == TrialBalanceItemType.Entry ||
           entry.ItemType == TrialBalanceItemType.Summary) &&
           !query.UseDefaultValuation && !query.ValuateBalances) {
@@ -118,7 +118,7 @@ namespace Empiria.FinancialAccounting.BalanceEngine.Adapters {
 
     static private void AssignLabelNameAndNumberInfo(BalanzaContabilidadesCascadaEntryDto dto,
                                                      TrialBalanceEntry entry) {
-      
+
       SubledgerAccount subledgerAccount = SubledgerAccount.Parse(entry.SubledgerAccountId);
 
       if (subledgerAccount.IsEmptyInstance || subledgerAccount.Number == "0") {

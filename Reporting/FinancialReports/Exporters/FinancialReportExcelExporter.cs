@@ -85,16 +85,18 @@ namespace Empiria.FinancialAccounting.Reporting.FinancialReports.Exporters {
       switch (reportType.DesignType) {
         case FinancialReportDesignType.FixedRows:
 
-          var entries = new FixedList<FinancialReportEntryDto>(financialReport.Entries.Select(x => (FinancialReportEntryDto) x));
+          var entries = financialReport.Entries.Select(x => (FinancialReportEntryDto) x)
+                                               .ToFixedList();
 
           FillOutFixedRowsReport(financialReport.Columns, entries);
           return;
 
         case FinancialReportDesignType.AccountsIntegration:
 
-          var entries2 = new FixedList<IntegrationReportEntryDto>(financialReport.Entries.Select(x => (IntegrationReportEntryDto) x));
+          var integrationEntries = financialReport.Entries.Select(x => (IntegrationReportEntryDto) x)
+                                                          .ToFixedList();
 
-          FillOutConceptsIntegrationReport(financialReport.Columns, entries2);
+          FillOutConceptsIntegrationReport(financialReport.Columns, integrationEntries);
           return;
 
         default:

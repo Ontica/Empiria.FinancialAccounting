@@ -4,7 +4,7 @@
 *  Assembly : FinancialAccounting.Reconciliation.dll     Pattern   : Empiria Data Object                     *
 *  Type     : OperationalEntry                           License   : Please read LICENSE.txt file            *
 *                                                                                                            *
-*  Summary  : Domain object that holds data for reconciliation operational entries.                          *
+*  Summary  : Domain object that holds data for a reconciliation operational entry.                          *
 *                                                                                                            *
 ************************* Copyright(c) La Vía Óntica SC, Ontica LLC and contributors. All rights reserved. **/
 using System;
@@ -18,7 +18,7 @@ using Empiria.FinancialAccounting.Reconciliation.Data;
 
 namespace Empiria.FinancialAccounting.Reconciliation {
 
-  /// <summary>Domain object that holds data for reconciliation operational entries.</summary>
+  /// <summary>Domain object that holds data for a reconciliation operational entry.</summary>
   internal class OperationalEntry : BaseObject {
 
     private OperationalEntry() {

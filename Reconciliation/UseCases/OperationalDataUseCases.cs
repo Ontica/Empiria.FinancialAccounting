@@ -85,7 +85,7 @@ namespace Empiria.FinancialAccounting.Reconciliation.UseCases {
 
       using (var usecase = DatasetsUseCases.UseCaseInteractor()) {
 
-        var mappedDto = dto.MapToCoreDatasetInputDto();
+        DatasetInputDto mappedDto = dto.MapToCoreDatasetInputDto();
 
         return usecase.GetDatasetsLoadStatus(mappedDto);
       }
@@ -103,7 +103,7 @@ namespace Empiria.FinancialAccounting.Reconciliation.UseCases {
 
 
     internal void RemoveOldDatasetsFor(ReconciliationType reconciliationType) {
-      int REMOVE_EVERY_TWO_HOURS = 2;
+      const int REMOVE_EVERY_TWO_HOURS = 2;
 
       Assertion.Require(reconciliationType, nameof(reconciliationType));
 

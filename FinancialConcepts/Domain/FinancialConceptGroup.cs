@@ -331,6 +331,7 @@ namespace Empiria.FinancialAccounting.FinancialConcepts {
       ((IInvariant) this).AssertInvariant();
     }
 
+
     void IInvariant.AssertInvariant() {
       var concepts = _financialConcepts.Value;
 
@@ -339,16 +340,16 @@ namespace Empiria.FinancialAccounting.FinancialConcepts {
       Assertion.Ensure(_locker, nameof(_locker));
 
       Assertion.Ensure(!concepts.Exists(x => x == null),
-                       "concepts list can not have null items.");
+                       "Concepts list can not have null items.");
 
       Assertion.Ensure(!concepts.Exists(x => x.Status == EntityStatus.Deleted || x.IsEmptyInstance),
-                       "concepts list can not have deleted or empty intance items.");
+                       "Concepts list can not have deleted or empty instance items.");
 
       Assertion.Ensure(concepts.TrueForAll(x => x.Group.Equals(this)),
                        $"All concepts must belong to the group ({this.Name}).");
 
       Assertion.Ensure(concepts.TrueForAll(x => x.Position == concepts.IndexOf(x) + 1),
-                       $"For all concepts, Position property must coincide with their index in the list.");
+                       $"For all concepts, Position property must coincide with their indexes in the list.");
     }
 
     #endregion Helpers
