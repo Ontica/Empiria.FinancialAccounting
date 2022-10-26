@@ -42,10 +42,10 @@ namespace Empiria.FinancialAccounting.FinancialConcepts.UseCases {
     }
 
 
-    public FixedList<NamedEntityDto> GetExternalVariablesSets() {
+    public FixedList<ExternalVariablesSetDto> GetExternalVariablesSets() {
       FixedList<ExternalVariablesSet> sets = ExternalVariablesSet.GetList();
 
-      return sets.MapToNamedEntityList();
+      return ExternalVariableMapper.Map(sets);
     }
 
 

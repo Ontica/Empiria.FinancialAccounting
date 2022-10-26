@@ -70,6 +70,26 @@ namespace Empiria.FinancialAccounting.FinancialConcepts {
 
     #region Properties
 
+    public FixedList<DataTableColumn> DataColumns {
+      get {
+        return base.ExtendedDataField.GetFixedList<DataTableColumn>("dataColumns");
+      }
+      private set {
+        base.ExtendedDataField.Set("dataColumns", value);
+      }
+    }
+
+
+    public FixedList<ExportTo> ExportTo {
+      get {
+        return base.ExtendedDataField.GetFixedList<ExportTo>("exportTo");
+      }
+      private set {
+        base.ExtendedDataField.Set("exportTo", value);
+      }
+    }
+
+
     public FixedList<ExternalVariable> ExternalVariables {
       get {
         return _externalVariables.Value;

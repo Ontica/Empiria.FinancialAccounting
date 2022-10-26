@@ -11,6 +11,30 @@ using System;
 
 namespace Empiria.FinancialAccounting.FinancialConcepts.Adapters {
 
+  /// <summary>DTO for ExternalVariablesSet instances.</summary>
+  public class ExternalVariablesSetDto {
+
+    internal ExternalVariablesSetDto() {
+      // no-op
+    }
+
+    public string UID {
+      get; internal set;
+    }
+
+
+    public string Name {
+      get; internal set;
+    }
+
+    public FixedList<ExportToDto> ExportTo {
+      get; internal set;
+    }
+
+  }  // class ExternalVariablesSetDto
+
+
+
   /// <summary>DTO for ExternalVariable instances.</summary>
   public class ExternalVariableDto {
 

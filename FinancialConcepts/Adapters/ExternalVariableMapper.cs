@@ -14,10 +14,17 @@ namespace Empiria.FinancialAccounting.FinancialConcepts.Adapters {
   /// <summary>Mapping methods for financial external variables.</summary>
   static internal class ExternalVariableMapper {
 
+
+    static internal FixedList<ExternalVariablesSetDto> Map(FixedList<ExternalVariablesSet> list) {
+      return list.Select(x => Map(x)).ToFixedList();
+    }
+
+
     static internal FixedList<ExternalVariableDto> Map(FixedList<ExternalVariable> list) {
       return list.Select(variable => Map(variable))
                  .ToFixedList();
     }
+
 
     static internal ExternalVariableDto Map(ExternalVariable variable) {
       return new ExternalVariableDto {
@@ -27,6 +34,15 @@ namespace Empiria.FinancialAccounting.FinancialConcepts.Adapters {
         Notes = variable.Notes,
         Position = variable.Position,
         SetUID = variable.Set.UID
+      };
+    }
+
+
+    static private ExternalVariablesSetDto Map(ExternalVariablesSet set) {
+      return new ExternalVariablesSetDto {
+         UID = set.UID,
+         Name = set.Name,
+         ExportTo = ExportToMapper.Map(set.ExportTo)
       };
     }
 

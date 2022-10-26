@@ -4,7 +4,7 @@
 *  Assembly : Empiria.FinancialAccounting.WebApi.dll       Pattern   : Query Controller                      *
 *  Type     : ExternalVariablesController                  License   : Please read LICENSE.txt file          *
 *                                                                                                            *
-*  Summary  : Web API used to retrive and edit external variables and their values.                          *
+*  Summary  : Web API used to retrive and edit external variables.                                           *
 *                                                                                                            *
 ************************* Copyright(c) La Vía Óntica SC, Ontica LLC and contributors. All rights reserved. **/
 using System;
@@ -17,7 +17,7 @@ using Empiria.FinancialAccounting.FinancialConcepts.UseCases;
 
 namespace Empiria.FinancialAccounting.WebApi.FinancialConcepts {
 
-  /// <summary>Query web API used to retrive financial concepts in groups.</summary>
+  /// <summary>Web API used to retrive and edit external variables.</summary>
   public class ExternalVariablesController : WebApiController {
 
     #region Web Apis
@@ -27,7 +27,7 @@ namespace Empiria.FinancialAccounting.WebApi.FinancialConcepts {
     public CollectionModel GetExternalVariablesSets() {
 
       using (var usecases = ExternalVariablesUseCases.UseCaseInteractor()) {
-        FixedList<NamedEntityDto> sets = usecases.GetExternalVariablesSets();
+        FixedList<ExternalVariablesSetDto> sets = usecases.GetExternalVariablesSets();
 
         return new CollectionModel(base.Request, sets);
       }
