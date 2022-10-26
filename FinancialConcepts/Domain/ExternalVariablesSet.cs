@@ -10,6 +10,7 @@
 ************************* Copyright(c) La Vía Óntica SC, Ontica LLC and contributors. All rights reserved. **/
 using System;
 
+using Empiria.FinancialAccounting.Datasets;
 
 using Empiria.FinancialAccounting.FinancialConcepts.Data;
 
@@ -17,7 +18,7 @@ namespace Empiria.FinancialAccounting.FinancialConcepts {
 
   /// <summary>Holds a set of external variables, with its unique single purpose is to classify them.
   /// A given external variables always belongs to a single set.</summary>
-  public class ExternalVariablesSet : GeneralObject {
+  public class ExternalVariablesSet : DatasetFamily {
 
     #region Fields
 
@@ -32,12 +33,12 @@ namespace Empiria.FinancialAccounting.FinancialConcepts {
     }
 
 
-    static public ExternalVariablesSet Parse(int id) {
+    static public new ExternalVariablesSet Parse(int id) {
       return BaseObject.ParseId<ExternalVariablesSet>(id);
     }
 
 
-    static public ExternalVariablesSet Parse(string uid) {
+    static public new ExternalVariablesSet Parse(string uid) {
       return BaseObject.ParseKey<ExternalVariablesSet>(uid);
     }
 
@@ -68,7 +69,6 @@ namespace Empiria.FinancialAccounting.FinancialConcepts {
     #endregion Constructors and parsers
 
     #region Properties
-
 
     public FixedList<ExternalVariable> ExternalVariables {
       get {
