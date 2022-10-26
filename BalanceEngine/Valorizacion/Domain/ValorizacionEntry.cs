@@ -47,10 +47,10 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
     } = new ValorizationByCurrency();
 
 
-    public List<ValuesByMonth> ValuesByMonth {
-      get;
-      internal set;
-    } = new List<ValuesByMonth>();
+    //public List<ValuesByMonth> ValuesByMonth {
+    //  get;
+    //  internal set;
+    //} = new List<ValuesByMonth>();
 
 
     public decimal TotalValued {

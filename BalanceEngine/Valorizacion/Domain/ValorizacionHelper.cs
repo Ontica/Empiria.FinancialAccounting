@@ -81,33 +81,18 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
 
       foreach (var month in months) {
 
-        ValuesByMonth values = new ValuesByMonth {
-          AccountNumber = month.Account.Number,
-          ConsultingDate = month.ConsultingDate,
-          CurrentBalance = month.TotalValued
-        };
-        account.ValuesByMonth.Add(values);
-
         account.SetTotalField($"{utility.GetMonthNameAndYear(month.ConsultingDate)}", month.TotalValued);
         totalByMonth += month.TotalValued;
       }
-
-      account.ValuesByMonth.Add(new ValuesByMonth {
-        AccountNumber = account.Account.Number,
-        ConsultingDate = account.ConsultingDate,
-        CurrentBalance = account.TotalValued
-      });
 
       account.SetTotalField($"{utility.GetMonthNameAndYear(account.ConsultingDate)}", account.TotalValued);
 
       account.TotalAccumulated = totalByMonth += account.TotalValued;
 
-
-
     }
 
 
-    internal FixedList<ValorizacionEntry> GetAccountsWithCurrencies(
+    internal FixedList<ValorizacionEntry> GetAccountsBalances(
                                           FixedList<TrialBalanceEntry> accountEntries,
                                           DateTime date) {
 
@@ -240,7 +225,7 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
 
       FixedList<TrialBalanceEntry> baseAccountEntries = BalancesDataService.GetTrialBalanceEntries(_query);
 
-      FixedList<ValorizacionEntry> returnedAccounts = GetAccountsWithCurrencies(baseAccountEntries, lastDate);
+      FixedList<ValorizacionEntry> returnedAccounts = GetAccountsBalances(baseAccountEntries, lastDate);
 
       return returnedAccounts.ToList();
     }

@@ -34,12 +34,13 @@ namespace Empiria.FinancialAccounting.BalanceEngine.Adapters {
 
     public static FixedList<DataTableColumn> DataColumns(FixedList<ITrialBalanceEntry> entries) {
 
+      
+      var valorizations = entries.Select(x => (ValorizacionEntry) x);
+      var columnsByCurrency = GetColumnsByCurrency(valorizations);
+      
       List<DataTableColumn> columns = new List<DataTableColumn>();
-
       columns.Add(new DataTableColumn("accountNumber", "Cuenta", "text-nowrap"));
       columns.Add(new DataTableColumn("accountName", "Nombre", "text-nowrap"));
-
-      var columnsByCurrency = GetColumnsByCurrency(entries);
 
       CurrenciesColumns(columns, columnsByCurrency);
       LastMonthColumns(columns, columnsByCurrency);
@@ -47,6 +48,9 @@ namespace Empiria.FinancialAccounting.BalanceEngine.Adapters {
       ValuedEffectColumns(columns, columnsByCurrency);
 
       columns.Add(new DataTableColumn("totalValued", "TOTAL", "decimal"));
+
+      GetDynamicColumns(columns, valorizations);
+
       columns.Add(new DataTableColumn("totalAccumulated", "ACUMULADO", "decimal"));
 
       return columns.ToFixedList();
@@ -142,9 +146,7 @@ namespace Empiria.FinancialAccounting.BalanceEngine.Adapters {
     }
 
 
-    static private ColumnsByCurrency GetColumnsByCurrency(FixedList<ITrialBalanceEntry> entries) {
-
-      var valorizations = entries.Select(x => (ValorizacionEntry) x);
+    static private ColumnsByCurrency GetColumnsByCurrency(IEnumerable<ValorizacionEntry> valorizations) {
 
       var columns = new ColumnsByCurrency();
 
@@ -154,6 +156,21 @@ namespace Empiria.FinancialAccounting.BalanceEngine.Adapters {
       columns.UDIColumn = valorizations.Sum(a => a.ValuesByCurrency.UDI) > 0 ? true : false;
 
       return columns;
+    }
+
+
+    static private void GetDynamicColumns(List<DataTableColumn> columns,
+                        IEnumerable<ValorizacionEntry> valorizations) {
+
+      var entry = valorizations.FirstOrDefault();
+
+      List<string> members = new List<string>();
+
+      members.AddRange(entry.GetDynamicMemberNames());
+
+      foreach (var member in members) {
+        columns.Add(new DataTableColumn(member.ToLower(), member, "decimal"));
+      }
     }
 
 

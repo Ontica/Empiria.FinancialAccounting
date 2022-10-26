@@ -181,42 +181,4 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
   } // class ColumnsByCurrency
 
 
-  internal class ValuesByMonth {
-
-
-    public string AccountNumber {
-      get;
-      internal set;
-    }
-
-
-    public DateTime ConsultingDate {
-      get;
-      internal set;
-    }
-
-
-    public decimal CurrentBalance {
-      get;
-      internal set;
-    }
-
-
-    public int Month {
-      get {
-        return ConsultingDate.Month;
-      }
-    }
-
-
-    public int Year {
-      get {
-        return ConsultingDate.Year;
-      }
-    }
-
-
-  } // class ValuesByMonth
-
-
 } // namespace Empiria.FinancialAccounting.BalanceEngine

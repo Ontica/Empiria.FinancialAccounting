@@ -53,7 +53,7 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
 
       var helper = new ValorizacionHelper(_query);
 
-      FixedList<ValorizacionEntry> accountsByCurrency = helper.GetAccountsWithCurrencies(accountEntries,
+      FixedList<ValorizacionEntry> accountsByCurrency = helper.GetAccountsBalances(accountEntries,
                                                         _query.InitialPeriod.ToDate);
 
       FixedList<ValorizacionEntry> accountsInfoByMonth = helper.GetAccountsByFilteredMonth();
