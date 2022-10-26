@@ -122,19 +122,6 @@ namespace Empiria.FinancialAccounting.FinancialConcepts {
     }
 
 
-    public bool HasDomesticCurrencyValue {
-      get {
-        return ExtData.Get("hasDomesticCurrencyValue", true);
-      }
-    }
-
-
-    public bool HasForeignCurrencyValue {
-      get {
-        return ExtData.Get("hasForeignCurrencyValue", true);
-      }
-    }
-
     #endregion Properties
 
   } // class ExternalVariable
