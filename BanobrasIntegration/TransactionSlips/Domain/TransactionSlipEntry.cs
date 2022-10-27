@@ -38,6 +38,13 @@ namespace Empiria.FinancialAccounting.BanobrasIntegration.TransactionSlips {
     }
 
 
+    [DataField("MCO_NO_OPERACION")]
+    public int VerificationNumber {
+      get;
+      private set;
+    }
+
+
     [DataField("MCO_REG_CONTABLE")]
     public string AccountNumber {
       get;

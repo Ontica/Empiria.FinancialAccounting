@@ -148,18 +148,24 @@ namespace Empiria.FinancialAccounting.FinancialConcepts {
     public void Cleanup() {
       FixedList<FinancialConcept> concepts = this.FinancialConcepts;
 
-      foreach (var concept in concepts) {
+      for (int i = 0; i < concepts.Count; i++) {
+        var concept = concepts[i];
+
+        concept.SetPosition(i + 1);
         concept.Cleanup();
         FinancialConceptsData.Write(concept);
-      }
 
-      FixedList<FinancialConceptEntry> items = FinancialConceptsData.GetAllIntegrationEntriesForAGroup(this)
-                                                                    .ToFixedList();
+        FixedList<FinancialConceptEntry> items = concept.Integration;
 
-      foreach (var item in items) {
-        item.Cleanup();
-        FinancialConceptsData.Write(item);
-      }
+        for (int j = 0; j < items.Count; j++) {
+          var item = items[j];
+
+          item.SetPosition(j + 1);
+          item.Cleanup();
+          FinancialConceptsData.Write(item);
+        }
+
+      }  // for i
 
       AssertInvariant();
     }

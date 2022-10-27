@@ -182,7 +182,11 @@ namespace Empiria.FinancialAccounting.BanobrasIntegration.VouchersImporter {
 
         } catch (Exception e) {
           EmpiriaLog.Error(e);
+
           EmpiriaLog.Info($"Póliza '{voucher.Header.UniqueID}': {e.Message}");
+
+          voucher.AddError(e.Message);
+
           return null;
         }
       }  // using

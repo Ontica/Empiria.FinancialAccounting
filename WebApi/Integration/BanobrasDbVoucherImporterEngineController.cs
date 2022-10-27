@@ -64,7 +64,7 @@ namespace Empiria.FinancialAccounting.WebApi.BanobrasIntegration {
       }
     }
 
-    #endregion Encabezados/Movimientos importers
+    #endregion Database importer
 
   }  // class BanobrasDbVoucherImporterEngineController
 

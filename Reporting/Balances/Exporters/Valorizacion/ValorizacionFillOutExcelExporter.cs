@@ -47,20 +47,33 @@ namespace Empiria.FinancialAccounting.Reporting.Balances {
         _excelFile.SetCell($"N{i}", entry.CurrentUDI);
         _excelFile.SetCell($"O{i}", entry.ValuedEffectUSD);
         _excelFile.SetCell($"P{i}", entry.ValuedEffectYEN);
-        _excelFile.SetCell($"P{i}", entry.ValuedEffectEUR);
-        _excelFile.SetCell($"P{i}", entry.ValuedEffectUDI);
+        _excelFile.SetCell($"Q{i}", entry.ValuedEffectEUR);
+        _excelFile.SetCell($"R{i}", entry.ValuedEffectUDI);
+        _excelFile.SetCell($"S{i}", entry.TotalValued);
 
+        //DynamicColumns(_excelFile, entry, i);
 
-        //SetRowClauses(_excelFile, entry, utility, i);
         SetRowStyleBold(_excelFile, entry, i);
         i++;
       }
 
-      //_excelFile.RemoveColumn("");
     }
 
 
     #region Private methods
+
+
+    static private void DynamicColumns(ExcelFile _excelFile, ValorizacionEntryDto entry, int i) {
+
+      List<string> members = new List<string>();
+
+      members.AddRange(entry.GetDynamicMemberNames());
+
+      foreach (var member in members) {
+        _excelFile.SetCell($"T{i}", entry.GetTotalField(member));
+      }
+    }
+
 
     private void SetRowStyleBold(ExcelFile excelFile, ValorizacionEntryDto entry, int i) {
 

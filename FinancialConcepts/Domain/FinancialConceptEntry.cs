@@ -223,7 +223,7 @@ namespace Empiria.FinancialAccounting.FinancialConcepts {
           if (externalVariable != null) {
             return externalVariable.Name;
           } else {
-            return "El valor por defecto no existe en el catálogo de variables.";
+            return "El dato operativo no existe en el catálogo de variables.";
           }
 
         } else {

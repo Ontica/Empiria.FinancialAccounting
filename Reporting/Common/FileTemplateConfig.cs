@@ -83,6 +83,27 @@ namespace Empiria.FinancialAccounting.Reporting {
       }
     }
 
+
+    public int FirstRowIndex {
+      get {
+        return base.ExtendedDataField.Get<int>("firstRowIndex", 10);
+      }
+    }
+
+
+    public string CurrentTimeCell {
+      get {
+        return base.ExtendedDataField.Get<string>("currentTimeCell", "L2");
+      }
+    }
+
+
+    public string ReportDateCell {
+      get {
+        return base.ExtendedDataField.Get<string>("reportDateCell", "L3");
+      }
+    }
+
     #endregion Properties
 
     #region Methods

@@ -52,11 +52,12 @@ namespace Empiria.FinancialAccounting.BanobrasIntegration.VouchersImporter {
                                                                                    ToImportVoucherHeader header) {
       var entries = _movimientos.FindAll(x => x.GetVoucherUniqueID() == header.UniqueID);
 
-      entries = new FixedList<Movimiento>(entries.Select<Movimiento>(x => { x.SetEncabezado(encabezado); return x; } ));
+      entries = entries.Select<Movimiento>(x => { x.SetEncabezado(encabezado); return x; } )
+                       .ToFixedList();
 
       var mapped = entries.Select(x => MapMovimientoToStandardVoucherEntry(header, x));
 
-      return new List<ToImportVoucherEntry>(mapped).ToFixedList();
+      return mapped.ToFixedList();
     }
 
 
@@ -100,7 +101,6 @@ namespace Empiria.FinancialAccounting.BanobrasIntegration.VouchersImporter {
         BaseCurrencyAmount = movimiento.GetBaseCurrencyAmount(),
         DataSource = movimiento.GetVoucherUniqueID(),
         Protected = movimiento.GetProtected()
-
       };
 
       entry.AddIssues(movimiento.GetIssues());
