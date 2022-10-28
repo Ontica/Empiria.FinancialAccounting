@@ -68,11 +68,20 @@ namespace Empiria.FinancialAccounting.Reporting.Balances {
       List<string> members = new List<string>();
 
       members.AddRange(entry.GetDynamicMemberNames());
-
+      
       foreach (var member in members) {
-        _excelFile.SetCell($"T{i}", entry.GetTotalField(member));
+        //for (int index = 0; index <= ExcelColumns.Length; index++) {
+        //  ExcelColumns[index]
+        //}
+        var b = entry.GetTotalField(member);
+        _excelFile.SetCell($"{i}", entry.GetTotalField(member));
       }
     }
+
+
+    static string[] ExcelColumns = {
+      "T", "U", "V", "W", "X", "Y", "Z"
+    };
 
 
     private void SetRowStyleBold(ExcelFile excelFile, ValorizacionEntryDto entry, int i) {
