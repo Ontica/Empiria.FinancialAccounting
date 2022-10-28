@@ -12,8 +12,14 @@ using System.Web.Http;
 
 using Empiria.WebApi;
 
+using Empiria.Storage;
+
+using Empiria.FinancialAccounting.Datasets.Adapters;
+
 using Empiria.FinancialAccounting.FinancialConcepts.Adapters;
 using Empiria.FinancialAccounting.FinancialConcepts.UseCases;
+
+using Empiria.FinancialAccounting.Reporting;
 
 namespace Empiria.FinancialAccounting.WebApi.FinancialConcepts {
 
@@ -32,6 +38,46 @@ namespace Empiria.FinancialAccounting.WebApi.FinancialConcepts {
         ExternalValuesDto result = usecases.GetExternalValues(query);
 
         return new SingleObjectModel(base.Request, result);
+      }
+    }
+
+
+    [HttpPost]
+    [Route("v2/financial-accounting/financial-concepts/external-values/datasets")]
+    public SingleObjectModel GetExternalValuesDatasetsLoadStatus([FromBody] ExternalValuesDatasetDto dto) {
+
+      using (var usecases = ExternalValuesUseCases.UseCaseInteractor()) {
+        DatasetsLoadStatusDto loadStatus = usecases.GetDatasetsLoadStatus(dto);
+
+        return new SingleObjectModel(base.Request, loadStatus);
+      }
+    }
+
+
+    [HttpPost]
+    [Route("v2/financial-accounting/financial-concepts/external-values/import-from-file")]
+    public SingleObjectModel ImportExternalValuesDatasetFromFile() {
+
+      ExternalValuesDatasetDto dto = base.GetFormDataFromHttpRequest<ExternalValuesDatasetDto>("command");
+
+      InputFile excelFile = base.GetInputFileFromHttpRequest(dto.DatasetKind);
+
+      using (var usecases = ExternalValuesUseCases.UseCaseInteractor()) {
+        DatasetsLoadStatusDto datasets = usecases.CreateDataset(dto, excelFile);
+
+        return new SingleObjectModel(base.Request, datasets);
+      }
+    }
+
+
+    [HttpDelete]
+    [Route("v2/financial-accounting/financial-concepts/external-values/datasets/{datasetUID:guid}")]
+    public SingleObjectModel RemoveExternalValuesDataset([FromUri] string datasetUID) {
+
+      using (var usecases = ExternalValuesUseCases.UseCaseInteractor()) {
+        DatasetsLoadStatusDto datasets = usecases.RemoveDataset(datasetUID);
+
+        return new SingleObjectModel(base.Request, datasets);
       }
     }
 

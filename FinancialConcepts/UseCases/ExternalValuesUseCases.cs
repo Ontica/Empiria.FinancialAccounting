@@ -10,6 +10,11 @@
 using System;
 
 using Empiria.Services;
+using Empiria.Storage;
+
+using Empiria.FinancialAccounting.Datasets;
+using Empiria.FinancialAccounting.Datasets.Adapters;
+using Empiria.FinancialAccounting.Datasets.UseCases;
 
 using Empiria.FinancialAccounting.FinancialConcepts.Adapters;
 
@@ -33,6 +38,34 @@ namespace Empiria.FinancialAccounting.FinancialConcepts.UseCases {
 
     #region Use cases
 
+    public DatasetsLoadStatusDto CreateDataset(ExternalValuesDatasetDto dto,
+                                               InputFile fileData) {
+      Assertion.Require(dto, nameof(dto));
+      Assertion.Require(fileData, nameof(fileData));
+
+      dto.EnsureIsValid();
+
+      using (var usecase = DatasetsUseCases.UseCaseInteractor()) {
+        var mappedDto = dto.MapToCoreDatasetInputDto();
+
+        Dataset dataset = usecase.CreateDataset(mappedDto, fileData);
+
+        //var reader = new OperationalEntriesReader(dataset);
+
+        //if (!reader.AllEntriesAreValid()) {
+
+        //  usecase.RemoveDataset(dataset.UID);
+
+        //  Assertion.RequireFail(
+        //    "El archivo tiene un formato que no reconozco o la información que contiene es incorrecta."
+        //  );
+        //}
+      }
+
+      return GetDatasetsLoadStatus(dto);
+    }
+
+
     public ExternalValuesDto GetExternalValues(ExternalValuesQuery query) {
       Assertion.Require(query, nameof(query));
 
@@ -44,6 +77,47 @@ namespace Empiria.FinancialAccounting.FinancialConcepts.UseCases {
 
       return ExternalValuesDataSetMapper.Map(query, dataSet);
     }
+
+
+    public DatasetsLoadStatusDto GetDatasetsLoadStatus(ExternalValuesDatasetDto dto) {
+      Assertion.Require(dto, nameof(dto));
+
+      dto.EnsureIsValid();
+
+      using (var usecase = DatasetsUseCases.UseCaseInteractor()) {
+
+        DatasetInputDto mappedDto = dto.MapToCoreDatasetInputDto();
+
+        return usecase.GetDatasetsLoadStatus(mappedDto);
+      }
+    }
+
+
+    public FixedList<ExternalVariableDto> GetExternalVariables(string setUID) {
+      Assertion.Require(setUID, nameof(setUID));
+
+      ExternalVariablesSet set = ExternalVariablesSet.Parse(setUID);
+
+      return ExternalVariableMapper.Map(set.ExternalVariables);
+    }
+
+
+    public FixedList<NamedEntityDto> GetExternalVariablesSets() {
+      FixedList<ExternalVariablesSet> sets = ExternalVariablesSet.GetList();
+
+      return sets.MapToNamedEntityList();
+    }
+
+
+    public DatasetsLoadStatusDto RemoveDataset(string datasetUID) {
+      Assertion.Require(datasetUID, nameof(datasetUID));
+
+      using (var usecase = DatasetsUseCases.UseCaseInteractor()) {
+
+        return usecase.RemoveDataset(datasetUID);
+      }
+    }
+
 
     #endregion Use cases
 
