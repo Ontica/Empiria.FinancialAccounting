@@ -25,7 +25,7 @@ namespace Empiria.FinancialAccounting.Datasets.Adapters {
         ElaboratedBy = ds.UploadedBy.Alias,
         FileType = ds.DatasetKind.FileType,
         FileSize = ds.MediaLength,
-        FileName = ds.OriginalFileName
+        FileName = ds.OriginalFileName,
         //  Url = ds.FileUrl
       };
     }
@@ -53,7 +53,8 @@ namespace Empiria.FinancialAccounting.Datasets.Adapters {
         Type = dsKind.UID,
         FileType = dsKind.FileType,
         Optional = dsKind.Optional,
-        Count = dsKind.Count
+        Count = dsKind.Count,
+        TemplateUrl = dsKind.TemplateUrl
       };
     }
 

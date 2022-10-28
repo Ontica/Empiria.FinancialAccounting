@@ -28,7 +28,8 @@ namespace Empiria.FinancialAccounting.Datasets {
         FileType = json.Get<FileType>("fileType", FileType.Csv),
         DataFormat = json.Get<string>("format", "Default"),
         Optional = json.Get<bool>("optional", false),
-        Count = json.Get<int>("count", 1)
+        Count = json.Get<int>("count", 1),
+        TemplateUrl = json.Get<string>("templateUrl", String.Empty)
       };
     }
 
@@ -60,6 +61,11 @@ namespace Empiria.FinancialAccounting.Datasets {
 
 
     public int Count {
+      get; private set;
+    }
+
+
+    public string TemplateUrl {
       get; private set;
     }
 

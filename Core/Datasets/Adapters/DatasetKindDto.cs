@@ -35,6 +35,10 @@ namespace Empiria.FinancialAccounting.Datasets.Adapters {
       get; internal set;
     }
 
+    public string TemplateUrl {
+      get; internal set;
+    }
+
   }  // class DatasetKindDto
 
 }  // namespace Empiria.FinancialAccounting.Datasets.Adapters
