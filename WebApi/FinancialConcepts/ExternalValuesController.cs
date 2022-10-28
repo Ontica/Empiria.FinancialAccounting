@@ -43,6 +43,24 @@ namespace Empiria.FinancialAccounting.WebApi.FinancialConcepts {
 
 
     [HttpPost]
+    [Route("v2/financial-accounting/financial-concepts/external-values/excel")]
+    public SingleObjectModel ExportExternalValuesToExcel([FromBody] ExternalValuesQuery query) {
+
+      base.RequireBody(query);
+
+      using (var usecases = ExternalValuesUseCases.UseCaseInteractor()) {
+        ExternalValuesDto result = usecases.GetExternalValues(query);
+
+        var excelExporter = new ExcelExporterService();
+
+        FileReportDto excelFileDto = excelExporter.Export(result);
+
+        return new SingleObjectModel(this.Request, excelFileDto);
+      }
+    }
+
+
+    [HttpPost]
     [Route("v2/financial-accounting/financial-concepts/external-values/datasets")]
     public SingleObjectModel GetExternalValuesDatasetsLoadStatus([FromBody] ExternalValuesDatasetDto dto) {
 

@@ -12,22 +12,16 @@ using System;
 using Empiria.FinancialAccounting.Reporting.Exporters.Excel;
 
 using Empiria.FinancialAccounting.Adapters;
-
 using Empiria.FinancialAccounting.BalanceEngine.Adapters;
-
 using Empiria.FinancialAccounting.FinancialConcepts.Adapters;
-
 using Empiria.FinancialAccounting.BanobrasIntegration.TransactionSlips.Adapters;
-
 using Empiria.FinancialAccounting.Reconciliation.Adapters;
 
 using Empiria.FinancialAccounting.Reporting.FinancialConceptsEntriesTree.Exporters;
-
 using Empiria.FinancialAccounting.Reporting.Reconciliation.Exporters;
-
 using Empiria.FinancialAccounting.Reporting.StoredBalanceSet.Exporters;
-
 using Empiria.FinancialAccounting.Reporting.TransactionSlip.Exporters;
+
 
 namespace Empiria.FinancialAccounting.Reporting {
 
@@ -145,6 +139,23 @@ namespace Empiria.FinancialAccounting.Reporting {
       return excelFile.ToFileReportDto();
     }
 
+
+    public FileReportDto Export(ExternalValuesDto externalValues) {
+      Assertion.Require(externalValues, nameof(externalValues));
+
+      //var templateUID = "ExternalValuesExcelTemplate";
+
+      //var templateConfig = FileTemplateConfig.Parse(templateUID);
+
+      return new FileReportDto(Storage.FileType.Excel,
+                               "http://172.27.207.97/sicofin/files/2022.10.27-20.26.44-r01-banxico.xlsx");
+
+      //var exporter = new AccountsChartExcelExporter(templateConfig);
+
+      //ExcelFile excelFile = exporter.CreateExcelFile(accountsChart);
+
+      //return excelFile.ToFileReportDto();
+    }
 
   }  // class ExcelExporter
 
