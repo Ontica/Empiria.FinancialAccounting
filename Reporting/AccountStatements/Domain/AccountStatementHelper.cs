@@ -131,9 +131,9 @@ namespace Empiria.FinancialAccounting.Reporting.AccountStatements.Domain {
       var returnedVouchers = new List<AccountStatementEntry>(orderingVouchers).ToList();
 
       decimal flagBalance = initialBalance.CurrentBalance;
-      decimal totalDebit = 0, totalCredit = 0;
+      decimal totalDebit, totalCredit;
 
-      SumTotalByDebitCredit(returnedVouchers, flagBalance, totalDebit,totalCredit);
+      SumTotalByDebitCredit(returnedVouchers, flagBalance, out totalDebit, out totalCredit);
 
       AccountStatementEntry currentBalance = AccountStatementEntry.SetTotalAccountBalance(
                                                     _buildQuery.Entry.CurrentBalanceForBalances);
@@ -162,7 +162,9 @@ namespace Empiria.FinancialAccounting.Reporting.AccountStatements.Domain {
     #region Private methods
 
     private void SumTotalByDebitCredit(List<AccountStatementEntry> returnedVouchers,
-                        decimal flagBalance, decimal totalDebit, decimal totalCredit) {
+                        decimal flagBalance, out decimal totalDebit, out decimal totalCredit) {
+      totalCredit = 0;
+      totalDebit = 0;
 
       foreach (var voucher in returnedVouchers) {
         if (voucher.DebtorCreditor == "D") {
