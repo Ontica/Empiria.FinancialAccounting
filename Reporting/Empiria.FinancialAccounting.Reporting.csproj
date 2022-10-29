@@ -65,6 +65,7 @@
     <PackageReference Include="Empiria.Office" Version="2.0.0" />
     <PackageReference Include="Empiria.FinancialAccounting.Core" Version="2.0.0" />
     <PackageReference Include="Empiria.FinancialAccounting.BalanceEngine" Version="2.0.0" />
+    <PackageReference Include="Empiria.FinancialAccounting.ExternalData" Version="2.0.0" />
     <PackageReference Include="Empiria.FinancialAccounting.FinancialReports" Version="2.0.0" />
     <PackageReference Include="Empiria.FinancialAccounting.BanobrasIntegration" Version="2.0.0" />
     <PackageReference Include="Empiria.FinancialAccounting.Vouchers" Version="2.0.0" />
@@ -76,6 +77,7 @@
     <ProjectReference Include="..\..\extensions\Office\Empiria.Office.csproj" />
     <ProjectReference Include="..\Core\Empiria.FinancialAccounting.Core.csproj" />
     <ProjectReference Include="..\BalanceEngine\Empiria.FinancialAccounting.BalanceEngine.csproj" />
+    <ProjectReference Include="..\ExternalData\Empiria.FinancialAccounting.ExternalData.csproj" />
     <ProjectReference Include="..\FinancialReports\Empiria.FinancialAccounting.FinancialReports.csproj" />
     <ProjectReference Include="..\BanobrasIntegration\Empiria.FinancialAccounting.BanobrasIntegration.csproj" />
     <ProjectReference Include="..\Vouchers\Empiria.FinancialAccounting.Vouchers.csproj" />
