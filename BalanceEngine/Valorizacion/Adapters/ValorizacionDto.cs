@@ -229,7 +229,6 @@ namespace Empiria.FinancialAccounting.BalanceEngine.Adapters {
 
       members.Add("TotalAccumulated");
 
-
       return members;
     }
 

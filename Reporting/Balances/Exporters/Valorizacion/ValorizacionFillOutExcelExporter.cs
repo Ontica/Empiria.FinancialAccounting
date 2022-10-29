@@ -9,6 +9,7 @@
 ************************* Copyright(c) La Vía Óntica SC, Ontica LLC and contributors. All rights reserved. **/
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using Empiria.FinancialAccounting.BalanceEngine;
 using Empiria.FinancialAccounting.BalanceEngine.Adapters;
 
@@ -25,8 +26,6 @@ namespace Empiria.FinancialAccounting.Reporting.Balances {
 
 
     public void FillOutValorizacion(ExcelFile _excelFile, IEnumerable<ValorizacionEntryDto> entries) {
-
-      var utility = new UtilityToFillOutExcelExporter(_query);
 
       int i = 5;
       foreach (var entry in entries) {
@@ -51,8 +50,7 @@ namespace Empiria.FinancialAccounting.Reporting.Balances {
         _excelFile.SetCell($"R{i}", entry.ValuedEffectUDI);
         _excelFile.SetCell($"S{i}", entry.TotalValued);
 
-        //DynamicColumns(_excelFile, entry, i);
-
+        DynamicColumns(_excelFile, entry, i);
         SetRowStyleBold(_excelFile, entry, i);
         i++;
       }
@@ -63,25 +61,55 @@ namespace Empiria.FinancialAccounting.Reporting.Balances {
     #region Private methods
 
 
-    static private void DynamicColumns(ExcelFile _excelFile, ValorizacionEntryDto entry, int i) {
+    static private void DynamicColumns(ExcelFile _excelFile,
+                                       ValorizacionEntryDto entry, int i) {
 
       List<string> members = new List<string>();
 
       members.AddRange(entry.GetDynamicMemberNames());
-      
+
+      int letterNumber = 18, secondLetterNumber = 0;
+      string letter = string.Empty;
+      string totalAccumulatedColumn = string.Empty;
+
       foreach (var member in members) {
-        //for (int index = 0; index <= ExcelColumns.Length; index++) {
-        //  ExcelColumns[index]
-        //}
-        var b = entry.GetTotalField(member);
-        _excelFile.SetCell($"{i}", entry.GetTotalField(member));
+
+        string[] memberName = member.Split('_');
+        string memberMonth = memberName[0];
+
+        var monthName = MonthName.Where(a => a.Contains(memberMonth)).FirstOrDefault();
+
+        if (monthName != null) {
+
+          if (letterNumber == 25) {
+
+            letter = ExcelColumns[0] + ExcelColumns[secondLetterNumber];
+            secondLetterNumber += 1;
+            totalAccumulatedColumn = ExcelColumns[0] + ExcelColumns[secondLetterNumber];
+
+          } else {
+
+            letterNumber += 1;
+            letter = ExcelColumns[letterNumber];
+
+            if (letterNumber == 25) {
+              totalAccumulatedColumn = "AA";
+
+            } else {
+              totalAccumulatedColumn = ExcelColumns[letterNumber + 1];
+            }
+          }
+
+          _excelFile.SetCell($"{letter}4", member);
+          _excelFile.SetCell($"{letter + i}", entry.GetTotalField(member));
+        }
       }
+      _excelFile.SetCell($"{totalAccumulatedColumn}4", "ACUMULADO");
+      _excelFile.SetCell($"{totalAccumulatedColumn + i}", entry.TotalAccumulated);
+
     }
 
 
-    static string[] ExcelColumns = {
-      "T", "U", "V", "W", "X", "Y", "Z"
-    };
 
 
     private void SetRowStyleBold(ExcelFile excelFile, ValorizacionEntryDto entry, int i) {
@@ -99,6 +127,21 @@ namespace Empiria.FinancialAccounting.Reporting.Balances {
 
     #endregion Private methods
 
+
+    #region Utility
+
+    static string[] ExcelColumns = {
+      "A", "B", "C", "D", "E", "F", "G", "H", "I", "J", "K", "L", "M",
+      "N", "O", "P", "Q", "R", "S", "T", "U", "V", "W", "X", "Y", "Z"
+    };
+
+
+    static string[] MonthName = {
+      "Enero", "Febrero", "Marzo", "Abril", "Mayo", "Junio",
+      "Julio", "Agosto", "Septiembre", "Octubre", "Noviembre", "Diciembre"
+    };
+
+    #endregion Utility
 
   } // class ValorizacionFillOutExcelExporter
 

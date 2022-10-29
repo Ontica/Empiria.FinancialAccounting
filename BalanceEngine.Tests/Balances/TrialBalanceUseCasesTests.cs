@@ -168,6 +168,7 @@ namespace Empiria.FinancialAccounting.Tests.BalanceEngine {
 
       TrialBalanceDto sut = BalanceEngineProxy.BuildTrialBalance(query);
 
+
       Assert.NotNull(sut);
       Assert.Equal(query, sut.Query);
       Assert.NotEmpty(sut.Entries);
