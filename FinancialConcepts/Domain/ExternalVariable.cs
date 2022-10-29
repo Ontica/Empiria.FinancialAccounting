@@ -13,6 +13,8 @@ using Empiria.Contacts;
 using Empiria.Json;
 using Empiria.StateEnums;
 
+using Empiria.FinancialAccounting.FinancialConcepts.Data;
+
 namespace Empiria.FinancialAccounting.FinancialConcepts {
 
   /// <summary>Holds data about an external variable or value like a
@@ -37,9 +39,10 @@ namespace Empiria.FinancialAccounting.FinancialConcepts {
       return TryParseWithCode(code) != null;
     }
 
-    static internal ExternalVariable TryParseWithCode(string code) {
+    static public ExternalVariable TryParseWithCode(string code) {
       return BaseObject.TryParse<ExternalVariable>($"CLAVE_VARIABLE = '{code}'");
     }
+
 
     static public ExternalVariable Empty {
       get {
@@ -80,7 +83,7 @@ namespace Empiria.FinancialAccounting.FinancialConcepts {
     }
 
 
-    [DataField("CONFIG_VARIABLE")]
+    [DataField("CONFIGURACION_VARIABLE")]
     internal JsonObject ExtData {
       get;
       private set;
@@ -108,7 +111,7 @@ namespace Empiria.FinancialAccounting.FinancialConcepts {
     }
 
 
-    [DataField("STATUS_VARIABLE", Default = EntityStatus.Active)]
+    [DataField("STATUS_VARIABLE_EXTERNA", Default = EntityStatus.Active)]
     public EntityStatus Status {
       get;
       private set;
@@ -123,6 +126,14 @@ namespace Empiria.FinancialAccounting.FinancialConcepts {
 
 
     #endregion Properties
+
+    #region Methods
+
+    public ExternalValue GetValue(DateTime date) {
+      return ExternalVariablesData.GetValue(this, date);
+    }
+
+    #endregion Methods
 
   } // class ExternalVariable
 

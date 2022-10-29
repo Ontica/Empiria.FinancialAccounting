@@ -16,10 +16,11 @@ namespace Empiria.FinancialAccounting.FinancialConcepts.Data {
   /// <summary>Data access layer for financial concepts variables coming from external sources.</summary>
   static internal class ExternalVariablesData {
 
-    static internal ExternalValue GetValue(string externalVariableCode, DateTime date) {
-      var sql = "SELECT * FROM COF_CONCEPTOS_VALORES " +
-               $"WHERE CLAVE_VARIABLE = '{externalVariableCode}' " +
-               $"AND FECHA_APLICACION = {CommonMethods.FormatSqlDbDate(date)}";
+    static internal ExternalValue GetValue(ExternalVariable variable, DateTime date) {
+      var sql = "SELECT * FROM COF_VALORES_EXTERNOS " +
+               $"WHERE ID_VARIABLE_EXTERNA = {variable.Id} " +
+               $"AND FECHA_APLICACION = {CommonMethods.FormatSqlDbDate(date)} " +
+               $"AND STATUS_VALOR_EXTERNO <> 'X'";
 
       var op = DataOperation.Parse(sql);
 
@@ -28,9 +29,9 @@ namespace Empiria.FinancialAccounting.FinancialConcepts.Data {
 
 
     static internal FixedList<ExternalVariable> GetExternalVariables(ExternalVariablesSet set) {
-      var sql = "SELECT * FROM COF_CONCEPTOS_VARIABLES " +
+      var sql = "SELECT * FROM COF_VARIABLES_EXTERNAS " +
                $"WHERE ID_CONJUNTO_BASE = {set.Id} " +
-               $"AND STATUS_VARIABLE <> 'X' " +
+               $"AND STATUS_VARIABLE_EXTERNA <> 'X' " +
                $"ORDER BY POSICION, CLAVE_VARIABLE";
 
       var op = DataOperation.Parse(sql);

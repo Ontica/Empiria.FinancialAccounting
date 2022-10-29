@@ -10,9 +10,8 @@
 using System;
 
 using Empiria.Contacts;
+using Empiria.Json;
 using Empiria.StateEnums;
-
-using Empiria.FinancialAccounting.FinancialConcepts.Data;
 
 namespace Empiria.FinancialAccounting.FinancialConcepts {
 
@@ -37,21 +36,22 @@ namespace Empiria.FinancialAccounting.FinancialConcepts {
       }
     }
 
-
-    static public ExternalValue GetValue(string externalVariableCode,
-                                         DateTime date) {
-      return ExternalVariablesData.GetValue(externalVariableCode, date);
-    }
-
     #endregion Constructors and parsers
 
     #region Properties
 
-    [DataField("CLAVE_VARIABLE")]
-    public string ExternalVariableCode {
+
+    [DataField("ID_VARIABLE_EXTERNA")]
+    public ExternalVariable ExternalVariable {
       get;
       private set;
     }
+
+    [DataField("VALORES_VARIABLE")]
+    private JsonObject ValuesExtData {
+      get;
+      set;
+    } = new JsonObject();
 
 
     [DataField("FECHA_APLICACION")]
@@ -59,28 +59,6 @@ namespace Empiria.FinancialAccounting.FinancialConcepts {
       get;
       private set;
     }
-
-
-    [DataField("NOTAS")]
-    public string Notes {
-      get;
-      private set;
-    }
-
-
-    [DataField("MONEDA_NACIONAL")]
-    public decimal DomesticCurrencyValue {
-      get;
-      private set;
-    }
-
-
-    [DataField("MONEDA_EXTRANJERA")]
-    public decimal ForeignCurrencyValue {
-      get;
-      private set;
-    }
-
 
     [DataField("ID_EDITADO_POR")]
     public Contact UpdatedBy {
@@ -96,10 +74,30 @@ namespace Empiria.FinancialAccounting.FinancialConcepts {
     }
 
 
-    [DataField("STATUS_VALOR_VARIABLE", Default = EntityStatus.Active)]
+    [DataField("STATUS_VALOR_EXTERNO", Default = EntityStatus.Active)]
     public EntityStatus Status {
       get;
       private set;
+    }
+
+
+    public decimal DomesticCurrencyValue {
+      get {
+        return ValuesExtData.Get<decimal>("MonedaNacional", 0m);
+      }
+      set {
+        ValuesExtData.SetIfValue("MonedaNacional", value);
+      }
+    }
+
+
+    public decimal ForeignCurrencyValue {
+      get {
+        return ValuesExtData.Get<decimal>("MonedaExtranjera", 0m);
+      }
+      set {
+        ValuesExtData.SetIfValue("MonedaExtranjera", value);
+      }
     }
 
 

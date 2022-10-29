@@ -203,8 +203,13 @@ namespace Empiria.FinancialAccounting.FinancialReports {
 
 
     private ReportEntryTotals ProcessFixedValue(FinancialConceptEntry integrationEntry) {
-      ExternalValue value = ExternalValue.GetValue(integrationEntry.ExternalVariableCode,
-                                                   _buildQuery.ToDate);
+      var variable = ExternalVariable.TryParseWithCode(integrationEntry.ExternalVariableCode);
+
+      ExternalValue value = ExternalValue.Empty;
+
+      if (variable != null) {
+        value = variable.GetValue(_buildQuery.ToDate);
+      }
 
       var totals = CreateReportEntryTotalsObject();
 
