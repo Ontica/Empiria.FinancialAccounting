@@ -46,6 +46,13 @@ namespace Empiria.FinancialAccounting {
     }
 
 
+    static private string TemplatesBaseUrl {
+      get {
+        return ConfigurationData.Get<string>("Reports.TemplatesBaseUrl");
+      }
+    }
+
+
     static public string TemplatesStoragePath {
       get {
         return ConfigurationData.Get<string>("Reports.TemplatesStoragePath");
@@ -73,6 +80,13 @@ namespace Empiria.FinancialAccounting {
     public string TemplateFullPath {
       get {
         return Path.Combine(TemplatesStoragePath, this.TemplateFileName);
+      }
+    }
+
+
+    public string TemplateUrl {
+      get {
+        return $"{FileTemplateConfig.TemplatesBaseUrl}/{this.TemplateFileName}";
       }
     }
 

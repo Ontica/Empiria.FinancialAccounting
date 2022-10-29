@@ -29,7 +29,7 @@ namespace Empiria.FinancialAccounting.Datasets {
         DataFormat = json.Get<string>("format", "Default"),
         Optional = json.Get<bool>("optional", false),
         Count = json.Get<int>("count", 1),
-        TemplateUrl = json.Get<string>("templateUrl", String.Empty)
+        TemplateId = json.Get<int>("templateId", -1)
       };
     }
 
@@ -65,8 +65,19 @@ namespace Empiria.FinancialAccounting.Datasets {
     }
 
 
+    private int TemplateId {
+      get; set;
+    }
+
+
     public string TemplateUrl {
-      get; private set;
+      get {
+        if (TemplateId != -1) {
+          return FileTemplateConfig.Parse(TemplateId).TemplateUrl;
+        } else {
+          return string.Empty;
+        }
+      }
     }
 
     #endregion Properties
