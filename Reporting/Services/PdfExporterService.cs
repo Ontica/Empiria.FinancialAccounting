@@ -149,7 +149,7 @@ namespace Empiria.FinancialAccounting.Reporting {
 
 
     private FileReportDto ToFileReportDto(string filename) {
-      return new FileReportDto(FileType.Pdf, FileTemplateConfig.BaseUrl + "/vouchers/" + filename);
+      return new FileReportDto(FileType.Pdf, FileTemplateConfig.GeneratedFilesBaseUrl + "/vouchers/" + filename);
     }
 
 

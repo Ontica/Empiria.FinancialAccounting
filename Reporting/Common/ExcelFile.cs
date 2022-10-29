@@ -36,7 +36,7 @@ namespace Empiria.FinancialAccounting.Reporting {
 
     public string Url {
       get {
-        return $"{FileTemplateConfig.BaseUrl}/{FileInfo.Name}";
+        return $"{FileTemplateConfig.GeneratedFilesBaseUrl}/{FileInfo.Name}";
       }
     }
 

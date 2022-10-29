@@ -52,9 +52,9 @@ namespace Empiria.FinancialAccounting.Reporting.Exporters.Text {
     public string Url {
       get {
         if (FileInfo != null) {
-          return $"{FileTemplateConfig.BaseUrl}/{FileInfo.Name}";
+          return $"{FileTemplateConfig.GeneratedFilesBaseUrl}/{FileInfo.Name}";
         } else {
-          return $"{FileTemplateConfig.BaseUrl}/unavailable_file.txt";
+          return $"{FileTemplateConfig.GeneratedFilesBaseUrl}/unavailable_file.txt";
         }
       }
     }

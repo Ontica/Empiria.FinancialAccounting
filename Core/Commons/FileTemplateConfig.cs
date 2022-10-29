@@ -32,7 +32,7 @@ namespace Empiria.FinancialAccounting {
     }
 
 
-    static public string BaseUrl {
+    static public string GeneratedFilesBaseUrl {
       get {
         return ConfigurationData.Get<string>("Reports.BaseUrl");
       }
