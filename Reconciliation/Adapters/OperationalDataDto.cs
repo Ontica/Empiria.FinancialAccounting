@@ -56,7 +56,7 @@ namespace Empiria.FinancialAccounting.Reconciliation.Adapters {
       var type = ReconciliationType.Parse(dto.ReconciliationTypeUID);
 
       return new DatasetInputDto {
-        DatasetFamilyUID = type.DatasetFamily.UID,
+        DatasetFamilyUID = type.UID,
         DatasetKind      = dto.DatasetKind,
         Date             = dto.Date
       };

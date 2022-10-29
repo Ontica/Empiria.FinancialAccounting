@@ -109,7 +109,7 @@ namespace Empiria.FinancialAccounting.Reconciliation.UseCases {
 
       using (var usecase = DatasetsUseCases.UseCaseInteractor()) {
 
-        usecase.RemoveOldDatasets(reconciliationType.DatasetFamily.UID,
+        usecase.RemoveOldDatasets(reconciliationType.UID,
                                   TimeSpan.FromHours(REMOVE_EVERY_TWO_HOURS));
       }
     }

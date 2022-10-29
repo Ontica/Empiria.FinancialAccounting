@@ -14,7 +14,7 @@ using Empiria.FinancialAccounting.Datasets;
 namespace Empiria.FinancialAccounting.Reconciliation {
 
   /// <summary>Describes a reconciliation type.</summary>
-  internal class ReconciliationType : GeneralObject {
+  internal class ReconciliationType : DatasetFamily {
 
     #region Constructors and parsers
 
@@ -23,12 +23,12 @@ namespace Empiria.FinancialAccounting.Reconciliation {
     }
 
 
-    static internal ReconciliationType Parse(int id) {
+    static internal new ReconciliationType Parse(int id) {
       return BaseObject.ParseId<ReconciliationType>(id);
     }
 
 
-    static public ReconciliationType Parse(string uid) {
+    static public new ReconciliationType Parse(string uid) {
       return BaseObject.ParseKey<ReconciliationType>(uid);
     }
 
@@ -53,19 +53,6 @@ namespace Empiria.FinancialAccounting.Reconciliation {
     }
 
 
-    public DatasetFamily DatasetFamily {
-      get {
-        return ExtendedDataField.Get<DatasetFamily>("datasetFamilyId");
-      }
-    }
-
-
-    public FixedList<DatasetKind> DatasetKinds {
-      get {
-        return this.DatasetFamily.DatasetKinds;
-      }
-    }
-
     public FixedList<ExportTo> ExportTo {
       get {
         return base.ExtendedDataField.GetFixedList<ExportTo>("exportTo");
@@ -76,30 +63,6 @@ namespace Empiria.FinancialAccounting.Reconciliation {
     }
 
     #endregion Properties
-
-    #region Methods
-
-    internal FixedList<Dataset> GetDatasetsList(DateTime date) {
-      return this.DatasetFamily.GetDatasetsList(date);
-    }
-
-
-    internal DatasetKind GetDatasetKind(string uid) {
-      var datasetKind = this.DatasetKinds.Find(x => x.UID == uid);
-
-      Assertion.Require(datasetKind,
-                        $"There is not defined a dataset kind with uid '{uid}'.");
-
-      return datasetKind;
-    }
-
-
-    internal FixedList<DatasetKind> MissingDatasetKinds(DateTime date) {
-      return this.DatasetKinds;
-    }
-
-
-    #endregion Methods
 
   }  // class ReconciliationType
 
