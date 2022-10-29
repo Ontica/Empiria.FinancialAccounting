@@ -1,6 +1,6 @@
 ﻿/* Empiria Financial *****************************************************************************************
 *                                                                                                            *
-*  Module   : Financial Concepts                           Component : Web Api                               *
+*  Module   : External Data                                Component : Web Api                               *
 *  Assembly : Empiria.FinancialAccounting.WebApi.dll       Pattern   : Query Controller                      *
 *  Type     : ExternalVariablesController                  License   : Please read LICENSE.txt file          *
 *                                                                                                            *
@@ -12,10 +12,10 @@ using System.Web.Http;
 
 using Empiria.WebApi;
 
-using Empiria.FinancialAccounting.FinancialConcepts.Adapters;
-using Empiria.FinancialAccounting.FinancialConcepts.UseCases;
+using Empiria.FinancialAccounting.ExternalData.Adapters;
+using Empiria.FinancialAccounting.ExternalData.UseCases;
 
-namespace Empiria.FinancialAccounting.WebApi.FinancialConcepts {
+namespace Empiria.FinancialAccounting.WebApi.ExternalData {
 
   /// <summary>Web API used to retrive and edit external variables.</summary>
   public class ExternalVariablesController : WebApiController {
@@ -29,7 +29,7 @@ namespace Empiria.FinancialAccounting.WebApi.FinancialConcepts {
       using (var usecases = ExternalVariablesUseCases.UseCaseInteractor()) {
         FixedList<ExternalVariablesSetDto> sets = usecases.GetExternalVariablesSets();
 
-        return new CollectionModel(base.Request, sets);
+        return new CollectionModel(Request, sets);
       }
     }
 
@@ -41,7 +41,7 @@ namespace Empiria.FinancialAccounting.WebApi.FinancialConcepts {
       using (var usecases = ExternalVariablesUseCases.UseCaseInteractor()) {
         FixedList<ExternalVariableDto> variables = usecases.GetExternalVariables(setUID);
 
-        return new CollectionModel(base.Request, variables);
+        return new CollectionModel(Request, variables);
       }
     }
 
@@ -49,4 +49,4 @@ namespace Empiria.FinancialAccounting.WebApi.FinancialConcepts {
 
   }  // class ExternalVariablesController
 
-}  // namespace Empiria.FinancialAccounting.WebApi.FinancialConcepts
+}  // namespace Empiria.FinancialAccounting.WebApi.ExternalData

@@ -1,6 +1,6 @@
 ﻿/* Empiria Financial *****************************************************************************************
 *                                                                                                            *
-*  Module   : Financial Concepts                           Component : Web Api                               *
+*  Module   : External Data                                Component : Web Api                               *
 *  Assembly : Empiria.FinancialAccounting.WebApi.dll       Pattern   : Query Controller                      *
 *  Type     : ExternalValuesController                     License   : Please read LICENSE.txt file          *
 *                                                                                                            *
@@ -16,12 +16,12 @@ using Empiria.Storage;
 
 using Empiria.FinancialAccounting.Datasets.Adapters;
 
-using Empiria.FinancialAccounting.FinancialConcepts.Adapters;
-using Empiria.FinancialAccounting.FinancialConcepts.UseCases;
+using Empiria.FinancialAccounting.ExternalData.Adapters;
+using Empiria.FinancialAccounting.ExternalData.UseCases;
 
 using Empiria.FinancialAccounting.Reporting;
 
-namespace Empiria.FinancialAccounting.WebApi.FinancialConcepts {
+namespace Empiria.FinancialAccounting.WebApi.ExternalData {
 
   /// <summary>Web API used to retrive and upload external variables.</summary>
   public class ExternalValuesController : WebApiController {
@@ -37,7 +37,7 @@ namespace Empiria.FinancialAccounting.WebApi.FinancialConcepts {
       using (var usecases = ExternalValuesUseCases.UseCaseInteractor()) {
         ExternalValuesDto result = usecases.GetExternalValues(query);
 
-        return new SingleObjectModel(base.Request, result);
+        return new SingleObjectModel(Request, result);
       }
     }
 
@@ -55,7 +55,7 @@ namespace Empiria.FinancialAccounting.WebApi.FinancialConcepts {
 
         FileReportDto excelFileDto = excelExporter.Export(result);
 
-        return new SingleObjectModel(this.Request, excelFileDto);
+        return new SingleObjectModel(Request, excelFileDto);
       }
     }
 
@@ -67,7 +67,7 @@ namespace Empiria.FinancialAccounting.WebApi.FinancialConcepts {
       using (var usecases = ExternalValuesUseCases.UseCaseInteractor()) {
         DatasetsLoadStatusDto loadStatus = usecases.GetDatasetsLoadStatus(dto);
 
-        return new SingleObjectModel(base.Request, loadStatus);
+        return new SingleObjectModel(Request, loadStatus);
       }
     }
 
@@ -76,14 +76,14 @@ namespace Empiria.FinancialAccounting.WebApi.FinancialConcepts {
     [Route("v2/financial-accounting/financial-concepts/external-values/import-from-file")]
     public SingleObjectModel ImportExternalValuesDatasetFromFile() {
 
-      ExternalValuesDatasetDto dto = base.GetFormDataFromHttpRequest<ExternalValuesDatasetDto>("command");
+      ExternalValuesDatasetDto dto = GetFormDataFromHttpRequest<ExternalValuesDatasetDto>("command");
 
       InputFile excelFile = base.GetInputFileFromHttpRequest(dto.DatasetKind);
 
       using (var usecases = ExternalValuesUseCases.UseCaseInteractor()) {
         DatasetsLoadStatusDto datasets = usecases.CreateDataset(dto, excelFile);
 
-        return new SingleObjectModel(base.Request, datasets);
+        return new SingleObjectModel(Request, datasets);
       }
     }
 
@@ -95,7 +95,7 @@ namespace Empiria.FinancialAccounting.WebApi.FinancialConcepts {
       using (var usecases = ExternalValuesUseCases.UseCaseInteractor()) {
         DatasetsLoadStatusDto datasets = usecases.RemoveDataset(datasetUID);
 
-        return new SingleObjectModel(base.Request, datasets);
+        return new SingleObjectModel(Request, datasets);
       }
     }
 
@@ -103,4 +103,4 @@ namespace Empiria.FinancialAccounting.WebApi.FinancialConcepts {
 
   }  // class ExternalValuesController
 
-}  // namespace Empiria.FinancialAccounting.WebApi.FinancialConcepts
+}  // namespace Empiria.FinancialAccounting.WebApi.ExternalData
