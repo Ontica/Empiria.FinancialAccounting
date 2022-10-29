@@ -32,22 +32,22 @@ Empiria Financial Accounting comprises the following modules:
 4.  **Balance Engine Tests**
     Tests suite for the Balance Engine services.
 
-5.  **Financial Reports**
+5.  **External Data**
+    Provides read and write services for financial external variables and their values.
+
+6.  **Financial Concepts**
+	Provides services that manage financial concepts and their integrations.
+
+7.  **Financial Reports**
     Generates information for financial reports based on accounts balance data structures and financial concepts and rules.
 
-6.  **Reconciliation**
+8.  **Reconciliation**
     Provides services for account's balance reconciliation.
 
-7.  **Reporting**
+9.  **Reporting**
     Generate financial accounting reports and export them to files.
 
-8.  **Rules**
-    Manages the repository of financial concepts and their integration rules.
-
-9.  **Banobras Integration**
-    Import and export data services according to Banobras data models and data infrastructure.
-
-10.  **Vouchers Management**
+10. **Vouchers Management**
     Provides services for vouchers edition, importation and management.
 
 11. **Vouchers Management Tests**
@@ -55,6 +55,10 @@ Empiria Financial Accounting comprises the following modules:
 
 12. **Web API**
     Http/Json RESTful interface for Financial Accounting system.
+
+13. **Banobras Integration**
+    Provides services used to integrate SICOFIN with other BANOBRAS systems.
+
 
 Each single project can be compiled using Visual Studio 2019 Community Edition.
 
