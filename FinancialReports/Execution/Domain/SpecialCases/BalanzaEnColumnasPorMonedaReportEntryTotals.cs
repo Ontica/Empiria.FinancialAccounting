@@ -7,10 +7,10 @@
 *  Summary  : ReportEntryTotals for use in reports based on BalanzaEnColumnasPorMoneda (ACLME).              *
 *                                                                                                            *
 ************************* Copyright(c) La Vía Óntica SC, Ontica LLC and contributors. All rights reserved. **/
-
 using System;
+
 using Empiria.FinancialAccounting.BalanceEngine.Adapters;
-using Empiria.FinancialAccounting.FinancialConcepts;
+using Empiria.FinancialAccounting.ExternalData;
 
 namespace Empiria.FinancialAccounting.FinancialReports {
 

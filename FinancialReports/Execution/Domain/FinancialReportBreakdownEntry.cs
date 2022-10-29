@@ -7,6 +7,7 @@
 *  Summary  : Data structure that holds information about a financial report breakdown entry.                *
 *                                                                                                            *
 ************************* Copyright(c) La Vía Óntica SC, Ontica LLC and contributors. All rights reserved. **/
+using System;
 using System.Collections.Generic;
 
 using Empiria.FinancialAccounting.FinancialConcepts;

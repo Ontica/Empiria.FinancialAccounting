@@ -10,7 +10,7 @@
 using System;
 
 using Empiria.FinancialAccounting.BalanceEngine.Adapters;
-using Empiria.FinancialAccounting.FinancialConcepts;
+using Empiria.FinancialAccounting.ExternalData;
 
 namespace Empiria.FinancialAccounting.FinancialReports {
 

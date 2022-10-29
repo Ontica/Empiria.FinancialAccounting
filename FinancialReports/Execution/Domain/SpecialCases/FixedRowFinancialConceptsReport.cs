@@ -14,6 +14,7 @@ using Empiria.Collections;
 
 using Empiria.FinancialAccounting.BalanceEngine.Adapters;
 
+using Empiria.FinancialAccounting.ExternalData;
 using Empiria.FinancialAccounting.FinancialReports.Adapters;
 using Empiria.FinancialAccounting.FinancialConcepts;
 
