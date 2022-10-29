@@ -11,8 +11,10 @@
 using System;
 
 using Empiria.Contacts;
-using Empiria.FinancialAccounting.FinancialConcepts.Data;
 using Empiria.StateEnums;
+
+using Empiria.FinancialAccounting.ExternalData;
+using Empiria.FinancialAccounting.FinancialConcepts.Data;
 
 namespace Empiria.FinancialAccounting.FinancialConcepts {
 

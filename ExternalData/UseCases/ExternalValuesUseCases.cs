@@ -1,7 +1,7 @@
 ﻿/* Empiria Financial *****************************************************************************************
 *                                                                                                            *
-*  Module   : Financial Concepts                         Component : Use cases Layer                         *
-*  Assembly : FinancialAccounting.FinancialConcepts.dll  Pattern   : Use case interactor class               *
+*  Module   : External Data                              Component : Use cases Layer                         *
+*  Assembly : FinancialAccounting.ExternalData.dll       Pattern   : Use case interactor class               *
 *  Type     : ExternalValuesUseCases                     License   : Please read LICENSE.txt file            *
 *                                                                                                            *
 *  Summary  : Use cases used to update and retrieve financial external values.                               *
@@ -16,9 +16,9 @@ using Empiria.FinancialAccounting.Datasets;
 using Empiria.FinancialAccounting.Datasets.Adapters;
 using Empiria.FinancialAccounting.Datasets.UseCases;
 
-using Empiria.FinancialAccounting.FinancialConcepts.Adapters;
+using Empiria.FinancialAccounting.ExternalData.Adapters;
 
-namespace Empiria.FinancialAccounting.FinancialConcepts.UseCases {
+namespace Empiria.FinancialAccounting.ExternalData.UseCases {
 
   /// <summary>Use cases used to update and retrieve financial external values.</summary>
   public class ExternalValuesUseCases : UseCase {
@@ -123,4 +123,4 @@ namespace Empiria.FinancialAccounting.FinancialConcepts.UseCases {
 
   }  // class ExternalValuesUseCases
 
-}  // namespace Empiria.FinancialAccounting.FinancialConcepts.UseCases
+}  // namespace Empiria.FinancialAccounting.ExternalData.UseCases

@@ -1,19 +1,19 @@
 ﻿/* Empiria Financial *****************************************************************************************
 *                                                                                                            *
-*  Module   : Financial Concepts                         Component : Data Access Layer                       *
-*  Assembly : FinancialAccounting.FinancialConcepts.dll  Pattern   : Data Service                            *
+*  Module   : External Data                              Component : Data Access Layer                       *
+*  Assembly : FinancialAccounting.ExternalData.dll       Pattern   : Data Service                            *
 *  Type     : ExternalVariablesData                      License   : Please read LICENSE.txt file            *
 *                                                                                                            *
-*  Summary  : Data access layer for financial concepts variables coming from external sources.               *
+*  Summary  : Data access layer for financial external variables definition data.                            *
 *                                                                                                            *
 ************************* Copyright(c) La Vía Óntica SC, Ontica LLC and contributors. All rights reserved. **/
 using System;
 
 using Empiria.Data;
 
-namespace Empiria.FinancialAccounting.FinancialConcepts.Data {
+namespace Empiria.FinancialAccounting.ExternalData.Data {
 
-  /// <summary>Data access layer for financial concepts variables coming from external sources.</summary>
+  /// <summary>Data access layer for financial external variables definition data.</summary>
   static internal class ExternalVariablesData {
 
     static internal ExternalValue GetValue(ExternalVariable variable, DateTime date) {
@@ -41,4 +41,4 @@ namespace Empiria.FinancialAccounting.FinancialConcepts.Data {
 
   }  // class ExternalVariablesData
 
-}  // namespace Empiria.FinancialAccounting.FinancialConcepts.Data
+}  // namespace Empiria.FinancialAccounting.ExternalData.Data

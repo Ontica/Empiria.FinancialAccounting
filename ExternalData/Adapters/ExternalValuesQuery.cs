@@ -1,7 +1,7 @@
 ﻿/* Empiria Financial *****************************************************************************************
 *                                                                                                            *
-*  Module   : Financial Concepts                         Component : Interface adapters                      *
-*  Assembly : FinancialAccounting.FinancialConcepts.dll  Pattern   : Query payload                           *
+*  Module   : External Data                              Component : Interface adapters                      *
+*  Assembly : FinancialAccounting.ExternalData.dll       Pattern   : Query payload                           *
 *  Type     : ExternalValuesQuery                        License   : Please read LICENSE.txt file            *
 *                                                                                                            *
 *  Summary  : Query payload used to retrieve external values.                                                *
@@ -10,7 +10,7 @@
 using System;
 using Empiria.FinancialAccounting.Datasets.Adapters;
 
-namespace Empiria.FinancialAccounting.FinancialConcepts.Adapters {
+namespace Empiria.FinancialAccounting.ExternalData.Adapters {
 
   /// <summary>Query payload used to retrieve external values.</summary>
   public class ExternalValuesQuery {
@@ -99,4 +99,4 @@ namespace Empiria.FinancialAccounting.FinancialConcepts.Adapters {
 
   }  // class ExternalValuesDatasetDtoExtensions
 
-}  // namespace Empiria.FinancialAccounting.FinancialConcepts.Adapters
+}  // namespace Empiria.FinancialAccounting.ExternalData.Adapters

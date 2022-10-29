@@ -1,7 +1,7 @@
 ﻿/* Empiria Financial *****************************************************************************************
 *                                                                                                            *
-*  Module   : Financial Concepts                         Component : Interface adapters                      *
-*  Assembly : FinancialAccounting.FinancialConcepts.dll  Pattern   : Data Transfer Object                    *
+*  Module   : External Data                              Component : Interface adapters                      *
+*  Assembly : FinancialAccounting.ExternalData.dll       Pattern   : Data Transfer Object                    *
 *  Type     : ExternalVariableDto                        License   : Please read LICENSE.txt file            *
 *                                                                                                            *
 *  Summary  : DTO for ExternalVariable instances.                                                            *
@@ -9,7 +9,7 @@
 ************************* Copyright(c) La Vía Óntica SC, Ontica LLC and contributors. All rights reserved. **/
 using System;
 
-namespace Empiria.FinancialAccounting.FinancialConcepts.Adapters {
+namespace Empiria.FinancialAccounting.ExternalData.Adapters {
 
   /// <summary>DTO for ExternalVariablesSet instances.</summary>
   public class ExternalVariablesSetDto {
@@ -42,6 +42,12 @@ namespace Empiria.FinancialAccounting.FinancialConcepts.Adapters {
       // no-op
     }
 
+
+    public ExternalVariableDto(string code, string name) {
+      Code = code;
+      Name = name;
+    }
+
     public string UID {
       get; internal set;
     }
@@ -68,4 +74,4 @@ namespace Empiria.FinancialAccounting.FinancialConcepts.Adapters {
 
   }  // class ExternalVariableDto
 
-}  // namespace Empiria.FinancialAccounting.FinancialConcepts.Adapters
+}  // namespace Empiria.FinancialAccounting.ExternalData.Adapters

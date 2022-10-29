@@ -13,6 +13,8 @@ using System.Collections.Generic;
 
 using Empiria.StateEnums;
 
+using Empiria.FinancialAccounting.ExternalData;
+
 using Empiria.FinancialAccounting.FinancialConcepts.Adapters;
 using Empiria.FinancialAccounting.FinancialConcepts.Data;
 

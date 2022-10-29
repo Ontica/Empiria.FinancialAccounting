@@ -1,7 +1,7 @@
 ﻿/* Empiria Financial *****************************************************************************************
 *                                                                                                            *
-*  Module   : Financial Concepts                         Component : Use cases Layer                         *
-*  Assembly : FinancialAccounting.FinancialConcepts.dll  Pattern   : Mapper class                            *
+*  Module   : External Data                              Component : Use cases Layer                         *
+*  Assembly : FinancialAccounting.ExternalData.dll       Pattern   : Mapper class                            *
 *  Type     : ExternalValuesDataSetMapper                License   : Please read LICENSE.txt file            *
 *                                                                                                            *
 *  Summary  : Mapping methods for financial external values.                                                 *
@@ -9,7 +9,7 @@
 ************************* Copyright(c) La Vía Óntica SC, Ontica LLC and contributors. All rights reserved. **/
 using System;
 
-namespace Empiria.FinancialAccounting.FinancialConcepts.Adapters {
+namespace Empiria.FinancialAccounting.ExternalData.Adapters {
 
   /// <summary>Mapping methods for financial external values.</summary>
   static internal class ExternalValuesDataSetMapper {
@@ -24,4 +24,4 @@ namespace Empiria.FinancialAccounting.FinancialConcepts.Adapters {
 
   }  // class ExternalValuesDataSetMapper
 
-}  // namespace Empiria.FinancialAccounting.FinancialConcepts.Adapters
+}  // namespace Empiria.FinancialAccounting.ExternalData.Adapters

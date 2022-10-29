@@ -1,7 +1,7 @@
 ﻿/* Empiria Financial *****************************************************************************************
 *                                                                                                            *
-*  Module   : Financial Concepts                         Component : Interface adapters                      *
-*  Assembly : FinancialAccounting.FinancialConcepts.dll  Pattern   : Mapper class                            *
+*  Module   : External Data                              Component : Interface adapters                      *
+*  Assembly : FinancialAccounting.ExternalData.dll       Pattern   : Mapper class                            *
 *  Type     : ExternalVariableMapper                     License   : Please read LICENSE.txt file            *
 *                                                                                                            *
 *  Summary  : Mapping methods for financial external variables.                                              *
@@ -9,10 +9,10 @@
 ************************* Copyright(c) La Vía Óntica SC, Ontica LLC and contributors. All rights reserved. **/
 using System;
 
-namespace Empiria.FinancialAccounting.FinancialConcepts.Adapters {
+namespace Empiria.FinancialAccounting.ExternalData.Adapters {
 
   /// <summary>Mapping methods for financial external variables.</summary>
-  static internal class ExternalVariableMapper {
+  static public class ExternalVariableMapper {
 
 
     static internal FixedList<ExternalVariablesSetDto> Map(FixedList<ExternalVariablesSet> list) {
@@ -26,7 +26,7 @@ namespace Empiria.FinancialAccounting.FinancialConcepts.Adapters {
     }
 
 
-    static internal ExternalVariableDto Map(ExternalVariable variable) {
+    static public ExternalVariableDto Map(ExternalVariable variable) {
       return new ExternalVariableDto {
         UID = variable.UID,
         Code = variable.Code,
@@ -48,4 +48,4 @@ namespace Empiria.FinancialAccounting.FinancialConcepts.Adapters {
 
   }  // class ExternalVariableMapper
 
-}  // namespace Empiria.FinancialAccounting.FinancialConcepts.Adapters
+}  // namespace Empiria.FinancialAccounting.ExternalData.Adapters

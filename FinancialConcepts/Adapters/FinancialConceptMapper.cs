@@ -8,7 +8,9 @@
 *                                                                                                            *
 ************************* Copyright(c) La Vía Óntica SC, Ontica LLC and contributors. All rights reserved. **/
 using System;
+
 using Empiria.FinancialAccounting.Adapters;
+using Empiria.FinancialAccounting.ExternalData.Adapters;
 
 namespace Empiria.FinancialAccounting.FinancialConcepts.Adapters {
 
@@ -142,10 +144,8 @@ namespace Empiria.FinancialAccounting.FinancialConcepts.Adapters {
         return ExternalVariableMapper.Map(externalVariable);
       }
 
-      return new ExternalVariableDto {
-        Code = entry.ExternalVariableCode,
-        Name = entry.Name
-      };
+      return new ExternalVariableDto(entry.ExternalVariableCode,
+                                     entry.Name);
 
     }
 

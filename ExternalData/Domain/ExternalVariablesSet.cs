@@ -1,7 +1,7 @@
 ﻿/* Empiria Financial *****************************************************************************************
 *                                                                                                            *
-*  Module   : Financial Concepts                         Component : Domain Layer                            *
-*  Assembly : FinancialAccounting.FinancialConcepts.dll  Pattern   : Empiria Aggregate Object                *
+*  Module   : External Data                              Component : Domain Layer                            *
+*  Assembly : FinancialAccounting.ExternalData.dll       Pattern   : Empiria Aggregate Object                *
 *  Type     : ExternalVariablesSet                       License   : Please read LICENSE.txt file            *
 *                                                                                                            *
 *  Summary  : Holds a set of external variables, with its single purpose is to classify them.                *
@@ -12,9 +12,9 @@ using System;
 
 using Empiria.FinancialAccounting.Datasets;
 
-using Empiria.FinancialAccounting.FinancialConcepts.Data;
+using Empiria.FinancialAccounting.ExternalData.Data;
 
-namespace Empiria.FinancialAccounting.FinancialConcepts {
+namespace Empiria.FinancialAccounting.ExternalData {
 
   /// <summary>Holds a set of external variables, with its unique single purpose is to classify them.
   /// A given external variables always belongs to a single set.</summary>
@@ -51,7 +51,7 @@ namespace Empiria.FinancialAccounting.FinancialConcepts {
 
     static public ExternalVariablesSet Empty {
       get {
-        return FinancialConceptGroup.ParseEmpty<ExternalVariablesSet>();
+        return BaseObject.ParseEmpty<ExternalVariablesSet>();
       }
     }
 
@@ -100,4 +100,4 @@ namespace Empiria.FinancialAccounting.FinancialConcepts {
 
   } // class ExternalVariablesSet
 
-}  // namespace Empiria.FinancialAccounting.FinancialConcepts
+}  // namespace Empiria.FinancialAccounting.ExternalData
