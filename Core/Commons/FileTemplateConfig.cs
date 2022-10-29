@@ -1,8 +1,8 @@
 ﻿/* Empiria Financial *****************************************************************************************
 *                                                                                                            *
-*  Module   : Reporting Services                           Component : Excel Exporters                       *
-*  Assembly : FinancialAccounting.Reporting.dll            Pattern   : Information Holder                    *
-*  Type     : FileTemplateConfig                           License   : Please read LICENSE.txt file          *
+*  Module   : Financial Accounting                       Component : Common Types                            *
+*  Assembly : FinancialAccounting.Core.dll               Pattern   : Information Holder                      *
+*  Type     : FileTemplateConfig                         License   : Please read LICENSE.txt file            *
 *                                                                                                            *
 *  Summary  : Holds configuration for file templates.                                                        *
 *                                                                                                            *
@@ -10,10 +10,10 @@
 using System;
 using System.IO;
 
-namespace Empiria.FinancialAccounting.Reporting {
+namespace Empiria.FinancialAccounting {
 
   /// <summary>Holds configuration for file templates.</summary>
-  internal class FileTemplateConfig : GeneralObject {
+  public class FileTemplateConfig : GeneralObject {
 
     #region Constructors and parsers
 
@@ -22,12 +22,12 @@ namespace Empiria.FinancialAccounting.Reporting {
     }
 
 
-    static internal FileTemplateConfig Parse(int id) {
+    static public FileTemplateConfig Parse(int id) {
       return BaseObject.ParseId<FileTemplateConfig>(id);
     }
 
 
-    static internal FileTemplateConfig Parse(string uid) {
+    static public FileTemplateConfig Parse(string uid) {
       return BaseObject.ParseKey<FileTemplateConfig>(uid);
     }
 
@@ -118,4 +118,4 @@ namespace Empiria.FinancialAccounting.Reporting {
 
   }  // class FileTemplateConfig
 
-}  // namespace Empiria.FinancialAccounting.Reporting
+}  // namespace Empiria.FinancialAccounting
