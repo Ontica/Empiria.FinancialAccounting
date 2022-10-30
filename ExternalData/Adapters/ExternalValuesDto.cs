@@ -8,6 +8,7 @@
 *                                                                                                            *
 ************************* Copyright(c) La Vía Óntica SC, Ontica LLC and contributors. All rights reserved. **/
 using System;
+using System.Collections.Generic;
 
 namespace Empiria.FinancialAccounting.ExternalData.Adapters {
 
@@ -37,7 +38,7 @@ namespace Empiria.FinancialAccounting.ExternalData.Adapters {
 
 
   /// <summary>Output DTO that holds an external value with dynamic fields.</summary>
-  public class ExternalValuesEntryDto {
+  public class ExternalValuesEntryDto : DynamicFields {
 
     internal ExternalValuesEntryDto() {
       // no-op
@@ -49,6 +50,17 @@ namespace Empiria.FinancialAccounting.ExternalData.Adapters {
 
     public string VariableName {
       get; internal set;
+    }
+
+    public override IEnumerable<string> GetDynamicMemberNames() {
+      List<string> members = new List<string>();
+
+      members.Add("VariableCode");
+      members.Add("VariableName");
+
+      members.AddRange(base.GetDynamicMemberNames());
+
+      return members;
     }
 
   }  // class ExternalValuesEntryDto

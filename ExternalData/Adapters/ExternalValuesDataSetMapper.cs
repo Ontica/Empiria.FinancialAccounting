@@ -30,11 +30,24 @@ namespace Empiria.FinancialAccounting.ExternalData.Adapters {
 
 
     static private ExternalValuesEntryDto Map(ExternalValueDatasetEntry entry) {
-      return new ExternalValuesEntryDto {
+      var dto = new ExternalValuesEntryDto {
         VariableCode = entry.Variable.Code,
         VariableName = entry.Variable.Name,
       };
+
+      SetTotalsFields(dto, entry);
+
+      return dto;
     }
+
+    static private void SetTotalsFields(ExternalValuesEntryDto o, ExternalValueDatasetEntry entry) {
+      var dynamicFieldNames = entry.Values.GetDynamicMemberNames();
+
+      foreach (string fieldName in dynamicFieldNames) {
+        o.SetTotalField(fieldName, entry.Values.GetTotalField(fieldName));
+      }
+    }
+
 
   }  // class ExternalValuesDataSetMapper
 

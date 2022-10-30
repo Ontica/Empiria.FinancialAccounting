@@ -45,16 +45,30 @@ namespace Empiria.FinancialAccounting.Reporting.ExternalData.Exporters {
     }
 
 
-    private void SetTable(ExternalValuesDto externalValues) {
-      int i = _templateConfig.FirstRowIndex;
+    private void SetDynamicColumns(FixedList<DataTableColumn> dynamicColumns,
+                                   ExternalValuesEntryDto entry, int row) {
+      foreach (var totalColumn in dynamicColumns) {
+        decimal totalField = entry.GetTotalField(totalColumn.Field);
 
-      foreach (var externalValue in externalValues.Entries) {
-        _excelFile.SetCell($"A{i}", externalValue.VariableCode);
-        _excelFile.SetCell($"B{i}", externalValue.VariableName);
-        i++;
+        _excelFile.SetCell($"{totalColumn.Column}{row}", totalField);
       }
     }
 
+
+    private void SetTable(ExternalValuesDto externalValues) {
+      int row = _templateConfig.FirstRowIndex;
+
+      FixedList<DataTableColumn> dynamicColumns = externalValues.Columns.FindAll(x => x.Type == "decimal");
+
+      foreach (var externalValue in externalValues.Entries) {
+        _excelFile.SetCell($"A{row}", externalValue.VariableCode);
+        _excelFile.SetCell($"B{row}", externalValue.VariableName);
+
+        SetDynamicColumns(dynamicColumns, externalValue, row);
+
+        row++;
+      }
+    }
 
     private void SetHeader(ExternalValuesDto externalValues) {
       _excelFile.SetCell(_templateConfig.ReportDateCell, externalValues.Query.Date);

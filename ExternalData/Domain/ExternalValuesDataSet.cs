@@ -45,7 +45,13 @@ namespace Empiria.FinancialAccounting.ExternalData {
       var list = new List<ExternalValueDatasetEntry>(VariablesSet.ExternalVariables.Count);
 
       foreach (var variable in VariablesSet.ExternalVariables) {
-        var entry = new ExternalValueDatasetEntry(variable);
+        var fields = new DynamicFields();
+        fields.SetTotalField("domesticCurrencyTotal", decimal.Parse(variable.Id.ToString()));
+        if (variable.Id % 3 == 0) {
+          fields.SetTotalField("foreignCurrencyTotal", decimal.Parse((variable.Id * 2).ToString()));
+        }
+
+        var entry = new ExternalValueDatasetEntry(variable, fields);
 
         list.Add(entry);
       }

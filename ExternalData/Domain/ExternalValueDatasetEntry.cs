@@ -14,16 +14,34 @@ namespace Empiria.FinancialAccounting.ExternalData {
   /// <summary>Holds a dataset entry for external values using dynamic tabular data.</summary>
   internal class ExternalValueDatasetEntry {
 
-    public ExternalValueDatasetEntry(ExternalVariable variable) {
-      Assertion.Require(variable, nameof(variable));
+    #region Constructors and parsers
 
-      this.Variable = variable;
+    public ExternalValueDatasetEntry(ExternalVariable variable) : this(variable, new DynamicFields()) {
+      // no-op
     }
 
+    public ExternalValueDatasetEntry(ExternalVariable variable, DynamicFields values) {
+      Assertion.Require(variable, nameof(variable));
+      Assertion.Require(values, nameof(values));
+
+      this.Variable = variable;
+      this.Values = values;
+    }
+
+    #endregion Constructors and parsers
+
+    #region Properties
 
     public ExternalVariable Variable {
       get;
     }
+
+
+    public DynamicFields Values {
+      get;
+    }
+
+    #endregion Properties
 
   }  // class ExternalValueDatasetEntry
 
