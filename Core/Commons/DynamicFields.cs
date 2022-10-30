@@ -1,20 +1,20 @@
 ﻿/* Empiria Financial *****************************************************************************************
 *                                                                                                            *
-*  Module   : Financial Reports                          Component : Domain Layer                            *
-*  Assembly : FinancialAccounting.FinancialReports.dll   Pattern   : Information Holder                      *
-*  Type     : FinancialReportEntry                       License   : Please read LICENSE.txt file            *
+*  Module   : Financial Accounting                       Component : Common Types                            *
+*  Assembly : FinancialAccounting.Core.dll               Pattern   : Information Holder                      *
+*  Type     : DynamicFields                              License   : Please read LICENSE.txt file            *
 *                                                                                                            *
-*  Summary  : Abstract class used to handle all final report entries with dynamic totals fields.             *
+*  Summary  : Information holder type with dynamic fields.                                                   *
 *                                                                                                            *
 ************************* Copyright(c) La Vía Óntica SC, Ontica LLC and contributors. All rights reserved. **/
 using System;
 using System.Collections.Generic;
 using System.Dynamic;
 
-namespace Empiria.FinancialAccounting.BalanceEngine {
-  
-  /// <summary></summary>
-  public abstract class DynamicEntry : DynamicObject {
+namespace Empiria.FinancialAccounting {
+
+  /// <summary>Information holder type with dynamic fields./summary>
+  public class DynamicFields : DynamicObject {
 
     private readonly IDictionary<string, object> _fields = new Dictionary<string, object>();
 
@@ -29,6 +29,7 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
         return 0;
       }
     }
+
 
     public void SetTotalField(string fieldName, decimal value) {
       if (_fields.ContainsKey(fieldName)) {
@@ -64,6 +65,6 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
       return true;
     }
 
-  } // class DynamicEntry
+  } // class DynamicFields
 
-} // namespace Empiria.FinancialAccounting.BalanceEngine
+} // namespace Empiria.FinancialAccounting

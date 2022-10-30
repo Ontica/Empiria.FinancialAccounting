@@ -7,11 +7,12 @@
 *  Summary  : Dynamic data transfer object for data structures that contain variable totals fields.          *
 *                                                                                                            *
 ************************* Copyright(c) La Vía Óntica SC, Ontica LLC and contributors. All rights reserved. **/
+using System;
 
 namespace Empiria.FinancialAccounting.FinancialReports.Adapters {
 
   /// <summary>Dynamic data transfer object for data structures that contain variable totals fields.</summary>
-  public abstract class DynamicFinancialReportEntryDto : FinancialReportEntry {
+  public class DynamicFinancialReportEntryDto : FinancialReportEntry {
 
   }  // class DynamicFinancialReportEntryDto
 

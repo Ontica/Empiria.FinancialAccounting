@@ -236,7 +236,7 @@ namespace Empiria.FinancialAccounting.BalanceEngine.Adapters {
   } // class ValorizacionEntryDto
 
 
-  public class DynamicValorizacionEntryDto : DynamicEntry {
+  public class DynamicValorizacionEntryDto : DynamicFields {
 
   } // class DynamicValorizacionEntryDto
 
