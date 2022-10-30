@@ -43,6 +43,14 @@ namespace Empiria.FinancialAccounting.ExternalData.Adapters {
       // no-op
     }
 
+    public string VariableCode {
+      get; internal set;
+    }
+
+    public string VariableName {
+      get; internal set;
+    }
+
   }  // class ExternalValuesEntryDto
 
 }  // namespace Empiria.FinancialAccounting.ExternalData.Adapters

@@ -8,24 +8,57 @@
 *                                                                                                            *
 ************************* Copyright(c) La Vía Óntica SC, Ontica LLC and contributors. All rights reserved. **/
 using System;
+using System.Collections.Generic;
 
 namespace Empiria.FinancialAccounting.ExternalData {
 
   /// <summary>Holds dynamic tabular data for a set of financial external values.</summary>
   internal class ExternalValuesDataSet {
 
+    #region Constructors and parsers
 
-    static internal ExternalValuesDataSet Parse(ExternalVariablesSet variablesSet, DateTime date) {
-      return new ExternalValuesDataSet {
-        Set = variablesSet
-      };
+    internal ExternalValuesDataSet(ExternalVariablesSet variablesSet, DateTime date) {
+      Assertion.Require(variablesSet, nameof(variablesSet));
+
+      VariablesSet = variablesSet;
+      Date = date;
     }
 
+    #endregion Constructors and parsers
 
-    public ExternalVariablesSet Set {
+    #region Properties
+
+    public DateTime Date {
       get;
-      private set;
     }
+
+
+    public ExternalVariablesSet VariablesSet {
+      get;
+    }
+
+    #endregion Properties
+
+    #region Methods
+
+    internal FixedList<ExternalValueDatasetEntry> GetAllValues() {
+      var list = new List<ExternalValueDatasetEntry>(VariablesSet.ExternalVariables.Count);
+
+      foreach (var variable in VariablesSet.ExternalVariables) {
+        var entry = new ExternalValueDatasetEntry(variable);
+
+        list.Add(entry);
+      }
+
+      return list.ToFixedList();
+    }
+
+
+    internal FixedList<ExternalValueDatasetEntry> GetLoadedValues() {
+      throw new NotImplementedException();
+    }
+
+    #endregion Methods
 
   } // class ExternalValuesDataSet
 

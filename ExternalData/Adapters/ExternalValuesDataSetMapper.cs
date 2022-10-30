@@ -17,8 +17,22 @@ namespace Empiria.FinancialAccounting.ExternalData.Adapters {
     static internal ExternalValuesDto Map(ExternalValuesQuery query, ExternalValuesDataSet dataset) {
       return new ExternalValuesDto {
         Query = query,
-        Columns = dataset.Set.DataColumns,
-        Entries = new FixedList<ExternalValuesEntryDto>()
+        Columns = dataset.VariablesSet.DataColumns,
+        Entries = Map(dataset.GetAllValues()),
+      };
+    }
+
+
+    static private FixedList<ExternalValuesEntryDto> Map(FixedList<ExternalValueDatasetEntry> entries) {
+      return entries.Select(e => Map(e))
+                    .ToFixedList();
+    }
+
+
+    static private ExternalValuesEntryDto Map(ExternalValueDatasetEntry entry) {
+      return new ExternalValuesEntryDto {
+        VariableCode = entry.Variable.Code,
+        VariableName = entry.Variable.Name,
       };
     }
 

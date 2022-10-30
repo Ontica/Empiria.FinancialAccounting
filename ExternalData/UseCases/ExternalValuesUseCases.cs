@@ -73,9 +73,9 @@ namespace Empiria.FinancialAccounting.ExternalData.UseCases {
 
       ExternalVariablesSet variablesSet = query.GetExternalVariablesSet();
 
-      ExternalValuesDataSet dataSet = ExternalValuesDataSet.Parse(variablesSet, query.Date);
+      var externalValuesDataSet = new ExternalValuesDataSet(variablesSet, query.Date);
 
-      return ExternalValuesDataSetMapper.Map(query, dataSet);
+      return ExternalValuesDataSetMapper.Map(query, externalValuesDataSet);
     }
 
 
