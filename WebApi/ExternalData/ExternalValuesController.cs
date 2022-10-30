@@ -43,7 +43,7 @@ namespace Empiria.FinancialAccounting.WebApi.ExternalData {
 
 
     [HttpPost]
-    [Route("v2/financial-accounting/financial-concepts/external-values/excel")]
+    [Route("v2/financial-accounting/financial-concepts/external-values/export")]
     public SingleObjectModel ExportExternalValuesToExcel([FromBody] ExternalValuesQuery query) {
 
       base.RequireBody(query);

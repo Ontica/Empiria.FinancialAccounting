@@ -15,12 +15,30 @@ namespace Empiria.FinancialAccounting {
   static public class ExportToMapper {
 
     static public FixedList<ExportToDto> Map(FixedList<ExportTo> exportTo) {
-      return new FixedList<ExportToDto>(exportTo.Select(x => Map(x)));
+      return exportTo.Select(x => Map(x))
+                     .ToFixedList();
     }
+
 
     static public ExportToDto Map(ExportTo exportTo) {
       return new ExportToDto {
         UID = exportTo.UID,
+        Name = exportTo.Name,
+        FileType = exportTo.FileType,
+        Dataset = exportTo.Dataset
+      };
+    }
+
+
+    static public FixedList<ExportToDto> MapWithCalculatedUID(FixedList<ExportTo> exportTo) {
+      return exportTo.Select(x => MapWithCalculatedUID(x))
+                     .ToFixedList();
+    }
+
+
+    static private ExportToDto MapWithCalculatedUID(ExportTo exportTo) {
+      return new ExportToDto {
+        UID = exportTo.CalculatedUID,
         Name = exportTo.Name,
         FileType = exportTo.FileType,
         Dataset = exportTo.Dataset

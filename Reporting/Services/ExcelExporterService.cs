@@ -144,12 +144,10 @@ namespace Empiria.FinancialAccounting.Reporting {
     public FileReportDto Export(ExternalValuesDto externalValues) {
       Assertion.Require(externalValues, nameof(externalValues));
 
-      //var templateUID = "ExternalValuesExcelTemplate";
-
-      //var templateConfig = FileTemplateConfig.Parse(templateUID);
+      var templateConfig = FileTemplateConfig.Parse(externalValues.Query.ExportTo);
 
       return new FileReportDto(Storage.FileType.Excel,
-                               "http://172.27.207.97/sicofin/files/2022.10.27-20.26.44-r01-banxico.xlsx");
+                               templateConfig.TemplateUrl);
 
       //var exporter = new AccountsChartExcelExporter(templateConfig);
 

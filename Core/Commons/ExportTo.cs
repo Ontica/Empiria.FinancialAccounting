@@ -64,6 +64,19 @@ namespace Empiria.FinancialAccounting {
       }
     }
 
+    public string CalculatedUID {
+      get {
+        if (TemplateId == -1) {
+          return this.UID;
+        }
+
+        var template = FileTemplateConfig.Parse(TemplateId);
+
+        return template.UID;
+      }
+    }
+
+
     [DataField("Name")]
     public string Name {
       get; private set;

@@ -42,7 +42,7 @@ namespace Empiria.FinancialAccounting.ExternalData.Adapters {
       return new ExternalVariablesSetDto {
          UID = set.UID,
          Name = set.Name,
-         ExportTo = ExportToMapper.Map(set.ExportTo)
+         ExportTo = ExportToMapper.MapWithCalculatedUID(set.ExportTo)
       };
     }
 
