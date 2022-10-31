@@ -26,6 +26,20 @@ namespace Empiria.FinancialAccounting.ExternalData.Data {
       return DataReader.GetObject<ExternalValue>(op, ExternalValue.Empty);
     }
 
+
+    static internal FixedList<ExternalValue> GetValues(ExternalVariablesSet variablesSet, DateTime date) {
+      var sql = "SELECT COF_VALORES_EXTERNOS.* " +
+                "FROM COF_VALORES_EXTERNOS INNER JOIN COF_VARIABLES_EXTERNAS " +
+                "ON COF_VALORES_EXTERNOS.ID_VARIABLE_EXTERNA = COF_VARIABLES_EXTERNAS.ID_VARIABLE_EXTERNA " +
+               $"WHERE COF_VARIABLES_EXTERNAS.ID_CONJUNTO_BASE = {variablesSet.Id} " +
+               $"AND COF_VALORES_EXTERNOS.FECHA_APLICACION = {CommonMethods.FormatSqlDbDate(date)} " +
+               $"AND STATUS_VALOR_EXTERNO <> 'X'";
+
+      var op = DataOperation.Parse(sql);
+
+      return DataReader.GetFixedList<ExternalValue>(op);
+    }
+
   }  // class ExternalValuesData
 
 }  // namespace Empiria.FinancialAccounting.ExternalData.Data

@@ -10,6 +10,8 @@
 using System;
 using System.Collections.Generic;
 
+using Empiria.FinancialAccounting.ExternalData.Data;
+
 namespace Empiria.FinancialAccounting.ExternalData {
 
   /// <summary>Holds dynamic tabular data for a set of financial external values.</summary>
@@ -44,14 +46,19 @@ namespace Empiria.FinancialAccounting.ExternalData {
     internal FixedList<ExternalValueDatasetEntry> GetAllValues() {
       var list = new List<ExternalValueDatasetEntry>(VariablesSet.ExternalVariables.Count);
 
-      foreach (var variable in VariablesSet.ExternalVariables) {
-        var fields = new DynamicFields();
-        fields.SetTotalField("domesticCurrencyTotal", decimal.Parse(variable.Id.ToString()));
-        if (variable.Id % 3 == 0) {
-          fields.SetTotalField("foreignCurrencyTotal", decimal.Parse((variable.Id * 2).ToString()));
-        }
+      FixedList<ExternalValue> valuesList = ExternalValuesData.GetValues(this.VariablesSet, this.Date);
 
-        var entry = new ExternalValueDatasetEntry(variable, fields);
+      foreach (var variable in VariablesSet.ExternalVariables) {
+
+        var externalValue = valuesList.Find(x => x.ExternalVariable.Equals(variable));
+
+        ExternalValueDatasetEntry entry;
+
+        if (externalValue != null) {
+          entry = new ExternalValueDatasetEntry(variable, externalValue.ToDynamicFields());
+        } else {
+          entry = new ExternalValueDatasetEntry(variable);
+        }
 
         list.Add(entry);
       }

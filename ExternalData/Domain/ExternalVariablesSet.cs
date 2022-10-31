@@ -4,8 +4,8 @@
 *  Assembly : FinancialAccounting.ExternalData.dll       Pattern   : Empiria Aggregate Object                *
 *  Type     : ExternalVariablesSet                       License   : Please read LICENSE.txt file            *
 *                                                                                                            *
-*  Summary  : Holds a set of external variables, with its single purpose is to classify them.                *
-*             A given external variables always belongs to a single set.                                     *
+*  Summary  : Holds a set of external variables, which the purpose of classify them.                         *
+*             A given external variable always belongs to a single set.                                      *
 *                                                                                                            *
 ************************* Copyright(c) La Vía Óntica SC, Ontica LLC and contributors. All rights reserved. **/
 using System;
@@ -16,8 +16,8 @@ using Empiria.FinancialAccounting.ExternalData.Data;
 
 namespace Empiria.FinancialAccounting.ExternalData {
 
-  /// <summary>Holds a set of external variables, with its unique single purpose is to classify them.
-  /// A given external variables always belongs to a single set.</summary>
+  /// <summary>Holds a set of external variables, which the purpose of classify them.
+  /// A given external variable always belongs to a single set.</summary>
   public class ExternalVariablesSet : DatasetFamily {
 
     #region Fields

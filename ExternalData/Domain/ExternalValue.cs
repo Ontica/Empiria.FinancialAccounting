@@ -13,6 +13,9 @@ using Empiria.Contacts;
 using Empiria.Json;
 using Empiria.StateEnums;
 
+using Empiria.FinancialAccounting.ExternalData.Adapters;
+using Empiria.FinancialAccounting.ExternalData.Data;
+
 namespace Empiria.FinancialAccounting.ExternalData {
 
   /// <summary>Holds data about an external variable or value like a
@@ -40,7 +43,6 @@ namespace Empiria.FinancialAccounting.ExternalData {
 
     #region Properties
 
-
     [DataField("ID_VARIABLE_EXTERNA")]
     public ExternalVariable ExternalVariable {
       get;
@@ -48,14 +50,14 @@ namespace Empiria.FinancialAccounting.ExternalData {
     }
 
     [DataField("VALORES_VARIABLE")]
-    private JsonObject ValuesExtData {
+    internal JsonObject ValuesExtData {
       get;
-      set;
+      private set;
     } = new JsonObject();
 
 
     [DataField("FECHA_APLICACION")]
-    public DateTime ValueDate {
+    public DateTime ApplicationDate {
       get;
       private set;
     }
@@ -108,6 +110,25 @@ namespace Empiria.FinancialAccounting.ExternalData {
     }
 
     #endregion Properties
+
+    internal DynamicFields ToDynamicFields() {
+      var rawValues = this.ValuesExtData.ToDictionary();
+
+      var dynamicFieldNames = this.ExternalVariable.Set.DataColumns.FindAll(x => x.Type == "decimal")
+                                                                   .Select(x => x.Field);
+
+      var fields = new DynamicFields();
+
+      foreach (var fieldName in dynamicFieldNames) {
+        if (rawValues.ContainsKey(fieldName)) {
+          fields.SetTotalField(fieldName, Convert.ToDecimal(rawValues[fieldName]));
+        }
+      }
+
+      return fields;
+
+      // return new DynamicFields(this.ValuesExtData);
+    }
 
   } // class ExternalValue
 
