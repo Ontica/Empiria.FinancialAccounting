@@ -159,12 +159,12 @@ namespace Empiria.FinancialAccounting.Tests.BalanceEngine {
       TrialBalanceQuery query = GetDefaultTrialBalanceQuery();
 
       query.TrialBalanceType = TrialBalanceType.Valorizacion;
-      query.BalancesType = BalancesType.WithCurrentBalance;
+      query.BalancesType = BalancesType.WithCurrentBalanceOrMovements;
       query.ShowCascadeBalances = false;
       query.UseDefaultValuation = true;
       query.WithAverageBalance = false;
-      query.FromAccount = "3.02.01";
-      query.ToAccount = "3.02.01";
+      query.FromAccount = "3.02.01.02.01.01.06.01";
+      query.ToAccount = "3.02.01.02.01.01.06.01";
 
       TrialBalanceDto sut = BalanceEngineProxy.BuildTrialBalance(query);
 

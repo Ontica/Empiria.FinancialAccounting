@@ -28,6 +28,19 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
     #region Public methods
 
 
+    private List<string> GetMemberFields(FixedList<ValorizacionEntry> accountsList) {
+      var rootAccount = accountsList.First();
+
+      List<string> members = new List<string>();
+
+      if (rootAccount != null) {
+        members.AddRange(rootAccount.GetDynamicMemberNames());
+      }
+
+      return members;
+    }
+
+
     internal void ExchangeRateByCurrency(FixedList<TrialBalanceEntry> entries, DateTime date, bool isLastMonth = false) {
 
       DateTime toDate = date;
@@ -58,13 +71,20 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
     internal FixedList<ValorizacionEntry> MergeAccountsByMonth(
                                           FixedList<ValorizacionEntry> accountsByCurrency,
                                           FixedList<ValorizacionEntry> accountsInfoByMonth) {
+
+      if (accountsByCurrency.Count == 0 && accountsInfoByMonth.Count == 0) {
+        return new FixedList<ValorizacionEntry>();
+      }
+
       var returnedAccounts = new List<ValorizacionEntry>(accountsByCurrency);
-
+      
       foreach (var account in returnedAccounts) {
-
+        
         var months = accountsInfoByMonth.FindAll(a => a.Account.Number == account.Account.Number)
                                         .OrderBy(a => a.ConsultingDate);
-
+        //TODO AGREGAR MESES EN LOS QUE NO HUBO MOVIMIENTO CON 00.00 PORQUE SALEN NULL
+        // EJEMPLO 3.02.01.02.01.01.06.01 DE ENERO-JUNIO 2022
+        
         GetValueByMonth(account, months);
 
       }
@@ -72,29 +92,38 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
       return returnedAccounts.ToFixedList();
     }
 
-
+    
     private void GetValueByMonth(ValorizacionEntry account, IOrderedEnumerable<ValorizacionEntry> months) {
 
-      decimal totalByMonth = 0;
-
       var utility = new ValorizacionUtility();
+
+      //List<DateTime> dateRange = GetDateRange();
 
       foreach (var month in months) {
 
         account.SetTotalField($"{utility.GetMonthNameAndYear(month.ConsultingDate)}", month.TotalValued);
-        totalByMonth += month.TotalValued;
+        account.TotalAccumulated += month.TotalValued;
       }
 
       account.SetTotalField($"{utility.GetMonthNameAndYear(account.ConsultingDate)}", account.TotalValued);
 
-      account.TotalAccumulated = totalByMonth += account.TotalValued;
+      account.TotalAccumulated += account.TotalValued;
 
+    }
+
+
+    private List<DateTime> GetDateRange() {
+      throw new NotImplementedException();
     }
 
 
     internal FixedList<ValorizacionEntry> GetAccountsBalances(
                                           FixedList<TrialBalanceEntry> accountEntries,
                                           DateTime date) {
+
+      if (accountEntries.Count==0) {
+        return new FixedList<ValorizacionEntry>();
+      }
 
       FixedList<TrialBalanceEntry> accountsByCurrency = GetAccountsByCurrency(accountEntries);
 
@@ -110,16 +139,12 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
 
     internal FixedList<ValorizacionEntry> GetAccountsByFilteredMonth() {
 
-      var accountBalanceByMonth = new List<ValorizacionEntry>();
-
-      DateTime initialDate = new DateTime();
-      DateTime lastDate = new DateTime();
-      int daysInMonth = 0, totalMonths = 0;
-
       DateTime fromDate = _query.InitialPeriod.FromDate;
       DateTime toDate = _query.InitialPeriod.ToDate;
 
-      GetInitialDate(out daysInMonth, out totalMonths, out initialDate, out lastDate);
+      GetInitialDate(out int daysInMonth, out int totalMonths, out DateTime initialDate, out DateTime lastDate);
+
+      var accountBalanceByMonth = new List<ValorizacionEntry>();
 
       for (int i = 1; i <= totalMonths; i++) {
 
@@ -132,7 +157,6 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
         initialDate = initialDate.AddMonths(1);
         daysInMonth = DateTime.DaysInMonth(initialDate.Year, initialDate.Month);
         lastDate = new DateTime(initialDate.Year, initialDate.Month, daysInMonth);
-
       }
 
       _query.InitialPeriod.FromDate = fromDate;

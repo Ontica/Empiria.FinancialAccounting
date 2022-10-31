@@ -20,7 +20,9 @@ namespace Empiria.FinancialAccounting.BalanceEngine.Adapters {
 
     static internal ValorizacionDto Map(TrialBalanceQuery query,
                                         FixedList<ValorizacionEntry> entries) {
-
+      if (entries.Count == 0) {
+        return new ValorizacionDto();
+      }
       var iEntries = new FixedList<ITrialBalanceEntry>(entries);
 
       return new ValorizacionDto {
@@ -164,13 +166,18 @@ namespace Empiria.FinancialAccounting.BalanceEngine.Adapters {
 
       var entry = valorizations.FirstOrDefault();
 
-      List<string> members = new List<string>();
+      if (entry != null) {
 
-      members.AddRange(entry.GetDynamicMemberNames());
+        List<string> members = new List<string>();
 
-      foreach (var member in members) {
-        columns.Add(new DataTableColumn(member.ToLower(), member, "decimal"));
+        members.AddRange(entry.GetDynamicMemberNames());
+
+        foreach (var member in members) {
+          columns.Add(new DataTableColumn(member.ToLower(), member, "decimal"));
+        }
+
       }
+      
     }
 
 
