@@ -11,6 +11,8 @@ using System;
 using System.Collections.Generic;
 using System.Dynamic;
 
+using Empiria.Json;
+
 namespace Empiria.FinancialAccounting {
 
   /// <summary>Information holder type with dynamic fields./summary>
@@ -18,9 +20,12 @@ namespace Empiria.FinancialAccounting {
 
     private readonly IDictionary<string, object> _fields = new Dictionary<string, object>();
 
+    #region Methods
+
     public override IEnumerable<string> GetDynamicMemberNames() {
       return this._fields.Keys;
     }
+
 
     public decimal GetTotalField(string fieldName) {
       if (_fields.ContainsKey(fieldName)) {
@@ -37,6 +42,16 @@ namespace Empiria.FinancialAccounting {
       } else {
         _fields.Add(fieldName, value);
       }
+    }
+
+
+    public JsonObject ToJson() {
+      var json = new JsonObject();
+
+      foreach (var fieldName in GetDynamicMemberNames()) {
+        json.AddIfValue(fieldName, this._fields[fieldName]);
+      }
+      return json;
     }
 
 
@@ -64,6 +79,8 @@ namespace Empiria.FinancialAccounting {
 
       return true;
     }
+
+    #endregion Methods
 
   } // class DynamicFields
 
