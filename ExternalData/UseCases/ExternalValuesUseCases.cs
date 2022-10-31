@@ -50,16 +50,15 @@ namespace Empiria.FinancialAccounting.ExternalData.UseCases {
 
         Dataset dataset = usecase.CreateDataset(mappedDto, fileData);
 
-        //var reader = new OperationalEntriesReader(dataset);
+        var reader = new ExternalValuesReader(dataset);
 
-        //if (!reader.AllEntriesAreValid()) {
+        if (!reader.AllEntriesAreValid()) {
+          usecase.RemoveDataset(dataset.UID);
 
-        //  usecase.RemoveDataset(dataset.UID);
-
-        //  Assertion.RequireFail(
-        //    "El archivo tiene un formato que no reconozco o la información que contiene es incorrecta."
-        //  );
-        //}
+          Assertion.RequireFail(
+            "El archivo tiene un formato que no reconozco o la información que contiene es incorrecta."
+          );
+        }
       }
 
       return GetDatasetsLoadStatus(dto);
