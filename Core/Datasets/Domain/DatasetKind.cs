@@ -25,7 +25,7 @@ namespace Empiria.FinancialAccounting.Datasets {
       return new DatasetKind {
         UID = json.Get<string>("uid"),
         Name = json.Get<string>("name"),
-        FileType = json.Get<FileType>("fileType", FileType.Csv),
+        FileType = json.Get<FileType>("fileType", FileType.Excel),
         DataFormat = json.Get<string>("format", "Default"),
         Optional = json.Get<bool>("optional", false),
         Count = json.Get<int>("count", 1),
@@ -65,8 +65,8 @@ namespace Empiria.FinancialAccounting.Datasets {
     }
 
 
-    private int TemplateId {
-      get; set;
+    public int TemplateId {
+      get; private set;
     }
 
 
