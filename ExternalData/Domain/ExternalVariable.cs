@@ -130,7 +130,7 @@ namespace Empiria.FinancialAccounting.ExternalData {
     #region Methods
 
     public ExternalValue GetValue(DateTime date) {
-      return ExternalVariablesData.GetValue(this, date);
+      return ExternalValuesData.GetValue(this, date);
     }
 
     #endregion Methods
