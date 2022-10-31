@@ -20,7 +20,7 @@ namespace Empiria.FinancialAccounting.Tests {
 
     static internal readonly DateTime FROM_DATE = new DateTime(2022, 01, 01);
 
-    static internal readonly DateTime TO_DATE = new DateTime(2022, 03, 31);
+    static internal readonly DateTime TO_DATE = new DateTime(2022, 06, 30);
 
     static public bool INVOKE_USE_CASES_THROUGH_THE_WEB_API = false;
 

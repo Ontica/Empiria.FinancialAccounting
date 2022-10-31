@@ -28,21 +28,8 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
     #region Public methods
 
 
-    private List<string> GetMemberFields(FixedList<ValorizacionEntry> accountsList) {
-      var rootAccount = accountsList.First();
-
-      List<string> members = new List<string>();
-
-      if (rootAccount != null) {
-        members.AddRange(rootAccount.GetDynamicMemberNames());
-      }
-
-      return members;
-    }
-
-
-    internal void ExchangeRateByCurrency(FixedList<TrialBalanceEntry> entries, DateTime date, bool isLastMonth = false) {
-
+    internal void ExchangeRateByCurrency(FixedList<TrialBalanceEntry> entries, DateTime date,
+                                         bool isLastMonth = false) {
       DateTime toDate = date;
 
       if (isLastMonth == true) {
@@ -52,11 +39,15 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
       }
 
       var exchangeRateType = ExchangeRateType.Parse(ExchangeRateType.ValorizacionBanxico.UID);
+
       FixedList<ExchangeRate> exchangeRates = ExchangeRate.GetList(exchangeRateType, toDate);
 
       foreach (var entry in entries) {
         var exchangeRate = exchangeRates.FirstOrDefault(a => a.FromCurrency.Code == "01" &&
                                                              a.ToCurrency.Code == entry.Currency.Code);
+        
+        Assertion.Require(exchangeRate, $"No se ha registrado el tipo de cambio para la " +
+                                        $"moneda {entry.Currency.FullName} con la fecha proporcionada.");
 
         if (isLastMonth == true) {
           entry.SecondExchangeRate = exchangeRate.Value;
@@ -80,10 +71,9 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
       
       foreach (var account in returnedAccounts) {
         
-        var months = accountsInfoByMonth.FindAll(a => a.Account.Number == account.Account.Number)
-                                        .OrderBy(a => a.ConsultingDate);
-        //TODO AGREGAR MESES EN LOS QUE NO HUBO MOVIMIENTO CON 00.00 PORQUE SALEN NULL
-        // EJEMPLO 3.02.01.02.01.01.06.01 DE ENERO-JUNIO 2022
+        var months = accountsInfoByMonth.Where(a => a.Account.Number == account.Account.Number)
+                                        .OrderBy(a => a.ConsultingDate)
+                                        .ToList();
         
         GetValueByMonth(account, months);
 
@@ -93,16 +83,26 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
     }
 
     
-    private void GetValueByMonth(ValorizacionEntry account, IOrderedEnumerable<ValorizacionEntry> months) {
+    private void GetValueByMonth(ValorizacionEntry account, List<ValorizacionEntry> months) {
 
       var utility = new ValorizacionUtility();
 
-      //List<DateTime> dateRange = GetDateRange();
+      List<DateTime> dateRange = GetDateRange();
+      
+      foreach (var date in dateRange) {
+        
+        var existDate = months.Where(a => a.ConsultingDate.Year == date.Year &&
+                                          a.ConsultingDate.Month == date.Month)
+                              .FirstOrDefault();
+        
+        if (existDate != null) {
+          
+          account.SetTotalField($"{utility.GetMonthNameAndYear(existDate.ConsultingDate)}", existDate.TotalValued);
+          account.TotalAccumulated += existDate.TotalValued;
 
-      foreach (var month in months) {
-
-        account.SetTotalField($"{utility.GetMonthNameAndYear(month.ConsultingDate)}", month.TotalValued);
-        account.TotalAccumulated += month.TotalValued;
+        } else {
+          account.SetTotalField($"{utility.GetMonthNameAndYear(date)}", 0.00M);
+        }
       }
 
       account.SetTotalField($"{utility.GetMonthNameAndYear(account.ConsultingDate)}", account.TotalValued);
@@ -113,7 +113,23 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
 
 
     private List<DateTime> GetDateRange() {
-      throw new NotImplementedException();
+
+      List<DateTime> dateRange = new List<DateTime>();
+
+      GetInitialDate(out int daysInMonth, out int totalMonths,
+                     out DateTime initialDate, out DateTime lastDate);
+
+      for (int i = 1; i <= totalMonths; i++) {
+
+        dateRange.Add(lastDate);
+
+        initialDate = initialDate.AddMonths(1);
+        daysInMonth = DateTime.DaysInMonth(initialDate.Year, initialDate.Month);
+        lastDate = new DateTime(initialDate.Year, initialDate.Month, daysInMonth);
+
+      }
+
+      return dateRange;
     }
 
 
@@ -151,6 +167,9 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
         List<ValorizacionEntry> accountsByMonth = GetAccountsByMonth(initialDate, lastDate);
 
         if (accountsByMonth.Count > 0) {
+          foreach (var account in accountsByMonth) {
+            account.MonthPosition = i;
+          }
           accountBalanceByMonth.AddRange(accountsByMonth);
         }
 

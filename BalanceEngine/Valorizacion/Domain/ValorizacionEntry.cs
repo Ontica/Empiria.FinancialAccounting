@@ -81,6 +81,12 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
     }
 
 
+    public int MonthPosition {
+      get;
+      internal set;
+    }
+
+
     public bool HasParentPostingEntry {
       get; internal set;
     }
