@@ -28,6 +28,13 @@ namespace Empiria.FinancialAccounting.ExternalData {
       // Required by Empiria Framework.
     }
 
+    public ExternalValue(ExternalValueInputDto dto) {
+      Assertion.Require(dto, nameof(dto));
+
+      this.Load(dto);
+    }
+
+
     static public ExternalValue Parse(int id) {
       return BaseObject.ParseId<ExternalValue>(id);
     }
@@ -110,6 +117,20 @@ namespace Empiria.FinancialAccounting.ExternalData {
     }
 
     #endregion Properties
+
+    private void Load(ExternalValueInputDto dto) {
+      this.ExternalVariable = dto.GetExternalVariable();
+      this.ValuesExtData = dto.GetDynamicFieldsAsJson();
+      this.ApplicationDate = dto.ApplicationDate;
+      this.UpdatedBy = dto.UpdatedBy;
+      this.UpdatedDate = dto.UpdatedDate;
+      this.Status = dto.Status;
+    }
+
+
+    protected override void OnSave() {
+      ExternalValuesData.Write(this);
+    }
 
     internal DynamicFields ToDynamicFields() {
       var rawValues = this.ValuesExtData.ToDictionary();

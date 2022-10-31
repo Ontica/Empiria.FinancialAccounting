@@ -40,6 +40,17 @@ namespace Empiria.FinancialAccounting.ExternalData.Data {
       return DataReader.GetFixedList<ExternalValue>(op);
     }
 
+
+    static internal void Write(ExternalValue o) {
+      var op = DataOperation.Parse("write_cof_valor_externo",
+                      o.Id, o.UID, o.ExternalVariable.Id,
+                      o.ValuesExtData.ToString(),
+                      o.ApplicationDate, o.UpdatedDate,
+                      (char) o.Status, o.UpdatedBy.Id);
+
+      DataWriter.Execute(op);
+    }
+
   }  // class ExternalValuesData
 
 }  // namespace Empiria.FinancialAccounting.ExternalData.Data

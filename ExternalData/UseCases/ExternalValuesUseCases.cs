@@ -52,7 +52,13 @@ namespace Empiria.FinancialAccounting.ExternalData.UseCases {
 
         var reader = new ExternalValuesReader(dataset);
 
-        if (!reader.AllEntriesAreValid()) {
+        if (reader.AllEntriesAreValid()) {
+          var writer = new ExternalValuesWriter(dataset, reader.GetEntries());
+
+          writer.Write();
+
+        } else {
+
           usecase.RemoveDataset(dataset.UID);
 
           Assertion.RequireFail(
