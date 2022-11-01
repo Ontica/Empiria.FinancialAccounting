@@ -58,7 +58,7 @@ namespace Empiria.FinancialAccounting.ExternalData.Adapters {
 
 
     static private FixedList<ExternalValueDatasetEntry> GetEntries(ExternalValuesDataSetMode datasetMode,
-                                                               ExternalValuesDataSet dataset) {
+                                                                   ExternalValuesDataSet dataset) {
       switch (datasetMode) {
         case ExternalValuesDataSetMode.AllValues:
           return dataset.GetAllValues();

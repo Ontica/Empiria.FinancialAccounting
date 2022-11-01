@@ -17,6 +17,7 @@ using Empiria.FinancialAccounting.Datasets.Adapters;
 using Empiria.FinancialAccounting.Datasets.UseCases;
 
 using Empiria.FinancialAccounting.ExternalData.Adapters;
+using Empiria.FinancialAccounting.ExternalData.Data;
 
 namespace Empiria.FinancialAccounting.ExternalData.UseCases {
 
@@ -118,6 +119,10 @@ namespace Empiria.FinancialAccounting.ExternalData.UseCases {
       Assertion.Require(datasetUID, nameof(datasetUID));
 
       using (var usecase = DatasetsUseCases.UseCaseInteractor()) {
+
+        var dataset = Dataset.Parse(datasetUID);
+
+        ExternalValuesData.RemoveDataset(dataset);
 
         return usecase.RemoveDataset(datasetUID);
       }

@@ -127,6 +127,11 @@ namespace Empiria.FinancialAccounting.ExternalData {
 
     #endregion Properties
 
+    internal void Delete() {
+      this.Status = EntityStatus.Deleted;
+    }
+
+
     private void Load(ExternalValueInputDto dto) {
       this.ExternalVariable = dto.GetExternalVariable();
       this.ValuesExtData = dto.GetDynamicFieldsAsJson();
@@ -141,6 +146,7 @@ namespace Empiria.FinancialAccounting.ExternalData {
     protected override void OnSave() {
       ExternalValuesData.Write(this);
     }
+
 
     internal DynamicFields ToDynamicFields() {
       var rawValues = this.ValuesExtData.ToDictionary();
@@ -157,8 +163,6 @@ namespace Empiria.FinancialAccounting.ExternalData {
       }
 
       return fields;
-
-      // return new DynamicFields(this.ValuesExtData);
     }
 
   } // class ExternalValue

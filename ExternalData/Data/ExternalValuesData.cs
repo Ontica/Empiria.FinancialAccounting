@@ -29,6 +29,17 @@ namespace Empiria.FinancialAccounting.ExternalData.Data {
       return DataReader.GetObject<ExternalValue>(op, ExternalValue.Empty);
     }
 
+    static internal FixedList<ExternalValue> GetValues(Dataset dataset) {
+      var sql = "SELECT * FROM COF_VALORES_EXTERNOS " +
+               $"WHERE ID_ARCHIVO = {dataset.Id} " +
+               $"AND STATUS_VALOR_EXTERNO <> 'X' " +
+               "ORDER BY ID_VALOR_EXTERNO";
+
+      var op = DataOperation.Parse(sql);
+
+      return DataReader.GetFixedList<ExternalValue>(op);
+    }
+
 
     static internal FixedList<ExternalValue> GetValues(ExternalVariablesSet variablesSet, DateTime date) {
       var sql = "SELECT * FROM COF_VALORES_EXTERNOS " +
@@ -40,6 +51,21 @@ namespace Empiria.FinancialAccounting.ExternalData.Data {
       var op = DataOperation.Parse(sql);
 
       return DataReader.GetFixedList<ExternalValue>(op);
+    }
+
+
+    static internal void RemoveDataset(Dataset dataset) {
+      FixedList<ExternalValue> values = GetValues(dataset);
+
+      values.ToList().ForEach(x => x.Delete());
+
+      var sql = "UPDATE COF_VALORES_EXTERNOS " +
+                "SET STATUS_VALOR_EXTERNO = 'X' " +
+               $"WHERE ID_ARCHIVO = {dataset.Id}";
+
+      var op = DataOperation.Parse(sql);
+
+      DataWriter.Execute(op);
     }
 
 
