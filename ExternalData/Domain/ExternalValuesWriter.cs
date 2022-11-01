@@ -43,6 +43,7 @@ namespace Empiria.FinancialAccounting.ExternalData {
       data.ApplicationDate = _dataset.OperationDate;
       data.UpdatedDate = _dataset.UpdatedTime;
       data.UpdatedBy = _dataset.UploadedBy;
+      data.Dataset = _dataset;
       data.Status = _dataset.Status;
     }
 

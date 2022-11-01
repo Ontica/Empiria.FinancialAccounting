@@ -8,7 +8,10 @@
 *                                                                                                            *
 ************************* Copyright(c) La Vía Óntica SC, Ontica LLC and contributors. All rights reserved. **/
 using System;
+using System.Linq;
+
 using Empiria.Data;
+using Empiria.FinancialAccounting.Datasets;
 
 namespace Empiria.FinancialAccounting.ExternalData.Data {
 
@@ -28,12 +31,11 @@ namespace Empiria.FinancialAccounting.ExternalData.Data {
 
 
     static internal FixedList<ExternalValue> GetValues(ExternalVariablesSet variablesSet, DateTime date) {
-      var sql = "SELECT COF_VALORES_EXTERNOS.* " +
-                "FROM COF_VALORES_EXTERNOS INNER JOIN COF_VARIABLES_EXTERNAS " +
-                "ON COF_VALORES_EXTERNOS.ID_VARIABLE_EXTERNA = COF_VARIABLES_EXTERNAS.ID_VARIABLE_EXTERNA " +
-               $"WHERE COF_VARIABLES_EXTERNAS.ID_CONJUNTO_BASE = {variablesSet.Id} " +
-               $"AND COF_VALORES_EXTERNOS.FECHA_APLICACION = {CommonMethods.FormatSqlDbDate(date)} " +
-               $"AND STATUS_VALOR_EXTERNO <> 'X'";
+      var sql = "SELECT * FROM COF_VALORES_EXTERNOS " +
+               $"WHERE ID_CONJUNTO_BASE = {variablesSet.Id} " +
+               $"AND FECHA_APLICACION = {CommonMethods.FormatSqlDbDate(date)} " +
+               $"AND STATUS_VALOR_EXTERNO <> 'X' " +
+               "ORDER BY ID_VALOR_EXTERNO";
 
       var op = DataOperation.Parse(sql);
 
@@ -43,10 +45,10 @@ namespace Empiria.FinancialAccounting.ExternalData.Data {
 
     static internal void Write(ExternalValue o) {
       var op = DataOperation.Parse("write_cof_valor_externo",
-                      o.Id, o.UID, o.ExternalVariable.Id,
+                      o.Id, o.UID, o.ExternalVariable.Set.Id, o.ExternalVariable.Id,
                       o.ValuesExtData.ToString(),
                       o.ApplicationDate, o.UpdatedDate,
-                      (char) o.Status, o.UpdatedBy.Id);
+                      o.Dataset.Id, (char) o.Status, o.UpdatedBy.Id);
 
       DataWriter.Execute(op);
     }

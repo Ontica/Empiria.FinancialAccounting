@@ -15,6 +15,7 @@ using Empiria.StateEnums;
 
 using Empiria.FinancialAccounting.ExternalData.Adapters;
 using Empiria.FinancialAccounting.ExternalData.Data;
+using Empiria.FinancialAccounting.Datasets;
 
 namespace Empiria.FinancialAccounting.ExternalData {
 
@@ -69,6 +70,7 @@ namespace Empiria.FinancialAccounting.ExternalData {
       private set;
     }
 
+
     [DataField("ID_EDITADO_POR")]
     public Contact UpdatedBy {
       get;
@@ -78,6 +80,13 @@ namespace Empiria.FinancialAccounting.ExternalData {
 
     [DataField("FECHA_EDICION")]
     public DateTime UpdatedDate {
+      get;
+      private set;
+    }
+
+
+    [DataField("ID_ARCHIVO")]
+    public Dataset Dataset {
       get;
       private set;
     }
@@ -122,6 +131,7 @@ namespace Empiria.FinancialAccounting.ExternalData {
       this.ExternalVariable = dto.GetExternalVariable();
       this.ValuesExtData = dto.GetDynamicFieldsAsJson();
       this.ApplicationDate = dto.ApplicationDate;
+      this.Dataset = dto.Dataset;
       this.UpdatedBy = dto.UpdatedBy;
       this.UpdatedDate = dto.UpdatedDate;
       this.Status = dto.Status;

@@ -8,9 +8,12 @@
 *                                                                                                            *
 ************************* Copyright(c) La Vía Óntica SC, Ontica LLC and contributors. All rights reserved. **/
 using System;
+
 using Empiria.Contacts;
 using Empiria.Json;
 using Empiria.StateEnums;
+
+using Empiria.FinancialAccounting.Datasets;
 
 namespace Empiria.FinancialAccounting.ExternalData.Adapters {
 
@@ -33,6 +36,11 @@ namespace Empiria.FinancialAccounting.ExternalData.Adapters {
       get; set;
     }
 
+    public Dataset Dataset {
+      get;
+      internal set;
+    }
+
     public int Position {
       get; set;
     }
@@ -40,6 +48,7 @@ namespace Empiria.FinancialAccounting.ExternalData.Adapters {
     public EntityStatus Status {
       get; set;
     }
+
 
     public ExternalVariable GetExternalVariable() {
       var variable = ExternalVariable.TryParseWithCode(VariableCode);
