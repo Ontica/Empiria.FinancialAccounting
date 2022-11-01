@@ -34,7 +34,9 @@ namespace Empiria.FinancialAccounting.ExternalData {
       foreach (var column in columns) {
         decimal value = ReadDecimalValueFromColumn(column.Column);
 
-        fields.SetTotalField(column.Field, value);
+        if (value != 0) {
+          fields.SetTotalField(column.Field, value);
+        }
       }
 
       return fields;

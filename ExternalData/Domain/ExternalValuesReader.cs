@@ -91,9 +91,11 @@ namespace Empiria.FinancialAccounting.ExternalData {
       var dynamicColumns = this.DataColumns.FindAll(column => column.Type == "decimal");
 
       while (spreadsheet.HasValue($"A{rowIndex}")) {
-        ExternalValueInputDto entry = ReadOperationalEntry(spreadsheet, dynamicColumns, rowIndex);
+        ExternalValueInputDto entry = TryReadEntry(spreadsheet, dynamicColumns, rowIndex);
 
-        entriesList.Add(entry);
+        if (entry != null) {
+          entriesList.Add(entry);
+        }
 
         rowIndex++;
       }
@@ -106,17 +108,21 @@ namespace Empiria.FinancialAccounting.ExternalData {
     }
 
 
-    private ExternalValueInputDto ReadOperationalEntry(Spreadsheet spreadsheet,
-                                                       FixedList<DataTableColumn> dynamicColumns,
-                                                       int rowIndex) {
+    private ExternalValueInputDto TryReadEntry(Spreadsheet spreadsheet,
+                                               FixedList<DataTableColumn> dynamicColumns,
+                                               int rowIndex) {
       var spreadsheetRow = new SpreadsheetRowReader(spreadsheet, rowIndex);
+
+      DynamicFields fields = spreadsheetRow.GetDynamicFields(dynamicColumns);
+
+      if (fields.IsEmptyInstance) {
+        return null;
+      }
 
       var dto = new ExternalValueInputDto {
         VariableCode = spreadsheetRow.GetVariableCode(),
         Position = rowIndex
       };
-
-      DynamicFields fields = spreadsheetRow.GetDynamicFields(dynamicColumns);
 
       foreach (var fieldName in fields.GetDynamicMemberNames()) {
         dto.SetTotalField(fieldName, fields.GetTotalField(fieldName));

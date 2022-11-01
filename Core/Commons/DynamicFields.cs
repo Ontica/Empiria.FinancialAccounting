@@ -20,6 +20,13 @@ namespace Empiria.FinancialAccounting {
 
     private readonly IDictionary<string, object> _fields = new Dictionary<string, object>();
 
+
+    public bool IsEmptyInstance {
+      get {
+        return this._fields.Keys.Count == 0;
+      }
+    }
+
     #region Methods
 
     public override IEnumerable<string> GetDynamicMemberNames() {
