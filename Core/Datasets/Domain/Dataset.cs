@@ -40,6 +40,11 @@ namespace Empiria.FinancialAccounting.Datasets {
     }
 
 
+    static internal Dataset Parse(int id) {
+      return BaseObject.ParseId<Dataset>(id);
+    }
+
+
     static public Dataset Parse(string uid) {
       return BaseObject.ParseKey<Dataset>(uid);
     }
