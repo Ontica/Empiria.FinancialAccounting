@@ -56,7 +56,7 @@ namespace Empiria.FinancialAccounting.ExternalData {
 
         if (externalValue != null) {
           entry = new ExternalValueDatasetEntry(variable,
-                                                externalValue.ToDynamicFields());
+                                                externalValue.GetDynamicFields());
         } else {
           entry = new ExternalValueDatasetEntry(variable);
         }
@@ -76,7 +76,7 @@ namespace Empiria.FinancialAccounting.ExternalData {
       foreach (var externalValue in loadedValues) {
 
         var entry = new ExternalValueDatasetEntry(externalValue.ExternalVariable,
-                                                  externalValue.ToDynamicFields());
+                                                  externalValue.GetDynamicFields());
 
         list.Add(entry);
       }

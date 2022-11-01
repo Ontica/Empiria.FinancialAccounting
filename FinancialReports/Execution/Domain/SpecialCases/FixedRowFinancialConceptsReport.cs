@@ -176,7 +176,7 @@ namespace Empiria.FinancialAccounting.FinancialReports {
           return ProcessAccount(integrationEntry);
 
         case FinancialConceptEntryType.ExternalVariable:
-          return ProcessFixedValue(integrationEntry);
+          return ProcessExternalVariable(integrationEntry);
 
         default:
           throw Assertion.EnsureNoReachThisCode();
@@ -203,7 +203,7 @@ namespace Empiria.FinancialAccounting.FinancialReports {
     }
 
 
-    private ReportEntryTotals ProcessFixedValue(FinancialConceptEntry integrationEntry) {
+    private ReportEntryTotals ProcessExternalVariable(FinancialConceptEntry integrationEntry) {
       var variable = ExternalVariable.TryParseWithCode(integrationEntry.ExternalVariableCode);
 
       ExternalValue value = ExternalValue.Empty;
@@ -222,7 +222,7 @@ namespace Empiria.FinancialAccounting.FinancialReports {
       Assertion.Require(!financialConcept.IsEmptyInstance,
                        "Cannot process the empty FinancialConcept instance.");
 
-      var totals = CreateReportEntryTotalsObject();
+      ReportEntryTotals totals = CreateReportEntryTotalsObject();
 
       foreach (var integrationItem in financialConcept.Integration) {
 
@@ -321,17 +321,17 @@ namespace Empiria.FinancialAccounting.FinancialReports {
 
         case OperatorType.Add:
 
-          return totals.Sum(ProcessFixedValue(integrationEntry),
+          return totals.Sum(ProcessExternalVariable(integrationEntry),
                             integrationEntry.DataColumn);
 
         case OperatorType.Substract:
 
-          return totals.Substract(ProcessFixedValue(integrationEntry),
+          return totals.Substract(ProcessExternalVariable(integrationEntry),
                                   integrationEntry.DataColumn);
 
         case OperatorType.AbsoluteValue:
 
-          return totals.Sum(ProcessFixedValue(integrationEntry),
+          return totals.Sum(ProcessExternalVariable(integrationEntry),
                             integrationEntry.DataColumn)
                        .AbsoluteValue();
 

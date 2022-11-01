@@ -86,7 +86,7 @@ namespace Empiria.FinancialAccounting.ExternalData {
 
 
     [DataField("ID_ARCHIVO")]
-    public Dataset Dataset {
+    public Dataset SourceDataset {
       get;
       private set;
     }
@@ -136,7 +136,7 @@ namespace Empiria.FinancialAccounting.ExternalData {
       this.ExternalVariable = dto.GetExternalVariable();
       this.ValuesExtData = dto.GetDynamicFieldsAsJson();
       this.ApplicationDate = dto.ApplicationDate;
-      this.Dataset = dto.Dataset;
+      this.SourceDataset = dto.Dataset;
       this.UpdatedBy = dto.UpdatedBy;
       this.UpdatedDate = dto.UpdatedDate;
       this.Status = dto.Status;
@@ -148,15 +148,15 @@ namespace Empiria.FinancialAccounting.ExternalData {
     }
 
 
-    internal DynamicFields ToDynamicFields() {
+    public DynamicFields GetDynamicFields() {
       var rawValues = this.ValuesExtData.ToDictionary();
 
-      var dynamicFieldNames = this.ExternalVariable.Set.DataColumns.FindAll(x => x.Type == "decimal")
-                                                                   .Select(x => x.Field);
+      var fieldNames = this.ExternalVariable.Set.DataColumns.FindAll(x => x.Type == "decimal")
+                                                            .Select(x => x.Field);
 
       var fields = new DynamicFields();
 
-      foreach (var fieldName in dynamicFieldNames) {
+      foreach (var fieldName in fieldNames) {
         if (rawValues.ContainsKey(fieldName)) {
           fields.SetTotalField(fieldName, Convert.ToDecimal(rawValues[fieldName]));
         }

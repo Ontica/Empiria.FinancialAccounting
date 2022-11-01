@@ -74,7 +74,7 @@ namespace Empiria.FinancialAccounting.ExternalData.Data {
                       o.Id, o.UID, o.ExternalVariable.Set.Id, o.ExternalVariable.Id,
                       o.ValuesExtData.ToString(),
                       o.ApplicationDate, o.UpdatedDate,
-                      o.Dataset.Id, (char) o.Status, o.UpdatedBy.Id);
+                      o.SourceDataset.Id, (char) o.Status, o.UpdatedBy.Id);
 
       DataWriter.Execute(op);
     }
