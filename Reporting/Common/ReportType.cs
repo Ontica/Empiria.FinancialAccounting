@@ -24,7 +24,7 @@ namespace Empiria.FinancialAccounting.Reporting {
 
     static internal FixedList<ReportType> GetList() {
       return BaseObject.GetList<ReportType>()
-                        .ToFixedList();
+                       .ToFixedList();
     }
 
     #endregion Constructors and parsers

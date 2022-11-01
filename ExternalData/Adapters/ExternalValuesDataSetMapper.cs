@@ -1,6 +1,6 @@
 ﻿/* Empiria Financial *****************************************************************************************
 *                                                                                                            *
-*  Module   : External Data                              Component : Use cases Layer                         *
+*  Module   : External Data                              Component : Interface adapters                      *
 *  Assembly : FinancialAccounting.ExternalData.dll       Pattern   : Mapper class                            *
 *  Type     : ExternalValuesDataSetMapper                License   : Please read LICENSE.txt file            *
 *                                                                                                            *

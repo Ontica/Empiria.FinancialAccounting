@@ -55,7 +55,7 @@ namespace Empiria.FinancialAccounting.FinancialReports.Adapters {
     }
 
     public override IEnumerable<string> GetDynamicMemberNames() {
-      List<string> members = new List<string>();
+      var members = new List<string>();
 
       members.Add("UID");
       members.Add("Type");

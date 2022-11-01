@@ -28,7 +28,6 @@ namespace Empiria.FinancialAccounting {
       get; set;
     }
 
-
     public string Title {
       get; set;
     }
