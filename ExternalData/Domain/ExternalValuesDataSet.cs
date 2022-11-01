@@ -55,7 +55,8 @@ namespace Empiria.FinancialAccounting.ExternalData {
         ExternalValueDatasetEntry entry;
 
         if (externalValue != null) {
-          entry = new ExternalValueDatasetEntry(variable, externalValue.ToDynamicFields());
+          entry = new ExternalValueDatasetEntry(variable,
+                                                externalValue.ToDynamicFields());
         } else {
           entry = new ExternalValueDatasetEntry(variable);
         }
@@ -68,7 +69,19 @@ namespace Empiria.FinancialAccounting.ExternalData {
 
 
     internal FixedList<ExternalValueDatasetEntry> GetLoadedValues() {
-      throw new NotImplementedException();
+      FixedList<ExternalValue> loadedValues = ExternalValuesData.GetValues(this.VariablesSet, this.Date);
+
+      var list = new List<ExternalValueDatasetEntry>(loadedValues.Count);
+
+      foreach (var externalValue in loadedValues) {
+
+        var entry = new ExternalValueDatasetEntry(externalValue.ExternalVariable,
+                                                  externalValue.ToDynamicFields());
+
+        list.Add(entry);
+      }
+
+      return list.ToFixedList();
     }
 
     #endregion Methods

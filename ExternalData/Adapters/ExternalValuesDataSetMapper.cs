@@ -14,11 +14,15 @@ namespace Empiria.FinancialAccounting.ExternalData.Adapters {
   /// <summary>Mapping methods for financial external values.</summary>
   static internal class ExternalValuesDataSetMapper {
 
+    #region Mappers
+
     static internal ExternalValuesDto Map(ExternalValuesQuery query, ExternalValuesDataSet dataset) {
+      FixedList<ExternalValueDatasetEntry> entries = GetEntries(query.DatasetMode, dataset);
+
       return new ExternalValuesDto {
         Query = query,
         Columns = dataset.VariablesSet.DataColumns,
-        Entries = Map(dataset.GetAllValues()),
+        Entries = Map(entries),
       };
     }
 
@@ -40,6 +44,10 @@ namespace Empiria.FinancialAccounting.ExternalData.Adapters {
       return dto;
     }
 
+    #endregion Mappers
+
+    #region Helpers
+
     static private void SetTotalsFields(ExternalValuesEntryDto o, ExternalValueDatasetEntry entry) {
       var dynamicFieldNames = entry.Values.GetDynamicMemberNames();
 
@@ -48,6 +56,23 @@ namespace Empiria.FinancialAccounting.ExternalData.Adapters {
       }
     }
 
+
+    static private FixedList<ExternalValueDatasetEntry> GetEntries(ExternalValuesDataSetMode datasetMode,
+                                                               ExternalValuesDataSet dataset) {
+      switch (datasetMode) {
+        case ExternalValuesDataSetMode.AllValues:
+          return dataset.GetAllValues();
+
+        case ExternalValuesDataSetMode.OnlyLoadedValues:
+          return dataset.GetLoadedValues();
+
+        default:
+          throw Assertion.EnsureNoReachThisCode($"Unhandled dataset mode {datasetMode}.");
+
+      }
+    }
+
+    #endregion Helpers
 
   }  // class ExternalValuesDataSetMapper
 

@@ -13,6 +13,17 @@ using Empiria.FinancialAccounting.Datasets.Adapters;
 
 namespace Empiria.FinancialAccounting.ExternalData.Adapters {
 
+  /// <summary>Describes the items returned for a ExternalValues query.</summary>
+  public enum ExternalValuesDataSetMode {
+
+    AllValues,
+
+    OnlyLoadedValues,
+
+  }  // enum ExternalValuesDataSetMode
+
+
+
   /// <summary>Query payload used to retrieve external values.</summary>
   public class ExternalValuesQuery {
 
@@ -32,6 +43,11 @@ namespace Empiria.FinancialAccounting.ExternalData.Adapters {
     public string ExportTo {
       get; set;
     } = string.Empty;
+
+
+    public ExternalValuesDataSetMode DatasetMode {
+      get; set;
+    } = ExternalValuesDataSetMode.OnlyLoadedValues;
 
 
     internal ExternalVariablesSet GetExternalVariablesSet() {

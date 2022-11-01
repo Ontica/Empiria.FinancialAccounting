@@ -16,6 +16,12 @@ namespace Empiria.FinancialAccounting.ExternalData {
 
     #region Constructors and parsers
 
+    public ExternalValueDatasetEntry(ExternalValue value) :
+                                        this(value.ExternalVariable, value.ToDynamicFields()) {
+      // no-op
+    }
+
+
     public ExternalValueDatasetEntry(ExternalVariable variable) : this(variable, new DynamicFields()) {
       // no-op
     }
