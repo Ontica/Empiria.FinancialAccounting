@@ -7,14 +7,23 @@
 *  Summary  : Describes a data table column.                                                                 *
 *                                                                                                            *
 ************************* Copyright(c) La Vía Óntica SC, Ontica LLC and contributors. All rights reserved. **/
+using System;
+
+using Empiria.Json;
 
 namespace Empiria.FinancialAccounting {
 
   /// <summary>Describes a data table column.</summary>
   public class DataTableColumn {
 
-    public DataTableColumn(string field, string title, string type, int digits = 2) {
+    #region Constructors and parsers
 
+    private DataTableColumn() {
+      // no-op
+    }
+
+
+    public DataTableColumn(string field, string title, string type, int digits = 2) {
       this.Field = field;
       this.Title = title;
       this.Type = type;
@@ -24,25 +33,45 @@ namespace Empiria.FinancialAccounting {
       }
     }
 
-    public string Column {
-      get; set;
+
+    static public DataTableColumn Parse(JsonObject json) {
+      Assertion.Require(json, nameof(json));
+
+      return new DataTableColumn {
+        Field = json.Get<string>("field"),
+        Title = json.Get<string>("title"),
+        Type = json.Get<string>("type"),
+        Column = json.Get<string>("column"),
+        Digits = json.Get<int>("digits", 2)
+      };
+    }
+
+
+    #endregion Constructors and parsers
+
+    #region Properties
+
+    public string Field {
+      get; private set;
     }
 
     public string Title {
-      get; set;
-    }
-
-    public string Field {
-      get; set;
+      get; private set;
     }
 
     public string Type {
-      get; set;
+      get; private set;
+    }
+
+    public string Column {
+      get; private set;
     }
 
     public int Digits {
-      get; set;
+      get; private set;
     }
+
+    #endregion Properties
 
   }  // class DataTableColumn
 
