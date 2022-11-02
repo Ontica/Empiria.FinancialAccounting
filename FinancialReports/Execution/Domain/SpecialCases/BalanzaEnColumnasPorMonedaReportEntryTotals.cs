@@ -153,23 +153,13 @@ namespace Empiria.FinancialAccounting.FinancialReports {
 
     public override ReportEntryTotals Sum(ExternalValue value, string dataColumn) {
       return new BalanzaEnColumnasPorMonedaReportEntryTotals {
-        PesosTotal = this.PesosTotal + value.DomesticCurrencyValue
+        PesosTotal = this.PesosTotal + value.GetField("monedaNacional")
       };
     }
 
 
     public override ReportEntryTotals SumDebitsOrSubstractCredits(ITrialBalanceEntryDto balance, string dataColumn) {
       throw new NotImplementedException();
-
-      // var castBalance = (TrialBalanceByCurrencyDto) balance;
-
-      // ToDo: Add DebtorCreditor property to TrialBalanceByCurrencyDto
-
-      //if (castBalance.DebtorCreditor == DebtorCreditorType.Deudora) {
-      //  return Sum(balance, dataColumn);
-      //} else {
-      //  return Substract(balance, dataColumn);
-      //}
     }
 
     #endregion Methods

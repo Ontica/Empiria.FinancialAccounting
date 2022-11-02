@@ -65,7 +65,7 @@ namespace Empiria.FinancialAccounting {
 
     private string OriginalFileName {
       get {
-        return base.ExtendedDataField.Get<string>("fileName");
+        return base.ExtendedDataField.Get<string>("fileName", this.TemplateFileName);
       }
     }
 

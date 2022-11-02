@@ -98,33 +98,6 @@ namespace Empiria.FinancialAccounting.ExternalData {
       private set;
     }
 
-
-    public decimal DomesticCurrencyValue {
-      get {
-        return ValuesExtData.Get<decimal>("MonedaNacional", 0m);
-      }
-      set {
-        ValuesExtData.SetIfValue("MonedaNacional", value);
-      }
-    }
-
-
-    public decimal ForeignCurrencyValue {
-      get {
-        return ValuesExtData.Get<decimal>("MonedaExtranjera", 0m);
-      }
-      set {
-        ValuesExtData.SetIfValue("MonedaExtranjera", value);
-      }
-    }
-
-
-    public decimal Total {
-      get {
-        return this.DomesticCurrencyValue + this.ForeignCurrencyValue;
-      }
-    }
-
     #endregion Properties
 
     internal void Delete() {
@@ -145,6 +118,11 @@ namespace Empiria.FinancialAccounting.ExternalData {
 
     protected override void OnSave() {
       ExternalValuesData.Write(this);
+    }
+
+
+    public decimal GetTotalField(string fieldName) {
+      return ValuesExtData.Get<decimal>(fieldName, 0m);
     }
 
 
