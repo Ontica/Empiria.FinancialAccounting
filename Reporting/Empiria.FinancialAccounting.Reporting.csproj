@@ -83,4 +83,8 @@
     <ProjectReference Include="..\Vouchers\Empiria.FinancialAccounting.Vouchers.csproj" />
     <ProjectReference Include="..\Reconciliation\Empiria.FinancialAccounting.Reconciliation.csproj" />
   </ItemGroup>
+  <ItemGroup>
+    <Folder Include="AccountComparer\Exporters\" />
+    <Folder Include="AccountComparer\Data\" />
+  </ItemGroup>
 </Project>

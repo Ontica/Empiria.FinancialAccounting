@@ -74,7 +74,9 @@ namespace Empiria.FinancialAccounting.Reporting {
 
     ListadoDePolizas,
 
-    ListadoDePolizasPorCuenta
+    ListadoDePolizasPorCuenta,
+
+    ComparacionDeCuentas
 
   } // enum ReportTypes
 
