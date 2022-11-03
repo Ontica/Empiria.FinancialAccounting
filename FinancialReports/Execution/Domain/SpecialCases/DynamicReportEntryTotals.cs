@@ -14,7 +14,6 @@ using Empiria.FinancialAccounting.ExternalData;
 
 using Empiria.FinancialAccounting.BalanceEngine.Adapters;
 
-
 namespace Empiria.FinancialAccounting.FinancialReports {
 
   delegate decimal DecimalFunction(decimal value);
@@ -44,7 +43,6 @@ namespace Empiria.FinancialAccounting.FinancialReports {
     public DynamicFields DynamicFields {
       get; private set;
     } = new DynamicFields();
-
 
 
     public override ReportEntryTotals AbsoluteValue() {
@@ -87,12 +85,16 @@ namespace Empiria.FinancialAccounting.FinancialReports {
 
 
     public override ReportEntryTotals Substract(ITrialBalanceEntryDto balance, string dataColumn) {
-      var analiticoBalance = (AnaliticoDeCuentasEntryDto) balance;
+      var casted = (DynamicTrialBalanceEntryDto) balance;
 
-      var substracted = new DynamicReportEntryTotals(this.DynamicFields.GetDynamicMemberNames());
+      var substracted = new DynamicReportEntryTotals();
 
-      substracted.DynamicFields.SetTotalField("monedaNacional", this.DynamicFields.GetTotalField("monedaNacional") - analiticoBalance.DomesticBalance);
-      substracted.DynamicFields.SetTotalField("monedaExtranjera", this.DynamicFields.GetTotalField("monedaExtranjera") - analiticoBalance.ForeignBalance);
+      foreach (var fieldName in DynamicFields.GetDynamicMemberNames()) {
+        decimal newValue = DynamicFields.GetTotalField(fieldName) -
+                           casted.GetTotalField(fieldName);
+
+        substracted.DynamicFields.SetTotalField(fieldName, newValue);
+      }
 
       return substracted;
     }
@@ -115,12 +117,16 @@ namespace Empiria.FinancialAccounting.FinancialReports {
 
 
     public override ReportEntryTotals Sum(ITrialBalanceEntryDto balance, string dataColumn) {
-      var analiticoBalance = (AnaliticoDeCuentasEntryDto) balance;
+      var casted = (DynamicTrialBalanceEntryDto) balance;
 
-      var sum = new DynamicReportEntryTotals(this.DynamicFields.GetDynamicMemberNames());
+      var sum = new DynamicReportEntryTotals();
 
-      sum.DynamicFields.SetTotalField("monedaNacional", this.DynamicFields.GetTotalField("monedaNacional") + analiticoBalance.DomesticBalance);
-      sum.DynamicFields.SetTotalField("monedaExtranjera", this.DynamicFields.GetTotalField("monedaExtranjera") + analiticoBalance.ForeignBalance);
+      foreach (var fieldName in DynamicFields.GetDynamicMemberNames()) {
+        decimal newValue = DynamicFields.GetTotalField(fieldName) +
+                           casted.GetTotalField(fieldName);
+
+        sum.DynamicFields.SetTotalField(fieldName, newValue);
+      }
 
       return sum;
     }
@@ -141,7 +147,7 @@ namespace Empiria.FinancialAccounting.FinancialReports {
 
 
     public override ReportEntryTotals SumDebitsOrSubstractCredits(ITrialBalanceEntryDto balance, string dataColumn) {
-      var analiticoBalance = (AnaliticoDeCuentasEntryDto) balance;
+      var analiticoBalance = (DynamicTrialBalanceEntryDto) balance;
 
       if (analiticoBalance.DebtorCreditor == DebtorCreditorType.Deudora) {
         return Sum(balance, dataColumn);

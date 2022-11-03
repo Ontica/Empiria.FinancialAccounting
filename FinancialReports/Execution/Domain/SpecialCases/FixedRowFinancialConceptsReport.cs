@@ -7,8 +7,8 @@
 *  Summary  : Generates a report with fixed rows linked to financial concepts (e.g. R01, R10, R12).          *
 *                                                                                                            *
 ************************* Copyright(c) La Vía Óntica SC, Ontica LLC and contributors. All rights reserved. **/
-using System;
 using System.Collections.Generic;
+using System.Linq;
 
 using Empiria.Collections;
 
@@ -405,7 +405,11 @@ namespace Empiria.FinancialAccounting.FinancialReports {
         }
       }
 
-      return filtered;
+      if (FinancialReportType.DataSource == FinancialReportDataSource.AnaliticoCuentasDynamic) {
+        return ConvertToDynamicTrialBalanceEntryDto(filtered);
+      } else {
+        return filtered;
+      }
     }
 
 
@@ -453,6 +457,15 @@ namespace Empiria.FinancialAccounting.FinancialReports {
       return new FinancialReport(_buildQuery, convertedEntries);
     }
 
+
+    private FixedList<ITrialBalanceEntryDto> ConvertToDynamicTrialBalanceEntryDto(FixedList<ITrialBalanceEntryDto> sourceEntries) {
+      var converter = new DynamicTrialBalanceEntryConverter();
+
+      FixedList<DynamicTrialBalanceEntryDto> convertedEntries = converter.Convert(sourceEntries);
+
+      return convertedEntries.Select(entry => (ITrialBalanceEntryDto) entry)
+                             .ToFixedList();
+    }
 
     #endregion Helpers
 
