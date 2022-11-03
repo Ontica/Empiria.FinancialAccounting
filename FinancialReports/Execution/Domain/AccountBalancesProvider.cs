@@ -66,6 +66,7 @@ namespace Empiria.FinancialAccounting.FinancialReports {
 
       switch (reportType.DataSource) {
         case FinancialReportDataSource.AnaliticoCuentas:
+        case FinancialReportDataSource.AnaliticoCuentasDynamic:
           return GetAnaliticoCuentasQuery();
 
         case FinancialReportDataSource.BalanzaEnColumnasPorMoneda:

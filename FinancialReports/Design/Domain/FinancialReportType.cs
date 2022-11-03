@@ -31,7 +31,9 @@ namespace Empiria.FinancialAccounting.FinancialReports {
 
     AnaliticoCuentas,
 
-    BalanzaEnColumnasPorMoneda
+    AnaliticoCuentasDynamic,
+
+    BalanzaEnColumnasPorMoneda,
 
   }
 

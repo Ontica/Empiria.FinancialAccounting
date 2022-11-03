@@ -350,6 +350,9 @@ namespace Empiria.FinancialAccounting.FinancialReports {
         case FinancialReportDataSource.AnaliticoCuentas:
           return new AnaliticoCuentasReportEntryTotals();
 
+        case FinancialReportDataSource.AnaliticoCuentasDynamic:
+          return new DynamicReportEntryTotals(this.FinancialReportType.DataColumns);
+
         case FinancialReportDataSource.BalanzaEnColumnasPorMoneda:
           return new BalanzaEnColumnasPorMonedaReportEntryTotals();
 
