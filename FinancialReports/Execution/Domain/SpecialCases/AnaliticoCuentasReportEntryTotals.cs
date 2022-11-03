@@ -136,18 +136,18 @@ namespace Empiria.FinancialAccounting.FinancialReports {
     public override ReportEntryTotals Sum(ExternalValue value, string dataColumn) {
       if (dataColumn == "MonedaNacional") {
         return new AnaliticoCuentasReportEntryTotals {
-          DomesticCurrencyTotal = value.GetField("monedaNacional") + value.GetField("monedaExtranjera")
+          DomesticCurrencyTotal = value.GetTotalField("monedaNacional") + value.GetTotalField("monedaExtranjera")
         };
 
       } else if (dataColumn == "MonedaExtranjera") {
         return new AnaliticoCuentasReportEntryTotals {
-          ForeignCurrencyTotal = value.GetField("monedaNacional") + value.GetField("monedaExtranjera")
+          ForeignCurrencyTotal = value.GetTotalField("monedaNacional") + value.GetTotalField("monedaExtranjera")
         };
 
       } else {
         return new AnaliticoCuentasReportEntryTotals {
-          DomesticCurrencyTotal = value.GetField("monedaNacional"),
-          ForeignCurrencyTotal = value.GetField("monedaExtranjera")
+          DomesticCurrencyTotal = value.GetTotalField("monedaNacional"),
+          ForeignCurrencyTotal = value.GetTotalField("monedaExtranjera")
         };
       }
     }

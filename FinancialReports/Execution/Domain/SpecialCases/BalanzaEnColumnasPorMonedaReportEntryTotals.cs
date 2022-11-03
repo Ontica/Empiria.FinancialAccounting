@@ -153,7 +153,7 @@ namespace Empiria.FinancialAccounting.FinancialReports {
 
     public override ReportEntryTotals Sum(ExternalValue value, string dataColumn) {
       return new BalanzaEnColumnasPorMonedaReportEntryTotals {
-        PesosTotal = this.PesosTotal + value.GetField("monedaNacional")
+        PesosTotal = this.PesosTotal + value.GetTotalField("monedaNacional")
       };
     }
 
