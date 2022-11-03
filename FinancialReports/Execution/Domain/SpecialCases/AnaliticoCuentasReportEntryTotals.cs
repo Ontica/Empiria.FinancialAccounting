@@ -19,19 +19,19 @@ namespace Empiria.FinancialAccounting.FinancialReports {
 
     #region Fields
 
-    public decimal DomesticCurrencyTotal {
-      get; private set;
+    private decimal MonedaNacional {
+      get; set;
     }
 
 
-    public decimal ForeignCurrencyTotal {
-      get; private set;
+    private decimal MonedaExtranjera {
+      get; set;
     }
 
 
     public decimal TotalBalance {
       get {
-        return DomesticCurrencyTotal + ForeignCurrencyTotal;
+        return MonedaNacional + MonedaExtranjera;
       }
     }
 
@@ -42,17 +42,17 @@ namespace Empiria.FinancialAccounting.FinancialReports {
 
     public override ReportEntryTotals AbsoluteValue() {
       return new AnaliticoCuentasReportEntryTotals {
-        DomesticCurrencyTotal = Math.Abs(this.DomesticCurrencyTotal),
-        ForeignCurrencyTotal = Math.Abs(this.ForeignCurrencyTotal)
+        MonedaNacional = Math.Abs(this.MonedaNacional),
+        MonedaExtranjera = Math.Abs(this.MonedaExtranjera)
       };
     }
 
 
     public override void CopyTotalsTo(FinancialReportEntry copyTo) {
-      copyTo.SetTotalField(FinancialReportTotalField.domesticCurrencyTotal,
-                           this.DomesticCurrencyTotal);
-      copyTo.SetTotalField(FinancialReportTotalField.foreignCurrencyTotal,
-                           this.ForeignCurrencyTotal);
+      copyTo.SetTotalField(FinancialReportTotalField.monedaNacional,
+                           this.MonedaNacional);
+      copyTo.SetTotalField(FinancialReportTotalField.monedaExtranjera,
+                           this.MonedaExtranjera);
       copyTo.SetTotalField(FinancialReportTotalField.total,
                            this.TotalBalance);
     }
@@ -60,8 +60,8 @@ namespace Empiria.FinancialAccounting.FinancialReports {
 
     public override ReportEntryTotals Round() {
       return new AnaliticoCuentasReportEntryTotals {
-        DomesticCurrencyTotal = Math.Round(this.DomesticCurrencyTotal, 0),
-        ForeignCurrencyTotal = Math.Round(this.ForeignCurrencyTotal, 0)
+        MonedaNacional = Math.Round(this.MonedaNacional, 0),
+        MonedaExtranjera = Math.Round(this.MonedaExtranjera, 0)
       };
     }
 
@@ -71,13 +71,13 @@ namespace Empiria.FinancialAccounting.FinancialReports {
 
       if (dataColumn == "MonedaExtranjera") {
         return new AnaliticoCuentasReportEntryTotals {
-          DomesticCurrencyTotal = this.DomesticCurrencyTotal,
-          ForeignCurrencyTotal = this.ForeignCurrencyTotal - (castTotal.DomesticCurrencyTotal + castTotal.ForeignCurrencyTotal)
+          MonedaNacional = this.MonedaNacional,
+          MonedaExtranjera = this.MonedaExtranjera - (castTotal.MonedaNacional + castTotal.MonedaExtranjera)
         };
       }
       return new AnaliticoCuentasReportEntryTotals {
-        DomesticCurrencyTotal = this.DomesticCurrencyTotal - castTotal.DomesticCurrencyTotal,
-        ForeignCurrencyTotal = this.ForeignCurrencyTotal - castTotal.ForeignCurrencyTotal
+        MonedaNacional = this.MonedaNacional - castTotal.MonedaNacional,
+        MonedaExtranjera = this.MonedaExtranjera - castTotal.MonedaExtranjera
       };
     }
 
@@ -87,14 +87,14 @@ namespace Empiria.FinancialAccounting.FinancialReports {
 
       if (dataColumn == "MonedaExtranjera") {
         return new AnaliticoCuentasReportEntryTotals {
-          DomesticCurrencyTotal = this.DomesticCurrencyTotal,
-          ForeignCurrencyTotal = this.ForeignCurrencyTotal - (analiticoBalance.DomesticBalance + analiticoBalance.ForeignBalance)
+          MonedaNacional = this.MonedaNacional,
+          MonedaExtranjera = this.MonedaExtranjera - (analiticoBalance.DomesticBalance + analiticoBalance.ForeignBalance)
         };
       }
 
       return new AnaliticoCuentasReportEntryTotals {
-        DomesticCurrencyTotal = this.DomesticCurrencyTotal - analiticoBalance.DomesticBalance,
-        ForeignCurrencyTotal = this.ForeignCurrencyTotal - analiticoBalance.ForeignBalance
+        MonedaNacional = this.MonedaNacional - analiticoBalance.DomesticBalance,
+        MonedaExtranjera = this.MonedaExtranjera - analiticoBalance.ForeignBalance
       };
     }
 
@@ -104,14 +104,14 @@ namespace Empiria.FinancialAccounting.FinancialReports {
 
       if (dataColumn == "MonedaExtranjera") {
         return new AnaliticoCuentasReportEntryTotals {
-          DomesticCurrencyTotal = this.DomesticCurrencyTotal,
-          ForeignCurrencyTotal = this.ForeignCurrencyTotal + (castTotal.DomesticCurrencyTotal + castTotal.ForeignCurrencyTotal)
+          MonedaNacional = this.MonedaNacional,
+          MonedaExtranjera = this.MonedaExtranjera + (castTotal.MonedaNacional + castTotal.MonedaExtranjera)
         };
       }
 
       return new AnaliticoCuentasReportEntryTotals {
-        DomesticCurrencyTotal = this.DomesticCurrencyTotal + castTotal.DomesticCurrencyTotal,
-        ForeignCurrencyTotal = this.ForeignCurrencyTotal + castTotal.ForeignCurrencyTotal
+        MonedaNacional = this.MonedaNacional + castTotal.MonedaNacional,
+        MonedaExtranjera = this.MonedaExtranjera + castTotal.MonedaExtranjera
       };
     }
 
@@ -121,14 +121,14 @@ namespace Empiria.FinancialAccounting.FinancialReports {
 
       if (dataColumn == "MonedaExtranjera") {
         return new AnaliticoCuentasReportEntryTotals {
-          DomesticCurrencyTotal = this.DomesticCurrencyTotal,
-          ForeignCurrencyTotal = this.ForeignCurrencyTotal + (analiticoBalance.DomesticBalance + analiticoBalance.ForeignBalance)
+          MonedaNacional = this.MonedaNacional,
+          MonedaExtranjera = this.MonedaExtranjera + (analiticoBalance.DomesticBalance + analiticoBalance.ForeignBalance)
         };
       }
 
       return new AnaliticoCuentasReportEntryTotals {
-        DomesticCurrencyTotal = this.DomesticCurrencyTotal + analiticoBalance.DomesticBalance,
-        ForeignCurrencyTotal = this.ForeignCurrencyTotal + analiticoBalance.ForeignBalance
+        MonedaNacional = this.MonedaNacional + analiticoBalance.DomesticBalance,
+        MonedaExtranjera = this.MonedaExtranjera + analiticoBalance.ForeignBalance
       };
     }
 
@@ -136,18 +136,18 @@ namespace Empiria.FinancialAccounting.FinancialReports {
     public override ReportEntryTotals Sum(ExternalValue value, string dataColumn) {
       if (dataColumn == "MonedaNacional") {
         return new AnaliticoCuentasReportEntryTotals {
-          DomesticCurrencyTotal = value.GetTotalField("monedaNacional") + value.GetTotalField("monedaExtranjera")
+          MonedaNacional = value.GetTotalField("monedaNacional") + value.GetTotalField("monedaExtranjera")
         };
 
       } else if (dataColumn == "MonedaExtranjera") {
         return new AnaliticoCuentasReportEntryTotals {
-          ForeignCurrencyTotal = value.GetTotalField("monedaNacional") + value.GetTotalField("monedaExtranjera")
+          MonedaExtranjera = value.GetTotalField("monedaNacional") + value.GetTotalField("monedaExtranjera")
         };
 
       } else {
         return new AnaliticoCuentasReportEntryTotals {
-          DomesticCurrencyTotal = value.GetTotalField("monedaNacional"),
-          ForeignCurrencyTotal = value.GetTotalField("monedaExtranjera")
+          MonedaNacional = value.GetTotalField("monedaNacional"),
+          MonedaExtranjera = value.GetTotalField("monedaExtranjera")
         };
       }
     }

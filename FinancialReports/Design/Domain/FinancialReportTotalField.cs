@@ -22,9 +22,9 @@ namespace Empiria.FinancialAccounting.FinancialReports {
 
     udisTotal,
 
-    domesticCurrencyTotal,
+    monedaNacional,
 
-    foreignCurrencyTotal,
+    monedaExtranjera,
 
     total
 
