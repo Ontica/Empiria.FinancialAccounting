@@ -69,8 +69,56 @@ namespace Empiria.FinancialAccounting.Reporting {
       }
     }
 
+
+    public ReportTypeActions Show {
+      get {
+        return base.ExtendedDataField.Get<ReportTypeActions>("show");
+      }
+      private set {
+        base.ExtendedDataField.Set("show", value);
+      }
+    }
+
+
     #endregion Properties
 
   }  // class ReportType
+
+
+  public class ReportTypeActions {
+
+
+    public bool SingleDate {
+      get; set;
+    } = false;
+
+
+    public bool DatePeriod {
+      get; set;
+    } = false;
+
+
+    public bool Ledgers {
+      get; set;
+    } = false;
+
+
+    public bool Account {
+      get; set;
+    } = false;
+
+
+    public bool WithSubledgerAccount {
+      get; set;
+    } = false;
+
+
+    public bool SendType {
+      get; set;
+    } = false;
+
+
+  } // class ReportTypeActions
+
 
 }  // namespace Empiria.FinancialAccounting.Reporting

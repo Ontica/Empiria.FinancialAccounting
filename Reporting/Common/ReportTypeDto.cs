@@ -44,6 +44,11 @@ namespace Empiria.FinancialAccounting.Reporting {
       get; internal set;
     } = new FileType[0];
 
+
+    public ReportTypeActions Show {
+      get; set;
+    } = new ReportTypeActions();
+
   } // class ReportTypeDto
 
 
