@@ -175,7 +175,7 @@ namespace Empiria.FinancialAccounting.FinancialConcepts {
     [DataField("COLUMNA")]
     public string DataColumn {
       get; private set;
-    } = "Default";
+    } = "default";
 
 
     public FinancialConceptGroup Group {

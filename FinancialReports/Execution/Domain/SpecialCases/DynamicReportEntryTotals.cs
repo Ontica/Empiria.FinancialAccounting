@@ -96,7 +96,7 @@ namespace Empiria.FinancialAccounting.FinancialReports {
         substracted.DynamicFields.SetTotalField(fieldName, newValue);
       }
 
-      return substracted;
+      return ApplyRuleIfNeeded(substracted, dataColumn);
     }
 
 
@@ -128,9 +128,8 @@ namespace Empiria.FinancialAccounting.FinancialReports {
         sum.DynamicFields.SetTotalField(fieldName, newValue);
       }
 
-      return sum;
+      return ApplyRuleIfNeeded(sum, dataColumn);
     }
-
 
     public override ReportEntryTotals Sum(ExternalValue value, string dataColumn) {
       var sum = new DynamicReportEntryTotals();
@@ -142,7 +141,7 @@ namespace Empiria.FinancialAccounting.FinancialReports {
         sum.DynamicFields.SetTotalField(fieldName, newValue);
       }
 
-      return sum;
+      return ApplyRuleIfNeeded(sum, dataColumn);
     }
 
 
@@ -169,6 +168,31 @@ namespace Empiria.FinancialAccounting.FinancialReports {
       return temp;
     }
 
+
+    private ReportEntryTotals ApplyRuleIfNeeded(DynamicReportEntryTotals entry, string dataColumn) {
+      if (dataColumn.Length == 0 || dataColumn.ToLower() == "default") {
+        return entry;
+      }
+
+      return ConsolidateTotalsInto(entry, dataColumn);
+    }
+
+
+    private ReportEntryTotals ConsolidateTotalsInto(DynamicReportEntryTotals entry, string consolidatedFieldName) {
+      Assertion.Require(consolidatedFieldName, nameof(consolidatedFieldName));
+
+      decimal consolidatedTotal = 0;
+
+      foreach (var fieldName in entry.DynamicFields.GetDynamicMemberNames()) {
+        consolidatedTotal += entry.DynamicFields.GetTotalField(fieldName);
+      }
+
+      var consolidated = new DynamicReportEntryTotals();
+
+      consolidated.DynamicFields.SetTotalField(consolidatedFieldName, consolidatedTotal);
+
+      return consolidated;
+    }
 
   }  // class DynamicReportEntryTotals
 
