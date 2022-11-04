@@ -75,7 +75,7 @@ namespace Empiria.FinancialAccounting.FinancialReports.Adapters {
         FinancialConceptGroups = reportType.FinancialConceptGroups.MapToNamedEntityList(),
         DataFields = reportType.DataFields.MapToNamedEntityList(),
         Grid = new ReportGridDto {
-          Columns = MapToReportColumn(reportType.DataColumns),
+          Columns = MapToReportColumn(reportType.OutputDataColumns),
           StartRow = 1,
           EndRow = 64
         }

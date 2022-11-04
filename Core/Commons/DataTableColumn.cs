@@ -41,8 +41,9 @@ namespace Empiria.FinancialAccounting {
         Field = json.Get<string>("field"),
         Title = json.Get<string>("title"),
         Type = json.Get<string>("type"),
-        Column = json.Get<string>("column"),
-        Digits = json.Get<int>("digits", 2)
+        Digits = json.Get<int>("digits", 2),
+        Column = json.Get<string>("column", string.Empty),
+        Hidden = json.Get<bool>("hidden", false)
       };
     }
 
@@ -55,20 +56,35 @@ namespace Empiria.FinancialAccounting {
       get; private set;
     }
 
+
     public string Title {
       get; private set;
     }
+
 
     public string Type {
       get; private set;
     }
 
+
     public string Column {
       get; private set;
     }
 
+
     public int Digits {
       get; private set;
+    }
+
+
+    public bool Show {
+      get {
+        return Column.Length != 0 && !Hidden;
+      }
+    }
+
+    private bool Hidden {
+      get; set;
     }
 
     #endregion Properties

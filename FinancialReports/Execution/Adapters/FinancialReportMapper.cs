@@ -27,7 +27,7 @@ namespace Empiria.FinancialAccounting.FinancialReports.Adapters {
     static internal FinancialReportDto Map(FinancialReport financialReport) {
       return new FinancialReportDto {
         Query = financialReport.BuildQuery,
-        Columns = financialReport.FinancialReportType.DataColumns,
+        Columns = financialReport.FinancialReportType.OutputDataColumns,
         Entries = MapEntries(financialReport)
       };
     }

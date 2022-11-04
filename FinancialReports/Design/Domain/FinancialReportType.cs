@@ -161,6 +161,11 @@ namespace Empiria.FinancialAccounting.FinancialReports {
       }
     }
 
+    public FixedList<DataTableColumn> OutputDataColumns {
+      get {
+        return DataColumns.FindAll(x => x.Show);
+      }
+    }
 
     #endregion Properties
 
