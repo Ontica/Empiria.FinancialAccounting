@@ -349,27 +349,6 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
     }
 
 
-    internal void SummaryByAccountForOperationalReport(EmpiriaHashTable<TrialBalanceEntry> entries,
-                                                       TrialBalanceEntry balanceEntry) {
-
-      TrialBalanceEntry entry = balanceEntry.CreatePartialCopy();
-
-      if (entry.ItemType == TrialBalanceItemType.Summary && entry.Level == 1 && entry.HasSector) {
-        entry.InitialBalance = 0;
-        entry.Debit = 0;
-        entry.Credit = 0;
-        entry.CurrentBalance = 0;
-      }
-      entry.LastChangeDate = balanceEntry.LastChangeDate;
-
-      string hash = $"{entry.Account.Number}";
-
-      GenerateOrIncreaseEntries(entries, entry, entry.Account,
-                                entry.Sector, TrialBalanceItemType.Entry, hash);
-    }
-
-
-
     internal void SummaryByAccountEntry(EmpiriaHashTable<TrialBalanceEntry> summaryEntries,
                                  TrialBalanceEntry entry,
                                  StandardAccount targetAccount, Sector targetSector) {

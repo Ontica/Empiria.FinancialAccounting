@@ -34,15 +34,35 @@ namespace Empiria.FinancialAccounting.Reporting.AccountComparer.Adapters {
 
 
   /// <summary>DTO for each account comparer entry report.</summary>
-  public class AccountComparerEntryDto {
+  public class AccountComparerEntryDto : IReportEntryDto {
 
 
-    public string AccountNumber {
+    public int AccountGroupId {
       get; internal set;
     }
 
 
-    public string AccountName {
+    public string ActiveAccount {
+      get; internal set;
+    }
+
+
+    public decimal ActiveBalance {
+      get; internal set;
+    }
+
+
+    public string PasiveAccount {
+      get; internal set;
+    }
+
+
+    public decimal PasiveBalance {
+      get; internal set;
+    }
+
+
+    public decimal BalanceDifference {
       get; internal set;
     }
 

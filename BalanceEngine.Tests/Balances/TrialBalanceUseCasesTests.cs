@@ -80,8 +80,8 @@ namespace Empiria.FinancialAccounting.Tests.BalanceEngine {
       query.WithSubledgerAccount = false;
       query.UseDefaultValuation = false;
       query.WithAverageBalance = false;
-      query.FromAccount = "1";
-      query.ToAccount = "1";
+      query.FromAccount = "3.02.01";
+      query.ToAccount = "3.02.01";
 
       TrialBalanceDto sut = BalanceEngineProxy.BuildTrialBalance(query);
 

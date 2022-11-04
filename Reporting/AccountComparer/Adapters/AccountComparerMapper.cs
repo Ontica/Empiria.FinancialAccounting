@@ -9,6 +9,7 @@
 ************************* Copyright(c) La Vía Óntica SC, Ontica LLC and contributors. All rights reserved. **/
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using Empiria.FinancialAccounting.Reporting.AccountComparer.Domain;
 
 namespace Empiria.FinancialAccounting.Reporting.AccountComparer.Adapters {
@@ -18,12 +19,15 @@ namespace Empiria.FinancialAccounting.Reporting.AccountComparer.Adapters {
 
     #region Public methods
 
-    static internal AccountComparerDto Map(FixedList<AccountComparerEntry> accounts, ReportBuilderQuery query) {
-      return new AccountComparerDto {
-        Query = query,
+    static internal ReportDataDto MapToReportDataDto(ReportBuilderQuery buildQuery,
+                                             List<AccountComparerEntry> entries) {
+
+      return new ReportDataDto {
+        Query = buildQuery,
         Columns = GetColumns(),
-        Entries = Map(accounts)
+        Entries = MapToReportDataEntries(entries)
       };
+
     }
 
 
@@ -37,26 +41,36 @@ namespace Empiria.FinancialAccounting.Reporting.AccountComparer.Adapters {
     static private FixedList<DataTableColumn> GetColumns() {
       var columns = new List<DataTableColumn>();
 
-      columns.Add(new DataTableColumn("accountNumber", "Cuenta", "text"));
-      columns.Add(new DataTableColumn("accountName", "Nombre", "text"));
+      columns.Add(new DataTableColumn("activeAccount", "Activas", "text-nowrap"));
+      columns.Add(new DataTableColumn("activeBalance", "Saldo Activas", "decimal"));
+      columns.Add(new DataTableColumn("pasiveAccount", "Pasivas", "text-nowrap"));
+      columns.Add(new DataTableColumn("pasiveBalance", "Saldo Pasivo", "decimal"));
+      columns.Add(new DataTableColumn("balanceDifference", "Diferencia", "decimal"));
 
       return columns.ToFixedList();
     }
 
 
-    static private FixedList<AccountComparerEntryDto> Map(FixedList<AccountComparerEntry> accounts) {
-      var mappedItems = accounts.Select((x) => MapToAccountComparer((AccountComparerEntry) x));
-      
-      return new FixedList<AccountComparerEntryDto>(mappedItems);
+    static private FixedList<IReportEntryDto> MapToReportDataEntries(List<AccountComparerEntry> entries) {
+
+      var mappedItems = entries.Select((x) => MapToAccountComparerDto((AccountComparerEntry) x));
+
+      return new FixedList<IReportEntryDto>(mappedItems);
     }
 
 
-    static private AccountComparerEntryDto MapToAccountComparer(AccountComparerEntry x) {
-      var comparerDto = new AccountComparerEntryDto();
+    static private AccountComparerEntryDto MapToAccountComparerDto(AccountComparerEntry x) {
+      var dto = new AccountComparerEntryDto();
 
-      return comparerDto;
+      dto.AccountGroupId = x.AccountGroupId;
+      dto.ActiveAccount = x.ActiveAccount;
+      dto.ActiveBalance = x.ActiveBalance;
+      dto.PasiveAccount = x.PasiveAccount;
+      dto.PasiveBalance = x.PasiveBalance;
+      dto.BalanceDifference = x.BalanceDifference;
+
+      return dto;
     }
-
 
     #endregion Private methods
 

@@ -40,7 +40,7 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
       List<TrialBalanceEntry> parentsAndAccountEntries = GetAccountsAndParentsWithSectorization(
                                                          accountEntries, parentAccounts);
 
-      List<TrialBalanceEntry> balanza = GetTotalsForBalanzaOrOperationalReport(
+      List<TrialBalanceEntry> balanza = GetTotals(
                                         parentsAndAccountEntries, accountEntries);
 
       var balanceHelper = new TrialBalanceHelper(_query);
@@ -81,7 +81,7 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
     }
 
 
-    private List<TrialBalanceEntry> GetTotalsForBalanzaOrOperationalReport(
+    private List<TrialBalanceEntry> GetTotals(
                                     List<TrialBalanceEntry> parentsAndAccountEntries,
                                     FixedList<TrialBalanceEntry> accountEntries) {
 
@@ -157,13 +157,13 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
 
 
     private List<TrialBalanceEntry> GetOperationalReports(List<TrialBalanceEntry> trialBalance) {
-      var balanceHelper = new TrialBalanceHelper(_query);
+
       var totalByAccountEntries = new EmpiriaHashTable<TrialBalanceEntry>(trialBalance.Count);
 
       if (_query.ConsolidateBalancesToTargetCurrency) {
 
         foreach (var entry in trialBalance) {
-          balanceHelper.SummaryByAccountForOperationalReport(totalByAccountEntries, entry);
+          SummaryByAccount(totalByAccountEntries, entry);
         }
 
         return totalByAccountEntries.ToFixedList().ToList();
@@ -173,6 +173,27 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
         return trialBalance;
 
       }
+    }
+
+
+    internal void SummaryByAccount(EmpiriaHashTable<TrialBalanceEntry> totalByEntries,
+                                                       TrialBalanceEntry balanceEntry) {
+
+      TrialBalanceEntry entry = balanceEntry.CreatePartialCopy();
+
+      if (entry.ItemType == TrialBalanceItemType.Summary && entry.Level == 1 && entry.HasSector) {
+        entry.InitialBalance = 0;
+        entry.Debit = 0;
+        entry.Credit = 0;
+        entry.CurrentBalance = 0;
+      }
+      entry.LastChangeDate = balanceEntry.LastChangeDate;
+
+      string hash = $"{entry.Account.Number}";
+      
+      var balanceHelper = new TrialBalanceHelper(_query);
+      balanceHelper.GenerateOrIncreaseEntries(totalByEntries, entry, entry.Account,
+                                entry.Sector, TrialBalanceItemType.Entry, hash);
     }
 
 

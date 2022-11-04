@@ -17,6 +17,7 @@ using Empiria.FinancialAccounting.Reporting.Exporters;
 using Empiria.FinancialAccounting.Reporting.FiscalReports.Builders;
 
 using Empiria.FinancialAccounting.Reporting.VoucherRelatedReports.Domain;
+using Empiria.FinancialAccounting.Reporting.AccountsComparer.Domain;
 
 namespace Empiria.FinancialAccounting.Reporting {
 
@@ -72,17 +73,20 @@ namespace Empiria.FinancialAccounting.Reporting {
         case ReportTypes.BalanzaSAT:
           return new BalanzaSat();
 
-        case ReportTypes.CatalogoCuentasSAT:
-          return new CatalogoCuentasSat();
-
         case ReportTypes.BalanzaDeterminarImpuestos:
           return new BalanzaCalculoImpuestos();
+
+        case ReportTypes.CatalogoCuentasSAT:
+          return new CatalogoCuentasSat();
 
         case ReportTypes.ListadoDePolizas:
           return new ListadoPolizas();
 
         case ReportTypes.ListadoDePolizasPorCuenta:
           return new ListadoPolizasPorCuenta();
+
+        case ReportTypes.ComparativoDeCuentas:
+          return new AccountComparerBuilder();
 
         default:
           throw Assertion.EnsureNoReachThisCode($"Unhandled reportType '{reportType}'.");

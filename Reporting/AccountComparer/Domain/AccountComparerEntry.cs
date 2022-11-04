@@ -8,6 +8,7 @@
 *                                                                                                            *
 ************************* Copyright(c) La Vía Óntica SC, Ontica LLC and contributors. All rights reserved. **/
 using System;
+using Empiria.FinancialAccounting.BalanceEngine.Adapters;
 
 namespace Empiria.FinancialAccounting.Reporting.AccountComparer.Domain {
 
@@ -15,7 +16,52 @@ namespace Empiria.FinancialAccounting.Reporting.AccountComparer.Domain {
   public class AccountComparerEntry {
 
 
+    public int AccountGroupId {
+      get; internal set;
+    }
 
+
+    public string ActiveAccount {
+      get; internal set;
+    }
+
+
+    public decimal ActiveBalance {
+      get; internal set;
+    }
+
+
+    public string PasiveAccount {
+      get; internal set;
+    }
+
+
+    public decimal PasiveBalance {
+      get; internal set;
+    }
+
+
+    public decimal BalanceDifference {
+      get; internal set;
+    }
+
+
+    internal void MergeAccountItemIntoAccountComparerEntry(AccountsListItem item, int groupId) {
+
+      this.AccountGroupId = groupId;
+      this.ActiveAccount = item.AccountNumber;
+      this.PasiveAccount = item.TargetAccountNumber;
+
+    }
+
+    internal void MapBalancesToAccountComparerEntry(BalanzaTradicionalEntryDto activeAccount,
+                                                    BalanzaTradicionalEntryDto pasiveAccount) {
+
+      this.ActiveBalance = (decimal) activeAccount.CurrentBalance;
+      this.PasiveBalance = (decimal) pasiveAccount.CurrentBalance;
+      this.BalanceDifference = (decimal) ((activeAccount.CurrentBalance) - (pasiveAccount.CurrentBalance));
+
+    }
   } // class AccountComparerEntry
 
 } // namespace Empiria.FinancialAccounting.Reporting.AccountComparer.Domain

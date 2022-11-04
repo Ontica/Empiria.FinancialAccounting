@@ -8,8 +8,13 @@
 *                                                                                                            *
 ************************* Copyright(c) La Vía Óntica SC, Ontica LLC and contributors. All rights reserved. **/
 using System;
+using System.Collections.Generic;
+using System.Linq;
+using Empiria.FinancialAccounting.BalanceEngine;
 using Empiria.FinancialAccounting.BalanceEngine.Adapters;
 using Empiria.FinancialAccounting.BalanceEngine.UseCases;
+using Empiria.FinancialAccounting.Reporting.AccountComparer.Adapters;
+using Empiria.FinancialAccounting.Reporting.AccountComparer.Domain;
 
 namespace Empiria.FinancialAccounting.Reporting.AccountsComparer.Domain {
 
@@ -23,12 +28,28 @@ namespace Empiria.FinancialAccounting.Reporting.AccountsComparer.Domain {
       Assertion.Require(buildQuery, nameof(buildQuery));
 
       using (var usecases = TrialBalanceUseCases.UseCaseInteractor()) {
-        TrialBalanceQuery trialBalanceQuery = MapToTrialBalanceQuery(buildQuery);
+        
+        TrialBalanceQuery trialBalanceQuery = this.MapToTrialBalanceQuery(buildQuery);
 
         TrialBalanceDto trialBalance = usecases.BuildTrialBalance(trialBalanceQuery);
 
-        return MapToReportDataDto(buildQuery, trialBalance);
+        List<AccountComparerEntry> comparerEntries = BuildComparerEntries(trialBalance.Entries, buildQuery);
+
+        return AccountComparerMapper.MapToReportDataDto(buildQuery, comparerEntries);
       }
+    }
+
+
+    private List<AccountComparerEntry> BuildComparerEntries(FixedList<ITrialBalanceEntryDto> entries,
+                                                            ReportBuilderQuery buildQuery) {
+      var helper = new AccountComparerHelper(buildQuery);
+
+      List<AccountComparerEntry> accountList = helper.GetComparerAccountsLists();
+
+      List<AccountComparerEntry> mergeAccounts = 
+                                  helper.MergeAccountsIntoAccountComparer(accountList, entries);
+
+      return mergeAccounts;
     }
 
 
@@ -37,13 +58,21 @@ namespace Empiria.FinancialAccounting.Reporting.AccountsComparer.Domain {
     #region Private methods
 
 
-    private ReportDataDto MapToReportDataDto(ReportBuilderQuery buildQuery, TrialBalanceDto trialBalance) {
-      throw new NotImplementedException();
-    }
-
-
     private TrialBalanceQuery MapToTrialBalanceQuery(ReportBuilderQuery buildQuery) {
-      throw new NotImplementedException();
+
+      return new TrialBalanceQuery {
+        TrialBalanceType = TrialBalanceType.Balanza,
+        AccountsChartUID = AccountsChart.Parse(buildQuery.AccountsChartUID).UID,
+        BalancesType = BalancesType.WithCurrentBalanceOrMovements,
+        ShowCascadeBalances = false,
+        WithAverageBalance = false,
+        InitialPeriod = new BalancesPeriod {
+          FromDate = new DateTime(buildQuery.ToDate.Year, buildQuery.ToDate.Month, 1),
+          ToDate = buildQuery.ToDate
+        },
+        IsOperationalReport = true,
+      };
+
     }
 
 
