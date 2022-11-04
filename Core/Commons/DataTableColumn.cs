@@ -43,6 +43,7 @@ namespace Empiria.FinancialAccounting {
         Type = json.Get<string>("type"),
         Digits = json.Get<int>("digits", 2),
         Column = json.Get<string>("column", string.Empty),
+        Formula = json.Get<string>("formula", string.Empty),
         Hidden = json.Get<bool>("hidden", false)
       };
     }
@@ -77,11 +78,24 @@ namespace Empiria.FinancialAccounting {
     }
 
 
+    public string Formula {
+      get; private set;
+    }
+
+
+    public bool IsCalculated {
+      get {
+        return EmpiriaString.TrimAll(Formula).Length != 0;
+      }
+    }
+
+
     public bool Show {
       get {
         return Column.Length != 0 && !Hidden;
       }
     }
+
 
     private bool Hidden {
       get; set;

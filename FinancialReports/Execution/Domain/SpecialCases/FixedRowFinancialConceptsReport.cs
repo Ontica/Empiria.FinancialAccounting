@@ -7,6 +7,7 @@
 *  Summary  : Generates a report with fixed rows linked to financial concepts (e.g. R01, R10, R12).          *
 *                                                                                                            *
 ************************* Copyright(c) La Vía Óntica SC, Ontica LLC and contributors. All rights reserved. **/
+using System;
 using System.Collections.Generic;
 using System.Linq;
 
@@ -45,7 +46,9 @@ namespace Empiria.FinancialAccounting.FinancialReports {
 
       FixedList<FixedRowFinancialReportEntry> reportEntries = CreateReportEntriesWithoutTotals(fixedRows);
 
-      ProcessEntries(reportEntries);
+      FillEntries(reportEntries);
+
+      CalculateColumns(reportEntries);
 
       return MapToFinancialReport(reportEntries);
     }
@@ -58,7 +61,7 @@ namespace Empiria.FinancialAccounting.FinancialReports {
 
       FixedList<FinancialReportBreakdownEntry> breakdownEntries = GetBreakdownEntries(reportEntry);
 
-      ReportEntryTotals breakdownTotal = ProcessBreakdown(breakdownEntries);
+      ReportEntryTotals breakdownTotal = FillBreakdown(breakdownEntries);
 
       breakdownTotal.CopyTotalsTo(reportEntry);
 
@@ -67,8 +70,11 @@ namespace Empiria.FinancialAccounting.FinancialReports {
       reportEntries.AddRange(breakdownEntries);
       reportEntries.Add(reportEntry);
 
+      CalculateColumns(reportEntries);
+
       return MapToFinancialReport(reportEntries.ToFixedList());
     }
+
 
 
     internal FinancialReport GenerateIntegration() {
@@ -82,7 +88,7 @@ namespace Empiria.FinancialAccounting.FinancialReports {
         FixedList<FinancialReportBreakdownEntry> breakdownEntries = GetBreakdownEntries(reportEntry).
                                                                     FindAll(x => x.IntegrationEntry.Type == FinancialConceptEntryType.Account);
 
-        ReportEntryTotals breakdownTotal = ProcessBreakdown(breakdownEntries);
+        ReportEntryTotals breakdownTotal = FillBreakdown(breakdownEntries);
 
         reportEntries.AddRange(breakdownEntries);
 
@@ -97,6 +103,26 @@ namespace Empiria.FinancialAccounting.FinancialReports {
     #endregion Public methods
 
     #region Private methods
+
+    private void CalculateColumns(IEnumerable<FixedRowFinancialReportEntry> reportEntries) {
+      var calculator = new FinancialReportCalculator(this.FinancialReportType);
+
+      IEnumerable<FinancialReportEntry> castedEntries = reportEntries.Select(entry => (FinancialReportEntry) entry);
+
+      var columnsToCalculate = this.FinancialReportType.DataColumns.FindAll(x => x.IsCalculated);
+
+      calculator.CalculateColumns(columnsToCalculate, castedEntries);
+    }
+
+
+    private void CalculateColumns(IEnumerable<FinancialReportEntry> reportEntries) {
+      var calculator = new FinancialReportCalculator(this.FinancialReportType);
+
+      var columnsToCalculate = this.FinancialReportType.BreakdownColumns.FindAll(x => x.IsCalculated);
+
+      calculator.CalculateColumns(columnsToCalculate, reportEntries);
+    }
+
 
     private ReportEntryTotals ProcessAccount(FinancialConceptEntry integrationEntry) {
       if (!_balances.ContainsKey(integrationEntry.AccountNumber)) {
@@ -128,7 +154,7 @@ namespace Empiria.FinancialAccounting.FinancialReports {
     }
 
 
-    private ReportEntryTotals ProcessBreakdown(FixedList<FinancialReportBreakdownEntry> breakdown) {
+    private ReportEntryTotals FillBreakdown(FixedList<FinancialReportBreakdownEntry> breakdown) {
 
       ReportEntryTotals granTotal = CreateReportEntryTotalsObject();
 
@@ -184,7 +210,7 @@ namespace Empiria.FinancialAccounting.FinancialReports {
     }
 
 
-    private void ProcessEntries(FixedList<FixedRowFinancialReportEntry> reportEntries) {
+    private void FillEntries(FixedList<FixedRowFinancialReportEntry> reportEntries) {
 
       foreach (var reportEntry in reportEntries) {
 
