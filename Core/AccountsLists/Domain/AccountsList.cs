@@ -37,11 +37,18 @@ namespace Empiria.FinancialAccounting {
                        .ToFixedList();
     }
 
+
     static public AccountsList Empty => BaseObject.ParseEmpty<AccountsList>();
 
     #endregion Constructors and parsers
 
     #region Public methods
+
+    public bool IsComparable {
+      get {
+        return base.ExtendedDataField.Get("isComparable", false);
+      }
+    }
 
     public FixedList<AccountsListItem> GetItems() {
       return AccountsListData.GetAccounts(this);
