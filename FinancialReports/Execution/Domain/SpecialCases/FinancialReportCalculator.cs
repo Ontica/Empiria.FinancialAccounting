@@ -10,14 +10,14 @@
 using System;
 using System.Collections.Generic;
 
-using Empiria.FinancialAccounting.FinancialReports.Expressions;
+using Empiria.Expressions;
 
 namespace Empiria.FinancialAccounting.FinancialReports {
 
   /// <summary>Performs data calculation over financial reports data.</summary>
   internal class FinancialReportCalculator {
 
-    private FinancialReportType _financialReportType;
+    private readonly FinancialReportType _financialReportType;
 
     public FinancialReportCalculator(FinancialReportType financialReportType) {
       Assertion.Require(financialReportType, nameof(financialReportType));
