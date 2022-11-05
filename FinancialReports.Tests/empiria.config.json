@@ -1,0 +1,28 @@
+﻿{
+  "appName": "Empiria Financial Accounting Financial Reports Tests suite",
+  "description": "Tests environment settings for the financial reports of the financial accounting system.",
+  "version": "2.0",
+  "date": "2022-11-04",
+  "settings": [
+    {
+      "type": "",
+      "key": "ApplicationKey",
+      "value": "{{APPLICATION-KEY}}"
+    },
+    {
+      "type": "",
+      "key": "GlobalConfigurationFile",
+      "value": "{{GLOBAL-CONFIGURATION-FILE}}"
+    },
+    {
+      "type": "Tests",
+      "key": "SessionToken",
+      "value": "{{TESTING-SESSION-TOKEN}}"
+    },
+    {
+      "type": "Data",
+      "key": "IsObjectIdGeneratorServer",
+      "value": true
+    }
+  ]
+}

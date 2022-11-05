@@ -20,47 +20,38 @@ developed by our organization in 2000-2002, for Banco Nacional de Obras y Servic
 
 Empiria Financial Accounting comprises the following modules:
 
-1.  **Core**
+1.  **Core**  
     Financial Accounting core domain classes and types.
 
-2.  **Core Tests**
-    Test suite for Financial Accounting core domain classes, types and services.
-
-3.  **Balance Engine**
+2.  **Balance Engine**  
     Provides account's balances and trial balances services.
 
-4.  **Balance Engine Tests**
-    Tests suite for the Balance Engine services.
-
-5.  **External Data**
+3.  **External Data**  
     Provides read and write services for financial external variables and their values.
 
-6.  **Financial Concepts**
+4.  **Financial Concepts**  
 	Provides services that manage financial concepts and their integrations.
 
-7.  **Financial Reports**
+5.  **Financial Reports**  
     Generates information for financial reports based on accounts balance data structures and financial concepts and rules.
 
-8.  **Reconciliation**
+6.  **Reconciliation**  
     Provides services for account's balance reconciliation.
 
-9.  **Reporting**
+7.  **Reporting**  
     Generate financial accounting reports and export them to files.
 
-10. **Vouchers Management**
+8.  **Vouchers Management**  
     Provides services for vouchers edition, importation and management.
 
-11. **Vouchers Management Tests**
-    Tests suite for vouchers edition, importation and management.
-
-12. **Web API**
+9. **Web API**  
     Http/Json RESTful interface for Financial Accounting system.
 
-13. **Banobras Integration**
+10. **Banobras Integration**  
     Provides services used to integrate SICOFIN with other BANOBRAS systems.
 
 
-Each single project can be compiled using Visual Studio 2019 Community Edition.
+Each single project can be compiled using Visual Studio 2022 Community Edition.
 
 ## Licencia
 
