@@ -49,12 +49,12 @@ namespace Empiria.FinancialAccounting.FinancialReports {
 
 
     static public FinancialReportType Parse(int id) {
-      return BaseObject.ParseId<FinancialReportType>(id);
+      return BaseObject.ParseId<FinancialReportType>(id, true);
     }
 
 
     static public FinancialReportType Parse(string uid) {
-      return BaseObject.ParseKey<FinancialReportType>(uid);
+      return BaseObject.ParseKey<FinancialReportType>(uid, true);
     }
 
 
