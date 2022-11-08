@@ -21,7 +21,17 @@ namespace Empiria.FinancialAccounting.Reporting.AccountComparer.Domain {
     }
 
 
+    public string CurrencyCode {
+      get; internal set;
+    }
+
+
     public string ActiveAccount {
+      get; internal set;
+    }
+
+
+    public string ActiveAccountName {
       get; internal set;
     }
 
@@ -32,6 +42,11 @@ namespace Empiria.FinancialAccounting.Reporting.AccountComparer.Domain {
 
 
     public string PasiveAccount {
+      get; internal set;
+    }
+
+
+    public string PasiveAccountName {
       get; internal set;
     }
 
@@ -49,6 +64,7 @@ namespace Empiria.FinancialAccounting.Reporting.AccountComparer.Domain {
     internal void MergeAccountItemIntoAccountComparerEntry(AccountsListItem item, int groupId) {
 
       this.AccountGroupId = groupId;
+      this.CurrencyCode = item.CurrencyCode;
       this.ActiveAccount = item.AccountNumber;
       this.PasiveAccount = item.TargetAccountNumber;
 
@@ -56,9 +72,13 @@ namespace Empiria.FinancialAccounting.Reporting.AccountComparer.Domain {
 
     internal void MapBalancesToAccountComparerEntry(BalanzaTradicionalEntryDto activeAccount,
                                                     BalanzaTradicionalEntryDto pasiveAccount) {
-
+      
+      this.ActiveAccountName = activeAccount.AccountName ?? string.Empty;
       this.ActiveBalance = (decimal) activeAccount.CurrentBalance;
+
+      this.PasiveAccountName = pasiveAccount.AccountName ?? string.Empty;
       this.PasiveBalance = (decimal) pasiveAccount.CurrentBalance;
+
       this.BalanceDifference = (decimal) ((activeAccount.CurrentBalance) - (pasiveAccount.CurrentBalance));
 
     }

@@ -41,10 +41,13 @@ namespace Empiria.FinancialAccounting.Reporting.AccountComparer.Adapters {
     static private FixedList<DataTableColumn> GetColumns() {
       var columns = new List<DataTableColumn>();
 
-      columns.Add(new DataTableColumn("activeAccount", "Activas", "text-nowrap"));
-      columns.Add(new DataTableColumn("activeBalance", "Saldo Activas", "decimal"));
-      columns.Add(new DataTableColumn("pasiveAccount", "Pasivas", "text-nowrap"));
-      columns.Add(new DataTableColumn("pasiveBalance", "Saldo Pasivo", "decimal"));
+      columns.Add(new DataTableColumn("currencyCode", "Moneda", "text-nowrap"));
+      columns.Add(new DataTableColumn("activeAccount", "Cuenta", "text-nowrap"));
+      columns.Add(new DataTableColumn("activeAccountName", "Nombre", "text-nowrap"));
+      columns.Add(new DataTableColumn("activeBalance", "Saldo", "decimal"));
+      columns.Add(new DataTableColumn("pasiveAccount", "Contracuenta", "text-nowrap"));
+      columns.Add(new DataTableColumn("pasiveAccountName", "Nombre Contracuenta", "text-nowrap"));
+      columns.Add(new DataTableColumn("pasiveBalance", "Saldo", "decimal"));
       columns.Add(new DataTableColumn("balanceDifference", "Diferencia", "decimal"));
 
       return columns.ToFixedList();
@@ -63,10 +66,18 @@ namespace Empiria.FinancialAccounting.Reporting.AccountComparer.Adapters {
       var dto = new AccountComparerEntryDto();
 
       dto.AccountGroupId = x.AccountGroupId;
+      
+      dto.CurrencyCode = x.CurrencyCode == string.Empty ?
+                          Currency.MXN.Code : x.CurrencyCode;
+
+      dto.ActiveAccountName = x.ActiveAccountName;
       dto.ActiveAccount = x.ActiveAccount;
       dto.ActiveBalance = x.ActiveBalance;
+
+      dto.PasiveAccountName = x.PasiveAccountName;
       dto.PasiveAccount = x.PasiveAccount;
       dto.PasiveBalance = x.PasiveBalance;
+
       dto.BalanceDifference = x.BalanceDifference;
 
       return dto;

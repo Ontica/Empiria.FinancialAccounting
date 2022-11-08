@@ -59,6 +59,7 @@ namespace Empiria.FinancialAccounting.Reporting.FiscalReports.Builders {
 
 
     private TrialBalanceQuery MapToTrialBalanceQuery(ReportBuilderQuery buildQuery) {
+      
       return new TrialBalanceQuery {
         TrialBalanceType = TrialBalanceType.Balanza,
         AccountsChartUID = AccountsChart.Parse(buildQuery.AccountsChartUID).UID,

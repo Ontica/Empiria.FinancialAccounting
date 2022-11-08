@@ -49,6 +49,12 @@ namespace Empiria.FinancialAccounting.Reporting {
       get; set;
     } = new ReportTypeActions();
 
+
+    public FixedList<OutputTypeObject> OutputType {
+      get; set;
+    } = new FixedList<OutputTypeObject>();
+
+
   } // class ReportTypeDto
 
 

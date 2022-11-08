@@ -27,7 +27,7 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
 
     internal TrialBalance Build() {
       var helper = new BalanzaTradicionalHelper(_query);
-
+      
       FixedList<TrialBalanceEntry> accountEntries = helper.GetPostingEntries();
 
       if (accountEntries.Count == 0) {

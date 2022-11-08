@@ -42,6 +42,17 @@ namespace Empiria.FinancialAccounting.Reporting.AccountComparer.Adapters {
     }
 
 
+    public string CurrencyCode {
+      get; internal set;
+    }
+
+
+    public string ActiveAccountName {
+      get;
+      internal set;
+    }
+
+
     public string ActiveAccount {
       get; internal set;
     }
@@ -49,6 +60,12 @@ namespace Empiria.FinancialAccounting.Reporting.AccountComparer.Adapters {
 
     public decimal ActiveBalance {
       get; internal set;
+    }
+
+
+    public string PasiveAccountName {
+      get;
+      internal set;
     }
 
 
@@ -65,7 +82,7 @@ namespace Empiria.FinancialAccounting.Reporting.AccountComparer.Adapters {
     public decimal BalanceDifference {
       get; internal set;
     }
-
+    
 
   } // class AccountComparerEntryDto
 

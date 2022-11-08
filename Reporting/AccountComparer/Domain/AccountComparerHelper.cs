@@ -18,7 +18,7 @@ namespace Empiria.FinancialAccounting.Reporting.AccountComparer.Domain {
   internal class AccountComparerHelper {
 
     private readonly ReportBuilderQuery _query;
-    
+
     internal AccountComparerHelper(ReportBuilderQuery query) {
       Assertion.Require(query, nameof(query));
 
@@ -29,39 +29,31 @@ namespace Empiria.FinancialAccounting.Reporting.AccountComparer.Domain {
     internal List<AccountComparerEntry> GetComparerAccountsLists() {
 
       var accountComparerList = new List<AccountComparerEntry>();
-      var accountGroupsList = AccountsList.GetList<AccountsList>("", "");
 
-      foreach (var accountGroup in accountGroupsList) {
+      var group = AccountsList.Parse(_query.OutputType);
+      if (group != null) {
 
-        var group = AccountsList.Parse(accountGroup.UID);
-        if (group != null) {
-
-          List<AccountComparerEntry> comparerEntries = MergeItemIntoAccountComparer(
-                                                        group.GetItems(), accountGroup.Id);
-          accountComparerList.AddRange(comparerEntries);
-        }
+        List<AccountComparerEntry> comparerEntries = MergeItemIntoAccountComparer(group);
+        accountComparerList.AddRange(comparerEntries);
       }
 
       return accountComparerList.OrderBy(a => a.ActiveAccount)
-                                //.ThenBy(a => a.AccountGroupId)
                                 .ToList();
     }
 
 
-    private List<AccountComparerEntry> MergeItemIntoAccountComparer(
-                                        FixedList<AccountsListItem> accountsListItems, int groupId) {
+    private List<AccountComparerEntry> MergeItemIntoAccountComparer(AccountsList group) {
 
       List<AccountComparerEntry> returnedComparerEntries = new List<AccountComparerEntry>();
 
+      var accountsListItems = group.GetItems();
+
       foreach (var item in accountsListItems) {
         AccountComparerEntry entry = new AccountComparerEntry();
-        
-        if (item.AccountNumber != string.Empty && item.TargetAccountNumber != string.Empty) {
-          
-          entry.MergeAccountItemIntoAccountComparerEntry(item, groupId);
-          returnedComparerEntries.Add(entry);
-        }
-        
+
+        entry.MergeAccountItemIntoAccountComparerEntry(item, group.Id);
+        returnedComparerEntries.Add(entry);
+
       }
 
       return returnedComparerEntries;
@@ -69,18 +61,19 @@ namespace Empiria.FinancialAccounting.Reporting.AccountComparer.Domain {
 
 
     internal List<AccountComparerEntry> MergeAccountsIntoAccountComparer(
-                                        List<AccountComparerEntry> accountList,
+                                        List<AccountComparerEntry> comparerEntries,
                                         FixedList<ITrialBalanceEntryDto> balanceEntries) {
 
       if (balanceEntries.Count == 0) {
-        return accountList;
+        return comparerEntries;
       }
 
       var entries = balanceEntries.Select(a => (BalanzaTradicionalEntryDto) a);
 
-      List<AccountComparerEntry> returnedAccountList = new List<AccountComparerEntry>(accountList);
+      List<AccountComparerEntry> returnedAccountList = new List<AccountComparerEntry>(comparerEntries);
 
       foreach (var account in returnedAccountList) {
+       
         var activeAccount = entries.FirstOrDefault(a => a.AccountNumber == account.ActiveAccount &&
                                                         a.CurrencyCode == Currency.MXN.Code);
         var pasiveAccount = entries.FirstOrDefault(a => a.AccountNumber == account.PasiveAccount &&

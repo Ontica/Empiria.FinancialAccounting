@@ -80,9 +80,33 @@ namespace Empiria.FinancialAccounting.Reporting {
     }
 
 
+    public FixedList<OutputTypeObject> OutputType {
+      get {
+        return base.ExtendedDataField.GetFixedList<OutputTypeObject>("outputType");
+      }
+      private set {
+        base.ExtendedDataField.Set("outputType", value);
+      }
+    }
+
+
     #endregion Properties
 
   }  // class ReportType
+
+
+  public class OutputTypeObject {
+
+    public string Uid {
+      get; set;
+    }
+
+
+    public string Name {
+      get; set;
+    }
+
+  }
 
 
   public class ReportTypeActions {
@@ -114,6 +138,11 @@ namespace Empiria.FinancialAccounting.Reporting {
 
 
     public bool SendType {
+      get; set;
+    } = false;
+
+
+    public bool OutputType {
       get; set;
     } = false;
 

@@ -52,6 +52,11 @@ namespace Empiria.FinancialAccounting.Reporting {
     } = string.Empty;
 
 
+    public string OutputType {
+      get; set;
+    } = string.Empty;
+
+
     public SendType SendType {
       get; set;
     } = SendType.N;
