@@ -70,7 +70,7 @@ namespace Empiria.FinancialAccounting {
 
     public string Column {
       get; private set;
-    }
+    } = string.Empty;
 
 
     public int Digits {
@@ -80,7 +80,7 @@ namespace Empiria.FinancialAccounting {
 
     public string Formula {
       get; private set;
-    }
+    } = string.Empty;
 
 
     public bool IsCalculated {
