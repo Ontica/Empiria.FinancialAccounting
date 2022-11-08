@@ -47,7 +47,7 @@ namespace Empiria.FinancialAccounting.FinancialReports {
     private void CalculateEntryColumn(DataTableColumn column, FinancialReportEntry entry) {
       var expression = new Expression(column.Formula);
 
-      decimal result = expression.Evaluate<decimal>(entry);
+      decimal result = expression.Evaluate<decimal>(entry.ToDictionary());
 
       entry.SetTotalField(column.Field, result);
     }
