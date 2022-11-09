@@ -22,8 +22,8 @@ namespace Empiria.FinancialAccounting.Tests.Reporting {
 
       ReportBuilderQuery query = new ReportBuilderQuery {
         AccountsChartUID = "47ec2ec7-0f4f-482e-9799-c23107b60d8a",
-        AccountNumber = "3.02.01",
-        OutputType = "a99756ce-2c80-4680-ae20-c897616fe155",
+        AccountNumber = "9",
+        OutputType = "d551b39a-ae52-4c35-abbe-96d71e4a10bf",
         ReportType = ReportTypes.ComparativoDeCuentas,
         FromDate = new DateTime(2022, 06, 01),
         ToDate = new DateTime(2022, 06, 30)
@@ -31,6 +31,8 @@ namespace Empiria.FinancialAccounting.Tests.Reporting {
 
       using (var service = ReportingService.ServiceInteractor()) {
         ReportDataDto sut = service.GenerateReport(query);
+
+        //FileReportDto fileReportDto = service.ExportReport(query, sut);
 
         Assert.NotNull(sut);
         Assert.Equal(query, sut.Query);
