@@ -118,7 +118,7 @@ namespace Empiria.FinancialAccounting.BalanceEngine.Data {
 
           return $"ID_MONEDA <> {Currency.MXN.Id} AND ID_MONEDA <> {Currency.UDI.Id}";
 
-        } else if (_query.TrialBalanceType == TrialBalanceType.Valorizacion) {
+        } else if (_query.TrialBalanceType == TrialBalanceType.ValorizacionEstimacionPreventiva) {
 
           return $"ID_MONEDA <> {Currency.MXN.Id}";
 

@@ -117,7 +117,7 @@ namespace Empiria.FinancialAccounting.Reporting.Balances {
                           trialBalance.Query.WithSubledgerAccount);
           return;
 
-        case TrialBalanceType.Valorizacion:
+        case TrialBalanceType.ValorizacionEstimacionPreventiva:
           valorizacionTable.FillOutValorizacion(_excelFile,
                           trialBalance.Entries.Select(x => (ValorizacionEntryDto) x));
           return;

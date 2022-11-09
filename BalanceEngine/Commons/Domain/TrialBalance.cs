@@ -58,7 +58,7 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
         case TrialBalanceType.BalanzaDolarizada:
           return BalanzaDolarizadaMapper.DataColumns();
 
-        case TrialBalanceType.Valorizacion:
+        case TrialBalanceType.ValorizacionEstimacionPreventiva:
           return ValorizacionEstimacionPreventivaMapper.DataColumns(this.Entries);
 
         default:

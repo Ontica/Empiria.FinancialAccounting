@@ -21,6 +21,18 @@ namespace Empiria.FinancialAccounting.Reporting.AccountComparer.Domain {
     }
 
 
+    public int AccountId {
+      get;
+      private set;
+    }
+
+
+    public string UID {
+      get;
+      private set;
+    }
+
+
     public string CurrencyCode {
       get; internal set;
     }
@@ -64,6 +76,8 @@ namespace Empiria.FinancialAccounting.Reporting.AccountComparer.Domain {
     internal void MergeAccountItemIntoAccountComparerEntry(AccountsListItem item, int groupId) {
 
       this.AccountGroupId = groupId;
+      this.AccountId = item.Id;
+      this.UID = item.UID;
       this.CurrencyCode = item.CurrencyCode;
       this.ActiveAccount = item.AccountNumber;
       this.PasiveAccount = item.TargetAccountNumber;

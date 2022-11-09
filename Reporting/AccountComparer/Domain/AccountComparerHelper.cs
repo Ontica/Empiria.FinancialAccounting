@@ -73,11 +73,13 @@ namespace Empiria.FinancialAccounting.Reporting.AccountComparer.Domain {
       List<AccountComparerEntry> returnedAccountList = new List<AccountComparerEntry>(comparerEntries);
 
       foreach (var account in returnedAccountList) {
-       
+
+        //var pasiveAccountName = StandardAccount.Parse(account.UID);
+
         var activeAccount = entries.FirstOrDefault(a => a.AccountNumber == account.ActiveAccount /*&& a.CurrencyCode == Currency.MXN.Code*/);
         var pasiveAccount = entries.FirstOrDefault(a => a.AccountNumber == account.PasiveAccount /*&& a.CurrencyCode == Currency.MXN.Code*/);
         //TODO BUSCAR POR LISTA Y AGRUPAR POR MONEDA
-        var pasiveAccounts = entries.Where(a => a.AccountNumber == account.PasiveAccount).ToList();
+        //var pasiveAccounts = entries.Where(a => a.AccountNumber == account.PasiveAccount).ToList();
 
         if (activeAccount != null && pasiveAccount != null) {
           account.MapBalancesToAccountComparerEntry(activeAccount, pasiveAccount);

@@ -153,6 +153,7 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
       return balanceByCurrency.ToFixedList();
     }
 
+
     internal FixedList<ValorizacionEstimacionPreventivaEntry> GetAccountsByFilteredMonth() {
 
       DateTime fromDate = _query.InitialPeriod.FromDate;

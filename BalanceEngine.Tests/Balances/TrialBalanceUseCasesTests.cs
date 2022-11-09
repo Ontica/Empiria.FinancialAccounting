@@ -158,7 +158,7 @@ namespace Empiria.FinancialAccounting.Tests.BalanceEngine {
     public void Should_Build_Valorizacion() {
       TrialBalanceQuery query = GetDefaultTrialBalanceQuery();
 
-      query.TrialBalanceType = TrialBalanceType.Valorizacion;
+      query.TrialBalanceType = TrialBalanceType.ValorizacionEstimacionPreventiva;
       query.BalancesType = BalancesType.WithCurrentBalanceOrMovements;
       query.ShowCascadeBalances = false;
       query.UseDefaultValuation = true;

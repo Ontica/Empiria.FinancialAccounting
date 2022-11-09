@@ -159,7 +159,7 @@ namespace Empiria.FinancialAccounting.BalanceEngine.UseCases {
     public async Task<ValorizacionEstimacionPreventivaDto> BuildValorizacion(TrialBalanceQuery query) {
       Assertion.Require(query, nameof(query));
 
-      Assertion.Require(query.TrialBalanceType == TrialBalanceType.Valorizacion,
+      Assertion.Require(query.TrialBalanceType == TrialBalanceType.ValorizacionEstimacionPreventiva,
                        "query.TrialBalanceType must be 'Valorizacion'.");
 
       var builder = new ValorizacionEstimacionPreventivaBuilder(query);
