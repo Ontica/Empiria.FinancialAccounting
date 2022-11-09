@@ -187,11 +187,11 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
     private void GetInitialDate(out int daysInMonth, out int totalMonths,
                                 out DateTime initialDate, out DateTime lastDate) {
 
-      initialDate = _query.InitialPeriod.FromDate;
+      initialDate = new DateTime(_query.InitialPeriod.ToDate.Year, 1, 1);
       daysInMonth = DateTime.DaysInMonth(initialDate.Year, initialDate.Month);
       lastDate = new DateTime(initialDate.Year, initialDate.Month, daysInMonth);
-      totalMonths = Math.Abs((_query.InitialPeriod.ToDate.Month - _query.InitialPeriod.FromDate.Month) +
-                              12 * (_query.InitialPeriod.ToDate.Year - _query.InitialPeriod.FromDate.Year));
+      totalMonths = Math.Abs((_query.InitialPeriod.ToDate.Month - initialDate.Month) +
+                              12 * (_query.InitialPeriod.ToDate.Year - initialDate.Year));
 
     }
 
@@ -248,7 +248,7 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
 
       }
 
-      MergeForeignBalancesByAccount(returnedEntries, accountEntries);
+      MergeForeignBalancesByAccount(returnedEntries, accountEntries, date);
 
       return returnedEntries.OrderBy(a => a.Account.Number).ToList();
     }
@@ -275,7 +275,8 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
 
 
     private void MergeForeignBalancesByAccount(List<ValorizacionEstimacionPreventivaEntry> returnedEntries,
-                                               FixedList<TrialBalanceEntry> accountEntries) {
+                                               FixedList<TrialBalanceEntry> accountEntries,
+                                               DateTime date) {
 
       foreach (var entry in accountEntries) {
 
@@ -286,7 +287,7 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
                                                         _query.InitialPeriod.ToDate));
         } else {
 
-          valorizacion.AssingValues(entry);
+          valorizacion.AssingValues(entry, date);
 
         }
 

@@ -109,47 +109,53 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
       this.HasParentPostingEntry = entry.HasParentPostingEntry;
       this.IsParentPostingEntry = entry.IsParentPostingEntry;
 
-      AssingValues(entry);
+      AssingValues(entry, date);
 
       return this;
     }
 
 
-    internal void AssingValues(TrialBalanceEntry entry) {
+    internal void AssingValues(TrialBalanceEntry entry, DateTime date) {
+      decimal balance = entry.InitialBalance;
+      
+      if (date.Month == 1) {
+        balance = entry.CurrentBalance;
+      }
+
       if (entry.Currency.Equals(Currency.USD)) {
 
-        this.ValuesByCurrency.USD = entry.InitialBalance;
+        this.ValuesByCurrency.USD = balance;
         this.ValuesByCurrency.ExchangeRateUSD = entry.ExchangeRate;
         this.ValuesByCurrency.LastExchangeRateUSD = entry.SecondExchangeRate;
-        this.ValuesByCurrency.LastUSD = entry.InitialBalance * entry.SecondExchangeRate;
-        this.ValuesByCurrency.CurrentUSD = entry.InitialBalance * entry.ExchangeRate;
+        this.ValuesByCurrency.LastUSD = balance * entry.SecondExchangeRate;
+        this.ValuesByCurrency.CurrentUSD = balance * entry.ExchangeRate;
         this.ValuesByCurrency.ValuedEffectUSD = this.ValuesByCurrency.LastUSD - this.ValuesByCurrency.CurrentUSD;
       }
       if (entry.Currency.Equals(Currency.YEN)) {
 
-        this.ValuesByCurrency.YEN = entry.InitialBalance;
+        this.ValuesByCurrency.YEN = balance;
         this.ValuesByCurrency.ExchangeRateYEN = entry.ExchangeRate;
         this.ValuesByCurrency.LastExchangeRateYEN = entry.SecondExchangeRate;
-        this.ValuesByCurrency.LastYEN = entry.InitialBalance * entry.SecondExchangeRate;
-        this.ValuesByCurrency.CurrentYEN = entry.InitialBalance * entry.ExchangeRate;
+        this.ValuesByCurrency.LastYEN = balance * entry.SecondExchangeRate;
+        this.ValuesByCurrency.CurrentYEN = balance * entry.ExchangeRate;
         this.ValuesByCurrency.ValuedEffectYEN = this.ValuesByCurrency.LastYEN - this.ValuesByCurrency.CurrentYEN;
       }
       if (entry.Currency.Equals(Currency.EUR)) {
 
-        this.ValuesByCurrency.EUR = entry.InitialBalance;
+        this.ValuesByCurrency.EUR = balance;
         this.ValuesByCurrency.ExchangeRateEUR = entry.ExchangeRate;
         this.ValuesByCurrency.LastExchangeRateEUR = entry.SecondExchangeRate;
-        this.ValuesByCurrency.LastEUR = entry.InitialBalance * entry.SecondExchangeRate;
-        this.ValuesByCurrency.CurrentEUR = entry.InitialBalance * entry.ExchangeRate;
+        this.ValuesByCurrency.LastEUR = balance * entry.SecondExchangeRate;
+        this.ValuesByCurrency.CurrentEUR = balance * entry.ExchangeRate;
         this.ValuesByCurrency.ValuedEffectEUR = this.ValuesByCurrency.LastEUR - this.ValuesByCurrency.CurrentEUR;
       }
       if (entry.Currency.Equals(Currency.UDI)) {
 
-        this.ValuesByCurrency.UDI = entry.InitialBalance;
+        this.ValuesByCurrency.UDI = balance;
         this.ValuesByCurrency.ExchangeRateUDI = entry.ExchangeRate;
         this.ValuesByCurrency.LastExchangeRateUDI = entry.SecondExchangeRate;
-        this.ValuesByCurrency.LastUDI = entry.InitialBalance * entry.SecondExchangeRate;
-        this.ValuesByCurrency.CurrentUDI = entry.InitialBalance * entry.ExchangeRate;
+        this.ValuesByCurrency.LastUDI = balance * entry.SecondExchangeRate;
+        this.ValuesByCurrency.CurrentUDI = balance * entry.ExchangeRate;
         this.ValuesByCurrency.ValuedEffectUDI = this.ValuesByCurrency.LastUDI - this.ValuesByCurrency.CurrentUDI;
       }
     }
