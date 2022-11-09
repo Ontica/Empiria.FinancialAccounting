@@ -2,7 +2,7 @@
 *                                                                                                            *
 *  Module   : Balance Engine                             Component : Interface adapters                      *
 *  Assembly : FinancialAccounting.BalanceEngine.dll      Pattern   : Mapper class                            *
-*  Type     : ValorizacionMapper                         License   : Please read LICENSE.txt file            *
+*  Type     : ValorizacionEstimacionPreventivaMapper     License   : Please read LICENSE.txt file            *
 *                                                                                                            *
 *  Summary  : Methods used to map valorized report.                                                          *
 *                                                                                                            *
@@ -14,18 +14,18 @@ using System.Linq;
 namespace Empiria.FinancialAccounting.BalanceEngine.Adapters {
 
   /// <summary>Methods used to map valorized report.</summary>
-  static internal class ValorizacionMapper {
+  static internal class ValorizacionEstimacionPreventivaMapper {
 
     #region Public methods
 
-    static internal ValorizacionDto Map(TrialBalanceQuery query,
-                                        FixedList<ValorizacionEntry> entries) {
+    static internal ValorizacionEstimacionPreventivaDto Map(TrialBalanceQuery query,
+                                        FixedList<ValorizacionEstimacionPreventivaEntry> entries) {
       if (entries.Count == 0) {
-        return new ValorizacionDto();
+        return new ValorizacionEstimacionPreventivaDto();
       }
       var iEntries = new FixedList<ITrialBalanceEntry>(entries);
 
-      return new ValorizacionDto {
+      return new ValorizacionEstimacionPreventivaDto {
         Query = query,
         Columns = DataColumns(iEntries),
         Entries = entries.Select(x => MapEntry(x))
@@ -37,7 +37,7 @@ namespace Empiria.FinancialAccounting.BalanceEngine.Adapters {
     public static FixedList<DataTableColumn> DataColumns(FixedList<ITrialBalanceEntry> entries) {
 
       
-      var valorizations = entries.Select(x => (ValorizacionEntry) x);
+      var valorizations = entries.Select(x => (ValorizacionEstimacionPreventivaEntry) x);
       var columnsByCurrency = GetColumnsByCurrency(valorizations);
       
       List<DataTableColumn> columns = new List<DataTableColumn>();
@@ -59,7 +59,7 @@ namespace Empiria.FinancialAccounting.BalanceEngine.Adapters {
     }
 
 
-    public static ValorizacionEntryDto MapEntry(ValorizacionEntry entry) {
+    public static ValorizacionEntryDto MapEntry(ValorizacionEstimacionPreventivaEntry entry) {
 
       var dto = new ValorizacionEntryDto();
 
@@ -87,7 +87,7 @@ namespace Empiria.FinancialAccounting.BalanceEngine.Adapters {
     #region Private methods
 
 
-    static private void AssignValuesByCurrency(ValorizacionEntryDto dto, ValorizacionEntry entry) {
+    static private void AssignValuesByCurrency(ValorizacionEntryDto dto, ValorizacionEstimacionPreventivaEntry entry) {
 
       dto.USD = entry.ValuesByCurrency.USD;
       dto.EUR = entry.ValuesByCurrency.EUR;
@@ -148,7 +148,7 @@ namespace Empiria.FinancialAccounting.BalanceEngine.Adapters {
     }
 
 
-    static private ColumnsByCurrency GetColumnsByCurrency(IEnumerable<ValorizacionEntry> valorizations) {
+    static private ColumnsByCurrency GetColumnsByCurrency(IEnumerable<ValorizacionEstimacionPreventivaEntry> valorizations) {
 
       var columns = new ColumnsByCurrency();
 
@@ -162,7 +162,7 @@ namespace Empiria.FinancialAccounting.BalanceEngine.Adapters {
 
 
     static private void GetDynamicColumns(List<DataTableColumn> columns,
-                        IEnumerable<ValorizacionEntry> valorizations) {
+                        IEnumerable<ValorizacionEstimacionPreventivaEntry> valorizations) {
 
       var entry = valorizations.FirstOrDefault();
 
@@ -216,7 +216,7 @@ namespace Empiria.FinancialAccounting.BalanceEngine.Adapters {
 
 
 
-    static private DynamicValorizacionEntryDto MapDynamicFields(ValorizacionEntryDto dto, ValorizacionEntry entry) {
+    static private DynamicValorizacionEntryDto MapDynamicFields(ValorizacionEntryDto dto, ValorizacionEstimacionPreventivaEntry entry) {
 
       dynamic obj = dto;
 
@@ -231,7 +231,7 @@ namespace Empiria.FinancialAccounting.BalanceEngine.Adapters {
 
     #region Helpers
 
-    static private void SetTotalsFields(DynamicValorizacionEntryDto o, ValorizacionEntry entry) {
+    static private void SetTotalsFields(DynamicValorizacionEntryDto o, ValorizacionEstimacionPreventivaEntry entry) {
       var totalsColumns = entry.GetDynamicMemberNames();
 
       foreach (string column in totalsColumns) {
@@ -241,6 +241,6 @@ namespace Empiria.FinancialAccounting.BalanceEngine.Adapters {
 
     #endregion Helpers
 
-  } // class ValorizacionMapper
+  } // class ValorizacionEstimacionPreventivaMapper
 
 } // namespace Empiria.FinancialAccounting.BalanceEngine.Adapters

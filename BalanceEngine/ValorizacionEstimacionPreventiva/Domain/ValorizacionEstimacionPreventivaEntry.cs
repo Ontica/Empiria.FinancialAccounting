@@ -2,7 +2,7 @@
 *                                                                                                            *
 *  Module   : Balance Engine                             Component : Domain Layer                            *
 *  Assembly : FinancialAccounting.BalanceEngine.dll      Pattern   : Empiria Plain Object                    *
-*  Type     : ValorizacionEntry                          License   : Please read LICENSE.txt file            *
+*  Type     : ValorizacionEstimacionPreventivaEntry      License   : Please read LICENSE.txt file            *
 *                                                                                                            *
 *  Summary  : Represents an entry for a valorized report entry.                                              *
 *                                                                                                            *
@@ -12,7 +12,7 @@ using System;
 namespace Empiria.FinancialAccounting.BalanceEngine {
 
   /// <summary>Represents an entry for a valorized report entry.</summary>
-  internal class ValorizacionEntry : DynamicFields, ITrialBalanceEntry {
+  internal class ValorizacionEstimacionPreventivaEntry : DynamicFields, ITrialBalanceEntry {
 
 
     public Currency Currency {
@@ -97,7 +97,7 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
     }
 
 
-    internal ValorizacionEntry MapToValorizedReport(TrialBalanceEntry entry, DateTime date) {
+    internal ValorizacionEstimacionPreventivaEntry MapToValorizedReport(TrialBalanceEntry entry, DateTime date) {
 
       this.ItemType = entry.ItemType;
       this.Account = entry.Account;
@@ -154,7 +154,7 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
       }
     }
 
-  } // class ValorizacionEntry
+  } // class ValorizacionEstimacionPreventivaEntry
 
 
 } // namespace Empiria.FinancialAccounting.BalanceEngine

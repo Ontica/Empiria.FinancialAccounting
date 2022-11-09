@@ -2,7 +2,7 @@
 *                                                                                                            *
 *  Module   : Balance Engine                             Component : Interface adapters                      *
 *  Assembly : FinancialAccounting.BalanceEngine.dll      Pattern   : Data Transfer Object                    *
-*  Type     : ValorizacionDto                            License   : Please read LICENSE.txt file            *
+*  Type     : ValorizacionEstimacionPreventivaDto        License   : Please read LICENSE.txt file            *
 *                                                                                                            *
 *  Summary  : Output DTO used to return the entries of a valorization report                                 *
 *             with foreign currencies totals and UDIS                                                        *
@@ -15,7 +15,7 @@ namespace Empiria.FinancialAccounting.BalanceEngine.Adapters {
 
   /// <summary>Output DTO used to return the entries of a valorization report
   /// with foreign currencies totals and UDIS</summary>
-  public class ValorizacionDto {
+  public class ValorizacionEstimacionPreventivaDto {
 
 
     public TrialBalanceQuery Query {
@@ -233,7 +233,7 @@ namespace Empiria.FinancialAccounting.BalanceEngine.Adapters {
     }
 
 
-  } // class ValorizacionEntryDto
+  } // class ValorizacionEstimacionPreventivaDto
 
 
   public class DynamicValorizacionEntryDto : DynamicFields {

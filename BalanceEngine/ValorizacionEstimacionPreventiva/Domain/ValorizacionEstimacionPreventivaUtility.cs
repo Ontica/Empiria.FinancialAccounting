@@ -2,7 +2,7 @@
 *                                                                                                            *
 *  Module   : Reporting Services                           Component : Excel Exporters                       *
 *  Assembly : FinancialAccounting.Reporting.dll            Pattern   : IExcelExporter                        *
-*  Type     : ValorizacionUtility                          License   : Please read LICENSE.txt file          *
+*  Type     : ValorizacionEstimacionPreventivaUtility      License   : Please read LICENSE.txt file          *
 *                                                                                                            *
 *  Summary  : Utility methods to manage accounts information for Valorizacion report.                        *
 *                                                                                                            *
@@ -12,7 +12,7 @@ using System;
 namespace Empiria.FinancialAccounting.BalanceEngine {
 
   /// <summary>Utility methods to manage accounts information for Valorizacion report.</summary>
-  internal class ValorizacionUtility {
+  internal class ValorizacionEstimacionPreventivaUtility {
 
     internal string GetMonthNameAndYear(DateTime date) {
 
@@ -99,6 +99,6 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
     }
 
 
-  } // class ValorizacionUtility
+  } // class ValorizacionEstimacionPreventivaUtility
 
 } // namespace Empiria.FinancialAccounting.BalanceEngine

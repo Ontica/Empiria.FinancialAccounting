@@ -2,7 +2,7 @@
 *                                                                                                            *
 *  Module   : Balance Engine                             Component : Domain Layer                            *
 *  Assembly : FinancialAccounting.BalanceEngine.dll      Pattern   : Service provider                        *
-*  Type     : ValorizacionBuilder                        License   : Please read LICENSE.txt file            *
+*  Type     : ValorizacionEstimacionPreventivaBuilder    License   : Please read LICENSE.txt file            *
 *                                                                                                            *
 *  Summary  : Genera los datos para el reporte de valorizacion.                                              *
 *                                                                                                            *
@@ -16,11 +16,11 @@ using Empiria.FinancialAccounting.BalanceEngine.Data;
 namespace Empiria.FinancialAccounting.BalanceEngine {
 
   /// <summary>Genera los datos para el reporte de valorizacion.</summary>
-  internal class ValorizacionBuilder {
+  internal class ValorizacionEstimacionPreventivaBuilder {
 
     private readonly TrialBalanceQuery _query;
 
-    public ValorizacionBuilder(TrialBalanceQuery query) {
+    public ValorizacionEstimacionPreventivaBuilder(TrialBalanceQuery query) {
 
       _query = query;
 
@@ -30,7 +30,7 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
     #region Public methods
 
 
-    internal FixedList<ValorizacionEntry> Build() {
+    internal FixedList<ValorizacionEstimacionPreventivaEntry> Build() {
 
       DateTime initialDate = _query.InitialPeriod.FromDate;
       
@@ -46,20 +46,20 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
     }
 
 
-    internal FixedList<ValorizacionEntry> Build(FixedList<TrialBalanceEntry> accountEntries) {
+    internal FixedList<ValorizacionEstimacionPreventivaEntry> Build(FixedList<TrialBalanceEntry> accountEntries) {
 
       if (accountEntries.Count == 0) {
-        return new FixedList<ValorizacionEntry>();
+        return new FixedList<ValorizacionEstimacionPreventivaEntry>();
       }
 
-      var helper = new ValorizacionHelper(_query);
+      var helper = new ValorizacionEstimacionPreventivaHelper(_query);
 
-      FixedList<ValorizacionEntry> accountsByCurrency = helper.GetAccountsBalances(accountEntries,
+      FixedList<ValorizacionEstimacionPreventivaEntry> accountsByCurrency = helper.GetAccountsBalances(accountEntries,
                                                         _query.InitialPeriod.ToDate);
 
-      FixedList <ValorizacionEntry> accountsInfoByMonth = helper.GetAccountsByFilteredMonth();
+      FixedList <ValorizacionEstimacionPreventivaEntry> accountsInfoByMonth = helper.GetAccountsByFilteredMonth();
 
-      FixedList<ValorizacionEntry> mergeAccountsByMonth = helper.MergeAccountsByMonth(
+      FixedList<ValorizacionEstimacionPreventivaEntry> mergeAccountsByMonth = helper.MergeAccountsByMonth(
                                                           accountsByCurrency, accountsInfoByMonth);
 
       return mergeAccountsByMonth;
@@ -69,6 +69,6 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
     #endregion Public methods
 
 
-  } // class ValorizacionBuilder
+  } // class ValorizacionEstimacionPreventivaBuilder
 
 } // namespace Empiria.FinancialAccounting.BalanceEngine

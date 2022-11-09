@@ -193,7 +193,7 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
 
         case TrialBalanceType.Valorizacion:
 
-          var build = new ValorizacionBuilder(this.Query).Build();
+          var build = new ValorizacionEstimacionPreventivaBuilder(this.Query).Build();
 
           FixedList<ITrialBalanceEntry> valorizacion = build.Select(x => (ITrialBalanceEntry) x)
                                                       .ToFixedList();
