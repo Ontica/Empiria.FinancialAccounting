@@ -8,6 +8,7 @@
 *                                                                                                            *
 ************************* Copyright(c) La Vía Óntica SC, Ontica LLC and contributors. All rights reserved. **/
 using System;
+using Empiria.FinancialAccounting.BalanceEngine;
 
 namespace Empiria.FinancialAccounting.Reporting.AccountComparer.Adapters {
 
@@ -35,6 +36,12 @@ namespace Empiria.FinancialAccounting.Reporting.AccountComparer.Adapters {
 
   /// <summary>DTO for each account comparer entry report.</summary>
   public class AccountComparerEntryDto : IReportEntryDto {
+
+
+    public TrialBalanceItemType ItemType {
+      get;
+      internal set;
+    }
 
 
     public int AccountGroupId {
@@ -83,7 +90,6 @@ namespace Empiria.FinancialAccounting.Reporting.AccountComparer.Adapters {
       get; internal set;
     }
     
-
   } // class AccountComparerEntryDto
 
 

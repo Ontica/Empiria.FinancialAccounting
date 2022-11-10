@@ -65,19 +65,15 @@ namespace Empiria.FinancialAccounting.Reporting.AccountComparer.Adapters {
     static private AccountComparerEntryDto MapToAccountComparerDto(AccountComparerEntry x) {
       var dto = new AccountComparerEntryDto();
 
+      dto.ItemType = x.ItemType;
       dto.AccountGroupId = x.AccountGroupId;
-      
-      dto.CurrencyCode = x.CurrencyCode == string.Empty ?
-                          Currency.MXN.Code : x.CurrencyCode;
-
-      dto.ActiveAccountName = x.ActiveAccountName;
-      dto.ActiveAccount = x.ActiveAccount;
-      dto.ActiveBalance = x.ActiveBalance;
-
-      dto.PasiveAccountName = x.PasiveAccountName;
-      dto.PasiveAccount = x.PasiveAccount;
-      dto.PasiveBalance = x.PasiveBalance;
-
+      dto.CurrencyCode = x.CurrencyCode;
+      dto.ActiveAccountName = x.AccountName;
+      dto.ActiveAccount = x.AccountNumber;
+      dto.ActiveBalance = x.AccountBalance;
+      dto.PasiveAccountName = x.TargetAccountName;
+      dto.PasiveAccount = x.TargetAccountNumber;
+      dto.PasiveBalance = x.TargetBalance;
       dto.BalanceDifference = x.BalanceDifference;
 
       return dto;

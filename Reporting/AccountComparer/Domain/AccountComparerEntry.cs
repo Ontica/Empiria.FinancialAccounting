@@ -8,6 +8,7 @@
 *                                                                                                            *
 ************************* Copyright(c) La Vía Óntica SC, Ontica LLC and contributors. All rights reserved. **/
 using System;
+using Empiria.FinancialAccounting.BalanceEngine;
 using Empiria.FinancialAccounting.BalanceEngine.Adapters;
 
 namespace Empiria.FinancialAccounting.Reporting.AccountComparer.Domain {
@@ -16,20 +17,14 @@ namespace Empiria.FinancialAccounting.Reporting.AccountComparer.Domain {
   public class AccountComparerEntry {
 
 
+    public TrialBalanceItemType ItemType {
+      get;
+      internal set;
+    } = TrialBalanceItemType.Entry;
+
+
     public int AccountGroupId {
       get; internal set;
-    }
-
-
-    public int AccountId {
-      get;
-      private set;
-    }
-
-
-    public string UID {
-      get;
-      private set;
     }
 
 
@@ -38,32 +33,32 @@ namespace Empiria.FinancialAccounting.Reporting.AccountComparer.Domain {
     }
 
 
-    public string ActiveAccount {
+    public string AccountNumber {
       get; internal set;
     }
 
 
-    public string ActiveAccountName {
+    public string AccountName {
       get; internal set;
     }
 
 
-    public decimal ActiveBalance {
+    public decimal AccountBalance {
       get; internal set;
     }
 
 
-    public string PasiveAccount {
+    public string TargetAccountNumber {
       get; internal set;
     }
 
 
-    public string PasiveAccountName {
+    public string TargetAccountName {
       get; internal set;
     }
 
 
-    public decimal PasiveBalance {
+    public decimal TargetBalance {
       get; internal set;
     }
 
@@ -73,28 +68,72 @@ namespace Empiria.FinancialAccounting.Reporting.AccountComparer.Domain {
     }
 
 
+    internal void MergeAccountIntoComparerEntry(int groupId,
+                          BalanzaTradicionalEntryDto active) {
+
+      this.AccountGroupId = groupId;
+      this.CurrencyCode = active.CurrencyCode;
+      this.AccountNumber = active.AccountNumber;
+      this.AccountName = active.AccountName;
+      this.AccountBalance = (decimal) active.CurrentBalance;
+
+    }
+
+
+    internal void MergeTargetAccountIntoComparerEntry(int groupId,
+                          BalanzaTradicionalEntryDto target) {
+
+      this.AccountGroupId = groupId;
+      this.CurrencyCode = target.CurrencyCode;
+      this.TargetAccountNumber = target.AccountNumber;
+      this.TargetAccountName = target.AccountName;
+      this.TargetBalance = (decimal) target.CurrentBalance;
+
+    }
+
+
     internal void MergeAccountItemIntoAccountComparerEntry(AccountsListItem item, int groupId) {
 
       this.AccountGroupId = groupId;
-      this.AccountId = item.Id;
-      this.UID = item.UID;
       this.CurrencyCode = item.CurrencyCode;
-      this.ActiveAccount = item.AccountNumber;
-      this.PasiveAccount = item.TargetAccountNumber;
+      this.AccountNumber = item.AccountNumber;
+      this.TargetAccountNumber = item.TargetAccountNumber;
 
     }
 
     internal void MapBalancesToAccountComparerEntry(BalanzaTradicionalEntryDto activeAccount,
                                                     BalanzaTradicionalEntryDto pasiveAccount) {
       
-      this.ActiveAccountName = activeAccount.AccountName ?? string.Empty;
-      this.ActiveBalance = (decimal) activeAccount.CurrentBalance;
+      this.AccountName = activeAccount.AccountName ?? string.Empty;
+      this.AccountBalance = (decimal) activeAccount.CurrentBalance;
 
-      this.PasiveAccountName = pasiveAccount.AccountName ?? string.Empty;
-      this.PasiveBalance = (decimal) pasiveAccount.CurrentBalance;
+      this.TargetAccountName = pasiveAccount.AccountName ?? string.Empty;
+      this.TargetBalance = (decimal) pasiveAccount.CurrentBalance;
 
       this.BalanceDifference = (decimal) ((activeAccount.CurrentBalance) - (pasiveAccount.CurrentBalance));
 
+    }
+
+
+    internal void BalanceDifferenceByAccount() {
+      this.BalanceDifference = this.AccountBalance - this.TargetBalance;
+    }
+
+
+    internal AccountComparerEntry CreatePartialComparer() {
+      return new AccountComparerEntry {
+        CurrencyCode = this.CurrencyCode,
+        AccountGroupId = this.AccountGroupId,
+        AccountBalance = this.AccountBalance,
+        TargetBalance = this.TargetBalance,
+        BalanceDifference = this.BalanceDifference
+      };
+    }
+
+    internal void Sum(AccountComparerEntry comparerTotal) {
+      this.AccountBalance += comparerTotal.AccountBalance;
+      this.TargetBalance += comparerTotal.TargetBalance;
+      this.BalanceDifference += comparerTotal.BalanceDifference;
     }
   } // class AccountComparerEntry
 

@@ -52,15 +52,18 @@ namespace Empiria.FinancialAccounting.Reporting.AccountComparer.Exporters {
 
       foreach (var comparer in comparers) {
 
-        excelFile.SetCell($"A{i}", comparer.CurrencyCode);
-        excelFile.SetCell($"B{i}", comparer.ActiveAccount);
+        excelFile.SetCell($"A{i}", comparer.CurrencyCode ?? string.Empty);
+        excelFile.SetCell($"B{i}", comparer.ActiveAccount ?? string.Empty);
         excelFile.SetCell($"C{i}", comparer.ActiveAccountName ?? string.Empty);
         excelFile.SetCell($"D{i}", comparer.ActiveBalance);
-        excelFile.SetCell($"E{i}", comparer.PasiveAccount);
+        excelFile.SetCell($"E{i}", comparer.PasiveAccount ?? string.Empty);
         excelFile.SetCell($"F{i}", comparer.PasiveAccountName ?? string.Empty);
         excelFile.SetCell($"G{i}", comparer.PasiveBalance);
         excelFile.SetCell($"H{i}", comparer.BalanceDifference);
 
+        if (comparer.ItemType == BalanceEngine.TrialBalanceItemType.Total) {
+          excelFile.SetRowStyleBold(i);
+        }
         i++;
 
       }

@@ -28,7 +28,7 @@ namespace Empiria.FinancialAccounting.Reporting.AccountsComparer.Domain {
       Assertion.Require(buildQuery, nameof(buildQuery));
 
       using (var usecases = TrialBalanceUseCases.UseCaseInteractor()) {
-        
+
         TrialBalanceQuery trialBalanceQuery = this.MapToTrialBalanceQuery(buildQuery);
 
         TrialBalanceDto trialBalance = usecases.BuildTrialBalance(trialBalanceQuery);
@@ -40,16 +40,22 @@ namespace Empiria.FinancialAccounting.Reporting.AccountsComparer.Domain {
     }
 
 
-    private List<AccountComparerEntry> BuildComparerEntries(FixedList<ITrialBalanceEntryDto> entries,
+    private List<AccountComparerEntry> BuildComparerEntries(FixedList<ITrialBalanceEntryDto> balanceEntries,
                                                             ReportBuilderQuery buildQuery) {
       var helper = new AccountComparerHelper(buildQuery);
 
-      List<AccountComparerEntry> accountList = helper.GetComparerAccountsLists();
+      var group = AccountsList.Parse(buildQuery.OutputType);
 
-      List<AccountComparerEntry> mergeAccounts = 
-                                  helper.MergeAccountsIntoAccountComparer(accountList, entries);
+      var entries = balanceEntries.Select(a => (BalanzaTradicionalEntryDto) a);
 
-      return mergeAccounts;
+      List<AccountComparerEntry> comparerEntries = helper.GetComparerEntries(group, entries);
+
+      List<AccountComparerEntry> totalByCurrency = helper.GetTotalByCurrency(comparerEntries);
+
+      List<AccountComparerEntry> returnedComparerEntries = helper.CombineComparerEntriesWithTotals(
+                                                           comparerEntries, totalByCurrency);
+        
+      return returnedComparerEntries;
     }
 
 
