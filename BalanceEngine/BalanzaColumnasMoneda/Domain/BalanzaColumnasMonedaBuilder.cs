@@ -66,6 +66,29 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
     }
 
 
+    public FixedList<TrialBalanceEntry> BuildValorizacion(FixedList<TrialBalanceEntry> accountEntries) {
+      var trialBalanceHelper = new TrialBalanceHelper(Query);
+      var balanzaColumnasHelper = new BalanzaColumnasMonedaHelper(Query);
+
+      trialBalanceHelper.RoundDecimals(accountEntries);
+
+      trialBalanceHelper.SetSummaryToParentEntries(accountEntries);
+
+      List<TrialBalanceEntry> parentAccountsEntries = trialBalanceHelper.GetCalculatedParentAccounts(
+                                                                          accountEntries.ToFixedList());
+
+      List<TrialBalanceEntry> debtorAccounts = balanzaColumnasHelper.GetSumFromCreditorToDebtorAccounts(
+                                                        parentAccountsEntries);
+
+      balanzaColumnasHelper.CombineAccountEntriesAndDebtorAccounts(accountEntries.ToList(), debtorAccounts);
+
+      FixedList<TrialBalanceEntry> accountEntriesByCurrency =
+                                          balanzaColumnasHelper.GetAccountEntriesByCurrency(debtorAccounts);
+
+      return accountEntriesByCurrency;
+    }
+
+
   } // class BalanzaColumnasMonedaBuilder
 
 } // namespace Empiria.FinancialAccounting.BalanceEngine

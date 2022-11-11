@@ -215,17 +215,6 @@ namespace Empiria.FinancialAccounting.BalanceEngine.Adapters {
     }
 
 
-
-    static private DynamicValorizacionEntryDto MapDynamicFields(ValorizacionEntryDto dto, ValorizacionEstimacionPreventivaEntry entry) {
-
-      dynamic obj = dto;
-
-      SetTotalsFields(obj, entry);
-
-      return obj;
-
-    }
-
     #endregion Private methods
 
 

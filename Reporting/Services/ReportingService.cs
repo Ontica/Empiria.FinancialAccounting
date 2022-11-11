@@ -18,6 +18,7 @@ using Empiria.FinancialAccounting.Reporting.FiscalReports.Builders;
 
 using Empiria.FinancialAccounting.Reporting.VoucherRelatedReports.Domain;
 using Empiria.FinancialAccounting.Reporting.AccountsComparer.Domain;
+using Empiria.FinancialAccounting.Reporting.ValorizacionEstimacionPreventiva.Domain;
 
 namespace Empiria.FinancialAccounting.Reporting {
 
@@ -87,6 +88,9 @@ namespace Empiria.FinancialAccounting.Reporting {
 
         case ReportTypes.ComparativoDeCuentas:
           return new AccountComparerBuilder();
+
+        //case ReportTypes.ValorizacionEstimacionPreventiva:
+        //  return new ValorizacionPreventivaBuilder();
 
         default:
           throw Assertion.EnsureNoReachThisCode($"Unhandled reportType '{reportType}'.");

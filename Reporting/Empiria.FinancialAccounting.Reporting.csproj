@@ -86,4 +86,7 @@
   <ItemGroup>
     <Folder Include="AccountComparer\Data\" />
   </ItemGroup>
+  <ItemGroup>
+    <Reference Include="Microsoft.CSharp" />
+  </ItemGroup>
 </Project>

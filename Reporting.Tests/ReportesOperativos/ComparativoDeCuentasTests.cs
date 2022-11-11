@@ -22,8 +22,8 @@ namespace Empiria.FinancialAccounting.Tests.Reporting {
 
       ReportBuilderQuery query = new ReportBuilderQuery {
         AccountsChartUID = "47ec2ec7-0f4f-482e-9799-c23107b60d8a",
-        AccountNumber = "9",
-        OutputType = "d551b39a-ae52-4c35-abbe-96d71e4a10bf",
+        AccountNumber = "1",
+        //OutputType = "d551b39a-ae52-4c35-abbe-96d71e4a10bf",
         ReportType = ReportTypes.ComparativoDeCuentas,
         FromDate = new DateTime(2022, 06, 01),
         ToDate = new DateTime(2022, 06, 30)

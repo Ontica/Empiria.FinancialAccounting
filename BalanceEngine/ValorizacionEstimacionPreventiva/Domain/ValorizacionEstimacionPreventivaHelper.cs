@@ -140,8 +140,11 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
       if (accountEntries.Count==0) {
         return new FixedList<ValorizacionEstimacionPreventivaEntry>();
       }
+      
+      var balanzaColumnasBuilder = new BalanzaColumnasMonedaBuilder(_query);
 
-      FixedList<TrialBalanceEntry> accountsByCurrency = GetAccountsByCurrency(accountEntries);
+      FixedList<TrialBalanceEntry> accountsByCurrency = 
+          balanzaColumnasBuilder.BuildValorizacion(accountEntries);
 
       ExchangeRateByCurrency(accountsByCurrency, date);
 
