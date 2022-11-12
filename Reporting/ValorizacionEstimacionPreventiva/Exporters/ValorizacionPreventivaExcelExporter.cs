@@ -12,20 +12,43 @@ using System.Collections.Generic;
 using System.Linq;
 using Empiria.FinancialAccounting.BalanceEngine;
 using Empiria.FinancialAccounting.BalanceEngine.Adapters;
+using Empiria.FinancialAccounting.Reporting.ValorizacionEstimacionPreventiva.Adaptars;
 
-namespace Empiria.FinancialAccounting.Reporting.Balances {
+namespace Empiria.FinancialAccounting.Reporting.ValorizacionEstimacionPreventiva.Exporters {
 
   /// <summary>Fill out table info for a Microsoft Excel file with valorización information.</summary>
-  internal class ValorizacionFillOutExcelExporter {
+  internal class ValorizacionPreventivaExcelExporter : IExcelExporter {
 
-    private TrialBalanceQuery _query;
+    private readonly ReportDataDto _reportData;
+    private readonly FileTemplateConfig _template;
 
-    public ValorizacionFillOutExcelExporter(TrialBalanceQuery query) {
-      _query = query;
+    public ValorizacionPreventivaExcelExporter(ReportDataDto reportData, FileTemplateConfig template) {
+      Assertion.Require(reportData, "reportData");
+      Assertion.Require(template, "template");
+
+      _reportData = reportData;
+      _template = template;
     }
 
 
-    public void FillOutValorizacion(ExcelFile _excelFile, IEnumerable<ValorizacionEntryDto> entries) {
+    public FileReportDto CreateExcelFile() {
+      var excelFile = new ExcelFile(_template);
+
+      excelFile.Open();
+
+      SetHeader(excelFile);
+
+      FillOutRows(excelFile, _reportData.Entries.Select(x => (ValorizacionPreventivaEntryDto) x));
+
+      excelFile.Save();
+
+      excelFile.Close();
+
+      return excelFile.ToFileReportDto();
+    }
+
+
+    public void FillOutRows(ExcelFile _excelFile, IEnumerable<ValorizacionPreventivaEntryDto> entries) {
 
       int i = 5;
       foreach (var entry in entries) {
@@ -62,7 +85,7 @@ namespace Empiria.FinancialAccounting.Reporting.Balances {
 
 
     static private void DynamicColumns(ExcelFile _excelFile,
-                                       ValorizacionEntryDto entry, int i) {
+                                       ValorizacionPreventivaEntryDto entry, int i) {
 
       List<string> members = new List<string>();
 
@@ -110,20 +133,23 @@ namespace Empiria.FinancialAccounting.Reporting.Balances {
     }
 
 
+    private void SetHeader(ExcelFile excelFile) {
+      excelFile.SetCell($"A2", _template.Title);
+
+      var subTitle = $"Del {_reportData.Query.FromDate.ToString("dd/MMM/yyyy")} al " +
+                     $"{_reportData.Query.ToDate.ToString("dd/MMM/yyyy")}";
+
+      excelFile.SetCell($"A3", subTitle);
+    }
 
 
-    private void SetRowStyleBold(ExcelFile excelFile, ValorizacionEntryDto entry, int i) {
+    private void SetRowStyleBold(ExcelFile excelFile, ValorizacionPreventivaEntryDto entry, int i) {
 
       if (entry.ItemType == TrialBalanceItemType.Summary) {
         excelFile.SetRowStyleBold(i);
       }
     }
 
-
-    private void SetRowClauses(ExcelFile excelFile, ValorizacionEntryDto entry,
-                                UtilityToFillOutExcelExporter utility, int i) {
-      throw new NotImplementedException();
-    }
 
     #endregion Private methods
 

@@ -60,9 +60,7 @@ namespace Empiria.FinancialAccounting.Reporting.ValorizacionEstimacionPreventiva
         ShowCascadeBalances = false,
         TrialBalanceType = TrialBalanceType.ValorizacionEstimacionPreventiva,
         UseDefaultValuation = true,
-        IsOperationalReport = true,
-        FromAccount ="3.02.01",
-        ToAccount = "3.02.01"
+        IsOperationalReport = true
       };
     }
 

@@ -10,6 +10,7 @@
 using System;
 using Empiria.FinancialAccounting.Reporting.AccountComparer.Exporters;
 using Empiria.FinancialAccounting.Reporting.FiscalReports.Exporters;
+using Empiria.FinancialAccounting.Reporting.ValorizacionEstimacionPreventiva.Exporters;
 
 namespace Empiria.FinancialAccounting.Reporting {
 
@@ -54,6 +55,10 @@ namespace Empiria.FinancialAccounting.Reporting {
 
         case ReportTypes.ComparativoDeCuentas:
           return new AccountComparerExcelExporter(reportData, templateConfig);
+
+        case ReportTypes.ValorizacionEstimacionPreventiva:
+          return new ValorizacionPreventivaExcelExporter(reportData, templateConfig);
+
         default:
           throw Assertion.EnsureNoReachThisCode($"Unhandled reportType '{reportData.Query.ReportType}'.");
       }

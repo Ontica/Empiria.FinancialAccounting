@@ -2,9 +2,9 @@
 *                                                                                                            *
 *  Module   : Balance Engine                             Component : Interface adapters                      *
 *  Assembly : FinancialAccounting.BalanceEngine.dll      Pattern   : Data Transfer Object                    *
-*  Type     : ValorizacionPreventivaDto                  License   : Please read LICENSE.txt file            *
+*  Type     : ValorizacionPreventivaEntryDto             License   : Please read LICENSE.txt file            *
 *                                                                                                            *
-*  Summary  : Output DTO used to return the entries of a valorization report.                                 *
+*  Summary  : Output DTO used to return the entries of a valorization report.                                *
 *             with foreign currencies totals and UDIS                                                        *
 *                                                                                                            *
 ************************* Copyright(c) La Vía Óntica SC, Ontica LLC and contributors. All rights reserved. **/
@@ -15,27 +15,6 @@ using Empiria.FinancialAccounting.BalanceEngine;
 namespace Empiria.FinancialAccounting.Reporting.ValorizacionEstimacionPreventiva.Adaptars {
 
   /// <summary>Output DTO used to return the entries of a valorization report.</summary>
-  public class ValorizacionPreventivaDto {
-
-
-    public ReportBuilderQuery Query {
-      get; internal set;
-    }
-
-
-    public FixedList<DataTableColumn> Columns {
-      get; internal set;
-    }
-
-
-    public FixedList<ValorizacionPreventivaEntryDto> Entries {
-      get; internal set;
-    }
-
-
-  } // class ValorizacionDto
-
-
   public class ValorizacionPreventivaEntryDto : DynamicValorizacionEntryDto, IReportEntryDto {
 
     public string CurrencyCode {

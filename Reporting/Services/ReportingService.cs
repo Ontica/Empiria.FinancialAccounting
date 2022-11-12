@@ -89,8 +89,8 @@ namespace Empiria.FinancialAccounting.Reporting {
         case ReportTypes.ComparativoDeCuentas:
           return new AccountComparerBuilder();
 
-        //case ReportTypes.ValorizacionEstimacionPreventiva:
-        //  return new ValorizacionPreventivaBuilder();
+        case ReportTypes.ValorizacionEstimacionPreventiva:
+          return new ValorizacionPreventivaBuilder();
 
         default:
           throw Assertion.EnsureNoReachThisCode($"Unhandled reportType '{reportType}'.");
