@@ -35,6 +35,8 @@ namespace Empiria.FinancialAccounting.FinancialReports {
 
     BalanzaEnColumnasPorMoneda,
 
+    BalanzaTradicionalDynamic,
+
   }
 
 

@@ -23,28 +23,6 @@ namespace Empiria.FinancialAccounting.FinancialReports {
     }
 
 
-    internal DynamicTrialBalanceEntryDto Convert(ITrialBalanceEntryDto sourceEntry) {
-      if (sourceEntry is AnaliticoDeCuentasEntryDto analiticoDeCuentasDto) {
-        return this.Convert(analiticoDeCuentasDto);
-      }
-
-      throw Assertion.EnsureNoReachThisCode(
-          $"A converter has not been defined for trial balance entry type {sourceEntry.GetType().FullName}.");
-    }
-
-
-    internal DynamicTrialBalanceEntryDto Convert(AnaliticoDeCuentasEntryDto sourceEntry) {
-      var converted = new DynamicTrialBalanceEntryDto(sourceEntry);
-
-      converted.DebtorCreditor = sourceEntry.DebtorCreditor;
-
-      converted.SetTotalField("monedaNacional", sourceEntry.DomesticBalance);
-      converted.SetTotalField("monedaExtranjera", sourceEntry.ForeignBalance);
-
-      return converted;
-    }
-
-
     internal FixedList<DynamicTrialBalanceEntryDto> Convert(FixedList<ITrialBalanceEntryDto> sourceEntries) {
       var convertedEntries = new List<DynamicTrialBalanceEntryDto>(sourceEntries.Count);
 
@@ -56,6 +34,48 @@ namespace Empiria.FinancialAccounting.FinancialReports {
 
       return convertedEntries.ToFixedList();
     }
+
+    #region Helpers
+
+    private DynamicTrialBalanceEntryDto Convert(ITrialBalanceEntryDto sourceEntry) {
+      if (sourceEntry is AnaliticoDeCuentasEntryDto analiticoDeCuentasEntryDto) {
+        return this.Convert(analiticoDeCuentasEntryDto);
+      }
+
+      if (sourceEntry is BalanzaTradicionalEntryDto balanzaTradicionalEntryDto) {
+        return this.Convert(balanzaTradicionalEntryDto);
+      }
+
+      throw Assertion.EnsureNoReachThisCode(
+          $"A converter has not been defined for trial balance entry type {sourceEntry.GetType().FullName}.");
+    }
+
+
+    private DynamicTrialBalanceEntryDto Convert(AnaliticoDeCuentasEntryDto sourceEntry) {
+      var converted = new DynamicTrialBalanceEntryDto(sourceEntry);
+
+      converted.DebtorCreditor = sourceEntry.DebtorCreditor;
+
+      converted.SetTotalField("monedaNacional", sourceEntry.DomesticBalance);
+      converted.SetTotalField("monedaExtranjera", sourceEntry.ForeignBalance);
+
+      return converted;
+    }
+
+
+    private DynamicTrialBalanceEntryDto Convert(BalanzaTradicionalEntryDto sourceEntry) {
+      var converted = new DynamicTrialBalanceEntryDto(sourceEntry);
+
+      converted.DebtorCreditor = sourceEntry.DebtorCreditor == DebtorCreditorType.Deudora.ToString() ?
+                                              DebtorCreditorType.Deudora : DebtorCreditorType.Acreedora;
+
+      converted.SetTotalField("saldoActual", sourceEntry.CurrentBalance.HasValue ?
+                                             sourceEntry.CurrentBalance.Value : 0m);
+
+      return converted;
+    }
+
+    #endregion Helpers
 
   }  // class DynamicTrialBalanceEntryConverter
 

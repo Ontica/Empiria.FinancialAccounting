@@ -72,6 +72,9 @@ namespace Empiria.FinancialAccounting.FinancialReports {
         case FinancialReportDataSource.BalanzaEnColumnasPorMoneda:
           return GetBalanzaEnColumnasPorMonedaQuery();
 
+        case FinancialReportDataSource.BalanzaTradicionalDynamic:
+          return GetBalanzaTradicionalQuery();
+
         default:
           throw Assertion.EnsureNoReachThisCode(
               $"Unrecognized balances source {reportType.DataSource} for report type {reportType.Name}.");
@@ -122,6 +125,27 @@ namespace Empiria.FinancialAccounting.FinancialReports {
         }
       };
     }
+
+
+    private TrialBalanceQuery GetBalanzaTradicionalQuery() {
+      return new TrialBalanceQuery {
+        AccountsChartUID = _buildQuery.AccountsChartUID,
+        TrialBalanceType = BalanceEngine.TrialBalanceType.Balanza,
+        ShowCascadeBalances = false,
+        WithSubledgerAccount = false,
+        UseDefaultValuation = false,
+        BalancesType = BalanceEngine.BalancesType.WithCurrentBalanceOrMovements,
+        ConsolidateBalancesToTargetCurrency = true,
+        InitialPeriod = new BalancesPeriod {
+          FromDate = new DateTime(_buildQuery.ToDate.Year, _buildQuery.ToDate.Month, 1),
+          ToDate = _buildQuery.ToDate,
+          ExchangeRateDate = _buildQuery.ToDate,
+          ExchangeRateTypeUID = ExchangeRateType.ValorizacionBanxico.UID,
+          ValuateToCurrrencyUID = Currency.MXN.UID
+        }
+      };
+    }
+
 
     #endregion Helper methods
 

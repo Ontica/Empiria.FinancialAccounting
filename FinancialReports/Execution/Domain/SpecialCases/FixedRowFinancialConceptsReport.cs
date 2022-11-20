@@ -246,7 +246,7 @@ namespace Empiria.FinancialAccounting.FinancialReports {
 
     private ReportEntryTotals ProcessFinancialConcept(FinancialConcept financialConcept) {
       Assertion.Require(!financialConcept.IsEmptyInstance,
-                       "Cannot process the empty FinancialConcept instance.");
+                        "Cannot process the empty FinancialConcept instance.");
 
       ReportEntryTotals totals = CreateReportEntryTotalsObject();
 
@@ -381,6 +381,9 @@ namespace Empiria.FinancialAccounting.FinancialReports {
 
         case FinancialReportDataSource.BalanzaEnColumnasPorMoneda:
           return new BalanzaEnColumnasPorMonedaReportEntryTotals();
+
+        case FinancialReportDataSource.BalanzaTradicionalDynamic:
+          return new DynamicReportEntryTotals(this.FinancialReportType.DataColumns);
 
         default:
           throw Assertion.EnsureNoReachThisCode($"Unhandled data source {FinancialReportType.DataSource}.");
