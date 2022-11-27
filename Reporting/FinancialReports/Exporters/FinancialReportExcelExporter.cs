@@ -109,12 +109,15 @@ namespace Empiria.FinancialAccounting.Reporting.FinancialReports.Exporters {
                                         FixedList<FinancialReportEntryDto> entries) {
       int i = _templateConfig.FirstRowIndex;
 
-      foreach (var entry in entries) {
-        _excelFile.SetCell($"A{i}", entry.ConceptCode.Replace(" ", string.Empty));
-        _excelFile.SetCell($"B{i}", entry.Concept);
-        _excelFile.IndentCell($"B{i}", entry.Level - 1);
+      DataTableColumn conceptCodeColumn = columns.Find(x => x.Field == "conceptCode");
+      DataTableColumn conceptNameColumn = columns.Find(x => x.Field == "concept");
+      FixedList<DataTableColumn> totalsColumns = columns.FindAll(x => x.Type == "decimal");
 
-        foreach (var totalColumn in columns.FindAll(x => x.Type == "decimal")) {
+        foreach (var entry in entries) {
+        _excelFile.SetCell($"{conceptCodeColumn.Column}{i}", entry.ConceptCode);
+        _excelFile.SetCell($"{conceptNameColumn.Column}{i}", entry.Concept);
+
+        foreach (var totalColumn in totalsColumns) {
 
           decimal totalField = entry.GetTotalField(totalColumn.Field);
 
@@ -131,7 +134,7 @@ namespace Empiria.FinancialAccounting.Reporting.FinancialReports.Exporters {
       int i = 5;
 
       foreach (var entry in entries) {
-        _excelFile.SetCell($"A{i}", entry.ConceptCode.Replace(" ", string.Empty));
+        _excelFile.SetCell($"A{i}", entry.ConceptCode);
         _excelFile.SetCell($"B{i}", entry.Concept);
         _excelFile.SetCell($"C{i}", entry.ItemCode);
         _excelFile.SetCell($"D{i}", entry.ItemName);

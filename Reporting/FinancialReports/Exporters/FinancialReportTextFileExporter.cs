@@ -100,7 +100,7 @@ namespace Empiria.FinancialAccounting.Reporting.FinancialReports.Exporters {
         return String.Empty;
       }
 
-      return $"{entry.ConceptCode.Replace(" ", string.Empty)};;{currencyCode};" +
+      return $"{entry.ConceptCode};;{currencyCode};" +
              $"{entry.GetTotalField(totalField).ToString("F0")}";
     }
 
@@ -113,7 +113,7 @@ namespace Empiria.FinancialAccounting.Reporting.FinancialReports.Exporters {
         return String.Empty;
       }
 
-      return $"{entry.ConceptCode.Replace(" ", string.Empty)};111;{currencyCode};" +
+      return $"{entry.ConceptCode};111;{currencyCode};" +
              $"{entry.GetTotalField(totalField).ToString("F0")}";
     }
 
@@ -121,7 +121,7 @@ namespace Empiria.FinancialAccounting.Reporting.FinancialReports.Exporters {
     private string TextLine_R01_SITI_CNBV(FinancialReportEntryDto entry,
                                           FinancialReportTotalField totalField,
                                           string currencyCode) {
-      return $"111;{entry.ConceptCode.Replace(" ", string.Empty)};{currencyCode};" +
+      return $"111;{entry.ConceptCode};{currencyCode};" +
              $"{entry.GetTotalField(totalField).ToString("F2")}";
     }
 
