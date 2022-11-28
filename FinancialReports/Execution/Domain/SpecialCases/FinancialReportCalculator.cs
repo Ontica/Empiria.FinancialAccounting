@@ -47,9 +47,22 @@ namespace Empiria.FinancialAccounting.FinancialReports {
     private void CalculateEntryColumn(DataTableColumn column, FinancialReportEntry entry) {
       var expression = new Expression(column.Formula);
 
-      decimal result = expression.Evaluate<decimal>(entry.ToDictionary());
+      IDictionary<string, object> dictionary = ConvertReportEntryToDictionary(entry);
+
+      decimal result = expression.Evaluate<decimal>(dictionary);
 
       entry.SetTotalField(column.Field, result);
+    }
+
+
+    private IDictionary<string, object> ConvertReportEntryToDictionary(FinancialReportEntry entry) {
+      IDictionary<string, object> dictionary = entry.ToDictionary();
+
+      var conceptCode = ((FixedRowFinancialReportEntry) entry).FinancialConcept.Code;
+
+      dictionary.Add("conceptCode", conceptCode);
+
+      return dictionary;
     }
 
 

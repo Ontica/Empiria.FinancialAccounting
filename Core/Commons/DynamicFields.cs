@@ -33,9 +33,6 @@ namespace Empiria.FinancialAccounting {
       return this._fields.Keys;
     }
 
-    public IDictionary<string, object> ToDictionary() {
-      return new Dictionary<string, object>(this._fields);
-    }
 
     public decimal GetTotalField(string fieldName) {
       if (_fields.ContainsKey(fieldName)) {
@@ -52,6 +49,11 @@ namespace Empiria.FinancialAccounting {
       } else {
         _fields.Add(fieldName, value);
       }
+    }
+
+
+    public IDictionary<string, object> ToDictionary() {
+      return new Dictionary<string, object>(this._fields);
     }
 
 
