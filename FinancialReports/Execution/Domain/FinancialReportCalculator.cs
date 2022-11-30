@@ -41,8 +41,8 @@ namespace Empiria.FinancialAccounting.FinancialReports {
       }
     }
 
-    #region Helpers
 
+    #region Helpers
 
     private void CalculateEntryColumn(DataTableColumn column, FinancialReportEntry entry) {
       var expression = new Expression(column.Formula);
@@ -70,4 +70,4 @@ namespace Empiria.FinancialAccounting.FinancialReports {
 
   }   // class FinancialReportCalculator
 
-}  // namespace Empiria.FinancialAccounting.FinancialReports.Expressions
+}  // namespace Empiria.FinancialAccounting.FinancialReports
