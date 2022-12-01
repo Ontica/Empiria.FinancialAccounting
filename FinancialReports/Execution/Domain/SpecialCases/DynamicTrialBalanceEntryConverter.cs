@@ -69,8 +69,7 @@ namespace Empiria.FinancialAccounting.FinancialReports {
       converted.DebtorCreditor = sourceEntry.DebtorCreditor == DebtorCreditorType.Deudora.ToString() ?
                                               DebtorCreditorType.Deudora : DebtorCreditorType.Acreedora;
 
-      converted.SetTotalField("saldoActual", sourceEntry.CurrentBalance.HasValue ?
-                                             sourceEntry.CurrentBalance.Value : 0m);
+      converted.SetTotalField("saldoActual", sourceEntry.CurrentBalanceForBalances);
 
       return converted;
     }
