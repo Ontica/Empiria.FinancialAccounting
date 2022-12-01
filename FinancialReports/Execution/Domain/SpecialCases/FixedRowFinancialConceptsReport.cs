@@ -416,7 +416,7 @@ namespace Empiria.FinancialAccounting.FinancialReports {
 
       } else if (integrationEntry.HasSector && !integrationEntry.HasSubledgerAccount) {
         filtered = balances.FindAll(x => x.SectorCode == integrationEntry.SectorCode &&
-                                         x.SubledgerAccountNumber.Length == 0);
+                                         x.SubledgerAccountNumber.Length <= 1);
 
       } else if (!integrationEntry.HasSector && integrationEntry.HasSubledgerAccount) {
         filtered = balances.FindAll(x => x.SectorCode == "00" &&
@@ -427,17 +427,22 @@ namespace Empiria.FinancialAccounting.FinancialReports {
         }
       } else {
         filtered = balances.FindAll(x => x.SectorCode == "00" &&
-                                         x.SubledgerAccountNumber.Length == 0);
+                                         x.SubledgerAccountNumber.Length <= 1);
         if (filtered.Count == 0) {
           filtered = balances.FindAll(x => x.SectorCode != "00" &&
-                                           x.SubledgerAccountNumber.Length == 0);
+                                           x.SubledgerAccountNumber.Length <= 1);
         }
       }
 
-      if (FinancialReportType.DataSource == FinancialReportDataSource.AnaliticoCuentasDynamic) {
+      if (FinancialReportType.DataSource == FinancialReportDataSource.AnaliticoCuentasDynamic ||
+          FinancialReportType.DataSource == FinancialReportDataSource.BalanzaTradicionalDynamic) {
+
         return ConvertToDynamicTrialBalanceEntryDto(filtered);
+
       } else {
+
         return filtered;
+
       }
     }
 
@@ -489,6 +494,8 @@ namespace Empiria.FinancialAccounting.FinancialReports {
 
     private FixedList<ITrialBalanceEntryDto> ConvertToDynamicTrialBalanceEntryDto(FixedList<ITrialBalanceEntryDto> sourceEntries) {
       var converter = new DynamicTrialBalanceEntryConverter();
+
+      // Assertion.Require(sourceEntries.Count > 0, "There are no source entries ... ");
 
       FixedList<DynamicTrialBalanceEntryDto> convertedEntries = converter.Convert(sourceEntries);
 
