@@ -31,20 +31,11 @@ namespace Empiria.FinancialAccounting.ExternalData {
 
     internal void Write() {
       foreach (var data in _externalValues) {
-        Prepare(data);
 
         var externalValue = new ExternalValue(data);
 
         externalValue.Save();
       }
-    }
-
-    private void Prepare(ExternalValueInputDto data) {
-      data.ApplicationDate = _dataset.OperationDate;
-      data.UpdatedDate = _dataset.UpdatedTime;
-      data.UpdatedBy = _dataset.UploadedBy;
-      data.Dataset = _dataset;
-      data.Status = _dataset.Status;
     }
 
   }  // class ExternalValuesWriter

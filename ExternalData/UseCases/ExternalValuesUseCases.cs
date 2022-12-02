@@ -53,18 +53,19 @@ namespace Empiria.FinancialAccounting.ExternalData.UseCases {
 
         var reader = new ExternalValuesReader(dataset);
 
-        if (reader.AllEntriesAreValid()) {
-          var writer = new ExternalValuesWriter(dataset, reader.GetEntries());
+        try {
+
+          FixedList<ExternalValueInputDto> entries = reader.GetEntries();
+
+          var writer = new ExternalValuesWriter(dataset, entries);
 
           writer.Write();
 
-        } else {
+        } catch {
 
           usecase.RemoveDataset(dataset.UID);
 
-          Assertion.RequireFail(
-            "El archivo tiene un formato que no reconozco o la información que contiene es incorrecta."
-          );
+          throw;
         }
       }
 

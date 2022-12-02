@@ -42,27 +42,17 @@ namespace Empiria.FinancialAccounting.ExternalData {
     }
 
 
-    internal bool AllEntriesAreValid() {
-      try {
-        var list = this.GetEntries();
-
-        if (list.Count == 0) {
-          return false;
-        }
-
-        return true;
-
-      } catch {
-        return false;
-      }
-    }
-
 
     internal FixedList<ExternalValueInputDto> GetEntries() {
       Spreadsheet spreadsheet = OpenSpreadsheet();
 
-      return ReadEntries(spreadsheet);
+      var entries = ReadEntries(spreadsheet);
+
+      Assertion.Require(entries.Count > 0, "El archivo no contiene ningún valor externo.");
+
+      return entries;
     }
+
 
     #region Private methods
 
@@ -84,11 +74,11 @@ namespace Empiria.FinancialAccounting.ExternalData {
 
 
     private FixedList<ExternalValueInputDto> ReadEntries(Spreadsheet spreadsheet) {
-      int rowIndex = FileTemplate.FirstRowIndex;
-
       var entriesList = new List<ExternalValueInputDto>(256);
 
       var dynamicColumns = this.DataColumns.FindAll(column => column.Type == "decimal");
+
+      int rowIndex = FileTemplate.FirstRowIndex;
 
       while (spreadsheet.HasValue($"A{rowIndex}")) {
         ExternalValueInputDto entry = TryReadEntry(spreadsheet, dynamicColumns, rowIndex);
@@ -121,8 +111,15 @@ namespace Empiria.FinancialAccounting.ExternalData {
 
       var dto = new ExternalValueInputDto {
         VariableCode = spreadsheetRow.GetVariableCode(),
-        Position = rowIndex
+        Position = rowIndex,
+        Dataset = _dataset,
+        ApplicationDate = _dataset.OperationDate,
+        UpdatedDate = _dataset.UpdatedTime,
+        UpdatedBy = _dataset.UploadedBy,
+        Status = _dataset.Status,
       };
+
+      dto.VariableUID = dto.GetExternalVariable().UID;
 
       foreach (var fieldName in fields.GetDynamicMemberNames()) {
         dto.SetTotalField(fieldName, fields.GetTotalField(fieldName));
