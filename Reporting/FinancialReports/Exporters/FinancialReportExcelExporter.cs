@@ -60,6 +60,9 @@ namespace Empiria.FinancialAccounting.Reporting.FinancialReports.Exporters {
       switch (reportType.DesignType) {
         case FinancialReportDesignType.FixedRows:
 
+          if (_templateConfig.TitleCell.Length != 0) {
+            _excelFile.SetCell(_templateConfig.TitleCell, buildQuery.GetFinancialReportType().Title);
+          }
           _excelFile.SetCell(_templateConfig.CurrentTimeCell, DateTime.Now);
           _excelFile.SetCell(_templateConfig.ReportDateCell, buildQuery.ToDate);
 

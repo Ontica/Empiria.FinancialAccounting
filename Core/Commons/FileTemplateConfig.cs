@@ -118,6 +118,13 @@ namespace Empiria.FinancialAccounting {
       }
     }
 
+    public string TitleCell {
+      get {
+        return base.ExtendedDataField.Get<string>("titleCell", string.Empty);
+      }
+    }
+
+
     #endregion Properties
 
     #region Methods

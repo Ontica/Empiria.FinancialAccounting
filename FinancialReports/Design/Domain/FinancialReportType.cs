@@ -149,6 +149,13 @@ namespace Empiria.FinancialAccounting.FinancialReports {
     }
 
 
+    public string Title {
+      get {
+        return base.ExtendedDataField.Get("title", string.Empty);
+      }
+    }
+
+
     public FixedList<FinancialConceptGroup> FinancialConceptGroups {
       get {
         return base.ExtendedDataField.GetFixedList<FinancialConceptGroup>("groupingRules", false);
