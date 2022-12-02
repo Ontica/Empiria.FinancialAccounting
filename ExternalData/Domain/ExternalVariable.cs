@@ -43,6 +43,10 @@ namespace Empiria.FinancialAccounting.ExternalData {
       return BaseObject.TryParse<ExternalVariable>($"CLAVE_VARIABLE = '{code}'");
     }
 
+    static public ExternalVariable TryParseWithCode(ExternalVariablesSet set, string code) {
+      return BaseObject.TryParse<ExternalVariable>($"ID_CONJUNTO_BASE = {set.Id} AND CLAVE_VARIABLE = '{code}'");
+    }
+
 
     static public ExternalVariable Empty {
       get {

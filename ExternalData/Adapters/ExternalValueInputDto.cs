@@ -20,6 +20,10 @@ namespace Empiria.FinancialAccounting.ExternalData.Adapters {
   /// <summary>Input DTO used to load financial external values.</summary>
   public class ExternalValueInputDto : DynamicFields {
 
+    public string VariableUID {
+      get; set;
+    }
+
     public string VariableCode {
       get; set;
     }
@@ -51,10 +55,11 @@ namespace Empiria.FinancialAccounting.ExternalData.Adapters {
 
 
     public ExternalVariable GetExternalVariable() {
-      var variable = ExternalVariable.TryParseWithCode(VariableCode);
+      var variable = ExternalVariable.TryParseWithCode((ExternalVariablesSet) Dataset.DatasetFamily, VariableCode);
 
       Assertion.Require(variable,
-                        $"No ha sido definida la variable externa con clave '{VariableCode}'.");
+                        $"No existe la variable externa con clave '{VariableCode}' " +
+                        $"dentro del conjunto de variables '{Dataset.DatasetFamily.Name}'.");
 
       return variable;
     }

@@ -106,7 +106,7 @@ namespace Empiria.FinancialAccounting.ExternalData {
 
 
     private void Load(ExternalValueInputDto dto) {
-      this.ExternalVariable = dto.GetExternalVariable();
+      this.ExternalVariable = ExternalVariable.Parse(dto.VariableUID);
       this.ValuesExtData = dto.GetDynamicFieldsAsJson();
       this.ApplicationDate = dto.ApplicationDate;
       this.SourceDataset = dto.Dataset;
