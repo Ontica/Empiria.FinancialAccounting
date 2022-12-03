@@ -60,7 +60,7 @@ namespace Empiria.FinancialAccounting.FinancialReports {
 
       FinancialReportEntryResult reportItemTotals = CreateReportEntryWithoutTotals(reportItem);
 
-      FixedList<FinancialReportBreakdownEntry> breakdownEntries = CreateBreakdownEntriesWithoutTotals(reportItemTotals);
+      FixedList<FinancialReportBreakdownResult> breakdownEntries = CreateBreakdownEntriesWithoutTotals(reportItemTotals);
 
       ReportEntryTotals breakdownTotal = FillBreakdown(breakdownEntries);
 
@@ -87,7 +87,7 @@ namespace Empiria.FinancialAccounting.FinancialReports {
       foreach (var item in rowsAndCells) {
         FinancialReportEntryResult reportEntry = CreateReportEntryWithoutTotals(item);
 
-        FixedList<FinancialReportBreakdownEntry> breakdownEntries = CreateBreakdownEntriesWithoutTotals(reportEntry);
+        FixedList<FinancialReportBreakdownResult> breakdownEntries = CreateBreakdownEntriesWithoutTotals(reportEntry);
 
         breakdownEntries = breakdownEntries.FindAll(x => x.IntegrationEntry.Type == FinancialConceptEntryType.Account);
 
@@ -157,7 +157,7 @@ namespace Empiria.FinancialAccounting.FinancialReports {
     }
 
 
-    private ReportEntryTotals FillBreakdown(FixedList<FinancialReportBreakdownEntry> breakdown) {
+    private ReportEntryTotals FillBreakdown(FixedList<FinancialReportBreakdownResult> breakdown) {
 
       ReportEntryTotals granTotal = CreateReportEntryTotalsObject();
 
@@ -408,10 +408,10 @@ namespace Empiria.FinancialAccounting.FinancialReports {
     }
 
 
-    private FixedList<FinancialReportBreakdownEntry> CreateBreakdownEntriesWithoutTotals(FinancialReportEntryResult reportEntry) {
+    private FixedList<FinancialReportBreakdownResult> CreateBreakdownEntriesWithoutTotals(FinancialReportEntryResult reportEntry) {
       var integration = reportEntry.FinancialConcept.Integration;
 
-      return integration.Select(x => new FinancialReportBreakdownEntry { IntegrationEntry = x })
+      return integration.Select(x => new FinancialReportBreakdownResult(x))
                         .ToFixedList();
     }
 
