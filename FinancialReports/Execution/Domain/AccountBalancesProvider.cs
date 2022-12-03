@@ -65,14 +65,14 @@ namespace Empiria.FinancialAccounting.FinancialReports {
       FinancialReportType reportType = _buildQuery.GetFinancialReportType();
 
       switch (reportType.DataSource) {
+
         case FinancialReportDataSource.AnaliticoCuentas:
-        case FinancialReportDataSource.AnaliticoCuentasDynamic:
           return GetAnaliticoCuentasQuery();
 
         case FinancialReportDataSource.BalanzaEnColumnasPorMoneda:
           return GetBalanzaEnColumnasPorMonedaQuery();
 
-        case FinancialReportDataSource.BalanzaTradicionalDynamic:
+        case FinancialReportDataSource.BalanzaTradicional:
           return GetBalanzaTradicionalQuery();
 
         default:
@@ -141,7 +141,8 @@ namespace Empiria.FinancialAccounting.FinancialReports {
           ToDate = _buildQuery.ToDate,
           ExchangeRateDate = _buildQuery.ToDate,
           ExchangeRateTypeUID = ExchangeRateType.ValorizacionBanxico.UID,
-          ValuateToCurrrencyUID = Currency.MXN.UID
+          ValuateToCurrrencyUID = Currency.MXN.UID,
+          UseDefaultValuation = false
         }
       };
     }

@@ -373,16 +373,14 @@ namespace Empiria.FinancialAccounting.FinancialReports {
 
     private ReportEntryTotals CreateReportEntryTotalsObject() {
       switch (FinancialReportType.DataSource) {
-        case FinancialReportDataSource.AnaliticoCuentas:
-          return new AnaliticoCuentasReportEntryTotals();
 
-        case FinancialReportDataSource.AnaliticoCuentasDynamic:
+        case FinancialReportDataSource.AnaliticoCuentas:
           return new DynamicReportEntryTotals(this.FinancialReportType.DataColumns);
 
         case FinancialReportDataSource.BalanzaEnColumnasPorMoneda:
           return new BalanzaEnColumnasPorMonedaReportEntryTotals();
 
-        case FinancialReportDataSource.BalanzaTradicionalDynamic:
+        case FinancialReportDataSource.BalanzaTradicional:
           return new DynamicReportEntryTotals(this.FinancialReportType.DataColumns);
 
         default:
@@ -431,8 +429,8 @@ namespace Empiria.FinancialAccounting.FinancialReports {
         }
       }
 
-      if (FinancialReportType.DataSource == FinancialReportDataSource.AnaliticoCuentasDynamic ||
-          FinancialReportType.DataSource == FinancialReportDataSource.BalanzaTradicionalDynamic) {
+      if (FinancialReportType.DataSource == FinancialReportDataSource.AnaliticoCuentas ||
+          FinancialReportType.DataSource == FinancialReportDataSource.BalanzaTradicional) {
 
         return ConvertToDynamicTrialBalanceEntryDto(filtered);
 
