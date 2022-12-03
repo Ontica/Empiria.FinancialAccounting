@@ -94,7 +94,7 @@ namespace Empiria.FinancialAccounting.FinancialReports.Adapters {
 
     static private DynamicFinancialReportEntryDto MapBreakdownEntry(FixedRowFinancialReportEntry entry) {
       dynamic o = new FinancialReportBreakdownEntryDto {
-        UID = entry.Row.UID,
+        UID = entry.UID,
         Type = FinancialConceptEntryType.FinancialConceptReference,
         FinancialConceptUID = entry.FinancialConcept.UID,
         ItemType = FinancialReportItemType.Summary,
@@ -164,7 +164,7 @@ namespace Empiria.FinancialAccounting.FinancialReports.Adapters {
 
       if (hasFinancialConcept) {
         o = new FinancialReportEntryDto {
-          UID = entry.Row.UID,
+          UID = entry.UID,
           ConceptCode = entry.FinancialConcept.Code,
           Concept = entry.FinancialConcept.Name,
           Level = entry.FinancialConcept.Level,
@@ -174,9 +174,9 @@ namespace Empiria.FinancialAccounting.FinancialReports.Adapters {
         };
       } else {
         o = new FinancialReportEntryDto {
-          UID = entry.Row.UID,
+          UID = entry.UID,
           ConceptCode = string.Empty,
-          Concept = entry.Row.Label,
+          Concept = entry.Label,
           Level = 1,
           FinancialConceptUID = string.Empty,
           AccountsChartName = string.Empty,
@@ -212,7 +212,7 @@ namespace Empiria.FinancialAccounting.FinancialReports.Adapters {
 
     static private DynamicFinancialReportEntryDto MapFixedRowEntry(FixedRowFinancialReportEntry entry) {
       dynamic o = new IntegrationReportEntryDto {
-        UID = entry.Row.UID,
+        UID = entry.UID,
         Type = FinancialConceptEntryType.FinancialConceptReference,
         FinancialConceptUID = entry.FinancialConcept.UID,
         ConceptCode = entry.FinancialConcept.Code,

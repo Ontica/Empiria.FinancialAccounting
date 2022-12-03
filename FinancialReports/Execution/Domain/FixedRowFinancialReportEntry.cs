@@ -17,38 +17,48 @@ namespace Empiria.FinancialAccounting.FinancialReports {
   /// <summary>Represents an entry for financial report defined by fixed rows.</summary>
   public class FixedRowFinancialReportEntry : FinancialReportEntry {
 
-    #region Constructors and parsers
+    private readonly FinancialReportItemDefinition _reportItemDefinition;
 
-    internal FixedRowFinancialReportEntry() {
-      // Required by Empiria Framework.
+    internal FixedRowFinancialReportEntry(FinancialReportItemDefinition reportItemDefinition) {
+      _reportItemDefinition = reportItemDefinition;
+    }
+
+    #region Properties
+
+    public string UID {
+      get {
+        return _reportItemDefinition.UID;
+      }
     }
 
 
-    #endregion Constructors and parsers
-
-    public FinancialReportRow Row {
-      get;
-      internal set;
+    public string Label {
+      get {
+        return _reportItemDefinition.Label;
+      }
     }
-
-
-    public FinancialReportItemType ItemType {
-      get;
-      internal set;
-    } = FinancialReportItemType.Entry;
 
 
     public FinancialConcept FinancialConcept {
-      get;
-      internal set;
+      get {
+        return _reportItemDefinition.FinancialConcept;
+      }
     }
 
+
+    public FinancialReportItemDefinition Definition {
+      get {
+        return _reportItemDefinition;
+      }
+    }
+
+
+    #endregion Properties
 
     public override IEnumerable<string> GetDynamicMemberNames() {
       var members = new List<string>();
 
-      members.Add("Row");
-      members.Add("ItemType");
+      members.Add("UID");
       members.Add("FinancialConcept");
 
       members.AddRange(base.GetDynamicMemberNames());

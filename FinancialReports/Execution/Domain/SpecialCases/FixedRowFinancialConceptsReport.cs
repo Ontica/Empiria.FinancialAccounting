@@ -397,11 +397,8 @@ namespace Empiria.FinancialAccounting.FinancialReports {
     }
 
 
-    private FixedRowFinancialReportEntry CreateReportEntryWithoutTotals(FinancialReportRow row) {
-      return new FixedRowFinancialReportEntry {
-        Row = row,
-        FinancialConcept = row.FinancialConcept
-      };
+    private FixedRowFinancialReportEntry CreateReportEntryWithoutTotals(FinancialReportItemDefinition item) {
+      return new FixedRowFinancialReportEntry(item);
     }
 
 

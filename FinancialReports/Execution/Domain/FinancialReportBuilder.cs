@@ -32,6 +32,11 @@ namespace Empiria.FinancialAccounting.FinancialReports {
       FinancialReportType reportType = this.BuildQuery.GetFinancialReportType();
 
       switch (reportType.DesignType) {
+        case FinancialReportDesignType.FixedCells:
+          var fixedCells = new FixedRowFinancialConceptsReport(this.BuildQuery);
+
+          return fixedCells.Generate();
+
         case FinancialReportDesignType.FixedRows:
           var fixedRows = new FixedRowFinancialConceptsReport(this.BuildQuery);
 
