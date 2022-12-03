@@ -14,42 +14,47 @@ using Empiria.FinancialAccounting.FinancialConcepts;
 
 namespace Empiria.FinancialAccounting.FinancialReports {
 
-  /// <summary>Represents a calculated entry for a financial report.</summary>
-  public class FinancialReportEntryResult : FinancialReportEntry {
 
-    private readonly FinancialReportItemDefinition _reportItemDefinition;
+  /// <summary>Interface used to homologate all financial report result types.</summary>
+  internal interface IFinancialReportResult {
+
+    FinancialConcept FinancialConcept { get; }
+
+  }  // IFinancialReportResult
+
+
+  /// <summary>Represents a calculated entry for a financial report.</summary>
+  public class FinancialReportEntryResult : FinancialReportEntry, IFinancialReportResult {
 
     internal FinancialReportEntryResult(FinancialReportItemDefinition reportItemDefinition) {
-      _reportItemDefinition = reportItemDefinition;
+      Definition = reportItemDefinition;
     }
 
     #region Properties
 
     public string UID {
       get {
-        return _reportItemDefinition.UID;
+        return Definition.UID;
       }
     }
 
 
     public string Label {
       get {
-        return _reportItemDefinition.Label;
+        return Definition.Label;
       }
     }
 
 
     public FinancialConcept FinancialConcept {
       get {
-        return _reportItemDefinition.FinancialConcept;
+        return Definition.FinancialConcept;
       }
     }
 
 
     public FinancialReportItemDefinition Definition {
-      get {
-        return _reportItemDefinition;
-      }
+      get;
     }
 
 
