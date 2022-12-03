@@ -213,11 +213,21 @@ namespace Empiria.FinancialAccounting.FinancialReports {
       }
     }
 
+
     public FixedList<FinancialReportRow> GetRows() {
       if (BaseReport.IsEmptyInstance) {
         return FinancialReportsData.GetRows(this);
       } else {
         return BaseReport.GetRows();
+      }
+    }
+
+
+    internal FixedList<FinancialReportItemDefinition> GetRowsAndCells() {
+      if (BaseReport.IsEmptyInstance) {
+        return FinancialReportsData.GetRowsAndCells(this);
+      } else {
+        return BaseReport.GetRowsAndCells();
       }
     }
 

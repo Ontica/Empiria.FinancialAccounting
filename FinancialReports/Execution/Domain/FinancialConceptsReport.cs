@@ -2,9 +2,9 @@
 *                                                                                                            *
 *  Module   : Financial Reports                          Component : Domain Layer                            *
 *  Assembly : FinancialAccounting.FinancialReports.dll   Pattern   : Service provider                        *
-*  Type     : FixedRowFinancialConceptsReport            License   : Please read LICENSE.txt file            *
+*  Type     : FinancialConceptsReport                    License   : Please read LICENSE.txt file            *
 *                                                                                                            *
-*  Summary  : Generates a report with fixed rows linked to financial concepts (e.g. R01, R10, R12).          *
+*  Summary  : Generates a report from financial concepts (e.g. R01, R10, R12).                               *
 *                                                                                                            *
 ************************* Copyright(c) La Vía Óntica SC, Ontica LLC and contributors. All rights reserved. **/
 using System;
@@ -21,20 +21,21 @@ using Empiria.FinancialAccounting.FinancialConcepts;
 
 namespace Empiria.FinancialAccounting.FinancialReports {
 
-  /// <summary>Generates a report with fixed rows linked to financial concepts (e.g. R01, R10, R12).</summary>
-  internal class FixedRowFinancialConceptsReport {
+  /// <summary>Generates a report from financial concepts (e.g. R01, R10, R12).</summary>
+  internal class FinancialConceptsReport {
 
     private readonly FinancialReportQuery _buildQuery;
     private readonly EmpiriaHashTable<FixedList<ITrialBalanceEntryDto>> _balances;
 
     #region Public methods
 
-    internal FixedRowFinancialConceptsReport(FinancialReportQuery buildQuery) {
+    internal FinancialConceptsReport(FinancialReportQuery buildQuery) {
       _buildQuery = buildQuery;
       _balances = GetBalancesHashTable();
 
-      this.FinancialReportType = _buildQuery.GetFinancialReportType();
+      FinancialReportType = _buildQuery.GetFinancialReportType();
     }
+
 
     public FinancialReportType FinancialReportType {
       get;
@@ -42,9 +43,9 @@ namespace Empiria.FinancialAccounting.FinancialReports {
 
 
     internal FinancialReport Generate() {
-      FixedList<FinancialReportRow> fixedRows = GetReportFixedRows();
+      FixedList<FinancialReportItemDefinition> rowsAndCells = FinancialReportType.GetRowsAndCells();
 
-      FixedList<FixedRowFinancialReportEntry> reportEntries = CreateReportEntriesWithoutTotals(fixedRows);
+      FixedList<FinancialReportEntryResult> reportEntries = CreateReportEntriesWithoutTotals(rowsAndCells);
 
       FillEntries(reportEntries);
 
@@ -54,21 +55,21 @@ namespace Empiria.FinancialAccounting.FinancialReports {
     }
 
 
-    internal FinancialReport GenerateBreakdown(string reportRowUID) {
-      FinancialReportRow row = GetReportBreakdownRow(reportRowUID);
+    internal FinancialReport GenerateBreakdown(string reportItemUID) {
+      FinancialReportItemDefinition reportItem = FinancialReportType.GetRow(reportItemUID);
 
-      FixedRowFinancialReportEntry reportEntry = CreateReportEntryWithoutTotals(row);
+      FinancialReportEntryResult reportItemTotals = CreateReportEntryWithoutTotals(reportItem);
 
-      FixedList<FinancialReportBreakdownEntry> breakdownEntries = GetBreakdownEntries(reportEntry);
+      FixedList<FinancialReportBreakdownEntry> breakdownEntries = CreateBreakdownEntriesWithoutTotals(reportItemTotals);
 
       ReportEntryTotals breakdownTotal = FillBreakdown(breakdownEntries);
 
-      breakdownTotal.CopyTotalsTo(reportEntry);
+      breakdownTotal.CopyTotalsTo(reportItemTotals);
 
       var reportEntries = new List<FinancialReportEntry>();
 
       reportEntries.AddRange(breakdownEntries);
-      reportEntries.Add(reportEntry);
+      reportEntries.Add(reportItemTotals);
 
       CalculateColumns(reportEntries);
 
@@ -76,17 +77,19 @@ namespace Empiria.FinancialAccounting.FinancialReports {
     }
 
 
-
     internal FinancialReport GenerateIntegration() {
-      FixedList<FinancialReportRow> integrationRows = GetReportRowsWithIntegrationAccounts();
+      FixedList<FinancialReportItemDefinition> rowsAndCells = FinancialReportType.GetRowsAndCells();
+
+      rowsAndCells = FilterItemsWithIntegrationAccounts(rowsAndCells);
 
       var reportEntries = new List<FinancialReportEntry>();
 
-      foreach (var row in integrationRows) {
-        FixedRowFinancialReportEntry reportEntry = CreateReportEntryWithoutTotals(row);
+      foreach (var item in rowsAndCells) {
+        FinancialReportEntryResult reportEntry = CreateReportEntryWithoutTotals(item);
 
-        FixedList<FinancialReportBreakdownEntry> breakdownEntries = GetBreakdownEntries(reportEntry).
-                                                                    FindAll(x => x.IntegrationEntry.Type == FinancialConceptEntryType.Account);
+        FixedList<FinancialReportBreakdownEntry> breakdownEntries = CreateBreakdownEntriesWithoutTotals(reportEntry);
+
+        breakdownEntries = breakdownEntries.FindAll(x => x.IntegrationEntry.Type == FinancialConceptEntryType.Account);
 
         ReportEntryTotals breakdownTotal = FillBreakdown(breakdownEntries);
 
@@ -104,21 +107,21 @@ namespace Empiria.FinancialAccounting.FinancialReports {
 
     #region Private methods
 
-    private void CalculateColumns(IEnumerable<FixedRowFinancialReportEntry> reportEntries) {
-      var calculator = new FinancialReportCalculator(this.FinancialReportType);
+    private void CalculateColumns(IEnumerable<FinancialReportEntryResult> reportEntries) {
+      var calculator = new FinancialReportCalculator(FinancialReportType);
 
       IEnumerable<FinancialReportEntry> castedEntries = reportEntries.Select(entry => (FinancialReportEntry) entry);
 
-      var columnsToCalculate = this.FinancialReportType.DataColumns.FindAll(x => x.IsCalculated);
+      var columnsToCalculate = FinancialReportType.DataColumns.FindAll(x => x.IsCalculated);
 
       calculator.CalculateColumns(columnsToCalculate, castedEntries);
     }
 
 
     private void CalculateColumns(IEnumerable<FinancialReportEntry> reportEntries) {
-      var calculator = new FinancialReportCalculator(this.FinancialReportType);
+      var calculator = new FinancialReportCalculator(FinancialReportType);
 
-      var columnsToCalculate = this.FinancialReportType.BreakdownColumns.FindAll(x => x.IsCalculated);
+      var columnsToCalculate = FinancialReportType.BreakdownColumns.FindAll(x => x.IsCalculated);
 
       calculator.CalculateColumns(columnsToCalculate, reportEntries);
     }
@@ -191,6 +194,11 @@ namespace Empiria.FinancialAccounting.FinancialReports {
     }
 
 
+    private FixedList<FinancialReportItemDefinition> FilterItemsWithIntegrationAccounts(FixedList<FinancialReportItemDefinition> list) {
+      return list.FindAll(x => !x.FinancialConcept.IsEmptyInstance &&
+                               x.FinancialConcept.Integration.Contains(item => item.Type == FinancialConceptEntryType.Account));
+    }
+
     private ReportEntryTotals CalculateBreakdown(FinancialConceptEntry integrationEntry) {
 
       switch (integrationEntry.Type) {
@@ -210,7 +218,7 @@ namespace Empiria.FinancialAccounting.FinancialReports {
     }
 
 
-    private void FillEntries(FixedList<FixedRowFinancialReportEntry> reportEntries) {
+    private void FillEntries(FixedList<FinancialReportEntryResult> reportEntries) {
 
       foreach (var reportEntry in reportEntries) {
 
@@ -375,13 +383,13 @@ namespace Empiria.FinancialAccounting.FinancialReports {
       switch (FinancialReportType.DataSource) {
 
         case FinancialReportDataSource.AnaliticoCuentas:
-          return new DynamicReportEntryTotals(this.FinancialReportType.DataColumns);
+          return new DynamicReportEntryTotals(FinancialReportType.DataColumns);
 
         case FinancialReportDataSource.BalanzaEnColumnasPorMoneda:
           return new BalanzaEnColumnasPorMonedaReportEntryTotals();
 
         case FinancialReportDataSource.BalanzaTradicional:
-          return new DynamicReportEntryTotals(this.FinancialReportType.DataColumns);
+          return new DynamicReportEntryTotals(FinancialReportType.DataColumns);
 
         default:
           throw Assertion.EnsureNoReachThisCode($"Unhandled data source {FinancialReportType.DataSource}.");
@@ -389,15 +397,24 @@ namespace Empiria.FinancialAccounting.FinancialReports {
     }
 
 
-    private FixedList<FixedRowFinancialReportEntry> CreateReportEntriesWithoutTotals(FixedList<FinancialReportRow> rows) {
-      return rows.Select(x => CreateReportEntryWithoutTotals(x))
-                 .ToFixedList();
+    private FixedList<FinancialReportEntryResult> CreateReportEntriesWithoutTotals(FixedList<FinancialReportItemDefinition> reportItemsDef) {
+      return reportItemsDef.Select(x => CreateReportEntryWithoutTotals(x))
+                           .ToFixedList();
     }
 
 
-    private FixedRowFinancialReportEntry CreateReportEntryWithoutTotals(FinancialReportItemDefinition item) {
-      return new FixedRowFinancialReportEntry(item);
+    private FinancialReportEntryResult CreateReportEntryWithoutTotals(FinancialReportItemDefinition reportItemDefinition) {
+      return new FinancialReportEntryResult(reportItemDefinition);
     }
+
+
+    private FixedList<FinancialReportBreakdownEntry> CreateBreakdownEntriesWithoutTotals(FinancialReportEntryResult reportEntry) {
+      var integration = reportEntry.FinancialConcept.Integration;
+
+      return integration.Select(x => new FinancialReportBreakdownEntry { IntegrationEntry = x })
+                        .ToFixedList();
+    }
+
 
 
     private FixedList<ITrialBalanceEntryDto> GetAccountBalances(FinancialConceptEntry integrationEntry) {
@@ -442,37 +459,6 @@ namespace Empiria.FinancialAccounting.FinancialReports {
     }
 
 
-    private FixedList<FinancialReportBreakdownEntry> GetBreakdownEntries(FixedRowFinancialReportEntry reportEntry) {
-      var breakdown = new List<FinancialReportBreakdownEntry>();
-
-      var financialConcept = reportEntry.FinancialConcept;
-
-      foreach (var integrationEntry in financialConcept.Integration) {
-        breakdown.Add(new FinancialReportBreakdownEntry { IntegrationEntry = integrationEntry });
-      }
-
-      return breakdown.ToFixedList();
-    }
-
-
-    private FinancialReportRow GetReportBreakdownRow(string reportRowUID) {
-      return FinancialReportType.GetRow(reportRowUID);
-    }
-
-
-    private FixedList<FinancialReportRow> GetReportRowsWithIntegrationAccounts() {
-      FixedList<FinancialReportRow> rows = GetReportFixedRows();
-
-      return rows.FindAll(x => !x.FinancialConcept.IsEmptyInstance &&
-                                x.FinancialConcept.Integration.Contains(item => item.Type == FinancialConceptEntryType.Account));
-    }
-
-
-    private FixedList<FinancialReportRow> GetReportFixedRows() {
-      return FinancialReportType.GetRows();
-    }
-
-
     private EmpiriaHashTable<FixedList<ITrialBalanceEntryDto>> GetBalancesHashTable() {
       var balancesProvider = new AccountBalancesProvider(_buildQuery);
 
@@ -500,6 +486,6 @@ namespace Empiria.FinancialAccounting.FinancialReports {
 
     #endregion Helpers
 
-  }  // class FixedRowGroupingRulesReport
+  }  // class FinancialConceptsReport
 
 }  // namespace Empiria.FinancialAccounting.FinancialReports

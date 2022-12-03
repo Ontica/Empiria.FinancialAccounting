@@ -58,7 +58,7 @@ namespace Empiria.FinancialAccounting.FinancialReports {
     private IDictionary<string, object> ConvertReportEntryToDictionary(FinancialReportEntry entry) {
       IDictionary<string, object> dictionary = entry.ToDictionary();
 
-      var conceptCode = ((FixedRowFinancialReportEntry) entry).FinancialConcept.Code;
+      var conceptCode = ((FinancialReportEntryResult) entry).FinancialConcept.Code;
 
       dictionary.Add("conceptCode", conceptCode);
 

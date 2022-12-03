@@ -45,7 +45,6 @@ namespace Empiria.FinancialAccounting.FinancialReports.Adapters {
 
     #region Private mappers
 
-
     static private FinancialReportTypeDto Map(FinancialReportType reportType) {
       return new FinancialReportTypeDto() {
         UID = reportType.UID,
@@ -63,11 +62,11 @@ namespace Empiria.FinancialAccounting.FinancialReports.Adapters {
 
 
     static private DynamicFinancialReportEntryDto MapBreakdownEntry(FinancialReportEntry entry) {
-      if (entry is FinancialReportBreakdownEntry entry1) {
-        return MapBreakdownEntry(entry1);
+      if (entry is FinancialReportBreakdownEntry breakdownEntry) {
+        return MapBreakdownEntry(breakdownEntry);
 
-      } else if (entry is FixedRowFinancialReportEntry entry2) {
-        return MapBreakdownEntry(entry2);
+      } else if (entry is FinancialReportEntryResult totalEntry) {
+        return MapBreakdownTotalEntry(totalEntry);
 
       } else {
         throw Assertion.EnsureNoReachThisCode();
@@ -92,7 +91,8 @@ namespace Empiria.FinancialAccounting.FinancialReports.Adapters {
       return o;
     }
 
-    static private DynamicFinancialReportEntryDto MapBreakdownEntry(FixedRowFinancialReportEntry entry) {
+
+    static private DynamicFinancialReportEntryDto MapBreakdownTotalEntry(FinancialReportEntryResult entry) {
       dynamic o = new FinancialReportBreakdownEntryDto {
         UID = entry.UID,
         Type = FinancialConceptEntryType.FinancialConceptReference,
@@ -111,7 +111,7 @@ namespace Empiria.FinancialAccounting.FinancialReports.Adapters {
     }
 
 
-    static private DynamicFinancialReportEntryDto MapBreakdownEntry2(FinancialReportBreakdownEntry entry) {
+    static private DynamicFinancialReportEntryDto MapFixedRowIntegrationBreakdownEntry(FinancialReportBreakdownEntry entry) {
       dynamic o = new IntegrationReportEntryDto {
         UID = entry.IntegrationEntry.UID,
         Type = entry.IntegrationEntry.Type,
@@ -151,13 +151,13 @@ namespace Empiria.FinancialAccounting.FinancialReports.Adapters {
 
 
     static private FixedList<DynamicFinancialReportEntryDto> MapToFixedRowsReport(FixedList<FinancialReportEntry> list) {
-      var mappedItems = list.Select((x) => MapToFixedRowsReport((FixedRowFinancialReportEntry) x));
+      var mappedItems = list.Select((x) => MapToFixedRowsReport((FinancialReportEntryResult) x));
 
       return new FixedList<DynamicFinancialReportEntryDto>(mappedItems);
     }
 
 
-    static private FinancialReportEntryDto MapToFixedRowsReport(FixedRowFinancialReportEntry entry) {
+    static private FinancialReportEntryDto MapToFixedRowsReport(FinancialReportEntryResult entry) {
       bool hasFinancialConcept = !entry.FinancialConcept.IsEmptyInstance;
 
       dynamic o;
@@ -199,10 +199,10 @@ namespace Empiria.FinancialAccounting.FinancialReports.Adapters {
 
     static private DynamicFinancialReportEntryDto MapToFixedRowsReportConceptsIntegration(FinancialReportEntry entry) {
       if (entry is FinancialReportBreakdownEntry breakdownEntry) {
-        return MapBreakdownEntry2(breakdownEntry);
+        return MapFixedRowIntegrationBreakdownEntry(breakdownEntry);
 
-      } else if (entry is FixedRowFinancialReportEntry fixedRowEntry) {
-        return MapFixedRowEntry(fixedRowEntry);
+      } else if (entry is FinancialReportEntryResult integrationTotalEntry) {
+        return MapFixedRowIntegrationTotalEntry(integrationTotalEntry);
 
       } else {
         throw Assertion.EnsureNoReachThisCode();
@@ -210,7 +210,7 @@ namespace Empiria.FinancialAccounting.FinancialReports.Adapters {
     }
 
 
-    static private DynamicFinancialReportEntryDto MapFixedRowEntry(FixedRowFinancialReportEntry entry) {
+    static private DynamicFinancialReportEntryDto MapFixedRowIntegrationTotalEntry(FinancialReportEntryResult entry) {
       dynamic o = new IntegrationReportEntryDto {
         UID = entry.UID,
         Type = FinancialConceptEntryType.FinancialConceptReference,

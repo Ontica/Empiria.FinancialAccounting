@@ -33,17 +33,17 @@ namespace Empiria.FinancialAccounting.FinancialReports {
 
       switch (reportType.DesignType) {
         case FinancialReportDesignType.FixedCells:
-          var fixedCells = new FixedRowFinancialConceptsReport(this.BuildQuery);
+          var fixedCells = new FinancialConceptsReport(this.BuildQuery);
 
           return fixedCells.Generate();
 
         case FinancialReportDesignType.FixedRows:
-          var fixedRows = new FixedRowFinancialConceptsReport(this.BuildQuery);
+          var fixedRows = new FinancialConceptsReport(this.BuildQuery);
 
           return fixedRows.Generate();
 
         case FinancialReportDesignType.AccountsIntegration:
-          var conceptsIntegration = new FixedRowFinancialConceptsReport(this.BuildQuery);
+          var conceptsIntegration = new FinancialConceptsReport(this.BuildQuery);
 
           return conceptsIntegration.GenerateIntegration();
 
@@ -59,7 +59,7 @@ namespace Empiria.FinancialAccounting.FinancialReports {
 
       switch (reportType.DesignType) {
         case FinancialReportDesignType.FixedRows:
-          var fixedRows = new FixedRowFinancialConceptsReport(this.BuildQuery);
+          var fixedRows = new FinancialConceptsReport(this.BuildQuery);
 
           return fixedRows.GenerateBreakdown(reportRowUID);
 

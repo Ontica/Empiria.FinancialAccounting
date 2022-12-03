@@ -25,7 +25,7 @@ namespace Empiria.FinancialAccounting.FinancialReports.Data {
 
       var op = DataOperation.Parse(sql);
 
-      return DataReader.GetFixedList<FinancialReportCell>(op);
+      return DataReader.GetFixedList<FinancialReportCell>(op, true);
     }
 
 
@@ -38,7 +38,18 @@ namespace Empiria.FinancialAccounting.FinancialReports.Data {
 
       var op = DataOperation.Parse(sql);
 
-      return DataReader.GetFixedList<FinancialReportRow>(op);
+      return DataReader.GetFixedList<FinancialReportRow>(op, true);
+    }
+
+    internal static FixedList<FinancialReportItemDefinition> GetRowsAndCells(FinancialReportType reportType) {
+      var sql = "SELECT * " +
+                "FROM COF_CONCEPTOS_REPORTES " +
+                $"WHERE ID_REPORTE = {reportType.Id} AND STATUS <> 'X' " +
+                $"ORDER BY FILA, COLUMNA";
+
+      var op = DataOperation.Parse(sql);
+
+      return DataReader.GetFixedList<FinancialReportItemDefinition>(op, true);
     }
 
   }  // class FinancialReportsData
