@@ -7,13 +7,12 @@
 *  Summary  : Describes a financial report fixed row.                                                        *
 *                                                                                                            *
 ************************* Copyright(c) La Vía Óntica SC, Ontica LLC and contributors. All rights reserved. **/
-
-using Empiria.FinancialAccounting.FinancialConcepts;
+using System;
 
 namespace Empiria.FinancialAccounting.FinancialReports {
 
   /// <summary>Describes a financial report fixed row.</summary>
-  public class FinancialReportRow: BaseObject {
+  public class FinancialReportRow: FinancialReportItemDefinition {
 
     #region Constructors and parsers
 
@@ -22,41 +21,16 @@ namespace Empiria.FinancialAccounting.FinancialReports {
     }
 
 
-    static public FinancialReportRow Parse(int id) {
-      return BaseObject.ParseId<FinancialReportRow>(id);
+    static new public FinancialReportRow Parse(int id) {
+      return BaseObject.ParseId<FinancialReportRow>(id, true);
     }
 
 
-    static public FinancialReportRow Parse(string uid) {
-      return BaseObject.ParseKey<FinancialReportRow>(uid);
+    static new public FinancialReportRow Parse(string uid) {
+      return BaseObject.ParseKey<FinancialReportRow>(uid, true);
     }
 
     #endregion Constructors and parsers
-
-    #region Properties
-
-    [DataField("ID_CONCEPTO")]
-    public FinancialConcept FinancialConcept {
-      get; private set;
-    }
-
-    [DataField("ETIQUETA")]
-    public string Label {
-      get; private set;
-    }
-
-    [DataField("FORMATO")]
-    public string Format {
-      get; private set;
-    }
-
-    [DataField("FILA")]
-    public int Row {
-      get; private set;
-    }
-
-
-    #endregion Properties
 
   }  // class FinancialReportRow
 
