@@ -13,6 +13,7 @@ using Empiria.Json;
 
 using Empiria.FinancialAccounting.FinancialReports.Data;
 using Empiria.FinancialAccounting.FinancialConcepts;
+using System.Data;
 
 namespace Empiria.FinancialAccounting.FinancialReports {
 
@@ -175,6 +176,32 @@ namespace Empiria.FinancialAccounting.FinancialReports {
         return DataColumns.FindAll(x => x.Show);
       }
     }
+
+    public FixedList<string> GridColumns {
+      get {
+        if (DesignType == FinancialReportDesignType.FixedRows ||
+            DesignType == FinancialReportDesignType.AccountsIntegration) {
+          return DataColumns.Select(x => x.Column)
+                            .ToFixedList();
+        }
+        return base.ExtendedDataField.GetFixedList<string>("grid/columns");
+      }
+    }
+
+
+    public int GridStartRow {
+      get {
+        return base.ExtendedDataField.Get<int>("grid/startRow", 1);
+      }
+    }
+
+
+    public int GridEndRow {
+      get {
+        return base.ExtendedDataField.Get<int>("grid/endRow", -1);
+      }
+    }
+
 
     #endregion Properties
 

@@ -27,20 +27,6 @@ namespace Empiria.FinancialAccounting.FinancialReports.Adapters {
     }
 
 
-    static internal FinancialReportCellDto Map(FinancialReportCell cell) {
-      return new FinancialReportCellDto {
-        UID = cell.UID,
-        Label = cell.Label,
-        DataField = cell.DataField,
-        Column = cell.Column,
-        Row = cell.Row,
-        Format = cell.Format,
-        FinancialConceptUID = cell.FinancialConcept.UID,
-        FinancialConceptGroupUID = cell.FinancialConcept.Group.UID
-      };
-    }
-
-
     static internal FinancialReportRowDto Map(FinancialReportRow row) {
       return new FinancialReportRowDto {
         UID = row.UID,
@@ -48,8 +34,22 @@ namespace Empiria.FinancialAccounting.FinancialReports.Adapters {
         ConceptCode = row.FinancialConcept.Code,
         Concept = row.FinancialConcept.Name,
         Format = row.Format,
-        Row = row.Row,
+        Row = row.RowIndex,
         FinancialConceptUID = row.FinancialConcept.UID
+      };
+    }
+
+
+    static internal FinancialReportCellDto Map(FinancialReportCell cell) {
+      return new FinancialReportCellDto {
+        UID = cell.UID,
+        Label = MapCellLabel(cell),
+        DataField = cell.DataField,
+        Column = cell.ColumnIndex,
+        Row = cell.RowIndex,
+        Format = cell.Format,
+        FinancialConceptUID = cell.FinancialConcept.UID,
+        FinancialConceptGroupUID = cell.FinancialConcept.Group.UID
       };
     }
 
@@ -67,6 +67,15 @@ namespace Empiria.FinancialAccounting.FinancialReports.Adapters {
     }
 
 
+    static private string MapCellLabel(FinancialReportCell cell) {
+      if (cell.DataField.Length != 0) {
+        return $"={cell.Label}.{cell.DataField}";
+      } else {
+        return cell.Label;
+      }
+    }
+
+
     static private ReportDesignConfigDto MapConfig(FinancialReportType reportType) {
       return new ReportDesignConfigDto {
         DesignType = reportType.DesignType,
@@ -75,9 +84,9 @@ namespace Empiria.FinancialAccounting.FinancialReports.Adapters {
         FinancialConceptGroups = reportType.FinancialConceptGroups.MapToNamedEntityList(),
         DataFields = reportType.DataFields.MapToNamedEntityList(),
         Grid = new ReportGridDto {
-          Columns = MapToReportColumn(reportType.OutputDataColumns),
-          StartRow = 1,
-          EndRow = 64
+          Columns = reportType.GridColumns,
+          StartRow = reportType.GridStartRow,
+          EndRow = reportType.GridEndRow
         }
       };
     }
@@ -90,11 +99,6 @@ namespace Empiria.FinancialAccounting.FinancialReports.Adapters {
                  .ToFixedList();
     }
 
-
-    static private FixedList<string> MapToReportColumn(FixedList<DataTableColumn> dataColumns) {
-      return dataColumns.Select(x => x.Column)
-                        .ToFixedList();
-    }
 
     #endregion Helpers
 
