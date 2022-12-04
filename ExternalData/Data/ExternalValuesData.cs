@@ -18,17 +18,6 @@ namespace Empiria.FinancialAccounting.ExternalData.Data {
   /// <summary>Data access layer for financial external values.</summary>
   static internal class ExternalValuesData {
 
-    static internal ExternalValue GetValue(ExternalVariable variable, DateTime date) {
-      var sql = "SELECT * FROM COF_VALORES_EXTERNOS " +
-               $"WHERE ID_VARIABLE_EXTERNA = {variable.Id} " +
-               $"AND FECHA_APLICACION = {CommonMethods.FormatSqlDbDate(date)} " +
-               $"AND STATUS_VALOR_EXTERNO <> 'X'";
-
-      var op = DataOperation.Parse(sql);
-
-      return DataReader.GetObject<ExternalValue>(op, ExternalValue.Empty);
-    }
-
     static internal FixedList<ExternalValue> GetValues(Dataset dataset) {
       var sql = "SELECT * FROM COF_VALORES_EXTERNOS " +
                $"WHERE ID_ARCHIVO = {dataset.Id} " +

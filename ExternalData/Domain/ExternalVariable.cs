@@ -128,16 +128,7 @@ namespace Empiria.FinancialAccounting.ExternalData {
       private set;
     }
 
-
     #endregion Properties
-
-    #region Methods
-
-    public ExternalValue GetValue(DateTime date) {
-      return ExternalValuesData.GetValue(this, date);
-    }
-
-    #endregion Methods
 
   } // class ExternalVariable
 
