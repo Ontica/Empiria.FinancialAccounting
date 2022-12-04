@@ -10,16 +10,18 @@
 using System;
 using System.Collections.Generic;
 
+using Empiria.Collections;
+
 using Empiria.FinancialAccounting.ExternalData.Data;
 
 namespace Empiria.FinancialAccounting.ExternalData {
 
   /// <summary>Holds dynamic tabular data for a set of financial external values.</summary>
-  internal class ExternalValuesDataSet {
+  public class ExternalValuesDataSet {
 
     #region Constructors and parsers
 
-    internal ExternalValuesDataSet(ExternalVariablesSet variablesSet, DateTime date) {
+    public ExternalValuesDataSet(ExternalVariablesSet variablesSet, DateTime date) {
       Assertion.Require(variablesSet, nameof(variablesSet));
 
       VariablesSet = variablesSet;
@@ -82,6 +84,19 @@ namespace Empiria.FinancialAccounting.ExternalData {
       }
 
       return list.ToFixedList();
+    }
+
+
+    public EmpiriaHashTable<ExternalValue> GetLoadedValuesAsHashTable() {
+      FixedList<ExternalValue> loadedValues = ExternalValuesData.GetValues(this.VariablesSet, this.Date);
+
+      var hashTable = new EmpiriaHashTable<ExternalValue>(loadedValues.Count);
+
+      foreach (var entry in loadedValues) {
+        hashTable.Insert(entry.ExternalVariable.Code, entry);
+      }
+
+      return hashTable;
     }
 
     #endregion Methods
