@@ -9,11 +9,10 @@
 ************************* Copyright(c) La Vía Óntica SC, Ontica LLC and contributors. All rights reserved. **/
 using System;
 
-using Empiria.Json;
-
 using Empiria.FinancialAccounting.FinancialReports.Data;
 using Empiria.FinancialAccounting.FinancialConcepts;
-using System.Data;
+
+using Empiria.FinancialAccounting.ExternalData;
 
 namespace Empiria.FinancialAccounting.FinancialReports {
 
@@ -158,6 +157,13 @@ namespace Empiria.FinancialAccounting.FinancialReports {
     public FixedList<FinancialConceptGroup> FinancialConceptGroups {
       get {
         return base.ExtendedDataField.GetFixedList<FinancialConceptGroup>("groupingRules", false);
+      }
+    }
+
+
+    public FixedList<ExternalVariablesSet> ExternalVariablesSets {
+      get {
+        return base.ExtendedDataField.GetFixedList<ExternalVariablesSet>("externalVariablesSets", false);
       }
     }
 

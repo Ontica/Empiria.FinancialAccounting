@@ -12,7 +12,6 @@ using System;
 using Empiria.FinancialAccounting.BalanceEngine.Adapters;
 
 using Empiria.FinancialAccounting.ExternalData;
-using Empiria.FinancialAccounting.FinancialReports.Adapters;
 using Empiria.FinancialAccounting.FinancialConcepts;
 
 namespace Empiria.FinancialAccounting.FinancialReports {
@@ -20,20 +19,23 @@ namespace Empiria.FinancialAccounting.FinancialReports {
   /// <summary>Calculates financial concepts values.</summary>
   internal class FinancialConceptsCalculator {
 
-    private readonly FinancialReportQuery _buildQuery;
-    private readonly FinancialReportType _financialReportType;
-
+    private readonly FixedList<DataTableColumn> _dataColumns;
     private readonly AccountBalancesProvider _balancesProvider;
+    private readonly ExternalValuesProvider _externalValuesProvider;
+    private readonly bool _roundDecimals;
 
-    internal FinancialConceptsCalculator(FinancialReportQuery buildQuery,
-                                         AccountBalancesProvider balancesProvider) {
-      Assertion.Require(buildQuery, nameof(buildQuery));
+    internal FinancialConceptsCalculator(FixedList<DataTableColumn> dataColumns,
+                                         AccountBalancesProvider balancesProvider,
+                                         ExternalValuesProvider externalValuesProvider,
+                                         bool roundDecimals) {
+      Assertion.Require(dataColumns, nameof(dataColumns));
       Assertion.Require(balancesProvider, nameof(balancesProvider));
+      Assertion.Require(externalValuesProvider, nameof(externalValuesProvider));
 
-      _buildQuery = buildQuery;
-      _financialReportType = _buildQuery.GetFinancialReportType();
-
+      _dataColumns = dataColumns;
       _balancesProvider = balancesProvider;
+      _externalValuesProvider = externalValuesProvider;
+      _roundDecimals = roundDecimals;
     }
 
 
@@ -47,7 +49,7 @@ namespace Empiria.FinancialAccounting.FinancialReports {
 
         ReportEntryTotals breakdownTotals = CalculateBreakdownEntry(breakdownItem.IntegrationEntry);
 
-        if (_financialReportType.RoundDecimals) {
+        if (_roundDecimals) {
           breakdownTotals = breakdownTotals.Round();
         }
 
@@ -110,7 +112,7 @@ namespace Empiria.FinancialAccounting.FinancialReports {
     #region Private calculation methods
 
     private ReportEntryTotals AccumulateAccountTotals(FinancialConceptEntry integrationEntry,
-                                                       ReportEntryTotals totals) {
+                                                      ReportEntryTotals totals) {
 
       Assertion.Require(integrationEntry.Type == FinancialConceptEntryType.Account,
                         "Invalid integrationEntry.Type");
@@ -202,6 +204,7 @@ namespace Empiria.FinancialAccounting.FinancialReports {
 
     }
 
+
     private ReportEntryTotals CalculateAccount(FinancialConceptEntry integrationEntry) {
       if (!_balancesProvider.ContainsAccount(integrationEntry.AccountNumber)) {
         return CreateReportEntryTotalsObject();
@@ -220,7 +223,7 @@ namespace Empiria.FinancialAccounting.FinancialReports {
         }
       }
 
-      if (_financialReportType.RoundDecimals) {
+      if (_roundDecimals) {
         totals = totals.Round();
       }
 
@@ -252,17 +255,19 @@ namespace Empiria.FinancialAccounting.FinancialReports {
 
 
     private ReportEntryTotals CalculateExternalVariable(FinancialConceptEntry integrationEntry) {
-      var variable = ExternalVariable.TryParseWithCode(integrationEntry.ExternalVariableCode);
-
-      ExternalValue value = ExternalValue.Empty;
-
-      if (variable != null) {
-        value = variable.GetValue(_buildQuery.ToDate);
+      if (!_externalValuesProvider.ContainsVariable(integrationEntry.ExternalVariableCode)) {
+        return CreateReportEntryTotalsObject();
       }
 
-      var totals = CreateReportEntryTotalsObject();
+      FixedList<ExternalValue> externalValues = _externalValuesProvider.GetValues(integrationEntry.ExternalVariableCode);
 
-      return totals.Sum(value, integrationEntry.DataColumn);
+      ReportEntryTotals totals = CreateReportEntryTotalsObject();
+
+      foreach (var value in externalValues) {
+        totals = totals.Sum(value, integrationEntry.DataColumn);
+      }
+
+      return totals;
     }
 
 
@@ -271,19 +276,10 @@ namespace Empiria.FinancialAccounting.FinancialReports {
     #region Helpers
 
     private ReportEntryTotals CreateReportEntryTotalsObject() {
-      switch (_financialReportType.DataSource) {
-
-        case FinancialReportDataSource.AnaliticoCuentas:
-          return new DynamicReportEntryTotals(_financialReportType.DataColumns);
-
-        case FinancialReportDataSource.BalanzaEnColumnasPorMoneda:
-          return new BalanzaEnColumnasPorMonedaReportEntryTotals();
-
-        case FinancialReportDataSource.BalanzaTradicional:
-          return new DynamicReportEntryTotals(_financialReportType.DataColumns);
-
-        default:
-          throw Assertion.EnsureNoReachThisCode($"Unhandled data source {_financialReportType.DataSource}.");
+      if (_dataColumns.Count != 0) {
+        return new DynamicReportEntryTotals(_dataColumns);
+      } else {
+        return new BalanzaEnColumnasPorMonedaReportEntryTotals();
       }
     }
 
