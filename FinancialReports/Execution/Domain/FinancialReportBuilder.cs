@@ -17,21 +17,18 @@ namespace Empiria.FinancialAccounting.FinancialReports {
   internal class FinancialReportBuilder {
 
     private readonly FinancialReportQuery _buildQuery;
-    private readonly AccountBalancesProvider _balancesProvider;
 
     internal FinancialReportBuilder(FinancialReportQuery buildQuery) {
       Assertion.Require(buildQuery, nameof(buildQuery));
 
       _buildQuery = buildQuery;
-
-      _balancesProvider = new AccountBalancesProvider(_buildQuery);
     }
 
 
     internal FinancialReport Build() {
       FinancialReportType reportType = _buildQuery.GetFinancialReportType();
 
-      var financialConceptsReport = new FinancialConceptsReport(_buildQuery, _balancesProvider);
+      var financialConceptsReport = new FinancialConceptsReport(_buildQuery);
 
       if (reportType.DesignType == FinancialReportDesignType.FixedCells ||
           reportType.DesignType == FinancialReportDesignType.FixedRows) {
@@ -55,7 +52,7 @@ namespace Empiria.FinancialAccounting.FinancialReports {
     internal FinancialReport GetBreakdown(string reportRowUID) {
       FinancialReportType reportType = _buildQuery.GetFinancialReportType();
 
-      var financialConceptsReport = new FinancialConceptsReport(_buildQuery, _balancesProvider);
+      var financialConceptsReport = new FinancialConceptsReport(_buildQuery);
 
       if (reportType.DesignType == FinancialReportDesignType.FixedRows) {
 

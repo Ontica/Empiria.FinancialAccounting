@@ -11,11 +11,6 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 
-using Empiria.Collections;
-
-using Empiria.FinancialAccounting.BalanceEngine.Adapters;
-
-using Empiria.FinancialAccounting.ExternalData;
 using Empiria.FinancialAccounting.FinancialReports.Adapters;
 using Empiria.FinancialAccounting.FinancialConcepts;
 
@@ -24,31 +19,30 @@ namespace Empiria.FinancialAccounting.FinancialReports {
   /// <summary>Generates a report from financial concepts (e.g. R01, R10, R12).</summary>
   internal class FinancialConceptsReport {
 
-    private readonly FinancialReportQuery _buildQuery;
+    private readonly FinancialReportType _financialReportType;
     private readonly FinancialConceptsCalculator _conceptsCalculator;
 
     #region Public methods
 
-    internal FinancialConceptsReport(FinancialReportQuery buildQuery,
-                                     AccountBalancesProvider balancesProvider) {
+    internal FinancialConceptsReport(FinancialReportQuery buildQuery) {
       Assertion.Require(buildQuery, nameof(buildQuery));
-      Assertion.Require(balancesProvider, nameof(balancesProvider));
 
-      _buildQuery = buildQuery;
+      _financialReportType = buildQuery.GetFinancialReportType();
 
-      _conceptsCalculator = new FinancialConceptsCalculator(_buildQuery, balancesProvider);
+      var balancesProvider = new AccountBalancesProvider(buildQuery);
 
-      FinancialReportType = _buildQuery.GetFinancialReportType();
-    }
+      var externalValuesProvider = new ExternalValuesProvider(_financialReportType.ExternalVariablesSets,
+                                                              buildQuery.ToDate);
 
-
-    public FinancialReportType FinancialReportType {
-      get;
+      _conceptsCalculator = new FinancialConceptsCalculator(_financialReportType.DataColumns,
+                                                            balancesProvider,
+                                                            externalValuesProvider,
+                                                            _financialReportType.RoundDecimals);
     }
 
 
     internal FixedList<FinancialReportEntry> Generate() {
-      FixedList<FinancialReportItemDefinition> rowsAndCells = FinancialReportType.GetRowsAndCells();
+      FixedList<FinancialReportItemDefinition> rowsAndCells = _financialReportType.GetRowsAndCells();
 
       FixedList<FinancialReportEntryResult> reportEntries = CreateReportEntriesWithoutTotals(rowsAndCells);
 
@@ -61,7 +55,7 @@ namespace Empiria.FinancialAccounting.FinancialReports {
 
 
     internal FixedList<FinancialReportEntry> GenerateBreakdown(string reportItemUID) {
-      FinancialReportItemDefinition reportItem = FinancialReportType.GetRow(reportItemUID);
+      FinancialReportItemDefinition reportItem = _financialReportType.GetRow(reportItemUID);
 
       FinancialReportEntryResult reportItemTotals = CreateReportEntryWithoutTotals(reportItem);
 
@@ -83,7 +77,7 @@ namespace Empiria.FinancialAccounting.FinancialReports {
 
 
     internal FixedList<FinancialReportEntry> GenerateIntegration() {
-      FixedList<FinancialReportItemDefinition> rowsAndCells = FinancialReportType.GetRowsAndCells();
+      FixedList<FinancialReportItemDefinition> rowsAndCells = _financialReportType.GetRowsAndCells();
 
       rowsAndCells = FilterItemsWithIntegrationAccounts(rowsAndCells);
 
@@ -114,20 +108,20 @@ namespace Empiria.FinancialAccounting.FinancialReports {
     #region Private methods
 
     private void CalculateColumns(IEnumerable<FinancialReportEntryResult> reportEntries) {
-      var calculator = new FinancialReportCalculator(FinancialReportType);
+      var calculator = new FinancialReportCalculator(_financialReportType);
 
       IEnumerable<FinancialReportEntry> castedEntries = reportEntries.Select(entry => (FinancialReportEntry) entry);
 
-      var columnsToCalculate = FinancialReportType.DataColumns.FindAll(x => x.IsCalculated);
+      var columnsToCalculate = _financialReportType.DataColumns.FindAll(x => x.IsCalculated);
 
       calculator.CalculateColumns(columnsToCalculate, castedEntries);
     }
 
 
     private void CalculateColumns(IEnumerable<FinancialReportEntry> reportEntries) {
-      var calculator = new FinancialReportCalculator(FinancialReportType);
+      var calculator = new FinancialReportCalculator(_financialReportType);
 
-      var columnsToCalculate = FinancialReportType.BreakdownColumns.FindAll(x => x.IsCalculated);
+      var columnsToCalculate = _financialReportType.BreakdownColumns.FindAll(x => x.IsCalculated);
 
       calculator.CalculateColumns(columnsToCalculate, reportEntries);
     }
@@ -149,7 +143,7 @@ namespace Empiria.FinancialAccounting.FinancialReports {
 
         ReportEntryTotals totals = _conceptsCalculator.CalculateFinancialConcept(reportEntry.FinancialConcept);
 
-        if (FinancialReportType.RoundDecimals) {
+        if (_financialReportType.RoundDecimals) {
           totals = totals.Round();
         }
 
