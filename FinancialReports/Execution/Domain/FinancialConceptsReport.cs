@@ -25,13 +25,18 @@ namespace Empiria.FinancialAccounting.FinancialReports {
   internal class FinancialConceptsReport {
 
     private readonly FinancialReportQuery _buildQuery;
-    private readonly EmpiriaHashTable<FixedList<ITrialBalanceEntryDto>> _balances;
+    private readonly FinancialConceptsCalculator _conceptsCalculator;
 
     #region Public methods
 
-    internal FinancialConceptsReport(FinancialReportQuery buildQuery) {
+    internal FinancialConceptsReport(FinancialReportQuery buildQuery,
+                                     AccountBalancesProvider balancesProvider) {
+      Assertion.Require(buildQuery, nameof(buildQuery));
+      Assertion.Require(balancesProvider, nameof(balancesProvider));
+
       _buildQuery = buildQuery;
-      _balances = GetBalancesHashTable();
+
+      _conceptsCalculator = new FinancialConceptsCalculator(_buildQuery, balancesProvider);
 
       FinancialReportType = _buildQuery.GetFinancialReportType();
     }
@@ -42,7 +47,7 @@ namespace Empiria.FinancialAccounting.FinancialReports {
     }
 
 
-    internal FinancialReport Generate() {
+    internal FixedList<FinancialReportEntry> Generate() {
       FixedList<FinancialReportItemDefinition> rowsAndCells = FinancialReportType.GetRowsAndCells();
 
       FixedList<FinancialReportEntryResult> reportEntries = CreateReportEntriesWithoutTotals(rowsAndCells);
@@ -51,18 +56,18 @@ namespace Empiria.FinancialAccounting.FinancialReports {
 
       CalculateColumns(reportEntries);
 
-      return MapToFinancialReport(reportEntries);
+      return reportEntries.Select(x => (FinancialReportEntry) x).ToFixedList();
     }
 
 
-    internal FinancialReport GenerateBreakdown(string reportItemUID) {
+    internal FixedList<FinancialReportEntry> GenerateBreakdown(string reportItemUID) {
       FinancialReportItemDefinition reportItem = FinancialReportType.GetRow(reportItemUID);
 
       FinancialReportEntryResult reportItemTotals = CreateReportEntryWithoutTotals(reportItem);
 
       FixedList<FinancialReportBreakdownResult> breakdownEntries = CreateBreakdownEntriesWithoutTotals(reportItemTotals);
 
-      ReportEntryTotals breakdownTotal = FillBreakdown(breakdownEntries);
+      ReportEntryTotals breakdownTotal = _conceptsCalculator.CalculateBreakdownTotalEntry(breakdownEntries);
 
       breakdownTotal.CopyTotalsTo(reportItemTotals);
 
@@ -73,11 +78,11 @@ namespace Empiria.FinancialAccounting.FinancialReports {
 
       CalculateColumns(reportEntries);
 
-      return MapToFinancialReport(reportEntries.ToFixedList());
+      return reportEntries.ToFixedList();
     }
 
 
-    internal FinancialReport GenerateIntegration() {
+    internal FixedList<FinancialReportEntry> GenerateIntegration() {
       FixedList<FinancialReportItemDefinition> rowsAndCells = FinancialReportType.GetRowsAndCells();
 
       rowsAndCells = FilterItemsWithIntegrationAccounts(rowsAndCells);
@@ -91,7 +96,7 @@ namespace Empiria.FinancialAccounting.FinancialReports {
 
         breakdownEntries = breakdownEntries.FindAll(x => x.IntegrationEntry.Type == FinancialConceptEntryType.Account);
 
-        ReportEntryTotals breakdownTotal = FillBreakdown(breakdownEntries);
+        ReportEntryTotals breakdownTotal = _conceptsCalculator.CalculateBreakdownTotalEntry(breakdownEntries);
 
         reportEntries.AddRange(breakdownEntries);
 
@@ -100,8 +105,9 @@ namespace Empiria.FinancialAccounting.FinancialReports {
         reportEntries.Add(reportEntry);
       }
 
-      return MapToFinancialReport(reportEntries.ToFixedList());
+      return reportEntries.ToFixedList();
     }
+
 
     #endregion Public methods
 
@@ -127,94 +133,9 @@ namespace Empiria.FinancialAccounting.FinancialReports {
     }
 
 
-    private ReportEntryTotals ProcessAccount(FinancialConceptEntry integrationEntry) {
-      if (!_balances.ContainsKey(integrationEntry.AccountNumber)) {
-        return CreateReportEntryTotalsObject();
-      }
-
-      FixedList<ITrialBalanceEntryDto> accountBalances = GetAccountBalances(integrationEntry);
-
-      var totals = CreateReportEntryTotalsObject();
-
-      foreach (var balance in accountBalances) {
-
-        if (integrationEntry.CalculationRule == "SaldoDeudorasMenosSaldoAcreedoras") {
-          totals = totals.SumDebitsOrSubstractCredits(balance, integrationEntry.DataColumn);
-        } else {
-          totals = totals.Sum(balance, integrationEntry.DataColumn);
-        }
-      }
-
-      if (FinancialReportType.RoundDecimals) {
-        totals = totals.Round();
-      }
-
-      if (integrationEntry.Operator == OperatorType.AbsoluteValue) {
-        totals = totals.AbsoluteValue();
-      }
-
-      return totals;
-    }
-
-
-    private ReportEntryTotals FillBreakdown(FixedList<FinancialReportBreakdownResult> breakdown) {
-
-      ReportEntryTotals granTotal = CreateReportEntryTotalsObject();
-
-      foreach (var breakdownItem in breakdown) {
-
-        ReportEntryTotals breakdownTotals = CalculateBreakdown(breakdownItem.IntegrationEntry);
-
-        if (FinancialReportType.RoundDecimals) {
-          breakdownTotals = breakdownTotals.Round();
-        }
-
-        breakdownTotals.CopyTotalsTo(breakdownItem);
-
-        switch (breakdownItem.IntegrationEntry.Operator) {
-
-          case OperatorType.Add:
-            granTotal = granTotal.Sum(breakdownTotals, breakdownItem.IntegrationEntry.DataColumn);
-            break;
-
-          case OperatorType.Substract:
-            granTotal = granTotal.Substract(breakdownTotals, breakdownItem.IntegrationEntry.DataColumn);
-            break;
-
-          case OperatorType.AbsoluteValue:
-            granTotal = granTotal.Sum(breakdownTotals, breakdownItem.IntegrationEntry.DataColumn)
-                                 .AbsoluteValue();
-            break;
-
-        } // switch
-
-      } // foreach
-
-      return granTotal;
-    }
-
-
     private FixedList<FinancialReportItemDefinition> FilterItemsWithIntegrationAccounts(FixedList<FinancialReportItemDefinition> list) {
       return list.FindAll(x => !x.FinancialConcept.IsEmptyInstance &&
                                x.FinancialConcept.Integration.Contains(item => item.Type == FinancialConceptEntryType.Account));
-    }
-
-    private ReportEntryTotals CalculateBreakdown(FinancialConceptEntry integrationEntry) {
-
-      switch (integrationEntry.Type) {
-
-        case FinancialConceptEntryType.FinancialConceptReference:
-          return ProcessFinancialConcept(integrationEntry.ReferencedFinancialConcept);
-
-        case FinancialConceptEntryType.Account:
-          return ProcessAccount(integrationEntry);
-
-        case FinancialConceptEntryType.ExternalVariable:
-          return ProcessExternalVariable(integrationEntry);
-
-        default:
-          throw Assertion.EnsureNoReachThisCode();
-      }
     }
 
 
@@ -226,7 +147,7 @@ namespace Empiria.FinancialAccounting.FinancialReports {
           continue;
         }
 
-        ReportEntryTotals totals = ProcessFinancialConcept(reportEntry.FinancialConcept);
+        ReportEntryTotals totals = _conceptsCalculator.CalculateFinancialConcept(reportEntry.FinancialConcept);
 
         if (FinancialReportType.RoundDecimals) {
           totals = totals.Round();
@@ -237,164 +158,9 @@ namespace Empiria.FinancialAccounting.FinancialReports {
     }
 
 
-    private ReportEntryTotals ProcessExternalVariable(FinancialConceptEntry integrationEntry) {
-      var variable = ExternalVariable.TryParseWithCode(integrationEntry.ExternalVariableCode);
-
-      ExternalValue value = ExternalValue.Empty;
-
-      if (variable != null) {
-        value = variable.GetValue(_buildQuery.ToDate);
-      }
-
-      var totals = CreateReportEntryTotalsObject();
-
-      return totals.Sum(value, integrationEntry.DataColumn);
-    }
-
-
-    private ReportEntryTotals ProcessFinancialConcept(FinancialConcept financialConcept) {
-      Assertion.Require(!financialConcept.IsEmptyInstance,
-                        "Cannot process the empty FinancialConcept instance.");
-
-      ReportEntryTotals totals = CreateReportEntryTotalsObject();
-
-      foreach (var integrationItem in financialConcept.Integration) {
-
-        switch (integrationItem.Type) {
-          case FinancialConceptEntryType.FinancialConceptReference:
-
-            totals = CalculateFinancialConceptTotals(integrationItem, totals);
-            break;
-
-          case FinancialConceptEntryType.Account:
-            totals = CalculateAccountTotals(integrationItem, totals);
-            break;
-
-          case FinancialConceptEntryType.ExternalVariable:
-            totals = CalculateExternalVariableTotals(integrationItem, totals);
-            break;
-
-        }
-
-      }  // foreach
-
-      return totals;
-    }
-
-
-    private ReportEntryTotals CalculateAccountTotals(FinancialConceptEntry integrationEntry,
-                                                     ReportEntryTotals totals) {
-
-      Assertion.Require(integrationEntry.Type == FinancialConceptEntryType.Account,
-                        "Invalid integrationEntry.Type");
-
-      switch (integrationEntry.Operator) {
-
-        case OperatorType.Add:
-
-          return totals.Sum(ProcessAccount(integrationEntry),
-                            integrationEntry.DataColumn);
-
-        case OperatorType.Substract:
-
-          return totals.Substract(ProcessAccount(integrationEntry),
-                                  integrationEntry.DataColumn);
-
-        case OperatorType.AbsoluteValue:
-
-          return totals.Sum(ProcessAccount(integrationEntry),
-                            integrationEntry.DataColumn)
-                       .AbsoluteValue();
-
-        default:
-          throw Assertion.EnsureNoReachThisCode($"Unhandled operator '{integrationEntry.Operator}'.");
-      }
-
-    }
-
-
-    private ReportEntryTotals CalculateFinancialConceptTotals(FinancialConceptEntry integrationEntry,
-                                                              ReportEntryTotals totals) {
-
-      Assertion.Require(integrationEntry.Type == FinancialConceptEntryType.FinancialConceptReference,
-                      "Invalid integrationEntry.Type");
-
-      switch (integrationEntry.Operator) {
-
-        case OperatorType.Add:
-
-          return totals.Sum(ProcessFinancialConcept(integrationEntry.ReferencedFinancialConcept),
-                            integrationEntry.DataColumn);
-
-        case OperatorType.Substract:
-
-          return totals.Substract(ProcessFinancialConcept(integrationEntry.ReferencedFinancialConcept),
-                                  integrationEntry.DataColumn);
-
-        case OperatorType.AbsoluteValue:
-
-          return totals.Sum(ProcessFinancialConcept(integrationEntry.ReferencedFinancialConcept),
-                            integrationEntry.DataColumn)
-                       .AbsoluteValue();
-
-        default:
-          throw Assertion.EnsureNoReachThisCode($"Unhandled operator '{integrationEntry.Operator}'.");
-
-      }
-
-    }
-
-
-    private ReportEntryTotals CalculateExternalVariableTotals(FinancialConceptEntry integrationEntry,
-                                                              ReportEntryTotals totals) {
-
-      Assertion.Require(integrationEntry.Type == FinancialConceptEntryType.ExternalVariable,
-                       "Invalid integrationEntry.Type");
-
-      switch (integrationEntry.Operator) {
-
-        case OperatorType.Add:
-
-          return totals.Sum(ProcessExternalVariable(integrationEntry),
-                            integrationEntry.DataColumn);
-
-        case OperatorType.Substract:
-
-          return totals.Substract(ProcessExternalVariable(integrationEntry),
-                                  integrationEntry.DataColumn);
-
-        case OperatorType.AbsoluteValue:
-
-          return totals.Sum(ProcessExternalVariable(integrationEntry),
-                            integrationEntry.DataColumn)
-                       .AbsoluteValue();
-
-        default:
-          throw Assertion.EnsureNoReachThisCode($"Unhandled operator '{integrationEntry.Operator}'.");
-      }
-
-    }
-
     #endregion Private methods
 
     #region Helpers
-
-    private ReportEntryTotals CreateReportEntryTotalsObject() {
-      switch (FinancialReportType.DataSource) {
-
-        case FinancialReportDataSource.AnaliticoCuentas:
-          return new DynamicReportEntryTotals(FinancialReportType.DataColumns);
-
-        case FinancialReportDataSource.BalanzaEnColumnasPorMoneda:
-          return new BalanzaEnColumnasPorMonedaReportEntryTotals();
-
-        case FinancialReportDataSource.BalanzaTradicional:
-          return new DynamicReportEntryTotals(FinancialReportType.DataColumns);
-
-        default:
-          throw Assertion.EnsureNoReachThisCode($"Unhandled data source {FinancialReportType.DataSource}.");
-      }
-    }
 
 
     private FixedList<FinancialReportEntryResult> CreateReportEntriesWithoutTotals(FixedList<FinancialReportItemDefinition> reportItemsDef) {
@@ -413,75 +179,6 @@ namespace Empiria.FinancialAccounting.FinancialReports {
 
       return integration.Select(x => new FinancialReportBreakdownResult(x))
                         .ToFixedList();
-    }
-
-
-
-    private FixedList<ITrialBalanceEntryDto> GetAccountBalances(FinancialConceptEntry integrationEntry) {
-      FixedList<ITrialBalanceEntryDto> balances = _balances[integrationEntry.AccountNumber];
-
-      FixedList<ITrialBalanceEntryDto> filtered;
-
-      if (integrationEntry.HasSector && integrationEntry.HasSubledgerAccount) {
-        filtered = balances.FindAll(x => x.SectorCode == integrationEntry.SectorCode &&
-                                         x.SubledgerAccountNumber == integrationEntry.SubledgerAccountNumber);
-
-      } else if (integrationEntry.HasSector && !integrationEntry.HasSubledgerAccount) {
-        filtered = balances.FindAll(x => x.SectorCode == integrationEntry.SectorCode &&
-                                         x.SubledgerAccountNumber.Length <= 1);
-
-      } else if (!integrationEntry.HasSector && integrationEntry.HasSubledgerAccount) {
-        filtered = balances.FindAll(x => x.SectorCode == "00" &&
-                                         x.SubledgerAccountNumber == integrationEntry.SubledgerAccountNumber);
-        if (filtered.Count == 0) {
-          filtered = balances.FindAll(x => x.SectorCode != "00" &&
-                                           x.SubledgerAccountNumber == integrationEntry.SubledgerAccountNumber);
-        }
-      } else {
-        filtered = balances.FindAll(x => x.SectorCode == "00" &&
-                                         x.SubledgerAccountNumber.Length <= 1);
-        if (filtered.Count == 0) {
-          filtered = balances.FindAll(x => x.SectorCode != "00" &&
-                                           x.SubledgerAccountNumber.Length <= 1);
-        }
-      }
-
-      if (FinancialReportType.DataSource == FinancialReportDataSource.AnaliticoCuentas ||
-          FinancialReportType.DataSource == FinancialReportDataSource.BalanzaTradicional) {
-
-        return ConvertToDynamicTrialBalanceEntryDto(filtered);
-
-      } else {
-
-        return filtered;
-
-      }
-    }
-
-
-    private EmpiriaHashTable<FixedList<ITrialBalanceEntryDto>> GetBalancesHashTable() {
-      var balancesProvider = new AccountBalancesProvider(_buildQuery);
-
-      return balancesProvider.GetBalancesAsHashTable();
-    }
-
-
-    private FinancialReport MapToFinancialReport<T>(FixedList<T> reportEntries) where T : FinancialReportEntry {
-      var convertedEntries = new FixedList<FinancialReportEntry>(reportEntries.Select(x => (FinancialReportEntry) x));
-
-      return new FinancialReport(_buildQuery, convertedEntries);
-    }
-
-
-    private FixedList<ITrialBalanceEntryDto> ConvertToDynamicTrialBalanceEntryDto(FixedList<ITrialBalanceEntryDto> sourceEntries) {
-      var converter = new DynamicTrialBalanceEntryConverter();
-
-      // Assertion.Require(sourceEntries.Count > 0, "There are no source entries ... ");
-
-      FixedList<DynamicTrialBalanceEntryDto> convertedEntries = converter.Convert(sourceEntries);
-
-      return convertedEntries.Select(entry => (ITrialBalanceEntryDto) entry)
-                             .ToFixedList();
     }
 
     #endregion Helpers
