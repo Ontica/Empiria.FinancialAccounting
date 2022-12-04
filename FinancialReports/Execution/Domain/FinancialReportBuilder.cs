@@ -16,58 +16,66 @@ namespace Empiria.FinancialAccounting.FinancialReports {
   /// <summary>Provides services to generate financial and regulatory reports.</summary>
   internal class FinancialReportBuilder {
 
+    private readonly FinancialReportQuery _buildQuery;
+    private readonly AccountBalancesProvider _balancesProvider;
+
     internal FinancialReportBuilder(FinancialReportQuery buildQuery) {
       Assertion.Require(buildQuery, nameof(buildQuery));
 
-      this.BuildQuery = buildQuery;
-    }
+      _buildQuery = buildQuery;
 
-
-    public FinancialReportQuery BuildQuery {
-      get;
+      _balancesProvider = new AccountBalancesProvider(_buildQuery);
     }
 
 
     internal FinancialReport Build() {
-      FinancialReportType reportType = this.BuildQuery.GetFinancialReportType();
+      FinancialReportType reportType = _buildQuery.GetFinancialReportType();
 
-      switch (reportType.DesignType) {
-        case FinancialReportDesignType.FixedCells:
-          var fixedCells = new FinancialConceptsReport(this.BuildQuery);
+      var financialConceptsReport = new FinancialConceptsReport(_buildQuery, _balancesProvider);
 
-          return fixedCells.Generate();
+      if (reportType.DesignType == FinancialReportDesignType.FixedCells ||
+          reportType.DesignType == FinancialReportDesignType.FixedRows) {
 
-        case FinancialReportDesignType.FixedRows:
-          var fixedRows = new FinancialConceptsReport(this.BuildQuery);
+        FixedList<FinancialReportEntry> entries = financialConceptsReport.Generate();
 
-          return fixedRows.Generate();
+        return MapToFinancialReport(entries);
 
-        case FinancialReportDesignType.AccountsIntegration:
-          var conceptsIntegration = new FinancialConceptsReport(this.BuildQuery);
+      } else if (reportType.DesignType == FinancialReportDesignType.AccountsIntegration) {
 
-          return conceptsIntegration.GenerateIntegration();
+        FixedList<FinancialReportEntry> entries = financialConceptsReport.GenerateIntegration();
 
-        default:
-          throw Assertion.EnsureNoReachThisCode(
-                    $"Unhandled financial report design type {reportType.DesignType}.");
+        return MapToFinancialReport(entries);
       }
+
+      throw Assertion.EnsureNoReachThisCode(
+                $"Unhandled financial report design type {reportType.DesignType}.");
     }
 
 
     internal FinancialReport GetBreakdown(string reportRowUID) {
-      FinancialReportType reportType = this.BuildQuery.GetFinancialReportType();
+      FinancialReportType reportType = _buildQuery.GetFinancialReportType();
 
-      switch (reportType.DesignType) {
-        case FinancialReportDesignType.FixedRows:
-          var fixedRows = new FinancialConceptsReport(this.BuildQuery);
+      var financialConceptsReport = new FinancialConceptsReport(_buildQuery, _balancesProvider);
 
-          return fixedRows.GenerateBreakdown(reportRowUID);
+      if (reportType.DesignType == FinancialReportDesignType.FixedRows) {
 
-        default:
-          throw Assertion.EnsureNoReachThisCode(
-                    $"Unhandled financial report design type {reportType.DesignType}.");
+        FixedList<FinancialReportEntry> entries = financialConceptsReport.GenerateBreakdown(reportRowUID);
+
+        return MapToFinancialReport(entries);
+
       }
+
+      throw Assertion.EnsureNoReachThisCode(
+                $"Unhandled financial report design type {reportType.DesignType}.");
     }
+
+
+    private FinancialReport MapToFinancialReport<T>(FixedList<T> reportEntries) where T : FinancialReportEntry {
+      var convertedEntries = new FixedList<FinancialReportEntry>(reportEntries.Select(x => (FinancialReportEntry) x));
+
+      return new FinancialReport(_buildQuery, convertedEntries);
+    }
+
 
   } // class FinancialReportBuilder
 
