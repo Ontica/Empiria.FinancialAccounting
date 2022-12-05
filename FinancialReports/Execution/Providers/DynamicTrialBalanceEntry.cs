@@ -1,10 +1,10 @@
 ﻿/* Empiria Financial *****************************************************************************************
 *                                                                                                            *
-*  Module   : Financial Reports                          Component : Domain Layer                            *
-*  Assembly : FinancialAccounting.FinancialReports.dll   Pattern   : Service provider                        *
-*  Type     : DynamicReportEntryTotals                   License   : Please read LICENSE.txt file            *
+*  Module   : Financial Reports                          Component : Providers                               *
+*  Assembly : FinancialAccounting.FinancialReports.dll   Pattern   : Information holder                      *
+*  Type     : DynamicTrialBalanceEntry                   License   : Please read LICENSE.txt file            *
 *                                                                                                            *
-*  Summary  : Generates a dynamic fields report entry to be used as a FinancialReportEntry.                  *
+*  Summary  : Holds information of a trial balance entry with their totals stored in dynamic fields.         *
 *                                                                                                            *
 ************************* Copyright(c) La Vía Óntica SC, Ontica LLC and contributors. All rights reserved. **/
 using System;
@@ -12,17 +12,18 @@ using System;
 using Empiria.FinancialAccounting.BalanceEngine;
 using Empiria.FinancialAccounting.BalanceEngine.Adapters;
 
-namespace Empiria.FinancialAccounting.FinancialReports {
+namespace Empiria.FinancialAccounting.FinancialReports.Providers {
 
-  public class DynamicTrialBalanceEntryDto : DynamicFields, ITrialBalanceEntryDto {
+  /// <summary>Holds information of a trial balance entry with their totals stored in dynamic fields.</summary>
+  public class DynamicTrialBalanceEntry : DynamicFields, ITrialBalanceEntryDto {
 
-    public DynamicTrialBalanceEntryDto(ITrialBalanceEntryDto entry) {
+    public DynamicTrialBalanceEntry(ITrialBalanceEntryDto entry) {
       Assertion.Require(entry, nameof(entry));
 
-      this.ItemType = entry.ItemType;
-      this.AccountNumber = entry.AccountNumber;
-      this.SectorCode = entry.SectorCode;
-      this.SubledgerAccountNumber = entry.SubledgerAccountNumber;
+      ItemType = entry.ItemType;
+      AccountNumber = entry.AccountNumber;
+      SectorCode = entry.SectorCode;
+      SubledgerAccountNumber = entry.SubledgerAccountNumber;
     }
 
     public TrialBalanceItemType ItemType {
@@ -50,6 +51,6 @@ namespace Empiria.FinancialAccounting.FinancialReports {
     } = DebtorCreditorType.Deudora;
 
 
-  }  // class DynamicTrialBalanceEntryDto
+  }  // class DynamicTrialBalanceEntry
 
-} // namespace Empiria.FinancialAccounting.BalanceEngine.Adapters
+} // namespace Empiria.FinancialAccounting.FinancialReports.Providers

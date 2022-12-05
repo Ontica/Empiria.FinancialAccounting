@@ -1,6 +1,6 @@
 ﻿/* Empiria Financial *****************************************************************************************
 *                                                                                                            *
-*  Module   : Financial Reports                          Component : Domain Layer                            *
+*  Module   : Financial Reports                          Component : Providers                               *
 *  Assembly : FinancialAccounting.FinancialReports.dll   Pattern   : Service provider                        *
 *  Type     : AccountBalancesProvider                    License   : Please read LICENSE.txt file            *
 *                                                                                                            *
@@ -17,9 +17,10 @@ using Empiria.FinancialAccounting.BalanceEngine.Adapters;
 using Empiria.FinancialAccounting.BalanceEngine.UseCases;
 
 using Empiria.FinancialAccounting.FinancialConcepts;
+
 using Empiria.FinancialAccounting.FinancialReports.Adapters;
 
-namespace Empiria.FinancialAccounting.FinancialReports {
+namespace Empiria.FinancialAccounting.FinancialReports.Providers {
 
   /// <summary>Provides accounts balances for their use in financial reports.</summary>
   internal class AccountBalancesProvider {
@@ -84,7 +85,7 @@ namespace Empiria.FinancialAccounting.FinancialReports {
     private FixedList<ITrialBalanceEntryDto> ConvertToDynamicTrialBalanceEntryDto(FixedList<ITrialBalanceEntryDto> sourceEntries) {
       var converter = new DynamicTrialBalanceEntryConverter();
 
-      FixedList<DynamicTrialBalanceEntryDto> convertedEntries = converter.Convert(sourceEntries);
+      FixedList<DynamicTrialBalanceEntry> convertedEntries = converter.Convert(sourceEntries);
 
       return convertedEntries.Select(entry => (ITrialBalanceEntryDto) entry)
                              .ToFixedList();
@@ -206,4 +207,5 @@ namespace Empiria.FinancialAccounting.FinancialReports {
 
   } // class AccountBalancesProvider
 
-} // namespace Empiria.FinancialAccounting.FinancialReports
+} // namespace Empiria.FinancialAccounting.FinancialReports.Providers
+

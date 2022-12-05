@@ -1,6 +1,6 @@
 ﻿/* Empiria Financial *****************************************************************************************
 *                                                                                                            *
-*  Module   : Financial Reports                          Component : Domain Layer                            *
+*  Module   : Financial Reports                          Component : Providers                               *
 *  Assembly : FinancialAccounting.FinancialReports.dll   Pattern   : Service provider                        *
 *  Type     : ExternalValuesProvider                     License   : Please read LICENSE.txt file            *
 *                                                                                                            *
@@ -14,7 +14,7 @@ using Empiria.Collections;
 
 using Empiria.FinancialAccounting.ExternalData;
 
-namespace Empiria.FinancialAccounting.FinancialReports {
+namespace Empiria.FinancialAccounting.FinancialReports.Providers {
 
   internal class ExternalValuesProvider {
 
@@ -41,6 +41,7 @@ namespace Empiria.FinancialAccounting.FinancialReports {
           return true;
         }
       }
+
       return false;
     }
 
@@ -53,20 +54,9 @@ namespace Empiria.FinancialAccounting.FinancialReports {
           values.Add(dataset[externalVariableCode]);
         }
       }
+
       return values.ToFixedList();
     }
-
-    // var variable = ExternalVariable.TryParseWithCode(integrationEntry.ExternalVariableCode);
-
-    //ExternalValue value = ExternalValue.Empty;
-
-    //if (variable != null) {
-    //  value = variable.GetValue(_buildQuery.ToDate);
-    //}
-
-    //var totals = CreateReportEntryTotalsObject();
-
-    //return totals.Sum(value, integrationEntry.DataColumn);
 
   }  // class ExternalValuesProvider
 

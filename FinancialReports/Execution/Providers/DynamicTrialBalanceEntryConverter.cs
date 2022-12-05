@@ -1,10 +1,10 @@
 ﻿/* Empiria Financial *****************************************************************************************
 *                                                                                                            *
-*  Module   : Financial Reports                          Component : Domain Layer                            *
+*  Module   : Financial Reports                          Component : Providers                               *
 *  Assembly : FinancialAccounting.FinancialReports.dll   Pattern   : Service provider                        *
 *  Type     : DynamicTrialBalanceEntryConverter          License   : Please read LICENSE.txt file            *
 *                                                                                                            *
-*  Summary  : Provides services to convert trial balance entries to their dynamical representation.          *
+*  Summary  : Converts trial balance entries to DynamicTrialBalanceEntry objects with dynamic fields.        *
 *                                                                                                            *
 ************************* Copyright(c) La Vía Óntica SC, Ontica LLC and contributors. All rights reserved. **/
 using System;
@@ -12,22 +12,21 @@ using System.Collections.Generic;
 
 using Empiria.FinancialAccounting.BalanceEngine.Adapters;
 
-namespace Empiria.FinancialAccounting.FinancialReports {
+namespace Empiria.FinancialAccounting.FinancialReports.Providers {
 
-  /// <summary>Provides services to convert trial balance entries to their dynamical representation.</summary>
+  /// <summary>Converts trial balance entries to DynamicTrialBalanceEntry objects with dynamic fields.</summary>
   internal class DynamicTrialBalanceEntryConverter {
-
 
     internal DynamicTrialBalanceEntryConverter() {
       // ToDo: Use convertion rules for dynamic fields names
     }
 
 
-    internal FixedList<DynamicTrialBalanceEntryDto> Convert(FixedList<ITrialBalanceEntryDto> sourceEntries) {
-      var convertedEntries = new List<DynamicTrialBalanceEntryDto>(sourceEntries.Count);
+    internal FixedList<DynamicTrialBalanceEntry> Convert(FixedList<ITrialBalanceEntryDto> sourceEntries) {
+      var convertedEntries = new List<DynamicTrialBalanceEntry>(sourceEntries.Count);
 
       foreach (var entry in sourceEntries) {
-        DynamicTrialBalanceEntryDto converted = Convert(entry);
+        DynamicTrialBalanceEntry converted = Convert(entry);
 
         convertedEntries.Add(converted);
       }
@@ -37,7 +36,7 @@ namespace Empiria.FinancialAccounting.FinancialReports {
 
     #region Helpers
 
-    private DynamicTrialBalanceEntryDto Convert(ITrialBalanceEntryDto sourceEntry) {
+    private DynamicTrialBalanceEntry Convert(ITrialBalanceEntryDto sourceEntry) {
       if (sourceEntry is AnaliticoDeCuentasEntryDto analiticoDeCuentasEntryDto) {
         return Convert(analiticoDeCuentasEntryDto);
       }
@@ -55,8 +54,8 @@ namespace Empiria.FinancialAccounting.FinancialReports {
     }
 
 
-    private DynamicTrialBalanceEntryDto Convert(AnaliticoDeCuentasEntryDto sourceEntry) {
-      var converted = new DynamicTrialBalanceEntryDto(sourceEntry);
+    private DynamicTrialBalanceEntry Convert(AnaliticoDeCuentasEntryDto sourceEntry) {
+      var converted = new DynamicTrialBalanceEntry(sourceEntry);
 
       converted.DebtorCreditor = sourceEntry.DebtorCreditor;
 
@@ -67,8 +66,8 @@ namespace Empiria.FinancialAccounting.FinancialReports {
     }
 
 
-    private DynamicTrialBalanceEntryDto Convert(BalanzaColumnasMonedaEntryDto sourceEntry) {
-      var converted = new DynamicTrialBalanceEntryDto(sourceEntry);
+    private DynamicTrialBalanceEntry Convert(BalanzaColumnasMonedaEntryDto sourceEntry) {
+      var converted = new DynamicTrialBalanceEntry(sourceEntry);
 
       converted.DebtorCreditor = sourceEntry.DebtorCreditor;
 
@@ -86,8 +85,8 @@ namespace Empiria.FinancialAccounting.FinancialReports {
     }
 
 
-    private DynamicTrialBalanceEntryDto Convert(BalanzaTradicionalEntryDto sourceEntry) {
-      var converted = new DynamicTrialBalanceEntryDto(sourceEntry);
+    private DynamicTrialBalanceEntry Convert(BalanzaTradicionalEntryDto sourceEntry) {
+      var converted = new DynamicTrialBalanceEntry(sourceEntry);
 
       converted.DebtorCreditor = sourceEntry.DebtorCreditor == DebtorCreditorType.Deudora.ToString() ?
                                               DebtorCreditorType.Deudora : DebtorCreditorType.Acreedora;
@@ -101,4 +100,4 @@ namespace Empiria.FinancialAccounting.FinancialReports {
 
   }  // class DynamicTrialBalanceEntryConverter
 
-}  // namespace Empiria.FinancialAccounting.FinancialReports
+}  // namespace Empiria.FinancialAccounting.FinancialReports.Providers
