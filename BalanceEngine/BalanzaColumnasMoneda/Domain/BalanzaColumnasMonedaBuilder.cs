@@ -30,7 +30,7 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
     internal FixedList<BalanzaColumnasMonedaEntry> Build() {
 
       FixedList<TrialBalanceEntry> baseAccountEntries = BalancesDataService.GetTrialBalanceEntries(Query);
-      
+
       return Build(baseAccountEntries);
     }
 

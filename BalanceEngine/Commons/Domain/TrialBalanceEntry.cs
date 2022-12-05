@@ -288,20 +288,21 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
       trialBalanceByCurrencyEntry.Account = this.Account;
       trialBalanceByCurrencyEntry.Sector = this.Sector;
 
-      if (Currency.Equals(Currency.MXN)) {
+      if (this.Currency.Equals(Currency.MXN)) {
         trialBalanceByCurrencyEntry.DomesticBalance = this.CurrentBalance;
-      }
-      if (Currency.Equals(Currency.USD)) {
+
+      } else if (this.Currency.Equals(Currency.USD)) {
         trialBalanceByCurrencyEntry.DollarBalance = this.CurrentBalance;
-      }
-      if (Currency.Equals(Currency.YEN)) {
+
+      } else if (this.Currency.Equals(Currency.YEN)) {
         trialBalanceByCurrencyEntry.YenBalance = this.CurrentBalance;
-      }
-      if (Currency.Equals(Currency.EUR)) {
+
+      } else if (this.Currency.Equals(Currency.EUR)) {
         trialBalanceByCurrencyEntry.EuroBalance = this.CurrentBalance;
-      }
-      if (Currency.Equals(Currency.UDI)) {
+
+      } else if (this.Currency.Equals(Currency.UDI)) {
         trialBalanceByCurrencyEntry.UdisBalance = this.CurrentBalance;
+
       }
 
       return trialBalanceByCurrencyEntry;
