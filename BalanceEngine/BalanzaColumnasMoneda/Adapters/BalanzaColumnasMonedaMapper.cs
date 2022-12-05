@@ -58,6 +58,7 @@ namespace Empiria.FinancialAccounting.BalanceEngine.Adapters {
       dto.CurrencyName = entry.Currency.Name;
       dto.StandardAccountId = entry.Account.Id;
       dto.AccountNumber = entry.Account.Number;
+      dto.DebtorCreditor = entry.Account.DebtorCreditor;
       dto.AccountNumberForBalances = entry.Account.Number;
       dto.AccountName = entry.Account.Name;
       dto.SectorCode = entry.Sector.Code;

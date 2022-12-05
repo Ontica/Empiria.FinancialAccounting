@@ -58,11 +58,14 @@ namespace Empiria.FinancialAccounting.BalanceEngine.Adapters {
       get; internal set;
     }
 
+    public DebtorCreditorType DebtorCreditor {
+      get; internal set;
+    } = DebtorCreditorType.Deudora;
+
 
     public string AccountNumberForBalances {
       get; internal set;
     }
-
 
     public string AccountName {
       get; internal set;
@@ -77,8 +80,7 @@ namespace Empiria.FinancialAccounting.BalanceEngine.Adapters {
     }
 
     public decimal DollarBalance {
-      get;
-      internal set;
+      get; internal set;
     }
 
     public decimal YenBalance {
@@ -92,6 +94,7 @@ namespace Empiria.FinancialAccounting.BalanceEngine.Adapters {
     public decimal UdisBalance {
       get; internal set;
     }
+
 
     public string GroupName {
       get; internal set;
