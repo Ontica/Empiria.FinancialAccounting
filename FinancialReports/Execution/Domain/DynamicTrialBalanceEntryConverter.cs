@@ -27,7 +27,7 @@ namespace Empiria.FinancialAccounting.FinancialReports {
       var convertedEntries = new List<DynamicTrialBalanceEntryDto>(sourceEntries.Count);
 
       foreach (var entry in sourceEntries) {
-        DynamicTrialBalanceEntryDto converted = this.Convert(entry);
+        DynamicTrialBalanceEntryDto converted = Convert(entry);
 
         convertedEntries.Add(converted);
       }
@@ -39,15 +39,15 @@ namespace Empiria.FinancialAccounting.FinancialReports {
 
     private DynamicTrialBalanceEntryDto Convert(ITrialBalanceEntryDto sourceEntry) {
       if (sourceEntry is AnaliticoDeCuentasEntryDto analiticoDeCuentasEntryDto) {
-        return this.Convert(analiticoDeCuentasEntryDto);
+        return Convert(analiticoDeCuentasEntryDto);
       }
 
       if (sourceEntry is BalanzaColumnasMonedaEntryDto balanzaColumnasMonedaEntryDto) {
-        return this.Convert(balanzaColumnasMonedaEntryDto);
+        return Convert(balanzaColumnasMonedaEntryDto);
       }
 
       if (sourceEntry is BalanzaTradicionalEntryDto balanzaTradicionalEntryDto) {
-        return this.Convert(balanzaTradicionalEntryDto);
+        return Convert(balanzaTradicionalEntryDto);
       }
 
       throw Assertion.EnsureNoReachThisCode(
