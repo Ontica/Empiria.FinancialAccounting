@@ -1,10 +1,10 @@
 ﻿/* Empiria Financial *****************************************************************************************
 *                                                                                                            *
 *  Module   : Financial Reports                          Component : Domain Layer                            *
-*  Assembly : FinancialAccounting.FinancialReports.dll   Pattern   : Service provider                        *
-*  Type     : DynamicReportEntryTotals                   License   : Please read LICENSE.txt file            *
+*  Assembly : FinancialAccounting.FinancialReports.dll   Pattern   : Value type                              *
+*  Type     : FinancialConceptValues                     License   : Please read LICENSE.txt file            *
 *                                                                                                            *
-*  Summary  : Generates a dynamic fields report entry to be used as a FinancialReportEntry.                  *
+*  Summary  : Default value type that holds and performs operations over financial concepts fields.          *
 *                                                                                                            *
 ************************* Copyright(c) La Vía Óntica SC, Ontica LLC and contributors. All rights reserved. **/
 using System;
@@ -14,26 +14,28 @@ using Empiria.FinancialAccounting.ExternalData;
 
 using Empiria.FinancialAccounting.BalanceEngine.Adapters;
 
+using Empiria.FinancialAccounting.FinancialReports.Providers;
+
 namespace Empiria.FinancialAccounting.FinancialReports {
 
   delegate decimal DecimalFunction(decimal value);
 
-  /// <summary>Generates a dynamic fields report entry to be used as a FinancialReportEntry.</summary>
-  internal class DynamicReportEntryTotals : ReportEntryTotals {
+  /// <summary>Default value type that holds and performs operations over financial concepts fields.</summary>
+  internal class FinancialConceptValues : IFinancialConceptValues {
 
-    private DynamicReportEntryTotals() {
+    private FinancialConceptValues() {
       // no-op
     }
 
 
-    internal DynamicReportEntryTotals(FixedList<DataTableColumn> columns) {
+    internal FinancialConceptValues(FixedList<DataTableColumn> columns) {
       foreach (var column in columns.FindAll(x => x.Type == "decimal")) {
         DynamicFields.SetTotalField(column.Field, 0m);
       }
     }
 
 
-    public DynamicReportEntryTotals(IEnumerable<string> fieldNames) {
+    public FinancialConceptValues(IEnumerable<string> fieldNames) {
       foreach (var fieldName in fieldNames) {
         DynamicFields.SetTotalField(fieldName, 0m);
       }
@@ -45,14 +47,14 @@ namespace Empiria.FinancialAccounting.FinancialReports {
     } = new DynamicFields();
 
 
-    public override ReportEntryTotals AbsoluteValue() {
+    public IFinancialConceptValues AbsoluteValue() {
       DecimalFunction absoluteValue = (x) => Math.Abs(x);
 
       return ApplyForEach(absoluteValue);
     }
 
 
-    public override void CopyTotalsTo(FinancialReportEntry copyTo) {
+    public void CopyTotalsTo(FinancialReportEntry copyTo) {
       foreach (var fieldName in DynamicFields.GetDynamicMemberNames()) {
         decimal value = DynamicFields.GetTotalField(fieldName);
 
@@ -61,17 +63,17 @@ namespace Empiria.FinancialAccounting.FinancialReports {
     }
 
 
-    public override ReportEntryTotals Round() {
+    public IFinancialConceptValues Round() {
       DecimalFunction round = (x) => Math.Round(x, 0);
 
       return ApplyForEach(round);
     }
 
 
-    public override ReportEntryTotals Substract(ReportEntryTotals total, string dataColumn) {
-      var casted = (DynamicReportEntryTotals) total;
+    public IFinancialConceptValues Substract(IFinancialConceptValues total, string dataColumn) {
+      var casted = (FinancialConceptValues) total;
 
-      var substracted = new DynamicReportEntryTotals();
+      var substracted = new FinancialConceptValues();
 
       foreach (var fieldName in DynamicFields.GetDynamicMemberNames()) {
         decimal newValue = DynamicFields.GetTotalField(fieldName) -
@@ -84,10 +86,10 @@ namespace Empiria.FinancialAccounting.FinancialReports {
     }
 
 
-    public override ReportEntryTotals Substract(ITrialBalanceEntryDto balance, string dataColumn) {
-      var casted = (DynamicTrialBalanceEntryDto) balance;
+    public IFinancialConceptValues Substract(ITrialBalanceEntryDto balance, string dataColumn) {
+      var casted = (DynamicTrialBalanceEntry) balance;
 
-      var substracted = new DynamicReportEntryTotals();
+      var substracted = new FinancialConceptValues();
 
       foreach (var fieldName in DynamicFields.GetDynamicMemberNames()) {
         decimal newValue = DynamicFields.GetTotalField(fieldName) -
@@ -100,10 +102,10 @@ namespace Empiria.FinancialAccounting.FinancialReports {
     }
 
 
-    public override ReportEntryTotals Sum(ReportEntryTotals total, string dataColumn) {
-      var casted = (DynamicReportEntryTotals) total;
+    public IFinancialConceptValues Sum(IFinancialConceptValues total, string dataColumn) {
+      var casted = (FinancialConceptValues) total;
 
-      var sum = new DynamicReportEntryTotals();
+      var sum = new FinancialConceptValues();
 
       foreach (var fieldName in DynamicFields.GetDynamicMemberNames()) {
         decimal newValue = DynamicFields.GetTotalField(fieldName) +
@@ -116,10 +118,10 @@ namespace Empiria.FinancialAccounting.FinancialReports {
     }
 
 
-    public override ReportEntryTotals Sum(ITrialBalanceEntryDto balance, string dataColumn) {
-      var casted = (DynamicTrialBalanceEntryDto) balance;
+    public IFinancialConceptValues Sum(ITrialBalanceEntryDto balance, string dataColumn) {
+      var casted = (DynamicTrialBalanceEntry) balance;
 
-      var sum = new DynamicReportEntryTotals();
+      var sum = new FinancialConceptValues();
 
       foreach (var fieldName in DynamicFields.GetDynamicMemberNames()) {
         decimal newValue = DynamicFields.GetTotalField(fieldName) +
@@ -131,8 +133,9 @@ namespace Empiria.FinancialAccounting.FinancialReports {
       return ApplyRuleIfNeeded(sum, dataColumn);
     }
 
-    public override ReportEntryTotals Sum(ExternalValue value, string dataColumn) {
-      var sum = new DynamicReportEntryTotals();
+
+    public IFinancialConceptValues Sum(ExternalValue value, string dataColumn) {
+      var sum = new FinancialConceptValues();
 
       foreach (var fieldName in DynamicFields.GetDynamicMemberNames()) {
         decimal newValue = DynamicFields.GetTotalField(fieldName) +
@@ -145,8 +148,8 @@ namespace Empiria.FinancialAccounting.FinancialReports {
     }
 
 
-    public override ReportEntryTotals SumDebitsOrSubstractCredits(ITrialBalanceEntryDto balance, string dataColumn) {
-      var analiticoBalance = (DynamicTrialBalanceEntryDto) balance;
+    public IFinancialConceptValues SumDebitsOrSubstractCredits(ITrialBalanceEntryDto balance, string dataColumn) {
+      var analiticoBalance = (DynamicTrialBalanceEntry) balance;
 
       if (analiticoBalance.DebtorCreditor == DebtorCreditorType.Deudora) {
         return Sum(balance, dataColumn);
@@ -156,8 +159,10 @@ namespace Empiria.FinancialAccounting.FinancialReports {
     }
 
 
-    private ReportEntryTotals ApplyForEach(DecimalFunction function) {
-      var temp = new DynamicReportEntryTotals();
+    #region Helpers
+
+    private IFinancialConceptValues ApplyForEach(DecimalFunction function) {
+      var temp = new FinancialConceptValues();
 
       foreach (var fieldName in DynamicFields.GetDynamicMemberNames()) {
         decimal value = DynamicFields.GetTotalField(fieldName);
@@ -169,7 +174,7 @@ namespace Empiria.FinancialAccounting.FinancialReports {
     }
 
 
-    private ReportEntryTotals ApplyRuleIfNeeded(DynamicReportEntryTotals entry, string dataColumn) {
+    private IFinancialConceptValues ApplyRuleIfNeeded(FinancialConceptValues entry, string dataColumn) {
       if (dataColumn.Length == 0 || dataColumn.ToLower() == "default") {
         return entry;
       }
@@ -178,7 +183,8 @@ namespace Empiria.FinancialAccounting.FinancialReports {
     }
 
 
-    private ReportEntryTotals ConsolidateTotalsInto(DynamicReportEntryTotals entry, string consolidatedFieldName) {
+    private IFinancialConceptValues ConsolidateTotalsInto(FinancialConceptValues entry, string consolidatedFieldName) {
+
       Assertion.Require(consolidatedFieldName, nameof(consolidatedFieldName));
 
       decimal consolidatedTotal = 0;
@@ -187,13 +193,15 @@ namespace Empiria.FinancialAccounting.FinancialReports {
         consolidatedTotal += entry.DynamicFields.GetTotalField(fieldName);
       }
 
-      var consolidated = new DynamicReportEntryTotals();
+      var consolidated = new FinancialConceptValues();
 
       consolidated.DynamicFields.SetTotalField(consolidatedFieldName, consolidatedTotal);
 
       return consolidated;
     }
 
-  }  // class DynamicReportEntryTotals
+    #endregion Helpers
+
+  }  // class FinancialConceptsValues
 
 }  // namespace Empiria.FinancialAccounting.FinancialReports

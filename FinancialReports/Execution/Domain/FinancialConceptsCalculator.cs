@@ -14,6 +14,8 @@ using Empiria.FinancialAccounting.BalanceEngine.Adapters;
 using Empiria.FinancialAccounting.ExternalData;
 using Empiria.FinancialAccounting.FinancialConcepts;
 
+using Empiria.FinancialAccounting.FinancialReports.Providers;
+
 namespace Empiria.FinancialAccounting.FinancialReports {
 
   /// <summary>Calculates financial concepts values.</summary>
@@ -41,13 +43,13 @@ namespace Empiria.FinancialAccounting.FinancialReports {
 
     #region Public methods
 
-    public ReportEntryTotals CalculateBreakdownTotalEntry(FixedList<FinancialReportBreakdownResult> breakdown) {
+    public IFinancialConceptValues CalculateBreakdownTotalEntry(FixedList<FinancialReportBreakdownResult> breakdown) {
 
-      ReportEntryTotals granTotal = CreateReportEntryTotalsObject();
+      IFinancialConceptValues granTotal = CreateFinancialConceptValuesObject();
 
       foreach (var breakdownItem in breakdown) {
 
-        ReportEntryTotals breakdownTotals = CalculateBreakdownEntry(breakdownItem.IntegrationEntry);
+        IFinancialConceptValues breakdownTotals = CalculateBreakdownEntry(breakdownItem.IntegrationEntry);
 
         if (_roundDecimals) {
           breakdownTotals = breakdownTotals.Round();
@@ -78,11 +80,11 @@ namespace Empiria.FinancialAccounting.FinancialReports {
     }
 
 
-    public ReportEntryTotals CalculateFinancialConcept(FinancialConcept financialConcept) {
+    public IFinancialConceptValues CalculateFinancialConcept(FinancialConcept financialConcept) {
       Assertion.Require(!financialConcept.IsEmptyInstance,
                         "Cannot process the empty FinancialConcept instance.");
 
-      ReportEntryTotals totals = CreateReportEntryTotalsObject();
+      IFinancialConceptValues totals = CreateFinancialConceptValuesObject();
 
       foreach (var integrationItem in financialConcept.Integration) {
 
@@ -111,8 +113,8 @@ namespace Empiria.FinancialAccounting.FinancialReports {
 
     #region Private calculation methods
 
-    private ReportEntryTotals AccumulateAccountTotals(FinancialConceptEntry integrationEntry,
-                                                      ReportEntryTotals totals) {
+    private IFinancialConceptValues AccumulateAccountTotals(FinancialConceptEntry integrationEntry,
+                                                            IFinancialConceptValues totals) {
 
       Assertion.Require(integrationEntry.Type == FinancialConceptEntryType.Account,
                         "Invalid integrationEntry.Type");
@@ -142,8 +144,8 @@ namespace Empiria.FinancialAccounting.FinancialReports {
     }
 
 
-    private ReportEntryTotals AccumulateExternalVariableTotals(FinancialConceptEntry integrationEntry,
-                                                               ReportEntryTotals totals) {
+    private IFinancialConceptValues AccumulateExternalVariableTotals(FinancialConceptEntry integrationEntry,
+                                                                     IFinancialConceptValues totals) {
 
       Assertion.Require(integrationEntry.Type == FinancialConceptEntryType.ExternalVariable,
                        "Invalid integrationEntry.Type");
@@ -173,8 +175,8 @@ namespace Empiria.FinancialAccounting.FinancialReports {
     }
 
 
-    private ReportEntryTotals AccumulateFinancialConceptTotals(FinancialConceptEntry integrationEntry,
-                                                               ReportEntryTotals totals) {
+    private IFinancialConceptValues AccumulateFinancialConceptTotals(FinancialConceptEntry integrationEntry,
+                                                                     IFinancialConceptValues totals) {
 
       Assertion.Require(integrationEntry.Type == FinancialConceptEntryType.FinancialConceptReference,
                       "Invalid integrationEntry.Type");
@@ -205,14 +207,14 @@ namespace Empiria.FinancialAccounting.FinancialReports {
     }
 
 
-    private ReportEntryTotals CalculateAccount(FinancialConceptEntry integrationEntry) {
+    private IFinancialConceptValues CalculateAccount(FinancialConceptEntry integrationEntry) {
       if (!_balancesProvider.ContainsAccount(integrationEntry.AccountNumber)) {
-        return CreateReportEntryTotalsObject();
+        return CreateFinancialConceptValuesObject();
       }
 
       FixedList<ITrialBalanceEntryDto> accountBalances = _balancesProvider.GetAccountBalances(integrationEntry);
 
-      var totals = CreateReportEntryTotalsObject();
+      var totals = CreateFinancialConceptValuesObject();
 
       foreach (var balance in accountBalances) {
 
@@ -235,7 +237,7 @@ namespace Empiria.FinancialAccounting.FinancialReports {
     }
 
 
-    private ReportEntryTotals CalculateBreakdownEntry(FinancialConceptEntry integrationEntry) {
+    private IFinancialConceptValues CalculateBreakdownEntry(FinancialConceptEntry integrationEntry) {
 
       switch (integrationEntry.Type) {
 
@@ -254,14 +256,15 @@ namespace Empiria.FinancialAccounting.FinancialReports {
     }
 
 
-    private ReportEntryTotals CalculateExternalVariable(FinancialConceptEntry integrationEntry) {
+    private IFinancialConceptValues CalculateExternalVariable(FinancialConceptEntry integrationEntry) {
+
       if (!_externalValuesProvider.ContainsVariable(integrationEntry.ExternalVariableCode)) {
-        return CreateReportEntryTotalsObject();
+        return CreateFinancialConceptValuesObject();
       }
 
       FixedList<ExternalValue> externalValues = _externalValuesProvider.GetValues(integrationEntry.ExternalVariableCode);
 
-      ReportEntryTotals totals = CreateReportEntryTotalsObject();
+      IFinancialConceptValues totals = CreateFinancialConceptValuesObject();
 
       foreach (var value in externalValues) {
         totals = totals.Sum(value, integrationEntry.DataColumn);
@@ -275,8 +278,8 @@ namespace Empiria.FinancialAccounting.FinancialReports {
 
     #region Helpers
 
-    private ReportEntryTotals CreateReportEntryTotalsObject() {
-      return new DynamicReportEntryTotals(_dataColumns);
+    private IFinancialConceptValues CreateFinancialConceptValuesObject() {
+      return new FinancialConceptValues(_dataColumns);
     }
 
     #endregion Helpers

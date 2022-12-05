@@ -11,8 +11,10 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 
-using Empiria.FinancialAccounting.FinancialReports.Adapters;
 using Empiria.FinancialAccounting.FinancialConcepts;
+
+using Empiria.FinancialAccounting.FinancialReports.Adapters;
+using Empiria.FinancialAccounting.FinancialReports.Providers;
 
 namespace Empiria.FinancialAccounting.FinancialReports {
 
@@ -61,7 +63,7 @@ namespace Empiria.FinancialAccounting.FinancialReports {
 
       FixedList<FinancialReportBreakdownResult> breakdownEntries = CreateBreakdownEntriesWithoutTotals(reportItemTotals);
 
-      ReportEntryTotals breakdownTotal = _conceptsCalculator.CalculateBreakdownTotalEntry(breakdownEntries);
+      IFinancialConceptValues breakdownTotal = _conceptsCalculator.CalculateBreakdownTotalEntry(breakdownEntries);
 
       breakdownTotal.CopyTotalsTo(reportItemTotals);
 
@@ -90,7 +92,7 @@ namespace Empiria.FinancialAccounting.FinancialReports {
 
         breakdownEntries = breakdownEntries.FindAll(x => x.IntegrationEntry.Type == FinancialConceptEntryType.Account);
 
-        ReportEntryTotals breakdownTotal = _conceptsCalculator.CalculateBreakdownTotalEntry(breakdownEntries);
+        IFinancialConceptValues breakdownTotal = _conceptsCalculator.CalculateBreakdownTotalEntry(breakdownEntries);
 
         reportEntries.AddRange(breakdownEntries);
 
@@ -141,7 +143,7 @@ namespace Empiria.FinancialAccounting.FinancialReports {
           continue;
         }
 
-        ReportEntryTotals totals = _conceptsCalculator.CalculateFinancialConcept(reportEntry.FinancialConcept);
+        IFinancialConceptValues totals = _conceptsCalculator.CalculateFinancialConcept(reportEntry.FinancialConcept);
 
         if (_financialReportType.RoundDecimals) {
           totals = totals.Round();
