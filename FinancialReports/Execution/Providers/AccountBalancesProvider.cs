@@ -28,6 +28,8 @@ namespace Empiria.FinancialAccounting.FinancialReports.Providers {
     private readonly FinancialReportQuery _buildQuery;
     private readonly FinancialReportType _financialReportType;
 
+    private readonly ExchangeRatesProvider _exchangeRatesProvider;
+
     private readonly EmpiriaHashTable<FixedList<ITrialBalanceEntryDto>> _balances;
 
     #region Constructors and parsers
@@ -38,6 +40,7 @@ namespace Empiria.FinancialAccounting.FinancialReports.Providers {
       _buildQuery = buildQuery;
       _financialReportType = _buildQuery.GetFinancialReportType();
       _balances = GetBalancesAsHashTable();
+      _exchangeRatesProvider = new ExchangeRatesProvider(buildQuery.ToDate);
     }
 
     #endregion Constructors and parsers
@@ -83,7 +86,7 @@ namespace Empiria.FinancialAccounting.FinancialReports.Providers {
 
 
     private FixedList<ITrialBalanceEntryDto> ConvertToDynamicTrialBalanceEntryDto(FixedList<ITrialBalanceEntryDto> sourceEntries) {
-      var converter = new DynamicTrialBalanceEntryConverter();
+      var converter = new DynamicTrialBalanceEntryConverter(_exchangeRatesProvider);
 
       FixedList<DynamicTrialBalanceEntry> convertedEntries = converter.Convert(sourceEntries);
 

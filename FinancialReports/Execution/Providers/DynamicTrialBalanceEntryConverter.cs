@@ -17,10 +17,11 @@ namespace Empiria.FinancialAccounting.FinancialReports.Providers {
   /// <summary>Converts trial balance entries to DynamicTrialBalanceEntry objects with dynamic fields.</summary>
   internal class DynamicTrialBalanceEntryConverter {
 
-    internal DynamicTrialBalanceEntryConverter() {
-      // ToDo: Use convertion rules for dynamic fields names
-    }
+    private readonly ExchangeRatesProvider _exchangeRatesProvider;
 
+    internal DynamicTrialBalanceEntryConverter(ExchangeRatesProvider exchangeRatesProvider) {
+      _exchangeRatesProvider = exchangeRatesProvider;
+    }
 
     internal FixedList<DynamicTrialBalanceEntry> Convert(FixedList<ITrialBalanceEntryDto> sourceEntries) {
       var convertedEntries = new List<DynamicTrialBalanceEntry>(sourceEntries.Count);
@@ -59,7 +60,7 @@ namespace Empiria.FinancialAccounting.FinancialReports.Providers {
 
       converted.DebtorCreditor = sourceEntry.DebtorCreditor;
 
-      converted.SetTotalField("monedaNacional", sourceEntry.DomesticBalance);
+      converted.SetTotalField("monedaNacional",   sourceEntry.DomesticBalance);
       converted.SetTotalField("monedaExtranjera", sourceEntry.ForeignBalance);
 
       return converted;
@@ -71,15 +72,17 @@ namespace Empiria.FinancialAccounting.FinancialReports.Providers {
 
       converted.DebtorCreditor = sourceEntry.DebtorCreditor;
 
-      converted.SetTotalField("pesosTotal", sourceEntry.DomesticBalance);
+      converted.SetTotalField("pesosTotal",   sourceEntry.DomesticBalance);
+      converted.SetTotalField("dollarTotal",  sourceEntry.DollarBalance);
+      converted.SetTotalField("yenTotal",     sourceEntry.YenBalance);
+      converted.SetTotalField("euroTotal",    sourceEntry.EuroBalance);
+      converted.SetTotalField("udisTotal",    sourceEntry.UdisBalance);
 
-      converted.SetTotalField("dollarTotal", sourceEntry.DollarBalance);
+      converted.SetTotalField("yenUSDTotal",
+                              _exchangeRatesProvider.Convert_YEN_To_USD(sourceEntry.YenBalance, 2));
 
-      converted.SetTotalField("yenTotal", sourceEntry.YenBalance);
-
-      converted.SetTotalField("euroTotal", sourceEntry.EuroBalance);
-
-      converted.SetTotalField("udisTotal", sourceEntry.UdisBalance);
+      converted.SetTotalField("euroUSDTotal",
+                              _exchangeRatesProvider.Convert_EUR_To_USD(sourceEntry.EuroBalance, 2));
 
       return converted;
     }
