@@ -42,6 +42,10 @@ namespace Empiria.FinancialAccounting.FinancialReports {
         return this.Convert(analiticoDeCuentasEntryDto);
       }
 
+      if (sourceEntry is BalanzaColumnasMonedaEntryDto balanzaColumnasMonedaEntryDto) {
+        return this.Convert(balanzaColumnasMonedaEntryDto);
+      }
+
       if (sourceEntry is BalanzaTradicionalEntryDto balanzaTradicionalEntryDto) {
         return this.Convert(balanzaTradicionalEntryDto);
       }
@@ -58,6 +62,25 @@ namespace Empiria.FinancialAccounting.FinancialReports {
 
       converted.SetTotalField("monedaNacional", sourceEntry.DomesticBalance);
       converted.SetTotalField("monedaExtranjera", sourceEntry.ForeignBalance);
+
+      return converted;
+    }
+
+
+    private DynamicTrialBalanceEntryDto Convert(BalanzaColumnasMonedaEntryDto sourceEntry) {
+      var converted = new DynamicTrialBalanceEntryDto(sourceEntry);
+
+      converted.DebtorCreditor = sourceEntry.DebtorCreditor;
+
+      converted.SetTotalField("pesosTotal", sourceEntry.DomesticBalance);
+
+      converted.SetTotalField("dollarTotal", sourceEntry.DollarBalance);
+
+      converted.SetTotalField("yenTotal", sourceEntry.YenBalance);
+
+      converted.SetTotalField("euroTotal", sourceEntry.EuroBalance);
+
+      converted.SetTotalField("udisTotal", sourceEntry.UdisBalance);
 
       return converted;
     }

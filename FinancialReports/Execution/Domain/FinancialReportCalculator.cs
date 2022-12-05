@@ -17,12 +17,8 @@ namespace Empiria.FinancialAccounting.FinancialReports {
   /// <summary>Performs data calculation over financial reports data.</summary>
   internal class FinancialReportCalculator {
 
-    private readonly FinancialReportType _financialReportType;
-
-    public FinancialReportCalculator(FinancialReportType financialReportType) {
-      Assertion.Require(financialReportType, nameof(financialReportType));
-
-      _financialReportType = financialReportType;
+    public FinancialReportCalculator() {
+      // no-op
     }
 
 

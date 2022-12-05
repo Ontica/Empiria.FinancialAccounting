@@ -276,11 +276,7 @@ namespace Empiria.FinancialAccounting.FinancialReports {
     #region Helpers
 
     private ReportEntryTotals CreateReportEntryTotalsObject() {
-      if (_dataColumns.Count != 0) {
-        return new DynamicReportEntryTotals(_dataColumns);
-      } else {
-        return new BalanzaEnColumnasPorMonedaReportEntryTotals();
-      }
+      return new DynamicReportEntryTotals(_dataColumns);
     }
 
     #endregion Helpers

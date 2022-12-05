@@ -108,7 +108,7 @@ namespace Empiria.FinancialAccounting.FinancialReports {
     #region Private methods
 
     private void CalculateColumns(IEnumerable<FinancialReportEntryResult> reportEntries) {
-      var calculator = new FinancialReportCalculator(_financialReportType);
+      var calculator = new FinancialReportCalculator();
 
       IEnumerable<FinancialReportEntry> castedEntries = reportEntries.Select(entry => (FinancialReportEntry) entry);
 
@@ -119,7 +119,7 @@ namespace Empiria.FinancialAccounting.FinancialReports {
 
 
     private void CalculateColumns(IEnumerable<FinancialReportEntry> reportEntries) {
-      var calculator = new FinancialReportCalculator(_financialReportType);
+      var calculator = new FinancialReportCalculator();
 
       var columnsToCalculate = _financialReportType.BreakdownColumns.FindAll(x => x.IsCalculated);
 

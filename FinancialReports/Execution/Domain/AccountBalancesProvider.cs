@@ -77,16 +77,7 @@ namespace Empiria.FinancialAccounting.FinancialReports {
         }
       }
 
-      if (_financialReportType.DataSource == FinancialReportDataSource.AnaliticoCuentas ||
-          _financialReportType.DataSource == FinancialReportDataSource.BalanzaTradicional) {
-
-        return ConvertToDynamicTrialBalanceEntryDto(filtered);
-
-      } else {
-
-        return filtered;
-
-      }
+      return ConvertToDynamicTrialBalanceEntryDto(filtered);
     }
 
 
