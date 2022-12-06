@@ -16,6 +16,7 @@ namespace Empiria.FinancialAccounting.BalanceEngine.Adapters {
   /// <summary>Methods used to map balanza dolarizada.</summary>
   static internal class BalanzaDolarizadaMapper {
 
+
     #region Public methods
 
     static internal BalanzaDolarizadaDto Map(TrialBalanceQuery query,
@@ -83,6 +84,7 @@ namespace Empiria.FinancialAccounting.BalanceEngine.Adapters {
 
 
     #endregion Public methods
+
 
     #region Private methods
 
