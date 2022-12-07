@@ -44,9 +44,9 @@ namespace Empiria.FinancialAccounting.FinancialReports {
 
 
     internal FixedList<FinancialReportEntry> Generate() {
-      FixedList<FinancialReportItemDefinition> rowsAndCells = _financialReportType.GetRowsAndCells();
+      FixedList<FinancialReportItemDefinition> reportItems = _financialReportType.GetItems();
 
-      FixedList<FinancialReportEntryResult> reportEntries = CreateReportEntriesWithoutTotals(rowsAndCells);
+      FixedList<FinancialReportEntryResult> reportEntries = CreateReportEntriesWithoutTotals(reportItems);
 
       FillEntries(reportEntries);
 
@@ -57,7 +57,7 @@ namespace Empiria.FinancialAccounting.FinancialReports {
 
 
     internal FixedList<FinancialReportEntry> GenerateBreakdown(string reportItemUID) {
-      FinancialReportItemDefinition reportItem = _financialReportType.GetRow(reportItemUID);
+      FinancialReportItemDefinition reportItem = _financialReportType.GetItem(reportItemUID);
 
       FinancialReportEntryResult reportItemTotals = CreateReportEntryWithoutTotals(reportItem);
 
@@ -79,13 +79,13 @@ namespace Empiria.FinancialAccounting.FinancialReports {
 
 
     internal FixedList<FinancialReportEntry> GenerateIntegration() {
-      FixedList<FinancialReportItemDefinition> rowsAndCells = _financialReportType.GetRowsAndCells();
+      FixedList<FinancialReportItemDefinition> reportItems = _financialReportType.GetItems();
 
-      rowsAndCells = FilterItemsWithIntegrationAccounts(rowsAndCells);
+      reportItems = FilterItemsWithIntegrationAccounts(reportItems);
 
       var reportEntries = new List<FinancialReportEntry>();
 
-      foreach (var item in rowsAndCells) {
+      foreach (var item in reportItems) {
         FinancialReportEntryResult reportEntry = CreateReportEntryWithoutTotals(item);
 
         FixedList<FinancialReportBreakdownResult> breakdownEntries = CreateBreakdownEntriesWithoutTotals(reportEntry);

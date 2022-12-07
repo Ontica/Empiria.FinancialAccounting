@@ -212,34 +212,41 @@ namespace Empiria.FinancialAccounting.FinancialReports {
     #region Methods
 
     public FixedList<FinancialReportCell> GetCells() {
-      if (BaseReport.IsEmptyInstance) {
-        return FinancialReportsData.GetCells(this);
-      } else {
-        return BaseReport.GetCells();
-      }
+      return GetItems().FindAll(x => x is FinancialReportCell)
+                       .Select(y => (FinancialReportCell) y).ToFixedList();
     }
 
 
     public FixedList<FinancialReportRow> GetRows() {
-      if (BaseReport.IsEmptyInstance) {
-        return FinancialReportsData.GetRows(this);
-      } else {
-        return BaseReport.GetRows();
-      }
+      return GetItems().FindAll(x => x is FinancialReportRow)
+                        .Select(y => (FinancialReportRow) y).ToFixedList();
     }
 
 
-    internal FixedList<FinancialReportItemDefinition> GetRowsAndCells() {
-      if (BaseReport.IsEmptyInstance) {
-        return FinancialReportsData.GetRowsAndCells(this);
-      } else {
-        return BaseReport.GetRowsAndCells();
+    FixedList<FinancialReportItemDefinition> _items;
+
+    internal FixedList<FinancialReportItemDefinition> GetItems() {
+      if (_items != null) {
+        return _items;
       }
+
+      if (BaseReport.IsEmptyInstance) {
+        _items = FinancialReportsData.GetItems(this);
+      } else {
+        _items = BaseReport.GetItems();
+      }
+
+      return _items;
     }
 
 
     public ExportTo GetExportToConfig(string exportToUID) {
       return ExportTo.Find(x => x.UID == exportToUID);
+    }
+
+
+    internal FinancialReportItemDefinition GetItem(string rowOrCellUID) {
+      return GetItems().Find(x => x.UID == rowOrCellUID);
     }
 
 
