@@ -36,15 +36,6 @@ namespace Empiria.FinancialAccounting {
     }
 
 
-    static public AccountsChart ParseForDate(DateTime accountingDate) {
-      if (accountingDate >= new DateTime(2022, 1, 1)) {
-        return AccountsChart.IFRS;
-      } else {
-        return AccountsChart.Former;
-      }
-    }
-
-
     static public AccountsChart Former {
       get {
         return AccountsChart.Parse(1);
@@ -63,7 +54,7 @@ namespace Empiria.FinancialAccounting {
       var list = GetList();
 
       foreach (var item in list) {
-        var dummy = item.Accounts;
+        _ = item.Accounts;
       }
     }
 
