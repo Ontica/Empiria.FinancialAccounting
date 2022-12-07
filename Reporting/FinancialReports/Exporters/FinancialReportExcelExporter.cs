@@ -116,9 +116,14 @@ namespace Empiria.FinancialAccounting.Reporting.FinancialReports.Exporters {
       DataTableColumn conceptNameColumn = columns.Find(x => x.Field == "concept");
       FixedList<DataTableColumn> totalsColumns = columns.FindAll(x => x.Type == "decimal");
 
-        foreach (var entry in entries) {
-        _excelFile.SetCell($"{conceptCodeColumn.Column}{i}", entry.ConceptCode);
-        _excelFile.SetCell($"{conceptNameColumn.Column}{i}", entry.Concept);
+      foreach (var entry in entries) {
+
+        if (conceptCodeColumn != null) {
+          _excelFile.SetCell($"{conceptCodeColumn.Column}{i}", entry.ConceptCode);
+        }
+        if (conceptNameColumn != null) {
+          _excelFile.SetCell($"{conceptNameColumn.Column}{i}", entry.Concept);
+        }
 
         foreach (var totalColumn in totalsColumns) {
 
