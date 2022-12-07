@@ -8,7 +8,6 @@
 *                                                                                                            *
 ************************* Copyright(c) La Vía Óntica SC, Ontica LLC and contributors. All rights reserved. **/
 using System;
-using System.Collections.Generic;
 
 using Empiria.FinancialAccounting.FinancialConcepts;
 
@@ -57,19 +56,7 @@ namespace Empiria.FinancialAccounting.FinancialReports {
       get;
     }
 
-
     #endregion Properties
-
-    public override IEnumerable<string> GetDynamicMemberNames() {
-      var members = new List<string>();
-
-      members.Add("UID");
-      members.Add("FinancialConcept");
-
-      members.AddRange(base.GetDynamicMemberNames());
-
-      return members;
-    }
 
   } // class FinancialReportEntryResult
 
