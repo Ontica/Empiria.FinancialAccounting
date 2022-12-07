@@ -101,7 +101,7 @@ namespace Empiria.FinancialAccounting.Adapters {
       string typeFilter     = BuildAccountsTypeFilter(query.Types);
       string roleFilter     = BuildAccountsRoleFilter(query.Roles);
 
-      string dateFilter = BuildDateFilter(query.Date);
+      string dateFilter = BuildDateFilter(query.Date, accountsChart);
 
       var filter = new Filter(keywordsFilter);
 
@@ -164,9 +164,14 @@ namespace Empiria.FinancialAccounting.Adapters {
     }
 
 
-    static private string BuildDateFilter(DateTime? date) {
+    static private string BuildDateFilter(DateTime? date, AccountsChart accountsChart) {
       if (!date.HasValue) {
         date = DateTime.Today;
+      }
+
+      if (accountsChart.Equals(AccountsChart.Former) &&
+          date > accountsChart.MasterData.EndDate) {
+        date = accountsChart.MasterData.EndDate;
       }
 
       string formattedDate = CommonMethods.FormatSqlDbDate(date.Value);
