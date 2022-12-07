@@ -31,7 +31,7 @@ namespace Empiria.FinancialAccounting.Reporting {
         AccountsCharts = reportType.AccountsCharts.Select(x => x.UID)
                                                   .ToArray(),
         OutputType = reportType.OutputType,
-        Show = reportType.Show, 
+        Show = reportType.Show,
         ExportTo = reportType.ExportTo.ToArray()
       };
     }

@@ -1,18 +1,15 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
+
 using Empiria.FinancialAccounting.BalanceEngine.Adapters;
-using Empiria.FinancialAccounting.Reporting.ValorizacionEstimacionPreventiva.Domain;
 
 namespace Empiria.FinancialAccounting.Reporting.ValorizacionEstimacionPreventiva.Adaptars {
-  
-  static internal class ValorizacionPreventivaMapper {
 
+  static internal class ValorizacionPreventivaMapper {
 
     #region Public methods
 
     static internal ReportDataDto Map(ReportBuilderQuery query, TrialBalanceDto trialBalance) {
-      
+
       var entries = trialBalance.Entries.Select(a => (ValorizacionEntryDto) a);
 
       return new ReportDataDto {
@@ -52,12 +49,9 @@ namespace Empiria.FinancialAccounting.Reporting.ValorizacionEstimacionPreventiva
       return obj;
     }
 
-
     #endregion Public methods
 
-
     #region Private methods
-
 
     static private void AssignValuesByCurrency(ValorizacionPreventivaEntryDto dto, ValorizacionEntryDto entry) {
 
@@ -85,9 +79,7 @@ namespace Empiria.FinancialAccounting.Reporting.ValorizacionEstimacionPreventiva
       dto.TotalAccumulated = entry.TotalAccumulated;
     }
 
-
     #endregion Private methods
-
 
     #region Helpers
 
@@ -101,6 +93,6 @@ namespace Empiria.FinancialAccounting.Reporting.ValorizacionEstimacionPreventiva
 
     #endregion Helpers
 
-
   }
+
 }

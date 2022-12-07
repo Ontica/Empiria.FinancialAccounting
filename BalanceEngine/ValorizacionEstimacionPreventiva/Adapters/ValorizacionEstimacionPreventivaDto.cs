@@ -54,137 +54,96 @@ namespace Empiria.FinancialAccounting.BalanceEngine.Adapters {
       get; internal set;
     }
 
-
     public decimal ValuedEffects {
-      get;
-      internal set;
+      get; internal set;
     }
 
     public decimal TotalValued {
-      get;
-      internal set;
+      get; internal set;
     }
 
     public decimal TotalAccumulated {
-      get;
-      internal set;
+      get; internal set;
     }
 
-
     public decimal USD {
-      get;
-      internal set;
+      get; internal set;
     }
 
     public decimal YEN {
-      get;
-      internal set;
+      get; internal set;
     }
 
     public decimal EUR {
-      get;
-      internal set;
+      get; internal set;
     }
 
     public decimal UDI {
-      get;
-      internal set;
+      get; internal set;
     }
-
 
     public decimal LastUSD {
-      get;
-      internal set;
+      get; internal set;
     }
-
 
     public decimal LastYEN {
-      get;
-      internal set;
+      get; internal set;
     }
-
 
     public decimal LastEUR {
-      get;
-      internal set;
+      get; internal set;
     }
-
 
     public decimal LastUDI {
-      get;
-      internal set;
+      get; internal set;
     }
-
 
     public decimal CurrentUSD {
-      get;
-      internal set;
+      get; internal set;
     }
-
 
     public decimal CurrentYEN {
-      get;
-      internal set;
+      get; internal set;
     }
-
 
     public decimal CurrentEUR {
-      get;
-      internal set;
+      get; internal set;
     }
-
 
     public decimal CurrentUDI {
-      get;
-      internal set;
+      get; internal set;
     }
-
 
     public decimal ValuedEffectUSD {
-      get;
-      internal set;
+      get; internal set;
     }
-
 
     public decimal ValuedEffectYEN {
-      get;
-      internal set;
+      get; internal set;
     }
-
 
     public decimal ValuedEffectEUR {
-      get;
-      internal set;
+      get; internal set;
     }
-
 
     public decimal ValuedEffectUDI {
-      get;
-      internal set;
+      get; internal set;
     }
-
 
     public decimal ValuedExchangeRate {
-      get;
-      internal set;
+      get; internal set;
     } = 1;
 
-
     public DateTime LastChangeDate {
-      get;
-      internal set;
+      get; internal set;
     }
-
 
     public DateTime ConsultingDate {
-      get;
-      private set;
+      get; private set;
     }
 
-
     public TrialBalanceItemType ItemType {
-      get;
-      internal set;
+      get; internal set;
     }
 
     public string SectorCode {

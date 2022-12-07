@@ -45,4 +45,4 @@ namespace Empiria.FinancialAccounting.Tests.Reporting {
 
   } // class ComparativoDeCuentasTests
 
-} // 
+} //

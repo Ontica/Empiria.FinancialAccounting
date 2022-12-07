@@ -36,10 +36,10 @@ namespace Empiria.FinancialAccounting.BalanceEngine.Adapters {
 
     public static FixedList<DataTableColumn> DataColumns(FixedList<ITrialBalanceEntry> entries) {
 
-      
+
       var valorizations = entries.Select(x => (ValorizacionEstimacionPreventivaEntry) x);
       var columnsByCurrency = GetColumnsByCurrency(valorizations);
-      
+
       List<DataTableColumn> columns = new List<DataTableColumn>();
       columns.Add(new DataTableColumn("accountNumber", "Cuenta", "text-nowrap"));
       columns.Add(new DataTableColumn("accountName", "Nombre", "text-nowrap"));
@@ -177,7 +177,7 @@ namespace Empiria.FinancialAccounting.BalanceEngine.Adapters {
         }
 
       }
-      
+
     }
 
 
@@ -214,9 +214,7 @@ namespace Empiria.FinancialAccounting.BalanceEngine.Adapters {
       }
     }
 
-
     #endregion Private methods
-
 
     #region Helpers
 

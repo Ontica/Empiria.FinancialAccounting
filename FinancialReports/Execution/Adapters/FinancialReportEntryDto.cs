@@ -21,7 +21,8 @@ namespace Empiria.FinancialAccounting.FinancialReports.Adapters {
 
     public FinancialReportItemType ItemType {
       get; internal set;
-    }
+    } = FinancialReportItemType.Entry;
+
 
     public string FinancialConceptUID {
       get; internal set;
