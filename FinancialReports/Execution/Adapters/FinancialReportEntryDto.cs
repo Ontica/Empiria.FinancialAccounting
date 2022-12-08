@@ -12,6 +12,14 @@ using System.Collections.Generic;
 
 namespace Empiria.FinancialAccounting.FinancialReports.Adapters {
 
+  public enum FinancialReportEntryType {
+
+    Cell,
+
+    Row,
+
+  }
+
   /// <summary>Output DTO used to return the entries of a financial report.</summary>
   public class FinancialReportEntryDto : DynamicFinancialReportEntryDto {
 
@@ -23,6 +31,10 @@ namespace Empiria.FinancialAccounting.FinancialReports.Adapters {
       get; internal set;
     } = FinancialReportItemType.Entry;
 
+
+    public FinancialReportEntryType ReportEntryType {
+      get; internal set;
+    }
 
     public string FinancialConceptUID {
       get; internal set;
@@ -48,11 +60,13 @@ namespace Empiria.FinancialAccounting.FinancialReports.Adapters {
       get; internal set;
     }
 
+
     public override IEnumerable<string> GetDynamicMemberNames() {
-      List<string> members = new List<string>();
+      var members = new List<string>();
 
       members.Add("UID");
       members.Add("ItemType");
+      members.Add("ReportEntryType");
       members.Add("FinancialConceptUID");
       members.Add("ConceptCode");
       members.Add("Concept");

@@ -158,6 +158,7 @@ namespace Empiria.FinancialAccounting.FinancialReports.Adapters {
       if (hasFinancialConcept) {
         o = new FinancialReportEntryDto {
           UID = entry.UID,
+          ReportEntryType = GetReportEntryType(entry.Definition),
           ConceptCode = entry.FinancialConcept.Code,
           Concept = entry.FinancialConcept.Name,
           Level = entry.FinancialConcept.Level,
@@ -165,9 +166,11 @@ namespace Empiria.FinancialAccounting.FinancialReports.Adapters {
           AccountsChartName = entry.FinancialConcept.Group.AccountsChart.Name,
           GroupName = entry.FinancialConcept.Group.Name
         };
+
       } else {
         o = new FinancialReportEntryDto {
           UID = entry.UID,
+          ReportEntryType = GetReportEntryType(entry.Definition),
           ConceptCode = string.Empty,
           Concept = entry.Label,
           Level = 1,
@@ -198,7 +201,8 @@ namespace Empiria.FinancialAccounting.FinancialReports.Adapters {
         return MapIntegrationTotalEntry(integrationTotalEntry);
 
       } else {
-        throw Assertion.EnsureNoReachThisCode();
+        throw Assertion.EnsureNoReachThisCode($"Unhandled integration entry type '{entry.GetType().Name}'.");
+
       }
     }
 
@@ -227,6 +231,20 @@ namespace Empiria.FinancialAccounting.FinancialReports.Adapters {
     #endregion Private mappers
 
     #region Helpers
+
+
+    static private FinancialReportEntryType GetReportEntryType(FinancialReportItemDefinition reportItem) {
+      if (reportItem is FinancialReportRow) {
+        return FinancialReportEntryType.Row;
+
+      } else if (reportItem is FinancialReportCell) {
+        return FinancialReportEntryType.Cell;
+
+      } else {
+        throw Assertion.EnsureNoReachThisCode($"Unhandled reportItem entry type '{reportItem.GetType().Name}'.");
+      }
+    }
+
 
     static private void SetTotalsFields(DynamicFinancialReportEntryDto o, FinancialReportEntry entry) {
       var totalsColumns = entry.GetDynamicMemberNames();
