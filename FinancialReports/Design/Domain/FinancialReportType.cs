@@ -120,6 +120,12 @@ namespace Empiria.FinancialAccounting.FinancialReports {
     }
 
 
+    public bool ConsecutiveRows {
+      get {
+        return base.ExtendedDataField.Get<bool>("consecutiveRows", true);
+      }
+    }
+
     public bool IsDesignable {
       get {
         return this.DesignType != FinancialReportDesignType.AccountsIntegration;
