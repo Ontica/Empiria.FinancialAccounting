@@ -30,40 +30,28 @@ namespace Empiria.FinancialAccounting.FinancialReports {
 
       var financialConceptsReport = new FinancialConceptsReport(_buildQuery);
 
-      if (reportType.DesignType == FinancialReportDesignType.FixedCells ||
-          reportType.DesignType == FinancialReportDesignType.FixedRows) {
+      if (reportType.DesignType != FinancialReportDesignType.AccountsIntegration) {
 
         FixedList<FinancialReportEntry> entries = financialConceptsReport.Generate();
 
         return MapToFinancialReport(entries);
 
-      } else if (reportType.DesignType == FinancialReportDesignType.AccountsIntegration) {
+      } else {
 
         FixedList<FinancialReportEntry> entries = financialConceptsReport.GenerateIntegration();
 
         return MapToFinancialReport(entries);
       }
-
-      throw Assertion.EnsureNoReachThisCode(
-                $"Unhandled financial report design type {reportType.DesignType}.");
     }
 
 
-    internal FinancialReport GetBreakdown(string reportRowUID) {
-      FinancialReportType reportType = _buildQuery.GetFinancialReportType();
+    internal FinancialReport GetBreakdown(string reportItemUID) {
 
       var financialConceptsReport = new FinancialConceptsReport(_buildQuery);
 
-      if (reportType.DesignType == FinancialReportDesignType.FixedRows) {
+      FixedList<FinancialReportEntry> entries = financialConceptsReport.GenerateBreakdown(reportItemUID);
 
-        FixedList<FinancialReportEntry> entries = financialConceptsReport.GenerateBreakdown(reportRowUID);
-
-        return MapToFinancialReport(entries);
-
-      }
-
-      throw Assertion.EnsureNoReachThisCode(
-                $"Unhandled financial report design type {reportType.DesignType}.");
+      return MapToFinancialReport(entries);
     }
 
 
