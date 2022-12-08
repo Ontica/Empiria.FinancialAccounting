@@ -167,6 +167,8 @@ namespace Empiria.FinancialAccounting.FinancialReports.Adapters {
           GroupName = entry.FinancialConcept.Group.Name
         };
 
+        SetTotalsFields(o, entry);
+
       } else {
         o = new FinancialReportEntryDto {
           UID = entry.UID,
@@ -179,8 +181,6 @@ namespace Empiria.FinancialAccounting.FinancialReports.Adapters {
           GroupName = String.Empty
         };
       }
-
-      SetTotalsFields(o, entry);
 
       return o;
     }
