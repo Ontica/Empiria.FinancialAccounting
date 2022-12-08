@@ -14,7 +14,7 @@ using Empiria.FinancialAccounting.FinancialConcepts;
 namespace Empiria.FinancialAccounting.FinancialReports {
 
   /// <summary>Base class for report rows or cells.</summary>
-  public class FinancialReportItemDefinition : BaseObject {
+  public abstract class FinancialReportItemDefinition : BaseObject {
 
     #region Constructors and parsers
 
@@ -24,12 +24,12 @@ namespace Empiria.FinancialAccounting.FinancialReports {
 
 
     static public FinancialReportItemDefinition Parse(int id) {
-      return BaseObject.ParseId<FinancialReportItemDefinition>(id, true);
+      return BaseObject.ParseId<FinancialReportItemDefinition>(id);
     }
 
 
     static public FinancialReportItemDefinition Parse(string uid) {
-      return BaseObject.ParseKey<FinancialReportItemDefinition>(uid, true);
+      return BaseObject.ParseKey<FinancialReportItemDefinition>(uid);
     }
 
     #endregion Constructors and parsers

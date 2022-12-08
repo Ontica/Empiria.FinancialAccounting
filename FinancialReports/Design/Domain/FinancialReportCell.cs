@@ -22,12 +22,12 @@ namespace Empiria.FinancialAccounting.FinancialReports {
 
 
     static public new FinancialReportCell Parse(int id) {
-      return BaseObject.ParseId<FinancialReportCell>(id, true);
+      return BaseObject.ParseId<FinancialReportCell>(id);
     }
 
 
     static public new FinancialReportCell Parse(string uid) {
-      return BaseObject.ParseKey<FinancialReportCell>(uid, true);
+      return BaseObject.ParseKey<FinancialReportCell>(uid);
     }
 
     #endregion Constructors and parsers
