@@ -83,65 +83,84 @@ namespace Empiria.FinancialAccounting.Reporting.FinancialReports.Exporters {
 
 
     private void SetTable(FinancialReportDto financialReport) {
+
       FinancialReportType reportType = financialReport.Query.GetFinancialReportType();
 
-      switch (reportType.DesignType) {
-        case FinancialReportDesignType.FixedRows:
+      if (reportType.DesignType == FinancialReportDesignType.FixedRows &&
+          reportType.ConsecutiveRows) {
 
-          var entries = financialReport.Entries.Select(x => (FinancialReportEntryDto) x)
-                                               .ToFixedList();
+        FillOutFinancialReportConsecutiveRows(financialReport);
 
-          FillOutFixedRowsReport(financialReport.Columns, entries);
-          return;
+      } else if (reportType.DesignType == FinancialReportDesignType.FixedRows &&
+                !reportType.ConsecutiveRows) {
 
-        case FinancialReportDesignType.AccountsIntegration:
+        FillOutFinancialReportSeparatedRows(financialReport);
 
-          var integrationEntries = financialReport.Entries.Select(x => (IntegrationReportEntryDto) x)
-                                                          .ToFixedList();
+      } else if (reportType.DesignType == FinancialReportDesignType.FixedCells) {
 
-          FillOutConceptsIntegrationReport(financialReport.Columns, integrationEntries);
-          return;
+        FillOutFinancialReportCells(financialReport);
 
-        default:
-          throw Assertion.EnsureNoReachThisCode();
+      } else if (reportType.DesignType == FinancialReportDesignType.AccountsIntegration) {
+
+        FillOutConceptsIntegrationReport(financialReport);
+
+      } else {
+
+        throw Assertion.EnsureNoReachThisCode("Unhandled option in method SetTable().");
+
       }
     }
 
 
-    private void FillOutFixedRowsReport(FixedList<DataTableColumn> columns,
-                                        FixedList<FinancialReportEntryDto> entries) {
-      int i = _templateConfig.FirstRowIndex;
+    private void FillOutFinancialReportCells(FinancialReportDto financialReport) {
+      throw new NotImplementedException();
+    }
 
-      DataTableColumn conceptCodeColumn = columns.Find(x => x.Field == "conceptCode");
-      DataTableColumn conceptNameColumn = columns.Find(x => x.Field == "concept");
-      FixedList<DataTableColumn> totalsColumns = columns.FindAll(x => x.Type == "decimal");
 
-      foreach (var entry in entries) {
+    private void FillOutFinancialReportConsecutiveRows(FinancialReportDto financialReport) {
 
-        if (conceptCodeColumn != null) {
-          _excelFile.SetCell($"{conceptCodeColumn.Column}{i}", entry.ConceptCode);
-        }
-        if (conceptNameColumn != null) {
-          _excelFile.SetCell($"{conceptNameColumn.Column}{i}", entry.Concept);
-        }
+      var rowFiller = new FinancialReportRowFiller(financialReport.Columns, _excelFile);
 
-        foreach (var totalColumn in totalsColumns) {
+      var rowEntries = financialReport.Entries.Select(x => (FinancialReportEntryDto) x)
+                                              .ToFixedList()
+                                              .FindAll(x => x.ReportEntryType == FinancialReportEntryType.Row);
 
-          decimal totalField = entry.GetTotalField(totalColumn.Field);
+      int rowIndex = _templateConfig.FirstRowIndex;
 
-          _excelFile.SetCell($"{totalColumn.Column}{i}", totalField);
-        }
+      foreach (var entry in rowEntries) {
+        var row = FinancialReportRow.Parse(entry.UID);
 
-        i++;
+        rowFiller.FillOutRow(row, entry, rowIndex);
+
+        rowIndex++;
       }
     }
 
 
-    private void FillOutConceptsIntegrationReport(FixedList<DataTableColumn> columns,
-                                                  FixedList<IntegrationReportEntryDto> entries) {
+    private void FillOutFinancialReportSeparatedRows(FinancialReportDto financialReport) {
+
+      var rowFiller = new FinancialReportRowFiller(financialReport.Columns, _excelFile);
+
+      var rowEntries = financialReport.Entries.Select(x => (FinancialReportEntryDto) x)
+                                              .ToFixedList()
+                                              .FindAll(x => x.ReportEntryType == FinancialReportEntryType.Row);
+
+      foreach (var entry in rowEntries) {
+        var row = FinancialReportRow.Parse(entry.UID);
+
+        rowFiller.FillOutRow(row, entry);
+      }
+    }
+
+
+    private void FillOutConceptsIntegrationReport(FinancialReportDto financialReport) {
       int i = 5;
 
-      foreach (var entry in entries) {
+      var integrationEntries = financialReport.Entries.Select(x => (IntegrationReportEntryDto) x)
+                                                      .ToFixedList();
+
+      foreach (var entry in integrationEntries) {
+
         _excelFile.SetCell($"A{i}", entry.ConceptCode);
         _excelFile.SetCell($"B{i}", entry.Concept);
         _excelFile.SetCell($"C{i}", entry.ItemCode);
@@ -149,7 +168,7 @@ namespace Empiria.FinancialAccounting.Reporting.FinancialReports.Exporters {
         _excelFile.SetCell($"E{i}", entry.SectorCode);
         _excelFile.SetCell($"F{i}", entry.Operator);
 
-        foreach (var totalColumn in columns.FindAll(x => x.Type == "decimal")) {
+        foreach (var totalColumn in financialReport.Columns.FindAll(x => x.Type == "decimal")) {
 
           decimal totalField = entry.GetTotalField(totalColumn.Field);
 
