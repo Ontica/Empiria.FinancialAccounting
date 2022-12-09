@@ -57,27 +57,20 @@ namespace Empiria.FinancialAccounting.Reporting.FinancialReports.Exporters {
     private void SetHeader(FinancialReportQuery buildQuery) {
       FinancialReportType reportType = buildQuery.GetFinancialReportType();
 
-      switch (reportType.DesignType) {
-        case FinancialReportDesignType.FixedRows:
+      if (reportType.DesignType != FinancialReportDesignType.AccountsIntegration) {
 
-          if (_templateConfig.TitleCell.Length != 0) {
-            _excelFile.SetCell(_templateConfig.TitleCell, buildQuery.GetFinancialReportType().Title);
-          }
-          _excelFile.SetCell(_templateConfig.CurrentTimeCell, DateTime.Now);
-          _excelFile.SetCell(_templateConfig.ReportDateCell, buildQuery.ToDate);
+        if (_templateConfig.TitleCell.Length != 0) {
+          _excelFile.SetCell(_templateConfig.TitleCell, buildQuery.GetFinancialReportType().Title);
+        }
+        _excelFile.SetCell(_templateConfig.CurrentTimeCell, DateTime.Now);
+        _excelFile.SetCell(_templateConfig.ReportDateCell, buildQuery.ToDate);
 
-          return;
+      } else {
 
-        case FinancialReportDesignType.AccountsIntegration:
+        _excelFile.SetCell($"A2", buildQuery.GetFinancialReportType().BaseReport.Name);
+        _excelFile.SetCell($"I2", DateTime.Now);
+        _excelFile.SetCell($"I3", buildQuery.ToDate);
 
-          _excelFile.SetCell($"A2", buildQuery.GetFinancialReportType().BaseReport.Name);
-          _excelFile.SetCell($"I2", DateTime.Now);
-          _excelFile.SetCell($"I3", buildQuery.ToDate);
-
-          return;
-
-        default:
-          return;
       }
     }
 
@@ -113,7 +106,18 @@ namespace Empiria.FinancialAccounting.Reporting.FinancialReports.Exporters {
 
 
     private void FillOutFinancialReportCells(FinancialReportDto financialReport) {
-      throw new NotImplementedException();
+
+      var cellFiller = new FinancialReportCellFiller(financialReport.Columns, _excelFile);
+
+      var cellEntries = financialReport.Entries.Select(x => (FinancialReportEntryDto) x)
+                                               .ToFixedList()
+                                               .FindAll(x => x.ReportEntryType == FinancialReportEntryType.Cell);
+
+      foreach (var entry in cellEntries) {
+        var cell = FinancialReportCell.Parse(entry.UID);
+
+        cellFiller.FillOutCell(cell, entry);
+      }
     }
 
 
