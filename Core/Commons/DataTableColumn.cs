@@ -44,6 +44,7 @@ namespace Empiria.FinancialAccounting {
         Digits = json.Get<int>("digits", 2),
         Column = json.Get<string>("column", string.Empty),
         Formula = json.Get<string>("formula", string.Empty),
+        Tags = json.Get<string>("tags", string.Empty),
         Hidden = json.Get<bool>("hidden", false)
       };
     }
@@ -77,6 +78,9 @@ namespace Empiria.FinancialAccounting {
       get; private set;
     }
 
+    public string Tags {
+      get; private set;
+    }
 
     public string Formula {
       get; private set;
@@ -100,6 +104,7 @@ namespace Empiria.FinancialAccounting {
     private bool Hidden {
       get; set;
     }
+
 
     #endregion Properties
 
