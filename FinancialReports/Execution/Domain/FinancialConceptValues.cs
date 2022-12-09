@@ -23,21 +23,13 @@ namespace Empiria.FinancialAccounting.FinancialReports {
   /// <summary>Default value type that holds and performs operations over financial concepts fields.</summary>
   internal class FinancialConceptValues : IFinancialConceptValues {
 
-    private FinancialConceptValues() {
-      // no-op
-    }
-
+    private readonly FixedList<DataTableColumn> _columns;
 
     internal FinancialConceptValues(FixedList<DataTableColumn> columns) {
+      _columns = columns;
+
       foreach (var column in columns.FindAll(x => x.Type == "decimal")) {
         DynamicFields.SetTotalField(column.Field, 0m);
-      }
-    }
-
-
-    public FinancialConceptValues(IEnumerable<string> fieldNames) {
-      foreach (var fieldName in fieldNames) {
-        DynamicFields.SetTotalField(fieldName, 0m);
       }
     }
 
@@ -70,12 +62,14 @@ namespace Empiria.FinancialAccounting.FinancialReports {
     }
 
 
-    public IFinancialConceptValues Substract(IFinancialConceptValues total, string dataColumn) {
-      var casted = (FinancialConceptValues) total;
+    public IFinancialConceptValues Substract(IFinancialConceptValues values,
+                                             string dataColumn) {
+      var casted = (FinancialConceptValues) values;
 
-      var substracted = new FinancialConceptValues();
+      var substracted = new FinancialConceptValues(_columns);
 
       foreach (var fieldName in DynamicFields.GetDynamicMemberNames()) {
+
         decimal newValue = DynamicFields.GetTotalField(fieldName) -
                            casted.DynamicFields.GetTotalField(fieldName);
 
@@ -89,9 +83,10 @@ namespace Empiria.FinancialAccounting.FinancialReports {
     public IFinancialConceptValues Substract(ITrialBalanceEntryDto balance, string dataColumn) {
       var casted = (DynamicTrialBalanceEntry) balance;
 
-      var substracted = new FinancialConceptValues();
+      var substracted = new FinancialConceptValues(_columns);
 
       foreach (var fieldName in DynamicFields.GetDynamicMemberNames()) {
+
         decimal newValue = DynamicFields.GetTotalField(fieldName) -
                            casted.GetTotalField(fieldName);
 
@@ -102,10 +97,10 @@ namespace Empiria.FinancialAccounting.FinancialReports {
     }
 
 
-    public IFinancialConceptValues Sum(IFinancialConceptValues total, string dataColumn) {
-      var casted = (FinancialConceptValues) total;
+    public IFinancialConceptValues Sum(IFinancialConceptValues values, string dataColumn) {
+      var casted = (FinancialConceptValues) values;
 
-      var sum = new FinancialConceptValues();
+      var sum = new FinancialConceptValues(_columns);
 
       foreach (var fieldName in DynamicFields.GetDynamicMemberNames()) {
         decimal newValue = DynamicFields.GetTotalField(fieldName) +
@@ -121,7 +116,7 @@ namespace Empiria.FinancialAccounting.FinancialReports {
     public IFinancialConceptValues Sum(ITrialBalanceEntryDto balance, string dataColumn) {
       var casted = (DynamicTrialBalanceEntry) balance;
 
-      var sum = new FinancialConceptValues();
+      var sum = new FinancialConceptValues(_columns);
 
       foreach (var fieldName in DynamicFields.GetDynamicMemberNames()) {
         decimal newValue = DynamicFields.GetTotalField(fieldName) +
@@ -135,7 +130,7 @@ namespace Empiria.FinancialAccounting.FinancialReports {
 
 
     public IFinancialConceptValues Sum(ExternalValue value, string dataColumn) {
-      var sum = new FinancialConceptValues();
+      var sum = new FinancialConceptValues(_columns);
 
       foreach (var fieldName in DynamicFields.GetDynamicMemberNames()) {
         decimal newValue = DynamicFields.GetTotalField(fieldName) +
@@ -162,7 +157,7 @@ namespace Empiria.FinancialAccounting.FinancialReports {
     #region Helpers
 
     private IFinancialConceptValues ApplyForEach(DecimalFunction function) {
-      var temp = new FinancialConceptValues();
+      var temp = new FinancialConceptValues(_columns);
 
       foreach (var fieldName in DynamicFields.GetDynamicMemberNames()) {
         decimal value = DynamicFields.GetTotalField(fieldName);
@@ -183,17 +178,17 @@ namespace Empiria.FinancialAccounting.FinancialReports {
     }
 
 
-    private IFinancialConceptValues ConsolidateTotalsInto(FinancialConceptValues entry, string consolidatedFieldName) {
+    private IFinancialConceptValues ConsolidateTotalsInto(FinancialConceptValues values, string consolidatedFieldName) {
 
       Assertion.Require(consolidatedFieldName, nameof(consolidatedFieldName));
 
       decimal consolidatedTotal = 0;
 
-      foreach (var fieldName in entry.DynamicFields.GetDynamicMemberNames()) {
-        consolidatedTotal += entry.DynamicFields.GetTotalField(fieldName);
+      foreach (var fieldName in values.DynamicFields.GetDynamicMemberNames()) {
+        consolidatedTotal += values.DynamicFields.GetTotalField(fieldName);
       }
 
-      var consolidated = new FinancialConceptValues();
+      var consolidated = new FinancialConceptValues(_columns);
 
       consolidated.DynamicFields.SetTotalField(consolidatedFieldName, consolidatedTotal);
 
