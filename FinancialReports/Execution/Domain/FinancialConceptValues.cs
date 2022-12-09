@@ -24,9 +24,14 @@ namespace Empiria.FinancialAccounting.FinancialReports {
   internal class FinancialConceptValues : IFinancialConceptValues {
 
     private readonly FixedList<DataTableColumn> _columns;
+    private readonly FixedList<string> _sumInsteadOfSubstractColumns;
 
     internal FinancialConceptValues(FixedList<DataTableColumn> columns) {
       _columns = columns;
+
+      _sumInsteadOfSubstractColumns = columns.FindAll(x => x.Tags.Contains("sumInsteadOfSubstract"))
+                                             .Select(x => x.Field)
+                                             .ToFixedList();
 
       foreach (var column in columns.FindAll(x => x.Type == "decimal")) {
         DynamicFields.SetTotalField(column.Field, 0m);
@@ -70,8 +75,15 @@ namespace Empiria.FinancialAccounting.FinancialReports {
 
       foreach (var fieldName in DynamicFields.GetDynamicMemberNames()) {
 
-        decimal newValue = DynamicFields.GetTotalField(fieldName) -
-                           casted.DynamicFields.GetTotalField(fieldName);
+        decimal newValue;
+
+        if (_sumInsteadOfSubstractColumns.Contains(fieldName)) {
+          newValue = DynamicFields.GetTotalField(fieldName) +
+                             casted.DynamicFields.GetTotalField(fieldName);
+        } else {
+          newValue = DynamicFields.GetTotalField(fieldName) -
+                             casted.DynamicFields.GetTotalField(fieldName);
+        }
 
         substracted.DynamicFields.SetTotalField(fieldName, newValue);
       }
@@ -87,8 +99,15 @@ namespace Empiria.FinancialAccounting.FinancialReports {
 
       foreach (var fieldName in DynamicFields.GetDynamicMemberNames()) {
 
-        decimal newValue = DynamicFields.GetTotalField(fieldName) -
-                           casted.GetTotalField(fieldName);
+        decimal newValue;
+
+        if (_sumInsteadOfSubstractColumns.Contains(fieldName)) {
+          newValue = DynamicFields.GetTotalField(fieldName) +
+                             casted.GetTotalField(fieldName);
+        } else {
+          newValue = DynamicFields.GetTotalField(fieldName) -
+                             casted.GetTotalField(fieldName);
+        }
 
         substracted.DynamicFields.SetTotalField(fieldName, newValue);
       }
