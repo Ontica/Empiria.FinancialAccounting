@@ -179,31 +179,43 @@ namespace Empiria.FinancialAccounting.FinancialReports {
                                                                      IFinancialConceptValues totals) {
 
       Assertion.Require(integrationEntry.Type == FinancialConceptEntryType.FinancialConceptReference,
-                      "Invalid integrationEntry.Type");
+                        "Invalid integrationEntry.Type");
+
+      IFinancialConceptValues returnValues;
 
       switch (integrationEntry.Operator) {
 
         case OperatorType.Add:
 
-          return totals.Sum(CalculateFinancialConcept(integrationEntry.ReferencedFinancialConcept),
-                            integrationEntry.DataColumn);
+          returnValues = totals.Sum(CalculateFinancialConcept(integrationEntry.ReferencedFinancialConcept),
+                                    integrationEntry.DataColumn);
+          break;
 
         case OperatorType.Substract:
 
-          return totals.Substract(CalculateFinancialConcept(integrationEntry.ReferencedFinancialConcept),
-                                  integrationEntry.DataColumn);
+          returnValues = totals.Substract(CalculateFinancialConcept(integrationEntry.ReferencedFinancialConcept),
+                                          integrationEntry.DataColumn);
+          break;
 
         case OperatorType.AbsoluteValue:
 
-          return totals.Sum(CalculateFinancialConcept(integrationEntry.ReferencedFinancialConcept),
-                            integrationEntry.DataColumn)
-                       .AbsoluteValue();
+          returnValues = totals.Sum(CalculateFinancialConcept(integrationEntry.ReferencedFinancialConcept),
+                                    integrationEntry.DataColumn)
+                               .AbsoluteValue();
+          break;
 
         default:
           throw Assertion.EnsureNoReachThisCode($"Unhandled operator '{integrationEntry.Operator}'.");
 
       }
 
+      if (integrationEntry.CalculationRule == "CambiarElSigno") {
+
+        returnValues = returnValues.ChangeSign();
+
+      }
+
+      return returnValues;
     }
 
 

@@ -22,15 +22,17 @@ namespace Empiria.FinancialAccounting.FinancialReports {
 
     IFinancialConceptValues AbsoluteValue();
 
+    IFinancialConceptValues ChangeSign();
+
     void CopyTotalsTo(FinancialReportEntry copyTo);
 
     IFinancialConceptValues Round();
 
-    IFinancialConceptValues Substract(IFinancialConceptValues total, string dataColumn);
+    IFinancialConceptValues Substract(IFinancialConceptValues values, string dataColumn);
 
     IFinancialConceptValues Substract(ITrialBalanceEntryDto balance, string dataColumn);
 
-    IFinancialConceptValues Sum(IFinancialConceptValues total, string dataColumn);
+    IFinancialConceptValues Sum(IFinancialConceptValues values, string dataColumn);
 
     IFinancialConceptValues Sum(ITrialBalanceEntryDto balance, string dataColumn);
 

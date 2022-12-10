@@ -8,7 +8,6 @@
 *                                                                                                            *
 ************************* Copyright(c) La Vía Óntica SC, Ontica LLC and contributors. All rights reserved. **/
 using System;
-using System.Collections.Generic;
 
 using Empiria.FinancialAccounting.ExternalData;
 
@@ -47,7 +46,14 @@ namespace Empiria.FinancialAccounting.FinancialReports {
     public IFinancialConceptValues AbsoluteValue() {
       DecimalFunction absoluteValue = (x) => Math.Abs(x);
 
-      return ApplyForEach(absoluteValue);
+      return ApplyToAllFields(absoluteValue);
+    }
+
+
+    public IFinancialConceptValues ChangeSign() {
+      DecimalFunction changeSign = (x) => -1m * x;
+
+      return ApplyToAllFields(changeSign);
     }
 
 
@@ -63,7 +69,7 @@ namespace Empiria.FinancialAccounting.FinancialReports {
     public IFinancialConceptValues Round() {
       DecimalFunction round = (x) => Math.Round(x, 0);
 
-      return ApplyForEach(round);
+      return ApplyToAllFields(round);
     }
 
 
@@ -175,7 +181,7 @@ namespace Empiria.FinancialAccounting.FinancialReports {
 
     #region Helpers
 
-    private IFinancialConceptValues ApplyForEach(DecimalFunction function) {
+    private IFinancialConceptValues ApplyToAllFields(DecimalFunction function) {
       var temp = new FinancialConceptValues(_columns);
 
       foreach (var fieldName in DynamicFields.GetDynamicMemberNames()) {
