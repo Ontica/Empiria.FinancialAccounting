@@ -39,7 +39,7 @@ namespace Empiria.FinancialAccounting.FinancialReports {
       _conceptsCalculator = new FinancialConceptsCalculator(_financialReportType.DataColumns,
                                                             balancesProvider,
                                                             externalValuesProvider,
-                                                            _financialReportType.RoundDecimals);
+                                                            _financialReportType.RoundTo);
     }
 
 
@@ -144,10 +144,6 @@ namespace Empiria.FinancialAccounting.FinancialReports {
         }
 
         IFinancialConceptValues totals = _conceptsCalculator.CalculateFinancialConcept(reportEntry.FinancialConcept);
-
-        if (_financialReportType.RoundDecimals) {
-          totals = totals.Round();
-        }
 
         totals.CopyTotalsTo(reportEntry);
       }

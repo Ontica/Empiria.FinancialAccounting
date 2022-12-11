@@ -24,9 +24,9 @@ namespace Empiria.FinancialAccounting.FinancialReports {
 
     IFinancialConceptValues ChangeSign();
 
-    void CopyTotalsTo(FinancialReportEntry copyTo);
+    void CopyTotalsTo(DynamicFields copyTo);
 
-    IFinancialConceptValues Round();
+    IFinancialConceptValues Round(RoundTo roundTo);
 
     IFinancialConceptValues Substract(IFinancialConceptValues values, string dataColumn);
 

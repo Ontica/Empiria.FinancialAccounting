@@ -133,9 +133,9 @@ namespace Empiria.FinancialAccounting.FinancialReports {
     }
 
 
-    public bool RoundDecimals {
+    public RoundTo RoundTo {
       get {
-        return base.ExtendedDataField.Get("roundDecimals", false);
+        return base.ExtendedDataField.Get("roundTo", RoundTo.DoNotRound);
       }
     }
 

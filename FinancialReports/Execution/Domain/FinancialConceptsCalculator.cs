@@ -24,12 +24,12 @@ namespace Empiria.FinancialAccounting.FinancialReports {
     private readonly FixedList<DataTableColumn> _dataColumns;
     private readonly AccountBalancesProvider _balancesProvider;
     private readonly ExternalValuesProvider _externalValuesProvider;
-    private readonly bool _roundDecimals;
+    private readonly RoundTo _roundTo;
 
     internal FinancialConceptsCalculator(FixedList<DataTableColumn> dataColumns,
                                          AccountBalancesProvider balancesProvider,
                                          ExternalValuesProvider externalValuesProvider,
-                                         bool roundDecimals) {
+                                         RoundTo roundTo) {
       Assertion.Require(dataColumns, nameof(dataColumns));
       Assertion.Require(balancesProvider, nameof(balancesProvider));
       Assertion.Require(externalValuesProvider, nameof(externalValuesProvider));
@@ -37,7 +37,7 @@ namespace Empiria.FinancialAccounting.FinancialReports {
       _dataColumns = dataColumns;
       _balancesProvider = balancesProvider;
       _externalValuesProvider = externalValuesProvider;
-      _roundDecimals = roundDecimals;
+      _roundTo = roundTo;
     }
 
 
@@ -51,8 +51,8 @@ namespace Empiria.FinancialAccounting.FinancialReports {
 
         IFinancialConceptValues breakdownTotals = CalculateBreakdownEntry(breakdownItem.IntegrationEntry);
 
-        if (_roundDecimals) {
-          breakdownTotals = breakdownTotals.Round();
+        if (_roundTo != RoundTo.DoNotRound) {
+          breakdownTotals = breakdownTotals.Round(_roundTo);
         }
 
         breakdownTotals.CopyTotalsTo(breakdownItem);
@@ -237,8 +237,8 @@ namespace Empiria.FinancialAccounting.FinancialReports {
         }
       }
 
-      if (_roundDecimals) {
-        totals = totals.Round();
+      if (_roundTo != RoundTo.DoNotRound) {
+        totals = totals.Round(_roundTo);
       }
 
       if (integrationEntry.Operator == OperatorType.AbsoluteValue) {

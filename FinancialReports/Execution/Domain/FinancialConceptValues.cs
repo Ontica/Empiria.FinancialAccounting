@@ -14,6 +14,7 @@ using Empiria.FinancialAccounting.ExternalData;
 using Empiria.FinancialAccounting.BalanceEngine.Adapters;
 
 using Empiria.FinancialAccounting.FinancialReports.Providers;
+using DocumentFormat.OpenXml.Drawing;
 
 namespace Empiria.FinancialAccounting.FinancialReports {
 
@@ -57,7 +58,7 @@ namespace Empiria.FinancialAccounting.FinancialReports {
     }
 
 
-    public void CopyTotalsTo(FinancialReportEntry copyTo) {
+    public void CopyTotalsTo(DynamicFields copyTo) {
       foreach (var fieldName in DynamicFields.GetDynamicMemberNames()) {
         decimal value = DynamicFields.GetTotalField(fieldName);
 
@@ -66,8 +67,30 @@ namespace Empiria.FinancialAccounting.FinancialReports {
     }
 
 
-    public IFinancialConceptValues Round() {
-      DecimalFunction round = (x) => Math.Round(x, 0);
+    public IFinancialConceptValues Round(RoundTo roundTo) {
+      DecimalFunction round;
+
+      switch (roundTo) {
+
+        case RoundTo.DoNotRound:
+          return this;
+
+        case RoundTo.Units:
+          round = (x) => Math.Round(x, 0);
+          break;
+
+        case RoundTo.Thousands:
+          round = (x) => Math.Round(x / 1000m, 0);
+          break;
+
+        case RoundTo.Millions:
+          round = (x) => Math.Round(x / 1000000m, 0);
+          break;
+
+        default:
+          throw Assertion.EnsureNoReachThisCode($"Unhandled roundTo operation '{roundTo}'");
+
+      }
 
       return ApplyToAllFields(round);
     }
@@ -194,12 +217,12 @@ namespace Empiria.FinancialAccounting.FinancialReports {
     }
 
 
-    private IFinancialConceptValues ApplyRuleIfNeeded(FinancialConceptValues entry, string dataColumn) {
+    private IFinancialConceptValues ApplyRuleIfNeeded(FinancialConceptValues values, string dataColumn) {
       if (dataColumn.Length == 0 || dataColumn.ToLower() == "default") {
-        return entry;
+        return values;
       }
 
-      return ConsolidateTotalsInto(entry, dataColumn);
+      return ConsolidateTotalsInto(values, dataColumn);
     }
 
 
