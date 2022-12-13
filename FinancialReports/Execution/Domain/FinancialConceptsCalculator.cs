@@ -60,15 +60,15 @@ namespace Empiria.FinancialAccounting.FinancialReports {
         switch (breakdownItem.IntegrationEntry.Operator) {
 
           case OperatorType.Add:
-            granTotal = granTotal.Sum(breakdownTotals, breakdownItem.IntegrationEntry.DataColumn);
+            granTotal = granTotal.Sum(breakdownTotals);
             break;
 
           case OperatorType.Substract:
-            granTotal = granTotal.Substract(breakdownTotals, breakdownItem.IntegrationEntry.DataColumn);
+            granTotal = granTotal.Substract(breakdownTotals);
             break;
 
           case OperatorType.AbsoluteValue:
-            granTotal = granTotal.Sum(breakdownTotals, breakdownItem.IntegrationEntry.DataColumn)
+            granTotal = granTotal.Sum(breakdownTotals)
                                  .AbsoluteValue();
             break;
 
@@ -123,18 +123,15 @@ namespace Empiria.FinancialAccounting.FinancialReports {
 
         case OperatorType.Add:
 
-          return totals.Sum(CalculateAccount(integrationEntry),
-                            integrationEntry.DataColumn);
+          return totals.Sum(CalculateAccount(integrationEntry));
 
         case OperatorType.Substract:
 
-          return totals.Substract(CalculateAccount(integrationEntry),
-                                  integrationEntry.DataColumn);
+          return totals.Substract(CalculateAccount(integrationEntry));
 
         case OperatorType.AbsoluteValue:
 
-          return totals.Sum(CalculateAccount(integrationEntry),
-                            integrationEntry.DataColumn)
+          return totals.Sum(CalculateAccount(integrationEntry))
                        .AbsoluteValue();
 
         default:
@@ -154,18 +151,15 @@ namespace Empiria.FinancialAccounting.FinancialReports {
 
         case OperatorType.Add:
 
-          return totals.Sum(CalculateExternalVariable(integrationEntry),
-                            integrationEntry.DataColumn);
+          return totals.Sum(CalculateExternalVariable(integrationEntry));
 
         case OperatorType.Substract:
 
-          return totals.Substract(CalculateExternalVariable(integrationEntry),
-                                  integrationEntry.DataColumn);
+          return totals.Substract(CalculateExternalVariable(integrationEntry));
 
         case OperatorType.AbsoluteValue:
 
-          return totals.Sum(CalculateExternalVariable(integrationEntry),
-                            integrationEntry.DataColumn)
+          return totals.Sum(CalculateExternalVariable(integrationEntry))
                        .AbsoluteValue();
 
         default:
@@ -187,20 +181,17 @@ namespace Empiria.FinancialAccounting.FinancialReports {
 
         case OperatorType.Add:
 
-          returnValues = totals.Sum(CalculateFinancialConcept(integrationEntry.ReferencedFinancialConcept),
-                                    integrationEntry.DataColumn);
+          returnValues = totals.Sum(CalculateFinancialConcept(integrationEntry.ReferencedFinancialConcept));
           break;
 
         case OperatorType.Substract:
 
-          returnValues = totals.Substract(CalculateFinancialConcept(integrationEntry.ReferencedFinancialConcept),
-                                          integrationEntry.DataColumn);
+          returnValues = totals.Substract(CalculateFinancialConcept(integrationEntry.ReferencedFinancialConcept));
           break;
 
         case OperatorType.AbsoluteValue:
 
-          returnValues = totals.Sum(CalculateFinancialConcept(integrationEntry.ReferencedFinancialConcept),
-                                    integrationEntry.DataColumn)
+          returnValues = totals.Sum(CalculateFinancialConcept(integrationEntry.ReferencedFinancialConcept))
                                .AbsoluteValue();
           break;
 
@@ -231,10 +222,15 @@ namespace Empiria.FinancialAccounting.FinancialReports {
       foreach (var balance in accountBalances) {
 
         if (integrationEntry.CalculationRule == "SaldoDeudorasMenosSaldoAcreedoras") {
-          totals = totals.SumDebitsOrSubstractCredits(balance, integrationEntry.DataColumn);
+          totals = totals.SumDebitsOrSubstractCredits(balance);
         } else {
-          totals = totals.Sum(balance, integrationEntry.DataColumn);
+          totals = totals.Sum(balance);
         }
+
+      }
+
+      if (integrationEntry.CalculationRule == "ConsolidarEnUnaColumna") {
+        totals = totals.ConsolidateTotalsInto(integrationEntry.DataColumn);
       }
 
       if (_roundTo != RoundTo.DoNotRound) {
@@ -279,7 +275,11 @@ namespace Empiria.FinancialAccounting.FinancialReports {
       IFinancialConceptValues totals = CreateFinancialConceptValuesObject();
 
       foreach (var value in externalValues) {
-        totals = totals.Sum(value, integrationEntry.DataColumn);
+        totals = totals.Sum(value);
+      }
+
+      if (integrationEntry.CalculationRule == "ConsolidarEnUnaColumna") {
+        totals = totals.ConsolidateTotalsInto(integrationEntry.DataColumn);
       }
 
       return totals;

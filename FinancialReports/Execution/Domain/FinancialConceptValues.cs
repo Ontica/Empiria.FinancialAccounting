@@ -58,6 +58,24 @@ namespace Empiria.FinancialAccounting.FinancialReports {
     }
 
 
+    public IFinancialConceptValues ConsolidateTotalsInto(string consolidatedFieldName) {
+
+      Assertion.Require(consolidatedFieldName, nameof(consolidatedFieldName));
+
+      decimal consolidatedTotal = 0;
+
+      foreach (var fieldName in this.DynamicFields.GetDynamicMemberNames()) {
+        consolidatedTotal += this.DynamicFields.GetTotalField(fieldName);
+      }
+
+      var consolidated = new FinancialConceptValues(_columns);
+
+      consolidated.DynamicFields.SetTotalField(consolidatedFieldName, consolidatedTotal);
+
+      return consolidated;
+    }
+
+
     public void CopyTotalsTo(DynamicFields copyTo) {
       foreach (var fieldName in DynamicFields.GetDynamicMemberNames()) {
         decimal value = DynamicFields.GetTotalField(fieldName);
@@ -96,8 +114,7 @@ namespace Empiria.FinancialAccounting.FinancialReports {
     }
 
 
-    public IFinancialConceptValues Substract(IFinancialConceptValues values,
-                                             string dataColumn) {
+    public IFinancialConceptValues Substract(IFinancialConceptValues values) {
       var casted = (FinancialConceptValues) values;
 
       var substracted = new FinancialConceptValues(_columns);
@@ -121,7 +138,7 @@ namespace Empiria.FinancialAccounting.FinancialReports {
     }
 
 
-    public IFinancialConceptValues Substract(ITrialBalanceEntryDto balance, string dataColumn) {
+    public IFinancialConceptValues Substract(ITrialBalanceEntryDto balance) {
       var casted = (DynamicTrialBalanceEntry) balance;
 
       var substracted = new FinancialConceptValues(_columns);
@@ -141,11 +158,11 @@ namespace Empiria.FinancialAccounting.FinancialReports {
         substracted.DynamicFields.SetTotalField(fieldName, newValue);
       }
 
-      return ApplyRuleIfNeeded(substracted, dataColumn);
+      return substracted;
     }
 
 
-    public IFinancialConceptValues Sum(IFinancialConceptValues values, string dataColumn) {
+    public IFinancialConceptValues Sum(IFinancialConceptValues values) {
       var casted = (FinancialConceptValues) values;
 
       var sum = new FinancialConceptValues(_columns);
@@ -161,7 +178,7 @@ namespace Empiria.FinancialAccounting.FinancialReports {
     }
 
 
-    public IFinancialConceptValues Sum(ITrialBalanceEntryDto balance, string dataColumn) {
+    public IFinancialConceptValues Sum(ITrialBalanceEntryDto balance) {
       var casted = (DynamicTrialBalanceEntry) balance;
 
       var sum = new FinancialConceptValues(_columns);
@@ -173,11 +190,11 @@ namespace Empiria.FinancialAccounting.FinancialReports {
         sum.DynamicFields.SetTotalField(fieldName, newValue);
       }
 
-      return ApplyRuleIfNeeded(sum, dataColumn);
+      return sum;
     }
 
 
-    public IFinancialConceptValues Sum(ExternalValue value, string dataColumn) {
+    public IFinancialConceptValues Sum(ExternalValue value) {
       var sum = new FinancialConceptValues(_columns);
 
       foreach (var fieldName in DynamicFields.GetDynamicMemberNames()) {
@@ -187,17 +204,17 @@ namespace Empiria.FinancialAccounting.FinancialReports {
         sum.DynamicFields.SetTotalField(fieldName, newValue);
       }
 
-      return ApplyRuleIfNeeded(sum, dataColumn);
+      return sum;
     }
 
 
-    public IFinancialConceptValues SumDebitsOrSubstractCredits(ITrialBalanceEntryDto balance, string dataColumn) {
+    public IFinancialConceptValues SumDebitsOrSubstractCredits(ITrialBalanceEntryDto balance) {
       var analiticoBalance = (DynamicTrialBalanceEntry) balance;
 
       if (analiticoBalance.DebtorCreditor == DebtorCreditorType.Deudora) {
-        return Sum(balance, dataColumn);
+        return Sum(balance);
       } else {
-        return Substract(balance, dataColumn);
+        return Substract(balance);
       }
     }
 
@@ -216,32 +233,6 @@ namespace Empiria.FinancialAccounting.FinancialReports {
       return temp;
     }
 
-
-    private IFinancialConceptValues ApplyRuleIfNeeded(FinancialConceptValues values, string dataColumn) {
-      if (dataColumn.Length == 0 || dataColumn.ToLower() == "default") {
-        return values;
-      }
-
-      return ConsolidateTotalsInto(values, dataColumn);
-    }
-
-
-    private IFinancialConceptValues ConsolidateTotalsInto(FinancialConceptValues values, string consolidatedFieldName) {
-
-      Assertion.Require(consolidatedFieldName, nameof(consolidatedFieldName));
-
-      decimal consolidatedTotal = 0;
-
-      foreach (var fieldName in values.DynamicFields.GetDynamicMemberNames()) {
-        consolidatedTotal += values.DynamicFields.GetTotalField(fieldName);
-      }
-
-      var consolidated = new FinancialConceptValues(_columns);
-
-      consolidated.DynamicFields.SetTotalField(consolidatedFieldName, consolidatedTotal);
-
-      return consolidated;
-    }
 
     #endregion Helpers
 
