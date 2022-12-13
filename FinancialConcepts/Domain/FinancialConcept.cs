@@ -12,6 +12,7 @@ using System;
 using System.Collections.Generic;
 
 using Empiria.Contacts;
+using Empiria.Json;
 using Empiria.StateEnums;
 
 using Empiria.FinancialAccounting.FinancialConcepts.Data;
@@ -52,6 +53,8 @@ namespace Empiria.FinancialAccounting.FinancialConcepts {
         Group = fields.Group,
         Code = fields.Code,
         Name = fields.Name,
+        VariableID = fields.VariableID,
+        CalculationScript = fields.CalculationScript,
         Position = fields.Position,
         StartDate = fields.StartDate,
         EndDate = fields.EndDate,
@@ -97,6 +100,31 @@ namespace Empiria.FinancialAccounting.FinancialConcepts {
     [DataField("NOMBRE_CONCEPTO")]
     public string Name {
       get; private set;
+    }
+
+
+    [DataField("ID_VARIABLE")]
+    public string VariableID {
+      get; private set;
+    }
+
+
+    [DataField("SCRIPT_CALCULO")]
+    public string CalculationScript {
+      get; private set;
+    }
+
+
+    [DataField("CONCEPTO_EXT_DATA")]
+    internal protected JsonObject ExtendedDataField {
+      get; set;
+    } = JsonObject.Empty;
+
+
+    public string Keywords {
+      get {
+        return EmpiriaString.BuildKeywords(Code, Name, VariableID, Group.Code, Group.Name);
+      }
     }
 
 
@@ -150,6 +178,7 @@ namespace Empiria.FinancialAccounting.FinancialConcepts {
     internal void Cleanup() {
       this.Code = EmpiriaString.Clean(this.Code);
       this.Name = EmpiriaString.Clean(this.Name);
+      this.VariableID = EmpiriaString.Clean(this.VariableID);
     }
 
 
@@ -214,6 +243,8 @@ namespace Empiria.FinancialAccounting.FinancialConcepts {
 
       Code = fields.Code;
       Name = fields.Name;
+      VariableID = fields.VariableID;
+      CalculationScript = fields.CalculationScript;
       Position = fields.Position;
       StartDate = fields.StartDate;
       EndDate = fields.EndDate;
@@ -333,6 +364,14 @@ namespace Empiria.FinancialAccounting.FinancialConcepts {
     }
 
     internal string Name {
+      get; set;
+    }
+
+    public string CalculationScript {
+      get; set;
+    }
+
+    public string VariableID {
       get; set;
     }
 

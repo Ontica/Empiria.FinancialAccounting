@@ -26,6 +26,14 @@ namespace Empiria.FinancialAccounting.FinancialConcepts.Adapters {
       get; internal set;
     }
 
+    public string VariableID {
+      get; internal set;
+    }
+
+    public string CalculationScript {
+      get; internal set;
+    }
+
     public int Position {
       get; internal set;
     }
@@ -74,6 +82,10 @@ namespace Empiria.FinancialAccounting.FinancialConcepts.Adapters {
     }
 
     public string Name {
+      get; internal set;
+    }
+
+    public string VariableID {
       get; internal set;
     }
 

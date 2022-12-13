@@ -8,6 +8,7 @@
 *                                                                                                            *
 ************************* Copyright(c) La Vía Óntica SC, Ontica LLC and contributors. All rights reserved. **/
 using System;
+using System.Text.RegularExpressions;
 
 namespace Empiria.FinancialAccounting.FinancialConcepts.Adapters {
 
@@ -30,6 +31,16 @@ namespace Empiria.FinancialAccounting.FinancialConcepts.Adapters {
 
 
     public string Name {
+      get; set;
+    } = string.Empty;
+
+
+    public string VariableID {
+      get; set;
+    } = string.Empty;
+
+
+    public string CalculationScript {
       get; set;
     } = string.Empty;
 
@@ -74,6 +85,7 @@ namespace Empiria.FinancialAccounting.FinancialConcepts.Adapters {
       Assertion.Require(command.Code, "command.Code");
       Assertion.Require(command.Name, "command.Name");
 
+      EnsureVariableIDIsValid(command.VariableID);
       EnsurePositioningRuleIsValid(command);
       EnsureDatesAreValid(command);
     }
@@ -85,6 +97,8 @@ namespace Empiria.FinancialAccounting.FinancialConcepts.Adapters {
         Group = FinancialConceptGroup.Parse(command.GroupUID),
         Code = command.Code,
         Name = command.Name,
+        VariableID = command.VariableID,
+        CalculationScript = command.CalculationScript,
         StartDate = command.StartDate,
         EndDate = command.EndDate,
         Position = position
@@ -124,11 +138,22 @@ namespace Empiria.FinancialAccounting.FinancialConcepts.Adapters {
     }
 
 
+    static private void EnsureVariableIDIsValid(string variableID) {
+      if (variableID.Length == 0) {
+        return;
+      }
+      if (!Regex.IsMatch(variableID, "^[A-Z_][A-Z0-9_]*$")) {
+        Assertion.RequireFail($"'{variableID}' is not recognized as a valid VariableID.");
+      }
+    }
+
+
     static private void Clean(this EditFinancialConceptCommand command) {
       command.FinancialConceptUID = EmpiriaString.Clean(command.FinancialConceptUID);
       command.GroupUID = EmpiriaString.Clean(command.GroupUID);
       command.Code = EmpiriaString.Clean(command.Code);
       command.Name = EmpiriaString.Clean(command.Name);
+      command.VariableID = EmpiriaString.Clean(command.VariableID);
       command.PositioningOffsetConceptUID = EmpiriaString.Clean(command.PositioningOffsetConceptUID);
     }
 

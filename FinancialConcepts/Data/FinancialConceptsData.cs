@@ -57,8 +57,9 @@ namespace Empiria.FinancialAccounting.FinancialConcepts.Data {
 
       var op = DataOperation.Parse("write_cof_concepto",
                                    o.Id, o.UID, o.Group.Id,
-                                   o.Code, o.Name, o.Position,
-                                   o.StartDate, o.EndDate,
+                                   o.Code, o.Name, o.VariableID, o.CalculationScript,
+                                   o.ExtendedDataField.ToString(), o.Keywords,
+                                   o.Position, o.StartDate, o.EndDate,
                                    (char) o.Status, o.UpdatedBy.Id);
 
       DataWriter.Execute(op);
