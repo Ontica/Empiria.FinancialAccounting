@@ -184,6 +184,26 @@ namespace Empiria.FinancialAccounting.WebApi {
       }
     }
 
+
+    [HttpPost]
+    [Route("v2/financial-accounting/accounts-charts/update-from-excel-file")]
+    [Route("v2/financial-accounting/accounts-charts/update-from-excel-file/dry-run")]
+    public CollectionModel UpdateAccountsChartFromExcelFile() {
+
+      InputFile excelFile = base.GetInputFileFromHttpRequest("ExcelFileWithAccountsChartEditionCommands");
+
+      BaseAccountEditionCommand command = base.GetFormDataFromHttpRequest<BaseAccountEditionCommand>("command");
+
+      bool dryRun = RouteContainsDryRunFlag();
+
+      using (var usecases = AccountEditionUseCases.UseCaseInteractor()) {
+        FixedList<OperationSummary> summary = usecases.UpdateFromExcelFile(command, excelFile, dryRun);
+
+        return new CollectionModel(base.Request, summary);
+      }
+    }
+
+
     #endregion Web Apis
 
     #region Helpers
@@ -199,8 +219,15 @@ namespace Empiria.FinancialAccounting.WebApi {
       command.AccountUID = accountUID;
     }
 
+
+    private bool RouteContainsDryRunFlag() {
+      return base.Request.RequestUri.PathAndQuery.EndsWith("/dry-run");
+    }
+
+
     #endregion Helpers
 
   }  // class AccountsEditionController
 
 }  // namespace Empiria.FinancialAccounting.WebApi
+

@@ -4,13 +4,13 @@
 *  Assembly : FinancialAccounting.Core.dll               Pattern   : Use case interactor class               *
 *  Type     : AccountEditionUseCases                     License   : Please read LICENSE.txt file            *
 *                                                                                                            *
-*  Summary  : Use cases used to create or update an account in a chart of accounts.                          *
+*  Summary  : Use cases used to create or update accounts in a chart of accounts.                            *
 *                                                                                                            *
 ************************* Copyright(c) La Vía Óntica SC, Ontica LLC and contributors. All rights reserved. **/
 using System;
-using System.Collections.Generic;
 
 using Empiria.Services;
+using Empiria.Storage;
 
 using Empiria.FinancialAccounting.Adapters;
 
@@ -18,7 +18,7 @@ using Empiria.FinancialAccounting.AccountsChartEdition.Adapters;
 
 namespace Empiria.FinancialAccounting.AccountsChartEdition.UseCases {
 
-  /// <summary>Use cases used to create or update an account in a chart of accounts.</summary>
+  /// <summary>Use cases used to create or update accounts in a chart of accounts.</summary>
   public class AccountEditionUseCases : UseCase {
 
     #region Constructors and parsers
@@ -110,6 +110,36 @@ namespace Empiria.FinancialAccounting.AccountsChartEdition.UseCases {
       editor.TryCommit();
 
       return editor.GetResult();
+    }
+
+
+    public FixedList<OperationSummary> UpdateFromExcelFile(BaseAccountEditionCommand command,
+                                                          InputFile excelFile,
+                                                          bool dryRun) {
+      Assertion.Require(command, nameof(command));
+      Assertion.Require(excelFile, nameof(excelFile));
+
+      AccountsChart chart = command.GetAccountsChart();
+      DateTime applicationDate = command.ApplicationDate;
+
+      Assertion.Require(DateTime.Today.AddDays(1) <= applicationDate &&
+                        applicationDate <= DateTime.Today.AddDays(5) &&
+                        applicationDate < chart.MasterData.EndDate,
+                        "La fecha de aplicación de los cambios en el catálogo " +
+                        "debe ser a partir de mañana y hasta 5 días después del día de hoy.");
+
+      var reader = new AccountsChartEditionFileReader(chart, applicationDate, excelFile, dryRun);
+
+      FixedList<AccountEditionCommand> commands = reader.GetCommands();
+
+      if (!dryRun) {
+
+        var processor = new AccountsChartEditionCommandsProcessor();
+
+        processor.Execute(commands);
+      }
+
+      return new FixedList<OperationSummary>();
     }
 
 
