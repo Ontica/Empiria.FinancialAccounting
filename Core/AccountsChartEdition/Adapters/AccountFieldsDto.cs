@@ -1,6 +1,6 @@
 ﻿/* Empiria Financial *****************************************************************************************
 *                                                                                                            *
-*  Module   : Accounts Chart                             Component : Interface adapters                      *
+*  Module   : Accounts Chart Edition                     Component : Interface adapters                      *
 *  Assembly : FinancialAccounting.Core.dll               Pattern   : Fields DTO                              *
 *  Type     : AccountFieldsDto                           License   : Please read LICENSE.txt file            *
 *                                                                                                            *
@@ -9,7 +9,7 @@
 ************************* Copyright(c) La Vía Óntica SC, Ontica LLC and contributors. All rights reserved. **/
 using System;
 
-namespace Empiria.FinancialAccounting.Adapters {
+namespace Empiria.FinancialAccounting.AccountsChartEdition.Adapters {
 
   /// <summary>Fields DTO used for account fields edition.</summary>
   public class AccountFieldsDto {
@@ -45,4 +45,4 @@ namespace Empiria.FinancialAccounting.Adapters {
 
   }  // class AccountFieldsDto
 
-}  // namespace Empiria.FinancialAccounting.Adapters
+}  // namespace Empiria.FinancialAccounting.AccountsChartEdition.Adapters

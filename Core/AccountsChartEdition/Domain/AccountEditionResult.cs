@@ -1,16 +1,18 @@
 ﻿/* Empiria Financial *****************************************************************************************
 *                                                                                                            *
-*  Module   : Accounts Chart                             Component : Domain Layer                            *
+*  Module   : Accounts Chart Edition                     Component : Domain Layer                            *
 *  Assembly : FinancialAccounting.Core.dll               Pattern   : Immutable Type                          *
 *  Type     : AccountEditionResult                       License   : Please read LICENSE.txt file            *
 *                                                                                                            *
 *  Summary  : Holds information about the result of an account edition.                                      *
 *                                                                                                            *
 ************************* Copyright(c) La Vía Óntica SC, Ontica LLC and contributors. All rights reserved. **/
+using System;
 
 using Empiria.FinancialAccounting.Adapters;
+using Empiria.FinancialAccounting.AccountsChartEdition.Adapters;
 
-namespace Empiria.FinancialAccounting {
+namespace Empiria.FinancialAccounting.AccountsChartEdition {
 
   /// <summary>Holds information about the result of an account edition.</summary>
   public class AccountEditionResult {
@@ -54,4 +56,4 @@ namespace Empiria.FinancialAccounting {
 
   }  // class AccountEditionResult
 
-}  // namespace Empiria.FinancialAccounting
+}  // namespace Empiria.FinancialAccounting.AccountsChartEdition

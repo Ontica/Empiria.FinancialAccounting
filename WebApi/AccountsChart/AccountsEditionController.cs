@@ -1,24 +1,25 @@
 ﻿/* Empiria Financial *****************************************************************************************
 *                                                                                                            *
-*  Module   : Accounts Chart                               Component : Web Api                               *
+*  Module   : Accounts Chart Edition                       Component : Web Api                               *
 *  Assembly : Empiria.FinancialAccounting.WebApi.dll       Pattern   : Command controller                    *
 *  Type     : AccountsEditionController                    License   : Please read LICENSE.txt file          *
 *                                                                                                            *
-*  Summary  : Command Web Api used to create or update an account in a chart of accounts.                    *
+*  Summary  : Command Web Api used to create or update accounts in a chart of accounts.                      *
 *                                                                                                            *
 ************************* Copyright(c) La Vía Óntica SC, Ontica LLC and contributors. All rights reserved. **/
 using System;
 using System.Web.Http;
 
+using Empiria.Storage;
 using Empiria.WebApi;
 
-using Empiria.FinancialAccounting.Adapters;
-using Empiria.FinancialAccounting.UseCases;
-
+using Empiria.FinancialAccounting.AccountsChartEdition;
+using Empiria.FinancialAccounting.AccountsChartEdition.UseCases;
+using Empiria.FinancialAccounting.AccountsChartEdition.Adapters;
 
 namespace Empiria.FinancialAccounting.WebApi {
 
-  /// <summary>Command Web Api used to update an account in a chart of accounts.</summary>
+  /// <summary>Command Web Api used to update accounts in a chart of accounts.</summary>
   public class AccountsEditionController : WebApiController {
 
     #region Web Apis
@@ -182,7 +183,6 @@ namespace Empiria.FinancialAccounting.WebApi {
         return new SingleObjectModel(base.Request, result);
       }
     }
-
 
     #endregion Web Apis
 

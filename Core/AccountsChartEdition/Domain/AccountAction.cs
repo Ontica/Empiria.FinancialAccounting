@@ -1,6 +1,6 @@
 ﻿/* Empiria Financial *****************************************************************************************
 *                                                                                                            *
-*  Module   : Accounts Chart                             Component : Domain Layer                            *
+*  Module   : Accounts Chart Edition                     Component : Domain Layer                            *
 *  Assembly : FinancialAccounting.Core.dll               Pattern   : Immutable Type                          *
 *  Type     : AccountAction                              License   : Please read LICENSE.txt file            *
 *                                                                                                            *
@@ -12,7 +12,7 @@ using System.Collections.Generic;
 
 using Empiria.Data;
 
-namespace Empiria.FinancialAccounting {
+namespace Empiria.FinancialAccounting.AccountsChartEdition {
 
   internal class AccountAction {
 
@@ -53,4 +53,4 @@ namespace Empiria.FinancialAccounting {
 
   }  // class AccountAction
 
-}  // namespace Empiria.FinancialAccounting
+}  // namespace Empiria.FinancialAccounting.AccountsChartEdition

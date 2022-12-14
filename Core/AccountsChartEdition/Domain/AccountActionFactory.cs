@@ -1,6 +1,6 @@
 ﻿/* Empiria Financial *****************************************************************************************
 *                                                                                                            *
-*  Module   : Accounts Chart                             Component : Domain Layer                            *
+*  Module   : Accounts Chart Edition                     Component : Domain Layer                            *
 *  Assembly : FinancialAccounting.Core.dll               Pattern   : Factory service                         *
 *  Type     : AccountActionFactory                       License   : Please read LICENSE.txt file            *
 *                                                                                                            *
@@ -10,9 +10,9 @@
 using System;
 
 using Empiria.Data;
-using Empiria.FinancialAccounting.Adapters;
+using Empiria.FinancialAccounting.AccountsChartEdition.Adapters;
 
-namespace Empiria.FinancialAccounting {
+namespace Empiria.FinancialAccounting.AccountsChartEdition {
 
   /// <summary>Factory service for AccountAction instances.</summary>
   internal class AccountActionFactory {
@@ -69,4 +69,4 @@ namespace Empiria.FinancialAccounting {
 
   }  // class AccountActionFactory
 
-}  // namespace Empiria.FinancialAccounting
+}  // namespace Empiria.FinancialAccounting.AccountsChartEdition

@@ -1,6 +1,6 @@
 ﻿/* Empiria Financial *****************************************************************************************
 *                                                                                                            *
-*  Module   : Accounts Chart                             Component : Use cases Layer                         *
+*  Module   : Accounts Chart Edition                     Component : Use cases Layer                         *
 *  Assembly : FinancialAccounting.Core.dll               Pattern   : Use case interactor class               *
 *  Type     : AccountEditionUseCases                     License   : Please read LICENSE.txt file            *
 *                                                                                                            *
@@ -8,12 +8,15 @@
 *                                                                                                            *
 ************************* Copyright(c) La Vía Óntica SC, Ontica LLC and contributors. All rights reserved. **/
 using System;
+using System.Collections.Generic;
 
 using Empiria.Services;
 
 using Empiria.FinancialAccounting.Adapters;
 
-namespace Empiria.FinancialAccounting.UseCases {
+using Empiria.FinancialAccounting.AccountsChartEdition.Adapters;
+
+namespace Empiria.FinancialAccounting.AccountsChartEdition.UseCases {
 
   /// <summary>Use cases used to create or update an account in a chart of accounts.</summary>
   public class AccountEditionUseCases : UseCase {
@@ -25,7 +28,7 @@ namespace Empiria.FinancialAccounting.UseCases {
     }
 
     static public AccountEditionUseCases UseCaseInteractor() {
-      return UseCase.CreateInstance<AccountEditionUseCases>();
+      return CreateInstance<AccountEditionUseCases>();
     }
 
     #endregion Constructors and parsers
@@ -109,6 +112,7 @@ namespace Empiria.FinancialAccounting.UseCases {
       return editor.GetResult();
     }
 
+
     #endregion Use cases
 
     #region Helpers
@@ -125,4 +129,4 @@ namespace Empiria.FinancialAccounting.UseCases {
 
   }  // class AccountEditionUseCases
 
-}  // namespace Empiria.FinancialAccounting.UseCases
+}  // namespace Empiria.FinancialAccounting.AccountsChartEdition.UseCases

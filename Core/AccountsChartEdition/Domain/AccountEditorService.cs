@@ -1,6 +1,6 @@
 ﻿/* Empiria Financial *****************************************************************************************
 *                                                                                                            *
-*  Module   : Accounts Chart                             Component : Domain Layer                            *
+*  Module   : Accounts Chart Edition                     Component : Domain Layer                            *
 *  Assembly : FinancialAccounting.Core.dll               Pattern   : Service provider                        *
 *  Type     : AccountEditorService                       License   : Please read LICENSE.txt file            *
 *                                                                                                            *
@@ -10,10 +10,12 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using Empiria.FinancialAccounting.Adapters;
-using Empiria.FinancialAccounting.Data;
 
-namespace Empiria.FinancialAccounting {
+using Empiria.FinancialAccounting.AccountsChartEdition.Adapters;
+
+using Empiria.FinancialAccounting.AccountsChartEdition.Data;
+
+namespace Empiria.FinancialAccounting.AccountsChartEdition {
 
   /// <summary>Provides account edition services.</summary>
   internal class AccountEditorService {
@@ -165,4 +167,4 @@ namespace Empiria.FinancialAccounting {
 
   }  // AccountEditorService
 
-}  // namespace Empiria.FinancialAccounting
+}  // namespace Empiria.FinancialAccounting.AccountsChartEdition

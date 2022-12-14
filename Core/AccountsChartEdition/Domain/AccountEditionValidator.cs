@@ -1,6 +1,6 @@
 ﻿/* Empiria Financial *****************************************************************************************
 *                                                                                                            *
-*  Module   : Accounts Chart                             Component : Domain Layer                            *
+*  Module   : Accounts Chart Edition                     Component : Domain Layer                            *
 *  Assembly : FinancialAccounting.Core.dll               Pattern   : Service provider                        *
 *  Type     : AccountEditionValidator                    License   : Please read LICENSE.txt file            *
 *                                                                                                            *
@@ -10,9 +10,9 @@
 using System;
 using System.Collections.Generic;
 
-using Empiria.FinancialAccounting.Adapters;
+using Empiria.FinancialAccounting.AccountsChartEdition.Adapters;
 
-namespace Empiria.FinancialAccounting {
+namespace Empiria.FinancialAccounting.AccountsChartEdition {
 
   /// <summary>Provides account edition validation services.</summary>
   internal class AccountEditionValidator {
@@ -123,4 +123,4 @@ namespace Empiria.FinancialAccounting {
 
   }  // class AccountEditionValidator
 
-}  // namespace Empiria.FinancialAccounting
+}  // namespace Empiria.FinancialAccounting.AccountsChartEdition

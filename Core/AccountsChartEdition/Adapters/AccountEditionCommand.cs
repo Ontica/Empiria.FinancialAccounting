@@ -1,6 +1,6 @@
 ﻿/* Empiria Financial *****************************************************************************************
 *                                                                                                            *
-*  Module   : Accounts Chart                             Component : Interface adapters                      *
+*  Module   : Accounts Chart Edition                     Component : Interface adapters                      *
 *  Assembly : FinancialAccounting.Core.dll               Pattern   : Command payload                         *
 *  Type     : AccountEditionCommand                      License   : Please read LICENSE.txt file            *
 *                                                                                                            *
@@ -10,7 +10,7 @@
 using System;
 using System.Linq;
 
-namespace Empiria.FinancialAccounting.Adapters {
+namespace Empiria.FinancialAccounting.AccountsChartEdition.Adapters {
 
   /// <summary>Enumerated constants type used to classify AccountEditionCommand types.</summary>
   public enum AccountEditionCommandType {
@@ -34,8 +34,25 @@ namespace Empiria.FinancialAccounting.Adapters {
   }  // enum AccountEditionCommandType
 
 
+
+  /// <summary>Base command object used for accounts edition.</summary>
+  public class BaseAccountEditionCommand {
+
+    public string AccountsChartUID {
+      get; set;
+    } = string.Empty;
+
+
+    public DateTime ApplicationDate {
+      get; set;
+    } = ExecutionServer.DateMinValue;
+
+  }  // class BaseAccountEditionCommand
+
+
+
   /// <summary>Command object used for accounts edition.</summary>
-  public class AccountEditionCommand {
+  public class AccountEditionCommand : BaseAccountEditionCommand {
 
     public AccountEditionCommandType CommandType {
       get; set;
@@ -45,17 +62,6 @@ namespace Empiria.FinancialAccounting.Adapters {
     public bool DryRun {
       get; set;
     }
-
-
-    public DateTime ApplicationDate {
-      get; set;
-    } = ExecutionServer.DateMinValue;
-
-
-    public string AccountsChartUID {
-      get; set;
-    } = string.Empty;
-
 
     public string AccountUID {
       get; set;
@@ -86,7 +92,7 @@ namespace Empiria.FinancialAccounting.Adapters {
 
     #region Public methods
 
-    static internal AccountsChart GetAccountsChart(this AccountEditionCommand command) {
+    static internal AccountsChart GetAccountsChart(this BaseAccountEditionCommand command) {
       Assertion.Require(command.AccountsChartUID, "command.AccountsChartUID");
 
       return AccountsChart.Parse(command.AccountsChartUID);
@@ -204,7 +210,7 @@ namespace Empiria.FinancialAccounting.Adapters {
 
 
     static private void EnsureIsValidForCreateAccount(this AccountEditionCommand command) {
-      Assertion.Require(String.IsNullOrEmpty(command.AccountUID),
+      Assertion.Require(string.IsNullOrEmpty(command.AccountUID),
                        "command.AccountUID was provided but it's not needed for a CreateAccount command.");
 
       command.EnsureAccountFieldsAreValid();
@@ -238,4 +244,4 @@ namespace Empiria.FinancialAccounting.Adapters {
 
   }  // AccountEditionCommandExtension
 
-}  // namespace Empiria.FinancialAccounting.Adapters
+}  // namespace Empiria.FinancialAccounting.AccountsChartEdition.Adapters
