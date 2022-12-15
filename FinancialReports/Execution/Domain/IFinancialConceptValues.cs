@@ -28,6 +28,12 @@ namespace Empiria.FinancialAccounting.FinancialReports {
 
     void CopyTotalsTo(DynamicFields copyTo);
 
+    IFinancialConceptValues Multiply(IFinancialConceptValues values);
+
+    IFinancialConceptValues Multiply(ITrialBalanceEntryDto balance);
+
+    IFinancialConceptValues Multiply(ExternalValue value);
+
     IFinancialConceptValues Round(RoundTo roundTo);
 
     IFinancialConceptValues Substract(IFinancialConceptValues values);

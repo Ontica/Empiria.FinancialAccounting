@@ -35,6 +35,8 @@ namespace Empiria.FinancialAccounting.FinancialConcepts {
 
     Substract = '-',
 
+    Multiply = '*',
+
     AbsoluteValue = '@'
 
   }

@@ -14,7 +14,6 @@ using Empiria.FinancialAccounting.ExternalData;
 using Empiria.FinancialAccounting.BalanceEngine.Adapters;
 
 using Empiria.FinancialAccounting.FinancialReports.Providers;
-using DocumentFormat.OpenXml.Drawing;
 
 namespace Empiria.FinancialAccounting.FinancialReports {
 
@@ -82,6 +81,52 @@ namespace Empiria.FinancialAccounting.FinancialReports {
 
         copyTo.SetTotalField(fieldName, value);
       }
+    }
+
+
+    public IFinancialConceptValues Multiply(IFinancialConceptValues values) {
+      var casted = (FinancialConceptValues) values;
+
+      var product = new FinancialConceptValues(_columns);
+
+      foreach (var fieldName in DynamicFields.GetDynamicMemberNames()) {
+        decimal newValue = DynamicFields.GetTotalField(fieldName) *
+                           casted.DynamicFields.GetTotalField(fieldName);
+
+        product.DynamicFields.SetTotalField(fieldName, newValue);
+      }
+
+      return product;
+    }
+
+
+    public IFinancialConceptValues Multiply(ITrialBalanceEntryDto balance) {
+      var casted = (DynamicTrialBalanceEntry) balance;
+
+      var product = new FinancialConceptValues(_columns);
+
+      foreach (var fieldName in DynamicFields.GetDynamicMemberNames()) {
+        decimal newValue = DynamicFields.GetTotalField(fieldName) *
+                           casted.GetTotalField(fieldName);
+
+        product.DynamicFields.SetTotalField(fieldName, newValue);
+      }
+
+      return product;
+    }
+
+
+    public IFinancialConceptValues Multiply(ExternalValue value) {
+      var product = new FinancialConceptValues(_columns);
+
+      foreach (var fieldName in DynamicFields.GetDynamicMemberNames()) {
+        decimal newValue = DynamicFields.GetTotalField(fieldName) *
+                           value.GetTotalField(fieldName);
+
+        product.DynamicFields.SetTotalField(fieldName, newValue);
+      }
+
+      return product;
     }
 
 

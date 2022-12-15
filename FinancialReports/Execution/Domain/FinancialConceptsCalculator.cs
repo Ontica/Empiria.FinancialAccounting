@@ -129,6 +129,10 @@ namespace Empiria.FinancialAccounting.FinancialReports {
 
           return totals.Substract(CalculateAccount(integrationEntry));
 
+        case OperatorType.Multiply:
+
+          return totals.Multiply(CalculateAccount(integrationEntry));
+
         case OperatorType.AbsoluteValue:
 
           return totals.Sum(CalculateAccount(integrationEntry))
@@ -156,6 +160,10 @@ namespace Empiria.FinancialAccounting.FinancialReports {
         case OperatorType.Substract:
 
           return totals.Substract(CalculateExternalVariable(integrationEntry));
+
+        case OperatorType.Multiply:
+
+          return totals.Multiply(CalculateExternalVariable(integrationEntry));
 
         case OperatorType.AbsoluteValue:
 
@@ -187,6 +195,11 @@ namespace Empiria.FinancialAccounting.FinancialReports {
         case OperatorType.Substract:
 
           returnValues = totals.Substract(CalculateFinancialConcept(integrationEntry.ReferencedFinancialConcept));
+          break;
+
+        case OperatorType.Multiply:
+
+          returnValues = totals.Multiply(CalculateFinancialConcept(integrationEntry.ReferencedFinancialConcept));
           break;
 
         case OperatorType.AbsoluteValue:
