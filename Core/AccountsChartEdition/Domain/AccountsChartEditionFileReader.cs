@@ -42,4 +42,3 @@ namespace Empiria.FinancialAccounting.AccountsChartEdition {
   }  // class AccountsChartEditionFileReader
 
 }  // namespace Empiria.FinancialAccounting.AccountsChartEdition
-
