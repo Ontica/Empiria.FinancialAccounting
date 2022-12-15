@@ -50,7 +50,7 @@ namespace Empiria.FinancialAccounting.FinancialReports {
 
       FillEntries(reportEntries);
 
-      CalculateColumns(reportEntries);
+      CalculateFormulaBasedColumns(reportEntries);
 
       return reportEntries.Select(x => (FinancialReportEntry) x).ToFixedList();
     }
@@ -72,7 +72,7 @@ namespace Empiria.FinancialAccounting.FinancialReports {
       reportEntries.AddRange(breakdownEntries);
       reportEntries.Add(reportItemTotals);
 
-      CalculateColumns(reportEntries);
+      CalculateFormulaBasedColumns(reportEntries);
 
       return reportEntries.ToFixedList();
     }
@@ -109,7 +109,7 @@ namespace Empiria.FinancialAccounting.FinancialReports {
 
     #region Private methods
 
-    private void CalculateColumns(IEnumerable<FinancialReportEntryResult> reportEntries) {
+    private void CalculateFormulaBasedColumns(IEnumerable<FinancialReportEntryResult> reportEntries) {
       var calculator = new FinancialReportCalculator();
 
       IEnumerable<FinancialReportEntry> castedEntries = reportEntries.Select(entry => (FinancialReportEntry) entry);
@@ -120,7 +120,7 @@ namespace Empiria.FinancialAccounting.FinancialReports {
     }
 
 
-    private void CalculateColumns(IEnumerable<FinancialReportEntry> reportEntries) {
+    private void CalculateFormulaBasedColumns(IEnumerable<FinancialReportEntry> reportEntries) {
       var calculator = new FinancialReportCalculator();
 
       var columnsToCalculate = _financialReportType.BreakdownColumns.FindAll(x => x.IsCalculated);

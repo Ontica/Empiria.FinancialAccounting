@@ -17,7 +17,7 @@ namespace Empiria.FinancialAccounting.FinancialReports {
   /// <summary>Performs data calculation over financial reports data.</summary>
   internal class FinancialReportCalculator {
 
-    public FinancialReportCalculator() {
+    internal FinancialReportCalculator() {
       // no-op
     }
 
@@ -32,22 +32,23 @@ namespace Empiria.FinancialAccounting.FinancialReports {
 
     internal void CalculateColumns(FixedList<DataTableColumn> columns,
                                    FinancialReportEntry entry) {
+      IDictionary<string, object> entryValues = ConvertReportEntryToDictionary(entry);
+
       foreach (var column in columns) {
-        CalculateEntryColumn(column, entry);
+        decimal result = CalculateEntryColumn(column.Formula, entryValues);
+
+        entryValues[column.Field] = result;
+        entry.SetTotalField(column.Field, result);
       }
     }
 
 
     #region Helpers
 
-    private void CalculateEntryColumn(DataTableColumn column, FinancialReportEntry entry) {
-      var expression = new Expression(column.Formula);
+    private decimal CalculateEntryColumn(string formula, IDictionary<string, object> values) {
+      var expression = new Expression(formula);
 
-      IDictionary<string, object> dictionary = ConvertReportEntryToDictionary(entry);
-
-      decimal result = expression.Evaluate<decimal>(dictionary);
-
-      entry.SetTotalField(column.Field, result);
+      return expression.Evaluate<decimal>(values);
     }
 
 
