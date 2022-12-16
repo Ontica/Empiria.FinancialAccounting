@@ -78,8 +78,7 @@ namespace Empiria.FinancialAccounting.FinancialReports {
     }
 
 
-    static readonly FinancialReportType Empty = BaseObject.ParseEmpty<FinancialReportType>();
-
+    static public FinancialReportType Empty => BaseObject.ParseEmpty<FinancialReportType>();
 
     #endregion Constructors and parsers
 

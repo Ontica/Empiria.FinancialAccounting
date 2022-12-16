@@ -9,6 +9,8 @@
 ************************* Copyright(c) La Vía Óntica SC, Ontica LLC and contributors. All rights reserved. **/
 using System;
 
+using Empiria.FinancialAccounting.FinancialReports.Data;
+
 namespace Empiria.FinancialAccounting.FinancialReports {
 
   /// <summary>Describes a financial report fixed row.</summary>
@@ -31,6 +33,14 @@ namespace Empiria.FinancialAccounting.FinancialReports {
     }
 
     #endregion Constructors and parsers
+
+    #region Methods
+
+    protected override void OnSave() {
+      FinancialReportsData.Write(this);
+    }
+
+    #endregion Methods
 
   }  // class FinancialReportRow
 

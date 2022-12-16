@@ -16,7 +16,7 @@ namespace Empiria.FinancialAccounting.FinancialReports.Data {
   /// <summary>Data services for financial reports configuration objects.</summary>
   static internal class FinancialReportsData {
 
-    internal static FixedList<FinancialReportItemDefinition> GetItems(FinancialReportType reportType) {
+    static internal FixedList<FinancialReportItemDefinition> GetItems(FinancialReportType reportType) {
       var sql = "SELECT * " +
                 "FROM COF_CONCEPTOS_REPORTES " +
                 $"WHERE ID_REPORTE = {reportType.Id} AND STATUS <> 'X' " +
@@ -27,6 +27,31 @@ namespace Empiria.FinancialAccounting.FinancialReports.Data {
       return DataReader.GetFixedList<FinancialReportItemDefinition>(op, true);
     }
 
+
+    static internal void Write(FinancialReportCell o) {
+      var op = DataOperation.Parse("write_cof_concepto_reporte",
+                               o.Id, o.UID, o.GetEmpiriaType().Id,
+                               o.FinancialReportType.Id, o.FinancialConcept.Id,
+                               o.Label, o.ExtendedData.ToString(), o.Format,
+                               o.Section, o.DataField,
+                               o.RowIndex.ToString(), o.ColumnIndex,
+                               (char) o.Status);
+
+      DataWriter.Execute(op);
+    }
+
+
+    static internal void Write(FinancialReportRow o) {
+      var op = DataOperation.Parse("write_cof_concepto_reporte",
+                               o.Id, o.UID, o.GetEmpiriaType().Id,
+                               o.FinancialReportType.Id, o.FinancialConcept.Id,
+                               o.Label, o.ExtendedData.ToString(), o.Format,
+                               o.Section, string.Empty,
+                               o.RowIndex.ToString(), string.Empty,
+                               (char) o.Status);
+
+      DataWriter.Execute(op);
+    }
 
   }  // class FinancialReportsData
 

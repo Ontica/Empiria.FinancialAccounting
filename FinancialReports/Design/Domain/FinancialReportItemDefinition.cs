@@ -9,6 +9,9 @@
 ************************* Copyright(c) La Vía Óntica SC, Ontica LLC and contributors. All rights reserved. **/
 using System;
 
+using Empiria.Json;
+using Empiria.StateEnums;
+
 using Empiria.FinancialAccounting.FinancialConcepts;
 
 namespace Empiria.FinancialAccounting.FinancialReports {
@@ -36,6 +39,12 @@ namespace Empiria.FinancialAccounting.FinancialReports {
 
     #region Properties
 
+    [DataField("ID_REPORTE")]
+    public FinancialReportType FinancialReportType {
+      get; private set;
+    }
+
+
     [DataField("ID_CONCEPTO")]
     public FinancialConcept FinancialConcept {
       get; private set;
@@ -56,6 +65,24 @@ namespace Empiria.FinancialAccounting.FinancialReports {
 
     [DataField("FILA")]
     public int RowIndex {
+      get; private set;
+    }
+
+
+    [DataField("SECCION")]
+    public string Section {
+      get; private set;
+    }
+
+
+    [DataField("ELEMENTO_REPORTE_EXT_DATA")]
+    internal protected JsonObject ExtendedData {
+      get; set;
+    } = JsonObject.Empty;
+
+
+    [DataField("STATUS", Default = EntityStatus.Active)]
+    public EntityStatus Status {
       get; private set;
     }
 
