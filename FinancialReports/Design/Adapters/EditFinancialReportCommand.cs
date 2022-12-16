@@ -85,6 +85,7 @@ namespace Empiria.FinancialAccounting.FinancialReports.Adapters {
         FinancialConcept = this.Entities.FinancialConcept,
         Row = this.Payload.Row,
         Column = this.Payload.Column,
+        DataField = this.Payload.DataField,
         Label = this.Payload.Label,
         Format = this.Payload.Format
       };

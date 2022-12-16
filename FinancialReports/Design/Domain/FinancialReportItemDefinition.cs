@@ -25,6 +25,11 @@ namespace Empiria.FinancialAccounting.FinancialReports {
       // Required by Empiria Framework.
     }
 
+    protected FinancialReportItemDefinition(FinancialReportType reportType) {
+      Assertion.Require(reportType, nameof(reportType));
+
+      this.FinancialReportType = reportType;
+    }
 
     static public FinancialReportItemDefinition Parse(int id) {
       return BaseObject.ParseId<FinancialReportItemDefinition>(id);
@@ -34,6 +39,7 @@ namespace Empiria.FinancialAccounting.FinancialReports {
     static public FinancialReportItemDefinition Parse(string uid) {
       return BaseObject.ParseKey<FinancialReportItemDefinition>(uid);
     }
+
 
     #endregion Constructors and parsers
 
@@ -87,6 +93,24 @@ namespace Empiria.FinancialAccounting.FinancialReports {
     }
 
     #endregion Properties
+
+    #region Methods
+
+    internal void Delete() {
+      this.Status = EntityStatus.Deleted;
+    }
+
+
+    internal void Update(ReportItemFields fields) {
+      Assertion.Require(fields, nameof(fields));
+
+      this.FinancialConcept = fields.FinancialConcept;
+      this.Label = fields.Label;
+      this.Format = fields.Format;
+      this.RowIndex = fields.Row;
+    }
+
+    #endregion Methods
 
   }  // class FinancialReportItemDefinition
 

@@ -34,7 +34,7 @@ namespace Empiria.FinancialAccounting.FinancialReports.Data {
                                o.FinancialReportType.Id, o.FinancialConcept.Id,
                                o.Label, o.ExtendedData.ToString(), o.Format,
                                o.Section, o.DataField,
-                               o.RowIndex.ToString(), o.ColumnIndex,
+                               o.RowIndex.ToString(), o.Column,
                                (char) o.Status);
 
       DataWriter.Execute(op);

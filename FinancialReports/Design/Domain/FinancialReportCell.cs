@@ -16,10 +16,18 @@ namespace Empiria.FinancialAccounting.FinancialReports {
   /// <summary>Describes a financial report fixed row.</summary>
   public class FinancialReportCell : FinancialReportItemDefinition {
 
+
     #region Constructors and parsers
 
     protected FinancialReportCell() {
       // Required by Empiria Framework.
+    }
+
+
+    internal FinancialReportCell(FinancialReportType reportType, ReportCellFields fields) : base(reportType) {
+      Assertion.Require(fields, nameof(fields));
+
+      Update(fields);
     }
 
 
@@ -43,7 +51,7 @@ namespace Empiria.FinancialAccounting.FinancialReports {
 
 
     [DataField("COLUMNA")]
-    public string ColumnIndex {
+    public string Column {
       get; private set;
     }
 
@@ -53,6 +61,13 @@ namespace Empiria.FinancialAccounting.FinancialReports {
 
     protected override void OnSave() {
       FinancialReportsData.Write(this);
+    }
+
+    internal void Update(ReportCellFields fields) {
+      base.Update(fields);
+
+      this.DataField = fields.DataField;
+      this.Column = fields.Column;
     }
 
     #endregion Methods

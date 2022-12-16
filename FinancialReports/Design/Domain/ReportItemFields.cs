@@ -43,6 +43,12 @@ namespace Empiria.FinancialAccounting.FinancialReports {
       get; set;
     } = string.Empty;
 
+
+    internal string DataField {
+      get; set;
+    } = string.Empty;
+
+
   }  // class ReportCellFields
 
 

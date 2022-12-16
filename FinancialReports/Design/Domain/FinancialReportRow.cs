@@ -22,6 +22,14 @@ namespace Empiria.FinancialAccounting.FinancialReports {
       // Required by Empiria Framework.
     }
 
+
+    internal FinancialReportRow(FinancialReportType reportType, ReportRowFields fields) : base(reportType) {
+      Assertion.Require(fields, nameof(fields));
+
+      Update(fields);
+    }
+
+
     static new public FinancialReportRow Parse(int id) {
       return BaseObject.ParseId<FinancialReportRow>(id);
     }
@@ -33,7 +41,7 @@ namespace Empiria.FinancialAccounting.FinancialReports {
 
     #endregion Constructors and parsers
 
-    #region Methods
+    #region Properties
 
     int IPositionable.Position {
       get {
@@ -41,8 +49,17 @@ namespace Empiria.FinancialAccounting.FinancialReports {
       }
     }
 
+    #endregion Properties
+
+    #region Methods
+
     protected override void OnSave() {
       FinancialReportsData.Write(this);
+    }
+
+
+    internal void Update(ReportRowFields fields) {
+      base.Update(fields);
     }
 
     #endregion Methods
