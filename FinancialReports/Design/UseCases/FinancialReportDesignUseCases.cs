@@ -32,7 +32,6 @@ namespace Empiria.FinancialAccounting.FinancialReports.UseCases {
 
     #region Use cases
 
-
     public FinancialReportDesignDto FinancialReportDesign(string reportTypeUID) {
       Assertion.Require(reportTypeUID, nameof(reportTypeUID));
 
@@ -54,21 +53,31 @@ namespace Empiria.FinancialAccounting.FinancialReports.UseCases {
 
 
     public FinancialReportCellDto InsertCell(EditFinancialReportCommand command) {
-      throw new NotImplementedException();
+      PrepareCommand(command);
+
+      FinancialReportType reportType = command.Entities.FinancialReportType;
+
+      ReportCellFields cellFields = command.MapToReportCellFields();
+
+      FinancialReportCell cell = reportType.InsertCell(cellFields);
+
+      cell.Save();
+
+      return FinancialReportDesignMapper.Map(cell);
     }
 
 
     public FinancialReportRowDto InsertRow(EditFinancialReportCommand command) {
-      Assertion.Require(command, nameof(command));
-
-      command.Arrange();
-
-      command.EnsureIsValid();
+      PrepareCommand(command);
 
       FinancialReportType reportType = command.Entities.FinancialReportType;
 
-      FinancialReportRow row = reportType.InsertRow(command.MapToRowEditionField(),
+      ReportRowFields rowFields = command.MapToReportRowFields();
+
+      FinancialReportRow row = reportType.InsertRow(rowFields,
                                                     command.Payload.Positioning);
+
+      row.Save();
 
       return FinancialReportDesignMapper.Map(row);
     }
@@ -78,7 +87,13 @@ namespace Empiria.FinancialAccounting.FinancialReports.UseCases {
       Assertion.Require(reportTypeUID, nameof(reportTypeUID));
       Assertion.Require(cellUID, nameof(cellUID));
 
-      throw new NotImplementedException();
+      var reportType = FinancialReportType.Parse(reportTypeUID);
+
+      var cell = FinancialReportCell.Parse(cellUID);
+
+      reportType.RemoveCell(cell);
+
+      cell.Save();
     }
 
 
@@ -86,27 +101,59 @@ namespace Empiria.FinancialAccounting.FinancialReports.UseCases {
       Assertion.Require(reportTypeUID, nameof(reportTypeUID));
       Assertion.Require(rowUID, nameof(rowUID));
 
-      throw new NotImplementedException();
+      var reportType = FinancialReportType.Parse(reportTypeUID);
+
+      var row = FinancialReportRow.Parse(rowUID);
+
+      reportType.RemoveRow(row);
+
+      row.Save();
     }
 
 
     public FinancialReportCellDto UpdateCell(EditFinancialReportCommand command) {
-      throw new NotImplementedException();
+      PrepareCommand(command);
+
+      FinancialReportType reportType = command.Entities.FinancialReportType;
+
+      ReportCellFields cellFields = command.MapToReportCellFields();
+
+      FinancialReportCell cell = reportType.UpdateCell(cellFields);
+
+      cell.Save();
+
+      return FinancialReportDesignMapper.Map(cell);
     }
 
 
     public FinancialReportRowDto UpdateRow(EditFinancialReportCommand command) {
+      PrepareCommand(command);
+
+      FinancialReportType reportType = command.Entities.FinancialReportType;
+
+      ReportRowFields rowFields = command.MapToReportRowFields();
+
+      FinancialReportRow row = reportType.UpdateRow(rowFields,
+                                                    command.Payload.Positioning);
+
+      row.Save();
+
+      return FinancialReportDesignMapper.Map(row);
+    }
+
+    #endregion Use cases
+
+    #region Helpers
+
+    private void PrepareCommand(EditFinancialReportCommand command) {
       Assertion.Require(command, nameof(command));
 
       command.Arrange();
 
       command.EnsureIsValid();
-
-      throw new NotImplementedException();
     }
 
-
-    #endregion Use cases
+    #endregion Helpers
 
   }  // class FinancialReportDesignUseCases
 

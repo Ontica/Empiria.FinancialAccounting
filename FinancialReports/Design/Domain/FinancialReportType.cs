@@ -216,15 +216,19 @@ namespace Empiria.FinancialAccounting.FinancialReports {
 
     #region Methods
 
+    internal FinancialReportCell GetCell(string cellUID) {
+      return GetCells().Find(x => x.UID == cellUID);
+    }
+
+
     public FixedList<FinancialReportCell> GetCells() {
       return GetItems().FindAll(x => x is FinancialReportCell)
                        .Select(y => (FinancialReportCell) y).ToFixedList();
     }
 
 
-    public FixedList<FinancialReportRow> GetRows() {
-      return GetItems().FindAll(x => x is FinancialReportRow)
-                        .Select(y => (FinancialReportRow) y).ToFixedList();
+    internal FinancialReportItemDefinition GetItem(string rowOrCellUID) {
+      return GetItems().Find(x => x.UID == rowOrCellUID);
     }
 
 
@@ -245,23 +249,62 @@ namespace Empiria.FinancialAccounting.FinancialReports {
     }
 
 
-    public ExportTo GetExportToConfig(string exportToUID) {
-      return ExportTo.Find(x => x.UID == exportToUID);
+    public FixedList<FinancialReportRow> GetRows() {
+      return GetItems().FindAll(x => x is FinancialReportRow)
+                        .Select(y => (FinancialReportRow) y).ToFixedList();
     }
-
-
-    internal FinancialReportItemDefinition GetItem(string rowOrCellUID) {
-      return GetItems().Find(x => x.UID == rowOrCellUID);
-    }
-
 
     internal FinancialReportRow GetRow(string rowUID) {
       return GetRows().Find(x => x.UID == rowUID);
     }
 
 
+    public ExportTo GetExportToConfig(string exportToUID) {
+      return ExportTo.Find(x => x.UID == exportToUID);
+    }
+
+
+    internal FinancialReportCell InsertCell(ReportCellFields cellFields) {
+      Assertion.Require(cellFields, nameof(cellFields));
+
+      throw new NotImplementedException("InsertCell()");
+    }
+
+
     internal FinancialReportRow InsertRow(ReportRowFields rowFields, Positioning positioning) {
-      throw new NotImplementedException();
+      Assertion.Require(rowFields, nameof(rowFields));
+      Assertion.Require(positioning, nameof(positioning));
+
+      throw new NotImplementedException("InsertRow()");
+    }
+
+
+    internal void RemoveCell(FinancialReportCell cell) {
+      Assertion.Require(cell, nameof(cell));
+
+      throw new NotImplementedException("RemoveCell()");
+    }
+
+
+    internal void RemoveRow(FinancialReportRow row) {
+      Assertion.Require(row, nameof(row));
+
+      throw new NotImplementedException("RemoveRow()");
+    }
+
+
+    internal FinancialReportCell UpdateCell(ReportCellFields cellFields) {
+      Assertion.Require(cellFields, nameof(cellFields));
+
+      throw new NotImplementedException("UpdateCell()");
+    }
+
+
+    internal FinancialReportRow UpdateRow(ReportRowFields rowFields, Positioning positioning) {
+      Assertion.Require(rowFields, nameof(rowFields));
+      Assertion.Require(positioning, nameof(positioning));
+
+      throw new NotImplementedException("UpdateRow()");
     }
 
 
