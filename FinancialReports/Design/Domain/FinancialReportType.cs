@@ -267,7 +267,11 @@ namespace Empiria.FinancialAccounting.FinancialReports {
     internal FinancialReportCell InsertCell(ReportCellFields cellFields) {
       Assertion.Require(cellFields, nameof(cellFields));
 
-      throw new NotImplementedException("InsertCell()");
+      var cell = new FinancialReportCell(this, cellFields);
+
+      _items = null;
+
+      return cell;
     }
 
 
@@ -275,14 +279,26 @@ namespace Empiria.FinancialAccounting.FinancialReports {
       Assertion.Require(rowFields, nameof(rowFields));
       Assertion.Require(positioning, nameof(positioning));
 
-      throw new NotImplementedException("InsertRow()");
+      rowFields.Row = positioning.Position;
+
+      var row = new FinancialReportRow(this, rowFields);
+
+      _items = null;
+
+      return row;
     }
 
 
     internal void RemoveCell(FinancialReportCell cell) {
       Assertion.Require(cell, nameof(cell));
 
-      throw new NotImplementedException("RemoveCell()");
+      Assertion.Require(cell.FinancialReportType.Equals(this),
+                        $"La celda {cell.UID} no pertenece al reporte {this.Name}.");
+
+      cell.Delete();
+
+      _items = null;
+
     }
 
 
@@ -293,18 +309,31 @@ namespace Empiria.FinancialAccounting.FinancialReports {
     }
 
 
-    internal FinancialReportCell UpdateCell(ReportCellFields cellFields) {
+    internal void UpdateCell(FinancialReportCell cell,
+                             ReportCellFields cellFields) {
+      Assertion.Require(cell, nameof(cell));
       Assertion.Require(cellFields, nameof(cellFields));
 
-      throw new NotImplementedException("UpdateCell()");
+      Assertion.Require(cell.FinancialReportType.Equals(this),
+                        $"La celda {cell.UID} no pertenece al reporte {this.Name}.");
+
+      cell.Update(cellFields);
     }
 
 
-    internal FinancialReportRow UpdateRow(ReportRowFields rowFields, Positioning positioning) {
+    internal void UpdateRow(FinancialReportRow row,
+                            ReportRowFields rowFields,
+                            Positioning positioning) {
+      Assertion.Require(row, nameof(row));
       Assertion.Require(rowFields, nameof(rowFields));
       Assertion.Require(positioning, nameof(positioning));
 
-      throw new NotImplementedException("UpdateRow()");
+      Assertion.Require(row.FinancialReportType.Equals(this),
+                        $"La fila {row.UID} no pertenece al reporte {this.Name}.");
+
+      rowFields.Row = positioning.Position;
+
+      row.Update(rowFields);
     }
 
 

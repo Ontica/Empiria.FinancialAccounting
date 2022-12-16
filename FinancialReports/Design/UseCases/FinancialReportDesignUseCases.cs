@@ -89,7 +89,7 @@ namespace Empiria.FinancialAccounting.FinancialReports.UseCases {
 
       var reportType = FinancialReportType.Parse(reportTypeUID);
 
-      var cell = FinancialReportCell.Parse(cellUID);
+      FinancialReportCell cell = reportType.GetCell(cellUID);
 
       reportType.RemoveCell(cell);
 
@@ -103,7 +103,7 @@ namespace Empiria.FinancialAccounting.FinancialReports.UseCases {
 
       var reportType = FinancialReportType.Parse(reportTypeUID);
 
-      var row = FinancialReportRow.Parse(rowUID);
+      FinancialReportRow row = reportType.GetRow(rowUID);
 
       reportType.RemoveRow(row);
 
@@ -111,14 +111,17 @@ namespace Empiria.FinancialAccounting.FinancialReports.UseCases {
     }
 
 
-    public FinancialReportCellDto UpdateCell(EditFinancialReportCommand command) {
+    public FinancialReportCellDto UpdateCell(string cellUID, EditFinancialReportCommand command) {
+      Assertion.Require(cellUID, nameof(cellUID));
       PrepareCommand(command);
 
       FinancialReportType reportType = command.Entities.FinancialReportType;
 
+      FinancialReportCell cell = reportType.GetCell(cellUID);
+
       ReportCellFields cellFields = command.MapToReportCellFields();
 
-      FinancialReportCell cell = reportType.UpdateCell(cellFields);
+      reportType.UpdateCell(cell, cellFields);
 
       cell.Save();
 
@@ -126,15 +129,17 @@ namespace Empiria.FinancialAccounting.FinancialReports.UseCases {
     }
 
 
-    public FinancialReportRowDto UpdateRow(EditFinancialReportCommand command) {
+    public FinancialReportRowDto UpdateRow(string rowUID, EditFinancialReportCommand command) {
+      Assertion.Require(rowUID, nameof(rowUID));
       PrepareCommand(command);
 
       FinancialReportType reportType = command.Entities.FinancialReportType;
 
+      FinancialReportRow row = reportType.GetRow(rowUID);
+
       ReportRowFields rowFields = command.MapToReportRowFields();
 
-      FinancialReportRow row = reportType.UpdateRow(rowFields,
-                                                    command.Payload.Positioning);
+      reportType.UpdateRow(row, rowFields, command.Payload.Positioning);
 
       row.Save();
 
