@@ -94,7 +94,7 @@ namespace Empiria.FinancialAccounting.WebApi.FinancialReports {
     [HttpDelete]
     [Route("v2/financial-accounting/financial-reports/design/{reportTypeUID}/rows/{rowUID:guid}")]
     public NoDataModel RemoveRow([FromUri] string reportTypeUID,
-                                       [FromUri] string rowUID) {
+                                 [FromUri] string rowUID) {
 
       using (var usecases = FinancialReportDesignUseCases.UseCaseInteractor()) {
         usecases.RemoveRow(reportTypeUID, rowUID);
@@ -105,7 +105,7 @@ namespace Empiria.FinancialAccounting.WebApi.FinancialReports {
 
 
     [HttpPut, HttpPatch]
-    [Route("2/financial-accounting/financial-reports/design/{reportTypeUID}/cells/{cellUID:guid}")]
+    [Route("v2/financial-accounting/financial-reports/design/{reportTypeUID}/cells/{cellUID:guid}")]
     public SingleObjectModel UpdateCell([FromUri] string reportTypeUID,
                                         [FromUri] string cellUID,
                                         [FromBody] EditFinancialReportCommand command) {
@@ -113,7 +113,7 @@ namespace Empiria.FinancialAccounting.WebApi.FinancialReports {
       base.RequireBody(command);
 
       command.Payload.ReportTypeUID = reportTypeUID;
-      command.Payload.CellUID = cellUID;
+      command.Payload.ReportItemUID = cellUID;
 
       using (var usecases = FinancialReportDesignUseCases.UseCaseInteractor()) {
         FinancialReportCellDto cell = usecases.UpdateCell(command);
@@ -124,7 +124,7 @@ namespace Empiria.FinancialAccounting.WebApi.FinancialReports {
 
 
     [HttpPut, HttpPatch]
-    [Route("2/financial-accounting/financial-reports/design/{reportTypeUID}/rows/{rowUID:guid}")]
+    [Route("v2/financial-accounting/financial-reports/design/{reportTypeUID}/rows/{rowUID:guid}")]
     public SingleObjectModel UpdateRow([FromUri] string reportTypeUID,
                                        [FromUri] string rowUID,
                                        [FromBody] EditFinancialReportCommand command) {
@@ -132,7 +132,7 @@ namespace Empiria.FinancialAccounting.WebApi.FinancialReports {
       base.RequireBody(command);
 
       command.Payload.ReportTypeUID = reportTypeUID;
-      command.Payload.RowUID = rowUID;
+      command.Payload.ReportItemUID = rowUID;
 
       using (var usecases = FinancialReportDesignUseCases.UseCaseInteractor()) {
         FinancialReportRowDto row = usecases.UpdateRow(command);
