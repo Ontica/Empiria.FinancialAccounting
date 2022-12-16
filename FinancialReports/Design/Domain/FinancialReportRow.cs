@@ -14,14 +14,13 @@ using Empiria.FinancialAccounting.FinancialReports.Data;
 namespace Empiria.FinancialAccounting.FinancialReports {
 
   /// <summary>Describes a financial report fixed row.</summary>
-  public class FinancialReportRow: FinancialReportItemDefinition {
+  public class FinancialReportRow: FinancialReportItemDefinition, IPositionable {
 
     #region Constructors and parsers
 
     protected FinancialReportRow() {
       // Required by Empiria Framework.
     }
-
 
     static new public FinancialReportRow Parse(int id) {
       return BaseObject.ParseId<FinancialReportRow>(id);
@@ -35,6 +34,12 @@ namespace Empiria.FinancialAccounting.FinancialReports {
     #endregion Constructors and parsers
 
     #region Methods
+
+    int IPositionable.Position {
+      get {
+        return base.RowIndex;
+      }
+    }
 
     protected override void OnSave() {
       FinancialReportsData.Write(this);

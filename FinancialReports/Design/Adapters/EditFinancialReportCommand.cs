@@ -9,6 +9,8 @@
 ************************* Copyright(c) La Vía Óntica SC, Ontica LLC and contributors. All rights reserved. **/
 using System;
 
+using Empiria.FinancialAccounting.FinancialConcepts;
+
 namespace Empiria.FinancialAccounting.FinancialReports.Adapters {
 
   /// <summary>Enumerates the command types used to create or update
@@ -54,53 +56,117 @@ namespace Empiria.FinancialAccounting.FinancialReports.Adapters {
     } = new EntitiesType();
 
 
-    protected override void Initialize() {
-      Payload.Initialize(this.Type);
-    }
-
-
     protected override string GetCommandTypeName() {
       return Type.ToString();
     }
 
 
-    internal ReportRowFields MapToRowEditionField() {
-      throw Assertion.EnsureNoReachThisCode("MapToRowEditionField");
+    protected override void Initialize() {
+      Payload.Initialize(this.Type);
+    }
+
+
+    protected override void SetEntities() {
+      Entities.FinancialReportType = FinancialReportType.Parse(Payload.ReportTypeUID);
+
+      if (Payload.FinancialConceptUID.Length != 0) {
+        Entities.FinancialConcept = FinancialConcept.Parse(Payload.FinancialConceptUID);
+      }
+
+      if (Payload.Positioning.Rule.UsesOffset()) {
+        FinancialReportRow offsetRow = Entities.FinancialReportType.GetRow(Payload.Positioning.OffsetUID);
+
+        Payload.Positioning.SetOffsetObject(offsetRow);
+      }
+    }
+
+    internal ReportCellFields MapToReportCellFields() {
+      return new ReportCellFields {
+        FinancialConcept = this.Entities.FinancialConcept,
+        Row = this.Payload.Row,
+        Column = this.Payload.Column,
+        Label = this.Payload.Label,
+        Format = this.Payload.Format
+      };
+    }
+
+
+    internal ReportRowFields MapToReportRowFields() {
+      return new ReportRowFields {
+        FinancialConcept = this.Entities.FinancialConcept,
+        Row = this.Payload.Row,
+        Label = this.Payload.Label,
+        Format = this.Payload.Format
+      };
     }
 
 
     public class PayloadType {
 
+      public string ReportItemUID {
+        get; set;
+      } = string.Empty;
+
+
       public string ReportTypeUID {
         get; set;
-      }
+      } = string.Empty;
 
-      public string RowUID {
+
+      public string FinancialConceptUID {
+        get; set;
+      } = string.Empty;
+
+
+      public string DataField {
+        get; set;
+      } = string.Empty;
+
+
+      public int Row {
         get; set;
       }
 
+      public string Column {
+        get; set;
+      } = string.Empty;
+
+
+      public string Label {
+        get; set;
+      } = string.Empty;
+
+
+      public string Format {
+        get; set;
+      } = string.Empty;
+
+
       public Positioning Positioning {
-        get;
-        internal set;
-      }
-      public string CellUID {
-        get;
-        set;
-      }
+        get; internal set;
+      } = new Positioning();
+
 
       internal void Initialize(EditFinancialReportCommandType type) {
-
+        // no-op
       }
 
-    } // class PayloadType
+
+    } // inner class PayloadType
 
 
     internal class EntitiesType {
+
       public FinancialReportType FinancialReportType {
-        get;
-        internal set;
+        get; internal set;
       }
-    }
+
+      public FinancialConcept FinancialConcept {
+        get; internal set;
+      } =  FinancialConcept.Empty;
+
+
+    }  // inner class EntitiesType
 
   }  // class EditFinancialReportCommand
 
