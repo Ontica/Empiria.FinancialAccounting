@@ -32,17 +32,21 @@ namespace Empiria.FinancialAccounting.Reporting.FinancialReports.Exporters {
     internal void FillOutCell(FinancialReportCell cell, FinancialReportEntryDto entry) {
       if (cell.DataField == "conceptCode") {
 
-        _excelFile.SetCell($"{cell.ColumnIndex}{cell.RowIndex}", entry.ConceptCode);
+        _excelFile.SetCell($"{cell.Column}{cell.RowIndex}", entry.ConceptCode);
 
       } else if (cell.DataField == "concept") {
 
-        _excelFile.SetCell($"{cell.ColumnIndex}{cell.RowIndex}", entry.Concept);
+        _excelFile.SetCell($"{cell.Column}{cell.RowIndex}", entry.Concept);
 
-      } else {
+      } else if (cell.DataField.Length != 0) {
 
         decimal cellValue = entry.GetTotalField(cell.DataField);
 
-        _excelFile.SetCell($"{cell.ColumnIndex}{cell.RowIndex}", cellValue);
+        _excelFile.SetCell($"{cell.Column}{cell.RowIndex}", cellValue);
+
+      } else {
+
+        _excelFile.SetCell($"{cell.Column}{cell.RowIndex}", cell.Label);
 
       }
 

@@ -45,7 +45,7 @@ namespace Empiria.FinancialAccounting.FinancialReports.Adapters {
         UID = cell.UID,
         Label = MapCellLabel(cell),
         DataField = cell.DataField,
-        Column = cell.ColumnIndex,
+        Column = cell.Column,
         Row = cell.RowIndex,
         Format = cell.Format,
         FinancialConceptUID = cell.FinancialConcept.UID,
@@ -69,7 +69,7 @@ namespace Empiria.FinancialAccounting.FinancialReports.Adapters {
 
     static private string MapCellLabel(FinancialReportCell cell) {
       if (cell.DataField.Length != 0) {
-        return $"={cell.Label}.{cell.DataField}";
+        return $"= CONCEPTO('{cell.FinancialConcept.Code}').{cell.DataField}";
       } else {
         return cell.Label;
       }
