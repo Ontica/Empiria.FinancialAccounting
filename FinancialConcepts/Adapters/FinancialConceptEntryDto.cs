@@ -9,6 +9,8 @@
 ************************* Copyright(c) La Vía Óntica SC, Ontica LLC and contributors. All rights reserved. **/
 using System;
 
+using Newtonsoft.Json;
+
 using Empiria.FinancialAccounting.ExternalData.Adapters;
 
 namespace Empiria.FinancialAccounting.FinancialConcepts.Adapters {
@@ -97,6 +99,12 @@ namespace Empiria.FinancialAccounting.FinancialConcepts.Adapters {
 
 
     public FinancialConceptEntryType Type {
+      get; internal set;
+    }
+
+
+    [JsonProperty(NullValueHandling = NullValueHandling.Include)]
+    public NamedEntityDto Group {
       get; internal set;
     }
 

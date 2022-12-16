@@ -98,7 +98,7 @@ namespace Empiria.FinancialAccounting.FinancialConcepts.Adapters {
 
 
     static internal FinancialConceptEntryDescriptorDto MapToDescriptor(FinancialConceptEntry entry) {
-      return new FinancialConceptEntryDescriptorDto {
+      var dto = new FinancialConceptEntryDescriptorDto {
         UID               = entry.UID,
         Type              = entry.Type,
         ItemCode          = entry.Code,
@@ -107,6 +107,12 @@ namespace Empiria.FinancialAccounting.FinancialConcepts.Adapters {
         SectorCode        = entry.SectorCode,
         Operator          = Convert.ToString((char) entry.Operator)
       };
+
+      if (entry.Type == FinancialConceptEntryType.FinancialConceptReference) {
+        dto.Group = entry.ReferencedFinancialConcept.Group.MapToNamedEntity();
+      }
+
+      return dto;
     }
 
 
