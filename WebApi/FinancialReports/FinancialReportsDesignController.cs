@@ -116,7 +116,7 @@ namespace Empiria.FinancialAccounting.WebApi.FinancialReports {
       command.Payload.ReportItemUID = cellUID;
 
       using (var usecases = FinancialReportDesignUseCases.UseCaseInteractor()) {
-        FinancialReportCellDto cell = usecases.UpdateCell(cellUID, command);
+        FinancialReportCellDto cell = usecases.UpdateCell(command);
 
         return new SingleObjectModel(base.Request, cell);
       }
@@ -135,7 +135,7 @@ namespace Empiria.FinancialAccounting.WebApi.FinancialReports {
       command.Payload.ReportItemUID = rowUID;
 
       using (var usecases = FinancialReportDesignUseCases.UseCaseInteractor()) {
-        FinancialReportRowDto row = usecases.UpdateRow(rowUID, command);
+        FinancialReportRowDto row = usecases.UpdateRow(command);
 
         return new SingleObjectModel(base.Request, row);
       }

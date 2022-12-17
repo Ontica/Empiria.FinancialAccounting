@@ -53,7 +53,7 @@ namespace Empiria.FinancialAccounting.FinancialReports.UseCases {
 
 
     public FinancialReportCellDto InsertCell(EditFinancialReportCommand command) {
-      PrepareCommand(command);
+      InitializeCommand(command);
 
       FinancialReportType reportType = command.Entities.FinancialReportType;
 
@@ -68,14 +68,13 @@ namespace Empiria.FinancialAccounting.FinancialReports.UseCases {
 
 
     public FinancialReportRowDto InsertRow(EditFinancialReportCommand command) {
-      PrepareCommand(command);
+      InitializeCommand(command);
 
       FinancialReportType reportType = command.Entities.FinancialReportType;
 
       ReportRowFields rowFields = command.MapToReportRowFields();
 
-      FinancialReportRow row = reportType.InsertRow(rowFields,
-                                                    command.Payload.Positioning);
+      FinancialReportRow row = reportType.InsertRow(rowFields);
 
       row.Save();
 
@@ -111,13 +110,12 @@ namespace Empiria.FinancialAccounting.FinancialReports.UseCases {
     }
 
 
-    public FinancialReportCellDto UpdateCell(string cellUID, EditFinancialReportCommand command) {
-      Assertion.Require(cellUID, nameof(cellUID));
-      PrepareCommand(command);
+    public FinancialReportCellDto UpdateCell(EditFinancialReportCommand command) {
+      InitializeCommand(command);
 
       FinancialReportType reportType = command.Entities.FinancialReportType;
 
-      FinancialReportCell cell = reportType.GetCell(cellUID);
+      var cell = (FinancialReportCell) command.Entities.FinancialReportItem;
 
       ReportCellFields cellFields = command.MapToReportCellFields();
 
@@ -129,17 +127,16 @@ namespace Empiria.FinancialAccounting.FinancialReports.UseCases {
     }
 
 
-    public FinancialReportRowDto UpdateRow(string rowUID, EditFinancialReportCommand command) {
-      Assertion.Require(rowUID, nameof(rowUID));
-      PrepareCommand(command);
+    public FinancialReportRowDto UpdateRow(EditFinancialReportCommand command) {
+      InitializeCommand(command);
 
       FinancialReportType reportType = command.Entities.FinancialReportType;
 
-      FinancialReportRow row = reportType.GetRow(rowUID);
+      var row = (FinancialReportRow) command.Entities.FinancialReportItem;
 
       ReportRowFields rowFields = command.MapToReportRowFields();
 
-      reportType.UpdateRow(row, rowFields, command.Payload.Positioning);
+      reportType.UpdateRow(row, rowFields);
 
       row.Save();
 
@@ -150,7 +147,7 @@ namespace Empiria.FinancialAccounting.FinancialReports.UseCases {
 
     #region Helpers
 
-    private void PrepareCommand(EditFinancialReportCommand command) {
+    private void InitializeCommand(EditFinancialReportCommand command) {
       Assertion.Require(command, nameof(command));
 
       command.Arrange();
