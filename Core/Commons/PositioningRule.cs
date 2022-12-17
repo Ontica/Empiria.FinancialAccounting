@@ -102,6 +102,56 @@ namespace Empiria.FinancialAccounting {
 
     }
 
+
+    public int CalculatePosition(IOrderedList orderedList, int currentPosition = -1) {
+      switch (this.Rule) {
+
+        case PositioningRule.AfterOffset:
+
+          if (currentPosition != -1 &&
+              currentPosition < OffsetObject.Position) {
+            return OffsetObject.Position;
+          } else {
+            return OffsetObject.Position + 1;
+          }
+
+
+        case PositioningRule.AtEnd:
+
+          if (currentPosition != -1) {
+            return orderedList.Count;
+          } else {
+            return orderedList.Count + 1;
+          }
+
+
+        case PositioningRule.AtStart:
+          return 1;
+
+
+        case PositioningRule.BeforeOffset:
+
+          if (currentPosition != -1 &&
+              currentPosition < OffsetObject.Position) {
+            return OffsetObject.Position - 1;
+          } else {
+            return OffsetObject.Position;
+          }
+
+
+        case PositioningRule.ByPositionValue:
+          Assertion.Require(1 <= this.Position &&
+                                this.Position <= orderedList.Count + 1,
+            $"Position value is {this.Position}, " +
+            $"but must be between 1 and {orderedList.Count + 1}.");
+
+          return this.Position;
+
+        default:
+          throw Assertion.EnsureNoReachThisCode($"Unhandled PositioningRule '{this.Rule}'.");
+      }
+    }
+
   }  // class ItemPositioning
 
 
