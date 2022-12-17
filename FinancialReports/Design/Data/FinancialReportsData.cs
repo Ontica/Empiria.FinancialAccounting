@@ -33,8 +33,7 @@ namespace Empiria.FinancialAccounting.FinancialReports.Data {
                                o.Id, o.UID, o.GetEmpiriaType().Id,
                                o.FinancialReportType.Id, o.FinancialConcept.Id,
                                o.Label, o.ExtendedData.ToString(), o.Format,
-                               o.Section, o.DataField,
-                               o.RowIndex.ToString(), o.Column,
+                               o.Section, o.DataField, o.RowIndex, o.Column,
                                (char) o.Status);
 
       DataWriter.Execute(op);
@@ -42,16 +41,60 @@ namespace Empiria.FinancialAccounting.FinancialReports.Data {
 
 
     static internal void Write(FinancialReportRow o) {
-      var op = DataOperation.Parse("write_cof_concepto_reporte",
-                               o.Id, o.UID, o.GetEmpiriaType().Id,
-                               o.FinancialReportType.Id, o.FinancialConcept.Id,
-                               o.Label, o.ExtendedData.ToString(), o.Format,
-                               o.Section, string.Empty,
-                               o.RowIndex.ToString(), string.Empty,
-                               (char) o.Status);
+      if (o.IsNew) {
+
+        WriteRow(o);
+        UpdateRowsPositions(o, -1, o.RowIndex);
+
+      } else if (o.Status == StateEnums.EntityStatus.Deleted) {
+
+        int oldRowIndex = GetRowIndex(o);
+
+        WriteRow(o);
+        UpdateRowsPositions(o, oldRowIndex, -1);
+
+      } else {
+
+        int oldRowIndex = GetRowIndex(o);
+
+        WriteRow(o);
+        UpdateRowsPositions(o, oldRowIndex, o.RowIndex);
+
+      }
+    }
+
+    #region Helpers
+
+    static private int GetRowIndex(FinancialReportRow o) {
+      var sql = "SELECT FILA " +
+                "FROM COF_CONCEPTOS_REPORTES " +
+                $"WHERE ID_ELEMENTO_REPORTE = {o.Id}";
+
+      var op = DataOperation.Parse(sql);
+
+      return DataReader.GetScalar<int>(op);
+    }
+
+
+    static private void UpdateRowsPositions(FinancialReportRow o, int oldRowIndex, int newRowIndex) {
+      var op = DataOperation.Parse("do_reposicionar_filas_reporte",
+                              o.FinancialReportType.Id, o.Id,
+                              oldRowIndex, newRowIndex);
 
       DataWriter.Execute(op);
     }
+
+    static private void WriteRow(FinancialReportRow o) {
+      var op = DataOperation.Parse("write_cof_concepto_reporte",
+                             o.Id, o.UID, o.GetEmpiriaType().Id,
+                             o.FinancialReportType.Id, o.FinancialConcept.Id,
+                             o.Label, o.ExtendedData.ToString(), o.Format,
+                             o.Section, string.Empty, o.RowIndex, string.Empty,
+                             (char) o.Status);
+      DataWriter.Execute(op);
+    }
+
+    #endregion Helpers
 
   }  // class FinancialReportsData
 
