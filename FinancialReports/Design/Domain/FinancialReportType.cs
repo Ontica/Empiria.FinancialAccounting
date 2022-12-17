@@ -13,6 +13,7 @@ using Empiria.FinancialAccounting.FinancialReports.Data;
 using Empiria.FinancialAccounting.FinancialConcepts;
 
 using Empiria.FinancialAccounting.ExternalData;
+using Empiria.StateEnums;
 
 namespace Empiria.FinancialAccounting.FinancialReports {
 
@@ -39,7 +40,7 @@ namespace Empiria.FinancialAccounting.FinancialReports {
 
 
   /// <summary>Describes a financial report.</summary>
-  public class FinancialReportType : GeneralObject {
+  public class FinancialReportType : GeneralObject, IOrderedList {
 
     #region Constructors and parsers
 
@@ -212,9 +213,15 @@ namespace Empiria.FinancialAccounting.FinancialReports {
     }
 
 
+    public int Count {
+      get {
+        return GetItems().Count;
+      }
+    }
+
     #endregion Properties
 
-    #region Methods
+      #region Methods
 
     internal FinancialReportCell GetCell(string cellUID) {
       return GetCells().Find(x => x.UID == cellUID);
@@ -275,11 +282,8 @@ namespace Empiria.FinancialAccounting.FinancialReports {
     }
 
 
-    internal FinancialReportRow InsertRow(ReportRowFields rowFields, Positioning positioning) {
+    internal FinancialReportRow InsertRow(ReportRowFields rowFields) {
       Assertion.Require(rowFields, nameof(rowFields));
-      Assertion.Require(positioning, nameof(positioning));
-
-      rowFields.Row = positioning.Position;
 
       var row = new FinancialReportRow(this, rowFields);
 
@@ -305,7 +309,12 @@ namespace Empiria.FinancialAccounting.FinancialReports {
     internal void RemoveRow(FinancialReportRow row) {
       Assertion.Require(row, nameof(row));
 
-      throw new NotImplementedException("RemoveRow()");
+      Assertion.Require(row.FinancialReportType.Equals(this),
+                  $"La fila {row.UID} no pertenece al reporte {this.Name}.");
+
+      row.Delete();
+
+      _items = null;
     }
 
 
@@ -318,22 +327,22 @@ namespace Empiria.FinancialAccounting.FinancialReports {
                         $"La celda {cell.UID} no pertenece al reporte {this.Name}.");
 
       cell.Update(cellFields);
+
+      _items = null;
     }
 
 
     internal void UpdateRow(FinancialReportRow row,
-                            ReportRowFields rowFields,
-                            Positioning positioning) {
+                            ReportRowFields rowFields) {
       Assertion.Require(row, nameof(row));
       Assertion.Require(rowFields, nameof(rowFields));
-      Assertion.Require(positioning, nameof(positioning));
 
       Assertion.Require(row.FinancialReportType.Equals(this),
                         $"La fila {row.UID} no pertenece al reporte {this.Name}.");
 
-      rowFields.Row = positioning.Position;
-
       row.Update(rowFields);
+
+      _items = null;
     }
 
 
