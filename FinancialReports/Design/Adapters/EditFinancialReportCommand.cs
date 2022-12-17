@@ -69,6 +69,10 @@ namespace Empiria.FinancialAccounting.FinancialReports.Adapters {
     protected override void SetEntities() {
       Entities.FinancialReportType = FinancialReportType.Parse(Payload.ReportTypeUID);
 
+      if (Payload.ReportItemUID.Length != 0) {
+        Entities.FinancialReportItem = FinancialReportItemDefinition.Parse(Payload.ReportItemUID);
+      }
+
       if (Payload.FinancialConceptUID.Length != 0) {
         Entities.FinancialConcept = FinancialConcept.Parse(Payload.FinancialConceptUID);
       }
@@ -79,6 +83,7 @@ namespace Empiria.FinancialAccounting.FinancialReports.Adapters {
         Payload.Positioning.SetOffsetObject(offsetRow);
       }
     }
+
 
     internal ReportCellFields MapToReportCellFields() {
       return new ReportCellFields {
@@ -95,21 +100,35 @@ namespace Empiria.FinancialAccounting.FinancialReports.Adapters {
     internal ReportRowFields MapToReportRowFields() {
       return new ReportRowFields {
         FinancialConcept = this.Entities.FinancialConcept,
-        Row = this.Payload.Row,
+        Row = CalculateRow(),
         Label = this.Payload.Label,
         Format = this.Payload.Format
       };
     }
 
+    private int CalculateRow() {
+      if (this.Entities.FinancialReportType.DesignType != FinancialReportDesignType.FixedRows) {
+        return this.Payload.Row;
+      }
+
+      if (Entities.FinancialReportItem.IsEmptyInstance) {
+        return this.Payload.Positioning.CalculatePosition(this.Entities.FinancialReportType);
+
+      } else {
+
+        return this.Payload.Positioning.CalculatePosition(this.Entities.FinancialReportType,
+                                                          Entities.FinancialReportItem.RowIndex);
+      }
+    }
 
     public class PayloadType {
 
-      public string ReportItemUID {
+      public string ReportTypeUID {
         get; set;
       } = string.Empty;
 
 
-      public string ReportTypeUID {
+      public string ReportItemUID {
         get; set;
       } = string.Empty;
 
@@ -149,11 +168,12 @@ namespace Empiria.FinancialAccounting.FinancialReports.Adapters {
 
 
       internal void Initialize(EditFinancialReportCommandType type) {
-        // no-op
+        Label = EmpiriaString.Clean(Label);
       }
 
 
     } // inner class PayloadType
+
 
 
     internal class EntitiesType {
@@ -162,12 +182,18 @@ namespace Empiria.FinancialAccounting.FinancialReports.Adapters {
         get; internal set;
       }
 
+
+      public FinancialReportItemDefinition FinancialReportItem {
+        get; internal set;
+      } = FinancialReportItemDefinition.Empty;
+
+
       public FinancialConcept FinancialConcept {
         get; internal set;
       } =  FinancialConcept.Empty;
 
-
     }  // inner class EntitiesType
+
 
   }  // class EditFinancialReportCommand
 

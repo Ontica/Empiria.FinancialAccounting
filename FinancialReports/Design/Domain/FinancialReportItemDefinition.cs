@@ -92,6 +92,8 @@ namespace Empiria.FinancialAccounting.FinancialReports {
       get; private set;
     }
 
+    static public FinancialReportItemDefinition Empty => BaseObject.ParseEmpty<FinancialReportItemDefinition>();
+
     #endregion Properties
 
     #region Methods
