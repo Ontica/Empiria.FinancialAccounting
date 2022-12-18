@@ -8,6 +8,7 @@
 *                                                                                                            *
 ************************* Copyright(c) La Vía Óntica SC, Ontica LLC and contributors. All rights reserved. **/
 using System;
+using System.Collections;
 
 namespace Empiria.FinancialAccounting {
 
@@ -103,7 +104,7 @@ namespace Empiria.FinancialAccounting {
     }
 
 
-    public int CalculatePosition(IOrderedList orderedList, int currentPosition = -1) {
+    public int CalculatePosition(ICollection orderedList, int currentPosition = -1) {
       switch (this.Rule) {
 
         case PositioningRule.AfterOffset:

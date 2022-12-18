@@ -40,7 +40,7 @@ namespace Empiria.FinancialAccounting.FinancialReports {
 
 
   /// <summary>Describes a financial report.</summary>
-  public class FinancialReportType : GeneralObject, IOrderedList {
+  public class FinancialReportType : GeneralObject {
 
     #region Fields
 
@@ -233,16 +233,9 @@ namespace Empiria.FinancialAccounting.FinancialReports {
       }
     }
 
-
-    public int Count {
-      get {
-        return GetItems().Count;
-      }
-    }
-
     #endregion Properties
 
-      #region Methods
+    #region Methods
 
     internal FinancialReportCell GetCell(string cellUID) {
       return GetCells().Find(x => x.UID == cellUID);
@@ -398,7 +391,6 @@ namespace Empiria.FinancialAccounting.FinancialReports {
 
         item.SetRowIndex(i + 1);
       }
-
     }
 
     #endregion Helpers

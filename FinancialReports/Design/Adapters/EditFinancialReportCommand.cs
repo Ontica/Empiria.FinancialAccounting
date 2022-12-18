@@ -112,11 +112,11 @@ namespace Empiria.FinancialAccounting.FinancialReports.Adapters {
       }
 
       if (Entities.FinancialReportItem.IsEmptyInstance) {
-        return this.Payload.Positioning.CalculatePosition(this.Entities.FinancialReportType);
+        return this.Payload.Positioning.CalculatePosition(this.Entities.FinancialReportType.GetItems());
 
       } else {
 
-        return this.Payload.Positioning.CalculatePosition(this.Entities.FinancialReportType,
+        return this.Payload.Positioning.CalculatePosition(this.Entities.FinancialReportType.GetItems(),
                                                           Entities.FinancialReportItem.RowIndex);
       }
     }
