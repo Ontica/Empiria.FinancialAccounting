@@ -21,7 +21,7 @@ namespace Empiria.FinancialAccounting.FinancialConcepts {
 
   /// <summary>Contains data about a financial concept, which has an arithmetic integration of other
   /// financial concepts, financial accounting accounts or external financial values.</summary>
-  public class FinancialConcept : BaseObject {
+  public class FinancialConcept : BaseObject, IPositionable {
 
     #region Fields
 
@@ -206,7 +206,7 @@ namespace Empiria.FinancialAccounting.FinancialConcepts {
 
       FinancialConceptEntry entry = FinancialConceptEntry.Create(fields);
 
-      int position = CalculatePosition(positioning);
+      int position = positioning.CalculatePosition(_integration.Value);
 
       UpdateList(entry, position);
 
@@ -260,7 +260,8 @@ namespace Empiria.FinancialAccounting.FinancialConcepts {
 
       entry.Update(fields);
 
-      int newPosition = CalculatePosition(positioning, entry.Position);
+      int newPosition = positioning.CalculatePosition(_integration.Value,
+                                                       entry.Position);
 
       UpdateList(entry, newPosition);
 
@@ -270,60 +271,6 @@ namespace Empiria.FinancialAccounting.FinancialConcepts {
     #endregion Methods
 
     #region Helpers
-
-    private int CalculatePosition(Positioning positioning,
-                                  int currentPosition = -1) {
-
-      switch (positioning.Rule) {
-
-        case PositioningRule.AfterOffset:
-          var afterOffset = GetEntry(positioning.OffsetUID);
-
-          if (currentPosition != -1 &&
-              currentPosition < afterOffset.Position) {
-            return afterOffset.Position;
-          } else {
-            return afterOffset.Position + 1;
-          }
-
-
-        case PositioningRule.AtEnd:
-
-          if (currentPosition != -1) {
-            return _integration.Value.Count;
-          } else {
-            return _integration.Value.Count + 1;
-          }
-
-
-        case PositioningRule.AtStart:
-          return 1;
-
-
-        case PositioningRule.BeforeOffset:
-          var beforeOffset = GetEntry(positioning.OffsetUID);
-
-          if (currentPosition != -1 &&
-              currentPosition < beforeOffset.Position) {
-            return beforeOffset.Position - 1;
-          } else {
-            return beforeOffset.Position;
-          }
-
-
-        case PositioningRule.ByPositionValue:
-          Assertion.Require(1 <= positioning.Position &&
-                                positioning.Position <= _integration.Value.Count + 1,
-            $"Position value is {positioning.Position}, " +
-            $"but must be between 1 and {_integration.Value.Count + 1}.");
-
-          return positioning.Position;
-
-        default:
-          throw Assertion.EnsureNoReachThisCode($"Unhandled PositioningRule '{positioning.Rule}'.");
-      }
-    }
-
 
     private void UpdateList(FinancialConceptEntry entry, int position) {
       int listIndex = Integration.IndexOf(entry);

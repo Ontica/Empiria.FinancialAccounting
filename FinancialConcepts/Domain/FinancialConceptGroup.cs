@@ -191,7 +191,7 @@ namespace Empiria.FinancialAccounting.FinancialConcepts {
         Assertion.RequireFail($"Ya existe otro concepto con la clave '{command.Code}'.");
       }
 
-      int position = CalculatePositionFrom(command);
+      int position = command.Positioning.CalculatePosition(this.FinancialConcepts);
 
       FinancialConceptFields fields = command.MapToFinancialConceptFields(position);
 
@@ -237,7 +237,8 @@ namespace Empiria.FinancialAccounting.FinancialConcepts {
         Assertion.RequireFail($"Ya existe otro concepto con la clave '{command.Code}'.");
       }
 
-      int newPosition = CalculatePositionFrom(command, concept.Position);
+      int newPosition = command.Positioning.CalculatePosition(this.FinancialConcepts,
+                                                              concept.Position);
 
       FinancialConceptFields fields = command.MapToFinancialConceptFields(newPosition);
 
@@ -254,55 +255,6 @@ namespace Empiria.FinancialAccounting.FinancialConcepts {
     #endregion Methods
 
     #region Helpers
-
-    private int CalculatePositionFrom(EditFinancialConceptCommand command,
-                                      int currentPosition = -1) {
-
-      switch (command.PositioningRule) {
-
-        case PositioningRule.AfterOffset:
-          var afterOffset = GetFinancialConcept(command.PositioningOffsetConceptUID);
-
-          if (currentPosition != -1 &&
-              currentPosition < afterOffset.Position) {
-            return afterOffset.Position;
-          } else {
-            return afterOffset.Position + 1;
-          }
-
-
-        case PositioningRule.AtEnd:
-
-          if (currentPosition != -1) {
-            return this.FinancialConcepts.Count;
-          } else {
-            return this.FinancialConcepts.Count + 1;
-          }
-
-        case PositioningRule.AtStart:
-          return 1;
-
-        case PositioningRule.BeforeOffset:
-          var beforeOffset = GetFinancialConcept(command.PositioningOffsetConceptUID);
-
-          if (currentPosition != -1 &&
-              currentPosition < beforeOffset.Position) {
-            return beforeOffset.Position - 1;
-          } else {
-            return beforeOffset.Position;
-          }
-
-        case PositioningRule.ByPositionValue:
-          Assertion.Require(1 <= command.Position &&
-                                command.Position <= this.FinancialConcepts.Count + 1,
-            $"Position value is {command.Position}, but must be between 1 and {this.FinancialConcepts.Count + 1}.");
-
-          return command.Position;
-
-        default:
-          throw Assertion.EnsureNoReachThisCode($"Unhandled PositioningRule '{command.PositioningRule}'.");
-      }
-    }
 
 
     private bool IsFinancialConceptCodeRegistered(string code, FinancialConcept excluding) {

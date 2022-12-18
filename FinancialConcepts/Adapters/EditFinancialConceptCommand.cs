@@ -60,6 +60,23 @@ namespace Empiria.FinancialAccounting.FinancialConcepts.Adapters {
     } = -1;
 
 
+    public Positioning Positioning {
+      get {
+        var positioning = new Positioning {
+          Rule = this.PositioningRule,
+          Position = this.Position,
+          OffsetUID = this.PositioningOffsetConceptUID,
+        };
+
+        if (positioning.Rule.UsesOffset()) {
+          positioning.SetOffsetObject(FinancialConcept.Parse(positioning.OffsetUID));
+        }
+
+        return positioning;
+      }
+    }
+
+
     public DateTime StartDate {
       get; set;
     } = ExecutionServer.DateMinValue;
