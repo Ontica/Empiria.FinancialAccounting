@@ -8,12 +8,12 @@
 *                                                                                                            *
 ************************* Copyright(c) La Vía Óntica SC, Ontica LLC and contributors. All rights reserved. **/
 using System;
-
-using Empiria.FinancialAccounting.FinancialReports.Data;
-using Empiria.FinancialAccounting.FinancialConcepts;
+using System.Collections.Generic;
 
 using Empiria.FinancialAccounting.ExternalData;
-using Empiria.StateEnums;
+using Empiria.FinancialAccounting.FinancialConcepts;
+
+using Empiria.FinancialAccounting.FinancialReports.Data;
 
 namespace Empiria.FinancialAccounting.FinancialReports {
 
@@ -42,6 +42,12 @@ namespace Empiria.FinancialAccounting.FinancialReports {
   /// <summary>Describes a financial report.</summary>
   public class FinancialReportType : GeneralObject, IOrderedList {
 
+    #region Fields
+
+    private Lazy<List<FinancialReportItemDefinition>> _items;
+
+    #endregion Fields
+
     #region Constructors and parsers
 
     protected FinancialReportType() {
@@ -50,12 +56,12 @@ namespace Empiria.FinancialAccounting.FinancialReports {
 
 
     static public FinancialReportType Parse(int id) {
-      return BaseObject.ParseId<FinancialReportType>(id, true);
+      return BaseObject.ParseId<FinancialReportType>(id, false);
     }
 
 
     static public FinancialReportType Parse(string uid) {
-      return BaseObject.ParseKey<FinancialReportType>(uid, true);
+      return BaseObject.ParseKey<FinancialReportType>(uid, false);
     }
 
 
@@ -80,6 +86,20 @@ namespace Empiria.FinancialAccounting.FinancialReports {
 
 
     static public FinancialReportType Empty => BaseObject.ParseEmpty<FinancialReportType>();
+
+
+    protected override void OnLoad() {
+      if (this.IsEmptyInstance) {
+        return;
+      }
+
+      if (BaseReport.IsEmptyInstance) {
+        _items = new Lazy<List<FinancialReportItemDefinition>>(() => FinancialReportsData.GetItems(this));
+      } else {
+        _items = BaseReport._items;
+      }
+    }
+
 
     #endregion Constructors and parsers
 
@@ -187,6 +207,7 @@ namespace Empiria.FinancialAccounting.FinancialReports {
       }
     }
 
+
     public FixedList<string> GridColumns {
       get {
         if (DesignType == FinancialReportDesignType.FixedRows ||
@@ -239,27 +260,21 @@ namespace Empiria.FinancialAccounting.FinancialReports {
     }
 
 
-    FixedList<FinancialReportItemDefinition> _items;
-
     internal FixedList<FinancialReportItemDefinition> GetItems() {
-      if (_items != null) {
-        return _items;
-      }
-
       if (BaseReport.IsEmptyInstance) {
-        _items = FinancialReportsData.GetItems(this);
-      } else {
-        _items = BaseReport.GetItems();
-      }
+        return _items.Value.ToFixedList();
 
-      return _items;
+      } else {
+        return BaseReport.GetItems();
+      }
     }
 
 
     public FixedList<FinancialReportRow> GetRows() {
       return GetItems().FindAll(x => x is FinancialReportRow)
-                        .Select(y => (FinancialReportRow) y).ToFixedList();
+                       .Select(y => (FinancialReportRow) y).ToFixedList();
     }
+
 
     internal FinancialReportRow GetRow(string rowUID) {
       return GetRows().Find(x => x.UID == rowUID);
@@ -276,7 +291,7 @@ namespace Empiria.FinancialAccounting.FinancialReports {
 
       var cell = new FinancialReportCell(this, cellFields);
 
-      _items = null;
+      UpdateListWith(cell);
 
       return cell;
     }
@@ -287,7 +302,7 @@ namespace Empiria.FinancialAccounting.FinancialReports {
 
       var row = new FinancialReportRow(this, rowFields);
 
-      _items = null;
+      UpdateListWith(row);
 
       return row;
     }
@@ -301,8 +316,7 @@ namespace Empiria.FinancialAccounting.FinancialReports {
 
       cell.Delete();
 
-      _items = null;
-
+      UpdateListWith(cell);
     }
 
 
@@ -310,11 +324,11 @@ namespace Empiria.FinancialAccounting.FinancialReports {
       Assertion.Require(row, nameof(row));
 
       Assertion.Require(row.FinancialReportType.Equals(this),
-                  $"La fila {row.UID} no pertenece al reporte {this.Name}.");
+                        $"La fila {row.UID} no pertenece al reporte {this.Name}.");
 
       row.Delete();
 
-      _items = null;
+      UpdateListWith(row);
     }
 
 
@@ -328,7 +342,7 @@ namespace Empiria.FinancialAccounting.FinancialReports {
 
       cell.Update(cellFields);
 
-      _items = null;
+      UpdateListWith(cell);
     }
 
 
@@ -342,11 +356,52 @@ namespace Empiria.FinancialAccounting.FinancialReports {
 
       row.Update(rowFields);
 
-      _items = null;
+      UpdateListWith(row);
     }
 
 
     #endregion Methods
+
+    #region Helpers
+
+    private void UpdateListWith(FinancialReportCell cell) {
+      var offsetCell = _items.Value.FindLast(x => x.RowIndex <= cell.RowIndex);
+
+      int insertionIndex = offsetCell != null ? _items.Value.IndexOf(offsetCell) : 0;
+
+      _items.Value.Insert(insertionIndex, cell);
+    }
+
+
+
+    private void UpdateListWith(FinancialReportRow row) {
+      int listIndex = _items.Value.IndexOf(row);
+
+      if (listIndex != -1) {
+        _items.Value.RemoveAt(listIndex);
+      }
+
+      for (int i = 0; i < _items.Value.Count; i++) {
+        FinancialReportRow item = (FinancialReportRow) _items.Value[i];
+
+        item.SetRowIndex(i + 1);
+      }
+
+      if (row.Status == StateEnums.EntityStatus.Deleted) {
+        return;
+      }
+
+      _items.Value.Insert(row.RowIndex - 1, row);
+
+      for (int i = row.RowIndex; i < _items.Value.Count; i++) {
+        FinancialReportRow item = (FinancialReportRow) _items.Value[i];
+
+        item.SetRowIndex(i + 1);
+      }
+
+    }
+
+    #endregion Helpers
 
   }  // class FinancialReportType
 

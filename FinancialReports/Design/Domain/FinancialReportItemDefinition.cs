@@ -102,6 +102,11 @@ namespace Empiria.FinancialAccounting.FinancialReports {
       this.Status = EntityStatus.Deleted;
     }
 
+    internal void SetRowIndex(int newRowIndex) {
+      Assertion.Require(newRowIndex > 0, "newRowIndex must be greater than zero.");
+
+      this.RowIndex = newRowIndex;
+    }
 
     internal void Update(ReportItemFields fields) {
       Assertion.Require(fields, nameof(fields));

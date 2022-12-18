@@ -8,6 +8,7 @@
 *                                                                                                            *
 ************************* Copyright(c) La Vía Óntica SC, Ontica LLC and contributors. All rights reserved. **/
 using System;
+using System.Collections.Generic;
 
 using Empiria.Data;
 
@@ -16,7 +17,7 @@ namespace Empiria.FinancialAccounting.FinancialReports.Data {
   /// <summary>Data services for financial reports configuration objects.</summary>
   static internal class FinancialReportsData {
 
-    static internal FixedList<FinancialReportItemDefinition> GetItems(FinancialReportType reportType) {
+    static internal List<FinancialReportItemDefinition> GetItems(FinancialReportType reportType) {
       var sql = "SELECT * " +
                 "FROM COF_CONCEPTOS_REPORTES " +
                 $"WHERE ID_REPORTE = {reportType.Id} AND STATUS <> 'X' " +
@@ -24,7 +25,7 @@ namespace Empiria.FinancialAccounting.FinancialReports.Data {
 
       var op = DataOperation.Parse(sql);
 
-      return DataReader.GetFixedList<FinancialReportItemDefinition>(op, true);
+      return DataReader.GetList<FinancialReportItemDefinition>(op, true);
     }
 
 
