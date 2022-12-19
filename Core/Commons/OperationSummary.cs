@@ -47,7 +47,7 @@ namespace Empiria.FinancialAccounting {
     }
 
 
-    internal void AddErrors(string[] issues) {
+    internal void AddErrors(IEnumerable<string> issues) {
       _errors.AddRange(issues);
     }
 
