@@ -99,7 +99,7 @@ namespace Empiria.FinancialAccounting.AccountsChartEdition {
           this.AddIssue($"La cuenta ya tiene registrado el sector {sectorToAdd.FullName}.");
           isOK = false;
 
-        } else if (sectorToAdd.HasChildren) {
+        } else if (sectorToAdd.IsSummary) {
           this.AddIssue($"El sector {sectorToAdd.FullName} tiene sectores hijos, " +
                         $"por lo que no puede ser asignado directamente a una cuenta.");
           isOK = false;

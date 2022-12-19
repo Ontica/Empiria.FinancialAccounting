@@ -89,6 +89,27 @@ namespace Empiria.FinancialAccounting {
     private int _parentSectorId = -1;
 
 
+    public bool HasParent {
+      get {
+        return !IsRoot;
+      }
+    }
+
+
+    public bool IsSummary {
+      get {
+        return EmpiriaMath.IsMemberOf(this.Id, new []{-1, 4, 10});
+      }
+    }
+
+
+    public bool IsRoot {
+      get {
+        return this.IsEmptyInstance;
+      }
+    }
+
+
     public Sector Parent {
       get {
         if (this.IsEmptyInstance) {
@@ -101,26 +122,6 @@ namespace Empiria.FinancialAccounting {
       }
     }
 
-
-    public bool HasParent {
-      get {
-        return !IsRoot;
-      }
-    }
-
-
-    public bool HasChildren {
-      get {
-        return EmpiriaMath.IsMemberOf(this.Id, new []{-1, 4, 10});
-      }
-    }
-
-
-    public bool IsRoot {
-      get {
-        return this.IsEmptyInstance;
-      }
-    }
 
     #endregion Public properties
 
