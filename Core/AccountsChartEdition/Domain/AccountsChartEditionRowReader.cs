@@ -10,6 +10,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+
 using Empiria.Office;
 
 using Empiria.FinancialAccounting.AccountsChartEdition.Adapters;
@@ -35,44 +36,85 @@ namespace Empiria.FinancialAccounting.AccountsChartEdition {
       return new AccountFieldsDto {
         AccountNumber = GetAccountNumber(),
         Name = GetAccountName(),
-        Description = string.Empty,
-        Role = GetAccountRole(),
-        DebtorCreditor = DebtorCreditorType.Undefined,
-        AccountTypeUID = string.Empty
+        Role = GetAccountRole()
       };
     }
 
 
     internal string GetAccountNumber() {
-      return ReadStringValueFromColumn("B");
+      var value = ReadStringValueFromColumn("B");
+
+      Assertion.Require(value,
+                  $"No se proporcionó el número de cuenta en la celda B{_rowIndex}.");
+
+      return value;
     }
 
 
     internal string GetAccountName() {
-      return ReadStringValueFromColumn("C");
+      var value = ReadStringValueFromColumn("C");
+
+      Assertion.Require(value,
+                $"No se proporcionó la descripción o nombre de la " +
+                $"cuenta en la celda C{_rowIndex}.");
+
+      Assertion.Require(value.Length >= 4,
+            $"La longitud de la descripción o nombre de la cuenta " +
+            $"en la celda C{_rowIndex} es demasiado corta: '{value}'");
+
+      return value;
     }
 
 
     internal AccountRole GetAccountRole() {
       string mainRole = ReadStringValueFromColumn("D").ToLower();
 
-      bool isSubsidary = ReadBoolValueFromColumn("E");
+      Assertion.Require(mainRole,
+                        $"No se proporcionó el rol de la cuenta en la celda D{_rowIndex}.");
+
+      bool isSubsidiary = GetIsSubsidiaryFlag();
       bool hasSectors = GetSectors().Length != 0;
 
       if (mainRole == "sumaria") {
         return AccountRole.Sumaria;
-
-      } else if (mainRole == "registro" && hasSectors) {
-        return AccountRole.Sectorizada;
-
-      } else if (mainRole == "registro" && isSubsidary) {
-        return AccountRole.Control;
-
-      } else if (mainRole == "registro" && !isSubsidary) {
-        return AccountRole.Detalle;
       }
 
-      return AccountRole.Undefined;
+      Assertion.Require(mainRole == "registro" || mainRole == "detalle",
+                        $"La celda D{_rowIndex} tiene un rol" +
+                        $"que no reconozco: {ReadStringValueFromColumn("D")}");
+
+      if (hasSectors) {
+        return AccountRole.Sectorizada;
+
+      } else if (isSubsidiary) {
+        return AccountRole.Control;
+
+      } else {
+        return AccountRole.Detalle;
+      }
+    }
+
+
+    internal bool GetIsSubsidiaryFlag() {
+      bool? isSubsidiary = TryReadBoolValueFromColumn("E");
+
+      Assertion.Require(isSubsidiary.HasValue,
+                  $"No puedo determinar si la cuenta maneja auxiliares o no " +
+                  $"con el dato de la celda E{_rowIndex}: {ReadStringValueFromColumn("E")}");
+
+      return isSubsidiary.Value;
+    }
+
+
+    internal AccountRole GetSectorsRole() {
+      bool isSubsidiary = GetIsSubsidiaryFlag();
+      bool hasSectors = GetSectors().Length != 0;
+
+      if (!hasSectors) {
+        return AccountRole.Undefined;
+      }
+
+      return isSubsidiary ? AccountRole.Control : AccountRole.Detalle;
     }
 
 
@@ -87,9 +129,15 @@ namespace Empiria.FinancialAccounting.AccountsChartEdition {
         return AccountEditionCommandType.CreateAccount;
       }
 
-      if (value.StartsWith("cambiar ")) {
+      if (value.StartsWith("cambiar ") ||
+          value.StartsWith("actualizar ") ||
+          value.StartsWith("modificar ")) {
         return AccountEditionCommandType.UpdateAccount;
       }
+
+      Assertion.RequireFail(
+            $"No puedo determinar qué operación se desea realizar, " +
+            $"de acuerdo a los datos de la celda A{_rowIndex}: {GetCommandText()}");
 
       return AccountEditionCommandType.Undefined;
     }
@@ -102,23 +150,58 @@ namespace Empiria.FinancialAccounting.AccountsChartEdition {
     }
 
 
-    internal string[] GetDataToBeUpdated() {
-      var value = ReadStringValueFromColumn("A");
+    internal AccountDataToBeUpdated[] GetDataToBeUpdated() {
+      var value = ReadStringValueFromColumn("A").ToLower();
 
       AccountEditionCommandType commandType = GetCommandType();
 
       if (commandType == AccountEditionCommandType.CreateAccount) {
-        return new string[0];
+        return new AccountDataToBeUpdated[0];
       }
 
       if (commandType == AccountEditionCommandType.UpdateAccount) {
-        value = value.Replace("Cambiar ", string.Empty);
+        value = value.Replace("cambiar ", string.Empty);
+        value = value.Replace("actualizar ", string.Empty);
+        value = value.Replace("modificar ", string.Empty);
+        value = value.Replace(".", string.Empty);
+        value = value.Replace(";", ",");
 
-        return value.Split(',').Select(x => EmpiriaString.TrimAll(x))
-                               .ToArray();
+        var stringArray = value.Split(',').Select(x => EmpiriaString.TrimAll(x).ToLower())
+                                    .ToArray();
+
+        return CreateUpdatedAccountDataFromStringArray(stringArray);
       }
 
-      return new string[0];
+      return new AccountDataToBeUpdated[0];
+    }
+
+
+    private AccountDataToBeUpdated[] CreateUpdatedAccountDataFromStringArray(string[] stringArray) {
+      var list = new List<AccountDataToBeUpdated>();
+
+      foreach (var s in stringArray) {
+        if (s == "descripción" || s == "descripcion" || s == "nombre") {
+          list.Add(AccountDataToBeUpdated.Description);
+
+        } else if (s == "rol") {
+          list.Add(AccountDataToBeUpdated.MainRole);
+
+        } else if (s == "auxiliar" || s == "auxiliares") {
+          list.Add(AccountDataToBeUpdated.SubledgerRole);
+
+        } else if (s == "moneda" || s == "monedas") {
+          list.Add(AccountDataToBeUpdated.Currencies);
+
+        } else if (s == "sector" || s == "sectores") {
+          list.Add(AccountDataToBeUpdated.Sectors);
+
+        } else {
+          Assertion.RequireFail($"La fila {_rowIndex} del archivo contiene una " +
+                                $"operación que no reconozco: {GetCommandText()}.");
+        }
+      }
+
+      return list.ToArray();
     }
 
 
@@ -136,14 +219,14 @@ namespace Empiria.FinancialAccounting.AccountsChartEdition {
 
     #region Helpers
 
-    private bool ReadBoolValueFromColumn(string column) {
+    private bool? TryReadBoolValueFromColumn(string column) {
       var value = _spreadsheet.ReadCellValue<string>($"{column}{_rowIndex}").Trim();
 
-      if (value.Length == 0 && value != "-") {
+      if (value.Length == 0 || value == "-") {
         return false;
       }
 
-      return EmpiriaString.ToBoolean(EmpiriaString.TrimAll(value));
+      return EmpiriaString.TryToBoolean(EmpiriaString.TrimAll(value));
     }
 
 
