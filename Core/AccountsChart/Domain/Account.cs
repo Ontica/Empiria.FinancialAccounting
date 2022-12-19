@@ -183,7 +183,6 @@ namespace Empiria.FinancialAccounting {
 
     #endregion Public properties
 
-
     #region Public methods
 
     public void CheckIsNotSummary() {
@@ -285,9 +284,7 @@ namespace Empiria.FinancialAccounting {
         return Account.Empty;
       }
 
-      var accountNumberSeparator = this.AccountsChart.MasterData.AccountNumberSeparator;
-
-      var parentAccountNumber = this.Number.Substring(0, this.Number.LastIndexOf(accountNumberSeparator));
+      var parentAccountNumber = this.AccountsChart.GetParentAccountNumber(this.Number);
 
       return AccountsChart.GetAccount(parentAccountNumber);
     }

@@ -72,6 +72,7 @@ namespace Empiria.FinancialAccounting {
     protected override void OnLoad() {
       if (!this.IsEmptyInstance) {
         this.MasterData = new AccountsChartMasterData(this, this.ExtendedDataField);
+
         _accounts = new Lazy<EmpiriaHashTable<Account>>(() => AccountsChartData.GetAccounts(this));
 
       } else {
@@ -233,6 +234,18 @@ namespace Empiria.FinancialAccounting {
     public bool IsAccountNumberFormatValid(string accountNumber) {
       var formatted = FormatAccountNumber(accountNumber);
 
+      if (this.Equals(AccountsChart.IFRS) && formatted.Contains("00")) {
+        return false;
+      }
+
+      if (this.Equals(AccountsChart.IFRS) && !EmpiriaString.All(formatted, "0123456789.")) {
+        return false;
+      }
+
+      if (this.Equals(AccountsChart.IFRS) && formatted.StartsWith("0")) {
+        return false;
+      }
+
       return (formatted == accountNumber);
     }
 
@@ -285,6 +298,13 @@ namespace Empiria.FinancialAccounting {
     }
 
 
+    internal string GetParentAccountNumber(string number) {
+      var accountNumberSeparator = this.MasterData.AccountNumberSeparator;
+
+      return number.Substring(0, number.LastIndexOf(accountNumberSeparator));
+    }
+
+
     public FixedList<DateTime> OpenedAccountingDates() {
       return this.MasterData.Calendar.OpenedAccountingDates();
     }
@@ -299,6 +319,13 @@ namespace Empiria.FinancialAccounting {
       Assertion.Require(ledgerNumber, "ledgerNumber");
 
       return this.MasterData.Ledgers.Find(x => x.Number.Equals(ledgerNumber));
+    }
+
+
+    internal Account TryGetParentAccount(string accountNumber) {
+      var parentAccountNumber = GetParentAccountNumber(accountNumber);
+
+      return TryGetAccount(parentAccountNumber);
     }
 
 
