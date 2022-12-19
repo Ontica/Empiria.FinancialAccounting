@@ -34,8 +34,23 @@ namespace Empiria.FinancialAccounting.AccountsChartEdition.Adapters {
   }  // enum AccountEditionCommandType
 
 
+  /// <summary>Enumerated constants type used to classify the updated data for an edition command.</summary>
+  public enum AccountDataToBeUpdated {
 
-  /// <summary>Command object used to update a chart of accouunts from a file.</summary>
+    Description,
+
+    MainRole,
+
+    SubledgerRole,
+
+    Currencies,
+
+    Sectors
+
+  }  // enum AccountDataEdition
+
+
+  /// <summary>Command object used to update a chart of accounts from a file.</summary>
   public class UpdateAccountsFromFileCommand {
 
     public string AccountsChartUID {
@@ -94,9 +109,14 @@ namespace Empiria.FinancialAccounting.AccountsChartEdition.Adapters {
     } = new string[0];
 
 
-    public string[] DataToBeUpdated {
+    public AccountRole SectorsRole {
       get; set;
-    } = new string[0];
+    } = AccountRole.Undefined;
+
+
+    public AccountDataToBeUpdated[] DataToBeUpdated {
+      get; set;
+    } = new AccountDataToBeUpdated[0];
 
 
     public string CommandText {
@@ -104,11 +124,54 @@ namespace Empiria.FinancialAccounting.AccountsChartEdition.Adapters {
     } = string.Empty;
 
 
-    public string[] Issues {
+    public string DataSource {
+      get; internal set;
+    } = string.Empty;
+
+
+    public FixedList<string> Issues {
       get {
-        return base.ExecutionResult.Issues.ToArray();
+        return base.ExecutionResult.Issues;
       }
     }
+
+
+    internal EntitiesType Entities {
+      get; private set;
+    } = new EntitiesType();
+
+
+    protected override void SetIssues() {
+      // no-op
+    }
+
+
+    protected override void SetEntities() {
+      Entities.AccountsChart = AccountsChart.Parse(AccountsChartUID);
+
+      if (AccountUID.Length != 0) {
+        Entities.Account = Account.Parse(AccountUID);
+      }
+    }
+
+
+    internal void EnsureCanCreateAccount(FixedList<AccountEditionCommand> commands) {
+      // no-op
+    }
+
+
+    internal class EntitiesType {
+
+      public AccountsChart AccountsChart {
+        get; internal set;
+      }
+
+      public Account Account {
+        get; internal set;
+      } = Account.Empty;
+
+
+    }  // inner class EntitiesType
 
   }  // class AccountEditionCommand
 
