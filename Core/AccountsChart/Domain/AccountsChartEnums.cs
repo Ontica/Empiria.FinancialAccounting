@@ -14,6 +14,8 @@ namespace Empiria.FinancialAccounting {
   /// <summary>Describes the posting or summary role of an account.</summary>
   public enum AccountRole {
 
+    Undefined = 'U',
+
     /// <summary>Summary account (cuenta sumaria).</summary>
     Sumaria = 'S',
 
@@ -32,6 +34,8 @@ namespace Empiria.FinancialAccounting {
 
   /// <summary>Enumerates an account debtor/creditor type (naturaleza deudora o acreedora).</summary>
   public enum DebtorCreditorType {
+
+    Undefined = 'U',
 
     /// <summary>Debtor account (naturaleza deudora).</summary>
     Deudora = 'D',
