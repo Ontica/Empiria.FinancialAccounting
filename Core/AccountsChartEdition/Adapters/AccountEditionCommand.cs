@@ -35,8 +35,8 @@ namespace Empiria.FinancialAccounting.AccountsChartEdition.Adapters {
 
 
 
-  /// <summary>Base command object used for accounts edition.</summary>
-  public class BaseAccountEditionCommand {
+  /// <summary>Command object used to update a chart of accouunts from a file.</summary>
+  public class UpdateAccountsFromFileCommand {
 
     public string AccountsChartUID {
       get; set;
@@ -47,21 +47,32 @@ namespace Empiria.FinancialAccounting.AccountsChartEdition.Adapters {
       get; set;
     } = ExecutionServer.DateMinValue;
 
-  }  // class BaseAccountEditionCommand
+
+  }  // class UpdateAccountsFromFileCommand
 
 
 
-  /// <summary>Command object used for accounts edition.</summary>
-  public class AccountEditionCommand : BaseAccountEditionCommand {
+  /// <summary>Command object used for edit an individual account.</summary>
+  public class AccountEditionCommand : Command {
 
     public AccountEditionCommandType CommandType {
       get; set;
     } = AccountEditionCommandType.Undefined;
 
 
-    public bool DryRun {
-      get; set;
+    protected override string GetCommandTypeName() {
+      return this.CommandType.ToString();
     }
+
+    public string AccountsChartUID {
+      get; set;
+    } = string.Empty;
+
+
+    public DateTime ApplicationDate {
+      get; set;
+    } = ExecutionServer.DateMinValue;
+
 
     public string AccountUID {
       get; set;
@@ -83,8 +94,40 @@ namespace Empiria.FinancialAccounting.AccountsChartEdition.Adapters {
     } = new string[0];
 
 
+    public string[] DataToBeUpdated {
+      get; set;
+    } = new string[0];
+
+
+    public string CommandText {
+      get; internal set;
+    } = string.Empty;
+
+
+    public string[] Issues {
+      get {
+        return base.ExecutionResult.Issues.ToArray();
+      }
+    }
+
   }  // class AccountEditionCommand
 
+
+
+  /// <summary>Extension methods for UpdateAccountsFromFileCommand interface adapter.</summary>
+  static internal class UpdateAccountsFromFileCommandExtension {
+
+    #region Methods
+
+    static internal AccountsChart GetAccountsChart(this UpdateAccountsFromFileCommand command) {
+      Assertion.Require(command.AccountsChartUID, "command.AccountsChartUID");
+
+      return AccountsChart.Parse(command.AccountsChartUID);
+    }
+
+    #endregion Methods
+
+  }  // class UpdateAccountsFromFileCommandExtension
 
 
   /// <summary>Extension methods for AccountEditionCommand interface adapter.</summary>
@@ -92,7 +135,7 @@ namespace Empiria.FinancialAccounting.AccountsChartEdition.Adapters {
 
     #region Public methods
 
-    static internal AccountsChart GetAccountsChart(this BaseAccountEditionCommand command) {
+    static internal AccountsChart GetAccountsChart(this AccountEditionCommand command) {
       Assertion.Require(command.AccountsChartUID, "command.AccountsChartUID");
 
       return AccountsChart.Parse(command.AccountsChartUID);

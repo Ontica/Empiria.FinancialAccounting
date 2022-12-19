@@ -192,7 +192,7 @@ namespace Empiria.FinancialAccounting.WebApi {
 
       InputFile excelFile = base.GetInputFileFromHttpRequest("ExcelFileWithAccountsChartEditionCommands");
 
-      BaseAccountEditionCommand command = base.GetFormDataFromHttpRequest<BaseAccountEditionCommand>("command");
+      UpdateAccountsFromFileCommand command = base.GetFormDataFromHttpRequest<UpdateAccountsFromFileCommand>("command");
 
       bool dryRun = RouteContainsDryRunFlag();
 
