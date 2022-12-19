@@ -8,6 +8,7 @@
 *                                                                                                            *
 ************************* Copyright(c) La Vía Óntica SC, Ontica LLC and contributors. All rights reserved. **/
 using System;
+using System.IO;
 
 using Empiria.Services;
 using Empiria.Storage;
@@ -113,9 +114,9 @@ namespace Empiria.FinancialAccounting.AccountsChartEdition.UseCases {
     }
 
 
-    public FixedList<OperationSummary> UpdateFromExcelFile(BaseAccountEditionCommand command,
-                                                          InputFile excelFile,
-                                                          bool dryRun) {
+    public FixedList<OperationSummary> UpdateFromExcelFile(UpdateAccountsFromFileCommand command,
+                                                           InputFile excelFile,
+                                                           bool dryRun) {
       Assertion.Require(command, nameof(command));
       Assertion.Require(excelFile, nameof(excelFile));
 
@@ -128,18 +129,15 @@ namespace Empiria.FinancialAccounting.AccountsChartEdition.UseCases {
                         "La fecha de aplicación de los cambios en el catálogo " +
                         "debe ser a partir de mañana y hasta 5 días después del día de hoy.");
 
-      var reader = new AccountsChartEditionFileReader(chart, applicationDate, excelFile, dryRun);
+      FileInfo excelFileInfo = FileUtilities.SaveFile(excelFile);
+
+      var reader = new AccountsChartEditionFileReader(chart, applicationDate, excelFileInfo, dryRun);
 
       FixedList<AccountEditionCommand> commands = reader.GetCommands();
 
-      if (!dryRun) {
+      var processor = new AccountsChartEditionCommandsProcessor(dryRun);
 
-        var processor = new AccountsChartEditionCommandsProcessor();
-
-        processor.Execute(commands);
-      }
-
-      return new FixedList<OperationSummary>();
+      return processor.Execute(commands);
     }
 
 
