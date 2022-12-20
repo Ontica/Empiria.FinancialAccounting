@@ -11,7 +11,10 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 
+using Empiria.Data;
+
 using Empiria.FinancialAccounting.AccountsChartEdition.Adapters;
+using Empiria.FinancialAccounting.AccountsChartEdition.Data;
 
 namespace Empiria.FinancialAccounting.AccountsChartEdition {
 
@@ -26,9 +29,42 @@ namespace Empiria.FinancialAccounting.AccountsChartEdition {
 
     internal FixedList<OperationSummary> Execute(FixedList<AccountEditionCommand> commands) {
 
+      foreach (var command in commands) {
+        command.Arrange();
+
+        if (command.CommandType == AccountEditionCommandType.CreateAccount) {
+          command.EnsureCanCreateAccount(commands);
+        }
+      }
+
+      var allActions = new List<AccountsChartEditionAction>(128);
+
+      foreach (var command in commands) {
+        var actionsCreator = new AccountsChartEditionActionsBuilder(command);
+
+        FixedList<AccountsChartEditionAction> commandActions = actionsCreator.BuildActions();
+
+        allActions.AddRange(commandActions);
+      }
+
+      if (!_dryRun) {
+        ProcessActions(allActions.ToFixedList());
+        commands.First().GetAccountsChart().Refresh();
+      }
 
       return CreateOperationSummaryList(commands);
     }
+
+    private void ProcessActions(FixedList<AccountsChartEditionAction> allActions) {
+      var list = new DataOperationList("AccountsChartEdition");
+
+      foreach (var action in allActions) {
+        list.Add(action.DataOperations);
+      }
+
+      AccountEditionDataService.Execute(list);
+    }
+
 
     private FixedList<OperationSummary> CreateOperationSummaryList(FixedList<AccountEditionCommand> commands) {
       var list = new List<OperationSummary>();
@@ -41,7 +77,6 @@ namespace Empiria.FinancialAccounting.AccountsChartEdition {
         summary.Operation = summaryGroup;
 
         foreach (var command in commands.FindAll(x => x.CommandText == summaryGroup)) {
-
           summary.Count++;
           summary.AddItem("Cuenta " + command.AccountFields.AccountNumber);
           summary.AddErrors(command.Issues);

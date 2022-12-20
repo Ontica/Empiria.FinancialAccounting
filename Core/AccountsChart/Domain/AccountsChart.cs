@@ -69,16 +69,23 @@ namespace Empiria.FinancialAccounting {
     static public AccountsChart Empty => BaseObject.ParseEmpty<AccountsChart>();
 
 
+    internal void Refresh() {
+      if (!this.IsEmptyInstance) {
+        _accounts = new Lazy<EmpiriaHashTable<Account>>(() => AccountsChartData.GetAccounts(this));
+      } else {
+        _accounts = new Lazy<EmpiriaHashTable<Account>>(() => new EmpiriaHashTable<Account>());
+      }
+    }
+
+
     protected override void OnLoad() {
       if (!this.IsEmptyInstance) {
         this.MasterData = new AccountsChartMasterData(this, this.ExtendedDataField);
-
-        _accounts = new Lazy<EmpiriaHashTable<Account>>(() => AccountsChartData.GetAccounts(this));
-
       } else {
         this.MasterData = new AccountsChartMasterData(this);
-        _accounts = new Lazy<EmpiriaHashTable<Account>>(() => new EmpiriaHashTable<Account>());
       }
+
+      Refresh();
     }
 
     #endregion Constructors and parsers
