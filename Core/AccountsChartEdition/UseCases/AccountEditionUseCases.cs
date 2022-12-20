@@ -123,11 +123,11 @@ namespace Empiria.FinancialAccounting.AccountsChartEdition.UseCases {
       AccountsChart chart = command.GetAccountsChart();
       DateTime applicationDate = command.ApplicationDate;
 
-      Assertion.Require(DateTime.Today.AddDays(1) <= applicationDate &&
-                        applicationDate <= DateTime.Today.AddDays(5) &&
+      Assertion.Require(chart.MasterData.StartDate <= applicationDate &&
                         applicationDate < chart.MasterData.EndDate,
-                        "La fecha de aplicación de los cambios en el catálogo " +
-                        "debe ser a partir de mañana y hasta 5 días después del día de hoy.");
+                 $"La fecha de aplicación de cambios al catálogo {chart.Name} " +
+                 $"debe estar los días {chart.MasterData.StartDate.ToString("dd/MMMM/yyyy")} " +
+                 $"y {chart.MasterData.EndDate.ToShortDateString()}.");
 
       FileInfo excelFileInfo = FileUtilities.SaveFile(excelFile);
 
