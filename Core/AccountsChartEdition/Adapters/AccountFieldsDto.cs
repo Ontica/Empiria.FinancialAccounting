@@ -31,7 +31,7 @@ namespace Empiria.FinancialAccounting.AccountsChartEdition.Adapters {
 
     public AccountRole Role {
       get; set;
-    }
+    } = AccountRole.Undefined;
 
 
     public string AccountTypeUID {
@@ -41,7 +41,7 @@ namespace Empiria.FinancialAccounting.AccountsChartEdition.Adapters {
 
     public DebtorCreditorType DebtorCreditor {
       get; set;
-    }
+    } = DebtorCreditorType.Undefined;
 
   }  // class AccountFieldsDto
 

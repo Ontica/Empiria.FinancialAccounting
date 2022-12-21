@@ -58,7 +58,7 @@ namespace Empiria.FinancialAccounting.AccountsChartEdition {
     #region Helpers
 
     private void CleanUpIrrelevantFields(AccountEditionCommand command) {
-      if (command.CommandType != AccountEditionCommandType.UpdateAccount) {
+      if (command.CommandType == AccountEditionCommandType.CreateAccount) {
         return;
       }
 
@@ -181,7 +181,8 @@ namespace Empiria.FinancialAccounting.AccountsChartEdition {
         DataSource = $"Fila {rowIndex}"
       };
 
-      if (command.CommandType == AccountEditionCommandType.UpdateAccount) {
+      if (command.CommandType == AccountEditionCommandType.FixAccountName ||
+          command.CommandType == AccountEditionCommandType.UpdateAccount) {
         Account account = _chart.GetAccount(command.AccountFields.AccountNumber);
 
         command.AccountUID = account.UID;
@@ -214,15 +215,17 @@ namespace Empiria.FinancialAccounting.AccountsChartEdition {
         Account account = _chart.TryGetAccount(accountNumber);
 
         if (command.CommandType == AccountEditionCommandType.CreateAccount) {
+
           Assertion.Require(account == null,
               $"Se está solicitando agregar la cuenta '{accountNumber}' " +
-              $"pero la misma ya existe en el catálogo de cuentas: {command.DataSource}");
+              $"pero ya existe en el catálogo de cuentas: {command.DataSource}");
 
-        } else if (command.CommandType == AccountEditionCommandType.UpdateAccount) {
+        } else if (command.CommandType == AccountEditionCommandType.FixAccountName ||
+                   command.CommandType == AccountEditionCommandType.UpdateAccount) {
 
           Assertion.Require(account != null,
               $"Se está solicitando modificar la cuenta '{accountNumber}' " +
-              $"pero la misma no está registrada en el catálogo de cuentas : {command.DataSource}.");
+              $"pero no está registrada en el catálogo de cuentas : {command.DataSource}.");
         }
       }
     }
@@ -232,7 +235,8 @@ namespace Empiria.FinancialAccounting.AccountsChartEdition {
       foreach (var command in commands) {
         string accountNumber = command.AccountFields.AccountNumber;
 
-        if (command.CommandType == AccountEditionCommandType.UpdateAccount) {
+        if (command.CommandType == AccountEditionCommandType.FixAccountName ||
+            command.CommandType == AccountEditionCommandType.UpdateAccount) {
           Assertion.Require(command.AccountUID,
               $"No se registró el UID de la cuenta {accountNumber}: {command.DataSource}.");
         }
@@ -259,6 +263,7 @@ namespace Empiria.FinancialAccounting.AccountsChartEdition {
 
       foreach (var command in commands) {
         Assertion.Require(command.CommandType == AccountEditionCommandType.CreateAccount ||
+                          command.CommandType == AccountEditionCommandType.FixAccountName ||
                           command.CommandType == AccountEditionCommandType.UpdateAccount,
           $"No reconozco la operación proveniente de: {command.DataSource}.");
       }

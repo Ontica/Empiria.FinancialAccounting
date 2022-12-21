@@ -21,6 +21,8 @@ namespace Empiria.FinancialAccounting.AccountsChartEdition.Adapters {
 
     CreateAccount,
 
+    FixAccountName,
+
     RemoveAccount,
 
     RemoveCurrencies,
@@ -37,11 +39,13 @@ namespace Empiria.FinancialAccounting.AccountsChartEdition.Adapters {
   /// <summary>Enumerated constants type used to classify the updated data for an edition command.</summary>
   public enum AccountDataToBeUpdated {
 
-    Description,
+    Name,
 
     MainRole,
 
     SubledgerRole,
+
+    DebtorCreditor,
 
     Currencies,
 

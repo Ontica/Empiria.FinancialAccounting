@@ -37,9 +37,13 @@ namespace Empiria.FinancialAccounting.AccountsChartEdition {
         return BuildCreateAccountActions();
       }
 
-      if (_command.CommandType == AccountEditionCommandType.UpdateAccount) {
-        return BuildUpdateAccountActions();
+      if (_command.CommandType == AccountEditionCommandType.FixAccountName) {
+        return BuildFixAccountNameActions();
       }
+
+      //if (_command.CommandType == AccountEditionCommandType.UpdateAccount) {
+      //  return BuildUpdateAccountActions();
+      //}
 
       throw Assertion.EnsureNoReachThisCode();
     }
@@ -106,6 +110,18 @@ namespace Empiria.FinancialAccounting.AccountsChartEdition {
       var action = new AccountsChartEditionAction(_command, tuple.DataOperation);
 
       return (tuple.NewStdAccountId, action);
+    }
+
+
+    private FixedList<AccountsChartEditionAction> BuildFixAccountNameActions() {
+      Account account = _command.GetAccountToEdit();
+
+      DataOperation op = AccountEditionDataService.FixStandardAccountNameOp(account,
+                                                                            _command.AccountFields.Name);
+
+      var action = new AccountsChartEditionAction(_command, op);
+
+      return new[] { action }.ToFixedList();
     }
 
   }  // class AccountsChartEditionActionsBuilder

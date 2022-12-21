@@ -121,12 +121,18 @@ namespace Empiria.FinancialAccounting.AccountsChartEdition {
     internal AccountEditionCommandType GetCommandType() {
       var value = ReadStringValueFromColumn("A").ToLower();
 
+      value = EmpiriaString.RemoveAccents(value);
+
       if (value.Length == 0) {
         return AccountEditionCommandType.Undefined;
       }
 
       if (value == "agregar cuenta") {
         return AccountEditionCommandType.CreateAccount;
+      }
+
+      if (value == "corregir descripcion") {
+        return AccountEditionCommandType.FixAccountName;
       }
 
       if (value.StartsWith("cambiar ") ||
@@ -159,6 +165,10 @@ namespace Empiria.FinancialAccounting.AccountsChartEdition {
         return new AccountDataToBeUpdated[0];
       }
 
+      if (commandType == AccountEditionCommandType.FixAccountName) {
+        return new AccountDataToBeUpdated[0];
+      }
+
       if (commandType == AccountEditionCommandType.UpdateAccount) {
         value = value.Replace("cambiar ", string.Empty);
         value = value.Replace("actualizar ", string.Empty);
@@ -181,7 +191,7 @@ namespace Empiria.FinancialAccounting.AccountsChartEdition {
 
       foreach (var s in stringArray) {
         if (s == "descripción" || s == "descripcion" || s == "nombre") {
-          list.Add(AccountDataToBeUpdated.Description);
+          list.Add(AccountDataToBeUpdated.Name);
 
         } else if (s == "rol") {
           list.Add(AccountDataToBeUpdated.MainRole);

@@ -48,7 +48,7 @@ namespace Empiria.FinancialAccounting.AccountsChartEdition.Data {
       }
 
 
-      var op = DataOperation.Parse("do_create_cof_cuenta_estandar",
+      var op = DataOperation.Parse("do_create_cuenta_estandar",
                          stdAccountId, o.GetAccountsChart().Id, o.AccountFields.AccountNumber,
                          o.AccountFields.Name, "Agregada con el importador en fase de pruebas",
                          (char) o.AccountFields.Role, o.AccountFields.GetAccountType().Id,
@@ -70,6 +70,13 @@ namespace Empiria.FinancialAccounting.AccountsChartEdition.Data {
     }
 
 
+    static internal DataOperation FixStandardAccountNameOp(Account account, string name) {
+      return DataOperation.Parse("do_fix_nombre_cuenta_estandar",
+                                 account.StandardAccountId, account.AccountsChart.Id,
+                                 account.Number, name, BuildKeywords(account));
+    }
+
+
     #region Helpers
 
     static private string BuildKeywords(AccountFieldsDto o) {
@@ -79,6 +86,13 @@ namespace Empiria.FinancialAccounting.AccountsChartEdition.Data {
                                          o.Role.ToString());
     }
 
+
+    private static string BuildKeywords(Account o) {
+      return EmpiriaString.BuildKeywords(o.Number, o.Name,
+                                         o.AccountType.Name, o.Description,
+                                         o.DebtorCreditor.ToString(),
+                                         o.Role.ToString());
+    }
 
     #endregion Helpers
 
