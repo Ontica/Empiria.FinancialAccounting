@@ -32,64 +32,41 @@ namespace Empiria.FinancialAccounting.AccountsChartEdition.Data {
                                                      DateTime applicationDate) {
       return DataOperation.Parse("write_cof_mapeo_sector",
                                   stdAccountId, sector.Id,
-                                  sectorRole, applicationDate,
+                                  (char) sectorRole, applicationDate,
                                   Account.MAX_END_DATE);
     }
 
 
-    static internal (long, FixedList<DataOperation>) CreateStandardAccountOp(AccountEditionCommand o) {
+    static internal (long, DataOperation) CreateStandardAccountOp(AccountEditionCommand o) {
 
       long stdAccountId = 0;
+      long stdAccountHistoryId = 0;
 
       if (!o.DryRun) {
         stdAccountId = CommonMethods.GetNextObjectId("SEC_ID_CUENTA_ESTANDAR");
+        stdAccountHistoryId = CommonMethods.GetNextObjectId("SEC_ID_CUENTA_ESTANDAR_HIST");
       }
 
-      var list = new List<DataOperation>();
 
-      DataOperation op = WriteStandardAccountOp(stdAccountId, o);
+      var op = DataOperation.Parse("do_create_cof_cuenta_estandar",
+                         stdAccountId, o.GetAccountsChart().Id, o.AccountFields.AccountNumber,
+                         o.AccountFields.Name, "Agregada con el importador en fase de pruebas",
+                         (char) o.AccountFields.Role, o.AccountFields.GetAccountType().Id,
+                         (char) o.AccountFields.DebtorCreditor, o.ApplicationDate, Account.MAX_END_DATE,
+                         stdAccountHistoryId, Guid.NewGuid().ToString(), BuildKeywords(o.AccountFields));
 
-      list.Add(op);
 
-      FixedList<DataOperation> history = CreateStandardAccountHistoryOp(stdAccountId, o);
-
-      list.AddRange(history);
-
-      return (stdAccountId, list.ToFixedList());
+      return (stdAccountId, op);
     }
 
 
-  static internal void Execute(FixedList<DataOperation> operations) {
+    static internal void Execute(FixedList<DataOperation> operations) {
       //no-op
     }
 
 
     static internal void Execute(DataOperationList list) {
       DataWriter.Execute(list);
-    }
-
-
-    static internal FixedList<DataOperation> CreateStandardAccountHistoryOp(long stdAccountId,
-                                                                            AccountEditionCommand o) {
-
-      long stdAccountHistoryId = 0;
-
-      if (!o.DryRun) {
-        stdAccountHistoryId = CommonMethods.GetNextObjectId("SEC_ID_CUENTA_ESTANDAR_HIST");
-      }
-
-      var op = DataOperation.Parse("write_cof_cuenta_estandar_hist",
-                        stdAccountHistoryId, stdAccountId,
-                        o.GetAccountsChart().Id, o.AccountFields.AccountNumber,
-                        o.AccountFields.Name, "Agregada con el importador en fase de pruebas",
-                        (char) o.AccountFields.Role, o.AccountFields.GetAccountType().Id,
-                        (char) o.AccountFields.DebtorCreditor, o.ApplicationDate, Account.MAX_END_DATE);
-
-      var op2 = DataOperation.Parse("write_cof_cuenta_est_hist_bis",
-                        stdAccountHistoryId, Guid.NewGuid().ToString(),
-                        BuildKeywords(o.AccountFields));
-
-      return new[] { op, op2 }.ToFixedList();
     }
 
 
@@ -103,20 +80,7 @@ namespace Empiria.FinancialAccounting.AccountsChartEdition.Data {
     }
 
 
-    static private DataOperation WriteStandardAccountOp(long stdAccountId,
-                                                     AccountEditionCommand o) {
-
-      return DataOperation.Parse("write_cof_cuenta_estandar",
-                    stdAccountId, o.GetAccountsChart().Id,
-                    o.AccountFields.AccountNumber, o.AccountFields.Name,
-                    "Agregada con el importador en fase de pruebas",
-                    (char) o.AccountFields.Role, o.AccountFields.GetAccountType().Id,
-                    (char) o.AccountFields.DebtorCreditor);
-    }
-
     #endregion Helpers
-
-
 
   }  // class AccountEditionDataService
 

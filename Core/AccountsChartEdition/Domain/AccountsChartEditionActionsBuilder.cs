@@ -54,8 +54,6 @@ namespace Empiria.FinancialAccounting.AccountsChartEdition {
 
       list.Add(tuple.CreateAccountAction);
 
-      //  long stdAccountId = 0;
-
       if (_command.Currencies.Length != 0) {
         list.Add(BuildAddCurrenciesAction(stdAccountId));
       }
@@ -102,10 +100,10 @@ namespace Empiria.FinancialAccounting.AccountsChartEdition {
 
 
     private (long, AccountsChartEditionAction) BuildCreateAccountAction() {
-      (long NewStdAccountId, FixedList<DataOperation> DataOperations) tuple =
+      (long NewStdAccountId, DataOperation DataOperation) tuple =
                                           AccountEditionDataService.CreateStandardAccountOp(_command);
 
-      var action = new AccountsChartEditionAction(_command, tuple.DataOperations);
+      var action = new AccountsChartEditionAction(_command, tuple.DataOperation);
 
       return (tuple.NewStdAccountId, action);
     }
