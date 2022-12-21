@@ -46,6 +46,7 @@ namespace Empiria.FinancialAccounting.AccountsChartEdition {
       RequireCommandTypesAreValid(commands);
       RequireApplicationDateIsValid(commands);
       RequireAccountNumbersAreValid(commands);
+      SetDataForExistingAccountsToBeUpdated(commands);
       DetermineAccountTypeForNewAccounts(commands);
       RequireValidCurrencies(commands);
       RequireValidSectors(commands);
@@ -167,7 +168,7 @@ namespace Empiria.FinancialAccounting.AccountsChartEdition {
     private AccountEditionCommand ReadCommand(Spreadsheet spreadsheet, int rowIndex) {
       var rowReader = new AccountsChartEditionRowReader(spreadsheet, rowIndex);
 
-      var command = new AccountEditionCommand {
+      return new AccountEditionCommand {
         CommandType = rowReader.GetCommandType(),
         AccountsChartUID = _chart.UID,
         ApplicationDate = _applicationDate,
@@ -180,19 +181,6 @@ namespace Empiria.FinancialAccounting.AccountsChartEdition {
         CommandText = rowReader.GetCommandText(),
         DataSource = $"Fila {rowIndex}"
       };
-
-      if (command.CommandType == AccountEditionCommandType.FixAccountName ||
-          command.CommandType == AccountEditionCommandType.UpdateAccount) {
-        Account account = _chart.GetAccount(command.AccountFields.AccountNumber);
-
-        command.AccountUID = account.UID;
-        command.AccountFields.AccountTypeUID = account.AccountType.UID;
-        command.AccountFields.DebtorCreditor = account.DebtorCreditor;
-
-        CleanUpIrrelevantFields(command);
-      }
-
-      return command;
     }
 
 
@@ -343,6 +331,23 @@ namespace Empiria.FinancialAccounting.AccountsChartEdition {
       }
     }
 
+
+    private void SetDataForExistingAccountsToBeUpdated(FixedList<AccountEditionCommand> commands) {
+
+      foreach (var command in commands) {
+        if (command.CommandType == AccountEditionCommandType.CreateAccount) {
+          continue;
+        }
+
+        Account account = _chart.GetAccount(command.AccountFields.AccountNumber);
+
+        command.AccountUID = account.UID;
+        command.AccountFields.AccountTypeUID = account.AccountType.UID;
+        command.AccountFields.DebtorCreditor = account.DebtorCreditor;
+
+        CleanUpIrrelevantFields(command);
+      }
+    }
 
     #endregion Helpers
 
