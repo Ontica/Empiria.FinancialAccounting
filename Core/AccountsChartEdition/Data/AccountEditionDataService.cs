@@ -8,7 +8,6 @@
 *                                                                                                            *
 ************************* Copyright(c) La Vía Óntica SC, Ontica LLC and contributors. All rights reserved. **/
 using System;
-using System.Collections.Generic;
 
 using Empiria.Data;
 
@@ -20,10 +19,11 @@ namespace Empiria.FinancialAccounting.AccountsChartEdition.Data {
   static internal class AccountEditionDataService {
 
 
-    static internal DataOperation AddAccountCurrencyOp(long stdAccountId, Currency currency, DateTime applicationDate) {
+    static internal DataOperation AddAccountCurrencyOp(long stdAccountId, Currency currency,
+                                                       DateTime applicationDate) {
       return DataOperation.Parse("write_cof_mapeo_moneda",
                                   stdAccountId, currency.Id,
-                                  applicationDate, Account.MAX_END_DATE);
+                                  applicationDate.Date, Account.MAX_END_DATE);
     }
 
 
@@ -32,7 +32,7 @@ namespace Empiria.FinancialAccounting.AccountsChartEdition.Data {
                                                      DateTime applicationDate) {
       return DataOperation.Parse("write_cof_mapeo_sector",
                                   stdAccountId, sector.Id,
-                                  (char) sectorRole, applicationDate,
+                                  (char) sectorRole, applicationDate.Date,
                                   Account.MAX_END_DATE);
     }
 
@@ -52,8 +52,10 @@ namespace Empiria.FinancialAccounting.AccountsChartEdition.Data {
                          stdAccountId, o.GetAccountsChart().Id, o.AccountFields.AccountNumber,
                          o.AccountFields.Name, "Agregada con el importador en fase de pruebas",
                          (char) o.AccountFields.Role, o.AccountFields.GetAccountType().Id,
-                         (char) o.AccountFields.DebtorCreditor, o.ApplicationDate, Account.MAX_END_DATE,
-                         stdAccountHistoryId, Guid.NewGuid().ToString(), BuildKeywords(o.AccountFields));
+                         (char) o.AccountFields.DebtorCreditor,
+                         o.ApplicationDate.Date, Account.MAX_END_DATE,
+                         stdAccountHistoryId, Guid.NewGuid().ToString(),
+                         BuildKeywords(o.AccountFields));
 
 
       return (stdAccountId, op);
@@ -68,7 +70,6 @@ namespace Empiria.FinancialAccounting.AccountsChartEdition.Data {
     static internal void Execute(DataOperationList list) {
       DataWriter.Execute(list);
     }
-
 
     static internal DataOperation FixStandardAccountNameOp(Account account, string name) {
       return DataOperation.Parse("do_fix_nombre_cuenta_estandar",
