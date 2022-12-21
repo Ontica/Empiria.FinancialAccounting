@@ -155,11 +155,6 @@ namespace Empiria.FinancialAccounting.AccountsChartEdition.Adapters {
     }
 
 
-    internal void EnsureCanCreateAccount(FixedList<AccountEditionCommand> commands) {
-      // no-op
-    }
-
-
     internal class EntitiesType {
 
       public AccountsChart AccountsChart {

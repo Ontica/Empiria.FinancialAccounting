@@ -18,9 +18,27 @@ namespace Empiria.FinancialAccounting.AccountsChartEdition.Data {
   static internal class AccountEditionDataService {
 
 
+    static internal DataOperation AddAccountCurrencyOp(long stdAccountId, Currency currency, DateTime applicationDate) {
+      return DataOperation.Parse("write_cof_mapeo_moneda",
+                                  stdAccountId, currency.Id,
+                                  applicationDate, Account.MAX_END_DATE);
+    }
+
+
+    static internal DataOperation AddAccountSectorOp(long stdAccountId, Sector sector,
+                                                     AccountRole sectorRole,
+                                                     DateTime applicationDate) {
+      return DataOperation.Parse("write_cof_mapeo_sector",
+                                  stdAccountId, sector.Id,
+                                  sectorRole, applicationDate,
+                                  Account.MAX_END_DATE);
+    }
+
+
     static internal void Execute(FixedList<DataOperation> operations) {
       //no-op
     }
+
 
     static internal void Execute(DataOperationList list) {
       DataWriter.Execute(list);
@@ -67,6 +85,8 @@ namespace Empiria.FinancialAccounting.AccountsChartEdition.Data {
     }
 
 
+    #region Helpers
+
     static private string BuildKeywords(AccountFieldsDto o) {
       return EmpiriaString.BuildKeywords(o.AccountNumber, o.Name,
                                          o.GetAccountType().Name, o.Description,
@@ -74,15 +94,10 @@ namespace Empiria.FinancialAccounting.AccountsChartEdition.Data {
                                          o.Role.ToString());
     }
 
+    #endregion Helpers
 
-    internal static DataOperation AddAccountSectorOp(long stdAccountId, Sector sector,
-                                                     AccountRole sectorRole,
-                                                     DateTime applicationDate) {
-      return DataOperation.Parse("write_cof_mapeo_sector",
-                                  stdAccountId, sector.Id,
-                                  sectorRole, applicationDate,
-                                  Account.MAX_END_DATE);
-    }
+
+
   }  // class AccountEditionDataService
 
 }  // namespace Empiria.FinancialAccounting.AccountsChartEdition.Data
