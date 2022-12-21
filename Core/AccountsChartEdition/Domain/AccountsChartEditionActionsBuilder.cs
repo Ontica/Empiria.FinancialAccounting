@@ -48,16 +48,13 @@ namespace Empiria.FinancialAccounting.AccountsChartEdition {
     private FixedList<AccountsChartEditionAction> BuildCreateAccountActions() {
       var list = new List<AccountsChartEditionAction>();
 
-      long stdAccountId = 0;
-      long stdAccountHistoryId = 0;
+      (long NewStdAccountId, AccountsChartEditionAction CreateAccountAction) tuple = BuildCreateAccountAction();
 
-      if (!_command.DryRun) {
-        stdAccountId = AccountEditionDataService.GetNextStandardAccountId();
-        stdAccountHistoryId = AccountEditionDataService.GetNextStandardAccountHistoryId();
-      }
+      long stdAccountId = tuple.NewStdAccountId;
 
-      list.Add(BuildCreateAccountAction(stdAccountId));
-      list.Add(BuildCreateHistoricAccountAction(stdAccountId, stdAccountHistoryId));
+      list.Add(tuple.CreateAccountAction);
+
+      //  long stdAccountId = 0;
 
       if (_command.Currencies.Length != 0) {
         list.Add(BuildAddCurrenciesAction(stdAccountId));
@@ -71,14 +68,14 @@ namespace Empiria.FinancialAccounting.AccountsChartEdition {
     }
 
 
-    private AccountsChartEditionAction BuildAddCurrenciesAction(long newAccountId) {
+    private AccountsChartEditionAction BuildAddCurrenciesAction(long stdAccountId) {
       var operations = new List<DataOperation>();
 
       foreach (var currency in _command.GetCurrencies()) {
 
-        var op = DataOperation.Parse("write_cof_mapeo_moneda",
-                    newAccountId, currency.Id,
-                    _command.ApplicationDate, Account.MAX_END_DATE);
+        DataOperation op =
+            AccountEditionDataService.AddAccountCurrencyOp(stdAccountId, currency,
+                                                           _command.ApplicationDate);
 
         operations.Add(op);
       }
@@ -92,10 +89,10 @@ namespace Empiria.FinancialAccounting.AccountsChartEdition {
 
       foreach (var sector in _command.GetSectors()) {
 
-        DataOperation op = AccountEditionDataService.AddAccountSectorOp(
-                                  stdAccountId, sector,
-                                  _command.SectorsRole,
-                                  _command.ApplicationDate);
+        DataOperation op =
+                  AccountEditionDataService.AddAccountSectorOp(stdAccountId, sector,
+                                                               _command.SectorsRole,
+                                                               _command.ApplicationDate);
 
         operations.Add(op);
       }
@@ -104,27 +101,13 @@ namespace Empiria.FinancialAccounting.AccountsChartEdition {
     }
 
 
-    private AccountsChartEditionAction BuildCreateAccountAction(long stdAccountId) {
-      DataOperation op = AccountEditionDataService.WriteStandardAccountOp(stdAccountId,
-                                                                          _command);
+    private (long, AccountsChartEditionAction) BuildCreateAccountAction() {
+      (long NewStdAccountId, FixedList<DataOperation> DataOperations) tuple =
+                                          AccountEditionDataService.CreateStandardAccountOp(_command);
 
-      return new AccountsChartEditionAction(_command, op);
-    }
+      var action = new AccountsChartEditionAction(_command, tuple.DataOperations);
 
-
-    private AccountsChartEditionAction BuildCreateHistoricAccountAction(long stdAccountId,
-                                                                        long stdAccountHistoryId) {
-      FixedList<DataOperation> op =
-                      AccountEditionDataService.WriteStandardAccountHistoryOp(stdAccountId,
-                                                                              stdAccountHistoryId,
-                                                                              _command);
-
-      return new AccountsChartEditionAction(_command, op);
-    }
-
-
-    private FixedList<AccountsChartEditionAction> BuildUpdateAccountActions() {
-      return new FixedList<AccountsChartEditionAction>();
+      return (tuple.NewStdAccountId, action);
     }
 
   }  // class AccountsChartEditionActionsBuilder

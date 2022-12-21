@@ -8,8 +8,10 @@
 *                                                                                                            *
 ************************* Copyright(c) La Vía Óntica SC, Ontica LLC and contributors. All rights reserved. **/
 using System;
+using System.Collections.Generic;
 
 using Empiria.Data;
+
 using Empiria.FinancialAccounting.AccountsChartEdition.Adapters;
 
 namespace Empiria.FinancialAccounting.AccountsChartEdition.Data {
@@ -35,7 +37,29 @@ namespace Empiria.FinancialAccounting.AccountsChartEdition.Data {
     }
 
 
-    static internal void Execute(FixedList<DataOperation> operations) {
+    static internal (long, FixedList<DataOperation>) CreateStandardAccountOp(AccountEditionCommand o) {
+
+      long stdAccountId = 0;
+
+      if (!o.DryRun) {
+        stdAccountId = CommonMethods.GetNextObjectId("SEC_ID_CUENTA_ESTANDAR");
+      }
+
+      var list = new List<DataOperation>();
+
+      DataOperation op = WriteStandardAccountOp(stdAccountId, o);
+
+      list.Add(op);
+
+      FixedList<DataOperation> history = CreateStandardAccountHistoryOp(stdAccountId, o);
+
+      list.AddRange(history);
+
+      return (stdAccountId, list.ToFixedList());
+    }
+
+
+  static internal void Execute(FixedList<DataOperation> operations) {
       //no-op
     }
 
@@ -45,33 +69,17 @@ namespace Empiria.FinancialAccounting.AccountsChartEdition.Data {
     }
 
 
-    static internal long GetNextStandardAccountHistoryId() {
-      return CommonMethods.GetNextObjectId("SEC_ID_CUENTA_ESTANDAR_HIST");
-    }
+    static internal FixedList<DataOperation> CreateStandardAccountHistoryOp(long stdAccountId,
+                                                                            AccountEditionCommand o) {
 
+      long stdAccountHistoryId = 0;
 
-    static internal long GetNextStandardAccountId() {
-      return CommonMethods.GetNextObjectId("SEC_ID_CUENTA_ESTANDAR");
-    }
+      if (!o.DryRun) {
+        stdAccountHistoryId = CommonMethods.GetNextObjectId("SEC_ID_CUENTA_ESTANDAR_HIST");
+      }
 
-
-    static internal DataOperation WriteStandardAccountOp(long stdAccountId,
-                                                         AccountEditionCommand o) {
-
-      return DataOperation.Parse("write_cof_cuenta_estandar",
-                    stdAccountId, o.GetAccountsChart().Id,
-                    o.AccountFields.AccountNumber, o.AccountFields.Name,
-                    "Agregada con el importador en fase de pruebas",
-                    (char) o.AccountFields.Role, o.AccountFields.GetAccountType().Id,
-                    (char) o.AccountFields.DebtorCreditor);
-    }
-
-
-    static internal FixedList<DataOperation> WriteStandardAccountHistoryOp(long stdAccountId,
-                                                                           long stdAccountHistoryId,
-                                                                           AccountEditionCommand o) {
       var op = DataOperation.Parse("write_cof_cuenta_estandar_hist",
-                        stdAccountId, stdAccountHistoryId,
+                        stdAccountHistoryId, stdAccountId,
                         o.GetAccountsChart().Id, o.AccountFields.AccountNumber,
                         o.AccountFields.Name, "Agregada con el importador en fase de pruebas",
                         (char) o.AccountFields.Role, o.AccountFields.GetAccountType().Id,
@@ -92,6 +100,18 @@ namespace Empiria.FinancialAccounting.AccountsChartEdition.Data {
                                          o.GetAccountType().Name, o.Description,
                                          o.DebtorCreditor.ToString(),
                                          o.Role.ToString());
+    }
+
+
+    static private DataOperation WriteStandardAccountOp(long stdAccountId,
+                                                     AccountEditionCommand o) {
+
+      return DataOperation.Parse("write_cof_cuenta_estandar",
+                    stdAccountId, o.GetAccountsChart().Id,
+                    o.AccountFields.AccountNumber, o.AccountFields.Name,
+                    "Agregada con el importador en fase de pruebas",
+                    (char) o.AccountFields.Role, o.AccountFields.GetAccountType().Id,
+                    (char) o.AccountFields.DebtorCreditor);
     }
 
     #endregion Helpers
