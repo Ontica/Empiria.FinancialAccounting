@@ -71,10 +71,10 @@ namespace Empiria.FinancialAccounting.AccountsChartEdition.Data {
       DataWriter.Execute(list);
     }
 
-    static internal DataOperation FixStandardAccountNameOp(Account account, string name) {
+    static internal DataOperation FixStandardAccountNameOp(Account account, string newName) {
       return DataOperation.Parse("do_fix_nombre_cuenta_estandar",
                                  account.StandardAccountId, account.AccountsChart.Id,
-                                 account.Number, name, BuildKeywords(account));
+                                 account.Number, newName, BuildKeywords(account, newName));
     }
 
 
@@ -88,8 +88,8 @@ namespace Empiria.FinancialAccounting.AccountsChartEdition.Data {
     }
 
 
-    private static string BuildKeywords(Account o) {
-      return EmpiriaString.BuildKeywords(o.Number, o.Name,
+    private static string BuildKeywords(Account o, string newName) {
+      return EmpiriaString.BuildKeywords(o.Number, newName,
                                          o.AccountType.Name, o.Description,
                                          o.DebtorCreditor.ToString(),
                                          o.Role.ToString());
