@@ -41,9 +41,9 @@ namespace Empiria.FinancialAccounting.AccountsChartEdition {
         return BuildFixAccountNameActions();
       }
 
-      //if (_command.CommandType == AccountEditionCommandType.UpdateAccount) {
-      //  return BuildUpdateAccountActions();
-      //}
+      if (_command.CommandType == AccountEditionCommandType.UpdateAccount) {
+        return BuildUpdateAccountActions();
+      }
 
       throw Assertion.EnsureNoReachThisCode();
     }
@@ -123,6 +123,49 @@ namespace Empiria.FinancialAccounting.AccountsChartEdition {
 
       return new[] { action }.ToFixedList();
     }
+
+
+    private FixedList<AccountsChartEditionAction> BuildUpdateAccountActions() {
+      var list = new List<AccountsChartEditionAction>();
+
+      Account account = _command.GetAccountToEdit();
+
+      var dataToBeUpdated = _command.DataToBeUpdated.ToFixedList();
+
+      if (dataToBeUpdated.Contains(AccountDataToBeUpdated.Currencies)) {
+        list.Add(BuildUpdateCurrenciesAction(account));
+      }
+
+      return list.ToFixedList();
+    }
+
+
+    private AccountsChartEditionAction BuildUpdateCurrenciesAction(Account account) {
+      var operations = new List<DataOperation>();
+
+      var newCurrencies = _command.GetCurrencies();
+
+      foreach (var currentCurrencyRule in account.CurrencyRules) {
+
+        if (!newCurrencies.Contains(x => x.Equals(currentCurrencyRule.Currency))) {
+          DataOperation op = AccountEditionDataService.RemoveAccountCurrencyOp(currentCurrencyRule,
+                                                                              _command.ApplicationDate);
+          operations.Add(op);
+        }
+      }
+
+      foreach (var currency in newCurrencies) {
+
+        if (!account.CurrencyRules.Contains(x => x.Currency.Equals(currency))) {
+          DataOperation op = AccountEditionDataService.AddAccountCurrencyOp(account.StandardAccountId, currency,
+                                                                            _command.ApplicationDate);
+          operations.Add(op);
+        }
+      }
+
+      return new AccountsChartEditionAction(_command, operations.ToFixedList());
+    }
+
 
   }  // class AccountsChartEditionActionsBuilder
 

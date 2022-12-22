@@ -78,6 +78,13 @@ namespace Empiria.FinancialAccounting.AccountsChartEdition.Data {
     }
 
 
+    static internal DataOperation RemoveAccountCurrencyOp(CurrencyRule o, DateTime applicationDate) {
+      return DataOperation.Parse("write_cof_mapeo_moneda",
+                                  o.StandardAccountId, o.Currency,
+                                  o.StartDate, applicationDate.Date.AddDays(-1));
+    }
+
+
     #region Helpers
 
     static private string BuildKeywords(AccountFieldsDto o) {
