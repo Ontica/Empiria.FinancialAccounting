@@ -136,6 +136,10 @@ namespace Empiria.FinancialAccounting.AccountsChartEdition {
         list.Add(BuildUpdateCurrenciesAction(account));
       }
 
+      if (dataToBeUpdated.Contains(AccountDataToBeUpdated.Sectors)) {
+        list.Add(BuildUpdateSectorsAction(account));
+      }
+
       return list.ToFixedList();
     }
 
@@ -159,6 +163,34 @@ namespace Empiria.FinancialAccounting.AccountsChartEdition {
         if (!account.CurrencyRules.Contains(x => x.Currency.Equals(currency))) {
           DataOperation op = AccountEditionDataService.AddAccountCurrencyOp(account.StandardAccountId, currency,
                                                                             _command.ApplicationDate);
+          operations.Add(op);
+        }
+      }
+
+      return new AccountsChartEditionAction(_command, operations.ToFixedList());
+    }
+
+
+    private AccountsChartEditionAction BuildUpdateSectorsAction(Account account) {
+      var operations = new List<DataOperation>();
+
+      var newSectors = _command.GetSectors();
+
+      foreach (var currentSectorRule in account.SectorRules) {
+
+        if (!newSectors.Contains(x => x.Equals(currentSectorRule.Sector))) {
+          DataOperation op = AccountEditionDataService.RemoveAccountSectorOp(currentSectorRule,
+                                                                             _command.ApplicationDate);
+          operations.Add(op);
+        }
+      }
+
+      foreach (var sector in newSectors) {
+
+        if (!account.SectorRules.Contains(x => x.Sector.Equals(sector))) {
+          DataOperation op = AccountEditionDataService.AddAccountSectorOp(account.StandardAccountId, sector,
+                                                                          _command.SectorsRole,
+                                                                          _command.ApplicationDate);
           operations.Add(op);
         }
       }

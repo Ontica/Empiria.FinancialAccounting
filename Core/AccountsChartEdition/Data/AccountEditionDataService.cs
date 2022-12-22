@@ -85,6 +85,14 @@ namespace Empiria.FinancialAccounting.AccountsChartEdition.Data {
     }
 
 
+    static internal DataOperation RemoveAccountSectorOp(SectorRule o, DateTime applicationDate) {
+      return DataOperation.Parse("write_cof_mapeo_sector",
+                                  o.StandardAccountId, o.Sector.Id,
+                                  (char) o.SectorRole,
+                                  o.StartDate, applicationDate.Date.AddDays(-1));
+    }
+
+
     #region Helpers
 
     static private string BuildKeywords(AccountFieldsDto o) {
