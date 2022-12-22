@@ -128,8 +128,6 @@ namespace Empiria.FinancialAccounting.AccountsChartEdition {
     private FixedList<AccountsChartEditionAction> BuildUpdateAccountActions() {
       var list = new List<AccountsChartEditionAction>();
 
-      Account account = _command.GetAccountToEdit();
-
       var dataToBeUpdated = _command.DataToBeUpdated.ToFixedList();
 
       if (dataToBeUpdated.Contains(AccountDataToBeUpdated.Name) ||
@@ -137,37 +135,36 @@ namespace Empiria.FinancialAccounting.AccountsChartEdition {
           dataToBeUpdated.Contains(AccountDataToBeUpdated.SubledgerRole) ||
           dataToBeUpdated.Contains(AccountDataToBeUpdated.DebtorCreditor)) {
 
-        list.Add(BuildUpdateAccountDataAction(account));
+        list.Add(BuildUpdateAccountDataAction());
       }
 
 
       if (dataToBeUpdated.Contains(AccountDataToBeUpdated.Currencies)) {
-        list.Add(BuildUpdateCurrenciesAction(account));
+        list.Add(BuildUpdateCurrenciesAction());
       }
 
       if (dataToBeUpdated.Contains(AccountDataToBeUpdated.Sectors)) {
-        list.Add(BuildUpdateSectorsAction(account));
+        list.Add(BuildUpdateSectorsAction());
       }
 
       return list.ToFixedList();
     }
 
 
-    private AccountsChartEditionAction BuildUpdateAccountDataAction(Account account) {
+    private AccountsChartEditionAction BuildUpdateAccountDataAction() {
+      Account account = _command.GetAccountToEdit();
+
       DataOperation op = AccountEditionDataService.UpdateStandardAccountOp(account, _command);
 
-      var operations = new List<DataOperation>();
-
-      operations.Add(op);
-
-      return new AccountsChartEditionAction(_command, operations.ToFixedList());
+      return new AccountsChartEditionAction(_command, op);
     }
 
 
-    private AccountsChartEditionAction BuildUpdateCurrenciesAction(Account account) {
+    private AccountsChartEditionAction BuildUpdateCurrenciesAction() {
       var operations = new List<DataOperation>();
 
-      var newCurrencies = _command.GetCurrencies();
+      FixedList<Currency> newCurrencies = _command.GetCurrencies();
+      Account account = _command.GetAccountToEdit();
 
       foreach (var currentCurrencyRule in account.CurrencyRules) {
 
@@ -191,10 +188,11 @@ namespace Empiria.FinancialAccounting.AccountsChartEdition {
     }
 
 
-    private AccountsChartEditionAction BuildUpdateSectorsAction(Account account) {
+    private AccountsChartEditionAction BuildUpdateSectorsAction() {
       var operations = new List<DataOperation>();
 
-      var newSectors = _command.GetSectors();
+      FixedList<Sector> newSectors = _command.GetSectors();
+      Account account = _command.GetAccountToEdit();
 
       foreach (var currentSectorRule in account.SectorRules) {
 
@@ -217,7 +215,6 @@ namespace Empiria.FinancialAccounting.AccountsChartEdition {
 
       return new AccountsChartEditionAction(_command, operations.ToFixedList());
     }
-
 
   }  // class AccountsChartEditionActionsBuilder
 
