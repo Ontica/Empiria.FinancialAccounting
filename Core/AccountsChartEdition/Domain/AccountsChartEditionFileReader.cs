@@ -147,12 +147,25 @@ namespace Empiria.FinancialAccounting.AccountsChartEdition {
       var commandsList = new List<AccountEditionCommand>(32);
 
       int rowIndex = 5;
+      const int MAX_SKIPPED_ROWS = 10;
 
-      while (spreadsheet.HasValue($"A{rowIndex}")) {
-        AccountEditionCommand command = ReadCommand(spreadsheet, rowIndex);
+      int skippedRows = 0;
 
-        commandsList.Add(command);
+      while (true) {
+        if (spreadsheet.HasValue($"A{rowIndex}")) {
 
+          AccountEditionCommand command = ReadCommand(spreadsheet, rowIndex);
+
+          commandsList.Add(command);
+          skippedRows = 0;
+
+        } else if (skippedRows < MAX_SKIPPED_ROWS) {
+          skippedRows++;
+
+        } else {
+          break;
+
+        }
         rowIndex++;
       }
 
