@@ -71,6 +71,7 @@ namespace Empiria.FinancialAccounting.AccountsChartEdition.Data {
       DataWriter.Execute(list);
     }
 
+
     static internal DataOperation FixStandardAccountNameOp(Account account, string newName) {
       return DataOperation.Parse("do_fix_nombre_cuenta_estandar",
                                  account.StandardAccountId, account.AccountsChart.Id,
@@ -90,6 +91,40 @@ namespace Empiria.FinancialAccounting.AccountsChartEdition.Data {
                                   o.StandardAccountId, o.Sector.Id,
                                   (char) o.SectorRole,
                                   o.StartDate, applicationDate.Date.AddDays(-1));
+    }
+
+
+    static internal DataOperation UpdateStandardAccountOp(Account account, AccountEditionCommand o) {
+      long stdAccountHistoryId = 0;
+
+      if (!o.DryRun) {
+        stdAccountHistoryId = CommonMethods.GetNextObjectId("SEC_ID_CUENTA_ESTANDAR_HIST");
+      }
+
+      var dataToBeUpdated = o.DataToBeUpdated.ToFixedList();
+
+      string name = dataToBeUpdated.Contains(AccountDataToBeUpdated.Name) ?
+                                                o.AccountFields.Name : account.Name;
+
+      AccountType accountType = dataToBeUpdated.Contains(AccountDataToBeUpdated.AccountType) ?
+                                                o.AccountFields.GetAccountType() : account.AccountType;
+
+      DebtorCreditorType debtorCreditor = dataToBeUpdated.Contains(AccountDataToBeUpdated.DebtorCreditor) ?
+                                                o.AccountFields.DebtorCreditor : account.DebtorCreditor;
+
+      AccountRole role = dataToBeUpdated.Contains(AccountDataToBeUpdated.MainRole) ||
+                         dataToBeUpdated.Contains(AccountDataToBeUpdated.SubledgerRole) ?
+                                                o.AccountFields.Role : account.Role;
+
+      string keywords = EmpiriaString.BuildKeywords(account.Number, name, accountType.Name,
+                                                    debtorCreditor.ToString(), role.ToString());
+
+      return DataOperation.Parse("do_update_cuenta_estandar",
+                        account.Id, account.AccountsChart.Id, account.Number,
+                        name, "Modificada con el importador en fase de pruebas",
+                        (char) role, accountType.Id, (char) debtorCreditor,
+                        o.ApplicationDate.Date, Account.MAX_END_DATE,
+                        stdAccountHistoryId, Guid.NewGuid().ToString(), keywords);
     }
 
 

@@ -132,6 +132,15 @@ namespace Empiria.FinancialAccounting.AccountsChartEdition {
 
       var dataToBeUpdated = _command.DataToBeUpdated.ToFixedList();
 
+      if (dataToBeUpdated.Contains(AccountDataToBeUpdated.Name) ||
+          dataToBeUpdated.Contains(AccountDataToBeUpdated.MainRole) ||
+          dataToBeUpdated.Contains(AccountDataToBeUpdated.SubledgerRole) ||
+          dataToBeUpdated.Contains(AccountDataToBeUpdated.DebtorCreditor)) {
+
+        list.Add(BuildUpdateAccountDataAction(account));
+      }
+
+
       if (dataToBeUpdated.Contains(AccountDataToBeUpdated.Currencies)) {
         list.Add(BuildUpdateCurrenciesAction(account));
       }
@@ -141,6 +150,17 @@ namespace Empiria.FinancialAccounting.AccountsChartEdition {
       }
 
       return list.ToFixedList();
+    }
+
+
+    private AccountsChartEditionAction BuildUpdateAccountDataAction(Account account) {
+      DataOperation op = AccountEditionDataService.UpdateStandardAccountOp(account, _command);
+
+      var operations = new List<DataOperation>();
+
+      operations.Add(op);
+
+      return new AccountsChartEditionAction(_command, operations.ToFixedList());
     }
 
 

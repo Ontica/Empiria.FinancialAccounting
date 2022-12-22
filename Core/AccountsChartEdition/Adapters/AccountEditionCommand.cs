@@ -39,17 +39,19 @@ namespace Empiria.FinancialAccounting.AccountsChartEdition.Adapters {
   /// <summary>Enumerated constants type used to classify the updated data for an edition command.</summary>
   public enum AccountDataToBeUpdated {
 
-    Name,
-
-    MainRole,
-
-    SubledgerRole,
-
-    DebtorCreditor,
+    AccountType,
 
     Currencies,
 
-    Sectors
+    DebtorCreditor,
+
+    MainRole,
+
+    Name,
+
+    Sectors,
+
+    SubledgerRole
 
   }  // enum AccountDataEdition
 
