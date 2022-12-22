@@ -52,9 +52,9 @@ namespace Empiria.FinancialAccounting.AccountsChartEdition {
     private FixedList<AccountsChartEditionAction> BuildCreateAccountActions() {
       var list = new List<AccountsChartEditionAction>();
 
-      (long NewStdAccountId, AccountsChartEditionAction CreateAccountAction) tuple = BuildCreateAccountAction();
+      (int NewStdAccountId, AccountsChartEditionAction CreateAccountAction) tuple = BuildCreateAccountAction();
 
-      long stdAccountId = tuple.NewStdAccountId;
+      int stdAccountId = tuple.NewStdAccountId;
 
       list.Add(tuple.CreateAccountAction);
 
@@ -70,7 +70,7 @@ namespace Empiria.FinancialAccounting.AccountsChartEdition {
     }
 
 
-    private AccountsChartEditionAction BuildAddCurrenciesAction(long stdAccountId) {
+    private AccountsChartEditionAction BuildAddCurrenciesAction(int stdAccountId) {
       var operations = new List<DataOperation>();
 
       foreach (var currency in _command.GetCurrencies()) {
@@ -86,7 +86,7 @@ namespace Empiria.FinancialAccounting.AccountsChartEdition {
     }
 
 
-    private AccountsChartEditionAction BuildAddSectorsAction(long stdAccountId) {
+    private AccountsChartEditionAction BuildAddSectorsAction(int stdAccountId) {
       var operations = new List<DataOperation>();
 
       foreach (var sector in _command.GetSectors()) {
@@ -103,8 +103,8 @@ namespace Empiria.FinancialAccounting.AccountsChartEdition {
     }
 
 
-    private (long, AccountsChartEditionAction) BuildCreateAccountAction() {
-      (long NewStdAccountId, DataOperation DataOperation) tuple =
+    private (int, AccountsChartEditionAction) BuildCreateAccountAction() {
+      (int NewStdAccountId, DataOperation DataOperation) tuple =
                                           AccountEditionDataService.CreateStandardAccountOp(_command);
 
       var action = new AccountsChartEditionAction(_command, tuple.DataOperation);

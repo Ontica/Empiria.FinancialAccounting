@@ -19,7 +19,7 @@ namespace Empiria.FinancialAccounting.AccountsChartEdition.Data {
   static internal class AccountEditionDataService {
 
 
-    static internal DataOperation AddAccountCurrencyOp(long stdAccountId, Currency currency,
+    static internal DataOperation AddAccountCurrencyOp(int stdAccountId, Currency currency,
                                                        DateTime applicationDate) {
       return DataOperation.Parse("write_cof_mapeo_moneda",
                                   stdAccountId, currency.Id,
@@ -27,7 +27,7 @@ namespace Empiria.FinancialAccounting.AccountsChartEdition.Data {
     }
 
 
-    static internal DataOperation AddAccountSectorOp(long stdAccountId, Sector sector,
+    static internal DataOperation AddAccountSectorOp(int stdAccountId, Sector sector,
                                                      AccountRole sectorRole,
                                                      DateTime applicationDate) {
       return DataOperation.Parse("write_cof_mapeo_sector",
@@ -37,14 +37,14 @@ namespace Empiria.FinancialAccounting.AccountsChartEdition.Data {
     }
 
 
-    static internal (long, DataOperation) CreateStandardAccountOp(AccountEditionCommand o) {
+    static internal (int, DataOperation) CreateStandardAccountOp(AccountEditionCommand o) {
 
-      long stdAccountId = 0;
-      long stdAccountHistoryId = 0;
+      int stdAccountId = 0;
+      int stdAccountHistoryId = 0;
 
       if (!o.DryRun) {
-        stdAccountId = CommonMethods.GetNextObjectId("SEC_ID_CUENTA_ESTANDAR");
-        stdAccountHistoryId = CommonMethods.GetNextObjectId("SEC_ID_CUENTA_ESTANDAR_HIST");
+        stdAccountId = (int) CommonMethods.GetNextObjectId("SEC_ID_CUENTA_ESTANDAR");
+        stdAccountHistoryId = (int) CommonMethods.GetNextObjectId("SEC_ID_CUENTA_ESTANDAR_HIST");
       }
 
 
@@ -95,10 +95,10 @@ namespace Empiria.FinancialAccounting.AccountsChartEdition.Data {
 
 
     static internal DataOperation UpdateStandardAccountOp(Account account, AccountEditionCommand o) {
-      long stdAccountHistoryId = 0;
+      int stdAccountHistoryId = 0;
 
       if (!o.DryRun) {
-        stdAccountHistoryId = CommonMethods.GetNextObjectId("SEC_ID_CUENTA_ESTANDAR_HIST");
+        stdAccountHistoryId = (int) CommonMethods.GetNextObjectId("SEC_ID_CUENTA_ESTANDAR_HIST");
       }
 
       var dataToBeUpdated = o.DataToBeUpdated.ToFixedList();
