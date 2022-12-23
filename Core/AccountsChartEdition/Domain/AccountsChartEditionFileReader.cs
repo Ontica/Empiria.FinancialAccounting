@@ -50,7 +50,7 @@ namespace Empiria.FinancialAccounting.AccountsChartEdition {
       DetermineAccountTypeForNewAccounts(commands);
       RequireValidCurrencies(commands);
       RequireValidSectors(commands);
-      RequireAllDataLoaded(commands);
+      EnsureAllDataIsLoaded(commands);
 
       return commands;
     }
@@ -171,7 +171,7 @@ namespace Empiria.FinancialAccounting.AccountsChartEdition {
 
       EmpiriaLog.Info(
         $"Se leyeron {commandsList.Count} operaciones del archivo de " +
-        $"modificaciones al catálogo de cuenta contables {_excelFile.Name}."
+        $"cambios al catálogo de cuenta contables {_excelFile.Name}."
       );
 
       return commandsList.ToFixedList();
@@ -218,21 +218,21 @@ namespace Empiria.FinancialAccounting.AccountsChartEdition {
         if (command.CommandType == AccountEditionCommandType.CreateAccount) {
 
           Assertion.Require(account == null,
-              $"Se está solicitando agregar la cuenta '{accountNumber}' " +
-              $"pero ya existe en el catálogo de cuentas: {command.DataSource}");
+              $"Se está solicitando agregar la cuenta '{accountNumber}'. " +
+              $"Sin embargo, ya existe en el catálogo de cuentas: {command.DataSource}");
 
         } else if (command.CommandType == AccountEditionCommandType.FixAccountName ||
                    command.CommandType == AccountEditionCommandType.UpdateAccount) {
 
           Assertion.Require(account != null,
-              $"Se está solicitando modificar la cuenta '{accountNumber}' " +
-              $"pero no está registrada en el catálogo de cuentas : {command.DataSource}.");
+              $"Se está solicitando modificar la cuenta '{accountNumber}', " +
+              $"misma que no está registrada en el catálogo de cuentas : {command.DataSource}.");
         }
       }
     }
 
 
-    private void RequireAllDataLoaded(FixedList<AccountEditionCommand> commands) {
+    private void EnsureAllDataIsLoaded(FixedList<AccountEditionCommand> commands) {
       foreach (var command in commands) {
         string accountNumber = command.AccountFields.AccountNumber;
 

@@ -10,7 +10,6 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
-
 using Empiria.Data;
 
 using Empiria.FinancialAccounting.AccountsChartEdition.Adapters;
@@ -28,13 +27,11 @@ namespace Empiria.FinancialAccounting.AccountsChartEdition {
     }
 
     internal FixedList<OperationSummary> Execute(FixedList<AccountEditionCommand> commands) {
+      Assertion.Require(commands, nameof(commands));
+      Assertion.Require(commands.Count > 0, "'commands' must have at least one element.");
 
       foreach (var command in commands) {
         command.Arrange();
-
-        if (command.CommandType == AccountEditionCommandType.CreateAccount) {
-          command.EnsureCanCreateAccount(commands);
-        }
       }
 
       var allActions = new List<AccountsChartEditionAction>(128);
@@ -48,23 +45,17 @@ namespace Empiria.FinancialAccounting.AccountsChartEdition {
       }
 
       if (!_dryRun) {
-        ProcessActions(allActions.ToFixedList());
-        commands.First().GetAccountsChart().Refresh();
+
+        ProcessActions(allActions);
+
+        RefreshCache(allActions);
+
       }
 
       return CreateOperationSummaryList(commands);
     }
 
-    private void ProcessActions(FixedList<AccountsChartEditionAction> allActions) {
-      var list = new DataOperationList("AccountsChartEdition");
-
-      foreach (var action in allActions) {
-        list.Add(action.DataOperations);
-      }
-
-      AccountEditionDataService.Execute(list);
-    }
-
+    #region Helpers
 
     private FixedList<OperationSummary> CreateOperationSummaryList(FixedList<AccountEditionCommand> commands) {
       var list = new List<OperationSummary>();
@@ -87,6 +78,26 @@ namespace Empiria.FinancialAccounting.AccountsChartEdition {
 
       return list.ToFixedList();
     }
+
+
+    private void ProcessActions(ICollection<AccountsChartEditionAction> allActions) {
+      var list = new DataOperationList("AccountsChartEdition");
+
+      foreach (var action in allActions) {
+        list.Add(action.DataOperations);
+      }
+
+      AccountEditionDataService.Execute(list);
+    }
+
+
+    private void RefreshCache(ICollection<AccountsChartEditionAction> allActions) {
+      AccountsChart chart = allActions.First().Command.GetAccountsChart();
+
+      chart.Refresh();
+    }
+
+    #endregion Helpers
 
   }  // class AccountsChartEditionCommandsProcessor
 
