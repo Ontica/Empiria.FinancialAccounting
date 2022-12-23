@@ -18,6 +18,7 @@ namespace Empiria.FinancialAccounting {
   public class AccountsChart : GeneralObject {
 
     private Lazy<EmpiriaHashTable<Account>> _accounts;
+    private Lazy<AccountsChartRules> _rules;
 
     #region Constructors and parsers
 
@@ -70,11 +71,14 @@ namespace Empiria.FinancialAccounting {
 
 
     internal void Refresh() {
+
       if (!this.IsEmptyInstance) {
         _accounts = new Lazy<EmpiriaHashTable<Account>>(() => AccountsChartData.GetAccounts(this));
       } else {
         _accounts = new Lazy<EmpiriaHashTable<Account>>(() => new EmpiriaHashTable<Account>());
       }
+
+      _rules = new Lazy<AccountsChartRules>(() => new AccountsChartRules(this));
     }
 
 
@@ -103,6 +107,12 @@ namespace Empiria.FinancialAccounting {
     public AccountsChartMasterData MasterData {
       get;
       private set;
+    }
+
+    public AccountsChartRules Rules {
+      get {
+        return _rules.Value;
+      }
     }
 
 

@@ -50,10 +50,7 @@ namespace Empiria.FinancialAccounting {
 
 
     protected override void OnLoad() {
-      this.ResetAreaRules();
-      this.ResetCurrencyRules();
-      this.ResetLedgerRules();
-      this.ResetSectorRules();
+      this.ResetRules();
     }
 
 
@@ -309,23 +306,13 @@ namespace Empiria.FinancialAccounting {
 
     #region Private methods
 
-    private void ResetAreaRules() {
-      _areaRules = new Lazy<FixedList<AreaRule>>(() => AreasRulesChart.GetAccountAreasRules(this));
-    }
+    private void ResetRules() {
+      AccountsChartRules rules = this.AccountsChart.Rules;
 
-
-    private void ResetCurrencyRules() {
-      _currencyRules = new Lazy<FixedList<CurrencyRule>>(() => CurrenciesRulesChart.GetAccountCurrenciesRules(this));
-    }
-
-
-    private void ResetLedgerRules() {
-      _ledgerRules = new Lazy<FixedList<LedgerRule>>(() => LedgersRulesChart.GetAccountLedgerRules(this));
-    }
-
-
-    private void ResetSectorRules() {
-      _sectorRules = new Lazy<FixedList<SectorRule>>(() => SectorRulesChart.GetAccountSectorRules(this));
+      _areaRules = new Lazy<FixedList<AreaRule>>(() => rules.GetAccountAreasRules(this));
+      _currencyRules = new Lazy<FixedList<CurrencyRule>>(() => rules.GetAccountCurrenciesRules(this));
+      _ledgerRules = new Lazy<FixedList<LedgerRule>>(() => rules.GetAccountLedgerRules(this));
+      _sectorRules = new Lazy<FixedList<SectorRule>>(() => rules.GetAccountSectorRules(this));
     }
 
     #endregion Private methods
