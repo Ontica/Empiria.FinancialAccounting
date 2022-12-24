@@ -15,87 +15,18 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
   internal class ValorizacionEstimacionPreventivaUtility {
 
     internal string GetMonthNameAndYear(DateTime date) {
-
-      if (date.Month == 1) {
-        return $"Enero_{date.Year}";
-      }
-      if (date.Month == 2) {
-        return $"Febrero_{date.Year}";
-      }
-      if (date.Month == 3) {
-        return $"Marzo_{date.Year}";
-      }
-      if (date.Month == 4) {
-        return $"Abril_{date.Year}";
-      }
-      if (date.Month == 5) {
-        return $"Mayo_{date.Year}";
-      }
-      if (date.Month == 6) {
-        return $"Junio_{date.Year}";
-      }
-      if (date.Month == 7) {
-        return $"Julio_{date.Year}";
-      }
-      if (date.Month == 8) {
-        return $"Agosto_{date.Year}";
-      }
-      if (date.Month == 9) {
-        return $"Septiembre_{date.Year}";
-      }
-      if (date.Month == 10) {
-        return $"Octubre_{date.Year}";
-      }
-      if (date.Month == 11) {
-        return $"Noviembre_{date.Year}";
-      }
-      if (date.Month == 12) {
-        return $"Diciembre_{date.Year}";
-      }
-
-      return "No se encontró información";
+      return $"{GetMonthName(date)}_{date.Year}";
     }
 
 
     internal string GetMonthName(DateTime date) {
+      var months = new string[] {
+        "Enero", "Febrero", "Marzo", "Abril",
+        "Mayo", "Junio", "Julio", "Agosto",
+        "Septiembre", "Octubre", "Noviembre", "Diciembre"
+      };
 
-      if (date.Month == 1) {
-        return $"Enero";
-      }
-      if (date.Month == 2) {
-        return $"Febrero";
-      }
-      if (date.Month == 3) {
-        return $"Marzo";
-      }
-      if (date.Month == 4) {
-        return $"Abril";
-      }
-      if (date.Month == 5) {
-        return $"Mayo";
-      }
-      if (date.Month == 6) {
-        return $"Junio";
-      }
-      if (date.Month == 7) {
-        return $"Julio";
-      }
-      if (date.Month == 8) {
-        return $"Agosto";
-      }
-      if (date.Month == 9) {
-        return $"Septiembre";
-      }
-      if (date.Month == 10) {
-        return $"Octubre";
-      }
-      if (date.Month == 11) {
-        return $"Noviembre";
-      }
-      if (date.Month == 12) {
-        return $"Diciembre";
-      }
-      return "No se encontró información";
+      return months[date.Month - 1];
     }
 
 

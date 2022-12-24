@@ -10,6 +10,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+
 using Empiria.FinancialAccounting.BalanceEngine.Adapters;
 using Empiria.FinancialAccounting.BalanceEngine.Data;
 
@@ -32,7 +33,7 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
                                          bool isLastMonth = false) {
       DateTime toDate = date;
 
-      if (isLastMonth == true) {
+      if (isLastMonth) {
         DateTime flagMonth = new DateTime(toDate.Year, toDate.Month, 1);
         DateTime lastMonth = flagMonth.AddDays(-1);
         toDate = lastMonth;
@@ -45,11 +46,11 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
       foreach (var entry in entries) {
         var exchangeRate = exchangeRates.FirstOrDefault(a => a.FromCurrency.Code == "01" &&
                                                              a.ToCurrency.Code == entry.Currency.Code);
-        
+
         Assertion.Require(exchangeRate, $"No se ha registrado el tipo de cambio para la " +
                                         $"moneda {entry.Currency.FullName} con la fecha proporcionada.");
 
-        if (isLastMonth == true) {
+        if (isLastMonth) {
           entry.SecondExchangeRate = exchangeRate.Value;
         } else {
           entry.ExchangeRate = exchangeRate.Value;
@@ -68,13 +69,13 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
       }
 
       var returnedAccounts = new List<ValorizacionEstimacionPreventivaEntry>(accountsByCurrency);
-      
+
       foreach (var account in returnedAccounts) {
-        
+
         var months = accountsInfoByMonth.Where(a => a.Account.Number == account.Account.Number)
                                         .OrderBy(a => a.ConsultingDate)
                                         .ToList();
-        
+
         GetValueByMonth(account, months);
 
       }
@@ -82,21 +83,20 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
       return returnedAccounts.ToFixedList();
     }
 
-    
+
     private void GetValueByMonth(ValorizacionEstimacionPreventivaEntry account, List<ValorizacionEstimacionPreventivaEntry> months) {
 
       var utility = new ValorizacionEstimacionPreventivaUtility();
 
       List<DateTime> dateRange = GetDateRange();
-      
+
       foreach (var date in dateRange) {
-        
-        var existDate = months.Where(a => a.ConsultingDate.Year == date.Year &&
-                                          a.ConsultingDate.Month == date.Month)
-                              .FirstOrDefault();
-        
+
+        var existDate = months.Find(a => a.ConsultingDate.Year == date.Year &&
+                                         a.ConsultingDate.Month == date.Month);
+
         if (existDate != null) {
-          
+
           account.SetTotalField($"{utility.GetMonthNameAndYear(existDate.ConsultingDate)}", existDate.TotalValued);
           account.TotalAccumulated += existDate.TotalValued;
 
@@ -140,10 +140,10 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
       if (accountEntries.Count==0) {
         return new FixedList<ValorizacionEstimacionPreventivaEntry>();
       }
-      
+
       var balanzaColumnasBuilder = new BalanzaColumnasMonedaBuilder(_query);
 
-      FixedList<TrialBalanceEntry> accountsByCurrency = 
+      FixedList<TrialBalanceEntry> accountsByCurrency =
           balanzaColumnasBuilder.BuildValorizacion(accountEntries);
 
       ExchangeRateByCurrency(accountsByCurrency, date);
