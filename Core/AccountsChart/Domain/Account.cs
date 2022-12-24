@@ -281,7 +281,7 @@ namespace Empiria.FinancialAccounting {
         return Account.Empty;
       }
 
-      var parentAccountNumber = this.AccountsChart.GetParentAccountNumber(this.Number);
+      var parentAccountNumber = this.AccountsChart.BuildParentAccountNumber(this.Number);
 
       return AccountsChart.GetAccount(parentAccountNumber);
     }

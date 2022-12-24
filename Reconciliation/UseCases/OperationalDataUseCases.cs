@@ -38,7 +38,6 @@ namespace Empiria.FinancialAccounting.Reconciliation.UseCases {
 
     #region Use cases
 
-
     public DatasetsLoadStatusDto CreateDataset(OperationalDataDto dto,
                                                InputFile fileData) {
       Assertion.Require(dto,      nameof(dto));

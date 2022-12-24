@@ -180,7 +180,6 @@ namespace Empiria.FinancialAccounting.Adapters {
     }
 
 
-
     static private string BuildKeywordsFilter(string keywords, AccountsChart accountsChart) {
       return accountsChart.BuildSearchAccountsFilter(keywords);
     }

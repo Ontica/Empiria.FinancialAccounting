@@ -201,7 +201,7 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
 
     internal List<TrialBalanceEntry> GenerateTotalsDebtorOrCreditor(
                                       FixedList<TrialBalanceEntry> accountEntries) {
-      
+
       if (accountEntries.Count == 0) {
         return new List<TrialBalanceEntry>();
       }
@@ -281,7 +281,7 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
 
 
     private void GetAccountEntriesWithParentSector(EmpiriaHashTable<TrialBalanceEntry> summaryEntries,
-                                          TrialBalanceEntry entry, StandardAccount currentParent) {
+                                                   TrialBalanceEntry entry, StandardAccount currentParent) {
       if (!_query.WithSectorization) {
         SummaryByAccountEntry(summaryEntries, entry, currentParent, Sector.Empty);
       } else {

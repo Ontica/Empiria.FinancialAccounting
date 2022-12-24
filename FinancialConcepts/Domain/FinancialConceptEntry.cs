@@ -86,7 +86,6 @@ namespace Empiria.FinancialAccounting.FinancialConcepts {
 
     #region Properties
 
-
     public FinancialConceptEntryType Type {
       get {
         if (!this.ReferencedFinancialConcept.IsEmptyInstance) {

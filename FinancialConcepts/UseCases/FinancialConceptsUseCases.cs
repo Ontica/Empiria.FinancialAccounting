@@ -32,7 +32,6 @@ namespace Empiria.FinancialAccounting.FinancialConcepts.UseCases {
 
     #region Use cases
 
-
     public FinancialConceptDto GetFinancialConcept(string financialConceptUID) {
       Assertion.Require(financialConceptUID, nameof(financialConceptUID));
 

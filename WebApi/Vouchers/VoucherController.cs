@@ -10,9 +10,6 @@
 using System;
 using System.Web.Http;
 
-using System.Net.Http.Headers;
-using System.Net.Http;
-
 using Empiria.WebApi;
 
 using Empiria.FinancialAccounting.Vouchers.UseCases;

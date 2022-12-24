@@ -186,6 +186,7 @@ namespace Empiria.FinancialAccounting {
       }
     }
 
+
     public void AddIssue(string issue) {
       Assertion.Require(issue, nameof(issue));
 
@@ -202,6 +203,7 @@ namespace Empiria.FinancialAccounting {
         AddIssue(issue);
       }
     }
+
 
     public void AddWarning(string warning) {
       Assertion.Require(warning, nameof(warning));

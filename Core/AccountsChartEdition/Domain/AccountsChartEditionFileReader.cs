@@ -95,7 +95,7 @@ namespace Empiria.FinancialAccounting.AccountsChartEdition {
           continue;
         }
 
-        string parentAccountNumber = _chart.GetParentAccountNumber(accountNumber);
+        string parentAccountNumber = _chart.BuildParentAccountNumber(accountNumber);
 
         AccountEditionCommand createParentAccountCommand =
                                     createAccountCommands.Find(x => x.AccountFields.AccountNumber == parentAccountNumber);

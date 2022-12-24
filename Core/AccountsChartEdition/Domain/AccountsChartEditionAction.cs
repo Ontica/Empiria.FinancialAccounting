@@ -30,6 +30,7 @@ namespace Empiria.FinancialAccounting.AccountsChartEdition {
       this.DataOperations = new FixedList<DataOperation>( new []{ dataOperation });
     }
 
+
     internal AccountsChartEditionAction(AccountEditionCommand command,
                                         IEnumerable<DataOperation> dataOperations) {
       Assertion.Require(command, nameof(command));

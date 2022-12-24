@@ -12,7 +12,6 @@ using System;
 using Empiria.Services;
 
 using Empiria.FinancialAccounting.FinancialConcepts.Adapters;
-using System.Collections.Generic;
 
 namespace Empiria.FinancialAccounting.FinancialConcepts.UseCases {
 
