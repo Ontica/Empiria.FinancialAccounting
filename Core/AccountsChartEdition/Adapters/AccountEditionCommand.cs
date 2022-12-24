@@ -267,7 +267,7 @@ namespace Empiria.FinancialAccounting.AccountsChartEdition.Adapters {
 
       AccountsChart accountsChart = command.GetAccountsChart();
 
-      Assertion.Require(accountsChart.IsAccountNumberFormatValid(command.AccountFields.AccountNumber),
+      Assertion.Require(accountsChart.IsValidAccountNumber(command.AccountFields.AccountNumber),
                        $"Account number '{command.AccountFields.AccountNumber}' has an invalid format.");
 
       _ = command.AccountFields.GetAccountType();

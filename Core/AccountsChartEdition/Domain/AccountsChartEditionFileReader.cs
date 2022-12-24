@@ -201,7 +201,7 @@ namespace Empiria.FinancialAccounting.AccountsChartEdition {
       foreach (var command in commands) {
         var accountNumber = command.AccountFields.AccountNumber;
 
-        if (!_chart.IsAccountNumberFormatValid(accountNumber)) {
+        if (!_chart.IsValidAccountNumber(accountNumber)) {
           Assertion.RequireFail(
                     $"La cuenta '{accountNumber}' tiene un formato que " +
                     $"no reconozco: {command.DataSource}");

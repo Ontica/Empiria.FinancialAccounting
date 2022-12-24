@@ -121,43 +121,6 @@ namespace Empiria.FinancialAccounting {
 
     #region Public methods
 
-    internal string BuildSearchAccountsFilter(string keywords) {
-      keywords = EmpiriaString.TrimSpacesAndControl(keywords);
-
-      string[] keywordsParts = keywords.Split(' ');
-
-      string accountNumber = string.Empty;
-
-      for (int i = 0; i < keywordsParts.Length; i++) {
-        string part = keywordsParts[i];
-
-        part = EmpiriaString.RemovePunctuation(part)
-                            .Replace(" ", string.Empty);
-
-        if (EmpiriaString.IsInteger(part)) {
-          accountNumber = part;
-          keywordsParts[i] = string.Empty;
-          break;
-        }
-      }
-
-      if (accountNumber.Length != 0 && keywordsParts.Length == 1) {
-        accountNumber = this.FormatAccountNumber(accountNumber);
-
-        return $"NUMERO_CUENTA_ESTANDAR LIKE '{accountNumber}%'";
-
-      } else if (accountNumber.Length != 0 && keywordsParts.Length > 1) {
-        accountNumber = this.FormatAccountNumber(accountNumber);
-
-        return $"NUMERO_CUENTA_ESTANDAR LIKE '{accountNumber}%' AND " +
-               SearchExpression.ParseAndLikeKeywords("keywords_cuenta_estandar_hist", String.Join(" ", keywordsParts));
-
-      } else {
-        return SearchExpression.ParseAndLikeKeywords("keywords_cuenta_estandar_hist", keywords);
-      }
-    }
-
-
     public Account GetAccount(string accountNumber) {
       Account account = TryGetAccount(accountNumber);
 
@@ -247,77 +210,24 @@ namespace Empiria.FinancialAccounting {
     }
 
 
-    public bool IsAccountNumberFormatValid(string accountNumber) {
-      var formatted = FormatAccountNumber(accountNumber);
+    public bool IsValidAccountNumber(string accountNumber) {
+      var formatter = new AccountsFormatter(this);
 
-      if (this.Equals(AccountsChart.IFRS) && formatted.Contains("00")) {
-        return false;
-      }
-
-      if (this.Equals(AccountsChart.IFRS) && !EmpiriaString.All(formatted, "0123456789.")) {
-        return false;
-      }
-
-      if (this.Equals(AccountsChart.IFRS) && formatted.StartsWith("0")) {
-        return false;
-      }
-
-      return (formatted == accountNumber);
+      return formatter.IsAccountNumberFormatValid(accountNumber);
     }
 
 
     public string FormatAccountNumber(string accountNumber) {
-      string temp = EmpiriaString.TrimSpacesAndControl(accountNumber);
+      var formatter = new AccountsFormatter(this);
 
-      Assertion.Require(temp, nameof(accountNumber));
-
-      char separator = this.MasterData.AccountNumberSeparator;
-      string pattern = this.MasterData.AccountsPattern;
-
-      temp = temp.Replace(separator.ToString(), string.Empty);
-
-      temp = temp.TrimEnd('0');
-
-      if (temp.Length > EmpiriaString.CountOccurences(pattern, '0')) {
-        Assertion.RequireFail($"Number of placeholders in pattern ({pattern}) is less than the " +
-                              $"number of characters in the input string ({accountNumber}).");
-      } else {
-        temp = temp.PadRight(EmpiriaString.CountOccurences(pattern, '0'), '0');
-      }
-
-      for (int i = 0; i < pattern.Length; i++) {
-        if (pattern[i] == separator) {
-          temp = temp.Insert(i, separator.ToString());
-        }
-      }
-
-      while (true) {
-        if (temp.EndsWith($"{separator}0000")) {
-          temp = temp.Remove(temp.Length - 5);
-
-        } else if (temp.EndsWith($"{separator}000")) {
-          temp = temp.Remove(temp.Length - 4);
-
-        } else if (temp.EndsWith($"{separator}00")) {
-          temp = temp.Remove(temp.Length - 3);
-
-        } else if (temp.EndsWith($"{separator}0")) {
-          temp = temp.Remove(temp.Length - 2);
-
-        } else {
-          break;
-
-        }
-      }
-
-      return temp;
+      return formatter.FormatAccountNumber(accountNumber);
     }
 
 
-    internal string BuildParentAccountNumber(string number) {
-      var accountNumberSeparator = this.MasterData.AccountNumberSeparator;
+    internal string BuildParentAccountNumber(string accountNumber) {
+      var formatter = new AccountsFormatter(this);
 
-      return number.Substring(0, number.LastIndexOf(accountNumberSeparator));
+      return formatter.BuildParentAccountNumber(accountNumber);
     }
 
 
@@ -343,7 +253,6 @@ namespace Empiria.FinancialAccounting {
 
       return TryGetAccount(parentAccountNumber);
     }
-
 
     #endregion Public methods
 
