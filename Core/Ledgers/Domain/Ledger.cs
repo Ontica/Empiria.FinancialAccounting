@@ -177,7 +177,6 @@ namespace Empiria.FinancialAccounting {
     }
 
 
-
     public string FormatSubledgerAccount(string subledgerAccountNo) {
       const int SUBLEDGER_ACCOUNT_FIXED_LENGTH = 16;
 
@@ -255,14 +254,14 @@ namespace Empiria.FinancialAccounting {
 
 
     public FixedList<LedgerAccount> SearchAssignedAccounts(string keywords, DateTime date) {
-      string filter = this.AccountsChart.BuildSearchAccountsFilter(keywords);
+      string filter = AccountsChartData.BuildSearchAccountsFilter(this.AccountsChart, keywords);
 
       return LedgerData.SearchAssignedAccountsForEdition(this, date, filter);
     }
 
 
     public FixedList<Account> SearchUnassignedAccounts(string keywords, DateTime date) {
-      string filter = this.AccountsChart.BuildSearchAccountsFilter(keywords);
+      string filter = AccountsChartData.BuildSearchAccountsFilter(this.AccountsChart, keywords);
 
       return LedgerData.SearchUnassignedAccountsForEdition(this, date, filter);
     }

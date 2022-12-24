@@ -18,6 +18,43 @@ namespace Empiria.FinancialAccounting.Data {
   /// <summary>Data access layer for accounts charts reading operations.</summary>
   static internal class AccountsChartData {
 
+    static internal string BuildSearchAccountsFilter(AccountsChart accountsChart, string keywords) {
+      keywords = EmpiriaString.TrimSpacesAndControl(keywords);
+
+      string[] keywordsParts = keywords.Split(' ');
+
+      string accountNumber = string.Empty;
+
+      for (int i = 0; i < keywordsParts.Length; i++) {
+        string part = keywordsParts[i];
+
+        part = EmpiriaString.RemovePunctuation(part)
+                            .Replace(" ", string.Empty);
+
+        if (EmpiriaString.IsInteger(part)) {
+          accountNumber = part;
+          keywordsParts[i] = string.Empty;
+          break;
+        }
+      }
+
+      if (accountNumber.Length != 0 && keywordsParts.Length == 1) {
+        accountNumber = accountsChart.FormatAccountNumber(accountNumber);
+
+        return $"NUMERO_CUENTA_ESTANDAR LIKE '{accountNumber}%'";
+
+      } else if (accountNumber.Length != 0 && keywordsParts.Length > 1) {
+        accountNumber = accountsChart.FormatAccountNumber(accountNumber);
+
+        return $"NUMERO_CUENTA_ESTANDAR LIKE '{accountNumber}%' AND " +
+               SearchExpression.ParseAndLikeKeywords("keywords_cuenta_estandar_hist", String.Join(" ", keywordsParts));
+
+      } else {
+        return SearchExpression.ParseAndLikeKeywords("keywords_cuenta_estandar_hist", keywords);
+      }
+    }
+
+
     static internal EmpiriaHashTable<Account> GetAccounts(AccountsChart accountsChart, bool reload = false) {
       var sql = "SELECT * FROM VW_COF_CUENTA_ESTANDAR_HIST " +
                 $"WHERE ID_TIPO_CUENTAS_STD = {accountsChart.Id} " +

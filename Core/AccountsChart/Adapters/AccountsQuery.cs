@@ -11,6 +11,8 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 
+using Empiria.FinancialAccounting.Data;
+
 namespace Empiria.FinancialAccounting.Adapters {
 
   /// <summary>Query payload used for accounts searching.</summary>
@@ -181,7 +183,7 @@ namespace Empiria.FinancialAccounting.Adapters {
 
 
     static private string BuildKeywordsFilter(string keywords, AccountsChart accountsChart) {
-      return accountsChart.BuildSearchAccountsFilter(keywords);
+      return AccountsChartData.BuildSearchAccountsFilter(accountsChart, keywords);
     }
 
 
