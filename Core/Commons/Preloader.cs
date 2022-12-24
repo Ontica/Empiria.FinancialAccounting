@@ -38,7 +38,6 @@ namespace Empiria.FinancialAccounting {
         EmpiriaLog.Info($"Application preloading starts at {DateTime.Now}.");
         Subledger.Preload();
         SubledgerAccount.Preload();
-        StandardAccount.Preload();
         AccountsChart.Preload();
         EmpiriaLog.Info($"Application preloading ends at {DateTime.Now}.");
       } catch {

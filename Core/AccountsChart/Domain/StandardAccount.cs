@@ -14,7 +14,6 @@ namespace Empiria.FinancialAccounting {
   /// <summary>Contains information about an standard account.</summary>
   public class StandardAccount : BaseObject {
 
-
     #region Constructors and parsers
 
 
@@ -32,13 +31,8 @@ namespace Empiria.FinancialAccounting {
       return BaseObject.ParseKey<StandardAccount>(uid);
     }
 
-    static public void Preload() {
-      BaseObject.GetList<StandardAccount>();
-    }
-
 
     static public StandardAccount Empty => BaseObject.ParseEmpty<StandardAccount>();
-
 
     #endregion Constructors and parsers
 
@@ -139,7 +133,6 @@ namespace Empiria.FinancialAccounting {
 
 
     #endregion Public properties
-
 
     #region Public methods
 

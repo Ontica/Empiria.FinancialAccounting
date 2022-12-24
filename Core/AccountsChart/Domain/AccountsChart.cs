@@ -8,8 +8,8 @@
 *                                                                                                            *
 ************************* Copyright(c) La Vía Óntica SC, Ontica LLC and contributors. All rights reserved. **/
 using System;
-
 using Empiria.Collections;
+
 using Empiria.FinancialAccounting.Data;
 
 namespace Empiria.FinancialAccounting {
@@ -17,8 +17,13 @@ namespace Empiria.FinancialAccounting {
   /// <summary>Aggregate root that holds an accounts chart.</summary>
   public class AccountsChart : GeneralObject {
 
+    #region Fields
+
     private Lazy<EmpiriaHashTable<Account>> _accounts;
+    private Lazy<EmpiriaHashTable<StandardAccount>> _standardAccounts;
     private Lazy<AccountsChartRules> _rules;
+
+    #endregion Fields
 
     #region Constructors and parsers
 
@@ -52,10 +57,11 @@ namespace Empiria.FinancialAccounting {
 
 
     static public void Preload() {
-      var list = GetList();
+      FixedList<AccountsChart> list = GetList();
 
       foreach (var item in list) {
-        _ = item.Accounts;
+        _ = item._accounts.Value;
+        _ = item._standardAccounts.Value;
       }
     }
 
@@ -71,13 +77,8 @@ namespace Empiria.FinancialAccounting {
 
 
     internal void Refresh() {
-
-      if (!this.IsEmptyInstance) {
-        _accounts = new Lazy<EmpiriaHashTable<Account>>(() => AccountsChartData.GetAccounts(this));
-      } else {
-        _accounts = new Lazy<EmpiriaHashTable<Account>>(() => new EmpiriaHashTable<Account>());
-      }
-
+      _accounts = new Lazy<EmpiriaHashTable<Account>>(() => AccountsChartData.GetAccounts(this, true));
+      _standardAccounts = new Lazy<EmpiriaHashTable<StandardAccount>>(() => AccountsChartData.GetStandardAccounts(this, true));
       _rules = new Lazy<AccountsChartRules>(() => new AccountsChartRules(this));
     }
 
@@ -160,40 +161,38 @@ namespace Empiria.FinancialAccounting {
     public Account GetAccount(string accountNumber) {
       Account account = TryGetAccount(accountNumber);
 
-      if (account != null) {
-        return account;
-      }
+      Assertion.Require(account, $"Account '{accountNumber}' was not found in the history log.");
 
-      throw Assertion.EnsureNoReachThisCode($"Account {accountNumber} was not found.");
+      return account;
     }
 
 
     public StandardAccount GetStandardAccount(string accountNumber) {
-      Account account = this.GetAccount(accountNumber);
+      StandardAccount stdAccount;
 
-      return StandardAccount.Parse(account.StandardAccountId);
+      _standardAccounts.Value.TryGetValue(accountNumber, out stdAccount);
+
+      Assertion.Require(stdAccount, $"Standard account '{accountNumber}' was not found.");
+
+      return stdAccount;
     }
 
 
     public Account TryGetAccount(string accountNumber) {
       Account account;
 
-      if (_accounts.Value.TryGetValue(accountNumber, out account)) {
-        return account;
-      } else {
-        return null;
-      }
+      _accounts.Value.TryGetValue(accountNumber, out account);
+
+      return account;
     }
 
 
     public StandardAccount TryGetStandardAccount(string accountNumber) {
-      Account account;
+      StandardAccount stdAccount;
 
-      if (_accounts.Value.TryGetValue(accountNumber, out account)) {
-        return StandardAccount.Parse(account.StandardAccountId);
-      } else {
-        return null;
-      }
+      _standardAccounts.Value.TryGetValue(accountNumber, out stdAccount);
+
+      return stdAccount;
     }
 
 
@@ -208,8 +207,8 @@ namespace Empiria.FinancialAccounting {
       Account account = history.Find(x => x.StartDate <= date && date <= x.EndDate);
 
       Assertion.Require(account,
-        $"La cuenta {accountNumber} " +
-        $"no existe o no está activa el día {date.ToString("dd/MMM/yyyy")}.");
+                  $"La cuenta {accountNumber} " +
+                  $"no existe o no está activa el día {date.ToString("dd/MMM/yyyy")}.");
 
       return account;
     }
@@ -315,7 +314,7 @@ namespace Empiria.FinancialAccounting {
     }
 
 
-    internal string GetParentAccountNumber(string number) {
+    internal string BuildParentAccountNumber(string number) {
       var accountNumberSeparator = this.MasterData.AccountNumberSeparator;
 
       return number.Substring(0, number.LastIndexOf(accountNumberSeparator));
@@ -340,7 +339,7 @@ namespace Empiria.FinancialAccounting {
 
 
     internal Account TryGetParentAccount(string accountNumber) {
-      var parentAccountNumber = GetParentAccountNumber(accountNumber);
+      var parentAccountNumber = BuildParentAccountNumber(accountNumber);
 
       return TryGetAccount(parentAccountNumber);
     }
