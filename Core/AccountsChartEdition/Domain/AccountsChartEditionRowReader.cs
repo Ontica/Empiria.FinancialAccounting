@@ -72,8 +72,8 @@ namespace Empiria.FinancialAccounting.AccountsChartEdition {
       Assertion.Require(mainRole,
                         $"No se proporcionó el rol de la cuenta en la celda D{_rowIndex}.");
 
-      bool isSubsidiary = GetIsSubsidiaryFlag();
-      bool hasSectors = GetSectors().Length != 0;
+      bool isSubsidiary  = GetIsSubsidiaryFlag();
+      bool isSectorizada = GetIsSectorizadaFlag();
 
       if (mainRole == "sumaria") {
         return AccountRole.Sumaria;
@@ -83,7 +83,7 @@ namespace Empiria.FinancialAccounting.AccountsChartEdition {
                         $"La celda D{_rowIndex} tiene un rol" +
                         $"que no reconozco: {ReadStringValueFromColumn("D")}");
 
-      if (hasSectors) {
+      if (isSectorizada) {
         return AccountRole.Sectorizada;
 
       } else if (isSubsidiary) {
@@ -95,26 +95,42 @@ namespace Empiria.FinancialAccounting.AccountsChartEdition {
     }
 
 
+    internal bool GetIsSectorizadaFlag() {
+      bool? hasSectors = TryReadBoolValueFromColumn("E");
+
+      Assertion.Require(hasSectors.HasValue,
+                  $"No puedo determinar si la cuenta maneja sectores o no " +
+                  $"con el dato de la celda E{_rowIndex}: {ReadStringValueFromColumn("E")}");
+
+      return hasSectors.Value;
+    }
+
+
     internal bool GetIsSubsidiaryFlag() {
-      bool? isSubsidiary = TryReadBoolValueFromColumn("E");
+      bool? isSubsidiary = TryReadBoolValueFromColumn("F");
 
       Assertion.Require(isSubsidiary.HasValue,
                   $"No puedo determinar si la cuenta maneja auxiliares o no " +
-                  $"con el dato de la celda E{_rowIndex}: {ReadStringValueFromColumn("E")}");
+                  $"con el dato de la celda F{_rowIndex}: {ReadStringValueFromColumn("F")}");
 
       return isSubsidiary.Value;
     }
 
 
-    internal AccountRole GetSectorsRole() {
+    private AccountRole GetSectorsRole() {
+      bool isSectorizada = GetIsSectorizadaFlag();
       bool isSubsidiary = GetIsSubsidiaryFlag();
-      bool hasSectors = GetSectors().Length != 0;
 
-      if (!hasSectors) {
+      if (!isSectorizada) {
         return AccountRole.Undefined;
       }
 
       return isSubsidiary ? AccountRole.Control : AccountRole.Detalle;
+    }
+
+
+    internal string GetCommandText() {
+      return ReadStringValueFromColumn("A");
     }
 
 
@@ -150,7 +166,7 @@ namespace Empiria.FinancialAccounting.AccountsChartEdition {
 
 
     internal string[] GetCurrencies() {
-      string[] columns = new[] { "F", "G", "H", "I", "J" };
+      string[] columns = new[] { "G", "H", "I", "J", "K" };
 
       return ReadStringArrayFromColumns(columns);
     }
@@ -215,30 +231,20 @@ namespace Empiria.FinancialAccounting.AccountsChartEdition {
     }
 
 
-    internal string GetCommandText() {
-      return ReadStringValueFromColumn("A");
+    internal SectorInputRuleDto[] GetSectorRules() {
+      string[] columns = new[] { "L", "M", "N", "O", "P", "Q", "R", "S", "T", "U", "V",
+                                 "W", "X", "Y", "Z", "AA", "AB", "AC", "AD", "AE" };
+
+      var sectorCodes = ReadStringArrayFromColumns(columns);
+
+      var allSectorsRole = GetSectorsRole();
+
+      return sectorCodes.Select(code => new SectorInputRuleDto { Code = code, Role = allSectorsRole })
+                        .ToArray();
     }
 
-
-    internal string[] GetSectors() {
-      string[] columns = new[] { "K", "L", "M", "N", "O", "P", "Q", "R", "S", "T", "U",
-                                 "V", "W", "X", "Y", "Z", "AA", "AB", "AC", "AD" };
-
-      return ReadStringArrayFromColumns(columns);
-    }
 
     #region Helpers
-
-    private bool? TryReadBoolValueFromColumn(string column) {
-      var value = _spreadsheet.ReadCellValue<string>($"{column}{_rowIndex}").Trim();
-
-      if (value.Length == 0 || value == "-") {
-        return false;
-      }
-
-      return EmpiriaString.TryToBoolean(EmpiriaString.TrimAll(value));
-    }
-
 
     private string[] ReadStringArrayFromColumns(string[] columns) {
       var list = new List<string>();
@@ -259,6 +265,17 @@ namespace Empiria.FinancialAccounting.AccountsChartEdition {
       var value = _spreadsheet.ReadCellValue<string>($"{column}{_rowIndex}");
 
       return EmpiriaString.TrimAll(value);
+    }
+
+
+    private bool? TryReadBoolValueFromColumn(string column) {
+      var value = _spreadsheet.ReadCellValue<string>($"{column}{_rowIndex}").Trim();
+
+      if (value.Length == 0 || value == "-") {
+        return false;
+      }
+
+      return EmpiriaString.TryToBoolean(EmpiriaString.TrimAll(value));
     }
 
     #endregion Helpers
