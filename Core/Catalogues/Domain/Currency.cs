@@ -26,13 +26,18 @@ namespace Empiria.FinancialAccounting {
     }
 
 
-    static public Currency Parse(string uid) {
-      return BaseObject.ParseKey<Currency>(uid);
+    static public Currency Parse(string code) {
+      return BaseObject.ParseKey<Currency>(code);
     }
 
 
-    public static bool Exists(string code) {
-      return BaseObject.TryParse<Currency>($"O_ID_MONEDA = '{code}'") != null;
+    static public Currency TryParse(string code) {
+      return BaseObject.TryParse<Currency>($"O_ID_MONEDA = '{code}'");
+    }
+
+
+    static public bool Exists(string code) {
+      return (TryParse(code) != null);
     }
 
 

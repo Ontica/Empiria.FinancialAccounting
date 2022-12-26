@@ -29,16 +29,24 @@ namespace Empiria.FinancialAccounting {
     }
 
 
-    static public Sector Parse(string uid) {
-      if (uid == "00") {
+    static public Sector Parse(string code) {
+      if (code == "00") {
         return Sector.Empty;
       }
-      return BaseObject.ParseKey<Sector>(uid);
+      return BaseObject.ParseKey<Sector>(code);
     }
 
 
-    public static bool Exists(string uid) {
-      return BaseObject.TryParse<Sector>($"CLAVE_SECTOR = '{uid}'") != null;
+    static public Sector TryParse(string code) {
+      if (code == "00") {
+        return Sector.Empty;
+      }
+      return BaseObject.TryParse<Sector>($"CLAVE_SECTOR = '{code}'");
+    }
+
+
+    static public bool Exists(string code) {
+      return TryParse(code) != null;
     }
 
 
