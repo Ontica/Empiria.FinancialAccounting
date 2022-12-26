@@ -13,8 +13,6 @@ using System.IO;
 using Empiria.Services;
 using Empiria.Storage;
 
-using Empiria.FinancialAccounting.Adapters;
-
 using Empiria.FinancialAccounting.AccountsChartEdition.Adapters;
 
 namespace Empiria.FinancialAccounting.AccountsChartEdition.UseCases {
@@ -36,87 +34,18 @@ namespace Empiria.FinancialAccounting.AccountsChartEdition.UseCases {
 
     #region Use cases
 
-
-    public AccountEditionResult AddCurrencies(AccountEditionCommand command) {
-      AccountEditorService editor = GetAccountEditorService(command);
-
-      editor.AddCurrencies();
-
-      editor.TryCommit();
-
-      return editor.GetResult();
+    public OperationSummary CreateAccount(AccountEditionCommand command) {
+      throw new NotImplementedException();
     }
 
 
-    public AccountEditionResult AddSectors(AccountEditionCommand command) {
-      AccountEditorService editor = GetAccountEditorService(command);
-
-      editor.AddSectors();
-
-      editor.TryCommit();
-
-      return editor.GetResult();
-    }
-
-
-    public AccountEditionResult CreateAccount(AccountEditionCommand command) {
-      AccountEditorService editor = GetAccountEditorService(command);
-
-      editor.CreateAccount();
-
-      editor.TryCommit();
-
-      return editor.GetResult();
-    }
-
-
-    public AccountEditionResult RemoveAccount(AccountEditionCommand command) {
-      AccountEditorService editor = GetAccountEditorService(command);
-
-      editor.RemoveAccount();
-
-      editor.TryCommit();
-
-      return editor.GetResult();
-    }
-
-
-    public AccountEditionResult RemoveCurrencies(AccountEditionCommand command) {
-      AccountEditorService editor = GetAccountEditorService(command);
-
-      editor.RemoveCurrencies();
-
-      editor.TryCommit();
-
-      return editor.GetResult();
-    }
-
-
-    public AccountEditionResult RemoveSectors(AccountEditionCommand command) {
-      AccountEditorService editor = GetAccountEditorService(command);
-
-      editor.RemoveSectors();
-
-      editor.TryCommit();
-
-      return editor.GetResult();
-    }
-
-
-    public AccountEditionResult UpdateAccount(AccountEditionCommand command) {
-      AccountEditorService editor = GetAccountEditorService(command);
-
-      editor.UpdateAccount();
-
-      editor.TryCommit();
-
-      return editor.GetResult();
+    public OperationSummary UpdateAccount(AccountEditionCommand command) {
+      throw new NotImplementedException();
     }
 
 
     public FixedList<OperationSummary> UpdateFromExcelFile(UpdateAccountsFromFileCommand command,
-                                                           InputFile excelFile,
-                                                           bool dryRun) {
+                                                           InputFile excelFile, bool dryRun) {
       Assertion.Require(command, nameof(command));
       Assertion.Require(excelFile, nameof(excelFile));
 
@@ -140,20 +69,7 @@ namespace Empiria.FinancialAccounting.AccountsChartEdition.UseCases {
       return processor.Execute(commands);
     }
 
-
     #endregion Use cases
-
-    #region Helpers
-
-    private AccountEditorService GetAccountEditorService(AccountEditionCommand command) {
-      Assertion.Require(command, nameof(command));
-
-      command.EnsureValid();
-
-      return new AccountEditorService(command);
-    }
-
-    #endregion Helpers
 
   }  // class AccountEditionUseCases
 
