@@ -56,6 +56,29 @@ namespace Empiria.FinancialAccounting.AccountsChartEdition.Adapters {
   }  // enum AccountDataEdition
 
 
+
+  /// <summary>DTO used to update a sector rule.</summary>
+  public class SectorInputRuleDto {
+
+    public string Code {
+      get; set;
+    } = string.Empty;
+
+
+    public Sector Sector {
+      get; internal set;
+    }
+
+
+    public AccountRole Role {
+      get; set;
+    } = AccountRole.Undefined;
+
+
+  }  // class SectorInputRuleDto
+
+
+
   /// <summary>Command object used to update a chart of accounts from a file.</summary>
   public class UpdateAccountsFromFileCommand {
 
@@ -110,14 +133,9 @@ namespace Empiria.FinancialAccounting.AccountsChartEdition.Adapters {
     } = new string[0];
 
 
-    public string[] Sectors {
+    public SectorInputRuleDto[] SectorRules {
       get; set;
-    } = new string[0];
-
-
-    public AccountRole SectorsRole {
-      get; set;
-    } = AccountRole.Undefined;
+    } = new SectorInputRuleDto[0];
 
 
     public AccountDataToBeUpdated[] DataToBeUpdated {
@@ -219,9 +237,11 @@ namespace Empiria.FinancialAccounting.AccountsChartEdition.Adapters {
     }
 
 
-    static internal FixedList<Sector> GetSectors(this AccountEditionCommand command) {
-      return command.Sectors.Select(x => Sector.Parse(x))
-                            .ToFixedList();
+    static internal FixedList<SectorInputRuleDto> GetSectorRules(this AccountEditionCommand command) {
+      return command.SectorRules.Select(x => {
+        x.Sector = Sector.Parse(x.Code);
+        return x;
+      }).ToFixedList();
     }
 
 
@@ -330,14 +350,14 @@ namespace Empiria.FinancialAccounting.AccountsChartEdition.Adapters {
 
 
     static private void EnsureIsValidForSectorsEdition(this AccountEditionCommand command) {
-      Assertion.Require(command.Sectors, "command.Sectors");
-      Assertion.Require(command.Sectors.Length > 0, "Sectors list must have one or more values.");
+      Assertion.Require(command.SectorRules, "command.SectorRules");
+      Assertion.Require(command.SectorRules.Length > 0, "Sector rules list must have one or more values.");
 
-      foreach (var sectorUID in command.Sectors) {
+      foreach (var sectorRule in command.SectorRules) {
         try {
-          _ = Sector.Parse(sectorUID);
+          _ = Sector.Parse(sectorRule.Code);
         } catch {
-          Assertion.RequireFail($"A sector with UID '{sectorUID}' does not exists.");
+          Assertion.RequireFail($"A sector with code '{sectorRule.Code}' does not exists.");
         }
       }
     }

@@ -84,9 +84,9 @@ namespace Empiria.FinancialAccounting.AccountsChartEdition {
 
 
     internal bool EnsureCanAddSectorsTo(Account account) {
-      FixedList<Sector> sectorsToBeAdded = _command.GetSectors();
+      FixedList<SectorInputRuleDto> sectorRulesToBeAdded = _command.GetSectorRules();
 
-      if (sectorsToBeAdded.Count == 0) {
+      if (sectorRulesToBeAdded.Count == 0) {
         this.AddIssue("No se proporcionó la lista con los nuevos sectores a registrar.");
 
         return false;
@@ -94,20 +94,25 @@ namespace Empiria.FinancialAccounting.AccountsChartEdition {
 
       bool isOK = true;
 
-      foreach (Sector sectorToAdd in sectorsToBeAdded) {
-        if (account.SectorRules.Contains(x => x.Sector.Equals(sectorToAdd))) {
-          this.AddIssue($"La cuenta ya tiene registrado el sector {sectorToAdd.FullName}.");
+      foreach (SectorInputRuleDto sectorRuleToAdd in sectorRulesToBeAdded) {
+        if (account.SectorRules.Contains(x => x.Sector.Equals(sectorRuleToAdd))) {
+          this.AddIssue($"La cuenta ya tiene registrado el sector {sectorRuleToAdd.Sector.FullName}.");
           isOK = false;
 
-        } else if (sectorToAdd.IsSummary) {
-          this.AddIssue($"El sector {sectorToAdd.FullName} tiene sectores hijos, " +
+        } else if (sectorRuleToAdd.Sector.IsSummary) {
+          this.AddIssue($"El sector {sectorRuleToAdd.Sector.FullName} tiene sectores hijos, " +
                         $"por lo que no puede ser asignado directamente a una cuenta.");
           isOK = false;
 
-        } else if (!_accountsChart.MasterData.Sectors.Contains(sectorToAdd)) {
-          this.AddIssue($"El catálogo de cuentas no maneja el sector {sectorToAdd.FullName}.");
+        } else if (!_accountsChart.MasterData.Sectors.Contains(sectorRuleToAdd.Sector)) {
+          this.AddIssue($"El catálogo de cuentas no maneja el sector {sectorRuleToAdd.Sector.FullName}.");
           isOK = false;
 
+        } else if (!(sectorRuleToAdd.Role == AccountRole.Detalle ||
+                     sectorRuleToAdd.Role == AccountRole.Control)) {
+          this.AddIssue($"El sector {sectorRuleToAdd.Sector.FullName} tiene un rol " +
+                        $"que no es válido para sectores: {sectorRuleToAdd.Role}.");
+          isOK = false;
         }
       }
 

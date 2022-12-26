@@ -37,13 +37,13 @@ namespace Empiria.FinancialAccounting.AccountsChartEdition {
     }
 
 
-    internal AccountAction BuildForAddSector(Account account, Sector sector) {
+    internal AccountAction BuildForAddSector(Account account, SectorInputRuleDto sectorRule) {
       Assertion.Require(account, nameof(account));
-      Assertion.Require(sector, nameof(sector));
+      Assertion.Require(sectorRule, nameof(sectorRule));
 
-      DataOperation operation = GetAddSectorOperation(account, sector);
+      DataOperation operation = GetAddSectorOperation(account, sectorRule);
 
-      return new AccountAction(operation, $"Agregar el sector {sector.FullName} a la cuenta.");
+      return new AccountAction(operation, $"Agregar el sector {sectorRule.Sector.FullName} a la cuenta.");
     }
 
 
@@ -56,12 +56,15 @@ namespace Empiria.FinancialAccounting.AccountsChartEdition {
     #region Data operation builders
 
     private DataOperation GetAddCurrencyOperation(Account account, Currency currency) {
-      return DataOperation.Parse("apd_cof_currency", account.StandardAccountId, currency.Id,
+      return DataOperation.Parse("apd_cof_currency", account.StandardAccountId,
+                                  currency.Id,
                                  _command.ApplicationDate, ExecutionServer.DateMaxValue);
     }
 
-    private DataOperation GetAddSectorOperation(Account account, Sector sector) {
-      return DataOperation.Parse("apd_cof_sector", account.StandardAccountId, sector.Id,
+
+    private DataOperation GetAddSectorOperation(Account account, SectorInputRuleDto sectorRule) {
+      return DataOperation.Parse("apd_cof_sector", account.StandardAccountId,
+                                 sectorRule.Sector.Id, (char) sectorRule.Role,
                                  _command.ApplicationDate, ExecutionServer.DateMaxValue);
     }
 

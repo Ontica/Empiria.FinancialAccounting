@@ -68,8 +68,8 @@ namespace Empiria.FinancialAccounting.AccountsChartEdition {
         return;
       }
 
-      foreach (Sector sector in _command.GetSectors()) {
-        AccountAction action = _actionBuilder.BuildForAddSector(account, sector);
+      foreach (SectorInputRuleDto sectorRule in _command.GetSectorRules()) {
+        AccountAction action = _actionBuilder.BuildForAddSector(account, sectorRule);
 
         _actionsList.Add(action);
 

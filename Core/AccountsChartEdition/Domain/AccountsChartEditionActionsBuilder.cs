@@ -62,8 +62,8 @@ namespace Empiria.FinancialAccounting.AccountsChartEdition {
         list.Add(BuildAddCurrenciesAction(stdAccountId));
       }
 
-      if (_command.Sectors.Length != 0) {
-        list.Add(BuildAddSectorsAction(stdAccountId));
+      if (_command.SectorRules.Length != 0) {
+        list.Add(BuildAddSectorRulesAction(stdAccountId));
       }
 
       return list.ToFixedList();
@@ -86,16 +86,16 @@ namespace Empiria.FinancialAccounting.AccountsChartEdition {
     }
 
 
-    private AccountsChartEditionAction BuildAddSectorsAction(int stdAccountId) {
+    private AccountsChartEditionAction BuildAddSectorRulesAction(int stdAccountId) {
       var operations = new List<DataOperation>();
 
-      foreach (var sector in _command.GetSectors()) {
+      foreach (var sectorRule in _command.GetSectorRules()) {
 
         DataOperation op =
-                  AccountEditionDataService.AddAccountSectorOp(stdAccountId, sector,
-                                                               _command.SectorsRole,
+                  AccountEditionDataService.AddAccountSectorOp(stdAccountId,
+                                                               sectorRule.Sector,
+                                                               sectorRule.Role,
                                                                _command.ApplicationDate);
-
         operations.Add(op);
       }
 
@@ -191,23 +191,24 @@ namespace Empiria.FinancialAccounting.AccountsChartEdition {
     private AccountsChartEditionAction BuildUpdateSectorsAction() {
       var operations = new List<DataOperation>();
 
-      FixedList<Sector> newSectors = _command.GetSectors();
+      FixedList<SectorInputRuleDto> newSectorRules = _command.GetSectorRules();
       Account account = _command.GetAccountToEdit();
 
       foreach (var currentSectorRule in account.SectorRules) {
 
-        if (!newSectors.Contains(x => x.Equals(currentSectorRule.Sector))) {
+        if (!newSectorRules.Contains(x => x.Sector.Equals(currentSectorRule.Sector))) {
           DataOperation op = AccountEditionDataService.RemoveAccountSectorOp(currentSectorRule,
                                                                              _command.ApplicationDate);
           operations.Add(op);
         }
       }
 
-      foreach (var sector in newSectors) {
+      foreach (var sectorRule in newSectorRules) {
 
-        if (!account.SectorRules.Contains(x => x.Sector.Equals(sector))) {
-          DataOperation op = AccountEditionDataService.AddAccountSectorOp(account.StandardAccountId, sector,
-                                                                          _command.SectorsRole,
+        if (!account.SectorRules.Contains(x => x.Sector.Equals(sectorRule.Sector))) {
+          DataOperation op = AccountEditionDataService.AddAccountSectorOp(account.StandardAccountId,
+                                                                          sectorRule.Sector,
+                                                                          sectorRule.Role,
                                                                           _command.ApplicationDate);
           operations.Add(op);
         }

@@ -14,6 +14,7 @@ using System.IO;
 using Empiria.Office;
 
 using Empiria.FinancialAccounting.AccountsChartEdition.Adapters;
+using System.Linq;
 
 namespace Empiria.FinancialAccounting.AccountsChartEdition {
 
@@ -70,8 +71,7 @@ namespace Empiria.FinancialAccounting.AccountsChartEdition {
       }
 
       if (!dataToBeUpdated.Contains(AccountDataToBeUpdated.Sectors)) {
-        command.Sectors = new string[0];
-        command.SectorsRole = AccountRole.Undefined;
+        command.SectorRules = new SectorInputRuleDto[0];
       }
     }
 
@@ -113,7 +113,6 @@ namespace Empiria.FinancialAccounting.AccountsChartEdition {
                         $"deber tener el rol de 'Sumaria', ya que en el archivo " +
                         $"se indica que también se debe agregar su cuenta " +
                         $"hija '{accountNumber}': {command.DataSource}");
-
 
         Assertion.Ensure(createParentAccountCommand.AccountFields.AccountTypeUID,
                         $"Unregistered AccountTypeUID for account " +
@@ -187,9 +186,8 @@ namespace Empiria.FinancialAccounting.AccountsChartEdition {
         ApplicationDate = _applicationDate,
         DryRun = _dryRun,
         AccountFields = rowReader.GetAccountFields(),
-        SectorsRole = rowReader.GetSectorsRole(),
         Currencies = rowReader.GetCurrencies(),
-        Sectors = rowReader.GetSectors(),
+        SectorRules = rowReader.GetSectorRules(),
         DataToBeUpdated = rowReader.GetDataToBeUpdated(),
         CommandText = rowReader.GetCommandText(),
         DataSource = $"Fila {rowIndex}"
@@ -218,15 +216,15 @@ namespace Empiria.FinancialAccounting.AccountsChartEdition {
         if (command.CommandType == AccountEditionCommandType.CreateAccount) {
 
           Assertion.Require(account == null,
-              $"Se está solicitando agregar la cuenta '{accountNumber}'. " +
-              $"Sin embargo, ya existe en el catálogo de cuentas: {command.DataSource}");
+              $"Se está solicitando agregar la cuenta '{accountNumber}', " +
+              $"pero la misma ya existe en el catálogo de cuentas: {command.DataSource}");
 
         } else if (command.CommandType == AccountEditionCommandType.FixAccountName ||
                    command.CommandType == AccountEditionCommandType.UpdateAccount) {
 
           Assertion.Require(account != null,
               $"Se está solicitando modificar la cuenta '{accountNumber}', " +
-              $"misma que no está registrada en el catálogo de cuentas : {command.DataSource}.");
+              $"pero no está registrada en el catálogo de cuentas : {command.DataSource}.");
         }
       }
     }
@@ -249,7 +247,7 @@ namespace Empiria.FinancialAccounting.AccountsChartEdition {
               $"No se registró el tipo de la cuenta {accountNumber}: {command.DataSource}.");
 
         Assertion.Require(command.AccountFields.DebtorCreditor != DebtorCreditorType.Undefined,
-              $"No se sabe si la naturaleza de la cuenta '{accountNumber}'" +
+              $"No se sabe si la naturaleza de la cuenta '{accountNumber}' " +
               $"es deudora o acreedora: {command.DataSource}");
 
         command.EnsureAccountFieldsAreValid();
@@ -303,7 +301,7 @@ namespace Empiria.FinancialAccounting.AccountsChartEdition {
                     $"no reconozco: '{currencyCode}': {command.DataSource}.");
 
           Assertion.Require(command.Currencies.ToFixedList().CountAll(x => x == currencyCode) == 1,
-                    $"La cuenta '{accountNumber}' contiene más de una vez " +
+                    $"La lista de monedas de la cuenta '{accountNumber}' contiene más de una vez " +
                     $"la moneda '{currencyCode}': {command.DataSource}.");
 
         }
@@ -316,29 +314,35 @@ namespace Empiria.FinancialAccounting.AccountsChartEdition {
       foreach (var command in commands) {
         string accountNumber = command.AccountFields.AccountNumber;
 
-        if (command.CommandType == AccountEditionCommandType.CreateAccount ||
-            command.DataToBeUpdated.ToFixedList().Contains(AccountDataToBeUpdated.Sectors)) {
+        if (command.AccountFields.Role == AccountRole.Sectorizada) {
 
-          Assertion.Require(!(command.Sectors.Length == 0 &&
-                              command.AccountFields.Role == AccountRole.Sectorizada),
-              $"El rol de la cuenta '{accountNumber}' indica que es sectorizada" +
+          Assertion.Require(command.SectorRules.Length != 0,
+              $"La columna de sector indica que la cuenta '{accountNumber}' es sectorizada, " +
               $"pero la lista de sectores está vacía: {command.DataSource}");
+
+        } else {
+
+          Assertion.Require(command.SectorRules.Length == 0,
+              $"La columna de sector indica que la cuenta '{accountNumber}' no es sectorizada, " +
+              $"pero la lista de sectores contiene uno o más sectores: {command.DataSource}");
+
         }
 
-        foreach (var sectorCode in command.Sectors) {
 
-          Assertion.Require(Sector.Exists(sectorCode),
-                $"La cuenta '{accountNumber}' trae el sector '{sectorCode}', " +
-                $"el cual no existe: {command.DataSource}'.");
+        foreach (var sectorRule in command.SectorRules) {
 
-          var sector = Sector.Parse(sectorCode);
+          var sector = Sector.TryParse(sectorRule.Code);
+
+          Assertion.Require(sector,
+                $"La cuenta '{accountNumber}' contiene el sector '{sectorRule.Code}', " +
+                $"pero dicho sector no existe: {command.DataSource}'.");
 
           Assertion.Require(!sector.IsSummary,
               $"Se solicita registrar el sector '({sector.Code}) {sector.Name}' " +
               $"a la cuenta '{accountNumber}', pero dicho sector es sumarizador: {command.DataSource}.");
 
-          Assertion.Require(command.Sectors.ToFixedList().CountAll(x => x == sector.Code) == 1,
-              $"La cuenta '{accountNumber}' tiene más de una vez " +
+          Assertion.Require(command.SectorRules.ToFixedList().CountAll(x => x.Code == sector.Code) == 1,
+              $"La lista de sectores de la cuenta '{accountNumber}' contiene más de una vez " +
               $"el sector '{sector.Code}': {command.DataSource}");
         }
       }
