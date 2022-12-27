@@ -73,7 +73,7 @@ namespace Empiria.FinancialAccounting.AccountsChartEdition {
     private AccountsChartEditionAction BuildAddCurrenciesAction(int stdAccountId) {
       var operations = new List<DataOperation>();
 
-      foreach (var currency in _command.GetCurrencies()) {
+      foreach (var currency in _command.Entities.Currencies) {
 
         DataOperation op =
             AccountEditionDataService.AddAccountCurrencyOp(stdAccountId, currency,
@@ -89,7 +89,7 @@ namespace Empiria.FinancialAccounting.AccountsChartEdition {
     private AccountsChartEditionAction BuildAddSectorRulesAction(int stdAccountId) {
       var operations = new List<DataOperation>();
 
-      foreach (var sectorRule in _command.GetSectorRules()) {
+      foreach (var sectorRule in _command.Entities.SectorRules) {
 
         DataOperation op =
                   AccountEditionDataService.AddAccountSectorOp(stdAccountId,
@@ -114,7 +114,7 @@ namespace Empiria.FinancialAccounting.AccountsChartEdition {
 
 
     private FixedList<AccountsChartEditionAction> BuildFixAccountNameActions() {
-      Account account = _command.GetAccountToEdit();
+      Account account = _command.Entities.Account;
 
       DataOperation op = AccountEditionDataService.FixStandardAccountNameOp(account,
                                                                             _command.AccountFields.Name);
@@ -152,7 +152,7 @@ namespace Empiria.FinancialAccounting.AccountsChartEdition {
 
 
     private AccountsChartEditionAction BuildUpdateAccountDataAction() {
-      Account account = _command.GetAccountToEdit();
+      Account account = _command.Entities.Account;
 
       DataOperation op = AccountEditionDataService.UpdateStandardAccountOp(account, _command);
 
@@ -163,8 +163,8 @@ namespace Empiria.FinancialAccounting.AccountsChartEdition {
     private AccountsChartEditionAction BuildUpdateCurrenciesAction() {
       var operations = new List<DataOperation>();
 
-      FixedList<Currency> newCurrencies = _command.GetCurrencies();
-      Account account = _command.GetAccountToEdit();
+      FixedList<Currency> newCurrencies = _command.Entities.Currencies;
+      Account account = _command.Entities.Account;
 
       foreach (var currentCurrencyRule in account.CurrencyRules) {
 
@@ -191,8 +191,8 @@ namespace Empiria.FinancialAccounting.AccountsChartEdition {
     private AccountsChartEditionAction BuildUpdateSectorsAction() {
       var operations = new List<DataOperation>();
 
-      FixedList<SectorInputRuleDto> newSectorRules = _command.GetSectorRules();
-      Account account = _command.GetAccountToEdit();
+      FixedList<SectorInputRuleDto> newSectorRules = _command.Entities.SectorRules;
+      Account account = _command.Entities.Account;
 
       foreach (var currentSectorRule in account.SectorRules) {
 

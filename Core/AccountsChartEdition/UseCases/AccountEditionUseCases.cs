@@ -38,7 +38,9 @@ namespace Empiria.FinancialAccounting.AccountsChartEdition.UseCases {
     public OperationSummary ExecuteCommand(AccountEditionCommand command) {
       Assertion.Require(command, nameof(command));
 
-      var processor = new AccountsChartEditionCommandsProcessor(command.DryRun);
+      command.Arrange();
+
+      var processor = new AccountsChartEditionCommandsProcessor();
 
       return processor.Execute(command);
     }
@@ -64,9 +66,9 @@ namespace Empiria.FinancialAccounting.AccountsChartEdition.UseCases {
 
       FixedList<AccountEditionCommand> commands = reader.GetCommands();
 
-      var processor = new AccountsChartEditionCommandsProcessor(dryRun);
+      var processor = new AccountsChartEditionCommandsProcessor();
 
-      return processor.Execute(commands);
+      return processor.Execute(commands, dryRun);
     }
 
     #endregion Use cases

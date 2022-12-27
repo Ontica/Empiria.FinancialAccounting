@@ -49,13 +49,13 @@ namespace Empiria.FinancialAccounting.AccountsChartEdition.Data {
 
 
       var op = DataOperation.Parse("do_create_cuenta_estandar",
-                         stdAccountId, o.GetAccountsChart().Id, o.AccountFields.AccountNumber,
+                         stdAccountId, o.Entities.AccountsChart.Id, o.AccountFields.AccountNumber,
                          o.AccountFields.Name, "Agregada con el importador en fase de pruebas",
-                         (char) o.AccountFields.Role, o.AccountFields.GetAccountType().Id,
+                         (char) o.AccountFields.Role, o.Entities.AccountType.Id,
                          (char) o.AccountFields.DebtorCreditor,
                          o.ApplicationDate.Date, Account.MAX_END_DATE,
                          stdAccountHistoryId, Guid.NewGuid().ToString(),
-                         BuildKeywords(o.AccountFields));
+                         BuildKeywords(o));
 
 
       return (stdAccountId, op);
@@ -107,7 +107,7 @@ namespace Empiria.FinancialAccounting.AccountsChartEdition.Data {
                                                 o.AccountFields.Name : account.Name;
 
       AccountType accountType = dataToBeUpdated.Contains(AccountDataToBeUpdated.AccountType) ?
-                                                o.AccountFields.GetAccountType() : account.AccountType;
+                                                o.Entities.AccountType : account.AccountType;
 
       DebtorCreditorType debtorCreditor = dataToBeUpdated.Contains(AccountDataToBeUpdated.DebtorCreditor) ?
                                                 o.AccountFields.DebtorCreditor : account.DebtorCreditor;
@@ -130,11 +130,13 @@ namespace Empiria.FinancialAccounting.AccountsChartEdition.Data {
 
     #region Helpers
 
-    static private string BuildKeywords(AccountFieldsDto o) {
-      return EmpiriaString.BuildKeywords(o.AccountNumber, o.Name,
-                                         o.GetAccountType().Name, o.Description,
-                                         o.DebtorCreditor.ToString(),
-                                         o.Role.ToString());
+    static private string BuildKeywords(AccountEditionCommand o) {
+      var f = o.AccountFields;
+
+      return EmpiriaString.BuildKeywords(f.AccountNumber, f.Name,
+                                         o.Entities.AccountType.Name, f.Description,
+                                         f.DebtorCreditor.ToString(),
+                                         f.Role.ToString());
     }
 
 

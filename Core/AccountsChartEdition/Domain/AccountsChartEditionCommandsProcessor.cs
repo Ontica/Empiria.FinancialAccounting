@@ -21,10 +21,8 @@ namespace Empiria.FinancialAccounting.AccountsChartEdition {
   /// <summary>Processes a set of chart of accounts edition commands.</summary>
   internal class AccountsChartEditionCommandsProcessor {
 
-    private readonly bool _dryRun;
-
-    public AccountsChartEditionCommandsProcessor(bool dryRun) {
-      _dryRun = dryRun;
+    internal AccountsChartEditionCommandsProcessor() {
+      // no-op
     }
 
 
@@ -37,7 +35,7 @@ namespace Empiria.FinancialAccounting.AccountsChartEdition {
 
       FixedList<AccountsChartEditionAction> commandActions = actionsBuilder.BuildActions();
 
-      if (!_dryRun) {
+      if (command.DryRun) {
 
         ProcessActions(commandActions);
         RefreshCache(commandActions);
@@ -47,7 +45,7 @@ namespace Empiria.FinancialAccounting.AccountsChartEdition {
     }
 
 
-    internal FixedList<OperationSummary> Execute(FixedList<AccountEditionCommand> commands) {
+    internal FixedList<OperationSummary> Execute(FixedList<AccountEditionCommand> commands, bool dryRun) {
       Assertion.Require(commands, nameof(commands));
       Assertion.Require(commands.Count > 0, "'commands' must have at least one element.");
 
@@ -66,7 +64,7 @@ namespace Empiria.FinancialAccounting.AccountsChartEdition {
         allActions.AddRange(commandActions);
       }
 
-      if (!_dryRun) {
+      if (dryRun) {
 
         ProcessActions(allActions);
 
@@ -128,7 +126,7 @@ namespace Empiria.FinancialAccounting.AccountsChartEdition {
 
 
     private void RefreshCache(ICollection<AccountsChartEditionAction> allActions) {
-      AccountsChart chart = allActions.First().Command.GetAccountsChart();
+      AccountsChart chart = allActions.First().Command.Entities.AccountsChart;
 
       chart.Refresh();
     }

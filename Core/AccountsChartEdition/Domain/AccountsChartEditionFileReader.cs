@@ -202,13 +202,13 @@ namespace Empiria.FinancialAccounting.AccountsChartEdition {
         if (!_chart.IsValidAccountNumber(accountNumber)) {
           Assertion.RequireFail(
                     $"La cuenta '{accountNumber}' tiene un formato que " +
-                    $"no reconozco: {command.DataSource}");
+                    $"no reconozco: {command.DataSource}.");
         }
 
         if (commands.CountAll(x => x.AccountFields.AccountNumber == accountNumber) >  1) {
           Assertion.RequireFail(
                     $"La cuenta '{accountNumber}' viene más de una vez " +
-                    $"en el archivo: {command.DataSource}");
+                    $"en el archivo: {command.DataSource}.");
         }
 
         Account account = _chart.TryGetAccount(accountNumber);
@@ -217,7 +217,7 @@ namespace Empiria.FinancialAccounting.AccountsChartEdition {
 
           Assertion.Require(account == null,
               $"Se está solicitando agregar la cuenta '{accountNumber}', " +
-              $"pero la misma ya existe en el catálogo de cuentas: {command.DataSource}");
+              $"pero la misma ya existe en el catálogo de cuentas: {command.DataSource}.");
 
         } else if (command.CommandType == AccountEditionCommandType.FixAccountName ||
                    command.CommandType == AccountEditionCommandType.UpdateAccount) {
@@ -241,7 +241,7 @@ namespace Empiria.FinancialAccounting.AccountsChartEdition {
         }
 
         Assertion.Require(command.AccountFields.Role != AccountRole.Undefined,
-              $"No se indica el rol de la cuenta '{accountNumber}': {command.DataSource}.");
+              $"No se indicó el rol de la cuenta '{accountNumber}': {command.DataSource}.");
 
         Assertion.Require(command.AccountFields.AccountTypeUID,
               $"No se registró el tipo de la cuenta {accountNumber}: {command.DataSource}.");
@@ -250,7 +250,7 @@ namespace Empiria.FinancialAccounting.AccountsChartEdition {
               $"No se sabe si la naturaleza de la cuenta '{accountNumber}' " +
               $"es deudora o acreedora: {command.DataSource}");
 
-        command.EnsureAccountFieldsAreValid();
+        command.Arrange();
       }
     }
 
@@ -264,7 +264,7 @@ namespace Empiria.FinancialAccounting.AccountsChartEdition {
         Assertion.Require(command.CommandType == AccountEditionCommandType.CreateAccount ||
                           command.CommandType == AccountEditionCommandType.FixAccountName ||
                           command.CommandType == AccountEditionCommandType.UpdateAccount,
-          $"No reconozco la operación proveniente de: {command.DataSource}.");
+          $"No reconozco la operación: {command.DataSource}.");
       }
     }
 
@@ -277,7 +277,7 @@ namespace Empiria.FinancialAccounting.AccountsChartEdition {
               "Debido a que el archivo contiene operaciones que modifican " +
               "cuentas ya existentes, la fecha de aplicación de los cambios " +
               "al catálogo debe ser a partir de mañana y hasta " +
-             $"el {DateTime.Today.AddDays(8).ToShortDateString()}.");
+              $"el {DateTime.Today.AddDays(8).ToShortDateString()}.");
       }
     }
 
@@ -325,7 +325,6 @@ namespace Empiria.FinancialAccounting.AccountsChartEdition {
           Assertion.Require(command.SectorRules.Length == 0,
               $"La columna de sector indica que la cuenta '{accountNumber}' no es sectorizada, " +
               $"pero la lista de sectores contiene uno o más sectores: {command.DataSource}");
-
         }
 
 
@@ -335,7 +334,7 @@ namespace Empiria.FinancialAccounting.AccountsChartEdition {
 
           Assertion.Require(sector,
                 $"La cuenta '{accountNumber}' contiene el sector '{sectorRule.Code}', " +
-                $"pero dicho sector no existe: {command.DataSource}'.");
+                $"pero dicho sector no existe: {command.DataSource}.");
 
           Assertion.Require(!sector.IsSummary,
               $"Se solicita registrar el sector '({sector.Code}) {sector.Name}' " +
