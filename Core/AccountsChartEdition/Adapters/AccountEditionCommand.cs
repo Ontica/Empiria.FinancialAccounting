@@ -15,19 +15,9 @@ namespace Empiria.FinancialAccounting.AccountsChartEdition.Adapters {
   /// <summary>Enumerated constants type used to classify AccountEditionCommand types.</summary>
   public enum AccountEditionCommandType {
 
-    AddCurrencies,
-
-    AddSectors,
-
     CreateAccount,
 
     FixAccountName,
-
-    RemoveAccount,
-
-    RemoveCurrencies,
-
-    RemoveSectors,
 
     UpdateAccount,
 
@@ -76,23 +66,6 @@ namespace Empiria.FinancialAccounting.AccountsChartEdition.Adapters {
 
 
   }  // class SectorInputRuleDto
-
-
-
-  /// <summary>Command object used to update a chart of accounts from a file.</summary>
-  public class UpdateAccountsFromFileCommand {
-
-    public string AccountsChartUID {
-      get; set;
-    } = string.Empty;
-
-
-    public DateTime ApplicationDate {
-      get; set;
-    } = ExecutionServer.DateMinValue;
-
-
-  }  // class UpdateAccountsFromFileCommand
 
 
 
@@ -165,8 +138,63 @@ namespace Empiria.FinancialAccounting.AccountsChartEdition.Adapters {
     } = new EntitiesType();
 
 
+    protected override void InitialRequire() {
+      Assertion.Require(this.CommandType != AccountEditionCommandType.Undefined, "CommandType");
+      Assertion.Require(this.AccountsChartUID, "AccountsChartUID");
+      Assertion.Require(this.ApplicationDate != ExecutionServer.DateMinValue, "ApplicationDate");
+      Assertion.Require(this.AccountFields, "AccountFields");
+      Assertion.Require(this.AccountFields.AccountNumber, "AccountFields.AccountNumber");
+      Assertion.Require(this.AccountFields.Name, "AccountFields.Name");
+      Assertion.Require(this.AccountFields.AccountTypeUID, "AccountFields.AccountTypeUID");
+      Assertion.Require(this.AccountFields.Role != AccountRole.Undefined,
+                        "AccountFields.Role");
+      Assertion.Require(this.AccountFields.DebtorCreditor != DebtorCreditorType.Undefined,
+                        "AccountFields.DebtorCreditor");
+
+      if (this.CommandType == AccountEditionCommandType.CreateAccount) {
+        Assertion.Require(this.AccountUID.Length == 0,
+                          "command.AccountUID was provided but it's not needed for a CreateAccount command.");
+
+      } else if (this.CommandType == AccountEditionCommandType.FixAccountName) {
+        Assertion.Require(this.AccountUID, "AccountUID");
+
+
+      } else if (this.CommandType == AccountEditionCommandType.UpdateAccount) {
+        Assertion.Require(this.AccountUID, "AccountUID");
+        Assertion.Require(this.DataToBeUpdated, "DataToBeUpdated");
+        Assertion.Require(this.DataToBeUpdated.Length != 0, "DataToBeUpdated must contain one or more values.");
+      }
+    }
+
+
+
     protected override void SetIssues() {
-      // no-op
+
+      if (this.CommandType == AccountEditionCommandType.CreateAccount) {
+
+        AccountsChart accountsChart = this.Entities.AccountsChart;
+
+        Assertion.Require(accountsChart.IsValidAccountNumber(this.AccountFields.AccountNumber),
+                          $"Account number '{this.AccountFields.AccountNumber}' has an invalid format.");
+
+      }
+
+      if (this.CommandType != AccountEditionCommandType.CreateAccount) {
+        AccountsChart accountsChart = this.Entities.AccountsChart;
+        Account accountToEdit = this.Entities.Account;
+
+        Assertion.Require(accountToEdit.AccountsChart.Equals(accountsChart),
+                         $"Account to be edited {accountToEdit.Number} does not belong to " +
+                         $"the chart of accounts {accountsChart.Name}.");
+
+        Assertion.Require(accountToEdit.EndDate == Account.MAX_END_DATE,
+                         "The given accountUID corresponds to an historic account, so it can not be edited.");
+
+        Assertion.Require(accountToEdit.StartDate <= this.ApplicationDate,
+                         $"ApplicationDate parameter ({this.ApplicationDate.ToString("dd/MMM/yyyy")}) " +
+                         $"must be greater or equal than the given account's " +
+                         $"start date {accountToEdit.StartDate.ToString("dd/MMM/yyyy")}.");
+      }
     }
 
 
@@ -176,7 +204,19 @@ namespace Empiria.FinancialAccounting.AccountsChartEdition.Adapters {
       if (AccountUID.Length != 0) {
         Entities.Account = Account.Parse(AccountUID);
       }
+
+      Entities.AccountType = AccountType.Parse(AccountFields.AccountTypeUID);
+
+      Entities.Currencies = this.Currencies.Select(x => Currency.Parse(x))
+                                           .ToFixedList();
+
+      Entities.SectorRules = this.SectorRules.Select(x => {
+                                                        x.Sector = Sector.Parse(x.Code);
+                                                        return x;
+                                                     })
+                                             .ToFixedList();
     }
+
 
 
     internal class EntitiesType {
@@ -190,185 +230,23 @@ namespace Empiria.FinancialAccounting.AccountsChartEdition.Adapters {
       } = Account.Empty;
 
 
+      public AccountType AccountType {
+        get; internal set;
+      } = AccountType.Empty;
+
+
+      public FixedList<Currency> Currencies {
+        get; internal set;
+      } = new FixedList<Currency>();
+
+
+      public FixedList<SectorInputRuleDto> SectorRules {
+        get; internal set;
+      } = new FixedList<SectorInputRuleDto>();
+
+
     }  // inner class EntitiesType
 
   }  // class AccountEditionCommand
-
-
-
-  /// <summary>Extension methods for UpdateAccountsFromFileCommand interface adapter.</summary>
-  static internal class UpdateAccountsFromFileCommandExtension {
-
-    #region Methods
-
-    static internal AccountsChart GetAccountsChart(this UpdateAccountsFromFileCommand command) {
-      Assertion.Require(command.AccountsChartUID, "command.AccountsChartUID");
-
-      return AccountsChart.Parse(command.AccountsChartUID);
-    }
-
-    #endregion Methods
-
-  }  // class UpdateAccountsFromFileCommandExtension
-
-
-  /// <summary>Extension methods for AccountEditionCommand interface adapter.</summary>
-  static internal class AccountEditionCommandExtension {
-
-    #region Public methods
-
-    static internal AccountsChart GetAccountsChart(this AccountEditionCommand command) {
-      Assertion.Require(command.AccountsChartUID, "command.AccountsChartUID");
-
-      return AccountsChart.Parse(command.AccountsChartUID);
-    }
-
-
-    static internal Account GetAccountToEdit(this AccountEditionCommand command) {
-      Assertion.Require(command.AccountUID, "command.AccountUID");
-
-      return Account.Parse(command.AccountUID);
-    }
-
-
-    static internal FixedList<Currency> GetCurrencies(this AccountEditionCommand command) {
-      return command.Currencies.Select(x => Currency.Parse(x))
-                               .ToFixedList();
-    }
-
-
-    static internal FixedList<SectorInputRuleDto> GetSectorRules(this AccountEditionCommand command) {
-      return command.SectorRules.Select(x => {
-        x.Sector = Sector.Parse(x.Code);
-        return x;
-      }).ToFixedList();
-    }
-
-
-    static internal void EnsureValid(this AccountEditionCommand command) {
-      Assertion.Require(command.CommandType != AccountEditionCommandType.Undefined, "command.Type");
-      Assertion.Require(command.AccountsChartUID, "command.AccountsChartUID");
-      Assertion.Require(command.ApplicationDate != ExecutionServer.DateMinValue, "command.ApplicationDate");
-
-      if (command.CommandType != AccountEditionCommandType.CreateAccount) {
-        command.EnsureAccountToEditIsValid();
-      }
-
-      switch (command.CommandType) {
-        case AccountEditionCommandType.AddCurrencies:
-        case AccountEditionCommandType.RemoveCurrencies:
-          command.EnsureIsValidForCurrenciesEdition();
-          break;
-
-        case AccountEditionCommandType.AddSectors:
-        case AccountEditionCommandType.RemoveSectors:
-          command.EnsureIsValidForSectorsEdition();
-          break;
-
-        case AccountEditionCommandType.CreateAccount:
-          command.EnsureIsValidForCreateAccount();
-          break;
-
-        case AccountEditionCommandType.UpdateAccount:
-          command.EnsureIsValidForUpdateAccount();
-          break;
-
-        case AccountEditionCommandType.RemoveAccount:
-          command.EnsureIsValidForRemoveAccount();
-          break;
-      }
-    }
-
-
-    static internal void EnsureAccountFieldsAreValid(this AccountEditionCommand command) {
-      Assertion.Require(command.AccountFields, "command.AccountFields");
-      Assertion.Require(command.AccountFields.AccountNumber, "command.AccountFields.AccountNumber");
-      Assertion.Require(command.AccountFields.Name, "command.AccountFields.Name");
-
-      AccountsChart accountsChart = command.GetAccountsChart();
-
-      Assertion.Require(accountsChart.IsValidAccountNumber(command.AccountFields.AccountNumber),
-                       $"Account number '{command.AccountFields.AccountNumber}' has an invalid format.");
-
-      _ = command.AccountFields.GetAccountType();
-    }
-
-
-    static internal AccountType GetAccountType(this AccountFieldsDto fields) {
-      Assertion.Require(fields.AccountTypeUID, "AccountTypeUID");
-
-      return AccountType.Parse(fields.AccountTypeUID);
-    }
-
-
-    static private void EnsureAccountToEditIsValid(this AccountEditionCommand command) {
-      AccountsChart accountsChart = command.GetAccountsChart();
-      Account accountToEdit = command.GetAccountToEdit();
-
-      Assertion.Require(command.AccountUID, "command.AccountUID");
-
-      Assertion.Require(accountToEdit.AccountsChart.Equals(accountsChart),
-                       $"Account to be edited {accountToEdit.Number} does not belong to " +
-                       $"the chart of accounts {accountsChart.Name}.");
-
-      Assertion.Require(accountToEdit.EndDate == Account.MAX_END_DATE,
-                       "The given accountUID corresponds to an historic account, so it can not be edited.");
-
-      Assertion.Require(accountToEdit.StartDate <= command.ApplicationDate,
-                       $"ApplicationDate parameter ({command.ApplicationDate.ToString("dd/MMM/yyyy")}) " +
-                       $"must be greater or equal than the given account's " +
-                       $"start date {accountToEdit.StartDate.ToString("dd/MMM/yyyy")}.");
-
-    }
-
-
-    static private void EnsureIsValidForCurrenciesEdition(this AccountEditionCommand command) {
-      Assertion.Require(command.Currencies, "command.Currencies");
-      Assertion.Require(command.Currencies.Length > 0, "Currencies list must have one or more values.");
-
-      foreach (var currencyUID in command.Currencies) {
-        try {
-          _ = Currency.Parse(currencyUID);
-        } catch {
-          Assertion.RequireFail($"A currency with UID '{currencyUID}' does not exists.");
-        }
-      }
-    }
-
-
-    static private void EnsureIsValidForCreateAccount(this AccountEditionCommand command) {
-      Assertion.Require(string.IsNullOrEmpty(command.AccountUID),
-                       "command.AccountUID was provided but it's not needed for a CreateAccount command.");
-
-      command.EnsureAccountFieldsAreValid();
-    }
-
-
-    static private void EnsureIsValidForRemoveAccount(this AccountEditionCommand command) {
-      throw new NotImplementedException();
-    }
-
-
-    static private void EnsureIsValidForSectorsEdition(this AccountEditionCommand command) {
-      Assertion.Require(command.SectorRules, "command.SectorRules");
-      Assertion.Require(command.SectorRules.Length > 0, "Sector rules list must have one or more values.");
-
-      foreach (var sectorRule in command.SectorRules) {
-        try {
-          _ = Sector.Parse(sectorRule.Code);
-        } catch {
-          Assertion.RequireFail($"A sector with code '{sectorRule.Code}' does not exists.");
-        }
-      }
-    }
-
-
-    static private void EnsureIsValidForUpdateAccount(this AccountEditionCommand command) {
-      throw new NotImplementedException();
-    }
-
-    #endregion Public methods
-
-  }  // AccountEditionCommandExtension
 
 }  // namespace Empiria.FinancialAccounting.AccountsChartEdition.Adapters
