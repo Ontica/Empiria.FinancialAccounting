@@ -34,18 +34,18 @@ namespace Empiria.FinancialAccounting.AccountsChartEdition.UseCases {
 
     #region Use cases
 
-    public OperationSummary CreateAccount(AccountEditionCommand command) {
-      throw new NotImplementedException();
+
+    public OperationSummary ExecuteCommand(AccountEditionCommand command) {
+      Assertion.Require(command, nameof(command));
+
+      var processor = new AccountsChartEditionCommandsProcessor(command.DryRun);
+
+      return processor.Execute(command);
     }
 
 
-    public OperationSummary UpdateAccount(AccountEditionCommand command) {
-      throw new NotImplementedException();
-    }
-
-
-    public FixedList<OperationSummary> UpdateFromExcelFile(UpdateAccountsFromFileCommand command,
-                                                           InputFile excelFile, bool dryRun) {
+    public FixedList<OperationSummary> ExecuteCommandsFromExcelFile(UpdateAccountsFromFileCommand command,
+                                                                    InputFile excelFile, bool dryRun) {
       Assertion.Require(command, nameof(command));
       Assertion.Require(excelFile, nameof(excelFile));
 

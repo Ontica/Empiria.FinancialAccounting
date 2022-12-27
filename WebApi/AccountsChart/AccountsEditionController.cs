@@ -31,7 +31,7 @@ namespace Empiria.FinancialAccounting.WebApi {
       PrepareCommand(command, AccountEditionCommandType.CreateAccount, accountsChartUID);
 
       using (var usecases = AccountEditionUseCases.UseCaseInteractor()) {
-        OperationSummary summary = usecases.CreateAccount(command);
+        OperationSummary summary = usecases.ExecuteCommand(command);
 
         return new SingleObjectModel(base.Request, summary);
       }
@@ -47,7 +47,7 @@ namespace Empiria.FinancialAccounting.WebApi {
       PrepareCommand(command, AccountEditionCommandType.UpdateAccount, accountsChartUID, accountUID);
 
       using (var usecases = AccountEditionUseCases.UseCaseInteractor()) {
-        OperationSummary summary = usecases.UpdateAccount(command);
+        OperationSummary summary = usecases.ExecuteCommand(command);
 
         return new SingleObjectModel(base.Request, summary);
       }
@@ -66,8 +66,9 @@ namespace Empiria.FinancialAccounting.WebApi {
       bool dryRun = RouteContainsDryRunFlag();
 
       using (var usecases = AccountEditionUseCases.UseCaseInteractor()) {
-        FixedList<OperationSummary> summary = usecases.UpdateFromExcelFile(command, excelFile, dryRun);
-
+        FixedList<OperationSummary> summary = usecases.ExecuteCommandsFromExcelFile(command,
+                                                                                    excelFile,
+                                                                                    dryRun);
         return new CollectionModel(base.Request, summary);
       }
     }

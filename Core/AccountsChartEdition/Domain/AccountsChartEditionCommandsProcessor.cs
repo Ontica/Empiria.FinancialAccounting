@@ -10,6 +10,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+
 using Empiria.Data;
 
 using Empiria.FinancialAccounting.AccountsChartEdition.Adapters;
@@ -26,6 +27,26 @@ namespace Empiria.FinancialAccounting.AccountsChartEdition {
       _dryRun = dryRun;
     }
 
+
+    internal OperationSummary Execute(AccountEditionCommand command) {
+      Assertion.Require(command, nameof(command));
+
+      command.Arrange();
+
+      var actionsBuilder = new AccountsChartEditionActionsBuilder(command);
+
+      FixedList<AccountsChartEditionAction> commandActions = actionsBuilder.BuildActions();
+
+      if (!_dryRun) {
+
+        ProcessActions(commandActions);
+        RefreshCache(commandActions);
+      }
+
+      return CreateOperationSummary(command);
+    }
+
+
     internal FixedList<OperationSummary> Execute(FixedList<AccountEditionCommand> commands) {
       Assertion.Require(commands, nameof(commands));
       Assertion.Require(commands.Count > 0, "'commands' must have at least one element.");
@@ -37,9 +58,10 @@ namespace Empiria.FinancialAccounting.AccountsChartEdition {
       var allActions = new List<AccountsChartEditionAction>(128);
 
       foreach (var command in commands) {
-        var actionsCreator = new AccountsChartEditionActionsBuilder(command);
 
-        FixedList<AccountsChartEditionAction> commandActions = actionsCreator.BuildActions();
+        var actionsBuilder = new AccountsChartEditionActionsBuilder(command);
+
+        FixedList<AccountsChartEditionAction> commandActions = actionsBuilder.BuildActions();
 
         allActions.AddRange(commandActions);
       }
@@ -55,7 +77,21 @@ namespace Empiria.FinancialAccounting.AccountsChartEdition {
       return CreateOperationSummaryList(commands);
     }
 
+
     #region Helpers
+
+    private OperationSummary CreateOperationSummary(AccountEditionCommand command) {
+      var summary = new OperationSummary();
+
+      summary.Operation = command.CommandText;
+
+      summary.Count++;
+      summary.AddItem("Cuenta " + command.AccountFields.AccountNumber);
+      summary.AddErrors(command.Issues);
+
+      return summary;
+    }
+
 
     private FixedList<OperationSummary> CreateOperationSummaryList(FixedList<AccountEditionCommand> commands) {
       var list = new List<OperationSummary>();
