@@ -22,7 +22,7 @@ namespace Empiria.FinancialAccounting.Datasets.Adapters {
         DatasetFamily = ds.DatasetFamily.Name,
         DatasetKind = ds.DatasetKind.Name,
         ElaborationDate = ds.UpdatedTime,
-        ElaboratedBy = ds.UploadedBy.Alias,
+        ElaboratedBy = ds.UploadedBy.ShortName,
         FileType = ds.DatasetKind.FileType,
         FileSize = ds.MediaLength,
         FileName = ds.OriginalFileName,
