@@ -39,19 +39,19 @@ namespace Empiria.FinancialAccounting.Reporting.VouchersToHtml.Exporters {
     #region Build header methods
 
     private StringBuilder SetHeaderFields(StringBuilder html) {
-      html = html.Replace("{{VOUCHER.ID}}", _voucher.Id.ToString());
-      html = html.Replace("{{VOUCHER.NUMBER}}", _voucher.Number);
-      html = html.Replace("{{VOUCHER.CONCEPT}}", _voucher.Concept);
-      html = html.Replace("{{ACCOUNTS_CHART.NAME}}", _voucher.AccountsChart.Name);
-      html = html.Replace("{{LEDGER.NAME}}", _voucher.Ledger.Name);
-      html = html.Replace("{{VOUCHER_TYPE.NAME}}", _voucher.VoucherType.Name);
-      html = html.Replace("{{TRANSACTION_TYPE.NAME}}", _voucher.TransactionType.Name);
-      html = html.Replace("{{FUNCTIONAL_AREA.NAME}}", _voucher.FunctionalArea.Name);
-      html = html.Replace("{{ACCOUNTING_DATE}}", _voucher.AccountingDate.ToString("dd/MMM/yyyy"));
-      html = html.Replace("{{ELABORATED_BY}}", _voucher.ElaboratedBy);
-      html = html.Replace("{{RECORDING_DATE}}", _voucher.RecordingDate.ToString("dd/MMM/yyyy"));
-      html = html.Replace("{{AUTHORIZED_BY}}", _voucher.AuthorizedBy);
-      html = html.Replace("{{CLOSED_BY}}", _voucher.IsClosed ? _voucher.ClosedBy : _voucher.Status);
+      html.Replace("{{VOUCHER.ID}}", _voucher.Id.ToString());
+      html.Replace("{{VOUCHER.NUMBER}}", _voucher.Number);
+      html.Replace("{{VOUCHER.CONCEPT}}", _voucher.Concept);
+      html.Replace("{{ACCOUNTS_CHART.NAME}}", _voucher.AccountsChart.Name);
+      html.Replace("{{LEDGER.NAME}}", _voucher.Ledger.Name);
+      html.Replace("{{VOUCHER_TYPE.NAME}}", _voucher.VoucherType.Name);
+      html.Replace("{{TRANSACTION_TYPE.NAME}}", _voucher.TransactionType.Name);
+      html.Replace("{{FUNCTIONAL_AREA.NAME}}", _voucher.FunctionalArea.Name);
+      html.Replace("{{ACCOUNTING_DATE}}", _voucher.AccountingDate.ToString("dd/MMM/yyyy"));
+      html.Replace("{{ELABORATED_BY}}", _voucher.ElaboratedBy);
+      html.Replace("{{RECORDING_DATE}}", _voucher.RecordingDate.ToString("dd/MMM/yyyy"));
+      html.Replace("{{AUTHORIZED_BY}}", _voucher.AuthorizedBy);
+      html.Replace("{{CLOSED_BY}}", _voucher.IsClosed ? _voucher.ClosedBy : _voucher.Status);
 
       return html;
     }
@@ -70,15 +70,17 @@ namespace Empiria.FinancialAccounting.Reporting.VouchersToHtml.Exporters {
       return template.Replace("{{VOUCHER_ENTRY.TEMPLATE.START}}", string.Empty);
     }
 
+
     private StringBuilder ReplaceEntriesTemplate(StringBuilder html,
-                                         StringBuilder entriesHtml) {
+                                                 StringBuilder entriesHtml) {
       int startIndex = html.ToString().IndexOf("{{VOUCHER_ENTRY.TEMPLATE.START}}");
       int endIndex = html.ToString().IndexOf("{{VOUCHER_ENTRY.TEMPLATE.END}}");
 
-      html = html.Remove(startIndex, endIndex - startIndex);
+      html.Remove(startIndex, endIndex - startIndex);
 
       return html.Replace("{{VOUCHER_ENTRY.TEMPLATE.END}}", entriesHtml.ToString());
     }
+
 
     private StringBuilder SetEntries(StringBuilder html) {
       string TEMPLATE = GetEntriesTemplate();
@@ -88,33 +90,32 @@ namespace Empiria.FinancialAccounting.Reporting.VouchersToHtml.Exporters {
       var entriesHtml = new StringBuilder();
 
       foreach (var entry in entries) {
-        var entryHtml = TEMPLATE.Replace("{{ACCOUNT.NUMBER}}", entry.AccountNumber);
+        var entryHtml = new StringBuilder(TEMPLATE.Replace("{{ACCOUNT.NUMBER}}", entry.AccountNumber));
 
-        entryHtml = entryHtml.Replace("{{ACCOUNT.NAME}}", entry.AccountName);
-        entryHtml = entryHtml.Replace("{{SECTOR.CODE}}", entry.Sector);
+        entryHtml.Replace("{{ACCOUNT.NAME}}", entry.AccountName);
+        entryHtml.Replace("{{SECTOR.CODE}}", entry.Sector);
 
-        entryHtml = entryHtml.Replace("{{SUBLEDGER_ACCOUNT.NUMBER}}", entry.SubledgerAccountNumber);
-        entryHtml = entryHtml.Replace("{{SUBLEDGER_ACCOUNT.NAME}}", entry.SubledgerAccountName);
+        entryHtml.Replace("{{SUBLEDGER_ACCOUNT.NUMBER}}", entry.SubledgerAccountNumber);
+        entryHtml.Replace("{{SUBLEDGER_ACCOUNT.NAME}}", entry.SubledgerAccountName);
 
-        entryHtml = entryHtml.Replace("{{VERIFICATION_NUMBER}}", entry.VerificationNumber);
-        entryHtml = entryHtml.Replace("{{RESPONSIBILITY_AREA.CODE}}", entry.ResponsibilityArea);
+        entryHtml.Replace("{{VERIFICATION_NUMBER}}", entry.VerificationNumber);
+        entryHtml.Replace("{{RESPONSIBILITY_AREA.CODE}}", entry.ResponsibilityArea);
 
-        entryHtml = entryHtml.Replace("{{CURRENCY.CODE}}", entry.Currency);
+        entryHtml.Replace("{{CURRENCY.CODE}}", entry.Currency);
 
-        entryHtml = entryHtml.Replace("{{EXCHANGE.RATE}}", entry.ExchangeRate != 1 ?
-                                                           entry.ExchangeRate.ToString("C6") : string.Empty);
+        entryHtml.Replace("{{EXCHANGE.RATE}}", entry.ExchangeRate != 1 ?
+                                               entry.ExchangeRate.ToString("C6") : string.Empty);
 
-        entryHtml = entryHtml.Replace("{{DEBIT.AMOUNT}}", entry.Debit.ToString("C2"));
-        entryHtml = entryHtml.Replace("{{CREDIT.AMOUNT}}", entry.Credit.ToString("C2"));
+        entryHtml.Replace("{{DEBIT.AMOUNT}}", entry.Debit.ToString("C2"));
+        entryHtml.Replace("{{CREDIT.AMOUNT}}", entry.Credit.ToString("C2"));
 
-        entriesHtml = entriesHtml.Append(entryHtml);
+        entriesHtml.Append(entryHtml);
       }
 
       return ReplaceEntriesTemplate(html, entriesHtml);
     }
 
     #endregion Build entries methods
-
 
     #region Build totals methods
 
@@ -132,7 +133,7 @@ namespace Empiria.FinancialAccounting.Reporting.VouchersToHtml.Exporters {
       int startIndex = html.ToString().IndexOf("{{VOUCHER_TOTALS.TEMPLATE.START}}");
       int endIndex = html.ToString().IndexOf("{{VOUCHER_TOTALS.TEMPLATE.END}}");
 
-      html = html.Remove(startIndex, endIndex - startIndex);
+      html.Remove(startIndex, endIndex - startIndex);
 
       return html.Replace("{{VOUCHER_TOTALS.TEMPLATE.END}}", totalsHtml.ToString());
     }
@@ -146,12 +147,12 @@ namespace Empiria.FinancialAccounting.Reporting.VouchersToHtml.Exporters {
       var totalsHtml = new StringBuilder();
 
       foreach (var entry in totalEntries) {
-        var totalHtml = TEMPLATE.Replace("{{TOTAL.TITLE}}", entry.AccountName);
+        var totalHtml = new StringBuilder(TEMPLATE.Replace("{{TOTAL.TITLE}}", entry.AccountName));
 
-        totalHtml = totalHtml.Replace("{{DEBIT.TOTAL}}", entry.Debit.ToString("C2"));
-        totalHtml = totalHtml.Replace("{{CREDIT.TOTAL}}", entry.Credit.ToString("C2"));
+        totalHtml.Replace("{{DEBIT.TOTAL}}", entry.Debit.ToString("C2"));
+        totalHtml.Replace("{{CREDIT.TOTAL}}", entry.Credit.ToString("C2"));
 
-        totalsHtml = totalsHtml.Append(totalHtml);
+        totalsHtml.Append(totalHtml);
       }
 
       return ReplaceTotalsTemplate(html, totalsHtml);
