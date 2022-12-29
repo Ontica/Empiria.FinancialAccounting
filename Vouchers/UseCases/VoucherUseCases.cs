@@ -8,6 +8,7 @@
 *                                                                                                            *
 ************************* Copyright(c) La Vía Óntica SC, Ontica LLC and contributors. All rights reserved. **/
 using System;
+using System.Collections.Generic;
 
 using Empiria.Services;
 
@@ -38,6 +39,24 @@ namespace Empiria.FinancialAccounting.Vouchers.UseCases {
       Voucher voucher = Voucher.Parse(voucherId);
 
       return VoucherMapper.Map(voucher);
+    }
+
+
+    public FixedList<VoucherDto> GetVouchers(int[] voucherIdsArray) {
+      Assertion.Require(voucherIdsArray, "voucherIdsArray");
+      Assertion.Require(voucherIdsArray.Length > 0, "voucherIdsArray must have one or more values.");
+
+      var vouchers = new List<VoucherDto>(voucherIdsArray.Length);
+
+      foreach (var voucherId in voucherIdsArray) {
+        var voucher = Voucher.Parse(voucherId);
+
+        VoucherDto dto = VoucherMapper.Map(voucher);
+
+        vouchers.Add(dto);
+      }
+
+      return vouchers.ToFixedList();
     }
 
 

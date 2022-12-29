@@ -8,7 +8,9 @@
 *                                                                                                            *
 ************************* Copyright(c) La Vía Óntica SC, Ontica LLC and contributors. All rights reserved. **/
 using System;
+using System.Collections.Generic;
 using System.IO;
+using System.Text;
 
 using Empiria.Office;
 using Empiria.Storage;
@@ -21,10 +23,15 @@ using Empiria.FinancialAccounting.Reporting.Reconciliation.Exporters;
 
 using Empiria.FinancialAccounting.Reporting.VouchersToHtml.Exporters;
 
+
 namespace Empiria.FinancialAccounting.Reporting {
 
   /// <summary>Provides services to export accounting information to PDF files.</summary>
   public class PdfExporterService {
+
+    static private readonly Dictionary<string, string> _templates = new Dictionary<string, string>(8);
+
+    #region Services
 
     public FileReportDto Export(VoucherDto voucher) {
       Assertion.Require(voucher, nameof(voucher));
@@ -35,7 +42,20 @@ namespace Empiria.FinancialAccounting.Reporting {
         return ToFileReportDto(filename);
       }
 
-      string html = GetHtml(voucher);
+      string html = BuildVoucherHtml(voucher);
+
+      SaveHtmlAsPdf(html, filename);
+
+      return ToFileReportDto(filename);
+    }
+
+
+    public FileReportDto Export(FixedList<VoucherDto> vouchersToPrint) {
+      Assertion.Require(vouchersToPrint, nameof(vouchersToPrint));
+
+      string filename = $"{vouchersToPrint.Count}.polizas.{DateTime.Now.ToString("yyyy.MM.dd-HH.mm.ss")}.pdf";
+
+      string html = BuildVoucherHtml(vouchersToPrint);
 
       SaveHtmlAsPdf(html, filename);
 
@@ -46,39 +66,27 @@ namespace Empiria.FinancialAccounting.Reporting {
     public FileReportDto Export(ReconciliationResultDto reconciliation) {
       Assertion.Require("reconciliation", nameof(reconciliation));
 
-      string filename = GetPdfFileName(reconciliation);
+      string filename = $"conciliacion.derivados.{reconciliation.Command.Date.ToString("yyyy.MM.dd")}.pdf";
 
       if (ExistsFile(filename)) {
         RemoveFile(filename);
       }
 
-      string html = GetHtml(reconciliation);
+      string html = BuildReconciliationHtml(reconciliation);
 
       SaveHtmlAsPdf(html, filename);
 
       return ToFileReportDto(filename);
     }
 
+    #endregion Services
 
-    #region Private methods
+    #region Builders
 
-    private bool ExistsFile(string filename) {
-      string fullPath = GetFullPath(filename);
-
-      return File.Exists(fullPath);
-    }
-
-    private string GetFullPath(string filename) {
-      return Path.Combine(FileTemplateConfig.GenerationStoragePath + "/vouchers", filename);
-    }
-
-
-    private string GetHtml(ReconciliationResultDto reconciliation) {
+    private string BuildReconciliationHtml(ReconciliationResultDto reconciliation) {
       string templateUID = "ReconciliationResult.HtmlTemplate";
 
-      var template = FileTemplateConfig.Parse(templateUID);
-
-      string htmlTemplate = File.ReadAllText(template.TemplateFullPath);
+      string htmlTemplate = GetHtmlTemplate(templateUID);
 
       var htmlExporter = new ReconciliationHtmlExporter(reconciliation, htmlTemplate);
 
@@ -86,19 +94,49 @@ namespace Empiria.FinancialAccounting.Reporting {
     }
 
 
-    private string GetHtml(VoucherDto voucher) {
-      var templateConfig = GetVoucherTemplateConfig(voucher);
-
-      string htmlTemplate = File.ReadAllText(templateConfig.TemplateFullPath);
+    private string BuildVoucherHtml(VoucherDto voucher) {
+      var htmlTemplate = GetVoucherHtmlTemplate(voucher);
 
       var htmlExporter = new VoucherToHtmlExporter(voucher, htmlTemplate);
 
-      return htmlExporter.GetHtml();
+      string wrapper = GetVoucherWrapperHtml();
+
+      return wrapper.Replace("{{VOUCHER.HTML.CONTENT}}", htmlExporter.GetHtml());
     }
 
 
-    private string GetPdfFileName(ReconciliationResultDto reconciliation) {
-      return $"conciliacion.derivados.{reconciliation.Command.Date.ToString("yyyy.MM.dd")}.pdf";
+    private string BuildVoucherHtml(FixedList<VoucherDto> vouchersToPrint) {
+      var html = new StringBuilder();
+
+      foreach (var voucher in vouchersToPrint) {
+        var htmlTemplate = GetVoucherHtmlTemplate(voucher);
+
+        var htmlExporter = new VoucherToHtmlExporter(voucher, htmlTemplate);
+
+        if (html.Length != 0) {
+          html.AppendLine("<div class=\"breakpage\"></div>");
+        }
+        html.Append(htmlExporter.GetHtml());
+      }
+
+      string wrapper = GetVoucherWrapperHtml();
+
+      return wrapper.Replace("{{VOUCHER.HTML.CONTENT}}", html.ToString());
+    }
+
+    #endregion Builders
+
+    #region Helpers
+
+    private bool ExistsFile(string filename) {
+      string fullPath = GetFileName(filename);
+
+      return File.Exists(fullPath);
+    }
+
+
+    private string GetFileName(string filename) {
+      return Path.Combine(FileTemplateConfig.GenerationStoragePath + "/vouchers", filename);
     }
 
 
@@ -111,7 +149,7 @@ namespace Empiria.FinancialAccounting.Reporting {
     }
 
 
-    private FileTemplateConfig GetVoucherTemplateConfig(VoucherDto voucher) {
+    private string GetVoucherHtmlTemplate(VoucherDto voucher) {
       string templateUID;
 
       if (voucher.AllEntriesAreInBaseCurrency) {
@@ -120,23 +158,39 @@ namespace Empiria.FinancialAccounting.Reporting {
         templateUID = $"OperationalReportTemplate.VoucherHtmlTemplateMultiCurrencies";
       }
 
-      return FileTemplateConfig.Parse(templateUID);
+      return GetHtmlTemplate(templateUID);
     }
 
 
-    private bool RemoveFile(string filename) {
-      string fullPath = GetFullPath(filename);
+    private string GetHtmlTemplate(string templateUID) {
+      if (!_templates.ContainsKey(templateUID)) {
+        var templateConfig = FileTemplateConfig.Parse(templateUID);
+        var htmlTemplate = File.ReadAllText(templateConfig.TemplateFullPath);
+
+        _templates.Add(templateUID, htmlTemplate);
+      }
+      return _templates[templateUID];
+    }
+
+
+    private string GetVoucherWrapperHtml() {
+      string templateUID = $"OperationalReportTemplate.VoucherHtmlWrapperTemplate";
+
+      return GetHtmlTemplate(templateUID);
+    }
+
+
+    private void RemoveFile(string filename) {
+      string fullPath = GetFileName(filename);
 
       if (File.Exists(fullPath)) {
         File.Delete(fullPath);
-        return true;
       }
-
-      return false;
     }
 
+
     private void SaveHtmlAsPdf(string html, string filename) {
-      string fullpath = GetFullPath(filename);
+      string fullpath = GetFileName(filename);
 
       var pdfConverter = new HtmlToPdfConverter();
 
@@ -152,8 +206,7 @@ namespace Empiria.FinancialAccounting.Reporting {
       return new FileReportDto(FileType.Pdf, FileTemplateConfig.GeneratedFilesBaseUrl + "/vouchers/" + filename);
     }
 
-
-    #endregion Private methods
+    #endregion Helpers
 
   }  // class PdfExporterService
 

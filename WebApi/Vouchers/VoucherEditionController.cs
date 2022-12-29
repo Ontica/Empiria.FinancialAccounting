@@ -14,7 +14,9 @@ using Empiria.WebApi;
 
 using Empiria.FinancialAccounting.Vouchers.UseCases;
 using Empiria.FinancialAccounting.Vouchers.Adapters;
+
 using Empiria.FinancialAccounting.Adapters;
+using Empiria.FinancialAccounting.Reporting;
 
 namespace Empiria.FinancialAccounting.WebApi.Vouchers {
 
@@ -156,10 +158,11 @@ namespace Empiria.FinancialAccounting.WebApi.Vouchers {
         } else if (operationName == "send-to-supervisor") {
           result.Message = usecases.BulkSendToSupervisor(command.Vouchers);
 
-        } else {
-            result.Message = "Funcionalidad en proceso de desarrollo.";
+        } else if (operationName == "print") {
+          result = ExecuteBulkPrinting(command.Vouchers);
 
-          // throw Assertion.AssertNoReachThisCode($"Unrecognized bulk operation name '{operationName}'.");
+        } else {
+          throw Assertion.EnsureNoReachThisCode($"Unrecognized bulk operation name '{operationName}'.");
         }
 
         return new SingleObjectModel(base.Request, result);
@@ -221,7 +224,30 @@ namespace Empiria.FinancialAccounting.WebApi.Vouchers {
 
     #endregion Web Apis
 
+    #region Helpers
+
+    private VoucherBulkOperationResult ExecuteBulkPrinting(int[] voucherIdsToPrint) {
+      using (var usecases = VoucherUseCases.UseCaseInteractor()) {
+
+        var result = new VoucherBulkOperationResult();
+
+        FixedList<VoucherDto> vouchersToPrint = usecases.GetVouchers(voucherIdsToPrint);
+
+        var exporter = new PdfExporterService();
+
+        result.File = exporter.Export(vouchersToPrint);
+
+        result.Message = $"Se generó el archivo de impresión con {voucherIdsToPrint.Length} pólizas.";
+
+        return result;
+      }
+    }
+
+    #endregion Helpers
+
   }  // class VoucherEditionController
+
+
 
   public class VoucherBulkOperationCommand {
 
@@ -229,16 +255,26 @@ namespace Empiria.FinancialAccounting.WebApi.Vouchers {
       get;
       set;
     }
+
   }
 
+
+
   public class VoucherBulkOperationResult {
+
     internal VoucherBulkOperationResult() {
+      // no-op
     }
 
     public string Message {
-      get;
-      internal set;
+      get; internal set;
     }
-  }
+
+
+    public FileReportDto File {
+      get; internal set;
+    }
+
+  }  // class VoucherBulkOperationCommand
 
 }  // namespace Empiria.FinancialAccounting.WebApi.Vouchers
