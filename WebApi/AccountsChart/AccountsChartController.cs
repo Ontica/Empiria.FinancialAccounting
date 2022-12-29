@@ -24,19 +24,6 @@ namespace Empiria.FinancialAccounting.WebApi {
     #region Web Apis
 
     [HttpGet]
-    [Route("v2/financial-accounting/accounts-charts/{accountsChartUID:guid}/accounts/{accountUID:guid}")]
-    public SingleObjectModel GetAccount([FromUri] string accountsChartUID,
-                                        [FromUri] string accountUID) {
-
-      using (var usecases = AccountsChartUseCases.UseCaseInteractor()) {
-        AccountDto account = usecases.GetAccount(accountsChartUID, accountUID);
-
-        return new SingleObjectModel(base.Request, account);
-      }
-    }
-
-
-    [HttpGet]
     [Route("v2/financial-accounting/accounts-charts/{accountsChartUID:guid}")]
     public SingleObjectModel GetAccounts([FromUri] string accountsChartUID) {
 
@@ -74,8 +61,8 @@ namespace Empiria.FinancialAccounting.WebApi {
 
     [HttpPost]
     [Route("v2/financial-accounting/accounts-charts/{accountsChartUID:guid}/excel")]
-    public SingleObjectModel GetAccountsInExcelFile([FromUri]  string accountsChartUID,
-                                                    [FromBody] AccountsQuery query) {
+    public SingleObjectModel ExportAccountsToExcelFile([FromUri]  string accountsChartUID,
+                                                       [FromBody] AccountsQuery query) {
       base.RequireBody(query);
 
       using (var usecases = AccountsChartUseCases.UseCaseInteractor()) {

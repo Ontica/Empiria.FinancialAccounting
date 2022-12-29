@@ -13,6 +13,9 @@ using System.Web.Http;
 using Empiria.Storage;
 using Empiria.WebApi;
 
+using Empiria.FinancialAccounting.Adapters;
+using Empiria.FinancialAccounting.UseCases;
+
 using Empiria.FinancialAccounting.AccountsChartEdition.Adapters;
 using Empiria.FinancialAccounting.AccountsChartEdition.UseCases;
 
@@ -22,6 +25,20 @@ namespace Empiria.FinancialAccounting.WebApi {
   public class AccountsEditionController : WebApiController {
 
     #region Web Apis
+
+
+    [HttpGet]
+    [Route("v2/financial-accounting/accounts-charts/{accountsChartUID:guid}/accounts/{accountUID:guid}")]
+    public SingleObjectModel GetAccount([FromUri] string accountsChartUID,
+                                    [FromUri] string accountUID) {
+
+      using (var usecases = AccountsChartUseCases.UseCaseInteractor()) {
+        AccountDto account = usecases.GetAccount(accountsChartUID, accountUID);
+
+        return new SingleObjectModel(base.Request, account);
+      }
+    }
+
 
     [HttpPost]
     [Route("v2/financial-accounting/accounts-charts/{accountsChartUID:guid}/accounts")]
