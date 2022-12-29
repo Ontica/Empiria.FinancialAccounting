@@ -1,7 +1,7 @@
 ﻿Empiria Financial Accounting Web Api Module License
 ===================================================
 
-Copyright (c) 2021-2022. La Vía Óntica SC, Ontica LLC y autores.
+Copyright (c) 2021-2023. La Vía Óntica SC, Ontica LLC y autores.
                          Todos los derechos reservados.
 -----------------------------------------------------------------------
 
