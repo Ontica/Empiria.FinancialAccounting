@@ -11,8 +11,8 @@ using System;
 
 using Empiria.Services;
 
-using Empiria.FinancialAccounting.Vouchers.Adapters;
 using Empiria.FinancialAccounting.Adapters;
+using Empiria.FinancialAccounting.Vouchers.Adapters;
 
 namespace Empiria.FinancialAccounting.Vouchers.UseCases {
 
@@ -40,9 +40,7 @@ namespace Empiria.FinancialAccounting.Vouchers.UseCases {
 
       var voucher = Voucher.Parse(voucherId);
 
-      var voucherEntry = voucher.AppendEntry(fields);
-
-      voucherEntry.Save();
+      voucher.AppendAndSaveEntry(fields);
 
       return VoucherMapper.Map(voucher);
     }
@@ -73,10 +71,8 @@ namespace Empiria.FinancialAccounting.Vouchers.UseCases {
         }
 
 
-        var voucherEntry = voucher.AppendEntry(entryFields);
-
-        voucherEntry.Save();
-      }
+        voucher.AppendAndSaveEntry(entryFields);
+     }
 
       return VoucherMapper.Map(voucher);
     }
@@ -163,7 +159,6 @@ namespace Empiria.FinancialAccounting.Vouchers.UseCases {
 
       return $"Se eliminaron {deletedCounter} pólizas de {voucherIdsArray.Length} seleccionadas.";
     }
-
 
     public string BulkSendToSupervisor(int[] voucherIdsArray) {
       Assertion.Require(voucherIdsArray, "voucherIdsArray");
@@ -369,7 +364,6 @@ namespace Empiria.FinancialAccounting.Vouchers.UseCases {
 
       return validator.Validate(entry);
     }
-
 
     #endregion Use cases
 

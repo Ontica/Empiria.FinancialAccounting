@@ -56,9 +56,7 @@ namespace Empiria.FinancialAccounting.Vouchers.SpecialCases {
 
         entryFields.VoucherId = voucher.Id;
 
-        VoucherEntry voucherEntry = voucher.AppendEntry(entryFields);
-
-        voucherEntry.Save();
+        voucher.AppendAndSaveEntry(entryFields);
       }
     }
 
