@@ -46,6 +46,22 @@ namespace Empiria.FinancialAccounting.Vouchers {
     }
 
 
+    internal Voucher(VoucherFields fields,
+                     IEnumerable<VoucherEntryFields> entriesFields) : this(fields) {
+      Assertion.Require(entriesFields, "entriesFields");
+
+      var entries = new List<VoucherEntry>(entriesFields.Count());
+
+      foreach (var entryFields in entriesFields) {
+        var voucherEntry = new VoucherEntry(this, entryFields);
+
+        entries.Add(voucherEntry);
+      }
+
+      _entries = new Lazy<FixedList<VoucherEntry>>(() => entries.ToFixedList());
+    }
+
+
     static public Voucher Parse(long id) {
       return VoucherData.GetVoucher(id);
     }
@@ -200,7 +216,7 @@ namespace Empiria.FinancialAccounting.Vouchers {
 
       fields.EnsureValidFor(this);
 
-      var voucherEntry = new VoucherEntry(this, fields);
+      var voucherEntry= new VoucherEntry(this, fields);
 
       voucherEntry.Save();
 
@@ -406,6 +422,7 @@ namespace Empiria.FinancialAccounting.Vouchers {
       }
     }
 
+
     // Ya tenemos el primero asunto de la cuenta 01.09.05.02.02.04 ahora con auxiliares y sin auxiliares hasta el 24 de enero
     internal FixedList<SubledgerAccount> SearchSubledgerAccountsForEdition(LedgerAccount account, string keywords) {
       Assertion.Require(this.IsOpened, "No hay cuentas auxiliares para edición porque la póliza ya está cerrada.");
@@ -492,6 +509,17 @@ namespace Empiria.FinancialAccounting.Vouchers {
       }
 
       return list.ToFixedList();
+    }
+
+
+    internal void SaveAll() {
+      this.Save();
+
+      foreach (var entry in this.Entries) {
+        entry.Save();
+      }
+
+      this.RefreshEntries();
     }
 
 

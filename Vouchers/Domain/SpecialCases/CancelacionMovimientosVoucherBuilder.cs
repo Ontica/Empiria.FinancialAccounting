@@ -39,15 +39,12 @@ namespace Empiria.FinancialAccounting.Vouchers.SpecialCases {
       FixedList<string> issues = this.ImplementsDryRun(entries);
 
       Assertion.Require(issues.Count == 0,
-          "There were one or more issues generating 'Cancelación de movimientos' voucher: " +
+          $"There were one or more issues generating '{base.SpecialCaseType.Name}' voucher: " +
           EmpiriaString.ToString(issues));
 
+      var voucher = new Voucher(base.Fields, entries);
 
-      var voucher = new Voucher(base.Fields);
-
-      voucher.Save();
-
-      CreateVoucherEntries(voucher, entries);
+      voucher.SaveAll();
 
       return voucher;
     }
@@ -55,18 +52,9 @@ namespace Empiria.FinancialAccounting.Vouchers.SpecialCases {
     #region Private methods
 
 
-    private void CreateVoucherEntries(Voucher voucher, FixedList<VoucherEntryFields> entries) {
-      foreach (var entry in entries) {
-
-        entry.VoucherId = voucher.Id;
-
-        voucher.AppendAndSaveEntry(entry);
-      }
-    }
-
-
     private FixedList<VoucherEntryFields> BuildVoucherEntries() {
-      return new FixedList<VoucherEntryFields>(_voucherToCancel.Entries.Select(x => MapToCancelationEntry(x)));
+      return _voucherToCancel.Entries.Select(x => MapToCancelationEntry(x))
+                                     .ToFixedList();
     }
 
 

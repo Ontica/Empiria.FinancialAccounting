@@ -43,23 +43,11 @@ namespace Empiria.FinancialAccounting.Vouchers.SpecialCases {
         $"There were one or more issues generating '{base.SpecialCaseType.Name}' voucher: " +
         EmpiriaString.ToString(issues));
 
-      var voucher = new Voucher(base.Fields);
+      var voucher = new Voucher(base.Fields, entries);
 
-      voucher.Save();
-
-      CreateVoucherEntries(voucher, entries);
+      voucher.SaveAll();
 
       return voucher;
-    }
-
-
-    private void CreateVoucherEntries(Voucher voucher, FixedList<VoucherEntryFields> entries) {
-      foreach (var entryFields in entries) {
-
-        entryFields.VoucherId = voucher.Id;
-
-        voucher.AppendAndSaveEntry(entryFields);
-      }
     }
 
 
