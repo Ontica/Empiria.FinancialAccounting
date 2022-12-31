@@ -30,14 +30,14 @@ namespace Empiria.FinancialAccounting.Vouchers.SpecialCases {
     protected override FixedList<VoucherEntryFields> BuildVoucherEntries() {
       FixedList<AccountsListItem> accountsListItems =  base.SpecialCaseType.AccountsList.GetItems();
 
-      FixedList<BalanzaTradicionalEntryDto> balances = BuildTrialBalanceEntries();
+      FixedList<BalanzaTradicionalEntryDto> balances = GetBalances();
 
       FixedList<ExchangeRate> exchangeRates = GetValuationExchangeRates();
 
       var entries = new List<VoucherEntryFields>();
 
       foreach (var item in accountsListItems) {
-        decimal registeredBalance = GetBalance(item.AccountNumber, balances);
+        decimal registeredBalance = GetAccountBalance(item.AccountNumber, balances);
 
         decimal revaluatedBalance = RevaluateForeignCurrencyBalances(item.TargetAccountNumber, balances, exchangeRates);
 
@@ -55,7 +55,55 @@ namespace Empiria.FinancialAccounting.Vouchers.SpecialCases {
 
     #region Helpers
 
-    private FixedList<BalanzaTradicionalEntryDto> BuildTrialBalanceEntries() {
+
+    private VoucherEntryFields BuildVoucherEntryFields(VoucherEntryType voucherEntryType, string accountNumber, decimal amount) {
+      StandardAccount stdAccount = base.AccountsChart.GetStandardAccount(accountNumber);
+
+      LedgerAccount ledgerAccount = base.Ledger.AssignAccount(stdAccount);
+
+      return new VoucherEntryFields {
+        Amount = amount,
+        BaseCurrencyAmount = amount,
+        CurrencyUID = base.Ledger.BaseCurrency.UID,
+        SectorId = Sector.Empty.Id,
+        SubledgerAccountNumber = String.Empty,
+        StandardAccountId = stdAccount.Id,
+        LedgerAccountId = ledgerAccount.Id,
+        VoucherEntryType = voucherEntryType
+      };
+    }
+
+
+    private List<VoucherEntryFields> BuildVoucherEntryFieldsList(AccountsListItem item,
+                                                                 decimal registeredBalance,
+                                                                 decimal revaluatedBalance) {
+      var entries = new List<VoucherEntryFields>();
+
+      decimal amount = (revaluatedBalance * -1) - registeredBalance;
+
+      if (amount > 0) {
+        entries.Add(BuildVoucherEntryFields(VoucherEntryType.Debit, item.AccountNumber, amount));
+        entries.Add(BuildVoucherEntryFields(VoucherEntryType.Credit, item.ProfitAccount, amount));
+      } else if (amount < 0) {
+        entries.Add(BuildVoucherEntryFields(VoucherEntryType.Credit, item.AccountNumber, Math.Abs(amount)));
+        entries.Add(BuildVoucherEntryFields(VoucherEntryType.Debit, item.LossAccount, Math.Abs(amount)));
+      }
+
+      return entries;
+    }
+
+
+    private decimal GetAccountBalance(string accountNumber, FixedList<BalanzaTradicionalEntryDto> balances) {
+      var balance = balances.Find(x => x.AccountNumber == accountNumber);
+
+      if (balance == null) {
+        return 0;
+      }
+      return balance.CurrentBalance.Value;
+    }
+
+
+    private FixedList<BalanzaTradicionalEntryDto> GetBalances() {
       var query = new TrialBalanceQuery {
         TrialBalanceType = BalanceEngine.TrialBalanceType.Balanza,
         AccountsChartUID = base.AccountsChart.UID,
@@ -76,53 +124,6 @@ namespace Empiria.FinancialAccounting.Vouchers.SpecialCases {
         return entries.Select(x => (BalanzaTradicionalEntryDto) x)
                       .ToFixedList();
       }
-    }
-
-
-    private VoucherEntryFields BuildVoucherEntryFields(string accountNumber, decimal amount, bool isDebit) {
-      StandardAccount stdAccount = base.AccountsChart.GetStandardAccount(accountNumber);
-
-      LedgerAccount ledgerAccount = base.Ledger.AssignAccount(stdAccount);
-
-      return new VoucherEntryFields {
-        Amount = amount,
-        BaseCurrencyAmount = amount,
-        CurrencyUID = base.Ledger.BaseCurrency.UID,
-        SectorId = Sector.Empty.Id,
-        SubledgerAccountNumber = String.Empty,
-        StandardAccountId = stdAccount.Id,
-        LedgerAccountId = ledgerAccount.Id,
-        VoucherEntryType = isDebit ? VoucherEntryType.Debit : VoucherEntryType.Credit
-      };
-    }
-
-
-    private List<VoucherEntryFields> BuildVoucherEntryFieldsList(AccountsListItem item,
-                                                                 decimal registeredBalance,
-                                                                 decimal revaluatedBalance) {
-      var entries = new List<VoucherEntryFields>();
-
-      decimal amount = (revaluatedBalance * -1) - registeredBalance;
-
-      if (amount > 0) {
-        entries.Add(BuildVoucherEntryFields(item.AccountNumber, amount, true));
-        entries.Add(BuildVoucherEntryFields(item.ProfitAccount, amount, false));
-      } else if (amount < 0) {
-        entries.Add(BuildVoucherEntryFields(item.AccountNumber, Math.Abs(amount), false));
-        entries.Add(BuildVoucherEntryFields(item.LossAccount, Math.Abs(amount), true));
-      }
-
-      return entries;
-    }
-
-
-    private decimal GetBalance(string accountNumber, FixedList<BalanzaTradicionalEntryDto> balances) {
-      var balance = balances.Find(x => x.AccountNumber == accountNumber);
-
-      if (balance == null) {
-        return 0;
-      }
-      return balance.CurrentBalance.Value;
     }
 
 
