@@ -177,7 +177,6 @@ namespace Empiria.FinancialAccounting.Vouchers.SpecialCases {
 
     private VoucherEntryFields BuildVoucherEntryFields(VoucherEntryType entryType,
                                                        TrialBalanceEntryDto accountBalance) {
-      // ToDo: Must Parse the subledger account using the id because subledgerNumbers are coming empty from the balance engine.
       var subledgerAccount = SubledgerAccount.Parse(accountBalance.SubledgerAccountId);
 
       return BuildVoucherEntryFields(entryType,
