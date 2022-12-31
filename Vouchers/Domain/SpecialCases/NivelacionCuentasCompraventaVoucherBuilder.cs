@@ -21,71 +21,14 @@ namespace Empiria.FinancialAccounting.Vouchers.SpecialCases {
   /// typically accounts handled in different currencies at different times.</summary>
   internal class NivelacionCuentasCompraventaVoucherBuilder : VoucherBuilder {
 
-    internal NivelacionCuentasCompraventaVoucherBuilder() {
+    internal NivelacionCuentasCompraventaVoucherBuilder(VoucherSpecialCaseFields fields) : base(fields) {
       // no-op
     }
 
-    internal override FixedList<string> DryRun() {
-      FixedList<VoucherEntryFields> entries = BuildVoucherEntries();
+    #region Abstract Implements
 
-      return ImplementsDryRun(entries);
-    }
-
-
-    internal override Voucher GenerateVoucher() {
-      FixedList<VoucherEntryFields> entries = BuildVoucherEntries();
-
-      FixedList<string> issues = this.ImplementsDryRun(entries);
-
-      Assertion.Require(issues.Count == 0,
-          $"There were one or more issues generating '{base.SpecialCaseType.Name}' voucher: " +
-          EmpiriaString.ToString(issues));
-
-      var voucher = new Voucher(base.Fields, entries);
-
-      voucher.SaveAll();
-
-      return voucher;
-    }
-
-
-    private FixedList<string> ImplementsDryRun(FixedList<VoucherEntryFields> entries) {
-      var validator = new VoucherValidator(Ledger.Parse(base.Fields.LedgerUID),
-                                           base.Fields.AccountingDate);
-
-      return validator.Validate(entries);
-    }
-
-
-    private TrialBalanceQuery BuildBalancesQuery() {
-      return new TrialBalanceQuery {
-        TrialBalanceType = BalanceEngine.TrialBalanceType.Balanza,
-        AccountsChartUID = base.Fields.AccountsChartUID,
-        BalancesType = BalanceEngine.BalancesType.WithCurrentBalanceOrMovements,
-        ShowCascadeBalances = true,
-        InitialPeriod = new BalancesPeriod {
-          FromDate = base.Fields.CalculationDate,
-          ToDate = base.Fields.CalculationDate
-        }
-      };
-    }
-
-
-    private FixedList<BalanzaTradicionalEntryDto> BuildTrialBalanceEntries() {
-      using (var usecases = TrialBalanceUseCases.UseCaseInteractor()) {
-        TrialBalanceQuery query = BuildBalancesQuery();
-
-        var entries = usecases.BuildTrialBalance(query)
-                              .Entries;
-
-        return entries.Select(x => (BalanzaTradicionalEntryDto) x)
-                      .ToFixedList();
-      }
-    }
-
-
-    private FixedList<VoucherEntryFields> BuildVoucherEntries() {
-      FixedList<AccountsListItem> accountsListItems = GetNivelacionAccountsList();
+    protected override FixedList<VoucherEntryFields> BuildVoucherEntries() {
+      FixedList<AccountsListItem> accountsListItems =  base.SpecialCaseType.AccountsList.GetItems();
 
       FixedList<BalanzaTradicionalEntryDto> balances = BuildTrialBalanceEntries();
 
@@ -108,19 +51,43 @@ namespace Empiria.FinancialAccounting.Vouchers.SpecialCases {
       return entries.ToFixedList();
     }
 
+    #endregion Abstract Implements
+
+    #region Helpers
+
+    private FixedList<BalanzaTradicionalEntryDto> BuildTrialBalanceEntries() {
+      var query = new TrialBalanceQuery {
+        TrialBalanceType = BalanceEngine.TrialBalanceType.Balanza,
+        AccountsChartUID = base.AccountsChart.UID,
+        Ledgers = new[] { base.Ledger.UID },
+        BalancesType = BalanceEngine.BalancesType.WithCurrentBalanceOrMovements,
+        ShowCascadeBalances = true,
+        InitialPeriod = new BalancesPeriod {
+          FromDate = base.Fields.CalculationDate,
+          ToDate = base.Fields.CalculationDate
+        }
+      };
+
+      using (var usecases = TrialBalanceUseCases.UseCaseInteractor()) {
+
+        var entries = usecases.BuildTrialBalance(query)
+                              .Entries;
+
+        return entries.Select(x => (BalanzaTradicionalEntryDto) x)
+                      .ToFixedList();
+      }
+    }
+
 
     private VoucherEntryFields BuildVoucherEntryFields(string accountNumber, decimal amount, bool isDebit) {
-      StandardAccount stdAccount = AccountsChart.Parse(base.Fields.AccountsChartUID)
-                                                .GetStandardAccount(accountNumber);
+      StandardAccount stdAccount = base.AccountsChart.GetStandardAccount(accountNumber);
 
-      var ledger = Ledger.Parse(base.Fields.LedgerUID);
-
-      LedgerAccount ledgerAccount = ledger.AssignAccount(stdAccount);
+      LedgerAccount ledgerAccount = base.Ledger.AssignAccount(stdAccount);
 
       return new VoucherEntryFields {
         Amount = amount,
         BaseCurrencyAmount = amount,
-        CurrencyUID = ledger.BaseCurrency.UID,
+        CurrencyUID = base.Ledger.BaseCurrency.UID,
         SectorId = Sector.Empty.Id,
         SubledgerAccountNumber = String.Empty,
         StandardAccountId = stdAccount.Id,
@@ -150,18 +117,12 @@ namespace Empiria.FinancialAccounting.Vouchers.SpecialCases {
 
 
     private decimal GetBalance(string accountNumber, FixedList<BalanzaTradicionalEntryDto> balances) {
-      var balance = balances.Find(x => x.AccountNumber == accountNumber &&
-                                       x.LedgerUID == base.Fields.LedgerUID);
+      var balance = balances.Find(x => x.AccountNumber == accountNumber);
 
       if (balance == null) {
         return 0;
       }
       return balance.CurrentBalance.Value;
-    }
-
-
-    private FixedList<AccountsListItem> GetNivelacionAccountsList() {
-      return base.SpecialCaseType.AccountsList.GetItems();
     }
 
 
@@ -177,8 +138,7 @@ namespace Empiria.FinancialAccounting.Vouchers.SpecialCases {
                                                      FixedList<ExchangeRate> exchangeRates) {
 
       FixedList<BalanzaTradicionalEntryDto> foreignBalances =
-                        balances.FindAll(x => x.AccountNumber == foreignCurrencyAccountNumber &&
-                                              x.LedgerUID == base.Fields.LedgerUID);
+                        balances.FindAll(x => x.AccountNumber == foreignCurrencyAccountNumber);
 
       decimal revaluatedForeignBalance = 0;
 
@@ -192,6 +152,7 @@ namespace Empiria.FinancialAccounting.Vouchers.SpecialCases {
       return Math.Round(revaluatedForeignBalance, 2);
     }
 
+    #endregion Helpers
 
   }  // class NivelacionCuentasCompraventaVoucherBuilder
 

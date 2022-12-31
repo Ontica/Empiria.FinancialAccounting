@@ -23,67 +23,13 @@ namespace Empiria.FinancialAccounting.Vouchers.SpecialCases {
   /// accounts at a given date (cuentas de resultados).</summary>
   internal class CancelacionCuentasResultadosVoucherBuilder : VoucherBuilder {
 
-    internal CancelacionCuentasResultadosVoucherBuilder() {
+    internal CancelacionCuentasResultadosVoucherBuilder(VoucherSpecialCaseFields fields) : base(fields) {
       // no-op
     }
 
-    internal override FixedList<string> DryRun() {
-      FixedList<VoucherEntryFields> entries = BuildVoucherEntries();
+    #region Abstract Implements
 
-      return ImplementsDryRun(entries);
-    }
-
-
-    internal override Voucher GenerateVoucher() {
-      FixedList<VoucherEntryFields> entries = BuildVoucherEntries();
-
-      FixedList<string> issues = this.ImplementsDryRun(entries);
-
-      Assertion.Require(issues.Count == 0,
-        $"There were one or more issues generating '{base.SpecialCaseType.Name}' voucher: " +
-        EmpiriaString.ToString(issues));
-
-      var voucher = new Voucher(base.Fields, entries);
-
-      voucher.SaveAll();
-
-      return voucher;
-    }
-
-
-    private FixedList<string> ImplementsDryRun(FixedList<VoucherEntryFields> entries) {
-      var validator = new VoucherValidator(Ledger.Parse(base.Fields.LedgerUID),
-                                           base.Fields.AccountingDate);
-
-      return validator.Validate(entries);
-    }
-
-
-    private FixedList<TrialBalanceEntryDto> GetBalances() {
-      var query = new TrialBalanceQuery {
-        TrialBalanceType = TrialBalanceType.GeneracionDeSaldos,
-        AccountsChartUID = base.Fields.AccountsChartUID,
-        Ledgers = new[] { base.Fields.LedgerUID },
-        BalancesType = BalancesType.WithCurrentBalance,
-        ShowCascadeBalances = true,
-        WithSubledgerAccount = true,
-        InitialPeriod = new BalancesPeriod {
-          FromDate = base.Fields.CalculationDate,
-          ToDate = base.Fields.CalculationDate
-        }
-      };
-
-      using (var usecases = TrialBalanceUseCases.UseCaseInteractor()) {
-        var entries = usecases.BuildTrialBalance(query)
-                              .Entries;
-
-        return entries.Select(x => (TrialBalanceEntryDto) x)
-                      .ToFixedList();
-      }
-    }
-
-
-    private FixedList<VoucherEntryFields> BuildVoucherEntries() {
+    protected override FixedList<VoucherEntryFields> BuildVoucherEntries() {
       FixedList<AccountsListItem> cancelationRulesList = base.SpecialCaseType.AccountsList.GetItems();
 
       FixedList<TrialBalanceEntryDto> balances = GetBalances();
@@ -115,6 +61,33 @@ namespace Empiria.FinancialAccounting.Vouchers.SpecialCases {
                         "No hay saldos de cuentas de resultados por cancelar a la fecha proporcionada.");
 
       return voucherEntries.ToFixedList();
+    }
+
+    #endregion Abstract Implements
+
+    #region Helpers
+
+    private FixedList<TrialBalanceEntryDto> GetBalances() {
+      var query = new TrialBalanceQuery {
+        TrialBalanceType = TrialBalanceType.GeneracionDeSaldos,
+        AccountsChartUID = base.AccountsChart.UID,
+        Ledgers = new[] { base.Ledger.UID },
+        BalancesType = BalancesType.WithCurrentBalance,
+        ShowCascadeBalances = true,
+        WithSubledgerAccount = true,
+        InitialPeriod = new BalancesPeriod {
+          FromDate = base.Fields.CalculationDate,
+          ToDate = base.Fields.CalculationDate
+        }
+      };
+
+      using (var usecases = TrialBalanceUseCases.UseCaseInteractor()) {
+        var entries = usecases.BuildTrialBalance(query)
+                              .Entries;
+
+        return entries.Select(x => (TrialBalanceEntryDto) x)
+                      .ToFixedList();
+      }
     }
 
 
@@ -194,17 +167,14 @@ namespace Empiria.FinancialAccounting.Vouchers.SpecialCases {
                                                    SubledgerAccount subledgerAccount,
                                                    decimal balance) {
 
-      StandardAccount stdAccount = AccountsChart.Parse(base.Fields.AccountsChartUID)
-                                                .GetStandardAccount(accountNumber);
+      StandardAccount stdAccount = base.AccountsChart.GetStandardAccount(accountNumber);
 
-      var ledger = Ledger.Parse(base.Fields.LedgerUID);
-
-      LedgerAccount ledgerAccount = ledger.AssignAccount(stdAccount);
+      LedgerAccount ledgerAccount = base.Ledger.AssignAccount(stdAccount);
 
       return new VoucherEntryFields {
         Amount = balance,
         BaseCurrencyAmount = balance,
-        CurrencyUID = ledger.BaseCurrency.UID,
+        CurrencyUID = base.Ledger.BaseCurrency.UID,
         SectorId = Sector.Parse(sectorCode).Id,
         SubledgerAccountId = subledgerAccount.Id,
         SubledgerAccountNumber = subledgerAccount.IsEmptyInstance ?
@@ -215,6 +185,7 @@ namespace Empiria.FinancialAccounting.Vouchers.SpecialCases {
       };
     }
 
+    #endregion Helpers
 
   }  // class CancelacionCuentasResultadosVoucherBuilder
 

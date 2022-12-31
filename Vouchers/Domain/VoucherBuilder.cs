@@ -19,55 +19,54 @@ namespace Empiria.FinancialAccounting.Vouchers {
 
     #region Constructors and parsers
 
-    protected VoucherBuilder() {
-      // no-op
+    protected VoucherBuilder(VoucherSpecialCaseFields fields) {
+      Assertion.Require(fields, nameof(fields));
+
+      this.Fields = fields;
+      this.SpecialCaseType = VoucherSpecialCaseType.Parse(fields.VoucherTypeUID);
+      this.Fields.VoucherTypeUID = this.SpecialCaseType.VoucherType.UID;
+      this.Fields.TransactionTypeUID = TransactionType.Automatic.UID;
+      this.AccountsChart = AccountsChart.Parse(this.Fields.AccountsChartUID);
+      this.Ledger = Ledger.Parse(this.Fields.LedgerUID);
     }
 
 
     static internal VoucherBuilder CreateBuilder(VoucherSpecialCaseFields fields) {
-      VoucherBuilder builder;
-
       switch (fields.VoucherTypeUID) {
 
         case "CancelacionMovimientos":
-          builder = CreateCancelacionMovimientosBuilder(fields);
-          break;
+          return new CancelacionMovimientosVoucherBuilder(fields);
 
         case "CancelacionCuentasResultados":
-          builder = CreateCancelacionCuentasResultadosBuilder();
-          break;
+          return new CancelacionCuentasResultadosVoucherBuilder(fields);
 
         case "NivelacionCuentasCompraventa":
-          builder = CreateNivelacionCuentasCompraventaBuilder();
-          break;
+          return new NivelacionCuentasCompraventaVoucherBuilder(fields);
 
         default:
           throw Assertion.EnsureNoReachThisCode($"Unrecognized voucher special case {fields.VoucherTypeUID}.");
       }
-
-      builder.Fields = fields;
-      builder.SpecialCaseType = VoucherSpecialCaseType.Parse(fields.VoucherTypeUID);
-
-      builder.Fields.VoucherTypeUID = builder.SpecialCaseType.VoucherType.UID;
-      builder.Fields.TransactionTypeUID = TransactionType.Automatic.UID;
-
-      return builder;
     }
 
     #endregion Constructors and parsers
 
-
     #region Fields
+
+    protected AccountsChart AccountsChart {
+      get;
+    }
+
+    protected Ledger Ledger {
+      get;
+    }
 
     protected VoucherSpecialCaseFields Fields {
       get;
-      private set;
     }
 
 
     public VoucherSpecialCaseType SpecialCaseType {
       get;
-      private set;
     }
 
 
@@ -75,9 +74,33 @@ namespace Empiria.FinancialAccounting.Vouchers {
 
     #region Abstract methods
 
-    internal abstract FixedList<string> DryRun();
+    protected abstract FixedList<VoucherEntryFields> BuildVoucherEntries();
 
-    internal abstract Voucher GenerateVoucher();
+
+    internal virtual FixedList<string> DryRun() {
+      FixedList<VoucherEntryFields> entries = BuildVoucherEntries();
+
+      return ImplementsDryRun(entries);
+    }
+
+
+    internal virtual Voucher GenerateVoucher() {
+      FixedList<VoucherEntryFields> entries = BuildVoucherEntries();
+
+      FixedList<string> issues = this.ImplementsDryRun(entries);
+
+      Assertion.Require(issues.Count == 0,
+        $"There were one or more issues generating '{SpecialCaseType.Name}' voucher: " +
+        EmpiriaString.ToString(issues));
+
+      var voucher = new Voucher(Fields, entries);
+
+      voucher.SaveAll();
+
+      return voucher;
+    }
+
+
 
     internal bool TryGenerateVoucher(Ledger ledger, out Voucher voucher) {
       this.Fields.LedgerUID = ledger.UID;
@@ -93,35 +116,14 @@ namespace Empiria.FinancialAccounting.Vouchers {
     }
 
 
+    private FixedList<string> ImplementsDryRun(FixedList<VoucherEntryFields> entries) {
+      var validator = new VoucherValidator(Ledger.Parse(Fields.LedgerUID),
+                                           Fields.AccountingDate);
+
+      return validator.Validate(entries);
+    }
+
     #endregion Abstract methods
-
-    #region Factory methods
-
-    static private VoucherBuilder CreateCancelacionCuentasResultadosBuilder() {
-      throw new NotImplementedException();
-    }
-
-
-    static private VoucherBuilder CreateCancelacionMovimientosBuilder(VoucherSpecialCaseFields fields) {
-      Ledger ledger = Ledger.Parse(fields.LedgerUID);
-
-      Voucher voucherToCancel = Voucher.TryParse(ledger, fields.OnVoucherNumber);
-
-      if (voucherToCancel == null) {
-        Assertion.EnsureNoReachThisCode(
-          $"La póliza '{fields.OnVoucherNumber}' no existe en la contabilidad {ledger.FullName}."
-        );
-      }
-
-      return new CancelacionMovimientosVoucherBuilder(voucherToCancel);
-    }
-
-
-    static private VoucherBuilder CreateNivelacionCuentasCompraventaBuilder() {
-      return new NivelacionCuentasCompraventaVoucherBuilder();
-    }
-
-    #endregion Factory methods
 
   }  // class VoucherBuilder
 

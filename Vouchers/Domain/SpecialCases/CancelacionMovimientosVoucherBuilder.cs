@@ -19,44 +19,30 @@ namespace Empiria.FinancialAccounting.Vouchers.SpecialCases {
 
     private readonly Voucher _voucherToCancel;
 
-    internal CancelacionMovimientosVoucherBuilder(Voucher voucherToCancel) {
-      Assertion.Require(voucherToCancel, "voucherToCancel");
+    internal CancelacionMovimientosVoucherBuilder(VoucherSpecialCaseFields fields) : base(fields) {
+
+      Voucher voucherToCancel = Voucher.TryParse(base.Ledger, fields.OnVoucherNumber);
+
+      if (voucherToCancel == null) {
+        Assertion.EnsureNoReachThisCode(
+          $"La póliza '{fields.OnVoucherNumber}' no existe en la contabilidad {base.Ledger.FullName}."
+        );
+      }
 
       _voucherToCancel = voucherToCancel;
     }
 
 
-    internal override FixedList<string> DryRun() {
-      FixedList<VoucherEntryFields> entries = BuildVoucherEntries();
+    #region Abstract Implements
 
-      return ImplementsDryRun(entries);
-    }
-
-
-    internal override Voucher GenerateVoucher() {
-      FixedList<VoucherEntryFields> entries = BuildVoucherEntries();
-
-      FixedList<string> issues = this.ImplementsDryRun(entries);
-
-      Assertion.Require(issues.Count == 0,
-          $"There were one or more issues generating '{base.SpecialCaseType.Name}' voucher: " +
-          EmpiriaString.ToString(issues));
-
-      var voucher = new Voucher(base.Fields, entries);
-
-      voucher.SaveAll();
-
-      return voucher;
-    }
-
-    #region Private methods
-
-
-    private FixedList<VoucherEntryFields> BuildVoucherEntries() {
+    protected override FixedList<VoucherEntryFields> BuildVoucherEntries() {
       return _voucherToCancel.Entries.Select(x => MapToCancelationEntry(x))
                                      .ToFixedList();
     }
 
+    #endregion Abstract Implements
+
+    #region Helpers
 
     private VoucherEntryFields MapToCancelationEntry(VoucherEntry toCancelEntry) {
       VoucherEntryFields cancelationEntryFields = VoucherMapper.MapToVoucherEntryFields(toCancelEntry);
@@ -70,16 +56,7 @@ namespace Empiria.FinancialAccounting.Vouchers.SpecialCases {
       return cancelationEntryFields;
     }
 
-
-    private FixedList<string> ImplementsDryRun(FixedList<VoucherEntryFields> entries) {
-      var validator = new VoucherValidator(_voucherToCancel.Ledger,
-                                           base.Fields.AccountingDate);
-
-      return validator.Validate(entries);
-    }
-
-
-    #endregion Private methods
+    #endregion Helpers
 
   }  // class CancelacionMovimientosVoucherBuilder
 
