@@ -23,7 +23,7 @@
     <AppendTargetFrameworkToOutputPath>false</AppendTargetFrameworkToOutputPath>
     <NeutralLanguage></NeutralLanguage>
     <Configurations>Debug;Release;Multisolutions</Configurations>
-    <AssemblyName>Empiria.FinancialAccounting.Tests.FinancialReports</AssemblyName>
+    <AssemblyName>Empiria.FinancialAccounting.FinancialReports.Tests</AssemblyName>
     <RootNamespace>Empiria.FinancialAccounting.Tests.FinancialReports</RootNamespace>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' Or '$(Configuration)|$(Platform)' == 'Multisolutions|AnyCPU' ">
@@ -38,7 +38,7 @@
     <CheckForOverflowUnderflow>true</CheckForOverflowUnderflow>
     <AllowUnsafeBlocks>false</AllowUnsafeBlocks>
     <GenerateSerializationAssemblies>Auto</GenerateSerializationAssemblies>
-    <NoWarn />
+    <NoWarn>CS3016</NoWarn>
     <WarningsAsErrors />
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
@@ -52,7 +52,7 @@
     <CheckForOverflowUnderflow>true</CheckForOverflowUnderflow>
     <AllowUnsafeBlocks>false</AllowUnsafeBlocks>
     <GenerateSerializationAssemblies>Auto</GenerateSerializationAssemblies>
-    <NoWarn />
+    <NoWarn>CS3016</NoWarn>
     <WarningsAsErrors />
     <WarningsNotAsErrors>CS3016</WarningsNotAsErrors>
   </PropertyGroup>
