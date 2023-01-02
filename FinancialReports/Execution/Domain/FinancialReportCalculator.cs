@@ -10,7 +10,7 @@
 using System;
 using System.Collections.Generic;
 
-using Empiria.Expressions;
+using Empiria.FinancialAccounting.FinancialReports.Providers;
 
 namespace Empiria.FinancialAccounting.FinancialReports {
 
@@ -35,7 +35,7 @@ namespace Empiria.FinancialAccounting.FinancialReports {
       IDictionary<string, object> entryValues = ConvertReportEntryToDictionary(entry);
 
       foreach (var column in columns) {
-        decimal result = CalculateEntryColumn(column.Formula, entryValues);
+        decimal result = CalculateColumnEntry(column.Formula, entryValues);
 
         entryValues[column.Field] = result;
         entry.SetTotalField(column.Field, result);
@@ -45,10 +45,10 @@ namespace Empiria.FinancialAccounting.FinancialReports {
 
     #region Helpers
 
-    private decimal CalculateEntryColumn(string formula, IDictionary<string, object> values) {
-      var expression = new Expression(formula);
+    private decimal CalculateColumnEntry(string formula, IDictionary<string, object> values) {
+      var evaluator = new ExpressionEvaluationProvider();
 
-      return expression.Evaluate<decimal>(values);
+      return evaluator.Evaluate<decimal>(formula, values);
     }
 
 
