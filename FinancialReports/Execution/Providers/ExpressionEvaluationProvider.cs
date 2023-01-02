@@ -17,14 +17,18 @@ namespace Empiria.FinancialAccounting.FinancialReports.Providers {
 /// <summary>Provides runtime textual expressions evaluation services.</summary>
   internal class ExpressionEvaluationProvider {
 
-    internal ExpressionEvaluationProvider() {
+    private readonly LexicalGrammar _grammar;
 
+    internal ExpressionEvaluationProvider() {
+      _grammar = LexicalGrammar.CreateFromDefault();
+
+      _grammar.LoadLibrary(FinancialFunctionsLibrary.Instance);
     }
 
 
     internal T Evaluate<T>(string textExpression) {
 
-      var expression = new Expression(textExpression);
+      var expression = new Expression(_grammar, textExpression);
 
       return expression.Evaluate<T>();
     }
@@ -32,7 +36,7 @@ namespace Empiria.FinancialAccounting.FinancialReports.Providers {
 
     internal T Evaluate<T>(string textExpression, IDictionary<string, object> values) {
 
-      var expression = new Expression(textExpression);
+      var expression = new Expression(_grammar, textExpression);
 
       return expression.Evaluate<T>(values);
     }
