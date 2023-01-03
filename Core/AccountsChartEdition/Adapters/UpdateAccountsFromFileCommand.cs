@@ -24,6 +24,11 @@ namespace Empiria.FinancialAccounting.AccountsChartEdition.Adapters {
     } = ExecutionServer.DateMinValue;
 
 
+    public bool DryRun {
+      get; set;
+    } = true;
+
+
   }  // class UpdateAccountsFromFileCommand
 
 

@@ -36,14 +36,14 @@ namespace Empiria.FinancialAccounting.BanobrasIntegration.VouchersImporter.UseCa
     #region Importers
 
     public ImportVouchersResult ImportVouchersFromExcelFile(ImportVouchersCommand command,
-                                                            InputFile excelFileData, bool dryRun) {
+                                                            InputFile excelFileData) {
       FileInfo excelFile = AssertParametersAreValidAndGetFileInfo(command, excelFileData);
 
       PrepareCommandForFileImportation(command);
 
       var importer = new ExcelVouchersImporter(command, excelFile);
 
-      if (dryRun) {
+      if (command.DryRun) {
         return importer.DryRunImport();
       } else {
         return importer.Import();
@@ -66,14 +66,14 @@ namespace Empiria.FinancialAccounting.BanobrasIntegration.VouchersImporter.UseCa
 
 
     public ImportVouchersResult ImportVouchersFromTextFile(ImportVouchersCommand command,
-                                                           InputFile textFileData, bool dryRun) {
+                                                           InputFile textFileData) {
       FileInfo textFile = AssertParametersAreValidAndGetFileInfo(command, textFileData);
 
       PrepareCommandForFileImportation(command);
 
       var importer = new TextFileImporter(command, textFile);
 
-      if (dryRun) {
+      if (command.DryRun) {
         return importer.DryRunImport();
       } else {
         return importer.Import();

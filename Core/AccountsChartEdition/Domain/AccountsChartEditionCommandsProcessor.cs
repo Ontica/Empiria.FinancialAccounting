@@ -35,7 +35,7 @@ namespace Empiria.FinancialAccounting.AccountsChartEdition {
 
       FixedList<AccountsChartEditionAction> commandActions = actionsBuilder.BuildActions();
 
-      if (command.DryRun) {
+      if (!command.DryRun) {
 
         ProcessActions(commandActions);
         RefreshCache(commandActions);
@@ -64,7 +64,7 @@ namespace Empiria.FinancialAccounting.AccountsChartEdition {
         allActions.AddRange(commandActions);
       }
 
-      if (dryRun) {
+      if (!dryRun) {
 
         ProcessActions(allActions);
 

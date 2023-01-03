@@ -27,17 +27,14 @@ namespace Empiria.FinancialAccounting.WebApi.BanobrasIntegration {
 
     [HttpPost]
     [Route("v2/financial-accounting/vouchers/import-from-excel")]
-    [Route("v2/financial-accounting/vouchers/import-from-excel/dry-run")]
     public SingleObjectModel ImportVouchersFromExcelFile() {
 
       InputFile excelFile = base.GetInputFileFromHttpRequest("VoucherImporterExcelFile");
 
       ImportVouchersCommand command = base.GetFormDataFromHttpRequest<ImportVouchersCommand>("command");
 
-      bool dryRun = RouteContainsDryRunFlag();
-
       using (var usecases = ImportVouchersUseCases.UseCaseInteractor()) {
-        ImportVouchersResult result = usecases.ImportVouchersFromExcelFile(command, excelFile, dryRun);
+        ImportVouchersResult result = usecases.ImportVouchersFromExcelFile(command, excelFile);
 
         return new SingleObjectModel(base.Request, result);
       }
@@ -63,17 +60,14 @@ namespace Empiria.FinancialAccounting.WebApi.BanobrasIntegration {
 
     [HttpPost]
     [Route("v2/financial-accounting/vouchers/import-from-text-file")]
-    [Route("v2/financial-accounting/vouchers/import-from-text-file/dry-run")]
     public SingleObjectModel ImportVouchersFromTextFile() {
 
       InputFile textFile = base.GetInputFileFromHttpRequest("VoucherImporterTextFile");
 
       ImportVouchersCommand command = base.GetFormDataFromHttpRequest<ImportVouchersCommand>("command");
 
-      bool dryRun = RouteContainsDryRunFlag();
-
       using (var usecases = ImportVouchersUseCases.UseCaseInteractor()) {
-        ImportVouchersResult result = usecases.ImportVouchersFromTextFile(command, textFile, dryRun);
+        ImportVouchersResult result = usecases.ImportVouchersFromTextFile(command, textFile);
 
         return new SingleObjectModel(base.Request, result);
       }

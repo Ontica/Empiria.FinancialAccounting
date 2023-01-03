@@ -60,10 +60,14 @@ namespace Empiria.FinancialAccounting.BanobrasIntegration.VouchersImporter.Adapt
     } = new string[0];
 
 
+    public bool DryRun {
+      get; set;
+    } = true;
+
+
     internal AccountsChart GetAccountsChart() {
       return AccountsChart.Parse(this.AccountsChartUID);
     }
-
 
   } // class ImportVouchersCommand
 

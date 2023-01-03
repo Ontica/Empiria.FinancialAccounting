@@ -73,19 +73,14 @@ namespace Empiria.FinancialAccounting.WebApi {
 
     [HttpPost]
     [Route("v2/financial-accounting/accounts-charts/update-from-excel-file")]
-    [Route("v2/financial-accounting/accounts-charts/update-from-excel-file/dry-run")]
     public CollectionModel UpdateAccountsChartFromExcelFile() {
 
       InputFile excelFile = base.GetInputFileFromHttpRequest("ExcelFileWithAccountsChartEditionCommands");
 
       UpdateAccountsFromFileCommand command = base.GetFormDataFromHttpRequest<UpdateAccountsFromFileCommand>("command");
 
-      bool dryRun = RouteContainsDryRunFlag();
-
       using (var usecases = AccountEditionUseCases.UseCaseInteractor()) {
-        FixedList<OperationSummary> summary = usecases.ExecuteCommandsFromExcelFile(command,
-                                                                                    excelFile,
-                                                                                    dryRun);
+        FixedList<OperationSummary> summary = usecases.ExecuteCommandsFromExcelFile(command, excelFile);
         return new CollectionModel(base.Request, summary);
       }
     }
@@ -105,12 +100,6 @@ namespace Empiria.FinancialAccounting.WebApi {
       command.AccountsChartUID = accountsChartUID;
       command.AccountUID = accountUID;
     }
-
-
-    private bool RouteContainsDryRunFlag() {
-      return base.Request.RequestUri.PathAndQuery.EndsWith("/dry-run");
-    }
-
 
     #endregion Helpers
 

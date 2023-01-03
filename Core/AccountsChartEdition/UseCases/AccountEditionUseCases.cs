@@ -47,7 +47,7 @@ namespace Empiria.FinancialAccounting.AccountsChartEdition.UseCases {
 
 
     public FixedList<OperationSummary> ExecuteCommandsFromExcelFile(UpdateAccountsFromFileCommand command,
-                                                                    InputFile excelFile, bool dryRun) {
+                                                                    InputFile excelFile) {
       Assertion.Require(command, nameof(command));
       Assertion.Require(excelFile, nameof(excelFile));
 
@@ -62,13 +62,13 @@ namespace Empiria.FinancialAccounting.AccountsChartEdition.UseCases {
 
       FileInfo excelFileInfo = FileUtilities.SaveFile(excelFile);
 
-      var reader = new AccountsChartEditionFileReader(chart, applicationDate, excelFileInfo, dryRun);
+      var reader = new AccountsChartEditionFileReader(chart, applicationDate, excelFileInfo, command.DryRun);
 
       FixedList<AccountEditionCommand> commands = reader.GetCommands();
 
       var processor = new AccountsChartEditionCommandsProcessor();
 
-      return processor.Execute(commands, dryRun);
+      return processor.Execute(commands, command.DryRun);
     }
 
     #endregion Use cases
