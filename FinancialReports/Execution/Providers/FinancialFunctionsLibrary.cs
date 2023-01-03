@@ -10,6 +10,7 @@
 using System;
 
 using Empiria.Expressions;
+using Empiria.Expressions.Execution;
 
 namespace Empiria.FinancialAccounting.FinancialReports.Providers {
 

@@ -25,10 +25,10 @@ namespace Empiria.FinancialAccounting.Tests.FinancialReports.Providers {
     [Theory]
     [InlineData("DEUDORAS_MENOS_ACREEDORAS(1000, 350, 200)", 150)]
     [InlineData("DEUDORAS_MENOS_ACREEDORAS(2000, 1400, 1500)", 100)]
-    [InlineData("DEUDORAS_MENOS_ACREEDORAS(1000, a, b)", 510.1)]
-    [InlineData("DEUDORAS_MENOS_ACREEDORAS(2000, a, b)", -510.10)]
-    [InlineData("DEUDORAS_MENOS_ACREEDORAS(1000, 2000 - b, 2000 - a)", 510.10)]
-    [InlineData("DEUDORAS_MENOS_ACREEDORAS(2000, a + b, 1500)", -1051.00)]
+    [InlineData("DEUDORAS_MENOS_ACREEDORAS(3000, a, b)", 510.1)]
+    [InlineData("DEUDORAS_MENOS_ACREEDORAS(4000, a, b)", -510.10)]
+    [InlineData("DEUDORAS_MENOS_ACREEDORAS(5000, a + b, 1500)", -1051.00)]
+    [InlineData("DEUDORAS_MENOS_ACREEDORAS(6000, 2000 - b, 2000 - a)", 510.10)]
     public void Should_Evaluate_Deudoras_Menos_Acreedoras(string textExpression, decimal expected) {
       var expression = new ExpressionEvaluationProvider();
 
