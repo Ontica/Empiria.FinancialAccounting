@@ -7,11 +7,8 @@
 *  Summary  : Use cases used to generate special case vouchers.                                              *
 *                                                                                                            *
 ************************* Copyright(c) La Vía Óntica SC, Ontica LLC and contributors. All rights reserved. **/
-using System;
-
-using Empiria.Services;
-
 using Empiria.FinancialAccounting.Vouchers.Adapters;
+using Empiria.Services;
 
 namespace Empiria.FinancialAccounting.Vouchers.UseCases {
 
@@ -39,19 +36,21 @@ namespace Empiria.FinancialAccounting.Vouchers.UseCases {
 
       FixedList<Ledger> ledgers = accountsChart.MasterData.Ledgers;
 
-      var builder = VoucherBuilder.CreateBuilder(fields);
-
       int count = 0;
 
       foreach (var ledger in ledgers) {
-        Voucher voucher;
+        var ledgerFields = fields.Copy();
 
-        if (builder.TryGenerateVoucher(ledger, out voucher)) {
+        ledgerFields.LedgerUID = ledger.UID;
+
+        var builder = VoucherBuilder.CreateBuilder(ledgerFields);
+
+        if (builder.TryGenerateVoucher(out _)) {
           count++;
         }
       }
 
-      return $"Se generaron {count} pólizas de tipo '{builder.SpecialCaseType.Name}.'";
+      return $"Se generaron {count} pólizas.'";
     }
 
 

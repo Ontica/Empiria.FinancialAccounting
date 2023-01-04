@@ -28,6 +28,11 @@ namespace Empiria.FinancialAccounting.Vouchers.Adapters {
       get; set;
     } = string.Empty;
 
+
+    internal VoucherSpecialCaseFields Copy() {
+      return (VoucherSpecialCaseFields) this.MemberwiseClone();
+    }
+
   }  // class VoucherSpecialCaseFields
 
 }  // namespace Empiria.FinancialAccounting.Vouchers.Adapters

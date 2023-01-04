@@ -37,7 +37,8 @@ namespace Empiria.FinancialAccounting.Vouchers.SpecialCases {
       var voucherEntries = new List<VoucherEntryFields>();
 
       foreach (var cancelationRule in cancelationRulesList) {
-        FixedList<TrialBalanceEntryDto> accountsToCancelBalances = balances.FindAll(x => x.AccountNumberForBalances.StartsWith(cancelationRule.AccountNumber));
+        FixedList<TrialBalanceEntryDto> accountsToCancelBalances =
+                balances.FindAll(x => x.AccountNumberForBalances.StartsWith(cancelationRule.AccountNumber));
 
         var ruleVoucherEntries = new List<VoucherEntryFields>();
 

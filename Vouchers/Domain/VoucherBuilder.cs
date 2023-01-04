@@ -102,9 +102,7 @@ namespace Empiria.FinancialAccounting.Vouchers {
 
 
 
-    internal bool TryGenerateVoucher(Ledger ledger, out Voucher voucher) {
-      this.Fields.LedgerUID = ledger.UID;
-
+    internal bool TryGenerateVoucher(out Voucher voucher) {
       try {
         voucher = GenerateVoucher();
         return true;
