@@ -48,7 +48,7 @@ namespace Empiria.FinancialAccounting.Vouchers.Adapters {
 
     public int ResponsibilityAreaId {
       get; set;
-    }
+    } = -1;
 
 
     public string BudgetConcept {
