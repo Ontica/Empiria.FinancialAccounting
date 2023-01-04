@@ -43,7 +43,7 @@ namespace Empiria.FinancialAccounting.FinancialReports.Providers {
     /// depending of the concept code.</summary>
     sealed private class DeudorasMenosAcreedorasFunction : FunctionHandler {
 
-      protected override decimal Evaluate() {
+      protected override object Evaluate() {
 
         string conceptCode = GetString(Parameters[0]);
 
