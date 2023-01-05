@@ -52,6 +52,10 @@ namespace Empiria.FinancialAccounting.Vouchers {
         return resultList.ToFixedList();
       }
 
+      if (account.Number == "6.05.01.02.03.03" && this.AccountingDate == new DateTime(2023, 01, 01)) {
+        return resultList.ToFixedList();
+      }
+
       try {
         account.CheckIsNotSummary();
       } catch (Exception e) {

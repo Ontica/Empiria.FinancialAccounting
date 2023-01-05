@@ -45,9 +45,7 @@ namespace Empiria.FinancialAccounting.Vouchers.SpecialCases {
         foreach (var accountBalance in accountsToCancelBalances) {
           VoucherEntryFields voucherEntry = BuildVoucherEntry(accountBalance);
 
-          if (voucherEntry != null) {     /// ToDo - WARNING: Remove this IF after fix locked balances. No nulls must be returned
-            ruleVoucherEntries.Add(voucherEntry);
-          }
+          ruleVoucherEntries.Add(voucherEntry);
         }
 
         FixedList<VoucherEntryFields> targetAccountVoucherEntries = BuildTargetAccountVoucherEntry(ruleVoucherEntries,
@@ -121,11 +119,6 @@ namespace Empiria.FinancialAccounting.Vouchers.SpecialCases {
 
 
     private VoucherEntryFields BuildVoucherEntry(TrialBalanceEntryDto accountBalance) {
-
-      if (accountBalance.AccountNumberForBalances == "6.05.01.02.03.03" &&     // ToDo - WARNING: Remove this code after fix locked balances
-          accountBalance.SubledgerAccountId <= 0) {
-        return null;
-      }
 
       if (accountBalance.DebtorCreditor == "Deudora" &&
           accountBalance.CurrentBalance > 0) {

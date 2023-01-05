@@ -50,7 +50,7 @@ namespace Empiria.FinancialAccounting.Vouchers.UseCases {
         }
       }
 
-      return $"Se generaron {count} pólizas.'";
+      return $"Se generaron {count} pólizas.";
     }
 
 
