@@ -78,6 +78,18 @@ namespace Empiria.FinancialAccounting.FinancialReports.Providers {
       converted.SetTotalField("euroTotal",    sourceEntry.EuroBalance);
       converted.SetTotalField("udisTotal",    sourceEntry.UdisBalance);
 
+      converted.SetTotalField("dollarMXNTotal",
+                              _exchangeRatesProvider.Convert_USD_To_MXN(sourceEntry.DollarBalance, 2));
+
+      converted.SetTotalField("yenMXNTotal",
+                              _exchangeRatesProvider.Convert_YEN_To_MXN(sourceEntry.YenBalance, 2));
+
+      converted.SetTotalField("euroMXNTotal",
+                              _exchangeRatesProvider.Convert_EUR_To_MXN(sourceEntry.EuroBalance, 2));
+
+      converted.SetTotalField("udisMXNTotal",
+                              _exchangeRatesProvider.Convert_UDI_To_MXN(sourceEntry.UdisBalance, 2));
+
       converted.SetTotalField("yenUSDTotal",
                               _exchangeRatesProvider.Convert_YEN_To_USD(sourceEntry.YenBalance, 2));
 

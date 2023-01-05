@@ -30,8 +30,28 @@ namespace Empiria.FinancialAccounting.FinancialReports.Providers {
     }
 
 
+    internal decimal Convert_EUR_To_MXN(decimal euros, int decimals) {
+      return Convert(ExchangeRateType.ValorizacionBanxico, Currency.EUR, euros, decimals);
+    }
+
+
     internal decimal Convert_EUR_To_USD(decimal euros, int decimals) {
       return Convert(ExchangeRateType.Dolarizacion, Currency.EUR, euros, decimals);
+    }
+
+
+    internal decimal Convert_UDI_To_MXN(decimal udis, int decimals) {
+      return Convert(ExchangeRateType.ValorizacionBanxico, Currency.UDI, udis, decimals);
+    }
+
+
+    internal decimal Convert_USD_To_MXN(decimal dollars, int decimals) {
+      return Convert(ExchangeRateType.ValorizacionBanxico, Currency.USD, dollars, decimals);
+    }
+
+
+    internal decimal Convert_YEN_To_MXN(decimal yenes, int decimals) {
+      return Convert(ExchangeRateType.ValorizacionBanxico, Currency.YEN, yenes, decimals);
     }
 
 
