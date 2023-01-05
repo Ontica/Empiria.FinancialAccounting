@@ -17,8 +17,10 @@ namespace Empiria.FinancialAccounting.FinancialReports {
   /// <summary>Performs data calculation over financial reports data.</summary>
   internal class FinancialReportCalculator {
 
-    internal FinancialReportCalculator() {
-      // no-op
+    private readonly ExecutionContext _executionContext;
+
+    internal FinancialReportCalculator(ExecutionContext executionContext) {
+      _executionContext = executionContext;
     }
 
 
@@ -46,7 +48,7 @@ namespace Empiria.FinancialAccounting.FinancialReports {
     #region Helpers
 
     private decimal CalculateColumnEntry(string formula, IDictionary<string, object> values) {
-      var compiler = new RuntimeCompiler();
+      var compiler = new RuntimeCompiler(_executionContext);
 
       return compiler.EvaluateExpression<decimal>(formula, values);
     }
