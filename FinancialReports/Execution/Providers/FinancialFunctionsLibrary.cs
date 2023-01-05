@@ -40,7 +40,7 @@ namespace Empiria.FinancialAccounting.FinancialReports.Providers {
 
 
     /// <summary>Returns deudoras minus acreedoras, or acreedoras minus deudoras balance,
-    /// depending of the concept code.</summary>
+    /// depending on the concept code.</summary>
     sealed private class DeudorasMenosAcreedorasFunction : FunctionHandler {
 
       protected override object Evaluate() {

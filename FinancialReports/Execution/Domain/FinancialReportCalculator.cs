@@ -46,9 +46,9 @@ namespace Empiria.FinancialAccounting.FinancialReports {
     #region Helpers
 
     private decimal CalculateColumnEntry(string formula, IDictionary<string, object> values) {
-      var evaluator = new ExpressionEvaluationProvider();
+      var compiler = new RuntimeCompiler();
 
-      return evaluator.Evaluate<decimal>(formula, values);
+      return compiler.EvaluateExpression<decimal>(formula, values);
     }
 
 
