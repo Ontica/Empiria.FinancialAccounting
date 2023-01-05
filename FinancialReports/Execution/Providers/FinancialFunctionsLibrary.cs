@@ -12,20 +12,19 @@ using System;
 using Empiria.Expressions;
 using Empiria.Expressions.Execution;
 
+using Empiria.FinancialAccounting.FinancialConcepts;
+
 namespace Empiria.FinancialAccounting.FinancialReports.Providers {
 
   /// <summary>Default arithmetic functions library.</summary>
   internal class FinancialFunctionsLibrary : BaseFunctionsLibrary {
 
-    private FinancialFunctionsLibrary() {
+    private readonly ExecutionContext _executionContext;
+
+    public FinancialFunctionsLibrary(ExecutionContext executionContext) {
+      _executionContext = executionContext;
+
       LoadFunctions();
-    }
-
-
-    static public FinancialFunctionsLibrary Instance {
-      get {
-        return new FinancialFunctionsLibrary();
-      }
     }
 
 
@@ -33,6 +32,9 @@ namespace Empiria.FinancialAccounting.FinancialReports.Providers {
       var functions = new[] {
         new Function(lexeme: "DEUDORAS_MENOS_ACREEDORAS", arity: 3,
                      calle: () => new DeudorasMenosAcreedorasFunction()),
+        new Function(lexeme: "VALORES_CONCEPTO", arity: 1,
+                     calle: () => new ValoresConceptoFunction(_executionContext.ConceptsCalculator)),
+
       };
 
       base.AddRange(functions);
@@ -56,6 +58,28 @@ namespace Empiria.FinancialAccounting.FinancialReports.Providers {
         } else {
           return deudorasBalance - acreedorasBalance;
         }
+      }
+
+    }  // DeudorasMenosAcreedorasFunction
+
+
+    /// <summary>Returns deudoras minus acreedoras, or acreedoras minus deudoras balance,
+    /// depending on the concept code.</summary>
+    sealed private class ValoresConceptoFunction : FunctionHandler {
+
+      private readonly FinancialConceptsCalculator _conceptsCalculator;
+
+      public ValoresConceptoFunction(FinancialConceptsCalculator conceptsCalculator) {
+        _conceptsCalculator = conceptsCalculator;
+      }
+
+      protected override object Evaluate() {
+
+        int conceptId = Convert.ToInt32(GetDecimal(Parameters[0]));
+
+        var financialConcept = FinancialConcept.Parse(conceptId);
+
+        return _conceptsCalculator.CalculateFinancialConcept(financialConcept);
       }
 
     }  // DeudorasMenosAcreedorasFunction

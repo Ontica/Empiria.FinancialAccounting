@@ -19,10 +19,13 @@ namespace Empiria.FinancialAccounting.FinancialReports.Providers {
 
     private readonly LexicalGrammar _grammar;
 
-    internal RuntimeCompiler() {
+    public RuntimeCompiler(ExecutionContext executionContext) {
+
       _grammar = LexicalGrammar.CreateFromDefault();
 
-      _grammar.LoadLibrary(FinancialFunctionsLibrary.Instance);
+      var financialFunctionsLibrary = new FinancialFunctionsLibrary(executionContext);
+
+      _grammar.LoadLibrary(financialFunctionsLibrary);
     }
 
 

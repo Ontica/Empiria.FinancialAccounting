@@ -12,7 +12,9 @@ using Xunit;
 
 using System.Collections.Generic;
 
+using Empiria.FinancialAccounting.FinancialReports;
 using Empiria.FinancialAccounting.FinancialReports.Providers;
+using Empiria.FinancialAccounting.FinancialReports.Adapters;
 
 namespace Empiria.FinancialAccounting.Tests.FinancialReports.Providers {
 
@@ -29,7 +31,7 @@ namespace Empiria.FinancialAccounting.Tests.FinancialReports.Providers {
     [InlineData("DEUDORAS_MENOS_ACREEDORAS('5000', a + b, 1500)", -1051.00)]
     [InlineData("DEUDORAS_MENOS_ACREEDORAS('6000', 2000 - b, 2000 - a)", 510.10)]
     public void Should_Evaluate_Deudoras_Menos_Acreedoras(string textExpression, decimal expected) {
-      var compiler = new RuntimeCompiler();
+      RuntimeCompiler compiler = GetRuntimeCompiler();
 
       var data = new Dictionary<string, object> {
         { "a", 1530.55 },
@@ -41,7 +43,34 @@ namespace Empiria.FinancialAccounting.Tests.FinancialReports.Providers {
       Assert.Equal(expected, sut);
     }
 
+    [Theory]
+    [InlineData("VALORES_CONCEPTO(5000)", 955611901579.55)]
+    public void Should_Evaluate_Valores_Concepto(string textExpression, decimal expected) {
+      RuntimeCompiler compiler = GetRuntimeCompiler();
+
+      var sut = compiler.EvaluateExpression<IFinancialConceptValues>(textExpression);
+
+      Assert.Equal(expected, sut.ToDictionary()["totalR10"]);
+    }
+
     #endregion Theories
+
+    #region Helpers
+
+    private RuntimeCompiler GetRuntimeCompiler() {
+      var buildQuery = new FinancialReportQuery {
+        AccountsChartUID = AccountsChart.IFRS.UID,
+        FinancialReportType = "FinancialReport.R10_A_1011",
+        FromDate = new DateTime(2022, 06, 01),
+        ToDate = new DateTime(2022, 06, 30)
+      };
+
+      var executionContext = new ExecutionContext(buildQuery);
+
+      return new RuntimeCompiler(executionContext);
+    }
+
+    #endregion Helpers
 
   }  // class FinancialFunctionsLibraryTests
 
