@@ -8,12 +8,14 @@
 *                                                                                                            *
 ************************* Copyright(c) La Vía Óntica SC, Ontica LLC and contributors. All rights reserved. **/
 using System;
+using System.Collections.Generic;
 
 using Empiria.FinancialAccounting.ExternalData;
 
 using Empiria.FinancialAccounting.BalanceEngine.Adapters;
 
 using Empiria.FinancialAccounting.FinancialReports.Providers;
+
 
 namespace Empiria.FinancialAccounting.FinancialReports {
 
@@ -261,6 +263,11 @@ namespace Empiria.FinancialAccounting.FinancialReports {
       } else {
         return Substract(balance);
       }
+    }
+
+
+    public IDictionary<string, object> ToDictionary() {
+      return DynamicFields.ToDictionary();
     }
 
 

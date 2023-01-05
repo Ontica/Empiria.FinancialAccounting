@@ -8,6 +8,7 @@
 *                                                                                                            *
 ************************* Copyright(c) La Vía Óntica SC, Ontica LLC and contributors. All rights reserved. **/
 using System;
+using System.Collections.Generic;
 
 using Empiria.FinancialAccounting.BalanceEngine.Adapters;
 
@@ -47,6 +48,8 @@ namespace Empiria.FinancialAccounting.FinancialReports {
     IFinancialConceptValues Sum(ExternalValue value);
 
     IFinancialConceptValues SumDebitsOrSubstractCredits(ITrialBalanceEntryDto balance);
+
+    IDictionary<string, object> ToDictionary();
 
     #endregion Methods
 
