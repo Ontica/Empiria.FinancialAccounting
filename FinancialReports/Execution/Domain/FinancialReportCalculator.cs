@@ -28,27 +28,51 @@ namespace Empiria.FinancialAccounting.FinancialReports {
     internal void CalculateColumns(FinancialConcept financialConcept,
                                    FixedList<DataTableColumn> columns,
                                    IFinancialConceptValues baseValues) {
-      IDictionary<string, object> entryValues = ConvertToDictionary(financialConcept, baseValues);
+      IDictionary<string, object> inputValues = ConvertToDictionary(financialConcept, baseValues);
 
       foreach (var column in columns) {
-        decimal result = CalculateColumnEntry(column.Formula, entryValues);
+        decimal result = CalculateColumnEntry(column.Formula, inputValues);
 
-        if (!entryValues.ContainsKey(column.Field)) {
-          entryValues.Add(column.Field, result);
+        if (!inputValues.ContainsKey(column.Field)) {
+          inputValues.Add(column.Field, result);
         } else {
-          entryValues[column.Field] = result;
+          inputValues[column.Field] = result;
         }
 
         baseValues.SetTotalField(column.Field, result);
       }
     }
 
-    #region Helpers
 
-    private decimal CalculateColumnEntry(string formula, IDictionary<string, object> values) {
+    internal IFinancialConceptValues ExecuteConceptScript(FinancialConcept financialConcept,
+                                                          IFinancialConceptValues baseValues) {
+
+      if (!financialConcept.HasScript) {
+        return baseValues;
+      }
+
+      IDictionary<string, object> inputValues = ConvertToDictionary(financialConcept, baseValues);
+
       var compiler = new RuntimeCompiler(_executionContext);
 
-      return compiler.EvaluateExpression<decimal>(formula, values);
+      var returnedValues = compiler.ExecuteScript<IFinancialConceptValues>(financialConcept.CalculationScript, inputValues)
+                                   .ToDictionary();
+
+
+      foreach (var field in returnedValues.Keys) {
+        baseValues.SetTotalField(field, (decimal) returnedValues[field]);
+      }
+
+      return baseValues;
+    }
+
+
+    #region Helpers
+
+    private decimal CalculateColumnEntry(string formula, IDictionary<string, object> inputValues) {
+      var compiler = new RuntimeCompiler(_executionContext);
+
+      return compiler.EvaluateExpression<decimal>(formula, inputValues);
     }
 
 

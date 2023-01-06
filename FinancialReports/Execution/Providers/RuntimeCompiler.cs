@@ -46,7 +46,10 @@ namespace Empiria.FinancialAccounting.FinancialReports.Providers {
 
 
     internal T ExecuteScript<T>(string script, IDictionary<string, object> inputValues) {
-      throw new NotImplementedException();
+
+      var expression = new Expression(_grammar, script);
+
+      return expression.Evaluate<T>(inputValues);
 
       // var script = new Script(_grammar, script);
 

@@ -124,11 +124,18 @@ namespace Empiria.FinancialAccounting.FinancialReports {
 
       foreach (var reportEntry in reportEntries) {
 
-        if (reportEntry.FinancialConcept.IsEmptyInstance) {
+        FinancialConcept financialConcept = reportEntry.FinancialConcept;
+
+        if (financialConcept.IsEmptyInstance) {
           continue;
         }
 
-        IFinancialConceptValues totals = this.ConceptsCalculator.CalculateFinancialConcept(reportEntry.FinancialConcept);
+        IFinancialConceptValues totals = this.ConceptsCalculator.CalculateFinancialConcept(financialConcept);
+
+        if (financialConcept.HasScript) {
+          totals = ExecuteConceptScript(financialConcept, totals);
+        }
+
 
         totals.CopyTotalsTo(reportEntry);
       }
@@ -156,6 +163,15 @@ namespace Empiria.FinancialAccounting.FinancialReports {
 
       return integration.Select(x => new FinancialReportBreakdownResult(x))
                         .ToFixedList();
+    }
+
+
+
+    private IFinancialConceptValues ExecuteConceptScript(FinancialConcept financialConcept,
+                                                         IFinancialConceptValues totals) {
+      var calculator = new FinancialReportCalculator(_executionContext);
+
+      return calculator.ExecuteConceptScript(financialConcept, totals);
     }
 
     #endregion Helpers
