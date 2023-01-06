@@ -36,28 +36,28 @@ namespace Empiria.FinancialAccounting.FinancialReports {
 
       foreach (var breakdownItem in breakdown) {
 
-        IFinancialConceptValues breakdownTotals = CalculateBreakdownEntry(breakdownItem.IntegrationEntry);
+        IFinancialConceptValues breakdownValues = CalculateBreakdownEntry(breakdownItem.IntegrationEntry);
 
         if (_executionContext.FinancialReportType.RoundTo != RoundTo.DoNotRound) {
-          breakdownTotals = breakdownTotals.Round(_executionContext.FinancialReportType.RoundTo);
+          breakdownValues = breakdownValues.Round(_executionContext.FinancialReportType.RoundTo);
         }
 
-        CalculateFormulaBasedColumns(breakdownItem.FinancialConcept, breakdownTotals);
+        CalculateFormulaBasedColumns(breakdownItem.FinancialConcept, breakdownValues);
 
-        breakdownTotals.CopyTotalsTo(breakdownItem);
+        breakdownValues.CopyTotalsTo(breakdownItem);
 
         switch (breakdownItem.IntegrationEntry.Operator) {
 
           case OperatorType.Add:
-            granTotal = granTotal.Sum(breakdownTotals);
+            granTotal = granTotal.Sum(breakdownValues);
             break;
 
           case OperatorType.Substract:
-            granTotal = granTotal.Substract(breakdownTotals);
+            granTotal = granTotal.Substract(breakdownValues);
             break;
 
           case OperatorType.AbsoluteValue:
-            granTotal = granTotal.Sum(breakdownTotals)
+            granTotal = granTotal.Sum(breakdownValues)
                                  .AbsoluteValue();
             break;
 
@@ -105,9 +105,10 @@ namespace Empiria.FinancialAccounting.FinancialReports {
 
       var calculator = new FinancialReportCalculator(_executionContext);
 
-      var toCalculateColumns = _executionContext.FinancialReportType.DataColumns.FindAll(x => x.IsCalculated);
+      FixedList<DataTableColumn> formulaBasedColumns =
+            _executionContext.FinancialReportType.DataColumns.FindAll(x => x.IsCalculated);
 
-      calculator.CalculateColumns(financialConcept, toCalculateColumns, totals);
+      calculator.CalculateColumns(financialConcept, formulaBasedColumns, totals);
     }
 
 
