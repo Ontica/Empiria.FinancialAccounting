@@ -10,6 +10,7 @@
 using System;
 using System.Collections.Generic;
 
+using Empiria.FinancialAccounting.FinancialConcepts;
 using Empiria.FinancialAccounting.FinancialReports.Providers;
 
 namespace Empiria.FinancialAccounting.FinancialReports {
@@ -24,26 +25,23 @@ namespace Empiria.FinancialAccounting.FinancialReports {
     }
 
 
-    internal void CalculateColumns(FixedList<DataTableColumn> columns,
-                                   IEnumerable<FinancialReportEntry> entries) {
-      foreach (var entry in entries) {
-        CalculateColumns(columns, entry);
-      }
-    }
-
-
-    internal void CalculateColumns(FixedList<DataTableColumn> columns,
-                                   FinancialReportEntry entry) {
-      IDictionary<string, object> entryValues = ConvertReportEntryToDictionary(entry);
+    internal void CalculateColumns(FinancialConcept financialConcept,
+                                   FixedList<DataTableColumn> columns,
+                                   IFinancialConceptValues baseValues) {
+      IDictionary<string, object> entryValues = ConvertToDictionary(financialConcept, baseValues);
 
       foreach (var column in columns) {
         decimal result = CalculateColumnEntry(column.Formula, entryValues);
 
-        entryValues[column.Field] = result;
-        entry.SetTotalField(column.Field, result);
+        if (!entryValues.ContainsKey(column.Field)) {
+          entryValues.Add(column.Field, result);
+        } else {
+          entryValues[column.Field] = result;
+        }
+
+        baseValues.SetTotalField(column.Field, result);
       }
     }
-
 
     #region Helpers
 
@@ -54,16 +52,16 @@ namespace Empiria.FinancialAccounting.FinancialReports {
     }
 
 
-    private IDictionary<string, object> ConvertReportEntryToDictionary(FinancialReportEntry entry) {
-      IDictionary<string, object> dictionary = entry.ToDictionary();
+    private IDictionary<string, object> ConvertToDictionary(FinancialConcept financialConcept,
+                                                            IFinancialConceptValues baseValues) {
+      IDictionary<string, object> dictionary = baseValues.ToDictionary();
 
-      var conceptCode = ((IFinancialReportResult) entry).FinancialConcept.Code;
+      var conceptCode = financialConcept.Code;
 
       dictionary.Add("conceptCode", conceptCode);
 
       return dictionary;
     }
-
 
     #endregion Helpers
 

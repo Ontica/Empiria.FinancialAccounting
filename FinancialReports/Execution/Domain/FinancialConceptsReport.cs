@@ -9,12 +9,10 @@
 ************************* Copyright(c) La Vía Óntica SC, Ontica LLC and contributors. All rights reserved. **/
 using System;
 using System.Collections.Generic;
-using System.Linq;
 
 using Empiria.FinancialAccounting.FinancialConcepts;
 
 using Empiria.FinancialAccounting.FinancialReports.Adapters;
-using Empiria.FinancialAccounting.FinancialReports.Providers;
 
 namespace Empiria.FinancialAccounting.FinancialReports {
 
@@ -42,17 +40,6 @@ namespace Empiria.FinancialAccounting.FinancialReports {
       }
     }
 
-    private FixedList<DataTableColumn> DataColumns {
-      get {
-        return _executionContext.FinancialReportType.DataColumns;
-      }
-    }
-
-    private FixedList<DataTableColumn> BreakdownColumns {
-      get {
-        return _executionContext.FinancialReportType.BreakdownColumns;
-      }
-    }
 
     private FinancialConceptsCalculator ConceptsCalculator {
       get {
@@ -70,8 +57,6 @@ namespace Empiria.FinancialAccounting.FinancialReports {
       FixedList<FinancialReportEntryResult> reportEntries = CreateReportEntriesWithoutTotals(reportItems);
 
       FillEntries(reportEntries);
-
-      CalculateFormulaBasedColumns(reportEntries);
 
       return reportEntries.Select(x => (FinancialReportEntry) x).ToFixedList();
     }
@@ -92,8 +77,6 @@ namespace Empiria.FinancialAccounting.FinancialReports {
 
       reportEntries.AddRange(breakdownEntries);
       reportEntries.Add(reportItemTotals);
-
-      CalculateFormulaBasedColumns(reportEntries);
 
       return reportEntries.ToFixedList();
     }
@@ -129,25 +112,6 @@ namespace Empiria.FinancialAccounting.FinancialReports {
     #endregion Public methods
 
     #region Private methods
-
-    private void CalculateFormulaBasedColumns(IEnumerable<FinancialReportEntryResult> reportEntries) {
-      var calculator = new FinancialReportCalculator(_executionContext);
-
-      IEnumerable<FinancialReportEntry> castedEntries = reportEntries.Select(entry => (FinancialReportEntry) entry);
-
-      var columnsToCalculate = this.DataColumns.FindAll(x => x.IsCalculated);
-
-      calculator.CalculateColumns(columnsToCalculate, castedEntries);
-    }
-
-
-    private void CalculateFormulaBasedColumns(IEnumerable<FinancialReportEntry> reportEntries) {
-      var calculator = new FinancialReportCalculator(_executionContext);
-
-      var columnsToCalculate = this.BreakdownColumns.FindAll(x => x.IsCalculated);
-
-      calculator.CalculateColumns(columnsToCalculate, reportEntries);
-    }
 
 
     private FixedList<FinancialReportItemDefinition> FilterItemsWithIntegrationAccounts(FixedList<FinancialReportItemDefinition> list) {

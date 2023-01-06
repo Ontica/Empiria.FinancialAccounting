@@ -42,6 +42,8 @@ namespace Empiria.FinancialAccounting.FinancialReports {
           breakdownTotals = breakdownTotals.Round(_executionContext.FinancialReportType.RoundTo);
         }
 
+        CalculateFormulaBasedColumns(breakdownItem.FinancialConcept, breakdownTotals);
+
         breakdownTotals.CopyTotalsTo(breakdownItem);
 
         switch (breakdownItem.IntegrationEntry.Operator) {
@@ -61,9 +63,7 @@ namespace Empiria.FinancialAccounting.FinancialReports {
 
         } // switch
 
-
       } // foreach
-
 
       return granTotal;
     }
@@ -94,8 +94,20 @@ namespace Empiria.FinancialAccounting.FinancialReports {
 
       }  // foreach
 
+      CalculateFormulaBasedColumns(financialConcept, totals);
 
       return totals;
+    }
+
+
+    private void CalculateFormulaBasedColumns(FinancialConcept financialConcept,
+                                              IFinancialConceptValues totals) {
+
+      var calculator = new FinancialReportCalculator(_executionContext);
+
+      var toCalculateColumns = _executionContext.FinancialReportType.DataColumns.FindAll(x => x.IsCalculated);
+
+      calculator.CalculateColumns(financialConcept, toCalculateColumns, totals);
     }
 
 
@@ -296,7 +308,9 @@ namespace Empiria.FinancialAccounting.FinancialReports {
     #region Helpers
 
     private IFinancialConceptValues CreateFinancialConceptValuesObject() {
-      return new FinancialConceptValues(_executionContext.FinancialReportType.DataColumns);
+      var notCalculatedColumns = _executionContext.FinancialReportType.DataColumns.FindAll(x => !x.IsCalculated);
+
+      return new FinancialConceptValues(notCalculatedColumns);
     }
 
     #endregion Helpers
