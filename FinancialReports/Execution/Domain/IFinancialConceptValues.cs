@@ -37,6 +37,8 @@ namespace Empiria.FinancialAccounting.FinancialReports {
 
     IFinancialConceptValues Round(RoundTo roundTo);
 
+    void SetTotalField(string field, decimal result);
+
     IFinancialConceptValues Substract(IFinancialConceptValues values);
 
     IFinancialConceptValues Substract(ITrialBalanceEntryDto balance);

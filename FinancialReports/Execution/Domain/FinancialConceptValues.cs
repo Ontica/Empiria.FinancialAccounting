@@ -161,6 +161,11 @@ namespace Empiria.FinancialAccounting.FinancialReports {
     }
 
 
+    void IFinancialConceptValues.SetTotalField(string field, decimal result) {
+      DynamicFields.SetTotalField(field, result);
+    }
+
+
     public IFinancialConceptValues Substract(IFinancialConceptValues values) {
       var casted = (FinancialConceptValues) values;
 
