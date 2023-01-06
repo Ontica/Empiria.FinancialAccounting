@@ -14,30 +14,17 @@ using Empiria.FinancialAccounting.BalanceEngine.Adapters;
 using Empiria.FinancialAccounting.ExternalData;
 using Empiria.FinancialAccounting.FinancialConcepts;
 
-using Empiria.FinancialAccounting.FinancialReports.Providers;
-
 namespace Empiria.FinancialAccounting.FinancialReports {
 
   /// <summary>Calculates financial concepts values.</summary>
   internal class FinancialConceptsCalculator {
 
-    private readonly FixedList<DataTableColumn> _dataColumns;
-    private readonly AccountBalancesProvider _balancesProvider;
-    private readonly ExternalValuesProvider _externalValuesProvider;
-    private readonly RoundTo _roundTo;
+    private readonly ExecutionContext _executionContext;
 
-    internal FinancialConceptsCalculator(FixedList<DataTableColumn> dataColumns,
-                                         AccountBalancesProvider balancesProvider,
-                                         ExternalValuesProvider externalValuesProvider,
-                                         RoundTo roundTo) {
-      Assertion.Require(dataColumns, nameof(dataColumns));
-      Assertion.Require(balancesProvider, nameof(balancesProvider));
-      Assertion.Require(externalValuesProvider, nameof(externalValuesProvider));
+    internal FinancialConceptsCalculator(ExecutionContext executionContext) {
+      Assertion.Require(executionContext, nameof(executionContext));
 
-      _dataColumns = dataColumns;
-      _balancesProvider = balancesProvider;
-      _externalValuesProvider = externalValuesProvider;
-      _roundTo = roundTo;
+      _executionContext = executionContext;
     }
 
 
@@ -51,8 +38,8 @@ namespace Empiria.FinancialAccounting.FinancialReports {
 
         IFinancialConceptValues breakdownTotals = CalculateBreakdownEntry(breakdownItem.IntegrationEntry);
 
-        if (_roundTo != RoundTo.DoNotRound) {
-          breakdownTotals = breakdownTotals.Round(_roundTo);
+        if (_executionContext.FinancialReportType.RoundTo != RoundTo.DoNotRound) {
+          breakdownTotals = breakdownTotals.Round(_executionContext.FinancialReportType.RoundTo);
         }
 
         breakdownTotals.CopyTotalsTo(breakdownItem);
@@ -74,7 +61,9 @@ namespace Empiria.FinancialAccounting.FinancialReports {
 
         } // switch
 
+
       } // foreach
+
 
       return granTotal;
     }
@@ -104,6 +93,7 @@ namespace Empiria.FinancialAccounting.FinancialReports {
         }
 
       }  // foreach
+
 
       return totals;
     }
@@ -224,11 +214,12 @@ namespace Empiria.FinancialAccounting.FinancialReports {
 
 
     private IFinancialConceptValues CalculateAccount(FinancialConceptEntry integrationEntry) {
-      if (!_balancesProvider.ContainsAccount(integrationEntry.AccountNumber)) {
+      if (!_executionContext.BalancesProvider.ContainsAccount(integrationEntry.AccountNumber)) {
         return CreateFinancialConceptValuesObject();
       }
 
-      FixedList<ITrialBalanceEntryDto> accountBalances = _balancesProvider.GetAccountBalances(integrationEntry);
+      FixedList<ITrialBalanceEntryDto> accountBalances =
+                                  _executionContext.BalancesProvider.GetAccountBalances(integrationEntry);
 
       var totals = CreateFinancialConceptValuesObject();
 
@@ -246,8 +237,8 @@ namespace Empiria.FinancialAccounting.FinancialReports {
         totals = totals.ConsolidateTotalsInto(integrationEntry.DataColumn);
       }
 
-      if (_roundTo != RoundTo.DoNotRound) {
-        totals = totals.Round(_roundTo);
+      if (_executionContext.FinancialReportType.RoundTo != RoundTo.DoNotRound) {
+        totals = totals.Round(_executionContext.FinancialReportType.RoundTo);
       }
 
       if (integrationEntry.Operator == OperatorType.AbsoluteValue) {
@@ -279,11 +270,12 @@ namespace Empiria.FinancialAccounting.FinancialReports {
 
     private IFinancialConceptValues CalculateExternalVariable(FinancialConceptEntry integrationEntry) {
 
-      if (!_externalValuesProvider.ContainsVariable(integrationEntry.ExternalVariableCode)) {
+      if (!_executionContext.ExternalValuesProvider.ContainsVariable(integrationEntry.ExternalVariableCode)) {
         return CreateFinancialConceptValuesObject();
       }
 
-      FixedList<ExternalValue> externalValues = _externalValuesProvider.GetValues(integrationEntry.ExternalVariableCode);
+      FixedList<ExternalValue> externalValues =
+                      _executionContext.ExternalValuesProvider.GetValues(integrationEntry.ExternalVariableCode);
 
       IFinancialConceptValues totals = CreateFinancialConceptValuesObject();
 
@@ -304,7 +296,7 @@ namespace Empiria.FinancialAccounting.FinancialReports {
     #region Helpers
 
     private IFinancialConceptValues CreateFinancialConceptValuesObject() {
-      return new FinancialConceptValues(_dataColumns);
+      return new FinancialConceptValues(_executionContext.FinancialReportType.DataColumns);
     }
 
     #endregion Helpers

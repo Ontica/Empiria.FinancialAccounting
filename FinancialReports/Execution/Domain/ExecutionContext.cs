@@ -36,10 +36,7 @@ namespace Empiria.FinancialAccounting.FinancialReports {
                                            BuildQuery.ToDate));
 
       _conceptsCalculator = new Lazy<FinancialConceptsCalculator>(() =>
-                new FinancialConceptsCalculator(FinancialReportType.DataColumns,
-                                                BalancesProvider,
-                                                ExternalValuesProvider,
-                                                FinancialReportType.RoundTo));
+                new FinancialConceptsCalculator(this));
     }
 
 
