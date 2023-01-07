@@ -358,13 +358,22 @@ namespace Empiria.FinancialAccounting.FinancialReports {
     #region Helpers
 
     private void UpdateListWith(FinancialReportCell cell) {
+      int listIndex = _items.Value.IndexOf(cell);
+
+      if (listIndex != -1) {
+        _items.Value.RemoveAt(listIndex);
+      }
+
+      if (cell.Status == StateEnums.EntityStatus.Deleted) {
+        return;
+      }
+
       var offsetCell = _items.Value.FindLast(x => x.RowIndex <= cell.RowIndex);
 
       int insertionIndex = offsetCell != null ? _items.Value.IndexOf(offsetCell) : 0;
 
       _items.Value.Insert(insertionIndex, cell);
     }
-
 
 
     private void UpdateListWith(FinancialReportRow row) {
