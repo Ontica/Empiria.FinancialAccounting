@@ -115,6 +115,13 @@ namespace Empiria.FinancialAccounting.FinancialConcepts {
     }
 
 
+    public bool HasScript {
+      get {
+        return CalculationScript.Length != 0;
+      }
+    }
+
+
     [DataField("CONCEPTO_EXT_DATA")]
     internal protected JsonObject ExtendedDataField {
       get; set;
@@ -204,6 +211,8 @@ namespace Empiria.FinancialAccounting.FinancialConcepts {
       Assertion.Require(fields,      nameof(fields));
       Assertion.Require(positioning, nameof(positioning));
 
+      AssertThereAreNotCycles(fields);
+
       FinancialConceptEntry entry = FinancialConceptEntry.Create(fields);
 
       int position = positioning.CalculatePosition(_integration.Value);
@@ -258,6 +267,8 @@ namespace Empiria.FinancialAccounting.FinancialConcepts {
       Assertion.Require(fields, nameof(fields));
       Assertion.Require(positioning, nameof(positioning));
 
+      AssertThereAreNotCycles(fields);
+
       entry.Update(fields);
 
       int newPosition = positioning.CalculatePosition(_integration.Value,
@@ -268,9 +279,56 @@ namespace Empiria.FinancialAccounting.FinancialConcepts {
       return entry;
     }
 
+
     #endregion Methods
 
     #region Helpers
+
+    private void AssertThereAreNotCycles(FinancialConceptEntryFields fields) {
+      if (!(fields is FinancialConceptReferenceEntryTypeFields referenceEntryFields)) {
+        return;
+      }
+
+      var referencedConcept = referenceEntryFields.ReferencedFinancialConcept;
+
+      if (referencedConcept.Equals(this)) {
+        Assertion.RequireFail($"No se puede agregar el concepto '{this.Code}'" +
+                              $"como parte de su propia integración.");
+      }
+
+      FinancialConceptEntry cycledEntry = TryFindCycledIntegrationConceptEntry(referencedConcept);
+
+      if (cycledEntry != null) {
+        Assertion.RequireFail(
+              $"No se puede agregar el concepto '{referencedConcept.Code}' a la integración " +
+              $"de este concepto ('{this.Code}'), ya que este a su vez está integrado en el " +
+              $"concepto '{cycledEntry.FinancialConcept.Code}' el cual desciende de '{this.Code}'. " +
+              $"La operación no se puede realizar porque se generaría un ciclo infinito.");
+      }
+    }
+
+
+    private FinancialConceptEntry TryFindCycledIntegrationConceptEntry(FinancialConcept referencedConcept) {
+      EmpiriaLog.Debug($"TryFindCycledIntegrationConceptEntry('{referencedConcept.Code}') => this.Code == {this.Code}");
+
+      var integration = referencedConcept.Integration.FindAll(x => x.Type == FinancialConceptEntryType.FinancialConceptReference);
+
+      foreach (var innerEntry in integration) {
+
+        if (innerEntry.ReferencedFinancialConcept.Equals(this)) {
+          return innerEntry;
+        }
+
+        var cycledEntry = TryFindCycledIntegrationConceptEntry(innerEntry.ReferencedFinancialConcept);
+
+        if (cycledEntry != null) {
+          return cycledEntry;
+        }
+      }
+
+      return null;
+    }
+
 
     private void UpdateList(FinancialConceptEntry entry, int position) {
       int listIndex = Integration.IndexOf(entry);
