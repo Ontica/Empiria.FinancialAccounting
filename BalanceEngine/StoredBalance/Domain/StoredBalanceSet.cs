@@ -170,13 +170,14 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
       var query = new TrialBalanceQuery {
         AccountsChartUID = this.AccountsChart.UID,
         TrialBalanceType = TrialBalanceType.GeneracionDeSaldos,
+        WithSubledgerAccount = true,
+        BalancesType = BalancesType.AllAccounts,
+        ShowCascadeBalances = true,
+        UseCache = false,
         InitialPeriod = {
           FromDate = this.BalancesDate,
           ToDate = this.BalancesDate
-        },
-        WithSubledgerAccount = true,
-        BalancesType = BalancesType.AllAccounts,
-        ShowCascadeBalances = true
+        }
       };
 
       var balanceEngine = new TrialBalanceEngine(query);
@@ -196,6 +197,7 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
       this.CalculationTime = DateTime.Now;
 
       this.Calculated = true;
+
       this.Save();
 
       this.ResetBalances();
