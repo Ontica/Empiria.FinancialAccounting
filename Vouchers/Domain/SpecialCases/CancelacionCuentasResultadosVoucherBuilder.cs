@@ -74,6 +74,7 @@ namespace Empiria.FinancialAccounting.Vouchers.SpecialCases {
         BalancesType = BalancesType.WithCurrentBalance,
         ShowCascadeBalances = true,
         WithSubledgerAccount = true,
+        UseCache = false,
         InitialPeriod = new BalancesPeriod {
           FromDate = base.Fields.CalculationDate,
           ToDate = base.Fields.CalculationDate

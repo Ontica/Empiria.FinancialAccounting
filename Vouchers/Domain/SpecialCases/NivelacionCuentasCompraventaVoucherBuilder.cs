@@ -110,6 +110,7 @@ namespace Empiria.FinancialAccounting.Vouchers.SpecialCases {
         Ledgers = new[] { base.Ledger.UID },
         BalancesType = BalanceEngine.BalancesType.WithCurrentBalanceOrMovements,
         ShowCascadeBalances = true,
+        UseCache = false,
         InitialPeriod = new BalancesPeriod {
           FromDate = base.Fields.CalculationDate,
           ToDate = base.Fields.CalculationDate
