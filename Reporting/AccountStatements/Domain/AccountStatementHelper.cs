@@ -47,8 +47,8 @@ namespace Empiria.FinancialAccounting.Reporting.AccountStatements.Domain {
 
     internal FixedList<AccountStatementEntry> GetOrderingVouchers(
                                               FixedList<AccountStatementEntry> voucherEntries) {
-      
-      if (voucherEntries.Count==0) {
+
+      if (voucherEntries.Count == 0) {
         return new FixedList<AccountStatementEntry>();
       }
 
@@ -60,6 +60,21 @@ namespace Empiria.FinancialAccounting.Reporting.AccountStatements.Domain {
                                                       .ThenBy(a => a.VoucherNumber)
                                                       .ToList();
       return returnedVouchers.ToFixedList();
+    }
+
+
+    internal FixedList<AccountStatementEntry> GetEntriesByBalanceType(
+             FixedList<AccountStatementEntry> voucherEntries) {
+
+      if (_buildQuery.Entry.ItemType == BalanceEngine.TrialBalanceItemType.Entry &&
+          _buildQuery.BalancesQuery.WithSubledgerAccount &&
+          _buildQuery.Entry.SubledgerAccountNumber.Length <= 1) {
+
+        return voucherEntries.Where(a => a.SubledgerAccountNumber.Length <= 1).ToFixedList();
+
+      }
+
+      return voucherEntries;
     }
 
 
@@ -148,7 +163,7 @@ namespace Empiria.FinancialAccounting.Reporting.AccountStatements.Domain {
       return returnedVouchers.ToFixedList();
     }
 
-    
+
     internal FixedList<AccountStatementEntry> GetVoucherEntries() {
       var builder = new AccountStatementSqlClausesBuilder(_buildQuery);
 

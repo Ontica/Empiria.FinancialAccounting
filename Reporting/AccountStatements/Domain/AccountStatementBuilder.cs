@@ -8,7 +8,7 @@
 *                                                                                                            *
 ************************* Copyright(c) La Vía Óntica SC, Ontica LLC and contributors. All rights reserved. **/
 using System;
-
+using System.Linq;
 using Empiria.FinancialAccounting.Reporting.AccountStatements.Adapters;
 
 namespace Empiria.FinancialAccounting.Reporting.AccountStatements.Domain {
@@ -50,11 +50,13 @@ namespace Empiria.FinancialAccounting.Reporting.AccountStatements.Domain {
       
       FixedList<AccountStatementEntry> voucherEntries = helper.GetVoucherEntries();
 
-      if (voucherEntries.Count == 0) {
+      FixedList<AccountStatementEntry> _voucherEntries = helper.GetEntriesByBalanceType(voucherEntries);
+
+      if (_voucherEntries.Count == 0) {
         return new AccountStatement(_buildQuery.BalancesQuery, new FixedList<IVouchersByAccountEntry>(), "");
       }
 
-      FixedList<AccountStatementEntry> orderingVouchers = helper.GetOrderingVouchers(voucherEntries);
+      FixedList<AccountStatementEntry> orderingVouchers = helper.GetOrderingVouchers(_voucherEntries);
 
       AccountStatementEntry initialBalance = helper.GetInitialBalance(orderingVouchers);
 
