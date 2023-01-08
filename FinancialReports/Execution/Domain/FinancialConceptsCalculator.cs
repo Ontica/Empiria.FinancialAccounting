@@ -309,9 +309,7 @@ namespace Empiria.FinancialAccounting.FinancialReports {
     #region Helpers
 
     private IFinancialConceptValues CreateFinancialConceptValuesObject() {
-      var notCalculatedColumns = _executionContext.FinancialReportType.DataColumns.FindAll(x => !x.IsCalculated);
-
-      return new FinancialConceptValues(notCalculatedColumns);
+      return new FinancialConceptValues(_executionContext.FinancialReportType.DataColumns);
     }
 
     #endregion Helpers
