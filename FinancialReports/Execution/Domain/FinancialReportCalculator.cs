@@ -30,6 +30,10 @@ namespace Empiria.FinancialAccounting.FinancialReports {
                                    IFinancialConceptValues baseValues) {
       IDictionary<string, object> inputValues = ConvertToDictionary(financialConcept, baseValues);
 
+      if (financialConcept.Code.StartsWith("3")) {
+        columns = columns.FindAll(x => !x.Tags.Contains("skipFormulaForConceptsStartingWith3"));
+      }
+
       foreach (var column in columns) {
         decimal result = CalculateColumnEntry(column.Formula, inputValues);
 
