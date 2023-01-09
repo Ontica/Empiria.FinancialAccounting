@@ -57,7 +57,6 @@ namespace Empiria.FinancialAccounting.AccountsChartEdition.Data {
                          stdAccountHistoryId, Guid.NewGuid().ToString(),
                          BuildKeywords(o));
 
-
       return (stdAccountId, op);
     }
 
@@ -81,7 +80,7 @@ namespace Empiria.FinancialAccounting.AccountsChartEdition.Data {
 
     static internal DataOperation RemoveAccountCurrencyOp(CurrencyRule o, DateTime applicationDate) {
       return DataOperation.Parse("write_cof_mapeo_moneda",
-                                  o.StandardAccountId, o.Currency,
+                                  o.StandardAccountId, o.Currency.Id,
                                   o.StartDate, applicationDate.Date.AddDays(-1));
     }
 
