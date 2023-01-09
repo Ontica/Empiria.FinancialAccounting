@@ -51,6 +51,7 @@ namespace Empiria.FinancialAccounting.AccountsChartEdition {
       DetermineAccountTypeForNewAccounts(commands);
       RequireValidCurrencies(commands);
       RequireValidSectors(commands);
+      CleanUpIrrelevantFields(commands);
       EnsureAllDataIsLoaded(commands);
 
       return commands;
@@ -59,19 +60,22 @@ namespace Empiria.FinancialAccounting.AccountsChartEdition {
 
     #region Helpers
 
-    private void CleanUpIrrelevantFields(AccountEditionCommand command) {
-      if (command.CommandType == AccountEditionCommandType.CreateAccount) {
-        return;
-      }
+    private void CleanUpIrrelevantFields(FixedList<AccountEditionCommand> commands) {
 
-      var dataToBeUpdated = command.DataToBeUpdated.ToFixedList();
+      foreach (var command in commands) {
+        if (command.CommandType == AccountEditionCommandType.CreateAccount) {
+          return;
+        }
 
-      if (!dataToBeUpdated.Contains(AccountDataToBeUpdated.Currencies)) {
-        command.Currencies = new string[0];
-      }
+        var dataToBeUpdated = command.DataToBeUpdated.ToFixedList();
 
-      if (!dataToBeUpdated.Contains(AccountDataToBeUpdated.Sectors)) {
-        command.SectorRules = new SectorInputRuleDto[0];
+        if (!dataToBeUpdated.Contains(AccountDataToBeUpdated.Currencies)) {
+          command.Currencies = new string[0];
+        }
+
+        if (!dataToBeUpdated.Contains(AccountDataToBeUpdated.Sectors)) {
+          command.SectorRules = new SectorInputRuleDto[0];
+        }
       }
     }
 
@@ -217,7 +221,7 @@ namespace Empiria.FinancialAccounting.AccountsChartEdition {
 
           Assertion.Require(account == null,
               $"Se está solicitando agregar la cuenta '{accountNumber}', " +
-              $"pero la misma ya existe en el catálogo de cuentas: {command.DataSource}.");
+              $"pero esta ya existe en el catálogo de cuentas: {command.DataSource}.");
 
         } else if (command.CommandType == AccountEditionCommandType.FixAccountName ||
                    command.CommandType == AccountEditionCommandType.UpdateAccount) {
@@ -270,6 +274,19 @@ namespace Empiria.FinancialAccounting.AccountsChartEdition {
 
 
     private void RequireApplicationDateIsValid(FixedList<AccountEditionCommand> commands) {
+      if (GetCreateAccountCommands(commands).Count != 0) {
+        var firstDate = new DateTime(DateTime.Today.AddMonths(-1).Year,
+                                     DateTime.Today.AddMonths(-1).Month,
+                                     1);
+
+        Assertion.Require(firstDate <= _applicationDate && _applicationDate <= DateTime.Today.AddDays(8),
+        "Debido a que el archivo contiene operaciones que agregan " +
+        "cuentas ya existentes, la fecha de aplicación de los cambios " +
+        $"al catálogo debe ser a partir del {firstDate.ToString("dd/MMM/yyyy")} " +
+        $" y hasta el {DateTime.Today.AddDays(8).ToString("dd/MMM/yyyy")}.");
+      }
+
+
       if (GetUpdateAccountCommands(commands).Count != 0) {
 
         Assertion.Require(DateTime.Today.AddDays(1) <= _applicationDate &&
@@ -360,8 +377,6 @@ namespace Empiria.FinancialAccounting.AccountsChartEdition {
         command.AccountUID = account.UID;
         command.AccountFields.AccountTypeUID = account.AccountType.UID;
         command.AccountFields.DebtorCreditor = account.DebtorCreditor;
-
-        CleanUpIrrelevantFields(command);
       }
     }
 

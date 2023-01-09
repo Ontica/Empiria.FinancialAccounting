@@ -177,13 +177,11 @@ namespace Empiria.FinancialAccounting.AccountsChartEdition {
 
       AccountEditionCommandType commandType = GetCommandType();
 
-      if (commandType == AccountEditionCommandType.CreateAccount) {
+      if (commandType == AccountEditionCommandType.CreateAccount ||
+          commandType == AccountEditionCommandType.FixAccountName) {
         return new AccountDataToBeUpdated[0];
       }
 
-      if (commandType == AccountEditionCommandType.FixAccountName) {
-        return new AccountDataToBeUpdated[0];
-      }
 
       if (commandType == AccountEditionCommandType.UpdateAccount) {
         value = value.Replace("cambiar ", string.Empty);
@@ -191,9 +189,11 @@ namespace Empiria.FinancialAccounting.AccountsChartEdition {
         value = value.Replace("modificar ", string.Empty);
         value = value.Replace(".", string.Empty);
         value = value.Replace(";", ",");
+        value = value.Replace(" y ", ",");
 
-        var stringArray = value.Split(',').Select(x => EmpiriaString.TrimAll(x).ToLower())
-                                    .ToArray();
+        var stringArray = value.Split(',')
+                               .Select(x => EmpiriaString.TrimAll(x))
+                               .ToArray();
 
         return CreateUpdatedAccountDataFromStringArray(stringArray);
       }
