@@ -30,7 +30,7 @@ namespace Empiria.FinancialAccounting.FinancialReports {
                                    IFinancialConceptValues baseValues) {
       IDictionary<string, object> inputValues = ConvertToDictionary(financialConcept, baseValues);
 
-      if (financialConcept.Code.StartsWith("3")) {
+      if (financialConcept.Code.StartsWith("3300") && !financialConcept.Code.EndsWith("0008")) {
         columns = columns.FindAll(x => !x.Tags.Contains("skipFormulaForConceptsStartingWith3"));
       }
 
