@@ -76,10 +76,16 @@ namespace Empiria.FinancialAccounting {
     static public AccountsChart Empty => BaseObject.ParseEmpty<AccountsChart>();
 
 
-    internal void Refresh() {
+    internal void Refresh(bool afterUpdated) {
       _accounts = new Lazy<EmpiriaHashTable<Account>>(() => AccountsChartData.GetAccounts(this, true));
       _standardAccounts = new Lazy<EmpiriaHashTable<StandardAccount>>(() => AccountsChartData.GetStandardAccounts(this, true));
       _rules = new Lazy<AccountsChartRules>(() => new AccountsChartRules(this));
+
+      if (afterUpdated) {
+        _ = _accounts.Value;
+        _ = _standardAccounts.Value;
+        _ = _rules.Value;
+      }
     }
 
 
@@ -90,7 +96,7 @@ namespace Empiria.FinancialAccounting {
         this.MasterData = new AccountsChartMasterData(this);
       }
 
-      Refresh();
+      Refresh(false);
     }
 
     #endregion Constructors and parsers

@@ -128,7 +128,7 @@ namespace Empiria.FinancialAccounting.AccountsChartEdition {
     private void RefreshCache(ICollection<AccountsChartEditionAction> allActions) {
       AccountsChart chart = allActions.First().Command.Entities.AccountsChart;
 
-      chart.Refresh();
+      chart.Refresh(true);
     }
 
     #endregion Helpers
