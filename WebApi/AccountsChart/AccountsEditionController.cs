@@ -30,7 +30,7 @@ namespace Empiria.FinancialAccounting.WebApi {
     [HttpGet]
     [Route("v2/financial-accounting/accounts-charts/{accountsChartUID:guid}/accounts/{accountUID:guid}")]
     public SingleObjectModel GetAccount([FromUri] string accountsChartUID,
-                                    [FromUri] string accountUID) {
+                                        [FromUri] string accountUID) {
 
       using (var usecases = AccountsChartUseCases.UseCaseInteractor()) {
         AccountDto account = usecases.GetAccount(accountsChartUID, accountUID);
@@ -45,7 +45,7 @@ namespace Empiria.FinancialAccounting.WebApi {
     public SingleObjectModel CreateAccount([FromUri] string accountsChartUID,
                                            [FromBody] AccountEditionCommand command) {
 
-      PrepareCommand(command, AccountEditionCommandType.CreateAccount, accountsChartUID);
+      PrepareCommand(command, accountsChartUID);
 
       using (var usecases = AccountEditionUseCases.UseCaseInteractor()) {
         OperationSummary summary = usecases.ExecuteCommand(command);
@@ -61,7 +61,7 @@ namespace Empiria.FinancialAccounting.WebApi {
                                            [FromUri] string accountUID,
                                            [FromBody] AccountEditionCommand command) {
 
-      PrepareCommand(command, AccountEditionCommandType.UpdateAccount, accountsChartUID, accountUID);
+      PrepareCommand(command, accountsChartUID, accountUID);
 
       using (var usecases = AccountEditionUseCases.UseCaseInteractor()) {
         OperationSummary summary = usecases.ExecuteCommand(command);
@@ -91,12 +91,10 @@ namespace Empiria.FinancialAccounting.WebApi {
     #region Helpers
 
     private void PrepareCommand(AccountEditionCommand command,
-                                AccountEditionCommandType type,
                                 string accountsChartUID,
                                 string accountUID = "") {
       base.RequireBody(command);
 
-      command.CommandType = type;
       command.AccountsChartUID = accountsChartUID;
       command.AccountUID = accountUID;
     }
