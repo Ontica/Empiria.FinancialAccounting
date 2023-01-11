@@ -43,7 +43,7 @@ namespace Empiria.FinancialAccounting.AccountsChartEdition.Adapters {
 
     SubledgerRole
 
-  }  // enum AccountDataEdition
+  }  // enum AccountDataToBeUpdated
 
 
 
@@ -55,15 +55,14 @@ namespace Empiria.FinancialAccounting.AccountsChartEdition.Adapters {
     } = string.Empty;
 
 
-    public Sector Sector {
-      get; internal set;
-    }
-
-
     public AccountRole Role {
       get; set;
     } = AccountRole.Undefined;
 
+
+    internal Sector Sector {
+      get; set;
+    }
 
   }  // class SectorInputRuleDto
 
@@ -76,10 +75,6 @@ namespace Empiria.FinancialAccounting.AccountsChartEdition.Adapters {
       get; set;
     } = AccountEditionCommandType.Undefined;
 
-
-    protected override string GetCommandTypeName() {
-      return this.CommandType.ToString();
-    }
 
     public string AccountsChartUID {
       get; set;
@@ -137,6 +132,10 @@ namespace Empiria.FinancialAccounting.AccountsChartEdition.Adapters {
       get; private set;
     } = new EntitiesType();
 
+
+    protected override string GetCommandTypeName() {
+      return this.CommandType.ToString();
+    }
 
     protected override void InitialRequire() {
       Assertion.Require(this.CommandType != AccountEditionCommandType.Undefined, "CommandType");
@@ -197,6 +196,9 @@ namespace Empiria.FinancialAccounting.AccountsChartEdition.Adapters {
       }
     }
 
+    protected override void SetActions() {
+      base.ExecutionResult.AddAction("Se modificará el catálogo de cuentas");
+    }
 
     protected override void SetEntities() {
       Entities.AccountsChart = AccountsChart.Parse(AccountsChartUID);

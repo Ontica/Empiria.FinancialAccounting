@@ -12,7 +12,7 @@ using System;
 namespace Empiria.FinancialAccounting.Adapters {
 
   /// <summary> Output DTOs with data related to an account.</summary>
-  public class AccountDto : AccountDescriptorDto {
+  public class AccountDto : AccountDescriptorDto, IDto {
 
     internal AccountDto() {
       // no-op

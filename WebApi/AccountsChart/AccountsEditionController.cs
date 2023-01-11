@@ -48,9 +48,9 @@ namespace Empiria.FinancialAccounting.WebApi {
       PrepareCommand(command, accountsChartUID);
 
       using (var usecases = AccountEditionUseCases.UseCaseInteractor()) {
-        OperationSummary summary = usecases.ExecuteCommand(command);
+        ExecutionResult<AccountDto> result = usecases.ExecuteCommand(command);
 
-        return new SingleObjectModel(base.Request, summary);
+        return new SingleObjectModel(base.Request, result);
       }
     }
 
@@ -64,9 +64,9 @@ namespace Empiria.FinancialAccounting.WebApi {
       PrepareCommand(command, accountsChartUID, accountUID);
 
       using (var usecases = AccountEditionUseCases.UseCaseInteractor()) {
-        OperationSummary summary = usecases.ExecuteCommand(command);
+        ExecutionResult<AccountDto> result = usecases.ExecuteCommand(command);
 
-        return new SingleObjectModel(base.Request, summary);
+        return new SingleObjectModel(base.Request, result);
       }
     }
 

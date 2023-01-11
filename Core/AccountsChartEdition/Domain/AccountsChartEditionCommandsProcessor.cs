@@ -26,7 +26,7 @@ namespace Empiria.FinancialAccounting.AccountsChartEdition {
     }
 
 
-    internal OperationSummary Execute(AccountEditionCommand command) {
+    internal Account Execute(AccountEditionCommand command) {
       Assertion.Require(command, nameof(command));
 
       command.Arrange();
@@ -36,12 +36,15 @@ namespace Empiria.FinancialAccounting.AccountsChartEdition {
       FixedList<AccountsChartEditionAction> commandActions = actionsBuilder.BuildActions();
 
       if (!command.DryRun) {
-
         ProcessActions(commandActions);
         RefreshCache(commandActions);
       }
 
-      return CreateOperationSummary(command);
+      if (command.CommandType == AccountEditionCommandType.CreateAccount) {
+        return command.Entities.AccountsChart.GetAccount(command.AccountFields.AccountNumber);
+      } else {
+        return Account.Parse(command.AccountUID);
+      }
     }
 
 
@@ -65,11 +68,9 @@ namespace Empiria.FinancialAccounting.AccountsChartEdition {
       }
 
       if (!dryRun) {
-
         ProcessActions(allActions);
 
         RefreshCache(allActions);
-
       }
 
       return CreateOperationSummaryList(commands);
@@ -77,19 +78,6 @@ namespace Empiria.FinancialAccounting.AccountsChartEdition {
 
 
     #region Helpers
-
-    private OperationSummary CreateOperationSummary(AccountEditionCommand command) {
-      var summary = new OperationSummary();
-
-      summary.Operation = command.CommandText;
-
-      summary.Count++;
-      summary.AddItem("Cuenta " + command.AccountFields.AccountNumber);
-      summary.AddErrors(command.Issues);
-
-      return summary;
-    }
-
 
     private FixedList<OperationSummary> CreateOperationSummaryList(FixedList<AccountEditionCommand> commands) {
       var list = new List<OperationSummary>();
