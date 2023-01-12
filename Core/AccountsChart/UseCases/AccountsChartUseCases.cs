@@ -105,6 +105,16 @@ namespace Empiria.FinancialAccounting.UseCases {
     }
 
 
+    public AccountsChartDto TryGetAccountsWithChange(string accountsChartUID, DateTime fromDate, DateTime toDate) {
+
+      var accountsChart = AccountsChart.Parse(accountsChartUID);
+
+      FixedList<Account> accounts = accountsChart.TryGetAccountsWithChange(accountsChart, fromDate, toDate);
+
+      return AccountsChartMapper.MapAccountsWithChange(accountsChart, accounts);
+    }
+
+
     #endregion Use cases
 
   }  // class AccountsChartUseCases

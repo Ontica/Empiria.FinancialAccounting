@@ -82,6 +82,20 @@ namespace Empiria.FinancialAccounting.Adapters {
       };
     }
 
+
+    internal static AccountsChartDto MapAccountsWithChange(AccountsChart accountsChart,
+                                                           FixedList<Account> accounts) {
+
+      return new AccountsChartDto {
+        UID = accountsChart.UID,
+        Name = accountsChart.Name,
+        WithSectors = false,
+        Accounts = MapToAccountsWithChange(accounts)
+      };
+
+    }
+
+
     #region Private methods
 
     static private void FillAccountDescriptorDto(AccountDescriptorDto dto, Account account) {
@@ -103,6 +117,20 @@ namespace Empiria.FinancialAccounting.Adapters {
       dto.Obsolete = account.EndDate < Account.MAX_END_DATE || account.IsSummaryWithNotChildren;
       dto.Parent = account.HasParent ? account.GetParent().Number : string.Empty;
       dto.SummaryWithNotChildren = account.IsSummaryWithNotChildren;
+    }
+
+
+    static private AccountDescriptorDto MapToAccountWithChange(Account account) {
+      var dto = new AccountDescriptorDto();
+
+      FillAccountDescriptorDto(dto, account);
+
+      return dto;
+    }
+
+
+    static private FixedList<AccountDescriptorDto> MapToAccountsWithChange(FixedList<Account> accounts) {
+      return new FixedList<AccountDescriptorDto>(accounts.Select((x) => MapToAccountWithChange(x)));
     }
 
 
