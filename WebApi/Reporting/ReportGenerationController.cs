@@ -13,6 +13,7 @@ using System.Web.Http;
 using Empiria.WebApi;
 
 using Empiria.FinancialAccounting.Reporting;
+using Empiria.FinancialAccounting.Reporting.LockedUpBalances.Adapters;
 
 namespace Empiria.FinancialAccounting.WebApi.Reporting {
 
@@ -54,6 +55,21 @@ namespace Empiria.FinancialAccounting.WebApi.Reporting {
         FileReportDto fileReportDto = service.ExportReport(buildQuery, reportData);
 
         return new SingleObjectModel(this.Request, fileReportDto);
+      }
+    }
+
+
+    [HttpPost]
+    [Route("v2/financial-accounting/locked-up-balances")]
+    public SingleObjectModel GetTrialBalanceToLockedUpBalances([FromBody] ReportBuilderQuery buildQuery) {
+
+      base.RequireBody(buildQuery);
+
+      using (var service = LockedUpBalancesService.ServiceInteractor()) {
+
+        LockedUpBalancesDto reportData = service.GenerateReport(buildQuery);
+
+        return new SingleObjectModel(this.Request, reportData);
       }
     }
 
