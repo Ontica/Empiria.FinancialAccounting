@@ -86,7 +86,9 @@ namespace Empiria.FinancialAccounting.FinancialReports.Providers {
 
 
     private FixedList<ITrialBalanceEntryDto> ConvertToDynamicTrialBalanceEntryDto(FixedList<ITrialBalanceEntryDto> sourceEntries) {
-      var converter = new DynamicTrialBalanceEntryConverter(_exchangeRatesProvider);
+
+      var converter = new DynamicTrialBalanceEntryConverter(_financialReportType,
+                                                            _exchangeRatesProvider);
 
       FixedList<DynamicTrialBalanceEntry> convertedEntries = converter.Convert(sourceEntries);
 
