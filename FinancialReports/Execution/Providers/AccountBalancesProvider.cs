@@ -96,31 +96,49 @@ namespace Empiria.FinancialAccounting.FinancialReports.Providers {
         return balances;
       }
 
+      if (_financialReportType.DataSource == FinancialReportDataSource.BalanzaTradicional) {
+
+        return ApplyFilterByCurrencyBalanzaTradicional(balances,
+                                                       Currency.Parse(integrationEntry.CurrencyCode));
+      }
+
       if (_financialReportType.DataSource == FinancialReportDataSource.BalanzaEnColumnasPorMoneda) {
 
         return ApplyFilterByCurrencyBalanzaEnColumnasPorMoneda(balances,
                                                                Currency.Parse(integrationEntry.CurrencyCode));
       }
 
+      // Warning: By currency filter is not supported for AnaliticoDeCuentas
 
       return balances;
     }
 
 
+    private FixedList<ITrialBalanceEntryDto> ApplyFilterByCurrencyBalanzaTradicional(FixedList<ITrialBalanceEntryDto> balances,
+                                                                                     Currency currency) {
+      var converted = balances.Select(x => (BalanzaTradicionalEntryDto) x).ToFixedList();
+
+      var filtered = converted.FindAll(x => x.CurrencyCode == currency.Code);
+
+      return filtered.Select(x => (ITrialBalanceEntryDto) x)
+                     .ToFixedList();
+    }
+
+
     private FixedList<ITrialBalanceEntryDto> ApplyFilterByCurrencyBalanzaEnColumnasPorMoneda(FixedList<ITrialBalanceEntryDto> balances,
                                                                                              Currency currency) {
-      var filteredList = new List<BalanzaColumnasMonedaEntryDto>(balances.Count);
+      var filtered = new List<BalanzaColumnasMonedaEntryDto>(balances.Count);
 
       foreach (ITrialBalanceEntryDto balanceEntry in balances) {
         var filteredBalance = (BalanzaColumnasMonedaEntryDto) balanceEntry;
 
         filteredBalance = filteredBalance.GetCopyWithOneCurrency(currency);
 
-        filteredList.Add(filteredBalance);
+        filtered.Add(filteredBalance);
       }
 
-      return filteredList.Select(x => (ITrialBalanceEntryDto) x)
-                         .ToFixedList();
+      return filtered.Select(x => (ITrialBalanceEntryDto) x)
+                     .ToFixedList();
     }
 
 
