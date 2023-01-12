@@ -8,6 +8,7 @@
 *                                                                                                            *
 ************************* Copyright(c) La Vía Óntica SC, Ontica LLC and contributors. All rights reserved. **/
 using System;
+using System.Collections.Generic;
 using System.Linq;
 
 using Empiria.Collections;
@@ -81,7 +82,45 @@ namespace Empiria.FinancialAccounting.FinancialReports.Providers {
         }
       }
 
+      if (integrationEntry.HasCurrency) {
+        filtered = ApplyFilterByCurrency(integrationEntry, filtered);
+      }
+
       return ConvertToDynamicTrialBalanceEntryDto(filtered);
+    }
+
+
+    private FixedList<ITrialBalanceEntryDto> ApplyFilterByCurrency(FinancialConceptEntry integrationEntry,
+                                                                   FixedList<ITrialBalanceEntryDto> balances) {
+      if (balances.Count == 0) {
+        return balances;
+      }
+
+      if (_financialReportType.DataSource == FinancialReportDataSource.BalanzaEnColumnasPorMoneda) {
+
+        return ApplyFilterByCurrencyBalanzaEnColumnasPorMoneda(balances,
+                                                               Currency.Parse(integrationEntry.CurrencyCode));
+      }
+
+
+      return balances;
+    }
+
+
+    private FixedList<ITrialBalanceEntryDto> ApplyFilterByCurrencyBalanzaEnColumnasPorMoneda(FixedList<ITrialBalanceEntryDto> balances,
+                                                                                             Currency currency) {
+      var filteredList = new List<BalanzaColumnasMonedaEntryDto>(balances.Count);
+
+      foreach (ITrialBalanceEntryDto balanceEntry in balances) {
+        var filteredBalance = (BalanzaColumnasMonedaEntryDto) balanceEntry;
+
+        filteredBalance = filteredBalance.GetCopyWithOneCurrency(currency);
+
+        filteredList.Add(filteredBalance);
+      }
+
+      return filteredList.Select(x => (ITrialBalanceEntryDto) x)
+                         .ToFixedList();
     }
 
 
