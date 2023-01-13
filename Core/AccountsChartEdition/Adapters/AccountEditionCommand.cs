@@ -17,6 +17,8 @@ namespace Empiria.FinancialAccounting.AccountsChartEdition.Adapters {
 
     CreateAccount,
 
+    DeleteAccount,
+
     FixAccountName,
 
     UpdateAccount,
@@ -154,9 +156,9 @@ namespace Empiria.FinancialAccounting.AccountsChartEdition.Adapters {
         Assertion.Require(this.AccountUID.Length == 0,
                           "command.AccountUID was provided but it's not needed for a CreateAccount command.");
 
-      } else if (this.CommandType == AccountEditionCommandType.FixAccountName) {
+      } else if (this.CommandType == AccountEditionCommandType.DeleteAccount ||
+                 this.CommandType == AccountEditionCommandType.FixAccountName) {
         Assertion.Require(this.AccountUID, "AccountUID");
-
 
       } else if (this.CommandType == AccountEditionCommandType.UpdateAccount) {
         Assertion.Require(this.AccountUID, "AccountUID");

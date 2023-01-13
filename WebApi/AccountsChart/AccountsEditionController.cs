@@ -47,6 +47,28 @@ namespace Empiria.FinancialAccounting.WebApi {
 
       PrepareCommand(command, accountsChartUID);
 
+      Assertion.Require(command.CommandType == AccountEditionCommandType.CreateAccount,
+                        $"Unrecognized command type '{command.CommandType}'.");
+
+      using (var usecases = AccountEditionUseCases.UseCaseInteractor()) {
+        ExecutionResult<AccountDto> result = usecases.ExecuteCommand(command);
+
+        return new SingleObjectModel(base.Request, result);
+      }
+    }
+
+
+    [HttpDelete]
+    [Route("v2/financial-accounting/accounts-charts/{accountsChartUID:guid}/accounts/{accountUID:guid}")]
+    public SingleObjectModel DeleteAccount([FromUri] string accountsChartUID,
+                                           [FromUri] string accountUID,
+                                           [FromBody] AccountEditionCommand command) {
+
+      PrepareCommand(command, accountsChartUID, accountUID);
+
+      Assertion.Require(command.CommandType == AccountEditionCommandType.DeleteAccount,
+                        $"Unrecognized command type '{command.CommandType}'.");
+
       using (var usecases = AccountEditionUseCases.UseCaseInteractor()) {
         ExecutionResult<AccountDto> result = usecases.ExecuteCommand(command);
 
@@ -62,6 +84,10 @@ namespace Empiria.FinancialAccounting.WebApi {
                                            [FromBody] AccountEditionCommand command) {
 
       PrepareCommand(command, accountsChartUID, accountUID);
+
+      Assertion.Require(command.CommandType == AccountEditionCommandType.UpdateAccount ||
+                        command.CommandType == AccountEditionCommandType.FixAccountName,
+                        $"Unrecognized command type '{command.CommandType}'.");
 
       using (var usecases = AccountEditionUseCases.UseCaseInteractor()) {
         ExecutionResult<AccountDto> result = usecases.ExecuteCommand(command);
