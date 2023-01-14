@@ -122,6 +122,7 @@ namespace Empiria.FinancialAccounting.Reporting {
       columns.Add(new DataTableColumn("accountNumber", "Cuenta", "text"));
       columns.Add(new DataTableColumn("accountName", "Nombre", "text-nowrap"));
       columns.Add(new DataTableColumn("SectorCode", "Sector", "text"));
+      columns.Add(new DataTableColumn("subledgerAccount", "Auxiliar", "text"));
       columns.Add(new DataTableColumn("currentBalance", "Saldo actual", "decimal"));
       columns.Add(new DataTableColumn("SectorCode", "Sector", "text"));
       columns.Add(new DataTableColumn("role", "Rol", "text"));
@@ -155,6 +156,8 @@ namespace Empiria.FinancialAccounting.Reporting {
       dto.AccountNumber = entry.AccountNumber;
       dto.AccountName = entry.AccountName;
       dto.SectorCode = entry.SectorCode;
+      dto.SubledgerAccount = entry.SubledgerAccountNumber.Length > 1 ?
+                             entry.SubledgerAccountNumber : "";
       dto.CurrentBalance = (decimal) entry.CurrentBalance;
       dto.LastChangeDate = entry.LastChangeDate;
       dto.RoleChangeDate = account.EndDate;
@@ -181,8 +184,8 @@ namespace Empiria.FinancialAccounting.Reporting {
         ToAccount = account.Number,
         IsOperationalReport = true,
         UseDefaultValuation = false,
-        ShowCascadeBalances = false,
-        WithSubledgerAccount = false
+        ShowCascadeBalances = true,
+        WithSubledgerAccount = account.Role == AccountRole.Control ? true : false
       };
 
     }

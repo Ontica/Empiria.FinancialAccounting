@@ -71,6 +71,11 @@ namespace Empiria.FinancialAccounting.Reporting.LockedUpBalances.Adapters {
     }
 
 
+    public string SubledgerAccount {
+      get; internal set;
+    }
+
+
     public decimal CurrentBalance {
       get; internal set;
     }
@@ -94,6 +99,7 @@ namespace Empiria.FinancialAccounting.Reporting.LockedUpBalances.Adapters {
     public string NewRole {
       get; internal set;
     }
+    
   } // class LockedUpBalancesEntryDto
 
 } // namespace Empiria.FinancialAccounting.Reporting.Balances.LockedUpBalances.Adapters
