@@ -78,6 +78,14 @@ namespace Empiria.FinancialAccounting.AccountsChartEdition.UseCases {
 
       FixedList<AccountEditionCommand> commands = reader.GetCommands();
 
+      foreach (var item in commands) {
+        item.Arrange();
+      }
+
+      if (commands.Exists(x => !x.IsValid) || command.DryRun) {
+        return AccountsChartEditionCommandsProcessor.MapToOperationSummaryList(commands);
+      }
+
       var processor = new AccountsChartEditionCommandsProcessor();
 
       return processor.Execute(commands, command.DryRun);
@@ -91,6 +99,9 @@ namespace Empiria.FinancialAccounting.AccountsChartEdition.UseCases {
       switch (commandType) {
         case AccountEditionCommandType.CreateAccount:
           return $"Se agregó la cuenta {account.Number} {account.Name} al catálogo de cuentas.";
+
+        case AccountEditionCommandType.DeleteAccount:
+          return $"Se eliminó la cuenta {account.Number} {account.Name}.";
 
         case AccountEditionCommandType.UpdateAccount:
           return $"La cuenta {account.Number} {account.Name} fue modificada satisfactoriamente.";

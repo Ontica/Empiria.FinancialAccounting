@@ -73,13 +73,13 @@ namespace Empiria.FinancialAccounting.AccountsChartEdition {
         RefreshCache(allActions);
       }
 
-      return CreateOperationSummaryList(commands);
+      return MapToOperationSummaryList(commands);
     }
 
 
     #region Helpers
 
-    private FixedList<OperationSummary> CreateOperationSummaryList(FixedList<AccountEditionCommand> commands) {
+    static internal FixedList<OperationSummary> MapToOperationSummaryList(FixedList<AccountEditionCommand> commands) {
       var list = new List<OperationSummary>();
 
       foreach (var summaryGroup in commands.Select(x => x.CommandText)
