@@ -48,34 +48,12 @@ namespace Empiria.FinancialAccounting.AccountsChartEdition {
       RequireAccountNumbersAreValid(commands);
       SetDataForExistingAccountsToBeUpdated(commands);
       DetermineAccountTypeForNewAccounts(commands);
-      CleanUpIrrelevantFields(commands);
       EnsureAllDataIsLoaded(commands);
 
       return commands;
     }
 
-
     #region Helpers
-
-    private void CleanUpIrrelevantFields(FixedList<AccountEditionCommand> commands) {
-
-      foreach (var command in commands) {
-        if (command.CommandType == AccountEditionCommandType.CreateAccount) {
-          return;
-        }
-
-        var dataToBeUpdated = command.DataToBeUpdated.ToFixedList();
-
-        if (!dataToBeUpdated.Contains(AccountDataToBeUpdated.Currencies)) {
-          command.Currencies = new string[0];
-        }
-
-        if (!dataToBeUpdated.Contains(AccountDataToBeUpdated.Sectors)) {
-          command.SectorRules = new SectorInputRuleDto[0];
-        }
-      }
-    }
-
 
     private void DetermineAccountTypeForNewAccounts(FixedList<AccountEditionCommand> commandsList) {
       var createAccountCommands = GetCreateAccountCommands(commandsList);
