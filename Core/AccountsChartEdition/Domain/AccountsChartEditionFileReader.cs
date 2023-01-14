@@ -14,7 +14,6 @@ using System.IO;
 using Empiria.Office;
 
 using Empiria.FinancialAccounting.AccountsChartEdition.Adapters;
-using System.Linq;
 
 namespace Empiria.FinancialAccounting.AccountsChartEdition {
 
@@ -49,8 +48,6 @@ namespace Empiria.FinancialAccounting.AccountsChartEdition {
       RequireAccountNumbersAreValid(commands);
       SetDataForExistingAccountsToBeUpdated(commands);
       DetermineAccountTypeForNewAccounts(commands);
-      RequireValidCurrencies(commands);
-      RequireValidSectors(commands);
       CleanUpIrrelevantFields(commands);
       EnsureAllDataIsLoaded(commands);
 
@@ -125,7 +122,6 @@ namespace Empiria.FinancialAccounting.AccountsChartEdition {
         command.AccountFields.AccountTypeUID = createParentAccountCommand.AccountFields.AccountTypeUID;
         command.AccountFields.DebtorCreditor = createParentAccountCommand.AccountFields.DebtorCreditor;
 
-
       }  // for
 
     }
@@ -184,17 +180,19 @@ namespace Empiria.FinancialAccounting.AccountsChartEdition {
     private AccountEditionCommand ReadCommand(Spreadsheet spreadsheet, int rowIndex) {
       var rowReader = new AccountsChartEditionRowReader(spreadsheet, rowIndex);
 
+      AccountFieldsDto accountFields = rowReader.GetAccountFields();
+
       return new AccountEditionCommand {
         CommandType = rowReader.GetCommandType(),
         AccountsChartUID = _chart.UID,
         ApplicationDate = _applicationDate,
         DryRun = _dryRun,
-        AccountFields = rowReader.GetAccountFields(),
+        AccountFields = accountFields,
         Currencies = rowReader.GetCurrencies(),
         SectorRules = rowReader.GetSectorRules(),
         DataToBeUpdated = rowReader.GetDataToBeUpdated(),
         CommandText = rowReader.GetCommandText(),
-        DataSource = $"Fila {rowIndex}"
+        DataSource = $"Fila {rowIndex} (cuenta {accountFields.AccountNumber})"
       };
     }
 
@@ -205,29 +203,23 @@ namespace Empiria.FinancialAccounting.AccountsChartEdition {
 
         if (!_chart.IsValidAccountNumber(accountNumber)) {
           Assertion.RequireFail(
-                    $"La cuenta '{accountNumber}' tiene un formato que " +
+                    $"La cuenta tiene un formato que " +
                     $"no reconozco: {command.DataSource}.");
         }
 
         if (commands.CountAll(x => x.AccountFields.AccountNumber == accountNumber) >  1) {
           Assertion.RequireFail(
-                    $"La cuenta '{accountNumber}' viene más de una vez " +
+                    $"La cuenta viene más de una vez " +
                     $"en el archivo: {command.DataSource}.");
         }
 
         Account account = _chart.TryGetAccount(accountNumber);
 
-        if (command.CommandType == AccountEditionCommandType.CreateAccount) {
-
-          Assertion.Require(account == null,
-              $"Se está solicitando agregar la cuenta '{accountNumber}', " +
-              $"pero esta ya existe en el catálogo de cuentas: {command.DataSource}.");
-
-        } else if (command.CommandType == AccountEditionCommandType.FixAccountName ||
-                   command.CommandType == AccountEditionCommandType.UpdateAccount) {
+        if (command.CommandType == AccountEditionCommandType.FixAccountName ||
+            command.CommandType == AccountEditionCommandType.UpdateAccount) {
 
           Assertion.Require(account != null,
-              $"Se está solicitando modificar la cuenta '{accountNumber}', " +
+              $"Se está solicitando modificar la cuenta " +
               $"pero no está registrada en el catálogo de cuentas : {command.DataSource}.");
         }
       }
@@ -241,20 +233,18 @@ namespace Empiria.FinancialAccounting.AccountsChartEdition {
         if (command.CommandType == AccountEditionCommandType.FixAccountName ||
             command.CommandType == AccountEditionCommandType.UpdateAccount) {
           Assertion.Require(command.AccountUID,
-              $"No se registró el UID de la cuenta {accountNumber}: {command.DataSource}.");
+              $"No se registró el UID de la cuenta: {command.DataSource}.");
         }
 
         Assertion.Require(command.AccountFields.Role != AccountRole.Undefined,
-              $"No se indicó el rol de la cuenta '{accountNumber}': {command.DataSource}.");
+              $"No se indicó el rol de la cuenta: {command.DataSource}.");
 
         Assertion.Require(command.AccountFields.AccountTypeUID,
-              $"No se registró el tipo de la cuenta {accountNumber}: {command.DataSource}.");
+              $"No se registró el tipo de la cuenta: {command.DataSource}.");
 
         Assertion.Require(command.AccountFields.DebtorCreditor != DebtorCreditorType.Undefined,
-              $"No se sabe si la naturaleza de la cuenta '{accountNumber}' " +
+              $"No se sabe si la naturaleza de la cuenta " +
               $"es deudora o acreedora: {command.DataSource}");
-
-        command.Arrange();
       }
     }
 
@@ -280,10 +270,10 @@ namespace Empiria.FinancialAccounting.AccountsChartEdition {
                                      1);
 
         Assertion.Require(firstDate <= _applicationDate && _applicationDate <= DateTime.Today.AddDays(8),
-        "Debido a que el archivo contiene operaciones que agregan " +
-        "cuentas ya existentes, la fecha de aplicación de los cambios " +
-        $"al catálogo debe ser a partir del {firstDate.ToString("dd/MMM/yyyy")} " +
-        $" y hasta el {DateTime.Today.AddDays(8).ToString("dd/MMM/yyyy")}.");
+              "Debido a que el archivo contiene operaciones que agregan " +
+              "cuentas ya existentes, la fecha de aplicación de los cambios " +
+              $"al catálogo debe ser a partir del {firstDate.ToString("dd/MMM/yyyy")} " +
+              $" y hasta el {DateTime.Today.AddDays(8).ToString("dd/MMM/yyyy")}.");
       }
 
 
@@ -295,72 +285,6 @@ namespace Empiria.FinancialAccounting.AccountsChartEdition {
               "cuentas ya existentes, la fecha de aplicación de los cambios " +
               "al catálogo debe ser a partir de mañana y hasta " +
               $"el {DateTime.Today.AddDays(8).ToShortDateString()}.");
-      }
-    }
-
-
-    private void RequireValidCurrencies(FixedList<AccountEditionCommand> commands) {
-
-      foreach (var command in commands) {
-        string accountNumber = command.AccountFields.AccountNumber;
-
-        if (command.CommandType == AccountEditionCommandType.CreateAccount ||
-            command.DataToBeUpdated.ToFixedList().Contains(AccountDataToBeUpdated.Currencies)) {
-
-          Assertion.Require(command.Currencies.Length > 0,
-                $"No se proporcionó ninguna moneda para la cuenta: '{accountNumber}': {command.DataSource}");
-        }
-
-        foreach (var currencyCode in command.Currencies) {
-
-          Assertion.Require(Currency.Exists(currencyCode),
-                    $"La cuenta '{accountNumber}' tiene una moneda que " +
-                    $"no reconozco: '{currencyCode}': {command.DataSource}.");
-
-          Assertion.Require(command.Currencies.ToFixedList().CountAll(x => x == currencyCode) == 1,
-                    $"La lista de monedas de la cuenta '{accountNumber}' contiene más de una vez " +
-                    $"la moneda '{currencyCode}': {command.DataSource}.");
-
-        }
-      }
-    }
-
-
-    private void RequireValidSectors(FixedList<AccountEditionCommand> commands) {
-
-      foreach (var command in commands) {
-        string accountNumber = command.AccountFields.AccountNumber;
-
-        if (command.AccountFields.Role == AccountRole.Sectorizada) {
-
-          Assertion.Require(command.SectorRules.Length != 0,
-              $"La columna de sector indica que la cuenta '{accountNumber}' es sectorizada, " +
-              $"pero la lista de sectores está vacía: {command.DataSource}");
-
-        } else {
-
-          Assertion.Require(command.SectorRules.Length == 0,
-              $"La columna de sector indica que la cuenta '{accountNumber}' no es sectorizada, " +
-              $"pero la lista de sectores contiene uno o más sectores: {command.DataSource}");
-        }
-
-
-        foreach (var sectorRule in command.SectorRules) {
-
-          var sector = Sector.TryParse(sectorRule.Code);
-
-          Assertion.Require(sector,
-                $"La cuenta '{accountNumber}' contiene el sector '{sectorRule.Code}', " +
-                $"pero dicho sector no existe: {command.DataSource}.");
-
-          Assertion.Require(!sector.IsSummary,
-              $"Se solicita registrar el sector '({sector.Code}) {sector.Name}' " +
-              $"a la cuenta '{accountNumber}', pero dicho sector es sumarizador: {command.DataSource}.");
-
-          Assertion.Require(command.SectorRules.ToFixedList().CountAll(x => x.Code == sector.Code) == 1,
-              $"La lista de sectores de la cuenta '{accountNumber}' contiene más de una vez " +
-              $"el sector '{sector.Code}': {command.DataSource}");
-        }
       }
     }
 
