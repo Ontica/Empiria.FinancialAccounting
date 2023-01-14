@@ -11,6 +11,7 @@ using System;
 
 using System.Collections.Generic;
 
+
 namespace Empiria.FinancialAccounting {
 
   public interface IDto {
@@ -198,6 +199,16 @@ namespace Empiria.FinancialAccounting {
     }
 
 
+    public void AddIssues(IEnumerable<string> issues) {
+      Assertion.Require(issues, nameof(issues));
+      EnsureNotCommited();
+
+      _issues.AddRange(issues);
+
+      AssertInvariant();
+    }
+
+
     public void AddIssueIf(bool condition, string issue) {
       if (condition) {
         AddIssue(issue);
@@ -260,6 +271,7 @@ namespace Empiria.FinancialAccounting {
 
       AssertInvariant();
     }
+
 
     private void EnsureNotCommited() {
       Assertion.Require(!this.Commited,
