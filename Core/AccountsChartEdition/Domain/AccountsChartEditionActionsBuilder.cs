@@ -37,6 +37,10 @@ namespace Empiria.FinancialAccounting.AccountsChartEdition {
         return BuildCreateAccountActions();
       }
 
+      if (_command.CommandType == AccountEditionCommandType.DeleteAccount) {
+        return BuildDeleteAccountActions();
+      }
+
       if (_command.CommandType == AccountEditionCommandType.FixAccountName) {
         return BuildFixAccountNameActions();
       }
@@ -67,6 +71,18 @@ namespace Empiria.FinancialAccounting.AccountsChartEdition {
       }
 
       return list.ToFixedList();
+    }
+
+
+    private FixedList<AccountsChartEditionAction> BuildDeleteAccountActions() {
+
+      Account account = _command.Entities.Account;
+
+      DataOperation op = AccountEditionDataService.DeleteAccountOp(account);
+
+      var action = new AccountsChartEditionAction(_command, op);
+
+      return new[] { action }.ToFixedList();
     }
 
 

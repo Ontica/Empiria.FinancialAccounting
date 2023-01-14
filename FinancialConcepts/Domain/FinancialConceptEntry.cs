@@ -255,6 +255,13 @@ namespace Empiria.FinancialAccounting.FinancialConcepts {
     }
 
 
+    public bool HasCurrency {
+      get {
+        return (this.CurrencyCode.Length != 0);
+      }
+    }
+
+
     public bool HasSector {
       get {
         return (this.SectorCode.Length != 0 && this.SectorCode != "00");

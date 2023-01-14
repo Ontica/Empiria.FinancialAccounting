@@ -17,6 +17,8 @@ namespace Empiria.FinancialAccounting.AccountsChartEdition.Adapters {
 
     CreateAccount,
 
+    DeleteAccount,
+
     FixAccountName,
 
     UpdateAccount,
@@ -43,7 +45,7 @@ namespace Empiria.FinancialAccounting.AccountsChartEdition.Adapters {
 
     SubledgerRole
 
-  }  // enum AccountDataEdition
+  }  // enum AccountDataToBeUpdated
 
 
 
@@ -55,15 +57,14 @@ namespace Empiria.FinancialAccounting.AccountsChartEdition.Adapters {
     } = string.Empty;
 
 
-    public Sector Sector {
-      get; internal set;
-    }
-
-
     public AccountRole Role {
       get; set;
     } = AccountRole.Undefined;
 
+
+    internal Sector Sector {
+      get; set;
+    }
 
   }  // class SectorInputRuleDto
 
@@ -76,10 +77,6 @@ namespace Empiria.FinancialAccounting.AccountsChartEdition.Adapters {
       get; set;
     } = AccountEditionCommandType.Undefined;
 
-
-    protected override string GetCommandTypeName() {
-      return this.CommandType.ToString();
-    }
 
     public string AccountsChartUID {
       get; set;
@@ -138,6 +135,10 @@ namespace Empiria.FinancialAccounting.AccountsChartEdition.Adapters {
     } = new EntitiesType();
 
 
+    protected override string GetCommandTypeName() {
+      return this.CommandType.ToString();
+    }
+
     protected override void InitialRequire() {
       Assertion.Require(this.CommandType != AccountEditionCommandType.Undefined, "CommandType");
       Assertion.Require(this.AccountsChartUID, "AccountsChartUID");
@@ -155,9 +156,9 @@ namespace Empiria.FinancialAccounting.AccountsChartEdition.Adapters {
         Assertion.Require(this.AccountUID.Length == 0,
                           "command.AccountUID was provided but it's not needed for a CreateAccount command.");
 
-      } else if (this.CommandType == AccountEditionCommandType.FixAccountName) {
+      } else if (this.CommandType == AccountEditionCommandType.DeleteAccount ||
+                 this.CommandType == AccountEditionCommandType.FixAccountName) {
         Assertion.Require(this.AccountUID, "AccountUID");
-
 
       } else if (this.CommandType == AccountEditionCommandType.UpdateAccount) {
         Assertion.Require(this.AccountUID, "AccountUID");
@@ -197,6 +198,9 @@ namespace Empiria.FinancialAccounting.AccountsChartEdition.Adapters {
       }
     }
 
+    protected override void SetActions() {
+      base.ExecutionResult.AddAction("Se modificará el catálogo de cuentas");
+    }
 
     protected override void SetEntities() {
       Entities.AccountsChart = AccountsChart.Parse(AccountsChartUID);

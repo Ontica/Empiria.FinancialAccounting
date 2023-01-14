@@ -35,7 +35,6 @@ namespace Empiria.FinancialAccounting.BanobrasIntegration.VouchersImporter {
 
     #region Public members
 
-
     internal bool IsRunning {
       get;
       private set;
@@ -43,7 +42,7 @@ namespace Empiria.FinancialAccounting.BanobrasIntegration.VouchersImporter {
 
 
     internal ImportVouchersResult GetImportVouchersResult() {
-      if (!this.IsRunning) {
+      if (!this.IsRunning || _importVouchersResult == null) {
         UpdateImportVouchersResult();
       }
       return _importVouchersResult;
@@ -137,13 +136,12 @@ namespace Empiria.FinancialAccounting.BanobrasIntegration.VouchersImporter {
 
 
     private void UpdateImportVouchersResult() {
-      if (!this.IsRunning) {
+      if (!this.IsRunning || _importVouchersResult == null) {
         _importVouchersResult = DbVouchersImporterDataService.GetEncabezadosTotals();
       }
 
       _importVouchersResult.IsRunning = this.IsRunning;
     }
-
 
   }  // class DbVouchersImporter
 

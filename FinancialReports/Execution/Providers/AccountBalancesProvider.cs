@@ -8,6 +8,7 @@
 *                                                                                                            *
 ************************* Copyright(c) La Vía Óntica SC, Ontica LLC and contributors. All rights reserved. **/
 using System;
+using System.Collections.Generic;
 using System.Linq;
 
 using Empiria.Collections;
@@ -81,12 +82,70 @@ namespace Empiria.FinancialAccounting.FinancialReports.Providers {
         }
       }
 
+      if (integrationEntry.HasCurrency) {
+        filtered = ApplyFilterByCurrency(integrationEntry, filtered);
+      }
+
       return ConvertToDynamicTrialBalanceEntryDto(filtered);
     }
 
 
+    private FixedList<ITrialBalanceEntryDto> ApplyFilterByCurrency(FinancialConceptEntry integrationEntry,
+                                                                   FixedList<ITrialBalanceEntryDto> balances) {
+      if (balances.Count == 0) {
+        return balances;
+      }
+
+      if (_financialReportType.DataSource == FinancialReportDataSource.BalanzaTradicional) {
+
+        return ApplyFilterByCurrencyBalanzaTradicional(balances,
+                                                       Currency.Parse(integrationEntry.CurrencyCode));
+      }
+
+      if (_financialReportType.DataSource == FinancialReportDataSource.BalanzaEnColumnasPorMoneda) {
+
+        return ApplyFilterByCurrencyBalanzaEnColumnasPorMoneda(balances,
+                                                               Currency.Parse(integrationEntry.CurrencyCode));
+      }
+
+      // Warning: By currency filter is not supported for AnaliticoDeCuentas
+
+      return balances;
+    }
+
+
+    private FixedList<ITrialBalanceEntryDto> ApplyFilterByCurrencyBalanzaTradicional(FixedList<ITrialBalanceEntryDto> balances,
+                                                                                     Currency currency) {
+      var converted = balances.Select(x => (BalanzaTradicionalEntryDto) x).ToFixedList();
+
+      var filtered = converted.FindAll(x => x.CurrencyCode == currency.Code);
+
+      return filtered.Select(x => (ITrialBalanceEntryDto) x)
+                     .ToFixedList();
+    }
+
+
+    private FixedList<ITrialBalanceEntryDto> ApplyFilterByCurrencyBalanzaEnColumnasPorMoneda(FixedList<ITrialBalanceEntryDto> balances,
+                                                                                             Currency currency) {
+      var filtered = new List<BalanzaColumnasMonedaEntryDto>(balances.Count);
+
+      foreach (ITrialBalanceEntryDto balanceEntry in balances) {
+        var filteredBalance = (BalanzaColumnasMonedaEntryDto) balanceEntry;
+
+        filteredBalance = filteredBalance.GetCopyWithOneCurrency(currency);
+
+        filtered.Add(filteredBalance);
+      }
+
+      return filtered.Select(x => (ITrialBalanceEntryDto) x)
+                     .ToFixedList();
+    }
+
+
     private FixedList<ITrialBalanceEntryDto> ConvertToDynamicTrialBalanceEntryDto(FixedList<ITrialBalanceEntryDto> sourceEntries) {
-      var converter = new DynamicTrialBalanceEntryConverter(_exchangeRatesProvider);
+
+      var converter = new DynamicTrialBalanceEntryConverter(_financialReportType,
+                                                            _exchangeRatesProvider);
 
       FixedList<DynamicTrialBalanceEntry> convertedEntries = converter.Convert(sourceEntries);
 

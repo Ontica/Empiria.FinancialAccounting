@@ -50,7 +50,7 @@ namespace Empiria.FinancialAccounting.AccountsChartEdition.Data {
 
       var op = DataOperation.Parse("do_create_cuenta_estandar",
                          stdAccountId, o.Entities.AccountsChart.Id, o.AccountFields.AccountNumber,
-                         o.AccountFields.Name, "Agregada con el importador en fase de pruebas",
+                         o.AccountFields.Name, o.AccountFields.Description,
                          (char) o.AccountFields.Role, o.Entities.AccountType.Id,
                          (char) o.AccountFields.DebtorCreditor,
                          o.ApplicationDate.Date, Account.MAX_END_DATE,
@@ -58,6 +58,14 @@ namespace Empiria.FinancialAccounting.AccountsChartEdition.Data {
                          BuildKeywords(o));
 
       return (stdAccountId, op);
+    }
+
+
+    static internal DataOperation DeleteAccountOp(Account o) {
+      var op = DataOperation.Parse("do_delete_cuenta_estandar",
+                        o.StandardAccountId, o.AccountsChart.Id,
+                        o.Number, o.Name, o.UID);
+      return op;
     }
 
 
@@ -105,6 +113,9 @@ namespace Empiria.FinancialAccounting.AccountsChartEdition.Data {
       string name = dataToBeUpdated.Contains(AccountDataToBeUpdated.Name) ?
                                                 o.AccountFields.Name : account.Name;
 
+      string description = dataToBeUpdated.Contains(AccountDataToBeUpdated.Name) ?
+                                         o.AccountFields.Description : account.Description;
+
       AccountType accountType = dataToBeUpdated.Contains(AccountDataToBeUpdated.AccountType) ?
                                                 o.Entities.AccountType : account.AccountType;
 
@@ -119,8 +130,8 @@ namespace Empiria.FinancialAccounting.AccountsChartEdition.Data {
                                                     debtorCreditor.ToString(), role.ToString());
 
       return DataOperation.Parse("do_update_cuenta_estandar",
-                        account.Id, account.AccountsChart.Id, account.Number,
-                        name, "Modificada con el importador en fase de pruebas",
+                        account.Id, account.AccountsChart.Id,
+                        account.Number, name, description,
                         (char) role, accountType.Id, (char) debtorCreditor,
                         o.ApplicationDate.Date, Account.MAX_END_DATE,
                         stdAccountHistoryId, Guid.NewGuid().ToString(), keywords);

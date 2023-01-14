@@ -8,7 +8,7 @@
 *                                                                                                            *
 ************************* Copyright(c) La Vía Óntica SC, Ontica LLC and contributors. All rights reserved. **/
 using System;
-using Empiria.FinancialAccounting.BalanceEngine.Adapters;
+
 using Empiria.Json;
 using Newtonsoft.Json;
 
@@ -126,12 +126,33 @@ namespace Empiria.FinancialAccounting.BalanceEngine.Adapters {
     }
 
 
+    public BalanzaColumnasMonedaEntryDto GetCopyWithOneCurrency(Currency currency) {
+      var copy = (BalanzaColumnasMonedaEntryDto) this.MemberwiseClone();
+
+      if (!currency.Equals(Currency.MXN)) {
+        copy.DomesticBalance = 0m;
+      }
+      if (!currency.Equals(Currency.USD)) {
+        copy.DollarBalance = 0m;
+      }
+      if (!currency.Equals(Currency.EUR)) {
+        copy.EuroBalance = 0m;
+      }
+      if (!currency.Equals(Currency.UDI)) {
+        copy.UdisBalance = 0m;
+      }
+      if (!currency.Equals(Currency.YEN)) {
+        copy.YenBalance = 0m;
+      }
+      return copy;
+    }
+
+
     public string ToJson() {
       return JsonObject.Parse(this)
                        .ToString();
     }
 
   }  // class BalanzaColumnasMonedaEntryDto
-
 
 } // namespace Empiria.FinancialAccounting.BalanceEngine.Adapters

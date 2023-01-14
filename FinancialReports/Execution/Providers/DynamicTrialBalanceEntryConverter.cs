@@ -17,17 +17,26 @@ namespace Empiria.FinancialAccounting.FinancialReports.Providers {
   /// <summary>Converts trial balance entries to DynamicTrialBalanceEntry objects with dynamic fields.</summary>
   internal class DynamicTrialBalanceEntryConverter {
 
+    private readonly FinancialReportType _financialReportType;
     private readonly ExchangeRatesProvider _exchangeRatesProvider;
 
-    internal DynamicTrialBalanceEntryConverter(ExchangeRatesProvider exchangeRatesProvider) {
+    internal DynamicTrialBalanceEntryConverter(FinancialReportType financialReportType,
+                                               ExchangeRatesProvider exchangeRatesProvider) {
+      _financialReportType = financialReportType;
       _exchangeRatesProvider = exchangeRatesProvider;
     }
+
 
     internal FixedList<DynamicTrialBalanceEntry> Convert(FixedList<ITrialBalanceEntryDto> sourceEntries) {
       var convertedEntries = new List<DynamicTrialBalanceEntry>(sourceEntries.Count);
 
+      FixedList<string> baseFields =
+                _financialReportType.DataColumns.FindAll(x => x.Type == "decimal" && !x.IsCalculated)
+                                                .Select(y => y.Field)
+                                                .ToFixedList();
+
       foreach (var entry in sourceEntries) {
-        DynamicTrialBalanceEntry converted = Convert(entry);
+        DynamicTrialBalanceEntry converted = Convert(entry, baseFields);
 
         convertedEntries.Add(converted);
       }
@@ -37,13 +46,15 @@ namespace Empiria.FinancialAccounting.FinancialReports.Providers {
 
     #region Helpers
 
-    private DynamicTrialBalanceEntry Convert(ITrialBalanceEntryDto sourceEntry) {
+    private DynamicTrialBalanceEntry Convert(ITrialBalanceEntryDto sourceEntry,
+                                             FixedList<string> fields) {
+
       if (sourceEntry is AnaliticoDeCuentasEntryDto analiticoDeCuentasEntryDto) {
         return Convert(analiticoDeCuentasEntryDto);
       }
 
       if (sourceEntry is BalanzaColumnasMonedaEntryDto balanzaColumnasMonedaEntryDto) {
-        return Convert(balanzaColumnasMonedaEntryDto);
+        return Convert(balanzaColumnasMonedaEntryDto, fields);
       }
 
       if (sourceEntry is BalanzaTradicionalEntryDto balanzaTradicionalEntryDto) {
@@ -67,7 +78,9 @@ namespace Empiria.FinancialAccounting.FinancialReports.Providers {
     }
 
 
-    private DynamicTrialBalanceEntry Convert(BalanzaColumnasMonedaEntryDto sourceEntry) {
+    private DynamicTrialBalanceEntry Convert(BalanzaColumnasMonedaEntryDto sourceEntry,
+                                             FixedList<string> fields) {
+
       var converted = new DynamicTrialBalanceEntry(sourceEntry);
 
       converted.DebtorCreditor = sourceEntry.DebtorCreditor;
@@ -78,23 +91,35 @@ namespace Empiria.FinancialAccounting.FinancialReports.Providers {
       converted.SetTotalField("euroTotal",    sourceEntry.EuroBalance);
       converted.SetTotalField("udisTotal",    sourceEntry.UdisBalance);
 
-      converted.SetTotalField("dollarMXNTotal",
-                              _exchangeRatesProvider.Convert_USD_To_MXN(sourceEntry.DollarBalance, 2));
+      if (fields.Contains("dollarMXNTotal")) {
+        converted.SetTotalField("dollarMXNTotal",
+                                _exchangeRatesProvider.Convert_USD_To_MXN(sourceEntry.DollarBalance, 2));
+      }
 
-      converted.SetTotalField("yenMXNTotal",
+      if (fields.Contains("yenMXNTotal")) {
+        converted.SetTotalField("yenMXNTotal",
                               _exchangeRatesProvider.Convert_YEN_To_MXN(sourceEntry.YenBalance, 2));
+      }
 
-      converted.SetTotalField("euroMXNTotal",
+      if (fields.Contains("euroMXNTotal")) {
+        converted.SetTotalField("euroMXNTotal",
                               _exchangeRatesProvider.Convert_EUR_To_MXN(sourceEntry.EuroBalance, 2));
+      }
 
-      converted.SetTotalField("udisMXNTotal",
+      if (fields.Contains("udisMXNTotal")) {
+        converted.SetTotalField("udisMXNTotal",
                               _exchangeRatesProvider.Convert_UDI_To_MXN(sourceEntry.UdisBalance, 2));
+      }
 
-      converted.SetTotalField("yenUSDTotal",
+      if (fields.Contains("yenUSDTotal")) {
+        converted.SetTotalField("yenUSDTotal",
                               _exchangeRatesProvider.Convert_YEN_To_USD(sourceEntry.YenBalance, 2));
+      }
 
-      converted.SetTotalField("euroUSDTotal",
+      if (fields.Contains("euroUSDTotal")) {
+        converted.SetTotalField("euroUSDTotal",
                               _exchangeRatesProvider.Convert_EUR_To_USD(sourceEntry.EuroBalance, 2));
+      }
 
       return converted;
     }

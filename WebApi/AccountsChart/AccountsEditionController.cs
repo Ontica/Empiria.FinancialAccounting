@@ -47,10 +47,32 @@ namespace Empiria.FinancialAccounting.WebApi {
 
       PrepareCommand(command, accountsChartUID);
 
-      using (var usecases = AccountEditionUseCases.UseCaseInteractor()) {
-        OperationSummary summary = usecases.ExecuteCommand(command);
+      Assertion.Require(command.CommandType == AccountEditionCommandType.CreateAccount,
+                        $"Unrecognized command type '{command.CommandType}'.");
 
-        return new SingleObjectModel(base.Request, summary);
+      using (var usecases = AccountEditionUseCases.UseCaseInteractor()) {
+        ExecutionResult<AccountDto> result = usecases.ExecuteCommand(command);
+
+        return new SingleObjectModel(base.Request, result);
+      }
+    }
+
+
+    [HttpDelete]
+    [Route("v2/financial-accounting/accounts-charts/{accountsChartUID:guid}/accounts/{accountUID:guid}")]
+    public SingleObjectModel DeleteAccount([FromUri] string accountsChartUID,
+                                           [FromUri] string accountUID,
+                                           [FromBody] AccountEditionCommand command) {
+
+      PrepareCommand(command, accountsChartUID, accountUID);
+
+      Assertion.Require(command.CommandType == AccountEditionCommandType.DeleteAccount,
+                        $"Unrecognized command type '{command.CommandType}'.");
+
+      using (var usecases = AccountEditionUseCases.UseCaseInteractor()) {
+        ExecutionResult<AccountDto> result = usecases.ExecuteCommand(command);
+
+        return new SingleObjectModel(base.Request, result);
       }
     }
 
@@ -63,10 +85,14 @@ namespace Empiria.FinancialAccounting.WebApi {
 
       PrepareCommand(command, accountsChartUID, accountUID);
 
-      using (var usecases = AccountEditionUseCases.UseCaseInteractor()) {
-        OperationSummary summary = usecases.ExecuteCommand(command);
+      Assertion.Require(command.CommandType == AccountEditionCommandType.UpdateAccount ||
+                        command.CommandType == AccountEditionCommandType.FixAccountName,
+                        $"Unrecognized command type '{command.CommandType}'.");
 
-        return new SingleObjectModel(base.Request, summary);
+      using (var usecases = AccountEditionUseCases.UseCaseInteractor()) {
+        ExecutionResult<AccountDto> result = usecases.ExecuteCommand(command);
+
+        return new SingleObjectModel(base.Request, result);
       }
     }
 

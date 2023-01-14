@@ -14,6 +14,7 @@ using Empiria.Services;
 using Empiria.Storage;
 
 using Empiria.FinancialAccounting.AccountsChartEdition.Adapters;
+using Empiria.FinancialAccounting.Adapters;
 
 namespace Empiria.FinancialAccounting.AccountsChartEdition.UseCases {
 
@@ -34,15 +35,26 @@ namespace Empiria.FinancialAccounting.AccountsChartEdition.UseCases {
 
     #region Use cases
 
-
-    public OperationSummary ExecuteCommand(AccountEditionCommand command) {
+    public ExecutionResult<AccountDto> ExecuteCommand(AccountEditionCommand command) {
       Assertion.Require(command, nameof(command));
 
       command.Arrange();
 
+      if (!command.IsValid || command.DryRun) {
+        return command.MapToExecutionResult<AccountDto>();
+      }
+
       var processor = new AccountsChartEditionCommandsProcessor();
 
-      return processor.Execute(command);
+      Account account = processor.Execute(command);
+
+      AccountDto outcome = AccountsChartMapper.MapAccount(account);
+
+      string message = GetCommandDoneMessage(command.CommandType, account);
+
+      command.Done(outcome, message);
+
+      return command.MapToExecutionResult<AccountDto>();
     }
 
 
@@ -72,6 +84,26 @@ namespace Empiria.FinancialAccounting.AccountsChartEdition.UseCases {
     }
 
     #endregion Use cases
+
+    #region Helpers
+
+    private string GetCommandDoneMessage(AccountEditionCommandType commandType, Account account) {
+      switch (commandType) {
+        case AccountEditionCommandType.CreateAccount:
+          return $"Se agregó la cuenta {account.Number} {account.Name} al catálogo de cuentas.";
+
+        case AccountEditionCommandType.UpdateAccount:
+          return $"La cuenta {account.Number} {account.Name} fue modificada satisfactoriamente.";
+
+        case AccountEditionCommandType.FixAccountName:
+          return $"Se corrigió la descripción de la cuenta {account.Number} {account.Name}.";
+
+        default:
+          throw Assertion.EnsureNoReachThisCode($"Unhandled commandType '{commandType}'.");
+      }
+    }
+
+    #endregion Helpers
 
   }  // class AccountEditionUseCases
 
