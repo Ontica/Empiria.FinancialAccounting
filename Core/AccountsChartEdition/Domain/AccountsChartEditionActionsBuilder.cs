@@ -89,7 +89,7 @@ namespace Empiria.FinancialAccounting.AccountsChartEdition {
     private AccountsChartEditionAction BuildAddCurrenciesAction(int stdAccountId) {
       var operations = new List<DataOperation>();
 
-      foreach (var currency in _command.Entities.Currencies) {
+      foreach (var currency in _command.Entities.GetCurrencies()) {
 
         DataOperation op =
             AccountEditionDataService.AddAccountCurrencyOp(stdAccountId, currency,
@@ -105,7 +105,7 @@ namespace Empiria.FinancialAccounting.AccountsChartEdition {
     private AccountsChartEditionAction BuildAddSectorRulesAction(int stdAccountId) {
       var operations = new List<DataOperation>();
 
-      foreach (var sectorRule in _command.Entities.SectorRules) {
+      foreach (var sectorRule in _command.Entities.GetSectorRules()) {
 
         DataOperation op =
                   AccountEditionDataService.AddAccountSectorOp(stdAccountId,
@@ -154,7 +154,6 @@ namespace Empiria.FinancialAccounting.AccountsChartEdition {
         list.Add(BuildUpdateAccountDataAction());
       }
 
-
       if (dataToBeUpdated.Contains(AccountDataToBeUpdated.Currencies)) {
         list.Add(BuildUpdateCurrenciesAction());
       }
@@ -179,7 +178,7 @@ namespace Empiria.FinancialAccounting.AccountsChartEdition {
     private AccountsChartEditionAction BuildUpdateCurrenciesAction() {
       var operations = new List<DataOperation>();
 
-      FixedList<Currency> newCurrencies = _command.Entities.Currencies;
+      FixedList<Currency> newCurrencies = _command.Entities.GetCurrencies();
       Account account = _command.Entities.Account;
 
       foreach (var currentCurrencyRule in account.CurrencyRules) {
@@ -207,7 +206,7 @@ namespace Empiria.FinancialAccounting.AccountsChartEdition {
     private AccountsChartEditionAction BuildUpdateSectorsAction() {
       var operations = new List<DataOperation>();
 
-      FixedList<SectorInputRuleDto> newSectorRules = _command.Entities.SectorRules;
+      FixedList<SectorInputRuleDto> newSectorRules = _command.Entities.GetSectorRules();
       Account account = _command.Entities.Account;
 
       foreach (var currentSectorRule in account.SectorRules) {

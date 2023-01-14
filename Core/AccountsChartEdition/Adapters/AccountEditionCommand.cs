@@ -9,6 +9,7 @@
 ************************* Copyright(c) La Vía Óntica SC, Ontica LLC and contributors. All rights reserved. **/
 using System;
 using System.Linq;
+using iText.StyledXmlParser.Jsoup.Nodes;
 
 namespace Empiria.FinancialAccounting.AccountsChartEdition.Adapters {
 
@@ -132,19 +133,21 @@ namespace Empiria.FinancialAccounting.AccountsChartEdition.Adapters {
 
     internal EntitiesType Entities {
       get; private set;
-    } = new EntitiesType();
+    }
 
 
     protected override string GetCommandTypeName() {
       return this.CommandType.ToString();
     }
 
+
     protected override void InitialRequire() {
       var validator = new AccountEditionCommandValidator(this);
 
       validator.InitialRequire();
-    }
 
+      Entities = new EntitiesType(this);
+    }
 
 
     protected override void SetIssues() {
@@ -157,9 +160,11 @@ namespace Empiria.FinancialAccounting.AccountsChartEdition.Adapters {
       }
     }
 
+
     protected override void SetActions() {
       base.ExecutionResult.AddAction("Se modificará el catálogo de cuentas");
     }
+
 
     protected override void SetEntities() {
       Entities.AccountsChart = AccountsChart.Parse(AccountsChartUID);
@@ -169,20 +174,16 @@ namespace Empiria.FinancialAccounting.AccountsChartEdition.Adapters {
       }
 
       Entities.AccountType = AccountType.Parse(AccountFields.AccountTypeUID);
-
-      Entities.Currencies = this.Currencies.Select(x => Currency.Parse(x))
-                                           .ToFixedList();
-
-      Entities.SectorRules = this.SectorRules.Select(x => {
-                                                        x.Sector = Sector.Parse(x.Code);
-                                                        return x;
-                                                     })
-                                             .ToFixedList();
     }
 
 
-
     internal class EntitiesType {
+
+      private readonly AccountEditionCommand _command;
+
+      internal EntitiesType(AccountEditionCommand command) {
+        _command = command;
+      }
 
       public AccountsChart AccountsChart {
         get; internal set;
@@ -198,14 +199,19 @@ namespace Empiria.FinancialAccounting.AccountsChartEdition.Adapters {
       } = AccountType.Empty;
 
 
-      public FixedList<Currency> Currencies {
-        get; internal set;
-      } = new FixedList<Currency>();
+      public FixedList<Currency> GetCurrencies() {
+        return _command.Currencies.Select(x => Currency.Parse(x))
+                                  .ToFixedList();
+      }
 
 
-      public FixedList<SectorInputRuleDto> SectorRules {
-        get; internal set;
-      } = new FixedList<SectorInputRuleDto>();
+      public FixedList<SectorInputRuleDto> GetSectorRules() {
+        return _command.SectorRules.Select(x => {
+                                              x.Sector = Sector.Parse(x.Code);
+                                              return x;
+                                           })
+                                   .ToFixedList();
+      }
 
 
     }  // inner class EntitiesType
