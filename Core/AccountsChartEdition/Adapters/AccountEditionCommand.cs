@@ -140,61 +140,20 @@ namespace Empiria.FinancialAccounting.AccountsChartEdition.Adapters {
     }
 
     protected override void InitialRequire() {
-      Assertion.Require(this.CommandType != AccountEditionCommandType.Undefined, "CommandType");
-      Assertion.Require(this.AccountsChartUID, "AccountsChartUID");
-      Assertion.Require(this.ApplicationDate != ExecutionServer.DateMinValue, "ApplicationDate");
-      Assertion.Require(this.AccountFields, "AccountFields");
-      Assertion.Require(this.AccountFields.AccountNumber, "AccountFields.AccountNumber");
-      Assertion.Require(this.AccountFields.Name, "AccountFields.Name");
-      Assertion.Require(this.AccountFields.AccountTypeUID, "AccountFields.AccountTypeUID");
-      Assertion.Require(this.AccountFields.Role != AccountRole.Undefined,
-                        "AccountFields.Role");
-      Assertion.Require(this.AccountFields.DebtorCreditor != DebtorCreditorType.Undefined,
-                        "AccountFields.DebtorCreditor");
+      var validator = new AccountEditionCommandValidator(this);
 
-      if (this.CommandType == AccountEditionCommandType.CreateAccount) {
-        Assertion.Require(this.AccountUID.Length == 0,
-                          "command.AccountUID was provided but it's not needed for a CreateAccount command.");
-
-      } else if (this.CommandType == AccountEditionCommandType.DeleteAccount ||
-                 this.CommandType == AccountEditionCommandType.FixAccountName) {
-        Assertion.Require(this.AccountUID, "AccountUID");
-
-      } else if (this.CommandType == AccountEditionCommandType.UpdateAccount) {
-        Assertion.Require(this.AccountUID, "AccountUID");
-        Assertion.Require(this.DataToBeUpdated, "DataToBeUpdated");
-        Assertion.Require(this.DataToBeUpdated.Length != 0, "DataToBeUpdated must contain one or more values.");
-      }
+      validator.InitialRequire();
     }
 
 
 
     protected override void SetIssues() {
+      var validator = new AccountEditionCommandValidator(this);
 
-      if (this.CommandType == AccountEditionCommandType.CreateAccount) {
+      FixedList<string> issues = validator.GetIssues();
 
-        AccountsChart accountsChart = this.Entities.AccountsChart;
-
-        Assertion.Require(accountsChart.IsValidAccountNumber(this.AccountFields.AccountNumber),
-                          $"Account number '{this.AccountFields.AccountNumber}' has an invalid format.");
-
-      }
-
-      if (this.CommandType != AccountEditionCommandType.CreateAccount) {
-        AccountsChart accountsChart = this.Entities.AccountsChart;
-        Account accountToEdit = this.Entities.Account;
-
-        Assertion.Require(accountToEdit.AccountsChart.Equals(accountsChart),
-                         $"Account to be edited {accountToEdit.Number} does not belong to " +
-                         $"the chart of accounts {accountsChart.Name}.");
-
-        Assertion.Require(accountToEdit.EndDate == Account.MAX_END_DATE,
-                         "The given accountUID corresponds to an historic account, so it can not be edited.");
-
-        Assertion.Require(accountToEdit.StartDate <= this.ApplicationDate,
-                         $"ApplicationDate parameter ({this.ApplicationDate.ToString("dd/MMM/yyyy")}) " +
-                         $"must be greater or equal than the given account's " +
-                         $"start date {accountToEdit.StartDate.ToString("dd/MMM/yyyy")}.");
+      if (issues.Count != 0) {
+        base.ExecutionResult.AddIssues(issues);
       }
     }
 
