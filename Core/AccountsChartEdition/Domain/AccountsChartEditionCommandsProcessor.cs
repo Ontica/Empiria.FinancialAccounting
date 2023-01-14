@@ -31,6 +31,8 @@ namespace Empiria.FinancialAccounting.AccountsChartEdition {
 
       command.Arrange();
 
+      EnsureCommandIsValid(command);
+
       var actionsBuilder = new AccountsChartEditionActionsBuilder(command);
 
       FixedList<AccountsChartEditionAction> commandActions = actionsBuilder.BuildActions();
@@ -54,6 +56,7 @@ namespace Empiria.FinancialAccounting.AccountsChartEdition {
 
       foreach (var command in commands) {
         command.Arrange();
+        EnsureCommandIsValid(command);
       }
 
       var allActions = new List<AccountsChartEditionAction>(128);
@@ -78,6 +81,13 @@ namespace Empiria.FinancialAccounting.AccountsChartEdition {
 
 
     #region Helpers
+
+    private void EnsureCommandIsValid(AccountEditionCommand command) {
+      Assertion.Require(command.IsValid,
+          $"DryRun was not called before processing and an invalid command was detected: " +
+          $"{command.CommandType}. {command.DataSource}");
+    }
+
 
     static internal FixedList<OperationSummary> MapToOperationSummaryList(FixedList<AccountEditionCommand> commands) {
       var list = new List<OperationSummary>();
