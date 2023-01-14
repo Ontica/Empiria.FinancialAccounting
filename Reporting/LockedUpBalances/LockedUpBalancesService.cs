@@ -48,16 +48,25 @@ namespace Empiria.FinancialAccounting.Reporting {
         AccountsChartDto accountsChart = accountsUsecases.TryGetAccountsWithChange(
                 buildQuery.AccountsChartUID, buildQuery.FromDate, buildQuery.ToDate);
 
-        var balancesUsecases = TrialBalanceUseCases.UseCaseInteractor();
+        List<BalanzaTradicionalEntryDto> entries = BalancesByAccount(buildQuery, accountsChart.Accounts);
 
-        TrialBalanceQuery _query = this.MapToTrialBalanceQuery(buildQuery);
-
-        TrialBalanceDto trialBalance = balancesUsecases.BuildTrialBalance(_query);
-
-        var entries = GetParentEntries(trialBalance.Entries);
-
-        return Map(entries);
+        return Map(entries, accountsChart.Accounts);
       }
+    }
+
+
+    private List<BalanzaTradicionalEntryDto> BalancesByAccount(
+                ReportBuilderQuery buildQuery, FixedList<AccountDescriptorDto> accounts) {
+
+      var returnedEntries = new List<BalanzaTradicionalEntryDto>();
+      foreach (var account in accounts) {
+
+        List<BalanzaTradicionalEntryDto> entries = GetBalancesByAccount(buildQuery, account);
+        returnedEntries.AddRange(entries);
+
+      }
+
+      return returnedEntries;
     }
 
 
@@ -66,19 +75,41 @@ namespace Empiria.FinancialAccounting.Reporting {
     #region Private methods
 
 
-    private List<BalanzaTradicionalEntryDto> GetParentEntries(FixedList<ITrialBalanceEntryDto> entries) {
+    private List<BalanzaTradicionalEntryDto> GetBalancesByAccount(
+                ReportBuilderQuery buildQuery, AccountDescriptorDto account) {
 
-      var balanceEntries = entries.Select(x => (BalanzaTradicionalEntryDto) x);
+      using (var balancesUsecases = TrialBalanceUseCases.UseCaseInteractor()) {
 
-      return balanceEntries.Where(a => a.IsParentPostingEntry).ToList();
+        TrialBalanceQuery _query = this.MapToTrialBalanceQuery(buildQuery, account);
+
+        TrialBalanceDto trialBalance = balancesUsecases.BuildTrialBalance(_query);
+
+        return GetParentEntries(trialBalance.Entries, account.Number);
+
+      }
+
     }
 
 
-    private LockedUpBalancesDto Map(List<BalanzaTradicionalEntryDto> entries) {
+    private List<BalanzaTradicionalEntryDto> GetParentEntries(
+            FixedList<ITrialBalanceEntryDto> entries, string number) {
+
+      if (entries.Count == 0) {
+        return new List<BalanzaTradicionalEntryDto>();
+      }
+
+      var balanceEntries = entries.Select(x => (BalanzaTradicionalEntryDto) x);
+
+      return balanceEntries.Where(a => a.AccountNumberForBalances == number).ToList();
+    }
+
+
+    private LockedUpBalancesDto Map(List<BalanzaTradicionalEntryDto> entries,
+                                    FixedList<AccountDescriptorDto> accounts) {
 
       return new LockedUpBalancesDto {
         Columns = MapColumns(),
-        Entries = MapToDto(entries)
+        Entries = MapToDto(entries, accounts)
       };
 
     }
@@ -92,6 +123,10 @@ namespace Empiria.FinancialAccounting.Reporting {
       columns.Add(new DataTableColumn("accountName", "Nombre", "text-nowrap"));
       columns.Add(new DataTableColumn("SectorCode", "Sector", "text"));
       columns.Add(new DataTableColumn("currentBalance", "Saldo actual", "decimal"));
+      columns.Add(new DataTableColumn("SectorCode", "Sector", "text"));
+      columns.Add(new DataTableColumn("role", "Rol", "text"));
+      columns.Add(new DataTableColumn("newRole", "Nuevo Rol", "text"));
+      columns.Add(new DataTableColumn("roleChangeDate", "Fecha cambio de Rol", "date"));
       columns.Add(new DataTableColumn("lastChangeDate", "Último movimiento", "date"));
 
 
@@ -99,15 +134,20 @@ namespace Empiria.FinancialAccounting.Reporting {
     }
 
 
-    static private FixedList<LockedUpBalancesEntryDto> MapToDto(List<BalanzaTradicionalEntryDto> entries) {
+    static private FixedList<LockedUpBalancesEntryDto> MapToDto(
+                   List<BalanzaTradicionalEntryDto> entries, FixedList<AccountDescriptorDto> accounts) {
 
-      var mapped = entries.Select(x => MapToLockedUpEntry(x));
+      var mapped = entries.Select(x => MapToLockedUpEntry(x, accounts));
 
       return new FixedList<LockedUpBalancesEntryDto>(mapped);
     }
 
 
-    static private LockedUpBalancesEntryDto MapToLockedUpEntry(BalanzaTradicionalEntryDto entry) {
+    static private LockedUpBalancesEntryDto MapToLockedUpEntry(
+                   BalanzaTradicionalEntryDto entry, FixedList<AccountDescriptorDto> accounts) {
+
+      var account = accounts.Find(a => a.Number == entry.AccountNumberForBalances);
+
       var dto = new LockedUpBalancesEntryDto();
 
       dto.StandardAccountId = entry.StandardAccountId;
@@ -117,26 +157,32 @@ namespace Empiria.FinancialAccounting.Reporting {
       dto.SectorCode = entry.SectorCode;
       dto.CurrentBalance = (decimal) entry.CurrentBalance;
       dto.LastChangeDate = entry.LastChangeDate;
+      dto.RoleChangeDate = account.EndDate;
+      dto.Role = account.Role.ToString();
+      dto.NewRole = entry.AccountRole.ToString();
 
       return dto;
     }
 
 
-    private TrialBalanceQuery MapToTrialBalanceQuery(ReportBuilderQuery buildQuery) {
+    private TrialBalanceQuery MapToTrialBalanceQuery(ReportBuilderQuery buildQuery,
+                                                     AccountDescriptorDto account) {
 
       return new TrialBalanceQuery {
         AccountsChartUID = buildQuery.AccountsChartUID,
+        TrialBalanceType = TrialBalanceType.Balanza,
         BalancesType = BalancesType.AllAccounts,
         InitialPeriod = {
          FromDate = buildQuery.FromDate,
          ToDate = buildQuery.ToDate
         },
-        ShowCascadeBalances = false,
-        TrialBalanceType = TrialBalanceType.Balanza,
-        UseDefaultValuation = false,
+
+        FromAccount = account.Number,
+        ToAccount = account.Number,
         IsOperationalReport = true,
-        FromAccount = "4",
-        ToAccount = "4"
+        UseDefaultValuation = false,
+        ShowCascadeBalances = false,
+        WithSubledgerAccount = false
       };
 
     }

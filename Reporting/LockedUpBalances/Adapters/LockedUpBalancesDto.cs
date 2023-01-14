@@ -80,6 +80,20 @@ namespace Empiria.FinancialAccounting.Reporting.LockedUpBalances.Adapters {
       get; set;
     }
 
+
+    public DateTime RoleChangeDate {
+      get; internal set;
+    }
+
+
+    public string Role {
+      get; internal set;
+    }
+
+
+    public string NewRole {
+      get; internal set;
+    }
   } // class LockedUpBalancesEntryDto
 
 } // namespace Empiria.FinancialAccounting.Reporting.Balances.LockedUpBalances.Adapters

@@ -124,6 +124,7 @@ namespace Empiria.FinancialAccounting.Adapters {
       var dto = new AccountDescriptorDto();
 
       FillAccountDescriptorDto(dto, account);
+      dto.Role = account.Role;
 
       return dto;
     }
