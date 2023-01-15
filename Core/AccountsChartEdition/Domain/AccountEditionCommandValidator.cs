@@ -185,19 +185,19 @@ namespace Empiria.FinancialAccounting.AccountsChartEdition {
       if (_command.AccountFields.Role == AccountRole.Sumaria) {
 
         Require(_command.Currencies.Length == 0,
-            $"La cuenta es sumaria por lo que la lista de monedas debe estar vacía.");
+            $"La lista de monedas para las cuentas sumarias debe estar vacía.");
 
       } else {
 
         Require(_command.Currencies.Length > 0,
-            $"La lista de monedas no puede estar vacía para una cuenta que no es sumaria.");
+            $"Se debe proporcionar la lista de monedas para las cuentas que no son sumarias.");
       }
 
       foreach (var currencyCode in _command.Currencies) {
 
         if (!Currency.Exists(currencyCode)) {
           Require(false,
-              $"La lista de monedas contiene la moneda '{currencyCode}' que no está registrada.");
+              $"La lista de monedas contiene la moneda '{currencyCode}' la cual no está registrada.");
           continue;
         }
 
@@ -213,6 +213,18 @@ namespace Empiria.FinancialAccounting.AccountsChartEdition {
 
       FixedList<AccountDataToBeUpdated> dataToBeUpdated = _command.DataToBeUpdated.ToFixedList();
 
+      bool updateName = dataToBeUpdated.Contains(AccountDataToBeUpdated.Name);
+
+      if (updateName) {
+        Require(!account.Name.Equals(_command.AccountFields.Name),
+            "Se solicita modificar la descripción de la cuenta pero no hay cambios en la misma.");
+      } else {
+        Require(account.Name.Equals(_command.AccountFields.Name),
+            "La descripción de la cuenta no coincide con la registrada " +
+            "y no se está solicitando modificarla.");
+      }
+
+
       bool updateRole = dataToBeUpdated.Contains(AccountDataToBeUpdated.MainRole) ||
                         dataToBeUpdated.Contains(AccountDataToBeUpdated.SubledgerRole);
 
@@ -224,6 +236,30 @@ namespace Empiria.FinancialAccounting.AccountsChartEdition {
             "No se pueden modificar las monedas de una cuenta sumaria.");
         Require(!updateSectors,
             "No se pueden modificar los sectores de una cuenta sumaria.");
+      }
+
+      if (account.Role == AccountRole.Sumaria) {
+        return;
+      }
+
+      if (!updateCurrencies) {
+        var registered = account.CurrencyRules.Select(x => x.Currency.Code)
+                                              .ToFixedList();
+
+        Require(registered.SameItems(_command.Currencies),
+            "Las monedas proporcionadas no coinciden con las registradas y " +
+            "no se está solicitando modificarlas.");
+      }
+
+      if (!updateSectors) {
+        var registered = account.SectorRules.Select(x => x.Sector.Code)
+                                            .ToFixedList();
+
+        var provided = _command.SectorRules.ToFixedList().Select(x => x.Code);
+
+        Require(registered.SameItems(provided),
+            "Los sectores proporcionados no coinciden con los registrados y " +
+            "no se está solicitando modificarlos.");
       }
     }
 
@@ -241,7 +277,8 @@ namespace Empiria.FinancialAccounting.AccountsChartEdition {
 
       if (!updateRole) {
         Require(currentRole.Equals(newRole),
-            "No se está modificando el rol, pero el rol actual de la cuenta no es igual al que se proporcionó.");
+            "No se está modificando el rol, pero el rol actual de la cuenta " +
+            "no es igual al que se indica.");
         return;
       } else if (account.Role.Equals(_command.AccountFields.Role)) {
 
@@ -267,7 +304,7 @@ namespace Empiria.FinancialAccounting.AccountsChartEdition {
       if (_command.AccountFields.Role == AccountRole.Sectorizada) {
 
         Require(_command.SectorRules.Length != 0,
-            $"La cuenta maneja sectores pero la lista de sectores está vacía.");
+            $"Se debe proporcionar la lista de sectores para las cuentas que son sectorizadas.");
 
       } else {
 
@@ -282,7 +319,7 @@ namespace Empiria.FinancialAccounting.AccountsChartEdition {
 
         if (sector == null) {
           Require(false,
-              $"La lista de sectores contiene el sector '{sectorRule.Code}' que no está registrado.");
+              $"La lista de sectores contiene el sector '{sectorRule.Code}' el cual no está registrado.");
           continue;
         }
 
@@ -291,8 +328,7 @@ namespace Empiria.FinancialAccounting.AccountsChartEdition {
             $"pero dicho sector es sumarizador.");
 
         Require(_command.SectorRules.ToFixedList().CountAll(x => x.Code == sector.Code) == 1,
-            $"La lista de sectores contiene más de una vez " +
-            $"el sector '{sector.Code}'.");
+            $"La lista de sectores contiene más de una vez el sector '{sector.Code}'.");
       }
     }
 
