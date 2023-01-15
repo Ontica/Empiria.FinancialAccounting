@@ -146,19 +146,30 @@ namespace Empiria.FinancialAccounting.AccountsChartEdition {
 
       var dataToBeUpdated = _command.DataToBeUpdated.ToFixedList();
 
+      bool sectorsRoleChanged = false;
+
       if (dataToBeUpdated.Contains(AccountDataToBeUpdated.Name) ||
-          dataToBeUpdated.Contains(AccountDataToBeUpdated.MainRole) ||
-          dataToBeUpdated.Contains(AccountDataToBeUpdated.SubledgerRole) ||
-          dataToBeUpdated.Contains(AccountDataToBeUpdated.DebtorCreditor)) {
+          dataToBeUpdated.Contains(AccountDataToBeUpdated.DebtorCreditor) ||
+          dataToBeUpdated.Contains(AccountDataToBeUpdated.AccountType) ||
+          dataToBeUpdated.Contains(AccountDataToBeUpdated.MainRole)) {
 
         list.Add(BuildUpdateAccountDataAction());
+
+      } else if (dataToBeUpdated.Contains(AccountDataToBeUpdated.SubledgerRole) &&
+                 !_command.Entities.Account.Role.Equals(_command.AccountFields.Role)) {
+        list.Add(BuildUpdateAccountDataAction());
+
+      } else if (dataToBeUpdated.Contains(AccountDataToBeUpdated.SubledgerRole) &&
+                 _command.Entities.Account.Role == AccountRole.Sectorizada &&
+                 _command.Entities.Account.SectorRules[0].SectorRole != _command.SectorRules[0].Role) {
+        sectorsRoleChanged = true;
       }
 
       if (dataToBeUpdated.Contains(AccountDataToBeUpdated.Currencies)) {
         list.Add(BuildUpdateCurrenciesAction());
       }
 
-      if (dataToBeUpdated.Contains(AccountDataToBeUpdated.Sectors)) {
+      if (dataToBeUpdated.Contains(AccountDataToBeUpdated.Sectors) || sectorsRoleChanged) {
         list.Add(BuildUpdateSectorsAction());
       }
 
@@ -211,7 +222,8 @@ namespace Empiria.FinancialAccounting.AccountsChartEdition {
 
       foreach (var currentSectorRule in account.SectorRules) {
 
-        if (!newSectorRules.Contains(x => x.Sector.Equals(currentSectorRule.Sector))) {
+        if (!newSectorRules.Contains(x => x.Sector.Equals(currentSectorRule.Sector) &&
+                                          x.Role.Equals(currentSectorRule.SectorRole))) {
           DataOperation op = AccountEditionDataService.RemoveAccountSectorOp(currentSectorRule,
                                                                              _command.ApplicationDate);
           operations.Add(op);
@@ -220,7 +232,8 @@ namespace Empiria.FinancialAccounting.AccountsChartEdition {
 
       foreach (var sectorRule in newSectorRules) {
 
-        if (!account.SectorRules.Contains(x => x.Sector.Equals(sectorRule.Sector))) {
+        if (!account.SectorRules.Contains(x => x.Sector.Equals(sectorRule.Sector) &&
+                                               x.SectorRole.Equals(sectorRule.Role))) {
           DataOperation op = AccountEditionDataService.AddAccountSectorOp(account.StandardAccountId,
                                                                           sectorRule.Sector,
                                                                           sectorRule.Role,
