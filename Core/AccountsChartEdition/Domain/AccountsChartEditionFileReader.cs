@@ -198,7 +198,7 @@ namespace Empiria.FinancialAccounting.AccountsChartEdition {
 
           Assertion.Require(account != null,
               $"Se está solicitando modificar la cuenta " +
-              $"pero no está registrada en el catálogo de cuentas : {command.DataSource}.");
+              $"pero no existe en el catálogo de cuentas : {command.DataSource}.");
         }
       }
     }
@@ -206,7 +206,6 @@ namespace Empiria.FinancialAccounting.AccountsChartEdition {
 
     private void EnsureAllDataIsLoaded(FixedList<AccountEditionCommand> commands) {
       foreach (var command in commands) {
-        string accountNumber = command.AccountFields.AccountNumber;
 
         if (command.CommandType == AccountEditionCommandType.FixAccountName ||
             command.CommandType == AccountEditionCommandType.UpdateAccount) {
@@ -279,7 +278,24 @@ namespace Empiria.FinancialAccounting.AccountsChartEdition {
         command.AccountUID = account.UID;
         command.AccountFields.AccountTypeUID = account.AccountType.UID;
         command.AccountFields.DebtorCreditor = account.DebtorCreditor;
+
+        if (!account.Role.Equals(command.AccountFields.Role)) {
+          PatchDataToBeUpdatedToInclude(command, AccountDataToBeUpdated.MainRole);
+        }
       }
+    }
+
+
+    private void PatchDataToBeUpdatedToInclude(AccountEditionCommand command,
+                                               AccountDataToBeUpdated dataToAddIfNotIncluded) {
+      var patchedList = new List<AccountDataToBeUpdated>(command.DataToBeUpdated);
+
+      if (patchedList.Contains(dataToAddIfNotIncluded)) {
+        return;
+      }
+
+      patchedList.Add(dataToAddIfNotIncluded);
+      command.DataToBeUpdated = patchedList.ToArray();
     }
 
     #endregion Helpers
