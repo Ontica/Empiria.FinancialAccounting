@@ -277,14 +277,29 @@ namespace Empiria.FinancialAccounting.AccountsChartEdition {
 
       if (!updateRole) {
         Require(currentRole.Equals(newRole),
-            "No se está modificando el rol, pero el rol actual de la cuenta " +
-            "no es igual al que se indica.");
+            "No se está solicitando modificar ni el rol, ni el sector ni el manejo de auxiliares, " +
+            "y sin embargo la información que se proporciona no es igual a la que se tiene registrada.");
         return;
-      } else if (account.Role.Equals(_command.AccountFields.Role)) {
 
+      } else if (currentRole.Equals(newRole) && currentRole != AccountRole.Sectorizada) {
         Require(false,
             "Se está solicitando modificar el rol, pero la cuenta ya tiene ese rol.");
-        return;
+
+      } else if (currentRole.Equals(newRole) && currentRole == AccountRole.Sectorizada &&
+                 !dataToBeUpdated.Contains(AccountDataToBeUpdated.SubledgerRole)) {
+        Require(false,
+            "Se está solicitando modificar el rol pero la cuenta ya es sectorizada " +
+            "y no se está solicitando cambiar el manejo de auxiliares.");
+
+      } else if (currentRole.Equals(newRole) && currentRole == AccountRole.Sectorizada &&
+                 dataToBeUpdated.Contains(AccountDataToBeUpdated.SubledgerRole)) {
+
+        Require(_command.SectorRules.Length != 0 &&
+                account.SectorRules[0].SectorRole != _command.SectorRules[0].Role,
+            "Se está solicitando modificar el manejo de auxiliares de los sectores " +
+            (account.SectorRules[0].SectorRole == AccountRole.Control ?
+                "pero actualmente los sectores de la cuenta ya manejan auxiliares." :
+                "pero actualmente los sectores de la cuenta no manejan auxiliares."));
       }
 
       if (newRole == AccountRole.Sumaria) {
