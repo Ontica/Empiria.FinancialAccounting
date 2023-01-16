@@ -48,6 +48,7 @@ namespace Empiria.FinancialAccounting.AccountsChartEdition {
       RequireAccountNumbersAreValid(commands);
       SetDataForExistingAccountsToBeUpdated(commands);
       DetermineAccountTypeForNewAccounts(commands);
+      SetSkipParentValidationFlag(commands);
       EnsureAllDataIsLoaded(commands);
 
       return commands;
@@ -102,6 +103,26 @@ namespace Empiria.FinancialAccounting.AccountsChartEdition {
 
       }  // for
 
+    }
+
+
+    private void SetSkipParentValidationFlag(FixedList<AccountEditionCommand> commandsList) {
+      var changeRoleRelatedCommands = commandsList.FindAll(x => x.CommandType == AccountEditionCommandType.CreateAccount ||
+                                                                x.DataToBeUpdated.ToFixedList().Contains(AccountDataToBeUpdated.MainRole));
+
+      if (changeRoleRelatedCommands.Count == 1) {
+        return;
+      }
+
+      foreach (AccountEditionCommand command in changeRoleRelatedCommands) {
+        string accountNumber = command.AccountFields.AccountNumber;
+        string parentNumber = _chart.BuildParentAccountNumber(accountNumber);
+
+        if (changeRoleRelatedCommands.Contains(x => x.AccountFields.AccountNumber.Equals(parentNumber) &&
+                                                    x.AccountFields.Role == AccountRole.Sumaria)) {
+          command.SkipParentAccountValidation = true;
+        }
+      }
     }
 
 

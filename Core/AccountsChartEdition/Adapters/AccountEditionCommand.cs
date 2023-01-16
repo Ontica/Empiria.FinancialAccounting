@@ -124,6 +124,11 @@ namespace Empiria.FinancialAccounting.AccountsChartEdition.Adapters {
     } = string.Empty;
 
 
+    internal bool SkipParentAccountValidation {
+      get; set;
+    } = false;
+
+
     public FixedList<string> Issues {
       get {
         return base.ExecutionResult.Issues;

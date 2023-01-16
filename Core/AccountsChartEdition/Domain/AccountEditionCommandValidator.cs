@@ -138,20 +138,23 @@ namespace Empiria.FinancialAccounting.AccountsChartEdition {
           $"La cuenta '{accountNumber}' ya existe en el catálogo de cuentas.");
 
 
-      var parent = chart.TryGetParentAccount(accountNumber);
+      if (!_command.SkipParentAccountValidation) {
 
-      if (parent == null) {
+        var parent = chart.TryGetParentAccount(accountNumber);
 
-        Require(false,
-            $"La cuenta sumaria de la cuenta '{accountNumber}' que se desea agregar, " +
-            $"no ha sido dada de alta en el catálogo.");
+        if (parent == null) {
 
-      } else if (parent.Role != AccountRole.Sumaria) {
+          Require(false,
+              $"La cuenta sumaria de la cuenta '{accountNumber}' que se desea agregar, " +
+              $"no ha sido dada de alta en el catálogo.");
 
-        Require(false,
-            $"No es posible agregar la cuenta '{accountNumber}' " +
-            $"ya que la cuenta padre de la que se deriva es de detalle.");
+        } else if (parent.Role != AccountRole.Sumaria) {
 
+          Require(false,
+              $"No es posible agregar la cuenta '{accountNumber}' " +
+              $"ya que la cuenta padre de la que se deriva es de detalle.");
+
+        }
       }
 
       SetCurrenciesIssues();
@@ -270,7 +273,8 @@ namespace Empiria.FinancialAccounting.AccountsChartEdition {
       }
 
       if (dataToBeUpdated.Contains(AccountDataToBeUpdated.MainRole) &&
-          (account.Role == AccountRole.Sectorizada || _command.AccountFields.Role == AccountRole.Sectorizada)) {
+          (account.Role == AccountRole.Sectorizada ||
+           _command.AccountFields.Role == AccountRole.Sectorizada)) {
         return;
       }
 
@@ -349,7 +353,6 @@ namespace Empiria.FinancialAccounting.AccountsChartEdition {
         Require(_command.SectorRules.Length == 0,
             $"La cuenta no maneja sectores pero se está proporcionando una lista de sectores.");
       }
-
 
       foreach (var sectorRule in _command.SectorRules) {
 
