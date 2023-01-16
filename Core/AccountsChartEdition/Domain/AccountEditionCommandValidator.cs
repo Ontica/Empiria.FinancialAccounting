@@ -135,7 +135,24 @@ namespace Empiria.FinancialAccounting.AccountsChartEdition {
       Account account = chart.TryGetAccount(accountNumber);
 
       Require(account == null,
-          $"La cuenta '{accountNumber} ya existe en el catálogo de cuentas.");
+          $"La cuenta '{accountNumber}' ya existe en el catálogo de cuentas.");
+
+
+      var parent = chart.TryGetParentAccount(accountNumber);
+
+      if (parent == null) {
+
+        Require(false,
+            $"La cuenta sumaria de la cuenta '{accountNumber}' que se desea agregar, " +
+            $"no ha sido dada de alta en el catálogo.");
+
+      } else if (parent.Role != AccountRole.Sumaria) {
+
+        Require(false,
+            $"No es posible agregar la cuenta '{accountNumber}' " +
+            $"ya que la cuenta padre de la que se deriva es de detalle.");
+
+      }
 
       SetCurrenciesIssues();
       SetSectorsIssues();
@@ -238,7 +255,8 @@ namespace Empiria.FinancialAccounting.AccountsChartEdition {
             "No se pueden modificar los sectores de una cuenta sumaria.");
       }
 
-      if (account.Role == AccountRole.Sumaria) {
+      if (dataToBeUpdated.Contains(AccountDataToBeUpdated.MainRole) &&
+          (account.Role == AccountRole.Sumaria ||_command.AccountFields.Role == AccountRole.Sumaria)) {
         return;
       }
 
@@ -249,6 +267,11 @@ namespace Empiria.FinancialAccounting.AccountsChartEdition {
         Require(registered.SameItems(_command.Currencies),
             "Las monedas proporcionadas no coinciden con las registradas y " +
             "no se está solicitando modificarlas.");
+      }
+
+      if (dataToBeUpdated.Contains(AccountDataToBeUpdated.MainRole) &&
+          (account.Role == AccountRole.Sectorizada || _command.AccountFields.Role == AccountRole.Sectorizada)) {
+        return;
       }
 
       if (!updateSectors) {
