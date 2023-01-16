@@ -121,7 +121,7 @@ namespace Empiria.FinancialAccounting.Reporting {
       columns.Add(new DataTableColumn("currencyCode", "Moneda", "text"));
       columns.Add(new DataTableColumn("accountNumber", "Cuenta", "text"));
       columns.Add(new DataTableColumn("accountName", "Nombre", "text-nowrap"));
-      columns.Add(new DataTableColumn("SectorCode", "Sector", "text"));
+      columns.Add(new DataTableColumn("sectorCode", "Sector", "text"));
       columns.Add(new DataTableColumn("subledgerAccount", "Auxiliar", "text"));
       columns.Add(new DataTableColumn("currentBalance", "Saldo actual", "decimal"));
       columns.Add(new DataTableColumn("role", "Rol", "text"));
