@@ -107,7 +107,7 @@ namespace Empiria.FinancialAccounting.Adapters {
       dto.UsesSector = account.Role == AccountRole.Sectorizada || account.HasChildrenWithSectors();
       dto.UsesSubledger = account.Role == AccountRole.Control ||
                           (account.Role == AccountRole.Sectorizada &&
-                           account.GetSectors().All(x => x.SectorRole == AccountRole.Control));
+                           account.GetSectors(account.StartDate).All(x => x.SectorRole == AccountRole.Control));
       dto.DebtorCreditor = account.DebtorCreditor;
       dto.Level = account.Level;
       dto.Sector = "00";
