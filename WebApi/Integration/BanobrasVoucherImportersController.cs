@@ -48,7 +48,7 @@ namespace Empiria.FinancialAccounting.WebApi.BanobrasIntegration {
 
       base.RequireBody(command);
 
-      bool dryRun = RouteContainsDryRunFlag();
+      bool dryRun = base.Request.RequestUri.PathAndQuery.EndsWith("/dry-run");
 
       using (var usecases = ImportVouchersUseCases.UseCaseInteractor()) {
         ImportVouchersResult result = usecases.ImportVouchersFromInterfazUnica(command, dryRun);
@@ -75,14 +75,6 @@ namespace Empiria.FinancialAccounting.WebApi.BanobrasIntegration {
 
 
     #endregion Voucher importers
-
-    #region Helper methods
-
-    private bool RouteContainsDryRunFlag() {
-      return base.Request.RequestUri.PathAndQuery.EndsWith("/dry-run");
-    }
-
-    #endregion Helper methods
 
   }  // class BanobrasVoucherImportersController
 

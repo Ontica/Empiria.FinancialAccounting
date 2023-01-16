@@ -159,13 +159,6 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
     }
 
 
-    public bool NotHasSector {
-      get {
-        return !HasSector;
-      }
-    }
-
-
     public int Level {
       get {
         return this.Account.Level;

@@ -309,7 +309,6 @@ namespace Empiria.FinancialAccounting.FinancialConcepts {
 
 
     private FinancialConceptEntry TryFindCycledIntegrationConceptEntry(FinancialConcept referencedConcept) {
-      EmpiriaLog.Debug($"TryFindCycledIntegrationConceptEntry('{referencedConcept.Code}') => this.Code == {this.Code}");
 
       var integration = referencedConcept.Integration.FindAll(x => x.Type == FinancialConceptEntryType.FinancialConceptReference);
 

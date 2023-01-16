@@ -96,24 +96,24 @@ namespace Empiria.FinancialAccounting.AccountsChartEdition {
 
 
     internal bool GetIsSectorizadaFlag() {
-      bool? hasSectors = TryReadBoolValueFromColumn("E");
+      bool? sectorsFlag = TryReadBoolValueFromColumn("E");
 
-      Assertion.Require(hasSectors.HasValue,
+      Assertion.Require(sectorsFlag.HasValue,
                   $"No puedo determinar si la cuenta maneja sectores o no " +
                   $"con el dato de la celda E{_rowIndex}: {ReadStringValueFromColumn("E")}");
 
-      return hasSectors.Value;
+      return sectorsFlag.Value;
     }
 
 
     internal bool GetIsSubsidiaryFlag() {
-      bool? isSubsidiary = TryReadBoolValueFromColumn("F");
+      bool? subsidiaryFlag = TryReadBoolValueFromColumn("F");
 
-      Assertion.Require(isSubsidiary.HasValue,
+      Assertion.Require(subsidiaryFlag.HasValue,
                   $"No puedo determinar si la cuenta maneja auxiliares o no " +
                   $"con el dato de la celda F{_rowIndex}: {ReadStringValueFromColumn("F")}");
 
-      return isSubsidiary.Value;
+      return subsidiaryFlag.Value;
     }
 
 

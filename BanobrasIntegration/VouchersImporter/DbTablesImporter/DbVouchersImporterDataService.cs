@@ -123,7 +123,6 @@ namespace Empiria.FinancialAccounting.BanobrasIntegration.VouchersImporter {
     }
 
 
-
     static internal long NextIdVolante() {
       return CommonMethods.GetNextObjectId("SEC_ID_VOLANTE");
     }
