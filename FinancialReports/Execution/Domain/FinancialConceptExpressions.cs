@@ -48,21 +48,25 @@ namespace Empiria.FinancialAccounting.FinancialReports {
     }
 
 
-    internal IFinancialConceptValues ExecuteConceptScript(FinancialConcept financialConcept,
-                                                          IFinancialConceptValues baseValues) {
+    internal void ExecuteConceptScript(FinancialConcept financialConcept,
+                                       IFinancialConceptValues baseValues) {
 
       if (!financialConcept.HasScript) {
-        return baseValues;
+        return;
       }
 
-      IDictionary<string, object> inputValues = ConvertToDictionary(financialConcept, baseValues);
+      IDictionary<string, object> data = ConvertToDictionary(financialConcept, baseValues);
 
       var compiler = new RuntimeCompiler(_executionContext);
 
-      return compiler.ExecuteScript<IFinancialConceptValues>(financialConcept.CalculationScript,
-                                                             inputValues);
-    }
+      compiler.ExecuteScript(financialConcept.CalculationScript, data);
 
+      foreach (var item in data) {
+        if (item.Value is decimal) {
+          baseValues.SetTotalField(item.Key, (decimal) item.Value);
+        }
+      }
+    }
 
     #region Helpers
 
