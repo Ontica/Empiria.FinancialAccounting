@@ -31,8 +31,8 @@ namespace Empiria.FinancialAccounting.Tests.Reporting.LockedUpBalances {
 
         ReportBuilderQuery buildQuery = new ReportBuilderQuery {
           AccountsChartUID = "47ec2ec7-0f4f-482e-9799-c23107b60d8a",
-          FromDate = new DateTime(2022, 02, 01),
-          ToDate = new DateTime(2022, 02, 28)
+          FromDate = new DateTime(2022, 04, 01),
+          ToDate = new DateTime(2022, 04, 30)
         };
 
         LockedUpBalancesDto sut = service.GenerateReport(buildQuery);

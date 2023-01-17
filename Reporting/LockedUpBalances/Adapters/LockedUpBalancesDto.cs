@@ -56,6 +56,11 @@ namespace Empiria.FinancialAccounting.Reporting.LockedUpBalances.Adapters {
     }
 
 
+    public string LedgerNumber {
+      get; internal set;
+    }
+
+
     public string AccountNumber {
       get; internal set;
     }
@@ -100,6 +105,7 @@ namespace Empiria.FinancialAccounting.Reporting.LockedUpBalances.Adapters {
       get; internal set;
     }
     
+
   } // class LockedUpBalancesEntryDto
 
 } // namespace Empiria.FinancialAccounting.Reporting.Balances.LockedUpBalances.Adapters

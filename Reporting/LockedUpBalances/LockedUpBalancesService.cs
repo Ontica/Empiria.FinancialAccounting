@@ -75,6 +75,21 @@ namespace Empiria.FinancialAccounting.Reporting {
     #region Private methods
 
 
+    static private void AssignAccountClauses(LockedUpBalancesEntryDto dto, BalanzaTradicionalEntryDto entry) {
+
+      if (entry.SubledgerAccountNumber.Length > 1) {
+
+        dto.AccountNumber = entry.AccountNumberForBalances;
+        dto.SubledgerAccount = entry.SubledgerAccountNumber;
+
+      } else {
+        dto.AccountNumber = entry.AccountNumber;
+        dto.SubledgerAccount = "";
+
+      }
+    }
+
+
     private List<BalanzaTradicionalEntryDto> GetBalancesByAccount(
                 ReportBuilderQuery buildQuery, AccountDescriptorDto account) {
 
@@ -84,23 +99,30 @@ namespace Empiria.FinancialAccounting.Reporting {
 
         TrialBalanceDto trialBalance = balancesUsecases.BuildTrialBalance(_query);
 
-        return GetParentEntries(trialBalance.Entries, account.Number);
+        return GetAccountEntries(trialBalance.Entries, account);
 
       }
 
     }
 
 
-    private List<BalanzaTradicionalEntryDto> GetParentEntries(
-            FixedList<ITrialBalanceEntryDto> entries, string number) {
+    private List<BalanzaTradicionalEntryDto> GetAccountEntries(
+            FixedList<ITrialBalanceEntryDto> entries, AccountDescriptorDto account) {
 
       if (entries.Count == 0) {
         return new List<BalanzaTradicionalEntryDto>();
       }
 
       var balanceEntries = entries.Select(x => (BalanzaTradicionalEntryDto) x);
+      
+      if (account.Role != AccountRole.Control) {
+      
+        return balanceEntries.Where(a => a.AccountNumberForBalances == account.Number &&
+                                         a.ItemType == TrialBalanceItemType.Entry).ToList();
 
-      return balanceEntries.Where(a => a.AccountNumberForBalances == number).ToList();
+      }
+
+      return balanceEntries.Where(a => a.AccountNumberForBalances == account.Number).ToList();
     }
 
 
@@ -118,6 +140,7 @@ namespace Empiria.FinancialAccounting.Reporting {
     private FixedList<DataTableColumn> MapColumns() {
       var columns = new List<DataTableColumn>();
 
+      columns.Add(new DataTableColumn("ledgerNumber", "Cont", "text"));
       columns.Add(new DataTableColumn("currencyCode", "Moneda", "text"));
       columns.Add(new DataTableColumn("accountNumber", "Cuenta", "text"));
       columns.Add(new DataTableColumn("accountName", "Nombre", "text-nowrap"));
@@ -152,11 +175,13 @@ namespace Empiria.FinancialAccounting.Reporting {
 
       dto.StandardAccountId = entry.StandardAccountId;
       dto.CurrencyCode = entry.CurrencyCode;
-      dto.AccountNumber = entry.AccountNumber;
+      dto.LedgerNumber = entry.LedgerNumber;
+
+      AssignAccountClauses(dto, entry);
+
       dto.AccountName = entry.AccountName;
       dto.SectorCode = entry.SectorCode;
-      dto.SubledgerAccount = entry.SubledgerAccountNumber.Length > 1 ?
-                             entry.SubledgerAccountNumber : "";
+      
       dto.CurrentBalance = (decimal) entry.CurrentBalance;
       dto.LastChangeDate = entry.LastChangeDate;
       dto.RoleChangeDate = account.EndDate;
