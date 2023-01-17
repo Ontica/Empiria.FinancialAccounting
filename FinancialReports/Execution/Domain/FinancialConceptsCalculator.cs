@@ -315,7 +315,7 @@ namespace Empiria.FinancialAccounting.FinancialReports {
     private void CalculateFormulaBasedColumns(FinancialConcept financialConcept,
                                               IFinancialConceptValues totals) {
 
-      var calculator = new FinancialReportCalculator(_executionContext);
+      var calculator = new FinancialConceptExpressions(_executionContext);
 
       FixedList<DataTableColumn> formulaBasedColumns =
             _executionContext.FinancialReportType.DataColumns.FindAll(x => x.IsCalculated);
@@ -331,7 +331,7 @@ namespace Empiria.FinancialAccounting.FinancialReports {
 
     private IFinancialConceptValues ExecuteConceptScript(FinancialConcept financialConcept,
                                                          IFinancialConceptValues totals) {
-      var calculator = new FinancialReportCalculator(_executionContext);
+      var calculator = new FinancialConceptExpressions(_executionContext);
 
       return calculator.ExecuteConceptScript(financialConcept, totals);
     }

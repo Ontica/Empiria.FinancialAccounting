@@ -2,9 +2,9 @@
 *                                                                                                            *
 *  Module   : Financial Reports                          Component : Domain Layer                            *
 *  Assembly : FinancialAccounting.FinancialReports.dll   Pattern   : Service provider                        *
-*  Type     : FinancialReportCalculator                  License   : Please read LICENSE.txt file            *
+*  Type     : FinancialConceptExpressions                License   : Please read LICENSE.txt file            *
 *                                                                                                            *
-*  Summary  : Performs data calculation over financial reports data.                                         *
+*  Summary  : Performs financial concepts runtime expressions calculation and scripts execution.             *
 *                                                                                                            *
 ************************* Copyright(c) La Vía Óntica SC, Ontica LLC and contributors. All rights reserved. **/
 using System;
@@ -15,12 +15,12 @@ using Empiria.FinancialAccounting.FinancialReports.Providers;
 
 namespace Empiria.FinancialAccounting.FinancialReports {
 
-  /// <summary>Performs data calculation over financial reports data.</summary>
-  internal class FinancialReportCalculator {
+  /// <summary>Performs financial concepts runtime expressions calculation and scripts execution.</summary>
+  internal class FinancialConceptExpressions {
 
     private readonly ExecutionContext _executionContext;
 
-    internal FinancialReportCalculator(ExecutionContext executionContext) {
+    internal FinancialConceptExpressions(ExecutionContext executionContext) {
       _executionContext = executionContext;
     }
 
@@ -59,15 +59,8 @@ namespace Empiria.FinancialAccounting.FinancialReports {
 
       var compiler = new RuntimeCompiler(_executionContext);
 
-      var returnedValues = compiler.ExecuteScript<IFinancialConceptValues>(financialConcept.CalculationScript, inputValues)
-                                   .ToDictionary();
-
-
-      foreach (var field in returnedValues.Keys) {
-        baseValues.SetTotalField(field, (decimal) returnedValues[field]);
-      }
-
-      return baseValues;
+      return compiler.ExecuteScript<IFinancialConceptValues>(financialConcept.CalculationScript,
+                                                             inputValues);
     }
 
 
@@ -93,6 +86,6 @@ namespace Empiria.FinancialAccounting.FinancialReports {
 
     #endregion Helpers
 
-  }   // class FinancialReportCalculator
+  }   // class FinancialConceptExpressions
 
 }  // namespace Empiria.FinancialAccounting.FinancialReports
