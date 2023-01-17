@@ -30,6 +30,22 @@ namespace Empiria.FinancialAccounting.FinancialReports {
 
     #region Public methods
 
+    public IFinancialConceptValues Calculate(FinancialConcept financialConcept) {
+      Assertion.Require(financialConcept, nameof(financialConcept));
+
+      Assertion.Require(!financialConcept.IsEmptyInstance,
+                    "Cannot process the empty FinancialConcept instance.");
+
+      IFinancialConceptValues totals = this.CalculateFinancialConcept(financialConcept);
+
+      if (financialConcept.HasScript) {
+        totals = ExecuteConceptScript(financialConcept, totals);
+      }
+
+      return totals;
+    }
+
+
     public IFinancialConceptValues CalculateBreakdownTotalEntry(FixedList<FinancialReportBreakdownResult> breakdown) {
 
       IFinancialConceptValues granTotal = CreateFinancialConceptValuesObject();
@@ -69,7 +85,7 @@ namespace Empiria.FinancialAccounting.FinancialReports {
     }
 
 
-    public IFinancialConceptValues CalculateFinancialConcept(FinancialConcept financialConcept) {
+    private IFinancialConceptValues CalculateFinancialConcept(FinancialConcept financialConcept) {
       Assertion.Require(!financialConcept.IsEmptyInstance,
                         "Cannot process the empty FinancialConcept instance.");
 
@@ -97,18 +113,6 @@ namespace Empiria.FinancialAccounting.FinancialReports {
       CalculateFormulaBasedColumns(financialConcept, totals);
 
       return totals;
-    }
-
-
-    private void CalculateFormulaBasedColumns(FinancialConcept financialConcept,
-                                              IFinancialConceptValues totals) {
-
-      var calculator = new FinancialReportCalculator(_executionContext);
-
-      FixedList<DataTableColumn> formulaBasedColumns =
-            _executionContext.FinancialReportType.DataColumns.FindAll(x => x.IsCalculated);
-
-      calculator.CalculateColumns(financialConcept, formulaBasedColumns, totals);
     }
 
 
@@ -308,8 +312,28 @@ namespace Empiria.FinancialAccounting.FinancialReports {
 
     #region Helpers
 
+    private void CalculateFormulaBasedColumns(FinancialConcept financialConcept,
+                                              IFinancialConceptValues totals) {
+
+      var calculator = new FinancialReportCalculator(_executionContext);
+
+      FixedList<DataTableColumn> formulaBasedColumns =
+            _executionContext.FinancialReportType.DataColumns.FindAll(x => x.IsCalculated);
+
+      calculator.CalculateColumns(financialConcept, formulaBasedColumns, totals);
+    }
+
+
     private IFinancialConceptValues CreateFinancialConceptValuesObject() {
       return new FinancialConceptValues(_executionContext.FinancialReportType.DataColumns);
+    }
+
+
+    private IFinancialConceptValues ExecuteConceptScript(FinancialConcept financialConcept,
+                                                         IFinancialConceptValues totals) {
+      var calculator = new FinancialReportCalculator(_executionContext);
+
+      return calculator.ExecuteConceptScript(financialConcept, totals);
     }
 
     #endregion Helpers

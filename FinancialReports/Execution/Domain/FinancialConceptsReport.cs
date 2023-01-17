@@ -130,12 +130,7 @@ namespace Empiria.FinancialAccounting.FinancialReports {
           continue;
         }
 
-        IFinancialConceptValues totals = this.ConceptsCalculator.CalculateFinancialConcept(financialConcept);
-
-        if (financialConcept.HasScript) {
-          totals = ExecuteConceptScript(financialConcept, totals);
-        }
-
+        IFinancialConceptValues totals = this.ConceptsCalculator.Calculate(financialConcept);
 
         totals.CopyTotalsTo(reportEntry);
       }
@@ -165,14 +160,6 @@ namespace Empiria.FinancialAccounting.FinancialReports {
                         .ToFixedList();
     }
 
-
-
-    private IFinancialConceptValues ExecuteConceptScript(FinancialConcept financialConcept,
-                                                         IFinancialConceptValues totals) {
-      var calculator = new FinancialReportCalculator(_executionContext);
-
-      return calculator.ExecuteConceptScript(financialConcept, totals);
-    }
 
     #endregion Helpers
 

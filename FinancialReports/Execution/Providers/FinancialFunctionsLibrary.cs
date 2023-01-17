@@ -79,7 +79,7 @@ namespace Empiria.FinancialAccounting.FinancialReports.Providers {
 
         var financialConcept = FinancialConcept.Parse(conceptId);
 
-        return _conceptsCalculator.CalculateFinancialConcept(financialConcept);
+        return _conceptsCalculator.Calculate(financialConcept);
       }
 
     }  // DeudorasMenosAcreedorasFunction
