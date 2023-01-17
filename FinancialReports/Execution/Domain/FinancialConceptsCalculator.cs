@@ -39,7 +39,7 @@ namespace Empiria.FinancialAccounting.FinancialReports {
       IFinancialConceptValues totals = this.CalculateFinancialConcept(financialConcept);
 
       if (financialConcept.HasScript) {
-        totals = ExecuteConceptScript(financialConcept, totals);
+        ExecuteConceptScript(financialConcept, totals);
       }
 
       return totals;
@@ -62,22 +62,8 @@ namespace Empiria.FinancialAccounting.FinancialReports {
 
         breakdownValues.CopyTotalsTo(breakdownItem);
 
-        switch (breakdownItem.IntegrationEntry.Operator) {
-
-          case OperatorType.Add:
-            granTotal = granTotal.Sum(breakdownValues);
-            break;
-
-          case OperatorType.Substract:
-            granTotal = granTotal.Substract(breakdownValues);
-            break;
-
-          case OperatorType.AbsoluteValue:
-            granTotal = granTotal.Sum(breakdownValues)
-                                 .AbsoluteValue();
-            break;
-
-        } // switch
+        granTotal = ApplyOperator(breakdownItem.IntegrationEntry.Operator,
+                                  granTotal, breakdownValues);
 
       } // foreach
 
@@ -126,29 +112,9 @@ namespace Empiria.FinancialAccounting.FinancialReports {
       Assertion.Require(integrationEntry.Type == FinancialConceptEntryType.Account,
                         "Invalid integrationEntry.Type");
 
-      switch (integrationEntry.Operator) {
+      var value = CalculateAccount(integrationEntry);
 
-        case OperatorType.Add:
-
-          return totals.Sum(CalculateAccount(integrationEntry));
-
-        case OperatorType.Substract:
-
-          return totals.Substract(CalculateAccount(integrationEntry));
-
-        case OperatorType.Multiply:
-
-          return totals.Multiply(CalculateAccount(integrationEntry));
-
-        case OperatorType.AbsoluteValue:
-
-          return totals.Sum(CalculateAccount(integrationEntry))
-                       .AbsoluteValue();
-
-        default:
-          throw Assertion.EnsureNoReachThisCode($"Unhandled operator '{integrationEntry.Operator}'.");
-      }
-
+      return ApplyOperator(integrationEntry.Operator, totals, value);
     }
 
 
@@ -158,29 +124,9 @@ namespace Empiria.FinancialAccounting.FinancialReports {
       Assertion.Require(integrationEntry.Type == FinancialConceptEntryType.ExternalVariable,
                        "Invalid integrationEntry.Type");
 
-      switch (integrationEntry.Operator) {
+      var value = CalculateExternalVariable(integrationEntry);
 
-        case OperatorType.Add:
-
-          return totals.Sum(CalculateExternalVariable(integrationEntry));
-
-        case OperatorType.Substract:
-
-          return totals.Substract(CalculateExternalVariable(integrationEntry));
-
-        case OperatorType.Multiply:
-
-          return totals.Multiply(CalculateExternalVariable(integrationEntry));
-
-        case OperatorType.AbsoluteValue:
-
-          return totals.Sum(CalculateExternalVariable(integrationEntry))
-                       .AbsoluteValue();
-
-        default:
-          throw Assertion.EnsureNoReachThisCode($"Unhandled operator '{integrationEntry.Operator}'.");
-      }
-
+      return ApplyOperator(integrationEntry.Operator, totals, value);
     }
 
 
@@ -190,43 +136,43 @@ namespace Empiria.FinancialAccounting.FinancialReports {
       Assertion.Require(integrationEntry.Type == FinancialConceptEntryType.FinancialConceptReference,
                         "Invalid integrationEntry.Type");
 
-      IFinancialConceptValues returnValues;
+      var value = CalculateFinancialConcept(integrationEntry.ReferencedFinancialConcept);
 
-      switch (integrationEntry.Operator) {
-
-        case OperatorType.Add:
-
-          returnValues = totals.Sum(CalculateFinancialConcept(integrationEntry.ReferencedFinancialConcept));
-          break;
-
-        case OperatorType.Substract:
-
-          returnValues = totals.Substract(CalculateFinancialConcept(integrationEntry.ReferencedFinancialConcept));
-          break;
-
-        case OperatorType.Multiply:
-
-          returnValues = totals.Multiply(CalculateFinancialConcept(integrationEntry.ReferencedFinancialConcept));
-          break;
-
-        case OperatorType.AbsoluteValue:
-
-          returnValues = totals.Sum(CalculateFinancialConcept(integrationEntry.ReferencedFinancialConcept))
-                               .AbsoluteValue();
-          break;
-
-        default:
-          throw Assertion.EnsureNoReachThisCode($"Unhandled operator '{integrationEntry.Operator}'.");
-
-      }
+      IFinancialConceptValues returnValues = ApplyOperator(integrationEntry.Operator, totals, value);
 
       if (integrationEntry.CalculationRule == "CambiarElSigno") {
-
         returnValues = returnValues.ChangeSign();
-
       }
 
       return returnValues;
+    }
+
+
+    private IFinancialConceptValues ApplyOperator(OperatorType @operator,
+                                                  IFinancialConceptValues totals,
+                                                  IFinancialConceptValues value) {
+      switch (@operator) {
+
+        case OperatorType.Add:
+
+          return totals.Sum(value);
+
+        case OperatorType.Substract:
+
+          return totals.Substract(value);
+
+        case OperatorType.Multiply:
+
+          return totals.Multiply(value);
+
+        case OperatorType.AbsoluteValue:
+
+          return totals.Sum(value)
+                       .AbsoluteValue();
+
+        default:
+          throw Assertion.EnsureNoReachThisCode($"Unhandled operator '{@operator}'.");
+      }
     }
 
 
@@ -315,12 +261,12 @@ namespace Empiria.FinancialAccounting.FinancialReports {
     private void CalculateFormulaBasedColumns(FinancialConcept financialConcept,
                                               IFinancialConceptValues totals) {
 
-      var calculator = new FinancialConceptExpressions(_executionContext);
+      var expressions = new FinancialConceptExpressions(_executionContext);
 
       FixedList<DataTableColumn> formulaBasedColumns =
             _executionContext.FinancialReportType.DataColumns.FindAll(x => x.IsCalculated);
 
-      calculator.CalculateColumns(financialConcept, formulaBasedColumns, totals);
+      expressions.CalculateColumns(financialConcept, formulaBasedColumns, totals);
     }
 
 
@@ -329,11 +275,11 @@ namespace Empiria.FinancialAccounting.FinancialReports {
     }
 
 
-    private IFinancialConceptValues ExecuteConceptScript(FinancialConcept financialConcept,
-                                                         IFinancialConceptValues totals) {
-      var calculator = new FinancialConceptExpressions(_executionContext);
+    private void ExecuteConceptScript(FinancialConcept financialConcept,
+                                      IFinancialConceptValues totals) {
+      var expressions = new FinancialConceptExpressions(_executionContext);
 
-      return calculator.ExecuteConceptScript(financialConcept, totals);
+      expressions.ExecuteConceptScript(financialConcept, totals);
     }
 
     #endregion Helpers
