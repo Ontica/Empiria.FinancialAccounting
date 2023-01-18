@@ -10,6 +10,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using Empiria.Collections;
 using Empiria.FinancialAccounting.Adapters;
 using Empiria.FinancialAccounting.BalanceEngine;
 using Empiria.FinancialAccounting.BalanceEngine.Adapters;
@@ -50,7 +51,41 @@ namespace Empiria.FinancialAccounting.Reporting {
 
         List<BalanzaTradicionalEntryDto> entries = BalancesByAccount(buildQuery, accountsChart.Accounts);
 
-        return Map(entries, accountsChart.Accounts);
+        FixedList<LockedUpBalancesEntryDto> mappedEntries = MapToDto(entries, accountsChart.Accounts);
+
+        FixedList<LockedUpBalancesEntryDto> headers = GetHeaderByLedger(mappedEntries);
+
+        FixedList<LockedUpBalancesEntryDto> headersAndEntries = MergeHeadersAndEntries(headers, mappedEntries);
+
+        return Map(headersAndEntries);
+
+      }
+    }
+
+
+    #endregion Public methods
+
+    #region Private methods
+
+    static private void AccountClauses(LockedUpBalancesEntryDto dto,
+                                       BalanzaTradicionalEntryDto entry,
+                                       AccountDescriptorDto account) {
+      if (entry.SubledgerAccountNumber.Length > 1) {
+
+        dto.AccountNumber = entry.AccountNumberForBalances;
+        dto.SubledgerAccount = entry.SubledgerAccountNumber;
+
+      } else {
+        dto.AccountNumber = entry.AccountNumber;
+        dto.SubledgerAccount = "";
+
+      }
+
+      if (account.Role != AccountRole.Control) {
+        dto.ItemType = TrialBalanceItemType.Summary;
+
+      } else {
+        dto.ItemType = entry.ItemType;
       }
     }
 
@@ -62,31 +97,47 @@ namespace Empiria.FinancialAccounting.Reporting {
       foreach (var account in accounts) {
 
         List<BalanzaTradicionalEntryDto> entries = GetBalancesByAccount(buildQuery, account);
-        returnedEntries.AddRange(entries);
 
+        returnedEntries.AddRange(entries);
       }
 
-      return returnedEntries;
+      return returnedEntries.OrderBy(a => a.CurrencyCode)
+                     .ThenBy(a => a.LedgerNumber)
+                     .ThenBy(a => a.AccountNumberForBalances)
+                     .ThenBy(a => a.SubledgerAccountNumber).ToList();
     }
 
 
-    #endregion Public methods
+    static private LockedUpBalancesEntryDto CreateGroupEntry(LockedUpBalancesEntryDto entry) {
+      var group = new LockedUpBalancesEntryDto();
+      group.CurrencyCode = entry.CurrencyCode;
+      group.LedgerNumber = entry.LedgerNumber;
+      group.AccountName = $"({entry.LedgerNumber}) {entry.LedgerName} - Moneda {entry.CurrencyCode}".ToUpper();
+      group.ItemType = TrialBalanceItemType.Group;
+      group.canGenerateVoucher = true;
+      group.RoleChangeDate = ExecutionServer.DateMaxValue;
+      group.LastChangeDate = ExecutionServer.DateMaxValue;
+      return group;
+    }
 
-    #region Private methods
 
+    private List<BalanzaTradicionalEntryDto> GetAccountEntries(
+            FixedList<ITrialBalanceEntryDto> entries, AccountDescriptorDto account) {
 
-    static private void AssignAccountClauses(LockedUpBalancesEntryDto dto, BalanzaTradicionalEntryDto entry) {
+      if (entries.Count == 0) {
+        return new List<BalanzaTradicionalEntryDto>();
+      }
 
-      if (entry.SubledgerAccountNumber.Length > 1) {
+      var balanceEntries = entries.Select(x => (BalanzaTradicionalEntryDto) x);
 
-        dto.AccountNumber = entry.AccountNumberForBalances;
-        dto.SubledgerAccount = entry.SubledgerAccountNumber;
+      if (account.Role != AccountRole.Control) {
 
-      } else {
-        dto.AccountNumber = entry.AccountNumber;
-        dto.SubledgerAccount = "";
+        return balanceEntries.Where(a => a.AccountNumberForBalances == account.Number &&
+                                         a.ItemType == TrialBalanceItemType.Entry).ToList();
 
       }
+
+      return balanceEntries.Where(a => a.AccountNumberForBalances == account.Number).ToList();
     }
 
 
@@ -106,51 +157,49 @@ namespace Empiria.FinancialAccounting.Reporting {
     }
 
 
-    private List<BalanzaTradicionalEntryDto> GetAccountEntries(
-            FixedList<ITrialBalanceEntryDto> entries, AccountDescriptorDto account) {
+    static private FixedList<LockedUpBalancesEntryDto> GetHeaderByLedger(
+                  FixedList<LockedUpBalancesEntryDto> mappedEntries) {
 
-      if (entries.Count == 0) {
-        return new List<BalanzaTradicionalEntryDto>();
+      var headers = new EmpiriaHashTable<LockedUpBalancesEntryDto>();
+
+      foreach (var entry in mappedEntries) {
+
+        string hash = $"{entry.LedgerNumber}||{entry.CurrencyCode}";
+
+        LockedUpBalancesEntryDto groupEntry = CreateGroupEntry(entry);
+
+        headers.Insert(hash, groupEntry);
+
       }
 
-      var balanceEntries = entries.Select(x => (BalanzaTradicionalEntryDto) x);
-      
-      if (account.Role != AccountRole.Control) {
-      
-        return balanceEntries.Where(a => a.AccountNumberForBalances == account.Number &&
-                                         a.ItemType == TrialBalanceItemType.Entry).ToList();
-
-      }
-
-      return balanceEntries.Where(a => a.AccountNumberForBalances == account.Number).ToList();
+      return headers.ToFixedList();
     }
 
 
-    private LockedUpBalancesDto Map(List<BalanzaTradicionalEntryDto> entries,
-                                    FixedList<AccountDescriptorDto> accounts) {
+    static private LockedUpBalancesDto Map(FixedList<LockedUpBalancesEntryDto> mappedEntries) {
 
       return new LockedUpBalancesDto {
         Columns = MapColumns(),
-        Entries = MapToDto(entries, accounts)
+        Entries = mappedEntries
       };
 
     }
 
 
-    private FixedList<DataTableColumn> MapColumns() {
+    static private FixedList<DataTableColumn> MapColumns() {
       var columns = new List<DataTableColumn>();
 
-      columns.Add(new DataTableColumn("ledgerNumber", "Cont", "text"));
-      columns.Add(new DataTableColumn("currencyCode", "Moneda", "text"));
+      //columns.Add(new DataTableColumn("currencyCode", "Mon", "text"));
+      //columns.Add(new DataTableColumn("ledgerNumber", "Cont", "text"));
       columns.Add(new DataTableColumn("accountNumber", "Cuenta", "text"));
-      columns.Add(new DataTableColumn("accountName", "Nombre", "text-nowrap"));
+      columns.Add(new DataTableColumn("accountName", "Nombre", "text"));
       columns.Add(new DataTableColumn("sectorCode", "Sector", "text"));
       columns.Add(new DataTableColumn("subledgerAccount", "Auxiliar", "text"));
       columns.Add(new DataTableColumn("currentBalance", "Saldo actual", "decimal"));
-      columns.Add(new DataTableColumn("role", "Rol", "text"));
-      columns.Add(new DataTableColumn("newRole", "Nuevo Rol", "text"));
-      columns.Add(new DataTableColumn("roleChangeDate", "Fecha cambio de Rol", "date"));
-      columns.Add(new DataTableColumn("lastChangeDate", "Último movimiento", "date"));
+      columns.Add(new DataTableColumn("roleChangeDate", "Fecha cambio Rol", "date"));
+      columns.Add(new DataTableColumn("actionRole", "Rol", "text-button"));
+      //columns.Add(new DataTableColumn("newRole", "Nuevo Rol", "text"));
+      //columns.Add(new DataTableColumn("lastChangeDate", "Último movimiento", "date"));
 
 
       return columns.ToFixedList();
@@ -172,20 +221,17 @@ namespace Empiria.FinancialAccounting.Reporting {
       var account = accounts.Find(a => a.Number == entry.AccountNumberForBalances);
 
       var dto = new LockedUpBalancesEntryDto();
-
+      AccountClauses(dto, entry, account);
       dto.StandardAccountId = entry.StandardAccountId;
       dto.CurrencyCode = entry.CurrencyCode;
       dto.LedgerNumber = entry.LedgerNumber;
-
-      AssignAccountClauses(dto, entry);
-
+      dto.LedgerName = entry.LedgerName;
+      dto.RoleChangeDate = account.EndDate;
+      dto.ActionRole = $"{account.Role}-{entry.AccountRole}";
       dto.AccountName = entry.AccountName;
       dto.SectorCode = entry.SectorCode;
-      
       dto.CurrentBalance = (decimal) entry.CurrentBalance;
       dto.LastChangeDate = entry.LastChangeDate;
-      dto.RoleChangeDate = account.EndDate;
-      dto.Role = account.Role.ToString();
       dto.NewRole = entry.AccountRole.ToString();
 
       return dto;
@@ -213,6 +259,26 @@ namespace Empiria.FinancialAccounting.Reporting {
       };
 
     }
+
+
+    static private FixedList<LockedUpBalancesEntryDto> MergeHeadersAndEntries(
+                            FixedList<LockedUpBalancesEntryDto> headers,
+                            FixedList<LockedUpBalancesEntryDto> mappedEntries) {
+
+      var mergedEntries = new List<LockedUpBalancesEntryDto>();
+
+      foreach (var header in headers) {
+
+        var entriesByHeader = mappedEntries.Where(a => a.CurrencyCode == header.CurrencyCode &&
+                              a.LedgerNumber == header.LedgerNumber).ToList();
+
+        mergedEntries.Add(header);
+        mergedEntries.AddRange(entriesByHeader);
+      }
+
+      return mergedEntries.ToFixedList();
+    }
+
 
     #endregion Private methods
 

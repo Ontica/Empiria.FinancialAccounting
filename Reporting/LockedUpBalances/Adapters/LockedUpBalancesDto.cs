@@ -16,11 +16,6 @@ namespace Empiria.FinancialAccounting.Reporting.LockedUpBalances.Adapters {
   /// <summary>Output DTO used to return vouchers by account.</summary>
   public class LockedUpBalancesDto {
 
-    //public BalanceExplorerQuery Query {
-    //  get; internal set;
-    //} = new BalanceExplorerQuery();
-
-
     public FixedList<DataTableColumn> Columns {
       get; internal set;
     } = new FixedList<DataTableColumn>();
@@ -31,18 +26,13 @@ namespace Empiria.FinancialAccounting.Reporting.LockedUpBalances.Adapters {
     } = new FixedList<LockedUpBalancesEntryDto>();
 
 
-    public string Title {
-      get; internal set;
-    }
-
   } // class VouchersByAccountDto
 
   public class LockedUpBalancesEntryDto {
 
 
     public TrialBalanceItemType ItemType {
-      get;
-      internal set;
+      get; internal set;
     }
 
 
@@ -57,6 +47,11 @@ namespace Empiria.FinancialAccounting.Reporting.LockedUpBalances.Adapters {
 
 
     public string LedgerNumber {
+      get; internal set;
+    }
+
+
+    public string LedgerName {
       get; internal set;
     }
 
@@ -81,7 +76,7 @@ namespace Empiria.FinancialAccounting.Reporting.LockedUpBalances.Adapters {
     }
 
 
-    public decimal CurrentBalance {
+    public decimal? CurrentBalance {
       get; internal set;
     }
 
@@ -96,7 +91,7 @@ namespace Empiria.FinancialAccounting.Reporting.LockedUpBalances.Adapters {
     }
 
 
-    public string Role {
+    public string ActionRole {
       get; internal set;
     }
 
@@ -104,7 +99,12 @@ namespace Empiria.FinancialAccounting.Reporting.LockedUpBalances.Adapters {
     public string NewRole {
       get; internal set;
     }
-    
+
+
+    public bool canGenerateVoucher {
+      get; internal set;
+    } = false;
+
 
   } // class LockedUpBalancesEntryDto
 
