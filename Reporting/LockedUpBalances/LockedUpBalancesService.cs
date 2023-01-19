@@ -111,6 +111,7 @@ namespace Empiria.FinancialAccounting.Reporting {
 
     static private LockedUpBalancesEntryDto CreateGroupEntry(LockedUpBalancesEntryDto entry) {
       var group = new LockedUpBalancesEntryDto();
+      group.LedgerUID = entry.LedgerUID;
       group.LedgerNumber = entry.LedgerNumber;
       group.AccountName = $"({entry.LedgerNumber}) {entry.LedgerName}".ToUpper();
       group.ItemType = TrialBalanceItemType.Group;
@@ -202,7 +203,7 @@ namespace Empiria.FinancialAccounting.Reporting {
       columns.Add(new DataTableColumn("subledgerAccount", "Auxiliar", "text"));
       columns.Add(new DataTableColumn("currentBalance", "Saldo encerrado", "decimal"));
       columns.Add(new DataTableColumn("roleChangeDate", "Fecha cambio Rol", "date"));
-      columns.Add(new DataTableColumn("actionRole", "Rol", "text-button"));
+      columns.Add(new DataTableColumn("roleChange", "Rol", "text-button"));
 
 
       return columns.ToFixedList();
@@ -231,7 +232,7 @@ namespace Empiria.FinancialAccounting.Reporting {
       dto.LedgerNumber = entry.LedgerNumber;
       dto.LedgerName = entry.LedgerName;
       dto.RoleChangeDate = account.EndDate;
-      dto.ActionRole = $"{account.Role}-{entry.AccountRole}";
+      dto.RoleChange = $"{account.Role}-{entry.AccountRole}";
       dto.AccountName = entry.AccountName;
       dto.SectorCode = entry.SectorCode;
       dto.CurrentBalance = (decimal) entry.CurrentBalance;

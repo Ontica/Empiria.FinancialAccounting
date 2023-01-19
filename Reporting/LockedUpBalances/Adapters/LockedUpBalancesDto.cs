@@ -96,7 +96,7 @@ namespace Empiria.FinancialAccounting.Reporting.LockedUpBalances.Adapters {
     }
 
 
-    public string ActionRole {
+    public string RoleChange {
       get; internal set;
     }
 
