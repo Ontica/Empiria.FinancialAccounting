@@ -51,12 +51,13 @@ namespace Empiria.FinancialAccounting.FinancialConcepts.UseCases {
     }
 
 
-    public FixedList<FinancialConceptDescriptorDto> GetFinancialConceptsInGroup(string groupUID) {
+    public FixedList<FinancialConceptDescriptorDto> GetFinancialConceptsInGroup(string groupUID,
+                                                                                DateTime date) {
       Assertion.Require(groupUID, "groupUID");
 
       var group = FinancialConceptGroup.Parse(groupUID);
 
-      return FinancialConceptMapper.Map(group.FinancialConcepts);
+      return FinancialConceptMapper.Map(group.GetFinancialConcepts(date));
     }
 
 

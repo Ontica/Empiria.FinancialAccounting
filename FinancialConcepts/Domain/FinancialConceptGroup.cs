@@ -184,6 +184,11 @@ namespace Empiria.FinancialAccounting.FinancialConcepts {
     }
 
 
+    internal FixedList<FinancialConcept> GetFinancialConcepts(DateTime date) {
+      return this.FinancialConcepts.FindAll(x => x.StartDate <= date && date <= x.EndDate);
+    }
+
+
     internal FinancialConcept InsertFrom(EditFinancialConceptCommand command) {
       Assertion.Require(command, nameof(command));
 
@@ -256,7 +261,6 @@ namespace Empiria.FinancialAccounting.FinancialConcepts {
 
     #region Helpers
 
-
     private bool IsFinancialConceptCodeRegistered(string code, FinancialConcept excluding) {
       return this.FinancialConcepts.Contains(x => x.Code == code && !x.Equals(excluding));
     }
@@ -305,6 +309,7 @@ namespace Empiria.FinancialAccounting.FinancialConcepts {
       Assertion.Ensure(concepts.TrueForAll(x => x.Position == concepts.IndexOf(x) + 1),
                        $"For all concepts, Position property must coincide with their indexes in the list.");
     }
+
 
     #endregion Helpers
 

@@ -38,10 +38,15 @@ namespace Empiria.FinancialAccounting.WebApi.FinancialConcepts {
 
     [HttpGet]
     [Route("v2/financial-accounting/financial-concepts/in-group/{groupUID:guid}")]
-    public CollectionModel GetFinancialConceptsInGroup([FromUri] string groupUID) {
+    public CollectionModel GetFinancialConceptsInGroup([FromUri] string groupUID,
+                                                       [FromUri] DateTime? date = null) {
+      if (!date.HasValue) {
+        date = DateTime.Today;
+      }
 
       using (var usecases = FinancialConceptsGroupUseCases.UseCaseInteractor()) {
-        FixedList<FinancialConceptDescriptorDto> concepts = usecases.GetFinancialConceptsInGroup(groupUID);
+        FixedList<FinancialConceptDescriptorDto> concepts =
+                                usecases.GetFinancialConceptsInGroup(groupUID, date.Value);
 
         return new CollectionModel(base.Request, concepts);
       }
