@@ -201,10 +201,9 @@ namespace Empiria.FinancialAccounting.Reporting {
       columns.Add(new DataTableColumn("accountName", "Nombre", "text"));
       columns.Add(new DataTableColumn("sectorCode", "Sector", "text"));
       columns.Add(new DataTableColumn("subledgerAccount", "Auxiliar", "text"));
-      columns.Add(new DataTableColumn("currentBalance", "Saldo encerrado", "decimal"));
+      columns.Add(new DataTableColumn("lockedBalance", "Saldo encerrado", "decimal"));
       columns.Add(new DataTableColumn("roleChangeDate", "Fecha cambio Rol", "date"));
       columns.Add(new DataTableColumn("roleChange", "Rol", "text-button"));
-
 
       return columns.ToFixedList();
     }
@@ -235,7 +234,7 @@ namespace Empiria.FinancialAccounting.Reporting {
       dto.RoleChange = $"{account.Role}-{entry.AccountRole}";
       dto.AccountName = entry.AccountName;
       dto.SectorCode = entry.SectorCode;
-      dto.CurrentBalance = (decimal) entry.CurrentBalance;
+      dto.LockedBalance = (decimal) entry.CurrentBalance;
       dto.LastChangeDate = entry.LastChangeDate;
       dto.NewRole = entry.AccountRole.ToString();
 

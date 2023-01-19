@@ -81,7 +81,7 @@ namespace Empiria.FinancialAccounting.Reporting.LockedUpBalances.Adapters {
     }
 
 
-    public decimal? CurrentBalance {
+    public decimal? LockedBalance {
       get; internal set;
     }
 
