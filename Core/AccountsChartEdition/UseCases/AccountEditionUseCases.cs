@@ -40,8 +40,12 @@ namespace Empiria.FinancialAccounting.AccountsChartEdition.UseCases {
 
       command.Arrange();
 
-      if (!command.IsValid || command.DryRun) {
+      if (!command.IsValid && command.DryRun) {
         return command.MapToExecutionResult<AccountDto>();
+
+      } else if (!command.IsValid && !command.DryRun) {
+        throw new ValidationException("422", command.Issues[0]);
+
       }
 
       var processor = new AccountsChartEditionCommandsProcessor();
@@ -82,8 +86,13 @@ namespace Empiria.FinancialAccounting.AccountsChartEdition.UseCases {
         item.Arrange();
       }
 
-      if (commands.Exists(x => !x.IsValid) || command.DryRun) {
+      bool notValid = commands.Exists(x => !x.IsValid);
+
+      if (notValid && command.DryRun) {
         return AccountsChartEditionCommandsProcessor.MapToOperationSummaryList(commands);
+
+      } else if (notValid && !command.DryRun) {
+        throw new ValidationException("422", commands.Find(x => !x.IsValid).Issues[0]);
       }
 
       var processor = new AccountsChartEditionCommandsProcessor();

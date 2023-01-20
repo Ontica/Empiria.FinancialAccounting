@@ -165,7 +165,7 @@ namespace Empiria.FinancialAccounting.AccountsChartEdition {
     private void SetDeleteAccountIssues() {
       Account account = _command.Entities.Account;
 
-      Require(account.GetChildren().Count != 0,
+      Require(account.GetChildren().Count == 0,
           "La cuenta no se puede eliminar porque tiene cuentas hijas.");
 
       Require(account.LedgerRules.Count == 0,
