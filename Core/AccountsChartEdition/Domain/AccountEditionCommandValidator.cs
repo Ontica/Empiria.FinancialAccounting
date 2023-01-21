@@ -114,9 +114,9 @@ namespace Empiria.FinancialAccounting.AccountsChartEdition {
             "AccountFields.AccountNumber does not match with the given accountUID.");
 
         Assertion.Require(account.StartDate < _command.ApplicationDate,
-            $"ApplicationDate ({_command.ApplicationDate.ToString("dd/MMM/yyyy")}) " +
-            $"must be greater than the given account's " +
-            $"start date {account.StartDate.ToString("dd/MMM/yyyy")}.");
+            $"La última modificacion de esta cuenta fue el día " +
+            $"{account.StartDate.ToString("dd/MMM/yyyy")}, " +
+            $"por lo que cualquier cambio adicional debe ser posterior a dicha fecha.");
       }
     }
 
@@ -279,8 +279,9 @@ namespace Empiria.FinancialAccounting.AccountsChartEdition {
       }
 
       if (!updateSectors) {
-        var registered = account.SectorRules.Select(x => x.Sector.Code)
-                                            .ToFixedList();
+        var registered = account.GetSectors(account.StartDate)
+                                .Select(x => x.Sector.Code)
+                                .ToFixedList();
 
         var provided = _command.SectorRules.ToFixedList().Select(x => x.Code);
 
@@ -322,11 +323,11 @@ namespace Empiria.FinancialAccounting.AccountsChartEdition {
                  dataToBeUpdated.Contains(AccountDataToBeUpdated.SubledgerRole)) {
 
         Require(_command.SectorRules.Length != 0 &&
-                account.SectorRules[0].SectorRole != _command.SectorRules[0].Role,
+                account.GetSectors(_command.ApplicationDate)[0].SectorRole != _command.SectorRules[0].Role,
             "Se está solicitando modificar el manejo de auxiliares de los sectores " +
-            (account.SectorRules[0].SectorRole == AccountRole.Control ?
-                "pero actualmente los sectores de la cuenta ya manejan auxiliares." :
-                "pero actualmente los sectores de la cuenta no manejan auxiliares."));
+            (account.GetSectors(_command.ApplicationDate)[0].SectorRole == AccountRole.Control ?
+            $"pero al día {_command.ApplicationDate.ToString("dd/MMM/yyyy")} los sectores de la cuenta ya manejan auxiliares." :
+            $"pero al día {_command.ApplicationDate.ToString("dd/MMM/yyyy")} los sectores de la cuenta no manejan auxiliares."));
       }
 
       if (newRole == AccountRole.Sumaria) {

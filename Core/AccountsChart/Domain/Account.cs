@@ -165,6 +165,7 @@ namespace Empiria.FinancialAccounting {
       }
     }
 
+
     public FixedList<LedgerRule> LedgerRules {
       get {
         return _ledgerRules.Value;
@@ -292,7 +293,7 @@ namespace Empiria.FinancialAccounting {
 
 
     internal FixedList<SectorRule> GetSectors(DateTime date) {
-      return _sectorRules.Value.FindAll(x => x.StartDate <= date.Date && date.Date <= x.EndDate);
+      return _sectorRules.Value.FindAll(x => x.AppliesOn(date));
     }
 
 
