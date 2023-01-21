@@ -13,6 +13,7 @@ using Empiria.Contacts;
 using Empiria.Json;
 using Empiria.StateEnums;
 
+using Empiria.FinancialAccounting.ExternalData.Adapters;
 using Empiria.FinancialAccounting.ExternalData.Data;
 
 namespace Empiria.FinancialAccounting.ExternalData {
@@ -26,6 +27,18 @@ namespace Empiria.FinancialAccounting.ExternalData {
     protected ExternalVariable() {
       // Required by Empiria Framework.
     }
+
+
+    internal ExternalVariable(ExternalVariablesSet set,
+                              ExternalVariableFields fields) {
+      Assertion.Require(set, nameof(set));
+      Assertion.Require(fields, nameof(fields));
+
+      this.Set = set;
+
+      Load(fields);
+    }
+
 
     static public ExternalVariable Parse(int id) {
       return BaseObject.ParseId<ExternalVariable>(id);
@@ -57,7 +70,6 @@ namespace Empiria.FinancialAccounting.ExternalData {
     #endregion Constructors and parsers
 
     #region Properties
-
 
     [DataField("ID_CONJUNTO_BASE")]
     public ExternalVariablesSet Set {
@@ -129,6 +141,36 @@ namespace Empiria.FinancialAccounting.ExternalData {
     }
 
     #endregion Properties
+
+    #region Methods
+
+    internal void Delete() {
+      this.Status = EntityStatus.Deleted;
+    }
+
+
+    internal void Update(ExternalVariableFields fields) {
+      Assertion.Require(fields, nameof(fields));
+
+      Load(fields);
+    }
+
+
+    private void Load(ExternalVariableFields fields) {
+      this.Code       = base.PatchField(fields.Code, this.Code);
+      this.Name       = base.PatchField(fields.Name, this.Name);
+      this.Notes      = base.PatchField(fields.Notes, this.Notes);
+      this.StartDate  = base.PatchField(fields.StartDate, this.StartDate);
+      this.EndDate    = base.PatchField(fields.EndDate, this.EndDate);
+      this.UpdatedBy  = ExecutionServer.CurrentIdentity.User.AsContact();
+    }
+
+
+    protected override void OnSave() {
+      ExternalVariablesData.Write(this);
+    }
+
+    #endregion Methods
 
   } // class ExternalVariable
 

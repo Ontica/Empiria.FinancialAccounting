@@ -39,7 +39,7 @@ namespace Empiria.FinancialAccounting.ExternalData.UseCases {
 
       ExternalVariablesSet set = ExternalVariablesSet.Parse(setUID);
 
-      ExternalVariable variable = set.Add(fields);
+      ExternalVariable variable = set.AddVariable(fields);
 
       variable.Save();
 
@@ -71,7 +71,7 @@ namespace Empiria.FinancialAccounting.ExternalData.UseCases {
 
       ExternalVariable variable = set.GetVariable(variableUID);
 
-      set.Delete(variable);
+      set.DeleteVariable(variable);
 
       variable.Save();
     }
@@ -88,7 +88,7 @@ namespace Empiria.FinancialAccounting.ExternalData.UseCases {
 
       ExternalVariable variable = set.GetVariable(variableUID);
 
-      set.Update(variable, fields);
+      set.UpdateVariable(variable, fields);
 
       variable.Save();
 

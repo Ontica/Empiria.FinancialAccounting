@@ -9,6 +9,8 @@
 ************************* Copyright(c) La Vía Óntica SC, Ontica LLC and contributors. All rights reserved. **/
 using System;
 
+using System.Collections.Generic;
+
 using Empiria.Data;
 
 namespace Empiria.FinancialAccounting.ExternalData.Data {
@@ -16,7 +18,7 @@ namespace Empiria.FinancialAccounting.ExternalData.Data {
   /// <summary>Data access layer for financial external variables definition data.</summary>
   static internal class ExternalVariablesData {
 
-    static internal FixedList<ExternalVariable> GetExternalVariables(ExternalVariablesSet set) {
+    static internal List<ExternalVariable> GetExternalVariables(ExternalVariablesSet set) {
       var sql = "SELECT * FROM COF_VARIABLES_EXTERNAS " +
                $"WHERE ID_CONJUNTO_BASE = {set.Id} " +
                $"AND STATUS_VARIABLE_EXTERNA <> 'X' " +
@@ -24,7 +26,18 @@ namespace Empiria.FinancialAccounting.ExternalData.Data {
 
       var op = DataOperation.Parse(sql);
 
-      return DataReader.GetFixedList<ExternalVariable>(op);
+      return DataReader.GetList<ExternalVariable>(op);
+    }
+
+
+    static internal void Write(ExternalVariable o) {
+      var op = DataOperation.Parse("write_cof_variable_externa",
+          o.Id, o.UID, o.Set.Id, o.Code, o.Name,
+          o.Notes, o.ExtData.ToString(), o.Position,
+          o.StartDate, o.EndDate,
+          (char) o.Status, o.UpdatedBy.Id);
+
+      DataWriter.Execute(op);
     }
 
   }  // class ExternalVariablesData
