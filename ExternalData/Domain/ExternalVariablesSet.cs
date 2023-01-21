@@ -9,8 +9,10 @@
 *                                                                                                            *
 ************************* Copyright(c) La Vía Óntica SC, Ontica LLC and contributors. All rights reserved. **/
 using System;
+using System.Collections.Generic;
 
 using Empiria.FinancialAccounting.Datasets;
+
 using Empiria.FinancialAccounting.ExternalData.Adapters;
 using Empiria.FinancialAccounting.ExternalData.Data;
 
@@ -22,7 +24,7 @@ namespace Empiria.FinancialAccounting.ExternalData {
 
     #region Fields
 
-    private Lazy<FixedList<ExternalVariable>> _externalVariables;
+    private Lazy<List<ExternalVariable>> _externalVariables;
 
     #endregion Fields
 
@@ -62,7 +64,7 @@ namespace Empiria.FinancialAccounting.ExternalData {
       }
 
       _externalVariables =
-            new Lazy<FixedList<ExternalVariable>>(() => ExternalVariablesData.GetExternalVariables(this));
+            new Lazy<List<ExternalVariable>>(() => ExternalVariablesData.GetExternalVariables(this));
 
     }
 
@@ -92,29 +94,53 @@ namespace Empiria.FinancialAccounting.ExternalData {
 
     public FixedList<ExternalVariable> ExternalVariables {
       get {
-        return _externalVariables.Value;
+        return _externalVariables.Value.ToFixedList();
       }
     }
 
     #endregion Properties
 
-
     #region Methods
 
-    internal ExternalVariable Add(ExternalVariableFields fields) {
-      throw new NotImplementedException();
+    internal ExternalVariable AddVariable(ExternalVariableFields fields) {
+      Assertion.Require(fields, nameof(fields));
+
+      var variable = new ExternalVariable(this, fields);
+
+      _externalVariables.Value.Add(variable);
+
+      return variable;
     }
+
 
     internal ExternalVariable GetVariable(string variableUID) {
-      throw new NotImplementedException();
+      Assertion.Require(variableUID, nameof(variableUID));
+
+      ExternalVariable variable = _externalVariables.Value.Find(x => x.UID == variableUID);
+
+      Assertion.Require(variableUID,
+                $"A variable with uid {variableUID} not found or does not belong to this set.");
+
+      return variable;
     }
 
-    internal void Delete(ExternalVariable variable) {
-      throw new NotImplementedException();
+
+    internal void DeleteVariable(ExternalVariable variable) {
+      Assertion.Require(variable, nameof(variable));
+      Assertion.Require(variable.Set.Equals(this), $"Variable set mismatch.");
+
+      variable.Delete();
+
+      _externalVariables.Value.Remove(variable);
     }
 
-    internal void Update(ExternalVariable variable, ExternalVariableFields fields) {
-      throw new NotImplementedException();
+
+    internal void UpdateVariable(ExternalVariable variable,
+                                 ExternalVariableFields fields) {
+      Assertion.Require(variable, nameof(variable));
+      Assertion.Require(variable.Set.Equals(this), $"Variable set mismatch.");
+
+      variable.Update(fields);
     }
 
     #endregion Methods

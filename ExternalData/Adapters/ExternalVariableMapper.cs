@@ -33,6 +33,8 @@ namespace Empiria.FinancialAccounting.ExternalData.Adapters {
         Name = variable.Name,
         Notes = variable.Notes,
         Position = variable.Position,
+        StartDate = variable.StartDate,
+        EndDate = variable.EndDate,
         SetUID = variable.Set.UID
       };
     }

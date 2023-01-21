@@ -53,6 +53,8 @@ namespace Empiria.FinancialAccounting.WebApi.ExternalData {
     public SingleObjectModel AddVariable([FromUri] string setUID,
                                          [FromBody] ExternalVariableFields fields) {
 
+      RequireBody(fields);
+
       using (var usecases = ExternalVariablesUseCases.UseCaseInteractor()) {
         ExternalVariableDto dto = usecases.AddVariable(setUID, fields);
 
@@ -81,6 +83,7 @@ namespace Empiria.FinancialAccounting.WebApi.ExternalData {
     public SingleObjectModel UpdateVariable([FromUri] string setUID,
                                             [FromUri] string variableUID,
                                             [FromBody] ExternalVariableFields fields) {
+      RequireBody(fields);
 
       using (var usecases = ExternalVariablesUseCases.UseCaseInteractor()) {
         ExternalVariableDto dto = usecases.UpdateVariable(setUID, variableUID, fields);

@@ -64,11 +64,9 @@ namespace Empiria.FinancialAccounting.ExternalData.Adapters {
       get; internal set;
     }
 
-
     public DateTime StartDate {
       get; set;
     }
-
 
     public DateTime EndDate {
       get; set;
@@ -91,23 +89,27 @@ namespace Empiria.FinancialAccounting.ExternalData.Adapters {
 
     public string Code {
       get; set;
-    }
+    } = string.Empty;
+
 
     public string Name {
       get; set;
-    }
+    } = string.Empty;
+
 
     public string Notes {
       get; set;
-    }
+    } = string.Empty;
+
 
     public DateTime StartDate {
       get; set;
-    }
+    } = ExecutionServer.DateMinValue;
+
 
     public DateTime EndDate {
       get; set;
-    }
+    } = ExecutionServer.DateMinValue;
 
   }  // class ExternalVariableFields
 
