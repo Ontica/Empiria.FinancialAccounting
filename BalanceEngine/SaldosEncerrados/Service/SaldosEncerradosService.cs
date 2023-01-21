@@ -30,7 +30,6 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
 
     public SaldosEncerradosService(SaldosEncerradosQuery _query) {
       Assertion.Require(_query, nameof(_query));
-
       buildQuery = _query;
     }
 
@@ -49,8 +48,7 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
       using (var accountsUsecases = AccountsChartUseCases.UseCaseInteractor()) {
 
         AccountsChartDto accountsChart = accountsUsecases.TryGetAccountsWithChange(
-                buildQuery.AccountsChartUID, buildQuery.FromDate,
-                buildQuery.ToDate);
+                buildQuery.AccountsChartUID, buildQuery.FromDate, buildQuery.ToDate);
 
         List<BalanzaTradicionalEntryDto> entries = BalancesByAccount(accountsChart.Accounts);
 
@@ -73,12 +71,11 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
 
     private List<BalanzaTradicionalEntryDto> BalancesByAccount(
                 FixedList<AccountDescriptorDto> accounts) {
-
       var returnedEntries = new List<BalanzaTradicionalEntryDto>();
+
       foreach (var account in accounts) {
 
         List<BalanzaTradicionalEntryDto> entries = GetBalancesByAccount(account);
-
         returnedEntries.AddRange(entries);
       }
 
@@ -102,7 +99,6 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
 
         return balanceEntries.Where(a => a.AccountNumberForBalances == account.Number &&
                                          a.ItemType == TrialBalanceItemType.Entry).ToList();
-
       }
 
       return balanceEntries.Where(a => a.AccountNumberForBalances == account.Number).ToList();
@@ -114,11 +110,8 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
       using (var balancesUsecases = TrialBalanceUseCases.UseCaseInteractor()) {
 
         TrialBalanceQuery trialBalanceQuery = GetTrialBalanceQueryClauses(buildQuery, account);
-
         TrialBalanceDto trialBalance = balancesUsecases.BuildTrialBalance(trialBalanceQuery);
-
         return GetAccountEntries(trialBalance.Entries, account);
-
       }
 
     }

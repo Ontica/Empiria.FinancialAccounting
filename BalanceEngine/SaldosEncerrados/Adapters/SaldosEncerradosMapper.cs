@@ -24,12 +24,10 @@ namespace Empiria.FinancialAccounting.BalanceEngine.Adapters {
 
 
     static public SaldosEncerradosDto Map(FixedList<SaldosEncerradosEntryDto> mappedEntries) {
-
       return new SaldosEncerradosDto {
         Columns = DataColumns(),
         Entries = mappedEntries
       };
-
     }
 
 

@@ -193,7 +193,6 @@ namespace Empiria.FinancialAccounting.WebApi.BalanceEngine {
     [HttpPost]
     [Route("v2/financial-accounting/locked-up-balances")]
     public async Task<SingleObjectModel> GetSaldosEncerrados([FromBody] SaldosEncerradosQuery buildQuery) {
-
       base.RequireBody(buildQuery);
 
       using (var service = TrialBalanceUseCases.UseCaseInteractor()) {
