@@ -11,7 +11,7 @@
 using System;
 
 using Empiria.FinancialAccounting.Datasets;
-
+using Empiria.FinancialAccounting.ExternalData.Adapters;
 using Empiria.FinancialAccounting.ExternalData.Data;
 
 namespace Empiria.FinancialAccounting.ExternalData {
@@ -97,6 +97,27 @@ namespace Empiria.FinancialAccounting.ExternalData {
     }
 
     #endregion Properties
+
+
+    #region Methods
+
+    internal ExternalVariable Add(ExternalVariableFields fields) {
+      throw new NotImplementedException();
+    }
+
+    internal ExternalVariable GetVariable(string variableUID) {
+      throw new NotImplementedException();
+    }
+
+    internal void Delete(ExternalVariable variable) {
+      throw new NotImplementedException();
+    }
+
+    internal void Update(ExternalVariable variable, ExternalVariableFields fields) {
+      throw new NotImplementedException();
+    }
+
+    #endregion Methods
 
   } // class ExternalVariablesSet
 

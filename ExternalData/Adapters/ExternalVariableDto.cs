@@ -64,6 +64,16 @@ namespace Empiria.FinancialAccounting.ExternalData.Adapters {
       get; internal set;
     }
 
+
+    public DateTime StartDate {
+      get; set;
+    }
+
+
+    public DateTime EndDate {
+      get; set;
+    }
+
     public int? Position {
       get; internal set;
     }
@@ -73,5 +83,32 @@ namespace Empiria.FinancialAccounting.ExternalData.Adapters {
     }
 
   }  // class ExternalVariableDto
+
+
+
+  /// <summary>DTO for ExternalVariable instances.</summary>
+  public class ExternalVariableFields {
+
+    public string Code {
+      get; set;
+    }
+
+    public string Name {
+      get; set;
+    }
+
+    public string Notes {
+      get; set;
+    }
+
+    public DateTime StartDate {
+      get; set;
+    }
+
+    public DateTime EndDate {
+      get; set;
+    }
+
+  }  // class ExternalVariableFields
 
 }  // namespace Empiria.FinancialAccounting.ExternalData.Adapters
