@@ -130,7 +130,7 @@ namespace Empiria.FinancialAccounting.AccountsChartEdition.Data {
                                                     debtorCreditor.ToString(), role.ToString());
 
       return DataOperation.Parse("do_update_cuenta_estandar",
-                        account.Id, account.AccountsChart.Id,
+                        account.StandardAccountId, account.AccountsChart.Id,
                         account.Number, name, description,
                         (char) role, accountType.Id, (char) debtorCreditor,
                         o.ApplicationDate.Date, Account.MAX_END_DATE,
