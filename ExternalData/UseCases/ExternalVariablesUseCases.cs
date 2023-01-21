@@ -33,7 +33,21 @@ namespace Empiria.FinancialAccounting.ExternalData.UseCases {
     #region Use cases
 
 
-    public FixedList<ExternalVariableDto> GetExternalVariables(string setUID) {
+    public ExternalVariableDto AddVariable(string setUID, ExternalVariableFields fields) {
+      Assertion.Require(setUID, nameof(setUID));
+      Assertion.Require(fields, nameof(fields));
+
+      ExternalVariablesSet set = ExternalVariablesSet.Parse(setUID);
+
+      ExternalVariable variable = set.Add(fields);
+
+      variable.Save();
+
+      return ExternalVariableMapper.Map(variable);
+    }
+
+
+    public FixedList<ExternalVariableDto> GetVariables(string setUID) {
       Assertion.Require(setUID, nameof(setUID));
 
       ExternalVariablesSet set = ExternalVariablesSet.Parse(setUID);
@@ -42,12 +56,44 @@ namespace Empiria.FinancialAccounting.ExternalData.UseCases {
     }
 
 
-    public FixedList<ExternalVariablesSetDto> GetExternalVariablesSets() {
+    public FixedList<ExternalVariablesSetDto> GetVariablesSets() {
       FixedList<ExternalVariablesSet> sets = ExternalVariablesSet.GetList();
 
       return ExternalVariableMapper.Map(sets);
     }
 
+
+    public void RemoveVariable(string setUID, string variableUID) {
+      Assertion.Require(setUID, nameof(setUID));
+      Assertion.Require(variableUID, nameof(variableUID));
+
+      ExternalVariablesSet set = ExternalVariablesSet.Parse(setUID);
+
+      ExternalVariable variable = set.GetVariable(variableUID);
+
+      set.Delete(variable);
+
+      variable.Save();
+    }
+
+
+    public ExternalVariableDto UpdateVariable(string setUID,
+                                              string variableUID,
+                                              ExternalVariableFields fields) {
+      Assertion.Require(setUID, nameof(setUID));
+      Assertion.Require(variableUID, nameof(variableUID));
+      Assertion.Require(fields, nameof(fields));
+
+      ExternalVariablesSet set = ExternalVariablesSet.Parse(setUID);
+
+      ExternalVariable variable = set.GetVariable(variableUID);
+
+      set.Update(variable, fields);
+
+      variable.Save();
+
+      return ExternalVariableMapper.Map(variable);
+    }
 
     #endregion Use cases
 

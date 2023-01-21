@@ -27,7 +27,7 @@ namespace Empiria.FinancialAccounting.WebApi.ExternalData {
     public CollectionModel GetExternalVariablesSets() {
 
       using (var usecases = ExternalVariablesUseCases.UseCaseInteractor()) {
-        FixedList<ExternalVariablesSetDto> sets = usecases.GetExternalVariablesSets();
+        FixedList<ExternalVariablesSetDto> sets = usecases.GetVariablesSets();
 
         return new CollectionModel(Request, sets);
       }
@@ -35,15 +35,60 @@ namespace Empiria.FinancialAccounting.WebApi.ExternalData {
 
 
     [HttpGet]
-    [Route("v2/financial-accounting/financial-concepts/external-variables-sets/{setUID:guid}")]
+    [Route("v2/financial-accounting/financial-concepts/" +
+           "external-variables-sets/{setUID:guid}/variables")]
     public CollectionModel GetExternalVariables([FromUri] string setUID) {
 
       using (var usecases = ExternalVariablesUseCases.UseCaseInteractor()) {
-        FixedList<ExternalVariableDto> variables = usecases.GetExternalVariables(setUID);
+        FixedList<ExternalVariableDto> variables = usecases.GetVariables(setUID);
 
         return new CollectionModel(Request, variables);
       }
     }
+
+
+    [HttpPost]
+    [Route("v2/financial-accounting/financial-concepts/" +
+           "external-variables-sets/{setUID:guid}/variables")]
+    public SingleObjectModel AddVariable([FromUri] string setUID,
+                                         [FromBody] ExternalVariableFields fields) {
+
+      using (var usecases = ExternalVariablesUseCases.UseCaseInteractor()) {
+        ExternalVariableDto dto = usecases.AddVariable(setUID, fields);
+
+        return new SingleObjectModel(Request, dto);
+      }
+    }
+
+
+    [HttpDelete]
+    [Route("v2/financial-accounting/financial-concepts/" +
+           "external-variables-sets/{setUID:guid}/variables/{variableUID:guid}")]
+    public NoDataModel RemoveVariable([FromUri] string setUID,
+                                      [FromUri] string variableUID) {
+
+      using (var usecases = ExternalVariablesUseCases.UseCaseInteractor()) {
+        usecases.RemoveVariable(setUID, variableUID);
+
+        return new NoDataModel(Request);
+      }
+    }
+
+
+    [HttpPut, HttpPatch]
+    [Route("v2/financial-accounting/financial-concepts/" +
+           "external-variables-sets/{setUID:guid}/variables/{variableUID:guid}")]
+    public SingleObjectModel UpdateVariable([FromUri] string setUID,
+                                            [FromUri] string variableUID,
+                                            [FromBody] ExternalVariableFields fields) {
+
+      using (var usecases = ExternalVariablesUseCases.UseCaseInteractor()) {
+        ExternalVariableDto dto = usecases.UpdateVariable(setUID, variableUID, fields);
+
+        return new SingleObjectModel(Request, dto);
+      }
+    }
+
 
     #endregion Web Apis
 
