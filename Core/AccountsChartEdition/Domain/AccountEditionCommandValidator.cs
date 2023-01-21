@@ -264,8 +264,9 @@ namespace Empiria.FinancialAccounting.AccountsChartEdition {
       }
 
       if (!updateCurrencies) {
-        var registered = account.CurrencyRules.Select(x => x.Currency.Code)
-                                              .ToFixedList();
+        var registered = account.GetCurrencies(account.StartDate)
+                                .Select(x => x.Currency.Code)
+                                .ToFixedList();
 
         Require(registered.SameItems(_command.Currencies),
             "Las monedas proporcionadas no coinciden con las registradas y " +

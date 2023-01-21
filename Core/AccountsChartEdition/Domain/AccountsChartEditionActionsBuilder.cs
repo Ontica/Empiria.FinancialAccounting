@@ -207,7 +207,7 @@ namespace Empiria.FinancialAccounting.AccountsChartEdition {
       FixedList<Currency> newCurrencies = _command.Entities.GetCurrencies();
       Account account = _command.Entities.Account;
 
-      foreach (var currentCurrencyRule in account.CurrencyRules) {
+      foreach (var currentCurrencyRule in account.GetCurrencies(account.StartDate)) {
 
         if (!newCurrencies.Contains(x => x.Equals(currentCurrencyRule.Currency))) {
           DataOperation op = AccountEditionDataService.RemoveAccountCurrencyOp(currentCurrencyRule,
@@ -218,7 +218,8 @@ namespace Empiria.FinancialAccounting.AccountsChartEdition {
 
       foreach (var currency in newCurrencies) {
 
-        if (!account.CurrencyRules.Contains(x => x.Currency.Equals(currency))) {
+        if (!account.GetCurrencies(account.StartDate)
+                    .Contains(x => x.Currency.Equals(currency))) {
           DataOperation op = AccountEditionDataService.AddAccountCurrencyOp(account.StandardAccountId, currency,
                                                                             _command.ApplicationDate);
           operations.Add(op);
@@ -267,9 +268,10 @@ namespace Empiria.FinancialAccounting.AccountsChartEdition {
 
     private bool HasUpdatedCurrencies() {
       FixedList<Currency> newCurrencies = _command.Entities.GetCurrencies();
+
       Account account = _command.Entities.Account;
 
-      foreach (var currentCurrencyRule in account.CurrencyRules) {
+      foreach (var currentCurrencyRule in account.GetCurrencies(account.StartDate)) {
 
         if (!newCurrencies.Contains(x => x.Equals(currentCurrencyRule.Currency))) {
           return true;
@@ -285,7 +287,7 @@ namespace Empiria.FinancialAccounting.AccountsChartEdition {
       FixedList<SectorInputRuleDto> newSectorRules = _command.Entities.GetSectorRules();
       Account account = _command.Entities.Account;
 
-      foreach (var currentSectorRule in account.SectorRules) {
+      foreach (var currentSectorRule in account.GetSectors(account.StartDate)) {
 
         if (!newSectorRules.Contains(x => x.Sector.Equals(currentSectorRule.Sector) &&
                                           x.Role.Equals(currentSectorRule.SectorRole))) {

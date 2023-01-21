@@ -267,6 +267,11 @@ namespace Empiria.FinancialAccounting {
     }
 
 
+    internal FixedList<CurrencyRule> GetCurrencies(DateTime date) {
+      return _currencyRules.Value.FindAll(x => x.AppliesOn(date));
+    }
+
+
     internal FixedList<Account> GetHistory() {
       return this.AccountsChart.GetAccountHistory(this.Number);
     }
