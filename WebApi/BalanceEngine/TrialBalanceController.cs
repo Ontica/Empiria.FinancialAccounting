@@ -18,6 +18,8 @@ using Empiria.FinancialAccounting.Reporting.Balances;
 
 using Empiria.FinancialAccounting.BalanceEngine.UseCases;
 using Empiria.FinancialAccounting.BalanceEngine.Adapters;
+using Empiria.FinancialAccounting.Adapters;
+using Empiria.FinancialAccounting.UseCases;
 
 namespace Empiria.FinancialAccounting.WebApi.BalanceEngine {
 
@@ -184,6 +186,21 @@ namespace Empiria.FinancialAccounting.WebApi.BalanceEngine {
         FileReportDto excelFileDto = excelExporter.Export(trialBalance);
 
         return new SingleObjectModel(this.Request, excelFileDto);
+      }
+    }
+
+
+    [HttpPost]
+    [Route("v2/financial-accounting/locked-up-balances")]
+    public async Task<SingleObjectModel> GetSaldosEncerrados([FromBody] SaldosEncerradosQuery buildQuery) {
+
+      base.RequireBody(buildQuery);
+
+      using (var service = TrialBalanceUseCases.UseCaseInteractor()) {
+
+        SaldosEncerradosDto reportData = await service.BuildSaldosEncerrados(buildQuery);
+
+        return new SingleObjectModel(this.Request, reportData);
       }
     }
 

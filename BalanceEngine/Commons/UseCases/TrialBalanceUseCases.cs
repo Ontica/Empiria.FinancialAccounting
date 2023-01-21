@@ -184,6 +184,17 @@ namespace Empiria.FinancialAccounting.BalanceEngine.UseCases {
     }
 
 
+    public async Task<SaldosEncerradosDto> BuildSaldosEncerrados(SaldosEncerradosQuery query) {
+      Assertion.Require(query, nameof(query));
+
+      var builder = new SaldosEncerradosService(query);
+
+      FixedList<SaldosEncerradosEntryDto> entries = await Task.Run(() => builder.Build()).ConfigureAwait(false);
+
+      return SaldosEncerradosMapper.Map(entries);
+    }
+
+
     #endregion Use cases
 
   } // class TrialBalanceUseCases
