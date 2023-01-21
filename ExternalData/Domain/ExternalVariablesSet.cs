@@ -103,7 +103,8 @@ namespace Empiria.FinancialAccounting.ExternalData {
     #region Methods
 
     internal ExternalVariable AddVariable(ExternalVariableFields fields) {
-      Assertion.Require(fields, nameof(fields));
+      Cleanup(fields);
+      EnsureCanAdd(fields);
 
       var variable = new ExternalVariable(this, fields);
 
@@ -129,9 +130,16 @@ namespace Empiria.FinancialAccounting.ExternalData {
       Assertion.Require(variable, nameof(variable));
       Assertion.Require(variable.Set.Equals(this), $"Variable set mismatch.");
 
+      EnsureCanDelete(variable);
+
       variable.Delete();
 
       _externalVariables.Value.Remove(variable);
+    }
+
+
+    public ExternalVariable TryGetVariable(string code) {
+      return _externalVariables.Value.Find(x => x.Code == code);
     }
 
 
@@ -140,10 +148,66 @@ namespace Empiria.FinancialAccounting.ExternalData {
       Assertion.Require(variable, nameof(variable));
       Assertion.Require(variable.Set.Equals(this), $"Variable set mismatch.");
 
+      Cleanup(fields);
+      EnsureCanUpdate(variable, fields);
+
       variable.Update(fields);
     }
 
     #endregion Methods
+
+    #region Helpers
+
+    private void Cleanup(ExternalVariableFields fields) {
+      Assertion.Require(fields, nameof(fields));
+
+      fields.Code = EmpiriaString.TrimAll(fields.Code);
+      fields.Name = EmpiriaString.TrimAll(fields.Name);
+    }
+
+
+    private void EnsureCanAdd(ExternalVariableFields fields) {
+      RequireFieldsAreValid(fields);
+
+      Assertion.Require(TryGetVariable(fields.Code) == null,
+                    "Ya existe otra variable con esa clave o código.");
+    }
+
+
+    private void EnsureCanDelete(ExternalVariable variable) {
+      FixedList<ExternalValue> values = ExternalValuesData.GetValues(variable);
+
+      Assertion.Require(values.Count == 0,
+                    "La variable ya está en uso por lo que no puede ser eliminada.");
+    }
+
+
+    private void EnsureCanUpdate(ExternalVariable variable,
+                                 ExternalVariableFields fields) {
+      RequireFieldsAreValid(fields);
+
+      if (variable.Code != fields.Code) {
+
+        Assertion.Require(TryGetVariable(fields.Code) == null,
+                      "Ya existe otra variable con ese código.");
+      }
+    }
+
+
+    private void RequireFieldsAreValid(ExternalVariableFields fields) {
+      Assertion.Require(fields.Code,
+                     "No se proporcionó la clave o código de la variable.");
+      Assertion.Require(fields.Name,
+                    "No se proporcionó el nombre de la variable.");
+      Assertion.Require(fields.StartDate,
+                    "No se proporcionó la fecha de inicio.");
+      Assertion.Require(fields.EndDate,
+                    "No se proporcionó la fecha de finalización.");
+      Assertion.Require(fields.StartDate <= fields.EndDate,
+                    "La fecha de finalización debe ser mayor o igual que la fecha de inicio.");
+    }
+
+    #endregion Helpers
 
   } // class ExternalVariablesSet
 

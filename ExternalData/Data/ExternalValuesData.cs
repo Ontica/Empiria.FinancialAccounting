@@ -18,10 +18,22 @@ namespace Empiria.FinancialAccounting.ExternalData.Data {
   /// <summary>Data access layer for financial external values.</summary>
   static internal class ExternalValuesData {
 
+    static internal FixedList<ExternalValue> GetValues(ExternalVariable variable) {
+      var sql = "SELECT * FROM COF_VALORES_EXTERNOS " +
+               $"WHERE ID_VARIABLE_EXTERNA = {variable.Id} AND " +
+               $"STATUS_VALOR_EXTERNO <> 'X' " +
+               "ORDER BY FECHA_APLICACION";
+
+      var op = DataOperation.Parse(sql);
+
+      return DataReader.GetFixedList<ExternalValue>(op);
+    }
+
+
     static internal FixedList<ExternalValue> GetValues(Dataset dataset) {
       var sql = "SELECT * FROM COF_VALORES_EXTERNOS " +
-               $"WHERE ID_ARCHIVO = {dataset.Id} " +
-               $"AND STATUS_VALOR_EXTERNO <> 'X' " +
+               $"WHERE ID_ARCHIVO = {dataset.Id} AND " +
+               $"STATUS_VALOR_EXTERNO <> 'X' " +
                "ORDER BY ID_VALOR_EXTERNO";
 
       var op = DataOperation.Parse(sql);
@@ -32,9 +44,9 @@ namespace Empiria.FinancialAccounting.ExternalData.Data {
 
     static internal FixedList<ExternalValue> GetValues(ExternalVariablesSet variablesSet, DateTime date) {
       var sql = "SELECT * FROM COF_VALORES_EXTERNOS " +
-               $"WHERE ID_CONJUNTO_BASE = {variablesSet.Id} " +
-               $"AND FECHA_APLICACION = {CommonMethods.FormatSqlDbDate(date)} " +
-               $"AND STATUS_VALOR_EXTERNO <> 'X' " +
+               $"WHERE ID_CONJUNTO_BASE = {variablesSet.Id} AND " +
+               $"FECHA_APLICACION = {CommonMethods.FormatSqlDbDate(date)} AND " +
+               $"STATUS_VALOR_EXTERNO <> 'X' " +
                "ORDER BY ID_VALOR_EXTERNO";
 
       var op = DataOperation.Parse(sql);
