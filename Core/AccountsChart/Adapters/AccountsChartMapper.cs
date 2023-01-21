@@ -45,8 +45,8 @@ namespace Empiria.FinancialAccounting.Adapters {
 
       dto.AccountsChart = account.AccountsChart.MapToNamedEntity();
       dto.AreaRules = account.AreaRules;
-      dto.CurrencyRules = account.CurrencyRules;
-      dto.SectorRules = LedgerMapper.MapSectorRules(account.SectorRules);
+      dto.CurrencyRules = account.AllCurrencyRules;
+      dto.SectorRules = LedgerMapper.MapSectorRules(account.AllSectorRules);
       dto.LedgerRules = LedgerMapper.MapLedgersRules(account.LedgerRules);
       dto.History = MapAccountHistory(account.GetHistory());
 
@@ -131,12 +131,14 @@ namespace Empiria.FinancialAccounting.Adapters {
 
 
     static private FixedList<AccountDescriptorDto> MapToAccountsWithChange(FixedList<Account> accounts) {
-      return new FixedList<AccountDescriptorDto>(accounts.Select((x) => MapToAccountWithChange(x)));
+      return accounts.Select((x) => MapToAccountWithChange(x))
+                     .ToFixedList();
     }
 
 
     static private FixedList<AccountDescriptorDto> MapToAccountDescriptors(FixedList<Account> list) {
-      return new FixedList<AccountDescriptorDto>(list.Select((x) => MapToAccountDescriptor(x)));
+      return list.Select((x) => MapToAccountDescriptor(x))
+                 .ToFixedList();
     }
 
 
@@ -151,7 +153,7 @@ namespace Empiria.FinancialAccounting.Adapters {
           continue;
         }
 
-        var sectors = account.GetSectors();
+        var sectors = account.GetSectors(account.StartDate);
         if (sectors.Count == 0) {
           continue;
         }
@@ -173,7 +175,8 @@ namespace Empiria.FinancialAccounting.Adapters {
 
 
     static private FixedList<AccountHistoryDto> MapAccountHistory(FixedList<Account> list) {
-      return new FixedList<AccountHistoryDto>(list.Select((x) => MapToAccountHistory(x)));
+      return list.Select((x) => MapToAccountHistory(x))
+                 .ToFixedList();
     }
 
 

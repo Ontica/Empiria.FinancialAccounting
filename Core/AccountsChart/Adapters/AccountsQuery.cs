@@ -192,10 +192,10 @@ namespace Empiria.FinancialAccounting.Adapters {
         return accounts;
       }
 
-      var restricted = accounts.FindAll(acct => acct.CurrencyRules.Contains(acctCurcy => acctCurcy.Currency.UID == currencies[0]));
+      var restricted = accounts.FindAll(acct => acct.AllCurrencyRules.Contains(acctCurcy => acctCurcy.Currency.UID == currencies[0]));
 
       for (int i = 1; i < currencies.Length; i++) {
-        var temp = restricted.FindAll(acct => acct.CurrencyRules.Contains(acctCurcy => acctCurcy.Currency.UID == currencies[i]));
+        var temp = restricted.FindAll(acct => acct.AllCurrencyRules.Contains(acctCurcy => acctCurcy.Currency.UID == currencies[i]));
         restricted = restricted.Intersect(temp);
       }
 
@@ -224,11 +224,14 @@ namespace Empiria.FinancialAccounting.Adapters {
       if (sectors.Length == 0) {
         return accounts;
       }
-      var restricted = accounts.FindAll(acct => acct.SectorRules.Contains(acctSector => acctSector.Sector.UID == sectors[0]));
+
+      var restricted = accounts.FindAll(acct => acct.AllSectorRules.Contains(acctSector => acctSector.Sector.UID == sectors[0]));
+
       for (int i = 1; i < sectors.Length; i++) {
-        var temp = restricted.FindAll(acct => acct.SectorRules.Contains(acctSector => acctSector.Sector.UID == sectors[i]));
+        var temp = restricted.FindAll(acct => acct.AllSectorRules.Contains(acctSector => acctSector.Sector.UID == sectors[i]));
         restricted = restricted.Intersect(temp);
       }
+
       return restricted;
     }
 

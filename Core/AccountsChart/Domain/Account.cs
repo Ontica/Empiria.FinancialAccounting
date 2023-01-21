@@ -56,8 +56,7 @@ namespace Empiria.FinancialAccounting {
 
     #endregion Constructors and parsers
 
-    #region Public properties
-
+    #region Properties
 
     [DataField("ID_TIPO_CUENTAS_STD", ConvertFrom = typeof(long))]
     public AccountsChart AccountsChart {
@@ -152,16 +151,22 @@ namespace Empiria.FinancialAccounting {
       }
     }
 
-    public FixedList<AreaRule> AreaRules {
+    public FixedList<CurrencyRule> AllCurrencyRules {
       get {
-        return _areaRules.Value;
+        return _currencyRules.Value;
       }
     }
 
 
-    public FixedList<CurrencyRule> CurrencyRules {
+    public FixedList<SectorRule> AllSectorRules {
       get {
-        return _currencyRules.Value;
+        return _sectorRules.Value;
+      }
+    }
+
+    public FixedList<AreaRule> AreaRules {
+      get {
+        return _areaRules.Value;
       }
     }
 
@@ -172,14 +177,7 @@ namespace Empiria.FinancialAccounting {
       }
     }
 
-
-    public FixedList<SectorRule> SectorRules {
-      get {
-        return _sectorRules.Value;
-      }
-    }
-
-    #endregion Public properties
+    #endregion Properties
 
     #region Public methods
 
@@ -191,7 +189,7 @@ namespace Empiria.FinancialAccounting {
 
     public void CheckCurrencyRule(Currency currency, DateTime accountingDate) {
       Assertion.Require(
-          CurrencyRules.Contains(x => x.Currency.Equals(currency) && x.AppliesOn(accountingDate)),
+          AllCurrencyRules.Contains(x => x.Currency.Equals(currency) && x.AppliesOn(accountingDate)),
           $"La cuenta {this.Number} no permite movimientos en la moneda {currency.FullName}.");
     }
 
@@ -208,7 +206,7 @@ namespace Empiria.FinancialAccounting {
           $"La cuenta {this.Number} no requiere sector, sin embargo se proporcionó el sector {sector.FullName}.");
 
       Assertion.Require(
-          SectorRules.Contains(x => x.Sector.Equals(sector) && x.AppliesOn(accountingDate)),
+          AllSectorRules.Contains(x => x.Sector.Equals(sector) && x.AppliesOn(accountingDate)),
           $"El sector {sector.Code} no está definido para la cuenta {this.Number}.");
     }
 
@@ -290,10 +288,6 @@ namespace Empiria.FinancialAccounting {
       var parentAccountNumber = this.AccountsChart.BuildParentAccountNumber(this.Number);
 
       return AccountsChart.GetAccount(parentAccountNumber);
-    }
-
-    internal FixedList<SectorRule> GetSectors() {
-      return GetSectors(DateTime.Today);
     }
 
 

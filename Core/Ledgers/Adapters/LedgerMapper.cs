@@ -62,8 +62,8 @@ namespace Empiria.FinancialAccounting.Adapters {
         AccountType = account.AccountType.MapToNamedEntity(),
         DebtorCreditor = account.DebtorCreditor,
         Level = account.Level,
-        Currencies = MapToValuedCurrencies(account.CurrencyRules),
-        Sectors = MapSectorRulesShort(account.SectorRules)
+        Currencies = MapToValuedCurrencies(account.AllCurrencyRules),
+        Sectors = MapSectorRulesShort(account.AllSectorRules)
       };
     }
 

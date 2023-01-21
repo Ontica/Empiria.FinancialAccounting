@@ -9,7 +9,6 @@
 ************************* Copyright(c) La Vía Óntica SC, Ontica LLC and contributors. All rights reserved. **/
 using System;
 
-using Empiria.FinancialAccounting.Adapters;
 using Empiria.FinancialAccounting.Data;
 
 namespace Empiria.FinancialAccounting {
@@ -47,53 +46,53 @@ namespace Empiria.FinancialAccounting {
     }
 
 
-    private Account _standardAccount;
+    private Account _account;
 
-    private Account StandardAccount {
+    private Account Account {
       get {
-        if (_standardAccount == null) {
-          _standardAccount = GetStandardAccount();
+        if (_account == null) {
+          _account = GetAccount();
         }
-        return _standardAccount;
+        return _account;
       }
     }
 
-    public string Number => this.StandardAccount.Number;
+    public string Number => this.Account.Number;
 
-    public string Name => this.StandardAccount.Name;
+    public string Name => this.Account.Name;
 
-    public string Description => this.StandardAccount.Description;
+    public string Description => this.Account.Description;
 
-    public AccountRole Role => this.StandardAccount.Role;
+    public AccountRole Role => this.Account.Role;
 
-    public AccountType AccountType => this.StandardAccount.AccountType;
+    public AccountType AccountType => this.Account.AccountType;
 
-    public DebtorCreditorType DebtorCreditor => this.StandardAccount.DebtorCreditor;
+    public DebtorCreditorType DebtorCreditor => this.Account.DebtorCreditor;
 
-    public int Level => this.StandardAccount.Level;
+    public int Level => this.Account.Level;
 
-    public FixedList<AreaRule> AreaRules => this.StandardAccount.AreaRules;
+    public FixedList<AreaRule> AreaRules => this.Account.AreaRules;
 
-    public FixedList<CurrencyRule> CurrencyRules => this.StandardAccount.CurrencyRules;
+    public FixedList<CurrencyRule> CurrencyRules => this.Account.AllCurrencyRules;
 
-    public FixedList<SectorRule> SectorRules => this.StandardAccount.SectorRules;
+    public FixedList<SectorRule> SectorRules => this.Account.AllSectorRules;
 
     #endregion Properties
 
     #region Methods
-
 
     internal FixedList<CurrencyRule> CurrencyRulesOn(DateTime date) {
       return this.CurrencyRules.FindAll(x => x.AppliesOn(date));
     }
 
 
-    public Account GetHistoric(DateTime accountingDate) {
-      return this.StandardAccount.GetHistory(accountingDate);
+    private Account GetAccount() {
+      return AccountsChartData.GetCurrentAccountWithStandardAccountId(this.StandardAccountId);
     }
 
-    private Account GetStandardAccount() {
-      return AccountsChartData.GetCurrentAccountWithStandardAccountId(this.StandardAccountId);
+
+    public Account GetHistoric(DateTime accountingDate) {
+      return this.Account.GetHistory(accountingDate);
     }
 
 
@@ -110,7 +109,6 @@ namespace Empiria.FinancialAccounting {
     internal FixedList<SectorRule> SectorRulesOn(DateTime date) {
       return this.SectorRules.FindAll(x => x.AppliesOn(date));
     }
-
 
     #endregion Methods
 
