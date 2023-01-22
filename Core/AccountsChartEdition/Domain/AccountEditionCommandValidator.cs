@@ -280,7 +280,7 @@ namespace Empiria.FinancialAccounting.AccountsChartEdition {
       }
 
       if (!updateSectors) {
-        var registered = account.GetSectors(account.StartDate)
+        var registered = account.GetSectors(_command.ApplicationDate)
                                 .Select(x => x.Sector.Code)
                                 .ToFixedList();
 

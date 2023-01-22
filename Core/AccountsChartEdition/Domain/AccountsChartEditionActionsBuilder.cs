@@ -207,7 +207,7 @@ namespace Empiria.FinancialAccounting.AccountsChartEdition {
       FixedList<Currency> newCurrencies = _command.Entities.GetCurrencies();
       Account account = _command.Entities.Account;
 
-      foreach (var currentCurrencyRule in account.GetCurrencies(account.StartDate)) {
+      foreach (var currentCurrencyRule in account.GetCurrencies(_command.ApplicationDate)) {
 
         if (!newCurrencies.Contains(x => x.Equals(currentCurrencyRule.Currency))) {
           DataOperation op = AccountEditionDataService.RemoveAccountCurrencyOp(currentCurrencyRule,
@@ -236,7 +236,7 @@ namespace Empiria.FinancialAccounting.AccountsChartEdition {
       FixedList<SectorInputRuleDto> newSectorRules = _command.Entities.GetSectorRules();
       Account account = _command.Entities.Account;
 
-      FixedList<SectorRule> currentSectors = account.GetSectors(account.StartDate);
+      FixedList<SectorRule> currentSectors = account.GetSectors(_command.ApplicationDate);
 
       foreach (var currentSectorRule in currentSectors) {
 
@@ -271,7 +271,7 @@ namespace Empiria.FinancialAccounting.AccountsChartEdition {
 
       Account account = _command.Entities.Account;
 
-      foreach (var currentCurrencyRule in account.GetCurrencies(account.StartDate)) {
+      foreach (var currentCurrencyRule in account.GetCurrencies(_command.ApplicationDate)) {
 
         if (!newCurrencies.Contains(x => x.Equals(currentCurrencyRule.Currency))) {
           return true;
@@ -287,7 +287,7 @@ namespace Empiria.FinancialAccounting.AccountsChartEdition {
       FixedList<SectorInputRuleDto> newSectorRules = _command.Entities.GetSectorRules();
       Account account = _command.Entities.Account;
 
-      foreach (var currentSectorRule in account.GetSectors(account.StartDate)) {
+      foreach (var currentSectorRule in account.GetSectors(_command.ApplicationDate)) {
 
         if (!newSectorRules.Contains(x => x.Sector.Equals(currentSectorRule.Sector) &&
                                           x.Role.Equals(currentSectorRule.SectorRole))) {

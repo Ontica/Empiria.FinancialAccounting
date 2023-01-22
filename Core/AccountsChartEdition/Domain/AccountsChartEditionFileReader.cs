@@ -294,7 +294,8 @@ namespace Empiria.FinancialAccounting.AccountsChartEdition {
           continue;
         }
 
-        Account account = _chart.GetAccount(command.AccountFields.AccountNumber);
+        Account account = _chart.GetAccount(command.AccountFields.AccountNumber)
+                                .GetHistory(_applicationDate);
 
         command.AccountUID = account.UID;
         command.AccountFields.AccountTypeUID = account.AccountType.UID;
