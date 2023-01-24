@@ -40,7 +40,7 @@ namespace Empiria.FinancialAccounting.AccountsChartEdition.UseCases {
 
       command.Arrange();
 
-      if (!command.IsValid && command.DryRun) {
+      if (!command.IsValid || command.DryRun) {
         return command.MapToExecutionResult<AccountDto>();
 
       } else if (!command.IsValid && !command.DryRun) {
@@ -88,7 +88,7 @@ namespace Empiria.FinancialAccounting.AccountsChartEdition.UseCases {
 
       bool notValid = commands.Exists(x => !x.IsValid);
 
-      if (notValid && command.DryRun) {
+      if (notValid || command.DryRun) {
         return AccountsChartEditionCommandsProcessor.MapToOperationSummaryList(commands);
 
       } else if (notValid && !command.DryRun) {
