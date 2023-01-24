@@ -143,6 +143,12 @@ namespace Empiria.FinancialAccounting.FinancialConcepts {
     }
 
 
+    public string Tags {
+      get {
+        return base.ExtendedDataField.Get<string>("tags", string.Empty);
+      }
+    }
+
     #endregion Properties
 
     #region Methods

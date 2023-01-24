@@ -47,12 +47,21 @@ namespace Empiria.FinancialAccounting.FinancialReports.Providers {
 
       protected override object Evaluate() {
 
-        string conceptCode = GetString(Parameters[0]);
-
+        FinancialConcept concept = GetObject<FinancialConcept>(Parameters[0]);
         decimal deudorasBalance = GetDecimal(Parameters[1]);
         decimal acreedorasBalance = GetDecimal(Parameters[2]);
 
-        if (conceptCode.StartsWith("2") || conceptCode.StartsWith("4") || conceptCode.StartsWith("5")) {
+        //if (!concept.Group.Tags.Contains("DeudorasMenosAcreedoras")) {
+
+        //  return deudorasBalance - acreedorasBalance;
+        //}
+
+        if (concept.Code.Contains(",")) {
+
+          return deudorasBalance - acreedorasBalance;
+        }
+
+        if (concept.Code.StartsWith("2") || concept.Code.StartsWith("4") || concept.Code.StartsWith("5")) {
           return acreedorasBalance - deudorasBalance;
 
         } else {
