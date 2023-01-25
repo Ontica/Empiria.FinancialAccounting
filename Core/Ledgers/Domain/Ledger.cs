@@ -116,17 +116,18 @@ namespace Empiria.FinancialAccounting {
       Assertion.Require(standardAccount, "standardAccount");
 
       Assertion.Require(standardAccount.AccountsChart.Equals(this.AccountsChart),
-          $"La cuenta estandar con id {standardAccount.Id} " +
-          $"pertenece al catálogo de cuentas de cuentas {standardAccount.AccountsChart.Name}, " +
-          $"el cual no corresponde al catálogo asignado a la contabilidad {this.FullName}.");
-
-      Assertion.Require(standardAccount.Role != AccountRole.Sumaria,
-             $"La cuenta estandar con id {standardAccount.Id} es sumaria. " +
-             $"No se puede agregar a la lista de cuentas de la contabilidad {this.FullName}.");
+                    $"La cuenta estandar con id {standardAccount.Id} " +
+                    $"pertenece al catálogo de cuentas de cuentas {standardAccount.AccountsChart.Name}, " +
+                    $"el cual no corresponde al catálogo asignado a la contabilidad {this.FullName}.");
 
       if (Contains(standardAccount)) {
         return GetAccount(standardAccount);
       }
+
+      Assertion.Require(standardAccount.Role != AccountRole.Sumaria,
+                    $"La cuenta estandar con id {standardAccount.Id} es sumaria. " +
+                    $"No se puede agregar a la lista de cuentas de la contabilidad {this.FullName}.");
+
 
       return LedgerData.AssignStandardAccount(this, standardAccount);
     }
