@@ -195,7 +195,7 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
           ToDate = buildQuery.ToDate
         },
         TrialBalanceType = TrialBalanceType.Balanza,
-        BalancesType = BalancesType.AllAccounts,
+        BalancesType = BalancesType.WithCurrentBalance,
         FromAccount = account.Number,
         ToAccount = account.Number,
         Ledgers = ledger,
