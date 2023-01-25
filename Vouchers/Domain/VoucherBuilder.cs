@@ -43,6 +43,13 @@ namespace Empiria.FinancialAccounting.Vouchers {
         case "NivelacionCuentasCompraventa":
           return new NivelacionCuentasCompraventaVoucherBuilder(fields);
 
+        case "CancelacionSaldosEncerrados":
+          fields.Concept = "Traspaso de saldos por cambio al catálogo de cuentas";
+          fields.CalculationDate = fields.AccountingDate;
+          fields.AccountingDate = fields.AccountingDate.AddDays(-1);
+
+          return new CancelacionSaldosEncerradosVoucherBuilder(fields);
+
         default:
           throw Assertion.EnsureNoReachThisCode($"Unrecognized voucher special case {fields.VoucherTypeUID}.");
       }
@@ -116,7 +123,7 @@ namespace Empiria.FinancialAccounting.Vouchers {
 
     private FixedList<string> ImplementsDryRun(FixedList<VoucherEntryFields> entries) {
       var validator = new VoucherValidator(Ledger.Parse(Fields.LedgerUID),
-                                           Fields.AccountingDate);
+                                           Fields.AccountingDate, SpecialCaseType.SkipEntriesValidation);
 
       return validator.Validate(entries);
     }
