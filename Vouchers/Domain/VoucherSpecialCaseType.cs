@@ -63,6 +63,11 @@ namespace Empiria.FinancialAccounting.Vouchers {
       }
     }
 
+    public bool SkipEntriesValidation {
+      get {
+        return base.ExtendedDataField.Get("skipEntriesValidation", false);
+      }
+    }
 
     public string CalculationDateFieldName {
       get {

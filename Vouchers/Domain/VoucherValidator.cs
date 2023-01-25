@@ -20,9 +20,10 @@ namespace Empiria.FinancialAccounting.Vouchers {
 
     #region Public members
 
-    public VoucherValidator(Ledger ledger, DateTime accountingDate) {
+    public VoucherValidator(Ledger ledger, DateTime accountingDate, bool skipEntries = false) {
       this.Ledger = ledger;
       this.AccountingDate = accountingDate;
+      this.SkipEntries = skipEntries;
     }
 
 
@@ -32,6 +33,10 @@ namespace Empiria.FinancialAccounting.Vouchers {
 
 
     public Ledger Ledger {
+      get;
+    }
+
+    public bool SkipEntries {
       get;
     }
 
@@ -130,6 +135,10 @@ namespace Empiria.FinancialAccounting.Vouchers {
         if (!fullValidation) {
           return new FixedList<string>(resultList);
         }
+      }
+
+      if (SkipEntries || (this.AccountingDate.Month == 1 && this.AccountingDate.Day == 1)) {
+        return new FixedList<string>(resultList);
       }
 
       tempList = VoucherEntriesDataAreValid(entries);
