@@ -23,7 +23,7 @@ namespace Empiria.FinancialAccounting.BalanceEngine.Adapters {
     #region Public methods
 
 
-    static public SaldosEncerradosDto Map(FixedList<SaldosEncerradosEntryDto> mappedEntries) {
+    static public SaldosEncerradosDto Map(FixedList<SaldosEncerradosBaseEntryDto> mappedEntries) {
       return new SaldosEncerradosDto {
         Columns = DataColumns(),
         Entries = mappedEntries
@@ -62,9 +62,15 @@ namespace Empiria.FinancialAccounting.BalanceEngine.Adapters {
 
       if (account.Role != AccountRole.Control) {
         dto.ItemType = TrialBalanceItemType.Summary;
+        dto.IsCancelable = true;
 
       } else {
+
         dto.ItemType = entry.ItemType;
+        if (entry.ItemType == TrialBalanceItemType.Entry) {
+          dto.IsCancelable = true;
+        }
+
       }
     }
 
@@ -74,7 +80,7 @@ namespace Empiria.FinancialAccounting.BalanceEngine.Adapters {
 
       columns.Add(new DataTableColumn("currencyCode", "Mon", "text"));
       columns.Add(new DataTableColumn("accountNumber", "Cuenta", "text"));
-      columns.Add(new DataTableColumn("accountName", "Nombre", "text"));
+      columns.Add(new DataTableColumn("itemName", "Nombre", "text"));
       columns.Add(new DataTableColumn("sectorCode", "Sector", "text"));
       columns.Add(new DataTableColumn("subledgerAccount", "Auxiliar", "text"));
       columns.Add(new DataTableColumn("lockedBalance", "Saldo encerrado", "decimal"));
@@ -99,11 +105,12 @@ namespace Empiria.FinancialAccounting.BalanceEngine.Adapters {
       dto.LedgerName = entry.LedgerName;
       dto.RoleChangeDate = account.EndDate;
       dto.RoleChange = $"{account.Role}-{entry.AccountRole}";
-      dto.AccountName = entry.AccountName;
+      dto.ItemName = entry.AccountName;
       dto.SectorCode = entry.SectorCode;
       dto.LockedBalance = (decimal) entry.CurrentBalance;
       dto.LastChangeDate = entry.LastChangeDate;
       dto.NewRole = entry.AccountRole.ToString();
+      dto.DebtorCreditor = entry.DebtorCreditor;
 
       return dto;
     }

@@ -19,6 +19,11 @@ namespace Empiria.FinancialAccounting.BalanceEngine.Adapters {
     }
 
 
+    public string LedgerUID {
+      get; set;
+    } = string.Empty;
+
+
     public DateTime FromDate {
       get; set;
     }

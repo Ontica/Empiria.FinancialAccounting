@@ -43,25 +43,36 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
     #region Public methods
 
 
-    public FixedList<SaldosEncerradosEntryDto> Build() {
+
+
+    public FixedList<SaldosEncerradosBaseEntryDto> Build() {
+      
+      FixedList<AccountDescriptorDto> accounts = GetAccountsChart();
+
+      List<BalanzaTradicionalEntryDto> entries = BalancesByAccount(accounts);
+
+      FixedList<SaldosEncerradosEntryDto> mappedEntries =
+        SaldosEncerradosMapper.MergeBalancesIntoLockedUpBalanceEntries(entries, accounts);
+
+      FixedList<SaldosEncerradosBaseEntryDto> headers = GetHeaderByLedger(mappedEntries);
+
+      FixedList<SaldosEncerradosBaseEntryDto> headersAndEntries = MergeHeadersAndEntries(headers, mappedEntries);
+
+      return headersAndEntries;
+    }
+
+
+    public FixedList<AccountDescriptorDto> GetAccountsChart() {
 
       using (var accountsUsecases = AccountsChartUseCases.UseCaseInteractor()) {
 
         AccountsChartDto accountsChart = accountsUsecases.TryGetAccountsWithChange(
                 buildQuery.AccountsChartUID, buildQuery.FromDate, buildQuery.ToDate);
 
-        List<BalanzaTradicionalEntryDto> entries = BalancesByAccount(accountsChart.Accounts);
-
-        FixedList<SaldosEncerradosEntryDto> mappedEntries =
-          SaldosEncerradosMapper.MergeBalancesIntoLockedUpBalanceEntries(entries, accountsChart.Accounts);
-
-        FixedList<SaldosEncerradosEntryDto> headers = GetHeaderByLedger(mappedEntries);
-
-        FixedList<SaldosEncerradosEntryDto> headersAndEntries = MergeHeadersAndEntries(headers, mappedEntries);
-
-        return headersAndEntries;
+        return accountsChart.Accounts;
       }
     }
+
 
 
     #endregion Public methods
@@ -117,16 +128,16 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
     }
 
 
-    static private FixedList<SaldosEncerradosEntryDto> GetHeaderByLedger(
+    static private FixedList<SaldosEncerradosBaseEntryDto> GetHeaderByLedger(
                   FixedList<SaldosEncerradosEntryDto> mappedEntries) {
 
-      var headers = new EmpiriaHashTable<SaldosEncerradosEntryDto>();
+      var headers = new EmpiriaHashTable<SaldosEncerradosBaseEntryDto>();
 
       foreach (var entry in mappedEntries) {
 
         string hash = $"{entry.LedgerNumber}||{entry.RoleChangeDate}";
 
-        SaldosEncerradosEntryDto groupEntry;
+        SaldosEncerradosBaseEntryDto groupEntry;
 
         headers.TryGetValue(hash, out groupEntry);
 
@@ -144,6 +155,12 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
 
     private TrialBalanceQuery GetTrialBalanceQueryClauses(SaldosEncerradosQuery buildQuery,
                                                      AccountDescriptorDto account) {
+
+      string[] ledger = new string[] { };
+      if (buildQuery.LedgerUID != string.Empty) {
+        ledger[0] = buildQuery.LedgerUID;
+      }
+
       return new TrialBalanceQuery {
         AccountsChartUID = buildQuery.AccountsChartUID,
         InitialPeriod = {
@@ -154,17 +171,18 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
         BalancesType = BalancesType.AllAccounts,
         FromAccount = account.Number,
         ToAccount = account.Number,
+        Ledgers = ledger,
         IsOperationalReport = true,
         WithSubledgerAccount = account.Role == AccountRole.Control ? true : false,
       };
     }
 
 
-    static private FixedList<SaldosEncerradosEntryDto> MergeHeadersAndEntries(
-                            FixedList<SaldosEncerradosEntryDto> headers,
+    static private FixedList<SaldosEncerradosBaseEntryDto> MergeHeadersAndEntries(
+                            FixedList<SaldosEncerradosBaseEntryDto> headers,
                             FixedList<SaldosEncerradosEntryDto> mappedEntries) {
 
-      var mergedEntries = new List<SaldosEncerradosEntryDto>();
+      var mergedEntries = new List<SaldosEncerradosBaseEntryDto>();
 
       foreach (var header in headers) {
 

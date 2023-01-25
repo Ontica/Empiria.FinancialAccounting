@@ -2,7 +2,7 @@
 *                                                                                                            *
 *  Module   : Reporting Services                            Component : Interface adapters                   *
 *  Assembly : FinancialAccounting.Reporting.dll             Pattern   : Data Transfer Object                 *
-*  Type     : AccountComparerDto                            License   : Please read LICENSE.txt file         *
+*  Type     : SaldosEncerradosBaseEntryDto                  License   : Please read LICENSE.txt file         *
 *                                                                                                            *
 *  Summary  : Output DTO used to return account comparer report data.                                        *
 *                                                                                                            *
@@ -11,77 +11,64 @@ using System;
 
 namespace Empiria.FinancialAccounting.BalanceEngine.Adapters {
 
-
-  /// <summary>Output DTO used to return vouchers by account.</summary>
-  public class SaldosEncerradosDto {
-
-    public FixedList<DataTableColumn> Columns {
-      get; internal set;
-    } = new FixedList<DataTableColumn>();
+  /// <summary>Output DTO used to return account comparer report data.</summary>
+  public class SaldosEncerradosBaseEntryDto {
 
 
-    public FixedList<SaldosEncerradosBaseEntryDto> Entries {
-      get; internal set;
-    } = new FixedList<SaldosEncerradosBaseEntryDto>();
-
-
-  } // class VouchersByAccountDto
-
-
-  public class SaldosEncerradosEntryDto : SaldosEncerradosBaseEntryDto {
-
-
-    public int StandardAccountId {
+    public TrialBalanceItemType ItemType {
       get; internal set;
     }
 
 
-    public string DebtorCreditor {
-      get;
-      internal set;
-    }
-
-
-    public string CurrencyCode {
+    public string ItemName {
       get; internal set;
     }
 
 
-    public string AccountNumber {
+    public string LedgerUID {
       get; internal set;
     }
 
 
-    public string SectorCode {
+    public string LedgerNumber {
       get; internal set;
     }
 
 
-    public string SubledgerAccount {
+    public string LedgerName {
       get; internal set;
     }
 
 
-    public decimal LockedBalance {
+    public string RoleChange {
       get; internal set;
     }
 
 
-    public DateTime LastChangeDate {
-      get; set;
-    }
-
-
-    public string NewRole {
+    public DateTime RoleChangeDate {
       get; internal set;
     }
 
 
-    public bool IsCancelable {
+    public bool CanGenerateVoucher {
       get; internal set;
     } = false;
-    
 
-  } // class LockedUpBalancesEntryDto
+
+    internal SaldosEncerradosBaseEntryDto CreateGroupEntry() {
+      return new SaldosEncerradosBaseEntryDto {
+        LedgerUID = this.LedgerUID,
+        LedgerNumber = this.LedgerNumber,
+        ItemName = $"({this.LedgerNumber}) {this.LedgerName}".ToUpper(),
+        ItemType = TrialBalanceItemType.Group,
+        CanGenerateVoucher = true,
+        RoleChangeDate = this.RoleChangeDate
+      };
+
+    }
+
+
+  } // class SaldosEncerradosBaseEntryDto
 
 } // namespace Empiria.FinancialAccounting.BalanceEngine.Adapters
+
