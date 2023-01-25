@@ -46,7 +46,7 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
 
 
     public FixedList<SaldosEncerradosBaseEntryDto> Build() {
-      
+
       FixedList<AccountDescriptorDto> accounts = GetAccountsChart();
 
       List<BalanzaTradicionalEntryDto> entries = BalancesByAccount(accounts);
@@ -62,6 +62,26 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
     }
 
 
+    public FixedList<SaldosEncerradosEntryDto> BuildEntries() {
+
+      FixedList<AccountDescriptorDto> accounts = GetAccountsChart();
+
+      List<BalanzaTradicionalEntryDto> entries = BalancesByAccount(accounts);
+
+      FixedList<SaldosEncerradosEntryDto> mappedEntries =
+        SaldosEncerradosMapper.MergeBalancesIntoLockedUpBalanceEntries(entries, accounts);
+
+      FixedList<SaldosEncerradosEntryDto> entriesList = GetCancelableEntries(mappedEntries);
+
+      return entriesList;
+    }
+
+
+    #endregion Public methods
+
+    #region Private methods
+
+
     public FixedList<AccountDescriptorDto> GetAccountsChart() {
 
       using (var accountsUsecases = AccountsChartUseCases.UseCaseInteractor()) {
@@ -74,11 +94,18 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
     }
 
 
+    private FixedList<SaldosEncerradosEntryDto> GetCancelableEntries(
+            FixedList<SaldosEncerradosEntryDto> mappedEntries) {
 
-    #endregion Public methods
+      var returnedEntries = mappedEntries.FindAll(a => a.IsCancelable).ToList();
+      
+      returnedEntries.OrderBy(a => a.AccountNumber)
+                     .ThenBy(a => a.CurrencyCode)
+                     .ThenBy(a => a.SectorCode)
+                     .ThenBy(a => a.SubledgerAccount).ToList();
 
-    #region Private methods
-
+      return returnedEntries.ToFixedList();
+    }
 
     private List<BalanzaTradicionalEntryDto> BalancesByAccount(
                 FixedList<AccountDescriptorDto> accounts) {
@@ -120,7 +147,7 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
 
       using (var balancesUsecases = TrialBalanceUseCases.UseCaseInteractor()) {
 
-        TrialBalanceQuery trialBalanceQuery = GetTrialBalanceQueryClauses(buildQuery, account);
+        TrialBalanceQuery trialBalanceQuery = GetTrialBalanceQueryClauses(account);
         TrialBalanceDto trialBalance = balancesUsecases.BuildTrialBalance(trialBalanceQuery);
         return GetAccountEntries(trialBalance.Entries, account);
       }
@@ -153,12 +180,12 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
     }
 
 
-    private TrialBalanceQuery GetTrialBalanceQueryClauses(SaldosEncerradosQuery buildQuery,
-                                                     AccountDescriptorDto account) {
+    private TrialBalanceQuery GetTrialBalanceQueryClauses(AccountDescriptorDto account) {
 
-      string[] ledger = new string[] { };
-      if (buildQuery.LedgerUID != string.Empty) {
-        ledger[0] = buildQuery.LedgerUID;
+      string[] ledger = new string[] {};
+
+      if (buildQuery.LedgerUID != "") {
+        ledger = new string[1] { buildQuery.LedgerUID };
       }
 
       return new TrialBalanceQuery {
