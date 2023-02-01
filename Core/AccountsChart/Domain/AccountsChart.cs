@@ -261,13 +261,6 @@ namespace Empiria.FinancialAccounting {
     }
 
 
-    internal FixedList<Account> TryGetAccountsWithChange(
-              AccountsChart accountsChart, DateTime fromDate, DateTime toDate) {
-
-      return AccountsChartData.GetAccountsWithChanges(accountsChart, fromDate, toDate);
-    }
-
-
     #endregion Public methods
 
   }  // class AccountsChart

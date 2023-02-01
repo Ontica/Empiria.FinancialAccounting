@@ -195,20 +195,6 @@ namespace Empiria.FinancialAccounting.Data {
     }
 
 
-    static internal FixedList<Account> GetAccountsWithChanges(AccountsChart accountsChart,
-                                                              DateTime fromDate, DateTime toDate) {
-      var sql = "SELECT * FROM VW_COF_CUENTA_ESTANDAR_HIST " +
-               $"WHERE ID_TIPO_CUENTAS_STD = {accountsChart.Id} " +
-               $"AND {CommonMethods.FormatSqlDbDate(fromDate)} <= FECHA_FIN " +
-               $"AND FECHA_FIN <= {CommonMethods.FormatSqlDbDate(toDate)} " +
-               $"ORDER BY FECHA_INICIO";
-
-      var dataOperation = DataOperation.Parse(sql);
-
-      return DataReader.GetFixedList<Account>(dataOperation);
-    }
-
-
   }  // class AccountsChartData
 
 }  // namespace Empiria.FinancialAccounting.Data

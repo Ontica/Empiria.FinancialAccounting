@@ -32,7 +32,7 @@ namespace Empiria.FinancialAccounting.BalanceEngine.Adapters {
 
 
     static public FixedList<SaldosEncerradosEntryDto> MergeBalancesIntoLockedUpBalanceEntries(
-                   List<BalanzaTradicionalEntryDto> entries, FixedList<AccountDescriptorDto> accounts) {
+                   List<TrialBalanceEntry> entries, FixedList<Account> accounts) {
 
       var mapped = entries.Select(x => MapToLockedUpEntry(x, accounts));
 
@@ -47,15 +47,15 @@ namespace Empiria.FinancialAccounting.BalanceEngine.Adapters {
 
 
     static private void AccountClauses(SaldosEncerradosEntryDto dto,
-                                       BalanzaTradicionalEntryDto entry,
-                                       AccountDescriptorDto account) {
+                                       TrialBalanceEntry entry,
+                                       Account account) {
       if (entry.SubledgerAccountNumber.Length > 1) {
 
-        dto.AccountNumber = entry.AccountNumberForBalances;
+        dto.AccountNumber = entry.Account.Number;
         dto.SubledgerAccount = entry.SubledgerAccountNumber;
 
       } else {
-        dto.AccountNumber = entry.AccountNumber;
+        dto.AccountNumber = entry.Account.Number;
         dto.SubledgerAccount = "";
 
       }
@@ -92,25 +92,25 @@ namespace Empiria.FinancialAccounting.BalanceEngine.Adapters {
 
 
     static private SaldosEncerradosEntryDto MapToLockedUpEntry(
-                   BalanzaTradicionalEntryDto entry, FixedList<AccountDescriptorDto> accounts) {
+                   TrialBalanceEntry entry, FixedList<Account> accounts) {
 
-      var account = accounts.Find(a => a.Number == entry.AccountNumberForBalances);
+      var account = accounts.Find(a => a.Number == entry.Account.Number);
 
       var dto = new SaldosEncerradosEntryDto();
       AccountClauses(dto, entry, account);
-      dto.StandardAccountId = entry.StandardAccountId;
-      dto.CurrencyCode = entry.CurrencyCode;
-      dto.LedgerUID = entry.LedgerUID;
-      dto.LedgerNumber = entry.LedgerNumber;
-      dto.LedgerName = entry.LedgerName;
+      dto.StandardAccountId = entry.Account.Id;
+      dto.CurrencyCode = entry.Currency.Code;
+      dto.LedgerUID = entry.Ledger.UID;
+      dto.LedgerNumber = entry.Ledger.Number;
+      dto.LedgerName = entry.Ledger.Name;
       dto.RoleChangeDate = account.EndDate;
-      dto.RoleChange = $"{account.Role}-{entry.AccountRole}";
-      dto.ItemName = entry.AccountName;
-      dto.SectorCode = entry.SectorCode;
+      dto.RoleChange = $"{account.Role}-{entry.Account.Role}";
+      dto.ItemName = entry.Account.Name;
+      dto.SectorCode = entry.Sector.Code;
       dto.LockedBalance = (decimal) entry.CurrentBalance;
       dto.LastChangeDate = entry.LastChangeDate;
-      dto.NewRole = entry.AccountRole.ToString();
-      dto.DebtorCreditor = entry.DebtorCreditor;
+      dto.NewRole = entry.Account.Role.ToString();
+      dto.DebtorCreditor = entry.DebtorCreditor.ToString();
 
       return dto;
     }
