@@ -31,7 +31,7 @@ namespace Empiria.FinancialAccounting.BalanceEngine.Adapters {
     }
 
 
-    static public FixedList<SaldosEncerradosEntryDto> MergeBalancesIntoLockedUpBalanceEntries(
+    static public FixedList<SaldosEncerradosEntryDto> MergeBalancesIntoLockedBalanceEntries(
                    List<TrialBalanceEntry> entries, FixedList<Account> accounts) {
 
       var mapped = entries.Select(x => MapToLockedUpEntry(x, accounts));
@@ -49,6 +49,7 @@ namespace Empiria.FinancialAccounting.BalanceEngine.Adapters {
     static private void AccountClauses(SaldosEncerradosEntryDto dto,
                                        TrialBalanceEntry entry,
                                        Account account) {
+      
       if (entry.SubledgerAccountNumber.Length > 1) {
 
         dto.AccountNumber = entry.Account.Number;
@@ -59,19 +60,16 @@ namespace Empiria.FinancialAccounting.BalanceEngine.Adapters {
         dto.SubledgerAccount = "";
 
       }
+      //if (account.Role != AccountRole.Control) {
+      //  dto.ItemType = TrialBalanceItemType.Summary;
+      //  dto.IsCancelable = true;
 
-      if (account.Role != AccountRole.Control) {
-        dto.ItemType = TrialBalanceItemType.Summary;
-        dto.IsCancelable = true;
-
-      } else {
-
-        dto.ItemType = entry.ItemType;
-        if (entry.ItemType == TrialBalanceItemType.Entry) {
-          dto.IsCancelable = true;
-        }
-
-      }
+      //} else {
+      //  dto.ItemType = entry.ItemType;
+      //  if (entry.ItemType == TrialBalanceItemType.Entry) {
+      //    dto.IsCancelable = true;
+      //  }
+      //}
     }
 
 
@@ -98,6 +96,7 @@ namespace Empiria.FinancialAccounting.BalanceEngine.Adapters {
 
       var dto = new SaldosEncerradosEntryDto();
       AccountClauses(dto, entry, account);
+      RoleClauses(dto, entry, account);
       dto.StandardAccountId = entry.Account.Id;
       dto.CurrencyCode = entry.Currency.Code;
       dto.LedgerUID = entry.Ledger.UID;
@@ -113,6 +112,23 @@ namespace Empiria.FinancialAccounting.BalanceEngine.Adapters {
       dto.DebtorCreditor = entry.DebtorCreditor.ToString();
 
       return dto;
+    }
+
+
+    private static void RoleClauses(SaldosEncerradosEntryDto dto,
+                                    TrialBalanceEntry entry, Account account) {
+
+      if (account.Role == AccountRole.Detalle) {
+
+        dto.ItemType = TrialBalanceItemType.Summary;
+        dto.IsCancelable = true;
+      } else {
+
+        dto.ItemType = entry.ItemType;
+        if (entry.ItemType == TrialBalanceItemType.Entry) {
+          dto.IsCancelable = true;
+        }
+      }
     }
 
 

@@ -265,7 +265,7 @@ namespace Empiria.FinancialAccounting {
     }
 
 
-    internal FixedList<CurrencyRule> GetCurrencies(DateTime date) {
+    public FixedList<CurrencyRule> GetCurrencies(DateTime date) {
       return _currencyRules.Value.FindAll(x => x.AppliesOn(date));
     }
 
@@ -291,7 +291,7 @@ namespace Empiria.FinancialAccounting {
     }
 
 
-    internal FixedList<SectorRule> GetSectors(DateTime date) {
+    public FixedList<SectorRule> GetSectors(DateTime date) {
       return _sectorRules.Value.FindAll(x => x.AppliesOn(date));
     }
 

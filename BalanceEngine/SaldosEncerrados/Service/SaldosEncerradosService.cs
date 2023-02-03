@@ -44,8 +44,6 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
     #region Public methods
 
 
-
-
     public FixedList<SaldosEncerradosBaseEntryDto> Build() {
 
       FixedList<Account> accounts = GetAccountsChart();
@@ -53,7 +51,7 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
       List<TrialBalanceEntry> entries = BalancesByAccount(accounts);
 
       FixedList<SaldosEncerradosEntryDto> mappedEntries =
-        SaldosEncerradosMapper.MergeBalancesIntoLockedUpBalanceEntries(entries, accounts);
+        SaldosEncerradosMapper.MergeBalancesIntoLockedBalanceEntries(entries, accounts);
 
       FixedList<SaldosEncerradosBaseEntryDto> headers = GetHeaderByLedger(mappedEntries);
 
@@ -70,11 +68,9 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
       List<TrialBalanceEntry> entries = BalancesByAccount(accounts);
 
       FixedList<SaldosEncerradosEntryDto> mappedEntries =
-        SaldosEncerradosMapper.MergeBalancesIntoLockedUpBalanceEntries(entries, accounts);
+        SaldosEncerradosMapper.MergeBalancesIntoLockedBalanceEntries(entries, accounts);
 
-      FixedList<SaldosEncerradosEntryDto> entriesList = GetCancelableEntries(mappedEntries);
-
-      return entriesList;
+      return GetCancelableEntries(mappedEntries);
     }
 
 
@@ -83,43 +79,75 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
     #region Private methods
 
 
-    public FixedList<Account> GetAccountsChart() {
-
-      var accountsChart = AccountsChart.Parse(buildQuery.AccountsChartUID);
-
-      return SaldosEncerradosDataService.GetAccountsWithChanges(accountsChart,
-                                          buildQuery.FromDate, buildQuery.ToDate);
-    }
-
-
-    private FixedList<SaldosEncerradosEntryDto> GetCancelableEntries(
-            FixedList<SaldosEncerradosEntryDto> mappedEntries) {
-
-      var returnedEntries = mappedEntries.FindAll(a => a.IsCancelable).ToList();
-      
-      returnedEntries.OrderBy(a => a.AccountNumber)
-                     .ThenBy(a => a.CurrencyCode)
-                     .ThenBy(a => a.SectorCode)
-                     .ThenBy(a => a.SubledgerAccount).ToList();
-
-      return returnedEntries.ToFixedList();
-    }
-
-
     private List<TrialBalanceEntry> BalancesByAccount(
                 FixedList<Account> accounts) {
+
+      if (accounts.Count == 0) {
+        return new List<TrialBalanceEntry>();
+      }
+
       var returnedEntries = new List<TrialBalanceEntry>();
 
       foreach (var account in accounts) {
 
         List<TrialBalanceEntry> entries = GetBalancesByAccount(account);
         returnedEntries.AddRange(entries);
+
       }
 
       return returnedEntries.OrderBy(a => a.Account.Number)
                      .ThenBy(a => a.Currency.Code)
                      .ThenBy(a => a.Sector.Code)
                      .ThenBy(a => a.SubledgerAccountNumber).ToList();
+    }
+
+
+    private List<TrialBalanceEntry> GetAccountsByAccountRole(Account account,
+                                      IEnumerable<TrialBalanceEntry> entries) {
+
+      if (account.Role == AccountRole.Control) {
+
+        return entries.Where(a => a.Account.Number == account.Number).ToList();
+
+      } else {
+        return entries.Where(a => a.Account.Number == account.Number &&
+                        a.SubledgerAccountNumber.Length <= 1 &&
+                        a.ItemType == TrialBalanceItemType.Entry).ToList();
+      }
+    }
+
+
+    private IEnumerable<TrialBalanceEntry> GetAccountsByCurrency(Account account,
+                                           IEnumerable<TrialBalanceEntry> entries) {
+
+
+      return entries;
+
+    }
+
+
+    private IEnumerable<TrialBalanceEntry> GetAccountsBySectorRulesOrAccountRoles(Account account,
+                                           IEnumerable<TrialBalanceEntry> entries) {
+
+      var sectors = account.GetSectors(buildQuery.FromDate);
+      if (sectors.Count > 0) {
+
+        return GetSectorRules(sectors, account, entries);
+
+      } else {
+
+        return GetAccountsByAccountRole(account, entries);
+
+      }
+    }
+
+
+    private FixedList<Account> GetAccountsChart() {
+
+      var accountsChart = AccountsChart.Parse(buildQuery.AccountsChartUID);
+
+      return SaldosEncerradosDataService.GetAccountsWithChanges(accountsChart,
+                                          buildQuery.FromDate, buildQuery.ToDate);
     }
 
 
@@ -131,33 +159,44 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
       }
 
       var balanceEntries = entries.Select(x => (TrialBalanceEntry) x);
+      var returnedEntries = GetAccountsBySectorRulesOrAccountRoles(account, balanceEntries);
 
-      if (account.Role != AccountRole.Control) {
-
-        return balanceEntries.Where(a => a.Account.Number == account.Number &&
-                                         a.ItemType == TrialBalanceItemType.Entry).ToList();
-      }
-
-      return balanceEntries.Where(a => a.Account.Number == account.Number).ToList();
+      return returnedEntries.ToList();
     }
 
 
     private List<TrialBalanceEntry> GetBalancesByAccount(Account account) {
 
-      using (var balancesUsecases = TrialBalanceUseCases.UseCaseInteractor()) {
+      TrialBalanceQuery trialBalanceQuery = GetTrialBalanceQueryClauses(account);
 
-        TrialBalanceQuery trialBalanceQuery = GetTrialBalanceQueryClauses(account);
+      var balanza = new BalanzaTradicionalBuilder(trialBalanceQuery);
 
-        var balanza = new BalanzaTradicionalBuilder(trialBalanceQuery);
+      TrialBalance balances = balanza.Build();
 
-        TrialBalance balances = balanza.Build();
-        return GetAccountEntries(balances.Entries, account);
-      }
+      return GetAccountEntries(balances.Entries, account);
 
     }
 
 
-    static private FixedList<SaldosEncerradosBaseEntryDto> GetHeaderByLedger(
+    private FixedList<SaldosEncerradosEntryDto> GetCancelableEntries(
+            FixedList<SaldosEncerradosEntryDto> mappedEntries) {
+
+      if (mappedEntries.Count == 0) {
+        return new FixedList<SaldosEncerradosEntryDto>();
+      }
+
+      var cancelableEntries = mappedEntries.FindAll(a => a.IsCancelable).ToList();
+
+      cancelableEntries.OrderBy(a => a.AccountNumber)
+                     .ThenBy(a => a.CurrencyCode)
+                     .ThenBy(a => a.SectorCode)
+                     .ThenBy(a => a.SubledgerAccount).ToList();
+
+      return cancelableEntries.ToFixedList();
+    }
+
+
+    private FixedList<SaldosEncerradosBaseEntryDto> GetHeaderByLedger(
                   FixedList<SaldosEncerradosEntryDto> mappedEntries) {
 
       var headers = new EmpiriaHashTable<SaldosEncerradosBaseEntryDto>();
@@ -182,9 +221,36 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
     }
 
 
+    private List<TrialBalanceEntry> GetSectorRules(FixedList<SectorRule> sectors,
+             Account account, IEnumerable<TrialBalanceEntry> entries) {
+
+      var returnedEntries = new List<TrialBalanceEntry>();
+
+      foreach (var sector in sectors) {
+
+        if (sector.SectorRole == AccountRole.Control) {
+
+          var sectorRole = entries.Where(a => a.Account.Number == account.Number &&
+          a.Sector.Code == sector.Sector.Code).ToList();
+
+          returnedEntries.AddRange(sectorRole);
+        } else {
+          var sectorRole = entries.Where(a => a.Account.Number == account.Number &&
+                          a.Sector.Code == sector.Sector.Code &&
+                          a.ItemType == TrialBalanceItemType.Entry).ToList();
+
+          returnedEntries.AddRange(sectorRole);
+        }
+      }
+
+      return returnedEntries;
+
+    }
+
+
     private TrialBalanceQuery GetTrialBalanceQueryClauses(Account account) {
 
-      string[] ledger = new string[] {};
+      string[] ledger = new string[] { };
 
       if (buildQuery.LedgerUID != "") {
         ledger = new string[1] { buildQuery.LedgerUID };
@@ -202,12 +268,12 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
         ToAccount = account.Number,
         Ledgers = ledger,
         IsOperationalReport = true,
-        WithSubledgerAccount = account.Role == AccountRole.Control ? true : false,
+        WithSubledgerAccount = true //account.Role == AccountRole.Control ? true : false,
       };
     }
 
 
-    static private FixedList<SaldosEncerradosBaseEntryDto> MergeHeadersAndEntries(
+    private FixedList<SaldosEncerradosBaseEntryDto> MergeHeadersAndEntries(
                             FixedList<SaldosEncerradosBaseEntryDto> headers,
                             FixedList<SaldosEncerradosEntryDto> mappedEntries) {
 
