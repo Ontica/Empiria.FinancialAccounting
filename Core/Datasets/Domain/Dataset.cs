@@ -163,7 +163,7 @@ namespace Empiria.FinancialAccounting.Datasets {
       _datasetKind        = baseData.DatasetKind;
       this.OperationDate  = baseData.Date;
       this.UpdatedTime    = DateTime.Now;
-      this.UploadedBy     = ExecutionServer.CurrentIdentity.User.AsContact();
+      this.UploadedBy     = ExecutionServer.CurrentContact;
     }
 
 

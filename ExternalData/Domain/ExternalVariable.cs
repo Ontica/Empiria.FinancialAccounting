@@ -162,7 +162,7 @@ namespace Empiria.FinancialAccounting.ExternalData {
       this.Notes      = base.PatchField(fields.Notes,     this.Notes);
       this.StartDate  = base.PatchField(fields.StartDate, this.StartDate);
       this.EndDate    = base.PatchField(fields.EndDate,   this.EndDate);
-      this.UpdatedBy  = ExecutionServer.CurrentIdentity.User.AsContact();
+      this.UpdatedBy  = ExecutionServer.CurrentContact;
     }
 
 

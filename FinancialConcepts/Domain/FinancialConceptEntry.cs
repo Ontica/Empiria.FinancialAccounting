@@ -406,7 +406,7 @@ namespace Empiria.FinancialAccounting.FinancialConcepts {
       Operator          = fields.Operator;
       CalculationRule   = fields.CalculationRule;
       DataColumn        = fields.DataColumn;
-      UpdatedBy         = ExecutionServer.CurrentIdentity.User.AsContact();
+      UpdatedBy         = ExecutionServer.CurrentContact;
     }
 
     #endregion Methods

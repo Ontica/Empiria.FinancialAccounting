@@ -58,7 +58,7 @@ namespace Empiria.FinancialAccounting.FinancialConcepts {
         Position = fields.Position,
         StartDate = fields.StartDate,
         EndDate = fields.EndDate,
-        UpdatedBy = ExecutionServer.CurrentIdentity.User.AsContact()
+        UpdatedBy = ExecutionServer.CurrentContact
       };
     }
 
@@ -257,7 +257,7 @@ namespace Empiria.FinancialAccounting.FinancialConcepts {
       Position = fields.Position;
       StartDate = fields.StartDate;
       EndDate = fields.EndDate;
-      UpdatedBy = ExecutionServer.CurrentIdentity.User.AsContact();
+      UpdatedBy = ExecutionServer.CurrentContact;
     }
 
 
