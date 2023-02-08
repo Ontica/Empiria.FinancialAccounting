@@ -72,7 +72,7 @@ namespace Empiria.FinancialAccounting.Reporting {
 
     public ReportTypeActions Show {
       get {
-        return base.ExtendedDataField.Get<ReportTypeActions>("show");
+        return base.ExtendedDataField.Get<ReportTypeActions>("show", new ReportTypeActions());
       }
       private set {
         base.ExtendedDataField.Set("show", value);
@@ -82,7 +82,7 @@ namespace Empiria.FinancialAccounting.Reporting {
 
     public FixedList<OutputTypeObject> OutputType {
       get {
-        return base.ExtendedDataField.GetFixedList<OutputTypeObject>("outputType");
+        return base.ExtendedDataField.GetFixedList<OutputTypeObject>("outputType", false);
       }
       private set {
         base.ExtendedDataField.Set("outputType", value);
