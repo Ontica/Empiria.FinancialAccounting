@@ -32,22 +32,25 @@ namespace Empiria.FinancialAccounting.FinancialConcepts.UseCases {
 
     #region Use cases
 
-
     public FixedList<FinancialConceptEntryDescriptorDto> GetFinancialConceptEntries(string financialConceptUID) {
       Assertion.Require(financialConceptUID, nameof(financialConceptUID));
 
       var concept = FinancialConcept.Parse(financialConceptUID);
+
+      base.EnsureUserHasDataAccessTo(concept.Group);
 
       return FinancialConceptMapper.Map(concept.Integration);
     }
 
 
     public FinancialConceptEntryDto GetFinancialConceptEntry(string financialConceptUID,
-                                                              string financialConceptEntryUID) {
+                                                             string financialConceptEntryUID) {
       Assertion.Require(financialConceptUID, nameof(financialConceptUID));
       Assertion.Require(financialConceptEntryUID, nameof(financialConceptEntryUID));
 
       var concept = FinancialConcept.Parse(financialConceptUID);
+
+      base.EnsureUserHasDataAccessTo(concept.Group);
 
       FinancialConceptEntry entry = concept.GetEntry(financialConceptEntryUID);
 
@@ -66,6 +69,8 @@ namespace Empiria.FinancialAccounting.FinancialConcepts.UseCases {
 
       FinancialConcept concept = command.Entities.FinancialConcept;
 
+      base.EnsureUserHasDataAccessTo(concept.Group);
+
       FinancialConceptEntry entry = concept.InsertEntry(command.MapToFields(),
                                                         command.Payload.Positioning);
 
@@ -80,11 +85,15 @@ namespace Empiria.FinancialAccounting.FinancialConcepts.UseCases {
     }
 
 
-    public void RemoveFinancialConceptEntry(string financialConceptUID, string financialConceptEntryUID) {
+    public void RemoveFinancialConceptEntry(string financialConceptUID,
+                                            string financialConceptEntryUID) {
+
       Assertion.Require(financialConceptUID, nameof(financialConceptUID));
       Assertion.Require(financialConceptEntryUID, nameof(financialConceptEntryUID));
 
       FinancialConcept concept = FinancialConcept.Parse(financialConceptUID);
+
+      base.EnsureUserHasDataAccessTo(concept.Group);
 
       FinancialConceptEntry entry = concept.GetEntry(financialConceptEntryUID);
 
@@ -95,6 +104,7 @@ namespace Empiria.FinancialAccounting.FinancialConcepts.UseCases {
 
 
     public ExecutionResult<FinancialConceptEntryDto> UpdateFinancialConceptEntry(EditFinancialConceptEntryCommand command) {
+
       Assertion.Require(command, nameof(command));
 
       command.Arrange();
@@ -104,6 +114,8 @@ namespace Empiria.FinancialAccounting.FinancialConcepts.UseCases {
       }
 
       FinancialConcept concept = command.Entities.FinancialConcept;
+
+      base.EnsureUserHasDataAccessTo(concept.Group);
 
       FinancialConceptEntry entry = command.Entities.FinancialConceptEntry;
 

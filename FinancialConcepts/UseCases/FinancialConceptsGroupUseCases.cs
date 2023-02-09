@@ -57,6 +57,8 @@ namespace Empiria.FinancialAccounting.FinancialConcepts.UseCases {
 
       var group = FinancialConceptGroup.Parse(groupUID);
 
+      base.EnsureUserHasDataAccessTo(group);
+
       return FinancialConceptMapper.Map(group.GetFinancialConcepts(date));
     }
 
@@ -65,6 +67,8 @@ namespace Empiria.FinancialAccounting.FinancialConcepts.UseCases {
       Assertion.Require(groupUID, "groupUID");
 
       var group = FinancialConceptGroup.Parse(groupUID);
+
+      base.EnsureUserHasDataAccessTo(group);
 
       var tree = new FinancialConceptsEntriesTree(group);
 
