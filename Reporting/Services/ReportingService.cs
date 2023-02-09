@@ -62,6 +62,8 @@ namespace Empiria.FinancialAccounting.Reporting {
     public FixedList<ReportTypeDto> GetReportTypes() {
       FixedList<ReportType> list = ReportType.GetList();
 
+      list = base.RestrictUserDataAccessTo(list);
+
       return ReportTypeMapper.Map(list);
     }
 
