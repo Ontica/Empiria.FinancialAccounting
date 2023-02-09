@@ -27,8 +27,8 @@ namespace Empiria.FinancialAccounting.Tests.BalanceEngine.SaldosEncerrados {
 
         SaldosEncerradosQuery buildQuery = new SaldosEncerradosQuery {
           AccountsChartUID = "47ec2ec7-0f4f-482e-9799-c23107b60d8a",
-          FromDate = new DateTime(2022, 02, 01),
-          ToDate = new DateTime(2022, 02, 28)
+          FromDate = new DateTime(2023, 01, 01),
+          ToDate = new DateTime(2023, 01, 31)
         };
 
 

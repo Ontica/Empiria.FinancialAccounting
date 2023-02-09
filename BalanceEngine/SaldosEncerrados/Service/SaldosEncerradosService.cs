@@ -102,7 +102,7 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
     }
 
 
-    private List<TrialBalanceEntry> GetAccountsByAccountRole(Account account,
+    private List<TrialBalanceEntry> GetEntriesByAccountRole(Account account,
                                       IEnumerable<TrialBalanceEntry> entries) {
 
       if (account.Role == AccountRole.Control) {
@@ -117,28 +117,78 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
     }
 
 
-    private IEnumerable<TrialBalanceEntry> GetAccountsByCurrency(Account account,
+    private List<TrialBalanceEntry> GetAccountsByRules(Account account,
                                            IEnumerable<TrialBalanceEntry> entries) {
 
+      List<TrialBalanceEntry> entriesByRole = GetEntriesByAccountAndSectorRole(account, entries);
 
-      return entries;
+      List<TrialBalanceEntry> entriesBySectorRules = GetEntriesBySectorRules(account, entriesByRole);
 
+      //GetEntriesByCurrencyRules(account, entriesByRole);
+
+      return entriesBySectorRules;
     }
 
 
-    private IEnumerable<TrialBalanceEntry> GetAccountsBySectorRulesOrAccountRoles(Account account,
-                                           IEnumerable<TrialBalanceEntry> entries) {
+    private List<TrialBalanceEntry> GetEntriesBySectorRules(
+            Account account, List<TrialBalanceEntry> entriesList) {
 
-      var sectors = account.GetSectors(buildQuery.FromDate);
-      if (sectors.Count > 0) {
+      var sectoresEliminados = GetDeletedSectors(account);
 
-        return GetSectorRules(sectors, account, entries);
+      List<TrialBalanceEntry> balanceEntries = GetEntriesBySectorRole(
+                              sectoresEliminados.ToFixedList(), account, entriesList);
 
-      } else {
+      foreach (var entry in balanceEntries) {
+        
+        var checkEntry = entriesList.Select(a => entry).First();
 
-        return GetAccountsByAccountRole(account, entries);
+        if (checkEntry == null) {
+          entriesList.Add(entry);
+        }
 
       }
+
+      return entriesList;
+    }
+
+
+    private List<SectorRule> GetDeletedSectors(Account account) {
+      
+      var sectoresAntes = account.GetSectors(buildQuery.FromDate);
+      var sectoresDespues = account.GetSectors(buildQuery.ToDate);
+      var sectoresEliminados = new List<SectorRule>();
+
+      foreach (var antes in sectoresAntes) {
+        var existe = sectoresDespues.Where(a => a.Sector.Code == antes.Sector.Code).FirstOrDefault();
+        if (existe == null) {
+          sectoresEliminados.Add(antes);
+        }
+      }
+
+      return sectoresEliminados;
+    }
+
+
+    private List<TrialBalanceEntry> GetEntriesByAccountAndSectorRole(
+            Account account, IEnumerable<TrialBalanceEntry> entries) {
+      
+      var sectors = account.GetSectors(buildQuery.FromDate);
+
+      if (sectors.Count > 0) {
+        return GetEntriesBySectorRole(sectors, account, entries);
+      } else {
+        return GetEntriesByAccountRole(account, entries);
+      }
+    }
+
+
+    private List<TrialBalanceEntry> GetEntriesByCurrencyRules(Account account,
+                                    IEnumerable<TrialBalanceEntry> entries) {
+
+      var currencies = account.GetCurrencies(buildQuery.FromDate);
+      var secondCurrencies = account.GetCurrencies(buildQuery.ToDate);
+      
+      return new List<TrialBalanceEntry>();
     }
 
 
@@ -159,9 +209,8 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
       }
 
       var balanceEntries = entries.Select(x => (TrialBalanceEntry) x);
-      var returnedEntries = GetAccountsBySectorRulesOrAccountRoles(account, balanceEntries);
 
-      return returnedEntries.ToList();
+      return GetAccountsByRules(account, balanceEntries);
     }
 
 
@@ -221,7 +270,7 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
     }
 
 
-    private List<TrialBalanceEntry> GetSectorRules(FixedList<SectorRule> sectors,
+    private List<TrialBalanceEntry> GetEntriesBySectorRole(FixedList<SectorRule> sectors,
              Account account, IEnumerable<TrialBalanceEntry> entries) {
 
       var returnedEntries = new List<TrialBalanceEntry>();
