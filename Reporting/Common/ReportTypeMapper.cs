@@ -16,9 +16,12 @@ namespace Empiria.FinancialAccounting.Reporting {
   static internal class ReportTypeMapper {
 
     static internal FixedList<ReportTypeDto> Map(FixedList<ReportType> list) {
-      var mappedList = list.Select(x => Map(x));
+      var mappedList = list.Select(x => Map(x))
+                           .ToFixedList();
 
-      return new FixedList<ReportTypeDto>(mappedList);
+      mappedList.Sort((x, y) => x.Name.CompareTo(y.Name));
+
+      return mappedList;
     }
 
 
