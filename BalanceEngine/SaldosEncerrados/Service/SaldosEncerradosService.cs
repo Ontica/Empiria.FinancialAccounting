@@ -87,10 +87,11 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
       }
 
       var returnedEntries = new List<TrialBalanceEntry>();
+      var helper = new SaldosEncerradosHelper(buildQuery);
 
       foreach (var account in accounts) {
 
-        List<TrialBalanceEntry> entries = GetBalancesByAccount(account);
+        List<TrialBalanceEntry> entries = helper.GetBalancesByAccount(account);
         returnedEntries.AddRange(entries);
 
       }
@@ -102,128 +103,12 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
     }
 
 
-    private List<TrialBalanceEntry> GetEntriesByAccountRole(Account account,
-                                      IEnumerable<TrialBalanceEntry> entries) {
-
-      if (account.Role == AccountRole.Control) {
-
-        return entries.Where(a => a.Account.Number == account.Number).ToList();
-
-      } else {
-        return entries.Where(a => a.Account.Number == account.Number &&
-                        a.SubledgerAccountNumber.Length <= 1 &&
-                        a.ItemType == TrialBalanceItemType.Entry).ToList();
-      }
-    }
-
-
-    private List<TrialBalanceEntry> GetAccountsByRules(Account account,
-                                           IEnumerable<TrialBalanceEntry> entries) {
-
-      List<TrialBalanceEntry> entriesByRole = GetEntriesByAccountAndSectorRole(account, entries);
-
-      List<TrialBalanceEntry> entriesBySectorRules = GetEntriesBySectorRules(account, entriesByRole);
-
-      //GetEntriesByCurrencyRules(account, entriesByRole);
-
-      return entriesBySectorRules;
-    }
-
-
-    private List<TrialBalanceEntry> GetEntriesBySectorRules(
-            Account account, List<TrialBalanceEntry> entriesList) {
-
-      var sectoresEliminados = GetDeletedSectors(account);
-
-      List<TrialBalanceEntry> balanceEntries = GetEntriesBySectorRole(
-                              sectoresEliminados.ToFixedList(), account, entriesList);
-
-      foreach (var entry in balanceEntries) {
-        
-        var checkEntry = entriesList.Select(a => entry).First();
-
-        if (checkEntry == null) {
-          entriesList.Add(entry);
-        }
-
-      }
-
-      return entriesList;
-    }
-
-
-    private List<SectorRule> GetDeletedSectors(Account account) {
-      
-      var sectoresAntes = account.GetSectors(buildQuery.FromDate);
-      var sectoresDespues = account.GetSectors(buildQuery.ToDate);
-      var sectoresEliminados = new List<SectorRule>();
-
-      foreach (var antes in sectoresAntes) {
-        var existe = sectoresDespues.Where(a => a.Sector.Code == antes.Sector.Code).FirstOrDefault();
-        if (existe == null) {
-          sectoresEliminados.Add(antes);
-        }
-      }
-
-      return sectoresEliminados;
-    }
-
-
-    private List<TrialBalanceEntry> GetEntriesByAccountAndSectorRole(
-            Account account, IEnumerable<TrialBalanceEntry> entries) {
-      
-      var sectors = account.GetSectors(buildQuery.FromDate);
-
-      if (sectors.Count > 0) {
-        return GetEntriesBySectorRole(sectors, account, entries);
-      } else {
-        return GetEntriesByAccountRole(account, entries);
-      }
-    }
-
-
-    private List<TrialBalanceEntry> GetEntriesByCurrencyRules(Account account,
-                                    IEnumerable<TrialBalanceEntry> entries) {
-
-      var currencies = account.GetCurrencies(buildQuery.FromDate);
-      var secondCurrencies = account.GetCurrencies(buildQuery.ToDate);
-      
-      return new List<TrialBalanceEntry>();
-    }
-
-
     private FixedList<Account> GetAccountsChart() {
 
       var accountsChart = AccountsChart.Parse(buildQuery.AccountsChartUID);
 
       return SaldosEncerradosDataService.GetAccountsWithChanges(accountsChart,
                                           buildQuery.FromDate, buildQuery.ToDate);
-    }
-
-
-    private List<TrialBalanceEntry> GetAccountEntries(
-            FixedList<ITrialBalanceEntry> entries, Account account) {
-
-      if (entries.Count == 0) {
-        return new List<TrialBalanceEntry>();
-      }
-
-      var balanceEntries = entries.Select(x => (TrialBalanceEntry) x);
-
-      return GetAccountsByRules(account, balanceEntries);
-    }
-
-
-    private List<TrialBalanceEntry> GetBalancesByAccount(Account account) {
-
-      TrialBalanceQuery trialBalanceQuery = GetTrialBalanceQueryClauses(account);
-
-      var balanza = new BalanzaTradicionalBuilder(trialBalanceQuery);
-
-      TrialBalance balances = balanza.Build();
-
-      return GetAccountEntries(balances.Entries, account);
-
     }
 
 
@@ -267,58 +152,6 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
 
       return headers.Values.OrderBy(a => a.LedgerNumber)
                            .ThenBy(a => a.RoleChangeDate).ToFixedList();
-    }
-
-
-    private List<TrialBalanceEntry> GetEntriesBySectorRole(FixedList<SectorRule> sectors,
-             Account account, IEnumerable<TrialBalanceEntry> entries) {
-
-      var returnedEntries = new List<TrialBalanceEntry>();
-
-      foreach (var sector in sectors) {
-
-        if (sector.SectorRole == AccountRole.Control) {
-
-          var sectorRole = entries.Where(a => a.Account.Number == account.Number &&
-          a.Sector.Code == sector.Sector.Code).ToList();
-
-          returnedEntries.AddRange(sectorRole);
-        } else {
-          var sectorRole = entries.Where(a => a.Account.Number == account.Number &&
-                          a.Sector.Code == sector.Sector.Code &&
-                          a.ItemType == TrialBalanceItemType.Entry).ToList();
-
-          returnedEntries.AddRange(sectorRole);
-        }
-      }
-
-      return returnedEntries;
-
-    }
-
-
-    private TrialBalanceQuery GetTrialBalanceQueryClauses(Account account) {
-
-      string[] ledger = new string[] { };
-
-      if (buildQuery.LedgerUID != "") {
-        ledger = new string[1] { buildQuery.LedgerUID };
-      }
-
-      return new TrialBalanceQuery {
-        AccountsChartUID = buildQuery.AccountsChartUID,
-        InitialPeriod = {
-          FromDate = buildQuery.FromDate,
-          ToDate = buildQuery.ToDate
-        },
-        TrialBalanceType = TrialBalanceType.Balanza,
-        BalancesType = BalancesType.WithCurrentBalance,
-        FromAccount = account.Number,
-        ToAccount = account.Number,
-        Ledgers = ledger,
-        IsOperationalReport = true,
-        WithSubledgerAccount = true //account.Role == AccountRole.Control ? true : false,
-      };
     }
 
 
