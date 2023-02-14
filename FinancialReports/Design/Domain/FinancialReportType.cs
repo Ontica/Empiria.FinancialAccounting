@@ -233,6 +233,27 @@ namespace Empiria.FinancialAccounting.FinancialReports {
       }
     }
 
+
+    public bool PrecalculateConcepts {
+      get {
+        return !PrecalculateConceptsFromReportType.IsEmptyInstance;
+      }
+    }
+
+
+    public FinancialReportType PrecalculateConceptsFromReportType {
+      get {
+        return base.ExtendedDataField.Get<FinancialReportType>("precalculatedConcepts/reportType", FinancialReportType.Empty);
+      }
+    }
+
+    public FixedList<FinancialConceptGroup> PrecalculatedConceptsGroups {
+      get {
+        return base.ExtendedDataField.GetList<FinancialConceptGroup>("precalculatedConcepts/groups", false)
+                                     .ToFixedList();
+      }
+    }
+
     #endregion Properties
 
     #region Methods
@@ -401,6 +422,7 @@ namespace Empiria.FinancialAccounting.FinancialReports {
         item.SetRowIndex(i + 1);
       }
     }
+
 
     #endregion Helpers
 
