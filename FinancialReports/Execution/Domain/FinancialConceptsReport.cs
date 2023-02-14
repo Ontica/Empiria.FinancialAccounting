@@ -29,7 +29,6 @@ namespace Empiria.FinancialAccounting.FinancialReports {
       _executionContext = new ExecutionContext(buildQuery);
     }
 
-
     #endregion Constructor and fields
 
     #region Properties
@@ -62,8 +61,7 @@ namespace Empiria.FinancialAccounting.FinancialReports {
     }
 
 
-    internal FixedList<FinancialReportEntry> GenerateBreakdown(string reportItemUID) {
-      FinancialReportItemDefinition reportItem = FinancialReportType.GetItem(reportItemUID);
+    internal FixedList<FinancialReportEntry> GenerateBreakdown(FinancialReportItemDefinition reportItem) {
 
       FinancialReportEntryResult reportItemTotals = CreateReportEntryWithoutTotals(reportItem);
 
@@ -108,11 +106,9 @@ namespace Empiria.FinancialAccounting.FinancialReports {
       return reportEntries.ToFixedList();
     }
 
-
     #endregion Public methods
 
     #region Private methods
-
 
     private FixedList<FinancialReportItemDefinition> FilterItemsWithIntegrationAccounts(FixedList<FinancialReportItemDefinition> list) {
       return list.FindAll(x => !x.FinancialConcept.IsEmptyInstance &&
@@ -141,7 +137,6 @@ namespace Empiria.FinancialAccounting.FinancialReports {
 
     #region Helpers
 
-
     private FixedList<FinancialReportEntryResult> CreateReportEntriesWithoutTotals(FixedList<FinancialReportItemDefinition> reportItemsDef) {
       return reportItemsDef.Select(x => CreateReportEntryWithoutTotals(x))
                            .ToFixedList();
@@ -159,7 +154,6 @@ namespace Empiria.FinancialAccounting.FinancialReports {
       return integration.Select(x => new FinancialReportBreakdownResult(x))
                         .ToFixedList();
     }
-
 
     #endregion Helpers
 

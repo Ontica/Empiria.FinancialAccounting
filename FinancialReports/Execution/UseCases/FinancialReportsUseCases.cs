@@ -48,9 +48,9 @@ namespace Empiria.FinancialAccounting.FinancialReports.UseCases {
     public FinancialReportDto GenerateFinancialReport(FinancialReportQuery buildQuery) {
       Assertion.Require(buildQuery, nameof(buildQuery));
 
-      var financialReportGenerator = new FinancialReportBuilder(buildQuery);
+      var reportBuilder = new FinancialReportBuilder(buildQuery);
 
-      FinancialReport financialReport = financialReportGenerator.Build();
+      FinancialReport financialReport = reportBuilder.Build();
 
       return FinancialReportMapper.Map(financialReport);
     }
@@ -60,9 +60,11 @@ namespace Empiria.FinancialAccounting.FinancialReports.UseCases {
       Assertion.Require(reportRowUID, nameof(reportRowUID));
       Assertion.Require(buildQuery, nameof(buildQuery));
 
-      var financialReportGenerator = new FinancialReportBuilder(buildQuery);
+      var reportBuilder = new FinancialReportBuilder(buildQuery);
 
-      FinancialReport breakdownReport = financialReportGenerator.GetBreakdown(reportRowUID);
+      FinancialReportItemDefinition reportItem = buildQuery.GetFinancialReportType().GetItem(reportRowUID);
+
+      FinancialReport breakdownReport = reportBuilder.GetBreakdown(reportItem);
 
       return FinancialReportMapper.MapBreakdown(breakdownReport);
     }

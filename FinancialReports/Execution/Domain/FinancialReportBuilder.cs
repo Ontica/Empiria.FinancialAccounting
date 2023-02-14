@@ -45,18 +45,20 @@ namespace Empiria.FinancialAccounting.FinancialReports {
     }
 
 
-    internal FinancialReport GetBreakdown(string reportItemUID) {
+    internal FinancialReport GetBreakdown(FinancialReportItemDefinition reportItem) {
+      Assertion.Require(reportItem, nameof(reportItem));
 
       var financialConceptsReport = new FinancialConceptsReport(_buildQuery);
 
-      FixedList<FinancialReportEntry> entries = financialConceptsReport.GenerateBreakdown(reportItemUID);
+      FixedList<FinancialReportEntry> entries = financialConceptsReport.GenerateBreakdown(reportItem);
 
       return MapToFinancialReport(entries);
     }
 
 
     private FinancialReport MapToFinancialReport<T>(FixedList<T> reportEntries) where T : FinancialReportEntry {
-      var convertedEntries = new FixedList<FinancialReportEntry>(reportEntries.Select(x => (FinancialReportEntry) x));
+      var convertedEntries = reportEntries.Select(x => (FinancialReportEntry) x)
+                                          .ToFixedList();
 
       return new FinancialReport(_buildQuery, convertedEntries);
     }
