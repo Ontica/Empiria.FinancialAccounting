@@ -44,6 +44,10 @@ namespace Empiria.FinancialAccounting.FinancialReports.Adapters {
     }
 
 
+    internal FinancialReportQuery Clone() {
+      return (FinancialReportQuery) this.MemberwiseClone();
+    }
+
     public FinancialReportType GetFinancialReportType() {
       return FinancialReports.FinancialReportType.Parse(this.FinancialReportType);
     }
