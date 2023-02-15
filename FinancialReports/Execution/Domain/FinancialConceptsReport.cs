@@ -50,6 +50,23 @@ namespace Empiria.FinancialAccounting.FinancialReports {
 
     #region Public methods
 
+    internal FixedList<CalculatedConcept> CalculateConcepts(FixedList<FinancialConcept> concepts) {
+      Assertion.Require(concepts, nameof(concepts));
+
+      var calculatedList = new List<CalculatedConcept>(concepts.Count);
+
+      foreach (var concept in concepts) {
+        IFinancialConceptValues values = this.ConceptsCalculator.Calculate(concept);
+
+        var calculatedConcept = new CalculatedConcept(concept, values);
+
+        calculatedList.Add(calculatedConcept);
+      }
+
+      return calculatedList.ToFixedList();
+    }
+
+
     internal FixedList<FinancialReportEntry> Generate() {
       FixedList<FinancialReportItemDefinition> reportItems = FinancialReportType.GetItems();
 
