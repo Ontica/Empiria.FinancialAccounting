@@ -45,12 +45,20 @@ namespace Empiria.FinancialAccounting.FinancialReports.Providers {
     }
 
 
-    internal void ExecuteScript(string scriptText, IDictionary<string, object> data) {
+    internal T ExecuteScript<T>(string scriptText, IDictionary<string, object> data) {
 
-      var script = new Script(_grammar, scriptText);
+      var expression = new Expression(_grammar, scriptText);
 
-      script.Execute(data);
+      return expression.Evaluate<T>(data);
     }
+
+
+    //internal void ExecuteScript(string scriptText, IDictionary<string, object> data) {
+
+    //  var script = new Script(_grammar, scriptText);
+
+    //  script.Execute(data);
+    //}
 
   }  // class RuntimeCompiler
 

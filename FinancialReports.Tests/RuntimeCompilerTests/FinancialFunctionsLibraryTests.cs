@@ -21,6 +21,10 @@ namespace Empiria.FinancialAccounting.Tests.FinancialReports.Providers {
   /// <summary>Test cases for the financial functions library.</summary>
   public class FinancialFunctionsLibraryTests {
 
+    public FinancialFunctionsLibraryTests() {
+      Preloader.Preload();
+    }
+
     #region Theories
 
     [Theory]

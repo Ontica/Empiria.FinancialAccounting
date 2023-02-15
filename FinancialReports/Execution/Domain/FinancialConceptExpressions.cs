@@ -48,25 +48,51 @@ namespace Empiria.FinancialAccounting.FinancialReports {
     }
 
 
-    internal void ExecuteConceptScript(FinancialConcept financialConcept,
-                                       IFinancialConceptValues baseValues) {
+    //internal void ExecuteConceptScript(FinancialConcept financialConcept,
+    //                                   IFinancialConceptValues baseValues) {
+
+    //  if (!financialConcept.HasScript) {
+    //    return;
+    //  }
+
+    //  IDictionary<string, object> data = ConvertToDictionary(financialConcept, baseValues);
+
+    //  var compiler = new RuntimeCompiler(_executionContext);
+
+    //  compiler.ExecuteScript(financialConcept.CalculationScript, data);
+
+    //  foreach (var item in data) {
+    //    if (item.Value is decimal) {
+    //      baseValues.SetTotalField(item.Key, (decimal) item.Value);
+    //    }
+    //  }
+    //}
+
+
+    internal IFinancialConceptValues ExecuteConceptScript(FinancialConcept financialConcept,
+                                                          IFinancialConceptValues baseValues) {
 
       if (!financialConcept.HasScript) {
-        return;
+        return baseValues;
       }
 
       IDictionary<string, object> data = ConvertToDictionary(financialConcept, baseValues);
 
       var compiler = new RuntimeCompiler(_executionContext);
 
-      compiler.ExecuteScript(financialConcept.CalculationScript, data);
+      return compiler.ExecuteScript<IFinancialConceptValues>(financialConcept.CalculationScript,
+                                                             data);
 
-      foreach (var item in data) {
-        if (item.Value is decimal) {
-          baseValues.SetTotalField(item.Key, (decimal) item.Value);
-        }
-      }
+      //compiler.ExecuteScript(financialConcept.CalculationScript, data);
+
+      //foreach (var item in data) {
+      //  if (item.Value is decimal) {
+      //    baseValues.SetTotalField(item.Key, (decimal) item.Value);
+      //  }
+      //}
     }
+
+
 
     #region Helpers
 
@@ -82,6 +108,8 @@ namespace Empiria.FinancialAccounting.FinancialReports {
       IDictionary<string, object> dictionary = baseValues.ToDictionary();
 
       var conceptCode = financialConcept.Code;
+
+      dictionary.Add("concepto", financialConcept);
 
       dictionary.Add("conceptCode", conceptCode);
 
