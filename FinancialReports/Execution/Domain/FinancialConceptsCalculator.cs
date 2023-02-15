@@ -34,12 +34,12 @@ namespace Empiria.FinancialAccounting.FinancialReports {
       Assertion.Require(financialConcept, nameof(financialConcept));
 
       Assertion.Require(!financialConcept.IsEmptyInstance,
-                    "Cannot process the empty FinancialConcept instance.");
+                        "Cannot process the empty FinancialConcept instance.");
 
       IFinancialConceptValues totals = this.CalculateFinancialConcept(financialConcept);
 
       if (financialConcept.HasScript) {
-        ExecuteConceptScript(financialConcept, totals);
+        totals = ExecuteConceptScript(financialConcept, totals);
       }
 
       return totals;
@@ -69,38 +69,6 @@ namespace Empiria.FinancialAccounting.FinancialReports {
 
       return granTotal;
     }
-
-
-    private IFinancialConceptValues CalculateFinancialConcept(FinancialConcept financialConcept) {
-      Assertion.Require(!financialConcept.IsEmptyInstance,
-                        "Cannot process the empty FinancialConcept instance.");
-
-      IFinancialConceptValues totals = CreateFinancialConceptValuesObject();
-
-      foreach (var integrationItem in financialConcept.Integration) {
-
-        switch (integrationItem.Type) {
-          case FinancialConceptEntryType.FinancialConceptReference:
-
-            totals = AccumulateFinancialConceptTotals(integrationItem, totals);
-            break;
-
-          case FinancialConceptEntryType.Account:
-            totals = AccumulateAccountTotals(integrationItem, totals);
-            break;
-
-          case FinancialConceptEntryType.ExternalVariable:
-            totals = AccumulateExternalVariableTotals(integrationItem, totals);
-            break;
-        }
-
-      }  // foreach
-
-      CalculateFormulaBasedColumns(financialConcept, totals);
-
-      return totals;
-    }
-
 
     #endregion Public methods
 
@@ -136,7 +104,13 @@ namespace Empiria.FinancialAccounting.FinancialReports {
       Assertion.Require(integrationEntry.Type == FinancialConceptEntryType.FinancialConceptReference,
                         "Invalid integrationEntry.Type");
 
-      var value = CalculateFinancialConcept(integrationEntry.ReferencedFinancialConcept);
+      IFinancialConceptValues value = TryGetPrecalculatedConceptValues(integrationEntry.ReferencedFinancialConcept);
+
+      if (value == null) {
+        value = CalculateFinancialConcept(integrationEntry.ReferencedFinancialConcept);
+      } else {
+        EmpiriaLog.Trace($"Picked value: {integrationEntry.ReferencedFinancialConcept.Code} => {integrationEntry.ReferencedFinancialConcept.Name}");
+      }
 
       IFinancialConceptValues returnValues = ApplyOperator(integrationEntry.Operator, totals, value);
 
@@ -145,6 +119,15 @@ namespace Empiria.FinancialAccounting.FinancialReports {
       }
 
       return returnValues;
+    }
+
+    private IFinancialConceptValues TryGetPrecalculatedConceptValues(FinancialConcept concept) {
+
+      if (_executionContext.PrecalculatedConcepts.Exists(x => x.Concept.Equals(concept))) {
+        return _executionContext.PrecalculatedConcepts.Find(x => x.Concept.Equals(concept))
+                                                      .Values;
+      }
+      return null;
     }
 
 
@@ -193,7 +176,6 @@ namespace Empiria.FinancialAccounting.FinancialReports {
         } else {
           totals = totals.Sum(balance);
         }
-
       }
 
       if (integrationEntry.CalculationRule == "ConsolidarEnUnaColumna") {
@@ -254,6 +236,36 @@ namespace Empiria.FinancialAccounting.FinancialReports {
     }
 
 
+    private IFinancialConceptValues CalculateFinancialConcept(FinancialConcept financialConcept) {
+      Assertion.Require(!financialConcept.IsEmptyInstance,
+                        "Cannot process the empty FinancialConcept instance.");
+
+      IFinancialConceptValues totals = CreateFinancialConceptValuesObject();
+
+      foreach (var integrationItem in financialConcept.Integration) {
+
+        switch (integrationItem.Type) {
+          case FinancialConceptEntryType.FinancialConceptReference:
+
+            totals = AccumulateFinancialConceptTotals(integrationItem, totals);
+            break;
+
+          case FinancialConceptEntryType.Account:
+            totals = AccumulateAccountTotals(integrationItem, totals);
+            break;
+
+          case FinancialConceptEntryType.ExternalVariable:
+            totals = AccumulateExternalVariableTotals(integrationItem, totals);
+            break;
+        }
+
+      }  // foreach
+
+      CalculateFormulaBasedColumns(financialConcept, totals);
+
+      return totals;
+    }
+
     #endregion Private calculation methods
 
     #region Helpers
@@ -275,12 +287,19 @@ namespace Empiria.FinancialAccounting.FinancialReports {
     }
 
 
-    private void ExecuteConceptScript(FinancialConcept financialConcept,
-                                      IFinancialConceptValues totals) {
+    private IFinancialConceptValues ExecuteConceptScript(FinancialConcept financialConcept,
+                                                         IFinancialConceptValues totals) {
       var expressions = new FinancialConceptExpressions(_executionContext);
 
-      expressions.ExecuteConceptScript(financialConcept, totals);
+      return expressions.ExecuteConceptScript(financialConcept, totals);
     }
+
+    //private void ExecuteConceptScript(FinancialConcept financialConcept,
+    //                                  IFinancialConceptValues totals) {
+    //  var expressions = new FinancialConceptExpressions(_executionContext);
+
+    //  expressions.ExecuteConceptScript(financialConcept, totals);
+    //}
 
     #endregion Helpers
 
