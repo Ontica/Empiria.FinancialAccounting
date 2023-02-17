@@ -212,7 +212,8 @@ namespace Empiria.FinancialAccounting.FinancialReports {
       get {
         if (DesignType == FinancialReportDesignType.FixedRows ||
             DesignType == FinancialReportDesignType.AccountsIntegration) {
-          return DataColumns.Select(x => x.Column)
+          return DataColumns.FindAll(x => x.Show && x.Column.Length != 0)
+                            .Select(x => x.Column)
                             .ToFixedList();
         }
         return base.ExtendedDataField.GetFixedList<string>("grid/columns");
@@ -229,7 +230,7 @@ namespace Empiria.FinancialAccounting.FinancialReports {
 
     public int GridEndRow {
       get {
-        return base.ExtendedDataField.Get<int>("grid/endRow", -1);
+        return base.ExtendedDataField.Get<int>("grid/endRow", 100);
       }
     }
 
@@ -246,6 +247,7 @@ namespace Empiria.FinancialAccounting.FinancialReports {
         return base.ExtendedDataField.Get<FinancialReportType>("precalculatedConcepts/reportType", FinancialReportType.Empty);
       }
     }
+
 
     public FixedList<FinancialConceptGroup> PrecalculatedConceptsGroups {
       get {

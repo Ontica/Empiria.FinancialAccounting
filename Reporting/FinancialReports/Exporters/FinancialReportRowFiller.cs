@@ -30,9 +30,9 @@ namespace Empiria.FinancialAccounting.Reporting.FinancialReports.Exporters {
       _columns = columns;
       _excelFile = excelFile;
 
-      _conceptCodeColumn = _columns.Find(x => x.Field == "conceptCode");
-      _conceptNameColumn = _columns.Find(x => x.Field == "concept");
-      _totalsColumns = _columns.FindAll(x => x.Type == "decimal");
+      _conceptCodeColumn = _columns.Find(x => x.Field == "conceptCode" && !x.Column.StartsWith("_"));
+      _conceptNameColumn = _columns.Find(x => x.Field == "concept" && !x.Column.StartsWith("_"));
+      _totalsColumns = _columns.FindAll(x => x.Type == "decimal" && !x.Column.StartsWith("_"));
     }
 
 

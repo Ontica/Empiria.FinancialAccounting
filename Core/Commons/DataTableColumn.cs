@@ -96,7 +96,7 @@ namespace Empiria.FinancialAccounting {
 
     public bool Show {
       get {
-        return Column.Length != 0 && !Hidden;
+        return !Hidden;
       }
     }
 
