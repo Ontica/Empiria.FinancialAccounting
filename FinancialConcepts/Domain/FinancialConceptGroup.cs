@@ -198,8 +198,10 @@ namespace Empiria.FinancialAccounting.FinancialConcepts {
     internal FinancialConcept InsertFrom(EditFinancialConceptCommand command) {
       Assertion.Require(command, nameof(command));
 
-      if (IsFinancialConceptCodeRegistered(command.Code, FinancialConcept.Empty)) {
-        Assertion.RequireFail($"Ya existe otro concepto con la clave '{command.Code}'.");
+      if (IsFinancialConceptCodeRegistered(command.Code, FinancialConcept.Empty,
+                                           command.StartDate, command.EndDate)) {
+        Assertion.RequireFail($"Ya existe otro concepto con la clave '{command.Code}', " +
+                              $"dentro del rango de fechas proporcionado.");
       }
 
       int position = command.Positioning.CalculatePosition(this.FinancialConcepts);
@@ -244,8 +246,10 @@ namespace Empiria.FinancialAccounting.FinancialConcepts {
 
       FinancialConcept concept = GetFinancialConcept(command.FinancialConceptUID);
 
-      if (IsFinancialConceptCodeRegistered(command.Code, concept)) {
-        Assertion.RequireFail($"Ya existe otro concepto con la clave '{command.Code}'.");
+      if (IsFinancialConceptCodeRegistered(command.Code, concept,
+                                           command.StartDate, command.EndDate)) {
+        Assertion.RequireFail($"Ya existe otro concepto con la clave '{command.Code}', " +
+                              $"dentro del rango de fechas proporcionado.");
       }
 
       int newPosition = command.Positioning.CalculatePosition(this.FinancialConcepts,
@@ -267,8 +271,12 @@ namespace Empiria.FinancialAccounting.FinancialConcepts {
 
     #region Helpers
 
-    private bool IsFinancialConceptCodeRegistered(string code, FinancialConcept excluding) {
-      return this.FinancialConcepts.Contains(x => x.Code == code && !x.Equals(excluding));
+    private bool IsFinancialConceptCodeRegistered(string code, FinancialConcept excluding,
+                                                  DateTime startDate, DateTime endDate) {
+      return this.FinancialConcepts.Contains(x => x.Code == code &&
+                                                  !x.Equals(excluding) &&
+                                                  (x.StartDate <= startDate && startDate <= x.EndDate ||
+                                                   x.StartDate <= endDate && endDate <= x.EndDate));
     }
 
 
@@ -304,10 +312,10 @@ namespace Empiria.FinancialAccounting.FinancialConcepts {
       Assertion.Ensure(_locker, nameof(_locker));
 
       Assertion.Ensure(!concepts.Exists(x => x == null),
-                       "Concepts list can not have null items.");
+                       "Concepts list cannot have null items.");
 
       Assertion.Ensure(!concepts.Exists(x => x.Status == EntityStatus.Deleted || x.IsEmptyInstance),
-                       "Concepts list can not have deleted or empty instance items.");
+                       "Concepts list cannot have deleted or empty instance items.");
 
       Assertion.Ensure(concepts.TrueForAll(x => x.Group.Equals(this)),
                        $"All concepts must belong to the group ({this.Name}).");
