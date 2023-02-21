@@ -108,7 +108,7 @@ namespace Empiria.FinancialAccounting.AccountsChartEdition {
             $"the chart of accounts {chart.Name}.");
 
         Assertion.Require(account.EndDate == Account.MAX_END_DATE,
-            "The given accountUID corresponds to an historic account, so it can not be edited.");
+            "The given accountUID corresponds to an historic account, so it cannot be edited.");
 
         Assertion.Require(account.Number.Equals(_command.AccountFields.AccountNumber),
             "AccountFields.AccountNumber does not match with the given accountUID.");

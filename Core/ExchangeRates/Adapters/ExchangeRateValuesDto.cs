@@ -33,7 +33,7 @@ namespace Empiria.FinancialAccounting.Adapters {
 
       Assertion.Require(Date != ExecutionServer.DateMinValue,
           "Exchange rate date must be provided.");
-      Assertion.Require(Values, "Values array can not be null.");
+      Assertion.Require(Values, "Values array cannot be null.");
       Assertion.Require(Values.Length != 0, "Values array must have one or more values.");
 
       for (int i = 0; i < Values.Length; i++) {

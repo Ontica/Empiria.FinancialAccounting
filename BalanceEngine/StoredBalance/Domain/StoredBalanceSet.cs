@@ -162,7 +162,7 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
 
     internal void Calculate() {
       Assertion.Require(this.Unprotected,
-        "This balance set is protected. It can not be recalculated.");
+        "This balance set is protected. It cannot be recalculated.");
 
       this.Calculated = false;
       this.Save();

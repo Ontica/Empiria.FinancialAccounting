@@ -50,6 +50,7 @@ namespace Empiria.FinancialAccounting.Reporting {
       }
     }
 
+
     public string Group {
       get {
         return base.ExtendedDataField.Get<string>("group");

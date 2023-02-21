@@ -9,7 +9,6 @@
 ************************* Copyright(c) La Vía Óntica SC, Ontica LLC and contributors. All rights reserved. **/
 using System;
 using System.Linq;
-using iText.StyledXmlParser.Jsoup.Nodes;
 
 namespace Empiria.FinancialAccounting.AccountsChartEdition.Adapters {
 

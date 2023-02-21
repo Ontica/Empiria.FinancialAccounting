@@ -129,23 +129,23 @@ namespace Empiria.FinancialAccounting.FinancialConcepts.Adapters {
 
     static private void EnsureDatesAreValid(EditFinancialConceptCommand command) {
       Assertion.Require(command.StartDate != ExecutionServer.DateMinValue,
-                       "command.StartDate can not be empty.");
+                       "command.StartDate cannot be empty.");
 
       Assertion.Require(command.EndDate <= Account.MAX_END_DATE,
                        $"command.EndDate max value must be {Account.MAX_END_DATE.ToString("yyyy/MM/dd")}.");
 
       Assertion.Require(command.StartDate <= command.EndDate,
-                       $"command.StartDate can not be greater than command.EndDate.");
+                       $"command.StartDate cannot be greater than command.EndDate.");
     }
 
 
     static private void EnsurePositioningRuleIsValid(EditFinancialConceptCommand command) {
       Assertion.Require(command.PositioningRule != PositioningRule.Undefined,
-                       "command.PositioningRule can not be 'Undefined'.");
+                       "command.PositioningRule cannot be 'Undefined'.");
 
       if (command.PositioningRule.UsesOffset() && command.PositioningOffsetConceptUID.Length == 0) {
         Assertion.RequireFail($"command.PositioningRule is '{command.PositioningRule}', " +
-                              $"so command.PositioningOffsetConceptUID can not be empty.");
+                              $"so command.PositioningOffsetConceptUID cannot be empty.");
       }
 
       if (command.PositioningRule.UsesPosition() && command.Position == -1) {
