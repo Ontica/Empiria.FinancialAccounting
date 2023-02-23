@@ -36,13 +36,22 @@ namespace Empiria.FinancialAccounting {
       get; internal set;
     }
 
-  }
+    public DateTime StartDate {
+      get; internal set;
+    }
+
+    public DateTime EndDate {
+      get; internal set;
+    }
+
+  }  // class ExportToDto
+
 
 
   /// <summary>Information holder with file exportation rules.</summary>
   public class ExportTo {
 
-    protected internal ExportTo() {
+    private ExportTo() {
       // no-op
     }
 
@@ -54,7 +63,9 @@ namespace Empiria.FinancialAccounting {
         FileName = json.Get<string>("fileName", string.Empty),
         CsvBuilder = json.Get<string>("csvBuilder", string.Empty),
         TemplateId = json.Get<int>("templateId", -1),
-        Dataset = json.Get<string>("dataset", "Default")
+        Dataset = json.Get<string>("dataset", "Default"),
+        StartDate = json.Get<DateTime>("startDate", AccountsChart.IFRS.MasterData.StartDate),
+        EndDate = json.Get<DateTime>("endDate", AccountsChart.IFRS.MasterData.EndDate),
       };
     }
 
@@ -77,38 +88,40 @@ namespace Empiria.FinancialAccounting {
     }
 
 
-    [DataField("Name")]
     public string Name {
       get; private set;
     }
 
 
-    [DataField("FileType")]
     public string FileType {
       get; private set;
     }
 
 
-    [DataField("FileName")]
     public string FileName {
       get; private set;
     }
 
 
-    [DataField("CsvBuilder")]
     public string CsvBuilder {
       get; private set;
     }
 
 
-    [DataField("TemplateId")]
     public int TemplateId {
       get; private set;
     }
 
 
-    [DataField("Dataset")]
     public string Dataset {
+      get; private set;
+    }
+
+    public DateTime StartDate {
+      get; private set;
+    }
+
+    public DateTime EndDate {
       get; private set;
     }
 

@@ -25,7 +25,9 @@ namespace Empiria.FinancialAccounting {
         UID = exportTo.UID,
         Name = exportTo.Name,
         FileType = exportTo.FileType,
-        Dataset = exportTo.Dataset
+        Dataset = exportTo.Dataset,
+        StartDate = exportTo.StartDate,
+        EndDate = exportTo.EndDate
       };
     }
 
