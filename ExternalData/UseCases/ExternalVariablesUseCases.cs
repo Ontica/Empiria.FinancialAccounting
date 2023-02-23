@@ -47,12 +47,12 @@ namespace Empiria.FinancialAccounting.ExternalData.UseCases {
     }
 
 
-    public FixedList<ExternalVariableDto> GetVariables(string setUID) {
+    public FixedList<ExternalVariableDto> GetVariables(string setUID, DateTime date) {
       Assertion.Require(setUID, nameof(setUID));
 
       ExternalVariablesSet set = ExternalVariablesSet.Parse(setUID);
 
-      return ExternalVariableMapper.Map(set.ExternalVariables);
+      return ExternalVariableMapper.Map(set.GetVariables(date));
     }
 
 

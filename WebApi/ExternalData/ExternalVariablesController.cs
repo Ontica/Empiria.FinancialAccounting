@@ -37,10 +37,14 @@ namespace Empiria.FinancialAccounting.WebApi.ExternalData {
     [HttpGet]
     [Route("v2/financial-accounting/financial-concepts/" +
            "external-variables-sets/{setUID:guid}/variables")]
-    public CollectionModel GetExternalVariables([FromUri] string setUID) {
+    public CollectionModel GetExternalVariables([FromUri] string setUID,
+                                                [FromUri] DateTime? date = null) {
+      if (!date.HasValue) {
+        date = DateTime.Today;
+      }
 
       using (var usecases = ExternalVariablesUseCases.UseCaseInteractor()) {
-        FixedList<ExternalVariableDto> variables = usecases.GetVariables(setUID);
+        FixedList<ExternalVariableDto> variables = usecases.GetVariables(setUID, date.Value);
 
         return new CollectionModel(Request, variables);
       }

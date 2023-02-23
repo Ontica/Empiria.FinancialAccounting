@@ -126,6 +126,11 @@ namespace Empiria.FinancialAccounting.ExternalData {
     }
 
 
+    public FixedList<ExternalVariable> GetVariables(DateTime date) {
+      return this.ExternalVariables.FindAll(x => x.StartDate <= date && date <= x.EndDate);
+    }
+
+
     internal void DeleteVariable(ExternalVariable variable) {
       Assertion.Require(variable, nameof(variable));
       Assertion.Require(variable.Set.Equals(this), $"Variable set mismatch.");

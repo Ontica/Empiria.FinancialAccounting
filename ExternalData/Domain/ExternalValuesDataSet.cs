@@ -50,7 +50,7 @@ namespace Empiria.FinancialAccounting.ExternalData {
 
       FixedList<ExternalValue> valuesList = ExternalValuesData.GetValues(this.VariablesSet, this.Date);
 
-      foreach (var variable in VariablesSet.ExternalVariables) {
+      foreach (var variable in VariablesSet.GetVariables(this.Date)) {
 
         var externalValue = valuesList.Find(x => x.ExternalVariable.Equals(variable));
 

@@ -110,7 +110,7 @@ namespace Empiria.FinancialAccounting.ExternalData {
     public int Position {
       get;
       private set;
-    }
+    } = 1;
 
 
     [DataField("FECHA_INICIO")]
