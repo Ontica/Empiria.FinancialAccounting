@@ -64,7 +64,8 @@ namespace Empiria.FinancialAccounting.Vouchers.SpecialCases {
       Assertion.Require(items.Count > 0,
                         "No hay saldos encerrados por cancelar en la fecha proporcionada.");
 
-      return items;
+
+      return SortLockedBalances(items);
     }
 
 
@@ -83,13 +84,14 @@ namespace Empiria.FinancialAccounting.Vouchers.SpecialCases {
 
       var entries = new List<VoucherEntryFields>();
 
-      if (totalDebits != 0) {
-        entries.Add(BuildVoucherEntryFields(VoucherEntryType.Credit, targetAccountNumber,
-                                            "00", SubledgerAccount.Empty, totalDebits));
-      }
       if (totalCredits != 0) {
         entries.Add(BuildVoucherEntryFields(VoucherEntryType.Debit, targetAccountNumber,
                                             "00", SubledgerAccount.Empty, totalCredits));
+      }
+
+      if (totalDebits != 0) {
+        entries.Add(BuildVoucherEntryFields(VoucherEntryType.Credit, targetAccountNumber,
+                                            "00", SubledgerAccount.Empty, totalDebits));
       }
 
       return entries.ToFixedList();
@@ -159,6 +161,25 @@ namespace Empiria.FinancialAccounting.Vouchers.SpecialCases {
         LedgerAccountId = ledgerAccount.Id,
         VoucherEntryType = entryType
       };
+    }
+
+
+    private FixedList<SaldosEncerradosEntryDto> SortLockedBalances(FixedList<SaldosEncerradosEntryDto> items) {
+      var sorted = new List<SaldosEncerradosEntryDto>(items.Count);
+
+      var chunk = items.FindAll(x => x.DebtorCreditor == "Deudora" && x.LockedBalance < 0);
+      sorted.AddRange(chunk);
+
+      chunk = items.FindAll(x => x.DebtorCreditor == "Acreedora" && x.LockedBalance > 0);
+      sorted.AddRange(chunk);
+
+      chunk = items.FindAll(x => x.DebtorCreditor == "Deudora" && x.LockedBalance > 0);
+      sorted.AddRange(chunk);
+
+      chunk = items.FindAll(x => x.DebtorCreditor == "Acreedora" && x.LockedBalance < 0);
+      sorted.AddRange(chunk);
+
+      return sorted.ToFixedList();
     }
 
     #endregion Helpers
