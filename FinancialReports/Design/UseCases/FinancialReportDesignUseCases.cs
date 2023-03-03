@@ -48,6 +48,8 @@ namespace Empiria.FinancialAccounting.FinancialReports.UseCases {
 
       var list = FinancialReportType.GetListForDesign(accountsChart);
 
+      list = base.RestrictUserDataAccessTo(list);
+
       return list.MapToNamedEntityList();
     }
 
