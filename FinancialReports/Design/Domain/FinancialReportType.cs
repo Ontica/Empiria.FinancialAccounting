@@ -36,6 +36,8 @@ namespace Empiria.FinancialAccounting.FinancialReports {
 
     BalanzaTradicional,
 
+    ValorizacionEstimacionPreventiva,
+
   }
 
 

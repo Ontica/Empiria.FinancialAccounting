@@ -61,6 +61,10 @@ namespace Empiria.FinancialAccounting.FinancialReports.Providers {
         return Convert(balanzaTradicionalEntryDto);
       }
 
+      if (sourceEntry is ValorizacionEntryDto estimacionPreventivaEntryDto) {
+        return Convert(estimacionPreventivaEntryDto);
+      }
+
       throw Assertion.EnsureNoReachThisCode(
           $"A converter has not been defined for trial balance entry type {sourceEntry.GetType().FullName}.");
     }
@@ -132,6 +136,20 @@ namespace Empiria.FinancialAccounting.FinancialReports.Providers {
                                               DebtorCreditorType.Deudora : DebtorCreditorType.Acreedora;
 
       converted.SetTotalField("saldoActual", sourceEntry.CurrentBalanceForBalances);
+
+      return converted;
+    }
+
+
+    private DynamicTrialBalanceEntry Convert(ValorizacionEntryDto sourceEntry) {
+      var converted = new DynamicTrialBalanceEntry(sourceEntry);
+
+      converted.DebtorCreditor = DebtorCreditorType.Deudora;
+
+      converted.SetTotalField("usd", sourceEntry.USD);
+      converted.SetTotalField("yen", sourceEntry.YEN);
+      converted.SetTotalField("eur", sourceEntry.EUR);
+      converted.SetTotalField("udi", sourceEntry.UDI);
 
       return converted;
     }

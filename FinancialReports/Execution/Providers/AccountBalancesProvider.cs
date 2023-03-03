@@ -170,6 +170,9 @@ namespace Empiria.FinancialAccounting.FinancialReports.Providers {
         case FinancialReportDataSource.BalanzaTradicional:
           return GetBalanzaTradicionalQuery();
 
+        case FinancialReportDataSource.ValorizacionEstimacionPreventiva:
+          return GetBalanzaValorizacionEstimacionPreventivaQuery();
+
         default:
           throw Assertion.EnsureNoReachThisCode(
               $"Unrecognized balances source {_financialReportType.DataSource} for report type {_financialReportType.Name}.");
@@ -240,6 +243,25 @@ namespace Empiria.FinancialAccounting.FinancialReports.Providers {
           ToDate = _buildQuery.ToDate,
           UseDefaultValuation = true
         }
+      };
+    }
+
+
+    private TrialBalanceQuery GetBalanzaValorizacionEstimacionPreventivaQuery() {
+      return new TrialBalanceQuery {
+        AccountsChartUID = _buildQuery.AccountsChartUID,
+        TrialBalanceType = TrialBalanceType.ValorizacionEstimacionPreventiva,
+        UseDefaultValuation = true,
+        ShowCascadeBalances = false,
+        WithSubledgerAccount = false,
+        BalancesType = BalancesType.WithCurrentBalanceOrMovements,
+        ConsolidateBalancesToTargetCurrency = false,
+        InitialPeriod = new BalancesPeriod {
+          FromDate = new DateTime(_buildQuery.ToDate.Year, _buildQuery.ToDate.Month, 1),
+          ToDate = _buildQuery.ToDate,
+          UseDefaultValuation = true
+        },
+        IsOperationalReport = true,
       };
     }
 
