@@ -15,6 +15,7 @@ using Empiria.FinancialAccounting.ExternalData;
 using Empiria.FinancialAccounting.BalanceEngine.Adapters;
 
 using Empiria.FinancialAccounting.FinancialReports.Providers;
+using static iText.IO.Codec.TiffWriter;
 
 
 namespace Empiria.FinancialAccounting.FinancialReports {
@@ -83,6 +84,11 @@ namespace Empiria.FinancialAccounting.FinancialReports {
 
         copyTo.SetTotalField(fieldName, value);
       }
+    }
+
+
+    public decimal GetTotalField(string fieldName) {
+      return DynamicFields.GetTotalField(fieldName);
     }
 
 
@@ -161,8 +167,8 @@ namespace Empiria.FinancialAccounting.FinancialReports {
     }
 
 
-    void IFinancialConceptValues.SetTotalField(string field, decimal result) {
-      DynamicFields.SetTotalField(field, result);
+    void IFinancialConceptValues.SetTotalField(string fieldName, decimal result) {
+      DynamicFields.SetTotalField(fieldName, result);
     }
 
 

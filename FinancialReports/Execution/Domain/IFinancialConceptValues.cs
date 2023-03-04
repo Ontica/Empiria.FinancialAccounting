@@ -29,6 +29,8 @@ namespace Empiria.FinancialAccounting.FinancialReports {
 
     void CopyTotalsTo(DynamicFields copyTo);
 
+    decimal GetTotalField(string fieldName);
+
     IFinancialConceptValues Multiply(IFinancialConceptValues values);
 
     IFinancialConceptValues Multiply(ITrialBalanceEntryDto balance);
@@ -37,7 +39,7 @@ namespace Empiria.FinancialAccounting.FinancialReports {
 
     IFinancialConceptValues Round(RoundTo roundTo);
 
-    void SetTotalField(string field, decimal result);
+    void SetTotalField(string fieldName, decimal result);
 
     IFinancialConceptValues Substract(IFinancialConceptValues values);
 
