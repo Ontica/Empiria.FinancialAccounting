@@ -113,6 +113,8 @@ namespace Empiria.FinancialAccounting.FinancialReports {
 
       dictionary.Add("conceptCode", conceptCode);
 
+      dictionary.Add("this", baseValues);
+
       return dictionary;
     }
 
