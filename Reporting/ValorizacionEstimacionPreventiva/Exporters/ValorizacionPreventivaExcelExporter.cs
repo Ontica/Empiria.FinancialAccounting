@@ -63,10 +63,10 @@ namespace Empiria.FinancialAccounting.Reporting.ValorizacionEstimacionPreventiva
         _excelFile.SetCell($"H{i}", entry.LastYEN);
         _excelFile.SetCell($"I{i}", entry.LastEUR);
         _excelFile.SetCell($"J{i}", entry.LastUDI);
-        _excelFile.SetCell($"K{i}", entry.CurrentUSD);
-        _excelFile.SetCell($"L{i}", entry.CurrentYEN);
-        _excelFile.SetCell($"M{i}", entry.CurrentEUR);
-        _excelFile.SetCell($"N{i}", entry.CurrentUDI);
+        _excelFile.SetCell($"K{i}", entry.ValuedUSD);
+        _excelFile.SetCell($"L{i}", entry.ValuedYEN);
+        _excelFile.SetCell($"M{i}", entry.ValuedEUR);
+        _excelFile.SetCell($"N{i}", entry.ValuedUDI);
         _excelFile.SetCell($"O{i}", entry.ValuedEffectUSD);
         _excelFile.SetCell($"P{i}", entry.ValuedEffectYEN);
         _excelFile.SetCell($"Q{i}", entry.ValuedEffectEUR);

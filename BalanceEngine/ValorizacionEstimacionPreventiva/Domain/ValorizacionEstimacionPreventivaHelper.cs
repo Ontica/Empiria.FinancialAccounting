@@ -43,7 +43,7 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
 
       FixedList<ExchangeRate> exchangeRates = ExchangeRate.GetList(exchangeRateType, toDate);
 
-      foreach (var entry in entries) {
+      foreach (var entry in entries.Where(a => a.Currency != Currency.MXN)) {
         var exchangeRate = exchangeRates.FirstOrDefault(a => a.FromCurrency.Code == "01" &&
                                                              a.ToCurrency.Code == entry.Currency.Code);
 
@@ -61,30 +61,31 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
 
 
     internal FixedList<ValorizacionEstimacionPreventivaEntry> MergeAccountsByMonth(
-                                          FixedList<ValorizacionEstimacionPreventivaEntry> accountsByCurrency,
-                                          FixedList<ValorizacionEstimacionPreventivaEntry> accountsInfoByMonth) {
+              FixedList<ValorizacionEstimacionPreventivaEntry> accountsByCurrency,
+              FixedList<ValorizacionEstimacionPreventivaEntry> entriesByMonth) {
 
-      if (accountsByCurrency.Count == 0 && accountsInfoByMonth.Count == 0) {
+      if (accountsByCurrency.Count == 0 && entriesByMonth.Count == 0) {
         return new FixedList<ValorizacionEstimacionPreventivaEntry>();
       }
 
-      var returnedAccounts = new List<ValorizacionEstimacionPreventivaEntry>(accountsByCurrency);
+      var returnedAccountEntries = new List<ValorizacionEstimacionPreventivaEntry>(accountsByCurrency);
 
-      foreach (var account in returnedAccounts) {
+      foreach (var accountEntry in returnedAccountEntries) {
 
-        var months = accountsInfoByMonth.Where(a => a.Account.Number == account.Account.Number)
-                                        .OrderBy(a => a.ConsultingDate)
-                                        .ToList();
+        var entriesByMonthList = entriesByMonth.Where(a => a.Account.Number == accountEntry.Account.Number)
+                                               .OrderBy(a => a.ConsultingDate)
+                                               .ToList();
 
-        GetValueByMonth(account, months);
+        GetValueByMonth(accountEntry, entriesByMonthList);
 
       }
 
-      return returnedAccounts.ToFixedList();
+      return returnedAccountEntries.ToFixedList();
     }
 
 
-    private void GetValueByMonth(ValorizacionEstimacionPreventivaEntry account, List<ValorizacionEstimacionPreventivaEntry> months) {
+    private void GetValueByMonth(ValorizacionEstimacionPreventivaEntry accountEntry, 
+                                 List<ValorizacionEstimacionPreventivaEntry> entriesByMonthList) {
 
       var utility = new ValorizacionEstimacionPreventivaUtility();
 
@@ -92,22 +93,25 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
 
       foreach (var date in dateRange) {
 
-        var existDate = months.Find(a => a.ConsultingDate.Year == date.Year &&
-                                         a.ConsultingDate.Month == date.Month);
+        var existEntryInMonth = entriesByMonthList.Find(a => a.ConsultingDate.Year == date.Year &&
+                                                    a.ConsultingDate.Month == date.Month);
 
-        if (existDate != null) {
+        if (existEntryInMonth != null) {
 
-          account.SetTotalField($"{utility.GetMonthNameAndYear(existDate.ConsultingDate)}", existDate.TotalValued);
-          account.TotalAccumulated += existDate.TotalValued;
+          accountEntry.SetTotalField($"{utility.GetMonthNameAndYear(existEntryInMonth.ConsultingDate)}",
+                                     existEntryInMonth.TotalValued);
+
+          accountEntry.TotalAccumulated += existEntryInMonth.TotalValued;
 
         } else {
-          account.SetTotalField($"{utility.GetMonthNameAndYear(date)}", 0.00M);
+          accountEntry.SetTotalField($"{utility.GetMonthNameAndYear(date)}", 0.00M);
         }
       }
 
-      account.SetTotalField($"{utility.GetMonthNameAndYear(account.ConsultingDate)}", account.TotalValued);
+      accountEntry.SetTotalField($"{utility.GetMonthNameAndYear(accountEntry.ConsultingDate)}",
+                                 accountEntry.TotalValued);
 
-      account.TotalAccumulated += account.TotalValued;
+      accountEntry.TotalAccumulated += accountEntry.TotalValued;
 
     }
 
@@ -188,6 +192,7 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
       return accountBalanceByMonth.ToFixedList();
     }
 
+
     private void GetInitialDate(out int daysInMonth, out int totalMonths,
                                 out DateTime initialDate, out DateTime lastDate) {
 
@@ -198,6 +203,7 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
                               12 * (_query.InitialPeriod.ToDate.Year - initialDate.Year));
 
     }
+
 
     private void GetTotalValuedByAccount(List<ValorizacionEstimacionPreventivaEntry> returnedEntries) {
 
@@ -254,7 +260,26 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
 
       MergeForeignBalancesByAccount(returnedEntries, accountEntries, date);
 
+      MergeDomesticIntoForeignBalances(returnedEntries, accountEntries, date);
+
       return returnedEntries.OrderBy(a => a.Account.Number).ToList();
+    }
+
+
+    private void MergeDomesticIntoForeignBalances(List<ValorizacionEstimacionPreventivaEntry> returnedEntries,
+                                                 FixedList<TrialBalanceEntry> accountEntries, DateTime date) {
+
+      foreach (var entry in accountEntries.Where(a => a.Currency == Currency.MXN)) {
+
+        var existAccount = returnedEntries.Find(a => a.Account.Number == entry.Account.Number);
+
+        if (existAccount != null) {
+          existAccount.MXNDebit = entry.Debit;
+          existAccount.MXNCredit = entry.Credit;
+        } 
+
+      } // foreach
+
     }
 
 
@@ -282,10 +307,10 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
                                                FixedList<TrialBalanceEntry> accountEntries,
                                                DateTime date) {
 
-      foreach (var entry in accountEntries) {
+      foreach (var entry in accountEntries.Where(a=> a.Currency != Currency.MXN)) {
 
         var valorizacion = returnedEntries.Find(a => a.Account.Number == entry.Account.Number);
-
+        
         if (valorizacion == null) {
           returnedEntries.Add(new ValorizacionEstimacionPreventivaEntry().MapToValorizedReport(entry,
                                                         _query.InitialPeriod.ToDate));

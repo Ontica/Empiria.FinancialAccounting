@@ -33,7 +33,7 @@ namespace Empiria.FinancialAccounting.BalanceEngine.Adapters {
     }
 
 
-  } // class ValorizacionDto
+  } // class ValorizacionEstimacionPreventivaDto
 
 
   public class ValorizacionEntryDto : DynamicValorizacionEntryDto, ITrialBalanceEntryDto {
@@ -53,6 +53,27 @@ namespace Empiria.FinancialAccounting.BalanceEngine.Adapters {
     public string AccountName {
       get; internal set;
     }
+
+
+    public decimal MXN {
+      get; internal set;
+    }
+
+
+    public decimal MXNDebit {
+      get; internal set;
+    }
+
+
+    public decimal MXNCredit {
+      get; internal set;
+    }
+
+
+    public DebtorCreditorType DebtorCreditor {
+      get; internal set;
+    } = DebtorCreditorType.Deudora;
+
 
     public decimal ValuedEffects {
       get; internal set;
@@ -98,19 +119,19 @@ namespace Empiria.FinancialAccounting.BalanceEngine.Adapters {
       get; internal set;
     }
 
-    public decimal CurrentUSD {
+    public decimal ValuedUSD {
       get; internal set;
     }
 
-    public decimal CurrentYEN {
+    public decimal ValuedYEN {
       get; internal set;
     }
 
-    public decimal CurrentEUR {
+    public decimal ValuedEUR {
       get; internal set;
     }
 
-    public decimal CurrentUDI {
+    public decimal ValuedUDI {
       get; internal set;
     }
 
@@ -133,6 +154,85 @@ namespace Empiria.FinancialAccounting.BalanceEngine.Adapters {
     public decimal ValuedExchangeRate {
       get; internal set;
     } = 1;
+    public decimal USDDebit {
+      get;
+      internal set;
+    }
+
+    public decimal USDCredit {
+      get;
+      internal set;
+    }
+
+    public decimal YENDebit {
+      get;
+      internal set;
+    }
+
+    public decimal YENCredit {
+      get;
+      internal set;
+    }
+
+    public decimal EURDebit {
+      get;
+      internal set;
+    }
+
+    public decimal EURCredit {
+      get;
+      internal set;
+    }
+
+    public decimal UDIDebit {
+      get;
+      internal set;
+    }
+
+    public decimal UDICredit {
+      get;
+      internal set;
+    }
+
+    public decimal ValuedUSDDebit {
+      get;
+      internal set;
+    }
+
+    public decimal ValuedYENDebit {
+      get;
+      internal set;
+    }
+
+    public decimal ValuedEURDebit {
+      get;
+      internal set;
+    }
+
+    public decimal ValuedUDIDebit {
+      get;
+      internal set;
+    }
+
+    public decimal ValuedUSDCredit {
+      get;
+      internal set;
+    }
+
+    public decimal ValuedYENCredit {
+      get;
+      internal set;
+    }
+
+    public decimal ValuedEURCredit {
+      get;
+      internal set;
+    }
+
+    public decimal ValuedUDICredit {
+      get;
+      internal set;
+    }
 
     public DateTime LastChangeDate {
       get; internal set;
@@ -160,39 +260,39 @@ namespace Empiria.FinancialAccounting.BalanceEngine.Adapters {
     public override IEnumerable<string> GetDynamicMemberNames() {
       List<string> members = new List<string>();
 
-      members.Add("ItemType");
-      members.Add("CurrencyCode");
-      members.Add("StandardAccountId");
-      members.Add("AccountNumber");
-      members.Add("AccountName");
-      members.Add("USD");
-      members.Add("YEN");
-      members.Add("EUR");
-      members.Add("UDI");
-      members.Add("LastUSD");
-      members.Add("LastYEN");
-      members.Add("LastEUR");
-      members.Add("LastUDI");
-      members.Add("CurrentUSD");
-      members.Add("CurrentYEN");
-      members.Add("CurrentEUR");
-      members.Add("CurrentUDI");
-      members.Add("ValuedEffectUSD");
-      members.Add("ValuedEffectYEN");
-      members.Add("ValuedEffectEUR");
-      members.Add("ValuedEffectUDI");
-      members.Add("ValuedEffects");
-      members.Add("TotalValued");
+      //members.Add("ItemType");
+      //members.Add("CurrencyCode");
+      //members.Add("StandardAccountId");
+      //members.Add("AccountNumber");
+      //members.Add("AccountName");
+      //members.Add("USD");
+      //members.Add("YEN");
+      //members.Add("EUR");
+      //members.Add("UDI");
+      //members.Add("LastUSD");
+      //members.Add("LastYEN");
+      //members.Add("LastEUR");
+      //members.Add("LastUDI");
+      //members.Add("CurrentUSD");
+      //members.Add("CurrentYEN");
+      //members.Add("CurrentEUR");
+      //members.Add("CurrentUDI");
+      //members.Add("ValuedEffectUSD");
+      //members.Add("ValuedEffectYEN");
+      //members.Add("ValuedEffectEUR");
+      //members.Add("ValuedEffectUDI");
+      //members.Add("ValuedEffects");
+      //members.Add("TotalValued");
 
       members.AddRange(base.GetDynamicMemberNames());
 
-      members.Add("TotalAccumulated");
+      //members.Add("TotalAccumulated");
 
       return members;
     }
 
 
-  } // class ValorizacionEstimacionPreventivaDto
+  } // class ValorizacionEntryDto
 
 
   public class DynamicValorizacionEntryDto : DynamicFields {

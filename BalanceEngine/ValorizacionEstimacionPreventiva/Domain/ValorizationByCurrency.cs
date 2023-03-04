@@ -62,25 +62,25 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
     }
 
 
-    public decimal CurrentUSD {
+    public decimal ValuedUSD {
       get;
       internal set;
     }
 
 
-    public decimal CurrentYEN {
+    public decimal ValuedYEN {
       get;
       internal set;
     }
 
 
-    public decimal CurrentEUR {
+    public decimal ValuedEUR {
       get;
       internal set;
     }
 
 
-    public decimal CurrentUDI {
+    public decimal ValuedUDI {
       get;
       internal set;
     }
@@ -156,6 +156,102 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
       get;
       internal set;
     }
+
+
+    public decimal USDDebit {
+      get;
+      internal set;
+    }
+
+
+    public decimal USDCredit {
+      get;
+      internal set;
+    }
+
+
+    public decimal YENDebit {
+      get;
+      internal set;
+    }
+
+
+    public decimal YENCredit {
+      get;
+      internal set;
+    }
+
+    public decimal EURDebit {
+      get;
+      internal set;
+    }
+
+
+    public decimal EURCredit {
+      get;
+      internal set;
+    }
+
+
+    public decimal UDIDebit {
+      get;
+      internal set;
+    }
+
+
+    public decimal UDICredit {
+      get;
+      internal set;
+    }
+
+
+    public decimal ValuedUSDDebit {
+      get;
+      internal set;
+    }
+
+
+    public decimal ValuedYENDebit {
+      get;
+      internal set;
+    }
+
+
+    public decimal ValuedEURDebit {
+      get;
+      internal set;
+    }
+
+
+    public decimal ValuedUDIDebit {
+      get;
+      internal set;
+    }
+
+
+    public decimal ValuedUSDCredit {
+      get;
+      internal set;
+    }
+
+
+    public decimal ValuedYENCredit {
+      get;
+      internal set;
+    }
+
+
+    public decimal ValuedEURCredit {
+      get;
+      internal set;
+    }
+
+
+    public decimal ValuedUDICredit {
+      get;
+      internal set;
+    }
+
 
   } // class ValorizationByCurrency
 

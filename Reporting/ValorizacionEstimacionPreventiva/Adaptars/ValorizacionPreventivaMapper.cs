@@ -39,6 +39,10 @@ namespace Empiria.FinancialAccounting.Reporting.ValorizacionEstimacionPreventiva
       dto.CurrencyCode = entry.CurrencyCode;
       dto.ValuedExchangeRate = entry.ValuedExchangeRate;
       dto.LastChangeDate = entry.LastChangeDate;
+      dto.MXN = entry.MXN;
+      dto.MXNDebit = entry.MXNDebit;
+      dto.MXNCredit = entry.MXNCredit;
+      dto.DebtorCreditor = entry.DebtorCreditor.ToString();
 
       AssignValuesByCurrency(dto, entry);
 
@@ -65,15 +69,35 @@ namespace Empiria.FinancialAccounting.Reporting.ValorizacionEstimacionPreventiva
       dto.LastEUR = entry.LastEUR;
       dto.LastUDI = entry.LastUDI;
 
-      dto.CurrentUSD = entry.CurrentUSD;
-      dto.CurrentYEN = entry.CurrentYEN;
-      dto.CurrentEUR = entry.CurrentEUR;
-      dto.CurrentUDI = entry.CurrentUDI;
+      dto.ValuedUSD = entry.ValuedUSD;
+      dto.ValuedYEN = entry.ValuedYEN;
+      dto.ValuedEUR = entry.ValuedEUR;
+      dto.ValuedUDI = entry.ValuedUDI;
 
       dto.ValuedEffectUSD = entry.ValuedEffectUSD;
       dto.ValuedEffectYEN = entry.ValuedEffectYEN;
       dto.ValuedEffectEUR = entry.ValuedEffectEUR;
       dto.ValuedEffectUDI = entry.ValuedEffectUDI;
+
+      dto.USDDebit = entry.USDDebit;
+      dto.YENDebit = entry.YENDebit;
+      dto.EURDebit = entry.EURDebit;
+      dto.UDIDebit = entry.UDIDebit;
+
+      dto.USDCredit = entry.USDCredit;
+      dto.YENCredit = entry.YENCredit;
+      dto.EURCredit = entry.EURCredit;
+      dto.UDICredit = entry.UDICredit;
+
+      dto.ValuedUSDDebit = entry.ValuedUSDDebit;
+      dto.ValuedYENDebit = entry.ValuedYENDebit;
+      dto.ValuedEURDebit = entry.ValuedEURDebit;
+      dto.ValuedUDIDebit = entry.ValuedUDIDebit;
+
+      dto.ValuedUSDCredit = entry.ValuedUSDCredit;
+      dto.ValuedYENCredit = entry.ValuedYENCredit;
+      dto.ValuedEURCredit = entry.ValuedEURCredit;
+      dto.ValuedUDICredit = entry.ValuedUDICredit;
 
       dto.TotalValued = entry.TotalValued;
       dto.TotalAccumulated = entry.TotalAccumulated;

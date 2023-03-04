@@ -34,6 +34,26 @@ namespace Empiria.FinancialAccounting.Reporting.ValorizacionEstimacionPreventiva
     }
 
 
+    public decimal MXN {
+      get; internal set;
+    }
+
+
+    public decimal MXNDebit {
+      get; internal set;
+    }
+
+
+    public decimal MXNCredit {
+      get; internal set;
+    }
+
+
+    public string DebtorCreditor {
+      get; internal set;
+    }
+
+
     public decimal ValuedEffects {
       get;
       internal set;
@@ -95,25 +115,25 @@ namespace Empiria.FinancialAccounting.Reporting.ValorizacionEstimacionPreventiva
     }
 
 
-    public decimal CurrentUSD {
+    public decimal ValuedUSD {
       get;
       internal set;
     }
 
 
-    public decimal CurrentYEN {
+    public decimal ValuedYEN {
       get;
       internal set;
     }
 
 
-    public decimal CurrentEUR {
+    public decimal ValuedEUR {
       get;
       internal set;
     }
 
 
-    public decimal CurrentUDI {
+    public decimal ValuedUDI {
       get;
       internal set;
     }
@@ -149,6 +169,102 @@ namespace Empiria.FinancialAccounting.Reporting.ValorizacionEstimacionPreventiva
     } = 1;
 
 
+    public decimal USDDebit {
+      get;
+      internal set;
+    }
+
+
+    public decimal USDCredit {
+      get;
+      internal set;
+    }
+
+
+    public decimal YENDebit {
+      get;
+      internal set;
+    }
+
+
+    public decimal YENCredit {
+      get;
+      internal set;
+    }
+
+
+    public decimal EURDebit {
+      get;
+      internal set;
+    }
+
+
+    public decimal EURCredit {
+      get;
+      internal set;
+    }
+
+
+    public decimal UDIDebit {
+      get;
+      internal set;
+    }
+
+
+    public decimal UDICredit {
+      get;
+      internal set;
+    }
+
+
+    public decimal ValuedUSDDebit {
+      get;
+      internal set;
+    }
+
+
+    public decimal ValuedYENDebit {
+      get;
+      internal set;
+    }
+
+
+    public decimal ValuedEURDebit {
+      get;
+      internal set;
+    }
+
+
+    public decimal ValuedUDIDebit {
+      get;
+      internal set;
+    }
+
+
+    public decimal ValuedUSDCredit {
+      get;
+      internal set;
+    }
+
+
+    public decimal ValuedYENCredit {
+      get;
+      internal set;
+    }
+
+
+    public decimal ValuedEURCredit {
+      get;
+      internal set;
+    }
+
+
+    public decimal ValuedUDICredit {
+      get;
+      internal set;
+    }
+
+
     public DateTime LastChangeDate {
       get;
       internal set;
@@ -179,23 +295,51 @@ namespace Empiria.FinancialAccounting.Reporting.ValorizacionEstimacionPreventiva
       members.Add("StandardAccountId");
       members.Add("AccountNumber");
       members.Add("AccountName");
+
+      members.Add("MXN");
+      members.Add("MXNDebit");
+      members.Add("MXNCredit");
+      members.Add("DebtorCreditor");
+
       members.Add("USD");
       members.Add("YEN");
       members.Add("EUR");
       members.Add("UDI");
+
       members.Add("LastUSD");
       members.Add("LastYEN");
       members.Add("LastEUR");
       members.Add("LastUDI");
-      members.Add("CurrentUSD");
-      members.Add("CurrentYEN");
-      members.Add("CurrentEUR");
-      members.Add("CurrentUDI");
+
+      members.Add("ValuedUSD");
+      members.Add("ValuedYEN");
+      members.Add("ValuedEUR");
+      members.Add("ValuedUDI");
+
       members.Add("ValuedEffectUSD");
       members.Add("ValuedEffectYEN");
       members.Add("ValuedEffectEUR");
       members.Add("ValuedEffectUDI");
       members.Add("ValuedEffects");
+
+      members.Add("USDDebit");
+      members.Add("USDCredit");
+      members.Add("YENDebit");
+      members.Add("YENCredit");
+      members.Add("EURDebit");
+      members.Add("EURCredit");
+      members.Add("UDIDebit");
+      members.Add("UDICredit");
+
+      members.Add("ValuedUSDDebit");
+      members.Add("ValuedUSDCredit");
+      members.Add("ValuedYENDebit");
+      members.Add("ValuedYENCredit");
+      members.Add("ValuedEURDebit");
+      members.Add("ValuedEURCredit");
+      members.Add("ValuedUDIDebit");
+      members.Add("ValuedUDICredit");
+
       members.Add("TotalValued");
 
       members.AddRange(base.GetDynamicMemberNames());

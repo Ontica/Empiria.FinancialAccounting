@@ -70,6 +70,10 @@ namespace Empiria.FinancialAccounting.BalanceEngine.Adapters {
       dto.CurrencyCode = entry.Currency.Code;
       dto.ValuedExchangeRate = entry.ValuedExchangeRate;
       dto.LastChangeDate = entry.LastChangeDate;
+      dto.MXN = entry.MXN;
+      dto.MXNDebit = entry.MXNDebit;
+      dto.MXNCredit = entry.MXNCredit;
+      dto.DebtorCreditor = entry.DebtorCreditor;
 
       AssignValuesByCurrency(dto, entry);
 
@@ -99,15 +103,35 @@ namespace Empiria.FinancialAccounting.BalanceEngine.Adapters {
       dto.LastEUR = entry.ValuesByCurrency.LastEUR;
       dto.LastUDI = entry.ValuesByCurrency.LastUDI;
 
-      dto.CurrentUSD = entry.ValuesByCurrency.CurrentUSD;
-      dto.CurrentYEN = entry.ValuesByCurrency.CurrentYEN;
-      dto.CurrentEUR = entry.ValuesByCurrency.CurrentEUR;
-      dto.CurrentUDI = entry.ValuesByCurrency.CurrentUDI;
+      dto.ValuedUSD = entry.ValuesByCurrency.ValuedUSD;
+      dto.ValuedYEN = entry.ValuesByCurrency.ValuedYEN;
+      dto.ValuedEUR = entry.ValuesByCurrency.ValuedEUR;
+      dto.ValuedUDI = entry.ValuesByCurrency.ValuedUDI;
 
       dto.ValuedEffectUSD = entry.ValuesByCurrency.ValuedEffectUSD;
       dto.ValuedEffectYEN = entry.ValuesByCurrency.ValuedEffectYEN;
       dto.ValuedEffectEUR = entry.ValuesByCurrency.ValuedEffectEUR;
       dto.ValuedEffectUDI = entry.ValuesByCurrency.ValuedEffectUDI;
+
+      dto.USDDebit = entry.ValuesByCurrency.USDDebit;
+      dto.EURDebit = entry.ValuesByCurrency.EURDebit;
+      dto.YENDebit = entry.ValuesByCurrency.YENDebit;
+      dto.UDIDebit = entry.ValuesByCurrency.UDIDebit;
+
+      dto.USDCredit = entry.ValuesByCurrency.USDCredit;
+      dto.EURCredit = entry.ValuesByCurrency.EURCredit;
+      dto.YENCredit = entry.ValuesByCurrency.YENCredit;
+      dto.UDICredit = entry.ValuesByCurrency.UDICredit;
+
+      dto.ValuedUSDDebit = entry.ValuesByCurrency.ValuedUSDDebit;
+      dto.ValuedYENDebit = entry.ValuesByCurrency.ValuedYENDebit;
+      dto.ValuedEURDebit = entry.ValuesByCurrency.ValuedEURDebit;
+      dto.ValuedUDIDebit = entry.ValuesByCurrency.ValuedUDIDebit;
+
+      dto.ValuedUSDCredit = entry.ValuesByCurrency.ValuedUSDCredit;
+      dto.ValuedYENCredit = entry.ValuesByCurrency.ValuedYENCredit;
+      dto.ValuedEURCredit = entry.ValuesByCurrency.ValuedEURCredit;
+      dto.ValuedUDICredit = entry.ValuesByCurrency.ValuedUDICredit;
 
       dto.TotalValued = entry.TotalValued;
       dto.TotalAccumulated = entry.TotalAccumulated;
@@ -219,10 +243,10 @@ namespace Empiria.FinancialAccounting.BalanceEngine.Adapters {
     #region Helpers
 
     static private void SetTotalsFields(DynamicValorizacionEntryDto o, ValorizacionEstimacionPreventivaEntry entry) {
-      var totalsColumns = entry.GetDynamicMemberNames();
+      var fieldColumns = entry.GetDynamicMemberNames();
 
-      foreach (string column in totalsColumns) {
-        o.SetTotalField(column, entry.GetTotalField(column));
+      foreach (string field in fieldColumns) {
+        o.SetTotalField(field, entry.GetTotalField(field));
       }
     }
 

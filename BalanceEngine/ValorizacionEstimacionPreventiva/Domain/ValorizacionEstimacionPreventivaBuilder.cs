@@ -54,8 +54,8 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
 
       var helper = new ValorizacionEstimacionPreventivaHelper(_query);
 
-      FixedList<ValorizacionEstimacionPreventivaEntry> accountsByCurrency = helper.GetAccountsBalances(accountEntries,
-                                                        _query.InitialPeriod.ToDate);
+      FixedList<ValorizacionEstimacionPreventivaEntry> accountsByCurrency = helper.GetAccountsBalances(
+                                          accountEntries, _query.InitialPeriod.ToDate);
 
       FixedList <ValorizacionEstimacionPreventivaEntry> accountsInfoByMonth = helper.GetAccountsByFilteredMonth();
 

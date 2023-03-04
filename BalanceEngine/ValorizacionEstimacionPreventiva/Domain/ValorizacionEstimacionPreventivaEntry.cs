@@ -33,6 +33,26 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
     }
 
 
+    public decimal MXN {
+      get; internal set;
+    }
+
+
+    public decimal MXNDebit {
+      get; internal set;
+    }
+
+
+    public decimal MXNCredit {
+      get; internal set;
+    }
+
+
+    public DebtorCreditorType DebtorCreditor {
+      get; internal set;
+    } = DebtorCreditorType.Deudora;
+
+
     public decimal ValuedExchangeRate {
       get;
       internal set;
@@ -103,6 +123,7 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
       this.Account = entry.Account;
       this.Currency = entry.Currency;
       this.Sector = entry.Sector;
+      this.DebtorCreditor = entry.DebtorCreditor;
 
       this.LastChangeDate = entry.LastChangeDate;
       this.ConsultingDate = date;
@@ -120,6 +141,7 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
       
       if (date.Month == 1) {
         balance = entry.CurrentBalance;
+
       }
 
       if (entry.Currency.Equals(Currency.USD)) {
@@ -128,8 +150,15 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
         this.ValuesByCurrency.ExchangeRateUSD = entry.ExchangeRate;
         this.ValuesByCurrency.LastExchangeRateUSD = entry.SecondExchangeRate;
         this.ValuesByCurrency.LastUSD = balance * entry.SecondExchangeRate;
-        this.ValuesByCurrency.CurrentUSD = balance * entry.ExchangeRate;
-        this.ValuesByCurrency.ValuedEffectUSD = this.ValuesByCurrency.LastUSD - this.ValuesByCurrency.CurrentUSD;
+        this.ValuesByCurrency.ValuedUSD = balance * entry.ExchangeRate;
+        this.ValuesByCurrency.ValuedEffectUSD = this.ValuesByCurrency.LastUSD - this.ValuesByCurrency.ValuedUSD;
+
+        this.ValuesByCurrency.USDDebit = entry.Debit;
+        this.ValuesByCurrency.ValuedUSDDebit = entry.Debit * entry.ExchangeRate;
+
+        this.ValuesByCurrency.USDCredit = entry.Credit;
+        this.ValuesByCurrency.ValuedUSDCredit = entry.Credit * entry.ExchangeRate;
+
       }
       if (entry.Currency.Equals(Currency.YEN)) {
 
@@ -137,8 +166,14 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
         this.ValuesByCurrency.ExchangeRateYEN = entry.ExchangeRate;
         this.ValuesByCurrency.LastExchangeRateYEN = entry.SecondExchangeRate;
         this.ValuesByCurrency.LastYEN = balance * entry.SecondExchangeRate;
-        this.ValuesByCurrency.CurrentYEN = balance * entry.ExchangeRate;
-        this.ValuesByCurrency.ValuedEffectYEN = this.ValuesByCurrency.LastYEN - this.ValuesByCurrency.CurrentYEN;
+        this.ValuesByCurrency.ValuedYEN = balance * entry.ExchangeRate;
+        this.ValuesByCurrency.ValuedEffectYEN = this.ValuesByCurrency.LastYEN - this.ValuesByCurrency.ValuedYEN;
+
+        this.ValuesByCurrency.YENDebit = entry.Debit;
+        this.ValuesByCurrency.ValuedYENDebit = entry.Debit * entry.ExchangeRate;
+
+        this.ValuesByCurrency.YENCredit = entry.Credit;
+        this.ValuesByCurrency.ValuedYENCredit = entry.Credit * entry.ExchangeRate;
       }
       if (entry.Currency.Equals(Currency.EUR)) {
 
@@ -146,8 +181,14 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
         this.ValuesByCurrency.ExchangeRateEUR = entry.ExchangeRate;
         this.ValuesByCurrency.LastExchangeRateEUR = entry.SecondExchangeRate;
         this.ValuesByCurrency.LastEUR = balance * entry.SecondExchangeRate;
-        this.ValuesByCurrency.CurrentEUR = balance * entry.ExchangeRate;
-        this.ValuesByCurrency.ValuedEffectEUR = this.ValuesByCurrency.LastEUR - this.ValuesByCurrency.CurrentEUR;
+        this.ValuesByCurrency.ValuedEUR = balance * entry.ExchangeRate;
+        this.ValuesByCurrency.ValuedEffectEUR = this.ValuesByCurrency.LastEUR - this.ValuesByCurrency.ValuedEUR;
+
+        this.ValuesByCurrency.EURDebit = entry.Debit;
+        this.ValuesByCurrency.ValuedEURDebit = entry.Debit * entry.ExchangeRate;
+
+        this.ValuesByCurrency.EURCredit = entry.Credit;
+        this.ValuesByCurrency.ValuedEURCredit = entry.Credit * entry.ExchangeRate;
       }
       if (entry.Currency.Equals(Currency.UDI)) {
 
@@ -155,8 +196,14 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
         this.ValuesByCurrency.ExchangeRateUDI = entry.ExchangeRate;
         this.ValuesByCurrency.LastExchangeRateUDI = entry.SecondExchangeRate;
         this.ValuesByCurrency.LastUDI = balance * entry.SecondExchangeRate;
-        this.ValuesByCurrency.CurrentUDI = balance * entry.ExchangeRate;
-        this.ValuesByCurrency.ValuedEffectUDI = this.ValuesByCurrency.LastUDI - this.ValuesByCurrency.CurrentUDI;
+        this.ValuesByCurrency.ValuedUDI = balance * entry.ExchangeRate;
+        this.ValuesByCurrency.ValuedEffectUDI = this.ValuesByCurrency.LastUDI - this.ValuesByCurrency.ValuedUDI;
+
+        this.ValuesByCurrency.UDIDebit = entry.Debit;
+        this.ValuesByCurrency.ValuedUDIDebit = entry.Debit * entry.ExchangeRate;
+
+        this.ValuesByCurrency.UDICredit = entry.Credit;
+        this.ValuesByCurrency.ValuedUDICredit = entry.Credit * entry.ExchangeRate;
       }
     }
 
