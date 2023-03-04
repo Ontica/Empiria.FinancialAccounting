@@ -60,6 +60,10 @@ namespace Empiria.FinancialAccounting.FinancialReports {
 
         CalculateFormulaBasedColumns(breakdownItem.FinancialConcept, breakdownValues);
 
+        if (breakdownItem.FinancialConcept.HasScript) {
+          breakdownValues = ExecuteConceptScript(breakdownItem.FinancialConcept, breakdownValues);
+        }
+
         breakdownValues.CopyTotalsTo(breakdownItem);
 
         granTotal = ApplyOperator(breakdownItem.IntegrationEntry.Operator,
@@ -120,6 +124,7 @@ namespace Empiria.FinancialAccounting.FinancialReports {
 
       return returnValues;
     }
+
 
     private IFinancialConceptValues TryGetPrecalculatedConceptValues(FinancialConcept concept) {
 
@@ -245,6 +250,7 @@ namespace Empiria.FinancialAccounting.FinancialReports {
       foreach (var integrationItem in financialConcept.Integration) {
 
         switch (integrationItem.Type) {
+
           case FinancialConceptEntryType.FinancialConceptReference:
 
             totals = AccumulateFinancialConceptTotals(integrationItem, totals);
@@ -262,6 +268,10 @@ namespace Empiria.FinancialAccounting.FinancialReports {
       }  // foreach
 
       CalculateFormulaBasedColumns(financialConcept, totals);
+
+      if (financialConcept.HasScript) {
+        totals = ExecuteConceptScript(financialConcept, totals);
+      }
 
       return totals;
     }
