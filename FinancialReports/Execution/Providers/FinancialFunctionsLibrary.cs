@@ -30,8 +30,22 @@ namespace Empiria.FinancialAccounting.FinancialReports.Providers {
 
     private void LoadFunctions() {
       var functions = new[] {
+
+        new Function(lexeme: "CALCULAR_ABONOS_R04", arity: 0,
+                     calle: () => new CalcularAbonosR04()),
+
+        new Function(lexeme: "CALCULAR_ABONOS_EFECTO_VALUACION_R04", arity: 0,
+                     calle: () => new CalcularAbonosEfectoValuacionR04()),
+
+        new Function(lexeme: "CALCULAR_CARGOS_R04", arity: 0,
+                     calle: () => new CalcularCargosR04()),
+
+        new Function(lexeme: "CALCULAR_CARGOS_EFECTO_VALUACION_R04", arity: 0,
+                     calle: () => new CalcularCargosEfectoValuacionR04()),
+
         new Function(lexeme: "DEUDORAS_MENOS_ACREEDORAS", arity: 3,
                      calle: () => new DeudorasMenosAcreedorasFunction()),
+
         new Function(lexeme: "VALORES_CONCEPTO", arity: 1,
                      calle: () => new ValoresConceptoFunction(_executionContext.ConceptsCalculator)),
 
@@ -39,6 +53,87 @@ namespace Empiria.FinancialAccounting.FinancialReports.Providers {
 
       base.AddRange(functions);
     }
+
+
+    sealed private class CalcularAbonosR04 : FunctionHandler {
+
+      protected override object Evaluate() {
+        IFinancialConceptValues _this = (IFinancialConceptValues) base.Data["this"];
+
+        decimal abonosPesos = _this.GetTotalField("abonosPesos");
+        decimal abonosMonExt = _this.GetTotalField("abonosMonExtVal");
+        decimal abonosUDIs = _this.GetTotalField("abonosUDIsVal");
+
+        _this.SetTotalField("totalMonedaNacional", abonosPesos);
+        _this.SetTotalField("totalMonedaExtranjera", abonosMonExt);
+        _this.SetTotalField("totalUdis", abonosUDIs);
+
+        _this.SetTotalField("totalR04", abonosPesos + abonosMonExt + abonosUDIs);
+
+        return _this;
+      }
+
+    }  // CalcularAbonosR04
+
+
+    sealed private class CalcularAbonosEfectoValuacionR04 : FunctionHandler {
+
+      protected override object Evaluate() {
+        IFinancialConceptValues _this = (IFinancialConceptValues) base.Data["this"];
+
+        decimal abonosMonExt = _this.GetTotalField("abonosEfectosValuacionMonExt");
+        decimal abonosUDIs = _this.GetTotalField("abonosEfectosValuacionUDIs");
+
+        _this.SetTotalField("totalMonedaNacional", 0);
+        _this.SetTotalField("totalMonedaExtranjera", abonosMonExt);
+        _this.SetTotalField("totalUdis", abonosUDIs);
+
+        _this.SetTotalField("totalR04", abonosMonExt + abonosUDIs);
+
+        return _this;
+      }
+
+    }  // class CalcularAbonosEfectoValuacionR04
+
+
+    sealed private class CalcularCargosR04 : FunctionHandler {
+
+      protected override object Evaluate() {
+        IFinancialConceptValues _this = (IFinancialConceptValues) base.Data["this"];
+
+        decimal cargosPesos = _this.GetTotalField("cargosPesos");
+        decimal cargosMonExt = _this.GetTotalField("cargosMonExtVal");
+        decimal cargosUDIs = _this.GetTotalField("cargosUDIsVal");
+
+        _this.SetTotalField("totalMonedaNacional", cargosPesos);
+        _this.SetTotalField("totalMonedaExtranjera", cargosMonExt);
+        _this.SetTotalField("totalUdis", cargosUDIs);
+
+        _this.SetTotalField("totalR04", cargosPesos + cargosMonExt + cargosUDIs);
+
+        return _this;
+      }
+
+    }  // class CalcularCargosR04
+
+
+    sealed private class CalcularCargosEfectoValuacionR04 : FunctionHandler {
+
+      protected override object Evaluate() {
+        IFinancialConceptValues _this = (IFinancialConceptValues) base.Data["this"];
+
+        decimal cargosMonExt = _this.GetTotalField("cargosEfectosValuacionMonExt");
+        decimal cargosUDIs = _this.GetTotalField("cargosEfectosValuacionUDIs");
+
+        _this.SetTotalField("totalMonedaNacional", 0);
+        _this.SetTotalField("totalMonedaExtranjera", cargosMonExt);
+        _this.SetTotalField("totalUdis", cargosUDIs);
+
+        _this.SetTotalField("totalR04", cargosMonExt + cargosUDIs);
+        return _this;
+      }
+
+    }  //  class CalcularCargosEfectoValuacionR04
 
 
     /// <summary>Returns deudoras minus acreedoras, or acreedoras minus deudoras balance,
