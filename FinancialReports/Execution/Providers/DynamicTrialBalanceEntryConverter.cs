@@ -144,12 +144,30 @@ namespace Empiria.FinancialAccounting.FinancialReports.Providers {
     private DynamicTrialBalanceEntry Convert(ValorizacionEntryDto sourceEntry) {
       var converted = new DynamicTrialBalanceEntry(sourceEntry);
 
-      converted.DebtorCreditor = DebtorCreditorType.Deudora;
+      converted.DebtorCreditor = sourceEntry.DebtorCreditor;
 
-      converted.SetTotalField("usd", sourceEntry.USD);
-      converted.SetTotalField("yen", sourceEntry.YEN);
-      converted.SetTotalField("eur", sourceEntry.EUR);
-      converted.SetTotalField("udi", sourceEntry.UDI);
+      converted.SetTotalField("cargosPesos", sourceEntry.MXNDebit);
+      converted.SetTotalField("abonosPesos", sourceEntry.MXNCredit);
+
+      converted.SetTotalField("cargosMonExtVal",
+            sourceEntry.ValuedUSDDebit + sourceEntry.ValuedEURDebit + sourceEntry.ValuedYENDebit);
+
+      converted.SetTotalField("abonosMonExtVal",
+            sourceEntry.ValuedUSDCredit + sourceEntry.ValuedEURCredit + sourceEntry.ValuedYENCredit);
+
+      converted.SetTotalField("cargosUDIsVal", sourceEntry.ValuedUDIDebit);
+      converted.SetTotalField("abonosUDIsVal", sourceEntry.ValuedUDICredit);
+
+
+      converted.SetTotalField("cargosEfectosValuacionMonExt",
+            sourceEntry.ValuedEffectUSD + sourceEntry.ValuedEffectEUR + sourceEntry.ValuedEffectYEN);
+
+      converted.SetTotalField("abonosEfectosValuacionMonExt",
+            (sourceEntry.ValuedEffectUSD + sourceEntry.ValuedEffectEUR + sourceEntry.ValuedEffectYEN) * -1m);
+
+      converted.SetTotalField("cargosEfectosValuacionUDIs", sourceEntry.ValuedEffectUDI);
+
+      converted.SetTotalField("abonosEfectosValuacionUDIs", sourceEntry.ValuedEffectUDI * -1m);
 
       return converted;
     }
