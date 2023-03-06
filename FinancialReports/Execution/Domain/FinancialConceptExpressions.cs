@@ -61,6 +61,11 @@ namespace Empiria.FinancialAccounting.FinancialReports {
 
       compiler.ExecuteScript(financialConcept.CalculationScript, data);
 
+      if (MustReturnThisValue(financialConcept)) {
+        return (IFinancialConceptValues) data["this"];
+      }
+
+
       foreach (var item in data) {
         if (baseValues.ContainsField(item.Key) && item.Value is decimal) {
           baseValues.SetTotalField(item.Key, (decimal) item.Value);
@@ -93,6 +98,13 @@ namespace Empiria.FinancialAccounting.FinancialReports {
       dictionary.Add("this", baseValues);
 
       return dictionary;
+    }
+
+
+    private bool MustReturnThisValue(FinancialConcept financialConcept) {
+      var script = EmpiriaString.TrimAll(financialConcept.CalculationScript);
+
+      return script.StartsWith("this := ");
     }
 
     #endregion Helpers
