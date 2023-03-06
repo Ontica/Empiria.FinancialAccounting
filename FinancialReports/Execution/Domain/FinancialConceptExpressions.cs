@@ -48,27 +48,6 @@ namespace Empiria.FinancialAccounting.FinancialReports {
     }
 
 
-    //internal void ExecuteConceptScript(FinancialConcept financialConcept,
-    //                                   IFinancialConceptValues baseValues) {
-
-    //  if (!financialConcept.HasScript) {
-    //    return;
-    //  }
-
-    //  IDictionary<string, object> data = ConvertToDictionary(financialConcept, baseValues);
-
-    //  var compiler = new RuntimeCompiler(_executionContext);
-
-    //  compiler.ExecuteScript(financialConcept.CalculationScript, data);
-
-    //  foreach (var item in data) {
-    //    if (item.Value is decimal) {
-    //      baseValues.SetTotalField(item.Key, (decimal) item.Value);
-    //    }
-    //  }
-    //}
-
-
     internal IFinancialConceptValues ExecuteConceptScript(FinancialConcept financialConcept,
                                                           IFinancialConceptValues baseValues) {
 
@@ -80,18 +59,16 @@ namespace Empiria.FinancialAccounting.FinancialReports {
 
       var compiler = new RuntimeCompiler(_executionContext);
 
-      return compiler.ExecuteScript<IFinancialConceptValues>(financialConcept.CalculationScript,
-                                                             data);
+      compiler.ExecuteScript(financialConcept.CalculationScript, data);
 
-      //compiler.ExecuteScript(financialConcept.CalculationScript, data);
+      foreach (var item in data) {
+        if (baseValues.ContainsField(item.Key) && item.Value is decimal) {
+          baseValues.SetTotalField(item.Key, (decimal) item.Value);
+        }
+      }
 
-      //foreach (var item in data) {
-      //  if (item.Value is decimal) {
-      //    baseValues.SetTotalField(item.Key, (decimal) item.Value);
-      //  }
-      //}
+      return baseValues;
     }
-
 
 
     #region Helpers
