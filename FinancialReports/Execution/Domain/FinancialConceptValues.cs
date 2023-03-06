@@ -78,7 +78,16 @@ namespace Empiria.FinancialAccounting.FinancialReports {
     }
 
 
+    public bool ContainsField(string fieldName) {
+      Assertion.Require(fieldName, nameof(fieldName));
+
+      return DynamicFields.ContainsField(fieldName);
+    }
+
+
     public void CopyTotalsTo(DynamicFields copyTo) {
+      Assertion.Require(copyTo, nameof(copyTo));
+
       foreach (var fieldName in DynamicFields.GetDynamicMemberNames()) {
         decimal value = DynamicFields.GetTotalField(fieldName);
 
@@ -88,6 +97,8 @@ namespace Empiria.FinancialAccounting.FinancialReports {
 
 
     public decimal GetTotalField(string fieldName) {
+      Assertion.Require(fieldName, nameof(fieldName));
+
       return DynamicFields.GetTotalField(fieldName);
     }
 

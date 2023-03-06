@@ -27,6 +27,8 @@ namespace Empiria.FinancialAccounting.FinancialReports {
 
     IFinancialConceptValues ConsolidateTotalsInto(string consolidatedFieldName);
 
+    bool ContainsField(string fieldName);
+
     void CopyTotalsTo(DynamicFields copyTo);
 
     decimal GetTotalField(string fieldName);
