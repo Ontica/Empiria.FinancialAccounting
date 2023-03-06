@@ -38,11 +38,7 @@ namespace Empiria.FinancialAccounting.FinancialReports {
 
       IFinancialConceptValues totals = this.CalculateFinancialConcept(financialConcept);
 
-      if (financialConcept.HasScript) {
-        totals = ExecuteConceptScript(financialConcept, totals);
-      }
-
-      return totals;
+      return ExecuteConceptScript(financialConcept, totals);
     }
 
 
@@ -60,9 +56,7 @@ namespace Empiria.FinancialAccounting.FinancialReports {
 
         CalculateFormulaBasedColumns(breakdownItem.FinancialConcept, breakdownValues);
 
-        if (breakdownItem.FinancialConcept.HasScript) {
-          breakdownValues = ExecuteConceptScript(breakdownItem.FinancialConcept, breakdownValues);
-        }
+        breakdownValues = ExecuteConceptScript(breakdownItem.FinancialConcept, breakdownValues);
 
         breakdownValues.CopyTotalsTo(breakdownItem);
 
@@ -267,6 +261,7 @@ namespace Empiria.FinancialAccounting.FinancialReports {
 
       }  // foreach
 
+
       CalculateFormulaBasedColumns(financialConcept, totals);
 
       if (financialConcept.HasScript) {
@@ -299,17 +294,15 @@ namespace Empiria.FinancialAccounting.FinancialReports {
 
     private IFinancialConceptValues ExecuteConceptScript(FinancialConcept financialConcept,
                                                          IFinancialConceptValues totals) {
+
+      if (!financialConcept.HasScript) {
+        return totals;
+      }
+
       var expressions = new FinancialConceptExpressions(_executionContext);
 
       return expressions.ExecuteConceptScript(financialConcept, totals);
     }
-
-    //private void ExecuteConceptScript(FinancialConcept financialConcept,
-    //                                  IFinancialConceptValues totals) {
-    //  var expressions = new FinancialConceptExpressions(_executionContext);
-
-    //  expressions.ExecuteConceptScript(financialConcept, totals);
-    //}
 
     #endregion Helpers
 
