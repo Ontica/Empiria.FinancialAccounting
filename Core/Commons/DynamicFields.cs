@@ -29,6 +29,12 @@ namespace Empiria.FinancialAccounting {
 
     #region Methods
 
+
+    public bool ContainsField(string fieldName) {
+      return _fields.ContainsKey(fieldName);
+    }
+
+
     public override IEnumerable<string> GetDynamicMemberNames() {
       return this._fields.Keys;
     }
