@@ -264,11 +264,11 @@ namespace Empiria.FinancialAccounting.FinancialReports {
 
       CalculateFormulaBasedColumns(financialConcept, totals);
 
-      if (financialConcept.HasScript) {
-        totals = ExecuteConceptScript(financialConcept, totals);
+      if (!financialConcept.SkipInnerCalculation) {
+        return ExecuteConceptScript(financialConcept, totals);
+      } else {
+        return totals;
       }
-
-      return totals;
     }
 
     #endregion Private calculation methods

@@ -122,6 +122,13 @@ namespace Empiria.FinancialAccounting.FinancialConcepts {
     }
 
 
+    public bool SkipInnerCalculation {
+      get {
+        return ExtendedDataField.Get<bool>("scriptConfig/skipInnerCalculation", false);
+      }
+    }
+
+
     [DataField("CONCEPTO_EXT_DATA")]
     internal protected JsonObject ExtendedDataField {
       get; set;
