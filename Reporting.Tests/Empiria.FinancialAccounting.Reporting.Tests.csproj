@@ -88,6 +88,9 @@
     <ProjectReference Include="..\Reporting\Empiria.FinancialAccounting.Reporting.csproj" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\..\extensions\Expressions\Empiria.Expressions.csproj" />
+  </ItemGroup>
+  <ItemGroup>
     <None Update="empiria.config.json">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>

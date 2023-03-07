@@ -144,6 +144,12 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
 
       }
 
+      if (entry.Currency.Equals(Currency.MXN)) {
+        this.MXN = entry.CurrentBalance;
+        this.MXNDebit = entry.Debit;
+        this.MXNCredit = entry.Credit;
+      }
+
       if (entry.Currency.Equals(Currency.USD)) {
 
         this.ValuesByCurrency.USD = balance;

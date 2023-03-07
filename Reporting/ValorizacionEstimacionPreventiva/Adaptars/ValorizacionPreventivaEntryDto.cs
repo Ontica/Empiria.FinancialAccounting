@@ -265,6 +265,46 @@ namespace Empiria.FinancialAccounting.Reporting.ValorizacionEstimacionPreventiva
     }
 
 
+    public decimal ValuedEffectDebitUSD {
+      get; internal set;
+    }
+
+
+    public decimal ValuedEffectDebitYEN {
+      get; internal set;
+    }
+
+
+    public decimal ValuedEffectDebitEUR {
+      get; internal set;
+    }
+
+
+    public decimal ValuedEffectDebitUDI {
+      get; internal set;
+    }
+
+
+    public decimal ValuedEffectCreditUSD {
+      get; internal set;
+    }
+
+
+    public decimal ValuedEffectCreditYEN {
+      get; internal set;
+    }
+
+
+    public decimal ValuedEffectCreditEUR {
+      get; internal set;
+    }
+
+
+    public decimal ValuedEffectCreditUDI {
+      get; internal set;
+    }
+
+
     public DateTime LastChangeDate {
       get;
       internal set;
@@ -339,6 +379,15 @@ namespace Empiria.FinancialAccounting.Reporting.ValorizacionEstimacionPreventiva
       members.Add("ValuedEURCredit");
       members.Add("ValuedUDIDebit");
       members.Add("ValuedUDICredit");
+
+      //members.Add("ValuedEffectDebitUSD");
+      //members.Add("ValuedEffectDebitYEN");
+      //members.Add("ValuedEffectDebitEUR");
+      //members.Add("ValuedEffectDebitUDI");
+      //members.Add("ValuedEffectCreditUSD");
+      //members.Add("ValuedEffectCreditYEN");
+      //members.Add("ValuedEffectCreditEUR");
+      //members.Add("ValuedEffectCreditUDI");
 
       members.Add("TotalValued");
 

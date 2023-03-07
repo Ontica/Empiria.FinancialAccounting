@@ -253,6 +253,46 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
     }
 
 
+    public decimal ValuedEffectDebitUSD {
+      get; internal set;
+    }
+
+
+    public decimal ValuedEffectDebitYEN {
+      get; internal set;
+    }
+
+
+    public decimal ValuedEffectDebitEUR {
+      get; internal set;
+    }
+
+
+    public decimal ValuedEffectDebitUDI {
+      get; internal set;
+    }
+
+
+    public decimal ValuedEffectCreditUSD {
+      get; internal set;
+    }
+
+
+    public decimal ValuedEffectCreditYEN {
+      get; internal set;
+    }
+
+
+    public decimal ValuedEffectCreditEUR {
+      get; internal set;
+    }
+
+
+    public decimal ValuedEffectCreditUDI {
+      get; internal set;
+    }
+
+
   } // class ValorizationByCurrency
 
 

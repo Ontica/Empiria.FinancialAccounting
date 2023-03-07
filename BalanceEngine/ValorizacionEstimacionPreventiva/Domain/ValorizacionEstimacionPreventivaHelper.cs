@@ -258,25 +258,30 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
 
       }
 
+      MergeDomesticIntoForeignBalances(returnedEntries, accountEntries);
+
       MergeForeignBalancesByAccount(returnedEntries, accountEntries, date);
 
-      MergeDomesticIntoForeignBalances(returnedEntries, accountEntries, date);
 
       return returnedEntries.OrderBy(a => a.Account.Number).ToList();
     }
 
 
     private void MergeDomesticIntoForeignBalances(List<ValorizacionEstimacionPreventivaEntry> returnedEntries,
-                                                 FixedList<TrialBalanceEntry> accountEntries, DateTime date) {
+                                                 FixedList<TrialBalanceEntry> accountEntries) {
 
       foreach (var entry in accountEntries.Where(a => a.Currency == Currency.MXN)) {
 
         var existAccount = returnedEntries.Find(a => a.Account.Number == entry.Account.Number);
 
         if (existAccount != null) {
+          existAccount.MXN = entry.CurrentBalance;
           existAccount.MXNDebit = entry.Debit;
           existAccount.MXNCredit = entry.Credit;
-        } 
+        } else {
+          returnedEntries.Add(new ValorizacionEstimacionPreventivaEntry().MapToValorizedReport(entry,
+                                                        _query.InitialPeriod.ToDate));
+        }
 
       } // foreach
 

@@ -91,7 +91,8 @@ namespace Empiria.FinancialAccounting.BalanceEngine.Adapters {
     #region Private methods
 
 
-    static private void AssignValuesByCurrency(ValorizacionEntryDto dto, ValorizacionEstimacionPreventivaEntry entry) {
+    static private void AssignValuesByCurrency(ValorizacionEntryDto dto,
+                                                ValorizacionEstimacionPreventivaEntry entry) {
 
       dto.USD = entry.ValuesByCurrency.USD;
       dto.EUR = entry.ValuesByCurrency.EUR;
@@ -132,6 +133,16 @@ namespace Empiria.FinancialAccounting.BalanceEngine.Adapters {
       dto.ValuedYENCredit = entry.ValuesByCurrency.ValuedYENCredit;
       dto.ValuedEURCredit = entry.ValuesByCurrency.ValuedEURCredit;
       dto.ValuedUDICredit = entry.ValuesByCurrency.ValuedUDICredit;
+
+      dto.ValuedEffectDebitUSD = entry.ValuesByCurrency.ValuedEffectDebitUSD;
+      dto.ValuedEffectDebitYEN = entry.ValuesByCurrency.ValuedEffectDebitYEN;
+      dto.ValuedEffectDebitEUR = entry.ValuesByCurrency.ValuedEffectDebitEUR;
+      dto.ValuedEffectDebitUDI = entry.ValuesByCurrency.ValuedEffectDebitUDI;
+
+      dto.ValuedEffectCreditUSD = entry.ValuesByCurrency.ValuedEffectCreditUSD;
+      dto.ValuedEffectCreditYEN = entry.ValuesByCurrency.ValuedEffectCreditYEN;
+      dto.ValuedEffectCreditEUR = entry.ValuesByCurrency.ValuedEffectCreditEUR;
+      dto.ValuedEffectCreditUDI = entry.ValuesByCurrency.ValuedEffectCreditUDI;
 
       dto.TotalValued = entry.TotalValued;
       dto.TotalAccumulated = entry.TotalAccumulated;

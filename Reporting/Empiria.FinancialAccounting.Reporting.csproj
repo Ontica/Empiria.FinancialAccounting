@@ -87,6 +87,9 @@
     <Folder Include="AccountComparer\Data\" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\..\extensions\Expressions\Empiria.Expressions.csproj" />
+  </ItemGroup>
+  <ItemGroup>
     <Reference Include="Microsoft.CSharp" />
   </ItemGroup>
 </Project>
