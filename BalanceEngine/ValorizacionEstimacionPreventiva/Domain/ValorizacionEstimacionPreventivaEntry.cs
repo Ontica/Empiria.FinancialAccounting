@@ -139,9 +139,7 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
 
     internal void AssingValues(TrialBalanceEntry entry, DateTime date, bool isPreviousMonth = false) {
       decimal balance = entry.InitialBalance;
-      if (entry.Account.Number == "1.01.02") {
-        string x = string.Empty;
-      }
+      
       if (date.Month == 1) {
         balance = entry.CurrentBalance;
 
@@ -158,20 +156,20 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
         this.ValuesByCurrency.USD = balance;
         this.ValuesByCurrency.ExchangeRateUSD = entry.ExchangeRate;
         this.ValuesByCurrency.LastExchangeRateUSD = entry.SecondExchangeRate;
-        this.ValuesByCurrency.LastUSD = balance * entry.SecondExchangeRate;
-        this.ValuesByCurrency.ValuedUSD = balance * entry.ExchangeRate;
+        this.ValuesByCurrency.LastUSD = Math.Round((balance * entry.SecondExchangeRate), 2);
+        this.ValuesByCurrency.ValuedUSD = Math.Round((balance * entry.ExchangeRate), 2);
         this.ValuesByCurrency.ValuedEffectUSD = this.ValuesByCurrency.LastUSD -
                                                 this.ValuesByCurrency.ValuedUSD;
 
         this.ValuesByCurrency.USDDebit = entry.Debit;
-        this.ValuesByCurrency.ValuedUSDDebit = entry.Debit * entry.ExchangeRate;
+        this.ValuesByCurrency.ValuedUSDDebit = Math.Round((entry.Debit * entry.ExchangeRate),2);
 
         this.ValuesByCurrency.USDCredit = entry.Credit;
-        this.ValuesByCurrency.ValuedUSDCredit = entry.Credit * entry.ExchangeRate;
+        this.ValuesByCurrency.ValuedUSDCredit = Math.Round((entry.Credit * entry.ExchangeRate),2);
 
         if (isPreviousMonth) {
-          this.ValuesByCurrency.PreviousValuedUSDDebit = entry.Debit * entry.SecondExchangeRate;
-          this.ValuesByCurrency.PreviousValuedUSDCredit = entry.Credit * entry.SecondExchangeRate;
+          this.ValuesByCurrency.PreviousValuedUSDDebit = Math.Round((entry.Debit * entry.SecondExchangeRate), 2);
+          this.ValuesByCurrency.PreviousValuedUSDCredit = Math.Round((entry.Credit * entry.SecondExchangeRate), 2);
         }
 
       }
@@ -180,20 +178,20 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
         this.ValuesByCurrency.YEN = balance;
         this.ValuesByCurrency.ExchangeRateYEN = entry.ExchangeRate;
         this.ValuesByCurrency.LastExchangeRateYEN = entry.SecondExchangeRate;
-        this.ValuesByCurrency.LastYEN = balance * entry.SecondExchangeRate;
-        this.ValuesByCurrency.ValuedYEN = balance * entry.ExchangeRate;
+        this.ValuesByCurrency.LastYEN = Math.Round((balance * entry.SecondExchangeRate),2);
+        this.ValuesByCurrency.ValuedYEN = Math.Round((balance * entry.ExchangeRate),2);
         this.ValuesByCurrency.ValuedEffectYEN = this.ValuesByCurrency.LastYEN -
                                                 this.ValuesByCurrency.ValuedYEN;
 
         this.ValuesByCurrency.YENDebit = entry.Debit;
-        this.ValuesByCurrency.ValuedYENDebit = entry.Debit * entry.ExchangeRate;
+        this.ValuesByCurrency.ValuedYENDebit = Math.Round((entry.Debit * entry.ExchangeRate),2);
 
         this.ValuesByCurrency.YENCredit = entry.Credit;
-        this.ValuesByCurrency.ValuedYENCredit = entry.Credit * entry.ExchangeRate;
+        this.ValuesByCurrency.ValuedYENCredit = Math.Round((entry.Credit * entry.ExchangeRate),2);
 
         if (isPreviousMonth) {
-          this.ValuesByCurrency.PreviousValuedYENDebit = entry.Debit * entry.SecondExchangeRate;
-          this.ValuesByCurrency.PreviousValuedYENCredit = entry.Credit * entry.SecondExchangeRate;
+          this.ValuesByCurrency.PreviousValuedYENDebit = Math.Round((entry.Debit * entry.SecondExchangeRate),2);
+          this.ValuesByCurrency.PreviousValuedYENCredit = Math.Round((entry.Credit * entry.SecondExchangeRate),2);
         }
 
       }
@@ -202,20 +200,20 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
         this.ValuesByCurrency.EUR = balance;
         this.ValuesByCurrency.ExchangeRateEUR = entry.ExchangeRate;
         this.ValuesByCurrency.LastExchangeRateEUR = entry.SecondExchangeRate;
-        this.ValuesByCurrency.LastEUR = balance * entry.SecondExchangeRate;
-        this.ValuesByCurrency.ValuedEUR = balance * entry.ExchangeRate;
+        this.ValuesByCurrency.LastEUR = Math.Round((balance * entry.SecondExchangeRate),2);
+        this.ValuesByCurrency.ValuedEUR = Math.Round((balance * entry.ExchangeRate),2);
         this.ValuesByCurrency.ValuedEffectEUR = this.ValuesByCurrency.LastEUR -
                                                 this.ValuesByCurrency.ValuedEUR;
 
         this.ValuesByCurrency.EURDebit = entry.Debit;
-        this.ValuesByCurrency.ValuedEURDebit = entry.Debit * entry.ExchangeRate;
+        this.ValuesByCurrency.ValuedEURDebit = Math.Round((entry.Debit * entry.ExchangeRate),2);
 
         this.ValuesByCurrency.EURCredit = entry.Credit;
-        this.ValuesByCurrency.ValuedEURCredit = entry.Credit * entry.ExchangeRate;
+        this.ValuesByCurrency.ValuedEURCredit = Math.Round((entry.Credit * entry.ExchangeRate),2);
 
         if (isPreviousMonth) {
-          this.ValuesByCurrency.PreviousValuedEURDebit = entry.Debit * entry.SecondExchangeRate;
-          this.ValuesByCurrency.PreviousValuedEURCredit = entry.Credit * entry.SecondExchangeRate;
+          this.ValuesByCurrency.PreviousValuedEURDebit = Math.Round((entry.Debit * entry.SecondExchangeRate),2);
+          this.ValuesByCurrency.PreviousValuedEURCredit = Math.Round((entry.Credit * entry.SecondExchangeRate),2);
         }
 
       }
@@ -224,20 +222,20 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
         this.ValuesByCurrency.UDI = balance;
         this.ValuesByCurrency.ExchangeRateUDI = entry.ExchangeRate;
         this.ValuesByCurrency.LastExchangeRateUDI = entry.SecondExchangeRate;
-        this.ValuesByCurrency.LastUDI = balance * entry.SecondExchangeRate;
-        this.ValuesByCurrency.ValuedUDI = balance * entry.ExchangeRate;
+        this.ValuesByCurrency.LastUDI = Math.Round((balance * entry.SecondExchangeRate),2);
+        this.ValuesByCurrency.ValuedUDI = Math.Round((balance * entry.ExchangeRate),2);
         this.ValuesByCurrency.ValuedEffectUDI = this.ValuesByCurrency.LastUDI -
                                                 this.ValuesByCurrency.ValuedUDI;
 
         this.ValuesByCurrency.UDIDebit = entry.Debit;
-        this.ValuesByCurrency.ValuedUDIDebit = entry.Debit * entry.ExchangeRate;
+        this.ValuesByCurrency.ValuedUDIDebit = Math.Round((entry.Debit * entry.ExchangeRate),2);
 
         this.ValuesByCurrency.UDICredit = entry.Credit;
-        this.ValuesByCurrency.ValuedUDICredit = entry.Credit * entry.ExchangeRate;
+        this.ValuesByCurrency.ValuedUDICredit = Math.Round((entry.Credit * entry.ExchangeRate),2);
 
         if (isPreviousMonth) {
-          this.ValuesByCurrency.PreviousValuedUDIDebit = entry.Debit * entry.SecondExchangeRate;
-          this.ValuesByCurrency.PreviousValuedUDICredit = entry.Credit * entry.SecondExchangeRate;
+          this.ValuesByCurrency.PreviousValuedUDIDebit = Math.Round((entry.Debit * entry.SecondExchangeRate),2);
+          this.ValuesByCurrency.PreviousValuedUDICredit = Math.Round((entry.Credit * entry.SecondExchangeRate),2);
         }
 
       }

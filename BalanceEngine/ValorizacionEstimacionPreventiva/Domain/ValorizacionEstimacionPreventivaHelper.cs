@@ -92,10 +92,10 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
 
       var balanzaColumnasBuilder = new BalanzaColumnasMonedaBuilder(_query);
 
+      ExchangeRateByCurrency(accountEntries, date);
+
       FixedList<TrialBalanceEntry> accountsByCurrency =
           balanzaColumnasBuilder.BuildValorizacion(accountEntries);
-
-      ExchangeRateByCurrency(accountsByCurrency, date);
 
       List<ValorizacionEstimacionPreventivaEntry> balanceByCurrency = MergeAccountsIntoAccountsByCurrency(
                                                     accountsByCurrency, date, isPreviousMonth);

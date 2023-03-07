@@ -169,16 +169,16 @@ namespace Empiria.FinancialAccounting.BalanceEngine.Adapters {
     private static void CurrentMonthColumns(List<DataTableColumn> columns,
                                           ColumnsByCurrency columnsByCurrency) {
       if (columnsByCurrency.USDColumn) {
-        columns.Add(new DataTableColumn("currentUSD", "Mes actual USD", "decimal"));
+        columns.Add(new DataTableColumn("valuedUSD", "Mes actual USD", "decimal"));
       }
       if (columnsByCurrency.YENColumn) {
-        columns.Add(new DataTableColumn("currentYEN", "Mes actual YEN", "decimal"));
+        columns.Add(new DataTableColumn("valuedYEN", "Mes actual YEN", "decimal"));
       }
       if (columnsByCurrency.EURColumn) {
-        columns.Add(new DataTableColumn("currentEUR", "Mes actual EUR", "decimal"));
+        columns.Add(new DataTableColumn("valuedEUR", "Mes actual EUR", "decimal"));
       }
       if (columnsByCurrency.UDIColumn) {
-        columns.Add(new DataTableColumn("currentUDI", "Mes actual UDI", "decimal"));
+        columns.Add(new DataTableColumn("valuedUDI", "Mes actual UDI", "decimal"));
       }
     }
 
