@@ -25,8 +25,8 @@ namespace Empiria.FinancialAccounting.Tests.Reporting {
         //AccountNumber = "1",
         //OutputType = "d551b39a-ae52-4c35-abbe-96d71e4a10bf",
         ReportType = ReportTypes.ValorizacionEstimacionPreventiva,
-        FromDate = new DateTime(2022, 02, 01),
-        ToDate = new DateTime(2022, 02, 28)
+        FromDate = new DateTime(2022, 03, 01),
+        ToDate = new DateTime(2022, 03, 31)
       };
 
       using (var service = ReportingService.ServiceInteractor()) {

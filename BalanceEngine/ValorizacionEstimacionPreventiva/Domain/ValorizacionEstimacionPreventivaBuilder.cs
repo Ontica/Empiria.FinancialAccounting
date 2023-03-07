@@ -59,7 +59,9 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
 
       FixedList <ValorizacionEstimacionPreventivaEntry> accountsInfoByMonth = helper.GetAccountsByFilteredMonth();
 
-      FixedList<ValorizacionEstimacionPreventivaEntry> mergeAccountsByMonth = helper.MergeAccountsByMonth(
+      var _x = accountsInfoByMonth.Where(a => a.Account.Number == "1.01.02").ToList();
+
+      FixedList <ValorizacionEstimacionPreventivaEntry> mergeAccountsByMonth = helper.MergeAccountsByMonth(
                                                           accountsByCurrency, accountsInfoByMonth);
 
       return mergeAccountsByMonth;

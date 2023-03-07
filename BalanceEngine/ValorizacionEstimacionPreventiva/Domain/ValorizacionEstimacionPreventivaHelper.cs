@@ -60,62 +60,6 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
     }
 
 
-    internal FixedList<ValorizacionEstimacionPreventivaEntry> MergeAccountsByMonth(
-              FixedList<ValorizacionEstimacionPreventivaEntry> accountsByCurrency,
-              FixedList<ValorizacionEstimacionPreventivaEntry> entriesByMonth) {
-
-      if (accountsByCurrency.Count == 0 && entriesByMonth.Count == 0) {
-        return new FixedList<ValorizacionEstimacionPreventivaEntry>();
-      }
-
-      var returnedAccountEntries = new List<ValorizacionEstimacionPreventivaEntry>(accountsByCurrency);
-
-      foreach (var accountEntry in returnedAccountEntries) {
-
-        var entriesByMonthList = entriesByMonth.Where(a => a.Account.Number == accountEntry.Account.Number)
-                                               .OrderBy(a => a.ConsultingDate)
-                                               .ToList();
-
-        GetValueByMonth(accountEntry, entriesByMonthList);
-
-      }
-
-      return returnedAccountEntries.ToFixedList();
-    }
-
-
-    private void GetValueByMonth(ValorizacionEstimacionPreventivaEntry accountEntry, 
-                                 List<ValorizacionEstimacionPreventivaEntry> entriesByMonthList) {
-
-      var utility = new ValorizacionEstimacionPreventivaUtility();
-
-      List<DateTime> dateRange = GetDateRange();
-
-      foreach (var date in dateRange) {
-
-        var existEntryInMonth = entriesByMonthList.Find(a => a.ConsultingDate.Year == date.Year &&
-                                                    a.ConsultingDate.Month == date.Month);
-
-        if (existEntryInMonth != null) {
-
-          accountEntry.SetTotalField($"{utility.GetMonthNameAndYear(existEntryInMonth.ConsultingDate)}",
-                                     existEntryInMonth.TotalValued);
-
-          accountEntry.TotalAccumulated += existEntryInMonth.TotalValued;
-
-        } else {
-          accountEntry.SetTotalField($"{utility.GetMonthNameAndYear(date)}", 0.00M);
-        }
-      }
-
-      accountEntry.SetTotalField($"{utility.GetMonthNameAndYear(accountEntry.ConsultingDate)}",
-                                 accountEntry.TotalValued);
-
-      accountEntry.TotalAccumulated += accountEntry.TotalValued;
-
-    }
-
-
     private List<DateTime> GetDateRange() {
 
       List<DateTime> dateRange = new List<DateTime>();
@@ -139,9 +83,10 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
 
     internal FixedList<ValorizacionEstimacionPreventivaEntry> GetAccountsBalances(
                                           FixedList<TrialBalanceEntry> accountEntries,
-                                          DateTime date) {
+                                          DateTime date,
+                                          bool isPreviousMonth = false) {
 
-      if (accountEntries.Count==0) {
+      if (accountEntries.Count == 0) {
         return new FixedList<ValorizacionEstimacionPreventivaEntry>();
       }
 
@@ -153,7 +98,7 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
       ExchangeRateByCurrency(accountsByCurrency, date);
 
       List<ValorizacionEstimacionPreventivaEntry> balanceByCurrency = MergeAccountsIntoAccountsByCurrency(
-                                                    accountsByCurrency, date);
+                                                    accountsByCurrency, date, isPreviousMonth);
 
       GetTotalValuedByAccount(balanceByCurrency);
 
@@ -171,15 +116,20 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
       var accountBalanceByMonth = new List<ValorizacionEstimacionPreventivaEntry>();
 
       for (int i = 1; i <= totalMonths; i++) {
-
-        List<ValorizacionEstimacionPreventivaEntry> accountsByMonth = GetAccountsByMonth(initialDate, lastDate);
-
-        if (accountsByMonth.Count > 0) {
-          foreach (var account in accountsByMonth) {
-            account.MonthPosition = i;
-          }
-          accountBalanceByMonth.AddRange(accountsByMonth);
+        bool isPreviousMonth = false;
+        
+        if (i == totalMonths) {
+          isPreviousMonth = true;
         }
+
+        List<ValorizacionEstimacionPreventivaEntry> accountsByMonth = 
+              GetAccountsByMonth(initialDate, lastDate, isPreviousMonth);
+
+        foreach (var account in accountsByMonth) {
+          account.MonthPosition = i;
+        }
+
+        accountBalanceByMonth.AddRange(accountsByMonth);
 
         initialDate = initialDate.AddMonths(1);
         daysInMonth = DateTime.DaysInMonth(initialDate.Year, initialDate.Month);
@@ -217,6 +167,73 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
     }
 
 
+    private void GetValueByMonth(ValorizacionEstimacionPreventivaEntry accountEntry,
+                                 List<ValorizacionEstimacionPreventivaEntry> entriesByMonthList) {
+
+      var utility = new ValorizacionEstimacionPreventivaUtility();
+
+      List<DateTime> dateRange = GetDateRange();
+      int flagDateCount = 0;
+      foreach (var date in dateRange) {
+        
+        var existEntryInMonth = entriesByMonthList.Find(a => a.ConsultingDate.Year == date.Year &&
+                                                    a.ConsultingDate.Month == date.Month);
+
+        if (existEntryInMonth != null) {
+
+          flagDateCount += 1;
+
+          if (flagDateCount == dateRange.Count) {
+            GetValuedEffectDebitCredit(accountEntry, existEntryInMonth);
+          }
+
+          accountEntry.SetTotalField($"{utility.GetMonthNameAndYear(existEntryInMonth.ConsultingDate)}",
+                                     existEntryInMonth.TotalValued);
+
+          accountEntry.TotalAccumulated += existEntryInMonth.TotalValued;
+
+        } else {
+          accountEntry.SetTotalField($"{utility.GetMonthNameAndYear(date)}", 0.00M);
+        }
+      }
+
+      accountEntry.SetTotalField($"{utility.GetMonthNameAndYear(accountEntry.ConsultingDate)}",
+                                 accountEntry.TotalValued);
+
+      accountEntry.TotalAccumulated += accountEntry.TotalValued;
+
+    }
+
+
+    internal void GetValuedEffectDebitCredit(ValorizacionEstimacionPreventivaEntry entry,
+                                             ValorizacionEstimacionPreventivaEntry preventivaEntry) {
+
+      entry.ValuesByCurrency.ValuedEffectDebitUSD = preventivaEntry.ValuesByCurrency.PreviousValuedUSDDebit -
+                                                      entry.ValuesByCurrency.ValuedUSDDebit;
+
+      entry.ValuesByCurrency.ValuedEffectCreditUSD = preventivaEntry.ValuesByCurrency.PreviousValuedUSDCredit -
+                                                     entry.ValuesByCurrency.ValuedUSDCredit;
+
+      entry.ValuesByCurrency.ValuedEffectDebitYEN = preventivaEntry.ValuesByCurrency.PreviousValuedYENDebit -
+                                                    entry.ValuesByCurrency.ValuedYENDebit;
+
+      entry.ValuesByCurrency.ValuedEffectCreditYEN = preventivaEntry.ValuesByCurrency.PreviousValuedYENCredit -
+                                                     entry.ValuesByCurrency.ValuedYENCredit;
+
+      entry.ValuesByCurrency.ValuedEffectDebitEUR = preventivaEntry.ValuesByCurrency.PreviousValuedEURDebit -
+                                                    entry.ValuesByCurrency.ValuedEURDebit;
+
+      entry.ValuesByCurrency.ValuedEffectCreditEUR = preventivaEntry.ValuesByCurrency.PreviousValuedEURCredit -
+                                                     entry.ValuesByCurrency.ValuedEURCredit;
+
+      entry.ValuesByCurrency.ValuedEffectDebitUDI = preventivaEntry.ValuesByCurrency.PreviousValuedUDIDebit -
+                                                    entry.ValuesByCurrency.ValuedUDIDebit;
+
+      entry.ValuesByCurrency.ValuedEffectCreditUDI = preventivaEntry.ValuesByCurrency.PreviousValuedUDICredit -
+                                                     entry.ValuesByCurrency.ValuedUDICredit;
+    }
+
+
     internal FixedList<TrialBalanceEntry> GetAccountsByCurrency(FixedList<TrialBalanceEntry> accountEntries) {
       var trialBalanceHelper = new TrialBalanceHelper(_query);
       var balanzaColumnasHelper = new BalanzaColumnasMonedaHelper(_query);
@@ -240,9 +257,57 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
     }
 
 
-    internal List<ValorizacionEstimacionPreventivaEntry> MergeAccountsIntoAccountsByCurrency(
+    
+
+    internal FixedList<ValorizacionEstimacionPreventivaEntry> MergeAccountsByMonth(
+              FixedList<ValorizacionEstimacionPreventivaEntry> accountsByCurrency,
+              FixedList<ValorizacionEstimacionPreventivaEntry> entriesByMonth) {
+
+      if (accountsByCurrency.Count == 0 && entriesByMonth.Count == 0) {
+        return new FixedList<ValorizacionEstimacionPreventivaEntry>();
+      }
+
+      var returnedAccountEntries = new List<ValorizacionEstimacionPreventivaEntry>(accountsByCurrency);
+
+      foreach (var accountEntry in returnedAccountEntries) {
+
+        var entriesByMonthList = entriesByMonth.Where(a => a.Account.Number == accountEntry.Account.Number)
+                                               .OrderBy(a => a.ConsultingDate)
+                                               .ToList();
+
+        GetValueByMonth(accountEntry, entriesByMonthList);
+
+      }
+
+      return returnedAccountEntries.ToFixedList();
+    }
+
+
+    #endregion Public methods
+
+
+    #region Private methods
+
+
+    private List<ValorizacionEstimacionPreventivaEntry> GetAccountsByMonth(
+                                          DateTime initialDate, DateTime lastDate, bool isPreviousMonth) {
+
+      _query.InitialPeriod.FromDate = initialDate;
+      _query.InitialPeriod.ToDate = lastDate;
+
+      FixedList<TrialBalanceEntry> baseAccountEntries = BalancesDataService.GetTrialBalanceEntries(_query);
+
+      FixedList<ValorizacionEstimacionPreventivaEntry> returnedAccounts = 
+              GetAccountsBalances(baseAccountEntries, lastDate, isPreviousMonth);
+
+      return returnedAccounts.ToList();
+    }
+
+
+    private List<ValorizacionEstimacionPreventivaEntry> MergeAccountsIntoAccountsByCurrency(
                                     FixedList<TrialBalanceEntry> accountEntries,
-                                    DateTime date) {
+                                    DateTime date,
+                                    bool isPreviousMonth) {
 
       if (accountEntries.Count == 0) {
         return new List<ValorizacionEstimacionPreventivaEntry>();
@@ -254,13 +319,14 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
 
       foreach (var usdEntry in accountEntries.Where(a => a.Currency.Equals(Currency.USD))) {
 
-        returnedEntries.Add(new ValorizacionEstimacionPreventivaEntry().MapToValorizedReport(usdEntry, date));
+        returnedEntries.Add(new ValorizacionEstimacionPreventivaEntry()
+                        .MapToValorizedReport(usdEntry, date, isPreviousMonth));
 
       }
 
-      MergeDomesticIntoForeignBalances(returnedEntries, accountEntries);
+      MergeDomesticIntoForeignBalances(returnedEntries, accountEntries, isPreviousMonth);
 
-      MergeForeignBalancesByAccount(returnedEntries, accountEntries, date);
+      MergeForeignBalancesByAccount(returnedEntries, accountEntries, date, isPreviousMonth);
 
 
       return returnedEntries.OrderBy(a => a.Account.Number).ToList();
@@ -268,7 +334,8 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
 
 
     private void MergeDomesticIntoForeignBalances(List<ValorizacionEstimacionPreventivaEntry> returnedEntries,
-                                                 FixedList<TrialBalanceEntry> accountEntries) {
+                                                 FixedList<TrialBalanceEntry> accountEntries,
+                                                 bool isPreviousMonth) {
 
       foreach (var entry in accountEntries.Where(a => a.Currency == Currency.MXN)) {
 
@@ -280,7 +347,7 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
           existAccount.MXNCredit = entry.Credit;
         } else {
           returnedEntries.Add(new ValorizacionEstimacionPreventivaEntry().MapToValorizedReport(entry,
-                                                        _query.InitialPeriod.ToDate));
+                                                        _query.InitialPeriod.ToDate, isPreviousMonth));
         }
 
       } // foreach
@@ -288,40 +355,21 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
     }
 
 
-    #endregion Public methods
-
-
-    #region Private methods
-
-
-    private List<ValorizacionEstimacionPreventivaEntry> GetAccountsByMonth(
-                                          DateTime initialDate, DateTime lastDate) {
-
-      _query.InitialPeriod.FromDate = initialDate;
-      _query.InitialPeriod.ToDate = lastDate;
-
-      FixedList<TrialBalanceEntry> baseAccountEntries = BalancesDataService.GetTrialBalanceEntries(_query);
-
-      FixedList<ValorizacionEstimacionPreventivaEntry> returnedAccounts = GetAccountsBalances(baseAccountEntries, lastDate);
-
-      return returnedAccounts.ToList();
-    }
-
-
     private void MergeForeignBalancesByAccount(List<ValorizacionEstimacionPreventivaEntry> returnedEntries,
                                                FixedList<TrialBalanceEntry> accountEntries,
-                                               DateTime date) {
+                                               DateTime date,
+                                               bool isPreviousMonth) {
 
-      foreach (var entry in accountEntries.Where(a=> a.Currency != Currency.MXN)) {
+      foreach (var entry in accountEntries.Where(a => a.Currency != Currency.MXN)) {
 
         var valorizacion = returnedEntries.Find(a => a.Account.Number == entry.Account.Number);
-        
+
         if (valorizacion == null) {
           returnedEntries.Add(new ValorizacionEstimacionPreventivaEntry().MapToValorizedReport(entry,
-                                                        _query.InitialPeriod.ToDate));
+                                                        _query.InitialPeriod.ToDate, isPreviousMonth));
         } else {
 
-          valorizacion.AssingValues(entry, date);
+          valorizacion.AssingValues(entry, date, isPreviousMonth);
 
         }
 

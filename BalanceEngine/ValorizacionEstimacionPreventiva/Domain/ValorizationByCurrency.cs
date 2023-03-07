@@ -293,6 +293,54 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
     }
 
 
+    public decimal PreviousValuedUSDDebit {
+      get;
+      internal set;
+    }
+
+
+    public decimal PreviousValuedYENDebit {
+      get;
+      internal set;
+    }
+
+
+    public decimal PreviousValuedEURDebit {
+      get;
+      internal set;
+    }
+
+
+    public decimal PreviousValuedUDIDebit {
+      get;
+      internal set;
+    }
+
+
+    public decimal PreviousValuedUSDCredit {
+      get;
+      internal set;
+    }
+
+
+    public decimal PreviousValuedYENCredit {
+      get;
+      internal set;
+    }
+
+
+    public decimal PreviousValuedEURCredit {
+      get;
+      internal set;
+    }
+
+
+    public decimal PreviousValuedUDICredit {
+      get;
+      internal set;
+    }
+
+
   } // class ValorizationByCurrency
 
 

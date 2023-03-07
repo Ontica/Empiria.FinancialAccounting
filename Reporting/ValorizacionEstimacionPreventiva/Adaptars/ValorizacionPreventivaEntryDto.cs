@@ -380,14 +380,14 @@ namespace Empiria.FinancialAccounting.Reporting.ValorizacionEstimacionPreventiva
       members.Add("ValuedUDIDebit");
       members.Add("ValuedUDICredit");
 
-      //members.Add("ValuedEffectDebitUSD");
-      //members.Add("ValuedEffectDebitYEN");
-      //members.Add("ValuedEffectDebitEUR");
-      //members.Add("ValuedEffectDebitUDI");
-      //members.Add("ValuedEffectCreditUSD");
-      //members.Add("ValuedEffectCreditYEN");
-      //members.Add("ValuedEffectCreditEUR");
-      //members.Add("ValuedEffectCreditUDI");
+      members.Add("ValuedEffectDebitUSD");
+      members.Add("ValuedEffectDebitYEN");
+      members.Add("ValuedEffectDebitEUR");
+      members.Add("ValuedEffectDebitUDI");
+      members.Add("ValuedEffectCreditUSD");
+      members.Add("ValuedEffectCreditYEN");
+      members.Add("ValuedEffectCreditEUR");
+      members.Add("ValuedEffectCreditUDI");
 
       members.Add("TotalValued");
 

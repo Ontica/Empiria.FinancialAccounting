@@ -99,6 +99,16 @@ namespace Empiria.FinancialAccounting.Reporting.ValorizacionEstimacionPreventiva
       dto.ValuedEURCredit = entry.ValuedEURCredit;
       dto.ValuedUDICredit = entry.ValuedUDICredit;
 
+      dto.ValuedEffectDebitUSD = entry.ValuedEffectDebitUSD;
+      dto.ValuedEffectDebitYEN = entry.ValuedEffectDebitYEN;
+      dto.ValuedEffectDebitEUR = entry.ValuedEffectDebitEUR;
+      dto.ValuedEffectDebitUDI = entry.ValuedEffectDebitUDI;
+
+      dto.ValuedEffectCreditUSD = entry.ValuedEffectCreditUSD;
+      dto.ValuedEffectCreditYEN = entry.ValuedEffectCreditYEN;
+      dto.ValuedEffectCreditEUR = entry.ValuedEffectCreditEUR;
+      dto.ValuedEffectCreditUDI = entry.ValuedEffectCreditUDI;
+
       dto.TotalValued = entry.TotalValued;
       dto.TotalAccumulated = entry.TotalAccumulated;
     }
