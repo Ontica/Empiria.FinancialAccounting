@@ -12,6 +12,8 @@ using System.Collections.Generic;
 
 using Empiria.Expressions;
 
+using Empiria.FinancialAccounting.FinancialConcepts;
+
 namespace Empiria.FinancialAccounting.FinancialReports.Providers {
 
   /// <summary>Provides runtime scripts execution and expressions evaluation services.</summary>
@@ -26,6 +28,10 @@ namespace Empiria.FinancialAccounting.FinancialReports.Providers {
       var financialFunctionsLibrary = new FinancialFunctionsLibrary(executionContext);
 
       _grammar.LoadLibrary(financialFunctionsLibrary);
+
+      var macros = FinancialConceptMacro.GetList();
+
+      _grammar.LoadMacros(macros.Select(x => (IMacro) x));
     }
 
 
@@ -45,9 +51,9 @@ namespace Empiria.FinancialAccounting.FinancialReports.Providers {
     }
 
 
-    internal void ExecuteScript(string scriptText, IDictionary<string, object> data) {
+    internal void ExecuteScript(string textScript, IDictionary<string, object> data) {
 
-      var script = new Script(_grammar, scriptText);
+      var script = new Script(_grammar, textScript);
 
       script.Execute(data);
     }
