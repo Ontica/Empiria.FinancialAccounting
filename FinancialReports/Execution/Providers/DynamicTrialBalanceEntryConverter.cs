@@ -160,14 +160,20 @@ namespace Empiria.FinancialAccounting.FinancialReports.Providers {
 
 
       converted.SetTotalField("cargosEfectosValuacionMonExt",
-            sourceEntry.ValuedEffectUSD + sourceEntry.ValuedEffectEUR + sourceEntry.ValuedEffectYEN);
+        (sourceEntry.ValuedEffectUSD > 0 ? sourceEntry.ValuedEffectUSD : 0) +
+        (sourceEntry.ValuedEffectEUR > 0 ? sourceEntry.ValuedEffectEUR : 0) +
+        (sourceEntry.ValuedEffectYEN > 0 ? sourceEntry.ValuedEffectYEN : 0));
 
       converted.SetTotalField("abonosEfectosValuacionMonExt",
-            (sourceEntry.ValuedEffectUSD + sourceEntry.ValuedEffectEUR + sourceEntry.ValuedEffectYEN) * -1m);
+        (sourceEntry.ValuedEffectUSD < 0 ? -1 * sourceEntry.ValuedEffectUSD: 0) +
+        (sourceEntry.ValuedEffectEUR < 0 ? -1 * sourceEntry.ValuedEffectEUR : 0) +
+        (sourceEntry.ValuedEffectYEN < 0 ? -1 * sourceEntry.ValuedEffectYEN : 0));
 
-      converted.SetTotalField("cargosEfectosValuacionUDIs", sourceEntry.ValuedEffectUDI);
+      converted.SetTotalField("cargosEfectosValuacionUDIs",
+        (sourceEntry.ValuedEffectUDI > 0 ? sourceEntry.ValuedEffectUDI : 0));
 
-      converted.SetTotalField("abonosEfectosValuacionUDIs", sourceEntry.ValuedEffectUDI * -1m);
+      converted.SetTotalField("abonosEfectosValuacionUDIs",
+        (sourceEntry.ValuedEffectUDI < 0 ? -1 * sourceEntry.ValuedEffectUDI : 0));
 
       return converted;
     }
