@@ -34,8 +34,12 @@ namespace Empiria.FinancialAccounting.FinancialReports.Providers {
         new Function(lexeme: "DEUDORAS_MENOS_ACREEDORAS", arity: 3,
                      calle: () => new DeudorasMenosAcreedorasFunction()),
 
+        new Function(lexeme: "VALOR_CONCEPTO", arity: 2,
+                     calle: () => new ValorConceptoFunction(_executionContext.ConceptsCalculator)),
+
         new Function(lexeme: "VALORES_CONCEPTO", arity: 1,
                      calle: () => new ValoresConceptoFunction(_executionContext.ConceptsCalculator)),
+
 
       };
 
@@ -68,8 +72,33 @@ namespace Empiria.FinancialAccounting.FinancialReports.Providers {
     }  // DeudorasMenosAcreedorasFunction
 
 
-    /// <summary>Returns deudoras minus acreedoras, or acreedoras minus deudoras balance,
-    /// depending on the concept code.</summary>
+    /// <summary>Returns a decimal value for a given field of a financial concept.</summary>
+    sealed private class ValorConceptoFunction : FunctionHandler {
+
+      private readonly FinancialConceptsCalculator _conceptsCalculator;
+
+      public ValorConceptoFunction(FinancialConceptsCalculator conceptsCalculator) {
+        _conceptsCalculator = conceptsCalculator;
+      }
+
+      protected override object Evaluate() {
+
+        string variableID = GetString(Parameters[0]);
+
+        string fieldName = GetString(Parameters[1]);
+
+
+        var financialConcept = FinancialConcept.ParseWithVariableID(variableID);
+
+        IFinancialConceptValues values = _conceptsCalculator.Calculate(financialConcept);
+
+        return values.GetTotalField(fieldName);
+      }
+
+    }  // ValorConceptoFunction
+
+
+    /// <summary>Returns a full evaluated financial concept with all of its fields.</summary>
     sealed private class ValoresConceptoFunction : FunctionHandler {
 
       private readonly FinancialConceptsCalculator _conceptsCalculator;

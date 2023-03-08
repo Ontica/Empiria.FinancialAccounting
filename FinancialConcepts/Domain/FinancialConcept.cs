@@ -46,6 +46,17 @@ namespace Empiria.FinancialAccounting.FinancialConcepts {
     }
 
 
+    static public FinancialConcept ParseWithVariableID(string variableID) {
+      Assertion.Require(variableID, nameof(variableID));
+
+      var concept = BaseObject.TryParse<FinancialConcept>($"ID_Variable = '{variableID}'");
+
+      Assertion.Require(concept, $"A financial concept with variable ID = '{variableID}' was not found.");
+
+      return concept;
+    }
+
+
     static internal FinancialConcept Create(FinancialConceptFields fields) {
       Assertion.Require(fields, nameof(fields));
 
