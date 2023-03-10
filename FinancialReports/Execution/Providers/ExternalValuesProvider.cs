@@ -46,6 +46,18 @@ namespace Empiria.FinancialAccounting.FinancialReports.Providers {
     }
 
 
+    internal decimal GetValue(string externalVariableCode, string fieldName) {
+
+      foreach (var dataset in _externalValuesDatasets) {
+        if (dataset.ContainsKey(externalVariableCode)) {
+          return dataset[externalVariableCode].GetTotalField(fieldName);
+        }
+      }
+
+      return 0;
+    }
+
+
     internal FixedList<ExternalValue> GetValues(string externalVariableCode) {
       var values = new List<ExternalValue>();
 

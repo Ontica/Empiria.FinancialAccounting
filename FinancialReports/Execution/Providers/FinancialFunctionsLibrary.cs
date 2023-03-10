@@ -40,6 +40,8 @@ namespace Empiria.FinancialAccounting.FinancialReports.Providers {
         new Function(lexeme: "VALORES_CONCEPTO", arity: 1,
                      calle: () => new ValoresConceptoFunction(_executionContext.ConceptsCalculator)),
 
+        new Function(lexeme: "VALOR_EXTERNO", arity: 2,
+                     calle: () => new ValorExternoFunction(_executionContext.ExternalValuesProvider)),
 
       };
 
@@ -69,7 +71,7 @@ namespace Empiria.FinancialAccounting.FinancialReports.Providers {
         }
       }
 
-    }  // DeudorasMenosAcreedorasFunction
+    }  // class DeudorasMenosAcreedorasFunction
 
 
     /// <summary>Returns a decimal value for a given field of a financial concept.</summary>
@@ -87,7 +89,6 @@ namespace Empiria.FinancialAccounting.FinancialReports.Providers {
 
         string fieldName = GetString(Parameters[1]);
 
-
         var financialConcept = FinancialConcept.ParseWithVariableID(variableID);
 
         IFinancialConceptValues values = _conceptsCalculator.Calculate(financialConcept);
@@ -95,7 +96,7 @@ namespace Empiria.FinancialAccounting.FinancialReports.Providers {
         return values.GetTotalField(fieldName);
       }
 
-    }  // ValorConceptoFunction
+    }  // class ValorConceptoFunction
 
 
     /// <summary>Returns a full evaluated financial concept with all of its fields.</summary>
@@ -116,7 +117,29 @@ namespace Empiria.FinancialAccounting.FinancialReports.Providers {
         return _conceptsCalculator.Calculate(financialConcept);
       }
 
-    }  // ValoresConceptoFunction
+    }  // class ValoresConceptoFunction
+
+
+    /// <summary>Returns a decimal value for a given field of a financial concept.</summary>
+    sealed private class ValorExternoFunction : FunctionHandler {
+
+      private readonly ExternalValuesProvider _provider;
+
+      public ValorExternoFunction(ExternalValuesProvider provider) {
+        _provider = provider;
+      }
+
+      protected override object Evaluate() {
+
+        string externalVariableID = GetString(Parameters[0]);
+
+        string fieldName = GetString(Parameters[1]);
+
+        return _provider.GetValue(externalVariableID, fieldName);
+      }
+
+    }  // ValorConceptoFunction
+
 
   }  // class FinancialFunctionsLibrary
 
