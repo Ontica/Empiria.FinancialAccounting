@@ -59,6 +59,8 @@ namespace Empiria.FinancialAccounting.ExternalData.UseCases {
     public FixedList<ExternalVariablesSetDto> GetVariablesSets() {
       FixedList<ExternalVariablesSet> sets = ExternalVariablesSet.GetList();
 
+      sets = base.RestrictUserDataAccessTo(sets);
+
       return ExternalVariableMapper.Map(sets);
     }
 
