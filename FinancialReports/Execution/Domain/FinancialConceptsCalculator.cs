@@ -181,7 +181,8 @@ namespace Empiria.FinancialAccounting.FinancialReports {
         totals = totals.ConsolidateTotalsInto(integrationEntry.DataColumn);
       }
 
-      if (_executionContext.FinancialReportType.RoundTo != RoundTo.DoNotRound) {
+      if (_executionContext.FinancialReportType.RoundTo != RoundTo.DoNotRound &&
+          _executionContext.FinancialReportType.RoundTo != RoundTo.Millions) {
         totals = totals.Round(_executionContext.FinancialReportType.RoundTo);
       }
 
