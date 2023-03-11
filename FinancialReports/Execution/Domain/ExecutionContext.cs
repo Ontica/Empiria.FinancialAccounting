@@ -87,6 +87,18 @@ namespace Empiria.FinancialAccounting.FinancialReports {
 
     #endregion Properties
 
+    #region Methods
+
+    internal ExecutionContext CreateCopy(FinancialReportType reportType) {
+      var buildQuery = BuildQuery.Clone();
+
+      buildQuery.FinancialReportType = reportType.UID;
+
+      return new ExecutionContext(buildQuery);
+    }
+
+    #endregion Methods
+
     #region Helpers
 
     private FixedList<CalculatedConcept> BuildPrecalculatedConcepts() {

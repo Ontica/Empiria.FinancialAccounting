@@ -37,6 +37,9 @@ namespace Empiria.FinancialAccounting.FinancialReports.Providers {
         new Function(lexeme: "VALOR_CONCEPTO", arity: 2,
                      calle: () => new ValorConceptoFunction(_executionContext.ConceptsCalculator)),
 
+        new Function(lexeme: "VALOR_CONCEPTO_EXTERNO", arity: 3,
+                     calle: () => new ValorConceptoExternoFunction(_executionContext)),
+
         new Function(lexeme: "VALORES_CONCEPTO", arity: 1,
                      calle: () => new ValoresConceptoFunction(_executionContext.ConceptsCalculator)),
 
@@ -118,6 +121,37 @@ namespace Empiria.FinancialAccounting.FinancialReports.Providers {
       }
 
     }  // class ValoresConceptoFunction
+
+
+    /// <summary>Returns a decimal value for a given field of a financial concept.</summary>
+    sealed private class ValorConceptoExternoFunction : FunctionHandler {
+
+      private readonly ExecutionContext _originalContext;
+
+      public ValorConceptoExternoFunction(ExecutionContext originalContext) {
+        _originalContext = originalContext;
+      }
+
+      protected override object Evaluate() {
+
+        int reportTypeId = (int) GetDecimal(Parameters[0]);
+
+        string variableID = GetString(Parameters[1]);
+
+        string fieldName = GetString(Parameters[2]);
+
+        var reportType = FinancialReportType.Parse(reportTypeId);
+
+        ExecutionContext executionContext = _originalContext.CreateCopy(reportType);
+
+        var financialConcept = FinancialConcept.ParseWithVariableID(variableID);
+
+        IFinancialConceptValues values = executionContext.ConceptsCalculator.Calculate(financialConcept);
+
+        return values.GetTotalField(fieldName);
+      }
+
+    }  // class ValorConceptoFunction
 
 
     /// <summary>Returns a decimal value for a given field of a financial concept.</summary>
