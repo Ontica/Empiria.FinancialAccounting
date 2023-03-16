@@ -51,6 +51,7 @@ namespace Empiria.FinancialAccounting.BalanceEngine.BalanceExplorer {
       switch (Query.TrialBalanceType) {
 
         case TrialBalanceType.SaldosPorAuxiliarConsultaRapida:
+          Query.WithSubledgerAccount = true;
           var saldosPorAuxiliar = new SaldosPorAuxiliarBuilder(Query);
           return saldosPorAuxiliar.Build();
 
