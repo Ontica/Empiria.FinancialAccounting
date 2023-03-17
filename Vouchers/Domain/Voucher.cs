@@ -423,7 +423,6 @@ namespace Empiria.FinancialAccounting.Vouchers {
     }
 
 
-    // Ya tenemos el primero asunto de la cuenta 01.09.05.02.02.04 ahora con auxiliares y sin auxiliares hasta el 24 de enero
     internal FixedList<SubledgerAccount> SearchSubledgerAccountsForEdition(LedgerAccount account, string keywords) {
       Assertion.Require(this.IsOpened, "No hay cuentas auxiliares para edición porque la póliza ya está cerrada.");
 

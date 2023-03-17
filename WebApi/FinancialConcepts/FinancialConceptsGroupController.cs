@@ -37,7 +37,7 @@ namespace Empiria.FinancialAccounting.WebApi.FinancialConcepts {
 
 
     [HttpGet]
-    [Route("v2/financial-accounting/financial-concepts/in-group/{groupUID:guid}")]
+    [Route("v2/financial-accounting/financial-concepts/in-group/{groupUID}")]
     public CollectionModel GetFinancialConceptsInGroup([FromUri] string groupUID,
                                                        [FromUri] DateTime? date = null) {
       if (!date.HasValue) {
@@ -54,7 +54,7 @@ namespace Empiria.FinancialAccounting.WebApi.FinancialConcepts {
 
 
     [HttpGet]
-    [Route("v2/financial-accounting/financial-concepts/groups/{groupUID:guid}/flat-tree")]
+    [Route("v2/financial-accounting/financial-concepts/groups/{groupUID}/flat-tree")]
     public CollectionModel GetGroupIntegrationEntriesAsTree([FromUri] string groupUID) {
 
       using (var usecases = FinancialConceptsGroupUseCases.UseCaseInteractor()) {
@@ -67,8 +67,8 @@ namespace Empiria.FinancialAccounting.WebApi.FinancialConcepts {
 
 
     [HttpGet]
-    [Route("v2/financial-accounting/financial-concepts/groups/{groupUID:guid}/excel")]
-    [Route("v2/financial-accounting/financial-concepts/groups/{groupUID:guid}/flat-tree/excel")]
+    [Route("v2/financial-accounting/financial-concepts/groups/{groupUID}/excel")]
+    [Route("v2/financial-accounting/financial-concepts/groups/{groupUID}/flat-tree/excel")]
     public SingleObjectModel ExportGroupIntegrationEntriesAsTree([FromUri] string groupUID) {
 
       using (var usecases = FinancialConceptsGroupUseCases.UseCaseInteractor()) {

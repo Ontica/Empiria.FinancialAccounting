@@ -4,9 +4,9 @@
     <Product>Empiria Financial Accounting Reporting Module Tests</Product>
     <Description>Tests suite for the reporting module of the financial accounting system.</Description>
     <Copyright>(c) 2021-2023. La Vía Óntica SC, Ontica LLC y de los autores. Todos los derechos reservados.</Copyright>
-    <Version>2.0.0</Version>
-    <AssemblyVersion>2.0.0</AssemblyVersion>
-    <FileVersion>2.0.0.0</FileVersion>
+    <Version>2.3.0</Version>
+    <AssemblyVersion>2.3.0</AssemblyVersion>
+    <FileVersion>2.3.0.0</FileVersion>
     <GeneratePackageOnBuild>false</GeneratePackageOnBuild>
     <PackageRequireLicenseAcceptance>true</PackageRequireLicenseAcceptance>
     <PackageLicenseUrl></PackageLicenseUrl>
@@ -80,15 +80,14 @@
   <ItemGroup Condition=" '$(Configuration)' != 'Multisolutions' ">
     <PackageReference Include="Empiria.Data.Oracle" Version="7.0.0" />
     <PackageReference Include="Empiria.Tests" Version="1.0.0" />
-    <PackageReference Include="Empiria.FinancialAccounting.Reporting" Version="2.0.0" />
+    <PackageReference Include="Empiria.Expressions" Version="7.0.0" />
+    <PackageReference Include="Empiria.FinancialAccounting.Reporting" Version="2.3.0" />
   </ItemGroup>
   <ItemGroup Condition=" '$(Configuration)' == 'Multisolutions' ">
     <ProjectReference Include="..\..\extensions\Data.Oracle\Empiria.Data.Oracle.csproj" />
     <ProjectReference Include="..\..\extensions\Tests\Empiria.Tests.csproj" />
-    <ProjectReference Include="..\Reporting\Empiria.FinancialAccounting.Reporting.csproj" />
-  </ItemGroup>
-  <ItemGroup>
     <ProjectReference Include="..\..\extensions\Expressions\Empiria.Expressions.csproj" />
+    <ProjectReference Include="..\Reporting\Empiria.FinancialAccounting.Reporting.csproj" />
   </ItemGroup>
   <ItemGroup>
     <None Update="empiria.config.json">

@@ -1,4 +1,4 @@
-﻿# Empiria Financial Accounting
+﻿# Empiria Financial Accounting System
 
 [![Codacy Badge](https://app.codacy.com/project/badge/Grade/3eb36cbce7564607855c8995a3796d77)](https://www.codacy.com/gh/Ontica/Empiria.FinancialAccounting/dashboard?utm_source=github.com&amp;utm_medium=referral&amp;utm_content=Ontica/Empiria.FinancialAccounting&amp;utm_campaign=Badge_Grade)
 &nbsp; &nbsp;
@@ -11,10 +11,9 @@ tailored with ASP .NET.
 As other Empiria products, this backend runs over [Empiria Framework](https://github.com/Ontica/Empiria.Core),
 and as usual, needs some of the [Empiria Extensions](https://github.com/Ontica/Empiria.Extensions).
 
-The main design of the backend was took from SICOFIN, a custom-tailored Financial Accounting Web System,
-developed by our organization in 2000-2002, for Banco Nacional de Obras y Servicios Públicos S.N.C.
-(BANOBRAS), a Mexican state owned development bank. The original SICOFIN's source code
-[can be downloaded here](https://github.com/Ontica/Sicofin).
+SICOFIN, a custom-tailored Financial Accounting Web System, originally was developed by our organization in 2000-2002,
+for Banco Nacional de Obras y Servicios Públicos S.N.C. (BANOBRAS), a Mexican state owned development bank.
+The original SICOFIN's source code [can be downloaded here](https://github.com/Ontica/Sicofin).
 
 ## Contents
 

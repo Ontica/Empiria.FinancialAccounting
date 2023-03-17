@@ -56,7 +56,8 @@ namespace Empiria.FinancialAccounting.FinancialReports.UseCases {
     }
 
 
-    public FinancialReportDto GetFinancialReportBreakdown(string reportRowUID, FinancialReportQuery buildQuery) {
+    public FinancialReportDto GetFinancialReportBreakdown(string reportRowUID,
+                                                          FinancialReportQuery buildQuery) {
       Assertion.Require(reportRowUID, nameof(reportRowUID));
       Assertion.Require(buildQuery, nameof(buildQuery));
 

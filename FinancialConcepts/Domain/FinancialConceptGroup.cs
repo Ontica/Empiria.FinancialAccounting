@@ -200,7 +200,7 @@ namespace Empiria.FinancialAccounting.FinancialConcepts {
 
       if (IsFinancialConceptCodeRegistered(command.Code, FinancialConcept.Empty,
                                            command.StartDate, command.EndDate)) {
-        Assertion.RequireFail($"Ya existe otro concepto con la clave '{command.Code}', " +
+        Assertion.RequireFail($"Ya existe otro concepto con la clave '{command.Code}' " +
                               $"dentro del rango de fechas proporcionado.");
       }
 
@@ -248,7 +248,7 @@ namespace Empiria.FinancialAccounting.FinancialConcepts {
 
       if (IsFinancialConceptCodeRegistered(command.Code, concept,
                                            command.StartDate, command.EndDate)) {
-        Assertion.RequireFail($"Ya existe otro concepto con la clave '{command.Code}', " +
+        Assertion.RequireFail($"Ya existe otro concepto con la clave '{command.Code}' " +
                               $"dentro del rango de fechas proporcionado.");
       }
 

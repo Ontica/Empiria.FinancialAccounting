@@ -209,6 +209,10 @@ namespace Empiria.FinancialAccounting {
                                         $"tiene una longitud que excede el formato determinado.");
       }
 
+      //Assertion.Require(EmpiriaString.AllDigits(subledgerAccountNo),
+      //                  $"El auxiliar '{subledgerAccountNo}' contiene letras o caracteres que no " +
+      //                  $"pueden ser usados como parte de un número de auxiliar.");
+
       return temp;
     }
 

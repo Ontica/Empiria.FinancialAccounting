@@ -28,19 +28,19 @@ namespace Empiria.FinancialAccounting.FinancialReports {
     internal void CalculateColumns(FinancialConcept financialConcept,
                                    FixedList<DataTableColumn> columns,
                                    IFinancialConceptValues baseValues) {
-      IDictionary<string, object> inputValues = ConvertToDictionary(financialConcept, baseValues);
+      IDictionary<string, object> data = ConvertToDictionary(financialConcept, baseValues);
 
       if (financialConcept.Code.StartsWith("3300") && !financialConcept.Code.EndsWith("0008")) {
         columns = columns.FindAll(x => !x.Tags.Contains("skipFormulaForConceptsStartingWith3"));
       }
 
       foreach (var column in columns) {
-        decimal result = CalculateColumnEntry(column.Formula, inputValues);
+        decimal result = CalculateColumnEntry(column.Formula, data);
 
-        if (!inputValues.ContainsKey(column.Field)) {
-          inputValues.Add(column.Field, result);
+        if (!data.ContainsKey(column.Field)) {
+          data.Add(column.Field, result);
         } else {
-          inputValues[column.Field] = result;
+          data[column.Field] = result;
         }
 
         baseValues.SetTotalField(column.Field, result);
@@ -59,22 +59,27 @@ namespace Empiria.FinancialAccounting.FinancialReports {
 
       var compiler = new RuntimeCompiler(_executionContext);
 
-      compiler.ExecuteScript(financialConcept.CalculationScript, data);
+      try {
+        compiler.ExecuteScript(financialConcept.CalculationScript, data);
+
+      } catch (Exception ex) {
+        throw new InvalidOperationException($"No se pudo ejecutar el script del concepto " +
+                    $"{financialConcept.Code} - {financialConcept.Name} ({financialConcept.Id}): " +
+                    $"{financialConcept.CalculationScript}", ex);
+      }
 
       if (MustReturnThisValue(financialConcept)) {
         return (IFinancialConceptValues) data["this"];
       }
 
-
       foreach (var item in data) {
-        if (baseValues.ContainsField(item.Key) && item.Value is decimal) {
+        if (item.Value is decimal || item.Value is int) {
           baseValues.SetTotalField(item.Key, (decimal) item.Value);
         }
       }
 
       return baseValues;
     }
-
 
     #region Helpers
 
