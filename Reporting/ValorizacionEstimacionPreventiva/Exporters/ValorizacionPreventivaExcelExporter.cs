@@ -136,7 +136,9 @@ namespace Empiria.FinancialAccounting.Reporting.ValorizacionEstimacionPreventiva
     private void SetHeader(ExcelFile excelFile) {
       excelFile.SetCell($"A2", _template.Title);
 
-      var subTitle = $"Del {_reportData.Query.FromDate.ToString("dd/MMM/yyyy")} al " +
+      DateTime fromDate = new DateTime(_reportData.Query.ToDate.Year, 1, 1);
+
+      var subTitle = $"Del {fromDate.ToString("dd/MMM/yyyy")} al " +
                      $"{_reportData.Query.ToDate.ToString("dd/MMM/yyyy")}";
 
       excelFile.SetCell($"A3", subTitle);
