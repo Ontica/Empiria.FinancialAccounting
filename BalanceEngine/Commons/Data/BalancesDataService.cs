@@ -24,7 +24,7 @@ namespace Empiria.FinancialAccounting.BalanceEngine.Data {
       Assertion.Require(query, nameof(query));
 
       BalancesSqlClauses sqlClauses = BalancesSqlClauses.BuildFrom(query);
-
+      
       return GetTrialBalanceEntries(sqlClauses);
     }
 

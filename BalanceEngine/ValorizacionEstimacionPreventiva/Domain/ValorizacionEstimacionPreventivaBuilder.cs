@@ -33,7 +33,7 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
     internal FixedList<ValorizacionEstimacionPreventivaEntry> Build() {
 
       DateTime initialDate = _query.InitialPeriod.FromDate;
-      
+
       _query.InitialPeriod.FromDate = new DateTime(
                   _query.InitialPeriod.ToDate.Year,
                   _query.InitialPeriod.ToDate.Month, 1);
@@ -57,10 +57,8 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
       FixedList<ValorizacionEstimacionPreventivaEntry> accountsByCurrency = helper.GetAccountsBalances(
                                           accountEntries, _query.InitialPeriod.ToDate);
 
-      FixedList <ValorizacionEstimacionPreventivaEntry> accountsInfoByMonth = helper.GetAccountsByFilteredMonth();
-
-      var _x = accountsInfoByMonth.Where(a => a.Account.Number == "1.01.02").ToList();
-
+      FixedList<ValorizacionEstimacionPreventivaEntry> accountsInfoByMonth = GetAccountsByFilteredMonths();
+      
       FixedList <ValorizacionEstimacionPreventivaEntry> mergeAccountsByMonth = helper.MergeAccountsByMonth(
                                                           accountsByCurrency, accountsInfoByMonth);
 
@@ -70,6 +68,27 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
 
     #endregion Public methods
 
+
+    #region Private methods
+
+
+    private FixedList<ValorizacionEstimacionPreventivaEntry> GetAccountsByFilteredMonths() {
+      
+      if (_query.InitialPeriod.ToDate.Month == 1) {
+
+        return new FixedList<ValorizacionEstimacionPreventivaEntry>();
+
+      } else {
+
+        var helper = new ValorizacionEstimacionPreventivaHelper(_query);
+        return helper.GetAccountsByFilteredMonth();
+
+      }
+
+    }
+
+
+    #endregion Private methods
 
   } // class ValorizacionEstimacionPreventivaBuilder
 

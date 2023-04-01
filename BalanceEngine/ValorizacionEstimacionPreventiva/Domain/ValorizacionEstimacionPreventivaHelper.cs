@@ -33,7 +33,7 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
                                          bool isLastMonth = false) {
       DateTime toDate = date;
 
-      if (isLastMonth) {
+      if (isLastMonth /*|| date.Month == 1*/) {
         DateTime flagMonth = new DateTime(toDate.Year, toDate.Month, 1);
         DateTime lastMonth = flagMonth.AddDays(-1);
         toDate = lastMonth;
