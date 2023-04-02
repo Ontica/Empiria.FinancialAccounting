@@ -142,53 +142,49 @@ namespace Empiria.FinancialAccounting.AccountsChartEdition {
 
 
     private FixedList<AccountsChartEditionAction> BuildUpdateAccountActions() {
-      var list = new List<AccountsChartEditionAction>();
+      var actions = new List<AccountsChartEditionAction>();
 
       var dataToBeUpdated = _command.DataToBeUpdated.ToFixedList();
 
-      bool sectorsRoleChanged = false;
 
       if (dataToBeUpdated.Contains(AccountDataToBeUpdated.Name) ||
           dataToBeUpdated.Contains(AccountDataToBeUpdated.DebtorCreditor) ||
           dataToBeUpdated.Contains(AccountDataToBeUpdated.AccountType) ||
           dataToBeUpdated.Contains(AccountDataToBeUpdated.MainRole)) {
 
-        list.Add(BuildUpdateAccountDataAction());
+        actions.Add(BuildUpdateAccountDataAction());
 
       } else if (dataToBeUpdated.Contains(AccountDataToBeUpdated.SubledgerRole) &&
                  !_command.Entities.Account.Role.Equals(_command.AccountFields.Role)) {
 
-        list.Add(BuildUpdateAccountDataAction());
+        actions.Add(BuildUpdateAccountDataAction());
 
       } else if (dataToBeUpdated.Contains(AccountDataToBeUpdated.SubledgerRole) &&
-                 _command.Entities.Account.Role == AccountRole.Sectorizada &&
-                 _command.Entities.Account.GetSectors(_command.ApplicationDate)[0].SectorRole != _command.SectorRules[0].Role) {
+                 HasUpdatedSectors()) {
 
-        list.Add(BuildUpdateAccountDataAction());
-
-        sectorsRoleChanged = true;
+        actions.Add(BuildUpdateAccountDataAction());
 
       } else if (dataToBeUpdated.Contains(AccountDataToBeUpdated.Currencies) &&
                  HasUpdatedCurrencies()) {
 
-        list.Add(BuildUpdateAccountDataAction());
+        actions.Add(BuildUpdateAccountDataAction());
 
       } else if (dataToBeUpdated.Contains(AccountDataToBeUpdated.Sectors) &&
                  HasUpdatedSectors()) {
 
-        list.Add(BuildUpdateAccountDataAction());
+        actions.Add(BuildUpdateAccountDataAction());
       }
 
 
       if (dataToBeUpdated.Contains(AccountDataToBeUpdated.Currencies)) {
-        list.Add(BuildUpdateCurrenciesAction());
+        actions.Add(BuildUpdateCurrenciesAction());
       }
 
-      if (dataToBeUpdated.Contains(AccountDataToBeUpdated.Sectors) || sectorsRoleChanged) {
-        list.Add(BuildUpdateSectorsAction());
+      if (dataToBeUpdated.Contains(AccountDataToBeUpdated.Sectors)) {
+        actions.Add(BuildUpdateSectorsAction());
       }
 
-      return list.ToFixedList();
+      return actions.ToFixedList();
     }
 
 
@@ -234,6 +230,7 @@ namespace Empiria.FinancialAccounting.AccountsChartEdition {
       var operations = new List<DataOperation>();
 
       FixedList<SectorInputRuleDto> newSectorRules = _command.Entities.GetSectorRules();
+
       Account account = _command.Entities.Account;
 
       FixedList<SectorRule> currentSectors = account.GetSectors(_command.ApplicationDate);

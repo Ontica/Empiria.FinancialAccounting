@@ -146,11 +146,52 @@ namespace Empiria.FinancialAccounting.AccountsChartEdition.Adapters {
 
 
     protected override void InitialRequire() {
+      PatchDataToBeUpdated();
+
       var validator = new AccountEditionCommandValidator(this);
 
       validator.InitialRequire();
 
       Entities = new EntitiesType(this);
+    }
+
+
+    private void PatchDataToBeUpdated() {
+      if (CommandType != AccountEditionCommandType.UpdateAccount) {
+        return;
+      }
+
+      var account = Account.Parse(AccountUID);
+
+      if (DataToBeUpdated.Contains(AccountDataToBeUpdated.MainRole) &&
+         !DataToBeUpdated.Contains(AccountDataToBeUpdated.Sectors) &&
+         (AccountFields.Role == AccountRole.Sectorizada && account.Role != AccountRole.Sectorizada) &&
+         SectorRules.Length > 0) {
+        IncludeInDataToBeUpdated(AccountDataToBeUpdated.Sectors);
+      }
+
+      if (DataToBeUpdated.Contains(AccountDataToBeUpdated.MainRole) &&
+         !DataToBeUpdated.Contains(AccountDataToBeUpdated.Sectors) &&
+         (AccountFields.Role != AccountRole.Sectorizada && account.Role == AccountRole.Sectorizada) &&
+         SectorRules.Length == 0) {
+        IncludeInDataToBeUpdated(AccountDataToBeUpdated.Sectors);
+      }
+
+      if (!DataToBeUpdated.Contains(AccountDataToBeUpdated.MainRole) &&
+          DataToBeUpdated.Contains(AccountDataToBeUpdated.SubledgerRole) &&
+          !DataToBeUpdated.Contains(AccountDataToBeUpdated.Sectors) &&
+          (AccountFields.Role == AccountRole.Sectorizada && account.Role == AccountRole.Sectorizada) &&
+          SectorRules.Length > 0) {
+        IncludeInDataToBeUpdated(AccountDataToBeUpdated.Sectors);
+      }
+
+      void IncludeInDataToBeUpdated(AccountDataToBeUpdated include) {
+        var list = DataToBeUpdated.ToList();
+
+        list.Add(include);
+
+        this.DataToBeUpdated = list.ToArray();
+      }
     }
 
 
