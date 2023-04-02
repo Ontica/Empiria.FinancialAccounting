@@ -326,9 +326,9 @@ namespace Empiria.FinancialAccounting.AccountsChartEdition {
         Require(_command.SectorRules.Length != 0 &&
                 account.GetSectors(_command.ApplicationDate)[0].SectorRole != _command.SectorRules[0].Role,
             "Se está solicitando modificar el manejo de auxiliares de los sectores " +
-            (account.GetSectors(_command.ApplicationDate)[0].SectorRole == AccountRole.Control ?
-            $"pero al día {_command.ApplicationDate.ToString("dd/MMM/yyyy")} los sectores de la cuenta ya manejan auxiliares." :
-            $"pero al día {_command.ApplicationDate.ToString("dd/MMM/yyyy")} los sectores de la cuenta no manejan auxiliares."));
+            $"pero al día {_command.ApplicationDate.ToString("dd/MMM/yyyy")} los sectores de la cuenta " +
+              (account.GetSectors(_command.ApplicationDate)[0].SectorRole == AccountRole.Control ?
+                                                    "ya manejan auxiliares." : "no manejan auxiliares."));
       }
 
       if (newRole == AccountRole.Sumaria) {
@@ -340,6 +340,7 @@ namespace Empiria.FinancialAccounting.AccountsChartEdition {
         Require(account.GetChildren().Count == 0,
           "No se puede convertir la cuenta de sumaria a detalle debido a que tiene cuentas hijas.");
       }
+
     }
 
 

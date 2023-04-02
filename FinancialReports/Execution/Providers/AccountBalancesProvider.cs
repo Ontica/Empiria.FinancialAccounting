@@ -175,7 +175,8 @@ namespace Empiria.FinancialAccounting.FinancialReports.Providers {
 
         default:
           throw Assertion.EnsureNoReachThisCode(
-              $"Unrecognized balances source {_financialReportType.DataSource} for report type {_financialReportType.Name}.");
+              $"Unrecognized balances source {_financialReportType.DataSource} " +
+              $"for report type {_financialReportType.Name}.");
       }
     }
 

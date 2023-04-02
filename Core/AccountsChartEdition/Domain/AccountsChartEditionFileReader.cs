@@ -10,6 +10,7 @@
 using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 
 using Empiria.Office;
 
@@ -108,7 +109,7 @@ namespace Empiria.FinancialAccounting.AccountsChartEdition {
 
     private void SetSkipParentValidationFlag(FixedList<AccountEditionCommand> commandsList) {
       var changeRoleRelatedCommands = commandsList.FindAll(x => x.CommandType == AccountEditionCommandType.CreateAccount ||
-                                                                x.DataToBeUpdated.ToFixedList().Contains(AccountDataToBeUpdated.MainRole));
+                                                                x.DataToBeUpdated.Contains(AccountDataToBeUpdated.MainRole));
 
       if (changeRoleRelatedCommands.Count == 1) {
         return;
