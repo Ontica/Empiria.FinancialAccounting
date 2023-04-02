@@ -31,23 +31,69 @@ namespace Empiria.FinancialAccounting.Vouchers.SpecialCases {
 
       var voucherEntries = new List<VoucherEntryFields>();
 
-      foreach (var lockedBalance in lockedBalances) {
+      voucherEntries.AddRange(BuildDebitVoucherEntries(lockedBalances));
+
+      voucherEntries.AddRange(BuildCreditVoucherEntries(lockedBalances));
+
+      return voucherEntries.ToFixedList();
+    }
+
+
+    #endregion Abstract Implements
+
+    #region Helpers
+
+
+    private FixedList<VoucherEntryFields> BuildCreditVoucherEntries(FixedList<SaldosEncerradosEntryDto> lockedBalances) {
+
+      var creditLockedBalances = FilterCreditLockedBalances(lockedBalances);
+
+      if (creditLockedBalances.Count == 0) {
+        return new FixedList<VoucherEntryFields>();
+      }
+
+      var voucherEntries = new List<VoucherEntryFields>();
+
+      foreach (var lockedBalance in creditLockedBalances) {
         VoucherEntryFields voucherEntry = BuildVoucherEntry(lockedBalance);
 
         voucherEntries.Add(voucherEntry);
       }
 
-      FixedList<VoucherEntryFields> targetAccountVoucherEntries =
-                                              BuildTargetAccountVoucherEntry(voucherEntries, "9.03.14");
+      VoucherEntryFields debitTotalEntry = BuildTargetAccountVoucherEntry(voucherEntries,
+                                                                          VoucherEntryType.Debit,
+                                                                          "9.03.14");
 
-      voucherEntries.AddRange(targetAccountVoucherEntries);
+      voucherEntries.Insert(0, debitTotalEntry);
 
       return voucherEntries.ToFixedList();
     }
 
-    #endregion Abstract Implements
 
-    #region Helpers
+    private FixedList<VoucherEntryFields> BuildDebitVoucherEntries(FixedList<SaldosEncerradosEntryDto> lockedBalances) {
+
+      var debitLockedBalances = FilterDebitLockedBalances(lockedBalances);
+
+      if (debitLockedBalances.Count == 0) {
+        return new FixedList<VoucherEntryFields>();
+      }
+
+      var voucherEntries = new List<VoucherEntryFields>();
+
+      foreach (var lockedBalance in debitLockedBalances) {
+        VoucherEntryFields voucherEntry = BuildVoucherEntry(lockedBalance);
+
+        voucherEntries.Add(voucherEntry);
+      }
+
+      VoucherEntryFields creditTotalEntry = BuildTargetAccountVoucherEntry(voucherEntries,
+                                                                           VoucherEntryType.Credit,
+                                                                           "9.03.14");
+
+      voucherEntries.Add(creditTotalEntry);
+
+      return voucherEntries.ToFixedList();
+    }
 
     private FixedList<SaldosEncerradosEntryDto> GetLockedBalances() {
       var query = new SaldosEncerradosQuery {
@@ -64,57 +110,44 @@ namespace Empiria.FinancialAccounting.Vouchers.SpecialCases {
       Assertion.Require(items.Count > 0,
                         "No hay saldos encerrados por cancelar en la fecha proporcionada.");
 
-
-      return SortLockedBalances(items);
+      return items;
     }
 
 
-    private FixedList<VoucherEntryFields> BuildTargetAccountVoucherEntry(List<VoucherEntryFields> accumulatedEntries,
-                                                                         string targetAccountNumber) {
-      decimal totalDebits = 0m;
-      decimal totalCredits = 0m;
+    private VoucherEntryFields BuildTargetAccountVoucherEntry(List<VoucherEntryFields> accumulatedEntries,
+                                                              VoucherEntryType targetEntryType,
+                                                              string targetAccountNumber) {
+      decimal total = 0m;
 
       foreach (var entry in accumulatedEntries) {
-        if (entry.VoucherEntryType == VoucherEntryType.Debit) {
-          totalDebits += entry.Amount;
-        } else {
-          totalCredits += entry.Amount;
-        }
+        total += entry.Amount;
       }
 
-      var entries = new List<VoucherEntryFields>();
-
-      if (totalCredits != 0) {
-        entries.Add(BuildVoucherEntryFields(VoucherEntryType.Debit, targetAccountNumber,
-                                            "00", SubledgerAccount.Empty, totalCredits));
-      }
-
-      if (totalDebits != 0) {
-        entries.Add(BuildVoucherEntryFields(VoucherEntryType.Credit, targetAccountNumber,
-                                            "00", SubledgerAccount.Empty, totalDebits));
-      }
-
-      return entries.ToFixedList();
+      return BuildVoucherEntryFields(targetEntryType, targetAccountNumber,
+                                     "00", SubledgerAccount.Empty, total);
     }
 
 
     private VoucherEntryFields BuildVoucherEntry(SaldosEncerradosEntryDto lockedBalance) {
 
       if (lockedBalance.DebtorCreditor == "Deudora" &&
-          lockedBalance.LockedBalance > 0) {
-        return BuildVoucherEntryFields(VoucherEntryType.Credit, lockedBalance);
-
-      } else if (lockedBalance.DebtorCreditor == "Deudora" &&
-                 lockedBalance.LockedBalance < 0) {
+          lockedBalance.LockedBalance < 0) {
 
         return BuildVoucherEntryFields(VoucherEntryType.Debit, lockedBalance);
 
       } else if (lockedBalance.DebtorCreditor == "Acreedora" &&
                  lockedBalance.LockedBalance > 0) {
+
         return BuildVoucherEntryFields(VoucherEntryType.Debit, lockedBalance);
+
+      } else if (lockedBalance.DebtorCreditor == "Deudora" &&
+                 lockedBalance.LockedBalance > 0) {
+
+        return BuildVoucherEntryFields(VoucherEntryType.Credit, lockedBalance);
 
       } else if (lockedBalance.DebtorCreditor == "Acreedora" &&
                  lockedBalance.LockedBalance < 0) {
+
         return BuildVoucherEntryFields(VoucherEntryType.Credit, lockedBalance);
       }
 
@@ -164,22 +197,29 @@ namespace Empiria.FinancialAccounting.Vouchers.SpecialCases {
     }
 
 
-    private FixedList<SaldosEncerradosEntryDto> SortLockedBalances(FixedList<SaldosEncerradosEntryDto> items) {
-      var sorted = new List<SaldosEncerradosEntryDto>(items.Count);
+    private FixedList<SaldosEncerradosEntryDto> FilterCreditLockedBalances(FixedList<SaldosEncerradosEntryDto> items) {
+      var filtered = new List<SaldosEncerradosEntryDto>(items.Count);
 
-      var chunk = items.FindAll(x => x.DebtorCreditor == "Deudora" && x.LockedBalance < 0);
-      sorted.AddRange(chunk);
-
-      chunk = items.FindAll(x => x.DebtorCreditor == "Acreedora" && x.LockedBalance > 0);
-      sorted.AddRange(chunk);
-
-      chunk = items.FindAll(x => x.DebtorCreditor == "Deudora" && x.LockedBalance > 0);
-      sorted.AddRange(chunk);
+      var chunk = items.FindAll(x => x.DebtorCreditor == "Deudora" && x.LockedBalance > 0);
+      filtered.AddRange(chunk);
 
       chunk = items.FindAll(x => x.DebtorCreditor == "Acreedora" && x.LockedBalance < 0);
-      sorted.AddRange(chunk);
+      filtered.AddRange(chunk);
 
-      return sorted.ToFixedList();
+      return filtered.ToFixedList();
+    }
+
+
+    private FixedList<SaldosEncerradosEntryDto> FilterDebitLockedBalances(FixedList<SaldosEncerradosEntryDto> items) {
+      var filtered = new List<SaldosEncerradosEntryDto>(items.Count);
+
+      var chunk = items.FindAll(x => x.DebtorCreditor == "Deudora" && x.LockedBalance < 0);
+      filtered.AddRange(chunk);
+
+      chunk = items.FindAll(x => x.DebtorCreditor == "Acreedora" && x.LockedBalance > 0);
+      filtered.AddRange(chunk);
+
+      return filtered.ToFixedList();
     }
 
     #endregion Helpers
