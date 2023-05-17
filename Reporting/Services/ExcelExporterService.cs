@@ -13,7 +13,6 @@ using Empiria.FinancialAccounting.Reporting.Exporters.Excel;
 
 using Empiria.FinancialAccounting.Adapters;
 using Empiria.FinancialAccounting.BalanceEngine.Adapters;
-using Empiria.FinancialAccounting.BanobrasIntegration.TransactionSlips.Adapters;
 using Empiria.FinancialAccounting.ExternalData.Adapters;
 using Empiria.FinancialAccounting.FinancialConcepts.Adapters;
 using Empiria.FinancialAccounting.Reconciliation.Adapters;
@@ -22,8 +21,6 @@ using Empiria.FinancialAccounting.Reporting.ExternalData.Exporters;
 using Empiria.FinancialAccounting.Reporting.FinancialConceptsEntriesTree.Exporters;
 using Empiria.FinancialAccounting.Reporting.Reconciliation.Exporters;
 using Empiria.FinancialAccounting.Reporting.StoredBalanceSet.Exporters;
-using Empiria.FinancialAccounting.Reporting.TransactionSlip.Exporters;
-
 
 namespace Empiria.FinancialAccounting.Reporting {
 
@@ -104,43 +101,6 @@ namespace Empiria.FinancialAccounting.Reporting {
 
       return excelFile.ToFileReportDto();
     }
-
-
-    public FileReportDto Export(FixedList<TransactionSlipDto> transactionSlips,
-                                string exportationType) {
-
-      Assertion.Require(transactionSlips, "transactionSlips");
-      Assertion.Require(exportationType, "exportationType");
-
-      string templateUID;
-
-      if (exportationType == "slips") {
-        templateUID = $"TransactionSlipsTemplate";
-      } else if (exportationType == "issues") {
-        templateUID = $"TransactionSlipsIssuesTemplate";
-      } else {
-        throw Assertion.EnsureNoReachThisCode($"Invalid exportation type '{exportationType}'.");
-      }
-
-      var templateConfig = FileTemplateConfig.Parse(templateUID);
-
-      var exporter = new TransactionSlipExporter(templateConfig);
-
-      ExcelFile excelFile;
-
-      if (exportationType == "slips") {
-        excelFile = exporter.CreateExcelFile(transactionSlips);
-
-      } else if (exportationType == "issues") {
-        excelFile = exporter.CreateIsuesExcelFile(transactionSlips);
-
-      } else {
-        throw Assertion.EnsureNoReachThisCode($"Invalid exportation type '{exportationType}'.");
-      }
-
-      return excelFile.ToFileReportDto();
-    }
-
 
     public FileReportDto Export(ExternalValuesDto externalValues) {
       Assertion.Require(externalValues, nameof(externalValues));

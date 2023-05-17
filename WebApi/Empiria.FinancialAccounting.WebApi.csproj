@@ -72,7 +72,6 @@
     <PackageReference Include="Empiria.FinancialAccounting.Reporting" Version="2.3.0" />
     <PackageReference Include="Empiria.FinancialAccounting.Rules" Version="2.3.0" />
     <PackageReference Include="Empiria.FinancialAccounting.Vouchers" Version="2.3.0" />
-    <PackageReference Include="Empiria.FinancialAccounting.BanobrasIntegration" Version="2.3.0" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\..\extensions\WebApi\Empiria.WebApi.csproj" />
@@ -83,6 +82,5 @@
     <ProjectReference Include="..\Reconciliation\Empiria.FinancialAccounting.Reconciliation.csproj" />
     <ProjectReference Include="..\Reporting\Empiria.FinancialAccounting.Reporting.csproj" />
     <ProjectReference Include="..\Vouchers\Empiria.FinancialAccounting.Vouchers.csproj" />
-    <ProjectReference Include="..\BanobrasIntegration\Empiria.FinancialAccounting.BanobrasIntegration.csproj" />
   </ItemGroup>
 </Project>

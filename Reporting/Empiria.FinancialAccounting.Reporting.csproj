@@ -67,7 +67,6 @@
     <PackageReference Include="Empiria.FinancialAccounting.BalanceEngine" Version="2.3.0" />
     <PackageReference Include="Empiria.FinancialAccounting.ExternalData" Version="2.3.0" />
     <PackageReference Include="Empiria.FinancialAccounting.FinancialReports" Version="2.3.0" />
-    <PackageReference Include="Empiria.FinancialAccounting.BanobrasIntegration" Version="2.3.0" />
     <PackageReference Include="Empiria.FinancialAccounting.Vouchers" Version="2.3.0" />
     <PackageReference Include="Empiria.FinancialAccounting.Reconciliation" Version="2.3.0" />
   </ItemGroup>
@@ -79,15 +78,11 @@
     <ProjectReference Include="..\BalanceEngine\Empiria.FinancialAccounting.BalanceEngine.csproj" />
     <ProjectReference Include="..\ExternalData\Empiria.FinancialAccounting.ExternalData.csproj" />
     <ProjectReference Include="..\FinancialReports\Empiria.FinancialAccounting.FinancialReports.csproj" />
-    <ProjectReference Include="..\BanobrasIntegration\Empiria.FinancialAccounting.BanobrasIntegration.csproj" />
     <ProjectReference Include="..\Vouchers\Empiria.FinancialAccounting.Vouchers.csproj" />
     <ProjectReference Include="..\Reconciliation\Empiria.FinancialAccounting.Reconciliation.csproj" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="AccountComparer\Data\" />
-  </ItemGroup>
-  <ItemGroup>
-    <ProjectReference Include="..\..\extensions\Expressions\Empiria.Expressions.csproj" />
   </ItemGroup>
   <ItemGroup>
     <Reference Include="Microsoft.CSharp" />
