@@ -13,10 +13,10 @@ using System.IO;
 using Empiria.Office;
 using Empiria.Storage;
 
-namespace Empiria.FinancialAccounting.Reporting {
+namespace Empiria.FinancialAccounting {
 
   /// <summary>Provides edition services for Microsoft Excel files.</summary>
-  internal class ExcelFile {
+  public class ExcelFile {
 
     #region Fields
 
@@ -27,7 +27,7 @@ namespace Empiria.FinancialAccounting.Reporting {
     #endregion Fields
 
     public ExcelFile(FileTemplateConfig templateConfig) {
-      Assertion.Require(templateConfig, nameof(templateConfig));
+      Assertion.Require(templateConfig, " templateConfig");
 
       _templateConfig = templateConfig;
     }
@@ -49,17 +49,17 @@ namespace Empiria.FinancialAccounting.Reporting {
 
     #region Methods
 
-    internal void Open() {
+    public void Open() {
       _excel = Spreadsheet.Open(_templateConfig.TemplateFullPath);
     }
 
-    internal void Close() {
+    public void Close() {
       if (_excel != null) {
         _excel.Close();
       }
     }
 
-    internal void Save() {
+    public void Save() {
       if (_excel != null) {
         var path = _templateConfig.NewFilePath();
         _excel.SaveAs(path);
@@ -67,7 +67,7 @@ namespace Empiria.FinancialAccounting.Reporting {
       }
     }
 
-    internal void IndentCell(string cell, int indent) {
+    public void IndentCell(string cell, int indent) {
       if (_excel != null) {
         _excel.IndentCell(cell, indent);
       }
@@ -77,43 +77,43 @@ namespace Empiria.FinancialAccounting.Reporting {
       _excel.RemoveColumn(column);
     }
 
-    internal void SetCell(string cell, string value) {
+    public void SetCell(string cell, string value) {
       if (_excel != null) {
         _excel.SetCell(cell, value);
       }
     }
 
-    internal void SetCell(string cell, decimal value) {
+    public void SetCell(string cell, decimal value) {
       if (_excel != null) {
         _excel.SetCell(cell, value);
       }
     }
 
-    internal void SetCell(string cell, int value) {
+    public void SetCell(string cell, int value) {
       if (_excel != null) {
         _excel.SetCell(cell, value);
       }
     }
 
-    internal void SetCell(string cell, DateTime value) {
+    public void SetCell(string cell, DateTime value) {
       if (_excel != null) {
         _excel.SetCell(cell, value);
       }
     }
 
-    internal void SetCellStyleLineThrough(string cell) {
+    public void SetCellStyleLineThrough(string cell) {
       if (_excel != null) {
         _excel.SetCellStyle(Style.LineThrough, cell);
       }
     }
 
-    internal void SetRowStyleBold(int rowIndex) {
+    public void SetRowStyleBold(int rowIndex) {
       if (_excel != null) {
         _excel.SetRowStyle(Style.Bold, rowIndex);
       }
     }
 
-    internal FileReportDto ToFileReportDto() {
+    public FileReportDto ToFileReportDto() {
       return new FileReportDto(FileType.Excel, this.Url);
     }
 

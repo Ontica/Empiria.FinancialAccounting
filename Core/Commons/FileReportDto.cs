@@ -1,7 +1,7 @@
 ﻿/* Empiria Financial *****************************************************************************************
 *                                                                                                            *
-*  Module   : Reporting Services                            Component : Interface adapters                   *
-*  Assembly : FinancialAccounting.Reporting.dll             Pattern   : Data Transfer Object                 *
+*  Module   : Reporting Services                            Component : Common Types                         *
+*  Assembly : FinancialAccounting.Core.dll                  Pattern   : Data Transfer Object                 *
 *  Type     : FileReportDto                                 License   : Please read LICENSE.txt file         *
 *                                                                                                            *
 *  Summary  : DTO that returns information about a server file containing a report.                          *
@@ -11,7 +11,7 @@ using System;
 
 using Empiria.Storage;
 
-namespace Empiria.FinancialAccounting.Reporting {
+namespace Empiria.FinancialAccounting {
 
   /// <summary>DTO that returns information about a server file containing a report.</summary>
   public class FileReportDto {
