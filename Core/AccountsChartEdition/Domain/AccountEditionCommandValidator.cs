@@ -140,7 +140,7 @@ namespace Empiria.FinancialAccounting.AccountsChartEdition {
 
       if (!_command.SkipParentAccountValidation) {
 
-        var parent = chart.TryGetParentAccount(accountNumber);
+        var parent = chart.TryGetParentAccount(accountNumber, _command.ApplicationDate);
 
         if (parent == null) {
 
