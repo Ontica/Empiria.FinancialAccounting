@@ -142,12 +142,18 @@ namespace Empiria.FinancialAccounting.Vouchers.UseCases {
 
         if (!voucher.IsOpened) {
           continue;
+
+        } else if (voucher.SentToSupervisor && !voucher.IsSupervisor()) {
+          continue;
+
+        } else if (voucher.SentToSupervisor && voucher.IsSupervisor()) {
+          // go
+
+        } else if (!voucher.ElaboratedBy.Equals(Participant.Current)) {
+          continue;
+
         }
 
-        if (!(voucher.ElaboratedBy.Equals(Participant.Current) ||
-              voucher.AuthorizedBy.Equals(Participant.Current))) {
-          continue;
-        }
 
         try {
           voucher.Delete();

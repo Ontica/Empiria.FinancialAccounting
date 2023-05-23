@@ -186,13 +186,19 @@ namespace Empiria.FinancialAccounting.Vouchers {
       }
     }
 
+    public bool SentToSupervisor {
+      get {
+        return !AuthorizedBy.Equals(Participant.Empty);
+      }
+    }
+
 
     public string StatusName {
       get {
         if (!IsOpened) {
           return "Enviada al diario";
         }
-        if (this.AuthorizedBy.Equals(GetSupervisor())) {
+        if (IsSupervisor(this.AuthorizedBy)) {
           return "Enviada al supervisor";
         }
         return "Pendiente";
@@ -205,10 +211,9 @@ namespace Empiria.FinancialAccounting.Vouchers {
       }
     }
 
-
     #endregion Public properties
 
-    #region Methods
+      #region Methods
 
     internal VoucherEntry AppendAndSaveEntry(VoucherEntryFields fields) {
       Assertion.Require(fields, "fields");
@@ -231,13 +236,7 @@ namespace Empiria.FinancialAccounting.Vouchers {
         return false;
       }
 
-      //if (!(this.ElaboratedBy.Equals(participant) || this.AuthorizedBy.Equals(participant))) {
-      //  return false;
-      //}
-
-      Participant supervisor = this.GetSupervisor();
-
-      if (participant.Equals(supervisor)) {
+      if (IsSupervisor(participant)) {
         return true;
       }
 
@@ -405,6 +404,15 @@ namespace Empiria.FinancialAccounting.Vouchers {
         this.Id = VoucherData.NextVoucherId();
       }
       VoucherData.WriteVoucher(this);
+    }
+
+
+    public bool IsSupervisor() {
+      return ExecutionServer.CurrentUserId == 135 || ExecutionServer.CurrentUserId == 1882;
+    }
+
+    private bool IsSupervisor(Participant participant) {
+      return participant.Id == 135 || participant.Id == 1882;
     }
 
 
