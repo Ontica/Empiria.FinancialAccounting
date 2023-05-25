@@ -73,7 +73,7 @@ namespace Empiria.FinancialAccounting.Reporting {
     }
 
 
-    public FileReportDto Export(FixedList<FinancialConceptEntryAsTreeNodeDto> treeNodes) {
+    public FileReportDto Export(FixedList<FinancialConceptTreeNodeDto> treeNodes) {
       Assertion.Require(treeNodes, "treeNodes");
 
       var templateUID = $"GroupingRulesReportTemplate";

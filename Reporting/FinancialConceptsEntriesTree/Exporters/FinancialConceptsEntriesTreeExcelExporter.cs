@@ -27,7 +27,7 @@ namespace Empiria.FinancialAccounting.Reporting.FinancialConceptsEntriesTree.Exp
     }
 
 
-    internal ExcelFile CreateExcelFile(FixedList<FinancialConceptEntryAsTreeNodeDto> treeNodes) {
+    internal ExcelFile CreateExcelFile(FixedList<FinancialConceptTreeNodeDto> treeNodes) {
       Assertion.Require(treeNodes, nameof(treeNodes));
 
       _excelFile = new ExcelFile(_templateConfig);
@@ -46,7 +46,7 @@ namespace Empiria.FinancialAccounting.Reporting.FinancialConceptsEntriesTree.Exp
     }
 
 
-    private void SetTable(FixedList<FinancialConceptEntryAsTreeNodeDto> treeNodes) {
+    private void SetTable(FixedList<FinancialConceptTreeNodeDto> treeNodes) {
       int i = 5;
 
       foreach (var node in treeNodes) {

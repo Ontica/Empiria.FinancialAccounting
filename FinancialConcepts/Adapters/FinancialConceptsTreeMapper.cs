@@ -8,6 +8,7 @@
 *                                                                                                            *
 ************************* Copyright(c) La Vía Óntica SC, Ontica LLC and contributors. All rights reserved. **/
 using System;
+using System.Collections.Generic;
 
 namespace Empiria.FinancialAccounting.FinancialConcepts.Adapters {
 
@@ -15,26 +16,39 @@ namespace Empiria.FinancialAccounting.FinancialConcepts.Adapters {
   static public class FinancialConceptsTreeMapper {
 
 
-    static internal FixedList<FinancialConceptEntryAsTreeNodeDto> Map(FixedList<FinancialConceptEntryAsTreeNode> nodes) {
-      return new FixedList<FinancialConceptEntryAsTreeNodeDto>(nodes.Select(node => Map(node)));
+    static internal FixedList<FinancialConceptTreeNodeDto> Map(FixedList<FinancialConceptNode> nodes) {
+      var list = new List<FinancialConceptTreeNodeDto>(nodes.Count * 2);
+
+      foreach (var node in nodes) {
+        list.Add(Map(node.FinancialConcept));
+        list.AddRange(node.Children.Select(child => Map(child)));
+      }
+      return list.ToFixedList();
     }
 
+    static private FinancialConceptTreeNodeDto Map(FinancialConceptEntry child) {
+      return new FinancialConceptTreeNodeDto {
+        ItemCode = child.Code,
+        ItemName = child.Name,
+        Operator = Convert.ToString((char) child.Operator),
+        ParentCode = string.Empty,
+        DataColumn = child.DataColumn,
+        SubledgerAccount = child.SubledgerAccountNumber,
+        SubledgerAccountName = child.SubledgerAccountName,
+        SectorCode = child.SectorCode,
+        CurrencyCode = child.CurrencyCode,
+        UID = child.UID,
+        Type = child.Type,
+        Level = 2
+      };
+    }
 
-    static private FinancialConceptEntryAsTreeNodeDto Map(FinancialConceptEntryAsTreeNode node) {
-      return new FinancialConceptEntryAsTreeNodeDto {
-        ItemCode = node.IntegrationEntry.Code,
-        ItemName = node.IntegrationEntry.Name,
-        Operator = Convert.ToString((char) node.IntegrationEntry.Operator),
-        ParentCode = node.ParentNode.IntegrationEntry.IsEmptyInstance ?
-                                            string.Empty: node.ParentNode.IntegrationEntry.Code,
-        DataColumn = node.IntegrationEntry.DataColumn,
-        SubledgerAccount = node.IntegrationEntry.SubledgerAccountNumber,
-        SubledgerAccountName = node.IntegrationEntry.SubledgerAccountName,
-        SectorCode = node.IntegrationEntry.SectorCode,
-        CurrencyCode = node.IntegrationEntry.CurrencyCode,
-        UID = node.IntegrationEntry.UID,
-        Type = node.IntegrationEntry.Type,
-        Level = node.Level
+    static private FinancialConceptTreeNodeDto Map(FinancialConcept financialConcept) {
+      return new FinancialConceptTreeNodeDto {
+        ItemCode = financialConcept.Code,
+        ItemName = financialConcept.Name,
+        UID = financialConcept.UID,
+        Level = 1
       };
     }
 

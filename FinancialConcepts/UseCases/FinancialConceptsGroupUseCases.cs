@@ -32,9 +32,8 @@ namespace Empiria.FinancialAccounting.FinancialConcepts.UseCases {
 
     #region Use cases
 
-
     public void CleanupFinancialConceptGroup(string groupUID) {
-      Assertion.Require(groupUID, "groupUID");
+      Assertion.Require(groupUID, nameof(groupUID));
 
       var group = FinancialConceptGroup.Parse(groupUID);
 
@@ -53,7 +52,7 @@ namespace Empiria.FinancialAccounting.FinancialConcepts.UseCases {
 
     public FixedList<FinancialConceptDescriptorDto> GetFinancialConceptsInGroup(string groupUID,
                                                                                 DateTime date) {
-      Assertion.Require(groupUID, "groupUID");
+      Assertion.Require(groupUID, nameof(groupUID));
 
       var group = FinancialConceptGroup.Parse(groupUID);
 
@@ -63,16 +62,16 @@ namespace Empiria.FinancialAccounting.FinancialConcepts.UseCases {
     }
 
 
-    public FixedList<FinancialConceptEntryAsTreeNodeDto> GetGroupIntegrationEntriesAsTree(string groupUID) {
-      Assertion.Require(groupUID, "groupUID");
+    public FixedList<FinancialConceptTreeNodeDto> GetGroupIntegrationEntriesAsTree(string groupUID) {
+      Assertion.Require(groupUID, nameof(groupUID));
 
       var group = FinancialConceptGroup.Parse(groupUID);
 
       base.EnsureUserHasDataAccessTo(group);
 
-      var tree = new FinancialConceptsEntriesTree(group);
+      var tree = new FinancialConceptsTree(group);
 
-      return FinancialConceptsTreeMapper.Map(tree.GetNodes());
+      return FinancialConceptsTreeMapper.Map(tree.Nodes);
     }
 
 

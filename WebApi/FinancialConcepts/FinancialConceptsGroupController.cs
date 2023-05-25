@@ -58,7 +58,7 @@ namespace Empiria.FinancialAccounting.WebApi.FinancialConcepts {
     public CollectionModel GetGroupIntegrationEntriesAsTree([FromUri] string groupUID) {
 
       using (var usecases = FinancialConceptsGroupUseCases.UseCaseInteractor()) {
-        FixedList<FinancialConceptEntryAsTreeNodeDto> treeNodes =
+        FixedList<FinancialConceptTreeNodeDto> treeNodes =
                             usecases.GetGroupIntegrationEntriesAsTree(groupUID);
 
         return new CollectionModel(base.Request, treeNodes);
@@ -72,7 +72,7 @@ namespace Empiria.FinancialAccounting.WebApi.FinancialConcepts {
     public SingleObjectModel ExportGroupIntegrationEntriesAsTree([FromUri] string groupUID) {
 
       using (var usecases = FinancialConceptsGroupUseCases.UseCaseInteractor()) {
-        FixedList<FinancialConceptEntryAsTreeNodeDto> treeNodes =
+        FixedList<FinancialConceptTreeNodeDto> treeNodes =
                              usecases.GetGroupIntegrationEntriesAsTree(groupUID);
 
         var excelExporter = new ExcelExporterService();
