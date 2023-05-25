@@ -107,16 +107,24 @@ namespace Empiria.FinancialAccounting {
 
     public string CurrentTimeCell {
       get {
-        return base.ExtendedDataField.Get<string>("currentTimeCell", "L2");
+        return base.ExtendedDataField.Get<string>("currentTimeCell", string.Empty);
       }
     }
 
 
     public string ReportDateCell {
       get {
-        return base.ExtendedDataField.Get<string>("reportDateCell", "L3");
+        return base.ExtendedDataField.Get<string>("reportDateCell", string.Empty);
       }
     }
+
+
+    public string ReportDateFormat {
+      get {
+        return base.ExtendedDataField.Get<string>("reportDateFormat", string.Empty);
+      }
+    }
+
 
     public string TitleCell {
       get {

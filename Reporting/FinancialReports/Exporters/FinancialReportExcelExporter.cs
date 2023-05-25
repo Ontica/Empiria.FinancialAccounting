@@ -8,6 +8,7 @@
 *                                                                                                            *
 ************************* Copyright(c) La Vía Óntica SC, Ontica LLC and contributors. All rights reserved. **/
 using System;
+using System.Globalization;
 
 using Empiria.FinancialAccounting.FinancialReports;
 using Empiria.FinancialAccounting.FinancialReports.Adapters;
@@ -55,23 +56,30 @@ namespace Empiria.FinancialAccounting.Reporting.FinancialReports.Exporters {
 
 
     private void SetHeader(FinancialReportQuery buildQuery) {
-      FinancialReportType reportType = buildQuery.GetFinancialReportType();
-
-      if (reportType.DesignType != FinancialReportDesignType.AccountsIntegration) {
-
-        if (_templateConfig.TitleCell.Length != 0) {
-          _excelFile.SetCell(_templateConfig.TitleCell, buildQuery.GetFinancialReportType().Title);
-        }
-        _excelFile.SetCell(_templateConfig.CurrentTimeCell, DateTime.Now);
-        _excelFile.SetCell(_templateConfig.ReportDateCell, buildQuery.ToDate);
-
-      } else {
-
-        _excelFile.SetCell($"A2", buildQuery.GetFinancialReportType().BaseReport.Name);
-        _excelFile.SetCell($"I2", DateTime.Now);
-        _excelFile.SetCell($"I3", buildQuery.ToDate);
-
+      if (_templateConfig.TitleCell.Length != 0) {
+        _excelFile.SetCell(_templateConfig.TitleCell, _templateConfig.Title);
       }
+
+      if (_templateConfig.CurrentTimeCell.Length != 0) {
+        _excelFile.SetCell(_templateConfig.CurrentTimeCell, DateTime.Now);
+      }
+
+      if (_templateConfig.ReportDateCell.Length != 0) {
+        _excelFile.SetCell(_templateConfig.ReportDateCell, buildQuery.ToDate);
+      }
+
+      if (_templateConfig.ReportDateFormat.Length != 0) {
+
+        CultureInfo esUS = new CultureInfo("es-US");
+
+        var formattedDate = _templateConfig.ReportDateFormat.Replace("{{LONG_DATE}}",
+                                                                     buildQuery.ToDate.ToString("dd \\DE MMMM \\DE yyyy", esUS))
+                                                            .ToUpper();
+        _excelFile.SetCell(_templateConfig.ReportDateCell, formattedDate);
+      }
+
+
+
     }
 
 
