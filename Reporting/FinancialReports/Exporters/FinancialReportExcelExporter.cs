@@ -91,11 +91,13 @@ namespace Empiria.FinancialAccounting.Reporting.FinancialReports.Exporters {
           reportType.ConsecutiveRows) {
 
         FillOutFinancialReportConsecutiveRows(financialReport);
+        FillOutFinancialReportCells(financialReport);
 
       } else if (reportType.DesignType == FinancialReportDesignType.FixedRows &&
                 !reportType.ConsecutiveRows) {
 
         FillOutFinancialReportSeparatedRows(financialReport);
+        FillOutFinancialReportCells(financialReport);
 
       } else if (reportType.DesignType == FinancialReportDesignType.FixedCells) {
 
