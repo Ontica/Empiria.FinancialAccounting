@@ -31,10 +31,12 @@ namespace Empiria.FinancialAccounting.FinancialReports.Adapters {
       return new FinancialReportRowDto {
         UID = row.UID,
         FinancialConceptGroupUID = row.FinancialConcept.Group.UID,
-        ConceptCode = row.FinancialConcept.Code,
-        Concept = row.FinancialConcept.Name,
+        ConceptCode = row.FinancialConcept.IsEmptyInstance ?
+                                    string.Empty : row.FinancialConcept.Code,
+        Concept = row.FinancialConcept.IsEmptyInstance ?
+                        "Línea en blanco" : row.FinancialConcept.Name,
         Format = row.Format,
-        Row = row.RowIndex,
+        Row = row.RowIndex + row.FinancialReportType.RowsOffset,
         FinancialConceptUID = row.FinancialConcept.UID
       };
     }
@@ -79,6 +81,7 @@ namespace Empiria.FinancialAccounting.FinancialReports.Adapters {
     static private ReportDesignConfigDto MapConfig(FinancialReportType reportType) {
       return new ReportDesignConfigDto {
         DesignType = reportType.DesignType,
+        RowsOffset = reportType.RowsOffset,
         AccountsChart = reportType.AccountsChart.MapToNamedEntity(),
         ReportType = reportType.MapToNamedEntity(),
         FinancialConceptGroups = reportType.FinancialConceptGroups.MapToNamedEntityList(),

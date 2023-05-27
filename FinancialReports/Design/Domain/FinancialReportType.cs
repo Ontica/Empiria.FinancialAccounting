@@ -258,6 +258,13 @@ namespace Empiria.FinancialAccounting.FinancialReports {
       }
     }
 
+    public int RowsOffset {
+      get {
+        return base.ExtendedDataField.Get<int>("rowsOffset", 7);
+      }
+    }
+
+
     #endregion Properties
 
     #region Methods

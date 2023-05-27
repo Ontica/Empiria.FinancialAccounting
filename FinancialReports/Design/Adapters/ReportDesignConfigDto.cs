@@ -18,6 +18,10 @@ namespace Empiria.FinancialAccounting.FinancialReports.Adapters {
       get; internal set;
     }
 
+    public int RowsOffset {
+      get; internal set;
+    }
+
     public NamedEntityDto ReportType {
       get; internal set;
     }
