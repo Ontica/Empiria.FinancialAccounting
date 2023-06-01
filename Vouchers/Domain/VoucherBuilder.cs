@@ -46,7 +46,6 @@ namespace Empiria.FinancialAccounting.Vouchers {
         case "CancelacionSaldosEncerrados":
           fields.Concept = "Traspaso de saldos por modificación al catálogo de cuentas";
           fields.CalculationDate = fields.AccountingDate;
-          fields.AccountingDate = fields.AccountingDate.AddDays(-1);
 
           return new CancelacionSaldosEncerradosVoucherBuilder(fields);
 

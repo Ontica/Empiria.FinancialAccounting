@@ -173,10 +173,10 @@ namespace Empiria.FinancialAccounting.Vouchers.SpecialCases {
 
 
     private VoucherEntryFields BuildVoucherEntryFields(VoucherEntryType entryType,
-                                                   string accountNumber,
-                                                   string sectorCode,
-                                                   SubledgerAccount subledgerAccount,
-                                                   decimal balance) {
+                                                       string accountNumber,
+                                                       string sectorCode,
+                                                       SubledgerAccount subledgerAccount,
+                                                       decimal balance) {
 
       StandardAccount stdAccount = base.AccountsChart.GetStandardAccount(accountNumber);
 
