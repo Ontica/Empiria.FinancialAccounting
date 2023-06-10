@@ -81,14 +81,13 @@ namespace Empiria.FinancialAccounting.FinancialConcepts {
     }
 
 
-    protected override void OnInitialize() {
+    protected override void OnLoad() {
       if (this.IsEmptyInstance) {
         return;
       }
 
-      _integration = new Lazy<List<FinancialConceptEntry>>(
-                        () => FinancialConceptsData.GetFinancialConceptEntries(this)
-                     );
+      _integration =
+            new Lazy<List<FinancialConceptEntry>>(() => FinancialConceptsData.GetFinancialConceptEntries(this));
     }
 
 

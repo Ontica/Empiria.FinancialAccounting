@@ -34,6 +34,9 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
       this.BalancesDate = balancesDate.Date;
     }
 
+    protected override void OnLoad() {
+      ResetBalances();
+    }
 
     static public StoredBalanceSet Parse(int id) {
       return BaseObject.ParseId<StoredBalanceSet>(id);
@@ -82,12 +85,6 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
 
       return bestBalanceSet;
     }
-
-
-    protected override void OnInitialize() {
-      ResetBalances();
-    }
-
 
     #endregion Constructors and parsers
 
