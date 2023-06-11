@@ -137,4 +137,4 @@ namespace Empiria.FinancialAccounting.Vouchers {
 
   }  // class VoucherEntryValidator
 
-}  /// namespace Empiria.FinancialAccounting.Vouchers
+}  // namespace Empiria.FinancialAccounting.Vouchers

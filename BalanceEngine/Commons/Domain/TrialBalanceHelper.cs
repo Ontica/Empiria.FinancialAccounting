@@ -255,10 +255,10 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
       foreach (var entry in accountEntries) {
         StandardAccount currentParent = entry.Account.GetParent();
 
-        /// Search for a parent account entry, for cases when both the account
-        /// and also his parent have entries for the given balance period.
-        /// WasConvertedToSummary marks an account that was converted from
-        /// posting to summary in the given period.
+        // Search for a parent account entry, for cases when both the account
+        // and also his parent have entries for the given balance period.
+        // WasConvertedToSummary marks an account that was converted from
+        // posting to summary in the given period.
         var parentAccountEntry = returnedEntries.FirstOrDefault(a => a.Account.Number == currentParent.Number &&
                                                                 a.Currency.Code == entry.Currency.Code &&
                                                                 a.Ledger.Number == entry.Ledger.Number &&

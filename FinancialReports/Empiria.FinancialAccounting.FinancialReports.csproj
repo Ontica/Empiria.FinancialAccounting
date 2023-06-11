@@ -4,9 +4,9 @@
     <Product>Empiria Financial Accounting Financial Reports Module</Product>
     <Description>This module provides services for financial reports generation.</Description>
     <Copyright>(c) 2021-2023. La Vía Óntica SC, Ontica LLC y de los autores. Todos los derechos reservados.</Copyright>
-    <Version>2.3.0</Version>
-    <AssemblyVersion>2.3.0</AssemblyVersion>
-    <FileVersion>2.3.0.0</FileVersion>
+    <Version>2.4.0</Version>
+    <AssemblyVersion>2.4.0</AssemblyVersion>
+    <FileVersion>2.4.0.0</FileVersion>
     <GeneratePackageOnBuild>false</GeneratePackageOnBuild>
     <PackageRequireLicenseAcceptance>true</PackageRequireLicenseAcceptance>
     <PackageLicenseUrl>https://github.com/Ontica/Empiria.FinancialAccounting/blob/master/FinancialReports/LICENSE.txt</PackageLicenseUrl>
@@ -59,10 +59,10 @@
     <PackageReference Include="Empiria.Core" Version="7.0.0" />
     <PackageReference Include="Empiria.Services" Version="1.0.0" />
     <PackageReference Include="Empiria.Expressions" Version="7.0.0" />
-    <PackageReference Include="Empiria.FinancialAccounting.Core" Version="2.3.0" />
-    <PackageReference Include="Empiria.FinancialAccounting.BalanceEngine" Version="2.3.0" />
-    <PackageReference Include="Empiria.FinancialAccounting.ExternalData" Version="2.3.0" />
-    <PackageReference Include="Empiria.FinancialAccounting.FinancialConcepts" Version="2.3.0" />
+    <PackageReference Include="Empiria.FinancialAccounting.Core" Version="2.4.0" />
+    <PackageReference Include="Empiria.FinancialAccounting.BalanceEngine" Version="2.4.0" />
+    <PackageReference Include="Empiria.FinancialAccounting.ExternalData" Version="2.4.0" />
+    <PackageReference Include="Empiria.FinancialAccounting.FinancialConcepts" Version="2.4.0" />
   </ItemGroup>
   <ItemGroup Condition=" '$(Configuration)' == 'Multisolutions' ">
     <ProjectReference Include="..\..\core\Core\Empiria.Core.csproj" />

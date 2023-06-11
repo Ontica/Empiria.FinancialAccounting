@@ -27,6 +27,7 @@ namespace Empiria.FinancialAccounting {
 
     #endregion Fields
 
+
     internal AccountsChartRules(AccountsChart accountsChart) {
       Assertion.Require(accountsChart, nameof(accountsChart));
 

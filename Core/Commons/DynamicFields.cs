@@ -15,7 +15,7 @@ using Empiria.Json;
 
 namespace Empiria.FinancialAccounting {
 
-  /// <summary>Information holder type with dynamic fields./summary>
+  /// <summary>Information holder type with dynamic fields.</summary>
   public class DynamicFields : DynamicObject {
 
     private readonly IDictionary<string, object> _fields = new Dictionary<string, object>();
