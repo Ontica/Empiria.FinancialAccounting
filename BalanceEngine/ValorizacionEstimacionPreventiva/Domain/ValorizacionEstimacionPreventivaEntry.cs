@@ -138,12 +138,11 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
 
 
     internal void AssingValues(TrialBalanceEntry entry, DateTime date, bool isPreviousMonth = false) {
-      decimal balance = entry.CurrentBalance;
-      
-      if (date.Month == 1) {
-        balance = entry.InitialBalance;
+      decimal balance = entry.InitialBalance; //entry.CurrentBalance;
 
-      }
+      //if (date.Month == 1) {
+      //  balance = entry.InitialBalance;
+      //}
 
       if (entry.Currency.Equals(Currency.MXN)) {
         this.MXN = entry.CurrentBalance;
