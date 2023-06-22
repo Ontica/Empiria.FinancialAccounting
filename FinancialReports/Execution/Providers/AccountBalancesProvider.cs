@@ -142,6 +142,27 @@ namespace Empiria.FinancialAccounting.FinancialReports.Providers {
     }
 
 
+    public BalanzaTradicionalEntryDto TryGetAccountBalances(string accountNumber) {
+
+      if (!_balances.ContainsKey(accountNumber)) {
+        EmpiriaLog.Trace($"invalid Account number {accountNumber}");
+
+        return null;
+
+      }
+
+      FixedList<ITrialBalanceEntryDto> balances = _balances[accountNumber];
+
+      EmpiriaLog.Trace($"{balances.Count} balances for account number {accountNumber}: [{balances[0].SectorCode}] [{balances[0].SubledgerAccountNumber}] [{balances[0].GetType().FullName}]");
+
+      return balances.Find(x => x.SectorCode == "00" && x.SubledgerAccountNumber.Length <= 1) as BalanzaTradicionalEntryDto;
+    }
+
+    #endregion Public methods
+
+    #region Helper methods
+
+
     private FixedList<ITrialBalanceEntryDto> ConvertToDynamicTrialBalanceEntryDto(FixedList<ITrialBalanceEntryDto> sourceEntries) {
 
       var converter = new DynamicTrialBalanceEntryConverter(_financialReportType,
@@ -153,9 +174,6 @@ namespace Empiria.FinancialAccounting.FinancialReports.Providers {
                              .ToFixedList();
     }
 
-    #endregion Public methods
-
-    #region Helper methods
 
     private TrialBalanceQuery DetermineTrialBalanceQuery() {
 

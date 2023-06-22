@@ -34,6 +34,10 @@ namespace Empiria.FinancialAccounting.FinancialReports.Providers {
         new Function(lexeme: "DEUDORAS_MENOS_ACREEDORAS", arity: 3,
                      calle: () => new DeudorasMenosAcreedorasFunction()),
 
+
+        new Function(lexeme: "SALDO_CUENTA", arity: 1,
+                     calle: () => new SaldoCuentaFunction(_executionContext.BalancesProvider)),
+
         new Function(lexeme: "VALOR_CONCEPTO", arity: 2,
                      calle: () => new ValorConceptoFunction(_executionContext.ConceptsCalculator)),
 
@@ -50,6 +54,8 @@ namespace Empiria.FinancialAccounting.FinancialReports.Providers {
 
       base.AddRange(functions);
     }
+
+
 
     /// <summary>Returns deudoras minus acreedoras, or acreedoras minus deudoras balance,
     /// depending on the concept code.</summary>
@@ -77,6 +83,35 @@ namespace Empiria.FinancialAccounting.FinancialReports.Providers {
     }  // class DeudorasMenosAcreedorasFunction
 
 
+
+    /// <summary>Returns the current balance of an account.</summary>
+    sealed private class SaldoCuentaFunction : FunctionHandler {
+
+      private readonly AccountBalancesProvider _balancesProvider;
+
+      public SaldoCuentaFunction(AccountBalancesProvider provider) {
+        _balancesProvider = provider;
+      }
+
+      protected override object Evaluate() {
+
+        string accountNumber = GetString(Parameters[0]);
+
+        var balance = _balancesProvider.TryGetAccountBalances(accountNumber);
+
+        if (balance != null) {
+          return balance.CurrentBalanceForBalances;
+        } else {
+          EmpiriaLog.Trace($"No encontré la cuenta {accountNumber}.");
+          return 0m;
+        }
+
+      }
+
+    }  // class SaldoCuentaFunction
+
+
+
     /// <summary>Returns a decimal value for a given field of a financial concept.</summary>
     sealed private class ValorConceptoFunction : FunctionHandler {
 
@@ -102,6 +137,7 @@ namespace Empiria.FinancialAccounting.FinancialReports.Providers {
     }  // class ValorConceptoFunction
 
 
+
     /// <summary>Returns a full evaluated financial concept with all of its fields.</summary>
     sealed private class ValoresConceptoFunction : FunctionHandler {
 
@@ -121,6 +157,7 @@ namespace Empiria.FinancialAccounting.FinancialReports.Providers {
       }
 
     }  // class ValoresConceptoFunction
+
 
 
     /// <summary>Returns a decimal value for a given field of a financial concept.</summary>
@@ -152,6 +189,7 @@ namespace Empiria.FinancialAccounting.FinancialReports.Providers {
       }
 
     }  // class ValorConceptoFunction
+
 
 
     /// <summary>Returns a decimal value for a given field of a financial concept.</summary>
