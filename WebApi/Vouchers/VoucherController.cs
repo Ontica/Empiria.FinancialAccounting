@@ -42,6 +42,22 @@ namespace Empiria.FinancialAccounting.WebApi.Vouchers {
     }
 
 
+    [HttpGet]
+    [Route("v2/financial-accounting/vouchers/{voucherId:int}/excel")]
+    public SingleObjectModel GetVoucherAsExcelFile([FromUri] int voucherId) {
+
+      using (var usecases = VoucherUseCases.UseCaseInteractor()) {
+        VoucherDto voucher = usecases.GetVoucher(voucherId);
+
+        var exporter = new ExcelExporterService();
+
+        FileReportDto pdfFileDto = exporter.Export(voucher);
+
+        return new SingleObjectModel(base.Request, pdfFileDto);
+      }
+    }
+
+
     [HttpPost]
     [Route("v2/financial-accounting/vouchers")]
     public CollectionModel SearchVouchers([FromBody] VouchersQuery query) {

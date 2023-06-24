@@ -21,6 +21,7 @@ using Empiria.FinancialAccounting.Reporting.ExternalData.Exporters;
 using Empiria.FinancialAccounting.Reporting.FinancialConceptsEntriesTree.Exporters;
 using Empiria.FinancialAccounting.Reporting.Reconciliation.Exporters;
 using Empiria.FinancialAccounting.Reporting.StoredBalanceSet.Exporters;
+using Empiria.FinancialAccounting.Vouchers.Adapters;
 
 namespace Empiria.FinancialAccounting.Reporting {
 
@@ -102,6 +103,7 @@ namespace Empiria.FinancialAccounting.Reporting {
       return excelFile.ToFileReportDto();
     }
 
+
     public FileReportDto Export(ExternalValuesDto externalValues) {
       Assertion.Require(externalValues, nameof(externalValues));
 
@@ -112,6 +114,21 @@ namespace Empiria.FinancialAccounting.Reporting {
       ExcelFile exportedFile = exporter.CreateExcelFile(externalValues);
 
       return exportedFile.ToFileReportDto();
+    }
+
+
+    public FileReportDto Export(VoucherDto voucher) {
+      Assertion.Require(voucher, nameof(voucher));
+
+      var templateUID = "AccountsChartTemplate";
+
+      var templateConfig = FileTemplateConfig.Parse(templateUID);
+
+      var exporter = new VouchersExporter(templateConfig);
+
+      ExcelFile excelFile = exporter.CreateExcelFile(voucher);
+
+      return excelFile.ToFileReportDto();
     }
 
   }  // class ExcelExporter
