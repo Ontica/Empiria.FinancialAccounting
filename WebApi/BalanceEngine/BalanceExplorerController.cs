@@ -17,6 +17,7 @@ using Empiria.FinancialAccounting.Reporting.Balances;
 
 using Empiria.FinancialAccounting.BalanceEngine.BalanceExplorer.UseCases;
 using Empiria.FinancialAccounting.BalanceEngine.BalanceExplorer.Adapters;
+using System.Threading.Tasks;
 
 namespace Empiria.FinancialAccounting.WebApi.BalanceEngine {
 
@@ -41,7 +42,8 @@ namespace Empiria.FinancialAccounting.WebApi.BalanceEngine {
 
     [HttpPost]
     [Route("v2/financial-accounting/balance-explorer/balances/excel")]
-    public SingleObjectModel ExportBalanceExplorerBalancesToExcel([FromBody] BalanceExplorerQuery query) {
+    public SingleObjectModel ExportBalanceExplorerBalancesToExcel(
+                                         [FromBody] BalanceExplorerQuery query) {
       base.RequireBody(query);
 
       using (var usecases = BalanceExplorerUseCases.UseCaseInteractor()) {

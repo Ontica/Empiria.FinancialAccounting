@@ -8,8 +8,10 @@
 *                                                                                                            *
 ************************* Copyright(c) La Vía Óntica SC, Ontica LLC and contributors. All rights reserved. **/
 using System;
-using Empiria.FinancialAccounting.BalanceEngine.BalanceExplorer.Adapters;
+using System.Threading.Tasks;
 using Empiria.Services;
+
+using Empiria.FinancialAccounting.BalanceEngine.BalanceExplorer.Adapters;
 
 namespace Empiria.FinancialAccounting.BalanceEngine.BalanceExplorer.UseCases {
 
@@ -30,12 +32,24 @@ namespace Empiria.FinancialAccounting.BalanceEngine.BalanceExplorer.UseCases {
 
     #region Use cases
 
+
     public BalanceExplorerDto GetBalances(BalanceExplorerQuery query) {
       Assertion.Require(query, nameof(query));
 
       var builder = new BalanceExplorerResultBuilder(query);
 
       BalanceExplorerResult balances = builder.Build();
+
+      return BalanceExplorerMapper.Map(balances);
+    }
+
+
+    public async Task<BalanceExplorerDto> GetBalancesForExplorer(BalanceExplorerQuery query) {
+      Assertion.Require(query, nameof(query));
+
+      var builder = new BalanceExplorerResultBuilder(query);
+
+      BalanceExplorerResult balances = await Task.Run(() => builder.Build()).ConfigureAwait(false);
 
       return BalanceExplorerMapper.Map(balances);
     }

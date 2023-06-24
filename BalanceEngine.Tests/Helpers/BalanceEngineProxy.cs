@@ -14,6 +14,8 @@ using Empiria.WebApi.Client;
 
 using Empiria.FinancialAccounting.BalanceEngine.Adapters;
 using Empiria.FinancialAccounting.BalanceEngine.UseCases;
+using Empiria.FinancialAccounting.BalanceEngine.BalanceExplorer.Adapters;
+using Empiria.FinancialAccounting.BalanceEngine.BalanceExplorer.UseCases;
 
 namespace Empiria.FinancialAccounting.Tests.BalanceEngine {
 
@@ -66,6 +68,17 @@ namespace Empiria.FinancialAccounting.Tests.BalanceEngine {
 
       } else {
         return BuildLocalAnaliticoDeCuentasUseCase(query);
+
+      }
+    }
+
+
+    static internal Task<BalanceExplorerDto> BuildBalanceExplorer(BalanceExplorerQuery query) {
+      if (TestingConstants.INVOKE_USE_CASES_THROUGH_THE_WEB_API) {
+        return BuildRemoteBalanceExplorerUseCase(query);
+
+      } else {
+        return BuildLocalBalanceExplorerUseCase(query);
 
       }
     }
@@ -163,6 +176,24 @@ namespace Empiria.FinancialAccounting.Tests.BalanceEngine {
 
       var dto = await http.PostAsync<ResponseModel<AnaliticoDeCuentasDto>>(
                             query, "v2/financial-accounting/balance-engine/analitico-de-cuentas")
+                          .ConfigureAwait(false);
+
+      return dto.Data;
+    }
+
+
+    private static Task<BalanceExplorerDto> BuildLocalBalanceExplorerUseCase(BalanceExplorerQuery query) {
+      using (var usecase = BalanceExplorerUseCases.UseCaseInteractor()) {
+        return usecase.GetBalancesForExplorer(query);
+      }
+    }
+
+
+    private static async Task<BalanceExplorerDto> BuildRemoteBalanceExplorerUseCase(BalanceExplorerQuery query) {
+      HttpApiClient http = CreateHttpApiClient();
+
+      var dto = await http.PostAsync<ResponseModel<BalanceExplorerDto>>(
+                            query, "v2/financial-accounting/balance-explorer/balances")
                           .ConfigureAwait(false);
 
       return dto.Data;
