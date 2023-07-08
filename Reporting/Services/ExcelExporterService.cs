@@ -120,7 +120,7 @@ namespace Empiria.FinancialAccounting.Reporting {
     public FileReportDto Export(VoucherDto voucher) {
       Assertion.Require(voucher, nameof(voucher));
 
-      var templateUID = "AccountsChartTemplate";
+      var templateUID = "VoucherMovementsTemplate";
 
       var templateConfig = FileTemplateConfig.Parse(templateUID);
 
