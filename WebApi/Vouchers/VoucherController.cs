@@ -16,6 +16,8 @@ using Empiria.FinancialAccounting.Vouchers.UseCases;
 using Empiria.FinancialAccounting.Vouchers.Adapters;
 
 using Empiria.FinancialAccounting.Reporting;
+using System.Collections.Generic;
+using System.Threading.Tasks;
 
 namespace Empiria.FinancialAccounting.WebApi.Vouchers {
 
@@ -51,9 +53,9 @@ namespace Empiria.FinancialAccounting.WebApi.Vouchers {
 
         var exporter = new ExcelExporterService();
 
-        FileReportDto pdfFileDto = exporter.Export(voucher);
+        FileReportDto excelFileDto = exporter.Export(voucher);
 
-        return new SingleObjectModel(base.Request, pdfFileDto);
+        return new SingleObjectModel(base.Request, excelFileDto);
       }
     }
 

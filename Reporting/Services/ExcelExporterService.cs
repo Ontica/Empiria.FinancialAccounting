@@ -22,6 +22,8 @@ using Empiria.FinancialAccounting.Reporting.FinancialConceptsEntriesTree.Exporte
 using Empiria.FinancialAccounting.Reporting.Reconciliation.Exporters;
 using Empiria.FinancialAccounting.Reporting.StoredBalanceSet.Exporters;
 using Empiria.FinancialAccounting.Vouchers.Adapters;
+using System.Collections.Generic;
+using System.Threading.Tasks;
 
 namespace Empiria.FinancialAccounting.Reporting {
 
@@ -127,6 +129,21 @@ namespace Empiria.FinancialAccounting.Reporting {
       var exporter = new VouchersExporter(templateConfig);
 
       ExcelFile excelFile = exporter.CreateExcelFile(voucher);
+
+      return excelFile.ToFileReportDto();
+    }
+
+
+    public FileReportDto Export(FixedList<VoucherDto> voucherList) {
+      Assertion.Require(voucherList, nameof(voucherList));
+
+      var templateUID = "VouchersWithMovementsTemplate";
+
+      var templateConfig = FileTemplateConfig.Parse(templateUID);
+
+      var exporter = new VouchersExporter(templateConfig);
+
+      ExcelFile excelFile = exporter.CreateExcelFile(voucherList);
 
       return excelFile.ToFileReportDto();
     }
