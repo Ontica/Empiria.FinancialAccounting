@@ -129,7 +129,7 @@ namespace Empiria.FinancialAccounting.Reporting.ValorizacionEstimacionPreventiva
       }
       _excelFile.SetCell($"{totalAccumulatedColumn}4", "ACUMULADO");
       _excelFile.SetCell($"{totalAccumulatedColumn + i}", entry.TotalAccumulated);
-
+      _excelFile.SetRowFontColorStyle(4, System.Drawing.Color.White);
     }
 
 
