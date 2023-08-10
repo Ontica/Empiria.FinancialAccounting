@@ -113,6 +113,30 @@ namespace Empiria.FinancialAccounting.Reporting {
       }
     }
 
+    internal void SetCellFontColorStyle(string cell, System.Drawing.Color color) {
+      if (_excel != null) {
+        _excel.SetFontColor(Style.FontColor, cell, color);
+      }
+    }
+
+    internal void SetRowFontColorStyle(int rowIndex, System.Drawing.Color color) {
+      if (_excel != null) {
+        _excel.SetRowFontColor(Style.FontColor, rowIndex, color);
+      }
+    }
+
+    internal void SetCellBackgroundStyle(string cell, DocumentFormat.OpenXml.Spreadsheet.PatternValues color) {
+      if (_excel != null) {
+        _excel.SetCellBackgroundStyle(Style.BackgroundColor, cell, color);
+      }
+    }
+
+    internal void SetRowBackgroundStyle(int rowIndex, DocumentFormat.OpenXml.Spreadsheet.PatternValues color) {
+      if (_excel != null) {
+        _excel.SetRowBackgroundStyle(Style.BackgroundColor, rowIndex, color);
+      }
+    }
+
     internal FileReportDto ToFileReportDto() {
       return new FileReportDto(FileType.Excel, this.Url);
     }

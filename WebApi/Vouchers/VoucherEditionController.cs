@@ -17,6 +17,7 @@ using Empiria.FinancialAccounting.Vouchers.Adapters;
 
 using Empiria.FinancialAccounting.Adapters;
 using Empiria.FinancialAccounting.Reporting;
+using System.Threading.Tasks;
 
 namespace Empiria.FinancialAccounting.WebApi.Vouchers {
 
@@ -161,6 +162,9 @@ namespace Empiria.FinancialAccounting.WebApi.Vouchers {
         } else if (operationName == "print") {
           result = ExecuteBulkPrinting(command.Vouchers);
 
+        } else if (operationName == "excel") {
+          result = ExecuteBulkExportingToExcel(command.Vouchers);
+
         } else {
           throw Assertion.EnsureNoReachThisCode($"Unrecognized bulk operation name '{operationName}'.");
         }
@@ -242,6 +246,25 @@ namespace Empiria.FinancialAccounting.WebApi.Vouchers {
         return result;
       }
     }
+
+
+    private VoucherBulkOperationResult ExecuteBulkExportingToExcel(int[] voucherIdsToExport) {
+      using (var usecases = VoucherUseCases.UseCaseInteractor()) {
+
+        var result = new VoucherBulkOperationResult();
+
+        FixedList<VoucherDto> vouchersToExport = usecases.GetVouchers(voucherIdsToExport);
+
+        var exporter = new ExcelExporterService();
+
+        FileReportDto excelFileDto = exporter.Export(vouchersToExport);
+
+        result.Message = $"Se exportaron {voucherIdsToExport.Length} a excel.";
+
+        return result;
+      }
+    }
+
 
     #endregion Helpers
 
