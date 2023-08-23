@@ -60,7 +60,7 @@ namespace Empiria.FinancialAccounting.FinancialConcepts {
     static internal FinancialConcept Create(FinancialConceptFields fields) {
       Assertion.Require(fields, nameof(fields));
 
-      return new FinancialConcept {
+      var o = new FinancialConcept {
         Group = fields.Group,
         Code = fields.Code,
         Name = fields.Name,
@@ -69,8 +69,12 @@ namespace Empiria.FinancialAccounting.FinancialConcepts {
         Position = fields.Position,
         StartDate = fields.StartDate,
         EndDate = fields.EndDate,
-        UpdatedBy = ExecutionServer.CurrentContact
+        UpdatedBy = ExecutionServer.CurrentContact,
       };
+
+      o._integration = new Lazy<List<FinancialConceptEntry>>(() => FinancialConceptsData.GetFinancialConceptEntries(o));
+
+      return o;
     }
 
 
