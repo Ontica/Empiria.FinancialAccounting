@@ -11,15 +11,14 @@ using System;
 using System.Threading.Tasks;
 using System.Web.Http;
 
+using Empiria.Storage;
 using Empiria.WebApi;
 
-using Empiria.FinancialAccounting.Reporting;
 using Empiria.FinancialAccounting.Reporting.Balances;
 
 using Empiria.FinancialAccounting.BalanceEngine.UseCases;
 using Empiria.FinancialAccounting.BalanceEngine.Adapters;
-using Empiria.FinancialAccounting.Adapters;
-using Empiria.FinancialAccounting.UseCases;
+
 
 namespace Empiria.FinancialAccounting.WebApi.BalanceEngine {
 
@@ -53,7 +52,7 @@ namespace Empiria.FinancialAccounting.WebApi.BalanceEngine {
       using (var usecases = TrialBalanceUseCases.UseCaseInteractor()) {
 
         BalanzaColumnasMonedaDto dto = await usecases.BuildBalanzaColumnasMoneda(query)
-                                                            .ConfigureAwait(false);
+                                                     .ConfigureAwait(false);
 
         return new SingleObjectModel(this.Request, dto);
       }
@@ -69,7 +68,7 @@ namespace Empiria.FinancialAccounting.WebApi.BalanceEngine {
       using (var usecases = TrialBalanceUseCases.UseCaseInteractor()) {
 
         BalanzaComparativaDto dto = await usecases.BuildBalanzaComparativa(query)
-                                                            .ConfigureAwait(false);
+                                                  .ConfigureAwait(false);
 
         return new SingleObjectModel(this.Request, dto);
       }
@@ -101,7 +100,7 @@ namespace Empiria.FinancialAccounting.WebApi.BalanceEngine {
       using (var usecases = TrialBalanceUseCases.UseCaseInteractor()) {
 
         BalanzaDolarizadaDto dto = await usecases.BuildBalanzaDolarizada(query)
-                                                            .ConfigureAwait(false);
+                                                 .ConfigureAwait(false);
 
         return new SingleObjectModel(this.Request, dto);
       }
@@ -133,7 +132,7 @@ namespace Empiria.FinancialAccounting.WebApi.BalanceEngine {
       using (var usecases = TrialBalanceUseCases.UseCaseInteractor()) {
 
         SaldosPorAuxiliarDto dto = await usecases.BuildSaldosPorAuxiliar(query)
-                                                  .ConfigureAwait(false);
+                                                 .ConfigureAwait(false);
 
         return new SingleObjectModel(this.Request, dto);
       }
@@ -149,7 +148,7 @@ namespace Empiria.FinancialAccounting.WebApi.BalanceEngine {
       using (var usecases = TrialBalanceUseCases.UseCaseInteractor()) {
 
         SaldosPorCuentaDto dto = await usecases.BuildSaldosPorCuenta(query)
-                                                  .ConfigureAwait(false);
+                                               .ConfigureAwait(false);
 
         return new SingleObjectModel(this.Request, dto);
       }
@@ -157,6 +156,7 @@ namespace Empiria.FinancialAccounting.WebApi.BalanceEngine {
 
 
     [HttpPost]
+    [AllowAnonymous]
     [Route("v2/financial-accounting/balance-engine/trial-balance")]
     public SingleObjectModel GetTrialBalance([FromBody] TrialBalanceQuery query) {
 

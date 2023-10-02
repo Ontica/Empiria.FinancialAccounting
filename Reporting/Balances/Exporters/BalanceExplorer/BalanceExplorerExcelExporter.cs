@@ -10,6 +10,9 @@
 using System;
 using System.Collections.Generic;
 
+using Empiria.Office;
+using Empiria.Storage;
+
 using Empiria.FinancialAccounting.BalanceEngine;
 using Empiria.FinancialAccounting.BalanceEngine.BalanceExplorer.Adapters;
 
@@ -111,8 +114,6 @@ namespace Empiria.FinancialAccounting.Reporting.Balances {
           throw Assertion.EnsureNoReachThisCode();
       }
     }
-
-
 
 
     private void FillOutSaldosAuxiliarConEncabezado(IEnumerable<BalanceExplorerEntryDto> entries) {

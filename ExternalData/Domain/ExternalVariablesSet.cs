@@ -11,6 +11,8 @@
 using System;
 using System.Collections.Generic;
 
+using Empiria.Storage;
+
 using Empiria.FinancialAccounting.Datasets;
 
 using Empiria.FinancialAccounting.ExternalData.Adapters;

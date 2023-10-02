@@ -10,6 +10,8 @@
 using System;
 using System.Xml;
 
+using Empiria.Storage;
+
 using Empiria.FinancialAccounting.Reporting.Exporters.Xml;
 
 namespace Empiria.FinancialAccounting.Reporting.Exporters {

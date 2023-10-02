@@ -10,6 +10,9 @@
 using System;
 using System.Collections.Generic;
 
+using Empiria.Office;
+using Empiria.Storage;
+
 using Empiria.FinancialAccounting.Reporting.FiscalReports.Builders;
 
 namespace Empiria.FinancialAccounting.Reporting.FiscalReports.Exporters {

@@ -10,6 +10,8 @@
 using System;
 using System.Collections.Generic;
 
+using Empiria.Storage;
+
 namespace Empiria.FinancialAccounting.Reconciliation.Adapters {
 
   /// <summary>Contains static mapping methods for reconciliation processes' results.</summary>

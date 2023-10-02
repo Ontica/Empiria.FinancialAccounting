@@ -10,6 +10,7 @@
 using System;
 
 using Empiria.Services;
+using Empiria.Storage;
 
 using Empiria.FinancialAccounting.FinancialReports.Adapters;
 

@@ -10,6 +10,9 @@
 using System;
 using System.Collections.Generic;
 
+using Empiria.Office;
+using Empiria.Storage;
+
 using Empiria.FinancialAccounting.BalanceEngine;
 using Empiria.FinancialAccounting.Reporting.VoucherRelatedReports.Domain;
 

@@ -10,8 +10,12 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+
+using Empiria.Office;
+using Empiria.Storage;
+
 using Empiria.FinancialAccounting.BalanceEngine;
-using Empiria.FinancialAccounting.BalanceEngine.Adapters;
+
 using Empiria.FinancialAccounting.Reporting.ValorizacionEstimacionPreventiva.Adaptars;
 
 namespace Empiria.FinancialAccounting.Reporting.ValorizacionEstimacionPreventiva.Exporters {

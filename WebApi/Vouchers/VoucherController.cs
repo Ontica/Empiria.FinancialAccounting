@@ -10,14 +10,14 @@
 using System;
 using System.Web.Http;
 
+using Empiria.Storage;
 using Empiria.WebApi;
 
 using Empiria.FinancialAccounting.Vouchers.UseCases;
 using Empiria.FinancialAccounting.Vouchers.Adapters;
 
 using Empiria.FinancialAccounting.Reporting;
-using System.Collections.Generic;
-using System.Threading.Tasks;
+
 
 namespace Empiria.FinancialAccounting.WebApi.Vouchers {
 
@@ -61,6 +61,7 @@ namespace Empiria.FinancialAccounting.WebApi.Vouchers {
 
 
     [HttpPost]
+    [AllowAnonymous]
     [Route("v2/financial-accounting/vouchers")]
     public CollectionModel SearchVouchers([FromBody] VouchersQuery query) {
       base.RequireBody(query);

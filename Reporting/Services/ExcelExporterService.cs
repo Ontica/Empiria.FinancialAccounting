@@ -9,6 +9,9 @@
 ************************* Copyright(c) La Vía Óntica SC, Ontica LLC and contributors. All rights reserved. **/
 using System;
 
+using Empiria.Office;
+using Empiria.Storage;
+
 using Empiria.FinancialAccounting.Reporting.Exporters.Excel;
 
 using Empiria.FinancialAccounting.Adapters;
@@ -22,8 +25,7 @@ using Empiria.FinancialAccounting.Reporting.FinancialConceptsEntriesTree.Exporte
 using Empiria.FinancialAccounting.Reporting.Reconciliation.Exporters;
 using Empiria.FinancialAccounting.Reporting.StoredBalanceSet.Exporters;
 using Empiria.FinancialAccounting.Vouchers.Adapters;
-using System.Collections.Generic;
-using System.Threading.Tasks;
+
 
 namespace Empiria.FinancialAccounting.Reporting {
 
@@ -79,7 +81,7 @@ namespace Empiria.FinancialAccounting.Reporting {
     public FileReportDto Export(FixedList<FinancialConceptTreeNodeDto> treeNodes) {
       Assertion.Require(treeNodes, "treeNodes");
 
-      var templateUID = $"GroupingRulesReportTemplate";
+      var templateUID = "GroupingRulesReportTemplate";
 
       var templateConfig = FileTemplateConfig.Parse(templateUID);
 

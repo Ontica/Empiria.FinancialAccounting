@@ -10,6 +10,9 @@
 using System;
 using System.Collections.Generic;
 
+using Empiria.Office;
+using Empiria.Storage;
+
 using Empiria.FinancialAccounting.Reporting.VoucherRelatedReports.Domain;
 
 namespace Empiria.FinancialAccounting.Reporting {
@@ -44,7 +47,6 @@ namespace Empiria.FinancialAccounting.Reporting {
 
       return excelFile.ToFileReportDto();
     }
-
 
     #region Private methods
 
@@ -82,7 +84,6 @@ namespace Empiria.FinancialAccounting.Reporting {
     }
 
     #endregion Private methods
-
 
   } // class PolizaExcelExporter
 

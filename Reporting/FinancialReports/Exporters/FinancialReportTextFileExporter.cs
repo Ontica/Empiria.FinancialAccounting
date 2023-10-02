@@ -10,6 +10,9 @@
 using System;
 using System.Collections.Generic;
 
+using Empiria.Office;
+using Empiria.Storage;
+
 using Empiria.FinancialAccounting.FinancialReports;
 using Empiria.FinancialAccounting.FinancialReports.Adapters;
 

@@ -10,6 +10,8 @@
 using System;
 using System.Collections.Generic;
 
+using Empiria.Storage;
+
 using Empiria.FinancialAccounting.ExternalData;
 using Empiria.FinancialAccounting.FinancialConcepts;
 
@@ -168,6 +170,7 @@ namespace Empiria.FinancialAccounting.FinancialReports {
       }
     }
 
+
     public FinancialReportType BaseReport {
       get {
         return base.ExtendedDataField.Get("baseReportId", FinancialReportType.Empty);
@@ -202,6 +205,7 @@ namespace Empiria.FinancialAccounting.FinancialReports {
                           .ToFixedList();
       }
     }
+
 
     public FixedList<DataTableColumn> OutputDataColumns {
       get {
@@ -246,7 +250,8 @@ namespace Empiria.FinancialAccounting.FinancialReports {
 
     public FinancialReportType PrecalculateConceptsFromReportType {
       get {
-        return base.ExtendedDataField.Get<FinancialReportType>("precalculatedConcepts/reportType", FinancialReportType.Empty);
+        return base.ExtendedDataField.Get<FinancialReportType>("precalculatedConcepts/reportType",
+                                                               FinancialReportType.Empty);
       }
     }
 
@@ -260,7 +265,7 @@ namespace Empiria.FinancialAccounting.FinancialReports {
 
     public int RowsOffset {
       get {
-        return base.ExtendedDataField.Get<int>("rowsOffset", 7);
+        return base.ExtendedDataField.Get<int>("rowsOffset", 0);
       }
     }
 
@@ -433,7 +438,6 @@ namespace Empiria.FinancialAccounting.FinancialReports {
         item.SetRowIndex(i + 1);
       }
     }
-
 
     #endregion Helpers
 
