@@ -11,20 +11,12 @@ using System;
 using System.IO;
 using System.Xml;
 
-using Empiria.Office;
-
 using Empiria.Storage;
 
 namespace Empiria.FinancialAccounting.Reporting.Exporters.Xml {
 
   /// <summary>Provides edition services for operational report files.</summary>
   internal class XmlFile {
-
-
-    static private string GenerationStoragePath = ConfigurationData.Get<string>("Reports.GenerationStoragePath");
-
-    static private string BaseUrl = ConfigurationData.Get<string>("Reports.BaseUrl");
-
 
     public XmlFile(XmlDocument xmlDocument) {
       Assertion.Require(xmlDocument, "xmlDocument");
@@ -42,7 +34,7 @@ namespace Empiria.FinancialAccounting.Reporting.Exporters.Xml {
 
     public string Url {
       get {
-        return $"{BaseUrl}/{FileInfo.Name}";
+        return $"{FileTemplateConfig.GeneratedFilesBaseUrl}/{FileInfo.Name}";
       }
     }
 
@@ -63,7 +55,7 @@ namespace Empiria.FinancialAccounting.Reporting.Exporters.Xml {
 
     internal void Save(string fileName) {
       var copyFileName = DateTime.Now.ToString("yyyy.MM.dd-HH.mm.ss-") + fileName + ".xml";
-      var path = Path.Combine(GenerationStoragePath, copyFileName);
+      var path = Path.Combine(FileTemplateConfig.GenerationStoragePath, copyFileName);
 
       XmlDocument.Save(path);
 
