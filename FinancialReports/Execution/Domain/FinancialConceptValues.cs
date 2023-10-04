@@ -15,8 +15,6 @@ using Empiria.FinancialAccounting.ExternalData;
 using Empiria.FinancialAccounting.BalanceEngine.Adapters;
 
 using Empiria.FinancialAccounting.FinancialReports.Providers;
-using static iText.IO.Codec.TiffWriter;
-
 
 namespace Empiria.FinancialAccounting.FinancialReports {
 

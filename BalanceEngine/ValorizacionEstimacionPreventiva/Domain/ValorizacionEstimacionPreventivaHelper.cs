@@ -48,7 +48,7 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
                                                              a.ToCurrency.Code == entry.Currency.Code);
 
         Assertion.Require(exchangeRate, $"No se ha registrado el tipo de cambio para la " +
-                                        $"moneda {entry.Currency.FullName} con la fecha proporcionada.");
+                                        $"moneda {entry.Currency.FullName} en la fecha proporcionada.");
 
         if (isLastMonth) {
           entry.SecondExchangeRate = exchangeRate.Value;
@@ -117,12 +117,12 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
 
       for (int i = 1; i <= totalMonths; i++) {
         bool isPreviousMonth = false;
-        
+
         if (i == totalMonths) {
           isPreviousMonth = true;
         }
 
-        List<ValorizacionEstimacionPreventivaEntry> accountsByMonth = 
+        List<ValorizacionEstimacionPreventivaEntry> accountsByMonth =
               GetAccountsByMonth(initialDate, lastDate, isPreviousMonth);
 
         foreach (var account in accountsByMonth) {
@@ -175,7 +175,7 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
       List<DateTime> dateRange = GetDateRange();
       int flagDateCount = 0;
       foreach (var date in dateRange) {
-        
+
         var existEntryInMonth = entriesByMonthList.Find(a => a.ConsultingDate.Year == date.Year &&
                                                     a.ConsultingDate.Month == date.Month);
 
@@ -257,7 +257,7 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
     }
 
 
-    
+
 
     internal FixedList<ValorizacionEstimacionPreventivaEntry> MergeAccountsByMonth(
               FixedList<ValorizacionEstimacionPreventivaEntry> accountsByCurrency,
@@ -297,7 +297,7 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
 
       FixedList<TrialBalanceEntry> baseAccountEntries = BalancesDataService.GetTrialBalanceEntries(_query);
 
-      FixedList<ValorizacionEstimacionPreventivaEntry> returnedAccounts = 
+      FixedList<ValorizacionEstimacionPreventivaEntry> returnedAccounts =
               GetAccountsBalances(baseAccountEntries, lastDate, isPreviousMonth);
 
       return returnedAccounts.ToList();

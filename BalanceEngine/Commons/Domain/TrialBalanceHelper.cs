@@ -463,7 +463,7 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
 
         // ToDo: URGENT This require must be checked before any state change
         Assertion.Require(exchangeRate, $"No se ha registrado el tipo de cambio para la " +
-                                        $"moneda {entry.Currency.FullName} con la fecha proporcionada.");
+                                        $"moneda {entry.Currency.FullName} en la fecha proporcionada.");
 
         ClausesToExchangeRate(entry, exchangeRate);
       }

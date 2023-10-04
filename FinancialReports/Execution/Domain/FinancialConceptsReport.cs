@@ -91,6 +91,7 @@ namespace Empiria.FinancialAccounting.FinancialReports {
       var reportEntries = new List<FinancialReportEntry>();
 
       reportEntries.AddRange(breakdownEntries);
+
       reportEntries.Add(reportItemTotals);
 
       return reportEntries.ToFixedList();
@@ -144,7 +145,6 @@ namespace Empiria.FinancialAccounting.FinancialReports {
         }
 
         IFinancialConceptValues totals = this.ConceptsCalculator.Calculate(financialConcept);
-
 
         if (_executionContext.FinancialReportType.RoundTo == RoundTo.Millions) {
           totals = totals.Round(_executionContext.FinancialReportType.RoundTo);

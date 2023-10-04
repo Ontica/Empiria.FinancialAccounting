@@ -60,6 +60,7 @@ namespace Empiria.FinancialAccounting.FinancialReports {
       var compiler = new RuntimeCompiler(_executionContext);
 
       try {
+
         compiler.ExecuteScript(financialConcept.CalculationScript, data);
 
       } catch (Exception ex) {

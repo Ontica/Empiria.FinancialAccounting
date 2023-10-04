@@ -24,9 +24,7 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
       // Required by Empiria Framework.
     }
 
-
     #endregion Constructors and parsers
-
 
     public TrialBalanceItemType ItemType {
       get;
