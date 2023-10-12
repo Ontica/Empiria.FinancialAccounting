@@ -63,6 +63,10 @@ namespace Empiria.FinancialAccounting.Reporting.FinancialReports.Exporters {
         _excelFile.SetCell(_templateConfig.TitleCell, _templateConfig.Title);
       }
 
+      if (_templateConfig.SubTitleCell.Length != 0) {
+        _excelFile.SetCell(_templateConfig.SubTitleCell, buildQuery.GetFinancialReportType().Name);
+      }
+
       if (_templateConfig.CurrentTimeCell.Length != 0) {
         _excelFile.SetCell(_templateConfig.CurrentTimeCell, DateTime.Now);
       }
@@ -80,8 +84,6 @@ namespace Empiria.FinancialAccounting.Reporting.FinancialReports.Exporters {
                                                             .ToUpper();
         _excelFile.SetCell(_templateConfig.ReportDateCell, formattedDate);
       }
-
-
 
     }
 
