@@ -28,6 +28,8 @@ namespace Empiria.FinancialAccounting.WebApi {
     [Route("v2/financial-accounting/accounts-charts/{accountsChartUID:guid}")]
     public SingleObjectModel GetAccounts([FromUri] string accountsChartUID) {
 
+      base.SetOperation($"Se leyeron todas las cuentas del catálogo de cuentas.");
+
       using (var usecases = AccountsChartUseCases.UseCaseInteractor()) {
         AccountsChartDto accountsChart = usecases.GetAccounts(accountsChartUID);
 
@@ -40,6 +42,8 @@ namespace Empiria.FinancialAccounting.WebApi {
     [Route("v2/financial-accounting/accounts-charts")]
     public CollectionModel GetAccountsChartsList() {
 
+      base.SetOperation($"Se leyó la lista de catálogos de cuentas.");
+
       using (var usecases = AccountsChartUseCases.UseCaseInteractor()) {
         FixedList<NamedEntityDto> accountsChartList = usecases.GetAccountsChartsList();
 
@@ -51,6 +55,8 @@ namespace Empiria.FinancialAccounting.WebApi {
     [HttpGet]
     [Route("v2/financial-accounting/accounts-charts-master-data")]
     public CollectionModel GetAccountsChartsMasterDataList() {
+
+      base.SetOperation($"Se leyeron los datos maestros del catálogo de cuentas.");
 
       using (var usecases = AccountsChartUseCases.UseCaseInteractor()) {
         FixedList<AccountsChartMasterDataDto> masterDataList = usecases.GetAccountsChartsMasterData();
@@ -65,6 +71,8 @@ namespace Empiria.FinancialAccounting.WebApi {
     public SingleObjectModel ExportAccountsToExcelFile([FromUri]  string accountsChartUID,
                                                        [FromBody] AccountsQuery query) {
       base.RequireBody(query);
+
+      base.SetOperation($"Se exportaron una o más cuentas del catálogo de cuentas a un archivo Excel.");
 
       using (var usecases = AccountsChartUseCases.UseCaseInteractor()) {
         AccountsChartDto accountsChart = usecases.SearchAccounts(accountsChartUID, query);
@@ -83,6 +91,8 @@ namespace Empiria.FinancialAccounting.WebApi {
     public SingleObjectModel SearchAccounts([FromUri] string accountsChartUID,
                                             [FromBody] AccountsQuery query) {
       base.RequireBody(query);
+
+      base.SetOperation($"Se efectuó una búsqueda en el catálogo de cuentas.");
 
       using (var usecases = AccountsChartUseCases.UseCaseInteractor()) {
         AccountsChartDto accountsChart = usecases.SearchAccounts(accountsChartUID, query);

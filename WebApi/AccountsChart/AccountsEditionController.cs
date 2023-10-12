@@ -35,6 +35,8 @@ namespace Empiria.FinancialAccounting.WebApi {
       using (var usecases = AccountsChartUseCases.UseCaseInteractor()) {
         AccountDto account = usecases.GetAccount(accountsChartUID, accountUID);
 
+        base.SetOperation($"Se leyó la cuenta {account.Number} del catálogo de cuentas.");
+
         return new SingleObjectModel(base.Request, account);
       }
     }
@@ -49,6 +51,8 @@ namespace Empiria.FinancialAccounting.WebApi {
 
       Assertion.Require(command.CommandType == AccountEditionCommandType.CreateAccount,
                         $"Unrecognized command type '{command.CommandType}'.");
+
+      base.SetOperation($"Se agregó la cuenta {command.AccountFields.AccountNumber} al catálogo de cuentas.");
 
       using (var usecases = AccountEditionUseCases.UseCaseInteractor()) {
         ExecutionResult<AccountDto> result = usecases.ExecuteCommand(command);
@@ -65,6 +69,8 @@ namespace Empiria.FinancialAccounting.WebApi {
                                            [FromBody] AccountEditionCommand command) {
 
       PrepareCommand(command, accountsChartUID, accountUID);
+
+      base.SetOperation($"Se eliminó la cuenta {command.AccountFields.AccountNumber} del catálogo de cuentas.");
 
       Assertion.Require(command.CommandType == AccountEditionCommandType.DeleteAccount,
                         $"Unrecognized command type '{command.CommandType}'.");
@@ -89,6 +95,8 @@ namespace Empiria.FinancialAccounting.WebApi {
                         command.CommandType == AccountEditionCommandType.FixAccountName,
                         $"Unrecognized command type '{command.CommandType}'.");
 
+      base.SetOperation($"Se actualizó la cuenta {command.AccountFields.AccountNumber} del catálogo de cuentas.");
+
       using (var usecases = AccountEditionUseCases.UseCaseInteractor()) {
         ExecutionResult<AccountDto> result = usecases.ExecuteCommand(command);
 
@@ -105,8 +113,11 @@ namespace Empiria.FinancialAccounting.WebApi {
 
       UpdateAccountsFromFileCommand command = base.GetFormDataFromHttpRequest<UpdateAccountsFromFileCommand>("command");
 
+      base.SetOperation($"Se actualizaron varias cuentas en el catálogo de cuentas utilizando un archivo de entrada Excel.");
+
       using (var usecases = AccountEditionUseCases.UseCaseInteractor()) {
         FixedList<OperationSummary> summary = usecases.ExecuteCommandsFromExcelFile(command, excelFile);
+
         return new CollectionModel(base.Request, summary);
       }
     }

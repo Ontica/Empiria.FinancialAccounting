@@ -16,7 +16,6 @@ using Empiria.WebApi;
 using Empiria.FinancialAccounting.FinancialReports.Adapters;
 using Empiria.FinancialAccounting.FinancialReports.UseCases;
 
-
 using Empiria.FinancialAccounting.Reporting.FinancialReports.Exporters;
 
 namespace Empiria.FinancialAccounting.WebApi.FinancialReports {
@@ -42,6 +41,9 @@ namespace Empiria.FinancialAccounting.WebApi.FinancialReports {
     public SingleObjectModel GetFinancialReport([FromBody] FinancialReportQuery buildQuery) {
       base.RequireBody(buildQuery);
 
+      SetOperation($"Se generó el reporte regulatorio " +
+                   $"{buildQuery.GetFinancialReportType().Name}.");
+
       using (var usecases = FinancialReportsUseCases.UseCaseInteractor()) {
         FinancialReportDto financialReport = usecases.GenerateFinancialReport(buildQuery);
 
@@ -56,6 +58,9 @@ namespace Empiria.FinancialAccounting.WebApi.FinancialReports {
                                                          [FromBody] FinancialReportQuery buildQuery) {
       base.RequireBody(buildQuery);
 
+      SetOperation($"Se generó el detalle del reporte regulatorio " +
+                   $"{buildQuery.GetFinancialReportType().Name}.");
+
       using (var usecases = FinancialReportsUseCases.UseCaseInteractor()) {
         FinancialReportDto financialReport = usecases.GetFinancialReportBreakdown(reportRowUID, buildQuery);
 
@@ -69,6 +74,9 @@ namespace Empiria.FinancialAccounting.WebApi.FinancialReports {
     public SingleObjectModel ExportFinancialReport([FromBody] FinancialReportQuery buildQuery) {
 
       base.RequireBody(buildQuery);
+
+      SetOperation($"Se exportó a un archivo Excel/CSV el reporte " +
+                   $"{buildQuery.GetFinancialReportType().Name}.");
 
       using (var usecases = FinancialReportsUseCases.UseCaseInteractor()) {
 

@@ -170,6 +170,8 @@ namespace Empiria.FinancialAccounting.WebApi.Vouchers {
           throw Assertion.EnsureNoReachThisCode($"Unrecognized bulk operation name '{operationName}'.");
         }
 
+        base.SetOperation(result.Message);
+
         return new SingleObjectModel(base.Request, result);
       }
     }

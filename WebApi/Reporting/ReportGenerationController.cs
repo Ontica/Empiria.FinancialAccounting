@@ -23,7 +23,6 @@ namespace Empiria.FinancialAccounting.WebApi.Reporting {
 
     #region Web Apis
 
-
     [HttpPost]
     [Route("v2/financial-accounting/reporting/{reportType}/data")]
     public SingleObjectModel BuildReport([FromUri] ReportTypes reportType,
@@ -31,6 +30,8 @@ namespace Empiria.FinancialAccounting.WebApi.Reporting {
       base.RequireBody(buildQuery);
 
       buildQuery.ReportType = reportType;
+
+      base.SetOperation($"Se generó el reporte '{reportType}'.");
 
       using (var service = ReportingService.ServiceInteractor()) {
         ReportDataDto reportData = service.GenerateReport(buildQuery);
@@ -45,8 +46,10 @@ namespace Empiria.FinancialAccounting.WebApi.Reporting {
     public SingleObjectModel ExportReportData([FromUri] ReportTypes reportType,
                                               [FromBody] ReportBuilderQuery buildQuery) {
       base.RequireBody(buildQuery);
-      
+
       buildQuery.ReportType = reportType;
+
+      SetOperation($"Se exportó a un archivo el reporte '{reportType}'.");
 
       using (var service = ReportingService.ServiceInteractor()) {
 
@@ -57,7 +60,6 @@ namespace Empiria.FinancialAccounting.WebApi.Reporting {
         return new SingleObjectModel(this.Request, fileReportDto);
       }
     }
-
 
     #endregion Web Apis
 
