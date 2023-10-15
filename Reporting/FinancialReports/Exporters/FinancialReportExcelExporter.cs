@@ -85,6 +85,17 @@ namespace Empiria.FinancialAccounting.Reporting.FinancialReports.Exporters {
         _excelFile.SetCell(_templateConfig.ReportDateCell, formattedDate);
       }
 
+
+      if (_templateConfig.ReportFooterCell.Length != 0) {
+
+        CultureInfo esUS = new CultureInfo("es-US");
+
+        var formattedDate = _templateConfig.ReportFooterFormat.Replace("{{LONG_DATE}}",
+                                                                       buildQuery.ToDate.ToString("dd \\de MMMM \\de yyyy", esUS));
+
+        _excelFile.SetCell(_templateConfig.ReportFooterCell, formattedDate);
+      }
+
     }
 
 
