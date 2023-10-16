@@ -38,17 +38,29 @@ namespace Empiria.FinancialAccounting.FinancialReports.Providers {
         new Function(lexeme: "SALDO_CUENTA", arity: 1,
                      calle: () => new SaldoCuentaFunction(_executionContext.BalancesProvider)),
 
+
+        new Function(lexeme: "TIPO_CAMBIO", arity: 1,
+                     calle: () => new TipoCambioFunction(_executionContext.BuildQuery.ToDate)),
+
+
         new Function(lexeme: "VALOR_CONCEPTO", arity: 2,
                      calle: () => new ValorConceptoFunction(_executionContext.ConceptsCalculator)),
+
 
         new Function(lexeme: "VALOR_CONCEPTO_EXTERNO", arity: 3,
                      calle: () => new ValorConceptoExternoFunction(_executionContext)),
 
+
         new Function(lexeme: "VALORES_CONCEPTO", arity: 1,
                      calle: () => new ValoresConceptoFunction(_executionContext.ConceptsCalculator)),
 
+
         new Function(lexeme: "VALOR_EXTERNO", arity: 2,
                      calle: () => new ValorExternoFunction(_executionContext.ExternalValuesProvider)),
+
+
+        new Function(lexeme: "VALORIZAR", arity: 2,
+                     calle: () => new ValorizarFunction(_executionContext.BuildQuery.ToDate)),
 
       };
 
@@ -109,6 +121,26 @@ namespace Empiria.FinancialAccounting.FinancialReports.Providers {
       }
 
     }  // class SaldoCuentaFunction
+
+
+
+    /// <summary>Returns the current balance of an account.</summary>
+    sealed private class TipoCambioFunction : FunctionHandler {
+
+      private readonly ExchangeRatesProvider _exchangeRatesProvider;
+
+      public TipoCambioFunction(DateTime date) {
+        _exchangeRatesProvider = new ExchangeRatesProvider(date);
+      }
+
+      protected override object Evaluate() {
+
+        var currency = Currency.Parse(GetString(Parameters[0]));
+
+        return _exchangeRatesProvider.Convert(ExchangeRateType.ValorizacionBanxico, currency, 1m, 6);
+      }
+
+    }  // class TipoCambioFunction
 
 
 
@@ -188,7 +220,7 @@ namespace Empiria.FinancialAccounting.FinancialReports.Providers {
         return values.GetTotalField(fieldName);
       }
 
-    }  // class ValorConceptoFunction
+    }  // class ValorConceptoExternoFunction
 
 
 
@@ -211,6 +243,26 @@ namespace Empiria.FinancialAccounting.FinancialReports.Providers {
       }
 
     }  // ValorConceptoFunction
+
+
+
+    /// <summary>Returns a currency value converted to a given exchange rate.</summary>
+    sealed private class ValorizarFunction: FunctionHandler {
+
+      private readonly ExchangeRatesProvider _exchangeRatesProvider;
+
+      public ValorizarFunction(DateTime date) {
+        _exchangeRatesProvider = new ExchangeRatesProvider(date);
+      }
+
+      protected override object Evaluate() {
+        decimal value = GetDecimal(Parameters[0]);
+        var currency = Currency.Parse(GetString(Parameters[1]));
+
+        return _exchangeRatesProvider.Convert(ExchangeRateType.ValorizacionBanxico, currency, value, 2);
+      }
+
+    }  // ValorizarFunction
 
 
   }  // class FinancialFunctionsLibrary
