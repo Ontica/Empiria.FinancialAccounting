@@ -115,6 +115,17 @@ namespace Empiria.FinancialAccounting.FinancialReports.Providers {
                               _exchangeRatesProvider.Convert_UDI_To_MXN(sourceEntry.UdisBalance, 2));
       }
 
+      if (fields.Contains("valorizadoMXNTotal")) {
+        converted.SetTotalField("valorizadoMXNTotal",
+                Math.Round(
+                    sourceEntry.DomesticBalance +
+                    _exchangeRatesProvider.Convert_USD_To_MXN(sourceEntry.DollarBalance, 8) +
+                    _exchangeRatesProvider.Convert_YEN_To_MXN(sourceEntry.YenBalance, 8) +
+                    _exchangeRatesProvider.Convert_EUR_To_MXN(sourceEntry.EuroBalance, 8) +
+                    _exchangeRatesProvider.Convert_UDI_To_MXN(sourceEntry.UdisBalance, 8),
+                2));
+      }
+
       if (fields.Contains("yenUSDTotal")) {
         converted.SetTotalField("yenUSDTotal",
                               _exchangeRatesProvider.Convert_YEN_To_USD(sourceEntry.YenBalance, 2));
