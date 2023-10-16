@@ -14,7 +14,7 @@ using Empiria.FinancialAccounting.FinancialReports.Data;
 namespace Empiria.FinancialAccounting.FinancialReports {
 
   /// <summary>Describes a financial report fixed row.</summary>
-  public class FinancialReportRow: FinancialReportItemDefinition, IPositionable {
+  public class FinancialReportRow : FinancialReportItemDefinition, IPositionable {
 
     #region Constructors and parsers
 
@@ -46,6 +46,15 @@ namespace Empiria.FinancialAccounting.FinancialReports {
     int IPositionable.Position {
       get {
         return base.RowIndex;
+      }
+    }
+
+    public string[] BlockedCells {
+      get {
+        if (!base.ExtendedData.Contains("blockedCells")) {
+          return new string[0];
+        }
+        return base.ExtendedData.Get<string>("blockedCells").Split(',');
       }
     }
 

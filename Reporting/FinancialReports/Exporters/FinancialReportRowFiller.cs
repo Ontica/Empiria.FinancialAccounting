@@ -8,6 +8,7 @@
 *                                                                                                            *
 ************************* Copyright(c) La Vía Óntica SC, Ontica LLC and contributors. All rights reserved. **/
 using System;
+using System.Linq;
 
 using Empiria.Office;
 
@@ -59,6 +60,9 @@ namespace Empiria.FinancialAccounting.Reporting.FinancialReports.Exporters {
 
         decimal totalField = entry.GetTotalField(totalColumn.Field);
 
+        if (row.BlockedCells.Contains(totalColumn.Column)) {
+          continue;
+        }
         _excelFile.SetCell($"{totalColumn.Column}{rowIndex}", totalField);
       }
     }
