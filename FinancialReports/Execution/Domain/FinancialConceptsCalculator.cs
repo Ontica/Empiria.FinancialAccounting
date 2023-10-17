@@ -182,7 +182,8 @@ namespace Empiria.FinancialAccounting.FinancialReports {
       }
 
       if (_executionContext.FinancialReportType.RoundTo != RoundTo.DoNotRound &&
-          _executionContext.FinancialReportType.RoundTo != RoundTo.Millions) {
+          _executionContext.FinancialReportType.RoundTo != RoundTo.Millions &&
+          integrationEntry.FinancialConcept.Name != "Tipo de cambio") {
         totals = totals.Round(_executionContext.FinancialReportType.RoundTo);
       }
 
