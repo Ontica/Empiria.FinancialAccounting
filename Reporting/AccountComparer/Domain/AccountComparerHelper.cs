@@ -69,7 +69,7 @@ namespace Empiria.FinancialAccounting.Reporting.AccountComparer.Domain {
 
       var returnedComparerEntries = new List<AccountComparerEntry>();
 
-      foreach (var item in group.GetItems()) {
+      foreach (var item in group.GetItems<AccountsListItem>()) {
 
         List<AccountComparerEntry> comparerEntries = new List<AccountComparerEntry>();
 

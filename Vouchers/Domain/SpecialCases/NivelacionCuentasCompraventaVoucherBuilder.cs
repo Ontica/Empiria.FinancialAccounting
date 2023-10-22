@@ -28,7 +28,7 @@ namespace Empiria.FinancialAccounting.Vouchers.SpecialCases {
     #region Abstract Implements
 
     protected override FixedList<VoucherEntryFields> BuildVoucherEntries() {
-      FixedList<AccountsListItem> accountsListItems =  base.SpecialCaseType.AccountsList.GetItems();
+      FixedList<AccountsListItem> accountsListItems =  base.SpecialCaseType.AccountsList.GetItems<AccountsListItem>();
 
       FixedList<BalanzaTradicionalEntryDto> balances = GetBalances();
 

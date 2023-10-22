@@ -30,7 +30,7 @@ namespace Empiria.FinancialAccounting.Vouchers.SpecialCases {
     #region Abstract Implements
 
     protected override FixedList<VoucherEntryFields> BuildVoucherEntries() {
-      FixedList<AccountsListItem> cancelationRulesList = base.SpecialCaseType.AccountsList.GetItems();
+      FixedList<AccountsListItem> cancelationRulesList = base.SpecialCaseType.AccountsList.GetItems<AccountsListItem>();
 
       FixedList<TrialBalanceEntryDto> balances = GetBalances();
 
