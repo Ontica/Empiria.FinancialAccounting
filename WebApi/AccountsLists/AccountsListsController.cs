@@ -23,11 +23,11 @@ namespace Empiria.FinancialAccounting.WebApi {
     #region Web Apis
 
     [HttpGet]
-    [Route("v2/financial-accounting/accounts-lists/{accountsListUID:guid}")]
-    public SingleObjectModel GetAccountsList([FromUri] string accountsListUID) {
+    [Route("v2/financial-accounting/accounts-lists-for-edition/{accountsListUID}")]
+    public SingleObjectModel GetEditableAccountsList([FromUri] string accountsListUID) {
 
       using (var usecases = AccountsListsUseCases.UseCaseInteractor()) {
-        AccountsListDto list = usecases.GetAccountsList(accountsListUID);
+        AccountsListDto list = usecases.GetEditableAccountsList(accountsListUID);
 
         return new SingleObjectModel(base.Request, list);
       }
@@ -35,11 +35,11 @@ namespace Empiria.FinancialAccounting.WebApi {
 
 
     [HttpGet]
-    [Route("v2/financial-accounting/accounts-lists")]
-    public CollectionModel GetAccountsLists() {
+    [Route("v2/financial-accounting/accounts-lists-for-edition")]
+    public CollectionModel GetAccountsListsForEdition() {
 
       using (var usecases = AccountsListsUseCases.UseCaseInteractor()) {
-        FixedList<NamedEntityDto> lists = usecases.GetAccountsLists();
+        FixedList<NamedEntityDto> lists = usecases.GetAccountsListsForEdition();
 
         return new CollectionModel(base.Request, lists);
       }

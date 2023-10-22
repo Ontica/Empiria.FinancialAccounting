@@ -33,15 +33,16 @@ namespace Empiria.FinancialAccounting.UseCases {
 
     #region Use cases
 
-    public AccountsListDto GetAccountsList(string accountsListUID) {
+    public AccountsListDto GetEditableAccountsList(string accountsListUID) {
       AccountsList list = AccountsList.Parse(accountsListUID);
 
       return AccountsListMapper.Map(list);
     }
 
 
-    public FixedList<NamedEntityDto> GetAccountsLists() {
-      FixedList<AccountsList> accountsLists = AccountsList.GetList();
+    public FixedList<NamedEntityDto> GetAccountsListsForEdition() {
+      FixedList<AccountsList> accountsLists = AccountsList.GetList()
+                                                          .FindAll(x => x.IsEditable);
 
       return accountsLists.MapToNamedEntityList();
     }
