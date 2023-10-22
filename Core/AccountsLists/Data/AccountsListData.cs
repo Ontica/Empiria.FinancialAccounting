@@ -26,6 +26,15 @@ namespace Empiria.FinancialAccounting.Data {
       return DataReader.GetFixedList<AccountsListItem>(dataOperation);
     }
 
+    internal static FixedList<T> GetAccounts<T>(AccountsList accountsList) where T : BaseObject, IAccountListItem {
+      var sql = "SELECT * FROM COF_LISTA_CUENTAS " +
+                $"WHERE ID_LISTA = {accountsList.Id} " +
+                $"ORDER BY POSICION, NUMERO_CUENTA_ESTANDAR, ID_MAYOR, NUMERO_CUENTA_AUXILIAR";
+
+      var dataOperation = DataOperation.Parse(sql);
+
+      return DataReader.GetFixedList<T>(dataOperation);
+    }
   }  // class AccountsListData
 
 }  // namespace Empiria.FinancialAccounting.Data

@@ -45,7 +45,7 @@ namespace Empiria.FinancialAccounting.Reconciliation {
 
       FixedList<OperationalEntryDto> operationalData = GetOperationalData(operationalDatasets);
 
-      FixedList<AccountsListItem> involvedAccounts = GetAccountsToReconciliate();
+      FixedList<ConciliacionDerivadosListItem> involvedAccounts = GetAccountsToReconciliate();
 
       FixedList<BalanzaTradicionalEntryDto> filteredBalances = GetFilteredBalancesForAccountstoReconciliate(involvedAccounts);
 
@@ -58,7 +58,7 @@ namespace Empiria.FinancialAccounting.Reconciliation {
     }
 
 
-    private FixedList<ReconciliationResultEntry> PerformReconciliation(FixedList<AccountsListItem> involvedAccounts,
+    private FixedList<ReconciliationResultEntry> PerformReconciliation(FixedList<ConciliacionDerivadosListItem> involvedAccounts,
                                                                        FixedList<OperationalEntryDto> operationalData,
                                                                        FixedList<BalanzaTradicionalEntryDto> balances) {
 
@@ -84,10 +84,10 @@ namespace Empiria.FinancialAccounting.Reconciliation {
     #region Helpers
 
 
-    private FixedList<AccountsListItem> GetAccountsToReconciliate() {
+    private FixedList<ConciliacionDerivadosListItem> GetAccountsToReconciliate() {
       AccountsList list = _reconciliationType.AccountsList;
 
-      FixedList<AccountsListItem> items = list.GetItems();
+      FixedList<ConciliacionDerivadosListItem> items = list.GetItems<ConciliacionDerivadosListItem>();
 
       Assertion.Require(items.Count > 0,
         $"No se han definido las cuentas a conciliar del tipo '{_reconciliationType.Name}'."
@@ -127,7 +127,9 @@ namespace Empiria.FinancialAccounting.Reconciliation {
     }
 
 
-    private FixedList<BalanzaTradicionalEntryDto> GetFilteredBalancesForAccountstoReconciliate(FixedList<AccountsListItem> accountstoReconciliate) {
+    private FixedList<BalanzaTradicionalEntryDto>
+          GetFilteredBalancesForAccountstoReconciliate(FixedList<ConciliacionDerivadosListItem> accountstoReconciliate) {
+
       FixedList<BalanzaTradicionalEntryDto> allBalances = GetAllBalances(_command.Date);
 
       return allBalances.FindAll(x => accountstoReconciliate.Exists(y => y.AccountNumber == x.AccountNumber));

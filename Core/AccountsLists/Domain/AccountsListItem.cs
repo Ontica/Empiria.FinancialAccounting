@@ -12,8 +12,12 @@ using Empiria.Json;
 
 namespace Empiria.FinancialAccounting {
 
-  /// <summary>Describes a memeber of a financial accounts list.</summary>
-  public class AccountsListItem : BaseObject {
+  public interface IAccountListItem : IIdentifiable {
+
+  }
+
+  /// <summary>Describes a member of a financial accounts list.</summary>
+  public class AccountsListItem : BaseObject, IAccountListItem {
 
     #region Constructors and parsers
 

@@ -8,6 +8,7 @@
 *                                                                                                            *
 ************************* Copyright(c) La Vía Óntica SC, Ontica LLC and contributors. All rights reserved. **/
 using System;
+
 using Empiria.FinancialAccounting.Data;
 
 namespace Empiria.FinancialAccounting {
@@ -44,14 +45,22 @@ namespace Empiria.FinancialAccounting {
 
     #region Public methods
 
-    public bool IsComparable {
+    public FixedList<DataTableColumn> DataTableColumns {
       get {
-        return base.ExtendedDataField.Get("isComparable", false);
+        return base.ExtendedDataField.GetFixedList<DataTableColumn>("columns", false);
       }
     }
 
-    public FixedList<AccountsListItem> GetItems() {
-      return AccountsListData.GetAccounts(this);
+
+    public bool IsEditable {
+      get {
+        return base.ExtendedDataField.Get("isEditable", false);
+      }
+    }
+
+
+    public FixedList<T> GetItems<T>() where T : BaseObject, IAccountListItem {
+      return AccountsListData.GetAccounts<T>(this);
     }
 
     #endregion Public methods

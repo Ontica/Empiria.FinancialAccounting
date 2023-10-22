@@ -36,7 +36,7 @@ namespace Empiria.FinancialAccounting.Reconciliation {
     }
 
 
-    internal void InsertEntriesFor(AccountsListItem account) {
+    internal void InsertEntriesFor(ConciliacionDerivadosListItem account) {
       Assertion.Require(account, nameof(account));
 
       FixedList<OperationalEntryDto> operationalEntries = GetOperationalEntriesFor(account);
@@ -80,13 +80,13 @@ namespace Empiria.FinancialAccounting.Reconciliation {
       }
     }
 
-    private FixedList<BalanzaTradicionalEntryDto> GetAccountingEntriesFor(AccountsListItem account) {
+    private FixedList<BalanzaTradicionalEntryDto> GetAccountingEntriesFor(ConciliacionDerivadosListItem account) {
       return _balances.FindAll(x => x.AccountNumber == account.AccountNumber &&
                                     x.SectorCode == "00");
     }
 
 
-    private FixedList<OperationalEntryDto> GetOperationalEntriesFor(AccountsListItem account) {
+    private FixedList<OperationalEntryDto> GetOperationalEntriesFor(ConciliacionDerivadosListItem account) {
       return _operationalEntries.FindAll(x => x.AccountNumber == account.AccountNumber);
     }
 
