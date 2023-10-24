@@ -127,6 +127,7 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
 
 
     private TrialBalance GenerateTrialBalance() {
+
       switch (this.Query.TrialBalanceType) {
 
         case TrialBalanceType.AnaliticoDeCuentas:
@@ -134,18 +135,20 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
           var builder = new AnaliticoDeCuentasBuilder(this.Query);
           var entries = builder.Build();
           FixedList<ITrialBalanceEntry> analyticBalance = entries.Select(x => (ITrialBalanceEntry) x)
-                                                           .ToFixedList();
+                                                                 .ToFixedList();
 
           return new TrialBalance(this.Query, analyticBalance);
 
         case TrialBalanceType.Balanza:
 
           var balanzaTradicional = new BalanzaTradicionalBuilder(this.Query);
+
           return balanzaTradicional.Build();
 
         case TrialBalanceType.SaldosPorCuenta:
 
           var saldosPorCuenta = new SaldosPorCuentaBuilder(this.Query);
+
           return saldosPorCuenta.Build();
 
 
@@ -163,7 +166,7 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
           var comparativaBuilder = new BalanzaComparativaBuilder(this.Query);
           var balanza = comparativaBuilder.Build();
           FixedList<ITrialBalanceEntry> balanzaComparativa = balanza.Select(x => (ITrialBalanceEntry) x)
-                                                           .ToFixedList();
+                                                                    .ToFixedList();
 
           return new TrialBalance(this.Query, balanzaComparativa);
 
@@ -179,16 +182,19 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
         case TrialBalanceType.GeneracionDeSaldos:
 
           var saldosConAuxiliares = new SaldosPorAuxiliarBuilder(this.Query);
+
           return saldosConAuxiliares.BuildForBalancesGeneration();
 
         case TrialBalanceType.SaldosPorAuxiliar:
 
           var saldosPorAuxiliar = new SaldosPorAuxiliarBuilder(this.Query);
+
           return saldosPorAuxiliar.Build();
 
         case TrialBalanceType.BalanzaConContabilidadesEnCascada:
 
           var saldosPorCuentaYMayores = new BalanzaContabilidadesCascadaBuilder(this.Query);
+
           return saldosPorCuentaYMayores.Build();
 
         case TrialBalanceType.ValorizacionEstimacionPreventiva:
@@ -196,7 +202,7 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
           var build = new ValorizacionEstimacionPreventivaBuilder(this.Query).Build();
 
           FixedList<ITrialBalanceEntry> valorizacion = build.Select(x => (ITrialBalanceEntry) x)
-                                                      .ToFixedList();
+                                                            .ToFixedList();
 
           return new TrialBalance(this.Query, valorizacion);
 

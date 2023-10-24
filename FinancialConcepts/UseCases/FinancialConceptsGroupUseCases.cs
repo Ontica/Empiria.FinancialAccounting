@@ -54,6 +54,7 @@ namespace Empiria.FinancialAccounting.FinancialConcepts.UseCases {
                                                                                 DateTime date) {
       Assertion.Require(groupUID, nameof(groupUID));
 
+
       var group = FinancialConceptGroup.Parse(groupUID);
 
       base.EnsureUserHasDataAccessTo(group);

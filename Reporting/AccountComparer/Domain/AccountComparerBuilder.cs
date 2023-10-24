@@ -9,10 +9,11 @@
 ************************* Copyright(c) La Vía Óntica SC, Ontica LLC and contributors. All rights reserved. **/
 using System;
 using System.Collections.Generic;
-using System.Linq;
+
 using Empiria.FinancialAccounting.BalanceEngine;
 using Empiria.FinancialAccounting.BalanceEngine.Adapters;
 using Empiria.FinancialAccounting.BalanceEngine.UseCases;
+
 using Empiria.FinancialAccounting.Reporting.AccountComparer.Adapters;
 using Empiria.FinancialAccounting.Reporting.AccountComparer.Domain;
 
@@ -54,7 +55,7 @@ namespace Empiria.FinancialAccounting.Reporting.AccountsComparer.Domain {
 
       List<AccountComparerEntry> returnedComparerEntries = helper.CombineComparerEntriesWithTotals(
                                                            comparerEntries, totalByCurrency);
-        
+
       return returnedComparerEntries;
     }
 

@@ -22,7 +22,6 @@ namespace Empiria.FinancialAccounting.WebApi.Vouchers {
 
     #region Web Apis
 
-
     [HttpGet]
     [Route("v2/financial-accounting/vouchers/editors/")]
     public CollectionModel GetVoucherEditors([FromUri] string keywords) {

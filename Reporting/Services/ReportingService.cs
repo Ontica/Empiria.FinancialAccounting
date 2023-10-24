@@ -9,7 +9,6 @@
 ************************* Copyright(c) La Vía Óntica SC, Ontica LLC and contributors. All rights reserved. **/
 using System;
 
-using Empiria.Office;
 using Empiria.Services;
 using Empiria.Storage;
 
@@ -41,7 +40,7 @@ namespace Empiria.FinancialAccounting.Reporting {
     #region Services
 
     public FileReportDto ExportReport(ReportBuilderQuery buildQuery, ReportDataDto reportData) {
-      
+
       Assertion.Require(buildQuery, nameof(buildQuery));
       Assertion.Require(reportData, nameof(reportData));
 

@@ -170,7 +170,7 @@ namespace Empiria.FinancialAccounting.Reporting.Balances {
     private void FillOutSaldosCuentaConEncabezado(IEnumerable<BalanceExplorerEntryDto> entries) {
       int i = 5;
       foreach (var entry in entries) {
-        
+
         if (entry.ItemType == TrialBalanceItemType.Total) {
           _excelFile.SetCell($"D{i}", entry.AccountNumber);
           _excelFile.SetCell($"E{i}", $"{entry.AccountName}");
