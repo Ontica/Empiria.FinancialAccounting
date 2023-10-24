@@ -11,9 +11,10 @@ using System;
 
 using Empiria.Services;
 
-using Empiria.FinancialAccounting.Adapters;
+using Empiria.FinancialAccounting.AccountsLists.SpecialCases;
+using Empiria.FinancialAccounting.AccountsLists.Adapters;
 
-namespace Empiria.FinancialAccounting.UseCases {
+namespace Empiria.FinancialAccounting.AccountsLists.UseCases {
 
   /// <summary>Use cases for accounts lists.</summary>
   public class AccountsListsUseCases : UseCase {
@@ -33,10 +34,103 @@ namespace Empiria.FinancialAccounting.UseCases {
 
     #region Use cases
 
-    public AccountsListDto GetEditableAccountsList(string accountsListUID) {
-      AccountsList list = AccountsList.Parse(accountsListUID);
+    public ConciliacionDerivadosListItemDto AddConciliacionDerivadosListItem(ConciliacionDerivadosListItemFields fields) {
+      var list = ConciliacionDerivadosList.Parse();
 
-      return AccountsListMapper.Map(list);
+      ConciliacionDerivadosListItem item = list.AddItem(fields);
+
+      item.Save();
+
+      return AccountsListMapper.MapEntry(item);
+    }
+
+
+    public DepreciacionActivoFijoListItemDto AddDepreciacionActivoFijoListItem(DepreciacionActivoFijoListItemFields fields) {
+      var list = DepreciacionActivoFijoList.Parse();
+
+      DepreciacionActivoFijoListItem item = list.AddItem(fields);
+
+      item.Save();
+
+      return AccountsListMapper.MapEntry(item);
+    }
+
+
+    public SwapsCoberturaListItemDto AddSwapsCoberturaListItem(SwapsCoberturaListItemFields fields) {
+      var list = SwapsCoberturaList.Parse();
+
+      SwapsCoberturaListItem item = list.AddItem(fields);
+
+      item.Save();
+
+      return AccountsListMapper.MapEntry(item);
+    }
+
+
+    public void RemoveConciliacionDerivadosListItem(ConciliacionDerivadosListItemFields fields) {
+      var list = ConciliacionDerivadosList.Parse();
+
+      ConciliacionDerivadosListItem item = list.RemoveItem(fields);
+
+      item.Save();
+    }
+
+
+    public void RemoveSwapsCoberturaListItem(SwapsCoberturaListItemFields fields) {
+      var list = SwapsCoberturaList.Parse();
+
+      SwapsCoberturaListItem item = list.RemoveItem(fields);
+
+      item.Save();
+    }
+
+
+    public void RemoveDepreciacionActivoFijoListItem(DepreciacionActivoFijoListItemFields fields) {
+      var list = DepreciacionActivoFijoList.Parse();
+
+      DepreciacionActivoFijoListItem item = list.RemoveItem(fields);
+
+      item.Save();
+    }
+
+
+    public ConciliacionDerivadosListItemDto UpdateConciliacionDerivadosListItem(ConciliacionDerivadosListItemFields fields) {
+      var list = ConciliacionDerivadosList.Parse();
+
+      ConciliacionDerivadosListItem item = list.UpdateItem(fields);
+
+      item.Save();
+
+      return AccountsListMapper.MapEntry(item);
+    }
+
+
+    public DepreciacionActivoFijoListItemDto UpdateDepreciacionActivoFijoListItem(DepreciacionActivoFijoListItemFields fields) {
+      var list = DepreciacionActivoFijoList.Parse();
+
+      DepreciacionActivoFijoListItem item = list.UpdateItem(fields);
+
+      item.Save();
+
+      return AccountsListMapper.MapEntry(item);
+    }
+
+
+    public SwapsCoberturaListItemDto UpdateSwapsCoberturaListItem(SwapsCoberturaListItemFields fields) {
+      var list = SwapsCoberturaList.Parse();
+
+      SwapsCoberturaListItem item = list.UpdateItem(fields);
+
+      item.Save();
+
+      return AccountsListMapper.MapEntry(item);
+    }
+
+
+    public AccountsListDto GetEditableAccountsList(string accountsListUID, string keywords) {
+      var list = AccountsList.Parse(accountsListUID);
+
+      return AccountsListMapper.Map(list, keywords);
     }
 
 

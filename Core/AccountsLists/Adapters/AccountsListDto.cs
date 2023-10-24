@@ -9,7 +9,7 @@
 ************************* Copyright(c) La Vía Óntica SC, Ontica LLC and contributors. All rights reserved. **/
 using System;
 
-namespace Empiria.FinancialAccounting.Adapters {
+namespace Empiria.FinancialAccounting.AccountsLists.Adapters {
 
   /// <summary>Output DTO for accounts lists.</summary>
   public class AccountsListDto {
