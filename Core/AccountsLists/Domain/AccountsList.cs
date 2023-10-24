@@ -9,7 +9,7 @@
 ************************* Copyright(c) La Vía Óntica SC, Ontica LLC and contributors. All rights reserved. **/
 using System;
 
-using Empiria.FinancialAccounting.Data;
+using Empiria.FinancialAccounting.AccountsLists.Data;
 
 namespace Empiria.FinancialAccounting {
 
@@ -61,6 +61,11 @@ namespace Empiria.FinancialAccounting {
 
     public FixedList<T> GetItems<T>() where T : BaseObject, IAccountListItem {
       return AccountsListData.GetAccounts<T>(this);
+    }
+
+
+    public FixedList<T> GetItems<T>(string keywords) where T : BaseObject, IAccountListItem {
+      return AccountsListData.GetAccounts<T>(this, keywords);
     }
 
     #endregion Public methods
