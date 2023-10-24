@@ -10,6 +10,7 @@
 using System;
 using System.Collections.Generic;
 
+using Empiria.FinancialAccounting.AccountsLists.SpecialCases;
 using Empiria.FinancialAccounting.BalanceEngine;
 using Empiria.FinancialAccounting.BalanceEngine.Adapters;
 using Empiria.FinancialAccounting.BalanceEngine.UseCases;
@@ -132,7 +133,7 @@ namespace Empiria.FinancialAccounting.Reconciliation {
 
       FixedList<BalanzaTradicionalEntryDto> allBalances = GetAllBalances(_command.Date);
 
-      return allBalances.FindAll(x => accountstoReconciliate.Exists(y => y.AccountNumber == x.AccountNumber));
+      return allBalances.FindAll(x => accountstoReconciliate.Exists(y => y.Account.Number == x.AccountNumber));
 
 
       #region Local functions

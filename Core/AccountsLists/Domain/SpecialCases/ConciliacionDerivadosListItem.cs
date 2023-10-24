@@ -9,7 +9,7 @@
 ************************* Copyright(c) La Vía Óntica SC, Ontica LLC and contributors. All rights reserved. **/
 using System;
 
-namespace Empiria.FinancialAccounting {
+namespace Empiria.FinancialAccounting.AccountsLists.SpecialCases {
 
   /// <summary>Describes a member of a financial accounts list.</summary>
   public class ConciliacionDerivadosListItem : BaseObject, IAccountListItem {
@@ -55,12 +55,12 @@ namespace Empiria.FinancialAccounting {
 
 
     [DataField("NUMERO_CUENTA_ESTANDAR")]
-    public string AccountNumber {
-      get; private set;
+    private string AccountNumber {
+      get; set;
     }
 
     #endregion Properties
 
   }  // class ConciliacionDerivadosListItem
 
-}  // namespace Empiria.FinancialAccounting
+}  // namespace Empiria.FinancialAccounting.AccountsLists.SpecialCases

@@ -11,7 +11,7 @@ using System;
 
 using Empiria.Json;
 
-namespace Empiria.FinancialAccounting {
+namespace Empiria.FinancialAccounting.AccountsLists.SpecialCases {
 
   /// <summary>Describes a member of a financial accounts list.</summary>
   public class DepreciacionActivoFijoListItem : BaseObject, IAccountListItem {
@@ -128,4 +128,4 @@ namespace Empiria.FinancialAccounting {
 
   }  // class DepreciacionActivoFijoListItem
 
-}  // namespace Empiria.FinancialAccounting
+}  // namespace Empiria.FinancialAccounting.AccountsLists.SpecialCases

@@ -8,9 +8,10 @@
 *                                                                                                            *
 ************************* Copyright(c) La Vía Óntica SC, Ontica LLC and contributors. All rights reserved. **/
 using System;
+
 using Empiria.Json;
 
-namespace Empiria.FinancialAccounting {
+namespace Empiria.FinancialAccounting.AccountsLists.SpecialCases {
 
   /// <summary>Describes a member of a financial accounts list.</summary>
   public class SwapsCoberturaListItem : BaseObject, IAccountListItem {
@@ -65,7 +66,7 @@ namespace Empiria.FinancialAccounting {
 
     public string Classification {
       get {
-        return ExtData.Get("clasificación", string.Empty);
+        return ExtData.Get("classification", string.Empty);
       }
     }
 
@@ -79,4 +80,4 @@ namespace Empiria.FinancialAccounting {
 
   }  // class SwapsCoberturaListItem
 
-}  // namespace Empiria.FinancialAccounting
+}  // namespace Empiria.FinancialAccounting.AccountsLists.SpecialCases

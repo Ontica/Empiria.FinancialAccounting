@@ -11,6 +11,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 
+using Empiria.FinancialAccounting.AccountsLists.SpecialCases;
 using Empiria.FinancialAccounting.BalanceEngine.Adapters;
 using Empiria.FinancialAccounting.Reconciliation.Adapters;
 
@@ -81,13 +82,13 @@ namespace Empiria.FinancialAccounting.Reconciliation {
     }
 
     private FixedList<BalanzaTradicionalEntryDto> GetAccountingEntriesFor(ConciliacionDerivadosListItem account) {
-      return _balances.FindAll(x => x.AccountNumber == account.AccountNumber &&
+      return _balances.FindAll(x => x.AccountNumber == account.Account.Number &&
                                     x.SectorCode == "00");
     }
 
 
     private FixedList<OperationalEntryDto> GetOperationalEntriesFor(ConciliacionDerivadosListItem account) {
-      return _operationalEntries.FindAll(x => x.AccountNumber == account.AccountNumber);
+      return _operationalEntries.FindAll(x => x.AccountNumber == account.Account.Number);
     }
 
 

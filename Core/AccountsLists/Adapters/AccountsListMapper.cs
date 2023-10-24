@@ -10,21 +10,22 @@
 using System;
 using System.Collections.Generic;
 
-namespace Empiria.FinancialAccounting.Adapters {
+using Empiria.FinancialAccounting.AccountsLists.SpecialCases;
+
+namespace Empiria.FinancialAccounting.AccountsLists.Adapters {
 
   /// <summary>Methods used to map accounts lists.</summary>
   static internal class AccountsListMapper {
 
     #region Public mappers
 
-    static internal AccountsListDto Map(AccountsList list) {
-
+    static internal AccountsListDto Map(AccountsList list, string keywords) {
 
       return new AccountsListDto {
         UID = list.UID,
         Name = list.Name,
         Columns = list.DataTableColumns,
-        Entries = MapEntries(list)
+        Entries = MapEntries(list, keywords)
       };
     }
 
@@ -33,17 +34,17 @@ namespace Empiria.FinancialAccounting.Adapters {
     #region Private methods
 
 
-    private static FixedList<AccountsListItemDto> MapEntries(AccountsList list) {
+    static private FixedList<AccountsListItemDto> MapEntries(AccountsList list, string keywords) {
       FixedList<AccountsListItemDto> entries;
       switch (list.UID) {
         case "ConciliacionDerivados":
-          entries = new FixedList<AccountsListItemDto>(MapList(list.GetItems<ConciliacionDerivadosListItem>()));
+          entries = new FixedList<AccountsListItemDto>(MapList(list.GetItems<ConciliacionDerivadosListItem>(keywords)));
           break;
         case "SwapsCobertura":
-          entries = new FixedList<AccountsListItemDto>(MapList(list.GetItems<SwapsCoberturaListItem>()));
+          entries = new FixedList<AccountsListItemDto>(MapList(list.GetItems<SwapsCoberturaListItem>(keywords)));
           break;
         case "DepreciacionActivoFijo":
-          entries = new FixedList<AccountsListItemDto>(MapList(list.GetItems<DepreciacionActivoFijoListItem>()));
+          entries = new FixedList<AccountsListItemDto>(MapList(list.GetItems<DepreciacionActivoFijoListItem>(keywords)));
           break;
         default:
           throw new NotImplementedException($"Unrecognized accounts list UID {list.UID}.");
@@ -52,25 +53,27 @@ namespace Empiria.FinancialAccounting.Adapters {
       return entries;
     }
 
-    private static IEnumerable<AccountsListItemDto> MapList(FixedList<ConciliacionDerivadosListItem> entries) {
+    static private IEnumerable<ConciliacionDerivadosListItemDto> MapList(FixedList<ConciliacionDerivadosListItem> entries) {
       var mapped = entries.Select(x => MapEntry(x));
 
-      return new FixedList<AccountsListItemDto>(mapped);
+      return new FixedList<ConciliacionDerivadosListItemDto>(mapped);
     }
 
-    private static IEnumerable<AccountsListItemDto> MapList(FixedList<SwapsCoberturaListItem> entries) {
+    static private IEnumerable<SwapsCoberturaListItemDto> MapList(FixedList<SwapsCoberturaListItem> entries) {
       var mapped = entries.Select(x => MapEntry(x));
 
-      return new FixedList<AccountsListItemDto>(mapped);
+      return new FixedList<SwapsCoberturaListItemDto>(mapped);
     }
 
-    private static IEnumerable<AccountsListItemDto> MapList(FixedList<DepreciacionActivoFijoListItem> entries) {
+
+    static private IEnumerable<DepreciacionActivoFijoListItemDto> MapList(FixedList<DepreciacionActivoFijoListItem> entries) {
       var mapped = entries.Select(x => MapEntry(x));
 
-      return new FixedList<AccountsListItemDto>(mapped);
+      return new FixedList<DepreciacionActivoFijoListItemDto>(mapped);
     }
 
-    static private AccountsListItemDto MapEntry(ConciliacionDerivadosListItem item) {
+
+    static internal ConciliacionDerivadosListItemDto MapEntry(ConciliacionDerivadosListItem item) {
       return new ConciliacionDerivadosListItemDto {
         UID = item.UID,
         AccountUID = item.Account.UID,
@@ -79,7 +82,8 @@ namespace Empiria.FinancialAccounting.Adapters {
       };
     }
 
-    static private AccountsListItemDto MapEntry(SwapsCoberturaListItem item) {
+
+    static internal SwapsCoberturaListItemDto MapEntry(SwapsCoberturaListItem item) {
       return new SwapsCoberturaListItemDto {
         UID = item.UID,
         SubledgerAccountId = item.SubledgerAccount.Id,
@@ -90,7 +94,7 @@ namespace Empiria.FinancialAccounting.Adapters {
     }
 
 
-    static private AccountsListItemDto MapEntry(DepreciacionActivoFijoListItem item) {
+    static internal DepreciacionActivoFijoListItemDto MapEntry(DepreciacionActivoFijoListItem item) {
       var value = new DepreciacionActivoFijoListItemDto {
         UID = item.UID,
         AuxiliarHistoricoId = item.AuxiliarHistorico.Id,
