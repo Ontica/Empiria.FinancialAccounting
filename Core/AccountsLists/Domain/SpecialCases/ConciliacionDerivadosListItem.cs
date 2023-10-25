@@ -94,7 +94,7 @@ namespace Empiria.FinancialAccounting.AccountsLists.SpecialCases {
     [DataField("STATUS_ELEMENTO_LISTA", Default = EntityStatus.Active)]
     public EntityStatus Status {
       get;
-      internal set;
+      private set;
     } = EntityStatus.Active;
 
 
@@ -102,8 +102,19 @@ namespace Empiria.FinancialAccounting.AccountsLists.SpecialCases {
 
     #region Methods
 
+    internal void Delete() {
+      Status = EntityStatus.Deleted;
+    }
+
+
     protected override void OnSave() {
       AccountsListData.Write(this);
+    }
+
+    internal void Update(ConciliacionDerivadosListItemFields fields) {
+      AccountNumber = fields.AccountNumber;
+      StartDate = fields.StartDate;
+      EndDate = fields.EndDate;
     }
 
     #endregion Methods

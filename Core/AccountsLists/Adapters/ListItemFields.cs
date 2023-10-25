@@ -7,12 +7,16 @@
 *  Summary  : Use cases for accounts lists.                                                                  *
 *                                                                                                            *
 ************************* Copyright(c) La Vía Óntica SC, Ontica LLC and contributors. All rights reserved. **/
-
 using System;
 
 namespace Empiria.FinancialAccounting.AccountsLists.Adapters {
 
   public class ConciliacionDerivadosListItemFields {
+
+    public string UID {
+      get; set;
+    } = string.Empty;
+
 
     public string AccountNumber {
       get; set;
@@ -28,6 +32,7 @@ namespace Empiria.FinancialAccounting.AccountsLists.Adapters {
 
     internal void EnsureValid() {
       Assertion.Require(AccountNumber, "accountNumber");
+
       _ = AccountsChart.IFRS.GetAccount(this.AccountNumber);
 
       Assertion.Require(AccountsChart.IFRS.MasterData.StartDate <= StartDate &&
@@ -39,7 +44,7 @@ namespace Empiria.FinancialAccounting.AccountsLists.Adapters {
                         "La fecha de término está fuera de rango");
 
       Assertion.Require(StartDate <= EndDate,
-                        "La fecha de inicio debe ser anterior a la fecha de término");
+                        "La fecha de inicio debe ser anterior a la fecha de término.");
 
     }
 

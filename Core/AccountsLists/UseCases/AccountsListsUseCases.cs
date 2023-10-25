@@ -53,6 +53,10 @@ namespace Empiria.FinancialAccounting.AccountsLists.UseCases {
     #region Use cases Conciliación de derivados
 
     public ConciliacionDerivadosListItemDto AddConciliacionDerivadosListItem(ConciliacionDerivadosListItemFields fields) {
+      Assertion.Require(fields, nameof(fields));
+
+      fields.EnsureValid();
+
       var list = ConciliacionDerivadosList.Parse();
 
       ConciliacionDerivadosListItem item = list.AddItem(fields);
@@ -64,6 +68,10 @@ namespace Empiria.FinancialAccounting.AccountsLists.UseCases {
 
 
     public void RemoveConciliacionDerivadosListItem(ConciliacionDerivadosListItemFields fields) {
+      Assertion.Require(fields, nameof(fields));
+
+      fields.EnsureValid();
+
       var list = ConciliacionDerivadosList.Parse();
 
       ConciliacionDerivadosListItem item = list.RemoveItem(fields);
@@ -73,6 +81,10 @@ namespace Empiria.FinancialAccounting.AccountsLists.UseCases {
 
 
     public ConciliacionDerivadosListItemDto UpdateConciliacionDerivadosListItem(ConciliacionDerivadosListItemFields fields) {
+      Assertion.Require(fields, nameof(fields));
+
+      fields.EnsureValid();
+
       var list = ConciliacionDerivadosList.Parse();
 
       ConciliacionDerivadosListItem item = list.UpdateItem(fields);
@@ -88,6 +100,8 @@ namespace Empiria.FinancialAccounting.AccountsLists.UseCases {
     #region Use cases Depreciación Activo Fijo
 
     public DepreciacionActivoFijoListItemDto AddDepreciacionActivoFijoListItem(DepreciacionActivoFijoListItemFields fields) {
+      Assertion.Require(fields, nameof(fields));
+
       var list = DepreciacionActivoFijoList.Parse();
 
       DepreciacionActivoFijoListItem item = list.AddItem(fields);
@@ -99,6 +113,8 @@ namespace Empiria.FinancialAccounting.AccountsLists.UseCases {
 
 
     public void RemoveDepreciacionActivoFijoListItem(DepreciacionActivoFijoListItemFields fields) {
+      Assertion.Require(fields, nameof(fields));
+
       var list = DepreciacionActivoFijoList.Parse();
 
       DepreciacionActivoFijoListItem item = list.RemoveItem(fields);
@@ -108,6 +124,8 @@ namespace Empiria.FinancialAccounting.AccountsLists.UseCases {
 
 
     public DepreciacionActivoFijoListItemDto UpdateDepreciacionActivoFijoListItem(DepreciacionActivoFijoListItemFields fields) {
+      Assertion.Require(fields, nameof(fields));
+
       var list = DepreciacionActivoFijoList.Parse();
 
       DepreciacionActivoFijoListItem item = list.UpdateItem(fields);
@@ -122,6 +140,8 @@ namespace Empiria.FinancialAccounting.AccountsLists.UseCases {
     #region Use cases Derrama SWAPS cobertura
 
     public SwapsCoberturaListItemDto AddSwapsCoberturaListItem(SwapsCoberturaListItemFields fields) {
+      Assertion.Require(fields, nameof(fields));
+
       var list = SwapsCoberturaList.Parse();
 
       SwapsCoberturaListItem item = list.AddItem(fields);
@@ -133,6 +153,8 @@ namespace Empiria.FinancialAccounting.AccountsLists.UseCases {
 
 
     public void RemoveSwapsCoberturaListItem(SwapsCoberturaListItemFields fields) {
+      Assertion.Require(fields, nameof(fields));
+
       var list = SwapsCoberturaList.Parse();
 
       SwapsCoberturaListItem item = list.RemoveItem(fields);
@@ -142,6 +164,8 @@ namespace Empiria.FinancialAccounting.AccountsLists.UseCases {
 
 
     public SwapsCoberturaListItemDto UpdateSwapsCoberturaListItem(SwapsCoberturaListItemFields fields) {
+      Assertion.Require(fields, nameof(fields));
+
       var list = SwapsCoberturaList.Parse();
 
       SwapsCoberturaListItem item = list.UpdateItem(fields);

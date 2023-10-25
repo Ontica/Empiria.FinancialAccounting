@@ -44,13 +44,40 @@ namespace Empiria.FinancialAccounting.AccountsLists.SpecialCases {
     internal ConciliacionDerivadosListItem RemoveItem(ConciliacionDerivadosListItemFields fields) {
       Assertion.Require(fields, nameof(fields));
 
-      throw new NotImplementedException();
+      var items = GetItems();
+
+      var itemToDelete = items.Find(x => x.UID == fields.UID &&
+                                         x.Account.Number == fields.AccountNumber &&
+                                         x.StartDate == fields.StartDate &&
+                                         x.EndDate == fields.EndDate);
+
+      if (itemToDelete == null) {
+        Assertion.RequireFail($"La lista no contiene la cuenta {fields.AccountNumber}.");
+      } else {
+        itemToDelete.Delete();
+      }
+
+      return itemToDelete;
     }
 
     internal ConciliacionDerivadosListItem UpdateItem(ConciliacionDerivadosListItemFields fields) {
       Assertion.Require(fields, nameof(fields));
 
-      throw new NotImplementedException();
+      var items = GetItems();
+
+      if (items.Contains(x => x.Account.Number == fields.AccountNumber && x.UID != fields.UID)) {
+        Assertion.RequireFail($"La lista ya contiene la cuenta {fields.AccountNumber}.");
+      }
+
+      var itemToUpdate = items.Find(x => x.UID == fields.UID);
+
+      if (itemToUpdate == null) {
+        Assertion.RequireFail($"La lista no contiene un elemento con el identificador {fields.UID}.");
+      } else {
+        itemToUpdate.Update(fields);
+      }
+
+      return itemToUpdate;
     }
 
   }  // class ConciliacionDerivadosList

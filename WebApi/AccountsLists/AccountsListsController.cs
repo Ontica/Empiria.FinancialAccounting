@@ -52,7 +52,9 @@ namespace Empiria.FinancialAccounting.WebApi {
 
     [HttpPost]
     [Route("v2/financial-accounting/accounts-lists-for-edition/ConciliacionDerivados")]
-    public SingleObjectModel AddConciliacionDerivadosListItem(ConciliacionDerivadosListItemFields fields) {
+    public SingleObjectModel AddConciliacionDerivadosListItem([FromBody] ConciliacionDerivadosListItemFields fields) {
+
+      RequireBody(fields);
 
       using (var usecases = AccountsListsUseCases.UseCaseInteractor()) {
         ConciliacionDerivadosListItemDto item = usecases.AddConciliacionDerivadosListItem(fields);
@@ -63,8 +65,12 @@ namespace Empiria.FinancialAccounting.WebApi {
 
 
     [HttpDelete]
-    [Route("v2/financial-accounting/accounts-lists-for-edition/ConciliacionDerivados")]
-    public NoDataModel RemoveConciliacionDerivadosListItem(ConciliacionDerivadosListItemFields fields) {
+    [Route("v2/financial-accounting/accounts-lists-for-edition/ConciliacionDerivados/{itemUID:guid}")]
+    public NoDataModel RemoveConciliacionDerivadosListItem([FromUri] string itemUID,
+                                                           [FromBody] ConciliacionDerivadosListItemFields fields) {
+      RequireBody(fields);
+
+      Assertion.Require(itemUID == fields.UID, "Unrecognized list item UID.");
 
       using (var usecases = AccountsListsUseCases.UseCaseInteractor()) {
         usecases.RemoveConciliacionDerivadosListItem(fields);
@@ -75,8 +81,12 @@ namespace Empiria.FinancialAccounting.WebApi {
 
 
     [HttpPut, HttpPatch]
-    [Route("v2/financial-accounting/accounts-lists-for-edition/ConciliacionDerivados")]
-    public SingleObjectModel UpdateConciliacionDerivadosListItem(ConciliacionDerivadosListItemFields fields) {
+    [Route("v2/financial-accounting/accounts-lists-for-edition/ConciliacionDerivados/{itemUID:guid}")]
+    public SingleObjectModel UpdateConciliacionDerivadosListItem([FromUri] string itemUID,
+                                                                 [FromBody] ConciliacionDerivadosListItemFields fields) {
+      RequireBody(fields);
+
+      Assertion.Require(itemUID == fields.UID, "Unrecognized list item UID.");
 
       using (var usecases = AccountsListsUseCases.UseCaseInteractor()) {
         ConciliacionDerivadosListItemDto item = usecases.UpdateConciliacionDerivadosListItem(fields);
@@ -91,7 +101,7 @@ namespace Empiria.FinancialAccounting.WebApi {
 
     [HttpPost]
     [Route("v2/financial-accounting/accounts-lists-for-edition/DepreciacionActivoFijo")]
-    public SingleObjectModel AddDepreciacionActivoFijoListItem(DepreciacionActivoFijoListItemFields fields) {
+    public SingleObjectModel AddDepreciacionActivoFijoListItem([FromBody] DepreciacionActivoFijoListItemFields fields) {
 
       using (var usecases = AccountsListsUseCases.UseCaseInteractor()) {
         DepreciacionActivoFijoListItemDto item = usecases.AddDepreciacionActivoFijoListItem(fields);
@@ -103,7 +113,7 @@ namespace Empiria.FinancialAccounting.WebApi {
 
     [HttpDelete]
     [Route("v2/financial-accounting/accounts-lists-for-edition/DepreciacionActivoFijo")]
-    public NoDataModel RemoveDepreciacionActivoFijoListItem(DepreciacionActivoFijoListItemFields fields) {
+    public NoDataModel RemoveDepreciacionActivoFijoListItem([FromBody] DepreciacionActivoFijoListItemFields fields) {
 
       using (var usecases = AccountsListsUseCases.UseCaseInteractor()) {
         usecases.RemoveDepreciacionActivoFijoListItem(fields);
@@ -115,7 +125,7 @@ namespace Empiria.FinancialAccounting.WebApi {
 
     [HttpPut, HttpPatch]
     [Route("v2/financial-accounting/accounts-lists-for-edition/DepreciacionActivoFijo")]
-    public SingleObjectModel UpdateDepreciacionActivoFijoListItem(DepreciacionActivoFijoListItemFields fields) {
+    public SingleObjectModel UpdateDepreciacionActivoFijoListItem([FromBody] DepreciacionActivoFijoListItemFields fields) {
 
       using (var usecases = AccountsListsUseCases.UseCaseInteractor()) {
         DepreciacionActivoFijoListItemDto item = usecases.UpdateDepreciacionActivoFijoListItem(fields);
@@ -130,7 +140,7 @@ namespace Empiria.FinancialAccounting.WebApi {
 
     [HttpPost]
     [Route("v2/financial-accounting/accounts-lists-for-edition/SwapsCobertura")]
-    public SingleObjectModel AddSwapsCoberturaListItem(SwapsCoberturaListItemFields fields) {
+    public SingleObjectModel AddSwapsCoberturaListItem([FromBody] SwapsCoberturaListItemFields fields) {
 
       using (var usecases = AccountsListsUseCases.UseCaseInteractor()) {
         SwapsCoberturaListItemDto item = usecases.AddSwapsCoberturaListItem(fields);
@@ -142,7 +152,7 @@ namespace Empiria.FinancialAccounting.WebApi {
 
     [HttpDelete]
     [Route("v2/financial-accounting/accounts-lists-for-edition/SwapsCobertura")]
-    public NoDataModel RemoveSwapsCoberturaListItem(SwapsCoberturaListItemFields fields) {
+    public NoDataModel RemoveSwapsCoberturaListItem([FromBody] SwapsCoberturaListItemFields fields) {
 
       using (var usecases = AccountsListsUseCases.UseCaseInteractor()) {
         usecases.RemoveSwapsCoberturaListItem(fields);
@@ -154,7 +164,7 @@ namespace Empiria.FinancialAccounting.WebApi {
 
     [HttpPut, HttpPatch]
     [Route("v2/financial-accounting/accounts-lists-for-edition/SwapsCobertura")]
-    public SingleObjectModel UpdateSwapsCoberturaListItem(SwapsCoberturaListItemFields fields) {
+    public SingleObjectModel UpdateSwapsCoberturaListItem([FromBody] SwapsCoberturaListItemFields fields) {
 
       using (var usecases = AccountsListsUseCases.UseCaseInteractor()) {
         SwapsCoberturaListItemDto item = usecases.UpdateSwapsCoberturaListItem(fields);
