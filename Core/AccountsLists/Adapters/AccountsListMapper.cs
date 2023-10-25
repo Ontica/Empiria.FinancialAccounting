@@ -79,6 +79,8 @@ namespace Empiria.FinancialAccounting.AccountsLists.Adapters {
         AccountUID = item.Account.UID,
         AccountNumber = item.Account.Number,
         AccountName = item.Account.Name,
+        StartDate = item.StartDate,
+        EndDate = item.EndDate
       };
     }
 

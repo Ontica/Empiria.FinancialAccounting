@@ -66,6 +66,14 @@ namespace Empiria.FinancialAccounting.AccountsLists.Adapters {
       get; internal set;
     }
 
+    public DateTime StartDate {
+      get; internal set;
+    }
+
+    public DateTime EndDate {
+      get; internal set;
+    }
+
   }  // class ConciliacionDerivadosListItemDto
 
 

@@ -20,19 +20,36 @@ namespace Empiria.FinancialAccounting.AccountsLists.SpecialCases {
       return BaseObject.ParseKey<ConciliacionDerivadosList>("ConciliacionDerivados");
     }
 
+    public FixedList<ConciliacionDerivadosListItem> GetItems() {
+      return AccountsListData.GetAccounts<ConciliacionDerivadosListItem>(this);
+    }
+
     public FixedList<ConciliacionDerivadosListItem> GetItems(string keywords) {
       return AccountsListData.GetAccounts<ConciliacionDerivadosListItem>(this, keywords);
     }
 
     internal ConciliacionDerivadosListItem AddItem(ConciliacionDerivadosListItemFields fields) {
-      throw new NotImplementedException();
+      Assertion.Require(fields, nameof(fields));
+      Assertion.Require(fields.AccountNumber, nameof(fields.AccountNumber));
+
+      var items = GetItems();
+
+      if (items.Contains(x => x.Account.Number == fields.AccountNumber)) {
+        Assertion.RequireFail($"La lista ya contiene la cuenta {fields.AccountNumber}.");
+      }
+
+      return new ConciliacionDerivadosListItem(this, fields);
     }
 
     internal ConciliacionDerivadosListItem RemoveItem(ConciliacionDerivadosListItemFields fields) {
+      Assertion.Require(fields, nameof(fields));
+
       throw new NotImplementedException();
     }
 
     internal ConciliacionDerivadosListItem UpdateItem(ConciliacionDerivadosListItemFields fields) {
+      Assertion.Require(fields, nameof(fields));
+
       throw new NotImplementedException();
     }
 

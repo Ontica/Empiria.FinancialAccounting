@@ -9,6 +9,11 @@
 ************************* Copyright(c) La Vía Óntica SC, Ontica LLC and contributors. All rights reserved. **/
 using System;
 
+using Empiria.StateEnums;
+
+using Empiria.FinancialAccounting.AccountsLists.Adapters;
+using Empiria.FinancialAccounting.AccountsLists.Data;
+
 namespace Empiria.FinancialAccounting.AccountsLists.SpecialCases {
 
   /// <summary>Describes a member of a financial accounts list.</summary>
@@ -21,12 +26,17 @@ namespace Empiria.FinancialAccounting.AccountsLists.SpecialCases {
     }
 
 
-    protected ConciliacionDerivadosListItem(AccountsList list, string accountNumber) {
+    internal protected ConciliacionDerivadosListItem(AccountsList list,
+                                                     ConciliacionDerivadosListItemFields fields) {
       Assertion.Require(list, nameof(list));
-      Assertion.Require(accountNumber, nameof(accountNumber));
+      Assertion.Require(fields, nameof(fields));
+
+      fields.EnsureValid();
 
       this.List = list;
-      this.AccountNumber = accountNumber;
+      this.AccountNumber = fields.AccountNumber;
+      this.StartDate = fields.StartDate;
+      this.EndDate = fields.EndDate;
     }
 
     static public ConciliacionDerivadosListItem Parse(int id) {
@@ -59,7 +69,44 @@ namespace Empiria.FinancialAccounting.AccountsLists.SpecialCases {
       get; set;
     }
 
+
+    [DataField("FECHA_INICIO")]
+    public DateTime StartDate {
+      get;
+      private set;
+    }
+
+
+    [DataField("FECHA_FIN")]
+    public DateTime EndDate {
+      get;
+      private set;
+    }
+
+
+    public string Keywords {
+      get {
+        return EmpiriaString.BuildKeywords(AccountNumber, Account.Name);
+      }
+    }
+
+
+    [DataField("STATUS_ELEMENTO_LISTA", Default = EntityStatus.Active)]
+    public EntityStatus Status {
+      get;
+      internal set;
+    } = EntityStatus.Active;
+
+
     #endregion Properties
+
+    #region Methods
+
+    protected override void OnSave() {
+      AccountsListData.Write(this);
+    }
+
+    #endregion Methods
 
   }  // class ConciliacionDerivadosListItem
 

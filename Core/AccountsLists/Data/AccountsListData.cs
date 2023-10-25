@@ -10,6 +10,7 @@
 using System;
 
 using Empiria.Data;
+using Empiria.FinancialAccounting.AccountsLists.SpecialCases;
 
 namespace Empiria.FinancialAccounting.AccountsLists.Data {
 
@@ -44,6 +45,15 @@ namespace Empiria.FinancialAccounting.AccountsLists.Data {
       return DataReader.GetFixedList<T>(dataOperation);
     }
 
+
+    static internal void Write(ConciliacionDerivadosListItem o) {
+      var op = DataOperation.Parse("write_cof_lista_cuentas",
+        o.Id, o.UID, o.List.Id, o.GetEmpiriaType().Id, -1, o.Account.Number,
+        string.Empty, string.Empty, string.Empty, string.Empty, string.Empty, 1,
+        o.StartDate, o.EndDate, o.Keywords, (char) o.Status);
+
+      DataWriter.Execute(op);
+    }
 
   }  // class AccountsListData
 
