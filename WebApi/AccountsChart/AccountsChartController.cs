@@ -24,6 +24,21 @@ namespace Empiria.FinancialAccounting.WebApi {
 
     #region Web Apis
 
+
+    [HttpGet]
+    [Route("v2/financial-accounting/accounts-charts/ifrs")]
+    public SingleObjectModel GetIFRSAccounts() {
+
+      base.SetOperation($"Se leyeron todas las cuentas del catálogo de cuentas.");
+
+      using (var usecases = AccountsChartUseCases.UseCaseInteractor()) {
+        AccountsChartDto accountsChart = usecases.GetAccounts(AccountsChart.IFRS.UID);
+
+        return new SingleObjectModel(base.Request, accountsChart);
+      }
+    }
+
+
     [HttpGet]
     [Route("v2/financial-accounting/accounts-charts/{accountsChartUID:guid}")]
     public SingleObjectModel GetAccounts([FromUri] string accountsChartUID) {
@@ -87,6 +102,21 @@ namespace Empiria.FinancialAccounting.WebApi {
 
 
     [HttpPost]
+    [Route("v2/financial-accounting/accounts-charts/ifrs")]
+    public SingleObjectModel SearchIFRSAccounts([FromBody] AccountsQuery query) {
+      base.RequireBody(query);
+
+      base.SetOperation($"Se efectuó una búsqueda en el catálogo de cuentas.");
+
+      using (var usecases = AccountsChartUseCases.UseCaseInteractor()) {
+        AccountsChartDto accountsChart = usecases.SearchAccounts(AccountsChart.IFRS.UID, query);
+
+        return new SingleObjectModel(base.Request, accountsChart);
+      }
+    }
+
+
+    [HttpPost]
     [Route("v2/financial-accounting/accounts-charts/{accountsChartUID:guid}")]
     public SingleObjectModel SearchAccounts([FromUri] string accountsChartUID,
                                             [FromBody] AccountsQuery query) {
@@ -100,6 +130,7 @@ namespace Empiria.FinancialAccounting.WebApi {
         return new SingleObjectModel(base.Request, accountsChart);
       }
     }
+
 
     #endregion Web Apis
 
