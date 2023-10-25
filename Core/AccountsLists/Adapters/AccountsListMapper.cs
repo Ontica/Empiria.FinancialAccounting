@@ -91,7 +91,9 @@ namespace Empiria.FinancialAccounting.AccountsLists.Adapters {
         SubledgerAccountId = item.SubledgerAccount.Id,
         SubledgerAccountName = item.SubledgerAccount.Name,
         SubledgerAccountNumber = item.SubledgerAccount.Number,
-        Classification = item.Classification
+        Classification = item.Classification,
+        StartDate = item.StartDate,
+        EndDate = item.EndDate
       };
     }
 

@@ -142,6 +142,8 @@ namespace Empiria.FinancialAccounting.AccountsLists.UseCases {
     public SwapsCoberturaListItemDto AddSwapsCoberturaListItem(SwapsCoberturaListItemFields fields) {
       Assertion.Require(fields, nameof(fields));
 
+      fields.EnsureValid();
+
       var list = SwapsCoberturaList.Parse();
 
       SwapsCoberturaListItem item = list.AddItem(fields);
@@ -155,6 +157,8 @@ namespace Empiria.FinancialAccounting.AccountsLists.UseCases {
     public void RemoveSwapsCoberturaListItem(SwapsCoberturaListItemFields fields) {
       Assertion.Require(fields, nameof(fields));
 
+      fields.EnsureValid();
+
       var list = SwapsCoberturaList.Parse();
 
       SwapsCoberturaListItem item = list.RemoveItem(fields);
@@ -165,6 +169,8 @@ namespace Empiria.FinancialAccounting.AccountsLists.UseCases {
 
     public SwapsCoberturaListItemDto UpdateSwapsCoberturaListItem(SwapsCoberturaListItemFields fields) {
       Assertion.Require(fields, nameof(fields));
+
+      fields.EnsureValid();
 
       var list = SwapsCoberturaList.Parse();
 

@@ -103,6 +103,8 @@ namespace Empiria.FinancialAccounting.WebApi {
     [Route("v2/financial-accounting/accounts-lists-for-edition/DepreciacionActivoFijo")]
     public SingleObjectModel AddDepreciacionActivoFijoListItem([FromBody] DepreciacionActivoFijoListItemFields fields) {
 
+      RequireBody(fields);
+
       using (var usecases = AccountsListsUseCases.UseCaseInteractor()) {
         DepreciacionActivoFijoListItemDto item = usecases.AddDepreciacionActivoFijoListItem(fields);
 
@@ -112,8 +114,13 @@ namespace Empiria.FinancialAccounting.WebApi {
 
 
     [HttpDelete]
-    [Route("v2/financial-accounting/accounts-lists-for-edition/DepreciacionActivoFijo")]
-    public NoDataModel RemoveDepreciacionActivoFijoListItem([FromBody] DepreciacionActivoFijoListItemFields fields) {
+    [Route("v2/financial-accounting/accounts-lists-for-edition/DepreciacionActivoFijo/{itemUID:guid}")]
+    public NoDataModel RemoveDepreciacionActivoFijoListItem([FromUri] string itemUID,
+                                                            [FromBody] DepreciacionActivoFijoListItemFields fields) {
+
+      RequireBody(fields);
+
+      Assertion.Require(itemUID == fields.UID, "Unrecognized list item UID.");
 
       using (var usecases = AccountsListsUseCases.UseCaseInteractor()) {
         usecases.RemoveDepreciacionActivoFijoListItem(fields);
@@ -124,8 +131,13 @@ namespace Empiria.FinancialAccounting.WebApi {
 
 
     [HttpPut, HttpPatch]
-    [Route("v2/financial-accounting/accounts-lists-for-edition/DepreciacionActivoFijo")]
-    public SingleObjectModel UpdateDepreciacionActivoFijoListItem([FromBody] DepreciacionActivoFijoListItemFields fields) {
+    [Route("v2/financial-accounting/accounts-lists-for-edition/DepreciacionActivoFijo/{itemUID:guid}")]
+    public SingleObjectModel UpdateDepreciacionActivoFijoListItem([FromUri] string itemUID,
+                                                                  [FromBody] DepreciacionActivoFijoListItemFields fields) {
+
+      RequireBody(fields);
+
+      Assertion.Require(itemUID == fields.UID, "Unrecognized list item UID.");
 
       using (var usecases = AccountsListsUseCases.UseCaseInteractor()) {
         DepreciacionActivoFijoListItemDto item = usecases.UpdateDepreciacionActivoFijoListItem(fields);
@@ -142,6 +154,8 @@ namespace Empiria.FinancialAccounting.WebApi {
     [Route("v2/financial-accounting/accounts-lists-for-edition/SwapsCobertura")]
     public SingleObjectModel AddSwapsCoberturaListItem([FromBody] SwapsCoberturaListItemFields fields) {
 
+      RequireBody(fields);
+
       using (var usecases = AccountsListsUseCases.UseCaseInteractor()) {
         SwapsCoberturaListItemDto item = usecases.AddSwapsCoberturaListItem(fields);
 
@@ -151,8 +165,13 @@ namespace Empiria.FinancialAccounting.WebApi {
 
 
     [HttpDelete]
-    [Route("v2/financial-accounting/accounts-lists-for-edition/SwapsCobertura")]
-    public NoDataModel RemoveSwapsCoberturaListItem([FromBody] SwapsCoberturaListItemFields fields) {
+    [Route("v2/financial-accounting/accounts-lists-for-edition/SwapsCobertura/{itemUID:guid}")]
+    public NoDataModel RemoveSwapsCoberturaListItem([FromUri] string itemUID,
+                                                    [FromBody] SwapsCoberturaListItemFields fields) {
+
+      RequireBody(fields);
+
+      Assertion.Require(itemUID == fields.UID, "Unrecognized list item UID.");
 
       using (var usecases = AccountsListsUseCases.UseCaseInteractor()) {
         usecases.RemoveSwapsCoberturaListItem(fields);
@@ -163,8 +182,13 @@ namespace Empiria.FinancialAccounting.WebApi {
 
 
     [HttpPut, HttpPatch]
-    [Route("v2/financial-accounting/accounts-lists-for-edition/SwapsCobertura")]
-    public SingleObjectModel UpdateSwapsCoberturaListItem([FromBody] SwapsCoberturaListItemFields fields) {
+    [Route("v2/financial-accounting/accounts-lists-for-edition/SwapsCobertura/{itemUID:guid}")]
+    public SingleObjectModel UpdateSwapsCoberturaListItem([FromUri] string itemUID,
+                                                          [FromBody] SwapsCoberturaListItemFields fields) {
+
+      RequireBody(fields);
+
+      Assertion.Require(itemUID == fields.UID, "Unrecognized list item UID.");
 
       using (var usecases = AccountsListsUseCases.UseCaseInteractor()) {
         SwapsCoberturaListItemDto item = usecases.UpdateSwapsCoberturaListItem(fields);

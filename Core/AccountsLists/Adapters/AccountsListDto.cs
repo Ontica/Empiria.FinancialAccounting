@@ -77,6 +77,7 @@ namespace Empiria.FinancialAccounting.AccountsLists.Adapters {
   }  // class ConciliacionDerivadosListItemDto
 
 
+
   public class SwapsCoberturaListItemDto : AccountsListItemDto {
 
     public int SubledgerAccountId {
@@ -95,7 +96,16 @@ namespace Empiria.FinancialAccounting.AccountsLists.Adapters {
       get; internal set;
     }
 
+    public DateTime StartDate {
+      get; internal set;
+    }
+
+    public DateTime EndDate {
+      get; internal set;
+    }
+
   }  // class SwapsCoberturaListItemDto
+
 
 
   public class DepreciacionActivoFijoListItemDto : AccountsListItemDto {

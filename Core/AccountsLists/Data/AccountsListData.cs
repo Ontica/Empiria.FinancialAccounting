@@ -55,6 +55,16 @@ namespace Empiria.FinancialAccounting.AccountsLists.Data {
       DataWriter.Execute(op);
     }
 
+
+    internal static void Write(SwapsCoberturaListItem o) {
+      var op = DataOperation.Parse("write_cof_lista_cuentas",
+        o.Id, o.UID, o.List.Id, o.GetEmpiriaType().Id, -1, string.Empty,
+        string.Empty, string.Empty, o.SubledgerAccount.Number, string.Empty, o.ExtData.ToString(), 1,
+        o.StartDate, o.EndDate, o.Keywords, (char) o.Status);
+
+      DataWriter.Execute(op);
+    }
+
   }  // class AccountsListData
 
 }  // namespace Empiria.FinancialAccounting.Data

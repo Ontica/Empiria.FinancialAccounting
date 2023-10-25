@@ -8,8 +8,10 @@
 *                                                                                                            *
 ************************* Copyright(c) La Vía Óntica SC, Ontica LLC and contributors. All rights reserved. **/
 using System;
-
+using Empiria.FinancialAccounting.AccountsLists.Adapters;
+using Empiria.FinancialAccounting.AccountsLists.Data;
 using Empiria.Json;
+using Empiria.StateEnums;
 
 namespace Empiria.FinancialAccounting.AccountsLists.SpecialCases {
 
@@ -23,8 +25,17 @@ namespace Empiria.FinancialAccounting.AccountsLists.SpecialCases {
     }
 
 
-    protected SwapsCoberturaListItem(AccountsList list) {
+    public SwapsCoberturaListItem(AccountsList list, SwapsCoberturaListItemFields fields) {
+      Assertion.Require(list, nameof(list));
+      Assertion.Require(fields, nameof(fields));
+
+      fields.EnsureValid();
+
       this.List = list;
+      this.SubledgerAccountNumber = fields.SubledgerAccountNumber;
+      this.Classification = fields.Classification;
+      this.StartDate = fields.StartDate;
+      this.EndDate = fields.EndDate;
     }
 
     static public SwapsCoberturaListItem Parse(int id) {
@@ -68,6 +79,9 @@ namespace Empiria.FinancialAccounting.AccountsLists.SpecialCases {
       get {
         return ExtData.Get("classification", string.Empty);
       }
+      private set {
+        ExtData.Set("classification", value);
+      }
     }
 
 
@@ -76,7 +90,53 @@ namespace Empiria.FinancialAccounting.AccountsLists.SpecialCases {
       get; private set;
     }
 
+
+    [DataField("FECHA_INICIO")]
+    public DateTime StartDate {
+      get;
+      private set;
+    }
+
+
+    [DataField("FECHA_FIN")]
+    public DateTime EndDate {
+      get;
+      private set;
+    }
+
+    public string Keywords {
+      get {
+        return EmpiriaString.BuildKeywords(SubledgerAccount.Number, SubledgerAccount.Name, Classification);
+      }
+    }
+
+
+    [DataField("STATUS_ELEMENTO_LISTA", Default = EntityStatus.Active)]
+    public EntityStatus Status {
+      get;
+      private set;
+    } = EntityStatus.Active;
+
     #endregion Properties
+
+    #region Methods
+
+    internal void Delete() {
+      Status = EntityStatus.Deleted;
+    }
+
+    protected override void OnSave() {
+      AccountsListData.Write(this);
+    }
+
+    internal void Update(SwapsCoberturaListItemFields fields) {
+      SubledgerAccountNumber = fields.SubledgerAccountNumber;
+      Classification = fields.Classification;
+      StartDate = fields.StartDate;
+      EndDate = fields.EndDate;
+    }
+
+    #endregion Methods
 
   }  // class SwapsCoberturaListItem
 
