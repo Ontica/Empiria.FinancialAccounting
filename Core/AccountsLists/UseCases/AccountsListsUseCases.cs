@@ -32,34 +32,30 @@ namespace Empiria.FinancialAccounting.AccountsLists.UseCases {
 
     #endregion Constructors and parsers
 
-    #region Use cases
+    #region Query Use cases
+
+    public AccountsListDto GetEditableAccountsList(string accountsListUID, string keywords) {
+      var list = AccountsList.Parse(accountsListUID);
+
+      return AccountsListMapper.Map(list, keywords);
+    }
+
+
+    public FixedList<NamedEntityDto> GetAccountsListsForEdition() {
+      FixedList<AccountsList> accountsLists = AccountsList.GetList()
+                                                          .FindAll(x => x.IsEditable);
+
+      return accountsLists.MapToNamedEntityList();
+    }
+
+    #endregion Query Use cases
+
+    #region Use cases Conciliación de derivados
 
     public ConciliacionDerivadosListItemDto AddConciliacionDerivadosListItem(ConciliacionDerivadosListItemFields fields) {
       var list = ConciliacionDerivadosList.Parse();
 
       ConciliacionDerivadosListItem item = list.AddItem(fields);
-
-      item.Save();
-
-      return AccountsListMapper.MapEntry(item);
-    }
-
-
-    public DepreciacionActivoFijoListItemDto AddDepreciacionActivoFijoListItem(DepreciacionActivoFijoListItemFields fields) {
-      var list = DepreciacionActivoFijoList.Parse();
-
-      DepreciacionActivoFijoListItem item = list.AddItem(fields);
-
-      item.Save();
-
-      return AccountsListMapper.MapEntry(item);
-    }
-
-
-    public SwapsCoberturaListItemDto AddSwapsCoberturaListItem(SwapsCoberturaListItemFields fields) {
-      var list = SwapsCoberturaList.Parse();
-
-      SwapsCoberturaListItem item = list.AddItem(fields);
 
       item.Save();
 
@@ -76,12 +72,29 @@ namespace Empiria.FinancialAccounting.AccountsLists.UseCases {
     }
 
 
-    public void RemoveSwapsCoberturaListItem(SwapsCoberturaListItemFields fields) {
-      var list = SwapsCoberturaList.Parse();
+    public ConciliacionDerivadosListItemDto UpdateConciliacionDerivadosListItem(ConciliacionDerivadosListItemFields fields) {
+      var list = ConciliacionDerivadosList.Parse();
 
-      SwapsCoberturaListItem item = list.RemoveItem(fields);
+      ConciliacionDerivadosListItem item = list.UpdateItem(fields);
 
       item.Save();
+
+      return AccountsListMapper.MapEntry(item);
+    }
+
+    #endregion Use cases Conciliación de derivados
+
+
+    #region Use cases Depreciación Activo Fijo
+
+    public DepreciacionActivoFijoListItemDto AddDepreciacionActivoFijoListItem(DepreciacionActivoFijoListItemFields fields) {
+      var list = DepreciacionActivoFijoList.Parse();
+
+      DepreciacionActivoFijoListItem item = list.AddItem(fields);
+
+      item.Save();
+
+      return AccountsListMapper.MapEntry(item);
     }
 
 
@@ -91,17 +104,6 @@ namespace Empiria.FinancialAccounting.AccountsLists.UseCases {
       DepreciacionActivoFijoListItem item = list.RemoveItem(fields);
 
       item.Save();
-    }
-
-
-    public ConciliacionDerivadosListItemDto UpdateConciliacionDerivadosListItem(ConciliacionDerivadosListItemFields fields) {
-      var list = ConciliacionDerivadosList.Parse();
-
-      ConciliacionDerivadosListItem item = list.UpdateItem(fields);
-
-      item.Save();
-
-      return AccountsListMapper.MapEntry(item);
     }
 
 
@@ -115,6 +117,29 @@ namespace Empiria.FinancialAccounting.AccountsLists.UseCases {
       return AccountsListMapper.MapEntry(item);
     }
 
+    #endregion Use cases Depreciación Activo Fijo
+
+    #region Use cases Derrama SWAPS cobertura
+
+    public SwapsCoberturaListItemDto AddSwapsCoberturaListItem(SwapsCoberturaListItemFields fields) {
+      var list = SwapsCoberturaList.Parse();
+
+      SwapsCoberturaListItem item = list.AddItem(fields);
+
+      item.Save();
+
+      return AccountsListMapper.MapEntry(item);
+    }
+
+
+    public void RemoveSwapsCoberturaListItem(SwapsCoberturaListItemFields fields) {
+      var list = SwapsCoberturaList.Parse();
+
+      SwapsCoberturaListItem item = list.RemoveItem(fields);
+
+      item.Save();
+    }
+
 
     public SwapsCoberturaListItemDto UpdateSwapsCoberturaListItem(SwapsCoberturaListItemFields fields) {
       var list = SwapsCoberturaList.Parse();
@@ -126,22 +151,7 @@ namespace Empiria.FinancialAccounting.AccountsLists.UseCases {
       return AccountsListMapper.MapEntry(item);
     }
 
-
-    public AccountsListDto GetEditableAccountsList(string accountsListUID, string keywords) {
-      var list = AccountsList.Parse(accountsListUID);
-
-      return AccountsListMapper.Map(list, keywords);
-    }
-
-
-    public FixedList<NamedEntityDto> GetAccountsListsForEdition() {
-      FixedList<AccountsList> accountsLists = AccountsList.GetList()
-                                                          .FindAll(x => x.IsEditable);
-
-      return accountsLists.MapToNamedEntityList();
-    }
-
-    #endregion Use cases
+    #endregion Use cases Derrama SWAPS cobertura
 
   } // class AccountsListsUseCases
 
