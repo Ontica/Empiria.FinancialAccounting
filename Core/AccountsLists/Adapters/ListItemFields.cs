@@ -60,6 +60,51 @@ namespace Empiria.FinancialAccounting.AccountsLists.Adapters {
       get; set;
     }
 
+    public int DelegacionId {
+      get; set;
+    }
+
+    public string AuxiliarHistorico {
+      get; set;
+    }
+
+    public DateTime FechaAdquisicion {
+      get; set;
+    } = DateTime.MinValue;
+
+
+    public DateTime FechaInicioDepreciacion {
+      get; set;
+    } = DateTime.MinValue;
+
+
+    public int MesesDepreciacion {
+      get; set;
+    }
+
+    public string AuxiliarRevaluacion {
+      get; set;
+    } = string.Empty;
+
+
+    internal void EnsureValid() {
+      Assertion.Require(DelegacionId != 0, "Delegacion");
+      Assertion.Require(AuxiliarHistorico, "AuxiliarHistorico");
+      Assertion.Require(FechaAdquisicion != DateTime.MinValue, "FechaAdquisicion");
+      Assertion.Require(FechaInicioDepreciacion != DateTime.MinValue, "FechaInicioDepreciacion");
+      Assertion.Require(MesesDepreciacion > 0, "MesesDepreciacion");
+
+      if (SubledgerAccount.TryParse(AccountsChart.IFRS, AuxiliarHistorico) == null) {
+        Assertion.RequireFail($"El auxiliar {AuxiliarHistorico} no ha sido registrado.");
+      }
+
+      if (AuxiliarRevaluacion.Length != 0 && SubledgerAccount.TryParse(AccountsChart.IFRS, AuxiliarHistorico) == null) {
+        Assertion.RequireFail($"El auxiliar de revaluación {AuxiliarRevaluacion} no ha sido registrado.");
+      }
+
+      Assertion.Require(FechaAdquisicion <= FechaInicioDepreciacion,
+                        "La fecha de adqusición debe ser anterior o igual a la fecha de inicio de depreciación.");
+    }
 
   }  // class DepreciacionActivoFijoListItemFields
 

@@ -20,6 +20,9 @@ namespace Empiria.FinancialAccounting.AccountsLists.SpecialCases {
       return (DepreciacionActivoFijoList) AccountsList.Parse("DepreciacionActivoFijo");
     }
 
+    public FixedList<DepreciacionActivoFijoListItem> GetItems() {
+      return AccountsListData.GetAccounts<DepreciacionActivoFijoListItem>(this);
+    }
 
     public FixedList<DepreciacionActivoFijoListItem> GetItems(string keywords) {
       return AccountsListData.GetAccounts<DepreciacionActivoFijoListItem>(this, keywords);
@@ -27,17 +30,56 @@ namespace Empiria.FinancialAccounting.AccountsLists.SpecialCases {
 
 
     internal DepreciacionActivoFijoListItem AddItem(DepreciacionActivoFijoListItemFields fields) {
-      throw new NotImplementedException();
+      Assertion.Require(fields, nameof(fields));
+
+      var items = GetItems();
+
+      if (items.Contains(x => x.AuxiliarHistorico.Number == fields.AuxiliarHistorico)) {
+        Assertion.RequireFail($"La lista ya contiene el auxiliar histórico {fields.AuxiliarHistorico}.");
+      }
+
+      return new DepreciacionActivoFijoListItem(this, fields);
     }
 
 
     internal DepreciacionActivoFijoListItem RemoveItem(DepreciacionActivoFijoListItemFields fields) {
-      throw new NotImplementedException();
+      Assertion.Require(fields, nameof(fields));
+
+      var items = GetItems();
+
+      var itemToDelete = items.Find(x => x.UID == fields.UID &&
+                                         x.AuxiliarHistorico.Number == fields.AuxiliarHistorico &&
+                                         x.FechaAdquisicion == fields.FechaAdquisicion &&
+                                         x.FechaInicioDepreciacion == fields.FechaInicioDepreciacion);
+
+      if (itemToDelete == null) {
+        Assertion.RequireFail($"La lista no contiene el auxiliar {fields.AuxiliarHistorico}.");
+      } else {
+        itemToDelete.Delete();
+      }
+
+      return itemToDelete;
     }
 
 
     internal DepreciacionActivoFijoListItem UpdateItem(DepreciacionActivoFijoListItemFields fields) {
-      throw new NotImplementedException();
+      Assertion.Require(fields, nameof(fields));
+
+      var items = GetItems();
+
+      if (items.Contains(x => x.AuxiliarHistorico.Number == fields.AuxiliarHistorico && x.UID != fields.UID)) {
+        Assertion.RequireFail($"La lista ya contiene el auxiliar {fields.AuxiliarHistorico}.");
+      }
+
+      var itemToUpdate = items.Find(x => x.UID == fields.UID);
+
+      if (itemToUpdate == null) {
+        Assertion.RequireFail($"La lista no contiene un elemento con el identificador {fields.UID}.");
+      } else {
+        itemToUpdate.Update(fields);
+      }
+
+      return itemToUpdate;
     }
 
   }  // class ConciliacionDerivadosList

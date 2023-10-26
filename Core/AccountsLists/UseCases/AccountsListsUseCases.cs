@@ -102,6 +102,8 @@ namespace Empiria.FinancialAccounting.AccountsLists.UseCases {
     public DepreciacionActivoFijoListItemDto AddDepreciacionActivoFijoListItem(DepreciacionActivoFijoListItemFields fields) {
       Assertion.Require(fields, nameof(fields));
 
+      fields.EnsureValid();
+
       var list = DepreciacionActivoFijoList.Parse();
 
       DepreciacionActivoFijoListItem item = list.AddItem(fields);
@@ -115,6 +117,8 @@ namespace Empiria.FinancialAccounting.AccountsLists.UseCases {
     public void RemoveDepreciacionActivoFijoListItem(DepreciacionActivoFijoListItemFields fields) {
       Assertion.Require(fields, nameof(fields));
 
+      fields.EnsureValid();
+
       var list = DepreciacionActivoFijoList.Parse();
 
       DepreciacionActivoFijoListItem item = list.RemoveItem(fields);
@@ -125,6 +129,8 @@ namespace Empiria.FinancialAccounting.AccountsLists.UseCases {
 
     public DepreciacionActivoFijoListItemDto UpdateDepreciacionActivoFijoListItem(DepreciacionActivoFijoListItemFields fields) {
       Assertion.Require(fields, nameof(fields));
+
+      fields.EnsureValid();
 
       var list = DepreciacionActivoFijoList.Parse();
 

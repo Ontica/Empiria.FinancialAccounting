@@ -138,11 +138,11 @@ namespace Empiria.FinancialAccounting.AccountsLists.Adapters {
       get; internal set;
     }
 
-    public DateTime FechaDepreciacion {
+    public DateTime FechaAdquisicion {
       get; internal set;
     }
 
-    public DateTime InicioDepreciacion {
+    public DateTime FechaInicioDepreciacion {
       get; internal set;
     }
 

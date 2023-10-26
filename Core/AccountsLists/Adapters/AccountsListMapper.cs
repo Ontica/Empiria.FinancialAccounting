@@ -108,8 +108,8 @@ namespace Empiria.FinancialAccounting.AccountsLists.Adapters {
         NumeroDelegacion = item.Ledger.Number,
         Delegacion = item.Ledger.Name,
         DelegacionId = item.Ledger.Id,
-        FechaDepreciacion = item.FechaDepreciacion,
-        InicioDepreciacion = item.InicioDepreciacion,
+        FechaAdquisicion = item.FechaAdquisicion,
+        FechaInicioDepreciacion = item.FechaInicioDepreciacion,
         MesesDepreciacion = item.MesesDepreciacion
       };
 

@@ -65,6 +65,14 @@ namespace Empiria.FinancialAccounting.AccountsLists.Data {
       DataWriter.Execute(op);
     }
 
+    internal static void Write(DepreciacionActivoFijoListItem o) {
+      var op = DataOperation.Parse("write_cof_lista_cuentas",
+        o.Id, o.UID, o.List.Id, o.GetEmpiriaType().Id, o.Ledger.Id, string.Empty,
+        string.Empty, string.Empty, o.AuxiliarHistorico.Number, string.Empty, o.ExtData.ToString(), 1,
+        o.StartDate, o.EndDate, o.Keywords, (char) o.Status);
+
+      DataWriter.Execute(op);
+    }
   }  // class AccountsListData
 
 }  // namespace Empiria.FinancialAccounting.Data

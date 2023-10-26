@@ -10,6 +10,10 @@
 using System;
 
 using Empiria.Json;
+using Empiria.StateEnums;
+
+using Empiria.FinancialAccounting.AccountsLists.Adapters;
+using Empiria.FinancialAccounting.AccountsLists.Data;
 
 namespace Empiria.FinancialAccounting.AccountsLists.SpecialCases {
 
@@ -23,8 +27,15 @@ namespace Empiria.FinancialAccounting.AccountsLists.SpecialCases {
     }
 
 
-    protected DepreciacionActivoFijoListItem(AccountsList list) {
+    internal DepreciacionActivoFijoListItem(AccountsList list, DepreciacionActivoFijoListItemFields fields) {
+      Assertion.Require(list, nameof(list));
+      Assertion.Require(fields, nameof(fields));
+
+      fields.EnsureValid();
+
       this.List = list;
+
+      this.Update(fields);
     }
 
     static public DepreciacionActivoFijoListItem Parse(int id) {
@@ -78,22 +89,22 @@ namespace Empiria.FinancialAccounting.AccountsLists.SpecialCases {
     }
 
 
-    public DateTime FechaDepreciacion {
+    public DateTime FechaAdquisicion {
       get {
-        return this.ExtData.Get("fechaDepreciacion", ExecutionServer.DateMaxValue);
+        return this.ExtData.Get("fechaAdquisicion", ExecutionServer.DateMaxValue);
       }
       private set {
-        this.ExtData.Set("fechaDepreciacion", value);
+        this.ExtData.Set("fechaAdquisicion", value);
       }
     }
 
 
-    public DateTime InicioDepreciacion {
+    public DateTime FechaInicioDepreciacion {
       get {
-        return this.ExtData.Get("inicioDepreciacion", ExecutionServer.DateMaxValue);
+        return this.ExtData.Get("fechaInicioDepreciacion", ExecutionServer.DateMaxValue);
       }
       private set {
-        this.ExtData.Set("inicioDepreciacion", value);
+        this.ExtData.Set("fechaInicioDepreciacion", value);
       }
     }
 
@@ -108,15 +119,31 @@ namespace Empiria.FinancialAccounting.AccountsLists.SpecialCases {
     }
 
 
+    private SubledgerAccount _auxiliarRevaluacion;
     public SubledgerAccount AuxiliarRevaluacion {
       get {
-        return this.ExtData.Get<SubledgerAccount>("auxiliarRevaluacion", SubledgerAccount.Empty);
-      }
-      private set {
-        this.ExtData.Set("auxiliarRevaluacion", value.Number);
+        if (this.NumeroAuxiliarRevaluacion.Length == 0) {
+          return SubledgerAccount.Empty;
+        }
+        if (_auxiliarRevaluacion == null) {
+          _auxiliarRevaluacion = SubledgerAccount.TryParse(AccountsChart.IFRS, this.NumeroAuxiliarRevaluacion);
+          if (_auxiliarRevaluacion == null) {
+            return SubledgerAccount.Empty;
+          }
+        }
+        return _auxiliarRevaluacion;
       }
     }
 
+
+    private string NumeroAuxiliarRevaluacion {
+      get {
+        return this.ExtData.Get<string>("auxiliarRevaluacion", string.Empty);
+      }
+      set {
+        this.ExtData.SetIfValue("auxiliarRevaluacion", value);
+      }
+    }
 
     public string NumeroInventario {
       get {
@@ -124,7 +151,64 @@ namespace Empiria.FinancialAccounting.AccountsLists.SpecialCases {
       }
     }
 
+
+    [DataField("FECHA_INICIO")]
+    internal DateTime StartDate {
+      get;
+      private set;
+    } = ExecutionServer.DateMinValue;
+
+
+    [DataField("FECHA_FIN")]
+    internal DateTime EndDate {
+      get;
+      private set;
+    } = ExecutionServer.DateMaxValue;
+
+
+    public string Keywords {
+      get {
+        var keywords = EmpiriaString.BuildKeywords(AuxiliarHistorico.Number, AuxiliarHistorico.Name, Ledger.Name);
+
+        if (!AuxiliarRevaluacion.IsEmptyInstance) {
+          keywords += EmpiriaString.BuildKeywords(AuxiliarRevaluacion.Number, AuxiliarRevaluacion.Name);
+        }
+
+        return keywords;
+      }
+    }
+
+
+    [DataField("STATUS_ELEMENTO_LISTA", Default = EntityStatus.Active)]
+    public EntityStatus Status {
+      get;
+      private set;
+    } = EntityStatus.Active;
+
+
     #endregion Properties
+
+    #region Methods
+
+    internal void Delete() {
+      Status = EntityStatus.Deleted;
+    }
+
+    protected override void OnSave() {
+      AccountsListData.Write(this);
+    }
+
+    internal void Update(DepreciacionActivoFijoListItemFields fields) {
+      SubledgerAccountNumber = fields.AuxiliarHistorico;
+      this.Ledger = Ledger.Parse(fields.DelegacionId);
+      this.SubledgerAccountNumber = fields.AuxiliarHistorico;
+      this.FechaAdquisicion = fields.FechaAdquisicion;
+      this.FechaInicioDepreciacion = fields.FechaInicioDepreciacion;
+      this.MesesDepreciacion = fields.MesesDepreciacion;
+      this.NumeroAuxiliarRevaluacion = fields.AuxiliarRevaluacion;
+    }
+
+    #endregion Methods
 
   }  // class DepreciacionActivoFijoListItem
 
