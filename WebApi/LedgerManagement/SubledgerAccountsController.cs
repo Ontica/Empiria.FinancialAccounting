@@ -74,6 +74,22 @@ namespace Empiria.FinancialAccounting.WebApi {
 
 
     [HttpPost]
+    [Route("v2/financial-accounting/subledger-accounts/search/ifrs")]
+    public CollectionModel SearchSubledgerAccountsIFRS([FromBody] SubledgerAccountQuery query) {
+
+      base.RequireBody(query);
+
+      query.AccountsChartUID = AccountsChart.IFRS.UID;
+
+      using (var usecases = SubledgerUseCases.UseCaseInteractor()) {
+        FixedList<SubledgerAccountDescriptorDto> list = usecases.SearchSubledgerAccounts(query);
+
+        return new CollectionModel(base.Request, list);
+      }
+    }
+
+
+    [HttpPost]
     [Route("v2/financial-accounting/subledger-accounts")]
     public SingleObjectModel CreateSubledgerAccount([FromBody] SubledgerAccountFields fields) {
 
