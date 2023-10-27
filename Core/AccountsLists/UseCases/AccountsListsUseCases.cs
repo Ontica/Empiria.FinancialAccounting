@@ -160,6 +160,13 @@ namespace Empiria.FinancialAccounting.AccountsLists.UseCases {
     }
 
 
+    public FixedList<string> SwapsCoberturaClassifications() {
+      var list = SwapsCoberturaList.Parse();
+
+      return list.GetClassifications();
+    }
+
+
     public void RemoveSwapsCoberturaListItem(SwapsCoberturaListItemFields fields) {
       Assertion.Require(fields, nameof(fields));
 
@@ -186,6 +193,7 @@ namespace Empiria.FinancialAccounting.AccountsLists.UseCases {
 
       return AccountsListMapper.MapEntry(item);
     }
+
 
     #endregion Use cases Derrama SWAPS cobertura
 

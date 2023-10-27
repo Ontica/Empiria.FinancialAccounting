@@ -150,6 +150,18 @@ namespace Empiria.FinancialAccounting.WebApi {
 
     #region Swaps Cobertura
 
+    [HttpGet]
+    [Route("v2/financial-accounting/accounts-lists-for-edition/SwapsCobertura/classifications")]
+    public CollectionModel GetSwapsCoberturaClassifications() {
+
+      using (var usecases = AccountsListsUseCases.UseCaseInteractor()) {
+        FixedList<string> classifications = usecases.SwapsCoberturaClassifications();
+
+        return new CollectionModel(base.Request, classifications);
+      }
+    }
+
+
     [HttpPost]
     [Route("v2/financial-accounting/accounts-lists-for-edition/SwapsCobertura")]
     public SingleObjectModel AddSwapsCoberturaListItem([FromBody] SwapsCoberturaListItemFields fields) {
