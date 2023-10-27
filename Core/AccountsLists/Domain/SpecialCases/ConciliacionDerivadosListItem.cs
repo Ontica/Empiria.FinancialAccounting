@@ -34,9 +34,7 @@ namespace Empiria.FinancialAccounting.AccountsLists.SpecialCases {
       fields.EnsureValid();
 
       this.List = list;
-      this.AccountNumber = fields.AccountNumber;
-      this.StartDate = fields.StartDate;
-      this.EndDate = fields.EndDate;
+      this.Update(fields);
     }
 
     static public ConciliacionDerivadosListItem Parse(int id) {
@@ -105,7 +103,6 @@ namespace Empiria.FinancialAccounting.AccountsLists.SpecialCases {
     internal void Delete() {
       Status = EntityStatus.Deleted;
     }
-
 
     protected override void OnSave() {
       AccountsListData.Write(this);

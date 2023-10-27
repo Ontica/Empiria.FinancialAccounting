@@ -96,7 +96,6 @@ namespace Empiria.FinancialAccounting.AccountsLists.UseCases {
 
     #endregion Use cases Conciliación de derivados
 
-
     #region Use cases Depreciación Activo Fijo
 
     public DepreciacionActivoFijoListItemDto AddDepreciacionActivoFijoListItem(DepreciacionActivoFijoListItemFields fields) {

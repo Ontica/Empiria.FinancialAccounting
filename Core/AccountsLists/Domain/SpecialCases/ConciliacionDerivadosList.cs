@@ -30,7 +30,6 @@ namespace Empiria.FinancialAccounting.AccountsLists.SpecialCases {
 
     internal ConciliacionDerivadosListItem AddItem(ConciliacionDerivadosListItemFields fields) {
       Assertion.Require(fields, nameof(fields));
-      Assertion.Require(fields.AccountNumber, nameof(fields.AccountNumber));
 
       var items = GetItems();
 

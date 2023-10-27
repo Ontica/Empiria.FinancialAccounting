@@ -8,10 +8,12 @@
 *                                                                                                            *
 ************************* Copyright(c) La Vía Óntica SC, Ontica LLC and contributors. All rights reserved. **/
 using System;
-using Empiria.FinancialAccounting.AccountsLists.Adapters;
-using Empiria.FinancialAccounting.AccountsLists.Data;
+
 using Empiria.Json;
 using Empiria.StateEnums;
+
+using Empiria.FinancialAccounting.AccountsLists.Adapters;
+using Empiria.FinancialAccounting.AccountsLists.Data;
 
 namespace Empiria.FinancialAccounting.AccountsLists.SpecialCases {
 
@@ -32,10 +34,7 @@ namespace Empiria.FinancialAccounting.AccountsLists.SpecialCases {
       fields.EnsureValid();
 
       this.List = list;
-      this.SubledgerAccountNumber = fields.SubledgerAccountNumber;
-      this.Classification = fields.Classification;
-      this.StartDate = fields.StartDate;
-      this.EndDate = fields.EndDate;
+      this.Update(fields);
     }
 
     static public SwapsCoberturaListItem Parse(int id) {
