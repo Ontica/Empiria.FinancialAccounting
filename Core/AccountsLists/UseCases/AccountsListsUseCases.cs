@@ -45,6 +45,8 @@ namespace Empiria.FinancialAccounting.AccountsLists.UseCases {
       FixedList<AccountsList> accountsLists = AccountsList.GetList()
                                                           .FindAll(x => x.IsEditable);
 
+      accountsLists = base.RestrictUserDataAccessTo(accountsLists);
+
       return accountsLists.MapToNamedEntityList();
     }
 
@@ -192,7 +194,6 @@ namespace Empiria.FinancialAccounting.AccountsLists.UseCases {
 
       return AccountsListMapper.MapEntry(item);
     }
-
 
     #endregion Use cases Derrama SWAPS cobertura
 
