@@ -32,6 +32,14 @@ namespace Empiria.FinancialAccounting.UseCases {
 
     #region Use cases
 
+
+    public FixedList<NamedEntityDto> GetIFRSLedgers() {
+      return AccountsChart.IFRS.MasterData.Ledgers
+                                          .Select(x => x.MapToNamedEntity())
+                                          .ToFixedList();
+    }
+
+
     public LedgerDto GetLedger(string ledgerUID) {
       Assertion.Require(ledgerUID, "ledgerUID");
 

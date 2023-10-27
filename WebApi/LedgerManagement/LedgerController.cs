@@ -37,6 +37,17 @@ namespace Empiria.FinancialAccounting.WebApi {
 
 
     [HttpGet]
+    [Route("v2/financial-accounting/ledgers/ifrs")]
+    public CollectionModel GetIFRSLedgers() {
+
+      using (var usecases = LedgerUseCases.UseCaseInteractor()) {
+        FixedList<NamedEntityDto> ledgers = usecases.GetIFRSLedgers();
+
+        return new CollectionModel(base.Request, ledgers);
+      }
+    }
+
+    [HttpGet]
     [Route("v2/financial-accounting/ledgers/{ledgerUID:guid}/accounts/{accountId:int}")]
     public SingleObjectModel GetLedgerAccount([FromUri] string ledgerUID,
                                               [FromUri] int accountId) {
