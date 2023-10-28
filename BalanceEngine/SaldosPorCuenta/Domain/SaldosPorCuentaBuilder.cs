@@ -10,7 +10,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using Empiria.Collections;
+
 using Empiria.FinancialAccounting.BalanceEngine.Adapters;
 
 namespace Empiria.FinancialAccounting.BalanceEngine {
@@ -96,7 +96,7 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
       if (totalConsolidated != null) {
         totalsByCurrencyAndAccountEntries.Add(totalConsolidated);
       }
-      
+
       List<TrialBalanceEntry> returnedBalances = helper.AccountEntriesWithSubledgerAccounts(
                                                        totalsByCurrencyAndAccountEntries);
 

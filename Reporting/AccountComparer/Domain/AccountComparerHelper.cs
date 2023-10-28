@@ -58,11 +58,7 @@ namespace Empiria.FinancialAccounting.Reporting.AccountComparer.Domain {
       return totalsByCurrency.Values.ToList();
     }
 
-
-    
-
     #region Public methods
-
 
     public List<AccountComparerEntry> GetComparerEntries(AccountsList group,
                               IEnumerable<BalanzaTradicionalEntryDto> entries) {

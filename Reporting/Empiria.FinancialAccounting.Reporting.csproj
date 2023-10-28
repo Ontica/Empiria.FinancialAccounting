@@ -82,9 +82,9 @@
     <ProjectReference Include="..\Reconciliation\Empiria.FinancialAccounting.Reconciliation.csproj" />
   </ItemGroup>
   <ItemGroup>
-    <Folder Include="AccountComparer\Data\" />
+    <Reference Include="Microsoft.CSharp" />
   </ItemGroup>
   <ItemGroup>
-    <Reference Include="Microsoft.CSharp" />
+    <Folder Include="DerramaSwapsCobertura\Exporters\" />
   </ItemGroup>
 </Project>

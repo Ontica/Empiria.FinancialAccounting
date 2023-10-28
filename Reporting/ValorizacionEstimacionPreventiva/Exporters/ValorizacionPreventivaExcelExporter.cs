@@ -16,7 +16,7 @@ using Empiria.Storage;
 
 using Empiria.FinancialAccounting.BalanceEngine;
 
-using Empiria.FinancialAccounting.Reporting.ValorizacionEstimacionPreventiva.Adaptars;
+using Empiria.FinancialAccounting.Reporting.ValorizacionEstimacionPreventiva.Adapters;
 
 namespace Empiria.FinancialAccounting.Reporting.ValorizacionEstimacionPreventiva.Exporters {
 

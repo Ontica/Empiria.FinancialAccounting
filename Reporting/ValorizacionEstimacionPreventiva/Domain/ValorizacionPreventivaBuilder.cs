@@ -8,46 +8,36 @@
 *                                                                                                            *
 ************************* Copyright(c) La Vía Óntica SC, Ontica LLC and contributors. All rights reserved. **/
 using System;
-using System.Collections.Generic;
-using System.Linq;
+
 using Empiria.FinancialAccounting.BalanceEngine;
 using Empiria.FinancialAccounting.BalanceEngine.Adapters;
 using Empiria.FinancialAccounting.BalanceEngine.UseCases;
-using Empiria.FinancialAccounting.Reporting.ValorizacionEstimacionPreventiva.Adaptars;
+using Empiria.FinancialAccounting.Reporting.ValorizacionEstimacionPreventiva.Adapters;
 
 namespace Empiria.FinancialAccounting.Reporting.ValorizacionEstimacionPreventiva.Domain {
 
   /// <summary>Genera los datos para el reporte de valorizacion.</summary>
   internal class ValorizacionPreventivaBuilder : IReportBuilder {
 
-    private TrialBalanceQuery _query;
-
     #region Public methods
-
 
     public ReportDataDto Build(ReportBuilderQuery buildQuery) {
       Assertion.Require(buildQuery, nameof(buildQuery));
 
       using (var usecases = TrialBalanceUseCases.UseCaseInteractor()) {
-        
-        _query = this.MapToTrialBalanceQuery(buildQuery);
+
+        TrialBalanceQuery _query = this.MapToTrialBalanceQuery(buildQuery);
 
         TrialBalanceDto trialBalance = usecases.BuildTrialBalance(_query);
-
-        var entries = trialBalance.Entries.Select(a => (ValorizacionEntryDto) a);
 
         return ValorizacionPreventivaMapper.Map(buildQuery, trialBalance);
       }
     }
 
-
-
     #endregion Public methods
 
 
     #region Private methods
-
-
 
     private TrialBalanceQuery MapToTrialBalanceQuery(ReportBuilderQuery buildQuery) {
       return new TrialBalanceQuery {

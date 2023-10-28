@@ -2,7 +2,7 @@
 
 using Empiria.FinancialAccounting.BalanceEngine.Adapters;
 
-namespace Empiria.FinancialAccounting.Reporting.ValorizacionEstimacionPreventiva.Adaptars {
+namespace Empiria.FinancialAccounting.Reporting.ValorizacionEstimacionPreventiva.Adapters {
 
   static internal class ValorizacionPreventivaMapper {
 

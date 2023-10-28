@@ -12,7 +12,7 @@ using System;
 using System.Collections.Generic;
 using Empiria.FinancialAccounting.BalanceEngine;
 
-namespace Empiria.FinancialAccounting.Reporting.ValorizacionEstimacionPreventiva.Adaptars {
+namespace Empiria.FinancialAccounting.Reporting.ValorizacionEstimacionPreventiva.Adapters {
 
   /// <summary>Output DTO used to return the entries of a valorization report.</summary>
   public class ValorizacionPreventivaEntryDto : DynamicValorizacionEntryDto, IReportEntryDto {
