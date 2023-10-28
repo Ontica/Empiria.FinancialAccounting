@@ -17,7 +17,7 @@ namespace Empiria.FinancialAccounting.AccountsLists.SpecialCases {
   /// <summary>Lista de Swaps de cobertura.</summary>
   public class SwapsCoberturaList : AccountsList {
 
-    static internal SwapsCoberturaList Parse() {
+    static public SwapsCoberturaList Parse() {
       return (SwapsCoberturaList) AccountsList.Parse("SwapsCobertura");
     }
 

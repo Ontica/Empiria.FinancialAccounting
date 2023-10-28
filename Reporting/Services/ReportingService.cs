@@ -19,6 +19,7 @@ using Empiria.FinancialAccounting.Reporting.FiscalReports.Builders;
 using Empiria.FinancialAccounting.Reporting.VoucherRelatedReports.Domain;
 using Empiria.FinancialAccounting.Reporting.AccountsComparer.Domain;
 using Empiria.FinancialAccounting.Reporting.ValorizacionEstimacionPreventiva.Domain;
+using Empiria.FinancialAccounting.Reporting.DerramaSwapsCobertura;
 
 namespace Empiria.FinancialAccounting.Reporting {
 
@@ -90,6 +91,9 @@ namespace Empiria.FinancialAccounting.Reporting {
 
         case ReportTypes.ComparativoDeCuentas:
           return new AccountComparerBuilder();
+
+        case ReportTypes.DerramaSwapsCoberturaDesglosado:
+          return new DerramaSwapsCoberturaBuilder();
 
         case ReportTypes.ValorizacionEstimacionPreventiva:
           return new ValorizacionPreventivaBuilder();
