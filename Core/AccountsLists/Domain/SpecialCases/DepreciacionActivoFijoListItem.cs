@@ -200,7 +200,7 @@ namespace Empiria.FinancialAccounting.AccountsLists.SpecialCases {
 
     internal void Update(DepreciacionActivoFijoListItemFields fields) {
       SubledgerAccountNumber = fields.AuxiliarHistorico;
-      this.Ledger = Ledger.Parse(fields.DelegacionId);
+      this.Ledger = Ledger.Parse(fields.DelegacionUID);
       this.SubledgerAccountNumber = fields.AuxiliarHistorico;
       this.FechaAdquisicion = fields.FechaAdquisicion;
       this.FechaInicioDepreciacion = fields.FechaInicioDepreciacion;

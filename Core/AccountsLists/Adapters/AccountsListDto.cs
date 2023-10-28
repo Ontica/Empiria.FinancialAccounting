@@ -134,7 +134,7 @@ namespace Empiria.FinancialAccounting.AccountsLists.Adapters {
       get; internal set;
     }
 
-    public int DelegacionId {
+    public string DelegacionUID {
       get; internal set;
     }
 

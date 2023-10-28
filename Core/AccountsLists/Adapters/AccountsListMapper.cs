@@ -107,7 +107,7 @@ namespace Empiria.FinancialAccounting.AccountsLists.Adapters {
         NumeroInventario = item.NumeroInventario,
         NumeroDelegacion = item.Ledger.Number,
         Delegacion = item.Ledger.Name,
-        DelegacionId = item.Ledger.Id,
+        DelegacionUID = item.Ledger.UID,
         FechaAdquisicion = item.FechaAdquisicion,
         FechaInicioDepreciacion = item.FechaInicioDepreciacion,
         MesesDepreciacion = item.MesesDepreciacion

@@ -60,7 +60,7 @@ namespace Empiria.FinancialAccounting.AccountsLists.Adapters {
       get; set;
     }
 
-    public int DelegacionId {
+    public string DelegacionUID {
       get; set;
     }
 
@@ -88,7 +88,7 @@ namespace Empiria.FinancialAccounting.AccountsLists.Adapters {
 
 
     internal void EnsureValid() {
-      Assertion.Require(DelegacionId != 0, "Delegacion");
+      Assertion.Require(DelegacionUID, "DelegacionUID");
       Assertion.Require(AuxiliarHistorico, "AuxiliarHistorico");
       Assertion.Require(FechaAdquisicion != DateTime.MinValue, "FechaAdquisicion");
       Assertion.Require(FechaInicioDepreciacion != DateTime.MinValue, "FechaInicioDepreciacion");
