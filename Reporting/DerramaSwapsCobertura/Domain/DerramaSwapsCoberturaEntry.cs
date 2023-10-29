@@ -14,17 +14,24 @@ namespace Empiria.FinancialAccounting.Reporting.DerramaSwapsCobertura {
   /// <summary>Represents an entry for 'Derrama de intereses de swaps de cobertura'.</summary>
   public class DerramaSwapsCoberturaEntry {
 
+    public string ItemType {
+      get; internal set;
+    } = "Entry";
+
     public string SubledgerAccount {
       get; internal set;
-    }
+    } = string.Empty;
+
 
     public string SubledgerAccountName {
       get; internal set;
-    }
+    } = string.Empty;
+
 
     public string Classification {
       get; internal set;
-    }
+    } = string.Empty;
+
 
     public decimal IncomeAccountTotal {
       get; internal set;

@@ -37,18 +37,25 @@ namespace Empiria.FinancialAccounting.Reporting.DerramaSwapsCobertura.Adapters {
   /// <summary>DTO for each account comparer entry report.</summary>
   public class DerramaSwapsCoberturaEntryDto : IReportEntryDto {
 
+    public string ItemType {
+      get; internal set;
+    } = "Entry";
+
 
     public string SubledgerAccount {
       get; internal set;
-    }
+    } = string.Empty;
+
 
     public string SubledgerAccountName {
       get; internal set;
-    }
+    } = string.Empty;
+
 
     public string Classification {
       get; internal set;
-    }
+    } = string.Empty;
+
 
     public decimal IncomeAccountTotal {
       get; internal set;

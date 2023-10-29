@@ -52,14 +52,13 @@ namespace Empiria.FinancialAccounting.Reporting {
     #region Private methods
 
     private void FillOutRows(ExcelFile excelFile, IEnumerable<DerramaSwapsCoberturaEntryDto> entries) {
-      decimal incomeAccountTotal = 0m;
-      decimal expensesAccountTotal = 0m;
-      decimal total = 0m;
-
-
       int i = 5;
 
       foreach (var entry in entries) {
+
+        if (entry.ItemType == "Total") {
+          excelFile.SetRowStyleBold(i);
+        }
 
         excelFile.SetCell($"A{i}", entry.SubledgerAccount);
         excelFile.SetCell($"B{i}", entry.SubledgerAccountName);
@@ -68,19 +67,8 @@ namespace Empiria.FinancialAccounting.Reporting {
         excelFile.SetCell($"E{i}", entry.Total);
         excelFile.SetCell($"F{i}", entry.Classification);
 
-        incomeAccountTotal += entry.IncomeAccountTotal;
-        expensesAccountTotal += entry.ExpensesAccountTotal;
-        total += entry.Total;
-
         i++;
       }
-
-      excelFile.SetRowStyleBold(i);
-
-      excelFile.SetCell($"B{i}", "TOTALES");
-      excelFile.SetCell($"C{i}", incomeAccountTotal);
-      excelFile.SetCell($"D{i}", expensesAccountTotal);
-      excelFile.SetCell($"E{i}", total);
     }
 
 

@@ -9,6 +9,7 @@
 ************************* Copyright(c) La Vía Óntica SC, Ontica LLC and contributors. All rights reserved. **/
 using System;
 using System.Collections.Generic;
+
 using Empiria.FinancialAccounting.AccountsLists.SpecialCases;
 using Empiria.FinancialAccounting.BalanceEngine;
 using Empiria.FinancialAccounting.BalanceEngine.Adapters;
@@ -37,6 +38,8 @@ namespace Empiria.FinancialAccounting.Reporting.DerramaSwapsCobertura {
 
       Sort(entries);
 
+      SetTotalEntry(entries);
+
       return DerramaSwapsCoberturaMapper.MapToReportDataDto(buildQuery, entries);
     }
 
@@ -57,6 +60,7 @@ namespace Empiria.FinancialAccounting.Reporting.DerramaSwapsCobertura {
       }
     }
 
+
     private void BuildIncomeEntries(List<DerramaSwapsCoberturaEntry> list, DateTime toDate) {
       FixedList<SaldosPorCuentaEntryDto> incomeBalances = GetBalances(toDate, "5.01.04");
 
@@ -73,14 +77,17 @@ namespace Empiria.FinancialAccounting.Reporting.DerramaSwapsCobertura {
       }
     }
 
+
     private DerramaSwapsCoberturaEntry ConvertBalanceToListEntry(SaldosPorCuentaEntryDto balance, bool isIncome) {
       return new DerramaSwapsCoberturaEntry {
+        ItemType = "Entry",
         SubledgerAccount = balance.SubledgerAccountNumber,
         SubledgerAccountName = balance.AccountName,
         IncomeAccountTotal = isIncome ? balance.CurrentBalanceForBalances : 0m,
         ExpensesAccountTotal = isIncome ? 0m : -1 * balance.CurrentBalanceForBalances
       };
     }
+
 
     private void LoadClassifications(List<DerramaSwapsCoberturaEntry> list) {
       var swapsCoberturaList = SwapsCoberturaList.Parse().GetItems();
@@ -94,6 +101,26 @@ namespace Empiria.FinancialAccounting.Reporting.DerramaSwapsCobertura {
           item.Classification = swapCobertura.Classification;
         }
       }
+    }
+
+
+    private void SetTotalEntry(List<DerramaSwapsCoberturaEntry> list) {
+      decimal incomeAccountTotal = 0m;
+      decimal expensesAccountTotal = 0m;
+      decimal total = 0m;
+
+      foreach (var entry in list) {
+        incomeAccountTotal += entry.IncomeAccountTotal;
+        expensesAccountTotal += entry.ExpensesAccountTotal;
+        total += entry.Total;
+      }
+
+      list.Add(new DerramaSwapsCoberturaEntry {
+       ItemType = "Total",
+       SubledgerAccountName = "TOTALES",
+       IncomeAccountTotal = incomeAccountTotal,
+       ExpensesAccountTotal = expensesAccountTotal
+      });
     }
 
 

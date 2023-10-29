@@ -58,6 +58,7 @@ namespace Empiria.FinancialAccounting.Reporting.DerramaSwapsCobertura.Adapters {
 
     static private DerramaSwapsCoberturaEntryDto MapToDerramaSwapsCoberturaDto(DerramaSwapsCoberturaEntry x) {
       return new DerramaSwapsCoberturaEntryDto {
+        ItemType = x.ItemType,
         SubledgerAccount = x.SubledgerAccount,
         SubledgerAccountName = x.SubledgerAccountName,
         Classification = x.Classification,
