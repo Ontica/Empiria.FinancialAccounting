@@ -84,7 +84,4 @@
   <ItemGroup>
     <Reference Include="Microsoft.CSharp" />
   </ItemGroup>
-  <ItemGroup>
-    <Folder Include="DerramaSwapsCobertura\Exporters\" />
-  </ItemGroup>
 </Project>
