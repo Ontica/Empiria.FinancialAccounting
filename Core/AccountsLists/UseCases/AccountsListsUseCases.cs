@@ -164,7 +164,7 @@ namespace Empiria.FinancialAccounting.AccountsLists.UseCases {
     public FixedList<string> SwapsCoberturaClassifications() {
       var list = SwapsCoberturaList.Parse();
 
-      return list.GetClassifications();
+      return list.GetClassificationValues();
     }
 
 

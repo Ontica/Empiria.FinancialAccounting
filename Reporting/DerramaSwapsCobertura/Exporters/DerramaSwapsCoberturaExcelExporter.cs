@@ -60,7 +60,7 @@ namespace Empiria.FinancialAccounting.Reporting {
           excelFile.SetRowStyleBold(i);
         }
 
-        excelFile.SetCell($"A{i}", entry.SubledgerAccount);
+        excelFile.SetCell($"A{i}", $"'{entry.SubledgerAccount}");
         excelFile.SetCell($"B{i}", entry.SubledgerAccountName);
         excelFile.SetCell($"C{i}", entry.IncomeAccountTotal);
         excelFile.SetCell($"D{i}", entry.ExpensesAccountTotal);

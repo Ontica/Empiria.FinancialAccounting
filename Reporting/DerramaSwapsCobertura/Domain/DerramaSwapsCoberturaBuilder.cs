@@ -34,7 +34,7 @@ namespace Empiria.FinancialAccounting.Reporting.DerramaSwapsCobertura {
 
       BuildExpensesEntries(entries, buildQuery.ToDate);
 
-      LoadClassifications(entries);
+      SetClassifications(entries);
 
       Sort(entries);
 
@@ -89,14 +89,14 @@ namespace Empiria.FinancialAccounting.Reporting.DerramaSwapsCobertura {
     }
 
 
-    private void LoadClassifications(List<DerramaSwapsCoberturaEntry> list) {
+    private void SetClassifications(List<DerramaSwapsCoberturaEntry> list) {
       var swapsCoberturaList = SwapsCoberturaList.Parse().GetItems();
 
       foreach (var item in list) {
         var swapCobertura = swapsCoberturaList.Find(x => x.SubledgerAccount.Number == item.SubledgerAccount);
 
         if (swapCobertura == null) {
-          item.Classification = "No determinada";
+          item.Classification = "Sin clasificar";
         } else {
           item.Classification = swapCobertura.Classification;
         }

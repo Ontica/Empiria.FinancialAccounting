@@ -138,7 +138,7 @@ namespace Empiria.FinancialAccounting.AccountsLists.Adapters {
 
       Assertion.Require(Classification, "classification");
 
-      var classifications = SwapsCoberturaList.Parse().GetClassifications();
+      var classifications = SwapsCoberturaList.Parse().GetClassificationValues();
 
       Assertion.Require(classifications.Contains(Classification),
                         $"No reconozco la clasificación del auxiliar: '{Classification}'.");
