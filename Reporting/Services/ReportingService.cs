@@ -92,6 +92,9 @@ namespace Empiria.FinancialAccounting.Reporting {
         case ReportTypes.ComparativoDeCuentas:
           return new AccountComparerBuilder();
 
+        case ReportTypes.DerramaSwapsCoberturaConsolidado:
+          return new DerramaSwapsCoberturaConsolidadoBuilder();
+
         case ReportTypes.DerramaSwapsCoberturaDesglosado:
           return new DerramaSwapsCoberturaBuilder();
 

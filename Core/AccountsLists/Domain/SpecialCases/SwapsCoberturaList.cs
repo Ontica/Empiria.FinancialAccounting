@@ -9,10 +9,41 @@
 ************************* Copyright(c) La Vía Óntica SC, Ontica LLC and contributors. All rights reserved. **/
 using System;
 
+using Empiria.Json;
+
 using Empiria.FinancialAccounting.AccountsLists.Adapters;
 using Empiria.FinancialAccounting.AccountsLists.Data;
 
 namespace Empiria.FinancialAccounting.AccountsLists.SpecialCases {
+
+  public class SwapsCoberturaListConfigItem {
+
+    static public SwapsCoberturaListConfigItem Parse(JsonObject json) {
+      return new SwapsCoberturaListConfigItem {
+        Value = json.Get<string>("value"),
+        Group = json.Get<string>("group", string.Empty),
+        IsTotalRow = json.Get<bool>("isTotalRow", false),
+        Row = json.Get<int>("row")
+      };
+    }
+
+    public string Value {
+      get; internal set;
+    }
+
+    public string Group {
+      get; internal set;
+    }
+
+    public bool IsTotalRow {
+      get; internal set;
+    }
+
+    public int Row {
+      get; internal set;
+    }
+
+  }
 
   /// <summary>Lista de Swaps de cobertura.</summary>
   public class SwapsCoberturaList : AccountsList {
@@ -29,8 +60,14 @@ namespace Empiria.FinancialAccounting.AccountsLists.SpecialCases {
       return AccountsListData.GetAccounts<SwapsCoberturaListItem>(this, keywords);
     }
 
-    public FixedList<string> GetClassifications() {
-      return ExtendedDataField.GetFixedList<string>("classifications");
+    public FixedList<SwapsCoberturaListConfigItem> GetConfiguration() {
+      return ExtendedDataField.GetFixedList<SwapsCoberturaListConfigItem>("configuration");
+    }
+
+    public FixedList<string> GetClassificationValues() {
+      return GetConfiguration().FindAll(x => !x.IsTotalRow)
+                               .Select(x => x.Value)
+                               .ToFixedList();
     }
 
     internal SwapsCoberturaListItem AddItem(SwapsCoberturaListItemFields fields) {
