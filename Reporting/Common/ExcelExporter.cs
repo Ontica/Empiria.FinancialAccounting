@@ -56,6 +56,9 @@ namespace Empiria.FinancialAccounting.Reporting {
         case ReportTypes.ListadoDePolizasPorCuenta:
           return new ListadoPolizasPorCuentaExcelExporter(reportData, templateConfig);
 
+        case ReportTypes.DerramaSwapsCoberturaConsolidado:
+          return new DerramaSwapsCoberturaConsolidadoExcelExporter(reportData, templateConfig);
+
         case ReportTypes.DerramaSwapsCoberturaDesglosado:
           return new DerramaSwapsCoberturaExcelExporter(reportData, templateConfig);
 
