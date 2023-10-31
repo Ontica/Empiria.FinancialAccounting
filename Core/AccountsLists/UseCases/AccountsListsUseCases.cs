@@ -197,6 +197,26 @@ namespace Empiria.FinancialAccounting.AccountsLists.UseCases {
 
     #endregion Use cases Derrama SWAPS cobertura
 
+    public void SetKeywords() {
+      var list1 = SwapsCoberturaList.Parse();
+
+      foreach (var item in list1.GetItems()) {
+        item.Save();
+      }
+
+      var list2 = ConciliacionDerivadosList.Parse();
+
+      foreach (var item in list2.GetItems()) {
+        item.Save();
+      }
+
+      var list3 = DepreciacionActivoFijoList.Parse();
+
+      foreach (var item in list3.GetItems()) {
+        item.Save();
+      }
+    }
+
   } // class AccountsListsUseCases
 
 } // Empiria.FinancialAccounting.UseCases

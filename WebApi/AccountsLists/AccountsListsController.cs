@@ -46,6 +46,17 @@ namespace Empiria.FinancialAccounting.WebApi {
       }
     }
 
+    [HttpPost]
+    [Route("v2/financial-accounting/accounts-lists-for-edition/set-keywords")]
+    public NoDataModel SetKeywords() {
+
+      using (var usecases = AccountsListsUseCases.UseCaseInteractor()) {
+        usecases.SetKeywords();
+
+        return new NoDataModel(base.Request);
+      }
+    }
+
     #endregion Query Web Apis
 
     #region Conciliación de derivados
