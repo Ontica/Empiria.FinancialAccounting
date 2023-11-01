@@ -132,7 +132,7 @@ namespace Empiria.FinancialAccounting.Reporting {
 
           _excelFile.SetCell($"A{i}", $"{entry.AccountNumber} {entry.SubledgerAccountNumber}");
           _excelFile.SetCell($"B{i}", entry.Sector.ToString());
-          _excelFile.SetCell($"C{i}", $"{entry.AccountName}{withSubledger}");
+          _excelFile.SetCell($"C{i}", $"{entry.AccountName} {withSubledger}");
           _excelFile.SetCell($"D{i}", entry.VerificationNumber);
           _excelFile.SetCell($"E{i}", entry.ResponsibilityArea.ToString());
           _excelFile.SetCell($"F{i}", entry.Currency);
@@ -161,17 +161,17 @@ namespace Empiria.FinancialAccounting.Reporting {
       
       i = inc;
       _excelFile.SetCell($"A{i}", _templateConfig.Title);
-      _excelFile.SetCell($"G{i}", $"Póliza:");
-      _excelFile.SetCellFontColorStyle($"G{i}", System.Drawing.Color.Green);
+      _excelFile.SetCell($"I{i}", $"Póliza:");
+      _excelFile.SetCellFontColorStyle($"I{i}", System.Drawing.Color.Green);
       _excelFile.SetRowStyleBold(i);
       i++;
 
       var subTitle = $"Elaboración {voucher.RecordingDate.ToString("dd/MMM/yyyy")} ";
       _excelFile.SetCell($"A{i}", subTitle);
-      _excelFile.SetCell($"G{i}", $"{voucher.Number}");
+      _excelFile.SetCell($"I{i}", $"{voucher.Number}");
       _excelFile.SetRowStyleBold(i);
       i++;
-      _excelFile.SetCell($"G{i}", $"id: {voucher.Id}");
+      _excelFile.SetCell($"I{i}", $"id: {voucher.Id}");
       i++;
       _excelFile.SetCell($"A{i}", $"{voucher.Concept}");
       _excelFile.SetRowBackgroundStyle(i, DocumentFormat.OpenXml.Spreadsheet.PatternValues.MediumGray);
@@ -215,7 +215,7 @@ namespace Empiria.FinancialAccounting.Reporting {
 
           _excelFile.SetCell($"A{i}", $"{entry.AccountNumber} {entry.SubledgerAccountNumber}");
           _excelFile.SetCell($"B{i}", entry.Sector.ToString());
-          _excelFile.SetCell($"C{i}", $"{entry.AccountName}{withSubledger}");
+          _excelFile.SetCell($"C{i}", $"{entry.AccountName} {withSubledger}");
           _excelFile.SetCell($"D{i}", entry.VerificationNumber);
           _excelFile.SetCell($"E{i}", entry.ResponsibilityArea.ToString());
           _excelFile.SetCell($"F{i}", entry.Currency);
@@ -232,8 +232,8 @@ namespace Empiria.FinancialAccounting.Reporting {
 
     private void SetVoucherData(VoucherDto voucher) {
 
-      _excelFile.SetCell($"G3", $"{voucher.Number}");
-      _excelFile.SetCell($"G4", $"id: {voucher.Id}");
+      _excelFile.SetCell($"I3", $"{voucher.Number}");
+      _excelFile.SetCell($"I4", $"id: {voucher.Id}");
 
       _excelFile.SetCell($"A5", $"{voucher.Concept}");
 
