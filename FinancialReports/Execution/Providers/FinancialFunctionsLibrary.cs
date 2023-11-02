@@ -242,7 +242,7 @@ namespace Empiria.FinancialAccounting.FinancialReports.Providers {
         return _provider.GetValue(externalVariableID, fieldName);
       }
 
-    }  // ValorConceptoFunction
+    }  // ValorExternoFunction
 
 
 

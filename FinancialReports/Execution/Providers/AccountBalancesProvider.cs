@@ -96,7 +96,8 @@ namespace Empiria.FinancialAccounting.FinancialReports.Providers {
         return balances;
       }
 
-      if (_financialReportType.DataSource == FinancialReportDataSource.BalanzaTradicional) {
+      if (_financialReportType.DataSource == FinancialReportDataSource.BalanzaTradicional ||
+          _financialReportType.DataSource == FinancialReportDataSource.BalanzaTradicionalValorizada) {
 
         return ApplyFilterByCurrencyBalanzaTradicional(balances,
                                                        Currency.Parse(integrationEntry.CurrencyCode));
@@ -187,6 +188,9 @@ namespace Empiria.FinancialAccounting.FinancialReports.Providers {
 
         case FinancialReportDataSource.BalanzaTradicional:
           return GetBalanzaTradicionalQuery();
+
+        case FinancialReportDataSource.BalanzaTradicionalValorizada:
+          return GetBalanzaTradicionalValorizadaQuery();
 
         case FinancialReportDataSource.ValorizacionEstimacionPreventiva:
           return GetBalanzaValorizacionEstimacionPreventivaQuery();
@@ -305,6 +309,26 @@ namespace Empiria.FinancialAccounting.FinancialReports.Providers {
       };
     }
 
+
+    private TrialBalanceQuery GetBalanzaTradicionalValorizadaQuery() {
+      return new TrialBalanceQuery {
+        AccountsChartUID = _buildQuery.AccountsChartUID,
+        TrialBalanceType = TrialBalanceType.Balanza,
+        ShowCascadeBalances = false,
+        WithSubledgerAccount = false,
+        UseDefaultValuation = true,
+        BalancesType = BalancesType.WithCurrentBalanceOrMovements,
+        ConsolidateBalancesToTargetCurrency = false,
+        InitialPeriod = new BalancesPeriod {
+          FromDate = new DateTime(_buildQuery.ToDate.Year, _buildQuery.ToDate.Month, 1),
+          ToDate = _buildQuery.ToDate,
+          ExchangeRateDate = _buildQuery.ToDate,
+          ExchangeRateTypeUID = ExchangeRateType.ValorizacionBanxico.UID,
+          ValuateToCurrrencyUID = Currency.MXN.UID,
+          UseDefaultValuation = true
+        }
+      };
+    }
 
     #endregion Helper methods
 
