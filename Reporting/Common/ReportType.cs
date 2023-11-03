@@ -14,7 +14,7 @@ using Empiria.Storage;
 namespace Empiria.FinancialAccounting.Reporting {
 
   /// <summary>Describes a report.</summary>
-  internal class ReportType: GeneralObject {
+  internal class ReportType: BaseReportType {
 
     #region Constructors and parsers
 
@@ -22,7 +22,7 @@ namespace Empiria.FinancialAccounting.Reporting {
       // no-op
     }
 
-    static internal FixedList<ReportType> GetList() {
+    static internal new FixedList<ReportType> GetList() {
       return BaseObject.GetList<ReportType>()
                        .ToFixedList();
     }
