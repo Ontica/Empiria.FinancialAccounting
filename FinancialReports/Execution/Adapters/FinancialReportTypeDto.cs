@@ -17,7 +17,7 @@ namespace Empiria.FinancialAccounting.FinancialReports.Adapters {
 
     public bool GetAccountsIntegration {
       get; set;
-    } = true;
+    } = false;
 
     public bool DatePeriod {
       get; set;
@@ -48,8 +48,10 @@ namespace Empiria.FinancialAccounting.FinancialReports.Adapters {
     }
 
 
-    public bool HasAccountsIntegration {
-      get; internal set;
+    public string Group {
+      get {
+        return "ReportesRegulatorios";
+      }
     }
 
 

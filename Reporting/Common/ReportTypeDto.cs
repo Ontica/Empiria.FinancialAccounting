@@ -40,9 +40,9 @@ namespace Empiria.FinancialAccounting.Reporting {
     } = string.Empty;
 
 
-    public FileType[] ExportTo {
+    public FixedList<ExportToDto> ExportTo {
       get; internal set;
-    } = new FileType[0];
+    } = new FixedList<ExportToDto>();
 
 
     public ReportTypeActions Show {

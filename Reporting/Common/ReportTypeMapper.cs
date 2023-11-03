@@ -10,18 +10,32 @@
 using System;
 using System.Linq;
 
+using Empiria.FinancialAccounting.FinancialReports;
+using Empiria.Storage;
+
 namespace Empiria.FinancialAccounting.Reporting {
 
   /// <summary>Methods used to map ReportType instances.</summary>
   static internal class ReportTypeMapper {
 
-    static internal FixedList<ReportTypeDto> Map(FixedList<ReportType> list) {
+    static internal FixedList<ReportTypeDto> Map(FixedList<BaseReportType> list) {
       var mappedList = list.Select(x => Map(x))
                            .ToFixedList();
 
       mappedList.Sort((x, y) => x.Name.CompareTo(y.Name));
 
       return mappedList;
+    }
+
+
+    static private ReportTypeDto Map(BaseReportType reportType) {
+      if (reportType is ReportType rt) {
+        return Map(rt);
+      } else if (reportType is FinancialReportType frt) {
+        return Map(frt);
+      } else {
+        throw Assertion.EnsureNoReachThisCode($"Unhandled report type {reportType.GetType().FullName}.");
+      }
     }
 
 
@@ -35,7 +49,21 @@ namespace Empiria.FinancialAccounting.Reporting {
                                                   .ToArray(),
         OutputType = reportType.OutputType,
         Show = reportType.Show,
-        ExportTo = reportType.ExportTo.ToArray()
+        ExportTo = ExportToMapper.Map(reportType.ExportTo)
+      };
+    }
+
+
+    static private ReportTypeDto Map(FinancialReportType reportType) {
+      return new ReportTypeDto {
+        UID = reportType.UID,
+        Name = reportType.Name,
+        Group = reportType.Group,
+        AccountsCharts = new[] { reportType.AccountsChart.UID },
+        ExportTo = ExportToMapper.Map(reportType.ExportTo),
+        Show = new ReportTypeActions {
+          SingleDate = true,
+        }
       };
     }
 
