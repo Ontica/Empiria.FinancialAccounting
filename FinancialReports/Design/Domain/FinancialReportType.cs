@@ -38,13 +38,14 @@ namespace Empiria.FinancialAccounting.FinancialReports {
 
     BalanzaTradicional,
 
+    BalanzaTradicionalValorizada,
+
     ValorizacionEstimacionPreventiva,
 
   }
 
-
   /// <summary>Describes a financial report.</summary>
-  public class FinancialReportType : GeneralObject {
+  public class FinancialReportType : BaseReportType {
 
     #region Fields
 
@@ -59,17 +60,17 @@ namespace Empiria.FinancialAccounting.FinancialReports {
     }
 
 
-    static public FinancialReportType Parse(int id) {
-      return BaseObject.ParseId<FinancialReportType>(id, false);
+    static public new FinancialReportType Parse(int id) {
+      return BaseObject.ParseId<FinancialReportType>(id);
     }
 
 
-    static public FinancialReportType Parse(string uid) {
-      return BaseObject.ParseKey<FinancialReportType>(uid, false);
+    static public new FinancialReportType Parse(string uid) {
+      return BaseObject.ParseKey<FinancialReportType>(uid);
     }
 
 
-    static public FixedList<FinancialReportType> GetList() {
+    static public new FixedList<FinancialReportType> GetList() {
       return BaseObject.GetList<FinancialReportType>(string.Empty, "ObjectName")
                        .ToFixedList();
     }
@@ -149,6 +150,14 @@ namespace Empiria.FinancialAccounting.FinancialReports {
         return base.ExtendedDataField.Get<bool>("consecutiveRows", true);
       }
     }
+
+
+    public string Group {
+      get {
+        return base.ExtendedDataField.Get("group", "ReportesRegulatorios");
+      }
+    }
+
 
     public bool IsDesignable {
       get {
