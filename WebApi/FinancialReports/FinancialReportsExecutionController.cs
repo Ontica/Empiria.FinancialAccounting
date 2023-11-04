@@ -37,6 +37,7 @@ namespace Empiria.FinancialAccounting.WebApi.FinancialReports {
 
 
     [HttpPost]
+    [Route("v2/financial-accounting/financial-reports/data")]
     [Route("v2/financial-accounting/financial-reports/generate")]
     public SingleObjectModel GetFinancialReport([FromBody] FinancialReportQuery buildQuery) {
       base.RequireBody(buildQuery);
@@ -53,6 +54,7 @@ namespace Empiria.FinancialAccounting.WebApi.FinancialReports {
 
 
     [HttpPost]
+    [Route("v2/financial-accounting/financial-reports/data/breakdown/{reportRowUID:guid}")]
     [Route("v2/financial-accounting/financial-reports/generate/breakdown/{reportRowUID:guid}")]
     public SingleObjectModel GetFinancialReportBreakdown([FromUri] string reportRowUID,
                                                          [FromBody] FinancialReportQuery buildQuery) {
