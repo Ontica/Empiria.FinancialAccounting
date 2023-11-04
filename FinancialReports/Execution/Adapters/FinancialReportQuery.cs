@@ -14,7 +14,7 @@ namespace Empiria.FinancialAccounting.FinancialReports.Adapters {
   /// <summary>Query payload used to build financial reports.</summary>
   public class FinancialReportQuery {
 
-    public string FinancialReportType {
+    public string ReportType {
       get; set;
     }
 
@@ -49,7 +49,7 @@ namespace Empiria.FinancialAccounting.FinancialReports.Adapters {
     }
 
     public FinancialReportType GetFinancialReportType() {
-      return FinancialReports.FinancialReportType.Parse(this.FinancialReportType);
+      return FinancialReports.FinancialReportType.Parse(this.ReportType);
     }
 
   } // class FinancialReportQuery

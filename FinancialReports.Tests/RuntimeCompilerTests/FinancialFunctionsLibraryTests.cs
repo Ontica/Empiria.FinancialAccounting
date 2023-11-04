@@ -64,7 +64,7 @@ namespace Empiria.FinancialAccounting.Tests.FinancialReports.Providers {
     private RuntimeCompiler GetRuntimeCompiler() {
       var buildQuery = new FinancialReportQuery {
         AccountsChartUID = AccountsChart.IFRS.UID,
-        FinancialReportType = "FinancialReport.R10_A_1011",
+        ReportType = "FinancialReport.R10_A_1011",
         FromDate = new DateTime(2022, 06, 01),
         ToDate = new DateTime(2022, 06, 30)
       };

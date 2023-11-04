@@ -92,7 +92,7 @@ namespace Empiria.FinancialAccounting.FinancialReports {
     internal ExecutionContext CreateCopy(FinancialReportType reportType) {
       var buildQuery = BuildQuery.Clone();
 
-      buildQuery.FinancialReportType = reportType.UID;
+      buildQuery.ReportType = reportType.UID;
 
       return new ExecutionContext(buildQuery);
     }
@@ -108,7 +108,7 @@ namespace Empiria.FinancialAccounting.FinancialReports {
 
       FinancialReportQuery query = this.BuildQuery.Clone();
 
-      query.FinancialReportType = FinancialReportType.PrecalculateConceptsFromReportType.UID;
+      query.ReportType = FinancialReportType.PrecalculateConceptsFromReportType.UID;
 
       FinancialConceptsReport report = new FinancialConceptsReport(query);
 
