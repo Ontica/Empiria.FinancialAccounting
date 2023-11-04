@@ -30,6 +30,9 @@ namespace Empiria.FinancialAccounting.Reporting {
       get; internal set;
     } = string.Empty;
 
+    public string Controller {
+      get; internal set;
+    }
 
     public string[] AccountsCharts {
       get; internal set;
@@ -53,7 +56,6 @@ namespace Empiria.FinancialAccounting.Reporting {
     public FixedList<OutputTypeObject> OutputType {
       get; set;
     } = new FixedList<OutputTypeObject>();
-
 
   } // class ReportTypeDto
 

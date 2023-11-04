@@ -44,6 +44,7 @@ namespace Empiria.FinancialAccounting.Reporting {
         UID = reportType.UID,
         Name = reportType.Name,
         Group = reportType.Group,
+        Controller = "Reporting",
         PayloadType = reportType.PayloadType,
         AccountsCharts = reportType.AccountsCharts.Select(x => x.UID)
                                                   .ToArray(),
@@ -59,6 +60,7 @@ namespace Empiria.FinancialAccounting.Reporting {
         UID = reportType.UID,
         Name = reportType.Name,
         Group = reportType.Group,
+        Controller = "FinancialReport",
         AccountsCharts = new[] { reportType.AccountsChart.UID },
         ExportTo = ExportToMapper.Map(reportType.ExportTo),
         Show = new ReportTypeActions {
