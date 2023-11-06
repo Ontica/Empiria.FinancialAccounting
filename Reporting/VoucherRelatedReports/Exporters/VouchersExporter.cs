@@ -203,13 +203,7 @@ namespace Empiria.FinancialAccounting.Reporting {
       int i = 13;
       foreach (var entry in voucher.Entries) {
 
-        if (entry == voucher.Entries.Last()) {
-          _excelFile.SetCell($"C{i}", $"{entry.AccountName}");
-          _excelFile.SetCell($"F{i}", entry.Currency);
-          _excelFile.SetCell($"H{i}", entry.Debit);
-          _excelFile.SetCell($"I{i}", entry.Credit);
-          _excelFile.SetRowStyleBold(i);
-        } else {
+        if (entry != voucher.Entries.Last()) {
           string withSubledger = entry.SubledgerAccountName != "" ?
                                   $"\n{entry.SubledgerAccountName}" : "";
 
@@ -222,6 +216,15 @@ namespace Empiria.FinancialAccounting.Reporting {
           _excelFile.SetCell($"G{i}", entry.ExchangeRate);
           _excelFile.SetCell($"H{i}", entry.Debit);
           _excelFile.SetCell($"I{i}", entry.Credit);
+
+          
+        } else {
+          _excelFile.SetCell($"C{i}", $"{entry.AccountName}");
+          _excelFile.SetCell($"F{i}", entry.Currency);
+          _excelFile.SetCell($"H{i}", entry.Debit);
+          _excelFile.SetCell($"I{i}", entry.Credit);
+          _excelFile.SetRowStyleBold(i);
+          _excelFile.SetRowFontColorStyle(i, System.Drawing.Color.Green);
         }
 
         i++;
