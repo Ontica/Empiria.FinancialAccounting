@@ -14,6 +14,7 @@ using Empiria.WebApi;
 
 using Empiria.FinancialAccounting.AccountsLists.UseCases;
 using Empiria.FinancialAccounting.AccountsLists.Adapters;
+using Empiria.FinancialAccounting.AccountsLists.SpecialCases;
 
 namespace Empiria.FinancialAccounting.WebApi {
 
@@ -221,6 +222,71 @@ namespace Empiria.FinancialAccounting.WebApi {
     }
 
     #endregion Swaps Cobertura
+
+    #region Préstamos interbancarios
+
+    [HttpGet]
+    [Route("v2/financial-accounting/accounts-lists-for-edition/PrestamosInterbancarios/prestamos")]
+    public CollectionModel GetPrestamos() {
+
+      using (var usecases = AccountsListsUseCases.UseCaseInteractor()) {
+        FixedList<Prestamo> prestamos = usecases.PrestamosList();
+
+        prestamos.Sort((x, y) => x.Order.CompareTo(y.Order));
+
+        return new CollectionModel(base.Request, prestamos);
+      }
+    }
+
+
+    [HttpPost]
+    [Route("v2/financial-accounting/accounts-lists-for-edition/PrestamosInterbancarios")]
+    public SingleObjectModel AddPrestamoInterbancarioListItem([FromBody] PrestamosInterbancariosListItemFields fields) {
+
+      RequireBody(fields);
+
+      using (var usecases = AccountsListsUseCases.UseCaseInteractor()) {
+        PrestamosInterbancariosListItemDto item = usecases.AddPrestamoInterbancarioListItem(fields);
+
+        return new SingleObjectModel(base.Request, item);
+      }
+    }
+
+
+    [HttpDelete]
+    [Route("v2/financial-accounting/accounts-lists-for-edition/PrestamosInterbancarios/{itemUID:guid}")]
+    public NoDataModel RemovePrestamoInterbancarioListItem([FromUri] string itemUID,
+                                                           [FromBody] PrestamosInterbancariosListItemFields fields) {
+
+      RequireBody(fields);
+
+      Assertion.Require(itemUID == fields.UID, "Unrecognized list item UID.");
+
+      using (var usecases = AccountsListsUseCases.UseCaseInteractor()) {
+        usecases.RemovePrestamoInterbancarioListItem(fields);
+
+        return new NoDataModel(base.Request);
+      }
+    }
+
+
+    [HttpPut, HttpPatch]
+    [Route("v2/financial-accounting/accounts-lists-for-edition/PrestamosInterbancarios/{itemUID:guid}")]
+    public SingleObjectModel UpdatePrestamoInterbancarioListItem([FromUri] string itemUID,
+                                                                 [FromBody] PrestamosInterbancariosListItemFields fields) {
+
+      RequireBody(fields);
+
+      Assertion.Require(itemUID == fields.UID, "Unrecognized list item UID.");
+
+      using (var usecases = AccountsListsUseCases.UseCaseInteractor()) {
+        PrestamosInterbancariosListItemDto item = usecases.UpdatePrestamoInterbancarioListItem(fields);
+
+        return new SingleObjectModel(base.Request, item);
+      }
+    }
+
+    #endregion Préstamos interbancarios
 
   }  // class AccountsListsController
 

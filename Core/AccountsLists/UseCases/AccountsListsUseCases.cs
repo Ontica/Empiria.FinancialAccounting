@@ -13,6 +13,7 @@ using Empiria.Services;
 
 using Empiria.FinancialAccounting.AccountsLists.SpecialCases;
 using Empiria.FinancialAccounting.AccountsLists.Adapters;
+using static Empiria.FinancialAccounting.AccountsLists.Adapters.DepreciacionActivoFijoListItemDto;
 
 namespace Empiria.FinancialAccounting.AccountsLists.UseCases {
 
@@ -197,6 +198,59 @@ namespace Empiria.FinancialAccounting.AccountsLists.UseCases {
 
     #endregion Use cases Derrama SWAPS cobertura
 
+    #region Use cases Préstamos interbancarios
+
+    public PrestamosInterbancariosListItemDto AddPrestamoInterbancarioListItem(PrestamosInterbancariosListItemFields fields) {
+      Assertion.Require(fields, nameof(fields));
+
+      fields.EnsureValid();
+
+      var list = PrestamosInterbancariosList.Parse();
+
+      PrestamosInterbancariosListItem item = list.AddItem(fields);
+
+      item.Save();
+
+      return AccountsListMapper.MapEntry(item);
+    }
+
+
+    public FixedList<Prestamo> PrestamosList() {
+      var list = PrestamosInterbancariosList.Parse();
+
+      return list.GetPrestamos();
+    }
+
+
+    public void RemovePrestamoInterbancarioListItem(PrestamosInterbancariosListItemFields fields) {
+      Assertion.Require(fields, nameof(fields));
+
+      fields.EnsureValid();
+
+      var list = PrestamosInterbancariosList.Parse();
+
+      PrestamosInterbancariosListItem item = list.RemoveItem(fields);
+
+      item.Save();
+    }
+
+
+    public PrestamosInterbancariosListItemDto UpdatePrestamoInterbancarioListItem(PrestamosInterbancariosListItemFields fields) {
+      Assertion.Require(fields, nameof(fields));
+
+      fields.EnsureValid();
+
+      var list = PrestamosInterbancariosList.Parse();
+
+      PrestamosInterbancariosListItem item = list.UpdateItem(fields);
+
+      item.Save();
+
+      return AccountsListMapper.MapEntry(item);
+    }
+
+    #endregion Use cases Préstamos interbancarios
+
     public void SetKeywords() {
       var list1 = SwapsCoberturaList.Parse();
 
@@ -215,6 +269,13 @@ namespace Empiria.FinancialAccounting.AccountsLists.UseCases {
       foreach (var item in list3.GetItems()) {
         item.Save();
       }
+
+      var list4 = PrestamosInterbancariosList.Parse();
+
+      foreach (var item in list4.GetItems()) {
+        item.Save();
+      }
+
     }
 
   } // class AccountsListsUseCases
