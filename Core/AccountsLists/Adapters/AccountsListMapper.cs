@@ -9,8 +9,10 @@
 ************************* Copyright(c) La Vía Óntica SC, Ontica LLC and contributors. All rights reserved. **/
 using System;
 using System.Collections.Generic;
+using System.Linq;
 
 using Empiria.FinancialAccounting.AccountsLists.SpecialCases;
+using static Empiria.FinancialAccounting.AccountsLists.Adapters.DepreciacionActivoFijoListItemDto;
 
 namespace Empiria.FinancialAccounting.AccountsLists.Adapters {
 
@@ -46,6 +48,9 @@ namespace Empiria.FinancialAccounting.AccountsLists.Adapters {
         case "DepreciacionActivoFijo":
           entries = new FixedList<AccountsListItemDto>(MapList(list.GetItems<DepreciacionActivoFijoListItem>(keywords)));
           break;
+        case "PrestamosInterbancarios":
+          entries = new FixedList<AccountsListItemDto>(MapList(list.GetItems<PrestamosInterbancariosListItem>(keywords)));
+          break;
         default:
           throw new NotImplementedException($"Unrecognized accounts list UID {list.UID}.");
       }
@@ -66,12 +71,21 @@ namespace Empiria.FinancialAccounting.AccountsLists.Adapters {
     }
 
 
+    static private IEnumerable<PrestamosInterbancariosListItemDto> MapList(FixedList<PrestamosInterbancariosListItem> entries) {
+      var list = entries.OrderBy(x => x.Prestamo.Order)
+                        .ThenBy(x => x.SubledgerAccountNumber)
+                        .ToFixedList();
+
+      var mapped = list.Select(x => MapEntry(x));
+
+      return new FixedList<PrestamosInterbancariosListItemDto>(mapped);
+    }
+
     static private IEnumerable<DepreciacionActivoFijoListItemDto> MapList(FixedList<DepreciacionActivoFijoListItem> entries) {
       var mapped = entries.Select(x => MapEntry(x));
 
       return new FixedList<DepreciacionActivoFijoListItemDto>(mapped);
     }
-
 
     static internal ConciliacionDerivadosListItemDto MapEntry(ConciliacionDerivadosListItem item) {
       return new ConciliacionDerivadosListItemDto {
@@ -121,6 +135,22 @@ namespace Empiria.FinancialAccounting.AccountsLists.Adapters {
 
       return value;
     }
+
+
+    static internal PrestamosInterbancariosListItemDto MapEntry(PrestamosInterbancariosListItem item) {
+      return new PrestamosInterbancariosListItemDto {
+        UID = item.UID,
+        SubledgerAccountId = item.SubledgerAccount.Id,
+        SubledgerAccountName = item.SubledgerAccount.Name,
+        SubledgerAccountNumber = item.SubledgerAccount.Number,
+        SectorCode = item.Sector.Code,
+        CurrencyCode = item.Currency.Code,
+        PrestamoUID = item.Prestamo.UID,
+        PrestamoName = item.Prestamo.Name,
+        Vencimiento = item.Vencimiento,
+      };
+    }
+
 
     #endregion Private methods
 

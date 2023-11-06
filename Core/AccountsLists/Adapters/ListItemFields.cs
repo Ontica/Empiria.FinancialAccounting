@@ -160,7 +160,57 @@ namespace Empiria.FinancialAccounting.AccountsLists.Adapters {
 
     }
 
-
   }  // class SwapsCoberturaListItemFields
+
+
+
+  public class PrestamosInterbancariosListItemFields {
+
+      public string UID {
+        get; set;
+      }
+
+      public string SubledgerAccountNumber {
+        get; set;
+      }
+
+      public string CurrencyCode {
+        get; set;
+      }
+
+      public string SectorCode {
+        get; set;
+      }
+
+      public string PrestamoUID {
+        get; set;
+      }
+
+      public DateTime Vencimiento {
+        get; set;
+      }
+
+      internal void EnsureValid() {
+        Assertion.Require(SubledgerAccountNumber, "subledgerAccountNumber");
+        Assertion.Require(CurrencyCode, "currencyCode");
+        Assertion.Require(SectorCode, "sectorCode");
+        Assertion.Require(PrestamoUID, "prestamoUID");
+
+        var prestamos = PrestamosInterbancariosList.Parse().GetPrestamos();
+
+        Assertion.Require(prestamos.Contains(x => x.UID == PrestamoUID),
+                          $"No reconozco el préstamo: '{PrestamoUID}'.");
+
+        if (SubledgerAccount.TryParse(AccountsChart.IFRS, SubledgerAccountNumber) == null) {
+          Assertion.RequireFail($"El auxiliar {SubledgerAccountNumber} no ha sido registrado.");
+        }
+
+        Assertion.Require(Sector.TryParse(SectorCode), $"No reconozco el sector {SectorCode}");
+
+        Assertion.Require(Currency.TryParse(CurrencyCode), $"No reconozco la moneda {CurrencyCode}");
+
+      }
+
+  }  // class PrestamosInterbancariosListItemFields
 
 }  // namespace Empiria.FinancialAccounting.AccountsLists.Adapters

@@ -49,7 +49,8 @@ namespace Empiria.FinancialAccounting.AccountsLists.Data {
     static internal void Write(ConciliacionDerivadosListItem o) {
       var op = DataOperation.Parse("write_cof_lista_cuentas",
         o.Id, o.UID, o.List.Id, o.GetEmpiriaType().Id, -1, o.Account.Number,
-        string.Empty, string.Empty, string.Empty, string.Empty, string.Empty, 1,
+        string.Empty, string.Empty, string.Empty,
+        string.Empty, string.Empty, 1,
         o.StartDate, o.EndDate, o.Keywords, (char) o.Status);
 
       DataWriter.Execute(op);
@@ -59,7 +60,8 @@ namespace Empiria.FinancialAccounting.AccountsLists.Data {
     internal static void Write(SwapsCoberturaListItem o) {
       var op = DataOperation.Parse("write_cof_lista_cuentas",
         o.Id, o.UID, o.List.Id, o.GetEmpiriaType().Id, -1, string.Empty,
-        string.Empty, string.Empty, o.SubledgerAccount.Number, string.Empty, o.ExtData.ToString(), 1,
+        string.Empty, string.Empty, o.SubledgerAccount.Number,
+        string.Empty, o.ExtData.ToString(), 1,
         o.StartDate, o.EndDate, o.Keywords, (char) o.Status);
 
       DataWriter.Execute(op);
@@ -68,7 +70,18 @@ namespace Empiria.FinancialAccounting.AccountsLists.Data {
     internal static void Write(DepreciacionActivoFijoListItem o) {
       var op = DataOperation.Parse("write_cof_lista_cuentas",
         o.Id, o.UID, o.List.Id, o.GetEmpiriaType().Id, o.Ledger.Id, string.Empty,
-        string.Empty, string.Empty, o.AuxiliarHistorico.Number, string.Empty, o.ExtData.ToString(), 1,
+        string.Empty, string.Empty, o.AuxiliarHistorico.Number,
+        string.Empty, o.ExtData.ToString(), 1,
+        o.StartDate, o.EndDate, o.Keywords, (char) o.Status);
+
+      DataWriter.Execute(op);
+    }
+
+    internal static void Write(PrestamosInterbancariosListItem o) {
+      var op = DataOperation.Parse("write_cof_lista_cuentas",
+        o.Id, o.UID, o.List.Id, o.GetEmpiriaType().Id, -1, string.Empty,
+        o.Sector.Code, o.Currency.Code, o.SubledgerAccount.Number,
+        string.Empty, o.ExtData.ToString(), 1,
         o.StartDate, o.EndDate, o.Keywords, (char) o.Status);
 
       DataWriter.Execute(op);
