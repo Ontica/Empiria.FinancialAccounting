@@ -87,6 +87,10 @@ namespace Empiria.FinancialAccounting.Reporting {
 
     DerramaSwapsCoberturaDesglosado,
 
+    IntegracionSaldosCapitalInteresesConsolidado,
+
+    IntegracionSaldosCapitalInteresesDesglosado,
+
     ValorizacionEstimacionPreventiva
 
   } // enum ReportTypes

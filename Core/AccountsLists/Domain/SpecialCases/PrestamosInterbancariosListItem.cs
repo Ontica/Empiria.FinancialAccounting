@@ -22,7 +22,7 @@ namespace Empiria.FinancialAccounting.AccountsLists.SpecialCases {
 
     #region Constructors and parsers
 
-    private PrestamosInterbancariosListItem() {
+    public PrestamosInterbancariosListItem() {
       // Required by Empiria Framework.
     }
 
@@ -134,7 +134,7 @@ namespace Empiria.FinancialAccounting.AccountsLists.SpecialCases {
 
     public string PrestamoUID {
       get {
-        return ExtData.Get<string>("prestamo");
+        return ExtData.Get<string>("prestamo", string.Empty);
       }
       private set {
         ExtData.Set("prestamo", value);

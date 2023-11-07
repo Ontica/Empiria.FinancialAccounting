@@ -20,6 +20,7 @@ using Empiria.FinancialAccounting.Reporting.VoucherRelatedReports.Domain;
 using Empiria.FinancialAccounting.Reporting.AccountsComparer.Domain;
 using Empiria.FinancialAccounting.Reporting.ValorizacionEstimacionPreventiva.Domain;
 using Empiria.FinancialAccounting.Reporting.DerramaSwapsCobertura;
+using Empiria.FinancialAccounting.Reporting.IntegracionSaldosCapitalIntereses;
 
 namespace Empiria.FinancialAccounting.Reporting {
 
@@ -97,6 +98,12 @@ namespace Empiria.FinancialAccounting.Reporting {
 
         case ReportTypes.DerramaSwapsCoberturaDesglosado:
           return new DerramaSwapsCoberturaBuilder();
+
+        //case ReportTypes.IntegracionSaldosCapitalInteresesConsolidado:
+        //  return new IntegracionSaldosCapitalInteresesConsolidadoBuilder();
+
+        case ReportTypes.IntegracionSaldosCapitalInteresesDesglosado:
+          return new IntegracionSaldosCapitalInteresesBuilder();
 
         case ReportTypes.ValorizacionEstimacionPreventiva:
           return new ValorizacionPreventivaBuilder();
