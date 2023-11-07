@@ -119,26 +119,30 @@ namespace Empiria.FinancialAccounting.Reporting {
 
       foreach (var entry in voucher.Entries) {
 
-        if (entry == voucher.Entries.Last()) {
+        if (entry != voucher.Entries.Last()) {
+          string withSubledger = entry.SubledgerAccountName != "" ?
+                                  $"\n{entry.SubledgerAccountName}" : "";
+
+          _excelFile.SetCell($"A{i}", $"{entry.AccountNumber}\n{entry.SubledgerAccountNumber}");
+          _excelFile.SetCell($"B{i}", entry.Sector.ToString());
+          _excelFile.SetCell($"C{i}", $"{entry.AccountName} {withSubledger}");
+          _excelFile.SetCell($"D{i}", entry.VerificationNumber);
+          _excelFile.SetCell($"E", entry.ResponsibilityArea.ToString());
+          _excelFile.SetCell($"F{i}", entry.Currency);
+          _excelFile.SetCell($"G{i}", entry.ExchangeRate);
+          _excelFile.SetCell($"H{i}", entry.Debit);
+          _excelFile.SetCell($"I{i}", entry.Credit);
+          _excelFile.SetCellWrapText($"A{i}");
+          _excelFile.SetCellWrapText($"C{i}");
+
+        } else {
+
           _excelFile.SetCell($"C{i}", $"{entry.AccountName}");
           _excelFile.SetCell($"F{i}", entry.Currency);
           _excelFile.SetCell($"H{i}", entry.Debit);
           _excelFile.SetCell($"I{i}", entry.Credit);
           _excelFile.SetRowStyleBold(i);
-
-        } else {
-          string withSubledger = entry.SubledgerAccountName != "" ?
-                                  $"\n{entry.SubledgerAccountName}" : "";
-
-          _excelFile.SetCell($"A{i}", $"{entry.AccountNumber} {entry.SubledgerAccountNumber}");
-          _excelFile.SetCell($"B{i}", entry.Sector.ToString());
-          _excelFile.SetCell($"C{i}", $"{entry.AccountName} {withSubledger}");
-          _excelFile.SetCell($"D{i}", entry.VerificationNumber);
-          _excelFile.SetCell($"E{i}", entry.ResponsibilityArea.ToString());
-          _excelFile.SetCell($"F{i}", entry.Currency);
-          _excelFile.SetCell($"G{i}", entry.ExchangeRate);
-          _excelFile.SetCell($"H{i}", entry.Debit);
-          _excelFile.SetCell($"I{i}", entry.Credit);
+          _excelFile.SetRowBackgroundStyle(i, System.Drawing.Color.FromArgb(204, 255, 204));
         }
 
         i++;
@@ -174,7 +178,7 @@ namespace Empiria.FinancialAccounting.Reporting {
       _excelFile.SetCell($"I{i}", $"id: {voucher.Id}");
       i++;
       _excelFile.SetCell($"A{i}", $"{voucher.Concept}");
-      _excelFile.SetRowBackgroundStyle(i, DocumentFormat.OpenXml.Spreadsheet.PatternValues.MediumGray);
+      _excelFile.SetRowBackgroundStyle(i, System.Drawing.Color.FromArgb(231,230,230));
       _excelFile.SetRowStyleBold(i);
       
     }
@@ -193,8 +197,7 @@ namespace Empiria.FinancialAccounting.Reporting {
       _excelFile.SetCell($"H{i}", "Debe");
       _excelFile.SetCell($"I{i}", "Haber");
       _excelFile.SetRowStyleBold(i);
-      _excelFile.SetRowFontColorStyle(i, System.Drawing.Color.Green);
-      _excelFile.SetRowBackgroundStyle(i, DocumentFormat.OpenXml.Spreadsheet.PatternValues.LightGray);
+      _excelFile.SetRowBackgroundStyle(i, System.Drawing.Color.FromArgb(204, 255, 204));
     }
 
 
@@ -207,7 +210,7 @@ namespace Empiria.FinancialAccounting.Reporting {
           string withSubledger = entry.SubledgerAccountName != "" ?
                                   $"\n{entry.SubledgerAccountName}" : "";
 
-          _excelFile.SetCell($"A{i}", $"{entry.AccountNumber} {entry.SubledgerAccountNumber}");
+          _excelFile.SetCell($"A{i}", $"{entry.AccountNumber} \n{entry.SubledgerAccountNumber}");
           _excelFile.SetCell($"B{i}", entry.Sector.ToString());
           _excelFile.SetCell($"C{i}", $"{entry.AccountName} {withSubledger}");
           _excelFile.SetCell($"D{i}", entry.VerificationNumber);
@@ -224,7 +227,8 @@ namespace Empiria.FinancialAccounting.Reporting {
           _excelFile.SetCell($"H{i}", entry.Debit);
           _excelFile.SetCell($"I{i}", entry.Credit);
           _excelFile.SetRowStyleBold(i);
-          _excelFile.SetRowFontColorStyle(i, System.Drawing.Color.Green);
+          _excelFile.SetRowBackgroundStyle(i, System.Drawing.Color.FromArgb(204, 255, 204));
+
         }
 
         i++;
