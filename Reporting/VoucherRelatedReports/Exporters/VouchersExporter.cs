@@ -157,6 +157,7 @@ namespace Empiria.FinancialAccounting.Reporting {
           _excelFile.SetCell($"H{i}", entry.Debit);
           _excelFile.SetCell($"I{i}", entry.Credit);
           _excelFile.SetRowStyleBold(i);
+          _excelFile.SetRowFontFamily(i, "Courier New");
           _excelFile.SetRowBackgroundStyle(i, System.Drawing.Color.FromArgb(204, 255, 204));
         }
 
@@ -183,21 +184,25 @@ namespace Empiria.FinancialAccounting.Reporting {
       _excelFile.SetCell($"I{i}", $"Póliza:");
       _excelFile.SetCellFontColorStyle($"I{i}", System.Drawing.Color.Green);
       _excelFile.SetRowStyleBold(i);
+      _excelFile.SetRowFontFamily(i, "Courier New");
       i++;
 
       var subTitle = $"Elaboración {voucher.RecordingDate.ToString("dd/MMM/yyyy")} ";
       _excelFile.SetCell($"A{i}", subTitle);
       _excelFile.SetCell($"I{i}", $"{voucher.Number}");
       _excelFile.SetRowStyleBold(i);
+      _excelFile.SetRowFontFamily(i, "Courier New");
       i++;
       _excelFile.SetCell($"I{i}", $"id: {voucher.Id}");
       _excelFile.SetRowStyleBold(i);
+      _excelFile.SetRowFontFamily(i, "Courier New");
       i++;
       _excelFile.SetCell($"A{i}", $"{voucher.Concept}");
       _excelFile.SetTextAlignment($"A{i}", DocumentFormat.OpenXml.Spreadsheet.VerticalAlignmentValues.Top);
       _excelFile.SetRowBackgroundStyle(i, System.Drawing.Color.FromArgb(231,230,230));
       _excelFile.SetRowStyleBold(i);
-      
+      _excelFile.SetRowFontFamily(i, "Courier New");
+
     }
 
 
