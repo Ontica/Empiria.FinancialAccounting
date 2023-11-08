@@ -19,7 +19,7 @@ namespace Empiria.FinancialAccounting.Reporting.IntegracionSaldosCapitalInterese
     #region Public methods
 
     static internal ReportDataDto MapToReportDataDto(ReportBuilderQuery buildQuery,
-                                                     List<IntegracionSaldosCapitalInteresesEntry> entries) {
+                                                     List<IIntegracionSaldosCapitalInteresesEntry> entries) {
 
       return new ReportDataDto {
         Query = buildQuery,
@@ -56,13 +56,23 @@ namespace Empiria.FinancialAccounting.Reporting.IntegracionSaldosCapitalInterese
     }
 
 
-    static private FixedList<IReportEntryDto> MapToReportDataEntries(List<IntegracionSaldosCapitalInteresesEntry> entries) {
+    static private FixedList<IReportEntryDto> MapToReportDataEntries(List<IIntegracionSaldosCapitalInteresesEntry> entries) {
 
       var mappedItems = entries.Select((x) => MapToReportEntry(x));
 
       return new FixedList<IReportEntryDto>(mappedItems);
     }
 
+
+    static private IReportEntryDto MapToReportEntry(IIntegracionSaldosCapitalInteresesEntry entry) {
+      if (entry is IntegracionSaldosCapitalInteresesEntry) {
+        return MapToReportEntry((IntegracionSaldosCapitalInteresesEntry) entry);
+      }
+      if (entry is IntegracionSaldosCapitalInteresesSubTotal) {
+        return MapToReportEntry((IntegracionSaldosCapitalInteresesSubTotal) entry);
+      }
+      throw new NotImplementedException();
+    }
 
     static private IntegracionSaldosCapitalInteresesEntryDto MapToReportEntry(IntegracionSaldosCapitalInteresesEntry entry) {
       return new IntegracionSaldosCapitalInteresesEntryDto {
@@ -83,6 +93,18 @@ namespace Empiria.FinancialAccounting.Reporting.IntegracionSaldosCapitalInterese
         TotalMonedaNacional = entry.TotalMonedaNacional
       };
     }
+
+
+    static private IntegracionSaldosCapitalInteresesTotalDto MapToReportEntry(IntegracionSaldosCapitalInteresesSubTotal entry) {
+      return new IntegracionSaldosCapitalInteresesTotalDto {
+        ItemType = "Total",
+        SubledgerAccount = entry.PrestamoBase.Name,
+        CapitalMonedaNacional = entry.CapitalMonedaNacional,
+        InteresesMonedaNacional = entry.InteresesMonedaNacional,
+        TotalMonedaNacional = entry.TotalMonedaNacional
+      };
+    }
+
 
     #endregion Private methods
 

@@ -51,9 +51,21 @@ namespace Empiria.FinancialAccounting.Reporting.IntegracionSaldosCapitalInterese
       get; internal set;
     } = string.Empty;
 
+
     public string PrestamoName {
       get; internal set;
-    }
+    } = string.Empty;
+
+
+    public string CurrencyCode {
+      get; internal set;
+    } = string.Empty;
+
+
+    public string SectorCode {
+      get; internal set;
+    } = string.Empty;
+
 
     public decimal CapitalCortoPlazoMonedaOrigen {
       get; internal set;
@@ -90,15 +102,34 @@ namespace Empiria.FinancialAccounting.Reporting.IntegracionSaldosCapitalInterese
     public decimal TotalMonedaNacional {
       get; internal set;
     }
-    public string CurrencyCode {
-      get;
-      internal set;
-    }
-    public string SectorCode {
-      get;
-      internal set;
-    }
+
   } // class IntegracionSaldosCapitalInteresesEntryDto
 
+
+  public class IntegracionSaldosCapitalInteresesTotalDto : IReportEntryDto {
+
+    public string ItemType {
+      get; internal set;
+    } = "Total";
+
+
+    public string SubledgerAccount {
+      get;
+      internal set;
+    }
+
+    public decimal CapitalMonedaNacional {
+      get; internal set;
+    }
+
+    public decimal InteresesMonedaNacional {
+      get; internal set;
+    }
+
+    public decimal TotalMonedaNacional {
+      get; internal set;
+    }
+
+  }
 
 } // namespace Empiria.FinancialAccounting.Reporting.DerramaSwapsCobertura.Adapters

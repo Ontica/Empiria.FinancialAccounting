@@ -17,12 +17,41 @@ namespace Empiria.FinancialAccounting.Reporting.IntegracionSaldosCapitalInterese
 
   }
 
+  public class IntegracionSaldosCapitalInteresesSubTotal : IIntegracionSaldosCapitalInteresesEntry {
+
+    public PrestamoBase PrestamoBase {
+      get; internal set;
+    }
+
+    public decimal CapitalMonedaNacional {
+      get; internal set;
+    }
+
+    public decimal InteresesMonedaNacional {
+      get; internal set;
+    }
+
+    public decimal TotalMonedaNacional {
+      get {
+        return CapitalMonedaNacional + InteresesMonedaNacional;
+      }
+    }
+
+  }  // class IntegracionSaldosCapitalInteresesTotal
+
+
+
   /// <summary>Represents an entry for 'Integración de saldos e intereses' report.</summary>
   public class IntegracionSaldosCapitalInteresesEntry : IIntegracionSaldosCapitalInteresesEntry {
 
     public string ItemType {
       get; internal set;
     } = "Entry";
+
+    public PrestamoBase PrestamoBase {
+      get; internal set;
+    } = PrestamoBase.Empty;
+
 
     public string SubledgerAccount {
       get; internal set;
@@ -41,11 +70,6 @@ namespace Empiria.FinancialAccounting.Reporting.IntegracionSaldosCapitalInterese
     public string SectorCode {
       get; internal set;
     }
-
-    public PrestamoBase PrestamoBase {
-      get; internal set;
-    } = new PrestamoBase();
-
 
     public decimal CapitalCortoPlazoMonedaOrigen {
       get; internal set;

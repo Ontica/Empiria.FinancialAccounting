@@ -47,11 +47,15 @@ namespace Empiria.FinancialAccounting.Reporting.IntegracionSaldosCapitalInterese
 
       SetPrestamosBase(entries);
 
+      var totals = GetTotalEntries(entries);
+
+      entries.AddRange(totals);
+
       entries = Sort(entries);
 
-      // SetTotalEntry(entries);
+      var converted = new List<IIntegracionSaldosCapitalInteresesEntry>(entries);
 
-      return IntegracionSaldosCapitalInteresesMapper.MapToReportDataDto(buildQuery, entries);
+      return IntegracionSaldosCapitalInteresesMapper.MapToReportDataDto(buildQuery, converted);
     }
 
     private void BuildEntries(List<IntegracionSaldosCapitalInteresesEntry> list,
@@ -61,7 +65,9 @@ namespace Empiria.FinancialAccounting.Reporting.IntegracionSaldosCapitalInterese
       foreach (var balance in incomeBalances) {
         IntegracionSaldosCapitalInteresesEntry entry = ConvertBalanceToListEntry(balance, field, toDate);
 
-        var item = list.Find(x => x.SubledgerAccount == balance.SubledgerAccountNumber);
+        var item = list.Find(x => x.SubledgerAccount == balance.SubledgerAccountNumber &&
+                                  x.CurrencyCode == balance.CurrencyCode &&
+                                  x.SectorCode == balance.SectorCode);
 
         if (item == null) {
           list.Add(entry);
@@ -75,7 +81,6 @@ namespace Empiria.FinancialAccounting.Reporting.IntegracionSaldosCapitalInterese
     private IntegracionSaldosCapitalInteresesEntry ConvertBalanceToListEntry(SaldosPorCuentaEntryDto balance,
                                                                              Campo campo, DateTime date) {
       return new IntegracionSaldosCapitalInteresesEntry {
-        ItemType = "Entry",
         SubledgerAccount = balance.SubledgerAccountNumber,
         SubledgerAccountName = balance.AccountName,
         CurrencyCode = balance.CurrencyCode,
@@ -104,29 +109,27 @@ namespace Empiria.FinancialAccounting.Reporting.IntegracionSaldosCapitalInterese
     }
 
 
-    private void SetTotalEntry(List<IntegracionSaldosCapitalInteresesEntry> list) {
-      decimal incomeAccountTotal = 0m;
-      decimal expensesAccountTotal = 0m;
-      decimal total = 0m;
-
-      foreach (var entry in list) {
-        incomeAccountTotal += entry.CapitalCortoPlazoMonedaOrigen;
-        expensesAccountTotal += entry.InteresesMonedaOrigen;
-        total += entry.TotalMonedaOrigen;
-      }
-
-      list.Add(new IntegracionSaldosCapitalInteresesEntry {
-        ItemType = "Total",
-        SubledgerAccountName = "TOTALES",
-        CapitalCortoPlazoMonedaOrigen = incomeAccountTotal,
-        InteresesMonedaOrigen = expensesAccountTotal,
-      });
+    private List<IntegracionSaldosCapitalInteresesEntry> GetTotalEntries(List<IntegracionSaldosCapitalInteresesEntry> list) {
+      return list.GroupBy(x => new { x.PrestamoBase.UID, x.CurrencyCode })
+                 .Select(x => new IntegracionSaldosCapitalInteresesEntry {
+                   ItemType = "Total",
+                   PrestamoBase = x.First().PrestamoBase,
+                   CurrencyCode = x.First().CurrencyCode,
+                   CapitalCortoPlazoMonedaOrigen = x.Sum(y => y.CapitalCortoPlazoMonedaOrigen),
+                   CapitalLargoPlazoMonedaOrigen = x.Sum(y => y.CapitalLargoPlazoMonedaOrigen),
+                   InteresesMonedaOrigen = x.Sum(y => y.InteresesMonedaOrigen),
+                   TipoCambio = x.First().TipoCambio,
+                   SubledgerAccount = "Total"
+                 })
+                 .ToList();
     }
 
 
     private List<IntegracionSaldosCapitalInteresesEntry> Sort(List<IntegracionSaldosCapitalInteresesEntry> entries) {
        return entries.OrderBy(x => x.PrestamoBase.Order)
-                     .ThenBy(x => x.SubledgerAccount).ToList();
+                     .ThenBy(x => x.CurrencyCode)
+                     .ThenBy(x => x.SubledgerAccount)
+                     .ToList();
     }
 
 
