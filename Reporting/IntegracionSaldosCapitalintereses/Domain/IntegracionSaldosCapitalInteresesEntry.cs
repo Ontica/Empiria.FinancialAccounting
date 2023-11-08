@@ -13,8 +13,12 @@ using Empiria.FinancialAccounting.AccountsLists.SpecialCases;
 
 namespace Empiria.FinancialAccounting.Reporting.IntegracionSaldosCapitalIntereses {
 
+  public interface IIntegracionSaldosCapitalInteresesEntry {
+
+  }
+
   /// <summary>Represents an entry for 'Integración de saldos e intereses' report.</summary>
-  public class IntegracionSaldosCapitalInteresesEntry {
+  public class IntegracionSaldosCapitalInteresesEntry : IIntegracionSaldosCapitalInteresesEntry {
 
     public string ItemType {
       get; internal set;
@@ -38,9 +42,9 @@ namespace Empiria.FinancialAccounting.Reporting.IntegracionSaldosCapitalInterese
       get; internal set;
     }
 
-    public PrestamosInterbancariosListItem Prestamo {
+    public PrestamoBase PrestamoBase {
       get; internal set;
-    } = new PrestamosInterbancariosListItem();
+    } = new PrestamoBase();
 
 
     public decimal CapitalCortoPlazoMonedaOrigen {

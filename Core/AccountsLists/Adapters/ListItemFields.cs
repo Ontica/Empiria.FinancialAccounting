@@ -196,7 +196,7 @@ namespace Empiria.FinancialAccounting.AccountsLists.Adapters {
         Assertion.Require(SectorCode, "sectorCode");
         Assertion.Require(PrestamoUID, "prestamoUID");
 
-        var prestamos = PrestamosInterbancariosList.Parse().GetPrestamos();
+        var prestamos = PrestamosInterbancariosList.Parse().GetPrestamosBase();
 
         Assertion.Require(prestamos.Contains(x => x.UID == PrestamoUID),
                           $"No reconozco el préstamo: '{PrestamoUID}'.");

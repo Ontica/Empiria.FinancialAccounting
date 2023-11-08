@@ -16,10 +16,23 @@ using Empiria.FinancialAccounting.AccountsLists.Data;
 
 namespace Empiria.FinancialAccounting.AccountsLists.SpecialCases {
 
-  public class Prestamo {
+  public class PrestamoBase {
 
-    static public Prestamo Parse(JsonObject json) {
-      return new Prestamo {
+    static public PrestamoBase Empty {
+      get {
+        return new PrestamoBase() {
+          UID = "Empty",
+          Name = "No asignado",
+          Bank = "No asignado",
+          Number = "",
+          Classification = "Sin clasificación",
+          Order = 99,
+        };
+      }
+    }
+
+    static public PrestamoBase Parse(JsonObject json) {
+      return new PrestamoBase {
         UID = json.Get<string>("uid"),
         Name = json.Get<string>("name"),
         Bank = json.Get<string>("bank"),
@@ -53,7 +66,7 @@ namespace Empiria.FinancialAccounting.AccountsLists.SpecialCases {
       get; private set;
     }
 
-  }  // class Prestamo
+  }  // class PrestamoBase
 
   /// <summary>Lista de préstamos interbancarios y de otros organismos.</summary>
   public class PrestamosInterbancariosList : AccountsList {
@@ -70,8 +83,8 @@ namespace Empiria.FinancialAccounting.AccountsLists.SpecialCases {
       return AccountsListData.GetAccounts<PrestamosInterbancariosListItem>(this, keywords);
     }
 
-    public FixedList<Prestamo> GetPrestamos() {
-      return ExtendedDataField.GetFixedList<Prestamo>("prestamos");
+    public FixedList<PrestamoBase> GetPrestamosBase() {
+      return ExtendedDataField.GetFixedList<PrestamoBase>("prestamos");
     }
 
 

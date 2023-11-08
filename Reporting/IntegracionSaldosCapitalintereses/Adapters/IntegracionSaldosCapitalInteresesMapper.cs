@@ -69,7 +69,7 @@ namespace Empiria.FinancialAccounting.Reporting.IntegracionSaldosCapitalInterese
         ItemType = entry.ItemType,
         SubledgerAccount = entry.SubledgerAccount,
         SubledgerAccountName = entry.SubledgerAccountName,
-        PrestamoName = entry.Prestamo.Prestamo.Name,
+        PrestamoName = entry.PrestamoBase.Name,
         CurrencyCode = entry.CurrencyCode,
         SectorCode = entry.SectorCode,
         CapitalCortoPlazoMonedaOrigen = entry.CapitalCortoPlazoMonedaOrigen,

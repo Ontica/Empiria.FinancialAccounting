@@ -98,7 +98,7 @@ namespace Empiria.FinancialAccounting.AccountsLists.SpecialCases {
     public string Keywords {
       get {
         return EmpiriaString.BuildKeywords(SubledgerAccount.Number, SubledgerAccount.Name,
-                                           Prestamo.Name, Prestamo.Number, Prestamo.Bank);
+                                           PrestamoBase.Name, PrestamoBase.Number, PrestamoBase.Bank);
       }
     }
 
@@ -142,10 +142,10 @@ namespace Empiria.FinancialAccounting.AccountsLists.SpecialCases {
     }
 
 
-    public Prestamo Prestamo {
+    public PrestamoBase PrestamoBase {
       get {
         return PrestamosInterbancariosList.Parse()
-                                          .GetPrestamos()
+                                          .GetPrestamosBase()
                                           .Find(x => x.UID == PrestamoUID);
       }
     }

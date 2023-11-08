@@ -45,7 +45,7 @@ namespace Empiria.FinancialAccounting.Reporting.IntegracionSaldosCapitalInterese
       BuildEntries(entries, buildQuery.ToDate, "2.02.03.06.01", Campo.CapitalLargoPlazo);
       BuildEntries(entries, buildQuery.ToDate, "2.02.02.06.02", Campo.Intereses);
 
-      SetPrestamos(entries);
+      SetPrestamosBase(entries);
 
       entries = Sort(entries);
 
@@ -87,13 +87,8 @@ namespace Empiria.FinancialAccounting.Reporting.IntegracionSaldosCapitalInterese
       };
     }
 
-    private decimal GetExchangeRate(string currencyCode, DateTime date) {
-      var exchangeRates = ExchangeRate.GetList(ExchangeRateType.ValorizacionBanxico, date);
 
-      return exchangeRates.Find(x => x.ToCurrency.Code == currencyCode).Value;
-    }
-
-    private void SetPrestamos(List<IntegracionSaldosCapitalInteresesEntry> list) {
+    private void SetPrestamosBase(List<IntegracionSaldosCapitalInteresesEntry> list) {
       var prestamosInterbancarios = PrestamosInterbancariosList.Parse().GetItems();
 
       foreach (var item in list) {
@@ -101,9 +96,9 @@ namespace Empiria.FinancialAccounting.Reporting.IntegracionSaldosCapitalInterese
                                                          x.Currency.Code == item.CurrencyCode &&
                                                          x.Sector.Code == item.SectorCode);
         if (prestamo == null) {
-          item.Prestamo = new PrestamosInterbancariosListItem();
+          item.PrestamoBase = PrestamoBase.Empty;
         } else {
-          item.Prestamo = prestamo;
+          item.PrestamoBase = prestamo.PrestamoBase;
         }
       }
     }
@@ -121,17 +116,17 @@ namespace Empiria.FinancialAccounting.Reporting.IntegracionSaldosCapitalInterese
       }
 
       list.Add(new IntegracionSaldosCapitalInteresesEntry {
-       ItemType = "Total",
-       SubledgerAccountName = "TOTALES",
-       CapitalCortoPlazoMonedaOrigen = incomeAccountTotal,
-       InteresesMonedaOrigen = expensesAccountTotal
+        ItemType = "Total",
+        SubledgerAccountName = "TOTALES",
+        CapitalCortoPlazoMonedaOrigen = incomeAccountTotal,
+        InteresesMonedaOrigen = expensesAccountTotal,
       });
     }
 
 
     private List<IntegracionSaldosCapitalInteresesEntry> Sort(List<IntegracionSaldosCapitalInteresesEntry> entries) {
-      return entries.OrderBy(x => x.Prestamo.Prestamo.Order)
-                    .ThenBy(x => x.SubledgerAccount).ToList();
+       return entries.OrderBy(x => x.PrestamoBase.Order)
+                     .ThenBy(x => x.SubledgerAccount).ToList();
     }
 
 
@@ -153,6 +148,12 @@ namespace Empiria.FinancialAccounting.Reporting.IntegracionSaldosCapitalInterese
     #endregion Public methods
 
     #region Private methods
+
+    private decimal GetExchangeRate(string currencyCode, DateTime date) {
+      var exchangeRates = ExchangeRate.GetList(ExchangeRateType.ValorizacionBanxico, date);
+
+      return exchangeRates.Find(x => x.ToCurrency.Code == currencyCode).Value;
+    }
 
     private TrialBalanceQuery MapToTrialBalanceQuery(DateTime toDate, string account) {
 

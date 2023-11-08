@@ -215,10 +215,10 @@ namespace Empiria.FinancialAccounting.AccountsLists.UseCases {
     }
 
 
-    public FixedList<Prestamo> PrestamosList() {
+    public FixedList<PrestamoBase> PrestamosList() {
       var list = PrestamosInterbancariosList.Parse();
 
-      return list.GetPrestamos();
+      return list.GetPrestamosBase();
     }
 
 

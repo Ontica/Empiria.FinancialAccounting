@@ -72,7 +72,7 @@ namespace Empiria.FinancialAccounting.AccountsLists.Adapters {
 
 
     static private IEnumerable<PrestamosInterbancariosListItemDto> MapList(FixedList<PrestamosInterbancariosListItem> entries) {
-      var list = entries.OrderBy(x => x.Prestamo.Order)
+      var list = entries.OrderBy(x => x.PrestamoBase.Order)
                         .ThenBy(x => x.SubledgerAccountNumber)
                         .ToFixedList();
 
@@ -145,8 +145,8 @@ namespace Empiria.FinancialAccounting.AccountsLists.Adapters {
         SubledgerAccountNumber = item.SubledgerAccount.Number,
         SectorCode = item.Sector.Code,
         CurrencyCode = item.Currency.Code,
-        PrestamoUID = item.Prestamo.UID,
-        PrestamoName = item.Prestamo.Name,
+        PrestamoUID = item.PrestamoBase.UID,
+        PrestamoName = item.PrestamoBase.Name,
         Vencimiento = item.Vencimiento,
       };
     }

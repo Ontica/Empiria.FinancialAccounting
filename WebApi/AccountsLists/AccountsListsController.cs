@@ -230,7 +230,7 @@ namespace Empiria.FinancialAccounting.WebApi {
     public CollectionModel GetPrestamos() {
 
       using (var usecases = AccountsListsUseCases.UseCaseInteractor()) {
-        FixedList<Prestamo> prestamos = usecases.PrestamosList();
+        FixedList<PrestamoBase> prestamos = usecases.PrestamosList();
 
         prestamos.Sort((x, y) => x.Order.CompareTo(y.Order));
 
