@@ -99,6 +99,9 @@ namespace Empiria.FinancialAccounting.Reporting {
         case ReportTypes.DerramaSwapsCoberturaDesglosado:
           return new DerramaSwapsCoberturaBuilder();
 
+        case ReportTypes.IntegracionSaldosCapital:
+          return new IntegracionSaldosCapitalBuilder();
+
         //case ReportTypes.IntegracionSaldosCapitalInteresesConsolidado:
         //  return new IntegracionSaldosCapitalInteresesConsolidadoBuilder();
 

@@ -33,6 +33,13 @@ namespace Empiria.FinancialAccounting.Reporting.IntegracionSaldosCapitalInterese
     #region Public methods
 
     public ReportDataDto Build(ReportBuilderQuery buildQuery) {
+      List<IIntegracionSaldosCapitalInteresesEntry> converted = BuildEntries(buildQuery);
+
+      return IntegracionSaldosCapitalInteresesMapper.MapToReportDataDto(buildQuery, converted);
+    }
+
+
+    public List<IIntegracionSaldosCapitalInteresesEntry> BuildEntries(ReportBuilderQuery buildQuery) {
       Assertion.Require(buildQuery, nameof(buildQuery));
 
       var entries = new List<IntegracionSaldosCapitalInteresesEntry>(128);
@@ -53,10 +60,9 @@ namespace Empiria.FinancialAccounting.Reporting.IntegracionSaldosCapitalInterese
 
       entries = Sort(entries);
 
-      var converted = new List<IIntegracionSaldosCapitalInteresesEntry>(entries);
-
-      return IntegracionSaldosCapitalInteresesMapper.MapToReportDataDto(buildQuery, converted);
+      return new List<IIntegracionSaldosCapitalInteresesEntry>(entries);
     }
+
 
     private void BuildEntries(List<IntegracionSaldosCapitalInteresesEntry> list,
                               DateTime toDate, string accountNumber, Campo field) {
@@ -104,6 +110,7 @@ namespace Empiria.FinancialAccounting.Reporting.IntegracionSaldosCapitalInterese
           item.PrestamoBase = PrestamoBase.Empty;
         } else {
           item.PrestamoBase = prestamo.PrestamoBase;
+          item.Vencimiento = prestamo.Vencimiento;
         }
       }
     }
@@ -155,7 +162,13 @@ namespace Empiria.FinancialAccounting.Reporting.IntegracionSaldosCapitalInterese
     private decimal GetExchangeRate(string currencyCode, DateTime date) {
       var exchangeRates = ExchangeRate.GetList(ExchangeRateType.ValorizacionBanxico, date);
 
-      return exchangeRates.Find(x => x.ToCurrency.Code == currencyCode).Value;
+      var exchangeRate = exchangeRates.Find(x => x.ToCurrency.Code == currencyCode);
+
+      if (exchangeRate == null) {
+        Assertion.RequireFail($"No se ha dado de alta el tipo de cambio para la fecha proporcionada.");
+      }
+
+      return exchangeRate.Value;
     }
 
     private TrialBalanceQuery MapToTrialBalanceQuery(DateTime toDate, string account) {
