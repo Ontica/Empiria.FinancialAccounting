@@ -50,6 +50,7 @@ namespace Empiria.FinancialAccounting.Reporting.IntegracionSaldosCapitalInterese
         new DataTableColumn("capitalMonedaNacional", "Capital MN", "decimal"),
         new DataTableColumn("interesesMonedaNacional", "Intereses MN", "decimal"),
         new DataTableColumn("totalMonedaNacional", "Total MN", "decimal"),
+        new DataTableColumn("vencimiento", "Vencimiento", "date"),
       };
 
       return columns.ToFixedList();
@@ -90,7 +91,8 @@ namespace Empiria.FinancialAccounting.Reporting.IntegracionSaldosCapitalInterese
         TipoCambio = entry.TipoCambio,
         CapitalMonedaNacional = entry.CapitalMonedaNacional,
         InteresesMonedaNacional = entry.InteresesMonedaNacional,
-        TotalMonedaNacional = entry.TotalMonedaNacional
+        TotalMonedaNacional = entry.TotalMonedaNacional,
+        Vencimiento = entry.Vencimiento
       };
     }
 

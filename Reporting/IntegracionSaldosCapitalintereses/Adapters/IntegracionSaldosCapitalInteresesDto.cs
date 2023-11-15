@@ -34,7 +34,7 @@ namespace Empiria.FinancialAccounting.Reporting.IntegracionSaldosCapitalInterese
 
 
 
-  /// <summary>DTO for each account comparer entry report.</summary>
+  /// <summary>DTO for each account report entry.</summary>
   public class IntegracionSaldosCapitalInteresesEntryDto : IReportEntryDto {
 
     public string ItemType {
@@ -103,7 +103,12 @@ namespace Empiria.FinancialAccounting.Reporting.IntegracionSaldosCapitalInterese
       get; internal set;
     }
 
+    public DateTime? Vencimiento {
+      get; internal set;
+    }
+
   } // class IntegracionSaldosCapitalInteresesEntryDto
+
 
 
   public class IntegracionSaldosCapitalInteresesTotalDto : IReportEntryDto {
@@ -132,4 +137,4 @@ namespace Empiria.FinancialAccounting.Reporting.IntegracionSaldosCapitalInterese
 
   }
 
-} // namespace Empiria.FinancialAccounting.Reporting.DerramaSwapsCobertura.Adapters
+} // namespace Empiria.FinancialAccounting.Reporting.IntegracionSaldosCapitalIntereses.Adapters

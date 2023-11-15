@@ -69,12 +69,13 @@ namespace Empiria.FinancialAccounting.Reporting {
         excelFile.SetCell($"J{i}", entry.CapitalMonedaNacional);
         excelFile.SetCell($"K{i}", entry.InteresesMonedaNacional);
         excelFile.SetCell($"L{i}", entry.TotalMonedaNacional);
-
+        if (entry.Vencimiento.HasValue) {
+          excelFile.SetCell($"M{i}", entry.Vencimiento.Value);
+        }
         if (entry.ItemType == "Total") {
           excelFile.SetRowStyleBold(i);
           excelFile.SetRowFontFamily(i, "Courier New");
         }
-
 
         i++;
       }

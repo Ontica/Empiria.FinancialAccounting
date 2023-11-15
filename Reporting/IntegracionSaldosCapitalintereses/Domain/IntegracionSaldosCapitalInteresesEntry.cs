@@ -117,6 +117,10 @@ namespace Empiria.FinancialAccounting.Reporting.IntegracionSaldosCapitalInterese
       }
     }
 
+    public DateTime? Vencimiento {
+      get; internal set;
+    }
+
     internal void Sum(IntegracionSaldosCapitalInteresesEntry entry) {
       CapitalCortoPlazoMonedaOrigen += entry.CapitalCortoPlazoMonedaOrigen;
       CapitalLargoPlazoMonedaOrigen += entry.CapitalLargoPlazoMonedaOrigen;
