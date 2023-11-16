@@ -54,13 +54,19 @@ namespace Empiria.FinancialAccounting.Reporting.IntegracionSaldosCapitalInterese
 
       SetPrestamosBase(entries);
 
-      var totals = GetTotalEntries(entries);
+      var returnEntries = new List<IntegracionSaldosCapitalInteresesEntry>(entries);
 
-      entries.AddRange(totals);
+      var totals = GetTotalByPrestamoEntries(entries);
 
-      entries = Sort(entries);
+      returnEntries.AddRange(totals);
 
-      return new List<IIntegracionSaldosCapitalInteresesEntry>(entries);
+      var totals2 = GetTotalByClassificationAndCurrencyEntries(entries);
+
+      returnEntries.AddRange(totals2);
+
+      returnEntries = Sort(returnEntries);
+
+      return new List<IIntegracionSaldosCapitalInteresesEntry>(returnEntries);
     }
 
 
@@ -107,34 +113,55 @@ namespace Empiria.FinancialAccounting.Reporting.IntegracionSaldosCapitalInterese
                                                          x.Currency.Code == item.CurrencyCode &&
                                                          x.Sector.Code == item.SectorCode);
         if (prestamo == null) {
-          item.PrestamoBase = PrestamoBase.Empty;
+          item.PrestamoBase = PrestamoBase.Unknown;
+          item.Classification = PrestamoBase.Unknown.Classification;
         } else {
           item.PrestamoBase = prestamo.PrestamoBase;
           item.Vencimiento = prestamo.Vencimiento;
+          item.Classification = prestamo.PrestamoBase.Classification;
         }
       }
     }
 
 
-    private List<IntegracionSaldosCapitalInteresesEntry> GetTotalEntries(List<IntegracionSaldosCapitalInteresesEntry> list) {
-      return list.GroupBy(x => new { x.PrestamoBase.UID, x.CurrencyCode })
-                 .Select(x => new IntegracionSaldosCapitalInteresesEntry {
-                   ItemType = "Total",
-                   PrestamoBase = x.First().PrestamoBase,
-                   CurrencyCode = x.First().CurrencyCode,
-                   CapitalCortoPlazoMonedaOrigen = x.Sum(y => y.CapitalCortoPlazoMonedaOrigen),
-                   CapitalLargoPlazoMonedaOrigen = x.Sum(y => y.CapitalLargoPlazoMonedaOrigen),
-                   InteresesMonedaOrigen = x.Sum(y => y.InteresesMonedaOrigen),
-                   TipoCambio = x.First().TipoCambio,
-                   SubledgerAccount = "Total"
-                 })
+    private List<IntegracionSaldosCapitalInteresesEntry> GetTotalByPrestamoEntries(List<IntegracionSaldosCapitalInteresesEntry> entries) {
+      return entries.GroupBy(x => new { x.PrestamoBase.UID, x.CurrencyCode })
+                    .Select(x => new IntegracionSaldosCapitalInteresesEntry {
+                      ItemType = "Total",
+                      PrestamoBase = x.First().PrestamoBase,
+                      Classification = x.First().Classification,
+                      CurrencyCode = x.First().CurrencyCode,
+                      CapitalCortoPlazoMonedaOrigen = x.Sum(y => y.CapitalCortoPlazoMonedaOrigen),
+                      CapitalLargoPlazoMonedaOrigen = x.Sum(y => y.CapitalLargoPlazoMonedaOrigen),
+                      InteresesMonedaOrigen = x.Sum(y => y.InteresesMonedaOrigen),
+                      TipoCambio = x.First().TipoCambio,
+                      SubledgerAccount = "Total"
+                    })
                  .ToList();
     }
 
 
+    private List<IntegracionSaldosCapitalInteresesEntry> GetTotalByClassificationAndCurrencyEntries(List<IntegracionSaldosCapitalInteresesEntry> entries) {
+      return entries.GroupBy(x => new { x.PrestamoBase.Classification, x.CurrencyCode })
+           .Select(x => new IntegracionSaldosCapitalInteresesEntry {
+             ItemType = "Total",
+             PrestamoBase = PrestamoBase.Empty,
+             Classification = x.First().Classification,
+             CurrencyCode = x.First().CurrencyCode,
+             CapitalCortoPlazoMonedaOrigen = x.Sum(y => y.CapitalCortoPlazoMonedaOrigen),
+             CapitalLargoPlazoMonedaOrigen = x.Sum(y => y.CapitalLargoPlazoMonedaOrigen),
+             InteresesMonedaOrigen = x.Sum(y => y.InteresesMonedaOrigen),
+             TipoCambio = x.First().TipoCambio,
+             SubledgerAccount = $"Subtotal {x.First().PrestamoBase.GetClassificationName()}"
+           })
+           .ToList();
+    }
+
+
     private List<IntegracionSaldosCapitalInteresesEntry> Sort(List<IntegracionSaldosCapitalInteresesEntry> entries) {
-       return entries.OrderBy(x => x.PrestamoBase.Order)
+       return entries.OrderBy(x => x.Classification)
                      .ThenBy(x => x.CurrencyCode)
+                     .ThenBy(x => x.PrestamoBase.Order)
                      .ThenBy(x => x.SubledgerAccount)
                      .ToList();
     }

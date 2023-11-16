@@ -53,6 +53,10 @@ namespace Empiria.FinancialAccounting.Reporting.IntegracionSaldosCapitalInterese
     } = PrestamoBase.Empty;
 
 
+    public PrestamoBaseClasificacion Classification {
+      get; internal set;
+    }
+
     public string SubledgerAccount {
       get; internal set;
     } = string.Empty;
@@ -120,6 +124,7 @@ namespace Empiria.FinancialAccounting.Reporting.IntegracionSaldosCapitalInterese
     public DateTime? Vencimiento {
       get; internal set;
     }
+
 
     internal void Sum(IntegracionSaldosCapitalInteresesEntry entry) {
       CapitalCortoPlazoMonedaOrigen += entry.CapitalCortoPlazoMonedaOrigen;

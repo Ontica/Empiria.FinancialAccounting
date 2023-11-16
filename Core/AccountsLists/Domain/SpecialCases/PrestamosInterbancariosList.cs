@@ -14,7 +14,22 @@ using Empiria.Json;
 using Empiria.FinancialAccounting.AccountsLists.Adapters;
 using Empiria.FinancialAccounting.AccountsLists.Data;
 
+
 namespace Empiria.FinancialAccounting.AccountsLists.SpecialCases {
+
+  public enum PrestamoBaseClasificacion {
+
+    OtrosOrganismos = 1,
+
+    AgenteFinanciero = 2,
+
+    GobiernoFederal = 3,
+
+    BancaComercial = 4,
+
+    None = 99,
+
+  }
 
   public class PrestamoBase {
 
@@ -22,10 +37,23 @@ namespace Empiria.FinancialAccounting.AccountsLists.SpecialCases {
       get {
         return new PrestamoBase() {
           UID = "Empty",
+          Name = string.Empty,
+          Bank = string.Empty,
+          Number = "",
+          Classification = PrestamoBaseClasificacion.None,
+          Order = 99,
+        };
+      }
+    }
+
+    static public PrestamoBase Unknown {
+      get {
+        return new PrestamoBase() {
+          UID = "Unknown",
           Name = "No asignado",
           Bank = "No asignado",
           Number = "",
-          Classification = "Sin clasificación",
+          Classification = PrestamoBaseClasificacion.None,
           Order = 99,
         };
       }
@@ -37,7 +65,7 @@ namespace Empiria.FinancialAccounting.AccountsLists.SpecialCases {
         Name = json.Get<string>("name"),
         Bank = json.Get<string>("bank"),
         Number = json.Get<string>("number"),
-        Classification = json.Get<string>("classification"),
+        Classification = json.Get<PrestamoBaseClasificacion>("classification"),
         Order = json.Get<int>("order"),
       };
     }
@@ -58,8 +86,30 @@ namespace Empiria.FinancialAccounting.AccountsLists.SpecialCases {
       get; private set;
     }
 
-    public string Classification {
+    public PrestamoBaseClasificacion Classification {
       get; private set;
+    }
+
+    public string GetClassificationName() {
+      switch (Classification) {
+        case PrestamoBaseClasificacion.OtrosOrganismos:
+          return "Préstamos de Otros Organismos";
+
+        case PrestamoBaseClasificacion.AgenteFinanciero:
+          return "Agente Financiero del Gobierno Federal";
+
+        case PrestamoBaseClasificacion.GobiernoFederal:
+          return "Gobierno Federal";
+
+        case PrestamoBaseClasificacion.BancaComercial:
+          return "Banca comercial";
+
+        case PrestamoBaseClasificacion.None:
+          return "Préstamos sin clasificación";
+
+        default:
+          throw Assertion.EnsureNoReachThisCode($"Unhandled classification {Classification}");
+      }
     }
 
     public int Order {
