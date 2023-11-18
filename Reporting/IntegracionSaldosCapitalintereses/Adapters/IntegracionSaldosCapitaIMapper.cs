@@ -53,21 +53,11 @@ namespace Empiria.FinancialAccounting.Reporting.IntegracionSaldosCapitalInterese
 
     static private FixedList<IReportEntryDto> MapToReportDataEntries(List<IIntegracionSaldosCapitalInteresesEntry> entries) {
 
-      var mappedItems = entries.Select((x) => MapToReportEntry(x));
+      var mappedItems = entries.Select((x) => MapToReportEntry((IntegracionSaldosCapitalInteresesEntry) x));
 
       return new FixedList<IReportEntryDto>(mappedItems);
     }
 
-
-    static private IReportEntryDto MapToReportEntry(IIntegracionSaldosCapitalInteresesEntry entry) {
-      if (entry is IntegracionSaldosCapitalInteresesEntry) {
-        return MapToReportEntry((IntegracionSaldosCapitalInteresesEntry) entry);
-      }
-      if (entry is IntegracionSaldosCapitalInteresesSubTotal) {
-        return MapToReportEntry((IntegracionSaldosCapitalInteresesSubTotal) entry);
-      }
-      throw new NotImplementedException();
-    }
 
     static private IntegracionSaldosCapitalEntryDto MapToReportEntry(IntegracionSaldosCapitalInteresesEntry entry) {
       return new IntegracionSaldosCapitalEntryDto {
@@ -83,18 +73,6 @@ namespace Empiria.FinancialAccounting.Reporting.IntegracionSaldosCapitalInterese
         Vencimiento = entry.Vencimiento
       };
     }
-
-
-    static private IntegracionSaldosCapitalTotalDto MapToReportEntry(IntegracionSaldosCapitalInteresesSubTotal entry) {
-      return new IntegracionSaldosCapitalTotalDto {
-        ItemType = "Total",
-        SubledgerAccount = entry.Title,
-        CapitalMonedaNacional = entry.CapitalMonedaNacional,
-        InteresesMonedaNacional = entry.InteresesMonedaNacional,
-        TotalMonedaNacional = entry.TotalMonedaNacional
-      };
-    }
-
 
     #endregion Private methods
 
