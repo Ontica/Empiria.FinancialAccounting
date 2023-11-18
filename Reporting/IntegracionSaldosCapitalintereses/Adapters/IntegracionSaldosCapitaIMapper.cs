@@ -53,11 +53,21 @@ namespace Empiria.FinancialAccounting.Reporting.IntegracionSaldosCapitalInterese
 
     static private FixedList<IReportEntryDto> MapToReportDataEntries(List<IIntegracionSaldosCapitalInteresesEntry> entries) {
 
-      var mappedItems = entries.Select((x) => MapToReportEntry((IntegracionSaldosCapitalInteresesEntry) x));
+      var mappedItems = entries.Select((x) => MapToReportEntry(x));
 
       return new FixedList<IReportEntryDto>(mappedItems);
     }
 
+
+    static private IReportEntryDto MapToReportEntry(IIntegracionSaldosCapitalInteresesEntry entry) {
+      if (entry is IntegracionSaldosCapitalInteresesEntry) {
+        return MapToReportEntry((IntegracionSaldosCapitalInteresesEntry) entry);
+      }
+      if (entry is IntegracionSaldosCapitalInteresesTitle) {
+        return MapToReportEntry((IntegracionSaldosCapitalInteresesTitle) entry);
+      }
+      throw new NotImplementedException();
+    }
 
     static private IntegracionSaldosCapitalEntryDto MapToReportEntry(IntegracionSaldosCapitalInteresesEntry entry) {
       return new IntegracionSaldosCapitalEntryDto {
@@ -73,6 +83,15 @@ namespace Empiria.FinancialAccounting.Reporting.IntegracionSaldosCapitalInterese
         Vencimiento = entry.Vencimiento
       };
     }
+
+
+    static private IntegracionSaldosCapitalTitleDto MapToReportEntry(IntegracionSaldosCapitalInteresesTitle entry) {
+      return new IntegracionSaldosCapitalTitleDto {
+        ItemType = "Total",
+        SubledgerAccount = entry.Title
+      };
+    }
+
 
     #endregion Private methods
 

@@ -19,6 +19,19 @@ namespace Empiria.FinancialAccounting.Reporting.IntegracionSaldosCapitalInterese
 
   }
 
+  public class IntegracionSaldosCapitalInteresesTitle : IIntegracionSaldosCapitalInteresesEntry {
+
+    public string Title {
+      get; internal set;
+    } = string.Empty;
+
+    public PrestamoBaseClasificacion Classification {
+      get;
+      internal set;
+    } = PrestamoBaseClasificacion.None;
+
+  }
+
   public class IntegracionSaldosCapitalInteresesSubTotal : IIntegracionSaldosCapitalInteresesEntry {
 
     public string Title {

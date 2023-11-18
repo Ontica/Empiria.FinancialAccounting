@@ -15,6 +15,19 @@ namespace Empiria.FinancialAccounting.Reporting.IntegracionSaldosCapitalInterese
 
   }
 
+  public class IntegracionSaldosCapitalInteresesTitleDto : IIntegracionSaldosCapitalInteresesDto {
+
+    public string ItemType {
+      get; internal set;
+    } = "Total";
+
+    public string SubledgerAccount {
+      get; set;
+    }
+
+  }  // class IntegracionSaldosCapitalInteresesTitleDto
+
+
   /// <summary>DTO for each account report entry.</summary>
   public class IntegracionSaldosCapitalInteresesEntryDto : IIntegracionSaldosCapitalInteresesDto {
 

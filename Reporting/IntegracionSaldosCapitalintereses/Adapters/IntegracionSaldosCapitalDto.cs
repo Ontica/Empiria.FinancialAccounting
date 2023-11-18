@@ -11,8 +11,13 @@ using System;
 
 namespace Empiria.FinancialAccounting.Reporting.IntegracionSaldosCapitalIntereses.Adapters {
 
+  public interface IntegracionSaldosCapitalDto : IReportEntryDto {
+
+  }
+
+
   /// <summary>DTO for each report row.</summary>
-  public class IntegracionSaldosCapitalEntryDto : IReportEntryDto {
+  public class IntegracionSaldosCapitalEntryDto : IntegracionSaldosCapitalDto {
 
     public string ItemType {
       get; internal set;
@@ -63,7 +68,8 @@ namespace Empiria.FinancialAccounting.Reporting.IntegracionSaldosCapitalInterese
   } // class IntegracionSaldosCapitalEntryDto
 
 
-  public class IntegracionSaldosCapitalTotalDto : IReportEntryDto {
+
+  public class IntegracionSaldosCapitalTitleDto : IntegracionSaldosCapitalDto {
 
     public string ItemType {
       get; internal set;
@@ -75,18 +81,6 @@ namespace Empiria.FinancialAccounting.Reporting.IntegracionSaldosCapitalInterese
       internal set;
     }
 
-    public decimal CapitalMonedaNacional {
-      get; internal set;
-    }
-
-    public decimal InteresesMonedaNacional {
-      get; internal set;
-    }
-
-    public decimal TotalMonedaNacional {
-      get; internal set;
-    }
-
-  }  // class IntegracionSaldosCapitalTotalDto
+  }  // class IntegracionSaldosCapitalTitleDto
 
 } // namespace Empiria.FinancialAccounting.Reporting.IntegracionSaldosCapitalIntereses.Adapters

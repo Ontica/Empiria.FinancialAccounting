@@ -60,13 +60,24 @@ namespace Empiria.FinancialAccounting.Reporting {
           FillOutRows(i, excelFile, (IntegracionSaldosCapitalInteresesEntryDto) entry);
         } else if (entry is IntegracionSaldosCapitalInteresesTotalDto) {
           FillOutRows(i, excelFile, (IntegracionSaldosCapitalInteresesTotalDto) entry);
+        } else if (entry is IntegracionSaldosCapitalInteresesTitleDto) {
+          FillOutRows(i, excelFile, (IntegracionSaldosCapitalInteresesTitleDto) entry);
         }
         i++;
       }
     }
 
+    private void FillOutRows(int row, ExcelFile excelFile, IntegracionSaldosCapitalInteresesTitleDto entry) {
+      excelFile.SetCell($"A{row}", $"'{entry.SubledgerAccount}");
+
+      if (entry.ItemType == "Total") {
+        excelFile.SetRowStyleBold(row);
+        excelFile.SetRowFontFamily(row, "Courier New");
+      }
+    }
+
     private void FillOutRows(int row, ExcelFile excelFile, IntegracionSaldosCapitalInteresesTotalDto entry) {
-      excelFile.SetCell($"C{row}", $"'{entry.SubledgerAccount}");
+      excelFile.SetCell($"A{row}", $"'{entry.SubledgerAccount}");
       excelFile.SetCell($"J{row}", entry.CapitalMonedaNacional);
       excelFile.SetCell($"K{row}", entry.InteresesMonedaNacional);
       excelFile.SetCell($"L{row}", entry.TotalMonedaNacional);

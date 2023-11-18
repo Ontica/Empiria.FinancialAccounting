@@ -72,6 +72,9 @@ namespace Empiria.FinancialAccounting.Reporting.IntegracionSaldosCapitalInterese
       if (entry is IntegracionSaldosCapitalInteresesSubTotal) {
         return MapToReportEntry((IntegracionSaldosCapitalInteresesSubTotal) entry);
       }
+      if (entry is IntegracionSaldosCapitalInteresesTitle) {
+        return MapToReportEntry((IntegracionSaldosCapitalInteresesTitle) entry);
+      }
       throw new NotImplementedException();
     }
 
@@ -107,9 +110,15 @@ namespace Empiria.FinancialAccounting.Reporting.IntegracionSaldosCapitalInterese
       };
     }
 
+    static private IntegracionSaldosCapitalInteresesTitleDto MapToReportEntry(IntegracionSaldosCapitalInteresesTitle entry) {
+      return new IntegracionSaldosCapitalInteresesTitleDto {
+        ItemType = "Total",
+        SubledgerAccount = entry.Title,
+      };
+    }
 
     #endregion Private methods
 
-  } // class IntegracionSaldosCapitalInteresesMapper
+    } // class IntegracionSaldosCapitalInteresesMapper
 
 } // namespace Empiria.FinancialAccounting.Reporting.IntegracionSaldosCapitalIntereses.Adapters

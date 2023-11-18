@@ -41,7 +41,7 @@ namespace Empiria.FinancialAccounting.Reporting {
 
       SetHeader(excelFile);
 
-      FillOutRows(excelFile, _reportData.Entries.Select(x => (IntegracionSaldosCapitalEntryDto) x));
+      FillOutRows(excelFile, _reportData.Entries.Select(x => (IntegracionSaldosCapitalDto) x));
 
       excelFile.Save();
 
@@ -52,33 +52,47 @@ namespace Empiria.FinancialAccounting.Reporting {
 
     #region Private methods
 
-    private void FillOutRows(ExcelFile excelFile, IEnumerable<IntegracionSaldosCapitalEntryDto> entries) {
+    private void FillOutRows(ExcelFile excelFile, IEnumerable<IntegracionSaldosCapitalDto> entries) {
       int i = 5;
 
       foreach (var entry in entries) {
-
-        excelFile.SetCell($"A{i}", entry.PrestamoName);
-        excelFile.SetCell($"B{i}", entry.CurrencyCode);
-        excelFile.SetCell($"C{i}", $"'{entry.SubledgerAccount}");
-        excelFile.SetCell($"D{i}", entry.SubledgerAccountName);
-        excelFile.SetCellWrapText($"D{i}");
-        excelFile.SetCell($"E{i}", entry.SectorCode);
-        excelFile.SetCell($"F{i}", entry.CapitalCortoPlazoMonedaOrigen);
-        excelFile.SetCell($"G{i}", entry.CapitalLargoPlazoMonedaOrigen);
-        excelFile.SetCell($"H{i}", entry.CapitalMonedaOrigenTotal);
-        if (entry.Vencimiento.HasValue) {
-          excelFile.SetCell($"I{i}", entry.Vencimiento.Value);
+        if (entry is IntegracionSaldosCapitalEntryDto) {
+          FillOutRows(i, excelFile, (IntegracionSaldosCapitalEntryDto) entry);
+        } else if (entry is IntegracionSaldosCapitalTitleDto) {
+          FillOutRows(i, excelFile, (IntegracionSaldosCapitalTitleDto) entry);
         }
-
-        if (entry.ItemType == "Total") {
-          excelFile.SetRowStyleBold(i);
-          excelFile.SetRowFontFamily(i, "Courier New");
-        }
-
         i++;
       }
     }
 
+    private void FillOutRows(int row, ExcelFile excelFile, IntegracionSaldosCapitalTitleDto entry) {
+      excelFile.SetCell($"A{row}", entry.SubledgerAccount);
+
+      if (entry.ItemType == "Total") {
+        excelFile.SetRowStyleBold(row);
+        excelFile.SetRowFontFamily(row, "Courier New");
+      }
+    }
+
+    private void FillOutRows(int row, ExcelFile excelFile, IntegracionSaldosCapitalEntryDto entry) {
+      excelFile.SetCell($"A{row}", entry.PrestamoName);
+      excelFile.SetCell($"B{row}", entry.CurrencyCode);
+      excelFile.SetCell($"C{row}", $"'{entry.SubledgerAccount}");
+      excelFile.SetCell($"D{row}", entry.SubledgerAccountName);
+      excelFile.SetCellWrapText($"D{row}");
+      excelFile.SetCell($"E{row}", entry.SectorCode);
+      excelFile.SetCell($"F{row}", entry.CapitalCortoPlazoMonedaOrigen);
+      excelFile.SetCell($"G{row}", entry.CapitalLargoPlazoMonedaOrigen);
+      excelFile.SetCell($"H{row}", entry.CapitalMonedaOrigenTotal);
+      if (entry.Vencimiento.HasValue) {
+        excelFile.SetCell($"I{row}", entry.Vencimiento.Value);
+      }
+
+      if (entry.ItemType == "Total") {
+        excelFile.SetRowStyleBold(row);
+        excelFile.SetRowFontFamily(row, "Courier New");
+      }
+    }
 
     private void SetHeader(ExcelFile excelFile) {
       excelFile.SetCell($"A2", _template.Title);

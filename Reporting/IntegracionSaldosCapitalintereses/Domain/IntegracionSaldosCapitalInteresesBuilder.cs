@@ -79,12 +79,19 @@ namespace Empiria.FinancialAccounting.Reporting.IntegracionSaldosCapitalInterese
       List<IIntegracionSaldosCapitalInteresesEntry> returnEntries = new List<IIntegracionSaldosCapitalInteresesEntry>(entries);
 
       foreach (var total in totals) {
-        int index = returnEntries.FindLastIndex(x => x.Classification == total.Classification);
+        int index = returnEntries.FindIndex(x => x.Classification == total.Classification);
+
+        returnEntries.Insert(index, new IntegracionSaldosCapitalInteresesTitle {
+          Title = total.Classification.DisplayName(),
+          Classification = total.Classification
+        });
+
+        index = returnEntries.FindLastIndex(x => x.Classification == total.Classification);
 
         returnEntries.Insert(index + 1, total);
+        returnEntries.Insert(index + 2, new IntegracionSaldosCapitalInteresesTitle { Classification = total.Classification });
+        returnEntries.Insert(index + 3, new IntegracionSaldosCapitalInteresesTitle { Classification = total.Classification });
       }
-
-      //returnEntries.AddRange(totals);
 
       return returnEntries;
     }
@@ -155,7 +162,7 @@ namespace Empiria.FinancialAccounting.Reporting.IntegracionSaldosCapitalInterese
                       CapitalLargoPlazoMonedaOrigen = x.Sum(y => y.CapitalLargoPlazoMonedaOrigen),
                       InteresesMonedaOrigen = x.Sum(y => y.InteresesMonedaOrigen),
                       TipoCambio = x.First().TipoCambio,
-                      SubledgerAccount = "Total"
+                      SubledgerAccount = $"Préstamo {x.First().PrestamoBase.Name} ({Currency.Parse(x.First().CurrencyCode).ShortName})",
                     })
                  .ToList();
     }
@@ -172,7 +179,7 @@ namespace Empiria.FinancialAccounting.Reporting.IntegracionSaldosCapitalInterese
              CapitalLargoPlazoMonedaOrigen = x.Sum(y => y.CapitalLargoPlazoMonedaOrigen),
              InteresesMonedaOrigen = x.Sum(y => y.InteresesMonedaOrigen),
              TipoCambio = x.First().TipoCambio,
-             SubledgerAccount = $"Subtotal {x.First().PrestamoBase.Classification.DisplayName()}"
+             SubledgerAccount = $"{x.First().PrestamoBase.Classification.DisplayName()} ({Currency.Parse(x.First().CurrencyCode).ShortName})"
            })
            .ToList();
     }
@@ -181,7 +188,7 @@ namespace Empiria.FinancialAccounting.Reporting.IntegracionSaldosCapitalInterese
     private List<IntegracionSaldosCapitalInteresesSubTotal> GetTotalsByClassification(List<IntegracionSaldosCapitalInteresesEntry> entries) {
       return entries.GroupBy(x => x.PrestamoBase.Classification)
            .Select(x => new IntegracionSaldosCapitalInteresesSubTotal {
-             Title = x.First().Classification.DisplayName(),
+             Title = "Total " + x.First().Classification.DisplayName(),
              Classification = x.First().Classification,
              CapitalMonedaNacional = x.Sum(y => y.CapitalMonedaNacional),
              InteresesMonedaNacional = x.Sum(y => y.InteresesMonedaNacional),
