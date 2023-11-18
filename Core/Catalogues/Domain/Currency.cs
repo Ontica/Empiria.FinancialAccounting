@@ -89,6 +89,28 @@ namespace Empiria.FinancialAccounting {
     }
 
 
+    public string ShortName {
+      get {
+        if (this.Equals(Currency.MXN)) {
+          return "M.N.";
+        }
+        if (this.Equals(Currency.USD)) {
+          return "Dlls";
+        }
+        if (this.Equals(Currency.YEN)) {
+          return "Yenes";
+        }
+        if (this.Equals(Currency.EUR)) {
+          return "Euros";
+        }
+        if (this.Equals(Currency.UDI)) {
+          return "UDI";
+        }
+        return this.Name;
+      }
+    }
+
+
     [DataField("ABBREV")]
     public string Abbrev {
       get; private set;
