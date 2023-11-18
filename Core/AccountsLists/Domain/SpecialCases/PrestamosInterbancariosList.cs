@@ -31,6 +31,34 @@ namespace Empiria.FinancialAccounting.AccountsLists.SpecialCases {
 
   }
 
+  static public class PrestamoBaseClasificacionMethods {
+
+    static public string DisplayName(this PrestamoBaseClasificacion classification) {
+      switch (classification) {
+        case PrestamoBaseClasificacion.OtrosOrganismos:
+          return "Préstamos de Otros Organismos";
+
+        case PrestamoBaseClasificacion.AgenteFinanciero:
+          return "Agente Financiero del Gobierno Federal";
+
+        case PrestamoBaseClasificacion.GobiernoFederal:
+          return "Gobierno Federal";
+
+        case PrestamoBaseClasificacion.BancaComercial:
+          return "Banca comercial";
+
+        case PrestamoBaseClasificacion.None:
+          return "Préstamos sin clasificación";
+
+        default:
+          throw Assertion.EnsureNoReachThisCode($"Unhandled classification {classification}");
+      }
+    }
+
+  }
+
+
+
   public class PrestamoBase {
 
     static public PrestamoBase Empty {
@@ -54,7 +82,7 @@ namespace Empiria.FinancialAccounting.AccountsLists.SpecialCases {
           Bank = "No asignado",
           Number = "",
           Classification = PrestamoBaseClasificacion.None,
-          Order = 99,
+          Order = 98,
         };
       }
     }
@@ -90,27 +118,6 @@ namespace Empiria.FinancialAccounting.AccountsLists.SpecialCases {
       get; private set;
     }
 
-    public string GetClassificationName() {
-      switch (Classification) {
-        case PrestamoBaseClasificacion.OtrosOrganismos:
-          return "Préstamos de Otros Organismos";
-
-        case PrestamoBaseClasificacion.AgenteFinanciero:
-          return "Agente Financiero del Gobierno Federal";
-
-        case PrestamoBaseClasificacion.GobiernoFederal:
-          return "Gobierno Federal";
-
-        case PrestamoBaseClasificacion.BancaComercial:
-          return "Banca comercial";
-
-        case PrestamoBaseClasificacion.None:
-          return "Préstamos sin clasificación";
-
-        default:
-          throw Assertion.EnsureNoReachThisCode($"Unhandled classification {Classification}");
-      }
-    }
 
     public int Order {
       get; private set;

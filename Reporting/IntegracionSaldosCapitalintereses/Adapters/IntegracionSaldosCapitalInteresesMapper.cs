@@ -100,7 +100,7 @@ namespace Empiria.FinancialAccounting.Reporting.IntegracionSaldosCapitalInterese
     static private IntegracionSaldosCapitalInteresesTotalDto MapToReportEntry(IntegracionSaldosCapitalInteresesSubTotal entry) {
       return new IntegracionSaldosCapitalInteresesTotalDto {
         ItemType = "Total",
-        SubledgerAccount = entry.PrestamoBase.Name,
+        SubledgerAccount = entry.Title,
         CapitalMonedaNacional = entry.CapitalMonedaNacional,
         InteresesMonedaNacional = entry.InteresesMonedaNacional,
         TotalMonedaNacional = entry.TotalMonedaNacional

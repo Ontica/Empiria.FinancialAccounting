@@ -25,6 +25,8 @@ namespace Empiria.FinancialAccounting.Reporting.IntegracionSaldosCapitalInterese
 
       List<IIntegracionSaldosCapitalInteresesEntry> data = baseBuilder.BuildEntries(buildQuery);
 
+      data.RemoveAll(x => x is IntegracionSaldosCapitalInteresesSubTotal);
+
       return IntegracionSaldosCapitalMapper.MapToReportDataDto(buildQuery, data);
     }
 

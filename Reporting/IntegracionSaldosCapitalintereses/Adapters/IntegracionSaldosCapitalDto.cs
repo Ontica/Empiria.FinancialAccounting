@@ -11,29 +11,6 @@ using System;
 
 namespace Empiria.FinancialAccounting.Reporting.IntegracionSaldosCapitalIntereses.Adapters {
 
-  /// <summary>Output DTO used to return 'Integración de saldos de capital' report data.</summary>
-  public class IntegracionSaldosCapitalDto {
-
-
-    public ReportBuilderQuery Query {
-      get; internal set;
-    } = new ReportBuilderQuery();
-
-
-    public FixedList<DataTableColumn> Columns {
-      get; internal set;
-    } = new FixedList<DataTableColumn>();
-
-
-    public FixedList<IntegracionSaldosCapitalEntryDto> Entries {
-      get; internal set;
-    } = new FixedList<IntegracionSaldosCapitalEntryDto>();
-
-
-  } // class IntegracionSaldosCapitalDto
-
-
-
   /// <summary>DTO for each report row.</summary>
   public class IntegracionSaldosCapitalEntryDto : IReportEntryDto {
 

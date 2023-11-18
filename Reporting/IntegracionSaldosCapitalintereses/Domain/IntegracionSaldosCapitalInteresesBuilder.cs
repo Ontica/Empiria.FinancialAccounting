@@ -42,31 +42,51 @@ namespace Empiria.FinancialAccounting.Reporting.IntegracionSaldosCapitalInterese
     public List<IIntegracionSaldosCapitalInteresesEntry> BuildEntries(ReportBuilderQuery buildQuery) {
       Assertion.Require(buildQuery, nameof(buildQuery));
 
-      var entries = new List<IntegracionSaldosCapitalInteresesEntry>(128);
+      var baseEntries = new List<IntegracionSaldosCapitalInteresesEntry>(128);
 
-      BuildEntries(entries, buildQuery.ToDate, "2.02.02.05.01", Campo.CapitalCortoPlazo);
-      BuildEntries(entries, buildQuery.ToDate, "2.02.03.05.01", Campo.CapitalLargoPlazo);
-      BuildEntries(entries, buildQuery.ToDate, "2.02.02.05.02", Campo.Intereses);
+      BuildEntries(baseEntries, buildQuery.ToDate, "2.02.02.05.01", Campo.CapitalCortoPlazo);
+      BuildEntries(baseEntries, buildQuery.ToDate, "2.02.03.05.01", Campo.CapitalLargoPlazo);
+      BuildEntries(baseEntries, buildQuery.ToDate, "2.02.02.05.02", Campo.Intereses);
 
-      BuildEntries(entries, buildQuery.ToDate, "2.02.02.06.01", Campo.CapitalCortoPlazo);
-      BuildEntries(entries, buildQuery.ToDate, "2.02.03.06.01", Campo.CapitalLargoPlazo);
-      BuildEntries(entries, buildQuery.ToDate, "2.02.02.06.02", Campo.Intereses);
+      BuildEntries(baseEntries, buildQuery.ToDate, "2.02.02.06.01", Campo.CapitalCortoPlazo);
+      BuildEntries(baseEntries, buildQuery.ToDate, "2.02.03.06.01", Campo.CapitalLargoPlazo);
+      BuildEntries(baseEntries, buildQuery.ToDate, "2.02.02.06.02", Campo.Intereses);
 
-      SetPrestamosBase(entries);
+      SetPrestamosBase(baseEntries);
 
-      var returnEntries = new List<IntegracionSaldosCapitalInteresesEntry>(entries);
+      var entries = new List<IntegracionSaldosCapitalInteresesEntry>(baseEntries);
 
-      var totals = GetTotalByPrestamoEntries(entries);
+      var totals = GetTotalsByPrestamo(baseEntries);
 
-      returnEntries.AddRange(totals);
+      entries.AddRange(totals);
 
-      var totals2 = GetTotalByClassificationAndCurrencyEntries(entries);
+      var totals2 = GetTotalsByClassificationAndCurrency(baseEntries);
 
-      returnEntries.AddRange(totals2);
+      entries.AddRange(totals2);
 
-      returnEntries = Sort(returnEntries);
+      entries = Sort(entries);
 
-      return new List<IIntegracionSaldosCapitalInteresesEntry>(returnEntries);
+      var totals3 = GetTotalsByClassification(baseEntries);
+
+      List<IIntegracionSaldosCapitalInteresesEntry> returnEntries = MergeTotalsByClassification(entries, totals3);
+
+      return returnEntries;
+    }
+
+
+    private List<IIntegracionSaldosCapitalInteresesEntry> MergeTotalsByClassification(List<IntegracionSaldosCapitalInteresesEntry> entries,
+                                                                                      List<IntegracionSaldosCapitalInteresesSubTotal> totals) {
+      List<IIntegracionSaldosCapitalInteresesEntry> returnEntries = new List<IIntegracionSaldosCapitalInteresesEntry>(entries);
+
+      foreach (var total in totals) {
+        int index = returnEntries.FindLastIndex(x => x.Classification == total.Classification);
+
+        returnEntries.Insert(index + 1, total);
+      }
+
+      //returnEntries.AddRange(totals);
+
+      return returnEntries;
     }
 
 
@@ -124,7 +144,7 @@ namespace Empiria.FinancialAccounting.Reporting.IntegracionSaldosCapitalInterese
     }
 
 
-    private List<IntegracionSaldosCapitalInteresesEntry> GetTotalByPrestamoEntries(List<IntegracionSaldosCapitalInteresesEntry> entries) {
+    private List<IntegracionSaldosCapitalInteresesEntry> GetTotalsByPrestamo(List<IntegracionSaldosCapitalInteresesEntry> entries) {
       return entries.GroupBy(x => new { x.PrestamoBase.UID, x.CurrencyCode })
                     .Select(x => new IntegracionSaldosCapitalInteresesEntry {
                       ItemType = "Total",
@@ -141,7 +161,7 @@ namespace Empiria.FinancialAccounting.Reporting.IntegracionSaldosCapitalInterese
     }
 
 
-    private List<IntegracionSaldosCapitalInteresesEntry> GetTotalByClassificationAndCurrencyEntries(List<IntegracionSaldosCapitalInteresesEntry> entries) {
+    private List<IntegracionSaldosCapitalInteresesEntry> GetTotalsByClassificationAndCurrency(List<IntegracionSaldosCapitalInteresesEntry> entries) {
       return entries.GroupBy(x => new { x.PrestamoBase.Classification, x.CurrencyCode })
            .Select(x => new IntegracionSaldosCapitalInteresesEntry {
              ItemType = "Total",
@@ -152,7 +172,19 @@ namespace Empiria.FinancialAccounting.Reporting.IntegracionSaldosCapitalInterese
              CapitalLargoPlazoMonedaOrigen = x.Sum(y => y.CapitalLargoPlazoMonedaOrigen),
              InteresesMonedaOrigen = x.Sum(y => y.InteresesMonedaOrigen),
              TipoCambio = x.First().TipoCambio,
-             SubledgerAccount = $"Subtotal {x.First().PrestamoBase.GetClassificationName()}"
+             SubledgerAccount = $"Subtotal {x.First().PrestamoBase.Classification.DisplayName()}"
+           })
+           .ToList();
+    }
+
+
+    private List<IntegracionSaldosCapitalInteresesSubTotal> GetTotalsByClassification(List<IntegracionSaldosCapitalInteresesEntry> entries) {
+      return entries.GroupBy(x => x.PrestamoBase.Classification)
+           .Select(x => new IntegracionSaldosCapitalInteresesSubTotal {
+             Title = x.First().Classification.DisplayName(),
+             Classification = x.First().Classification,
+             CapitalMonedaNacional = x.Sum(y => y.CapitalMonedaNacional),
+             InteresesMonedaNacional = x.Sum(y => y.InteresesMonedaNacional),
            })
            .ToList();
     }

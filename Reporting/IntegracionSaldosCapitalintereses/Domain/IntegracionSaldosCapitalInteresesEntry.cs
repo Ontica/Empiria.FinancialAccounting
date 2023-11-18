@@ -15,12 +15,19 @@ namespace Empiria.FinancialAccounting.Reporting.IntegracionSaldosCapitalInterese
 
   public interface IIntegracionSaldosCapitalInteresesEntry {
 
+    PrestamoBaseClasificacion Classification { get; }
+
   }
 
   public class IntegracionSaldosCapitalInteresesSubTotal : IIntegracionSaldosCapitalInteresesEntry {
 
-    public PrestamoBase PrestamoBase {
+    public string Title {
       get; internal set;
+    }
+
+    public PrestamoBaseClasificacion Classification {
+      get;
+      internal set;
     }
 
     public decimal CapitalMonedaNacional {

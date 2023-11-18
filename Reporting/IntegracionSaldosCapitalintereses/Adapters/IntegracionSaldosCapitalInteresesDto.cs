@@ -11,31 +11,34 @@ using System;
 
 namespace Empiria.FinancialAccounting.Reporting.IntegracionSaldosCapitalIntereses.Adapters {
 
-  /// <summary>Output DTO used to return 'Integración de saldos de capital e intereses' report data.</summary>
-  public class IntegracionSaldosCapitalInteresesDto {
+  ///// <summary>Output DTO used to return 'Integración de saldos de capital e intereses' report data.</summary>
+  //public class IntegracionSaldosCapitalInteresesDto {
 
 
-    public ReportBuilderQuery Query {
-      get; internal set;
-    } = new ReportBuilderQuery();
+  //  public ReportBuilderQuery Query {
+  //    get; internal set;
+  //  } = new ReportBuilderQuery();
 
 
-    public FixedList<DataTableColumn> Columns {
-      get; internal set;
-    } = new FixedList<DataTableColumn>();
+  //  public FixedList<DataTableColumn> Columns {
+  //    get; internal set;
+  //  } = new FixedList<DataTableColumn>();
 
 
-    public FixedList<IntegracionSaldosCapitalInteresesEntryDto> Entries {
-      get; internal set;
-    } = new FixedList<IntegracionSaldosCapitalInteresesEntryDto>();
+  //  public FixedList<IIntegracionSaldosCapitalInteresesDto> Entries {
+  //    get; internal set;
+  //  } = new FixedList<IIntegracionSaldosCapitalInteresesDto>();
 
 
-  } // class IntegracionSaldosCapitalInteresesDto
+  //} // class IntegracionSaldosCapitalInteresesDto
 
 
+  public interface IIntegracionSaldosCapitalInteresesDto : IReportEntryDto {
+
+  }
 
   /// <summary>DTO for each account report entry.</summary>
-  public class IntegracionSaldosCapitalInteresesEntryDto : IReportEntryDto {
+  public class IntegracionSaldosCapitalInteresesEntryDto : IIntegracionSaldosCapitalInteresesDto {
 
     public string ItemType {
       get; internal set;
@@ -111,7 +114,7 @@ namespace Empiria.FinancialAccounting.Reporting.IntegracionSaldosCapitalInterese
 
 
 
-  public class IntegracionSaldosCapitalInteresesTotalDto : IReportEntryDto {
+  public class IntegracionSaldosCapitalInteresesTotalDto : IIntegracionSaldosCapitalInteresesDto {
 
     public string ItemType {
       get; internal set;
@@ -135,6 +138,6 @@ namespace Empiria.FinancialAccounting.Reporting.IntegracionSaldosCapitalInterese
       get; internal set;
     }
 
-  }
+  }  // class IntegracionSaldosCapitalInteresesTotalDto
 
 } // namespace Empiria.FinancialAccounting.Reporting.IntegracionSaldosCapitalIntereses.Adapters
