@@ -61,6 +61,7 @@ namespace Empiria.FinancialAccounting.Reporting {
         excelFile.SetCell($"B{i}", entry.CurrencyCode);
         excelFile.SetCell($"C{i}", $"'{entry.SubledgerAccount}");
         excelFile.SetCell($"D{i}", entry.SubledgerAccountName);
+        excelFile.SetCellWrapText($"D{i}");
         excelFile.SetCell($"E{i}", entry.SectorCode);
         excelFile.SetCell($"F{i}", entry.CapitalCortoPlazoMonedaOrigen);
         excelFile.SetCell($"G{i}", entry.CapitalLargoPlazoMonedaOrigen);
