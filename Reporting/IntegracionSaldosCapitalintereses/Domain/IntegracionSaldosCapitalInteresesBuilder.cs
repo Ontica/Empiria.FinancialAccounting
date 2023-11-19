@@ -33,13 +33,14 @@ namespace Empiria.FinancialAccounting.Reporting.IntegracionSaldosCapitalInterese
     #region Public methods
 
     public ReportDataDto Build(ReportBuilderQuery buildQuery) {
-      List<IIntegracionSaldosCapitalInteresesEntry> converted = BuildEntries(buildQuery);
+      List<IIntegracionSaldosCapitalInteresesEntry> converted = BuildEntries(buildQuery, true);
 
       return IntegracionSaldosCapitalInteresesMapper.MapToReportDataDto(buildQuery, converted);
     }
 
 
-    public List<IIntegracionSaldosCapitalInteresesEntry> BuildEntries(ReportBuilderQuery buildQuery) {
+    public List<IIntegracionSaldosCapitalInteresesEntry> BuildEntries(ReportBuilderQuery buildQuery,
+                                                                      bool includeBaseEntries) {
       Assertion.Require(buildQuery, nameof(buildQuery));
 
       var baseEntries = new List<IntegracionSaldosCapitalInteresesEntry>(128);
@@ -54,7 +55,11 @@ namespace Empiria.FinancialAccounting.Reporting.IntegracionSaldosCapitalInterese
 
       SetPrestamosBase(baseEntries);
 
-      var entries = new List<IntegracionSaldosCapitalInteresesEntry>(baseEntries);
+      var entries = new List<IntegracionSaldosCapitalInteresesEntry>();
+
+      if (includeBaseEntries) {
+        entries.AddRange(baseEntries);
+      }
 
       var totals = GetTotalsByPrestamo(baseEntries);
 

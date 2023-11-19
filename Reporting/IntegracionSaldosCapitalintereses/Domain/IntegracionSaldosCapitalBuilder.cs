@@ -23,7 +23,7 @@ namespace Empiria.FinancialAccounting.Reporting.IntegracionSaldosCapitalInterese
     public ReportDataDto Build(ReportBuilderQuery buildQuery) {
       var baseBuilder = new IntegracionSaldosCapitalInteresesBuilder();
 
-      List<IIntegracionSaldosCapitalInteresesEntry> data = baseBuilder.BuildEntries(buildQuery);
+      List<IIntegracionSaldosCapitalInteresesEntry> data = baseBuilder.BuildEntries(buildQuery, true);
 
       data.RemoveAll(x => x is IntegracionSaldosCapitalInteresesSubTotal);
 
