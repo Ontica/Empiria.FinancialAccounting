@@ -75,9 +75,19 @@ namespace Empiria.FinancialAccounting.Reporting.IntegracionSaldosCapitalInterese
 
       List<IIntegracionSaldosCapitalInteresesEntry> returnEntries = MergeTotalsByClassification(entries, totals3);
 
+      returnEntries.Add(GetGrandTotal(totals3));
+
       return returnEntries;
     }
 
+    private IntegracionSaldosCapitalInteresesSubTotal GetGrandTotal(List<IntegracionSaldosCapitalInteresesSubTotal> totals) {
+      return new IntegracionSaldosCapitalInteresesSubTotal {
+        Title = "TOTAL",
+        Classification = PrestamoBaseClasificacion.None,
+        CapitalMonedaNacional = totals.Sum(x => x.CapitalMonedaNacional),
+        InteresesMonedaNacional = totals.Sum(x => x.InteresesMonedaNacional)
+      };
+    }
 
     private List<IIntegracionSaldosCapitalInteresesEntry> MergeTotalsByClassification(List<IntegracionSaldosCapitalInteresesEntry> entries,
                                                                                       List<IntegracionSaldosCapitalInteresesSubTotal> totals) {
