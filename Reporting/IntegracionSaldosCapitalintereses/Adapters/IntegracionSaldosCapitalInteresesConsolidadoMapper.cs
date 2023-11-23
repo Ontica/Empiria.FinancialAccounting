@@ -69,6 +69,12 @@ namespace Empiria.FinancialAccounting.Reporting.IntegracionSaldosCapitalInterese
       if (entry is IntegracionSaldosCapitalInteresesTitle title) {
         return MapToReportEntry(title);
       }
+      if (entry is IntegracionSaldosBackOfficeEntry backOffice) {
+        return MapToReportEntry(backOffice);
+      }
+      if (entry is IntegracionSaldosBackOfficeTotal backofficeTotal) {
+        return MapToReportEntry(backofficeTotal);
+      }
       throw new NotImplementedException();
     }
 
@@ -97,6 +103,30 @@ namespace Empiria.FinancialAccounting.Reporting.IntegracionSaldosCapitalInterese
       return new IntegracionSaldosCapitalInteresesConsolidadoTotalDto {
         ItemType = "Total",
         Title = entry.Title,
+        CapitalMonedaNacional = entry.CapitalMonedaNacional,
+        InteresesMonedaNacional = entry.InteresesMonedaNacional,
+        TotalMonedaNacional = entry.TotalMonedaNacional
+      };
+    }
+
+    static private IntegracionSaldosCapitalInteresesConsolidadoEntryDto MapToReportEntry(IntegracionSaldosBackOfficeEntry entry) {
+      return new IntegracionSaldosCapitalInteresesConsolidadoEntryDto {
+        ItemType = entry.ItemType,
+        Title = entry.BackOfficeEntry.DisplayName(),
+        CapitalMonedaOrigenTotal = entry.CapitalMonedaOrigen,
+        InteresesMonedaOrigenTotal = entry.InteresesMonedaOrigen,
+        TotalMonedaOrigen = entry.TotalMonedaOrigen,
+        TipoCambio = entry.TipoCambio,
+        CapitalMonedaNacional = entry.CapitalMonedaNacional,
+        InteresesMonedaNacional = entry.InteresesMonedaNacional,
+        TotalMonedaNacional = entry.TotalMonedaNacional
+      };
+    }
+
+    static private IntegracionSaldosCapitalInteresesConsolidadoTotalDto MapToReportEntry(IntegracionSaldosBackOfficeTotal entry) {
+      return new IntegracionSaldosCapitalInteresesConsolidadoTotalDto {
+        ItemType = entry.ItemType,
+        Title = entry.BackOfficeEntry.DisplayName(),
         CapitalMonedaNacional = entry.CapitalMonedaNacional,
         InteresesMonedaNacional = entry.InteresesMonedaNacional,
         TotalMonedaNacional = entry.TotalMonedaNacional

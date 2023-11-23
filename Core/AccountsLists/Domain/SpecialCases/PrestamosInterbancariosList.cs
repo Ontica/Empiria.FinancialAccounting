@@ -27,8 +27,11 @@ namespace Empiria.FinancialAccounting.AccountsLists.SpecialCases {
 
     BancaComercial = 4,
 
+    RegistroBackOffice = 5,
+
     None = 99,
 
+    Total = 100,
   }
 
   static public class PrestamoBaseClasificacionMethods {
@@ -49,6 +52,9 @@ namespace Empiria.FinancialAccounting.AccountsLists.SpecialCases {
 
         case PrestamoBaseClasificacion.None:
           return "Préstamos sin clasificación";
+
+        case PrestamoBaseClasificacion.Total:
+          return "TOTAL PRESTAMOS INTERBANCARIOS Y DE OTROS ORGANISMOS";
 
         default:
           throw Assertion.EnsureNoReachThisCode($"Unhandled classification {classification}");
