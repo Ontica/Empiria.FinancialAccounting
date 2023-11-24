@@ -11,7 +11,7 @@ tailored with ASP .NET.
 As other Empiria products, this backend runs over [Empiria Framework](https://github.com/Ontica/Empiria.Core),
 and as usual, needs some of the [Empiria Extensions](https://github.com/Ontica/Empiria.Extensions).
 
-SICOFIN, a custom-tailored Financial Accounting Web System, originally was developed by our organization in 2000-2002,
+SICOFIN, a custom-tailored Financial Accounting Web System, was originally developed by our organization in 2000-2002,
 for Banco Nacional de Obras y Servicios Públicos S.N.C. (BANOBRAS), a Mexican state owned development bank.
 The original SICOFIN's source code [can be downloaded here](https://github.com/Ontica/Sicofin).
 
@@ -29,24 +29,27 @@ Empiria Financial Accounting comprises the following modules:
     Provides read and write services for financial external variables and their values.
 
 4.  **Financial Concepts**  
-	Provides services that manage financial concepts and their integrations.
+    Provides services that manage financial concepts and their integrations.
 
 5.  **Financial Reports**  
     Generates information for financial reports based on accounts balance data structures and financial concepts and rules.
 
-6.  **Reconciliation**  
+6.  **Fixed Assets Depreciation**  
+    Generates information for fixed assets depreciation.
+
+7.  **Reconciliation**  
     Provides services for account's balance reconciliation.
 
-7.  **Reporting**  
-    Generate financial accounting reports and export them to files.
+8.  **Reporting**  
+    Generates financial accounting reports and export them to files.
 
-8.  **Vouchers Management**  
+9.  **Vouchers Management**  
     Provides services for vouchers edition, importation and management.
 
-9. **Web API**  
+10. **Web API**  
     Http/Json RESTful interface for Financial Accounting system.
 
-10. **Banobras Integration**  
+11. **Banobras Integration**  
     Provides services used to integrate SICOFIN with other BANOBRAS systems.
 
 
