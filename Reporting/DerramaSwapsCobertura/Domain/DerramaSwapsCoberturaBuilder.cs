@@ -154,7 +154,7 @@ namespace Empiria.FinancialAccounting.Reporting.DerramaSwapsCobertura {
       return new TrialBalanceQuery {
         TrialBalanceType = TrialBalanceType.SaldosPorCuenta,
         AccountsChartUID = AccountsChart.IFRS.UID,
-        BalancesType = BalancesType.WithCurrentBalanceOrMovements,
+        BalancesType = BalancesType.WithCurrentBalance,
         ShowCascadeBalances = false,
         WithSubledgerAccount = true,
         WithAverageBalance = false,
