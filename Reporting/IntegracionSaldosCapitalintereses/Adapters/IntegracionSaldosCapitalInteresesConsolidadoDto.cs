@@ -23,7 +23,7 @@ namespace Empiria.FinancialAccounting.Reporting.IntegracionSaldosCapitalInterese
 
     public string Title {
       get; set;
-    }
+    } = string.Empty;
 
   }  // class IntegracionSaldosCapitalInteresesConsolidadoTitleDto
 
@@ -37,6 +37,15 @@ namespace Empiria.FinancialAccounting.Reporting.IntegracionSaldosCapitalInterese
 
 
     public string Title {
+      get; internal set;
+    } = string.Empty;
+
+    public string Banco {
+      get; internal set;
+    } = string.Empty;
+
+
+    public string PrestamoID {
       get; internal set;
     } = string.Empty;
 
@@ -86,14 +95,7 @@ namespace Empiria.FinancialAccounting.Reporting.IntegracionSaldosCapitalInterese
     public decimal TotalMonedaNacional {
       get; internal set;
     }
-    public string Banco {
-      get;
-      internal set;
-    }
-    public string PrestamoID {
-      get;
-      internal set;
-    }
+
   } // class IntegracionSaldosCapitalInteresesConsolidadoEntryDto
 
 
@@ -108,7 +110,7 @@ namespace Empiria.FinancialAccounting.Reporting.IntegracionSaldosCapitalInterese
     public string Title {
       get;
       internal set;
-    }
+    } = string.Empty;
 
     public decimal CapitalMonedaNacional {
       get; internal set;
