@@ -209,7 +209,7 @@ namespace Empiria.FinancialAccounting.Reporting.IntegracionSaldosCapitalInterese
       return new TrialBalanceQuery {
         TrialBalanceType = TrialBalanceType.SaldosPorCuenta,
         AccountsChartUID = AccountsChart.IFRS.UID,
-        BalancesType = BalancesType.WithCurrentBalanceOrMovements,
+        BalancesType = BalancesType.WithCurrentBalance,
         ShowCascadeBalances = false,
         WithSubledgerAccount = false,
         WithAverageBalance = false,
