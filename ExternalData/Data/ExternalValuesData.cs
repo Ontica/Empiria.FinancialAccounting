@@ -51,7 +51,7 @@ namespace Empiria.FinancialAccounting.ExternalData.Data {
 
       var op = DataOperation.Parse(sql);
 
-      return DataReader.GetFixedList<ExternalValue>(op);
+      return DataReader.GetFixedList<ExternalValue>(op, true);
     }
 
 
