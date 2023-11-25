@@ -16,7 +16,7 @@ namespace Empiria.FinancialAccounting.AccountsLists.SpecialCases {
 
   public class DepreciacionActivoFijoList : AccountsList {
 
-    static internal DepreciacionActivoFijoList Parse() {
+    static public DepreciacionActivoFijoList Parse() {
       return (DepreciacionActivoFijoList) AccountsList.Parse("DepreciacionActivoFijo");
     }
 
