@@ -82,6 +82,9 @@
     <ProjectReference Include="..\Reconciliation\Empiria.FinancialAccounting.Reconciliation.csproj" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\FixedAssetsDepreciation\Empiria.FinancialAccounting.FixedAssetsDepreciation.csproj" />
+  </ItemGroup>
+  <ItemGroup>
     <Reference Include="Microsoft.CSharp" />
   </ItemGroup>
 </Project>

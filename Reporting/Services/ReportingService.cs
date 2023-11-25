@@ -16,11 +16,12 @@ using Empiria.FinancialAccounting.Reporting.Exporters;
 
 using Empiria.FinancialAccounting.Reporting.FiscalReports.Builders;
 
-using Empiria.FinancialAccounting.Reporting.VoucherRelatedReports.Domain;
+using Empiria.FinancialAccounting.Reporting.ActivoFijoDepreciacion;
 using Empiria.FinancialAccounting.Reporting.AccountsComparer.Domain;
-using Empiria.FinancialAccounting.Reporting.ValorizacionEstimacionPreventiva.Domain;
 using Empiria.FinancialAccounting.Reporting.DerramaSwapsCobertura;
 using Empiria.FinancialAccounting.Reporting.IntegracionSaldosCapitalIntereses;
+using Empiria.FinancialAccounting.Reporting.ValorizacionEstimacionPreventiva.Domain;
+using Empiria.FinancialAccounting.Reporting.VoucherRelatedReports.Domain;
 
 namespace Empiria.FinancialAccounting.Reporting {
 
@@ -75,6 +76,10 @@ namespace Empiria.FinancialAccounting.Reporting {
 
     private IReportBuilder GetReportBuilder(ReportTypes reportType) {
       switch (reportType) {
+
+        case ReportTypes.ActivoFijoDepreciacion:
+          return new ActivoFijoDepreciacionBuilder();
+
         case ReportTypes.BalanzaSAT:
           return new BalanzaSat();
 

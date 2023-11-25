@@ -71,6 +71,8 @@ namespace Empiria.FinancialAccounting.Reporting {
 
   public enum ReportTypes {
 
+    ActivoFijoDepreciacion,
+
     BalanzaSAT,
 
     BalanzaDeterminarImpuestos,
