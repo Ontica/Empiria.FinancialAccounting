@@ -9,6 +9,7 @@
 ************************* Copyright(c) La Vía Óntica SC, Ontica LLC and contributors. All rights reserved. **/
 using System;
 using System.Collections.Generic;
+using System.Linq;
 
 using Empiria.FinancialAccounting.AccountsLists.SpecialCases;
 using Empiria.FinancialAccounting.BalanceEngine;
@@ -105,21 +106,11 @@ namespace Empiria.FinancialAccounting.Reporting.DerramaSwapsCobertura {
 
 
     private void SetTotalEntry(List<DerramaSwapsCoberturaEntry> list) {
-      decimal incomeAccountTotal = 0m;
-      decimal expensesAccountTotal = 0m;
-      decimal total = 0m;
-
-      foreach (var entry in list) {
-        incomeAccountTotal += entry.IncomeAccountTotal;
-        expensesAccountTotal += entry.ExpensesAccountTotal;
-        total += entry.Total;
-      }
-
       list.Add(new DerramaSwapsCoberturaEntry {
-       ItemType = "Total",
-       SubledgerAccountName = "TOTALES",
-       IncomeAccountTotal = incomeAccountTotal,
-       ExpensesAccountTotal = expensesAccountTotal
+        ItemType = "Total",
+        SubledgerAccountName = "TOTALES",
+        IncomeAccountTotal = list.Sum(x => x.IncomeAccountTotal),
+        ExpensesAccountTotal = list.Sum(x => x.ExpensesAccountTotal),
       });
     }
 
