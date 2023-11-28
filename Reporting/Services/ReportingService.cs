@@ -80,6 +80,9 @@ namespace Empiria.FinancialAccounting.Reporting {
         case ReportTypes.ActivoFijoDepreciacion:
           return new ActivoFijoDepreciacionBuilder();
 
+        case ReportTypes.ActivoFijoDepreciado:
+          return new ActivoFijoDepreciadoBuilder();
+
         case ReportTypes.BalanzaSAT:
           return new BalanzaSat();
 

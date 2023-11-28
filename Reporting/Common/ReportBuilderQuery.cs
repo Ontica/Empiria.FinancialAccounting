@@ -73,6 +73,8 @@ namespace Empiria.FinancialAccounting.Reporting {
 
     ActivoFijoDepreciacion,
 
+    ActivoFijoDepreciado,
+
     BalanzaSAT,
 
     BalanzaDeterminarImpuestos,

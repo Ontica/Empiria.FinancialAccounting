@@ -2,9 +2,9 @@
 *                                                                                                            *
 *  Module   : Reporting Services                            Component : Report Builders                      *
 *  Assembly : FinancialAccounting.Reporting.dll             Pattern   : Report builder                       *
-*  Type     : ActivoFijoDepreciacionBuilder                 License   : Please read LICENSE.txt file         *
+*  Type     : ActivoFijoDepreciadoBuilder                   License   : Please read LICENSE.txt file         *
 *                                                                                                            *
-*  Summary  : Generates report 'Activo fijo depreciación'.                                                   *
+*  Summary  : Generates report 'Activo fijo depreciado'.                                                     *
 *                                                                                                            *
 ************************* Copyright(c) La Vía Óntica SC, Ontica LLC and contributors. All rights reserved. **/
 using System;
@@ -15,8 +15,8 @@ using Empiria.FinancialAccounting.Reporting.ActivoFijoDepreciacion.Adapters;
 
 namespace Empiria.FinancialAccounting.Reporting.ActivoFijoDepreciacion {
 
-  /// <summary>Generates report 'Activo fijo depreciación'.</summary>
-  internal class ActivoFijoDepreciacionBuilder : IReportBuilder {
+  /// <summary>Generates report 'Activo fijo depreciado'.</summary>
+  internal class ActivoFijoDepreciadoBuilder : IReportBuilder {
 
     #region Public methods
 
@@ -25,13 +25,13 @@ namespace Empiria.FinancialAccounting.Reporting.ActivoFijoDepreciacion {
 
       FixedList<FixedAssetsDepreciationEntry> data = builder.Build();
 
-      data = data.FindAll(x => !x.Depreciado);
+      data = data.FindAll(x => x.Depreciado);
 
       return ActivoFijoDepreciacionMapper.MapToReportDataDto(buildQuery, data);
     }
 
     #endregion Public methods
 
-  } // class ActivoFijoDepreciacionBuilder
+  } // class ActivoFijoDepreciadoBuilder
 
 } // namespace Empiria.FinancialAccounting.Reporting.ActivoFijoDepreciacion

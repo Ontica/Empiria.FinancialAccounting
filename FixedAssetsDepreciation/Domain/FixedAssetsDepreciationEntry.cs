@@ -160,6 +160,13 @@ namespace Empiria.FinancialAccounting.FixedAssetsDepreciation {
       }
     }
 
+    public bool Depreciado {
+      get {
+        return (ValorHistorico == DepreciacionAcumuladaRegistradaContablemente);
+      }
+    }
+
+
     internal void SetValues(DepreciacionActivoFijoListItem activoFijoEntry) {
       NumeroInventario = activoFijoEntry.NumeroInventario;
       FechaAdquisicion = activoFijoEntry.FechaAdquisicion;
