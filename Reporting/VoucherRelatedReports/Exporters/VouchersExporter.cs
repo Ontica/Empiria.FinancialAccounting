@@ -72,9 +72,9 @@ namespace Empiria.FinancialAccounting.Reporting {
 
 
     private void SetDataByVoucher(VoucherDto voucher, int inc, out int i) {
-      
+
       i = inc + 1;
-      
+
       _excelFile.SetCell($"B{i}", $"{voucher.AccountsChart.Name}");
       _excelFile.SetCell($"G{i}", $"{voucher.Ledger.Name}");
       _excelFile.SetRowStyleBold(i);
@@ -140,9 +140,9 @@ namespace Empiria.FinancialAccounting.Reporting {
           string withSubledgerNumber = entry.SubledgerAccountNumber != "" ?
                                   $"\n{entry.SubledgerAccountNumber}" : "";
 
-          _excelFile.SetCell($"A{i}", $"{entry.AccountNumber} {withSubledgerNumber}");
+          _excelFile.SetCell($"A{i}", $"{entry.AccountNumber}{withSubledgerNumber}");
           _excelFile.SetCell($"B{i}", entry.Sector.ToString());
-          _excelFile.SetCell($"C{i}", $"{entry.AccountName} {withSubledger}");
+          _excelFile.SetCell($"C{i}", $"{entry.AccountName}{withSubledger}");
           _excelFile.SetCell($"D{i}", entry.VerificationNumber);
           _excelFile.SetCell($"E", entry.ResponsibilityArea.ToString());
           _excelFile.SetCell($"F{i}", entry.Currency);
@@ -178,7 +178,7 @@ namespace Empiria.FinancialAccounting.Reporting {
 
 
     private void SetExcelHeaderByVoucher(VoucherDto voucher, int inc,  out int i) {
-      
+
       i = inc;
       _excelFile.SetCell($"A{i}", _templateConfig.Title);
       _excelFile.SetCell($"I{i}", $"Póliza:");
@@ -243,7 +243,7 @@ namespace Empiria.FinancialAccounting.Reporting {
           _excelFile.SetCell($"H{i}", entry.Debit);
           _excelFile.SetCell($"I{i}", entry.Credit);
 
-          
+
         } else {
           _excelFile.SetCell($"C{i}", $"{entry.AccountName}");
           _excelFile.SetCell($"F{i}", entry.Currency);
