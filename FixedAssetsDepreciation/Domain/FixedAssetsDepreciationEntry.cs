@@ -112,6 +112,9 @@ namespace Empiria.FinancialAccounting.FixedAssetsDepreciation {
 
     public decimal DepreciacionPendienteRegistrar {
       get {
+        if (MesesDepreciacion == 0) {
+          return 0;
+        }
         return Math.Round(DepreciacionAcumulada - DepreciacionAcumuladaRegistradaContablemente, 2);
       }
     }
@@ -162,7 +165,7 @@ namespace Empiria.FinancialAccounting.FixedAssetsDepreciation {
 
     public bool Depreciado {
       get {
-        return (ValorHistorico == DepreciacionAcumuladaRegistradaContablemente);
+        return (ValorHistorico <= DepreciacionAcumuladaRegistradaContablemente);
       }
     }
 
