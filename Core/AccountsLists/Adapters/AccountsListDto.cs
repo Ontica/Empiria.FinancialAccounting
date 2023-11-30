@@ -164,43 +164,48 @@ namespace Empiria.FinancialAccounting.AccountsLists.Adapters {
       get; internal set;
     } = -1;
 
+
+    public decimal MontoRevaluacion {
+      get; internal set;
+    }
+
   }  // class DepreciacionActivoFijoListItemDto
 
 
 
   public class PrestamosInterbancariosListItemDto : AccountsListItemDto {
 
-      public int SubledgerAccountId {
-        get; internal set;
-      }
+    public int SubledgerAccountId {
+      get; internal set;
+    }
 
-      public string SubledgerAccountName {
-        get; internal set;
-      }
+    public string SubledgerAccountName {
+      get; internal set;
+    }
 
-      public string SubledgerAccountNumber {
-        get; internal set;
-      }
+    public string SubledgerAccountNumber {
+      get; internal set;
+    }
 
-      public string SectorCode {
-        get; internal set;
-      }
+    public string SectorCode {
+      get; internal set;
+    }
 
-      public string CurrencyCode {
-        get; internal set;
-      }
+    public string CurrencyCode {
+      get; internal set;
+    }
 
-      public string PrestamoUID {
-        get; internal set;
-      }
+    public string PrestamoUID {
+      get; internal set;
+    }
 
-      public string PrestamoName {
-        get; internal set;
-      }
+    public string PrestamoName {
+      get; internal set;
+    }
 
-      public DateTime Vencimiento {
-        get; internal set;
-      }
+    public DateTime Vencimiento {
+      get; internal set;
+    }
 
   }  // class PrestamosInterbancariosListItemDto
 

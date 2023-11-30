@@ -87,6 +87,10 @@ namespace Empiria.FinancialAccounting.AccountsLists.Adapters {
     } = string.Empty;
 
 
+    public decimal MontoRevaluacion {
+      get; set;
+    }
+
     internal void EnsureValid() {
       Assertion.Require(DelegacionUID, "DelegacionUID");
       Assertion.Require(AuxiliarHistorico, "AuxiliarHistorico");
@@ -102,8 +106,14 @@ namespace Empiria.FinancialAccounting.AccountsLists.Adapters {
         Assertion.RequireFail($"El auxiliar de revaluación {AuxiliarRevaluacion} no ha sido registrado.");
       }
 
+      if (AuxiliarRevaluacion.Length != 0 && MontoRevaluacion <= 0) {
+        Assertion.RequireFail($"Se requiere el monto de revaluación del auxiliar {AuxiliarRevaluacion}.");
+      }
+
       Assertion.Require(FechaAdquisicion <= FechaInicioDepreciacion,
                         "La fecha de adqusición debe ser anterior o igual a la fecha de inicio de depreciación.");
+
+
     }
 
   }  // class DepreciacionActivoFijoListItemFields

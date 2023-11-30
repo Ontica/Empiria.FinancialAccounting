@@ -83,7 +83,7 @@ namespace Empiria.FinancialAccounting.Reporting {
         excelFile.SetCell($"O{i}", entry.DepreciacionAcumuladaRegistradaContablemente);
         excelFile.SetCell($"P{i}", entry.DepreciacionPendienteRegistrar);
         excelFile.SetCell($"Q{i}", entry.AuxiliarRevaluacion);
-        excelFile.SetCell($"R{i}", entry.Revaluacion);
+        excelFile.SetCell($"R{i}", entry.MontoRevaluacion);
         excelFile.SetCell($"S{i}", entry.DepreciacionDeLaRevaluacionMensual);
         excelFile.SetCell($"T{i}", entry.DepreciacionAcumuladaDeLaRevaluacion);
         excelFile.SetCell($"U{i}", entry.DepreciacionAcumuladaDeLaRevaluacionRegistradaContablemente);

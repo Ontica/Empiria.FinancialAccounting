@@ -131,6 +131,7 @@ namespace Empiria.FinancialAccounting.AccountsLists.Adapters {
         value.AuxiliarRevaluacion = item.AuxiliarRevaluacion.Number;
         value.AuxiliarRevaluacionId = item.AuxiliarRevaluacion.Id;
         value.AuxiliarRevaluacionNombre = item.AuxiliarRevaluacion.Name;
+        value.MontoRevaluacion = item.MontoRevaluacion;
       }
 
       return value;

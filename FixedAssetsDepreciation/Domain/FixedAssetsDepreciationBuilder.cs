@@ -46,7 +46,7 @@ namespace Empiria.FinancialAccounting.FixedAssetsDepreciation {
 
       SetClassifications(entries);
 
-      BuildRevaluacionEntries(entries);
+      // BuildRevaluacionEntries(entries);
 
       BuildDepreciacionAcumuladaRevaluacionEntries(entries);
 
@@ -92,20 +92,20 @@ namespace Empiria.FinancialAccounting.FixedAssetsDepreciation {
     }
 
 
-    private void BuildRevaluacionEntries(List<FixedAssetsDepreciationEntry> list) {
-      FixedList<SaldosPorCuentaEntryDto> incomeBalances = GetBalances("1.13.02");
+    //private void BuildRevaluacionEntries(List<FixedAssetsDepreciationEntry> list) {
+    //  FixedList<SaldosPorCuentaEntryDto> incomeBalances = GetBalances("1.13.02");
 
-      foreach (var balance in incomeBalances) {
+    //  foreach (var balance in incomeBalances) {
 
-        var item = list.Find(x => x.AuxiliarRevaluacion.Number == balance.SubledgerAccountNumber);
+    //    var item = list.Find(x => x.AuxiliarRevaluacion.Number == balance.SubledgerAccountNumber);
 
-        if (item == null) {
-          // no-op
-        } else {
-          item.Revaluacion = balance.CurrentBalanceForBalances;
-        }
-      }
-    }
+    //    if (item == null) {
+    //      // no-op
+    //    } else {
+    //      item.MontoRevaluacion = balance.CurrentBalanceForBalances;
+    //    }
+    //  }
+    //}
 
     private void BuildDepreciacionAcumuladaRevaluacionEntries(List<FixedAssetsDepreciationEntry> list) {
       FixedList<SaldosPorCuentaEntryDto> incomeBalances = GetBalances("3.06.02");

@@ -120,9 +120,9 @@ namespace Empiria.FinancialAccounting.FixedAssetsDepreciation {
     }
 
 
-    public decimal Revaluacion {
+    public decimal MontoRevaluacion {
       get;
-      internal set;
+      private set;
     }
 
 
@@ -131,7 +131,7 @@ namespace Empiria.FinancialAccounting.FixedAssetsDepreciation {
         if (MesesDepreciacion == 0) {
           return 0;
         }
-        return Revaluacion / MesesDepreciacion;
+        return MontoRevaluacion / MesesDepreciacion;
       }
     }
 
@@ -159,7 +159,7 @@ namespace Empiria.FinancialAccounting.FixedAssetsDepreciation {
     public decimal ValorHistoricoEnLibros {
       get {
         return Math.Round(ValorHistorico - DepreciacionAcumuladaRegistradaContablemente +
-                          Revaluacion - DepreciacionAcumuladaDeLaRevaluacionRegistradaContablemente, 2);
+                          MontoRevaluacion - DepreciacionAcumuladaDeLaRevaluacionRegistradaContablemente, 2);
       }
     }
 
@@ -176,6 +176,7 @@ namespace Empiria.FinancialAccounting.FixedAssetsDepreciation {
       FechaInicioDepreciacion = activoFijoEntry.FechaInicioDepreciacion;
       MesesDepreciacion = activoFijoEntry.MesesDepreciacion;
       AuxiliarRevaluacion = activoFijoEntry.AuxiliarRevaluacion;
+      MontoRevaluacion = activoFijoEntry.MontoRevaluacion;
     }
 
   }  // class FixedAssetsDepreciationEntry

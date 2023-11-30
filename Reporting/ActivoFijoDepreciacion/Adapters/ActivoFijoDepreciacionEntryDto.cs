@@ -82,7 +82,7 @@ namespace Empiria.FinancialAccounting.Reporting.ActivoFijoDepreciacion.Adapters 
       get; internal set;
     }
 
-    public decimal Revaluacion {
+    public decimal MontoRevaluacion {
       get; internal set;
     }
 

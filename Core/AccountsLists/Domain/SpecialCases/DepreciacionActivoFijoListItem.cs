@@ -145,6 +145,17 @@ namespace Empiria.FinancialAccounting.AccountsLists.SpecialCases {
       }
     }
 
+
+    public decimal MontoRevaluacion {
+      get {
+        return this.ExtData.Get<decimal>("montoRevaluacion", 0);
+      }
+      set {
+        this.ExtData.SetIfValue("montoRevaluacion", value);
+      }
+    }
+
+
     public string NumeroInventario {
       get {
         return this.SubledgerAccountNumber.Substring(2).TrimStart('0');
@@ -206,6 +217,7 @@ namespace Empiria.FinancialAccounting.AccountsLists.SpecialCases {
       this.FechaInicioDepreciacion = fields.FechaInicioDepreciacion;
       this.MesesDepreciacion = fields.MesesDepreciacion;
       this.NumeroAuxiliarRevaluacion = fields.AuxiliarRevaluacion;
+      this.MontoRevaluacion = fields.MontoRevaluacion;
     }
 
     #endregion Methods
