@@ -90,7 +90,7 @@ namespace Empiria.FinancialAccounting.Reporting.ActivoFijoDepreciacion.Adapters 
         DepreciacionAcumulada = x.DepreciacionAcumulada,
         DepreciacionAcumuladaRegistradaContablemente = x.DepreciacionAcumuladaRegistradaContablemente,
         DepreciacionPendienteRegistrar = x.DepreciacionPendienteRegistrar,
-        AuxiliarRevaluacion = x.AuxiliarRevaluacion.Number,
+        AuxiliarRevaluacion = x.AuxiliarRevaluacion.IsEmptyInstance ? string.Empty : x.AuxiliarRevaluacion.Number,
         Revaluacion = x.Revaluacion,
         DepreciacionDeLaRevaluacionMensual = x.DepreciacionDeLaRevaluacionMensual,
         DepreciacionAcumuladaDeLaRevaluacion = x.DepreciacionAcumuladaDeLaRevaluacion,

@@ -155,7 +155,7 @@ namespace Empiria.FinancialAccounting.Reporting {
         return excelFile.ToFileReportDto();
 
       }
-      
+
     }
 
   }  // class ExcelExporter

@@ -41,6 +41,11 @@ namespace Empiria.FinancialAccounting.Reporting {
       FileTemplateConfig templateConfig = GetExcelTemplate(reportData);
 
       switch (reportData.Query.ReportType) {
+
+        case ReportTypes.ActivoFijoDepreciacion:
+        case ReportTypes.ActivoFijoDepreciado:
+          return new ActivoFijoDepreciacionExcelExporter(reportData, templateConfig);
+
         case ReportTypes.BalanzaSAT:
           return new BalanzaSatExcelExporter(reportData, templateConfig);
 
