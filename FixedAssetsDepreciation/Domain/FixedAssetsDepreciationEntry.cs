@@ -29,6 +29,12 @@ namespace Empiria.FinancialAccounting.FixedAssetsDepreciation {
       get;
     }
 
+    public TipoActivoFijo TipoActivoFijo {
+      get;
+      private set;
+    } = TipoActivoFijo.Empty;
+
+
     public DateTime FechaCalculo {
       get;
     }
@@ -172,6 +178,7 @@ namespace Empiria.FinancialAccounting.FixedAssetsDepreciation {
 
     internal void SetValues(DepreciacionActivoFijoListItem activoFijoEntry) {
       NumeroInventario = activoFijoEntry.NumeroInventario;
+      TipoActivoFijo = activoFijoEntry.TipoActivoFijo;
       FechaAdquisicion = activoFijoEntry.FechaAdquisicion;
       FechaInicioDepreciacion = activoFijoEntry.FechaInicioDepreciacion;
       MesesDepreciacion = activoFijoEntry.MesesDepreciacion;

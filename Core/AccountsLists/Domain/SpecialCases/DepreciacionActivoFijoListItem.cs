@@ -27,7 +27,8 @@ namespace Empiria.FinancialAccounting.AccountsLists.SpecialCases {
     }
 
 
-    internal DepreciacionActivoFijoListItem(AccountsList list, DepreciacionActivoFijoListItemFields fields) {
+    internal DepreciacionActivoFijoListItem(DepreciacionActivoFijoList list,
+                                            DepreciacionActivoFijoListItemFields fields) {
       Assertion.Require(list, nameof(list));
       Assertion.Require(fields, nameof(fields));
 
@@ -51,7 +52,7 @@ namespace Empiria.FinancialAccounting.AccountsLists.SpecialCases {
     #region Properties
 
     [DataField("ID_LISTA")]
-    public AccountsList List {
+    public DepreciacionActivoFijoList List {
       get; private set;
     }
 
@@ -75,6 +76,14 @@ namespace Empiria.FinancialAccounting.AccountsLists.SpecialCases {
       }
     }
 
+    public TipoActivoFijo TipoActivoFijo {
+      get {
+        return this.List.TiposActivoFijo.Find(x => x.UID == ExtData.Get<string>("tipoActivoFijoUID"));
+      }
+      private set {
+        this.ExtData.Set("tipoActivoFijoUID", value.UID);
+      }
+    }
 
     [DataField("ELEMENTO_EXT_DATA")]
     internal JsonObject ExtData {
@@ -213,6 +222,7 @@ namespace Empiria.FinancialAccounting.AccountsLists.SpecialCases {
       SubledgerAccountNumber = fields.AuxiliarHistorico;
       this.Ledger = Ledger.Parse(fields.DelegacionUID);
       this.SubledgerAccountNumber = fields.AuxiliarHistorico;
+      this.TipoActivoFijo = List.TiposActivoFijo.Find(x => x.UID == fields.TipoActivoFijoUID);
       this.FechaAdquisicion = fields.FechaAdquisicion;
       this.FechaInicioDepreciacion = fields.FechaInicioDepreciacion;
       this.MesesDepreciacion = fields.MesesDepreciacion;

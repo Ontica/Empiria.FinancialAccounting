@@ -34,6 +34,10 @@ namespace Empiria.FinancialAccounting.Reporting.ActivoFijoDepreciacion.Adapters 
       get; internal set;
     }
 
+    public string TipoActivoFijoName {
+      get; internal set;
+    }
+
     public string NombreAuxiliar {
       get; internal set;
     }

@@ -9,7 +9,7 @@
 ************************* Copyright(c) La Vía Óntica SC, Ontica LLC and contributors. All rights reserved. **/
 using System;
 using System.Collections.Generic;
-using System.Linq;
+
 using Empiria.FinancialAccounting.FixedAssetsDepreciation;
 
 namespace Empiria.FinancialAccounting.Reporting.ActivoFijoDepreciacion.Adapters {
@@ -34,13 +34,13 @@ namespace Empiria.FinancialAccounting.Reporting.ActivoFijoDepreciacion.Adapters 
 
     #region Private methods
 
-
     static private FixedList<DataTableColumn> GetColumns() {
       var columns = new List<DataTableColumn> {
         new DataTableColumn("numContabilidad", "Del", "text-nowrap"),
         new DataTableColumn("nombreContabilidad", "Delegación", "text-nowrap"),
         new DataTableColumn("auxiliarHistorico", "Auxiliar histórico", "text-nowrap"),
         new DataTableColumn("numeroInventario", "No Inventario", "text-nowrap"),
+        new DataTableColumn("tipoActivoFijoName", "Tipo de activo", "text"),
         new DataTableColumn("nombreAuxiliar", "Nombre auxiliar / Descripción", "text"),
         new DataTableColumn("fechaAdquisicion", "Adquisición", "date"),
         new DataTableColumn("fechaInicioDepreciacion", "Inicio dep.", "date"),
@@ -78,6 +78,7 @@ namespace Empiria.FinancialAccounting.Reporting.ActivoFijoDepreciacion.Adapters 
         NumContabilidad = x.Ledger.Number,
         NombreContabilidad = x.Ledger.Name,
         AuxiliarHistorico = x.AuxiliarHistorico.Number,
+        TipoActivoFijoName = x.TipoActivoFijo.Name,
         NumeroInventario = x.NumeroInventario,
         NombreAuxiliar = x.AuxiliarHistorico.Name,
         FechaAdquisicion = x.FechaAdquisicion,

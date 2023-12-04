@@ -13,7 +13,6 @@ using Empiria.Services;
 
 using Empiria.FinancialAccounting.AccountsLists.SpecialCases;
 using Empiria.FinancialAccounting.AccountsLists.Adapters;
-using static Empiria.FinancialAccounting.AccountsLists.Adapters.DepreciacionActivoFijoListItemDto;
 
 namespace Empiria.FinancialAccounting.AccountsLists.UseCases {
 
@@ -128,6 +127,12 @@ namespace Empiria.FinancialAccounting.AccountsLists.UseCases {
       item.Save();
     }
 
+
+    public FixedList<NamedEntityDto> TiposActivoFijoList() {
+      var list = DepreciacionActivoFijoList.Parse();
+
+      return list.TiposActivoFijo.MapToNamedEntityList();
+    }
 
     public DepreciacionActivoFijoListItemDto UpdateDepreciacionActivoFijoListItem(DepreciacionActivoFijoListItemFields fields) {
       Assertion.Require(fields, nameof(fields));

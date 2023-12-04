@@ -126,6 +126,14 @@ namespace Empiria.FinancialAccounting.AccountsLists.Adapters {
       get; internal set;
     }
 
+    public string TipoActivoFijoUID {
+      get; internal set;
+    }
+
+    public string TipoActivoFijoName {
+      get; internal set;
+    }
+
     public string NumeroDelegacion {
       get; internal set;
     }

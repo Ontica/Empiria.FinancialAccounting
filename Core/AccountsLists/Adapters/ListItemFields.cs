@@ -68,6 +68,10 @@ namespace Empiria.FinancialAccounting.AccountsLists.Adapters {
       get; set;
     }
 
+    public string TipoActivoFijoUID {
+      get; set;
+    }
+
     public DateTime FechaAdquisicion {
       get; set;
     } = DateTime.MinValue;
@@ -94,6 +98,7 @@ namespace Empiria.FinancialAccounting.AccountsLists.Adapters {
     internal void EnsureValid() {
       Assertion.Require(DelegacionUID, "DelegacionUID");
       Assertion.Require(AuxiliarHistorico, "AuxiliarHistorico");
+      Assertion.Require(TipoActivoFijoUID, "TipoActivoFijoUID");
       Assertion.Require(FechaAdquisicion != DateTime.MinValue, "FechaAdquisicion");
       Assertion.Require(FechaInicioDepreciacion != DateTime.MinValue, "FechaInicioDepreciacion");
       Assertion.Require(MesesDepreciacion > 0, "MesesDepreciacion");
@@ -113,6 +118,9 @@ namespace Empiria.FinancialAccounting.AccountsLists.Adapters {
       Assertion.Require(FechaAdquisicion <= FechaInicioDepreciacion,
                         "La fecha de adqusición debe ser anterior o igual a la fecha de inicio de depreciación.");
 
+      Assertion.Require(DepreciacionActivoFijoList.Parse()
+                                                  .TiposActivoFijo.Contains(x => x.UID == TipoActivoFijoUID),
+                        $"No reconozco el tipo de activo fijo con UID '{TipoActivoFijoUID}'.");
 
     }
 

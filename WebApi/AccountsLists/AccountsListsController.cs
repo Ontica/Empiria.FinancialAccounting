@@ -111,6 +111,20 @@ namespace Empiria.FinancialAccounting.WebApi {
 
     #region Depreciación activo fijo
 
+    [HttpGet]
+    [Route("v2/financial-accounting/accounts-lists-for-edition/DepreciacionActivoFijo/tipos-activo-fijo")]
+    public CollectionModel GetTiposActivoFijo() {
+
+      using (var usecases = AccountsListsUseCases.UseCaseInteractor()) {
+        FixedList<NamedEntityDto> tiposActivoFijo = usecases.TiposActivoFijoList();
+
+        tiposActivoFijo.Sort((x, y) => x.Name.CompareTo(y.Name));
+
+        return new CollectionModel(base.Request, tiposActivoFijo);
+      }
+    }
+
+
     [HttpPost]
     [Route("v2/financial-accounting/accounts-lists-for-edition/DepreciacionActivoFijo")]
     public SingleObjectModel AddDepreciacionActivoFijoListItem([FromBody] DepreciacionActivoFijoListItemFields fields) {

@@ -12,7 +12,6 @@ using System.Collections.Generic;
 using System.Linq;
 
 using Empiria.FinancialAccounting.AccountsLists.SpecialCases;
-using static Empiria.FinancialAccounting.AccountsLists.Adapters.DepreciacionActivoFijoListItemDto;
 
 namespace Empiria.FinancialAccounting.AccountsLists.Adapters {
 
@@ -119,6 +118,8 @@ namespace Empiria.FinancialAccounting.AccountsLists.Adapters {
         AuxiliarHistoricoNombre = item.AuxiliarHistorico.Name,
         AuxiliarHistorico = item.AuxiliarHistorico.Number,
         NumeroInventario = item.NumeroInventario,
+        TipoActivoFijoName = item.TipoActivoFijo.Name,
+        TipoActivoFijoUID = item.TipoActivoFijo.UID,
         NumeroDelegacion = item.Ledger.Number,
         Delegacion = item.Ledger.Name,
         DelegacionUID = item.Ledger.UID,

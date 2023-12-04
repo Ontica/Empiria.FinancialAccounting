@@ -63,32 +63,33 @@ namespace Empiria.FinancialAccounting.Reporting {
         excelFile.SetCell($"C{i}", entry.NombreContabilidad);
         excelFile.SetCell($"D{i}", entry.AuxiliarHistorico);
         excelFile.SetCell($"E{i}", entry.NumeroInventario);
-        excelFile.SetCell($"F{i}", entry.NombreAuxiliar);
+        excelFile.SetCell($"F{i}", entry.TipoActivoFijoName);
+        excelFile.SetCell($"G{i}", entry.NombreAuxiliar);
         if (entry.FechaAdquisicion != ExecutionServer.DateMinValue) {
-          excelFile.SetCell($"G{i}", entry.FechaAdquisicion);
+          excelFile.SetCell($"H{i}", entry.FechaAdquisicion);
         }
         if (entry.FechaInicioDepreciacion != ExecutionServer.DateMinValue) {
-          excelFile.SetCell($"H{i}", entry.FechaInicioDepreciacion);
+          excelFile.SetCell($"I{i}", entry.FechaInicioDepreciacion);
         }
         if (entry.FechaTerminoDepreciacion != ExecutionServer.DateMinValue) {
-          excelFile.SetCell($"I{i}", entry.FechaTerminoDepreciacion);
+          excelFile.SetCell($"J{i}", entry.FechaTerminoDepreciacion);
         }
         if (entry.MesesDepreciacion != 0) {
-          excelFile.SetCell($"J{i}", entry.MesesDepreciacion);
+          excelFile.SetCell($"K{i}", entry.MesesDepreciacion);
         }
-        excelFile.SetCell($"K{i}", entry.ValorHistorico);
-        excelFile.SetCell($"L{i}", entry.DepreciacionMensual);
-        excelFile.SetCell($"M{i}", entry.MesesTranscurridos);
-        excelFile.SetCell($"N{i}", entry.DepreciacionAcumulada);
-        excelFile.SetCell($"O{i}", entry.DepreciacionAcumuladaRegistradaContablemente);
-        excelFile.SetCell($"P{i}", entry.DepreciacionPendienteRegistrar);
-        excelFile.SetCell($"Q{i}", entry.AuxiliarRevaluacion);
-        excelFile.SetCell($"R{i}", entry.MontoRevaluacion);
-        excelFile.SetCell($"S{i}", entry.DepreciacionDeLaRevaluacionMensual);
-        excelFile.SetCell($"T{i}", entry.DepreciacionAcumuladaDeLaRevaluacion);
-        excelFile.SetCell($"U{i}", entry.DepreciacionAcumuladaDeLaRevaluacionRegistradaContablemente);
-        excelFile.SetCell($"V{i}", entry.DepreciacionPendienteRegistrarDeLaRevaluacion);
-        excelFile.SetCell($"W{i}", entry.ValorHistoricoEnLibros);
+        excelFile.SetCell($"L{i}", entry.ValorHistorico);
+        excelFile.SetCell($"M{i}", entry.DepreciacionMensual);
+        excelFile.SetCell($"N{i}", entry.MesesTranscurridos);
+        excelFile.SetCell($"O{i}", entry.DepreciacionAcumulada);
+        excelFile.SetCell($"P{i}", entry.DepreciacionAcumuladaRegistradaContablemente);
+        excelFile.SetCell($"Q{i}", entry.DepreciacionPendienteRegistrar);
+        excelFile.SetCell($"R{i}", entry.AuxiliarRevaluacion);
+        excelFile.SetCell($"S{i}", entry.MontoRevaluacion);
+        excelFile.SetCell($"T{i}", entry.DepreciacionDeLaRevaluacionMensual);
+        excelFile.SetCell($"U{i}", entry.DepreciacionAcumuladaDeLaRevaluacion);
+        excelFile.SetCell($"V{i}", entry.DepreciacionAcumuladaDeLaRevaluacionRegistradaContablemente);
+        excelFile.SetCell($"W{i}", entry.DepreciacionPendienteRegistrarDeLaRevaluacion);
+        excelFile.SetCell($"X{i}", entry.ValorHistoricoEnLibros);
 
         i++;
         consecutivo ++;
