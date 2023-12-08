@@ -108,9 +108,15 @@ namespace Empiria.FinancialAccounting {
       get; private set;
     }
 
+    public bool IsMasterLedger {
+      get {
+        return this.Number == "09";
+      }
+    }
+
     #endregion Public properties
 
-    #region Public methods
+      #region Public methods
 
     public LedgerAccount AssignAccount(StandardAccount standardAccount) {
       Assertion.Require(standardAccount, "standardAccount");
