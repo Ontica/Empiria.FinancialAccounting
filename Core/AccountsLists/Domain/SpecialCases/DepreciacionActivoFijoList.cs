@@ -29,7 +29,8 @@ namespace Empiria.FinancialAccounting.AccountsLists.SpecialCases {
         Name = instance.Get<string>("name"),
         ValorHistoricoAccount = instance.Get<string>("valorHistoricoAccount"),
         RevaluacionAccount = instance.Get<string>("revaluacionAccount"),
-        DepreciacionAcumuladaAccount = instance.Get<string>("depreciacionAcumuladaAccount")
+        DepreciacionAcumuladaAccount = instance.Get<string>("depreciacionAcumuladaAccount"),
+        RevaluacionDepreciacionAcumuladaAccount = instance.Get<string>("revaluacionDepreciacionAcumuladaAccount")
       };
     }
 
@@ -59,6 +60,12 @@ namespace Empiria.FinancialAccounting.AccountsLists.SpecialCases {
     } = string.Empty;
 
     public string DepreciacionAcumuladaAccount {
+      get;
+      private set;
+    } = string.Empty;
+
+
+    public string RevaluacionDepreciacionAcumuladaAccount {
       get;
       private set;
     } = string.Empty;

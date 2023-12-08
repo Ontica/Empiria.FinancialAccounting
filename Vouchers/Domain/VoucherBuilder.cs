@@ -34,6 +34,9 @@ namespace Empiria.FinancialAccounting.Vouchers {
     static internal VoucherBuilder CreateBuilder(VoucherSpecialCaseFields fields) {
       switch (fields.VoucherTypeUID) {
 
+        case "DepreciacionActivoFijo":
+          return new DepreciacionActivoFijoVoucherBuilder(fields);
+
         case "CancelacionMovimientos":
           return new CancelacionMovimientosVoucherBuilder(fields);
 
