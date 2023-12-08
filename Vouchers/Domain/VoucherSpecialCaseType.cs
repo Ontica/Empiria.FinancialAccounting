@@ -49,6 +49,11 @@ namespace Empiria.FinancialAccounting.Vouchers {
       }
     }
 
+    public bool AllowAllChildrenLedgersSelection {
+      get {
+        return base.ExtendedDataField.Get("allowAllChildrenLedgersSelection", false);
+      }
+    }
 
     public bool AskForCalculationDateField {
       get {
@@ -62,6 +67,8 @@ namespace Empiria.FinancialAccounting.Vouchers {
         return base.ExtendedDataField.Get("askForVoucherNumberField", false);
       }
     }
+
+
 
     public bool SkipEntriesValidation {
       get {

@@ -27,16 +27,17 @@ namespace Empiria.FinancialAccounting.Vouchers.Adapters {
       get; internal set;
     }
 
+    public bool AllowAllChildrenLedgersSelection {
+      get; internal set;
+    }
 
     public bool AskForCalculationDateField {
       get; internal set;
     }
 
-
     public bool AskForVoucherNumberField {
       get; internal set;
     }
-
 
     public string CalculationDateFieldName {
       get; internal set;

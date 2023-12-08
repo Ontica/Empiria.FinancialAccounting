@@ -34,7 +34,13 @@ namespace Empiria.FinancialAccounting.Vouchers.UseCases {
 
       var accountsChart = AccountsChart.Parse(fields.AccountsChartUID);
 
-      FixedList<Ledger> ledgers = accountsChart.MasterData.Ledgers;
+      FixedList<Ledger> ledgers;
+
+      if (fields.GenerateForAllChildrenLedgers) {
+        ledgers = accountsChart.MasterData.Ledgers.FindAll(x => !x.IsMasterLedger);
+      } else {
+        ledgers = accountsChart.MasterData.Ledgers;
+      }
 
       int count = 0;
 

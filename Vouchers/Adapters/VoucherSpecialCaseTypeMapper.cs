@@ -22,6 +22,7 @@ namespace Empiria.FinancialAccounting.Vouchers.Adapters {
          UID = x.UID,
          Name = x.Name,
          AllowAllLedgersSelection = x.AllowAllLedgersSelection,
+         AllowAllChildrenLedgersSelection = x.AllowAllChildrenLedgersSelection,
          AskForCalculationDateField = x.AskForCalculationDateField,
          AskForVoucherNumberField = x.AskForVoucherNumberField,
          CalculationDateFieldName = x.CalculationDateFieldName

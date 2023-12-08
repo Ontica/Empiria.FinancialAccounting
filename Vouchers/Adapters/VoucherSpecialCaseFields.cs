@@ -19,6 +19,10 @@ namespace Empiria.FinancialAccounting.Vouchers.Adapters {
     } = string.Empty;
 
 
+    public bool GenerateForAllChildrenLedgers {
+      get; set;
+    }
+
     public DateTime CalculationDate {
       get; set;
     } = ExecutionServer.DateMinValue;
