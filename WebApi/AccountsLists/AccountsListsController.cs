@@ -10,11 +10,13 @@
 using System;
 using System.Web.Http;
 
+using Empiria.Storage;
 using Empiria.WebApi;
 
 using Empiria.FinancialAccounting.AccountsLists.UseCases;
 using Empiria.FinancialAccounting.AccountsLists.Adapters;
 using Empiria.FinancialAccounting.AccountsLists.SpecialCases;
+using Empiria.FinancialAccounting.Reporting;
 
 namespace Empiria.FinancialAccounting.WebApi {
 
@@ -37,6 +39,23 @@ namespace Empiria.FinancialAccounting.WebApi {
 
 
     [HttpGet]
+    [Route("v2/financial-accounting/accounts-lists-for-edition/{accountsListUID}/excel")]
+    public SingleObjectModel ExportAccountsListToExcel([FromUri] string accountsListUID,
+                                                       [FromUri] string keywords = "") {
+
+      using (var usecases = AccountsListsUseCases.UseCaseInteractor()) {
+        AccountsListDto list = usecases.GetEditableAccountsList(accountsListUID, keywords);
+
+        var service = new ExcelExporterService();
+
+        FileReportDto report = service.Export(list);
+
+        return new SingleObjectModel(base.Request, report);
+      }
+    }
+
+
+    [HttpGet]
     [Route("v2/financial-accounting/accounts-lists-for-edition")]
     public CollectionModel GetAccountsListsForEdition() {
 
@@ -46,6 +65,7 @@ namespace Empiria.FinancialAccounting.WebApi {
         return new CollectionModel(base.Request, lists);
       }
     }
+
 
     [HttpPost]
     [Route("v2/financial-accounting/accounts-lists-for-edition/set-keywords")]

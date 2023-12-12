@@ -19,19 +19,18 @@ using Empiria.FinancialAccounting.BalanceEngine.Adapters;
 using Empiria.FinancialAccounting.ExternalData.Adapters;
 using Empiria.FinancialAccounting.FinancialConcepts.Adapters;
 using Empiria.FinancialAccounting.Reconciliation.Adapters;
+using Empiria.FinancialAccounting.Vouchers.Adapters;
 
 using Empiria.FinancialAccounting.Reporting.ExternalData.Exporters;
 using Empiria.FinancialAccounting.Reporting.FinancialConceptsEntriesTree.Exporters;
 using Empiria.FinancialAccounting.Reporting.Reconciliation.Exporters;
 using Empiria.FinancialAccounting.Reporting.StoredBalanceSet.Exporters;
-using Empiria.FinancialAccounting.Vouchers.Adapters;
-using System.Linq;
+using Empiria.FinancialAccounting.AccountsLists.Adapters;
 
 namespace Empiria.FinancialAccounting.Reporting {
 
   /// <summary>Main service to export accounting information to Microsoft Excel.</summary>
   public class ExcelExporterService {
-
 
     public FileReportDto Export(AccountsChartDto accountsChart) {
       Assertion.Require(accountsChart, nameof(accountsChart));
@@ -43,6 +42,21 @@ namespace Empiria.FinancialAccounting.Reporting {
       var exporter = new AccountsChartExcelExporter(templateConfig);
 
       ExcelFile excelFile = exporter.CreateExcelFile(accountsChart);
+
+      return excelFile.ToFileReportDto();
+    }
+
+
+    public FileReportDto Export(AccountsListDto accountsList) {
+      Assertion.Require(accountsList, nameof(accountsList));
+
+      var templateUID = $"AccountsList.{accountsList.UID}.ExcelTemplate";
+
+      var templateConfig = FileTemplateConfig.Parse(templateUID);
+
+      var exporter = new AccountsListExcelExporter(templateConfig);
+
+      ExcelFile excelFile = exporter.CreateExcelFile(accountsList);
 
       return excelFile.ToFileReportDto();
     }
@@ -140,7 +154,7 @@ namespace Empiria.FinancialAccounting.Reporting {
       Assertion.Require(voucherList, nameof(voucherList));
 
       if (voucherList.Count == 1) {
-        return Export(voucherList.First());
+        return Export(voucherList[0]);
 
       } else {
 
