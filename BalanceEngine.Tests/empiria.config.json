@@ -20,6 +20,11 @@
       "value": "{{TESTING-SESSION-TOKEN}}"
     },
     {
+      "type": "Tests",
+      "key": "UserHostAddress",
+      "value": "{{USER-HOST-ADDRESS}}"
+    },
+    {
       "type": "Data",
       "key": "IsObjectIdGeneratorServer",
       "value": true
