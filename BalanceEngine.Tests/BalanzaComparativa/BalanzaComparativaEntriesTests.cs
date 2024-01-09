@@ -66,6 +66,38 @@ namespace Empiria.FinancialAccounting.Tests.BalanceEngine.BalanzaComparativa {
     }
 
 
+    [Fact]
+    public void Should_Build_Balanza_Comparativa() {
+
+      TrialBalanceQuery query = new TrialBalanceQuery {
+        TrialBalanceType = TrialBalanceType.BalanzaValorizadaComparativa,
+        AccountsChartUID = "47ec2ec7-0f4f-482e-9799-c23107b60d8a",
+        BalancesType = BalancesType.WithCurrentBalanceOrMovements,
+        ConsolidateBalancesToTargetCurrency = false,
+        FromAccount = "3.02",
+        ShowCascadeBalances = false,
+        UseDefaultValuation = true,
+        WithAverageBalance = false,
+        WithSectorization = false,
+        WithSubledgerAccount = true,
+        InitialPeriod = {
+          FromDate = new DateTime(2022,09,01),
+          ToDate = new DateTime(2022,09,30),
+        },
+        FinalPeriod = {
+          FromDate = new DateTime(2023,09,01),
+          ToDate = new DateTime(2023,09,30),
+        }
+      };
+
+      TrialBalanceDto sut = BalanceEngineProxy.BuildTrialBalance(query);
+
+      Assert.NotNull(sut);
+      Assert.Equal(query, sut.Query);
+      Assert.NotEmpty(sut.Entries);
+    }
+
+
     #endregion Theories
 
     #region Helpers
