@@ -18,7 +18,7 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
   /// <summary>Describes a stored chart of accounts accumulated balance set.</summary>
   internal class StoredBalanceSet : GeneralObject {
 
-    static private readonly Lazy<List<StoredBalanceSet>> _list =
+    static private Lazy<List<StoredBalanceSet>> _list =
                                     new Lazy<List<StoredBalanceSet>>(() => LoadList());
 
     private Lazy<FixedList<StoredBalance>> _balances;
@@ -223,15 +223,12 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
 
 
     protected override void OnSave() {
-      base.Name = $"Saldos acumulados al {this.BalancesDate.ToLongDateString()}";
+      base.Name = $"Saldos acumulados al {this.BalancesDate.ToString("dd/MMM/yyyy")}";
       base.Keywords = EmpiriaString.BuildKeywords(base.Name);
 
-      if (IsNew) {
-        _list.Value.Add(this);
-        _list.Value.Sort((x, y) => x.BalancesDate.CompareTo(y.BalancesDate));
-      }
-
       base.OnSave();
+
+      _list = new Lazy<List<StoredBalanceSet>>(() => LoadList());
     }
 
     static private List<StoredBalanceSet> LoadList() {
