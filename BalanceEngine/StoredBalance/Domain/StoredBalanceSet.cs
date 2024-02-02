@@ -207,6 +207,21 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
     }
 
 
+    internal void Delete() {
+      Assertion.Require(this.Unprotected, "This balance set is protected. It cannot be deleted.");
+
+      this.Calculated = false;
+
+      base.Status = StateEnums.EntityStatus.Deleted;
+
+      this.Save();
+
+      StoredBalanceDataService.DeleteBalances(this);
+
+      this.ResetBalances();
+    }
+
+
     protected override void OnSave() {
       base.Name = $"Saldos acumulados al {this.BalancesDate.ToLongDateString()}";
       base.Keywords = EmpiriaString.BuildKeywords(base.Name);

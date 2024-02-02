@@ -71,6 +71,13 @@ namespace Empiria.FinancialAccounting.BalanceEngine.UseCases {
     }
 
 
+    public void DeleteBalanceSet(string accountsChartUID, string balanceSetUID) {
+      StoredBalanceSet balanceSet = ParseBalanceSet(accountsChartUID, balanceSetUID);
+
+      balanceSet.Delete();
+    }
+
+
     public StoredBalanceSetDto GetBalanceSet(string accountsChartUID, string balanceSetUID) {
       StoredBalanceSet balanceSet = ParseBalanceSet(accountsChartUID, balanceSetUID);
 

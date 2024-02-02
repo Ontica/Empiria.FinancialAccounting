@@ -93,6 +93,17 @@ namespace Empiria.FinancialAccounting.WebApi.BalanceEngine {
     }
 
 
+    [HttpDelete]
+    [Route("v2/financial-accounting/accounts-charts/{accountsChartUID:guid}/balance-store/{balanceSetUID:guid}")]
+    public NoDataModel DeleteStoredBalanceSet([FromUri] string accountsChartUID,
+                                              [FromUri] string balanceSetUID) {
+      using (var usecases = BalanceStorageUseCases.UseCaseInteractor()) {
+        usecases.DeleteBalanceSet(accountsChartUID, balanceSetUID);
+
+        return new NoDataModel(this.Request);
+      }
+    }
+
     #endregion Command web apis
 
   } // class BalanceStorageController
