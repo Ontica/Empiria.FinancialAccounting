@@ -4,7 +4,7 @@
 *  Assembly : FinancialAccounting.BalanceEngine.dll      Pattern   : Use case interactor class               *
 *  Type     : BalanceStorageUseCases                     License   : Please read LICENSE.txt file            *
 *                                                                                                            *
-*  Summary  : Use cases used to store account or account aggrupation balances.                               *
+*  Summary  : Use cases used to store chart of accounts accumulated balances.                                *
 *                                                                                                            *
 ************************* Copyright(c) La Vía Óntica SC, Ontica LLC and contributors. All rights reserved. **/
 using System;
@@ -15,7 +15,7 @@ using Empiria.FinancialAccounting.BalanceEngine.Adapters;
 
 namespace Empiria.FinancialAccounting.BalanceEngine.UseCases {
 
-  /// <summary>Use cases used to store account or account aggrupation balances.</summary>
+  /// <summary>Use cases used to store chart of accounts accumulated balances.</summary>
   public class BalanceStorageUseCases : UseCase {
 
     #region Constructors and parsers
@@ -33,7 +33,7 @@ namespace Empiria.FinancialAccounting.BalanceEngine.UseCases {
     #region Use cases
 
     public FixedList<StoredBalanceSetDto> BalanceSetsList(string accountsChartUID) {
-      Assertion.Require(accountsChartUID, "accountsChartUID");
+      Assertion.Require(accountsChartUID, nameof(accountsChartUID));
 
       var accountsChart = AccountsChart.Parse(accountsChartUID);
 
@@ -43,15 +43,18 @@ namespace Empiria.FinancialAccounting.BalanceEngine.UseCases {
     }
 
 
-    // ToDo: review this double intention
-    public StoredBalanceSetDto CreateOrGetBalanceSet(string accountsChartUID,
-                                                     BalanceStorageCommand command) {
-      Assertion.Require(accountsChartUID, "accountsChartUID");
-      Assertion.Require(command, "command");
+    public StoredBalanceSetDto CreateBalanceSet(string accountsChartUID,
+                                                BalanceStorageCommand command) {
+      Assertion.Require(accountsChartUID, nameof(accountsChartUID));
+      Assertion.Require(command, nameof(command));
 
       var accountsChart = AccountsChart.Parse(accountsChartUID);
 
-      var storedBalanceSet = StoredBalanceSet.CreateOrGetBalanceSet(accountsChart, command.BalancesDate);
+      if (StoredBalanceSet.ExistBalanceSet(accountsChart, command.BalancesDate)) {
+        Assertion.RequireFail("Ya existe un conjunto de saldos para la fecha proporcionada.");
+      }
+
+      var storedBalanceSet = StoredBalanceSet.CreateBalanceSet(accountsChart, command.BalancesDate);
 
       storedBalanceSet.Save();
 
@@ -74,14 +77,13 @@ namespace Empiria.FinancialAccounting.BalanceEngine.UseCases {
       return StoredBalanceSetMapper.MapWithBalances(balanceSet);
     }
 
-
     #endregion Use cases
 
     #region Helper methods
 
     private StoredBalanceSet ParseBalanceSet(string accountsChartUID, string balanceSetUID) {
-      Assertion.Require(accountsChartUID, "accountsChartUID");
-      Assertion.Require(balanceSetUID, "balanceSetUID");
+      Assertion.Require(accountsChartUID, nameof(accountsChartUID));
+      Assertion.Require(balanceSetUID, nameof(balanceSetUID));
 
       var accountsChart = AccountsChart.Parse(accountsChartUID);
       var balanceSet = StoredBalanceSet.Parse(balanceSetUID);

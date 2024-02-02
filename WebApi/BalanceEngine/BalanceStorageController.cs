@@ -4,7 +4,7 @@
 *  Assembly : Empiria.FinancialAccounting.WebApi.dll       Pattern   : Controller                            *
 *  Type     : BalanceStorageController                     License   : Please read LICENSE.txt file          *
 *                                                                                                            *
-*  Summary  : Command web API used to store account and account aggrupation balances.                        *
+*  Summary  : Web API used to store account chart of accouints accumulated balances.                         *
 *                                                                                                            *
 ************************* Copyright(c) La Vía Óntica SC, Ontica LLC and contributors. All rights reserved. **/
 using System.Web.Http;
@@ -19,10 +19,10 @@ using Empiria.FinancialAccounting.Reporting;
 
 namespace Empiria.FinancialAccounting.WebApi.BalanceEngine {
 
-  /// <summary>Command web API used to store account and account aggrupation balances.</summary>
+  /// <summary>Web API used to store account chart of accouints accumulated balances.</summary>
   public class BalanceStorageController : WebApiController {
 
-    #region Web Apis
+    #region Query web apis
 
     [HttpGet]
     [Route("v2/financial-accounting/accounts-charts/{accountsChartUID:guid}/balance-store/{balanceSetUID:guid}")]
@@ -47,31 +47,6 @@ namespace Empiria.FinancialAccounting.WebApi.BalanceEngine {
     }
 
 
-    [HttpPost]
-    [Route("v2/financial-accounting/accounts-charts/{accountsChartUID:guid}/balance-store/{balanceSetUID:guid}/calculate")]
-    public SingleObjectModel CalculateStoredBalanceSet([FromUri] string accountsChartUID,
-                                                       [FromUri] string balanceSetUID) {
-      using (var usecases = BalanceStorageUseCases.UseCaseInteractor()) {
-        StoredBalanceSetDto balanceSet = usecases.CalculateBalanceSet(accountsChartUID, balanceSetUID);
-
-        return new SingleObjectModel(this.Request, balanceSet);
-      }
-    }
-
-
-    [HttpPost]
-    [Route("v2/financial-accounting/accounts-charts/{accountsChartUID:guid}/balance-store")]
-    public SingleObjectModel CreateOrGetStoredBalanceSet([FromUri] string accountsChartUID,
-                                                         [FromBody] BalanceStorageCommand command) {
-      base.RequireBody(command);
-
-      using (var usecases = BalanceStorageUseCases.UseCaseInteractor()) {
-        StoredBalanceSetDto balanceSet = usecases.CreateOrGetBalanceSet(accountsChartUID, command);
-
-        return new SingleObjectModel(this.Request, balanceSet);
-      }
-    }
-
     [HttpGet]
     [Route("v2/financial-accounting/accounts-charts/{accountsChartUID:guid}/balance-store/{balanceSetUID:guid}/excel")]
     public SingleObjectModel ExportStoredBalancesToExcel([FromUri] string accountsChartUID,
@@ -88,7 +63,37 @@ namespace Empiria.FinancialAccounting.WebApi.BalanceEngine {
       }
     }
 
-    #endregion Web Apis
+    #endregion Query web apis
+
+    #region Command web apis
+
+    [HttpPost]
+    [Route("v2/financial-accounting/accounts-charts/{accountsChartUID:guid}/balance-store/{balanceSetUID:guid}/calculate")]
+    public SingleObjectModel CalculateStoredBalanceSet([FromUri] string accountsChartUID,
+                                                       [FromUri] string balanceSetUID) {
+      using (var usecases = BalanceStorageUseCases.UseCaseInteractor()) {
+        StoredBalanceSetDto balanceSet = usecases.CalculateBalanceSet(accountsChartUID, balanceSetUID);
+
+        return new SingleObjectModel(this.Request, balanceSet);
+      }
+    }
+
+
+    [HttpPost]
+    [Route("v2/financial-accounting/accounts-charts/{accountsChartUID:guid}/balance-store")]
+    public SingleObjectModel CreateBalanceSet([FromUri] string accountsChartUID,
+                                              [FromBody] BalanceStorageCommand command) {
+      base.RequireBody(command);
+
+      using (var usecases = BalanceStorageUseCases.UseCaseInteractor()) {
+        StoredBalanceSetDto balanceSet = usecases.CreateBalanceSet(accountsChartUID, command);
+
+        return new SingleObjectModel(this.Request, balanceSet);
+      }
+    }
+
+
+    #endregion Command web apis
 
   } // class BalanceStorageController
 

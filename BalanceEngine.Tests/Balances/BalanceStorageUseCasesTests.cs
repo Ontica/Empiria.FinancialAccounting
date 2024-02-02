@@ -53,7 +53,7 @@ namespace Empiria.FinancialAccounting.Tests.Balances {
         BalancesDate = BALANCES_DATE
       };
 
-      var storedBalanceSet = _usecases.CreateOrGetBalanceSet(accountsChart.UID, command);
+      var storedBalanceSet = _usecases.CreateBalanceSet(accountsChart.UID, command);
 
       Assert.NotNull(storedBalanceSet);
       Assert.Equal(BALANCES_DATE, storedBalanceSet.BalancesDate);

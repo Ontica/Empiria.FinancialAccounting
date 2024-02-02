@@ -4,18 +4,18 @@
 *  Assembly : FinancialAccounting.BalanceEngine.dll        Pattern   : Empiria General Object                *
 *  Type     : StoredBalanceSet                             License   : Please read LICENSE.txt file          *
 *                                                                                                            *
-*  Summary  : Describes a stored accounts balance set.                                                       *
+*  Summary  : Describes a stored chart of accounts accumulated balance set.                                  *
 *                                                                                                            *
 ************************* Copyright(c) La Vía Óntica SC, Ontica LLC and contributors. All rights reserved. **/
 using System;
 using System.Collections.Generic;
+
 using Empiria.FinancialAccounting.BalanceEngine.Adapters;
 using Empiria.FinancialAccounting.BalanceEngine.Data;
 
 namespace Empiria.FinancialAccounting.BalanceEngine {
 
-
-  /// <summary>Describes a stored accounts balance set.</summary>
+  /// <summary>Describes a stored chart of accounts accumulated balance set.</summary>
   internal class StoredBalanceSet : GeneralObject {
 
     static private readonly Lazy<List<StoredBalanceSet>> _list =
@@ -61,18 +61,24 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
     }
 
 
-    static internal StoredBalanceSet CreateOrGetBalanceSet(AccountsChart accountsChart,
-                                                           DateTime balancesDate) {
+    static internal StoredBalanceSet CreateBalanceSet(AccountsChart accountsChart,
+                                                      DateTime balancesDate) {
 
-      var existing = GetList(accountsChart).Find(x => x.BalancesDate == balancesDate.Date);
-
-      if (existing != null) {
-        return existing;
+      if (ExistBalanceSet(accountsChart, balancesDate)) {
+        Assertion.RequireFail("There is already a balance set for the same date.");
       }
 
       return new StoredBalanceSet(accountsChart, balancesDate);
     }
 
+
+    static internal bool ExistBalanceSet(AccountsChart accountsChart,
+                                         DateTime balancesDate) {
+
+      var exist = GetList(accountsChart).Find(x => x.BalancesDate == balancesDate.Date);
+
+      return (exist != null);
+    }
 
     static internal StoredBalanceSet GetBestBalanceSet(AccountsChart accountsChart,
                                                        DateTime fromDate) {
@@ -213,11 +219,6 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
       base.OnSave();
     }
 
-
-    private FixedList<StoredBalance> LoadBalances() {
-      return StoredBalanceDataService.GetBalances(this);
-    }
-
     static private List<StoredBalanceSet> LoadList() {
       var list = BaseObject.GetList<StoredBalanceSet>("ObjectStatus <> 'X'", string.Empty);
 
@@ -227,7 +228,7 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
     }
 
     private void ResetBalances() {
-      _balances = new Lazy<FixedList<StoredBalance>>(() => LoadBalances());
+      _balances = new Lazy<FixedList<StoredBalance>>(() => StoredBalanceDataService.GetBalances(this));
     }
 
     #endregion Methods
