@@ -223,7 +223,7 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
 
 
     protected override void OnSave() {
-      base.Name = $"Saldos acumulados al {this.BalancesDate.ToString("dd/MMM/yyyy")}";
+      base.Name = $"Saldos acumulados al {this.BalancesDate.ToLongDateString()}";
       base.Keywords = EmpiriaString.BuildKeywords(base.Name);
 
       base.OnSave();
