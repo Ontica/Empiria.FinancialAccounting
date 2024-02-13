@@ -25,7 +25,7 @@ namespace Empiria.FinancialAccounting.FinancialReports.Data {
 
       var op = DataOperation.Parse(sql);
 
-      return DataReader.GetList<FinancialReportItemDefinition>(op, true);
+      return DataReader.GetList<FinancialReportItemDefinition>(op);
     }
 
 

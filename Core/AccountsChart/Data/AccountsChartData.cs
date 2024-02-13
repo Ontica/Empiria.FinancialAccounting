@@ -55,14 +55,14 @@ namespace Empiria.FinancialAccounting.Data {
     }
 
 
-    static internal EmpiriaHashTable<Account> GetAccounts(AccountsChart accountsChart, bool reload = false) {
+    static internal EmpiriaHashTable<Account> GetAccounts(AccountsChart accountsChart) {
       var sql = "SELECT * FROM VW_COF_CUENTA_ESTANDAR_HIST " +
                 $"WHERE ID_TIPO_CUENTAS_STD = {accountsChart.Id} " +
                 $"ORDER BY NUMERO_CUENTA_ESTANDAR";
 
       var dataOperation = DataOperation.Parse(sql);
 
-      return DataReader.GetHashTable<Account>(dataOperation, x => x.Number, reload);
+      return DataReader.GetHashTable<Account>(dataOperation, x => x.Number);
     }
 
 
@@ -170,15 +170,14 @@ namespace Empiria.FinancialAccounting.Data {
     }
 
 
-    static internal EmpiriaHashTable<StandardAccount> GetStandardAccounts(AccountsChart accountsChart,
-                                                                          bool reload = false) {
+    static internal EmpiriaHashTable<StandardAccount> GetStandardAccounts(AccountsChart accountsChart) {
       var sql = "SELECT * FROM COF_CUENTA_ESTANDAR " +
                 $"WHERE ID_TIPO_CUENTAS_STD = {accountsChart.Id} " +
                 $"ORDER BY NUMERO_CUENTA_ESTANDAR";
 
       var dataOperation = DataOperation.Parse(sql);
 
-      return DataReader.GetHashTable<StandardAccount>(dataOperation, x => x.Number, reload);
+      return DataReader.GetHashTable<StandardAccount>(dataOperation, x => x.Number);
     }
 
 

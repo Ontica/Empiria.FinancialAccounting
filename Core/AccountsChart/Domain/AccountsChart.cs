@@ -77,8 +77,8 @@ namespace Empiria.FinancialAccounting {
 
 
     internal void Refresh(bool afterUpdated) {
-      _accounts = new Lazy<EmpiriaHashTable<Account>>(() => AccountsChartData.GetAccounts(this, true));
-      _standardAccounts = new Lazy<EmpiriaHashTable<StandardAccount>>(() => AccountsChartData.GetStandardAccounts(this, true));
+      _accounts = new Lazy<EmpiriaHashTable<Account>>(() => AccountsChartData.GetAccounts(this));
+      _standardAccounts = new Lazy<EmpiriaHashTable<StandardAccount>>(() => AccountsChartData.GetStandardAccounts(this));
       _rules = new Lazy<AccountsChartRules>(() => new AccountsChartRules(this));
 
       if (afterUpdated) {
