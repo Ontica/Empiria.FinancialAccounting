@@ -27,7 +27,11 @@ namespace Empiria.FinancialAccounting.Vouchers {
 
 
     static public FunctionalArea Parse(string uid) {
-      return BaseObject.ParseKey<FunctionalArea>(uid);
+      var area = FunctionalArea.TryParse(uid);
+
+      Assertion.Require(area, $"Área funcional no encontrada {uid}");
+
+      return area;
     }
 
 
