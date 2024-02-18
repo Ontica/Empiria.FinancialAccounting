@@ -157,15 +157,14 @@ namespace Empiria.FinancialAccounting.BalanceEngine.Adapters {
       get; set;
     }
 
+    public override bool Equals(object obj) => this.Equals(obj as AnaliticoDeCuentasEntryDto);
 
     public bool Equals(AnaliticoDeCuentasEntryDto entry) {
-      return entry.GetHashCode() == this.GetHashCode();
-    }
+      if (entry == null) {
+        return false;
+      }
 
-
-    public override bool Equals(object obj) {
-      return obj is AnaliticoDeCuentasEntryDto entry &&
-             this.Equals(entry);
+      return this.GetHashCode() == entry.GetHashCode();
     }
 
 
