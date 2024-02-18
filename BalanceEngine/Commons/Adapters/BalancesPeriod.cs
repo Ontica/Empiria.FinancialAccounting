@@ -49,9 +49,20 @@ namespace Empiria.FinancialAccounting.BalanceEngine.Adapters {
     } = false;
 
 
-    public override bool Equals(object obj) {
-      return obj is BalancesPeriod period &&
-             period.GetHashCode() == this.GetHashCode();
+    public override bool Equals(object obj) => this.Equals(obj as BalancesPeriod);
+
+    public bool Equals(BalancesPeriod period) {
+      if (period == null) {
+        return false;
+      }
+      if (Object.ReferenceEquals(this, period)) {
+        return true;
+      }
+      if (this.GetType() != period.GetType()) {
+        return false;
+      }
+
+      return period.GetHashCode() == this.GetHashCode();
     }
 
 
