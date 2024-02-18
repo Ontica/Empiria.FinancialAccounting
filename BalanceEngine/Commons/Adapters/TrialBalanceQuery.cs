@@ -7,6 +7,7 @@
 *  Summary  : Query payload used to generate trial balances.                                                 *
 *                                                                                                            *
 ************************* Copyright(c) La Vía Óntica SC, Ontica LLC and contributors. All rights reserved. **/
+using System;
 using Empiria.Json;
 
 namespace Empiria.FinancialAccounting.BalanceEngine.Adapters {
@@ -162,9 +163,20 @@ namespace Empiria.FinancialAccounting.BalanceEngine.Adapters {
     } = false;
 
 
-    public override bool Equals(object obj) {
-      return obj is TrialBalanceQuery query &&
-             query.GetHashCode() == this.GetHashCode();
+    public override bool Equals(object obj) => this.Equals(obj as TrialBalanceQuery);
+
+    public bool Equals(TrialBalanceQuery query) {
+      if (query == null) {
+        return false;
+      }
+      if (Object.ReferenceEquals(this, query)) {
+        return true;
+      }
+      if (this.GetType() != query.GetType()) {
+        return false;
+      }
+
+      return this.GetHashCode() == query.GetHashCode();
     }
 
 
