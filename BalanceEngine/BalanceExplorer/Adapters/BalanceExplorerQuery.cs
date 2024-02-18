@@ -80,9 +80,20 @@ namespace Empiria.FinancialAccounting.BalanceEngine.BalanceExplorer.Adapters {
     } = true;
 
 
-    public override bool Equals(object obj) {
-      return obj is BalanceExplorerQuery query &&
-             query.GetHashCode() == this.GetHashCode();
+    public override bool Equals(object obj) => Equals(obj as BalanceExplorerQuery);
+
+    public bool Equals(BalanceExplorerQuery query) {
+      if (query == null) {
+        return false;
+      }
+      if (Object.ReferenceEquals(this, query)) {
+        return true;
+      }
+      if (this.GetType() != query.GetType()) {
+        return false;
+      }
+
+      return this.GetHashCode() == query.GetHashCode();
     }
 
 
