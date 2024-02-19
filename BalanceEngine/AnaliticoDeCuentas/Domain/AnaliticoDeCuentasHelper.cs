@@ -200,8 +200,8 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
 
       var targetCurrency = Currency.Parse(_query.InitialPeriod.ValuateToCurrrencyUID);
 
-      if (currentCurrency != targetCurrency && !balanceEntry.Currency.Equals(Currency.UDI) &&
-          !currentCurrency.Equals(Currency.UDI)) {
+      if (currentCurrency.Distinct(targetCurrency) && balanceEntry.Currency.Distinct(Currency.UDI) &&
+          currentCurrency.Distinct(Currency.UDI)) {
 
         analyticEntry.ForeignBalance += balanceEntry.CurrentBalance;
 

@@ -68,13 +68,14 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
       var exchangeRateType = ExchangeRateType.Dolarizacion;
 
       Query.InitialPeriod.ExchangeRateTypeUID = exchangeRateType.UID;
-      Query.InitialPeriod.ValuateToCurrrencyUID = "01";
+      Query.InitialPeriod.ValuateToCurrrencyUID = Currency.MXN.Code;
+
       Query.InitialPeriod.ExchangeRateDate = Query.InitialPeriod.ToDate;
 
       FixedList<ExchangeRate> exchangeRates = ExchangeRate.GetList(exchangeRateType,
                                                                    Query.InitialPeriod.ExchangeRateDate);
 
-      foreach (var entry in accountEntries.Where(a => a.Currency.Code != "02")) {
+      foreach (var entry in accountEntries.Where(a => a.Currency.Distinct(Currency.USD))) {
         var exchangeRate = exchangeRates.FirstOrDefault(
                             a => a.FromCurrency.Code == Query.InitialPeriod.ValuateToCurrrencyUID &&
                                  a.ToCurrency.Equals(entry.Currency));
@@ -124,8 +125,8 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
                                                     decimal totalEquivalence) {
 
       var foreignAccounts = balanzaDolarizada
-                               .Where(a => a.Account.Number == dollarAccount.Account.Number &&
-                                           a.Currency.Code != dollarAccount.Currency.Code).ToList();
+                               .FindAll(a => a.Account.Number == dollarAccount.Account.Number &&
+                                             a.Currency.Distinct(dollarAccount.Currency));
 
       foreach (var foreignAccount in foreignAccounts) {
 
@@ -213,8 +214,8 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
                             EmpiriaHashTable<TrialBalanceEntry> returnedBalances,
                             List<TrialBalanceEntry> accountEntries) {
 
-      var secondaryAccounts = accountEntries.Where(a => a.Currency.Code != "01" &&
-                                                                   a.Currency.Code != "02");
+      var secondaryAccounts = accountEntries.Where(a => a.Currency.Distinct(Currency.MXN) && a.Currency.Distinct(Currency.USD));
+
       foreach (var secondary in secondaryAccounts) {
         var existPrimaryAccount = returnedBalances.Values
                                     .FirstOrDefault(a => a.Account.Number == secondary.Account.Number &&

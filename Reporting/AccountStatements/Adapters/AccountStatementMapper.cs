@@ -70,7 +70,7 @@ namespace Empiria.FinancialAccounting.Reporting.AccountStatements.Adapters {
       ItemTypeClausesForDto(dto, entry);
 
       dto.ItemType = entry.ItemType;
-      dto.LedgerUID = entry.Ledger.UID != "Empty" ? entry.Ledger.UID : "";
+      dto.LedgerUID = !entry.Ledger.IsEmptyInstance ? entry.Ledger.UID : "";
       dto.LedgerName = entry.Ledger.Name;
       dto.LedgerNumber = entry.Ledger.Number;
       dto.StandardAccountId = entry.StandardAccountId;

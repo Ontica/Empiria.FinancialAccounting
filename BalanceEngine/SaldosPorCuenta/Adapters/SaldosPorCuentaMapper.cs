@@ -54,20 +54,20 @@ namespace Empiria.FinancialAccounting.BalanceEngine.Adapters {
       return new FixedList<SaldosPorCuentaEntryDto>(mappedItems);
     }
 
-    
+
     #endregion Public methods
 
 
     #region Private methods
 
-    
+
     static public SaldosPorCuentaEntryDto MapEntry(TrialBalanceEntry entry, TrialBalanceQuery query) {
       SubledgerAccount subledgerAccount = SubledgerAccount.Parse(entry.SubledgerAccountId);
 
       var dto = new SaldosPorCuentaEntryDto();
 
       dto.ItemType = entry.ItemType;
-      AssingnLedgerProperties(dto, entry);
+      AssignLedgerProperties(dto, entry);
       AssignLabelNameAndNumber(dto, entry, subledgerAccount);
       dto.CurrencyCode = entry.Currency.Code;
       dto.SectorCode = entry.Sector.Code;
@@ -91,7 +91,7 @@ namespace Empiria.FinancialAccounting.BalanceEngine.Adapters {
       return dto;
     }
 
-    
+
     static private void AssignDebtorCreditorAndLastChangeDate(SaldosPorCuentaEntryDto dto,
                                                               TrialBalanceEntry entry,
                                                               TrialBalanceQuery query) {
@@ -100,7 +100,7 @@ namespace Empiria.FinancialAccounting.BalanceEngine.Adapters {
       if (!query.WithSubledgerAccount) {
         debtorCreditor = entry.ItemType == TrialBalanceItemType.Entry ?
                          entry.DebtorCreditor.ToString() : "";
-        
+
       } else {
         debtorCreditor = entry.ItemType == TrialBalanceItemType.Summary ?
                              entry.DebtorCreditor.ToString() : "";
@@ -147,9 +147,9 @@ namespace Empiria.FinancialAccounting.BalanceEngine.Adapters {
     }
 
 
-    static private void AssingnLedgerProperties(SaldosPorCuentaEntryDto dto, TrialBalanceEntry entry) {
+    static private void AssignLedgerProperties(SaldosPorCuentaEntryDto dto, TrialBalanceEntry entry) {
 
-      dto.LedgerUID = entry.Ledger.UID != "Empty" ? entry.Ledger.UID : "";
+      dto.LedgerUID = !entry.Ledger.IsEmptyInstance ? entry.Ledger.UID : "";
       dto.LedgerNumber = entry.Ledger.Number;
       if (entry.ItemType == TrialBalanceItemType.Summary ||
           entry.ItemType == TrialBalanceItemType.Entry) {
@@ -158,7 +158,7 @@ namespace Empiria.FinancialAccounting.BalanceEngine.Adapters {
     }
 
 
-   
+
     static private void LedgerAndSubledgerAccountColumns(List<DataTableColumn> columns,
                                                             TrialBalanceQuery Query) {
       if (Query.ReturnLedgerColumn) {

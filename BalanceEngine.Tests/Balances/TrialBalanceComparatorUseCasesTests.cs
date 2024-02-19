@@ -129,7 +129,7 @@ namespace Empiria.FinancialAccounting.Tests.BalanceEngine {
       foreach (var entry in _twoColumnsEntries.Where(a => a.ItemType == TrialBalanceItemType.Entry)) {
         var foreignBalances = _trialBalance.Where(
                                           a => a.AccountNumber == entry.AccountNumber &&
-                                          a.CurrencyCode != "01" && a.CurrencyCode != "44" &&
+                                          a.CurrencyCode != Currency.MXN.Code && a.CurrencyCode != Currency.UDI.Code &&
                                           a.LedgerNumber == entry.LedgerNumber &&
                                           a.SectorCode == entry.SectorCode &&
                                           a.DebtorCreditor == entry.DebtorCreditor.ToString()
