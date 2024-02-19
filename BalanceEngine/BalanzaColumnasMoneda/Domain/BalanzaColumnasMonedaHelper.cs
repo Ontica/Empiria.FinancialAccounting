@@ -59,9 +59,9 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
       foreach (var debtor in parentAccounts.Where(a => a.DebtorCreditor == DebtorCreditorType.Deudora)) {
 
         var creditor = parentAccounts.FirstOrDefault(a => a.Account.Number == debtor.Account.Number &&
-                                              a.Currency.Code == debtor.Currency.Code &&
-                                              a.Sector.Code == debtor.Sector.Code &&
-                                              a.DebtorCreditor == DebtorCreditorType.Acreedora);
+                                                          a.Currency.Equals(debtor.Currency) &&
+                                                          a.Sector.Code == debtor.Sector.Code &&
+                                                          a.DebtorCreditor == DebtorCreditorType.Acreedora);
         if (creditor != null) {
           SumCreditorToDebtorAccount(debtor, creditor);
           returnedAccounts.Remove(creditor);
@@ -80,8 +80,8 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
 
       var helper = new TrialBalanceHelper(Query);
 
-      var filteredAccountList = accountEntries.Where(a => (a.Level == 1 && a.Sector.Code == "00") ||
-                                                    (a.Level > 1)).ToList();
+      var filteredAccountList = accountEntries.FindAll(a => (a.Level == 1 && a.Sector.Code == "00") ||
+                                                            (a.Level > 1));
 
       var hashAccountEntries = new EmpiriaHashTable<TrialBalanceEntry>();
 
@@ -103,7 +103,7 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
 
       var returnedValuedBalance = new List<BalanzaColumnasMonedaEntry>();
 
-      foreach (var entry in accountEntriesByCurrency.Where(a => a.Currency.Code == "01")) {
+      foreach (var entry in accountEntriesByCurrency.Where(a => a.Currency.Equals(Currency.MXN))) {
         returnedValuedBalance.Add(entry.MapToBalanceByCurrencyEntry());
       }
 
@@ -139,12 +139,12 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
     private void GetDomesticAccountEntries(EmpiriaHashTable<TrialBalanceEntry> returnedBalances,
                                            EmpiriaHashTable<TrialBalanceEntry> hashAccountEntries) {
 
-      var domesticAccounts = hashAccountEntries.Values.Where(a => a.Currency.Code == "01").ToList();
+      var domesticAccounts = hashAccountEntries.Values.Where(a => a.Currency.Equals(Currency.MXN)).ToList();
 
       foreach (var domestic in domesticAccounts) {
 
         var foreignCurrencyAccounts = hashAccountEntries.Values
-                                .Where(a => a.Currency.Code != "01" &&
+                                .Where(a => a.Currency.Distinct(Currency.MXN) &&
                                             a.Account.Number == domestic.Account.Number)
                                 .OrderBy(a => a.Currency.Code).ToList();
 
@@ -164,12 +164,12 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
     private void GetForeignAccountEntries(EmpiriaHashTable<TrialBalanceEntry> returnedBalances,
                                           EmpiriaHashTable<TrialBalanceEntry> hashAccountEntries) {
 
-      var foreignAccounts = hashAccountEntries.Values.Where(a => a.Currency.Code != "01").ToList();
+      var foreignAccounts = hashAccountEntries.Values.Where(a => a.Currency.Distinct(Currency.MXN)).ToList();
 
       foreach (var foreignAccount in foreignAccounts) {
 
         var existDomesticAccount = returnedBalances.Values
-                          .Where(a => a.Currency.Code == "01" &&
+                          .Where(a => a.Currency.Equals(Currency.MXN) &&
                                       a.Account.Number == foreignAccount.Account.Number)
                           .FirstOrDefault();
 
@@ -189,19 +189,18 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
 
         foreach (var ledger in ledgerAccounts.Where(a => a.Account.Number == entry.Account.Number)) {
 
-          if (ledger.Currency.Code == "02") {
+          if (ledger.Currency.Equals(Currency.USD)) {
             entry.DollarBalance = ledger.CurrentBalance;
           }
-          if (ledger.Currency.Code == "06") {
+          if (ledger.Currency.Equals(Currency.YEN)) {
             entry.YenBalance = ledger.CurrentBalance;
           }
-          if (ledger.Currency.Code == "27") {
+          if (ledger.Currency.Equals(Currency.EUR)) {
             entry.EuroBalance = ledger.CurrentBalance;
           }
-          if (ledger.Currency.Code == "44") {
+          if (ledger.Currency.Equals(Currency.UDI)) {
             entry.UdisBalance = ledger.CurrentBalance;
           }
-
         }
       }
     }
@@ -219,19 +218,19 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
         if (entry == null) {
           returnedValuedBalance.Add(ledger.MapToBalanceByCurrencyEntry());
         } else {
-          if (ledger.Currency.Code == "01") {
+          if (ledger.Currency.Equals(Currency.MXN)) {
             entry.DomesticBalance = ledger.CurrentBalance;
           }
-          if (ledger.Currency.Code == "02") {
+          if (ledger.Currency.Equals(Currency.USD)) {
             entry.DollarBalance = ledger.CurrentBalance;
           }
-          if (ledger.Currency.Code == "06") {
+          if (ledger.Currency.Equals(Currency.YEN)) {
             entry.YenBalance = ledger.CurrentBalance;
           }
-          if (ledger.Currency.Code == "27") {
+          if (ledger.Currency.Equals(Currency.EUR)) {
             entry.EuroBalance = ledger.CurrentBalance;
           }
-          if (ledger.Currency.Code == "44") {
+          if (ledger.Currency.Equals(Currency.UDI)) {
             entry.UdisBalance = ledger.CurrentBalance;
           }
         }

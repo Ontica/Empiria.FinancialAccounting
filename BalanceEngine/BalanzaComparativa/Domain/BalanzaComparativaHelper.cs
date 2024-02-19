@@ -85,7 +85,7 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
 
       foreach (var entry in entries.Where(a => a.Currency.Code != "01")) {
         var exchangeRate = exchangeRates.FirstOrDefault(a => a.FromCurrency.Code == period.ValuateToCurrrencyUID &&
-                                                             a.ToCurrency.Code == entry.Currency.Code);
+                                                             a.ToCurrency.Equals(entry.Currency));
 
         if (period.IsSecondPeriod) {
           entry.SecondExchangeRate = exchangeRate.Value;

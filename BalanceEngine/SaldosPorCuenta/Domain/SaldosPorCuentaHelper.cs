@@ -71,8 +71,8 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
       var returnedEntries = new List<TrialBalanceEntry>();
 
       foreach (var currencyEntry in totalsByCurrency) {
-        var listSummaryByCurrency = accountEntries.Where(a => a.Ledger.Id == currencyEntry.Ledger.Id &&
-                                                         a.Currency.Code == currencyEntry.Currency.Code)
+        var listSummaryByCurrency = accountEntries.Where(a => a.Ledger.Equals(currencyEntry.Ledger) &&
+                                                              a.Currency.Equals(currencyEntry.Currency))
                                                   .ToList();
 
         if (listSummaryByCurrency.Count > 0) {
@@ -97,9 +97,9 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
       var returnedEntries = new List<TrialBalanceEntry>();
 
       foreach (var debtorSummaryEntry in totalsByDebtorOrCreditor) {
-        var debtorsSummaryList = accountEntries.Where(a => a.Ledger.Id == debtorSummaryEntry.Ledger.Id &&
-                                                  a.Currency.Code == debtorSummaryEntry.Currency.Code &&
-                                                  a.DebtorCreditor == debtorSummaryEntry.DebtorCreditor)
+        var debtorsSummaryList = accountEntries.Where(a => a.Ledger.Equals(debtorSummaryEntry.Ledger) &&
+                                                           a.Currency.Equals(debtorSummaryEntry.Currency) &&
+                                                           a.DebtorCreditor == debtorSummaryEntry.DebtorCreditor)
                                                .ToList();
 
         if (debtorsSummaryList.Count > 0) {

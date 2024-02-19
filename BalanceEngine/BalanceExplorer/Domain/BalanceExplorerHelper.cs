@@ -50,11 +50,11 @@ namespace Empiria.FinancialAccounting.BalanceEngine.BalanceExplorer {
 
       foreach (var subledgerAccount in orderingBalance) {
 
-        var entries = balanceEntries.Where(
+        var entries = balanceEntries.FindAll(
                       a => a.SubledgerAccountId == subledgerAccount.SubledgerAccountIdParent &&
-                      a.Ledger.Number == subledgerAccount.Ledger.Number &&
-                      a.Currency.Code == subledgerAccount.Currency.Code &&
-                      a.ItemType == TrialBalanceItemType.Entry).ToList();
+                           a.Ledger.Number == subledgerAccount.Ledger.Number &&
+                           a.Currency.Equals(subledgerAccount.Currency) &&
+                           a.ItemType == TrialBalanceItemType.Entry).ToList();
 
 
         returnedEntries.Add(subledgerAccount);
@@ -84,7 +84,7 @@ namespace Empiria.FinancialAccounting.BalanceEngine.BalanceExplorer {
 
     internal FixedList<BalanceExplorerEntry> GetSubledgerAccounts(
               FixedList<BalanceExplorerEntry> balanceEntries) {
-      
+
       if (balanceEntries.Count == 0) {
         return new FixedList<BalanceExplorerEntry>();
       }
@@ -116,11 +116,11 @@ namespace Empiria.FinancialAccounting.BalanceEngine.BalanceExplorer {
       foreach (var entry in balanceEntries) {
         StandardAccount currentParent = entry.Account.GetParent();
 
-        var entryParent = returnedEntries.FirstOrDefault(a => a.Account.Number == currentParent.Number &&
-                                                a.Currency.Code == entry.Currency.Code &&
-                                                a.Ledger.Number == entry.Ledger.Number &&
-                                                a.Sector.Code == entry.Sector.Code &&
-                                                a.Account.DebtorCreditor == entry.Account.DebtorCreditor);
+        var entryParent = returnedEntries.Find(a => a.Account.Number == currentParent.Number &&
+                                                    a.Currency.Equals(entry.Currency) &&
+                                                    a.Ledger.Number == entry.Ledger.Number &&
+                                                    a.Sector.Code == entry.Sector.Code &&
+                                                    a.Account.DebtorCreditor == entry.Account.DebtorCreditor);
         if (entryParent != null) {
           entry.HasParentPostingEntry = true;
           entryParent.IsParentPostingEntry = true;

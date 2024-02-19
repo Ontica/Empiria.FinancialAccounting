@@ -84,7 +84,7 @@ namespace Empiria.FinancialAccounting.BalanceEngine.Helpers {
 
         List<TrialBalanceEntry> parentAccountsWithLastChangeDate =
                                 AssingnLastChangeDateToParentAccounts(parentAccountEntry, accountEntries);
-        
+
         returnedOrdering.Add(parentAccountEntry);
         returnedOrdering.AddRange(parentAccountsWithLastChangeDate);
 
@@ -128,7 +128,7 @@ namespace Empiria.FinancialAccounting.BalanceEngine.Helpers {
       var accountEntriesByParentAccount = accountEntries.Where(
                       a => a.SubledgerAccountId == parentAccountEntry.SubledgerAccountIdParent &&
                       a.Ledger.Number == parentAccountEntry.Ledger.Number &&
-                      a.Currency.Code == parentAccountEntry.Currency.Code &&
+                      a.Currency.Equals(parentAccountEntry.Currency) &&
                       a.ItemType == TrialBalanceItemType.Entry).ToList();
 
       foreach (var entryToCompare in accountEntriesByParentAccount) {

@@ -198,7 +198,7 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
         var entriesWithSummarySector = EntriesList
                                   .Where(a => a.Account.Number == entry.Account.Number &&
                                          a.Ledger.Number == entry.Ledger.Number &&
-                                         a.Currency.Code == entry.Currency.Code)
+                                         a.Currency.Equals(entry.Currency))
                                   .ToList();
 
         if (entry.Level > 1 &&
@@ -455,10 +455,10 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
 
       FixedList<ExchangeRate> exchangeRates = GetExchangeRateListForDate();
 
-      foreach (var entry in entries.Where(a => a.Currency.Code != "01")) {
+      foreach (var entry in entries.Where(a => a.Currency.Distinct(Currency.MXN))) {
 
-        var exchangeRate = exchangeRates.FirstOrDefault(
-                            a => a.ToCurrency.Code == entry.Currency.Code &&
+        var exchangeRate = exchangeRates.Find(
+                            a => a.ToCurrency.Equals(entry.Currency) &&
                             a.FromCurrency.Code == _query.InitialPeriod.ValuateToCurrrencyUID);
 
         // ToDo: URGENT This require must be checked before any state change
@@ -481,7 +481,7 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
 
         var accountEntry = accountEntries.FirstOrDefault(a => a.Account.Number == entry.Account.Number &&
                                                                a.Ledger.Number == entry.Ledger.Number &&
-                                                               a.Currency.Code == entry.Currency.Code &&
+                                                               a.Currency.Equals(entry.Currency) &&
                                                                a.Sector.Code == "00");
 
         var sectorParent = entry.Sector.Parent;
@@ -508,7 +508,7 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
         var sectorParent = entry.Sector.Parent;
         var returnedEntry = accountEntries.FirstOrDefault(a => a.Account.Number == entry.Account.Number &&
                                                             a.Ledger.Number == entry.Ledger.Number &&
-                                                            a.Currency.Code == entry.Currency.Code &&
+                                                            a.Currency.Equals(entry.Currency) &&
                                                             a.Sector.Code == "00");
 
         if (returnedEntry != null && sectorParent.Code != "00" &&
@@ -532,7 +532,7 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
         var entry = accountEntries.FirstOrDefault(
                                     a => a.Account.Number == hashEntry.Account.Number &&
                                          a.Ledger.Number == hashEntry.Ledger.Number &&
-                                         a.Currency.Code == hashEntry.Currency.Code &&
+                                         a.Currency.Equals(hashEntry.Currency) &&
                                          a.Sector.Code == hashEntry.Sector.Code && a.Sector.Code == "00");
         if (entry == null) {
           accountEntries.Add(hashEntry);
@@ -676,7 +676,7 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
 
       var parentToChange = parentAccounts.FirstOrDefault(
                           a => a.Account.Number == currentParentAccount.Number &&
-                          a.Currency.Code == entry.Currency.Code &&
+                          a.Currency.Equals(entry.Currency) &&
                           a.Sector.Code == entry.Sector.Code &&
                           entry.LastChangeDate > a.LastChangeDate);
 
@@ -692,7 +692,7 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
 
       var parentToChangeWithoutSector = parentAccounts.FirstOrDefault(
                                     a => a.Account.Number == currentParentAccount.Number &&
-                                    a.Currency.Code == entry.Currency.Code &&
+                                    a.Currency.Equals(entry.Currency) &&
                                     a.Sector.Code == "00" &&
                                     entry.LastChangeDate > a.LastChangeDate);
 
@@ -706,7 +706,7 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
                                                    FixedList<TrialBalanceEntry> parentAccounts) {
 
       var filtered = parentAccounts.Where(a => a.Account.Number == entry.Account.Number &&
-                                               a.Currency.Code == entry.Currency.Code &&
+                                               a.Currency.Equals(entry.Currency) &&
                                                a.Sector.Code == entry.Sector.Code &&
                                                entry.LastChangeDate > a.LastChangeDate);
 

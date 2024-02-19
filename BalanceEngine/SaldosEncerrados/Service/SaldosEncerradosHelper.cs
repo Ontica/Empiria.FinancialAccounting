@@ -77,7 +77,7 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
       var sectoresEliminados = new List<SectorRule>();
 
       foreach (var antes in sectoresAntes) {
-        
+
         var existe = sectoresDespues.Where(a => a.Sector.Code == antes.Sector.Code).FirstOrDefault();
         if (existe == null) {
           sectoresEliminados.Add(antes);
@@ -143,9 +143,9 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
       var returnedEntries = new List<TrialBalanceEntry>();
 
       foreach (var currencyEntry in currenciesRules) {
-        
+
         var entry = entries.Where(a => a.Account.Number == account.Number &&
-          a.Currency.Code == currencyEntry.Currency.Code).ToList();
+                                       a.Currency.Equals(currencyEntry.Currency)).ToList();
 
         returnedEntries.AddRange(entry);
       }
@@ -162,12 +162,13 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
 
       foreach (var antes in monedasAntes) {
 
-        var existe = monedasDespues.Where(a => a.Currency.Code == antes.Currency.Code).FirstOrDefault();
+        var existe = monedasDespues.Find(a => a.Currency.Equals(antes.Currency));
+
         if (existe == null) {
           monedasEliminadas.Add(antes);
         }
-
       }
+
       return monedasEliminadas;
     }
 

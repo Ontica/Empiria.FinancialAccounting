@@ -76,7 +76,7 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
         foreach (var debtorGroup in entries.Where(x => x.ItemType == TrialBalanceItemType.BalanceTotalGroupDebtor)) {
           var entriesTotal = postingEntries.FindAll(x => x.Account.GroupNumber == debtorGroup.GroupNumber &&
                                                          x.Account.DebtorCreditor == DebtorCreditorType.Deudora &&
-                                                         x.Currency.Code == debtorGroup.Currency.Code)
+                                                         x.Currency.Equals(debtorGroup.Currency))
                                            .Sum(x => x.CurrentBalance);
 
           Assertion.Require(Math.Abs(debtorGroup.CurrentBalance - entriesTotal) <= MAX_BALANCE_DIFFERENCE,
@@ -88,7 +88,7 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
         foreach (var creditorGroup in entries.Where(x => x.ItemType == TrialBalanceItemType.BalanceTotalGroupCreditor)) {
           var entriesTotal = postingEntries.FindAll(x => x.Account.GroupNumber == creditorGroup.GroupNumber &&
                                                          x.Account.DebtorCreditor == DebtorCreditorType.Acreedora &&
-                                                         x.Currency.Code == creditorGroup.Currency.Code)
+                                                         x.Currency.Equals(creditorGroup.Currency))
                                            .Sum(x => x.CurrentBalance);
 
           Assertion.Require(Math.Abs(creditorGroup.CurrentBalance - entriesTotal) <= MAX_BALANCE_DIFFERENCE,
@@ -261,7 +261,7 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
         if (_query.AccountsChartUID == "b2328e67-3f2e-45b9-b1f6-93ef6292204e") {
           entriesTotal = entries.FindAll(x => x.DebtorCreditor == DebtorCreditorType.Acreedora &&
                                                 x.ItemType == TrialBalanceItemType.Entry)
-                                  .Sum(x => x.DomesticBalance);
+                                .Sum(x => x.DomesticBalance);
         }
         Assertion.Require(Math.Abs(totalCreditor.DomesticBalance - entriesTotal) <= MAX_BALANCE_DIFFERENCE,
                          $"La suma del saldo actual ({entriesTotal}) de las cuentas acreedoras no es " +
@@ -278,8 +278,8 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
 
       foreach (var totalDebtor in entries.Where(x => x.ItemType == TrialBalanceItemType.BalanceTotalDebtor)) {
         var entriesTotal = postingEntries.FindAll(x => x.DebtorCreditor == DebtorCreditorType.Deudora &&
-                                                x.Currency.Code == totalDebtor.Currency.Code)
-                                  .Sum(x => x.CurrentBalance);
+                                                x.Currency.Equals(totalDebtor.Currency))
+                                         .Sum(x => x.CurrentBalance);
 
         Assertion.Require(Math.Abs(totalDebtor.CurrentBalance - entriesTotal) <= MAX_BALANCE_DIFFERENCE,
                          $"La suma del saldo actual ({entriesTotal}) de las cuentas deudoras no es " +
@@ -288,8 +288,8 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
 
       foreach (var totalCreditor in entries.Where(a => a.ItemType == TrialBalanceItemType.BalanceTotalCreditor)) {
         var entriesTotal = postingEntries.FindAll(x => x.DebtorCreditor == DebtorCreditorType.Acreedora &&
-                                                x.Currency.Code == totalCreditor.Currency.Code)
-                                  .Sum(x => x.CurrentBalance);
+                                                       x.Currency.Equals(totalCreditor.Currency))
+                                         .Sum(x => x.CurrentBalance);
 
         Assertion.Require(Math.Abs(totalCreditor.CurrentBalance - entriesTotal) <= MAX_BALANCE_DIFFERENCE,
                          $"La suma del saldo actual ({entriesTotal}) de las cuentas acreedoras no es " +

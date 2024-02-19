@@ -36,7 +36,7 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
 
       foreach (var entry in parentAccountEntries) {
 
-        TrialBalanceItemType itemType = entry.Currency.Code == "02" ?
+        TrialBalanceItemType itemType = entry.Currency.Equals(Currency.USD) ?
                                         TrialBalanceItemType.Summary :
                                         TrialBalanceItemType.Entry;
 
@@ -77,7 +77,7 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
       foreach (var entry in accountEntries.Where(a => a.Currency.Code != "02")) {
         var exchangeRate = exchangeRates.FirstOrDefault(
                             a => a.FromCurrency.Code == Query.InitialPeriod.ValuateToCurrrencyUID &&
-                            a.ToCurrency.Code == entry.Currency.Code);
+                                 a.ToCurrency.Equals(entry.Currency));
 
         // ToDo: URGENT This require must be checked before any state
         Assertion.Require(exchangeRate, $"No hay tipo de cambio para la moneda {entry.Currency.FullName}.");
@@ -189,12 +189,12 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
     private void GetAccountEntriesWithDollarCurrency(EmpiriaHashTable<TrialBalanceEntry> returnedBalances,
                                                      List<TrialBalanceEntry> hashAccountEntries) {
 
-      var dollarEntries = hashAccountEntries.ToFixedList().Where(a => a.Currency.Code == "02").ToList();
+      var dollarEntries = hashAccountEntries.ToFixedList().Where(a => a.Currency.Equals(Currency.USD)).ToList();
 
       foreach (var header in dollarEntries) {
 
         var foreignEntries = hashAccountEntries.ToFixedList()
-                                .Where(a => a.Currency.Code != "02" &&
+                                .Where(a => a.Currency.Distinct(Currency.USD) &&
                                             a.Account.Number == header.Account.Number)
                                 .OrderBy(a => a.Currency.Code).ToList();
 
@@ -218,12 +218,12 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
       foreach (var secondary in secondaryAccounts) {
         var existPrimaryAccount = returnedBalances.Values
                                     .FirstOrDefault(a => a.Account.Number == secondary.Account.Number &&
-                                     a.Currency.Code == "02");
+                                                         a.Currency.Equals(Currency.USD));
 
         if (existPrimaryAccount == null) {
           TrialBalanceEntry entry = secondary.CreatePartialCopy();
 
-          entry.Currency = Currency.Parse("02");
+          entry.Currency = Currency.USD;
           entry.InitialBalance = 0;
           entry.Debit = 0;
           entry.Credit = 0;

@@ -58,9 +58,9 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
       List<AnaliticoDeCuentasEntry> returnedEntries = new List<AnaliticoDeCuentasEntry>();
 
       foreach (var debtorsGroup in totalByGroup) {
-        var debtorEntries = analyticEntries.Where(a => a.Account.GroupNumber == debtorsGroup.GroupNumber &&
-                                          a.Ledger.Id == debtorsGroup.Ledger.Id &&
-                                          a.DebtorCreditor == debtorsGroup.DebtorCreditor).ToList();
+        var debtorEntries = analyticEntries.FindAll(a => a.Account.GroupNumber == debtorsGroup.GroupNumber &&
+                                                         a.Ledger.Equals(debtorsGroup.Ledger) &&
+                                                         a.DebtorCreditor == debtorsGroup.DebtorCreditor);
         if (debtorEntries.Count > 0) {
           debtorEntries.Add(debtorsGroup);
           returnedEntries.AddRange(debtorEntries);
@@ -97,9 +97,8 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
       var returnedEntries = new List<AnaliticoDeCuentasEntry>();
 
       foreach (var totalByLedger in totalsByLedgerList) {
-        var entriesByLedger = analyticEntries.Where(a => a.Currency.Code == totalByLedger.Currency.Code &&
-                                                         a.Ledger.Number == totalByLedger.Ledger.Number)
-                                             .ToList();
+        var entriesByLedger = analyticEntries.FindAll(a => a.Currency.Equals(totalByLedger.Currency) &&
+                                                           a.Ledger.Equals(totalByLedger.Ledger));
         if (entriesByLedger.Count > 0) {
           entriesByLedger.Add(totalByLedger);
           returnedEntries.AddRange(entriesByLedger);
@@ -134,9 +133,9 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
       foreach (var totalCreditor in totalByDebtorsCreditors
                     .Where(a => a.DebtorCreditor == DebtorCreditorType.Acreedora)) {
 
-        var creditorEntries = analyticEntries.Where(a => a.Ledger.Id == totalCreditor.Ledger.Id &&
-                                                 a.Currency.Code == totalCreditor.Currency.Code &&
-                                                 a.DebtorCreditor == totalCreditor.DebtorCreditor).ToList();
+        var creditorEntries = analyticEntries.FindAll(a => a.Ledger.Equals(totalCreditor.Ledger) &&
+                                                           a.Currency.Equals(totalCreditor.Currency) &&
+                                                           a.DebtorCreditor == totalCreditor.DebtorCreditor);
         creditorEntries.Add(totalCreditor);
         returnedEntries.AddRange(creditorEntries);
       }
@@ -151,9 +150,9 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
       foreach (var totalDebtor in totalByDebtorsCreditors
                     .Where(a => a.DebtorCreditor == DebtorCreditorType.Deudora)) {
 
-        var debtorEntries = analyticEntries.Where(a => a.Ledger.Id == totalDebtor.Ledger.Id &&
-                                               a.Currency.Code == totalDebtor.Currency.Code &&
-                                               a.DebtorCreditor == totalDebtor.DebtorCreditor).ToList();
+        var debtorEntries = analyticEntries.FindAll(a => a.Ledger.Equals(totalDebtor.Ledger) &&
+                                                         a.Currency.Equals(totalDebtor.Currency) &&
+                                                         a.DebtorCreditor == totalDebtor.DebtorCreditor);
         debtorEntries.Add(totalDebtor);
         returnedEntries.AddRange(debtorEntries);
       }

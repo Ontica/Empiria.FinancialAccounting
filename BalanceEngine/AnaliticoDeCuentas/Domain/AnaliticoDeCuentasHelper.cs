@@ -61,7 +61,7 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
 
     internal List<TrialBalanceEntry> GetCalculatedParentAccounts(
                                      FixedList<TrialBalanceEntry> accountEntries) {
-     
+
       if (accountEntries.Count == 0) {
         return new List<TrialBalanceEntry>();
       }
@@ -93,7 +93,7 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
     internal void GetSummaryToSectorZeroForPesosAndUdis(
                     List<TrialBalanceEntry> accountEntries) {
       if (accountEntries.Count == 0) {
-        return; 
+        return;
       }
 
       if (!_query.UseNewSectorizationModel) {
@@ -131,7 +131,7 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
       var totalSummaryDebtorCredtor = new EmpiriaHashTable<AnaliticoDeCuentasEntry>();
 
       foreach (var entry in listEntries) {
-        
+
         SummaryByDebtorCreditorEntries(totalSummaryDebtorCredtor, entry);
 
       }
@@ -366,7 +366,7 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
         } else {
 
           listEntries.Add(entry);
-        } 
+        }
       }
 
       return listEntries;
@@ -426,7 +426,7 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
         entry.GroupName = "TOTAL ACREEDORAS";
         itemType = TrialBalanceItemType.BalanceTotalCreditor;
 
-      } 
+      }
 
       string hash = $"{entry.GroupName}||{Sector.Empty.Code}||{entry.Ledger.Id}||{entry.DebtorCreditor}";
 
@@ -458,14 +458,14 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
     private void SummaryToSectorZeroForPesosAndUdis(List<TrialBalanceEntry> entries) {
 
       var entriesWithUdisCurrency = entries.Where(a => a.Level > 1 &&
-                                                  a.Currency.Code == "44" &&
+                                                  a.Currency.Equals(Currency.UDI) &&
                                                   a.Sector.Code == "00")
                                             .ToList();
 
       foreach (var entryUdis in entriesWithUdisCurrency) {
         var entry = entries.FirstOrDefault(a => a.Account.Number == entryUdis.Account.Number &&
                                             a.Ledger.Number == entryUdis.Ledger.Number &&
-                                            a.Currency.Code == "01" &&
+                                            a.Currency.Equals(Currency.MXN) &&
                                             a.Sector.Code == "00" &&
                                             a.DebtorCreditor == entryUdis.DebtorCreditor);
 
@@ -475,7 +475,7 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
 
 
     private void SummaryBalancesByEntry(TrialBalanceEntry entry, TrialBalanceEntry entryUdis) {
-      
+
       if (entry != null) {
         entry.InitialBalance += entryUdis.InitialBalance;
         entry.Debit += entryUdis.Debit;

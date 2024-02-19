@@ -70,9 +70,8 @@ namespace Empiria.FinancialAccounting.BalanceEngine.BalanceExplorer {
       var balanceWithHeader = new List<BalanceExplorerEntry>();
 
       foreach (var header in balanceHeader) {
-        var balance = accountEntries.Where(a =>
-                                    a.Currency.Code == header.Currency.Code &&
-                                    a.Account.Number == header.Account.Number).ToList();
+        var balance = accountEntries.FindAll(a => a.Currency.Equals(header.Currency) &&
+                                                  a.Account.Number == header.Account.Number);
         balanceWithHeader.Add(header);
         if (balance.Count > 0) {
 
@@ -99,8 +98,8 @@ namespace Empiria.FinancialAccounting.BalanceEngine.BalanceExplorer {
       var combinedEntries = new List<BalanceExplorerEntry>();
 
       foreach (var totalByAccount in totalByAccountAndCurrency) {
-        var balancesByLedger = subledgerAccounts.Where(a => a.Currency.Code == totalByAccount.Currency.Code &&
-                                                    a.Account.Number == totalByAccount.Account.Number).ToList();
+        var balancesByLedger = subledgerAccounts.FindAll(a => a.Currency.Equals(totalByAccount.Currency) &&
+                                                              a.Account.Number == totalByAccount.Account.Number);
         if (balancesByLedger.Count > 0) {
 
           foreach (var balance in balancesByLedger) {

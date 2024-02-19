@@ -40,7 +40,9 @@ namespace Empiria.FinancialAccounting.Reporting.VoucherRelatedReports.Domain {
       var returnedEntries = new List<AccountStatementEntry>();
 
       foreach (var total in totalsByCurrency) {
-        var vouchers = orderingVouchers.Where(a => a.Currency.Code == total.Currency.Code).ToList();
+
+        var vouchers = orderingVouchers.FindAll(a => a.Currency.Equals(total.Currency));
+
         if (vouchers.Count > 0) {
           returnedEntries.AddRange(vouchers);
           returnedEntries.Add(total);
@@ -70,11 +72,11 @@ namespace Empiria.FinancialAccounting.Reporting.VoucherRelatedReports.Domain {
       foreach (var entry in vouchers) {
         StandardAccount currentParent = StandardAccount.Parse(entry.StandardAccountId).GetParent();
 
-        var entryParent = returnedEntries.FirstOrDefault(a => a.AccountNumber == currentParent.Number &&
-                                                a.Currency.Code == entry.Currency.Code &&
-                                                a.Ledger.Number == entry.Ledger.Number &&
-                                                a.Sector.Code == entry.Sector.Code &&
-                                                a.DebtorCreditor == entry.DebtorCreditor);
+        var entryParent = returnedEntries.Find(a => a.AccountNumber == currentParent.Number &&
+                                                    a.Currency.Equals(entry.Currency) &&
+                                                    a.Ledger.Number == entry.Ledger.Number &&
+                                                    a.Sector.Code == entry.Sector.Code &&
+                                                    a.DebtorCreditor == entry.DebtorCreditor);
         if (entryParent != null) {
           entry.HasParentPostingEntry = true;
           entryParent.IsParentPostingEntry = true;

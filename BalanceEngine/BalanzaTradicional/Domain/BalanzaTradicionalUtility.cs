@@ -63,8 +63,8 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
 
       foreach (var currencyEntry in totalsByCurrency) {
 
-        var entriesByCurrency = accountEntries.Where(a => a.Ledger.Id == currencyEntry.Ledger.Id &&
-                                                     a.Currency.Code == currencyEntry.Currency.Code)
+        var entriesByCurrency = accountEntries.Where(a => a.Ledger.Equals(currencyEntry.Ledger) &&
+                                                     a.Currency.Equals(currencyEntry.Currency))
                                               .ToList();
         if (entriesValidator.ValidateToCountEntries(entriesByCurrency)) {
 
@@ -91,8 +91,8 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
       var entriesValidator = new TrialBalanceEntriesValidator();
 
       foreach (var totalByLedger in totalConsolidatedByLedger) {
-        var entries = balanceEntries.Where(a => a.Ledger.Id == totalByLedger.Ledger.Id)
-                                     .ToList();
+        var entries = balanceEntries.Where(a => a.Ledger.Equals(totalByLedger.Ledger))
+                                    .ToList();
 
         if (entriesValidator.ValidateToCountEntries(entries)) {
           entries.Add(totalByLedger);
@@ -117,8 +117,8 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
 
       foreach (var debtorCreditorEntry in totalDebtorCreditors) {
 
-        var entries = accountEntries.Where(a => a.Ledger.Id == debtorCreditorEntry.Ledger.Id &&
-                                           a.Currency.Code == debtorCreditorEntry.Currency.Code &&
+        var entries = accountEntries.FindAll(a => a.Ledger.Id == debtorCreditorEntry.Ledger.Id &&
+                                           a.Currency.Equals(debtorCreditorEntry.Currency) &&
                                            a.DebtorCreditor == debtorCreditorEntry.DebtorCreditor).ToList();
 
         if (entriesValidator.ValidateToCountEntries(entries)) {
@@ -149,7 +149,7 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
         var accountEntries = balanzaEntries.Where(
                                   a => a.Account.GroupNumber == totalGroupEntry.GroupNumber &&
                                   a.Ledger.Id == totalGroupEntry.Ledger.Id &&
-                                  a.Currency.Id == totalGroupEntry.Currency.Id &&
+                                  a.Currency.Equals(totalGroupEntry.Currency) &&
                                   a.Account.DebtorCreditor == totalGroupEntry.DebtorCreditor).ToList();
 
         if (validator.ValidateToCountEntries(accountEntries)) {
