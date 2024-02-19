@@ -191,7 +191,7 @@ namespace Empiria.FinancialAccounting {
         return;
       }
 
-      var newSubledger = this.Ledger.Subledgers().Find(x => x.SubledgerType == newSubledgerType);
+      var newSubledger = this.Ledger.Subledgers().Find(x => x.SubledgerType.Equals(newSubledgerType));
 
       Assertion.Require(newSubledger,
             $"No existe un libro auxiliar de tipo {newSubledgerType.Name} para la " +

@@ -43,9 +43,9 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
 
       FixedList<ExchangeRate> exchangeRates = ExchangeRate.GetList(exchangeRateType, toDate);
 
-      foreach (var entry in entries.Where(a => a.Currency != Currency.MXN)) {
-        var exchangeRate = exchangeRates.FirstOrDefault(a => a.FromCurrency.Code == "01" &&
-                                                             a.ToCurrency.Code == entry.Currency.Code);
+      foreach (var entry in entries.Where(a => a.Currency.Distinct(Currency.MXN))) {
+        var exchangeRate = exchangeRates.FirstOrDefault(a => a.FromCurrency.Equals(Currency.MXN) &&
+                                                             a.ToCurrency.Equals(entry.Currency));
 
         Assertion.Require(exchangeRate, $"No se ha registrado el tipo de cambio para la " +
                                         $"moneda {entry.Currency.FullName} en la fecha proporcionada.");
@@ -334,10 +334,10 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
 
 
     private void MergeDomesticIntoForeignBalances(List<ValorizacionEstimacionPreventivaEntry> returnedEntries,
-                                                 FixedList<TrialBalanceEntry> accountEntries,
-                                                 bool isPreviousMonth) {
+                                                  FixedList<TrialBalanceEntry> accountEntries,
+                                                  bool isPreviousMonth) {
 
-      foreach (var entry in accountEntries.Where(a => a.Currency == Currency.MXN)) {
+      foreach (var entry in accountEntries.Where(a => a.Currency.Equals(Currency.MXN))) {
 
         var existAccount = returnedEntries.Find(a => a.Account.Number == entry.Account.Number);
 
@@ -360,7 +360,7 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
                                                DateTime date,
                                                bool isPreviousMonth) {
 
-      foreach (var entry in accountEntries.Where(a => a.Currency != Currency.MXN)) {
+      foreach (var entry in accountEntries.Where(a => a.Currency.Distinct(Currency.MXN))) {
 
         var valorizacion = returnedEntries.Find(a => a.Account.Number == entry.Account.Number);
 

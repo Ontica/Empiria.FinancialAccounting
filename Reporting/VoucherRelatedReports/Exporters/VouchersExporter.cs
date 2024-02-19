@@ -133,6 +133,7 @@ namespace Empiria.FinancialAccounting.Reporting {
 
       foreach (var entry in voucher.Entries) {
 
+        // ToDo: Issue object instances comparison using !=. The type does not implement Equals.
         if (entry != voucher.Entries.Last()) {
           string withSubledger = entry.SubledgerAccountName != "" ?
                                   $"\n{entry.SubledgerAccountName}" : "";
@@ -229,6 +230,7 @@ namespace Empiria.FinancialAccounting.Reporting {
       int i = 13;
       foreach (var entry in voucher.Entries) {
 
+        // ToDo: Issue object instances comparison using !=. The type does not implement Equals.
         if (entry != voucher.Entries.Last()) {
           string withSubledger = entry.SubledgerAccountName != "" ?
                                   $"\n{entry.SubledgerAccountName}" : "";
