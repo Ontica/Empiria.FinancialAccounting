@@ -213,7 +213,7 @@ namespace Empiria.FinancialAccounting.Vouchers {
 
     #endregion Public properties
 
-      #region Methods
+    #region Methods
 
     internal VoucherEntry AppendAndSaveEntry(VoucherEntryFields fields) {
       Assertion.Require(fields, "fields");

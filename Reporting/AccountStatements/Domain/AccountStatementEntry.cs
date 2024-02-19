@@ -94,6 +94,7 @@ namespace Empiria.FinancialAccounting.Reporting.AccountStatements.Domain {
     }
 
 
+    // Todo: Change string type to DebtorCreditor enumeration type (already exists)
     [DataField("NATURALEZA")]
     public string DebtorCreditor {
       get; internal set;

@@ -54,7 +54,7 @@ namespace Empiria.FinancialAccounting.Reporting.Exporters.Excel {
 
     private void FillOut(FixedList<ExchangeRateDescriptorDto> exchangeRates, ExcelFile excelFile) {
       int i = 5;
-      
+
       foreach (var exchangeRate in exchangeRates) {
         excelFile.SetCell($"A{i}", exchangeRate.Date);
         excelFile.SetCell($"B{i}", exchangeRate.ExchangeRateType);

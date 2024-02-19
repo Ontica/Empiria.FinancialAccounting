@@ -203,11 +203,11 @@ namespace Empiria.FinancialAccounting.Adapters {
     }
 
 
-    static private FixedList<Account> RestrictLedger(string ledger, FixedList<Account> accounts) {
-      if (ledger.Length == 0) {
+    static private FixedList<Account> RestrictLedger(string ledgerUID, FixedList<Account> accounts) {
+      if (ledgerUID.Length == 0) {
         return accounts;
       }
-      return accounts.FindAll(x => x.LedgerRules.Contains(y => y.Ledger.UID == ledger));
+      return accounts.FindAll(x => x.LedgerRules.Contains(y => y.Ledger.UID == ledgerUID));
     }
 
 

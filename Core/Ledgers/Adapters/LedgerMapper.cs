@@ -148,14 +148,14 @@ namespace Empiria.FinancialAccounting.Adapters {
                                                                   DateTime date) {
       FixedList<ExchangeRate> exchangeRates = ExchangeRate.GetList(ExchangeRateType.Diario, date);
 
-      foreach (var currency in valuedCurrencies) {
-        if (currency.UID == baseCurrency.UID) {
+      foreach (var valuedCurrency in valuedCurrencies) {
+        if (valuedCurrency.UID == baseCurrency.UID) {
           continue;
         }
 
-        var erate = exchangeRates.Find(x => x.ToCurrency.UID == currency.UID);
+        var exchangeRate = exchangeRates.Find(x => x.ToCurrency.UID == valuedCurrency.UID);
 
-        currency.ExchangeRate = (erate != null ? erate.Value : 0);
+        valuedCurrency.ExchangeRate = (exchangeRate != null ? exchangeRate.Value : 0);
       }
 
       return valuedCurrencies;

@@ -72,7 +72,7 @@ namespace Empiria.FinancialAccounting.Vouchers.UseCases {
 
 
         voucher.AppendAndSaveEntry(entryFields);
-     }
+      }
 
       return VoucherMapper.Map(voucher);
     }

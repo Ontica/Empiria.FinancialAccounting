@@ -80,7 +80,7 @@ namespace Empiria.FinancialAccounting.BalanceEngine.Adapters {
     public bool IsCancelable {
       get; internal set;
     } = false;
-    
+
 
   } // class LockedUpBalancesEntryDto
 

@@ -57,7 +57,7 @@ namespace Empiria.FinancialAccounting.Tests.BalanceEngine {
 
 
     static public FixedList<SaldosPorCuentaEntryDto> GetExpectedEntries(this SaldosPorCuentaTestCase testcase,
-                                                                           TrialBalanceItemType filteredBy) {
+                                                                        TrialBalanceItemType filteredBy) {
 
       SaldosPorCuentaDto dto = ReadSaldosPorCuentaFromFile(testcase);
 
