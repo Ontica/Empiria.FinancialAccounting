@@ -26,17 +26,11 @@ namespace Empiria.FinancialAccounting {
       return BaseObject.ParseId<Participant>(id);
     }
 
-    static public Participant Parse(string uid) {
-      var participant = Participant.TryParse<Participant>(uid);
-
-      Assertion.Require(participant, $"No encontré al usuario o participante con identificador {uid.ToUpperInvariant()}");
-
-      return participant;
-    }
 
     static public Participant TryParse(string uid) {
       return BaseObject.TryParse<Participant>($"UPPER(ParticipantKey) = '{uid.ToUpperInvariant()}'");
     }
+
 
     static public FixedList<Participant> GetList() {
       string filter = "ParticipantType = 'U' AND Status = 'A'";

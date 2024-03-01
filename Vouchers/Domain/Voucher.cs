@@ -30,7 +30,7 @@ namespace Empiria.FinancialAccounting.Vouchers {
     }
 
     internal Voucher(VoucherFields fields) {
-      Assertion.Require(fields, "fields");
+      Assertion.Require(fields, nameof(fields));
 
       this.LoadFields(fields);
 
@@ -48,7 +48,7 @@ namespace Empiria.FinancialAccounting.Vouchers {
 
     internal Voucher(VoucherFields fields,
                      IEnumerable<VoucherEntryFields> entriesFields) : this(fields) {
-      Assertion.Require(entriesFields, "entriesFields");
+      Assertion.Require(entriesFields,nameof(entriesFields));
 
       var entries = new List<VoucherEntry>(entriesFields.Count());
 
@@ -216,7 +216,7 @@ namespace Empiria.FinancialAccounting.Vouchers {
     #region Methods
 
     internal VoucherEntry AppendAndSaveEntry(VoucherEntryFields fields) {
-      Assertion.Require(fields, "fields");
+      Assertion.Require(fields, nameof(fields));
       Assertion.Require(this.IsOpened, "No se puede agregar el movimiento porque la póliza ya está cerrada.");
 
       fields.EnsureValidFor(this);
@@ -295,7 +295,7 @@ namespace Empiria.FinancialAccounting.Vouchers {
 
 
     internal void DeleteEntry(VoucherEntry entry) {
-      Assertion.Require(entry, "entry");
+      Assertion.Require(entry, nameof(entry));
 
       Assertion.Require(this.IsOpened, "No se puede eliminar el movimiento porque la póliza ya está cerrada.");
       Assertion.Require(this.Entries.Contains(entry), "El movimiento que se desea eliminar no pertenece a esta póliza");
@@ -386,10 +386,10 @@ namespace Empiria.FinancialAccounting.Vouchers {
       this.AccountingDate = fields.AccountingDate;
       this.RecordingDate = fields.RecordingDate;
 
-      if (fields.ElaboratedByUID.Length == 0) {
+      if (fields.ElaboratedById == 0) {
         this.ElaboratedBy = Participant.Current;
       } else {
-        this.ElaboratedBy = Participant.Parse(fields.ElaboratedByUID);
+        this.ElaboratedBy = Participant.Parse(fields.ElaboratedById);
       }
 
       this.Concept = EmpiriaString.TrimAll(fields.Concept).ToUpperInvariant();
@@ -458,12 +458,12 @@ namespace Empiria.FinancialAccounting.Vouchers {
 
 
     internal void Update(VoucherFields fields) {
-      Assertion.Require(fields, "fields");
+      Assertion.Require(fields, nameof(fields));
 
       this.Ledger = FieldPatcher.PatchField(fields.LedgerUID, this.Ledger);
       this.AccountingDate = FieldPatcher.PatchField(fields.AccountingDate, this.AccountingDate);
       this.RecordingDate = FieldPatcher.PatchField(fields.RecordingDate, this.RecordingDate);
-      this.ElaboratedBy = FieldPatcher.PatchField(fields.ElaboratedByUID, this.ElaboratedBy);
+      this.ElaboratedBy = FieldPatcher.PatchField(fields.ElaboratedById, this.ElaboratedBy);
       this.Concept = FieldPatcher.PatchField(EmpiriaString.TrimAll(fields.Concept), this.Concept);
       // this.TransactionType = FieldPatcher.PatchField(fields.TransactionTypeUID, this.TransactionType);
       this.VoucherType = FieldPatcher.PatchField(fields.VoucherTypeUID, this.VoucherType);
@@ -472,7 +472,7 @@ namespace Empiria.FinancialAccounting.Vouchers {
 
 
     internal void UpdateEntry(VoucherEntry entry, VoucherEntryFields fields) {
-      Assertion.Require(entry, "entry");
+      Assertion.Require(entry, nameof(entry));
       Assertion.Require(this.IsOpened, "No se puede actualizar el movimiento porque la póliza ya está cerrada.");
       Assertion.Require(this.Entries.Contains(entry), "El movimiento que se desea modificar no pertenece a esta póliza");
 

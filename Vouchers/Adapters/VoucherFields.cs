@@ -29,10 +29,9 @@ namespace Empiria.FinancialAccounting.Vouchers.Adapters {
     } = ExecutionServer.DateMaxValue;
 
 
-    public string ElaboratedByUID {
+    public int ElaboratedById {
       get; set;
-    } = string.Empty;
-
+    }
 
     public string LedgerUID {
       get; set;
