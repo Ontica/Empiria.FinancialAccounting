@@ -14,6 +14,9 @@ namespace Empiria.FinancialAccounting {
   /// <summary>Represents an exchange rate type.</summary>
   public class ExchangeRateType : GeneralObject {
 
+    internal readonly int MIN_EDITION_DATE = ConfigurationData.Get("ExchangeRateEdition.MinDate", 20);
+    internal readonly int MAX_EDITION_DATE = ConfigurationData.Get("ExchangeRateEdition.MaxDate", 3);
+
     #region Constructors and parsers
 
     protected ExchangeRateType() {
@@ -58,8 +61,8 @@ namespace Empiria.FinancialAccounting {
     #region Methods
 
     internal bool EditionValidOn(DateTime date) {
-      if (date >= DateTime.Today.AddDays(-20) &&
-          date <= DateTime.Today.AddDays(3)) {
+      if (DateTime.Today.AddDays(-1 * MIN_EDITION_DATE) <= date &&
+          date <= DateTime.Today.AddDays(MAX_EDITION_DATE)) {
         return true;
       }
       return false;
