@@ -181,16 +181,22 @@ namespace Empiria.FinancialAccounting {
 
     #region Public methods
 
+    public void CheckCurrencyRule(Currency currency, DateTime accountingDate) {
+      Assertion.Require(
+          AllCurrencyRules.Contains(x => x.Currency.Equals(currency) && x.AppliesOn(accountingDate)),
+          $"La cuenta {this.Number} no permite movimientos en la moneda {currency.FullName}.");
+    }
+
+
     public void CheckIsNotSummary() {
       Assertion.Require(this.Role != AccountRole.Sumaria,
           $"La cuenta {this.Number} es sumaria, por lo que no admite movimientos.");
     }
 
 
-    public void CheckCurrencyRule(Currency currency, DateTime accountingDate) {
-      Assertion.Require(
-          AllCurrencyRules.Contains(x => x.Currency.Equals(currency) && x.AppliesOn(accountingDate)),
-          $"La cuenta {this.Number} no permite movimientos en la moneda {currency.FullName}.");
+    public void CheckIsNotProtectedForEdition() {
+      Assertion.Require(!this.Number.StartsWith("9.01") || ExecutionServer.CurrentPrincipal.IsInRole("operacion-contable"),
+                        $"La cuenta {this.Number} está protegida contra edición.");
     }
 
 
