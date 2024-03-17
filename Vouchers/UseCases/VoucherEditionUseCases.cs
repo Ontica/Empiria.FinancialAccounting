@@ -40,6 +40,8 @@ namespace Empiria.FinancialAccounting.Vouchers.UseCases {
 
       var voucher = Voucher.Parse(voucherId);
 
+      EnsureEntryFieldsAreValid(voucher, fields);
+
       voucher.AppendAndSaveEntry(fields);
 
       return VoucherMapper.Map(voucher);
@@ -325,12 +327,7 @@ namespace Empiria.FinancialAccounting.Vouchers.UseCases {
 
       var voucher = Voucher.Parse(voucherId);
 
-      var validator = new VoucherEntryValidator(voucher.Ledger, voucher.AccountingDate);
-
-      FixedList<string> issues = validator.Validate(fields);
-
-      Assertion.Require(issues.Count == 0,
-                       "No se pudo guardar el movimiento debido a: " + EmpiriaString.ToString(issues));
+      EnsureEntryFieldsAreValid(voucher, fields);
 
       VoucherEntry entry = voucher.GetEntry(voucherEntryId);
 
@@ -362,16 +359,30 @@ namespace Empiria.FinancialAccounting.Vouchers.UseCases {
 
 
     public FixedList<string> ValidateVoucherEntryToImport(VoucherFields voucher,
-                                                          VoucherEntryFields entry) {
+                                                          VoucherEntryFields entry,
+                                                          bool checkProtectedAccounts) {
 
       Ledger ledger = Ledger.Parse(voucher.LedgerUID);
 
-      var validator = new VoucherEntryValidator(ledger, voucher.AccountingDate);
+      var validator = new VoucherEntryValidator(ledger, voucher.AccountingDate, checkProtectedAccounts);
 
       return validator.Validate(entry);
     }
 
     #endregion Use cases
+
+    #region Helpers
+
+    private void EnsureEntryFieldsAreValid(Voucher voucher, VoucherEntryFields fields) {
+      var validator = new VoucherEntryValidator(voucher.Ledger, voucher.AccountingDate, true);
+
+      FixedList<string> issues = validator.Validate(fields);
+
+      Assertion.Require(issues.Count == 0,
+                       "No se pudo guardar el movimiento debido a: " + EmpiriaString.ToString(issues));
+    }
+
+    #endregion Helpers
 
   }  // class VoucherEditionUseCases
 

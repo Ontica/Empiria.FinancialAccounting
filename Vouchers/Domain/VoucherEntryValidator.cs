@@ -15,9 +15,10 @@ namespace Empiria.FinancialAccounting.Vouchers {
   /// <summary>Validates a voucher entry before be sent to the ledger.</summary>
   internal class VoucherEntryValidator {
 
-    public VoucherEntryValidator(Ledger ledger, DateTime accountingDate) {
+    public VoucherEntryValidator(Ledger ledger, DateTime accountingDate, bool checkProtectedAccounts) {
       this.Ledger = ledger;
       this.AccountingDate = accountingDate;
+      this.CheckProtectedAccounts = checkProtectedAccounts;
     }
 
     public Ledger Ledger {
@@ -28,6 +29,9 @@ namespace Empiria.FinancialAccounting.Vouchers {
       get;
     }
 
+    public bool CheckProtectedAccounts {
+      get;
+    }
 
     internal void EnsureValid(IVoucherEntry fields) {
       FixedList<string> resultList = Validate(fields);
@@ -58,6 +62,16 @@ namespace Empiria.FinancialAccounting.Vouchers {
 
       try {
         account.CheckIsNotSummary();
+      } catch (Exception e) {
+        resultList.Add(e.Message);
+
+        return resultList.ToFixedList();
+      }
+
+      try {
+        if (this.CheckProtectedAccounts) {
+          account.CheckIsNotProtectedForEdition();
+        }
       } catch (Exception e) {
         resultList.Add(e.Message);
 

@@ -158,7 +158,7 @@ namespace Empiria.FinancialAccounting.Vouchers {
     private FixedList<string> VoucherEntriesDataAreValid(FixedList<IVoucherEntry> entries) {
       var resultList = new List<string>();
 
-      var validator = new VoucherEntryValidator(this.Ledger, this.AccountingDate);
+      var validator = new VoucherEntryValidator(this.Ledger, this.AccountingDate, false);
 
       foreach (var entry in entries) {
         FixedList<string> issues = validator.Validate(entry);

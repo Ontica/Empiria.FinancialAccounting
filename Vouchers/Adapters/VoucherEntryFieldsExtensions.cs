@@ -16,16 +16,6 @@ namespace Empiria.FinancialAccounting.Vouchers.Adapters {
 
     #region Extension methods
 
-    static internal void EnsureValidFor(this VoucherEntryFields fields,
-                                        Ledger ledger,
-                                        DateTime accountingDate) {
-      EnsureValidData(fields);
-
-      var validator = new VoucherEntryValidator(ledger, accountingDate);
-
-      validator.EnsureValid(fields);
-    }
-
 
     static internal void EnsureValidFor(this VoucherEntryFields fields, Voucher voucher) {
       fields.EnsureValidData();
@@ -34,7 +24,9 @@ namespace Empiria.FinancialAccounting.Vouchers.Adapters {
       Ledger ledger = voucher.Ledger;
       DateTime accountingDate = voucher.AccountingDate;
 
-      EnsureValidFor(fields, ledger, accountingDate);
+      var validator = new VoucherEntryValidator(ledger, accountingDate, false);
+
+      validator.EnsureValid(fields);
     }
 
 
