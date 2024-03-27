@@ -122,8 +122,8 @@ namespace Empiria.FinancialAccounting {
           $"Currency {currency.FullName} is not defined for exchange rate type {exchangeRateType.Name}");
       Assertion.Require(exchangeRateType.EditionValidOn(date),
           $"El sistema no permite editar tipos de cambio para fechas " +
-          $"anteriores a {exchangeRateType.MIN_EDITION_DATE} días ni posteriores a " +
-          $"{exchangeRateType.MAX_EDITION_DATE} días.");
+          $"anteriores a {exchangeRateType.MIN_EDITION_DAYS} días ni posteriores a " +
+          $"{exchangeRateType.MAX_EDITION_DAYS} días.");
       Assertion.Require(value > 0, "Exchange rate value must be greater than zero.");
     }
 
