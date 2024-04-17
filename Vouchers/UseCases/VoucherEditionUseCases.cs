@@ -204,7 +204,7 @@ namespace Empiria.FinancialAccounting.Vouchers.UseCases {
 
       if (!fromImporter && !voucher.CanBeClosedBy(Participant.Current)) {
         Assertion.RequireFail($"La póliza no puede enviarse directamente al diario " +
-                              $"por el usuario {Participant.Current.Name}.");
+                              $"por la persona usuaria {Participant.Current.Name}.");
 
       } else if (fromImporter && !voucher.IsAccountingDateOpened) {
         EmpiriaLog.Info($"Se intentó cerrar la póliza {voucherId} desde el importador, pero tiene fecha valor.");
@@ -274,7 +274,7 @@ namespace Empiria.FinancialAccounting.Vouchers.UseCases {
 
       if (!(voucher.ElaboratedBy.Equals(Participant.Current) ||
             voucher.AuthorizedBy.Equals(Participant.Current))) {
-        Assertion.RequireFail("La póliza no puede ser eliminada debido a que la tiene otro usuario.");
+        Assertion.RequireFail("La póliza no puede ser eliminada debido a que está asignada a otra persona.");
       }
 
       voucher.Delete();
