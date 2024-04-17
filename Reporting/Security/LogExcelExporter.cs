@@ -44,7 +44,7 @@ namespace Empiria.OnePoint.Security.Reporting {
     }
 
 
-    #region Private methods
+    #region Helpers
 
     private void FillOutRows(ExcelFile excelFile) {
 
@@ -73,7 +73,7 @@ namespace Empiria.OnePoint.Security.Reporting {
 
       foreach (var entry in _logEntries) {
         excelFile.SetCell($"A{i}", entry.DateTime);
-        excelFile.SetCell($"B{i}", entry.SessionId);
+        SetSessionCell(excelFile, $"B{i}", entry);
         excelFile.SetCell($"C{i}", entry.EmployeeID);
         excelFile.SetCell($"D{i}", entry.UserName);
         excelFile.SetCell($"E{i}", entry.UserHostAddress);
@@ -89,7 +89,7 @@ namespace Empiria.OnePoint.Security.Reporting {
 
       foreach (var entry in _logEntries) {
         excelFile.SetCell($"A{i}", entry.DateTime);
-        excelFile.SetCell($"B{i}", entry.SessionId);
+        SetSessionCell(excelFile, $"B{i}", entry);
         excelFile.SetCell($"C{i}", entry.EmployeeID);
         excelFile.SetCell($"D{i}", entry.UserName);
         excelFile.SetCell($"E{i}", entry.UserHostAddress);
@@ -106,7 +106,7 @@ namespace Empiria.OnePoint.Security.Reporting {
 
       foreach (var entry in _logEntries) {
         excelFile.SetCell($"A{i}", entry.DateTime);
-        excelFile.SetCell($"B{i}", entry.SessionId);
+        SetSessionCell(excelFile, $"B{i}", entry);
         excelFile.SetCell($"C{i}", entry.EmployeeID);
         excelFile.SetCell($"D{i}", entry.UserName);
         excelFile.SetCell($"E{i}", entry.UserHostAddress);
@@ -122,7 +122,7 @@ namespace Empiria.OnePoint.Security.Reporting {
 
       foreach (var entry in _logEntries) {
         excelFile.SetCell($"A{i}", entry.DateTime);
-        excelFile.SetCell($"B{i}", entry.SessionId);
+        SetSessionCell(excelFile, $"B{i}", entry);
         excelFile.SetCell($"C{i}", entry.EmployeeID);
         excelFile.SetCell($"D{i}", entry.UserName);
         excelFile.SetCell($"E{i}", entry.UserHostAddress);
@@ -147,7 +147,16 @@ namespace Empiria.OnePoint.Security.Reporting {
       excelFile.SetCell($"A3", subTitle);
     }
 
-    #endregion Private methods
+    static private void SetSessionCell(ExcelFile excelFile, string cell, LogEntryDto entry) {
+      if (entry.SessionId != -1) {
+        excelFile.SetCell(cell, entry.SessionId);
+      } else {
+        excelFile.SetCell(cell, "Fuera de sesión");
+      }
+    }
+
+    #endregion Helpers
+
   }  // class LogExcelExporter
 
 }  // namespace Empiria.OnePoint.Security.Reporting
