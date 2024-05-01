@@ -15,7 +15,7 @@ namespace Empiria.FinancialAccounting {
   public class ExchangeRateType : GeneralObject {
 
     internal readonly int MIN_EDITION_DAYS = ConfigurationData.Get("ExchangeRateEdition.MinDays", 20);
-    internal readonly int MAX_EDITION_DAYS = ConfigurationData.Get("ExchangeRateEdition.MaxDays", 4);
+    internal readonly int MAX_EDITION_DAYS = ConfigurationData.Get("ExchangeRateEdition.MaxDays", 7);
 
     #region Constructors and parsers
 
