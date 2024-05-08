@@ -30,7 +30,7 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
     internal FixedList<BalanzaColumnasMonedaEntry> Build() {
 
       FixedList<TrialBalanceEntry> baseAccountEntries = BalancesDataService.GetTrialBalanceEntries(Query);
-      
+
       return Build(baseAccountEntries);
     }
 
@@ -59,8 +59,13 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
       FixedList<TrialBalanceEntry> accountEntriesByCurrency =
                                           helper.GetAccountEntriesByCurrency(debtorAccounts);
 
+      var balanceHelper = new TrialBalanceHelper(Query);
+      balanceHelper.RestrictLevels(accountEntriesByCurrency.ToList());
+
       List<BalanzaColumnasMonedaEntry> balanceByCurrency =
                       helper.MergeTrialBalanceIntoBalanceByCurrency(accountEntriesByCurrency);
+
+      helper.ValuateEntriesToExchangeRate(balanceByCurrency);
 
       return balanceByCurrency.ToFixedList();
     }

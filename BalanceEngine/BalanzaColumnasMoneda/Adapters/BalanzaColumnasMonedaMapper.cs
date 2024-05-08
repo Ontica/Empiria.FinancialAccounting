@@ -45,6 +45,7 @@ namespace Empiria.FinancialAccounting.BalanceEngine.Adapters {
       columns.Add(new DataTableColumn("yenBalance", "Yenes (06)", "decimal"));
       columns.Add(new DataTableColumn("euroBalance", "Euros (27)", "decimal"));
       columns.Add(new DataTableColumn("udisBalance", "UDIS (44)", "decimal"));
+      columns.Add(new DataTableColumn("totalValorized", "Total", "decimal"));
 
       return columns.ToFixedList();
     }
@@ -69,6 +70,7 @@ namespace Empiria.FinancialAccounting.BalanceEngine.Adapters {
       dto.UdisBalance = entry.UdisBalance;
       dto.GroupName = entry.GroupName;
       dto.GroupNumber = entry.GroupNumber;
+      dto.TotalValorized = entry.TotalValorized;
 
       return dto;
     }

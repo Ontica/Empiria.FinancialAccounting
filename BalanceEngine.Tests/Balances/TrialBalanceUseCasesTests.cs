@@ -126,8 +126,6 @@ namespace Empiria.FinancialAccounting.Tests.BalanceEngine {
     public void Should_Build_Balanza_Consolidada_Por_Moneda() {
       TrialBalanceQuery query = GetDefaultTrialBalanceQuery();
 
-      query.TrialBalanceType = TrialBalanceType.BalanzaEnColumnasPorMoneda;
-
       TrialBalanceDto sut = BalanceEngineProxy.BuildTrialBalance(query);
 
       Assert.NotNull(sut);
@@ -174,8 +172,6 @@ namespace Empiria.FinancialAccounting.Tests.BalanceEngine {
     }
 
 
-
-
     #endregion Facts
 
     #region Helpers
@@ -184,16 +180,29 @@ namespace Empiria.FinancialAccounting.Tests.BalanceEngine {
       return new TrialBalanceQuery() {
         AccountsChartUID = TestingConstants.ACCOUNTS_CHART_UID,
         BalancesType = BalancesType.WithCurrentBalanceOrMovements,
-        TrialBalanceType = TrialBalanceType.Balanza,
+        TrialBalanceType = TrialBalanceType.BalanzaEnColumnasPorMoneda,
+        ShowCascadeBalances = false,
         Ledgers = TestingConstants.BALANCE_LEDGERS_ARRAY,
+        FromAccount = "1.05",
+        UseDefaultValuation = false,
+        WithAverageBalance = false,
+        WithSectorization = false,
+        WithSubledgerAccount = false,
+        //ToAccount = "1.05",
+        //Level=0,
+
         InitialPeriod = new BalancesPeriod {
           FromDate = TestingConstants.FROM_DATE,
           ToDate = TestingConstants.TO_DATE,
-        },
-        FinalPeriod = new BalancesPeriod {
-          FromDate = new DateTime(2022, 03, 01),
-          ToDate = new DateTime(2022, 03, 31)
-        }
+          ExchangeRateDate = new DateTime(2024, 01, 31),
+          ExchangeRateTypeUID = ExchangeRateType.ValorizacionBanxico.UID,
+          ValuateToCurrrencyUID = "01"
+    },
+
+        //FinalPeriod = new BalancesPeriod {
+        //  FromDate = new DateTime(2024, 01, 01),
+        //  ToDate = new DateTime(2024, 01, 31)
+        //}
       };
     }
 

@@ -96,6 +96,12 @@ namespace Empiria.FinancialAccounting.BalanceEngine.Adapters {
     }
 
 
+    public decimal TotalValorized {
+      get;
+      internal set;
+    }
+
+
     public string GroupName {
       get; internal set;
     }
@@ -117,7 +123,7 @@ namespace Empiria.FinancialAccounting.BalanceEngine.Adapters {
     public bool ClickableEntry {
       get; internal set;
     } = false;
-
+    
 
     string ITrialBalanceEntryDto.SubledgerAccountNumber {
       get {
