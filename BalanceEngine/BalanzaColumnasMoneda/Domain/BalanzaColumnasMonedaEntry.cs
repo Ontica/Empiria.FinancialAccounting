@@ -96,27 +96,6 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
     }
 
 
-    internal void Sum(BalanzaDolarizadaEntry entry) {
-
-    }
-
-
-    internal void MultiplyByValorizedValue(decimal value) {
-      this.ValorizedDollarBalance *= value;
-      this.ValorizedYenBalance *= value;
-      this.ValorizedEuroBalance *= value;
-      this.ValorizedUdisBalance *= value;
-    }
-
-
-    internal void GetValorizedValueByCurrency() {
-      this.DollarBalance = this.ValorizedDollarBalance;
-      this.YenBalance = this.ValorizedYenBalance;
-      this.EuroBalance = this.ValorizedEuroBalance;
-      this.UdisBalance = this.ValorizedUdisBalance;
-    }
-
-
     internal void SumToTotalValorized() {
       TotalValorized += (
         this.DomesticBalance +

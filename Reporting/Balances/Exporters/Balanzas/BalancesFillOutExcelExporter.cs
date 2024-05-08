@@ -111,6 +111,7 @@ namespace Empiria.FinancialAccounting.Reporting.Balances {
         _excelFile.SetCell($"E{i}", entry.YenBalance);
         _excelFile.SetCell($"F{i}", entry.EuroBalance);
         _excelFile.SetCell($"G{i}", entry.UdisBalance);
+        _excelFile.SetCell($"H{i}", entry.TotalValorized);
         if (entry.ItemType == TrialBalanceItemType.Summary) {
           _excelFile.SetRowStyleBold(i);
         }
