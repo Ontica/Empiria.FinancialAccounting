@@ -97,8 +97,7 @@ namespace Empiria.FinancialAccounting.BalanceEngine.Adapters {
 
 
     public decimal TotalValorized {
-      get;
-      internal set;
+      get; internal set;
     }
 
 

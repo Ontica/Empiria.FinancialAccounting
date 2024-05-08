@@ -119,6 +119,7 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
 
     internal void SumToTotalValorized() {
       TotalValorized += (
+        this.DomesticBalance +
         this.ValorizedDollarBalance +
         this.ValorizedYenBalance +
         this.ValorizedEuroBalance +

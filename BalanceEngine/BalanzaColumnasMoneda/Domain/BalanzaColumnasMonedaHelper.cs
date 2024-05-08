@@ -45,6 +45,27 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
 
       debtorAccounts.AddRange(summaryAccountEntries.ToFixedList());
     }
+    
+    internal FixedList<TrialBalanceEntry> GetAccountEntriesByCurrency(
+                                                List<TrialBalanceEntry> accountEntries) {
+      if (accountEntries.Count == 0) {
+        return new FixedList<TrialBalanceEntry>();
+      }
+
+      var helper = new TrialBalanceHelper(Query);
+
+      var filteredAccountList = accountEntries.FindAll(a => (a.Level == 1 && a.Sector.Code == "00") ||
+                                                            (a.Level > 1));
+
+      var hashAccountEntries = new EmpiriaHashTable<TrialBalanceEntry>();
+
+      foreach (var entry in filteredAccountList) {
+
+        SummaryByAccountEntry(hashAccountEntries, entry, entry.ItemType);
+      }
+
+      return GetAccountEntriesByDomesticAndForeignCurrencies(hashAccountEntries).ToFixedList();
+    }
 
 
     internal List<TrialBalanceEntry> GetSumFromCreditorToDebtorAccounts(
@@ -71,26 +92,13 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
       return returnedAccounts;
     }
 
+    
+    internal void GetTotalValorizedByAccount(
+      List<BalanzaColumnasMonedaEntry> balanceByCurrency) {
 
-    internal FixedList<TrialBalanceEntry> GetAccountEntriesByCurrency(
-                                                List<TrialBalanceEntry> accountEntries) {
-      if (accountEntries.Count == 0) {
-        return new FixedList<TrialBalanceEntry>();
+      foreach (var entry in balanceByCurrency) {
+        entry.SumToTotalValorized();
       }
-
-      var helper = new TrialBalanceHelper(Query);
-
-      var filteredAccountList = accountEntries.FindAll(a => (a.Level == 1 && a.Sector.Code == "00") ||
-                                                            (a.Level > 1));
-
-      var hashAccountEntries = new EmpiriaHashTable<TrialBalanceEntry>();
-
-      foreach (var entry in filteredAccountList) {
-
-        SummaryByAccountEntry(hashAccountEntries, entry, entry.ItemType);
-      }
-
-      return GetAccountEntriesByDomesticAndForeignCurrencies(hashAccountEntries).ToFixedList();
     }
 
 
@@ -118,13 +126,13 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
 
 
     internal void ValuateEntriesToExchangeRate(
-      List<BalanzaColumnasMonedaEntry> entries) {
+      FixedList<TrialBalanceEntry> entries) {
 
       var isValorizedBalance = Query.InitialPeriod.ValuateToCurrrencyUID != string.Empty ||
                                Query.UseDefaultValuation ? true : false;
 
       FixedList<ExchangeRate> exchangeRates = GetExchangeRateList(isValorizedBalance);
-
+      var x = entries.Where(a => a.Currency.Distinct(Currency.MXN)).ToList();
       foreach (var entry in entries.Where(a => a.Currency.Distinct(Currency.MXN))) {
 
         var exchangeRate = exchangeRates.Find(
@@ -199,16 +207,12 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
       if (Query.InitialPeriod.ToDate.Day == lastDayInMonth) {
         Query.InitialPeriod.ExchangeRateTypeUID = ExchangeRateType.ValorizacionBanxico.UID;
       }
-
       Query.InitialPeriod.ExchangeRateDate = Query.InitialPeriod.ToDate;
-
-
 
       var exchangeRateType = ExchangeRateType.Parse(Query.InitialPeriod.ExchangeRateTypeUID);
       FixedList<ExchangeRate> exchangeRates = ExchangeRate.GetList(exchangeRateType,
                                                                    Query.InitialPeriod.ExchangeRateDate);
       return exchangeRates;
-
     }
 
 
@@ -234,16 +238,14 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
     }
 
 
-    private void GetValorizedEntries(BalanzaColumnasMonedaEntry entry,
+    private void GetValorizedEntries(TrialBalanceEntry entry,
       ExchangeRate exchangeRate, bool isValorizedBalance) {
 
       entry.MultiplyByValorizedValue(exchangeRate.Value);
 
       if (isValorizedBalance) {
-        entry.GetValorizedValueByCurrency();
+        entry.CurrentBalance = entry.ValorizedCurrentBalance;
       }
-
-      entry.SumToTotalValorized();
     }
 
 
@@ -255,15 +257,19 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
 
           if (ledger.Currency.Equals(Currency.USD)) {
             entry.DollarBalance = ledger.CurrentBalance;
+            entry.ValorizedDollarBalance = ledger.ValorizedCurrentBalance;
           }
           if (ledger.Currency.Equals(Currency.YEN)) {
             entry.YenBalance = ledger.CurrentBalance;
+            entry.ValorizedYenBalance = ledger.ValorizedCurrentBalance;
           }
           if (ledger.Currency.Equals(Currency.EUR)) {
             entry.EuroBalance = ledger.CurrentBalance;
+            entry.ValorizedEuroBalance = ledger.ValorizedCurrentBalance;
           }
           if (ledger.Currency.Equals(Currency.UDI)) {
             entry.UdisBalance = ledger.CurrentBalance;
+            entry.ValorizedUdisBalance = ledger.ValorizedCurrentBalance;
           }
         }
       }
@@ -287,15 +293,19 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
           }
           if (ledger.Currency.Equals(Currency.USD)) {
             entry.DollarBalance = ledger.CurrentBalance;
+            entry.ValorizedDollarBalance = ledger.ValorizedCurrentBalance;
           }
           if (ledger.Currency.Equals(Currency.YEN)) {
             entry.YenBalance = ledger.CurrentBalance;
+            entry.ValorizedYenBalance = ledger.ValorizedCurrentBalance;
           }
           if (ledger.Currency.Equals(Currency.EUR)) {
             entry.EuroBalance = ledger.CurrentBalance;
+            entry.ValorizedEuroBalance = ledger.ValorizedCurrentBalance;
           }
           if (ledger.Currency.Equals(Currency.UDI)) {
             entry.UdisBalance = ledger.CurrentBalance;
+            entry.ValorizedUdisBalance = ledger.ValorizedCurrentBalance;
           }
         }
       }
@@ -307,6 +317,7 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
       debtor.Debit = debtor.Debit - creditor.Debit;
       debtor.Credit = debtor.Credit - creditor.Credit;
       debtor.CurrentBalance = debtor.CurrentBalance - creditor.CurrentBalance;
+      debtor.ValorizedCurrentBalance = debtor.ValorizedCurrentBalance - creditor.ValorizedCurrentBalance;
     }
 
 

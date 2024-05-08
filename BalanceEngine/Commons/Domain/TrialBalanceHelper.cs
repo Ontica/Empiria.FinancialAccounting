@@ -86,7 +86,7 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
           SubledgerAccountIdParent = entry.SubledgerAccountIdParent,
           LastChangeDate = entry.LastChangeDate
         };
-
+        
         summaryEntry.Sum(entry);
 
         summaryEntries.Insert(hash, summaryEntry);

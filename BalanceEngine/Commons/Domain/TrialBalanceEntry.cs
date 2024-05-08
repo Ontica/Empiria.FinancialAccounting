@@ -120,6 +120,17 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
     } = 1;
 
 
+    public decimal ValorizedCurrentBalance {
+      get;
+      internal set;
+    }
+
+
+    public decimal TotalValorized {
+      get; internal set;
+    }
+
+
     public string GroupName {
       get; internal set;
     } = string.Empty;
@@ -187,6 +198,13 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
       this.ExchangeRate = value;
     }
 
+
+    internal void MultiplyByValorizedValue(decimal value) {
+      this.ValorizedCurrentBalance = this.CurrentBalance * value;
+      this.ExchangeRate = value;
+    }
+
+
     internal TrialBalanceEntry CreatePartialCopy() {
       return new TrialBalanceEntry {
         Account = this.Account,
@@ -215,6 +233,7 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
       this.ExchangeRate = entry.ExchangeRate;
       this.SecondExchangeRate = entry.SecondExchangeRate;
       this.AverageBalance += entry.AverageBalance;
+      this.ValorizedCurrentBalance += entry.ValorizedCurrentBalance;
     }
 
 
@@ -284,15 +303,19 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
       }
       if (Currency.Equals(Currency.USD)) {
         trialBalanceByCurrencyEntry.DollarBalance = this.CurrentBalance;
+        trialBalanceByCurrencyEntry.ValorizedDollarBalance = this.ValorizedCurrentBalance;
       }
       if (Currency.Equals(Currency.YEN)) {
         trialBalanceByCurrencyEntry.YenBalance = this.CurrentBalance;
+        trialBalanceByCurrencyEntry.ValorizedYenBalance = this.ValorizedCurrentBalance;
       }
       if (Currency.Equals(Currency.EUR)) {
         trialBalanceByCurrencyEntry.EuroBalance = this.CurrentBalance;
+        trialBalanceByCurrencyEntry.ValorizedEuroBalance= this.ValorizedCurrentBalance;
       }
       if (Currency.Equals(Currency.UDI)) {
         trialBalanceByCurrencyEntry.UdisBalance = this.CurrentBalance;
+        trialBalanceByCurrencyEntry.ValorizedUdisBalance = this.ValorizedCurrentBalance;
       }
 
       return trialBalanceByCurrencyEntry;

@@ -44,6 +44,8 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
       var trialBalanceHelper = new TrialBalanceHelper(Query);
       var helper = new BalanzaColumnasMonedaHelper(Query);
 
+      helper.ValuateEntriesToExchangeRate(accountEntries);
+
       trialBalanceHelper.RoundDecimals(accountEntries);
 
       trialBalanceHelper.SetSummaryToParentEntries(accountEntries);
@@ -64,8 +66,8 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
 
       List<BalanzaColumnasMonedaEntry> balanceByCurrency =
                       helper.MergeTrialBalanceIntoBalanceByCurrency(accountEntriesByCurrency);
-
-      helper.ValuateEntriesToExchangeRate(balanceByCurrency);
+      
+      helper.GetTotalValorizedByAccount(balanceByCurrency);
 
       return balanceByCurrency.ToFixedList();
     }

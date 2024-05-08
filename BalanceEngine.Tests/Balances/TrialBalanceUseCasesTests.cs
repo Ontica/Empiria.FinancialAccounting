@@ -78,10 +78,10 @@ namespace Empiria.FinancialAccounting.Tests.BalanceEngine {
       query.BalancesType = BalancesType.WithCurrentBalanceOrMovements;
       query.ShowCascadeBalances = false;
       query.WithSubledgerAccount = false;
-      query.UseDefaultValuation = false;
+      query.UseDefaultValuation = true;
       query.WithAverageBalance = false;
-      query.FromAccount = "4.01.02";
-      query.ToAccount = "4.01.02";
+      query.FromAccount = "1.05";
+      query.ToAccount = "1.05";
 
       TrialBalanceDto sut = BalanceEngineProxy.BuildTrialBalance(query);
 
@@ -184,19 +184,19 @@ namespace Empiria.FinancialAccounting.Tests.BalanceEngine {
         ShowCascadeBalances = false,
         Ledgers = TestingConstants.BALANCE_LEDGERS_ARRAY,
         FromAccount = "1.05",
+        ToAccount = "1.05",
         UseDefaultValuation = false,
         WithAverageBalance = false,
         WithSectorization = false,
         WithSubledgerAccount = false,
-        //ToAccount = "1.05",
-        //Level=0,
+        Level=0,
 
         InitialPeriod = new BalancesPeriod {
           FromDate = TestingConstants.FROM_DATE,
           ToDate = TestingConstants.TO_DATE,
-          ExchangeRateDate = new DateTime(2024, 01, 31),
-          ExchangeRateTypeUID = ExchangeRateType.ValorizacionBanxico.UID,
-          ValuateToCurrrencyUID = "01"
+          //ExchangeRateDate = new DateTime(2024, 03, 31),
+          //ExchangeRateTypeUID = ExchangeRateType.ValorizacionBanxico.UID,
+          //ValuateToCurrrencyUID = "01"
     },
 
         //FinalPeriod = new BalancesPeriod {
