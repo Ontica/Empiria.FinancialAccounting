@@ -198,8 +198,8 @@ namespace Empiria.FinancialAccounting {
       Assertion.Require(!this.Number.StartsWith("4.02.03.01") || ExecutionServer.CurrentPrincipal.IsInRole("administrador-operativo"),
                         $"La cuenta {this.Number} está protegida contra edición.");
 
-      Assertion.Require(!this.Number.StartsWith("9.01") || ExecutionServer.CurrentPrincipal.HasPermission("registro-manual-cuentas-protegidas"),
-                        $"La cuenta {this.Number} está protegida contra edición.");
+      //Assertion.Require(!this.Number.StartsWith("9.01") || ExecutionServer.CurrentPrincipal.HasPermission("registro-manual-cuentas-protegidas"),
+      //                  $"La cuenta {this.Number} está protegida contra edición.");
     }
 
 
