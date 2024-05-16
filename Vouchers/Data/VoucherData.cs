@@ -74,6 +74,15 @@ namespace Empiria.FinancialAccounting.Vouchers.Data {
     }
 
 
+    static internal FixedList<Voucher> GetVouchers(long id) {
+      var sql = $"SELECT * FROM COF_TRANSACCION WHERE ID_TRANSACCION = {id}";
+
+      var dataOperation = DataOperation.Parse(sql);
+
+      return DataReader.GetPlainObjectFixedList<Voucher>(dataOperation);
+    }
+
+
     static internal string GetVoucherNumberFor(Voucher voucher) {
       // Please check do_close_transaction stored procedure validation code
 

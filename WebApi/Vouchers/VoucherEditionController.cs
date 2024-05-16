@@ -256,7 +256,7 @@ namespace Empiria.FinancialAccounting.WebApi.Vouchers {
 
         var result = new VoucherBulkOperationResult();
 
-        FixedList<VoucherDto> vouchersToExport = usecases.GetVouchers(voucherIdsToExport);
+        FixedList<VoucherDto> vouchersToExport = usecases.GetVouchersToExport(voucherIdsToExport);
 
         var exporter = new ExcelExporterService();
 

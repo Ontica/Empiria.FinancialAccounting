@@ -140,7 +140,7 @@ namespace Empiria.FinancialAccounting.Reporting {
 
           string withSubledgerNumber = entry.SubledgerAccountNumber != "" ?
                                   $"\n{entry.SubledgerAccountNumber}" : "";
-
+          
           _excelFile.SetCell($"A{i}", $"{entry.AccountNumber}{withSubledgerNumber}");
           _excelFile.SetCell($"B{i}", entry.Sector.ToString());
           _excelFile.SetCell($"C{i}", $"{entry.AccountName}{withSubledger}");
@@ -297,6 +297,7 @@ namespace Empiria.FinancialAccounting.Reporting {
         inc = i;
         SetHeaderMovementesByVoucher(inc, out i);
         inc = i;
+        
         SetDataMovementesByVoucher(voucher, inc, out i);
         i += 4;
       }
