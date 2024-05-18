@@ -4,63 +4,69 @@
 &nbsp; &nbsp;
 [![Maintainability](https://api.codeclimate.com/v1/badges/3982e4436bbd2779606f/maintainability)](https://codeclimate.com/github/Ontica/Empiria.FinancialAccounting/maintainability)
 
-This repository contains the Empiria Financial Accounting System's backend modules,
-in C# 7.0 and .NET Framework 4.8, with a Http/Json Web Api integration module
-tailored with ASP .NET.
+Este producto de software está siendo desarrollado a la medida para el Banco Nacional de Obras y Servicios Públicos, S.N.C (BANOBRAS).
 
-As other Empiria products, this backend runs over [Empiria Framework](https://github.com/Ontica/Empiria.Core),
-and as usual, needs some of the [Empiria Extensions](https://github.com/Ontica/Empiria.Extensions).
+[BANOBRAS](https://www.gob.mx/banobras) es una institución de banca de desarrollo mexicana cuya labor
+es financiar obras para la creación de servicios públicos. Por el tamaño de su cartera de crédito directo,
+es el cuarto Banco más grande del sistema bancario mexicano y el primero de la Banca de Desarrollo de nuestro país.
 
-SICOFIN, a custom-tailored Financial Accounting Web System, was originally developed by our organization in 2000-2002,
-for Banco Nacional de Obras y Servicios Públicos S.N.C. (BANOBRAS), a Mexican state owned development bank.
-The original SICOFIN's source code [can be downloaded here](https://github.com/Ontica/Sicofin).
+Este repositorio contiene los módulos del *backend* del **Sistema de contabilidad financiera**.
 
-## Contents
+Todos los módulos están escritos en C# 7.0 y utilizan .NET Framework versión 4.8.  
+Los módulos pueden ser compilados utilizando [Visual Studio 2022 Community Edition](https://visualstudio.microsoft.com/vs/community/).
 
-Empiria Financial Accounting comprises the following modules:
+El acceso a los servicios que ofrece el *backend* se realiza mediante llamadas a servicios web de tipo RESTful,
+mismos que están basados en ASP .NET.
+
+Al igual que otros productos Empiria, este *backend* se apoya en [Empiria Framework](https://github.com/Ontica/Empiria.Core),
+y también en algunos módulos de [Empiria Extensions](https://github.com/Ontica/Empiria.Extensions).
+
+La versión anterior de este sistema, la cual operó en BANOBRAS durante más de 20 años, 
+también fue desarrollada por nuestra organización en el período 2000-2002,
+y el código fuente de la misma se puede consultar [aquí](https://github.com/Ontica/Sicofin-2002).
+
+
+## Contenido
+
+El *backend* del **Sistema de contabilidad financiera** se conforma de los siguientes módulos:
 
 1.  **Core**  
-    Financial Accounting core domain classes and types.
+    Tipos, clases y servicios de propósito general que conforman el núcleo del *backend*.  
 
 2.  **Balance Engine**  
-    Provides account's balances and trial balances services.
+    Provee servicios para el cálculo de saldos y balanzas de comprobación.  
 
 3.  **External Data**  
-    Provides read and write services for financial external variables and their values.
+    Administra las variables externas al sistema de contabilidad, así como sus valores.  
 
 4.  **Financial Concepts**  
-    Provides services that manage financial concepts and their integrations.
+    Proporciona servicios para definir conceptos financieros y sus reglas de integración.  
 
 5.  **Financial Reports**  
-    Generates information for financial reports based on accounts balance data structures and financial concepts and rules.
+    Genera información para reportes financieros apoyándose de los servicios de *Balance Engine* y *Financial Concepts*.  
 
 6.  **Fixed Assets Depreciation**  
-    Generates information for fixed assets depreciation.
+    Proporciona información y servicios para el manejo de la depreciación del activo fijo.  
 
 7.  **Reconciliation**  
-    Provides services for account's balance reconciliation.
+    Provee servicios de conciliación de saldos y movimientos contables contra operaciones originadas en otros sistemas.  
 
 8.  **Reporting**  
-    Generates financial accounting reports and export them to files.
+    Genera reportes fiscales, reportes de contabilidad financiera y reportes operativos.  
 
 9.  **Vouchers Management**  
-    Provides services for vouchers edition, importation and management.
+    Provee servicios para la edición, importación y administración de las pólizas contables.  
 
 10. **Web API**  
-    Http/Json RESTful interface for Financial Accounting system.
+    Capa de servicios web HTTP/Json para interactuar con todos los módulos que conforman el *backend* del Sistema.  
 
-11. **Banobras Integration**  
-    Provides services used to integrate SICOFIN with other BANOBRAS systems.
-
-
-Each single project can be compiled using Visual Studio 2022 Community Edition.
 
 ## Licencia
 
 Este producto y sus partes se distribuyen mediante una licencia GNU AFFERO
 GENERAL PUBLIC LICENSE, para uso exclusivo de BANOBRAS y de su personal, y
-para su uso por cualquier otro organismo en México perteneciente a la
-Administración Pública Federal.
+también para su uso por cualquier otro organismo en México perteneciente a
+la Administración Pública Federal.
 
 Para cualquier otro uso (con excepción a lo estipulado en los Términos de
 Servicio de GitHub), es indispensable obtener con nuestra organización una
@@ -71,9 +77,9 @@ instalación, compilación o cualquier otro uso del producto o de sus partes,
 a terceros, empresas privadas o a su personal, sean o no proveedores de
 servicios de las entidades públicas mencionadas.
 
-El desarrollo de este producto fue pagado en su totalidad con recursos
-públicos, y está protegido por las leyes nacionales e internacionales
-de derechos de autor.
+El desarrollo, evolución y mantenimiento de este producto está siendo pagado
+en su totalidad con recursos públicos, y está protegido por las leyes nacionales
+e internacionales de derechos de autor.
 
 ## Copyright
 

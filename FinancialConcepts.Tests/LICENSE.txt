@@ -7,10 +7,11 @@ Copyright (c) 2021-2024. La Vía Óntica SC, Ontica LLC y autores.
 
 I M P O R T A N T E:
 --------------------
+
 Este producto y sus partes se distribuyen mediante una licencia GNU AFFERO
-GENERAL PUBLIC LICENSE, para uso exclusivo de BANOBRAS y de su personal,
-y para su uso por cualquier otro organismo en México perteneciente a la
-Administración Pública Federal.
+GENERAL PUBLIC LICENSE, para uso exclusivo de BANOBRAS y de su personal, y
+también para su uso por cualquier otro organismo en México perteneciente a
+la Administración Pública Federal.
 
 Para cualquier otro uso (con excepción a lo estipulado en los Términos de
 Servicio de GitHub), es indispensable obtener con nuestra organización una
@@ -21,9 +22,9 @@ instalación, compilación o cualquier otro uso del producto o de sus partes,
 a terceros, empresas privadas o a su personal, sean o no proveedores de
 servicios de las entidades públicas mencionadas.
 
-El desarrollo de este producto fue pagado en su totalidad con recursos
-públicos, y está protegido por las leyes nacionales e internacionales
-de derechos de autor.
+El desarrollo, evolución y mantenimiento de este producto está siendo pagado
+en su totalidad con recursos públicos, y está protegido por las leyes nacionales
+e internacionales de derechos de autor.
 
 -----------------------------------------------------------------------
 
@@ -53,7 +54,7 @@ license is virtually the same as GPL v3.
 
 To say this another way: if you modify the Empiria Financial Accounting
 Financial Concepts Test Module source code, or any other Empiria-based
-product, the goal is that you have to contribute those modifications 
+product, the goal is that you have to contribute those modifications
 back to the community.
 
 La Vía Óntica SC and Ontica LLC also offer the same software components
