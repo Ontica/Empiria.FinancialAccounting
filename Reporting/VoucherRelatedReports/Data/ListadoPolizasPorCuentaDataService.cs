@@ -24,8 +24,8 @@ namespace Empiria.FinancialAccounting.Reporting.AccountStatements {
 
       var operation = DataOperation.Parse("@qryVouchersByAccount",
                                           commandData.AccountsChart.Id,
-                                          CommonMethods.FormatSqlDbDate(commandData.FromDate),
-                                          CommonMethods.FormatSqlDbDate(commandData.ToDate),
+                                          DataCommonMethods.FormatSqlDbDate(commandData.FromDate),
+                                          DataCommonMethods.FormatSqlDbDate(commandData.ToDate),
                                           commandData.Filters,
                                           commandData.Fields,
                                           commandData.Grouping

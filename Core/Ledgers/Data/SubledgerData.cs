@@ -61,7 +61,7 @@ namespace Empiria.FinancialAccounting.Data {
 
 
     static internal int NextSubledgerAccountId() {
-      return Convert.ToInt32(CommonMethods.GetNextObjectId("SEC_ID_CUENTA_AUXILIAR"));
+      return Convert.ToInt32(DataCommonMethods.GetNextObjectId("SEC_ID_CUENTA_AUXILIAR"));
     }
 
 

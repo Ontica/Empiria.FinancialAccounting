@@ -124,12 +124,12 @@ namespace Empiria.FinancialAccounting.Vouchers.Data {
 
 
     static internal long NextVoucherId() {
-      return CommonMethods.GetNextObjectId("SEC_ID_TRANSACCION");
+      return DataCommonMethods.GetNextObjectId("SEC_ID_TRANSACCION");
     }
 
 
     static internal long NextVoucherEntryId() {
-      return CommonMethods.GetNextObjectId("SEC_ID_MOVIMIENTO_TMP");
+      return DataCommonMethods.GetNextObjectId("SEC_ID_MOVIMIENTO_TMP");
     }
 
 

@@ -21,7 +21,7 @@ namespace Empiria.FinancialAccounting.Data {
                                       DateTime fromDate, DateTime toDate) {
       Assertion.Require(name, "name");
 
-      long periodId = CommonMethods.GetNextObjectId("SEC_PERIOD_ID");
+      long periodId = DataCommonMethods.GetNextObjectId("SEC_PERIOD_ID");
 
       var operation = DataOperation.Parse("apd_calendar_period",
                                           periodId, calendar.Id,

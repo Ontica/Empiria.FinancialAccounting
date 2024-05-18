@@ -10,6 +10,8 @@
 using System;
 using System.Linq;
 
+using Empiria.Data;
+
 namespace Empiria.FinancialAccounting.Adapters {
 
   /// <summary>Query payload used to search exchange rates.</summary>
@@ -80,8 +82,8 @@ namespace Empiria.FinancialAccounting.Adapters {
 
 
     static private string BuildPeriodFilter(ExchangeRatesQuery query) {
-      return $"({CommonMethods.FormatSqlDbDate(query.FromDate)} <= FROM_DATE AND " +
-             $"FROM_DATE <= {CommonMethods.FormatSqlDbDate(query.ToDate)})";
+      return $"({DataCommonMethods.FormatSqlDbDate(query.FromDate)} <= FROM_DATE AND " +
+             $"FROM_DATE <= {DataCommonMethods.FormatSqlDbDate(query.ToDate)})";
     }
 
 

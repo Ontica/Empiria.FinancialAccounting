@@ -43,8 +43,8 @@ namespace Empiria.FinancialAccounting.AccountsChartEdition.Data {
       int stdAccountHistoryId = 0;
 
       if (!o.DryRun) {
-        stdAccountId = (int) CommonMethods.GetNextObjectId("SEC_ID_CUENTA_ESTANDAR");
-        stdAccountHistoryId = (int) CommonMethods.GetNextObjectId("SEC_ID_CUENTA_ESTANDAR_HIST");
+        stdAccountId = (int) DataCommonMethods.GetNextObjectId("SEC_ID_CUENTA_ESTANDAR");
+        stdAccountHistoryId = (int) DataCommonMethods.GetNextObjectId("SEC_ID_CUENTA_ESTANDAR_HIST");
       }
 
 
@@ -105,7 +105,7 @@ namespace Empiria.FinancialAccounting.AccountsChartEdition.Data {
       int stdAccountHistoryId = 0;
 
       if (!o.DryRun) {
-        stdAccountHistoryId = (int) CommonMethods.GetNextObjectId("SEC_ID_CUENTA_ESTANDAR_HIST");
+        stdAccountHistoryId = (int) DataCommonMethods.GetNextObjectId("SEC_ID_CUENTA_ESTANDAR_HIST");
       }
 
       var dataToBeUpdated = o.DataToBeUpdated.ToFixedList();

@@ -9,6 +9,8 @@
 ************************* Copyright(c) La Vía Óntica SC, Ontica LLC and contributors. All rights reserved. **/
 using System;
 
+using Empiria.Data;
+
 namespace Empiria.FinancialAccounting.Vouchers.Adapters {
 
   /// <summary>Extension methods for VouchersQuery interface adapter.</summary>
@@ -68,8 +70,8 @@ namespace Empiria.FinancialAccounting.Vouchers.Adapters {
         return string.Empty;
       }
 
-      string filter = $"{CommonMethods.FormatSqlDbDate(query.FromDate)} <= @DATE_FIELD@ AND " +
-                      $"@DATE_FIELD@ < {CommonMethods.FormatSqlDbDate(query.ToDate.Date.AddDays(1))}";
+      string filter = $"{DataCommonMethods.FormatSqlDbDate(query.FromDate)} <= @DATE_FIELD@ AND " +
+                      $"@DATE_FIELD@ < {DataCommonMethods.FormatSqlDbDate(query.ToDate.Date.AddDays(1))}";
 
       if (query.DateSearchField == DateSearchField.AccountingDate) {
         return filter.Replace("@DATE_FIELD@", "FECHA_AFECTACION");

@@ -45,7 +45,7 @@ namespace Empiria.FinancialAccounting.ExternalData.Data {
     static internal FixedList<ExternalValue> GetValues(ExternalVariablesSet variablesSet, DateTime date) {
       var sql = "SELECT * FROM COF_VALORES_EXTERNOS " +
                $"WHERE ID_CONJUNTO_BASE = {variablesSet.Id} AND " +
-               $"FECHA_APLICACION = {CommonMethods.FormatSqlDbDate(date)} AND " +
+               $"FECHA_APLICACION = {DataCommonMethods.FormatSqlDbDate(date)} AND " +
                $"STATUS_VALOR_EXTERNO <> 'X' " +
                "ORDER BY ID_VALOR_EXTERNO";
 

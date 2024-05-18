@@ -11,6 +11,8 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 
+using Empiria.Data;
+
 using Empiria.FinancialAccounting.Data;
 
 namespace Empiria.FinancialAccounting.Adapters {
@@ -176,7 +178,7 @@ namespace Empiria.FinancialAccounting.Adapters {
         date = accountsChart.MasterData.EndDate;
       }
 
-      string formattedDate = CommonMethods.FormatSqlDbDate(date.Value);
+      string formattedDate = DataCommonMethods.FormatSqlDbDate(date.Value);
 
       return $"FECHA_INICIO <= {formattedDate} AND {formattedDate} <= FECHA_FIN";
     }

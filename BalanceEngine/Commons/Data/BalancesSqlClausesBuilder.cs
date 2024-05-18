@@ -10,6 +10,8 @@
 using System;
 using System.Linq;
 
+using Empiria.Data;
+
 using Empiria.FinancialAccounting.BalanceEngine.Adapters;
 
 namespace Empiria.FinancialAccounting.BalanceEngine.Data {
@@ -118,12 +120,12 @@ namespace Empiria.FinancialAccounting.BalanceEngine.Data {
 
           return $"ID_MONEDA <> {Currency.MXN.Id} AND ID_MONEDA <> {Currency.UDI.Id}";
 
-        } 
+        }
         //else if (_query.TrialBalanceType == TrialBalanceType.ValorizacionEstimacionPreventiva) {
 
         //  return $"ID_MONEDA <> {Currency.MXN.Id}";
 
-        //} 
+        //}
         else if (_query.Currencies.Length == 0) {
           return string.Empty;
 
@@ -256,7 +258,7 @@ namespace Empiria.FinancialAccounting.BalanceEngine.Data {
         if (!_query.WithAverageBalance) {
           return ", 0 AS SALDO_PROMEDIO";
         }
-        return $", SUM((({CommonMethods.FormatSqlDbDate(_query.InitialPeriod.ToDate)} - " +
+        return $", SUM((({DataCommonMethods.FormatSqlDbDate(_query.InitialPeriod.ToDate)} - " +
                         $"FECHA_AFECTACION + 1) * MOVIMIENTO) / {_query.InitialPeriod.ToDate.Day}) " +
                 $" AS SALDO_PROMEDIO";
       }
