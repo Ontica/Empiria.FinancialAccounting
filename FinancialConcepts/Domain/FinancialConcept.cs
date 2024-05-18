@@ -11,6 +11,7 @@
 using System;
 using System.Collections.Generic;
 
+using Empiria.Commands;
 using Empiria.Contacts;
 using Empiria.Json;
 using Empiria.StateEnums;

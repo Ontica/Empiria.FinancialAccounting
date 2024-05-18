@@ -10,6 +10,8 @@
 using System;
 using System.Linq;
 
+using Empiria.Commands;
+
 namespace Empiria.FinancialAccounting.AccountsChartEdition.Adapters {
 
   /// <summary>Enumerated constants type used to classify AccountEditionCommand types.</summary>

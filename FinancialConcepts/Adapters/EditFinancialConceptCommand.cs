@@ -10,6 +10,8 @@
 using System;
 using System.Text.RegularExpressions;
 
+using Empiria.Commands;
+
 namespace Empiria.FinancialAccounting.FinancialConcepts.Adapters {
 
   /// <summary>The command used to create or update financial concepts.</summary>

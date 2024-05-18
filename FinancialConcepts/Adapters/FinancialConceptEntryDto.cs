@@ -11,6 +11,8 @@ using System;
 
 using Newtonsoft.Json;
 
+using Empiria.Commands;
+
 using Empiria.FinancialAccounting.ExternalData.Adapters;
 
 namespace Empiria.FinancialAccounting.FinancialConcepts.Adapters {

@@ -10,6 +10,7 @@
 using System;
 using System.IO;
 
+using Empiria.Commands;
 using Empiria.Services;
 using Empiria.Storage;
 
