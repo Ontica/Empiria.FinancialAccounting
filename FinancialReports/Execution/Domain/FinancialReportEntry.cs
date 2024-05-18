@@ -9,6 +9,8 @@
 ************************* Copyright(c) La Vía Óntica SC, Ontica LLC and contributors. All rights reserved. **/
 using System;
 
+using Empiria.DynamicData;
+
 namespace Empiria.FinancialAccounting.FinancialReports {
 
   /// <summary>Type used to handle all final report entries with dynamic totals fields.</summary>

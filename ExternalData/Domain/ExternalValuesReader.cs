@@ -10,6 +10,7 @@
 using System;
 using System.Collections.Generic;
 
+using Empiria.DynamicData;
 using Empiria.Office;
 using Empiria.Storage;
 

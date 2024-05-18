@@ -9,6 +9,8 @@
 ************************* Copyright(c) La Vía Óntica SC, Ontica LLC and contributors. All rights reserved. **/
 using System;
 
+using Empiria.DynamicData;
+
 namespace Empiria.FinancialAccounting.Reporting.DerramaSwapsCobertura.Adapters {
 
   /// <summary>Output DTO used to return 'Derrrama de intereses de swaps de cobertura' report data.</summary>

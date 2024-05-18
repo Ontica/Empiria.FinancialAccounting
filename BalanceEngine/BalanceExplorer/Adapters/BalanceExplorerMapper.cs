@@ -10,6 +10,8 @@
 using System;
 using System.Collections.Generic;
 
+using Empiria.DynamicData;
+
 namespace Empiria.FinancialAccounting.BalanceEngine.BalanceExplorer.Adapters {
 
   /// <summary>Methods used to map balances for the balances explorer.</summary>

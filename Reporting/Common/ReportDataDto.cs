@@ -11,6 +11,8 @@ using System;
 
 using Newtonsoft.Json;
 
+using Empiria.DynamicData;
+
 namespace Empiria.FinancialAccounting.Reporting {
 
   public interface IReportEntryDto {

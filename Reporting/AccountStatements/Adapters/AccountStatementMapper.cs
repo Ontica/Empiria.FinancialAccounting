@@ -10,6 +10,8 @@
 using System;
 using System.Collections.Generic;
 
+using Empiria.DynamicData;
+
 using Empiria.FinancialAccounting.BalanceEngine;
 using Empiria.FinancialAccounting.Reporting.AccountStatements.Domain;
 

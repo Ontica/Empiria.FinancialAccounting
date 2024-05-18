@@ -11,6 +11,8 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 
+using Empiria.DynamicData;
+
 namespace Empiria.FinancialAccounting.Reporting.IntegracionSaldosCapitalIntereses.Adapters {
 
   /// <summary>Methods used to map 'Integracion de saldos de capital e intereses' report entries.</summary>

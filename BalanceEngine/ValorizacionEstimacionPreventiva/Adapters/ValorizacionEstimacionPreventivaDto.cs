@@ -11,6 +11,8 @@
 using System;
 using System.Collections.Generic;
 
+using Empiria.DynamicData;
+
 namespace Empiria.FinancialAccounting.BalanceEngine.Adapters {
 
   /// <summary>Output DTO used to return the entries of a valorization report

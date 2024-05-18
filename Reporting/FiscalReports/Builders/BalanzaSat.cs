@@ -10,6 +10,8 @@
 using System;
 using System.Collections.Generic;
 
+using Empiria.DynamicData;
+
 using Empiria.FinancialAccounting.BalanceEngine;
 using Empiria.FinancialAccounting.BalanceEngine.Adapters;
 using Empiria.FinancialAccounting.BalanceEngine.UseCases;
@@ -59,7 +61,7 @@ namespace Empiria.FinancialAccounting.Reporting.FiscalReports.Builders {
 
 
     private TrialBalanceQuery MapToTrialBalanceQuery(ReportBuilderQuery buildQuery) {
-      
+
       return new TrialBalanceQuery {
         TrialBalanceType = TrialBalanceType.Balanza,
         AccountsChartUID = AccountsChart.Parse(buildQuery.AccountsChartUID).UID,

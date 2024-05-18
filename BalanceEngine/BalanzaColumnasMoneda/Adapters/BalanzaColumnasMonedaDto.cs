@@ -9,8 +9,10 @@
 ************************* Copyright(c) La Vía Óntica SC, Ontica LLC and contributors. All rights reserved. **/
 using System;
 
-using Empiria.Json;
 using Newtonsoft.Json;
+
+using Empiria.DynamicData;
+using Empiria.Json;
 
 namespace Empiria.FinancialAccounting.BalanceEngine.Adapters {
 
@@ -122,7 +124,7 @@ namespace Empiria.FinancialAccounting.BalanceEngine.Adapters {
     public bool ClickableEntry {
       get; internal set;
     } = false;
-    
+
 
     string ITrialBalanceEntryDto.SubledgerAccountNumber {
       get {

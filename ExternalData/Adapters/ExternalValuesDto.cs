@@ -10,6 +10,8 @@
 using System;
 using System.Collections.Generic;
 
+using Empiria.DynamicData;
+
 namespace Empiria.FinancialAccounting.ExternalData.Adapters {
 
   /// <summary>Output DTO for external values query.</summary>

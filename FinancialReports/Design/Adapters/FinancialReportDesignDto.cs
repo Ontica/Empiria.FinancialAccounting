@@ -9,6 +9,8 @@
 ************************* Copyright(c) La Vía Óntica SC, Ontica LLC and contributors. All rights reserved. **/
 using System;
 
+using Empiria.DynamicData;
+
 namespace Empiria.FinancialAccounting.FinancialReports.Adapters {
 
   /// <summary>Output DTO used to return financial reports designs.</summary>

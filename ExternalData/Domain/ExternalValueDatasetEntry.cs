@@ -9,6 +9,8 @@
 ************************* Copyright(c) La Vía Óntica SC, Ontica LLC and contributors. All rights reserved. **/
 using System;
 
+using Empiria.DynamicData;
+
 namespace Empiria.FinancialAccounting.ExternalData {
 
   /// <summary>Holds a dataset entry for external values using dynamic tabular data.</summary>

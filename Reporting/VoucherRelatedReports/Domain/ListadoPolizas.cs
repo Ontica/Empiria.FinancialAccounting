@@ -10,6 +10,8 @@
 using System;
 using System.Collections.Generic;
 
+using Empiria.DynamicData;
+
 using Empiria.FinancialAccounting.Reporting.VoucherRelatedReports.Adapters;
 
 namespace Empiria.FinancialAccounting.Reporting.VoucherRelatedReports.Domain {

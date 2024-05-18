@@ -11,6 +11,8 @@ using System;
 
 using Newtonsoft.Json;
 
+using Empiria.DynamicData;
+
 namespace Empiria.FinancialAccounting.BalanceEngine.Adapters {
 
   /// <summary>Output DTO used to return trial balances.</summary>

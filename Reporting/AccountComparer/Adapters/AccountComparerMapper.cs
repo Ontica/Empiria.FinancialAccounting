@@ -10,6 +10,9 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+
+using Empiria.DynamicData;
+
 using Empiria.FinancialAccounting.Reporting.AccountComparer.Domain;
 
 namespace Empiria.FinancialAccounting.Reporting.AccountComparer.Adapters {

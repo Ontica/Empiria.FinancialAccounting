@@ -10,6 +10,8 @@
 using System;
 using System.Collections.Generic;
 
+using Empiria.DynamicData;
+
 using Empiria.FinancialAccounting.FixedAssetsDepreciation;
 
 namespace Empiria.FinancialAccounting.Reporting.ActivoFijoDepreciacion.Adapters {

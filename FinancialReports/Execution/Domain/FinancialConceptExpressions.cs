@@ -10,6 +10,8 @@
 using System;
 using System.Collections.Generic;
 
+using Empiria.DynamicData;
+
 using Empiria.FinancialAccounting.FinancialConcepts;
 using Empiria.FinancialAccounting.FinancialReports.Providers;
 

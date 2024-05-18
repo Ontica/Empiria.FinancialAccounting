@@ -10,6 +10,7 @@
 using System;
 using System.Collections.Generic;
 
+using Empiria.DynamicData;
 using Empiria.Storage;
 
 namespace Empiria.FinancialAccounting.Reconciliation.Adapters {

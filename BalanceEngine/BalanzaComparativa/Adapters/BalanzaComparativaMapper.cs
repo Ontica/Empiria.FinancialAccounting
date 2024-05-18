@@ -10,6 +10,8 @@
 using System;
 using System.Collections.Generic;
 
+using Empiria.DynamicData;
+
 namespace Empiria.FinancialAccounting.BalanceEngine.Adapters {
 
 
@@ -79,7 +81,7 @@ namespace Empiria.FinancialAccounting.BalanceEngine.Adapters {
 
     static public BalanzaComparativaEntryDto MapEntry(BalanzaComparativaEntry entry) {
       var dto = new BalanzaComparativaEntryDto();
-      
+
       dto.ItemType = entry.ItemType;
       dto.AccountRole = entry.Account.Role;
       dto.AccountLevel = entry.Account.Level;
@@ -123,6 +125,6 @@ namespace Empiria.FinancialAccounting.BalanceEngine.Adapters {
     #endregion Private methods
 
 
-  } // class BalanzaComparativaMapper 
+  } // class BalanzaComparativaMapper
 
 } // namespace Empiria.FinancialAccounting.BalanceEngine.Adapters

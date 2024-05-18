@@ -10,12 +10,11 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using Empiria.FinancialAccounting.Adapters;
+
+using Empiria.DynamicData;
 
 namespace Empiria.FinancialAccounting.BalanceEngine.Adapters {
-  
+
   /// <summary></summary>
   static internal class SaldosEncerradosMapper {
 
@@ -49,7 +48,7 @@ namespace Empiria.FinancialAccounting.BalanceEngine.Adapters {
     static private void AccountClauses(SaldosEncerradosEntryDto dto,
                                        TrialBalanceEntry entry,
                                        Account account) {
-      
+
       if (entry.SubledgerAccountNumber.Length > 1) {
 
         dto.AccountNumber = entry.Account.Number;

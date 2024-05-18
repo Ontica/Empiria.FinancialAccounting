@@ -8,6 +8,9 @@
 *                                                                                                            *
 ************************* Copyright(c) La Vía Óntica SC, Ontica LLC and contributors. All rights reserved. **/
 using System;
+
+using Empiria.DynamicData;
+
 using Empiria.FinancialAccounting.BalanceEngine;
 using Empiria.FinancialAccounting.BalanceEngine.BalanceExplorer.Adapters;
 
@@ -151,7 +154,7 @@ namespace Empiria.FinancialAccounting.Reporting.AccountStatements.Adapters {
       get;
       internal set;
     }
-    
+
   } // class VouchersByAccountEntryDto
 
 } // namespace Empiria.FinancialAccounting.Reporting.AccountStatements.Adapters

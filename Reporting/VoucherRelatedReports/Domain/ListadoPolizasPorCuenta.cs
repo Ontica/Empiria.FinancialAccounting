@@ -10,6 +10,8 @@
 using System;
 using System.Collections.Generic;
 
+using Empiria.DynamicData;
+
 using Empiria.FinancialAccounting.BalanceEngine;
 using Empiria.FinancialAccounting.Reporting.AccountStatements.Domain;
 
@@ -98,7 +100,7 @@ namespace Empiria.FinancialAccounting.Reporting.VoucherRelatedReports.Domain {
       var returnedVoucher = new VoucherByAccountEntry();
 
       ItemTypeClausesForVoucher(returnedVoucher, entry);
-      
+
       returnedVoucher.LedgerUID = entry.Ledger.UID;
       returnedVoucher.CurrencyCode = entry.Currency.Code;
       returnedVoucher.AccountName = entry.AccountName;
@@ -106,7 +108,7 @@ namespace Empiria.FinancialAccounting.Reporting.VoucherRelatedReports.Domain {
       if (entry.SubledgerAccountNumber != "0" && entry.SubledgerAccountNumber != null) {
         returnedVoucher.SubledgerAccountNumber = entry.SubledgerAccountNumber;
       }
-      
+
       returnedVoucher.Debit = entry.Debit;
       returnedVoucher.Credit = entry.Credit;
       returnedVoucher.ElaboratedBy = entry.ElaboratedBy.Name;
@@ -136,9 +138,6 @@ namespace Empiria.FinancialAccounting.Reporting.VoucherRelatedReports.Domain {
       }
 
     }
-
-
-
 
     #endregion Private methods
 

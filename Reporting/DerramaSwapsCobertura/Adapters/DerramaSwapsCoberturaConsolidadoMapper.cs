@@ -10,6 +10,8 @@
 using System;
 using System.Collections.Generic;
 
+using Empiria.DynamicData;
+
 namespace Empiria.FinancialAccounting.Reporting.DerramaSwapsCobertura.Adapters {
 
   /// <summary>Methods used to map 'Derrama de intereses swaps de cobertura' report.</summary>

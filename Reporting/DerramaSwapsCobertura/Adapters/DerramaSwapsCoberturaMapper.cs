@@ -11,6 +11,8 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 
+using Empiria.DynamicData;
+
 namespace Empiria.FinancialAccounting.Reporting.DerramaSwapsCobertura.Adapters {
 
   /// <summary>Methods used to map account comparer.</summary>

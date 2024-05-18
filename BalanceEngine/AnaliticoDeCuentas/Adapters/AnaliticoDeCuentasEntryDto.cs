@@ -12,6 +12,7 @@ using System;
 
 using Newtonsoft.Json;
 
+using Empiria.DynamicData;
 using Empiria.Json;
 
 namespace Empiria.FinancialAccounting.BalanceEngine.Adapters {

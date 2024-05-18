@@ -11,6 +11,8 @@ using System;
 
 using Newtonsoft.Json;
 
+using Empiria.DynamicData;
+
 namespace Empiria.FinancialAccounting.BalanceEngine.BalanceExplorer.Adapters {
 
     /// <summary>Output DTO used to return balances for the balances explorer.</summary>

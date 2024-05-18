@@ -10,6 +10,7 @@
 using System;
 
 using Empiria.Contacts;
+using Empiria.DynamicData;
 using Empiria.Json;
 using Empiria.StateEnums;
 

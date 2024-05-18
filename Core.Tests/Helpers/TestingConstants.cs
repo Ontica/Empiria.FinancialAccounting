@@ -7,8 +7,7 @@
 *  Summary  : Provides testing constants.                                                                    *
 *                                                                                                            *
 ************************* Copyright(c) La Vía Óntica SC, Ontica LLC and contributors. All rights reserved. **/
-
-using System.Collections.Generic;
+using System;
 
 namespace Empiria.FinancialAccounting.Tests {
 

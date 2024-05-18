@@ -10,6 +10,8 @@
 using System;
 using System.Collections.Generic;
 
+using Empiria.DynamicData;
+
 namespace Empiria.FinancialAccounting.BalanceEngine.Adapters {
 
 
@@ -82,7 +84,7 @@ namespace Empiria.FinancialAccounting.BalanceEngine.Adapters {
       }
 
       dto.LedgerNumber = entry.Ledger.Number;
-      
+
       if (entry.ItemType != TrialBalanceItemType.Total) {
         dto.LedgerName = entry.Ledger.Name;
       }

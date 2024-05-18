@@ -10,6 +10,7 @@
 using System;
 using System.Linq;
 
+using Empiria.DynamicData;
 using Empiria.Office;
 
 using Empiria.FinancialAccounting.FinancialReports;

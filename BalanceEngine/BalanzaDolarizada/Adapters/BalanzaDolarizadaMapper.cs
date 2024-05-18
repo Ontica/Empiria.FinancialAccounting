@@ -10,6 +10,8 @@
 using System;
 using System.Collections.Generic;
 
+using Empiria.DynamicData;
+
 namespace Empiria.FinancialAccounting.BalanceEngine.Adapters {
 
 
@@ -91,7 +93,7 @@ namespace Empiria.FinancialAccounting.BalanceEngine.Adapters {
 
     private static void AssignTotalBalanceAndExchangeRate(BalanzaDolarizadaEntryDto dto,
                                                           BalanzaDolarizadaEntry entry) {
-      
+
       if (entry.ItemType != TrialBalanceItemType.BalanceTotalCurrency) {
         dto.TotalBalance = entry.TotalBalance;
         dto.ValuedExchangeRate = entry.ValuedExchangeRate;
