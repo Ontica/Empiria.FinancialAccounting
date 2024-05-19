@@ -64,20 +64,20 @@
     <Reference Include="System.Net.Http" />
   </ItemGroup>
   <ItemGroup Condition=" '$(Configuration)' != 'Multisolutions' ">
+    <PackageReference Include="Empiria.DynamicData" Version="2.0.0" />
     <PackageReference Include="Empiria.WebApi" Version="2.0.0" />
     <PackageReference Include="Empiria.FinancialAccounting.Core" Version="2.4.0" />
     <PackageReference Include="Empiria.FinancialAccounting.BalanceEngine" Version="2.4.0" />
-    <PackageReference Include="Empiria.FinancialAccounting.ExternalData" Version="2.4.0" />
     <PackageReference Include="Empiria.FinancialAccounting.FinancialReports" Version="2.4.0" />
+    <PackageReference Include="Empiria.FinancialAccounting.Reconciliation" Version="2.4.0" />
     <PackageReference Include="Empiria.FinancialAccounting.Reporting" Version="2.4.0" />
-    <PackageReference Include="Empiria.FinancialAccounting.Rules" Version="2.4.0" />
     <PackageReference Include="Empiria.FinancialAccounting.Vouchers" Version="2.4.0" />
   </ItemGroup>
   <ItemGroup Condition=" '$(Configuration)' == 'Multisolutions' ">
+    <ProjectReference Include="..\..\extensions\DynamicData\Empiria.DynamicData.csproj" />
     <ProjectReference Include="..\..\extensions\WebApi\Empiria.WebApi.csproj" />
     <ProjectReference Include="..\Core\Empiria.FinancialAccounting.Core.csproj" />
     <ProjectReference Include="..\BalanceEngine\Empiria.FinancialAccounting.BalanceEngine.csproj" />
-    <ProjectReference Include="..\ExternalData\Empiria.FinancialAccounting.ExternalData.csproj" />
     <ProjectReference Include="..\FinancialReports\Empiria.FinancialAccounting.FinancialReports.csproj" />
     <ProjectReference Include="..\Reconciliation\Empiria.FinancialAccounting.Reconciliation.csproj" />
     <ProjectReference Include="..\Reporting\Empiria.FinancialAccounting.Reporting.csproj" />

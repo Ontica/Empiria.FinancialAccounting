@@ -11,7 +11,7 @@ using System;
 
 using Empiria.Commands;
 
-using Empiria.FinancialAccounting.ExternalData;
+using Empiria.DynamicData.ExternalData;
 
 namespace Empiria.FinancialAccounting.FinancialConcepts.Adapters {
 

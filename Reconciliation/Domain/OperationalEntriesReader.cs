@@ -13,7 +13,7 @@ using System.Collections.Generic;
 using Empiria.Office;
 using Empiria.Storage;
 
-using Empiria.FinancialAccounting.Datasets;
+using Empiria.DynamicData.Datasets;
 
 using Empiria.FinancialAccounting.Reconciliation.Adapters;
 

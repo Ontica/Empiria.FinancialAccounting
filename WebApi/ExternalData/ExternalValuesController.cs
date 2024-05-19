@@ -10,15 +10,14 @@
 using System;
 using System.Web.Http;
 
-using Empiria.Office;
 using Empiria.WebApi;
 
 using Empiria.Storage;
 
-using Empiria.FinancialAccounting.Datasets.Adapters;
+using Empiria.DynamicData.Datasets.Adapters;
+using Empiria.DynamicData.ExternalData.Adapters;
 
-using Empiria.FinancialAccounting.ExternalData.Adapters;
-using Empiria.FinancialAccounting.ExternalData.UseCases;
+using Empiria.DynamicData.ExternalData.UseCases;
 
 using Empiria.FinancialAccounting.Reporting;
 

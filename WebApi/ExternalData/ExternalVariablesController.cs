@@ -12,8 +12,8 @@ using System.Web.Http;
 
 using Empiria.WebApi;
 
-using Empiria.FinancialAccounting.ExternalData.Adapters;
-using Empiria.FinancialAccounting.ExternalData.UseCases;
+using Empiria.DynamicData.ExternalData.Adapters;
+using Empiria.DynamicData.ExternalData.UseCases;
 
 namespace Empiria.FinancialAccounting.WebApi.ExternalData {
 

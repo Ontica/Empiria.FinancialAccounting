@@ -11,8 +11,7 @@ using System;
 using System.Collections.Generic;
 
 using Empiria.DynamicData;
-
-using Empiria.FinancialAccounting.ExternalData;
+using Empiria.DynamicData.ExternalData;
 
 using Empiria.FinancialAccounting.BalanceEngine.Adapters;
 

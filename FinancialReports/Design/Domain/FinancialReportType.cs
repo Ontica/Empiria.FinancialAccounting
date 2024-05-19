@@ -11,9 +11,9 @@ using System;
 using System.Collections.Generic;
 
 using Empiria.DynamicData;
+using Empiria.DynamicData.ExternalData;
 using Empiria.Storage;
 
-using Empiria.FinancialAccounting.ExternalData;
 using Empiria.FinancialAccounting.FinancialConcepts;
 
 using Empiria.FinancialAccounting.FinancialReports.Data;

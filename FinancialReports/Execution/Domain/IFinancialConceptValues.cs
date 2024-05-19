@@ -11,10 +11,9 @@ using System;
 using System.Collections.Generic;
 
 using Empiria.DynamicData;
+using Empiria.DynamicData.ExternalData;
 
 using Empiria.FinancialAccounting.BalanceEngine.Adapters;
-
-using Empiria.FinancialAccounting.ExternalData;
 
 namespace Empiria.FinancialAccounting.FinancialReports {
 

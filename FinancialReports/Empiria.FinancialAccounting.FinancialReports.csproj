@@ -57,20 +57,20 @@
   </PropertyGroup>
   <ItemGroup Condition=" '$(Configuration)' != 'Multisolutions' ">
     <PackageReference Include="Empiria.Core" Version="7.0.0" />
-    <PackageReference Include="Empiria.Services" Version="1.0.0" />
+    <PackageReference Include="Empiria.DynamicData" Version="2.0.0" />
     <PackageReference Include="Empiria.Expressions" Version="7.0.0" />
+    <PackageReference Include="Empiria.Services" Version="1.0.0" />
     <PackageReference Include="Empiria.FinancialAccounting.Core" Version="2.4.0" />
     <PackageReference Include="Empiria.FinancialAccounting.BalanceEngine" Version="2.4.0" />
-    <PackageReference Include="Empiria.FinancialAccounting.ExternalData" Version="2.4.0" />
     <PackageReference Include="Empiria.FinancialAccounting.FinancialConcepts" Version="2.4.0" />
   </ItemGroup>
   <ItemGroup Condition=" '$(Configuration)' == 'Multisolutions' ">
     <ProjectReference Include="..\..\core\Core\Empiria.Core.csproj" />
-    <ProjectReference Include="..\..\extensions\Services\Empiria.Services.csproj" />
+    <ProjectReference Include="..\..\extensions\DynamicData\Empiria.DynamicData.csproj" />
     <ProjectReference Include="..\..\extensions\Expressions\Empiria.Expressions.csproj" />
+    <ProjectReference Include="..\..\extensions\Services\Empiria.Services.csproj" />
     <ProjectReference Include="..\Core\Empiria.FinancialAccounting.Core.csproj" />
     <ProjectReference Include="..\BalanceEngine\Empiria.FinancialAccounting.BalanceEngine.csproj" />
-    <ProjectReference Include="..\ExternalData\Empiria.FinancialAccounting.ExternalData.csproj" />
     <ProjectReference Include="..\FinancialConcepts\Empiria.FinancialAccounting.FinancialConcepts.csproj" />
   </ItemGroup>
   <ItemGroup>

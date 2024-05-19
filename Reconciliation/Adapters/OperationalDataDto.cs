@@ -9,7 +9,7 @@
 ************************* Copyright(c) La Vía Óntica SC, Ontica LLC and contributors. All rights reserved. **/
 using System;
 
-using Empiria.FinancialAccounting.Datasets.Adapters;
+using Empiria.DynamicData.Datasets.Adapters;
 
 namespace Empiria.FinancialAccounting.Reconciliation.Adapters {
 

@@ -14,7 +14,8 @@ using Empiria.Commands;
 using Empiria.Contacts;
 using Empiria.StateEnums;
 
-using Empiria.FinancialAccounting.ExternalData;
+using Empiria.DynamicData.ExternalData;
+
 using Empiria.FinancialAccounting.FinancialConcepts.Data;
 
 namespace Empiria.FinancialAccounting.FinancialConcepts {

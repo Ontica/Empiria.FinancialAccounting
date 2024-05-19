@@ -11,7 +11,7 @@ using System;
 
 using Empiria.Json;
 
-using Empiria.FinancialAccounting.Datasets;
+using Empiria.DynamicData.Datasets;
 
 using Empiria.FinancialAccounting.Reconciliation.Adapters;
 using Empiria.FinancialAccounting.Reconciliation.Data;
@@ -27,8 +27,8 @@ namespace Empiria.FinancialAccounting.Reconciliation {
 
 
     internal protected OperationalEntry(Dataset dataset, OperationalEntryDto dto) {
-      Assertion.Require(dataset, "dataset");
-      Assertion.Require(dto, "dto");
+      Assertion.Require(dataset, nameof(dataset));
+      Assertion.Require(dto, nameof(dto));
 
       this.Dataset = dataset;
 

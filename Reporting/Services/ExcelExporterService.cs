@@ -12,11 +12,13 @@ using System;
 using Empiria.Office;
 using Empiria.Storage;
 
+using Empiria.DynamicData.ExternalData.Adapters;
+
 using Empiria.FinancialAccounting.Reporting.Exporters.Excel;
 
 using Empiria.FinancialAccounting.Adapters;
 using Empiria.FinancialAccounting.BalanceEngine.Adapters;
-using Empiria.FinancialAccounting.ExternalData.Adapters;
+
 using Empiria.FinancialAccounting.FinancialConcepts.Adapters;
 using Empiria.FinancialAccounting.Reconciliation.Adapters;
 using Empiria.FinancialAccounting.Vouchers.Adapters;

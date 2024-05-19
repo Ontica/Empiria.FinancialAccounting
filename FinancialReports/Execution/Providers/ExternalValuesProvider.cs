@@ -11,8 +11,7 @@ using System;
 using System.Collections.Generic;
 
 using Empiria.Collections;
-
-using Empiria.FinancialAccounting.ExternalData;
+using Empiria.DynamicData.ExternalData;
 
 namespace Empiria.FinancialAccounting.FinancialReports.Providers {
 

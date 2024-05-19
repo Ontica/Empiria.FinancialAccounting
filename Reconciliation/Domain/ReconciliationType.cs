@@ -11,7 +11,7 @@ using System;
 
 using Empiria.Storage;
 
-using Empiria.FinancialAccounting.Datasets;
+using Empiria.DynamicData.Datasets;
 
 namespace Empiria.FinancialAccounting.Reconciliation {
 

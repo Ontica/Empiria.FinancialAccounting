@@ -12,9 +12,9 @@ using System;
 using Empiria.Services;
 using Empiria.Storage;
 
-using Empiria.FinancialAccounting.Datasets;
-using Empiria.FinancialAccounting.Datasets.UseCases;
-using Empiria.FinancialAccounting.Datasets.Adapters;
+using Empiria.DynamicData.Datasets;
+using Empiria.DynamicData.Datasets.UseCases;
+using Empiria.DynamicData.Datasets.Adapters;
 
 using Empiria.FinancialAccounting.Reconciliation.Adapters;
 

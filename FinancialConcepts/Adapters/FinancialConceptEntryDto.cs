@@ -13,7 +13,7 @@ using Newtonsoft.Json;
 
 using Empiria.Commands;
 
-using Empiria.FinancialAccounting.ExternalData.Adapters;
+using Empiria.DynamicData.ExternalData.Adapters;
 
 namespace Empiria.FinancialAccounting.FinancialConcepts.Adapters {
 

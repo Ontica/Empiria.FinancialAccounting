@@ -10,10 +10,10 @@
 using System;
 
 using Empiria.DynamicData;
+using Empiria.DynamicData.ExternalData;
 
 using Empiria.FinancialAccounting.BalanceEngine.Adapters;
 
-using Empiria.FinancialAccounting.ExternalData;
 using Empiria.FinancialAccounting.FinancialConcepts;
 
 namespace Empiria.FinancialAccounting.FinancialReports {
