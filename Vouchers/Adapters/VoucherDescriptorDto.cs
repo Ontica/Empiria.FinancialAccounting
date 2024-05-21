@@ -95,50 +95,57 @@ namespace Empiria.FinancialAccounting.Vouchers.Adapters {
 
     public string AccountNumber {
       get; internal set;
-    }
+    } = string.Empty;
+
 
     public string AccountName {
       get; internal set;
-    }
+    } = string.Empty;
+
 
     public string Sector {
       get; internal set;
-    }
+    } = string.Empty;
 
 
     public string SubledgerAccountNumber {
       get; internal set;
-    }
+    } = string.Empty;
 
 
     public string SubledgerAccountName {
       get; internal set;
-    }
+    } = string.Empty;
 
 
     public string VerificationNumber {
       get; internal set;
-    }
+    } = string.Empty;
 
     public string ResponsibilityArea {
       get; internal set;
-    }
+    } = string.Empty;
+
 
     public string Currency {
       get; internal set;
-    }
+    } = string.Empty;
+
 
     public decimal ExchangeRate {
       get; internal set;
     }
 
+
     public decimal Debit {
       get; internal set;
     }
 
+
     public decimal Credit {
       get; internal set;
     }
+
 
     public VoucherEntryItemType ItemType {
       get; internal set;

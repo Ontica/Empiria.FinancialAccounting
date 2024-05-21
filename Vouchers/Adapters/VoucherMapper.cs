@@ -124,7 +124,7 @@ namespace Empiria.FinancialAccounting.Vouchers.Adapters {
         Sector = entry.Sector.Code,
         SubledgerAccountNumber = entry.HasSubledgerAccount ? entry.SubledgerAccount.Number : string.Empty,
         SubledgerAccountName = entry.HasSubledgerAccount ? entry.SubledgerAccount.Name : string.Empty,
-        ResponsibilityArea = entry.ResponsibilityArea.Code == "NULL" ? string.Empty : entry.ResponsibilityArea.Code,
+        ResponsibilityArea = entry.ResponsibilityArea.Code,
         VerificationNumber = entry.VerificationNumber,
         Currency = $"{entry.Currency.Code} / {entry.Currency.Abbrev}",
         ExchangeRate = entry.ExchangeRate,
