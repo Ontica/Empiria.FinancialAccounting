@@ -112,7 +112,7 @@ namespace Empiria.FinancialAccounting.Reporting.AccountStatements.Exporters {
       }
 
       if (voucher.ItemType == TrialBalanceItemType.Total) {
-        _excelFile.SetRowStyleBold(i);
+        _excelFile.SetRowBold(i, 13);
       }
 
     }

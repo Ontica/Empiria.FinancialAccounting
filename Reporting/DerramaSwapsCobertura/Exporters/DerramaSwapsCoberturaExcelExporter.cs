@@ -57,7 +57,7 @@ namespace Empiria.FinancialAccounting.Reporting {
       foreach (var entry in entries) {
 
         if (entry.ItemType == "Total") {
-          excelFile.SetRowStyleBold(i);
+          excelFile.SetRowBold(i, 6);
         }
 
         excelFile.SetCell($"A{i}", $"'{entry.SubledgerAccount}");

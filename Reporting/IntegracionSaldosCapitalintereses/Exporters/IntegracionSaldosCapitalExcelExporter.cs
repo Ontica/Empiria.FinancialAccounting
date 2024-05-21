@@ -21,6 +21,8 @@ namespace Empiria.FinancialAccounting.Reporting {
   /// <summary>Service used to export 'Integración de saldos de capital' to Microsoft Excel.</summary>
   internal class IntegracionSaldosCapitalExcelExporter : IExcelExporter {
 
+    private const int LAST_COLUMN_INDEX = 9;
+
     private readonly ReportDataDto _reportData;
     private readonly FileTemplateConfig _template;
 
@@ -69,8 +71,8 @@ namespace Empiria.FinancialAccounting.Reporting {
       excelFile.SetCell($"A{row}", entry.SubledgerAccount);
 
       if (entry.ItemType == "Total") {
-        excelFile.SetRowStyleBold(row);
-        excelFile.SetRowFontFamily(row, "Courier New");
+        excelFile.SetRowBold(row, LAST_COLUMN_INDEX);
+        excelFile.SetRowFontName(row, LAST_COLUMN_INDEX, "Courier New");
       }
     }
 
@@ -89,8 +91,8 @@ namespace Empiria.FinancialAccounting.Reporting {
       }
 
       if (entry.ItemType == "Total") {
-        excelFile.SetRowStyleBold(row);
-        excelFile.SetRowFontFamily(row, "Courier New");
+        excelFile.SetRowBold(row, LAST_COLUMN_INDEX);
+        excelFile.SetRowFontName(row, LAST_COLUMN_INDEX, "Courier New");
       }
     }
 

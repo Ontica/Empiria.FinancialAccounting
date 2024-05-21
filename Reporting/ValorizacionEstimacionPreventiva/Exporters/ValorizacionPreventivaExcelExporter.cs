@@ -23,6 +23,8 @@ namespace Empiria.FinancialAccounting.Reporting.ValorizacionEstimacionPreventiva
   /// <summary>Fill out table info for a Microsoft Excel file with valorización information.</summary>
   internal class ValorizacionPreventivaExcelExporter : IExcelExporter {
 
+    private const int LAST_COLUMN_INDEX = 48;
+
     private readonly ReportDataDto _reportData;
     private readonly FileTemplateConfig _template;
 
@@ -133,7 +135,7 @@ namespace Empiria.FinancialAccounting.Reporting.ValorizacionEstimacionPreventiva
       }
       _excelFile.SetCell($"{totalAccumulatedColumn}4", "ACUMULADO");
       _excelFile.SetCell($"{totalAccumulatedColumn + i}", entry.TotalAccumulated);
-      _excelFile.SetRowFontColorStyle(4, System.Drawing.Color.White);
+      _excelFile.SetRowFontColorStyle(4, LAST_COLUMN_INDEX, System.Drawing.Color.White);
     }
 
 
@@ -152,7 +154,7 @@ namespace Empiria.FinancialAccounting.Reporting.ValorizacionEstimacionPreventiva
     private void SetRowStyleBold(ExcelFile excelFile, ValorizacionPreventivaEntryDto entry, int i) {
 
       if (entry.ItemType == TrialBalanceItemType.Summary) {
-        excelFile.SetRowStyleBold(i);
+        excelFile.SetRowBold(i, LAST_COLUMN_INDEX);
       }
     }
 

@@ -17,7 +17,6 @@ using Empiria.FinancialAccounting.Reporting.VoucherRelatedReports.Domain;
 
 namespace Empiria.FinancialAccounting.Reporting {
 
-  /// <summary></summary>
   internal class ListadoPolizasExcelExporter : IExcelExporter {
 
     private readonly ReportDataDto _reportData;
@@ -65,7 +64,7 @@ namespace Empiria.FinancialAccounting.Reporting {
         excelFile.SetCell($"H{i}", voucher.Credit);
 
         if (voucher.ItemType != ItemType.Entry) {
-          excelFile.SetRowStyleBold(i);
+          excelFile.SetRowBold(i, 8);
         }
 
         i++;

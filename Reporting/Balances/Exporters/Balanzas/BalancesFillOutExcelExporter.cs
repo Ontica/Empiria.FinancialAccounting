@@ -49,7 +49,7 @@ namespace Empiria.FinancialAccounting.Reporting.Balances {
         _excelFile.SetCell($"H{i}", entry.ForeignBalance);
         _excelFile.SetCell($"I{i}", entry.TotalBalance);
 
-        SetRowStyleBoldForAnaliticoAndBalanza(_excelFile, entry, i);
+        SetRowStyleBoldForAnaliticoAndBalanza(_excelFile, entry, i, 9);
 
         i++;
       }
@@ -89,7 +89,7 @@ namespace Empiria.FinancialAccounting.Reporting.Balances {
           _excelFile.SetCell($"N{i}", entry.LastChangeDate.ToString("dd/MMM/yyyy"));
         }
 
-        SetRowStyleBoldForAnaliticoAndBalanza(_excelFile, entry, i);
+        SetRowStyleBoldForAnaliticoAndBalanza(_excelFile, entry, i, 14);
 
         i++;
       }
@@ -113,7 +113,7 @@ namespace Empiria.FinancialAccounting.Reporting.Balances {
         _excelFile.SetCell($"G{i}", entry.UdisBalance);
         _excelFile.SetCell($"H{i}", entry.TotalValorized);
         if (entry.ItemType == TrialBalanceItemType.Summary) {
-          _excelFile.SetRowStyleBold(i);
+          _excelFile.SetRowBold(i, 8);
         }
         i++;
       }
@@ -207,7 +207,7 @@ namespace Empiria.FinancialAccounting.Reporting.Balances {
         _excelFile.SetCell($"G{i}", entry.TotalEquivalence);
 
         if (entry.ItemType != TrialBalanceItemType.Entry) {
-          _excelFile.SetRowStyleBold(i);
+          _excelFile.SetRowBold(i, 7);
         }
 
         i++;
@@ -321,7 +321,7 @@ namespace Empiria.FinancialAccounting.Reporting.Balances {
         _excelFile.SetCell($"D{i}", entry.SectorCode);
         _excelFile.SetCell($"E{i}", "00");
         _excelFile.SetCell($"F{i}", "Todas");
-        _excelFile.SetRowStyleBold(i);
+        _excelFile.SetRowBold(i, 6);
 
       } else {
         _excelFile.SetCell($"C{i}", account.Name);
@@ -334,10 +334,11 @@ namespace Empiria.FinancialAccounting.Reporting.Balances {
 
 
     private void SetRowStyleBoldForAnaliticoAndBalanza(ExcelFile _excelFile,
-                                                       ITrialBalanceEntryDto entry, int i) {
+                                                       ITrialBalanceEntryDto entry,
+                                                       int rowIndex, int lastColumnIndex) {
 
       if (entry.ItemType != TrialBalanceItemType.Entry && entry.ItemType != TrialBalanceItemType.Summary) {
-        _excelFile.SetRowStyleBold(i);
+        _excelFile.SetRowBold(rowIndex, lastColumnIndex);
       }
 
     }

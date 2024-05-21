@@ -66,7 +66,7 @@ namespace Empiria.FinancialAccounting.Reporting.AccountComparer.Exporters {
         excelFile.SetCell($"H{i}", comparer.BalanceDifference);
 
         if (comparer.ItemType == BalanceEngine.TrialBalanceItemType.Total) {
-          excelFile.SetRowStyleBold(i);
+          excelFile.SetRowBold(i, 8);
         }
         i++;
 

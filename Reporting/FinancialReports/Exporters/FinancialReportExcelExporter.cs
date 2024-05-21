@@ -206,7 +206,7 @@ namespace Empiria.FinancialAccounting.Reporting.FinancialReports.Exporters {
         }
 
         if (entry.ItemType == FinancialReportItemType.Summary) {
-          _excelFile.SetRowStyleBold(i);
+          _excelFile.SetRowBold(i, financialReport.Columns.Count + 6);
         }
 
         i++;

@@ -21,6 +21,8 @@ namespace Empiria.FinancialAccounting.Reporting.Balances {
   /// <summary>Creates a Microsoft Excel file with the results of a balance explorer query execution.</summary>
   internal class BalanceExplorerExcelExporter {
 
+    private const int LAST_COLUMN_INDEX = 11;
+
     private BalanceExplorerQuery _query = new BalanceExplorerQuery();
 
     private readonly FileTemplateConfig _templateConfig;
@@ -59,12 +61,12 @@ namespace Empiria.FinancialAccounting.Reporting.Balances {
     private void SetHeader() {
       _excelFile.SetCell($"A2", _templateConfig.Title);
       _excelFile.SetCell($"E2", $"Fecha de consulta: {DateTime.Now.ToString("dd/MMM/yyyy")}");
-      _excelFile.SetRowStyleBold(2);
+      _excelFile.SetRowBold(2, LAST_COLUMN_INDEX);
       var subTitle = $"Del {_query.InitialPeriod.FromDate.ToString("dd/MMM/yyyy")} " +
                      $"al {_query.InitialPeriod.ToDate.ToString("dd/MMM/yyyy")}";
 
       _excelFile.SetCell($"A3", subTitle);
-      _excelFile.SetRowStyleBold(3);
+      _excelFile.SetRowBold(3, LAST_COLUMN_INDEX);
     }
 
 
@@ -125,7 +127,7 @@ namespace Empiria.FinancialAccounting.Reporting.Balances {
           _excelFile.SetCell($"E{i}", $"{entry.AccountName}"/* , Naturaleza {entry.DebtorCreditor}"*/);
           _excelFile.SetCell($"G{i}", "");
           _excelFile.SetCell($"H{i}", "");
-          _excelFile.SetRowStyleBold(i);
+          _excelFile.SetRowBold(i, LAST_COLUMN_INDEX);
 
           i++;
           SetRowHeaderByAccount(i);
@@ -176,7 +178,7 @@ namespace Empiria.FinancialAccounting.Reporting.Balances {
           _excelFile.SetCell($"E{i}", $"{entry.AccountName}");
           _excelFile.SetCell($"G{i}", "");
           _excelFile.SetCell($"H{i}", "");
-          _excelFile.SetRowStyleBold(i);
+          _excelFile.SetRowBold(i, LAST_COLUMN_INDEX);
 
           i++;
           SetRowHeaderByAccount(i);
@@ -184,7 +186,7 @@ namespace Empiria.FinancialAccounting.Reporting.Balances {
         } else if (entry.ItemType == TrialBalanceItemType.Group) {
           _excelFile.SetCell($"E{i}", entry.AccountName);
           _excelFile.SetCell($"G{i}", (decimal) entry.CurrentBalance);
-          _excelFile.SetRowStyleBold(i);
+          _excelFile.SetRowBold(i, LAST_COLUMN_INDEX);
           i += 3;
 
         } else {
@@ -216,7 +218,7 @@ namespace Empiria.FinancialAccounting.Reporting.Balances {
         } else if (entry.ItemType == TrialBalanceItemType.Group) {
           _excelFile.SetCell($"E{i}", entry.AccountName);
           _excelFile.SetCell($"I{i}", (decimal) entry.CurrentBalance);
-          _excelFile.SetRowStyleBold(i);
+          _excelFile.SetRowBold(i, LAST_COLUMN_INDEX);
           i++;
         }
       }
@@ -279,7 +281,7 @@ namespace Empiria.FinancialAccounting.Reporting.Balances {
 
       }
 
-      _excelFile.SetRowStyleBold(i);
+      _excelFile.SetRowBold(i, LAST_COLUMN_INDEX);
     }
 
   } // class BalanceExplorerExcelExporter

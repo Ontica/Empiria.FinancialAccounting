@@ -95,7 +95,7 @@ namespace Empiria.FinancialAccounting.Reporting {
       }
 
       if (voucher.ItemType != TrialBalanceItemType.Entry) {
-        excelFile.SetRowStyleBold(i);
+        excelFile.SetRowBold(i, 14);
       }
 
     }

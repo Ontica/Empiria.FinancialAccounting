@@ -8,19 +8,19 @@
 *                                                                                                            *
 ************************* Copyright(c) La Vía Óntica SC, Ontica LLC and contributors. All rights reserved. **/
 using System;
+using System.Globalization;
 
 using Empiria.Office;
 using Empiria.Storage;
 
-using System.Collections.Generic;
-
 using Empiria.FinancialAccounting.Reporting.IntegracionSaldosCapitalIntereses.Adapters;
-using System.Globalization;
 
 namespace Empiria.FinancialAccounting.Reporting {
 
   /// <summary>Service used to export 'Integración de saldos de capital e intereses' to Microsoft Excel.</summary>
   internal class IntegracionSaldosCapitalInteresesConsolidadoExcelExporter : IExcelExporter {
+
+    private const int LAST_COLUMN_INDEX = 14;
 
     private readonly ReportDataDto _reportData;
     private readonly FileTemplateConfig _template;
@@ -96,8 +96,8 @@ namespace Empiria.FinancialAccounting.Reporting {
       excelFile.SetCell($"C{row}", $"'{entry.Title}");
 
       if (entry.ItemType == "Total") {
-        excelFile.SetRowStyleBold(row);
-        excelFile.SetRowFontFamily(row, "Arial", 10);
+        excelFile.SetRowBold(row, LAST_COLUMN_INDEX);
+        excelFile.SetRowFontName(row, LAST_COLUMN_INDEX, "Arial", 10);
       }
     }
 
@@ -108,8 +108,8 @@ namespace Empiria.FinancialAccounting.Reporting {
       excelFile.SetCell($"N{row}", entry.TotalMonedaNacional);
 
       if (entry.ItemType == "Total") {
-        excelFile.SetRowStyleBold(row);
-        excelFile.SetRowFontFamily(row, "Arial", 10);
+        excelFile.SetRowBold(row, LAST_COLUMN_INDEX);
+        excelFile.SetRowFontName(row, LAST_COLUMN_INDEX, "Arial", 10);
       }
     }
 
@@ -126,8 +126,8 @@ namespace Empiria.FinancialAccounting.Reporting {
       excelFile.SetCell($"N{row}", entry.TotalMonedaNacional);
 
       if (entry.ItemType == "Total") {
-        excelFile.SetRowStyleBold(row);
-        excelFile.SetRowFontFamily(row, "Arial", 10);
+        excelFile.SetRowBold(row, LAST_COLUMN_INDEX);
+        excelFile.SetRowFontName(row, LAST_COLUMN_INDEX,"Arial", 10);
       }
     }
 

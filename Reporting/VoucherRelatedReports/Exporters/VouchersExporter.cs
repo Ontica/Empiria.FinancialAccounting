@@ -20,6 +20,9 @@ namespace Empiria.FinancialAccounting.Reporting {
   /// <summary>Main service used to export vouchers to Microsoft Excel.</summary>
   internal class VouchersExporter {
 
+    private const int LAST_COLUMN_INDEX = 9;
+    private readonly System.Drawing.Color ROW_COLOR = System.Drawing.Color.FromArgb(224, 255, 224);
+
     private readonly FileTemplateConfig _templateConfig;
     private ExcelFile _excelFile;
 
@@ -68,8 +71,7 @@ namespace Empiria.FinancialAccounting.Reporting {
     }
 
 
-    #region Private methods
-
+    #region Helpers
 
     private void SetDataByVoucher(VoucherDto voucher, int inc, out int i) {
 
@@ -77,29 +79,27 @@ namespace Empiria.FinancialAccounting.Reporting {
 
       _excelFile.SetCell($"B{i}", $"{voucher.AccountsChart.Name}");
       _excelFile.SetCell($"G{i}", $"{voucher.Ledger.Name}");
-      _excelFile.SetRowStyleBold(i);
-      _excelFile.SetRowFontFamily(i, "Courier New");
+      _excelFile.SetRowBold(i, LAST_COLUMN_INDEX);
       i++;
+
       _excelFile.SetCell($"B{i}", $"{voucher.VoucherType.Name}");
       _excelFile.SetCell($"G{i}", $"{voucher.TransactionType.Name}");
-      _excelFile.SetRowStyleBold(i);
-      _excelFile.SetRowFontFamily(i, "Courier New");
+      _excelFile.SetRowBold(i, LAST_COLUMN_INDEX);
       i++;
+
       _excelFile.SetCell($"B{i}", $"{voucher.FunctionalArea.Name}");
       _excelFile.SetCell($"G{i}", $"{voucher.AccountingDate.ToString("dd/MMM/yyyy")}");
-      _excelFile.SetRowStyleBold(i);
-      _excelFile.SetRowFontFamily(i, "Courier New");
+      _excelFile.SetRowBold(i, LAST_COLUMN_INDEX);
       i++;
+
       _excelFile.SetCell($"B{i}", $"{voucher.ElaboratedBy}");
       _excelFile.SetCell($"G{i}", $"{voucher.RecordingDate.ToString("dd/MMM/yyyy")}");
-      _excelFile.SetRowStyleBold(i);
-      _excelFile.SetRowFontFamily(i, "Courier New");
+      _excelFile.SetRowBold(i, LAST_COLUMN_INDEX);
       i++;
+
       _excelFile.SetCell($"B{i}", $"{voucher.AuthorizedBy}");
       _excelFile.SetCell($"G{i}", $"{voucher.Status}");
-      _excelFile.SetRowStyleBold(i);
-      _excelFile.SetRowFontFamily(i, "Courier New");
-
+      _excelFile.SetRowBold(i, LAST_COLUMN_INDEX);
     }
 
 
@@ -108,44 +108,38 @@ namespace Empiria.FinancialAccounting.Reporting {
 
       _excelFile.SetCell($"A{i}", "Tipo de contabilidad:");
       _excelFile.SetCell($"D{i}", "Contabilidad:");
-      _excelFile.SetRowFontFamily(i, "Courier New");
       i++;
       _excelFile.SetCell($"A{i}", "Tipo de póliza:");
       _excelFile.SetCell($"D{i}", "Tipo de transacción:");
-      _excelFile.SetRowFontFamily(i, "Courier New");
       i++;
       _excelFile.SetCell($"A{i}", "Originada en:");
       _excelFile.SetCell($"D{i}", "Afectación:");
-      _excelFile.SetRowFontFamily(i, "Courier New");
       i++;
       _excelFile.SetCell($"A{i}", "Elaboró:");
       _excelFile.SetCell($"D{i}", "Elaboración:");
-      _excelFile.SetRowFontFamily(i, "Courier New");
       i++;
       _excelFile.SetCell($"A{i}", "Autorizó:");
       _excelFile.SetCell($"D{i}", "Envió al diario:");
-      _excelFile.SetRowFontFamily(i, "Courier New");
     }
 
 
     private void SetDataMovementesByVoucher(VoucherDto voucher, int inc, out int i) {
-      i = inc+1;
+      i = inc + 1;
 
       foreach (var entry in voucher.Entries) {
 
-        // ToDo: Issue object instances comparison using !=. The type does not implement Equals.
-        if (entry != voucher.Entries.Last()) {
-          string withSubledger = entry.SubledgerAccountName != "" ?
-                                  $"\n{entry.SubledgerAccountName}" : "";
+        if (entry.Id != voucher.Entries.Last().Id) {
+          string withSubledger = entry.SubledgerAccountName != string.Empty ?
+                                  $"\n{entry.SubledgerAccountName}" : string.Empty;
 
-          string withSubledgerNumber = entry.SubledgerAccountNumber != "" ?
-                                  $"\n{entry.SubledgerAccountNumber}" : "";
-          
+          string withSubledgerNumber = entry.SubledgerAccountNumber != string.Empty ?
+                                  $"\n{entry.SubledgerAccountNumber}" : string.Empty;
+
           _excelFile.SetCell($"A{i}", $"{entry.AccountNumber}{withSubledgerNumber}");
-          _excelFile.SetCell($"B{i}", entry.Sector.ToString());
+          _excelFile.SetCell($"B{i}", entry.Sector);
           _excelFile.SetCell($"C{i}", $"{entry.AccountName}{withSubledger}");
           _excelFile.SetCell($"D{i}", entry.VerificationNumber);
-          _excelFile.SetCell($"E", entry.ResponsibilityArea.ToString());
+          _excelFile.SetCell($"E{i}", entry.ResponsibilityArea);
           _excelFile.SetCell($"F{i}", entry.Currency);
           _excelFile.SetCell($"G{i}", entry.ExchangeRate);
           _excelFile.SetCell($"H{i}", entry.Debit);
@@ -153,13 +147,12 @@ namespace Empiria.FinancialAccounting.Reporting {
 
         } else {
 
-          _excelFile.SetCell($"C{i}", $"{entry.AccountName}");
+          _excelFile.SetCell($"C{i}", entry.AccountName);
           _excelFile.SetCell($"F{i}", entry.Currency);
           _excelFile.SetCell($"H{i}", entry.Debit);
           _excelFile.SetCell($"I{i}", entry.Credit);
-          _excelFile.SetRowStyleBold(i);
-          _excelFile.SetRowFontFamily(i, "Courier New");
-          _excelFile.SetRowBackgroundStyle(i, System.Drawing.Color.FromArgb(204, 255, 204));
+          _excelFile.SetRowBold(i, LAST_COLUMN_INDEX);
+          _excelFile.SetRowBackgroundStyle(i, LAST_COLUMN_INDEX, ROW_COLOR);
         }
 
         i++;
@@ -167,6 +160,42 @@ namespace Empiria.FinancialAccounting.Reporting {
 
     }
 
+
+    private void SetTable(VoucherDto voucher) {
+
+      int i = 13;
+
+      foreach (var entry in voucher.Entries) {
+
+        if (entry.Id != voucher.Entries.Last().Id) {
+          string withSubledger = entry.SubledgerAccountName != string.Empty ?
+                                  $"\n{entry.SubledgerAccountName}" : string.Empty;
+
+          _excelFile.SetCell($"A{i}", $"{entry.AccountNumber} \n{entry.SubledgerAccountNumber}");
+          _excelFile.SetCell($"B{i}", entry.Sector);
+          _excelFile.SetCell($"C{i}", $"{entry.AccountName} {withSubledger}");
+          _excelFile.SetCell($"D{i}", entry.VerificationNumber);
+          _excelFile.SetCell($"E{i}", entry.ResponsibilityArea);
+          _excelFile.SetCell($"F{i}", entry.Currency);
+          _excelFile.SetCell($"G{i}", entry.ExchangeRate);
+          _excelFile.SetCell($"H{i}", entry.Debit);
+          _excelFile.SetCell($"I{i}", entry.Credit);
+
+
+        } else {
+          _excelFile.SetCell($"C{i}", entry.AccountName);
+          _excelFile.SetCell($"F{i}", entry.Currency);
+          _excelFile.SetCell($"H{i}", entry.Debit);
+          _excelFile.SetCell($"I{i}", entry.Credit);
+          _excelFile.SetRowBold(i, LAST_COLUMN_INDEX);
+          _excelFile.SetRowBackgroundStyle(i, LAST_COLUMN_INDEX, ROW_COLOR);
+
+        }
+
+        i++;
+      }
+
+    }
 
     private void SetExcelHeader(VoucherDto voucher) {
       _excelFile.SetCell($"A2", _templateConfig.Title);
@@ -184,26 +213,21 @@ namespace Empiria.FinancialAccounting.Reporting {
       _excelFile.SetCell($"A{i}", _templateConfig.Title);
       _excelFile.SetCell($"I{i}", $"Póliza:");
       _excelFile.SetCellFontColorStyle($"I{i}", System.Drawing.Color.Green);
-      _excelFile.SetRowStyleBold(i);
-      _excelFile.SetRowFontFamily(i, "Courier New");
+      _excelFile.SetRowBold(i, LAST_COLUMN_INDEX);
       i++;
 
       var subTitle = $"Elaboración {voucher.RecordingDate.ToString("dd/MMM/yyyy")} ";
       _excelFile.SetCell($"A{i}", subTitle);
       _excelFile.SetCell($"I{i}", $"{voucher.Number}");
-      _excelFile.SetRowStyleBold(i);
-      _excelFile.SetRowFontFamily(i, "Courier New");
+      _excelFile.SetRowBold(i, LAST_COLUMN_INDEX);
       i++;
       _excelFile.SetCell($"I{i}", $"id: {voucher.Id}");
-      _excelFile.SetRowStyleBold(i);
-      _excelFile.SetRowFontFamily(i, "Courier New");
+      _excelFile.SetRowBold(i, LAST_COLUMN_INDEX);
       i++;
       _excelFile.SetCell($"A{i}", $"{voucher.Concept}");
-      _excelFile.SetTextAlignment($"A{i}", DocumentFormat.OpenXml.Spreadsheet.VerticalAlignmentValues.Top);
-      _excelFile.SetRowBackgroundStyle(i, System.Drawing.Color.FromArgb(231,230,230));
-      _excelFile.SetRowStyleBold(i);
-      _excelFile.SetRowFontFamily(i, "Courier New");
-
+      _excelFile.SetTextAlignmentTop($"A{i}");
+      _excelFile.SetRowBackgroundStyle(i, LAST_COLUMN_INDEX, ROW_COLOR);
+      _excelFile.SetRowBold(i, LAST_COLUMN_INDEX);
     }
 
 
@@ -219,46 +243,9 @@ namespace Empiria.FinancialAccounting.Reporting {
       _excelFile.SetCell($"G{i}", "T. de cambio");
       _excelFile.SetCell($"H{i}", "Debe");
       _excelFile.SetCell($"I{i}", "Haber");
-      _excelFile.SetRowStyleBold(i);
-      _excelFile.SetRowFontFamily(i, "Courier New");
-      _excelFile.SetRowBackgroundStyle(i, System.Drawing.Color.FromArgb(204, 255, 204));
-    }
-
-
-    private void SetTable(VoucherDto voucher) {
-
-      int i = 13;
-      foreach (var entry in voucher.Entries) {
-
-        // ToDo: Issue object instances comparison using !=. The type does not implement Equals.
-        if (entry != voucher.Entries.Last()) {
-          string withSubledger = entry.SubledgerAccountName != "" ?
-                                  $"\n{entry.SubledgerAccountName}" : "";
-
-          _excelFile.SetCell($"A{i}", $"{entry.AccountNumber} \n{entry.SubledgerAccountNumber}");
-          _excelFile.SetCell($"B{i}", entry.Sector.ToString());
-          _excelFile.SetCell($"C{i}", $"{entry.AccountName} {withSubledger}");
-          _excelFile.SetCell($"D{i}", entry.VerificationNumber);
-          _excelFile.SetCell($"E{i}", entry.ResponsibilityArea.ToString());
-          _excelFile.SetCell($"F{i}", entry.Currency);
-          _excelFile.SetCell($"G{i}", entry.ExchangeRate);
-          _excelFile.SetCell($"H{i}", entry.Debit);
-          _excelFile.SetCell($"I{i}", entry.Credit);
-
-
-        } else {
-          _excelFile.SetCell($"C{i}", $"{entry.AccountName}");
-          _excelFile.SetCell($"F{i}", entry.Currency);
-          _excelFile.SetCell($"H{i}", entry.Debit);
-          _excelFile.SetCell($"I{i}", entry.Credit);
-          _excelFile.SetRowStyleBold(i);
-          _excelFile.SetRowBackgroundStyle(i, System.Drawing.Color.FromArgb(204, 255, 204));
-
-        }
-
-        i++;
-      }
-
+      _excelFile.SetRowBold(i, LAST_COLUMN_INDEX);
+      _excelFile.SetRowFontName(i, LAST_COLUMN_INDEX, "Courier New");
+      _excelFile.SetRowBackgroundStyle(i, LAST_COLUMN_INDEX, ROW_COLOR);
     }
 
 
@@ -297,16 +284,14 @@ namespace Empiria.FinancialAccounting.Reporting {
         inc = i;
         SetHeaderMovementesByVoucher(inc, out i);
         inc = i;
-        
+
         SetDataMovementesByVoucher(voucher, inc, out i);
         i += 4;
       }
 
     }
 
-
-    #endregion Private methods
-
+    #endregion Helpers
 
   }
 }

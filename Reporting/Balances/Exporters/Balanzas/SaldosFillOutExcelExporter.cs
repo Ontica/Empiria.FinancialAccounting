@@ -20,6 +20,8 @@ namespace Empiria.FinancialAccounting.Reporting.Balances {
   /// <summary>Fill out table info for a Microsoft Excel file with saldos information.</summary>
   internal class SaldosFillOutExcelExporter {
 
+    private const int LAST_COLUMN_INDEX = 11;
+
     private TrialBalanceQuery _query;
 
     private readonly DateTime MIN_LAST_CHANGE_DATE_TO_REPORT = DateTime.Parse("01/01/1970");
@@ -36,7 +38,7 @@ namespace Empiria.FinancialAccounting.Reporting.Balances {
 
       int i = 5;
       foreach (var entry in entries) {
-        
+
         SetRowByItemType(_excelFile, entry, i);
         SetRowConditionsForSaldosPorAuxiliar(_excelFile, entry, i);
 
@@ -45,7 +47,7 @@ namespace Empiria.FinancialAccounting.Reporting.Balances {
 
         if (entry.ItemType == TrialBalanceItemType.Summary ||
             entry.ItemType == TrialBalanceItemType.Total) {
-          _excelFile.SetRowStyleBold(i);
+          _excelFile.SetRowBold(i, LAST_COLUMN_INDEX);
         }
 
         if (entry.ItemType == TrialBalanceItemType.Total) {
@@ -63,7 +65,7 @@ namespace Empiria.FinancialAccounting.Reporting.Balances {
       }
     }
 
-    
+
     public void FillOutSaldosPorCuenta(ExcelFile _excelFile,
                                     IEnumerable<SaldosPorCuentaEntryDto> entries,
                                     bool withSubledgerAccounts) {
@@ -79,7 +81,7 @@ namespace Empiria.FinancialAccounting.Reporting.Balances {
 
         SetCellByItemTypeAndRowStyle(_excelFile, entry, i);
         SetCellClausesForSaldosPorCuenta(_excelFile,entry, withSubledgerAccounts, i);
-        
+
         _excelFile.SetCell($"G{i}", entry.SectorCode);
         _excelFile.SetCell($"J{i}", (decimal) entry.CurrentBalance);
         _excelFile.SetCell($"K{i}", entry.DebtorCreditor);
@@ -97,14 +99,13 @@ namespace Empiria.FinancialAccounting.Reporting.Balances {
       }
 
       SetColumnClausesForSaldosPorCuenta(_excelFile, withSubledgerAccounts);
-      
+
     }
 
 
     #endregion Public methods
 
-    #region Private methods
-
+    #region Helpers
 
     private void SetCellByItemTypeAndRowStyle(ExcelFile _excelFile, SaldosPorCuentaEntryDto entry, int i) {
 
@@ -120,7 +121,7 @@ namespace Empiria.FinancialAccounting.Reporting.Balances {
 
       if (entry.ItemType != TrialBalanceItemType.Entry &&
           entry.ItemType != TrialBalanceItemType.Summary) {
-        _excelFile.SetRowStyleBold(i);
+        _excelFile.SetRowBold(i, LAST_COLUMN_INDEX);
       }
 
     }
@@ -235,7 +236,7 @@ namespace Empiria.FinancialAccounting.Reporting.Balances {
 
     }
 
-    #endregion Private methods
+    #endregion Helpers
 
   } // class SaldosFillOutExcelExporter
 
