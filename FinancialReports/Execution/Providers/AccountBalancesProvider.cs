@@ -256,7 +256,7 @@ namespace Empiria.FinancialAccounting.FinancialReports.Providers {
       return new TrialBalanceQuery {
         AccountsChartUID = _buildQuery.AccountsChartUID,
         TrialBalanceType = TrialBalanceType.BalanzaEnColumnasPorMoneda,
-        UseDefaultValuation = true,
+        UseDefaultValuation = false,
         ShowCascadeBalances = false,
         WithSubledgerAccount = false,
         BalancesType = BalancesType.WithCurrentBalanceOrMovements,
@@ -264,7 +264,7 @@ namespace Empiria.FinancialAccounting.FinancialReports.Providers {
         InitialPeriod = new BalancesPeriod {
           FromDate = new DateTime(_buildQuery.ToDate.Year, _buildQuery.ToDate.Month, 1),
           ToDate = _buildQuery.ToDate,
-          UseDefaultValuation = true
+          UseDefaultValuation = false
         }
       };
     }
