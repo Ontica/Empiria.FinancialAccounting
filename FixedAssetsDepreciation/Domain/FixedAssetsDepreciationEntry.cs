@@ -94,14 +94,19 @@ namespace Empiria.FinancialAccounting.FixedAssetsDepreciation {
 
     public int MesesTranscurridos {
       get {
+        return Math.Min(MesesDepreciacion, MesesTranscurridosAlDia);
+      }
+    }
+
+    private int MesesTranscurridosAlDia {
+      get {
         if (FechaAdquisicion == ExecutionServer.DateMinValue) {
           return 0;
         }
 
-        return (FechaCalculo.Year - FechaAdquisicion.Year) * 12 + FechaCalculo.Month - FechaAdquisicion.Month;
+        return (FechaCalculo.Year - FechaAdquisicion.Year) * 12 + (FechaCalculo.Month - FechaAdquisicion.Month);
       }
     }
-
 
     public decimal DepreciacionAcumulada {
       get {
@@ -144,7 +149,11 @@ namespace Empiria.FinancialAccounting.FixedAssetsDepreciation {
 
     public decimal DepreciacionAcumuladaDeLaRevaluacion {
       get {
-        return Math.Round(DepreciacionDeLaRevaluacionMensual * MesesTranscurridos);
+        if (MesesTranscurridosAlDia <= MesesTranscurridos) {
+          return Math.Round(DepreciacionDeLaRevaluacionMensual * MesesTranscurridos, 2);
+        } else {
+          return MontoRevaluacion;
+        }
       }
     }
 
@@ -157,21 +166,29 @@ namespace Empiria.FinancialAccounting.FixedAssetsDepreciation {
 
     public decimal DepreciacionPendienteRegistrarDeLaRevaluacion {
       get {
-        return Math.Round(DepreciacionAcumuladaDeLaRevaluacion - DepreciacionAcumuladaDeLaRevaluacionRegistradaContablemente, 2);
+        if (MesesTranscurridosAlDia <= MesesDepreciacion) {
+          return Math.Round(DepreciacionAcumuladaDeLaRevaluacion - DepreciacionAcumuladaDeLaRevaluacionRegistradaContablemente, 2);
+        } else {
+          return DepreciacionAcumuladaDeLaRevaluacion - MontoRevaluacion;
+        }
       }
     }
 
 
     public decimal ValorHistoricoEnLibros {
       get {
-        return Math.Round(ValorHistorico - DepreciacionAcumuladaRegistradaContablemente +
-                          MontoRevaluacion - DepreciacionAcumuladaDeLaRevaluacionRegistradaContablemente, 2);
+        if (MesesTranscurridosAlDia <= MesesDepreciacion) {
+          return Math.Round(ValorHistorico - DepreciacionAcumuladaRegistradaContablemente +
+                            MontoRevaluacion - DepreciacionAcumuladaDeLaRevaluacionRegistradaContablemente, 2);
+        } else {
+          return 0;
+        }
       }
     }
 
     public bool Depreciado {
       get {
-        return (ValorHistorico <= DepreciacionAcumuladaRegistradaContablemente);
+        return ValorHistorico <= DepreciacionAcumuladaRegistradaContablemente;
       }
     }
 
