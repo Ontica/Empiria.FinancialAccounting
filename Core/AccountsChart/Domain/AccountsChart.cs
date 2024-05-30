@@ -263,7 +263,12 @@ namespace Empiria.FinancialAccounting {
     internal Account TryGetParentAccount(string accountNumber, DateTime date) {
       var parentAccountNumber = BuildParentAccountNumber(accountNumber);
 
-      return TryGetAccount(parentAccountNumber).GetHistory(date);
+      var parentAccount = TryGetAccount(parentAccountNumber);
+
+      if (parentAccount != null) {
+        return parentAccount.TryGetHistory(date);
+      }
+      return null;
     }
 
     #endregion Public methods

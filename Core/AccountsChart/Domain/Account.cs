@@ -288,7 +288,6 @@ namespace Empiria.FinancialAccounting {
       return this.AccountsChart.GetAccountHistory(this.Number, date);
     }
 
-
     public Account GetParent() {
       if (this.Level == 1) {
         return Account.Empty;
@@ -309,6 +308,12 @@ namespace Empiria.FinancialAccounting {
       FixedList<Account> children = this.GetChildren();
 
       return children.Contains(x => x.Role == AccountRole.Sectorizada);
+    }
+
+    public Account TryGetHistory(DateTime date) {
+      FixedList<Account> history = this.AccountsChart.GetAccountHistory(this.Number);
+
+      return history.Find(x => x.StartDate <= date && date <= x.EndDate);
     }
 
     #endregion Public methods
