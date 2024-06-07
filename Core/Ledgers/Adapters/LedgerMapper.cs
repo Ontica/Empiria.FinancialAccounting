@@ -136,7 +136,11 @@ namespace Empiria.FinancialAccounting.Adapters {
 
       var valuedCurrencies = new FixedList<ValuedCurrencyDto>(list.Select(x => MapToValuedCurrency(x)));
 
-      if (valuedCurrencies.Count <= 1 && valuedCurrencies[0].UID == baseCurrency.UID) {
+      if (valuedCurrencies.Count == 0) {
+        return valuedCurrencies;
+      }
+
+      if (valuedCurrencies.Count == 1 && valuedCurrencies[0].UID == baseCurrency.UID) {
         return valuedCurrencies;
       }
 
