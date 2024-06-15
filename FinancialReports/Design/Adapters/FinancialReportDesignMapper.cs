@@ -34,7 +34,7 @@ namespace Empiria.FinancialAccounting.FinancialReports.Adapters {
         ConceptCode = row.FinancialConcept.IsEmptyInstance ?
                                     string.Empty : row.FinancialConcept.Code,
         Concept = row.FinancialConcept.IsEmptyInstance ?
-                        "Línea en blanco" : row.FinancialConcept.Name,
+                        row.Label : row.FinancialConcept.Name,
         Format = row.Format,
         Row = row.RowIndex + row.FinancialReportType.RowsOffset,
         FinancialConceptUID = row.FinancialConcept.UID

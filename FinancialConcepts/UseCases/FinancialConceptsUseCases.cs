@@ -48,6 +48,8 @@ namespace Empiria.FinancialAccounting.FinancialConcepts.UseCases {
 
       var group = FinancialConceptGroup.Parse(command.GroupUID);
 
+      base.EnsureUserHasDataAccessTo(group);
+
       FinancialConcept concept = group.InsertFrom(command);
 
       concept.Save();

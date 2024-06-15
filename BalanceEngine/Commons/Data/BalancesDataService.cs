@@ -24,7 +24,7 @@ namespace Empiria.FinancialAccounting.BalanceEngine.Data {
       Assertion.Require(query, nameof(query));
 
       BalancesSqlClauses sqlClauses = BalancesSqlClauses.BuildFrom(query);
-      
+
       return GetTrialBalanceEntries(sqlClauses);
     }
 
@@ -55,18 +55,8 @@ namespace Empiria.FinancialAccounting.BalanceEngine.Data {
                             clauses.AverageBalance
                             );
 
-      string random = EmpiriaString.BuildRandomString(8);
 
-      DateTime startTime = DateTime.Now;
-
-      EmpiriaLog.Debug($"{random}: {startTime}: {operation.AsText()}");
-
-      var entries = DataReader.GetPlainObjectFixedList<TrialBalanceEntry>(operation);
-
-      EmpiriaLog.Debug($"{random} call returns {entries.Count} parsed entities in " +
-                       $"{DateTime.Now.Subtract(startTime).TotalSeconds} seconds.");
-
-      return entries;
+      return DataReader.GetPlainObjectFixedList<TrialBalanceEntry>(operation);
     }
 
   } // class BalancesDataService

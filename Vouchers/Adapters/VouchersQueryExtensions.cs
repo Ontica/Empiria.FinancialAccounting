@@ -26,7 +26,7 @@ namespace Empiria.FinancialAccounting.Vouchers.Adapters {
     static internal string MapToFilterString(this VouchersQuery query) {
       string ledgerFilter = BuildLedgerFilter(query);
       string editedByFilter = BuildEditedByFilter(query);
-      string dateRangeFilter = BuildDateRangerFilter(query);
+      string dateRangeFilter = BuildDateRangeFilter(query);
       string transactionTypeFilter = BuildTransactionTypeFilter(query);
       string voucherTypeFilter = BuildVoucherTypeFilter(query);
       string stageStatusFilter = BuildStageStatusFilter(query);
@@ -65,7 +65,7 @@ namespace Empiria.FinancialAccounting.Vouchers.Adapters {
 
     #region Private methods
 
-    static private string BuildDateRangerFilter(VouchersQuery query) {
+    static private string BuildDateRangeFilter(VouchersQuery query) {
       if (query.DateSearchField == DateSearchField.None) {
         return string.Empty;
       }
