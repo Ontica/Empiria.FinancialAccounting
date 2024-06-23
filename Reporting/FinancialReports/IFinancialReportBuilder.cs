@@ -16,7 +16,7 @@ namespace Empiria.FinancialAccounting.Reporting.FinancialReports {
 
   internal interface IFinancialReportBuilder {
 
-    FileReportDto Build(FinancialReportDto financialReportDto);
+    FileDto Build(FinancialReportDto financialReportDto);
 
   }  // interface IFinancialReportBuilder
 

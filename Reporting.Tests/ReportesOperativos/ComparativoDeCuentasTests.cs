@@ -32,8 +32,6 @@ namespace Empiria.FinancialAccounting.Tests.Reporting {
       using (var service = ReportingService.ServiceInteractor()) {
         ReportDataDto sut = service.GenerateReport(query);
 
-        //FileReportDto fileReportDto = service.ExportReport(query, sut);
-
         Assert.NotNull(sut);
         Assert.Equal(query, sut.Query);
         Assert.NotEmpty(sut.Entries);

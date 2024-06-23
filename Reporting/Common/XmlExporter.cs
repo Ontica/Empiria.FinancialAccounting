@@ -27,7 +27,7 @@ namespace Empiria.FinancialAccounting.Reporting.Exporters {
 
   internal class XmlExporter : IReportExporter {
 
-    public FileReportDto Export(ReportDataDto reportData) {
+    public FileDto Export(ReportDataDto reportData) {
       Assertion.Require(reportData, "reportData");
 
       IXmlDocumentExporter xmlConverter = GetXmlConverter(reportData);
@@ -38,7 +38,7 @@ namespace Empiria.FinancialAccounting.Reporting.Exporters {
 
       xmlFile.Save(xmlConverter.GetFileName());
 
-      return xmlFile.ToFileReportDto();
+      return xmlFile.ToFileDto();
     }
 
 

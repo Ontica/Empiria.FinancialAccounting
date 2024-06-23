@@ -15,7 +15,7 @@ namespace Empiria.FinancialAccounting.Reporting {
 
   /// <summary>Common interface for all report data exporters.</summary>
   internal interface IReportExporter {
-    FileReportDto Export(ReportDataDto reportData);
+    FileDto Export(ReportDataDto reportData);
   }
 
 }  // namespace Empiria.FinancialAccounting.Reporting

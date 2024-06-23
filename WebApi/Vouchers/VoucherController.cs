@@ -37,7 +37,7 @@ namespace Empiria.FinancialAccounting.WebApi.Vouchers {
 
         var exporter = new PdfExporterService();
 
-        FileReportDto pdfFileDto = exporter.Export(voucher);
+        FileDto pdfFileDto = exporter.Export(voucher);
 
         return new SingleObjectModel(base.Request, pdfFileDto);
       }
@@ -53,7 +53,7 @@ namespace Empiria.FinancialAccounting.WebApi.Vouchers {
 
         var exporter = new ExcelExporterService();
 
-        FileReportDto excelFileDto = exporter.Export(voucher);
+        FileDto excelFileDto = exporter.Export(voucher);
 
         return new SingleObjectModel(base.Request, excelFileDto);
       }

@@ -32,7 +32,7 @@ namespace Empiria.FinancialAccounting.Reporting {
     }
 
 
-    public FileReportDto CreateExcelFile() {
+    public FileDto CreateExcelFile() {
       var excelFile = new ExcelFile(_template);
 
       excelFile.Open();
@@ -46,7 +46,7 @@ namespace Empiria.FinancialAccounting.Reporting {
 
       excelFile.Close();
 
-      return excelFile.ToFileReportDto();
+      return excelFile.ToFileDto();
     }
 
     #region Private methods

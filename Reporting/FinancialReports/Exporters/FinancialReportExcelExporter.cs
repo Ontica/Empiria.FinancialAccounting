@@ -31,11 +31,11 @@ namespace Empiria.FinancialAccounting.Reporting.FinancialReports.Exporters {
     }
 
 
-    public FileReportDto Build(FinancialReportDto financialReportDto) {
+    public FileDto Build(FinancialReportDto financialReportDto) {
       Assertion.Require(financialReportDto, "financialReportDto");
 
       return CreateExcelFile(financialReportDto)
-            .ToFileReportDto();
+            .ToFileDto();
     }
 
 

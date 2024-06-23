@@ -33,7 +33,7 @@ namespace Empiria.FinancialAccounting.Reporting.FinancialReports.Exporters {
 
     #region Services
 
-    public FileReportDto Export(FinancialReportDto financialReport) {
+    public FileDto Export(FinancialReportDto financialReport) {
       Assertion.Require(financialReport, "financialReport");
 
       IFinancialReportBuilder reportBuilder = GetReportBuilder(financialReport.Query);

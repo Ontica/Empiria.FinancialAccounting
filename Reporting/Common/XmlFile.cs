@@ -44,8 +44,8 @@ namespace Empiria.FinancialAccounting.Reporting.Exporters.Xml {
     }
 
 
-    internal FileReportDto ToFileReportDto() {
-      return new FileReportDto(FileType.Xml, this.Url);
+    internal FileDto ToFileDto() {
+      return new FileDto(FileType.Xml, this.Url);
     }
 
 

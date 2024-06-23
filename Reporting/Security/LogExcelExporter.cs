@@ -27,7 +27,7 @@ namespace Empiria.OnePoint.Security.Reporting {
     }
 
 
-    public FileReportDto Export() {
+    public FileDto Export() {
       var excelFile = new ExcelFile(_template);
 
       excelFile.Open();
@@ -40,7 +40,7 @@ namespace Empiria.OnePoint.Security.Reporting {
 
       excelFile.Close();
 
-      return excelFile.ToFileReportDto();
+      return excelFile.ToFileDto();
     }
 
 

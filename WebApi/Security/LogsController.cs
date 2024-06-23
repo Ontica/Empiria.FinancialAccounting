@@ -34,7 +34,7 @@ namespace Empiria.OnePoint.Security.WebApi {
 
         var exporter = new LogExcelExporter(query, logEntries);
 
-        FileReportDto report = exporter.Export();
+        FileDto report = exporter.Export();
 
         base.SetOperation($"Se exportó a Excel la bitácora de {GetOperationalLogName(query.OperationLogType)}.");
 

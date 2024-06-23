@@ -34,7 +34,7 @@ namespace Empiria.FinancialAccounting.Reporting {
   /// <summary>Main service to export accounting information to Microsoft Excel.</summary>
   public class ExcelExporterService {
 
-    public FileReportDto Export(AccountsChartDto accountsChart) {
+    public FileDto Export(AccountsChartDto accountsChart) {
       Assertion.Require(accountsChart, nameof(accountsChart));
 
       var templateUID = "AccountsChartTemplate";
@@ -45,11 +45,11 @@ namespace Empiria.FinancialAccounting.Reporting {
 
       ExcelFile excelFile = exporter.CreateExcelFile(accountsChart);
 
-      return excelFile.ToFileReportDto();
+      return excelFile.ToFileDto();
     }
 
 
-    public FileReportDto Export(AccountsListDto accountsList) {
+    public FileDto Export(AccountsListDto accountsList) {
       Assertion.Require(accountsList, nameof(accountsList));
 
       var templateUID = $"AccountsList.{accountsList.UID}.ExcelTemplate";
@@ -60,11 +60,11 @@ namespace Empiria.FinancialAccounting.Reporting {
 
       ExcelFile excelFile = exporter.CreateExcelFile(accountsList);
 
-      return excelFile.ToFileReportDto();
+      return excelFile.ToFileDto();
     }
 
 
-    public FileReportDto Export(ReconciliationResultDto reconciliationResult) {
+    public FileDto Export(ReconciliationResultDto reconciliationResult) {
       Assertion.Require(reconciliationResult, nameof(reconciliationResult));
 
       var templateUID = "ReconciliationResult.ExcelTemplate";
@@ -75,11 +75,11 @@ namespace Empiria.FinancialAccounting.Reporting {
 
       ExcelFile excelFile = exporter.CreateExcelFile(reconciliationResult);
 
-      return excelFile.ToFileReportDto();
+      return excelFile.ToFileDto();
     }
 
 
-    public FileReportDto Export(FixedList<ExchangeRateDescriptorDto> exchangeRates) {
+    public FileDto Export(FixedList<ExchangeRateDescriptorDto> exchangeRates) {
       Assertion.Require(exchangeRates, "exchangeRates");
 
       var templateUID = "ExchangeRatesTemplate";
@@ -90,11 +90,11 @@ namespace Empiria.FinancialAccounting.Reporting {
 
       ExcelFile excelFile = exporter.CreateExcelFile(exchangeRates);
 
-      return excelFile.ToFileReportDto();
+      return excelFile.ToFileDto();
     }
 
 
-    public FileReportDto Export(FixedList<FinancialConceptTreeNodeDto> treeNodes) {
+    public FileDto Export(FixedList<FinancialConceptTreeNodeDto> treeNodes) {
       Assertion.Require(treeNodes, "treeNodes");
 
       var templateUID = "GroupingRulesReportTemplate";
@@ -105,11 +105,11 @@ namespace Empiria.FinancialAccounting.Reporting {
 
       ExcelFile excelFile = exporter.CreateExcelFile(treeNodes);
 
-      return excelFile.ToFileReportDto();
+      return excelFile.ToFileDto();
     }
 
 
-    public FileReportDto Export(StoredBalanceSetDto balanceSet) {
+    public FileDto Export(StoredBalanceSetDto balanceSet) {
       Assertion.Require(balanceSet, "balanceSet");
 
       var templateUID = "BalanceSetTemplate";
@@ -120,11 +120,11 @@ namespace Empiria.FinancialAccounting.Reporting {
 
       ExcelFile excelFile = exporter.CreateExcelFile(balanceSet);
 
-      return excelFile.ToFileReportDto();
+      return excelFile.ToFileDto();
     }
 
 
-    public FileReportDto Export(ExternalValuesDto externalValues) {
+    public FileDto Export(ExternalValuesDto externalValues) {
       Assertion.Require(externalValues, nameof(externalValues));
 
       var templateConfig = FileTemplateConfig.Parse(externalValues.Query.ExportTo);
@@ -133,11 +133,11 @@ namespace Empiria.FinancialAccounting.Reporting {
 
       ExcelFile exportedFile = exporter.CreateExcelFile(externalValues);
 
-      return exportedFile.ToFileReportDto();
+      return exportedFile.ToFileDto();
     }
 
 
-    public FileReportDto Export(VoucherDto voucher) {
+    public FileDto Export(VoucherDto voucher) {
       Assertion.Require(voucher, nameof(voucher));
 
       var templateUID = "VoucherMovementsTemplate";
@@ -148,11 +148,11 @@ namespace Empiria.FinancialAccounting.Reporting {
 
       ExcelFile excelFile = exporter.CreateExcelFile(voucher);
 
-      return excelFile.ToFileReportDto();
+      return excelFile.ToFileDto();
     }
 
 
-    public FileReportDto Export(FixedList<VoucherDto> voucherList) {
+    public FileDto Export(FixedList<VoucherDto> voucherList) {
       Assertion.Require(voucherList, nameof(voucherList));
 
       if (voucherList.Count == 1) {
@@ -168,7 +168,7 @@ namespace Empiria.FinancialAccounting.Reporting {
 
         ExcelFile excelFile = exporter.CreateExcelFile(voucherList);
 
-        return excelFile.ToFileReportDto();
+        return excelFile.ToFileDto();
 
       }
 

@@ -20,7 +20,7 @@ namespace Empiria.FinancialAccounting.Reporting.Balances {
   /// <summary>Main service to export balances information to Microsoft Excel.</summary>
   public class BalancesExcelExporterService {
 
-    public FileReportDto Export(TrialBalanceDto trialBalance) {
+    public FileDto Export(TrialBalanceDto trialBalance) {
       Assertion.Require(trialBalance, "trialBalance");
 
       var templateUID = $"TrialBalanceTemplate.{trialBalance.Query.TrialBalanceType}";
@@ -31,11 +31,11 @@ namespace Empiria.FinancialAccounting.Reporting.Balances {
 
       ExcelFile excelFile = exporter.CreateExcelFile(trialBalance);
 
-      return excelFile.ToFileReportDto();
+      return excelFile.ToFileDto();
     }
 
 
-    public FileReportDto Export(BalanceExplorerDto dto) {
+    public FileDto Export(BalanceExplorerDto dto) {
       Assertion.Require(dto, nameof(dto));
 
       var templateUID = $"BalanceTemplate.{dto.Query.TrialBalanceType}";
@@ -51,7 +51,7 @@ namespace Empiria.FinancialAccounting.Reporting.Balances {
 
       ExcelFile excelFile = exporter.CreateExcelFile(dto);
 
-      return excelFile.ToFileReportDto();
+      return excelFile.ToFileDto();
     }
 
 

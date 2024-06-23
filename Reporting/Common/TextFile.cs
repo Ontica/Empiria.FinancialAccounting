@@ -96,8 +96,8 @@ namespace Empiria.FinancialAccounting.Reporting.Exporters.Text {
     }
 
 
-    internal FileReportDto ToFileReportDto() {
-      return new FileReportDto(FileType.Text, this.Url);
+    internal FileDto ToFileDto() {
+      return new FileDto(FileType.Text, this.Url);
     }
 
 

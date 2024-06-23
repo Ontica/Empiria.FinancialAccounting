@@ -86,9 +86,9 @@ namespace Empiria.FinancialAccounting.WebApi.FinancialReports {
 
         var exporter = FinancialReportExportService.ServiceInteractor();
 
-        FileReportDto fileReportDto = exporter.Export(financialReport);
+        FileDto fileDto = exporter.Export(financialReport);
 
-        return new SingleObjectModel(this.Request, fileReportDto);
+        return new SingleObjectModel(this.Request, fileDto);
       }
     }
 

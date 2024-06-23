@@ -48,7 +48,7 @@ namespace Empiria.FinancialAccounting.WebApi {
 
         var service = new ExcelExporterService();
 
-        FileReportDto report = service.Export(list);
+        FileDto report = service.Export(list);
 
         return new SingleObjectModel(base.Request, report);
       }

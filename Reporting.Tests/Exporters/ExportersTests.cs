@@ -28,7 +28,7 @@ namespace Empiria.FinancialAccounting.Tests.Reporting {
         var exporter = new ExcelExporterService();
 
         VoucherDto voucher = usecases.GetVoucher(8381251);
-        FileReportDto sut = exporter.Export(voucher);
+        FileDto sut = exporter.Export(voucher);
 
         Assert.NotNull(sut);
       }
@@ -45,7 +45,7 @@ namespace Empiria.FinancialAccounting.Tests.Reporting {
 
         int[] ids = new int[] { 8298449, 8298419, 8841127 }; //, 8742526 
         FixedList<VoucherDto> vouchers = usecases.GetVouchersToExport(ids);
-        FileReportDto sut = exporter.Export(vouchers);
+        FileDto sut = exporter.Export(vouchers);
 
         Assert.NotNull(sut);
       }

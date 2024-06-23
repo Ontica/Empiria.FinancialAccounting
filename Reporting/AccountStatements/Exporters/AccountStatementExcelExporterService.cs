@@ -19,7 +19,7 @@ namespace Empiria.FinancialAccounting.Reporting.AccountStatements.Exporters {
   /// <summary>Main service to export account statement information to Microsoft Excel.</summary>
   public class AccountStatementExcelExporterService {
 
-    public FileReportDto Export(AccountStatementDto accountStatement) {
+    public FileDto Export(AccountStatementDto accountStatement) {
       Assertion.Require(accountStatement, nameof(accountStatement));
 
       var templateUID = $"VouchersByAccountTemplate";
@@ -30,7 +30,7 @@ namespace Empiria.FinancialAccounting.Reporting.AccountStatements.Exporters {
 
       ExcelFile excelFile = exporter.CreateExcelFile(accountStatement);
 
-      return excelFile.ToFileReportDto();
+      return excelFile.ToFileDto();
     }
 
   } // class AccountStatementExcelExporterService

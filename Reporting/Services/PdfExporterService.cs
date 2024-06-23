@@ -33,24 +33,24 @@ namespace Empiria.FinancialAccounting.Reporting {
 
     #region Services
 
-    public FileReportDto Export(VoucherDto voucher) {
+    public FileDto Export(VoucherDto voucher) {
       Assertion.Require(voucher, nameof(voucher));
 
       string filename = GetVoucherPdfFileName(voucher);
 
       if (ExistsFile(filename)) {
-        return ToFileReportDto(filename);
+        return ToFileDto(filename);
       }
 
       string html = BuildVoucherHtml(voucher);
 
       SaveHtmlAsPdf(html, filename);
 
-      return ToFileReportDto(filename);
+      return ToFileDto(filename);
     }
 
 
-    public FileReportDto Export(FixedList<VoucherDto> vouchersToPrint) {
+    public FileDto Export(FixedList<VoucherDto> vouchersToPrint) {
       Assertion.Require(vouchersToPrint, nameof(vouchersToPrint));
 
       string filename = $"{vouchersToPrint.Count}.polizas.{DateTime.Now.ToString("yyyy.MM.dd-HH.mm.ss")}.pdf";
@@ -59,11 +59,11 @@ namespace Empiria.FinancialAccounting.Reporting {
 
       SaveHtmlAsPdf(html, filename);
 
-      return ToFileReportDto(filename);
+      return ToFileDto(filename);
     }
 
 
-    public FileReportDto Export(ReconciliationResultDto reconciliation) {
+    public FileDto Export(ReconciliationResultDto reconciliation) {
       Assertion.Require("reconciliation", nameof(reconciliation));
 
       string filename = $"conciliacion.derivados.{reconciliation.Command.Date.ToString("yyyy.MM.dd")}.pdf";
@@ -76,7 +76,7 @@ namespace Empiria.FinancialAccounting.Reporting {
 
       SaveHtmlAsPdf(html, filename);
 
-      return ToFileReportDto(filename);
+      return ToFileDto(filename);
     }
 
     #endregion Services
@@ -202,8 +202,8 @@ namespace Empiria.FinancialAccounting.Reporting {
     }
 
 
-    private FileReportDto ToFileReportDto(string filename) {
-      return new FileReportDto(FileType.Pdf, FileTemplateConfig.GeneratedFilesBaseUrl + "/vouchers/" + filename);
+    private FileDto ToFileDto(string filename) {
+      return new FileDto(FileType.Pdf, FileTemplateConfig.GeneratedFilesBaseUrl + "/vouchers/" + filename);
     }
 
     #endregion Helpers

@@ -19,7 +19,7 @@ namespace Empiria.FinancialAccounting.Reporting {
 
   internal interface IExcelExporter {
 
-    FileReportDto CreateExcelFile();
+    FileDto CreateExcelFile();
 
   }  // interface IExcelExporter
 
@@ -28,7 +28,7 @@ namespace Empiria.FinancialAccounting.Reporting {
   /// <summary>Provides services used to export financial accounting reports to Excel files.</summary>
   internal class ExcelExporter : IReportExporter {
 
-    public FileReportDto Export(ReportDataDto reportData) {
+    public FileDto Export(ReportDataDto reportData) {
       Assertion.Require(reportData, "reportData");
 
       IExcelExporter excelExporter = GetExcelExporter(reportData);

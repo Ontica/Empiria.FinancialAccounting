@@ -47,19 +47,19 @@ namespace Empiria.FinancialAccounting.WebApi.Reconciliation {
       using (var usecases = ReconciliationExecutionUseCases.UseCaseInteractor()) {
         ReconciliationResultDto result = usecases.Execute(command);
 
-        FileReportDto fileReportDto;
+        FileDto fileDto;
 
         if (command.ExportTo == "Excel.Default") {
           var exporter = new ExcelExporterService();
 
-          fileReportDto = exporter.Export(result);
+          fileDto = exporter.Export(result);
         } else {
           var pdfExporter = new PdfExporterService();
 
-          fileReportDto = pdfExporter.Export(result);
+          fileDto = pdfExporter.Export(result);
         }
 
-        return new SingleObjectModel(this.Request, fileReportDto);
+        return new SingleObjectModel(this.Request, fileDto);
       }
     }
 

@@ -37,7 +37,7 @@ namespace Empiria.FinancialAccounting.Reporting.ValorizacionEstimacionPreventiva
     }
 
 
-    public FileReportDto CreateExcelFile() {
+    public FileDto CreateExcelFile() {
       var excelFile = new ExcelFile(_template);
 
       excelFile.Open();
@@ -50,7 +50,7 @@ namespace Empiria.FinancialAccounting.Reporting.ValorizacionEstimacionPreventiva
 
       excelFile.Close();
 
-      return excelFile.ToFileReportDto();
+      return excelFile.ToFileDto();
     }
 
 

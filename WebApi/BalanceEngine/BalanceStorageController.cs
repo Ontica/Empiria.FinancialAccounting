@@ -57,7 +57,7 @@ namespace Empiria.FinancialAccounting.WebApi.BalanceEngine {
 
         var excelExporter = new ExcelExporterService();
 
-        FileReportDto excelFileDto = excelExporter.Export(balanceSet);
+        FileDto excelFileDto = excelExporter.Export(balanceSet);
 
         return new SingleObjectModel(base.Request, excelFileDto);
       }

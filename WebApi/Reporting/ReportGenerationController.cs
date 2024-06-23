@@ -49,9 +49,9 @@ namespace Empiria.FinancialAccounting.WebApi.Reporting {
 
         ReportDataDto reportData = service.GenerateReport(buildQuery);
 
-        FileReportDto fileReportDto = service.ExportReport(buildQuery, reportData);
+        FileDto fileDto = service.ExportReport(buildQuery, reportData);
 
-        return new SingleObjectModel(this.Request, fileReportDto);
+        return new SingleObjectModel(this.Request, fileDto);
       }
     }
 

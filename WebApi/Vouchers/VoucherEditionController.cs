@@ -260,7 +260,7 @@ namespace Empiria.FinancialAccounting.WebApi.Vouchers {
 
         var exporter = new ExcelExporterService();
 
-        FileReportDto excelFileDto = exporter.Export(vouchersToExport);
+        FileDto excelFileDto = exporter.Export(vouchersToExport);
 
         result.Message = $"Se exportaron los movimientos de " +
                          $"{voucherIdsToExport.Length} pólizas a excel.";
@@ -300,7 +300,7 @@ namespace Empiria.FinancialAccounting.WebApi.Vouchers {
     }
 
 
-    public FileReportDto File {
+    public FileDto File {
       get; internal set;
     }
 
