@@ -16,7 +16,7 @@ using Empiria.Storage;
 using Empiria.DynamicData.Datasets;
 
 using Empiria.FinancialAccounting.Reconciliation.Adapters;
-
+using Empiria.FinancialAccounting.Reconciliation.Readers;
 
 namespace Empiria.FinancialAccounting.Reconciliation {
 
@@ -91,7 +91,7 @@ namespace Empiria.FinancialAccounting.Reconciliation {
 
 
     private OperationalEntryDto ReadOperationalEntry(Spreadsheet spreadsheet, int rowIndex) {
-      var spreadsheetRow = new SpreadsheetRowReader(spreadsheet, rowIndex);
+      var spreadsheetRow = new IkosDerivadosRowReader(spreadsheet, rowIndex);
 
       return new OperationalEntryDto {
         UniqueKey               = spreadsheetRow.GetUniqueKey(),

@@ -1,10 +1,10 @@
 ﻿/* Empiria Financial *****************************************************************************************
 *                                                                                                            *
-*  Module   : Reconciliation Services                    Component : Domain Layer                            *
-*  Assembly : FinancialAccounting.Reconciliation.dll     Pattern   : Service provider                        *
-*  Type     : SpreadsheetRowReader                       License   : Please read LICENSE.txt file            *
+*  Module   : Reconciliation Services                    Component : Adapters Layer                          *
+*  Assembly : FinancialAccounting.Reconciliation.dll     Pattern   : Data reader provider                    *
+*  Type     : IkosDerivadosRowReader                     License   : Please read LICENSE.txt file            *
 *                                                                                                            *
-*  Summary  : Gets reconciliation data from a spreadsheet row.                                               *
+*  Summary  : Lee el archivo de concilación de IKOS derivados.                                               *
 *                                                                                                            *
 ************************* Copyright(c) La Vía Óntica SC, Ontica LLC and contributors. All rights reserved. **/
 using System;
@@ -12,15 +12,15 @@ using System;
 using Empiria.Json;
 using Empiria.Office;
 
-namespace Empiria.FinancialAccounting.Reconciliation {
+namespace Empiria.FinancialAccounting.Reconciliation.Readers {
 
-  /// <summary>Gets reconciliation data from a spreadsheet row.</summary>
-  sealed internal class SpreadsheetRowReader {
+  /// <summary>Lee el archivo de concilación de IKOS derivados.</summary>
+  sealed internal class IkosDerivadosRowReader {
 
     private readonly Spreadsheet _spreadsheet;
     private readonly int _rowIndex;
 
-    public SpreadsheetRowReader(Spreadsheet spreadsheet, int rowIndex) {
+    public IkosDerivadosRowReader(Spreadsheet spreadsheet, int rowIndex) {
       Assertion.Require(spreadsheet, nameof(spreadsheet));
       Assertion.Require(rowIndex > 0, "rowIndex must be greater than zero.");
 
@@ -142,6 +142,6 @@ namespace Empiria.FinancialAccounting.Reconciliation {
 
     #endregion Helpers
 
-  }  // class SpreadsheetRowReader
+  }  // class IkosDerivadosRowReader
 
-} // namespace Empiria.FinancialAccounting.Reconciliation
+} // namespace Empiria.FinancialAccounting.Reconciliation.Readers
