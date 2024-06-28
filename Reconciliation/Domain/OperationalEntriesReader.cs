@@ -91,23 +91,27 @@ namespace Empiria.FinancialAccounting.Reconciliation {
 
 
     private OperationalEntryDto ReadOperationalEntry(Spreadsheet spreadsheet, int rowIndex) {
-      var spreadsheetRow = new IkosDerivadosRowReader(spreadsheet, rowIndex);
+      IReconciliationRowReader rowReader = GetRowReader(spreadsheet, rowIndex);
 
       return new OperationalEntryDto {
-        UniqueKey               = spreadsheetRow.GetUniqueKey(),
-        LedgerNumber            = spreadsheetRow.GetLedger(),
-        AccountNumber           = spreadsheetRow.GetAccountNumber(),
-        SubledgerAccountNumber  = spreadsheetRow.GetSubledgerAccountNumber(),
-        CurrencyCode            = spreadsheetRow.GetCurrencyCode(),
-        SectorCode              = spreadsheetRow.GetSectorCode(),
-        TransactionSlip         = spreadsheetRow.GetTransactionSlip(),
-        ExtData                 = spreadsheetRow.GetExtensionData(),
-        InitialBalance          = spreadsheetRow.GetInitialBalance(),
-        Debits                  = spreadsheetRow.GetDebits(),
-        Credits                 = spreadsheetRow.GetCredits(),
-        EndBalance              = spreadsheetRow.GetEndBalance(),
+        UniqueKey               = rowReader.GetUniqueKey(),
+        LedgerNumber            = rowReader.GetLedger(),
+        AccountNumber           = rowReader.GetAccountNumber(),
+        SubledgerAccountNumber  = rowReader.GetSubledgerAccountNumber(),
+        CurrencyCode            = rowReader.GetCurrencyCode(),
+        SectorCode              = rowReader.GetSectorCode(),
+        TransactionSlip         = rowReader.GetTransactionSlip(),
+        ExtData                 = rowReader.GetExtensionData(),
+        InitialBalance          = rowReader.GetInitialBalance(),
+        Debits                  = rowReader.GetDebits(),
+        Credits                 = rowReader.GetCredits(),
+        EndBalance              = rowReader.GetEndBalance(),
         Position                = rowIndex
       };
+    }
+
+    private IReconciliationRowReader GetRowReader(Spreadsheet spreadsheet, int rowIndex) {
+      return new IkosDerivadosRowReader(spreadsheet, rowIndex);
     }
 
     #endregion Private methods

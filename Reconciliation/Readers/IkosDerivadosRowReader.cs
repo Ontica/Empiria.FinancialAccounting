@@ -15,7 +15,7 @@ using Empiria.Office;
 namespace Empiria.FinancialAccounting.Reconciliation.Readers {
 
   /// <summary>Lee el archivo de concilación de IKOS derivados.</summary>
-  sealed internal class IkosDerivadosRowReader {
+  sealed internal class IkosDerivadosRowReader : IReconciliationRowReader {
 
     private readonly Spreadsheet _spreadsheet;
     private readonly int _rowIndex;
