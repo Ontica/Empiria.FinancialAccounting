@@ -111,7 +111,14 @@ namespace Empiria.FinancialAccounting.Reconciliation {
     }
 
     private IReconciliationRowReader GetRowReader(Spreadsheet spreadsheet, int rowIndex) {
-      return new IkosDerivadosRowReader(spreadsheet, rowIndex);
+      switch (_dataset.DatasetKind.DataFormat) {
+        case "IkosDerivados":
+          return new IkosDerivadosRowReader(spreadsheet, rowIndex);
+        case "SimefinDerivados":
+          return new SimefinRowReader(spreadsheet, rowIndex);
+        default:
+          throw Assertion.EnsureNoReachThisCode($"Unrecognized dataset kind format {_dataset.DatasetKind.DataFormat}.");
+      }
     }
 
     #endregion Private methods

@@ -2,9 +2,9 @@
 *                                                                                                            *
 *  Module   : Reconciliation Services                    Component : Adapters Layer                          *
 *  Assembly : FinancialAccounting.Reconciliation.dll     Pattern   : Data reader provider                    *
-*  Type     : IkosDerivadosRowReader                     License   : Please read LICENSE.txt file            *
+*  Type     : SimefinRowReader                           License   : Please read LICENSE.txt file            *
 *                                                                                                            *
-*  Summary  : Lee el archivo de conciliación de IKOS derivados.                                              *
+*  Summary  : Lee el archivo de conciliación del sistema SIMEFIN.                                            *
 *                                                                                                            *
 ************************* Copyright(c) La Vía Óntica SC, Ontica LLC and contributors. All rights reserved. **/
 using System;
@@ -14,13 +14,13 @@ using Empiria.Office;
 
 namespace Empiria.FinancialAccounting.Reconciliation.Readers {
 
-  /// <summary>Lee el archivo de conciliación de IKOS derivados.</summary>
-  sealed internal class IkosDerivadosRowReader : IReconciliationRowReader {
+  /// <summary>Lee el archivo de conciliación del sistema SIMEFIN.</summary>
+  sealed internal class SimefinRowReader : IReconciliationRowReader {
 
     private readonly Spreadsheet _spreadsheet;
     private readonly int _rowIndex;
 
-    public IkosDerivadosRowReader(Spreadsheet spreadsheet, int rowIndex) {
+    public SimefinRowReader(Spreadsheet spreadsheet, int rowIndex) {
       Assertion.Require(spreadsheet, nameof(spreadsheet));
       Assertion.Require(rowIndex > 0, "rowIndex must be greater than zero.");
 
@@ -30,25 +30,21 @@ namespace Empiria.FinancialAccounting.Reconciliation.Readers {
 
 
     public string GetAccountNumber() {
-      string accountNumber = ReadStringValueFromColumn("F");
+      string accountNumber = ReadStringValueFromColumn("D");
 
       accountNumber = EmpiriaString.TrimAll(accountNumber);
-
-      if (accountNumber.Contains(" ")) {
-        accountNumber = accountNumber.Split(' ')[0];
-      }
 
       return AccountsChart.IFRS.FormatAccountNumber(accountNumber);
     }
 
 
     public decimal GetCredits() {
-      return ReadDecimalValueFromColumn("H");
+      return ReadDecimalValueFromColumn("F");
     }
 
 
     public string GetCurrencyCode() {
-      string isoCode = ReadStringValueFromColumn("O");
+      string isoCode = ReadStringValueFromColumn("G");
 
       var currency = Currency.TryParseISOCode(isoCode.ToUpperInvariant());
 
@@ -60,7 +56,7 @@ namespace Empiria.FinancialAccounting.Reconciliation.Readers {
 
 
     public decimal GetDebits() {
-      return ReadDecimalValueFromColumn("G");
+      return ReadDecimalValueFromColumn("E");
     }
 
 
@@ -72,14 +68,11 @@ namespace Empiria.FinancialAccounting.Reconciliation.Readers {
     public JsonObject GetExtensionData() {
       var json = new JsonObject();
 
-      json.Add("parte",       ReadStringValueFromColumn("A"));
-      json.Add("mercado",     ReadStringValueFromColumn("B"));
-      json.Add("claveoper",   ReadStringValueFromColumn("C"));
-      json.Add("fecha",       ReadStringValueFromColumn("D"));
-      json.Add("consecutivo", ReadStringValueFromColumn("E"));
-      json.Add("submov",      ReadStringValueFromColumn("J"));
-      json.Add("emisor",      ReadStringValueFromColumn("L"));
-      json.Add("numcontrato", ReadStringValueFromColumn("M"));
+      json.Add("portafolio",  ReadStringValueFromColumn("J"));
+      json.Add("idOperacion", ReadStringValueFromColumn("L"));
+      json.Add("nombreOperacion", ReadStringValueFromColumn("M"));
+      json.Add("sector",       ReadStringValueFromColumn("N"));
+      json.Add("contraparte", ReadStringValueFromColumn("Q"));
 
       return json;
     }
@@ -101,18 +94,12 @@ namespace Empiria.FinancialAccounting.Reconciliation.Readers {
 
 
     public string GetSubledgerAccountNumber() {
-      string subledgerAccountNumber = ReadStringValueFromColumn("F");
-
-      if (subledgerAccountNumber.Contains(" ")) {
-        subledgerAccountNumber = subledgerAccountNumber.Split(' ')[1];
-      }
-
-      return subledgerAccountNumber.TrimStart('0');
+      return string.Empty;
     }
 
 
     public string GetTransactionSlip() {
-      return ReadStringValueFromColumn("D") + "-" + ReadStringValueFromColumn("E");
+      return ReadStringValueFromColumn("A");
     }
 
 

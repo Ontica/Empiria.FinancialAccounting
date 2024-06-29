@@ -141,13 +141,10 @@ namespace Empiria.FinancialAccounting.Reconciliation {
       this.Position = dto.Position;
     }
 
-    protected override void OnBeforeSave() {
+    protected override void OnSave() {
       Assertion.Require(this.IsNew,
         "El método Save() sólo puede invocarse sobre nuevas entradas de conciliación."
       );
-    }
-
-    protected override void OnSave() {
       ReconciliationData.AppendEntry(this);
     }
 
