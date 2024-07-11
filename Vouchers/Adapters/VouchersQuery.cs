@@ -27,18 +27,12 @@ namespace Empiria.FinancialAccounting.Vouchers.Adapters {
   }  // enum VoucherStage
 
 
-  /// <summary>Enumerates the possible statuses of a vouhcer with respect of the office workflow.</summary>
+  /// <summary>Enumerates the possible status of a voucher with respect of the office workflow.</summary>
   public enum VoucherStatus {
 
-    Undefined,
+    Pending = 'P',
 
-    Control = 'K',
-
-    Elaboration = 'E',
-
-    Revision = 'V',
-
-    OnHold = 'H',
+    Revision = 'R',
 
     Posted = 'C',
 
@@ -46,19 +40,13 @@ namespace Empiria.FinancialAccounting.Vouchers.Adapters {
 
   }  // enum VoucherStatus
 
-
-  public enum DateSearchField {
-
-    None,
-
-    AccountingDate,
-
-    RecordingDate,
-
-  }
-
-
   public class VouchersQuery {
+
+    public string VoucherID {
+      get;
+      set;
+    } = string.Empty;
+
 
     public VoucherStage Stage {
       get;
@@ -96,7 +84,6 @@ namespace Empiria.FinancialAccounting.Vouchers.Adapters {
     } = string.Empty;
 
 
-
     public string LedgersGroupUID {
       get;
       set;
@@ -109,22 +96,29 @@ namespace Empiria.FinancialAccounting.Vouchers.Adapters {
     } = string.Empty;
 
 
-    public DateTime FromDate {
+    public DateTime FromAccountingDate {
       get;
       set;
     } = ExecutionServer.DateMinValue;
 
 
-    public DateTime ToDate {
+    public DateTime ToAccountingDate {
       get;
       set;
     } = ExecutionServer.DateMaxValue;
 
 
-    public DateSearchField DateSearchField {
+
+    public DateTime FromRecordingDate {
       get;
       set;
-    } = DateSearchField.None;
+    } = ExecutionServer.DateMinValue;
+
+
+    public DateTime ToRecordingDate {
+      get;
+      set;
+    } = ExecutionServer.DateMaxValue;
 
 
     public string AccountKeywords {
@@ -137,6 +131,11 @@ namespace Empiria.FinancialAccounting.Vouchers.Adapters {
       get;
       set;
     } = String.Empty;
+
+
+    public string VerificationNumber {
+      get; set;
+    } = string.Empty;
 
 
     public string TransactionTypeUID {

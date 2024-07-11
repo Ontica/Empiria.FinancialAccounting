@@ -61,7 +61,6 @@ namespace Empiria.FinancialAccounting.WebApi.Vouchers {
 
 
     [HttpPost]
-    [AllowAnonymous]
     [Route("v2/financial-accounting/vouchers")]
     public CollectionModel SearchVouchers([FromBody] VouchersQuery query) {
       base.RequireBody(query);

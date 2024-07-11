@@ -8,7 +8,6 @@
 *                                                                                                            *
 ************************* Copyright(c) La Vía Óntica SC, Ontica LLC and contributors. All rights reserved. **/
 using System;
-
 using Empiria.Data;
 
 namespace Empiria.FinancialAccounting.Vouchers.Adapters {
@@ -26,26 +25,31 @@ namespace Empiria.FinancialAccounting.Vouchers.Adapters {
     static internal string MapToFilterString(this VouchersQuery query) {
       string ledgerFilter = BuildLedgerFilter(query);
       string editedByFilter = BuildEditedByFilter(query);
-      string dateRangeFilter = BuildDateRangeFilter(query);
+      string accountingDateRangeFilter = BuildAccountingDateRangeFilter(query);
+      string recordingDateRangeFilter = BuildRecordingDateRangeFilter(query);
       string transactionTypeFilter = BuildTransactionTypeFilter(query);
       string voucherTypeFilter = BuildVoucherTypeFilter(query);
       string stageStatusFilter = BuildStageStatusFilter(query);
+      string statusFilter = BuildStatusFilter(query.Status);
       string keywordsFilter = BuildKeywordsFilter(query.Keywords);
       string conceptsFilter = BuildConceptFilter(query.Concept);
+      string voucherIDFilter = BuildVoucherIDFilter(query.VoucherID);
       string numberFilter = BuildNumberFilter(query.Number);
 
       var filter = new Filter(ledgerFilter);
       filter.AppendAnd(editedByFilter);
-      filter.AppendAnd(dateRangeFilter);
+      filter.AppendAnd(accountingDateRangeFilter);
+      filter.AppendAnd(recordingDateRangeFilter);
       filter.AppendAnd(transactionTypeFilter);
       filter.AppendAnd(voucherTypeFilter);
       filter.AppendAnd(stageStatusFilter);
+      filter.AppendAnd(statusFilter);
       filter.AppendAnd(conceptsFilter);
+      filter.AppendAnd(voucherIDFilter);
       filter.AppendAnd(numberFilter);
-
       filter.AppendAnd(keywordsFilter);
 
-      string transactionEntriesFilter = BuildTransactionEntriesFilter(query, filter.ToString());
+      string transactionEntriesFilter = BuildTransactionEntriesFilter(query);
 
       filter.AppendAnd(transactionEntriesFilter);
 
@@ -63,25 +67,20 @@ namespace Empiria.FinancialAccounting.Vouchers.Adapters {
 
     #endregion Extension methods
 
-    #region Private methods
+    #region Helpers
 
-    static private string BuildDateRangeFilter(VouchersQuery query) {
-      if (query.DateSearchField == DateSearchField.None) {
+    static private string BuildAccountingDateRangeFilter(VouchersQuery query) {
+      if (query.FromAccountingDate == ExecutionServer.DateMinValue && query.ToAccountingDate == ExecutionServer.DateMaxValue) {
         return string.Empty;
       }
 
-      string filter = $"{DataCommonMethods.FormatSqlDbDate(query.FromDate)} <= @DATE_FIELD@ AND " +
-                      $"@DATE_FIELD@ < {DataCommonMethods.FormatSqlDbDate(query.ToDate.Date.AddDays(1))}";
+      return $"{DataCommonMethods.FormatSqlDbDate(query.FromAccountingDate)} <= FECHA_AFECTACION AND " +
+             $"FECHA_AFECTACION < {DataCommonMethods.FormatSqlDbDate(query.ToAccountingDate.Date.AddDays(1))}";
+    }
 
-      if (query.DateSearchField == DateSearchField.AccountingDate) {
-        return filter.Replace("@DATE_FIELD@", "FECHA_AFECTACION");
 
-      } else if (query.DateSearchField == DateSearchField.RecordingDate) {
-        return filter.Replace("@DATE_FIELD@", "FECHA_REGISTRO");
-
-      } else {
-        throw Assertion.EnsureNoReachThisCode();
-      }
+    static private string BuildConceptFilter(string keywords) {
+      return SearchExpression.ParseLike("CONCEPTO_TRANSACCION", keywords.ToUpperInvariant());
     }
 
 
@@ -102,6 +101,36 @@ namespace Empiria.FinancialAccounting.Vouchers.Adapters {
                  $"ID_AUTORIZADA_POR = {query.EditorUID} OR " +
                  $"ID_ENVIADA_DIARIO_POR = {query.EditorUID}";
       }
+    }
+
+
+    static private string BuildVoucherIDFilter(string voucherID) {
+      if (voucherID == string.Empty) {
+        return string.Empty;
+      }
+
+      string[] array = voucherID.Split(',');
+      string temp = string.Empty;
+
+      foreach (string id in array) {
+        var idAsString = EmpiriaString.TrimAll(id);
+
+        if (!EmpiriaString.IsInteger(idAsString)) {
+          continue;
+        }
+
+        if (temp.Length != 0) {
+          temp += " OR ";
+        }
+        temp += $"ID_TRANSACCION = {EmpiriaString.TrimAll(idAsString)}";
+      }
+
+      return temp;
+    }
+
+
+    static private string BuildKeywordsFilter(string keywords) {
+      return SearchExpression.ParseAndLikeKeywords("TRANSACCION_KEYWORDS", keywords);
     }
 
 
@@ -128,16 +157,6 @@ namespace Empiria.FinancialAccounting.Vouchers.Adapters {
     }
 
 
-    static private string BuildConceptFilter(string keywords) {
-      return SearchExpression.ParseLike("CONCEPTO_TRANSACCION", keywords.ToUpperInvariant());
-    }
-
-
-    static private string BuildKeywordsFilter(string keywords) {
-      return SearchExpression.ParseAndLikeKeywords("TRANSACCION_KEYWORDS", keywords);
-    }
-
-
     static private string BuildMyInboxFilter() {
       string baseFilter = $"ESTA_ABIERTA <> 0 AND " +
                           $"(ID_ELABORADA_POR = {ExecutionServer.CurrentUserId} OR " +
@@ -154,8 +173,19 @@ namespace Empiria.FinancialAccounting.Vouchers.Adapters {
     }
 
 
+
     static private string BuildNumberFilter(string number) {
       return SearchExpression.ParseLike("NUMERO_TRANSACCION", number.ToUpperInvariant());
+    }
+
+
+    static private string BuildRecordingDateRangeFilter(VouchersQuery query) {
+      if (query.FromRecordingDate == ExecutionServer.DateMinValue && query.ToRecordingDate == ExecutionServer.DateMaxValue) {
+        return string.Empty;
+      }
+
+      return $"{DataCommonMethods.FormatSqlDbDate(query.FromRecordingDate)} <= FECHA_REGISTRO AND " +
+             $"FECHA_REGISTRO < {DataCommonMethods.FormatSqlDbDate(query.ToRecordingDate.Date.AddDays(1))}";
     }
 
 
@@ -182,7 +212,25 @@ namespace Empiria.FinancialAccounting.Vouchers.Adapters {
     }
 
 
-    static private string BuildTransactionEntriesFilter(VouchersQuery query, string nestedFilter) {
+    static private string BuildStatusFilter(VoucherStatus status) {
+      if (status == VoucherStatus.All) {
+        return string.Empty;
+      }
+      if (status == VoucherStatus.Posted) {
+        return "ESTA_ABIERTA <> 0";
+      }
+      if (status == VoucherStatus.Pending) {
+        return "ESTA_ABIERTA = 0 AND ID_AUTORIZADA_POR = 0";
+      }
+      if (status == VoucherStatus.Revision) {
+        return "ESTA_ABIERTA = 0 AND ID_AUTORIZADA_POR > 0";
+      }
+
+      throw Assertion.EnsureNoReachThisCode($"Unrecognized status {status}.");
+    }
+
+
+    static private string BuildTransactionEntriesFilter(VouchersQuery query) {
       if (query.AccountKeywords.Length == 0 && query.SubledgerAccountKeywords.Length == 0) {
         return string.Empty;
       }
@@ -192,6 +240,7 @@ namespace Empiria.FinancialAccounting.Vouchers.Adapters {
         filter = SearchExpression.ParseAndLikeKeywords("CUENTA_ESTANDAR_KEYWORDS",
                                                        query.AccountKeywords);
       }
+
       if (query.SubledgerAccountKeywords.Length != 0) {
         if (filter.Length != 0) {
           filter += " AND ";
@@ -200,13 +249,18 @@ namespace Empiria.FinancialAccounting.Vouchers.Adapters {
                                                         query.SubledgerAccountKeywords);
       }
 
-      if (nestedFilter.Length != 0) {
-        return $"ID_TRANSACCION IN (SELECT ID_TRANSACCION FROM VW_COF_MOVIMIENTO_SEARCH WHERE ({nestedFilter} AND {filter}))";
-      } else {
-        return $"ID_TRANSACCION IN (SELECT ID_TRANSACCION FROM VW_COF_MOVIMIENTO_SEARCH WHERE {filter})";
+      string verficationNumberFilter = BuildVerificationNumberFilter(query.VerificationNumber);
+
+      if (verficationNumberFilter != string.Empty) {
+        if (filter.Length != 0) {
+          filter += " AND ";
+        }
+        filter += $"({verficationNumberFilter})";
       }
 
+      return $"ID_TRANSACCION IN (SELECT ID_TRANSACCION FROM VW_COF_MOVIMIENTO_SEARCH WHERE {filter})";
     }
+
 
     static private string BuildTransactionTypeFilter(VouchersQuery query) {
       if (query.TransactionTypeUID.Length == 0) {
@@ -216,6 +270,25 @@ namespace Empiria.FinancialAccounting.Vouchers.Adapters {
       var transactionType = TransactionType.Parse(query.TransactionTypeUID);
 
       return $"ID_TIPO_TRANSACCION = {transactionType.Id}";
+    }
+
+
+    static private string BuildVerificationNumberFilter(string verificationNumber) {
+      if (verificationNumber == string.Empty) {
+        return string.Empty;
+      }
+
+      string[] array = verificationNumber.Split(',');
+      string temp = string.Empty;
+
+      foreach (string verifNumber in array) {
+        if (temp.Length != 0) {
+          temp += " OR ";
+        }
+        temp += $"NUMERO_VERIFICACION = '{EmpiriaString.TrimAll(verifNumber)}'";
+      }
+
+      return temp;
     }
 
 
@@ -244,7 +317,7 @@ namespace Empiria.FinancialAccounting.Vouchers.Adapters {
       return filter.ToString();
     }
 
-    #endregion Private methods
+    #endregion Helpers
 
   }  // class VouchersQueryExtensions
 
