@@ -7,14 +7,14 @@
 *  Summary  : Use cases used to retrive and manage accounting vouchers.                                      *
 *                                                                                                            *
 ************************* Copyright(c) La Vía Óntica SC, Ontica LLC and contributors. All rights reserved. **/
-using System;
+
 using System.Collections.Generic;
+using System.Linq;
 
 using Empiria.Services;
 
 using Empiria.FinancialAccounting.Vouchers.Adapters;
 using Empiria.FinancialAccounting.Vouchers.Data;
-using System.Linq;
 
 namespace Empiria.FinancialAccounting.Vouchers.UseCases {
 
@@ -70,7 +70,7 @@ namespace Empiria.FinancialAccounting.Vouchers.UseCases {
 
       foreach (var voucherId in voucherIdsArray) {
         var voucher = VoucherData.GetVouchers(voucherId);
-        
+
         if (voucher.Count == 0) {
           Assertion.EnsureFailed($"Una o más pólizas no contienen movimientos para exportar.");
         }
@@ -93,6 +93,7 @@ namespace Empiria.FinancialAccounting.Vouchers.UseCases {
       return VoucherMapper.MapEntry(voucherEntry);
     }
 
+
     public FixedList<VoucherDescriptorDto> SearchVouchers(VouchersQuery query) {
       Assertion.Require(query, nameof(query));
 
@@ -104,6 +105,16 @@ namespace Empiria.FinancialAccounting.Vouchers.UseCases {
       FixedList<Voucher> list = Voucher.GetList(filter, sort, query.PageSize);
 
       return VoucherMapper.MapToDescriptor(list);
+    }
+
+
+    public FixedList<NamedEntityDto> VoucherStatusList() {
+      return new NamedEntityDto[4] {
+        new NamedEntityDto(VoucherStatus.All.ToString(), "Todas"),
+        new NamedEntityDto(VoucherStatus.Pending.ToString(), "Pendientes"),
+        new NamedEntityDto(VoucherStatus.Revision.ToString(), "Enviadas al supervisor(a)"),
+        new NamedEntityDto(VoucherStatus.Posted.ToString(), "Enviadas al diario"),
+      }.ToFixedList();
     }
 
     #endregion Use cases

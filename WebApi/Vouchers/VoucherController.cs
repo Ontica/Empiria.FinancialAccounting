@@ -72,6 +72,18 @@ namespace Empiria.FinancialAccounting.WebApi.Vouchers {
       }
     }
 
+
+    [HttpGet]
+    [Route("v2/financial-accounting/vouchers/status-list")]
+    public CollectionModel VoucherStatusList() {
+
+      using (var usecases = VoucherUseCases.UseCaseInteractor()) {
+        FixedList<NamedEntityDto> status = usecases.VoucherStatusList();
+
+        return new CollectionModel(base.Request, status);
+      }
+    }
+
     #endregion Web Apis
 
   }  // class VoucherController
