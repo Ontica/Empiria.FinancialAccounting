@@ -171,6 +171,18 @@ namespace Empiria.FinancialAccounting.Vouchers.Adapters {
       // no-op
     }
 
+    public bool ChangeConcept {
+      get; internal set;
+    }
+
+    public bool CloneVoucher {
+      get; internal set;
+    }
+
+    public bool DeleteVoucher {
+      get; internal set;
+    }
+
     public bool EditVoucher {
       get; internal set;
     }

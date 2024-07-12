@@ -140,7 +140,10 @@ namespace Empiria.FinancialAccounting.Vouchers.Adapters {
 
     static private VoucherActionsDto MapVoucherActions(Voucher voucher) {
       if (!voucher.IsOpened) {
-        return new VoucherActionsDto();
+        return new VoucherActionsDto {
+          ChangeConcept = voucher.IsAccountingDateOpened,
+          CloneVoucher = true
+        };
       }
 
       bool isAssignedToCurrentUser = voucher.ElaboratedBy.Equals(Participant.Current);
@@ -149,21 +152,31 @@ namespace Empiria.FinancialAccounting.Vouchers.Adapters {
 
       if (!voucher.IsValid()) {
         return new VoucherActionsDto {
-          EditVoucher = true, // isAssignedToCurrentUser,
+          DeleteVoucher = true,
+          EditVoucher = true,
           ReviewVoucher = true
         };
       }
 
       if (voucher.CanBeClosedBy(Participant.Current)) {
         return new VoucherActionsDto {
+          CloneVoucher = true,
+          DeleteVoucher = true,
           EditVoucher = true,
           SendToLedger = true
         };
 
-      } else if (!wasSentToAnotherUser) {   // && isAssignedToCurrentUser
+      } else if (!wasSentToAnotherUser) {
         return new VoucherActionsDto {
+          CloneVoucher = true,
+          DeleteVoucher = true,
           EditVoucher = true,
           SendToSupervisor = true
+        };
+
+      } else if (wasSentToAnotherUser) {
+        return new VoucherActionsDto {
+          CloneVoucher = true,
         };
 
       } else {
