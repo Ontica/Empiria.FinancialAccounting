@@ -11,6 +11,26 @@ using System;
 
 namespace Empiria.FinancialAccounting.Vouchers.Adapters {
 
+  /// <summary>Data structure used for update voucher concepts and also for protect voucher cloning.</summary>
+  public class UpdateVoucherFields {
+
+    public string Concept {
+      get; set;
+    } = string.Empty;
+
+
+    public DateTime AccountingDate {
+      get; set;
+    } = ExecutionServer.DateMaxValue;
+
+
+    public DateTime RecordingDate {
+      get; set;
+    } = ExecutionServer.DateMaxValue;
+
+  }  // UpdateVoucherFields
+
+
   /// <summary>Data structure that serves as an adapter to create or update vouchers data.</summary>
   public class VoucherFields {
 

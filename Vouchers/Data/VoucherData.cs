@@ -155,6 +155,17 @@ namespace Empiria.FinancialAccounting.Vouchers.Data {
     }
 
 
+    static internal void UpdateVoucherConcept(Voucher voucher) {
+      var sql = "UPDATE COF_TRANSACCION " +
+               $"SET CONCEPTO_TRANSACCION = '{voucher.Concept}' " +
+               $"WHERE (ID_TRANSACCION = {voucher.Id} AND NUMERO_TRANSACCION = '{voucher.Number}')";
+
+      var dataOperation = DataOperation.Parse(sql);
+
+      DataWriter.Execute(dataOperation);
+    }
+
+
     static internal void WriteVoucher(Voucher o) {
       Assertion.Require(o.IsOpened, "Voucher must be opened to be modified in the database.");
 
@@ -183,6 +194,7 @@ namespace Empiria.FinancialAccounting.Vouchers.Data {
 
       DataWriter.Execute(op);
     }
+
 
   }  // class VoucherData
 

@@ -471,6 +471,19 @@ namespace Empiria.FinancialAccounting.Vouchers {
     }
 
 
+    internal void UpdateConcept(string newConcept) {
+      Assertion.Require(newConcept, nameof(newConcept));
+
+      Assertion.Require(!this.IsOpened && this.IsAccountingDateOpened,
+          "Para efectuar el cambio de concepto, la póliza debe estar cerrada " +
+          "y su fecha de afectación debe estar dentro de un período contable abierto.");
+
+      this.Concept = EmpiriaString.TrimAll(newConcept);
+
+      VoucherData.UpdateVoucherConcept(this);
+    }
+
+
     internal void UpdateEntry(VoucherEntry entry, VoucherEntryFields fields) {
       Assertion.Require(entry, nameof(entry));
       Assertion.Require(this.IsOpened, "No se puede actualizar el movimiento porque la póliza ya está cerrada.");

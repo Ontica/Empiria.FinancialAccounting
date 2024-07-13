@@ -204,6 +204,20 @@ namespace Empiria.FinancialAccounting.WebApi.Vouchers {
 
 
     [HttpPut, HttpPatch]
+    [Route("v2/financial-accounting/vouchers/{voucherId:int}/update-concept")]
+    public SingleObjectModel UpdateVoucherConcept([FromUri] long voucherId,
+                                                  [FromBody] UpdateVoucherFields fields) {
+      base.RequireBody(fields);
+
+      using (var usecases = VoucherEditionUseCases.UseCaseInteractor()) {
+        VoucherDto voucher = usecases.UpdateVoucherConcept(voucherId, fields);
+
+        return new SingleObjectModel(base.Request, voucher);
+      }
+    }
+
+
+    [HttpPut, HttpPatch]
     [Route("v2/financial-accounting/vouchers/{voucherId:int}/entries/{voucherEntryId:int}")]
     public SingleObjectModel UpdateVoucherEntry([FromUri] long voucherId,
                                                 [FromUri] long voucherEntryId,

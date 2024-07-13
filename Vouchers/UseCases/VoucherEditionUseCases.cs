@@ -319,6 +319,21 @@ namespace Empiria.FinancialAccounting.Vouchers.UseCases {
     }
 
 
+    public VoucherDto UpdateVoucherConcept(long voucherId, UpdateVoucherFields fields) {
+      Assertion.Require(voucherId > 0, nameof(voucherId));
+      Assertion.Require(fields, nameof(fields));
+
+      var voucher = Voucher.Parse(voucherId);
+
+      Assertion.Require(fields.AccountingDate == voucher.AccountingDate, "Unrecognized AccountingDate value.");
+      Assertion.Require(fields.RecordingDate == voucher.RecordingDate, "Unrecognized RecordingDate value.");
+
+      voucher.UpdateConcept(fields.Concept);
+
+      return VoucherMapper.Map(voucher);
+    }
+
+
     public VoucherDto UpdateEntry(long voucherId, long voucherEntryId,
                                   VoucherEntryFields fields) {
       Assertion.Require(voucherId > 0, "voucherId");
