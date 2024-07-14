@@ -84,7 +84,7 @@ namespace Empiria.FinancialAccounting.Vouchers.Adapters {
       get; internal set;
     }
 
-    public VoucherActionsDto Actions {
+    public VoucherActions Actions {
       get; internal set;
     }
 
@@ -163,45 +163,5 @@ namespace Empiria.FinancialAccounting.Vouchers.Adapters {
     }
 
   }  // class VoucherEntryDto
-
-
-  public class VoucherActionsDto {
-
-    internal VoucherActionsDto() {
-      // no-op
-    }
-
-    public bool ChangeConcept {
-      get; internal set;
-    }
-
-    public bool CloneVoucher {
-      get; internal set;
-    }
-
-    public bool DeleteVoucher {
-      get; internal set;
-    }
-
-    public bool EditVoucher {
-      get; internal set;
-    }
-
-
-    public bool ReviewVoucher {
-      get; internal set;
-    }
-
-
-    public bool SendToLedger {
-      get; internal set;
-    }
-
-
-    public bool SendToSupervisor {
-      get; internal set;
-    }
-
-  }
 
 }  // namespace Empiria.FinancialAccounting.Vouchers.Adapters

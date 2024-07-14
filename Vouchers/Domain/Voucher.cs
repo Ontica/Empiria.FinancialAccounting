@@ -17,6 +17,48 @@ using Empiria.FinancialAccounting.Vouchers.Data;
 
 namespace Empiria.FinancialAccounting.Vouchers {
 
+  /// <summary>Contains edition and opeeration flags for an accounting voucher.</summary>
+  public class VoucherActions {
+
+    internal VoucherActions() {
+      // no-op
+    }
+
+    public bool ChangeConcept {
+      get; internal set;
+    }
+
+    public bool CloneVoucher {
+      get; internal set;
+    }
+
+    public bool DeleteVoucher {
+      get; internal set;
+    }
+
+    public bool EditVoucher {
+      get; internal set;
+    }
+
+
+    public bool ReviewVoucher {
+      get; internal set;
+    }
+
+
+    public bool SendToLedger {
+      get; internal set;
+    }
+
+
+    public bool SendToSupervisor {
+      get; internal set;
+    }
+
+  }  // VoucherActions
+
+
+
   /// <summary>Represents an accounting voucher.</summary>
   internal class Voucher {
 
@@ -193,6 +235,7 @@ namespace Empiria.FinancialAccounting.Vouchers {
       }
     }
 
+
     public bool SentToSupervisor {
       get {
         return !AuthorizedBy.Equals(Participant.Empty);
@@ -215,6 +258,55 @@ namespace Empiria.FinancialAccounting.Vouchers {
     internal bool IsAccountingDateOpened {
       get {
         return this.Ledger.IsAccountingDateOpened(this.AccountingDate);
+      }
+    }
+
+
+    public VoucherActions Actions {
+      get {
+        if (this.IsClosed) {
+          return new VoucherActions {
+            ChangeConcept = this.IsAccountingDateOpened,
+            CloneVoucher = true
+          };
+        }
+
+        bool isAssignedToCurrentUser = this.ElaboratedBy.Equals(Participant.Current);
+        bool wasSentToAnotherUser = !this.AuthorizedBy.IsEmptyInstance &&
+                                    !this.AuthorizedBy.Equals(Participant.Current);
+
+        if (!this.IsValid()) {
+          return new VoucherActions {
+            DeleteVoucher = true,
+            EditVoucher = true,
+            ReviewVoucher = true
+          };
+        }
+
+        if (this.CanBeClosedBy(Participant.Current)) {
+          return new VoucherActions {
+            CloneVoucher = true,
+            DeleteVoucher = true,
+            EditVoucher = true,
+            SendToLedger = true
+          };
+
+        } else if (!wasSentToAnotherUser) {
+          return new VoucherActions {
+            CloneVoucher = true,
+            DeleteVoucher = true,
+            EditVoucher = true,
+            SendToSupervisor = true
+          };
+
+        } else if (wasSentToAnotherUser) {
+          return new VoucherActions {
+            CloneVoucher = true,
+          };
+
+        } else {
+          return new VoucherActions();
+        }
       }
     }
 
@@ -481,7 +573,7 @@ namespace Empiria.FinancialAccounting.Vouchers {
     internal void UpdateConcept(string newConcept) {
       Assertion.Require(newConcept, nameof(newConcept));
 
-      Assertion.Require(this.IsClosed && this.IsAccountingDateOpened,
+      Assertion.Require(this.Actions.ChangeConcept,
           "Para efectuar el cambio de concepto, la póliza debe estar cerrada " +
           "y su fecha de afectación debe estar dentro de un período contable abierto.");
 

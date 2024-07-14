@@ -36,7 +36,7 @@ namespace Empiria.FinancialAccounting.Vouchers.Adapters {
         Status = voucher.StatusName,
         IsClosed = voucher.IsClosed,
         AllEntriesAreInBaseCurrency = !voucher.Entries.Contains(x => !x.Currency.Equals(voucher.Ledger.BaseCurrency)),
-        Actions = MapVoucherActions(voucher),
+        Actions = voucher.Actions,
         Entries = MapToVoucherEntriesDescriptorWithTotals(voucher)
       };
 
@@ -136,53 +136,6 @@ namespace Empiria.FinancialAccounting.Vouchers.Adapters {
 
 
     #region Helpers
-
-
-    static private VoucherActionsDto MapVoucherActions(Voucher voucher) {
-      if (voucher.IsClosed) {
-        return new VoucherActionsDto {
-          ChangeConcept = voucher.IsAccountingDateOpened,
-          CloneVoucher = true
-        };
-      }
-
-      bool isAssignedToCurrentUser = voucher.ElaboratedBy.Equals(Participant.Current);
-      bool wasSentToAnotherUser = !voucher.AuthorizedBy.IsEmptyInstance &&
-                                  !voucher.AuthorizedBy.Equals(Participant.Current);
-
-      if (!voucher.IsValid()) {
-        return new VoucherActionsDto {
-          DeleteVoucher = true,
-          EditVoucher = true,
-          ReviewVoucher = true
-        };
-      }
-
-      if (voucher.CanBeClosedBy(Participant.Current)) {
-        return new VoucherActionsDto {
-          CloneVoucher = true,
-          DeleteVoucher = true,
-          EditVoucher = true,
-          SendToLedger = true
-        };
-
-      } else if (!wasSentToAnotherUser) {
-        return new VoucherActionsDto {
-          CloneVoucher = true,
-          DeleteVoucher = true,
-          EditVoucher = true,
-          SendToSupervisor = true
-        };
-
-      } else if (wasSentToAnotherUser) {
-        return new VoucherActionsDto {
-          CloneVoucher = true,
-        };
-
-      } else {
-        return new VoucherActionsDto();
-      }
-    }
 
 
     static private FixedList<VoucherEntryDescriptorDto> MapToVoucherEntriesDescriptorWithTotals(Voucher voucher) {
