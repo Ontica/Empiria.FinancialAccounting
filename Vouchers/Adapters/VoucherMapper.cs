@@ -32,9 +32,9 @@ namespace Empiria.FinancialAccounting.Vouchers.Adapters {
         RecordingDate = voucher.RecordingDate,
         ElaboratedBy = voucher.ElaboratedBy.Name,
         AuthorizedBy = voucher.AuthorizedBy.Name,
-        ClosedBy = !voucher.IsOpened ? voucher.ClosedBy.Name : string.Empty,
+        ClosedBy = voucher.IsClosed ? voucher.ClosedBy.Name : string.Empty,
         Status = voucher.StatusName,
-        IsClosed = !voucher.IsOpened,
+        IsClosed = voucher.IsClosed,
         AllEntriesAreInBaseCurrency = !voucher.Entries.Contains(x => !x.Currency.Equals(voucher.Ledger.BaseCurrency)),
         Actions = MapVoucherActions(voucher),
         Entries = MapToVoucherEntriesDescriptorWithTotals(voucher)
@@ -139,7 +139,7 @@ namespace Empiria.FinancialAccounting.Vouchers.Adapters {
 
 
     static private VoucherActionsDto MapVoucherActions(Voucher voucher) {
-      if (!voucher.IsOpened) {
+      if (voucher.IsClosed) {
         return new VoucherActionsDto {
           ChangeConcept = voucher.IsAccountingDateOpened,
           CloneVoucher = true

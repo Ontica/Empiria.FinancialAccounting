@@ -145,6 +145,13 @@ namespace Empiria.FinancialAccounting.Vouchers {
     }
 
 
+    public bool IsClosed {
+      get {
+        return !IsOpened;
+      }
+    }
+
+
     [DataField("ESTA_ABIERTA", ConvertFrom = typeof(int))]
     public bool IsOpened {
       get;
@@ -195,7 +202,7 @@ namespace Empiria.FinancialAccounting.Vouchers {
 
     public string StatusName {
       get {
-        if (!IsOpened) {
+        if (IsClosed) {
           return "Enviada al diario";
         }
         if (IsSupervisor(this.AuthorizedBy)) {
@@ -232,7 +239,7 @@ namespace Empiria.FinancialAccounting.Vouchers {
 
 
     internal bool CanBeClosedBy(Participant participant) {
-      if (!IsOpened) {
+      if (IsClosed) {
         return false;
       }
 
@@ -373,7 +380,7 @@ namespace Empiria.FinancialAccounting.Vouchers {
 
 
     public bool IsValid() {
-      if (!this.IsOpened) {
+      if (this.IsClosed) {
         return true;
       }
 
@@ -474,7 +481,7 @@ namespace Empiria.FinancialAccounting.Vouchers {
     internal void UpdateConcept(string newConcept) {
       Assertion.Require(newConcept, nameof(newConcept));
 
-      Assertion.Require(!this.IsOpened && this.IsAccountingDateOpened,
+      Assertion.Require(this.IsClosed && this.IsAccountingDateOpened,
           "Para efectuar el cambio de concepto, la póliza debe estar cerrada " +
           "y su fecha de afectación debe estar dentro de un período contable abierto.");
 

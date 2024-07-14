@@ -167,7 +167,7 @@ namespace Empiria.FinancialAccounting.Vouchers.Data {
 
 
     static internal void WriteVoucher(Voucher o) {
-      Assertion.Require(o.IsOpened, "Voucher must be opened to be modified in the database.");
+      Assertion.Require(o.IsOpened, "Voucher must be open to be modified in the database.");
 
       var op = DataOperation.Parse("write_cof_transaccion", o.Id, o.Number,
                                     o.Ledger.Id, o.FunctionalArea.Id,
@@ -181,7 +181,7 @@ namespace Empiria.FinancialAccounting.Vouchers.Data {
 
 
     static internal void WriteVoucherEntry(VoucherEntry o) {
-      Assertion.Require(o.Voucher.IsOpened, "Voucher must be opened to be modified in the database.");
+      Assertion.Require(o.Voucher.IsOpened, "Voucher must be open to be modified in the database.");
 
       var op = DataOperation.Parse("write_cof_movimiento_tmp", o.Id, o.Voucher.Id, o.LedgerAccount.Id,
                                     o.SubledgerAccount.IsEmptyInstance ? 0 : o.SubledgerAccount.Id,

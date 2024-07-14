@@ -113,7 +113,7 @@ namespace Empiria.FinancialAccounting.Vouchers.UseCases {
       foreach (var voucherId in voucherIdsArray) {
         var voucher = Voucher.Parse(voucherId);
 
-        if (!voucher.IsOpened) {
+        if (voucher.IsClosed) {
           continue;
         }
 
@@ -142,7 +142,7 @@ namespace Empiria.FinancialAccounting.Vouchers.UseCases {
       foreach (var voucherId in voucherIdsArray) {
         var voucher = Voucher.Parse(voucherId);
 
-        if (!voucher.IsOpened) {
+        if (voucher.IsClosed) {
           continue;
 
         } else if (voucher.SentToSupervisor && !voucher.IsSupervisor()) {
@@ -177,7 +177,7 @@ namespace Empiria.FinancialAccounting.Vouchers.UseCases {
       foreach (var voucherId in voucherIdsArray) {
         var voucher = Voucher.Parse(voucherId);
 
-        if (!voucher.IsOpened) {
+        if (voucher.IsClosed) {
           continue;
         }
 
