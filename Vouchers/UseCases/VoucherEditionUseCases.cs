@@ -104,6 +104,30 @@ namespace Empiria.FinancialAccounting.Vouchers.UseCases {
     }
 
 
+    public string BulkClone(int[] voucherIdsArray) {
+      Assertion.Require(voucherIdsArray, "voucherIdsArray");
+      Assertion.Require(voucherIdsArray.Length > 0, "voucherIdsArray must have one or more values.");
+
+      int clonedCounter = 0;
+
+      foreach (var voucherId in voucherIdsArray) {
+        var voucher = Voucher.Parse(voucherId);
+
+        if (!voucher.Actions.CloneVoucher) {
+          continue;
+        }
+
+        CloneVoucher(voucherId, new UpdateVoucherFields {
+                                    AccountingDate = voucher.AccountingDate,
+                                    Concept = voucher.Concept,
+                                    RecordingDate = voucher.RecordingDate});
+        clonedCounter++;
+      }
+
+      return $"Se clonaron {clonedCounter} pólizas de {voucherIdsArray.Length} seleccionadas.";
+    }
+
+
     public string BulkClose(int[] voucherIdsArray) {
       Assertion.Require(voucherIdsArray, "voucherIdsArray");
       Assertion.Require(voucherIdsArray.Length > 0, "voucherIdsArray must have one or more values.");
@@ -194,6 +218,35 @@ namespace Empiria.FinancialAccounting.Vouchers.UseCases {
       }
 
       return $"Se enviaron {sentCounter} pólizas al supervisor de {voucherIdsArray.Length} seleccionadas.";
+    }
+
+
+    public VoucherDto CloneVoucher(long voucherId, UpdateVoucherFields fields) {
+      Assertion.Require(voucherId > 0, "voucherId");
+      Assertion.Require(fields, "fields");
+
+      var originalVoucher = Voucher.Parse(voucherId);
+
+      Assertion.Require(fields.AccountingDate == originalVoucher.AccountingDate, "Unrecognized AccountingDate value.");
+      Assertion.Require(fields.RecordingDate == originalVoucher.RecordingDate, "Unrecognized RecordingDate value.");
+      Assertion.Require(fields.Concept == originalVoucher.Concept, "Unrecognized Concept value.");
+
+      VoucherFields clonedVoucherFields = VoucherMapper.MapToVoucherFields(originalVoucher);
+
+      clonedVoucherFields.ElaboratedById = Participant.Empty.Id;
+      clonedVoucherFields.RecordingDate = DateTime.Today;
+
+      Voucher clonedVoucher = new Voucher(clonedVoucherFields);
+
+      clonedVoucher.Save();
+
+      foreach (var entry in originalVoucher.Entries) {
+        VoucherEntryFields clonedEntryFields = VoucherMapper.MapToVoucherEntryFields(entry);
+
+        clonedVoucher.AppendAndSaveEntry(clonedEntryFields);
+      }
+
+      return VoucherMapper.Map(clonedVoucher);
     }
 
 

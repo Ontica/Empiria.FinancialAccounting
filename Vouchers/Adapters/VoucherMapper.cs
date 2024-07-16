@@ -44,6 +44,20 @@ namespace Empiria.FinancialAccounting.Vouchers.Adapters {
     }
 
 
+    static internal VoucherFields MapToVoucherFields(Voucher voucher) {
+      return new VoucherFields {
+         AccountingDate = voucher.AccountingDate,
+         Concept = voucher.Concept,
+         ElaboratedById = voucher.ElaboratedBy.Id,
+         FunctionalAreaId = voucher.FunctionalArea.Id,
+         LedgerUID = voucher.Ledger.UID,
+         RecordingDate = voucher.RecordingDate,
+         TransactionTypeUID = voucher.TransactionType.UID,
+         VoucherTypeUID = voucher.VoucherType.UID
+      };
+    }
+
+
     static internal VoucherEntryFields MapToVoucherEntryFields(VoucherEntry entry) {
       return new VoucherEntryFields {
          Amount = entry.Amount,
@@ -137,7 +151,6 @@ namespace Empiria.FinancialAccounting.Vouchers.Adapters {
 
     #region Helpers
 
-
     static private FixedList<VoucherEntryDescriptorDto> MapToVoucherEntriesDescriptorWithTotals(Voucher voucher) {
       var list = new List<VoucherEntryDescriptorDto>(voucher.Entries.Select((x) => MapToDescriptor(x)));
 
@@ -165,7 +178,6 @@ namespace Empiria.FinancialAccounting.Vouchers.Adapters {
         Debit = total.DebitTotal
       };
     }
-
 
     #endregion Helpers
 

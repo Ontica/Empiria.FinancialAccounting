@@ -106,6 +106,20 @@ namespace Empiria.FinancialAccounting.WebApi.Vouchers {
     }
 
 
+    [HttpPost]
+    [Route("v2/financial-accounting/vouchers/{voucherId:int}/clone")]
+    public SingleObjectModel CloneVoucher([FromUri] long voucherId,
+                                          [FromBody] UpdateVoucherFields fields) {
+      base.RequireBody(fields);
+
+      using (var usecases = VoucherEditionUseCases.UseCaseInteractor()) {
+        VoucherDto voucher = usecases.CloneVoucher(voucherId, fields);
+
+        return new SingleObjectModel(base.Request, voucher);
+      }
+    }
+
+
     [HttpDelete]
     [Route("v2/financial-accounting/vouchers/{voucherId:int}")]
     public NoDataModel DeleteVoucher([FromUri] long voucherId) {
@@ -151,7 +165,10 @@ namespace Empiria.FinancialAccounting.WebApi.Vouchers {
       using (var usecases = VoucherEditionUseCases.UseCaseInteractor()) {
         var result = new VoucherBulkOperationResult();
 
-        if (operationName == "close") {
+        if (operationName == "clone") {
+          result.Message = usecases.BulkClone(command.Vouchers);
+
+        } else if (operationName == "close") {
           result.Message = usecases.BulkClose(command.Vouchers);
 
         } else if (operationName == "delete") {
