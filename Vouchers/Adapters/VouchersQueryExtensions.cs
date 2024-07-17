@@ -217,13 +217,13 @@ namespace Empiria.FinancialAccounting.Vouchers.Adapters {
         return string.Empty;
       }
       if (status == VoucherStatus.Posted) {
-        return "ESTA_ABIERTA <> 0";
+        return "ESTA_ABIERTA = 0";
       }
       if (status == VoucherStatus.Pending) {
-        return "ESTA_ABIERTA = 0 AND ID_AUTORIZADA_POR = 0";
+        return "ESTA_ABIERTA <> 0 AND ID_AUTORIZADA_POR = 0";
       }
       if (status == VoucherStatus.Revision) {
-        return "ESTA_ABIERTA = 0 AND ID_AUTORIZADA_POR > 0";
+        return "ESTA_ABIERTA <> 0 AND ID_AUTORIZADA_POR > 0";
       }
 
       throw Assertion.EnsureNoReachThisCode($"Unrecognized status {status}.");
