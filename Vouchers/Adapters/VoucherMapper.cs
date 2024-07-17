@@ -110,6 +110,22 @@ namespace Empiria.FinancialAccounting.Vouchers.Adapters {
       return new FixedList<VoucherDescriptorDto>(list.Select((x) => MapToDescriptor(x)));
     }
 
+    static internal VoucherDescriptorDto MapToDescriptor(VoucherDto dto) {
+      return new VoucherDescriptorDto {
+        Id = dto.Id,
+        AccountingDate = dto.AccountingDate,
+        AuthorizedBy = dto.AuthorizedBy,
+        Concept = dto.Concept,
+        ElaboratedBy = dto.ElaboratedBy,
+        LedgerName = dto.Ledger.Name,
+        Number = dto.Number,
+        RecordingDate = dto.RecordingDate,
+        SourceName = dto.FunctionalArea.Name,
+        Status = dto.Status,
+        TransactionTypeName = dto.TransactionType.Name,
+        VoucherTypeName = dto.VoucherType.Name
+      };
+    }
 
     static private VoucherDescriptorDto MapToDescriptor(Voucher voucher) {
       return new VoucherDescriptorDto {

@@ -8,6 +8,7 @@
 *                                                                                                            *
 ************************* Copyright(c) La Vía Óntica SC, Ontica LLC and contributors. All rights reserved. **/
 using System;
+using System.Collections.Generic;
 
 using Empiria.Services;
 
@@ -104,11 +105,13 @@ namespace Empiria.FinancialAccounting.Vouchers.UseCases {
     }
 
 
-    public string BulkClone(int[] voucherIdsArray) {
+    public FixedList<VoucherDescriptorDto> BulkClone(int[] voucherIdsArray) {
       Assertion.Require(voucherIdsArray, "voucherIdsArray");
       Assertion.Require(voucherIdsArray.Length > 0, "voucherIdsArray must have one or more values.");
 
       int clonedCounter = 0;
+
+      var returnList = new List<VoucherDescriptorDto>(voucherIdsArray.Length);
 
       foreach (var voucherId in voucherIdsArray) {
         var voucher = Voucher.Parse(voucherId);
@@ -117,14 +120,17 @@ namespace Empiria.FinancialAccounting.Vouchers.UseCases {
           continue;
         }
 
-        CloneVoucher(voucherId, new UpdateVoucherFields {
-                                    AccountingDate = voucher.AccountingDate,
-                                    Concept = voucher.Concept,
-                                    RecordingDate = voucher.RecordingDate});
+        VoucherDto clonedVoucher = CloneVoucher(voucherId, new UpdateVoucherFields {
+                                                AccountingDate = voucher.AccountingDate,
+                                                Concept = voucher.Concept,
+                                                RecordingDate = voucher.RecordingDate});
+
+        returnList.Add(VoucherMapper.MapToDescriptor(clonedVoucher));
+
         clonedCounter++;
       }
 
-      return $"Se clonaron {clonedCounter} pólizas de {voucherIdsArray.Length} seleccionadas.";
+      return returnList.ToFixedList();
     }
 
 
@@ -235,6 +241,7 @@ namespace Empiria.FinancialAccounting.Vouchers.UseCases {
 
       clonedVoucherFields.ElaboratedById = Participant.Empty.Id;
       clonedVoucherFields.RecordingDate = DateTime.Today;
+      clonedVoucherFields.Concept += " (copia)";
 
       Voucher clonedVoucher = new Voucher(clonedVoucherFields);
 
@@ -242,6 +249,8 @@ namespace Empiria.FinancialAccounting.Vouchers.UseCases {
 
       foreach (var entry in originalVoucher.Entries) {
         VoucherEntryFields clonedEntryFields = VoucherMapper.MapToVoucherEntryFields(entry);
+
+        clonedEntryFields.VoucherId = clonedVoucher.Id;
 
         clonedVoucher.AppendAndSaveEntry(clonedEntryFields);
       }

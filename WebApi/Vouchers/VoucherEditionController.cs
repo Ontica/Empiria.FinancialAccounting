@@ -166,8 +166,9 @@ namespace Empiria.FinancialAccounting.WebApi.Vouchers {
         var result = new VoucherBulkOperationResult();
 
         if (operationName == "clone") {
-          result.Message = usecases.BulkClone(command.Vouchers);
-
+          result.Vouchers = usecases.BulkClone(command.Vouchers);
+          result.Message = $"Se clonaron {result.Vouchers.Count} pólizas " +
+                           $"de {command.Vouchers.Length} seleccionadas.";
         } else if (operationName == "close") {
           result.Message = usecases.BulkClose(command.Vouchers);
 
@@ -330,8 +331,11 @@ namespace Empiria.FinancialAccounting.WebApi.Vouchers {
       get; internal set;
     }
 
-
     public FileDto File {
+      get; internal set;
+    }
+
+    public FixedList<VoucherDescriptorDto> Vouchers {
       get; internal set;
     }
 
