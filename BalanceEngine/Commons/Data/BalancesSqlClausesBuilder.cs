@@ -90,11 +90,9 @@ namespace Empiria.FinancialAccounting.BalanceEngine.Data {
 
       private string GetAccountFilterString() {
         
-        if (
-            _query.TrialBalanceType == TrialBalanceType.SaldosPorCuenta ||
-            _query.TrialBalanceType == TrialBalanceType.SaldosPorCuentaConsultaRapida //||
-            //_query.TrialBalanceType == TrialBalanceType.SaldosPorAuxiliar
-            ) {
+        if (_query.TrialBalanceType == TrialBalanceType.SaldosPorCuenta ||
+            _query.TrialBalanceType == TrialBalanceType.SaldosPorCuentaConsultaRapida ||
+            _query.TrialBalanceType == TrialBalanceType.SaldosPorAuxiliar) {
 
           string rangeFilter = GetAccountsFilter();
 
@@ -284,11 +282,9 @@ namespace Empiria.FinancialAccounting.BalanceEngine.Data {
 
       private string GetAccountRangeByTrialBalanceType() {
 
-        if (
-          _query.TrialBalanceType == TrialBalanceType.SaldosPorCuenta || 
-          _query.TrialBalanceType == TrialBalanceType.SaldosPorCuentaConsultaRapida //||
-            //_query.TrialBalanceType == TrialBalanceType.SaldosPorAuxiliar
-            ) {
+        if (_query.TrialBalanceType == TrialBalanceType.SaldosPorCuenta ||
+            _query.TrialBalanceType == TrialBalanceType.SaldosPorCuentaConsultaRapida ||
+            _query.TrialBalanceType == TrialBalanceType.SaldosPorAuxiliar) {
 
           return GetAccountsFilter();
         } else {
@@ -344,9 +340,8 @@ namespace Empiria.FinancialAccounting.BalanceEngine.Data {
 
       private string GetSubledgerAccountsFilterByTrialBalanceType() {
 
-        if (
-          _query.TrialBalanceType == TrialBalanceType.SaldosPorCuenta ||
-            //_query.TrialBalanceType == TrialBalanceType.SaldosPorAuxiliar ||
+        if (_query.TrialBalanceType == TrialBalanceType.SaldosPorCuenta ||
+            _query.TrialBalanceType == TrialBalanceType.SaldosPorAuxiliar ||
             _query.TrialBalanceType == TrialBalanceType.SaldosPorAuxiliarConsultaRapida) {
 
           return GetSubledgerAccountsFilters();

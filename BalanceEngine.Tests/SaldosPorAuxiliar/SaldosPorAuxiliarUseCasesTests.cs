@@ -47,7 +47,40 @@ namespace Empiria.FinancialAccounting.Tests.BalanceEngine.SaldosPorAuxiliar {
 
     }
 
+
+    [Fact]
+    public async Task MustBeMultipleSubledgerAccountBalancesTest() {
+
+      TrialBalanceQuery query = GetTrialBalanceQuery();
+
+      using (var usecase = TrialBalanceUseCases.UseCaseInteractor()) {
+        SaldosPorAuxiliarDto sut = await usecase.BuildSaldosPorAuxiliar(query);
+
+        Assert.True(sut.Entries.Count > 0);
+      }
+
+    }
+
     #endregion Theories
+
+
+    #region Helpers
+
+    private TrialBalanceQuery GetTrialBalanceQuery() {
+      TrialBalanceQuery query = new TrialBalanceQuery {
+        TrialBalanceType = FinancialAccounting.BalanceEngine.TrialBalanceType.SaldosPorAuxiliar,
+        AccountsChartUID = "47ec2ec7-0f4f-482e-9799-c23107b60d8a",
+        BalancesType = FinancialAccounting.BalanceEngine.BalancesType.WithCurrentBalance,
+        ShowCascadeBalances = true,
+        WithSubledgerAccount = true,
+        InitialPeriod = { FromDate = new DateTime(2023, 06, 01), ToDate = new DateTime(2023, 06, 30) },
+        Accounts = new string[] { "1.05.01.01.05.01", "5.01.05.01.01.05.02" },
+        SubledgerAccounts = new string[] { "90000000009011515", "90000000009010970" } //,"90000000009010970",
+      };
+      return query;
+    }
+
+    #endregion Helpers
 
   } // class SaldosPorAuxiliarUseCasesTests
 
