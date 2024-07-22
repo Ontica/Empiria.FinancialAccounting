@@ -38,7 +38,9 @@ namespace Empiria.FinancialAccounting.Tests.BalanceEngine.BalanceExplorer {
 
       BalanceExplorerQuery query = explorerTest.GetDefaultBalanceExplorerQuery();
       query.TrialBalanceType = TrialBalanceType.SaldosPorAuxiliarConsultaRapida;
-      query.SubledgerAccount = "0000000001010636";
+      query.SubledgerAccount = "10000000001010636";
+      query.SubledgerAccounts = new string[] { "90000000009011515", "90000000000122235" };//
+      query.WithSubledgerAccount = true;
 
       BalanceExplorerDto sut = await BalanceEngineProxy.BuildBalanceExplorer(query);
 
