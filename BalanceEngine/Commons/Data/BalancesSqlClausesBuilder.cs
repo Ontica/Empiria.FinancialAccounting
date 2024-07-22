@@ -17,6 +17,7 @@ using Empiria.FinancialAccounting.BalanceEngine.Adapters;
 namespace Empiria.FinancialAccounting.BalanceEngine.Data {
 
   sealed internal partial class BalancesSqlClauses {
+    
 
     /// <summary>Builds BalancesSqlClauses instances.</summary>
     sealed private class BalancesSqlClausesBuilder {
@@ -88,20 +89,37 @@ namespace Empiria.FinancialAccounting.BalanceEngine.Data {
       #region Helpers
 
       private string GetAccountFilterString() {
-        string rangeFilter = GetAccountRangeFilter();
+        
+        if (
+            //_query.TrialBalanceType == TrialBalanceType.SaldosPorCuenta ||
+            _query.TrialBalanceType == TrialBalanceType.SaldosPorCuentaConsultaRapida //||
+            //_query.TrialBalanceType == TrialBalanceType.SaldosPorAuxiliar
+            ) {
 
-        var filter = new Filter(rangeFilter);
+          string rangeFilter = GetAccountsFilter();
 
-        return filter.ToString().Length > 0 ? $"AND {filter}" : "";
+          var filter = new Filter(rangeFilter);
+
+          return filter.ToString().Length > 0 ? $"AND ({filter})" : "";
+          
+        } else {
+
+          string rangeFilter = GetAccountRangeFilter();
+
+          var filter = new Filter(rangeFilter);
+
+          return filter.ToString().Length > 0 ? $"AND {filter}" : "";
+        }
+        
       }
 
-
+      
       private string GetFilterString() {
         string ledgerFilter = GetLedgerFilter();
         string sectorFilter = GetSectorFilter();
         string currencyFilter = GetCurrencyFilter();
-        string accountRangeFilter = GetAccountRangeFilter();
-        string subledgerAccountFilter = GetSubledgerAccountFilter();
+        string accountRangeFilter = GetAccountRangeByTrialBalanceType();
+        string subledgerAccountFilter = GetSubledgerAccountsFilterByTrialBalanceType();
 
         var filter = new Filter(ledgerFilter);
 
@@ -264,6 +282,22 @@ namespace Empiria.FinancialAccounting.BalanceEngine.Data {
       }
 
 
+      private string GetAccountRangeByTrialBalanceType() {
+
+        if (
+          //_query.TrialBalanceType == TrialBalanceType.SaldosPorCuenta || 
+          _query.TrialBalanceType == TrialBalanceType.SaldosPorCuentaConsultaRapida //||
+            //_query.TrialBalanceType == TrialBalanceType.SaldosPorAuxiliar
+            ) {
+
+          return GetAccountsFilter();
+        } else {
+          return GetAccountRangeFilter();
+        }
+
+      }
+
+
       private string GetAccountRangeFilter() {
 
         if (_query.FromAccount.Length == 0 && _query.ToAccount.Length == 0) {
@@ -291,11 +325,58 @@ namespace Empiria.FinancialAccounting.BalanceEngine.Data {
       }
 
 
+      private string GetAccountsFilter() {
+
+        string accountsFilter = string.Empty;
+
+        int count = 0;
+        foreach (var account in _query.Accounts) {
+
+          accountsFilter += $"{(count > 0 ? "OR " : "")} NUMERO_CUENTA_ESTANDAR LIKE '{account}%' ";
+          count += 1;
+          accountsFilter += $"{(count > 0 ? "OR " : "")} NOMBRE_CUENTA_ESTANDAR LIKE '%{account}%' ";
+          
+        }
+        
+        return accountsFilter != string.Empty ? $"({accountsFilter})" : "";
+      }
+
+
+      private string GetSubledgerAccountsFilterByTrialBalanceType() {
+
+        if (_query.TrialBalanceType == TrialBalanceType.SaldosPorCuenta ||
+            _query.TrialBalanceType == TrialBalanceType.SaldosPorAuxiliar ||
+            _query.TrialBalanceType == TrialBalanceType.SaldosPorAuxiliarConsultaRapida) {
+
+          return GetSubledgerAccountsFilters();
+        } else {
+
+          return GetSubledgerAccountFilter();
+        }
+
+      }
+
+
+      private string GetSubledgerAccountsFilters() {
+
+        string subledgerAccountsFilter = string.Empty;
+
+        int count = 0;
+        foreach (var subledgerAccount in _query.SubledgerAccounts) {
+
+          subledgerAccountsFilter += $"{(count > 0 ? "OR " : "")} NUMERO_CUENTA_AUXILIAR LIKE '%{subledgerAccount}' ";
+          count += 1;
+          subledgerAccountsFilter += $"{(count > 0 ? "OR " : "")} NOMBRE_CUENTA_AUXILIAR LIKE '%{subledgerAccount}%' ";
+
+        }
+        return subledgerAccountsFilter != string.Empty ? $"({subledgerAccountsFilter})" : "";
+      }
+
+
       private string GetSubledgerAccountFilter() {
         if (_query.SubledgerAccount.Length == 0) {
           return string.Empty;
         }
-
         return $"NUMERO_CUENTA_AUXILIAR LIKE '%{_query.SubledgerAccount}'";
       }
 

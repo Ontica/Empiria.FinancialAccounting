@@ -96,6 +96,11 @@ namespace Empiria.FinancialAccounting.BalanceEngine.Data {
     } = string.Empty;
 
 
+    public string AccountsArrayFilters {
+      get; private set;
+    }
+
+
     public string InitialGrouping {
       get;
       private set;
@@ -127,7 +132,9 @@ namespace Empiria.FinancialAccounting.BalanceEngine.Data {
       return new TrialBalanceQuery {
         AccountsChartUID      = query.AccountsChartUID,
         FromAccount           = query.FromAccount,
+        Accounts              = query.Accounts,
         SubledgerAccount      = query.SubledgerAccount,
+        SubledgerAccounts     = query.SubledgerAccounts,
         TrialBalanceType      = query.TrialBalanceType,
         BalancesType          = query.BalancesType,
         Ledgers               = query.Ledgers,

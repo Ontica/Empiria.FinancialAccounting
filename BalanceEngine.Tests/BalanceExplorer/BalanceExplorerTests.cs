@@ -45,13 +45,14 @@ namespace Empiria.FinancialAccounting.Tests.BalanceEngine.BalanceExplorer {
       return new BalanceExplorerQuery {
         TrialBalanceType = TrialBalanceType.SaldosPorCuentaConsultaRapida,
         AccountsChartUID = "47ec2ec7-0f4f-482e-9799-c23107b60d8a",
-        FromAccount = "1",
+        //FromAccount = "1.05.01.03.02.03.01",
+        //FromAccounts = new string[] { "1.05.01.01.06.01", "1.05.01.01.06.02", "1.05.01.02.02.01.01", "1.05.01.02.02.01.02" },
         WithAllAccounts = false,
         WithSubledgerAccount = false,
         Ledgers = new string[] { },
         InitialPeriod = {
-          FromDate = new DateTime(2022, 01, 01),
-          ToDate = new DateTime(2022, 01, 31)
+          FromDate = new DateTime(2023, 06, 01),
+          ToDate = new DateTime(2023, 06, 30)
         }
       };
 

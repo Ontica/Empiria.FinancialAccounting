@@ -37,13 +37,16 @@ namespace Empiria.FinancialAccounting.Tests.BalanceEngine.BalanceExplorer {
       var explorerTest = new BalanceExplorerTests();
 
       BalanceExplorerQuery query = explorerTest.GetDefaultBalanceExplorerQuery();
-
+      query.TrialBalanceType = TrialBalanceType.SaldosPorCuentaConsultaRapida;
+      query.WithSubledgerAccount = true;
+      query.FromAccount = "1.05.01.03.01.01.03";
+      query.Accounts = new string[] { "1.05.01.03.01.01.03", "1.05.01.02.02.01.01" };//, "1.05.01.01.06.01"
+      //"1.05.01.01.06.01", "1.05.01.01.06.02", "1.05.01.02.02.01.01", "1.05.01.02.02.01.02", "1.05.01.03.02.03.01"
       BalanceExplorerDto sut = await BalanceEngineProxy.BuildBalanceExplorer(query);
 
       Assert.NotNull(sut);
       Assert.Equal(query, sut.Query);
       Assert.NotEmpty(sut.Entries);
-
     }
 
 

@@ -56,7 +56,6 @@ namespace Empiria.FinancialAccounting.BalanceEngine.BalanceExplorer {
                            a.Currency.Equals(subledgerAccount.Currency) &&
                            a.ItemType == TrialBalanceItemType.Entry).ToList();
 
-
         returnedEntries.Add(subledgerAccount);
 
         AssignLastChangeDateToSubledgerAccount(subledgerAccount, entries);
@@ -90,7 +89,6 @@ namespace Empiria.FinancialAccounting.BalanceEngine.BalanceExplorer {
       }
 
       var subledgerAccountList = balanceEntries.Where(a => a.SubledgerAccountId > 0).ToList();
-
       var subledgerAccountListHashTable = new EmpiriaHashTable<BalanceExplorerEntry>();
 
       foreach (var entry in subledgerAccountList) {
@@ -152,9 +150,9 @@ namespace Empiria.FinancialAccounting.BalanceEngine.BalanceExplorer {
         }
         returnedCombineOrdering.Add(entry);
       }
-      return returnedCombineOrdering.OrderBy(a => a.Currency.Code)
-                                    .ThenBy(a => a.SubledgerNumberOfDigits)
+      return returnedCombineOrdering.OrderBy(a => a.SubledgerNumberOfDigits)
                                     .ThenBy(a => a.SubledgerAccountNumber)
+                                    .ThenBy(a => a.Currency.Code)
                                     .ToList();
     }
 

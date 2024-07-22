@@ -33,9 +33,19 @@ namespace Empiria.FinancialAccounting.BalanceEngine.BalanceExplorer.Adapters {
     } = string.Empty;
 
 
+    public string[] Accounts {
+      get; set;
+    } = new string[0];
+
+
     public string SubledgerAccount {
       get; set;
     } = string.Empty;
+
+
+    public string[] SubledgerAccounts {
+      get; set;
+    } = new string[0];
 
 
     public bool WithSubledgerAccount {
@@ -78,7 +88,7 @@ namespace Empiria.FinancialAccounting.BalanceEngine.BalanceExplorer.Adapters {
     public bool UseCache {
       get; set;
     } = true;
-
+    
 
     public override bool Equals(object obj) => Equals(obj as BalanceExplorerQuery);
 

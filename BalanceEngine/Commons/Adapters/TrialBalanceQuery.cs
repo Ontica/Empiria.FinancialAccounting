@@ -49,6 +49,11 @@ namespace Empiria.FinancialAccounting.BalanceEngine.Adapters {
     } = string.Empty;
 
 
+    public string[] Accounts {
+      get; set;
+    } = new string[0];
+
+
     public string ToAccount {
       get; set;
     } = string.Empty;
@@ -57,6 +62,11 @@ namespace Empiria.FinancialAccounting.BalanceEngine.Adapters {
     public string SubledgerAccount {
       get; set;
     } = string.Empty;
+
+
+    public string[] SubledgerAccounts {
+      get; set;
+    } = new string[0];
 
 
     public int Level {
@@ -161,7 +171,7 @@ namespace Empiria.FinancialAccounting.BalanceEngine.Adapters {
     public bool IsOperationalReport {
       get; set;
     } = false;
-
+    
 
     public override bool Equals(object obj) => this.Equals(obj as TrialBalanceQuery);
 

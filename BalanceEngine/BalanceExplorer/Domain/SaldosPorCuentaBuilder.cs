@@ -133,7 +133,10 @@ namespace Empiria.FinancialAccounting.BalanceEngine.BalanceExplorer {
         helper.GetHeaderAccountName(headerByAccount, entry, TrialBalanceItemType.Total);
       }
 
-      return headerByAccount.ToFixedList();
+      var orderingHeaders = headerByAccount.ToFixedList();
+
+      return orderingHeaders.OrderBy(x => x.Account.Number)
+                            .ThenBy(x => x.Currency.Code).ToFixedList();
     }
 
 
