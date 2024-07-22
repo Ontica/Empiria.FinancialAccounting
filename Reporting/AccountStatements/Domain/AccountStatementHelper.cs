@@ -52,14 +52,80 @@ namespace Empiria.FinancialAccounting.Reporting.AccountStatements.Domain {
         return new FixedList<AccountStatementEntry>();
       }
 
-      List<AccountStatementEntry> returnedVouchers = voucherEntries
-                                                      .OrderBy(a => a.AccountingDate)
-                                                      .ThenBy(a => a.Ledger.Number)
-                                                      .ThenBy(a => a.AccountNumber)
-                                                      .ThenBy(a => a.SubledgerAccountNumber)
-                                                      .ThenBy(a => a.VoucherNumber)
-                                                      .ToList();
+      //List<AccountStatementEntry> returnedVouchers = voucherEntries
+      //                                                .OrderBy(a => a.AccountingDate)
+      //                                                .ThenBy(a => a.Ledger.Number)
+      //                                                .ThenBy(a => a.AccountNumber)
+      //                                                .ThenBy(a => a.SubledgerAccountNumber)
+      //                                                .ThenBy(a => a.VoucherNumber)
+      //                                                .ToList();
+
+      var returnedVouchers = GetByAccountStatementOrder(voucherEntries);
+
       return returnedVouchers.ToFixedList();
+    }
+
+
+    private List<AccountStatementEntry> GetByAccountStatementOrder(
+      FixedList<AccountStatementEntry> voucherEntries) {
+
+      List<AccountStatementEntry> returnedVouchers = voucherEntries.ToList();
+
+      switch (_buildQuery.OrderBy) {
+
+        case AccountStatementOrder.Ascending:
+          return returnedVouchers.OrderBy(a => a.Ledger.Number)
+                                 .ThenBy(a => a.AccountingDate)
+                                 .ThenBy(a => a.AccountNumber)
+                                 .ThenBy(a => a.SubledgerAccountNumber)
+                                 .ThenBy(a => a.VoucherNumber)
+                                 .ToList();
+
+        case AccountStatementOrder.Descending:
+          return returnedVouchers.OrderByDescending(a => a.Ledger.Number)
+                                 .ThenByDescending(a => a.AccountingDate)
+                                 .ThenByDescending(a => a.AccountNumber)
+                                 .ThenByDescending(a => a.SubledgerAccountNumber)
+                                 .ThenByDescending(a => a.VoucherNumber)
+                                 .ToList();
+
+        case AccountStatementOrder.AccountingDate:
+          return returnedVouchers.OrderBy(a => a.AccountingDate)
+                                 .ThenBy(a => a.Ledger.Number)
+                                 .ThenBy(a => a.AccountNumber)
+                                 .ThenBy(a => a.SubledgerAccountNumber)
+                                 .ThenBy(a => a.VoucherNumber)
+                                 .ToList();
+
+        case AccountStatementOrder.RecordingDate:
+          return returnedVouchers.OrderBy(a => a.RecordingDate)
+                                 .ThenBy(a => a.Ledger.Number)
+                                 .ThenBy(a => a.AccountNumber)
+                                 .ThenBy(a => a.SubledgerAccountNumber)
+                                 .ThenBy(a => a.VoucherNumber)
+                                 .ThenBy(a => a.AccountingDate)
+                                 .ToList();
+
+        case AccountStatementOrder.CurrentBalance:
+          return returnedVouchers.OrderBy(a => a.CurrentBalance)
+                                 .ThenBy(a => a.Ledger.Number)
+                                 .ThenBy(a => a.AccountNumber)
+                                 .ThenBy(a => a.SubledgerAccountNumber)
+                                 .ThenBy(a => a.VoucherNumber)
+                                 .ThenBy(a => a.AccountingDate)
+                                 .ToList();
+
+        case AccountStatementOrder.VoucherNumber:
+          return returnedVouchers.OrderBy(a => a.VoucherNumber)
+                                 .ThenBy(a => a.Ledger.Number)
+                                 .ThenBy(a => a.AccountNumber)
+                                 .ThenBy(a => a.SubledgerAccountNumber)
+                                 .ThenBy(a => a.AccountingDate)
+                                 .ToList();
+
+        default:
+          return voucherEntries.ToList();
+      }
     }
 
 

@@ -24,28 +24,29 @@ namespace Empiria.FinancialAccounting.Tests.Reporting.AccountStatements {
       AccountStatementQuery query = new AccountStatementQuery {
         BalancesQuery = {
           AccountsChartUID = "47ec2ec7-0f4f-482e-9799-c23107b60d8a",
-          FromAccount = "1.09.05.02.02.02",
+          FromAccount = "1.05.01.01.05.01",
           InitialPeriod = {
-            FromDate = new DateTime(2022, 01, 01),
-            ToDate = new DateTime(2022, 01, 31),
+            FromDate = new DateTime(2023, 06, 01),
+            ToDate = new DateTime(2023, 06, 30),
           },
-          TrialBalanceType = BalanceEngine.TrialBalanceType.SaldosPorCuenta,
-          WithSubledgerAccount = true,
+          TrialBalanceType = BalanceEngine.TrialBalanceType.Balanza,
+          WithSubledgerAccount = false,
           SubledgerAccount =""
         },
         Entry = {
-          AccountNumberForBalances = "1.09.05.02.02.02", //
-          CurrencyCode = "01", //
-          InitialBalance = 0,
-          CurrentBalanceForBalances = 3879.50M,
-          DebtorCreditor="",
+          AccountNumberForBalances = "1.05.01.01.05.01", //
+          CurrencyCode = "02", //
+          InitialBalance = 1177171183.97M,
+          CurrentBalanceForBalances = 1161935586.37M,
+          DebtorCreditor="Deudora",
           ItemType = BalanceEngine.TrialBalanceItemType.Entry,
-          LastChangeDateForBalances = new DateTime(2022, 01, 14),
+          LastChangeDateForBalances = new DateTime(2023, 06, 30),
           LedgerNumber="",
           //LedgerUID="",
-          SectorCode = "00",
+          SectorCode = "31",
           SubledgerAccountNumber ="0"
-        }
+        },
+        OrderBy= AccountStatementOrder.Descending
       };
 
       using (var useCase = AccountStatementUseCases.UseCaseInteractor()) {

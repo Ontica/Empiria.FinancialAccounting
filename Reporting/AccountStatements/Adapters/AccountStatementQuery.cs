@@ -16,6 +16,24 @@ using Empiria.FinancialAccounting.BalanceEngine.BalanceExplorer.Adapters;
 
 namespace Empiria.FinancialAccounting.Reporting.AccountStatements.Adapters {
 
+
+  public enum AccountStatementOrder {
+
+    Ascending,
+
+    Descending,
+
+    AccountingDate,
+
+    RecordingDate,
+
+    CurrentBalance,
+
+    VoucherNumber
+
+  }
+
+
   /// <summary>Query payload used to build account statement.</summary>
   public class AccountStatementQuery {
 
@@ -29,8 +47,13 @@ namespace Empiria.FinancialAccounting.Reporting.AccountStatements.Adapters {
       get; internal set;
     } = new AccountStatementQueryEntry();
 
-  } // class AccountStatementQuery
 
+    public AccountStatementOrder OrderBy {
+      get; internal set;
+    } = AccountStatementOrder.Ascending;
+
+
+  } // class AccountStatementQuery
 
 
   public class AccountStatementQueryEntry {
