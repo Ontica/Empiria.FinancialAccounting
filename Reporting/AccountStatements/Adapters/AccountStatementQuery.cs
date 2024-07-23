@@ -19,17 +19,24 @@ namespace Empiria.FinancialAccounting.Reporting.AccountStatements.Adapters {
 
   public enum AccountStatementOrder {
 
-    Ascending,
-
-    Descending,
-
     AccountingDate,
+
+    Amount,
 
     RecordingDate,
 
-    CurrentBalance,
+    SubledgerAccount,
 
     VoucherNumber
+
+  }
+
+
+  public enum AccountStatementOrderType {
+
+    Ascending,
+
+    Descending
 
   }
 
@@ -48,12 +55,25 @@ namespace Empiria.FinancialAccounting.Reporting.AccountStatements.Adapters {
     } = new AccountStatementQueryEntry();
 
 
-    public AccountStatementOrder OrderBy {
+    public AccountStatementSortOrder OrderBy {
       get; internal set;
-    } = AccountStatementOrder.Ascending;
-
+    } = new AccountStatementSortOrder();
 
   } // class AccountStatementQuery
+
+
+  public class AccountStatementSortOrder {
+
+    public AccountStatementOrder SortType {
+      get; internal set;
+    } = AccountStatementOrder.AccountingDate;
+
+
+    public AccountStatementOrderType OrderType {
+      get; internal set;
+    } = AccountStatementOrderType.Ascending;
+
+  }
 
 
   public class AccountStatementQueryEntry {

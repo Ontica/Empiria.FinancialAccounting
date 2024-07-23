@@ -18,10 +18,26 @@ namespace Empiria.FinancialAccounting.Tests.Reporting.AccountStatements {
   /// <summary>Test cases for Account statements.</summary>
   public class AccountStatementsTests {
 
+
     [Fact]
     public void ShouldBuildAccountStatements() {
 
-      AccountStatementQuery query = new AccountStatementQuery {
+      AccountStatementQuery query = GetAccountStatementQuery();
+
+      using (var useCase = AccountStatementUseCases.UseCaseInteractor()) {
+        AccountStatementDto sut = useCase.BuildAccountStatement(query);
+
+        Assert.NotNull(sut);
+        Assert.NotEmpty(sut.Entries);
+      }
+    }
+
+
+    #region Helpers
+
+
+    private AccountStatementQuery GetAccountStatementQuery() {
+      return new AccountStatementQuery {
         BalancesQuery = {
           AccountsChartUID = "47ec2ec7-0f4f-482e-9799-c23107b60d8a",
           FromAccount = "1.05.01.01.05.01",
@@ -33,6 +49,7 @@ namespace Empiria.FinancialAccounting.Tests.Reporting.AccountStatements {
           WithSubledgerAccount = false,
           SubledgerAccount =""
         },
+
         Entry = {
           AccountNumberForBalances = "1.05.01.01.05.01", //
           CurrencyCode = "02", //
@@ -46,17 +63,15 @@ namespace Empiria.FinancialAccounting.Tests.Reporting.AccountStatements {
           SectorCode = "31",
           SubledgerAccountNumber ="0"
         },
-        OrderBy= AccountStatementOrder.Descending
+
+        OrderBy = {
+          SortType = AccountStatementOrder.Amount,
+          OrderType = AccountStatementOrderType.Descending
+        }
       };
-
-      using (var useCase = AccountStatementUseCases.UseCaseInteractor()) {
-        AccountStatementDto sut = useCase.BuildAccountStatement(query);
-
-        Assert.NotNull(sut);
-        Assert.NotEmpty(sut.Entries);
-      }
-
     }
+
+    #endregion Helpers
 
   } // class AccountStatementsTests
 
