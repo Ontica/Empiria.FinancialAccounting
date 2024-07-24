@@ -40,32 +40,33 @@ namespace Empiria.FinancialAccounting.Tests.Reporting.AccountStatements {
       return new AccountStatementQuery {
         BalancesQuery = {
           AccountsChartUID = "47ec2ec7-0f4f-482e-9799-c23107b60d8a",
-          FromAccount = "1.05.01.01.05.01",
+          FromAccount = "1.01.01.02",
           InitialPeriod = {
             FromDate = new DateTime(2023, 06, 01),
             ToDate = new DateTime(2023, 06, 30),
           },
           TrialBalanceType = BalanceEngine.TrialBalanceType.Balanza,
           WithSubledgerAccount = false,
-          SubledgerAccount =""
+          SubledgerAccount ="",
+          
         },
 
         Entry = {
-          AccountNumberForBalances = "1.05.01.01.05.01", //
-          CurrencyCode = "02", //
-          InitialBalance = 1177171183.97M,
-          CurrentBalanceForBalances = 1161935586.37M,
+          AccountNumberForBalances = "1.01.01", //
+          CurrencyCode = "01", //
+          InitialBalance = 24400,
+          CurrentBalanceForBalances = 23400,
           DebtorCreditor="Deudora",
-          ItemType = BalanceEngine.TrialBalanceItemType.Entry,
-          LastChangeDateForBalances = new DateTime(2023, 06, 30),
+          ItemType = BalanceEngine.TrialBalanceItemType.Summary,
+          LastChangeDateForBalances = new DateTime(2023, 06, 07),
           LedgerNumber="",
           //LedgerUID="",
-          SectorCode = "31",
+          SectorCode = "00",
           SubledgerAccountNumber ="0"
         },
 
         OrderBy = {
-          SortType = AccountStatementOrder.Amount,
+          SortType = AccountStatementOrder.VoucherNumber,
           OrderType = AccountStatementOrderType.Descending
         }
       };
