@@ -31,17 +31,17 @@ namespace Empiria.FinancialAccounting.Reporting.AccountStatements.Domain {
 
 
     internal FixedList<AccountStatementEntry> CombineInitialBalanceWithVouchers(
-                                                FixedList<AccountStatementEntry> vouchers,
-                                                AccountStatementEntry initialBalance) {
+                                                AccountStatementEntry initialBalance,
+                                                FixedList<AccountStatementEntry> vouchers) {
       if (initialBalance == null) {
         return vouchers;
       }
 
-      var totalBalanceAndVouchers = new List<AccountStatementEntry>();
-      totalBalanceAndVouchers.Add(initialBalance);
-      totalBalanceAndVouchers.AddRange(vouchers);
+      var initialBalanceAndVouchers = new List<AccountStatementEntry>();
+      initialBalanceAndVouchers.Add(initialBalance);
+      initialBalanceAndVouchers.AddRange(vouchers);
 
-      return totalBalanceAndVouchers.ToFixedList();
+      return initialBalanceAndVouchers.ToFixedList();
     }
 
 
@@ -83,13 +83,13 @@ namespace Empiria.FinancialAccounting.Reporting.AccountStatements.Domain {
     }
 
 
-    private List<AccountStatementEntry> GetOrderByAccountingDate(List<AccountStatementEntry> returnedVouchers) {
+    private List<AccountStatementEntry> GetOrderByAccountingDate(List<AccountStatementEntry> vouchers) {
 
-      var orderingVouchers = returnedVouchers.ToList();
+      List<AccountStatementEntry> list = new List<AccountStatementEntry>();
 
       if (_buildQuery.OrderBy.OrderType == AccountStatementOrderType.Descending) {
 
-        orderingVouchers = returnedVouchers.OrderByDescending(a => a.AccountingDate)
+        list = vouchers.OrderByDescending(a => a.AccountingDate)
                                  .ThenByDescending(a => a.Ledger.Number)
                                  .ThenByDescending(a => a.AccountNumber)
                                  .ThenByDescending(a => a.SubledgerAccountNumber)
@@ -97,23 +97,23 @@ namespace Empiria.FinancialAccounting.Reporting.AccountStatements.Domain {
                                  .ToList();
 
       } else {
-        orderingVouchers = returnedVouchers.OrderBy(a => a.AccountingDate)
+        list = vouchers.OrderBy(a => a.AccountingDate)
                                  .ThenBy(a => a.Ledger.Number)
                                  .ThenBy(a => a.AccountNumber)
                                  .ThenBy(a => a.SubledgerAccountNumber)
                                  .ThenBy(a => a.VoucherNumber)
                                  .ToList();
       }
-      return orderingVouchers;
+      return list;
     }
 
 
-    private List<AccountStatementEntry> GetOrderByAmount(List<AccountStatementEntry> returnedVouchers) {
+    private List<AccountStatementEntry> GetOrderByAmount(List<AccountStatementEntry> vouchers) {
 
-      var orderingVouchers = returnedVouchers.ToList();
+      List<AccountStatementEntry> list = new List<AccountStatementEntry>();
 
       if (_buildQuery.OrderBy.OrderType == AccountStatementOrderType.Descending) {
-        orderingVouchers = returnedVouchers.OrderByDescending(a => a.Ledger.Number)
+        list = vouchers.OrderByDescending(a => a.Ledger.Number)
                                  .ThenByDescending(a => a.Debit)
                                  .ThenByDescending(a => a.Credit)
                                  .ThenByDescending(a => a.AccountNumber)
@@ -121,7 +121,7 @@ namespace Empiria.FinancialAccounting.Reporting.AccountStatements.Domain {
                                  .ThenByDescending(a => a.VoucherNumber)
                                  .ToList();
       } else {
-        orderingVouchers = returnedVouchers.OrderBy(a => a.Ledger.Number)
+        list = vouchers.OrderBy(a => a.Ledger.Number)
                                  .ThenBy(a => a.Debit)
                                  .ThenBy(a => a.Credit)
                                  .ThenBy(a => a.AccountNumber)
@@ -129,109 +129,114 @@ namespace Empiria.FinancialAccounting.Reporting.AccountStatements.Domain {
                                  .ThenBy(a => a.VoucherNumber)
                                  .ToList();
       }
-      return orderingVouchers;
+      return list;
     }
 
 
-    private List<AccountStatementEntry> GetOrderByRecordingDate(List<AccountStatementEntry> returnedVouchers) {
+    private List<AccountStatementEntry> GetOrderByRecordingDate(List<AccountStatementEntry> vouchers) {
 
-      var orderingVouchers = returnedVouchers.ToList();
+      List<AccountStatementEntry> list = new List<AccountStatementEntry>();
 
       if (_buildQuery.OrderBy.OrderType == AccountStatementOrderType.Descending) {
-        orderingVouchers = returnedVouchers.OrderByDescending(a => a.Ledger.Number)
+        list = vouchers.OrderByDescending(a => a.Ledger.Number)
                                  .ThenByDescending(a => a.RecordingDate)
                                  .ThenByDescending(a => a.AccountNumber)
                                  .ThenByDescending(a => a.SubledgerAccountNumber)
                                  .ThenByDescending(a => a.VoucherNumber)
                                  .ToList();
       } else {
-        orderingVouchers = returnedVouchers.OrderBy(a => a.Ledger.Number)
+        list = vouchers.OrderBy(a => a.Ledger.Number)
                                  .ThenBy(a => a.RecordingDate)
                                  .ThenBy(a => a.AccountNumber)
                                  .ThenBy(a => a.SubledgerAccountNumber)
                                  .ThenBy(a => a.VoucherNumber)
                                  .ToList();
       }
-      return orderingVouchers;
+      return list;
     }
 
 
-    private List<AccountStatementEntry> GetOrderBySubledgerAccount(List<AccountStatementEntry> returnedVouchers) {
+    private List<AccountStatementEntry> GetOrderBySubledgerAccount(List<AccountStatementEntry> vouchers) {
 
-      var orderingVouchers = returnedVouchers.ToList();
+      List<AccountStatementEntry> list = new List<AccountStatementEntry>();
 
       if (_buildQuery.OrderBy.OrderType == AccountStatementOrderType.Descending) {
-        orderingVouchers = returnedVouchers.OrderByDescending(a => a.Ledger.Number)
+        list = vouchers.OrderByDescending(a => a.Ledger.Number)
                                  .ThenByDescending(a => a.SubledgerAccountNumber)
                                  .ThenByDescending(a => a.AccountNumber)
                                  .ThenByDescending(a => a.VoucherNumber)
                                  .ThenByDescending(a => a.AccountingDate)
                                  .ToList();
       } else {
-        orderingVouchers = returnedVouchers.OrderBy(a => a.Ledger.Number)
+        list = vouchers.OrderBy(a => a.Ledger.Number)
                                  .ThenBy(a => a.SubledgerAccountNumber)
                                  .ThenBy(a => a.AccountNumber)
                                  .ThenBy(a => a.VoucherNumber)
                                  .ThenBy(a => a.AccountingDate)
                                  .ToList();
       }
-      return orderingVouchers;
+      return list;
     }
 
 
-    private List<AccountStatementEntry> GetOrderByVoucherNumber(List<AccountStatementEntry> returnedVouchers) {
+    private List<AccountStatementEntry> GetOrderByVoucherNumber(List<AccountStatementEntry> vouchers) {
 
-      var orderingVouchers = returnedVouchers.ToList();
+      List<AccountStatementEntry> list = new List<AccountStatementEntry>();
 
       if (_buildQuery.OrderBy.OrderType == AccountStatementOrderType.Descending) {
-        orderingVouchers = returnedVouchers.OrderByDescending(a => a.Ledger.Number)
+        list = vouchers.OrderByDescending(a => a.Ledger.Number)
                                  .ThenByDescending(a => a.VoucherNumber)
                                  .ThenByDescending(a => a.AccountNumber)
                                  .ThenByDescending(a => a.SubledgerAccountNumber)
                                  .ThenByDescending(a => a.AccountingDate)
                                  .ToList();
       } else {
-        orderingVouchers = returnedVouchers.OrderBy(a => a.Ledger.Number)
+        list = vouchers.OrderBy(a => a.Ledger.Number)
                                  .ThenBy(a => a.VoucherNumber)
                                  .ThenBy(a => a.AccountNumber)
                                  .ThenBy(a => a.SubledgerAccountNumber)
                                  .ThenBy(a => a.AccountingDate)
                                  .ToList();
       }
-      return orderingVouchers;
+      return list;
     }
 
 
     private List<AccountStatementEntry> GetOrderingByAccountStatementFilter(
       FixedList<AccountStatementEntry> voucherEntries) {
 
-      List<AccountStatementEntry> returnedVouchers =
+      List<AccountStatementEntry> orderingVouchers =
         voucherEntries.Where(x => x.ItemType == TrialBalanceItemType.Entry).ToList();
 
       switch (_buildQuery.OrderBy.SortType) {
 
         case AccountStatementOrder.AccountingDate:
 
-          return GetOrderByAccountingDate(returnedVouchers);
+          orderingVouchers = GetOrderByAccountingDate(orderingVouchers);
+          return orderingVouchers.ToList();
 
         case AccountStatementOrder.Amount:
 
-          return GetOrderByAmount(returnedVouchers);
+          orderingVouchers = GetOrderByAmount(orderingVouchers);
+          return orderingVouchers.ToList();
 
         case AccountStatementOrder.RecordingDate:
 
-          return GetOrderByRecordingDate(returnedVouchers);
+          orderingVouchers = GetOrderByRecordingDate(orderingVouchers);
+          return orderingVouchers.ToList();
 
         case AccountStatementOrder.SubledgerAccount:
 
-          return GetOrderBySubledgerAccount(returnedVouchers);
+          orderingVouchers = GetOrderBySubledgerAccount(orderingVouchers);
+          return orderingVouchers.ToList();
 
         case AccountStatementOrder.VoucherNumber:
 
-          return GetOrderByVoucherNumber(returnedVouchers);
+          orderingVouchers = GetOrderByVoucherNumber(orderingVouchers);
+          return orderingVouchers.ToList();
 
         default:
-          return returnedVouchers.ToList();
+          return orderingVouchers.ToList();
       }
     }
 

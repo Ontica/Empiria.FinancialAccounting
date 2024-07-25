@@ -66,7 +66,7 @@ namespace Empiria.FinancialAccounting.Tests.Reporting.AccountStatements {
         },
 
         OrderBy = {
-          SortType = AccountStatementOrder.VoucherNumber,
+          SortType = AccountStatementOrder.AccountingDate,
           OrderType = AccountStatementOrderType.Descending
         }
       };

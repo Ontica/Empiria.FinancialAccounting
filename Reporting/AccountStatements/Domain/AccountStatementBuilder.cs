@@ -67,7 +67,7 @@ namespace Empiria.FinancialAccounting.Reporting.AccountStatements.Domain {
         helper.GetOrderingByFilter(vouchersWithCurrentBalance);
 
       FixedList<AccountStatementEntry> vouchers = helper.CombineInitialBalanceWithVouchers(
-                                                            orderingByFilter, initialBalance);
+                                                            initialBalance, orderingByFilter);
 
       var returnedVoucherEntries = new FixedList<IVouchersByAccountEntry>(
                                         vouchers.Select(x => (IVouchersByAccountEntry) x));
