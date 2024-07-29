@@ -34,6 +34,10 @@ namespace Empiria.FinancialAccounting.Reconciliation.Readers {
 
       accountNumber = EmpiriaString.TrimAll(accountNumber);
 
+      if (accountNumber.Contains(" ")) {
+        accountNumber = accountNumber.Split(' ')[0];
+      }
+
       return AccountsChart.IFRS.FormatAccountNumber(accountNumber);
     }
 
