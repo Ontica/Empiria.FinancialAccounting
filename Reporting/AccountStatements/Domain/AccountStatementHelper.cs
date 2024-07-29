@@ -195,28 +195,38 @@ namespace Empiria.FinancialAccounting.Reporting.AccountStatements.Domain {
 
       List<AccountStatementEntry> orderingVouchers =
         voucherEntries.Where(x => x.ItemType == TrialBalanceItemType.Entry).ToList();
+      
+      switch (_buildQuery.OrderBy.SortType) {
 
-      if (_buildQuery.OrderBy.SortType == AccountStatementOrder.AccountingDate) {
-        orderingVouchers = GetOrderByAccountingDate(orderingVouchers);
+        case AccountStatementOrder.AccountingDate:
+
+          orderingVouchers = GetOrderByAccountingDate(orderingVouchers);
+          return orderingVouchers.ToList();
+
+        case AccountStatementOrder.Amount:
+
+          orderingVouchers = GetOrderByAmount(orderingVouchers);
+          return orderingVouchers.ToList();
+
+        case AccountStatementOrder.RecordingDate:
+
+          orderingVouchers = GetOrderByRecordingDate(orderingVouchers);
+          return orderingVouchers.ToList();
+
+        case AccountStatementOrder.SubledgerAccount:
+
+          orderingVouchers = GetOrderBySubledgerAccount(orderingVouchers);
+          return orderingVouchers.ToList();
+
+        case AccountStatementOrder.VoucherNumber:
+
+          orderingVouchers = GetOrderByVoucherNumber(orderingVouchers);
+          return orderingVouchers.ToList();
+
+        default:
+          return orderingVouchers.ToList();
       }
 
-      if (_buildQuery.OrderBy.SortType == AccountStatementOrder.Amount) {
-        orderingVouchers = GetOrderByAmount(orderingVouchers);
-      }
-
-      if (_buildQuery.OrderBy.SortType == AccountStatementOrder.RecordingDate) {
-        orderingVouchers = GetOrderByRecordingDate(orderingVouchers);
-      }
-
-      if (_buildQuery.OrderBy.SortType == AccountStatementOrder.SubledgerAccount) {
-        orderingVouchers = GetOrderBySubledgerAccount(orderingVouchers);
-      }
-
-      if (_buildQuery.OrderBy.SortType == AccountStatementOrder.VoucherNumber) {
-        orderingVouchers = GetOrderByVoucherNumber(orderingVouchers);
-      }
-
-      return orderingVouchers.ToList();
     }
 
 
