@@ -46,17 +46,17 @@ namespace Empiria.FinancialAccounting.Reporting.AccountStatements.Adapters {
 
     [JsonProperty("Query")]
     public BalanceExplorerQuery BalancesQuery {
-      get; internal set;
+      get; set;
     } = new BalanceExplorerQuery();
 
 
     public AccountStatementQueryEntry Entry {
-      get; internal set;
+      get; set;
     } = new AccountStatementQueryEntry();
 
 
     public AccountStatementSortOrder OrderBy {
-      get; internal set;
+      get; set;
     } = new AccountStatementSortOrder();
 
   } // class AccountStatementQuery
@@ -65,12 +65,12 @@ namespace Empiria.FinancialAccounting.Reporting.AccountStatements.Adapters {
   public class AccountStatementSortOrder {
 
     public AccountStatementOrder SortType {
-      get; internal set;
+      get; set;
     } = AccountStatementOrder.AccountingDate;
 
 
     public AccountStatementOrderType OrderType {
-      get; internal set;
+      get; set;
     } = AccountStatementOrderType.Ascending;
 
   }
