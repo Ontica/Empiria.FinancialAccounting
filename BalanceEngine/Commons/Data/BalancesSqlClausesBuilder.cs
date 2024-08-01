@@ -9,7 +9,7 @@
 ************************* Copyright(c) La Vía Óntica SC, Ontica LLC and contributors. All rights reserved. **/
 using System;
 using System.Linq;
-
+using System.Text.RegularExpressions;
 using Empiria.Data;
 
 using Empiria.FinancialAccounting.BalanceEngine.Adapters;
@@ -17,7 +17,7 @@ using Empiria.FinancialAccounting.BalanceEngine.Adapters;
 namespace Empiria.FinancialAccounting.BalanceEngine.Data {
 
   sealed internal partial class BalancesSqlClauses {
-    
+
 
     /// <summary>Builds BalancesSqlClauses instances.</summary>
     sealed private class BalancesSqlClausesBuilder {
@@ -89,7 +89,7 @@ namespace Empiria.FinancialAccounting.BalanceEngine.Data {
       #region Helpers
 
       private string GetAccountFilterString() {
-        
+
         if (_query.TrialBalanceType == TrialBalanceType.SaldosPorCuenta ||
             _query.TrialBalanceType == TrialBalanceType.SaldosPorCuentaConsultaRapida ||
             _query.TrialBalanceType == TrialBalanceType.SaldosPorAuxiliar) {
@@ -99,7 +99,7 @@ namespace Empiria.FinancialAccounting.BalanceEngine.Data {
           var filter = new Filter(rangeFilter);
 
           return filter.ToString().Length > 0 ? $"AND ({filter})" : "";
-          
+
         } else {
 
           string rangeFilter = GetAccountRangeFilter();
@@ -108,10 +108,10 @@ namespace Empiria.FinancialAccounting.BalanceEngine.Data {
 
           return filter.ToString().Length > 0 ? $"AND {filter}" : "";
         }
-        
+
       }
 
-      
+
       private string GetFilterString() {
         string ledgerFilter = GetLedgerFilter();
         string sectorFilter = GetSectorFilter();
@@ -280,6 +280,77 @@ namespace Empiria.FinancialAccounting.BalanceEngine.Data {
       }
 
 
+      private string GetAccountsFilter() {
+
+        string accountsFilter = string.Empty;
+
+        int count = 0;
+        foreach (var account in _query.Accounts) {
+
+          if (account.Contains("-")) {
+            accountsFilter += GetAccountNumberFilterByRange(account, count);
+
+          } else {
+            accountsFilter += $"{(count > 0 ? "OR " : "")} NUMERO_CUENTA_ESTANDAR LIKE '{account}%' ";
+          }
+
+          count += 1;
+          //accountsFilter += $"{(count > 0 ? "OR " : "")} NOMBRE_CUENTA_ESTANDAR LIKE '%{account}%' ";
+
+        }
+
+        return accountsFilter != string.Empty ? $"({accountsFilter})" : "";
+      }
+
+
+      private string GetAccountNumberFilterByRange(string accountString, int count) {
+
+        string[] accounts = accountString.Split('-');
+        int range = 0;
+        string fromAccount = "";
+        string toAccount = "";
+
+        foreach (var account in accounts) {
+
+          if (account != string.Empty) {
+
+            fromAccount = fromAccount == string.Empty && range == 0
+                          ? $"{account.Trim().Replace(" ", "")}"
+                          : fromAccount;
+            if (fromAccount != string.Empty && range == 0) {
+
+              foreach (var c in fromAccount) {
+                if (!char.IsNumber(c) && c != '.') {
+
+                  Assertion.EnsureFailed($"La cuenta '{fromAccount}-' del rango '{account}' " +
+                    $"no contiene solo números y puntos, caracter: '{c}'");
+                }
+              }
+            } else if (toAccount == string.Empty && range == 1) {
+
+              toAccount = $"{account.Trim().Replace(" ", "")}";
+
+              foreach (var c in toAccount) {
+                if (!char.IsNumber(c) && c != '.') {
+
+                  Assertion.EnsureFailed($"La cuenta '-{toAccount}' del rango '{account}' " +
+                    $"no contiene solo números y puntos, caracter: '{c}'");
+                }
+              }
+            } else {
+              Assertion.EnsureFailed($"El rango '{account}' " +
+                $"contiene más de dos números de cuenta: '...-{account}'");
+            }
+            range++;
+          }
+        }
+        return $"{(count > 0 ? "OR " : "")} " +
+                            $"(NUMERO_CUENTA_ESTANDAR >= '{fromAccount}' AND " +
+                            $"(NUMERO_CUENTA_ESTANDAR <= '{toAccount}' OR " +
+                            $"NUMERO_CUENTA_ESTANDAR LIKE '{toAccount}%')) ";
+      }
+
+
       private string GetAccountRangeByTrialBalanceType() {
 
         if (_query.TrialBalanceType == TrialBalanceType.SaldosPorCuenta ||
@@ -318,23 +389,6 @@ namespace Empiria.FinancialAccounting.BalanceEngine.Data {
         }
 
         throw Assertion.EnsureNoReachThisCode();
-      }
-
-
-      private string GetAccountsFilter() {
-
-        string accountsFilter = string.Empty;
-
-        int count = 0;
-        foreach (var account in _query.Accounts) {
-
-          accountsFilter += $"{(count > 0 ? "OR " : "")} NUMERO_CUENTA_ESTANDAR LIKE '{account}%' ";
-          count += 1;
-          accountsFilter += $"{(count > 0 ? "OR " : "")} NOMBRE_CUENTA_ESTANDAR LIKE '%{account}%' ";
-          
-        }
-        
-        return accountsFilter != string.Empty ? $"({accountsFilter})" : "";
       }
 
 
