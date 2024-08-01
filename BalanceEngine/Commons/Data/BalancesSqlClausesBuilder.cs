@@ -322,7 +322,7 @@ namespace Empiria.FinancialAccounting.BalanceEngine.Data {
               foreach (var c in fromAccount) {
                 if (!char.IsNumber(c) && c != '.') {
 
-                  Assertion.EnsureFailed($"La cuenta '{fromAccount}-' del rango '{account}' " +
+                  Assertion.EnsureFailed($"La cuenta '{fromAccount}-' del rango '{accountString}' " +
                     $"no contiene solo números y puntos, caracter: '{c}'");
                 }
               }
@@ -333,12 +333,12 @@ namespace Empiria.FinancialAccounting.BalanceEngine.Data {
               foreach (var c in toAccount) {
                 if (!char.IsNumber(c) && c != '.') {
 
-                  Assertion.EnsureFailed($"La cuenta '-{toAccount}' del rango '{account}' " +
+                  Assertion.EnsureFailed($"La cuenta '-{toAccount}' del rango '{accountString}' " +
                     $"no contiene solo números y puntos, caracter: '{c}'");
                 }
               }
             } else {
-              Assertion.EnsureFailed($"El rango '{account}' " +
+              Assertion.EnsureFailed($"El rango '{accountString}' " +
                 $"contiene más de dos números de cuenta: '...-{account}'");
             }
             range++;
