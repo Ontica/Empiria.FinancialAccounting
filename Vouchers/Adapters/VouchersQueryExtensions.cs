@@ -97,9 +97,9 @@ namespace Empiria.FinancialAccounting.Vouchers.Adapters {
         case "PostedBy":
           return $"ID_ENVIADA_DIARIO_POR = {query.EditorUID}";
         default:
-          return $"ID_ELABORADA_POR = {query.EditorUID} OR " +
+          return $"(ID_ELABORADA_POR = {query.EditorUID} OR " +
                  $"ID_AUTORIZADA_POR = {query.EditorUID} OR " +
-                 $"ID_ENVIADA_DIARIO_POR = {query.EditorUID}";
+                 $"ID_ENVIADA_DIARIO_POR = {query.EditorUID})";
       }
     }
 
@@ -125,7 +125,7 @@ namespace Empiria.FinancialAccounting.Vouchers.Adapters {
         temp += $"ID_TRANSACCION = {EmpiriaString.TrimAll(idAsString)}";
       }
 
-      return temp;
+      return $"({temp})";
     }
 
 
@@ -175,7 +175,21 @@ namespace Empiria.FinancialAccounting.Vouchers.Adapters {
 
 
     static private string BuildNumberFilter(string number) {
-      return SearchExpression.ParseLike("NUMERO_TRANSACCION", number.ToUpperInvariant());
+      if (number == string.Empty) {
+        return string.Empty;
+      }
+
+      string[] array = number.Split(',');
+      string temp = string.Empty;
+
+      foreach (string item in array) {
+        if (temp.Length != 0) {
+          temp += " OR ";
+        }
+        temp += $"NUMERO_TRANSACCION = '{EmpiriaString.TrimAll(item)}'";
+      }
+
+      return $"({temp})";
     }
 
 
@@ -231,9 +245,6 @@ namespace Empiria.FinancialAccounting.Vouchers.Adapters {
 
 
     static private string BuildTransactionEntriesFilter(VouchersQuery query) {
-      if (query.AccountKeywords.Length == 0 && query.SubledgerAccountKeywords.Length == 0) {
-        return string.Empty;
-      }
       string filter = string.Empty;
 
       if (query.AccountKeywords.Length != 0) {
@@ -256,6 +267,10 @@ namespace Empiria.FinancialAccounting.Vouchers.Adapters {
           filter += " AND ";
         }
         filter += $"({verficationNumberFilter})";
+      }
+
+      if (filter == string.Empty) {
+        return string.Empty;
       }
 
       return $"ID_TRANSACCION IN (SELECT ID_TRANSACCION FROM VW_COF_MOVIMIENTO_SEARCH WHERE {filter})";
@@ -281,14 +296,14 @@ namespace Empiria.FinancialAccounting.Vouchers.Adapters {
       string[] array = verificationNumber.Split(',');
       string temp = string.Empty;
 
-      foreach (string verifNumber in array) {
+      foreach (string item in array) {
         if (temp.Length != 0) {
           temp += " OR ";
         }
-        temp += $"NUMERO_VERIFICACION = '{EmpiriaString.TrimAll(verifNumber)}'";
+        temp += $"NUMERO_VERIFICACION = '{EmpiriaString.TrimAll(item)}'";
       }
 
-      return temp;
+      return $"({temp})";
     }
 
 
