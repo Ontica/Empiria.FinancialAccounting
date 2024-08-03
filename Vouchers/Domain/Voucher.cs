@@ -299,13 +299,10 @@ namespace Empiria.FinancialAccounting.Vouchers {
             SendToSupervisor = true
           };
 
-        } else if (wasSentToAnotherUser) {
+        } else {  // wasSentToAnotherUser
           return new VoucherActions {
             CloneVoucher = true,
           };
-
-        } else {
-          return new VoucherActions();
         }
       }
     }
@@ -640,7 +637,6 @@ namespace Empiria.FinancialAccounting.Vouchers {
 
       this.RefreshEntries();
     }
-
 
     #endregion Methods
 
