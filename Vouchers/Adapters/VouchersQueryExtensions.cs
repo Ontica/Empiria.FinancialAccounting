@@ -33,10 +33,13 @@ namespace Empiria.FinancialAccounting.Vouchers.Adapters {
       string statusFilter = BuildStatusFilter(query.Status);
       string keywordsFilter = BuildKeywordsFilter(query.Keywords);
       string conceptsFilter = BuildConceptFilter(query.Concept);
-      string voucherIDFilter = BuildVoucherIDFilter(query.VoucherID);
-      string numberFilter = BuildNumberFilter(query.Number);
+      string voucherIDFilter = BuildVoucherIDFilter(query.VouchersID);
+      string numberFilter = BuildNumberFilter(query.VoucherNumbers);
 
       var filter = new Filter(ledgerFilter);
+
+      filter.AppendAnd(voucherIDFilter);
+      filter.AppendAnd(numberFilter);
       filter.AppendAnd(editedByFilter);
       filter.AppendAnd(accountingDateRangeFilter);
       filter.AppendAnd(recordingDateRangeFilter);
@@ -45,8 +48,7 @@ namespace Empiria.FinancialAccounting.Vouchers.Adapters {
       filter.AppendAnd(stageStatusFilter);
       filter.AppendAnd(statusFilter);
       filter.AppendAnd(conceptsFilter);
-      filter.AppendAnd(voucherIDFilter);
-      filter.AppendAnd(numberFilter);
+
       filter.AppendAnd(keywordsFilter);
 
       string transactionEntriesFilter = BuildTransactionEntriesFilter(query);
@@ -68,6 +70,17 @@ namespace Empiria.FinancialAccounting.Vouchers.Adapters {
     #endregion Extension methods
 
     #region Helpers
+
+    static private string BuildAccountsFilter(string[] accounts) {
+      if (accounts.Length == 0) {
+        return string.Empty;
+      }
+
+      var filter = SearchExpression.ParseOrLikeKeywords("CUENTA_ESTANDAR_KEYWORDS",
+                                                         string.Join(" , ", accounts));
+      return $"({filter})";
+    }
+
 
     static private string BuildAccountingDateRangeFilter(VouchersQuery query) {
       if (query.FromAccountingDate == ExecutionServer.DateMinValue && query.ToAccountingDate == ExecutionServer.DateMaxValue) {
@@ -101,31 +114,6 @@ namespace Empiria.FinancialAccounting.Vouchers.Adapters {
                  $"ID_AUTORIZADA_POR = {query.EditorUID} OR " +
                  $"ID_ENVIADA_DIARIO_POR = {query.EditorUID})";
       }
-    }
-
-
-    static private string BuildVoucherIDFilter(string voucherID) {
-      if (voucherID == string.Empty) {
-        return string.Empty;
-      }
-
-      string[] array = voucherID.Split(',');
-      string temp = string.Empty;
-
-      foreach (string id in array) {
-        var idAsString = EmpiriaString.TrimAll(id);
-
-        if (!EmpiriaString.IsInteger(idAsString)) {
-          continue;
-        }
-
-        if (temp.Length != 0) {
-          temp += " OR ";
-        }
-        temp += $"ID_TRANSACCION = {EmpiriaString.TrimAll(idAsString)}";
-      }
-
-      return $"({temp})";
     }
 
 
@@ -174,15 +162,17 @@ namespace Empiria.FinancialAccounting.Vouchers.Adapters {
 
 
 
-    static private string BuildNumberFilter(string number) {
-      if (number == string.Empty) {
+    static private string BuildNumberFilter(string[] numbers) {
+      if (numbers.Length == 0) {
         return string.Empty;
       }
 
-      string[] array = number.Split(',');
       string temp = string.Empty;
 
-      foreach (string item in array) {
+      foreach (string item in numbers) {
+        if (EmpiriaString.TrimAll(item).Length == 0) {
+          continue;
+        }
         if (temp.Length != 0) {
           temp += " OR ";
         }
@@ -244,29 +234,36 @@ namespace Empiria.FinancialAccounting.Vouchers.Adapters {
     }
 
 
+    static private string BuildSubledgerAccountsFilter(string[] subledgerAccounts) {
+      if (subledgerAccounts.Length == 0) {
+        return string.Empty;
+      }
+
+      var filter = SearchExpression.ParseOrLikeKeywords("CUENTA_AUXILIAR_KEYWORDS",
+                                                        string.Join(" , ", subledgerAccounts));
+      return $"({filter})";
+    }
+
+
     static private string BuildTransactionEntriesFilter(VouchersQuery query) {
       string filter = string.Empty;
 
-      if (query.AccountKeywords.Length != 0) {
-        filter = SearchExpression.ParseAndLikeKeywords("CUENTA_ESTANDAR_KEYWORDS",
-                                                       query.AccountKeywords);
+      if (query.Accounts.Length != 0) {
+        filter = BuildAccountsFilter(query.Accounts);
       }
 
-      if (query.SubledgerAccountKeywords.Length != 0) {
+      if (query.SubledgerAccounts.Length != 0) {
         if (filter.Length != 0) {
           filter += " AND ";
         }
-        filter += SearchExpression.ParseAndLikeKeywords("CUENTA_AUXILIAR_KEYWORDS",
-                                                        query.SubledgerAccountKeywords);
+        filter += BuildSubledgerAccountsFilter(query.SubledgerAccounts);
       }
 
-      string verficationNumberFilter = BuildVerificationNumberFilter(query.VerificationNumber);
-
-      if (verficationNumberFilter != string.Empty) {
+      if (query.VerificationNumbers.Length != 0) {
         if (filter.Length != 0) {
           filter += " AND ";
         }
-        filter += $"({verficationNumberFilter})";
+        filter += BuildVerificationNumberFilter(query.VerificationNumbers);
       }
 
       if (filter == string.Empty) {
@@ -288,19 +285,45 @@ namespace Empiria.FinancialAccounting.Vouchers.Adapters {
     }
 
 
-    static private string BuildVerificationNumberFilter(string verificationNumber) {
-      if (verificationNumber == string.Empty) {
+    static private string BuildVerificationNumberFilter(string[] verificationNumbers) {
+      if (verificationNumbers.Length == 0) {
         return string.Empty;
       }
 
-      string[] array = verificationNumber.Split(',');
       string temp = string.Empty;
 
-      foreach (string item in array) {
+      foreach (string item in verificationNumbers) {
+        if (EmpiriaString.TrimAll(item).Length == 0) {
+          continue;
+        }
         if (temp.Length != 0) {
           temp += " OR ";
         }
         temp += $"NUMERO_VERIFICACION = '{EmpiriaString.TrimAll(item)}'";
+      }
+
+      return $"({temp})";
+    }
+
+
+    static private string BuildVoucherIDFilter(string[] vouchersID) {
+      if (vouchersID.Length == 0) {
+        return string.Empty;
+      }
+
+      string temp = string.Empty;
+
+      foreach (string id in vouchersID) {
+        var idAsString = EmpiriaString.TrimAll(id);
+
+        if (!EmpiriaString.IsInteger(idAsString)) {
+          continue;
+        }
+
+        if (temp.Length != 0) {
+          temp += " OR ";
+        }
+        temp += $"ID_TRANSACCION = {EmpiriaString.TrimAll(idAsString)}";
       }
 
       return $"({temp})";

@@ -42,10 +42,10 @@ namespace Empiria.FinancialAccounting.Vouchers.Adapters {
 
   public class VouchersQuery {
 
-    public string VoucherID {
+    public string[] VouchersID {
       get;
       set;
-    } = string.Empty;
+    } = new string[0];
 
 
     public VoucherStage Stage {
@@ -78,10 +78,10 @@ namespace Empiria.FinancialAccounting.Vouchers.Adapters {
     } = string.Empty;
 
 
-    public string Number {
+    public string[] VoucherNumbers {
       get;
       set;
-    } = string.Empty;
+    } = new string[0];
 
 
     public string LedgersGroupUID {
@@ -121,21 +121,21 @@ namespace Empiria.FinancialAccounting.Vouchers.Adapters {
     } = ExecutionServer.DateMaxValue;
 
 
-    public string AccountKeywords {
+    public string[] Accounts {
       get;
       set;
-    } = String.Empty;
+    } = new string[0];
 
 
-    public string SubledgerAccountKeywords {
+    public string[] SubledgerAccounts {
       get;
       set;
-    } = String.Empty;
+    } = new string[0];
 
 
-    public string VerificationNumber {
+    public string[] VerificationNumbers {
       get; set;
-    } = string.Empty;
+    } = new string[0];
 
 
     public string TransactionTypeUID {
