@@ -165,27 +165,34 @@ namespace Empiria.FinancialAccounting.WebApi.Vouchers {
       using (var usecases = VoucherEditionUseCases.UseCaseInteractor()) {
         var result = new VoucherBulkOperationResult();
 
-        if (operationName == "clone") {
-          result.Vouchers = usecases.BulkClone(command.Vouchers);
-          result.Message = $"Se clonaron {result.Vouchers.Count} pólizas " +
-                           $"de {command.Vouchers.Length} seleccionadas.";
-        } else if (operationName == "close") {
-          result.Message = usecases.BulkClose(command.Vouchers);
+        switch (operationName) {
+          case "clone":
+            result.Vouchers = usecases.BulkClone(command.Vouchers);
+            result.Message = $"Se clonaron {result.Vouchers.Count} pólizas " +
+                             $"de {command.Vouchers.Length} seleccionadas.";
+            break;
+          case "close":
+            result.Message = usecases.BulkClose(command.Vouchers);
 
-        } else if (operationName == "delete") {
-          result.Message = usecases.BulkDelete(command.Vouchers);
+            break;
+          case "delete":
+            result.Message = usecases.BulkDelete(command.Vouchers);
 
-        } else if (operationName == "send-to-supervisor") {
-          result.Message = usecases.BulkSendToSupervisor(command.Vouchers);
+            break;
+          case "send-to-supervisor":
+            result.Message = usecases.BulkSendToSupervisor(command.Vouchers);
 
-        } else if (operationName == "print") {
-          result = ExecuteBulkPrinting(command.Vouchers);
+            break;
+          case "print":
+            result = ExecuteBulkPrinting(command.Vouchers);
 
-        } else if (operationName == "excel") {
-          result = ExecuteBulkExportingToExcel(command.Vouchers);
+            break;
+          case "excel":
+            result = ExecuteBulkExportingToExcel(command.Vouchers);
 
-        } else {
-          throw Assertion.EnsureNoReachThisCode($"Unrecognized bulk operation name '{operationName}'.");
+            break;
+          default:
+            throw Assertion.EnsureNoReachThisCode($"Unrecognized bulk operation name '{operationName}'.");
         }
 
         base.SetOperation(result.Message);
