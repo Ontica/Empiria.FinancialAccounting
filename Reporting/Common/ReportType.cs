@@ -138,6 +138,11 @@ namespace Empiria.FinancialAccounting.Reporting {
     } = false;
 
 
+    public bool ElaboratedBy {
+      get; set;
+    } = false;
+
+
     public bool SendType {
       get; set;
     } = false;
