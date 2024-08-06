@@ -43,6 +43,7 @@ namespace Empiria.FinancialAccounting.Reporting.AccountStatements {
       return AccountStatementMapper.Map(accountStatement);
     }
 
+
     #endregion Use cases
 
   } // class AccountStatementUseCases

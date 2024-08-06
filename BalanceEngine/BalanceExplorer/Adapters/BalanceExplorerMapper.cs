@@ -79,7 +79,8 @@ namespace Empiria.FinancialAccounting.BalanceEngine.BalanceExplorer.Adapters {
       columns.Add(new DataTableColumn("sectorCode", "Sct", "text"));
       columns.Add(new DataTableColumn("accountName", "Nombre", "text"));
       columns.Add(new DataTableColumn("currentBalance", "Saldo actual", "decimal"));
-      if (query.TrialBalanceType == TrialBalanceType.SaldosPorAuxiliarConsultaRapida) {
+      if (query.TrialBalanceType == TrialBalanceType.SaldosPorAuxiliarConsultaRapida ||
+          query.TrialBalanceType == TrialBalanceType.SaldosPorAuxiliarID) {
         columns.Add(new DataTableColumn("debtorCreditor", "Naturaleza", "text"));
       }
       columns.Add(new DataTableColumn("lastChangeDate", "Último movimiento", "date"));
@@ -93,6 +94,7 @@ namespace Empiria.FinancialAccounting.BalanceEngine.BalanceExplorer.Adapters {
 
       switch (query.TrialBalanceType) {
         case TrialBalanceType.SaldosPorAuxiliarConsultaRapida:
+        case TrialBalanceType.SaldosPorAuxiliarID:
 
           return list.Select((x) => MapToBalanceBySubledgerAccount(x))
                      .ToFixedList();

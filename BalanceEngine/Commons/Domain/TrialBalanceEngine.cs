@@ -35,6 +35,8 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
 
     SaldosPorAuxiliarConsultaRapida,
 
+    SaldosPorAuxiliarID,
+
     SaldosPorCuentaConsultaRapida,
 
     ValorizacionEstimacionPreventiva

@@ -139,7 +139,9 @@ namespace Empiria.FinancialAccounting.Reporting.AccountStatements {
 
     private string GetSubledgerAccountFilter() {
       if (_accountStatementQry.BalancesQuery.TrialBalanceType ==
-            TrialBalanceType.SaldosPorAuxiliarConsultaRapida) {
+            TrialBalanceType.SaldosPorAuxiliarConsultaRapida ||
+            _accountStatementQry.BalancesQuery.TrialBalanceType ==
+            TrialBalanceType.SaldosPorAuxiliarID) {
 
         if (_accountStatementQry.Entry.SubledgerAccountNumber.Length > 1) {
           return $"NUMERO_CUENTA_AUXILIAR = '{_accountStatementQry.Entry.SubledgerAccountNumber}'";

@@ -73,6 +73,8 @@ namespace Empiria.FinancialAccounting.Reporting.Balances {
     private void SetTable(BalanceExplorerDto dto) {
       switch (dto.Query.TrialBalanceType) {
         case TrialBalanceType.SaldosPorAuxiliarConsultaRapida:
+        case TrialBalanceType.SaldosPorAuxiliarID:
+
           FillOutSaldosAuxiliar(dto.Entries);
           return;
 
@@ -249,7 +251,8 @@ namespace Empiria.FinancialAccounting.Reporting.Balances {
 
     private void SetRowHeaderByAccount(int i) {
 
-      if (_query.TrialBalanceType == TrialBalanceType.SaldosPorAuxiliarConsultaRapida) {
+      if (_query.TrialBalanceType == TrialBalanceType.SaldosPorAuxiliarConsultaRapida ||
+          _query.TrialBalanceType == TrialBalanceType.SaldosPorAuxiliarID) {
 
         _excelFile.SetCell($"A{i}", "Deleg");
         _excelFile.SetCell($"B{i}", "Delegación");

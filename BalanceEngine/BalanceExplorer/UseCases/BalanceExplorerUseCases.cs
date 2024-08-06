@@ -36,6 +36,11 @@ namespace Empiria.FinancialAccounting.BalanceEngine.BalanceExplorer.UseCases {
     public BalanceExplorerDto GetBalances(BalanceExplorerQuery query) {
       Assertion.Require(query, nameof(query));
 
+      if (query.TrialBalanceType == TrialBalanceType.SaldosPorAuxiliarID) {
+
+        query.SubledgerAccount = SubledgerAccount.Parse(query.SubledgerAccountID).Number;
+      }
+
       var builder = new BalanceExplorerResultBuilder(query);
 
       BalanceExplorerResult balances = builder.Build();
@@ -46,6 +51,11 @@ namespace Empiria.FinancialAccounting.BalanceEngine.BalanceExplorer.UseCases {
 
     public async Task<BalanceExplorerDto> GetBalancesForExplorer(BalanceExplorerQuery query) {
       Assertion.Require(query, nameof(query));
+
+      if (query.TrialBalanceType == TrialBalanceType.SaldosPorAuxiliarID) {
+        
+        query.SubledgerAccount = SubledgerAccount.Parse(query.SubledgerAccountID).Number;
+      }
 
       var builder = new BalanceExplorerResultBuilder(query);
 

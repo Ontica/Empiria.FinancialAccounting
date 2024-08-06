@@ -53,7 +53,7 @@ namespace Empiria.FinancialAccounting.Tests.BalanceEngine.BalanceExplorer {
     [Fact]
     public void RegexTest() {
 
-      string text = "1.01---1.02---2.05";
+      string text = "1.01 - 1.02";
       var fromAccount = "";
       var toAccount = "";
       

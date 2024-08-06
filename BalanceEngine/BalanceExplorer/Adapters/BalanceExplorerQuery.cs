@@ -43,6 +43,11 @@ namespace Empiria.FinancialAccounting.BalanceEngine.BalanceExplorer.Adapters {
     } = string.Empty;
 
 
+    public int SubledgerAccountID {
+      get; set;
+    }
+
+
     public string[] SubledgerAccounts {
       get; set;
     } = new string[0];

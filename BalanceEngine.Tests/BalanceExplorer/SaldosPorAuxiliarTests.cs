@@ -37,9 +37,10 @@ namespace Empiria.FinancialAccounting.Tests.BalanceEngine.BalanceExplorer {
       var explorerTest = new BalanceExplorerTests();
 
       BalanceExplorerQuery query = explorerTest.GetDefaultBalanceExplorerQuery();
-      query.TrialBalanceType = TrialBalanceType.SaldosPorAuxiliarConsultaRapida;
-      query.SubledgerAccount = "10000000001010636";
-      query.SubledgerAccounts = new string[] { "90000000009011515", "90000000000122235" };//
+      query.TrialBalanceType = TrialBalanceType.SaldosPorAuxiliarID;
+      query.SubledgerAccountID = 292736;
+      query.SubledgerAccount = "90000000000439543";
+      query.SubledgerAccounts = new string[] { "90000000000439543"};//
       query.WithSubledgerAccount = true;
 
       BalanceExplorerDto sut = await BalanceEngineProxy.BuildBalanceExplorer(query);
