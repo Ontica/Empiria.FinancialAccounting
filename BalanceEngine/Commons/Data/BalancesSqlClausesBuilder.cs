@@ -283,11 +283,11 @@ namespace Empiria.FinancialAccounting.BalanceEngine.Data {
       private string GetAccountsFilter() {
 
         string accountsFilter = string.Empty;
-
+        var token = " - ";
         int count = 0;
         foreach (var account in _query.Accounts) {
 
-          if (account.Contains("-")) {
+          if (account.Contains(token)) {
             accountsFilter += GetAccountNumberFilterByRange(account, count);
 
           } else {
@@ -305,25 +305,25 @@ namespace Empiria.FinancialAccounting.BalanceEngine.Data {
 
       private string GetAccountNumberFilterByRange(string accountString, int count) {
 
-        string[] accounts = accountString.Split('-');
+        string[] accounts = accountString.Split(' ');
         int range = 0;
         string fromAccount = "";
         string toAccount = "";
 
-        foreach (var account in accounts) {
+        foreach (var account in accounts.Where(x => x != "-")) {
 
           if (account != string.Empty) {
 
             fromAccount = fromAccount == string.Empty && range == 0
                           ? $"{account.Trim().Replace(" ", "")}"
                           : fromAccount;
+
             if (fromAccount != string.Empty && range == 0) {
 
               foreach (var c in fromAccount) {
-                if (!char.IsNumber(c) && c != '.') {
-
-                  Assertion.EnsureFailed($"La cuenta '{fromAccount}-' del rango '{accountString}' " +
-                    $"no contiene solo números y puntos, caracter: '{c}'");
+                if (!char.IsNumber(c) && c != '.' && c != '-') {
+                  Assertion.EnsureFailed($"La cuenta '{fromAccount} -' del rango '{accountString}' " +
+                                         $"contiene espacios, letras o caracteres no permitidos.");
                 }
               }
             } else if (toAccount == string.Empty && range == 1) {
@@ -331,15 +331,14 @@ namespace Empiria.FinancialAccounting.BalanceEngine.Data {
               toAccount = $"{account.Trim().Replace(" ", "")}";
 
               foreach (var c in toAccount) {
-                if (!char.IsNumber(c) && c != '.') {
-
-                  Assertion.EnsureFailed($"La cuenta '-{toAccount}' del rango '{accountString}' " +
-                    $"no contiene solo números y puntos, caracter: '{c}'");
+                if (!char.IsNumber(c) && c != '.' && c != '-') {
+                  Assertion.EnsureFailed($"La cuenta '- {toAccount}' del rango '{accountString}' " +
+                                         $"contiene espacios, letras o caracteres no permitidos.");
                 }
               }
             } else {
               Assertion.EnsureFailed($"El rango '{accountString}' " +
-                $"contiene más de dos números de cuenta: '...-{account}'");
+                                     $"contiene espacios, letras o caracteres no permitidos.");
             }
             range++;
           }
