@@ -22,7 +22,9 @@ namespace Empiria.FinancialAccounting.Reporting.Data {
                                           DataCommonMethods.FormatSqlDbDate(command.FromDate),
                                           DataCommonMethods.FormatSqlDbDate(command.ToDate),
                                           command.Ledgers,
-                                          command.AccountsChart.Id);
+                                          command.AccountsChart.Id,
+                                          command.ElaboratedBy
+                                          );
 
       return DataReader.GetPlainObjectFixedList<PolizaEntry>(operation);
     }

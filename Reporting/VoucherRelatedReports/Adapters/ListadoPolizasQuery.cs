@@ -20,6 +20,11 @@ namespace Empiria.FinancialAccounting.Reporting.VoucherRelatedReports.Adapters {
     }
 
 
+    public string ElaboratedBy {
+      get; set;
+    } = string.Empty;
+
+
     public string[] Ledgers {
       get; set;
     } = new string[0];

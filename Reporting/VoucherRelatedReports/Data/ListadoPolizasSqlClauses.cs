@@ -34,6 +34,11 @@ namespace Empiria.FinancialAccounting.Reporting.Data {
     } = string.Empty;
 
 
+    internal string ElaboratedBy {
+      get; set;
+    } = string.Empty;
+
+
     internal string Fields {
       get; set;
     } = string.Empty;

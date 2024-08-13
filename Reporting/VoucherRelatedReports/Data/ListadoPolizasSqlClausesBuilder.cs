@@ -34,8 +34,17 @@ namespace Empiria.FinancialAccounting.Reporting.Data {
       commandData.FromDate = _query.FromDate;
       commandData.ToDate = _query.ToDate;
       commandData.Ledgers = GetLedgerFilter();
-
+      commandData.ElaboratedBy = GetElaboratedByFilter();
       return commandData;
+    }
+
+
+    private string GetElaboratedByFilter() {
+      if (_query.ElaboratedBy == string.Empty) {
+        return string.Empty;
+      }
+
+      return $" AND T.ID_ELABORADA_POR IN ({_query.ElaboratedBy}) ";
     }
 
 

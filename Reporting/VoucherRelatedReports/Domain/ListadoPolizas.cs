@@ -53,6 +53,7 @@ namespace Empiria.FinancialAccounting.Reporting.VoucherRelatedReports.Domain {
     private ListadoPolizasQuery MapToListadoPolizasQuery(ReportBuilderQuery buildQuery) {
       return new ListadoPolizasQuery {
         AccountsChartUID = buildQuery.AccountsChartUID,
+        ElaboratedBy = buildQuery.ElaboratedBy,
         Ledgers = buildQuery.Ledgers,
         FromDate = buildQuery.FromDate,
         ToDate = buildQuery.ToDate
