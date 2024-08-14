@@ -34,7 +34,7 @@ namespace Empiria.FinancialAccounting.Vouchers.Adapters {
       string keywordsFilter = BuildKeywordsFilter(query.Keywords);
       string conceptsFilter = BuildConceptFilter(query.Concept);
       string voucherIDFilter = BuildVoucherIDFilter(query.VouchersID);
-      string numberFilter = BuildNumberFilter(query.VoucherNumbers);
+      string numberFilter = BuildNumberFilter(query.VouchersNumbers);
 
       var filter = new Filter(ledgerFilter);
 

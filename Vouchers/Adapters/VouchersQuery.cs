@@ -78,7 +78,7 @@ namespace Empiria.FinancialAccounting.Vouchers.Adapters {
     } = string.Empty;
 
 
-    public string[] VoucherNumbers {
+    public string[] VouchersNumbers {
       get;
       set;
     } = new string[0];
