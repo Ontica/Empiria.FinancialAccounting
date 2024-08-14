@@ -8,6 +8,7 @@
 *                                                                                                            *
 ************************* Copyright(c) La Vía Óntica SC, Ontica LLC and contributors. All rights reserved. **/
 using System;
+using System.Linq;
 
 namespace Empiria.FinancialAccounting {
 
@@ -268,9 +269,63 @@ namespace Empiria.FinancialAccounting {
     }
 
 
+    internal FixedList<AreaRule> GetCascadeAreas(DateTime date) {
+      return this.AreaRules;
+    }
+
+
+    internal FixedList<CurrencyRule> GetCascadeCurrencies(DateTime date) {
+      if (this.Role != AccountRole.Sumaria) {
+        return GetCurrencies(date);
+      }
+
+      FixedList<Account> children = GetChildren(date).FindAll(x => x.Role != AccountRole.Sumaria);
+
+      return children.SelectMany(x => x.GetCurrencies(date))
+                     .Distinct(new CurrencyRuleComparer())
+                     .OrderBy(x => x.Currency.Code)
+                     .ToFixedList();
+    }
+
+
+    internal FixedList<SectorRule> GetCascadeSectors(DateTime date) {
+      if (this.Role == AccountRole.Sectorizada) {
+        return GetSectors(date);
+      }
+
+      FixedList<Account> children = GetChildren(date).FindAll(x => x.Role == AccountRole.Sectorizada);
+
+      return children.SelectMany(x => x.GetSectors(date))
+                     .Distinct(new SectorRuleComparer())
+                     .OrderBy(x => x.Sector.Code)
+                     .ToFixedList();
+    }
+
+
+    internal FixedList<LedgerRule> GetCascadeLedgers(DateTime date) {
+      if (this.Role != AccountRole.Sumaria) {
+        return GetLedgers(date);
+      }
+
+      FixedList<Account> children = GetChildren(date).FindAll(x => x.Role != AccountRole.Sumaria);
+
+      return children.SelectMany(x => x.GetLedgers(date))
+                     .Distinct(new LedgerRuleComparer())
+                     .OrderBy(x => x.Ledger.Number)
+                     .ToFixedList();
+    }
+
+
     internal FixedList<Account> GetChildren() {
       return this.AccountsChart.Accounts.FindAll(x => x.Number.StartsWith(this.Number) &&
                                                      !x.Number.Equals(this.Number));
+    }
+
+
+    private FixedList<Account> GetChildren(DateTime date) {
+      return this.AccountsChart.Accounts.FindAll(x => x.Number.StartsWith(this.Number) &&
+                                                     !x.Number.Equals(this.Number) &&
+                                                     (x.StartDate <= date && date <= x.EndDate));
     }
 
 
@@ -278,6 +333,9 @@ namespace Empiria.FinancialAccounting {
       return _currencyRules.Value.FindAll(x => x.AppliesOn(date));
     }
 
+    private FixedList<LedgerRule> GetLedgers(DateTime date) {
+      return _ledgerRules.Value.FindAll(x => x.AppliesOn(date));
+    }
 
     internal FixedList<Account> GetHistory() {
       return this.AccountsChart.GetAccountHistory(this.Number);
@@ -287,6 +345,7 @@ namespace Empiria.FinancialAccounting {
     internal Account GetHistory(DateTime date) {
       return this.AccountsChart.GetAccountHistory(this.Number, date);
     }
+
 
     public Account GetParent() {
       if (this.Level == 1) {
@@ -309,6 +368,7 @@ namespace Empiria.FinancialAccounting {
 
       return children.Contains(x => x.Role == AccountRole.Sectorizada);
     }
+
 
     public Account TryGetHistory(DateTime date) {
       FixedList<Account> history = this.AccountsChart.GetAccountHistory(this.Number);

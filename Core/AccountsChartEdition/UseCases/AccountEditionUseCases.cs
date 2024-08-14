@@ -53,7 +53,7 @@ namespace Empiria.FinancialAccounting.AccountsChartEdition.UseCases {
 
       Account account = processor.Execute(command);
 
-      AccountDto outcome = AccountsChartMapper.MapAccount(account);
+      AccountDto outcome = AccountsChartMapper.MapAccount(account, account.StartDate);
 
       string message = GetCommandDoneMessage(command.CommandType, account);
 

@@ -31,10 +31,15 @@ namespace Empiria.FinancialAccounting.WebApi {
     [HttpGet]
     [Route("v2/financial-accounting/accounts-charts/{accountsChartUID:guid}/accounts/{accountUID:guid}")]
     public SingleObjectModel GetAccount([FromUri] string accountsChartUID,
-                                        [FromUri] string accountUID) {
+                                        [FromUri] string accountUID,
+                                        [FromUri] DateTime? date = null) {
+
+      if (date == null || !date.HasValue) {
+        date = DateTime.Today;
+      }
 
       using (var usecases = AccountsChartUseCases.UseCaseInteractor()) {
-        AccountDto account = usecases.GetAccount(accountsChartUID, accountUID);
+        AccountDto account = usecases.GetAccount(accountsChartUID, accountUID, date.Value);
 
         base.SetOperation($"Se leyó la cuenta {account.Number} del catálogo de cuentas.");
 

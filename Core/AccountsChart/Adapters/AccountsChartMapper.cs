@@ -36,7 +36,7 @@ namespace Empiria.FinancialAccounting.Adapters {
     }
 
 
-    static internal AccountDto MapAccount(Account account) {
+    static internal AccountDto MapAccount(Account account, DateTime date) {
       var dto = new AccountDto();
 
       FillAccountDescriptorDto(dto, account);
@@ -44,10 +44,10 @@ namespace Empiria.FinancialAccounting.Adapters {
       dto.Description = account.Description;
 
       dto.AccountsChart = account.AccountsChart.MapToNamedEntity();
-      dto.AreaRules = account.AreaRules;
-      dto.CurrencyRules = account.AllCurrencyRules;
-      dto.SectorRules = LedgerMapper.MapSectorRules(account.AllSectorRules);
-      dto.LedgerRules = LedgerMapper.MapLedgersRules(account.LedgerRules);
+      dto.AreaRules = account.GetCascadeAreas(date);
+      dto.CurrencyRules = account.GetCascadeCurrencies(date);
+      dto.SectorRules = LedgerMapper.MapSectorRules(account.GetCascadeSectors(date));
+      dto.LedgerRules = LedgerMapper.MapLedgersRules(account.GetCascadeLedgers(date));
       dto.History = MapAccountHistory(account.GetHistory());
 
       return dto;

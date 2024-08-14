@@ -32,7 +32,7 @@ namespace Empiria.FinancialAccounting.UseCases {
 
     #region Use cases
 
-    public AccountDto GetAccount(string accountsChartUID, string accountUID) {
+    public AccountDto GetAccount(string accountsChartUID, string accountUID, DateTime date) {
       Assertion.Require(accountsChartUID, "accountsChartUID");
       Assertion.Require(accountUID, "accountUID");
 
@@ -44,7 +44,7 @@ namespace Empiria.FinancialAccounting.UseCases {
           $"The account with uid {account.UID} does not belong " +
           $"to accounts chart {accountsChart.Name}.");
 
-      return AccountsChartMapper.MapAccount(account);
+      return AccountsChartMapper.MapAccount(account, date);
     }
 
 

@@ -42,7 +42,8 @@ namespace Empiria.FinancialAccounting.Tests {
     [Fact]
     public void Should_Get_An_Account() {
       AccountDto account = _usecases.GetAccount(TestingConstants.ACCOUNTS_CHART_UID,
-                                                TestingConstants.ACCOUNT_UID);
+                                                TestingConstants.ACCOUNT_UID,
+                                                DateTime.Today);
 
       Assert.Equal(TestingConstants.ACCOUNT_UID, account.UID);
       Assert.NotEmpty(account.AreaRules);
