@@ -13,10 +13,11 @@ using Empiria.Services;
 
 using Empiria.FinancialAccounting.Adapters;
 
-namespace Empiria.FinancialAccounting.UseCases {
+namespace Empiria.FinancialAccounting.UseCases
+{
 
-  /// <summary>Use cases for accounts chart searching and retriving.</summary>
-  public class AccountsChartUseCases : UseCase {
+    /// <summary>Use cases for accounts chart searching and retriving.</summary>
+    public class AccountsChartUseCases : UseCase {
 
     #region Constructors and parsers
 
@@ -33,8 +34,8 @@ namespace Empiria.FinancialAccounting.UseCases {
     #region Use cases
 
     public AccountDto GetAccount(string accountsChartUID, string accountUID, DateTime date) {
-      Assertion.Require(accountsChartUID, "accountsChartUID");
-      Assertion.Require(accountUID, "accountUID");
+      Assertion.Require(accountsChartUID, nameof(accountsChartUID));
+      Assertion.Require(accountUID, nameof(accountUID));
 
       var accountsChart = AccountsChart.Parse(accountsChartUID);
 
@@ -49,7 +50,7 @@ namespace Empiria.FinancialAccounting.UseCases {
 
 
     public AccountsChartDto GetAccounts(string accountsChartUID) {
-      Assertion.Require(accountsChartUID, "accountsChartUID");
+      Assertion.Require(accountsChartUID, nameof(accountsChartUID));
 
       var accountsChart = AccountsChart.Parse(accountsChartUID);
 
@@ -57,8 +58,18 @@ namespace Empiria.FinancialAccounting.UseCases {
     }
 
 
+    public AccountsChartDto GetAccounts(AccountsChartQueryDto query) {
+      Assertion.Require(query, nameof(query));
+
+      FixedList<Account> accounts = query.AccountsChart.GetAccountsInAPeriod(query.FromDate,
+                                                                             query.ToDate);
+
+      return AccountsChartMapper.Map(query.AccountsChart, accounts);
+    }
+
+
     public AccountsChartDto GetAccountsInADate(string accountsChartUID, DateTime date) {
-      Assertion.Require(accountsChartUID, "accountsChartUID");
+      Assertion.Require(accountsChartUID, nameof(accountsChartUID));
 
       var accountsChart = AccountsChart.Parse(accountsChartUID);
 

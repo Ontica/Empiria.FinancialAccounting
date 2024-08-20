@@ -8,6 +8,7 @@
 *                                                                                                            *
 ************************* Copyright(c) La Vía Óntica SC, Ontica LLC and contributors. All rights reserved. **/
 using System;
+
 using Empiria.Collections;
 
 using Empiria.FinancialAccounting.Data;
@@ -186,6 +187,14 @@ namespace Empiria.FinancialAccounting {
     public FixedList<Account> GetAccountsInADate(DateTime date) {
       return _accounts.Value.ToFixedList()
                             .FindAll(x => x.StartDate <= date && date <= x.EndDate);
+    }
+
+
+    public FixedList<Account> GetAccountsInAPeriod(DateTime fromDate, DateTime toDate) {
+      Assertion.Require(fromDate <= toDate, "fromDate must be less or equal than toDate.");
+
+      return _accounts.Value.ToFixedList()
+                            .FindAll(x => !(toDate < x.StartDate || fromDate > x.EndDate));
     }
 
 
