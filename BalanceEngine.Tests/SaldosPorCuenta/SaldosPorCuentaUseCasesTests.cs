@@ -71,8 +71,8 @@ namespace Empiria.FinancialAccounting.Tests.BalanceEngine.SaldosPorCuenta {
       TrialBalanceQuery query = new TrialBalanceQuery {
         TrialBalanceType = FinancialAccounting.BalanceEngine.TrialBalanceType.SaldosPorCuenta,
         AccountsChartUID = "47ec2ec7-0f4f-482e-9799-c23107b60d8a",
-        BalancesType = FinancialAccounting.BalanceEngine.BalancesType.WithCurrentBalance,
-        Accounts = new string[] { "1.01.02-1.01.03", "1.05.01.03.01.01.03" },
+        BalancesType = FinancialAccounting.BalanceEngine.BalancesType.AllAccountsInCatalog,
+        Accounts = new string[] { "1.01.02 - 1.01.03", "1.05.01.03.01.01.03" },
         SubledgerAccounts = new string[] {}, //"90000000000007096", "90000000009010970", "90000000009011515"
         ShowCascadeBalances = false,
         WithSubledgerAccount = true,

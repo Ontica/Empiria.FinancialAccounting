@@ -48,6 +48,8 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
 
     AllAccounts,
 
+    AllAccountsInCatalog,
+
     WithCurrentBalance,
 
     WithCurrentBalanceOrMovements,

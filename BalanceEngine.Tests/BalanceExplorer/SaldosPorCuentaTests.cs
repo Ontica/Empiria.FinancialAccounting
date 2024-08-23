@@ -40,62 +40,12 @@ namespace Empiria.FinancialAccounting.Tests.BalanceEngine.BalanceExplorer {
       BalanceExplorerQuery query = explorerTest.GetDefaultBalanceExplorerQuery();
       query.TrialBalanceType = TrialBalanceType.SaldosPorCuentaConsultaRapida;
       query.WithSubledgerAccount = true;
-      query.Accounts = new string[] { "1.01.02-1.01.03", "1.05.01.03.01.01.03" };//, "1.05.01.01.06.01"
-      //"1.05.01.01.06.01", "1.05.01.01.06.02", "1.05.01.02.02.01.01", "1.05.01.02.02.01.02", "1.05.01.03.02.03.01"
+      query.Accounts = new string[] { "1.01.02 - 1.01.03", "1.05.01.03.01.01.03" };
       BalanceExplorerDto sut = await BalanceEngineProxy.BuildBalanceExplorer(query);
       
       Assert.NotNull(sut);
       Assert.Equal(query, sut.Query);
       Assert.NotEmpty(sut.Entries);
-    }
-
-
-    [Fact]
-    public void RegexTest() {
-
-      string text = "1.01 - 1.02";
-      var fromAccount = "";
-      var toAccount = "";
-      
-      if (text.Contains("-")) {
-        
-        string[] accounts = text.Split('-');
-        int cont = 0;
-        
-        foreach (var account in accounts) {
-
-          if (account != string.Empty) {
-
-            fromAccount = fromAccount == string.Empty && cont == 0
-                          ? $"{account.Trim().Replace(" ", "")}"
-                          : fromAccount;
-
-            if (fromAccount != string.Empty && cont == 0) {
-
-              foreach (var c in fromAccount) {
-                if (!char.IsNumber(c) && c != '.') {
-                  Assertion.EnsureFailed($"La cuenta '{fromAccount}-' del rango '{text}' no contiene solo números y puntos, caracter: '{c}'");
-                }
-              }
-
-            } else if (toAccount == string.Empty && cont == 1) {
-
-              toAccount = $"{account.Trim().Replace(" ", "")}";
-
-              foreach (var c in toAccount) {
-                if (!char.IsNumber(c) && c != '.') {
-                  Assertion.EnsureFailed($"La cuenta '-{toAccount}' del rango '{text}' no contiene solo números y puntos, caracter: '{c}'");
-                }
-              }
-            } else {
-              Assertion.EnsureFailed($"El rango '{text}' contiene más de dos números de cuenta: '...-{account}'");
-            }
-            cont++;
-          }
-        }
-      }
-      
-      Assert.NotNull(fromAccount);
     }
 
 

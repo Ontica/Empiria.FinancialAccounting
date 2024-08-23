@@ -94,7 +94,7 @@ namespace Empiria.FinancialAccounting.BalanceEngine.Data {
             _query.TrialBalanceType == TrialBalanceType.SaldosPorCuentaConsultaRapida ||
             _query.TrialBalanceType == TrialBalanceType.SaldosPorAuxiliar) {
 
-          string rangeFilter = GetAccountsFilter();
+          string rangeFilter = GetAccountsRangeFilter();
 
           var filter = new Filter(rangeFilter);
 
@@ -102,7 +102,7 @@ namespace Empiria.FinancialAccounting.BalanceEngine.Data {
 
         } else {
 
-          string rangeFilter = GetAccountRangeFilter();
+          string rangeFilter = GetAccountsFilter();
 
           var filter = new Filter(rangeFilter);
 
@@ -116,7 +116,7 @@ namespace Empiria.FinancialAccounting.BalanceEngine.Data {
         string ledgerFilter = GetLedgerFilter();
         string sectorFilter = GetSectorFilter();
         string currencyFilter = GetCurrencyFilter();
-        string accountRangeFilter = GetAccountRangeByTrialBalanceType();
+        string accountRangeFilter = GetAccountsFilterByTrialBalanceType();
         string subledgerAccountFilter = GetSubledgerAccountsFilterByTrialBalanceType();
 
         var filter = new Filter(ledgerFilter);
@@ -155,7 +155,8 @@ namespace Empiria.FinancialAccounting.BalanceEngine.Data {
 
       private string GetWhereClause() {
 
-        if (_query.BalancesType == BalancesType.AllAccounts) {
+        if (_query.BalancesType == BalancesType.AllAccounts ||
+            _query.BalancesType == BalancesType.AllAccountsInCatalog) {
           return string.Empty;
         }
 
@@ -280,7 +281,7 @@ namespace Empiria.FinancialAccounting.BalanceEngine.Data {
       }
 
 
-      private string GetAccountsFilter() {
+      private string GetAccountsRangeFilter() {
 
         string accountsFilter = string.Empty;
         var token = " - ";
@@ -350,21 +351,21 @@ namespace Empiria.FinancialAccounting.BalanceEngine.Data {
       }
 
 
-      private string GetAccountRangeByTrialBalanceType() {
+      private string GetAccountsFilterByTrialBalanceType() {
 
         if (_query.TrialBalanceType == TrialBalanceType.SaldosPorCuenta ||
             _query.TrialBalanceType == TrialBalanceType.SaldosPorCuentaConsultaRapida ||
             _query.TrialBalanceType == TrialBalanceType.SaldosPorAuxiliar) {
 
-          return GetAccountsFilter();
+          return GetAccountsRangeFilter();
         } else {
-          return GetAccountRangeFilter();
+          return GetAccountsFilter();
         }
 
       }
 
 
-      private string GetAccountRangeFilter() {
+      private string GetAccountsFilter() {
 
         if (_query.FromAccount.Length == 0 && _query.ToAccount.Length == 0) {
           return string.Empty;
@@ -397,7 +398,7 @@ namespace Empiria.FinancialAccounting.BalanceEngine.Data {
             _query.TrialBalanceType == TrialBalanceType.SaldosPorAuxiliar ||
             _query.TrialBalanceType == TrialBalanceType.SaldosPorAuxiliarConsultaRapida) {
 
-          return GetSubledgerAccountsFilters();
+          return GetSubledgerAccountsRangeFilters();
         } else {
 
           return GetSubledgerAccountFilter();
@@ -406,7 +407,7 @@ namespace Empiria.FinancialAccounting.BalanceEngine.Data {
       }
 
 
-      private string GetSubledgerAccountsFilters() {
+      private string GetSubledgerAccountsRangeFilters() {
 
         string subledgerAccountsFilter = string.Empty;
 
