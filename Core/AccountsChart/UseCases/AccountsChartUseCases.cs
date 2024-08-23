@@ -58,13 +58,25 @@ namespace Empiria.FinancialAccounting.UseCases
     }
 
 
-    public AccountsChartDto GetAccounts(AccountsChartQueryDto query) {
+    static public AccountsChartDto GetAccounts(AccountsChartQueryDto query) {
       Assertion.Require(query, nameof(query));
 
       FixedList<Account> accounts = query.AccountsChart.GetAccountsInAPeriod(query.FromDate,
                                                                              query.ToDate);
 
       return AccountsChartMapper.Map(query.AccountsChart, accounts);
+    }
+
+
+    static public FixedList<AccountRange> GetAccountRangeToFilter(string[] accounts) {
+
+      return AccountRangeClauses.GetAccountRangeToFilter(accounts);
+    }
+
+
+    public static FixedList<AccountRange> GetAccountRangeToFilter(string fromAccount, string toAccount) {
+
+      return AccountRangeClauses.GetAccountRangeToFilter(fromAccount, toAccount);
     }
 
 
@@ -78,7 +90,7 @@ namespace Empiria.FinancialAccounting.UseCases
       return AccountsChartMapper.Map(accountsChart, accounts);
     }
 
-
+    
     public FixedList<NamedEntityDto> GetAccountsChartsList() {
       FixedList<AccountsChart> accountsChartsList = AccountsChart.GetList();
 
