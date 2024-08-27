@@ -13,6 +13,7 @@ using System.Text.RegularExpressions;
 using Empiria.Data;
 
 using Empiria.FinancialAccounting.BalanceEngine.Adapters;
+using Empiria.FinancialAccounting.UseCases;
 
 namespace Empiria.FinancialAccounting.BalanceEngine.Data {
 
@@ -283,71 +284,24 @@ namespace Empiria.FinancialAccounting.BalanceEngine.Data {
 
       private string GetAccountsRangeFilter() {
 
+        var accountRangeToFilter = AccountsChartUseCases.GetAccountRangeToFilter(_query.Accounts);
         string accountsFilter = string.Empty;
-        var token = " - ";
         int count = 0;
-        foreach (var account in _query.Accounts) {
 
-          if (account.Contains(token)) {
-            accountsFilter += GetAccountNumberFilterByRange(account, count);
+        foreach (var accountRange in accountRangeToFilter) {
 
-          } else {
-            accountsFilter += $"{(count > 0 ? "OR " : "")} NUMERO_CUENTA_ESTANDAR LIKE '{account}%' ";
+          if (accountRange.FromAccount.Length != 0 && accountRange.ToAccount.Length != 0) {
+            accountsFilter += $"{(count > 0 ? "OR " : "")} " +
+                              $"(NUMERO_CUENTA_ESTANDAR >= '{accountRange.FromAccount}' AND " +
+                              $"(NUMERO_CUENTA_ESTANDAR <= '{accountRange.ToAccount}' OR " +
+                              $"NUMERO_CUENTA_ESTANDAR LIKE '{accountRange.ToAccount}%')) ";
+
+          } else if (accountRange.FromAccount.Length != 0 && accountRange.ToAccount.Length == 0) {
+            accountsFilter += $"{(count > 0 ? "OR " : "")} NUMERO_CUENTA_ESTANDAR LIKE '{accountRange.FromAccount}%' ";
           }
-
           count += 1;
-          //accountsFilter += $"{(count > 0 ? "OR " : "")} NOMBRE_CUENTA_ESTANDAR LIKE '%{account}%' ";
-
         }
-
         return accountsFilter != string.Empty ? $"({accountsFilter})" : "";
-      }
-
-
-      private string GetAccountNumberFilterByRange(string accountString, int count) {
-
-        string[] accounts = accountString.Split(' ');
-        int range = 0;
-        string fromAccount = "";
-        string toAccount = "";
-
-        foreach (var account in accounts.Where(x => x != "-")) {
-
-          if (account != string.Empty) {
-
-            fromAccount = fromAccount == string.Empty && range == 0
-                          ? $"{account.Trim().Replace(" ", "")}"
-                          : fromAccount;
-
-            if (fromAccount != string.Empty && range == 0) {
-
-              foreach (var c in fromAccount) {
-                if (!char.IsNumber(c) && c != '.' && c != '-') {
-                  Assertion.EnsureFailed($"La cuenta '{fromAccount} -' del rango '{accountString}' " +
-                                         $"contiene espacios, letras o caracteres no permitidos.");
-                }
-              }
-            } else if (toAccount == string.Empty && range == 1) {
-
-              toAccount = $"{account.Trim().Replace(" ", "")}";
-
-              foreach (var c in toAccount) {
-                if (!char.IsNumber(c) && c != '.' && c != '-') {
-                  Assertion.EnsureFailed($"La cuenta '- {toAccount}' del rango '{accountString}' " +
-                                         $"contiene espacios, letras o caracteres no permitidos.");
-                }
-              }
-            } else {
-              Assertion.EnsureFailed($"El rango '{accountString}' " +
-                                     $"contiene espacios, letras o caracteres no permitidos.");
-            }
-            range++;
-          }
-        }
-        return $"{(count > 0 ? "OR " : "")} " +
-                            $"(NUMERO_CUENTA_ESTANDAR >= '{fromAccount}' AND " +
-                            $"(NUMERO_CUENTA_ESTANDAR <= '{toAccount}' OR " +
-                            $"NUMERO_CUENTA_ESTANDAR LIKE '{toAccount}%')) ";
       }
 
 
