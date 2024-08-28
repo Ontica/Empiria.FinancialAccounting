@@ -18,7 +18,21 @@ namespace Empiria.FinancialAccounting.Adapters {
 
     #region Public methods
 
-    static public FixedList<AccountRange> GetAccountRangeToFilter(string[] accounts) {
+    static public FixedList<AccountRange> GetAccountRange(string fromAccount,
+                                                          string toAccount) {
+
+      var accountRangeList = new List<AccountRange>();
+
+      var range = new AccountRange {
+        FromAccount = fromAccount,
+        ToAccount = toAccount
+      };
+
+      accountRangeList.Add(range);
+      return accountRangeList.ToFixedList();
+    }
+
+    static public FixedList<AccountRange> GetAccountRanges(string[] accounts) {
 
       var token = " - ";
       var accountRangeList = new List<AccountRange>();
@@ -36,21 +50,6 @@ namespace Empiria.FinancialAccounting.Adapters {
         accountRangeList.Add(accountRange);
       }
 
-      return accountRangeList.ToFixedList();
-    }
-
-
-    static public FixedList<AccountRange> GetAccountRangeToFilter(string fromAccount,
-                                                                  string toAccount) {
-
-      var accountRangeList = new List<AccountRange>();
-
-      var range = new AccountRange {
-        FromAccount = fromAccount,
-        ToAccount = toAccount
-      };
-
-      accountRangeList.Add(range);
       return accountRangeList.ToFixedList();
     }
 

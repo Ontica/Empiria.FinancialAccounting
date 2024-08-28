@@ -67,11 +67,11 @@ namespace Empiria.FinancialAccounting.BalanceEngine.Data {
       if (query.TrialBalanceType == TrialBalanceType.SaldosPorAuxiliar ||
           query.TrialBalanceType == TrialBalanceType.SaldosPorCuenta) {
 
-        accountsChartQuery.Accounts = AccountRangeConverter.GetAccountRangeToFilter(query.Accounts);
+        accountsChartQuery.Accounts = AccountRangeConverter.GetAccountRanges(query.Accounts);
 
       } else {
-        accountsChartQuery.Accounts = AccountRangeConverter.GetAccountRangeToFilter(query.FromAccount,
-                                                                                    query.ToAccount);
+        accountsChartQuery.Accounts = AccountRangeConverter.GetAccountRange(query.FromAccount,
+                                                                            query.ToAccount);
       }
 
       return accountsChartQuery;

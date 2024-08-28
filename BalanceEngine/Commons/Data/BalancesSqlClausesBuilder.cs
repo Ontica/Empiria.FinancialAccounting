@@ -283,7 +283,7 @@ namespace Empiria.FinancialAccounting.BalanceEngine.Data {
 
       private string GetAccountsRangeFilter() {
 
-        var accountRangeToFilter = AccountRangeConverter.GetAccountRangeToFilter(_query.Accounts);
+        var accountRangeToFilter = AccountRangeConverter.GetAccountRanges(_query.Accounts);
         string accountsFilter = string.Empty;
         int count = 0;
 
