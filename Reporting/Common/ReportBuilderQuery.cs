@@ -67,6 +67,11 @@ namespace Empiria.FinancialAccounting.Reporting {
     } = SendType.N;
 
 
+    public string[] VerificationNumbers {
+      get; set;
+    } = new string[0];
+
+
     public bool WithSubledgerAccount {
       get; set;
     } = false;
@@ -89,6 +94,8 @@ namespace Empiria.FinancialAccounting.Reporting {
     ListadoDePolizas,
 
     ListadoDePolizasPorCuenta,
+
+    MovinientosPorNumeroDeVerificacion,
 
     ComparativoDeCuentas,
 
