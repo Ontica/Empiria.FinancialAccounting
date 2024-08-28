@@ -41,19 +41,4 @@ namespace Empiria.FinancialAccounting.Adapters {
 
   }  // class AccountsChartQueryDto
 
-
-  /// <summary>Structure used to represent a range of financial accounts.</summary>
-  public class AccountRange {
-
-    public string FromAccount {
-      get; set;
-    } = string.Empty;
-
-
-    public string ToAccount {
-      get; set;
-    } = string.Empty;
-
-  }  // class AccountRange
-
-}  // namespace Empiria.FinancialAccounting.UseCases
+}  // namespace Empiria.FinancialAccounting.Adapters

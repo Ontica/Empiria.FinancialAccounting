@@ -37,11 +37,11 @@ namespace Empiria.FinancialAccounting.BalanceEngine.Data {
         //var accountsInCatalog = AccountsChartUseCases.GetAccounts(accountsChartQuery).Accounts;
         //return MergeBalancesAndAccounts(trialBalanceList, accountsInCatalog);
       }
-      
+
       return new FixedList<TrialBalanceEntry>(trialBalanceList);
     }
 
-    
+
     static internal FixedList<TrialBalanceEntry> GetTrialBalanceForBalancesExplorer(BalanceExplorerQuery query) {
       Assertion.Require(query, nameof(query));
 
@@ -67,11 +67,11 @@ namespace Empiria.FinancialAccounting.BalanceEngine.Data {
       if (query.TrialBalanceType == TrialBalanceType.SaldosPorAuxiliar ||
           query.TrialBalanceType == TrialBalanceType.SaldosPorCuenta) {
 
-        accountsChartQuery.Accounts = AccountsChartUseCases.GetAccountRangeToFilter(query.Accounts);
+        accountsChartQuery.Accounts = AccountRangeConverter.GetAccountRangeToFilter(query.Accounts);
 
       } else {
-        accountsChartQuery.Accounts =
-          AccountsChartUseCases.GetAccountRangeToFilter(query.FromAccount, query.ToAccount);
+        accountsChartQuery.Accounts = AccountRangeConverter.GetAccountRangeToFilter(query.FromAccount,
+                                                                                    query.ToAccount);
       }
 
       return accountsChartQuery;

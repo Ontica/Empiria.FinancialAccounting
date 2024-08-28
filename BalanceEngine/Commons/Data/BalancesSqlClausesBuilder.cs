@@ -9,16 +9,15 @@
 ************************* Copyright(c) La Vía Óntica SC, Ontica LLC and contributors. All rights reserved. **/
 using System;
 using System.Linq;
-using System.Text.RegularExpressions;
+
 using Empiria.Data;
 
+using Empiria.FinancialAccounting.Adapters;
 using Empiria.FinancialAccounting.BalanceEngine.Adapters;
-using Empiria.FinancialAccounting.UseCases;
 
 namespace Empiria.FinancialAccounting.BalanceEngine.Data {
 
   sealed internal partial class BalancesSqlClauses {
-
 
     /// <summary>Builds BalancesSqlClauses instances.</summary>
     sealed private class BalancesSqlClausesBuilder {
@@ -284,7 +283,7 @@ namespace Empiria.FinancialAccounting.BalanceEngine.Data {
 
       private string GetAccountsRangeFilter() {
 
-        var accountRangeToFilter = AccountsChartUseCases.GetAccountRangeToFilter(_query.Accounts);
+        var accountRangeToFilter = AccountRangeConverter.GetAccountRangeToFilter(_query.Accounts);
         string accountsFilter = string.Empty;
         int count = 0;
 
