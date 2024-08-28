@@ -33,7 +33,7 @@ namespace Empiria.FinancialAccounting.BalanceEngine.Data {
 
       if (query.BalancesType == BalancesType.AllAccountsInCatalog) {
 
-        var accountsChartQuery = GetAccountsChartQueryDto(query);
+        //var accountsChartQuery = GetAccountsChartQueryDto(query);
         //var accountsInCatalog = AccountsChartUseCases.GetAccounts(accountsChartQuery).Accounts;
         //return MergeBalancesAndAccounts(trialBalanceList, accountsInCatalog);
       }

@@ -37,10 +37,9 @@ namespace Empiria.FinancialAccounting.Tests.BalanceEngine.BalanceExplorer {
       var explorerTest = new BalanceExplorerTests();
 
       BalanceExplorerQuery query = explorerTest.GetDefaultBalanceExplorerQuery();
-      query.TrialBalanceType = TrialBalanceType.SaldosPorAuxiliarID;
-      query.SubledgerAccountID = 292736;
-      query.SubledgerAccount = "90000000000439543";
-      query.SubledgerAccounts = new string[] { "90000000000439543"};//
+      query.TrialBalanceType = TrialBalanceType.SaldosPorAuxiliarConsultaRapida;
+      //query.SubledgerAccountID = 292736;
+      query.SubledgerAccounts = new string[] {"LA VIA ONTICA", "SOFTEK", "EL PERRO AGUAYO"};//90000000000439543
       query.WithSubledgerAccount = true;
 
       BalanceExplorerDto sut = await BalanceEngineProxy.BuildBalanceExplorer(query);

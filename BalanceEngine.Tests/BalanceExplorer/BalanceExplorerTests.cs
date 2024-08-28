@@ -51,8 +51,8 @@ namespace Empiria.FinancialAccounting.Tests.BalanceEngine.BalanceExplorer {
         WithSubledgerAccount = false,
         Ledgers = new string[] { },
         InitialPeriod = {
-          FromDate = new DateTime(2023, 06, 01),
-          ToDate = new DateTime(2023, 06, 30)
+          FromDate = new DateTime(2023, 03, 01),
+          ToDate = new DateTime(2023, 03, 31)
         }
       };
 
