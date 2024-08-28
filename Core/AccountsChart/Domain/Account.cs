@@ -196,7 +196,8 @@ namespace Empiria.FinancialAccounting {
 
 
     public void CheckIsNotProtectedForEdition() {
-      Assertion.Require(!this.Number.StartsWith("4.02.03.01") || ExecutionServer.CurrentPrincipal.IsInRole("administrador-operativo"),
+      Assertion.Require(!this.Number.StartsWith("4.02.03.01") ||
+                        ExecutionServer.CurrentPrincipal.IsInRole("administrador-operativo"),
                         $"La cuenta {this.Number} está protegida contra edición.");
 
       //Assertion.Require(!this.Number.StartsWith("9.01") || ExecutionServer.CurrentPrincipal.HasPermission("registro-manual-cuentas-protegidas"),
@@ -275,13 +276,21 @@ namespace Empiria.FinancialAccounting {
 
 
     internal FixedList<CurrencyRule> GetCascadeCurrencies(DateTime date) {
+      return GetCascadeCurrencies(date, date);
+    }
+
+
+    internal FixedList<CurrencyRule> GetCascadeCurrencies(DateTime fromDate,
+                                                          DateTime toDate) {
+      Assertion.Require(fromDate <= toDate, "fromDate must be less or equal than toDate.");
+
       if (this.Role != AccountRole.Sumaria) {
-        return GetCurrencies(date);
+        return GetCurrencies(fromDate, toDate);
       }
 
-      FixedList<Account> children = GetChildren(date).FindAll(x => x.Role != AccountRole.Sumaria);
+      FixedList<Account> children = GetChildren(fromDate, toDate).FindAll(x => x.Role != AccountRole.Sumaria);
 
-      return children.SelectMany(x => x.GetCurrencies(date))
+      return children.SelectMany(x => x.GetCurrencies(fromDate, toDate))
                      .Distinct(new CurrencyRuleComparer())
                      .OrderBy(x => x.Currency.Code)
                      .ToFixedList();
@@ -289,18 +298,21 @@ namespace Empiria.FinancialAccounting {
 
 
     internal FixedList<SectorRule> GetCascadeSectors(DateTime date) {
+      return GetCascadeSectors(date, date);
+    }
+
+    internal FixedList<SectorRule> GetCascadeSectors(DateTime fromDate, DateTime toDate) {
       if (this.Role == AccountRole.Sectorizada) {
-        return GetSectors(date);
+        return GetSectors(fromDate, toDate);
       }
 
-      FixedList<Account> children = GetChildren(date).FindAll(x => x.Role == AccountRole.Sectorizada);
+      FixedList<Account> children = GetChildren(fromDate, toDate).FindAll(x => x.Role == AccountRole.Sectorizada);
 
-      return children.SelectMany(x => x.GetSectors(date))
+      return children.SelectMany(x => x.GetSectors(fromDate, toDate))
                      .Distinct(new SectorRuleComparer())
                      .OrderBy(x => x.Sector.Code)
                      .ToFixedList();
     }
-
 
     internal FixedList<LedgerRule> GetCascadeLedgers(DateTime date) {
       if (this.Role != AccountRole.Sumaria) {
@@ -329,12 +341,27 @@ namespace Empiria.FinancialAccounting {
     }
 
 
+    private FixedList<Account> GetChildren(DateTime fromDate, DateTime toDate) {
+      return this.AccountsChart.Accounts.FindAll(x => x.Number.StartsWith(this.Number) &&
+                                                     !x.Number.Equals(this.Number) &&
+                                                     !(toDate < x.StartDate || fromDate > x.EndDate));
+    }
+
     public FixedList<CurrencyRule> GetCurrencies(DateTime date) {
       return _currencyRules.Value.FindAll(x => x.AppliesOn(date));
     }
 
+    public FixedList<CurrencyRule> GetCurrencies(DateTime fromDate, DateTime toDate) {
+      return _currencyRules.Value.FindAll(x => x.AppliesOn(fromDate, toDate));
+    }
+
+
     private FixedList<LedgerRule> GetLedgers(DateTime date) {
       return _ledgerRules.Value.FindAll(x => x.AppliesOn(date));
+    }
+
+    private FixedList<LedgerRule> GetLedgers(DateTime fromDate, DateTime toDate) {
+      return _ledgerRules.Value.FindAll(x => x.AppliesOn(fromDate, toDate));
     }
 
     internal FixedList<Account> GetHistory() {
@@ -362,6 +389,10 @@ namespace Empiria.FinancialAccounting {
       return _sectorRules.Value.FindAll(x => x.AppliesOn(date));
     }
 
+
+    public FixedList<SectorRule> GetSectors(DateTime fromDate, DateTime toDate) {
+      return _sectorRules.Value.FindAll(x => x.AppliesOn(fromDate, toDate));
+    }
 
     internal bool HasChildrenWithSectors() {
       FixedList<Account> children = this.GetChildren();
