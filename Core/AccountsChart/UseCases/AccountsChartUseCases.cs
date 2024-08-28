@@ -58,24 +58,13 @@ namespace Empiria.FinancialAccounting.UseCases
     }
 
 
-    public AccountsChartDto GetAccounts(AccountsChartQueryDto query) {
+    public FixedList<FlatAccountDto> GetAccounts(AccountsChartQueryDto query) {
       Assertion.Require(query, nameof(query));
 
       FixedList<Account> accounts = query.AccountsChart.GetAccountsInAPeriod(query.FromDate,
                                                                              query.ToDate);
 
-      return AccountsChartMapper.Map(query.AccountsChart, accounts);
-    }
-
-
-    public AccountsChartDto GetAccountsInADate(string accountsChartUID, DateTime date) {
-      Assertion.Require(accountsChartUID, nameof(accountsChartUID));
-
-      var accountsChart = AccountsChart.Parse(accountsChartUID);
-
-      FixedList<Account> accounts = accountsChart.GetAccountsInADate(date);
-
-      return AccountsChartMapper.Map(accountsChart, accounts);
+      return FlatAccountMapper.Map(accounts, query.FromDate, query.ToDate);
     }
 
 
