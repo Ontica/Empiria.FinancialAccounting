@@ -143,6 +143,11 @@ namespace Empiria.FinancialAccounting.Reporting {
     } = false;
 
 
+    public bool VerificationNumbers {
+      get; set;
+    } = false;
+
+
     public bool SendType {
       get; set;
     } = false;
