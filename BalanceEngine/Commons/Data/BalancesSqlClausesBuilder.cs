@@ -368,10 +368,10 @@ namespace Empiria.FinancialAccounting.BalanceEngine.Data {
         int count = 0;
         foreach (var subledgerAccount in _query.SubledgerAccounts) {
 
-          subledgerAccountsFilter += $"{(count > 0 ? "OR " : "")} NUMERO_CUENTA_AUXILIAR LIKE '%{subledgerAccount}' ";
-          count += 1;
-          subledgerAccountsFilter += $"{(count > 0 ? "OR " : "")} NOMBRE_CUENTA_AUXILIAR LIKE '%{subledgerAccount}%' ";
+          var keyword = SearchExpression.ParseAndLikeWithNoiseWords("CUENTA_AUXILIAR_KEYWORDS", subledgerAccount);
+          subledgerAccountsFilter += $"{(count > 0 ? "OR " : "")} {keyword} ";
 
+          count += 1;
         }
         return subledgerAccountsFilter != string.Empty ? $"({subledgerAccountsFilter})" : "";
       }
