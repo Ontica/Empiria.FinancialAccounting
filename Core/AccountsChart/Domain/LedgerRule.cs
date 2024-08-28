@@ -48,8 +48,15 @@ namespace Empiria.FinancialAccounting {
     } = new DateTime(2049, 12, 31);
 
 
-    internal bool AppliesOn(DateTime date) {
+    public bool AppliesOn(DateTime date) {
       return this.StartDate <= date && date <= this.EndDate;
+    }
+
+
+    public bool AppliesOn(DateTime fromDate, DateTime toDate) {
+      Assertion.Require(fromDate <= toDate, "fromDate must be less or equal than toDate.");
+
+      return !(toDate < StartDate || fromDate > EndDate);
     }
 
     public override bool Equals(object obj) => this.Equals(obj as LedgerRule);
