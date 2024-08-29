@@ -61,8 +61,12 @@ namespace Empiria.FinancialAccounting.UseCases
     public FixedList<FlatAccountDto> GetAccounts(AccountsChartQueryDto query) {
       Assertion.Require(query, nameof(query));
 
-      FixedList<Account> accounts = query.AccountsChart.GetAccountsInAPeriod(query.FromDate,
-                                                                             query.ToDate);
+      FixedList<Account> accounts = query.AccountsChart.FilterAccountsInAPeriod(query.Accounts,
+                                                                                query.FromDate,
+                                                                                query.ToDate);
+      if (!query.IncludeSummaryAccounts) {
+        accounts = accounts.FindAll(x => x.Role != AccountRole.Sumaria);
+      }
 
       return FlatAccountMapper.Map(accounts, query.FromDate, query.ToDate);
     }

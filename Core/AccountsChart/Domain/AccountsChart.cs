@@ -8,9 +8,12 @@
 *                                                                                                            *
 ************************* Copyright(c) La Vía Óntica SC, Ontica LLC and contributors. All rights reserved. **/
 using System;
+using System.Collections.Generic;
+using System.Linq;
 
 using Empiria.Collections;
 
+using Empiria.FinancialAccounting.Adapters;
 using Empiria.FinancialAccounting.Data;
 
 namespace Empiria.FinancialAccounting {
@@ -195,6 +198,38 @@ namespace Empiria.FinancialAccounting {
 
       return _accounts.Value.ToFixedList()
                             .FindAll(x => !(toDate < x.StartDate || fromDate > x.EndDate));
+    }
+
+
+    public FixedList<Account> FilterAccountsInAPeriod(FixedList<AccountRange> accounts,
+                                                      DateTime fromDate, DateTime toDate) {
+      FixedList<Account> baseAccounts = GetAccountsInAPeriod(fromDate, toDate);
+
+      if (accounts.Count == 0) {
+        return baseAccounts;
+      }
+
+      var filteredAccounts = new List<Account>(accounts.Count);
+
+      foreach (AccountRange accountRange in accounts) {
+        FixedList<Account> chunk = new FixedList<Account>();
+
+        if (accountRange.ToAccount.Length != 0) {
+          chunk = baseAccounts.FindAll(x => (string.Compare(accountRange.FromAccount, x.Number) <= 0 &&
+                                             string.Compare(x.Number, accountRange.ToAccount) < 0) ||
+                                             x.Number.StartsWith(accountRange.ToAccount));
+        } else {
+          chunk = baseAccounts.FindAll(x => x.Number.StartsWith(accountRange.FromAccount));
+        }
+
+        filteredAccounts.AddRange(chunk.FindAll(x => !filteredAccounts.Contains(x)));
+      }
+
+      filteredAccounts.Sort((x, y) => x.Number.CompareTo(y.Number));
+
+      filteredAccounts.TrimExcess();
+
+      return filteredAccounts.Distinct().ToFixedList();
     }
 
 
