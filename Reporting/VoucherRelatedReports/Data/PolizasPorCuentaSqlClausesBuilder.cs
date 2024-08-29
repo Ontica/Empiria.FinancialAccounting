@@ -51,44 +51,68 @@ namespace Empiria.FinancialAccounting.Reporting.Data {
 
 
     private string GetFields() {
-      if (_buildQuery.WithSubledgerAccount) {
-        return "ID_MAYOR, ID_MONEDA, ID_CUENTA_ESTANDAR, ID_SECTOR, ID_TRANSACCION, ID_ELABORADA_POR, " +
-             "ID_AUTORIZADA_POR, ID_MOVIMIENTO, NUMERO_CUENTA_ESTANDAR, NOMBRE_CUENTA_ESTANDAR, " +
-             "NUMERO_CUENTA_AUXILIAR, NUMERO_TRANSACCION, NATURALEZA, FECHA_AFECTACION, FECHA_REGISTRO, " +
-             "CONCEPTO_TRANSACCION,  SUM(DEBE) AS DEBE, SUM(HABER) AS HABER";
+
+      if (_buildQuery.ReportType == ReportTypes.MovimientosPorNumeroDeVerificacion) {
+
+        return "NUMERO_VERIFICACION, ID_MAYOR, ID_MONEDA, ID_CUENTA_ESTANDAR, ID_SECTOR, ID_TRANSACCION, " +
+               "ID_ELABORADA_POR, ID_AUTORIZADA_POR, ID_MOVIMIENTO, NUMERO_CUENTA_ESTANDAR, " +
+               "NOMBRE_CUENTA_ESTANDAR, '-1' AS NUMERO_CUENTA_AUXILIAR, NUMERO_TRANSACCION, NATURALEZA, " +
+               "FECHA_AFECTACION, FECHA_REGISTRO, CONCEPTO_TRANSACCION,  SUM(DEBE) AS DEBE, SUM(HABER) AS HABER";
       } else {
-        return "ID_MAYOR, ID_MONEDA, ID_CUENTA_ESTANDAR, ID_SECTOR, ID_TRANSACCION, ID_ELABORADA_POR, " +
-             "ID_AUTORIZADA_POR, ID_MOVIMIENTO, NUMERO_CUENTA_ESTANDAR, NOMBRE_CUENTA_ESTANDAR, " +
-             "'-1' AS NUMERO_CUENTA_AUXILIAR, NUMERO_TRANSACCION, NATURALEZA, FECHA_AFECTACION, FECHA_REGISTRO, " +
-             "CONCEPTO_TRANSACCION,  SUM(DEBE) AS DEBE, SUM(HABER) AS HABER";
+        
+        if (_buildQuery.WithSubledgerAccount) {
+          return "ID_MAYOR, ID_MONEDA, ID_CUENTA_ESTANDAR, ID_SECTOR, ID_TRANSACCION, ID_ELABORADA_POR, " +
+               "ID_AUTORIZADA_POR, ID_MOVIMIENTO, NUMERO_CUENTA_ESTANDAR, NOMBRE_CUENTA_ESTANDAR, " +
+               "NUMERO_CUENTA_AUXILIAR, NUMERO_TRANSACCION, NATURALEZA, FECHA_AFECTACION, FECHA_REGISTRO, " +
+               "CONCEPTO_TRANSACCION,  SUM(DEBE) AS DEBE, SUM(HABER) AS HABER";
+        } else {
+          return "'-1' AS NUMERO_VERIFICACION, ID_MAYOR, ID_MONEDA, ID_CUENTA_ESTANDAR, ID_SECTOR, ID_TRANSACCION, ID_ELABORADA_POR, " +
+               "ID_AUTORIZADA_POR, ID_MOVIMIENTO, NUMERO_CUENTA_ESTANDAR, NOMBRE_CUENTA_ESTANDAR, " +
+               "'-1' AS NUMERO_CUENTA_AUXILIAR, NUMERO_TRANSACCION, NATURALEZA, FECHA_AFECTACION, FECHA_REGISTRO, " +
+               "CONCEPTO_TRANSACCION,  SUM(DEBE) AS DEBE, SUM(HABER) AS HABER";
+        }
       }
     }
 
 
     private string GetFilters() {
+
       string account = GetAccountFilter();
       string ledgers = GetLedgerFilter();
+      string verificationNumber = GetVerificationNumber();
 
       var filter = new Filter(account);
 
       filter.AppendAnd(ledgers);
+      filter.AppendAnd(verificationNumber);
 
       return filter.ToString().Length > 0 ? $"AND {filter}" : "";
     }
 
 
     private string GetGroupingClause() {
-      if (_buildQuery.WithSubledgerAccount) {
-        return "ID_MAYOR, ID_MONEDA, ID_CUENTA_ESTANDAR, ID_SECTOR, ID_TRANSACCION, ID_ELABORADA_POR, " +
-             "ID_AUTORIZADA_POR, ID_MOVIMIENTO, NUMERO_CUENTA_ESTANDAR, NOMBRE_CUENTA_ESTANDAR, " +
-             "NUMERO_CUENTA_AUXILIAR, NUMERO_TRANSACCION, NATURALEZA, FECHA_AFECTACION, FECHA_REGISTRO, " +
-             "CONCEPTO_TRANSACCION";
+
+      if (_buildQuery.ReportType == ReportTypes.MovimientosPorNumeroDeVerificacion) {
+
+        return "NUMERO_VERIFICACION, ID_MAYOR, ID_MONEDA, ID_CUENTA_ESTANDAR, ID_SECTOR, ID_TRANSACCION, ID_ELABORADA_POR, " +
+               "ID_AUTORIZADA_POR, ID_MOVIMIENTO, NUMERO_CUENTA_ESTANDAR, NOMBRE_CUENTA_ESTANDAR, " +
+               "NUMERO_TRANSACCION, NATURALEZA, FECHA_AFECTACION, FECHA_REGISTRO, " +
+               "CONCEPTO_TRANSACCION";
       } else {
-        return "ID_MAYOR, ID_MONEDA, ID_CUENTA_ESTANDAR, ID_SECTOR, ID_TRANSACCION, ID_ELABORADA_POR, " +
-             "ID_AUTORIZADA_POR, ID_MOVIMIENTO, NUMERO_CUENTA_ESTANDAR, NOMBRE_CUENTA_ESTANDAR, " +
-             "NUMERO_TRANSACCION, NATURALEZA, FECHA_AFECTACION, FECHA_REGISTRO, " +
-             "CONCEPTO_TRANSACCION";
+
+        if (_buildQuery.WithSubledgerAccount) {
+          return "ID_MAYOR, ID_MONEDA, ID_CUENTA_ESTANDAR, ID_SECTOR, ID_TRANSACCION, ID_ELABORADA_POR, " +
+               "ID_AUTORIZADA_POR, ID_MOVIMIENTO, NUMERO_CUENTA_ESTANDAR, NOMBRE_CUENTA_ESTANDAR, " +
+               "NUMERO_CUENTA_AUXILIAR, NUMERO_TRANSACCION, NATURALEZA, FECHA_AFECTACION, FECHA_REGISTRO, " +
+               "CONCEPTO_TRANSACCION";
+        } else {
+          return "NUMERO_VERIFICACION, ID_MAYOR, ID_MONEDA, ID_CUENTA_ESTANDAR, ID_SECTOR, ID_TRANSACCION, ID_ELABORADA_POR, " +
+               "ID_AUTORIZADA_POR, ID_MOVIMIENTO, NUMERO_CUENTA_ESTANDAR, NOMBRE_CUENTA_ESTANDAR, " +
+               "NUMERO_TRANSACCION, NATURALEZA, FECHA_AFECTACION, FECHA_REGISTRO, " +
+               "CONCEPTO_TRANSACCION";
+        }
       }
+      
     }
 
 
@@ -110,6 +134,18 @@ namespace Empiria.FinancialAccounting.Reporting.Data {
 
       return string.Empty;
     }
+
+
+    private string GetVerificationNumber() {
+
+      if (_buildQuery.ReportType == ReportTypes.MovimientosPorNumeroDeVerificacion &&
+          _buildQuery.VerificationNumbers.Length > 0) {
+
+        return $"NUMERO_VERIFICACION IN ({String.Join(", ", _buildQuery.VerificationNumbers)})";
+      }
+      return string.Empty;
+    }
+
 
     #endregion Private methods
 

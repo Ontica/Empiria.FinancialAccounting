@@ -98,14 +98,29 @@ namespace Empiria.FinancialAccounting.Reporting.VoucherRelatedReports.Domain {
 
 
     internal FixedList<AccountStatementEntry> OrderingVouchers(FixedList<AccountStatementEntry> vouchers) {
-      var ordering = vouchers.OrderBy(a => a.Currency.Code)
+
+      if (_buildQuery.ReportType.Equals(ReportTypes.MovimientosPorNumeroDeVerificacion)) {
+
+        var ordering = vouchers.OrderBy(a => a.VerificationNumber)
+                             .ThenBy(a => a.Currency.Code)
                              .ThenBy(a => a.Ledger.Number)
                              .ThenBy(a => a.AccountingDate)
                              .ThenBy(a => a.VoucherNumber)
                              .ThenBy(a => a.AccountNumber)
                              .ThenBy(a => a.SubledgerAccountNumber)
                              .ToList();
-      return ordering.ToFixedList();
+        return ordering.ToFixedList();
+      } else {
+
+        var ordering = vouchers.OrderBy(a => a.Currency.Code)
+                             .ThenBy(a => a.Ledger.Number)
+                             .ThenBy(a => a.AccountingDate)
+                             .ThenBy(a => a.VoucherNumber)
+                             .ThenBy(a => a.AccountNumber)
+                             .ThenBy(a => a.SubledgerAccountNumber)
+                             .ToList();
+        return ordering.ToFixedList();
+      }
     }
 
 

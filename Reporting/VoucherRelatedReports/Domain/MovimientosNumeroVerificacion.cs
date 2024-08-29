@@ -9,16 +9,14 @@
 ************************* Copyright(c) La Vía Óntica SC, Ontica LLC and contributors. All rights reserved. **/
 using System;
 using System.Collections.Generic;
-
 using Empiria.DynamicData;
-
 using Empiria.FinancialAccounting.BalanceEngine;
 using Empiria.FinancialAccounting.Reporting.AccountStatements.Domain;
 
 namespace Empiria.FinancialAccounting.Reporting.VoucherRelatedReports.Domain {
 
-  ///<summary>Listado de polizas por cuenta para reporte operativo.</summary>
-  internal class ListadoPolizasPorCuenta : IReportBuilder {
+  /// <summary></summary>
+  internal class MovimientosNumeroVerificacion : IReportBuilder {
 
     #region Public methods
 
@@ -29,7 +27,6 @@ namespace Empiria.FinancialAccounting.Reporting.VoucherRelatedReports.Domain {
 
       return MapToReportDataDto(buildQuery, vouchersByAccount);
     }
-
 
     #endregion Public methods
 
@@ -45,13 +42,13 @@ namespace Empiria.FinancialAccounting.Reporting.VoucherRelatedReports.Domain {
 
       FixedList<AccountStatementEntry> orderingVouchers = helper.OrderingVouchers(vouchersList);
 
-      FixedList<AccountStatementEntry> totalsByCurrency = helper.GenerateTotalSummaryByCurrency(
-                                                                  orderingVouchers);
+      //FixedList<AccountStatementEntry> totalsByCurrency = helper.GenerateTotalSummaryByCurrency(
+      //                                                            orderingVouchers);
 
-      FixedList<AccountStatementEntry> returnedEntries = helper.CombineVouchersWithTotalByCurrency(
-                                                          orderingVouchers, totalsByCurrency);
+      //FixedList<AccountStatementEntry> returnedEntries = helper.CombineVouchersWithTotalByCurrency(
+      //                                                    orderingVouchers, totalsByCurrency);
 
-      return returnedEntries.Select(x => (IVouchersByAccountEntry) x)
+      return orderingVouchers.Select(x => (IVouchersByAccountEntry) x)
                             .ToFixedList();
     }
 
@@ -59,13 +56,11 @@ namespace Empiria.FinancialAccounting.Reporting.VoucherRelatedReports.Domain {
     private static FixedList<DataTableColumn> GetReportColumns(ReportBuilderQuery buildQuery) {
       var columns = new List<DataTableColumn>();
 
+      columns.Add(new DataTableColumn("verificationNumber", "No. Verif", "text"));
       columns.Add(new DataTableColumn("ledgerNumber", "Cont", "text"));
       columns.Add(new DataTableColumn("currencyCode", "Mon", "text"));
       columns.Add(new DataTableColumn("accountNumber", "Cuenta", "text-nowrap"));
       columns.Add(new DataTableColumn("sectorCode", "Sct", "text"));
-      if (buildQuery.WithSubledgerAccount) {
-        columns.Add(new DataTableColumn("subledgerAccountNumber", "Auxiliar", "text-nowrap"));
-      }
       columns.Add(new DataTableColumn("voucherNumber", "No. Poliza", "text-nowrap"));
       columns.Add(new DataTableColumn("debit", "Cargo", "decimal"));
       columns.Add(new DataTableColumn("credit", "Abono", "decimal"));
@@ -99,11 +94,19 @@ namespace Empiria.FinancialAccounting.Reporting.VoucherRelatedReports.Domain {
     static private VoucherByAccountEntry MapToVoucherEntry(AccountStatementEntry entry) {
       var returnedVoucher = new VoucherByAccountEntry();
 
-      ItemTypeClausesForVoucher(returnedVoucher, entry);
-
+      returnedVoucher.VerificationNumber = entry.VerificationNumber;
       returnedVoucher.LedgerUID = entry.Ledger.UID;
       returnedVoucher.CurrencyCode = entry.Currency.Code;
       returnedVoucher.AccountName = entry.AccountName;
+      
+      returnedVoucher.LedgerNumber = entry.Ledger.Number;
+      returnedVoucher.LedgerName = entry.Ledger.Name;
+      returnedVoucher.AccountNumber = entry.AccountNumber;
+      returnedVoucher.SectorCode = entry.Sector.Code;
+      returnedVoucher.VoucherNumber = entry.VoucherNumber;
+      returnedVoucher.Concept = entry.Concept;
+      returnedVoucher.AccountingDate = entry.AccountingDate;
+      returnedVoucher.RecordingDate = entry.RecordingDate;
 
       if (entry.SubledgerAccountNumber != "0" && entry.SubledgerAccountNumber != null) {
         returnedVoucher.SubledgerAccountNumber = entry.SubledgerAccountNumber;
@@ -118,127 +121,8 @@ namespace Empiria.FinancialAccounting.Reporting.VoucherRelatedReports.Domain {
       return returnedVoucher;
     }
 
-
-    private static void ItemTypeClausesForVoucher(VoucherByAccountEntry returnedVoucher,
-                                                  AccountStatementEntry entry) {
-
-      if (entry.ItemType == TrialBalanceItemType.Entry) {
-        returnedVoucher.LedgerNumber = entry.Ledger.Number;
-        returnedVoucher.LedgerName = entry.Ledger.Name;
-        returnedVoucher.AccountNumber = entry.AccountNumber;
-        returnedVoucher.SectorCode = entry.Sector.Code;
-        returnedVoucher.VoucherNumber = entry.VoucherNumber;
-        returnedVoucher.Concept = entry.Concept;
-        returnedVoucher.AccountingDate = entry.AccountingDate;
-        returnedVoucher.RecordingDate = entry.RecordingDate;
-      } else {
-        returnedVoucher.AccountNumber = entry.AccountName;
-        returnedVoucher.AccountingDate = ExecutionServer.DateMaxValue;
-        returnedVoucher.RecordingDate = ExecutionServer.DateMaxValue;
-      }
-
-    }
-
     #endregion Private methods
 
-  } // class ListadoPolizasPorCuenta
-
-
-  public class VoucherByAccountEntry : IReportEntryDto {
-
-    public TrialBalanceItemType ItemType {
-      get; internal set;
-    }
-
-    public int VoucherId {
-      get; internal set;
-    }
-
-    public string LedgerUID {
-      get; internal set;
-    }
-
-    public string LedgerNumber {
-      get; internal set;
-    } = string.Empty;
-
-
-    public string LedgerName {
-      get; internal set;
-    } = string.Empty;
-
-    public string CurrencyCode {
-      get; internal set;
-    }
-
-    public int StandardAccountId {
-      get; internal set;
-    }
-
-    public string AccountNumber {
-      get; internal set;
-    }
-
-    public string AccountNumberForBalances {
-      get; internal set;
-    }
-
-    public string AccountName {
-      get; internal set;
-    }
-
-    public string SectorCode {
-      get; internal set;
-    } = string.Empty;
-
-    public decimal? Debit {
-      get; internal set;
-    }
-
-    public decimal? Credit {
-      get; internal set;
-    }
-
-    public decimal CurrentBalance {
-      get; internal set;
-    }
-
-    public string VoucherNumber {
-      get; internal set;
-    } = string.Empty;
-
-    public string VerificationNumber {
-      get;
-      internal set;
-    }
-
-    public string ElaboratedBy {
-      get; internal set;
-    }
-
-    public string AuthorizedBy {
-      get;
-      internal set;
-    }
-
-    public string Concept {
-      get; internal set;
-    } = string.Empty;
-
-    public string SubledgerAccountNumber {
-      get; internal set;
-    } = string.Empty;
-
-    public DateTime AccountingDate {
-      get; internal set;
-    }
-
-    public DateTime RecordingDate {
-      get;
-      internal set;
-    }
-
-    
-  } // class VoucherByAccountEntry
+  } // class MovimientosNumeroVerificacion
 
 } // namespace Empiria.FinancialAccounting.Reporting.VoucherRelatedReports.Domain
