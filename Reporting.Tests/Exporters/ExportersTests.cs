@@ -53,6 +53,29 @@ namespace Empiria.FinancialAccounting.Tests.Reporting {
     }
 
 
+    [Fact]
+    public void ExportVouchersByVerificationNumbersTest() {
+
+      using (var service = ReportingService.ServiceInteractor()) {
+
+        ReportBuilderQuery buildQuery = new ReportBuilderQuery {
+          AccountsChartUID = "47ec2ec7-0f4f-482e-9799-c23107b60d8a",
+          //AccountNumber = "1.05.01.03.02.03.01",
+          VerificationNumbers = new string[] { "1", "2", "3" },
+          ReportType = ReportTypes.MovimientosPorNumeroDeVerificacion,
+          FromDate = new DateTime(2023, 06, 30),
+          ToDate = new DateTime(2023, 06, 30),
+          ExportTo = FileType.Excel
+        };
+
+        ReportDataDto reportData = service.GenerateReport(buildQuery);
+        FileDto sut = service.ExportReport(buildQuery, reportData);
+        Assert.NotNull(sut);
+      }
+
+    }
+
+
   } // class ComparativoDeCuentasTests
 
 } //

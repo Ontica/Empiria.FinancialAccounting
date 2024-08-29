@@ -107,7 +107,6 @@ namespace Empiria.FinancialAccounting.Reporting.VoucherRelatedReports.Domain {
                              .ThenBy(a => a.AccountingDate)
                              .ThenBy(a => a.VoucherNumber)
                              .ThenBy(a => a.AccountNumber)
-                             .ThenBy(a => a.SubledgerAccountNumber)
                              .ToList();
         return ordering.ToFixedList();
       } else {

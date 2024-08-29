@@ -2,9 +2,9 @@
 *                                                                                                            *
 *  Module   : Reporting Services                            Component : Report Builders                      *
 *  Assembly : FinancialAccounting.Reporting.dll             Pattern   : Report builder                       *
-*  Type     : ListadoPolizasPorCuenta                       License   : Please read LICENSE.txt file         *
+*  Type     : MovimientosNumeroVerificacion                 License   : Please read LICENSE.txt file         *
 *                                                                                                            *
-*  Summary  : Listado de polizas por cuenta para reporte operativo.                                          *
+*  Summary  : Listado de polizas por número de verificación para reporte operativo.                          *
 *                                                                                                            *
 ************************* Copyright(c) La Vía Óntica SC, Ontica LLC and contributors. All rights reserved. **/
 using System;
@@ -15,7 +15,7 @@ using Empiria.FinancialAccounting.Reporting.AccountStatements.Domain;
 
 namespace Empiria.FinancialAccounting.Reporting.VoucherRelatedReports.Domain {
 
-  /// <summary></summary>
+  /// <summary>Listado de polizas por número de verificación para reporte operativo.</summary>
   internal class MovimientosNumeroVerificacion : IReportBuilder {
 
     #region Public methods
@@ -42,12 +42,6 @@ namespace Empiria.FinancialAccounting.Reporting.VoucherRelatedReports.Domain {
 
       FixedList<AccountStatementEntry> orderingVouchers = helper.OrderingVouchers(vouchersList);
 
-      //FixedList<AccountStatementEntry> totalsByCurrency = helper.GenerateTotalSummaryByCurrency(
-      //                                                            orderingVouchers);
-
-      //FixedList<AccountStatementEntry> returnedEntries = helper.CombineVouchersWithTotalByCurrency(
-      //                                                    orderingVouchers, totalsByCurrency);
-
       return orderingVouchers.Select(x => (IVouchersByAccountEntry) x)
                             .ToFixedList();
     }
@@ -59,9 +53,9 @@ namespace Empiria.FinancialAccounting.Reporting.VoucherRelatedReports.Domain {
       columns.Add(new DataTableColumn("verificationNumber", "No. Verif", "text"));
       columns.Add(new DataTableColumn("ledgerNumber", "Cont", "text"));
       columns.Add(new DataTableColumn("currencyCode", "Mon", "text"));
+      columns.Add(new DataTableColumn("voucherNumber", "No. Poliza", "text-nowrap"));
       columns.Add(new DataTableColumn("accountNumber", "Cuenta", "text-nowrap"));
       columns.Add(new DataTableColumn("sectorCode", "Sct", "text"));
-      columns.Add(new DataTableColumn("voucherNumber", "No. Poliza", "text-nowrap"));
       columns.Add(new DataTableColumn("debit", "Cargo", "decimal"));
       columns.Add(new DataTableColumn("credit", "Abono", "decimal"));
       columns.Add(new DataTableColumn("accountingDate", "Afectación", "date"));

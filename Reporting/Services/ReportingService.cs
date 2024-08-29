@@ -46,7 +46,7 @@ namespace Empiria.FinancialAccounting.Reporting {
 
       Assertion.Require(buildQuery, nameof(buildQuery));
       Assertion.Require(reportData, nameof(reportData));
-
+      
       IReportExporter exporter = GetReportExporter(buildQuery.ExportTo);
 
       return exporter.Export(reportData);
