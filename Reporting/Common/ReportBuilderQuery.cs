@@ -95,7 +95,7 @@ namespace Empiria.FinancialAccounting.Reporting {
 
     ListadoDePolizasPorCuenta,
 
-    MovinientosPorNumeroDeVerificacion,
+    MovimientosPorNumeroDeVerificacion,
 
     ComparativoDeCuentas,
 

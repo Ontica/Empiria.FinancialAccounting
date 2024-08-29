@@ -40,7 +40,7 @@ namespace Empiria.FinancialAccounting.Tests.Reporting.AccountStatements {
       return new AccountStatementQuery {
         BalancesQuery = {
           AccountsChartUID = "47ec2ec7-0f4f-482e-9799-c23107b60d8a",
-          FromAccount = "1.01.01.02",
+          FromAccount = "1.01.01",
           InitialPeriod = {
             FromDate = new DateTime(2023, 06, 01),
             ToDate = new DateTime(2023, 06, 30),
@@ -54,11 +54,11 @@ namespace Empiria.FinancialAccounting.Tests.Reporting.AccountStatements {
         Entry = {
           AccountNumberForBalances = "1.01.01", //
           CurrencyCode = "01", //
-          InitialBalance = 24400,
-          CurrentBalanceForBalances = 23400,
+          InitialBalance = 440142.42M,
+          CurrentBalanceForBalances = 672376.16M,
           DebtorCreditor="Deudora",
           ItemType = BalanceEngine.TrialBalanceItemType.Summary,
-          LastChangeDateForBalances = new DateTime(2023, 06, 07),
+          LastChangeDateForBalances = new DateTime(2023, 06, 30),
           LedgerNumber="",
           //LedgerUID="",
           SectorCode = "00",
@@ -67,7 +67,7 @@ namespace Empiria.FinancialAccounting.Tests.Reporting.AccountStatements {
 
         OrderBy = {
           SortType = AccountStatementOrder.AccountingDate,
-          OrderType = AccountStatementOrderType.Descending
+          OrderType = AccountStatementOrderType.Ascending
         }
       };
     }

@@ -94,6 +94,12 @@ namespace Empiria.FinancialAccounting.Reporting.AccountStatements.Domain {
     }
 
 
+    [DataField("NUMERO_VERIFICACION")]
+    public string VerificationNumber {
+      get; internal set;
+    }
+
+
     // Todo: Change string type to DebtorCreditor enumeration type (already exists)
     [DataField("NATURALEZA")]
     public string DebtorCreditor {
@@ -213,5 +219,6 @@ namespace Empiria.FinancialAccounting.Reporting.AccountStatements.Domain {
 
 
   } // class VouchersByAccountEntry
+
 
 } // namespace Empiria.FinancialAccounting.Reporting.AccountStatements.Domain
