@@ -1,24 +1,23 @@
 ﻿/* Empiria Financial *****************************************************************************************
 *                                                                                                            *
-*  Module   : Vouchers Management                        Component : Domain Layer                            *
-*  Assembly : FinancialAccounting.Vouchers.dll           Pattern   : Service Provider                        *
+*  Module   : Accounts Chart                             Component : Domain Layer                            *
+*  Assembly : FinancialAccounting.Core.dll               Pattern   : Service Provider                        *
 *  Type     : AccountAssertions                          License   : Please read LICENSE.txt file            *
 *                                                                                                            *
 *  Summary  : Provides business rules checking through assertions for financial accounts.                    *
 *                                                                                                            *
 ************************* Copyright(c) La Vía Óntica SC, Ontica LLC and contributors. All rights reserved. **/
 using System;
-using Empiria.DataTypes;
 
-namespace Empiria.FinancialAccounting.Vouchers {
+namespace Empiria.FinancialAccounting {
 
   /// <summary>Provides business rules checking through assertions for financial accounts.</summary>
-  internal class AccountAssertions {
+  public class AccountAssertions {
 
     private readonly Account _account;
     private readonly DateTime _accountingDate;
 
-    internal AccountAssertions(Account account, DateTime accountingDate) {
+    public AccountAssertions(Account account, DateTime accountingDate) {
       Assertion.Require(account, nameof(account));
 
       _account = account;
@@ -27,7 +26,7 @@ namespace Empiria.FinancialAccounting.Vouchers {
 
     #region Assertions
 
-    internal void AssertCurrencyRule(Currency currency) {
+    public void AssertCurrencyRule(Currency currency) {
       Assertion.Require(currency, nameof(currency));
 
       Assertion.Require(
@@ -36,13 +35,13 @@ namespace Empiria.FinancialAccounting.Vouchers {
     }
 
 
-    internal void AssertIsNotSummary() {
+    public void AssertIsNotSummary() {
       Assertion.Require(_account.Role != AccountRole.Sumaria,
                         $"La cuenta {_account.Number} es sumaria, por lo que no admite movimientos.");
     }
 
 
-    internal void AssertIsNotProtectedForEdition() {
+    public void AssertIsNotProtectedForEdition() {
       Assertion.Require(!_account.Number.StartsWith("4.02.03.01") ||
                         ExecutionServer.CurrentPrincipal.IsInRole("administrador-operativo"),
                         $"La cuenta {_account.Number} está protegida contra edición.");
@@ -53,7 +52,7 @@ namespace Empiria.FinancialAccounting.Vouchers {
     }
 
 
-    internal void AssertNoEventTypeRule() {
+    public void AssertNoEventTypeRule() {
       if (_account.Number.StartsWith("13")) {
         Assertion.RequireFail($"La cuenta {_account.Number} necesita un tipo de evento, " +
                               $"sin embargo no se proporcionó.");
@@ -61,14 +60,14 @@ namespace Empiria.FinancialAccounting.Vouchers {
     }
 
 
-    internal void AssertNoSectorRule() {
+    public void AssertNoSectorRule() {
       Assertion.Require(_account.Role != AccountRole.Sectorizada,
                        $"La cuenta {_account.Number} requiere un sector, " +
                        $"sin embargo no se proporcionó.");
     }
 
 
-    internal void AssertSectorRule(Sector sector) {
+    public void AssertSectorRule(Sector sector) {
       Assertion.Require(sector, nameof(sector));
 
       Assertion.Require(_account.Role == AccountRole.Sectorizada,
@@ -81,13 +80,13 @@ namespace Empiria.FinancialAccounting.Vouchers {
     }
 
 
-    internal void AssertSubledgerAccountRuleWithNoSector() {
+    public void AssertSubledgerAccountRuleWithNoSector() {
       Assertion.Require(_account.Role == AccountRole.Control,
                       $"La cuenta {_account.Number} no maneja auxiliares para el sector 00.");
     }
 
 
-    internal void AssertSubledgerAccountRuleWithSector(Sector sector) {
+    public void AssertSubledgerAccountRuleWithSector(Sector sector) {
       Assertion.Require(sector, nameof(sector));
 
       SectorRule sectorRule = _account.GetSectors(_accountingDate)
@@ -104,13 +103,13 @@ namespace Empiria.FinancialAccounting.Vouchers {
     }
 
 
-    internal void AssertNoSubledgerAccountRuleWithNoSector() {
+    public void AssertNoSubledgerAccountRuleWithNoSector() {
       Assertion.Require(_account.Role == AccountRole.Detalle,
                        $"La cuenta {_account.Number} requiere un auxiliar.");
     }
 
 
-    internal void AssertNoSubledgerAccountRuleWithSector(Sector sector) {
+    public void AssertNoSubledgerAccountRuleWithSector(Sector sector) {
       Assertion.Require(sector, nameof(sector));
 
       SectorRule sectorRule = _account.GetSectors(_accountingDate).Find(x => x.Sector.Equals(sector));
@@ -126,7 +125,7 @@ namespace Empiria.FinancialAccounting.Vouchers {
     }
 
 
-    internal bool CanSkipAssertionChecking() {
+    public bool CanSkipAssertionChecking() {
       if (_account.Number == "6.05.01.02.03.03" &&
           _accountingDate == new DateTime(2023, 01, 01)) {
         return true;
@@ -138,4 +137,4 @@ namespace Empiria.FinancialAccounting.Vouchers {
 
   } // class AccountAssertions
 
-}  // namespace Empiria.FinancialAccounting.Vouchers
+}  // namespace Empiria.FinancialAccounting
