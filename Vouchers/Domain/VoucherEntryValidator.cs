@@ -56,12 +56,14 @@ namespace Empiria.FinancialAccounting.Vouchers {
         return resultList.ToFixedList();
       }
 
-      if (account.Number == "6.05.01.02.03.03" && this.AccountingDate == new DateTime(2023, 01, 01)) {
+      var accountAssertions = new AccountAssertions(account, this.AccountingDate);
+
+      if (accountAssertions.CanSkipAssertionChecking()) {
         return resultList.ToFixedList();
       }
 
       try {
-        account.CheckIsNotSummary();
+        accountAssertions.AssertIsNotSummary();
       } catch (Exception e) {
         resultList.Add(e.Message);
 
@@ -70,7 +72,7 @@ namespace Empiria.FinancialAccounting.Vouchers {
 
       try {
         if (this.CheckProtectedAccounts) {
-          account.CheckIsNotProtectedForEdition();
+          accountAssertions.AssertIsNotProtectedForEdition();
         }
       } catch (Exception e) {
         resultList.Add(e.Message);
@@ -79,16 +81,16 @@ namespace Empiria.FinancialAccounting.Vouchers {
       }
 
       try {
-        account.CheckCurrencyRule(entry.Currency, this.AccountingDate);
+        accountAssertions.AssertCurrencyRule(entry.Currency);
       } catch (Exception e) {
         resultList.Add(e.Message);
       }
 
       try {
         if (entry.HasSector) {
-          account.CheckSectorRule(entry.Sector, this.AccountingDate);
+          accountAssertions.AssertSectorRule(entry.Sector);
         } else {
-          account.CheckNoSectorRule();
+          accountAssertions.AssertNoSectorRule();
         }
       } catch (Exception e) {
         resultList.Add(e.Message);
@@ -96,16 +98,16 @@ namespace Empiria.FinancialAccounting.Vouchers {
 
       try {
         if (entry.HasSubledgerAccount && entry.HasSector) {
-          account.CheckSubledgerAccountRule(entry.Sector, this.AccountingDate);
+          accountAssertions.AssertSubledgerAccountRuleWithSector(entry.Sector);
 
         } else if (entry.HasSubledgerAccount && !entry.HasSector) {
-          account.CheckSubledgerAccountRule();
+          accountAssertions.AssertSubledgerAccountRuleWithNoSector();
 
         } else if (!entry.HasSubledgerAccount && entry.HasSector) {
-          account.CheckNoSubledgerAccountRule(entry.Sector, this.AccountingDate);
+          accountAssertions.AssertNoSubledgerAccountRuleWithSector(entry.Sector);
 
         } else if (!entry.HasSubledgerAccount && !entry.HasSector) {
-          account.CheckNoSubledgerAccountRule();
+          accountAssertions.AssertNoSubledgerAccountRuleWithNoSector();
         }
       } catch (Exception e) {
         resultList.Add(e.Message);
@@ -130,17 +132,15 @@ namespace Empiria.FinancialAccounting.Vouchers {
 
       try {
         if (!entry.HasEventType) {
-          account.CheckNoEventTypeRule();
+          accountAssertions.AssertNoEventTypeRule();
         }
       } catch (Exception e) {
         resultList.Add(e.Message);
       }
 
-
       if (entry.Amount <= 0) {
         resultList.Add($"El importe del cargo o abono debe ser mayor que cero.");
       }
-
 
       if (entry.Amount != Math.Round(entry.Amount, 2)) {
         resultList.Add($"El importe del movimiento tiene más de dos decimales: {entry.Amount}");
@@ -149,6 +149,6 @@ namespace Empiria.FinancialAccounting.Vouchers {
       return resultList.ToFixedList();
     }
 
-  }  // class VoucherEntryValidator
+   }  // class VoucherEntryValidator
 
 }  // namespace Empiria.FinancialAccounting.Vouchers
