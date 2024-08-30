@@ -201,18 +201,18 @@ namespace Empiria.FinancialAccounting {
     }
 
 
-    public FixedList<Account> FilterAccountsInAPeriod(FixedList<AccountRange> accounts,
+    public FixedList<Account> FilterAccountsInAPeriod(FixedList<AccountRange> accountRanges,
                                                       DateTime fromDate, DateTime toDate) {
       FixedList<Account> baseAccounts = GetAccountsInAPeriod(fromDate, toDate);
 
-      if (accounts.Count == 0) {
+      if (accountRanges.Count == 0 || baseAccounts.Count == 0) {
         return baseAccounts;
       }
 
-      var filteredAccounts = new List<Account>(accounts.Count);
+      var filteredAccounts = new List<Account>(accountRanges.Count);
 
-      foreach (AccountRange accountRange in accounts) {
-        FixedList<Account> chunk = new FixedList<Account>();
+      foreach (AccountRange accountRange in accountRanges) {
+        var chunk = new FixedList<Account>();
 
         if (accountRange.ToAccount.Length != 0) {
           chunk = baseAccounts.FindAll(x => (string.Compare(accountRange.FromAccount, x.Number) <= 0 &&

@@ -133,6 +133,6 @@ namespace Empiria.FinancialAccounting.Reconciliation.Readers {
 
     #endregion Helpers
 
-  }  // class IkosDerivadosRowReader
+  }  // class SimefinRowReader
 
 } // namespace Empiria.FinancialAccounting.Reconciliation.Readers

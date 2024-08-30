@@ -9,20 +9,19 @@
 ************************* Copyright(c) La Vía Óntica SC, Ontica LLC and contributors. All rights reserved. **/
 using System;
 using System.Collections.Generic;
+
 using Empiria.Data;
+
 using Empiria.FinancialAccounting.Adapters;
 using Empiria.FinancialAccounting.BalanceEngine.Adapters;
 using Empiria.FinancialAccounting.BalanceEngine.BalanceExplorer.Adapters;
-using Empiria.FinancialAccounting.UseCases;
 
 namespace Empiria.FinancialAccounting.BalanceEngine.Data {
 
   /// <summary>Provides data read methods for balances.</summary>
   static internal class BalancesDataService {
 
-
     #region Public methods
-
 
     static internal FixedList<TrialBalanceEntry> GetTrialBalanceEntries(TrialBalanceQuery query) {
       Assertion.Require(query, nameof(query));
@@ -53,11 +52,9 @@ namespace Empiria.FinancialAccounting.BalanceEngine.Data {
 
     #endregion Public methods
 
-    #region Private methods
+    #region Helpers
 
-
-    static private AccountsChartQueryDto GetAccountsChartQueryDto(
-      TrialBalanceQuery query) {
+    static private AccountsChartQueryDto GetAccountsChartQueryDto(TrialBalanceQuery query) {
 
       var accountsChartQuery = new AccountsChartQueryDto();
       accountsChartQuery.AccountsChart = AccountsChart.Parse(query.AccountsChartUID);
@@ -106,8 +103,7 @@ namespace Empiria.FinancialAccounting.BalanceEngine.Data {
     }
 
 
-    #endregion Private methods
-
+    #endregion Helpers
 
   } // class BalancesDataService
 

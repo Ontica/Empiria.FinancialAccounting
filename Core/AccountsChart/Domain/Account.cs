@@ -255,6 +255,8 @@ namespace Empiria.FinancialAccounting {
 
 
     private FixedList<Account> GetChildren(DateTime fromDate, DateTime toDate) {
+      Assertion.Require(fromDate <= toDate, "fromDate must be less or equal than toDate.");
+
       return this.AccountsChart.Accounts.FindAll(x => x.Number.StartsWith(this.Number) &&
                                                      !x.Number.Equals(this.Number) &&
                                                      !(toDate < x.StartDate || fromDate > x.EndDate));
