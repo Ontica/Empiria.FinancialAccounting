@@ -9,6 +9,7 @@
 ************************* Copyright(c) La Vía Óntica SC, Ontica LLC and contributors. All rights reserved. **/
 using System;
 using System.Collections.Generic;
+using System.Linq;
 
 namespace Empiria.FinancialAccounting.Adapters {
 
@@ -16,9 +17,12 @@ namespace Empiria.FinancialAccounting.Adapters {
   static public class FlatAccountMapper {
 
     static internal FixedList<FlatAccountDto> Map(FixedList<Account> accounts,
-                                                  DateTime fromDate,
-                                                  DateTime toDate) {
+                                                  DateTime fromDate, DateTime toDate) {
       var flattenedAccounts = new List<FlatAccountDto>(accounts.Count * 4);
+
+      foreach (Account account in accounts) {
+        flattenedAccounts.AddRange(Map(account, fromDate, toDate));
+      }
 
       flattenedAccounts.TrimExcess();
 
@@ -26,24 +30,47 @@ namespace Empiria.FinancialAccounting.Adapters {
     }
 
 
-    static public FixedList<FlatAccountDto> Map(Account account, DateTime fromDate, DateTime toDate) {
-      FixedList<SectorRule> accountSectors = account.GetCascadeSectors(fromDate, toDate);
+    static public FixedList<FlatAccountDto> Map(Account account,
+                                                DateTime fromDate, DateTime toDate) {
 
-      if (accountSectors.Count != 0) {
-        return MapSectorizedAccount(account, accountSectors, fromDate, toDate);
+      FixedList<Currency> currencies = GetAccountCurrencies(account, fromDate, toDate);
+      FixedList<FlatSector> flatSectors = GetAccountSectors(account, fromDate, toDate);
+
+      if (flatSectors.Count != 0) {
+        return MapSectorizedAccount(account, currencies, flatSectors);
       } else {
-        return MapNoSectorsAccount(account, fromDate, toDate);
+        return MapNoSectorsAccount(account, currencies);
       }
     }
 
+
     #region Helpers
 
+    static private FixedList<Currency> GetAccountCurrencies(Account account,
+                                                            DateTime fromDate, DateTime toDate) {
+      return account.GetCascadeCurrencies(fromDate, toDate)
+                    .Select(x => x.Currency).Distinct()
+                    .ToFixedList()
+                    .Sort((x, y) => x.Code.CompareTo(y.Code));
+    }
+
+
+    static private FixedList<FlatSector> GetAccountSectors(Account account,
+                                                           DateTime fromDate, DateTime toDate) {
+      return account.GetCascadeSectors(fromDate, toDate)
+                    .Select(x => new FlatSector { Sector = x.Sector, SectorRole = x.SectorRole })
+                    .Distinct()
+                    .ToFixedList()
+                    .Sort((x, y) => x.Sector.Code.CompareTo(y.Sector.Code));
+    }
+
+
     static private FixedList<FlatAccountDto> MapNoSectorsAccount(Account account,
-                                                                 DateTime fromDate, DateTime toDate) {
+                                                                 FixedList<Currency> currencies) {
       var flattenedAccounts = new List<FlatAccountDto>(4);
 
-      foreach (CurrencyRule currencyRule in account.GetCascadeCurrencies(fromDate, toDate)) {
-        FlatAccountDto flatAccount = MapFlatAccount(account, currencyRule.Currency);
+      foreach (Currency currency in currencies) {
+        FlatAccountDto flatAccount = MapFlatAccount(account, currency);
 
         flattenedAccounts.Add(flatAccount);
       }
@@ -53,16 +80,20 @@ namespace Empiria.FinancialAccounting.Adapters {
 
 
     static private FixedList<FlatAccountDto> MapSectorizedAccount(Account account,
-                                                                  FixedList<SectorRule> sectorRules,
-                                                                  DateTime fromDate, DateTime toDate) {
+                                                                  FixedList<Currency> currencies,
+                                                                  FixedList<FlatSector> flatSectors) {
       var flattenedAccounts = new List<FlatAccountDto>(4);
 
-      foreach (SectorRule sectorRule in sectorRules) {
-        foreach (CurrencyRule currencyRule in account.GetCascadeCurrencies(fromDate, toDate)) {
-          FlatAccountDto flatAccount = MapFlatAccount(account, currencyRule.Currency);
+      foreach (Currency currency in currencies) {
 
-          flatAccount.Sector = sectorRule.Sector;
-          flatAccount.Role = sectorRule.SectorRole;
+        foreach (FlatSector flatSector in flatSectors) {
+
+          FlatAccountDto flatAccount = MapFlatAccount(account, currency);
+
+          flatAccount.Sector = flatSector.Sector;
+          if (account.Role != AccountRole.Sumaria) {
+            flatAccount.Role = flatSector.SectorRole;
+          }
 
           flattenedAccounts.Add(flatAccount);
         }
@@ -90,6 +121,40 @@ namespace Empiria.FinancialAccounting.Adapters {
     }
 
     #endregion Helpers
+
+
+    /// <summary>Holds a sector with its role.</summary>
+    private class FlatSector {
+
+      internal Sector Sector {
+        get; set;
+      }
+
+      internal AccountRole SectorRole {
+        get; set;
+      }
+
+      public override bool Equals(object obj) => this.Equals(obj as FlatSector);
+
+      public bool Equals(FlatSector obj) {
+        if (obj == null) {
+          return false;
+        }
+        if (Object.ReferenceEquals(this, obj)) {
+          return true;
+        }
+        if (this.GetType() != obj.GetType()) {
+          return false;
+        }
+
+        return this.Sector.Equals(obj.Sector) && this.SectorRole == obj.SectorRole;
+      }
+
+      public override int GetHashCode() {
+        return (this.Sector.Id, this.SectorRole).GetHashCode();
+      }
+
+    }   // private class FlatSector
 
   }  // class FlatAccountMapper
 
