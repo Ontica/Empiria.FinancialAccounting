@@ -58,7 +58,7 @@ namespace Empiria.FinancialAccounting.UseCases
     }
 
 
-    public FixedList<FlatAccountDto> GetAccounts(AccountsChartQueryDto query) {
+    public FixedList<FlatAccountDto> GetFlattenedAccounts(AccountsChartQueryDto query) {
       Assertion.Require(query, nameof(query));
 
       FixedList<Account> accounts = query.AccountsChart.FilterAccountsInAPeriod(query.Accounts,

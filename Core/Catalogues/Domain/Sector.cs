@@ -117,7 +117,7 @@ namespace Empiria.FinancialAccounting {
       }
     }
 
-
+    [Newtonsoft.Json.JsonIgnore]
     public Sector Parent {
       get {
         if (this.IsEmptyInstance) {
