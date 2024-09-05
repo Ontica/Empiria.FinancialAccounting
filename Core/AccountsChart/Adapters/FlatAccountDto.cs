@@ -21,6 +21,10 @@ namespace Empiria.FinancialAccounting.Adapters {
       get; internal set;
     }
 
+    public int StandardAccountId {
+      get; internal set;
+    }
+
     public string Number {
       get; internal set;
     }

@@ -106,6 +106,7 @@ namespace Empiria.FinancialAccounting.Adapters {
     static private FlatAccountDto MapFlatAccount(Account account, Currency currency) {
       return new FlatAccountDto {
         UID = account.UID,
+        StandardAccountId = account.StandardAccountId,
         Number = account.Number,
         Name = account.Name,
         Description = account.Description,
