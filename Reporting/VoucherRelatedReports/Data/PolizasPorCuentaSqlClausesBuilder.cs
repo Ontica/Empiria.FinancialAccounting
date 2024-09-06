@@ -138,10 +138,16 @@ namespace Empiria.FinancialAccounting.Reporting.Data {
 
     private string GetVerificationNumber() {
 
-      if (_buildQuery.ReportType == ReportTypes.MovimientosPorNumeroDeVerificacion &&
-          _buildQuery.VerificationNumbers.Length > 0) {
+      if (_buildQuery.ReportType == ReportTypes.MovimientosPorNumeroDeVerificacion) {
 
-        return $"NUMERO_VERIFICACION IN ({String.Join(", ", _buildQuery.VerificationNumbers)})";
+        if (_buildQuery.VerificationNumbers.Length > 0) {
+
+          return $"NUMERO_VERIFICACION IN ({String.Join(", ", _buildQuery.VerificationNumbers)})";
+
+        } else if (_buildQuery.VerificationNumbers.Length == 0 && _buildQuery.AccountNumber != string.Empty) {
+
+          return $"NUMERO_VERIFICACION > 0";
+        }
       }
       return string.Empty;
     }
