@@ -238,6 +238,11 @@ namespace Empiria.FinancialAccounting.Reporting.VoucherRelatedReports.Domain {
       internal set;
     }
 
+    public bool IsVoucher {
+      get;
+      internal set;
+    } = false;
+
     
   } // class VoucherByAccountEntry
 
