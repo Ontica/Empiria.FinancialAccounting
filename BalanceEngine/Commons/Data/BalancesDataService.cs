@@ -15,6 +15,7 @@ using Empiria.Data;
 using Empiria.FinancialAccounting.Adapters;
 using Empiria.FinancialAccounting.BalanceEngine.Adapters;
 using Empiria.FinancialAccounting.BalanceEngine.BalanceExplorer.Adapters;
+using Empiria.FinancialAccounting.UseCases;
 
 namespace Empiria.FinancialAccounting.BalanceEngine.Data {
 
@@ -30,18 +31,15 @@ namespace Empiria.FinancialAccounting.BalanceEngine.Data {
 
       var trialBalanceList = GetTrialBalanceEntries(sqlClauses);
 
-      if (query.BalancesType == BalancesType.AllAccountsInCatalog) {
+      FixedList<TrialBalanceEntry> balancesAndFlattenedAccounts =
+        BalanceDataServiceClauses.GetBalancesWithFlattenedAccounts(query, trialBalanceList);
 
-        //var accountsChartQuery = GetAccountsChartQueryDto(query);
-        //var accountsInCatalog = AccountsChartUseCases.GetAccounts(accountsChartQuery).Accounts;
-        //return MergeBalancesAndAccounts(trialBalanceList, accountsInCatalog);
-      }
-
-      return new FixedList<TrialBalanceEntry>(trialBalanceList);
+      return new FixedList<TrialBalanceEntry>(balancesAndFlattenedAccounts);
     }
 
 
-    static internal FixedList<TrialBalanceEntry> GetTrialBalanceForBalancesExplorer(BalanceExplorerQuery query) {
+    static internal FixedList<TrialBalanceEntry> GetTrialBalanceForBalancesExplorer(
+                                                  BalanceExplorerQuery query) {
       Assertion.Require(query, nameof(query));
 
       BalancesSqlClauses sqlClauses = BalancesSqlClauses.BuildFrom(query);
@@ -54,27 +52,7 @@ namespace Empiria.FinancialAccounting.BalanceEngine.Data {
 
     #region Helpers
 
-    static private AccountsChartQueryDto GetAccountsChartQueryDto(TrialBalanceQuery query) {
-
-      var accountsChartQuery = new AccountsChartQueryDto();
-      accountsChartQuery.AccountsChart = AccountsChart.Parse(query.AccountsChartUID);
-      accountsChartQuery.FromDate = query.InitialPeriod.FromDate;
-      accountsChartQuery.ToDate = query.InitialPeriod.ToDate;
-
-      if (query.TrialBalanceType == TrialBalanceType.SaldosPorAuxiliar ||
-          query.TrialBalanceType == TrialBalanceType.SaldosPorCuenta) {
-
-        accountsChartQuery.Accounts = AccountRangeConverter.GetAccountRanges(query.Accounts);
-
-      } else {
-        accountsChartQuery.Accounts = AccountRangeConverter.GetAccountRange(query.FromAccount,
-                                                                            query.ToAccount);
-      }
-
-      return accountsChartQuery;
-    }
-
-
+    
     static private List<TrialBalanceEntry> GetTrialBalanceEntries(BalancesSqlClauses clauses) {
       var operation = DataOperation.Parse("@qryTrialBalance",
                             DataCommonMethods.FormatSqlDbDate(clauses.StoredInitialBalanceSet.BalancesDate),
@@ -93,13 +71,6 @@ namespace Empiria.FinancialAccounting.BalanceEngine.Data {
                             );
 
       return DataReader.GetPlainObjectList<TrialBalanceEntry>(operation);
-    }
-
-
-    static private FixedList<TrialBalanceEntry> MergeBalancesAndAccounts(
-      List<TrialBalanceEntry> trialBalanceList, FixedList<AccountDescriptorDto> accountsInCatalog) {
-
-      return new FixedList<TrialBalanceEntry>();
     }
 
 

@@ -75,14 +75,14 @@ namespace Empiria.FinancialAccounting.Tests.BalanceEngine {
       TrialBalanceQuery query = GetDefaultTrialBalanceQuery();
 
       query.TrialBalanceType = TrialBalanceType.Balanza;
-      query.BalancesType = BalancesType.AllAccountsInCatalog;
+      query.BalancesType = BalancesType.WithCurrentBalanceOrMovements;
       query.ShowCascadeBalances = false;
       query.WithSubledgerAccount = false;
-      query.UseDefaultValuation = true;
+      query.UseDefaultValuation = false;
       query.WithAverageBalance = false;
-      query.FromAccount = "1.05";
-      query.ToAccount = "1.05";
-
+      query.FromAccount = "1.05.01.03.02.03.01";
+      query.ToAccount = "1.05.01.03.02.03.02";
+      query.Ledgers = new string[] { "2cd4a2d3-4951-04f6-9d9a-dca96837580c", "144f536c-457a-3520-6384-c9d45d3d9482", "ae98b697-674a-519f-1dba-e1545fe81af7" };
       TrialBalanceDto sut = BalanceEngineProxy.BuildTrialBalance(query);
       
       Assert.NotNull(sut);

@@ -8,6 +8,7 @@
 *                                                                                                            *
 ************************* Copyright(c) La Vía Óntica SC, Ontica LLC and contributors. All rights reserved. **/
 using System;
+using Empiria.FinancialAccounting.Adapters;
 
 namespace Empiria.FinancialAccounting.BalanceEngine {
 
@@ -57,7 +58,6 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
       get;
       internal set;
     }
-
 
 
     [DataField("ID_CUENTA_AUXILIAR", ConvertFrom = typeof(decimal))]
@@ -225,15 +225,18 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
       };
     }
 
-    internal void Sum(TrialBalanceEntry entry) {
-      this.InitialBalance += entry.InitialBalance;
-      this.Credit += entry.Credit;
-      this.Debit += entry.Debit;
-      this.CurrentBalance += entry.CurrentBalance;
-      this.ExchangeRate = entry.ExchangeRate;
-      this.SecondExchangeRate = entry.SecondExchangeRate;
-      this.AverageBalance += entry.AverageBalance;
-      this.ValorizedCurrentBalance += entry.ValorizedCurrentBalance;
+
+    internal TrialBalanceEntry MapFromFlatAccountToTrialBalanceEntry(FlatAccountDto flatAccount,
+                                                                     Ledger ledger) {
+      var entry = new TrialBalanceEntry();
+      entry.Account = StandardAccount.Parse(flatAccount.StandardAccountId);
+      entry.Ledger = ledger;
+      entry.Currency = flatAccount.Currency;
+      entry.Sector = flatAccount.Sector;
+      entry.SubledgerAccountId = -1;
+      entry.DebtorCreditor = flatAccount.DebtorCreditor;
+      
+      return entry;
     }
 
 
@@ -250,6 +253,38 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
         IsParentPostingEntry = this.IsParentPostingEntry,
         LastChangeDate = this.LastChangeDate
       };
+    }
+
+
+    internal BalanzaColumnasMonedaEntry MapToBalanceByCurrencyEntry() {
+      BalanzaColumnasMonedaEntry trialBalanceByCurrencyEntry = new BalanzaColumnasMonedaEntry();
+
+      trialBalanceByCurrencyEntry.ItemType = this.ItemType;
+      trialBalanceByCurrencyEntry.Currency = this.Currency;
+      trialBalanceByCurrencyEntry.Account = this.Account;
+      trialBalanceByCurrencyEntry.Sector = this.Sector;
+
+      if (Currency.Equals(Currency.MXN)) {
+        trialBalanceByCurrencyEntry.DomesticBalance = this.CurrentBalance;
+      }
+      if (Currency.Equals(Currency.USD)) {
+        trialBalanceByCurrencyEntry.DollarBalance = this.CurrentBalance;
+        trialBalanceByCurrencyEntry.ValorizedDollarBalance = this.ValorizedCurrentBalance;
+      }
+      if (Currency.Equals(Currency.YEN)) {
+        trialBalanceByCurrencyEntry.YenBalance = this.CurrentBalance;
+        trialBalanceByCurrencyEntry.ValorizedYenBalance = this.ValorizedCurrentBalance;
+      }
+      if (Currency.Equals(Currency.EUR)) {
+        trialBalanceByCurrencyEntry.EuroBalance = this.CurrentBalance;
+        trialBalanceByCurrencyEntry.ValorizedEuroBalance = this.ValorizedCurrentBalance;
+      }
+      if (Currency.Equals(Currency.UDI)) {
+        trialBalanceByCurrencyEntry.UdisBalance = this.CurrentBalance;
+        trialBalanceByCurrencyEntry.ValorizedUdisBalance = this.ValorizedCurrentBalance;
+      }
+
+      return trialBalanceByCurrencyEntry;
     }
 
 
@@ -290,35 +325,15 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
     }
 
 
-    internal BalanzaColumnasMonedaEntry MapToBalanceByCurrencyEntry() {
-      BalanzaColumnasMonedaEntry trialBalanceByCurrencyEntry = new BalanzaColumnasMonedaEntry();
-
-      trialBalanceByCurrencyEntry.ItemType = this.ItemType;
-      trialBalanceByCurrencyEntry.Currency = this.Currency;
-      trialBalanceByCurrencyEntry.Account = this.Account;
-      trialBalanceByCurrencyEntry.Sector = this.Sector;
-
-      if (Currency.Equals(Currency.MXN)) {
-        trialBalanceByCurrencyEntry.DomesticBalance = this.CurrentBalance;
-      }
-      if (Currency.Equals(Currency.USD)) {
-        trialBalanceByCurrencyEntry.DollarBalance = this.CurrentBalance;
-        trialBalanceByCurrencyEntry.ValorizedDollarBalance = this.ValorizedCurrentBalance;
-      }
-      if (Currency.Equals(Currency.YEN)) {
-        trialBalanceByCurrencyEntry.YenBalance = this.CurrentBalance;
-        trialBalanceByCurrencyEntry.ValorizedYenBalance = this.ValorizedCurrentBalance;
-      }
-      if (Currency.Equals(Currency.EUR)) {
-        trialBalanceByCurrencyEntry.EuroBalance = this.CurrentBalance;
-        trialBalanceByCurrencyEntry.ValorizedEuroBalance= this.ValorizedCurrentBalance;
-      }
-      if (Currency.Equals(Currency.UDI)) {
-        trialBalanceByCurrencyEntry.UdisBalance = this.CurrentBalance;
-        trialBalanceByCurrencyEntry.ValorizedUdisBalance = this.ValorizedCurrentBalance;
-      }
-
-      return trialBalanceByCurrencyEntry;
+    internal void Sum(TrialBalanceEntry entry) {
+      this.InitialBalance += entry.InitialBalance;
+      this.Credit += entry.Credit;
+      this.Debit += entry.Debit;
+      this.CurrentBalance += entry.CurrentBalance;
+      this.ExchangeRate = entry.ExchangeRate;
+      this.SecondExchangeRate = entry.SecondExchangeRate;
+      this.AverageBalance += entry.AverageBalance;
+      this.ValorizedCurrentBalance += entry.ValorizedCurrentBalance;
     }
 
 
