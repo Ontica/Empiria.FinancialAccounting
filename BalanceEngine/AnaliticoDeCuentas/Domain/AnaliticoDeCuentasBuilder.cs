@@ -184,13 +184,13 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
       var targetCurrency = Currency.Parse(_query.InitialPeriod.ValuateToCurrrencyUID);
 
       foreach (var entry in accountEntries) {
-        if (entry.CurrentBalance != 0) {
+        
+        if (entry.CurrentBalance != 0 || _query.BalancesType == BalancesType.AllAccountsInCatalog) {
+
           string hash = $"{entry.Account.Number}||{entry.Sector.Code}||{targetCurrency.Id}||" +
                         $"{entry.Ledger.Id}||{entry.DebtorCreditor}";
-
           Currency currentCurrency = entry.Currency;
           helper.MergeEntriesIntoTwoColumns(hashAnaliticoEntries, entry, hash, currentCurrency);
-
         }
       }
     }

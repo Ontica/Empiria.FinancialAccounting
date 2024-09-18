@@ -74,14 +74,14 @@ namespace Empiria.FinancialAccounting.Tests.BalanceEngine {
     public void Should_Build_A_Traditional_Trial_Balance() {
       TrialBalanceQuery query = GetDefaultTrialBalanceQuery();
 
-      query.TrialBalanceType = TrialBalanceType.Balanza;
-      query.BalancesType = BalancesType.WithCurrentBalanceOrMovements;
-      query.ShowCascadeBalances = false;
+      query.TrialBalanceType = TrialBalanceType.AnaliticoDeCuentas;
+      query.BalancesType = BalancesType.AllAccountsInCatalog;
+      query.ShowCascadeBalances = true;
       query.WithSubledgerAccount = false;
-      query.UseDefaultValuation = false;
+      query.UseDefaultValuation = true;
       query.WithAverageBalance = false;
-      query.FromAccount = "1.05.01.03.02.03.01";
-      query.ToAccount = "1.05.01.03.02.03.02";
+      query.FromAccount = "2.01.01.01.01";
+      query.ToAccount = "2.01.01.01.01";
       query.Ledgers = new string[] { "2cd4a2d3-4951-04f6-9d9a-dca96837580c", "144f536c-457a-3520-6384-c9d45d3d9482", "ae98b697-674a-519f-1dba-e1545fe81af7" };
       TrialBalanceDto sut = BalanceEngineProxy.BuildTrialBalance(query);
       
