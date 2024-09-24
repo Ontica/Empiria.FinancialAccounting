@@ -88,13 +88,17 @@ namespace Empiria.FinancialAccounting.Reporting.AccountStatements.Exporters {
 
         if (voucher.ItemType == TrialBalanceItemType.Entry &&
           (_query.UseDefaultValuation || _query.InitialPeriod.ExchangeRateTypeUID != string.Empty)) {
+
           _excelFile.SetCell($"N{i}", voucher.ExchangeRate);
         }
-
         SetCellClauses(voucher,i);
-
         i++;
       }
+
+      if (!_query.UseDefaultValuation && _query.InitialPeriod.ExchangeRateTypeUID == string.Empty) {
+        _excelFile.RemoveColumn("N");
+      }
+
     }
 
 
