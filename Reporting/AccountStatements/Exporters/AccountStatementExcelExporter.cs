@@ -86,14 +86,19 @@ namespace Empiria.FinancialAccounting.Reporting.AccountStatements.Exporters {
         _excelFile.SetCell($"L{i}", EmpiriaString.Clean(voucher.Concept));
         _excelFile.SetCell($"M{i}", voucher.ElaboratedBy);
 
-        SetCellClauses(_excelFile,voucher,i);
+        if (voucher.ItemType == TrialBalanceItemType.Entry &&
+          (_query.UseDefaultValuation || _query.InitialPeriod.ExchangeRateTypeUID != string.Empty)) {
+          _excelFile.SetCell($"N{i}", voucher.ExchangeRate);
+        }
+
+        SetCellClauses(voucher,i);
 
         i++;
       }
     }
 
 
-    private void SetCellClauses(ExcelFile excelFile, VouchersByAccountEntryDto voucher, int i) {
+    private void SetCellClauses(VouchersByAccountEntryDto voucher, int i) {
 
       if (voucher.Debit.HasValue) {
         _excelFile.SetCell($"G{i}", voucher.Debit.Value);
