@@ -13,6 +13,7 @@ using System.Collections.Generic;
 using Empiria.DynamicData;
 
 using Empiria.FinancialAccounting.BalanceEngine;
+using Empiria.FinancialAccounting.BalanceEngine.BalanceExplorer.Adapters;
 using Empiria.FinancialAccounting.Reporting.AccountStatements.Domain;
 
 namespace Empiria.FinancialAccounting.Reporting.AccountStatements.Adapters {
@@ -25,7 +26,7 @@ namespace Empiria.FinancialAccounting.Reporting.AccountStatements.Adapters {
     static internal AccountStatementDto Map(AccountStatement accountStatement) {
       return new AccountStatementDto {
         Query = accountStatement.Query,
-        Columns = MapColumns(),
+        Columns = MapColumns(accountStatement.Query),
         Entries = MapToDto(accountStatement.Entries),
         Title = accountStatement.Title
       };
@@ -35,7 +36,7 @@ namespace Empiria.FinancialAccounting.Reporting.AccountStatements.Adapters {
 
     #region Private methods
 
-    private static FixedList<DataTableColumn> MapColumns() {
+    private static FixedList<DataTableColumn> MapColumns(BalanceExplorerQuery query) {
       var columns = new List<DataTableColumn>();
 
       columns.Add(new DataTableColumn("ledgerNumber", "Cont", "text"));
@@ -51,6 +52,11 @@ namespace Empiria.FinancialAccounting.Reporting.AccountStatements.Adapters {
       columns.Add(new DataTableColumn("recordingDate", "Registro", "date"));
       columns.Add(new DataTableColumn("concept", "Concepto", "text-nowrap"));
       columns.Add(new DataTableColumn("elaboratedBy", "Elaborado por", "text-nowrap"));
+      
+      if (query.UseDefaultValuation || query.InitialPeriod.ExchangeRateTypeUID != string.Empty) {
+
+        columns.Add(new DataTableColumn("exchangeRate", "TC", "decimal", 6));
+      }
 
       return columns.ToFixedList();
     }
@@ -98,6 +104,7 @@ namespace Empiria.FinancialAccounting.Reporting.AccountStatements.Adapters {
         dto.RecordingDate = entry.RecordingDate;
         dto.CurrencyCode = entry.Currency.Code;
         dto.SectorCode = entry.Sector.Code;
+        dto.ExchangeRate = entry.ExchangeRate;
       } else {
         dto.AccountNumber = entry.IsCurrentBalance ? "SALDO ACTUAL" : "SALDO INICIAL";
         dto.AccountingDate = ExecutionServer.DateMaxValue;

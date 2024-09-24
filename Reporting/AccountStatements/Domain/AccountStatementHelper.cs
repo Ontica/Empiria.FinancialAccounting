@@ -45,10 +45,21 @@ namespace Empiria.FinancialAccounting.Reporting.AccountStatements.Domain {
     }
 
 
+    internal FixedList<AccountStatementEntry> CombineVouchersWithCurrentBalance(
+                                              FixedList<AccountStatementEntry> voucherEntriesWithBalances,
+                                              AccountStatementEntry entryWithCurrentBalance) {
+
+      var returnedVouchers = new List<AccountStatementEntry>(voucherEntriesWithBalances).ToList();
+      returnedVouchers.Add(entryWithCurrentBalance);
+
+      return returnedVouchers.ToFixedList();
+    }
+
+
     internal FixedList<AccountStatementEntry> GetEntriesByBalanceType(
              FixedList<AccountStatementEntry> voucherEntries) {
 
-      if (_buildQuery.Entry.ItemType == BalanceEngine.TrialBalanceItemType.Entry &&
+      if (_buildQuery.Entry.ItemType == TrialBalanceItemType.Entry &&
           _buildQuery.BalancesQuery.WithSubledgerAccount &&
           _buildQuery.Entry.SubledgerAccountNumber.Length <= 1) {
 
@@ -60,6 +71,18 @@ namespace Empiria.FinancialAccounting.Reporting.AccountStatements.Domain {
     }
 
 
+
+    internal AccountStatementEntry GetEntryWithCurrentBalance(FixedList<AccountStatementEntry> voucherEntries) {
+
+      AccountStatementEntry currentBalance = AccountStatementEntry.SetTotalAccountBalance(
+                                                    _buildQuery.Entry.CurrentBalanceForBalances);
+      currentBalance.Debit = voucherEntries.Sum(x => x.Debit);
+      currentBalance.Credit = voucherEntries.Sum(x => x.Credit);
+      currentBalance.IsCurrentBalance = true;
+      return currentBalance;
+    }
+
+
     internal AccountStatementEntry GetInitialBalance(FixedList<AccountStatementEntry> orderingVouchers) {
 
       if (orderingVouchers.Count == 0) {
@@ -67,19 +90,186 @@ namespace Empiria.FinancialAccounting.Reporting.AccountStatements.Domain {
       }
 
       var vouchersList = new List<AccountStatementEntry>(orderingVouchers).ToList();
-
       decimal balance = _buildQuery.Entry.CurrentBalanceForBalances;
 
-      foreach (var voucher in vouchersList) {
-        if (voucher.DebtorCreditor == "A") {
-          balance += (voucher.Debit - voucher.Credit);
-        } else {
-          balance += (voucher.Credit - voucher.Debit);
-        }
-      }
+      balance += vouchersList.Where(x => x.DebtorCreditor == "A").Sum(x => (x.Debit - x.Credit)) -
+                 vouchersList.Where(x => x.DebtorCreditor == "D").Sum(x => (x.Debit - x.Credit));
 
       AccountStatementEntry inicialBalance = AccountStatementEntry.SetTotalAccountBalance(balance);
       return inicialBalance;
+    }
+
+
+    internal FixedList<AccountStatementEntry> GetOrderingByFilter(
+     FixedList<AccountStatementEntry> voucherEntries) {
+
+      List<AccountStatementEntry> returnedVouchers = GetOrderingByAccountStatementFilter(voucherEntries);
+
+      returnedVouchers.AddRange(voucherEntries.Where(x => x.ItemType == TrialBalanceItemType.Total));
+
+      return returnedVouchers.ToFixedList();
+    }
+
+
+    internal FixedList<AccountStatementEntry> GetOrderingVouchers(
+                                              FixedList<AccountStatementEntry> voucherEntries) {
+
+      if (voucherEntries.Count == 0) {
+        return new FixedList<AccountStatementEntry>();
+      }
+
+      List<AccountStatementEntry> returnedVouchers = voucherEntries
+                                                      .OrderBy(a => a.AccountingDate)
+                                                      .ThenBy(a => a.Ledger.Number)
+                                                      .ThenBy(a => a.AccountNumber)
+                                                      .ThenBy(a => a.SubledgerAccountNumber)
+                                                      .ThenBy(a => a.VoucherNumber)
+                                                      .ToList();
+      return returnedVouchers.ToFixedList();
+    }
+
+
+    internal string GetTitle() {
+
+      var accountNumber = _buildQuery.Entry.AccountNumberForBalances;
+
+      var accountName = _buildQuery.Entry.AccountName;
+
+      var subledgerAccountNumber = _buildQuery.Entry.SubledgerAccountNumber;
+
+      var title = "";
+
+      if (accountNumber != string.Empty || accountNumber != "Empty") {
+        title = $"{accountNumber} ";
+      }
+
+      if (accountName != string.Empty && accountName != "Empty") {
+        title += $"{accountName} ";
+      }
+
+      if (subledgerAccountNumber.Length > 1) {
+
+        if (accountNumber == string.Empty || accountNumber == "Empty") {
+
+          title = $"{subledgerAccountNumber}: {accountName}";
+
+        } else {
+          title += $"({subledgerAccountNumber})";
+        }
+
+      }
+
+      return title;
+    }
+
+
+    internal FixedList<AccountStatementEntry> GetVoucherEntries() {
+      var builder = new AccountStatementSqlClausesBuilder(_buildQuery);
+
+      var sqlClauses = builder.BuildSqlClauses();
+
+      return AccountStatementDataService.GetVouchersWithAccounts(sqlClauses);
+    }
+
+
+    internal FixedList<AccountStatementEntry> GetVoucherEntriesBalance(
+      FixedList<AccountStatementEntry> orderingVouchers, AccountStatementEntry initialBalance) {
+
+      if (orderingVouchers.Count == 0) {
+        return new FixedList<AccountStatementEntry>();
+      }
+      var returnedVouchers = new List<AccountStatementEntry>(orderingVouchers).ToList();
+      SumTotalByDebitCredit(returnedVouchers, initialBalance.CurrentBalance);
+
+      return returnedVouchers.ToFixedList();
+    }
+
+
+    internal void RoundValorizedBalances(FixedList<AccountStatementEntry> vouchers) {
+
+      if (_buildQuery.BalancesQuery.UseDefaultValuation ||
+          _buildQuery.BalancesQuery.InitialPeriod.ExchangeRateTypeUID != string.Empty) {
+
+        foreach (var entry in vouchers) {
+          entry.RoundBalances();
+        }
+      }
+    }
+
+
+    internal void ValuateAccountStatementToExchangeRate(FixedList<AccountStatementEntry> accounts) {
+
+      FixedList<ExchangeRate> exchangeRates = GetExchangeRateListForDate();
+
+      foreach (var account in accounts.Where(a => a.Currency.Distinct(Currency.MXN))) {
+
+        var exchangeRate = exchangeRates.Find(
+          a => a.ToCurrency.Equals(account.Currency) &&
+          a.FromCurrency.Code == _buildQuery.BalancesQuery.InitialPeriod.ValuateToCurrrencyUID);
+
+        Assertion.Require(exchangeRate, $"No se ha registrado el tipo de cambio para la " +
+                                        $"moneda {account.Currency.FullName} en la fecha proporcionada.");
+
+        account.MultiplyBy(exchangeRate.Value);
+      }
+    }
+
+    #endregion Public methods
+
+    #region Private methods
+
+
+    private FixedList<ExchangeRate> GetExchangeRateListForDate() {
+
+      if (_buildQuery.BalancesQuery.UseDefaultValuation) {
+
+        _buildQuery.BalancesQuery.InitialPeriod.ExchangeRateTypeUID = ExchangeRateType.ValorizacionBanxico.UID;
+        _buildQuery.BalancesQuery.InitialPeriod.ValuateToCurrrencyUID = Currency.MXN.Code;
+        _buildQuery.BalancesQuery.InitialPeriod.ExchangeRateDate = _buildQuery.BalancesQuery.InitialPeriod.ToDate;
+
+      }
+      return ExchangeRate.GetList(ExchangeRateType.Parse(_buildQuery.BalancesQuery.InitialPeriod.ExchangeRateTypeUID),
+                                  _buildQuery.BalancesQuery.InitialPeriod.ExchangeRateDate);
+    }
+
+
+    private List<AccountStatementEntry> GetOrderingByAccountStatementFilter(
+      FixedList<AccountStatementEntry> voucherEntries) {
+
+      List<AccountStatementEntry> orderingVouchers =
+        voucherEntries.Where(x => x.ItemType == TrialBalanceItemType.Entry).ToList();
+
+      switch (_buildQuery.OrderBy.SortType) {
+
+        case AccountStatementOrder.AccountingDate:
+
+          orderingVouchers = GetOrderByAccountingDate(orderingVouchers);
+          return orderingVouchers.ToList();
+
+        case AccountStatementOrder.Amount:
+
+          orderingVouchers = GetOrderByAmount(orderingVouchers);
+          return orderingVouchers.ToList();
+
+        case AccountStatementOrder.RecordingDate:
+
+          orderingVouchers = GetOrderByRecordingDate(orderingVouchers);
+          return orderingVouchers.ToList();
+
+        case AccountStatementOrder.SubledgerAccount:
+
+          orderingVouchers = GetOrderBySubledgerAccount(orderingVouchers);
+          return orderingVouchers.ToList();
+
+        case AccountStatementOrder.VoucherNumber:
+
+          orderingVouchers = GetOrderByVoucherNumber(orderingVouchers);
+          return orderingVouchers.ToList();
+
+        default:
+          return orderingVouchers.ToList();
+      }
+
     }
 
 
@@ -190,154 +380,7 @@ namespace Empiria.FinancialAccounting.Reporting.AccountStatements.Domain {
     }
 
 
-    private List<AccountStatementEntry> GetOrderingByAccountStatementFilter(
-      FixedList<AccountStatementEntry> voucherEntries) {
-
-      List<AccountStatementEntry> orderingVouchers =
-        voucherEntries.Where(x => x.ItemType == TrialBalanceItemType.Entry).ToList();
-      
-      switch (_buildQuery.OrderBy.SortType) {
-
-        case AccountStatementOrder.AccountingDate:
-
-          orderingVouchers = GetOrderByAccountingDate(orderingVouchers);
-          return orderingVouchers.ToList();
-
-        case AccountStatementOrder.Amount:
-
-          orderingVouchers = GetOrderByAmount(orderingVouchers);
-          return orderingVouchers.ToList();
-
-        case AccountStatementOrder.RecordingDate:
-
-          orderingVouchers = GetOrderByRecordingDate(orderingVouchers);
-          return orderingVouchers.ToList();
-
-        case AccountStatementOrder.SubledgerAccount:
-
-          orderingVouchers = GetOrderBySubledgerAccount(orderingVouchers);
-          return orderingVouchers.ToList();
-
-        case AccountStatementOrder.VoucherNumber:
-
-          orderingVouchers = GetOrderByVoucherNumber(orderingVouchers);
-          return orderingVouchers.ToList();
-
-        default:
-          return orderingVouchers.ToList();
-      }
-
-    }
-
-
-    internal FixedList<AccountStatementEntry> GetOrderingByFilter(
-     FixedList<AccountStatementEntry> voucherEntries) {
-
-      List<AccountStatementEntry> returnedVouchers = GetOrderingByAccountStatementFilter(voucherEntries);
-
-      returnedVouchers.AddRange(voucherEntries.Where(x => x.ItemType == TrialBalanceItemType.Total));
-
-      return returnedVouchers.ToFixedList();
-    }
-
-
-    internal FixedList<AccountStatementEntry> GetOrderingVouchers(
-                                              FixedList<AccountStatementEntry> voucherEntries) {
-
-      if (voucherEntries.Count == 0) {
-        return new FixedList<AccountStatementEntry>();
-      }
-
-      List<AccountStatementEntry> returnedVouchers = voucherEntries
-                                                      .OrderBy(a => a.AccountingDate)
-                                                      .ThenBy(a => a.Ledger.Number)
-                                                      .ThenBy(a => a.AccountNumber)
-                                                      .ThenBy(a => a.SubledgerAccountNumber)
-                                                      .ThenBy(a => a.VoucherNumber)
-                                                      .ToList();
-      return returnedVouchers.ToFixedList();
-    }
-
-
-    internal string GetTitle() {
-
-      var accountNumber = _buildQuery.Entry.AccountNumberForBalances;
-
-      var accountName = _buildQuery.Entry.AccountName;
-
-      var subledgerAccountNumber = _buildQuery.Entry.SubledgerAccountNumber;
-
-      var title = "";
-
-      if (accountNumber != string.Empty || accountNumber != "Empty") {
-        title = $"{accountNumber} ";
-      }
-
-      if (accountName != string.Empty && accountName != "Empty") {
-        title += $"{accountName} ";
-      }
-
-      if (subledgerAccountNumber.Length > 1) {
-
-        if (accountNumber == string.Empty || accountNumber == "Empty") {
-
-          title = $"{subledgerAccountNumber}: {accountName}";
-
-        } else {
-          title += $"({subledgerAccountNumber})";
-        }
-
-      }
-
-      return title;
-    }
-
-
-    internal FixedList<AccountStatementEntry> GetVouchersListWithCurrentBalance(
-                                                FixedList<AccountStatementEntry> orderingVouchers,
-                                                AccountStatementEntry initialBalance) {
-
-      if (orderingVouchers.Count == 0) {
-        return new FixedList<AccountStatementEntry>();
-      }
-
-      var returnedVouchers = new List<AccountStatementEntry>(orderingVouchers).ToList();
-
-      decimal flagBalance = initialBalance.CurrentBalance;
-      decimal totalDebit, totalCredit;
-
-      SumTotalByDebitCredit(returnedVouchers, flagBalance, out totalDebit, out totalCredit);
-
-      AccountStatementEntry currentBalance = AccountStatementEntry.SetTotalAccountBalance(
-                                                    _buildQuery.Entry.CurrentBalanceForBalances);
-
-      if (currentBalance != null) {
-        currentBalance.Debit = totalDebit;
-        currentBalance.Credit = totalCredit;
-        currentBalance.IsCurrentBalance = true;
-        returnedVouchers.Add(currentBalance);
-      }
-
-      return returnedVouchers.ToFixedList();
-    }
-
-
-    internal FixedList<AccountStatementEntry> GetVoucherEntries() {
-      var builder = new AccountStatementSqlClausesBuilder(_buildQuery);
-
-      var sqlClauses = builder.BuildSqlClauses();
-
-      return AccountStatementDataService.GetVouchersWithAccounts(sqlClauses);
-    }
-
-    #endregion Public methods
-
-    #region Private methods
-
-    private void SumTotalByDebitCredit(List<AccountStatementEntry> returnedVouchers,
-                        decimal flagBalance, out decimal totalDebit, out decimal totalCredit) {
-      totalCredit = 0;
-      totalDebit = 0;
+    private void SumTotalByDebitCredit(List<AccountStatementEntry> returnedVouchers, decimal flagBalance) {
 
       foreach (var voucher in returnedVouchers) {
         if (voucher.DebtorCreditor == "D") {
@@ -349,9 +392,6 @@ namespace Empiria.FinancialAccounting.Reporting.AccountStatements.Domain {
           flagBalance += (voucher.Credit - voucher.Debit);
 
         }
-
-        totalDebit += voucher.Debit;
-        totalCredit += voucher.Credit;
       }
 
     }

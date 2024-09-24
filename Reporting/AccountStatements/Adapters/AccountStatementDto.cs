@@ -121,6 +121,12 @@ namespace Empiria.FinancialAccounting.Reporting.AccountStatements.Adapters {
     }
 
 
+    public decimal ExchangeRate {
+      get;
+      internal set;
+    }
+
+
     public string VoucherNumber {
       get;
       internal set;
@@ -154,6 +160,7 @@ namespace Empiria.FinancialAccounting.Reporting.AccountStatements.Adapters {
       get;
       internal set;
     }
+    
 
   } // class VouchersByAccountEntryDto
 

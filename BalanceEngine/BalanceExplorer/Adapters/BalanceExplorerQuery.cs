@@ -68,6 +68,11 @@ namespace Empiria.FinancialAccounting.BalanceEngine.BalanceExplorer.Adapters {
     } = new string[0];
 
 
+    public bool UseDefaultValuation {
+      get; set;
+    } = false;
+
+
     public BalancesType BalancesType {
       get {
         return WithAllAccounts ? BalancesType.AllAccounts : BalancesType.WithCurrentBalance;

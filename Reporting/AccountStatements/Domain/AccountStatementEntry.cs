@@ -142,6 +142,11 @@ namespace Empiria.FinancialAccounting.Reporting.AccountStatements.Domain {
     }
 
 
+    public decimal ExchangeRate {
+      get; internal set;
+    } = 1;
+
+
     public bool IsCurrentBalance {
       get; internal set;
     } = false;
@@ -188,6 +193,21 @@ namespace Empiria.FinancialAccounting.Reporting.AccountStatements.Domain {
         HasParentPostingEntry = entry.HasParentPostingEntry,
         IsParentPostingEntry = entry.IsParentPostingEntry,
       };
+    }
+
+
+    internal void MultiplyBy(decimal value) {
+      this.Debit *= value;
+      this.Credit *= value;
+      this.CurrentBalance *= value;
+      this.ExchangeRate = value;
+    }
+
+
+    internal void RoundBalances() {
+      this.Debit = Math.Round(this.Debit, 2);
+      this.Credit = Math.Round(this.Credit, 2);
+      this.CurrentBalance = Math.Round(this.CurrentBalance, 2);
     }
 
 
