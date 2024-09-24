@@ -199,18 +199,22 @@ namespace Empiria.FinancialAccounting.Reporting.AccountStatements.Domain {
 
     internal void ValuateAccountStatementToExchangeRate(FixedList<AccountStatementEntry> accounts) {
 
-      FixedList<ExchangeRate> exchangeRates = GetExchangeRateListForDate();
+      if (_buildQuery.BalancesQuery.UseDefaultValuation ||
+          _buildQuery.BalancesQuery.InitialPeriod.ExchangeRateTypeUID != string.Empty) {
 
-      foreach (var account in accounts.Where(a => a.Currency.Distinct(Currency.MXN))) {
+        FixedList<ExchangeRate> exchangeRates = GetExchangeRateListForDate();
 
-        var exchangeRate = exchangeRates.Find(
-          a => a.ToCurrency.Equals(account.Currency) &&
-          a.FromCurrency.Code == _buildQuery.BalancesQuery.InitialPeriod.ValuateToCurrrencyUID);
+        foreach (var account in accounts.Where(a => a.Currency.Distinct(Currency.MXN))) {
 
-        Assertion.Require(exchangeRate, $"No se ha registrado el tipo de cambio para la " +
-                                        $"moneda {account.Currency.FullName} en la fecha proporcionada.");
+          var exchangeRate = exchangeRates.Find(
+            a => a.ToCurrency.Equals(account.Currency) &&
+            a.FromCurrency.Code == _buildQuery.BalancesQuery.InitialPeriod.ValuateToCurrrencyUID);
 
-        account.MultiplyBy(exchangeRate.Value);
+          Assertion.Require(exchangeRate, $"No se ha registrado el tipo de cambio para la " +
+                                          $"moneda {account.Currency.FullName} en la fecha proporcionada.");
+
+          account.MultiplyBy(exchangeRate.Value);
+        }
       }
     }
 

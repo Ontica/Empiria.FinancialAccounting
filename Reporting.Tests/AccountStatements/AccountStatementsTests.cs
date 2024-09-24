@@ -50,7 +50,7 @@ namespace Empiria.FinancialAccounting.Tests.Reporting.AccountStatements {
             //ValuateToCurrrencyUID = "01"
           },
           TrialBalanceType = BalanceEngine.TrialBalanceType.Balanza,
-          UseDefaultValuation = true,
+          UseDefaultValuation = false,
           WithSubledgerAccount = false,
           SubledgerAccount ="",
           
