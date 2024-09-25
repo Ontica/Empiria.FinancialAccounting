@@ -83,20 +83,23 @@ namespace Empiria.FinancialAccounting.Reporting.AccountStatements.Exporters {
         _excelFile.SetCell($"E{i}", voucher.SubledgerAccountNumber);
         _excelFile.SetCell($"F{i}", voucher.VoucherNumber);
         _excelFile.SetCell($"I{i}", voucher.CurrentBalance);
-        _excelFile.SetCell($"L{i}", EmpiriaString.Clean(voucher.Concept));
-        _excelFile.SetCell($"M{i}", voucher.ElaboratedBy);
 
         if (voucher.ItemType == TrialBalanceItemType.Entry &&
           (_query.UseDefaultValuation || _query.InitialPeriod.ExchangeRateTypeUID != string.Empty)) {
 
-          _excelFile.SetCell($"N{i}", voucher.ExchangeRate);
+          _excelFile.SetCell($"J{i}", voucher.ExchangeRate);
         }
+
+        _excelFile.SetCell($"M{i}", EmpiriaString.Clean(voucher.Concept));
+        _excelFile.SetCell($"N{i}", voucher.ElaboratedBy);
+
+        
         SetCellClauses(voucher,i);
         i++;
       }
 
       if (!_query.UseDefaultValuation && _query.InitialPeriod.ExchangeRateTypeUID == string.Empty) {
-        _excelFile.RemoveColumn("N");
+        _excelFile.RemoveColumn("J");
       }
 
     }
@@ -113,11 +116,11 @@ namespace Empiria.FinancialAccounting.Reporting.AccountStatements.Exporters {
       }
 
       if (voucher.AccountingDate != ExecutionServer.DateMaxValue) {
-        _excelFile.SetCell($"J{i}", voucher.AccountingDate);
+        _excelFile.SetCell($"K{i}", voucher.AccountingDate);
       }
 
       if (voucher.RecordingDate != ExecutionServer.DateMaxValue) {
-        _excelFile.SetCell($"K{i}", voucher.RecordingDate);
+        _excelFile.SetCell($"L{i}", voucher.RecordingDate);
       }
 
       if (voucher.ItemType == TrialBalanceItemType.Total) {

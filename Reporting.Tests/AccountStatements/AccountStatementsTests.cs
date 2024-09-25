@@ -40,7 +40,7 @@ namespace Empiria.FinancialAccounting.Tests.Reporting.AccountStatements {
       return new AccountStatementQuery {
         BalancesQuery = {
           AccountsChartUID = "47ec2ec7-0f4f-482e-9799-c23107b60d8a",
-          FromAccount = "1.05.01.01.06.02",
+          FromAccount = "1.05.01.01.05.01",
           Ledgers = new string[]{ "81816c16-3306-98b0-66bf-a69021e31171" },
           InitialPeriod = {
             FromDate = new DateTime(2023, 06, 30),
@@ -49,7 +49,7 @@ namespace Empiria.FinancialAccounting.Tests.Reporting.AccountStatements {
             //ExchangeRateTypeUID = "96c617f6-8ed9-47f3-8d2d-f1240e446e1d",
             //ValuateToCurrrencyUID = "01"
           },
-          TrialBalanceType = BalanceEngine.TrialBalanceType.Balanza,
+          TrialBalanceType = BalanceEngine.TrialBalanceType.BalanzaConContabilidadesEnCascada,
           UseDefaultValuation = true,
           WithSubledgerAccount = false,
           SubledgerAccount ="",
@@ -57,10 +57,10 @@ namespace Empiria.FinancialAccounting.Tests.Reporting.AccountStatements {
         },
 
         Entry = {
-          AccountNumberForBalances = "1.05.01.01.06.02", //
+          AccountNumberForBalances = "1.05.01.01.05.01", //
           CurrencyCode = "02", //
-          InitialBalance = 6035970.04M,
-          CurrentBalanceForBalances = 633661.27M,
+          InitialBalance = 20042110138.42M,
+          CurrentBalanceForBalances = 19887224722.07M,
           DebtorCreditor="Deudora",
           ItemType = BalanceEngine.TrialBalanceItemType.Entry,
           LastChangeDateForBalances = new DateTime(2023, 06, 30),
