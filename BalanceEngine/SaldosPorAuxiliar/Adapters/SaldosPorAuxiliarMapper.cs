@@ -77,7 +77,7 @@ namespace Empiria.FinancialAccounting.BalanceEngine.Adapters {
       AssignLabelNameAndNumber(dto, subledgerAccount, entry);
       AssignSubledgerAccountNumber(dto, subledgerAccount, entry);
       AssignBalancesAndDebtorCreditorByEntry(dto, entry);
-      AssignHasAccountStatementAndClickableEntry(dto, entry, query);
+      AssignHasAccountStatementAndClickableEntry(dto, entry);
 
       if (entry.Ledger.UID != "Empty") {
         dto.LedgerUID = entry.Ledger.UID;
