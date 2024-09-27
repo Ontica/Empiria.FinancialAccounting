@@ -48,16 +48,16 @@ namespace Empiria.FinancialAccounting.Reporting.AccountStatements.Adapters {
       columns.Add(new DataTableColumn("debit", "Cargo", "decimal"));
       columns.Add(new DataTableColumn("credit", "Abono", "decimal"));
       columns.Add(new DataTableColumn("currentBalance", "Saldo actual", "decimal"));
+      
+      if (query.UseDefaultValuation || query.InitialPeriod.ExchangeRateTypeUID != string.Empty) {
+        columns.Add(new DataTableColumn("exchangeRate", "TC", "decimal", 6));
+      }
+
       columns.Add(new DataTableColumn("accountingDate", "Afectación", "date"));
       columns.Add(new DataTableColumn("recordingDate", "Registro", "date"));
       columns.Add(new DataTableColumn("concept", "Concepto", "text-nowrap"));
       columns.Add(new DataTableColumn("elaboratedBy", "Elaborado por", "text-nowrap"));
       
-      if (query.UseDefaultValuation || query.InitialPeriod.ExchangeRateTypeUID != string.Empty) {
-
-        columns.Add(new DataTableColumn("exchangeRate", "TC", "decimal", 6));
-      }
-
       return columns.ToFixedList();
     }
 
@@ -70,13 +70,10 @@ namespace Empiria.FinancialAccounting.Reporting.AccountStatements.Adapters {
       return new FixedList<IVouchersByAccountEntryDto>(mapped);
     }
 
-    static private VouchersByAccountEntryDto MapToVouchersByAccount(
-                                              AccountStatementEntry entry) {
-
+    static private VouchersByAccountEntryDto MapToVouchersByAccount(AccountStatementEntry entry) {
       var dto = new VouchersByAccountEntryDto();
 
       ItemTypeClausesForDto(dto, entry);
-
       dto.ItemType = entry.ItemType;
       dto.LedgerUID = !entry.Ledger.IsEmptyInstance ? entry.Ledger.UID : "";
       dto.LedgerName = entry.Ledger.Name;

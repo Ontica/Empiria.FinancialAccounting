@@ -11,6 +11,8 @@ using System;
 using Empiria.FinancialAccounting.Reporting;
 using Empiria.FinancialAccounting.Reporting.AccountStatements;
 using Empiria.FinancialAccounting.Reporting.AccountStatements.Adapters;
+using Empiria.FinancialAccounting.Reporting.AccountStatements.Exporters;
+using Empiria.Storage;
 using Xunit;
 
 namespace Empiria.FinancialAccounting.Tests.Reporting.AccountStatements {
@@ -20,7 +22,7 @@ namespace Empiria.FinancialAccounting.Tests.Reporting.AccountStatements {
 
 
     [Fact]
-    public void ShouldBuildAccountStatements() {
+    public void ShouldBuildAccountStatementsTest() {
 
       AccountStatementQuery query = GetAccountStatementQuery();
 
@@ -29,6 +31,24 @@ namespace Empiria.FinancialAccounting.Tests.Reporting.AccountStatements {
 
         Assert.NotNull(sut);
         Assert.NotEmpty(sut.Entries);
+      }
+    }
+
+
+    [Fact]
+    public void AccountStatementsExcelExporterTest() {
+
+      AccountStatementQuery query = GetAccountStatementQuery();
+
+      using (var usecases = AccountStatementUseCases.UseCaseInteractor()) {
+
+        AccountStatementDto accountStatement = usecases.BuildAccountStatement(query);
+
+        var excelExporter = new AccountStatementExcelExporterService();
+
+        FileDto excelFileDto = excelExporter.Export(accountStatement);
+
+        Assert.NotNull(excelFileDto);
       }
     }
 
@@ -50,7 +70,7 @@ namespace Empiria.FinancialAccounting.Tests.Reporting.AccountStatements {
             //ValuateToCurrrencyUID = "01"
           },
           TrialBalanceType = BalanceEngine.TrialBalanceType.BalanzaConContabilidadesEnCascada,
-          UseDefaultValuation = true,
+          UseDefaultValuation = false,
           WithSubledgerAccount = false,
           SubledgerAccount ="",
           
@@ -59,8 +79,8 @@ namespace Empiria.FinancialAccounting.Tests.Reporting.AccountStatements {
         Entry = {
           AccountNumberForBalances = "1.05.01.01.05.01", //
           CurrencyCode = "02", //
-          InitialBalance = 20042110138.42M,
-          CurrentBalanceForBalances = 19887224722.07M,
+          InitialBalance = 1170984957.49M,
+          CurrentBalanceForBalances = 1161935586.37M,
           DebtorCreditor="Deudora",
           ItemType = BalanceEngine.TrialBalanceItemType.Entry,
           LastChangeDateForBalances = new DateTime(2023, 06, 30),
