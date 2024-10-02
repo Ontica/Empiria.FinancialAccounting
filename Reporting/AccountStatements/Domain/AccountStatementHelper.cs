@@ -72,12 +72,14 @@ namespace Empiria.FinancialAccounting.Reporting.AccountStatements.Domain {
 
 
 
-    internal AccountStatementEntry GetEntryWithCurrentBalance(FixedList<AccountStatementEntry> voucherEntries) {
+    internal AccountStatementEntry GetEntryWithCurrentBalance(
+                                    FixedList<AccountStatementEntry> voucherEntries) {
 
       AccountStatementEntry currentBalance = AccountStatementEntry.SetTotalAccountBalance(
                                                     _buildQuery.Entry.CurrentBalanceForBalances);
       currentBalance.Debit = voucherEntries.Sum(x => x.Debit);
       currentBalance.Credit = voucherEntries.Sum(x => x.Credit);
+      currentBalance.ExchangeRate = voucherEntries.First().ExchangeRate;
       currentBalance.IsCurrentBalance = true;
       return currentBalance;
     }
@@ -95,8 +97,9 @@ namespace Empiria.FinancialAccounting.Reporting.AccountStatements.Domain {
       balance += vouchersList.Where(x => x.DebtorCreditor == "A").Sum(x => (x.Debit - x.Credit)) -
                  vouchersList.Where(x => x.DebtorCreditor == "D").Sum(x => (x.Debit - x.Credit));
 
-      AccountStatementEntry inicialBalance = AccountStatementEntry.SetTotalAccountBalance(balance);
-      return inicialBalance;
+      AccountStatementEntry initialBalance = AccountStatementEntry.SetTotalAccountBalance(balance);
+      initialBalance.ExchangeRate = vouchersList.First().ExchangeRate;
+      return initialBalance;
     }
 
 
@@ -111,7 +114,7 @@ namespace Empiria.FinancialAccounting.Reporting.AccountStatements.Domain {
     }
 
 
-    internal FixedList<AccountStatementEntry> GetOrderingVouchers(
+    internal FixedList<AccountStatementEntry> GetInitialOrderingToCalculateBalances(
                                               FixedList<AccountStatementEntry> voucherEntries) {
 
       if (voucherEntries.Count == 0) {
@@ -173,7 +176,8 @@ namespace Empiria.FinancialAccounting.Reporting.AccountStatements.Domain {
 
 
     internal FixedList<AccountStatementEntry> GetVoucherEntriesBalance(
-      FixedList<AccountStatementEntry> orderingVouchers, AccountStatementEntry initialBalance) {
+                                              FixedList<AccountStatementEntry> orderingVouchers,
+                                              AccountStatementEntry initialBalance) {
 
       if (orderingVouchers.Count == 0) {
         return new FixedList<AccountStatementEntry>();
@@ -227,12 +231,17 @@ namespace Empiria.FinancialAccounting.Reporting.AccountStatements.Domain {
 
       if (_buildQuery.BalancesQuery.UseDefaultValuation) {
 
-        _buildQuery.BalancesQuery.InitialPeriod.ExchangeRateTypeUID = ExchangeRateType.ValorizacionBanxico.UID;
+        _buildQuery.BalancesQuery.InitialPeriod.ExchangeRateTypeUID =
+          ExchangeRateType.ValorizacionBanxico.UID;
+
         _buildQuery.BalancesQuery.InitialPeriod.ValuateToCurrrencyUID = Currency.MXN.Code;
-        _buildQuery.BalancesQuery.InitialPeriod.ExchangeRateDate = _buildQuery.BalancesQuery.InitialPeriod.ToDate;
+
+        _buildQuery.BalancesQuery.InitialPeriod.ExchangeRateDate =
+          _buildQuery.BalancesQuery.InitialPeriod.ToDate;
 
       }
-      return ExchangeRate.GetList(ExchangeRateType.Parse(_buildQuery.BalancesQuery.InitialPeriod.ExchangeRateTypeUID),
+      return ExchangeRate.GetList(ExchangeRateType.Parse(
+                                  _buildQuery.BalancesQuery.InitialPeriod.ExchangeRateTypeUID),
                                   _buildQuery.BalancesQuery.InitialPeriod.ExchangeRateDate);
     }
 

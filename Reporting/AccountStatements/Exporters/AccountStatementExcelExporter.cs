@@ -78,11 +78,6 @@ namespace Empiria.FinancialAccounting.Reporting.AccountStatements.Exporters {
         if (voucher.ItemType == TrialBalanceItemType.Entry) {
           
           _excelFile.SetCell($"A{i}", $"({voucher.LedgerNumber}) {voucher.LedgerName}");
-          _excelFile.SetCell($"J{i}", voucher.ExchangeRate);
-
-          //if (_query.UseDefaultValuation || _query.InitialPeriod.ExchangeRateTypeUID != string.Empty) {
-
-          //}
         }
         _excelFile.SetCell($"B{i}", voucher.CurrencyCode);
         _excelFile.SetCell($"C{i}", voucher.AccountNumber);
@@ -90,7 +85,7 @@ namespace Empiria.FinancialAccounting.Reporting.AccountStatements.Exporters {
         _excelFile.SetCell($"E{i}", voucher.SubledgerAccountNumber);
         _excelFile.SetCell($"F{i}", voucher.VoucherNumber);
         _excelFile.SetCell($"I{i}", voucher.CurrentBalance);
-
+        _excelFile.SetCell($"J{i}", voucher.ExchangeRate);
         _excelFile.SetCell($"M{i}", EmpiriaString.Clean(voucher.Concept));
         _excelFile.SetCell($"N{i}", voucher.ElaboratedBy);
 

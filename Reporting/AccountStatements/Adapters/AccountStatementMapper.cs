@@ -87,6 +87,7 @@ namespace Empiria.FinancialAccounting.Reporting.AccountStatements.Adapters {
       dto.ElaboratedBy = entry.ElaboratedBy.Name;
       dto.Concept = EmpiriaString.Clean(entry.Concept);
       dto.CurrentBalance = entry.CurrentBalance;
+      dto.ExchangeRate = entry.ExchangeRate;
       dto.VoucherId = entry.VoucherId;
 
       return dto;
@@ -101,7 +102,6 @@ namespace Empiria.FinancialAccounting.Reporting.AccountStatements.Adapters {
         dto.RecordingDate = entry.RecordingDate;
         dto.CurrencyCode = entry.Currency.Code;
         dto.SectorCode = entry.Sector.Code;
-        dto.ExchangeRate = entry.ExchangeRate;
       } else {
         dto.AccountNumber = entry.IsCurrentBalance ? "SALDO ACTUAL" : "SALDO INICIAL";
         dto.AccountingDate = ExecutionServer.DateMaxValue;

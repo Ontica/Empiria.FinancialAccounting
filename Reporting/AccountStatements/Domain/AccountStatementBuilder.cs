@@ -40,7 +40,6 @@ namespace Empiria.FinancialAccounting.Reporting.AccountStatements.Domain {
         accountStatement = GenerateAccountStatement();
         AccountStatementCache.Store(hash, accountStatement);
       }
-
       return accountStatement;
     }
 
@@ -56,20 +55,21 @@ namespace Empiria.FinancialAccounting.Reporting.AccountStatements.Domain {
         return new AccountStatement(_buildQuery.BalancesQuery, new FixedList<IVouchersByAccountEntry>(), "");
       }
 
-      FixedList<AccountStatementEntry> orderingVouchers = helper.GetOrderingVouchers(_voucherEntries);
+      FixedList<AccountStatementEntry> orderingVouchers =
+                                        helper.GetInitialOrderingToCalculateBalances(_voucherEntries);
 
       helper.ValuateAccountStatementToExchangeRate(orderingVouchers);
 
       AccountStatementEntry initialBalance = helper.GetInitialBalance(orderingVouchers);
 
       FixedList<AccountStatementEntry> voucherEntriesWithBalances =
-        helper.GetVoucherEntriesBalance(orderingVouchers, initialBalance);
+                                        helper.GetVoucherEntriesBalance(orderingVouchers, initialBalance);
 
       AccountStatementEntry entryWithCurrentBalance = helper.GetEntryWithCurrentBalance(
                                                         voucherEntriesWithBalances);
 
-      FixedList<AccountStatementEntry> vouchersWithCurrentBalance =
-        helper.CombineVouchersWithCurrentBalance(voucherEntriesWithBalances, entryWithCurrentBalance);
+      FixedList<AccountStatementEntry> vouchersWithCurrentBalance = helper.CombineVouchersWithCurrentBalance(
+                                        voucherEntriesWithBalances, entryWithCurrentBalance);
 
       FixedList<AccountStatementEntry> orderingByFilter =
         helper.GetOrderingByFilter(vouchersWithCurrentBalance);

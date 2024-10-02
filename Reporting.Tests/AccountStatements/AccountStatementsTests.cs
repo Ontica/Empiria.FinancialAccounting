@@ -65,12 +65,9 @@ namespace Empiria.FinancialAccounting.Tests.Reporting.AccountStatements {
           InitialPeriod = {
             FromDate = new DateTime(2023, 06, 30),
             ToDate = new DateTime(2023, 06, 30),
-            //ExchangeRateDate =new DateTime(2023, 06, 30),
-            //ExchangeRateTypeUID = "96c617f6-8ed9-47f3-8d2d-f1240e446e1d",
-            //ValuateToCurrrencyUID = "01"
           },
-          TrialBalanceType = BalanceEngine.TrialBalanceType.BalanzaConContabilidadesEnCascada,
-          UseDefaultValuation = false,
+          TrialBalanceType = BalanceEngine.TrialBalanceType.Balanza,
+          UseDefaultValuation = true,
           WithSubledgerAccount = false,
           SubledgerAccount ="",
           
@@ -79,8 +76,8 @@ namespace Empiria.FinancialAccounting.Tests.Reporting.AccountStatements {
         Entry = {
           AccountNumberForBalances = "1.05.01.01.05.01", //
           CurrencyCode = "02", //
-          InitialBalance = 1170984957.49M,
-          CurrentBalanceForBalances = 1161935586.37M,
+          InitialBalance = 20042110138.42M,
+          CurrentBalanceForBalances = 19887224722.07M,
           DebtorCreditor="Deudora",
           ItemType = BalanceEngine.TrialBalanceItemType.Entry,
           LastChangeDateForBalances = new DateTime(2023, 06, 30),
