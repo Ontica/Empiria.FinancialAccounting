@@ -54,11 +54,20 @@ namespace Empiria.FinancialAccounting.Adapters {
       filter.AppendAnd(ledgerFilter);
       filter.AppendAnd(typeFilter);
 
+
+      if (filter.ToString().Length == 0) {
+        filter.AppendOr(SearchExpression.AllRecordsFilter);
+      }
+
       return filter.ToString();
     }
 
 
     static private string BuildKeywordsFilter(string keywords) {
+      if (keywords.Length == 0) {
+        return string.Empty;
+      }
+
       return SearchExpression.ParseAndLikeKeywords("KEYWORDS_CUENTA_AUXILIAR", keywords);
     }
 

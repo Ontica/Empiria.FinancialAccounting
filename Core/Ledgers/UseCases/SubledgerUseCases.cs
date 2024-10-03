@@ -90,7 +90,7 @@ namespace Empiria.FinancialAccounting.UseCases {
 
     public FixedList<SubledgerAccountDescriptorDto> SearchSubledgerAccounts(SubledgerAccountQuery query) {
       Assertion.Require(query, nameof(query));
-      Assertion.Require(query.AccountsChartUID, "query.AccountsChartUID");
+      Assertion.Require(query.AccountsChartUID, nameof(query.AccountsChartUID));
 
       var accountsChart = AccountsChart.Parse(query.AccountsChartUID);
 
