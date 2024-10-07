@@ -78,17 +78,12 @@
     <PackageReference Include="MSTest.TestFramework" Version="3.0.2" />
   </ItemGroup>
   <ItemGroup Condition=" '$(Configuration)' != 'Multisolutions' ">
-    <PackageReference Include="Empiria.Data.Oracle" Version="7.0.0" />
     <PackageReference Include="Empiria.Tests" Version="1.0.0" />
     <PackageReference Include="Empiria.FinancialAccounting.Reconciliation" Version="2.4.0" />
   </ItemGroup>
   <ItemGroup Condition=" '$(Configuration)' == 'Multisolutions' ">
-    <ProjectReference Include="..\..\extensions\Data.Oracle\Empiria.Data.Oracle.csproj" />
     <ProjectReference Include="..\..\extensions\Tests\Empiria.Tests.csproj" />
     <ProjectReference Include="..\Reconciliation\Empiria.FinancialAccounting.Reconciliation.csproj" />
-  </ItemGroup>
-  <ItemGroup>
-
   </ItemGroup>
   <ItemGroup>
     <None Update="empiria.config.json">

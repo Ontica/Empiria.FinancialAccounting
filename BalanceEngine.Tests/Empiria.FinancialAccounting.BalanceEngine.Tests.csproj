@@ -81,20 +81,16 @@
     <PackageReference Include="MSTest.TestFramework" Version="3.0.2" />
   </ItemGroup>
   <ItemGroup Condition=" '$(Configuration)' != 'Multisolutions' ">
-    <PackageReference Include="Empiria.Data.Oracle" Version="7.0.0" />
     <PackageReference Include="Empiria.Tests" Version="1.0.0" />
     <PackageReference Include="Empiria.WebApi.Client" Version="2.0.0" />
+    <PackageReference Include="Empiria.FinancialAccounting.Core" Version="2.4.0" />
     <PackageReference Include="Empiria.FinancialAccounting.BalanceEngine" Version="2.4.0" />
   </ItemGroup>
   <ItemGroup Condition=" '$(Configuration)' == 'Multisolutions' ">
-    <ProjectReference Include="..\..\extensions\Data.Oracle\Empiria.Data.Oracle.csproj" />
     <ProjectReference Include="..\..\extensions\Tests\Empiria.Tests.csproj" />
     <ProjectReference Include="..\..\extensions\WebApi.Client\Empiria.WebApi.Client.csproj" />
-    <ProjectReference Include="..\BalanceEngine\Empiria.FinancialAccounting.BalanceEngine.csproj" />
     <ProjectReference Include="..\Core\Empiria.FinancialAccounting.Core.csproj" />
-  </ItemGroup>
-  <ItemGroup>
-    <ProjectReference Include="..\..\onepoint\Security\Empiria.OnePoint.Security.csproj" />
+    <ProjectReference Include="..\BalanceEngine\Empiria.FinancialAccounting.BalanceEngine.csproj" />
   </ItemGroup>
   <ItemGroup>
     <None Update="empiria.config.json">
