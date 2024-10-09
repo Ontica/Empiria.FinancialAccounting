@@ -23,12 +23,13 @@ namespace Empiria.FinancialAccounting.Tests.Reporting {
       ReportBuilderQuery query = new ReportBuilderQuery {
         AccountsChartUID = "47ec2ec7-0f4f-482e-9799-c23107b60d8a",
         //ElaboratedBy = "1857",
-        //AccountNumber = "8.11",
-        VerificationNumbers = new string[] {"1","2","3" },
-        ReportType = ReportTypes.MovimientosPorNumeroDeVerificacion,
-        //Ledgers = new string[] { "81816c16-3306-98b0-66bf-a69021e31171" },
-        FromDate = new DateTime(2023, 06, 30),
-        ToDate = new DateTime(2023, 06, 30)
+        AccountNumber = "1.01",
+        //VerificationNumbers = new string[] {"1","2","3" },
+        ReportType = ReportTypes.ListadoDePolizasPorCuenta,
+        Ledgers = new string[] { "81816c16-3306-98b0-66bf-a69021e31171" },
+        WithSubledgerAccount = false,
+        FromDate = new DateTime(2023, 02, 01),
+        ToDate = new DateTime(2023, 02, 28)
       };
 
       using (var service = ReportingService.ServiceInteractor()) {
