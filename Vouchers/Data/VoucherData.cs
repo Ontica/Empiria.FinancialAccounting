@@ -74,8 +74,8 @@ namespace Empiria.FinancialAccounting.Vouchers.Data {
     }
 
 
-    static internal FixedList<Voucher> GetVouchers(long id) {
-      var sql = $"SELECT * FROM COF_TRANSACCION WHERE ID_TRANSACCION = {id}";
+    static internal FixedList<Voucher> GetVouchers(int[] ids) {
+      var sql = $"SELECT * FROM COF_TRANSACCION WHERE ID_TRANSACCION IN ({String.Join(", ", ids)})";
 
       var dataOperation = DataOperation.Parse(sql);
 

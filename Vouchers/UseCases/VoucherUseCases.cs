@@ -66,20 +66,9 @@ namespace Empiria.FinancialAccounting.Vouchers.UseCases {
       Assertion.Require(voucherIdsArray, "voucherIdsArray");
       Assertion.Require(voucherIdsArray.Length > 0, "voucherIdsArray must have one or more values.");
 
-      var vouchers = new List<VoucherDto>(voucherIdsArray.Length);
+      FixedList<Voucher> vouchers = VoucherData.GetVouchers(voucherIdsArray);
 
-      foreach (var voucherId in voucherIdsArray) {
-        var voucher = VoucherData.GetVouchers(voucherId);
-
-        if (voucher.Count == 0) {
-          Assertion.EnsureFailed($"Una o más pólizas no contienen movimientos para exportar.");
-        }
-
-        VoucherDto dto = VoucherMapper.Map(voucher.FirstOrDefault());
-        vouchers.Add(dto);
-      }
-
-      return vouchers.ToFixedList();
+      return VoucherMapper.MapVouchers(vouchers);
     }
 
 

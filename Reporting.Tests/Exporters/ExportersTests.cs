@@ -43,7 +43,7 @@ namespace Empiria.FinancialAccounting.Tests.Reporting {
 
         var exporter = new ExcelExporterService();
 
-        int[] ids = new int[] { 8298449, 8298419, 8841127 }; //, 8742526 
+        int[] ids = new int[] { 8926717, 8770140 }; //, 8742526 
         FixedList<VoucherDto> vouchers = usecases.GetVouchersToExport(ids);
         FileDto sut = exporter.Export(vouchers);
 

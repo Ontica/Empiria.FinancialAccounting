@@ -17,6 +17,15 @@ namespace Empiria.FinancialAccounting.Vouchers.Adapters {
   /// <summary>Mapping methods for accounting vouchers.</summary>
   static internal class VoucherMapper {
 
+
+    internal static FixedList<VoucherDto> MapVouchers(FixedList<Voucher> vouchers) {
+
+      var mappedVouchers = vouchers.Select((voucher) => Map(voucher));
+
+      return new FixedList<VoucherDto>(mappedVouchers);
+    }
+
+
     static internal VoucherDto Map(Voucher voucher) {
 
       var dto = new VoucherDto {
@@ -194,6 +203,7 @@ namespace Empiria.FinancialAccounting.Vouchers.Adapters {
         Debit = total.DebitTotal
       };
     }
+
 
     #endregion Helpers
 
