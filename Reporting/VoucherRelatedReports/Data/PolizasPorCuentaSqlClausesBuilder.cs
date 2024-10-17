@@ -18,12 +18,14 @@ namespace Empiria.FinancialAccounting.Reporting.Data {
     internal class PolizasPorCuentaSqlClausesBuilder {
 
         private readonly ReportBuilderQuery _buildQuery;
+        private readonly int[] _voucherIds;
 
         internal PolizasPorCuentaSqlClausesBuilder(ReportBuilderQuery buildQuery) {
             Assertion.Require(buildQuery, nameof(buildQuery));
 
             _buildQuery = buildQuery;
         }
+
 
 
         internal ListadoPolizasSqlClauses Build() {
@@ -59,14 +61,6 @@ namespace Empiria.FinancialAccounting.Reporting.Data {
                        "ID_ELABORADA_POR, ID_AUTORIZADA_POR, ID_MOVIMIENTO, NUMERO_CUENTA_ESTANDAR, " +
                        "NOMBRE_CUENTA_ESTANDAR, '-1' AS NUMERO_CUENTA_AUXILIAR, NUMERO_TRANSACCION, NATURALEZA, " +
                        "FECHA_AFECTACION, FECHA_REGISTRO, CONCEPTO_TRANSACCION, " +
-                       "SUM(DEBE) AS DEBE, SUM(HABER) AS HABER";
-
-            } else if (_buildQuery.ReportType == ReportTypes.ListadoDeMovimientosPorPolizas) {
-
-                return "NUMERO_VERIFICACION, ID_MAYOR, ID_MONEDA, ID_CUENTA_ESTANDAR, ID_SECTOR, ID_TRANSACCION, " +
-                       "ID_ELABORADA_POR, ID_AUTORIZADA_POR, ID_MOVIMIENTO, NUMERO_CUENTA_ESTANDAR, " +
-                       "NOMBRE_CUENTA_ESTANDAR, NUMERO_CUENTA_AUXILIAR, NOMBRE_CUENTA_AUXILIAR, NUMERO_TRANSACCION, " +
-                       "NATURALEZA, FECHA_AFECTACION, FECHA_REGISTRO, CONCEPTO_TRANSACCION, " +
                        "SUM(DEBE) AS DEBE, SUM(HABER) AS HABER";
 
             } else {
@@ -144,12 +138,6 @@ namespace Empiria.FinancialAccounting.Reporting.Data {
                        "NUMERO_TRANSACCION, NATURALEZA, FECHA_AFECTACION, FECHA_REGISTRO, " +
                        "CONCEPTO_TRANSACCION";
 
-            } else if (_buildQuery.ReportType == ReportTypes.ListadoDeMovimientosPorPolizas) {
-
-                return "NUMERO_VERIFICACION, ID_MAYOR, ID_MONEDA, ID_CUENTA_ESTANDAR, ID_SECTOR, ID_TRANSACCION, " +
-                       "ID_ELABORADA_POR, ID_AUTORIZADA_POR, ID_MOVIMIENTO, NUMERO_CUENTA_ESTANDAR, " +
-                       "NOMBRE_CUENTA_ESTANDAR, NUMERO_CUENTA_AUXILIAR, NOMBRE_CUENTA_AUXILIAR, " +
-                       "NUMERO_TRANSACCION, NATURALEZA, FECHA_AFECTACION, FECHA_REGISTRO, CONCEPTO_TRANSACCION";
             } else {
 
                 if (_buildQuery.WithSubledgerAccount) {
@@ -202,9 +190,6 @@ namespace Empiria.FinancialAccounting.Reporting.Data {
 
                     return $"NUMERO_VERIFICACION > 0";
                 }
-            } else if (_buildQuery.ReportType == ReportTypes.ListadoDeMovimientosPorPolizas) {
-
-                return $"NUMERO_VERIFICACION > 0";
             }
 
             return string.Empty;

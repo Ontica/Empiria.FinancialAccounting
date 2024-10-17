@@ -20,9 +20,6 @@ namespace Empiria.FinancialAccounting.Reporting.AccountStatements {
     static internal FixedList<AccountStatementEntry> GetVouchersWithAccounts(AccountStatementSqlClauses sqlClauses) {
 
       var operation = DataOperation.Parse("@qryVouchersByAccount",
-                                          //sqlClauses.AccountsChartId,
-                                          //DataCommonMethods.FormatSqlDbDate(sqlClauses.FromDate),
-                                          //DataCommonMethods.FormatSqlDbDate(sqlClauses.ToDate),
                                           sqlClauses.Fields,
                                           sqlClauses.Filters,
                                           sqlClauses.Grouping);
