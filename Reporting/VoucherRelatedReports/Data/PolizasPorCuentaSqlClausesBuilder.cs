@@ -9,152 +9,210 @@
 ************************* Copyright(c) La Vía Óntica SC, Ontica LLC and contributors. All rights reserved. **/
 using System;
 using System.Linq;
+using Empiria.Data;
 
 
 namespace Empiria.FinancialAccounting.Reporting.Data {
 
-  /// <summary>Builds Sql clauses used for retrive data for 'Pólizas por cuenta' report.</summary>
-  internal class PolizasPorCuentaSqlClausesBuilder {
+    /// <summary>Builds Sql clauses used for retrive data for 'Pólizas por cuenta' report.</summary>
+    internal class PolizasPorCuentaSqlClausesBuilder {
 
-    private readonly ReportBuilderQuery _buildQuery;
+        private readonly ReportBuilderQuery _buildQuery;
 
-    internal PolizasPorCuentaSqlClausesBuilder(ReportBuilderQuery buildQuery) {
-      Assertion.Require(buildQuery, nameof(buildQuery));
+        internal PolizasPorCuentaSqlClausesBuilder(ReportBuilderQuery buildQuery) {
+            Assertion.Require(buildQuery, nameof(buildQuery));
 
-      _buildQuery = buildQuery;
-    }
-
-
-    internal ListadoPolizasSqlClauses Build() {
-      var accountsChart = AccountsChart.Parse(_buildQuery.AccountsChartUID);
-      var commandData = new ListadoPolizasSqlClauses();
-
-      commandData.AccountsChart = accountsChart;
-      commandData.FromDate = _buildQuery.FromDate;
-      commandData.ToDate = _buildQuery.ToDate;
-      commandData.Filters = GetFilters();
-      commandData.Fields = GetFields();
-      commandData.Grouping = GetGroupingClause();
-
-      return commandData;
-    }
-
-
-    #region Private methods
-
-    private string GetAccountFilter() {
-      if (_buildQuery.AccountNumber != string.Empty) {
-        return $"NUMERO_CUENTA_ESTANDAR LIKE '{_buildQuery.AccountNumber}%'";
-      }
-      return string.Empty;
-    }
-
-
-    private string GetFields() {
-
-      if (_buildQuery.ReportType == ReportTypes.MovimientosPorNumeroDeVerificacion) {
-
-        return "NUMERO_VERIFICACION, ID_MAYOR, ID_MONEDA, ID_CUENTA_ESTANDAR, ID_SECTOR, ID_TRANSACCION, " +
-               "ID_ELABORADA_POR, ID_AUTORIZADA_POR, ID_MOVIMIENTO, NUMERO_CUENTA_ESTANDAR, " +
-               "NOMBRE_CUENTA_ESTANDAR, '-1' AS NUMERO_CUENTA_AUXILIAR, NUMERO_TRANSACCION, NATURALEZA, " +
-               "FECHA_AFECTACION, FECHA_REGISTRO, CONCEPTO_TRANSACCION,  SUM(DEBE) AS DEBE, SUM(HABER) AS HABER";
-      } else {
-        
-        if (_buildQuery.WithSubledgerAccount) {
-          return "'-1' AS NUMERO_VERIFICACION, ID_MAYOR, ID_MONEDA, ID_CUENTA_ESTANDAR, ID_SECTOR, ID_TRANSACCION, ID_ELABORADA_POR, " +
-               "ID_AUTORIZADA_POR, ID_MOVIMIENTO, NUMERO_CUENTA_ESTANDAR, NOMBRE_CUENTA_ESTANDAR, " +
-               "NUMERO_CUENTA_AUXILIAR, NUMERO_TRANSACCION, NATURALEZA, FECHA_AFECTACION, FECHA_REGISTRO, " +
-               "CONCEPTO_TRANSACCION,  SUM(DEBE) AS DEBE, SUM(HABER) AS HABER";
-        } else {
-          return "'-1' AS NUMERO_VERIFICACION, ID_MAYOR, ID_MONEDA, ID_CUENTA_ESTANDAR, ID_SECTOR, ID_TRANSACCION, ID_ELABORADA_POR, " +
-               "ID_AUTORIZADA_POR, ID_MOVIMIENTO, NUMERO_CUENTA_ESTANDAR, NOMBRE_CUENTA_ESTANDAR, " +
-               "'-1' AS NUMERO_CUENTA_AUXILIAR, NUMERO_TRANSACCION, NATURALEZA, FECHA_AFECTACION, FECHA_REGISTRO, " +
-               "CONCEPTO_TRANSACCION,  SUM(DEBE) AS DEBE, SUM(HABER) AS HABER";
+            _buildQuery = buildQuery;
         }
-      }
-    }
 
 
-    private string GetFilters() {
+        internal ListadoPolizasSqlClauses Build() {
+            var accountsChart = AccountsChart.Parse(_buildQuery.AccountsChartUID);
+            var commandData = new ListadoPolizasSqlClauses();
 
-      string account = GetAccountFilter();
-      string ledgers = GetLedgerFilter();
-      string verificationNumber = GetVerificationNumber();
+            commandData.AccountsChart = accountsChart;
+            commandData.FromDate = _buildQuery.FromDate;
+            commandData.ToDate = _buildQuery.ToDate;
+            commandData.Filters = GetFilters();
+            commandData.Fields = GetFields();
+            commandData.Grouping = GetGroupingClause();
 
-      var filter = new Filter(account);
-
-      filter.AppendAnd(ledgers);
-      filter.AppendAnd(verificationNumber);
-
-      return filter.ToString().Length > 0 ? $"AND {filter}" : "";
-    }
-
-
-    private string GetGroupingClause() {
-
-      if (_buildQuery.ReportType == ReportTypes.MovimientosPorNumeroDeVerificacion) {
-
-        return "NUMERO_VERIFICACION, ID_MAYOR, ID_MONEDA, ID_CUENTA_ESTANDAR, ID_SECTOR, ID_TRANSACCION, ID_ELABORADA_POR, " +
-               "ID_AUTORIZADA_POR, ID_MOVIMIENTO, NUMERO_CUENTA_ESTANDAR, NOMBRE_CUENTA_ESTANDAR, " +
-               "NUMERO_TRANSACCION, NATURALEZA, FECHA_AFECTACION, FECHA_REGISTRO, " +
-               "CONCEPTO_TRANSACCION";
-      } else {
-
-        if (_buildQuery.WithSubledgerAccount) {
-          return "NUMERO_VERIFICACION, ID_MAYOR, ID_MONEDA, ID_CUENTA_ESTANDAR, ID_SECTOR, ID_TRANSACCION, ID_ELABORADA_POR, " +
-               "ID_AUTORIZADA_POR, ID_MOVIMIENTO, NUMERO_CUENTA_ESTANDAR, NOMBRE_CUENTA_ESTANDAR, " +
-               "NUMERO_CUENTA_AUXILIAR, NUMERO_TRANSACCION, NATURALEZA, FECHA_AFECTACION, FECHA_REGISTRO, " +
-               "CONCEPTO_TRANSACCION";
-        } else {
-          return "NUMERO_VERIFICACION, ID_MAYOR, ID_MONEDA, ID_CUENTA_ESTANDAR, ID_SECTOR, ID_TRANSACCION, ID_ELABORADA_POR, " +
-               "ID_AUTORIZADA_POR, ID_MOVIMIENTO, NUMERO_CUENTA_ESTANDAR, NOMBRE_CUENTA_ESTANDAR, " +
-               "NUMERO_TRANSACCION, NATURALEZA, FECHA_AFECTACION, FECHA_REGISTRO, " +
-               "CONCEPTO_TRANSACCION";
+            return commandData;
         }
-      }
-      
-    }
 
 
-    private string GetLedgerFilter() {
-      if (_buildQuery.Ledgers.Length > 0) {
-        int[] ledgerIds = _buildQuery.Ledgers
-                      .Select(uid => Ledger.Parse(uid).Id).ToArray();
+        #region Private methods
 
-        return $"ID_MAYOR IN ({String.Join(", ", ledgerIds)})";
-      }
-      return string.Empty;
-    }
-
-
-    private string GetSubledgerAccountFilter() {
-      if (_buildQuery.SubledgerAccountNumber != string.Empty) {
-        return $"NUMERO_CUENTA_AUXILIAR = '{_buildQuery.SubledgerAccountNumber}'";
-      }
-
-      return string.Empty;
-    }
-
-
-    private string GetVerificationNumber() {
-
-      if (_buildQuery.ReportType == ReportTypes.MovimientosPorNumeroDeVerificacion) {
-
-        if (_buildQuery.VerificationNumbers.Length > 0) {
-
-          return $"NUMERO_VERIFICACION IN ({String.Join(", ", _buildQuery.VerificationNumbers)})";
-
-        } else if (_buildQuery.VerificationNumbers.Length == 0 && _buildQuery.AccountNumber != string.Empty) {
-
-          return $"NUMERO_VERIFICACION > 0";
+        private string GetAccountFilter() {
+            if (_buildQuery.AccountNumber != string.Empty) {
+                return $"NUMERO_CUENTA_ESTANDAR LIKE '{_buildQuery.AccountNumber}%'";
+            }
+            return string.Empty;
         }
-      }
-      return string.Empty;
-    }
 
 
-    #endregion Private methods
+        private string GetFields() {
 
-  } // class PolizasPorCuentaSqlClausesBuilder
+            if (_buildQuery.ReportType == ReportTypes.MovimientosPorNumeroDeVerificacion) {
+
+                return "NUMERO_VERIFICACION, ID_MAYOR, ID_MONEDA, ID_CUENTA_ESTANDAR, ID_SECTOR, ID_TRANSACCION, " +
+                       "ID_ELABORADA_POR, ID_AUTORIZADA_POR, ID_MOVIMIENTO, NUMERO_CUENTA_ESTANDAR, " +
+                       "NOMBRE_CUENTA_ESTANDAR, '-1' AS NUMERO_CUENTA_AUXILIAR, NUMERO_TRANSACCION, NATURALEZA, " +
+                       "FECHA_AFECTACION, FECHA_REGISTRO, CONCEPTO_TRANSACCION, " +
+                       "SUM(DEBE) AS DEBE, SUM(HABER) AS HABER";
+
+            } else if (_buildQuery.ReportType == ReportTypes.ListadoDeMovimientosPorPolizas) {
+
+                return "NUMERO_VERIFICACION, ID_MAYOR, ID_MONEDA, ID_CUENTA_ESTANDAR, ID_SECTOR, ID_TRANSACCION, " +
+                       "ID_ELABORADA_POR, ID_AUTORIZADA_POR, ID_MOVIMIENTO, NUMERO_CUENTA_ESTANDAR, " +
+                       "NOMBRE_CUENTA_ESTANDAR, NUMERO_CUENTA_AUXILIAR, NOMBRE_CUENTA_AUXILIAR, NUMERO_TRANSACCION, " +
+                       "NATURALEZA, FECHA_AFECTACION, FECHA_REGISTRO, CONCEPTO_TRANSACCION, " +
+                       "SUM(DEBE) AS DEBE, SUM(HABER) AS HABER";
+
+            } else {
+
+                if (_buildQuery.WithSubledgerAccount) {
+
+                    return "'-1' AS NUMERO_VERIFICACION, ID_MAYOR, ID_MONEDA, ID_CUENTA_ESTANDAR, ID_SECTOR, " +
+                           "ID_TRANSACCION, ID_ELABORADA_POR, ID_AUTORIZADA_POR, ID_MOVIMIENTO, " +
+                           "NUMERO_CUENTA_ESTANDAR, NOMBRE_CUENTA_ESTANDAR, NUMERO_CUENTA_AUXILIAR, " +
+                           "NUMERO_TRANSACCION, NATURALEZA, FECHA_AFECTACION, FECHA_REGISTRO, CONCEPTO_TRANSACCION, " +
+                           "SUM(DEBE) AS DEBE, SUM(HABER) AS HABER";
+
+                } else {
+
+                    return "'-1' AS NUMERO_VERIFICACION, ID_MAYOR, ID_MONEDA, ID_CUENTA_ESTANDAR, ID_SECTOR, " +
+                           "ID_TRANSACCION, ID_ELABORADA_POR, ID_AUTORIZADA_POR, ID_MOVIMIENTO, " +
+                           "NUMERO_CUENTA_ESTANDAR, NOMBRE_CUENTA_ESTANDAR, '-1' AS NUMERO_CUENTA_AUXILIAR, " +
+                           "NUMERO_TRANSACCION, NATURALEZA, FECHA_AFECTACION, FECHA_REGISTRO, CONCEPTO_TRANSACCION, " +
+                           "SUM(DEBE) AS DEBE, SUM(HABER) AS HABER";
+                }
+            }
+        }
+
+
+        private string GetFilters() {
+
+            string accountChart = GetAccountsChartFilter();
+            string dateFilter = GetDateFilter();
+            string account = GetAccountFilter();
+            string ledgers = GetLedgerFilter();
+            string verificationNumber = GetVerificationNumber();
+
+            var filter = new Filter(accountChart);
+
+            filter.AppendAnd(dateFilter);
+            filter.AppendAnd(account);
+            filter.AppendAnd(ledgers);
+            filter.AppendAnd(verificationNumber);
+
+            return filter.ToString().Length > 0 ? $"{filter}" : "";
+        }
+
+
+        private string GetAccountsChartFilter() {
+
+            if (_buildQuery.ReportType == ReportTypes.ListadoDePolizasPorCuenta ||
+                _buildQuery.ReportType == ReportTypes.MovimientosPorNumeroDeVerificacion) {
+
+                return $"ID_TIPO_CUENTAS_STD = {AccountsChart.Parse(_buildQuery.AccountsChartUID).Id}";
+            } else {
+
+                return string.Empty;
+            }
+        }
+
+
+        private string GetDateFilter() {
+            if (_buildQuery.ReportType == ReportTypes.ListadoDePolizasPorCuenta ||
+                _buildQuery.ReportType == ReportTypes.MovimientosPorNumeroDeVerificacion) {
+
+                return $"FECHA_AFECTACION >= {DataCommonMethods.FormatSqlDbDate(_buildQuery.FromDate)} " +
+                       $"AND FECHA_AFECTACION <= {DataCommonMethods.FormatSqlDbDate(_buildQuery.ToDate)}";
+            } else {
+
+                return string.Empty;
+            }
+        }
+
+        private string GetGroupingClause() {
+
+            if (_buildQuery.ReportType == ReportTypes.MovimientosPorNumeroDeVerificacion) {
+
+                return "NUMERO_VERIFICACION, ID_MAYOR, ID_MONEDA, ID_CUENTA_ESTANDAR, ID_SECTOR, ID_TRANSACCION, ID_ELABORADA_POR, " +
+                       "ID_AUTORIZADA_POR, ID_MOVIMIENTO, NUMERO_CUENTA_ESTANDAR, NOMBRE_CUENTA_ESTANDAR, " +
+                       "NUMERO_TRANSACCION, NATURALEZA, FECHA_AFECTACION, FECHA_REGISTRO, " +
+                       "CONCEPTO_TRANSACCION";
+
+            } else if (_buildQuery.ReportType == ReportTypes.ListadoDeMovimientosPorPolizas) {
+
+                return "NUMERO_VERIFICACION, ID_MAYOR, ID_MONEDA, ID_CUENTA_ESTANDAR, ID_SECTOR, ID_TRANSACCION, " +
+                       "ID_ELABORADA_POR, ID_AUTORIZADA_POR, ID_MOVIMIENTO, NUMERO_CUENTA_ESTANDAR, " +
+                       "NOMBRE_CUENTA_ESTANDAR, NUMERO_CUENTA_AUXILIAR, NOMBRE_CUENTA_AUXILIAR, " +
+                       "NUMERO_TRANSACCION, NATURALEZA, FECHA_AFECTACION, FECHA_REGISTRO, CONCEPTO_TRANSACCION";
+            } else {
+
+                if (_buildQuery.WithSubledgerAccount) {
+
+                    return "NUMERO_VERIFICACION, ID_MAYOR, ID_MONEDA, ID_CUENTA_ESTANDAR, ID_SECTOR, ID_TRANSACCION, " +
+                           "ID_ELABORADA_POR, ID_AUTORIZADA_POR, ID_MOVIMIENTO, NUMERO_CUENTA_ESTANDAR, " +
+                           "NOMBRE_CUENTA_ESTANDAR, NUMERO_CUENTA_AUXILIAR, NUMERO_TRANSACCION, NATURALEZA, " +
+                           "FECHA_AFECTACION, FECHA_REGISTRO, CONCEPTO_TRANSACCION";
+                } else {
+
+                    return "NUMERO_VERIFICACION, ID_MAYOR, ID_MONEDA, ID_CUENTA_ESTANDAR, ID_SECTOR, ID_TRANSACCION, " +
+                           "ID_ELABORADA_POR, ID_AUTORIZADA_POR, ID_MOVIMIENTO, NUMERO_CUENTA_ESTANDAR, " +
+                           "NOMBRE_CUENTA_ESTANDAR, NUMERO_TRANSACCION, NATURALEZA, FECHA_AFECTACION, " +
+                           "FECHA_REGISTRO, CONCEPTO_TRANSACCION";
+                }
+            }
+
+        }
+
+
+        private string GetLedgerFilter() {
+            if (_buildQuery.Ledgers.Length > 0) {
+                int[] ledgerIds = _buildQuery.Ledgers
+                              .Select(uid => Ledger.Parse(uid).Id).ToArray();
+
+                return $"ID_MAYOR IN ({String.Join(", ", ledgerIds)})";
+            }
+            return string.Empty;
+        }
+
+
+        private string GetSubledgerAccountFilter() {
+            if (_buildQuery.SubledgerAccountNumber != string.Empty) {
+                return $"NUMERO_CUENTA_AUXILIAR = '{_buildQuery.SubledgerAccountNumber}'";
+            }
+
+            return string.Empty;
+        }
+
+
+        private string GetVerificationNumber() {
+
+            if (_buildQuery.ReportType == ReportTypes.MovimientosPorNumeroDeVerificacion) {
+
+                if (_buildQuery.VerificationNumbers.Length > 0) {
+
+                    return $"NUMERO_VERIFICACION IN ({String.Join(", ", _buildQuery.VerificationNumbers)})";
+
+                } else if (_buildQuery.VerificationNumbers.Length == 0 && _buildQuery.AccountNumber != string.Empty) {
+
+                    return $"NUMERO_VERIFICACION > 0";
+                }
+            } else if (_buildQuery.ReportType == ReportTypes.ListadoDeMovimientosPorPolizas) {
+
+                return $"NUMERO_VERIFICACION > 0";
+            }
+
+            return string.Empty;
+        }
+
+
+        #endregion Private methods
+
+    } // class PolizasPorCuentaSqlClausesBuilder
 
 } // namespace Empiria.FinancialAccounting.Reporting.Data
