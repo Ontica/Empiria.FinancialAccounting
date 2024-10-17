@@ -194,8 +194,8 @@ namespace Empiria.FinancialAccounting.WebApi.Vouchers {
                         break;
                     case "excel-vouchers-entries":
                         result = ExecuteExportingVouchersMovementsToExcel(command.Vouchers);
-                        throw Assertion.EnsureNoReachThisCode("Función en proceso de desarrollo.");
 
+                        break;
                     default:
                         throw Assertion.EnsureNoReachThisCode($"Unrecognized bulk operation name '{operationName}'.");
                 }
