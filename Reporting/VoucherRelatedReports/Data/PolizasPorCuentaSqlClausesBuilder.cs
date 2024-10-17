@@ -28,17 +28,11 @@ namespace Empiria.FinancialAccounting.Reporting.Data {
 
 
         internal ListadoPolizasSqlClauses Build() {
-            var accountsChart = AccountsChart.Parse(_buildQuery.AccountsChartUID);
             var commandData = new ListadoPolizasSqlClauses();
-
-            commandData.AccountsChart = accountsChart;
-            commandData.FromDate = _buildQuery.FromDate;
-            commandData.ToDate = _buildQuery.ToDate;
             commandData.Fields = GetFields();
             commandData.Filters = GetFilters();
             commandData.Grouping = GetGroupingClause();
             commandData.Ordering = string.Empty;
-
             return commandData;
         }
 
