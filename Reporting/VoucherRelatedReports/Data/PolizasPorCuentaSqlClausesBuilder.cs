@@ -18,7 +18,6 @@ namespace Empiria.FinancialAccounting.Reporting.Data {
     internal class PolizasPorCuentaSqlClausesBuilder {
 
         private readonly ReportBuilderQuery _buildQuery;
-        private readonly int[] _voucherIds;
 
         internal PolizasPorCuentaSqlClausesBuilder(ReportBuilderQuery buildQuery) {
             Assertion.Require(buildQuery, nameof(buildQuery));
