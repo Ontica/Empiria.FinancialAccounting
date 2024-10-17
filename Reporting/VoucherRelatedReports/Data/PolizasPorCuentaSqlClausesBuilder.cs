@@ -34,9 +34,10 @@ namespace Empiria.FinancialAccounting.Reporting.Data {
             commandData.AccountsChart = accountsChart;
             commandData.FromDate = _buildQuery.FromDate;
             commandData.ToDate = _buildQuery.ToDate;
-            commandData.Filters = GetFilters();
             commandData.Fields = GetFields();
+            commandData.Filters = GetFilters();
             commandData.Grouping = GetGroupingClause();
+            commandData.Ordering = string.Empty;
 
             return commandData;
         }
@@ -66,15 +67,15 @@ namespace Empiria.FinancialAccounting.Reporting.Data {
 
                 if (_buildQuery.WithSubledgerAccount) {
 
-                    return "'-1' AS NUMERO_VERIFICACION, ID_MAYOR, ID_MONEDA, ID_CUENTA_ESTANDAR, ID_SECTOR, " +
+                    return "NUMERO_VERIFICACION, ID_MAYOR, ID_MONEDA, ID_CUENTA_ESTANDAR, ID_SECTOR, " +
                            "ID_TRANSACCION, ID_ELABORADA_POR, ID_AUTORIZADA_POR, ID_MOVIMIENTO, " +
-                           "NUMERO_CUENTA_ESTANDAR, NOMBRE_CUENTA_ESTANDAR, NUMERO_CUENTA_AUXILIAR, " +
+                           "NUMERO_CUENTA_ESTANDAR, NOMBRE_CUENTA_ESTANDAR, NUMERO_CUENTA_AUXILIAR, NOMBRE_CUENTA_AUXILIAR, " +
                            "NUMERO_TRANSACCION, NATURALEZA, FECHA_AFECTACION, FECHA_REGISTRO, CONCEPTO_TRANSACCION, " +
                            "SUM(DEBE) AS DEBE, SUM(HABER) AS HABER";
 
                 } else {
 
-                    return "'-1' AS NUMERO_VERIFICACION, ID_MAYOR, ID_MONEDA, ID_CUENTA_ESTANDAR, ID_SECTOR, " +
+                    return "NUMERO_VERIFICACION, ID_MAYOR, ID_MONEDA, ID_CUENTA_ESTANDAR, ID_SECTOR, " +
                            "ID_TRANSACCION, ID_ELABORADA_POR, ID_AUTORIZADA_POR, ID_MOVIMIENTO, " +
                            "NUMERO_CUENTA_ESTANDAR, NOMBRE_CUENTA_ESTANDAR, '-1' AS NUMERO_CUENTA_AUXILIAR, " +
                            "NUMERO_TRANSACCION, NATURALEZA, FECHA_AFECTACION, FECHA_REGISTRO, CONCEPTO_TRANSACCION, " +
@@ -91,6 +92,7 @@ namespace Empiria.FinancialAccounting.Reporting.Data {
             string account = GetAccountFilter();
             string ledgers = GetLedgerFilter();
             string verificationNumber = GetVerificationNumber();
+            string voucherRangeFilter = GetVoucherRangeFilter();
 
             var filter = new Filter(accountChart);
 
@@ -98,10 +100,22 @@ namespace Empiria.FinancialAccounting.Reporting.Data {
             filter.AppendAnd(account);
             filter.AppendAnd(ledgers);
             filter.AppendAnd(verificationNumber);
+            filter.AppendAnd(voucherRangeFilter);
 
             return filter.ToString().Length > 0 ? $"{filter}" : "";
         }
 
+        private string GetVoucherRangeFilter() {
+
+            if (_buildQuery.ReportType == ReportTypes.ListadoMovimientosPorPolizas) {
+
+                return $"ID_TRANSACCION IN ({String.Join(", ", _buildQuery.VoucherIds)})";
+            } else {
+
+                return string.Empty;
+            }
+
+        }
 
         private string GetAccountsChartFilter() {
 
@@ -143,7 +157,7 @@ namespace Empiria.FinancialAccounting.Reporting.Data {
 
                     return "NUMERO_VERIFICACION, ID_MAYOR, ID_MONEDA, ID_CUENTA_ESTANDAR, ID_SECTOR, ID_TRANSACCION, " +
                            "ID_ELABORADA_POR, ID_AUTORIZADA_POR, ID_MOVIMIENTO, NUMERO_CUENTA_ESTANDAR, " +
-                           "NOMBRE_CUENTA_ESTANDAR, NUMERO_CUENTA_AUXILIAR, NUMERO_TRANSACCION, NATURALEZA, " +
+                           "NOMBRE_CUENTA_ESTANDAR, NUMERO_CUENTA_AUXILIAR, NOMBRE_CUENTA_AUXILIAR, NUMERO_TRANSACCION, NATURALEZA, " +
                            "FECHA_AFECTACION, FECHA_REGISTRO, CONCEPTO_TRANSACCION";
                 } else {
 

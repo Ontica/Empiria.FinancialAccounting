@@ -9,7 +9,6 @@
 ************************* Copyright(c) La Vía Óntica SC, Ontica LLC and contributors. All rights reserved. **/
 using System;
 using System.Collections.Generic;
-
 using Empiria.DynamicData;
 
 using Empiria.FinancialAccounting.BalanceEngine;
@@ -17,233 +16,294 @@ using Empiria.FinancialAccounting.Reporting.AccountStatements.Domain;
 
 namespace Empiria.FinancialAccounting.Reporting.VoucherRelatedReports.Domain {
 
-  ///<summary>Listado de polizas por cuenta para reporte operativo.</summary>
-  internal class ListadoPolizasPorCuenta : IReportBuilder {
+    ///<summary>Listado de polizas por cuenta para reporte operativo.</summary>
+    internal class ListadoPolizasPorCuenta : IReportBuilder {
 
-    #region Public methods
+        #region Public methods
 
-    public ReportDataDto Build(ReportBuilderQuery buildQuery) {
-      Assertion.Require(buildQuery, nameof(buildQuery));
+        public ReportDataDto Build(ReportBuilderQuery buildQuery) {
+            Assertion.Require(buildQuery, nameof(buildQuery));
 
-      FixedList<IVouchersByAccountEntry> vouchersByAccount = BuildVouchersByAccount(buildQuery);
+            FixedList<IVouchersByAccountEntry> vouchersByAccount = BuildVouchersByAccount(buildQuery);
 
-      return MapToReportDataDto(buildQuery, vouchersByAccount);
-    }
+            return MapToReportDataDto(buildQuery, vouchersByAccount);
+        }
 
 
-    #endregion Public methods
+        #endregion Public methods
 
-    #region Private methods
+        #region Private methods
 
-    private FixedList<IVouchersByAccountEntry> BuildVouchersByAccount(ReportBuilderQuery buildQuery) {
+        private FixedList<IVouchersByAccountEntry> BuildVouchersByAccount(ReportBuilderQuery buildQuery) {
 
-      var helper = new ListadoPolizasPorCuentaHelper(buildQuery);
+            var helper = new ListadoPolizasPorCuentaHelper(buildQuery);
 
-      FixedList<AccountStatementEntry> vouchersList = helper.GetVoucherEntries();
+            FixedList<AccountStatementEntry> vouchersList = helper.GetVoucherEntries();
 
-      vouchersList = helper.GetSummaryToParentVouchers(vouchersList);
+            vouchersList = helper.GetSummaryToParentVouchers(vouchersList);
 
-      FixedList<AccountStatementEntry> orderingVouchers = helper.OrderingVouchers(vouchersList);
+            FixedList<AccountStatementEntry> orderingVouchers = helper.OrderingVouchers(vouchersList);
 
-      FixedList<AccountStatementEntry> totalsByCurrency = helper.GenerateTotalSummaryByCurrency(
-                                                                  orderingVouchers);
+            if (buildQuery.ReportType == ReportTypes.ListadoDePolizasPorCuenta) {
 
-      FixedList<AccountStatementEntry> returnedEntries = helper.CombineVouchersWithTotalByCurrency(
-                                                          orderingVouchers, totalsByCurrency);
+                FixedList<AccountStatementEntry> totalsByCurrency = helper.GenerateTotalSummaryByCurrency(
+                                                                        orderingVouchers);
 
-      return returnedEntries.Select(x => (IVouchersByAccountEntry) x)
-                            .ToFixedList();
-    }
+                FixedList<AccountStatementEntry> returnedEntries = helper.CombineVouchersWithTotalByCurrency(
+                                                                    orderingVouchers, totalsByCurrency);
 
+                return returnedEntries.Select(x => (IVouchersByAccountEntry) x).ToFixedList();
+            } else {
 
-    private static FixedList<DataTableColumn> GetReportColumns(ReportBuilderQuery buildQuery) {
-      var columns = new List<DataTableColumn>();
+                return orderingVouchers.Select(x => (IVouchersByAccountEntry) x).ToFixedList();
+            }
+        }
 
-      columns.Add(new DataTableColumn("ledgerNumber", "Cont", "text"));
-      columns.Add(new DataTableColumn("currencyCode", "Mon", "text"));
-      columns.Add(new DataTableColumn("accountNumber", "Cuenta", "text-nowrap"));
-      columns.Add(new DataTableColumn("sectorCode", "Sct", "text"));
-      if (buildQuery.WithSubledgerAccount) {
-        columns.Add(new DataTableColumn("subledgerAccountNumber", "Auxiliar", "text-nowrap"));
-      }
-      columns.Add(new DataTableColumn("voucherNumber", "No. Poliza", "text-nowrap"));
-      columns.Add(new DataTableColumn("debit", "Cargo", "decimal"));
-      columns.Add(new DataTableColumn("credit", "Abono", "decimal"));
-      columns.Add(new DataTableColumn("accountingDate", "Afectación", "date"));
-      columns.Add(new DataTableColumn("recordingDate", "Registro", "date"));
-      columns.Add(new DataTableColumn("concept", "Concepto", "text-nowrap"));
-      columns.Add(new DataTableColumn("authorizedBy", "Autorizado por", "text-nowrap"));
-      columns.Add(new DataTableColumn("elaboratedBy", "Elaborado por", "text-nowrap"));
 
-      return columns.ToFixedList();
-    }
+        static private FixedList<DataTableColumn> GetColumnsForListadoDePolizasPorCuenta(
+                                                    ReportBuilderQuery buildQuery) {
+            var columns = new List<DataTableColumn>();
+            columns.Add(new DataTableColumn("ledgerNumber", "Cont", "text"));
+            columns.Add(new DataTableColumn("currencyCode", "Mon", "text"));
+            columns.Add(new DataTableColumn("accountNumber", "Cuenta", "text-nowrap"));
+            columns.Add(new DataTableColumn("sectorCode", "Sct", "text"));
+            if (buildQuery.WithSubledgerAccount) {
+                columns.Add(new DataTableColumn("subledgerAccountNumber", "Auxiliar", "text-nowrap"));
+            }
+            columns.Add(new DataTableColumn("debit", "Cargo", "decimal"));
+            columns.Add(new DataTableColumn("credit", "Abono", "decimal"));
+            columns.Add(new DataTableColumn("voucherNumber", "No. Poliza", "text-nowrap"));
+            columns.Add(new DataTableColumn("accountingDate", "Afectación", "date"));
+            columns.Add(new DataTableColumn("recordingDate", "Registro", "date"));
+            columns.Add(new DataTableColumn("concept", "Concepto", "text-nowrap"));
+            columns.Add(new DataTableColumn("authorizedBy", "Autorizado por", "text-nowrap"));
+            columns.Add(new DataTableColumn("elaboratedBy", "Elaborado por", "text-nowrap"));
 
+            return columns.ToFixedList();
+        }
 
-    static private ReportDataDto MapToReportDataDto(ReportBuilderQuery buildQuery,
-                                                    FixedList<IVouchersByAccountEntry> vouchers) {
-      return new ReportDataDto {
-        Query = buildQuery,
-        Columns = GetReportColumns(buildQuery),
-        Entries = MapToReportDataEntries(vouchers)
-      };
-    }
 
+        private static FixedList<DataTableColumn> GetColumnsForListadoMovimientosPorPolizas(
+                                                    ReportBuilderQuery buildQuery) {
+            var columns = new List<DataTableColumn>();
 
-    private static FixedList<IReportEntryDto> MapToReportDataEntries(FixedList<IVouchersByAccountEntry> entries) {
-      var mappedItems = entries.Select((x) => MapToVoucherEntry((AccountStatementEntry) x));
+            columns.Add(new DataTableColumn("ledgerNumber", "Cont", "text"));
+            columns.Add(new DataTableColumn("ledgerName", "Contabilidad", "text"));
+            columns.Add(new DataTableColumn("currencyCode", "Mon", "text"));
+            columns.Add(new DataTableColumn("voucherNumber", "No. Poliza", "text-nowrap"));
+            columns.Add(new DataTableColumn("accountNumber", "Cuenta", "text-nowrap"));
+            columns.Add(new DataTableColumn("accountName", "Nombre cuenta", "text"));
+            columns.Add(new DataTableColumn("sectorCode", "Sct", "text"));
+            columns.Add(new DataTableColumn("subledgerAccountNumber", "Auxiliar", "text-nowrap"));
+            columns.Add(new DataTableColumn("SubledgerAccountName", "Nombre auxiliar", "text"));
+            columns.Add(new DataTableColumn("verificationNumber", "No. Verif", "text"));
+            columns.Add(new DataTableColumn("debit", "Cargo", "decimal"));
+            columns.Add(new DataTableColumn("credit", "Abono", "decimal"));
+            columns.Add(new DataTableColumn("accountingDate", "Afectación", "date"));
+            columns.Add(new DataTableColumn("recordingDate", "Registro", "date"));
+            columns.Add(new DataTableColumn("concept", "Concepto", "text-nowrap"));
+            columns.Add(new DataTableColumn("authorizedBy", "Autorizado por", "text-nowrap"));
+            columns.Add(new DataTableColumn("elaboratedBy", "Elaborado por", "text-nowrap"));
 
-      return new FixedList<IReportEntryDto>(mappedItems);
-    }
+            return columns.ToFixedList();
 
+        }
 
-    static private VoucherByAccountEntry MapToVoucherEntry(AccountStatementEntry entry) {
-      var returnedVoucher = new VoucherByAccountEntry();
 
-      ItemTypeClausesForVoucher(returnedVoucher, entry);
+        private static FixedList<DataTableColumn> GetReportColumns(ReportBuilderQuery buildQuery) {
 
-      returnedVoucher.LedgerUID = entry.Ledger.UID;
-      returnedVoucher.CurrencyCode = entry.Currency.Code;
-      returnedVoucher.AccountName = entry.AccountName;
+            if (buildQuery.ReportType == ReportTypes.ListadoDePolizasPorCuenta) {
 
-      if (entry.SubledgerAccountNumber != "0" && entry.SubledgerAccountNumber != null) {
-        returnedVoucher.SubledgerAccountNumber = entry.SubledgerAccountNumber;
-      }
+                return GetColumnsForListadoDePolizasPorCuenta(buildQuery);
+            } else if (buildQuery.ReportType == ReportTypes.ListadoMovimientosPorPolizas) {
 
-      returnedVoucher.Debit = entry.Debit;
-      returnedVoucher.Credit = entry.Credit;
-      returnedVoucher.ElaboratedBy = entry.ElaboratedBy.Name;
-      returnedVoucher.AuthorizedBy = entry.AuthorizedBy.Name;
-      returnedVoucher.ItemType = entry.ItemType;
+                return GetColumnsForListadoMovimientosPorPolizas(buildQuery);
+            }
+            return new FixedList<DataTableColumn>();
 
-      return returnedVoucher;
-    }
+        }
 
 
-    private static void ItemTypeClausesForVoucher(VoucherByAccountEntry returnedVoucher,
-                                                  AccountStatementEntry entry) {
+        
+        
+        static private ReportDataDto MapToReportDataDto(ReportBuilderQuery buildQuery,
+                                                        FixedList<IVouchersByAccountEntry> vouchers) {
+            return new ReportDataDto {
+                Query = buildQuery,
+                Columns = GetReportColumns(buildQuery),
+                Entries = MapToReportDataEntries(vouchers, buildQuery)
+            };
+        }
 
-      if (entry.ItemType == TrialBalanceItemType.Entry) {
-        returnedVoucher.LedgerNumber = entry.Ledger.Number;
-        returnedVoucher.LedgerName = entry.Ledger.Name;
-        returnedVoucher.AccountNumber = entry.AccountNumber;
-        returnedVoucher.SectorCode = entry.Sector.Code;
-        returnedVoucher.VoucherNumber = entry.VoucherNumber;
-        returnedVoucher.Concept = entry.Concept;
-        returnedVoucher.AccountingDate = entry.AccountingDate;
-        returnedVoucher.RecordingDate = entry.RecordingDate;
-      } else {
-        returnedVoucher.AccountNumber = entry.AccountName;
-        returnedVoucher.AccountingDate = ExecutionServer.DateMaxValue;
-        returnedVoucher.RecordingDate = ExecutionServer.DateMaxValue;
-      }
 
-    }
+        private static FixedList<IReportEntryDto> MapToReportDataEntries(
+                                                    FixedList<IVouchersByAccountEntry> entries,
+                                                    ReportBuilderQuery buildQuery) {
 
-    #endregion Private methods
+            var mappedItems = entries.Select((x) => MapToVoucherEntry((AccountStatementEntry) x, buildQuery));
+            return new FixedList<IReportEntryDto>(mappedItems);
+        }
 
-  } // class ListadoPolizasPorCuenta
 
+        static private VoucherByAccountEntry MapToVoucherEntry(AccountStatementEntry entry,
+                                                               ReportBuilderQuery buildQuery) {
+            var returnedVoucher = new VoucherByAccountEntry();
 
-  public class VoucherByAccountEntry : IReportEntryDto {
+            ItemTypeClausesForVoucher(returnedVoucher, entry, buildQuery);
 
-    public TrialBalanceItemType ItemType {
-      get; internal set;
-    }
+            returnedVoucher.LedgerUID = entry.Ledger.UID;
+            returnedVoucher.CurrencyCode = entry.Currency.Code;
+            returnedVoucher.AccountName = entry.AccountName;
 
-    public int VoucherId {
-      get; internal set;
-    }
+            if (entry.SubledgerAccountNumber != "0" && entry.SubledgerAccountNumber != null) {
+                returnedVoucher.SubledgerAccountNumber = entry.SubledgerAccountNumber;
+            }
 
-    public string LedgerUID {
-      get; internal set;
-    }
+            returnedVoucher.Debit = entry.Debit;
+            returnedVoucher.Credit = entry.Credit;
+            returnedVoucher.ElaboratedBy = entry.ElaboratedBy.Name;
+            returnedVoucher.AuthorizedBy = entry.AuthorizedBy.Name;
+            returnedVoucher.ItemType = entry.ItemType;
+            
+            return returnedVoucher;
+        }
 
-    public string LedgerNumber {
-      get; internal set;
-    } = string.Empty;
 
+        private static void ItemTypeClausesForVoucher(VoucherByAccountEntry returnedVoucher,
+                                                      AccountStatementEntry entry,
+                                                      ReportBuilderQuery buildQuery) {
 
-    public string LedgerName {
-      get; internal set;
-    } = string.Empty;
+            if (entry.ItemType == TrialBalanceItemType.Entry) {
+                returnedVoucher.LedgerNumber = entry.Ledger.Number;
+                returnedVoucher.LedgerName = entry.Ledger.Name;
+                returnedVoucher.AccountNumber = entry.AccountNumber;
+                returnedVoucher.SectorCode = entry.Sector.Code;
+                returnedVoucher.VoucherNumber = entry.VoucherNumber;
+                returnedVoucher.Concept = entry.Concept;
+                returnedVoucher.AccountingDate = entry.AccountingDate;
+                returnedVoucher.RecordingDate = entry.RecordingDate;
+                
+                if (buildQuery.ReportType == ReportTypes.ListadoMovimientosPorPolizas) {
 
-    public string CurrencyCode {
-      get; internal set;
-    }
+                    returnedVoucher.SubledgerAccountName = entry.SubledgerAccountName;
+                    returnedVoucher.VerificationNumber = entry.VerificationNumber;
+                }
 
-    public int StandardAccountId {
-      get; internal set;
-    }
+            } else {
+                returnedVoucher.AccountNumber = entry.AccountName;
+                returnedVoucher.AccountingDate = ExecutionServer.DateMaxValue;
+                returnedVoucher.RecordingDate = ExecutionServer.DateMaxValue;
+            }
 
-    public string AccountNumber {
-      get; internal set;
-    }
+        }
 
-    public string AccountNumberForBalances {
-      get; internal set;
-    }
+        #endregion Private methods
 
-    public string AccountName {
-      get; internal set;
-    }
+    } // class ListadoPolizasPorCuenta
 
-    public string SectorCode {
-      get; internal set;
-    } = string.Empty;
 
-    public decimal? Debit {
-      get; internal set;
-    }
+    public class VoucherByAccountEntry : IReportEntryDto {
 
-    public decimal? Credit {
-      get; internal set;
-    }
-
-    public decimal CurrentBalance {
-      get; internal set;
-    }
-
-    public string VoucherNumber {
-      get; internal set;
-    } = string.Empty;
-
-    public string VerificationNumber {
-      get;
-      internal set;
-    }
-
-    public string ElaboratedBy {
-      get; internal set;
-    }
-
-    public string AuthorizedBy {
-      get;
-      internal set;
-    }
-
-    public string Concept {
-      get; internal set;
-    } = string.Empty;
-
-    public string SubledgerAccountNumber {
-      get; internal set;
-    } = string.Empty;
-
-    public DateTime AccountingDate {
-      get; internal set;
-    }
-
-    public DateTime RecordingDate {
-      get;
-      internal set;
-    }
-
-    public bool IsVoucher {
-      get;
-      internal set;
-    } = false;
-
-    
-  } // class VoucherByAccountEntry
+        public TrialBalanceItemType ItemType {
+            get; internal set;
+        }
+
+        public int VoucherId {
+            get; internal set;
+        }
+
+        public string LedgerUID {
+            get; internal set;
+        }
+
+        public string LedgerNumber {
+            get; internal set;
+        } = string.Empty;
+
+
+        public string LedgerName {
+            get; internal set;
+        } = string.Empty;
+
+        public string CurrencyCode {
+            get; internal set;
+        }
+
+        public int StandardAccountId {
+            get; internal set;
+        }
+
+        public string AccountNumber {
+            get; internal set;
+        } = string.Empty;
+
+        public string AccountNumberForBalances {
+            get; internal set;
+        }
+
+        public string AccountName {
+            get; internal set;
+        }
+
+        public string SectorCode {
+            get; internal set;
+        } = string.Empty;
+
+        public decimal? Debit {
+            get; internal set;
+        }
+
+        public decimal? Credit {
+            get; internal set;
+        }
+
+        public decimal CurrentBalance {
+            get; internal set;
+        }
+
+        public string VoucherNumber {
+            get; internal set;
+        } = string.Empty;
+
+        public string VerificationNumber {
+            get;
+            internal set;
+        }
+
+        public string ElaboratedBy {
+            get; internal set;
+        }
+
+        public string AuthorizedBy {
+            get;
+            internal set;
+        }
+
+        public string Concept {
+            get; internal set;
+        } = string.Empty;
+
+        public string SubledgerAccountNumber {
+            get; internal set;
+        } = string.Empty;
+
+        public DateTime AccountingDate {
+            get; internal set;
+        }
+
+        public DateTime RecordingDate {
+            get;
+            internal set;
+        }
+
+        public bool IsVoucher {
+            get;
+            internal set;
+        } = false;
+        public string SubledgerAccountName {
+            get;
+            internal set;
+        }
+    } // class VoucherByAccountEntry
 
 } // namespace Empiria.FinancialAccounting.Reporting.VoucherRelatedReports.Domain

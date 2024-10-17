@@ -54,6 +54,11 @@ namespace Empiria.FinancialAccounting.Reporting.Data {
     } = string.Empty;
 
 
-  } // class ListadoPolizasSqlClauses
+        internal string Ordering {
+            get; set;
+        } = string.Empty;
+
+
+    } // class ListadoPolizasSqlClauses
 
 } // namespace Empiria.FinancialAccounting.Reporting.Data

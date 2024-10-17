@@ -13,113 +13,121 @@ using Empiria.Storage;
 
 namespace Empiria.FinancialAccounting.Reporting {
 
-  /// <summary>Query payload used to generate financial accounting reports.</summary>
-  public class ReportBuilderQuery {
+    /// <summary>Query payload used to generate financial accounting reports.</summary>
+    public class ReportBuilderQuery {
 
-    public ReportTypes ReportType {
-      get; set;
-    }
+        public ReportTypes ReportType {
+            get; set;
+        }
 
-    public FileType ExportTo {
-      get; set;
-    } = FileType.Xml;
-
-
-    public string AccountsChartUID {
-      get; set;
-    }
-
-    public DateTime FromDate {
-      get; set;
-    } = DateTime.Now;
-
-    public DateTime ToDate {
-      get; set;
-    }
-
-    public string[] Ledgers {
-      get; set;
-    } = new string[0];
+        public FileType ExportTo {
+            get; set;
+        } = FileType.Xml;
 
 
-    public string AccountNumber {
-      get; set;
-    } = string.Empty;
+        public string AccountsChartUID {
+            get; set;
+        }
+
+        public DateTime FromDate {
+            get; set;
+        } = DateTime.Now;
+
+        public DateTime ToDate {
+            get; set;
+        }
+
+        public string[] Ledgers {
+            get; set;
+        } = new string[0];
 
 
-    public string SubledgerAccountNumber {
-      get; set;
-    } = string.Empty;
+        public string AccountNumber {
+            get; set;
+        } = string.Empty;
 
 
-    public string ElaboratedBy {
-      get; set;
-    } = string.Empty;
+        public string SubledgerAccountNumber {
+            get; set;
+        } = string.Empty;
 
 
-    public string OutputType {
-      get; set;
-    } = string.Empty;
+        public string ElaboratedBy {
+            get; set;
+        } = string.Empty;
 
 
-    public SendType SendType {
-      get; set;
-    } = SendType.N;
+        public string OutputType {
+            get; set;
+        } = string.Empty;
 
 
-    public string[] VerificationNumbers {
-      get; set;
-    } = new string[0];
+        public SendType SendType {
+            get; set;
+        } = SendType.N;
 
 
-    public bool WithSubledgerAccount {
-      get; set;
-    } = false;
-
-  } // class ReportBuilderQuery
+        public string[] VerificationNumbers {
+            get; set;
+        } = new string[0];
 
 
-  public enum ReportTypes {
-
-    ActivoFijoDepreciacion,
-
-    ActivoFijoDepreciado,
-
-    BalanzaSAT,
-
-    BalanzaDeterminarImpuestos,
-
-    CatalogoCuentasSAT,
-
-    ListadoDePolizas,
-
-    ListadoDePolizasPorCuenta,
-
-    MovimientosPorNumeroDeVerificacion,
-
-    ComparativoDeCuentas,
-
-    DerramaSwapsCoberturaConsolidado,
-
-    DerramaSwapsCoberturaDesglosado,
-
-    IntegracionSaldosCapital,
-
-    IntegracionSaldosCapitalInteresesConsolidado,
-
-    IntegracionSaldosCapitalInteresesDesglosado,
-
-    ValorizacionEstimacionPreventiva
-
-  } // enum ReportTypes
+        public bool WithSubledgerAccount {
+            get; set;
+        } = false;
 
 
-  public enum SendType {
+        public int[] VoucherIds {
+            get;
+            set;
+        }
 
-    N,
+    } // class ReportBuilderQuery
 
-    C
 
-  } // enum SendType
+    public enum ReportTypes {
+
+        ActivoFijoDepreciacion,
+
+        ActivoFijoDepreciado,
+
+        BalanzaSAT,
+
+        BalanzaDeterminarImpuestos,
+
+        CatalogoCuentasSAT,
+
+        ListadoDePolizas,
+
+        ListadoDePolizasPorCuenta,
+
+        ListadoMovimientosPorPolizas,
+
+        MovimientosPorNumeroDeVerificacion,
+
+        ComparativoDeCuentas,
+
+        DerramaSwapsCoberturaConsolidado,
+
+        DerramaSwapsCoberturaDesglosado,
+
+        IntegracionSaldosCapital,
+
+        IntegracionSaldosCapitalInteresesConsolidado,
+
+        IntegracionSaldosCapitalInteresesDesglosado,
+
+        ValorizacionEstimacionPreventiva
+
+    } // enum ReportTypes
+
+
+    public enum SendType {
+
+        N,
+
+        C
+
+    } // enum SendType
 
 } // namespace Empiria.FinancialAccounting.Reporting

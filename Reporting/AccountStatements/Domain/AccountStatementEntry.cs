@@ -69,7 +69,6 @@ namespace Empiria.FinancialAccounting.Reporting.AccountStatements.Domain {
     }
 
 
-
     [DataField("NUMERO_CUENTA_ESTANDAR")]
     public string AccountNumber {
       get; internal set;
@@ -85,6 +84,12 @@ namespace Empiria.FinancialAccounting.Reporting.AccountStatements.Domain {
     [DataField("NUMERO_CUENTA_AUXILIAR")]
     public string SubledgerAccountNumber {
       get; internal set;
+    }
+
+
+    [DataField("NOMBRE_CUENTA_AUXILIAR")]
+    public string SubledgerAccountName {
+        get; internal set;
     }
 
 
