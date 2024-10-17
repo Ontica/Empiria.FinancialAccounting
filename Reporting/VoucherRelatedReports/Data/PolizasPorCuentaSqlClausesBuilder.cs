@@ -59,22 +59,11 @@ namespace Empiria.FinancialAccounting.Reporting.Data {
 
             } else {
 
-                if (_buildQuery.WithSubledgerAccount) {
-
-                    return "NUMERO_VERIFICACION, ID_MAYOR, ID_MONEDA, ID_CUENTA_ESTANDAR, ID_SECTOR, " +
+                return "NUMERO_VERIFICACION, ID_MAYOR, ID_MONEDA, ID_CUENTA_ESTANDAR, ID_SECTOR, " +
                            "ID_TRANSACCION, ID_ELABORADA_POR, ID_AUTORIZADA_POR, ID_MOVIMIENTO, " +
                            "NUMERO_CUENTA_ESTANDAR, NOMBRE_CUENTA_ESTANDAR, NUMERO_CUENTA_AUXILIAR, NOMBRE_CUENTA_AUXILIAR, " +
                            "NUMERO_TRANSACCION, NATURALEZA, FECHA_AFECTACION, FECHA_REGISTRO, CONCEPTO_TRANSACCION, " +
                            "SUM(DEBE) AS DEBE, SUM(HABER) AS HABER";
-
-                } else {
-
-                    return "NUMERO_VERIFICACION, ID_MAYOR, ID_MONEDA, ID_CUENTA_ESTANDAR, ID_SECTOR, " +
-                           "ID_TRANSACCION, ID_ELABORADA_POR, ID_AUTORIZADA_POR, ID_MOVIMIENTO, " +
-                           "NUMERO_CUENTA_ESTANDAR, NOMBRE_CUENTA_ESTANDAR, '-1' AS NUMERO_CUENTA_AUXILIAR, " +
-                           "NUMERO_TRANSACCION, NATURALEZA, FECHA_AFECTACION, FECHA_REGISTRO, CONCEPTO_TRANSACCION, " +
-                           "SUM(DEBE) AS DEBE, SUM(HABER) AS HABER";
-                }
             }
         }
 
@@ -147,19 +136,10 @@ namespace Empiria.FinancialAccounting.Reporting.Data {
 
             } else {
 
-                if (_buildQuery.WithSubledgerAccount) {
-
-                    return "NUMERO_VERIFICACION, ID_MAYOR, ID_MONEDA, ID_CUENTA_ESTANDAR, ID_SECTOR, ID_TRANSACCION, " +
+                return "NUMERO_VERIFICACION, ID_MAYOR, ID_MONEDA, ID_CUENTA_ESTANDAR, ID_SECTOR, ID_TRANSACCION, " +
                            "ID_ELABORADA_POR, ID_AUTORIZADA_POR, ID_MOVIMIENTO, NUMERO_CUENTA_ESTANDAR, " +
                            "NOMBRE_CUENTA_ESTANDAR, NUMERO_CUENTA_AUXILIAR, NOMBRE_CUENTA_AUXILIAR, NUMERO_TRANSACCION, NATURALEZA, " +
                            "FECHA_AFECTACION, FECHA_REGISTRO, CONCEPTO_TRANSACCION";
-                } else {
-
-                    return "NUMERO_VERIFICACION, ID_MAYOR, ID_MONEDA, ID_CUENTA_ESTANDAR, ID_SECTOR, ID_TRANSACCION, " +
-                           "ID_ELABORADA_POR, ID_AUTORIZADA_POR, ID_MOVIMIENTO, NUMERO_CUENTA_ESTANDAR, " +
-                           "NOMBRE_CUENTA_ESTANDAR, NUMERO_TRANSACCION, NATURALEZA, FECHA_AFECTACION, " +
-                           "FECHA_REGISTRO, CONCEPTO_TRANSACCION";
-                }
             }
 
         }
