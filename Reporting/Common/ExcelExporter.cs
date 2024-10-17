@@ -61,6 +61,9 @@ namespace Empiria.FinancialAccounting.Reporting {
         case ReportTypes.ListadoDePolizasPorCuenta:
           return new ListadoPolizasPorCuentaExcelExporter(reportData, templateConfig);
 
+        case ReportTypes.ListadoMovimientosPorPolizas:
+            return new ListadoMovimientosPorPolizasExcelExporter(reportData, templateConfig);
+
         case ReportTypes.MovimientosPorNumeroDeVerificacion:
           return new MovimientosNumeroVerificacionExcelExporter(reportData, templateConfig);
 
