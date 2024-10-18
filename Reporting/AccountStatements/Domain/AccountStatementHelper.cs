@@ -18,12 +18,12 @@ namespace Empiria.FinancialAccounting.Reporting.AccountStatements.Domain {
   /// <summary>Provides helper methods to build acount statements.</summary>
   internal class AccountStatementHelper {
 
-    private readonly AccountStatementQuery _buildQuery;
+    private readonly AccountStatementQuery query;
 
     internal AccountStatementHelper(AccountStatementQuery buildQuery) {
       Assertion.Require(buildQuery, nameof(buildQuery));
 
-      _buildQuery = buildQuery;
+      query = buildQuery;
     }
 
 
@@ -59,9 +59,9 @@ namespace Empiria.FinancialAccounting.Reporting.AccountStatements.Domain {
     internal FixedList<AccountStatementEntry> GetEntriesByBalanceType(
              FixedList<AccountStatementEntry> voucherEntries) {
 
-      if (_buildQuery.Entry.ItemType == TrialBalanceItemType.Entry &&
-          _buildQuery.BalancesQuery.WithSubledgerAccount &&
-          _buildQuery.Entry.SubledgerAccountNumber.Length <= 1) {
+      if (query.Entry.ItemType == TrialBalanceItemType.Entry &&
+          query.BalancesQuery.WithSubledgerAccount &&
+          query.Entry.SubledgerAccountNumber.Length <= 1) {
 
         return voucherEntries.Where(a => a.SubledgerAccountNumber.Length <= 1).ToFixedList();
 
@@ -76,7 +76,7 @@ namespace Empiria.FinancialAccounting.Reporting.AccountStatements.Domain {
                                     FixedList<AccountStatementEntry> voucherEntries) {
 
       AccountStatementEntry currentBalance = AccountStatementEntry.SetTotalAccountBalance(
-                                                    _buildQuery.Entry.CurrentBalanceForBalances);
+                                                    query.Entry.CurrentBalanceForBalances);
       currentBalance.Debit = voucherEntries.Sum(x => x.Debit);
       currentBalance.Credit = voucherEntries.Sum(x => x.Credit);
       currentBalance.ExchangeRate = voucherEntries.First().ExchangeRate;
@@ -92,7 +92,7 @@ namespace Empiria.FinancialAccounting.Reporting.AccountStatements.Domain {
       }
 
       var vouchersList = new List<AccountStatementEntry>(orderingVouchers).ToList();
-      decimal balance = _buildQuery.Entry.CurrentBalanceForBalances;
+      decimal balance = query.Entry.CurrentBalanceForBalances;
 
       balance += vouchersList.Where(x => x.DebtorCreditor == "A").Sum(x => (x.Debit - x.Credit)) -
                  vouchersList.Where(x => x.DebtorCreditor == "D").Sum(x => (x.Debit - x.Credit));
@@ -134,11 +134,11 @@ namespace Empiria.FinancialAccounting.Reporting.AccountStatements.Domain {
 
     internal string GetTitle() {
 
-      var accountNumber = _buildQuery.Entry.AccountNumberForBalances;
+      var accountNumber = query.Entry.AccountNumberForBalances;
 
-      var accountName = _buildQuery.Entry.AccountName;
+      var accountName = query.Entry.AccountName;
 
-      var subledgerAccountNumber = _buildQuery.Entry.SubledgerAccountNumber;
+      var subledgerAccountNumber = query.Entry.SubledgerAccountNumber;
 
       var title = "";
 
@@ -167,11 +167,12 @@ namespace Empiria.FinancialAccounting.Reporting.AccountStatements.Domain {
 
 
     internal FixedList<AccountStatementEntry> GetVoucherEntries() {
-      var builder = new AccountStatementSqlClausesBuilder(_buildQuery);
+      var builder = new AccountStatementSqlClausesBuilder(query);
 
-      var sqlClauses = builder.BuildSqlClauses();
-
-      return AccountStatementDataService.GetVouchersWithAccounts(sqlClauses);
+      //var sqlClauses = builder.BuildSqlClauses();
+      string filtering = query.MapToFilterString();
+      string ordering = query.MapToSortString();
+      return AccountStatementDataService.GetVouchersWithAccounts(filtering, ordering);
     }
 
 
@@ -191,8 +192,8 @@ namespace Empiria.FinancialAccounting.Reporting.AccountStatements.Domain {
 
     internal void RoundValorizedBalances(FixedList<AccountStatementEntry> vouchers) {
 
-      if (_buildQuery.BalancesQuery.UseDefaultValuation ||
-          _buildQuery.BalancesQuery.InitialPeriod.ExchangeRateTypeUID != string.Empty) {
+      if (query.BalancesQuery.UseDefaultValuation ||
+          query.BalancesQuery.InitialPeriod.ExchangeRateTypeUID != string.Empty) {
 
         foreach (var entry in vouchers) {
           entry.RoundBalances();
@@ -203,8 +204,8 @@ namespace Empiria.FinancialAccounting.Reporting.AccountStatements.Domain {
 
     internal void ValuateAccountStatementToExchangeRate(FixedList<AccountStatementEntry> accounts) {
 
-      if (_buildQuery.BalancesQuery.UseDefaultValuation ||
-          _buildQuery.BalancesQuery.InitialPeriod.ExchangeRateTypeUID != string.Empty) {
+      if (query.BalancesQuery.UseDefaultValuation ||
+          query.BalancesQuery.InitialPeriod.ExchangeRateTypeUID != string.Empty) {
 
         FixedList<ExchangeRate> exchangeRates = GetExchangeRateListForDate();
 
@@ -212,7 +213,7 @@ namespace Empiria.FinancialAccounting.Reporting.AccountStatements.Domain {
 
           var exchangeRate = exchangeRates.Find(
             a => a.ToCurrency.Equals(account.Currency) &&
-            a.FromCurrency.Code == _buildQuery.BalancesQuery.InitialPeriod.ValuateToCurrrencyUID);
+            a.FromCurrency.Code == query.BalancesQuery.InitialPeriod.ValuateToCurrrencyUID);
 
           Assertion.Require(exchangeRate, $"No se ha registrado el tipo de cambio para la " +
                                           $"moneda {account.Currency.FullName} en la fecha proporcionada.");
@@ -229,20 +230,20 @@ namespace Empiria.FinancialAccounting.Reporting.AccountStatements.Domain {
 
     private FixedList<ExchangeRate> GetExchangeRateListForDate() {
 
-      if (_buildQuery.BalancesQuery.UseDefaultValuation) {
+      if (query.BalancesQuery.UseDefaultValuation) {
 
-        _buildQuery.BalancesQuery.InitialPeriod.ExchangeRateTypeUID =
+        query.BalancesQuery.InitialPeriod.ExchangeRateTypeUID =
           ExchangeRateType.ValorizacionBanxico.UID;
 
-        _buildQuery.BalancesQuery.InitialPeriod.ValuateToCurrrencyUID = Currency.MXN.Code;
+        query.BalancesQuery.InitialPeriod.ValuateToCurrrencyUID = Currency.MXN.Code;
 
-        _buildQuery.BalancesQuery.InitialPeriod.ExchangeRateDate =
-          _buildQuery.BalancesQuery.InitialPeriod.ToDate;
+        query.BalancesQuery.InitialPeriod.ExchangeRateDate =
+          query.BalancesQuery.InitialPeriod.ToDate;
 
       }
       return ExchangeRate.GetList(ExchangeRateType.Parse(
-                                  _buildQuery.BalancesQuery.InitialPeriod.ExchangeRateTypeUID),
-                                  _buildQuery.BalancesQuery.InitialPeriod.ExchangeRateDate);
+                                  query.BalancesQuery.InitialPeriod.ExchangeRateTypeUID),
+                                  query.BalancesQuery.InitialPeriod.ExchangeRateDate);
     }
 
 
@@ -252,7 +253,7 @@ namespace Empiria.FinancialAccounting.Reporting.AccountStatements.Domain {
       List<AccountStatementEntry> orderingVouchers =
         voucherEntries.Where(x => x.ItemType == TrialBalanceItemType.Entry).ToList();
 
-      switch (_buildQuery.OrderBy.SortType) {
+      switch (query.OrderBy.SortType) {
 
         case AccountStatementOrder.AccountingDate:
 
@@ -290,7 +291,7 @@ namespace Empiria.FinancialAccounting.Reporting.AccountStatements.Domain {
 
       List<AccountStatementEntry> list = new List<AccountStatementEntry>();
 
-      list = _buildQuery.OrderBy.OrderType == AccountStatementOrderType.Descending
+      list = query.OrderBy.OrderType == AccountStatementOrderType.Descending
         ? vouchers.OrderByDescending(a => a.AccountingDate)
                   .ThenByDescending(a => a.Ledger.Number)
                   .ThenByDescending(a => a.AccountNumber)
@@ -311,7 +312,7 @@ namespace Empiria.FinancialAccounting.Reporting.AccountStatements.Domain {
 
       List<AccountStatementEntry> list = new List<AccountStatementEntry>();
 
-      list = _buildQuery.OrderBy.OrderType == AccountStatementOrderType.Descending
+      list = query.OrderBy.OrderType == AccountStatementOrderType.Descending
         ? vouchers.OrderByDescending(a => a.Ledger.Number)
                                  .ThenByDescending(a => a.Debit)
                                  .ThenByDescending(a => a.Credit)
@@ -334,7 +335,7 @@ namespace Empiria.FinancialAccounting.Reporting.AccountStatements.Domain {
 
       List<AccountStatementEntry> list = new List<AccountStatementEntry>();
 
-      list = _buildQuery.OrderBy.OrderType == AccountStatementOrderType.Descending
+      list = query.OrderBy.OrderType == AccountStatementOrderType.Descending
         ? vouchers.OrderByDescending(a => a.Ledger.Number)
                                  .ThenByDescending(a => a.RecordingDate)
                                  .ThenByDescending(a => a.AccountNumber)
@@ -355,7 +356,7 @@ namespace Empiria.FinancialAccounting.Reporting.AccountStatements.Domain {
 
       List<AccountStatementEntry> list = new List<AccountStatementEntry>();
 
-      list = _buildQuery.OrderBy.OrderType == AccountStatementOrderType.Descending
+      list = query.OrderBy.OrderType == AccountStatementOrderType.Descending
         ? vouchers.OrderByDescending(a => a.Ledger.Number)
                                  .ThenByDescending(a => a.SubledgerAccountNumber)
                                  .ThenByDescending(a => a.AccountNumber)
@@ -376,7 +377,7 @@ namespace Empiria.FinancialAccounting.Reporting.AccountStatements.Domain {
 
       List<AccountStatementEntry> list = new List<AccountStatementEntry>();
 
-      list = _buildQuery.OrderBy.OrderType == AccountStatementOrderType.Descending
+      list = query.OrderBy.OrderType == AccountStatementOrderType.Descending
         ? vouchers.OrderByDescending(a => a.Ledger.Number)
                                  .ThenByDescending(a => a.VoucherNumber)
                                  .ThenByDescending(a => a.AccountNumber)

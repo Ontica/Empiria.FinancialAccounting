@@ -4,7 +4,7 @@
 *  Assembly : FinancialAccounting.Reporting.dll             Pattern   : Query payload                        *
 *  Type     : ReportBuilderQueryExtensions                  License   : Please read LICENSE.txt file         *
 *                                                                                                            *
-*  Summary  : Constructor extension used to generate clauses from query for financial accounting reports.    *
+*  Summary  : Class extension used to generate clauses from query for financial accounting reports.          *
 *                                                                                                            *
 ************************* Copyright(c) La Vía Óntica SC, Ontica LLC and contributors. All rights reserved. **/
 using System;
@@ -14,24 +14,8 @@ using Empiria.Data;
 namespace Empiria.FinancialAccounting.Reporting {
 
 
-    /// <summary>Constructor extension used to generate clauses
-    /// from query for financial accounting reports.</summary>
+    /// <summary>Class extension used to generate clauses from query for financial accounting reports.</summary>
     static internal class ReportBuilderQueryExtensions {
-
-        #region Properties
-
-
-        static public string Filtering {
-            get; set;
-        } = string.Empty;
-
-
-        static public string Ordering {
-            get; set;
-        } = string.Empty;
-
-
-        #endregion Properties
 
 
         #region Public methods

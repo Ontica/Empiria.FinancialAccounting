@@ -27,6 +27,23 @@ namespace Empiria.FinancialAccounting.Reporting.AccountStatements {
       return DataReader.GetPlainObjectFixedList<AccountStatementEntry>(operation);
     }
 
-  } // class AccountStatementDataService
+
+    static internal FixedList<AccountStatementEntry> GetVouchersWithAccounts(string filter, string sortBy) {
+        var sql = "SELECT * FROM VW_COF_MOVIMIENTO ";
+
+        if (!string.IsNullOrWhiteSpace(filter)) {
+            sql += $"WHERE {filter} ";
+        }
+
+        if (!string.IsNullOrWhiteSpace(sortBy)) {
+            sql += $"ORDER BY {sortBy} ";
+        }
+
+        var op = DataOperation.Parse(sql);
+
+        return DataReader.GetPlainObjectFixedList<AccountStatementEntry>(op);
+    }
+
+    } // class AccountStatementDataService
 
 } // namespace Empiria.FinancialAccounting.Reporting.AccountStatements
