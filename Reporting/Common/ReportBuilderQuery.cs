@@ -13,6 +13,53 @@ using Empiria.Storage;
 
 namespace Empiria.FinancialAccounting.Reporting {
 
+
+    public enum ReportTypes {
+
+        ActivoFijoDepreciacion,
+
+        ActivoFijoDepreciado,
+
+        BalanzaSAT,
+
+        BalanzaDeterminarImpuestos,
+
+        CatalogoCuentasSAT,
+
+        ListadoDePolizas,
+
+        ListadoDePolizasPorCuenta,
+
+        ListadoMovimientosPorPolizas,
+
+        MovimientosPorNumeroDeVerificacion,
+
+        ComparativoDeCuentas,
+
+        DerramaSwapsCoberturaConsolidado,
+
+        DerramaSwapsCoberturaDesglosado,
+
+        IntegracionSaldosCapital,
+
+        IntegracionSaldosCapitalInteresesConsolidado,
+
+        IntegracionSaldosCapitalInteresesDesglosado,
+
+        ValorizacionEstimacionPreventiva
+
+    } // enum ReportTypes
+
+
+    public enum SendType {
+
+        N,
+
+        C
+
+    } // enum SendType
+
+
     /// <summary>Query payload used to generate financial accounting reports.</summary>
     public class ReportBuilderQuery {
 
@@ -84,50 +131,5 @@ namespace Empiria.FinancialAccounting.Reporting {
 
     } // class ReportBuilderQuery
 
-
-    public enum ReportTypes {
-
-        ActivoFijoDepreciacion,
-
-        ActivoFijoDepreciado,
-
-        BalanzaSAT,
-
-        BalanzaDeterminarImpuestos,
-
-        CatalogoCuentasSAT,
-
-        ListadoDePolizas,
-
-        ListadoDePolizasPorCuenta,
-
-        ListadoMovimientosPorPolizas,
-
-        MovimientosPorNumeroDeVerificacion,
-
-        ComparativoDeCuentas,
-
-        DerramaSwapsCoberturaConsolidado,
-
-        DerramaSwapsCoberturaDesglosado,
-
-        IntegracionSaldosCapital,
-
-        IntegracionSaldosCapitalInteresesConsolidado,
-
-        IntegracionSaldosCapitalInteresesDesglosado,
-
-        ValorizacionEstimacionPreventiva
-
-    } // enum ReportTypes
-
-
-    public enum SendType {
-
-        N,
-
-        C
-
-    } // enum SendType
 
 } // namespace Empiria.FinancialAccounting.Reporting

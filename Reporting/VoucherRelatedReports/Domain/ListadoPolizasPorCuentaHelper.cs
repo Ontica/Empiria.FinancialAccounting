@@ -23,12 +23,12 @@ namespace Empiria.FinancialAccounting.Reporting.VoucherRelatedReports.Domain {
   /// <summary>Helper methods to build voucher list by account information.</summary>
   internal class ListadoPolizasPorCuentaHelper {
 
-    private readonly ReportBuilderQuery _buildQuery;
+    private readonly ReportBuilderQuery query;
 
     public ListadoPolizasPorCuentaHelper(ReportBuilderQuery buildQuery) {
       Assertion.Require(buildQuery, nameof(buildQuery));
 
-      _buildQuery = buildQuery;
+      query = buildQuery;
     }
 
 
@@ -89,17 +89,20 @@ namespace Empiria.FinancialAccounting.Reporting.VoucherRelatedReports.Domain {
 
 
     internal FixedList<AccountStatementEntry> GetVoucherEntries() {
-      var builder = new PolizasPorCuentaSqlClausesBuilder(_buildQuery);
+      
+      //var builder = new PolizasPorCuentaSqlClausesBuilder(query);
+      //ListadoPolizasSqlClauses sqlClauses = builder.Build();
 
-      ListadoPolizasSqlClauses sqlClauses = builder.Build();
+      string filtering = query.MapToFilterString();
+      string ordering = query.MapToSortString();
 
-      return ListadoPolizasPorCuentaDataService.GetVouchersByAccountEntries(sqlClauses);
+      return ListadoPolizasPorCuentaDataService.GetVouchersByAccountEntries(filtering, ordering);
     }
 
 
     internal FixedList<AccountStatementEntry> OrderingVouchers(FixedList<AccountStatementEntry> vouchers) {
 
-            if (_buildQuery.ReportType.Equals(ReportTypes.MovimientosPorNumeroDeVerificacion)) {
+            if (query.ReportType.Equals(ReportTypes.MovimientosPorNumeroDeVerificacion)) {
 
                 var ordering = vouchers.OrderBy(a => a.VerificationNumber)
                                      .ThenBy(a => a.Currency.Code)
@@ -110,7 +113,7 @@ namespace Empiria.FinancialAccounting.Reporting.VoucherRelatedReports.Domain {
                                      .ToList();
                 return ordering.ToFixedList();
 
-            } else if (_buildQuery.ReportType.Equals(ReportTypes.ListadoMovimientosPorPolizas)) {
+            } else if (query.ReportType.Equals(ReportTypes.ListadoMovimientosPorPolizas)) {
 
                 var ordering = vouchers.OrderBy(a => a.Currency.Code)
                                      .ThenBy(a => a.Ledger.Number)
