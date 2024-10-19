@@ -89,7 +89,7 @@ namespace Empiria.FinancialAccounting.Reporting.VoucherRelatedReports.Domain {
 
             columns.Add(new DataTableColumn("ledgerNumber", "Cont", "text"));
             columns.Add(new DataTableColumn("ledgerName", "Contabilidad", "text"));
-            columns.Add(new DataTableColumn("currencyCode", "Mon", "text"));
+            columns.Add(new DataTableColumn("voucherId", "Id póliza", "text"));
             columns.Add(new DataTableColumn("voucherNumber", "No. Poliza", "text-nowrap"));
             columns.Add(new DataTableColumn("accountNumber", "Cuenta", "text-nowrap"));
             columns.Add(new DataTableColumn("accountName", "Nombre cuenta", "text"));
@@ -97,6 +97,7 @@ namespace Empiria.FinancialAccounting.Reporting.VoucherRelatedReports.Domain {
             columns.Add(new DataTableColumn("subledgerAccountNumber", "Auxiliar", "text-nowrap"));
             columns.Add(new DataTableColumn("SubledgerAccountName", "Nombre auxiliar", "text"));
             columns.Add(new DataTableColumn("verificationNumber", "No. Verif", "text"));
+            columns.Add(new DataTableColumn("currencyCode", "Mon", "text"));
             columns.Add(new DataTableColumn("debit", "Cargo", "decimal"));
             columns.Add(new DataTableColumn("credit", "Abono", "decimal"));
             columns.Add(new DataTableColumn("accountingDate", "Afectación", "date"));
@@ -178,6 +179,7 @@ namespace Empiria.FinancialAccounting.Reporting.VoucherRelatedReports.Domain {
                 returnedVoucher.LedgerName = entry.Ledger.Name;
                 returnedVoucher.AccountNumber = entry.AccountNumber;
                 returnedVoucher.SectorCode = entry.Sector.Code;
+                returnedVoucher.VoucherId = entry.VoucherId;
                 returnedVoucher.VoucherNumber = entry.VoucherNumber;
                 returnedVoucher.Concept = entry.Concept;
                 returnedVoucher.AccountingDate = entry.AccountingDate;

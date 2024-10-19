@@ -71,7 +71,7 @@ namespace Empiria.FinancialAccounting.Reporting {
             foreach (var voucher in vouchers) {
                 excelFile.SetCell($"A{i}", voucher.LedgerNumber);
                 excelFile.SetCell($"B{i}", voucher.LedgerName);
-                excelFile.SetCell($"C{i}", voucher.CurrencyCode);
+                excelFile.SetCell($"C{i}", voucher.VoucherId);
                 excelFile.SetCell($"D{i}", voucher.VoucherNumber);
                 excelFile.SetCell($"E{i}", voucher.AccountNumber);
                 excelFile.SetCell($"F{i}", voucher.AccountName);
@@ -79,13 +79,14 @@ namespace Empiria.FinancialAccounting.Reporting {
                 excelFile.SetCell($"H{i}", voucher.SubledgerAccountNumber);
                 excelFile.SetCell($"I{i}", voucher.SubledgerAccountName);
                 excelFile.SetCell($"J{i}", voucher.VerificationNumber);
-                excelFile.SetCell($"K{i}", (decimal) voucher.Debit);
-                excelFile.SetCell($"L{i}", (decimal) voucher.Credit);
-                excelFile.SetCell($"M{i}", voucher.AccountingDate);
-                excelFile.SetCell($"N{i}", voucher.RecordingDate);
-                excelFile.SetCell($"O{i}", voucher.Concept);
-                excelFile.SetCell($"P{i}", voucher.AuthorizedBy);
-                excelFile.SetCell($"Q{i}", voucher.ElaboratedBy);
+                excelFile.SetCell($"K{i}", voucher.CurrencyCode);
+                excelFile.SetCell($"L{i}", (decimal) voucher.Debit);
+                excelFile.SetCell($"M{i}", (decimal) voucher.Credit);
+                excelFile.SetCell($"N{i}", voucher.AccountingDate);
+                excelFile.SetCell($"O{i}", voucher.RecordingDate);
+                excelFile.SetCell($"P{i}", voucher.Concept);
+                excelFile.SetCell($"Q{i}", voucher.AuthorizedBy);
+                excelFile.SetCell($"R{i}", voucher.ElaboratedBy);
 
                 //excelFile.SetRowBold(0,0);
                 i++;
