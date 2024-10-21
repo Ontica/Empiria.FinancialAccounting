@@ -1,12 +1,13 @@
 ﻿/* Empiria Financial *****************************************************************************************
 *                                                                                                            *
 *  Module   : Vouchers Management                        Component : Interface adapters                      *
-*  Assembly : FinancialAccounting.Vouchers.dll           Pattern   : Query payload                           *
+*  Assembly : FinancialAccounting.Vouchers.dll           Pattern   : Query DTO                               *
 *  Type     : VouchersQuery                              License   : Please read LICENSE.txt file            *
 *                                                                                                            *
-*  Summary  : Quer payload used to search accounting vouchers.                                               *
+*  Summary  : Query DTO used to search accounting vouchers.                                                  *
 *                                                                                                            *
 ************************* Copyright(c) La Vía Óntica SC, Ontica LLC and contributors. All rights reserved. **/
+
 using System;
 
 namespace Empiria.FinancialAccounting.Vouchers.Adapters {
@@ -27,6 +28,7 @@ namespace Empiria.FinancialAccounting.Vouchers.Adapters {
   }  // enum VoucherStage
 
 
+
   /// <summary>Enumerates the possible status of a voucher with respect of the office workflow.</summary>
   public enum VoucherStatus {
 
@@ -40,41 +42,38 @@ namespace Empiria.FinancialAccounting.Vouchers.Adapters {
 
   }  // enum VoucherStatus
 
+
+
+  /// <summary>Query DTO used to search accounting vouchers.</summary>
   public class VouchersQuery {
 
     public string[] VouchersID {
-      get;
-      set;
+      get; set;
     } = new string[0];
 
 
     public VoucherStage Stage {
-      get;
-      set;
+      get; set;
     } = VoucherStage.All;
 
 
     public VoucherStatus Status {
-      get;
-      set;
+      get; set;
     } = VoucherStatus.All;
 
 
     public string AccountsChartUID {
-      get;
-      set;
+      get; set;
     } = string.Empty;
 
 
     public string Keywords {
-      get;
-      set;
+      get; set;
     } = string.Empty;
 
 
     public string Concept {
-      get;
-      set;
+      get; set;
     } = string.Empty;
 
 
@@ -85,45 +84,37 @@ namespace Empiria.FinancialAccounting.Vouchers.Adapters {
 
 
     public string LedgersGroupUID {
-      get;
-      set;
+      get; set;
     } = string.Empty;
 
 
     public string LedgerUID {
-      get;
-      set;
+      get; set;
     } = string.Empty;
 
 
     public DateTime FromAccountingDate {
-      get;
-      set;
+      get; set;
     } = ExecutionServer.DateMinValue;
 
 
     public DateTime ToAccountingDate {
-      get;
-      set;
+      get; set;
     } = ExecutionServer.DateMaxValue;
 
 
-
     public DateTime FromRecordingDate {
-      get;
-      set;
+      get; set;
     } = ExecutionServer.DateMinValue;
 
 
     public DateTime ToRecordingDate {
-      get;
-      set;
+      get; set;
     } = ExecutionServer.DateMaxValue;
 
 
     public string[] Accounts {
-      get;
-      set;
+      get; set;
     } = new string[0];
 
 
@@ -139,46 +130,38 @@ namespace Empiria.FinancialAccounting.Vouchers.Adapters {
 
 
     public string TransactionTypeUID {
-      get;
-      set;
-    } = String.Empty;
+      get; set;
+    } = string.Empty;
 
 
     public string VoucherTypeUID {
-      get;
-      set;
-    } = String.Empty;
+      get; set;
+    } = string.Empty;
 
 
     public string EditorType {
-      get;
-      set;
-    } = String.Empty;
+      get; set;
+    } = string.Empty;
 
 
     public string EditorUID {
-      get;
-      set;
-    } = String.Empty;
+      get; set;
+    } = string.Empty;
 
 
     public string OrderBy {
-      get;
-      set;
+      get; set;
     } = string.Empty;
 
 
     public int PageSize {
-      get;
-      set;
-    } = 5000;
+      get; set;
+    } = 10000;
 
 
     public int Page {
-      get;
-      set;
+      get; set;
     } = 1;
-
 
   }  // class VouchersQuery
 
