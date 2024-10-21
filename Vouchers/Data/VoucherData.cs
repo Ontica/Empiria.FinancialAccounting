@@ -7,7 +7,9 @@
 *  Summary  : Data access layer for accounting vouchers.                                                     *
 *                                                                                                            *
 ************************* Copyright(c) La Vía Óntica SC, Ontica LLC and contributors. All rights reserved. **/
+
 using System;
+using System.Linq;
 
 using Empiria.Data;
 
@@ -75,7 +77,28 @@ namespace Empiria.FinancialAccounting.Vouchers.Data {
 
 
     static internal FixedList<Voucher> GetVouchers(int[] ids) {
-      var sql = $"SELECT * FROM COF_TRANSACCION WHERE ID_TRANSACCION IN ({String.Join(", ", ids)})";
+      if (ids.Length == 0) {
+        return new FixedList<Voucher>();
+      }
+
+      int counter = 0;
+      int offset = 800;
+      var filter = "";
+      while (true) {
+        var voucherIds = ids.Skip(counter).Take(offset);
+
+        if (voucherIds.Count() == 0) {
+          break;
+        }
+        if (filter.Length > 0) {
+          filter += " OR ";
+        }
+        filter += $"ID_TRANSACCION IN ({String.Join(", ", voucherIds)})";
+
+        counter = counter + voucherIds.Count();
+      }
+
+      var sql = $"SELECT * FROM COF_TRANSACCION WHERE ({filter})";
 
       var dataOperation = DataOperation.Parse(sql);
 
