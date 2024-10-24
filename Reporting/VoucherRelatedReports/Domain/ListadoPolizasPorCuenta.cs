@@ -125,8 +125,6 @@ namespace Empiria.FinancialAccounting.Reporting.VoucherRelatedReports.Domain {
         }
 
 
-        
-        
         static private ReportDataDto MapToReportDataDto(ReportBuilderQuery buildQuery,
                                                         FixedList<IVouchersByAccountEntry> vouchers) {
             return new ReportDataDto {
@@ -210,13 +208,16 @@ namespace Empiria.FinancialAccounting.Reporting.VoucherRelatedReports.Domain {
             get; internal set;
         }
 
+
         public int VoucherId {
             get; internal set;
         }
 
+
         public string LedgerUID {
             get; internal set;
         }
+
 
         public string LedgerNumber {
             get; internal set;
@@ -227,85 +228,104 @@ namespace Empiria.FinancialAccounting.Reporting.VoucherRelatedReports.Domain {
             get; internal set;
         } = string.Empty;
 
+
         public string CurrencyCode {
             get; internal set;
         }
+
 
         public int StandardAccountId {
             get; internal set;
         }
 
+
         public string AccountNumber {
             get; internal set;
         } = string.Empty;
+
 
         public string AccountNumberForBalances {
             get; internal set;
         }
 
+
         public string AccountName {
             get; internal set;
         }
+
 
         public string SectorCode {
             get; internal set;
         } = string.Empty;
 
+
         public decimal? Debit {
             get; internal set;
         }
+
 
         public decimal? Credit {
             get; internal set;
         }
 
+
         public decimal CurrentBalance {
             get; internal set;
         }
 
+
         public string VoucherNumber {
             get; internal set;
         } = string.Empty;
+
 
         public string VerificationNumber {
             get;
             internal set;
         }
 
+
         public string ElaboratedBy {
             get; internal set;
         }
+
 
         public string AuthorizedBy {
             get;
             internal set;
         }
 
+
         public string Concept {
             get; internal set;
         } = string.Empty;
+
 
         public string SubledgerAccountNumber {
             get; internal set;
         } = string.Empty;
 
+
+        public string SubledgerAccountName {
+            get; internal set;
+        }
+
+
         public DateTime AccountingDate {
             get; internal set;
         }
 
+
         public DateTime RecordingDate {
-            get;
-            internal set;
+            get; internal set;
         }
 
+
         public bool IsVoucher {
-            get;
-            internal set;
+            get; internal set;
         } = false;
-        public string SubledgerAccountName {
-            get;
-            internal set;
-        }
+
+
     } // class VoucherByAccountEntry
 
 } // namespace Empiria.FinancialAccounting.Reporting.VoucherRelatedReports.Domain

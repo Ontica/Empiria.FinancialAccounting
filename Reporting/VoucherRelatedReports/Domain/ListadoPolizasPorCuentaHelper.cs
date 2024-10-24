@@ -89,9 +89,6 @@ namespace Empiria.FinancialAccounting.Reporting.VoucherRelatedReports.Domain {
 
 
     internal FixedList<AccountStatementEntry> GetVoucherEntries() {
-      
-      //var builder = new PolizasPorCuentaSqlClausesBuilder(query);
-      //ListadoPolizasSqlClauses sqlClauses = builder.Build();
 
       string filtering = query.MapToFilterString();
       string ordering = query.MapToSortString();
@@ -102,38 +99,38 @@ namespace Empiria.FinancialAccounting.Reporting.VoucherRelatedReports.Domain {
 
     internal FixedList<AccountStatementEntry> OrderingVouchers(FixedList<AccountStatementEntry> vouchers) {
 
-            if (query.ReportType.Equals(ReportTypes.MovimientosPorNumeroDeVerificacion)) {
+      if (query.ReportType.Equals(ReportTypes.MovimientosPorNumeroDeVerificacion)) {
 
-                var ordering = vouchers.OrderBy(a => a.VerificationNumber)
-                                     .ThenBy(a => a.Currency.Code)
-                                     .ThenBy(a => a.Ledger.Number)
-                                     .ThenBy(a => a.AccountingDate)
-                                     .ThenBy(a => a.VoucherNumber)
-                                     .ThenBy(a => a.AccountNumber)
-                                     .ToList();
-                return ordering.ToFixedList();
+        var ordering = vouchers.OrderBy(a => a.VerificationNumber)
+                             .ThenBy(a => a.Currency.Code)
+                             .ThenBy(a => a.Ledger.Number)
+                             .ThenBy(a => a.AccountingDate)
+                             .ThenBy(a => a.VoucherNumber)
+                             .ThenBy(a => a.AccountNumber)
+                             .ToList();
+        return ordering.ToFixedList();
 
-            } else if (query.ReportType.Equals(ReportTypes.ListadoMovimientosPorPolizas)) {
+      } else if (query.ReportType.Equals(ReportTypes.ListadoMovimientosPorPolizas)) {
 
-                var ordering = vouchers.OrderBy(a => a.Currency.Code)
-                                     .ThenBy(a => a.Ledger.Number)
-                                     .ThenBy(a => a.VoucherNumber)
-                                     .ThenBy(a => a.AccountNumber)
-                                     .ThenBy(a => a.SubledgerAccountNumber)
-                                     .ToList();
-                return ordering.ToFixedList();
+        var ordering = vouchers.OrderBy(a => a.Currency.Code)
+                             .ThenBy(a => a.Ledger.Number)
+                             .ThenBy(a => a.VoucherNumber)
+                             .ThenBy(a => a.AccountNumber)
+                             .ThenBy(a => a.SubledgerAccountNumber)
+                             .ToList();
+        return ordering.ToFixedList();
 
-            } else {
+      } else {
 
-                var ordering = vouchers.OrderBy(a => a.Currency.Code)
-                                     .ThenBy(a => a.Ledger.Number)
-                                     .ThenBy(a => a.AccountingDate)
-                                     .ThenBy(a => a.VoucherNumber)
-                                     .ThenBy(a => a.AccountNumber)
-                                     .ThenBy(a => a.SubledgerAccountNumber)
-                                     .ToList();
-                return ordering.ToFixedList();
-            }
+        var ordering = vouchers.OrderBy(a => a.Currency.Code)
+                             .ThenBy(a => a.Ledger.Number)
+                             .ThenBy(a => a.AccountingDate)
+                             .ThenBy(a => a.VoucherNumber)
+                             .ThenBy(a => a.AccountNumber)
+                             .ThenBy(a => a.SubledgerAccountNumber)
+                             .ToList();
+        return ordering.ToFixedList();
+      }
     }
 
 
@@ -168,11 +165,9 @@ namespace Empiria.FinancialAccounting.Reporting.VoucherRelatedReports.Domain {
         };
 
         summaryEntry.Sum(entry);
-
         summaryEntries.Insert(hash, summaryEntry);
 
       } else {
-
         summaryEntry.Sum(entry);
       }
     }

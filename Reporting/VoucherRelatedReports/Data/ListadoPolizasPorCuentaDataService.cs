@@ -19,19 +19,6 @@ namespace Empiria.FinancialAccounting.Reporting.AccountStatements {
   static class ListadoPolizasPorCuentaDataService {
 
 
-    static internal FixedList<AccountStatementEntry> GetVouchersByAccountEntries(
-                                                        ListadoPolizasSqlClauses commandData) {
-
-      var operation = DataOperation.Parse("@qryVouchersByAccount",
-                                          commandData.Fields,
-                                          commandData.Filters,
-                                          commandData.Grouping
-                                          );
-
-      return DataReader.GetPlainObjectFixedList<AccountStatementEntry>(operation);
-    }
-
-
     static internal FixedList<AccountStatementEntry> GetVouchersByAccountEntries(string filter, string sortBy) {
         var sql = "SELECT * FROM VW_COF_MOVIMIENTO ";
 

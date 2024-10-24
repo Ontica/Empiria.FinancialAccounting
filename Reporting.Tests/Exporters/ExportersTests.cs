@@ -62,9 +62,11 @@ namespace Empiria.FinancialAccounting.Tests.Reporting {
           AccountsChartUID = "47ec2ec7-0f4f-482e-9799-c23107b60d8a",
           //AccountNumber = "1.05.01.03.02.03.01",
           VerificationNumbers = new string[] { "1", "2", "3" },
-          ReportType = ReportTypes.MovimientosPorNumeroDeVerificacion,
+          ReportType = ReportTypes.ListadoMovimientosPorPolizas,
           FromDate = new DateTime(2023, 06, 30),
           ToDate = new DateTime(2023, 06, 30),
+          VoucherIds = new int[] { 8926688, 8926717 },
+          WithSubledgerAccount = true,
           ExportTo = FileType.Excel
         };
 
