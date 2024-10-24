@@ -167,11 +167,10 @@ namespace Empiria.FinancialAccounting.Reporting.AccountStatements.Domain {
 
 
     internal FixedList<AccountStatementEntry> GetVoucherEntries() {
-      var builder = new AccountStatementSqlClausesBuilder(query);
-
-      //var sqlClauses = builder.BuildSqlClauses();
+      
       string filtering = query.MapToFilterString();
       string ordering = query.MapToSortString();
+
       return AccountStatementDataService.GetVouchersWithAccounts(filtering, ordering);
     }
 

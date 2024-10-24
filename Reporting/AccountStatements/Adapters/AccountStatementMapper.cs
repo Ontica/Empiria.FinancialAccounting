@@ -48,7 +48,7 @@ namespace Empiria.FinancialAccounting.Reporting.AccountStatements.Adapters {
       columns.Add(new DataTableColumn("debit", "Cargo", "decimal"));
       columns.Add(new DataTableColumn("credit", "Abono", "decimal"));
       columns.Add(new DataTableColumn("currentBalance", "Saldo actual", "decimal"));
-      
+
       if (query.UseDefaultValuation || query.InitialPeriod.ExchangeRateTypeUID != string.Empty) {
         columns.Add(new DataTableColumn("exchangeRate", "TC", "decimal", 6));
       }
@@ -57,12 +57,12 @@ namespace Empiria.FinancialAccounting.Reporting.AccountStatements.Adapters {
       columns.Add(new DataTableColumn("recordingDate", "Registro", "date"));
       columns.Add(new DataTableColumn("concept", "Concepto", "text-nowrap"));
       columns.Add(new DataTableColumn("elaboratedBy", "Elaborado por", "text-nowrap"));
-      
+
       return columns.ToFixedList();
     }
 
 
-    private static FixedList<IVouchersByAccountEntryDto> MapToDto (
+    private static FixedList<IVouchersByAccountEntryDto> MapToDto(
                     FixedList<IVouchersByAccountEntry> list) {
 
       var mapped = list.Select((x) => MapToVouchersByAccount((AccountStatementEntry) x));

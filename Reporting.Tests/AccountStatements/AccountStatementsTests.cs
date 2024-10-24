@@ -70,7 +70,7 @@ namespace Empiria.FinancialAccounting.Tests.Reporting.AccountStatements {
           UseDefaultValuation = true,
           WithSubledgerAccount = false,
           SubledgerAccount ="",
-          
+
         },
 
         Entry = {

@@ -17,16 +17,6 @@ namespace Empiria.FinancialAccounting.Reporting.AccountStatements {
   /// <summary>Data services that gets information used to build account statements. </summary>
   static internal class AccountStatementDataService {
 
-    static internal FixedList<AccountStatementEntry> GetVouchersWithAccounts(AccountStatementSqlClauses sqlClauses) {
-
-      var operation = DataOperation.Parse("@qryVouchersByAccount",
-                                          sqlClauses.Fields,
-                                          sqlClauses.Filters,
-                                          sqlClauses.Grouping);
-
-      return DataReader.GetPlainObjectFixedList<AccountStatementEntry>(operation);
-    }
-
 
     static internal FixedList<AccountStatementEntry> GetVouchersWithAccounts(string filter, string sortBy) {
         var sql = "SELECT * FROM VW_COF_MOVIMIENTO ";
