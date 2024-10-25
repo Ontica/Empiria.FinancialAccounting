@@ -312,16 +312,14 @@ namespace Empiria.FinancialAccounting.Reporting.AccountStatements.Domain {
       List<AccountStatementEntry> list = new List<AccountStatementEntry>();
 
       list = query.OrderBy.OrderType == AccountStatementOrderType.Descending
-        ? vouchers.OrderByDescending(a => a.Ledger.Number)
-                                 .ThenByDescending(a => a.Debit)
-                                 .ThenByDescending(a => a.Credit)
+        ? vouchers.OrderByDescending(a => a.Credit + a.Debit)
+                                 .ThenByDescending(a => a.Ledger.Number)
                                  .ThenByDescending(a => a.AccountNumber)
                                  .ThenByDescending(a => a.SubledgerAccountNumber)
                                  .ThenByDescending(a => a.VoucherNumber)
                                  .ToList()
-        : vouchers.OrderBy(a => a.Ledger.Number)
-                                 .ThenBy(a => a.Debit)
-                                 .ThenBy(a => a.Credit)
+        : vouchers.OrderBy(a => a.Credit + a.Debit)
+                                 .ThenByDescending(a => a.Ledger.Number)
                                  .ThenBy(a => a.AccountNumber)
                                  .ThenBy(a => a.SubledgerAccountNumber)
                                  .ThenBy(a => a.VoucherNumber)
@@ -335,14 +333,14 @@ namespace Empiria.FinancialAccounting.Reporting.AccountStatements.Domain {
       List<AccountStatementEntry> list = new List<AccountStatementEntry>();
 
       list = query.OrderBy.OrderType == AccountStatementOrderType.Descending
-        ? vouchers.OrderByDescending(a => a.Ledger.Number)
-                                 .ThenByDescending(a => a.RecordingDate)
+        ? vouchers.OrderByDescending(a => a.RecordingDate)
+                                 .ThenByDescending(a => a.Ledger.Number)
                                  .ThenByDescending(a => a.AccountNumber)
                                  .ThenByDescending(a => a.SubledgerAccountNumber)
                                  .ThenByDescending(a => a.VoucherNumber)
                                  .ToList()
-        : vouchers.OrderBy(a => a.Ledger.Number)
-                                 .ThenBy(a => a.RecordingDate)
+        : vouchers.OrderByDescending(a => a.RecordingDate)
+                                 .ThenBy(a => a.Ledger.Number)
                                  .ThenBy(a => a.AccountNumber)
                                  .ThenBy(a => a.SubledgerAccountNumber)
                                  .ThenBy(a => a.VoucherNumber)
