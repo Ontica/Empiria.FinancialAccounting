@@ -88,7 +88,7 @@ namespace Empiria.FinancialAccounting.BalanceEngine.Adapters {
       dto.SecondExchangeRate = entry.SecondExchangeRate;
       dto.AverageBalance = entry.AverageBalance;
       dto.IsParentPostingEntry = entry.IsParentPostingEntry;
-      AssignDebtorCreditorAndLastChangeDate(dto,entry,query);
+      AssignDebtorCreditorAndLastChangeDate(dto, entry, query);
       AssignHasAccountStatementAndClickableEntry(dto, entry, query);
       return dto;
     }
@@ -120,7 +120,10 @@ namespace Empiria.FinancialAccounting.BalanceEngine.Adapters {
     static private void AssignHasAccountStatementAndClickableEntry(SaldosPorCuentaEntryDto dto,
                                                                    TrialBalanceEntry entry,
                                                                    TrialBalanceQuery query) {
-      if (entry.ItemType == TrialBalanceItemType.Entry || entry.ItemType == TrialBalanceItemType.Summary) {
+      if ((entry.ItemType == TrialBalanceItemType.Entry ||
+          entry.ItemType == TrialBalanceItemType.Summary)
+          && !query.UseDefaultValuation && !query.ValuateBalances
+          ) {
 
         dto.HasAccountStatement = true;
         dto.ClickableEntry = true;

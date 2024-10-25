@@ -77,7 +77,7 @@ namespace Empiria.FinancialAccounting.BalanceEngine.Adapters {
       AssignLabelNameAndNumber(dto, subledgerAccount, entry);
       AssignSubledgerAccountNumber(dto, subledgerAccount, entry);
       AssignBalancesAndDebtorCreditorByEntry(dto, entry);
-      AssignHasAccountStatementAndClickableEntry(dto, entry);
+      AssignHasAccountStatementAndClickableEntry(dto, entry, query);
 
       if (entry.Ledger.UID != "Empty") {
         dto.LedgerUID = entry.Ledger.UID;
@@ -127,9 +127,11 @@ namespace Empiria.FinancialAccounting.BalanceEngine.Adapters {
 
 
     static private void AssignHasAccountStatementAndClickableEntry(
-                        SaldosPorAuxiliarEntryDto dto, TrialBalanceEntry entry) {
+                        SaldosPorAuxiliarEntryDto dto, TrialBalanceEntry entry,
+                        TrialBalanceQuery query) {
 
-      if (entry.ItemType != TrialBalanceItemType.Total) {
+      if (entry.ItemType != TrialBalanceItemType.Total &&
+          !query.UseDefaultValuation && !query.ValuateBalances) {
 
         dto.HasAccountStatement = true;
         dto.ClickableEntry = true;

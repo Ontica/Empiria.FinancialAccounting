@@ -75,7 +75,6 @@ namespace Empiria.FinancialAccounting.BalanceEngine.Adapters {
     static public BalanzaContabilidadesCascadaEntryDto MapEntry(
                                                         TrialBalanceEntry entry, TrialBalanceQuery query) {
 
-
       var dto = new BalanzaContabilidadesCascadaEntryDto();
 
       AssignLedgerAndCurrencyAndDebtorCreditorInfo(dto, entry);
@@ -108,7 +107,10 @@ namespace Empiria.FinancialAccounting.BalanceEngine.Adapters {
                         BalanzaContabilidadesCascadaEntryDto dto,
                         TrialBalanceEntry entry, TrialBalanceQuery query) {
 
-      if (entry.ItemType == TrialBalanceItemType.Entry || entry.ItemType == TrialBalanceItemType.Summary) {
+      if ((entry.ItemType == TrialBalanceItemType.Entry ||
+          entry.ItemType == TrialBalanceItemType.Summary)
+          && !query.UseDefaultValuation && !query.ValuateBalances
+          ) {
 
         dto.HasAccountStatement = true;
         dto.ClickableEntry = true;
