@@ -128,7 +128,7 @@ namespace Empiria.FinancialAccounting.BalanceEngine.Adapters {
                                                                    TrialBalanceQuery query) {
       if ((entry.ItemType == TrialBalanceItemType.Entry ||
           entry.ItemType == TrialBalanceItemType.Summary)
-          && !query.UseDefaultValuation && !query.ValuateBalances
+          //&& !query.UseDefaultValuation && !query.ValuateBalances
           ) {
 
         dto.HasAccountStatement = true;

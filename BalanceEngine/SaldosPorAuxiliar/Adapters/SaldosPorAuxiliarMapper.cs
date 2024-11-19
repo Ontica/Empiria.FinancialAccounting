@@ -130,8 +130,9 @@ namespace Empiria.FinancialAccounting.BalanceEngine.Adapters {
                         SaldosPorAuxiliarEntryDto dto, TrialBalanceEntry entry,
                         TrialBalanceQuery query) {
 
-      if (entry.ItemType != TrialBalanceItemType.Total &&
-          !query.UseDefaultValuation && !query.ValuateBalances) {
+      if (entry.ItemType != TrialBalanceItemType.Total 
+          //&& !query.UseDefaultValuation && !query.ValuateBalances
+        ) {
 
         dto.HasAccountStatement = true;
         dto.ClickableEntry = true;
