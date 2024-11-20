@@ -139,7 +139,7 @@ namespace Empiria.FinancialAccounting.BalanceEngine.Adapters {
 
     public bool UseNewSectorizationModel {
       get {
-        return this.AccountsChartUID == "47ec2ec7-0f4f-482e-9799-c23107b60d8a";
+        return this.AccountsChartUID == AccountsChart.IFRS.UID;
       }
     }
 
@@ -171,7 +171,7 @@ namespace Empiria.FinancialAccounting.BalanceEngine.Adapters {
     public bool IsOperationalReport {
       get; set;
     } = false;
-    
+
 
     public override bool Equals(object obj) => this.Equals(obj as TrialBalanceQuery);
 
