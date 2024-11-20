@@ -81,21 +81,10 @@ namespace Empiria.FinancialAccounting.Vouchers.Data {
         return new FixedList<Voucher>();
       }
 
-      int counter = 0;
-      int offset = 800;
-      var filter = "";
-      while (true) {
-        var voucherIds = ids.Skip(counter).Take(offset);
+      string filter = SearchExpression.ParseInSet("ID_TRANSACCION", ids);
 
-        if (voucherIds.Count() == 0) {
-          break;
-        }
-        if (filter.Length > 0) {
-          filter += " OR ";
-        }
-        filter += $"ID_TRANSACCION IN ({String.Join(", ", voucherIds)})";
-
-        counter = counter + voucherIds.Count();
+      if (filter.Length == 0) {
+        return new FixedList<Voucher>();
       }
 
       var sql = $"SELECT * FROM COF_TRANSACCION WHERE ({filter})";

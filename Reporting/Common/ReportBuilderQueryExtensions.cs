@@ -124,24 +124,7 @@ namespace Empiria.FinancialAccounting.Reporting {
         return string.Empty;
       }
 
-      int counter = 0;
-      int offset = 800;
-      var sql = "";
-      while (true) {
-        var voucherIds = query.VoucherIds.Skip(counter).Take(offset);
-
-        if (voucherIds.Count() == 0) {
-          break;
-        }
-        if (sql.Length > 0) {
-          sql += " OR ";
-        }
-        sql += $"ID_TRANSACCION IN ({String.Join(", ", voucherIds)})";
-
-        counter = counter + voucherIds.Count();
-      }
-
-      return $"({sql})";
+      return SearchExpression.ParseInSet("ID_TRANSACCION", query.VoucherIds);
     }
 
     #endregion Helpers
