@@ -256,35 +256,37 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
     }
 
 
-    internal BalanzaColumnasMonedaEntry MapToBalanceByCurrencyEntry() {
-      BalanzaColumnasMonedaEntry trialBalanceByCurrencyEntry = new BalanzaColumnasMonedaEntry();
+    internal BalanzaColumnasMonedaEntry MapToBalanceByCurrencyEntry(DateTime fromDate, DateTime toDate) {
+      BalanzaColumnasMonedaEntry balanceByCurrencyEntry = new BalanzaColumnasMonedaEntry();
 
-      trialBalanceByCurrencyEntry.ItemType = this.ItemType;
-      trialBalanceByCurrencyEntry.Currency = this.Currency;
-      trialBalanceByCurrencyEntry.Account = this.Account;
-      trialBalanceByCurrencyEntry.Sector = this.Sector;
+      balanceByCurrencyEntry.ItemType = this.ItemType;
+      balanceByCurrencyEntry.Currency = this.Currency;
+      balanceByCurrencyEntry.Account = this.Account;
+      balanceByCurrencyEntry.Sector = this.Sector;
+      balanceByCurrencyEntry.FromDate = fromDate;
+      balanceByCurrencyEntry.ToDate = toDate;
 
       if (Currency.Equals(Currency.MXN)) {
-        trialBalanceByCurrencyEntry.DomesticBalance = this.CurrentBalance;
+        balanceByCurrencyEntry.DomesticBalance = this.CurrentBalance;
       }
       if (Currency.Equals(Currency.USD)) {
-        trialBalanceByCurrencyEntry.DollarBalance = this.CurrentBalance;
-        trialBalanceByCurrencyEntry.ValorizedDollarBalance = this.ValorizedCurrentBalance;
+        balanceByCurrencyEntry.DollarBalance = this.CurrentBalance;
+        balanceByCurrencyEntry.ValorizedDollarBalance = this.ValorizedCurrentBalance;
       }
       if (Currency.Equals(Currency.YEN)) {
-        trialBalanceByCurrencyEntry.YenBalance = this.CurrentBalance;
-        trialBalanceByCurrencyEntry.ValorizedYenBalance = this.ValorizedCurrentBalance;
+        balanceByCurrencyEntry.YenBalance = this.CurrentBalance;
+        balanceByCurrencyEntry.ValorizedYenBalance = this.ValorizedCurrentBalance;
       }
       if (Currency.Equals(Currency.EUR)) {
-        trialBalanceByCurrencyEntry.EuroBalance = this.CurrentBalance;
-        trialBalanceByCurrencyEntry.ValorizedEuroBalance = this.ValorizedCurrentBalance;
+        balanceByCurrencyEntry.EuroBalance = this.CurrentBalance;
+        balanceByCurrencyEntry.ValorizedEuroBalance = this.ValorizedCurrentBalance;
       }
       if (Currency.Equals(Currency.UDI)) {
-        trialBalanceByCurrencyEntry.UdisBalance = this.CurrentBalance;
-        trialBalanceByCurrencyEntry.ValorizedUdisBalance = this.ValorizedCurrentBalance;
+        balanceByCurrencyEntry.UdisBalance = this.CurrentBalance;
+        balanceByCurrencyEntry.ValorizedUdisBalance = this.ValorizedCurrentBalance;
       }
 
-      return trialBalanceByCurrencyEntry;
+      return balanceByCurrencyEntry;
     }
 
 

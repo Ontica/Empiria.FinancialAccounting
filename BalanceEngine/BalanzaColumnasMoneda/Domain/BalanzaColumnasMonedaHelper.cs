@@ -112,7 +112,8 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
       var returnedValuedBalance = new List<BalanzaColumnasMonedaEntry>();
 
       foreach (var entry in accountEntriesByCurrency.Where(a => a.Currency.Equals(Currency.MXN))) {
-        returnedValuedBalance.Add(entry.MapToBalanceByCurrencyEntry());
+        returnedValuedBalance.Add(
+          entry.MapToBalanceByCurrencyEntry(Query.InitialPeriod.FromDate, Query.InitialPeriod.ToDate));
       }
 
       MergeDomesticWithForeignAccountEntries(returnedValuedBalance, accountEntriesByCurrency);
@@ -254,22 +255,28 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
       foreach (var entry in returnedBalance) {
 
         foreach (var ledger in ledgerAccounts.Where(a => a.Account.Number == entry.Account.Number)) {
+          entry.FromDate = Query.InitialPeriod.FromDate;
+          entry.ToDate = Query.InitialPeriod.ToDate;
 
           if (ledger.Currency.Equals(Currency.USD)) {
             entry.DollarBalance = ledger.CurrentBalance;
             entry.ValorizedDollarBalance = ledger.ValorizedCurrentBalance;
+            entry.ExchangeRateForDollar = ledger.ExchangeRate;
           }
           if (ledger.Currency.Equals(Currency.YEN)) {
             entry.YenBalance = ledger.CurrentBalance;
             entry.ValorizedYenBalance = ledger.ValorizedCurrentBalance;
+            entry.ExchangeRateForYen = ledger.ExchangeRate;
           }
           if (ledger.Currency.Equals(Currency.EUR)) {
             entry.EuroBalance = ledger.CurrentBalance;
             entry.ValorizedEuroBalance = ledger.ValorizedCurrentBalance;
+            entry.ExchangeRateForEuro = ledger.ExchangeRate;
           }
           if (ledger.Currency.Equals(Currency.UDI)) {
             entry.UdisBalance = ledger.CurrentBalance;
             entry.ValorizedUdisBalance = ledger.ValorizedCurrentBalance;
+            entry.ExchangeRateForUdi = ledger.ExchangeRate;
           }
         }
       }
@@ -286,26 +293,37 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
         var entry = returnedValuedBalance.Where(a => a.Account.Number == ledger.Account.Number)
                                          .FirstOrDefault();
         if (entry == null) {
-          returnedValuedBalance.Add(ledger.MapToBalanceByCurrencyEntry());
+
+          returnedValuedBalance.Add(
+            ledger.MapToBalanceByCurrencyEntry(Query.InitialPeriod.FromDate, Query.InitialPeriod.ToDate));
+
         } else {
+
+          entry.FromDate = Query.InitialPeriod.FromDate;
+          entry.ToDate = Query.InitialPeriod.ToDate;
+
           if (ledger.Currency.Equals(Currency.MXN)) {
             entry.DomesticBalance = ledger.CurrentBalance;
           }
           if (ledger.Currency.Equals(Currency.USD)) {
             entry.DollarBalance = ledger.CurrentBalance;
             entry.ValorizedDollarBalance = ledger.ValorizedCurrentBalance;
+            entry.ExchangeRateForDollar = ledger.ExchangeRate;
           }
           if (ledger.Currency.Equals(Currency.YEN)) {
             entry.YenBalance = ledger.CurrentBalance;
             entry.ValorizedYenBalance = ledger.ValorizedCurrentBalance;
+            entry.ExchangeRateForYen = ledger.ExchangeRate;
           }
           if (ledger.Currency.Equals(Currency.EUR)) {
             entry.EuroBalance = ledger.CurrentBalance;
             entry.ValorizedEuroBalance = ledger.ValorizedCurrentBalance;
+            entry.ExchangeRateForEuro = ledger.ExchangeRate;
           }
           if (ledger.Currency.Equals(Currency.UDI)) {
             entry.UdisBalance = ledger.CurrentBalance;
             entry.ValorizedUdisBalance = ledger.ValorizedCurrentBalance;
+            entry.ExchangeRateForUdi = ledger.ExchangeRate;
           }
         }
       }

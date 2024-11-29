@@ -23,6 +23,8 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
 
     BalanzaEnColumnasPorMoneda,
 
+    BalanzaDiferenciaDiariaPorMoneda,
+
     BalanzaValorizadaComparativa,
 
     BalanzaDolarizada,
@@ -164,6 +166,15 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
                                                             (ITrialBalanceEntry) x).ToFixedList();
 
           return new TrialBalance(this.Query, balanzaColumnas);
+
+        case TrialBalanceType.BalanzaDiferenciaDiariaPorMoneda:
+
+          var balanzaDifDiariaBuilder = new BalanzaDiferenciaDiariaMonedaBuilder(this.Query);
+          var balanzaDifDiariaEntries = balanzaDifDiariaBuilder.BuildBalanceByColumnValorized();
+          FixedList<ITrialBalanceEntry> balanzaDifDiaria = balanzaDifDiariaEntries.Select(x =>
+                                                            (ITrialBalanceEntry) x).ToFixedList();
+
+          return new TrialBalance(this.Query, balanzaDifDiaria);
 
         case TrialBalanceType.BalanzaValorizadaComparativa:
 

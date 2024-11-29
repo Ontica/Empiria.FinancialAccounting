@@ -73,6 +73,13 @@ namespace Empiria.FinancialAccounting.BalanceEngine.Adapters {
 
           return new FixedList<ITrialBalanceEntryDto>(currencyMappedItems);
 
+        case TrialBalanceType.BalanzaDiferenciaDiariaPorMoneda:
+
+          var balanzaDifDiaria = list.Select((x) =>
+                BalanzaDiferenciaDiariaMonedaMapper.MapEntry((BalanzaDiferenciaDiariaMonedaEntry) x));
+
+          return new FixedList<ITrialBalanceEntryDto>(balanzaDifDiaria);
+
         case TrialBalanceType.BalanzaDolarizada:
 
           var balanzaDolarizada = list.Select((x) =>

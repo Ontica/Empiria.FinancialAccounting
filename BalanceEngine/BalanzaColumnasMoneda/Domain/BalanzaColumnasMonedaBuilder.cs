@@ -50,26 +50,40 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
 
       trialBalanceHelper.SetSummaryToParentEntries(accountEntries);
 
-      List<TrialBalanceEntry> parentAccountsEntries = trialBalanceHelper.GetCalculatedParentAccounts(
-                                                                          accountEntries.ToFixedList());
-
-      List<TrialBalanceEntry> debtorAccounts = helper.GetSumFromCreditorToDebtorAccounts(
-                                                        parentAccountsEntries);
-
-      helper.CombineAccountEntriesAndDebtorAccounts(accountEntries.ToList(), debtorAccounts);
-
-      FixedList<TrialBalanceEntry> accountEntriesByCurrency =
-                                          helper.GetAccountEntriesByCurrency(debtorAccounts);
+      List<TrialBalanceEntry> accountEntriesByCurrency = GetAccountEntriesByTrialBalanceType(
+                                                                  accountEntries.ToFixedList());
 
       var balanceHelper = new TrialBalanceHelper(Query);
       balanceHelper.RestrictLevels(accountEntriesByCurrency.ToList());
 
       List<BalanzaColumnasMonedaEntry> balanceByCurrency =
-                      helper.MergeTrialBalanceIntoBalanceByCurrency(accountEntriesByCurrency);
+                      helper.MergeTrialBalanceIntoBalanceByCurrency(accountEntriesByCurrency.ToFixedList());
       
       helper.GetTotalValorizedByAccount(balanceByCurrency);
 
       return balanceByCurrency.ToFixedList();
+    }
+
+
+    private List<TrialBalanceEntry> GetAccountEntriesByTrialBalanceType(
+                                    FixedList<TrialBalanceEntry> accountEntries) {
+
+      if (Query.TrialBalanceType == TrialBalanceType.BalanzaEnColumnasPorMoneda) {
+        
+        var trialBalanceHelper = new TrialBalanceHelper(Query);
+        var helper = new BalanzaColumnasMonedaHelper(Query);
+
+        var parentAccountsEntries = trialBalanceHelper.GetCalculatedParentAccounts(accountEntries.ToFixedList());
+
+        List<TrialBalanceEntry> debtorAccounts = helper.GetSumFromCreditorToDebtorAccounts(
+                                                        parentAccountsEntries);
+
+        helper.CombineAccountEntriesAndDebtorAccounts(accountEntries.ToList(), debtorAccounts);
+
+        return helper.GetAccountEntriesByCurrency(debtorAccounts).ToList();
+      }
+
+      return new List<TrialBalanceEntry>(accountEntries);
     }
 
 

@@ -54,6 +54,9 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
         case TrialBalanceType.BalanzaEnColumnasPorMoneda:
           return BalanzaColumnasMonedaMapper.DataColumns();
 
+        case TrialBalanceType.BalanzaDiferenciaDiariaPorMoneda:
+          return BalanzaDiferenciaDiariaMonedaMapper.DataColumns();
+
         case TrialBalanceType.BalanzaValorizadaComparativa:
           return BalanzaComparativaMapper.DataColumns(this.Query);
 

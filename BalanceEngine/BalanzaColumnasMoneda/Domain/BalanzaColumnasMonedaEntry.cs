@@ -13,19 +13,64 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
 
 
   /// <summary>Represents an entry for a Balanza en columnas por moneda entry.</summary>
-  public class BalanzaColumnasMonedaEntry : ITrialBalanceEntry {
+  public class BalanzaColumnasMonedaEntry : BalanzaColumnasMonedaCommons, ITrialBalanceEntry {
 
     public Currency Currency {
       get; internal set;
     }
 
 
-    public StandardAccount Account {
+    public Sector Sector {
       get; internal set;
     }
 
 
-    public Sector Sector {
+    public decimal TotalValorized {
+      get; internal set;
+    }
+
+
+    public string GroupName {
+      get; internal set;
+    } = string.Empty;
+
+
+    public string GroupNumber {
+      get; internal set;
+    } = string.Empty;
+
+
+    public TrialBalanceItemType ItemType {
+      get;
+      internal set;
+    }
+
+
+    internal void SumToTotalValorized() {
+      TotalValorized += (
+        this.DomesticBalance +
+        this.ValorizedDollarBalance +
+        this.ValorizedYenBalance +
+        this.ValorizedEuroBalance +
+        this.ValorizedUdisBalance
+      );
+    }
+  } // BalanzaColumnasMonedaEntry
+
+
+  public class BalanzaColumnasMonedaCommons {
+
+    public DateTime FromDate {
+      get; internal set;
+    }
+
+
+    public DateTime ToDate {
+      get; internal set;
+    }
+
+
+    public StandardAccount Account {
       get; internal set;
     }
 
@@ -75,36 +120,26 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
     }
 
 
-    public decimal TotalValorized {
+    public decimal ExchangeRateForDollar {
       get; internal set;
     }
 
 
-    public string GroupName {
+    public decimal ExchangeRateForYen {
       get; internal set;
-    } = string.Empty;
-
-
-    public string GroupNumber {
-      get; internal set;
-    } = string.Empty;
-
-
-    public TrialBalanceItemType ItemType {
-      get;
-      internal set;
     }
 
 
-    internal void SumToTotalValorized() {
-      TotalValorized += (
-        this.DomesticBalance +
-        this.ValorizedDollarBalance +
-        this.ValorizedYenBalance +
-        this.ValorizedEuroBalance +
-        this.ValorizedUdisBalance
-      );
+    public decimal ExchangeRateForEuro {
+      get; internal set;
     }
-  } // BalanzaColumnasMonedaEntry
+
+
+    public decimal ExchangeRateForUdi {
+      get; internal set;
+    }
+
+  } // class BalanzaColumnasMonedaCommons
+
 
 } // namespace Empiria.FinancialAccounting.BalanceEngine
