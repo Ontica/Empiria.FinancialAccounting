@@ -44,6 +44,11 @@ namespace Empiria.FinancialAccounting.BalanceEngine.Adapters {
     }
 
 
+    public TrialBalanceItemType ItemType {
+      get; internal set;
+    } = TrialBalanceItemType.Entry;
+
+
     public DebtorCreditorType DebtorCreditor {
       get; internal set;
     } = DebtorCreditorType.Deudora;
@@ -113,10 +118,53 @@ namespace Empiria.FinancialAccounting.BalanceEngine.Adapters {
       get; internal set;
     }
 
+    
+    public decimal ExchangeRateForDollar {
+      get;
+      internal set;
+    }
 
-    public TrialBalanceItemType ItemType {
-      get; internal set;
-    } = TrialBalanceItemType.Entry;
+
+    public decimal ExchangeRateForYen {
+      get;
+      internal set;
+    }
+
+
+    public decimal ExchangeRateForEuro {
+      get;
+      internal set;
+    }
+
+
+    public decimal ExchangeRateForUdi {
+      get;
+      internal set;
+    }
+
+
+    public decimal ValorizedDollarBalance {
+      get;
+      internal set;
+    }
+
+
+    public decimal ValorizedYenBalance {
+      get;
+      internal set;
+    }
+
+
+    public decimal ValorizedEuroBalance {
+      get;
+      internal set;
+    }
+
+
+    public decimal ValorizedUdisBalance {
+      get;
+      internal set;
+    }
 
 
     public bool HasAccountStatement {

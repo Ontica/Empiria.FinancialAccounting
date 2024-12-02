@@ -42,19 +42,27 @@ namespace Empiria.FinancialAccounting.BalanceEngine.Adapters {
       columns.Add(new DataTableColumn("toDate", "Fecha", "date"));
 
       columns.Add(new DataTableColumn("domesticBalance", "M.N. (01)", "decimal"));
-      columns.Add(new DataTableColumn("domesticDailyBalance", "Diferencia M.N. (01)", "decimal"));
+      columns.Add(new DataTableColumn("domesticDailyBalance", "Diferencia diaria M.N.", "decimal"));
 
       columns.Add(new DataTableColumn("dollarBalance", "Dólares (02)", "decimal"));
-      columns.Add(new DataTableColumn("dollarDailyBalance", "Diferencia Dólares (02)", "decimal"));
+      columns.Add(new DataTableColumn("dollarDailyBalance", "Diferencia diaria Dólares", "decimal"));
+      columns.Add(new DataTableColumn("exchangeRateForDollar", "Tipo cambio (Dólar)", "decimal"));
+      columns.Add(new DataTableColumn("valorizedDollarBalance", "Dólar valorizado", "decimal"));
 
       columns.Add(new DataTableColumn("yenBalance", "Yenes (06)", "decimal"));
-      columns.Add(new DataTableColumn("yenDailyBalance", "Diferencia Yenes (06)", "decimal"));
+      columns.Add(new DataTableColumn("yenDailyBalance", "Diferencia diaria Yenes", "decimal"));
+      columns.Add(new DataTableColumn("exchangeRateForYen", "Tipo cambio (Yen)", "decimal"));
+      columns.Add(new DataTableColumn("valorizedYenBalance", "Yen valorizado", "decimal"));
 
       columns.Add(new DataTableColumn("euroBalance", "Euros (27)", "decimal"));
-      columns.Add(new DataTableColumn("euroDailyBalance", "Euros (27)", "decimal"));
+      columns.Add(new DataTableColumn("euroDailyBalance", "Diferencia diaria Euros", "decimal"));
+      columns.Add(new DataTableColumn("exchangeRateForEuro", "Tipo cambio (Euro)", "decimal"));
+      columns.Add(new DataTableColumn("valorizedEuroBalance", "Euro valorizado", "decimal"));
 
       columns.Add(new DataTableColumn("udisBalance", "UDIS (44)", "decimal"));
-      columns.Add(new DataTableColumn("udisDailyBalance", "UDIS (44)", "decimal"));
+      columns.Add(new DataTableColumn("udisDailyBalance", "Diferencia diaria UDIS", "decimal"));
+      columns.Add(new DataTableColumn("exchangeRateForUdi", "Tipo cambio (Udi)", "decimal"));
+      columns.Add(new DataTableColumn("valorizedUdisBalance", "Udi valorizado", "decimal"));
 
       return columns.ToFixedList();
     }
@@ -72,18 +80,26 @@ namespace Empiria.FinancialAccounting.BalanceEngine.Adapters {
 
         DomesticBalance = entry.DomesticBalance,
         DomesticDailyBalance = entry.DomesticDailyBalance,
-
+        
         DollarBalance = entry.DollarBalance,
         DollarDailyBalance = entry.DollarDailyBalance,
+        ExchangeRateForDollar = entry.ExchangeRateForDollar,
+        ValorizedDollarBalance = entry.ValorizedDollarBalance,
 
         YenBalance = entry.YenBalance,
         YenDailyBalance = entry.YenDailyBalance,
+        ExchangeRateForYen = entry.ExchangeRateForYen,
+        ValorizedYenBalance = entry.ValorizedYenBalance,
 
         EuroBalance = entry.EuroBalance,
         EuroDailyBalance = entry.EuroDailyBalance,
+        ExchangeRateForEuro = entry.ExchangeRateForEuro,
+        ValorizedEuroBalance = entry.ValorizedEuroBalance,
 
         UdisBalance = entry.UdisBalance,
         UdisDailyBalance = entry.UdisDailyBalance,
+        ExchangeRateForUdi = entry.ExchangeRateForUdi,
+        ValorizedUdisBalance = entry.ValorizedUdisBalance,
       };
     }
 
