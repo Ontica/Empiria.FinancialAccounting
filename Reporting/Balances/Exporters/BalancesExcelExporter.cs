@@ -93,6 +93,11 @@ namespace Empiria.FinancialAccounting.Reporting.Balances {
                           trialBalance.Entries.Select(x => (BalanzaColumnasMonedaEntryDto) x));
           return;
 
+        case TrialBalanceType.BalanzaDiferenciaDiariaPorMoneda:
+          balaceSetTable.FillOutBalanzaDiferenciaDiariaPorMoneda(_excelFile,
+                          trialBalance.Entries.Select(x => (BalanzaDiferenciaDiariaMonedaEntryDto) x));
+          return;
+
         case TrialBalanceType.BalanzaDolarizada:
           balaceSetTable.FillOutBalanzaDolarizada(_excelFile,
                           trialBalance.Entries.Select(x => (BalanzaDolarizadaEntryDto) x));
