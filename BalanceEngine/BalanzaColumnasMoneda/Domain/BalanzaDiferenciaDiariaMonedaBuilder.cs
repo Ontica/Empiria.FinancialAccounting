@@ -51,11 +51,15 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
       return diffByDayEntries;
     }
 
+    #endregion Public methods
+
+
+    #region Private methods
 
     private void CalculateDifferenceByDayEntries(
       FixedList<BalanzaDiferenciaDiariaMonedaEntry> diffByDayEntries) {
 
-      foreach (var entry in diffByDayEntries.Where(x=>x.ToDate.Month == Query.InitialPeriod.ToDate.Month)) {
+      foreach (var entry in diffByDayEntries.Where(x => x.ToDate.Month == Query.InitialPeriod.ToDate.Month)) {
 
         var previousDayEntry = diffByDayEntries.Find(x => x.Account.Number == entry.Account.Number &&
                                                   x.ToDate == entry.ToDate.AddDays(-1));
@@ -70,13 +74,64 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
     }
 
 
-    private FixedList<BalanzaDiferenciaDiariaMonedaEntry> MergeBalanceByCurrencyIntoCurrencyDiffByDay(
-      FixedList<BalanzaColumnasMonedaEntry> entriesByAccountAndDate) {
+    private FixedList<BalanzaColumnasMonedaEntry> GetBalanzaColumnasMoneda(FixedList<DateTime> workingDays) {
 
-      var mappedItems = entriesByAccountAndDate.Select((x) =>
-                          MapToDiffByDayEntry((BalanzaColumnasMonedaEntry) x));
+      var fromDateFlag = this.Query.InitialPeriod.FromDate;
+      var toDateFlag = this.Query.InitialPeriod.ToDate;
+      var balanzaColumnasList = new List<BalanzaColumnasMonedaEntry>();
 
-      return new FixedList<BalanzaDiferenciaDiariaMonedaEntry>(mappedItems);
+      foreach (var dateFilter in workingDays) {
+        this.Query.InitialPeriod.FromDate = dateFilter;
+        this.Query.InitialPeriod.ToDate = dateFilter;
+        this.Query.InitialPeriod.ValuateToCurrrencyUID = string.Empty;
+        this.Query.UseDefaultValuation = false;
+
+        var balanzaColumnasBuilder = new BalanzaColumnasMonedaBuilder(this.Query);
+        List<BalanzaColumnasMonedaEntry> balanzaColumnas = balanzaColumnasBuilder.Build().ToList();
+
+        balanzaColumnasList.AddRange(balanzaColumnas.Where(x => x.ItemType == TrialBalanceItemType.Entry));
+      }
+      this.Query.InitialPeriod.FromDate = fromDateFlag;
+      this.Query.InitialPeriod.ToDate = toDateFlag;
+
+      return balanzaColumnasList.ToFixedList();
+    }
+
+
+    private FixedList<BalanzaColumnasMonedaEntry> GetOrderByAccountAndDateEntries(
+                                                  FixedList<BalanzaColumnasMonedaEntry> balanzaColumnas) {
+
+      var orderingEntries = new List<BalanzaColumnasMonedaEntry>(balanzaColumnas);
+
+      return orderingEntries.OrderBy(x => x.Account.Number)
+                            .ThenBy(x => x.ToDate).ToFixedList();
+    }
+
+
+    private FixedList<DateTime> GetWorkingDaysRange() {
+
+      List<DateTime> workingDays = new List<DateTime>();
+
+      var calendar = EmpiriaCalendar.Default;
+      var previousMonth = this.Query.InitialPeriod.ToDate.AddMonths(-1);
+      var lastWorkingDatePreviousMonth = calendar.LastWorkingDateWithinMonth(
+                                          previousMonth.Year, previousMonth.Month);
+
+      workingDays.Add(lastWorkingDatePreviousMonth);
+
+      for (DateTime dateCount = this.Query.InitialPeriod.FromDate;
+           dateCount <= this.Query.InitialPeriod.ToDate; dateCount = dateCount.AddDays(1)) {
+
+        if (calendar.IsWorkingDate(dateCount)) {
+          workingDays.Add(dateCount);
+        }
+      }
+
+      if (workingDays.Count == 0) {
+        throw Assertion.EnsureNoReachThisCode($"There must be at least one working day.");
+      }
+
+      return workingDays.ToFixedList();
     }
 
 
@@ -103,74 +158,16 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
     }
 
 
-    private FixedList<BalanzaColumnasMonedaEntry> GetOrderByAccountAndDateEntries(
-                                                  FixedList<BalanzaColumnasMonedaEntry> balanzaColumnas) {
+    private FixedList<BalanzaDiferenciaDiariaMonedaEntry> MergeBalanceByCurrencyIntoCurrencyDiffByDay(
+      FixedList<BalanzaColumnasMonedaEntry> entriesByAccountAndDate) {
 
-      var orderingEntries = new List<BalanzaColumnasMonedaEntry>(balanzaColumnas);
+      var mappedItems = entriesByAccountAndDate.Select((x) =>
+                          MapToDiffByDayEntry((BalanzaColumnasMonedaEntry) x));
 
-      return orderingEntries.OrderBy(x => x.Account.Number)
-                            .ThenBy(x => x.ToDate).ToFixedList();
-    }
-
-    #endregion Public methods
-
-
-    #region Private methods
-
-    private FixedList<BalanzaColumnasMonedaEntry> GetBalanzaColumnasMoneda(FixedList<DateTime> workingDays) {
-
-      var fromDateFlag = this.Query.InitialPeriod.FromDate;
-      var toDateFlag = this.Query.InitialPeriod.ToDate;
-      var balanzaColumnasList = new List<BalanzaColumnasMonedaEntry>();
-
-      foreach (var dateFilter in workingDays) {
-        this.Query.InitialPeriod.FromDate = dateFilter;
-        this.Query.InitialPeriod.ToDate = dateFilter;
-        this.Query.InitialPeriod.ValuateToCurrrencyUID = string.Empty;
-        this.Query.UseDefaultValuation = false;
-
-        var balanzaColumnasBuilder = new BalanzaColumnasMonedaBuilder(this.Query);
-        List<BalanzaColumnasMonedaEntry> balanzaColumnas = balanzaColumnasBuilder.Build().ToList();
-
-        balanzaColumnasList.AddRange(balanzaColumnas.Where(x => x.ItemType == TrialBalanceItemType.Entry));
-      }
-      this.Query.InitialPeriod.FromDate = fromDateFlag;
-      this.Query.InitialPeriod.ToDate = toDateFlag;
-
-      return balanzaColumnasList.ToFixedList();
-    }
-
-
-    private FixedList<DateTime> GetWorkingDaysRange() {
-
-      List<DateTime> workingDays = new List<DateTime>();
-
-      var calendar = EmpiriaCalendar.Default;
-      var previousMonth = this.Query.InitialPeriod.ToDate.AddMonths(-1);
-      var lastWorkingDatePreviousMonth = calendar.LastWorkingDateWithinMonth(
-                                          previousMonth.Year, previousMonth.Month);
-      
-      workingDays.Add(lastWorkingDatePreviousMonth);
-
-      for (DateTime dateCount = this.Query.InitialPeriod.FromDate;
-           dateCount <= this.Query.InitialPeriod.ToDate; dateCount = dateCount.AddDays(1)) {
-
-        if (calendar.IsWorkingDate(dateCount)) {
-          workingDays.Add(dateCount);
-        }
-      }
-
-      if (workingDays.Count == 0) {
-        throw Assertion.EnsureNoReachThisCode($"There must be at least one working day.");
-      }
-
-      return workingDays.ToFixedList();
+      return new FixedList<BalanzaDiferenciaDiariaMonedaEntry>(mappedItems);
     }
 
     #endregion Private methods
-
-
-
 
   } // class BalanzaDiferenciaDiariaMonedaBuilder
 
