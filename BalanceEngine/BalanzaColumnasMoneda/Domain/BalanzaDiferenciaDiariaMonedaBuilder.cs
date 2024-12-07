@@ -24,7 +24,8 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
     #region Constructors and parsers
 
     private readonly TrialBalanceQuery Query;
-
+    private DateTime fromDateFlag;
+    private DateTime toDateFlag;
     internal BalanzaDiferenciaDiariaMonedaBuilder(TrialBalanceQuery query) {
       Query = query;
     }
@@ -34,11 +35,9 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
 
     #region Public methods
 
-    internal FixedList<BalanzaDiferenciaDiariaMonedaEntry> BuildBalanceByColumnValorized() {
+    internal FixedList<BalanzaDiferenciaDiariaMonedaEntry> Build() {
 
-      FixedList<DateTime> workingDays = GetWorkingDaysRange();
-
-      FixedList<BalanzaColumnasMonedaEntry> balanzaColumnas = GetBalanzaColumnasMoneda(workingDays);
+      FixedList<BalanzaColumnasMonedaEntry> balanzaColumnas = GetBalanzaColumnasMoneda();
 
       FixedList<BalanzaColumnasMonedaEntry> entriesByAccountAndDate = GetOrderByAccountAndDateEntries(
                                                                       balanzaColumnas);
@@ -55,6 +54,14 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
 
 
     #region Private methods
+
+    private void AssignPeriodByWorkingDateRange(DateTime dateFilter) {
+      this.Query.InitialPeriod.FromDate = dateFilter;
+      this.Query.InitialPeriod.ToDate = dateFilter;
+      this.Query.InitialPeriod.ValuateToCurrrencyUID = string.Empty;
+      this.Query.UseDefaultValuation = false;
+    }
+
 
     private void CalculateDifferenceByDayEntries(
       FixedList<BalanzaDiferenciaDiariaMonedaEntry> diffByDayEntries) {
@@ -74,22 +81,18 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
     }
 
 
-    private FixedList<BalanzaColumnasMonedaEntry> GetBalanzaColumnasMoneda(FixedList<DateTime> workingDays) {
+    private FixedList<BalanzaColumnasMonedaEntry> GetBalanzaColumnasMoneda() {
 
-      var fromDateFlag = this.Query.InitialPeriod.FromDate;
-      var toDateFlag = this.Query.InitialPeriod.ToDate;
+      FixedList<DateTime> workingDays = GetWorkingDaysRange();
       var balanzaColumnasList = new List<BalanzaColumnasMonedaEntry>();
 
       foreach (var dateFilter in workingDays) {
-        this.Query.InitialPeriod.FromDate = dateFilter;
-        this.Query.InitialPeriod.ToDate = dateFilter;
-        this.Query.InitialPeriod.ValuateToCurrrencyUID = string.Empty;
-        this.Query.UseDefaultValuation = false;
 
+        AssignPeriodByWorkingDateRange(dateFilter);
         var balanzaColumnasBuilder = new BalanzaColumnasMonedaBuilder(this.Query);
         List<BalanzaColumnasMonedaEntry> balanzaColumnas = balanzaColumnasBuilder.Build().ToList();
-
         balanzaColumnasList.AddRange(balanzaColumnas.Where(x => x.ItemType == TrialBalanceItemType.Entry));
+
       }
       this.Query.InitialPeriod.FromDate = fromDateFlag;
       this.Query.InitialPeriod.ToDate = toDateFlag;
@@ -102,13 +105,15 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
                                                   FixedList<BalanzaColumnasMonedaEntry> balanzaColumnas) {
 
       var orderingEntries = new List<BalanzaColumnasMonedaEntry>(balanzaColumnas);
-
       return orderingEntries.OrderBy(x => x.Account.Number)
                             .ThenBy(x => x.ToDate).ToFixedList();
     }
 
 
     private FixedList<DateTime> GetWorkingDaysRange() {
+
+      fromDateFlag = this.Query.InitialPeriod.FromDate;
+      toDateFlag = this.Query.InitialPeriod.ToDate;
 
       List<DateTime> workingDays = new List<DateTime>();
 

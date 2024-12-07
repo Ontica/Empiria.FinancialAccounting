@@ -133,7 +133,7 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
                                Query.UseDefaultValuation ? true : false;
 
       FixedList<ExchangeRate> exchangeRates = GetExchangeRateList(isValorizedBalance);
-      var x = entries.Where(a => a.Currency.Distinct(Currency.MXN)).ToList();
+      
       foreach (var entry in entries.Where(a => a.Currency.Distinct(Currency.MXN))) {
 
         var exchangeRate = exchangeRates.Find(
@@ -141,7 +141,8 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
                             a.FromCurrency.Code == Query.InitialPeriod.ValuateToCurrrencyUID);
 
         Assertion.Require(exchangeRate, $"No se ha registrado el tipo de cambio para la " +
-                                        $"moneda {entry.Currency.FullName} en la fecha proporcionada.");
+                                        $"moneda {entry.Currency.FullName} " +
+                                        $"en la fecha {Query.InitialPeriod.ToDate}.");
 
         GetValorizedEntries(entry, exchangeRate, isValorizedBalance);
       }
@@ -201,11 +202,15 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
         Query.InitialPeriod.ValuateToCurrrencyUID = "01";
       }
 
-      if (Query.InitialPeriod.ToDate.Day < lastDayInMonth) {
+      if (Query.InitialPeriod.ToDate.Day < lastDayInMonth ||
+          Query.TrialBalanceType == TrialBalanceType.BalanzaDiferenciaDiariaPorMoneda) {
+
         Query.InitialPeriod.ExchangeRateTypeUID = ExchangeRateType.Diario.UID;
       }
 
-      if (Query.InitialPeriod.ToDate.Day == lastDayInMonth) {
+      if (Query.InitialPeriod.ToDate.Day == lastDayInMonth &&
+          Query.TrialBalanceType != TrialBalanceType.BalanzaDiferenciaDiariaPorMoneda) {
+
         Query.InitialPeriod.ExchangeRateTypeUID = ExchangeRateType.ValorizacionBanxico.UID;
       }
       Query.InitialPeriod.ExchangeRateDate = Query.InitialPeriod.ToDate;

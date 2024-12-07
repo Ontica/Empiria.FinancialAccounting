@@ -170,7 +170,7 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
         case TrialBalanceType.BalanzaDiferenciaDiariaPorMoneda:
 
           var balanzaDifDiariaBuilder = new BalanzaDiferenciaDiariaMonedaBuilder(this.Query);
-          var balanzaDifDiariaEntries = balanzaDifDiariaBuilder.BuildBalanceByColumnValorized();
+          var balanzaDifDiariaEntries = balanzaDifDiariaBuilder.Build();
           FixedList<ITrialBalanceEntry> balanzaDifDiaria = balanzaDifDiariaEntries.Select(x =>
                                                             (ITrialBalanceEntry) x).ToFixedList();
 
