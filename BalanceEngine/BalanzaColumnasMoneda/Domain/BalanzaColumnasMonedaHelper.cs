@@ -195,30 +195,36 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
 
     private FixedList<ExchangeRate> GetExchangeRateList(bool isValorizedBalance) {
 
-      var lastDayInMonth = DateTime.DaysInMonth(
-        Query.InitialPeriod.ToDate.Year, Query.InitialPeriod.ToDate.Month);
-
       if (Query.UseDefaultValuation || !isValorizedBalance) {
         Query.InitialPeriod.ValuateToCurrrencyUID = "01";
       }
 
-      if (Query.InitialPeriod.ToDate.Day < lastDayInMonth ||
-          Query.TrialBalanceType == TrialBalanceType.BalanzaDiferenciaDiariaPorMoneda) {
-
-        Query.InitialPeriod.ExchangeRateTypeUID = ExchangeRateType.Diario.UID;
-      }
-
-      if (Query.InitialPeriod.ToDate.Day == lastDayInMonth &&
-          Query.TrialBalanceType != TrialBalanceType.BalanzaDiferenciaDiariaPorMoneda) {
-
-        Query.InitialPeriod.ExchangeRateTypeUID = ExchangeRateType.ValorizacionBanxico.UID;
-      }
-      Query.InitialPeriod.ExchangeRateDate = Query.InitialPeriod.ToDate;
+      GetExchangeRateTypeUIDByTrialBalanceType();
 
       var exchangeRateType = ExchangeRateType.Parse(Query.InitialPeriod.ExchangeRateTypeUID);
-      FixedList<ExchangeRate> exchangeRates = ExchangeRate.GetList(exchangeRateType,
-                                                                   Query.InitialPeriod.ExchangeRateDate);
+      FixedList<ExchangeRate> exchangeRates = ExchangeRate.GetList(
+                                                exchangeRateType, Query.InitialPeriod.ToDate);
       return exchangeRates;
+    }
+
+
+    private void GetExchangeRateTypeUIDByTrialBalanceType() {
+      
+      if (Query.TrialBalanceType == TrialBalanceType.BalanzaDiferenciaDiariaPorMoneda) {
+        
+        Query.InitialPeriod.ExchangeRateTypeUID = ExchangeRateType.BalanzaDiaria.UID;
+
+      } else {
+
+        var lastDayInMonth = DateTime.DaysInMonth(
+        Query.InitialPeriod.ToDate.Year, Query.InitialPeriod.ToDate.Month);
+
+        if (Query.InitialPeriod.ToDate.Day == lastDayInMonth) {
+          Query.InitialPeriod.ExchangeRateTypeUID = ExchangeRateType.ValorizacionBanxico.UID;
+        } else {
+          Query.InitialPeriod.ExchangeRateTypeUID = ExchangeRateType.Diario.UID;
+        }
+      }
     }
 
 
