@@ -40,6 +40,8 @@ namespace Empiria.FinancialAccounting {
 
     static public ExchangeRateType Empty => BaseObject.ParseEmpty<ExchangeRateType>();
 
+    static public ExchangeRateType BalanzaDiaria => ExchangeRateType.Parse(51);
+
     static public ExchangeRateType Diario => ExchangeRateType.Parse(46);
 
     static public ExchangeRateType Dolarizacion => ExchangeRateType.Parse(120);
