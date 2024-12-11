@@ -66,17 +66,26 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
     private void CalculateDifferenceByDayEntries(
       FixedList<BalanzaDiferenciaDiariaMonedaEntry> diffByDayEntries) {
 
+      int previousDayCount = 0;
+
       foreach (var entry in diffByDayEntries.Where(x => x.ToDate.Month == Query.InitialPeriod.ToDate.Month)) {
 
-        var previousDayEntry = diffByDayEntries.Find(x => x.Account.Number == entry.Account.Number &&
-                                                  x.ToDate == entry.ToDate.AddDays(-1));
-        if (previousDayEntry != null) {
+        DateTime previousDate = previousDayCount > 0 ?
+                       new DateTime(entry.ToDate.Year, entry.ToDate.Month, previousDayCount) :
+                       DateTime.MinValue;
+
+        if (previousDate != DateTime.MinValue && previousDate < entry.ToDate) {
+
+          var previousDayEntry = diffByDayEntries.Find(
+                                  x => x.Account.Number == entry.Account.Number && x.ToDate == previousDate);
+
           entry.DomesticDailyBalance = entry.DomesticBalance - previousDayEntry.DomesticBalance;
           entry.DollarDailyBalance = entry.DollarBalance - previousDayEntry.DollarBalance;
           entry.YenDailyBalance = entry.YenBalance - previousDayEntry.YenBalance;
           entry.EuroDailyBalance = entry.EuroBalance - previousDayEntry.EuroBalance;
           entry.UdisDailyBalance = entry.UdisBalance - previousDayEntry.UdisBalance;
         }
+        previousDayCount = entry.ToDate.Day;
       }
     }
 
