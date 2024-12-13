@@ -40,9 +40,7 @@ namespace Empiria.FinancialAccounting.BalanceEngine.Adapters {
       List<DataTableColumn> columns = new List<DataTableColumn>();
       columns.Add(new DataTableColumn("accountNumber", "Cuenta", "text-nowrap"));
       columns.Add(new DataTableColumn("toDate", "Fecha", "date"));
-
       columns.Add(new DataTableColumn("domesticBalance", "M.N. (01)", "decimal"));
-      //columns.Add(new DataTableColumn("domesticDailyBalance", "Diferencia diaria (M.N.)", "decimal"));
 
       columns.Add(new DataTableColumn("dollarBalance", "Dólares (02)", "decimal"));
       columns.Add(new DataTableColumn("dollarDailyBalance", "Diferencia diaria (Dólares)", "decimal"));
@@ -77,9 +75,7 @@ namespace Empiria.FinancialAccounting.BalanceEngine.Adapters {
 
         FromDate = entry.FromDate,
         ToDate = entry.ToDate,
-
         DomesticBalance = entry.DomesticBalance,
-        //DomesticDailyBalance = entry.DomesticDailyBalance,
         
         DollarBalance = entry.DollarBalance,
         DollarDailyBalance = entry.DollarDailyBalance,
