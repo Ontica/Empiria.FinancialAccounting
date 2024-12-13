@@ -76,7 +76,8 @@ namespace Empiria.FinancialAccounting.BalanceEngine.Adapters {
         FromDate = entry.FromDate,
         ToDate = entry.ToDate,
         DomesticBalance = entry.DomesticBalance,
-        
+        DomesticDailyBalance = entry.DomesticDailyBalance,
+
         DollarBalance = entry.DollarBalance,
         DollarDailyBalance = entry.DollarDailyBalance,
         ExchangeRateForDollar = entry.ExchangeRateForDollar,
