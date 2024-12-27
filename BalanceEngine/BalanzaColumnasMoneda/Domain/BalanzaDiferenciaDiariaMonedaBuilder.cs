@@ -66,28 +66,22 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
     private void CalculateDifferenceByDayEntries(
       FixedList<BalanzaDiferenciaDiariaMonedaEntry> diffByDayEntries) {
 
-      int previousDayCount = 0;
+      DateTime previousDate = DateTime.MinValue;
 
-      foreach (var entry in diffByDayEntries.Where(x => x.ToDate.Month == Query.InitialPeriod.ToDate.Month)) {
+      foreach (var entry in diffByDayEntries) {
 
-        DateTime previousDate = previousDayCount > 0 ?
-                     new DateTime(entry.ToDate.Year, entry.ToDate.Month, previousDayCount) :
-                     DateTime.MinValue;
-
-        if (previousDate != DateTime.MinValue && previousDate < entry.ToDate) {
+        if (entry.FromDate < Query.InitialPeriod.FromDate) {
+          entry.SetDailyBalance(new BalanzaDiferenciaDiariaMonedaEntry());
+        
+        } else if (previousDate != DateTime.MinValue && previousDate < entry.ToDate) {
 
           var previousDayEntry = diffByDayEntries.Find(x => x.ToDate == previousDate &&
                                                        x.Account.Number == entry.Account.Number);
-
           if (previousDayEntry != null) {
-            entry.DomesticDailyBalance = entry.DomesticBalance - previousDayEntry.DomesticBalance;
-            entry.DollarDailyBalance = entry.DollarBalance - previousDayEntry.DollarBalance;
-            entry.YenDailyBalance = entry.YenBalance - previousDayEntry.YenBalance;
-            entry.EuroDailyBalance = entry.EuroBalance - previousDayEntry.EuroBalance;
-            entry.UdisDailyBalance = entry.UdisBalance - previousDayEntry.UdisBalance;
+            entry.SetDailyBalance(previousDayEntry);
           }
         }
-        previousDayCount = entry.ToDate.Day;
+        previousDate = entry.ToDate;
 
       }
     }
@@ -130,11 +124,9 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
       List<DateTime> workingDays = new List<DateTime>();
 
       var calendar = EmpiriaCalendar.Default;
-      var previousMonth = this.Query.InitialPeriod.ToDate.AddMonths(-1);
-      var lastWorkingDatePreviousMonth = calendar.LastWorkingDateWithinMonth(
-                                          previousMonth.Year, previousMonth.Month);
-
-      workingDays.Add(lastWorkingDatePreviousMonth);
+      var previousMonth = this.Query.InitialPeriod.FromDate.AddMonths(-1);
+      
+      workingDays.Add(calendar.LastWorkingDateWithinMonth(previousMonth.Year, previousMonth.Month));
 
       for (DateTime dateCount = this.Query.InitialPeriod.FromDate;
            dateCount <= this.Query.InitialPeriod.ToDate; dateCount = dateCount.AddDays(1)) {

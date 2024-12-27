@@ -39,6 +39,15 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
       get; internal set;
     }
 
+
+    internal void SetDailyBalance(BalanzaDiferenciaDiariaMonedaEntry previousDayEntry) {
+      this.DomesticDailyBalance = this.DomesticBalance - previousDayEntry.DomesticBalance;
+      this.DollarDailyBalance = this.DollarBalance - previousDayEntry.DollarBalance;
+      this.YenDailyBalance = this.YenBalance - previousDayEntry.YenBalance;
+      this.EuroDailyBalance = this.EuroBalance - previousDayEntry.EuroBalance;
+      this.UdisDailyBalance = this.UdisBalance - previousDayEntry.UdisBalance;
+    }
+
   } // class BalanzaDiferenciaDiariaMonedaEntry
 
 } // namespace Empiria.FinancialAccounting.BalanceEngine
