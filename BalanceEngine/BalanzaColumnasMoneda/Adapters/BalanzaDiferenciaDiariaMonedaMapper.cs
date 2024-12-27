@@ -39,6 +39,7 @@ namespace Empiria.FinancialAccounting.BalanceEngine.Adapters {
     static public FixedList<DataTableColumn> DataColumns() {
       List<DataTableColumn> columns = new List<DataTableColumn>();
       columns.Add(new DataTableColumn("accountNumber", "Cuenta", "text-nowrap"));
+      columns.Add(new DataTableColumn("accountName", "Nombre cuenta", "text-nowrap"));
       columns.Add(new DataTableColumn("toDate", "Fecha", "date"));
       columns.Add(new DataTableColumn("domesticBalance", "M.N. (01)", "decimal"));
 
@@ -70,6 +71,7 @@ namespace Empiria.FinancialAccounting.BalanceEngine.Adapters {
 
       return new BalanzaDiferenciaDiariaMonedaEntryDto() {
         AccountNumber = entry.Account.Number,
+        AccountName = entry.Account.Name,
         DebtorCreditor = entry.Account.DebtorCreditor,
         SectorCode = "00",
 

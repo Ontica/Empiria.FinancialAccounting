@@ -44,6 +44,11 @@ namespace Empiria.FinancialAccounting.BalanceEngine.Adapters {
     }
 
 
+    public string AccountName {
+      get; internal set;
+    }
+
+
     public TrialBalanceItemType ItemType {
       get; internal set;
     } = TrialBalanceItemType.Entry;
@@ -175,7 +180,7 @@ namespace Empiria.FinancialAccounting.BalanceEngine.Adapters {
     public bool ClickableEntry {
       get; internal set;
     } = false;
-
+    
 
     string ITrialBalanceEntryDto.SubledgerAccountNumber {
       get {
