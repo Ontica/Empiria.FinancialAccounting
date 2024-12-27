@@ -71,8 +71,9 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
       foreach (var entry in diffByDayEntries) {
 
         if (entry.FromDate < Query.InitialPeriod.FromDate) {
+
           entry.SetDailyBalance(new BalanzaDiferenciaDiariaMonedaEntry());
-        
+
         } else if (previousDate != DateTime.MinValue && previousDate < entry.ToDate) {
 
           var previousDayEntry = diffByDayEntries.Find(x => x.ToDate == previousDate &&
