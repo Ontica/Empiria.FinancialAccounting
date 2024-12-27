@@ -71,14 +71,21 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
       foreach (var entry in diffByDayEntries) {
 
         if (entry.FromDate < Query.InitialPeriod.FromDate) {
-
           entry.SetDailyBalance(new BalanzaDiferenciaDiariaMonedaEntry());
 
         } else if (previousDate != DateTime.MinValue && previousDate < entry.ToDate) {
 
+          var calendar = EmpiriaCalendar.Default;
+          
+          DateTime lastWorkingDateInMonth =
+            calendar.LastWorkingDateWithinMonth(entry.ToDate.Year, entry.ToDate.Month);
+
           var previousDayEntry = diffByDayEntries.Find(x => x.ToDate == previousDate &&
                                                        x.Account.Number == entry.Account.Number);
-          if (previousDayEntry != null) {
+          if (entry.ToDate == lastWorkingDateInMonth) {
+            entry.SetDailyBalance(new BalanzaDiferenciaDiariaMonedaEntry());
+
+          } else if (previousDayEntry != null) {
             entry.SetDailyBalance(previousDayEntry);
           }
         }
