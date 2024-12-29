@@ -139,6 +139,26 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
       get; internal set;
     }
 
+
+    public decimal ClosingExchangeRateForDollar {
+      get; internal set;
+    }
+
+
+    public decimal ClosingExchangeRateForYen {
+      get; internal set;
+    }
+
+
+    public decimal ClosingExchangeRateForEuro {
+      get; internal set;
+    }
+
+
+    public decimal ClosingExchangeRateForUdi {
+      get; internal set;
+    }
+
   } // class BalanzaColumnasMonedaCommons
 
 

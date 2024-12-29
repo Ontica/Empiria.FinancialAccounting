@@ -12,6 +12,7 @@ using System.Linq;
 using System.Collections.Generic;
 using Empiria.Collections;
 using Empiria.FinancialAccounting.BalanceEngine.Adapters;
+using Empiria.Time;
 
 namespace Empiria.FinancialAccounting.BalanceEngine {
 
@@ -126,6 +127,35 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
     }
 
 
+    internal void ValuateEntriesToClosingExchangeRate(
+      FixedList<TrialBalanceEntry> entries) {
+
+      if (Query.TrialBalanceType == TrialBalanceType.BalanzaDiferenciaDiariaPorMoneda) {
+        
+        var calendar = EmpiriaCalendar.Default;
+        var lastWorkingDayInMonth = calendar.LastWorkingDateWithinMonth(
+                                      Query.InitialPeriod.ToDate.Year, Query.InitialPeriod.ToDate.Month);
+
+        var exchangeRateType = ExchangeRateType.Parse(ExchangeRateType.ValorizacionBanxico.UID);
+        FixedList<ExchangeRate> exchangeRates = ExchangeRate.GetList(
+                                                  exchangeRateType, lastWorkingDayInMonth);
+
+        foreach (var entry in entries.Where(a => a.Currency.Distinct(Currency.MXN))) {
+
+          var exchangeRate = exchangeRates.Find(
+                              a => a.ToCurrency.Equals(entry.Currency) &&
+                              a.FromCurrency.Code == Currency.MXN.Code);
+
+          Assertion.Require(exchangeRate, $"No se ha registrado el tipo de cambio para la " +
+                                          $"moneda {entry.Currency.FullName} " +
+                                          $"en la fecha {lastWorkingDayInMonth}.");
+
+          entry.SecondExchangeRate = exchangeRate.Value;
+        }
+      }
+    }
+
+
     internal void ValuateEntriesToExchangeRate(
       FixedList<TrialBalanceEntry> entries) {
 
@@ -209,21 +239,22 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
 
 
     private void GetExchangeRateTypeUIDByTrialBalanceType() {
+
+      var calendar = EmpiriaCalendar.Default;
+      var lastWorkingDateInMonth = calendar.LastWorkingDateWithinMonth(
+                                    Query.InitialPeriod.ToDate.Year, Query.InitialPeriod.ToDate.Month);
       
-      if (Query.TrialBalanceType == TrialBalanceType.BalanzaDiferenciaDiariaPorMoneda) {
+      if (Query.TrialBalanceType == TrialBalanceType.BalanzaDiferenciaDiariaPorMoneda &&
+          Query.InitialPeriod.ToDate < lastWorkingDateInMonth) {
         
         Query.InitialPeriod.ExchangeRateTypeUID = ExchangeRateType.BalanzaDiaria.UID;
 
+      } else if (Query.InitialPeriod.ToDate == lastWorkingDateInMonth) {
+       
+        Query.InitialPeriod.ExchangeRateTypeUID = ExchangeRateType.ValorizacionBanxico.UID;
       } else {
-
-        var lastDayInMonth = DateTime.DaysInMonth(
-        Query.InitialPeriod.ToDate.Year, Query.InitialPeriod.ToDate.Month);
-
-        if (Query.InitialPeriod.ToDate.Day == lastDayInMonth) {
-          Query.InitialPeriod.ExchangeRateTypeUID = ExchangeRateType.ValorizacionBanxico.UID;
-        } else {
-          Query.InitialPeriod.ExchangeRateTypeUID = ExchangeRateType.Diario.UID;
-        }
+        
+        Query.InitialPeriod.ExchangeRateTypeUID = ExchangeRateType.Diario.UID;
       }
     }
 
@@ -273,21 +304,25 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
             entry.DollarBalance = ledger.CurrentBalance;
             entry.ValorizedDollarBalance = ledger.ValorizedCurrentBalance;
             entry.ExchangeRateForDollar = ledger.ExchangeRate;
+            entry.ClosingExchangeRateForDollar = ledger.SecondExchangeRate;
           }
           if (ledger.Currency.Equals(Currency.YEN)) {
             entry.YenBalance = ledger.CurrentBalance;
             entry.ValorizedYenBalance = ledger.ValorizedCurrentBalance;
             entry.ExchangeRateForYen = ledger.ExchangeRate;
+            entry.ClosingExchangeRateForYen = ledger.SecondExchangeRate;
           }
           if (ledger.Currency.Equals(Currency.EUR)) {
             entry.EuroBalance = ledger.CurrentBalance;
             entry.ValorizedEuroBalance = ledger.ValorizedCurrentBalance;
             entry.ExchangeRateForEuro = ledger.ExchangeRate;
+            entry.ClosingExchangeRateForEuro = ledger.SecondExchangeRate;
           }
           if (ledger.Currency.Equals(Currency.UDI)) {
             entry.UdisBalance = ledger.CurrentBalance;
             entry.ValorizedUdisBalance = ledger.ValorizedCurrentBalance;
             entry.ExchangeRateForUdi = ledger.ExchangeRate;
+            entry.ClosingExchangeRateForUdi = ledger.SecondExchangeRate;
           }
         }
       }
@@ -320,21 +355,25 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
             entry.DollarBalance = ledger.CurrentBalance;
             entry.ValorizedDollarBalance = ledger.ValorizedCurrentBalance;
             entry.ExchangeRateForDollar = ledger.ExchangeRate;
+            entry.ClosingExchangeRateForDollar = ledger.SecondExchangeRate;
           }
           if (ledger.Currency.Equals(Currency.YEN)) {
             entry.YenBalance = ledger.CurrentBalance;
             entry.ValorizedYenBalance = ledger.ValorizedCurrentBalance;
             entry.ExchangeRateForYen = ledger.ExchangeRate;
+            entry.ClosingExchangeRateForYen = ledger.SecondExchangeRate;
           }
           if (ledger.Currency.Equals(Currency.EUR)) {
             entry.EuroBalance = ledger.CurrentBalance;
             entry.ValorizedEuroBalance = ledger.ValorizedCurrentBalance;
             entry.ExchangeRateForEuro = ledger.ExchangeRate;
+            entry.ClosingExchangeRateForEuro = ledger.SecondExchangeRate;
           }
           if (ledger.Currency.Equals(Currency.UDI)) {
             entry.UdisBalance = ledger.CurrentBalance;
             entry.ValorizedUdisBalance = ledger.ValorizedCurrentBalance;
             entry.ExchangeRateForUdi = ledger.ExchangeRate;
+            entry.ClosingExchangeRateForUdi = ledger.SecondExchangeRate;
           }
         }
       }

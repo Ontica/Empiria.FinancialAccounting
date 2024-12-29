@@ -72,7 +72,7 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
 
         if (entry.FromDate < Query.InitialPeriod.FromDate) {
           entry.SetDailyBalance(new BalanzaDiferenciaDiariaMonedaEntry());
-
+          
         } else if (previousDate != DateTime.MinValue && previousDate < entry.ToDate) {
 
           var calendar = EmpiriaCalendar.Default;
@@ -87,6 +87,7 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
 
           } else if (previousDayEntry != null) {
             entry.SetDailyBalance(previousDayEntry);
+            entry.SetValorizedDailyBalance();
           }
         }
         previousDate = entry.ToDate;
@@ -170,7 +171,11 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
         ExchangeRateForDollar = x.ExchangeRateForDollar,
         ExchangeRateForYen = x.ExchangeRateForYen,
         ExchangeRateForEuro = x.ExchangeRateForEuro,
-        ExchangeRateForUdi = x.ExchangeRateForUdi
+        ExchangeRateForUdi = x.ExchangeRateForUdi,
+        ClosingExchangeRateForDollar = x.ClosingExchangeRateForDollar,
+        ClosingExchangeRateForYen = x.ClosingExchangeRateForYen,
+        ClosingExchangeRateForEuro = x.ClosingExchangeRateForEuro,
+        ClosingExchangeRateForUdi = x.ClosingExchangeRateForUdi
       };
     }
 

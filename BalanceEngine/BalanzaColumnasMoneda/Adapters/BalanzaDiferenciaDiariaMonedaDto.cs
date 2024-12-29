@@ -148,6 +148,26 @@ namespace Empiria.FinancialAccounting.BalanceEngine.Adapters {
     }
 
 
+    public decimal ClosingExchangeRateForDollar {
+      get; internal set;
+    }
+
+
+    public decimal ClosingExchangeRateForYen {
+      get; internal set;
+    }
+
+
+    public decimal ClosingExchangeRateForEuro {
+      get; internal set;
+    }
+
+
+    public decimal ClosingExchangeRateForUdi {
+      get; internal set;
+    }
+
+
     public decimal ValorizedDollarBalance {
       get;
       internal set;
@@ -169,6 +189,26 @@ namespace Empiria.FinancialAccounting.BalanceEngine.Adapters {
     public decimal ValorizedUdisBalance {
       get;
       internal set;
+    }
+
+
+    public decimal ValorizedDailyDollarBalance {
+      get; internal set;
+    }
+
+
+    public decimal ValorizedDailyYenBalance {
+      get; internal set;
+    }
+
+
+    public decimal ValorizedDailyEuroBalance {
+      get; internal set;
+    }
+
+
+    public decimal ValorizedDailyUdisBalance {
+      get; internal set;
     }
 
 

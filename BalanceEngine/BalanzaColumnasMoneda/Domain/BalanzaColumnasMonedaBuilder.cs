@@ -46,6 +46,8 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
 
       helper.ValuateEntriesToExchangeRate(accountEntries);
 
+      helper.ValuateEntriesToClosingExchangeRate(accountEntries);
+
       trialBalanceHelper.RoundDecimals(accountEntries);
 
       trialBalanceHelper.SetSummaryToParentEntries(accountEntries);

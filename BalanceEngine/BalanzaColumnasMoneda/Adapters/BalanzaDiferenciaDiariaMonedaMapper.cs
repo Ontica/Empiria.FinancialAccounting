@@ -47,21 +47,29 @@ namespace Empiria.FinancialAccounting.BalanceEngine.Adapters {
       columns.Add(new DataTableColumn("dollarDailyBalance", "Diferencia diaria (Dólares)", "decimal"));
       columns.Add(new DataTableColumn("exchangeRateForDollar", "Tipo cambio (Dólares)", "decimal", 6));
       columns.Add(new DataTableColumn("valorizedDollarBalance", "Saldo valorizado (Dólares)", "decimal"));
+      columns.Add(new DataTableColumn("closingExchangeRateForDollar", "Tipo cambio cierre (Dólares)", "decimal", 6));
+      columns.Add(new DataTableColumn("valorizedDailyDollarBalance", "Valorización diaria (Dólares)", "decimal"));
 
       columns.Add(new DataTableColumn("yenBalance", "Yenes (06)", "decimal"));
       columns.Add(new DataTableColumn("yenDailyBalance", "Diferencia diaria (Yenes)", "decimal"));
       columns.Add(new DataTableColumn("exchangeRateForYen", "Tipo cambio (Yenes)", "decimal", 6));
       columns.Add(new DataTableColumn("valorizedYenBalance", "Saldo valorizado (Yenes)", "decimal"));
+      columns.Add(new DataTableColumn("closingExchangeRateForYen", "Tipo cambio cierre (Yenes)", "decimal", 6));
+      columns.Add(new DataTableColumn("valorizedDailyYenBalance", "Valorización diaria (Yenes)", "decimal"));
 
       columns.Add(new DataTableColumn("euroBalance", "Euros (27)", "decimal"));
       columns.Add(new DataTableColumn("euroDailyBalance", "Diferencia diaria (Euros)", "decimal"));
       columns.Add(new DataTableColumn("exchangeRateForEuro", "Tipo cambio (Euros)", "decimal", 6));
       columns.Add(new DataTableColumn("valorizedEuroBalance", "Saldo valorizado (Euros)", "decimal"));
+      columns.Add(new DataTableColumn("closingExchangeRateForEuro", "Tipo cambio cierre (Euros)", "decimal", 6));
+      columns.Add(new DataTableColumn("ValorizedDailyEuroBalance", "Valorización diaria (Euros)", "decimal"));
 
       columns.Add(new DataTableColumn("udisBalance", "UDIS (44)", "decimal"));
       columns.Add(new DataTableColumn("udisDailyBalance", "Diferencia diaria (UDIS)", "decimal"));
       columns.Add(new DataTableColumn("exchangeRateForUdi", "Tipo cambio (UDIS)", "decimal", 6));
       columns.Add(new DataTableColumn("valorizedUdisBalance", "Saldo valorizado (UDIS)", "decimal"));
+      columns.Add(new DataTableColumn("closingExchangeRateForUdi", "Tipo cambio cierre (UDIS)", "decimal", 6));
+      columns.Add(new DataTableColumn("valorizedDailyUdisBalance", "Valorización diaria (UDIS)", "decimal"));
 
       return columns.ToFixedList();
     }
@@ -84,21 +92,29 @@ namespace Empiria.FinancialAccounting.BalanceEngine.Adapters {
         DollarDailyBalance = entry.DollarDailyBalance,
         ExchangeRateForDollar = entry.ExchangeRateForDollar,
         ValorizedDollarBalance = entry.ValorizedDollarBalance,
+        ClosingExchangeRateForDollar = entry.ClosingExchangeRateForDollar,
+        ValorizedDailyDollarBalance = entry.ValorizedDailyDollarBalance,
 
         YenBalance = entry.YenBalance,
         YenDailyBalance = entry.YenDailyBalance,
         ExchangeRateForYen = entry.ExchangeRateForYen,
         ValorizedYenBalance = entry.ValorizedYenBalance,
+        ClosingExchangeRateForYen = entry.ClosingExchangeRateForYen,
+        ValorizedDailyYenBalance = entry.ValorizedDailyYenBalance,
 
         EuroBalance = entry.EuroBalance,
         EuroDailyBalance = entry.EuroDailyBalance,
         ExchangeRateForEuro = entry.ExchangeRateForEuro,
         ValorizedEuroBalance = entry.ValorizedEuroBalance,
+        ClosingExchangeRateForEuro = entry.ClosingExchangeRateForEuro,
+        ValorizedDailyEuroBalance = entry.ValorizedDailyEuroBalance,
 
         UdisBalance = entry.UdisBalance,
         UdisDailyBalance = entry.UdisDailyBalance,
         ExchangeRateForUdi = entry.ExchangeRateForUdi,
-        ValorizedUdisBalance = entry.ValorizedUdisBalance
+        ValorizedUdisBalance = entry.ValorizedUdisBalance,
+        ClosingExchangeRateForUdi = entry.ClosingExchangeRateForUdi,
+        ValorizedDailyUdisBalance = entry.ValorizedDailyUdisBalance
       };
     }
 

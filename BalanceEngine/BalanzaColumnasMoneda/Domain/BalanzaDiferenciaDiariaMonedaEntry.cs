@@ -40,12 +40,40 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
     }
 
 
+    public decimal ValorizedDailyDollarBalance {
+      get; internal set;
+    }
+
+
+    public decimal ValorizedDailyYenBalance {
+      get; internal set;
+    }
+
+
+    public decimal ValorizedDailyEuroBalance {
+      get; internal set;
+    }
+
+
+    public decimal ValorizedDailyUdisBalance {
+      get; internal set;
+    }
+
+
     internal void SetDailyBalance(BalanzaDiferenciaDiariaMonedaEntry previousDayEntry) {
       this.DomesticDailyBalance = this.DomesticBalance - previousDayEntry.DomesticBalance;
       this.DollarDailyBalance = this.DollarBalance - previousDayEntry.DollarBalance;
       this.YenDailyBalance = this.YenBalance - previousDayEntry.YenBalance;
       this.EuroDailyBalance = this.EuroBalance - previousDayEntry.EuroBalance;
       this.UdisDailyBalance = this.UdisBalance - previousDayEntry.UdisBalance;
+    }
+
+
+    internal void SetValorizedDailyBalance() {
+      this.ValorizedDailyDollarBalance = (this.ClosingExchangeRateForDollar - this.ExchangeRateForDollar) * DollarDailyBalance;
+      this.ValorizedDailyYenBalance = (this.ClosingExchangeRateForYen - this.ExchangeRateForYen) * YenDailyBalance;
+      this.ValorizedDailyEuroBalance = (this.ClosingExchangeRateForEuro - this.ExchangeRateForEuro) * EuroDailyBalance;
+      this.ValorizedDailyUdisBalance = (this.ClosingExchangeRateForUdi - this.ExchangeRateForUdi) * UdisDailyBalance;
     }
 
   } // class BalanzaDiferenciaDiariaMonedaEntry
