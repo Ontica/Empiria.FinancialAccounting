@@ -62,7 +62,7 @@ namespace Empiria.FinancialAccounting.Reporting.Balances {
       var subTitle = $"Del {_query.InitialPeriod.FromDate.ToString("dd/MMM/yyyy")} " +
                      $"al {_query.InitialPeriod.ToDate.ToString("dd/MMM/yyyy")}";
 
-      if (_query.ValuateBalances) {
+      if (_query.ValuateBalances && _query.TrialBalanceType != TrialBalanceType.BalanzaDiferenciaDiariaPorMoneda) {
         subTitle += $". Saldos valorizados al {_query.InitialPeriod.ExchangeRateDate.ToString("dd/MMM/yyyy")}.";
       }
 

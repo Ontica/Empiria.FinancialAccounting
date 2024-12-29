@@ -135,22 +135,30 @@ namespace Empiria.FinancialAccounting.Reporting.Balances {
         _excelFile.SetCell($"F{i}", entry.DollarDailyBalance);
         _excelFile.SetCell($"G{i}", entry.ExchangeRateForDollar);
         _excelFile.SetCell($"H{i}", entry.ValorizedDollarBalance);
+        _excelFile.SetCell($"I{i}", entry.ClosingExchangeRateForDollar);
+        _excelFile.SetCell($"J{i}", entry.ValorizedDailyDollarBalance);
 
-        _excelFile.SetCell($"I{i}", entry.YenBalance);
-        _excelFile.SetCell($"J{i}", entry.YenDailyBalance);
-        _excelFile.SetCell($"K{i}", entry.ExchangeRateForYen);
-        _excelFile.SetCell($"L{i}", entry.ValorizedYenBalance);
+        _excelFile.SetCell($"K{i}", entry.YenBalance);
+        _excelFile.SetCell($"L{i}", entry.YenDailyBalance);
+        _excelFile.SetCell($"M{i}", entry.ExchangeRateForYen);
+        _excelFile.SetCell($"N{i}", entry.ValorizedYenBalance);
+        _excelFile.SetCell($"O{i}", entry.ClosingExchangeRateForYen);
+        _excelFile.SetCell($"P{i}", entry.ValorizedDailyYenBalance);
 
-        _excelFile.SetCell($"M{i}", entry.EuroBalance);
-        _excelFile.SetCell($"N{i}", entry.EuroDailyBalance);
-        _excelFile.SetCell($"O{i}", entry.ExchangeRateForEuro);
-        _excelFile.SetCell($"P{i}", entry.ValorizedEuroBalance);
+        _excelFile.SetCell($"Q{i}", entry.EuroBalance);
+        _excelFile.SetCell($"R{i}", entry.EuroDailyBalance);
+        _excelFile.SetCell($"S{i}", entry.ExchangeRateForEuro);
+        _excelFile.SetCell($"T{i}", entry.ValorizedEuroBalance);
+        _excelFile.SetCell($"U{i}", entry.ClosingExchangeRateForEuro);
+        _excelFile.SetCell($"V{i}", entry.ValorizedDailyEuroBalance);
 
-        _excelFile.SetCell($"Q{i}", entry.UdisBalance);
-        _excelFile.SetCell($"R{i}", entry.UdisDailyBalance);
-        _excelFile.SetCell($"S{i}", entry.ExchangeRateForUdi);
-        _excelFile.SetCell($"T{i}", entry.ValorizedUdisBalance);
-        
+        _excelFile.SetCell($"W{i}", entry.UdisBalance);
+        _excelFile.SetCell($"X{i}", entry.UdisDailyBalance);
+        _excelFile.SetCell($"Y{i}", entry.ExchangeRateForUdi);
+        _excelFile.SetCell($"Z{i}", entry.ValorizedUdisBalance);
+        _excelFile.SetCell($"AA{i}", entry.ClosingExchangeRateForUdi);
+        _excelFile.SetCell($"AB{i}", entry.ValorizedDailyUdisBalance);
+
         i++;
       }
     }

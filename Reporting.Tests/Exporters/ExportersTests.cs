@@ -8,7 +8,12 @@
 *                                                                                                            *
 ************************* Copyright(c) La Vía Óntica SC, Ontica LLC and contributors. All rights reserved. **/
 using System;
+using Empiria.FinancialAccounting.BalanceEngine;
+using System.Security.Principal;
+using Empiria.FinancialAccounting.BalanceEngine.Adapters;
+using Empiria.FinancialAccounting.BalanceEngine.UseCases;
 using Empiria.FinancialAccounting.Reporting;
+using Empiria.FinancialAccounting.Reporting.Balances;
 using Empiria.FinancialAccounting.Vouchers.Adapters;
 using Empiria.FinancialAccounting.Vouchers.UseCases;
 using Empiria.Storage;
@@ -18,6 +23,36 @@ namespace Empiria.FinancialAccounting.Tests.Reporting {
 
   /// <summary>Test cases for Comparativo de cuentas.</summary>
   public class ExportersTests {
+
+
+    [Fact]
+    public void ExportDiferenciaDiaraTest() {
+      using (var usecases = TrialBalanceUseCases.UseCaseInteractor()) {
+
+        var query  = new TrialBalanceQuery() {
+          AccountsChartUID = "47ec2ec7-0f4f-482e-9799-c23107b60d8a",
+        BalancesType = BalancesType.WithCurrentBalanceOrMovements,
+        TrialBalanceType = TrialBalanceType.BalanzaDiferenciaDiariaPorMoneda,
+        ShowCascadeBalances = false,
+        Ledgers = new string[] { },
+        FromAccount = "1.01.01.01",
+        ToAccount = "1.01.01.01",
+
+        InitialPeriod = new BalancesPeriod {
+          FromDate = new DateTime(2024, 02, 19),
+          ToDate = new DateTime(2024, 02, 23)
+        }
+      };
+
+        TrialBalanceDto trialBalance = usecases.BuildTrialBalance(query);
+
+        var excelExporter = new BalancesExcelExporterService();
+
+        FileDto excelFileDto = excelExporter.Export(trialBalance);
+        
+        Assert.NotNull(excelFileDto);
+      }
+    }
 
 
     [Fact]
