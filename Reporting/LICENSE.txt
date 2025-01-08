@@ -1,7 +1,7 @@
 ﻿Empiria Financial Accounting Reporting Module License
 =====================================================
 
-Copyright (c) 2021-2024. La Vía Óntica SC, Ontica LLC y autores.
+Copyright (c) 2021-2025. La Vía Óntica SC, Ontica LLC y autores.
                          Todos los derechos reservados.
 -----------------------------------------------------------------------
 
