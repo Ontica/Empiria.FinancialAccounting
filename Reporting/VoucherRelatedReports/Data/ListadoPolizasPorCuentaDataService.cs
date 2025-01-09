@@ -7,11 +7,9 @@
 *  Summary  : Provides data read methods for voucher list by account.                                       *
 *                                                                                                            *
 ************************* Copyright(c) La Vía Óntica SC, Ontica LLC and contributors. All rights reserved. **/
-using System;
 
 using Empiria.Data;
 using Empiria.FinancialAccounting.Reporting.AccountStatements.Domain;
-using Empiria.FinancialAccounting.Reporting.Data;
 
 namespace Empiria.FinancialAccounting.Reporting.AccountStatements {
 
@@ -20,22 +18,21 @@ namespace Empiria.FinancialAccounting.Reporting.AccountStatements {
 
 
     static internal FixedList<AccountStatementEntry> GetVouchersByAccountEntries(string filter, string sortBy) {
-        var sql = "SELECT * FROM VW_COF_MOVIMIENTO ";
+      var sql = "SELECT * FROM VW_COF_MOVIMIENTO";
 
-        if (!string.IsNullOrWhiteSpace(filter)) {
-            sql += $"WHERE {filter} ";
-        }
+      if (!string.IsNullOrWhiteSpace(filter)) {
+        sql += $" WHERE {filter}";
+      }
 
-        if (!string.IsNullOrWhiteSpace(sortBy)) {
-            sql += $"ORDER BY {sortBy} ";
-        }
+      if (!string.IsNullOrWhiteSpace(sortBy)) {
+        sql += $" ORDER BY {sortBy}";
+      }
 
-        var op = DataOperation.Parse(sql);
+      var op = DataOperation.Parse(sql);
 
-        return DataReader.GetPlainObjectFixedList<AccountStatementEntry>(op);
+      return DataReader.GetPlainObjectFixedList<AccountStatementEntry>(op);
     }
 
-
-    } // class ListadoPolizasPorCuentaDataService
+  } // class ListadoPolizasPorCuentaDataService
 
 } // namespace Empiria.FinancialAccounting.Reporting.Data

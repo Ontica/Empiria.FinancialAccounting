@@ -1,44 +1,43 @@
 ﻿/* Empiria Financial *****************************************************************************************
 *                                                                                                            *
 *  Module   : Reporting Services                            Component : Interface adapters                   *
-*  Assembly : FinancialAccounting.Reporting.dll             Pattern   : Query payload                        *
+*  Assembly : FinancialAccounting.Reporting.dll             Pattern   : Query type extension methods         *
 *  Type     : ReportBuilderQueryExtensions                  License   : Please read LICENSE.txt file         *
 *                                                                                                            *
-*  Summary  : Class extension used to generate clauses from query for financial accounting reports.          *
+*  Summary  : Extension methods for ReportBuilderQuery type.                                                 *
 *                                                                                                            *
 ************************* Copyright(c) La Vía Óntica SC, Ontica LLC and contributors. All rights reserved. **/
+
 using System;
 using System.Linq;
+
 using Empiria.Data;
 
 namespace Empiria.FinancialAccounting.Reporting {
 
-
-  /// <summary>Class extension used to generate clauses from query for financial accounting reports.</summary>
+  /// <summary>Extension methods for ReportBuilderQuery type.</summary>
   static internal class ReportBuilderQueryExtensions {
 
-
-    #region Public methods
-
+    #region Methods
 
     static internal string MapToFilterString(this ReportBuilderQuery query) {
 
-      string accountChart = GetAccountsChartFilter(query);
-      string dateFilter = GetDateFilter(query);
-      string account = GetAccountFilter(query);
-      string ledgers = GetLedgerFilter(query);
-      string verificationNumber = GetVerificationNumber(query);
-      string voucherRangeFilter = GetVoucherRangeFilter(query);
+      string accountChartFilter = BuildAccountsChartFilter(query);
+      string dateFilter = BuildDateRangeFilter(query);
+      string accountNumberFilter = BuildAccountNumberFilter(query);
+      string ledgersFilter = BuildLedgersFilter(query);
+      string verificationNumberFilter = BuildVerificationNumberFilter(query);
+      string voucherRangeFilter = BuildVoucherRangeFilter(query);
 
-      var filter = new Filter(accountChart);
+      var filter = new Filter(accountChartFilter);
 
       filter.AppendAnd(dateFilter);
-      filter.AppendAnd(account);
-      filter.AppendAnd(ledgers);
-      filter.AppendAnd(verificationNumber);
+      filter.AppendAnd(accountNumberFilter);
+      filter.AppendAnd(ledgersFilter);
+      filter.AppendAnd(verificationNumberFilter);
       filter.AppendAnd(voucherRangeFilter);
 
-      return filter.ToString().Length > 0 ? $"{filter}" : "";
+      return filter.ToString();
     }
 
 
@@ -51,13 +50,11 @@ namespace Empiria.FinancialAccounting.Reporting {
       return $"ID_MAYOR, NUMERO_TRANSACCION, ID_MOVIMIENTO";
     }
 
-
-    #endregion Public methods
-
+    #endregion Methods
 
     #region Helpers
 
-    static private string GetAccountFilter(ReportBuilderQuery query) {
+    static private string BuildAccountNumberFilter(ReportBuilderQuery query) {
       if (query.AccountNumber == string.Empty) {
         return string.Empty;
       }
@@ -66,7 +63,7 @@ namespace Empiria.FinancialAccounting.Reporting {
     }
 
 
-    static private string GetAccountsChartFilter(ReportBuilderQuery query) {
+    static private string BuildAccountsChartFilter(ReportBuilderQuery query) {
 
       if (query.ReportType != ReportTypes.ListadoDePolizasPorCuenta &&
           query.ReportType != ReportTypes.MovimientosPorNumeroDeVerificacion) {
@@ -77,7 +74,7 @@ namespace Empiria.FinancialAccounting.Reporting {
     }
 
 
-    static private string GetDateFilter(ReportBuilderQuery query) {
+    static private string BuildDateRangeFilter(ReportBuilderQuery query) {
       if (query.ReportType != ReportTypes.ListadoDePolizasPorCuenta &&
           query.ReportType != ReportTypes.MovimientosPorNumeroDeVerificacion) {
         return string.Empty;
@@ -88,7 +85,7 @@ namespace Empiria.FinancialAccounting.Reporting {
     }
 
 
-    static private string GetLedgerFilter(ReportBuilderQuery query) {
+    static private string BuildLedgersFilter(ReportBuilderQuery query) {
       if (query.Ledgers.Length == 0) {
         return string.Empty;
       }
@@ -99,27 +96,17 @@ namespace Empiria.FinancialAccounting.Reporting {
     }
 
 
-    static private string GetVerificationNumber(ReportBuilderQuery query) {
-
-      if (query.ReportType == ReportTypes.MovimientosPorNumeroDeVerificacion) {
+    static private string BuildVerificationNumberFilter(ReportBuilderQuery query) {
+      if (query.VerificationNumbers.Length == 0) {
         return string.Empty;
       }
 
-      if (query.VerificationNumbers.Length > 0) {
+      return $"NUMERO_VERIFICACION IN ({String.Join(", ", query.VerificationNumbers.Select(x => $"'{x}'"))})";
 
-        return $"NUMERO_VERIFICACION IN ({String.Join(", ", query.VerificationNumbers)})";
-
-      } else if (query.VerificationNumbers.Length == 0 && query.AccountNumber != string.Empty) {
-
-        return $"NUMERO_VERIFICACION > 0";
-
-      } else {
-        return string.Empty;
-      }
     }
 
 
-    static private string GetVoucherRangeFilter(ReportBuilderQuery query) {
+    static private string BuildVoucherRangeFilter(ReportBuilderQuery query) {
       if (query.ReportType != ReportTypes.ListadoMovimientosPorPolizas) {
         return string.Empty;
       }
