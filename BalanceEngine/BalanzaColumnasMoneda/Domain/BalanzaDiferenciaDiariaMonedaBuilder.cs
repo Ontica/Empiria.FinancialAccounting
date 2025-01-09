@@ -35,6 +35,7 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
 
     #region Public methods
 
+
     internal FixedList<BalanzaDiferenciaDiariaMonedaEntry> Build() {
 
       FixedList<BalanzaColumnasMonedaEntry> balanzaColumnas = GetBalanzaColumnasMoneda();
@@ -54,13 +55,6 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
 
 
     #region Private methods
-
-    private void AssignPeriodByWorkingDateRange(DateTime dateFilter) {
-      this.Query.InitialPeriod.FromDate = dateFilter;
-      this.Query.InitialPeriod.ToDate = dateFilter;
-      this.Query.InitialPeriod.ValuateToCurrrencyUID = string.Empty;
-      this.Query.UseDefaultValuation = false;
-    }
 
 
     private void CalculateDifferenceByDayEntries(
@@ -103,7 +97,7 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
 
       foreach (var dateFilter in workingDays) {
 
-        AssignPeriodByWorkingDateRange(dateFilter);
+        Query.AssignPeriodByWorkingDate(dateFilter);
         var balanzaColumnasBuilder = new BalanzaColumnasMonedaBuilder(this.Query);
         List<BalanzaColumnasMonedaEntry> balanzaColumnas = balanzaColumnasBuilder.Build().ToList();
         balanzaColumnasList.AddRange(balanzaColumnas.Where(x => x.ItemType == TrialBalanceItemType.Entry));
