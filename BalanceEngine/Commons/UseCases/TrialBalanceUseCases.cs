@@ -78,10 +78,26 @@ namespace Empiria.FinancialAccounting.BalanceEngine.UseCases {
 
       FixedList<TrialBalanceEntry> baseAccountEntries = BalancesDataService.GetTrialBalanceEntries(query);
 
-      FixedList<BalanzaColumnasMonedaEntry> entries = await Task.Run(() => builder.Build(baseAccountEntries))
-                                                             .ConfigureAwait(false);
+      FixedList<BalanzaColumnasMonedaEntry> entries = await Task.Run(() =>
+                                                  builder.BuildBalanceInColumnByCurrency(baseAccountEntries))
+                                                  .ConfigureAwait(false);
 
       return BalanzaColumnasMonedaMapper.Map(query, entries);
+    }
+
+
+    public async Task<BalanzaDiferenciaDiariaMonedaDto> BuildBalanzaDiferenciaDiariaMoneda(TrialBalanceQuery query) {
+      Assertion.Require(query, nameof(query));
+
+      Assertion.Require(query.TrialBalanceType == TrialBalanceType.BalanzaDiferenciaDiariaPorMoneda,
+                       "query.TrialBalanceType must be 'BalanzaDiferenciaDiariaPorMoneda'.");
+
+      var builder = new BalanzaDiferenciaDiariaMonedaBuilder(query);
+
+      FixedList<BalanzaDiferenciaDiariaMonedaEntry> entries = await Task.Run(() => builder.Build())
+                                                                        .ConfigureAwait(false);
+
+      return BalanzaDiferenciaDiariaMonedaMapper.Map(query, entries);
     }
 
 

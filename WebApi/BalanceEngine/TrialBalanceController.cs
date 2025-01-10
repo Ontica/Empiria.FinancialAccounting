@@ -60,6 +60,22 @@ namespace Empiria.FinancialAccounting.WebApi.BalanceEngine {
 
 
     [HttpPost]
+    [Route("v2/financial-accounting/balance-engine/balanza-diferencia-diaria-moneda")]
+    public async Task<SingleObjectModel> GetBalanzaDiferenciaDiariaMoneda([FromBody] TrialBalanceQuery query) {
+
+      base.RequireBody(query);
+
+      using (var usecases = TrialBalanceUseCases.UseCaseInteractor()) {
+
+        BalanzaDiferenciaDiariaMonedaDto dto = await usecases.BuildBalanzaDiferenciaDiariaMoneda(query)
+                                                             .ConfigureAwait(false);
+
+        return new SingleObjectModel(this.Request, dto);
+      }
+    }
+
+
+    [HttpPost]
     [Route("v2/financial-accounting/balance-engine/balanza-comparativa")]
     public async Task<SingleObjectModel> GetBalanzaComparativa([FromBody] TrialBalanceQuery query) {
 
