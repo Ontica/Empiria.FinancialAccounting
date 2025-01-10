@@ -37,6 +37,61 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
 
     internal FixedList<BalanzaColumnasMonedaEntry> Build(FixedList<TrialBalanceEntry> accountEntries) {
 
+      if (Query.TrialBalanceType == TrialBalanceType.BalanzaEnColumnasPorMoneda) {
+
+        return BuildBalanceInColumnByCurrency(accountEntries);
+
+      } else if (Query.TrialBalanceType == TrialBalanceType.BalanzaDiferenciaDiariaPorMoneda) {
+
+        return BuildDailyDifferenceBalance(accountEntries);
+
+      } else {
+        throw Assertion.EnsureNoReachThisCode(
+                    $"Unhandled trial balance type {Query.TrialBalanceType}.");
+      }
+
+    }
+
+
+    internal FixedList<BalanzaColumnasMonedaEntry> BuildBalanceInColumnByCurrency(FixedList<TrialBalanceEntry> accountEntries) {
+
+      if (accountEntries.Count == 0) {
+        return new FixedList<BalanzaColumnasMonedaEntry>();
+      }
+
+      var balanceHelper = new TrialBalanceHelper(Query);
+      var helper = new BalanzaColumnasMonedaHelper(Query);
+
+      helper.ValuateEntriesToExchangeRate(accountEntries);
+
+      balanceHelper.RoundDecimals(accountEntries);
+
+      balanceHelper.SetSummaryToParentEntries(accountEntries);
+
+      var parentAccountsEntries = balanceHelper.GetCalculatedParentAccounts(accountEntries.ToFixedList());
+
+      List<TrialBalanceEntry> debtorAccounts = helper.GetSumFromCreditorToDebtorAccounts(
+                                                      parentAccountsEntries);
+
+      helper.CombineAccountEntriesAndDebtorAccounts(accountEntries.ToList(), debtorAccounts);
+
+      List<TrialBalanceEntry> accountEntriesByCurrency =
+                                helper.GetAccountEntriesByCurrency(debtorAccounts).ToList();
+      
+      balanceHelper.RestrictLevels(accountEntriesByCurrency.ToList());
+
+      List<BalanzaColumnasMonedaEntry> balanceByCurrency =
+                      helper.MergeTrialBalanceIntoBalanceByCurrency(accountEntriesByCurrency.ToFixedList());
+      
+      helper.GetTotalValorizedByAccount(balanceByCurrency);
+
+      return balanceByCurrency.ToFixedList();
+    }
+
+
+    internal FixedList<BalanzaColumnasMonedaEntry> BuildDailyDifferenceBalance(
+                                                    FixedList<TrialBalanceEntry> accountEntries) {
+
       if (accountEntries.Count == 0) {
         return new FixedList<BalanzaColumnasMonedaEntry>();
       }
@@ -52,40 +107,13 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
 
       trialBalanceHelper.SetSummaryToParentEntries(accountEntries);
 
-      List<TrialBalanceEntry> accountEntriesByCurrency = GetAccountEntriesByTrialBalanceType(
-                                                                  accountEntries.ToFixedList());
-
       var balanceHelper = new TrialBalanceHelper(Query);
-      balanceHelper.RestrictLevels(accountEntriesByCurrency.ToList());
+      balanceHelper.RestrictLevels(accountEntries.ToList());
 
       List<BalanzaColumnasMonedaEntry> balanceByCurrency =
-                      helper.MergeTrialBalanceIntoBalanceByCurrency(accountEntriesByCurrency.ToFixedList());
-      
-      helper.GetTotalValorizedByAccount(balanceByCurrency);
+                      helper.MergeTrialBalanceIntoBalanceByCurrency(accountEntries.ToFixedList());
 
       return balanceByCurrency.ToFixedList();
-    }
-
-
-    private List<TrialBalanceEntry> GetAccountEntriesByTrialBalanceType(
-                                    FixedList<TrialBalanceEntry> accountEntries) {
-
-      if (Query.TrialBalanceType == TrialBalanceType.BalanzaEnColumnasPorMoneda) {
-        
-        var trialBalanceHelper = new TrialBalanceHelper(Query);
-        var helper = new BalanzaColumnasMonedaHelper(Query);
-
-        var parentAccountsEntries = trialBalanceHelper.GetCalculatedParentAccounts(accountEntries.ToFixedList());
-
-        List<TrialBalanceEntry> debtorAccounts = helper.GetSumFromCreditorToDebtorAccounts(
-                                                        parentAccountsEntries);
-
-        helper.CombineAccountEntriesAndDebtorAccounts(accountEntries.ToList(), debtorAccounts);
-
-        return helper.GetAccountEntriesByCurrency(debtorAccounts).ToList();
-      }
-
-      return new List<TrialBalanceEntry>(accountEntries);
     }
 
 

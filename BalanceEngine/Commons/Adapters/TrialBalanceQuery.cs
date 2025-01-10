@@ -173,6 +173,14 @@ namespace Empiria.FinancialAccounting.BalanceEngine.Adapters {
     } = false;
 
 
+    public void AssignPeriodByWorkingDate(DateTime dateFilter) {
+      this.InitialPeriod.FromDate = dateFilter;
+      this.InitialPeriod.ToDate = dateFilter;
+      this.InitialPeriod.ValuateToCurrrencyUID = string.Empty;
+      this.UseDefaultValuation = false;
+    }
+
+
     public override bool Equals(object obj) => this.Equals(obj as TrialBalanceQuery);
 
     public bool Equals(TrialBalanceQuery query) {
