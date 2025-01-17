@@ -96,18 +96,17 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
         return new FixedList<BalanzaColumnasMonedaEntry>();
       }
 
-      var trialBalanceHelper = new TrialBalanceHelper(Query);
+      var balanceHelper = new TrialBalanceHelper(Query);
       var helper = new BalanzaColumnasMonedaHelper(Query);
 
       helper.ValuateEntriesToExchangeRate(accountEntries);
 
       helper.ValuateEntriesToClosingExchangeRate(accountEntries);
 
-      trialBalanceHelper.RoundDecimals(accountEntries);
+      balanceHelper.RoundDecimals(accountEntries);
 
-      trialBalanceHelper.SetSummaryToParentEntries(accountEntries);
+      balanceHelper.SetSummaryToParentEntries(accountEntries);
 
-      var balanceHelper = new TrialBalanceHelper(Query);
       balanceHelper.RestrictLevels(accountEntries.ToList());
 
       List<BalanzaColumnasMonedaEntry> balanceByCurrency =

@@ -76,6 +76,30 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
       this.ValorizedDailyUdisBalance = (this.ClosingExchangeRateForUdi - this.ExchangeRateForUdi) * UdisDailyBalance;
     }
 
+
+    internal void MapFromBalanceByColumnEntry(BalanzaColumnasMonedaEntry x) {
+      this.FromDate = x.FromDate;
+      this.ToDate = x.ToDate;
+      this.Account = x.Account;
+      this.DomesticBalance = x.DomesticBalance;
+      this.DollarBalance = x.DollarBalance;
+      this.YenBalance = x.YenBalance;
+      this.EuroBalance = x.EuroBalance;
+      this.UdisBalance = x.UdisBalance;
+      this.ValorizedDollarBalance = x.ValorizedDollarBalance;
+      this.ValorizedYenBalance = x.ValorizedYenBalance;
+      this.ValorizedEuroBalance = x.ValorizedEuroBalance;
+      this.ValorizedUdisBalance = x.ValorizedUdisBalance;
+      this.ExchangeRateForDollar = x.ExchangeRateForDollar;
+      this.ExchangeRateForYen = x.ExchangeRateForYen;
+      this.ExchangeRateForEuro = x.ExchangeRateForEuro;
+      this.ExchangeRateForUdi = x.ExchangeRateForUdi;
+      this.ClosingExchangeRateForDollar = x.ClosingExchangeRateForDollar;
+      this.ClosingExchangeRateForYen = x.ClosingExchangeRateForYen;
+      this.ClosingExchangeRateForEuro = x.ClosingExchangeRateForEuro;
+      this.ClosingExchangeRateForUdi = x.ClosingExchangeRateForUdi;
+    }
+
   } // class BalanzaDiferenciaDiariaMonedaEntry
 
 } // namespace Empiria.FinancialAccounting.BalanceEngine

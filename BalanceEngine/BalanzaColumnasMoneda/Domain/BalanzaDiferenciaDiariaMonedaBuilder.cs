@@ -149,28 +149,10 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
 
     private BalanzaDiferenciaDiariaMonedaEntry MapToDiffByDayEntry(BalanzaColumnasMonedaEntry x) {
 
-      return new BalanzaDiferenciaDiariaMonedaEntry() {
-        FromDate = x.FromDate,
-        ToDate = x.ToDate,
-        Account = x.Account,
-        DomesticBalance = x.DomesticBalance,
-        DollarBalance = x.DollarBalance,
-        YenBalance = x.YenBalance,
-        EuroBalance = x.EuroBalance,
-        UdisBalance = x.UdisBalance,
-        ValorizedDollarBalance = x.ValorizedDollarBalance,
-        ValorizedYenBalance = x.ValorizedYenBalance,
-        ValorizedEuroBalance = x.ValorizedEuroBalance,
-        ValorizedUdisBalance = x.ValorizedUdisBalance,
-        ExchangeRateForDollar = x.ExchangeRateForDollar,
-        ExchangeRateForYen = x.ExchangeRateForYen,
-        ExchangeRateForEuro = x.ExchangeRateForEuro,
-        ExchangeRateForUdi = x.ExchangeRateForUdi,
-        ClosingExchangeRateForDollar = x.ClosingExchangeRateForDollar,
-        ClosingExchangeRateForYen = x.ClosingExchangeRateForYen,
-        ClosingExchangeRateForEuro = x.ClosingExchangeRateForEuro,
-        ClosingExchangeRateForUdi = x.ClosingExchangeRateForUdi
-      };
+      var entry = new BalanzaDiferenciaDiariaMonedaEntry();
+      entry.MapFromBalanceByColumnEntry(x);
+
+      return entry;
     }
 
 
@@ -178,7 +160,7 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
       FixedList<BalanzaColumnasMonedaEntry> entriesByAccountAndDate) {
 
       var mappedItems = entriesByAccountAndDate.Select((x) =>
-                          MapToDiffByDayEntry((BalanzaColumnasMonedaEntry) x));
+                        MapToDiffByDayEntry((BalanzaColumnasMonedaEntry) x));
 
       return new FixedList<BalanzaDiferenciaDiariaMonedaEntry>(mappedItems);
     }
