@@ -118,6 +118,7 @@ namespace Empiria.FinancialAccounting.BalanceEngine.Data {
         string currencyFilter = GetCurrencyFilter();
         string accountRangeFilter = GetAccountsFilterByTrialBalanceType();
         string subledgerAccountFilter = GetSubledgerAccountsFilterByTrialBalanceType();
+        string polizasDeCancelacion = GetRefusedVouchersFilter();
 
         var filter = new Filter(ledgerFilter);
 
@@ -125,8 +126,22 @@ namespace Empiria.FinancialAccounting.BalanceEngine.Data {
         filter.AppendAnd(accountRangeFilter);
         filter.AppendAnd(subledgerAccountFilter);
         filter.AppendAnd(currencyFilter);
-
+        filter.AppendAnd(polizasDeCancelacion);
         return filter.ToString().Length > 0 ? $"AND ({filter})" : "";
+      }
+
+
+      private string GetRefusedVouchersFilter() {
+
+        DateTime minVoucherDateRange = new DateTime(2024, 12, 31);
+        DateTime lastDayOfTheYear = new DateTime(_query.InitialPeriod.ToDate.Year, 12, 31);
+
+        if (_query.InitialPeriod.ToDate >= minVoucherDateRange &&
+            _query.InitialPeriod.ToDate != lastDayOfTheYear) {
+
+          return $"(ID_TIPO_POLIZA != 30)";
+        }
+        return string.Empty;
       }
 
 
