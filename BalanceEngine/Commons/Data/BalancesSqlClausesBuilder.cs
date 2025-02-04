@@ -118,7 +118,7 @@ namespace Empiria.FinancialAccounting.BalanceEngine.Data {
         string currencyFilter = GetCurrencyFilter();
         string accountRangeFilter = GetAccountsFilterByTrialBalanceType();
         string subledgerAccountFilter = GetSubledgerAccountsFilterByTrialBalanceType();
-        string polizasDeCancelacion = GetRefusedVouchersFilter();
+        //string polizasDeCancelacion = GetRefusedVouchersFilter();
 
         var filter = new Filter(ledgerFilter);
 
@@ -126,7 +126,7 @@ namespace Empiria.FinancialAccounting.BalanceEngine.Data {
         filter.AppendAnd(accountRangeFilter);
         filter.AppendAnd(subledgerAccountFilter);
         filter.AppendAnd(currencyFilter);
-        filter.AppendAnd(polizasDeCancelacion);
+        //filter.AppendAnd(polizasDeCancelacion);
         return filter.ToString().Length > 0 ? $"AND ({filter})" : "";
       }
 
