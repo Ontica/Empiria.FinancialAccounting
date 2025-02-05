@@ -13,6 +13,7 @@ using System.Linq;
 using Empiria.Collections;
 using Empiria.FinancialAccounting.BalanceEngine.Adapters;
 using Empiria.FinancialAccounting.BalanceEngine.Data;
+using Empiria.Time;
 
 namespace Empiria.FinancialAccounting.BalanceEngine {
 
@@ -101,8 +102,6 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
 
       helper.ValuateEntriesToExchangeRate(accountEntries);
 
-      helper.ValuateEntriesToClosingExchangeRate(accountEntries);
-
       balanceHelper.RoundDecimals(accountEntries);
 
       balanceHelper.SetSummaryToParentEntries(accountEntries);
@@ -120,6 +119,10 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
       //-----------
 
       balanceHelper.RestrictLevels(accountEntriesByCurrency.ToList());
+
+      helper.ValuateEntriesToExchangeRateByCurrency(accountEntriesByCurrency.ToFixedList());
+
+      helper.ValuateEntriesToClosingExchangeRate(accountEntriesByCurrency.ToFixedList());
 
       List<BalanzaColumnasMonedaEntry> balanceByCurrency =
                       helper.MergeTrialBalanceIntoBalanceByCurrency(accountEntriesByCurrency.ToFixedList());

@@ -39,8 +39,8 @@ namespace Empiria.FinancialAccounting.Tests.Reporting {
         ToAccount = "3",
 
         InitialPeriod = new BalancesPeriod {
-          FromDate = new DateTime(2024, 02, 01),
-          ToDate = new DateTime(2024, 02, 29)
+          FromDate = new DateTime(2024, 02, 02),
+          ToDate = new DateTime(2024, 02, 8)
         }
       };
 

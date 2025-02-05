@@ -73,6 +73,7 @@ namespace Empiria.FinancialAccounting.Tests.BalanceEngine {
     [Fact]
     public void Should_Build_A_Traditional_Trial_Balance() {
       TrialBalanceQuery query = GetDefaultTrialBalanceQuery();
+      query.TrialBalanceType = TrialBalanceType.Balanza;
 
       TrialBalanceDto sut = BalanceEngineProxy.BuildTrialBalance(query);
 
@@ -116,6 +117,20 @@ namespace Empiria.FinancialAccounting.Tests.BalanceEngine {
     [Fact]
     public void Should_Build_Balanza_Consolidada_Por_Moneda() {
       TrialBalanceQuery query = GetDefaultTrialBalanceQuery();
+
+      TrialBalanceDto sut = BalanceEngineProxy.BuildTrialBalance(query);
+
+      Assert.NotNull(sut);
+      Assert.Equal(query, sut.Query);
+      Assert.NotEmpty(sut.Entries);
+    }
+
+
+    [Fact]
+    public void Should_Build_Balanza_Diferencia_Diaria() {
+
+      TrialBalanceQuery query = GetDefaultTrialBalanceQuery();
+      query.TrialBalanceType = TrialBalanceType.BalanzaDiferenciaDiariaPorMoneda;
 
       TrialBalanceDto sut = BalanceEngineProxy.BuildTrialBalance(query);
 
@@ -171,11 +186,10 @@ namespace Empiria.FinancialAccounting.Tests.BalanceEngine {
       return new TrialBalanceQuery() {
         AccountsChartUID = TestingConstants.ACCOUNTS_CHART_UID,
         BalancesType = BalancesType.WithCurrentBalanceOrMovements,
-        TrialBalanceType = TrialBalanceType.Balanza,
         ShowCascadeBalances = false,
         Ledgers = TestingConstants.BALANCE_LEDGERS_ARRAY,
-        FromAccount = "1.01.01.01",
-        ToAccount = "1.01.01.01",
+        FromAccount = "1",
+        ToAccount = "1",
 
         InitialPeriod = new BalancesPeriod {
           FromDate = TestingConstants.FROM_DATE,

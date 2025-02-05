@@ -9,6 +9,7 @@
 ************************* Copyright(c) La Vía Óntica SC, Ontica LLC and contributors. All rights reserved. **/
 using System;
 using Empiria.FinancialAccounting.Adapters;
+using Microsoft.Extensions.Logging;
 
 namespace Empiria.FinancialAccounting.BalanceEngine {
 
@@ -114,15 +115,53 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
     } = 1;
 
 
+    public decimal USDExchangeRate {
+      get; internal set;
+    }
+
+
+    public decimal YENExchangeRate {
+      get; internal set;
+    }
+
+
+    public decimal EURExchangeRate {
+      get; internal set;
+    }
+
+
+    public decimal UDIExchangeRate {
+      get; internal set;
+    }
+
+
     public decimal SecondExchangeRate {
-      get;
-      internal set;
+      get; internal set;
     } = 1;
 
 
+    public decimal USDSecondExchangeRate {
+      get; internal set;
+    }
+
+
+    public decimal YENSecondExchangeRate {
+      get; internal set;
+    }
+
+
+    public decimal EURSecondExchangeRate {
+      get; internal set;
+    }
+
+
+    public decimal UDISecondExchangeRate {
+      get; internal set;
+    }
+
+
     public decimal ValorizedCurrentBalance {
-      get;
-      internal set;
+      get; internal set;
     }
 
 
@@ -202,6 +241,24 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
     internal void MultiplyByValorizedValue(decimal value) {
       this.ValorizedCurrentBalance = this.CurrentBalance * value;
       this.ExchangeRate = value;
+    }
+
+
+    internal void GetExchangeRateByCurrencyValue(FixedList<ExchangeRate> exchangeRates) {
+      
+      this.USDExchangeRate = exchangeRates.Find(x => x.ToCurrency.Equals(Currency.USD) && x.FromCurrency.Code.Equals(Currency.MXN.Code)).Value;
+      this.YENExchangeRate = exchangeRates.Find(x => x.ToCurrency.Equals(Currency.YEN) && x.FromCurrency.Code.Equals(Currency.MXN.Code)).Value;
+      this.EURExchangeRate = exchangeRates.Find(x => x.ToCurrency.Equals(Currency.EUR) && x.FromCurrency.Code.Equals(Currency.MXN.Code)).Value;
+      this.UDIExchangeRate = exchangeRates.Find(x => x.ToCurrency.Equals(Currency.UDI) && x.FromCurrency.Code.Equals(Currency.MXN.Code)).Value;
+    }
+
+
+    internal void GetSecondExchangeRateByCurrencyValue(FixedList<ExchangeRate> exchangeRates) {
+
+      this.USDSecondExchangeRate = exchangeRates.Find(x => x.ToCurrency.Equals(Currency.USD) && x.FromCurrency.Code.Equals(Currency.MXN.Code)).Value;
+      this.YENSecondExchangeRate = exchangeRates.Find(x => x.ToCurrency.Equals(Currency.YEN) && x.FromCurrency.Code.Equals(Currency.MXN.Code)).Value;
+      this.EURSecondExchangeRate = exchangeRates.Find(x => x.ToCurrency.Equals(Currency.EUR) && x.FromCurrency.Code.Equals(Currency.MXN.Code)).Value;
+      this.UDISecondExchangeRate = exchangeRates.Find(x => x.ToCurrency.Equals(Currency.UDI) && x.FromCurrency.Code.Equals(Currency.MXN.Code)).Value;
     }
 
 
@@ -285,6 +342,16 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
         balanceByCurrencyEntry.UdisBalance = this.CurrentBalance;
         balanceByCurrencyEntry.ValorizedUdisBalance = this.ValorizedCurrentBalance;
       }
+
+      balanceByCurrencyEntry.ExchangeRateForDollar = this.USDExchangeRate;
+      balanceByCurrencyEntry.ExchangeRateForYen = this.YENExchangeRate;
+      balanceByCurrencyEntry.ExchangeRateForEuro = this.EURExchangeRate;
+      balanceByCurrencyEntry.ExchangeRateForUdi = this.UDIExchangeRate;
+
+      balanceByCurrencyEntry.ClosingExchangeRateForDollar = this.USDSecondExchangeRate;
+      balanceByCurrencyEntry.ClosingExchangeRateForYen = this.YENSecondExchangeRate;
+      balanceByCurrencyEntry.ClosingExchangeRateForEuro = this.EURSecondExchangeRate;
+      balanceByCurrencyEntry.ClosingExchangeRateForUdi = this.UDISecondExchangeRate;
 
       return balanceByCurrencyEntry;
     }
