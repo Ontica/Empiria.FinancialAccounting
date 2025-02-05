@@ -52,7 +52,7 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
       internal set;
     }
 
-
+    
     [DataField("ID_SECTOR", ConvertFrom = typeof(long))]
     public Sector Sector {
       get;

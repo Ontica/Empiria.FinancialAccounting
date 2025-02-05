@@ -54,6 +54,16 @@ namespace Empiria.FinancialAccounting.BalanceEngine.Adapters {
     } = TrialBalanceItemType.Entry;
 
 
+    public string ItemTypeName {
+      get; internal set;
+    }
+
+
+    public string AccountType {
+      get; internal set;
+    } = string.Empty;
+
+
     public DebtorCreditorType DebtorCreditor {
       get; internal set;
     } = DebtorCreditorType.Deudora;
@@ -212,14 +222,89 @@ namespace Empiria.FinancialAccounting.BalanceEngine.Adapters {
     }
 
 
-    public bool HasAccountStatement {
+    public string ERI {
       get; internal set;
-    } = false;
+    } = string.Empty;
 
 
-    public bool ClickableEntry {
+    public string ComplementDescription {
       get; internal set;
-    } = false;
+    } = string.Empty;
+
+
+    public string ComplementDetail {
+      get; internal set;
+    } = string.Empty;
+
+
+    public string AccountLevel {
+      get; internal set;
+    } = string.Empty;
+
+
+    public string CategoryType {
+      get; internal set;
+    } = string.Empty;
+
+
+    public string SiglasUSD {
+      get; internal set;
+    }
+
+
+    public string SiglasYEN {
+      get; internal set;
+    }
+
+
+    public string SiglasEURO {
+      get; internal set;
+    }
+
+
+    public string SiglasUDI {
+      get; internal set;
+    }
+
+
+    public decimal ValorizedDailyDollarBalanceNeg {
+      get; internal set;
+    }
+
+
+    public decimal DollarBalanceNeg {
+      get; internal set;
+    }
+
+
+    public decimal ValorizedDailyYenBalanceNeg {
+      get; internal set;
+    }
+
+
+    public decimal YenBalanceNeg {
+      get; internal set;
+    }
+
+
+    public decimal ValorizedDailyEuroBalanceNeg {
+      get; internal set;
+    }
+
+
+    public decimal EuroBalanceNeg {
+      get; internal set;
+    }
+
+
+    public decimal ValorizedDailyUdisBalanceNeg {
+      get; internal set;
+    }
+
+
+    public decimal UdisBalanceNeg {
+      get; internal set;
+    }
     
 
     string ITrialBalanceEntryDto.SubledgerAccountNumber {

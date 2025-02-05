@@ -58,7 +58,22 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
     public decimal ValorizedDailyUdisBalance {
       get; internal set;
     }
-
+    public string ERI {
+      get;
+      internal set;
+    }
+    public string ComplementDescription {
+      get;
+      internal set;
+    }
+    public string ComplementDetail {
+      get;
+      internal set;
+    }
+    public string CategoryType {
+      get;
+      internal set;
+    }
 
     internal void SetDailyBalance(BalanzaDiferenciaDiariaMonedaEntry previousDayEntry) {
       this.DomesticDailyBalance = this.DomesticBalance - previousDayEntry.DomesticBalance;
@@ -78,25 +93,31 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
 
 
     internal void MapFromBalanceByColumnEntry(BalanzaColumnasMonedaEntry x) {
+      
+      this.ItemType = x.ItemType;
       this.FromDate = x.FromDate;
       this.ToDate = x.ToDate;
       this.Account = x.Account;
       this.DomesticBalance = x.DomesticBalance;
+
       this.DollarBalance = x.DollarBalance;
-      this.YenBalance = x.YenBalance;
-      this.EuroBalance = x.EuroBalance;
-      this.UdisBalance = x.UdisBalance;
-      this.ValorizedDollarBalance = x.ValorizedDollarBalance;
-      this.ValorizedYenBalance = x.ValorizedYenBalance;
-      this.ValorizedEuroBalance = x.ValorizedEuroBalance;
-      this.ValorizedUdisBalance = x.ValorizedUdisBalance;
       this.ExchangeRateForDollar = x.ExchangeRateForDollar;
-      this.ExchangeRateForYen = x.ExchangeRateForYen;
-      this.ExchangeRateForEuro = x.ExchangeRateForEuro;
-      this.ExchangeRateForUdi = x.ExchangeRateForUdi;
+      this.ValorizedDollarBalance = x.ValorizedDollarBalance;
       this.ClosingExchangeRateForDollar = x.ClosingExchangeRateForDollar;
+
+      this.YenBalance = x.YenBalance;
+      this.ExchangeRateForYen = x.ExchangeRateForYen;
+      this.ValorizedYenBalance = x.ValorizedYenBalance;
       this.ClosingExchangeRateForYen = x.ClosingExchangeRateForYen;
+
+      this.EuroBalance = x.EuroBalance;
+      this.ExchangeRateForEuro = x.ExchangeRateForEuro;
+      this.ValorizedEuroBalance = x.ValorizedEuroBalance;
       this.ClosingExchangeRateForEuro = x.ClosingExchangeRateForEuro;
+
+      this.UdisBalance = x.UdisBalance;
+      this.ExchangeRateForUdi = x.ExchangeRateForUdi;
+      this.ValorizedUdisBalance = x.ValorizedUdisBalance;
       this.ClosingExchangeRateForUdi = x.ClosingExchangeRateForUdi;
     }
 

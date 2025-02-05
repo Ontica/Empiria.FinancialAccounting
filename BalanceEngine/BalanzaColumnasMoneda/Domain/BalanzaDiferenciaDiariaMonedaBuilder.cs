@@ -40,7 +40,7 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
 
       FixedList<BalanzaColumnasMonedaEntry> balanzaColumnas = GetBalanzaColumnasMoneda();
 
-      FixedList<BalanzaColumnasMonedaEntry> entriesByAccountAndDate = GetOrderByAccountAndDateEntries(
+      FixedList<BalanzaColumnasMonedaEntry> entriesByAccountAndDate = GetOrderingByAccountAndDate(
                                                                       balanzaColumnas);
 
       FixedList<BalanzaDiferenciaDiariaMonedaEntry> diffByDayEntries =
@@ -48,7 +48,20 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
 
       CalculateDifferenceByDayEntries(diffByDayEntries);
 
-      return diffByDayEntries;
+      FixedList<BalanzaDiferenciaDiariaMonedaEntry> entriesByDateAndAccount =
+        GetOrderingByDateAndAccount(diffByDayEntries);
+
+      return entriesByDateAndAccount;
+    }
+
+
+    private FixedList<BalanzaDiferenciaDiariaMonedaEntry> GetOrderingByDateAndAccount(
+      FixedList<BalanzaDiferenciaDiariaMonedaEntry> diffByDayEntries) {
+
+      var orderingEntries = new List<BalanzaDiferenciaDiariaMonedaEntry>(diffByDayEntries);
+
+      return orderingEntries.OrderBy(x => x.ToDate)
+                            .ThenBy(x => x.Account.Number).ToFixedList();
     }
 
     #endregion Public methods
@@ -100,7 +113,7 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
         Query.AssignPeriodByWorkingDate(dateFilter);
         var balanzaColumnasBuilder = new BalanzaColumnasMonedaBuilder(this.Query);
         List<BalanzaColumnasMonedaEntry> balanzaColumnas = balanzaColumnasBuilder.Build().ToList();
-        balanzaColumnasList.AddRange(balanzaColumnas.Where(x => x.ItemType == TrialBalanceItemType.Entry));
+        balanzaColumnasList.AddRange(balanzaColumnas);
 
       }
       this.Query.InitialPeriod.FromDate = fromDateFlag;
@@ -110,7 +123,7 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
     }
 
 
-    private FixedList<BalanzaColumnasMonedaEntry> GetOrderByAccountAndDateEntries(
+    private FixedList<BalanzaColumnasMonedaEntry> GetOrderingByAccountAndDate(
                                                   FixedList<BalanzaColumnasMonedaEntry> balanzaColumnas) {
 
       var orderingEntries = new List<BalanzaColumnasMonedaEntry>(balanzaColumnas);

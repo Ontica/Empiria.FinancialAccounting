@@ -34,7 +34,6 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
 
     internal void CombineAccountEntriesAndDebtorAccounts(List<TrialBalanceEntry> accountEntries,
                                                          List<TrialBalanceEntry> debtorAccounts) {
-
       if (accountEntries.Count == 0) {
         return;
       }
@@ -46,6 +45,7 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
 
       debtorAccounts.AddRange(summaryAccountEntries.ToFixedList());
     }
+
     
     internal FixedList<TrialBalanceEntry> GetAccountEntriesByCurrency(
                                                 List<TrialBalanceEntry> accountEntries) {
@@ -61,7 +61,7 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
       var hashAccountEntries = new EmpiriaHashTable<TrialBalanceEntry>();
 
       foreach (var entry in filteredAccountList) {
-
+        
         SummaryByAccountEntry(hashAccountEntries, entry, entry.ItemType);
       }
 

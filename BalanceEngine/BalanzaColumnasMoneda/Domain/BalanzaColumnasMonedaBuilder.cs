@@ -43,7 +43,7 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
 
       } else if (Query.TrialBalanceType == TrialBalanceType.BalanzaDiferenciaDiariaPorMoneda) {
 
-        return BuildDailyDifferenceBalance(accountEntries);
+        return BuildDailyDifferenceBalanceV2(accountEntries);
 
       } else {
         throw Assertion.EnsureNoReachThisCode(
@@ -89,7 +89,46 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
     }
 
 
-    internal FixedList<BalanzaColumnasMonedaEntry> BuildDailyDifferenceBalance(
+    internal FixedList<BalanzaColumnasMonedaEntry> BuildDailyDifferenceBalanceV2(
+                                                    FixedList<TrialBalanceEntry> accountEntries) {
+
+      if (accountEntries.Count == 0) {
+        return new FixedList<BalanzaColumnasMonedaEntry>();
+      }
+
+      var balanceHelper = new TrialBalanceHelper(Query);
+      var helper = new BalanzaColumnasMonedaHelper(Query);
+
+      helper.ValuateEntriesToExchangeRate(accountEntries);
+
+      helper.ValuateEntriesToClosingExchangeRate(accountEntries);
+
+      balanceHelper.RoundDecimals(accountEntries);
+
+      balanceHelper.SetSummaryToParentEntries(accountEntries);
+
+      //-----------
+      var parentAccountsEntries = balanceHelper.GetCalculatedParentAccounts(accountEntries.ToFixedList());
+
+      List<TrialBalanceEntry> debtorAccounts = helper.GetSumFromCreditorToDebtorAccounts(
+                                                      parentAccountsEntries);
+
+      helper.CombineAccountEntriesAndDebtorAccounts(accountEntries.ToList(), debtorAccounts);
+
+      List<TrialBalanceEntry> accountEntriesByCurrency =
+                                helper.GetAccountEntriesByCurrency(debtorAccounts).ToList();
+      //-----------
+
+      balanceHelper.RestrictLevels(accountEntriesByCurrency.ToList());
+
+      List<BalanzaColumnasMonedaEntry> balanceByCurrency =
+                      helper.MergeTrialBalanceIntoBalanceByCurrency(accountEntriesByCurrency.ToFixedList());
+
+      return balanceByCurrency.ToFixedList();
+    }
+
+
+    internal FixedList<BalanzaColumnasMonedaEntry> BuildDailyDifferenceBalanceV1(
                                                     FixedList<TrialBalanceEntry> accountEntries) {
 
       if (accountEntries.Count == 0) {

@@ -40,12 +40,6 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
     } = string.Empty;
 
 
-    public TrialBalanceItemType ItemType {
-      get;
-      internal set;
-    }
-
-
     internal void SumToTotalValorized() {
       TotalValorized += (
         this.DomesticBalance +
@@ -59,6 +53,12 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
 
 
   public class BalanzaColumnasMonedaCommons {
+
+
+    public TrialBalanceItemType ItemType {
+      get; internal set;
+    }
+
 
     public DateTime FromDate {
       get; internal set;
