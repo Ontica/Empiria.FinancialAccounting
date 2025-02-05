@@ -120,7 +120,7 @@ namespace Empiria.FinancialAccounting.Reporting.Balances {
     }
 
 
-    public void FillOutBalanzaDiferenciaDiariaPorMoneda(ExcelFile _excelFile,
+    public void FillOutBalanzaDiferenciaDiariaPorMonedaV1(ExcelFile _excelFile,
                                                IEnumerable<BalanzaDiferenciaDiariaMonedaEntryDto> entries) {
       int i = 5;
 
@@ -158,6 +158,77 @@ namespace Empiria.FinancialAccounting.Reporting.Balances {
         _excelFile.SetCell($"Z{i}", entry.ValorizedUdisBalance);
         _excelFile.SetCell($"AA{i}", entry.ClosingExchangeRateForUdi);
         _excelFile.SetCell($"AB{i}", entry.ValorizedDailyUdisBalance);
+
+        i++;
+      }
+    }
+
+
+    public void FillOutBalanzaDiferenciaDiariaPorMonedaV2(ExcelFile _excelFile,
+                                               IEnumerable<BalanzaDiferenciaDiariaMonedaEntryDto> entries) {
+      int i = 5;
+
+      foreach (var entry in entries) {
+
+        _excelFile.SetCell($"A{i}", entry.AccountNumber);
+        _excelFile.SetCell($"B{i}", entry.AccountName);
+        
+        _excelFile.SetCell($"C{i}", entry.DomesticBalance);
+
+        _excelFile.SetCell($"D{i}", entry.DollarBalance);
+        _excelFile.SetCell($"E{i}", entry.YenBalance);
+        _excelFile.SetCell($"F{i}", entry.EuroBalance);
+        _excelFile.SetCell($"G{i}", entry.UdisBalance);
+
+        _excelFile.SetCell($"H{i}", entry.ToDate);
+        _excelFile.SetCell($"I{i}", entry.ItemTypeName);
+        _excelFile.SetCell($"J{i}", entry.AccountType);
+
+        _excelFile.SetCell($"K{i}", entry.ExchangeRateForDollar);
+        _excelFile.SetCell($"L{i}", entry.ExchangeRateForYen);
+        _excelFile.SetCell($"M{i}", entry.ExchangeRateForEuro);
+        _excelFile.SetCell($"N{i}", entry.ExchangeRateForUdi);
+
+        _excelFile.SetCell($"O{i}", entry.ClosingExchangeRateForDollar);
+        _excelFile.SetCell($"P{i}", entry.ClosingExchangeRateForYen);
+        _excelFile.SetCell($"Q{i}", entry.ClosingExchangeRateForEuro);
+        _excelFile.SetCell($"R{i}", entry.ClosingExchangeRateForUdi);
+
+        _excelFile.SetCell($"S{i}", entry.YenDailyBalance);
+        _excelFile.SetCell($"T{i}", entry.ValorizedDailyYenBalance);
+
+        _excelFile.SetCell($"U{i}", entry.DollarDailyBalance);
+        _excelFile.SetCell($"V{i}", entry.ValorizedDailyDollarBalance);
+
+        _excelFile.SetCell($"W{i}", entry.EuroDailyBalance);
+        _excelFile.SetCell($"X{i}", entry.ValorizedDailyEuroBalance);
+
+        _excelFile.SetCell($"Y{i}", entry.UdisDailyBalance);
+        _excelFile.SetCell($"Z{i}", entry.ValorizedDailyUdisBalance);
+
+        _excelFile.SetCell($"AA{i}", entry.ERI);
+        _excelFile.SetCell($"AB{i}", entry.ComplementDescription);
+        _excelFile.SetCell($"AC{i}", entry.ComplementDetail);
+        _excelFile.SetCell($"AD{i}", entry.AccountLevel);
+        _excelFile.SetCell($"AE{i}", entry.CategoryType);
+
+        _excelFile.SetCell($"AF{i}", entry.SiglasUSD);
+        _excelFile.SetCell($"AG{i}", entry.SiglasYEN);
+        _excelFile.SetCell($"AH{i}", entry.SiglasEURO);
+        _excelFile.SetCell($"AI{i}", entry.SiglasUDI);
+
+
+        _excelFile.SetCell($"AJ{i}", entry.ValorizedDailyDollarBalanceNeg);
+        _excelFile.SetCell($"AK{i}", entry.DollarBalanceNeg);
+
+        _excelFile.SetCell($"AL{i}", entry.ValorizedDailyYenBalanceNeg);
+        _excelFile.SetCell($"AM{i}", entry.YenBalanceNeg);
+
+        _excelFile.SetCell($"AN{i}", entry.ValorizedDailyEuroBalanceNeg);
+        _excelFile.SetCell($"AO{i}", entry.EuroBalanceNeg);
+
+        _excelFile.SetCell($"AP{i}", entry.ValorizedDailyUdisBalanceNeg);
+        _excelFile.SetCell($"AQ{i}", entry.UdisBalanceNeg);
 
         i++;
       }

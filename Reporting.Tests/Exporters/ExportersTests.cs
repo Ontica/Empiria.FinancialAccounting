@@ -35,12 +35,12 @@ namespace Empiria.FinancialAccounting.Tests.Reporting {
         TrialBalanceType = TrialBalanceType.BalanzaDiferenciaDiariaPorMoneda,
         ShowCascadeBalances = false,
         Ledgers = new string[] { },
-        FromAccount = "1.01.01.01",
-        ToAccount = "1.01.01.01",
+        FromAccount = "1",
+        ToAccount = "3",
 
         InitialPeriod = new BalancesPeriod {
-          FromDate = new DateTime(2024, 02, 19),
-          ToDate = new DateTime(2024, 02, 23)
+          FromDate = new DateTime(2024, 02, 01),
+          ToDate = new DateTime(2024, 02, 29)
         }
       };
 

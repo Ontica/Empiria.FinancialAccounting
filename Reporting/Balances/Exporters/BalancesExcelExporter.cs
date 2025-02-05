@@ -94,7 +94,7 @@ namespace Empiria.FinancialAccounting.Reporting.Balances {
           return;
 
         case TrialBalanceType.BalanzaDiferenciaDiariaPorMoneda:
-          balaceSetTable.FillOutBalanzaDiferenciaDiariaPorMoneda(_excelFile,
+          balaceSetTable.FillOutBalanzaDiferenciaDiariaPorMonedaV2(_excelFile,
                           trialBalance.Entries.Select(x => (BalanzaDiferenciaDiariaMonedaEntryDto) x));
           return;
 
