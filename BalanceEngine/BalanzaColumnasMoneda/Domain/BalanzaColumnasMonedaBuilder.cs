@@ -106,7 +106,6 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
 
       balanceHelper.SetSummaryToParentEntries(accountEntries);
 
-      //-----------
       var parentAccountsEntries = balanceHelper.GetCalculatedParentAccounts(accountEntries.ToFixedList());
 
       List<TrialBalanceEntry> debtorAccounts = helper.GetSumFromCreditorToDebtorAccounts(
@@ -116,7 +115,6 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
 
       List<TrialBalanceEntry> accountEntriesByCurrency =
                                 helper.GetAccountEntriesByCurrency(debtorAccounts).ToList();
-      //-----------
 
       balanceHelper.RestrictLevels(accountEntriesByCurrency.ToList());
 

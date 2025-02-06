@@ -164,8 +164,6 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
                                         $"en la fecha {Query.InitialPeriod.ToDate}.");
 
         GetValorizedEntries(entry, exchangeRate, isValorizedBalance);
-
-
       }
     }
 
@@ -173,18 +171,11 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
     internal void ValuateEntriesToExchangeRateByCurrency(
       FixedList<TrialBalanceEntry> entries) {
 
-      var isValorizedBalance = Query.InitialPeriod.ValuateToCurrrencyUID != string.Empty ||
-                               Query.UseDefaultValuation ? true : false;
-
-      FixedList<ExchangeRate> exchangeRates = GetExchangeRateList(isValorizedBalance);
+      FixedList<ExchangeRate> exchangeRates = GetExchangeRateList(false);
 
       foreach (var entry in entries) {
 
         entry.GetExchangeRateByCurrencyValue(exchangeRates);
-
-        if (isValorizedBalance) {
-          entry.CurrentBalance = entry.ValorizedCurrentBalance;
-        }
       }
     }
 
