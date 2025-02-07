@@ -140,13 +140,12 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
 
       foreach (var entry in entries) {
 
-        entry.GetSecondExchangeRateByCurrencyValue(exchangeRates);
+        entry.AssignClosingExchangeRateValueByCurrency(exchangeRates);
       }
     }
 
 
-    internal void ValuateEntriesToExchangeRate(
-      FixedList<TrialBalanceEntry> entries) {
+    internal void ValuateEntriesToExchangeRate(FixedList<TrialBalanceEntry> entries) {
 
       var isValorizedBalance = Query.InitialPeriod.ValuateToCurrrencyUID != string.Empty ||
                                Query.UseDefaultValuation ? true : false;
@@ -168,14 +167,13 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
     }
 
 
-    internal void ValuateEntriesToExchangeRateByCurrency(
-      FixedList<TrialBalanceEntry> entries) {
+    internal void ValuateEntriesToExchangeRateByCurrency(FixedList<TrialBalanceEntry> entries) {
 
       FixedList<ExchangeRate> exchangeRates = GetExchangeRateList(false);
 
       foreach (var entry in entries) {
 
-        entry.GetExchangeRateByCurrencyValue(exchangeRates);
+        entry.AssignExchangeRateValueByCurrency(exchangeRates);
       }
     }
 
@@ -246,15 +244,13 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
                                     Query.InitialPeriod.ToDate.Year, Query.InitialPeriod.ToDate.Month);
 
       if (Query.InitialPeriod.ToDate == lastWorkingDateInMonth) {
-
+        
         Query.InitialPeriod.ExchangeRateTypeUID = ExchangeRateType.ValorizacionBanxico.UID;
 
       } else {
-
         if (Query.TrialBalanceType == TrialBalanceType.BalanzaDiferenciaDiariaPorMoneda) {
 
           Query.InitialPeriod.ExchangeRateTypeUID = ExchangeRateType.BalanzaDiaria.UID;
-
         } else {
 
           Query.InitialPeriod.ExchangeRateTypeUID = ExchangeRateType.Diario.UID;

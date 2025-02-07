@@ -229,39 +229,6 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
     } = false;
 
 
-    internal void MultiplyBy(decimal value) {
-      this.InitialBalance *= value;
-      this.Debit *= value;
-      this.Credit *= value;
-      this.CurrentBalance *= value;
-      this.ExchangeRate = value;
-    }
-
-
-    internal void MultiplyByValorizedValue(decimal value) {
-      this.ValorizedCurrentBalance = this.CurrentBalance * value;
-      this.ExchangeRate = value;
-    }
-
-
-    internal void GetExchangeRateByCurrencyValue(FixedList<ExchangeRate> exchangeRates) {
-      
-      this.USDExchangeRate = exchangeRates.Find(x => x.ToCurrency.Equals(Currency.USD) && x.FromCurrency.Code.Equals(Currency.MXN.Code)).Value;
-      this.YENExchangeRate = exchangeRates.Find(x => x.ToCurrency.Equals(Currency.YEN) && x.FromCurrency.Code.Equals(Currency.MXN.Code)).Value;
-      this.EURExchangeRate = exchangeRates.Find(x => x.ToCurrency.Equals(Currency.EUR) && x.FromCurrency.Code.Equals(Currency.MXN.Code)).Value;
-      this.UDIExchangeRate = exchangeRates.Find(x => x.ToCurrency.Equals(Currency.UDI) && x.FromCurrency.Code.Equals(Currency.MXN.Code)).Value;
-    }
-
-
-    internal void GetSecondExchangeRateByCurrencyValue(FixedList<ExchangeRate> exchangeRates) {
-
-      this.USDSecondExchangeRate = exchangeRates.Find(x => x.ToCurrency.Equals(Currency.USD) && x.FromCurrency.Code.Equals(Currency.MXN.Code)).Value;
-      this.YENSecondExchangeRate = exchangeRates.Find(x => x.ToCurrency.Equals(Currency.YEN) && x.FromCurrency.Code.Equals(Currency.MXN.Code)).Value;
-      this.EURSecondExchangeRate = exchangeRates.Find(x => x.ToCurrency.Equals(Currency.EUR) && x.FromCurrency.Code.Equals(Currency.MXN.Code)).Value;
-      this.UDISecondExchangeRate = exchangeRates.Find(x => x.ToCurrency.Equals(Currency.UDI) && x.FromCurrency.Code.Equals(Currency.MXN.Code)).Value;
-    }
-
-
     internal TrialBalanceEntry CreatePartialCopy() {
       return new TrialBalanceEntry {
         Account = this.Account,
@@ -283,6 +250,32 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
     }
 
 
+    internal void AssignClosingExchangeRateValueByCurrency(FixedList<ExchangeRate> exchangeRates) {
+
+      this.USDSecondExchangeRate = exchangeRates.Find(x => x.ToCurrency.Equals(Currency.USD) &&
+                                                      x.FromCurrency.Code.Equals(Currency.MXN.Code)).Value;
+      this.YENSecondExchangeRate = exchangeRates.Find(x => x.ToCurrency.Equals(Currency.YEN) &&
+                                                      x.FromCurrency.Code.Equals(Currency.MXN.Code)).Value;
+      this.EURSecondExchangeRate = exchangeRates.Find(x => x.ToCurrency.Equals(Currency.EUR) &&
+                                                      x.FromCurrency.Code.Equals(Currency.MXN.Code)).Value;
+      this.UDISecondExchangeRate = exchangeRates.Find(x => x.ToCurrency.Equals(Currency.UDI) &&
+                                                      x.FromCurrency.Code.Equals(Currency.MXN.Code)).Value;
+    }
+
+
+    internal void AssignExchangeRateValueByCurrency(FixedList<ExchangeRate> exchangeRates) {
+      
+      this.USDExchangeRate = exchangeRates.Find(x => x.ToCurrency.Equals(Currency.USD) &&
+                                                x.FromCurrency.Code.Equals(Currency.MXN.Code)).Value;
+      this.YENExchangeRate = exchangeRates.Find(x => x.ToCurrency.Equals(Currency.YEN) &&
+                                                x.FromCurrency.Code.Equals(Currency.MXN.Code)).Value;
+      this.EURExchangeRate = exchangeRates.Find(x => x.ToCurrency.Equals(Currency.EUR) &&
+                                                x.FromCurrency.Code.Equals(Currency.MXN.Code)).Value;
+      this.UDIExchangeRate = exchangeRates.Find(x => x.ToCurrency.Equals(Currency.UDI) &&
+                                                x.FromCurrency.Code.Equals(Currency.MXN.Code)).Value;
+    }
+
+    
     internal TrialBalanceEntry MapFromFlatAccountToTrialBalanceEntry(FlatAccountDto flatAccount,
                                                                      Ledger ledger) {
       var entry = new TrialBalanceEntry();
@@ -391,6 +384,21 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
         HasParentPostingEntry = this.HasParentPostingEntry,
         IsParentPostingEntry = this.IsParentPostingEntry
       };
+    }
+
+
+    internal void MultiplyBy(decimal value) {
+      this.InitialBalance *= value;
+      this.Debit *= value;
+      this.Credit *= value;
+      this.CurrentBalance *= value;
+      this.ExchangeRate = value;
+    }
+
+
+    internal void MultiplyByValorizedValue(decimal value) {
+      this.ValorizedCurrentBalance = this.CurrentBalance * value;
+      this.ExchangeRate = value;
     }
 
 

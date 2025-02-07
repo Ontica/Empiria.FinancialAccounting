@@ -32,25 +32,7 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
 
       FixedList<TrialBalanceEntry> baseAccountEntries = BalancesDataService.GetTrialBalanceEntries(Query);
 
-      return Build(baseAccountEntries);
-    }
-
-
-    internal FixedList<BalanzaColumnasMonedaEntry> Build(FixedList<TrialBalanceEntry> accountEntries) {
-
-      if (Query.TrialBalanceType == TrialBalanceType.BalanzaEnColumnasPorMoneda) {
-
-        return BuildBalanceInColumnByCurrency(accountEntries);
-
-      } else if (Query.TrialBalanceType == TrialBalanceType.BalanzaDiferenciaDiariaPorMoneda) {
-
-        return BuildDailyDifferenceBalanceV2(accountEntries);
-
-      } else {
-        throw Assertion.EnsureNoReachThisCode(
-                    $"Unhandled trial balance type {Query.TrialBalanceType}.");
-      }
-
+      return BuildBalanceInColumnByCurrency(baseAccountEntries);
     }
 
 
@@ -85,72 +67,6 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
                       helper.MergeTrialBalanceIntoBalanceByCurrency(accountEntriesByCurrency.ToFixedList());
       
       helper.GetTotalValorizedByAccount(balanceByCurrency);
-
-      return balanceByCurrency.ToFixedList();
-    }
-
-
-    internal FixedList<BalanzaColumnasMonedaEntry> BuildDailyDifferenceBalanceV2(
-                                                    FixedList<TrialBalanceEntry> accountEntries) {
-
-      if (accountEntries.Count == 0) {
-        return new FixedList<BalanzaColumnasMonedaEntry>();
-      }
-
-      var balanceHelper = new TrialBalanceHelper(Query);
-      var helper = new BalanzaColumnasMonedaHelper(Query);
-
-      helper.ValuateEntriesToExchangeRate(accountEntries);
-
-      balanceHelper.RoundDecimals(accountEntries);
-
-      balanceHelper.SetSummaryToParentEntries(accountEntries);
-
-      var parentAccountsEntries = balanceHelper.GetCalculatedParentAccounts(accountEntries.ToFixedList());
-
-      List<TrialBalanceEntry> debtorAccounts = helper.GetSumFromCreditorToDebtorAccounts(
-                                                      parentAccountsEntries);
-
-      helper.CombineAccountEntriesAndDebtorAccounts(accountEntries.ToList(), debtorAccounts);
-
-      List<TrialBalanceEntry> accountEntriesByCurrency =
-                                helper.GetAccountEntriesByCurrency(debtorAccounts).ToList();
-
-      balanceHelper.RestrictLevels(accountEntriesByCurrency.ToList());
-
-      helper.ValuateEntriesToExchangeRateByCurrency(accountEntriesByCurrency.ToFixedList());
-
-      helper.ValuateEntriesToClosingExchangeRate(accountEntriesByCurrency.ToFixedList());
-
-      List<BalanzaColumnasMonedaEntry> balanceByCurrency =
-                      helper.MergeTrialBalanceIntoBalanceByCurrency(accountEntriesByCurrency.ToFixedList());
-
-      return balanceByCurrency.ToFixedList();
-    }
-
-
-    internal FixedList<BalanzaColumnasMonedaEntry> BuildDailyDifferenceBalanceV1(
-                                                    FixedList<TrialBalanceEntry> accountEntries) {
-
-      if (accountEntries.Count == 0) {
-        return new FixedList<BalanzaColumnasMonedaEntry>();
-      }
-
-      var balanceHelper = new TrialBalanceHelper(Query);
-      var helper = new BalanzaColumnasMonedaHelper(Query);
-
-      helper.ValuateEntriesToExchangeRate(accountEntries);
-
-      helper.ValuateEntriesToClosingExchangeRate(accountEntries);
-
-      balanceHelper.RoundDecimals(accountEntries);
-
-      balanceHelper.SetSummaryToParentEntries(accountEntries);
-
-      balanceHelper.RestrictLevels(accountEntries.ToList());
-
-      List<BalanzaColumnasMonedaEntry> balanceByCurrency =
-                      helper.MergeTrialBalanceIntoBalanceByCurrency(accountEntries.ToFixedList());
 
       return balanceByCurrency.ToFixedList();
     }
