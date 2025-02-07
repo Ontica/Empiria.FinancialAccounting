@@ -59,7 +59,7 @@ namespace Empiria.FinancialAccounting.Vouchers {
 
     internal string VouchersCondition {
       get {
-        return base.ExtendedDataField.Get<string>("vouchersCondition");
+        return base.ExtendedDataField.Get<string>("vouchersCondition", string.Empty);
       }
     }
 

@@ -503,17 +503,24 @@ namespace Empiria.FinancialAccounting.Vouchers {
     }
 
 
-    public bool IsSupervisor() {
-      return ExecutionServer.CurrentUserId == 135 || ExecutionServer.CurrentUserId == 1882;
+    public bool CurrentUserIsSupervisor() {
+      var workgroup = VoucherWorkgroup.Parse("Vouchers.Authorization.Group");
+
+      return workgroup.Members.Contains(x => x.Id == ExecutionServer.CurrentUserId);
     }
+
 
     private bool IsSupervisor(Participant participant) {
-      return participant.Id == 135 || participant.Id == 1882;
+      var workgroup = VoucherWorkgroup.Parse("Vouchers.Authorization.Group");
+
+      return workgroup.Members.Contains(participant);
     }
 
 
-    private Participant GetSupervisor() {
-      return Participant.Parse(135);
+    private Participant GetAccountingManager() {
+      var workgroup = VoucherWorkgroup.Parse("Accounting.Manager");
+
+      return workgroup.Members[0];
     }
 
 
@@ -547,7 +554,7 @@ namespace Empiria.FinancialAccounting.Vouchers {
       Assertion.Require(this.IsValid(), "La póliza no puede enviarse al supervisor porque " +
                                         "tiene datos con inconsistencias o no está balanceada.");
 
-      this.AuthorizedBy = GetSupervisor();
+      this.AuthorizedBy = GetAccountingManager();
 
       this.Save();
     }

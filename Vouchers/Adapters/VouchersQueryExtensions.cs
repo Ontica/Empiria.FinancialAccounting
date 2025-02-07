@@ -349,7 +349,9 @@ namespace Empiria.FinancialAccounting.Vouchers.Adapters {
       var filter = new Filter();
 
       foreach (VoucherWorkgroup workgroup in userWorkgroups) {
-        filter.AppendOr(workgroup.VouchersCondition);
+        if (workgroup.VouchersCondition.Length != 0) {
+          filter.AppendOr(workgroup.VouchersCondition);
+        }
       }
 
       return filter.ToString();

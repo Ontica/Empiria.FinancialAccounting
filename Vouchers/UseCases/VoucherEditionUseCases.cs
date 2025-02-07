@@ -175,10 +175,10 @@ namespace Empiria.FinancialAccounting.Vouchers.UseCases {
         if (voucher.IsClosed) {
           continue;
 
-        } else if (voucher.SentToSupervisor && !voucher.IsSupervisor()) {
+        } else if (voucher.SentToSupervisor && !voucher.CurrentUserIsSupervisor()) {
           continue;
 
-        } else if (voucher.SentToSupervisor && voucher.IsSupervisor()) {
+        } else if (voucher.SentToSupervisor && voucher.CurrentUserIsSupervisor()) {
           // go
 
         } else if (!voucher.ElaboratedBy.Equals(Participant.Current)) {
