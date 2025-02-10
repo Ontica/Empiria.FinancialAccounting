@@ -140,23 +140,14 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
 
         } else if (previousDate != DateTime.MinValue && previousDate < entry.ToDate) {
 
-          var calendar = EmpiriaCalendar.Default;
-
-          DateTime lastWorkingDateInMonth =
-            calendar.LastWorkingDateWithinMonth(entry.ToDate.Year, entry.ToDate.Month);
-
           var previousDayEntry = diffByDayEntries.Find(x => x.ToDate == previousDate &&
                                                        x.Account.Number == entry.Account.Number);
-          if (entry.ToDate == lastWorkingDateInMonth) {
-            entry.SetDailyBalance(new BalanzaDiferenciaDiariaMonedaEntry());
-
-          } else if (previousDayEntry != null) {
+          if (previousDayEntry != null) {
             entry.SetDailyBalance(previousDayEntry);
             entry.SetValorizedDailyBalance();
           }
         }
         previousDate = entry.ToDate;
-
       }
     }
 
