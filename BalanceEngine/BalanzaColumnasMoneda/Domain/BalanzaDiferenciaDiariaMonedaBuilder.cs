@@ -137,6 +137,7 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
 
         if (entry.FromDate < Query.InitialPeriod.FromDate) {
           entry.SetDailyBalance(new BalanzaDiferenciaDiariaMonedaEntry());
+          entry.SetValorizedDailyBalance();
 
         } else if (previousDate != DateTime.MinValue && previousDate < entry.ToDate) {
 
