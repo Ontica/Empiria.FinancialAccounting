@@ -79,7 +79,7 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
 
       helper.ValuateEntriesToExchangeRate(accountEntries);
 
-      helper.ValuateEntriesToClosingExchangeRate(accountEntries);
+      helper.ValuateEntriesToClosingExchangeRate(accountEntries, fromDateFlag);
 
       balanceHelper.RoundDecimals(accountEntries);
 
@@ -119,7 +119,7 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
 
       helper.ValuateEntriesToExchangeRateByCurrency(accountEntriesByCurrency.ToFixedList());
 
-      helper.ValuateEntriesToClosingExchangeRate(accountEntriesByCurrency.ToFixedList());
+      helper.ValuateEntriesToClosingExchangeRate(accountEntriesByCurrency.ToFixedList(), fromDateFlag);
 
       List<BalanzaColumnasMonedaEntry> balanceByCurrency =
                       helper.MergeTrialBalanceIntoBalanceByCurrency(accountEntriesByCurrency.ToFixedList());
@@ -160,7 +160,7 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
       foreach (var dateFilter in workingDays) {
 
         Query.AssignPeriodByWorkingDate(dateFilter);
-        var balanzaColumnasBuilder = new BalanzaColumnasMonedaBuilder(this.Query);
+
         List<BalanzaColumnasMonedaEntry> balanzaColumnas = BuildAccountEntries().ToList();
         balanceInColumnByCurrencyList.AddRange(balanzaColumnas);
       }

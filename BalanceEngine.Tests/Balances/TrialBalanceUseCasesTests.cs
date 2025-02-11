@@ -188,8 +188,8 @@ namespace Empiria.FinancialAccounting.Tests.BalanceEngine {
         BalancesType = BalancesType.WithCurrentBalanceOrMovements,
         ShowCascadeBalances = false,
         Ledgers = TestingConstants.BALANCE_LEDGERS_ARRAY,
-        FromAccount = "1",
-        ToAccount = "1",
+        FromAccount = "1.01.01.01",
+        ToAccount = "1.01.01.01",
 
         InitialPeriod = new BalancesPeriod {
           FromDate = TestingConstants.FROM_DATE,

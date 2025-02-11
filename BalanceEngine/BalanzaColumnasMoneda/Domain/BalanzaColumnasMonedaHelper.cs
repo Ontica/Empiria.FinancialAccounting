@@ -128,11 +128,15 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
 
 
     internal void ValuateEntriesToClosingExchangeRate(
-      FixedList<TrialBalanceEntry> entries) {
+      FixedList<TrialBalanceEntry> entries, DateTime fromDateFlag) {
+
+      DateTime dateForLastWorkingDate = Query.InitialPeriod.FromDate < fromDateFlag ?
+                                 fromDateFlag :
+                                 Query.InitialPeriod.FromDate;
 
       var calendar = EmpiriaCalendar.Default;
       var lastWorkingDayInMonth = calendar.LastWorkingDateWithinMonth(
-                                    Query.InitialPeriod.ToDate.Year, Query.InitialPeriod.ToDate.Month);
+                                    dateForLastWorkingDate.Year, dateForLastWorkingDate.Month);
 
       var exchangeRateType = ExchangeRateType.Parse(ExchangeRateType.ValorizacionBanxico.UID);
       FixedList<ExchangeRate> exchangeRates = ExchangeRate.GetList(
