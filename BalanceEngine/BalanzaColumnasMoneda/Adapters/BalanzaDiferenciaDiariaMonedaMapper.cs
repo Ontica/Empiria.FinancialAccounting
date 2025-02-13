@@ -259,51 +259,34 @@ namespace Empiria.FinancialAccounting.BalanceEngine.Adapters {
     private static void MapToValorizedDailyAndBalanceNeg(BalanzaDiferenciaDiariaMonedaEntryDto dto,
                                                          BalanzaDiferenciaDiariaMonedaEntry entry) {
 
-      if (entry.Account.Number.Substring(0, 1) == "1") {
+      if (entry.Account.DebtorCreditor == DebtorCreditorType.Deudora) {
 
-        dto.ValorizedDailyDollarBalanceNeg = entry.ValorizedDailyDollarBalance < 0 ?
-                                             entry.ValorizedDailyDollarBalance * (-1) :
-                                             entry.ValorizedDailyDollarBalance;
-        dto.DollarBalanceNeg = entry.DollarBalance < 0 ? entry.DollarBalance * (-1) : entry.DollarBalance;
+        dto.ValorizedDailyDollarBalanceNeg = entry.ValorizedDailyDollarBalance;
+        dto.DollarBalanceNeg = entry.DollarBalance;
 
-        dto.ValorizedDailyYenBalanceNeg = entry.ValorizedDailyYenBalance < 0 ?
-                                          entry.ValorizedDailyYenBalance * (-1) :
-                                          entry.ValorizedDailyYenBalance;
-        dto.YenBalanceNeg = entry.YenBalance < 0 ? entry.YenBalance * (-1) : entry.YenBalance;
+        dto.ValorizedDailyYenBalanceNeg = entry.ValorizedDailyYenBalance;
+        dto.YenBalanceNeg = entry.YenBalance;
 
-        dto.ValorizedDailyEuroBalanceNeg = entry.ValorizedDailyEuroBalance < 0 ?
-                                           entry.ValorizedDailyEuroBalance * (-1) :
-                                           entry.ValorizedDailyEuroBalance;
-        dto.EuroBalanceNeg = entry.EuroBalance < 0 ? entry.EuroBalance * (-1) : entry.EuroBalance;
+        dto.ValorizedDailyEuroBalanceNeg = entry.ValorizedDailyEuroBalance;
+        dto.EuroBalanceNeg = entry.EuroBalance;
 
-        dto.ValorizedDailyUdisBalanceNeg = entry.ValorizedDailyUdisBalance < 0 ?
-                                           entry.ValorizedDailyUdisBalance * (-1) :
-                                           entry.ValorizedDailyUdisBalance;
-        dto.UdisBalanceNeg = entry.UdisBalance < 0 ? entry.UdisBalance * (-1) : entry.UdisBalance;
+        dto.ValorizedDailyUdisBalanceNeg = entry.ValorizedDailyUdisBalance;
+        dto.UdisBalanceNeg = entry.UdisBalance;
 
-      } else {
+      } else if(entry.Account.DebtorCreditor == DebtorCreditorType.Acreedora) {
 
-        dto.ValorizedDailyDollarBalanceNeg = entry.ValorizedDailyDollarBalance > 0 ?
-                                             entry.ValorizedDailyDollarBalance * (-1) :
-                                             entry.ValorizedDailyDollarBalance;
-        dto.DollarBalanceNeg = entry.DollarBalance > 0 ? entry.DollarBalance * (-1) : entry.DollarBalance;
+        dto.ValorizedDailyDollarBalanceNeg = entry.ValorizedDailyDollarBalance * (-1);
+        dto.DollarBalanceNeg = entry.DollarBalance * (-1);
 
-        dto.ValorizedDailyYenBalanceNeg = entry.ValorizedDailyYenBalance > 0 ?
-                                          entry.ValorizedDailyYenBalance * (-1) :
-                                          entry.ValorizedDailyYenBalance;
-        dto.YenBalanceNeg = entry.YenBalance > 0 ? entry.YenBalance * (-1) : entry.YenBalance;
+        dto.ValorizedDailyYenBalanceNeg = entry.ValorizedDailyYenBalance * (-1);
+        dto.YenBalanceNeg = entry.YenBalance * (-1);
 
-        dto.ValorizedDailyEuroBalanceNeg = entry.ValorizedDailyEuroBalance > 0 ?
-                                           entry.ValorizedDailyEuroBalance * (-1) :
-                                           entry.ValorizedDailyEuroBalance;
-        dto.EuroBalanceNeg = entry.EuroBalance > 0 ? entry.EuroBalance * (-1) : entry.EuroBalance;
+        dto.ValorizedDailyEuroBalanceNeg = entry.ValorizedDailyEuroBalance * (-1);
+        dto.EuroBalanceNeg = entry.EuroBalance * (-1);
 
-        dto.ValorizedDailyUdisBalanceNeg = entry.ValorizedDailyUdisBalance > 0 ?
-                                           entry.ValorizedDailyUdisBalance * (-1) :
-                                           entry.ValorizedDailyUdisBalance;
-        dto.UdisBalanceNeg = entry.UdisBalance > 0 ? entry.UdisBalance * (-1) : entry.UdisBalance;
+        dto.ValorizedDailyUdisBalanceNeg = entry.ValorizedDailyUdisBalance * (-1);
+        dto.UdisBalanceNeg = entry.UdisBalance * (-1);
       }
-      
     }
 
     #endregion Private methods
