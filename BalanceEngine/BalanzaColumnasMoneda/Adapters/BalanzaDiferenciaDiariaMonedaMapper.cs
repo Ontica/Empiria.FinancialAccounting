@@ -87,7 +87,7 @@ namespace Empiria.FinancialAccounting.BalanceEngine.Adapters {
       columns.Add(new DataTableColumn("udisBalance", "UDIS (44)", "decimal"));
 
       columns.Add(new DataTableColumn("toDate", "Fecha", "date"));
-      columns.Add(new DataTableColumn("itemType", "Tipo Cta", "text"));
+      columns.Add(new DataTableColumn("itemTypeName", "Rol", "text"));
       columns.Add(new DataTableColumn("accountType", "Tipo de cuenta", "text"));
 
       columns.Add(new DataTableColumn("exchangeRateForDollar", "Tipo cambio (Dólares)", "decimal", 6));
@@ -147,7 +147,7 @@ namespace Empiria.FinancialAccounting.BalanceEngine.Adapters {
 
       dto.ItemType = entry.ItemType;
       dto.ItemTypeName = GetItemTypeName(entry.ItemType);
-      dto.AccountType = entry.Account.AccountType.Name.ToUpper();
+      dto.AccountType = entry.Account.AccountType.Name;
 
       dto.ERI = string.Empty;
       dto.ComplementDescription = string.Empty;
