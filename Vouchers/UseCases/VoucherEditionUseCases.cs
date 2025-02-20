@@ -7,6 +7,7 @@
 *  Summary  : Use cases used to edit vouchers and their postings.                                            *
 *                                                                                                            *
 ************************* Copyright(c) La Vía Óntica SC, Ontica LLC and contributors. All rights reserved. **/
+
 using System;
 using System.Collections.Generic;
 
@@ -33,7 +34,6 @@ namespace Empiria.FinancialAccounting.Vouchers.UseCases {
     #endregion Constructors and parsers
 
     #region Use cases
-
 
     public VoucherDto AppendEntry(long voucherId, VoucherEntryFields fields) {
       Assertion.Require(voucherId > 0, "voucherId");
@@ -72,7 +72,6 @@ namespace Empiria.FinancialAccounting.Vouchers.UseCases {
 
           entryFields.SubledgerAccountId = newSubledgerAccount.Id;
         }
-
 
         voucher.AppendAndSaveEntry(entryFields);
       }
@@ -154,8 +153,8 @@ namespace Empiria.FinancialAccounting.Vouchers.UseCases {
         try {
           voucher.Close();
           closedCounter++;
-        } finally {
-          // no-op
+        } catch {
+          continue;
         }
       }
 
@@ -190,13 +189,14 @@ namespace Empiria.FinancialAccounting.Vouchers.UseCases {
         try {
           voucher.Delete();
           deletedCounter++;
-        } finally {
-          // no-op
+        } catch {
+          continue;
         }
       }
 
       return $"Se eliminaron {deletedCounter} pólizas de {voucherIdsArray.Length} seleccionadas.";
     }
+
 
     public string BulkSendToSupervisor(int[] voucherIdsArray) {
       Assertion.Require(voucherIdsArray, "voucherIdsArray");
@@ -211,15 +211,11 @@ namespace Empiria.FinancialAccounting.Vouchers.UseCases {
           continue;
         }
 
-        if (!voucher.ElaboratedBy.Equals(Participant.Current)) {
-          continue;
-        }
-
         try {
           voucher.SendToSupervisor();
           sentCounter++;
-        } finally {
-          // no-op
+        } catch {
+          continue;
         }
       }
 

@@ -549,10 +549,14 @@ namespace Empiria.FinancialAccounting.Vouchers {
 
 
     internal void SendToSupervisor() {
-      Assertion.Require(this.IsOpened, "La póliza no se puede enviar al supervisor porque no está abierta.");
+      Assertion.Require(this.IsOpened, "La póliza no se puede enviar a supervisión porque no está abierta.");
 
-      Assertion.Require(this.IsValid(), "La póliza no puede enviarse al supervisor porque " +
+      Assertion.Require(this.IsValid(), "La póliza no puede enviarse a supervisión debido a que " +
                                         "tiene datos con inconsistencias o no está balanceada.");
+
+      //Assertion.Require(this.ElaboratedBy.Equals(Participant.Current) || IsSupervisor(Participant.Current),
+      //                                   "La póliza solo puede ser enviada a supervisión " +
+      //                                   "por la persona que la elaboró o por alguien con el rol supervisor.");
 
       this.AuthorizedBy = GetAccountingManager();
 
