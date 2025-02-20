@@ -349,8 +349,11 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
                   FixedList<TrialBalanceEntry> ledgerAccounts) {
 
       foreach (var ledger in ledgerAccounts) {
-        ledger.ItemType = TrialBalanceItemType.Summary;
-
+        
+        if (Query.TrialBalanceType == TrialBalanceType.BalanzaEnColumnasPorMoneda) {
+          ledger.ItemType = TrialBalanceItemType.Summary;
+        }
+        
         var entry = returnedValuedBalance.Where(a => a.Account.Number == ledger.Account.Number)
                                          .FirstOrDefault();
         if (entry == null) {
