@@ -41,17 +41,6 @@ namespace Empiria.FinancialAccounting {
     }
 
 
-    public void AssertIsNotProtectedForEdition() {
-      Assertion.Require(!_account.Number.StartsWith("4.02.03.01") ||
-                        ExecutionServer.CurrentPrincipal.IsInRole("administrador-operativo"),
-                        $"La cuenta {_account.Number} está protegida contra edición.");
-
-      //Assertion.Require(!_account.Number.StartsWith("9.01") ||
-      //                  ExecutionServer.CurrentPrincipal.HasPermission("registro-manual-cuentas-protegidas"),
-      //                  $"La cuenta {_account.Number} está protegida contra edición.");
-    }
-
-
     public void AssertNoEventTypeRule() {
       if (_account.Number.StartsWith("13")) {
         Assertion.RequireFail($"La cuenta {_account.Number} necesita un tipo de evento, " +

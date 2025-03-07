@@ -336,11 +336,21 @@ namespace Empiria.FinancialAccounting.Vouchers {
         return true;
       }
 
+      if (HasProtectedAccounts() && !CanCloseWithProtectedAccounts()) {
+        return false;
+      }
+
       if (this.IsAccountingDateOpened) {
         return true;
       }
 
       return false;
+    }
+
+
+    internal bool CanCloseWithProtectedAccounts() {
+      return ExecutionServer.CurrentPrincipal.IsInRole("administrador-operativo") ||
+             ExecutionServer.CurrentPrincipal.HasPermission("registro-manual-cuentas-protegidas");
     }
 
 
@@ -402,23 +412,8 @@ namespace Empiria.FinancialAccounting.Vouchers {
     }
 
 
-    private void RequireAllEntriesAreValidBeforeClose() {
-      this.RefreshEntries();
-
-      Assertion.Require(this.Entries.All(x => x.LedgerAccount.Ledger.Equals(this.Ledger)),
-          $"Cuando menos un movimiento tiene una cuenta que pertenece a otro mayor. (Póliza {this.Id}).");
-
-      Assertion.Require(this.Entries.All(x => x.Amount > 0),
-          $"Cuando menos un movimiento tiene un importe negativo o igual a cero. (Póliza {this.Id}).");
-
-      Assertion.Require(this.Entries.All(x => x.BaseCurrencyAmount > 0),
-          $"Cuando menos un movimiento tiene un importe negativo o igual a cero" +
-          $"para la moneda origen (Póliza {this.Id}).");
-
-      Assertion.Require(this.Entries.All(x => x.SubledgerAccount.IsEmptyInstance ||
-                        (x.SubledgerAccount.BelongsTo(this.Ledger) && !x.SubledgerAccount.Suspended)),
-          $"Cuando menos un movimiento tiene un auxiliar que pertenece " +
-          $"a otra contabilidad o está suspendido. (Póliza {this.Id}).");
+    internal bool HasProtectedAccounts() {
+      return this.Entries.Contains(x => x.LedgerAccount.Number.StartsWith("4.02.03.01"));
     }
 
 
@@ -534,6 +529,26 @@ namespace Empiria.FinancialAccounting.Vouchers {
     }
 
 
+    private void RequireAllEntriesAreValidBeforeClose() {
+      this.RefreshEntries();
+
+      Assertion.Require(this.Entries.All(x => x.LedgerAccount.Ledger.Equals(this.Ledger)),
+          $"Cuando menos un movimiento tiene una cuenta que pertenece a otro mayor. (Póliza {this.Id}).");
+
+      Assertion.Require(this.Entries.All(x => x.Amount > 0),
+          $"Cuando menos un movimiento tiene un importe negativo o igual a cero. (Póliza {this.Id}).");
+
+      Assertion.Require(this.Entries.All(x => x.BaseCurrencyAmount > 0),
+          $"Cuando menos un movimiento tiene un importe negativo o igual a cero" +
+          $"para la moneda origen (Póliza {this.Id}).");
+
+      Assertion.Require(this.Entries.All(x => x.SubledgerAccount.IsEmptyInstance ||
+                        (x.SubledgerAccount.BelongsTo(this.Ledger) && !x.SubledgerAccount.Suspended)),
+          $"Cuando menos un movimiento tiene un auxiliar que pertenece " +
+          $"a otra contabilidad o está suspendido. (Póliza {this.Id}).");
+    }
+
+
     internal FixedList<SubledgerAccount> SearchSubledgerAccountsForEdition(LedgerAccount account, string keywords) {
       Assertion.Require(this.IsOpened, "No hay cuentas auxiliares para edición porque la póliza ya está cerrada.");
 
@@ -625,6 +640,10 @@ namespace Empiria.FinancialAccounting.Vouchers {
 
       if (AccountingDate.Date != new DateTime(2022, 1, 2) && VoucherType.UID == UID_POLIZA_EFECTOS_INICIALES_ADOPCION_NORMA) {
         exception = "Las pólizas de 'Efectos iniciales de adopción de Norma' deben registrarse con fecha 2 de enero de 2022.";
+      }
+
+      if (HasProtectedAccounts() && !CanCloseWithProtectedAccounts()) {
+        exception = "La persona usuaria no tiene permisos para enviar al diario pólizas con cuentas protegidas.";
       }
 
       var validator = new VoucherValidator(this.Ledger, this.AccountingDate);
