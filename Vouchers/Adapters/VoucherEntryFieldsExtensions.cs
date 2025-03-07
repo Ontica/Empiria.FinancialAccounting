@@ -24,7 +24,7 @@ namespace Empiria.FinancialAccounting.Vouchers.Adapters {
       Ledger ledger = voucher.Ledger;
       DateTime accountingDate = voucher.AccountingDate;
 
-      var validator = new VoucherEntryValidator(ledger, accountingDate, false);
+      var validator = new VoucherEntryValidator(ledger, accountingDate);
 
       validator.EnsureValid(fields);
     }

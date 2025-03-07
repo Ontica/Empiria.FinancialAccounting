@@ -264,8 +264,14 @@ namespace Empiria.FinancialAccounting.Vouchers.UseCases {
         Assertion.RequireFail($"La póliza no puede enviarse directamente al diario " +
                               $"por la persona usuaria {Participant.Current.Name}.");
 
+
+      } else if (fromImporter && voucher.HasProtectedAccounts() && !voucher.CanCloseWithProtectedAccounts()) {
+        EmpiriaLog.Info($"Se intentó enviar al diario la póliza {voucherId} desde el importador, pero tiene cuentas protegidas.");
+
+        return VoucherMapper.Map(voucher);
+
       } else if (fromImporter && !voucher.IsAccountingDateOpened) {
-        EmpiriaLog.Info($"Se intentó cerrar la póliza {voucherId} desde el importador, pero tiene fecha valor.");
+        EmpiriaLog.Info($"Se intentó enviar al diario la póliza {voucherId} desde el importador, pero tiene fecha valor.");
 
         return VoucherMapper.Map(voucher);
       }
@@ -432,12 +438,11 @@ namespace Empiria.FinancialAccounting.Vouchers.UseCases {
 
 
     public FixedList<string> ValidateVoucherEntryToImport(VoucherFields voucher,
-                                                          VoucherEntryFields entry,
-                                                          bool checkProtectedAccounts) {
+                                                          VoucherEntryFields entry) {
 
       Ledger ledger = Ledger.Parse(voucher.LedgerUID);
 
-      var validator = new VoucherEntryValidator(ledger, voucher.AccountingDate, checkProtectedAccounts);
+      var validator = new VoucherEntryValidator(ledger, voucher.AccountingDate);
 
       return validator.Validate(entry);
     }
@@ -447,7 +452,7 @@ namespace Empiria.FinancialAccounting.Vouchers.UseCases {
     #region Helpers
 
     private void EnsureEntryFieldsAreValid(Voucher voucher, VoucherEntryFields fields) {
-      var validator = new VoucherEntryValidator(voucher.Ledger, voucher.AccountingDate, true);
+      var validator = new VoucherEntryValidator(voucher.Ledger, voucher.AccountingDate);
 
       FixedList<string> issues = validator.Validate(fields);
 
