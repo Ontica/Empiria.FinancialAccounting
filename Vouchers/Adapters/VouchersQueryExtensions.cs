@@ -7,7 +7,7 @@
 *  Summary  : Extension methods for VouchersQuery interface adapter.                                         *
 *                                                                                                            *
 ************************* Copyright(c) La Vía Óntica SC, Ontica LLC and contributors. All rights reserved. **/
-using System;
+
 using Empiria.Data;
 
 namespace Empiria.FinancialAccounting.Vouchers.Adapters {
@@ -72,13 +72,25 @@ namespace Empiria.FinancialAccounting.Vouchers.Adapters {
     #region Helpers
 
     static private string BuildAccountsFilter(string[] accounts) {
+
       if (accounts.Length == 0) {
         return string.Empty;
       }
 
-      var filter = SearchExpression.ParseOrLikeKeywords("CUENTA_ESTANDAR_KEYWORDS",
-                                                         string.Join(" , ", accounts));
-      return $"({filter})";
+      var filter = new Filter();
+
+      foreach (string account in accounts) {
+
+        if (EmpiriaString.TrimAll(account).Length == 0) {
+          continue;
+        }
+
+        var temp = $"NUMERO_CUENTA_ESTANDAR LIKE '{EmpiriaString.TrimAll(account)}%'";
+
+        filter.AppendOr(temp);
+      }
+
+      return $"({filter.ToString()})";
     }
 
 
