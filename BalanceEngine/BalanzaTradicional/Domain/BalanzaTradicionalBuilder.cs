@@ -161,16 +161,16 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
 
       var totalByAccountEntries = new EmpiriaHashTable<TrialBalanceEntry>(trialBalance.Count);
 
-      if (_query.ConsolidateBalancesToTargetCurrency) {
+      if (_query.IsSATBalanceReport) {
+
+        return trialBalance.Where(x=>x.Sector.Code == "00").ToList();
+
+      } else if (_query.ConsolidateBalancesToTargetCurrency && !_query.IsSATBalanceReport) {
 
         foreach (var entry in trialBalance) {
           SummaryByAccount(totalByAccountEntries, entry);
         }
 
-        if (_query.IsSATBalanceReport) {
-          return GetMergedAccountsWithoutSector(totalByAccountEntries.ToFixedList()).ToList();
-        }
-        
         return totalByAccountEntries.ToFixedList().ToList();
 
       } else {
@@ -179,6 +179,7 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
 
       }
     }
+
 
     private List<TrialBalanceEntry> GetMergedAccountsWithoutSector(FixedList<TrialBalanceEntry> entries) {
 
@@ -191,6 +192,7 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
       }
       return returnedEntries;
     }
+
 
     internal void SummaryByAccount(EmpiriaHashTable<TrialBalanceEntry> totalByEntries,
                                                        TrialBalanceEntry balanceEntry) {
