@@ -173,6 +173,11 @@ namespace Empiria.FinancialAccounting.BalanceEngine.Adapters {
     } = false;
 
 
+    public bool IsSATBalanceReport {
+      get; set;
+    } = false;
+
+
     public void AssignPeriodByWorkingDate(DateTime dateFilter) {
       this.InitialPeriod.FromDate = dateFilter;
       this.InitialPeriod.ToDate = dateFilter;

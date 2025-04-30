@@ -38,6 +38,27 @@ namespace Empiria.FinancialAccounting.Tests.Reporting {
     }
 
 
+    [Fact]
+    public void Should_Build_Balanza_Sat() {
+
+      ReportBuilderQuery query = new ReportBuilderQuery {
+        AccountsChartUID = "47ec2ec7-0f4f-482e-9799-c23107b60d8a",
+        ReportType = ReportTypes.BalanzaSAT,
+        FromDate = new DateTime(2025, 01, 01),
+        ToDate = new DateTime(2025, 01, 31),
+        ExportTo = Storage.FileType.Xml
+      };
+
+      using (var service = ReportingService.ServiceInteractor()) {
+        ReportDataDto sut = service.GenerateReport(query);
+
+        Assert.NotNull(sut);
+        Assert.Equal(query, sut.Query);
+        Assert.NotEmpty(sut.Entries);
+      }
+    }
+
+
   } // class ListadoDePolizasTests
 
 } // namespace Empiria.FinancialAccounting.Tests.Reporting

@@ -35,12 +35,12 @@ namespace Empiria.FinancialAccounting.Tests.Reporting {
         TrialBalanceType = TrialBalanceType.BalanzaDiferenciaDiariaPorMoneda,
         ShowCascadeBalances = false,
         Ledgers = new string[] { },
-        FromAccount = "1.01.01.01",
-        ToAccount = "1.01.01.01",
+        FromAccount = "1.01.02.02.02.05",
+        ToAccount = "1.01.02.02.02.05",
 
         InitialPeriod = new BalancesPeriod {
-          FromDate = new DateTime(2024, 09, 27),
-          ToDate = new DateTime(2024, 10, 03)
+          FromDate = new DateTime(2024, 09, 02),
+          ToDate = new DateTime(2024, 09, 06)
         }
       };
 
@@ -107,6 +107,26 @@ namespace Empiria.FinancialAccounting.Tests.Reporting {
 
         ReportDataDto reportData = service.GenerateReport(buildQuery);
         FileDto sut = service.ExportReport(buildQuery, reportData);
+        Assert.NotNull(sut);
+      }
+    }
+
+
+    [Fact]
+    public void ExportBalanzaSATTest() {
+
+      using (var service = ReportingService.ServiceInteractor()) {
+
+        ReportBuilderQuery query = new ReportBuilderQuery {
+          AccountsChartUID = "47ec2ec7-0f4f-482e-9799-c23107b60d8a",
+          ReportType = ReportTypes.BalanzaSAT,
+          FromDate = new DateTime(2025, 01, 01),
+          ToDate = new DateTime(2025, 01, 31),
+          ExportTo = Storage.FileType.Excel
+        };
+
+        ReportDataDto reportData = service.GenerateReport(query);
+        FileDto sut = service.ExportReport(query, reportData);
         Assert.NotNull(sut);
       }
 

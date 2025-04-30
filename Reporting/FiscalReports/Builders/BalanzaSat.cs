@@ -69,17 +69,18 @@ namespace Empiria.FinancialAccounting.Reporting.FiscalReports.Builders {
         UseDefaultValuation = true,
         ConsolidateBalancesToTargetCurrency = true,
         ShowCascadeBalances = false,
-        WithAverageBalance = true,
         InitialPeriod = new BalancesPeriod {
           FromDate = new DateTime(buildQuery.ToDate.Year, buildQuery.ToDate.Month, 1),
           ToDate = buildQuery.ToDate
         },
         IsOperationalReport = true,
+        IsSATBalanceReport = true
       };
     }
 
 
     static private BalanzaSatEntry MapToBalanzaSATEntry(BalanzaTradicionalEntryDto entry) {
+
       return new BalanzaSatEntry {
         Cuenta = entry.AccountNumber,
         SaldoInicial = entry.InitialBalance,

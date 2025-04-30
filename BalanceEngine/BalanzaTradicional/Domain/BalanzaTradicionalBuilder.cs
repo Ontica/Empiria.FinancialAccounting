@@ -10,6 +10,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Security.Policy;
 using Empiria.Collections;
 using Empiria.FinancialAccounting.BalanceEngine.Adapters;
 
@@ -166,6 +167,10 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
           SummaryByAccount(totalByAccountEntries, entry);
         }
 
+        if (_query.IsSATBalanceReport) {
+          return GetMergedAccountsWithoutSector(totalByAccountEntries.ToFixedList()).ToList();
+        }
+        
         return totalByAccountEntries.ToFixedList().ToList();
 
       } else {
@@ -175,6 +180,17 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
       }
     }
 
+    private List<TrialBalanceEntry> GetMergedAccountsWithoutSector(FixedList<TrialBalanceEntry> entries) {
+
+      var returnedEntries = new List<TrialBalanceEntry>();
+
+      foreach (var entry in entries) {
+        if (returnedEntries.Find(x=>x.Account.Number == entry.Account.Number) == null) {
+          returnedEntries.Add(entry);
+        }
+      }
+      return returnedEntries;
+    }
 
     internal void SummaryByAccount(EmpiriaHashTable<TrialBalanceEntry> totalByEntries,
                                                        TrialBalanceEntry balanceEntry) {
@@ -187,9 +203,13 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
         entry.Credit = 0;
         entry.CurrentBalance = 0;
       }
-      entry.LastChangeDate = balanceEntry.LastChangeDate;
 
+      entry.LastChangeDate = balanceEntry.LastChangeDate;
       string hash = $"{entry.Account.Number}";
+
+      if (_query.IsSATBalanceReport) {
+        hash = $"{entry.Account.Number}||{entry.Sector.Code}";
+      }
       
       var balanceHelper = new TrialBalanceHelper(_query);
       balanceHelper.GenerateOrIncreaseEntries(totalByEntries, entry, entry.Account,
