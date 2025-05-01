@@ -170,9 +170,8 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
     private void GetValueByMonth(ValorizacionEstimacionPreventivaEntry accountEntry,
                                  List<ValorizacionEstimacionPreventivaEntry> entriesByMonthList) {
 
-      var utility = new ValorizacionEstimacionPreventivaUtility();
-
       List<DateTime> dateRange = GetDateRange();
+
       int flagDateCount = 0;
       foreach (var date in dateRange) {
 
@@ -187,17 +186,17 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
             GetValuedEffectDebitCredit(accountEntry, existEntryInMonth);
           }
 
-          accountEntry.SetTotalField($"{utility.GetMonthNameAndYear(existEntryInMonth.ConsultingDate)}",
+          accountEntry.SetTotalField($"{GetMonthNameAndYear(existEntryInMonth.ConsultingDate)}",
                                      existEntryInMonth.TotalValued);
 
           accountEntry.TotalAccumulated += existEntryInMonth.TotalValued;
 
         } else {
-          accountEntry.SetTotalField($"{utility.GetMonthNameAndYear(date)}", 0.00M);
+          accountEntry.SetTotalField($"{GetMonthNameAndYear(date)}", 0.00M);
         }
       }
 
-      accountEntry.SetTotalField($"{utility.GetMonthNameAndYear(accountEntry.ConsultingDate)}",
+      accountEntry.SetTotalField($"{GetMonthNameAndYear(accountEntry.ConsultingDate)}",
                                  accountEntry.TotalValued);
 
       accountEntry.TotalAccumulated += accountEntry.TotalValued;
@@ -286,8 +285,7 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
     #endregion Public methods
 
 
-    #region Private methods
-
+    #region Helpers
 
     private List<ValorizacionEstimacionPreventivaEntry> GetAccountsByMonth(
                                           DateTime initialDate, DateTime lastDate, bool isPreviousMonth) {
@@ -301,6 +299,11 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
               GetAccountsBalances(baseAccountEntries, lastDate, isPreviousMonth);
 
       return returnedAccounts.ToList();
+    }
+
+
+    private string GetMonthNameAndYear(DateTime date) {
+      return $"{EmpiriaString.MonthName(date)}_{date.Year}";
     }
 
 
@@ -377,8 +380,7 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
 
     }
 
-
-    #endregion Private methods
+    #endregion Helpers
 
   } // class ValorizacionEstimacionPreventivaHelper
 

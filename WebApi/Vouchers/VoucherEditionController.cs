@@ -7,7 +7,7 @@
 *  Summary  : Command web API used to retrive accounting vouchers related data.                              *
 *                                                                                                            *
 ************************* Copyright(c) La Vía Óntica SC, Ontica LLC and contributors. All rights reserved. **/
-using System;
+
 using System.Web.Http;
 
 using Empiria.Storage;
@@ -18,366 +18,365 @@ using Empiria.FinancialAccounting.Vouchers.Adapters;
 
 using Empiria.FinancialAccounting.Adapters;
 using Empiria.FinancialAccounting.Reporting;
-using System.Web.Http.Results;
 
 namespace Empiria.FinancialAccounting.WebApi.Vouchers {
 
-    /// <summary>Command web API used to retrive accounting vouchers related data.</summary>
-    public class VoucherEditionController : WebApiController {
+  /// <summary>Command web API used to retrive accounting vouchers related data.</summary>
+  public class VoucherEditionController : WebApiController {
 
-        #region Web Apis
+    #region Web Apis
 
 
-        [HttpGet]
-        [AllowAnonymous]
-        [Route("v2/financial-accounting/vouchers/{voucherId:int}")]
-        public SingleObjectModel GetVoucher([FromUri] long voucherId) {
+    [HttpGet]
+    [AllowAnonymous]
+    [Route("v2/financial-accounting/vouchers/{voucherId:int}")]
+    public SingleObjectModel GetVoucher([FromUri] long voucherId) {
 
-            using (var usecases = VoucherUseCases.UseCaseInteractor()) {
-                VoucherDto voucher = usecases.GetVoucher(voucherId);
+      using (var usecases = VoucherUseCases.UseCaseInteractor()) {
+        VoucherDto voucher = usecases.GetVoucher(voucherId);
 
-                return new SingleObjectModel(base.Request, voucher);
-            }
-        }
-
-
-        [HttpGet]
-        [Route("v2/financial-accounting/vouchers/{voucherId:int}/entries/{voucherEntryId:int}")]
-        public SingleObjectModel GetVoucherEntry([FromUri] long voucherId,
-                                                 [FromUri] long voucherEntryId) {
-
-            using (var usecases = VoucherUseCases.UseCaseInteractor()) {
-                VoucherEntryDto voucher = usecases.GetVoucherEntry(voucherId, voucherEntryId);
-
-                return new SingleObjectModel(base.Request, voucher);
-            }
-        }
-
-
-        [HttpGet]
-        [Route("v2/financial-accounting/vouchers/{voucherId:int}/get-copy-of-last-entry")]
-        public SingleObjectModel GetCopyOfVoucherLastEntry([FromUri] long voucherId) {
-
-            using (var usecases = VoucherEditionUseCases.UseCaseInteractor()) {
-                VoucherEntryDto copy = usecases.GetCopyOfLastEntry(voucherId);
-
-                return new SingleObjectModel(base.Request, copy);
-            }
-        }
-
-
-        [HttpPost]
-        [Route("v2/financial-accounting/vouchers/{voucherId:int}/assign-account/{standardAccountId:int}")]
-        public SingleObjectModel AssignStandardAccountToVoucherLedger([FromUri] long voucherId,
-                                                                      [FromUri] int standardAccountId) {
-
-            using (var usecases = VoucherEditionUseCases.UseCaseInteractor()) {
-                LedgerAccountDto ledgerAccount = usecases.AssignVoucherLedgerStandardAccount(voucherId,
-                                                                                             standardAccountId);
-
-                return new SingleObjectModel(base.Request, ledgerAccount);
-            }
-        }
-
-
-        [HttpPost]
-        [Route("v2/financial-accounting/vouchers/{voucherId:int}/entries")]
-        public SingleObjectModel AppendVoucherEntry([FromUri] long voucherId,
-                                                    [FromBody] VoucherEntryFields fields) {
-            base.RequireBody(fields);
-
-            using (var usecases = VoucherEditionUseCases.UseCaseInteractor()) {
-                VoucherDto voucher = usecases.AppendEntry(voucherId, fields);
-
-                return new SingleObjectModel(base.Request, voucher);
-            }
-        }
-
-
-        [HttpPost]
-        [Route("v2/financial-accounting/vouchers/create-voucher")]
-        public SingleObjectModel CreateVoucher([FromBody] VoucherFields fields) {
-            base.RequireBody(fields);
-
-            using (var usecases = VoucherEditionUseCases.UseCaseInteractor()) {
-                VoucherDto voucher = usecases.CreateVoucher(fields);
-
-                return new SingleObjectModel(base.Request, voucher);
-            }
-        }
-
-
-        [HttpPost]
-        [Route("v2/financial-accounting/vouchers/{voucherId:int}/clone")]
-        public SingleObjectModel CloneVoucher([FromUri] long voucherId,
-                                              [FromBody] UpdateVoucherFields fields) {
-            base.RequireBody(fields);
-
-            using (var usecases = VoucherEditionUseCases.UseCaseInteractor()) {
-                VoucherDto voucher = usecases.CloneVoucher(voucherId, fields);
-
-                return new SingleObjectModel(base.Request, voucher);
-            }
-        }
-
-
-        [HttpDelete]
-        [Route("v2/financial-accounting/vouchers/{voucherId:int}")]
-        public NoDataModel DeleteVoucher([FromUri] long voucherId) {
-
-            using (var usecases = VoucherEditionUseCases.UseCaseInteractor()) {
-                usecases.DeleteVoucher(voucherId);
-
-                return new NoDataModel(base.Request);
-            }
-        }
-
-
-        [HttpPost]
-        [Route("v2/financial-accounting/vouchers/{voucherId:int}/close")]
-        public SingleObjectModel CloseVoucher([FromUri] long voucherId) {
-
-            using (var usecases = VoucherEditionUseCases.UseCaseInteractor()) {
-                VoucherDto voucher = usecases.CloseVoucher(voucherId, false);
-
-                return new SingleObjectModel(base.Request, voucher);
-            }
-        }
-
-
-        [HttpDelete]
-        [Route("v2/financial-accounting/vouchers/{voucherId:int}/entries/{voucherEntryId:int}")]
-        public SingleObjectModel DeleteVoucherEntry([FromUri] long voucherId,
-                                                    [FromUri] long voucherEntryId) {
-
-            using (var usecases = VoucherEditionUseCases.UseCaseInteractor()) {
-                VoucherDto voucher = usecases.DeleteEntry(voucherId, voucherEntryId);
-
-                return new SingleObjectModel(base.Request, voucher);
-            }
-        }
-
-
-        [HttpPost]
-        [Route("v2/financial-accounting/vouchers/bulk-operation/{operationName}")]
-        public SingleObjectModel ExecuteBulkOperation([FromUri] string operationName,
-                                                      [FromBody] VoucherBulkOperationCommand command) {
-
-            using (var usecases = VoucherEditionUseCases.UseCaseInteractor()) {
-                var result = new VoucherBulkOperationResult();
-
-                switch (operationName) {
-                    case "clone":
-                        result.Vouchers = usecases.BulkClone(command.Vouchers);
-                        result.Message = $"Se clonaron {result.Vouchers.Count} pólizas " +
-                                         $"de {command.Vouchers.Length} seleccionadas.";
-                        break;
-                    case "close":
-                        result.Message = usecases.BulkClose(command.Vouchers);
-
-                        break;
-                    case "delete":
-                        result.Message = usecases.BulkDelete(command.Vouchers);
-
-                        break;
-                    case "send-to-supervisor":
-                        result.Message = usecases.BulkSendToSupervisor(command.Vouchers);
-
-                        break;
-                    case "print":
-                        result = ExecuteBulkPrinting(command.Vouchers);
-
-                        break;
-                    case "excel-vouchers":
-                        result = ExecuteBulkExportingToExcel(command.Vouchers);
-
-                        break;
-                    case "excel-vouchers-entries":
-                        result = ExecuteExportingVouchersMovementsToExcel(command.Vouchers);
-
-                        break;
-                    default:
-                        throw Assertion.EnsureNoReachThisCode($"Unrecognized bulk operation name '{operationName}'.");
-                }
-
-                base.SetOperation(result.Message);
-
-                return new SingleObjectModel(base.Request, result);
-            }
-        }
-
-
-        [HttpPost]
-        [Route("v2/financial-accounting/vouchers/{voucherId:int}/send-to-supervisor")]
-        public SingleObjectModel SendVoucherToSupervisor([FromUri] long voucherId) {
-
-            using (var usecases = VoucherEditionUseCases.UseCaseInteractor()) {
-                VoucherDto voucher = usecases.SendVoucherToSupervisor(voucherId);
-
-                return new SingleObjectModel(base.Request, voucher);
-            }
-        }
-
-
-        [HttpPut, HttpPatch]
-        [Route("v2/financial-accounting/vouchers/{voucherId:int}")]
-        public SingleObjectModel UpdateVoucher([FromUri] long voucherId,
-                                               [FromBody] VoucherFields fields) {
-            base.RequireBody(fields);
-
-            using (var usecases = VoucherEditionUseCases.UseCaseInteractor()) {
-                VoucherDto voucher = usecases.UpdateVoucher(voucherId, fields);
-
-                return new SingleObjectModel(base.Request, voucher);
-            }
-        }
-
-
-        [HttpPut, HttpPatch]
-        [Route("v2/financial-accounting/vouchers/{voucherId:int}/update-concept")]
-        public SingleObjectModel UpdateVoucherConcept([FromUri] long voucherId,
-                                                      [FromBody] UpdateVoucherFields fields) {
-            base.RequireBody(fields);
-
-            using (var usecases = VoucherEditionUseCases.UseCaseInteractor()) {
-                VoucherDto voucher = usecases.UpdateVoucherConcept(voucherId, fields);
-
-                return new SingleObjectModel(base.Request, voucher);
-            }
-        }
-
-
-        [HttpPut, HttpPatch]
-        [Route("v2/financial-accounting/vouchers/{voucherId:int}/entries/{voucherEntryId:int}")]
-        public SingleObjectModel UpdateVoucherEntry([FromUri] long voucherId,
-                                                    [FromUri] long voucherEntryId,
-                                                    [FromBody] VoucherEntryFields fields) {
-            base.RequireBody(fields);
-
-            using (var usecases = VoucherEditionUseCases.UseCaseInteractor()) {
-                VoucherDto voucher = usecases.UpdateEntry(voucherId, voucherEntryId, fields);
-
-                return new SingleObjectModel(base.Request, voucher);
-            }
-        }
-
-
-        [HttpGet]
-        [Route("v2/financial-accounting/vouchers/{voucherId:int}/validate")]
-        public CollectionModel ValidateVoucher([FromUri] long voucherId) {
-
-            using (var usecases = VoucherEditionUseCases.UseCaseInteractor()) {
-                FixedList<string> validationResult = usecases.ValidateVoucher(voucherId);
-
-                return new CollectionModel(base.Request, validationResult);
-            }
-        }
-
-        #endregion Web Apis
-
-        #region Helpers
-
-        private VoucherBulkOperationResult ExecuteBulkPrinting(int[] voucherIdsToPrint) {
-            using (var usecases = VoucherUseCases.UseCaseInteractor()) {
-
-                var result = new VoucherBulkOperationResult();
-
-                FixedList<VoucherDto> vouchersToPrint = usecases.GetVouchers(voucherIdsToPrint);
-
-                var exporter = new PdfExporterService();
-
-                result.File = exporter.Export(vouchersToPrint);
-
-                result.Message = $"Se generó el archivo de impresión con {voucherIdsToPrint.Length} pólizas.";
-
-                return result;
-            }
-        }
-
-
-        private VoucherBulkOperationResult ExecuteBulkExportingToExcel(int[] voucherIdsToExport) {
-            using (var usecases = VoucherUseCases.UseCaseInteractor()) {
-
-                var result = new VoucherBulkOperationResult();
-
-                FixedList<VoucherDto> vouchersToExport = usecases.GetVouchersToExport(voucherIdsToExport);
-
-                var exporter = new ExcelExporterService();
-
-                FileDto excelFileDto = exporter.Export(vouchersToExport);
-
-                result.Message = $"Se exportaron {voucherIdsToExport.Length} pólizas a excel.";
-
-                result.File = excelFileDto;
-
-                return result;
-            }
-        }
-
-
-        private VoucherBulkOperationResult ExecuteExportingVouchersMovementsToExcel(int[] voucherIdsToExport) {
-
-
-            using (var service = ReportingService.ServiceInteractor()) {
-
-                ReportBuilderQuery buildQuery = new ReportBuilderQuery();
-                buildQuery.VoucherIds = voucherIdsToExport;
-                buildQuery.WithSubledgerAccount = true;
-                buildQuery.ReportType = ReportTypes.ListadoMovimientosPorPolizas;
-                buildQuery.ExportTo = FileType.Excel;
-
-                ReportDataDto reportData = service.GenerateReport(buildQuery);
-
-                FileDto excelFileDto = service.ExportReport(buildQuery, reportData);
-
-                var result = new VoucherBulkOperationResult();
-
-                result.Message = $"Se exportaron los movimientos de " +
-                         $"{voucherIdsToExport.Length} pólizas a excel.";
-                result.File = excelFileDto;
-
-                return result;
-            }
-
-            throw Assertion.EnsureNoReachThisCode($"Función en proceso de desarrollo.");
-        }
-
-
-        #endregion Helpers
-
-    }  // class VoucherEditionController
-
-
-
-    public class VoucherBulkOperationCommand {
-
-        public int[] Vouchers {
-            get;
-            set;
-        }
-
+        return new SingleObjectModel(base.Request, voucher);
+      }
     }
 
 
+    [HttpGet]
+    [Route("v2/financial-accounting/vouchers/{voucherId:int}/entries/{voucherEntryId:int}")]
+    public SingleObjectModel GetVoucherEntry([FromUri] long voucherId,
+                                             [FromUri] long voucherEntryId) {
 
-    public class VoucherBulkOperationResult {
+      using (var usecases = VoucherUseCases.UseCaseInteractor()) {
+        VoucherEntryDto voucher = usecases.GetVoucherEntry(voucherId, voucherEntryId);
 
-        internal VoucherBulkOperationResult() {
-            // no-op
+        return new SingleObjectModel(base.Request, voucher);
+      }
+    }
+
+
+    [HttpGet]
+    [Route("v2/financial-accounting/vouchers/{voucherId:int}/get-copy-of-last-entry")]
+    public SingleObjectModel GetCopyOfVoucherLastEntry([FromUri] long voucherId) {
+
+      using (var usecases = VoucherEditionUseCases.UseCaseInteractor()) {
+        VoucherEntryDto copy = usecases.GetCopyOfLastEntry(voucherId);
+
+        return new SingleObjectModel(base.Request, copy);
+      }
+    }
+
+
+    [HttpPost]
+    [Route("v2/financial-accounting/vouchers/{voucherId:int}/assign-account/{standardAccountId:int}")]
+    public SingleObjectModel AssignStandardAccountToVoucherLedger([FromUri] long voucherId,
+                                                                  [FromUri] int standardAccountId) {
+
+      using (var usecases = VoucherEditionUseCases.UseCaseInteractor()) {
+        LedgerAccountDto ledgerAccount = usecases.AssignVoucherLedgerStandardAccount(voucherId,
+                                                                                     standardAccountId);
+
+        return new SingleObjectModel(base.Request, ledgerAccount);
+      }
+    }
+
+
+    [HttpPost]
+    [Route("v2/financial-accounting/vouchers/{voucherId:int}/entries")]
+    public SingleObjectModel AppendVoucherEntry([FromUri] long voucherId,
+                                                [FromBody] VoucherEntryFields fields) {
+      base.RequireBody(fields);
+
+      using (var usecases = VoucherEditionUseCases.UseCaseInteractor()) {
+        VoucherDto voucher = usecases.AppendEntry(voucherId, fields);
+
+        return new SingleObjectModel(base.Request, voucher);
+      }
+    }
+
+
+    [HttpPost]
+    [Route("v2/financial-accounting/vouchers/create-voucher")]
+    public SingleObjectModel CreateVoucher([FromBody] VoucherFields fields) {
+      base.RequireBody(fields);
+
+      using (var usecases = VoucherEditionUseCases.UseCaseInteractor()) {
+        VoucherDto voucher = usecases.CreateVoucher(fields);
+
+        return new SingleObjectModel(base.Request, voucher);
+      }
+    }
+
+
+    [HttpPost]
+    [Route("v2/financial-accounting/vouchers/{voucherId:int}/clone")]
+    public SingleObjectModel CloneVoucher([FromUri] long voucherId,
+                                          [FromBody] UpdateVoucherFields fields) {
+      base.RequireBody(fields);
+
+      using (var usecases = VoucherEditionUseCases.UseCaseInteractor()) {
+        VoucherDto voucher = usecases.CloneVoucher(voucherId, fields);
+
+        return new SingleObjectModel(base.Request, voucher);
+      }
+    }
+
+
+    [HttpDelete]
+    [Route("v2/financial-accounting/vouchers/{voucherId:int}")]
+    public NoDataModel DeleteVoucher([FromUri] long voucherId) {
+
+      using (var usecases = VoucherEditionUseCases.UseCaseInteractor()) {
+        usecases.DeleteVoucher(voucherId);
+
+        return new NoDataModel(base.Request);
+      }
+    }
+
+
+    [HttpPost]
+    [Route("v2/financial-accounting/vouchers/{voucherId:int}/close")]
+    public SingleObjectModel CloseVoucher([FromUri] long voucherId) {
+
+      using (var usecases = VoucherEditionUseCases.UseCaseInteractor()) {
+        VoucherDto voucher = usecases.CloseVoucher(voucherId, false);
+
+        return new SingleObjectModel(base.Request, voucher);
+      }
+    }
+
+
+    [HttpDelete]
+    [Route("v2/financial-accounting/vouchers/{voucherId:int}/entries/{voucherEntryId:int}")]
+    public SingleObjectModel DeleteVoucherEntry([FromUri] long voucherId,
+                                                [FromUri] long voucherEntryId) {
+
+      using (var usecases = VoucherEditionUseCases.UseCaseInteractor()) {
+        VoucherDto voucher = usecases.DeleteEntry(voucherId, voucherEntryId);
+
+        return new SingleObjectModel(base.Request, voucher);
+      }
+    }
+
+
+    [HttpPost]
+    [Route("v2/financial-accounting/vouchers/bulk-operation/{operationName}")]
+    public SingleObjectModel ExecuteBulkOperation([FromUri] string operationName,
+                                                  [FromBody] VoucherBulkOperationCommand command) {
+
+      using (var usecases = VoucherEditionUseCases.UseCaseInteractor()) {
+        var result = new VoucherBulkOperationResult();
+
+        switch (operationName) {
+          case "clone":
+            result.Vouchers = usecases.BulkClone(command.Vouchers);
+            result.Message = $"Se clonaron {result.Vouchers.Count} pólizas " +
+                             $"de {command.Vouchers.Length} seleccionadas.";
+            break;
+          case "close":
+            result.Message = usecases.BulkClose(command.Vouchers);
+
+            break;
+          case "delete":
+            result.Message = usecases.BulkDelete(command.Vouchers);
+
+            break;
+          case "send-to-supervisor":
+            result.Message = usecases.BulkSendToSupervisor(command.Vouchers);
+
+            break;
+          case "print":
+            result = ExecuteBulkPrinting(command.Vouchers);
+
+            break;
+          case "excel-vouchers":
+            result = ExecuteBulkExportingToExcel(command.Vouchers);
+
+            break;
+          case "excel-vouchers-entries":
+            result = ExecuteExportingVouchersMovementsToExcel(command.Vouchers);
+
+            break;
+          default:
+            throw Assertion.EnsureNoReachThisCode($"Unrecognized bulk operation name '{operationName}'.");
         }
 
-        public string Message {
-            get; internal set;
-        }
+        base.SetOperation(result.Message);
 
-        public FileDto File {
-            get; internal set;
-        }
+        return new SingleObjectModel(base.Request, result);
+      }
+    }
 
-        public FixedList<VoucherDescriptorDto> Vouchers {
-            get; internal set;
-        }
 
-    }  // class VoucherBulkOperationCommand
+    [HttpPost]
+    [Route("v2/financial-accounting/vouchers/{voucherId:int}/send-to-supervisor")]
+    public SingleObjectModel SendVoucherToSupervisor([FromUri] long voucherId) {
+
+      using (var usecases = VoucherEditionUseCases.UseCaseInteractor()) {
+        VoucherDto voucher = usecases.SendVoucherToSupervisor(voucherId);
+
+        return new SingleObjectModel(base.Request, voucher);
+      }
+    }
+
+
+    [HttpPut, HttpPatch]
+    [Route("v2/financial-accounting/vouchers/{voucherId:int}")]
+    public SingleObjectModel UpdateVoucher([FromUri] long voucherId,
+                                           [FromBody] VoucherFields fields) {
+      base.RequireBody(fields);
+
+      using (var usecases = VoucherEditionUseCases.UseCaseInteractor()) {
+        VoucherDto voucher = usecases.UpdateVoucher(voucherId, fields);
+
+        return new SingleObjectModel(base.Request, voucher);
+      }
+    }
+
+
+    [HttpPut, HttpPatch]
+    [Route("v2/financial-accounting/vouchers/{voucherId:int}/update-concept")]
+    public SingleObjectModel UpdateVoucherConcept([FromUri] long voucherId,
+                                                  [FromBody] UpdateVoucherFields fields) {
+      base.RequireBody(fields);
+
+      using (var usecases = VoucherEditionUseCases.UseCaseInteractor()) {
+        VoucherDto voucher = usecases.UpdateVoucherConcept(voucherId, fields);
+
+        return new SingleObjectModel(base.Request, voucher);
+      }
+    }
+
+
+    [HttpPut, HttpPatch]
+    [Route("v2/financial-accounting/vouchers/{voucherId:int}/entries/{voucherEntryId:int}")]
+    public SingleObjectModel UpdateVoucherEntry([FromUri] long voucherId,
+                                                [FromUri] long voucherEntryId,
+                                                [FromBody] VoucherEntryFields fields) {
+      base.RequireBody(fields);
+
+      using (var usecases = VoucherEditionUseCases.UseCaseInteractor()) {
+        VoucherDto voucher = usecases.UpdateEntry(voucherId, voucherEntryId, fields);
+
+        return new SingleObjectModel(base.Request, voucher);
+      }
+    }
+
+
+    [HttpGet]
+    [Route("v2/financial-accounting/vouchers/{voucherId:int}/validate")]
+    public CollectionModel ValidateVoucher([FromUri] long voucherId) {
+
+      using (var usecases = VoucherEditionUseCases.UseCaseInteractor()) {
+        FixedList<string> validationResult = usecases.ValidateVoucher(voucherId);
+
+        return new CollectionModel(base.Request, validationResult);
+      }
+    }
+
+    #endregion Web Apis
+
+    #region Helpers
+
+    private VoucherBulkOperationResult ExecuteBulkPrinting(int[] voucherIdsToPrint) {
+      using (var usecases = VoucherUseCases.UseCaseInteractor()) {
+
+        var result = new VoucherBulkOperationResult();
+
+        FixedList<VoucherDto> vouchersToPrint = usecases.GetVouchers(voucherIdsToPrint);
+
+        var exporter = new PdfExporterService();
+
+        result.File = exporter.Export(vouchersToPrint);
+
+        result.Message = $"Se generó el archivo de impresión con {voucherIdsToPrint.Length} pólizas.";
+
+        return result;
+      }
+    }
+
+
+    private VoucherBulkOperationResult ExecuteBulkExportingToExcel(int[] voucherIdsToExport) {
+      using (var usecases = VoucherUseCases.UseCaseInteractor()) {
+
+        var result = new VoucherBulkOperationResult();
+
+        FixedList<VoucherDto> vouchersToExport = usecases.GetVouchersToExport(voucherIdsToExport);
+
+        var exporter = new ExcelExporterService();
+
+        FileDto excelFileDto = exporter.Export(vouchersToExport);
+
+        result.Message = $"Se exportaron {voucherIdsToExport.Length} pólizas a excel.";
+
+        result.File = excelFileDto;
+
+        return result;
+      }
+    }
+
+
+    private VoucherBulkOperationResult ExecuteExportingVouchersMovementsToExcel(int[] voucherIdsToExport) {
+
+
+      using (var service = ReportingService.ServiceInteractor()) {
+
+        ReportBuilderQuery buildQuery = new ReportBuilderQuery();
+        buildQuery.VoucherIds = voucherIdsToExport;
+        buildQuery.WithSubledgerAccount = true;
+        buildQuery.ReportType = ReportTypes.ListadoMovimientosPorPolizas;
+        buildQuery.ExportTo = FileType.Excel;
+
+        ReportDataDto reportData = service.GenerateReport(buildQuery);
+
+        FileDto excelFileDto = service.ExportReport(buildQuery, reportData);
+
+        var result = new VoucherBulkOperationResult();
+
+        result.Message = $"Se exportaron los movimientos de " +
+                 $"{voucherIdsToExport.Length} pólizas a excel.";
+        result.File = excelFileDto;
+
+        return result;
+      }
+
+      throw Assertion.EnsureNoReachThisCode($"Función en proceso de desarrollo.");
+    }
+
+
+    #endregion Helpers
+
+  }  // class VoucherEditionController
+
+
+
+  public class VoucherBulkOperationCommand {
+
+    public int[] Vouchers {
+      get;
+      set;
+    }
+
+  }
+
+
+
+  public class VoucherBulkOperationResult {
+
+    internal VoucherBulkOperationResult() {
+      // no-op
+    }
+
+    public string Message {
+      get; internal set;
+    }
+
+    public FileDto File {
+      get; internal set;
+    }
+
+    public FixedList<VoucherDescriptorDto> Vouchers {
+      get; internal set;
+    }
+
+  }  // class VoucherBulkOperationCommand
 
 }  // namespace Empiria.FinancialAccounting.WebApi.Vouchers
