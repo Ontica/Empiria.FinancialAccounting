@@ -181,19 +181,6 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
     }
 
 
-    private List<TrialBalanceEntry> GetMergedAccountsWithoutSector(FixedList<TrialBalanceEntry> entries) {
-
-      var returnedEntries = new List<TrialBalanceEntry>();
-
-      foreach (var entry in entries) {
-        if (returnedEntries.Find(x=>x.Account.Number == entry.Account.Number) == null) {
-          returnedEntries.Add(entry);
-        }
-      }
-      return returnedEntries;
-    }
-
-
     internal void SummaryByAccount(EmpiriaHashTable<TrialBalanceEntry> totalByEntries,
                                                        TrialBalanceEntry balanceEntry) {
 
