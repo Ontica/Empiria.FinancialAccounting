@@ -163,7 +163,7 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
 
       if (_query.IsSATBalanceReport) {
 
-        return trialBalance.Where(x=>x.Sector.Code == "00").ToList();
+        return GetSATBalanceReport(trialBalance);
 
       } else if (_query.ConsolidateBalancesToTargetCurrency && !_query.IsSATBalanceReport) {
 
@@ -178,6 +178,28 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
         return trialBalance;
 
       }
+    }
+
+
+    private List<TrialBalanceEntry> GetSATBalanceReport(List<TrialBalanceEntry> trialBalance) {
+
+      List<TrialBalanceEntry> returnedBalance = new List<TrialBalanceEntry>();
+
+      var debtorEntries = trialBalance.Where(x => x.Sector.Code == "00" &&
+                                             x.DebtorCreditor == DebtorCreditorType.Deudora && 
+                                             (x.ItemType == TrialBalanceItemType.Entry ||
+                                              x.ItemType == TrialBalanceItemType.Summary)
+                                            ).OrderBy(x => x.Account.Number).ToList();
+      returnedBalance.AddRange(debtorEntries);
+
+      var creditorEntries = trialBalance.Where(x => x.Sector.Code == "00" &&
+                                               x.DebtorCreditor == DebtorCreditorType.Acreedora &&
+                                               (x.ItemType == TrialBalanceItemType.Entry ||
+                                                x.ItemType == TrialBalanceItemType.Summary)
+                                              ).OrderBy(x=>x.Account.Number).ToList();
+      returnedBalance.AddRange(creditorEntries);
+
+      return returnedBalance;
     }
 
 
