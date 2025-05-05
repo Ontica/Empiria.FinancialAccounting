@@ -207,7 +207,7 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
 
       } else {
 
-        BalanceEntryByCurrencyToSumTwoColumnEntry(analyticEntry, balanceEntry, currentCurrency);
+        BalanceEntryByCurrencySumToTwoColumnEntry(analyticEntry, balanceEntry, currentCurrency);
       }
 
       SumBalanceEntryIntoAnalyticEntry(analyticEntry, balanceEntry);
@@ -225,7 +225,7 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
     #region Private methods
 
 
-    private void BalanceEntryByCurrencyToSumTwoColumnEntry(AnaliticoDeCuentasEntry analyticEntry,
+    private void BalanceEntryByCurrencySumToTwoColumnEntry(AnaliticoDeCuentasEntry analyticEntry,
                                                            TrialBalanceEntry balanceEntry,
                                                            Currency currentCurrency) {
 
@@ -463,12 +463,12 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
                                             .ToList();
 
       foreach (var entryUdis in entriesWithUdisCurrency) {
+
         var entry = entries.FirstOrDefault(a => a.Account.Number == entryUdis.Account.Number &&
                                             a.Ledger.Number == entryUdis.Ledger.Number &&
                                             a.Currency.Equals(Currency.MXN) &&
                                             a.Sector.Code == "00" &&
                                             a.DebtorCreditor == entryUdis.DebtorCreditor);
-
         SummaryBalancesByEntry(entry, entryUdis);
       }
     }

@@ -10,6 +10,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using DocumentFormat.OpenXml.Spreadsheet;
 using Empiria.Collections;
 using Empiria.FinancialAccounting.BalanceEngine.Adapters;
 using Empiria.FinancialAccounting.BalanceEngine.Data;
@@ -134,17 +135,23 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
       var helper = new AnaliticoDeCuentasHelper(_query);
 
       foreach (var entry in analyticEntries.Where(a => a.Sector.Code == "00" && a.Level > 1)) {
-
+        
         var entriesWithForeignCurrency = accountEntries.Where(
               a => a.Account.Number == entry.Account.Number && a.Ledger.Number == entry.Ledger.Number &&
               a.Sector.Code != "00" && a.DebtorCreditor == entry.DebtorCreditor &&
               a.Currency.Distinct(Currency.MXN) && a.Currency.Distinct(Currency.UDI)).ToList();
 
         if (entriesWithForeignCurrency.Count > 0) {
+          
+          var totalBalance = entry.TotalBalance;
 
           entry.ForeignBalance = 0;
           foreach (var foreignEntry in entriesWithForeignCurrency) {
             helper.SumTwoColumnEntry(entry, foreignEntry, foreignEntry.Currency);
+          }
+
+          if (entry.TotalBalance != totalBalance) {
+            entry.TotalBalance = totalBalance;
           }
         }
       }
@@ -184,7 +191,7 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
       var targetCurrency = Currency.Parse(_query.InitialPeriod.ValuateToCurrrencyUID);
 
       foreach (var entry in accountEntries) {
-        
+
         if (entry.CurrentBalance != 0 || _query.BalancesType == BalancesType.AllAccountsInCatalog) {
 
           string hash = $"{entry.Account.Number}||{entry.Sector.Code}||{targetCurrency.Id}||" +

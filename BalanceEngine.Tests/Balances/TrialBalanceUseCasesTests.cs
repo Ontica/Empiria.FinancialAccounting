@@ -15,6 +15,7 @@ using Empiria.Tests;
 
 using Empiria.FinancialAccounting.BalanceEngine.Adapters;
 using Empiria.FinancialAccounting.BalanceEngine;
+using System.Linq;
 
 namespace Empiria.FinancialAccounting.Tests.BalanceEngine {
 
@@ -31,6 +32,64 @@ namespace Empiria.FinancialAccounting.Tests.BalanceEngine {
     #endregion Initialization
 
     #region Facts
+
+    [Fact]
+    public void Should_Build_Analitico_De_Cuentas() {
+
+      TrialBalanceQuery query = GetDefaultTrialBalanceQuery();
+
+      query.TrialBalanceType = TrialBalanceType.AnaliticoDeCuentas;
+      TrialBalanceDto analitico = BalanceEngineProxy.BuildTrialBalance(query);
+
+      Assert.NotNull(analitico);
+      Assert.Equal(query, analitico.Query);
+      Assert.NotEmpty(analitico.Entries);
+    }
+
+
+    [Fact]
+    public void Analitico_Totals_Must_Be_Same_As_BalanzaConsolidada() {
+
+      TrialBalanceQuery query = GetDefaultTrialBalanceQuery();
+
+      query.TrialBalanceType = TrialBalanceType.AnaliticoDeCuentas;
+      TrialBalanceDto analitico = BalanceEngineProxy.BuildTrialBalance(query);
+
+      Assert.NotNull(analitico);
+      Assert.Equal(query, analitico.Query);
+      Assert.NotEmpty(analitico.Entries);
+
+      query.TrialBalanceType = TrialBalanceType.Balanza;
+      query.ConsolidateBalancesToTargetCurrency = true;
+      query.UseDefaultValuation = false;
+      query.InitialPeriod = new BalancesPeriod {
+        FromDate = TestingConstants.FROM_DATE,
+        ToDate = TestingConstants.TO_DATE,
+        ExchangeRateDate = new DateTime(2025, 01, 31),
+        ExchangeRateTypeUID = ExchangeRateType.ValorizacionBanxico.UID,
+        ValuateToCurrrencyUID = "01"
+      };
+      TrialBalanceDto balanza = BalanceEngineProxy.BuildTrialBalance(query);
+
+      Assert.NotNull(balanza);
+      Assert.Equal(query, balanza.Query);
+      Assert.NotEmpty(balanza.Entries);
+
+      var _balanza = balanza.Entries.Select(x => (BalanzaTradicionalEntryDto) x);
+      var _analitico = analitico.Entries.Select(x => (AnaliticoDeCuentasEntryDto) x);
+
+      foreach (var analiticEntry in _analitico.Where(x=>x.AccountNumber != string.Empty)) {
+
+        var balanzaEntryBalance = _balanza.Where(x => x.AccountNumber == analiticEntry.AccountNumber &&
+                                               x.SectorCode == analiticEntry.SectorCode &&
+                                               x.DebtorCreditor == analiticEntry.DebtorCreditor.ToString()
+                                         ).FirstOrDefault();
+
+        Assert.Equal(Math.Round(analiticEntry.TotalBalance), Math.Round((decimal) balanzaEntryBalance.CurrentBalance));
+
+      }
+    }
+
 
     [Fact]
     public void Should_Build_Balanza_Contabilidades_Cascada() {
@@ -72,6 +131,7 @@ namespace Empiria.FinancialAccounting.Tests.BalanceEngine {
 
     [Fact]
     public void Should_Build_A_Traditional_Trial_Balance() {
+      
       TrialBalanceQuery query = GetDefaultTrialBalanceQuery();
       query.TrialBalanceType = TrialBalanceType.Balanza;
 
@@ -188,13 +248,14 @@ namespace Empiria.FinancialAccounting.Tests.BalanceEngine {
         BalancesType = BalancesType.WithCurrentBalanceOrMovements,
         ShowCascadeBalances = false,
         Ledgers = TestingConstants.BALANCE_LEDGERS_ARRAY,
-        FromAccount = "2.01.02.01.01.01",
-        ToAccount = "2.01.02.01.01.01",
-
+        //FromAccount = "1.01.02",
+        //ToAccount = "1.01.02",
+        ConsolidateBalancesToTargetCurrency = false,
+        UseDefaultValuation = true,
         InitialPeriod = new BalancesPeriod {
           FromDate = TestingConstants.FROM_DATE,
           ToDate = TestingConstants.TO_DATE,
-          //ExchangeRateDate = new DateTime(2024, 03, 31),
+          //ExchangeRateDate = new DateTime(2025, 01, 31),
           //ExchangeRateTypeUID = ExchangeRateType.ValorizacionBanxico.UID,
           //ValuateToCurrrencyUID = "01"
         }
