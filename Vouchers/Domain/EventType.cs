@@ -30,11 +30,7 @@ namespace Empiria.FinancialAccounting.Vouchers {
       return VoucherData.EventTypes();
     }
 
-    static public EventType Empty {
-      get {
-        return BaseObject.ParseEmpty<EventType>(0);
-      }
-    }
+    static public EventType Empty => ParseId<EventType>(0);
 
     #endregion Constructors and parsers
 
