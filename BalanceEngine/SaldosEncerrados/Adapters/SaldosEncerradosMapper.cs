@@ -4,10 +4,10 @@
 *  Assembly : FinancialAccounting.BalanceEngine.dll      Pattern   : Mapper class                            *
 *  Type     : SaldosEncerradosMapper                     License   : Please read LICENSE.txt file            *
 *                                                                                                            *
-*  Summary  : Methods used to map saldos encerrados.                                                         *
+*  Summary  : Mapper for saldos encerrados.                                                                  *
 *                                                                                                            *
 ************************* Copyright(c) La Vía Óntica SC, Ontica LLC and contributors. All rights reserved. **/
-using System;
+
 using System.Collections.Generic;
 using System.Linq;
 
@@ -15,12 +15,10 @@ using Empiria.DynamicData;
 
 namespace Empiria.FinancialAccounting.BalanceEngine.Adapters {
 
-  /// <summary></summary>
+  /// <summary>Mapper for saldos encerrados.</summary>
   static internal class SaldosEncerradosMapper {
 
-
-    #region Public methods
-
+    #region Methods
 
     static public SaldosEncerradosDto Map(FixedList<SaldosEncerradosBaseEntryDto> mappedEntries) {
       return new SaldosEncerradosDto {
@@ -38,12 +36,9 @@ namespace Empiria.FinancialAccounting.BalanceEngine.Adapters {
       return new FixedList<SaldosEncerradosEntryDto>(mapped);
     }
 
+    #endregion Methods
 
-    #endregion Public methods
-
-
-    #region Private methods
-
+    #region Helpers
 
     static private void AccountClauses(SaldosEncerradosEntryDto dto,
                                        TrialBalanceEntry entry,
@@ -57,32 +52,21 @@ namespace Empiria.FinancialAccounting.BalanceEngine.Adapters {
       } else {
         dto.AccountNumber = entry.Account.Number;
         dto.SubledgerAccount = "";
-
       }
-      //if (account.Role != AccountRole.Control) {
-      //  dto.ItemType = TrialBalanceItemType.Summary;
-      //  dto.IsCancelable = true;
-
-      //} else {
-      //  dto.ItemType = entry.ItemType;
-      //  if (entry.ItemType == TrialBalanceItemType.Entry) {
-      //    dto.IsCancelable = true;
-      //  }
-      //}
     }
 
 
     static private FixedList<DataTableColumn> DataColumns() {
-      var columns = new List<DataTableColumn>();
-
-      columns.Add(new DataTableColumn("currencyCode", "Mon", "text"));
-      columns.Add(new DataTableColumn("accountNumber", "Cuenta", "text"));
-      columns.Add(new DataTableColumn("itemName", "Nombre", "text"));
-      columns.Add(new DataTableColumn("sectorCode", "Sector", "text"));
-      columns.Add(new DataTableColumn("subledgerAccount", "Auxiliar", "text"));
-      columns.Add(new DataTableColumn("lockedBalance", "Saldo encerrado", "decimal"));
-      columns.Add(new DataTableColumn("roleChangeDate", "Fecha cambio Rol", "date"));
-      columns.Add(new DataTableColumn("roleChange", "Rol", "text-button"));
+      var columns = new List<DataTableColumn> {
+        new DataTableColumn("currencyCode", "Mon", "text"),
+        new DataTableColumn("accountNumber", "Cuenta", "text"),
+        new DataTableColumn("itemName", "Nombre", "text"),
+        new DataTableColumn("sectorCode", "Sector", "text"),
+        new DataTableColumn("subledgerAccount", "Auxiliar", "text"),
+        new DataTableColumn("lockedBalance", "Saldo encerrado", "decimal"),
+        new DataTableColumn("roleChangeDate", "Fecha cambio Rol", "date"),
+        new DataTableColumn("roleChange", "Rol", "text")
+      };
 
       return columns.ToFixedList();
     }
@@ -114,25 +98,25 @@ namespace Empiria.FinancialAccounting.BalanceEngine.Adapters {
     }
 
 
-    private static void RoleClauses(SaldosEncerradosEntryDto dto,
+    static private void RoleClauses(SaldosEncerradosEntryDto dto,
                                     TrialBalanceEntry entry, Account account) {
 
       if (account.Role == AccountRole.Detalle) {
 
         dto.ItemType = TrialBalanceItemType.Summary;
         dto.IsCancelable = true;
+
       } else {
 
         dto.ItemType = entry.ItemType;
         if (entry.ItemType == TrialBalanceItemType.Entry) {
           dto.IsCancelable = true;
         }
+
       }
     }
 
-
-    #endregion Private methods
-
+    #endregion Helpers
 
   } // class SaldosEncerradosMapper
 
