@@ -35,6 +35,10 @@ namespace Empiria.FinancialAccounting.Vouchers.Adapters {
       get; internal set;
     }
 
+    public bool AskForDatePeriodField {
+      get; internal set;
+    }
+
     public bool AskForVoucherNumberField {
       get; internal set;
     }
@@ -42,6 +46,11 @@ namespace Empiria.FinancialAccounting.Vouchers.Adapters {
     public string CalculationDateFieldName {
       get; internal set;
     } = "Fecha";
+
+
+    public string DatePeriodFieldName {
+      get; internal set;
+    } = "Período";
 
   }  // class VoucherSpecialCaseTypeDto
 

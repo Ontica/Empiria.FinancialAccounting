@@ -62,12 +62,18 @@ namespace Empiria.FinancialAccounting.Vouchers {
     }
 
 
+    public bool AskForDatePeriodField {
+      get {
+        return base.ExtendedDataField.Get("askForDatePeriodField", false);
+      }
+    }
+
+
     public bool AskForVoucherNumberField {
       get {
         return base.ExtendedDataField.Get("askForVoucherNumberField", false);
       }
     }
-
 
 
     public bool SkipEntriesValidation {
@@ -79,6 +85,13 @@ namespace Empiria.FinancialAccounting.Vouchers {
     public string CalculationDateFieldName {
       get {
         return base.ExtendedDataField.Get("calculationDateFieldName", "Fecha");
+      }
+    }
+
+
+    public string DatePeriodFieldName {
+      get {
+        return base.ExtendedDataField.Get("datePeriodFieldName", "Período");
       }
     }
 

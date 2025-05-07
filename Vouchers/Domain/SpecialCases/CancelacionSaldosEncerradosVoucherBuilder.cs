@@ -98,8 +98,8 @@ namespace Empiria.FinancialAccounting.Vouchers.SpecialCases {
     private FixedList<SaldosEncerradosEntryDto> GetLockedBalances() {
       var query = new SaldosEncerradosQuery {
         AccountsChartUID = base.AccountsChart.UID,
-        FromDate = base.Fields.CalculationDate,
-        ToDate = base.Fields.CalculationDate,
+        FromDate = base.Fields.DatePeriod.FromDate,
+        ToDate = base.Fields.DatePeriod.ToDate,
         LedgerUID = base.Fields.LedgerUID
       };
 

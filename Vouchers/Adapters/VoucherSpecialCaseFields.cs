@@ -23,9 +23,15 @@ namespace Empiria.FinancialAccounting.Vouchers.Adapters {
       get; set;
     }
 
+
     public DateTime CalculationDate {
       get; set;
     } = ExecutionServer.DateMinValue;
+
+
+    public DatePeriodFields DatePeriod {
+      get; set;
+    }
 
 
     public string OnVoucherNumber {
@@ -38,5 +44,18 @@ namespace Empiria.FinancialAccounting.Vouchers.Adapters {
     }
 
   }  // class VoucherSpecialCaseFields
+
+
+  public class DatePeriodFields {
+
+    public DateTime FromDate {
+      get; set;
+    }
+
+    public DateTime ToDate {
+      get; set;
+    }
+
+  }  // class DatePeriod
 
 }  // namespace Empiria.FinancialAccounting.Vouchers.Adapters
