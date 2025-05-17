@@ -83,11 +83,11 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
       get; internal set;
     }
 
-
     public decimal TotalBalance {
-      get; internal set;
+      get {
+        return DomesticBalance + ForeignBalance;
+      }
     }
-
 
     public decimal ExchangeRate {
       get; internal set;
@@ -152,7 +152,6 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
     internal void Sum(AnaliticoDeCuentasEntry entry) {
       this.DomesticBalance += entry.DomesticBalance;
       this.ForeignBalance += entry.ForeignBalance;
-      this.TotalBalance += entry.TotalBalance;
       this.ExchangeRate = entry.ExchangeRate;
     }
 
@@ -162,7 +161,6 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
       this.InitialBalance = 0;
       this.Debit = 0;
       this.Credit = 0;
-      this.TotalBalance = 0;
       this.AverageBalance = 0;
     }
   } // class AnalyticBalanceEntry

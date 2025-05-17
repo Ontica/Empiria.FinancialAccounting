@@ -44,7 +44,6 @@ namespace Empiria.FinancialAccounting.BalanceEngine.Adapters {
       entry.DebtorCreditor = balanceEntry.DebtorCreditor;
       entry.DomesticBalance = balanceEntry.DomesticBalance;
       entry.ForeignBalance = balanceEntry.ForeignBalance;
-      entry.TotalBalance = balanceEntry.TotalBalance;
       entry.ExchangeRate = balanceEntry.ExchangeRate;
 
       return entry;

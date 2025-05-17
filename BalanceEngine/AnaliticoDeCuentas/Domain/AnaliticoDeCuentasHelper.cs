@@ -43,7 +43,6 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
         if (balanceEntry.DebtorCreditor == DebtorCreditorType.Acreedora) {
           analyticEntry.DomesticBalance = -1 * analyticEntry.DomesticBalance;
           analyticEntry.ForeignBalance = -1 * analyticEntry.ForeignBalance;
-          analyticEntry.TotalBalance = -1 * analyticEntry.TotalBalance;
         }
         analyticEntry.Account = StandardAccount.Empty;
         analyticEntry.Sector = Sector.Empty;
@@ -403,7 +402,6 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
       analyticEntry.InitialBalance += balanceEntry.InitialBalance;
       analyticEntry.Debit += balanceEntry.Debit;
       analyticEntry.Credit += balanceEntry.Credit;
-      analyticEntry.TotalBalance = analyticEntry.DomesticBalance + analyticEntry.ForeignBalance;
       analyticEntry.AverageBalance += balanceEntry.AverageBalance;
       analyticEntry.LastChangeDate = balanceEntry.LastChangeDate > analyticEntry.LastChangeDate ?
                                           balanceEntry.LastChangeDate : analyticEntry.LastChangeDate;

@@ -135,23 +135,19 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
       var helper = new AnaliticoDeCuentasHelper(_query);
 
       foreach (var entry in analyticEntries.Where(a => a.Sector.Code == "00" && a.Level > 1)) {
-        
+
         var entriesWithForeignCurrency = accountEntries.Where(
               a => a.Account.Number == entry.Account.Number && a.Ledger.Number == entry.Ledger.Number &&
               a.Sector.Code != "00" && a.DebtorCreditor == entry.DebtorCreditor &&
               a.Currency.Distinct(Currency.MXN) && a.Currency.Distinct(Currency.UDI)).ToList();
 
         if (entriesWithForeignCurrency.Count > 0) {
-          
+
           var totalBalance = entry.TotalBalance;
 
           entry.ForeignBalance = 0;
           foreach (var foreignEntry in entriesWithForeignCurrency) {
             helper.SumTwoColumnEntry(entry, foreignEntry, foreignEntry.Currency);
-          }
-
-          if (entry.TotalBalance != totalBalance) {
-            entry.TotalBalance = totalBalance;
           }
         }
       }
