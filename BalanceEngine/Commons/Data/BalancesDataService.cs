@@ -7,15 +7,11 @@
 *  Summary  : Provides data read methods for balances.                                                       *
 *                                                                                                            *
 ************************* Copyright(c) La Vía Óntica SC, Ontica LLC and contributors. All rights reserved. **/
-using System;
 using System.Collections.Generic;
 
 using Empiria.Data;
-
-using Empiria.FinancialAccounting.Adapters;
 using Empiria.FinancialAccounting.BalanceEngine.Adapters;
 using Empiria.FinancialAccounting.BalanceEngine.BalanceExplorer.Adapters;
-using Empiria.FinancialAccounting.UseCases;
 
 namespace Empiria.FinancialAccounting.BalanceEngine.Data {
 
@@ -72,7 +68,6 @@ namespace Empiria.FinancialAccounting.BalanceEngine.Data {
 
       return DataReader.GetPlainObjectList<TrialBalanceEntry>(operation);
     }
-
 
     #endregion Helpers
 
