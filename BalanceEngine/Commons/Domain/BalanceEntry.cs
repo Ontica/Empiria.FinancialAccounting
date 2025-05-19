@@ -22,84 +22,68 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
 
     #endregion Constructors and parsers
 
-    public TrialBalanceItemType ItemType {
-      get;
-      internal set;
-    } = TrialBalanceItemType.Entry;
-
-
     [DataField("ID_MAYOR", ConvertFrom = typeof(decimal))]
     public Ledger Ledger {
-      get;
-      internal set;
+      get; private set;
     }
 
     [DataField("ID_MONEDA", ConvertFrom = typeof(decimal))]
     public Currency Currency {
-      get;
-      internal set;
+      get; private set;
     }
 
 
     [DataField("ID_CUENTA_ESTANDAR", ConvertFrom = typeof(long))]
     public StandardAccount Account {
-      get;
-      internal set;
+      get; private set;
     }
 
 
     [DataField("ID_SECTOR", ConvertFrom = typeof(long))]
     public Sector Sector {
-      get;
-      internal set;
+      get; private set;
     }
 
 
     [DataField("ID_CUENTA_AUXILIAR", ConvertFrom = typeof(decimal))]
     public int SubledgerAccountId {
-      get;
-      internal set;
+      get; private set;
     }
 
 
     [DataField("SALDO_ANTERIOR")]
     public decimal InitialBalance {
-      get;
-      internal set;
+      get; private set;
     }
 
 
     [DataField("DEBE")]
     public decimal Debit {
-      get;
-      internal set;
+      get; private set;
     }
 
 
     [DataField("HABER")]
     public decimal Credit {
-      get;
-      internal set;
+      get; private set;
     }
 
 
     [DataField("SALDO_ACTUAL")]
     public decimal CurrentBalance {
-      get;
-      internal set;
+      get; private set;
     }
 
 
     [DataField("SALDO_PROMEDIO")]
     public decimal AverageBalance {
-      get;
-      internal set;
+      get; private set;
     }
 
 
     [DataField("FECHA_ULTIMO_MOVIMIENTO")]
     public DateTime LastChangeDate {
-      get; internal set;
+      get; private set;
     }
 
   } //class BalanceEntry
