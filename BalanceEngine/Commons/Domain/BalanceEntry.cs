@@ -86,6 +86,20 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
       get; private set;
     }
 
+
+    public decimal ExchangeRate {
+      get; private set;
+    } = 1;
+
+
+    internal void MultiplyBy(decimal value) {
+      Math.Round(this.InitialBalance *= value);
+      Math.Round(this.Debit *= value);
+      Math.Round(this.Credit *= value);
+      Math.Round(this.CurrentBalance *= value);
+      this.ExchangeRate = value;
+    }
+
   } //class BalanceEntry
 
 } // namespace Empiria.FinancialAccounting.BalanceEngine
