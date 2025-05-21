@@ -69,6 +69,58 @@ namespace Empiria.FinancialAccounting.Tests.BalanceEngine {
     }
 
 
+    [Fact]
+    public void Should_Be_Same_Balanza_Consolidada_VS_Balance_Entries() {
+
+      TrialBalanceQuery query = GetDefaultQuery();
+      GetQueryFiltersForBalanceEntries(query);
+      
+      var balanzaConsolidada = GetTrialBalanceDto(query);
+      var balanzaConsolidadaEntries = balanzaConsolidada.Entries.Select(x => (BalanzaTradicionalEntryDto) x);
+      
+      Assert.NotNull(balanzaConsolidada);
+      Assert.NotEmpty(balanzaConsolidadaEntries);
+
+      var balanceEntries = GetBalanceEntries(query);
+      Assert.NotEmpty(balanceEntries);
+
+      foreach (var balanza in balanzaConsolidadaEntries) {
+
+        var filtered = BalanceEntryBuilder.GetBalancesByAccountAndSector(balanza.AccountNumber,
+                                           balanza.SectorCode, balanceEntries);
+
+        var totalInitialBalance = filtered.Sum(x => x.InitialBalance);
+        var totalDebit = filtered.Sum(x => x.Debit);
+        var totalCredit = filtered.Sum(x => x.Credit);
+        var totalCurrentBalance = filtered.Sum(x => x.CurrentBalance);
+
+        Assert.True((totalInitialBalance - balanza.InitialBalance) <= 1 ||
+                    (totalInitialBalance - balanza.InitialBalance) >= -1,
+                    $"Diferencia saldo inicial en {balanza.AccountNumber}, " +
+                    $"balanza consolidada = {balanza.InitialBalance}, " +
+                    $"suma movimientos = {totalInitialBalance} ");
+
+        Assert.True((totalDebit - balanza.Debit) <= 1 ||
+                    (totalDebit - balanza.Debit) >= -1,
+                    $"Diferencia cargos en {balanza.AccountNumber}, " +
+                    $"balanza consolidada = {balanza.Debit}, " +
+                    $"suma movimientos = {totalDebit} ");
+
+        Assert.True((totalCredit - balanza.Credit) <= 1 ||
+                    (totalCredit - balanza.Credit) >= -1,
+                    $"Diferencia abonos en {balanza.AccountNumber}, " +
+                    $"balanza consolidada = {balanza.Credit}, " +
+                    $"suma movimientos = {totalCredit} ");
+
+        Assert.True((totalCurrentBalance - balanza.CurrentBalance) <= 1 ||
+                    (totalCurrentBalance - balanza.CurrentBalance) >= -1,
+                    $"Diferencia saldo actual en {balanza.AccountNumber}, " +
+                    $"balanza consolidada = {balanza.CurrentBalance}, " +
+                    $"suma movimientos = {totalCurrentBalance} ");
+      }
+    }
+
+
     #region Helpers
 
     private FixedList<BalanceEntry> GetBalanceEntries(TrialBalanceQuery query) {
