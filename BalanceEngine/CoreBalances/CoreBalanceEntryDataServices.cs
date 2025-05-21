@@ -2,36 +2,38 @@
 *                                                                                                            *
 *  Module   : Balance Engine                             Component : Data Layer                              *
 *  Assembly : FinancialAccounting.BalanceEngine.dll      Pattern   : Data Service                            *
-*  Type     : BalanceEntryDataService                    License   : Please read LICENSE.txt file            *
+*  Type     : CoreBalanceEntryDataServices               License   : Please read LICENSE.txt file            *
 *                                                                                                            *
-*  Summary  : Provides data read methods for balance entries.                                                *
+*  Summary  : Provides data read methods for core balance entries.                                           *
 *                                                                                                            *
 ************************* Copyright(c) La Vía Óntica SC, Ontica LLC and contributors. All rights reserved. **/
 
 using System.Collections.Generic;
+
 using Empiria.Data;
+
 using Empiria.FinancialAccounting.BalanceEngine.Adapters;
 
 namespace Empiria.FinancialAccounting.BalanceEngine.Data {
 
-  /// <summary>Provides data read methods for balance entries.</summary>
-  static internal class BalanceEntryDataService {
+  /// <summary>Provides data read methods for core balance entries.</summary>
+  static internal class CoreBalanceEntryDataServices {
 
     #region Public methods
 
-    static internal FixedList<BalanceEntry> GetBalanceEntries(TrialBalanceQuery query) {
+    static internal FixedList<CoreBalanceEntry> GetBalanceEntries(TrialBalanceQuery query) {
       Assertion.Require(query, nameof(query));
 
       BalancesSqlClauses sqlClauses = BalancesSqlClauses.BuildFrom(query);
 
-      return new FixedList<BalanceEntry>(GetBalanceEntries(sqlClauses));
+      return new FixedList<CoreBalanceEntry>(GetBalanceEntries(sqlClauses));
     }
 
     #endregion Public methods
 
     #region Helpers
 
-    static private List<BalanceEntry> GetBalanceEntries(BalancesSqlClauses clauses) {
+    static private List<CoreBalanceEntry> GetBalanceEntries(BalancesSqlClauses clauses) {
       var operation = DataOperation.Parse("@qryTrialBalance",
                             DataCommonMethods.FormatSqlDbDate(clauses.StoredInitialBalanceSet.BalancesDate),
                             DataCommonMethods.FormatSqlDbDate(clauses.FromDate),
@@ -48,11 +50,11 @@ namespace Empiria.FinancialAccounting.BalanceEngine.Data {
                             clauses.AverageBalance
                             );
 
-      return DataReader.GetPlainObjectList<BalanceEntry>(operation);
+      return DataReader.GetPlainObjectList<CoreBalanceEntry>(operation);
     }
 
     #endregion Helpers
 
-  } // class BalanceEntryDataService
+  } // class CoreBalanceEntryDataServices
 
 } // namespace Empiria.FinancialAccounting.BalanceEngine.Data

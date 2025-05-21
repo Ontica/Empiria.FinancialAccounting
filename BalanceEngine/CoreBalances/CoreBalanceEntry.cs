@@ -2,21 +2,21 @@
 *                                                                                                            *
 *  Module   : Balance Engine                             Component : Domain Layer                            *
 *  Assembly : FinancialAccounting.BalanceEngine.dll      Pattern   : Empiria Plain Object                    *
-*  Type     : TrialBalanceEntry                          License   : Please read LICENSE.txt file            *
+*  Type     : CoreBalanceEntry                           License   : Please read LICENSE.txt file            *
 *                                                                                                            *
-*  Summary  : Represents an entry for a balance entry.                                                       *
+*  Summary  : Represents a core balance entry.                                                               *
 *                                                                                                            *
 ************************* Copyright(c) La Vía Óntica SC, Ontica LLC and contributors. All rights reserved. **/
 using System;
 
 namespace Empiria.FinancialAccounting.BalanceEngine {
 
-  /// <summary>Represents an entry for a balance entry.</summary>
-  public class BalanceEntry {
+  /// <summary>Represents a core balance entry.</summary>
+  public class CoreBalanceEntry {
 
     #region Constructors and parsers
 
-    internal BalanceEntry() {
+    internal CoreBalanceEntry() {
       // Required by Empiria Framework.
     }
 
@@ -92,14 +92,14 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
     } = 1;
 
 
-    internal void MultiplyBy(decimal value) {
-      Math.Round(this.InitialBalance *= value);
-      Math.Round(this.Debit *= value);
-      Math.Round(this.Credit *= value);
-      Math.Round(this.CurrentBalance *= value);
-      this.ExchangeRate = value;
+    internal void ValuateTo(decimal exchangeRate) {
+      this.ExchangeRate = exchangeRate;
+      Math.Round(this.InitialBalance *= exchangeRate, 2);
+      Math.Round(this.Debit *= exchangeRate, 2);
+      Math.Round(this.Credit *= exchangeRate, 2);
+      Math.Round(this.CurrentBalance *= exchangeRate, 2);
     }
 
-  } //class BalanceEntry
+  } //class CoreBalanceEntry
 
 } // namespace Empiria.FinancialAccounting.BalanceEngine
