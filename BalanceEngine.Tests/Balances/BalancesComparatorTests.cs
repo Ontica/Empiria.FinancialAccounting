@@ -8,6 +8,8 @@
 *                                                                                                            *
 ************************* Copyright(c) La Vía Óntica SC, Ontica LLC and contributors. All rights reserved. **/
 using System;
+using System.Linq;
+using DocumentFormat.OpenXml.Spreadsheet;
 using Empiria.FinancialAccounting.BalanceEngine;
 using Empiria.FinancialAccounting.BalanceEngine.Adapters;
 using Empiria.FinancialAccounting.BalanceEngine.UseCases;
@@ -22,44 +24,60 @@ namespace Empiria.FinancialAccounting.Tests.BalanceEngine {
     [Fact]
     public void Should_Get_Balance_Entries() {
 
-      var sut = GetBalanceEntries();
+      TrialBalanceQuery query = GetDefaultQuery();
+      var sut = GetBalanceEntries(query);
 
       Assert.NotNull(sut);
     }
 
 
     [Fact]
-    public void Should_Compare_Analitico_VS_Balance_Entries() {
+    public void Should_Be_Same_Analitico_VS_Balance_Entries() {
 
-      var analitico = new FixedList<AnaliticoDeCuentasDto>();
+      TrialBalanceQuery query = GetDefaultQuery();
+      query.TrialBalanceType = TrialBalanceType.AnaliticoDeCuentas;
 
-      var balanceEntries = GetBalanceEntries();
-
+      var analitico = GetTrialBalanceDto(query);
+      var analiticoEntries = analitico.Entries.Select(x => (AnaliticoDeCuentasEntryDto) x);
       Assert.NotNull(analitico);
-      Assert.NotNull(balanceEntries);
-    }
+      Assert.NotEmpty(analiticoEntries);
 
+      var balanceEntries = GetBalanceEntries(query);
+      Assert.NotEmpty(balanceEntries);
 
-    [Fact]
-    public void Should_Compare_Balanza_Tradicional_VS_Balance_Entries() {
+      foreach (var analiticoEntry in analiticoEntries) {
 
-      var balanza = new FixedList<BalanzaTradicionalDto>();
+        var filtered = BalanceEntryBuilder.GetBalancesByAccountAndSector(analiticoEntry.AccountNumber, analiticoEntry.SectorCode, balanceEntries);
+        var entriesMN = BalanceEntryBuilder.GetSumByMN(filtered);
+        var entriesME = BalanceEntryBuilder.GetSumByME(filtered);
 
-      var balanceEntries = GetBalanceEntries();
+        Assert.True((entriesMN - analiticoEntry.DomesticBalance) <= 1 ||
+                    (entriesMN - analiticoEntry.DomesticBalance) >= -1,
+                    $"Diferencia MN en cuenta {analiticoEntry.AccountNumber}, " +
+                    $"analítico = {analiticoEntry.DomesticBalance}. Suma movimientos = {entriesMN}");
 
-      Assert.NotNull(balanza);
-      Assert.NotNull(balanceEntries);
+        Assert.True((entriesME - analiticoEntry.ForeignBalance) <= 1 ||
+                    (entriesME - analiticoEntry.ForeignBalance) >= -1,
+                    $"Diferencia ME en cuenta {analiticoEntry.AccountNumber}, " +
+                    $"analítico = {analiticoEntry.ForeignBalance}. Suma movimientos = {entriesME}");
+
+        Assert.True(((entriesMN + entriesME) - analiticoEntry.TotalBalance) <= 1 ||
+                    ((entriesMN + entriesME) - analiticoEntry.TotalBalance) >= -1,
+                    $"Diferencia en Total en cuenta {analiticoEntry.AccountNumber}, " +
+                    $"analítico = {analiticoEntry.TotalBalance}. Suma movimientos = {entriesMN + entriesME}");
+      }
     }
 
 
     #region Helpers
 
-    private FixedList<BalanceEntry> GetBalanceEntries() {
-      TrialBalanceQuery query = GetDefaultQuery();
+    private FixedList<BalanceEntry> GetBalanceEntries(TrialBalanceQuery query) {
 
-      BalanceEntryBuilder builder = new BalanceEntryBuilder();
+      GetQueryFiltersForBalanceEntries(query);
 
-      return builder.GetBalanceEntries(query);
+      BalanceEntryBuilder builder = new BalanceEntryBuilder(query);
+
+      return builder.GetBalanceEntries();
     }
 
 
@@ -67,20 +85,40 @@ namespace Empiria.FinancialAccounting.Tests.BalanceEngine {
 
       return new TrialBalanceQuery() {
         AccountsChartUID = TestingConstants.ACCOUNTS_CHART_UID,
-        TrialBalanceType = TrialBalanceType.Balanza,
         BalancesType = BalancesType.WithCurrentBalanceOrMovements,
+        ShowCascadeBalances = false,
         Ledgers = TestingConstants.BALANCE_LEDGERS_ARRAY,
-        FromAccount = "1.01",
-        ToAccount = "1.01",
-        ConsolidateBalancesToTargetCurrency = true,
+        FromAccount = "",
+        ToAccount = "",
+        ConsolidateBalancesToTargetCurrency = false,
+        UseDefaultValuation = true,
         InitialPeriod = new BalancesPeriod {
-          FromDate = new DateTime(2025, 01, 01),
-          ToDate = new DateTime(2025, 01, 31),
-          ExchangeRateDate = new DateTime(2025, 01, 31),
-          ExchangeRateTypeUID = ExchangeRateType.ValorizacionBanxico.UID,
-          ValuateToCurrrencyUID = "01"
+          FromDate = TestingConstants.FROM_DATE,
+          ToDate = TestingConstants.TO_DATE
         }
       };
+    }
+
+
+    private TrialBalanceDto GetTrialBalanceDto(TrialBalanceQuery query) {
+
+      using (var usecase = TrialBalanceUseCases.UseCaseInteractor()) {
+
+        TrialBalanceDto trialBalance = usecase.BuildTrialBalance(query);
+        var analiticoEntries = trialBalance.Entries.Select(x => (AnaliticoDeCuentasEntryDto) x);
+
+        return trialBalance;
+      }
+    }
+
+
+    private void GetQueryFiltersForBalanceEntries(TrialBalanceQuery query) {
+      query.UseDefaultValuation = false;
+      query.ConsolidateBalancesToTargetCurrency = true;
+      query.TrialBalanceType = TrialBalanceType.Balanza;
+      query.InitialPeriod.ExchangeRateDate = TestingConstants.TO_DATE;
+      query.InitialPeriod.ExchangeRateTypeUID = ExchangeRateType.ValorizacionBanxico.UID;
+      query.InitialPeriod.ValuateToCurrrencyUID = "01";
     }
 
     #endregion Helpers

@@ -18,9 +18,9 @@ namespace Empiria.FinancialAccounting.Tests {
 
     static internal readonly string[] BALANCE_LEDGERS_ARRAY = new string[] { };
 
-    static internal readonly DateTime FROM_DATE = new DateTime(2024, 10, 01);
+    static internal readonly DateTime FROM_DATE = new DateTime(2025, 01, 01);
 
-    static internal readonly DateTime TO_DATE = new DateTime(2024, 10, 07);
+    static internal readonly DateTime TO_DATE = new DateTime(2025, 01, 31);
 
     static public bool INVOKE_USE_CASES_THROUGH_THE_WEB_API = false;
 
