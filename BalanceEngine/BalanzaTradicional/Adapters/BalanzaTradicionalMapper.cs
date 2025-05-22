@@ -111,9 +111,7 @@ namespace Empiria.FinancialAccounting.BalanceEngine.Adapters {
     static private void AssignDebtorCreditorAndLastChangeDate(BalanzaTradicionalEntryDto dto,
                                                               TrialBalanceEntry entry) {
 
-      dto.DebtorCreditor = entry.ItemType == TrialBalanceItemType.Entry ||
-                           entry.ItemType == TrialBalanceItemType.Summary ?
-                           entry.DebtorCreditor.ToString() : "";
+      dto.DebtorCreditor = entry.DebtorCreditor;
 
       dto.LastChangeDate = entry.ItemType == TrialBalanceItemType.Entry ||
                            entry.ItemType == TrialBalanceItemType.Summary ?

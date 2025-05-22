@@ -143,8 +143,7 @@ namespace Empiria.FinancialAccounting.FinancialReports.Providers {
     private DynamicTrialBalanceEntry Convert(BalanzaTradicionalEntryDto sourceEntry) {
       var converted = new DynamicTrialBalanceEntry(sourceEntry);
 
-      converted.DebtorCreditor = sourceEntry.DebtorCreditor == DebtorCreditorType.Deudora.ToString() ?
-                                              DebtorCreditorType.Deudora : DebtorCreditorType.Acreedora;
+      converted.DebtorCreditor = sourceEntry.DebtorCreditor;
 
       converted.SetTotalField("saldoActual", sourceEntry.CurrentBalanceForBalances);
 

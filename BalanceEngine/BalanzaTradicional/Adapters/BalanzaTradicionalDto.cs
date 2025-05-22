@@ -169,7 +169,7 @@ namespace Empiria.FinancialAccounting.BalanceEngine.Adapters {
     }
 
 
-    public string DebtorCreditor {
+    public DebtorCreditorType DebtorCreditor {
       get; internal set;
     }
 

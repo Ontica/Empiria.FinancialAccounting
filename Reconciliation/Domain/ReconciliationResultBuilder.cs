@@ -74,7 +74,7 @@ namespace Empiria.FinancialAccounting.Reconciliation {
 
 
     private decimal CalculateTotal(BalanzaTradicionalEntryDto accountingEntry) {
-      if (accountingEntry.DebtorCreditor == "Deudora") {
+      if (accountingEntry.DebtorCreditor == DebtorCreditorType.Deudora) {
         return accountingEntry.Debit - accountingEntry.Credit;
       } else {
         return accountingEntry.Credit - accountingEntry.Debit;
