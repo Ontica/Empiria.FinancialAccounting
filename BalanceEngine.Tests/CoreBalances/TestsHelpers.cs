@@ -60,7 +60,7 @@ namespace Empiria.Tests.FinancialAccounting.BalanceEngine {
       var query = new TrialBalanceQuery() {
         TrialBalanceType = TrialBalanceType.Balanza,
         AccountsChartUID = TestingConstants.IFRS_ACCOUNTS_CHART.UID,
-        BalancesType = BalancesType.WithCurrentBalanceOrMovements,
+        BalancesType = BalancesType.AllAccounts,
         ShowCascadeBalances = false,
         UseDefaultValuation = false,
         ConsolidateBalancesToTargetCurrency = true,
@@ -79,7 +79,15 @@ namespace Empiria.Tests.FinancialAccounting.BalanceEngine {
 
     static internal CoreBalanceEntries GetCoreBalanceEntries(DateTime fromDate, DateTime toDate,
                                                              ExchangeRateType exchangeRateType) {
-      TrialBalanceQuery query = GetCoreBalanceEntriesQuery(fromDate, toDate);
+      var query = new TrialBalanceQuery() {
+        AccountsChartUID = TestingConstants.IFRS_ACCOUNTS_CHART.UID,
+        TrialBalanceType = TrialBalanceType.Balanza,
+        BalancesType = BalancesType.AllAccounts,
+        InitialPeriod = new BalancesPeriod {
+          FromDate = fromDate,
+          ToDate = toDate,
+        }
+      };
 
       return new CoreBalanceEntries(query, exchangeRateType);
     }
@@ -97,23 +105,6 @@ namespace Empiria.Tests.FinancialAccounting.BalanceEngine {
 
 
     #endregion Methods
-
-    #region Private
-
-    static private TrialBalanceQuery GetCoreBalanceEntriesQuery(DateTime fromDate,
-                                                                DateTime toDate) {
-      return new TrialBalanceQuery() {
-        AccountsChartUID = TestingConstants.IFRS_ACCOUNTS_CHART.UID,
-        TrialBalanceType = TrialBalanceType.Balanza,
-        BalancesType = BalancesType.AllAccounts,
-        InitialPeriod = new BalancesPeriod {
-          FromDate = fromDate,
-          ToDate = toDate,
-        }
-      };
-    }
-
-    #endregion Helpers
 
   } // class TestsHelpers
 

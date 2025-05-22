@@ -37,18 +37,6 @@ namespace Empiria.FinancialAccounting.WebApi {
 
 
     [HttpPost]
-    [Route("v2/financial-accounting/exchange-rates")]
-    public CollectionModel GetExchangeRates([FromBody] ExchangeRatesQuery query) {
-
-      using (var usecases = ExchangeRatesUseCases.UseCaseInteractor()) {
-        FixedList<ExchangeRateDescriptorDto> exchangeRates = usecases.SearchExchangeRates(query);
-
-        return new CollectionModel(base.Request, exchangeRates);
-      }
-    }
-
-
-    [HttpPost]
     [Route("v2/financial-accounting/exchange-rates/for-edition")]
     public SingleObjectModel GetExchangeRatesForEdition([FromBody] ExchangeRateValuesDto query) {
 
@@ -75,20 +63,6 @@ namespace Empiria.FinancialAccounting.WebApi {
 
 
     [HttpPost]
-    [Route("v2/financial-accounting/exchange-rates/update-all")]
-    public SingleObjectModel UpdateAllExchangeRates([FromBody] ExchangeRateValuesDto fields) {
-
-      RequireBody(fields);
-
-      using (var usecases = ExchangeRatesUseCases.UseCaseInteractor()) {
-        ExchangeRateValuesDto exchangeRatesforEdition = usecases.UpdateAllExchangeRates(fields);
-
-        return new SingleObjectModel(base.Request, exchangeRatesforEdition);
-      }
-    }
-
-
-    [HttpPost]
     [Route("v2/financial-accounting/exchange-rates/excel")]
     public SingleObjectModel GetExcelExchangeRates([FromBody] ExchangeRatesQuery query) {
 
@@ -100,6 +74,32 @@ namespace Empiria.FinancialAccounting.WebApi {
         FileDto excelFileDto = excelExporter.Export(exchangeRates);
 
         return new SingleObjectModel(this.Request, excelFileDto);
+      }
+    }
+
+
+    [HttpPost]
+    [Route("v2/financial-accounting/exchange-rates")]
+    public CollectionModel SearchExchangeRates([FromBody] ExchangeRatesQuery query) {
+
+      using (var usecases = ExchangeRatesUseCases.UseCaseInteractor()) {
+        FixedList<ExchangeRateDescriptorDto> exchangeRates = usecases.SearchExchangeRates(query);
+
+        return new CollectionModel(base.Request, exchangeRates);
+      }
+    }
+
+
+    [HttpPost]
+    [Route("v2/financial-accounting/exchange-rates/update-all")]
+    public SingleObjectModel UpdateAllExchangeRates([FromBody] ExchangeRateValuesDto fields) {
+
+      RequireBody(fields);
+
+      using (var usecases = ExchangeRatesUseCases.UseCaseInteractor()) {
+        ExchangeRateValuesDto exchangeRatesforEdition = usecases.UpdateAllExchangeRates(fields);
+
+        return new SingleObjectModel(base.Request, exchangeRatesforEdition);
       }
     }
 

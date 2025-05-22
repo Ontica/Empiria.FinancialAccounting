@@ -206,6 +206,7 @@ namespace Empiria.FinancialAccounting.AccountsChartEdition {
       var list = new List<AccountDataToBeUpdated>();
 
       foreach (var s in stringArray) {
+
         if (s == "descripción" || s == "descripcion" || s == "nombre") {
           list.Add(AccountDataToBeUpdated.Name);
 

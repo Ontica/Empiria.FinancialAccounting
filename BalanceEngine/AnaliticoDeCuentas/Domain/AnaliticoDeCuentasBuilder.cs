@@ -143,9 +143,8 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
 
         if (entriesWithForeignCurrency.Count > 0) {
 
-          var totalBalance = entry.TotalBalance;
-
           entry.ForeignBalance = 0;
+
           foreach (var foreignEntry in entriesWithForeignCurrency) {
             helper.SumTwoColumnEntry(entry, foreignEntry, foreignEntry.Currency);
           }

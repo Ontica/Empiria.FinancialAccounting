@@ -334,6 +334,7 @@ namespace Empiria.FinancialAccounting.FinancialConcepts {
         case FinancialConceptEntryType.FinancialConceptReference:
           this.IntegrationTypeId = 3074;
           return;
+
         default:
           throw Assertion.EnsureNoReachThisCode();
       }

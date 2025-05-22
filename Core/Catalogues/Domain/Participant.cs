@@ -7,7 +7,6 @@
 *  Summary  : Legacy entity that describes an accounting system user or organization.                        *
 *                                                                                                            *
 ************************* Copyright(c) La Vía Óntica SC, Ontica LLC and contributors. All rights reserved. **/
-using System;
 
 using Empiria.FinancialAccounting.Data;
 
