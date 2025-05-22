@@ -363,7 +363,6 @@ namespace Empiria.FinancialAccounting.Tests.BalanceEngine {
       Assert.True(wrongEntries == 0);
     }
 
-
     #endregion Facts
 
     #region Private methods
@@ -437,10 +436,9 @@ namespace Empiria.FinancialAccounting.Tests.BalanceEngine {
 
     private TrialBalanceQuery GetDefaultTrialBalanceQuery() {
       return new TrialBalanceQuery() {
-        AccountsChartUID = TestingConstants.ACCOUNTS_CHART_UID,
+        AccountsChartUID = TestingConstants.IFRS_ACCOUNTS_CHART.UID,
         BalancesType = BalancesType.WithCurrentBalanceOrMovements,
         TrialBalanceType = TrialBalanceType.Balanza,
-        Ledgers = TestingConstants.BALANCE_LEDGERS_ARRAY,
         InitialPeriod = new BalancesPeriod {
           FromDate = TestingConstants.FROM_DATE,
           ToDate = TestingConstants.TO_DATE

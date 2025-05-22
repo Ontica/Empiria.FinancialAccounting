@@ -14,9 +14,7 @@ namespace Empiria.FinancialAccounting.Tests {
   /// <summary>Provides testing constants.</summary>
   static public class TestingConstants {
 
-    static internal readonly string ACCOUNTS_CHART_UID = "47ec2ec7-0f4f-482e-9799-c23107b60d8a";
-
-    static internal readonly string[] BALANCE_LEDGERS_ARRAY = new string[] { };
+    static internal readonly AccountsChart IFRS_ACCOUNTS_CHART = AccountsChart.IFRS;
 
     static internal readonly DateTime FROM_DATE = new DateTime(2025, 01, 01);
 

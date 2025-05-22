@@ -45,7 +45,7 @@ namespace Empiria.FinancialAccounting.Tests.Balances {
 
     [Fact]
     public void Should_Generate_A_Balances_Set() {
-      var accountsChart = AccountsChart.Parse(TestingConstants.ACCOUNTS_CHART_UID);
+      var accountsChart = TestingConstants.IFRS_ACCOUNTS_CHART;
 
       var BALANCES_DATE = new DateTime(2000, 12, 30);
 
@@ -62,7 +62,7 @@ namespace Empiria.FinancialAccounting.Tests.Balances {
 
     [Fact]
     public void Should_Get_Balances_Sets() {
-      var accountsChart = AccountsChart.Parse(TestingConstants.ACCOUNTS_CHART_UID);
+      var accountsChart = TestingConstants.IFRS_ACCOUNTS_CHART;
 
       FixedList<StoredBalanceSetDto> storedBalanceSetsList = _usecases.BalanceSetsList(accountsChart.UID);
 

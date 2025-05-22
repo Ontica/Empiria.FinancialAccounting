@@ -131,7 +131,7 @@ namespace Empiria.FinancialAccounting.Tests.BalanceEngine {
 
     [Fact]
     public void Should_Build_A_Traditional_Trial_Balance() {
-      
+
       TrialBalanceQuery query = GetDefaultTrialBalanceQuery();
       query.TrialBalanceType = TrialBalanceType.Balanza;
 
@@ -244,20 +244,14 @@ namespace Empiria.FinancialAccounting.Tests.BalanceEngine {
 
     private TrialBalanceQuery GetDefaultTrialBalanceQuery() {
       return new TrialBalanceQuery() {
-        AccountsChartUID = TestingConstants.ACCOUNTS_CHART_UID,
+        AccountsChartUID = TestingConstants.IFRS_ACCOUNTS_CHART.UID,
         BalancesType = BalancesType.WithCurrentBalanceOrMovements,
         ShowCascadeBalances = false,
-        Ledgers = TestingConstants.BALANCE_LEDGERS_ARRAY,
-        //FromAccount = "1.01.02",
-        //ToAccount = "1.01.02",
         ConsolidateBalancesToTargetCurrency = false,
         UseDefaultValuation = true,
         InitialPeriod = new BalancesPeriod {
           FromDate = TestingConstants.FROM_DATE,
-          ToDate = TestingConstants.TO_DATE,
-          //ExchangeRateDate = new DateTime(2025, 01, 31),
-          //ExchangeRateTypeUID = ExchangeRateType.ValorizacionBanxico.UID,
-          //ValuateToCurrrencyUID = "01"
+          ToDate = TestingConstants.TO_DATE
         }
       };
     }

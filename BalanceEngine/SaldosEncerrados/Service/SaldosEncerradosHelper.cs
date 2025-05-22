@@ -138,7 +138,7 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
 
 
     private List<TrialBalanceEntry> GetEntriesByCurrencyRole(FixedList<CurrencyRule> currenciesRules,
-                                        Account account, List<TrialBalanceEntry> entries) {
+                                                             Account account, List<TrialBalanceEntry> entries) {
 
       var returnedEntries = new List<TrialBalanceEntry>();
 
