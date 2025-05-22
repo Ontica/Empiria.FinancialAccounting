@@ -22,12 +22,13 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
 
     #endregion Constructors and parsers
 
-    [DataField("ID_MAYOR", ConvertFrom = typeof(decimal))]
+    [DataField("ID_MAYOR", ConvertFrom = typeof(long))]
     public Ledger Ledger {
       get; private set;
     }
 
-    [DataField("ID_MONEDA", ConvertFrom = typeof(decimal))]
+
+    [DataField("ID_MONEDA", ConvertFrom = typeof(long))]
     public Currency Currency {
       get; private set;
     }
@@ -45,9 +46,13 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
     }
 
 
-    [DataField("ID_CUENTA_AUXILIAR", ConvertFrom = typeof(decimal))]
-    public int SubledgerAccountId {
-      get; private set;
+    [DataField("ID_CUENTA_AUXILIAR", ConvertFrom = typeof(long))]
+    private int _subledgerAccountId = -1;
+
+    public SubledgerAccount SubledgerAccount {
+      get {
+        return SubledgerAccount.Parse(_subledgerAccountId);
+      }
     }
 
 
@@ -93,11 +98,14 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
 
 
     internal void ValuateTo(decimal exchangeRate) {
+      Assertion.Require(exchangeRate > 0, nameof(exchangeRate));
+
       this.ExchangeRate = exchangeRate;
-      Math.Round(this.InitialBalance *= exchangeRate, 2);
-      Math.Round(this.Debit *= exchangeRate, 2);
-      Math.Round(this.Credit *= exchangeRate, 2);
-      Math.Round(this.CurrentBalance *= exchangeRate, 2);
+      this.InitialBalance = Math.Round(InitialBalance * exchangeRate, 2);
+      this.Debit = Math.Round(Debit * exchangeRate, 2);
+      this.Credit = Math.Round(Credit * exchangeRate, 2);
+      this.CurrentBalance = Math.Round(CurrentBalance * exchangeRate, 2);
+      this.AverageBalance = Math.Round(AverageBalance * exchangeRate, 2);
     }
 
   } //class CoreBalanceEntry

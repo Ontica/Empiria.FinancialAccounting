@@ -9,7 +9,6 @@
 ************************* Copyright(c) La Vía Óntica SC, Ontica LLC and contributors. All rights reserved. **/
 
 using System;
-using System.Linq;
 
 using Empiria.FinancialAccounting.BalanceEngine.Adapters;
 using Empiria.FinancialAccounting.BalanceEngine.Data;
@@ -52,7 +51,6 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
 
     internal FixedList<CoreBalanceEntry> GetBalancesByAccountAndSector(string accountNumber,
                                                                        string sectorCode) {
-
       if (sectorCode == "00") {
         return Entries.FindAll(x => x.Account.Number.StartsWith(accountNumber))
                        .ToFixedList();
@@ -62,19 +60,6 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
                                     x.Sector.Code == sectorCode)
                       .ToFixedList();
       }
-    }
-
-
-    static internal decimal GetTotal_Foreign(FixedList<CoreBalanceEntry> filtered) {
-      return filtered.FindAll(x => x.Currency.Equals(Currency.MXN) && x.Currency.Equals(Currency.UDI))
-                     .Sum(x => x.CurrentBalance);
-    }
-
-
-    static internal decimal GetTotal_MXN_UDIS(FixedList<CoreBalanceEntry> filtered) {
-      return filtered.FindAll(x => x.Currency.Equals(Currency.MXN) || x.Currency.Equals(Currency.UDI))
-                     .Sum(x => x.CurrentBalance);
-
     }
 
     #endregion Methods
@@ -97,7 +82,7 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
 
       FixedList<ExchangeRate> exchangeRates = ExchangeRate.GetList(exchangeRateType,
                                                                    _query.InitialPeriod.ToDate);
-      foreach (var entry in entries) {
+      foreach (var entry in entries.FindAll(x => x.Currency.Distinct(Currency.MXN))) {
 
         var exchangeRate = exchangeRates.Find(x => x.ToCurrency.Equals(entry.Currency));
 
