@@ -48,8 +48,7 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
       var helper = new AnaliticoDeCuentasHelper(_query);
 
       List<AnaliticoDeCuentasEntry> analyticEntries =
-                                          MergeTrialBalanceIntoAnalyticColumns(balanceEntries);
-      //helper.MergeTrialBalanceIntoAnalyticColumns(balanceEntries);
+                                          MergeTrialBalanceIntoAnalitico(balanceEntries);
 
       List<AnaliticoDeCuentasEntry> analyticEntriesAndSubledgerAccounts =
         helper.MergeSubledgerAccountsWithAnalyticEntries(analyticEntries, balanceEntries);
@@ -85,20 +84,23 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
 
     private IEnumerable<TrialBalanceEntry> GetFilteredAccountEntries(List<TrialBalanceEntry> balanceEntries) {
 
-      var accountEntries = new List<TrialBalanceEntry>(balanceEntries);
-
+      if (balanceEntries.Count == 0) {
+        return new List<TrialBalanceEntry>();
+      }
+      
       if (_query.WithSubledgerAccount) {
-        accountEntries = balanceEntries.FindAll(a => a.SubledgerAccountId == 0 &&
+       
+        return balanceEntries.FindAll(a => a.SubledgerAccountId == 0 &&
                                                      a.ItemType == TrialBalanceItemType.Summary);
 
       } else {
-        accountEntries = balanceEntries.FindAll(a => a.SubledgerAccountNumber.Length <= 1);
+        
+        return balanceEntries.FindAll(a => a.SubledgerAccountNumber.Length <= 1);
       }
-      return accountEntries;
     }
 
 
-    private void MergeDomesticBalancesIntoSectorZero(IEnumerable<AnaliticoDeCuentasEntry> analyticEntries,
+    private void MergeDomesticBalancesIntoSectorZero(IEnumerable<AnaliticoDeCuentasEntry> analiticoEntries,
                                                      IEnumerable<TrialBalanceEntry> accountEntries) {
       if (!_query.UseNewSectorizationModel) {
         return;
@@ -106,26 +108,27 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
 
       var helper = new AnaliticoDeCuentasHelper(_query);
 
-      foreach (var entry in analyticEntries.Where(a => a.Sector.Code == "00" && a.DomesticBalance == 0)) {
+      foreach (var analiticoEntry in analiticoEntries.Where(a => a.Sector.Code == "00" && a.DomesticBalance == 0)) {
 
         var accountsWithDomesticCurrency = accountEntries.Where(
-              a => a.Account.Number == entry.Account.Number && a.Ledger.Number == entry.Ledger.Number &&
-              a.Sector.Code != "00" && a.DebtorCreditor == entry.DebtorCreditor &&
+              a => a.Account.Number == analiticoEntry.Account.Number &&
+              a.Ledger.Number == analiticoEntry.Ledger.Number &&
+              a.Sector.Code != "00" && a.DebtorCreditor == analiticoEntry.DebtorCreditor &&
               (a.Currency.Equals(Currency.MXN) || a.Currency.Equals(Currency.UDI))).ToList();
 
         if (accountsWithDomesticCurrency.Count > 0) {
 
-          entry.ResetBalances();
+          analiticoEntry.ResetBalances();
 
           foreach (var foreignEntry in accountsWithDomesticCurrency) {
-            helper.SumTwoColumnEntry(entry, foreignEntry, foreignEntry.Currency);
+            helper.SumTwoColumnEntry(analiticoEntry, foreignEntry, foreignEntry.Currency);
           }
         }
       }
     }
 
 
-    private void MergeForeignBalancesIntoSectorZero(IEnumerable<AnaliticoDeCuentasEntry> analyticEntries,
+    private void MergeForeignBalancesIntoSectorZero(IEnumerable<AnaliticoDeCuentasEntry> analiticoEntries,
                                                     IEnumerable<TrialBalanceEntry> accountEntries) {
 
       if (!_query.UseNewSectorizationModel) {
@@ -134,26 +137,28 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
 
       var helper = new AnaliticoDeCuentasHelper(_query);
 
-      foreach (var entry in analyticEntries.Where(a => a.Sector.Code == "00" && a.Level > 1)) {
+      foreach (var analiticoEntry in analiticoEntries.Where(a => a.Sector.Code == "00" && a.Level > 1)) {
 
         var entriesWithForeignCurrency = accountEntries.Where(
-              a => a.Account.Number == entry.Account.Number && a.Ledger.Number == entry.Ledger.Number &&
-              a.Sector.Code != "00" && a.DebtorCreditor == entry.DebtorCreditor &&
+              a => a.Account.Number == analiticoEntry.Account.Number &&
+              a.Ledger.Number == analiticoEntry.Ledger.Number &&
+              a.Sector.Code != "00" &&
+              a.DebtorCreditor == analiticoEntry.DebtorCreditor &&
               a.Currency.Distinct(Currency.MXN) && a.Currency.Distinct(Currency.UDI)).ToList();
 
         if (entriesWithForeignCurrency.Count > 0) {
 
-          entry.ForeignBalance = 0;
+          analiticoEntry.ForeignBalance = 0;
 
           foreach (var foreignEntry in entriesWithForeignCurrency) {
-            helper.SumTwoColumnEntry(entry, foreignEntry, foreignEntry.Currency);
+            helper.SumTwoColumnEntry(analiticoEntry, foreignEntry, foreignEntry.Currency);
           }
         }
       }
     }
 
 
-    private List<AnaliticoDeCuentasEntry> MergeTrialBalanceIntoAnalyticColumns(
+    private List<AnaliticoDeCuentasEntry> MergeTrialBalanceIntoAnalitico(
                                             List<TrialBalanceEntry> balanceEntries) {
       if (balanceEntries.Count == 0) {
         return new List<AnaliticoDeCuentasEntry>();
@@ -165,12 +170,12 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
 
       ConvertIntoAnaliticoDeCuentasEntry(accountEntries, hashAnaliticoEntries);
 
-      ICollection<AnaliticoDeCuentasEntry> analyticEntries = hashAnaliticoEntries.Values;
+      ICollection<AnaliticoDeCuentasEntry> analiticoEntries = hashAnaliticoEntries.Values;
 
-      MergeDomesticBalancesIntoSectorZero(analyticEntries, accountEntries);
-      MergeForeignBalancesIntoSectorZero(analyticEntries, accountEntries);
+      MergeDomesticBalancesIntoSectorZero(analiticoEntries, accountEntries);
+      MergeForeignBalancesIntoSectorZero(analiticoEntries, accountEntries);
 
-      return analyticEntries.OrderBy(a => a.Ledger.Number)
+      return analiticoEntries.OrderBy(a => a.Ledger.Number)
                             .ThenByDescending(a => a.DebtorCreditor)
                             .ThenBy(a => a.Account.Number)
                             .ThenBy(a => a.Sector.Code)
@@ -186,7 +191,7 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
       var targetCurrency = Currency.Parse(_query.InitialPeriod.ValuateToCurrrencyUID);
 
       foreach (var entry in accountEntries) {
-
+        
         if (entry.CurrentBalance != 0 || _query.BalancesType == BalancesType.AllAccountsInCatalog) {
 
           string hash = $"{entry.Account.Number}||{entry.Sector.Code}||{targetCurrency.Id}||" +

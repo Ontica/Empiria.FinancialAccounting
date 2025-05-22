@@ -161,31 +161,35 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
 
 
     internal List<AnaliticoDeCuentasEntry> MergeSubledgerAccountsWithAnalyticEntries(
-                                                  List<AnaliticoDeCuentasEntry> analyticEntries,
+                                                  List<AnaliticoDeCuentasEntry> analiticoEntries,
                                                   List<TrialBalanceEntry> balanceEntries) {
-      if (analyticEntries.Count == 0 || balanceEntries.Count == 0) {
+
+      if (analiticoEntries.Count == 0 || balanceEntries.Count == 0) {
         return new List<AnaliticoDeCuentasEntry>();
       }
       if (!_query.WithSubledgerAccount) {
-        return analyticEntries;
+        return analiticoEntries;
       }
 
       var targetCurrency = Currency.Parse(_query.InitialPeriod.ValuateToCurrrencyUID);
-      var returnedEntries = new List<AnaliticoDeCuentasEntry>();
+      var returnedAnaliticoEntries = new List<AnaliticoDeCuentasEntry>();
 
-      foreach (var analyticEntry in analyticEntries) {
-        var hashEntries = new EmpiriaHashTable<AnaliticoDeCuentasEntry>();
+      foreach (var analiticoEntry in analiticoEntries) {
+        var hashSubledgerAccounts = new EmpiriaHashTable<AnaliticoDeCuentasEntry>();
 
-        MergeSubledgerAccountsWithAnaliticEntry(balanceEntries, targetCurrency, analyticEntry, hashEntries);
+        MergeSubledgerAccountsWithAnaliticEntry(balanceEntries, targetCurrency,
+                                                analiticoEntry, hashSubledgerAccounts);
 
-        var balanceEntriesList = hashEntries.Values.OrderBy(a => a.SubledgerAccountNumber.Length)
+        var subledgerAccounts = hashSubledgerAccounts.Values
+                                                   .OrderBy(a => a.SubledgerAccountNumber.Length)
                                                    .ThenBy(a => a.SubledgerAccountNumber)
                                                    .ToList();
-        returnedEntries.Add(analyticEntry);
-        returnedEntries.AddRange(balanceEntriesList);
+
+        returnedAnaliticoEntries.Add(analiticoEntry);
+        returnedAnaliticoEntries.AddRange(subledgerAccounts);
       }
 
-      return returnedEntries;
+      return returnedAnaliticoEntries;
     }
 
 
@@ -228,14 +232,13 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
                                                            TrialBalanceEntry balanceEntry,
                                                            Currency currentCurrency) {
 
-      if (balanceEntry.Level == 1 && (currentCurrency.Equals(Currency.MXN) || currentCurrency.Equals(Currency.UDI))) {
+      if (balanceEntry.Level == 1) {
         analyticEntry.DomesticBalance += balanceEntry.CurrentBalance;
 
       } else if (balanceEntry.Sector.Code == "00" && currentCurrency.Equals(Currency.MXN)) {
         analyticEntry.DomesticBalance = balanceEntry.CurrentBalance;
 
-      } else if (balanceEntry.Sector.Code != "00" &&
-                  (currentCurrency.Equals(Currency.MXN) || currentCurrency.Equals(Currency.UDI))) {
+      } else if (balanceEntry.Sector.Code != "00") {
         analyticEntry.DomesticBalance += balanceEntry.CurrentBalance;
 
       } else if (currentCurrency.Equals(Currency.UDI) && balanceEntry.IsSummaryForAnalytics) {
@@ -373,14 +376,13 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
 
 
     private void MergeSubledgerAccountsWithAnaliticEntry(List<TrialBalanceEntry> balanceEntries,
-                                                  Currency targetCurrency,
-                                                  AnaliticoDeCuentasEntry analyticEntry,
-                                                  EmpiriaHashTable<AnaliticoDeCuentasEntry> hashEntries) {
+                                          Currency targetCurrency, AnaliticoDeCuentasEntry analiticoEntry,
+                                          EmpiriaHashTable<AnaliticoDeCuentasEntry> hashSubledgerAccounts) {
 
       var accountEntries = balanceEntries.Where(a => a.ItemType == TrialBalanceItemType.Entry &&
-                                                a.Ledger.Number == analyticEntry.Ledger.Number &&
-                                                a.Account.Number == analyticEntry.Account.Number &&
-                                                a.Sector.Code == analyticEntry.Sector.Code &&
+                                                a.Ledger.Number == analiticoEntry.Ledger.Number &&
+                                                a.Account.Number == analiticoEntry.Account.Number &&
+                                                a.Sector.Code == analiticoEntry.Sector.Code &&
                                                 a.SubledgerAccountIdParent > 0 &&
                                                 a.SubledgerAccountNumber != "")
                                           .ToList();
@@ -391,7 +393,7 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
                       $"{entry.Ledger.Id}||{entry.DebtorCreditor}||{entry.SubledgerAccountIdParent}";
 
         Currency currentCurrency = entry.Currency;
-        MergeEntriesIntoTwoColumns(hashEntries, entry, hash, currentCurrency);
+        MergeEntriesIntoTwoColumns(hashSubledgerAccounts, entry, hash, currentCurrency);
       }
     }
 
