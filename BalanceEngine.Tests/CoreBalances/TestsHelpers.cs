@@ -25,20 +25,23 @@ namespace Empiria.Tests.FinancialAccounting.BalanceEngine {
 
     #region Methods
 
-    static internal string BalanceDiffMsg(string column, string accountText, decimal expected, decimal sutValue) {
+    static internal string BalanceDiffMsg(string column, string accountText,
+                                          decimal expected, decimal sutValue) {
+
       return $"Diferencia en {column}, cuenta {accountText}. " +
-             $"Valor esperado = {expected}, " +
-             $"Reporte = {sutValue}. " +
-             $"Diferencia = {expected - sutValue}";
+             $"Valor esperado = {expected.ToString("C2")}, " +
+             $"Reporte = {sutValue.ToString("C2")}. " +
+             $"Diferencia = {(expected - sutValue).ToString("C2")}";
     }
 
 
-    static internal FixedList<AnaliticoDeCuentasEntryDto> GetAnaliticoCuentas(DateTime fromDate, DateTime toDate) {
+    static internal FixedList<AnaliticoDeCuentasEntryDto> GetAnaliticoCuentas(DateTime fromDate,
+                                                                              DateTime toDate) {
 
       var query = new TrialBalanceQuery() {
         TrialBalanceType = TrialBalanceType.AnaliticoDeCuentas,
         AccountsChartUID = TestingConstants.IFRS_ACCOUNTS_CHART.UID,
-        BalancesType = BalancesType.AllAccounts,
+        BalancesType = BalancesType.WithCurrentBalanceOrMovements,
         ShowCascadeBalances = false,
         UseDefaultValuation = true,
         InitialPeriod = new BalancesPeriod {
@@ -51,7 +54,8 @@ namespace Empiria.Tests.FinancialAccounting.BalanceEngine {
     }
 
 
-    static internal FixedList<BalanzaTradicionalEntryDto> GetBalanzaConsolidada(DateTime fromDate, DateTime toDate) {
+    static internal FixedList<BalanzaTradicionalEntryDto> GetBalanzaConsolidada(DateTime fromDate,
+                                                                                DateTime toDate) {
 
       var query = new TrialBalanceQuery() {
         TrialBalanceType = TrialBalanceType.Balanza,

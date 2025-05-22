@@ -10,10 +10,12 @@
 
 using System;
 using System.Linq;
+
+using Xunit;
+
 using Empiria.FinancialAccounting;
 using Empiria.FinancialAccounting.BalanceEngine;
 using Empiria.FinancialAccounting.BalanceEngine.Adapters;
-using Xunit;
 
 namespace Empiria.Tests.FinancialAccounting.BalanceEngine {
 
@@ -21,19 +23,51 @@ namespace Empiria.Tests.FinancialAccounting.BalanceEngine {
   public class BalanzaConsolidadaVsCoreBalancesTests {
 
     [Theory]
+    [InlineData("2024-12-01", "2024-12-31")]
+    [InlineData("2025-01-01", "2025-01-31")]
     [InlineData("2025-04-01", "2025-04-30")]
-    public void Should_Be_Equals_Balanza_Consolidada_And_CoreBalanceEntries(string fromDate, string toDate) {
+    public void Should_Have_Same_Entries(string fromDate, string toDate) {
 
       CoreBalanceEntries coreBalances = TestsHelpers.GetCoreBalanceEntries(DateTime.Parse(fromDate),
                                                                            DateTime.Parse(toDate),
                                                                            ExchangeRateType.ValorizacionBanxico);
 
       FixedList<BalanzaTradicionalEntryDto> balanzaConsolidada = TestsHelpers.GetBalanzaConsolidada(DateTime.Parse(fromDate),
-                                                                                                    DateTime.Parse(toDate));
-      foreach (var sut in balanzaConsolidada) {
+                                                                                                    DateTime.Parse(toDate))
+                                                                             .FindAll(x => x.ItemType == TrialBalanceItemType.Entry);
+
+      RunTest(coreBalances, balanzaConsolidada);
+
+      Assert.True(balanzaConsolidada.Count > 500);
+    }
+
+
+    [Theory]
+    [InlineData("2024-12-01", "2024-12-31")]
+    [InlineData("2025-01-01", "2025-01-31")]
+    [InlineData("2025-04-01", "2025-04-30")]
+    public void Should_Have_Same_Summaries(string fromDate, string toDate) {
+
+      CoreBalanceEntries coreBalances = TestsHelpers.GetCoreBalanceEntries(DateTime.Parse(fromDate),
+                                                                           DateTime.Parse(toDate),
+                                                                           ExchangeRateType.ValorizacionBanxico);
+
+      FixedList<BalanzaTradicionalEntryDto> balanzaConsolidada = TestsHelpers.GetBalanzaConsolidada(DateTime.Parse(fromDate),
+                                                                                                    DateTime.Parse(toDate))
+                                                                             .FindAll(x => x.ItemType == TrialBalanceItemType.Summary);
+
+      RunTest(coreBalances, balanzaConsolidada);
+
+      Assert.True(balanzaConsolidada.Count > 100);
+    }
+
+
+    private void RunTest(CoreBalanceEntries coreBalances, FixedList<BalanzaTradicionalEntryDto> balanza) {
+
+      foreach (var sut in balanza) {
 
         var filtered = coreBalances.GetBalancesByAccountAndSector(sut.AccountNumber, sut.SectorCode)
-                                   .FindAll(x => x.Account.DebtorCreditor.ToString().Equals(sut.DebtorCreditor));
+                                   .FindAll(x => x.Account.DebtorCreditor == sut.DebtorCreditor);
 
         var totalInitialBalance = filtered.Sum(x => x.InitialBalance);
         var totalDebit = filtered.Sum(x => x.Debit);
@@ -56,7 +90,6 @@ namespace Empiria.Tests.FinancialAccounting.BalanceEngine {
                                                 totalCurrentBalance, sut.CurrentBalance.Value));
       }
     }
-
 
   } // class BalanzaConsolidadaVsCoreBalancesTests
 

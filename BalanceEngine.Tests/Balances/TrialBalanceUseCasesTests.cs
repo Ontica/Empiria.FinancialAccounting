@@ -81,8 +81,8 @@ namespace Empiria.FinancialAccounting.Tests.BalanceEngine {
       foreach (var analiticEntry in _analitico.Where(x=>x.AccountNumber != string.Empty)) {
 
         var balanzaEntryBalance = _balanza.Where(x => x.AccountNumber == analiticEntry.AccountNumber &&
-                                               x.SectorCode == analiticEntry.SectorCode &&
-                                               x.DebtorCreditor == analiticEntry.DebtorCreditor.ToString()
+                                                 x.SectorCode == analiticEntry.SectorCode &&
+                                                 x.DebtorCreditor == analiticEntry.DebtorCreditor
                                          ).FirstOrDefault();
 
         Assert.Equal(Math.Round(analiticEntry.TotalBalance), Math.Round((decimal) balanzaEntryBalance.CurrentBalance));

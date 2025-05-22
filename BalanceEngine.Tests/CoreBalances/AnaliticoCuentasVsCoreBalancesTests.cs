@@ -10,10 +10,12 @@
 
 using System;
 using System.Linq;
+
+using Xunit;
+
 using Empiria.FinancialAccounting;
 using Empiria.FinancialAccounting.BalanceEngine;
 using Empiria.FinancialAccounting.BalanceEngine.Adapters;
-using Xunit;
 
 namespace Empiria.Tests.FinancialAccounting.BalanceEngine {
 
@@ -21,19 +23,49 @@ namespace Empiria.Tests.FinancialAccounting.BalanceEngine {
   public class AnaliticoCuentasVsCoreBalancesTests {
 
     [Theory]
+    [InlineData("2024-12-01", "2024-12-31")]
+    [InlineData("2025-01-01", "2025-01-31")]
     [InlineData("2025-04-01", "2025-04-30")]
-    public void Should_Be_Equals_AnaliticoCuentas_And_CoreBalanceEntries(string fromDate, string toDate) {
+    public void Should_Have_Same_Entries(string fromDate, string toDate) {
 
       CoreBalanceEntries coreBalances = TestsHelpers.GetCoreBalanceEntries(DateTime.Parse(fromDate),
                                                                            DateTime.Parse(toDate),
                                                                            ExchangeRateType.ValorizacionBanxico);
 
       FixedList<AnaliticoDeCuentasEntryDto> analitico = TestsHelpers.GetAnaliticoCuentas(DateTime.Parse(fromDate),
-                                                                                         DateTime.Parse(toDate));
+                                                                                         DateTime.Parse(toDate))
+                                                                    .FindAll(x => x.ItemType == TrialBalanceItemType.Entry);
+      RunTest(coreBalances, analitico);
+
+      Assert.True(analitico.Count > 500);
+    }
+
+
+    [Theory]
+    [InlineData("2024-12-01", "2024-12-31")]
+    [InlineData("2025-01-01", "2025-01-31")]
+    [InlineData("2025-04-01", "2025-04-30")]
+    public void Should_Have_Same_Summaries(string fromDate, string toDate) {
+
+      CoreBalanceEntries coreBalances = TestsHelpers.GetCoreBalanceEntries(DateTime.Parse(fromDate),
+                                                                           DateTime.Parse(toDate),
+                                                                           ExchangeRateType.ValorizacionBanxico);
+
+      FixedList<AnaliticoDeCuentasEntryDto> analitico = TestsHelpers.GetAnaliticoCuentas(DateTime.Parse(fromDate),
+                                                                                         DateTime.Parse(toDate))
+                                                                    .FindAll(x => x.ItemType == TrialBalanceItemType.Summary);
+      RunTest(coreBalances, analitico);
+
+      Assert.True(analitico.Count > 100);
+    }
+
+
+    private void RunTest(CoreBalanceEntries coreBalances, FixedList<AnaliticoDeCuentasEntryDto> analitico) {
 
       foreach (var sut in analitico) {
 
-        var filtered = coreBalances.GetBalancesByAccountAndSector(sut.AccountNumber, sut.SectorCode);
+        var filtered = coreBalances.GetBalancesByAccountAndSector(sut.AccountNumber, sut.SectorCode)
+                                   .FindAll(x => x.Account.DebtorCreditor == sut.DebtorCreditor);
 
         var totalMN = filtered.FindAll(x => x.Currency.Equals(Currency.MXN) ||
                                             x.Currency.Equals(Currency.UDI))
