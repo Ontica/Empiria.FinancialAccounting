@@ -1,0 +1,63 @@
+﻿/* Empiria Financial *****************************************************************************************
+*                                                                                                            *
+*  Module   : Balance Engine                             Component : Test cases                              *
+*  Assembly : FinancialAccounting.BalanceEngine.Tests    Pattern   : Use cases tests                         *
+*  Type     : BalanzaConsolidadaVsCoreBalancesTests      License   : Please read LICENSE.txt file            *
+*                                                                                                            *
+*  Summary  : Test cases that compares AnaliticoCuentas vs core balances tests.                              *
+*                                                                                                            *
+************************* Copyright(c) La Vía Óntica SC, Ontica LLC and contributors. All rights reserved. **/
+
+using System;
+using System.Linq;
+using Empiria.FinancialAccounting;
+using Empiria.FinancialAccounting.BalanceEngine;
+using Empiria.FinancialAccounting.BalanceEngine.Adapters;
+using Xunit;
+
+namespace Empiria.Tests.FinancialAccounting.BalanceEngine {
+
+  /// <summary>Test cases that compares AnaliticoCuentas vs core balances tests.</summary>
+  public class BalanzaConsolidadaVsCoreBalancesTests {
+
+    [Theory]
+    [InlineData("2025-04-01", "2025-04-30")]
+    public void Should_Be_Equals_Balanza_Consolidada_And_CoreBalanceEntries(string fromDate, string toDate) {
+
+      CoreBalanceEntries coreBalances = TestsHelpers.GetCoreBalanceEntries(DateTime.Parse(fromDate),
+                                                                           DateTime.Parse(toDate),
+                                                                           ExchangeRateType.ValorizacionBanxico);
+
+      FixedList<BalanzaTradicionalEntryDto> balanzaConsolidada = TestsHelpers.GetBalanzaConsolidada(DateTime.Parse(fromDate),
+                                                                                                    DateTime.Parse(toDate));
+      foreach (var sut in balanzaConsolidada) {
+
+        var filtered = coreBalances.GetBalancesByAccountAndSector(sut.AccountNumber, sut.SectorCode)
+                                   .FindAll(x => x.Account.DebtorCreditor.ToString().Equals(sut.DebtorCreditor));
+
+        var totalInitialBalance = filtered.Sum(x => x.InitialBalance);
+        var totalDebit = filtered.Sum(x => x.Debit);
+        var totalCredit = filtered.Sum(x => x.Credit);
+        var totalCurrentBalance = filtered.Sum(x => x.CurrentBalance);
+
+        Assert.True(Math.Abs(totalInitialBalance - sut.InitialBalance) <= 1,
+                    TestsHelpers.BalanceDiffMsg("Saldo inicial", $"{sut.AccountNumber}, sector {sut.SectorCode} ({sut.DebtorCreditor})",
+                                                totalInitialBalance, sut.InitialBalance));
+
+        Assert.True(Math.Abs(totalDebit - sut.Debit) <= 1,
+                    TestsHelpers.BalanceDiffMsg("Cargos", $"{sut.AccountNumber}, sector {sut.SectorCode} ({sut.DebtorCreditor})",
+                                                totalDebit, sut.Debit));
+        Assert.True(Math.Abs(totalCredit - sut.Credit) <= 1,
+                    TestsHelpers.BalanceDiffMsg("Abonos", $"{sut.AccountNumber}, sector {sut.SectorCode} ({sut.DebtorCreditor})",
+                                                totalCredit, sut.Credit));
+
+        Assert.True(Math.Abs(totalCurrentBalance - sut.CurrentBalance.Value) <= 1,
+                    TestsHelpers.BalanceDiffMsg("Saldo actual", $"{sut.AccountNumber}, sector {sut.SectorCode} ({sut.DebtorCreditor})",
+                                                totalCurrentBalance, sut.CurrentBalance.Value));
+      }
+    }
+
+
+  } // class BalanzaConsolidadaVsCoreBalancesTests
+
+}  // namespace Empiria.Tests.FinancialAccounting.BalanceEngine

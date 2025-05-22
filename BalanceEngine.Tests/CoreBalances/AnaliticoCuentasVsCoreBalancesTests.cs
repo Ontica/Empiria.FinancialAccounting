@@ -1,0 +1,63 @@
+﻿/* Empiria Financial *****************************************************************************************
+*                                                                                                            *
+*  Module   : Balance Engine                             Component : Test cases                              *
+*  Assembly : FinancialAccounting.BalanceEngine.Tests    Pattern   : Use cases tests                         *
+*  Type     : AnaliticoCuentasVsCoreBalancesTests        License   : Please read LICENSE.txt file            *
+*                                                                                                            *
+*  Summary  : Test cases that compares AnaliticoCuentas vs core balances tests.                              *
+*                                                                                                            *
+************************* Copyright(c) La Vía Óntica SC, Ontica LLC and contributors. All rights reserved. **/
+
+using System;
+using System.Linq;
+using Empiria.FinancialAccounting;
+using Empiria.FinancialAccounting.BalanceEngine;
+using Empiria.FinancialAccounting.BalanceEngine.Adapters;
+using Xunit;
+
+namespace Empiria.Tests.FinancialAccounting.BalanceEngine {
+
+  /// <summary>Test cases that compares AnaliticoCuentas vs core balances tests.</summary>
+  public class AnaliticoCuentasVsCoreBalancesTests {
+
+    [Theory]
+    [InlineData("2025-04-01", "2025-04-30")]
+    public void Should_Be_Equals_AnaliticoCuentas_And_CoreBalanceEntries(string fromDate, string toDate) {
+
+      CoreBalanceEntries coreBalances = TestsHelpers.GetCoreBalanceEntries(DateTime.Parse(fromDate),
+                                                                           DateTime.Parse(toDate),
+                                                                           ExchangeRateType.ValorizacionBanxico);
+
+      FixedList<AnaliticoDeCuentasEntryDto> analitico = TestsHelpers.GetAnaliticoCuentas(DateTime.Parse(fromDate),
+                                                                                         DateTime.Parse(toDate));
+
+      foreach (var sut in analitico) {
+
+        var filtered = coreBalances.GetBalancesByAccountAndSector(sut.AccountNumber, sut.SectorCode);
+
+        var totalMN = filtered.FindAll(x => x.Currency.Equals(Currency.MXN) ||
+                                            x.Currency.Equals(Currency.UDI))
+                              .Sum(x => x.CurrentBalance);
+
+        var totalME = filtered.FindAll(x => x.Currency.Distinct(Currency.MXN) &&
+                                            x.Currency.Distinct(Currency.UDI))
+                              .Sum(x => x.CurrentBalance);
+
+        Assert.True(Math.Abs(totalMN - sut.DomesticBalance) <= 1,
+                    TestsHelpers.BalanceDiffMsg("Mon Nacional", $"{sut.AccountNumber}, sector {sut.SectorCode}",
+                                                totalMN, sut.DomesticBalance));
+
+        Assert.True(Math.Abs(totalME - sut.ForeignBalance) <= 1,
+                    TestsHelpers.BalanceDiffMsg("Mon Extranjera", $"{sut.AccountNumber}, sector {sut.SectorCode}",
+                                                totalME, sut.ForeignBalance));
+
+
+        Assert.True(Math.Abs(totalMN + totalME - sut.TotalBalance) <= 1,
+                    TestsHelpers.BalanceDiffMsg("Total", $"{sut.AccountNumber}, sector {sut.SectorCode}",
+                                                totalMN + totalME, sut.TotalBalance));
+      }
+    }
+
+  } // class AnaliticoCuentasVsCoreBalancesTests
+
+}  // namespace Empiria.Tests.FinancialAccounting.BalanceEngine
