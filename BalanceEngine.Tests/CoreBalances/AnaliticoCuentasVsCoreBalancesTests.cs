@@ -23,8 +23,9 @@ namespace Empiria.Tests.FinancialAccounting.BalanceEngine {
   public class AnaliticoCuentasVsCoreBalancesTests {
 
     [Theory]
-    [InlineData("2024-12-01", "2024-12-31")]
     [InlineData("2025-01-01", "2025-01-31")]
+    [InlineData("2025-02-01", "2025-02-28")]
+    [InlineData("2025-03-01", "2025-03-31")]
     [InlineData("2025-04-01", "2025-04-30")]
     public void Should_Have_Same_Entries(string fromDate, string toDate) {
 
@@ -42,8 +43,9 @@ namespace Empiria.Tests.FinancialAccounting.BalanceEngine {
 
 
     [Theory]
-    [InlineData("2024-12-01", "2024-12-31")]
     [InlineData("2025-01-01", "2025-01-31")]
+    [InlineData("2025-02-01", "2025-02-28")]
+    [InlineData("2025-03-01", "2025-03-31")]
     [InlineData("2025-04-01", "2025-04-30")]
     public void Should_Have_Same_Summaries(string fromDate, string toDate) {
 
@@ -82,7 +84,6 @@ namespace Empiria.Tests.FinancialAccounting.BalanceEngine {
         Assert.True(Math.Abs(totalME - sut.ForeignBalance) <= 1,
                     TestsHelpers.BalanceDiffMsg("Mon Extranjera", $"{sut.AccountNumber}, sector {sut.SectorCode}",
                                                 totalME, sut.ForeignBalance));
-
 
         Assert.True(Math.Abs(totalMN + totalME - sut.TotalBalance) <= 1,
                     TestsHelpers.BalanceDiffMsg("Total", $"{sut.AccountNumber}, sector {sut.SectorCode}",
