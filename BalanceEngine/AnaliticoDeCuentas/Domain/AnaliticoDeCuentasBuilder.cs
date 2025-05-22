@@ -140,10 +140,10 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
       foreach (var analiticoEntry in analiticoEntries.Where(a => a.Sector.Code == "00" && a.Level > 1)) {
 
         var entriesWithForeignCurrency = accountEntries.Where(
-              a => a.Account.Number == analiticoEntry.Account.Number &&
+              a => a.Account.Number.StartsWith(analiticoEntry.Account.Number) &&
               a.Ledger.Number == analiticoEntry.Ledger.Number &&
-              a.Sector.Code != "00" &&
               a.DebtorCreditor == analiticoEntry.DebtorCreditor &&
+              a.ItemType == TrialBalanceItemType.Entry &&
               a.Currency.Distinct(Currency.MXN) && a.Currency.Distinct(Currency.UDI)).ToList();
 
         if (entriesWithForeignCurrency.Count > 0) {
