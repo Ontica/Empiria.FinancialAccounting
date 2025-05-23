@@ -87,7 +87,8 @@ namespace Empiria.FinancialAccounting.Reporting.FiscalReports.Builders {
         Debe = entry.Debit,
         Haber = entry.Credit,
         SaldoFinal = (decimal) entry.CurrentBalance,
-        FechaModificacion = entry.LastChangeDate
+        FechaModificacion = entry.LastChangeDate,
+        DebtorCreditor = entry.DebtorCreditor
       };
     }
 
@@ -141,8 +142,12 @@ namespace Empiria.FinancialAccounting.Reporting.FiscalReports.Builders {
 
 
     public DateTime FechaModificacion {
-      get;
-      internal set;
+      get; internal set;
+    }
+
+
+    public DebtorCreditorType DebtorCreditor {
+      get; internal set;
     }
 
   }  // class BalanzaSatEntry

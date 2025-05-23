@@ -16,16 +16,22 @@ using Empiria.FinancialAccounting.BalanceEngine.Data;
 namespace Empiria.FinancialAccounting.BalanceEngine {
 
   /// <summary>Contains a set of CoreBlancesEntry objects.</summary>
-  internal class CoreBalanceEntries {
+  public class CoreBalanceEntries {
 
     #region Constructors and parsers
 
     private readonly TrialBalanceQuery _query;
     private readonly Lazy<FixedList<CoreBalanceEntry>> _entries;
 
-    internal CoreBalanceEntries(TrialBalanceQuery query, ExchangeRateType exchangeRateType) {
+    public CoreBalanceEntries(TrialBalanceQuery query, ExchangeRateType exchangeRateType) {
       _query = query;
       _entries = new Lazy<FixedList<CoreBalanceEntry>>(() => ReloadEntries(exchangeRateType));
+    }
+
+
+    public CoreBalanceEntries(ExchangeRateType exchangeRateType, TrialBalanceQuery query) {
+      _query = query;
+      CoreEntries = ReloadEntries(exchangeRateType);
     }
 
     #endregion Constructors and parsers
@@ -38,13 +44,25 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
       }
     }
 
+
+    internal FixedList<CoreBalanceEntry> CoreEntries {
+      get; set;
+    }
+
     #endregion Properties
 
     #region Methods
 
-    internal FixedList<CoreBalanceEntry> GetBalancesByAccount(string accountNumber) {
+    public FixedList<CoreBalanceEntry> GetBalancesByAccount(string accountNumber) {
 
       return Entries.FindAll(x => x.Account.Number.StartsWith(accountNumber))
+                    .ToFixedList();
+    }
+
+
+    public FixedList<CoreBalanceEntry> GetCoreEntriesByAccount(string accountNumber) {
+
+      return CoreEntries.FindAll(x => x.Account.Number.StartsWith(accountNumber))
                     .ToFixedList();
     }
 
