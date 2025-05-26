@@ -241,6 +241,7 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
       var trialBalanceHelper = new TrialBalanceHelper(_query);
 
       while (true) {
+        
         entry.SubledgerAccountIdParent = entry.SubledgerAccountId;
 
         if (entry.Level > 1) {
@@ -258,6 +259,7 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
           break;
 
         } else {
+
           currentParent = currentParent.GetParent();
         }
 

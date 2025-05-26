@@ -35,6 +35,10 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
         return new TrialBalance(_query, new FixedList<ITrialBalanceEntry>());
       }
 
+      var balanceHelper = new TrialBalanceHelper(_query);
+
+      balanceHelper.SetSummaryToParentEntries(accountEntries);
+
       FixedList<TrialBalanceEntry> parentAccounts = helper.GetCalculatedParentAccounts(
                                                     accountEntries);
 
@@ -44,7 +48,6 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
       List<TrialBalanceEntry> balanza = GetTotals(
                                         parentsAndAccountEntries, accountEntries);
 
-      var balanceHelper = new TrialBalanceHelper(_query);
       balanceHelper.RestrictLevels(balanza);
 
       var returnBalance = new FixedList<ITrialBalanceEntry>(
@@ -60,7 +63,7 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
 
       var balanceHelper = new TrialBalanceHelper(_query);
 
-      balanceHelper.SetSummaryToParentEntries(accountEntries);
+      //balanceHelper.SetSummaryToParentEntries(accountEntries);
 
       List<TrialBalanceEntry> accountEntriesMapped = balanceHelper.GetEntriesMappedForSectorization(
                                                      accountEntries.ToList());

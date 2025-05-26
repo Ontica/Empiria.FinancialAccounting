@@ -421,7 +421,14 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
         currentParent = entry.Account;
 
       } else if (_query.DoNotReturnSubledgerAccounts && entry.Account.HasParent) {
-        currentParent = entry.Account.GetParent();
+        
+        if (entry.IsParentPostingEntry) {
+
+          currentParent = entry.Account;
+
+        } else {
+          currentParent = entry.Account.GetParent();
+        }
 
       } else if (_query.DoNotReturnSubledgerAccounts && entry.Account.NotHasParent) {
         currentParent = entry.Account;
