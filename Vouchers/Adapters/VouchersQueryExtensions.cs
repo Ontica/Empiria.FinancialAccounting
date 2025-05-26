@@ -17,6 +17,17 @@ namespace Empiria.FinancialAccounting.Vouchers.Adapters {
 
     #region Extension methods
 
+    static internal int CalculatePageSize(this VouchersQuery query) {
+      string datesFilter = BuildAccountingDateRangeFilter(query) + BuildRecordingDateRangeFilter(query);
+
+      if (datesFilter.Length == 0) {
+        return query.PageSize;
+      } else {
+        return 1000000;
+      }
+    }
+
+
     static internal void EnsureIsValid(this VouchersQuery query) {
       // no-op
     }

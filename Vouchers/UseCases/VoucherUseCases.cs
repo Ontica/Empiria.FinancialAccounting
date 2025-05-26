@@ -89,8 +89,9 @@ namespace Empiria.FinancialAccounting.Vouchers.UseCases {
 
       string filter = query.MapToFilterString();
       string sort = query.MapToSortString();
+      int pageSize = query.CalculatePageSize();
 
-      FixedList<Voucher> list = Voucher.GetList(filter, sort, query.PageSize);
+      FixedList<Voucher> list = Voucher.GetList(filter, sort, pageSize);
 
       return VoucherMapper.MapToDescriptor(list);
     }
