@@ -96,8 +96,10 @@ namespace Empiria.FinancialAccounting.Reporting {
           return new ListadoPolizas();
 
         case ReportTypes.ListadoDePolizasPorCuenta:
-        case ReportTypes.ListadoMovimientosPorPolizas:
           return new ListadoPolizasPorCuenta();
+
+        case ReportTypes.ListadoMovimientosPorPolizas:
+          return new ListadoMovimientosPorPoliza();
 
         case ReportTypes.MovimientosPorNumeroDeVerificacion:
           return new MovimientosNumeroVerificacion();
