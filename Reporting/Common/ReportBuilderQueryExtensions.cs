@@ -111,7 +111,7 @@ namespace Empiria.FinancialAccounting.Reporting {
         return string.Empty;
       }
 
-      return SearchExpression.ParseInSet("ID_TRANSACCION", query.VoucherIds);
+      return SearchExpression.ParseInSet("ID_TRANSACCION", query.VouchersIdGroup);
     }
 
     #endregion Helpers

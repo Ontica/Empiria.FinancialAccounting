@@ -7,8 +7,9 @@
 *  Summary  : Listado de movimientos por póliza para exportar datos a excel.                                 *
 *                                                                                                            *
 ************************* Copyright(c) La Vía Óntica SC, Ontica LLC and contributors. All rights reserved. **/
-using System;
 using System.Collections.Generic;
+using System.Linq;
+
 using Empiria.DynamicData;
 using Empiria.FinancialAccounting.BalanceEngine;
 using Empiria.FinancialAccounting.Reporting.AccountStatements.Domain;
@@ -18,12 +19,15 @@ namespace Empiria.FinancialAccounting.Reporting.VoucherRelatedReports.Domain {
   /// <summary>Listado de movimientos por póliza para exportar datos a excel.</summary>
   internal class ListadoMovimientosPorPoliza : IReportBuilder {
 
+    private ReportBuilderQuery _query;
+
     #region Public methods
 
     public ReportDataDto Build(ReportBuilderQuery buildQuery) {
       Assertion.Require(buildQuery, nameof(buildQuery));
+      _query = buildQuery;
 
-      FixedList<IVouchersByAccountEntry> vouchersByAccount = BuildMovementsByVoucher(buildQuery);
+      FixedList<IVouchersByAccountEntry> vouchersByAccount = BuildMovementsByVoucher();
 
       return MapToReportDataDto(buildQuery, vouchersByAccount);
     }
@@ -33,14 +37,14 @@ namespace Empiria.FinancialAccounting.Reporting.VoucherRelatedReports.Domain {
 
     #region Private methods
 
-    private FixedList<IVouchersByAccountEntry> BuildMovementsByVoucher(ReportBuilderQuery buildQuery) {
+    private FixedList<IVouchersByAccountEntry> BuildMovementsByVoucher() {
 
-      var helper = new ListadoPolizasPorCuentaHelper(buildQuery);
+      var helper = new ListadoPolizasPorCuentaHelper(_query);
 
-      FixedList<AccountStatementEntry> voucherEntries = helper.GetVoucherEntries();
+      FixedList<AccountStatementEntry> voucherEntriesByGroups = GetVoucherEntriesByGroups();
 
       FixedList<AccountStatementEntry> voucherWithSummaryEntries =
-                                        helper.GetSummaryToParentVouchers(voucherEntries);
+                                        helper.GetSummaryToParentVouchers(voucherEntriesByGroups);
 
       FixedList<AccountStatementEntry> orderingVouchers = helper.OrderingVouchers(voucherWithSummaryEntries);
 
@@ -48,8 +52,7 @@ namespace Empiria.FinancialAccounting.Reporting.VoucherRelatedReports.Domain {
     }
 
 
-    private static FixedList<DataTableColumn> GetReportColumns(
-                                                ReportBuilderQuery buildQuery) {
+    private static FixedList<DataTableColumn> GetReportColumns() {
       var columns = new List<DataTableColumn>();
 
       columns.Add(new DataTableColumn("ledgerNumber", "Cont", "text"));
@@ -72,7 +75,31 @@ namespace Empiria.FinancialAccounting.Reporting.VoucherRelatedReports.Domain {
       columns.Add(new DataTableColumn("elaboratedBy", "Elaborado por", "text-nowrap"));
 
       return columns.ToFixedList();
+    }
 
+
+    private FixedList<AccountStatementEntry> GetVoucherEntriesByGroups() {
+
+      var helper = new ListadoPolizasPorCuentaHelper(_query);
+
+      List<AccountStatementEntry> returnedVouchers = new List<AccountStatementEntry>();
+
+      int counter = 0;
+      int offset = 500;
+
+      while (true) {
+        var vouchers = _query.VoucherIds.Skip(counter).Take(offset);
+
+        if (vouchers.Count() == 0) {
+          break;
+        }
+
+        _query.VouchersIdGroup = vouchers.ToArray();
+        returnedVouchers.AddRange(helper.GetVoucherEntries().ToList());
+
+        counter += vouchers.Count();
+      }
+      return returnedVouchers.ToFixedList();
     }
 
 
@@ -80,26 +107,24 @@ namespace Empiria.FinancialAccounting.Reporting.VoucherRelatedReports.Domain {
                                                     FixedList<IVouchersByAccountEntry> vouchers) {
       return new ReportDataDto {
         Query = buildQuery,
-        Columns = GetReportColumns(buildQuery),
-        Entries = MapToReportDataEntries(vouchers, buildQuery)
+        Columns = GetReportColumns(),
+        Entries = MapToReportDataEntries(vouchers)
       };
     }
 
 
     private static FixedList<IReportEntryDto> MapToReportDataEntries(
-                                                FixedList<IVouchersByAccountEntry> entries,
-                                                ReportBuilderQuery buildQuery) {
+                                                FixedList<IVouchersByAccountEntry> entries) {
 
-      var mappedItems = entries.Select((x) => MapToMovementEntry((AccountStatementEntry) x, buildQuery));
+      var mappedItems = entries.Select((x) => MapToMovementEntry((AccountStatementEntry) x));
       return new FixedList<IReportEntryDto>(mappedItems);
     }
 
 
-    static private VoucherByAccountEntry MapToMovementEntry(AccountStatementEntry entry,
-                                                           ReportBuilderQuery buildQuery) {
+    static private VoucherByAccountEntry MapToMovementEntry(AccountStatementEntry entry) {
       var voucherMovement = new VoucherByAccountEntry();
 
-      ClausesByItemType(voucherMovement, entry, buildQuery);
+      ClausesByItemType(voucherMovement, entry);
 
       voucherMovement.LedgerUID = entry.Ledger.UID;
       voucherMovement.CurrencyCode = entry.Currency.Code;
@@ -120,8 +145,7 @@ namespace Empiria.FinancialAccounting.Reporting.VoucherRelatedReports.Domain {
 
 
     private static void ClausesByItemType(VoucherByAccountEntry voucherMovement,
-                                                  AccountStatementEntry entry,
-                                                  ReportBuilderQuery buildQuery) {
+                                          AccountStatementEntry entry) {
 
       if (entry.ItemType == TrialBalanceItemType.Entry) {
         voucherMovement.LedgerNumber = entry.Ledger.Number;
