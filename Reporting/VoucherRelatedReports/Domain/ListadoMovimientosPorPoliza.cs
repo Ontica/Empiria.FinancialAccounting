@@ -7,6 +7,7 @@
 *  Summary  : Listado de movimientos por póliza para exportar datos a excel.                                 *
 *                                                                                                            *
 ************************* Copyright(c) La Vía Óntica SC, Ontica LLC and contributors. All rights reserved. **/
+using System;
 using System.Collections.Generic;
 using System.Linq;
 
@@ -39,16 +40,36 @@ namespace Empiria.FinancialAccounting.Reporting.VoucherRelatedReports.Domain {
 
     private FixedList<IVouchersByAccountEntry> BuildMovementsByVoucher() {
 
-      var helper = new ListadoPolizasPorCuentaHelper(_query);
 
       FixedList<AccountStatementEntry> voucherEntriesByGroups = GetVoucherEntriesByGroups();
 
-      FixedList<AccountStatementEntry> voucherWithSummaryEntries =
-                                        helper.GetSummaryToParentVouchers(voucherEntriesByGroups);
-
-      FixedList<AccountStatementEntry> orderingVouchers = helper.OrderingVouchers(voucherWithSummaryEntries);
+      FixedList<AccountStatementEntry> orderingVouchers = OrderingMovementsForVouchers(voucherEntriesByGroups);
 
       return orderingVouchers.Select(x => (IVouchersByAccountEntry) x).ToFixedList();
+    }
+
+
+    private static void ClausesByItemType(VoucherByAccountEntry voucherMovement,
+                                          AccountStatementEntry entry) {
+
+      if (entry.ItemType == TrialBalanceItemType.Entry) {
+        voucherMovement.LedgerNumber = entry.Ledger.Number;
+        voucherMovement.LedgerName = entry.Ledger.Name;
+        voucherMovement.AccountNumber = entry.AccountNumber;
+        voucherMovement.SectorCode = entry.Sector.Code;
+        voucherMovement.VoucherId = entry.VoucherId;
+        voucherMovement.VoucherNumber = entry.VoucherNumber;
+        voucherMovement.Concept = entry.Concept;
+        voucherMovement.AccountingDate = entry.AccountingDate;
+        voucherMovement.RecordingDate = entry.RecordingDate;
+        voucherMovement.SubledgerAccountName = entry.SubledgerAccountName;
+        voucherMovement.VerificationNumber = entry.VerificationNumber;
+
+      } else {
+        voucherMovement.AccountNumber = entry.AccountName;
+        voucherMovement.AccountingDate = ExecutionServer.DateMaxValue;
+        voucherMovement.RecordingDate = ExecutionServer.DateMaxValue;
+      }
     }
 
 
@@ -95,7 +116,13 @@ namespace Empiria.FinancialAccounting.Reporting.VoucherRelatedReports.Domain {
         }
 
         _query.VouchersIdGroup = vouchers.ToArray();
-        returnedVouchers.AddRange(helper.GetVoucherEntries().ToList());
+
+        FixedList<AccountStatementEntry> movementsVoucherEntries = helper.GetVoucherEntries();
+
+        FixedList<AccountStatementEntry> movementsWithSummaryEntries =
+                                        helper.GetSummaryToParentVouchers(movementsVoucherEntries);
+        
+        returnedVouchers.AddRange(movementsWithSummaryEntries.ToList());
 
         counter += vouchers.Count();
       }
@@ -144,27 +171,16 @@ namespace Empiria.FinancialAccounting.Reporting.VoucherRelatedReports.Domain {
     }
 
 
-    private static void ClausesByItemType(VoucherByAccountEntry voucherMovement,
-                                          AccountStatementEntry entry) {
+    private FixedList<AccountStatementEntry> OrderingMovementsForVouchers(
+             FixedList<AccountStatementEntry> movementEntries) {
 
-      if (entry.ItemType == TrialBalanceItemType.Entry) {
-        voucherMovement.LedgerNumber = entry.Ledger.Number;
-        voucherMovement.LedgerName = entry.Ledger.Name;
-        voucherMovement.AccountNumber = entry.AccountNumber;
-        voucherMovement.SectorCode = entry.Sector.Code;
-        voucherMovement.VoucherId = entry.VoucherId;
-        voucherMovement.VoucherNumber = entry.VoucherNumber;
-        voucherMovement.Concept = entry.Concept;
-        voucherMovement.AccountingDate = entry.AccountingDate;
-        voucherMovement.RecordingDate = entry.RecordingDate;
-        voucherMovement.SubledgerAccountName = entry.SubledgerAccountName;
-        voucherMovement.VerificationNumber = entry.VerificationNumber;
-
-      } else {
-        voucherMovement.AccountNumber = entry.AccountName;
-        voucherMovement.AccountingDate = ExecutionServer.DateMaxValue;
-        voucherMovement.RecordingDate = ExecutionServer.DateMaxValue;
-      }
+      var ordering = movementEntries.OrderBy(a => a.Currency.Code)
+                                    .ThenBy(a => a.Ledger.Number)
+                                    .ThenBy(a => a.VoucherNumber)
+                                    .ThenBy(a => a.AccountNumber)
+                                    .ThenBy(a => a.SubledgerAccountNumber)
+                                    .ToList();
+      return ordering.ToFixedList();
     }
 
     #endregion Private methods

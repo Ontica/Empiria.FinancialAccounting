@@ -78,7 +78,7 @@ namespace Empiria.FinancialAccounting.Tests.Reporting {
 
         var exporter = new ExcelExporterService();
 
-        int[] ids = new int[] { 8926717, 8770140 }; //, 8742526 
+        int[] ids = new int[] { 8926717, 8770140 };
         FixedList<VoucherDto> vouchers = usecases.GetVouchersToExport(ids);
         FileDto sut = exporter.Export(vouchers);
 
@@ -89,19 +89,15 @@ namespace Empiria.FinancialAccounting.Tests.Reporting {
 
 
     [Fact]
-    public void ExportVouchersByVerificationNumbersTest() {
+    public void ExportListadoMovimientosPorPolizasTest() {
 
       using (var service = ReportingService.ServiceInteractor()) {
 
         ReportBuilderQuery buildQuery = new ReportBuilderQuery {
-          AccountsChartUID = "47ec2ec7-0f4f-482e-9799-c23107b60d8a",
-          //AccountNumber = "1.05.01.03.02.03.01",
-          VerificationNumbers = new string[] { "1", "2", "3" },
-          ReportType = ReportTypes.ListadoMovimientosPorPolizas,
-          FromDate = new DateTime(2023, 06, 30),
-          ToDate = new DateTime(2023, 06, 30),
-          VoucherIds = new int[] { 8926688, 8926717 },
+          AccountsChartUID = AccountsChart.IFRS.UID,
+          VoucherIds = QueryVoucherArray.GetVouchersIdArray(),
           WithSubledgerAccount = true,
+          ReportType = ReportTypes.ListadoMovimientosPorPolizas,
           ExportTo = FileType.Excel
         };
 

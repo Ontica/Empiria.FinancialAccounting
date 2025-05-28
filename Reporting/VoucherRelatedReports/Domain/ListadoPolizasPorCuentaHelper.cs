@@ -110,16 +110,6 @@ namespace Empiria.FinancialAccounting.Reporting.VoucherRelatedReports.Domain {
                              .ToList();
         return ordering.ToFixedList();
 
-      } else if (query.ReportType.Equals(ReportTypes.ListadoMovimientosPorPolizas)) {
-
-        var ordering = vouchers.OrderBy(a => a.Currency.Code)
-                             .ThenBy(a => a.Ledger.Number)
-                             .ThenBy(a => a.VoucherNumber)
-                             .ThenBy(a => a.AccountNumber)
-                             .ThenBy(a => a.SubledgerAccountNumber)
-                             .ToList();
-        return ordering.ToFixedList();
-
       } else {
 
         var ordering = vouchers.OrderBy(a => a.Currency.Code)
