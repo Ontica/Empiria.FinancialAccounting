@@ -62,7 +62,6 @@ namespace Empiria.Tests.FinancialAccounting.BalanceEngine {
         AccountsChartUID = TestingConstants.IFRS_ACCOUNTS_CHART.UID,
         BalancesType = BalancesType.AllAccounts,
         ShowCascadeBalances = false,
-        UseDefaultValuation = false,
         InitialPeriod = new BalancesPeriod {
           FromDate = fromDate,
           ToDate = toDate
@@ -81,7 +80,6 @@ namespace Empiria.Tests.FinancialAccounting.BalanceEngine {
         AccountsChartUID = TestingConstants.IFRS_ACCOUNTS_CHART.UID,
         BalancesType = BalancesType.AllAccounts,
         ShowCascadeBalances = false,
-        UseDefaultValuation = false,
         ConsolidateBalancesToTargetCurrency = true,
         InitialPeriod = new BalancesPeriod {
           FromDate = fromDate,
@@ -96,12 +94,32 @@ namespace Empiria.Tests.FinancialAccounting.BalanceEngine {
     }
 
 
+    static internal FixedList<BalanzaDolarizadaEntryDto> GetBalanzaDolarizada(DateTime fromDate,
+                                                                              DateTime toDate) {
+
+      var query = new TrialBalanceQuery() {
+        TrialBalanceType = TrialBalanceType.BalanzaDolarizada,
+        AccountsChartUID = TestingConstants.IFRS_ACCOUNTS_CHART.UID,
+        BalancesType = BalancesType.AllAccounts,
+        ShowCascadeBalances = false,
+        UseDefaultValuation = true,
+        InitialPeriod = new BalancesPeriod {
+          FromDate = fromDate,
+          ToDate = toDate
+        }
+      };
+
+      return ExecuteTrialBalance<BalanzaDolarizadaEntryDto>(query);
+    }
+
+
     static internal CoreBalanceEntries GetCoreBalanceEntries(DateTime fromDate, DateTime toDate,
                                                              ExchangeRateType exchangeRateType) {
       var query = new TrialBalanceQuery() {
         AccountsChartUID = TestingConstants.IFRS_ACCOUNTS_CHART.UID,
         TrialBalanceType = TrialBalanceType.Balanza,
         BalancesType = BalancesType.AllAccounts,
+        ShowCascadeBalances = false,
         InitialPeriod = new BalancesPeriod {
           FromDate = fromDate,
           ToDate = toDate,
