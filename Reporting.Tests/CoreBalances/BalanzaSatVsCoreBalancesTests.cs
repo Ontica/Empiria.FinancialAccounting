@@ -47,11 +47,6 @@ namespace Empiria.FinancialAccounting.Tests.Reporting {
       FixedList<BalanzaSatEntry> balanzaSat = TestsHelpers.GetBalanzaSat(DateTime.Parse(fromDate),
                                                                                        DateTime.Parse(toDate));
 
-      var _balanzaSat = balanzaSat.FindAll(x => x.Cuenta != "1.10.01.02" && // MAYO 2024
-                                           x.Cuenta != "6.05.03.02.05" && // FEBRERO 2025
-                                           x.Cuenta != "6.05.13.03.01" // FEBRERO 2025
-                                           );
-
       foreach (var sut in balanzaSat) {
        
         var filtered = coreBalances.GetCoreEntriesByAccount(sut.Cuenta)
