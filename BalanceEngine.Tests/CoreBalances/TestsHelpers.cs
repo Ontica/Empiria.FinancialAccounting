@@ -54,6 +54,25 @@ namespace Empiria.Tests.FinancialAccounting.BalanceEngine {
     }
 
 
+    static internal FixedList<BalanzaColumnasMonedaEntryDto> GetBalanzaColumnas(DateTime fromDate,
+                                                                              DateTime toDate) {
+
+      var query = new TrialBalanceQuery() {
+        TrialBalanceType = TrialBalanceType.BalanzaEnColumnasPorMoneda,
+        AccountsChartUID = TestingConstants.IFRS_ACCOUNTS_CHART.UID,
+        BalancesType = BalancesType.AllAccounts,
+        ShowCascadeBalances = false,
+        UseDefaultValuation = false,
+        InitialPeriod = new BalancesPeriod {
+          FromDate = fromDate,
+          ToDate = toDate
+        }
+      };
+
+      return ExecuteTrialBalance<BalanzaColumnasMonedaEntryDto>(query);
+    }
+
+
     static internal FixedList<BalanzaTradicionalEntryDto> GetBalanzaConsolidada(DateTime fromDate,
                                                                                 DateTime toDate) {
 
