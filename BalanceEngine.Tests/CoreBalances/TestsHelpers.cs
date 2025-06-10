@@ -153,6 +153,24 @@ namespace Empiria.Tests.FinancialAccounting.BalanceEngine {
     }
 
 
+    static internal CoreBalanceEntries GetCoreBalanceEntriesBySubledger(DateTime fromDate, DateTime toDate,
+                                                             ExchangeRateType exchangeRateType) {
+      var query = new TrialBalanceQuery() {
+        AccountsChartUID = TestingConstants.IFRS_ACCOUNTS_CHART.UID,
+        TrialBalanceType = TrialBalanceType.Balanza,
+        BalancesType = BalancesType.AllAccounts,
+        ShowCascadeBalances = true,
+        WithSubledgerAccount = true,
+        InitialPeriod = new BalancesPeriod {
+          FromDate = fromDate,
+          ToDate = toDate,
+        }
+      };
+
+      return new CoreBalanceEntries(query, exchangeRateType);
+    }
+
+
     static internal FixedList<SaldosPorAuxiliarEntryDto> GetSaldosPorAuxiliar(DateTime fromDate,
                                                                               DateTime toDate,
                                                                               BalancesType balancesType) {
@@ -163,8 +181,6 @@ namespace Empiria.Tests.FinancialAccounting.BalanceEngine {
         BalancesType = balancesType,
         ShowCascadeBalances = true,
         WithSubledgerAccount = true,
-        //SubledgerAccounts = new string[] { "90000000000121281" },
-        //FromAccount = "1.05.01.03.05.02",
         InitialPeriod = new BalancesPeriod {
           FromDate = fromDate,
           ToDate = toDate

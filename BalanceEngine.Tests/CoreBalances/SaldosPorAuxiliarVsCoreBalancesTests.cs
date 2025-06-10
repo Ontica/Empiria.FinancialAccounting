@@ -26,15 +26,18 @@ namespace Empiria.Tests.FinancialAccounting.BalanceEngine {
     [InlineData("2025-04-01", "2025-04-30", BalancesType.AllAccounts)]
     public void Should_Have_Same_Entries(string fromDate, string toDate, BalancesType balancesType) {
 
-      CoreBalanceEntries coreBalances = TestsHelpers.GetCoreBalanceEntries(DateTime.Parse(fromDate),
-                                                                           DateTime.Parse(toDate),
-                                                                           ExchangeRateType.Empty);
+      CoreBalanceEntries coreBalances = TestsHelpers.GetCoreBalanceEntriesBySubledger(
+                                                                            DateTime.Parse(fromDate),
+                                                                            DateTime.Parse(toDate),
+                                                                            ExchangeRateType.Empty);
 
-      FixedList<SaldosPorAuxiliarEntryDto> saldosAuxiliar = TestsHelpers.GetSaldosPorAuxiliar(DateTime.Parse(fromDate),
-                                                                                                    DateTime.Parse(toDate),
-                                                                                                    balancesType)
-                                                                             .FindAll(x => x.ItemType == TrialBalanceItemType.Entry);
-      //TODO PENDIENTE DE REALIZAR PRUEBAS
+      FixedList<SaldosPorAuxiliarEntryDto> saldosAuxiliar = TestsHelpers.GetSaldosPorAuxiliar(
+                                                            DateTime.Parse(fromDate),
+                                                            DateTime.Parse(toDate),
+                                                            balancesType)
+                                           .FindAll(x => x.ItemType == TrialBalanceItemType.Entry &&
+                                                         !x.IsParentPostingEntry);
+      
       RunTest(coreBalances, saldosAuxiliar);
 
       Assert.True(saldosAuxiliar.Count > 500);
@@ -45,13 +48,19 @@ namespace Empiria.Tests.FinancialAccounting.BalanceEngine {
 
       foreach (var sut in saldosAuxiliar) {
 
-        var filtered = coreBalances.GetBalancesByAccountAndSector(sut.AccountNumber, sut.SectorCode)
-                                   .FindAll(x => x.Account.DebtorCreditor.ToString() == sut.DebtorCreditor);
-
-        var totalCurrentBalance = filtered.FindAll(x => x.Currency.Code == sut.CurrencyCode).Sum(x => x.CurrentBalance);
+        var filtered = coreBalances.GetBalancesByAccountAndSubledgerAndSector(
+                                      sut.AccountNumber, sut.SubledgerAccountNumber, sut.SectorCode)
+                                   .FindAll(x => x.Account.DebtorCreditor.ToString() == sut.DebtorCreditor &&
+                                                 x.Ledger.Number == sut.LedgerNumber &&
+                                                 x.LastChangeDate == sut.LastChangeDate);
+        
+        var totalCurrentBalance = filtered.FindAll(x => x.Currency.Code == sut.CurrencyCode)
+                                          .Sum(x => x.CurrentBalance);
 
         Assert.True(Math.Abs(totalCurrentBalance - sut.CurrentBalance.Value) <= 1,
-                    TestsHelpers.BalanceDiffMsg($"Saldo actual. Moneda {sut.CurrencyCode}", $"{sut.AccountNumber}, sector {sut.SectorCode} ({sut.DebtorCreditor})",
+                    TestsHelpers.BalanceDiffMsg($"Saldo actual. Moneda {sut.CurrencyCode}. " +
+                                                $"Auxiliar {sut.SubledgerAccountNumber} ",
+                                                $"{sut.AccountNumber}, sector {sut.SectorCode} ({sut.DebtorCreditor})",
                                                 totalCurrentBalance, sut.CurrentBalance.Value));
       }
     }

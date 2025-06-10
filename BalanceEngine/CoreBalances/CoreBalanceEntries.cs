@@ -80,6 +80,23 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
       }
     }
 
+
+    internal FixedList<CoreBalanceEntry> GetBalancesByAccountAndSubledgerAndSector(string accountNumber,
+                                                                                   string subledgerAccount,
+                                                                                   string sectorCode) {
+      if (sectorCode == "00") {
+        return Entries.FindAll(x => x.Account.Number.StartsWith(accountNumber) &&
+                                    x.SubledgerAccount.Number == subledgerAccount)
+                       .ToFixedList();
+
+      } else {
+        return Entries.FindAll(x => x.Account.Number.StartsWith(accountNumber) &&
+                                    x.SubledgerAccount.Number == subledgerAccount &&
+                                    x.Sector.Code == sectorCode)
+                      .ToFixedList();
+      }
+    }
+
     #endregion Methods
 
     #region Helpers
