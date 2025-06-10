@@ -21,6 +21,8 @@ namespace Empiria.Tests.FinancialAccounting.BalanceEngine {
   public class BalanzaColumnasVsCoreBalancesTests {
 
     [Theory]
+    [InlineData("2024-10-01", "2024-10-31", BalancesType.WithCurrentBalanceOrMovements)]
+    [InlineData("2024-11-01", "2024-11-30", BalancesType.WithCurrentBalanceOrMovements)]
     [InlineData("2024-12-01", "2024-12-31", BalancesType.WithCurrentBalanceOrMovements)]
     [InlineData("2025-01-01", "2025-01-31", BalancesType.WithCurrentBalanceOrMovements)]
     [InlineData("2025-02-01", "2025-02-28", BalancesType.WithCurrentBalanceOrMovements)]
@@ -43,6 +45,8 @@ namespace Empiria.Tests.FinancialAccounting.BalanceEngine {
 
 
     [Theory]
+    [InlineData("2024-10-01", "2024-10-31", BalancesType.WithCurrentBalanceOrMovements)]
+    [InlineData("2024-11-01", "2024-11-30", BalancesType.WithCurrentBalanceOrMovements)]
     [InlineData("2024-12-01", "2024-12-31", BalancesType.WithCurrentBalanceOrMovements)]
     [InlineData("2025-01-01", "2025-01-31", BalancesType.WithCurrentBalanceOrMovements)]
     [InlineData("2025-02-01", "2025-02-28", BalancesType.WithCurrentBalanceOrMovements)]
@@ -52,7 +56,7 @@ namespace Empiria.Tests.FinancialAccounting.BalanceEngine {
 
       CoreBalanceEntries coreBalances = TestsHelpers.GetCoreBalanceEntries(DateTime.Parse(fromDate),
                                                                            DateTime.Parse(toDate),
-                                                                           ExchangeRateType.ValorizacionBanxico);
+                                                                           ExchangeRateType.Empty);
 
       FixedList<BalanzaColumnasMonedaEntryDto> balanzaCol = TestsHelpers.GetBalanzaColumnas(DateTime.Parse(fromDate),
                                                                                          DateTime.Parse(toDate),
@@ -70,29 +74,62 @@ namespace Empiria.Tests.FinancialAccounting.BalanceEngine {
 
         var filtered = coreBalances.GetBalancesByAccount(sut.AccountNumber);
 
-        var totalMXN = filtered.FindAll(x => x.Currency.Equals(Currency.MXN)).Sum(x => x.CurrentBalance);
-        var totalUSD = filtered.FindAll(x => x.Currency.Equals(Currency.USD)).Sum(x => x.CurrentBalance);
-        var totalYEN = filtered.FindAll(x => x.Currency.Equals(Currency.YEN)).Sum(x => x.CurrentBalance);
-        var totalEUR = filtered.FindAll(x => x.Currency.Equals(Currency.EUR)).Sum(x => x.CurrentBalance);
-        var totalUDI = filtered.FindAll(x => x.Currency.Equals(Currency.UDI)).Sum(x => x.CurrentBalance);
+        var totalDebtorMXN = filtered.FindAll(x => x.Currency.Equals(Currency.MXN) &&
+                                              x.Account.DebtorCreditor == DebtorCreditorType.Deudora)
+                                     .Sum(x => x.CurrentBalance);
+        var totalDebtorUSD = filtered.FindAll(x => x.Currency.Equals(Currency.USD) &&
+                                              x.Account.DebtorCreditor == DebtorCreditorType.Deudora)
+                                     .Sum(x => x.CurrentBalance);
+        var totalDebtorYEN = filtered.FindAll(x => x.Currency.Equals(Currency.YEN) &&
+                                              x.Account.DebtorCreditor == DebtorCreditorType.Deudora)
+                                     .Sum(x => x.CurrentBalance);
+        var totalDebtorEUR = filtered.FindAll(x => x.Currency.Equals(Currency.EUR) &&
+                                              x.Account.DebtorCreditor == DebtorCreditorType.Deudora)
+                                     .Sum(x => x.CurrentBalance);
+        var totalDebtorUDI = filtered.FindAll(x => x.Currency.Equals(Currency.UDI) &&
+                                              x.Account.DebtorCreditor == DebtorCreditorType.Deudora)
+                                     .Sum(x => x.CurrentBalance);
 
-        Assert.True(Math.Abs(totalMXN - sut.DomesticBalance) <= 1,
+        var totalCreditorMXN = filtered.FindAll(x => x.Currency.Equals(Currency.MXN) &&
+                                              x.Account.DebtorCreditor == DebtorCreditorType.Acreedora)
+                                     .Sum(x => x.CurrentBalance);
+        var totalCreditorUSD = filtered.FindAll(x => x.Currency.Equals(Currency.USD) &&
+                                              x.Account.DebtorCreditor == DebtorCreditorType.Acreedora)
+                                     .Sum(x => x.CurrentBalance);
+        var totalCreditorYEN = filtered.FindAll(x => x.Currency.Equals(Currency.YEN) &&
+                                              x.Account.DebtorCreditor == DebtorCreditorType.Acreedora)
+                                     .Sum(x => x.CurrentBalance);
+        var totalCreditorEUR = filtered.FindAll(x => x.Currency.Equals(Currency.EUR) &&
+                                              x.Account.DebtorCreditor == DebtorCreditorType.Acreedora)
+                                     .Sum(x => x.CurrentBalance);
+        var totalCreditorUDI = filtered.FindAll(x => x.Currency.Equals(Currency.UDI) &&
+                                              x.Account.DebtorCreditor == DebtorCreditorType.Acreedora)
+                                     .Sum(x => x.CurrentBalance);
+
+
+        var totalMXN = Math.Abs(totalDebtorMXN - totalCreditorMXN);
+        var totalUSD = Math.Abs(totalDebtorUSD - totalCreditorUSD);
+        var totalYEN = Math.Abs(totalDebtorYEN - totalCreditorYEN);
+        var totalEUR = Math.Abs(totalDebtorEUR - totalCreditorEUR);
+        var totalUDI = Math.Abs(totalDebtorUDI - totalCreditorUDI);
+
+        Assert.True(Math.Abs(totalMXN - Math.Abs(sut.DomesticBalance)) <= 1,
                     TestsHelpers.BalanceDiffMsg("Mon Nacional", $"{sut.AccountNumber}," +
                                                 $"sector {sut.SectorCode}", totalMXN, sut.DomesticBalance));
 
-        Assert.True(Math.Abs(totalUSD - sut.DollarBalance) <= 1,
+        Assert.True(Math.Abs(totalUSD - Math.Abs(sut.DollarBalance)) <= 1,
                     TestsHelpers.BalanceDiffMsg("Mon USD", $"{sut.AccountNumber}, sector {sut.SectorCode}",
                                                 totalUSD, sut.DollarBalance));
 
-        Assert.True(Math.Abs(totalYEN - sut.YenBalance) <= 1,
+        Assert.True(Math.Abs(totalYEN - Math.Abs(sut.YenBalance)) <= 1,
                     TestsHelpers.BalanceDiffMsg("Mon YEN", $"{sut.AccountNumber}, sector {sut.SectorCode}",
                                                 totalYEN, sut.YenBalance));
 
-        Assert.True(Math.Abs(totalEUR - sut.EuroBalance) <= 1,
+        Assert.True(Math.Abs(totalEUR - Math.Abs(sut.EuroBalance)) <= 1,
                     TestsHelpers.BalanceDiffMsg("Mon EUR", $"{sut.AccountNumber}, sector {sut.SectorCode}",
                                                 totalEUR, sut.EuroBalance));
 
-        Assert.True(Math.Abs(totalUDI - sut.UdisBalance) <= 1,
+        Assert.True(Math.Abs(totalUDI - Math.Abs(sut.UdisBalance)) <= 1,
                     TestsHelpers.BalanceDiffMsg("Mon UDI", $"{sut.AccountNumber}, sector {sut.SectorCode}",
                                                 totalUDI, sut.UdisBalance));
       }
