@@ -97,6 +97,23 @@ namespace Empiria.Tests.FinancialAccounting.BalanceEngine {
     }
 
 
+    static internal FixedList<BalanzaContabilidadesCascadaEntryDto> GetBalanzaContabilidadesCascada(
+                                            DateTime fromDate, DateTime toDate, BalancesType balancesType) {
+      var query = new TrialBalanceQuery() {
+        TrialBalanceType = TrialBalanceType.BalanzaConContabilidadesEnCascada,
+        AccountsChartUID = TestingConstants.IFRS_ACCOUNTS_CHART.UID,
+        BalancesType = balancesType,
+        ShowCascadeBalances = true,
+        InitialPeriod = new BalancesPeriod {
+          FromDate = fromDate,
+          ToDate = toDate
+        }
+      };
+
+      return ExecuteTrialBalance<BalanzaContabilidadesCascadaEntryDto>(query);
+    }
+
+
     static internal FixedList<BalanzaDolarizadaEntryDto> GetBalanzaDolarizada(DateTime fromDate,
                                                                               DateTime toDate,
                                                                               BalancesType balancesType) {
@@ -161,6 +178,23 @@ namespace Empiria.Tests.FinancialAccounting.BalanceEngine {
         BalancesType = BalancesType.AllAccounts,
         ShowCascadeBalances = true,
         WithSubledgerAccount = true,
+        InitialPeriod = new BalancesPeriod {
+          FromDate = fromDate,
+          ToDate = toDate,
+        }
+      };
+
+      return new CoreBalanceEntries(query, exchangeRateType);
+    }
+
+    
+    static internal CoreBalanceEntries GetCoreBalanceEntriesInCascade(DateTime fromDate, DateTime toDate,
+                                                            ExchangeRateType exchangeRateType) {
+      var query = new TrialBalanceQuery() {
+        AccountsChartUID = TestingConstants.IFRS_ACCOUNTS_CHART.UID,
+        TrialBalanceType = TrialBalanceType.Balanza,
+        BalancesType = BalancesType.AllAccounts,
+        ShowCascadeBalances = true,
         InitialPeriod = new BalancesPeriod {
           FromDate = fromDate,
           ToDate = toDate,
