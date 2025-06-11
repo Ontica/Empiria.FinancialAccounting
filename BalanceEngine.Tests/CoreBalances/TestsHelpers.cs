@@ -103,7 +103,6 @@ namespace Empiria.Tests.FinancialAccounting.BalanceEngine {
         TrialBalanceType = TrialBalanceType.BalanzaConContabilidadesEnCascada,
         AccountsChartUID = TestingConstants.IFRS_ACCOUNTS_CHART.UID,
         BalancesType = balancesType,
-        ShowCascadeBalances = true,
         InitialPeriod = new BalancesPeriod {
           FromDate = fromDate,
           ToDate = toDate
@@ -176,7 +175,6 @@ namespace Empiria.Tests.FinancialAccounting.BalanceEngine {
         AccountsChartUID = TestingConstants.IFRS_ACCOUNTS_CHART.UID,
         TrialBalanceType = TrialBalanceType.Balanza,
         BalancesType = BalancesType.AllAccounts,
-        ShowCascadeBalances = true,
         WithSubledgerAccount = true,
         InitialPeriod = new BalancesPeriod {
           FromDate = fromDate,
@@ -194,7 +192,6 @@ namespace Empiria.Tests.FinancialAccounting.BalanceEngine {
         AccountsChartUID = TestingConstants.IFRS_ACCOUNTS_CHART.UID,
         TrialBalanceType = TrialBalanceType.Balanza,
         BalancesType = BalancesType.AllAccounts,
-        ShowCascadeBalances = true,
         InitialPeriod = new BalancesPeriod {
           FromDate = fromDate,
           ToDate = toDate,
@@ -213,7 +210,6 @@ namespace Empiria.Tests.FinancialAccounting.BalanceEngine {
         TrialBalanceType = TrialBalanceType.SaldosPorAuxiliar,
         AccountsChartUID = TestingConstants.IFRS_ACCOUNTS_CHART.UID,
         BalancesType = balancesType,
-        ShowCascadeBalances = true,
         WithSubledgerAccount = true,
         InitialPeriod = new BalancesPeriod {
           FromDate = fromDate,
@@ -222,6 +218,25 @@ namespace Empiria.Tests.FinancialAccounting.BalanceEngine {
       };
 
       return ExecuteTrialBalance<SaldosPorAuxiliarEntryDto>(query);
+    }
+
+
+    static internal FixedList<SaldosPorCuentaEntryDto> GetSaldosPorCuenta(DateTime fromDate,
+                                                                              DateTime toDate,
+                                                                              BalancesType balancesType) {
+
+      var query = new TrialBalanceQuery() {
+        TrialBalanceType = TrialBalanceType.SaldosPorCuenta,
+        AccountsChartUID = TestingConstants.IFRS_ACCOUNTS_CHART.UID,
+        BalancesType = balancesType,
+        ShowCascadeBalances = false,
+        InitialPeriod = new BalancesPeriod {
+          FromDate = fromDate,
+          ToDate = toDate
+        }
+      };
+
+      return ExecuteTrialBalance<SaldosPorCuentaEntryDto>(query);
     }
 
 
