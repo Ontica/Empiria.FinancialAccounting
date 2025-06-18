@@ -177,8 +177,8 @@ namespace Empiria.FinancialAccounting {
 
       fields.EnsureValid();
 
-      this.Name = FieldPatcher.PatchField(fields.Name, this.Name);
-      this.Description = FieldPatcher.PatchField(fields.Description, this.Description);
+      this.Name = Patcher.Patch(fields.Name, this.Name);
+      this.Description = Patcher.Patch(fields.Description, this.Description);
 
       UpdateSubledger(fields.SubledgerType());
     }

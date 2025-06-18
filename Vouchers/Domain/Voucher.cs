@@ -582,14 +582,14 @@ namespace Empiria.FinancialAccounting.Vouchers {
     internal void Update(VoucherFields fields) {
       Assertion.Require(fields, nameof(fields));
 
-      this.Ledger = FieldPatcher.PatchField(fields.LedgerUID, this.Ledger);
-      this.AccountingDate = FieldPatcher.PatchField(fields.AccountingDate, this.AccountingDate);
-      this.RecordingDate = FieldPatcher.PatchField(fields.RecordingDate, this.RecordingDate);
-      this.ElaboratedBy = FieldPatcher.PatchField(fields.ElaboratedById, this.ElaboratedBy);
-      this.Concept = FieldPatcher.PatchField(EmpiriaString.TrimAll(fields.Concept), this.Concept);
+      this.Ledger = Patcher.Patch(fields.LedgerUID, this.Ledger);
+      this.AccountingDate = Patcher.Patch(fields.AccountingDate, this.AccountingDate);
+      this.RecordingDate = Patcher.Patch(fields.RecordingDate, this.RecordingDate);
+      this.ElaboratedBy = Patcher.Patch(fields.ElaboratedById, this.ElaboratedBy);
+      this.Concept = Patcher.PatchClean(fields.Concept, this.Concept);
       // this.TransactionType = FieldPatcher.PatchField(fields.TransactionTypeUID, this.TransactionType);
-      this.VoucherType = FieldPatcher.PatchField(fields.VoucherTypeUID, this.VoucherType);
-      this.FunctionalArea = FieldPatcher.PatchField(fields.FunctionalAreaId, this.FunctionalArea);
+      this.VoucherType = Patcher.Patch(fields.VoucherTypeUID, this.VoucherType);
+      this.FunctionalArea = Patcher.Patch(fields.FunctionalAreaId, this.FunctionalArea);
     }
 
 
