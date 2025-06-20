@@ -61,7 +61,7 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
       var hashAccountEntries = new EmpiriaHashTable<TrialBalanceEntry>();
 
       foreach (var entry in filteredAccountList) {
-
+        
         SummaryByAccountEntry(hashAccountEntries, entry, entry.ItemType);
       }
 
@@ -248,17 +248,12 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
                                     Query.InitialPeriod.ToDate.Year, Query.InitialPeriod.ToDate.Month);
 
       if (Query.InitialPeriod.ToDate == lastWorkingDateInMonth) {
-        
+
         Query.InitialPeriod.ExchangeRateTypeUID = ExchangeRateType.ValorizacionBanxico.UID;
 
       } else {
-        if (Query.TrialBalanceType == TrialBalanceType.BalanzaDiferenciaDiariaPorMoneda) {
 
-          Query.InitialPeriod.ExchangeRateTypeUID = ExchangeRateType.BalanzaDiaria.UID;
-        } else {
-
-          Query.InitialPeriod.ExchangeRateTypeUID = ExchangeRateType.Diario.UID;
-        }
+        Query.InitialPeriod.ExchangeRateTypeUID = ExchangeRateType.BalanzaDiaria.UID;
       }
     }
 
@@ -349,11 +344,11 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
                   FixedList<TrialBalanceEntry> ledgerAccounts) {
 
       foreach (var ledger in ledgerAccounts) {
-        
+
         if (Query.TrialBalanceType == TrialBalanceType.BalanzaEnColumnasPorMoneda) {
           ledger.ItemType = TrialBalanceItemType.Summary;
         }
-        
+
         var entry = returnedValuedBalance.Where(a => a.Account.Number == ledger.Account.Number)
                                          .FirstOrDefault();
         if (entry == null) {

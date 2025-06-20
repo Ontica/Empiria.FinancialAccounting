@@ -35,7 +35,7 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
       return BuildBalanceInColumnByCurrency(baseAccountEntries);
     }
 
-
+    
     internal FixedList<BalanzaColumnasMonedaEntry> BuildBalanceInColumnByCurrency(FixedList<TrialBalanceEntry> accountEntries) {
 
       if (accountEntries.Count == 0) {
@@ -45,7 +45,7 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
       var balanceHelper = new TrialBalanceHelper(Query);
       var helper = new BalanzaColumnasMonedaHelper(Query);
 
-      helper.ValuateEntriesToExchangeRate(accountEntries);
+      balanceHelper.ValuateAccountEntriesToExchangeRate(accountEntries);
 
       balanceHelper.RoundDecimals(accountEntries);
 
