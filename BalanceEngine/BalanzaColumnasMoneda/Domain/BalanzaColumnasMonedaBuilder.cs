@@ -45,7 +45,10 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
       var balanceHelper = new TrialBalanceHelper(Query);
       var helper = new BalanzaColumnasMonedaHelper(Query);
 
-      balanceHelper.ValuateAccountEntriesToExchangeRate(accountEntries);
+      if (Query.ValuateBalances || Query.InitialPeriod.UseDefaultValuation) {
+
+        balanceHelper.ValuateAccountEntriesToExchangeRate(accountEntries);
+      }
 
       balanceHelper.RoundDecimals(accountEntries);
 
