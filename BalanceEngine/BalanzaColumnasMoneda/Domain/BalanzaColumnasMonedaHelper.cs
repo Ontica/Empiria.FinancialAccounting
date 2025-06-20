@@ -418,6 +418,12 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
       string hash = $"{entry.Account.Number}||{targetSector.Code}||{entry.Currency.Id}" +
                     $"||{entry.Ledger.Id}||{entry.DebtorCreditor}";
       
+      if (Query.TrialBalanceType == TrialBalanceType.BalanzaEnColumnasPorMoneda) {
+
+        hash = $"{entry.Account.Number}||{targetSector.Code}||{entry.Currency.Id}" +
+                    $"||{entry.Ledger.Id}||{entry.DebtorCreditor}||{entry.ItemType}";
+      }
+
       if (!Query.UseNewSectorizationModel) {
 
         hash = $"{entry.Account.Number}||{targetSector.Code}||{entry.Currency.Id}||{entry.Ledger.Id}";
