@@ -21,6 +21,11 @@ namespace Empiria.Tests.FinancialAccounting.BalanceEngine {
   public class BalanzaColumnasVsCoreBalancesTests {
 
     [Theory]
+    [InlineData("2024-05-01", "2024-05-31", BalancesType.WithCurrentBalanceOrMovements)]
+    [InlineData("2024-06-01", "2024-06-30", BalancesType.WithCurrentBalanceOrMovements)]
+    [InlineData("2024-07-01", "2024-07-31", BalancesType.WithCurrentBalanceOrMovements)]
+    [InlineData("2024-08-01", "2024-08-31", BalancesType.WithCurrentBalanceOrMovements)]
+    [InlineData("2024-09-01", "2024-09-30", BalancesType.WithCurrentBalanceOrMovements)]
     [InlineData("2024-10-01", "2024-10-31", BalancesType.WithCurrentBalanceOrMovements)]
     [InlineData("2024-11-01", "2024-11-30", BalancesType.WithCurrentBalanceOrMovements)]
     [InlineData("2024-12-01", "2024-12-31", BalancesType.WithCurrentBalanceOrMovements)]
@@ -45,6 +50,11 @@ namespace Empiria.Tests.FinancialAccounting.BalanceEngine {
 
 
     [Theory]
+    [InlineData("2024-05-01", "2024-05-31", BalancesType.WithCurrentBalanceOrMovements)]
+    [InlineData("2024-06-01", "2024-06-30", BalancesType.WithCurrentBalanceOrMovements)]
+    [InlineData("2024-07-01", "2024-07-31", BalancesType.WithCurrentBalanceOrMovements)]
+    [InlineData("2024-08-01", "2024-08-31", BalancesType.WithCurrentBalanceOrMovements)]
+    [InlineData("2024-09-01", "2024-09-30", BalancesType.WithCurrentBalanceOrMovements)]
     [InlineData("2024-10-01", "2024-10-31", BalancesType.WithCurrentBalanceOrMovements)]
     [InlineData("2024-11-01", "2024-11-30", BalancesType.WithCurrentBalanceOrMovements)]
     [InlineData("2024-12-01", "2024-12-31", BalancesType.WithCurrentBalanceOrMovements)]
@@ -105,7 +115,6 @@ namespace Empiria.Tests.FinancialAccounting.BalanceEngine {
         var totalCreditorUDI = filtered.FindAll(x => x.Currency.Equals(Currency.UDI) &&
                                               x.Account.DebtorCreditor == DebtorCreditorType.Acreedora)
                                      .Sum(x => x.CurrentBalance);
-
 
         var totalMXN = Math.Abs(totalDebtorMXN - totalCreditorMXN);
         var totalUSD = Math.Abs(totalDebtorUSD - totalCreditorUSD);
