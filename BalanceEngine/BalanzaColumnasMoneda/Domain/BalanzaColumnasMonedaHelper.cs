@@ -156,18 +156,7 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
 
       FixedList<ExchangeRate> exchangeRates = GetExchangeRateList(isValorizedBalance);
 
-      foreach (var entry in entries.Where(a => a.Currency.Distinct(Currency.MXN))) {
-
-        var exchangeRate = exchangeRates.Find(
-                          a => a.ToCurrency.Equals(entry.Currency) &&
-                          a.FromCurrency.Code == Query.InitialPeriod.ValuateToCurrrencyUID);
-
-        Assertion.Require(exchangeRate, $"No se ha registrado el tipo de cambio para la " +
-                                        $"moneda {entry.Currency.FullName} " +
-                                        $"en la fecha {Query.InitialPeriod.ToDate}.");
-
-        GetValorizedEntries(entry, exchangeRate, isValorizedBalance);
-      }
+      ValuateEntries(entries, exchangeRates, isValorizedBalance);
     }
 
 
@@ -231,7 +220,7 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
       if (Query.UseDefaultValuation || !isValorizedBalance) {
         Query.InitialPeriod.ValuateToCurrrencyUID = "01";
       }
-
+          
       GetExchangeRateTypeUID();
 
       var exchangeRateType = ExchangeRateType.Parse(Query.InitialPeriod.ExchangeRateTypeUID);
@@ -247,14 +236,21 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
       var lastWorkingDateInMonth = calendar.LastWorkingDateWithinMonth(
                                     Query.InitialPeriod.ToDate.Year, Query.InitialPeriod.ToDate.Month);
 
-      if (Query.InitialPeriod.ToDate == lastWorkingDateInMonth) {
+      Query.InitialPeriod.ExchangeRateTypeUID = ExchangeRateType.ValorizacionBanxico.UID;
 
-        Query.InitialPeriod.ExchangeRateTypeUID = ExchangeRateType.ValorizacionBanxico.UID;
+      if (Query.TrialBalanceType == TrialBalanceType.BalanzaDiferenciaDiariaPorMoneda) {
 
-      } else {
+        if (Query.InitialPeriod.ToDate == lastWorkingDateInMonth) {
 
-        Query.InitialPeriod.ExchangeRateTypeUID = ExchangeRateType.BalanzaDiaria.UID;
+          Query.InitialPeriod.ExchangeRateTypeUID = ExchangeRateType.ValorizacionBanxico.UID;
+
+        } else {
+
+          Query.InitialPeriod.ExchangeRateTypeUID = ExchangeRateType.BalanzaDiaria.UID;
+        }
+
       }
+
     }
 
 
@@ -344,11 +340,11 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
                   FixedList<TrialBalanceEntry> ledgerAccounts) {
 
       foreach (var ledger in ledgerAccounts) {
-
+        
         if (Query.TrialBalanceType == TrialBalanceType.BalanzaEnColumnasPorMoneda) {
           ledger.ItemType = TrialBalanceItemType.Summary;
         }
-
+        
         var entry = returnedValuedBalance.Where(a => a.Account.Number == ledger.Account.Number)
                                          .FirstOrDefault();
         if (entry == null) {
@@ -421,7 +417,7 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
 
       string hash = $"{entry.Account.Number}||{targetSector.Code}||{entry.Currency.Id}" +
                     $"||{entry.Ledger.Id}||{entry.DebtorCreditor}";
-
+      
       if (!Query.UseNewSectorizationModel) {
 
         hash = $"{entry.Account.Number}||{targetSector.Code}||{entry.Currency.Id}||{entry.Ledger.Id}";
@@ -432,6 +428,23 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
                                               Sector.Empty, itemType, hash);
     }
 
+
+    private void ValuateEntries(FixedList<TrialBalanceEntry> entries,
+                                FixedList<ExchangeRate> exchangeRates, bool isValorizedBalance) {
+
+      foreach (var entry in entries.Where(a => a.Currency.Distinct(Currency.MXN))) {
+
+        var exchangeRate = exchangeRates.Find(
+                            a => a.ToCurrency.Equals(entry.Currency) &&
+                            a.FromCurrency.Code == Query.InitialPeriod.ValuateToCurrrencyUID);
+
+        Assertion.Require(exchangeRate, $"No se ha registrado el tipo de cambio para la " +
+                                        $"moneda {entry.Currency.FullName} " +
+                                        $"en la fecha {Query.InitialPeriod.ToDate}.");
+
+        GetValorizedEntries(entry, exchangeRate, isValorizedBalance);
+      }
+    }
 
     #endregion Private methods
 
