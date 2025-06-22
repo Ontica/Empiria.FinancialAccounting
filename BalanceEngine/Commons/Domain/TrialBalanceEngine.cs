@@ -137,8 +137,8 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
       switch (this.Query.TrialBalanceType) {
 
         case TrialBalanceType.AnaliticoDeCuentas:
-          Assertion.Require(Query.BalancesType != BalancesType.AllAccounts,
-          "La opción 'Todas las cuentas', está temporalmente fuera de servicio para el Analítico de cuentas.");
+          //Assertion.Require(Query.BalancesType != BalancesType.AllAccounts,
+          //"La opción 'Todas las cuentas', está temporalmente fuera de servicio para el Analítico de cuentas.");
 
           var builder = new AnaliticoDeCuentasBuilder(this.Query);
           var entries = builder.Build();
@@ -154,9 +154,7 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
           return balanzaTradicional.Build();
 
         case TrialBalanceType.SaldosPorCuenta:
-          Assertion.Require(Query.BalancesType != BalancesType.AllAccounts,
-          "La opción 'Todas las cuentas', está temporalmente fuera de servicio para los reportes de saldos por cuenta.");
-
+          
           var saldosPorCuenta = new SaldosPorCuentaBuilder(this.Query);
 
           return saldosPorCuenta.Build();
@@ -219,8 +217,8 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
           return saldosPorAuxiliar.Build();
 
         case TrialBalanceType.BalanzaConContabilidadesEnCascada:
-          Assertion.Require(Query.BalancesType != BalancesType.AllAccounts,
-          "La opción 'Todas las cuentas', está temporalmente fuera de servicio para la balanza con contabilidades en cascada.");
+          //Assertion.Require(Query.BalancesType != BalancesType.AllAccounts,
+          //"La opción 'Todas las cuentas', está temporalmente fuera de servicio para la balanza con contabilidades en cascada.");
 
           var saldosPorCuentaYMayores = new BalanzaContabilidadesCascadaBuilder(this.Query);
 
