@@ -26,7 +26,7 @@ namespace Empiria.Tests.FinancialAccounting.BalanceEngine {
     [InlineData("2025-04-01", "2025-04-30", BalancesType.AllAccounts)]
     public void Should_Have_Same_Entries(string fromDate, string toDate, BalancesType balancesType) {
 
-      CoreBalanceEntries coreBalances = TestsHelpers.GetCoreBalanceEntriesBySubledger(
+      CoreBalanceEntries coreBalances = TestsHelpers.GetCoreBalanceEntriesWithSubledgerAccounts(
                                                                             DateTime.Parse(fromDate),
                                                                             DateTime.Parse(toDate),
                                                                             ExchangeRateType.Empty);
