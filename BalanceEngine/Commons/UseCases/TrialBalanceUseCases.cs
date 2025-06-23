@@ -71,9 +71,6 @@ namespace Empiria.FinancialAccounting.BalanceEngine.UseCases {
     public async Task<BalanzaColumnasMonedaDto> BuildBalanzaColumnasMoneda(TrialBalanceQuery query) {
       Assertion.Require(query, nameof(query));
 
-      Assertion.Require(query.TrialBalanceType == TrialBalanceType.BalanzaEnColumnasPorMoneda,
-                       "query.TrialBalanceType must be 'BalanzaEnColumnasPorMoneda'.");
-
       var builder = new BalanzaColumnasMonedaBuilder(query);
 
       FixedList<TrialBalanceEntry> baseAccountEntries = BalancesDataService.GetTrialBalanceEntries(query);

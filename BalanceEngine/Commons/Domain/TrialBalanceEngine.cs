@@ -161,9 +161,7 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
 
 
         case TrialBalanceType.BalanzaEnColumnasPorMoneda:
-          Assertion.Require(Query.BalancesType != BalancesType.AllAccounts,
-          "La opción 'Todas las cuentas', está temporalmente fuera de servicio para la balanza en columnas por moneda.");
-
+          
           var balanzaColumnasBuilder = new BalanzaColumnasMonedaBuilder(this.Query);
           var balanzaColumnasEntries = balanzaColumnasBuilder.Build();
           FixedList<ITrialBalanceEntry> balanzaColumnas = balanzaColumnasEntries.Select(x =>
