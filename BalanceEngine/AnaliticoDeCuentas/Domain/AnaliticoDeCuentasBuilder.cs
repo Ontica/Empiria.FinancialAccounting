@@ -191,7 +191,11 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
       var targetCurrency = Currency.Parse(_query.InitialPeriod.ValuateToCurrrencyUID);
 
       foreach (var entry in accountEntries) {
-        
+
+        if (entry.Account.Number == "1.05.01.02.01.01.01" && entry.Sector.Code == "00") {
+          string xx = string.Empty;
+        }
+
         if (entry.CurrentBalance != 0 || _query.BalancesType == BalancesType.AllAccountsInCatalog) {
 
           string hash = $"{entry.Account.Number}||{entry.Sector.Code}||{targetCurrency.Id}||" +
@@ -229,7 +233,7 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
 
       var balanceHelper = new TrialBalanceHelper(_query);
 
-      List<TrialBalanceEntry> balanceEntries = balanceHelper.GetSummaryAccountsAndSectorization(
+      List<TrialBalanceEntry> balanceEntries = helper.GetSummariesWithOrWithoutSectorization(
                                                parentAndAccountEntries.ToList());
 
       helper.GetSummaryToSectorZeroForPesosAndUdis(balanceEntries);
