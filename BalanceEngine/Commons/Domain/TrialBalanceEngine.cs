@@ -137,9 +137,7 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
       switch (this.Query.TrialBalanceType) {
 
         case TrialBalanceType.AnaliticoDeCuentas:
-          Assertion.Require(Query.BalancesType != BalancesType.AllAccounts,
-          "La opción 'Todas las cuentas', está temporalmente fuera de servicio para el Analítico de cuentas.");
-
+          
           var builder = new AnaliticoDeCuentasBuilder(this.Query);
           var entries = builder.Build();
           FixedList<ITrialBalanceEntry> analyticBalance = entries.Select(x => (ITrialBalanceEntry) x)

@@ -37,9 +37,6 @@ namespace Empiria.FinancialAccounting.BalanceEngine.UseCases {
     public async Task<AnaliticoDeCuentasDto> BuildAnaliticoDeCuentas(TrialBalanceQuery query) {
       Assertion.Require(query, nameof(query));
 
-      Assertion.Require(query.TrialBalanceType == TrialBalanceType.AnaliticoDeCuentas,
-                       "query.TrialBalanceType must be 'AnaliticoDeCuentas'.");
-
       var builder = new AnaliticoDeCuentasBuilder(query);
 
       FixedList<TrialBalanceEntry> baseAccountEntries = BalancesDataService.GetTrialBalanceEntries(query);
