@@ -45,6 +45,26 @@ namespace Empiria.Tests.FinancialAccounting.BalanceEngine {
         BalancesType = balancesType,
         ShowCascadeBalances = false,
         UseDefaultValuation = true,
+        InitialPeriod = new BalancesPeriod {
+          FromDate = fromDate,
+          ToDate = toDate
+        }
+      };
+
+      return ExecuteTrialBalance<AnaliticoDeCuentasEntryDto>(query);
+    }
+
+
+    static internal FixedList<AnaliticoDeCuentasEntryDto> GetAnaliticoCuentasWithSubledgerAccounts(DateTime fromDate,
+                                                                              DateTime toDate,
+                                                                              BalancesType balancesType) {
+
+      var query = new TrialBalanceQuery() {
+        TrialBalanceType = TrialBalanceType.AnaliticoDeCuentas,
+        AccountsChartUID = TestingConstants.IFRS_ACCOUNTS_CHART.UID,
+        BalancesType = balancesType,
+        ShowCascadeBalances = false,
+        UseDefaultValuation = true,
         WithSubledgerAccount = true,
         InitialPeriod = new BalancesPeriod {
           FromDate = fromDate,

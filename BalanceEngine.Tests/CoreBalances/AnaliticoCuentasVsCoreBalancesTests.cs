@@ -23,11 +23,11 @@ namespace Empiria.Tests.FinancialAccounting.BalanceEngine {
   public class AnaliticoCuentasVsCoreBalancesTests {
 
     [Theory]
-    [InlineData("2024-12-01", "2024-12-31", BalancesType.WithCurrentBalanceOrMovements)]
-    [InlineData("2025-01-01", "2025-01-31", BalancesType.WithCurrentBalanceOrMovements)]
-    [InlineData("2025-02-01", "2025-02-28", BalancesType.WithCurrentBalanceOrMovements)]
-    [InlineData("2025-03-01", "2025-03-31", BalancesType.WithCurrentBalanceOrMovements)]
-    [InlineData("2025-04-01", "2025-04-30", BalancesType.WithCurrentBalanceOrMovements)]
+    [InlineData("2024-12-01", "2024-12-31", BalancesType.AllAccounts)]
+    [InlineData("2025-01-01", "2025-01-31", BalancesType.AllAccounts)]
+    [InlineData("2025-02-01", "2025-02-28", BalancesType.AllAccounts)]
+    [InlineData("2025-03-01", "2025-03-31", BalancesType.AllAccounts)]
+    [InlineData("2025-04-01", "2025-04-30", BalancesType.AllAccounts)]
     public void Should_Have_Same_Entries(string fromDate, string toDate, BalancesType balancesType) {
 
       CoreBalanceEntries coreBalances = TestsHelpers.GetCoreBalanceEntries(DateTime.Parse(fromDate),
@@ -45,11 +45,11 @@ namespace Empiria.Tests.FinancialAccounting.BalanceEngine {
 
 
     [Theory]
-    [InlineData("2024-12-01", "2024-12-31", BalancesType.WithCurrentBalanceOrMovements)]
-    [InlineData("2025-01-01", "2025-01-31", BalancesType.WithCurrentBalanceOrMovements)]
-    [InlineData("2025-02-01", "2025-02-28", BalancesType.WithCurrentBalanceOrMovements)]
-    [InlineData("2025-03-01", "2025-03-31", BalancesType.WithCurrentBalanceOrMovements)]
-    [InlineData("2025-04-01", "2025-04-30", BalancesType.WithCurrentBalanceOrMovements)]
+    [InlineData("2024-12-01", "2024-12-31", BalancesType.AllAccounts)]
+    [InlineData("2025-01-01", "2025-01-31", BalancesType.AllAccounts)]
+    [InlineData("2025-02-01", "2025-02-28", BalancesType.AllAccounts)]
+    [InlineData("2025-03-01", "2025-03-31", BalancesType.AllAccounts)]
+    [InlineData("2025-04-01", "2025-04-30", BalancesType.AllAccounts)]
     public void Should_Have_Same_Summaries(string fromDate, string toDate, BalancesType balancesType) {
 
       CoreBalanceEntries coreBalances = TestsHelpers.GetCoreBalanceEntries(DateTime.Parse(fromDate),
@@ -57,6 +57,28 @@ namespace Empiria.Tests.FinancialAccounting.BalanceEngine {
                                                                            ExchangeRateType.ValorizacionBanxico);
 
       FixedList<AnaliticoDeCuentasEntryDto> analitico = TestsHelpers.GetAnaliticoCuentas(DateTime.Parse(fromDate),
+                                                                                         DateTime.Parse(toDate),
+                                                                                         balancesType)
+                                                                    .FindAll(x => x.ItemType == TrialBalanceItemType.Summary);
+      RunTest(coreBalances, analitico);
+
+      Assert.True(analitico.Count > 100);
+    }
+
+
+    [Theory]
+    [InlineData("2024-12-01", "2024-12-31", BalancesType.AllAccounts)]
+    [InlineData("2025-01-01", "2025-01-31", BalancesType.AllAccounts)]
+    [InlineData("2025-02-01", "2025-02-28", BalancesType.AllAccounts)]
+    [InlineData("2025-03-01", "2025-03-31", BalancesType.AllAccounts)]
+    [InlineData("2025-04-01", "2025-04-30", BalancesType.AllAccounts)]
+    public void Should_Have_Same_Summaries_By_Subledger_Accounts(string fromDate, string toDate, BalancesType balancesType) {
+
+      CoreBalanceEntries coreBalances = TestsHelpers.GetCoreBalanceEntriesWithSubledgerAccounts(DateTime.Parse(fromDate),
+                                                                           DateTime.Parse(toDate),
+                                                                           ExchangeRateType.ValorizacionBanxico);
+
+      FixedList<AnaliticoDeCuentasEntryDto> analitico = TestsHelpers.GetAnaliticoCuentasWithSubledgerAccounts(DateTime.Parse(fromDate),
                                                                                          DateTime.Parse(toDate),
                                                                                          balancesType)
                                                                     .FindAll(x => x.ItemType == TrialBalanceItemType.Summary);
