@@ -192,11 +192,9 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
 
       foreach (var entry in accountEntries) {
 
-        if (entry.Account.Number == "1.05.01.02.01.01.01" && entry.Sector.Code == "00") {
-          string xx = string.Empty;
-        }
-
-        if (entry.CurrentBalance != 0 || _query.BalancesType == BalancesType.AllAccountsInCatalog) {
+        if (entry.CurrentBalance != 0 ||
+            _query.BalancesType == BalancesType.AllAccountsInCatalog ||
+            _query.BalancesType == BalancesType.AllAccounts) {
 
           string hash = $"{entry.Account.Number}||{entry.Sector.Code}||{targetCurrency.Id}||" +
                         $"{entry.Ledger.Id}||{entry.DebtorCreditor}";
