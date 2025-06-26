@@ -2,7 +2,7 @@
 *                                                                                                            *
 *  Module   : Balance Engine                             Component : Test cases                              *
 *  Assembly : FinancialAccounting.BalanceEngine.Tests    Pattern   : Use cases tests                         *
-*  Type     : BalanzaContCascadaVsCoreBalances           License   : Please read LICENSE.txt file            *
+*  Type     : BalanzaContCascadaVsCoreBalancesTests           License   : Please read LICENSE.txt file            *
 *                                                                                                            *
 *  Summary  : Test cases that compares balanzaContabilidadesCascada vs core balances tests.                  *
 *                                                                                                            *
@@ -18,7 +18,7 @@ using Xunit;
 namespace Empiria.Tests.FinancialAccounting.BalanceEngine {
 
   /// <summary>Test cases that compares balanzaContabilidadesCascada vs core balances tests.</summary>
-  public class BalanzaContCascadaVsCoreBalances {
+  public class BalanzaContCascadaVsCoreBalancesTests {
 
     [Theory]
     [InlineData("2024-10-01", "2024-10-31", BalancesType.AllAccounts)]
@@ -86,6 +86,6 @@ namespace Empiria.Tests.FinancialAccounting.BalanceEngine {
       }
     }
 
-  } // class BalanzaContCascadaVsCoreBalances
+  } // class BalanzaContCascadaVsCoreBalancesTests
 
 } // namespace Empiria.Tests.FinancialAccounting.BalanceEngine
