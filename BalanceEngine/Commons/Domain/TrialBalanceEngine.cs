@@ -190,9 +190,7 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
           return new TrialBalance(this.Query, balanzaComparativa);
 
         case TrialBalanceType.BalanzaDolarizada:
-          Assertion.Require(Query.BalancesType != BalancesType.AllAccounts,
-          "La opción 'Todas las cuentas', está temporalmente fuera de servicio para la balanza dolarizada.");
-
+          
           var dolarizadaEntries = new BalanzaDolarizadaBuilder(this.Query).Build();
 
           FixedList<ITrialBalanceEntry> balanzaDolarizada = dolarizadaEntries.Select(x =>
