@@ -73,7 +73,7 @@ namespace Empiria.FinancialAccounting.BalanceEngine.UseCases {
       FixedList<TrialBalanceEntry> baseAccountEntries = BalancesDataService.GetTrialBalanceEntries(query);
 
       FixedList<BalanzaColumnasMonedaEntry> entries = await Task.Run(() =>
-                                                  builder.BuildBalanceInColumnByCurrency(baseAccountEntries))
+                                                  builder.Build(baseAccountEntries))
                                                   .ConfigureAwait(false);
 
       return BalanzaColumnasMonedaMapper.Map(query, entries);

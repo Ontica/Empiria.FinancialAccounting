@@ -160,8 +160,8 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
 
         case TrialBalanceType.BalanzaEnColumnasPorMoneda:
           
-          var balanzaColumnasBuilder = new BalanzaColumnasMonedaBuilder(this.Query);
-          var balanzaColumnasEntries = balanzaColumnasBuilder.Build();
+          var balanzaMOBuilder = new BalanzaColumnasMonedaBuilder(this.Query);
+          var balanzaColumnasEntries = balanzaMOBuilder.Build();
           FixedList<ITrialBalanceEntry> balanzaColumnas = balanzaColumnasEntries.Select(x =>
                                                             (ITrialBalanceEntry) x).ToFixedList();
 
