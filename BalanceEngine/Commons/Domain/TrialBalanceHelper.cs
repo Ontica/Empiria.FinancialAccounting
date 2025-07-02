@@ -8,11 +8,10 @@
 *                                                                                                            *
 ************************* Copyright(c) La Vía Óntica SC, Ontica LLC and contributors. All rights reserved. **/
 using System;
-using System.Linq;
 using System.Collections.Generic;
-
+using System.Linq;
+using DocumentFormat.OpenXml.Drawing.Charts;
 using Empiria.Collections;
-
 using Empiria.FinancialAccounting.BalanceEngine.Adapters;
 using Empiria.FinancialAccounting.BalanceEngine.Data;
 
@@ -322,6 +321,29 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
       AssignLastChangeDatesToParentEntries(accountEntries, parentAccounts.ToFixedList());
 
       return parentAccounts.ToFixedList().ToList();
+    }
+
+
+    internal ExchangeRateForCurrencies GetExchangeRateTypeForCurrencies(BalancesPeriod period) {
+
+      var exchangeRateFor = new ExchangeRateForCurrencies(period.FromDate,
+                                                            period.ToDate);
+      if (_query.UseDefaultValuation) {
+
+        exchangeRateFor.GetDefaultExchangeRate();
+
+      } else if (_query.ValuateBalances) {
+
+        exchangeRateFor.GetExchangeRateByQuery(period);
+
+      } else {
+        Assertion.EnsureNoReachThisCode($"No es posible valorizar saldos con " +
+                                        $"los datos especificados.");
+      }
+
+      Assertion.Require(exchangeRateFor.ExchangeRateList, $"{exchangeRateFor.InvalidExchangeRateTypeMsg()}");
+
+      return exchangeRateFor;
     }
 
 
