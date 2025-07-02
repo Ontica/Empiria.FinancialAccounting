@@ -341,7 +341,7 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
                                         $"los datos especificados.");
       }
 
-      Assertion.Require(exchangeRateFor.ExchangeRateList, $"{exchangeRateFor.InvalidExchangeRateTypeMsg()}");
+      Assertion.Require(exchangeRateFor.ExchangeRateList.Count > 0, $"{exchangeRateFor.InvalidExchangeRateTypeMsg()}");
 
       return exchangeRateFor;
     }
@@ -523,6 +523,26 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
 
 
     internal void ValuateAccountEntriesToExchangeRate_Analitico(FixedList<TrialBalanceEntry> entries) {
+
+      FixedList<ExchangeRate> exchangeRates = GetExchangeRateListForDate();
+
+      var exchangeRateFor = GetExchangeRateTypeForCurrencies(_query.InitialPeriod);
+
+      foreach (var entry in entries.Where(a => a.Currency.Distinct(Currency.MXN))) {
+
+        var exchangeRate = exchangeRateFor.ExchangeRateList.Find(
+                            a => a.ToCurrency.Equals(entry.Currency) &&
+                            a.FromCurrency.Code == exchangeRateFor.ValuateToCurrrencyUID);
+
+        Assertion.Require(exchangeRate, $" {exchangeRateFor.InvalidExchangeRateTypeMsg()} " +
+                                        $"para la moneda {entry.Currency.FullName} ");
+
+        ClausesToExchangeRate(entry, exchangeRate);
+      }
+    }
+
+
+    internal void ValuateAccountEntriesToExchangeRate_Balanza(FixedList<TrialBalanceEntry> entries) {
 
       FixedList<ExchangeRate> exchangeRates = GetExchangeRateListForDate();
 
