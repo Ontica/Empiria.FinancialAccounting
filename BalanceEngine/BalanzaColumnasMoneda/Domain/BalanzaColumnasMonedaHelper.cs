@@ -103,6 +103,17 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
     }
 
 
+    internal void GetValorizedEntries(TrialBalanceEntry entry,
+      ExchangeRate exchangeRate, bool isValorizedBalance) {
+
+      entry.MultiplyByValorizedValue(exchangeRate.Value);
+
+      if (isValorizedBalance) {
+        entry.CurrentBalance = entry.ValorizedCurrentBalance;
+      }
+    }
+
+
     internal List<BalanzaColumnasMonedaEntry> MergeTrialBalanceIntoBalanceByCurrency(
                                           FixedList<TrialBalanceEntry> accountEntriesByCurrency) {
 
@@ -124,6 +135,28 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
       var returnedOrdering = returnedValuedBalance.OrderBy(a => a.Account.Number).ToList();
 
       return returnedOrdering;
+    }
+
+
+    internal void ValuateBalanzaMOToExchangeRate(FixedList<TrialBalanceEntry> entries) {
+
+      var isValorizedBalance = Query.InitialPeriod.ValuateToCurrrencyUID != string.Empty ||
+                               Query.UseDefaultValuation ? true : false;
+
+      var balanceHelper = new TrialBalanceHelper(Query);
+      var exchangeRateFor = balanceHelper.GetExchangeRateTypeForCurrencies(Query.InitialPeriod);
+
+      foreach (var entry in entries.Where(a => a.Currency.Distinct(Currency.MXN))) {
+
+        var exchangeRate = exchangeRateFor.ExchangeRateList.Find(
+                            a => a.ToCurrency.Equals(entry.Currency) &&
+                            a.FromCurrency.Code == exchangeRateFor.ValuateToCurrrencyUID);
+
+        Assertion.Require(exchangeRate, $" {exchangeRateFor.InvalidExchangeRateTypeMsg()} " +
+                                        $"para la moneda {entry.Currency.FullName} ");
+
+        GetValorizedEntries(entry, exchangeRate, isValorizedBalance);
+      }
     }
 
 
@@ -272,17 +305,6 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
           returnedBalances.Insert(hash, foreignAccount);
 
         }
-      }
-    }
-
-
-    private void GetValorizedEntries(TrialBalanceEntry entry,
-      ExchangeRate exchangeRate, bool isValorizedBalance) {
-
-      entry.MultiplyByValorizedValue(exchangeRate.Value);
-
-      if (isValorizedBalance) {
-        entry.CurrentBalance = entry.ValorizedCurrentBalance;
       }
     }
 

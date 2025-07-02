@@ -10,6 +10,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using DocumentFormat.OpenXml.VariantTypes;
 using Empiria.Collections;
 using Empiria.FinancialAccounting.BalanceEngine.Adapters;
 using Empiria.FinancialAccounting.BalanceEngine.Data;
@@ -32,11 +33,11 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
 
       FixedList<TrialBalanceEntry> baseAccountEntries = BalancesDataService.GetTrialBalanceEntries(Query);
 
-      return BuildBalanceInColumnByCurrency(baseAccountEntries);
+      return Build(baseAccountEntries);
     }
 
-    
-    internal FixedList<BalanzaColumnasMonedaEntry> BuildBalanceInColumnByCurrency(FixedList<TrialBalanceEntry> accountEntries) {
+
+    internal FixedList<BalanzaColumnasMonedaEntry> Build(FixedList<TrialBalanceEntry> accountEntries) {
 
       if (accountEntries.Count == 0) {
         return new FixedList<BalanzaColumnasMonedaEntry>();
@@ -45,7 +46,10 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
       var balanceHelper = new TrialBalanceHelper(Query);
       var helper = new BalanzaColumnasMonedaHelper(Query);
 
-      helper.ValuateEntriesToExchangeRate(accountEntries);
+      if (Query.UseDefaultValuation || Query.ValuateBalances) {
+
+        helper.ValuateBalanzaMOToExchangeRate(accountEntries);
+      }
 
       balanceHelper.RoundDecimals(accountEntries);
 
@@ -60,12 +64,12 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
 
       List<TrialBalanceEntry> accountEntriesByCurrency =
                                 helper.GetAccountEntriesByCurrency(debtorAccounts).ToList();
-      
+
       balanceHelper.RestrictLevels(accountEntriesByCurrency.ToList());
 
       List<BalanzaColumnasMonedaEntry> balanceByCurrency =
                       helper.MergeTrialBalanceIntoBalanceByCurrency(accountEntriesByCurrency.ToFixedList());
-      
+
       helper.GetTotalValorizedByAccount(balanceByCurrency);
 
       return balanceByCurrency.ToFixedList();
@@ -93,7 +97,6 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
 
       return accountEntriesByCurrency;
     }
-
 
   } // class BalanzaColumnasMonedaBuilder
 
