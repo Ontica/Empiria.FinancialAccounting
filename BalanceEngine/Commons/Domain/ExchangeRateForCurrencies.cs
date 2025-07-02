@@ -21,6 +21,11 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
 
     #region Constructors and parsers
 
+    internal ExchangeRateForCurrencies() {
+
+    }
+
+
     internal ExchangeRateForCurrencies(DateTime _fromDate, DateTime _toDate) {
       Assertion.Require(_fromDate, nameof(_fromDate));
       Assertion.Require(_toDate, nameof(_toDate));
@@ -56,13 +61,34 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
 
     #region Public methods
 
-    internal void GetDefaultExchangeRate() {
+    internal ExchangeRateForCurrencies GetDefaultExchangeRate() {
 
       DetermineExchangeRateTypeForDate();
 
       this.ValuateToCurrrencyUID = Currency.MXN.Code;
       this.ExchangeRateList = ExchangeRate.GetList(ExchangeRateType.Parse(this.ExchangeRateTypeUID),
                                                                           this.ExchangeRateDate);
+      return this;
+    }
+
+
+    internal ExchangeRateForCurrencies GetExchangeRateByQuery(BalancesPeriod period) {
+
+      DetermineExchangeRateTypeForDate();
+
+      this.ExchangeRateTypeUID = period.ExchangeRateTypeUID;
+      this.ValuateToCurrrencyUID = period.ValuateToCurrrencyUID;
+      this.ExchangeRateList = ExchangeRate.GetList(ExchangeRateType.Parse(period.ExchangeRateTypeUID),
+                                                   ExchangeRateDate);
+      return this;
+    }
+
+
+    internal string InvalidExchangeRateTypeMsg() {
+
+      return $"No se ha registrado el tipo de cambio " +
+             $"{ExchangeRateType.Parse(this.ExchangeRateTypeUID).Name} " +
+             $"en la fecha {this.ExchangeRateDate} ";
     }
 
     #endregion Public methods
