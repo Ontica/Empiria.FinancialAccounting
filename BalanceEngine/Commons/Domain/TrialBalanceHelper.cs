@@ -144,6 +144,29 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
     }
 
 
+    internal FixedList<TrialBalanceEntry> GetAccountEntries_For_Saldos() {
+
+      FixedList<TrialBalanceEntry> accountEntries = BalancesDataService.GetTrialBalanceEntries(_query);
+
+      if (accountEntries.Count == 0) {
+        return accountEntries;
+      }
+
+      if (_query.ValuateBalances || _query.InitialPeriod.UseDefaultValuation) {
+        ValuateAccountEntriesToExchangeRate_Saldos(accountEntries);
+
+        if (_query.ConsolidateBalancesToTargetCurrency) {
+          accountEntries = ConsolidateToTargetCurrency(accountEntries, _query.InitialPeriod);
+        }
+      }
+
+      RoundDecimals(accountEntries);
+
+      return accountEntries;
+
+    }
+
+
     internal void GetAccountEntriesAndParentSector(EmpiriaHashTable<TrialBalanceEntry> summaryEntries,
                                         TrialBalanceEntry entry, StandardAccount currentParent) {
 
@@ -524,8 +547,6 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
 
     internal void ValuateAccountEntriesToExchangeRate_Analitico(FixedList<TrialBalanceEntry> entries) {
 
-      FixedList<ExchangeRate> exchangeRates = GetExchangeRateListForDate();
-
       var exchangeRateFor = GetExchangeRateTypeForCurrencies(_query.InitialPeriod);
 
       foreach (var entry in entries.Where(a => a.Currency.Distinct(Currency.MXN))) {
@@ -544,8 +565,6 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
 
     internal void ValuateAccountEntriesToExchangeRate_Balanza(FixedList<TrialBalanceEntry> entries) {
 
-      FixedList<ExchangeRate> exchangeRates = GetExchangeRateListForDate();
-
       var exchangeRateFor = GetExchangeRateTypeForCurrencies(_query.InitialPeriod);
 
       foreach (var entry in entries.Where(a => a.Currency.Distinct(Currency.MXN))) {
@@ -561,6 +580,23 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
       }
     }
 
+
+    internal void ValuateAccountEntriesToExchangeRate_Saldos(FixedList<TrialBalanceEntry> entries) {
+
+      var exchangeRateFor = GetExchangeRateTypeForCurrencies(_query.InitialPeriod);
+      
+      foreach (var entry in entries.Where(a => a.Currency.Distinct(Currency.MXN))) {
+
+        var exchangeRate = exchangeRateFor.ExchangeRateList.Find(
+                            a => a.ToCurrency.Equals(entry.Currency) &&
+                            a.FromCurrency.Code == exchangeRateFor.ValuateToCurrrencyUID);
+
+        Assertion.Require(exchangeRate, $" {exchangeRateFor.InvalidExchangeRateTypeMsg()} " +
+                                        $"para la moneda {entry.Currency.FullName} ");
+
+        ClausesToExchangeRate(entry, exchangeRate);
+      }
+    }
 
     #region Private methods
 
