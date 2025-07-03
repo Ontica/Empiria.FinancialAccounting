@@ -174,7 +174,7 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
       var trialBalanceHelper = new TrialBalanceHelper(_query);
 
       if (_query.ValuateBalances || _query.InitialPeriod.UseDefaultValuation) {
-        trialBalanceHelper.ValuateAccountEntriesToExchangeRate_Balanza(accountEntries);
+        trialBalanceHelper.ValuateAccountEntriesToExchangeRateV2(accountEntries);
 
         if (_query.ConsolidateBalancesToTargetCurrency) {
           accountEntries = ConsolidateAccountEntriesToTargetCurrency(accountEntries);

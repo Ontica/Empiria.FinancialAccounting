@@ -48,7 +48,13 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
 
       if (Query.UseDefaultValuation || Query.ValuateBalances) {
 
-        helper.ValuateBalanzaMOToExchangeRate(accountEntries);
+        if (Query.InitialPeriod.ToDate.Year >= 2025) {
+
+          helper.ValuateBalanzaMOToExchangeRateV2(accountEntries);
+        } else {
+
+          helper.ValuateEntriesToExchangeRate(accountEntries);
+        }
       }
 
       balanceHelper.RoundDecimals(accountEntries);

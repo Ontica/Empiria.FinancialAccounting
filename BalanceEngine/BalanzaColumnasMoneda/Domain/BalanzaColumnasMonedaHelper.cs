@@ -138,7 +138,7 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
     }
 
 
-    internal void ValuateBalanzaMOToExchangeRate(FixedList<TrialBalanceEntry> entries) {
+    internal void ValuateBalanzaMOToExchangeRateV2(FixedList<TrialBalanceEntry> entries) {
 
       var isValorizedBalance = Query.InitialPeriod.ValuateToCurrrencyUID != string.Empty ||
                                Query.UseDefaultValuation ? true : false;
