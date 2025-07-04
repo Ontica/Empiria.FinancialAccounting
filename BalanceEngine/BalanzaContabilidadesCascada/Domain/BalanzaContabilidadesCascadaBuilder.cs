@@ -29,7 +29,7 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
       var trialBalanceHelper = new TrialBalanceHelper(_query);
       var helper = new BalanzaContabilidadesCascadaHelper(_query);
 
-      FixedList<TrialBalanceEntry> accountEntries = trialBalanceHelper.GetAccountEntries();
+      FixedList<TrialBalanceEntry> accountEntries = trialBalanceHelper.GetAccountEntriesV2();
 
       if (accountEntries.Count == 0) {
         return new TrialBalance(_query, new FixedList<ITrialBalanceEntry>());
