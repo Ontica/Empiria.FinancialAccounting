@@ -32,7 +32,7 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
       var trialBalanceHelper = new TrialBalanceHelper(_query);
       var saldosHelper = new SaldosPorAuxiliarHelper(_query);
 
-      FixedList<TrialBalanceEntry> accountEntries = trialBalanceHelper.GetAccountEntries_For_Saldos();
+      FixedList<TrialBalanceEntry> accountEntries = trialBalanceHelper.GetAccountEntriesV2();
 
       if (accountEntries.Count == 0) {
         return new TrialBalance(_query, new FixedList<ITrialBalanceEntry>());
@@ -65,7 +65,7 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
 
       _query.WithSubledgerAccount = true;
 
-      FixedList<TrialBalanceEntry> trialBalance = helper.GetAccountEntries();
+      FixedList<TrialBalanceEntry> trialBalance = helper.GetAccountEntriesV1();
 
       foreach (var entry in trialBalance) {
         entry.DebtorCreditor = entry.Account.DebtorCreditor;

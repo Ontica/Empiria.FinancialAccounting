@@ -121,7 +121,30 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
     }
 
 
-    internal FixedList<TrialBalanceEntry> GetAccountEntries() {
+    internal FixedList<TrialBalanceEntry> GetAccountEntriesV1() {
+
+      FixedList<TrialBalanceEntry> accountEntries = BalancesDataService.GetTrialBalanceEntries(_query);
+
+      if (accountEntries.Count == 0) {
+        return accountEntries;
+      }
+
+      if (_query.ValuateBalances || _query.InitialPeriod.UseDefaultValuation) {
+        ValuateAccountEntriesToExchangeRate(accountEntries);
+
+        if (_query.ConsolidateBalancesToTargetCurrency) {
+          accountEntries = ConsolidateToTargetCurrency(accountEntries, _query.InitialPeriod);
+        }
+      }
+
+      RoundDecimals(accountEntries);
+
+      return accountEntries;
+
+    }
+
+
+    internal FixedList<TrialBalanceEntry> GetAccountEntriesV2() {
 
       FixedList<TrialBalanceEntry> accountEntries = BalancesDataService.GetTrialBalanceEntries(_query);
 
@@ -142,34 +165,8 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
           accountEntries = ConsolidateToTargetCurrency(accountEntries, _query.InitialPeriod);
         }
       }
-
       RoundDecimals(accountEntries);
-
       return accountEntries;
-
-    }
-
-
-    internal FixedList<TrialBalanceEntry> GetAccountEntries_For_Saldos() {
-
-      FixedList<TrialBalanceEntry> accountEntries = BalancesDataService.GetTrialBalanceEntries(_query);
-
-      if (accountEntries.Count == 0) {
-        return accountEntries;
-      }
-
-      if (_query.ValuateBalances || _query.InitialPeriod.UseDefaultValuation) {
-        ValuateAccountEntriesToExchangeRateV2(accountEntries);
-
-        if (_query.ConsolidateBalancesToTargetCurrency) {
-          accountEntries = ConsolidateToTargetCurrency(accountEntries, _query.InitialPeriod);
-        }
-      }
-
-      RoundDecimals(accountEntries);
-
-      return accountEntries;
-
     }
 
 
