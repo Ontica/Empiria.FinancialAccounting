@@ -210,7 +210,13 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
 
       balanceHelper.SetSummaryToParentEntries(baseAccountEntries);
 
-      balanceHelper.ValuateAccountEntriesToExchangeRateV2(baseAccountEntries);
+      if (_query.InitialPeriod.ToDate.Year >= 2025) {
+
+        balanceHelper.ValuateAccountEntriesToExchangeRateV2(baseAccountEntries);
+      } else {
+
+        balanceHelper.ValuateAccountEntriesToExchangeRate(baseAccountEntries);
+      }
 
       balanceHelper.RoundDecimals(baseAccountEntries);
 

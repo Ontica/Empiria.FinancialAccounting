@@ -174,8 +174,15 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
       var trialBalanceHelper = new TrialBalanceHelper(_query);
 
       if (_query.ValuateBalances || _query.InitialPeriod.UseDefaultValuation) {
-        trialBalanceHelper.ValuateAccountEntriesToExchangeRateV2(accountEntries);
 
+        if (_query.InitialPeriod.ToDate.Year >= 2025) {
+
+          trialBalanceHelper.ValuateAccountEntriesToExchangeRateV2(accountEntries);
+        } else {
+
+          trialBalanceHelper.ValuateAccountEntriesToExchangeRate(accountEntries);
+        }
+        
         if (_query.ConsolidateBalancesToTargetCurrency) {
           accountEntries = ConsolidateAccountEntriesToTargetCurrency(accountEntries);
         }
