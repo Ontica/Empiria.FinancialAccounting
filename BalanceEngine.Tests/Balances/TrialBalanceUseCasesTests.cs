@@ -37,8 +37,8 @@ namespace Empiria.FinancialAccounting.Tests.BalanceEngine {
     public void Should_Build_Analitico_De_Cuentas() {
 
       TrialBalanceQuery query = GetDefaultTrialBalanceQuery();
-
       query.TrialBalanceType = TrialBalanceType.AnaliticoDeCuentas;
+
       TrialBalanceDto analitico = BalanceEngineProxy.BuildTrialBalance(query);
 
       Assert.NotNull(analitico);
@@ -97,10 +97,6 @@ namespace Empiria.FinancialAccounting.Tests.BalanceEngine {
 
       query.TrialBalanceType = TrialBalanceType.BalanzaConContabilidadesEnCascada;
       query.BalancesType = BalancesType.WithCurrentBalanceOrMovements;
-      query.UseDefaultValuation = false;
-      query.WithSubledgerAccount = false;
-      query.WithAverageBalance = false;
-      query.ShowCascadeBalances = true;
 
       TrialBalanceDto sut = BalanceEngineProxy.BuildTrialBalance(query);
 
@@ -134,6 +130,18 @@ namespace Empiria.FinancialAccounting.Tests.BalanceEngine {
 
       TrialBalanceQuery query = GetDefaultTrialBalanceQuery();
       query.TrialBalanceType = TrialBalanceType.Balanza;
+      TrialBalanceDto sut = BalanceEngineProxy.BuildTrialBalance(query);
+
+      Assert.NotNull(sut);
+      Assert.Equal(query, sut.Query);
+      Assert.NotEmpty(sut.Entries);
+    }
+
+
+    [Fact]
+    public void Should_Build_Saldos_Por_Auxiliar() {
+      TrialBalanceQuery query = GetDefaultTrialBalanceQuery();
+      query.TrialBalanceType = TrialBalanceType.SaldosPorAuxiliar;
 
       TrialBalanceDto sut = BalanceEngineProxy.BuildTrialBalance(query);
 
@@ -146,10 +154,7 @@ namespace Empiria.FinancialAccounting.Tests.BalanceEngine {
     [Fact]
     public void Should_Build_Saldos_Por_Cuenta() {
       TrialBalanceQuery query = GetDefaultTrialBalanceQuery();
-
       query.TrialBalanceType = TrialBalanceType.SaldosPorCuenta;
-      query.BalancesType = BalancesType.WithCurrentBalance;
-      query.ShowCascadeBalances = false;
 
       TrialBalanceDto sut = BalanceEngineProxy.BuildTrialBalance(query);
 
@@ -164,7 +169,20 @@ namespace Empiria.FinancialAccounting.Tests.BalanceEngine {
       TrialBalanceQuery query = GetDefaultTrialBalanceQuery();
 
       query.TrialBalanceType = TrialBalanceType.Balanza;
-      query.ShowCascadeBalances = true;
+
+      TrialBalanceDto sut = BalanceEngineProxy.BuildTrialBalance(query);
+
+      Assert.NotNull(sut);
+      Assert.Equal(query, sut.Query);
+      Assert.NotEmpty(sut.Entries);
+    }
+
+
+    [Fact]
+    public void Should_Build_Balanza_Col_Monedas() {
+      TrialBalanceQuery query = GetDefaultTrialBalanceQuery();
+      query.TrialBalanceType = TrialBalanceType.BalanzaEnColumnasPorMoneda;
+      query.BalancesType = BalancesType.WithCurrentBalanceOrMovements;
 
       TrialBalanceDto sut = BalanceEngineProxy.BuildTrialBalance(query);
 
@@ -204,11 +222,6 @@ namespace Empiria.FinancialAccounting.Tests.BalanceEngine {
     public void Should_Build_Balanza_Dolarizada() {
       TrialBalanceQuery query = GetDefaultTrialBalanceQuery();
       query.TrialBalanceType = TrialBalanceType.BalanzaDolarizada;
-      query.BalancesType = BalancesType.WithCurrentBalanceOrMovements;
-      query.UseDefaultValuation = true;
-      query.ShowCascadeBalances = false;
-      query.FromAccount = "1";
-      query.ToAccount = "1";
 
       TrialBalanceDto sut = BalanceEngineProxy.BuildTrialBalance(query);
 
@@ -224,11 +237,6 @@ namespace Empiria.FinancialAccounting.Tests.BalanceEngine {
 
       query.TrialBalanceType = TrialBalanceType.ValorizacionEstimacionPreventiva;
       query.BalancesType = BalancesType.WithCurrentBalanceOrMovements;
-      query.ShowCascadeBalances = false;
-      query.UseDefaultValuation = true;
-      query.WithAverageBalance = false;
-      query.FromAccount = "3.02.01";
-      query.ToAccount = "3.02.01";
 
       TrialBalanceDto sut = BalanceEngineProxy.BuildTrialBalance(query);
 
@@ -246,8 +254,7 @@ namespace Empiria.FinancialAccounting.Tests.BalanceEngine {
       return new TrialBalanceQuery() {
         AccountsChartUID = TestingConstants.IFRS_ACCOUNTS_CHART.UID,
         BalancesType = BalancesType.WithCurrentBalanceOrMovements,
-        ShowCascadeBalances = false,
-        ConsolidateBalancesToTargetCurrency = false,
+        ShowCascadeBalances = true,
         UseDefaultValuation = true,
         InitialPeriod = new BalancesPeriod {
           FromDate = TestingConstants.FROM_DATE,

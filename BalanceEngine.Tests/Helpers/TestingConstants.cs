@@ -16,9 +16,9 @@ namespace Empiria.FinancialAccounting.Tests {
 
     static internal readonly AccountsChart IFRS_ACCOUNTS_CHART = AccountsChart.IFRS;
 
-    static internal readonly DateTime FROM_DATE = new DateTime(2025, 01, 01);
+    static internal readonly DateTime FROM_DATE = new DateTime(2025, 05, 01);
 
-    static internal readonly DateTime TO_DATE = new DateTime(2025, 01, 31);
+    static internal readonly DateTime TO_DATE = new DateTime(2025, 05, 25);
 
     static public bool INVOKE_USE_CASES_THROUGH_THE_WEB_API = false;
 
