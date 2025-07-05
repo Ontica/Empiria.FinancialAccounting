@@ -552,6 +552,13 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
 
       var exchangeRateFor = GetExchangeRateTypeForCurrencies(_query.InitialPeriod);
 
+      if (_query.TrialBalanceType == TrialBalanceType.AnaliticoDeCuentas) {
+
+        _query.InitialPeriod.ExchangeRateTypeUID = exchangeRateFor.ExchangeRateTypeUID;
+        _query.InitialPeriod.ValuateToCurrrencyUID = exchangeRateFor.ValuateToCurrrencyUID;
+        _query.InitialPeriod.ExchangeRateDate = exchangeRateFor.ExchangeRateDate;
+      }
+      
       foreach (var entry in entries.Where(a => a.Currency.Distinct(Currency.MXN))) {
 
         var exchangeRate = exchangeRateFor.ExchangeRateList.Find(
