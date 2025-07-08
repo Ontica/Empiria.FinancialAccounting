@@ -24,7 +24,7 @@ namespace Empiria.FinancialAccounting.WebApi {
 
     #region Web Api
 
-    [HttpGet, AllowAnonymous]
+    [HttpGet]   // ToDo: AllowAnonymous Removed
     [Route("v1/financial-accounting/exchange-rates")]
     public CollectionModel GetAllExchangeRates([FromUri] DateTime date) {
 

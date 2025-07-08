@@ -59,7 +59,7 @@ namespace Empiria.FinancialAccounting.WebApi {
     }
 
 
-    [HttpPost, AllowAnonymous]
+    [HttpPost]   // ToDo: AllowAnonymous Removed
     [Route("v2/financial-accounting/subledger-accounts/search")]
     public CollectionModel SearchSubledgerAccounts([FromBody] SubledgerAccountQuery query) {
 

@@ -171,8 +171,7 @@ namespace Empiria.FinancialAccounting.WebApi.BalanceEngine {
     }
 
 
-    [HttpPost]
-    [AllowAnonymous]
+    [HttpPost]  // ToDo: AllowAnonymous Removed
     [Route("v2/financial-accounting/balance-engine/trial-balance")]
     public SingleObjectModel GetTrialBalance([FromBody] TrialBalanceQuery query) {
 
