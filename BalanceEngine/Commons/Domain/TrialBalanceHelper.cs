@@ -109,7 +109,7 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
           SubledgerAccountIdParent = entry.SubledgerAccountIdParent,
           LastChangeDate = entry.LastChangeDate
         };
-        
+
         summaryEntry.Sum(entry);
 
         summaryEntries.Insert(hash, summaryEntry);
@@ -160,7 +160,7 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
 
           ValuateAccountEntriesToExchangeRate(accountEntries);
         }
-        
+
         if (_query.ConsolidateBalancesToTargetCurrency) {
           accountEntries = ConsolidateToTargetCurrency(accountEntries, _query.InitialPeriod);
         }
@@ -370,6 +370,8 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
       Assertion.Require(exchangeRateFor.ExchangeRateList.Count > 0,
                         $"{exchangeRateFor.InvalidExchangeRateTypeMsg()}");
 
+      UpdateExchangeRateDataToQuery(exchangeRateFor);
+
       return exchangeRateFor;
     }
 
@@ -493,7 +495,7 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
         currentParent = entry.Account;
 
       } else if (_query.DoNotReturnSubledgerAccounts && entry.Account.HasParent) {
-        
+
         if (entry.IsParentPostingEntry) {
 
           currentParent = entry.Account;
@@ -553,13 +555,6 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
 
       var exchangeRateFor = GetExchangeRateTypeForCurrencies(_query.InitialPeriod);
 
-      if (_query.TrialBalanceType == TrialBalanceType.AnaliticoDeCuentas) {
-
-        _query.InitialPeriod.ExchangeRateTypeUID = exchangeRateFor.ExchangeRateTypeUID;
-        _query.InitialPeriod.ValuateToCurrrencyUID = exchangeRateFor.ValuateToCurrrencyUID;
-        _query.InitialPeriod.ExchangeRateDate = exchangeRateFor.ExchangeRateDate;
-      }
-      
       foreach (var entry in entries.Where(a => a.Currency.Distinct(Currency.MXN))) {
 
         var exchangeRate = exchangeRateFor.ExchangeRateList.Find(
@@ -794,6 +789,13 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
       }
     }
 
+
+    private void UpdateExchangeRateDataToQuery(ExchangeRateForCurrencies exchangeRateFor) {
+
+      _query.InitialPeriod.ExchangeRateTypeUID = exchangeRateFor.ExchangeRateTypeUID;
+      _query.InitialPeriod.ValuateToCurrrencyUID = exchangeRateFor.ValuateToCurrrencyUID;
+      _query.InitialPeriod.ExchangeRateDate = exchangeRateFor.ExchangeRateDate;
+    }
 
     #endregion Private methods
 

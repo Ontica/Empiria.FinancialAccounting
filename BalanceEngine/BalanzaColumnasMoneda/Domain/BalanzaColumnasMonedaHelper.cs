@@ -147,7 +147,7 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
 
       var balanceHelper = new TrialBalanceHelper(Query);
       var exchangeRateFor = balanceHelper.GetExchangeRateTypeForCurrencies(Query.InitialPeriod);
-
+      
       foreach (var entry in entries.Where(a => a.Currency.Distinct(Currency.MXN))) {
 
         var exchangeRate = exchangeRateFor.ExchangeRateList.Find(
