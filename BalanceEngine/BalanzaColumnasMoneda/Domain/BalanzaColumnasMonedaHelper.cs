@@ -96,9 +96,11 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
 
     internal void GetTotalValorizedByAccount(
       List<BalanzaColumnasMonedaEntry> balanceByCurrency) {
+      
+      bool valorizedBanalce = Query.ValuateBalances || Query.UseDefaultValuation;
 
       foreach (var entry in balanceByCurrency) {
-        entry.SumToTotalValorized();
+        entry.SumToTotalValorized(valorizedBanalce);
       }
     }
 

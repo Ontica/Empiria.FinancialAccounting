@@ -367,7 +367,8 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
                                         $"los datos especificados.");
       }
 
-      Assertion.Require(exchangeRateFor.ExchangeRateList.Count > 0, $"{exchangeRateFor.InvalidExchangeRateTypeMsg()}");
+      Assertion.Require(exchangeRateFor.ExchangeRateList.Count > 0,
+                        $"{exchangeRateFor.InvalidExchangeRateTypeMsg()}");
 
       return exchangeRateFor;
     }
