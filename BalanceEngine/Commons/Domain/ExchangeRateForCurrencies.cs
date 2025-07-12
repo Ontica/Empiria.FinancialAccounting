@@ -72,7 +72,7 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
     }
 
 
-    internal ExchangeRateForCurrencies GetExchangeRateByQuery(BalancesPeriod period) {
+    internal ExchangeRateForCurrencies GetExchangeRateInPeriod(BalancesPeriod period) {
 
       this.ExchangeRateDate = period.ExchangeRateDate;
       this.ExchangeRateTypeUID = period.ExchangeRateTypeUID;
