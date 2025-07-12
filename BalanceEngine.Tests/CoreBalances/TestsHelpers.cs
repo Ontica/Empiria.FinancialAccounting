@@ -95,6 +95,32 @@ namespace Empiria.Tests.FinancialAccounting.BalanceEngine {
     }
 
 
+    static internal FixedList<BalanzaComparativaEntryDto> GetBalanzaComparativa(DateTime fromDate,
+                                                                              DateTime toDate,
+                                                                              DateTime fromDate2,
+                                                                              DateTime toDate2,
+                                                                              BalancesType balancesType) {
+      var query = new TrialBalanceQuery() {
+        TrialBalanceType = TrialBalanceType.BalanzaValorizadaComparativa,
+        AccountsChartUID = TestingConstants.IFRS_ACCOUNTS_CHART.UID,
+        BalancesType = balancesType,
+        ShowCascadeBalances = false,
+        UseDefaultValuation = true,
+        WithSubledgerAccount = true,
+        InitialPeriod = new BalancesPeriod {
+          FromDate = fromDate,
+          ToDate = toDate
+        },
+        FinalPeriod = new BalancesPeriod {
+          FromDate = fromDate2,
+          ToDate = toDate2
+        }
+      };
+
+      return ExecuteTrialBalance<BalanzaComparativaEntryDto>(query);
+    }
+
+
     static internal FixedList<BalanzaTradicionalEntryDto> GetBalanzaConsolidada(DateTime fromDate,
                                                                                 DateTime toDate,
                                                                                 BalancesType balancesType) {
@@ -180,6 +206,7 @@ namespace Empiria.Tests.FinancialAccounting.BalanceEngine {
         TrialBalanceType = TrialBalanceType.Balanza,
         BalancesType = BalancesType.AllAccounts,
         ShowCascadeBalances = false,
+        UseDefaultValuation = false,
         InitialPeriod = new BalancesPeriod {
           FromDate = fromDate,
           ToDate = toDate,
@@ -206,7 +233,7 @@ namespace Empiria.Tests.FinancialAccounting.BalanceEngine {
       return new CoreBalanceEntries(query, exchangeRateType);
     }
 
-    
+
     static internal CoreBalanceEntries GetCoreBalanceEntriesInCascade(DateTime fromDate, DateTime toDate,
                                                             ExchangeRateType exchangeRateType) {
       var query = new TrialBalanceQuery() {

@@ -73,6 +73,7 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
 
     internal FixedList<TrialBalanceEntry> GetExchangeRateByPeriod(FixedList<TrialBalanceEntry> entries,
                                                                 BalancesPeriod period) {
+      //TODO CAMBIAR EXCHANGE RATE A NUEVA REGLA DE VALORIZACION
       if (period.UseDefaultValuation) {
         period.ExchangeRateTypeUID = ExchangeRateType.ValorizacionBanxico.UID;
         period.ValuateToCurrrencyUID = "01";
