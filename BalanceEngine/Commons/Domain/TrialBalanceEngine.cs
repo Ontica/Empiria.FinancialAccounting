@@ -179,9 +179,7 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
           return new TrialBalance(this.Query, balanzaDifDiaria);
 
         case TrialBalanceType.BalanzaValorizadaComparativa:
-          Assertion.Require(Query.BalancesType != BalancesType.AllAccounts,
-          "La opción 'Todas las cuentas', está temporalmente fuera de servicio para la balanza valorizada comparativa.");
-
+          
           var comparativaBuilder = new BalanzaComparativaBuilder(this.Query);
           var balanza = comparativaBuilder.Build();
           FixedList<ITrialBalanceEntry> balanzaComparativa = balanza.Select(x => (ITrialBalanceEntry) x)
