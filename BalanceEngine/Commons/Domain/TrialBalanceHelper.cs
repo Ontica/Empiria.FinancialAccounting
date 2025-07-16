@@ -327,27 +327,31 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
       var returnedEntries = new List<TrialBalanceEntry>(accountEntries);
 
       foreach (var entry in accountEntries) {
+
         StandardAccount currentParent = entry.Account.GetParent();
 
-        // Search for a parent account entry, for cases when both the account
-        // and also his parent have entries for the given balance period.
-        // WasConvertedToSummary marks an account that was converted from
-        // posting to summary in the given period.
-        var parentAccountEntry = returnedEntries.FirstOrDefault(a => a.Account.Number == currentParent.Number &&
+        var parentAccountEntry = new TrialBalanceEntry();
+
+        if (!_query.WithSubledgerAccount) {
+
+          parentAccountEntry = returnedEntries.FirstOrDefault(a => a.Account.Number == currentParent.Number &&
                                                                 a.Currency.Code == entry.Currency.Code &&
                                                                 a.Ledger.Number == entry.Ledger.Number &&
                                                                 a.Sector.Code == entry.Sector.Code &&
                                                                 a.Account.DebtorCreditor == entry.Account.DebtorCreditor);
+        } else if (_query.WithSubledgerAccount) {
+
+          parentAccountEntry = returnedEntries.FirstOrDefault(a => a.Account.Number == currentParent.Number &&
+                                                                  a.SubledgerAccountId == entry.SubledgerAccountId &&
+                                                                  a.Currency.Code == entry.Currency.Code &&
+                                                                  a.Ledger.Number == entry.Ledger.Number &&
+                                                                  a.Sector.Code == entry.Sector.Code &&
+                                                                  a.Account.DebtorCreditor == entry.Account.DebtorCreditor);
+        }
         if (parentAccountEntry != null) {
-
-          if (!_query.WithSubledgerAccount ||
-              (_query.WithSubledgerAccount &&
-               parentAccountEntry.SubledgerAccountId == entry.SubledgerAccountId)) {
-
-            entry.HasParentPostingEntry = true;
-            parentAccountEntry.IsParentPostingEntry = true;
-            parentAccountEntry.Sum(entry);
-          }
+          entry.HasParentPostingEntry = true;
+          parentAccountEntry.IsParentPostingEntry = true;
+          parentAccountEntry.Sum(entry);
         }
       }
     }
