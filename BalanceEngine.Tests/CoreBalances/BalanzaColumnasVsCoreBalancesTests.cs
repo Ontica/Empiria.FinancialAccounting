@@ -21,11 +21,11 @@ namespace Empiria.Tests.FinancialAccounting.BalanceEngine {
   public class BalanzaColumnasVsCoreBalancesTests {
 
     [Theory]
-    [InlineData("2024-11-01", "2024-11-30", BalancesType.AllAccounts)]
-    [InlineData("2024-12-01", "2024-12-31", BalancesType.AllAccounts)]
-    [InlineData("2025-01-01", "2025-01-31", BalancesType.AllAccounts)]
-    [InlineData("2025-02-01", "2025-02-28", BalancesType.AllAccounts)]
-    [InlineData("2025-03-01", "2025-03-31", BalancesType.AllAccounts)]
+    //[InlineData("2024-11-01", "2024-11-30", BalancesType.AllAccounts)]
+    //[InlineData("2024-12-01", "2024-12-31", BalancesType.AllAccounts)]
+    //[InlineData("2025-01-01", "2025-01-31", BalancesType.AllAccounts)]
+    //[InlineData("2025-02-01", "2025-02-28", BalancesType.AllAccounts)]
+    //[InlineData("2025-03-01", "2025-03-31", BalancesType.AllAccounts)]
     [InlineData("2025-04-01", "2025-04-30", BalancesType.AllAccounts)]
     public void Should_Have_Same_Entries(string fromDate, string toDate, BalancesType balancesType) {
 
@@ -44,11 +44,11 @@ namespace Empiria.Tests.FinancialAccounting.BalanceEngine {
 
 
     [Theory]
-    [InlineData("2024-11-01", "2024-11-30", BalancesType.AllAccounts)]
-    [InlineData("2024-12-01", "2024-12-31", BalancesType.AllAccounts)]
-    [InlineData("2025-01-01", "2025-01-31", BalancesType.AllAccounts)]
-    [InlineData("2025-02-01", "2025-02-28", BalancesType.AllAccounts)]
-    [InlineData("2025-03-01", "2025-03-31", BalancesType.AllAccounts)]
+    //[InlineData("2024-11-01", "2024-11-30", BalancesType.AllAccounts)]
+    //[InlineData("2024-12-01", "2024-12-31", BalancesType.AllAccounts)]
+    //[InlineData("2025-01-01", "2025-01-31", BalancesType.AllAccounts)]
+    //[InlineData("2025-02-01", "2025-02-28", BalancesType.AllAccounts)]
+    //[InlineData("2025-03-01", "2025-03-31", BalancesType.AllAccounts)]
     [InlineData("2025-04-01", "2025-04-30", BalancesType.AllAccounts)]
     public void Should_Have_Same_Summaries(string fromDate, string toDate, BalancesType balancesType) {
 

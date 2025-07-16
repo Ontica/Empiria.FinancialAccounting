@@ -48,7 +48,7 @@ namespace Empiria.Tests.FinancialAccounting.BalanceEngine {
 
       foreach (var sut in saldosAuxiliar) {
 
-        var filtered = coreBalances.GetBalancesByAccountAndSubledgerAndSector(
+        var filtered = coreBalances.GetBalancesByAccountNumberAndSubledgerAccountNumberAndSector(
                                       sut.AccountNumber, sut.SubledgerAccountNumber, sut.SectorCode)
                                    .FindAll(x => x.Account.DebtorCreditor.ToString() == sut.DebtorCreditor &&
                                                  x.Ledger.Number == sut.LedgerNumber &&

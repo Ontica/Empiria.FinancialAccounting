@@ -52,6 +52,7 @@ namespace Empiria.Tests.FinancialAccounting.BalanceEngine {
                                                                     balancesType);
 
       RunTest(coreBalances, coreBalances2, comparativa.FindAll(x=>x.SubledgerAccountId == 0));
+
       RunTestForSubledgerAccount(coreBalances, coreBalances2, comparativa.FindAll(x => x.SubledgerAccountId > 0));
 
       Assert.True(comparativa.Count > 100);
@@ -63,11 +64,11 @@ namespace Empiria.Tests.FinancialAccounting.BalanceEngine {
 
       foreach (var sut in comparativa) {
 
-        var filtered = coreBalances.GetBalancesByAccountAndSector(sut.AccountNumber, sut.SectorCode)
+        var filtered = coreBalances.GetBalancesByAccountNumberAndSector(sut.AccountNumber, sut.SectorCode)
                                    .FindAll(x => x.Account.DebtorCreditor == sut.DebtorCreditor &&
                                                  x.SubledgerAccount.Id <= 0);
 
-        var filtered2 = coreBalances2.GetBalancesByAccountAndSector(sut.AccountNumber, sut.SectorCode)
+        var filtered2 = coreBalances2.GetBalancesByAccountNumberAndSector(sut.AccountNumber, sut.SectorCode)
                                      .FindAll(x => x.Account.DebtorCreditor == sut.DebtorCreditor &&
                                                  x.SubledgerAccount.Id <= 0);
 
@@ -95,12 +96,12 @@ namespace Empiria.Tests.FinancialAccounting.BalanceEngine {
 
       foreach (var sut in comparativa) {
 
-        var filtered = coreBalances.GetBalancesByAccountIdAndSubledgerAccountIdAndSector(
-                                      sut.StandardAccountId, sut.SubledgerAccountId, sut.SectorCode)
+        var filtered = coreBalances.GetBalancesByAccountNumberAndSubledgerAccountIdAndSector(
+                                      sut.AccountNumber, sut.SubledgerAccountId, sut.SectorCode)
                                    .FindAll(x => x.Account.DebtorCreditor == sut.DebtorCreditor);
 
-        var filtered2 = coreBalances2.GetBalancesByAccountIdAndSubledgerAccountIdAndSector(
-                                      sut.StandardAccountId, sut.SubledgerAccountId, sut.SectorCode)
+        var filtered2 = coreBalances2.GetBalancesByAccountNumberAndSubledgerAccountIdAndSector(
+                                      sut.AccountNumber, sut.SubledgerAccountId, sut.SectorCode)
                                    .FindAll(x => x.Account.DebtorCreditor == sut.DebtorCreditor);
 
         var totalFirstPeriod = filtered.FindAll(x => x.Currency.Code.Equals(sut.CurrencyCode))

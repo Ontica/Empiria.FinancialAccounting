@@ -51,7 +51,7 @@ namespace Empiria.Tests.FinancialAccounting.BalanceEngine {
 
       foreach (var sut in saldosCuenta) {
 
-        var filtered = coreBalances.GetBalancesByAccountAndSector(sut.AccountNumber, sut.SectorCode)
+        var filtered = coreBalances.GetBalancesByAccountNumberAndSector(sut.AccountNumber, sut.SectorCode)
                                    .FindAll(x => x.Account.DebtorCreditor.ToString() == sut.DebtorCreditor);
 
         var totalCurrentBalance = filtered.FindAll(x => x.Currency.Code == sut.CurrencyCode)
@@ -102,7 +102,7 @@ namespace Empiria.Tests.FinancialAccounting.BalanceEngine {
 
       foreach (var sut in _saldosCuenta) {
 
-        var filtered = coreBalances.GetBalancesByAccountAndSubledgerAndSector(sut.AccountNumberForBalances,
+        var filtered = coreBalances.GetBalancesByAccountNumberAndSubledgerAccountNumberAndSector(sut.AccountNumberForBalances,
                                                                               sut.SubledgerAccountNumber,
                                                                               sut.SectorCode)
                                    .FindAll(x => x.Currency.Code == sut.CurrencyCode);

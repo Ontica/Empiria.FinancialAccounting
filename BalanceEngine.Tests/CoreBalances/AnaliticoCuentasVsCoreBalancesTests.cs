@@ -92,7 +92,7 @@ namespace Empiria.Tests.FinancialAccounting.BalanceEngine {
 
       foreach (var sut in analitico) {
 
-        var filtered = coreBalances.GetBalancesByAccountAndSector(sut.AccountNumber, sut.SectorCode)
+        var filtered = coreBalances.GetBalancesByAccountNumberAndSector(sut.AccountNumber, sut.SectorCode)
                                    .FindAll(x => x.Account.DebtorCreditor == sut.DebtorCreditor);
 
         var totalMN = filtered.FindAll(x => x.Currency.Equals(Currency.MXN) ||

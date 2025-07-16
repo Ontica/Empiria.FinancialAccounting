@@ -67,7 +67,7 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
     }
 
 
-    internal FixedList<CoreBalanceEntry> GetBalancesByAccountAndSector(string accountNumber,
+    internal FixedList<CoreBalanceEntry> GetBalancesByAccountNumberAndSector(string accountNumber,
                                                                        string sectorCode) {
       if (sectorCode == "00") {
         return Entries.FindAll(x => x.Account.Number.StartsWith(accountNumber))
@@ -81,9 +81,8 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
     }
 
 
-    internal FixedList<CoreBalanceEntry> GetBalancesByAccountAndSubledgerAndSector(string accountNumber,
-                                                                                   string subledgerAccount,
-                                                                                   string sectorCode) {
+    internal FixedList<CoreBalanceEntry> GetBalancesByAccountNumberAndSubledgerAccountNumberAndSector(
+                                          string accountNumber, string subledgerAccount, string sectorCode) {
       if (sectorCode == "00") {
         return Entries.FindAll(x => x.Account.Number.StartsWith(accountNumber) &&
                                     x.SubledgerAccount.Number == subledgerAccount)
@@ -98,9 +97,8 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
     }
 
 
-    internal FixedList<CoreBalanceEntry> GetBalancesByAccountIdAndSubledgerAndSector(int accountId,
-                                                                                   string subledgerAccount,
-                                                                                   string sectorCode) {
+    internal FixedList<CoreBalanceEntry> GetBalancesByAccountIdAndSubledgerAccountNumberAndSector(
+                                          int accountId, string subledgerAccount, string sectorCode) {
       if (sectorCode == "00") {
         return Entries.FindAll(x => x.Account.Id.Equals(accountId) &&
                                     x.SubledgerAccount.Number == subledgerAccount)
@@ -124,6 +122,22 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
 
       } else {
         return Entries.FindAll(x => x.Account.Id.Equals(accountId) &&
+                                    x.SubledgerAccount.Id == subledgerAccountId &&
+                                    x.Sector.Code == sectorCode)
+                      .ToFixedList();
+      }
+    }
+
+
+    internal FixedList<CoreBalanceEntry> GetBalancesByAccountNumberAndSubledgerAccountIdAndSector(
+                                          string accountNumber, int subledgerAccountId, string sectorCode) {
+      if (sectorCode == "00") {
+        return Entries.FindAll(x => x.Account.Number.StartsWith(accountNumber) &&
+                                    x.SubledgerAccount.Id == subledgerAccountId)
+                       .ToFixedList();
+
+      } else {
+        return Entries.FindAll(x => x.Account.Number.StartsWith(accountNumber) &&
                                     x.SubledgerAccount.Id == subledgerAccountId &&
                                     x.Sector.Code == sectorCode)
                       .ToFixedList();

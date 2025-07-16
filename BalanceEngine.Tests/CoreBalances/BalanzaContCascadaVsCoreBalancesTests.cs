@@ -50,7 +50,7 @@ namespace Empiria.Tests.FinancialAccounting.BalanceEngine {
 
       foreach (var sut in balanzaCascada) {
 
-        var filtered = coreBalances.GetBalancesByAccountAndSector(sut.AccountNumber, sut.SectorCode)
+        var filtered = coreBalances.GetBalancesByAccountNumberAndSector(sut.AccountNumber, sut.SectorCode)
                                    .FindAll(x => x.Account.DebtorCreditor.ToString() == sut.DebtorCreditor);
 
         var totalInitialBalance = filtered.FindAll(x => x.Currency.Code == sut.CurrencyCode &&
