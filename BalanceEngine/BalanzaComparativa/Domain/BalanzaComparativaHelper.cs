@@ -56,8 +56,9 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
 
       var trialBalanceHelper = new TrialBalanceHelper(_query);
 
-      if ((_query.ValuateBalances || _query.InitialPeriod.UseDefaultValuation) ) {
-        accountEntries = GetExchangeRateByPeriod(accountEntries, _query.InitialPeriod);
+      if ((_query.ValuateBalances || _query.InitialPeriod.UseDefaultValuation)) {
+
+        ValuateEntriesToExchangeRate(accountEntries, _query.InitialPeriod);
 
         if (_query.ConsolidateBalancesToTargetCurrency) {
           accountEntries = trialBalanceHelper.ConsolidateToTargetCurrency(
@@ -73,7 +74,7 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
 
     internal FixedList<TrialBalanceEntry> GetExchangeRateByPeriod(FixedList<TrialBalanceEntry> entries,
                                                                 BalancesPeriod period) {
-      //TODO CAMBIAR EXCHANGE RATE A NUEVA REGLA DE VALORIZACION
+
       if (period.UseDefaultValuation) {
         period.ExchangeRateTypeUID = ExchangeRateType.ValorizacionBanxico.UID;
         period.ValuateToCurrrencyUID = "01";
@@ -98,6 +99,28 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
       return entries;
     }
 
+
+    internal void GetExchangeRateByPeriodV2(FixedList<TrialBalanceEntry> entries,
+                                                                BalancesPeriod period) {
+
+      var trialBalanceHelper = new TrialBalanceHelper(_query);
+      var exchangeRateFor = trialBalanceHelper.GetExchangeRateTypeForCurrencies(period);
+
+      foreach (var entry in entries.Where(a => a.Currency.Distinct(Currency.MXN))) {
+
+        var exchangeRate = exchangeRateFor.ExchangeRateList.Find(
+                            a => a.ToCurrency.Equals(entry.Currency) &&
+                                 a.FromCurrency.Code == exchangeRateFor.ValuateToCurrrencyUID);
+
+        if (period.IsSecondPeriod) {
+          entry.SecondExchangeRate = exchangeRate.Value;
+        } else {
+          entry.ExchangeRate = exchangeRate.Value;
+        }
+      }
+    }
+
+
     internal FixedList<BalanzaComparativaEntry> MergePeriodsIntoComparativeBalance(
                                       FixedList<TrialBalanceEntry> entriesWithExchangeRate) {
       if (entriesWithExchangeRate.Count == 0) {
@@ -119,6 +142,18 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
       return comparativeEntries.ToFixedList();
     }
 
+
+    internal void ValuateEntriesToExchangeRate(FixedList<TrialBalanceEntry> accountEntries,
+                                               BalancesPeriod period) {
+      if (period.ToDate.Year >= 2025) {
+
+        GetExchangeRateByPeriodV2(accountEntries, period);
+
+      } else {
+
+        GetExchangeRateByPeriod(accountEntries, period);
+      }
+    }
 
     #region Private methods
 
@@ -171,7 +206,6 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
                             .ThenBy(a => a.SubledgerAccountNumber)
                             .ToList();
     }
-
 
     #endregion
 

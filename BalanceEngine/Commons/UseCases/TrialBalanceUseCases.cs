@@ -7,13 +7,10 @@
 *  Summary  : Use cases used to build trial balances.                                                        *
 *                                                                                                            *
 ************************* Copyright(c) La Vía Óntica SC, Ontica LLC and contributors. All rights reserved. **/
-using System;
 using System.Threading.Tasks;
-
-using Empiria.Services;
-
 using Empiria.FinancialAccounting.BalanceEngine.Adapters;
 using Empiria.FinancialAccounting.BalanceEngine.Data;
+using Empiria.Services;
 
 namespace Empiria.FinancialAccounting.BalanceEngine.UseCases {
 

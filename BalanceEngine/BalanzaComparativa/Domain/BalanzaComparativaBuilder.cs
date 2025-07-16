@@ -50,18 +50,16 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
 
       balanceHelper.SetSummaryToParentEntriesV2(accountEntries);
 
-      FixedList<TrialBalanceEntry> entriesWithExchangeRate =
-                              helper.GetExchangeRateByPeriod(accountEntries, _query.FinalPeriod);
+      helper.ValuateEntriesToExchangeRate(accountEntries, _query.FinalPeriod);
 
-      balanceHelper.RoundDecimals(entriesWithExchangeRate);
+      balanceHelper.RoundDecimals(accountEntries);
 
-      helper.GetAverageBalance(entriesWithExchangeRate);
+      helper.GetAverageBalance(accountEntries);
 
       FixedList<BalanzaComparativaEntry> comparativeBalance =
-                                    helper.MergePeriodsIntoComparativeBalance(entriesWithExchangeRate);
+                                    helper.MergePeriodsIntoComparativeBalance(accountEntries);
 
       return comparativeBalance;
-
     }
 
   }  // class BalanzaComparativa
