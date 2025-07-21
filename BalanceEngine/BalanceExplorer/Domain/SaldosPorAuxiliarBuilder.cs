@@ -35,7 +35,7 @@ namespace Empiria.FinancialAccounting.BalanceEngine.BalanceExplorer {
         return new BalanceExplorerResult(_query, new FixedList<BalanceExplorerEntry>());
       }
 
-      balanceEntries = helper.GetSummaryToParentEntries(balanceEntries);
+      helper.GetSummaryToParentEntriesV2(balanceEntries);
 
       FixedList<BalanceExplorerEntry> subledgerAccounts = helper.GetSubledgerAccounts(balanceEntries);
 

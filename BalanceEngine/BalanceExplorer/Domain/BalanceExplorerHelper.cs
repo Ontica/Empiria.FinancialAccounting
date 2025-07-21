@@ -130,6 +130,28 @@ namespace Empiria.FinancialAccounting.BalanceEngine.BalanceExplorer {
     }
 
 
+    internal void GetSummaryToParentEntriesV2(FixedList<BalanceExplorerEntry> balanceEntries) {
+      
+      var returnedEntries = new List<BalanceExplorerEntry>(balanceEntries);
+
+      foreach (var entry in balanceEntries) {
+        StandardAccount currentParent = entry.Account.GetParent();
+
+        var entryParent = returnedEntries.Find(a => a.Account.Number == currentParent.Number &&
+                                                    a.SubledgerAccountId == entry.SubledgerAccountId &&
+                                                    a.Currency.Equals(entry.Currency) &&
+                                                    a.Ledger.Number == entry.Ledger.Number &&
+                                                    a.Sector.Code == entry.Sector.Code &&
+                                                    a.Account.DebtorCreditor == entry.Account.DebtorCreditor);
+        if (entryParent != null) {
+          entry.HasParentPostingEntry = true;
+          entryParent.IsParentPostingEntry = true;
+          entryParent.Sum(entry);
+        }
+      }
+    }
+
+
     internal List<BalanceExplorerEntry> OrderBySubledgerAccounts(
                                     FixedList<BalanceExplorerEntry> subledgerAccounts) {
 
