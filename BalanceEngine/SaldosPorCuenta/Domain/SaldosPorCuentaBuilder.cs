@@ -38,7 +38,7 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
       List<TrialBalanceEntry> parentAccounts = helper.GetCalculatedParentAccounts(accountEntries);
 
 
-      trialBalanceHelper.SetSummaryToParentEntries(accountEntries);
+      trialBalanceHelper.SetSummaryToParentEntriesV2(accountEntries);
 
       List<TrialBalanceEntry> accountEntriesMapped = trialBalanceHelper.GetEntriesMappedForSectorization(
                                               accountEntries.ToList());

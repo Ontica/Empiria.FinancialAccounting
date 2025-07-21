@@ -59,7 +59,7 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
 
       balanceHelper.RoundDecimals(accountEntries);
 
-      balanceHelper.SetSummaryToParentEntries(accountEntries);
+      balanceHelper.SetSummaryToParentEntriesV2(accountEntries);
 
       var parentAccountsEntries = balanceHelper.GetCalculatedParentAccounts(accountEntries.ToFixedList());
 
