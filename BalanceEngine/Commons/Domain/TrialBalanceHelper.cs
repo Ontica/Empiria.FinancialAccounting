@@ -307,7 +307,7 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
         // and also his parent have entries for the given balance period.
         // WasConvertedToSummary marks an account that was converted from
         // posting to summary in the given period.
-        var parentAccountEntry = returnedEntries.FirstOrDefault(a => a.Account.Number == currentParent.Number &&
+        var parentAccountEntry = returnedEntries.First(a => a.Account.Number == currentParent.Number &&
                                                                 a.Currency.Code == entry.Currency.Code &&
                                                                 a.Ledger.Number == entry.Ledger.Number &&
                                                                 a.Sector.Code == entry.Sector.Code &&
@@ -330,24 +330,12 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
 
         StandardAccount currentParent = entry.Account.GetParent();
 
-        var parentAccountEntry = new TrialBalanceEntry();
-
-        if (!_query.WithSubledgerAccount) {
-
-          parentAccountEntry = returnedEntries.FirstOrDefault(a => a.Account.Number == currentParent.Number &&
-                                                                a.Currency.Code == entry.Currency.Code &&
-                                                                a.Ledger.Number == entry.Ledger.Number &&
-                                                                a.Sector.Code == entry.Sector.Code &&
-                                                                a.Account.DebtorCreditor == entry.Account.DebtorCreditor);
-        } else if (_query.WithSubledgerAccount) {
-
-          parentAccountEntry = returnedEntries.FirstOrDefault(a => a.Account.Number == currentParent.Number &&
+        var parentAccountEntry = returnedEntries.FirstOrDefault(a => a.Account.Number == currentParent.Number &&
                                                                   a.SubledgerAccountId == entry.SubledgerAccountId &&
                                                                   a.Currency.Code == entry.Currency.Code &&
                                                                   a.Ledger.Number == entry.Ledger.Number &&
                                                                   a.Sector.Code == entry.Sector.Code &&
                                                                   a.Account.DebtorCreditor == entry.Account.DebtorCreditor);
-        }
         if (parentAccountEntry != null) {
           entry.HasParentPostingEntry = true;
           parentAccountEntry.IsParentPostingEntry = true;
