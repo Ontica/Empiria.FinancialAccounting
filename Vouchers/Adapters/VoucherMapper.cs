@@ -7,7 +7,7 @@
 *  Summary  : Mapping methods for accounting vouchers.                                                       *
 *                                                                                                            *
 ************************* Copyright(c) La Vía Óntica SC, Ontica LLC and contributors. All rights reserved. **/
-using System;
+
 using System.Collections.Generic;
 
 using Empiria.FinancialAccounting.Adapters;
@@ -79,7 +79,7 @@ namespace Empiria.FinancialAccounting.Vouchers.Adapters {
          ExchangeRate = entry.ExchangeRate,
          LedgerAccountId = entry.LedgerAccount.Id,
          Protected = entry.Protected,
-         ReferenceEntryId = entry.ReferenceEntryId,
+         CashFlowAccountId = entry.CashFlowAccountId,
          ResponsibilityAreaId = entry.ResponsibilityArea.Id,
          SectorId = entry.Sector.Id,
          SubledgerAccountId = entry.SubledgerAccount.Id,
@@ -106,6 +106,7 @@ namespace Empiria.FinancialAccounting.Vouchers.Adapters {
         BudgetConcept = entry.BudgetConcept,
         EventType = !entry.EventType.IsEmptyInstance ?
                      entry.EventType.MapToNamedEntity() : null,
+        CashFlowAccountId = entry.CashFlowAccountId,
         VerificationNumber = entry.VerificationNumber,
         Currency = entry.Currency.MapToNamedEntity(),
         Amount = entry.Amount,

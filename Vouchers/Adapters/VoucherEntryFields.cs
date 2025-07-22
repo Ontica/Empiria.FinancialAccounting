@@ -41,7 +41,7 @@ namespace Empiria.FinancialAccounting.Vouchers.Adapters {
     } = string.Empty;
 
 
-    public int ReferenceEntryId {
+    public int CashFlowAccountId {
       get; set;
     }
 

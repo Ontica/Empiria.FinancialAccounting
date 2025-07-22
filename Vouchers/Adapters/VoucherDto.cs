@@ -142,6 +142,10 @@ namespace Empiria.FinancialAccounting.Vouchers.Adapters {
       get; internal set;
     }
 
+    public int CashFlowAccountId {
+      get; internal set;
+    }
+
     public string VerificationNumber {
       get; internal set;
     }

@@ -182,11 +182,11 @@ namespace Empiria.FinancialAccounting.Vouchers.Data {
       Assertion.Require(o.IsOpened, "Voucher must be open to be modified in the database.");
 
       var op = DataOperation.Parse("write_cof_transaccion", o.Id, o.Number,
-                                    o.Ledger.Id, o.FunctionalArea.Id,
-                                    o.TransactionType.Id, o.VoucherType.Id,
-                                    o.Concept, o.AccountingDate, o.RecordingDate,
-                                    o.ElaboratedBy.Id,
-                                    o.AuthorizedBy.IsEmptyInstance ? 0 : o.AuthorizedBy.Id);
+                  o.Ledger.Id, o.FunctionalArea.Id,
+                  o.TransactionType.Id, o.VoucherType.Id,
+                  o.Concept, o.AccountingDate, o.RecordingDate,
+                  o.ElaboratedBy.Id,
+                  o.AuthorizedBy.IsEmptyInstance ? 0 : o.AuthorizedBy.Id);
 
       DataWriter.Execute(op);
     }
@@ -196,17 +196,15 @@ namespace Empiria.FinancialAccounting.Vouchers.Data {
       Assertion.Require(o.Voucher.IsOpened, "Voucher must be open to be modified in the database.");
 
       var op = DataOperation.Parse("write_cof_movimiento_tmp", o.Id, o.Voucher.Id, o.LedgerAccount.Id,
-                                    o.SubledgerAccount.IsEmptyInstance ? 0 : o.SubledgerAccount.Id,
-                                    o.Sector.IsEmptyInstance ? 0: o.Sector.Id,
-                                    o.ReferenceEntryId,
-                                    o.ResponsibilityArea.IsEmptyInstance ? 0: o.ResponsibilityArea.Id,
-                                    o.BudgetConcept, o.EventType.Id, o.VerificationNumber, (char) o.VoucherEntryType,
-                                    o.HasDate ? (object) o.Date : DBNull.Value, o.Concept, o.Currency.Id,
-                                    o.Amount, o.BaseCurrencyAmount, o.Protected ? 1 : 0);
+          o.SubledgerAccount.IsEmptyInstance ? 0 : o.SubledgerAccount.Id,
+          o.Sector.IsEmptyInstance ? 0: o.Sector.Id,
+          o.CashFlowAccountId, o.ResponsibilityArea.IsEmptyInstance ? 0: o.ResponsibilityArea.Id,
+          o.BudgetConcept, o.EventType.Id, o.VerificationNumber, (char) o.VoucherEntryType,
+          o.HasDate ? (object) o.Date : DBNull.Value, o.Concept, o.Currency.Id,
+          o.Amount, o.BaseCurrencyAmount, o.Protected ? 1 : 0);
 
       DataWriter.Execute(op);
     }
-
 
   }  // class VoucherData
 
