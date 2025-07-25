@@ -58,6 +58,8 @@ namespace Empiria.FinancialAccounting.BalanceEngine.Adapters {
 
     static private FixedList<DataTableColumn> DataColumns() {
       var columns = new List<DataTableColumn> {
+        new DataTableColumn("ledgerNumber", "Deleg", "text"),
+        new DataTableColumn("ledgerName", "Delegación", "text"),
         new DataTableColumn("currencyCode", "Mon", "text"),
         new DataTableColumn("accountNumber", "Cuenta", "text"),
         new DataTableColumn("itemName", "Nombre", "text"),
