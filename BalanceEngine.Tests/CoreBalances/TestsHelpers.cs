@@ -9,11 +9,12 @@
 ************************* Copyright(c) La Vía Óntica SC, Ontica LLC and contributors. All rights reserved. **/
 
 using System;
-
 using Empiria.FinancialAccounting;
 
 using Empiria.FinancialAccounting.BalanceEngine;
 using Empiria.FinancialAccounting.BalanceEngine.Adapters;
+using Empiria.FinancialAccounting.BalanceEngine.BalanceExplorer.Adapters;
+using Empiria.FinancialAccounting.BalanceEngine.BalanceExplorer.UseCases;
 using Empiria.FinancialAccounting.BalanceEngine.UseCases;
 
 using Empiria.FinancialAccounting.Tests;
@@ -205,8 +206,11 @@ namespace Empiria.Tests.FinancialAccounting.BalanceEngine {
         AccountsChartUID = TestingConstants.IFRS_ACCOUNTS_CHART.UID,
         TrialBalanceType = TrialBalanceType.Balanza,
         BalancesType = BalancesType.AllAccounts,
-        ShowCascadeBalances = false,
+        ShowCascadeBalances = true,
+        WithSubledgerAccount = true,
         UseDefaultValuation = false,
+        //FromAccount = "1.09.04.02.07",
+        //ToAccount = "1.09.04.02.07",
         InitialPeriod = new BalancesPeriod {
           FromDate = fromDate,
           ToDate = toDate,
@@ -269,6 +273,43 @@ namespace Empiria.Tests.FinancialAccounting.BalanceEngine {
     }
 
 
+    static internal FixedList<BalanceExplorerEntryDto> GetExploradorSaldosPorCuenta(DateTime fromDate,
+                                                                              DateTime toDate,
+                                                                              bool accountsFilter) {
+      var query = new BalanceExplorerQuery() {
+        TrialBalanceType = TrialBalanceType.SaldosPorCuentaConsultaRapida,
+        AccountsChartUID = TestingConstants.IFRS_ACCOUNTS_CHART.UID,
+        //Accounts = new string[] { "1.09.04.02.07" },
+        WithAllAccounts = accountsFilter,
+        InitialPeriod = new BalancesPeriod {
+          FromDate = fromDate,
+          ToDate = toDate
+        }
+      };
+
+      return ExecutelBalanceExplorer(query);
+    }
+
+
+    static internal FixedList<BalanceExplorerEntryDto> GetExploradorSaldosPorCuentaConAuxiliar(
+                                                        DateTime fromDate,
+                                                        DateTime toDate,
+                                                        bool accountsFilter) {
+      var query = new BalanceExplorerQuery() {
+        TrialBalanceType = TrialBalanceType.SaldosPorCuentaConsultaRapida,
+        AccountsChartUID = TestingConstants.IFRS_ACCOUNTS_CHART.UID,
+        WithAllAccounts = accountsFilter,
+        WithSubledgerAccount = true,
+        InitialPeriod = new BalancesPeriod {
+          FromDate = fromDate,
+          ToDate = toDate
+        }
+      };
+
+      return ExecutelBalanceExplorer(query);
+    }
+
+
     static internal FixedList<SaldosPorCuentaEntryDto> GetSaldosPorCuenta(DateTime fromDate,
                                                                               DateTime toDate,
                                                                               BalancesType balancesType) {
@@ -313,6 +354,17 @@ namespace Empiria.Tests.FinancialAccounting.BalanceEngine {
         var entries = usecase.BuildTrialBalance(query).Entries;
 
         return entries.Select(x => (T) x).ToFixedList();
+      }
+    }
+
+
+    static internal FixedList<BalanceExplorerEntryDto> ExecutelBalanceExplorer(BalanceExplorerQuery query) {
+
+      using (var usecase = BalanceExplorerUseCases.UseCaseInteractor()) {
+
+        var entries = usecase.GetBalances(query).Entries;
+
+        return entries.Select(x => (BalanceExplorerEntryDto) x).ToFixedList();
       }
     }
 
