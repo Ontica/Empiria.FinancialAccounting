@@ -1,0 +1,18 @@
+﻿{
+  "appName": "Empiria Financial Accounting Web Api Client Tests",
+  "description": "Financial Accounting Web Api Client tests environment settings",
+  "version": "3.0",
+  "date": "2025-06-25",
+  "settings": [
+    {
+      "type": "",
+      "key": "GlobalConfigurationFile",
+      "value": "{{GLOBAL-CONFIGURATION-FILE}}"
+    },
+    {
+      "type": "",
+      "key": "IsTestingModule",
+      "value": true
+    }
+  ]
+}
