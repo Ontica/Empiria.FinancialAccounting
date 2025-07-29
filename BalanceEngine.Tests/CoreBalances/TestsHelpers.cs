@@ -204,13 +204,12 @@ namespace Empiria.Tests.FinancialAccounting.BalanceEngine {
                                                              ExchangeRateType exchangeRateType) {
       var query = new TrialBalanceQuery() {
         AccountsChartUID = TestingConstants.IFRS_ACCOUNTS_CHART.UID,
-        TrialBalanceType = TrialBalanceType.Balanza,
+        TrialBalanceType = TrialBalanceType.SaldosPorAuxiliar,
         BalancesType = BalancesType.AllAccounts,
         ShowCascadeBalances = true,
         WithSubledgerAccount = true,
         UseDefaultValuation = false,
-        //FromAccount = "1.09.04.02.07",
-        //ToAccount = "1.09.04.02.07",
+        SubledgerAccounts = new[] { "90000000000123100" },
         InitialPeriod = new BalancesPeriod {
           FromDate = fromDate,
           ToDate = toDate,
@@ -273,13 +272,32 @@ namespace Empiria.Tests.FinancialAccounting.BalanceEngine {
     }
 
 
+    static internal FixedList<BalanceExplorerEntryDto> GetExploradorSaldosPorAuxiliar(
+                                                        DateTime fromDate,
+                                                        DateTime toDate,
+                                                        bool accountsFilter) {
+      var query = new BalanceExplorerQuery() {
+        TrialBalanceType = TrialBalanceType.SaldosPorAuxiliarConsultaRapida,
+        AccountsChartUID = TestingConstants.IFRS_ACCOUNTS_CHART.UID,
+        WithAllAccounts = accountsFilter,
+        WithSubledgerAccount = true,
+        SubledgerAccounts = new string[] { "90000000000123100" },
+        InitialPeriod = new BalancesPeriod {
+          FromDate = fromDate,
+          ToDate = toDate
+        }
+      };
+
+      return ExecutelBalanceExplorer(query);
+    }
+
+
     static internal FixedList<BalanceExplorerEntryDto> GetExploradorSaldosPorCuenta(DateTime fromDate,
                                                                               DateTime toDate,
                                                                               bool accountsFilter) {
       var query = new BalanceExplorerQuery() {
         TrialBalanceType = TrialBalanceType.SaldosPorCuentaConsultaRapida,
         AccountsChartUID = TestingConstants.IFRS_ACCOUNTS_CHART.UID,
-        //Accounts = new string[] { "1.09.04.02.07" },
         WithAllAccounts = accountsFilter,
         InitialPeriod = new BalancesPeriod {
           FromDate = fromDate,
