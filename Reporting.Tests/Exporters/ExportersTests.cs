@@ -26,30 +26,30 @@ namespace Empiria.FinancialAccounting.Tests.Reporting {
 
 
     [Fact]
-    public void ExportDiferenciaDiaraTest() {
+    public void ExportTrialBalanceTest() {
       using (var usecases = TrialBalanceUseCases.UseCaseInteractor()) {
 
-        var query  = new TrialBalanceQuery() {
-          AccountsChartUID = "47ec2ec7-0f4f-482e-9799-c23107b60d8a",
-        BalancesType = BalancesType.WithCurrentBalanceOrMovements,
-        TrialBalanceType = TrialBalanceType.BalanzaDiferenciaDiariaPorMoneda,
-        ShowCascadeBalances = false,
-        Ledgers = new string[] { },
-        FromAccount = "1.01.02.02.02.05",
-        ToAccount = "1.01.02.02.02.05",
-
-        InitialPeriod = new BalancesPeriod {
-          FromDate = new DateTime(2024, 09, 02),
-          ToDate = new DateTime(2024, 09, 06)
-        }
-      };
+        var query = new TrialBalanceQuery() {
+          AccountsChartUID = AccountsChart.IFRS.UID,
+          BalancesType = BalancesType.WithCurrentBalanceOrMovements,
+          TrialBalanceType = TrialBalanceType.BalanzaEnColumnasPorMoneda,
+          ShowCascadeBalances = false,
+          Ledgers = new string[] { },
+          FromAccount = "1.05",
+          ToAccount = "1.05",
+          UseDefaultValuation = true,
+          InitialPeriod = new BalancesPeriod {
+            FromDate = new DateTime(2025, 05, 01),
+            ToDate = new DateTime(2025, 05, 31)
+          }
+        };
 
         TrialBalanceDto trialBalance = usecases.BuildTrialBalance(query);
 
         var excelExporter = new BalancesExcelExporterService();
 
         FileDto excelFileDto = excelExporter.Export(trialBalance);
-        
+
         Assert.NotNull(excelFileDto);
       }
     }
@@ -67,7 +67,7 @@ namespace Empiria.FinancialAccounting.Tests.Reporting {
 
         Assert.NotNull(sut);
       }
-      
+
     }
 
 

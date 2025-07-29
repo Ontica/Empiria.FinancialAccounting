@@ -39,8 +39,7 @@ namespace Empiria.FinancialAccounting.Tests.BalanceEngine.BalanceExplorer {
 
       BalanceExplorerQuery query = explorerTest.GetDefaultBalanceExplorerQuery();
       query.TrialBalanceType = TrialBalanceType.SaldosPorCuentaConsultaRapida;
-      query.WithSubledgerAccount = true;
-      query.Accounts = new string[] { "1.01.02 - 1.01.03", "1.05.01.03.01.01.03" };
+      query.Accounts = new string[] { "2.07.04.01.01.03.01" };
       BalanceExplorerDto sut = await BalanceEngineProxy.BuildBalanceExplorer(query);
       
       Assert.NotNull(sut);

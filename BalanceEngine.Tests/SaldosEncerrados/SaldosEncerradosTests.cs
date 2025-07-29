@@ -24,15 +24,14 @@ namespace Empiria.FinancialAccounting.Tests.BalanceEngine.SaldosEncerrados {
 
       using (var service = TrialBalanceUseCases.UseCaseInteractor()) {
 
-        SaldosEncerradosQuery buildQuery = new SaldosEncerradosQuery {
-          AccountsChartUID = "47ec2ec7-0f4f-482e-9799-c23107b60d8a",
-          FromDate = new DateTime(2022, 02, 01),
-          ToDate = new DateTime(2022, 02, 28)
+        SaldosEncerradosQuery query = new SaldosEncerradosQuery {
+          AccountsChartUID = AccountsChart.IFRS.UID,
+          FromDate = new DateTime(2024, 06, 01),
+          ToDate = new DateTime(2024, 06, 30)
         };
 
-        SaldosEncerradosDto sut = await service.BuildSaldosEncerrados(buildQuery);
+        SaldosEncerradosDto sut = await service.BuildSaldosEncerrados(query);
         Assert.NotNull(sut);
-
         Assert.NotNull(sut.Entries);
       }
     }
