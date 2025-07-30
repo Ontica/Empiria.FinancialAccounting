@@ -307,7 +307,7 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
         // and also his parent have entries for the given balance period.
         // WasConvertedToSummary marks an account that was converted from
         // posting to summary in the given period.
-        var parentAccountEntry = returnedEntries.First(a => a.Account.Number == currentParent.Number &&
+        var parentAccountEntry = returnedEntries.FirstOrDefault(a => a.Account.Number == currentParent.Number &&
                                                                 a.Currency.Code == entry.Currency.Code &&
                                                                 a.Ledger.Number == entry.Ledger.Number &&
                                                                 a.Sector.Code == entry.Sector.Code &&
