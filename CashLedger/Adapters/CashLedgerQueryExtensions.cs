@@ -1,0 +1,250 @@
+﻿/* Empiria Financial *****************************************************************************************
+*                                                                                                            *
+*  Module   : Cash Ledger                                Component : Interface adapters                      *
+*  Assembly : FinancialAccounting.CashLedger.dll         Pattern   : Type Extension methods                  *
+*  Type     : CashLedgerQueryExtensions                  License   : Please read LICENSE.txt file            *
+*                                                                                                            *
+*  Summary  : Extension methods for VouchersQuery interface adapter.                                         *
+*                                                                                                            *
+************************* Copyright(c) La Vía Óntica SC, Ontica LLC and contributors. All rights reserved. **/
+
+using Empiria.Data;
+using Empiria.StateEnums;
+
+using Empiria.FinancialAccounting.Vouchers;
+
+namespace Empiria.FinancialAccounting.CashLedger.Adapters {
+
+  /// <summary>Extension methods for VouchersQuery interface adapter.</summary>
+  static internal class CashLedgerQueryExtensions {
+
+    #region Extension methods
+
+    static internal int CalculatePageSize(this CashLedgerQuery query) {
+      string datesFilter = BuildAccountingDateRangeFilter(query) + BuildRecordingDateRangeFilter(query);
+
+      if (datesFilter.Length == 0) {
+        return query.PageSize;
+      } else {
+        return 1000000;
+      }
+    }
+
+
+    static internal void EnsureIsValid(this CashLedgerQuery query) {
+      // no-op
+    }
+
+
+    static internal string MapToFilterString(this CashLedgerQuery query) {
+      string ledgerFilter = BuildLedgerFilter(query.AccountingLedgerUID);
+      string accountingDateRangeFilter = BuildAccountingDateRangeFilter(query);
+      string recordingDateRangeFilter = BuildRecordingDateRangeFilter(query);
+      string transactionTypeFilter = BuildTransactionTypeFilter(query.TransactionTypeUID);
+      string voucherTypeFilter = BuildVoucherTypeFilter(query.VoucherTypeUID);
+      string stageFilter = BuildStageStatusFilter(query.Stage);
+      string keywordsFilter = BuildKeywordsFilter(query.Keywords);
+      string conceptsFilter = BuildConceptFilter(query.Concept);
+
+      var filter = new Filter(ledgerFilter);
+
+      filter.AppendAnd(accountingDateRangeFilter);
+      filter.AppendAnd(recordingDateRangeFilter);
+
+      filter.AppendAnd(transactionTypeFilter);
+      filter.AppendAnd(voucherTypeFilter);
+      filter.AppendAnd(stageFilter);
+      filter.AppendAnd(conceptsFilter);
+      filter.AppendAnd(keywordsFilter);
+
+      string transactionEntriesFilter = BuildTransactionEntriesFilter(query);
+
+      filter.AppendAnd(transactionEntriesFilter);
+
+      return filter.ToString();
+    }
+
+    static internal string MapToSortString(this CashLedgerQuery query) {
+      if (query.OrderBy.Length != 0) {
+        return query.OrderBy;
+      } else {
+        return "ID_MAYOR, NUMERO_TRANSACCION DESC, FECHA_REGISTRO DESC, FECHA_AFECTACION DESC, CONCEPTO_TRANSACCION";
+      }
+    }
+
+    #endregion Extension methods
+
+    #region Helpers
+
+    static private string BuildAccountsFilter(string[] accounts) {
+
+      if (accounts.Length == 0) {
+        return string.Empty;
+      }
+
+      var filter = new Filter();
+
+      foreach (string account in accounts) {
+
+        if (EmpiriaString.TrimAll(account).Length == 0) {
+          continue;
+        }
+
+        var temp = $"NUMERO_CUENTA_ESTANDAR LIKE '{EmpiriaString.TrimAll(account)}%'";
+
+        filter.AppendOr(temp);
+      }
+
+      return $"({filter.ToString()})";
+    }
+
+
+    static private string BuildAccountingDateRangeFilter(CashLedgerQuery query) {
+      if (query.FromAccountingDate == ExecutionServer.DateMinValue && query.ToAccountingDate == ExecutionServer.DateMaxValue) {
+        return string.Empty;
+      }
+
+      return $"{DataCommonMethods.FormatSqlDbDate(query.FromAccountingDate)} <= FECHA_AFECTACION AND " +
+             $"FECHA_AFECTACION < {DataCommonMethods.FormatSqlDbDate(query.ToAccountingDate.Date.AddDays(1))}";
+    }
+
+
+    static private string BuildConceptFilter(string keywords) {
+      return SearchExpression.ParseLike("CONCEPTO_TRANSACCION", keywords.ToUpperInvariant());
+    }
+
+
+    static private string BuildKeywordsFilter(string keywords) {
+      return SearchExpression.ParseAndLikeKeywords("TRANSACCION_KEYWORDS", keywords);
+    }
+
+
+    static private string BuildLedgerFilter(string accountingLedgerUID) {
+      string filter = string.Empty;
+
+      if (accountingLedgerUID.Length != 0) {
+        var ledger = Ledger.Parse(accountingLedgerUID);
+
+        filter += $"ID_MAYOR = {ledger.Id}";
+
+        return filter;
+      }
+
+      return $"ID_TIPO_CUENTAS_STD = {AccountsChart.IFRS.Id}";
+    }
+
+
+    static private string BuildRecordingDateRangeFilter(CashLedgerQuery query) {
+      if (query.FromRecordingDate == ExecutionServer.DateMinValue && query.ToRecordingDate == ExecutionServer.DateMaxValue) {
+        return string.Empty;
+      }
+
+      return $"{DataCommonMethods.FormatSqlDbDate(query.FromRecordingDate)} <= FECHA_REGISTRO AND " +
+             $"FECHA_REGISTRO < {DataCommonMethods.FormatSqlDbDate(query.ToRecordingDate.Date.AddDays(1))}";
+    }
+
+
+    static private string BuildStageStatusFilter(TransactionStage stage) {
+      switch(stage) {
+        case TransactionStage.All:
+          return string.Empty;
+
+        case TransactionStage.Closed:
+          return "ESTA_ABIERTA = 0";
+
+        case TransactionStage.Pending:
+          return "ESTA_ABIERTA <> 0";
+
+        default:
+          throw Assertion.EnsureNoReachThisCode();
+      }
+    }
+
+
+    static private string BuildSubledgerAccountsFilter(string[] subledgerAccounts) {
+      if (subledgerAccounts.Length == 0) {
+        return string.Empty;
+      }
+
+      var filter = SearchExpression.ParseOrLikeKeywords("CUENTA_AUXILIAR_KEYWORDS",
+                                                        string.Join(" , ", subledgerAccounts));
+      return $"({filter})";
+    }
+
+
+    static private string BuildTransactionEntriesFilter(CashLedgerQuery query) {
+      string filter = string.Empty;
+
+      if (query.VoucherAccounts.Length != 0) {
+        filter = BuildAccountsFilter(query.VoucherAccounts);
+      }
+
+      if (query.SubledgerAccounts.Length != 0) {
+        if (filter.Length != 0) {
+          filter += " AND ";
+        }
+        filter += BuildSubledgerAccountsFilter(query.SubledgerAccounts);
+      }
+
+      if (query.VerificationNumbers.Length != 0) {
+        if (filter.Length != 0) {
+          filter += " AND ";
+        }
+        filter += BuildVerificationNumberFilter(query.VerificationNumbers);
+      }
+
+      if (filter == string.Empty) {
+        return string.Empty;
+      }
+
+      return $"ID_TRANSACCION IN (SELECT ID_TRANSACCION FROM VW_COF_MOVIMIENTO_SEARCH WHERE {filter})";
+    }
+
+
+    static private string BuildTransactionTypeFilter(string transactionTypeUID) {
+      if (transactionTypeUID.Length == 0) {
+        return string.Empty;
+      }
+
+      var transactionType = TransactionType.Parse(transactionTypeUID);
+
+      return $"ID_TIPO_TRANSACCION = {transactionType.Id}";
+    }
+
+
+    static private string BuildVerificationNumberFilter(string[] verificationNumbers) {
+      if (verificationNumbers.Length == 0) {
+        return string.Empty;
+      }
+
+      string temp = string.Empty;
+
+      foreach (string item in verificationNumbers) {
+        if (EmpiriaString.TrimAll(item).Length == 0) {
+          continue;
+        }
+        if (temp.Length != 0) {
+          temp += " OR ";
+        }
+        temp += $"NUMERO_VERIFICACION = '{EmpiriaString.TrimAll(item)}'";
+      }
+
+      return $"({temp})";
+    }
+
+
+    static private string BuildVoucherTypeFilter(string voucherTypeUID) {
+      if (voucherTypeUID.Length == 0) {
+        return string.Empty;
+      }
+
+      var vocherType = VoucherType.Parse(voucherTypeUID);
+
+      return $"ID_TIPO_POLIZA = {vocherType.Id}";
+    }
+
+    #endregion Helpers
+
+  }  // class CashLedgerQueryExtensions
+
+} // namespace Empiria.FinancialAccounting.CashLedger.Adapters

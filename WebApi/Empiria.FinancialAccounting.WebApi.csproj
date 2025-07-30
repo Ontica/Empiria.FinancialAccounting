@@ -72,6 +72,7 @@
     <PackageReference Include="Empiria.FinancialAccounting.Reconciliation" Version="2.4.0" />
     <PackageReference Include="Empiria.FinancialAccounting.Reporting" Version="2.4.0" />
     <PackageReference Include="Empiria.FinancialAccounting.Vouchers" Version="2.4.0" />
+    <PackageReference Include="Empiria.FinancialAccounting.CashLedger" Version="3.0.0" />
   </ItemGroup>
   <ItemGroup Condition=" '$(Configuration)' == 'Multisolutions' ">
     <ProjectReference Include="..\..\extensions\DynamicData\Empiria.DynamicData.csproj" />
@@ -82,5 +83,6 @@
     <ProjectReference Include="..\Reconciliation\Empiria.FinancialAccounting.Reconciliation.csproj" />
     <ProjectReference Include="..\Reporting\Empiria.FinancialAccounting.Reporting.csproj" />
     <ProjectReference Include="..\Vouchers\Empiria.FinancialAccounting.Vouchers.csproj" />
+    <ProjectReference Include="..\CashLedger\Empiria.FinancialAccounting.CashLedger.csproj" />
   </ItemGroup>
 </Project>
