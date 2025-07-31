@@ -34,14 +34,25 @@ namespace Empiria.FinancialAccounting.CashLedger.Data {
 
     static internal FixedList<CashTransaction> GetTransactions(string filter, string sort, int pageSize) {
       var sql = "SELECT * FROM (" +
-            "SELECT * FROM VW_COF_TRANSACCION " +
-            $"WHERE {filter} " +
-            $"ORDER BY {sort}) " +
-         $"WHERE ROWNUM <= {pageSize}";
+                  "SELECT * FROM VW_COF_TRANSACCION " +
+                  $"WHERE {filter} " +
+                  $"ORDER BY {sort}) " +
+               $"WHERE ROWNUM <= {pageSize}";
 
       var op = DataOperation.Parse(sql);
 
       return DataReader.GetPlainObjectFixedList<CashTransaction>(op);
+    }
+
+
+    static internal void WriteCashEntryAccount(CashEntry entry, int cashAccountId) {
+      var sql = "UPDATE COF_MOVIMIENTO " +
+               $"SET ID_MOVIMIENTO_REFERENCIA = {cashAccountId} " +
+               $"WHERE ID_MOVIMIENTO = {entry.Id} AND ID_TRANSACCION = {entry.VoucherId}";
+
+      var op = DataOperation.Parse(sql);
+
+      DataWriter.Execute(op);
     }
 
   }  // class CashLedgerData
