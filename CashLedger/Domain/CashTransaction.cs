@@ -12,6 +12,8 @@ using System;
 
 using Empiria.FinancialAccounting.Vouchers;
 
+using Empiria.FinancialAccounting.CashLedger.Data;
+
 namespace Empiria.FinancialAccounting.CashLedger {
 
   /// <summary>Holds data for a cash ledger transaction.</summary>
@@ -79,13 +81,17 @@ namespace Empiria.FinancialAccounting.CashLedger {
     } = Participant.Empty;
 
 
-    public string StageName {
+    public string StatusName {
       get {
         return "Pendiente";
       }
     }
 
     #endregion Properties
+
+    internal FixedList<CashEntry> GetEntries() {
+      return CashLedgerData.GetTransactionEntries(this);
+    }
 
   }  // class CashTransaction
 

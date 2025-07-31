@@ -32,6 +32,15 @@ namespace Empiria.FinancialAccounting.CashLedger.UseCases {
 
     #region Use cases
 
+    public CashTransactionHolderDto GetTransaction(long id) {
+      Assertion.Require(id > 0, nameof(id));
+
+      CashTransaction transaction = CashLedgerData.GetTransaction(id);
+
+      return CashTransactionMapper.Map(transaction);
+    }
+
+
     public FixedList<CashTransactionDescriptor> SearchTransactions(CashLedgerQuery query) {
       Assertion.Require(query, nameof(query));
 

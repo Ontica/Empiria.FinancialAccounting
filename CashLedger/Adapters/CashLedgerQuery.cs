@@ -17,11 +17,6 @@ namespace Empiria.FinancialAccounting.CashLedger.Adapters {
   /// <summary>Input query DTO used to retrieve cash ledger transactions.</summary>
   public class CashLedgerQuery {
 
-    public TransactionStage Stage {
-      get; set;
-    } = TransactionStage.All;
-
-
     public DateTime FromAccountingDate {
       get; set;
     } = ExecutionServer.DateMinValue;
@@ -30,6 +25,11 @@ namespace Empiria.FinancialAccounting.CashLedger.Adapters {
     public DateTime ToAccountingDate {
       get; set;
     } = ExecutionServer.DateMaxValue;
+
+
+    public TransactionStatus Status {
+      get; set;
+    } = TransactionStatus.All;
 
 
     public string Keywords {
@@ -84,6 +84,11 @@ namespace Empiria.FinancialAccounting.CashLedger.Adapters {
 
 
     public string VoucherTypeUID {
+      get; set;
+    } = string.Empty;
+
+
+    public string SourceUID {
       get; set;
     } = string.Empty;
 

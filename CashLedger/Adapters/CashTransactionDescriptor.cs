@@ -55,7 +55,7 @@ namespace Empiria.FinancialAccounting.CashLedger.Adapters {
       get; internal set;
     }
 
-    public string StageName {
+    public string StatusName {
       get; internal set;
     }
 

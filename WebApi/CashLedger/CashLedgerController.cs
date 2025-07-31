@@ -17,13 +17,25 @@ using Empiria.FinancialAccounting.CashLedger.UseCases;
 
 namespace Empiria.FinancialAccounting.WebApi.CashLedger {
 
-  /// <summary>Query web API used to retrive accounting vouchers.</summary>
+  /// <summary>Query web API used to retrive cash ledger transactions.</summary>
   public class CashLedgerController : WebApiController {
 
     #region Web Apis
 
+    [HttpGet]
+    [Route("v2/financial-accounting/cash-ledger/transactions/{id:long}")]
+    public SingleObjectModel GetCashTransaction([FromUri] long id) {
+
+      using (var usecases = CashLedgerUseCases.UseCaseInteractor()) {
+        CashTransactionHolderDto transaction = usecases.GetTransaction(id);
+
+        return new SingleObjectModel(base.Request, transaction);
+      }
+    }
+
+
     [HttpPost]
-    [Route("v2/financial-accounting/cash-ledger")]
+    [Route("v2/financial-accounting/cash-ledger/transactions/search")]
     public CollectionModel SearchCashLedgerTransactions([FromBody] CashLedgerQuery query) {
       base.RequireBody(query);
 

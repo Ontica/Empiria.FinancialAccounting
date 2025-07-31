@@ -12,6 +12,7 @@ using Empiria.Data;
 using Empiria.StateEnums;
 
 using Empiria.FinancialAccounting.Vouchers;
+using System;
 
 namespace Empiria.FinancialAccounting.CashLedger.Adapters {
 
@@ -42,7 +43,8 @@ namespace Empiria.FinancialAccounting.CashLedger.Adapters {
       string recordingDateRangeFilter = BuildRecordingDateRangeFilter(query);
       string transactionTypeFilter = BuildTransactionTypeFilter(query.TransactionTypeUID);
       string voucherTypeFilter = BuildVoucherTypeFilter(query.VoucherTypeUID);
-      string stageFilter = BuildStageStatusFilter(query.Stage);
+      string sourceFilter = BuildSourceFilter(query.SourceUID);
+      string statusFilter = BuildStatusFilter(query.Status);
       string keywordsFilter = BuildKeywordsFilter(query.Keywords);
       string conceptsFilter = BuildConceptFilter(query.Concept);
 
@@ -53,7 +55,8 @@ namespace Empiria.FinancialAccounting.CashLedger.Adapters {
 
       filter.AppendAnd(transactionTypeFilter);
       filter.AppendAnd(voucherTypeFilter);
-      filter.AppendAnd(stageFilter);
+      filter.AppendAnd(sourceFilter);
+      filter.AppendAnd(statusFilter);
       filter.AppendAnd(conceptsFilter);
       filter.AppendAnd(keywordsFilter);
 
@@ -144,16 +147,27 @@ namespace Empiria.FinancialAccounting.CashLedger.Adapters {
     }
 
 
-    static private string BuildStageStatusFilter(TransactionStage stage) {
-      switch(stage) {
-        case TransactionStage.All:
-          return string.Empty;
+    static private string BuildSourceFilter(string sourceUID) {
+      if (sourceUID.Length == 0) {
+        return string.Empty;
+      }
 
-        case TransactionStage.Closed:
+      var source = FunctionalArea.Parse(sourceUID);
+
+      return $"ID_FUENTE = {source.Id}";
+    }
+
+
+    static private string BuildStatusFilter(TransactionStatus status) {
+      switch(status) {
+        case TransactionStatus.All:
           return "ESTA_ABIERTA = 0";
 
-        case TransactionStage.Pending:
-          return "ESTA_ABIERTA <> 0";
+        case TransactionStatus.Closed:
+          return "ESTA_ABIERTA = 0";
+
+        case TransactionStatus.Pending:
+          return "ESTA_ABIERTA = 0";
 
         default:
           throw Assertion.EnsureNoReachThisCode();
