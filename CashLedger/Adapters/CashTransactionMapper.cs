@@ -8,6 +8,8 @@
 *                                                                                                            *
 ************************* Copyright(c) La Vía Óntica SC, Ontica LLC and contributors. All rights reserved. **/
 
+using Empiria.StateEnums;
+
 namespace Empiria.FinancialAccounting.CashLedger.Adapters {
 
   /// <summary>Provides mapping services for cash ledger transactions.</summary>
@@ -54,6 +56,8 @@ namespace Empiria.FinancialAccounting.CashLedger.Adapters {
 
 
     static private CashTransactionDescriptor MapToDescriptor(CashTransaction txn) {
+      TransactionStatus status = txn.Id % 7 == 0 ? TransactionStatus.Closed : TransactionStatus.Pending;
+
       return new CashTransactionDescriptor {
          Id = txn.Id,
          Number = txn.Number,
@@ -65,7 +69,8 @@ namespace Empiria.FinancialAccounting.CashLedger.Adapters {
          VoucherTypeName = txn.VoucherType.Name,
          ElaboratedBy = txn.ElaboratedBy.Name,
          SourceName = txn.FunctionalArea.FullName,
-         StatusName = txn.StatusName
+         Status = status.ToString(),
+         StatusName = status.GetName(),
       };
     }
 
