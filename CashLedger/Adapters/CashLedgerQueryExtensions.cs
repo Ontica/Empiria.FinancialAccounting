@@ -159,15 +159,17 @@ namespace Empiria.FinancialAccounting.CashLedger.Adapters {
 
 
     static private string BuildStatusFilter(TransactionStatus status) {
-      switch(status) {
+      var startDateFilter = $"FECHA_AFECTACION >= {DataCommonMethods.FormatSqlDbDate(new DateTime(2025, 5, 1))}";
+
+      switch (status) {
         case TransactionStatus.All:
-          return "ESTA_ABIERTA = 0";
+          return $"(ESTA_ABIERTA = 0 AND {startDateFilter})";
 
         case TransactionStatus.Closed:
-          return "ESTA_ABIERTA = 0";
+          return $"(ESTA_ABIERTA = 0 AND {startDateFilter})";
 
         case TransactionStatus.Pending:
-          return "ESTA_ABIERTA = 0";
+          return $"(ESTA_ABIERTA = 0 AND {startDateFilter})";
 
         default:
           throw Assertion.EnsureNoReachThisCode();
