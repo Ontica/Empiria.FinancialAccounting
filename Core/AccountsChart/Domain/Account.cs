@@ -66,7 +66,7 @@ namespace Empiria.FinancialAccounting {
 
 
     [DataField("ID_CUENTA_ESTANDAR", ConvertFrom = typeof(long))]
-    public int StandardAccountId {
+    public StandardAccount StandardAccount {
       get; private set;
     }
 
@@ -82,6 +82,18 @@ namespace Empiria.FinancialAccounting {
       get; private set;
     } = string.Empty;
 
+
+    public string FullName {
+      get {
+        if (HasParent) {
+          return $"{Name} - {GetParent().FullName}";
+        } else if (!this.IsEmptyInstance) {
+          return Name;
+        } else {
+          return string.Empty;
+        }
+      }
+    }
 
     [DataField("DESCRIPCION")]
     public string Description {
@@ -136,6 +148,9 @@ namespace Empiria.FinancialAccounting {
 
     public int Level {
       get {
+        if (this.IsEmptyInstance) {
+          return 0;
+        }
         var accountNumberSeparator = this.AccountsChart.MasterData.AccountNumberSeparator;
 
         return EmpiriaString.CountOccurences(Number, accountNumberSeparator) + 1;
@@ -152,6 +167,7 @@ namespace Empiria.FinancialAccounting {
       }
     }
 
+
     public FixedList<CurrencyRule> AllCurrencyRules {
       get {
         return _currencyRules.Value;
@@ -164,6 +180,7 @@ namespace Empiria.FinancialAccounting {
         return _sectorRules.Value;
       }
     }
+
 
     public FixedList<AreaRule> AreaRules {
       get {
@@ -181,7 +198,6 @@ namespace Empiria.FinancialAccounting {
     #endregion Properties
 
     #region Public methods
-
 
     internal FixedList<AreaRule> GetCascadeAreas(DateTime date) {
       return this.AreaRules;
@@ -214,6 +230,7 @@ namespace Empiria.FinancialAccounting {
       return GetCascadeSectors(date, date);
     }
 
+
     internal FixedList<SectorRule> GetCascadeSectors(DateTime fromDate, DateTime toDate) {
       if (this.Role == AccountRole.Sectorizada) {
         return GetSectors(fromDate, toDate);
@@ -226,6 +243,7 @@ namespace Empiria.FinancialAccounting {
                      .OrderBy(x => x.Sector.Code)
                      .ToFixedList();
     }
+
 
     internal FixedList<LedgerRule> GetCascadeLedgers(DateTime date) {
       if (this.Role != AccountRole.Sumaria) {
@@ -275,9 +293,6 @@ namespace Empiria.FinancialAccounting {
       return _ledgerRules.Value.FindAll(x => x.AppliesOn(date));
     }
 
-    private FixedList<LedgerRule> GetLedgers(DateTime fromDate, DateTime toDate) {
-      return _ledgerRules.Value.FindAll(x => x.AppliesOn(fromDate, toDate));
-    }
 
     internal FixedList<Account> GetHistory() {
       return this.AccountsChart.GetAccountHistory(this.Number);
@@ -289,14 +304,22 @@ namespace Empiria.FinancialAccounting {
     }
 
 
+    private Account _parent;
     public Account GetParent() {
+      if (_parent != null) {
+        return _parent;
+      }
+
       if (this.Level == 1) {
-        return Account.Empty;
+        _parent = Account.Empty;
+        return _parent;
       }
 
       var parentAccountNumber = this.AccountsChart.BuildParentAccountNumber(this.Number);
 
-      return AccountsChart.GetAccount(parentAccountNumber);
+      _parent = AccountsChart.GetAccount(parentAccountNumber);
+
+      return _parent;
     }
 
 

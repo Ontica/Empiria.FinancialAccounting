@@ -42,7 +42,7 @@ namespace Empiria.FinancialAccounting {
 
 
     public FixedList<AreaRule> GetAccountAreasRules(Account account) {
-      var list = _areasRules.FindAll(x => x.StandardAccountId == account.StandardAccountId);
+      var list = _areasRules.FindAll(x => x.StandardAccountId == account.StandardAccount.Id);
 
       list.Sort((x, y) => x.StandardAccountId.CompareTo(y.StandardAccountId));
 
@@ -53,7 +53,7 @@ namespace Empiria.FinancialAccounting {
     public FixedList<CurrencyRule> GetAccountCurrenciesRules(Account account) {
       FixedList<CurrencyRule> list;
 
-      _currenciesRules.TryGetValue(account.StandardAccountId.ToString(), out list);
+      _currenciesRules.TryGetValue(account.StandardAccount.Id.ToString(), out list);
 
       if (list != null) {
         return list;
@@ -64,7 +64,7 @@ namespace Empiria.FinancialAccounting {
 
 
     public FixedList<LedgerRule> GetAccountLedgerRules(Account account) {
-      var list = _ledgersRules.FindAll(x => x.StandardAccountId == account.StandardAccountId);
+      var list = _ledgersRules.FindAll(x => x.StandardAccountId == account.StandardAccount.Id);
 
       list.Sort((x, y) => x.Ledger.Number.CompareTo(y.Ledger.Number));
 
@@ -73,7 +73,7 @@ namespace Empiria.FinancialAccounting {
 
 
     public FixedList<SectorRule> GetAccountSectorRules(Account account) {
-      var list = _sectorRules.FindAll(x => x.StandardAccountId == account.StandardAccountId);
+      var list = _sectorRules.FindAll(x => x.StandardAccountId == account.StandardAccount.Id);
 
       list.Sort((x, y) => x.Sector.Code.CompareTo(y.Sector.Code));
 

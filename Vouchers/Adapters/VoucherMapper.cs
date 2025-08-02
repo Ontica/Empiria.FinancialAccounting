@@ -161,6 +161,7 @@ namespace Empiria.FinancialAccounting.Vouchers.Adapters {
         VoucherEntryType = entry.VoucherEntryType,
         AccountNumber = entry.LedgerAccount.Number,
         AccountName = entry.LedgerAccount.Name,
+        ParentAccountFullName = entry.LedgerAccount.ParentFullName,
         Sector = entry.Sector.Code,
         SubledgerAccountNumber = entry.HasSubledgerAccount ? entry.SubledgerAccount.Number : string.Empty,
         SubledgerAccountName = entry.HasSubledgerAccount ? entry.SubledgerAccount.Name : string.Empty,

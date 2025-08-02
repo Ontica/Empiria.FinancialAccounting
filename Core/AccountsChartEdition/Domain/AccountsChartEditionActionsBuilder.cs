@@ -216,7 +216,7 @@ namespace Empiria.FinancialAccounting.AccountsChartEdition {
 
         if (!account.GetCurrencies(account.StartDate)
                     .Contains(x => x.Currency.Equals(currency))) {
-          DataOperation op = AccountEditionDataService.AddAccountCurrencyOp(account.StandardAccountId, currency,
+          DataOperation op = AccountEditionDataService.AddAccountCurrencyOp(account.StandardAccount.Id, currency,
                                                                             _command.ApplicationDate);
           operations.Add(op);
         }
@@ -251,7 +251,7 @@ namespace Empiria.FinancialAccounting.AccountsChartEdition {
         if (!currentSectors.Contains(x => x.Sector.Equals(sectorRule.Sector) &&
                                           x.SectorRole.Equals(sectorRule.Role))) {
 
-          DataOperation op = AccountEditionDataService.AddAccountSectorOp(account.StandardAccountId,
+          DataOperation op = AccountEditionDataService.AddAccountSectorOp(account.StandardAccount.Id,
                                                                           sectorRule.Sector,
                                                                           sectorRule.Role,
                                                                           _command.ApplicationDate);

@@ -41,7 +41,7 @@ namespace Empiria.FinancialAccounting {
 
 
     [DataField("ID_CUENTA_ESTANDAR", ConvertFrom = typeof(long))]
-    public int StandardAccountId {
+    public StandardAccount StandardAccount {
       get; private set;
     }
 
@@ -60,6 +60,8 @@ namespace Empiria.FinancialAccounting {
     public string Number => this.Account.Number;
 
     public string Name => this.Account.Name;
+
+    public string ParentFullName => this.Account.GetParent().FullName;
 
     public string Description => this.Account.Description;
 
@@ -87,7 +89,7 @@ namespace Empiria.FinancialAccounting {
 
 
     private Account GetAccount() {
-      return AccountsChartData.GetCurrentAccountWithStandardAccountId(this.StandardAccountId);
+      return AccountsChartData.GetCurrentAccountWithStandardAccountId(this.StandardAccount.Id);
     }
 
 

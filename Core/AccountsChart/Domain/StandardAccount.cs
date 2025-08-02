@@ -57,6 +57,19 @@ namespace Empiria.FinancialAccounting {
     } = string.Empty;
 
 
+    public string FullName {
+      get {
+        if (HasParent) {
+          return $"{Name} - {GetParent().FullName}";
+        } else if (!IsEmptyInstance) {
+          return Name;
+        } else {
+          return string.Empty;
+        }
+      }
+    }
+
+
     [DataField("DESCRIPCION")]
     public string Description {
       get; private set;
@@ -99,6 +112,9 @@ namespace Empiria.FinancialAccounting {
 
     public int Level {
       get {
+        if (this.IsEmptyInstance) {
+          return 0;
+        }
         var accountNumberSeparator = this.AccountsChart.MasterData.AccountNumberSeparator;
 
         return EmpiriaString.CountOccurences(Number, accountNumberSeparator) + 1;
@@ -127,7 +143,6 @@ namespace Empiria.FinancialAccounting {
       }
     }
 
-
     #endregion Public properties
 
     #region Public methods
@@ -137,8 +152,13 @@ namespace Empiria.FinancialAccounting {
     }
 
 
+    private StandardAccount _parent;
     public StandardAccount GetParent() {
+      if (_parent != null) {
+        return _parent;
+      }
       if (!this.HasParent) {
+        _parent = StandardAccount.Empty;
         return StandardAccount.Empty;
       }
 
@@ -146,7 +166,9 @@ namespace Empiria.FinancialAccounting {
 
       var parentAccountNumber = this.Number.Substring(0, this.Number.LastIndexOf(accountNumberSeparator));
 
-      return this.AccountsChart.GetStandardAccount(parentAccountNumber);
+      _parent = this.AccountsChart.GetStandardAccount(parentAccountNumber);
+
+      return _parent;
     }
 
 

@@ -63,7 +63,7 @@ namespace Empiria.FinancialAccounting.AccountsChartEdition.Data {
 
     static internal DataOperation DeleteAccountOp(Account o) {
       var op = DataOperation.Parse("do_delete_cuenta_estandar",
-                        o.StandardAccountId, o.AccountsChart.Id,
+                        o.StandardAccount.Id, o.AccountsChart.Id,
                         o.Number, o.Name, o.UID);
       return op;
     }
@@ -81,7 +81,7 @@ namespace Empiria.FinancialAccounting.AccountsChartEdition.Data {
 
     static internal DataOperation FixStandardAccountNameOp(Account account, string newName) {
       return DataOperation.Parse("do_fix_nombre_cuenta_estandar",
-                                 account.StandardAccountId, account.AccountsChart.Id,
+                                 account.StandardAccount.Id, account.AccountsChart.Id,
                                  account.Number, newName, BuildKeywords(account, newName));
     }
 
@@ -130,7 +130,7 @@ namespace Empiria.FinancialAccounting.AccountsChartEdition.Data {
                                                     debtorCreditor.ToString(), role.ToString());
 
       return DataOperation.Parse("do_update_cuenta_estandar",
-                        account.StandardAccountId, account.AccountsChart.Id,
+                        account.StandardAccount.Id, account.AccountsChart.Id,
                         account.Number, name, description,
                         (char) role, accountType.Id, (char) debtorCreditor,
                         o.ApplicationDate.Date, Account.MAX_END_DATE,
