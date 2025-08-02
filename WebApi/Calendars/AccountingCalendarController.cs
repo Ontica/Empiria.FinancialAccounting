@@ -7,7 +7,7 @@
 *  Summary  : Web API used to manage information about accounting calendars and their opened periods.        *
 *                                                                                                            *
 ************************* Copyright(c) La Vía Óntica SC, Ontica LLC and contributors. All rights reserved. **/
-using System;
+
 using System.Web.Http;
 
 using Empiria.WebApi;

@@ -7,7 +7,7 @@
 *  Summary  : Query web API used to retrive accounting vouchers.                                             *
 *                                                                                                            *
 ************************* Copyright(c) La Vía Óntica SC, Ontica LLC and contributors. All rights reserved. **/
-using System;
+
 using System.Web.Http;
 
 using Empiria.Storage;
@@ -18,14 +18,12 @@ using Empiria.FinancialAccounting.Vouchers.Adapters;
 
 using Empiria.FinancialAccounting.Reporting;
 
-
 namespace Empiria.FinancialAccounting.WebApi.Vouchers {
 
   /// <summary>Query web API used to retrive accounting vouchers.</summary>
   public class VoucherController : WebApiController {
 
     #region Web Apis
-
 
     [HttpGet]
     [Route("v2/financial-accounting/vouchers/{voucherId:int}/pdf")]

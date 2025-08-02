@@ -10,7 +10,6 @@
 
 namespace Empiria.FinancialAccounting {
 
-
   /// <summary>Describes the posting or summary role of an account.</summary>
   public enum AccountRole {
 
@@ -44,6 +43,5 @@ namespace Empiria.FinancialAccounting {
     Acreedora = 'A'
 
   }  // enum DebtorCreditorType
-
 
 }  // namespace Empiria.FinancialAccounting

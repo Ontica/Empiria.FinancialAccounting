@@ -7,7 +7,9 @@
 *  Summary  : Represents an accounting voucher entry: a debit or credit movement.                            *
 *                                                                                                            *
 ************************* Copyright(c) La Vía Óntica SC, Ontica LLC and contributors. All rights reserved. **/
+
 using System;
+
 using Empiria.FinancialAccounting.Vouchers.Adapters;
 using Empiria.FinancialAccounting.Vouchers.Data;
 
@@ -25,11 +27,6 @@ namespace Empiria.FinancialAccounting.Vouchers {
   internal class VoucherEntry : IVoucherEntry {
 
     #region Constructors and parsers
-
-    //protected VoucherEntry() {
-    //  // Required by Empiria Framework.
-    //}
-
 
     internal VoucherEntry(Voucher voucher) {
       Assertion.Require(voucher, "voucher");
@@ -51,7 +48,6 @@ namespace Empiria.FinancialAccounting.Vouchers {
     #endregion Constructors and parsers
 
     #region Public properties
-
 
     [DataField("ID_MOVIMIENTO")]
     public long Id {

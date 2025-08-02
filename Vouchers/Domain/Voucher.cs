@@ -123,7 +123,6 @@ namespace Empiria.FinancialAccounting.Vouchers {
 
     #region Public properties
 
-
     [DataField("ID_TRANSACCION")]
     public long Id {
       get;
