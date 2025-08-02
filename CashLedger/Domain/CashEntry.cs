@@ -21,50 +21,47 @@ namespace Empiria.FinancialAccounting.CashLedger {
 
     [DataField("ID_MOVIMIENTO")]
     public long Id {
-      get;
-      private set;
+      get; private set;
     }
 
+    [DataField("ID_TRANSACCION")]
+    public long VoucherId {
+      get; private set;
+    }
 
     [DataField("ID_CUENTA", ConvertFrom = typeof(long))]
     public LedgerAccount LedgerAccount {
-      get;
-      private set;
+      get; private set;
     }
 
 
     [DataField("ID_SECTOR", ConvertFrom = typeof(long))]
     public Sector Sector {
-      get;
-      private set;
+      get; private set;
     }
 
 
     [DataField("ID_CUENTA_AUXILIAR", ConvertFrom = typeof(long))]
     public SubledgerAccount SubledgerAccount {
-      get;
-      private set;
+      get; private set;
     }
 
 
     [DataField("ID_MOVIMIENTO_REFERENCIA", ConvertFrom = typeof(long))]
     public int CashAccountId {
-      get;
-      private set;
+      get; private set;
     }
 
 
     [DataField("ID_AREA_RESPONSABILIDAD", ConvertFrom = typeof(long))]
     public FunctionalArea ResponsibilityArea {
-      get;
-      private set;
+      get; private set;
     }
 
 
     [DataField("CLAVE_PRESUPUESTAL")]
-    public string BudgetConcept {
-      get;
-      private set;
+    public string BudgetCode {
+      get; private set;
     }
 
 
@@ -87,50 +84,43 @@ namespace Empiria.FinancialAccounting.CashLedger {
 
     [DataField("NUMERO_VERIFICACION")]
     public string VerificationNumber {
-      get;
-      private set;
+      get; private set;
     }
 
 
     [DataField("TIPO_MOVIMIENTO", Default = VoucherEntryType.Debit)]
     public VoucherEntryType VoucherEntryType {
-      get;
-      private set;
+      get; private set;
     }
 
 
     [DataField("FECHA_MOVIMIENTO", Default = "ExecutionServer.DateMinValue")]
     public DateTime Date {
-      get;
-      private set;
+      get; private set;
     }
 
 
     [DataField("CONCEPTO_MOVIMIENTO")]
-    public string Concept {
-      get;
-      private set;
+    public string Description {
+      get; private set;
     }
 
 
     [DataField("ID_MONEDA", ConvertFrom = typeof(long))]
     public Currency Currency {
-      get;
-      private set;
+      get; private set;
     }
 
 
     [DataField("MONTO")]
     public decimal Amount {
-      get;
-      private set;
+      get; private set;
     }
 
 
     [DataField("MONTO_MONEDA_BASE")]
     public decimal BaseCurrencyAmount {
-      get;
-      private set;
+      get; private set;
     }
 
     public decimal Debit {

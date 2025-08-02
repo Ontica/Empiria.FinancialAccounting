@@ -41,6 +41,7 @@ namespace Empiria.FinancialAccounting.CashLedger.Adapters {
         Id = entry.Id,
         AccountNumber = entry.LedgerAccount.Number,
         AccountName = entry.LedgerAccount.Name,
+        ParentAccountFullName = entry.LedgerAccount.ParentFullName,
         SubledgerAccountNumber = entry.HasSubledgerAccount ? entry.SubledgerAccount.Number : string.Empty,
         SubledgerAccountName = entry.HasSubledgerAccount ? entry.SubledgerAccount.Name : string.Empty,
         SectorCode = entry.Sector.Code,
@@ -48,8 +49,12 @@ namespace Empiria.FinancialAccounting.CashLedger.Adapters {
         Credit = entry.Credit,
         Debit = entry.Debit,
         ExchangeRate = entry.ExchangeRate,
+        ResponsibilityAreaCode = entry.ResponsibilityArea.Code,
         ResponsibilityAreaName = entry.ResponsibilityArea.Name,
         VerificationNumber = entry.VerificationNumber,
+        BudgetCode = entry.BudgetCode,
+        Date = entry.Date,
+        Description = entry.Description,
         CashAccountId = entry.CashAccountId
       };
     }
