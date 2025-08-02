@@ -22,6 +22,28 @@ namespace Empiria.FinancialAccounting.BalanceEngine.Data {
 
     #region Public methods
 
+    static internal AccountsChartQueryDto GetAccountsChartQueryDto(TrialBalanceQuery query) {
+
+      var accountsChartQuery = new AccountsChartQueryDto();
+      accountsChartQuery.AccountsChart = AccountsChart.Parse(query.AccountsChartUID);
+      accountsChartQuery.FromDate = query.InitialPeriod.FromDate;
+      accountsChartQuery.ToDate = query.InitialPeriod.ToDate;
+      accountsChartQuery.IncludeSummaryAccounts = false;
+
+      if (query.TrialBalanceType == TrialBalanceType.SaldosPorAuxiliar ||
+          query.TrialBalanceType == TrialBalanceType.SaldosPorCuenta) {
+
+        accountsChartQuery.Accounts = AccountRangeConverter.GetAccountRanges(query.Accounts);
+
+      } else {
+        accountsChartQuery.Accounts = AccountRangeConverter.GetAccountRange(query.FromAccount,
+                                                                            query.ToAccount);
+      }
+
+      return accountsChartQuery;
+    }
+
+
     static internal FixedList<TrialBalanceEntry> GetBalancesWithFlattenedAccounts(TrialBalanceQuery query,
                                                 List<TrialBalanceEntry> trialBalanceList) {
 
@@ -82,30 +104,6 @@ namespace Empiria.FinancialAccounting.BalanceEngine.Data {
                                       account, (Ledger) x)));
       }
       return convertedAccounts.ToFixedList();
-    }
-
-
-
-
-    static private AccountsChartQueryDto GetAccountsChartQueryDto(TrialBalanceQuery query) {
-
-      var accountsChartQuery = new AccountsChartQueryDto();
-      accountsChartQuery.AccountsChart = AccountsChart.Parse(query.AccountsChartUID);
-      accountsChartQuery.FromDate = query.InitialPeriod.FromDate;
-      accountsChartQuery.ToDate = query.InitialPeriod.ToDate;
-      accountsChartQuery.IncludeSummaryAccounts = false;
-
-      if (query.TrialBalanceType == TrialBalanceType.SaldosPorAuxiliar ||
-          query.TrialBalanceType == TrialBalanceType.SaldosPorCuenta) {
-
-        accountsChartQuery.Accounts = AccountRangeConverter.GetAccountRanges(query.Accounts);
-
-      } else {
-        accountsChartQuery.Accounts = AccountRangeConverter.GetAccountRange(query.FromAccount,
-                                                                            query.ToAccount);
-      }
-
-      return accountsChartQuery;
     }
 
 

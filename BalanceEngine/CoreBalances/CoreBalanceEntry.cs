@@ -8,6 +8,8 @@
 *                                                                                                            *
 ************************* Copyright(c) La Vía Óntica SC, Ontica LLC and contributors. All rights reserved. **/
 using System;
+using Empiria.FinancialAccounting.Adapters;
+using Microsoft.Extensions.Logging;
 
 namespace Empiria.FinancialAccounting.BalanceEngine {
 
@@ -44,7 +46,7 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
     public Sector Sector {
       get; private set;
     }
-
+    
 
     [DataField("ID_CUENTA_AUXILIAR", ConvertFrom = typeof(long))]
     private int _subledgerAccountId = -1;
@@ -92,6 +94,11 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
     }
 
 
+    public DebtorCreditorType DebtorCreditor {
+      get; internal set;
+    } = DebtorCreditorType.Deudora;
+
+
     public decimal ExchangeRate {
       get; private set;
     } = 1;
@@ -108,6 +115,16 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
       this.AverageBalance = Math.Round(AverageBalance * exchangeRate, 2);
     }
 
+    internal CoreBalanceEntry MapFromFlattenedAccount(FlatAccountDto flatAccount, Ledger ledger) {
+      var entry = new CoreBalanceEntry();
+      entry.Account = StandardAccount.Parse(flatAccount.StandardAccountId);
+      entry.Ledger = ledger;
+      entry.Currency = flatAccount.Currency;
+      entry.Sector = flatAccount.Sector;
+      entry.DebtorCreditor = flatAccount.DebtorCreditor;
+
+      return entry;
+    }
   } //class CoreBalanceEntry
 
 } // namespace Empiria.FinancialAccounting.BalanceEngine
