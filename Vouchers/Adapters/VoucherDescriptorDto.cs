@@ -103,6 +103,11 @@ namespace Empiria.FinancialAccounting.Vouchers.Adapters {
     } = string.Empty;
 
 
+    public string ParentAccountFullName {
+      get; internal set;
+    } = string.Empty;
+
+
     public string Sector {
       get; internal set;
     } = string.Empty;

@@ -69,6 +69,10 @@ namespace Empiria.FinancialAccounting.Adapters {
       get; internal set;
     }
 
+    public string ParentFullName {
+      get; internal set;
+    }
+
     public NamedEntityDto Type {
       get; internal set;
     }

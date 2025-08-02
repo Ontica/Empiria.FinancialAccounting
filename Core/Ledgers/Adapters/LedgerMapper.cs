@@ -23,9 +23,9 @@ namespace Empiria.FinancialAccounting.Adapters {
     static internal LedgerDto Map(Ledger ledger) {
       return new LedgerDto {
         UID = ledger.UID,
+        Number = ledger.Number,
         Name = ledger.Name,
         FullName = ledger.FullName,
-        Number = ledger.Number,
         Subnumber = ledger.Subnumber,
         AccountsChart = ledger.AccountsChart.MapToNamedEntity(),
         SubledgerAccountsPrefix = ledger.SubledgerAccountsPrefix,
@@ -54,7 +54,7 @@ namespace Empiria.FinancialAccounting.Adapters {
 
       return new LedgerAccountDto {
         Id = 0,
-        StandardAccountId = account.StandardAccountId,
+        StandardAccountId = account.StandardAccount.Id,
         Name = account.Name,
         Number = account.Number,
         Description = historicData.Description,
@@ -72,9 +72,10 @@ namespace Empiria.FinancialAccounting.Adapters {
 
       return new LedgerAccountDto {
         Id = ledgerAccount.Id,
-        StandardAccountId = ledgerAccount.StandardAccountId,
+        StandardAccountId = ledgerAccount.StandardAccount.Id,
         Ledger = ledgerAccount.Ledger.MapToNamedEntity(),
         Name = ledgerAccount.Name,
+        ParentFullName = ledgerAccount.ParentFullName,
         Number = ledgerAccount.Number,
         Description = historicData.Description,
         Role = historicData.Role,

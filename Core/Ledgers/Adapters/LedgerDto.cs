@@ -22,6 +22,9 @@ namespace Empiria.FinancialAccounting.Adapters {
       get; internal set;
     }
 
+    public string Number {
+      get; internal set;
+    }
 
     public string Name {
       get; internal set;
@@ -31,31 +34,22 @@ namespace Empiria.FinancialAccounting.Adapters {
       get; internal set;
     }
 
-    public string Number {
-      get; internal set;
-    }
-
-
     public string Subnumber {
       get; internal set;
     }
-
 
     public string SubledgerAccountsPrefix {
       get;
       internal set;
     }
 
-
     public FixedList<NamedEntityDto> SubledgerAccountsTypes {
       get; internal set;
     }
 
-
     public NamedEntityDto AccountsChart {
       get; internal set;
     }
-
 
     public NamedEntityDto BaseCurrency {
       get; internal set;
@@ -75,56 +69,49 @@ namespace Empiria.FinancialAccounting.Adapters {
       get; internal set;
     }
 
-
     public int StandardAccountId {
       get; internal set;
     }
-
 
     public NamedEntityDto Ledger {
       get; internal set;
     }
 
-
     public string Number {
       get; internal set;
     }
-
 
     public string Name {
       get; internal set;
     }
 
+    public string ParentFullName {
+      get; internal set;
+    }
 
     public string Description {
       get; internal set;
     }
 
-
     public NamedEntityDto AccountType {
       get; internal set;
     }
-
 
     public AccountRole Role {
       get; internal set;
     }
 
-
     public DebtorCreditorType DebtorCreditor {
       get; internal set;
     }
-
 
     public int Level {
       get; internal set;
     }
 
-
     public FixedList<ValuedCurrencyDto> Currencies {
       get; internal set;
     }
-
 
     public FixedList<SectorRuleShortDto> Sectors {
       get; internal set;

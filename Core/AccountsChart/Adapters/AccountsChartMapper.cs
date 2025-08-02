@@ -102,6 +102,7 @@ namespace Empiria.FinancialAccounting.Adapters {
       dto.UID = account.UID;
       dto.Number = account.Number;
       dto.Name = account.Name;
+      dto.ParentFullName = account.GetParent().FullName;
       dto.Type = account.AccountType.MapToNamedEntity();
       dto.Role = MapToDescriptorRole(account.Role);
       dto.UsesSector = account.Role == AccountRole.Sectorizada || account.HasChildrenWithSectors();
