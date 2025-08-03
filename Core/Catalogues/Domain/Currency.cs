@@ -83,6 +83,28 @@ namespace Empiria.FinancialAccounting {
     #region Public properties
 
 
+    public string ISOCode {
+      get {
+        if (this.Equals(Currency.MXN)) {
+          return "MXN";
+        }
+        if (this.Equals(Currency.USD)) {
+          return "USD";
+        }
+        if (this.Equals(Currency.YEN)) {
+          return "JPY";
+        }
+        if (this.Equals(Currency.EUR)) {
+          return "EUR";
+        }
+        if (this.Equals(Currency.UDI)) {
+          return "UDI";
+        }
+        return string.Empty;
+      }
+    }
+
+
     [DataField("CURRENCY_NAME")]
     public string Name {
       get; private set;
