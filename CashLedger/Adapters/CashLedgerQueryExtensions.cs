@@ -71,7 +71,7 @@ namespace Empiria.FinancialAccounting.CashLedger.Adapters {
       if (query.OrderBy.Length != 0) {
         return query.OrderBy;
       } else {
-        return "ID_MAYOR, NUMERO_TRANSACCION DESC, FECHA_REGISTRO DESC, FECHA_AFECTACION DESC, CONCEPTO_TRANSACCION";
+        return "ID_MAYOR, FECHA_AFECTACION, NUMERO_TRANSACCION";
       }
     }
 

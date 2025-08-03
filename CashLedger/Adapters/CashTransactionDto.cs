@@ -136,6 +136,10 @@ namespace Empiria.FinancialAccounting.CashLedger.Adapters {
       get; internal set;
     }
 
+    public int CurrencyId {
+      get; internal set;
+    }
+
     public string CurrencyName {
       get; internal set;
     }
