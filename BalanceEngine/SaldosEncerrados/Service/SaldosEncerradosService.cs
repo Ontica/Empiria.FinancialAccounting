@@ -93,7 +93,6 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
 
         List<TrialBalanceEntry> entries = helper.GetBalancesByAccount(account);
         returnedEntries.AddRange(entries);
-
       }
 
       return returnedEntries.OrderBy(a => a.Account.Number)

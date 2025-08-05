@@ -9,6 +9,7 @@
 ************************* Copyright(c) La Vía Óntica SC, Ontica LLC and contributors. All rights reserved. **/
 
 using System;
+using System.Threading.Tasks;
 using Empiria.FinancialAccounting;
 
 using Empiria.FinancialAccounting.BalanceEngine;
@@ -271,6 +272,19 @@ namespace Empiria.Tests.FinancialAccounting.BalanceEngine {
     }
 
 
+    static internal async Task<FixedList<SaldosEncerradosBaseEntryDto>> GetSaldosEncerrados(
+                                DateTime fromDate, DateTime toDate) {
+
+      var query = new SaldosEncerradosQuery() {
+        AccountsChartUID = TestingConstants.IFRS_ACCOUNTS_CHART.UID,
+        FromDate = fromDate,
+        ToDate = toDate
+      };
+
+      return  await ExecuteLockedUpBalances(query);
+    }
+
+
     static internal FixedList<SaldosPorAuxiliarEntryDto> GetSaldosPorAuxiliar(DateTime fromDate,
                                                                               DateTime toDate,
                                                                               BalancesType balancesType) {
@@ -383,17 +397,6 @@ namespace Empiria.Tests.FinancialAccounting.BalanceEngine {
     }
 
 
-    static internal FixedList<T> ExecuteTrialBalance<T>(TrialBalanceQuery query) {
-
-      using (var usecase = TrialBalanceUseCases.UseCaseInteractor()) {
-
-        var entries = usecase.BuildTrialBalance(query).Entries;
-
-        return entries.Select(x => (T) x).ToFixedList();
-      }
-    }
-
-
     static internal FixedList<BalanceExplorerEntryDto> ExecutelBalanceExplorer(BalanceExplorerQuery query) {
 
       using (var usecase = BalanceExplorerUseCases.UseCaseInteractor()) {
@@ -404,6 +407,27 @@ namespace Empiria.Tests.FinancialAccounting.BalanceEngine {
       }
     }
 
+
+    static internal async Task<FixedList<SaldosEncerradosBaseEntryDto>> ExecuteLockedUpBalances(SaldosEncerradosQuery query) {
+
+      using (var usecase = TrialBalanceUseCases.UseCaseInteractor()) {
+
+        var dto = await usecase.BuildSaldosEncerrados(query);
+
+        return dto.Entries.Select(x => (SaldosEncerradosBaseEntryDto) x).ToFixedList();
+      }
+    }
+
+
+    static internal FixedList<T> ExecuteTrialBalance<T>(TrialBalanceQuery query) {
+
+      using (var usecase = TrialBalanceUseCases.UseCaseInteractor()) {
+
+        var entries = usecase.BuildTrialBalance(query).Entries;
+
+        return entries.Select(x => (T) x).ToFixedList();
+      }
+    }
 
     #endregion Methods
 
