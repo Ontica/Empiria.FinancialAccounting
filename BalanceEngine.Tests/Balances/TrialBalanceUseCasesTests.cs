@@ -108,8 +108,6 @@ namespace Empiria.FinancialAccounting.Tests.BalanceEngine {
       TrialBalanceQuery query = GetDefaultTrialBalanceQuery();
 
       query.TrialBalanceType = TrialBalanceType.BalanzaValorizadaComparativa;
-      query.FromAccount = "1.05.01.01.06.02";
-      query.ToAccount = "1.05.01.01.06.02";
 
       TrialBalanceDto sut = BalanceEngineProxy.BuildTrialBalance(query);
 
@@ -124,8 +122,6 @@ namespace Empiria.FinancialAccounting.Tests.BalanceEngine {
 
       TrialBalanceQuery query = GetDefaultTrialBalanceQuery();
       query.TrialBalanceType = TrialBalanceType.Balanza;
-      query.FromAccount = "2.07.04.01.01.03.01";
-      query.ToAccount = "2.07.04.01.01.03.01";
       TrialBalanceDto sut = BalanceEngineProxy.BuildTrialBalance(query);
 
       Assert.NotNull(sut);
@@ -251,15 +247,10 @@ namespace Empiria.FinancialAccounting.Tests.BalanceEngine {
         AccountsChartUID = TestingConstants.IFRS_ACCOUNTS_CHART.UID,
         BalancesType = BalancesType.WithCurrentBalanceOrMovements,
         ShowCascadeBalances = false,
-        UseDefaultValuation = false,
-        WithSubledgerAccount = true,
+        WithSubledgerAccount = false,
         InitialPeriod = new BalancesPeriod {
           FromDate = TestingConstants.FROM_DATE,
           ToDate = TestingConstants.TO_DATE
-        },
-        FinalPeriod = new BalancesPeriod {
-          FromDate = new DateTime(2025, 04, 01),
-          ToDate = new DateTime(2025, 04, 30)
         }
       };
     }
