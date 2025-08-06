@@ -40,28 +40,15 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
     } = string.Empty;
 
 
-    internal void SumToTotalValorized(bool valorizedBanalce = false) {
+    internal void SumToTotalValorized() {
 
-      if (valorizedBanalce) {
-
-        TotalValorized += (
+      TotalValorized += (
           this.DomesticBalance +
           this.ValorizedDollarBalance +
           this.ValorizedYenBalance +
           this.ValorizedEuroBalance +
           this.ValorizedUdisBalance
         );
-
-      } else {
-
-        TotalValorized += (
-          this.DomesticBalance +
-          this.DollarBalance +
-          this.YenBalance +
-          this.EuroBalance +
-          this.UdisBalance
-        );
-      }   
     }
 
   } // BalanzaColumnasMonedaEntry

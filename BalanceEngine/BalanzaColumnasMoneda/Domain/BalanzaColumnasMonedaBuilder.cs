@@ -46,15 +46,12 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
       var balanceHelper = new TrialBalanceHelper(Query);
       var helper = new BalanzaColumnasMonedaHelper(Query);
 
-      if (Query.UseDefaultValuation || Query.ValuateBalances) {
+      if (Query.InitialPeriod.ToDate.Year >= 2025) {
 
-        if (Query.InitialPeriod.ToDate.Year >= 2025) {
+        helper.ValuateBalanzaMOToExchangeRateV2(accountEntries);
+      } else {
 
-          helper.ValuateBalanzaMOToExchangeRateV2(accountEntries);
-        } else {
-
-          helper.ValuateEntriesToExchangeRate(accountEntries);
-        }
+        helper.ValuateEntriesToExchangeRate(accountEntries);
       }
 
       balanceHelper.RoundDecimals(accountEntries);

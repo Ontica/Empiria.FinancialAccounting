@@ -61,7 +61,7 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
       var hashAccountEntries = new EmpiriaHashTable<TrialBalanceEntry>();
 
       foreach (var entry in filteredAccountList) {
-        
+
         SummaryByAccountEntry(hashAccountEntries, entry, entry.ItemType);
       }
 
@@ -96,17 +96,15 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
 
     internal void GetTotalValorizedByAccount(
       List<BalanzaColumnasMonedaEntry> balanceByCurrency) {
-      
-      bool valorizedBanalce = Query.ValuateBalances || Query.UseDefaultValuation;
 
       foreach (var entry in balanceByCurrency) {
-        entry.SumToTotalValorized(valorizedBanalce);
+        entry.SumToTotalValorized();
       }
     }
 
 
-    internal void GetValorizedEntries(TrialBalanceEntry entry,
-      ExchangeRate exchangeRate, bool isValorizedBalance) {
+    internal void GetValorizedEntries(TrialBalanceEntry entry, ExchangeRate exchangeRate,
+                                      bool isValorizedBalance = false) {
 
       entry.MultiplyByValorizedValue(exchangeRate.Value);
 
@@ -142,12 +140,17 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
 
     internal void ValuateBalanzaMOToExchangeRateV2(FixedList<TrialBalanceEntry> entries) {
 
-      var isValorizedBalance = Query.InitialPeriod.ValuateToCurrrencyUID != string.Empty ||
-                               Query.UseDefaultValuation ? true : false;
+      bool defaultValuation = Query.UseDefaultValuation;
+      bool isValorizedBalance = Query.ValuateBalances || Query.UseDefaultValuation ? true : false;
+
+      Query.UseDefaultValuation = !Query.ValuateBalances && !Query.UseDefaultValuation
+                                    ? true : Query.UseDefaultValuation;
 
       var balanceHelper = new TrialBalanceHelper(Query);
       var exchangeRateFor = balanceHelper.GetExchangeRateTypeForCurrencies(Query.InitialPeriod);
-      
+
+      Query.UseDefaultValuation = defaultValuation;
+
       foreach (var entry in entries.Where(a => a.Currency.Distinct(Currency.MXN))) {
 
         var exchangeRate = exchangeRateFor.ExchangeRateList.Find(
@@ -186,7 +189,7 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
 
     internal void ValuateEntriesToExchangeRate(FixedList<TrialBalanceEntry> entries) {
 
-      var isValorizedBalance = Query.InitialPeriod.ValuateToCurrrencyUID != string.Empty ||
+      var isValorizedBalance = Query.ValuateBalances ||
                                Query.UseDefaultValuation ? true : false;
 
       FixedList<ExchangeRate> exchangeRates = GetExchangeRateList(isValorizedBalance);
@@ -255,7 +258,7 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
       if (Query.UseDefaultValuation || !isValorizedBalance) {
         Query.InitialPeriod.ValuateToCurrrencyUID = "01";
       }
-          
+
       GetExchangeRateTypeUID();
 
       var exchangeRateType = ExchangeRateType.Parse(Query.InitialPeriod.ExchangeRateTypeUID);
@@ -267,13 +270,11 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
 
     private void GetExchangeRateTypeUID() {
 
-      var calendar = EmpiriaCalendar.Default;
-      var lastWorkingDateInMonth = calendar.LastWorkingDateWithinMonth(
-                                    Query.InitialPeriod.ToDate.Year, Query.InitialPeriod.ToDate.Month);
-
-      Query.InitialPeriod.ExchangeRateTypeUID = ExchangeRateType.ValorizacionBanxico.UID;
-
       if (Query.TrialBalanceType == TrialBalanceType.BalanzaDiferenciaDiariaPorMoneda) {
+
+        var calendar = EmpiriaCalendar.Default;
+        var lastWorkingDateInMonth = calendar.LastWorkingDateWithinMonth(
+                                      Query.InitialPeriod.ToDate.Year, Query.InitialPeriod.ToDate.Month);
 
         if (Query.InitialPeriod.ToDate == lastWorkingDateInMonth) {
 
@@ -283,9 +284,10 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
 
           Query.InitialPeriod.ExchangeRateTypeUID = ExchangeRateType.BalanzaDiaria.UID;
         }
+      } else {
 
+        Query.InitialPeriod.ExchangeRateTypeUID = ExchangeRateType.ValorizacionBanxico.UID;
       }
-
     }
 
 
@@ -364,11 +366,11 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
                   FixedList<TrialBalanceEntry> ledgerAccounts) {
 
       foreach (var ledger in ledgerAccounts) {
-        
+
         if (Query.TrialBalanceType == TrialBalanceType.BalanzaEnColumnasPorMoneda) {
           ledger.ItemType = TrialBalanceItemType.Summary;
         }
-        
+
         var entry = returnedValuedBalance.Where(a => a.Account.Number == ledger.Account.Number)
                                          .FirstOrDefault();
         if (entry == null) {
@@ -441,7 +443,7 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
 
       string hash = $"{entry.Account.Number}||{targetSector.Code}||{entry.Currency.Id}" +
                     $"||{entry.Ledger.Id}||{entry.DebtorCreditor}";
-      
+
       if (Query.TrialBalanceType == TrialBalanceType.BalanzaEnColumnasPorMoneda) {
 
         hash = $"{entry.Account.Number}||{targetSector.Code}||{entry.Currency.Id}" +
@@ -460,7 +462,8 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
 
 
     private void ValuateEntries(FixedList<TrialBalanceEntry> entries,
-                                FixedList<ExchangeRate> exchangeRates, bool isValorizedBalance) {
+                                FixedList<ExchangeRate> exchangeRates,
+                                bool isValorizedBalance) {
 
       foreach (var entry in entries.Where(a => a.Currency.Distinct(Currency.MXN))) {
 
