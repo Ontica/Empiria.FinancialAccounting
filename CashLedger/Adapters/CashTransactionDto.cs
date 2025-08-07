@@ -17,11 +17,11 @@ namespace Empiria.FinancialAccounting.CashLedger.Adapters {
   public class CashTransactionHolderDto {
 
     public CashTransactionDescriptor Transaction {
-      get; internal set;
+      get; set;
     }
 
     public FixedList<CashTransactionEntryDto> Entries {
-      get; internal set;
+      get; set;
     }
 
   }  // class CashTransactionHolderDto
@@ -31,51 +31,51 @@ namespace Empiria.FinancialAccounting.CashLedger.Adapters {
   public class CashTransactionDescriptor {
 
     public long Id {
-      get; internal set;
+      get; set;
     }
 
     public string Number {
-      get; internal set;
+      get; set;
     }
 
     public string LedgerName {
-      get; internal set;
+      get; set;
     }
 
     public string Concept {
-      get; internal set;
+      get; set;
     }
 
     public string TransactionTypeName {
-      get; internal set;
+      get; set;
     }
 
     public string VoucherTypeName {
-      get; internal set;
+      get; set;
     }
 
     public string SourceName {
-      get; internal set;
+      get; set;
     }
 
     public DateTime AccountingDate {
-      get; internal set;
+      get; set;
     }
 
     public DateTime RecordingDate {
-      get; internal set;
+      get; set;
     }
 
     public string ElaboratedBy {
-      get; internal set;
+      get; set;
     }
 
     public string Status {
-      get; internal set;
+      get; set;
     }
 
     public string StatusName {
-      get; internal set;
+      get; set;
     }
 
   }  // class CashTransactionDescriptor
@@ -85,79 +85,79 @@ namespace Empiria.FinancialAccounting.CashLedger.Adapters {
   public class CashTransactionEntryDto {
 
     public long Id {
-      get; internal set;
+      get; set;
     }
 
     public string AccountNumber {
-      get; internal set;
+      get; set;
     }
 
     public string AccountName {
-      get; internal set;
+      get; set;
     }
 
     public string ParentAccountFullName {
-      get; internal set;
+      get; set;
     }
 
     public string SectorCode {
-      get; internal set;
+      get; set;
     }
 
     public string SubledgerAccountNumber {
-      get; internal set;
+      get; set;
     }
 
     public string SubledgerAccountName {
-      get; internal set;
+      get; set;
     }
 
     public string VerificationNumber {
-      get; internal set;
+      get; set;
     }
 
     public string ResponsibilityAreaCode {
-      get; internal set;
+      get; set;
     }
 
     public string ResponsibilityAreaName {
-      get; internal set;
+      get; set;
     }
 
     public string BudgetCode {
-      get; internal set;
+      get; set;
     }
 
     public string Description {
-      get; internal set;
+      get; set;
     }
 
     public DateTime Date {
-      get; internal set;
+      get; set;
     }
 
     public int CurrencyId {
-      get; internal set;
+      get; set;
     }
 
     public string CurrencyName {
-      get; internal set;
+      get; set;
     }
 
     public decimal ExchangeRate {
-      get; internal set;
+      get; set;
     }
 
     public decimal Debit {
-      get; internal set;
+      get; set;
     }
 
     public decimal Credit {
-      get; internal set;
+      get; set;
     }
 
     public int CashAccountId {
-      get; internal set;
+      get; set;
     }
 
   }  // class CashTransactionEntryDto

@@ -96,6 +96,14 @@ namespace Empiria.FinancialAccounting.CashLedger {
     }
 
 
+    internal void SetCashEntryAccount(CashEntry entry, int cashAccountId) {
+      Assertion.Require(entry, nameof(entry));
+      Assertion.Require(cashAccountId >= -2, nameof(cashAccountId));
+
+      CashLedgerData.WriteCashEntryAccount(entry, cashAccountId);
+    }
+
+
     internal void SetCashEntryAccount(FixedList<CashEntry> entries, int cashAccountId) {
       Assertion.Require(entries, nameof(entries));
       Assertion.Require(cashAccountId >= -2, nameof(cashAccountId));
