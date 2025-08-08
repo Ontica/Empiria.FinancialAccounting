@@ -52,19 +52,22 @@ namespace Empiria.FinancialAccounting.Vouchers.SpecialCases {
         return new FixedList<VoucherEntryFields>();
       }
 
-      var voucherEntries = new List<VoucherEntryFields>();
+      var voucherEntries = new List<VoucherEntryFields>(creditLockedBalances.Count + 8);
 
-      foreach (var lockedBalance in creditLockedBalances) {
-        VoucherEntryFields voucherEntry = BuildVoucherEntry(lockedBalance);
+      foreach (var currency in creditLockedBalances.SelectDistinct(x => Currency.Parse(x.CurrencyCode))) {
 
-        voucherEntries.Add(voucherEntry);
+        foreach (var lockedBalance in creditLockedBalances.FindAll(x => x.CurrencyCode == currency.Code)) {
+          VoucherEntryFields voucherEntry = BuildVoucherEntry(lockedBalance);
+
+          voucherEntries.Add(voucherEntry);
+        }
+
+        VoucherEntryFields debitTotalEntry = BuildTargetAccountVoucherEntry(voucherEntries,
+                                                                            VoucherEntryType.Debit,
+                                                                            "9.03.14", currency);
+
+        voucherEntries.Add(debitTotalEntry);
       }
-
-      VoucherEntryFields debitTotalEntry = BuildTargetAccountVoucherEntry(voucherEntries,
-                                                                          VoucherEntryType.Debit,
-                                                                          "9.03.14");
-
-      voucherEntries.Insert(0, debitTotalEntry);
 
       return voucherEntries.ToFixedList();
     }
@@ -78,19 +81,22 @@ namespace Empiria.FinancialAccounting.Vouchers.SpecialCases {
         return new FixedList<VoucherEntryFields>();
       }
 
-      var voucherEntries = new List<VoucherEntryFields>();
+      var voucherEntries = new List<VoucherEntryFields>(debitLockedBalances.Count + 8);
 
-      foreach (var lockedBalance in debitLockedBalances) {
-        VoucherEntryFields voucherEntry = BuildVoucherEntry(lockedBalance);
+      foreach (var currency in debitLockedBalances.SelectDistinct(x => Currency.Parse(x.CurrencyCode))) {
 
-        voucherEntries.Add(voucherEntry);
+        foreach (var lockedBalance in debitLockedBalances.FindAll(x => x.CurrencyCode == currency.Code)) {
+          VoucherEntryFields voucherEntry = BuildVoucherEntry(lockedBalance);
+
+          voucherEntries.Add(voucherEntry);
+        }
+
+        VoucherEntryFields creditTotalEntry = BuildTargetAccountVoucherEntry(voucherEntries,
+                                                                            VoucherEntryType.Credit,
+                                                                            "9.03.14", currency);
+
+        voucherEntries.Add(creditTotalEntry);
       }
-
-      VoucherEntryFields creditTotalEntry = BuildTargetAccountVoucherEntry(voucherEntries,
-                                                                           VoucherEntryType.Credit,
-                                                                           "9.03.14");
-
-      voucherEntries.Add(creditTotalEntry);
 
       return voucherEntries.ToFixedList();
     }
@@ -116,15 +122,15 @@ namespace Empiria.FinancialAccounting.Vouchers.SpecialCases {
 
     private VoucherEntryFields BuildTargetAccountVoucherEntry(List<VoucherEntryFields> accumulatedEntries,
                                                               VoucherEntryType targetEntryType,
-                                                              string targetAccountNumber) {
+                                                              string targetAccountNumber, Currency currency) {
       decimal total = 0m;
 
-      foreach (var entry in accumulatedEntries) {
+      foreach (var entry in accumulatedEntries.FindAll(x => x.Currency.Equals(currency))) {
         total += entry.Amount;
       }
 
       return BuildVoucherEntryFields(targetEntryType, targetAccountNumber,
-                                     "00", SubledgerAccount.Empty, total);
+                                     "00", SubledgerAccount.Empty, total, currency);
     }
 
 
@@ -167,7 +173,8 @@ namespace Empiria.FinancialAccounting.Vouchers.SpecialCases {
                                      lockedBalance.AccountNumber,
                                      lockedBalance.SectorCode,
                                      subledgerAccount,
-                                     Math.Abs(lockedBalance.LockedBalance)
+                                     Math.Abs(lockedBalance.LockedBalance),
+                                     Currency.Parse(lockedBalance.CurrencyCode)
                                     );
     }
 
@@ -176,7 +183,8 @@ namespace Empiria.FinancialAccounting.Vouchers.SpecialCases {
                                                        string accountNumber,
                                                        string sectorCode,
                                                        SubledgerAccount subledgerAccount,
-                                                       decimal balance) {
+                                                       decimal balance,
+                                                       Currency currency) {
 
       StandardAccount stdAccount = base.AccountsChart.GetStandardAccount(accountNumber);
 
@@ -185,7 +193,7 @@ namespace Empiria.FinancialAccounting.Vouchers.SpecialCases {
       return new VoucherEntryFields {
         Amount = balance,
         BaseCurrencyAmount = balance,
-        CurrencyUID = base.Ledger.BaseCurrency.UID,
+        CurrencyUID = currency.UID,
         SectorId = Sector.Parse(sectorCode).Id,
         SubledgerAccountId = subledgerAccount.Id,
         SubledgerAccountNumber = subledgerAccount.IsEmptyInstance ?
@@ -200,11 +208,11 @@ namespace Empiria.FinancialAccounting.Vouchers.SpecialCases {
     private FixedList<SaldosEncerradosEntryDto> FilterCreditLockedBalances(FixedList<SaldosEncerradosEntryDto> items) {
       var filtered = new List<SaldosEncerradosEntryDto>(items.Count);
 
-      var chunk = items.FindAll(x => x.DebtorCreditor == "Deudora" && x.LockedBalance > 0);
-      filtered.AddRange(chunk);
+      var temp = items.FindAll(x => x.DebtorCreditor == "Deudora" && x.LockedBalance > 0);
+      filtered.AddRange(temp);
 
-      chunk = items.FindAll(x => x.DebtorCreditor == "Acreedora" && x.LockedBalance < 0);
-      filtered.AddRange(chunk);
+      temp = items.FindAll(x => x.DebtorCreditor == "Acreedora" && x.LockedBalance < 0);
+      filtered.AddRange(temp);
 
       return filtered.ToFixedList();
     }
