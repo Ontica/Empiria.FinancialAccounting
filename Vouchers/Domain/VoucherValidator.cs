@@ -26,7 +26,6 @@ namespace Empiria.FinancialAccounting.Vouchers {
       this.SkipEntries = skipEntries;
     }
 
-
     public DateTime AccountingDate {
       get;
     }
@@ -137,7 +136,7 @@ namespace Empiria.FinancialAccounting.Vouchers {
         }
       }
 
-      if (SkipEntries || (this.AccountingDate.Month == 1 && this.AccountingDate.Day == 1)) {
+      if (SkipEntries && AccountingDate.Day == DateTime.DaysInMonth(AccountingDate.Year, AccountingDate.Month)) {
         return new FixedList<string>(resultList);
       }
 
