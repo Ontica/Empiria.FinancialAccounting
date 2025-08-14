@@ -55,6 +55,21 @@ namespace Empiria.FinancialAccounting.CashLedger.UseCases {
     }
 
 
+    public FixedList<CashEntryDescriptor> SearchEntries(CashLedgerQuery query) {
+      Assertion.Require(query, nameof(query));
+
+      query.EnsureIsValid();
+
+      string filter = query.MapToFilterString();
+      string sort = query.MapToSortString();
+      int pageSize = query.CalculatePageSize();
+
+      FixedList<CashEntryExtended> list = CashLedgerData.SearchEntries(filter, sort, pageSize);
+
+      return CashTransactionMapper.MapToDescriptor(list);
+    }
+
+
     public FixedList<CashTransactionDescriptor> SearchTransactions(CashLedgerQuery query) {
       Assertion.Require(query, nameof(query));
 

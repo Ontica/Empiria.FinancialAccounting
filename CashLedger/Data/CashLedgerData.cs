@@ -32,6 +32,19 @@ namespace Empiria.FinancialAccounting.CashLedger.Data {
     }
 
 
+    static internal FixedList<CashEntryExtended> SearchEntries(string filter, string sort, int pageSize) {
+      var sql = "SELECT * FROM (" +
+            "SELECT * FROM VW_COF_MOVIMIENTO " +
+            $"WHERE {filter} " +
+            $"ORDER BY {sort}) " +
+         $"WHERE ROWNUM <= {pageSize}";
+
+      var op = DataOperation.Parse(sql);
+
+      return DataReader.GetPlainObjectFixedList<CashEntryExtended>(op);
+    }
+
+
     static internal FixedList<CashTransaction> GetTransactions(string filter, string sort, int pageSize) {
       var sql = "SELECT * FROM (" +
                   "SELECT * FROM VW_COF_TRANSACCION " +
@@ -43,6 +56,7 @@ namespace Empiria.FinancialAccounting.CashLedger.Data {
 
       return DataReader.GetPlainObjectFixedList<CashTransaction>(op);
     }
+
 
 
     static internal void WriteCashEntryAccount(CashEntry entry, int cashAccountId) {

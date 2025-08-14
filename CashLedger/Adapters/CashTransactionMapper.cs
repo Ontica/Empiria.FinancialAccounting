@@ -28,6 +28,12 @@ namespace Empiria.FinancialAccounting.CashLedger.Adapters {
                  .ToFixedList();
     }
 
+
+    static internal FixedList<CashEntryDescriptor> MapToDescriptor(FixedList<CashEntryExtended> list) {
+      return list.Select(x => MapToDescriptor(x))
+                 .ToFixedList();
+    }
+
     #region Helpers
 
     static private FixedList<CashTransactionEntryDto> MapEntries(FixedList<CashEntry> entries) {
@@ -61,22 +67,54 @@ namespace Empiria.FinancialAccounting.CashLedger.Adapters {
     }
 
 
+    static private CashEntryDescriptor MapToDescriptor(CashEntryExtended entry) {
+
+      return new CashEntryDescriptor {
+        Id = entry.Id,
+        AccountNumber = entry.LedgerAccount.Number,
+        AccountName = entry.LedgerAccount.Name,
+        ParentAccountFullName = entry.LedgerAccount.ParentFullName,
+        SubledgerAccountNumber = entry.HasSubledgerAccount ? entry.SubledgerAccount.Number : string.Empty,
+        SubledgerAccountName = entry.HasSubledgerAccount ? entry.SubledgerAccount.Name : string.Empty,
+        SectorCode = entry.Sector.Code,
+        CurrencyId = entry.Currency.Id,
+        CurrencyName = entry.Currency.ISOCode,
+        Credit = entry.Credit,
+        Debit = entry.Debit,
+        ExchangeRate = entry.ExchangeRate,
+        ResponsibilityAreaCode = entry.ResponsibilityArea.Code,
+        ResponsibilityAreaName = entry.ResponsibilityArea.Name,
+        VerificationNumber = entry.VerificationNumber,
+        BudgetCode = entry.BudgetCode,
+        Date = entry.Date,
+        Description = entry.Description,
+        CashAccountId = entry.CashAccountId,
+        TransactionId = entry.TransactionId,
+        TransactionNumber = entry.TransactionNumber,
+        TransactionConcept = entry.TransactionConcept,
+        TransactionAccountingDate = entry.AccountingDate,
+        TransactionRecordingDate = entry.RecordingDate,
+        TransactionLedgerName = entry.Ledger.FullName,
+      };
+    }
+
+
     static private CashTransactionDescriptor MapToDescriptor(CashTransaction txn) {
       TransactionStatus status = txn.Id % 7 == 0 ? TransactionStatus.Closed : TransactionStatus.Pending;
 
       return new CashTransactionDescriptor {
-         Id = txn.Id,
-         Number = txn.Number,
-         Concept = txn.Concept,
-         AccountingDate = txn.AccountingDate,
-         RecordingDate = txn.RecordingDate,
-         LedgerName = txn.Ledger.FullName,
-         TransactionTypeName = txn.TransactionType.Name,
-         VoucherTypeName = txn.VoucherType.Name,
-         ElaboratedBy = txn.ElaboratedBy.Name,
-         SourceName = txn.FunctionalArea.FullName,
-         Status = status.ToString(),
-         StatusName = status.GetName(),
+        Id = txn.Id,
+        Number = txn.Number,
+        Concept = txn.Concept,
+        AccountingDate = txn.AccountingDate,
+        RecordingDate = txn.RecordingDate,
+        LedgerName = txn.Ledger.FullName,
+        TransactionTypeName = txn.TransactionType.Name,
+        VoucherTypeName = txn.VoucherType.Name,
+        ElaboratedBy = txn.ElaboratedBy.Name,
+        SourceName = txn.FunctionalArea.FullName,
+        Status = status.ToString(),
+        StatusName = status.GetName(),
       };
     }
 

@@ -4,7 +4,7 @@
 *  Assembly : Empiria.FinancialAccounting.WebApi.dll       Pattern   : Web Api Controller                    *
 *  Type     : CashLedgerController                         License   : Please read LICENSE.txt file          *
 *                                                                                                            *
-*  Summary  : Web API used to retrive and updete cash ledger transactions.                                   *
+*  Summary  : Web API used to retrive and update cash ledger transactions.                                   *
 *                                                                                                            *
 ************************* Copyright(c) La Vía Óntica SC, Ontica LLC and contributors. All rights reserved. **/
 
@@ -17,7 +17,7 @@ using Empiria.FinancialAccounting.CashLedger.UseCases;
 
 namespace Empiria.FinancialAccounting.WebApi.CashLedger {
 
-  /// <summary>Web API used to retrive and updete cash ledger transactions.</summary>
+  /// <summary>Web API used to retrive and update cash ledger transactions.</summary>
   public class CashLedgerController : WebApiController {
 
     #region Query web apis
@@ -35,9 +35,20 @@ namespace Empiria.FinancialAccounting.WebApi.CashLedger {
 
 
     [HttpPost]
+    [Route("v2/financial-accounting/cash-ledger/entries/search")]
+    public CollectionModel SearchCashEntries([FromBody] CashLedgerQuery query) {
+
+      using (var usecases = CashLedgerUseCases.UseCaseInteractor()) {
+        FixedList<CashEntryDescriptor> entries = usecases.SearchEntries(query);
+
+        return new CollectionModel(base.Request, entries);
+      }
+    }
+
+
+    [HttpPost]
     [Route("v2/financial-accounting/cash-ledger/transactions/search")]
     public CollectionModel SearchCashLedgerTransactions([FromBody] CashLedgerQuery query) {
-      base.RequireBody(query);
 
       using (var usecases = CashLedgerUseCases.UseCaseInteractor()) {
         FixedList<CashTransactionDescriptor> transactions = usecases.SearchTransactions(query);
