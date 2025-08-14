@@ -45,7 +45,8 @@ namespace Empiria.FinancialAccounting.CashLedger.Adapters {
       string transactionTypeFilter = BuildTransactionTypeFilter(query.TransactionTypeUID);
       string voucherTypeFilter = BuildVoucherTypeFilter(query.VoucherTypeUID);
       string sourceFilter = BuildSourceFilter(query.SourceUID);
-      string statusFilter = BuildStatusFilter(query.Status);
+      string transactionStatusFilter = BuildTransactionStatusFilter(query.TransactionStatus);
+      string cashAccountStatusFilter = BuildCashAccountStatusFilter(query.CashAccountStatus);
       string keywordsFilter = BuildKeywordsFilter(query.Keywords);
       string conceptsFilter = BuildConceptFilter(query.Concept);
 
@@ -57,7 +58,8 @@ namespace Empiria.FinancialAccounting.CashLedger.Adapters {
       filter.AppendAnd(transactionTypeFilter);
       filter.AppendAnd(voucherTypeFilter);
       filter.AppendAnd(sourceFilter);
-      filter.AppendAnd(statusFilter);
+      filter.AppendAnd(transactionStatusFilter);
+      filter.AppendAnd(cashAccountStatusFilter);
       filter.AppendAnd(conceptsFilter);
       filter.AppendAnd(keywordsFilter);
 
@@ -113,6 +115,30 @@ namespace Empiria.FinancialAccounting.CashLedger.Adapters {
     }
 
 
+    static private string BuildCashAccountStatusFilter(CashAccountStatus cashAccountStatus) {
+
+      switch (cashAccountStatus) {
+        case CashAccountStatus.All:
+          return string.Empty;
+
+        case CashAccountStatus.CashAccountPending:
+          return $"(ID_MOVIMIENTO_REFERENCIA = 0)";
+
+        case CashAccountStatus.CashAccountWaiting:
+          return $"(ID_MOVIMIENTO_REFERENCIA = -2)";
+
+        case CashAccountStatus.NoCashAccount:
+          return $"(ID_MOVIMIENTO_REFERENCIA = -1)";
+
+        case CashAccountStatus.WithCashAccount:
+          return $"(ID_MOVIMIENTO_REFERENCIA > 0)";
+
+        default:
+          throw Assertion.EnsureNoReachThisCode();
+      }
+    }
+
+
     static private string BuildConceptFilter(string keywords) {
       return SearchExpression.ParseLike("CONCEPTO_TRANSACCION", keywords.ToUpperInvariant());
     }
@@ -159,7 +185,7 @@ namespace Empiria.FinancialAccounting.CashLedger.Adapters {
     }
 
 
-    static private string BuildStatusFilter(TransactionStatus status) {
+    static private string BuildTransactionStatusFilter(TransactionStatus status) {
       var startDateFilter = $"FECHA_AFECTACION >= {DataCommonMethods.FormatSqlDbDate(new DateTime(2025, 5, 1))}";
 
       switch (status) {

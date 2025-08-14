@@ -14,6 +14,20 @@ using Empiria.StateEnums;
 
 namespace Empiria.FinancialAccounting.CashLedger.Adapters {
 
+  public enum CashAccountStatus {
+
+    CashAccountWaiting = -2,
+
+    NoCashAccount = -1,
+
+    CashAccountPending = 0,
+
+    WithCashAccount = 1,
+
+    All = 255
+
+  }
+
   /// <summary>Input query DTO used to retrieve cash ledger transactions.</summary>
   public class CashLedgerQuery {
 
@@ -27,9 +41,14 @@ namespace Empiria.FinancialAccounting.CashLedger.Adapters {
     } = ExecutionServer.DateMaxValue;
 
 
-    public TransactionStatus Status {
+    public TransactionStatus TransactionStatus {
       get; set;
     } = TransactionStatus.All;
+
+
+    public CashAccountStatus CashAccountStatus {
+      get; set;
+    } = CashAccountStatus.All;
 
 
     public string Keywords {
