@@ -10,19 +10,12 @@
 
 using System.Linq;
 
+using Empiria.Financial.Integration.CashLedger;
+
 namespace Empiria.FinancialAccounting.CashLedger.Adapters {
 
   /// <summary>Input command used to update cash transaction entries.</summary>
-  public class CashEntriesCommand {
-
-    public long[] Entries {
-      get; set;
-    } = new long[0];
-
-
-    public int CashAccountId {
-      get; set;
-    }
+  public class CashEntriesCommand : SharedCashEntriesCommand {
 
     internal FixedList<CashEntry> GetEntries(CashTransaction transaction) {
       var allEntries = transaction.GetEntries();
