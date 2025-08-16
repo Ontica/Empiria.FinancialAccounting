@@ -8,10 +8,9 @@
 *                                                                                                            *
 ************************* Copyright(c) La Vía Óntica SC, Ontica LLC and contributors. All rights reserved. **/
 
-using System;
+using Empiria.Financial.Integration.CashLedger;
 
 namespace Empiria.FinancialAccounting.CashLedger.Adapters {
-
 
   /// <summary>Output holder DTO used for a cash transaction.</summary>
   public class CashTransactionHolderDto {
@@ -27,138 +26,16 @@ namespace Empiria.FinancialAccounting.CashLedger.Adapters {
   }  // class CashTransactionHolderDto
 
 
+
   /// <summary>Output DTO used to retrieve cash ledger transactions for use in lists.</summary>
-  public class CashTransactionDescriptor {
-
-    public long Id {
-      get; set;
-    }
-
-    public string Number {
-      get; set;
-    }
-
-    public string LedgerName {
-      get; set;
-    }
-
-    public string Concept {
-      get; set;
-    }
-
-    public string TransactionTypeName {
-      get; set;
-    }
-
-    public string VoucherTypeName {
-      get; set;
-    }
-
-    public string SourceName {
-      get; set;
-    }
-
-    public DateTime AccountingDate {
-      get; set;
-    }
-
-    public DateTime RecordingDate {
-      get; set;
-    }
-
-    public string ElaboratedBy {
-      get; set;
-    }
-
-    public string Status {
-      get; set;
-    }
-
-    public string StatusName {
-      get; set;
-    }
+  public class CashTransactionDescriptor : SharedCashTransactionDescriptor {
 
   }  // class CashTransactionDescriptor
 
 
+
   /// <summary>Output DTO used to retrieve cash ledger transaction entries.</summary>
-  public class CashTransactionEntryDto {
-
-    public long Id {
-      get; set;
-    }
-
-    public string AccountNumber {
-      get; set;
-    }
-
-    public string AccountName {
-      get; set;
-    }
-
-    public string ParentAccountFullName {
-      get; set;
-    }
-
-    public string SectorCode {
-      get; set;
-    }
-
-    public string SubledgerAccountNumber {
-      get; set;
-    }
-
-    public string SubledgerAccountName {
-      get; set;
-    }
-
-    public string VerificationNumber {
-      get; set;
-    }
-
-    public string ResponsibilityAreaCode {
-      get; set;
-    }
-
-    public string ResponsibilityAreaName {
-      get; set;
-    }
-
-    public string BudgetCode {
-      get; set;
-    }
-
-    public string Description {
-      get; set;
-    }
-
-    public DateTime Date {
-      get; set;
-    }
-
-    public int CurrencyId {
-      get; set;
-    }
-
-    public string CurrencyName {
-      get; set;
-    }
-
-    public decimal ExchangeRate {
-      get; set;
-    }
-
-    public decimal Debit {
-      get; set;
-    }
-
-    public decimal Credit {
-      get; set;
-    }
-
-    public int CashAccountId {
-      get; set;
-    }
+  public class CashTransactionEntryDto : SharedCashTransactionEntryDto {
 
   }  // class CashTransactionEntryDto
 
