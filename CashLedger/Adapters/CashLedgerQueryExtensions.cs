@@ -13,6 +13,8 @@ using System;
 using Empiria.Data;
 using Empiria.StateEnums;
 
+using Empiria.Financial.Integration.CashLedger;
+
 using Empiria.FinancialAccounting.Vouchers;
 
 namespace Empiria.FinancialAccounting.CashLedger.Adapters {
@@ -115,22 +117,22 @@ namespace Empiria.FinancialAccounting.CashLedger.Adapters {
     }
 
 
-    static private string BuildCashAccountStatusFilter(CashAccountStatus cashAccountStatus) {
+    static private string BuildCashAccountStatusFilter(SharedCashAccountStatus cashAccountStatus) {
 
       switch (cashAccountStatus) {
-        case CashAccountStatus.All:
+        case SharedCashAccountStatus.All:
           return string.Empty;
 
-        case CashAccountStatus.CashAccountPending:
+        case SharedCashAccountStatus.CashAccountPending:
           return $"(ID_MOVIMIENTO_REFERENCIA = 0)";
 
-        case CashAccountStatus.CashAccountWaiting:
+        case SharedCashAccountStatus.CashAccountWaiting:
           return $"(ID_MOVIMIENTO_REFERENCIA = -2)";
 
-        case CashAccountStatus.NoCashAccount:
+        case SharedCashAccountStatus.NoCashAccount:
           return $"(ID_MOVIMIENTO_REFERENCIA = -1)";
 
-        case CashAccountStatus.WithCashAccount:
+        case SharedCashAccountStatus.WithCashAccount:
           return $"(ID_MOVIMIENTO_REFERENCIA > 0)";
 
         default:
