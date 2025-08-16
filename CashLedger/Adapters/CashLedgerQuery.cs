@@ -15,6 +15,10 @@ namespace Empiria.FinancialAccounting.CashLedger.Adapters {
   /// <summary>Input query DTO used to retrieve cash ledger transactions.</summary>
   public class CashLedgerQuery : SharedCashLedgerQuery {
 
+    internal bool SearchEntries {
+      get; set;
+    }
+
   }  // class CashLedgerQuery
 
 }  // namespace Empiria.FinancialAccounting.CashLedger.Adapters

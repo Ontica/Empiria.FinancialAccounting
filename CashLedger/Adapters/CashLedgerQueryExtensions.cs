@@ -48,9 +48,8 @@ namespace Empiria.FinancialAccounting.CashLedger.Adapters {
       string voucherTypeFilter = BuildVoucherTypeFilter(query.VoucherTypeUID);
       string sourceFilter = BuildSourceFilter(query.SourceUID);
       string transactionStatusFilter = BuildTransactionStatusFilter(query.TransactionStatus);
-      string cashAccountStatusFilter = BuildCashAccountStatusFilter(query.CashAccountStatus);
       string keywordsFilter = BuildKeywordsFilter(query.Keywords);
-      string conceptsFilter = BuildConceptFilter(query.Concept);
+      string conceptsFilter = BuildConceptFilter(query.Keywords);
 
       var filter = new Filter(ledgerFilter);
 
@@ -61,16 +60,22 @@ namespace Empiria.FinancialAccounting.CashLedger.Adapters {
       filter.AppendAnd(voucherTypeFilter);
       filter.AppendAnd(sourceFilter);
       filter.AppendAnd(transactionStatusFilter);
-      filter.AppendAnd(cashAccountStatusFilter);
       filter.AppendAnd(conceptsFilter);
       filter.AppendAnd(keywordsFilter);
 
-      string transactionEntriesFilter = BuildTransactionEntriesFilter(query);
+      if (query.SearchEntries) {
+        string entriesFilter = BuildEntriesFilter(query);
 
-      filter.AppendAnd(transactionEntriesFilter);
+        filter.AppendAnd(entriesFilter);
+      } else {
+        string transactionEntriesFilter = BuildTransactionEntriesFilter(query);
+
+        filter.AppendAnd(transactionEntriesFilter);
+      }
 
       return filter.ToString();
     }
+
 
     static internal string MapToSortString(this CashLedgerQuery query) {
       if (query.OrderBy.Length != 0) {
@@ -118,7 +123,6 @@ namespace Empiria.FinancialAccounting.CashLedger.Adapters {
 
 
     static private string BuildCashAccountStatusFilter(SharedCashAccountStatus cashAccountStatus) {
-
       switch (cashAccountStatus) {
         case SharedCashAccountStatus.All:
           return string.Empty;
@@ -142,11 +146,19 @@ namespace Empiria.FinancialAccounting.CashLedger.Adapters {
 
 
     static private string BuildConceptFilter(string keywords) {
+      if (!keywords.StartsWith("@")) {
+        return string.Empty;
+      }
+
+      keywords = EmpiriaString.TrimAll(keywords, "@", string.Empty);
+
       return SearchExpression.ParseLike("CONCEPTO_TRANSACCION", keywords.ToUpperInvariant());
     }
 
 
     static private string BuildKeywordsFilter(string keywords) {
+      keywords = EmpiriaString.TrimAll(keywords, "@", string.Empty);
+
       return SearchExpression.ParseAndLikeKeywords("TRANSACCION_KEYWORDS", keywords);
     }
 
@@ -217,28 +229,27 @@ namespace Empiria.FinancialAccounting.CashLedger.Adapters {
     }
 
 
+    static private string BuildEntriesFilter(CashLedgerQuery query) {
+      string cashAccountStatusFilter = BuildCashAccountStatusFilter(query.CashAccountStatus);
+      string accountsFilter = BuildAccountsFilter(query.VoucherAccounts);
+      string subledgerAccountsFilter = BuildSubledgerAccountsFilter(query.SubledgerAccounts);
+      string verificationNumbersFilter = BuildVerificationNumberFilter(query.VerificationNumbers);
+
+      var filter = new Filter(cashAccountStatusFilter);
+
+      filter.AppendAnd(accountsFilter);
+      filter.AppendAnd(subledgerAccountsFilter);
+      filter.AppendAnd(verificationNumbersFilter);
+
+      return filter.ToString();
+    }
+
+
     static private string BuildTransactionEntriesFilter(CashLedgerQuery query) {
-      string filter = string.Empty;
 
-      if (query.VoucherAccounts.Length != 0) {
-        filter = BuildAccountsFilter(query.VoucherAccounts);
-      }
+      string filter = BuildEntriesFilter(query);
 
-      if (query.SubledgerAccounts.Length != 0) {
-        if (filter.Length != 0) {
-          filter += " AND ";
-        }
-        filter += BuildSubledgerAccountsFilter(query.SubledgerAccounts);
-      }
-
-      if (query.VerificationNumbers.Length != 0) {
-        if (filter.Length != 0) {
-          filter += " AND ";
-        }
-        filter += BuildVerificationNumberFilter(query.VerificationNumbers);
-      }
-
-      if (filter == string.Empty) {
+      if (filter.Length == 0) {
         return string.Empty;
       }
 

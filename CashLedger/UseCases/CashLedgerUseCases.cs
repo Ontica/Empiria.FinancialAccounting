@@ -58,6 +58,7 @@ namespace Empiria.FinancialAccounting.CashLedger.UseCases {
     public FixedList<CashEntryDescriptor> SearchEntries(CashLedgerQuery query) {
       Assertion.Require(query, nameof(query));
 
+      query.SearchEntries = true;
       query.EnsureIsValid();
 
       string filter = query.MapToFilterString();
