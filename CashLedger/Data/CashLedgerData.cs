@@ -10,6 +10,8 @@
 
 using Empiria.Data;
 
+using Empiria.FinancialAccounting.CashLedger.Adapters;
+
 namespace Empiria.FinancialAccounting.CashLedger.Data {
 
   /// <summary>Provides services used to retrive and write cash ledger transactions.</summary>
@@ -57,6 +59,26 @@ namespace Empiria.FinancialAccounting.CashLedger.Data {
       return DataReader.GetPlainObjectFixedList<CashTransaction>(op);
     }
 
+
+
+    static internal void WriteCashEntriesAccounts(FixedList<CashEntryFields> entries) {
+
+      string sql = "BEGIN ";
+
+      foreach (var entry in entries) {
+        var localSql = "UPDATE COF_MOVIMIENTO " +
+                 $"SET ID_MOVIMIENTO_REFERENCIA = {entry.CashAccountId} " +
+                 $"WHERE ID_MOVIMIENTO = {entry.EntryId} AND ID_TRANSACCION = {entry.TransactionId}; ";
+
+        sql += localSql;
+      }
+
+      sql += "END;";
+
+      var op = DataOperation.Parse(sql);
+
+      DataWriter.Execute(op);
+    }
 
 
     static internal void WriteCashEntryAccount(CashEntry entry, int cashAccountId) {

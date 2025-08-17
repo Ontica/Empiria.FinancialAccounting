@@ -86,19 +86,13 @@ namespace Empiria.FinancialAccounting.CashLedger.UseCases {
     }
 
 
-    public CashTransactionHolderDto UpdateEntries(long id, CashTransactionHolderDto transactionDto) {
-      Assertion.Require(id > 0, nameof(id));
-      Assertion.Require(transactionDto, nameof(transactionDto));
+    public CashTransactionHolderDto UpdateEntries(long transactionId, FixedList<CashEntryFields> entries) {
+      Assertion.Require(entries, nameof(entries));
+      Assertion.Require(entries.Count > 0, nameof(entries));
 
-      CashTransaction transaction = CashLedgerData.GetTransaction(id);
+      CashTransaction transaction = CashLedgerData.GetTransaction(transactionId);
 
-      FixedList<CashEntry> entries = transaction.GetEntries();
-
-      foreach (var updatedEntry in transactionDto.Entries) {
-        CashEntry entry = entries.Find(x => x.Id == updatedEntry.Id);
-
-        transaction.SetCashEntryAccount(entry, updatedEntry.CashAccountId);
-      }
+      CashLedgerData.WriteCashEntriesAccounts(entries);
 
       return CashTransactionMapper.Map(transaction);
     }

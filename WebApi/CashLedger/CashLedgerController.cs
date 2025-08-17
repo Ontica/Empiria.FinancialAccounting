@@ -75,10 +75,10 @@ namespace Empiria.FinancialAccounting.WebApi.CashLedger {
 
     [HttpPost]
     [Route("v2/financial-accounting/cash-ledger/transactions/{id:long}/update-entries")]
-    public SingleObjectModel UpdateEntries([FromUri] long id, [FromBody] CashTransactionHolderDto transactionDto) {
+    public SingleObjectModel UpdateEntries([FromUri] long id, [FromBody] FixedList<CashEntryFields> entries) {
 
       using (var usecases = CashLedgerUseCases.UseCaseInteractor()) {
-        CashTransactionHolderDto transaction = usecases.UpdateEntries(id, transactionDto);
+        CashTransactionHolderDto transaction = usecases.UpdateEntries(id, entries);
 
         return new SingleObjectModel(base.Request, transaction);
       }
