@@ -95,24 +95,6 @@ namespace Empiria.FinancialAccounting.CashLedger {
       return CashLedgerData.GetTransactionEntries(this);
     }
 
-
-    internal void SetCashEntryAccount(CashEntry entry, int cashAccountId) {
-      Assertion.Require(entry, nameof(entry));
-      Assertion.Require(cashAccountId >= -2, nameof(cashAccountId));
-
-      CashLedgerData.WriteCashEntryAccount(entry, cashAccountId);
-    }
-
-
-    internal void SetCashEntryAccount(FixedList<CashEntry> entries, int cashAccountId) {
-      Assertion.Require(entries, nameof(entries));
-      Assertion.Require(cashAccountId >= -2, nameof(cashAccountId));
-
-      foreach (var entry in entries) {
-        CashLedgerData.WriteCashEntryAccount(entry, cashAccountId);
-      }
-    }
-
     #endregion Methods
 
   }  // class CashTransaction

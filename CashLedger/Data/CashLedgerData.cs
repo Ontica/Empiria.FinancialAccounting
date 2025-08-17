@@ -47,7 +47,7 @@ namespace Empiria.FinancialAccounting.CashLedger.Data {
     }
 
 
-    static internal FixedList<CashTransaction> GetTransactions(string filter, string sort, int pageSize) {
+    static internal FixedList<CashTransaction> SearchTransactions(string filter, string sort, int pageSize) {
       var sql = "SELECT * FROM (" +
                   "SELECT * FROM VW_COF_TRANSACCION " +
                   $"WHERE {filter} " +
@@ -58,7 +58,6 @@ namespace Empiria.FinancialAccounting.CashLedger.Data {
 
       return DataReader.GetPlainObjectFixedList<CashTransaction>(op);
     }
-
 
 
     static internal void WriteCashEntriesAccounts(FixedList<CashEntryFields> entries) {
@@ -74,17 +73,6 @@ namespace Empiria.FinancialAccounting.CashLedger.Data {
       }
 
       sql += "END;";
-
-      var op = DataOperation.Parse(sql);
-
-      DataWriter.Execute(op);
-    }
-
-
-    static internal void WriteCashEntryAccount(CashEntry entry, int cashAccountId) {
-      var sql = "UPDATE COF_MOVIMIENTO " +
-               $"SET ID_MOVIMIENTO_REFERENCIA = {cashAccountId} " +
-               $"WHERE ID_MOVIMIENTO = {entry.Id} AND ID_TRANSACCION = {entry.VoucherId}";
 
       var op = DataOperation.Parse(sql);
 

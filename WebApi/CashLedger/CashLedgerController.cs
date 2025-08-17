@@ -62,18 +62,6 @@ namespace Empiria.FinancialAccounting.WebApi.CashLedger {
     #region Command web apis
 
     [HttpPost]
-    [Route("v2/financial-accounting/cash-ledger/transactions/{id:long}/execute-command")]
-    public SingleObjectModel ExecuteCommand([FromUri] long id, [FromBody] CashEntriesCommand command) {
-
-      using (var usecases = CashLedgerUseCases.UseCaseInteractor()) {
-        CashTransactionHolderDto transaction = usecases.ExecuteCommand(id, command);
-
-        return new SingleObjectModel(base.Request, transaction);
-      }
-    }
-
-
-    [HttpPost]
     [Route("v2/financial-accounting/cash-ledger/transactions/{id:long}/update-entries")]
     public SingleObjectModel UpdateEntries([FromUri] long id, [FromBody] FixedList<CashEntryFields> entries) {
 

@@ -32,20 +32,6 @@ namespace Empiria.FinancialAccounting.CashLedger.UseCases {
 
     #region Use cases
 
-    public CashTransactionHolderDto ExecuteCommand(long id, CashEntriesCommand command) {
-      Assertion.Require(id > 0, nameof(id));
-      Assertion.Require(command, nameof(command));
-
-      CashTransaction transaction = CashLedgerData.GetTransaction(id);
-
-      FixedList<CashEntry> entries = command.GetEntries(transaction);
-
-      transaction.SetCashEntryAccount(entries, command.CashAccountId);
-
-      return CashTransactionMapper.Map(transaction);
-    }
-
-
     public CashTransactionHolderDto GetTransaction(long id) {
       Assertion.Require(id > 0, nameof(id));
 
@@ -80,7 +66,7 @@ namespace Empiria.FinancialAccounting.CashLedger.UseCases {
       string sort = query.MapToSortString();
       int pageSize = query.CalculatePageSize();
 
-      FixedList<CashTransaction> list = CashLedgerData.GetTransactions(filter, sort, pageSize);
+      FixedList<CashTransaction> list = CashLedgerData.SearchTransactions(filter, sort, pageSize);
 
       return CashTransactionMapper.MapToDescriptor(list);
     }
