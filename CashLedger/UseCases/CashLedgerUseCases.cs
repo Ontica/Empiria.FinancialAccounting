@@ -13,6 +13,7 @@ using Empiria.Services;
 using Empiria.FinancialAccounting.CashLedger.Adapters;
 using Empiria.FinancialAccounting.CashLedger.Data;
 
+
 namespace Empiria.FinancialAccounting.CashLedger.UseCases {
 
   /// <summary>Use cases used to retrive and manage cash ledger transactions.</summary>
@@ -38,6 +39,16 @@ namespace Empiria.FinancialAccounting.CashLedger.UseCases {
       CashTransaction transaction = CashLedgerData.GetTransaction(id);
 
       return CashTransactionMapper.Map(transaction);
+    }
+
+
+    public FixedList<CashTransactionHolderDto> GetTransactions(FixedList<long> ids) {
+      Assertion.Require(ids, nameof(ids));
+      Assertion.Require(ids.Count > 0, nameof(ids));
+
+      FixedList<CashTransaction> list = CashLedgerData.GetTransactions(ids);
+
+      return CashTransactionMapper.Map(list);
     }
 
 
@@ -69,6 +80,14 @@ namespace Empiria.FinancialAccounting.CashLedger.UseCases {
       FixedList<CashTransaction> list = CashLedgerData.SearchTransactions(filter, sort, pageSize);
 
       return CashTransactionMapper.MapToDescriptor(list);
+    }
+
+
+    public void UpdateBulkEntries(FixedList<CashEntryFields> entries) {
+      Assertion.Require(entries, nameof(entries));
+      Assertion.Require(entries.Count > 0, nameof(entries));
+
+      CashLedgerData.WriteCashEntriesAccounts(entries);
     }
 
 

@@ -35,6 +35,18 @@ namespace Empiria.FinancialAccounting.WebApi.CashLedger {
 
 
     [HttpPost]
+    [Route("v2/financial-accounting/cash-ledger/transactions/bulk-operation/get-transactions")]
+    public CollectionModel GetCashTransactions([FromBody] long[] ids) {
+
+      using (var usecases = CashLedgerUseCases.UseCaseInteractor()) {
+        FixedList<CashTransactionHolderDto> transactions = usecases.GetTransactions(ids.ToFixedList());
+
+        return new CollectionModel(base.Request, transactions);
+      }
+    }
+
+
+    [HttpPost]
     [Route("v2/financial-accounting/cash-ledger/entries/search")]
     public CollectionModel SearchCashEntries([FromBody] CashLedgerQuery query) {
 
@@ -60,6 +72,19 @@ namespace Empiria.FinancialAccounting.WebApi.CashLedger {
     #endregion Query web apis
 
     #region Command web apis
+
+    [HttpPost]
+    [Route("v2/financial-accounting/cash-ledger/transactions/bulk-operation/update-entries")]
+    public SingleObjectModel UpdateBulkEntries([FromBody] FixedList<CashEntryFields> entries) {
+
+      using (var usecases = CashLedgerUseCases.UseCaseInteractor()) {
+
+        usecases.UpdateBulkEntries(entries);
+
+        return new SingleObjectModel(base.Request, entries.Count);
+      }
+    }
+
 
     [HttpPost]
     [Route("v2/financial-accounting/cash-ledger/transactions/{id:long}/update-entries")]

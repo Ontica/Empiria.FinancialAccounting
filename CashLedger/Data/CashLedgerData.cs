@@ -27,6 +27,21 @@ namespace Empiria.FinancialAccounting.CashLedger.Data {
     }
 
 
+    static internal FixedList<CashTransaction> GetTransactions(FixedList<long> ids) {
+      Assertion.Require(ids, nameof(ids));
+      Assertion.Require(ids.Count > 0, nameof(ids));
+
+      var filter = SearchExpression.ParseInSet("ID_TRANSACCION", ids);
+
+      var sql = "SELECT * FROM VW_COF_TRANSACCION " +
+               $"WHERE {filter} AND ESTA_ABIERTA = 0";
+
+      var op = DataOperation.Parse(sql);
+
+      return DataReader.GetPlainObjectFixedList<CashTransaction>(op);
+    }
+
+
     static internal FixedList<CashEntry> GetTransactionEntries(CashTransaction transaction) {
       var op = DataOperation.Parse("qry_cof_movimiento", transaction.Id, 0);
 
