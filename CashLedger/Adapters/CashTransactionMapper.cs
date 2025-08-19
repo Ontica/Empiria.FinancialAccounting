@@ -118,6 +118,7 @@ namespace Empiria.FinancialAccounting.CashLedger.Adapters {
         TransactionTypeName = txn.TransactionType.Name,
         VoucherTypeName = txn.VoucherType.Name,
         ElaboratedBy = txn.ElaboratedBy.Name,
+        AuthorizedBy = txn.AuthorizedBy.Name,
         SourceName = txn.FunctionalArea.FullName,
         Status = status.ToString(),
         StatusName = status.GetName(),

@@ -81,6 +81,12 @@ namespace Empiria.FinancialAccounting.CashLedger {
     } = Participant.Empty;
 
 
+    [DataField("ID_AUTORIZADA_POR", ConvertFrom = typeof(long))]
+    public Participant AuthorizedBy {
+      get; private set;
+    } = Participant.Empty;
+
+
     public string StatusName {
       get {
         return "Pendiente";
