@@ -253,7 +253,7 @@ namespace Empiria.FinancialAccounting.CashLedger.Adapters {
         return string.Empty;
       }
 
-      return $"ID_TRANSACCION IN (SELECT ID_TRANSACCION FROM VW_COF_MOVIMIENTO_SEARCH WHERE {filter})";
+      return $"ID_TRANSACCION IN (SELECT ID_TRANSACCION FROM VW_COF_MOVIMIENTO WHERE {filter})";
     }
 
 
