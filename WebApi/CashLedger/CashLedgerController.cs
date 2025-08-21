@@ -45,6 +45,17 @@ namespace Empiria.FinancialAccounting.WebApi.CashLedger {
       }
     }
 
+    [HttpPost]
+    [Route("v2/financial-accounting/cash-ledger/entries/bulk-operation/get-entries")]
+    public CollectionModel GetCashEntries([FromBody] long[] ids) {
+
+      using (var usecases = CashLedgerUseCases.UseCaseInteractor()) {
+        FixedList<CashEntryDescriptor> entries = usecases.GetEntries(ids.ToFixedList());
+
+        return new CollectionModel(base.Request, entries);
+      }
+    }
+
 
     [HttpPost]
     [Route("v2/financial-accounting/cash-ledger/entries/search")]
