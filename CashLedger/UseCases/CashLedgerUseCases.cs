@@ -13,7 +13,6 @@ using Empiria.Services;
 using Empiria.FinancialAccounting.CashLedger.Adapters;
 using Empiria.FinancialAccounting.CashLedger.Data;
 
-
 namespace Empiria.FinancialAccounting.CashLedger.UseCases {
 
   /// <summary>Use cases used to retrive and manage cash ledger transactions.</summary>

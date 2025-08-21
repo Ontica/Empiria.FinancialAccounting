@@ -200,7 +200,7 @@ namespace Empiria.FinancialAccounting.CashLedger.Adapters {
 
 
     static private string BuildTransactionStatusFilter(TransactionStatus status) {
-      var startDateFilter = $"FECHA_AFECTACION >= {DataCommonMethods.FormatSqlDbDate(new DateTime(2025, 5, 1))}";
+      var startDateFilter = $"FECHA_AFECTACION >= {DataCommonMethods.FormatSqlDbDate(new DateTime(2025, 1, 1))}";
 
       switch (status) {
         case TransactionStatus.All:

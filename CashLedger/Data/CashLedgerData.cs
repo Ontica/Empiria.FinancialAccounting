@@ -51,10 +51,10 @@ namespace Empiria.FinancialAccounting.CashLedger.Data {
 
     static internal FixedList<CashEntryExtended> SearchEntries(string filter, string sort, int pageSize) {
       var sql = "SELECT * FROM (" +
-            "SELECT * FROM VW_COF_MOVIMIENTO " +
-            $"WHERE {filter} " +
-            $"ORDER BY {sort}) " +
-         $"WHERE ROWNUM <= {pageSize}";
+                    "SELECT * FROM VW_COF_MOVIMIENTO " +
+                    $"WHERE {filter} " +
+                    $"ORDER BY {sort}) " +
+                 $"WHERE ROWNUM <= {pageSize}";
 
       var op = DataOperation.Parse(sql);
 

@@ -7,7 +7,6 @@
 *  Summary  : Lee el archivo de conciliación del sistema SIMEFIN.                                            *
 *                                                                                                            *
 ************************* Copyright(c) La Vía Óntica SC, Ontica LLC and contributors. All rights reserved. **/
-using System;
 
 using Empiria.Json;
 using Empiria.Office;
