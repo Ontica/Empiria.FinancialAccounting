@@ -80,8 +80,12 @@ namespace Empiria.FinancialAccounting.CashLedger.Adapters {
     static internal string MapToSortString(this CashLedgerQuery query) {
       if (query.OrderBy.Length != 0) {
         return query.OrderBy;
+
+      } else if (query.SearchEntries) {
+        return "ID_MAYOR, NUMERO_TRANSACCION, ID_MOVIMIENTO";
+
       } else {
-        return "ID_MAYOR, FECHA_AFECTACION, NUMERO_TRANSACCION";
+        return "ID_MAYOR, NUMERO_TRANSACCION";
       }
     }
 
