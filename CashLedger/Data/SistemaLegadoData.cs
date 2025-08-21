@@ -18,7 +18,9 @@ namespace Empiria.FinancialAccounting.CashLedger.Data {
   static internal class SistemaLegadoData {
 
     static internal FixedList<MovimientoSistemaLegado> LeerMovimientos(long idPoliza) {
-      var sql = "SELECT * FROM Z_MOVS_PYC " +
+      var sql = "SELECT MCOM_NUM_VOL, MCOM_FOLIO_VOL, MCOM_REG_CONTABLE, MCOM_NUM_AUX, MCOM_SECTOR, " +
+                       "MCOM_MONEDA, MCOM_DISPONIB, MCOM_IMPORTE, MCOM_CVE_MOV, MCOM_CONCEPTO " +
+                "FROM Z_MOVS_PYC " +
                 $"WHERE MCOM_NUM_VOL = {idPoliza} " +
                 $"ORDER BY MCOM_FOLIO_VOL";
 
