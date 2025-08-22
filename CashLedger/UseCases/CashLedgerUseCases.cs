@@ -76,9 +76,13 @@ namespace Empiria.FinancialAccounting.CashLedger.UseCases {
         return mapped;
       }
 
+      var allLegacyEntries = SistemaLegadoData.LeerMovimientos(ids);
+
       foreach (var txn in mapped) {
-        var legacyEntries = SistemaLegadoData.LeerMovimientos(txn.Transaction.Id);
-        var merger = new SistemaLegadoMerger(txn.Entries, legacyEntries);
+        var legacyTxnEntries = allLegacyEntries.FindAll(x => x.IdPoliza == txn.Transaction.Id)
+                                               .Sort((x, y) => x.IdConsecutivo.CompareTo(y.IdConsecutivo));
+
+        var merger = new SistemaLegadoMerger(txn.Entries, legacyTxnEntries);
 
         merger.Merge();
       }

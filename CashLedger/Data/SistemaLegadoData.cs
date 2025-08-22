@@ -10,7 +10,9 @@
 
 using Empiria.Data;
 
-using Empiria.Financial.Integration.CashLedger;
+using Empiria.Financial.Integration;
+
+using Empiria.FinancialAccounting.CashLedger.Adapters;
 
 namespace Empiria.FinancialAccounting.CashLedger.Data {
 
@@ -23,6 +25,27 @@ namespace Empiria.FinancialAccounting.CashLedger.Data {
                 "FROM Z_MOVS_PYC " +
                 $"WHERE MCOM_NUM_VOL = {idPoliza} " +
                 $"ORDER BY MCOM_FOLIO_VOL";
+
+      var op = DataOperation.Parse(sql);
+
+      return DataReader.GetPlainObjectFixedList<MovimientoSistemaLegado>(op);
+    }
+
+
+    static internal FixedList<MovimientoSistemaLegado> LeerMovimientos(FixedList<long> idsPolizas) {
+      Assertion.Require(idsPolizas, nameof(idsPolizas));
+
+      if (idsPolizas.Count == 0) {
+        return new FixedList<MovimientoSistemaLegado>();
+      }
+
+      var filter = SearchExpression.ParseInSet("MCOM_NUM_VOL", idsPolizas);
+
+      var sql = "SELECT MCOM_NUM_VOL, MCOM_FOLIO_VOL, MCOM_REG_CONTABLE, MCOM_NUM_AUX, MCOM_SECTOR, " +
+                       "MCOM_MONEDA, MCOM_DISPONIB, MCOM_IMPORTE, MCOM_CVE_MOV, MCOM_CONCEPTO " +
+                "FROM Z_MOVS_PYC " +
+                $"WHERE {filter} " +
+                $"ORDER BY MCOM_NUM_VOL, MCOM_FOLIO_VOL";
 
       var op = DataOperation.Parse(sql);
 
@@ -45,66 +68,13 @@ namespace Empiria.FinancialAccounting.CashLedger.Data {
         var idMovimiento = (long) (float) data.Rows[i]["MCOM_FOLIO_VOL"];
 
         sql = "UPDATE Z_MOVS_PYC " +
-             $"SET MCOM_REG_CONTABLE = '{FormatAccountNumber(cuenta)}' " +
+             $"SET MCOM_REG_CONTABLE = '{IntegrationLibrary.FormatAccountNumber(cuenta)}' " +
              $"WHERE MCOM_NUM_VOL = {idVolante} AND MCOM_FOLIO_VOL = {idMovimiento} AND MCOM_REG_CONTABLE = '{cuenta}'";
 
         op = DataOperation.Parse(sql);
 
         DataWriter.Execute(op);
       }
-    }
-
-
-    static private string FormatAccountNumber(string accountNumber) {
-      string temp = EmpiriaString.TrimSpacesAndControl(accountNumber);
-
-      if (temp.Length == 0) {
-        return temp;
-      }
-
-      if (temp.Contains("*") || temp.Contains("]") || temp.Contains("^") || temp.Contains("~")) {
-        return temp;
-      }
-
-      char separator = '.';
-      string pattern = "0.00.00.00.00.00.00.00.00.00.00";
-
-      temp = temp.Replace(separator.ToString(), string.Empty);
-
-      temp = temp.TrimEnd('0');
-
-      if (temp.Length > EmpiriaString.CountOccurences(pattern, '0')) {
-        Assertion.RequireFail($"Number of placeholders in pattern ({pattern}) is less than the " +
-                              $"number of characters in the input string ({accountNumber}).");
-      } else {
-        temp = temp.PadRight(EmpiriaString.CountOccurences(pattern, '0'), '0');
-      }
-
-      for (int i = 0; i < pattern.Length; i++) {
-        if (pattern[i] == separator) {
-          temp = temp.Insert(i, separator.ToString());
-        }
-      }
-
-      while (true) {
-        if (temp.EndsWith($"{separator}0000")) {
-          temp = temp.Remove(temp.Length - 5);
-
-        } else if (temp.EndsWith($"{separator}000")) {
-          temp = temp.Remove(temp.Length - 4);
-
-        } else if (temp.EndsWith($"{separator}00")) {
-          temp = temp.Remove(temp.Length - 3);
-
-        } else if (temp.EndsWith($"{separator}0")) {
-          temp = temp.Remove(temp.Length - 2);
-
-        } else {
-          break;
-        }
-      }
-
-      return temp;
     }
 
   }  // class SistemaLegadoData
