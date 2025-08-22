@@ -42,22 +42,48 @@ namespace Empiria.FinancialAccounting.CashLedger.UseCases {
     }
 
 
-    public CashTransactionHolderDto GetTransaction(long id) {
+    public CashTransactionHolderDto GetTransaction(long id, bool returnLegacySystemData) {
       Assertion.Require(id > 0, nameof(id));
 
       CashTransaction transaction = CashLedgerData.GetTransaction(id);
 
-      return CashTransactionMapper.Map(transaction);
+      CashTransactionHolderDto mapped = CashTransactionMapper.Map(transaction);
+
+      if (!returnLegacySystemData) {
+        return mapped;
+      }
+
+      var legacyEntries = SistemaLegadoData.LeerMovimientos(id);
+      var merger = new SistemaLegadoMerger(mapped.Entries, legacyEntries);
+
+      merger.Merge();
+
+      return mapped;
     }
 
 
-    public FixedList<CashTransactionHolderDto> GetTransactions(FixedList<long> ids) {
+    public FixedList<CashTransactionHolderDto> GetTransactions(FixedList<long> ids,
+                                                               bool returnLegacySystemData) {
+
       Assertion.Require(ids, nameof(ids));
       Assertion.Require(ids.Count > 0, nameof(ids));
 
       FixedList<CashTransaction> list = CashLedgerData.GetTransactions(ids);
 
-      return CashTransactionMapper.Map(list);
+      FixedList<CashTransactionHolderDto> mapped = CashTransactionMapper.Map(list);
+
+      if (!returnLegacySystemData) {
+        return mapped;
+      }
+
+      foreach (var txn in mapped) {
+        var legacyEntries = SistemaLegadoData.LeerMovimientos(txn.Transaction.Id);
+        var merger = new SistemaLegadoMerger(txn.Entries, legacyEntries);
+
+        merger.Merge();
+      }
+
+      return mapped;
     }
 
 
