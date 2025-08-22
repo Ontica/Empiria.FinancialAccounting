@@ -10,8 +10,6 @@
 
 using Empiria.Services;
 
-using Empiria.Financial.Integration.CashLedger;
-
 using Empiria.FinancialAccounting.CashLedger.Data;
 
 namespace Empiria.FinancialAccounting.CashLedger.UseCases {
@@ -32,11 +30,6 @@ namespace Empiria.FinancialAccounting.CashLedger.UseCases {
     #endregion Constructors and parsers
 
     #region Use cases
-
-    public FixedList<MovimientoSistemaLegado> LeerMovimientos(long idPoliza) {
-      return SistemaLegadoData.LeerMovimientos(idPoliza);
-    }
-
 
     public void LimpiarTransacciones() {
       SistemaLegadoData.LimpiarTransacciones();

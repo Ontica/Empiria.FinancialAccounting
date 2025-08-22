@@ -12,8 +12,6 @@ using System.Web.Http;
 
 using Empiria.WebApi;
 
-using Empiria.Financial.Integration.CashLedger;
-
 using Empiria.FinancialAccounting.CashLedger.UseCases;
 
 namespace Empiria.FinancialAccounting.WebApi.CashLedger {
@@ -22,18 +20,6 @@ namespace Empiria.FinancialAccounting.WebApi.CashLedger {
   public class SistemaLegadoController : WebApiController {
 
     #region Query web apis
-
-
-    [HttpGet]
-    [Route("v2/financial-accounting/cash-ledger/sistema-legado/transacciones/{idPoliza:long}")]
-    public CollectionModel LeerMovimientos([FromUri] long idPoliza) {
-
-      using (var usecases = SistemaLegadoUseCases.UseCaseInteractor()) {
-        FixedList<MovimientoSistemaLegado> movimientos = usecases.LeerMovimientos(idPoliza);
-
-        return new CollectionModel(base.Request, movimientos);
-      }
-    }
 
 
     [HttpGet]
