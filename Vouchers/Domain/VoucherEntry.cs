@@ -78,7 +78,7 @@ namespace Empiria.FinancialAccounting.Vouchers {
 
 
     [DataField("ID_MOVIMIENTO_REFERENCIA", ConvertFrom = typeof(long))]
-    public int CashFlowAccountId {
+    public int BusinessOperationId {
       get;
       private set;
     }
@@ -280,7 +280,7 @@ namespace Empiria.FinancialAccounting.Vouchers {
       this.LedgerAccount = fields.GetLedgerAccount();
       this.Sector = fields.Sector;
       this.SubledgerAccount = fields.GetSubledgerAccount();
-      this.CashFlowAccountId = fields.CashFlowAccountId;
+      this.BusinessOperationId = fields.BusinessOperationId;
       this.ResponsibilityArea = fields.GetResponsibilityArea();
       this.BudgetConcept = EmpiriaString.TrimAll(fields.BudgetConcept);
       this.EventType = fields.GetEventType();

@@ -9,7 +9,6 @@
 ************************* Copyright(c) La Vía Óntica SC, Ontica LLC and contributors. All rights reserved. **/
 
 using System;
-using System.Linq;
 
 using Empiria.Data;
 
@@ -197,8 +196,8 @@ namespace Empiria.FinancialAccounting.Vouchers.Data {
 
       var op = DataOperation.Parse("write_cof_movimiento_tmp", o.Id, o.Voucher.Id, o.LedgerAccount.Id,
           o.SubledgerAccount.IsEmptyInstance ? 0 : o.SubledgerAccount.Id,
-          o.Sector.IsEmptyInstance ? 0: o.Sector.Id,
-          o.CashFlowAccountId, o.ResponsibilityArea.IsEmptyInstance ? 0: o.ResponsibilityArea.Id,
+          o.Sector.IsEmptyInstance ? 0 : o.Sector.Id,
+          o.BusinessOperationId, o.ResponsibilityArea.IsEmptyInstance ? 0 : o.ResponsibilityArea.Id,
           o.BudgetConcept, o.EventType.Id, o.VerificationNumber, (char) o.VoucherEntryType,
           o.HasDate ? (object) o.Date : DBNull.Value, o.Concept, o.Currency.Id,
           o.Amount, o.BaseCurrencyAmount, o.Protected ? 1 : 0);

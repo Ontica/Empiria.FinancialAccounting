@@ -55,37 +55,37 @@ namespace Empiria.FinancialAccounting.Vouchers.Adapters {
 
     static internal VoucherFields MapToVoucherFields(Voucher voucher) {
       return new VoucherFields {
-         AccountingDate = voucher.AccountingDate,
-         Concept = voucher.Concept,
-         ElaboratedById = voucher.ElaboratedBy.Id,
-         FunctionalAreaId = voucher.FunctionalArea.Id,
-         LedgerUID = voucher.Ledger.UID,
-         RecordingDate = voucher.RecordingDate,
-         TransactionTypeUID = voucher.TransactionType.UID,
-         VoucherTypeUID = voucher.VoucherType.UID
+        AccountingDate = voucher.AccountingDate,
+        Concept = voucher.Concept,
+        ElaboratedById = voucher.ElaboratedBy.Id,
+        FunctionalAreaId = voucher.FunctionalArea.Id,
+        LedgerUID = voucher.Ledger.UID,
+        RecordingDate = voucher.RecordingDate,
+        TransactionTypeUID = voucher.TransactionType.UID,
+        VoucherTypeUID = voucher.VoucherType.UID
       };
     }
 
 
     static internal VoucherEntryFields MapToVoucherEntryFields(VoucherEntry entry) {
       return new VoucherEntryFields {
-         Amount = entry.Amount,
-         BaseCurrencyAmount = entry.BaseCurrencyAmount,
-         BudgetConcept = entry.BudgetConcept,
-         Concept = entry.Concept,
-         CurrencyUID = entry.Currency.UID,
-         Date = entry.Date,
-         EventTypeId = entry.EventType.Id,
-         ExchangeRate = entry.ExchangeRate,
-         LedgerAccountId = entry.LedgerAccount.Id,
-         Protected = entry.Protected,
-         CashFlowAccountId = entry.CashFlowAccountId,
-         ResponsibilityAreaId = entry.ResponsibilityArea.Id,
-         SectorId = entry.Sector.Id,
-         SubledgerAccountId = entry.SubledgerAccount.Id,
-         VerificationNumber = entry.VerificationNumber,
-         VoucherEntryType = entry.VoucherEntryType,
-         VoucherId = entry.Voucher.Id
+        Amount = entry.Amount,
+        BaseCurrencyAmount = entry.BaseCurrencyAmount,
+        BudgetConcept = entry.BudgetConcept,
+        Concept = entry.Concept,
+        CurrencyUID = entry.Currency.UID,
+        Date = entry.Date,
+        EventTypeId = entry.EventType.Id,
+        ExchangeRate = entry.ExchangeRate,
+        LedgerAccountId = entry.LedgerAccount.Id,
+        Protected = entry.Protected,
+        BusinessOperationId = entry.BusinessOperationId,
+        ResponsibilityAreaId = entry.ResponsibilityArea.Id,
+        SectorId = entry.Sector.Id,
+        SubledgerAccountId = entry.SubledgerAccount.Id,
+        VerificationNumber = entry.VerificationNumber,
+        VoucherEntryType = entry.VoucherEntryType,
+        VoucherId = entry.Voucher.Id
       };
     }
 
@@ -106,7 +106,7 @@ namespace Empiria.FinancialAccounting.Vouchers.Adapters {
         BudgetConcept = entry.BudgetConcept,
         EventType = !entry.EventType.IsEmptyInstance ?
                      entry.EventType.MapToNamedEntity() : null,
-        CashFlowAccountId = entry.CashFlowAccountId,
+        BusinessOperationId = entry.BusinessOperationId,
         VerificationNumber = entry.VerificationNumber,
         Currency = entry.Currency.MapToNamedEntity(),
         Amount = entry.Amount,

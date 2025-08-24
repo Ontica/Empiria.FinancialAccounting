@@ -142,7 +142,7 @@ namespace Empiria.FinancialAccounting.Vouchers.Adapters {
       get; internal set;
     }
 
-    public int CashFlowAccountId {
+    public int BusinessOperationId {
       get; internal set;
     }
 
