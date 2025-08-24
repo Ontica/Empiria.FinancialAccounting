@@ -26,7 +26,7 @@ namespace Empiria.FinancialAccounting.CashLedger.Data {
 
       var filter = SearchExpression.ParseInSet("ID_MOVIMIENTO", ids);
 
-      var sql = "SELECT * FROM VW_COF_MOVIMIENTO " +
+      var sql = "SELECT * FROM VW_COF_MOVIMIENTO_BIS " +
                 $"WHERE {filter} " +
                 $"ORDER BY ID_MAYOR, NUMERO_TRANSACCION, FECHA_AFECTACION, ID_MOVIMIENTO";
 
@@ -62,7 +62,10 @@ namespace Empiria.FinancialAccounting.CashLedger.Data {
 
 
     static internal FixedList<CashEntry> GetTransactionEntries(CashTransaction transaction) {
-      var op = DataOperation.Parse("qry_cof_movimiento", transaction.Id, 0);
+      var sql = "SELECT * FROM VW_COF_MOVIMIENTO_BIS " +
+               $"WHERE ID_TRANSACCION = {transaction.Id}";
+
+      var op = DataOperation.Parse(sql);
 
       return DataReader.GetPlainObjectFixedList<CashEntry>(op);
     }
@@ -70,7 +73,7 @@ namespace Empiria.FinancialAccounting.CashLedger.Data {
 
     static internal FixedList<CashEntryExtended> SearchEntries(string filter, string sort, int pageSize) {
       var sql = "SELECT * FROM (" +
-                    "SELECT * FROM VW_COF_MOVIMIENTO " +
+                    "SELECT * FROM VW_COF_MOVIMIENTO_BIS " +
                     $"WHERE {filter} " +
                     $"ORDER BY {sort}) " +
                  $"WHERE ROWNUM <= {pageSize}";
@@ -105,7 +108,8 @@ namespace Empiria.FinancialAccounting.CashLedger.Data {
 
                 "INSERT INTO COF_MOVIMIENTO_BIS VALUES " +
                  $"({entry.EntryId}, {entry.CashAccountId}, '{entry.CashAccountId}', " +
-                 $"'Rule', -1, -1, {DataCommonMethods.FormatSqlDbDateTime(DateTime.Now)}, 0); ";
+                 $"'{entry.AppliedRule}', -1, {entry.UserId}, " +
+                 $"{DataCommonMethods.FormatSqlDbDateTime(DateTime.Now)}, 0); ";
 
         stringBuilder.Append(localSql);
       }

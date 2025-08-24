@@ -47,12 +47,6 @@ namespace Empiria.FinancialAccounting.CashLedger {
     }
 
 
-    [DataField("ID_MOVIMIENTO_REFERENCIA", ConvertFrom = typeof(long))]
-    public int CashAccountId {
-      get; private set;
-    }
-
-
     [DataField("ID_AREA_RESPONSABILIDAD", ConvertFrom = typeof(long))]
     public FunctionalArea ResponsibilityArea {
       get; private set;
@@ -65,31 +59,8 @@ namespace Empiria.FinancialAccounting.CashLedger {
     }
 
 
-    [DataField("CLAVE_DISPONIBILIDAD")]
-    private string _claveDisponibilidad;
-
-    public EventType EventType {
-      get {
-        if (String.IsNullOrWhiteSpace(_claveDisponibilidad) ||
-            Convert.ToInt32(_claveDisponibilidad) == 0) {
-          return EventType.Empty;
-        }
-        return EventType.Parse(Convert.ToInt32(_claveDisponibilidad));
-      }
-      private set {
-        _claveDisponibilidad = value.Id.ToString();
-      }
-    }
-
-
     [DataField("NUMERO_VERIFICACION")]
     public string VerificationNumber {
-      get; private set;
-    }
-
-
-    [DataField("TIPO_MOVIMIENTO", Default = VoucherEntryType.Debit)]
-    public VoucherEntryType VoucherEntryType {
       get; private set;
     }
 
@@ -123,17 +94,16 @@ namespace Empiria.FinancialAccounting.CashLedger {
       get; private set;
     }
 
+
+    [DataField("DEBE")]
     public decimal Debit {
-      get {
-        return this.VoucherEntryType == VoucherEntryType.Debit ? this.Amount : 0m;
-      }
+      get; private set;
     }
 
 
+    [DataField("HABER")]
     public decimal Credit {
-      get {
-        return this.VoucherEntryType == VoucherEntryType.Credit ? this.Amount : 0m;
-      }
+      get; private set;
     }
 
 
@@ -150,6 +120,40 @@ namespace Empiria.FinancialAccounting.CashLedger {
     }
 
     #endregion Properties
+
+    #region Cash flow related properties
+
+    [DataField("ID_CUENTA_FLUJO")]
+    public int CashAccountId {
+      get; private set;
+    }
+
+    [DataField("NUM_CONCEPTO_FLUJO")]
+    public string CashAccountNo {
+      get; private set;
+    }
+
+    [DataField("REGLA_FLUJO")]
+    public string CashAccountAppliedRule {
+      get; private set;
+    }
+
+    [DataField("ID_USUARIO_FLUJO")]
+    public int CashAccountRecordedById {
+      get; private set;
+    }
+
+    [DataField("FECHA_REGISTRO_FLUJO")]
+    public DateTime CashAccountRecordingTime {
+      get; private set;
+    }
+
+    [DataField("CONCEPTO_FLUJO_LEGADO")]
+    public string CuentaSistemaLegado {
+      get; private set;
+    }
+
+    #endregion Cash flow related properties
 
   }  // class CashEntry
 

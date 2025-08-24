@@ -132,16 +132,16 @@ namespace Empiria.FinancialAccounting.CashLedger.Adapters {
           return string.Empty;
 
         case SharedCashAccountStatus.CashAccountPending:
-          return $"(ID_MOVIMIENTO_REFERENCIA = 0)";
+          return $"(ID_CUENTA_FLUJO = 0)";
 
         case SharedCashAccountStatus.CashAccountWaiting:
-          return $"(ID_MOVIMIENTO_REFERENCIA = -2)";
+          return $"(ID_CUENTA_FLUJO = -2)";
 
         case SharedCashAccountStatus.NoCashAccount:
-          return $"(ID_MOVIMIENTO_REFERENCIA = -1)";
+          return $"(ID_CUENTA_FLUJO = -1)";
 
         case SharedCashAccountStatus.WithCashAccount:
-          return $"(ID_MOVIMIENTO_REFERENCIA > 0)";
+          return $"(ID_CUENTA_FLUJO > 0)";
 
         default:
           throw Assertion.EnsureNoReachThisCode();
@@ -204,21 +204,7 @@ namespace Empiria.FinancialAccounting.CashLedger.Adapters {
 
 
     static private string BuildTransactionStatusFilter(TransactionStatus status) {
-      var startDateFilter = $"FECHA_AFECTACION >= {DataCommonMethods.FormatSqlDbDate(new DateTime(2025, 1, 1))}";
-
-      switch (status) {
-        case TransactionStatus.All:
-          return $"(ESTA_ABIERTA = 0 AND {startDateFilter})";
-
-        case TransactionStatus.Closed:
-          return $"(ESTA_ABIERTA = 0 AND {startDateFilter})";
-
-        case TransactionStatus.Pending:
-          return $"(ESTA_ABIERTA = 0 AND {startDateFilter})";
-
-        default:
-          throw Assertion.EnsureNoReachThisCode();
-      }
+      return $"(FECHA_AFECTACION >= {DataCommonMethods.FormatSqlDbDate(new DateTime(2025, 1, 1))})";
     }
 
 
@@ -257,7 +243,7 @@ namespace Empiria.FinancialAccounting.CashLedger.Adapters {
         return string.Empty;
       }
 
-      return $"ID_TRANSACCION IN (SELECT ID_TRANSACCION FROM VW_COF_MOVIMIENTO WHERE {filter})";
+      return $"ID_TRANSACCION IN (SELECT ID_TRANSACCION FROM VW_COF_MOVIMIENTO_BIS WHERE {filter})";
     }
 
 

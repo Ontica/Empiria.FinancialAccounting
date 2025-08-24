@@ -66,9 +66,14 @@ namespace Empiria.FinancialAccounting.CashLedger.Adapters {
         ResponsibilityAreaName = entry.ResponsibilityArea.Name,
         VerificationNumber = entry.VerificationNumber,
         BudgetCode = entry.BudgetCode,
-        Date = entry.Date,
+        Date = ExecutionServer.IsMinOrMaxDate(entry.Date) ? System.DateTime.Today : entry.Date,
         Description = entry.Description,
-        CashAccountId = entry.CashAccountId
+        CashAccountId = entry.CashAccountId,
+        CashAccountNo = entry.CashAccountNo,
+        CashAccountAppliedRule = entry.CashAccountAppliedRule,
+        CashAccountRecordedById = entry.CashAccountRecordedById,
+        CashAccountRecordingTime = ExecutionServer.IsMinOrMaxDate(entry.CashAccountRecordingTime) ? System.DateTime.Today : entry.CashAccountRecordingTime,
+        CuentaSistemaLegado = entry.CuentaSistemaLegado
       };
     }
 
@@ -92,7 +97,7 @@ namespace Empiria.FinancialAccounting.CashLedger.Adapters {
         ResponsibilityAreaName = entry.ResponsibilityArea.Name,
         VerificationNumber = entry.VerificationNumber,
         BudgetCode = entry.BudgetCode,
-        Date = entry.Date,
+        Date = ExecutionServer.IsMinOrMaxDate(entry.Date) ? System.DateTime.Today : entry.Date,
         Description = entry.Description,
         CashAccountId = entry.CashAccountId,
         TransactionId = entry.TransactionId,
@@ -100,13 +105,13 @@ namespace Empiria.FinancialAccounting.CashLedger.Adapters {
         TransactionConcept = entry.TransactionConcept,
         TransactionAccountingDate = entry.AccountingDate,
         TransactionRecordingDate = entry.RecordingDate,
-        TransactionLedgerName = entry.Ledger.FullName,
+        TransactionLedgerName = entry.Ledger.FullName
       };
     }
 
 
     static private CashTransactionDescriptor MapToDescriptor(CashTransaction txn) {
-      TransactionStatus status = txn.Id % 7 == 0 ? TransactionStatus.Closed : TransactionStatus.Pending;
+      TransactionStatus status = TransactionStatus.Pending;
 
       return new CashTransactionDescriptor {
         Id = txn.Id,
@@ -121,7 +126,7 @@ namespace Empiria.FinancialAccounting.CashLedger.Adapters {
         AuthorizedBy = txn.AuthorizedBy.Name,
         SourceName = txn.FunctionalArea.FullName,
         Status = status.ToString(),
-        StatusName = status.GetName(),
+        StatusName = status.GetName()
       };
     }
 
