@@ -8,6 +8,9 @@
 *                                                                                                            *
 ************************* Copyright(c) La Vía Óntica SC, Ontica LLC and contributors. All rights reserved. **/
 
+using System;
+using System.Text;
+
 using Empiria.Data;
 
 using Empiria.FinancialAccounting.CashLedger.Adapters;
@@ -92,20 +95,24 @@ namespace Empiria.FinancialAccounting.CashLedger.Data {
 
 
     static internal void WriteCashEntriesAccounts(FixedList<CashEntryFields> entries) {
+      var stringBuilder = new StringBuilder(entries.Count * 300);
 
-      string sql = "BEGIN ";
+      stringBuilder.Append("BEGIN ");
 
       foreach (var entry in entries) {
-        var localSql = "UPDATE COF_MOVIMIENTO " +
-                 $"SET ID_MOVIMIENTO_REFERENCIA = {entry.CashAccountId} " +
-                 $"WHERE ID_MOVIMIENTO = {entry.EntryId} AND ID_TRANSACCION = {entry.TransactionId}; ";
+        var localSql =
+                $"DELETE FROM COF_MOVIMIENTO_BIS WHERE ID_MOVIMIENTO = {entry.EntryId}; " +
 
-        sql += localSql;
+                "INSERT INTO COF_MOVIMIENTO_BIS VALUES " +
+                 $"({entry.EntryId}, {entry.CashAccountId}, '{entry.CashAccountId}', " +
+                 $"'Rule', -1, -1, {DataCommonMethods.FormatSqlDbDateTime(DateTime.Now)}, 0); ";
+
+        stringBuilder.Append(localSql);
       }
 
-      sql += "END;";
+      stringBuilder.AppendLine("END;");
 
-      var op = DataOperation.Parse(sql);
+      var op = DataOperation.Parse(stringBuilder.ToString());
 
       DataWriter.Execute(op);
     }
