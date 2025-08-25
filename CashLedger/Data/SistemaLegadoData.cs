@@ -41,12 +41,17 @@ namespace Empiria.FinancialAccounting.CashLedger.Data {
     }
 
 
-    static internal FixedList<MovimientoSistemaLegado> LeerMovimientos(long idPoliza) {
+    static internal FixedList<MovimientoSistemaLegado> LeerMovimientos(FixedList<long> idsPolizas) {
+      Assertion.Require(idsPolizas, nameof(idsPolizas));
+      Assertion.Require(idsPolizas.Count > 0, nameof(idsPolizas));
+
+      var filter = SearchExpression.ParseInSet("MCOM_NUM_VOL", idsPolizas);
+
       var sql = "SELECT MCOM_NUM_VOL, MCOM_FOLIO_VOL, MCOM_REG_CONTABLE, MCOM_NUM_AUX, MCOM_SECTOR, " +
                        "MCOM_MONEDA, MCOM_DISPONIB, MCOM_IMPORTE, MCOM_CVE_MOV, MCOM_CONCEPTO " +
                 "FROM Z_MOVS_PYC " +
-                $"WHERE MCOM_NUM_VOL = {idPoliza} " +
-                $"ORDER BY MCOM_FOLIO_VOL";
+                  $"WHERE {filter} " +
+                $"ORDER BY MCOM_NUM_VOL, MCOM_FOLIO_VOL";
 
       var op = DataOperation.Parse(sql);
 
@@ -56,7 +61,7 @@ namespace Empiria.FinancialAccounting.CashLedger.Data {
 
     static internal FixedList<long> TransaccionesSinActualizar() {
       var sql = "SELECT DISTINCT ID_TRANSACCION " +
-                "FROM VW_COF_MOVIMIENTO_BIS " +
+                  "FROM VW_COF_MOVIMIENTO_BIS " +
                 "WHERE CONCEPTO_FLUJO_LEGADO IS NULL";
 
       var op = DataOperation.Parse(sql);

@@ -9,6 +9,7 @@
 ************************* Copyright(c) La Vía Óntica SC, Ontica LLC and contributors. All rights reserved. **/
 
 
+using Empiria.FinancialAccounting.CashLedger.Adapters;
 using Empiria.FinancialAccounting.CashLedger.Data;
 
 using Empiria.Services;
@@ -36,18 +37,26 @@ namespace Empiria.FinancialAccounting.CashLedger.UseCases {
 
       FixedList<long> transactionsIds = SistemaLegadoData.TransaccionesSinActualizar();
 
-      foreach (var txnId in transactionsIds) {
+      int CHUNK_SIZE = 900;
 
-        FixedList<CashEntry> entries = CashLedgerData.GetTransactionEntries(txnId);
+      FixedList<long>[] chunks = transactionsIds.Split(CHUNK_SIZE);
 
-        var legacyEntries = SistemaLegadoData.LeerMovimientos(txnId);
-        var merger = new SistemaLegadoMerger(entries, legacyEntries);
+      foreach (FixedList<long> chunk in chunks) {
+        FixedList<CashEntry> chunk_entries = CashLedgerData.GetTransactionEntries(chunk);
+        FixedList<MovimientoSistemaLegado> chunkLegacyEntries = SistemaLegadoData.LeerMovimientos(chunk);
 
-        merger.Merge();
+        foreach (long txnId in chunk) {
+          FixedList<CashEntry> entries = chunk_entries.FindAll(x => x.VoucherId == txnId);
+          FixedList<MovimientoSistemaLegado> legacyEntries = chunkLegacyEntries.FindAll(x => x.IdPoliza == txnId);
 
-        SistemaLegadoData.ActualizarMovimientos(entries);
+          var merger = new SistemaLegadoMerger(entries, legacyEntries);
+
+          merger.Merge();
+
+          SistemaLegadoData.ActualizarMovimientos(entries);
+        }
+
       }
-
     }
 
     #endregion Use cases

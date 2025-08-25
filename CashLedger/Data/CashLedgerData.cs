@@ -60,9 +60,10 @@ namespace Empiria.FinancialAccounting.CashLedger.Data {
       return DataReader.GetPlainObjectFixedList<CashTransaction>(op);
     }
 
-    static internal FixedList<CashEntry> GetTransactionEntries(long transactionId) {
+
+    static internal FixedList<CashEntry> GetTransactionEntries(CashTransaction transaction) {
       var sql = "SELECT * FROM VW_COF_MOVIMIENTO_BIS " +
-               $"WHERE ID_TRANSACCION = {transactionId} " +
+               $"WHERE ID_TRANSACCION = {transaction.Id} " +
                $"ORDER BY ID_MOVIMIENTO";
 
       var op = DataOperation.Parse(sql);
@@ -71,8 +72,19 @@ namespace Empiria.FinancialAccounting.CashLedger.Data {
     }
 
 
-    static internal FixedList<CashEntry> GetTransactionEntries(CashTransaction transaction) {
-      return GetTransactionEntries(transaction.Id);
+    static internal FixedList<CashEntry> GetTransactionEntries(FixedList<long> ids) {
+      Assertion.Require(ids, nameof(ids));
+      Assertion.Require(ids.Count > 0, nameof(ids));
+
+      var filter = SearchExpression.ParseInSet("ID_TRANSACCION", ids);
+
+      var sql = "SELECT * FROM VW_COF_MOVIMIENTO_BIS " +
+                $"WHERE {filter} " +
+                $"ORDER BY ID_TRANSACCION, ID_MOVIMIENTO";
+
+      var op = DataOperation.Parse(sql);
+
+      return DataReader.GetPlainObjectFixedList<CashEntry>(op);
     }
 
 
