@@ -32,62 +32,34 @@ namespace Empiria.FinancialAccounting.CashLedger.UseCases {
 
     #region Use cases
 
-    public FixedList<CashEntryDescriptor> GetEntries(FixedList<long> ids) {
-      Assertion.Require(ids, nameof(ids));
-      Assertion.Require(ids.Count > 0, nameof(ids));
+    public FixedList<CashEntryDescriptor> GetEntries(FixedList<long> transactionsIds) {
+      Assertion.Require(transactionsIds, nameof(transactionsIds));
+      Assertion.Require(transactionsIds.Count > 0, nameof(transactionsIds));
 
-      FixedList<CashEntryExtended> list = CashLedgerData.GetEntries(ids);
+      FixedList<CashEntryExtended> list = CashLedgerData.GetEntries(transactionsIds);
 
       return CashTransactionMapper.MapToDescriptor(list);
     }
 
 
-    public CashTransactionHolderDto GetTransaction(long id, bool returnLegacySystemData) {
-      Assertion.Require(id > 0, nameof(id));
+    public CashTransactionHolderDto GetTransaction(long transactionId, bool returnLegacySystemData) {
+      Assertion.Require(transactionId > 0, nameof(transactionId));
 
-      CashTransaction transaction = CashLedgerData.GetTransaction(id);
+      CashTransaction transaction = CashLedgerData.GetTransaction(transactionId);
 
-      CashTransactionHolderDto mapped = CashTransactionMapper.Map(transaction);
-
-      if (!returnLegacySystemData) {
-        return mapped;
-      }
-
-      var legacyEntries = SistemaLegadoData.LeerMovimientos(id);
-      var merger = new SistemaLegadoMerger(mapped.Entries, legacyEntries);
-
-      merger.Merge();
-
-      return mapped;
+      return CashTransactionMapper.Map(transaction);
     }
 
 
-    public FixedList<CashTransactionHolderDto> GetTransactions(FixedList<long> ids,
+    public FixedList<CashTransactionHolderDto> GetTransactions(FixedList<long> transactionsIds,
                                                                bool returnLegacySystemData) {
 
-      Assertion.Require(ids, nameof(ids));
-      Assertion.Require(ids.Count > 0, nameof(ids));
+      Assertion.Require(transactionsIds, nameof(transactionsIds));
+      Assertion.Require(transactionsIds.Count > 0, nameof(transactionsIds));
 
-      FixedList<CashTransaction> list = CashLedgerData.GetTransactions(ids);
+      FixedList<CashTransaction> list = CashLedgerData.GetTransactions(transactionsIds);
 
-      FixedList<CashTransactionHolderDto> mapped = CashTransactionMapper.Map(list);
-
-      if (!returnLegacySystemData) {
-        return mapped;
-      }
-
-      var allLegacyEntries = SistemaLegadoData.LeerMovimientos(ids);
-
-      foreach (var txn in mapped) {
-        var legacyTxnEntries = allLegacyEntries.FindAll(x => x.IdPoliza == txn.Transaction.Id)
-                                               .Sort((x, y) => x.IdConsecutivo.CompareTo(y.IdConsecutivo));
-
-        var merger = new SistemaLegadoMerger(txn.Entries, legacyTxnEntries);
-
-        merger.Merge();
-      }
-
-      return mapped;
+      return CashTransactionMapper.Map(list);
     }
 
 
@@ -126,7 +98,7 @@ namespace Empiria.FinancialAccounting.CashLedger.UseCases {
       Assertion.Require(entries, nameof(entries));
       Assertion.Require(entries.Count > 0, nameof(entries));
 
-      CashLedgerData.WriteCashEntriesAccounts(entries);
+      CashLedgerData.UpdateCashEntriesAccounts(entries);
     }
 
 
@@ -136,7 +108,7 @@ namespace Empiria.FinancialAccounting.CashLedger.UseCases {
 
       CashTransaction transaction = CashLedgerData.GetTransaction(transactionId);
 
-      CashLedgerData.WriteCashEntriesAccounts(entries);
+      CashLedgerData.UpdateCashEntriesAccounts(entries);
 
       return CashTransactionMapper.Map(transaction);
     }

@@ -97,19 +97,20 @@ namespace Empiria.FinancialAccounting.CashLedger.Data {
     }
 
 
-    static internal void WriteCashEntriesAccounts(FixedList<CashEntryFields> entries) {
-      var stringBuilder = new StringBuilder(entries.Count * 300);
+    static internal void UpdateCashEntriesAccounts(FixedList<CashEntryFields> entries) {
+      var stringBuilder = new StringBuilder(entries.Count * 350);
 
       stringBuilder.Append("BEGIN ");
 
       foreach (var entry in entries) {
         var localSql =
-                $"DELETE FROM COF_MOVIMIENTO_BIS WHERE ID_MOVIMIENTO = {entry.EntryId}; " +
-
-                "INSERT INTO COF_MOVIMIENTO_BIS VALUES " +
-                 $"({entry.EntryId}, {entry.CashAccountId}, '{entry.CashAccountId}', " +
-                 $"'{entry.AppliedRule}', -1, {entry.UserId}, " +
-                 $"{DataCommonMethods.FormatSqlDbDateTime(DateTime.Now)}, 0); ";
+              "UPDATE COF_MOVIMIENTO_BIS SET " +
+                   $"ID_CUENTA_FLUJO = {entry.CashAccountId}, " +
+                   $"NUM_CONCEPTO_FLUJO = '{entry.CashAccountId}', " +
+                   $"REGLA_FLUJO = '{entry.AppliedRule}', " +
+                   $"ID_USUARIO_FLUJO = {entry.UserId}, " +
+                   $"FECHA_REGISTRO_FLUJO = {DataCommonMethods.FormatSqlDbDateTime(DateTime.Now)} " +
+              $"WHERE ID_MOVIMIENTO = {entry.EntryId}; ";
 
         stringBuilder.Append(localSql);
       }
