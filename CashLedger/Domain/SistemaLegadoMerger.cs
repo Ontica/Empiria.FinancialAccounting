@@ -15,10 +15,10 @@ namespace Empiria.FinancialAccounting.CashLedger {
   /// <summary>Servicio para agregar el concepto del sistema legado a objetos CashTransactionEntryDto.</summary>
   internal class SistemaLegadoMerger {
 
-    private FixedList<CashTransactionEntryDto> _entries;
+    private FixedList<CashEntry> _entries;
     private FixedList<MovimientoSistemaLegado> _movs;
 
-    internal SistemaLegadoMerger(FixedList<CashTransactionEntryDto> entries,
+    internal SistemaLegadoMerger(FixedList<CashEntry> entries,
                                  FixedList<MovimientoSistemaLegado> movs) {
       _entries = entries;
       _movs = movs;
@@ -35,9 +35,9 @@ namespace Empiria.FinancialAccounting.CashLedger {
 
 
         if (_movs[i].Disponibilidad == 2) {
-          entry.CuentaSistemaLegado = "Sin flujo";
+          entry.SetCuentaSistemaLegado("Sin flujo");
         } else {
-          entry.CuentaSistemaLegado = _movs[i].CuentaConcepto.ToString();
+          entry.SetCuentaSistemaLegado(_movs[i].CuentaConcepto.ToString());
         }
       }
     }

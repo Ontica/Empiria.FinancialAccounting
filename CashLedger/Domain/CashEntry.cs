@@ -153,6 +153,15 @@ namespace Empiria.FinancialAccounting.CashLedger {
       get; private set;
     }
 
+
+    public void SetCuentaSistemaLegado(string cuentaSistemaLegado) {
+      Assertion.Require(cuentaSistemaLegado, nameof(CuentaSistemaLegado));
+      Assertion.Require(cuentaSistemaLegado != "0", nameof(CuentaSistemaLegado));
+      Assertion.Require(cuentaSistemaLegado.Length >= 4, nameof(CuentaSistemaLegado));
+
+      CuentaSistemaLegado = cuentaSistemaLegado;
+    }
+
     #endregion Cash flow related properties
 
   }  // class CashEntry

@@ -8,9 +8,10 @@
 *                                                                                                            *
 ************************* Copyright(c) La Vía Óntica SC, Ontica LLC and contributors. All rights reserved. **/
 
-using Empiria.Services;
 
 using Empiria.FinancialAccounting.CashLedger.Data;
+
+using Empiria.Services;
 
 namespace Empiria.FinancialAccounting.CashLedger.UseCases {
 
@@ -31,8 +32,23 @@ namespace Empiria.FinancialAccounting.CashLedger.UseCases {
 
     #region Use cases
 
-    public void LimpiarTransacciones() {
-      SistemaLegadoData.LimpiarTransacciones();
+    public void ActualizarTransacciones() {
+
+      FixedList<long> transactionsIds = SistemaLegadoData.TransaccionesSinActualizar();
+
+      foreach (var txnId in transactionsIds) {
+        CashTransaction transaction = CashLedgerData.GetTransaction(txnId);
+
+        FixedList<CashEntry> entries = CashLedgerData.GetTransactionEntries(transaction);
+
+        var legacyEntries = SistemaLegadoData.LeerMovimientos(txnId);
+        var merger = new SistemaLegadoMerger(entries, legacyEntries);
+
+        merger.Merge();
+
+        SistemaLegadoData.ActualizarMovimientos(entries);
+      }
+
     }
 
     #endregion Use cases

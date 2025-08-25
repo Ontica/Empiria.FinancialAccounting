@@ -21,13 +21,12 @@ namespace Empiria.FinancialAccounting.WebApi.CashLedger {
 
     #region Query web apis
 
-
-    [HttpGet]
-    [Route("v2/financial-accounting/cash-ledger/sistema-lgado/limpiar-transacciones")]
-    public NoDataModel LimpiarTransacciones() {
+    [HttpPost]
+    [Route("v2/financial-accounting/cash-ledger/sistema-legado/actualizar-transacciones")]
+    public NoDataModel ActualizarTransacciones() {
 
       using (var usecases = SistemaLegadoUseCases.UseCaseInteractor()) {
-        usecases.LimpiarTransacciones();
+        usecases.ActualizarTransacciones();
 
         return new NoDataModel(base.Request);
       }

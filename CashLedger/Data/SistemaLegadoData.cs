@@ -8,9 +8,9 @@
 *                                                                                                            *
 ************************* Copyright(c) La Vía Óntica SC, Ontica LLC and contributors. All rights reserved. **/
 
-using Empiria.Data;
+using System.Text;
 
-using Empiria.Financial.Integration;
+using Empiria.Data;
 
 using Empiria.FinancialAccounting.CashLedger.Adapters;
 
@@ -18,6 +18,29 @@ namespace Empiria.FinancialAccounting.CashLedger.Data {
 
   /// <summary>Servicios de acceso a datos al sistema legado de flujo de efectivo.</summary>
   static internal class SistemaLegadoData {
+
+
+    static internal void ActualizarMovimientos(FixedList<CashEntry> entries) {
+      var stringBuilder = new StringBuilder(entries.Count * 116);
+
+      stringBuilder.Append("BEGIN ");
+
+      foreach (var entry in entries) {
+        var localSql =
+              "UPDATE COF_MOVIMIENTO_BIS SET " +
+                   $"CONCEPTO_FLUJO_LEGADO = '{entry.CuentaSistemaLegado}' " +
+              $"WHERE ID_MOVIMIENTO = {entry.Id}; ";
+
+        stringBuilder.Append(localSql);
+      }
+
+      stringBuilder.AppendLine("END;");
+
+      var op = DataOperation.Parse(stringBuilder.ToString());
+
+      DataWriter.Execute(op);
+    }
+
 
     static internal FixedList<MovimientoSistemaLegado> LeerMovimientos(long idPoliza) {
       var sql = "SELECT MCOM_NUM_VOL, MCOM_FOLIO_VOL, MCOM_REG_CONTABLE, MCOM_NUM_AUX, MCOM_SECTOR, " +
@@ -53,28 +76,15 @@ namespace Empiria.FinancialAccounting.CashLedger.Data {
     }
 
 
-    static internal void LimpiarTransacciones() {
-      var sql = "SELECT MCOM_REG_CONTABLE, MCOM_NUM_VOL, MCOM_FOLIO_VOL " +
-                "FROM Z_MOVS_PYC " +
-                "WHERE SUBSTR(MCOM_REG_CONTABLE, -1) = '0'";
+    static internal FixedList<long> TransaccionesSinActualizar() {
+      var sql = "SELECT DISTINCT ID_TRANSACCION " +
+                "FROM VW_COF_MOVIMIENTO_BIS " +
+                "WHERE CONCEPTO_FLUJO_LEGADO IS NULL";
 
       var op = DataOperation.Parse(sql);
 
-      var data = DataReader.GetDataTable(op);
-
-      for (int i = 0; i < data.Rows.Count; i++) {
-        var cuenta = (string) data.Rows[i]["MCOM_REG_CONTABLE"];
-        var idVolante = (long) (float) data.Rows[i]["MCOM_NUM_VOL"];
-        var idMovimiento = (long) (float) data.Rows[i]["MCOM_FOLIO_VOL"];
-
-        sql = "UPDATE Z_MOVS_PYC " +
-             $"SET MCOM_REG_CONTABLE = '{IntegrationLibrary.FormatAccountNumber(cuenta)}' " +
-             $"WHERE MCOM_NUM_VOL = {idVolante} AND MCOM_FOLIO_VOL = {idMovimiento} AND MCOM_REG_CONTABLE = '{cuenta}'";
-
-        op = DataOperation.Parse(sql);
-
-        DataWriter.Execute(op);
-      }
+      return DataReader.GetFieldValues<long>(op)
+                       .ToFixedList();
     }
 
   }  // class SistemaLegadoData
