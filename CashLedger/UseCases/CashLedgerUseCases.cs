@@ -42,7 +42,7 @@ namespace Empiria.FinancialAccounting.CashLedger.UseCases {
     }
 
 
-    public CashTransactionHolderDto GetTransaction(long transactionId, bool returnLegacySystemData) {
+    public CashTransactionHolderDto GetTransaction(long transactionId) {
       Assertion.Require(transactionId > 0, nameof(transactionId));
 
       CashTransaction transaction = CashLedgerData.GetTransaction(transactionId);
@@ -51,8 +51,7 @@ namespace Empiria.FinancialAccounting.CashLedger.UseCases {
     }
 
 
-    public FixedList<CashTransactionHolderDto> GetTransactions(FixedList<long> transactionsIds,
-                                                               bool returnLegacySystemData) {
+    public FixedList<CashTransactionHolderDto> GetTransactions(FixedList<long> transactionsIds) {
 
       Assertion.Require(transactionsIds, nameof(transactionsIds));
       Assertion.Require(transactionsIds.Count > 0, nameof(transactionsIds));

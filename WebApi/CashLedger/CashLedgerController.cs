@@ -23,11 +23,11 @@ namespace Empiria.FinancialAccounting.WebApi.CashLedger {
     #region Query web apis
 
     [HttpGet]
-    [Route("v2/financial-accounting/cash-ledger/transactions/{id:long}/{returnLegacySystemData:bool}")]
-    public SingleObjectModel GetCashTransaction([FromUri] long id, [FromUri] bool returnLegacySystemData) {
+    [Route("v2/financial-accounting/cash-ledger/transactions/{id:long}")]
+    public SingleObjectModel GetCashTransaction([FromUri] long id) {
 
       using (var usecases = CashLedgerUseCases.UseCaseInteractor()) {
-        CashTransactionHolderDto transaction = usecases.GetTransaction(id, returnLegacySystemData);
+        CashTransactionHolderDto transaction = usecases.GetTransaction(id);
 
         return new SingleObjectModel(base.Request, transaction);
       }
@@ -35,11 +35,11 @@ namespace Empiria.FinancialAccounting.WebApi.CashLedger {
 
 
     [HttpPost]
-    [Route("v2/financial-accounting/cash-ledger/transactions/bulk-operation/get-transactions/{returnLegacySystemData:bool}")]
-    public CollectionModel GetCashTransactions([FromBody] long[] ids, [FromUri] bool returnLegacySystemData) {
+    [Route("v2/financial-accounting/cash-ledger/transactions/bulk-operation/get-transactions")]
+    public CollectionModel GetCashTransactions([FromBody] long[] ids) {
 
       using (var usecases = CashLedgerUseCases.UseCaseInteractor()) {
-        FixedList<CashTransactionHolderDto> transactions = usecases.GetTransactions(ids.ToFixedList(), returnLegacySystemData);
+        FixedList<CashTransactionHolderDto> transactions = usecases.GetTransactions(ids.ToFixedList());
 
         return new CollectionModel(base.Request, transactions);
       }

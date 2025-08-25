@@ -19,7 +19,6 @@ namespace Empiria.FinancialAccounting.CashLedger.Data {
   /// <summary>Servicios de acceso a datos al sistema legado de flujo de efectivo.</summary>
   static internal class SistemaLegadoData {
 
-
     static internal void ActualizarMovimientos(FixedList<CashEntry> entries) {
       var stringBuilder = new StringBuilder(entries.Count * 116);
 
@@ -48,27 +47,6 @@ namespace Empiria.FinancialAccounting.CashLedger.Data {
                 "FROM Z_MOVS_PYC " +
                 $"WHERE MCOM_NUM_VOL = {idPoliza} " +
                 $"ORDER BY MCOM_FOLIO_VOL";
-
-      var op = DataOperation.Parse(sql);
-
-      return DataReader.GetPlainObjectFixedList<MovimientoSistemaLegado>(op);
-    }
-
-
-    static internal FixedList<MovimientoSistemaLegado> LeerMovimientos(FixedList<long> idsPolizas) {
-      Assertion.Require(idsPolizas, nameof(idsPolizas));
-
-      if (idsPolizas.Count == 0) {
-        return new FixedList<MovimientoSistemaLegado>();
-      }
-
-      var filter = SearchExpression.ParseInSet("MCOM_NUM_VOL", idsPolizas);
-
-      var sql = "SELECT MCOM_NUM_VOL, MCOM_FOLIO_VOL, MCOM_REG_CONTABLE, MCOM_NUM_AUX, MCOM_SECTOR, " +
-                       "MCOM_MONEDA, MCOM_DISPONIB, MCOM_IMPORTE, MCOM_CVE_MOV, MCOM_CONCEPTO " +
-                "FROM Z_MOVS_PYC " +
-                $"WHERE {filter} " +
-                $"ORDER BY MCOM_NUM_VOL, MCOM_FOLIO_VOL";
 
       var op = DataOperation.Parse(sql);
 
