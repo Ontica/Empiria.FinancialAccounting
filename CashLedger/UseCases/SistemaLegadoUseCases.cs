@@ -37,9 +37,8 @@ namespace Empiria.FinancialAccounting.CashLedger.UseCases {
       FixedList<long> transactionsIds = SistemaLegadoData.TransaccionesSinActualizar();
 
       foreach (var txnId in transactionsIds) {
-        CashTransaction transaction = CashLedgerData.GetTransaction(txnId);
 
-        FixedList<CashEntry> entries = CashLedgerData.GetTransactionEntries(transaction);
+        FixedList<CashEntry> entries = CashLedgerData.GetTransactionEntries(txnId);
 
         var legacyEntries = SistemaLegadoData.LeerMovimientos(txnId);
         var merger = new SistemaLegadoMerger(entries, legacyEntries);
