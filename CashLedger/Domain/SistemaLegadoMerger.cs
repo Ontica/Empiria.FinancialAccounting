@@ -4,15 +4,17 @@
 *  Assembly : FinancialAccounting.CashLedger.dll         Pattern   : Service provider                        *
 *  Type     : SistemaLegadoMerger                        License   : Please read LICENSE.txt file            *
 *                                                                                                            *
-*  Summary  : Servicio para agregar el concepto del sistema legado a objetos CashTransactionEntryDto.        *
+*  Summary  : Servicio para agregar el concepto del sistema legado a objetos CashEntry.                      *
 *                                                                                                            *
 ************************* Copyright(c) La Vía Óntica SC, Ontica LLC and contributors. All rights reserved. **/
+
+using Empiria.Financial.Integration;
 
 using Empiria.FinancialAccounting.CashLedger.Adapters;
 
 namespace Empiria.FinancialAccounting.CashLedger {
 
-  /// <summary>Servicio para agregar el concepto del sistema legado a objetos CashTransactionEntryDto.</summary>
+  /// <summary>Servicio para agregar el concepto del sistema legado a objetos CashEntry.</summary>
   internal class SistemaLegadoMerger {
 
     private FixedList<CashEntry> _entries;
@@ -31,8 +33,13 @@ namespace Empiria.FinancialAccounting.CashLedger {
       }
 
       for (int i = 0; i < _entries.Count; i++) {
-        var entry = _entries[i];
+        if (!MatchEntries(_entries[i], _movs[i])) {
+          return;
+        }
+      }
 
+      for (int i = 0; i < _entries.Count; i++) {
+        var entry = _entries[i];
 
         if (_movs[i].Disponibilidad == 2) {
           entry.SetCuentaSistemaLegado("Sin flujo");
@@ -40,6 +47,32 @@ namespace Empiria.FinancialAccounting.CashLedger {
           entry.SetCuentaSistemaLegado(_movs[i].CuentaConcepto.ToString());
         }
       }
+    }
+
+
+    private bool MatchEntries(CashEntry cashEntry, MovimientoSistemaLegado entrySistemaLegado) {
+      if (cashEntry.VoucherId != entrySistemaLegado.IdPoliza) {
+        return false;
+      }
+      if (cashEntry.Currency.Id != entrySistemaLegado.IdMoneda) {
+        return false;
+      }
+      if (cashEntry.Debit == 0 && entrySistemaLegado.TipoMovimiento == 1) {
+        return false;
+      }
+      if (cashEntry.Credit == 0 && entrySistemaLegado.TipoMovimiento == 2) {
+        return false;
+      }
+      if (cashEntry.Amount != entrySistemaLegado.Importe) {
+        return false;
+      }
+      if (cashEntry.SubledgerAccount.Number != entrySistemaLegado.Auxiliar) {
+        return false;
+      }
+      if (cashEntry.LedgerAccount.Number != IntegrationLibrary.FormatAccountNumber(entrySistemaLegado.CuentaContable)) {
+        return false;
+      }
+      return true;
     }
 
   }  // class SistemaLegadoMerger
