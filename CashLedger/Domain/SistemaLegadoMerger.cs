@@ -32,10 +32,9 @@ namespace Empiria.FinancialAccounting.CashLedger {
     internal void Merge() {
       if (_entries.Count != _legacyEntries.Count && _legacyEntries.Count == 0) {
         return;
-      } else if (_entries.Count != _legacyEntries.Count && _legacyEntries.Count != 0) {
-        Assertion.RequireFail($"En el sistema legado la póliza {_entries[0].VoucherId} tiene " +
-                              $"{_legacyEntries.Count} movimientos. " +
-                              $"En SICOFIN esa misma póliza tiene {_entries.Count}.");
+      } else if (_entries.Count != _legacyEntries.Count && _legacyEntries.Count > 0) {
+        MarkLegacyEntriesAsAltered();
+        return;
       }
 
       for (int i = 0; i < _entries.Count; i++) {
@@ -89,6 +88,13 @@ namespace Empiria.FinancialAccounting.CashLedger {
         return false;
       }
       return true;
+    }
+
+
+    private void MarkLegacyEntriesAsAltered() {
+      foreach (var legacyEntry in _legacyEntries) {
+        legacyEntry.CuentaContable = "Alterada en el legado";
+      }
     }
 
 
