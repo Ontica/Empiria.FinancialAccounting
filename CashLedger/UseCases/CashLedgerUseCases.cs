@@ -52,13 +52,14 @@ namespace Empiria.FinancialAccounting.CashLedger.UseCases {
 
 
     public FixedList<CashTransactionHolderDto> GetTransactions(FixedList<long> transactionsIds) {
-
       Assertion.Require(transactionsIds, nameof(transactionsIds));
       Assertion.Require(transactionsIds.Count > 0, nameof(transactionsIds));
 
-      FixedList<CashTransaction> list = CashLedgerData.GetTransactions(transactionsIds);
+      FixedList<CashTransaction> transactions = CashLedgerData.GetTransactions(transactionsIds);
 
-      return CashTransactionMapper.Map(list);
+      FixedList<CashEntry> entries = CashLedgerData.GetTransactionEntries(transactionsIds);
+
+      return CashTransactionMapper.Map(transactions, entries);
     }
 
 

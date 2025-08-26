@@ -8,6 +8,8 @@
 *                                                                                                            *
 ************************* Copyright(c) La Vía Óntica SC, Ontica LLC and contributors. All rights reserved. **/
 
+using System.Collections.Generic;
+
 using Empiria.StateEnums;
 
 namespace Empiria.FinancialAccounting.CashLedger.Adapters {
@@ -23,9 +25,24 @@ namespace Empiria.FinancialAccounting.CashLedger.Adapters {
     }
 
 
-    static internal FixedList<CashTransactionHolderDto> Map(FixedList<CashTransaction> transactions) {
-      return transactions.Select(x => Map(x))
-                         .ToFixedList();
+    static internal FixedList<CashTransactionHolderDto> Map(FixedList<CashTransaction> transactions,
+                                                            FixedList<CashEntry> entries) {
+
+
+      var list = new List<CashTransactionHolderDto>(transactions.Count);
+
+      foreach (var txn in transactions) {
+        var txnEntries = entries.FindAll(x => x.VoucherId == txn.Id);
+
+        var holder = new CashTransactionHolderDto {
+          Transaction = MapToDescriptor(txn),
+          Entries = MapEntries(txnEntries)
+        };
+
+        list.Add(holder);
+      }
+
+      return list.ToFixedList();
     }
 
 
