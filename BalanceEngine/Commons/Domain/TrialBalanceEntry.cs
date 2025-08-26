@@ -53,7 +53,7 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
       internal set;
     }
 
-    
+
     [DataField("ID_SECTOR", ConvertFrom = typeof(long))]
     public Sector Sector {
       get;
@@ -183,7 +183,7 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
     public DebtorCreditorType DebtorCreditor {
       get; internal set;
     } = DebtorCreditorType.Deudora;
-
+    
 
     public int SubledgerAccountIdParent {
       get; internal set;
@@ -229,6 +229,11 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
     } = false;
 
 
+    public bool IsFlattenedAccount {
+      get; internal set;
+    }
+
+
     internal TrialBalanceEntry CreatePartialCopy() {
       return new TrialBalanceEntry {
         Account = this.Account,
@@ -264,7 +269,7 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
 
 
     internal void AssignExchangeRateValueByCurrency(FixedList<ExchangeRate> exchangeRates) {
-      
+
       this.USDExchangeRate = exchangeRates.Find(x => x.ToCurrency.Equals(Currency.USD) &&
                                                 x.FromCurrency.Code.Equals(Currency.MXN.Code)).Value;
       this.YENExchangeRate = exchangeRates.Find(x => x.ToCurrency.Equals(Currency.YEN) &&
@@ -275,7 +280,7 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
                                                 x.FromCurrency.Code.Equals(Currency.MXN.Code)).Value;
     }
 
-    
+
     internal TrialBalanceEntry MapFromFlatAccountToTrialBalanceEntry(FlatAccountDto flatAccount,
                                                                      Ledger ledger) {
       var entry = new TrialBalanceEntry();
@@ -285,7 +290,8 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
       entry.Sector = flatAccount.Sector;
       entry.SubledgerAccountId = -1;
       entry.DebtorCreditor = flatAccount.DebtorCreditor;
-      
+      entry.IsFlattenedAccount = true;
+
       return entry;
     }
 
