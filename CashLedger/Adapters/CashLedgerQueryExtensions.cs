@@ -204,7 +204,7 @@ namespace Empiria.FinancialAccounting.CashLedger.Adapters {
 
 
     static private string BuildTransactionStatusFilter(TransactionStatus status) {
-      return $"(FECHA_AFECTACION >= {DataCommonMethods.FormatSqlDbDate(new DateTime(2025, 1, 1))})";
+      return $"(ESTA_ABIERTA = 0 AND FECHA_AFECTACION >= {DataCommonMethods.FormatSqlDbDate(new DateTime(2025, 1, 1))})";
     }
 
 
