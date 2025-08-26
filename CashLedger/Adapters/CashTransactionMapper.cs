@@ -85,6 +85,7 @@ namespace Empiria.FinancialAccounting.CashLedger.Adapters {
         BudgetCode = entry.BudgetCode,
         Date = ExecutionServer.IsMinOrMaxDate(entry.Date) ? System.DateTime.Today : entry.Date,
         Description = entry.Description,
+
         CashAccountId = entry.CashAccountId,
         CashAccountNo = entry.CashAccountNo,
         CashAccountAppliedRule = entry.CashAccountAppliedRule,
@@ -116,7 +117,14 @@ namespace Empiria.FinancialAccounting.CashLedger.Adapters {
         BudgetCode = entry.BudgetCode,
         Date = ExecutionServer.IsMinOrMaxDate(entry.Date) ? System.DateTime.Today : entry.Date,
         Description = entry.Description,
+
         CashAccountId = entry.CashAccountId,
+        CashAccountNo = entry.CashAccountNo,
+        CashAccountAppliedRule = entry.CashAccountAppliedRule,
+        CashAccountRecordedById = entry.CashAccountRecordedById,
+        CashAccountRecordingTime = ExecutionServer.IsMinOrMaxDate(entry.CashAccountRecordingTime) ? System.DateTime.Today : entry.CashAccountRecordingTime,
+        CuentaSistemaLegado = entry.CuentaSistemaLegado,
+
         TransactionId = entry.TransactionId,
         TransactionNumber = entry.TransactionNumber,
         TransactionConcept = entry.TransactionConcept,
