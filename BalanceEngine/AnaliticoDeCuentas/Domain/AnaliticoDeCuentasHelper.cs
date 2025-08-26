@@ -212,7 +212,7 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
         analyticEntry.ForeignBalance += balanceEntry.CurrentBalance;
 
       } else {
-
+        
         BalanceEntryByCurrencySumToTwoColumnEntry(analyticEntry, balanceEntry, currentCurrency);
       }
 
@@ -306,11 +306,13 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
     private void BalanceEntryByCurrencySumToTwoColumnEntry(AnaliticoDeCuentasEntry analyticEntry,
                                                            TrialBalanceEntry balanceEntry,
                                                            Currency currentCurrency) {
-
+      
       if (balanceEntry.Level == 1) {
         analyticEntry.DomesticBalance += balanceEntry.CurrentBalance;
 
-      } else if (balanceEntry.Sector.Code == "00" && currentCurrency.Equals(Currency.MXN)) {
+      } else if (balanceEntry.Sector.Code == "00" && currentCurrency.Equals(Currency.MXN) &&
+                 !balanceEntry.IsFlattenedAccount) {
+
         analyticEntry.DomesticBalance = balanceEntry.CurrentBalance;
 
       } else if (balanceEntry.Sector.Code != "00") {

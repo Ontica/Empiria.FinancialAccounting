@@ -83,7 +83,7 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
 
 
     private IEnumerable<TrialBalanceEntry> GetFilteredAccountEntries(List<TrialBalanceEntry> balanceEntries) {
-
+      
       if (balanceEntries.Count == 0) {
         return new List<TrialBalanceEntry>();
       }
@@ -163,7 +163,7 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
       if (balanceEntries.Count == 0) {
         return new List<AnaliticoDeCuentasEntry>();
       }
-
+      
       IEnumerable<TrialBalanceEntry> accountEntries = GetFilteredAccountEntries(balanceEntries);
 
       var hashAnaliticoEntries = new EmpiriaHashTable<AnaliticoDeCuentasEntry>();
@@ -189,7 +189,7 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
 
       var helper = new AnaliticoDeCuentasHelper(_query);
       var targetCurrency = Currency.Parse(_query.InitialPeriod.ValuateToCurrrencyUID);
-
+      
       foreach (var entry in accountEntries) {
 
         if (entry.CurrentBalance != 0 ||
@@ -198,7 +198,9 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
 
           string hash = $"{entry.Account.Number}||{entry.Sector.Code}||{targetCurrency.Id}||" +
                         $"{entry.Ledger.Id}||{entry.DebtorCreditor}";
+
           Currency currentCurrency = entry.Currency;
+          
           helper.MergeEntriesIntoTwoColumns(hashAnaliticoEntries, entry, hash, currentCurrency);
         }
       }
