@@ -33,7 +33,7 @@ namespace Empiria.FinancialAccounting.CashLedger {
       if (_entries.Count != _legacyEntries.Count && _legacyEntries.Count == 0) {
         return;
       } else if (_entries.Count != _legacyEntries.Count && _legacyEntries.Count > 0) {
-        MarkLegacyEntriesAsAltered();
+        MarkEntriesAsAlteredInLegacySystem();
         return;
       }
 
@@ -91,9 +91,9 @@ namespace Empiria.FinancialAccounting.CashLedger {
     }
 
 
-    private void MarkLegacyEntriesAsAltered() {
-      foreach (var legacyEntry in _legacyEntries) {
-        legacyEntry.CuentaContable = "Alterada en el legado";
+    private void MarkEntriesAsAlteredInLegacySystem() {
+      foreach (var entry in _entries) {
+        entry.SetCuentaSistemaLegado("Alterada en el legado");
       }
     }
 
