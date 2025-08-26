@@ -37,7 +37,7 @@ namespace Empiria.FinancialAccounting.CashLedger.Data {
 
 
     static internal CashTransaction GetTransaction(long id) {
-      var sql = "SELECT * FROM VW_COF_TRANSACCION " +
+      var sql = "SELECT * FROM COF_TRANSACCION " +
                $"WHERE ID_TRANSACCION = {id} AND ESTA_ABIERTA = 0";
 
       var op = DataOperation.Parse(sql);
@@ -52,7 +52,7 @@ namespace Empiria.FinancialAccounting.CashLedger.Data {
 
       var filter = SearchExpression.ParseInSet("ID_TRANSACCION", ids);
 
-      var sql = "SELECT * FROM VW_COF_TRANSACCION " +
+      var sql = "SELECT * FROM COF_TRANSACCION " +
                $"WHERE {filter} AND ESTA_ABIERTA = 0";
 
       var op = DataOperation.Parse(sql);
