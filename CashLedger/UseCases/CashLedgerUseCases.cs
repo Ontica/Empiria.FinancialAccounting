@@ -36,7 +36,7 @@ namespace Empiria.FinancialAccounting.CashLedger.UseCases {
       Assertion.Require(transactionsIds, nameof(transactionsIds));
       Assertion.Require(transactionsIds.Count > 0, nameof(transactionsIds));
 
-      FixedList<CashEntryExtended> list = CashLedgerData.GetEntries(transactionsIds);
+      FixedList<CashEntryExtended> list = CashLedgerData.GetExtendedEntries(transactionsIds);
 
       return CashTransactionMapper.MapToDescriptor(list);
     }

@@ -20,7 +20,7 @@ namespace Empiria.FinancialAccounting.CashLedger.Data {
   /// <summary>Provides services used to retrive and write cash ledger transactions.</summary>
   static internal class CashLedgerData {
 
-    static internal FixedList<CashEntryExtended> GetEntries(FixedList<long> ids) {
+    static internal FixedList<CashEntryExtended> GetExtendedEntries(FixedList<long> ids) {
       Assertion.Require(ids, nameof(ids));
       Assertion.Require(ids.Count > 0, nameof(ids));
 
@@ -62,7 +62,7 @@ namespace Empiria.FinancialAccounting.CashLedger.Data {
 
 
     static internal FixedList<CashEntry> GetTransactionEntries(CashTransaction transaction) {
-      var sql = "SELECT * FROM VW_COF_MOVIMIENTO_BIS " +
+      var sql = "SELECT * FROM VW_COF_MOVIMIENTO_JOINED " +
                $"WHERE ID_TRANSACCION = {transaction.Id} " +
                $"ORDER BY ID_MOVIMIENTO";
 
@@ -78,7 +78,7 @@ namespace Empiria.FinancialAccounting.CashLedger.Data {
 
       var filter = SearchExpression.ParseInSet("ID_TRANSACCION", ids);
 
-      var sql = "SELECT * FROM VW_COF_MOVIMIENTO_BIS " +
+      var sql = "SELECT * FROM VW_COF_MOVIMIENTO_JOINED " +
                 $"WHERE {filter} " +
                 $"ORDER BY ID_TRANSACCION, ID_MOVIMIENTO";
 
