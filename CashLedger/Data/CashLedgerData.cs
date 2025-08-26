@@ -123,7 +123,7 @@ namespace Empiria.FinancialAccounting.CashLedger.Data {
         var localSql =
               "UPDATE COF_MOVIMIENTO_BIS SET " +
                    $"ID_CUENTA_FLUJO = {entry.CashAccountId}, " +
-                   $"NUM_CONCEPTO_FLUJO = '{entry.CashAccountId}', " +
+                   $"NUM_CONCEPTO_FLUJO = '{entry.CashAccountNo}', " +
                    $"REGLA_FLUJO = '{entry.AppliedRule}', " +
                    $"ID_USUARIO_FLUJO = {entry.UserId}, " +
                    $"FECHA_REGISTRO_FLUJO = {DataCommonMethods.FormatSqlDbDateTime(DateTime.Now)} " +
