@@ -13,7 +13,7 @@ using System.Text;
 
 using Empiria.Data;
 
-using Empiria.FinancialAccounting.CashLedger.Adapters;
+using Empiria.CashFlow.CashLedger.Adapters;
 
 namespace Empiria.FinancialAccounting.CashLedger.Data {
 

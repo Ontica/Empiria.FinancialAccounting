@@ -13,7 +13,7 @@ using System;
 using Empiria.Data;
 using Empiria.StateEnums;
 
-using Empiria.Financial.Integration.CashLedger;
+using Empiria.CashFlow.CashLedger.Adapters;
 
 using Empiria.FinancialAccounting.Vouchers;
 
@@ -126,24 +126,24 @@ namespace Empiria.FinancialAccounting.CashLedger.Adapters {
     }
 
 
-    static private string BuildCashAccountStatusFilter(SharedCashAccountStatus cashAccountStatus) {
+    static private string BuildCashAccountStatusFilter(CashAccountStatus cashAccountStatus) {
       switch (cashAccountStatus) {
-        case SharedCashAccountStatus.All:
+        case CashAccountStatus.All:
           return string.Empty;
 
-        case SharedCashAccountStatus.CashAccountPending:
+        case CashAccountStatus.CashAccountPending:
           return $"(ID_CUENTA_FLUJO = 0)";
 
-        case SharedCashAccountStatus.CashAccountWaiting:
+        case CashAccountStatus.CashAccountWaiting:
           return $"(ID_CUENTA_FLUJO = -2)";
 
-        case SharedCashAccountStatus.NoCashAccount:
+        case CashAccountStatus.NoCashAccount:
           return $"(ID_CUENTA_FLUJO = -1)";
 
-        case SharedCashAccountStatus.WithCashAccount:
+        case CashAccountStatus.WithCashAccount:
           return $"(ID_CUENTA_FLUJO > 0)";
 
-        case SharedCashAccountStatus.FalsePositives:
+        case CashAccountStatus.FalsePositives:
           return $"((ID_CUENTA_FLUJO = -2 AND CONCEPTO_FLUJO_LEGADO = 'Sin flujo') OR" +
                   $"(ID_CUENTA_FLUJO = -1 AND CONCEPTO_FLUJO_LEGADO <> 'Sin flujo') OR" +
                   $"(ID_CUENTA_FLUJO > 0 AND NUM_CONCEPTO_FLUJO <> CONCEPTO_FLUJO_LEGADO))";

@@ -8,7 +8,7 @@
 *                                                                                                            *
 ************************* Copyright(c) La Vía Óntica SC, Ontica LLC and contributors. All rights reserved. **/
 
-using Empiria.Financial.Integration.CashLedger;
+using Empiria.CashFlow.CashLedger.Adapters;
 
 namespace Empiria.FinancialAccounting.CashLedger.Adapters {
 
@@ -19,24 +19,11 @@ namespace Empiria.FinancialAccounting.CashLedger.Adapters {
       get; set;
     }
 
-    public FixedList<CashTransactionEntryDto> Entries {
+    public FixedList<BaseCashTransactionEntryDto> Entries {
       get; set;
     }
 
   }  // class CashTransactionHolderDto
 
-
-
-  /// <summary>Output DTO used to retrieve cash ledger transactions for use in lists.</summary>
-  public class CashTransactionDescriptor : SharedCashTransactionDescriptor {
-
-  }  // class CashTransactionDescriptor
-
-
-
-  /// <summary>Output DTO used to retrieve cash ledger transaction entries.</summary>
-  public class CashTransactionEntryDto : SharedCashTransactionEntryDto {
-
-  }  // class CashTransactionEntryDto
 
 }  // namespace Empiria.FinancialAccounting.CashLedger.Adapters

@@ -12,6 +12,8 @@ using System.Collections.Generic;
 
 using Empiria.StateEnums;
 
+using Empiria.CashFlow.CashLedger.Adapters;
+
 namespace Empiria.FinancialAccounting.CashLedger.Adapters {
 
   /// <summary>Provides mapping services for cash ledger transactions.</summary>
@@ -59,14 +61,14 @@ namespace Empiria.FinancialAccounting.CashLedger.Adapters {
 
     #region Helpers
 
-    static private FixedList<CashTransactionEntryDto> MapEntries(FixedList<CashEntry> entries) {
+    static private FixedList<BaseCashTransactionEntryDto> MapEntries(FixedList<CashEntry> entries) {
       return entries.Select(x => MapEntry(x))
                     .ToFixedList();
     }
 
 
-    static private CashTransactionEntryDto MapEntry(CashEntry entry) {
-      return new CashTransactionEntryDto {
+    static private BaseCashTransactionEntryDto MapEntry(CashEntry entry) {
+      return new BaseCashTransactionEntryDto {
         Id = entry.Id,
         AccountNumber = entry.LedgerAccount.Number,
         AccountName = entry.LedgerAccount.Name,

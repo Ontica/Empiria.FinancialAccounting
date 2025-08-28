@@ -12,6 +12,8 @@ using System.Web.Http;
 
 using Empiria.WebApi;
 
+using Empiria.CashFlow.CashLedger.Adapters;
+
 using Empiria.FinancialAccounting.CashLedger.Adapters;
 using Empiria.FinancialAccounting.CashLedger.UseCases;
 

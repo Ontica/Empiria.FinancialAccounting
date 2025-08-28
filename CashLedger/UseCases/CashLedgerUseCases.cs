@@ -10,6 +10,8 @@
 
 using Empiria.Services;
 
+using Empiria.CashFlow.CashLedger.Adapters;
+
 using Empiria.FinancialAccounting.CashLedger.Adapters;
 using Empiria.FinancialAccounting.CashLedger.Data;
 
