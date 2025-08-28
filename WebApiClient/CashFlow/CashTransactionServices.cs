@@ -11,27 +11,19 @@
 using System.Threading.Tasks;
 
 using Empiria.Storage;
-using Empiria.WebApi.Client;
 
 using Empiria.CashFlow.CashLedger.Adapters;
 
 namespace Empiria.FinancialAccounting.ClientServices {
 
   /// <summary>Provides financial accounting cash ledger transactions services using a web proxy.</summary>
-  public class CashTransactionServices {
-
-    private readonly WebApiClient _webApiClient;
-
-    public CashTransactionServices() {
-      _webApiClient = WebApiClient.GetInstance("SICOFIN");
-    }
-
+  public class CashTransactionServices : BaseService {
 
     public async Task<T> GetTransaction<T>(long id) {
 
       string path = $"v2/financial-accounting/cash-ledger/transactions/{id}";
 
-      return await _webApiClient.GetAsync<T>(path);
+      return await WebApiClient.GetAsync<T>(path);
     }
 
 
@@ -39,7 +31,7 @@ namespace Empiria.FinancialAccounting.ClientServices {
 
       string path = $"v2/financial-accounting/vouchers/{id}/print";
 
-      return await _webApiClient.GetAsync<FileDto>(path);
+      return await WebApiClient.GetAsync<FileDto>(path);
     }
 
 
@@ -47,7 +39,7 @@ namespace Empiria.FinancialAccounting.ClientServices {
 
       string path = $"v2/financial-accounting/cash-ledger/transactions/bulk-operation/get-transactions";
 
-      return await _webApiClient.PostAsync<FixedList<T>>(transactionIds, path);
+      return await WebApiClient.PostAsync<FixedList<T>>(transactionIds, path);
     }
 
 
@@ -55,7 +47,7 @@ namespace Empiria.FinancialAccounting.ClientServices {
 
       string path = $"v2/financial-accounting/cash-ledger/entries/bulk-operation/get-entries";
 
-      return await _webApiClient.PostAsync<FixedList<CashEntryDescriptor>>(entriesIds, path);
+      return await WebApiClient.PostAsync<FixedList<CashEntryDescriptor>>(entriesIds, path);
     }
 
 
@@ -63,7 +55,7 @@ namespace Empiria.FinancialAccounting.ClientServices {
 
       string path = "v2/financial-accounting/cash-ledger/entries/search";
 
-      return await _webApiClient.PostAsync<FixedList<CashEntryDescriptor>>(query, path);
+      return await WebApiClient.PostAsync<FixedList<CashEntryDescriptor>>(query, path);
     }
 
 
@@ -71,7 +63,7 @@ namespace Empiria.FinancialAccounting.ClientServices {
 
       string path = "v2/financial-accounting/cash-ledger/transactions/search";
 
-      return await _webApiClient.PostAsync<FixedList<CashTransactionDescriptor>>(query, path);
+      return await WebApiClient.PostAsync<FixedList<CashTransactionDescriptor>>(query, path);
     }
 
 
@@ -79,7 +71,7 @@ namespace Empiria.FinancialAccounting.ClientServices {
 
       string path = $"v2/financial-accounting/cash-ledger/transactions/bulk-operation/update-entries";
 
-      await _webApiClient.PostAsync(bulkEntries, path);
+      await WebApiClient.PostAsync(bulkEntries, path);
     }
 
 
@@ -87,7 +79,7 @@ namespace Empiria.FinancialAccounting.ClientServices {
 
       string path = $"v2/financial-accounting/cash-ledger/transactions/{entries[0].TransactionId}/update-entries";
 
-      return await _webApiClient.PostAsync<T>(entries, path);
+      return await WebApiClient.PostAsync<T>(entries, path);
     }
 
   }  // class CashTransactionServices

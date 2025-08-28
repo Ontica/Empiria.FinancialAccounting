@@ -10,25 +10,16 @@
 
 using System.Threading.Tasks;
 
-using Empiria.WebApi.Client;
-
 namespace Empiria.FinancialAccounting.ClientServices {
 
   /// <summary>Provides financial accounting cash ledger transactions services using a web proxy.</summary>
-  public class CashLedgerServices {
-
-    private readonly WebApiClient _webApiClient;
-
-    public CashLedgerServices() {
-      _webApiClient = WebApiClient.GetInstance("SICOFIN");
-    }
-
+  public class CashLedgerServices : BaseService {
 
     public async Task<FixedList<NamedEntityDto>> GetAccountingLedgers() {
 
       string path = "v2/financial-accounting/ledgers/ifrs";
 
-      return await _webApiClient.GetAsync<FixedList<NamedEntityDto>>(path);
+      return await WebApiClient.GetAsync<FixedList<NamedEntityDto>>(path);
     }
 
 
@@ -36,7 +27,7 @@ namespace Empiria.FinancialAccounting.ClientServices {
 
       string path = "v2/financial-accounting/vouchers/functional-areas";
 
-      return await _webApiClient.GetAsync<FixedList<NamedEntityDto>>(path);
+      return await WebApiClient.GetAsync<FixedList<NamedEntityDto>>(path);
     }
 
 
@@ -44,7 +35,7 @@ namespace Empiria.FinancialAccounting.ClientServices {
 
       string path = "v2/financial-accounting/vouchers/transaction-types";
 
-      return await _webApiClient.GetAsync<FixedList<NamedEntityDto>>(path);
+      return await WebApiClient.GetAsync<FixedList<NamedEntityDto>>(path);
     }
 
 
@@ -52,7 +43,7 @@ namespace Empiria.FinancialAccounting.ClientServices {
 
       string path = "v2/financial-accounting/vouchers/voucher-types";
 
-      return await _webApiClient.GetAsync<FixedList<NamedEntityDto>>(path);
+      return await WebApiClient.GetAsync<FixedList<NamedEntityDto>>(path);
     }
 
   }  // class CashLedgerServices

@@ -10,27 +10,18 @@
 
 using System.Threading.Tasks;
 
-using Empiria.WebApi.Client;
-
 using Empiria.CashFlow.CashLedger.Adapters;
 
 namespace Empiria.FinancialAccounting.ClientServices {
 
   /// <summary>Provides financial accounting cash ledger totals services using a web proxy.</summary>
-  public class CashLedgerTotalsServices {
-
-    private readonly WebApiClient _webApiClient;
-
-    public CashLedgerTotalsServices() {
-      _webApiClient = WebApiClient.GetInstance("SICOFIN");
-    }
-
+  public class CashLedgerTotalsServices : BaseService {
 
     public async Task<FixedList<CashLedgerTotalEntryDto>> GetCashLedgerTotals(BaseCashLedgerTotalsQuery query) {
 
       string path = "v2/financial-accounting/cash-ledger/totals";
 
-      return await _webApiClient.PostAsync<FixedList<CashLedgerTotalEntryDto>>(query, path);
+      return await WebApiClient.PostAsync<FixedList<CashLedgerTotalEntryDto>>(query, path);
     }
 
   }  // class CashLedgerTotalsServices
