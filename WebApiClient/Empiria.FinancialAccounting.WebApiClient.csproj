@@ -62,10 +62,12 @@
     <PackageReference Include="Empiria.Core" Version="8.0.0" />
     <PackageReference Include="Empiria.Services" Version="1.0.0" />
     <PackageReference Include="Empiria.WebApi.Client" Version="2.0.0" />
+    <PackageReference Include="Empiria.Financial.Integration" Version="2.0.0" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\..\core\Core\Empiria.Core.csproj" />
     <ProjectReference Include="..\..\extensions\Services\Empiria.Services.csproj" />
     <ProjectReference Include="..\..\extensions\WebApi.Client\Empiria.WebApi.Client.csproj" />
+    <ProjectReference Include="..\..\financial.management\Integration\Empiria.Financial.Integration.csproj" />
   </ItemGroup>
 </Project>
