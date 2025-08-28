@@ -51,6 +51,7 @@ namespace Empiria.FinancialAccounting.BalanceEngine.Data {
 
         var accountsChartUseCase = AccountsChartUseCases.UseCaseInteractor();
         var accountsChartQuery = GetAccountsChartQueryDto(query);
+        
         var flattenedAccounts = accountsChartUseCase.GetFlattenedAccounts(accountsChartQuery);
 
         var ledgers = GetLedgersFromTrialBalance(trialBalanceList, query);
@@ -72,7 +73,6 @@ namespace Empiria.FinancialAccounting.BalanceEngine.Data {
     private static FixedList<TrialBalanceEntry> CombineBalanceEntriesAndFlattenedAccounts(
                                                 List<TrialBalanceEntry> trialBalanceList,
                                                 FixedList<TrialBalanceEntry> flattenedAccountBalances) {
-
       var returnedList = trialBalanceList.ToList();
 
       foreach (var account in flattenedAccountBalances) {

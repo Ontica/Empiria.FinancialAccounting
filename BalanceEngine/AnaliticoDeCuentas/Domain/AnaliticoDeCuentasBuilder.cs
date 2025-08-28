@@ -87,12 +87,15 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
       if (balanceEntries.Count == 0) {
         return new List<TrialBalanceEntry>();
       }
-      
-      if (_query.WithSubledgerAccount) {
-       
-        return balanceEntries.FindAll(a => a.SubledgerAccountId == 0 &&
-                                                     a.ItemType == TrialBalanceItemType.Summary);
 
+      if (_query.BalancesType == BalancesType.AllAccounts ||
+          _query.BalancesType == BalancesType.AllAccountsInCatalog) {
+
+        return balanceEntries;
+      } else if (_query.WithSubledgerAccount) {
+
+        return balanceEntries.FindAll(a => a.SubledgerAccountId == 0 &&
+                                      a.ItemType == TrialBalanceItemType.Summary);
       } else {
         
         return balanceEntries.FindAll(a => a.SubledgerAccountNumber.Length <= 1);
