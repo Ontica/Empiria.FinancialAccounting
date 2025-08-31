@@ -7,7 +7,7 @@
 *  Summary  : Gets account edition commands from a spreadsheet row.                                          *
 *                                                                                                            *
 ************************* Copyright(c) La Vía Óntica SC, Ontica LLC and contributors. All rights reserved. **/
-using System;
+
 using System.Collections.Generic;
 using System.Linq;
 
@@ -72,7 +72,7 @@ namespace Empiria.FinancialAccounting.AccountsChartEdition {
       Assertion.Require(mainRole,
                         $"No se proporcionó el rol de la cuenta en la celda D{_rowIndex}.");
 
-      bool isSubsidiary  = GetIsSubsidiaryFlag();
+      bool isSubsidiary = GetIsSubsidiaryFlag();
       bool isSectorizada = GetIsSectorizadaFlag();
 
       if (mainRole == "sumaria") {

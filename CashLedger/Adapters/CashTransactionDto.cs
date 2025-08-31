@@ -25,5 +25,4 @@ namespace Empiria.FinancialAccounting.CashLedger.Adapters {
 
   }  // class CashTransactionHolderDto
 
-
 }  // namespace Empiria.FinancialAccounting.CashLedger.Adapters

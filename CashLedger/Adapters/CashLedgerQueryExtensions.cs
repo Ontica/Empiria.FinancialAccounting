@@ -143,7 +143,7 @@ namespace Empiria.FinancialAccounting.CashLedger.Adapters {
         case CashAccountStatus.WithCashAccount:
           return $"(ID_CUENTA_FLUJO > 0)";
 
-        case CashAccountStatus.FalsePositives:
+        case CashAccountStatus.FalsePositive:
           return $"((ID_CUENTA_FLUJO = -2 AND CONCEPTO_FLUJO_LEGADO = 'Sin flujo') OR" +
                   $"(ID_CUENTA_FLUJO = -1 AND CONCEPTO_FLUJO_LEGADO <> 'Sin flujo') OR" +
                   $"(ID_CUENTA_FLUJO > 0 AND NUM_CONCEPTO_FLUJO <> CONCEPTO_FLUJO_LEGADO))";
