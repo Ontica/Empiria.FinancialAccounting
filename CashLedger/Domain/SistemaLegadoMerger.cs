@@ -12,6 +12,7 @@ using System.Collections.Generic;
 
 using Empiria.Financial.Integration;
 
+using Empiria.CashFlow.CashLedger.Adapters;
 using Empiria.FinancialAccounting.CashLedger.Adapters;
 
 namespace Empiria.FinancialAccounting.CashLedger {
@@ -51,7 +52,7 @@ namespace Empiria.FinancialAccounting.CashLedger {
         var entry = _entries[i];
 
         if (_legacyEntries[i].Disponibilidad == 2) {
-          entry.SetCuentaSistemaLegado("Sin flujo");
+          entry.SetCuentaSistemaLegado(CashAccountStatus.NoCashFlow.Name());
         } else {
           entry.SetCuentaSistemaLegado(_legacyEntries[i].CuentaConcepto.ToString());
         }

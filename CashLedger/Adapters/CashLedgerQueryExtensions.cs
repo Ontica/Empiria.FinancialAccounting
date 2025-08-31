@@ -127,29 +127,29 @@ namespace Empiria.FinancialAccounting.CashLedger.Adapters {
 
 
     static private string BuildCashAccountStatusFilter(CashAccountStatus cashAccountStatus) {
+
+      if (cashAccountStatus.IsForControl()) {
+        return $"(ID_CUENTA_FLUJO = {cashAccountStatus.ControlValue()})";
+      }
+
       switch (cashAccountStatus) {
         case CashAccountStatus.All:
           return string.Empty;
 
-        case CashAccountStatus.CashAccountPending:
-          return $"(ID_CUENTA_FLUJO = 0)";
-
-        case CashAccountStatus.CashAccountWaiting:
-          return $"(ID_CUENTA_FLUJO = -2)";
-
-        case CashAccountStatus.NoCashAccount:
-          return $"(ID_CUENTA_FLUJO = -1)";
-
-        case CashAccountStatus.WithCashAccount:
+        case CashAccountStatus.CashFlowAssigned:
           return $"(ID_CUENTA_FLUJO > 0)";
 
         case CashAccountStatus.FalsePositive:
-          return $"((ID_CUENTA_FLUJO = -2 AND CONCEPTO_FLUJO_LEGADO = 'Sin flujo') OR" +
-                  $"(ID_CUENTA_FLUJO = -1 AND CONCEPTO_FLUJO_LEGADO <> 'Sin flujo') OR" +
+          return $"( (ID_CUENTA_FLUJO = {CashAccountStatus.CashFlowUnassigned.ControlValue()} AND " +
+                    $"CONCEPTO_FLUJO_LEGADO = '{CashAccountStatus.NoCashFlow.Name()}')" +
+                 $" OR " +
+                  $"(ID_CUENTA_FLUJO = {CashAccountStatus.NoCashFlow.ControlValue()} AND " +
+                   $"CONCEPTO_FLUJO_LEGADO <> '{CashAccountStatus.NoCashFlow.Name()}')" +
+                 $" OR " +
                   $"(ID_CUENTA_FLUJO > 0 AND NUM_CONCEPTO_FLUJO <> CONCEPTO_FLUJO_LEGADO))";
 
         default:
-          throw Assertion.EnsureNoReachThisCode();
+          throw Assertion.EnsureNoReachThisCode($"Unhandled cash account status {cashAccountStatus}.");
       }
     }
 
