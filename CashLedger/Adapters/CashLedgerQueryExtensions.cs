@@ -9,6 +9,7 @@
 ************************* Copyright(c) La Vía Óntica SC, Ontica LLC and contributors. All rights reserved. **/
 
 using System;
+using System.Linq;
 
 using Empiria.Data;
 using Empiria.StateEnums;
@@ -99,20 +100,9 @@ namespace Empiria.FinancialAccounting.CashLedger.Adapters {
         return string.Empty;
       }
 
-      var filter = new Filter();
+      var formatted = accounts.Select(x => $"{EmpiriaString.TrimAll(x)}%");
 
-      foreach (string account in accounts) {
-
-        if (EmpiriaString.TrimAll(account).Length == 0) {
-          continue;
-        }
-
-        var temp = $"NUMERO_CUENTA_ESTANDAR LIKE '{EmpiriaString.TrimAll(account)}%'";
-
-        filter.AppendOr(temp);
-      }
-
-      return $"({filter.ToString()})";
+      return SearchExpression.ParseLike("NUMERO_CUENTA_ESTANDAR", formatted);
     }
 
 
@@ -123,6 +113,15 @@ namespace Empiria.FinancialAccounting.CashLedger.Adapters {
 
       return $"{DataCommonMethods.FormatSqlDbDate(query.FromAccountingDate)} <= FECHA_AFECTACION AND " +
              $"FECHA_AFECTACION < {DataCommonMethods.FormatSqlDbDate(query.ToAccountingDate.Date.AddDays(1))}";
+    }
+
+
+    static private string BuildCashAccountsFilter(string[] cashAccounts) {
+      if (cashAccounts.Length == 0) {
+        return string.Empty;
+      }
+
+      return SearchExpression.ParseInSet("NUM_CONCEPTO_FLUJO", cashAccounts);
     }
 
 
@@ -229,12 +228,14 @@ namespace Empiria.FinancialAccounting.CashLedger.Adapters {
       string accountsFilter = BuildAccountsFilter(query.VoucherAccounts);
       string subledgerAccountsFilter = BuildSubledgerAccountsFilter(query.SubledgerAccounts);
       string verificationNumbersFilter = BuildVerificationNumberFilter(query.VerificationNumbers);
+      string cashAccountsFilter = BuildCashAccountsFilter(query.CashAccounts);
 
       var filter = new Filter(cashAccountStatusFilter);
 
       filter.AppendAnd(accountsFilter);
       filter.AppendAnd(subledgerAccountsFilter);
       filter.AppendAnd(verificationNumbersFilter);
+      filter.AppendAnd(cashAccountsFilter);
 
       return filter.ToString();
     }
@@ -268,19 +269,7 @@ namespace Empiria.FinancialAccounting.CashLedger.Adapters {
         return string.Empty;
       }
 
-      string temp = string.Empty;
-
-      foreach (string item in verificationNumbers) {
-        if (EmpiriaString.TrimAll(item).Length == 0) {
-          continue;
-        }
-        if (temp.Length != 0) {
-          temp += " OR ";
-        }
-        temp += $"NUMERO_VERIFICACION = '{EmpiriaString.TrimAll(item)}'";
-      }
-
-      return $"({temp})";
+      return SearchExpression.ParseInSet("NUMERO_VERIFICACION", verificationNumbers);
     }
 
 
