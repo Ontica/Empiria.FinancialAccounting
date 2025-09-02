@@ -13,11 +13,11 @@ using System.Web.Http;
 using Empiria.Storage;
 using Empiria.WebApi;
 
-using Empiria.FinancialAccounting.Vouchers.UseCases;
-using Empiria.FinancialAccounting.Vouchers.Adapters;
-
 using Empiria.FinancialAccounting.Adapters;
 using Empiria.FinancialAccounting.Reporting;
+
+using Empiria.FinancialAccounting.Vouchers.Adapters;
+using Empiria.FinancialAccounting.Vouchers.UseCases;
 
 namespace Empiria.FinancialAccounting.WebApi.Vouchers {
 
@@ -182,20 +182,9 @@ namespace Empiria.FinancialAccounting.WebApi.Vouchers {
             result.Message = usecases.BulkSendToSupervisor(command.Vouchers);
 
             break;
-          case "print":
-            result = ExecuteBulkPrinting(command.Vouchers);
 
-            break;
-          case "excel-vouchers":
-            result = ExecuteBulkExportingToExcel(command.Vouchers);
-
-            break;
-          case "excel-vouchers-entries":
-            result = ExecuteExportingVouchersMovementsToExcel(command.Vouchers);
-
-            break;
           default:
-            throw Assertion.EnsureNoReachThisCode($"Unrecognized bulk operation name '{operationName}'.");
+            return ExportVouchersReport(operationName, command.Vouchers);
         }
 
         base.SetOperation(result.Message);
@@ -275,28 +264,26 @@ namespace Empiria.FinancialAccounting.WebApi.Vouchers {
 
     #region Helpers
 
-    private VoucherBulkOperationResult ExecuteBulkPrinting(int[] voucherIdsToPrint) {
+    private FileResultDto ExecuteBulkPrinting(int[] voucherIdsToPrint) {
       using (var usecases = VoucherUseCases.UseCaseInteractor()) {
-
-        var result = new VoucherBulkOperationResult();
 
         FixedList<VoucherDto> vouchersToPrint = usecases.GetVouchers(voucherIdsToPrint);
 
         var exporter = new PdfExporterService();
 
-        result.File = exporter.Export(vouchersToPrint);
-
-        result.Message = $"Se generó el archivo de impresión con {voucherIdsToPrint.Length} pólizas.";
+        var result = new FileResultDto(
+            exporter.Export(vouchersToPrint),
+            $"Se generó el archivo de impresión con {voucherIdsToPrint.Length} pólizas."
+        );
 
         return result;
       }
     }
 
 
-    private VoucherBulkOperationResult ExecuteBulkExportingToExcel(int[] voucherIdsToExport) {
-      using (var usecases = VoucherUseCases.UseCaseInteractor()) {
+    private FileResultDto ExecuteBulkExportingToExcel(int[] voucherIdsToExport) {
 
-        var result = new VoucherBulkOperationResult();
+      using (var usecases = VoucherUseCases.UseCaseInteractor()) {
 
         FixedList<VoucherDto> vouchersToExport = usecases.GetVouchersToExport(voucherIdsToExport);
 
@@ -304,17 +291,17 @@ namespace Empiria.FinancialAccounting.WebApi.Vouchers {
 
         FileDto excelFileDto = exporter.Export(vouchersToExport);
 
-        result.Message = $"Se exportaron {voucherIdsToExport.Length} pólizas a excel.";
-
-        result.File = excelFileDto;
+        var result = new FileResultDto(
+            excelFileDto,
+            $"Se exportaron {voucherIdsToExport.Length} pólizas a Excel."
+        );
 
         return result;
       }
     }
 
 
-    private VoucherBulkOperationResult ExecuteExportingVouchersMovementsToExcel(int[] voucherIdsToExport) {
-
+    private FileResultDto ExecuteExportingVouchersMovementsToExcel(int[] voucherIdsToExport) {
 
       using (var service = ReportingService.ServiceInteractor()) {
 
@@ -328,18 +315,42 @@ namespace Empiria.FinancialAccounting.WebApi.Vouchers {
 
         FileDto excelFileDto = service.ExportReport(buildQuery, reportData);
 
-        var result = new VoucherBulkOperationResult();
-
-        result.Message = $"Se exportaron los movimientos de " +
-                 $"{voucherIdsToExport.Length} pólizas a excel.";
-        result.File = excelFileDto;
+        var result = new FileResultDto(
+          excelFileDto,
+          $"Se exportaron los movimientos de {voucherIdsToExport.Length} pólizas a Excel."
+        );
 
         return result;
       }
-
-      throw Assertion.EnsureNoReachThisCode($"Función en proceso de desarrollo.");
     }
 
+
+    private SingleObjectModel ExportVouchersReport(string operationName, int[] vouchers) {
+
+      FileResultDto result;
+
+      switch (operationName) {
+        case "print":
+          result = ExecuteBulkPrinting(vouchers);
+
+          break;
+        case "excel-vouchers":
+          result = ExecuteBulkExportingToExcel(vouchers);
+
+          break;
+        case "excel-vouchers-entries":
+          result = ExecuteExportingVouchersMovementsToExcel(vouchers);
+
+          break;
+
+        default:
+          throw Assertion.EnsureNoReachThisCode($"Unrecognized export operation name '{operationName}'.");
+      }
+
+      base.SetOperation(result.Message);
+
+      return new SingleObjectModel(base.Request, result);
+    }
 
     #endregion Helpers
 
@@ -350,11 +361,10 @@ namespace Empiria.FinancialAccounting.WebApi.Vouchers {
   public class VoucherBulkOperationCommand {
 
     public int[] Vouchers {
-      get;
-      set;
+      get; set;
     }
 
-  }
+  }  // class VoucherBulkOperationCommand
 
 
 
@@ -368,14 +378,10 @@ namespace Empiria.FinancialAccounting.WebApi.Vouchers {
       get; internal set;
     }
 
-    public FileDto File {
-      get; internal set;
-    }
-
     public FixedList<VoucherDescriptorDto> Vouchers {
       get; internal set;
     }
 
-  }  // class VoucherBulkOperationCommand
+  }  // class VoucherBulkOperationResult
 
 }  // namespace Empiria.FinancialAccounting.WebApi.Vouchers
