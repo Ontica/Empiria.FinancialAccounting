@@ -12,6 +12,8 @@ using Empiria.Data;
 
 using Empiria.CashFlow.CashLedger.Adapters;
 
+using Empiria.FinancialAccounting.CashLedger.Data;
+
 namespace Empiria.FinancialAccounting.CashLedger.Adapters {
 
   /// <summary>Extension methods for BaseCashLedgerTotalsQuery interface adapter.</summary>
@@ -19,7 +21,20 @@ namespace Empiria.FinancialAccounting.CashLedger.Adapters {
 
     #region Extension methods
 
-    static internal string MapToFilterString(this BaseCashLedgerTotalsQuery query) {
+    static internal FixedList<CashLedgerTotal> Execute(this BaseCashLedgerTotalsQuery query) {
+
+      string filter = GetFilterString(query);
+
+      FixedList<CashLedgerTotal> totals = CashLedgerTotalsData.GetTotals(filter);
+
+      return totals;
+    }
+
+    #endregion Extension methods
+
+    #region Methods
+
+    static private string GetFilterString(BaseCashLedgerTotalsQuery query) {
       string ledgerFilter = BuildLedgerFilter(query.AccountingLedgerUID);
       string accountingDateRangeFilter = BuildAccountingDateRangeFilter(query);
 
@@ -30,7 +45,7 @@ namespace Empiria.FinancialAccounting.CashLedger.Adapters {
       return filter.ToString();
     }
 
-    #endregion Extension methods
+    #endregion Methods
 
     #region Helpers
 

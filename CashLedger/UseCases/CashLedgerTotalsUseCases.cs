@@ -12,8 +12,6 @@ using Empiria.Services;
 
 using Empiria.CashFlow.CashLedger.Adapters;
 
-using Empiria.FinancialAccounting.CashLedger.Data;
-
 using Empiria.FinancialAccounting.CashLedger.Adapters;
 
 namespace Empiria.FinancialAccounting.CashLedger.UseCases {
@@ -38,9 +36,7 @@ namespace Empiria.FinancialAccounting.CashLedger.UseCases {
     public FixedList<CashLedgerTotalEntryDto> GetCashLedgerTotals(BaseCashLedgerTotalsQuery query) {
       Assertion.Require(query, nameof(query));
 
-      string filter = query.MapToFilterString();
-
-      FixedList<CashLedgerTotal> totals = CashLedgerTotalsData.GetTotals(filter);
+      FixedList<CashLedgerTotal> totals = query.Execute();
 
       return CashLedgerTotalsMapper.Map(totals);
     }

@@ -18,6 +18,8 @@ using Empiria.CashFlow.CashLedger.Adapters;
 
 using Empiria.FinancialAccounting.Vouchers;
 
+using Empiria.FinancialAccounting.CashLedger.Data;
+
 namespace Empiria.FinancialAccounting.CashLedger.Adapters {
 
   /// <summary>Extension methods for VouchersQuery interface adapter.</summary>
@@ -25,7 +27,37 @@ namespace Empiria.FinancialAccounting.CashLedger.Adapters {
 
     #region Extension methods
 
-    static internal int CalculatePageSize(this CashLedgerQuery query) {
+    static internal FixedList<CashEntryExtended> ExecuteAndGetEntries(this CashLedgerQuery query) {
+      query.SearchEntries = true;
+
+      string filter = GetFilterString(query);
+      string sort = GetSortString(query);
+      int pageSize = CalculatePageSize(query);
+
+      FixedList<CashEntryExtended> entries = CashLedgerData.SearchEntries(filter, sort, pageSize);
+
+      return entries;
+    }
+
+
+    static internal FixedList<CashTransaction> ExecuteAndGetTransactions(this CashLedgerQuery query) {
+      query.SearchEntries = false;
+
+      string filter = GetFilterString(query);
+      string sort = GetSortString(query);
+      int pageSize = CalculatePageSize(query);
+
+      FixedList<CashTransaction> transactions = CashLedgerData.SearchTransactions(filter, sort, pageSize);
+
+      return transactions;
+    }
+
+    #endregion Extension methods
+
+    #region Methods
+
+    static private int CalculatePageSize(CashLedgerQuery query) {
+
       string datesFilter = BuildAccountingDateRangeFilter(query) + BuildRecordingDateRangeFilter(query);
 
       if (datesFilter.Length == 0) {
@@ -36,12 +68,8 @@ namespace Empiria.FinancialAccounting.CashLedger.Adapters {
     }
 
 
-    static internal void EnsureIsValid(this CashLedgerQuery query) {
-      // no-op
-    }
+    static private string GetFilterString(CashLedgerQuery query) {
 
-
-    static internal string MapToFilterString(this CashLedgerQuery query) {
       string ledgerFilter = BuildLedgerFilter(query.AccountingLedgerUID);
       string accountingDateRangeFilter = BuildAccountingDateRangeFilter(query);
       string recordingDateRangeFilter = BuildRecordingDateRangeFilter(query);
@@ -78,7 +106,7 @@ namespace Empiria.FinancialAccounting.CashLedger.Adapters {
     }
 
 
-    static internal string MapToSortString(this CashLedgerQuery query) {
+    static private string GetSortString(CashLedgerQuery query) {
       if (query.OrderBy.Length != 0) {
         return query.OrderBy;
 
