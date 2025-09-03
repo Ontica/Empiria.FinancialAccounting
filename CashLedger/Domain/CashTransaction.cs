@@ -13,6 +13,7 @@ using System;
 using Empiria.FinancialAccounting.Vouchers;
 
 using Empiria.FinancialAccounting.CashLedger.Data;
+using Empiria.StateEnums;
 
 namespace Empiria.FinancialAccounting.CashLedger {
 
@@ -87,10 +88,9 @@ namespace Empiria.FinancialAccounting.CashLedger {
     } = Participant.Empty;
 
 
-    public string StatusName {
-      get {
-        return "Pendiente";
-      }
+    [DataField("STATUS_FLUJO", Default = TransactionStatus.Pending)]
+    public TransactionStatus Status {
+      get; private set;
     }
 
     #endregion Properties

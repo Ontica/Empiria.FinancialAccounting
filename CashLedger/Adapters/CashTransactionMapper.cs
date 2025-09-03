@@ -138,8 +138,6 @@ namespace Empiria.FinancialAccounting.CashLedger.Adapters {
 
 
     static private CashTransactionDescriptor MapToDescriptor(CashTransaction txn) {
-      TransactionStatus status = TransactionStatus.Pending;
-
       return new CashTransactionDescriptor {
         Id = txn.Id,
         Number = txn.Number,
@@ -152,8 +150,8 @@ namespace Empiria.FinancialAccounting.CashLedger.Adapters {
         ElaboratedBy = txn.ElaboratedBy.Name,
         AuthorizedBy = txn.AuthorizedBy.Name,
         SourceName = txn.FunctionalArea.FullName,
-        Status = status.ToString(),
-        StatusName = status.GetName()
+        Status = txn.Status.ToString(),
+        StatusName = txn.Status.GetName()
       };
     }
 

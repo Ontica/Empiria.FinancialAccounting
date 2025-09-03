@@ -135,7 +135,9 @@ namespace Empiria.FinancialAccounting.CashLedger.Adapters {
 
 
     static private string BuildAccountingDateRangeFilter(CashLedgerQuery query) {
-      if (query.FromAccountingDate == ExecutionServer.DateMinValue && query.ToAccountingDate == ExecutionServer.DateMaxValue) {
+      if (query.FromAccountingDate == ExecutionServer.DateMinValue &&
+          query.ToAccountingDate == ExecutionServer.DateMaxValue) {
+
         return string.Empty;
       }
 
@@ -215,7 +217,10 @@ namespace Empiria.FinancialAccounting.CashLedger.Adapters {
 
 
     static private string BuildRecordingDateRangeFilter(CashLedgerQuery query) {
-      if (query.FromRecordingDate == ExecutionServer.DateMinValue && query.ToRecordingDate == ExecutionServer.DateMaxValue) {
+
+      if (query.FromRecordingDate == ExecutionServer.DateMinValue &&
+          query.ToRecordingDate == ExecutionServer.DateMaxValue) {
+
         return string.Empty;
       }
 
@@ -236,7 +241,15 @@ namespace Empiria.FinancialAccounting.CashLedger.Adapters {
 
 
     static private string BuildTransactionStatusFilter(TransactionStatus status) {
-      return $"(ESTA_ABIERTA = 0 AND FECHA_AFECTACION >= {DataCommonMethods.FormatSqlDbDate(new DateTime(2025, 1, 1))})";
+
+      string filter = $"(FECHA_AFECTACION >= {DataCommonMethods.FormatSqlDbDate(new DateTime(2025, 1, 1))})";
+
+      if (status == TransactionStatus.Pending) {
+        filter += " AND (STATUS_FLUJO = 'P')";
+      } else if (status == TransactionStatus.Closed) {
+        filter += " AND (STATUS_FLUJO = 'C')";
+      }
+      return filter;
     }
 
 
