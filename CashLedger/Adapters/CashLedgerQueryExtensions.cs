@@ -8,7 +8,6 @@
 *                                                                                                            *
 ************************* Copyright(c) La Vía Óntica SC, Ontica LLC and contributors. All rights reserved. **/
 
-using System;
 using System.Linq;
 
 using Empiria.Data;
@@ -58,25 +57,27 @@ namespace Empiria.FinancialAccounting.CashLedger.Adapters {
 
     static private int CalculatePageSize(CashLedgerQuery query) {
 
-      string datesFilter = BuildAccountingDateRangeFilter(query) + BuildRecordingDateRangeFilter(query);
+      int length = BuildAccountingDateRangeFilter(query).Length +
+                   BuildRecordingDateRangeFilter(query).Length;
 
-      if (datesFilter.Length == 0) {
+      if (length == 0) {
         return query.PageSize;
       } else {
         return 1000000;
       }
     }
 
-
     static private string GetFilterString(CashLedgerQuery query) {
-
       string ledgerFilter = BuildLedgerFilter(query.AccountingLedgerUID);
       string accountingDateRangeFilter = BuildAccountingDateRangeFilter(query);
       string recordingDateRangeFilter = BuildRecordingDateRangeFilter(query);
       string transactionTypeFilter = BuildTransactionTypeFilter(query.TransactionTypeUID);
+      string transactionStatusFilter = BuildTransactionStatusFilter(query.TransactionStatus);
+      string cashAccountsStatusFilter = BuildCashAccountsStatusFilter(query.CashAccountStatus);
       string voucherTypeFilter = BuildVoucherTypeFilter(query.VoucherTypeUID);
       string sourceFilter = BuildSourceFilter(query.SourceUID);
-      string transactionStatusFilter = BuildTransactionStatusFilter(query.TransactionStatus);
+      string entriesFilter = BuildEntriesFilter(query);
+
       string keywordsFilter = BuildKeywordsFilter(query.Keywords);
       string conceptsFilter = BuildConceptFilter(query.Keywords);
 
@@ -86,18 +87,24 @@ namespace Empiria.FinancialAccounting.CashLedger.Adapters {
       filter.AppendAnd(recordingDateRangeFilter);
 
       filter.AppendAnd(transactionTypeFilter);
+      filter.AppendAnd(transactionStatusFilter);
+      filter.AppendAnd(cashAccountsStatusFilter);
+
       filter.AppendAnd(voucherTypeFilter);
       filter.AppendAnd(sourceFilter);
-      filter.AppendAnd(transactionStatusFilter);
+
       filter.AppendAnd(conceptsFilter);
       filter.AppendAnd(keywordsFilter);
 
       if (query.SearchEntries) {
-        string entriesFilter = BuildEntriesFilter(query);
-
         filter.AppendAnd(entriesFilter);
+
       } else {
-        string transactionEntriesFilter = BuildTransactionEntriesFilter(query);
+
+        string transactionEntriesFilter = BuildTransactionEntriesFilter(filter.ToString(), entriesFilter);
+
+        filter.AppendAnd(transactionStatusFilter);
+        filter.AppendAnd(cashAccountsStatusFilter);
 
         filter.AppendAnd(transactionEntriesFilter);
       }
@@ -135,8 +142,9 @@ namespace Empiria.FinancialAccounting.CashLedger.Adapters {
 
 
     static private string BuildAccountingDateRangeFilter(CashLedgerQuery query) {
-      if (query.FromAccountingDate == ExecutionServer.DateMinValue &&
-          query.ToAccountingDate == ExecutionServer.DateMaxValue) {
+
+      if (ExecutionServer.IsMinOrMaxDate(query.FromAccountingDate) &&
+          ExecutionServer.IsMinOrMaxDate(query.ToAccountingDate)) {
 
         return string.Empty;
       }
@@ -155,27 +163,27 @@ namespace Empiria.FinancialAccounting.CashLedger.Adapters {
     }
 
 
-    static private string BuildCashAccountStatusFilter(CashAccountStatus cashAccountStatus) {
-
-      if (cashAccountStatus.IsForControl()) {
-        return $"(ID_CUENTA_FLUJO = {cashAccountStatus.ControlValue()})";
-      }
+    static private string BuildCashAccountsStatusFilter(CashAccountStatus cashAccountStatus) {
 
       switch (cashAccountStatus) {
+
         case CashAccountStatus.All:
           return string.Empty;
 
+        case CashAccountStatus.Pending:
+          return $"(FLUJO_PENDIENTE > 0)";
+
+        case CashAccountStatus.NoCashFlow:
+          return $"(SIN_FLUJO > 0)";
+
+        case CashAccountStatus.CashFlowUnassigned:
+          return $"(CON_FLUJO_SIN_ASIGNAR > 0)";
+
         case CashAccountStatus.CashFlowAssigned:
-          return $"(ID_CUENTA_FLUJO > 0)";
+          return $"(CON_FLUJO > 0)";
 
         case CashAccountStatus.FalsePositive:
-          return $"( (ID_CUENTA_FLUJO = {CashAccountStatus.CashFlowUnassigned.ControlValue()} AND " +
-                    $"CONCEPTO_FLUJO_LEGADO = '{CashAccountStatus.NoCashFlow.Name()}')" +
-                 $" OR " +
-                  $"(ID_CUENTA_FLUJO = {CashAccountStatus.NoCashFlow.ControlValue()} AND " +
-                   $"CONCEPTO_FLUJO_LEGADO <> '{CashAccountStatus.NoCashFlow.Name()}')" +
-                 $" OR " +
-                  $"(ID_CUENTA_FLUJO > 0 AND NUM_CONCEPTO_FLUJO <> CONCEPTO_FLUJO_LEGADO))";
+          return $"(FLUJO_INCORRECTO > 0)";
 
         default:
           throw Assertion.EnsureNoReachThisCode($"Unhandled cash account status {cashAccountStatus}.");
@@ -184,6 +192,7 @@ namespace Empiria.FinancialAccounting.CashLedger.Adapters {
 
 
     static private string BuildConceptFilter(string keywords) {
+
       if (!keywords.StartsWith("@")) {
         return string.Empty;
       }
@@ -218,8 +227,8 @@ namespace Empiria.FinancialAccounting.CashLedger.Adapters {
 
     static private string BuildRecordingDateRangeFilter(CashLedgerQuery query) {
 
-      if (query.FromRecordingDate == ExecutionServer.DateMinValue &&
-          query.ToRecordingDate == ExecutionServer.DateMaxValue) {
+      if (ExecutionServer.IsMinOrMaxDate(query.FromRecordingDate) &&
+          ExecutionServer.IsMinOrMaxDate(query.ToRecordingDate)) {
 
         return string.Empty;
       }
@@ -242,14 +251,20 @@ namespace Empiria.FinancialAccounting.CashLedger.Adapters {
 
     static private string BuildTransactionStatusFilter(TransactionStatus status) {
 
-      string filter = $"(FECHA_AFECTACION >= {DataCommonMethods.FormatSqlDbDate(new DateTime(2025, 1, 1))})";
+      switch (status) {
 
-      if (status == TransactionStatus.Pending) {
-        filter += " AND (STATUS_FLUJO = 'P')";
-      } else if (status == TransactionStatus.Closed) {
-        filter += " AND (STATUS_FLUJO = 'C')";
+        case TransactionStatus.All:
+          return string.Empty;
+
+        case TransactionStatus.Pending:
+          return "(STATUS_FLUJO = 'P')";
+
+        case TransactionStatus.Closed:
+          return "(STATUS_FLUJO = 'C')";
+
+        default:
+          throw Assertion.EnsureNoReachThisCode($"Unhandled cash ledger transaction status '{status}'.");
       }
-      return filter;
     }
 
 
@@ -265,15 +280,14 @@ namespace Empiria.FinancialAccounting.CashLedger.Adapters {
 
 
     static private string BuildEntriesFilter(CashLedgerQuery query) {
-      string cashAccountStatusFilter = BuildCashAccountStatusFilter(query.CashAccountStatus);
+
       string accountsFilter = BuildAccountsFilter(query.VoucherAccounts);
       string subledgerAccountsFilter = BuildSubledgerAccountsFilter(query.SubledgerAccounts);
       string verificationNumbersFilter = BuildVerificationNumberFilter(query.VerificationNumbers);
       string cashAccountsFilter = BuildCashAccountsFilter(query.CashAccounts);
 
-      var filter = new Filter(cashAccountStatusFilter);
+      var filter = new Filter(accountsFilter);
 
-      filter.AppendAnd(accountsFilter);
       filter.AppendAnd(subledgerAccountsFilter);
       filter.AppendAnd(verificationNumbersFilter);
       filter.AppendAnd(cashAccountsFilter);
@@ -282,15 +296,22 @@ namespace Empiria.FinancialAccounting.CashLedger.Adapters {
     }
 
 
-    static private string BuildTransactionEntriesFilter(CashLedgerQuery query) {
+    static private string BuildTransactionEntriesFilter(string commonFilter, string entriesFilter) {
 
-      string filter = BuildEntriesFilter(query);
-
-      if (filter.Length == 0) {
+      if (entriesFilter.Length == 0) {
         return string.Empty;
       }
 
-      return $"ID_TRANSACCION IN (SELECT ID_TRANSACCION FROM VW_COF_MOVIMIENTO_BIS WHERE {filter})";
+      if (commonFilter.Length != 0) {
+        return $"ID_TRANSACCION IN (SELECT ID_TRANSACCION " +
+                                  $"FROM VW_COF_MOVIMIENTO_FLUJO " +
+                                  $"WHERE ({commonFilter}) AND ({entriesFilter}))";
+
+      } else {
+        return $"ID_TRANSACCION IN (SELECT ID_TRANSACCION " +
+                                  $"FROM VW_COF_MOVIMIENTO_BIS " +
+                                  $"WHERE ({entriesFilter}))";
+      }
     }
 
 

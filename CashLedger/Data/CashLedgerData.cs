@@ -37,8 +37,9 @@ namespace Empiria.FinancialAccounting.CashLedger.Data {
 
 
     static internal CashTransaction GetTransaction(long id) {
-      var sql = "SELECT * FROM COF_TRANSACCION " +
-               $"WHERE ID_TRANSACCION = {id} AND ESTA_ABIERTA = 0";
+
+      var sql = "SELECT * FROM VW_COF_TRANSACCION_FLUJO " +
+               $"WHERE ID_TRANSACCION = {id}";
 
       var op = DataOperation.Parse(sql);
 
@@ -52,8 +53,8 @@ namespace Empiria.FinancialAccounting.CashLedger.Data {
 
       var filter = SearchExpression.ParseInSet("ID_TRANSACCION", ids);
 
-      var sql = "SELECT * FROM COF_TRANSACCION " +
-               $"WHERE {filter} AND ESTA_ABIERTA = 0";
+      var sql = "SELECT * FROM VW_COF_TRANSACCION_FLUJO " +
+               $"WHERE {filter}";
 
       var op = DataOperation.Parse(sql);
 
@@ -62,6 +63,7 @@ namespace Empiria.FinancialAccounting.CashLedger.Data {
 
 
     static internal FixedList<CashEntry> GetTransactionEntries(CashTransaction transaction) {
+
       var sql = "SELECT * FROM VW_COF_MOVIMIENTO_JOINED " +
                $"WHERE ID_TRANSACCION = {transaction.Id} " +
                $"ORDER BY ID_MOVIMIENTO";
@@ -90,12 +92,14 @@ namespace Empiria.FinancialAccounting.CashLedger.Data {
 
     static internal FixedList<CashEntryExtended> SearchEntries(string filter, string sort, int pageSize) {
       var sql = "SELECT * FROM (" +
-                    "SELECT * FROM VW_COF_MOVIMIENTO_BIS " +
+                    "SELECT * FROM VW_COF_MOVIMIENTO_FLUJO " +
                     $"WHERE {filter} " +
                     $"ORDER BY {sort}) " +
                  $"WHERE ROWNUM <= {pageSize}";
 
       var op = DataOperation.Parse(sql);
+
+      EmpiriaLog.Debug(sql);
 
       return DataReader.GetPlainObjectFixedList<CashEntryExtended>(op);
     }
@@ -103,7 +107,7 @@ namespace Empiria.FinancialAccounting.CashLedger.Data {
 
     static internal FixedList<CashTransaction> SearchTransactions(string filter, string sort, int pageSize) {
       var sql = "SELECT * FROM (" +
-                  "SELECT * FROM VW_COF_TRANSACCION " +
+                  "SELECT * FROM VW_COF_TRANSACCION_FLUJO " +
                   $"WHERE {filter} " +
                   $"ORDER BY {sort}) " +
                $"WHERE ROWNUM <= {pageSize}";
