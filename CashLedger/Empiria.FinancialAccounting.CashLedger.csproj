@@ -67,7 +67,7 @@
   <ItemGroup>
     <ProjectReference Include="..\..\core\Core\Empiria.Core.csproj" />
     <ProjectReference Include="..\..\extensions\Services\Empiria.Services.csproj" />
-    <ProjectReference Include="..\..\financial.management\Integration\Empiria.Financial.Integration.csproj" />
+    <ProjectReference Include="..\..\financial.management\Integration\Core\Empiria.Financial.Integration.Core.csproj" />
     <ProjectReference Include="..\Vouchers\Empiria.FinancialAccounting.Vouchers.csproj" />
   </ItemGroup>
 </Project>
