@@ -14,6 +14,7 @@ using Empiria.WebApi.Client;
 
 using Empiria.FinancialAccounting.BalanceEngine.Adapters;
 using Empiria.FinancialAccounting.BalanceEngine.UseCases;
+
 using Empiria.FinancialAccounting.BalanceEngine.BalanceExplorer.Adapters;
 using Empiria.FinancialAccounting.BalanceEngine.BalanceExplorer.UseCases;
 
@@ -296,7 +297,8 @@ namespace Empiria.FinancialAccounting.Tests.BalanceEngine {
       HttpApiClient http = CreateHttpApiClient();
 
       return http.PostAsync<ResponseModel<TrialBalanceDto>>(query, "v2/financial-accounting/balance-engine/trial-balance")
-                 .Result
+                 .GetAwaiter()
+                 .GetResult()
                  .Data;
     }
 
@@ -306,7 +308,8 @@ namespace Empiria.FinancialAccounting.Tests.BalanceEngine {
       HttpApiClient http = CreateHttpApiClient();
 
       return http.PostAsync<ResponseModel<TrialBalanceDto<T>>>(query, "v2/financial-accounting/balance-engine/trial-balance")
-                 .Result
+                 .GetAwaiter()
+                 .GetResult()
                  .Data;
     }
 
