@@ -45,26 +45,27 @@ namespace Empiria.FinancialAccounting.BalanceEngine.Data {
 
 
     static internal FixedList<TrialBalanceEntry> GetBalancesWithFlattenedAccounts(TrialBalanceQuery query,
-                                                List<TrialBalanceEntry> trialBalanceList) {
+                                                List<TrialBalanceEntry> trialBalance) {
 
       if (query.BalancesType == BalancesType.AllAccountsInCatalog) {
 
         var accountsChartUseCase = AccountsChartUseCases.UseCaseInteractor();
         var accountsChartQuery = GetAccountsChartQueryDto(query);
-        
+
+        FixedList<Ledger> ledgers = GetLedgersFromTrialBalance(trialBalance, query);
+
         var flattenedAccounts = accountsChartUseCase.GetFlattenedAccounts(accountsChartQuery);
 
-        var ledgers = GetLedgersFromTrialBalance(trialBalanceList, query);
+        FlattenedAccountsFiltered(trialBalance, flattenedAccounts);
 
         FixedList<TrialBalanceEntry> flattenedAccountBalances = ConvertFlattenedAccountsIntoBalances(
                                                                 flattenedAccounts, ledgers);
 
-        return CombineBalanceEntriesAndFlattenedAccounts(trialBalanceList, flattenedAccountBalances);
+        return CombineBalanceEntriesAndFlattenedAccounts(trialBalance, flattenedAccountBalances);
       } else {
-        return new FixedList<TrialBalanceEntry>(trialBalanceList);
+        return new FixedList<TrialBalanceEntry>(trialBalance);
       }
     }
-
 
     #endregion Public methods
 
@@ -104,6 +105,24 @@ namespace Empiria.FinancialAccounting.BalanceEngine.Data {
                                       account, (Ledger) x)));
       }
       return convertedAccounts.ToFixedList();
+    }
+
+
+    static private void FlattenedAccountsFiltered(List<TrialBalanceEntry> trialBalance,
+                                                  FixedList<FlatAccountDto> flattenedAccounts) {
+
+      var accountsToFilter = new FixedList<FlatAccountDto>(flattenedAccounts);
+
+      foreach (var account in accountsToFilter) {
+
+        var exist = trialBalance.FindAll(x => x.Account.Number == account.Number &&
+                                         x.Account.DebtorCreditor == account.DebtorCreditor &&
+                                         x.Currency == account.Currency &&
+                                         x.Sector.Code == account.Sector.Code);
+        if (exist.Count > 0) {
+          flattenedAccounts.Remove(account);
+        }
+      }
     }
 
 
