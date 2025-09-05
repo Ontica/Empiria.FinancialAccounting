@@ -21,13 +21,13 @@ namespace Empiria.Tests.FinancialAccounting.BalanceEngine {
   public class BalanzaTradicionalVsCoreBalancesTests {
 
     [Theory]
-    [InlineData("2024-10-01", "2024-10-31", BalancesType.WithCurrentBalanceOrMovements)]
-    [InlineData("2024-11-01", "2024-11-30", BalancesType.AllAccounts)]
-    [InlineData("2024-12-01", "2024-12-31", BalancesType.WithCurrentBalanceOrMovements)]
-    [InlineData("2025-01-01", "2025-01-31", BalancesType.AllAccounts)]
-    [InlineData("2025-02-01", "2025-02-28", BalancesType.WithCurrentBalanceOrMovements)]
-    [InlineData("2025-03-01", "2025-03-31", BalancesType.AllAccounts)]
-    [InlineData("2025-04-01", "2025-04-30", BalancesType.WithCurrentBalanceOrMovements)]
+    [InlineData("2024-10-01", "2024-10-31", BalancesType.AllAccountsInCatalog)]
+    [InlineData("2024-11-01", "2024-11-30", BalancesType.AllAccountsInCatalog)]
+    [InlineData("2024-12-01", "2024-12-31", BalancesType.AllAccountsInCatalog)]
+    [InlineData("2025-01-01", "2025-01-31", BalancesType.AllAccountsInCatalog)]
+    [InlineData("2025-02-01", "2025-02-28", BalancesType.AllAccountsInCatalog)]
+    [InlineData("2025-03-01", "2025-03-31", BalancesType.AllAccountsInCatalog)]
+    [InlineData("2025-04-01", "2025-04-30", BalancesType.AllAccountsInCatalog)]
     public void Should_Have_Same_Entries(string fromDate, string toDate, BalancesType balancesType) {
 
       CoreBalanceEntries coreBalances = TestsHelpers.GetCoreBalanceEntries(DateTime.Parse(fromDate),
@@ -46,13 +46,13 @@ namespace Empiria.Tests.FinancialAccounting.BalanceEngine {
 
 
     [Theory]
-    [InlineData("2024-10-01", "2024-10-31", BalancesType.WithCurrentBalanceOrMovements)]
-    [InlineData("2024-11-01", "2024-11-30", BalancesType.AllAccounts)]
-    [InlineData("2024-12-01", "2024-12-31", BalancesType.WithCurrentBalanceOrMovements)]
-    [InlineData("2025-01-01", "2025-01-31", BalancesType.AllAccounts)]
-    [InlineData("2025-02-01", "2025-02-28", BalancesType.WithCurrentBalanceOrMovements)]
-    [InlineData("2025-03-01", "2025-03-31", BalancesType.AllAccounts)]
-    [InlineData("2025-04-01", "2025-04-30", BalancesType.WithCurrentBalanceOrMovements)]
+    [InlineData("2024-10-01", "2024-10-31", BalancesType.AllAccountsInCatalog)]
+    [InlineData("2024-11-01", "2024-11-30", BalancesType.AllAccountsInCatalog)]
+    [InlineData("2024-12-01", "2024-12-31", BalancesType.AllAccountsInCatalog)]
+    [InlineData("2025-01-01", "2025-01-31", BalancesType.AllAccountsInCatalog)]
+    [InlineData("2025-02-01", "2025-02-28", BalancesType.AllAccountsInCatalog)]
+    [InlineData("2025-03-01", "2025-03-31", BalancesType.AllAccountsInCatalog)]
+    [InlineData("2025-04-01", "2025-04-30", BalancesType.AllAccountsInCatalog)]
     public void Should_Have_Same_Summaries(string fromDate, string toDate, BalancesType balancesType) {
 
       CoreBalanceEntries coreBalances = TestsHelpers.GetCoreBalanceEntries(DateTime.Parse(fromDate),
@@ -83,19 +83,23 @@ namespace Empiria.Tests.FinancialAccounting.BalanceEngine {
         var totalCurrentBalance = filtered.FindAll(x => x.Currency.Code == sut.CurrencyCode).Sum(x => x.CurrentBalance);
 
         Assert.True(Math.Abs(totalInitialBalance - sut.InitialBalance) <= 1,
-                    TestsHelpers.BalanceDiffMsg($"Saldo inicial. Moneda {sut.CurrencyCode}", $"{sut.AccountNumber}, sector {sut.SectorCode} ({sut.DebtorCreditor})",
-                                                totalInitialBalance, sut.InitialBalance));
+                    TestsHelpers.BalanceDiffMsg($"Saldo inicial. Moneda {sut.CurrencyCode}",
+                    $"{sut.AccountNumber}, sector {sut.SectorCode} ({sut.DebtorCreditor})",
+                    totalInitialBalance, sut.InitialBalance));
 
         Assert.True(Math.Abs(totalDebit - sut.Debit) <= 1,
-                    TestsHelpers.BalanceDiffMsg($"Cargos. Moneda {sut.CurrencyCode}", $"{sut.AccountNumber}, sector {sut.SectorCode} ({sut.DebtorCreditor})",
-                                                totalDebit, sut.Debit));
+                    TestsHelpers.BalanceDiffMsg($"Cargos. Moneda {sut.CurrencyCode}",
+                    $"{sut.AccountNumber}, sector {sut.SectorCode} ({sut.DebtorCreditor})",
+                    totalDebit, sut.Debit));
         Assert.True(Math.Abs(totalCredit - sut.Credit) <= 1,
-                    TestsHelpers.BalanceDiffMsg($"Abonos. Moneda {sut.CurrencyCode}", $"{sut.AccountNumber}, sector {sut.SectorCode} ({sut.DebtorCreditor})",
-                                                totalCredit, sut.Credit));
+                    TestsHelpers.BalanceDiffMsg($"Abonos. Moneda {sut.CurrencyCode}",
+                    $"{sut.AccountNumber}, sector {sut.SectorCode} ({sut.DebtorCreditor})",
+                    totalCredit, sut.Credit));
 
         Assert.True(Math.Abs(totalCurrentBalance - sut.CurrentBalance.Value) <= 1,
-                    TestsHelpers.BalanceDiffMsg($"Saldo actual. Moneda {sut.CurrencyCode}", $"{sut.AccountNumber}, sector {sut.SectorCode} ({sut.DebtorCreditor})",
-                                                totalCurrentBalance, sut.CurrentBalance.Value));
+                    TestsHelpers.BalanceDiffMsg($"Saldo actual. Moneda {sut.CurrencyCode}",
+                    $"{sut.AccountNumber}, sector {sut.SectorCode} ({sut.DebtorCreditor})",
+                    totalCurrentBalance, sut.CurrentBalance.Value));
       }
     }
 

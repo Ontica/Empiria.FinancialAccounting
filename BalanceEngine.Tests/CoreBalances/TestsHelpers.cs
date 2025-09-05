@@ -19,6 +19,7 @@ using Empiria.FinancialAccounting.BalanceEngine.BalanceExplorer.UseCases;
 using Empiria.FinancialAccounting.BalanceEngine.UseCases;
 
 using Empiria.FinancialAccounting.Tests;
+using Empiria.FinancialAccounting.Tests.BalanceEngine;
 
 namespace Empiria.Tests.FinancialAccounting.BalanceEngine {
 
@@ -225,10 +226,10 @@ namespace Empiria.Tests.FinancialAccounting.BalanceEngine {
       var query = new TrialBalanceQuery() {
         AccountsChartUID = TestingConstants.IFRS_ACCOUNTS_CHART.UID,
         TrialBalanceType = TrialBalanceType.Balanza,
-        BalancesType = BalancesType.AllAccounts,
+        BalancesType = BalancesType.AllAccountsInCatalog,
         ShowCascadeBalances = false,
         WithSubledgerAccount = false,
-        UseDefaultValuation = false,
+        UseDefaultValuation = true,
         InitialPeriod = new BalancesPeriod {
           FromDate = fromDate,
           ToDate = toDate,
@@ -244,8 +245,9 @@ namespace Empiria.Tests.FinancialAccounting.BalanceEngine {
       var query = new TrialBalanceQuery() {
         AccountsChartUID = TestingConstants.IFRS_ACCOUNTS_CHART.UID,
         TrialBalanceType = TrialBalanceType.Balanza,
-        BalancesType = BalancesType.AllAccounts,
+        BalancesType = BalancesType.AllAccountsInCatalog,
         WithSubledgerAccount = true,
+        UseDefaultValuation = true,
         InitialPeriod = new BalancesPeriod {
           FromDate = fromDate,
           ToDate = toDate,
@@ -261,7 +263,7 @@ namespace Empiria.Tests.FinancialAccounting.BalanceEngine {
       var query = new TrialBalanceQuery() {
         AccountsChartUID = TestingConstants.IFRS_ACCOUNTS_CHART.UID,
         TrialBalanceType = TrialBalanceType.Balanza,
-        BalancesType = BalancesType.AllAccounts,
+        BalancesType = BalancesType.AllAccountsInCatalog,
         InitialPeriod = new BalancesPeriod {
           FromDate = fromDate,
           ToDate = toDate,
@@ -423,9 +425,9 @@ namespace Empiria.Tests.FinancialAccounting.BalanceEngine {
 
       using (var usecase = TrialBalanceUseCases.UseCaseInteractor()) {
 
-        var entries = usecase.BuildTrialBalance(query).Entries;
+        var _entries = BalanceEngineProxy.BuildTrialBalance(query).Entries;
 
-        return entries.Select(x => (T) x).ToFixedList();
+        return _entries.Select(x => (T) x).ToFixedList();
       }
     }
 
