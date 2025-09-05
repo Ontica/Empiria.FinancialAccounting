@@ -306,7 +306,6 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
     private void BalanceEntryByCurrencySumToTwoColumnEntry(AnaliticoDeCuentasEntry analyticEntry,
                                                            TrialBalanceEntry balanceEntry,
                                                            Currency currentCurrency) {
-      
       if (balanceEntry.Level == 1) {
         analyticEntry.DomesticBalance += balanceEntry.CurrentBalance;
 

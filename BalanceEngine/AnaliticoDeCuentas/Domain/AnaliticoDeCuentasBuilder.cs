@@ -88,11 +88,7 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
         return new List<TrialBalanceEntry>();
       }
 
-      if (_query.BalancesType == BalancesType.AllAccounts ||
-          _query.BalancesType == BalancesType.AllAccountsInCatalog) {
-
-        return balanceEntries;
-      } else if (_query.WithSubledgerAccount) {
+      if (_query.WithSubledgerAccount) {
 
         return balanceEntries.FindAll(a => a.SubledgerAccountId == 0 &&
                                       a.ItemType == TrialBalanceItemType.Summary);
