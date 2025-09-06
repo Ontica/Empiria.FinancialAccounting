@@ -281,7 +281,7 @@ namespace Empiria.Tests.FinancialAccounting.BalanceEngine {
         ToDate = toDate
       };
 
-      return  await ExecuteLockedUpBalances(query);
+      return await ExecuteLockedUpBalances(query);
     }
 
 
@@ -320,7 +320,7 @@ namespace Empiria.Tests.FinancialAccounting.BalanceEngine {
         }
       };
 
-      return ExecutelBalanceExplorer(query);
+      return ExecuteBalanceExplorer(query);
     }
 
 
@@ -337,7 +337,7 @@ namespace Empiria.Tests.FinancialAccounting.BalanceEngine {
         }
       };
 
-      return ExecutelBalanceExplorer(query);
+      return ExecuteBalanceExplorer(query);
     }
 
 
@@ -356,7 +356,7 @@ namespace Empiria.Tests.FinancialAccounting.BalanceEngine {
         }
       };
 
-      return ExecutelBalanceExplorer(query);
+      return ExecuteBalanceExplorer(query);
     }
 
 
@@ -397,13 +397,11 @@ namespace Empiria.Tests.FinancialAccounting.BalanceEngine {
     }
 
 
-    static internal FixedList<BalanceExplorerEntryDto> ExecutelBalanceExplorer(BalanceExplorerQuery query) {
+    static internal FixedList<BalanceExplorerEntryDto> ExecuteBalanceExplorer(BalanceExplorerQuery query) {
 
       using (var usecase = BalanceExplorerUseCases.UseCaseInteractor()) {
 
-        var entries = usecase.GetBalances(query).Entries;
-
-        return entries.Select(x => (BalanceExplorerEntryDto) x).ToFixedList();
+        return usecase.GetBalances(query).Entries;
       }
     }
 
@@ -414,7 +412,7 @@ namespace Empiria.Tests.FinancialAccounting.BalanceEngine {
 
         var dto = await usecase.BuildSaldosEncerrados(query);
 
-        return dto.Entries.Select(x => (SaldosEncerradosBaseEntryDto) x).ToFixedList();
+        return dto.Entries;
       }
     }
 

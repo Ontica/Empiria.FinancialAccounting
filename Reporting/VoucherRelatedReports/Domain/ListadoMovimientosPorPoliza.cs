@@ -4,20 +4,21 @@
 *  Assembly : FinancialAccounting.Reporting.dll             Pattern   : Report builder                       *
 *  Type     : ListadoMovimientosPorPoliza                   License   : Please read LICENSE.txt file         *
 *                                                                                                            *
-*  Summary  : Listado de movimientos por póliza para exportar datos a excel.                                 *
+*  Summary  : Listado de movimientos por póliza para exportar datos a Excel.                                 *
 *                                                                                                            *
 ************************* Copyright(c) La Vía Óntica SC, Ontica LLC and contributors. All rights reserved. **/
-using System;
+
 using System.Collections.Generic;
 using System.Linq;
 
 using Empiria.DynamicData;
+
 using Empiria.FinancialAccounting.BalanceEngine;
 using Empiria.FinancialAccounting.Reporting.AccountStatements.Domain;
 
 namespace Empiria.FinancialAccounting.Reporting.VoucherRelatedReports.Domain {
 
-  /// <summary>Listado de movimientos por póliza para exportar datos a excel.</summary>
+  /// <summary>Listado de movimientos por póliza para exportar datos a Excel.</summary>
   internal class ListadoMovimientosPorPoliza : IReportBuilder {
 
     private ReportBuilderQuery _query;
@@ -121,7 +122,7 @@ namespace Empiria.FinancialAccounting.Reporting.VoucherRelatedReports.Domain {
 
         FixedList<AccountStatementEntry> movementsWithSummaryEntries =
                                         helper.GetSummaryToParentVouchers(movementsVoucherEntries);
-        
+
         returnedVouchers.AddRange(movementsWithSummaryEntries.ToList());
 
         counter += vouchers.Count();
