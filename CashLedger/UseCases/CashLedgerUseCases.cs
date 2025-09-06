@@ -99,6 +99,8 @@ namespace Empiria.FinancialAccounting.CashLedger.UseCases {
 
       CashLedgerData.UpdateCashEntriesAccounts(entries);
 
+      transaction = CashLedgerData.GetTransaction(transactionId);
+
       return CashTransactionMapper.Map(transaction);
     }
 
