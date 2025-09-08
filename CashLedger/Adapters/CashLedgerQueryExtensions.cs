@@ -68,46 +68,33 @@ namespace Empiria.FinancialAccounting.CashLedger.Adapters {
     }
 
     static private string GetFilterString(CashLedgerQuery query) {
-      string ledgerFilter = BuildLedgerFilter(query.AccountingLedgerUID);
       string accountingDateRangeFilter = BuildAccountingDateRangeFilter(query);
       string recordingDateRangeFilter = BuildRecordingDateRangeFilter(query);
-      string transactionTypeFilter = BuildTransactionTypeFilter(query.TransactionTypeUID);
+      string ledgerFilter = BuildLedgerFilter(query.AccountingLedgerUID);
       string transactionStatusFilter = BuildTransactionStatusFilter(query.TransactionStatus);
       string cashAccountsStatusFilter = BuildCashAccountsStatusFilter(query.CashAccountStatus);
+      string transactionTypeFilter = BuildTransactionTypeFilter(query.TransactionTypeUID);
       string voucherTypeFilter = BuildVoucherTypeFilter(query.VoucherTypeUID);
       string sourceFilter = BuildSourceFilter(query.SourceUID);
-      string entriesFilter = BuildEntriesFilter(query);
-
       string keywordsFilter = BuildKeywordsFilter(query.Keywords);
       string conceptsFilter = BuildConceptFilter(query.Keywords);
+      string entriesFilter = BuildEntriesFilter(query);
 
-      var filter = new Filter(ledgerFilter);
+      var filter = new Filter(accountingDateRangeFilter);
 
-      filter.AppendAnd(accountingDateRangeFilter);
       filter.AppendAnd(recordingDateRangeFilter);
+      filter.AppendAnd(ledgerFilter);
 
-      filter.AppendAnd(transactionTypeFilter);
       filter.AppendAnd(transactionStatusFilter);
       filter.AppendAnd(cashAccountsStatusFilter);
 
+      filter.AppendAnd(transactionTypeFilter);
       filter.AppendAnd(voucherTypeFilter);
       filter.AppendAnd(sourceFilter);
 
-      filter.AppendAnd(conceptsFilter);
       filter.AppendAnd(keywordsFilter);
-
-      if (query.SearchEntries) {
-        filter.AppendAnd(entriesFilter);
-
-      } else {
-
-        string transactionEntriesFilter = BuildTransactionEntriesFilter(filter.ToString(), entriesFilter);
-
-        filter.AppendAnd(transactionStatusFilter);
-        filter.AppendAnd(cashAccountsStatusFilter);
-
-        filter.AppendAnd(transactionEntriesFilter);
-      }
+      filter.AppendAnd(conceptsFilter);
+      filter.AppendAnd(entriesFilter);
 
       return filter.ToString();
     }
@@ -293,25 +280,6 @@ namespace Empiria.FinancialAccounting.CashLedger.Adapters {
       filter.AppendAnd(cashAccountsFilter);
 
       return filter.ToString();
-    }
-
-
-    static private string BuildTransactionEntriesFilter(string commonFilter, string entriesFilter) {
-
-      if (entriesFilter.Length == 0) {
-        return string.Empty;
-      }
-
-      if (commonFilter.Length != 0) {
-        return $"ID_TRANSACCION IN (SELECT ID_TRANSACCION " +
-                                  $"FROM VW_COF_MOVIMIENTO_FLUJO " +
-                                  $"WHERE ({commonFilter}) AND ({entriesFilter}))";
-
-      } else {
-        return $"ID_TRANSACCION IN (SELECT ID_TRANSACCION " +
-                                  $"FROM VW_COF_MOVIMIENTO_BIS " +
-                                  $"WHERE ({entriesFilter}))";
-      }
     }
 
 
