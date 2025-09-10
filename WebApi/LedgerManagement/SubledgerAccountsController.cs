@@ -7,7 +7,6 @@
 *  Summary  : Query web API used to get information about subledger accounts.                                *
 *                                                                                                            *
 ************************* Copyright(c) La Vía Óntica SC, Ontica LLC and contributors. All rights reserved. **/
-using System;
 using System.Web.Http;
 
 using Empiria.WebApi;
