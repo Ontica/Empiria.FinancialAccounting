@@ -15,6 +15,20 @@ namespace Empiria.FinancialAccounting.CashLedger.Data {
   /// <summary>Data services used to retrive cash ledger totals.</summary>
   static internal class CashLedgerTotalsData {
 
+    static internal FixedList<CashEntryExtended> GetEntries(string filter) {
+      Assertion.Require(filter, nameof(filter));
+
+      var sql = "SELECT * " +
+                "FROM VW_COF_MOVIMIENTO_BIS " +
+                $"WHERE {filter} " +
+                $"ORDER BY NUM_CONCEPTO_FLUJO, FECHA_AFECTACION DESC, NUMERO_CUENTA_ESTANDAR";
+
+      var op = DataOperation.Parse(sql);
+
+      return DataReader.GetPlainObjectFixedList<CashEntryExtended>(op);
+    }
+
+
     static internal FixedList<CashLedgerTotal> GetTotals(string filter) {
       Assertion.Require(filter, nameof(filter));
 

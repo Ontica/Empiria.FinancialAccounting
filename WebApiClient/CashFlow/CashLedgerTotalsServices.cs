@@ -17,6 +17,13 @@ namespace Empiria.FinancialAccounting.ClientServices {
   /// <summary>Provides financial accounting cash ledger totals services using a web proxy.</summary>
   public class CashLedgerTotalsServices : BaseService {
 
+    public async Task<FixedList<CashEntryDescriptor>> GetCashLedgerEntries(BaseCashLedgerTotalsQuery query) {
+      string path = "v2/financial-accounting/cash-ledger/entries";
+
+      return await WebApiClient.PostAsync<FixedList<CashEntryDescriptor>>(query, path);
+    }
+
+
     public async Task<FixedList<CashLedgerTotalEntryDto>> GetCashLedgerTotals(BaseCashLedgerTotalsQuery query) {
 
       string path = "v2/financial-accounting/cash-ledger/totals";

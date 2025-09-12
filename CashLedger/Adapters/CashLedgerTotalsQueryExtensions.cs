@@ -30,6 +30,15 @@ namespace Empiria.FinancialAccounting.CashLedger.Adapters {
       return totals;
     }
 
+
+    static public FixedList<CashEntryDescriptor> ExecuteEntries(this BaseCashLedgerTotalsQuery query) {
+      string filter = GetFilterString(query);
+
+      FixedList<CashEntryExtended> entries = CashLedgerTotalsData.GetEntries(filter);
+
+      return CashTransactionMapper.MapToDescriptor(entries);
+    }
+
     #endregion Extension methods
 
     #region Methods

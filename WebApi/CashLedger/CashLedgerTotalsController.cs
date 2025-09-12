@@ -24,6 +24,18 @@ namespace Empiria.FinancialAccounting.CashLedger.WebApi {
     #region Query web apis
 
     [HttpPost]
+    [Route("v2/financial-accounting/cash-ledger/entries")]
+    public CollectionModel GetCashLedgerEntries([FromBody] BaseCashLedgerTotalsQuery query) {
+
+      using (var usecases = CashLedgerTotalsUseCases.UseCaseInteractor()) {
+        FixedList<CashEntryDescriptor> entries = usecases.GetCashLedgerEntries(query);
+
+        return new CollectionModel(base.Request, entries);
+      }
+    }
+
+
+    [HttpPost]
     [Route("v2/financial-accounting/cash-ledger/totals")]
     public CollectionModel GetCashLedgerTotals([FromBody] BaseCashLedgerTotalsQuery query) {
 
