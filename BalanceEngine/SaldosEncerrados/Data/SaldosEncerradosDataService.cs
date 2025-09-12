@@ -16,7 +16,7 @@ namespace Empiria.FinancialAccounting.BalanceEngine.Data {
   internal class SaldosEncerradosDataService {
 
 
-    static internal FixedList<Account> GetAccountsWithChanges(AccountsChart accountsChart,
+    static internal FixedList<Account> GetAccountsHistory(AccountsChart accountsChart,
                                                               DateTime fromDate, DateTime toDate) {
       var sql = "SELECT * FROM VW_COF_CUENTA_ESTANDAR_HIST " +
                $"WHERE ID_TIPO_CUENTAS_STD = {accountsChart.Id} " +

@@ -48,14 +48,17 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
 
       FixedList<Account> accounts = GetAccountsChart();
 
-      List<TrialBalanceEntry> entries = BalancesByAccount(accounts);
+      FixedList<TrialBalanceEntry> entries = BalancesByAccount(accounts).ToFixedList();
+
+      FixedList<TrialBalanceEntry> filteredEntriesByAccounts = FilteredEntriesByAccounts(entries, accounts);
 
       FixedList<SaldosEncerradosEntryDto> mappedEntries =
-        SaldosEncerradosMapper.MergeBalancesIntoLockedBalanceEntries(entries, accounts);
+        SaldosEncerradosMapper.MergeBalancesIntoLockedBalanceEntries(filteredEntriesByAccounts, accounts);
 
       FixedList<SaldosEncerradosBaseEntryDto> headers = GetHeaderByLedger(mappedEntries);
 
-      FixedList<SaldosEncerradosBaseEntryDto> headersAndEntries = MergeHeadersAndEntries(headers, mappedEntries);
+      FixedList<SaldosEncerradosBaseEntryDto> headersAndEntries = MergeHeadersAndEntries(headers,
+                                                                                         mappedEntries);
 
       return headersAndEntries;
     }
@@ -65,10 +68,12 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
 
       FixedList<Account> accounts = GetAccountsChart();
 
-      List<TrialBalanceEntry> entries = BalancesByAccount(accounts);
+      FixedList<TrialBalanceEntry> entries = BalancesByAccount(accounts).ToFixedList();
+
+      FixedList<TrialBalanceEntry> filteredEntriesByAccounts = FilteredEntriesByAccounts(entries, accounts);
 
       FixedList<SaldosEncerradosEntryDto> mappedEntries =
-        SaldosEncerradosMapper.MergeBalancesIntoLockedBalanceEntries(entries, accounts);
+        SaldosEncerradosMapper.MergeBalancesIntoLockedBalanceEntries(filteredEntriesByAccounts, accounts);
 
       return GetCancelableEntries(mappedEntries);
     }
@@ -102,11 +107,25 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
     }
 
 
+    private FixedList<TrialBalanceEntry> FilteredEntriesByAccounts(FixedList<TrialBalanceEntry> entries,
+                                                                   FixedList<Account> accounts) {
+      var returnedEntries = new List<TrialBalanceEntry>();
+
+      foreach (var entry in entries) {
+        var account = accounts.Find(a => a.Number == entry.Account.Number);
+        if (account.Role != entry.Account.Role) {
+          returnedEntries.Add(entry);
+        }
+      }
+      return returnedEntries.ToFixedList();
+    }
+
+
     private FixedList<Account> GetAccountsChart() {
 
       var accountsChart = AccountsChart.Parse(buildQuery.AccountsChartUID);
 
-      return SaldosEncerradosDataService.GetAccountsWithChanges(accountsChart,
+      return SaldosEncerradosDataService.GetAccountsHistory(accountsChart,
                                           buildQuery.FromDate, buildQuery.ToDate);
     }
 

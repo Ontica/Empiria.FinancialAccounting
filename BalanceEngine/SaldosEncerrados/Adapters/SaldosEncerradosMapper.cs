@@ -29,7 +29,7 @@ namespace Empiria.FinancialAccounting.BalanceEngine.Adapters {
 
 
     static public FixedList<SaldosEncerradosEntryDto> MergeBalancesIntoLockedBalanceEntries(
-                   List<TrialBalanceEntry> entries, FixedList<Account> accounts) {
+                   FixedList<TrialBalanceEntry> entries, FixedList<Account> accounts) {
 
       var mapped = entries.Select(x => MapToLockedUpEntry(x, accounts));
 

@@ -196,7 +196,8 @@ namespace Empiria.FinancialAccounting.BalanceEngine.UseCases {
 
       var builder = new SaldosEncerradosService(query);
 
-      FixedList<SaldosEncerradosBaseEntryDto> entries = await Task.Run(() => builder.Build()).ConfigureAwait(false);
+      FixedList<SaldosEncerradosBaseEntryDto> entries = await Task.Run(() => builder.Build())
+                                                                  .ConfigureAwait(false);
 
       return SaldosEncerradosMapper.Map(entries);
     }
