@@ -2,16 +2,16 @@
 *                                                                                                            *
 *  Module   : Cash Ledger                                Component : Domain Layer                            *
 *  Assembly : FinancialAccounting.CashLedger.dll         Pattern   : Information holder                      *
-*  Type     : CashLedgerTotal                            License   : Please read LICENSE.txt file            *
+*  Type     : CashAccountTotal                           License   : Please read LICENSE.txt file            *
 *                                                                                                            *
-*  Summary  : Holds information for a cash ledger total entry.                                               *
+*  Summary  : Holds information for a cash ledger account total entry.                                       *
 *                                                                                                            *
 ************************* Copyright(c) La Vía Óntica SC, Ontica LLC and contributors. All rights reserved. **/
 
 namespace Empiria.FinancialAccounting.CashLedger {
 
-  /// <summary>Holds information for a cash ledger total entry.</summary>
-  internal class CashLedgerTotal {
+  /// <summary>Holds information for a cash ledger account total entry.</summary>
+  internal class CashAccountTotal {
 
     #region Properties
 
@@ -25,6 +25,11 @@ namespace Empiria.FinancialAccounting.CashLedger {
       get; private set;
     }
 
+    [DataField("ID_CUENTA", IsOptional = true)]
+    public LedgerAccount LedgerAccount {
+      get; private set;
+    }
+
     [DataField("ID_MONEDA", ConvertFrom = typeof(long))]
     public Currency Currency {
       get; private set;
@@ -35,7 +40,6 @@ namespace Empiria.FinancialAccounting.CashLedger {
       get; private set;
     }
 
-
     [DataField("HABER")]
     public decimal Credit {
       get; private set;
@@ -43,6 +47,6 @@ namespace Empiria.FinancialAccounting.CashLedger {
 
     #endregion Properties
 
-  }  // class CashLedgerTotal
+  }  // class CashAccountTotal
 
 }  // namespace Empiria.FinancialAccounting.CashLedger

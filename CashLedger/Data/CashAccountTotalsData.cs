@@ -2,9 +2,9 @@
 *                                                                                                            *
 *  Module   : Cash Ledger                                Component : Data Layer                              *
 *  Assembly : FinancialAccounting.CashLedger.dll         Pattern   : Static data services                    *
-*  Type     : CashLedgerTotalsData                       License   : Please read LICENSE.txt file            *
+*  Type     : CashAccountTotalsData                      License   : Please read LICENSE.txt file            *
 *                                                                                                            *
-*  Summary  : Data services used to retrive cash ledger totals.                                              *
+*  Summary  : Data services used to retrive cash ledger accounts totals.                                     *
 *                                                                                                            *
 ************************* Copyright(c) La Vía Óntica SC, Ontica LLC and contributors. All rights reserved. **/
 
@@ -13,27 +13,13 @@ using Empiria.Data;
 namespace Empiria.FinancialAccounting.CashLedger.Data {
 
   /// <summary>Data services used to retrive cash ledger totals.</summary>
-  static internal class CashLedgerTotalsData {
+  static internal class CashAccountTotalsData {
 
-    static internal FixedList<CashEntryExtended> GetEntries(string filter) {
+    static internal FixedList<CashAccountTotal> GetTotals(string filter) {
       Assertion.Require(filter, nameof(filter));
 
-      var sql = "SELECT * " +
-                "FROM VW_COF_MOVIMIENTO_BIS " +
-                $"WHERE {filter} " +
-                $"ORDER BY NUM_CONCEPTO_FLUJO, FECHA_AFECTACION DESC, NUMERO_CUENTA_ESTANDAR";
-
-      var op = DataOperation.Parse(sql);
-
-      return DataReader.GetPlainObjectFixedList<CashEntryExtended>(op);
-    }
-
-
-    static internal FixedList<CashLedgerTotal> GetTotals(string filter) {
-      Assertion.Require(filter, nameof(filter));
-
-      var sql = "SELECT ID_CUENTA_FLUJO, NUM_CONCEPTO_FLUJO, ID_MONEDA, " +
-                        "SUM(DEBE) DEBE, SUM(HABER) HABER " +
+      var sql = "SELECT ID_CUENTA_FLUJO, NUM_CONCEPTO_FLUJO, " +
+        "        ID_MONEDA, SUM(DEBE) DEBE, SUM(HABER) HABER " +
                 "FROM VW_COF_MOVIMIENTO_BIS " +
                 $"WHERE {filter} " +
                 $"GROUP BY ID_CUENTA_FLUJO, NUM_CONCEPTO_FLUJO, ID_MONEDA " +
@@ -41,8 +27,8 @@ namespace Empiria.FinancialAccounting.CashLedger.Data {
 
       var op = DataOperation.Parse(sql);
 
-      return DataReader.GetPlainObjectFixedList<CashLedgerTotal>(op);
+      return DataReader.GetPlainObjectFixedList<CashAccountTotal>(op);
     }
-  }  // class CashLedgerTotalsData
+  }  // class CashAccountTotalsData
 
 }  // namespace Empiria.FinancialAccounting.CashLedger.Data
