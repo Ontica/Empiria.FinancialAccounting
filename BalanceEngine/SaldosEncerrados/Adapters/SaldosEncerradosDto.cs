@@ -37,53 +37,6 @@ namespace Empiria.FinancialAccounting.BalanceEngine.Adapters {
       get; internal set;
     }
 
-
-    public string DebtorCreditor {
-      get;
-      internal set;
-    }
-
-
-    public string CurrencyCode {
-      get; internal set;
-    }
-
-
-    public string AccountNumber {
-      get; internal set;
-    }
-
-
-    public string SectorCode {
-      get; internal set;
-    }
-
-
-    public string SubledgerAccount {
-      get; internal set;
-    }
-
-
-    public decimal LockedBalance {
-      get; internal set;
-    }
-
-
-    public DateTime LastChangeDate {
-      get; set;
-    }
-
-
-    public string NewRole {
-      get; internal set;
-    }
-
-
-    public bool IsCancelable {
-      get; internal set;
-    } = false;
-
-
   } // class LockedUpBalancesEntryDto
 
 } // namespace Empiria.FinancialAccounting.BalanceEngine.Adapters

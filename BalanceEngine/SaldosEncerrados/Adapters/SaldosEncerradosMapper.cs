@@ -107,14 +107,12 @@ namespace Empiria.FinancialAccounting.BalanceEngine.Adapters {
 
         dto.ItemType = TrialBalanceItemType.Summary;
         dto.IsCancelable = true;
-
       } else {
 
         dto.ItemType = entry.ItemType;
         if (entry.ItemType == TrialBalanceItemType.Entry) {
           dto.IsCancelable = true;
         }
-
       }
     }
 
