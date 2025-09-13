@@ -28,7 +28,7 @@ namespace Empiria.FinancialAccounting.CashLedger.WebApi {
     public CollectionModel GetCashLedgerEntries([FromBody] BaseCashLedgerTotalsQuery query) {
 
       using (var usecases = CashLedgerTotalsUseCases.UseCaseInteractor()) {
-        FixedList<CashEntryDescriptor> entries = usecases.GetCashLedgerEntries(query);
+        FixedList<CashEntryExtendedDto> entries = usecases.GetCashLedgerEntries(query);
 
         return new CollectionModel(base.Request, entries);
       }

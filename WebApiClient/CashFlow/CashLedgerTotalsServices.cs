@@ -18,7 +18,7 @@ namespace Empiria.FinancialAccounting.ClientServices {
   public class CashLedgerTotalsServices : BaseService {
 
     public Task<FixedList<T>> GetCashLedgerEntries<T>(BaseCashLedgerTotalsQuery query)
-                                                                      where T : BaseCashLedgerEntryDto {
+                                                                      where T : BaseCashEntryDto {
       string path = "v2/financial-accounting/cash-ledger/entries";
 
       return WebApiClient.PostAsync<FixedList<T>>(query, path);

@@ -33,10 +33,10 @@ namespace Empiria.FinancialAccounting.CashLedger.UseCases {
 
     #region Use cases
 
-    public FixedList<CashEntryDescriptor> GetCashLedgerEntries(BaseCashLedgerTotalsQuery query) {
+    public FixedList<CashEntryExtendedDto> GetCashLedgerEntries(BaseCashLedgerTotalsQuery query) {
       Assertion.Require(query, nameof(query));
 
-      FixedList<CashEntryDescriptor> entries = query.ExecuteEntries();
+      FixedList<CashEntryExtendedDto> entries = query.ExecuteEntries();
 
       return entries;
     }

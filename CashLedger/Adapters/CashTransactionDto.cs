@@ -19,7 +19,7 @@ namespace Empiria.FinancialAccounting.CashLedger.Adapters {
       get; set;
     }
 
-    public FixedList<BaseCashTransactionEntryDto> Entries {
+    public FixedList<BaseCashEntryDto> Entries {
       get; set;
     }
 

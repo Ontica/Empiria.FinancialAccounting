@@ -54,21 +54,21 @@ namespace Empiria.FinancialAccounting.CashLedger.Adapters {
     }
 
 
-    static internal FixedList<CashEntryDescriptor> MapToDescriptor(FixedList<CashEntryExtended> list) {
+    static internal FixedList<CashEntryExtendedDto> MapToDescriptor(FixedList<CashEntryExtended> list) {
       return list.Select(x => MapToDescriptor(x))
                  .ToFixedList();
     }
 
     #region Helpers
 
-    static private FixedList<BaseCashTransactionEntryDto> MapEntries(FixedList<CashEntry> entries) {
+    static private FixedList<BaseCashEntryDto> MapEntries(FixedList<CashEntry> entries) {
       return entries.Select(x => MapEntry(x))
                     .ToFixedList();
     }
 
 
-    static private BaseCashTransactionEntryDto MapEntry(CashEntry entry) {
-      return new BaseCashTransactionEntryDto {
+    static private BaseCashEntryDto MapEntry(CashEntry entry) {
+      return new BaseCashEntryDto {
         Id = entry.Id,
         AccountNumber = entry.LedgerAccount.Number,
         AccountName = entry.LedgerAccount.Name,
@@ -98,9 +98,9 @@ namespace Empiria.FinancialAccounting.CashLedger.Adapters {
     }
 
 
-    static private CashEntryDescriptor MapToDescriptor(CashEntryExtended entry) {
+    static private CashEntryExtendedDto MapToDescriptor(CashEntryExtended entry) {
 
-      return new CashEntryDescriptor {
+      return new CashEntryExtendedDto {
         Id = entry.Id,
         AccountNumber = entry.LedgerAccount.Number,
         AccountName = entry.LedgerAccount.Name,

@@ -43,19 +43,19 @@ namespace Empiria.FinancialAccounting.ClientServices {
     }
 
 
-    public Task<FixedList<CashLedgerEntryDto>> GetTransactionsEntries(FixedList<long> entriesIds) {
+    public Task<FixedList<CashEntryExtendedDto>> GetTransactionsEntries(FixedList<long> entriesIds) {
 
       string path = $"v2/financial-accounting/cash-ledger/entries/bulk-operation/get-entries";
 
-      return WebApiClient.PostAsync<FixedList<CashLedgerEntryDto>>(entriesIds, path);
+      return WebApiClient.PostAsync<FixedList<CashEntryExtendedDto>>(entriesIds, path);
     }
 
 
-    public Task<FixedList<CashLedgerEntryDto>> SearchEntries(BaseCashLedgerQuery query) {
+    public Task<FixedList<CashEntryExtendedDto>> SearchEntries(BaseCashLedgerQuery query) {
 
       string path = "v2/financial-accounting/cash-ledger/entries/search";
 
-      return WebApiClient.PostAsync<FixedList<CashLedgerEntryDto>>(query, path);
+      return WebApiClient.PostAsync<FixedList<CashEntryExtendedDto>>(query, path);
     }
 
 

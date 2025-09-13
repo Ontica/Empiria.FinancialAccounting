@@ -31,7 +31,7 @@ namespace Empiria.FinancialAccounting.CashLedger.Adapters {
     }
 
 
-    static public FixedList<CashEntryDescriptor> ExecuteEntries(this BaseCashLedgerTotalsQuery query) {
+    static public FixedList<CashEntryExtendedDto> ExecuteEntries(this BaseCashLedgerTotalsQuery query) {
       string filter = GetFilterString(query);
 
       FixedList<CashEntryExtended> entries = CashLedgerTotalsData.GetEntries(filter);

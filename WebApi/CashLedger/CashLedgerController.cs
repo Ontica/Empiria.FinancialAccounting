@@ -52,7 +52,7 @@ namespace Empiria.FinancialAccounting.WebApi.CashLedger {
     public CollectionModel GetCashEntries([FromBody] long[] ids) {
 
       using (var usecases = CashLedgerUseCases.UseCaseInteractor()) {
-        FixedList<CashEntryDescriptor> entries = usecases.GetEntries(ids.ToFixedList());
+        FixedList<CashEntryExtendedDto> entries = usecases.GetEntries(ids.ToFixedList());
 
         return new CollectionModel(base.Request, entries);
       }
@@ -64,7 +64,7 @@ namespace Empiria.FinancialAccounting.WebApi.CashLedger {
     public CollectionModel SearchCashEntries([FromBody] CashLedgerQuery query) {
 
       using (var usecases = CashLedgerUseCases.UseCaseInteractor()) {
-        FixedList<CashEntryDescriptor> entries = usecases.SearchEntries(query);
+        FixedList<CashEntryExtendedDto> entries = usecases.SearchEntries(query);
 
         return new CollectionModel(base.Request, entries);
       }
