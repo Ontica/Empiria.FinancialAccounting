@@ -2,38 +2,37 @@
 *                                                                                                            *
 *  Module   : Cash Ledger                                Component : Use cases Layer                         *
 *  Assembly : FinancialAccounting.CashLedger.dll         Pattern   : Use case interactor class               *
-*  Type     : CashLedgerTotalsUseCases                   License   : Please read LICENSE.txt file            *
+*  Type     : CashAccountTotalsUseCases                  License   : Please read LICENSE.txt file            *
 *                                                                                                            *
-*  Summary  : Use cases used to retrive and manage cash ledger transactions.                                 *
+*  Summary  : Use cases used to retrive cash accounts totals.                                                *
 *                                                                                                            *
 ************************* Copyright(c) La Vía Óntica SC, Ontica LLC and contributors. All rights reserved. **/
 
-using Empiria.Services;
-
 using Empiria.CashFlow.CashLedger.Adapters;
-
+using Empiria.Financial.Adapters;
 using Empiria.FinancialAccounting.CashLedger.Adapters;
+using Empiria.Services;
 
 namespace Empiria.FinancialAccounting.CashLedger.UseCases {
 
-  /// <summary>Use cases used to retrive and manage cash ledger transactions.</summary>
-  public class CashLedgerTotalsUseCases : UseCase {
+  /// <summary>Use cases used to retrive cash accounts totals.</summary>
+  public class CashAccountTotalsUseCases : UseCase {
 
     #region Constructors and parsers
 
-    protected CashLedgerTotalsUseCases() {
+    protected CashAccountTotalsUseCases() {
       // no-op
     }
 
-    static public CashLedgerTotalsUseCases UseCaseInteractor() {
-      return UseCase.CreateInstance<CashLedgerTotalsUseCases>();
+    static public CashAccountTotalsUseCases UseCaseInteractor() {
+      return UseCase.CreateInstance<CashAccountTotalsUseCases>();
     }
 
     #endregion Constructors and parsers
 
     #region Use cases
 
-    public FixedList<CashEntryExtendedDto> GetCashLedgerEntries(BaseCashLedgerTotalsQuery query) {
+    public FixedList<CashEntryExtendedDto> GetCashLedgerEntries(CashAccountTotalsQuery query) {
       Assertion.Require(query, nameof(query));
 
       FixedList<CashEntryExtendedDto> entries = query.ExecuteEntries();
@@ -42,16 +41,16 @@ namespace Empiria.FinancialAccounting.CashLedger.UseCases {
     }
 
 
-    public FixedList<CashLedgerTotalEntryDto> GetCashLedgerTotals(BaseCashLedgerTotalsQuery query) {
+    public FixedList<CashAccountTotalDto> GetCashLedgerTotals(CashAccountTotalsQuery query) {
       Assertion.Require(query, nameof(query));
 
-      FixedList<CashLedgerTotal> totals = query.Execute();
+      FixedList<CashAccountTotal> totals = query.Execute();
 
-      return CashLedgerTotalsMapper.Map(totals);
+      return CashAccountTotalsMapper.Map(totals);
     }
 
     #endregion Use cases
 
-  }  // class CashLedgerTotalsUseCases
+  }  // class CashAccountTotalsUseCases
 
 }  // namespace Empiria.FinancialAccounting.CashLedger.UseCases

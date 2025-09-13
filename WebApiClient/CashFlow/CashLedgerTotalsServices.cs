@@ -10,6 +10,8 @@
 
 using System.Threading.Tasks;
 
+using Empiria.Financial.Adapters;
+
 using Empiria.CashFlow.CashLedger.Adapters;
 
 namespace Empiria.FinancialAccounting.ClientServices {
@@ -17,7 +19,7 @@ namespace Empiria.FinancialAccounting.ClientServices {
   /// <summary>Provides financial accounting cash ledger totals services using a web proxy.</summary>
   public class CashLedgerTotalsServices : BaseService {
 
-    public Task<FixedList<T>> GetCashLedgerEntries<T>(BaseCashLedgerTotalsQuery query)
+    public Task<FixedList<T>> GetCashLedgerEntries<T>(CashAccountTotalsQuery query)
                                                                       where T : BaseCashEntryDto {
       string path = "v2/financial-accounting/cash-ledger/entries";
 
@@ -25,11 +27,11 @@ namespace Empiria.FinancialAccounting.ClientServices {
     }
 
 
-    public Task<FixedList<CashLedgerTotalEntryDto>> GetCashLedgerTotals(BaseCashLedgerTotalsQuery query) {
+    public Task<FixedList<CashAccountTotalDto>> GetCashLedgerTotals(CashAccountTotalsQuery query) {
 
       string path = "v2/financial-accounting/cash-ledger/totals";
 
-      return WebApiClient.PostAsync<FixedList<CashLedgerTotalEntryDto>>(query, path);
+      return WebApiClient.PostAsync<FixedList<CashAccountTotalDto>>(query, path);
     }
 
   }  // class CashLedgerTotalsServices

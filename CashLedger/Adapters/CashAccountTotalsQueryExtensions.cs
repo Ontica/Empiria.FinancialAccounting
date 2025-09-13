@@ -2,39 +2,38 @@
 *                                                                                                            *
 *  Module   : Cash Ledger                                Component : Interface adapters                      *
 *  Assembly : FinancialAccounting.CashLedger.dll         Pattern   : Type Extension methods                  *
-*  Type     : CashLedgerTotalsQueryExtensions            License   : Please read LICENSE.txt file            *
+*  Type     : CashAccountTotalsQueryExtensions           License   : Please read LICENSE.txt file            *
 *                                                                                                            *
 *  Summary  : Extension methods for BaseCashLedgerTotalsQuery interface adapter.                             *
 *                                                                                                            *
 ************************* Copyright(c) La Vía Óntica SC, Ontica LLC and contributors. All rights reserved. **/
 
-using Empiria.Data;
-
 using Empiria.CashFlow.CashLedger.Adapters;
-
+using Empiria.Data;
+using Empiria.Financial.Adapters;
 using Empiria.FinancialAccounting.CashLedger.Data;
 
 namespace Empiria.FinancialAccounting.CashLedger.Adapters {
 
   /// <summary>Extension methods for BaseCashLedgerTotalsQuery interface adapter.</summary>
-  static internal class CashLedgerTotalsQueryExtensions {
+  static internal class CashAccountTotalsQueryExtensions {
 
     #region Extension methods
 
-    static internal FixedList<CashLedgerTotal> Execute(this BaseCashLedgerTotalsQuery query) {
+    static internal FixedList<CashAccountTotal> Execute(this CashAccountTotalsQuery query) {
 
       string filter = GetFilterString(query);
 
-      FixedList<CashLedgerTotal> totals = CashLedgerTotalsData.GetTotals(filter);
+      FixedList<CashAccountTotal> totals = CashAccountTotalsData.GetTotals(filter);
 
       return totals;
     }
 
 
-    static public FixedList<CashEntryExtendedDto> ExecuteEntries(this BaseCashLedgerTotalsQuery query) {
+    static public FixedList<CashEntryExtendedDto> ExecuteEntries(this CashAccountTotalsQuery query) {
       string filter = GetFilterString(query);
 
-      FixedList<CashEntryExtended> entries = CashLedgerTotalsData.GetEntries(filter);
+      FixedList<CashEntryExtended> entries = CashLedgerData.GetExtendedEntries(filter);
 
       return CashTransactionMapper.MapToDescriptor(entries);
     }
@@ -43,7 +42,7 @@ namespace Empiria.FinancialAccounting.CashLedger.Adapters {
 
     #region Methods
 
-    static private string GetFilterString(BaseCashLedgerTotalsQuery query) {
+    static private string GetFilterString(CashAccountTotalsQuery query) {
       string ledgerFilter = BuildLedgerFilter(query.AccountingLedgerUID);
       string accountingDateRangeFilter = BuildAccountingDateRangeFilter(query);
 
@@ -58,12 +57,12 @@ namespace Empiria.FinancialAccounting.CashLedger.Adapters {
 
     #region Helpers
 
-    static private string BuildAccountingDateRangeFilter(BaseCashLedgerTotalsQuery query) {
-      Assertion.Require(query.FromAccountingDate, nameof(query.FromAccountingDate));
-      Assertion.Require(query.ToAccountingDate, nameof(query.ToAccountingDate));
+    static private string BuildAccountingDateRangeFilter(CashAccountTotalsQuery query) {
+      Assertion.Require(query.FromDate, nameof(query.FromDate));
+      Assertion.Require(query.ToDate, nameof(query.ToDate));
 
-      return $"{DataCommonMethods.FormatSqlDbDate(query.FromAccountingDate)} <= FECHA_AFECTACION AND " +
-             $"FECHA_AFECTACION < {DataCommonMethods.FormatSqlDbDate(query.ToAccountingDate.Date.AddDays(1))}";
+      return $"{DataCommonMethods.FormatSqlDbDate(query.FromDate)} <= FECHA_AFECTACION AND " +
+             $"FECHA_AFECTACION < {DataCommonMethods.FormatSqlDbDate(query.ToDate.Date.AddDays(1))}";
     }
 
 
@@ -83,6 +82,6 @@ namespace Empiria.FinancialAccounting.CashLedger.Adapters {
 
     #endregion Helpers
 
-  }  // class CashLedgerTotalsQueryExtensions
+  }  // class CashAccountTotalsQueryExtensions
 
 } // namespace Empiria.FinancialAccounting.CashLedger.Adapters
