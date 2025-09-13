@@ -8,10 +8,13 @@
 *                                                                                                            *
 ************************* Copyright(c) La Vía Óntica SC, Ontica LLC and contributors. All rights reserved. **/
 
-using Empiria.CashFlow.CashLedger.Adapters;
-using Empiria.Financial.Adapters;
-using Empiria.FinancialAccounting.CashLedger.Adapters;
 using Empiria.Services;
+
+using Empiria.Financial.Adapters;
+
+using Empiria.CashFlow.CashLedger.Adapters;
+
+using Empiria.FinancialAccounting.CashLedger.Adapters;
 
 namespace Empiria.FinancialAccounting.CashLedger.UseCases {
 
