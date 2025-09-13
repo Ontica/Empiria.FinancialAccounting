@@ -35,6 +35,21 @@ namespace Empiria.FinancialAccounting.Reporting.Balances {
     }
 
 
+    public FileDto Export(SaldosEncerradosDto reportData) {
+      Assertion.Require(reportData, "reportData");
+
+      var templateUID = $"TrialBalanceTemplate.SaldosEncerrados";
+
+      var templateConfig = FileTemplateConfig.Parse(templateUID);
+
+      var exporter = new SaldosEncerradosExcelExporter(templateConfig);
+
+      ExcelFile excelFile = exporter.CreateExcelFile(reportData);
+
+      return excelFile.ToFileDto();
+    }
+
+
     public FileDto Export(BalanceExplorerDto dto) {
       Assertion.Require(dto, nameof(dto));
 

@@ -9,14 +9,12 @@
 ************************* Copyright(c) La Vía Óntica SC, Ontica LLC and contributors. All rights reserved. **/
 using System.Threading.Tasks;
 using System.Web.Http;
-
+using Empiria.FinancialAccounting.BalanceEngine;
+using Empiria.FinancialAccounting.BalanceEngine.Adapters;
+using Empiria.FinancialAccounting.BalanceEngine.UseCases;
+using Empiria.FinancialAccounting.Reporting.Balances;
 using Empiria.Storage;
 using Empiria.WebApi;
-
-using Empiria.FinancialAccounting.Reporting.Balances;
-
-using Empiria.FinancialAccounting.BalanceEngine.UseCases;
-using Empiria.FinancialAccounting.BalanceEngine.Adapters;
 
 
 namespace Empiria.FinancialAccounting.WebApi.BalanceEngine {
@@ -214,6 +212,24 @@ namespace Empiria.FinancialAccounting.WebApi.BalanceEngine {
         SaldosEncerradosDto reportData = await service.BuildSaldosEncerrados(buildQuery);
 
         return new SingleObjectModel(this.Request, reportData);
+      }
+    }
+
+
+    [HttpPost]
+    [Route("v2/financial-accounting/locked-up-balances/excel")]
+    public async Task<SingleObjectModel> ExportSaldosEncerradosToExcel([FromBody] SaldosEncerradosQuery buildQuery) {
+      base.RequireBody(buildQuery);
+
+      using (var service = TrialBalanceUseCases.UseCaseInteractor()) {
+
+        SaldosEncerradosDto reportData = await service.BuildSaldosEncerrados(buildQuery);
+
+        var excelExporter = new BalancesExcelExporterService();
+
+        FileDto excelFileDto = excelExporter.Export(reportData);
+
+        return new SingleObjectModel(this.Request, excelFileDto);
       }
     }
 

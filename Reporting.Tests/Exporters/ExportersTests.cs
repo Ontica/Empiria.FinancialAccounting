@@ -8,14 +8,16 @@
 *                                                                                                            *
 ************************* Copyright(c) La Vía Óntica SC, Ontica LLC and contributors. All rights reserved. **/
 using System;
-using Empiria.FinancialAccounting.BalanceEngine;
 using System.Security.Principal;
+using System.Threading.Tasks;
+using Empiria.FinancialAccounting.BalanceEngine;
 using Empiria.FinancialAccounting.BalanceEngine.Adapters;
 using Empiria.FinancialAccounting.BalanceEngine.UseCases;
 using Empiria.FinancialAccounting.Reporting;
 using Empiria.FinancialAccounting.Reporting.Balances;
 using Empiria.FinancialAccounting.Vouchers.Adapters;
 using Empiria.FinancialAccounting.Vouchers.UseCases;
+using Empiria.Services;
 using Empiria.Storage;
 using Xunit;
 
@@ -31,16 +33,17 @@ namespace Empiria.FinancialAccounting.Tests.Reporting {
 
         var query = new TrialBalanceQuery() {
           AccountsChartUID = AccountsChart.IFRS.UID,
-          BalancesType = BalancesType.WithCurrentBalanceOrMovements,
-          TrialBalanceType = TrialBalanceType.BalanzaEnColumnasPorMoneda,
-          ShowCascadeBalances = false,
+          BalancesType = BalancesType.AllAccountsInCatalog,
+          TrialBalanceType = TrialBalanceType.AnaliticoDeCuentas,
           Ledgers = new string[] { },
-          FromAccount = "1.05",
-          ToAccount = "1.05",
+          ShowCascadeBalances = false,
           UseDefaultValuation = true,
+          WithSubledgerAccount = true,
+          FromAccount = "1.01.03.04.06",
+          ToAccount = "1.01.03.04.06",
           InitialPeriod = new BalancesPeriod {
-            FromDate = new DateTime(2025, 05, 01),
-            ToDate = new DateTime(2025, 05, 31)
+            FromDate = new DateTime(2025, 01, 01),
+            ToDate = new DateTime(2025, 01, 31)
           }
         };
 
@@ -49,6 +52,28 @@ namespace Empiria.FinancialAccounting.Tests.Reporting {
         var excelExporter = new BalancesExcelExporterService();
 
         FileDto excelFileDto = excelExporter.Export(trialBalance);
+
+        Assert.NotNull(excelFileDto);
+      }
+    }
+
+
+    [Fact]
+    public async Task ExportSaldosEncerradosTest() {
+      
+      using (var service = TrialBalanceUseCases.UseCaseInteractor()) {
+
+        SaldosEncerradosQuery query = new SaldosEncerradosQuery {
+          AccountsChartUID = AccountsChart.IFRS.UID,
+          FromDate = new DateTime(2022, 01, 03),
+          ToDate = new DateTime(2022, 05, 31),
+        };
+
+        SaldosEncerradosDto reportData = await service.BuildSaldosEncerrados(query);
+
+        var excelExporter = new BalancesExcelExporterService();
+
+        FileDto excelFileDto = excelExporter.Export(reportData);
 
         Assert.NotNull(excelFileDto);
       }
