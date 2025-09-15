@@ -7,7 +7,6 @@
 *  Summary  : Abstract class used to create special case vouchers.                                           *
 *                                                                                                            *
 ************************* Copyright(c) La Vía Óntica SC, Ontica LLC and contributors. All rights reserved. **/
-using System;
 
 using Empiria.FinancialAccounting.Vouchers.Adapters;
 using Empiria.FinancialAccounting.Vouchers.SpecialCases;

@@ -83,7 +83,7 @@ namespace Empiria.FinancialAccounting.Vouchers.UseCases {
       var ledgerAccount = LedgerAccount.Parse(accountId);
 
       FixedList<SubledgerAccount> subledgerAccounts =
-                            voucher.SearchSubledgerAccountsForEdition(ledgerAccount, keywords);
+                            voucher.Helper.SearchSubledgerAccountsForEdition(ledgerAccount, keywords);
 
       return SubledgerMapper.MapToSubledgerAccountDescriptor(subledgerAccounts);
     }

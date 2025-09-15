@@ -45,7 +45,7 @@ namespace Empiria.FinancialAccounting.Vouchers.Adapters {
         Status = voucher.StatusName,
         IsClosed = voucher.IsClosed,
         AllEntriesAreInBaseCurrency = !voucher.Entries.Contains(x => !x.Currency.Equals(voucher.Ledger.BaseCurrency)),
-        Actions = voucher.Actions,
+        Actions = voucher.Helper.Actions,
         Entries = MapToVoucherEntriesDescriptorWithTotals(voucher)
       };
 

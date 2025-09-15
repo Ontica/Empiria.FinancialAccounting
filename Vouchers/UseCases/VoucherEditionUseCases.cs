@@ -36,8 +36,8 @@ namespace Empiria.FinancialAccounting.Vouchers.UseCases {
     #region Use cases
 
     public VoucherDto AppendEntry(long voucherId, VoucherEntryFields fields) {
-      Assertion.Require(voucherId > 0, "voucherId");
-      Assertion.Require(fields, "fields");
+      Assertion.Require(voucherId > 0, nameof(voucherId));
+      Assertion.Require(fields, nameof(fields));
 
       var voucher = Voucher.Parse(voucherId);
 
@@ -50,8 +50,8 @@ namespace Empiria.FinancialAccounting.Vouchers.UseCases {
 
 
     public VoucherDto AppendEntries(long voucherId, FixedList<VoucherEntryFields> entries) {
-      Assertion.Require(voucherId > 0, "voucherId");
-      Assertion.Require(entries, "entries");
+      Assertion.Require(voucherId > 0, nameof(voucherId));
+      Assertion.Require(entries, nameof(entries));
 
       var voucher = Voucher.Parse(voucherId);
 
@@ -82,8 +82,8 @@ namespace Empiria.FinancialAccounting.Vouchers.UseCases {
 
     public LedgerAccountDto AssignVoucherLedgerStandardAccount(long voucherId,
                                                                int standardAccountId) {
-      Assertion.Require(voucherId > 0, "voucherId");
-      Assertion.Require(standardAccountId > 0, "standardAccountId");
+      Assertion.Require(voucherId > 0, nameof(voucherId));
+      Assertion.Require(standardAccountId > 0, nameof(standardAccountId));
 
       var voucher = Voucher.Parse(voucherId);
 
@@ -105,7 +105,7 @@ namespace Empiria.FinancialAccounting.Vouchers.UseCases {
 
 
     public FixedList<VoucherDescriptorDto> BulkClone(int[] voucherIdsArray) {
-      Assertion.Require(voucherIdsArray, "voucherIdsArray");
+      Assertion.Require(voucherIdsArray, nameof(voucherIdsArray));
       Assertion.Require(voucherIdsArray.Length > 0, "voucherIdsArray must have one or more values.");
 
       int clonedCounter = 0;
@@ -115,14 +115,15 @@ namespace Empiria.FinancialAccounting.Vouchers.UseCases {
       foreach (var voucherId in voucherIdsArray) {
         var voucher = Voucher.Parse(voucherId);
 
-        if (!voucher.Actions.CloneVoucher) {
+        if (!voucher.Helper.Actions.CloneVoucher) {
           continue;
         }
 
         VoucherDto clonedVoucher = CloneVoucher(voucherId, new UpdateVoucherFields {
-                                                AccountingDate = voucher.AccountingDate,
-                                                Concept = voucher.Concept,
-                                                RecordingDate = voucher.RecordingDate});
+          AccountingDate = voucher.AccountingDate,
+          Concept = voucher.Concept,
+          RecordingDate = voucher.RecordingDate
+        });
 
         returnList.Add(VoucherMapper.MapToDescriptor(clonedVoucher));
 
@@ -134,7 +135,7 @@ namespace Empiria.FinancialAccounting.Vouchers.UseCases {
 
 
     public string BulkClose(int[] voucherIdsArray) {
-      Assertion.Require(voucherIdsArray, "voucherIdsArray");
+      Assertion.Require(voucherIdsArray, nameof(voucherIdsArray));
       Assertion.Require(voucherIdsArray.Length > 0, "voucherIdsArray must have one or more values.");
 
       int closedCounter = 0;
@@ -146,7 +147,7 @@ namespace Empiria.FinancialAccounting.Vouchers.UseCases {
           continue;
         }
 
-        if (!voucher.CanBeClosedBy(Participant.Current)) {
+        if (!voucher.Helper.CanBeClosedBy(Participant.Current)) {
           continue;
         }
 
@@ -163,7 +164,7 @@ namespace Empiria.FinancialAccounting.Vouchers.UseCases {
 
 
     public string BulkDelete(int[] voucherIdsArray) {
-      Assertion.Require(voucherIdsArray, "voucherIdsArray");
+      Assertion.Require(voucherIdsArray, nameof(voucherIdsArray));
       Assertion.Require(voucherIdsArray.Length > 0, "voucherIdsArray must have one or more values.");
 
       int deletedCounter = 0;
@@ -174,10 +175,10 @@ namespace Empiria.FinancialAccounting.Vouchers.UseCases {
         if (voucher.IsClosed) {
           continue;
 
-        } else if (voucher.SentToSupervisor && !voucher.CurrentUserIsSupervisor()) {
+        } else if (voucher.WasSentToSupervisor && !voucher.Helper.CurrentUserIsSupervisor) {
           continue;
 
-        } else if (voucher.SentToSupervisor && voucher.CurrentUserIsSupervisor()) {
+        } else if (voucher.WasSentToSupervisor && voucher.Helper.CurrentUserIsSupervisor) {
           // go
 
         } else if (!voucher.ElaboratedBy.Equals(Participant.Current)) {
@@ -224,8 +225,8 @@ namespace Empiria.FinancialAccounting.Vouchers.UseCases {
 
 
     public VoucherDto CloneVoucher(long voucherId, UpdateVoucherFields fields) {
-      Assertion.Require(voucherId > 0, "voucherId");
-      Assertion.Require(fields, "fields");
+      Assertion.Require(voucherId > 0, nameof(voucherId));
+      Assertion.Require(fields, nameof(fields));
 
       var originalVoucher = Voucher.Parse(voucherId);
 
@@ -256,21 +257,22 @@ namespace Empiria.FinancialAccounting.Vouchers.UseCases {
 
 
     public VoucherDto CloseVoucher(long voucherId, bool fromImporter) {
-      Assertion.Require(voucherId > 0, "voucherId");
+      Assertion.Require(voucherId > 0, nameof(voucherId));
 
       var voucher = Voucher.Parse(voucherId);
 
-      if (!fromImporter && !voucher.CanBeClosedBy(Participant.Current)) {
+      if (!fromImporter && !voucher.Helper.CanBeClosedBy(Participant.Current)) {
         Assertion.RequireFail($"La póliza no puede enviarse directamente al diario " +
                               $"por la persona usuaria {Participant.Current.Name}.");
 
 
-      } else if (fromImporter && voucher.HasProtectedAccounts() && !voucher.CanCloseWithProtectedAccounts()) {
+      } else if (fromImporter && voucher.Helper.HasProtectedAccounts &&
+                 !voucher.Helper.CanCloseWithProtectedAccounts) {
         EmpiriaLog.Info($"Se intentó enviar al diario la póliza {voucherId} desde el importador, pero tiene cuentas protegidas.");
 
         return VoucherMapper.Map(voucher);
 
-      } else if (fromImporter && !voucher.IsAccountingDateOpened) {
+      } else if (fromImporter && !voucher.Helper.IsAccountingDateOpened) {
         EmpiriaLog.Info($"Se intentó enviar al diario la póliza {voucherId} desde el importador, pero tiene fecha valor.");
 
         return VoucherMapper.Map(voucher);
@@ -283,7 +285,7 @@ namespace Empiria.FinancialAccounting.Vouchers.UseCases {
 
 
     public VoucherDto CreateVoucher(VoucherFields fields) {
-      Assertion.Require(fields, "fields");
+      Assertion.Require(fields, nameof(fields));
 
       fields.EnsureValid();
 
@@ -298,8 +300,8 @@ namespace Empiria.FinancialAccounting.Vouchers.UseCases {
     public VoucherDto ImportVoucher(VoucherFields voucherFields,
                                     FixedList<VoucherEntryFields> entriesFields,
                                     bool tryToClose) {
-      Assertion.Require(voucherFields, "voucherFields");
-      Assertion.Require(entriesFields, "entriesFields");
+      Assertion.Require(voucherFields, nameof(voucherFields));
+      Assertion.Require(entriesFields, nameof(entriesFields));
 
       FixedList<string> issues = ValidateVoucherToImport(voucherFields, entriesFields);
 
@@ -318,8 +320,8 @@ namespace Empiria.FinancialAccounting.Vouchers.UseCases {
 
 
     public VoucherDto DeleteEntry(long voucherId, long voucherEntryId) {
-      Assertion.Require(voucherId > 0, "voucherId");
-      Assertion.Require(voucherEntryId > 0, "voucherEntryId");
+      Assertion.Require(voucherId > 0, nameof(voucherId));
+      Assertion.Require(voucherEntryId > 0, nameof(voucherEntryId));
 
       var voucher = Voucher.Parse(voucherId);
 
@@ -332,7 +334,7 @@ namespace Empiria.FinancialAccounting.Vouchers.UseCases {
 
 
     public void DeleteVoucher(long voucherId) {
-      Assertion.Require(voucherId > 0, "voucherId");
+      Assertion.Require(voucherId > 0, nameof(voucherId));
 
       var voucher = Voucher.Parse(voucherId);
 
@@ -346,7 +348,7 @@ namespace Empiria.FinancialAccounting.Vouchers.UseCases {
 
 
     public VoucherEntryDto GetCopyOfLastEntry(long voucherId) {
-      Assertion.Require(voucherId > 0, "voucherId");
+      Assertion.Require(voucherId > 0, nameof(voucherId));
 
       var voucher = Voucher.Parse(voucherId);
 
@@ -357,7 +359,7 @@ namespace Empiria.FinancialAccounting.Vouchers.UseCases {
 
 
     public VoucherDto SendVoucherToSupervisor(long voucherId) {
-      Assertion.Require(voucherId > 0, "voucherId");
+      Assertion.Require(voucherId > 0, nameof(voucherId));
 
       var voucher = Voucher.Parse(voucherId);
 
@@ -368,8 +370,8 @@ namespace Empiria.FinancialAccounting.Vouchers.UseCases {
 
 
     public VoucherDto UpdateVoucher(long voucherId, VoucherFields fields) {
-      Assertion.Require(voucherId > 0, "voucherId");
-      Assertion.Require(fields, "fields");
+      Assertion.Require(voucherId > 0, nameof(voucherId));
+      Assertion.Require(fields, nameof(fields));
 
       fields.EnsureValid();
 
@@ -400,9 +402,9 @@ namespace Empiria.FinancialAccounting.Vouchers.UseCases {
 
     public VoucherDto UpdateEntry(long voucherId, long voucherEntryId,
                                   VoucherEntryFields fields) {
-      Assertion.Require(voucherId > 0, "voucherId");
-      Assertion.Require(voucherEntryId > 0, "voucherEntryId");
-      Assertion.Require(fields, "fields");
+      Assertion.Require(voucherId > 0, nameof(voucherId));
+      Assertion.Require(voucherEntryId > 0, nameof(voucherEntryId));
+      Assertion.Require(fields, nameof(fields));
 
       var voucher = Voucher.Parse(voucherId);
 
@@ -417,16 +419,19 @@ namespace Empiria.FinancialAccounting.Vouchers.UseCases {
 
 
     public FixedList<string> ValidateVoucher(long voucherId) {
-      Assertion.Require(voucherId > 0, "voucherId");
+      Assertion.Require(voucherId > 0, nameof(voucherId));
 
       var voucher = Voucher.Parse(voucherId);
 
-      return voucher.ValidationResult(true);
+      return voucher.Helper.GetValidationResult(true);
     }
 
 
     public FixedList<string> ValidateVoucherToImport(VoucherFields voucher,
                                                      FixedList<VoucherEntryFields> entries) {
+      Assertion.Require(voucher, nameof(voucher));
+      Assertion.Require(entries, nameof(entries));
+
       voucher.EnsureValid();
 
       Ledger ledger = Ledger.Parse(voucher.LedgerUID);
@@ -439,6 +444,8 @@ namespace Empiria.FinancialAccounting.Vouchers.UseCases {
 
     public FixedList<string> ValidateVoucherEntryToImport(VoucherFields voucher,
                                                           VoucherEntryFields entry) {
+      Assertion.Require(voucher, nameof(voucher));
+      Assertion.Require(entry, nameof(entry));
 
       Ledger ledger = Ledger.Parse(voucher.LedgerUID);
 
