@@ -17,12 +17,15 @@ namespace Empiria.FinancialAccounting.BalanceEngine.Data {
 
 
     static internal FixedList<Account> GetAccountsHistory(AccountsChart accountsChart,
-                                                              DateTime fromDate, DateTime toDate) {
+                                                          DateTime fromDate, DateTime toDate) {
+      const string CUENTA_RECLASIFICACION_SALDOS_INICIALES = "9.04";
+
       var sql = "SELECT * FROM VW_COF_CUENTA_ESTANDAR_HIST " +
                $"WHERE ID_TIPO_CUENTAS_STD = {accountsChart.Id} " +
+               $"AND NUMERO_CUENTA_ESTANDAR NOT LIKE '{CUENTA_RECLASIFICACION_SALDOS_INICIALES}%' " +
                $"AND {DataCommonMethods.FormatSqlDbDate(fromDate)} <= FECHA_FIN " +
                $"AND FECHA_FIN <= {DataCommonMethods.FormatSqlDbDate(toDate)} " +
-               $"ORDER BY FECHA_INICIO";
+               $"ORDER BY FECHA_INICIO, NUMERO_CUENTA_ESTANDAR";
 
       var dataOperation = DataOperation.Parse(sql);
 
