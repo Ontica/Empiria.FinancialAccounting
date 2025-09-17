@@ -69,12 +69,6 @@ namespace Empiria.FinancialAccounting {
       return SubledgerData.GetSubledgerAccountsList(accountsChart, filter);
     }
 
-
-    static public void Preload() {
-      SubledgerData.GetSubledgerAccountsList();
-    }
-
-
     static public SubledgerAccount Empty => Parse(-1);
 
     #endregion Constructors and parsers

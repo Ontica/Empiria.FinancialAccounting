@@ -7,7 +7,6 @@
 *  Summary  : Holds information about a subledger book.                                                      *
 *                                                                                                            *
 ************************* Copyright(c) La Vía Óntica SC, Ontica LLC and contributors. All rights reserved. **/
-using System;
 
 namespace Empiria.FinancialAccounting {
 
@@ -20,26 +19,15 @@ namespace Empiria.FinancialAccounting {
       // Required by Empiria Framework.
     }
 
+    static public Subledger Parse(int id) => ParseId<Subledger>(id);
 
-    static public Subledger Parse(int id) {
-      return BaseObject.ParseId<Subledger>(id);
-    }
+    static public Subledger Parse(string uid) => ParseKey<Subledger>(uid);
 
-    static public Subledger Parse(string uid) {
-      return BaseObject.ParseKey<Subledger>(uid);
-    }
-
-    static public void Preload() {
-      BaseObject.GetList<Subledger>();
-    }
-
-    static public Subledger Empty => BaseObject.ParseEmpty<Subledger>();
-
+    static public Subledger Empty => ParseEmpty<Subledger>();
 
     #endregion Constructors and parsers
 
-    #region Public properties
-
+    #region Properties
 
     [DataField("ID_MAYOR", ConvertFrom = typeof(long))]
     public Ledger BaseLedger {
@@ -82,10 +70,9 @@ namespace Empiria.FinancialAccounting {
       get; private set;
     }
 
+    #endregion Properties
 
-    #endregion Public properties
-
-    #region Public methods
+    #region Methods
 
     public bool BelongsTo(Ledger ledger) {
       return ledger.Equals(this.BaseLedger) || ledger.Equals(this.AdditionalLedger);
@@ -123,8 +110,7 @@ namespace Empiria.FinancialAccounting {
       return subledgerAccount;
     }
 
-
-    #endregion Public methods
+    #endregion Methods
 
   }  // class Subledger
 

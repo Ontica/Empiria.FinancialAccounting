@@ -9,6 +9,7 @@
 ************************* Copyright(c) La Vía Óntica SC, Ontica LLC and contributors. All rights reserved. **/
 using System;
 using System.Threading.Tasks;
+using Empiria.FinancialAccounting.Data;
 
 namespace Empiria.FinancialAccounting {
 
@@ -35,13 +36,18 @@ namespace Empiria.FinancialAccounting {
       _alreadyExecuted = true;
 
       try {
+
         EmpiriaLog.Info($"Application preloading starts at {DateTime.Now}.");
-        Subledger.Preload();
-        SubledgerAccount.Preload();
+
+        _ = BaseObject.GetList<Subledger>();
+        _ = SubledgerData.GetSubledgerAccountsList();
         AccountsChart.Preload();
+
         EmpiriaLog.Info($"Application preloading ends at {DateTime.Now}.");
-      } catch {
-        //  no-op
+
+      } catch (Exception ex) {
+
+        EmpiriaLog.Error($"Error during application preloading: {ex.Message}");
       }
     }
 
