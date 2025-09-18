@@ -59,7 +59,6 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
 
       FixedList<SaldosEncerradosBaseEntryDto> headersAndEntries = MergeHeadersAndEntries(headers,
                                                                                          mappedEntries);
-
       return headersAndEntries;
     }
 
@@ -95,8 +94,8 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
       var helper = new SaldosEncerradosHelper(buildQuery);
 
       foreach (var account in accounts) {
-
-        List<TrialBalanceEntry> entries = helper.GetBalancesByAccount(account);
+        
+        List<TrialBalanceEntry> entries = helper.GetBalancesByAccount(account, account.EndDate);
         returnedEntries.AddRange(entries);
       }
 
@@ -165,7 +164,6 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
           groupEntry = entry.CreateGroupEntry();
           headers.Insert(hash, groupEntry);
         }
-
       }
 
       return headers.Values.OrderBy(a => a.LedgerNumber)

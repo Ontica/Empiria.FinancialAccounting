@@ -26,9 +26,9 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
 
     #region Public methods
 
-    public List<TrialBalanceEntry> GetBalancesByAccount(Account account) {
+    public List<TrialBalanceEntry> GetBalancesByAccount(Account account, DateTime endDate) {
 
-      TrialBalanceQuery trialBalanceQuery = GetTrialBalanceQueryClauses(account);
+      TrialBalanceQuery trialBalanceQuery = GetTrialBalanceQueryClauses(account, endDate);
 
       var balanza = new BalanzaTradicionalBuilder(trialBalanceQuery);
 
@@ -65,7 +65,7 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
       }
 
       var balanceEntries = entries.Select(x => (TrialBalanceEntry) x);
-
+      ///
       return GetAccountsByRules(account, balanceEntries);
     }
 
@@ -222,7 +222,7 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
     }
 
 
-    private TrialBalanceQuery GetTrialBalanceQueryClauses(Account account) {
+    private TrialBalanceQuery GetTrialBalanceQueryClauses(Account account, DateTime endDate) {
 
       string[] ledger = new string[] { };
 
@@ -234,7 +234,7 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
         AccountsChartUID = _query.AccountsChartUID,
         InitialPeriod = {
           FromDate = _query.FromDate,
-          ToDate = _query.ToDate
+          ToDate = endDate
         },
         TrialBalanceType = TrialBalanceType.Balanza,
         BalancesType = BalancesType.WithCurrentBalance,
