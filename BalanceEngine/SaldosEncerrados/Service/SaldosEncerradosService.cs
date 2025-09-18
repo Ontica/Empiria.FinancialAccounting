@@ -50,10 +50,10 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
 
       FixedList<TrialBalanceEntry> entries = BalancesByAccount(accounts).ToFixedList();
 
-      FixedList<TrialBalanceEntry> filteredEntriesByAccounts = FilteredEntriesByAccounts(entries, accounts);
+      //FixedList<TrialBalanceEntry> filteredEntriesByAccounts = FilteredEntriesByAccounts(entries, accounts);
 
       FixedList<SaldosEncerradosEntryDto> mappedEntries =
-        SaldosEncerradosMapper.MergeBalancesIntoLockedBalanceEntries(filteredEntriesByAccounts, accounts);
+        SaldosEncerradosMapper.MergeBalancesIntoLockedBalanceEntries(entries, accounts);
 
       FixedList<SaldosEncerradosBaseEntryDto> headers = GetHeaderByLedger(mappedEntries);
 
@@ -69,10 +69,10 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
 
       FixedList<TrialBalanceEntry> entries = BalancesByAccount(accounts).ToFixedList();
 
-      FixedList<TrialBalanceEntry> filteredEntriesByAccounts = FilteredEntriesByAccounts(entries, accounts);
+      //FixedList<TrialBalanceEntry> filteredEntriesByAccounts = FilteredEntriesByAccounts(entries, accounts);
 
       FixedList<SaldosEncerradosEntryDto> mappedEntries =
-        SaldosEncerradosMapper.MergeBalancesIntoLockedBalanceEntries(filteredEntriesByAccounts, accounts);
+        SaldosEncerradosMapper.MergeBalancesIntoLockedBalanceEntries(entries, accounts);
 
       return GetCancelableEntries(mappedEntries);
     }
@@ -96,7 +96,8 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
       foreach (var account in accounts) {
         
         List<TrialBalanceEntry> entries = helper.GetBalancesByAccount(account, account.EndDate);
-        returnedEntries.AddRange(entries);
+
+        returnedEntries.AddRange(FilteredEntriesByAccounts(entries, account));
       }
 
       return returnedEntries.OrderBy(a => a.Account.Number)
@@ -106,17 +107,17 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
     }
 
 
-    private FixedList<TrialBalanceEntry> FilteredEntriesByAccounts(FixedList<TrialBalanceEntry> entries,
-                                                                   FixedList<Account> accounts) {
+    private List<TrialBalanceEntry> FilteredEntriesByAccounts(List<TrialBalanceEntry> entries,
+                                                                   Account account) {
       var returnedEntries = new List<TrialBalanceEntry>();
 
       foreach (var entry in entries) {
-        var account = accounts.Find(a => a.Number == entry.Account.Number);
+        
         if (account.Role != entry.Account.Role) {
           returnedEntries.Add(entry);
         }
       }
-      return returnedEntries.ToFixedList();
+      return returnedEntries;
     }
 
 
