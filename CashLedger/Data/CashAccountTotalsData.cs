@@ -15,7 +15,7 @@ namespace Empiria.FinancialAccounting.CashLedger.Data {
   /// <summary>Data services used to retrive cash ledger totals.</summary>
   static internal class CashAccountTotalsData {
 
-    static internal FixedList<CashAccountTotal> GetTotals(string filter) {
+    static internal FixedList<CashAccountTotal> GetTotalsByCashAccount(string filter) {
       Assertion.Require(filter, nameof(filter));
 
       var sql = "SELECT ID_CUENTA_FLUJO, NUM_CONCEPTO_FLUJO, " +
@@ -29,6 +29,7 @@ namespace Empiria.FinancialAccounting.CashLedger.Data {
 
       return DataReader.GetPlainObjectFixedList<CashAccountTotal>(op);
     }
+
   }  // class CashAccountTotalsData
 
 }  // namespace Empiria.FinancialAccounting.CashLedger.Data

@@ -23,17 +23,18 @@ namespace Empiria.FinancialAccounting.CashLedger.Adapters {
 
     #region Extension methods
 
-    static internal FixedList<CashAccountTotal> Execute(this CashAccountTotalsQuery query) {
+    static internal FixedList<CashAccountTotal> Execute(this AccountsTotalsQuery query) {
 
       string filter = GetFilterString(query);
 
-      FixedList<CashAccountTotal> totals = CashAccountTotalsData.GetTotals(filter);
+      if (query.QueryType == "") {
+      }
 
-      return totals;
+      return CashAccountTotalsData.GetTotalsByCashAccount(filter);
     }
 
 
-    static public FixedList<CashEntryExtendedDto> ExecuteEntries(this CashAccountTotalsQuery query) {
+    static public FixedList<CashEntryExtendedDto> ExecuteEntries(this AccountsTotalsQuery query) {
       string filter = GetFilterString(query);
 
       FixedList<CashEntryExtended> entries = CashLedgerData.GetExtendedEntries(filter);
@@ -45,8 +46,8 @@ namespace Empiria.FinancialAccounting.CashLedger.Adapters {
 
     #region Methods
 
-    static private string GetFilterString(CashAccountTotalsQuery query) {
-      string ledgerFilter = BuildLedgerFilter(query.AccountingLedgerUID);
+    static private string GetFilterString(AccountsTotalsQuery query) {
+      string ledgerFilter = BuildLedgerFilter(query.Ledgers);
       string accountingDateRangeFilter = BuildAccountingDateRangeFilter(query);
 
       var filter = new Filter(ledgerFilter);
@@ -60,7 +61,7 @@ namespace Empiria.FinancialAccounting.CashLedger.Adapters {
 
     #region Helpers
 
-    static private string BuildAccountingDateRangeFilter(CashAccountTotalsQuery query) {
+    static private string BuildAccountingDateRangeFilter(AccountsTotalsQuery query) {
       Assertion.Require(query.FromDate, nameof(query.FromDate));
       Assertion.Require(query.ToDate, nameof(query.ToDate));
 
@@ -69,15 +70,13 @@ namespace Empiria.FinancialAccounting.CashLedger.Adapters {
     }
 
 
-    static private string BuildLedgerFilter(string accountingLedgerUID) {
+    static private string BuildLedgerFilter(string[] ledgers) {
       string filter = string.Empty;
 
-      if (accountingLedgerUID.Length != 0) {
-        var ledger = Ledger.Parse(accountingLedgerUID);
+      if (ledgers.Length != 0) {
+        var ledger = Ledger.Parse(ledgers[0]);
 
-        filter += $"ID_MAYOR = {ledger.Id}";
-
-        return filter;
+        return $"ID_MAYOR = {ledger.Id}";
       }
 
       return $"ID_TIPO_CUENTAS_STD = {AccountsChart.IFRS.Id}";

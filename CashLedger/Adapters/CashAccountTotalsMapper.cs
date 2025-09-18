@@ -24,13 +24,13 @@ namespace Empiria.FinancialAccounting.CashLedger.Adapters {
 
     static private CashAccountTotalDto Map(CashAccountTotal total) {
       return new CashAccountTotalDto {
-        AccountNo = total.LedgerAccount.Number,
-        AccountName = total.LedgerAccount.Name,
         CashAccountId = total.CashAccountId,
         CashAccountNo = total.CashAccountNo,
-        CurrencyCode = total.Currency.Code,
-        Debit = total.Debit,
-        Credit = total.Credit
+        CurrencyCode = total.Currency.ISOCode,
+        Inflows = total.Debit,
+        Outflows = total.Credit,
+        AccountNo = total.LedgerAccount.Number,
+        AccountName = total.LedgerAccount.Name,
       };
     }
 
