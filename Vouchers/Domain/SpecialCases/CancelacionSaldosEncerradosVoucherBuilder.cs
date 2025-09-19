@@ -1,12 +1,13 @@
 ﻿/* Empiria Financial *****************************************************************************************
 *                                                                                                            *
-*  Module   : Vouchers Management                        Component : Domain Layer                            *
-*  Assembly : FinancialAccounting.Vouchers.dll           Pattern   : Concrete Builder                        *
-*  Type     : CancelacionSaldosEncerradosVoucherBuilder  License   : Please read LICENSE.txt file            *
+*  Module   : Vouchers Management                           Component : Domain Layer                         *
+*  Assembly : FinancialAccounting.Vouchers.dll              Pattern   : Concrete Builder                     *
+*  Type     : CancelacionSaldosEncerradosVoucherBuilder     License   : Please read LICENSE.txt file         *
 *                                                                                                            *
-*  Summary  : Builds a voucher that cancels locked balances for changes in the charts of accounts.           *
+*  Summary  : Builds a voucher that cancels locked balances because of charts of accounts changes.           *
 *                                                                                                            *
 ************************* Copyright(c) La Vía Óntica SC, Ontica LLC and contributors. All rights reserved. **/
+
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -18,7 +19,7 @@ using Empiria.FinancialAccounting.Vouchers.Adapters;
 
 namespace Empiria.FinancialAccounting.Vouchers.SpecialCases {
 
-  /// <summary>Builds a voucher that cancels locked balances for changes in the charts of accounts.</summary>
+  /// <summary>Builds a voucher that cancels locked balances because of charts of accounts changes.</summary>
   internal class CancelacionSaldosEncerradosVoucherBuilder : VoucherBuilder {
 
     static private readonly string CONTROL_ACCOUNT_NO = "9.03.14";
@@ -30,6 +31,7 @@ namespace Empiria.FinancialAccounting.Vouchers.SpecialCases {
     #region Abstract Implements
 
     protected override FixedList<VoucherEntryFields> BuildVoucherEntries() {
+
       FixedList<SaldosEncerradosEntryDto> lockedBalances = GetLockedBalances();
 
       var voucherEntries = new List<VoucherEntryFields>();
@@ -41,112 +43,100 @@ namespace Empiria.FinancialAccounting.Vouchers.SpecialCases {
       return voucherEntries.ToFixedList();
     }
 
-
     #endregion Abstract Implements
 
-    #region Helpers
-
+    #region Builders
 
     private FixedList<VoucherEntryFields> BuildCreditVoucherEntries(FixedList<SaldosEncerradosEntryDto> lockedBalances) {
 
-      var creditLockedBalances = FilterCreditLockedBalances(lockedBalances);
+      var creditLockedBalances = GetCreditBalances(lockedBalances);
 
       if (creditLockedBalances.Count == 0) {
         return new FixedList<VoucherEntryFields>();
       }
 
-      var voucherEntries = new List<VoucherEntryFields>(creditLockedBalances.Count + 8);
-
-      foreach (var currency in GetCurrenciesList(creditLockedBalances)) {
-
-        var to_process = creditLockedBalances.FindAll(x => x.CurrencyCode == currency.Code &&
-                                                           IsDirectCaseEntry(x));
-
-        foreach (var accountNo in to_process.SelectDistinct(x => x.AccountNumber)) {
-          var byAccountEntries = to_process.FindAll(x => x.AccountNumber == accountNo);
-
-          var byAccountVoucherEntries = BuildVoucherEntries(byAccountEntries, VoucherEntryType.Debit,
-                                                            currency, accountNo);
-          voucherEntries.AddRange(byAccountVoucherEntries);
-        }
-
-        to_process = creditLockedBalances.FindAll(x => x.CurrencyCode == currency.Code &&
-                                                       !IsDirectCaseEntry(x));
-
-        var noDirectCaseEntries = BuildVoucherEntries(to_process, VoucherEntryType.Debit,
-                                                      currency, CONTROL_ACCOUNT_NO);
-
-        voucherEntries.AddRange(noDirectCaseEntries);
-      }
-
-      return voucherEntries.ToFixedList();
+      return BuildVoucherEntriesByCurrencyAndAccount(creditLockedBalances, VoucherEntryType.Debit);
     }
 
 
     private FixedList<VoucherEntryFields> BuildDebitVoucherEntries(FixedList<SaldosEncerradosEntryDto> lockedBalances) {
 
-      var debitLockedBalances = FilterDebitLockedBalances(lockedBalances);
+      var debitLockedBalances = GetDebitBalances(lockedBalances);
 
       if (debitLockedBalances.Count == 0) {
         return new FixedList<VoucherEntryFields>();
       }
 
-      var voucherEntries = new List<VoucherEntryFields>(debitLockedBalances.Count + 8);
+      return BuildVoucherEntriesByCurrencyAndAccount(debitLockedBalances, VoucherEntryType.Credit);
+    }
 
-      foreach (var currency in GetCurrenciesList(debitLockedBalances)) {
 
-        var to_process = debitLockedBalances.FindAll(x => x.CurrencyCode == currency.Code &&
-                                                          IsDirectCaseEntry(x));
+    private FixedList<VoucherEntryFields> BuildVoucherEntriesByCurrencyAndAccount(FixedList<SaldosEncerradosEntryDto> balances,
+                                                                                  VoucherEntryType targetEntryType) {
+
+      var voucherEntries = new List<VoucherEntryFields>();
+
+      foreach (var currency in GetCurrenciesList(balances)) {
+
+        var to_process = balances.FindAll(x => x.CurrencyCode == currency.Code &&
+                                               IsDirectCaseEntry(x));
 
         foreach (var accountNo in to_process.SelectDistinct(x => x.AccountNumber)) {
           var byAccountEntries = to_process.FindAll(x => x.AccountNumber == accountNo);
 
-          var byAccountVoucherEntries = BuildVoucherEntries(byAccountEntries, VoucherEntryType.Credit,
-                                                            currency, accountNo);
+          var byAccountVoucherEntries = BuildVoucherEntriesBlock(byAccountEntries, targetEntryType,
+                                                                 currency, accountNo);
           voucherEntries.AddRange(byAccountVoucherEntries);
         }
 
-        to_process = debitLockedBalances.FindAll(x => x.CurrencyCode == currency.Code &&
-                                                      !IsDirectCaseEntry(x));
+        to_process = balances.FindAll(x => x.CurrencyCode == currency.Code &&
+                                           !IsDirectCaseEntry(x));
 
-        var noDirectCaseEntries = BuildVoucherEntries(to_process, VoucherEntryType.Credit,
-                                                      currency, CONTROL_ACCOUNT_NO);
+        var noDirectCaseEntries = BuildVoucherEntriesBlock(to_process, targetEntryType,
+                                                           currency, CONTROL_ACCOUNT_NO);
+
         voucherEntries.AddRange(noDirectCaseEntries);
-
-      }  //foreach currency
+      }
 
       return voucherEntries.ToFixedList();
     }
 
 
-    private FixedList<SaldosEncerradosEntryDto> GetLockedBalances() {
-      var query = new SaldosEncerradosQuery {
-        AccountsChartUID = base.AccountsChart.UID,
-        FromDate = base.Fields.DatePeriod.FromDate,
-        ToDate = base.Fields.DatePeriod.ToDate,
-        LedgerUID = base.Fields.LedgerUID
-      };
+    private FixedList<VoucherEntryFields> BuildVoucherEntriesBlock(FixedList<SaldosEncerradosEntryDto> to_process,
+                                                                   VoucherEntryType totalEntryType,
+                                                                   Currency totalCurrency,
+                                                                   string totalControlAccountNo) {
 
-      var builder = new SaldosEncerradosService(query);
+      var voucherEntries = new List<VoucherEntryFields>(to_process.Count + 1);
 
-      FixedList<SaldosEncerradosEntryDto> items = builder.BuildEntries();
+      foreach (var lockedBalance in to_process) {
 
-      Assertion.Require(items.Count > 0,
-                        "No hay saldos encerrados por cancelar en la fecha proporcionada.");
+        VoucherEntryFields voucherEntry = BuildVoucherEntry(lockedBalance);
 
-      return items;
+        voucherEntries.Add(voucherEntry);
+      }
+
+      VoucherEntryFields totalEntry = BuildTargetAccountVoucherEntry(voucherEntries,
+                                                                     totalEntryType,
+                                                                     totalControlAccountNo,
+                                                                     totalCurrency);
+
+      voucherEntries.Add(totalEntry);
+
+      return voucherEntries.ToFixedList();
     }
 
 
     private VoucherEntryFields BuildTargetAccountVoucherEntry(List<VoucherEntryFields> accumulatedEntries,
                                                               VoucherEntryType targetEntryType,
-                                                              string targetAccountNumber, Currency currency) {
+                                                              string targetAccountNumber,
+                                                              Currency targetCurrency) {
 
-      decimal total = accumulatedEntries.FindAll(x => x.Currency.Equals(currency))
+      decimal total = accumulatedEntries.FindAll(x => x.Currency.Equals(targetCurrency))
                                         .Sum(x => x.Amount);
 
       return BuildVoucherEntryFields(targetEntryType, targetAccountNumber,
-                                     "00", SubledgerAccount.Empty, total, currency);
+                                     "00", SubledgerAccount.Empty, total, targetCurrency);
     }
 
 
@@ -179,10 +169,11 @@ namespace Empiria.FinancialAccounting.Vouchers.SpecialCases {
 
     private VoucherEntryFields BuildVoucherEntryFields(VoucherEntryType entryType,
                                                        SaldosEncerradosEntryDto lockedBalance) {
+
       SubledgerAccount subledgerAccount = SubledgerAccount.Empty;
 
       if (!string.IsNullOrWhiteSpace(lockedBalance.SubledgerAccount)) {
-        subledgerAccount = base.Ledger.TryGetSubledgerAccount(lockedBalance.SubledgerAccount);
+        subledgerAccount = Ledger.TryGetSubledgerAccount(lockedBalance.SubledgerAccount);
       }
 
       return BuildVoucherEntryFields(entryType,
@@ -202,9 +193,9 @@ namespace Empiria.FinancialAccounting.Vouchers.SpecialCases {
                                                        decimal balance,
                                                        Currency currency) {
 
-      StandardAccount stdAccount = base.AccountsChart.GetStandardAccount(accountNumber);
+      StandardAccount stdAccount = AccountsChart.GetStandardAccount(accountNumber);
 
-      LedgerAccount ledgerAccount = base.Ledger.AssignAccount(stdAccount);
+      LedgerAccount ledgerAccount = Ledger.AssignAccount(stdAccount);
 
       return new VoucherEntryFields {
         Amount = balance,
@@ -220,31 +211,12 @@ namespace Empiria.FinancialAccounting.Vouchers.SpecialCases {
       };
     }
 
-    private IEnumerable<VoucherEntryFields> BuildVoucherEntries(FixedList<SaldosEncerradosEntryDto> to_process,
-                                                                VoucherEntryType totalEntryType,
-                                                                Currency totalCurrency,
-                                                                string totalControlAccountNo) {
+    #endregion Builders
 
-      var voucherEntries = new List<VoucherEntryFields>(to_process.Count + 1);
+    #region Helpers
 
-      foreach (var lockedBalance in to_process) {
+    static private FixedList<SaldosEncerradosEntryDto> GetCreditBalances(FixedList<SaldosEncerradosEntryDto> items) {
 
-        VoucherEntryFields voucherEntry = BuildVoucherEntry(lockedBalance);
-
-        voucherEntries.Add(voucherEntry);
-      }
-
-      VoucherEntryFields totalEntry = BuildTargetAccountVoucherEntry(voucherEntries,
-                                                                     totalEntryType,
-                                                                     totalControlAccountNo,
-                                                                     totalCurrency);
-
-      voucherEntries.Add(totalEntry);
-
-      return voucherEntries;
-    }
-
-    private FixedList<SaldosEncerradosEntryDto> FilterCreditLockedBalances(FixedList<SaldosEncerradosEntryDto> items) {
       var filtered = new List<SaldosEncerradosEntryDto>(items.Count);
 
       var temp = items.FindAll(x => x.DebtorCreditor == "Deudora" && x.LockedBalance > 0);
@@ -257,7 +229,14 @@ namespace Empiria.FinancialAccounting.Vouchers.SpecialCases {
     }
 
 
-    private FixedList<SaldosEncerradosEntryDto> FilterDebitLockedBalances(FixedList<SaldosEncerradosEntryDto> items) {
+    static private IEnumerable<Currency> GetCurrenciesList(FixedList<SaldosEncerradosEntryDto> lockedBalances) {
+
+      return lockedBalances.SelectDistinct(x => Currency.Parse(x.CurrencyCode));
+    }
+
+
+    static private FixedList<SaldosEncerradosEntryDto> GetDebitBalances(FixedList<SaldosEncerradosEntryDto> items) {
+
       var filtered = new List<SaldosEncerradosEntryDto>(items.Count);
 
       var chunk = items.FindAll(x => x.DebtorCreditor == "Deudora" && x.LockedBalance < 0);
@@ -270,12 +249,27 @@ namespace Empiria.FinancialAccounting.Vouchers.SpecialCases {
     }
 
 
-    private IEnumerable<Currency> GetCurrenciesList(FixedList<SaldosEncerradosEntryDto> lockedBalances) {
-      return lockedBalances.SelectDistinct(x => Currency.Parse(x.CurrencyCode));
+    private FixedList<SaldosEncerradosEntryDto> GetLockedBalances() {
+
+      var query = new SaldosEncerradosQuery {
+        AccountsChartUID = AccountsChart.UID,
+        FromDate = Fields.DatePeriod.FromDate,
+        ToDate = Fields.DatePeriod.ToDate,
+        LedgerUID = Fields.LedgerUID
+      };
+
+      var builder = new SaldosEncerradosService(query);
+
+      FixedList<SaldosEncerradosEntryDto> items = builder.BuildEntries();
+
+      Assertion.Require(items.Count > 0,
+                        "No hay saldos encerrados por cancelar en la fecha proporcionada.");
+
+      return items;
     }
 
 
-    private bool IsDirectCaseEntry(SaldosEncerradosEntryDto entry) {
+    static private bool IsDirectCaseEntry(SaldosEncerradosEntryDto entry) {
       return entry.PreviousRole == "Control" && entry.NewRole == "Detalle";
     }
 
