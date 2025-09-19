@@ -9,6 +9,7 @@
 ************************* Copyright(c) La Vía Óntica SC, Ontica LLC and contributors. All rights reserved. **/
 using System;
 using System.Collections.Generic;
+using System.Linq;
 
 using Empiria.FinancialAccounting.BalanceEngine;
 using Empiria.FinancialAccounting.BalanceEngine.Adapters;
@@ -19,6 +20,8 @@ namespace Empiria.FinancialAccounting.Vouchers.SpecialCases {
 
   /// <summary>Builds a voucher that cancels locked balances for changes in the charts of accounts.</summary>
   internal class CancelacionSaldosEncerradosVoucherBuilder : VoucherBuilder {
+
+    static private readonly string CONTROL_ACCOUNT_NO = "9.03.14";
 
     internal CancelacionSaldosEncerradosVoucherBuilder(VoucherSpecialCaseFields fields) : base(fields) {
       // no-op
@@ -54,24 +57,18 @@ namespace Empiria.FinancialAccounting.Vouchers.SpecialCases {
 
       var voucherEntries = new List<VoucherEntryFields>(creditLockedBalances.Count + 8);
 
-      foreach (var currency in creditLockedBalances.SelectDistinct(x => Currency.Parse(x.CurrencyCode))) {
+      foreach (var currency in GetCurrenciesList(creditLockedBalances)) {
 
-        foreach (var lockedBalance in creditLockedBalances.FindAll(x => x.CurrencyCode == currency.Code)) {
-          VoucherEntryFields voucherEntry = BuildVoucherEntry(lockedBalance);
+        var to_process = creditLockedBalances.FindAll(x => x.CurrencyCode == currency.Code);
 
-          voucherEntries.Add(voucherEntry);
-        }
+        var byCurrencyVoucherEntries = BuildVoucherEntries(to_process, VoucherEntryType.Debit,
+                                                           currency, CONTROL_ACCOUNT_NO);
 
-        VoucherEntryFields debitTotalEntry = BuildTargetAccountVoucherEntry(voucherEntries,
-                                                                            VoucherEntryType.Debit,
-                                                                            "9.03.14", currency);
-
-        voucherEntries.Add(debitTotalEntry);
+        voucherEntries.AddRange(byCurrencyVoucherEntries);
       }
 
       return voucherEntries.ToFixedList();
     }
-
 
     private FixedList<VoucherEntryFields> BuildDebitVoucherEntries(FixedList<SaldosEncerradosEntryDto> lockedBalances) {
 
@@ -83,23 +80,19 @@ namespace Empiria.FinancialAccounting.Vouchers.SpecialCases {
 
       var voucherEntries = new List<VoucherEntryFields>(debitLockedBalances.Count + 8);
 
-      foreach (var currency in debitLockedBalances.SelectDistinct(x => Currency.Parse(x.CurrencyCode))) {
+      foreach (var currency in GetCurrenciesList(debitLockedBalances)) {
 
-        foreach (var lockedBalance in debitLockedBalances.FindAll(x => x.CurrencyCode == currency.Code)) {
-          VoucherEntryFields voucherEntry = BuildVoucherEntry(lockedBalance);
+        var to_process = debitLockedBalances.FindAll(x => x.CurrencyCode == currency.Code);
 
-          voucherEntries.Add(voucherEntry);
-        }
+        var byCurrencyVoucherEntries = BuildVoucherEntries(to_process, VoucherEntryType.Credit,
+                                                           currency, CONTROL_ACCOUNT_NO);
 
-        VoucherEntryFields creditTotalEntry = BuildTargetAccountVoucherEntry(voucherEntries,
-                                                                            VoucherEntryType.Credit,
-                                                                            "9.03.14", currency);
-
-        voucherEntries.Add(creditTotalEntry);
+        voucherEntries.AddRange(byCurrencyVoucherEntries);
       }
 
       return voucherEntries.ToFixedList();
     }
+
 
     private FixedList<SaldosEncerradosEntryDto> GetLockedBalances() {
       var query = new SaldosEncerradosQuery {
@@ -111,7 +104,7 @@ namespace Empiria.FinancialAccounting.Vouchers.SpecialCases {
 
       var builder = new SaldosEncerradosService(query);
 
-      FixedList <SaldosEncerradosEntryDto> items = builder.BuildEntries();
+      FixedList<SaldosEncerradosEntryDto> items = builder.BuildEntries();
 
       Assertion.Require(items.Count > 0,
                         "No hay saldos encerrados por cancelar en la fecha proporcionada.");
@@ -123,11 +116,9 @@ namespace Empiria.FinancialAccounting.Vouchers.SpecialCases {
     private VoucherEntryFields BuildTargetAccountVoucherEntry(List<VoucherEntryFields> accumulatedEntries,
                                                               VoucherEntryType targetEntryType,
                                                               string targetAccountNumber, Currency currency) {
-      decimal total = 0m;
 
-      foreach (var entry in accumulatedEntries.FindAll(x => x.Currency.Equals(currency))) {
-        total += entry.Amount;
-      }
+      decimal total = accumulatedEntries.FindAll(x => x.Currency.Equals(currency))
+                                        .Sum(x => x.Amount);
 
       return BuildVoucherEntryFields(targetEntryType, targetAccountNumber,
                                      "00", SubledgerAccount.Empty, total, currency);
@@ -204,6 +195,29 @@ namespace Empiria.FinancialAccounting.Vouchers.SpecialCases {
       };
     }
 
+    private IEnumerable<VoucherEntryFields> BuildVoucherEntries(FixedList<SaldosEncerradosEntryDto> to_process,
+                                                                VoucherEntryType totalEntryType,
+                                                                Currency totalCurrency,
+                                                                string totalControlAccountNo) {
+
+      var voucherEntries = new List<VoucherEntryFields>(to_process.Count + 1);
+
+      foreach (var lockedBalance in to_process) {
+
+        VoucherEntryFields voucherEntry = BuildVoucherEntry(lockedBalance);
+
+        voucherEntries.Add(voucherEntry);
+      }
+
+      VoucherEntryFields totalEntry = BuildTargetAccountVoucherEntry(voucherEntries,
+                                                                     totalEntryType,
+                                                                     totalControlAccountNo,
+                                                                     totalCurrency);
+
+      voucherEntries.Add(totalEntry);
+
+      return voucherEntries;
+    }
 
     private FixedList<SaldosEncerradosEntryDto> FilterCreditLockedBalances(FixedList<SaldosEncerradosEntryDto> items) {
       var filtered = new List<SaldosEncerradosEntryDto>(items.Count);
@@ -228,6 +242,11 @@ namespace Empiria.FinancialAccounting.Vouchers.SpecialCases {
       filtered.AddRange(chunk);
 
       return filtered.ToFixedList();
+    }
+
+
+    private IEnumerable<Currency> GetCurrenciesList(FixedList<SaldosEncerradosEntryDto> lockedBalances) {
+      return lockedBalances.SelectDistinct(x => Currency.Parse(x.CurrencyCode));
     }
 
     #endregion Helpers
