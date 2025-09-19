@@ -207,7 +207,10 @@ namespace Empiria.FinancialAccounting.Vouchers {
         exception = "La persona usuaria no tiene permisos para enviar al diario pólizas con cuentas protegidas.";
       }
 
-      var validator = new VoucherValidator(_voucher.Ledger, _voucher.AccountingDate);
+      var skipEntriesValidation = _voucher.VoucherType.SkipEntriesValidation;
+
+      var validator = new VoucherValidator(_voucher.Ledger, _voucher.AccountingDate,
+                                           skipEntriesValidation);
 
       var list = validator.Validate(_voucher.Entries, fullValidation).ToList();
 

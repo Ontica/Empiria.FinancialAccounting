@@ -39,18 +39,17 @@ namespace Empiria.FinancialAccounting.Vouchers {
       get;
     }
 
+    internal FixedList<string> Validate(FixedList<VoucherEntryFields> entries) {
+      var converted = new FixedList<IVoucherEntry>(entries.Select(x => (IVoucherEntry) x));
+
+      return Validate(converted, true);
+    }
+
 
     internal FixedList<string> Validate(FixedList<VoucherEntry> entries, bool fullValidation) {
       var converted = new FixedList<IVoucherEntry>(entries.Select(x => (IVoucherEntry) x));
 
       return Validate(converted, fullValidation);
-    }
-
-
-    internal FixedList<string> Validate(FixedList<VoucherEntryFields> entries) {
-      var converted = new FixedList<IVoucherEntry>(entries.Select(x => (IVoucherEntry) x));
-
-      return Validate(converted, true);
     }
 
 

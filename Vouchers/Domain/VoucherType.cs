@@ -34,6 +34,16 @@ namespace Empiria.FinancialAccounting.Vouchers {
 
     static public VoucherType Empty => BaseObject.ParseEmpty<VoucherType>();
 
+    #region Properties
+
+    public bool SkipEntriesValidation {
+      get {
+        return base.ExtendedDataField.Get("skipEntriesValidation", false);
+      }
+    }
+
+    #endregion Properties
+
   } // class VoucherType
 
 }  // namespace Empiria.FinancialAccounting.Vouchers
