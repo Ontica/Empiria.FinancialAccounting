@@ -7,8 +7,6 @@
 *  Summary  : Output DTO used to return account comparer report data.                                        *
 *                                                                                                            *
 ************************* Copyright(c) La Vía Óntica SC, Ontica LLC and contributors. All rights reserved. **/
-using System;
-
 using Empiria.DynamicData;
 
 namespace Empiria.FinancialAccounting.BalanceEngine.Adapters {

@@ -9,7 +9,6 @@
 ************************* Copyright(c) La Vía Óntica SC, Ontica LLC and contributors. All rights reserved. **/
 
 using System.Collections.Generic;
-using System.Linq;
 
 using Empiria.DynamicData;
 
@@ -91,8 +90,9 @@ namespace Empiria.FinancialAccounting.BalanceEngine.Adapters {
       dto.RoleChange = $"{account.Role}-{entry.Account.Role}";
       dto.ItemName = entry.Account.Name;
       dto.SectorCode = entry.Sector.Code;
-      dto.LockedBalance = (decimal) entry.CurrentBalance;
+      dto.LockedBalance = entry.CurrentBalance;
       dto.LastChangeDate = entry.LastChangeDate;
+      dto.PreviousRole = account.Role.ToString();
       dto.NewRole = entry.Account.Role.ToString();
       dto.DebtorCreditor = entry.DebtorCreditor.ToString();
 

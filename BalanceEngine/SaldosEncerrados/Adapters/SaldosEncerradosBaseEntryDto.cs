@@ -7,6 +7,7 @@
 *  Summary  : Output DTO used to return account comparer report data.                                        *
 *                                                                                                            *
 ************************* Copyright(c) La Vía Óntica SC, Ontica LLC and contributors. All rights reserved. **/
+
 using System;
 
 namespace Empiria.FinancialAccounting.BalanceEngine.Adapters {
@@ -14,53 +15,45 @@ namespace Empiria.FinancialAccounting.BalanceEngine.Adapters {
   /// <summary>Output DTO used to return account comparer report data.</summary>
   public class SaldosEncerradosBaseEntryDto {
 
-
     public TrialBalanceItemType ItemType {
       get; internal set;
     }
 
-
-
     public string DebtorCreditor {
-      get;
-      internal set;
+      get; internal set;
     }
-
 
     public string CurrencyCode {
       get; internal set;
     }
 
-
     public string AccountNumber {
       get; internal set;
     }
-
 
     public string SectorCode {
       get; internal set;
     }
 
-
     public string SubledgerAccount {
       get; internal set;
     }
-
 
     public decimal LockedBalance {
       get; internal set;
     }
 
-
     public DateTime LastChangeDate {
       get; set;
     }
 
+    public string PreviousRole {
+      get; internal set;
+    }
 
     public string NewRole {
       get; internal set;
     }
-
 
     public bool IsCancelable {
       get; internal set;
@@ -71,31 +64,25 @@ namespace Empiria.FinancialAccounting.BalanceEngine.Adapters {
       get; internal set;
     }
 
-
     public string LedgerUID {
       get; internal set;
     }
-
 
     public string LedgerNumber {
       get; internal set;
     }
 
-
     public string LedgerName {
       get; internal set;
     }
-
 
     public string RoleChange {
       get; internal set;
     }
 
-
     public DateTime RoleChangeDate {
       get; internal set;
     }
-
 
     public bool CanGenerateVoucher {
       get; internal set;
