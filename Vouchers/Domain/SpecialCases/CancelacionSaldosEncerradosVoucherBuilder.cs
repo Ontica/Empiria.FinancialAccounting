@@ -59,16 +59,29 @@ namespace Empiria.FinancialAccounting.Vouchers.SpecialCases {
 
       foreach (var currency in GetCurrenciesList(creditLockedBalances)) {
 
-        var to_process = creditLockedBalances.FindAll(x => x.CurrencyCode == currency.Code);
+        var to_process = creditLockedBalances.FindAll(x => x.CurrencyCode == currency.Code &&
+                                                           IsDirectCaseEntry(x));
 
-        var byCurrencyVoucherEntries = BuildVoucherEntries(to_process, VoucherEntryType.Debit,
-                                                           currency, CONTROL_ACCOUNT_NO);
+        foreach (var accountNo in to_process.SelectDistinct(x => x.AccountNumber)) {
+          var byAccountEntries = to_process.FindAll(x => x.AccountNumber == accountNo);
 
-        voucherEntries.AddRange(byCurrencyVoucherEntries);
+          var byAccountVoucherEntries = BuildVoucherEntries(byAccountEntries, VoucherEntryType.Debit,
+                                                            currency, accountNo);
+          voucherEntries.AddRange(byAccountVoucherEntries);
+        }
+
+        to_process = creditLockedBalances.FindAll(x => x.CurrencyCode == currency.Code &&
+                                                       !IsDirectCaseEntry(x));
+
+        var noDirectCaseEntries = BuildVoucherEntries(to_process, VoucherEntryType.Debit,
+                                                      currency, CONTROL_ACCOUNT_NO);
+
+        voucherEntries.AddRange(noDirectCaseEntries);
       }
 
       return voucherEntries.ToFixedList();
     }
+
 
     private FixedList<VoucherEntryFields> BuildDebitVoucherEntries(FixedList<SaldosEncerradosEntryDto> lockedBalances) {
 
@@ -82,13 +95,25 @@ namespace Empiria.FinancialAccounting.Vouchers.SpecialCases {
 
       foreach (var currency in GetCurrenciesList(debitLockedBalances)) {
 
-        var to_process = debitLockedBalances.FindAll(x => x.CurrencyCode == currency.Code);
+        var to_process = debitLockedBalances.FindAll(x => x.CurrencyCode == currency.Code &&
+                                                          IsDirectCaseEntry(x));
 
-        var byCurrencyVoucherEntries = BuildVoucherEntries(to_process, VoucherEntryType.Credit,
-                                                           currency, CONTROL_ACCOUNT_NO);
+        foreach (var accountNo in to_process.SelectDistinct(x => x.AccountNumber)) {
+          var byAccountEntries = to_process.FindAll(x => x.AccountNumber == accountNo);
 
-        voucherEntries.AddRange(byCurrencyVoucherEntries);
-      }
+          var byAccountVoucherEntries = BuildVoucherEntries(byAccountEntries, VoucherEntryType.Credit,
+                                                            currency, accountNo);
+          voucherEntries.AddRange(byAccountVoucherEntries);
+        }
+
+        to_process = debitLockedBalances.FindAll(x => x.CurrencyCode == currency.Code &&
+                                                      !IsDirectCaseEntry(x));
+
+        var noDirectCaseEntries = BuildVoucherEntries(to_process, VoucherEntryType.Credit,
+                                                      currency, CONTROL_ACCOUNT_NO);
+        voucherEntries.AddRange(noDirectCaseEntries);
+
+      }  //foreach currency
 
       return voucherEntries.ToFixedList();
     }
@@ -247,6 +272,11 @@ namespace Empiria.FinancialAccounting.Vouchers.SpecialCases {
 
     private IEnumerable<Currency> GetCurrenciesList(FixedList<SaldosEncerradosEntryDto> lockedBalances) {
       return lockedBalances.SelectDistinct(x => Currency.Parse(x.CurrencyCode));
+    }
+
+
+    private bool IsDirectCaseEntry(SaldosEncerradosEntryDto entry) {
+      return entry.PreviousRole == "Control" && entry.NewRole == "Detalle";
     }
 
     #endregion Helpers
