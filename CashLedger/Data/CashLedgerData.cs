@@ -139,6 +139,8 @@ namespace Empiria.FinancialAccounting.CashLedger.Data {
     static internal void UpdateCashEntriesAccounts(FixedList<CashEntryFields> entries) {
       var stringBuilder = new StringBuilder(entries.Count * 350);
 
+      var dateTime = DateTime.Now;
+
       stringBuilder.Append("BEGIN ");
 
       foreach (var entry in entries) {
@@ -146,9 +148,10 @@ namespace Empiria.FinancialAccounting.CashLedger.Data {
               "UPDATE COF_MOVIMIENTO_BIS SET " +
                    $"ID_CUENTA_FLUJO = {entry.CashAccountId}, " +
                    $"NUM_CONCEPTO_FLUJO = '{entry.CashAccountNo}', " +
-                   $"REGLA_FLUJO = '{entry.AppliedRule}', " +
+                   $"ID_REGLA_FLUJO = {entry.AppliedRuleId}, " +
+                   $"TEXTO_REGLA_FLUJO = '{entry.AppliedRuleText}', " +
                    $"ID_USUARIO_FLUJO = {entry.UserId}, " +
-                   $"FECHA_REGISTRO_FLUJO = {DataCommonMethods.FormatSqlDbDateTime(DateTime.Now)} " +
+                   $"FECHA_REGISTRO_FLUJO = {DataCommonMethods.FormatSqlDbDateTime(dateTime)} " +
               $"WHERE ID_MOVIMIENTO = {entry.EntryId}; ";
 
         stringBuilder.Append(localSql);

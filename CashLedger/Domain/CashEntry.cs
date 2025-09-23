@@ -128,25 +128,36 @@ namespace Empiria.FinancialAccounting.CashLedger {
       get; private set;
     }
 
+
     [DataField("NUM_CONCEPTO_FLUJO")]
     public string CashAccountNo {
       get; private set;
     }
 
-    [DataField("REGLA_FLUJO")]
-    public string CashAccountAppliedRule {
+
+    [DataField("ID_REGLA_FLUJO")]
+    public int AppliedRuleId {
       get; private set;
     }
+
+
+    [DataField("TEXTO_REGLA_FLUJO")]
+    public string AppliedRuleText {
+      get; private set;
+    }
+
 
     [DataField("ID_USUARIO_FLUJO")]
-    public int CashAccountRecordedById {
+    public int CashFlowRecordedById {
       get; private set;
     }
 
+
     [DataField("FECHA_REGISTRO_FLUJO")]
-    public DateTime CashAccountRecordingTime {
+    public DateTime CashFlowRecordingTime {
       get; private set;
     }
+
 
     [DataField("CONCEPTO_FLUJO_LEGADO")]
     public string CuentaSistemaLegado {
