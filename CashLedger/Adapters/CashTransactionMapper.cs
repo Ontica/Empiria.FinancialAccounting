@@ -90,9 +90,10 @@ namespace Empiria.FinancialAccounting.CashLedger.Adapters {
 
         CashAccountId = entry.CashAccountId,
         CashAccountNo = entry.CashAccountNo,
-        CashAccountAppliedRule = entry.CashAccountAppliedRule,
-        CashAccountRecordedById = entry.CashAccountRecordedById,
-        CashAccountRecordingTime = ExecutionServer.IsMinOrMaxDate(entry.CashAccountRecordingTime) ? System.DateTime.Today : entry.CashAccountRecordingTime,
+        CashFlowAppliedRuleId = entry.AppliedRuleId,
+        CashFlowAppliedRuleText = entry.AppliedRuleText,
+        CashFlowRecordedById = entry.CashFlowRecordedById,
+        CashFlowRecordingTime = ExecutionServer.IsMinOrMaxDate(entry.CashFlowRecordingTime) ? System.DateTime.Today : entry.CashFlowRecordingTime,
         CuentaSistemaLegado = entry.CuentaSistemaLegado
       };
     }
@@ -122,9 +123,10 @@ namespace Empiria.FinancialAccounting.CashLedger.Adapters {
 
         CashAccountId = entry.CashAccountId,
         CashAccountNo = entry.CashAccountNo,
-        CashAccountAppliedRule = entry.CashAccountAppliedRule,
-        CashAccountRecordedById = entry.CashAccountRecordedById,
-        CashAccountRecordingTime = ExecutionServer.IsMinOrMaxDate(entry.CashAccountRecordingTime) ? System.DateTime.Today : entry.CashAccountRecordingTime,
+        CashFlowAppliedRuleId = entry.AppliedRuleId,
+        CashFlowAppliedRuleText = entry.AppliedRuleText,
+        CashFlowRecordedById = entry.CashFlowRecordedById,
+        CashFlowRecordingTime = ExecutionServer.IsMinOrMaxDate(entry.CashFlowRecordingTime) ? System.DateTime.Today : entry.CashFlowRecordingTime,
         CuentaSistemaLegado = entry.CuentaSistemaLegado,
 
         TransactionId = entry.TransactionId,
