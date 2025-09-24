@@ -7,23 +7,20 @@
 *  Summary  : Main service to get balances information to create locked up balances report.                  *
 *                                                                                                            *
 ************************* Copyright(c) La Vía Óntica SC, Ontica LLC and contributors. All rights reserved. **/
-using System;
+
 using System.Collections.Generic;
 using System.Linq;
+
 using Empiria.Collections;
-using Empiria.FinancialAccounting.Adapters;
-using Empiria.FinancialAccounting.BalanceEngine;
+using Empiria.Services;
+
 using Empiria.FinancialAccounting.BalanceEngine.Adapters;
 using Empiria.FinancialAccounting.BalanceEngine.Data;
-using Empiria.FinancialAccounting.BalanceEngine.UseCases;
-using Empiria.FinancialAccounting.UseCases;
-using Empiria.Services;
 
 namespace Empiria.FinancialAccounting.BalanceEngine {
 
   /// <summary>Main service to get balances information to create locked up balances report.</summary>
   public class SaldosEncerradosService : Service {
-
 
     #region Constructors and parsers
 
@@ -40,9 +37,7 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
 
     #endregion Constructors and parsers
 
-
-    #region Public methods
-
+    #region Methods
 
     public FixedList<SaldosEncerradosBaseEntryDto> Build() {
 
@@ -50,16 +45,14 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
 
       FixedList<TrialBalanceEntry> entries = BalancesByAccount(accounts).ToFixedList();
 
-      //FixedList<TrialBalanceEntry> filteredEntriesByAccounts = FilteredEntriesByAccounts(entries, accounts);
+      entries = entries.FindAll(x => x.CurrentBalance != 0);
 
       FixedList<SaldosEncerradosEntryDto> mappedEntries =
         SaldosEncerradosMapper.MergeBalancesIntoLockedBalanceEntries(entries, accounts);
 
       FixedList<SaldosEncerradosBaseEntryDto> headers = GetHeaderByLedger(mappedEntries);
 
-      FixedList<SaldosEncerradosBaseEntryDto> headersAndEntries = MergeHeadersAndEntries(headers,
-                                                                                         mappedEntries);
-      return headersAndEntries;
+      return MergeHeadersAndEntries(headers, mappedEntries);
     }
 
 
@@ -69,7 +62,7 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
 
       FixedList<TrialBalanceEntry> entries = BalancesByAccount(accounts).ToFixedList();
 
-      //FixedList<TrialBalanceEntry> filteredEntriesByAccounts = FilteredEntriesByAccounts(entries, accounts);
+      entries = entries.FindAll(x => x.CurrentBalance != 0);
 
       FixedList<SaldosEncerradosEntryDto> mappedEntries =
         SaldosEncerradosMapper.MergeBalancesIntoLockedBalanceEntries(entries, accounts);
@@ -77,14 +70,11 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
       return GetCancelableEntries(mappedEntries);
     }
 
+    #endregion Methods
 
-    #endregion Public methods
+    #region Helpers
 
-    #region Private methods
-
-
-    private List<TrialBalanceEntry> BalancesByAccount(
-                FixedList<Account> accounts) {
+    private List<TrialBalanceEntry> BalancesByAccount(FixedList<Account> accounts) {
 
       if (accounts.Count == 0) {
         return new List<TrialBalanceEntry>();
@@ -94,7 +84,7 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
       var helper = new SaldosEncerradosHelper(buildQuery);
 
       foreach (var account in accounts) {
-        
+
         List<TrialBalanceEntry> entries = helper.GetBalancesByAccount(account, account.EndDate);
 
         returnedEntries.AddRange(FilteredEntriesByAccounts(entries, account));
@@ -108,11 +98,11 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
 
 
     private List<TrialBalanceEntry> FilteredEntriesByAccounts(List<TrialBalanceEntry> entries,
-                                                                   Account account) {
+                                                              Account account) {
       var returnedEntries = new List<TrialBalanceEntry>();
 
       foreach (var entry in entries) {
-        
+
         if (account.Role != entry.Account.Role) {
           returnedEntries.Add(entry);
         }
@@ -191,7 +181,7 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
     }
 
 
-    #endregion Private methods
+    #endregion Helpers
 
   } // class SaldosEncerradosService
 

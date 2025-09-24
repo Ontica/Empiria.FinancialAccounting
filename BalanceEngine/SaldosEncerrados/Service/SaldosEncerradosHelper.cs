@@ -7,9 +7,11 @@
 *  Summary  : Helper methods to build locked balances.                                                       *
 *                                                                                                            *
 ************************* Copyright(c) La Vía Óntica SC, Ontica LLC and contributors. All rights reserved. **/
+
 using System;
 using System.Collections.Generic;
 using System.Linq;
+
 using Empiria.FinancialAccounting.BalanceEngine.Adapters;
 
 namespace Empiria.FinancialAccounting.BalanceEngine {
@@ -19,12 +21,11 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
 
     private readonly SaldosEncerradosQuery _query;
 
-    public SaldosEncerradosHelper(SaldosEncerradosQuery query) {
+    internal SaldosEncerradosHelper(SaldosEncerradosQuery query) {
       _query = query;
     }
 
-
-    #region Public methods
+    #region Methods
 
     public List<TrialBalanceEntry> GetBalancesByAccount(Account account, DateTime endDate) {
 
@@ -38,14 +39,12 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
 
     }
 
-    #endregion Public methods
+    #endregion Methods
 
-
-    #region Private methods
-
+    #region Helpers
 
     private List<TrialBalanceEntry> GetAccountsByRules(Account account,
-                                           IEnumerable<TrialBalanceEntry> entries) {
+                                                       IEnumerable<TrialBalanceEntry> entries) {
 
       List<TrialBalanceEntry> entriesByRole = GetEntriesByAccountAndSectorRole(account, entries);
 
@@ -138,7 +137,8 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
 
 
     private List<TrialBalanceEntry> GetEntriesByCurrencyRole(FixedList<CurrencyRule> currenciesRules,
-                                                             Account account, List<TrialBalanceEntry> entries) {
+                                                             Account account,
+                                                             List<TrialBalanceEntry> entries) {
 
       var returnedEntries = new List<TrialBalanceEntry>();
 
@@ -174,7 +174,8 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
 
 
     private List<TrialBalanceEntry> GetEntriesBySectorRole(FixedList<SectorRule> sectors,
-             Account account, IEnumerable<TrialBalanceEntry> entries) {
+                                                           Account account,
+                                                           IEnumerable<TrialBalanceEntry> entries) {
 
       var returnedEntries = new List<TrialBalanceEntry>();
 
@@ -196,7 +197,6 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
       }
 
       return returnedEntries;
-
     }
 
 
@@ -215,7 +215,6 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
         if (checkEntry == null) {
           entriesList.Add(entry);
         }
-
       }
 
       return entriesList;
@@ -246,9 +245,7 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
       };
     }
 
-
-    #endregion Private methods
-
+    #endregion Helpers
 
   } // class SaldosEncerradosHelper
 

@@ -8,13 +8,13 @@
 *                                                                                                            *
 ************************* Copyright(c) La Vía Óntica SC, Ontica LLC and contributors. All rights reserved. **/
 using System;
+
 using Empiria.Data;
 
 namespace Empiria.FinancialAccounting.BalanceEngine.Data {
 
   /// <summary>Provides data read methods for saldos encerrados.</summary>
-  internal class SaldosEncerradosDataService {
-
+  static internal class SaldosEncerradosDataService {
 
     static internal FixedList<Account> GetAccountsHistory(AccountsChart accountsChart,
                                                           DateTime fromDate, DateTime toDate) {
@@ -31,7 +31,6 @@ namespace Empiria.FinancialAccounting.BalanceEngine.Data {
 
       return DataReader.GetFixedList<Account>(dataOperation);
     }
-
 
   } // class SaldosEncerradosDataService
 
