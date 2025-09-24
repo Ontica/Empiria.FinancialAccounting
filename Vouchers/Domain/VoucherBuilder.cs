@@ -49,6 +49,11 @@ namespace Empiria.FinancialAccounting.Vouchers {
           fields.Concept = "Traspaso de saldos por modificación al catálogo de cuentas";
           fields.CalculationDate = fields.AccountingDate;
 
+          Assertion.Require(fields.AccountingDate >= fields.DatePeriod.ToDate,
+            $"La fecha de afectación {fields.AccountingDate:dd/MMM/yyyy} debe ser igual " +
+            $"o posterior a la fecha final del período de cancelación de los saldos encerrados " +
+            $"{fields.DatePeriod.ToDate:dd/MMM/yyyy}.");
+
           return new CancelacionSaldosEncerradosVoucherBuilder(fields);
 
         default:
