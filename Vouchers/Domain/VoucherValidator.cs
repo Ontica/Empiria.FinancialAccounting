@@ -135,7 +135,7 @@ namespace Empiria.FinancialAccounting.Vouchers {
         }
       }
 
-      if (SkipEntries && AccountingDate.Day == DateTime.DaysInMonth(AccountingDate.Year, AccountingDate.Month)) {
+      if (SkipEntries) {
         return new FixedList<string>(resultList);
       }
 
