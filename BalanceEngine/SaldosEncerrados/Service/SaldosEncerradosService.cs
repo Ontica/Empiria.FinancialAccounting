@@ -7,15 +7,13 @@
 *  Summary  : Main service to get balances information to create locked up balances report.                  *
 *                                                                                                            *
 ************************* Copyright(c) La Vía Óntica SC, Ontica LLC and contributors. All rights reserved. **/
-
 using System.Collections.Generic;
 using System.Linq;
 
 using Empiria.Collections;
-using Empiria.Services;
-
 using Empiria.FinancialAccounting.BalanceEngine.Adapters;
 using Empiria.FinancialAccounting.BalanceEngine.Data;
+using Empiria.Services;
 
 namespace Empiria.FinancialAccounting.BalanceEngine {
 
@@ -45,8 +43,6 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
 
       FixedList<TrialBalanceEntry> entries = BalancesByAccount(accounts).ToFixedList();
 
-      entries = entries.FindAll(x => x.CurrentBalance != 0);
-
       FixedList<SaldosEncerradosEntryDto> mappedEntries =
         SaldosEncerradosMapper.MergeBalancesIntoLockedBalanceEntries(entries, accounts);
 
@@ -61,8 +57,6 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
       FixedList<Account> accounts = GetAccountsChart();
 
       FixedList<TrialBalanceEntry> entries = BalancesByAccount(accounts).ToFixedList();
-
-      entries = entries.FindAll(x => x.CurrentBalance != 0);
 
       FixedList<SaldosEncerradosEntryDto> mappedEntries =
         SaldosEncerradosMapper.MergeBalancesIntoLockedBalanceEntries(entries, accounts);
@@ -85,9 +79,17 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
 
       foreach (var account in accounts) {
 
-        List<TrialBalanceEntry> entries = helper.GetBalancesByAccount(account, account.EndDate);
+        List<TrialBalanceEntry> entriesByEndDate = helper.GetBalancesByAccount(account, account.EndDate);
 
-        returnedEntries.AddRange(FilteredEntriesByAccounts(entries, account));
+        List<TrialBalanceEntry> entriesWithLockedBalance = FilterEntriesWithRoleChange(
+                                                            entriesByEndDate, account);
+
+        List<TrialBalanceEntry> entriesToDate = helper.GetBalancesByAccount(account, buildQuery.ToDate);
+
+        List<TrialBalanceEntry> entriesWithBalance = FilterEntriesWithBalance(entriesWithLockedBalance,
+                                                                              entriesToDate);
+
+        returnedEntries.AddRange(entriesWithBalance);
       }
 
       return returnedEntries.OrderBy(a => a.Account.Number)
@@ -97,7 +99,27 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
     }
 
 
-    private List<TrialBalanceEntry> FilteredEntriesByAccounts(List<TrialBalanceEntry> entries,
+    private List<TrialBalanceEntry> FilterEntriesWithBalance(List<TrialBalanceEntry> entriesWithLockedBalance,
+                                                             List<TrialBalanceEntry> entriesToDate) {
+      var returnedEntries = new List<TrialBalanceEntry>();
+      
+      foreach (var entry in entriesWithLockedBalance) {
+
+        var entryToDate = entriesToDate.Where(x=>x.Account.Number == entry.Account.Number &&
+                                      x.Ledger.Number == entry.Ledger.Number && x.Currency.Code == entry.Currency.Code &&
+                                      x.Sector.Code == entry.Sector.Code &&
+                                      x.SubledgerAccountId == entry.SubledgerAccountId &&
+                                      x.CurrentBalance != 0).FirstOrDefault();
+        
+        if (entryToDate != null) {
+          returnedEntries.Add(entry);
+        }
+      }
+      return returnedEntries;
+    }
+
+
+    private List<TrialBalanceEntry> FilterEntriesWithRoleChange(List<TrialBalanceEntry> entries,
                                                               Account account) {
       var returnedEntries = new List<TrialBalanceEntry>();
 
