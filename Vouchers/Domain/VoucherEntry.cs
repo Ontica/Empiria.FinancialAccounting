@@ -254,17 +254,23 @@ namespace Empiria.FinancialAccounting.Vouchers {
               $"El auxiliar {SubledgerAccount.Number} no pertenece a la contabilidad {ledger.FullName}.");
 
         Assertion.Require(!SubledgerAccount.Suspended,
-              $"El auxiliar {SubledgerAccount.Number} ({SubledgerAccount.Name}) está suspendido, por lo que no acepta movimientos.");
+              $"El auxiliar {SubledgerAccount.Number} ({SubledgerAccount.Name}) está suspendido, " +
+              $"por lo que no acepta movimientos.");
       }
 
-      Assertion.Require(Amount > 0, "El importe del cargo o abono debe ser mayor a cero.");
+      Assertion.Require(Amount > 0, "El importe del cargo o abono debe ser mayor a cero: " +
+                                    $"{this.LedgerAccount.Number} = {Amount}");
 
-      Assertion.Require(Math.Round(Amount, 2) == Amount, "El movimiento tiene un importe con más de dos decimales.");
+      Assertion.Require(Math.Round(Amount, 2) == Amount, "El movimiento tiene un importe con más de dos decimales: " +
+                                                        $"{this.LedgerAccount.Number} = {Amount}");
 
-      Assertion.Require(BaseCurrencyAmount > 0, "El importe en moneda base debe ser mayor a cero.");
+      Assertion.Require(BaseCurrencyAmount > 0, $"El importe en moneda base debe ser mayor a cero: " +
+                                                $"{this.LedgerAccount.Number} = {BaseCurrencyAmount}");
 
       Assertion.Require(Math.Round(BaseCurrencyAmount, 8) == BaseCurrencyAmount,
-          "El movimiento en moneda base tiene un importe con más de ocho decimales. El tipo de cambio debe estar incorrecto.");
+          "El movimiento en moneda base tiene un importe con más de ocho decimales. " +
+          "El tipo de cambio debe estar incorrecto: " +
+          $"{this.LedgerAccount.Number} = {BaseCurrencyAmount}");
     }
 
 
