@@ -27,18 +27,25 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
 
     #region Methods
 
-    public List<TrialBalanceEntry> GetBalancesByAccount(Account account, DateTime endDate) {
+    internal List<TrialBalanceEntry> GetAccountsBalances(FixedList<Account> accountsByDate,
+                                                         DateTime endDate) {
 
-      TrialBalanceQuery trialBalanceQuery = GetTrialBalanceQueryClauses(account.Number, endDate);
+      string[] accountNumbers = accountsByDate.SelectDistinct(x => x.Number).ToArray();
+
+      TrialBalanceQuery trialBalanceQuery = GetTrialBalanceQueryClauses(accountNumbers, endDate);
 
       var balanza = new BalanzaTradicionalBuilder(trialBalanceQuery);
 
       TrialBalance balances = balanza.Build();
 
-      return GetAccountEntries(balances.Entries, account);
+      var entries = new List<TrialBalanceEntry>(accountsByDate.Count);
 
+      foreach (var account in accountsByDate) {
+        entries.AddRange(GetAccountEntries(balances.Entries, account));
+      }
+
+      return entries;
     }
-
 
     #endregion Methods
 
@@ -65,7 +72,7 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
       }
 
       var balanceEntries = entries.Select(x => (TrialBalanceEntry) x);
-      ///
+
       return GetAccountsByRules(account, balanceEntries);
     }
 
@@ -88,8 +95,8 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
     }
 
 
-    private List<TrialBalanceEntry> GetEntriesByAccountAndSectorRole(
-            Account account, IEnumerable<TrialBalanceEntry> entries) {
+    private List<TrialBalanceEntry> GetEntriesByAccountAndSectorRole(Account account,
+                                                                     IEnumerable<TrialBalanceEntry> entries) {
 
       var sectors = account.GetSectors(_query.FromDate);
 
@@ -102,7 +109,7 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
 
 
     private List<TrialBalanceEntry> GetEntriesByAccountRole(Account account,
-                                      IEnumerable<TrialBalanceEntry> entries) {
+                                                            IEnumerable<TrialBalanceEntry> entries) {
 
       if (account.Role == AccountRole.Control) {
 
@@ -201,13 +208,14 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
     }
 
 
-    private List<TrialBalanceEntry> GetEntriesBySectorRules(
-            Account account, List<TrialBalanceEntry> entriesList) {
+    private List<TrialBalanceEntry> GetEntriesBySectorRules(Account account,
+                                                            List<TrialBalanceEntry> entriesList) {
 
       var sectoresEliminados = GetRemovedSectors(account);
 
-      List<TrialBalanceEntry> balanceEntries = GetEntriesBySectorRole(
-                              sectoresEliminados.ToFixedList(), account, entriesList);
+      List<TrialBalanceEntry> balanceEntries = GetEntriesBySectorRole(sectoresEliminados.ToFixedList(),
+                                                                      account,
+                                                                      entriesList);
 
       foreach (var entry in balanceEntries) {
 
@@ -222,12 +230,13 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
     }
 
 
-    private TrialBalanceQuery GetTrialBalanceQueryClauses(string accountNumber, DateTime endDate) {
+    private TrialBalanceQuery GetTrialBalanceQueryClauses(string[] accountNumbers,
+                                                          DateTime endDate) {
 
-      string[] ledger = new string[] { };
+      string[] ledgers = new string[] { };
 
-      if (_query.LedgerUID != "") {
-        ledger = new string[1] { _query.LedgerUID };
+      if (_query.LedgerUID != string.Empty) {
+        ledgers = new string[1] { _query.LedgerUID };
       }
 
       return new TrialBalanceQuery {
@@ -236,13 +245,12 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
           FromDate = _query.FromDate,
           ToDate = endDate
         },
-        TrialBalanceType = TrialBalanceType.Balanza,
+        TrialBalanceType = TrialBalanceType.SaldosPorCuenta,
         BalancesType = BalancesType.WithCurrentBalance,
-        FromAccount = accountNumber,
-        ToAccount = accountNumber,
-        Ledgers = ledger,
+        Accounts = accountNumbers,
+        Ledgers = ledgers,
         IsOperationalReport = true,
-        WithSubledgerAccount = true //account.Role == AccountRole.Control ? true : false,
+        WithSubledgerAccount = true
       };
     }
 

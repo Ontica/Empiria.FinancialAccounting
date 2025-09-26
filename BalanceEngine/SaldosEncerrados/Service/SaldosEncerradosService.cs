@@ -7,6 +7,8 @@
 *  Summary  : Main service to get balances information to create locked up balances report.                  *
 *                                                                                                            *
 ************************* Copyright(c) La Vía Óntica SC, Ontica LLC and contributors. All rights reserved. **/
+
+using System;
 using System.Collections.Generic;
 using System.Linq;
 
@@ -77,58 +79,73 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
       var returnedEntries = new List<TrialBalanceEntry>();
       var helper = new SaldosEncerradosHelper(buildQuery);
 
-      foreach (var account in accounts) {
+      accounts = accounts.FindAll(x => x.EndDate <= buildQuery.ToDate);
 
-        List<TrialBalanceEntry> entriesByEndDate = helper.GetBalancesByAccount(account, account.EndDate);
+      FixedList<DateTime> changesDates = accounts.SelectDistinct(x => x.EndDate);
 
-        List<TrialBalanceEntry> entriesWithLockedBalance = FilterEntriesWithRoleChange(
-                                                            entriesByEndDate, account);
+      foreach (var date in changesDates) {
 
-        List<TrialBalanceEntry> entriesToDate = helper.GetBalancesByAccount(account, buildQuery.ToDate);
+        FixedList<Account> accountsByDate = accounts.FindAll(x => x.EndDate == date);
 
-        List<TrialBalanceEntry> entriesWithBalance = FilterEntriesWithBalance(entriesWithLockedBalance,
-                                                                              entriesToDate);
+        List<TrialBalanceEntry> candidates = helper.GetAccountsBalances(accountsByDate, date);
 
-        returnedEntries.AddRange(entriesWithBalance);
+        List<TrialBalanceEntry> candidatesWithRoleChange = FilterEntriesWithRoleChange(candidates,
+                                                                                       accountsByDate);
+
+        List<TrialBalanceEntry> currentBalances = helper.GetAccountsBalances(accountsByDate,
+                                                                             buildQuery.ToDate);
+
+        List<TrialBalanceEntry> lockedBalances = FilterEntriesWithBalance(candidatesWithRoleChange,
+                                                                          currentBalances);
+
+        returnedEntries.AddRange(lockedBalances);
       }
 
+
       return returnedEntries.OrderBy(a => a.Account.Number)
-                     .ThenBy(a => a.Currency.Code)
-                     .ThenBy(a => a.Sector.Code)
-                     .ThenBy(a => a.SubledgerAccountNumber).ToList();
+                            .ThenBy(a => a.Currency.Code)
+                            .ThenBy(a => a.Sector.Code)
+                            .ThenBy(a => a.SubledgerAccountNumber).ToList();
+    }
+
+
+    private List<TrialBalanceEntry> FilterEntriesWithRoleChange(List<TrialBalanceEntry> entries,
+                                                                FixedList<Account> accounts) {
+      var returnedEntries = new List<TrialBalanceEntry>();
+
+      foreach (var account in accounts) {
+
+        foreach (var entry in entries) {
+
+          if (account.StandardAccount.Id == entry.Account.Id &&
+              account.Role != entry.Account.Role) {
+            returnedEntries.Add(entry);
+          }
+        }
+      }
+
+      return returnedEntries;
     }
 
 
     private List<TrialBalanceEntry> FilterEntriesWithBalance(List<TrialBalanceEntry> entriesWithLockedBalance,
                                                              List<TrialBalanceEntry> entriesToDate) {
       var returnedEntries = new List<TrialBalanceEntry>();
-      
+
       foreach (var entry in entriesWithLockedBalance) {
 
-        var entryToDate = entriesToDate.Where(x=>x.Account.Number == entry.Account.Number &&
-                                      x.Ledger.Number == entry.Ledger.Number && x.Currency.Code == entry.Currency.Code &&
-                                      x.Sector.Code == entry.Sector.Code &&
-                                      x.SubledgerAccountId == entry.SubledgerAccountId &&
-                                      x.CurrentBalance != 0).FirstOrDefault();
-        
+        var entryToDate = entriesToDate.Find(x => x.CurrentBalance != 0 &&
+                                                  x.SubledgerAccountId == entry.SubledgerAccountId &&
+                                                  x.Account.Number == entry.Account.Number &&
+                                                  x.Ledger.Number == entry.Ledger.Number &&
+                                                  x.Currency.Code == entry.Currency.Code &&
+                                                  x.Sector.Code == entry.Sector.Code);
+
         if (entryToDate != null) {
           returnedEntries.Add(entry);
         }
       }
-      return returnedEntries;
-    }
 
-
-    private List<TrialBalanceEntry> FilterEntriesWithRoleChange(List<TrialBalanceEntry> entries,
-                                                              Account account) {
-      var returnedEntries = new List<TrialBalanceEntry>();
-
-      foreach (var entry in entries) {
-
-        if (account.Role != entry.Account.Role) {
-          returnedEntries.Add(entry);
-        }
-      }
       return returnedEntries;
     }
 
@@ -142,19 +159,18 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
     }
 
 
-    private FixedList<SaldosEncerradosEntryDto> GetCancelableEntries(
-            FixedList<SaldosEncerradosEntryDto> mappedEntries) {
+    private FixedList<SaldosEncerradosEntryDto> GetCancelableEntries(FixedList<SaldosEncerradosEntryDto> mappedEntries) {
 
       if (mappedEntries.Count == 0) {
         return new FixedList<SaldosEncerradosEntryDto>();
       }
 
-      var cancelableEntries = mappedEntries.FindAll(a => a.IsCancelable).ToList();
+      var cancelableEntries = mappedEntries.FindAll(x => x.IsCancelable).ToList();
 
-      cancelableEntries.OrderBy(a => a.AccountNumber)
-                     .ThenBy(a => a.CurrencyCode)
-                     .ThenBy(a => a.SectorCode)
-                     .ThenBy(a => a.SubledgerAccount).ToList();
+      cancelableEntries = cancelableEntries.OrderBy(a => a.AccountNumber)
+                       .ThenBy(a => a.CurrencyCode)
+                       .ThenBy(a => a.SectorCode)
+                       .ThenBy(a => a.SubledgerAccount).ToList();
 
       return cancelableEntries.ToFixedList();
     }
@@ -193,7 +209,7 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
       foreach (var header in headers) {
 
         var entriesByHeader = mappedEntries.Where(a => a.RoleChangeDate == header.RoleChangeDate &&
-                                                  a.LedgerNumber == header.LedgerNumber).ToList();
+                                                       a.LedgerNumber == header.LedgerNumber).ToList();
 
         mergedEntries.Add(header);
         mergedEntries.AddRange(entriesByHeader);
