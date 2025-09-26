@@ -84,18 +84,12 @@ namespace Empiria.FinancialAccounting.BalanceEngine.Adapters {
       get; internal set;
     }
 
-    public bool CanGenerateVoucher {
-      get; internal set;
-    } = false;
-
-
     internal SaldosEncerradosBaseEntryDto CreateGroupEntry() {
       return new SaldosEncerradosBaseEntryDto {
         LedgerUID = this.LedgerUID,
         LedgerNumber = this.LedgerNumber,
         ItemName = $"({this.LedgerNumber}) {this.LedgerName}".ToUpper(),
         ItemType = TrialBalanceItemType.Group,
-        CanGenerateVoucher = true,
         RoleChangeDate = this.RoleChangeDate
       };
 

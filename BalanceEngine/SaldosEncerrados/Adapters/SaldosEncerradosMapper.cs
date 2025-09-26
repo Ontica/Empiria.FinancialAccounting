@@ -39,22 +39,6 @@ namespace Empiria.FinancialAccounting.BalanceEngine.Adapters {
 
     #region Helpers
 
-    static private void AccountClauses(SaldosEncerradosEntryDto dto,
-                                       TrialBalanceEntry entry,
-                                       Account account) {
-
-      if (entry.SubledgerAccountNumber.Length > 1) {
-
-        dto.AccountNumber = entry.Account.Number;
-        dto.SubledgerAccount = entry.SubledgerAccountNumber;
-
-      } else {
-        dto.AccountNumber = entry.Account.Number;
-        dto.SubledgerAccount = "";
-      }
-    }
-
-
     static private FixedList<DataTableColumn> DataColumns() {
       var columns = new List<DataTableColumn> {
         new DataTableColumn("ledgerNumber", "Deleg", "text"),
@@ -78,42 +62,29 @@ namespace Empiria.FinancialAccounting.BalanceEngine.Adapters {
 
       var account = accounts.Find(a => a.Number == entry.Account.Number);
 
-      var dto = new SaldosEncerradosEntryDto();
-      AccountClauses(dto, entry, account);
-      RoleClauses(dto, entry, account);
-      dto.StandardAccountId = entry.Account.Id;
-      dto.CurrencyCode = entry.Currency.Code;
-      dto.LedgerUID = entry.Ledger.UID;
-      dto.LedgerNumber = entry.Ledger.Number;
-      dto.LedgerName = entry.Ledger.Name;
-      dto.RoleChangeDate = account.EndDate;
-      dto.RoleChange = $"{account.Role}-{entry.Account.Role}";
-      dto.ItemName = entry.Account.Name;
-      dto.SectorCode = entry.Sector.Code;
-      dto.LockedBalance = entry.CurrentBalance;
-      dto.LastChangeDate = entry.LastChangeDate;
-      dto.PreviousRole = account.Role.ToString();
-      dto.NewRole = entry.Account.Role.ToString();
-      dto.DebtorCreditor = entry.DebtorCreditor.ToString();
+      return new SaldosEncerradosEntryDto {
 
-      return dto;
-    }
-
-
-    static private void RoleClauses(SaldosEncerradosEntryDto dto,
-                                    TrialBalanceEntry entry, Account account) {
-
-      if (account.Role == AccountRole.Detalle) {
-
-        dto.ItemType = TrialBalanceItemType.Summary;
-        dto.IsCancelable = true;
-      } else {
-
-        dto.ItemType = entry.ItemType;
-        if (entry.ItemType == TrialBalanceItemType.Entry) {
-          dto.IsCancelable = true;
-        }
-      }
+        ItemType = entry.ItemType,
+        AccountNumber = entry.Account.Number,
+        SubledgerAccount = entry.SubledgerAccountNumber.Length > 1 ?
+                                  entry.SubledgerAccountNumber : string.Empty,
+        StandardAccountId = entry.Account.Id,
+        CurrencyCode = entry.Currency.Code,
+        LedgerUID = entry.Ledger.UID,
+        LedgerNumber = entry.Ledger.Number,
+        LedgerName = entry.Ledger.Name,
+        RoleChangeDate = account.EndDate,
+        RoleChange = $"{account.Role}-{entry.Account.Role}",
+        ItemName = entry.Account.Name,
+        SectorCode = entry.Sector.Code,
+        LockedBalance = entry.CurrentBalance,
+        LastChangeDate = entry.LastChangeDate,
+        PreviousRole = account.Role.ToString(),
+        NewRole = entry.Account.Role.ToString(),
+        DebtorCreditor = entry.DebtorCreditor.ToString(),
+        IsCancelable = (entry.ItemType == TrialBalanceItemType.Entry &&
+                        entry.CurrentBalance != 0)
+      };
     }
 
     #endregion Helpers
