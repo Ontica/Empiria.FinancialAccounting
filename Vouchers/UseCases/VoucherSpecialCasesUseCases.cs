@@ -60,6 +60,7 @@ namespace Empiria.FinancialAccounting.Vouchers.UseCases {
     }
 
 
+
     public VoucherDto CreateSpecialCaseVoucher(VoucherSpecialCaseFields fields) {
       Assertion.Require(fields, "fields");
 

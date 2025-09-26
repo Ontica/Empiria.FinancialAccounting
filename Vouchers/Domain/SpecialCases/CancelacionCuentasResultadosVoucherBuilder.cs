@@ -67,6 +67,7 @@ namespace Empiria.FinancialAccounting.Vouchers.SpecialCases {
     #region Helpers
 
     private FixedList<TrialBalanceEntryDto> GetBalances() {
+
       var query = new TrialBalanceQuery {
         TrialBalanceType = TrialBalanceType.GeneracionDeSaldos,
         AccountsChartUID = base.AccountsChart.UID,

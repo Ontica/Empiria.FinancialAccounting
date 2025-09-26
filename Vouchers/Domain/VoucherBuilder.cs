@@ -114,7 +114,6 @@ namespace Empiria.FinancialAccounting.Vouchers {
     }
 
 
-
     internal bool TryGenerateVoucher(out Voucher voucher) {
       try {
         voucher = GenerateVoucher();
@@ -129,7 +128,8 @@ namespace Empiria.FinancialAccounting.Vouchers {
 
     private FixedList<string> ImplementsDryRun(FixedList<VoucherEntryFields> entries) {
       var validator = new VoucherValidator(Ledger.Parse(Fields.LedgerUID),
-                                           Fields.AccountingDate, SpecialCaseType.SkipEntriesValidation);
+                                           Fields.AccountingDate,
+                                           SpecialCaseType.SkipEntriesValidation);
 
       return validator.Validate(entries);
     }
