@@ -14,7 +14,7 @@ using Empiria.Time;
 namespace Empiria.FinancialAccounting.BalanceEngine {
 
   /// <summary>Helper methods to valuate currencies depending rules for balances.</summary>
-  internal class ExchangeRateForCurrencies {
+  public class ExchangeRateForCurrencies {
 
     private readonly DateTime fromDate;
     private readonly DateTime toDate;
@@ -26,7 +26,7 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
     }
 
 
-    internal ExchangeRateForCurrencies(DateTime _fromDate, DateTime _toDate) {
+    public ExchangeRateForCurrencies(DateTime _fromDate, DateTime _toDate) {
       Assertion.Require(_fromDate, nameof(_fromDate));
       Assertion.Require(_toDate, nameof(_toDate));
 
@@ -38,22 +38,22 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
 
     #region Properties
 
-    internal string ExchangeRateTypeUID {
+    public string ExchangeRateTypeUID {
       get; private set;
     }
 
 
-    internal string ValuateToCurrrencyUID {
+    public string ValuateToCurrrencyUID {
       get; private set;
     }
 
 
-    internal DateTime ExchangeRateDate {
+    public DateTime ExchangeRateDate {
       get; private set;
     }
 
 
-    internal FixedList<ExchangeRate> ExchangeRateList {
+    public FixedList<ExchangeRate> ExchangeRateList {
       get; private set;
     }
 
@@ -61,7 +61,7 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
 
     #region Public methods
 
-    internal ExchangeRateForCurrencies GetDefaultExchangeRate() {
+    public ExchangeRateForCurrencies GetDefaultExchangeRate() {
 
       DetermineExchangeRateTypeForDate();
 
@@ -72,7 +72,7 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
     }
 
 
-    internal ExchangeRateForCurrencies GetExchangeRateInPeriod(BalancesPeriod period) {
+    public ExchangeRateForCurrencies GetExchangeRateInPeriod(BalancesPeriod period) {
 
       this.ExchangeRateDate = period.ExchangeRateDate;
       this.ExchangeRateTypeUID = period.ExchangeRateTypeUID;
@@ -83,7 +83,7 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
     }
 
 
-    internal string InvalidExchangeRateTypeMsg() {
+    public string InvalidExchangeRateTypeMsg() {
 
       return $"No se ha registrado el tipo de cambio " +
              $"{ExchangeRateType.Parse(this.ExchangeRateTypeUID).Name} " +
