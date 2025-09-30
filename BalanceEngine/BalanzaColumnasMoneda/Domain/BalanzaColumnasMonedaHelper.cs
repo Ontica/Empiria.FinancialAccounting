@@ -192,6 +192,10 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
       var isValorizedBalance = Query.ValuateBalances ||
                                Query.UseDefaultValuation ? true : false;
 
+      var balanceHelper = new TrialBalanceHelper(Query);
+
+      balanceHelper.ValidateDateToExchangeRate();
+
       FixedList<ExchangeRate> exchangeRates = GetExchangeRateList(isValorizedBalance);
 
       ValuateEntries(entries, exchangeRates, isValorizedBalance);

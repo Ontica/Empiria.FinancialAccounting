@@ -558,6 +558,8 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
 
     internal void ValuateAccountEntriesToExchangeRate(FixedList<TrialBalanceEntry> entries) {
 
+      ValidateDateToExchangeRate();
+
       FixedList<ExchangeRate> exchangeRates = GetExchangeRateListForDate();
 
       foreach (var entry in entries.Where(a => a.Currency.Distinct(Currency.MXN))) {
@@ -567,7 +569,8 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
                             a.FromCurrency.Code == _query.InitialPeriod.ValuateToCurrrencyUID);
 
         // ToDo: URGENT This require must be checked before any state change
-        Assertion.Require(exchangeRate, $"No se ha registrado el tipo de cambio para la " +
+        Assertion.Require(exchangeRate, $"No se ha registrado el tipo de cambio para " +
+                                        $"la cuenta {entry.Account.Number} con la " +
                                         $"moneda {entry.Currency.FullName} en la fecha proporcionada.");
 
         ClausesToExchangeRate(entry, exchangeRate);
@@ -589,6 +592,22 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
                                         $"para la moneda {entry.Currency.FullName} ");
 
         ClausesToExchangeRate(entry, exchangeRate);
+      }
+    }
+
+
+    internal void ValidateDateToExchangeRate() {
+
+      if (_query.UseDefaultValuation) {
+
+        var daysInMonth = DateTime.DaysInMonth(_query.InitialPeriod.ToDate.Year,
+                             _query.InitialPeriod.ToDate.Month);
+
+        if (_query.InitialPeriod.ToDate.Day < daysInMonth) {
+
+          Assertion.EnsureFailed("La valorización predeterminada en fechas intermedias del mes, " +
+                                 "solo está disponible a partir del día 01/Enero/2025");
+        }
       }
     }
 

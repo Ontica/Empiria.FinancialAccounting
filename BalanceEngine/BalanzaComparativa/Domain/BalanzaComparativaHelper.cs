@@ -81,6 +81,10 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
         period.ExchangeRateDate = period.ToDate;
       }
 
+      var trialBalanceHelper = new TrialBalanceHelper(_query);
+
+      trialBalanceHelper.ValidateDateToExchangeRate();
+
       var exchangeRateType = ExchangeRateType.Parse(period.ExchangeRateTypeUID);
 
       FixedList<ExchangeRate> exchangeRates = ExchangeRate.GetList(exchangeRateType, period.ExchangeRateDate);
@@ -88,6 +92,10 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
       foreach (var entry in entries.Where(a => a.Currency.Distinct(Currency.MXN))) {
         var exchangeRate = exchangeRates.FirstOrDefault(a => a.FromCurrency.Code == period.ValuateToCurrrencyUID &&
                                                              a.ToCurrency.Equals(entry.Currency));
+
+        Assertion.Require(exchangeRate, $"No se ha registrado el tipo de cambio para " +
+                                        $"la cuenta {entry.Account.Number} con la " +
+                                        $"moneda {entry.Currency.FullName} en la fecha proporcionada.");
 
         if (period.IsSecondPeriod) {
           entry.SecondExchangeRate = exchangeRate.Value;
