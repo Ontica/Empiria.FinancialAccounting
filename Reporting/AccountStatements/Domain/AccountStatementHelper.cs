@@ -10,7 +10,10 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using DocumentFormat.OpenXml.Spreadsheet;
+using DocumentFormat.OpenXml.Wordprocessing;
 using Empiria.FinancialAccounting.BalanceEngine;
+using Empiria.FinancialAccounting.BalanceEngine.Adapters;
 using Empiria.FinancialAccounting.Reporting.AccountStatements.Adapters;
 
 namespace Empiria.FinancialAccounting.Reporting.AccountStatements.Domain {
@@ -203,6 +206,25 @@ namespace Empiria.FinancialAccounting.Reporting.AccountStatements.Domain {
 
     internal void ValuateAccountStatementToExchangeRate(FixedList<AccountStatementEntry> accounts) {
 
+      if (query.BalancesQuery.UseDefaultValuation || 
+          query.BalancesQuery.InitialPeriod.ExchangeRateTypeUID != string.Empty) {
+
+        if (query.BalancesQuery.InitialPeriod.ToDate.Year >= 2025) {
+
+          AccountStatementToExchangeRateV2(accounts);
+        } else {
+
+          AccountStatementToExchangeRateV1(accounts);
+        }
+      }
+    }
+
+    #endregion Public methods
+
+    #region Private methods
+
+    private void AccountStatementToExchangeRateV1(FixedList<AccountStatementEntry> accounts) {
+
       if (query.BalancesQuery.UseDefaultValuation ||
           query.BalancesQuery.InitialPeriod.ExchangeRateTypeUID != string.Empty) {
 
@@ -214,7 +236,8 @@ namespace Empiria.FinancialAccounting.Reporting.AccountStatements.Domain {
             a => a.ToCurrency.Equals(account.Currency) &&
             a.FromCurrency.Code == query.BalancesQuery.InitialPeriod.ValuateToCurrrencyUID);
 
-          Assertion.Require(exchangeRate, $"No se ha registrado el tipo de cambio para la " +
+          Assertion.Require(exchangeRate, $"No se ha registrado el tipo de cambio para " +
+                                          $"la cuenta {account.AccountNumber} con la " +
                                           $"moneda {account.Currency.FullName} en la fecha proporcionada.");
 
           account.MultiplyBy(exchangeRate.Value);
@@ -222,9 +245,49 @@ namespace Empiria.FinancialAccounting.Reporting.AccountStatements.Domain {
       }
     }
 
-    #endregion Public methods
 
-    #region Private methods
+    private void AccountStatementToExchangeRateV2(FixedList<AccountStatementEntry> accounts) {
+
+      var exchangeRateFor = GetExchangeRateTypeForCurrencies(query.BalancesQuery.InitialPeriod);
+
+      foreach (var account in accounts.Where(a => a.Currency.Distinct(Currency.MXN))) {
+
+        var exchangeRate = exchangeRateFor.ExchangeRateList.Find(
+                            a => a.ToCurrency.Equals(account.Currency) &&
+                            a.FromCurrency.Code == exchangeRateFor.ValuateToCurrrencyUID);
+
+        Assertion.Require(exchangeRate, $" {exchangeRateFor.InvalidExchangeRateTypeMsg()} " +
+                                        $"para la moneda {account.Currency.FullName} ");
+
+        account.MultiplyBy(exchangeRate.Value);
+      }
+    }
+
+
+    internal ExchangeRateForCurrencies GetExchangeRateTypeForCurrencies(BalancesPeriod period) {
+
+      var exchangeRateFor = new ExchangeRateForCurrencies(period.FromDate,
+                                                            period.ToDate);
+      if (query.BalancesQuery.UseDefaultValuation) {
+
+        exchangeRateFor.GetDefaultExchangeRate();
+
+      } else if (query.BalancesQuery.InitialPeriod.ExchangeRateTypeUID != string.Empty) {
+
+        exchangeRateFor.GetExchangeRateInPeriod(period);
+
+      } else {
+        Assertion.EnsureNoReachThisCode($"No es posible valorizar saldos con " +
+                                        $"los datos especificados.");
+      }
+
+      Assertion.Require(exchangeRateFor.ExchangeRateList.Count > 0,
+                        $"{exchangeRateFor.InvalidExchangeRateTypeMsg()}");
+
+      UpdateExchangeRateDataToQuery(exchangeRateFor);
+
+      return exchangeRateFor;
+    }
 
 
     private FixedList<ExchangeRate> GetExchangeRateListForDate() {
@@ -405,6 +468,14 @@ namespace Empiria.FinancialAccounting.Reporting.AccountStatements.Domain {
         }
       }
 
+    }
+
+
+    private void UpdateExchangeRateDataToQuery(ExchangeRateForCurrencies exchangeRateFor) {
+
+      query.BalancesQuery.InitialPeriod.ExchangeRateTypeUID = exchangeRateFor.ExchangeRateTypeUID;
+      query.BalancesQuery.InitialPeriod.ValuateToCurrrencyUID = exchangeRateFor.ValuateToCurrrencyUID;
+      query.BalancesQuery.InitialPeriod.ExchangeRateDate = exchangeRateFor.ExchangeRateDate;
     }
 
     #endregion Private methods

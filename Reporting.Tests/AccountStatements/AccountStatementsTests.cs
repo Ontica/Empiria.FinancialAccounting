@@ -60,30 +60,28 @@ namespace Empiria.FinancialAccounting.Tests.Reporting.AccountStatements {
       return new AccountStatementQuery {
         BalancesQuery = {
           AccountsChartUID = "47ec2ec7-0f4f-482e-9799-c23107b60d8a",
-          FromAccount = "1.05.01.01.05.01",
-          Ledgers = new string[]{ "81816c16-3306-98b0-66bf-a69021e31171" },
+          FromAccount = "1.04.02.02.01.01.01.01",
           InitialPeriod = {
-            FromDate = new DateTime(2023, 06, 30),
-            ToDate = new DateTime(2023, 06, 30),
+            FromDate = new DateTime(2024, 09, 01),
+            ToDate = new DateTime(2024, 09, 18),
+            ExchangeRateDate = new DateTime(2024, 09, 18),
+            ExchangeRateTypeUID = "5923136d-8533-4975-81b9-c8ec3bf18dea",
+            ValuateToCurrrencyUID ="01"
           },
           TrialBalanceType = BalanceEngine.TrialBalanceType.Balanza,
-          UseDefaultValuation = true,
+          UseDefaultValuation = false,
           WithSubledgerAccount = false,
-          SubledgerAccount ="",
-
         },
 
         Entry = {
-          AccountNumberForBalances = "1.05.01.01.05.01", //
+          AccountNumberForBalances = "1.04.02.02.01.01.01.01", //
           CurrencyCode = "02", //
-          InitialBalance = 20042110138.42M,
-          CurrentBalanceForBalances = 19887224722.07M,
+          InitialBalance = 1360669249.38M,
+          CurrentBalanceForBalances = 1356773554.94M,
           DebtorCreditor="Deudora",
           ItemType = BalanceEngine.TrialBalanceItemType.Entry,
-          LastChangeDateForBalances = new DateTime(2023, 06, 30),
-          LedgerNumber="09",
-          LedgerUID="81816c16-3306-98b0-66bf-a69021e31171",
-          SectorCode = "31",
+          LastChangeDateForBalances = new DateTime(2024, 09, 09),
+          SectorCode = "00",
           SubledgerAccountNumber ="0"
         },
 
