@@ -228,6 +228,8 @@ namespace Empiria.FinancialAccounting.Reporting.AccountStatements.Domain {
       if (query.BalancesQuery.UseDefaultValuation ||
           query.BalancesQuery.InitialPeriod.ExchangeRateTypeUID != string.Empty) {
 
+        ValidateDateToExchangeRate();
+
         FixedList<ExchangeRate> exchangeRates = GetExchangeRateListForDate();
 
         foreach (var account in accounts.Where(a => a.Currency.Distinct(Currency.MXN))) {
@@ -476,6 +478,22 @@ namespace Empiria.FinancialAccounting.Reporting.AccountStatements.Domain {
       query.BalancesQuery.InitialPeriod.ExchangeRateTypeUID = exchangeRateFor.ExchangeRateTypeUID;
       query.BalancesQuery.InitialPeriod.ValuateToCurrrencyUID = exchangeRateFor.ValuateToCurrrencyUID;
       query.BalancesQuery.InitialPeriod.ExchangeRateDate = exchangeRateFor.ExchangeRateDate;
+    }
+
+
+    private void ValidateDateToExchangeRate() {
+
+      if (query.BalancesQuery.UseDefaultValuation) {
+
+        var daysInMonth = DateTime.DaysInMonth(query.BalancesQuery.InitialPeriod.ToDate.Year,
+                             query.BalancesQuery.InitialPeriod.ToDate.Month);
+
+        if (query.BalancesQuery.InitialPeriod.ToDate.Day < daysInMonth) {
+
+          Assertion.EnsureFailed("La valorización predeterminada en fechas intermedias del mes, " +
+                                 "solo está disponible a partir del día 01/Enero/2025");
+        }
+      }
     }
 
     #endregion Private methods
