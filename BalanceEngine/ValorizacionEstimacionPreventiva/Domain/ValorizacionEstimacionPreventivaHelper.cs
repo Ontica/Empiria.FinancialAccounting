@@ -29,15 +29,26 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
     #region Public methods
 
 
-    internal void ExchangeRateByCurrency(FixedList<TrialBalanceEntry> entries, DateTime date,
-                                         bool isLastMonth = false) {
-      DateTime toDate = date;
+    internal void ValuateExchangeRateByCurrency(FixedList<TrialBalanceEntry> entries,
+                                                DateTime date, bool isLastMonth = false) {
 
-      if (isLastMonth /*|| date.Month == 1*/) {
-        DateTime flagMonth = new DateTime(toDate.Year, toDate.Month, 1);
-        DateTime lastMonth = flagMonth.AddDays(-1);
-        toDate = lastMonth;
+      if (_query.ValuateBalances || _query.InitialPeriod.UseDefaultValuation) {
+        
+        if (_query.InitialPeriod.ToDate.Year >= 2025) {
+          ExchangeRateByCurrencyV2(entries, date, isLastMonth);
+
+        } else {
+
+          ExchangeRateByCurrencyV1(entries, date, isLastMonth);
+        }
       }
+    }
+
+
+    internal void ExchangeRateByCurrencyV1(FixedList<TrialBalanceEntry> entries,
+                                           DateTime date, bool isLastMonth) {
+
+      DateTime toDate = GetToDateOrLastMonthDate(date, isLastMonth);
 
       var exchangeRateType = ExchangeRateType.Parse(ExchangeRateType.ValorizacionBanxico.UID);
 
@@ -56,7 +67,37 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
           entry.ExchangeRate = exchangeRate.Value;
         }
       }
+    }
 
+
+    internal void ExchangeRateByCurrencyV2(FixedList<TrialBalanceEntry> entries,
+                                           DateTime date, bool isLastMonth) {
+
+      DateTime toDate = GetToDateOrLastMonthDate(date, isLastMonth);
+
+      var trialBalanceHelper = new TrialBalanceHelper(_query);
+
+      DateTime _toDateFlag = _query.InitialPeriod.ToDate;
+      _query.InitialPeriod.ToDate = toDate;
+      
+      var exchangeRateFor = trialBalanceHelper.GetExchangeRateTypeForCurrencies(_query.InitialPeriod);
+
+      foreach (var entry in entries.Where(a => a.Currency.Distinct(Currency.MXN))) {
+
+        var exchangeRate = exchangeRateFor.ExchangeRateList.Find(
+                            a => a.ToCurrency.Equals(entry.Currency) &&
+                            a.FromCurrency.Code == exchangeRateFor.ValuateToCurrrencyUID);
+
+        Assertion.Require(exchangeRate, $" {exchangeRateFor.InvalidExchangeRateTypeMsg()} " +
+                                        $"para la moneda {entry.Currency.FullName} ");
+
+        if (isLastMonth) {
+          entry.SecondExchangeRate = exchangeRate.Value;
+        } else {
+          entry.ExchangeRate = exchangeRate.Value;
+        }
+      }
+      _query.InitialPeriod.ToDate = _toDateFlag;
     }
 
 
@@ -92,7 +133,7 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
 
       var balanzaColumnasBuilder = new BalanzaColumnasMonedaBuilder(_query);
 
-      ExchangeRateByCurrency(accountEntries, date);
+      ValuateExchangeRateByCurrency(accountEntries, date);
 
       FixedList<TrialBalanceEntry> accountsByCurrency =
           balanzaColumnasBuilder.BuildValorizacion(accountEntries);
@@ -307,6 +348,19 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
     }
 
 
+    private DateTime GetToDateOrLastMonthDate(DateTime date, bool isLastMonth) {
+
+      DateTime toDate = date;
+
+      if (isLastMonth /*|| date.Month == 1*/) {
+        DateTime flagMonth = new DateTime(toDate.Year, toDate.Month, 1);
+        DateTime lastMonth = flagMonth.AddDays(-1);
+        toDate = lastMonth;
+      }
+      return toDate;
+    }
+
+
     private List<ValorizacionEstimacionPreventivaEntry> MergeAccountsIntoAccountsByCurrency(
                                     FixedList<TrialBalanceEntry> accountEntries,
                                     DateTime date,
@@ -316,7 +370,7 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
         return new List<ValorizacionEstimacionPreventivaEntry>();
       }
 
-      ExchangeRateByCurrency(accountEntries, date, true);
+      ValuateExchangeRateByCurrency(accountEntries, date, true);
 
       var returnedEntries = new List<ValorizacionEstimacionPreventivaEntry>();
 
