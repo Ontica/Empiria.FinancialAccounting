@@ -50,6 +50,9 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
 
       DateTime toDate = GetToDateOrLastMonthDate(date, isLastMonth);
 
+      var trialBalanceHelper = new TrialBalanceHelper(_query);
+      trialBalanceHelper.ValidateDateToExchangeRate();
+
       var exchangeRateType = ExchangeRateType.Parse(ExchangeRateType.ValorizacionBanxico.UID);
 
       FixedList<ExchangeRate> exchangeRates = ExchangeRate.GetList(exchangeRateType, toDate);
