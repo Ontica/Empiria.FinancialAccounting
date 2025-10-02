@@ -19,17 +19,17 @@ namespace Empiria.FinancialAccounting.ClientServices {
   /// <summary>Provides financial accounting cash ledger transactions services using a web proxy.</summary>
   public class CashTransactionServices : BaseService {
 
-    public Task<T> GetTransaction<T>(long id) {
+    public Task<T> GetTransaction<T>(long transactionId) {
 
-      string path = $"v2/financial-accounting/cash-ledger/transactions/{id}";
+      string path = $"v2/financial-accounting/cash-ledger/transactions/{transactionId}";
 
       return WebApiClient.GetAsync<T>(path);
     }
 
 
-    public Task<FileDto> GetTransactionAsPdfFile(long id) {
+    public Task<FileDto> GetTransactionAsPdfFile(long transactionId) {
 
-      string path = $"v2/financial-accounting/vouchers/{id}/print";
+      string path = $"v2/financial-accounting/vouchers/{transactionId}/print";
 
       return WebApiClient.GetAsync<FileDto>(path);
     }
@@ -37,7 +37,7 @@ namespace Empiria.FinancialAccounting.ClientServices {
 
     public Task<FixedList<T>> GetTransactions<T>(FixedList<long> transactionIds) {
 
-      string path = $"v2/financial-accounting/cash-ledger/transactions/bulk-operation/get-transactions";
+      string path = "v2/financial-accounting/cash-ledger/transactions/bulk-operation/get-transactions";
 
       return WebApiClient.PostAsync<FixedList<T>>(transactionIds, path);
     }
@@ -45,7 +45,7 @@ namespace Empiria.FinancialAccounting.ClientServices {
 
     public Task<FixedList<CashEntryExtendedDto>> GetTransactionsEntries(FixedList<long> entriesIds) {
 
-      string path = $"v2/financial-accounting/cash-ledger/entries/bulk-operation/get-entries";
+      string path = "v2/financial-accounting/cash-ledger/entries/bulk-operation/get-entries";
 
       return WebApiClient.PostAsync<FixedList<CashEntryExtendedDto>>(entriesIds, path);
     }
@@ -69,7 +69,7 @@ namespace Empiria.FinancialAccounting.ClientServices {
 
     public Task UpdateBulkEntries(FixedList<CashEntryFields> bulkEntries) {
 
-      string path = $"v2/financial-accounting/cash-ledger/transactions/bulk-operation/update-entries";
+      string path = "v2/financial-accounting/cash-ledger/transactions/bulk-operation/update-entries";
 
       return WebApiClient.PostAsync(bulkEntries, path);
     }
@@ -77,7 +77,9 @@ namespace Empiria.FinancialAccounting.ClientServices {
 
     public Task<T> UpdateEntries<T>(FixedList<CashEntryFields> entries) {
 
-      string path = $"v2/financial-accounting/cash-ledger/transactions/{entries[0].TransactionId}/update-entries";
+      long transactionId = entries[0].TransactionId;
+
+      string path = $"v2/financial-accounting/cash-ledger/transactions/{transactionId}/update-entries";
 
       return WebApiClient.PostAsync<T>(entries, path);
     }

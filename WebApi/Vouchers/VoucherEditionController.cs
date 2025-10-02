@@ -26,7 +26,6 @@ namespace Empiria.FinancialAccounting.WebApi.Vouchers {
 
     #region Web Apis
 
-
     [HttpGet]     // ToDo: AllowAnonymous Removed
     [Route("v2/financial-accounting/vouchers/{voucherId:int}")]
     public SingleObjectModel GetVoucher([FromUri] long voucherId) {
