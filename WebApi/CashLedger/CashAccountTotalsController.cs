@@ -27,7 +27,7 @@ namespace Empiria.FinancialAccounting.CashLedger.WebApi {
 
     [HttpPost]
     [Route("v2/financial-accounting/cash-ledger/entries")]
-    public CollectionModel GetCashLedgerEntries([FromBody] AccountsTotalsQuery query) {
+    public CollectionModel GetCashLedgerEntries([FromBody] RecordsSearchQuery query) {
 
       using (var usecases = CashAccountTotalsUseCases.UseCaseInteractor()) {
         FixedList<CashEntryExtendedDto> entries = usecases.GetCashLedgerEntries(query);
@@ -39,7 +39,7 @@ namespace Empiria.FinancialAccounting.CashLedger.WebApi {
 
     [HttpPost]
     [Route("v2/financial-accounting/cash-ledger/totals")]
-    public CollectionModel GetCashLedgerTotals([FromBody] AccountsTotalsQuery query) {
+    public CollectionModel GetCashLedgerTotals([FromBody] RecordsSearchQuery query) {
 
       using (var usecases = CashAccountTotalsUseCases.UseCaseInteractor()) {
         FixedList<CashAccountTotalDto> totals = usecases.GetCashLedgerTotals(query);

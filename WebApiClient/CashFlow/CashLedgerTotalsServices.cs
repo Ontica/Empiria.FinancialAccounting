@@ -19,7 +19,7 @@ namespace Empiria.FinancialAccounting.ClientServices {
   /// <summary>Provides financial accounting cash ledger totals services using a web proxy.</summary>
   public class CashLedgerTotalsServices : BaseService {
 
-    public Task<FixedList<CashAccountTotalDto>> GetCashAccountTotals(AccountsTotalsQuery query) {
+    public Task<FixedList<CashAccountTotalDto>> GetCashAccountTotals(RecordsSearchQuery query) {
 
       string path = "v2/financial-accounting/cash-ledger/totals";
 
@@ -27,7 +27,7 @@ namespace Empiria.FinancialAccounting.ClientServices {
     }
 
 
-    public Task<FixedList<T>> GetCashLedgerEntries<T>(AccountsTotalsQuery query)
+    public Task<FixedList<T>> GetCashLedgerEntries<T>(RecordsSearchQuery query)
                                                                       where T : BaseCashEntryDto {
       string path = "v2/financial-accounting/cash-ledger/entries";
 

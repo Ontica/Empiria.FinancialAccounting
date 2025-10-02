@@ -23,18 +23,18 @@ namespace Empiria.FinancialAccounting.CashLedger.Adapters {
 
     #region Extension methods
 
-    static internal FixedList<CashAccountTotal> Execute(this AccountsTotalsQuery query) {
+    static internal FixedList<CashAccountTotal> Execute(this RecordsSearchQuery query) {
 
       string filter = GetFilterString(query);
 
-      if (query.QueryType == "") {
+      if (query.QueryType == RecordSearchQueryType.None) {
       }
 
       return CashAccountTotalsData.GetTotalsByCashAccount(filter);
     }
 
 
-    static public FixedList<CashEntryExtendedDto> ExecuteEntries(this AccountsTotalsQuery query) {
+    static public FixedList<CashEntryExtendedDto> ExecuteEntries(this RecordsSearchQuery query) {
       string filter = GetFilterString(query);
 
       FixedList<CashEntryExtended> entries = CashLedgerData.GetExtendedEntries(filter);
@@ -46,7 +46,7 @@ namespace Empiria.FinancialAccounting.CashLedger.Adapters {
 
     #region Methods
 
-    static private string GetFilterString(AccountsTotalsQuery query) {
+    static private string GetFilterString(RecordsSearchQuery query) {
       string ledgerFilter = BuildLedgerFilter(query.Ledgers);
       string accountingDateRangeFilter = BuildAccountingDateRangeFilter(query);
 
@@ -61,7 +61,7 @@ namespace Empiria.FinancialAccounting.CashLedger.Adapters {
 
     #region Helpers
 
-    static private string BuildAccountingDateRangeFilter(AccountsTotalsQuery query) {
+    static private string BuildAccountingDateRangeFilter(RecordsSearchQuery query) {
       Assertion.Require(query.FromDate, nameof(query.FromDate));
       Assertion.Require(query.ToDate, nameof(query.ToDate));
 
