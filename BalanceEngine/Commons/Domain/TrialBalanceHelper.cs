@@ -153,7 +153,7 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
       }
 
       if (_query.ValuateBalances || _query.InitialPeriod.UseDefaultValuation) {
-        if (_query.InitialPeriod.ToDate.Year >= 2025) {
+        if (_query.InitialPeriod.ToDate >= new DateTime(2025, 06, 01)) {
 
           ValuateAccountEntriesToExchangeRateV2(accountEntries);
         } else {
@@ -606,7 +606,7 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
         if (_query.InitialPeriod.ToDate.Day < daysInMonth) {
 
           Assertion.EnsureFailed("La valorización predeterminada en fechas intermedias del mes, " +
-                                 "solo está disponible a partir del día 01/Enero/2025");
+                                 "solo está disponible a partir del día 01/Junio/2025");
         }
       }
     }

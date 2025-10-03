@@ -175,7 +175,7 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
 
       if (_query.ValuateBalances || _query.InitialPeriod.UseDefaultValuation) {
 
-        if (_query.InitialPeriod.ToDate.Year >= 2025) {
+        if (_query.InitialPeriod.ToDate >= new DateTime(2025, 06, 01)) {
 
           trialBalanceHelper.ValuateAccountEntriesToExchangeRateV2(accountEntries);
         } else {

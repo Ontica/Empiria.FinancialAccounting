@@ -46,7 +46,7 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
       var balanceHelper = new TrialBalanceHelper(Query);
       var helper = new BalanzaColumnasMonedaHelper(Query);
 
-      if (Query.InitialPeriod.ToDate.Year >= 2025) {
+      if (Query.InitialPeriod.ToDate >= new DateTime(2025, 06, 01)) {
 
         helper.ValuateBalanzaMOToExchangeRateV2(accountEntries);
       } else {

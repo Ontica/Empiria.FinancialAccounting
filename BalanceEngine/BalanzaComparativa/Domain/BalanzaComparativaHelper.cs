@@ -153,7 +153,7 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
 
     internal void ValuateEntriesToExchangeRate(FixedList<TrialBalanceEntry> accountEntries,
                                                BalancesPeriod period) {
-      if (period.ToDate.Year >= 2025) {
+      if (period.ToDate >= new DateTime(2025, 06, 01)) {
 
         GetExchangeRateByPeriodV2(accountEntries, period);
 

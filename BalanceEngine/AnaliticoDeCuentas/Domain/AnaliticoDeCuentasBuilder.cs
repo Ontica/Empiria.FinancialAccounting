@@ -211,7 +211,7 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
 
       balanceHelper.SetSummaryToParentEntriesV2(baseAccountEntries);
 
-      if (_query.InitialPeriod.ToDate.Year >= 2025) {
+      if (_query.InitialPeriod.ToDate >= new DateTime(2025, 06, 01)) {
 
         balanceHelper.ValuateAccountEntriesToExchangeRateV2(baseAccountEntries);
       } else {

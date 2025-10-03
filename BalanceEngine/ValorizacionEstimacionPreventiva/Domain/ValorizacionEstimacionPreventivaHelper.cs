@@ -34,7 +34,7 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
 
       if (_query.ValuateBalances || _query.InitialPeriod.UseDefaultValuation) {
         
-        if (_query.InitialPeriod.ToDate.Year >= 2025) {
+        if (_query.InitialPeriod.ToDate >= new DateTime(2025, 06, 01)) {
           ExchangeRateByCurrencyV2(entries, date, isLastMonth);
 
         } else {
