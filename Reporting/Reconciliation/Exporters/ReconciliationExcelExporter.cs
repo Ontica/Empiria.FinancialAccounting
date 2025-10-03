@@ -7,8 +7,6 @@
 *  Summary  : Exports a reconciliation result to Microsoft Excel.                                            *
 *                                                                                                            *
 ************************* Copyright(c) La Vía Óntica SC, Ontica LLC and contributors. All rights reserved. **/
-using System;
-
 using Empiria.Office;
 using Empiria.Storage;
 
@@ -78,6 +76,8 @@ namespace Empiria.FinancialAccounting.Reporting.Reconciliation.Exporters {
     private void SetSignatures(int startIndex) {
       int index = startIndex;
 
+      excelFile.RemoveFormat($"A{index}", $"E{index + 10}");
+
       excelFile.SetCell($"D{index}", "Firmas");
 
       index++;
@@ -90,14 +90,19 @@ namespace Empiria.FinancialAccounting.Reporting.Reconciliation.Exporters {
       excelFile.SetCell($"A{index}", "Revisó:");
       excelFile.SetCell($"B{index}", "Subgerente de Información Contable");
 
+      excelFile.SetCell($"D{index}", "Revisó:");
+      excelFile.SetCell($"E{index}", "Subgerente de Registro e Información de Mercados Financieros");
+
       index++;
 
       excelFile.SetCell($"A{index}", "Autorizó:");
       excelFile.SetCell($"B{index}", "Gerente de Contabilidad");
+
+      excelFile.SetCell($"D{index}", "Autorizó:");
+      excelFile.SetCell($"E{index}", "Gerente de Operación Financiera");
     }
 
     #endregion Private methods
-
 
   } // class ReconciliationExcelExporter
 
