@@ -7,11 +7,9 @@
 *  Summary  : Genera los datos para el reporte de saldos por auxiliar para el explorador de saldos.          *
 *                                                                                                            *
 ************************* Copyright(c) La Vía Óntica SC, Ontica LLC and contributors. All rights reserved. **/
-using System;
-using System.Collections.Generic;
-using System.Linq;
 
-using Empiria.Collections;
+using System.Collections.Generic;
+
 using Empiria.FinancialAccounting.BalanceEngine.BalanceExplorer.Adapters;
 
 namespace Empiria.FinancialAccounting.BalanceEngine.BalanceExplorer {
@@ -34,8 +32,6 @@ namespace Empiria.FinancialAccounting.BalanceEngine.BalanceExplorer {
       if (balanceEntries.Count == 0) {
         return new BalanceExplorerResult(_query, new FixedList<BalanceExplorerEntry>());
       }
-
-      helper.GetSummaryToParentEntriesV2(balanceEntries);
 
       FixedList<BalanceExplorerEntry> subledgerAccounts = helper.GetSubledgerAccounts(balanceEntries);
 

@@ -29,7 +29,7 @@ namespace Empiria.FinancialAccounting.BalanceEngine.BalanceExplorer {
 
 
     public Currency Currency {
-      get;  internal set;
+      get; internal set;
     }
 
 
@@ -39,12 +39,12 @@ namespace Empiria.FinancialAccounting.BalanceEngine.BalanceExplorer {
 
 
     public Sector Sector {
-      get;  internal set;
+      get; internal set;
     }
 
 
     public int SubledgerAccountId {
-      get;  internal set;
+      get; internal set;
     }
 
 
@@ -54,7 +54,7 @@ namespace Empiria.FinancialAccounting.BalanceEngine.BalanceExplorer {
 
 
     public decimal CurrentBalance {
-      get;  internal set;
+      get; internal set;
     }
 
 
@@ -104,16 +104,6 @@ namespace Empiria.FinancialAccounting.BalanceEngine.BalanceExplorer {
 
 
     public bool HasAccountStatement {
-      get; internal set;
-    } = false;
-
-
-    public bool HasParentPostingEntry {
-      get; internal set;
-    } = false;
-
-
-    public bool IsParentPostingEntry {
       get; internal set;
     } = false;
 

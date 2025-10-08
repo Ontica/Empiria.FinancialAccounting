@@ -7,7 +7,6 @@
 *  Summary  : Helper methods to build balances for the balances explorer.                                    *
 *                                                                                                            *
 ************************* Copyright(c) La Vía Óntica SC, Ontica LLC and contributors. All rights reserved. **/
-using System;
 using System.Linq;
 using System.Collections.Generic;
 
@@ -100,55 +99,6 @@ namespace Empiria.FinancialAccounting.BalanceEngine.BalanceExplorer {
       }
 
       return GenerateSubledgerAccount(subledgerAccountListHashTable).ToFixedList();
-    }
-
-
-    internal FixedList<BalanceExplorerEntry> GetSummaryToParentEntries(
-                                            FixedList<BalanceExplorerEntry> balanceEntries) {
-      if (balanceEntries.Count == 0) {
-        return new FixedList<BalanceExplorerEntry>();
-      }
-
-      var returnedEntries = new List<BalanceExplorerEntry>(balanceEntries);
-
-      foreach (var entry in balanceEntries) {
-        StandardAccount currentParent = entry.Account.GetParent();
-
-        var entryParent = returnedEntries.Find(a => a.Account.Number == currentParent.Number &&
-                                                    a.Currency.Equals(entry.Currency) &&
-                                                    a.Ledger.Number == entry.Ledger.Number &&
-                                                    a.Sector.Code == entry.Sector.Code &&
-                                                    a.Account.DebtorCreditor == entry.Account.DebtorCreditor);
-        if (entryParent != null) {
-          entry.HasParentPostingEntry = true;
-          entryParent.IsParentPostingEntry = true;
-          entryParent.Sum(entry);
-        }
-      }
-
-      return returnedEntries.ToFixedList();
-    }
-
-
-    internal void GetSummaryToParentEntriesV2(FixedList<BalanceExplorerEntry> balanceEntries) {
-      
-      var returnedEntries = new List<BalanceExplorerEntry>(balanceEntries);
-
-      foreach (var entry in balanceEntries) {
-        StandardAccount currentParent = entry.Account.GetParent();
-
-        var entryParent = returnedEntries.Find(a => a.Account.Number == currentParent.Number &&
-                                                    a.SubledgerAccountId == entry.SubledgerAccountId &&
-                                                    a.Currency.Equals(entry.Currency) &&
-                                                    a.Ledger.Number == entry.Ledger.Number &&
-                                                    a.Sector.Code == entry.Sector.Code &&
-                                                    a.Account.DebtorCreditor == entry.Account.DebtorCreditor);
-        if (entryParent != null) {
-          entry.HasParentPostingEntry = true;
-          entryParent.IsParentPostingEntry = true;
-          entryParent.Sum(entry);
-        }
-      }
     }
 
 
