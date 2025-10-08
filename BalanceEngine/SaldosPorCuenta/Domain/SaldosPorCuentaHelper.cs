@@ -7,12 +7,9 @@
 *  Summary  : Helper methods to build balances by account report.                                            *
 *                                                                                                            *
 ************************* Copyright(c) La Vía Óntica SC, Ontica LLC and contributors. All rights reserved. **/
-using System;
 using System.Collections.Generic;
 using Empiria.Collections;
 using System.Linq;
-
-using Empiria.FinancialAccounting.BalanceEngine.Data;
 using Empiria.FinancialAccounting.BalanceEngine.Adapters;
 
 namespace Empiria.FinancialAccounting.BalanceEngine {
@@ -46,7 +43,7 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
         bool isCalculatedAccount = trialBalanceHelper.ValidateEntryToAssignCurrentParentAccount(
                                                       entry, out currentParent);
 
-        if (!trialBalanceHelper.ValidateEntryForSummaryParentAccount(entry, isCalculatedAccount)) {
+        if (!isCalculatedAccount) {
           continue;
         }
 

@@ -33,7 +33,7 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
                                                 DateTime date, bool isLastMonth = false) {
 
       if (_query.ValuateBalances || _query.InitialPeriod.UseDefaultValuation) {
-        
+
         if (_query.InitialPeriod.ToDate >= new DateTime(2025, 06, 01)) {
           ExchangeRateByCurrencyV2(entries, date, isLastMonth);
 
@@ -82,7 +82,7 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
 
       DateTime _toDateFlag = _query.InitialPeriod.ToDate;
       _query.InitialPeriod.ToDate = toDate;
-      
+
       var exchangeRateFor = trialBalanceHelper.GetExchangeRateTypeForCurrencies(_query.InitialPeriod);
 
       foreach (var entry in entries.Where(a => a.Currency.Distinct(Currency.MXN))) {
@@ -139,7 +139,7 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
       ValuateExchangeRateByCurrency(accountEntries, date);
 
       FixedList<TrialBalanceEntry> accountsByCurrency =
-          balanzaColumnasBuilder.BuildValorizacion(accountEntries);
+          balanzaColumnasBuilder.BuildValorizacionEstimacionPreventiva(accountEntries);
 
       List<ValorizacionEstimacionPreventivaEntry> balanceByCurrency = MergeAccountsIntoAccountsByCurrency(
                                                     accountsByCurrency, date, isPreviousMonth);

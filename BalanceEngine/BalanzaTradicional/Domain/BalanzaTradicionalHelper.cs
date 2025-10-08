@@ -153,7 +153,7 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
         bool isCalculatedAccount = trialBalanceHelper.ValidateEntryToAssignCurrentParentAccount(
                                                       entry, out currentParent);
 
-        if (!trialBalanceHelper.ValidateEntryForSummaryParentAccount(entry, isCalculatedAccount)) {
+        if (!isCalculatedAccount) {
           continue;
         }
 
@@ -182,7 +182,7 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
 
           trialBalanceHelper.ValuateAccountEntriesToExchangeRate(accountEntries);
         }
-        
+
         if (_query.ConsolidateBalancesToTargetCurrency) {
           accountEntries = ConsolidateAccountEntriesToTargetCurrency(accountEntries);
         }
@@ -248,7 +248,7 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
       var trialBalanceHelper = new TrialBalanceHelper(_query);
 
       while (true) {
-        
+
         entry.SubledgerAccountIdParent = entry.SubledgerAccountId;
 
         if (entry.Level > 1) {

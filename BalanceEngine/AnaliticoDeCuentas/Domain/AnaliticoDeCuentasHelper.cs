@@ -75,7 +75,7 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
         bool isCalculatedAccount = trialBalanceHelper.ValidateEntryToAssignCurrentParentAccount(
                                                       entry, out currentParent);
 
-        if (!trialBalanceHelper.ValidateEntryForSummaryParentAccount(entry, isCalculatedAccount)) {
+        if (!isCalculatedAccount) {
           continue;
         }
 
@@ -144,21 +144,22 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
 
       var targetCurrency = Currency.Parse(_query.InitialPeriod.ValuateToCurrrencyUID);
 
-      if (!entry.IsParentPostingEntry) {
+      if (entry.IsParentPostingEntry) {
+        return;
+      }
 
-        if (entry.Currency.Equals(targetCurrency)) {
+      if (entry.Currency.Equals(targetCurrency)) {
 
-          GenerateOrIncreaseTwoColumnEntry(hashAnaliticoEntries, entry, hash, currentCurrency);
+        GenerateOrIncreaseTwoColumnEntry(hashAnaliticoEntries, entry, hash, currentCurrency);
 
-        } else if (hashAnaliticoEntries.ContainsKey(hash)) {
+      } else if (hashAnaliticoEntries.ContainsKey(hash)) {
 
-          SumTwoColumnEntry(hashAnaliticoEntries[hash], entry, currentCurrency);
+        SumTwoColumnEntry(hashAnaliticoEntries[hash], entry, currentCurrency);
 
-        } else {
+      } else {
 
-          entry.Currency = targetCurrency;
-          GenerateOrIncreaseTwoColumnEntry(hashAnaliticoEntries, entry, hash, currentCurrency);
-        }
+        entry.Currency = targetCurrency;
+        GenerateOrIncreaseTwoColumnEntry(hashAnaliticoEntries, entry, hash, currentCurrency);
       }
     }
 
@@ -212,7 +213,7 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
         analyticEntry.ForeignBalance += balanceEntry.CurrentBalance;
 
       } else {
-        
+
         BalanceEntryByCurrencySumToTwoColumnEntry(analyticEntry, balanceEntry, currentCurrency);
       }
 
@@ -246,7 +247,7 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
         var sectorParent = entry.Sector.Parent;
 
         if (accountEntry != null && sectorParent.Code != "00" && entry.Level > 1) {
-          
+
           accountEntry.Sum(entry);
 
         } else if (entry.Level > 1 &&
@@ -264,7 +265,7 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
 
       var checkSummaryEntries = new List<TrialBalanceEntry>(accountEntries);
       foreach (var entry in checkSummaryEntries) {
-        
+
         var sectorParent = entry.Sector.Parent;
         var returnedEntry = accountEntries.FirstOrDefault(a => a.Account.Number == entry.Account.Number &&
                                                             a.Ledger.Number == entry.Ledger.Number &&
@@ -283,7 +284,7 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
       }
     }
 
-    
+
     private void ValidateToSummaryByEntry(EmpiriaHashTable<TrialBalanceEntry> hashEntries,
                                           TrialBalanceEntry entry, StandardAccount account,
                                           TrialBalanceItemType summary) {
@@ -381,15 +382,15 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
       }
 
       summaryEntry = new AnaliticoDeCuentasEntry {
-          Ledger = entry.Ledger,
-          Currency = entry.Currency,
-          Sector = entry.Sector,
-          Account = entry.Account,
-          ItemType = itemType,
-          GroupNumber = entry.GroupNumber,
-          GroupName = entry.GroupName,
-          DebtorCreditor = entry.DebtorCreditor
-        };
+        Ledger = entry.Ledger,
+        Currency = entry.Currency,
+        Sector = entry.Sector,
+        Account = entry.Account,
+        ItemType = itemType,
+        GroupNumber = entry.GroupNumber,
+        GroupName = entry.GroupName,
+        DebtorCreditor = entry.DebtorCreditor
+      };
 
       summaryEntry.Sum(entry);
       summaryEntries.Insert(hash, summaryEntry);
