@@ -208,7 +208,7 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
     private FixedList<TrialBalanceEntry> SaldosDeCuentasValorizados(FixedList<TrialBalanceEntry> baseAccountEntries) {
       var balanceHelper = new TrialBalanceHelper(_query);
 
-      balanceHelper.SetSummaryToParentEntries(baseAccountEntries);
+      balanceHelper.SetParentPostingFlags(baseAccountEntries);
 
       if (_query.InitialPeriod.ToDate >= new DateTime(2025, 06, 01)) {
 

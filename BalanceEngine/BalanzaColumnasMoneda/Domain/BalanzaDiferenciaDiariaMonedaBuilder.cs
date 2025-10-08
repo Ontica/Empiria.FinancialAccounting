@@ -81,7 +81,7 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
 
       balanceHelper.RoundDecimals(accountEntries);
 
-      balanceHelper.SetSummaryToParentEntries(accountEntries);
+      balanceHelper.SetParentPostingFlags(accountEntries);
 
       balanceHelper.RestrictLevels(accountEntries.ToList());
 
@@ -103,7 +103,7 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
 
       helper.ValuateEntriesToExchangeRate(accountEntries);
       balanceHelper.RoundDecimals(accountEntries);
-      balanceHelper.SetSummaryToParentEntries(accountEntries);
+      balanceHelper.SetParentPostingFlags(accountEntries);
 
       var parentAccountsEntries = balanceHelper.GetCalculatedParentAccounts(accountEntries.ToFixedList());
 

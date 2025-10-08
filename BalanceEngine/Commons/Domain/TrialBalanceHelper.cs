@@ -294,7 +294,7 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
       return returnedAccountEntries;
     }
 
-    internal void SetSummaryToParentEntries(IEnumerable<TrialBalanceEntry> accountEntries) {
+    internal void SetParentPostingFlags(IEnumerable<TrialBalanceEntry> accountEntries) {
 
       var returnedEntries = new List<TrialBalanceEntry>(accountEntries);
 

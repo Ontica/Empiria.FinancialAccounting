@@ -35,7 +35,7 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
         return new TrialBalance(_query, new FixedList<ITrialBalanceEntry>());
       }
 
-      trialBalanceHelper.SetSummaryToParentEntries(accountEntries);
+      trialBalanceHelper.SetParentPostingFlags(accountEntries);
 
       List<TrialBalanceEntry> accountEntriesOrdered =
                               helper.OrderingAccountEntries(accountEntries);

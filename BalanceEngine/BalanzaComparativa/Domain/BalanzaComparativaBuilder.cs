@@ -48,7 +48,7 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
 
       var balanceHelper = new TrialBalanceHelper(_query);
 
-      balanceHelper.SetSummaryToParentEntries(accountEntries);
+      balanceHelper.SetParentPostingFlags(accountEntries);
 
       helper.ValuateEntriesToExchangeRate(accountEntries, _query.FinalPeriod);
 
