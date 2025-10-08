@@ -9,9 +9,7 @@
 ************************* Copyright(c) La Vía Óntica SC, Ontica LLC and contributors. All rights reserved. **/
 using System;
 using System.Collections.Generic;
-using System.Collections.ObjectModel;
 using System.Linq;
-using DocumentFormat.OpenXml.Spreadsheet;
 using Empiria.FinancialAccounting.BalanceEngine.Adapters;
 using Empiria.FinancialAccounting.BalanceEngine.Data;
 using Empiria.Time;
@@ -200,7 +198,7 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
 
       var calendar = EmpiriaCalendar.Default;
       var previousMonth = this.Query.InitialPeriod.FromDate.AddMonths(-1);
-      
+
       workingDays.Add(calendar.LastWorkingDateWithinMonth(previousMonth.Year, previousMonth.Month));
 
       for (DateTime dateCount = this.Query.InitialPeriod.FromDate;

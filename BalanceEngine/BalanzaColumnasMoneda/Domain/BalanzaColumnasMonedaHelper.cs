@@ -132,9 +132,7 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
 
       MergeForeignWithReturnedAccountEntries(returnedValuedBalance, accountEntriesByCurrency);
 
-      var returnedOrdering = returnedValuedBalance.OrderBy(a => a.Account.Number).ToList();
-
-      return returnedOrdering;
+      return returnedValuedBalance.OrderBy(a => a.Account.Number).ToList();
     }
 
 

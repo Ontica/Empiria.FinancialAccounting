@@ -10,7 +10,6 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using DocumentFormat.OpenXml.Spreadsheet;
 using Empiria.Collections;
 using Empiria.FinancialAccounting.BalanceEngine.Adapters;
 using Empiria.FinancialAccounting.BalanceEngine.Data;
@@ -83,7 +82,7 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
 
 
     private IEnumerable<TrialBalanceEntry> GetFilteredAccountEntries(List<TrialBalanceEntry> balanceEntries) {
-      
+
       if (balanceEntries.Count == 0) {
         return new List<TrialBalanceEntry>();
       }
@@ -93,7 +92,7 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
         return balanceEntries.FindAll(a => a.SubledgerAccountId == 0 &&
                                       a.ItemType == TrialBalanceItemType.Summary);
       } else {
-        
+
         return balanceEntries.FindAll(a => a.SubledgerAccountNumber.Length <= 1);
       }
     }
@@ -162,7 +161,7 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
       if (balanceEntries.Count == 0) {
         return new List<AnaliticoDeCuentasEntry>();
       }
-      
+
       IEnumerable<TrialBalanceEntry> accountEntries = GetFilteredAccountEntries(balanceEntries);
 
       var hashAnaliticoEntries = new EmpiriaHashTable<AnaliticoDeCuentasEntry>();
@@ -188,7 +187,7 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
 
       var helper = new AnaliticoDeCuentasHelper(_query);
       var targetCurrency = Currency.Parse(_query.InitialPeriod.ValuateToCurrrencyUID);
-      
+
       foreach (var entry in accountEntries) {
 
         if (entry.CurrentBalance != 0 ||
@@ -199,7 +198,7 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
                         $"{entry.Ledger.Id}||{entry.DebtorCreditor}";
 
           Currency currentCurrency = entry.Currency;
-          
+
           helper.MergeEntriesIntoTwoColumns(hashAnaliticoEntries, entry, hash, currentCurrency);
         }
       }
@@ -209,7 +208,7 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
     private FixedList<TrialBalanceEntry> SaldosDeCuentasValorizados(FixedList<TrialBalanceEntry> baseAccountEntries) {
       var balanceHelper = new TrialBalanceHelper(_query);
 
-      balanceHelper.SetSummaryToParentEntriesV2(baseAccountEntries);
+      balanceHelper.SetSummaryToParentEntries(baseAccountEntries);
 
       if (_query.InitialPeriod.ToDate >= new DateTime(2025, 06, 01)) {
 

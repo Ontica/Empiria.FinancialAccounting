@@ -74,7 +74,7 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
       trialBalanceHelper.RoundDecimals(accountEntries);
 
       // Special case summaries y posting al mismo tiempo.
-      trialBalanceHelper.SetSummaryToParentEntriesV2(accountEntries);
+      trialBalanceHelper.SetSummaryToParentEntries(accountEntries);
 
       List<TrialBalanceEntry> parentAccounts =trialBalanceHelper.GetCalculatedParentAccounts(
                                                                   accountEntries.ToFixedList());

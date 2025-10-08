@@ -8,8 +8,6 @@
 *                                                                                                            *
 ************************* Copyright(c) La Vía Óntica SC, Ontica LLC and contributors. All rights reserved. **/
 using System;
-using System.Collections.Generic;
-using System.Linq;
 using Empiria.FinancialAccounting.BalanceEngine.Adapters;
 using Empiria.FinancialAccounting.BalanceEngine.Data;
 
@@ -26,7 +24,6 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
 
     }
 
-
     #region Public methods
 
 
@@ -38,7 +35,7 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
                   _query.InitialPeriod.ToDate.Year,
                   _query.InitialPeriod.ToDate.Month, 1);
 
-      FixedList <TrialBalanceEntry> baseAccountEntries = BalancesDataService.GetTrialBalanceEntries(_query);
+      FixedList<TrialBalanceEntry> baseAccountEntries = BalancesDataService.GetTrialBalanceEntries(_query);
 
       _query.InitialPeriod.FromDate = initialDate;
 
@@ -58,8 +55,8 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
                                           accountEntries, _query.InitialPeriod.ToDate);
 
       FixedList<ValorizacionEstimacionPreventivaEntry> accountsInfoByMonth = GetAccountsByFilteredMonths();
-      
-      FixedList <ValorizacionEstimacionPreventivaEntry> mergeAccountsByMonth = helper.MergeAccountsByMonth(
+
+      FixedList<ValorizacionEstimacionPreventivaEntry> mergeAccountsByMonth = helper.MergeAccountsByMonth(
                                                           accountsByCurrency, accountsInfoByMonth);
 
       return mergeAccountsByMonth;
@@ -68,12 +65,11 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
 
     #endregion Public methods
 
-
     #region Private methods
 
 
     private FixedList<ValorizacionEstimacionPreventivaEntry> GetAccountsByFilteredMonths() {
-      
+
       if (_query.InitialPeriod.ToDate.Month == 1) {
 
         return new FixedList<ValorizacionEstimacionPreventivaEntry>();

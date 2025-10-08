@@ -38,7 +38,7 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
         return new TrialBalance(_query, new FixedList<ITrialBalanceEntry>());
       }
 
-      trialBalanceHelper.SetSummaryToParentEntriesV2(accountEntries);
+      trialBalanceHelper.SetSummaryToParentEntries(accountEntries);
 
       EmpiriaHashTable<TrialBalanceEntry> parentAccounts =
                                           saldosHelper.GetBalancesBySubledgerAccounts(accountEntries);

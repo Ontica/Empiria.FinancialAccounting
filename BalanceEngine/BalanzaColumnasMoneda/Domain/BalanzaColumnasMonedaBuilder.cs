@@ -10,11 +10,8 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using DocumentFormat.OpenXml.VariantTypes;
-using Empiria.Collections;
 using Empiria.FinancialAccounting.BalanceEngine.Adapters;
 using Empiria.FinancialAccounting.BalanceEngine.Data;
-using Empiria.Time;
 
 namespace Empiria.FinancialAccounting.BalanceEngine {
 
@@ -56,7 +53,7 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
 
       balanceHelper.RoundDecimals(accountEntries);
 
-      balanceHelper.SetSummaryToParentEntriesV2(accountEntries);
+      balanceHelper.SetSummaryToParentEntries(accountEntries);
 
       var parentAccountsEntries = balanceHelper.GetCalculatedParentAccounts(accountEntries.ToFixedList());
 
@@ -79,7 +76,7 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
     }
 
 
-    public FixedList<TrialBalanceEntry> BuildValorizacion(FixedList<TrialBalanceEntry> accountEntries) {
+    public FixedList<TrialBalanceEntry> BuildValorizacionEstimacionPreventiva(FixedList<TrialBalanceEntry> accountEntries) {
       var trialBalanceHelper = new TrialBalanceHelper(Query);
       var balanzaColumnasHelper = new BalanzaColumnasMonedaHelper(Query);
 
@@ -95,10 +92,7 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
 
       balanzaColumnasHelper.CombineAccountEntriesAndDebtorAccounts(accountEntries.ToList(), debtorAccounts);
 
-      FixedList<TrialBalanceEntry> accountEntriesByCurrency =
-                                          balanzaColumnasHelper.GetAccountEntriesByCurrency(debtorAccounts);
-
-      return accountEntriesByCurrency;
+      return balanzaColumnasHelper.GetAccountEntriesByCurrency(debtorAccounts);
     }
 
   } // class BalanzaColumnasMonedaBuilder
