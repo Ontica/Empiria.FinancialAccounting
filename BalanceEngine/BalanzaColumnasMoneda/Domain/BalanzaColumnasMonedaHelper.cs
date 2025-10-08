@@ -37,13 +37,32 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
       if (accountEntries.Count == 0) {
         return;
       }
-      var summaryAccountEntries = new EmpiriaHashTable<TrialBalanceEntry>();
+      var hashAccountEntries = new EmpiriaHashTable<TrialBalanceEntry>();
 
       foreach (var entry in accountEntries) {
-        SummaryByAccountEntry(summaryAccountEntries, entry, entry.ItemType);
+        SummaryByAccountEntry(hashAccountEntries, entry, entry.ItemType);
       }
 
-      debtorAccounts.AddRange(summaryAccountEntries.ToFixedList());
+      MergeParentPostingFlags(accountEntries, hashAccountEntries.ToFixedList());
+
+      debtorAccounts.AddRange(hashAccountEntries.ToFixedList());
+    }
+
+
+    private void MergeParentPostingFlags(List<TrialBalanceEntry> accountEntries, FixedList<TrialBalanceEntry> trialBalanceEntries) {
+
+      var parentPostingEntries = accountEntries.FindAll(x => x.IsParentPostingEntry);
+
+      foreach (var entry in trialBalanceEntries.ToFixedList()) {
+
+        var findPostingEntry = parentPostingEntries.Find(a => a.Account.Number == entry.Account.Number &&
+                                                           a.Currency.Code == entry.Currency.Code &&
+                                                           a.Ledger.Number == entry.Ledger.Number &&
+                                                           a.Sector.Code == entry.Sector.Code &&
+                                                           a.Account.DebtorCreditor == entry.Account.DebtorCreditor);
+
+        entry.IsParentPostingEntry = findPostingEntry != null ? true : false;
+      }
     }
 
 
@@ -64,6 +83,8 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
 
         SummaryByAccountEntry(hashAccountEntries, entry, entry.ItemType);
       }
+
+      MergeParentPostingFlags(accountEntries, hashAccountEntries.ToFixedList());
 
       return GetAccountEntriesByDomesticAndForeignCurrencies(hashAccountEntries).ToFixedList();
     }
@@ -367,7 +388,7 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
                   List<BalanzaColumnasMonedaEntry> returnedValuedBalance,
                   FixedList<TrialBalanceEntry> ledgerAccounts) {
 
-      foreach (var ledger in ledgerAccounts) {
+      foreach (var ledger in ledgerAccounts.FindAll(x => !x.IsParentPostingEntry)) {
 
         if (Query.TrialBalanceType == TrialBalanceType.BalanzaEnColumnasPorMoneda) {
           ledger.ItemType = TrialBalanceItemType.Summary;
