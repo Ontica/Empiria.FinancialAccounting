@@ -58,22 +58,27 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
     public decimal ValorizedDailyUdisBalance {
       get; internal set;
     }
+
+
     public string ERI {
-      get;
-      internal set;
+      get; internal set;
     }
+
+
     public string ComplementDescription {
-      get;
-      internal set;
+      get; internal set;
     }
+
+
     public string ComplementDetail {
-      get;
-      internal set;
+      get; internal set;
     }
+
+
     public string CategoryType {
-      get;
-      internal set;
+      get; internal set;
     }
+
 
     internal void SetDailyBalance(BalanzaDiferenciaDiariaMonedaEntry previousDayEntry) {
       this.DomesticDailyBalance = this.DomesticBalance - previousDayEntry.DomesticBalance;

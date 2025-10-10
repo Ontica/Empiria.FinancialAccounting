@@ -149,11 +149,11 @@ namespace Empiria.FinancialAccounting.BalanceEngine.Adapters {
       dto.ItemTypeName = GetItemTypeName(entry.ItemType);
       dto.AccountType = entry.Account.AccountType.Name;
 
-      dto.ERI = string.Empty;
-      dto.ComplementDescription = string.Empty;
-      dto.ComplementDetail = string.Empty;
+      dto.ERI = entry.ERI;
+      dto.ComplementDescription = entry.ComplementDescription;
+      dto.ComplementDetail = entry.ComplementDetail;
 
-      dto.CategoryType = string.Empty;
+      dto.CategoryType = entry.CategoryType;
 
       dto.AccountNumber = entry.Account.Number;
       dto.AccountName = entry.Account.Name;
