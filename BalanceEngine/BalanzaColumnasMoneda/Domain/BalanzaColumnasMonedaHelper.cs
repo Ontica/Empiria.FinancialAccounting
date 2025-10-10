@@ -287,6 +287,11 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
       var exchangeRateType = ExchangeRateType.Parse(Query.InitialPeriod.ExchangeRateTypeUID);
       FixedList<ExchangeRate> exchangeRates = ExchangeRate.GetList(
                                                 exchangeRateType, Query.InitialPeriod.ToDate);
+
+      Assertion.Require(exchangeRates.Count > 0,
+                        $"No se han registrado tipos de cambio para el tipo valorización " +
+                        $"'{exchangeRateType.Name}' en la fecha {Query.InitialPeriod.ToDate}.");
+
       return exchangeRates;
     }
 
