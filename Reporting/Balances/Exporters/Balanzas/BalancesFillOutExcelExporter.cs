@@ -159,6 +159,10 @@ namespace Empiria.FinancialAccounting.Reporting.Balances {
         _excelFile.SetCell($"AA{i}", entry.ClosingExchangeRateForUdi);
         _excelFile.SetCell($"AB{i}", entry.ValorizedDailyUdisBalance);
 
+        if (entry.ItemType == TrialBalanceItemType.Summary) {
+          _excelFile.SetRowBold(i, 43);
+        }
+
         i++;
       }
     }
@@ -229,6 +233,10 @@ namespace Empiria.FinancialAccounting.Reporting.Balances {
 
         _excelFile.SetCell($"AP{i}", entry.ValorizedDailyUdisBalanceNeg);
         _excelFile.SetCell($"AQ{i}", entry.UdisBalanceNeg);
+        
+        if (entry.ItemType == TrialBalanceItemType.Summary) {
+          _excelFile.SetRowBold(i, 43);
+        }
 
         i++;
       }
