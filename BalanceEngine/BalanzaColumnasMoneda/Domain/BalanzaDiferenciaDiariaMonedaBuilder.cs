@@ -10,6 +10,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using Empiria.FinancialAccounting.AccountsLists;
 using Empiria.FinancialAccounting.BalanceEngine.Adapters;
 using Empiria.FinancialAccounting.BalanceEngine.Data;
 using Empiria.Time;
@@ -49,6 +50,8 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
       FixedList<BalanzaDiferenciaDiariaMonedaEntry> entriesByDateAndAccount =
         GetOrderingByDateThenAccount(diffByDayEntries);
 
+      AssignTagsToEntries(entriesByDateAndAccount);
+
       return entriesByDateAndAccount;
     }
 
@@ -56,6 +59,29 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
 
 
     #region Private methods
+
+    private void AssignTagsToEntries(
+                  FixedList<BalanzaDiferenciaDiariaMonedaEntry> entriesByDateAndAccount) {
+
+      FixedList<string> accountsNumberList = entriesByDateAndAccount.SelectDistinct(x => x.Account.Number);
+
+      var tagsList = AccountClassificatorList.Parse("BitacoraCuentasValorizacion");
+
+      foreach (var accountNumber in accountsNumberList) {
+
+        FixedList<BalanzaDiferenciaDiariaMonedaEntry> entries = entriesByDateAndAccount.FindAll(
+                                                                x => x.Account.Number == accountNumber);
+
+        for (int i = 0; i < entries.Count; i++) {
+
+          entries[i].ERI = tagsList.TryGetAccountValue(accountNumber, "ERI") ?? "";
+          entries[i].ComplementDescription = tagsList.TryGetAccountValue(accountNumber, "Completo") ?? "";
+          entries[i].ComplementDetail = tagsList.TryGetAccountValue(accountNumber, "Detallado") ?? "";
+          entries[i].CategoryType = tagsList.TryGetAccountValue(accountNumber, "Rubro") ?? "";
+        }
+      }
+    }
+
 
     private FixedList<BalanzaColumnasMonedaEntry> BuildAccountEntries() {
 
@@ -157,7 +183,7 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
       var balanceInColumnByCurrencyList = new List<BalanzaColumnasMonedaEntry>();
 
       foreach (var dateFilter in workingDays) {
-
+        
         Query.AssignPeriodByWorkingDate(dateFilter);
 
         List<BalanzaColumnasMonedaEntry> balanzaColumnas = BuildAccountEntries().ToList();
