@@ -202,7 +202,9 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
                                               ).OrderBy(x=>x.Account.Number).ToList();
       returnedBalance.AddRange(creditorEntries);
 
-      return returnedBalance;
+      var balanceWithoutParentEntries = returnedBalance.FindAll(x => !x.IsParentPostingEntry);
+
+      return balanceWithoutParentEntries;
     }
 
 
