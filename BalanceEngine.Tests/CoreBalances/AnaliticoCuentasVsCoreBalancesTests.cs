@@ -23,12 +23,14 @@ namespace Empiria.Tests.FinancialAccounting.BalanceEngine {
   public class AnaliticoCuentasVsCoreBalancesTests {
 
     [Theory]
-    [InlineData("2024-12-01", "2024-12-31", BalancesType.AllAccountsInCatalog)]
-    [InlineData("2025-01-01", "2025-01-31", BalancesType.AllAccountsInCatalog)]
-    [InlineData("2025-02-01", "2025-02-28", BalancesType.AllAccountsInCatalog)]
-    [InlineData("2025-03-01", "2025-03-31", BalancesType.AllAccountsInCatalog)]
-    [InlineData("2025-04-01", "2025-04-30", BalancesType.AllAccountsInCatalog)]
-    public void Should_Have_Same_Entries(string fromDate, string toDate, BalancesType balancesType) {
+    [InlineData("2024-12-01", "2024-12-31", BalancesType.AllAccounts)]
+    [InlineData("2025-06-01", "2025-06-30", BalancesType.AllAccounts)]
+    [InlineData("2025-07-01", "2025-07-31", BalancesType.AllAccounts)]
+    [InlineData("2025-08-01", "2025-08-31", BalancesType.AllAccounts)]
+    [InlineData("2025-09-01", "2025-09-30", BalancesType.AllAccounts)]
+    public void Should_Have_Same_Entries_With_Or_Without_Subledger_Accounts(string fromDate,
+                                                                            string toDate,
+                                                                            BalancesType balancesType) {
 
       CoreBalanceEntries coreBalances = TestsHelpers.GetCoreBalanceEntries(DateTime.Parse(fromDate),
                                                                            DateTime.Parse(toDate),
@@ -45,11 +47,11 @@ namespace Empiria.Tests.FinancialAccounting.BalanceEngine {
 
 
     [Theory]
-    [InlineData("2024-12-01", "2024-12-31", BalancesType.AllAccountsInCatalog)]
-    [InlineData("2025-01-01", "2025-01-31", BalancesType.AllAccountsInCatalog)]
-    [InlineData("2025-02-01", "2025-02-28", BalancesType.AllAccountsInCatalog)]
-    [InlineData("2025-03-01", "2025-03-31", BalancesType.AllAccountsInCatalog)]
-    [InlineData("2025-04-01", "2025-04-30", BalancesType.AllAccountsInCatalog)]
+    [InlineData("2024-12-01", "2024-12-31", BalancesType.AllAccounts)]
+    [InlineData("2025-01-01", "2025-01-31", BalancesType.AllAccounts)]
+    [InlineData("2025-02-01", "2025-02-28", BalancesType.AllAccounts)]
+    [InlineData("2025-03-01", "2025-03-31", BalancesType.AllAccounts)]
+    [InlineData("2025-04-01", "2025-04-30", BalancesType.AllAccounts)]
     public void Should_Have_Same_Summaries(string fromDate, string toDate, BalancesType balancesType) {
 
       CoreBalanceEntries coreBalances = TestsHelpers.GetCoreBalanceEntries(DateTime.Parse(fromDate),
@@ -67,11 +69,11 @@ namespace Empiria.Tests.FinancialAccounting.BalanceEngine {
 
 
     [Theory]
-    [InlineData("2024-12-01", "2024-12-31", BalancesType.AllAccountsInCatalog)]
-    [InlineData("2025-01-01", "2025-01-31", BalancesType.AllAccountsInCatalog)]
-    [InlineData("2025-02-01", "2025-02-28", BalancesType.AllAccountsInCatalog)]
-    [InlineData("2025-03-01", "2025-03-31", BalancesType.AllAccountsInCatalog)]
-    [InlineData("2025-04-01", "2025-04-30", BalancesType.AllAccountsInCatalog)]
+    [InlineData("2024-12-01", "2024-12-31", BalancesType.AllAccounts)]
+    [InlineData("2025-01-01", "2025-01-31", BalancesType.AllAccounts)]
+    [InlineData("2025-02-01", "2025-02-28", BalancesType.AllAccounts)]
+    [InlineData("2025-03-01", "2025-03-31", BalancesType.AllAccounts)]
+    [InlineData("2025-04-01", "2025-04-30", BalancesType.AllAccounts)]
     public void Should_Have_Same_Summaries_By_Subledger_Accounts(string fromDate, string toDate, BalancesType balancesType) {
 
       CoreBalanceEntries coreBalances = TestsHelpers.GetCoreBalanceEntriesWithSubledgerAccounts(DateTime.Parse(fromDate),
@@ -92,8 +94,19 @@ namespace Empiria.Tests.FinancialAccounting.BalanceEngine {
 
       foreach (var sut in analitico) {
 
-        var filtered = coreBalances.GetBalancesByAccountNumberAndSector(sut.AccountNumber, sut.SectorCode)
-                                   .FindAll(x => x.Account.DebtorCreditor == sut.DebtorCreditor);
+        FixedList<CoreBalanceEntry> filtered = new FixedList<CoreBalanceEntry>();
+
+        if (sut.SubledgerAccountId > 0) {
+          
+          filtered = coreBalances.GetBalancesByAccountIdAndSubledgerAccountIdAndSector(sut.StandardAccountId,
+                                                                                       sut.SubledgerAccountId,
+                                                                                       sut.SectorCode)
+                                 .FindAll(x => x.Account.DebtorCreditor == sut.DebtorCreditor);
+        } else {
+
+          filtered = coreBalances.GetBalancesByAccountNumberAndSector(sut.AccountNumber, sut.SectorCode)
+                                 .FindAll(x => x.Account.DebtorCreditor == sut.DebtorCreditor);
+        }
 
         var totalMN = filtered.FindAll(x => x.Currency.Equals(Currency.MXN) ||
                                             x.Currency.Equals(Currency.UDI))
@@ -104,11 +117,13 @@ namespace Empiria.Tests.FinancialAccounting.BalanceEngine {
                               .Sum(x => x.CurrentBalance);
 
         Assert.True(Math.Abs(totalMN - sut.DomesticBalance) <= 1,
-                    TestsHelpers.BalanceDiffMsg("Mon Nacional", $"{sut.AccountNumber}, sector {sut.SectorCode}",
+                    TestsHelpers.BalanceDiffMsg("Mon Nacional", $"{sut.AccountNumber}, " +
+                                                $"Deleg:{sut.LedgerNumber}, sector {sut.SectorCode}",
                                                 totalMN, sut.DomesticBalance));
 
         Assert.True(Math.Abs(totalME - sut.ForeignBalance) <= 1,
-                    TestsHelpers.BalanceDiffMsg("Mon Extranjera", $"{sut.AccountNumber}, sector {sut.SectorCode}",
+                    TestsHelpers.BalanceDiffMsg("Mon Extranjera", $"{sut.AccountNumber}, " +
+                                                $"Deleg: {sut.LedgerNumber}, sector {sut.SectorCode}",
                                                 totalME, sut.ForeignBalance));
 
         Assert.True(Math.Abs(totalMN + totalME - sut.TotalBalance) <= 1,

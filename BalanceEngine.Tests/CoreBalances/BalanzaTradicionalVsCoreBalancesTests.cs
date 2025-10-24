@@ -46,13 +46,12 @@ namespace Empiria.Tests.FinancialAccounting.BalanceEngine {
 
 
     [Theory]
-    [InlineData("2024-10-01", "2024-10-31", BalancesType.AllAccountsInCatalog)]
-    [InlineData("2024-11-01", "2024-11-30", BalancesType.AllAccountsInCatalog)]
-    [InlineData("2024-12-01", "2024-12-31", BalancesType.AllAccountsInCatalog)]
-    [InlineData("2025-01-01", "2025-01-31", BalancesType.AllAccountsInCatalog)]
-    [InlineData("2025-02-01", "2025-02-28", BalancesType.AllAccountsInCatalog)]
-    [InlineData("2025-03-01", "2025-03-31", BalancesType.AllAccountsInCatalog)]
-    [InlineData("2025-04-01", "2025-04-30", BalancesType.AllAccountsInCatalog)]
+    [InlineData("2024-12-01", "2024-12-31", BalancesType.WithCurrentBalanceOrMovements)]
+    [InlineData("2025-01-01", "2025-01-31", BalancesType.WithCurrentBalanceOrMovements)]
+    [InlineData("2025-02-01", "2025-02-28", BalancesType.WithCurrentBalanceOrMovements)]
+    [InlineData("2025-07-01", "2025-07-31", BalancesType.WithCurrentBalanceOrMovements)]
+    [InlineData("2025-08-01", "2025-08-31", BalancesType.WithCurrentBalanceOrMovements)]
+    [InlineData("2025-09-01", "2025-09-30", BalancesType.WithCurrentBalanceOrMovements)]
     public void Should_Have_Same_Summaries(string fromDate, string toDate, BalancesType balancesType) {
 
       CoreBalanceEntries coreBalances = TestsHelpers.GetCoreBalanceEntries(DateTime.Parse(fromDate),

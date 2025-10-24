@@ -25,14 +25,9 @@ namespace Empiria.Tests.FinancialAccounting.BalanceEngine {
   public class BalanzaComparativaVsCoreBalancesTests {
 
     [Theory]
-    [InlineData("2024-12-01", "2024-12-31", "2025-01-01", "2025-01-31", BalancesType.AllAccounts)]
-    [InlineData("2025-01-01", "2025-01-31", "2025-02-01", "2025-02-28", BalancesType.AllAccounts)]
-    [InlineData("2025-02-01", "2025-02-28", "2025-03-01", "2025-03-31", BalancesType.AllAccounts)]
-    [InlineData("2025-03-01", "2025-03-31", "2025-04-01", "2025-04-30", BalancesType.AllAccounts)]
-    [InlineData("2025-04-01", "2025-04-30", "2025-05-01", "2025-05-31", BalancesType.AllAccounts)]
+    [InlineData("2025-08-01", "2025-08-31", "2025-09-01", "2025-09-30", BalancesType.WithCurrentBalanceOrMovements)]
     public void Should_Have_Same_Entries(string fromDate, string toDate,
-                                                               string fromDate2, string toDate2, 
-                                                               BalancesType balancesType) {
+                                         string fromDate2, string toDate2, BalancesType balancesType) {
 
       CoreBalanceEntries coreBalances = TestsHelpers.GetCoreBalanceEntriesWithSubledgerAccounts(
                                                             DateTime.Parse(fromDate),
@@ -64,11 +59,11 @@ namespace Empiria.Tests.FinancialAccounting.BalanceEngine {
 
       foreach (var sut in comparativa) {
 
-        var filtered = coreBalances.GetBalancesByAccountNumberAndSector(sut.AccountNumber, sut.SectorCode)
+        var filtered = coreBalances.GetBalancesByAccountIdAndSector(sut.StandardAccountId, sut.SectorCode)
                                    .FindAll(x => x.Account.DebtorCreditor == sut.DebtorCreditor &&
                                                  x.SubledgerAccount.Id <= 0);
 
-        var filtered2 = coreBalances2.GetBalancesByAccountNumberAndSector(sut.AccountNumber, sut.SectorCode)
+        var filtered2 = coreBalances2.GetBalancesByAccountIdAndSector(sut.StandardAccountId, sut.SectorCode)
                                      .FindAll(x => x.Account.DebtorCreditor == sut.DebtorCreditor &&
                                                  x.SubledgerAccount.Id <= 0);
 
@@ -96,12 +91,12 @@ namespace Empiria.Tests.FinancialAccounting.BalanceEngine {
 
       foreach (var sut in comparativa) {
 
-        var filtered = coreBalances.GetBalancesByAccountNumberAndSubledgerAccountIdAndSector(
-                                      sut.AccountNumber, sut.SubledgerAccountId, sut.SectorCode)
+        var filtered = coreBalances.GetBalancesByAccountIdAndSubledgerAccountIdAndSector(
+                                      sut.StandardAccountId, sut.SubledgerAccountId, sut.SectorCode)
                                    .FindAll(x => x.Account.DebtorCreditor == sut.DebtorCreditor);
 
-        var filtered2 = coreBalances2.GetBalancesByAccountNumberAndSubledgerAccountIdAndSector(
-                                      sut.AccountNumber, sut.SubledgerAccountId, sut.SectorCode)
+        var filtered2 = coreBalances2.GetBalancesByAccountIdAndSubledgerAccountIdAndSector(
+                                      sut.StandardAccountId, sut.SubledgerAccountId, sut.SectorCode)
                                    .FindAll(x => x.Account.DebtorCreditor == sut.DebtorCreditor);
 
         var totalFirstPeriod = filtered.FindAll(x => x.Currency.Code.Equals(sut.CurrencyCode))

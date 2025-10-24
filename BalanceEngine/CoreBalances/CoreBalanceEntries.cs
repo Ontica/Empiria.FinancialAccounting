@@ -81,7 +81,7 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
     }
 
 
-    internal FixedList<CoreBalanceEntry> GetBalancesByAccountIdAndSector(string accountId,
+    internal FixedList<CoreBalanceEntry> GetBalancesByAccountIdAndSector(int accountId,
                                                                        string sectorCode) {
       if (sectorCode == "00") {
         return Entries.FindAll(x => x.Account.Id.Equals(accountId))
@@ -178,11 +178,13 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
 
       FixedList<ExchangeRate> exchangeRates = ExchangeRate.GetList(exchangeRateType,
                                                                    _query.InitialPeriod.ToDate);
+
       foreach (var entry in entries.FindAll(x => x.Currency.Distinct(Currency.MXN))) {
 
         var exchangeRate = exchangeRates.Find(x => x.ToCurrency.Equals(entry.Currency));
 
-        Assertion.Require(exchangeRate, $"No se ha registrado el tipo de cambio para la " +
+        Assertion.Require(exchangeRate, $"(CoreBalances)Cuenta {entry.Account.Number}." +
+                                        $"No se ha registrado el tipo de cambio para la " +
                                         $"moneda {entry.Currency.FullName} en la fecha proporcionada.");
 
         entry.ValuateTo(exchangeRate.Value);

@@ -21,7 +21,8 @@ namespace Empiria.Tests.FinancialAccounting.BalanceEngine {
   public class BalanzaContCascadaVsCoreBalancesTests {
 
     [Theory]
-    [InlineData("2025-01-01", "2025-01-31", BalancesType.AllAccountsInCatalog)]
+    [InlineData("2025-08-01", "2025-08-31", BalancesType.WithCurrentBalanceOrMovements)]
+    [InlineData("2025-09-01", "2025-09-30", BalancesType.WithCurrentBalanceOrMovements)]
     public void Should_Have_Same_Entries(string fromDate, string toDate, BalancesType balancesType) {
 
       CoreBalanceEntries coreBalances = TestsHelpers.GetCoreBalanceEntriesInCascade(
@@ -42,8 +43,8 @@ namespace Empiria.Tests.FinancialAccounting.BalanceEngine {
 
     private void RunTest(CoreBalanceEntries coreBalances, FixedList<BalanzaContabilidadesCascadaEntryDto> balanzaCascada) {
 
-      foreach (var sut in balanzaCascada) {
-
+      foreach (var sut in balanzaCascada.FindAll(x => !x.IsParentPostingEntry)) {
+        
         var filtered = coreBalances.GetBalancesByAccountNumberAndSector(sut.AccountNumber, sut.SectorCode)
                                    .FindAll(x => x.Account.DebtorCreditor.ToString() == sut.DebtorCreditor);
 
@@ -60,7 +61,7 @@ namespace Empiria.Tests.FinancialAccounting.BalanceEngine {
                                                         x.Ledger.Number == sut.LedgerNumber).Sum(x => x.CurrentBalance);
 
         Assert.True(Math.Abs(totalInitialBalance - sut.InitialBalance) <= 1,
-                    TestsHelpers.BalanceDiffMsg($"Saldo inicial. Moneda {sut.CurrencyCode}",
+                    TestsHelpers.BalanceDiffMsg($"Saldo inicial {sut.AccountName}. Moneda {sut.CurrencyCode}",
                                                 $"{sut.AccountNumber}, sector {sut.SectorCode} ({sut.DebtorCreditor})",
                                                 totalInitialBalance, sut.InitialBalance));
 

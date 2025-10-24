@@ -48,6 +48,7 @@ namespace Empiria.Tests.FinancialAccounting.BalanceEngine {
         BalancesType = balancesType,
         ShowCascadeBalances = false,
         UseDefaultValuation = true,
+        WithSubledgerAccount = true,
         InitialPeriod = new BalancesPeriod {
           FromDate = fromDate,
           ToDate = toDate
@@ -58,9 +59,9 @@ namespace Empiria.Tests.FinancialAccounting.BalanceEngine {
     }
 
 
-    static internal FixedList<AnaliticoDeCuentasEntryDto> GetAnaliticoCuentasWithSubledgerAccounts(DateTime fromDate,
-                                                                              DateTime toDate,
-                                                                              BalancesType balancesType) {
+    static internal FixedList<AnaliticoDeCuentasEntryDto> GetAnaliticoCuentasWithSubledgerAccounts(
+                                                          DateTime fromDate, DateTime toDate,
+                                                          BalancesType balancesType) {
 
       var query = new TrialBalanceQuery() {
         TrialBalanceType = TrialBalanceType.AnaliticoDeCuentas,
@@ -163,10 +164,9 @@ namespace Empiria.Tests.FinancialAccounting.BalanceEngine {
     }
 
 
-    static internal FixedList<BalanzaDiferenciaDiariaMonedaEntryDto> GetBalanzaDiferenciaDiaria(DateTime fromDate,
-                                                                              DateTime toDate,
-                                                                              BalancesType balancesType) {
-
+    static internal FixedList<BalanzaDiferenciaDiariaMonedaEntryDto> GetBalanzaDiferenciaDiaria(
+                                                                      DateTime fromDate, DateTime toDate,
+                                                                      BalancesType balancesType) {
       var query = new TrialBalanceQuery() {
         TrialBalanceType = TrialBalanceType.BalanzaDiferenciaDiariaPorMoneda,
         AccountsChartUID = TestingConstants.IFRS_ACCOUNTS_CHART.UID,
@@ -185,13 +185,12 @@ namespace Empiria.Tests.FinancialAccounting.BalanceEngine {
     static internal FixedList<BalanzaDolarizadaEntryDto> GetBalanzaDolarizada(DateTime fromDate,
                                                                               DateTime toDate,
                                                                               BalancesType balancesType) {
-
       var query = new TrialBalanceQuery() {
         TrialBalanceType = TrialBalanceType.BalanzaDolarizada,
         AccountsChartUID = TestingConstants.IFRS_ACCOUNTS_CHART.UID,
         BalancesType = balancesType,
         ShowCascadeBalances = false,
-        UseDefaultValuation = true,
+        UseDefaultValuation = false,
         InitialPeriod = new BalancesPeriod {
           FromDate = fromDate,
           ToDate = toDate
@@ -226,9 +225,9 @@ namespace Empiria.Tests.FinancialAccounting.BalanceEngine {
       var query = new TrialBalanceQuery() {
         AccountsChartUID = TestingConstants.IFRS_ACCOUNTS_CHART.UID,
         TrialBalanceType = TrialBalanceType.Balanza,
-        BalancesType = BalancesType.AllAccountsInCatalog,
+        BalancesType = BalancesType.AllAccounts,
         ShowCascadeBalances = false,
-        WithSubledgerAccount = false,
+        WithSubledgerAccount = true,
         UseDefaultValuation = true,
         InitialPeriod = new BalancesPeriod {
           FromDate = fromDate,
@@ -245,7 +244,7 @@ namespace Empiria.Tests.FinancialAccounting.BalanceEngine {
       var query = new TrialBalanceQuery() {
         AccountsChartUID = TestingConstants.IFRS_ACCOUNTS_CHART.UID,
         TrialBalanceType = TrialBalanceType.Balanza,
-        BalancesType = BalancesType.AllAccountsInCatalog,
+        BalancesType = BalancesType.AllAccounts,
         WithSubledgerAccount = true,
         UseDefaultValuation = true,
         InitialPeriod = new BalancesPeriod {
@@ -263,7 +262,7 @@ namespace Empiria.Tests.FinancialAccounting.BalanceEngine {
       var query = new TrialBalanceQuery() {
         AccountsChartUID = TestingConstants.IFRS_ACCOUNTS_CHART.UID,
         TrialBalanceType = TrialBalanceType.Balanza,
-        BalancesType = BalancesType.AllAccountsInCatalog,
+        BalancesType = BalancesType.AllAccounts,
         InitialPeriod = new BalancesPeriod {
           FromDate = fromDate,
           ToDate = toDate,
