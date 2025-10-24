@@ -324,6 +324,10 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
       } else if (!_query.UseNewSectorizationModel && currentCurrency.Equals(Currency.UDI)) {
         analyticEntry.DomesticBalance += balanceEntry.CurrentBalance;
 
+      } else if (_query.WithSubledgerAccount && currentCurrency.Equals(Currency.UDI) &&
+                 analyticEntry.SubledgerAccountId == balanceEntry.SubledgerAccountId) {
+        
+        analyticEntry.DomesticBalance += balanceEntry.CurrentBalance;
       }
     }
 
