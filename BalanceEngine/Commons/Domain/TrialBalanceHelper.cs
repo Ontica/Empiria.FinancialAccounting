@@ -13,6 +13,7 @@ using System.Linq;
 using Empiria.Collections;
 using Empiria.FinancialAccounting.BalanceEngine.Adapters;
 using Empiria.FinancialAccounting.BalanceEngine.Data;
+using Empiria.Time;
 
 namespace Empiria.FinancialAccounting.BalanceEngine {
 
@@ -294,27 +295,6 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
       return returnedAccountEntries;
     }
 
-    internal void SetParentPostingFlags(IEnumerable<TrialBalanceEntry> accountEntries) {
-
-      var returnedEntries = new List<TrialBalanceEntry>(accountEntries);
-
-      foreach (var entry in accountEntries) {
-
-        StandardAccount currentParent = entry.Account.GetParent();
-
-        var parentAccountEntry = returnedEntries.Find(a => a.Account.Number == currentParent.Number &&
-                                                           a.SubledgerAccountId == entry.SubledgerAccountId &&
-                                                           a.Currency.Code == entry.Currency.Code &&
-                                                           a.Ledger.Number == entry.Ledger.Number &&
-                                                           a.Sector.Code == entry.Sector.Code &&
-                                                           a.Account.DebtorCreditor == entry.Account.DebtorCreditor);
-        if (parentAccountEntry != null) {
-          entry.HasParentPostingEntry = true;
-          parentAccountEntry.IsParentPostingEntry = true;
-        }
-      }
-    }
-
 
     internal List<TrialBalanceEntry> GetCalculatedParentAccounts(
                                      FixedList<TrialBalanceEntry> accountEntries) {
@@ -371,6 +351,28 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
     }
 
 
+    public FixedList<DateTime> GetWorkingDaysRange() {
+
+      List<DateTime> workingDays = new List<DateTime>();
+
+      var calendar = EmpiriaCalendar.Default;
+      
+      for (DateTime dateCount = _query.InitialPeriod.FromDate;
+           dateCount <= _query.InitialPeriod.ToDate; dateCount = dateCount.AddDays(1)) {
+
+        if (calendar.IsWorkingDate(dateCount)) {
+          workingDays.Add(dateCount);
+        }
+      }
+
+      if (workingDays.Count == 0) {
+        throw Assertion.EnsureNoReachThisCode($"There must be at least one working day.");
+      }
+
+      return workingDays.ToFixedList();
+    }
+
+
     internal void RestrictLevels(List<TrialBalanceEntry> entries) {
       if (_query.Level == 0) {
         return;
@@ -397,6 +399,28 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
         entry.Debit = Math.Round(entry.Debit, decimals);
         entry.Credit = Math.Round(entry.Credit, decimals);
         entry.CurrentBalance = Math.Round(entry.CurrentBalance, decimals);
+      }
+    }
+
+
+    internal void SetParentPostingFlags(IEnumerable<TrialBalanceEntry> accountEntries) {
+
+      var returnedEntries = new List<TrialBalanceEntry>(accountEntries);
+
+      foreach (var entry in accountEntries) {
+
+        StandardAccount currentParent = entry.Account.GetParent();
+
+        var parentAccountEntry = returnedEntries.Find(a => a.Account.Number == currentParent.Number &&
+                                                           a.SubledgerAccountId == entry.SubledgerAccountId &&
+                                                           a.Currency.Code == entry.Currency.Code &&
+                                                           a.Ledger.Number == entry.Ledger.Number &&
+                                                           a.Sector.Code == entry.Sector.Code &&
+                                                           a.Account.DebtorCreditor == entry.Account.DebtorCreditor);
+        if (parentAccountEntry != null) {
+          entry.HasParentPostingEntry = true;
+          parentAccountEntry.IsParentPostingEntry = true;
+        }
       }
     }
 
@@ -464,6 +488,7 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
       SummaryByEntry(parentAccounts, entry, currentParent, entry.Sector.Parent,
                      TrialBalanceItemType.Summary);
     }
+
 
     internal bool ValidateEntryToAssignCurrentParentAccount(TrialBalanceEntry entry,
                                                       out StandardAccount currentParent) {
@@ -795,7 +820,7 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
       _query.InitialPeriod.ValuateToCurrrencyUID = exchangeRateFor.ValuateToCurrrencyUID;
       _query.InitialPeriod.ExchangeRateDate = exchangeRateFor.ExchangeRateDate;
     }
-
+    
     #endregion Private methods
 
   }  // class TrialBalanceHelper

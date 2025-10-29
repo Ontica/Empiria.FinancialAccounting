@@ -26,8 +26,11 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
     private readonly TrialBalanceQuery Query;
     private DateTime fromDateFlag;
     private DateTime toDateFlag;
+
     internal BalanzaDiferenciaDiariaMonedaBuilder(TrialBalanceQuery query) {
       Query = query;
+      fromDateFlag = this.Query.InitialPeriod.FromDate;
+      toDateFlag = this.Query.InitialPeriod.ToDate;
     }
 
     #endregion Constructors and parsers
@@ -179,7 +182,8 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
 
     private FixedList<BalanzaColumnasMonedaEntry> GetBalanceInColumnByCurrency() {
 
-      FixedList<DateTime> workingDays = GetWorkingDaysRange();
+      List<DateTime> workingDays = GetWorkingDates();
+
       var balanceInColumnByCurrencyList = new List<BalanzaColumnasMonedaEntry>();
 
       foreach (var dateFilter in workingDays) {
@@ -193,6 +197,15 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
       this.Query.InitialPeriod.ToDate = toDateFlag;
 
       return balanceInColumnByCurrencyList.ToFixedList();
+    }
+
+    
+    private DateTime GetLastWorkingDateFromPreviousMonth() {
+      var calendar = EmpiriaCalendar.Default;
+
+      var previousMonth = Query.InitialPeriod.FromDate.AddMonths(-1);
+
+      return calendar.LastWorkingDateWithinMonth(previousMonth.Year, previousMonth.Month);
     }
 
 
@@ -215,31 +228,17 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
     }
 
 
-    private FixedList<DateTime> GetWorkingDaysRange() {
-
-      fromDateFlag = this.Query.InitialPeriod.FromDate;
-      toDateFlag = this.Query.InitialPeriod.ToDate;
+    private List<DateTime> GetWorkingDates() {
 
       List<DateTime> workingDays = new List<DateTime>();
 
-      var calendar = EmpiriaCalendar.Default;
-      var previousMonth = this.Query.InitialPeriod.FromDate.AddMonths(-1);
+      workingDays.Add(GetLastWorkingDateFromPreviousMonth());
 
-      workingDays.Add(calendar.LastWorkingDateWithinMonth(previousMonth.Year, previousMonth.Month));
+      var balanceHelper = new TrialBalanceHelper(Query);
 
-      for (DateTime dateCount = this.Query.InitialPeriod.FromDate;
-           dateCount <= this.Query.InitialPeriod.ToDate; dateCount = dateCount.AddDays(1)) {
+      workingDays.AddRange(balanceHelper.GetWorkingDaysRange());
 
-        if (calendar.IsWorkingDate(dateCount)) {
-          workingDays.Add(dateCount);
-        }
-      }
-
-      if (workingDays.Count == 0) {
-        throw Assertion.EnsureNoReachThisCode($"There must be at least one working day.");
-      }
-
-      return workingDays.ToFixedList();
+      return workingDays;
     }
 
 
