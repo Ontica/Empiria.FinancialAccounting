@@ -90,6 +90,28 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
     }
 
 
+
+    internal FixedList<ExchangeRate> GetExchangeRateList(bool isValorizedBalance) {
+
+      if (Query.UseDefaultValuation || !isValorizedBalance) {
+        Query.InitialPeriod.ValuateToCurrrencyUID = "01";
+      }
+
+      GetExchangeRateTypeUID();
+
+      var exchangeRateType = ExchangeRateType.Parse(Query.InitialPeriod.ExchangeRateTypeUID);
+      FixedList<ExchangeRate> exchangeRates = ExchangeRate.GetList(
+                                                exchangeRateType, Query.InitialPeriod.ToDate);
+
+      Assertion.Require(exchangeRates.Count > 0,
+                        $"No se han registrado tipos de cambio para el tipo valorización " +
+                        $"'{exchangeRateType.Name}' en la fecha " +
+                        $"{Query.InitialPeriod.ToDate.ToString("dd/MMM/yyyy")}.");
+
+      return exchangeRates;
+    }
+
+
     internal List<TrialBalanceEntry> GetSumFromCreditorToDebtorAccounts(
                                       List<TrialBalanceEntry> parentAccounts) {
 
@@ -198,18 +220,6 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
       ValuateEntries(entries, exchangeRates, isValorizedBalance);
     }
 
-
-    internal void ValuateEntriesToExchangeRateByCurrency(FixedList<TrialBalanceEntry> entries) {
-
-      FixedList<ExchangeRate> exchangeRates = GetExchangeRateList(false);
-
-      foreach (var entry in entries) {
-
-        entry.AssignExchangeRateValueByCurrency(exchangeRates);
-      }
-    }
-
-
     #endregion Public methods
 
 
@@ -254,29 +264,8 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
     }
 
 
-    private FixedList<ExchangeRate> GetExchangeRateList(bool isValorizedBalance) {
-
-      if (Query.UseDefaultValuation || !isValorizedBalance) {
-        Query.InitialPeriod.ValuateToCurrrencyUID = "01";
-      }
-
-      GetExchangeRateTypeUID();
-
-      var exchangeRateType = ExchangeRateType.Parse(Query.InitialPeriod.ExchangeRateTypeUID);
-      FixedList<ExchangeRate> exchangeRates = ExchangeRate.GetList(
-                                                exchangeRateType, Query.InitialPeriod.ToDate);
-
-      Assertion.Require(exchangeRates.Count > 0,
-                        $"No se han registrado tipos de cambio para el tipo valorización " +
-                        $"'{exchangeRateType.Name}' en la fecha " +
-                        $"{Query.InitialPeriod.ToDate.ToString("dd/MMM/yyyy")}.");
-
-      return exchangeRates;
-    }
-
-
     private void GetExchangeRateTypeUID() {
-
+      
       if (Query.TrialBalanceType == TrialBalanceType.BalanzaDiferenciaDiariaPorMoneda) {
 
         var calendar = EmpiriaCalendar.Default;

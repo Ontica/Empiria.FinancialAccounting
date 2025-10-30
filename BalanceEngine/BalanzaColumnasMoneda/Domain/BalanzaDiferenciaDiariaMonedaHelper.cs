@@ -2,7 +2,7 @@
 *                                                                                                            *
 *  Module   : Balance Engine                             Component : Domain Layer                            *
 *  Assembly : FinancialAccounting.BalanceEngine.dll      Pattern   : Helper methods                          *
-*  Type     : BalanzaColumnasMonedaHelper                License   : Please read LICENSE.txt file            *
+*  Type     : BalanzaDiferenciaDiariaMonedaHelper        License   : Please read LICENSE.txt file            *
 *                                                                                                            *
 *  Summary  : Helper methods to build balanza diferencia diaria por moneda.                                  *
 *                                                                                                            *
@@ -89,19 +89,19 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
 
       List<DateTime> workingDays = GetWorkingDates();
 
-      var balanceInColumnByCurrencyList = new List<BalanzaColumnasMonedaEntry>();
+      var balancesInColumnByCurrency = new List<BalanzaColumnasMonedaEntry>();
 
       foreach (var dateFilter in workingDays) {
 
-        Query.AssignPeriodByWorkingDate(dateFilter);
+        Query.AssignDefaultDateAndValuation(dateFilter);
 
         List<BalanzaColumnasMonedaEntry> balanzaColumnas = BuildAccountEntries().ToList();
-        balanceInColumnByCurrencyList.AddRange(balanzaColumnas);
+        balancesInColumnByCurrency.AddRange(balanzaColumnas);
       }
       this.Query.InitialPeriod.FromDate = fromDateFlag;
       this.Query.InitialPeriod.ToDate = toDateFlag;
 
-      return balanceInColumnByCurrencyList.ToFixedList();
+      return balancesInColumnByCurrency.ToFixedList();
     }
 
 
@@ -142,39 +142,40 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
 
       FixedList<TrialBalanceEntry> baseAccountEntries = BalancesDataService.GetTrialBalanceEntries(Query);
 
-      return BuildBalanceInColumnByCurrencyV2(baseAccountEntries);
+      return BuildBalanceInColumnByCurrency(baseAccountEntries);
     }
 
 
-    private FixedList<BalanzaColumnasMonedaEntry> BuildBalanceInColumnByCurrencyV2(
+    private FixedList<BalanzaColumnasMonedaEntry> BuildBalanceInColumnByCurrency(
                                                     FixedList<TrialBalanceEntry> accountEntries) {
       if (accountEntries.Count == 0) {
         return new FixedList<BalanzaColumnasMonedaEntry>();
       }
 
+      var balanceInColumnHelper = new BalanzaColumnasMonedaHelper(Query);
       var balanceHelper = new TrialBalanceHelper(Query);
-      var helper = new BalanzaColumnasMonedaHelper(Query);
 
-      helper.ValuateEntriesToExchangeRate(accountEntries);
+      balanceInColumnHelper.ValuateEntriesToExchangeRate(accountEntries);
       balanceHelper.RoundDecimals(accountEntries);
       balanceHelper.SetParentPostingFlags(accountEntries);
 
       var parentAccountsEntries = balanceHelper.GetCalculatedParentAccounts(accountEntries.ToFixedList());
 
-      List<TrialBalanceEntry> debtorAccounts = helper.GetSumFromCreditorToDebtorAccounts(
+      List<TrialBalanceEntry> debtorAccounts = balanceInColumnHelper.GetSumFromCreditorToDebtorAccounts(
                                                       parentAccountsEntries);
 
-      helper.CombineAccountEntriesAndDebtorAccounts(accountEntries.ToList(), debtorAccounts);
+      balanceInColumnHelper.CombineAccountEntriesAndDebtorAccounts(accountEntries.ToList(), debtorAccounts);
 
       List<TrialBalanceEntry> accountEntriesByCurrency =
-                                helper.GetAccountEntriesByCurrency(debtorAccounts).ToList();
+                                balanceInColumnHelper.GetAccountEntriesByCurrency(debtorAccounts).ToList();
 
-      helper.ValuateEntriesToExchangeRateByCurrency(accountEntriesByCurrency.ToFixedList());
+      ValuateEntriesToExchangeRateByCurrency(accountEntriesByCurrency.ToFixedList());
 
       ValuateEntriesToClosingExchangeRate(accountEntriesByCurrency.ToFixedList(), fromDateFlag);
 
       List<BalanzaColumnasMonedaEntry> balanceByCurrency =
-                      helper.MergeTrialBalanceIntoBalanceByCurrency(accountEntriesByCurrency.ToFixedList());
+                      balanceInColumnHelper.MergeTrialBalanceIntoBalanceByCurrency(
+                                              accountEntriesByCurrency.ToFixedList());
 
       return balanceByCurrency.ToFixedList();
     }
@@ -230,6 +231,18 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
       foreach (var entry in entries) {
 
         entry.AssignClosingExchangeRateValueByCurrency(exchangeRates);
+      }
+    }
+
+
+    internal void ValuateEntriesToExchangeRateByCurrency(FixedList<TrialBalanceEntry> entries) {
+
+      var balanceInColumnHelper = new BalanzaColumnasMonedaHelper(Query);
+      FixedList<ExchangeRate> exchangeRates = balanceInColumnHelper.GetExchangeRateList(false);
+
+      foreach (var entry in entries) {
+
+        entry.AssignExchangeRateValueByCurrency(exchangeRates);
       }
     }
 
