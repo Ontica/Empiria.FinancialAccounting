@@ -184,28 +184,6 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
     }
 
 
-    internal void ValuateEntriesToClosingExchangeRate(
-      FixedList<TrialBalanceEntry> entries, DateTime fromDateFlag) {
-
-      DateTime dateForLastWorkingDate = Query.InitialPeriod.FromDate < fromDateFlag ?
-                                 fromDateFlag :
-                                 Query.InitialPeriod.FromDate;
-
-      var calendar = EmpiriaCalendar.Default;
-      var lastWorkingDayInMonth = calendar.LastWorkingDateWithinMonth(
-                                    dateForLastWorkingDate.Year, dateForLastWorkingDate.Month);
-
-      var exchangeRateType = ExchangeRateType.Parse(ExchangeRateType.ValorizacionBanxico.UID);
-      FixedList<ExchangeRate> exchangeRates = ExchangeRate.GetList(
-                                                exchangeRateType, lastWorkingDayInMonth);
-
-      foreach (var entry in entries) {
-
-        entry.AssignClosingExchangeRateValueByCurrency(exchangeRates);
-      }
-    }
-
-
     internal void ValuateEntriesToExchangeRate(FixedList<TrialBalanceEntry> entries) {
 
       var isValorizedBalance = Query.ValuateBalances ||
@@ -290,7 +268,8 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
 
       Assertion.Require(exchangeRates.Count > 0,
                         $"No se han registrado tipos de cambio para el tipo valorización " +
-                        $"'{exchangeRateType.Name}' en la fecha {Query.InitialPeriod.ToDate}.");
+                        $"'{exchangeRateType.Name}' en la fecha " +
+                        $"{Query.InitialPeriod.ToDate.ToString("dd/MMM/yyyy")}.");
 
       return exchangeRates;
     }

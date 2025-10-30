@@ -24,13 +24,9 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
     #region Constructors and parsers
 
     private readonly TrialBalanceQuery Query;
-    private DateTime fromDateFlag;
-    private DateTime toDateFlag;
 
     internal BalanzaDiferenciaDiariaMonedaBuilder(TrialBalanceQuery query) {
       Query = query;
-      fromDateFlag = this.Query.InitialPeriod.FromDate;
-      toDateFlag = this.Query.InitialPeriod.ToDate;
     }
 
     #endregion Constructors and parsers
@@ -40,20 +36,22 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
 
     internal FixedList<BalanzaDiferenciaDiariaMonedaEntry> Build() {
 
-      FixedList<BalanzaColumnasMonedaEntry> balanzaColumnas = GetBalanceInColumnByCurrency();
+      var helper = new BalanzaDiferenciaDiariaMonedaHelper(Query);
 
-      FixedList<BalanzaColumnasMonedaEntry> entriesByAccountAndDate = GetOrderingByAccountThenDate(
+      FixedList<BalanzaColumnasMonedaEntry> balanzaColumnas = helper.GetBalanceInColumnByCurrency();
+
+      FixedList<BalanzaColumnasMonedaEntry> entriesByAccountAndDate = helper.GetOrderingByAccountThenDate(
                                                                       balanzaColumnas);
 
       FixedList<BalanzaDiferenciaDiariaMonedaEntry> diffByDayEntries =
-        MergeBalanceByCurrencyIntoCurrencyDiffByDay(entriesByAccountAndDate);
+        helper.MergeBalanceByCurrencyIntoCurrencyDiffByDay(entriesByAccountAndDate);
 
-      CalculateBalancesForEntries(diffByDayEntries);
+      helper.CalculateBalancesForEntries(diffByDayEntries);
 
       FixedList<BalanzaDiferenciaDiariaMonedaEntry> entriesByDateAndAccount =
-        GetOrderingByDateThenAccount(diffByDayEntries);
+        helper.GetOrderingByDateThenAccount(diffByDayEntries);
 
-      AssignTagsToEntries(entriesByDateAndAccount);
+      helper.AssignTagsToEntries(entriesByDateAndAccount);
 
       return entriesByDateAndAccount;
     }
@@ -62,203 +60,6 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
 
 
     #region Private methods
-
-    private void AssignTagsToEntries(
-                  FixedList<BalanzaDiferenciaDiariaMonedaEntry> entriesByDateAndAccount) {
-
-      FixedList<string> accountsNumberList = entriesByDateAndAccount.SelectDistinct(x => x.Account.Number);
-
-      var tagsList = AccountClassificatorList.Parse("BitacoraCuentasValorizacion");
-
-      foreach (var accountNumber in accountsNumberList) {
-
-        FixedList<BalanzaDiferenciaDiariaMonedaEntry> entries = entriesByDateAndAccount.FindAll(
-                                                                x => x.Account.Number == accountNumber);
-
-        for (int i = 0; i < entries.Count; i++) {
-
-          entries[i].ERI = tagsList.TryGetAccountValue(accountNumber, "ERI") ?? "";
-          entries[i].ComplementDescription = tagsList.TryGetAccountValue(accountNumber, "Completo") ?? "";
-          entries[i].ComplementDetail = tagsList.TryGetAccountValue(accountNumber, "Detallado") ?? "";
-          entries[i].CategoryType = tagsList.TryGetAccountValue(accountNumber, "Rubro") ?? "";
-        }
-      }
-    }
-
-
-    private FixedList<BalanzaColumnasMonedaEntry> BuildAccountEntries() {
-
-      FixedList<TrialBalanceEntry> baseAccountEntries = BalancesDataService.GetTrialBalanceEntries(Query);
-
-      return BuildBalanceInColumnByCurrencyV2(baseAccountEntries);
-    }
-
-
-    internal FixedList<BalanzaColumnasMonedaEntry> BuildBalanceInColumnByCurrencyV1(
-                                                    FixedList<TrialBalanceEntry> accountEntries) {
-
-      if (accountEntries.Count == 0) {
-        return new FixedList<BalanzaColumnasMonedaEntry>();
-      }
-
-      var balanceHelper = new TrialBalanceHelper(Query);
-      var helper = new BalanzaColumnasMonedaHelper(Query);
-
-      helper.ValuateEntriesToExchangeRate(accountEntries);
-
-      helper.ValuateEntriesToClosingExchangeRate(accountEntries, fromDateFlag);
-
-      balanceHelper.RoundDecimals(accountEntries);
-
-      balanceHelper.SetParentPostingFlags(accountEntries);
-
-      balanceHelper.RestrictLevels(accountEntries.ToList());
-
-      List<BalanzaColumnasMonedaEntry> balanceByCurrency =
-                      helper.MergeTrialBalanceIntoBalanceByCurrency(accountEntries.ToFixedList());
-
-      return balanceByCurrency.ToFixedList();
-    }
-
-
-    private FixedList<BalanzaColumnasMonedaEntry> BuildBalanceInColumnByCurrencyV2(
-                                                    FixedList<TrialBalanceEntry> accountEntries) {
-      if (accountEntries.Count == 0) {
-        return new FixedList<BalanzaColumnasMonedaEntry>();
-      }
-
-      var balanceHelper = new TrialBalanceHelper(Query);
-      var helper = new BalanzaColumnasMonedaHelper(Query);
-
-      helper.ValuateEntriesToExchangeRate(accountEntries);
-      balanceHelper.RoundDecimals(accountEntries);
-      balanceHelper.SetParentPostingFlags(accountEntries);
-
-      var parentAccountsEntries = balanceHelper.GetCalculatedParentAccounts(accountEntries.ToFixedList());
-
-      List<TrialBalanceEntry> debtorAccounts = helper.GetSumFromCreditorToDebtorAccounts(
-                                                      parentAccountsEntries);
-
-      helper.CombineAccountEntriesAndDebtorAccounts(accountEntries.ToList(), debtorAccounts);
-
-      List<TrialBalanceEntry> accountEntriesByCurrency =
-                                helper.GetAccountEntriesByCurrency(debtorAccounts).ToList();
-
-      helper.ValuateEntriesToExchangeRateByCurrency(accountEntriesByCurrency.ToFixedList());
-
-      helper.ValuateEntriesToClosingExchangeRate(accountEntriesByCurrency.ToFixedList(), fromDateFlag);
-
-      List<BalanzaColumnasMonedaEntry> balanceByCurrency =
-                      helper.MergeTrialBalanceIntoBalanceByCurrency(accountEntriesByCurrency.ToFixedList());
-
-      return balanceByCurrency.ToFixedList();
-    }
-
-
-    private void CalculateBalancesForEntries(
-      FixedList<BalanzaDiferenciaDiariaMonedaEntry> diffByDayEntries) {
-
-      DateTime previousDate = DateTime.MinValue;
-
-      foreach (var entry in diffByDayEntries) {
-
-        if (entry.FromDate < Query.InitialPeriod.FromDate) {
-          entry.SetDailyBalance(new BalanzaDiferenciaDiariaMonedaEntry());
-          entry.SetValorizedDailyBalance();
-
-        } else if (previousDate != DateTime.MinValue && previousDate < entry.ToDate) {
-
-          var previousDayEntry = diffByDayEntries.Find(x => x.ToDate == previousDate &&
-                                                       x.Account.Number == entry.Account.Number);
-          if (previousDayEntry != null) {
-            entry.SetDailyBalance(previousDayEntry);
-            entry.SetValorizedDailyBalance();
-          }
-        }
-        previousDate = entry.ToDate;
-      }
-    }
-
-
-    private FixedList<BalanzaColumnasMonedaEntry> GetBalanceInColumnByCurrency() {
-
-      List<DateTime> workingDays = GetWorkingDates();
-
-      var balanceInColumnByCurrencyList = new List<BalanzaColumnasMonedaEntry>();
-
-      foreach (var dateFilter in workingDays) {
-        
-        Query.AssignPeriodByWorkingDate(dateFilter);
-
-        List<BalanzaColumnasMonedaEntry> balanzaColumnas = BuildAccountEntries().ToList();
-        balanceInColumnByCurrencyList.AddRange(balanzaColumnas);
-      }
-      this.Query.InitialPeriod.FromDate = fromDateFlag;
-      this.Query.InitialPeriod.ToDate = toDateFlag;
-
-      return balanceInColumnByCurrencyList.ToFixedList();
-    }
-
-    
-    private DateTime GetLastWorkingDateFromPreviousMonth() {
-      var calendar = EmpiriaCalendar.Default;
-
-      var previousMonth = Query.InitialPeriod.FromDate.AddMonths(-1);
-
-      return calendar.LastWorkingDateWithinMonth(previousMonth.Year, previousMonth.Month);
-    }
-
-
-    private FixedList<BalanzaColumnasMonedaEntry> GetOrderingByAccountThenDate(
-                                                  FixedList<BalanzaColumnasMonedaEntry> balanzaColumnas) {
-
-      var orderingEntries = new List<BalanzaColumnasMonedaEntry>(balanzaColumnas);
-      return orderingEntries.OrderBy(x => x.Account.Number)
-                            .ThenBy(x => x.ToDate).ToFixedList();
-    }
-
-
-    private FixedList<BalanzaDiferenciaDiariaMonedaEntry> GetOrderingByDateThenAccount(
-      FixedList<BalanzaDiferenciaDiariaMonedaEntry> diffByDayEntries) {
-
-      var orderingEntries = new List<BalanzaDiferenciaDiariaMonedaEntry>(diffByDayEntries);
-
-      return orderingEntries.OrderBy(x => x.ToDate)
-                            .ThenBy(x => x.Account.Number).ToFixedList();
-    }
-
-
-    private List<DateTime> GetWorkingDates() {
-
-      List<DateTime> workingDays = new List<DateTime>();
-
-      workingDays.Add(GetLastWorkingDateFromPreviousMonth());
-
-      var balanceHelper = new TrialBalanceHelper(Query);
-
-      workingDays.AddRange(balanceHelper.GetWorkingDaysRange());
-
-      return workingDays;
-    }
-
-
-    private BalanzaDiferenciaDiariaMonedaEntry MapToDifferenceByDayEntry(BalanzaColumnasMonedaEntry x) {
-
-      var entry = new BalanzaDiferenciaDiariaMonedaEntry();
-      entry.MapFromBalanceByColumnEntry(x);
-
-      return entry;
-    }
-
-
-    private FixedList<BalanzaDiferenciaDiariaMonedaEntry> MergeBalanceByCurrencyIntoCurrencyDiffByDay(
-      FixedList<BalanzaColumnasMonedaEntry> entriesByAccountAndDate) {
-
-      var mappedItems = entriesByAccountAndDate.Select((x) =>
-                        MapToDifferenceByDayEntry((BalanzaColumnasMonedaEntry) x));
-
-      return new FixedList<BalanzaDiferenciaDiariaMonedaEntry>(mappedItems);
-    }
 
     #endregion Private methods
 
