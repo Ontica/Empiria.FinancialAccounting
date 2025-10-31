@@ -34,6 +34,17 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
       CoreEntries = ReloadEntries(exchangeRateType);
     }
 
+
+    public CoreBalanceEntries(TrialBalanceQuery query, FixedList<CoreBalanceEntry> entries) {
+      _query = query;
+      CoreEntries = entries;
+    }
+
+
+    public CoreBalanceEntries(TrialBalanceQuery query) {
+      _query = query;
+    }
+
     #endregion Constructors and parsers
 
     #region Properties
@@ -162,7 +173,7 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
 
     #region Helpers
 
-    private FixedList<CoreBalanceEntry> ReloadEntries(ExchangeRateType exchangeRateType) {
+    internal FixedList<CoreBalanceEntry> ReloadEntries(ExchangeRateType exchangeRateType) {
 
       FixedList<CoreBalanceEntry> balances = CoreBalanceEntryDataServices.GetBalanceEntries(_query);
 

@@ -351,7 +351,7 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
     }
 
 
-    public FixedList<DateTime> GetWorkingDaysRange() {
+    internal FixedList<DateTime> GetWorkingDaysRange() {
 
       List<DateTime> workingDays = new List<DateTime>();
 

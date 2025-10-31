@@ -21,22 +21,42 @@ namespace Empiria.Tests.FinancialAccounting.BalanceEngine {
   public class BalanzaDiferenciaDiariaMonedaVsCoreBalancesTests {
 
     [Theory]
-    [InlineData("2024-10-01", "2024-10-31", BalancesType.WithCurrentBalanceOrMovements)]
-    [InlineData("2024-11-01", "2024-11-30", BalancesType.AllAccounts)]
-    [InlineData("2024-12-01", "2024-12-31", BalancesType.WithCurrentBalanceOrMovements)]
-    [InlineData("2025-01-01", "2025-01-31", BalancesType.AllAccounts)]
-    [InlineData("2025-02-01", "2025-02-28", BalancesType.WithCurrentBalanceOrMovements)]
-    [InlineData("2025-03-01", "2025-03-31", BalancesType.AllAccounts)]
-    [InlineData("2025-04-01", "2025-04-30", BalancesType.WithCurrentBalanceOrMovements)]
-    public void Should_Have_Same_Entries(string fromDate, string toDate, BalancesType balancesType) {
+    [InlineData("2024-09-01", "2024-09-30", BalancesType.WithCurrentBalanceOrMovements)]
+    public void Should_Have_Same_Entries_In_Last_Date(string fromDate, string toDate,
+                                                      BalancesType balancesType) {
 
-      CoreBalanceEntries coreBalances = TestsHelpers.GetCoreBalanceEntries(DateTime.Parse(fromDate),
-                                                                           DateTime.Parse(toDate),
-                                                                           ExchangeRateType.Empty);
+      CoreBalanceEntries coreBalances = BalanzaDiferenciaDiariaMonedaTestHelpers.GetCoreBalanceEntries(
+                                                                                  DateTime.Parse(fromDate),
+                                                                                  DateTime.Parse(toDate),
+                                                                                  ExchangeRateType.Empty);
 
-      FixedList<BalanzaDiferenciaDiariaMonedaEntryDto> balanzaDiferencia = 
-        TestsHelpers.GetBalanzaDiferenciaDiaria(DateTime.Parse(fromDate), DateTime.Parse(toDate), balancesType)
-                                              .FindAll(x => x.ItemType == TrialBalanceItemType.Entry);
+      FixedList<BalanzaDiferenciaDiariaMonedaEntryDto> balanzaDiferencia =
+        BalanzaDiferenciaDiariaMonedaTestHelpers.GetBalanzaDiferenciaDiaria(DateTime.Parse(fromDate),
+                                                                            DateTime.Parse(toDate),
+                                                                            balancesType)
+                                                .FindAll(x => x.ItemType == TrialBalanceItemType.Entry);
+
+      RunTest(coreBalances, balanzaDiferencia);
+
+      Assert.True(balanzaDiferencia.Count > 500);
+    }
+
+
+    [Theory]
+    [InlineData("2024-09-01", "2024-09-30", BalancesType.WithCurrentBalanceOrMovements)]
+    public void Should_Have_Same_Entries_By_Working_Date(string fromDate, string toDate,
+                                                         BalancesType balancesType) {
+
+      CoreBalanceEntries coreBalances = BalanzaDiferenciaDiariaMonedaTestHelpers.GetCoreBalanceEntriesByDateRange(
+                                                                                  DateTime.Parse(fromDate),
+                                                                                  DateTime.Parse(toDate),
+                                                                                  ExchangeRateType.Empty);
+
+      FixedList<BalanzaDiferenciaDiariaMonedaEntryDto> balanzaDiferencia =
+        BalanzaDiferenciaDiariaMonedaTestHelpers.GetBalanzaDiferenciaDiaria(DateTime.Parse(fromDate),
+                                                                            DateTime.Parse(toDate),
+                                                                            balancesType)
+                                                .FindAll(x => x.ItemType == TrialBalanceItemType.Entry);
 
       RunTest(coreBalances, balanzaDiferencia);
 

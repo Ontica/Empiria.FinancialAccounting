@@ -178,7 +178,7 @@ namespace Empiria.FinancialAccounting.BalanceEngine.Adapters {
     } = false;
 
 
-    public void AssignPeriodByWorkingDate(DateTime dateFilter) {
+    public void AssignDefaultDateAndValuation(DateTime dateFilter) {
       this.InitialPeriod.FromDate = dateFilter;
       this.InitialPeriod.ToDate = dateFilter;
       this.InitialPeriod.ValuateToCurrrencyUID = string.Empty;

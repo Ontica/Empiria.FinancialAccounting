@@ -164,24 +164,6 @@ namespace Empiria.Tests.FinancialAccounting.BalanceEngine {
     }
 
 
-    static internal FixedList<BalanzaDiferenciaDiariaMonedaEntryDto> GetBalanzaDiferenciaDiaria(
-                                                                      DateTime fromDate, DateTime toDate,
-                                                                      BalancesType balancesType) {
-      var query = new TrialBalanceQuery() {
-        TrialBalanceType = TrialBalanceType.BalanzaDiferenciaDiariaPorMoneda,
-        AccountsChartUID = TestingConstants.IFRS_ACCOUNTS_CHART.UID,
-        BalancesType = balancesType,
-        ShowCascadeBalances = false,
-        InitialPeriod = new BalancesPeriod {
-          FromDate = fromDate,
-          ToDate = toDate
-        }
-      };
-
-      return ExecuteTrialBalance<BalanzaDiferenciaDiariaMonedaEntryDto>(query);
-    }
-
-
     static internal FixedList<BalanzaDolarizadaEntryDto> GetBalanzaDolarizada(DateTime fromDate,
                                                                               DateTime toDate,
                                                                               BalancesType balancesType) {
@@ -227,8 +209,8 @@ namespace Empiria.Tests.FinancialAccounting.BalanceEngine {
         TrialBalanceType = TrialBalanceType.Balanza,
         BalancesType = BalancesType.AllAccounts,
         ShowCascadeBalances = false,
-        WithSubledgerAccount = true,
-        UseDefaultValuation = true,
+        WithSubledgerAccount = false,
+        UseDefaultValuation = false,
         InitialPeriod = new BalancesPeriod {
           FromDate = fromDate,
           ToDate = toDate,
