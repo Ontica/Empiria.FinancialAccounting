@@ -74,4 +74,7 @@
   <ItemGroup>
     <Reference Include="Microsoft.CSharp" />
   </ItemGroup>
+  <ItemGroup>
+    <Folder Include="ResumenAjusteAnual\Adapters\" />
+  </ItemGroup>
 </Project>
