@@ -36,7 +36,7 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
 
       var balanza = new BalanzaTradicionalBuilder(trialBalanceQuery);
 
-      TrialBalance balances = balanza.Build();
+      TrialBalance balances = balanza.BuildOperationalReport();
 
       var entries = new List<TrialBalanceEntry>(accountsByDate.Count);
 

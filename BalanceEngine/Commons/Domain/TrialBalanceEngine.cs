@@ -21,21 +21,23 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
 
     BalanzaEnColumnasPorMoneda,
 
+    BalanzaDolarizada,
+
     BalanzaDiferenciaDiariaPorMoneda,
 
     BalanzaValorizadaComparativa,
 
-    BalanzaDolarizada,
-
     GeneracionDeSaldos,
 
-    SaldosPorAuxiliar,
+    ResumenAjusteAnual,
 
-    SaldosPorCuenta,
+    SaldosPorAuxiliar,
 
     SaldosPorAuxiliarConsultaRapida,
 
     SaldosPorAuxiliarID,
+
+    SaldosPorCuenta,
 
     SaldosPorCuentaConsultaRapida,
 
@@ -147,7 +149,7 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
 
           var balanzaTradicional = new BalanzaTradicionalBuilder(this.Query);
 
-          return balanzaTradicional.Build();
+          return balanzaTradicional.BuildV2();
 
         case TrialBalanceType.SaldosPorCuenta:
 

@@ -51,31 +51,6 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
     }
 
 
-    internal TrialBalanceEntry TryGenerateTotalConsolidated(
-                                      List<TrialBalanceEntry> totalByCurrencyEntries) {
-      Assertion.Require(totalByCurrencyEntries, nameof(totalByCurrencyEntries));
-
-      if (totalByCurrencyEntries.Count == 0) {
-        return null;
-      }
-
-      var totalConsolidated = new EmpiriaHashTable<TrialBalanceEntry>();
-
-      foreach (var totalByCurrency in totalByCurrencyEntries) {
-
-        TrialBalanceEntry entry = totalByCurrency.CreatePartialCopy();
-        entry.GroupName = "TOTAL CONSOLIDADO GENERAL";
-        string hash = $"{entry.GroupName}";
-
-        var trialBalanceHelper = new TrialBalanceHelper(_query);
-        trialBalanceHelper.GenerateOrIncreaseEntries(totalConsolidated, entry, StandardAccount.Empty,
-                            Sector.Empty, TrialBalanceItemType.BalanceTotalConsolidated, hash);
-      } // foreach
-
-      return totalConsolidated.Values.First();
-    }
-
-
     internal List<TrialBalanceEntry> GenerateTotalsConsolidatedByLedger(
                                       List<TrialBalanceEntry> totalsByCurrency) {
 
@@ -137,6 +112,34 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
     }
 
 
+    internal List<TrialBalanceEntry> GetAccountsAndParentsWithSectorization(
+                                    FixedList<TrialBalanceEntry> accountEntries,
+                                    FixedList<TrialBalanceEntry> parentAccounts) {
+
+      var balanceHelper = new TrialBalanceHelper(_query);
+
+      //balanceHelper.SetSummaryToParentEntries(accountEntries);
+
+      List<TrialBalanceEntry> accountEntriesMapped = balanceHelper.GetEntriesMappedForSectorization(
+                                                     accountEntries.ToList());
+
+      List<TrialBalanceEntry> accountAndSectorization =
+        balanceHelper.GetSummaryAccountsAndSectorization(accountEntriesMapped);
+
+      List<TrialBalanceEntry> parentAccountsAndSectorization =
+        balanceHelper.GetSummaryAccountsAndSectorization(parentAccounts.ToList());
+
+      var utility = new BalanzaTradicionalUtility(_query);
+
+      List<TrialBalanceEntry> parentsAndAccountEntries = utility.CombineParentsAndAccountEntries(
+                                                         parentAccountsAndSectorization,
+                                                         accountAndSectorization);
+
+      return parentsAndAccountEntries;
+
+    }
+    
+    
     internal FixedList<TrialBalanceEntry> GetCalculatedParentAccounts(
                                           FixedList<TrialBalanceEntry> accountEntries) {
       if (accountEntries.Count == 0) {
@@ -164,6 +167,25 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
       trialBalanceHelper.AssignLastChangeDatesToParentEntries(accountEntries, parentAccounts.ToFixedList());
 
       return parentAccounts.ToFixedList();
+    }
+
+
+    internal FixedList<TrialBalanceEntry> GetEntriesWithParents(
+                      FixedList<TrialBalanceEntry> accountEntries) {
+
+      if (accountEntries.Count == 0) {
+        return new FixedList<TrialBalanceEntry>();
+      }
+
+      var balanceHelper = new TrialBalanceHelper(_query);
+
+      balanceHelper.SetParentPostingFlags(accountEntries);
+
+      FixedList<TrialBalanceEntry> parentAccounts = GetCalculatedParentAccounts(
+                                                    accountEntries);
+
+      return new FixedList<TrialBalanceEntry>(GetAccountsAndParentsWithSectorization(
+                                                accountEntries, parentAccounts).ToFixedList());
     }
 
 
@@ -212,6 +234,30 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
                                                    TrialBalanceItemType.BalanceTotalCurrency, hash);
     }
 
+
+    internal TrialBalanceEntry TryGenerateTotalConsolidated(
+                                      List<TrialBalanceEntry> totalByCurrencyEntries) {
+      Assertion.Require(totalByCurrencyEntries, nameof(totalByCurrencyEntries));
+
+      if (totalByCurrencyEntries.Count == 0) {
+        return null;
+      }
+
+      var totalConsolidated = new EmpiriaHashTable<TrialBalanceEntry>();
+
+      foreach (var totalByCurrency in totalByCurrencyEntries) {
+
+        TrialBalanceEntry entry = totalByCurrency.CreatePartialCopy();
+        entry.GroupName = "TOTAL CONSOLIDADO GENERAL";
+        string hash = $"{entry.GroupName}";
+
+        var trialBalanceHelper = new TrialBalanceHelper(_query);
+        trialBalanceHelper.GenerateOrIncreaseEntries(totalConsolidated, entry, StandardAccount.Empty,
+                            Sector.Empty, TrialBalanceItemType.BalanceTotalConsolidated, hash);
+      } // foreach
+
+      return totalConsolidated.Values.First();
+    }
 
     #endregion Public methods
 

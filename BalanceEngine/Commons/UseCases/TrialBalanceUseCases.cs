@@ -131,7 +131,7 @@ namespace Empiria.FinancialAccounting.BalanceEngine.UseCases {
 
       var builder = new BalanzaTradicionalBuilder(query);
 
-      TrialBalance entries = await Task.Run(() => builder.Build()).ConfigureAwait(false);
+      TrialBalance entries = await Task.Run(() => builder.BuildV2()).ConfigureAwait(false);
 
       return BalanzaTradicionalMapper.Map(entries);
     }

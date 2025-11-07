@@ -26,7 +26,49 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
     }
 
 
+    internal TrialBalance BuildV2() {
+
+      if (!_query.IsOperationalReport) {
+        
+        return BuildBalanzaTradicional();
+      } else {
+
+        return BuildOperationalReport();
+      }
+    }
+
+
+    internal TrialBalance BuildBalanzaTradicional() {
+
+      var helper = new BalanzaTradicionalHelper(_query);
+
+      FixedList<TrialBalanceEntry> accountEntries = helper.GetPostingEntries();
+
+      FixedList<TrialBalanceEntry> parentsAndAccountEntries = helper.GetEntriesWithParents(accountEntries);
+
+      List<TrialBalanceEntry> balanza = GenerateTotalsForBalanza(parentsAndAccountEntries.ToList(),
+                                                                 accountEntries);
+
+      return GetTrialBalanceStructure(balanza);
+    }
+
+
+    internal TrialBalance BuildOperationalReport() {
+
+      var helper = new BalanzaTradicionalHelper(_query);
+
+      FixedList<TrialBalanceEntry> accountEntries = helper.GetPostingEntries();
+
+      FixedList<TrialBalanceEntry> parentsAndAccountEntries = helper.GetEntriesWithParents(accountEntries);
+
+      List<TrialBalanceEntry> operationalReport = GetOperationalReports(parentsAndAccountEntries.ToList());
+
+      return GetTrialBalanceStructure(operationalReport);
+    }
+
+
     internal TrialBalance Build() {
+
       var helper = new BalanzaTradicionalHelper(_query);
       
       FixedList<TrialBalanceEntry> accountEntries = helper.GetPostingEntries();
@@ -42,7 +84,7 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
       FixedList<TrialBalanceEntry> parentAccounts = helper.GetCalculatedParentAccounts(
                                                     accountEntries);
 
-      List<TrialBalanceEntry> parentsAndAccountEntries = GetAccountsAndParentsWithSectorization(
+      List<TrialBalanceEntry> parentsAndAccountEntries = helper.GetAccountsAndParentsWithSectorization(
                                                          accountEntries, parentAccounts);
 
       List<TrialBalanceEntry> balanza = GetTotals(
@@ -54,52 +96,6 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
                               balanza.Select(x => (ITrialBalanceEntry) x));
 
       return new TrialBalance(_query, returnBalance);
-    }
-
-
-    private List<TrialBalanceEntry> GetAccountsAndParentsWithSectorization(
-                                    FixedList<TrialBalanceEntry> accountEntries,
-                                    FixedList<TrialBalanceEntry> parentAccounts) {
-
-      var balanceHelper = new TrialBalanceHelper(_query);
-
-      //balanceHelper.SetSummaryToParentEntries(accountEntries);
-
-      List<TrialBalanceEntry> accountEntriesMapped = balanceHelper.GetEntriesMappedForSectorization(
-                                                     accountEntries.ToList());
-
-      List<TrialBalanceEntry> accountAndSectorization =
-        balanceHelper.GetSummaryAccountsAndSectorization(accountEntriesMapped);
-
-      List<TrialBalanceEntry> parentAccountsAndSectorization =
-        balanceHelper.GetSummaryAccountsAndSectorization(parentAccounts.ToList());
-
-      var utility = new BalanzaTradicionalUtility(_query);
-
-      List<TrialBalanceEntry> parentsAndAccountEntries = utility.CombineParentsAndAccountEntries(
-                                                         parentAccountsAndSectorization,
-                                                         accountAndSectorization);
-
-      return parentsAndAccountEntries;
-
-    }
-
-
-    private List<TrialBalanceEntry> GetTotals(
-                                    List<TrialBalanceEntry> parentsAndAccountEntries,
-                                    FixedList<TrialBalanceEntry> accountEntries) {
-
-      List<TrialBalanceEntry> balanza;
-
-      if (!_query.IsOperationalReport) {
-        balanza = GenerateTotalsForBalanza(
-                  parentsAndAccountEntries, accountEntries);
-
-      } else {
-        balanza = GetOperationalReports(parentsAndAccountEntries);
-      }
-
-      return balanza;
     }
 
 
@@ -160,13 +156,43 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
     }
 
 
+    private List<TrialBalanceEntry> GetTotals(
+                                    List<TrialBalanceEntry> parentsAndAccountEntries,
+                                    FixedList<TrialBalanceEntry> accountEntries) {
+
+      List<TrialBalanceEntry> balanza;
+
+      if (!_query.IsOperationalReport) {
+        balanza = GenerateTotalsForBalanza(
+                  parentsAndAccountEntries, accountEntries);
+
+      } else {
+        balanza = GetOperationalReports(parentsAndAccountEntries);
+      }
+
+      return balanza;
+    }
+
+
+    private TrialBalance GetTrialBalanceStructure(List<TrialBalanceEntry> balanza) {
+
+      var balanceHelper = new TrialBalanceHelper(_query);
+      balanceHelper.RestrictLevels(balanza);
+
+      var returnBalance = new FixedList<ITrialBalanceEntry>(
+                              balanza.Select(x => (ITrialBalanceEntry) x));
+
+      return new TrialBalance(_query, returnBalance);
+    }
+
+
     private List<TrialBalanceEntry> GetOperationalReports(List<TrialBalanceEntry> trialBalance) {
 
       var totalByAccountEntries = new EmpiriaHashTable<TrialBalanceEntry>(trialBalance.Count);
 
       if (_query.IsSATBalanceReport) {
 
-        return GetSATBalanceReport(trialBalance);
+        return GetOrderingForBalanzaSAT(trialBalance);
 
       } else if (_query.ConsolidateBalancesToTargetCurrency && !_query.IsSATBalanceReport) {
 
@@ -184,7 +210,7 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
     }
 
 
-    private List<TrialBalanceEntry> GetSATBalanceReport(List<TrialBalanceEntry> trialBalance) {
+    private List<TrialBalanceEntry> GetOrderingForBalanzaSAT(List<TrialBalanceEntry> trialBalance) {
 
       List<TrialBalanceEntry> returnedBalance = new List<TrialBalanceEntry>();
 
