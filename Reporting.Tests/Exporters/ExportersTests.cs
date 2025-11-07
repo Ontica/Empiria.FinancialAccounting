@@ -33,17 +33,15 @@ namespace Empiria.FinancialAccounting.Tests.Reporting {
 
         var query = new TrialBalanceQuery() {
           AccountsChartUID = AccountsChart.IFRS.UID,
-          BalancesType = BalancesType.AllAccountsInCatalog,
-          TrialBalanceType = TrialBalanceType.AnaliticoDeCuentas,
+          BalancesType = BalancesType.WithCurrentBalanceOrMovements,
+          TrialBalanceType = TrialBalanceType.Balanza,
           Ledgers = new string[] { },
           ShowCascadeBalances = false,
-          UseDefaultValuation = true,
-          WithSubledgerAccount = true,
-          FromAccount = "1.01.03.04.06",
-          ToAccount = "1.01.03.04.06",
+          UseDefaultValuation = false,
+          WithSubledgerAccount = false,
           InitialPeriod = new BalancesPeriod {
-            FromDate = new DateTime(2025, 01, 01),
-            ToDate = new DateTime(2025, 01, 31)
+            FromDate = new DateTime(2025, 09, 01),
+            ToDate = new DateTime(2025, 09, 30)
           }
         };
 
@@ -65,8 +63,8 @@ namespace Empiria.FinancialAccounting.Tests.Reporting {
 
         SaldosEncerradosQuery query = new SaldosEncerradosQuery {
           AccountsChartUID = AccountsChart.IFRS.UID,
-          FromDate = new DateTime(2022, 01, 03),
-          ToDate = new DateTime(2022, 05, 31),
+          FromDate = new DateTime(2022, 01, 01),
+          ToDate = new DateTime(2025, 09, 30),
         };
 
         SaldosEncerradosDto reportData = await service.BuildSaldosEncerrados(query);
@@ -141,16 +139,55 @@ namespace Empiria.FinancialAccounting.Tests.Reporting {
         ReportBuilderQuery query = new ReportBuilderQuery {
           AccountsChartUID = "47ec2ec7-0f4f-482e-9799-c23107b60d8a",
           ReportType = ReportTypes.BalanzaSAT,
-          FromDate = new DateTime(2025, 01, 01),
-          ToDate = new DateTime(2025, 01, 31),
-          ExportTo = Storage.FileType.Excel
+          FromDate = new DateTime(2025, 09, 01),
+          ToDate = new DateTime(2025, 09, 30),
+          ExportTo = FileType.Excel
         };
 
         ReportDataDto reportData = service.GenerateReport(query);
         FileDto sut = service.ExportReport(query, reportData);
         Assert.NotNull(sut);
       }
+    }
 
+
+    [Fact]
+    public void ExportBalanzaDeterminarImpuestosTest() {
+
+      using (var service = ReportingService.ServiceInteractor()) {
+
+        ReportBuilderQuery query = new ReportBuilderQuery {
+          AccountsChartUID = "47ec2ec7-0f4f-482e-9799-c23107b60d8a",
+          ReportType = ReportTypes.BalanzaDeterminarImpuestos,
+          FromDate = new DateTime(2025, 09, 01),
+          ToDate = new DateTime(2025, 09, 30),
+          ExportTo = FileType.Excel
+        };
+
+        ReportDataDto reportData = service.GenerateReport(query);
+        FileDto sut = service.ExportReport(query, reportData);
+        Assert.NotNull(sut);
+      }
+    }
+
+
+    [Fact]
+    public void ExportValorizacionEstimacionTest() {
+
+      using (var service = ReportingService.ServiceInteractor()) {
+
+        ReportBuilderQuery query = new ReportBuilderQuery {
+          AccountsChartUID = "47ec2ec7-0f4f-482e-9799-c23107b60d8a",
+          ReportType = ReportTypes.ValorizacionEstimacionPreventiva,
+          FromDate = new DateTime(2024, 01, 01),
+          ToDate = new DateTime(2024, 03, 16),
+          ExportTo = FileType.Excel
+        };
+
+        ReportDataDto reportData = service.GenerateReport(query);
+        FileDto sut = service.ExportReport(query, reportData);
+        Assert.NotNull(sut);
+      }
     }
 
 

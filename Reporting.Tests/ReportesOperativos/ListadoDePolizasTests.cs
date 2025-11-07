@@ -44,9 +44,9 @@ namespace Empiria.FinancialAccounting.Tests.Reporting {
       ReportBuilderQuery query = new ReportBuilderQuery {
         AccountsChartUID = "47ec2ec7-0f4f-482e-9799-c23107b60d8a",
         ReportType = ReportTypes.BalanzaSAT,
-        FromDate = new DateTime(2025, 01, 01),
-        ToDate = new DateTime(2025, 01, 31),
-        ExportTo = Storage.FileType.Xml
+        FromDate = new DateTime(2025, 09, 01),
+        ToDate = new DateTime(2025, 09, 30),
+        ExportTo = Storage.FileType.Excel
       };
 
       using (var service = ReportingService.ServiceInteractor()) {
