@@ -131,6 +131,19 @@ namespace Empiria.FinancialAccounting.Tests.BalanceEngine {
 
 
     [Fact]
+    public void Should_Build_Resumen_Ajuste_Anual_Balance() {
+
+      TrialBalanceQuery query = GetDefaultTrialBalanceQuery();
+      query.TrialBalanceType = TrialBalanceType.ResumenAjusteAnual;
+      TrialBalanceDto sut = BalanceEngineProxy.BuildTrialBalance(query);
+
+      Assert.NotNull(sut);
+      Assert.Equal(query, sut.Query);
+      Assert.NotEmpty(sut.Entries);
+    }
+
+
+    [Fact]
     public void Should_Build_Saldos_Por_Auxiliar() {
       TrialBalanceQuery query = GetDefaultTrialBalanceQuery();
       query.TrialBalanceType = TrialBalanceType.SaldosPorAuxiliar;
@@ -247,7 +260,10 @@ namespace Empiria.FinancialAccounting.Tests.BalanceEngine {
         AccountsChartUID = TestingConstants.IFRS_ACCOUNTS_CHART.UID,
         BalancesType = BalancesType.WithCurrentBalanceOrMovements,
         ShowCascadeBalances = false,
+        UseDefaultValuation = false,
         WithSubledgerAccount = false,
+        FromAccount = "1",
+        ToAccount = "3",
         InitialPeriod = new BalancesPeriod {
           FromDate = TestingConstants.FROM_DATE,
           ToDate = TestingConstants.TO_DATE

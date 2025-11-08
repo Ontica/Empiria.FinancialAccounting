@@ -16,13 +16,14 @@ namespace Empiria.FinancialAccounting.Tests {
 
     static internal readonly AccountsChart IFRS_ACCOUNTS_CHART = AccountsChart.IFRS;
 
-    static internal readonly DateTime FROM_DATE = new DateTime(2024, 04, 01);
+    static internal readonly DateTime FROM_DATE = new DateTime(2025, 9, 01);
 
-    static internal readonly DateTime TO_DATE = new DateTime(2024, 04, 30);
+    static internal readonly DateTime TO_DATE = new DateTime(2025, 09, 30);
 
     static public bool INVOKE_USE_CASES_THROUGH_THE_WEB_API = false;
 
     static internal readonly string WEB_API_BASE_ADDRESS = "http://172.27.207.97/sicofin/api";
+    //static internal readonly string WEB_API_BASE_ADDRESS = "https://bnoqsicofin1-b.banobras.gob.mx/sicofin/api";
 
     static public int WEB_API_TIMEOUT_SECONDS = 240;
 
