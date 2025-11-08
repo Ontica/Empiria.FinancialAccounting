@@ -28,25 +28,25 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
 
     #region Public methods
 
-    internal FixedList<ResumenAjusteAnualEntry> GetBalancesByMonths() {
+    internal FixedList<ResumenAjusteEntry> GetBalancesByMonths() {
 
       FixedList<DateTime> monthsInYear = GetMonthsInYear();
 
-      FixedList<ResumenAjusteAnualEntry> balancesByMonth = GetResumeBalancesByMonth(monthsInYear);
+      FixedList<ResumenAjusteEntry> balancesByMonth = GetResumeBalancesByMonth(monthsInYear);
 
-      return new FixedList<ResumenAjusteAnualEntry>(balancesByMonth);
+      return new FixedList<ResumenAjusteEntry>(balancesByMonth);
     }
 
     #endregion Public methods
 
     #region Private methods
 
-    private FixedList<ResumenAjusteAnualEntry> ConvertBalanceEntryIntoResumeEntry(
+    private FixedList<ResumenAjusteEntry> ConvertBalanceEntryIntoResumeEntry(
                                                 FixedList<TrialBalanceEntry> entriesFromBalanza) {
-      List<ResumenAjusteAnualEntry> resumeByMonth = new List<ResumenAjusteAnualEntry>();
+      List<ResumenAjusteEntry> resumeByMonth = new List<ResumenAjusteEntry>();
 
       foreach (var entry in entriesFromBalanza) {
-        ResumenAjusteAnualEntry resumeEntry = new ResumenAjusteAnualEntry();
+        ResumenAjusteEntry resumeEntry = new ResumenAjusteEntry();
 
         resumeEntry.MapFromTrialBalanceEntry(entry);
         resumeEntry.ConsultingDate = Query.InitialPeriod.ToDate;
@@ -57,7 +57,7 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
         resumeByMonth.Add(resumeEntry);
       }
 
-      return new FixedList<ResumenAjusteAnualEntry>(resumeByMonth);
+      return new FixedList<ResumenAjusteEntry>(resumeByMonth);
     }
 
 
@@ -99,9 +99,9 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
     }
 
 
-    private FixedList<ResumenAjusteAnualEntry> GetResumeBalancesByMonth(FixedList<DateTime> monthsInYear) {
+    private FixedList<ResumenAjusteEntry> GetResumeBalancesByMonth(FixedList<DateTime> monthsInYear) {
 
-      List<ResumenAjusteAnualEntry> resumenAjusteAnual = new List<ResumenAjusteAnualEntry>();
+      List<ResumenAjusteEntry> resumenAjusteAnual = new List<ResumenAjusteEntry>();
 
       foreach (var monthFilter in monthsInYear) {
 
@@ -113,7 +113,7 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
       this.Query.InitialPeriod.FromDate = fromDateFlag;
       this.Query.InitialPeriod.ToDate = toDateFlag;
 
-      return new FixedList<ResumenAjusteAnualEntry>(resumenAjusteAnual);
+      return new FixedList<ResumenAjusteEntry>(resumenAjusteAnual);
     }
 
 

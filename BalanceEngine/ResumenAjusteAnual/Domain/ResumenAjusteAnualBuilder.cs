@@ -23,13 +23,13 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
     }
 
 
-    internal FixedList<ResumenAjusteAnualEntry> Build() {
+    internal FixedList<ResumenAjusteEntry> Build() {
 
       var helper = new ResumenAjusteAnualHelper(_query);
 
-      FixedList<ResumenAjusteAnualEntry> balanzaColumnas = helper.GetBalancesByMonths();
+      FixedList<ResumenAjusteEntry> balanzaColumnas = helper.GetBalancesByMonths();
 
-      return new FixedList<ResumenAjusteAnualEntry>();
+      return new FixedList<ResumenAjusteEntry>();
     }
 
 

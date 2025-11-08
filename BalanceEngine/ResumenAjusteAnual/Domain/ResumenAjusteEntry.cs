@@ -2,9 +2,9 @@
 *                                                                                                            *
 *  Module   : Balance Engine                             Component : Domain Layer                            *
 *  Assembly : FinancialAccounting.BalanceEngine.dll      Pattern   : Information Holder                      *
-*  Type     : AnalyticBalanceEntry                       License   : Please read LICENSE.txt file            *
+*  Type     : ResumenAjusteEntry                         License   : Please read LICENSE.txt file            *
 *                                                                                                            *
-*  Summary  : Represents an entry for resumen de ajuste anual entry.                                         *
+*  Summary  : Represents an entry for resumen de ajuste entry.                                               *
 *                                                                                                            *
 ************************* Copyright(c) La Vía Óntica SC, Ontica LLC and contributors. All rights reserved. **/
 using System;
@@ -21,8 +21,8 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
   }
 
 
-  /// <summary>Represents an entry for resumen de ajuste anual entry</summary>
-  internal class ResumenAjusteAnualEntry : TrialBalanceEntry, ITrialBalanceEntry {
+  /// <summary>Represents an entry for resumen de ajuste entry</summary>
+  internal class ResumenAjusteEntry : TrialBalanceEntry, ITrialBalanceEntry {
 
     #region Properties
 
@@ -82,6 +82,6 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
 
     #endregion Methods
 
-  } // class ResumenAjusteAnualEntry
+  } // class ResumenAjusteEntry
 
 } // namespace Empiria.FinancialAccounting.BalanceEngine
