@@ -212,6 +212,16 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
 
           return saldosPorCuentaYMayores.Build();
 
+        case TrialBalanceType.ResumenAjusteAnual:
+          Assertion.EnsureFailed("Funcionalidad en proceso de desarrollo.");
+
+          var buildAjusteAnual = new ResumenAjusteAnualBuilder(this.Query).Build();
+
+          FixedList<ITrialBalanceEntry> ajusteAnual = buildAjusteAnual.Select(x => (ITrialBalanceEntry) x)
+                                                            .ToFixedList();
+
+          return new TrialBalance(this.Query, ajusteAnual);
+
         case TrialBalanceType.ValorizacionEstimacionPreventiva:
           var build = new ValorizacionEstimacionPreventivaBuilder(this.Query).Build();
 
