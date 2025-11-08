@@ -8,8 +8,8 @@
 *                                                                                                            *
 ************************* Copyright(c) La Vía Óntica SC, Ontica LLC and contributors. All rights reserved. **/
 using System;
+
 using Empiria.FinancialAccounting.BalanceEngine.Adapters;
-using Empiria.FinancialAccounting.BalanceEngine.Data;
 
 namespace Empiria.FinancialAccounting.BalanceEngine {
 
@@ -25,15 +25,9 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
 
     internal FixedList<ResumenAjusteAnualEntry> Build() {
 
-      FixedList<TrialBalanceEntry> baseAccountEntries = BalancesDataService.GetTrialBalanceEntries(_query);
+      var helper = new ResumenAjusteAnualHelper(_query);
 
-      return Build(baseAccountEntries);
-    }
-
-
-    internal FixedList<ResumenAjusteAnualEntry> Build(FixedList<TrialBalanceEntry> baseAccountEntries) {
-
-
+      FixedList<ResumenAjusteAnualEntry> balanzaColumnas = helper.GetBalancesByMonths();
 
       return new FixedList<ResumenAjusteAnualEntry>();
     }
