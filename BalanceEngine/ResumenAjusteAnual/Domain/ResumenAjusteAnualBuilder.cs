@@ -27,9 +27,7 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
 
       var helper = new ResumenAjusteAnualHelper(_query);
 
-      FixedList<ResumenAjusteEntry> balanzaColumnas = helper.GetBalancesByMonths();
-
-      return new FixedList<ResumenAjusteEntry>();
+      return helper.GetBalancesByMonths();
     }
 
 

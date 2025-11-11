@@ -9,6 +9,8 @@
 ************************* Copyright(c) La Vía Óntica SC, Ontica LLC and contributors. All rights reserved. **/
 using System;
 using System.Collections.Generic;
+using System.Linq;
+using DocumentFormat.OpenXml.Drawing.Charts;
 using Empiria.FinancialAccounting.BalanceEngine.Adapters;
 
 namespace Empiria.FinancialAccounting.BalanceEngine {
@@ -75,6 +77,19 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
     }
 
 
+    private void GetExchangeRate(FixedList<TrialBalanceEntry> entriesFromBalanza) {
+
+      Query.InitialPeriod.ExchangeRateDate = Query.InitialPeriod.FromDate.AddDays(-1);
+      Query.InitialPeriod.ExchangeRateTypeUID = ExchangeRateType.ValorizacionBanxico.UID;
+      Query.InitialPeriod.ValuateToCurrrencyUID = Currency.MXN.UID;
+
+      var trialBalanceHelper = new TrialBalanceHelper(Query);
+
+      trialBalanceHelper.ValuateAccountEntriesToExchangeRateV2(entriesFromBalanza);
+      
+    }
+
+
     private FixedList<DateTime> GetMonthsInYear() {
 
       List<DateTime> monthsInYear = new List<DateTime>();
@@ -107,6 +122,8 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
 
         FixedList<TrialBalanceEntry> entriesFromBalanza = GetEntriesFromBalanza(monthFilter);
 
+        GetExchangeRate(entriesFromBalanza);
+
         resumenAjusteAnual.AddRange(ConvertBalanceEntryIntoResumeEntry(entriesFromBalanza));
       }
 
@@ -115,10 +132,6 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
 
       return new FixedList<ResumenAjusteEntry>(resumenAjusteAnual);
     }
-
-
-
-
 
     #endregion Private methods
 

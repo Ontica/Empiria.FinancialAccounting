@@ -647,7 +647,9 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
 
     private void ClausesToExchangeRate(TrialBalanceEntry entry, ExchangeRate exchangeRate) {
 
-      if (_query.IsOperationalReport && !_query.ConsolidateBalancesToTargetCurrency) {
+      if (_query.TrialBalanceType == TrialBalanceType.ResumenAjusteAnual ||
+          (_query.IsOperationalReport && !_query.ConsolidateBalancesToTargetCurrency)) {
+
         entry.ExchangeRate = exchangeRate.Value;
 
       } else {

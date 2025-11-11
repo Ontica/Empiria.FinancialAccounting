@@ -59,9 +59,10 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
     #region Methods
 
     internal void CalculateFields() {
-      this.DetailAccountBalanceMonth = KeyAdjustment == KeyAdjustmentTypes.SI ? this.CurrentBalance : 0;
-      this.DeferredDetailAccountBalance = KeyAdjustment == KeyAdjustmentTypes.SIINT ? this.InitialBalance : 0;
+      this.DetailAccountBalanceMonth = this.KeyAdjustment == KeyAdjustmentTypes.SI ? this.CurrentBalance : 0;
+      this.DeferredDetailAccountBalance = this.KeyAdjustment == KeyAdjustmentTypes.SIINT ? this.InitialBalance : 0;
       this.TotalBalanceAccountAdjustment = this.DetailAccountBalanceMonth + this.DeferredDetailAccountBalance;
+      this.TotalValorized = this.TotalBalanceAccountAdjustment * this.ExchangeRate;
     }
 
 
