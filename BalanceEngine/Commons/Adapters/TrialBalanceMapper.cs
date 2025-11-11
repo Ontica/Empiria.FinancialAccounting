@@ -86,6 +86,13 @@ namespace Empiria.FinancialAccounting.BalanceEngine.Adapters {
                 BalanzaDolarizadaMapper.MapEntry((BalanzaDolarizadaEntry) x));
           return new FixedList<ITrialBalanceEntryDto>(balanzaDolarizada);
 
+        case TrialBalanceType.ResumenAjusteAnual:
+
+          var resumenAjusteAnual = list.Select((x) =>
+                ResumenAjusteAnualMapper.MapEntry((ResumenAjusteEntry) x));
+
+          return new FixedList<ITrialBalanceEntryDto>(resumenAjusteAnual);
+
         case TrialBalanceType.BalanzaValorizadaComparativa:
 
           var balanzaComparativa = list.Select((x) => BalanzaComparativaMapper
