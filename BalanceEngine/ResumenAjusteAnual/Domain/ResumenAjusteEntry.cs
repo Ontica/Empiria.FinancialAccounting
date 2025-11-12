@@ -21,10 +21,26 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
   }
 
 
+  internal enum AccountClassification {
+
+    Credito,
+
+    Deuda,
+
+    ND
+
+  }
+
+
   /// <summary>Represents an entry for resumen de ajuste entry</summary>
-  internal class ResumenAjusteEntry : TrialBalanceEntry, ITrialBalanceEntry {
+  internal class ResumenAjusteEntry : TrialBalanceEntry {
 
     #region Properties
+
+    public AccountClassification Classification {
+      get; internal set;
+    } = AccountClassification.ND;
+
 
     public KeyAdjustmentTypes KeyAdjustment {
       get; internal set;
@@ -59,10 +75,15 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
     #region Methods
 
     internal void CalculateFields() {
+
       this.DetailAccountBalanceMonth = this.KeyAdjustment == KeyAdjustmentTypes.SI ? this.CurrentBalance : 0;
       this.DeferredDetailAccountBalance = this.KeyAdjustment == KeyAdjustmentTypes.SIINT ? this.InitialBalance : 0;
       this.TotalBalanceAccountAdjustment = this.DetailAccountBalanceMonth + this.DeferredDetailAccountBalance;
       this.TotalValorized = this.TotalBalanceAccountAdjustment * this.ExchangeRate;
+
+      this.Classification = this.DebtorCreditor == DebtorCreditorType.Deudora &&
+                            this.DeferredDetailAccountBalance >= 0 ?
+                            AccountClassification.Credito : AccountClassification.Deuda;
     }
 
 
