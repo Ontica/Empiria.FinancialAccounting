@@ -89,7 +89,7 @@ namespace Empiria.FinancialAccounting.BalanceEngine.Adapters {
         case TrialBalanceType.ResumenAjusteAnual:
 
           var resumenAjusteAnual = list.Select((x) =>
-                ResumenAjusteAnualMapper.MapEntry((ResumenAjusteEntry) x));
+                ResumenAjusteAnualMapper.MapEntry((ResumenAjusteAnualEntry) x));
 
           return new FixedList<ITrialBalanceEntryDto>(resumenAjusteAnual);
 

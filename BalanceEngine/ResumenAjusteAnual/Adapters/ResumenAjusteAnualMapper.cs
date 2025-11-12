@@ -9,6 +9,7 @@
 ************************* Copyright(c) La Vía Óntica SC, Ontica LLC and contributors. All rights reserved. **/
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using DocumentFormat.OpenXml.Wordprocessing;
 using Empiria.DynamicData;
 
@@ -20,7 +21,7 @@ namespace Empiria.FinancialAccounting.BalanceEngine.Adapters {
     #region Public methods
 
     static internal ResumenAjusteAnualDto Map(TrialBalanceQuery query,
-                                             FixedList<ResumenAjusteEntry> entries) {
+                                             FixedList<ResumenAjusteAnualEntry> entries) {
 
       return new ResumenAjusteAnualDto {
         Query = query,
@@ -43,14 +44,23 @@ namespace Empiria.FinancialAccounting.BalanceEngine.Adapters {
     }
 
 
-    static public ResumenAjusteAnualEntryDto MapEntry(ResumenAjusteEntry x) {
+    static public ResumenAjusteAnualEntryDto MapEntry(ResumenAjusteAnualEntry x) {
 
-      var dto = new ResumenAjusteAnualEntryDto();
+      return new ResumenAjusteAnualEntryDto {
 
-      return dto;
+
+      };
     }
 
+
     #endregion Public methods
+
+
+    #region Private methods
+
+
+
+    #endregion Private methods
 
   } // class ResumenAjusteAnualMapper
 

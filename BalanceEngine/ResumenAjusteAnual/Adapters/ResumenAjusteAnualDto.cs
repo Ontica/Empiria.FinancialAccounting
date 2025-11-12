@@ -37,7 +37,7 @@ namespace Empiria.FinancialAccounting.BalanceEngine.Adapters {
   public class ResumenAjusteAnualEntryDto : ITrialBalanceEntryDto {
 
 
-    public string MonthsInYear {
+    public DateTime FiscalYearDate {
       get; internal set;
     }
 
@@ -62,25 +62,21 @@ namespace Empiria.FinancialAccounting.BalanceEngine.Adapters {
     }
 
 
-    /// <summary>Credit > Debit</summary>
     public decimal DeductibleAdjustment {
       get; internal set;
     }
 
 
-    /// <summary>Debit > Credit</summary>
     public decimal CumulativeAdjustment {
       get; internal set;
     }
 
 
-    /// <summary>Cumulative/Deductible</summary>
     public decimal InflationAdjustmentMonths {
       get; internal set;
     }
 
 
-    /// <summary>Cumulative/Deductible</summary>
     public decimal InflationAdjustment12Months {
       get; internal set;
     }
@@ -119,6 +115,6 @@ namespace Empiria.FinancialAccounting.BalanceEngine.Adapters {
 
     public string SubledgerAccountNumber => string.Empty;
 
-  } // class ResumenAjusteAnualEntryDto
+  } // class ResumenAjusteAnualEntry
 
 } // namespace Empiria.FinancialAccounting.BalanceEngine.Adapters
