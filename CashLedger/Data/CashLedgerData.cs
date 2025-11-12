@@ -150,7 +150,7 @@ namespace Empiria.FinancialAccounting.CashLedger.Data {
                    $"NUM_CONCEPTO_FLUJO = '{entry.CashAccountNo}', " +
                    $"ID_REGLA_FLUJO = {entry.AppliedRuleId}, " +
                    $"TEXTO_REGLA_FLUJO = '{entry.AppliedRuleText}', " +
-                   $"ID_USUARIO_FLUJO = {entry.UserId}, " +
+                   $"ID_USUARIO_FLUJO = {entry.CashFlowRecordedById}, " +
                    $"FECHA_REGISTRO_FLUJO = {DataCommonMethods.FormatSqlDbDateTime(dateTime)} " +
               $"WHERE ID_MOVIMIENTO = {entry.EntryId}; ";
 
