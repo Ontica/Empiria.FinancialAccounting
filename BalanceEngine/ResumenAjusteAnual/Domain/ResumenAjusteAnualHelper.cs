@@ -51,7 +51,8 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
         ResumenAjusteEntry resumeEntry = new ResumenAjusteEntry();
 
         resumeEntry.MapFromTrialBalanceEntry(entry);
-        resumeEntry.KeyAdjustment = KeyAdjustmentTypes.SI; // TODO CARGAR CATALOGO
+        // TODO CARGAR CATALOGO
+        resumeEntry.KeyAdjustment = GetRandomValue<KeyAdjustmentTypes>();
         resumeEntry.ConsultingDate = Query.InitialPeriod.ToDate;
         resumeEntry.CalculateFields();
 
@@ -161,9 +162,8 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
         var balances = entries.FindAll(x =>
                                        x.ConsultingDate == new DateTime(date.Year, i,
                                                                         DateTime.DaysInMonth(date.Year, i)));
-        decimal saldo = CalculateCreditField(balances);
-
-        totalAverageCredit.Add(saldo);
+        
+        totalAverageCredit.Add(CalculateCreditField(balances));
       }
 
       return totalAverageCredit.Average();
@@ -221,6 +221,15 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
       }
 
       return new FixedList<ResumenAjusteAnualEntry>(resumen);
+    }
+
+
+    static private T GetRandomValue<T>() {
+
+      var v = Enum.GetValues(typeof(T));
+      var random = new Random();
+      T result = (T) v.GetValue(random.Next(v.Length));
+      return result;
     }
 
     #endregion Private methods
