@@ -80,21 +80,20 @@ namespace Empiria.FinancialAccounting.Reporting.Balances {
       var saldosSetTable = new SaldosFillOutExcelExporter(_query);
 
       switch (trialBalance.Query.TrialBalanceType) {
+        
         case TrialBalanceType.AnaliticoDeCuentas:
           balaceSetTable.FillOutAnaliticoDeCuentas(_excelFile,
                           trialBalance.Entries.Select(x => (AnaliticoDeCuentasEntryDto) x));
           return;
 
-        case TrialBalanceType.BalanzaValorizadaComparativa:
-          SetBalanzaComparativaHeaders();
-          balaceSetTable.FillOutBalanzaComparativa(_excelFile,
-                          trialBalance.Entries.Select(x => (BalanzaComparativaEntryDto) x));
+        case TrialBalanceType.Balanza:
+          balaceSetTable.FillOutBalanza(_excelFile,
+                          trialBalance.Entries.Select(x => (BalanzaTradicionalEntryDto) x));
           return;
 
-
-        case TrialBalanceType.BalanzaEnColumnasPorMoneda:
-          balaceSetTable.FillOutBalanzaColumnasPorMoneda(_excelFile,
-                          trialBalance.Entries.Select(x => (BalanzaColumnasMonedaEntryDto) x));
+        case TrialBalanceType.BalanzaConContabilidadesEnCascada:
+          balaceSetTable.FillOutBalanzaConContabilidadesEnCascada(_excelFile,
+                          trialBalance.Entries.Select(x => (BalanzaContabilidadesCascadaEntryDto) x));
           return;
 
         case TrialBalanceType.BalanzaDiferenciaDiariaPorMoneda:
@@ -107,14 +106,15 @@ namespace Empiria.FinancialAccounting.Reporting.Balances {
                           trialBalance.Entries.Select(x => (BalanzaDolarizadaEntryDto) x));
           return;
 
-        case TrialBalanceType.BalanzaConContabilidadesEnCascada:
-          balaceSetTable.FillOutBalanzaConContabilidadesEnCascada(_excelFile,
-                          trialBalance.Entries.Select(x => (BalanzaContabilidadesCascadaEntryDto) x));
+        case TrialBalanceType.BalanzaEnColumnasPorMoneda:
+          balaceSetTable.FillOutBalanzaColumnasPorMoneda(_excelFile,
+                          trialBalance.Entries.Select(x => (BalanzaColumnasMonedaEntryDto) x));
           return;
 
-        case TrialBalanceType.Balanza:
-          balaceSetTable.FillOutBalanza(_excelFile,
-                          trialBalance.Entries.Select(x => (BalanzaTradicionalEntryDto) x));
+        case TrialBalanceType.BalanzaValorizadaComparativa:
+          SetBalanzaComparativaHeaders();
+          balaceSetTable.FillOutBalanzaComparativa(_excelFile,
+                          trialBalance.Entries.Select(x => (BalanzaComparativaEntryDto) x));
           return;
 
         case TrialBalanceType.SaldosPorAuxiliar:

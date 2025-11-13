@@ -120,6 +120,77 @@ namespace Empiria.FinancialAccounting.Reporting.Balances {
     }
 
 
+    public void FillOutBalanzaComparativa(ExcelFile _excelFile,
+                                          IEnumerable<BalanzaComparativaEntryDto> entries) {
+
+      var utility = new UtilityToFillOutExcelExporter(_query);
+
+      int i = 5;
+      foreach (var entry in entries) {
+
+        _excelFile.SetCell($"A{i}", "Consolidada");
+
+        SetRowClausesForBalanzaComparativa(_excelFile, entry, utility, i);
+
+        _excelFile.SetCell($"C{i}", entry.CurrencyCode);
+        _excelFile.SetCell($"D{i}", utility.GetLedgerLevelAccountNumber(entry.AccountNumber));
+        _excelFile.SetCell($"E{i}", utility.GetSubAccountNumberWithSector(entry.AccountNumber, entry.SectorCode));
+        _excelFile.SetCell($"F{i}", entry.AccountNumber);
+        _excelFile.SetCell($"G{i}", entry.SectorCode);
+        _excelFile.SetCell($"H{i}", entry.SubledgerAccountNumber);
+        _excelFile.SetCell($"I{i}", entry.SubledgerAccountName);
+        _excelFile.SetCell($"J{i}", entry.FirstTotalBalance);
+        _excelFile.SetCell($"K{i}", entry.FirstExchangeRate);
+        _excelFile.SetCell($"L{i}", entry.FirstValorization);
+        _excelFile.SetCell($"M{i}", entry.Debit);
+        _excelFile.SetCell($"N{i}", entry.Credit);
+        _excelFile.SetCell($"O{i}", entry.SecondTotalBalance);
+        _excelFile.SetCell($"P{i}", entry.SecondExchangeRate);
+        _excelFile.SetCell($"Q{i}", entry.SecondValorization);
+        _excelFile.SetCell($"R{i}", entry.AccountName);
+        _excelFile.SetCell($"S{i}", Convert.ToString((char) entry.DebtorCreditor));
+        _excelFile.SetCell($"T{i}", entry.Variation);
+        _excelFile.SetCell($"U{i}", entry.VariationByER);
+        _excelFile.SetCell($"V{i}", entry.RealVariation);
+
+        i++;
+      }
+      SetColumnClausesForBalanzaComparativa(_excelFile);
+    }
+
+
+    public void FillOutBalanzaConContabilidadesEnCascada(ExcelFile _excelFile,
+                                             IEnumerable<BalanzaContabilidadesCascadaEntryDto> entries) {
+
+      var utility = new UtilityToFillOutExcelExporter(_query);
+
+      int i = 5;
+      foreach (var entry in entries) {
+
+        _excelFile.SetCell($"A{i}", entry.CurrencyCode);
+
+        SetRowClausesForBalanzaContabilidadesEnCascada(_excelFile, entry, i);
+
+        _excelFile.SetCell($"G{i}", entry.InitialBalance);
+        _excelFile.SetCell($"H{i}", entry.Debit);
+        _excelFile.SetCell($"I{i}", entry.Credit);
+        _excelFile.SetCell($"J{i}", (decimal) entry.CurrentBalance);
+
+        if (utility.MustFillOutAverageBalance((decimal) entry.AverageBalance, entry.LastChangeDate)) {
+          _excelFile.SetCell($"K{i}", (decimal) entry.AverageBalance);
+          _excelFile.SetCell($"L{i}", entry.LastChangeDate.ToString("dd/MMM/yyyy"));
+        }
+
+        i++;
+      }
+
+      if (!_query.WithAverageBalance) {
+        _excelFile.RemoveColumn("L");
+        _excelFile.RemoveColumn("K");
+      }
+    }
+
+
     public void FillOutBalanzaDiferenciaDiariaPorMonedaV1(ExcelFile _excelFile,
                                                IEnumerable<BalanzaDiferenciaDiariaMonedaEntryDto> entries) {
       int i = 5;
@@ -239,77 +310,6 @@ namespace Empiria.FinancialAccounting.Reporting.Balances {
         }
 
         i++;
-      }
-    }
-
-
-    public void FillOutBalanzaComparativa(ExcelFile _excelFile,
-                                          IEnumerable<BalanzaComparativaEntryDto> entries) {
-
-      var utility = new UtilityToFillOutExcelExporter(_query);
-
-      int i = 5;
-      foreach (var entry in entries) {
-
-        _excelFile.SetCell($"A{i}", "Consolidada");
-
-        SetRowClausesForBalanzaComparativa(_excelFile, entry, utility, i);
-
-        _excelFile.SetCell($"C{i}", entry.CurrencyCode);
-        _excelFile.SetCell($"D{i}", utility.GetLedgerLevelAccountNumber(entry.AccountNumber));
-        _excelFile.SetCell($"E{i}", utility.GetSubAccountNumberWithSector(entry.AccountNumber, entry.SectorCode));
-        _excelFile.SetCell($"F{i}", entry.AccountNumber);
-        _excelFile.SetCell($"G{i}", entry.SectorCode);
-        _excelFile.SetCell($"H{i}", entry.SubledgerAccountNumber);
-        _excelFile.SetCell($"I{i}", entry.SubledgerAccountName);
-        _excelFile.SetCell($"J{i}", entry.FirstTotalBalance);
-        _excelFile.SetCell($"K{i}", entry.FirstExchangeRate);
-        _excelFile.SetCell($"L{i}", entry.FirstValorization);
-        _excelFile.SetCell($"M{i}", entry.Debit);
-        _excelFile.SetCell($"N{i}", entry.Credit);
-        _excelFile.SetCell($"O{i}", entry.SecondTotalBalance);
-        _excelFile.SetCell($"P{i}", entry.SecondExchangeRate);
-        _excelFile.SetCell($"Q{i}", entry.SecondValorization);
-        _excelFile.SetCell($"R{i}", entry.AccountName);
-        _excelFile.SetCell($"S{i}", Convert.ToString((char) entry.DebtorCreditor));
-        _excelFile.SetCell($"T{i}", entry.Variation);
-        _excelFile.SetCell($"U{i}", entry.VariationByER);
-        _excelFile.SetCell($"V{i}", entry.RealVariation);
-
-        i++;
-      }
-      SetColumnClausesForBalanzaComparativa(_excelFile);
-    }
-
-
-    public void FillOutBalanzaConContabilidadesEnCascada(ExcelFile _excelFile,
-                                             IEnumerable<BalanzaContabilidadesCascadaEntryDto> entries) {
-
-      var utility = new UtilityToFillOutExcelExporter(_query);
-
-      int i = 5;
-      foreach (var entry in entries) {
-
-        _excelFile.SetCell($"A{i}", entry.CurrencyCode);
-
-        SetRowClausesForBalanzaContabilidadesEnCascada(_excelFile, entry, i);
-
-        _excelFile.SetCell($"G{i}", entry.InitialBalance);
-        _excelFile.SetCell($"H{i}", entry.Debit);
-        _excelFile.SetCell($"I{i}", entry.Credit);
-        _excelFile.SetCell($"J{i}", (decimal) entry.CurrentBalance);
-
-        if (utility.MustFillOutAverageBalance((decimal) entry.AverageBalance, entry.LastChangeDate)) {
-          _excelFile.SetCell($"K{i}", (decimal) entry.AverageBalance);
-          _excelFile.SetCell($"L{i}", entry.LastChangeDate.ToString("dd/MMM/yyyy"));
-        }
-
-        i++;
-      }
-
-      if (!_query.WithAverageBalance) {
-        _excelFile.RemoveColumn("L");
-        _excelFile.RemoveColumn("K");
       }
     }
 

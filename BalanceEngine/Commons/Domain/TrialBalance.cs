@@ -33,38 +33,39 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
 
     internal FixedList<DataTableColumn> DataColumns() {
       switch (this.Query.TrialBalanceType) {
+        
         case TrialBalanceType.AnaliticoDeCuentas:
           return AnaliticoDeCuentasMapper.DataColumns(this.Query);
 
         case TrialBalanceType.Balanza:
           return BalanzaTradicionalMapper.DataColumns(this.Query);
-
-        case TrialBalanceType.SaldosPorCuenta:
-          return SaldosPorCuentaMapper.DataColumns(this.Query);
-
-        case TrialBalanceType.SaldosPorAuxiliar:
-          return SaldosPorAuxiliarMapper.DataColumns(this.Query);
-
-        case TrialBalanceType.GeneracionDeSaldos:
-          return TrialBalanceDataColumns();
-
+        
         case TrialBalanceType.BalanzaConContabilidadesEnCascada:
           return BalanzaContabilidadesCascadaMapper.DataColumns(this.Query);
-
-        case TrialBalanceType.BalanzaEnColumnasPorMoneda:
-          return BalanzaColumnasMonedaMapper.DataColumns();
 
         case TrialBalanceType.BalanzaDiferenciaDiariaPorMoneda:
           return BalanzaDiferenciaDiariaMonedaMapper.DataColumnsV2();
 
-        case TrialBalanceType.BalanzaValorizadaComparativa:
-          return BalanzaComparativaMapper.DataColumns(this.Query);
-
         case TrialBalanceType.BalanzaDolarizada:
           return BalanzaDolarizadaMapper.DataColumns();
 
+        case TrialBalanceType.BalanzaEnColumnasPorMoneda:
+          return BalanzaColumnasMonedaMapper.DataColumns();
+
+        case TrialBalanceType.BalanzaValorizadaComparativa:
+          return BalanzaComparativaMapper.DataColumns(this.Query);
+
+        case TrialBalanceType.GeneracionDeSaldos:
+          return TrialBalanceDataColumns();
+
         case TrialBalanceType.ResumenAjusteAnual:
           return ResumenAjusteAnualMapper.DataColumns(Query.InitialPeriod.ToDate);
+
+        case TrialBalanceType.SaldosPorAuxiliar:
+          return SaldosPorAuxiliarMapper.DataColumns(this.Query);
+
+        case TrialBalanceType.SaldosPorCuenta:
+          return SaldosPorCuentaMapper.DataColumns(this.Query);
 
         case TrialBalanceType.ValorizacionEstimacionPreventiva:
           return ValorizacionEstimacionPreventivaMapper.DataColumns(this.Entries);
