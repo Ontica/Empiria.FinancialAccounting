@@ -31,7 +31,8 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
 
       FixedList<ResumenAjusteEntry> resumenAjusteEntries = helper.GetResumenAjusteEntriesByMonths();
 
-      FixedList<ResumenAjusteAnualEntry> resumenAjusteAnual = helper.MapToResumenAjusteAnual(resumenAjusteEntries);
+      FixedList<ResumenAjusteAnualEntry> resumenAjusteAnual = helper.MapToResumenAjusteAnual(
+                                                                          resumenAjusteEntries);
 
       return resumenAjusteAnual;
     }

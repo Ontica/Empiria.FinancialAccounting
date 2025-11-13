@@ -9,6 +9,7 @@
 ************************* Copyright(c) La Vía Óntica SC, Ontica LLC and contributors. All rights reserved. **/
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 
 using Empiria.FinancialAccounting.BalanceEngine.Adapters;
@@ -39,9 +40,40 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
       return new FixedList<ResumenAjusteEntry>(balancesByMonth);
     }
 
+
+    internal FixedList<ResumenAjusteAnualEntry> MapToResumenAjusteAnual(
+                                                  FixedList<ResumenAjusteEntry> entries) {
+
+      List<ResumenAjusteAnualEntry> resumen = new List<ResumenAjusteAnualEntry>();
+
+      FixedList<DateTime> consultingDates = entries.SelectDistinct(x => x.ConsultingDate);
+
+      foreach (var date in consultingDates) {
+
+        FixedList<ResumenAjusteEntry> balancesByDate = entries.FindAll(x => x.ConsultingDate == date);
+
+        ResumenAjusteAnualEntry annualAdjustByMonth = GetAnnualAdjustmentByMonth(
+                                                          balancesByDate, entries, date);
+
+        resumen.Add(annualAdjustByMonth);
+      }
+
+      return new FixedList<ResumenAjusteAnualEntry>(resumen);
+    }
+
     #endregion Public methods
 
     #region Private methods
+
+    
+
+
+
+    
+
+
+    
+
 
     private FixedList<ResumenAjusteEntry> ConvertBalanceEntryIntoResumeEntry(
                                                 FixedList<TrialBalanceEntry> entriesFromBalanza) {
@@ -51,7 +83,7 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
         ResumenAjusteEntry resumeEntry = new ResumenAjusteEntry();
 
         resumeEntry.MapFromTrialBalanceEntry(entry);
-        // TODO CARGAR CATALOGO
+        // TODO CONSEGUIR CATALOGO DE CLAVE AJUSTE ASIGNADO POR CUENTA
         resumeEntry.KeyAdjustment = GetRandomValue<KeyAdjustmentTypes>();
         resumeEntry.ConsultingDate = Query.InitialPeriod.ToDate;
         resumeEntry.CalculateFields();
@@ -60,6 +92,40 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
       }
 
       return new FixedList<ResumenAjusteEntry>(resumeByMonth);
+    }
+
+
+    static private ResumenAjusteAnualEntry GetAnnualAdjustmentByMonth(
+                                              FixedList<ResumenAjusteEntry> balancesByDate,
+                                              FixedList<ResumenAjusteEntry> entries, DateTime date) {
+
+      var ajusteAnual = new ResumenAjusteAnualEntry();
+
+      ajusteAnual.CalculateFields(balancesByDate, entries, date);
+
+      return ajusteAnual;
+    }
+
+    
+    private FixedList<ResumenAjusteEntry> GetBalancesByMonth(FixedList<DateTime> monthsInYear) {
+
+      List<ResumenAjusteEntry> resumenAjusteAnual = new List<ResumenAjusteEntry>();
+
+      foreach (var monthFilter in monthsInYear) {
+
+        FixedList<TrialBalanceEntry> entriesFromBalanza = GetEntriesFromBalanza(monthFilter);
+
+        GetExchangeRate(entriesFromBalanza);
+
+        FixedList<ResumenAjusteEntry> resumenAjusteEntries = ConvertBalanceEntryIntoResumeEntry(
+                                                                              entriesFromBalanza);
+        resumenAjusteAnual.AddRange(resumenAjusteEntries);
+      }
+
+      this.Query.InitialPeriod.FromDate = fromDateFlag;
+      this.Query.InitialPeriod.ToDate = toDateFlag;
+
+      return new FixedList<ResumenAjusteEntry>(resumenAjusteAnual);
     }
 
 
@@ -111,116 +177,6 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
       }
 
       return monthsInYear.ToFixedList();
-    }
-
-
-    private FixedList<ResumenAjusteEntry> GetBalancesByMonth(FixedList<DateTime> monthsInYear) {
-
-      List<ResumenAjusteEntry> resumenAjusteAnual = new List<ResumenAjusteEntry>();
-
-      foreach (var monthFilter in monthsInYear) {
-
-        FixedList<TrialBalanceEntry> entriesFromBalanza = GetEntriesFromBalanza(monthFilter);
-
-        GetExchangeRate(entriesFromBalanza);
-
-        FixedList<ResumenAjusteEntry> resumenAjusteEntries = ConvertBalanceEntryIntoResumeEntry(
-                                                                              entriesFromBalanza);
-        resumenAjusteAnual.AddRange(resumenAjusteEntries);
-      }
-
-      this.Query.InitialPeriod.FromDate = fromDateFlag;
-      this.Query.InitialPeriod.ToDate = toDateFlag;
-
-      return new FixedList<ResumenAjusteEntry>(resumenAjusteAnual);
-    }
-
-
-    private static ResumenAjusteAnualEntry GetAnnualAdjustmentByMonth(
-                                              FixedList<ResumenAjusteEntry> balancesByDate,
-                                              FixedList<ResumenAjusteEntry> entries, DateTime date) {
-
-      var dto = new ResumenAjusteAnualEntry();
-
-      dto.FiscalYearDate = date;
-      dto.Credit = CalculateCreditField(balancesByDate);
-      dto.Debit = CalculateDebitField(balancesByDate);
-
-      dto.AverageBalanceCredit = CalculateAverageBalanceCreditField(entries, date);
-      dto.AverageBalanceDebit = CalculateAverageBalanceDebitField(entries, date);
-
-      return dto;
-    }
-
-
-    private static decimal CalculateAverageBalanceCreditField(FixedList<ResumenAjusteEntry> entries,
-                                                              DateTime date) {
-      List<decimal> totalAverageCredit = new List<decimal>();
-
-      for (int i = 1; i <= date.Month; i++) {
-
-        var balances = entries.FindAll(x =>
-                                       x.ConsultingDate == new DateTime(date.Year, i,
-                                                                        DateTime.DaysInMonth(date.Year, i)));
-        
-        totalAverageCredit.Add(CalculateCreditField(balances));
-      }
-
-      return totalAverageCredit.Average();
-    }
-
-
-    private static decimal CalculateAverageBalanceDebitField(FixedList<ResumenAjusteEntry> entries,
-                                                             DateTime date) {
-      List<decimal> totalAverageDebit = new List<decimal>();
-
-      for (int i = 1; i <= date.Month; i++) {
-
-        var balances = entries.FindAll(x =>
-                                       x.ConsultingDate == new DateTime(date.Year, i,
-                                                                        DateTime.DaysInMonth(date.Year, i)));
-
-        totalAverageDebit.Add(CalculateDebitField(balances));
-      }
-
-      return totalAverageDebit.Average();
-    }
-
-
-    private static decimal CalculateCreditField(FixedList<ResumenAjusteEntry> balancesByDate) {
-
-      return balancesByDate.FindAll(x => x.Classification == AccountClassification.Credito &&
-                                             x.KeyAdjustment != KeyAdjustmentTypes.NO)
-                                    .Sum(x => x.TotalValorized);
-    }
-
-
-    private static decimal CalculateDebitField(FixedList<ResumenAjusteEntry> balancesByDate) {
-
-      return balancesByDate.FindAll(x => x.Classification == AccountClassification.Deuda &&
-                                             x.KeyAdjustment != KeyAdjustmentTypes.NO)
-                                    .Sum(x => x.TotalValorized);
-    }
-
-
-    internal FixedList<ResumenAjusteAnualEntry> MapToResumenAjusteAnual(
-                                                  FixedList<ResumenAjusteEntry> entries) {
-
-      List<ResumenAjusteAnualEntry> resumen = new List<ResumenAjusteAnualEntry>();
-
-      FixedList<DateTime> consultingDates = entries.SelectDistinct(x => x.ConsultingDate);
-
-      foreach (var date in consultingDates) {
-
-        FixedList<ResumenAjusteEntry> balancesByDate = entries.FindAll(x => x.ConsultingDate == date);
-
-        ResumenAjusteAnualEntry annualAdjustByMonth = GetAnnualAdjustmentByMonth(
-                                                          balancesByDate, entries, date);
-
-        resumen.Add(annualAdjustByMonth);
-      }
-
-      return new FixedList<ResumenAjusteAnualEntry>(resumen);
     }
 
 
