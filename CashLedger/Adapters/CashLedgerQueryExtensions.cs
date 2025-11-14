@@ -186,12 +186,18 @@ namespace Empiria.FinancialAccounting.CashLedger.Adapters {
 
       keywords = EmpiriaString.TrimAll(keywords, "@", string.Empty);
 
-      return SearchExpression.ParseLike("CONCEPTO_TRANSACCION", keywords.ToUpperInvariant());
+      keywords = keywords.Replace("*", "%")
+                         .ToUpperInvariant();
+
+      return SearchExpression.ParseLike("UPPER(CONCEPTO_TRANSACCION)", keywords);
     }
 
 
     static private string BuildKeywordsFilter(string keywords) {
-      keywords = EmpiriaString.TrimAll(keywords, "@", string.Empty);
+
+      if (keywords.StartsWith("@")) {
+        return string.Empty;
+      }
 
       return SearchExpression.ParseAndLikeKeywords("TRANSACCION_KEYWORDS", keywords);
     }
