@@ -117,6 +117,12 @@ namespace Empiria.FinancialAccounting.Reporting.Balances {
                           trialBalance.Entries.Select(x => (BalanzaComparativaEntryDto) x));
           return;
 
+        case TrialBalanceType.ResumenAjusteAnual:
+          
+          balaceSetTable.FillOutResumenAjusteAnual(_excelFile,
+                          trialBalance.Entries.Select(x => (ResumenAjusteAnualEntryDto) x));
+          return;
+
         case TrialBalanceType.SaldosPorAuxiliar:
           saldosSetTable.FillOutSaldosPorAuxiliar(_excelFile,
                           trialBalance.Entries.Select(x => (SaldosPorAuxiliarEntryDto) x));

@@ -34,14 +34,14 @@ namespace Empiria.FinancialAccounting.Tests.Reporting {
         var query = new TrialBalanceQuery() {
           AccountsChartUID = AccountsChart.IFRS.UID,
           BalancesType = BalancesType.WithCurrentBalanceOrMovements,
-          TrialBalanceType = TrialBalanceType.Balanza,
+          TrialBalanceType = TrialBalanceType.ResumenAjusteAnual,
           Ledgers = new string[] { },
           ShowCascadeBalances = false,
           UseDefaultValuation = false,
           WithSubledgerAccount = false,
           InitialPeriod = new BalancesPeriod {
-            FromDate = new DateTime(2025, 09, 01),
-            ToDate = new DateTime(2025, 09, 30)
+            FromDate = new DateTime(2025, 08, 01),
+            ToDate = new DateTime(2025, 08, 31)
           }
         };
 

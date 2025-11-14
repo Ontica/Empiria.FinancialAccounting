@@ -9,11 +9,12 @@
 ************************* Copyright(c) La Vía Óntica SC, Ontica LLC and contributors. All rights reserved. **/
 using System;
 using System.Collections.Generic;
-
-using Empiria.Office;
-
+using System.Globalization;
+using DocumentFormat.OpenXml.Spreadsheet;
 using Empiria.FinancialAccounting.BalanceEngine;
 using Empiria.FinancialAccounting.BalanceEngine.Adapters;
+using Empiria.Office;
+using SpreadsheetLight.Charts;
 
 namespace Empiria.FinancialAccounting.Reporting.Balances {
 
@@ -332,6 +333,32 @@ namespace Empiria.FinancialAccounting.Reporting.Balances {
         if (entry.ItemType != TrialBalanceItemType.Entry) {
           _excelFile.SetRowBold(i, 7);
         }
+
+        i++;
+      }
+    }
+    
+    
+    internal void FillOutResumenAjusteAnual(ExcelFile _excelFile,
+                                            IEnumerable<ResumenAjusteAnualEntryDto> entries) {
+      
+      int i = 5;
+
+      foreach (var entry in entries) {
+        _excelFile.SetCell($"A{i}", entry.FiscalYearDate);
+        _excelFile.SetCell($"B{i}", entry.Credit);
+        _excelFile.SetCell($"C{i}", entry.Debit);
+        _excelFile.SetCell($"D{i}", entry.AverageBalanceCredit);
+        _excelFile.SetCell($"E{i}", entry.AverageBalanceDebit);
+        _excelFile.SetCell($"F{i}", entry.CumulativeAdjustment);
+        _excelFile.SetCell($"G{i}", entry.DeductibleAdjustment);
+        _excelFile.SetCell($"H{i}", entry.InflationAdjustmentMonths);
+        _excelFile.SetCell($"I{i}", entry.InflationAdjustment12Months);
+        _excelFile.SetCell($"J{i}", entry.INPCLastMonthPreviousYear);
+        _excelFile.SetCell($"K{i}", entry.INPCPreviousYear);
+        _excelFile.SetCell($"L{i}", entry.INPC);
+        _excelFile.SetCell($"M{i}", entry.FactorMonthsElapsed);
+        _excelFile.SetCell($"N{i}", entry.Factor12Months);
 
         i++;
       }
