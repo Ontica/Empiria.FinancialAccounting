@@ -32,14 +32,16 @@ namespace Empiria.Tests.FinancialAccounting.BalanceEngine {
                                                                             string toDate,
                                                                             BalancesType balancesType) {
 
-      CoreBalanceEntries coreBalances = TestsHelpers.GetCoreBalanceEntries(DateTime.Parse(fromDate),
-                                                                           DateTime.Parse(toDate),
-                                                                           ExchangeRateType.ValorizacionBanxico);
+      CoreBalanceEntries coreBalances = AnaliticoCuentasTestHelpers.GetCoreBalanceEntries(
+                                                                      DateTime.Parse(fromDate),
+                                                                      DateTime.Parse(toDate),
+                                                                      ExchangeRateType.ValorizacionBanxico);
 
-      FixedList<AnaliticoDeCuentasEntryDto> analitico = TestsHelpers.GetAnaliticoCuentas(DateTime.Parse(fromDate),
-                                                                                         DateTime.Parse(toDate),
-                                                                                         balancesType)
-                                                                    .FindAll(x => x.ItemType == TrialBalanceItemType.Entry);
+      FixedList<AnaliticoDeCuentasEntryDto> analitico = AnaliticoCuentasTestHelpers.GetAnaliticoCuentas(
+                                                                                DateTime.Parse(fromDate),
+                                                                                DateTime.Parse(toDate),
+                                                                                balancesType)
+                                                     .FindAll(x => x.ItemType == TrialBalanceItemType.Entry);
       RunTest(coreBalances, analitico);
 
       Assert.True(analitico.Count > 500);
@@ -54,14 +56,16 @@ namespace Empiria.Tests.FinancialAccounting.BalanceEngine {
     [InlineData("2025-04-01", "2025-04-30", BalancesType.AllAccounts)]
     public void Should_Have_Same_Summaries(string fromDate, string toDate, BalancesType balancesType) {
 
-      CoreBalanceEntries coreBalances = TestsHelpers.GetCoreBalanceEntries(DateTime.Parse(fromDate),
-                                                                           DateTime.Parse(toDate),
-                                                                           ExchangeRateType.ValorizacionBanxico);
+      CoreBalanceEntries coreBalances = AnaliticoCuentasTestHelpers.GetCoreBalanceEntries(
+                                                                      DateTime.Parse(fromDate),
+                                                                      DateTime.Parse(toDate),
+                                                                      ExchangeRateType.ValorizacionBanxico);
 
-      FixedList<AnaliticoDeCuentasEntryDto> analitico = TestsHelpers.GetAnaliticoCuentas(DateTime.Parse(fromDate),
-                                                                                         DateTime.Parse(toDate),
-                                                                                         balancesType)
-                                                                    .FindAll(x => x.ItemType == TrialBalanceItemType.Summary);
+      FixedList<AnaliticoDeCuentasEntryDto> analitico = AnaliticoCuentasTestHelpers.GetAnaliticoCuentas(
+                                                                                DateTime.Parse(fromDate),
+                                                                                DateTime.Parse(toDate),
+                                                                                balancesType)
+                                                   .FindAll(x => x.ItemType == TrialBalanceItemType.Summary);
       RunTest(coreBalances, analitico);
 
       Assert.True(analitico.Count > 100);
@@ -74,16 +78,20 @@ namespace Empiria.Tests.FinancialAccounting.BalanceEngine {
     [InlineData("2025-02-01", "2025-02-28", BalancesType.AllAccounts)]
     [InlineData("2025-03-01", "2025-03-31", BalancesType.AllAccounts)]
     [InlineData("2025-04-01", "2025-04-30", BalancesType.AllAccounts)]
-    public void Should_Have_Same_Summaries_By_Subledger_Accounts(string fromDate, string toDate, BalancesType balancesType) {
+    public void Should_Have_Same_Summaries_By_Subledger_Accounts(string fromDate, string toDate,
+                                                                 BalancesType balancesType) {
 
-      CoreBalanceEntries coreBalances = TestsHelpers.GetCoreBalanceEntriesWithSubledgerAccounts(DateTime.Parse(fromDate),
-                                                                           DateTime.Parse(toDate),
-                                                                           ExchangeRateType.ValorizacionBanxico);
+      CoreBalanceEntries coreBalances = AnaliticoCuentasTestHelpers.GetCoreBalanceEntriesWithSubledgerAccounts(
+                                                                      DateTime.Parse(fromDate),
+                                                                      DateTime.Parse(toDate),
+                                                                      ExchangeRateType.ValorizacionBanxico);
 
-      FixedList<AnaliticoDeCuentasEntryDto> analitico = TestsHelpers.GetAnaliticoCuentasWithSubledgerAccounts(DateTime.Parse(fromDate),
-                                                                                         DateTime.Parse(toDate),
-                                                                                         balancesType)
-                                                                    .FindAll(x => x.ItemType == TrialBalanceItemType.Summary);
+      FixedList<AnaliticoDeCuentasEntryDto> analitico =
+                                      AnaliticoCuentasTestHelpers.GetAnaliticoCuentasWithSubledgerAccounts(
+                                                                      DateTime.Parse(fromDate),
+                                                                      DateTime.Parse(toDate),
+                                                                      balancesType)
+                                                    .FindAll(x => x.ItemType == TrialBalanceItemType.Summary);
       RunTest(coreBalances, analitico);
 
       Assert.True(analitico.Count > 100);

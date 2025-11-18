@@ -2,7 +2,7 @@
 *                                                                                                            *
 *  Module   : Balance Engine                             Component : Test cases                              *
 *  Assembly : FinancialAccounting.BalanceEngine.Tests    Pattern   : Service provider                        *
-*  Type     : TestsHelpers                               License   : Please read LICENSE.txt file            *
+*  Type     : BalanzaDiferenciaDiariaMonedaTestHelpers   License   : Please read LICENSE.txt file            *
 *                                                                                                            *
 *  Summary  : Provides services for BalanzaDiferenciaDiariaMoneda tests.                                     *
 *                                                                                                            *
