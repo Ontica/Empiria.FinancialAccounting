@@ -38,31 +38,6 @@ namespace Empiria.Tests.FinancialAccounting.BalanceEngine {
     }
 
 
-    
-
-
-    
-
-
-    static internal FixedList<BalanzaColumnasMonedaEntryDto> GetBalanzaColumnas(DateTime fromDate,
-                                                                              DateTime toDate,
-                                                                              BalancesType balancesType) {
-
-      var query = new TrialBalanceQuery() {
-        TrialBalanceType = TrialBalanceType.BalanzaEnColumnasPorMoneda,
-        AccountsChartUID = TestingConstants.IFRS_ACCOUNTS_CHART.UID,
-        BalancesType = balancesType,
-        ShowCascadeBalances = false,
-        InitialPeriod = new BalancesPeriod {
-          FromDate = fromDate,
-          ToDate = toDate
-        }
-      };
-
-      return ExecuteTrialBalance<BalanzaColumnasMonedaEntryDto>(query);
-    }
-
-
     static internal FixedList<BalanzaComparativaEntryDto> GetBalanzaComparativa(DateTime fromDate,
                                                                               DateTime toDate,
                                                                               DateTime fromDate2,

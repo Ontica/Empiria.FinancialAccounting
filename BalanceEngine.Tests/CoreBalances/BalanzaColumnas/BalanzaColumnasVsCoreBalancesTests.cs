@@ -29,14 +29,16 @@ namespace Empiria.Tests.FinancialAccounting.BalanceEngine {
     [InlineData("2025-09-01", "2025-09-30", BalancesType.WithCurrentBalanceOrMovements)]
     public void Should_Have_Same_Entries(string fromDate, string toDate, BalancesType balancesType) {
 
-      CoreBalanceEntries coreBalances = TestsHelpers.GetCoreBalanceEntries(DateTime.Parse(fromDate),
+      CoreBalanceEntries coreBalances = BalanzaColumnasTestHelpers.GetCoreBalanceEntries(
+                                                                           DateTime.Parse(fromDate),
                                                                            DateTime.Parse(toDate),
                                                                            ExchangeRateType.Empty);
 
-      FixedList<BalanzaColumnasMonedaEntryDto> balanzaCol = TestsHelpers.GetBalanzaColumnas(DateTime.Parse(fromDate),
-                                                                                         DateTime.Parse(toDate),
-                                                                                         balancesType)
-                                                                    .FindAll(x => x.ItemType == TrialBalanceItemType.Entry);
+      FixedList<BalanzaColumnasMonedaEntryDto> balanzaCol = BalanzaColumnasTestHelpers.GetBalanzaColumnas(
+                                                                                    DateTime.Parse(fromDate),
+                                                                                    DateTime.Parse(toDate),
+                                                                                    balancesType)
+                                                    .FindAll(x => x.ItemType == TrialBalanceItemType.Entry);
       RunTest(coreBalances, balanzaCol);
 
       Assert.True(balanzaCol.Count > 500);
@@ -48,14 +50,16 @@ namespace Empiria.Tests.FinancialAccounting.BalanceEngine {
     [InlineData("2025-09-01", "2025-09-30", BalancesType.WithCurrentBalanceOrMovements)]
     public void Should_Have_Same_Summaries(string fromDate, string toDate, BalancesType balancesType) {
 
-      CoreBalanceEntries coreBalances = TestsHelpers.GetCoreBalanceEntries(DateTime.Parse(fromDate),
+      CoreBalanceEntries coreBalances = BalanzaColumnasTestHelpers.GetCoreBalanceEntries(
+                                                                           DateTime.Parse(fromDate),
                                                                            DateTime.Parse(toDate),
                                                                            ExchangeRateType.Empty);
 
-      FixedList<BalanzaColumnasMonedaEntryDto> balanzaCol = TestsHelpers.GetBalanzaColumnas(DateTime.Parse(fromDate),
-                                                                                         DateTime.Parse(toDate),
-                                                                                         balancesType)
-                                                                    .FindAll(x => x.ItemType == TrialBalanceItemType.Summary);
+      FixedList<BalanzaColumnasMonedaEntryDto> balanzaCol = BalanzaColumnasTestHelpers.GetBalanzaColumnas(
+                                                                                    DateTime.Parse(fromDate),
+                                                                                    DateTime.Parse(toDate),
+                                                                                    balancesType)
+                                                   .FindAll(x => x.ItemType == TrialBalanceItemType.Summary);
       RunTest(coreBalances, balanzaCol);
 
       Assert.True(balanzaCol.Count > 100);
@@ -71,15 +75,19 @@ namespace Empiria.Tests.FinancialAccounting.BalanceEngine {
         var totalDebtorMXN = filtered.FindAll(x => x.Currency.Equals(Currency.MXN) &&
                                               x.Account.DebtorCreditor == DebtorCreditorType.Deudora)
                                      .Sum(x => x.CurrentBalance);
+
         var totalDebtorUSD = filtered.FindAll(x => x.Currency.Equals(Currency.USD) &&
                                               x.Account.DebtorCreditor == DebtorCreditorType.Deudora)
                                      .Sum(x => x.CurrentBalance);
+
         var totalDebtorYEN = filtered.FindAll(x => x.Currency.Equals(Currency.YEN) &&
                                               x.Account.DebtorCreditor == DebtorCreditorType.Deudora)
                                      .Sum(x => x.CurrentBalance);
+
         var totalDebtorEUR = filtered.FindAll(x => x.Currency.Equals(Currency.EUR) &&
                                               x.Account.DebtorCreditor == DebtorCreditorType.Deudora)
                                      .Sum(x => x.CurrentBalance);
+
         var totalDebtorUDI = filtered.FindAll(x => x.Currency.Equals(Currency.UDI) &&
                                               x.Account.DebtorCreditor == DebtorCreditorType.Deudora)
                                      .Sum(x => x.CurrentBalance);
@@ -87,15 +95,19 @@ namespace Empiria.Tests.FinancialAccounting.BalanceEngine {
         var totalCreditorMXN = filtered.FindAll(x => x.Currency.Equals(Currency.MXN) &&
                                               x.Account.DebtorCreditor == DebtorCreditorType.Acreedora)
                                      .Sum(x => x.CurrentBalance);
+
         var totalCreditorUSD = filtered.FindAll(x => x.Currency.Equals(Currency.USD) &&
                                               x.Account.DebtorCreditor == DebtorCreditorType.Acreedora)
                                      .Sum(x => x.CurrentBalance);
+
         var totalCreditorYEN = filtered.FindAll(x => x.Currency.Equals(Currency.YEN) &&
                                               x.Account.DebtorCreditor == DebtorCreditorType.Acreedora)
                                      .Sum(x => x.CurrentBalance);
+
         var totalCreditorEUR = filtered.FindAll(x => x.Currency.Equals(Currency.EUR) &&
                                               x.Account.DebtorCreditor == DebtorCreditorType.Acreedora)
                                      .Sum(x => x.CurrentBalance);
+
         var totalCreditorUDI = filtered.FindAll(x => x.Currency.Equals(Currency.UDI) &&
                                               x.Account.DebtorCreditor == DebtorCreditorType.Acreedora)
                                      .Sum(x => x.CurrentBalance);
