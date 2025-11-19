@@ -34,10 +34,11 @@ namespace Empiria.Tests.FinancialAccounting.BalanceEngine {
                                                                            DateTime.Parse(toDate),
                                                                            ExchangeRateType.Empty);
 
-      FixedList<BalanzaTradicionalEntryDto> balanzaTradicional = TestsHelpers.GetBalanzaTradicional(DateTime.Parse(fromDate),
-                                                                                                    DateTime.Parse(toDate),
-                                                                                                    balancesType)
-                                                                             .FindAll(x => x.ItemType == TrialBalanceItemType.Entry);
+      FixedList<BalanzaTradicionalEntryDto> balanzaTradicional =
+                                BalanzaTradicionalTestHelpers.GetBalanzaTradicional(DateTime.Parse(fromDate),
+                                                                                      DateTime.Parse(toDate),
+                                                                                      balancesType)
+                                                     .FindAll(x => x.ItemType == TrialBalanceItemType.Entry);
 
       RunTest(coreBalances, balanzaTradicional);
 
@@ -58,10 +59,11 @@ namespace Empiria.Tests.FinancialAccounting.BalanceEngine {
                                                                            DateTime.Parse(toDate),
                                                                            ExchangeRateType.Empty);
 
-      FixedList<BalanzaTradicionalEntryDto> balanzaTradicional = TestsHelpers.GetBalanzaTradicional(DateTime.Parse(fromDate),
-                                                                                                    DateTime.Parse(toDate),
-                                                                                                    balancesType)
-                                                                             .FindAll(x => x.ItemType == TrialBalanceItemType.Summary);
+      FixedList<BalanzaTradicionalEntryDto> balanzaTradicional =
+                                BalanzaTradicionalTestHelpers.GetBalanzaTradicional(DateTime.Parse(fromDate),
+                                                                                      DateTime.Parse(toDate),
+                                                                                      balancesType)
+                                                   .FindAll(x => x.ItemType == TrialBalanceItemType.Summary);
 
       RunTest(coreBalances, balanzaTradicional);
 
@@ -76,10 +78,12 @@ namespace Empiria.Tests.FinancialAccounting.BalanceEngine {
         var filtered = coreBalances.GetBalancesByAccountNumberAndSector(sut.AccountNumber, sut.SectorCode)
                                    .FindAll(x => x.Account.DebtorCreditor == sut.DebtorCreditor);
 
-        var totalInitialBalance = filtered.FindAll(x=>x.Currency.Code == sut.CurrencyCode).Sum(x => x.InitialBalance);
+        var totalInitialBalance = filtered.FindAll(x=>x.Currency.Code == sut.CurrencyCode)
+                                          .Sum(x => x.InitialBalance);
         var totalDebit = filtered.FindAll(x => x.Currency.Code == sut.CurrencyCode).Sum(x => x.Debit);
         var totalCredit = filtered.FindAll(x => x.Currency.Code == sut.CurrencyCode).Sum(x => x.Credit);
-        var totalCurrentBalance = filtered.FindAll(x => x.Currency.Code == sut.CurrencyCode).Sum(x => x.CurrentBalance);
+        var totalCurrentBalance = filtered.FindAll(x => x.Currency.Code == sut.CurrencyCode)
+                                          .Sum(x => x.CurrentBalance);
 
         Assert.True(Math.Abs(totalInitialBalance - sut.InitialBalance) <= 1,
                     TestsHelpers.BalanceDiffMsg($"Saldo inicial. Moneda {sut.CurrencyCode}",

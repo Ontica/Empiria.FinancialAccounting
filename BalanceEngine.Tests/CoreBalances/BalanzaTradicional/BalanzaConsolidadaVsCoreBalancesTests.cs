@@ -36,10 +36,11 @@ namespace Empiria.Tests.FinancialAccounting.BalanceEngine {
                                                                            DateTime.Parse(toDate),
                                                                            ExchangeRateType.ValorizacionBanxico);
 
-      FixedList<BalanzaTradicionalEntryDto> balanzaConsolidada = TestsHelpers.GetBalanzaConsolidada(DateTime.Parse(fromDate),
-                                                                                                    DateTime.Parse(toDate),
-                                                                                                    balancesType)
-                                                                             .FindAll(x => x.ItemType == TrialBalanceItemType.Entry);
+      FixedList<BalanzaTradicionalEntryDto> balanzaConsolidada =
+                                BalanzaTradicionalTestHelpers.GetBalanzaConsolidada(DateTime.Parse(fromDate),
+                                                                                      DateTime.Parse(toDate),
+                                                                                      balancesType)
+                                                     .FindAll(x => x.ItemType == TrialBalanceItemType.Entry);
 
       RunTest(coreBalances, balanzaConsolidada);
 
@@ -61,10 +62,11 @@ namespace Empiria.Tests.FinancialAccounting.BalanceEngine {
                                                                            DateTime.Parse(toDate),
                                                                            ExchangeRateType.ValorizacionBanxico);
 
-      FixedList<BalanzaTradicionalEntryDto> balanzaConsolidada = TestsHelpers.GetBalanzaConsolidada(DateTime.Parse(fromDate),
-                                                                                                    DateTime.Parse(toDate),
-                                                                                                    balancesType)
-                                                                             .FindAll(x => x.ItemType == TrialBalanceItemType.Summary);
+      FixedList<BalanzaTradicionalEntryDto> balanzaConsolidada =
+                                BalanzaTradicionalTestHelpers.GetBalanzaConsolidada(DateTime.Parse(fromDate),
+                                                                                      DateTime.Parse(toDate),
+                                                                                      balancesType)
+                                                   .FindAll(x => x.ItemType == TrialBalanceItemType.Summary);
 
       RunTest(coreBalances, balanzaConsolidada);
 

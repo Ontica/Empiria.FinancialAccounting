@@ -38,55 +38,6 @@ namespace Empiria.Tests.FinancialAccounting.BalanceEngine {
     }
 
 
-    static internal FixedList<BalanzaComparativaEntryDto> GetBalanzaComparativa(DateTime fromDate,
-                                                                              DateTime toDate,
-                                                                              DateTime fromDate2,
-                                                                              DateTime toDate2,
-                                                                              BalancesType balancesType) {
-      var query = new TrialBalanceQuery() {
-        TrialBalanceType = TrialBalanceType.BalanzaValorizadaComparativa,
-        AccountsChartUID = TestingConstants.IFRS_ACCOUNTS_CHART.UID,
-        BalancesType = balancesType,
-        ShowCascadeBalances = false,
-        UseDefaultValuation = true,
-        WithSubledgerAccount = true,
-        InitialPeriod = new BalancesPeriod {
-          FromDate = fromDate,
-          ToDate = toDate
-        },
-        FinalPeriod = new BalancesPeriod {
-          FromDate = fromDate2,
-          ToDate = toDate2
-        }
-      };
-
-      return ExecuteTrialBalance<BalanzaComparativaEntryDto>(query);
-    }
-
-
-    static internal FixedList<BalanzaTradicionalEntryDto> GetBalanzaConsolidada(DateTime fromDate,
-                                                                                DateTime toDate,
-                                                                                BalancesType balancesType) {
-
-      var query = new TrialBalanceQuery() {
-        TrialBalanceType = TrialBalanceType.Balanza,
-        AccountsChartUID = TestingConstants.IFRS_ACCOUNTS_CHART.UID,
-        BalancesType = balancesType,
-        ShowCascadeBalances = false,
-        ConsolidateBalancesToTargetCurrency = true,
-        InitialPeriod = new BalancesPeriod {
-          FromDate = fromDate,
-          ToDate = toDate,
-          ExchangeRateDate = toDate,
-          ValuateToCurrrencyUID = Currency.MXN.Code,
-          ExchangeRateTypeUID = ExchangeRateType.ValorizacionBanxico.UID,
-        }
-      };
-
-      return ExecuteTrialBalance<BalanzaTradicionalEntryDto>(query);
-    }
-
-
     static internal FixedList<BalanzaContabilidadesCascadaEntryDto> GetBalanzaContabilidadesCascada(
                                             DateTime fromDate, DateTime toDate, BalancesType balancesType) {
       var query = new TrialBalanceQuery() {
@@ -119,25 +70,6 @@ namespace Empiria.Tests.FinancialAccounting.BalanceEngine {
       };
 
       return ExecuteTrialBalance<BalanzaDolarizadaEntryDto>(query);
-    }
-
-
-    static internal FixedList<BalanzaTradicionalEntryDto> GetBalanzaTradicional(DateTime fromDate,
-                                                                              DateTime toDate,
-                                                                              BalancesType balancesType) {
-
-      var query = new TrialBalanceQuery() {
-        TrialBalanceType = TrialBalanceType.Balanza,
-        AccountsChartUID = TestingConstants.IFRS_ACCOUNTS_CHART.UID,
-        BalancesType = balancesType,
-        ShowCascadeBalances = false,
-        InitialPeriod = new BalancesPeriod {
-          FromDate = fromDate,
-          ToDate = toDate
-        }
-      };
-
-      return ExecuteTrialBalance<BalanzaTradicionalEntryDto>(query);
     }
 
 

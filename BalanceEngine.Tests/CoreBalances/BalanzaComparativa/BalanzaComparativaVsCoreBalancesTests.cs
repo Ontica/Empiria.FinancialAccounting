@@ -39,7 +39,7 @@ namespace Empiria.Tests.FinancialAccounting.BalanceEngine {
                                                             DateTime.Parse(toDate2),
                                                             ExchangeRateType.ValorizacionBanxico);
 
-      FixedList<BalanzaComparativaEntryDto> comparativa = TestsHelpers.GetBalanzaComparativa(
+      FixedList<BalanzaComparativaEntryDto> comparativa = BalanzaComparativaTestHelpers.GetBalanzaComparativa(
                                                                     DateTime.Parse(fromDate),
                                                                     DateTime.Parse(toDate),
                                                                     DateTime.Parse(fromDate2),
