@@ -31,12 +31,13 @@ namespace Empiria.Tests.FinancialAccounting.BalanceEngine {
                                                                             DateTime.Parse(toDate),
                                                                             ExchangeRateType.Empty);
 
-      FixedList<SaldosPorAuxiliarEntryDto> saldosAuxiliar = TestsHelpers.GetSaldosPorAuxiliar(
-                                                            DateTime.Parse(fromDate),
-                                                            DateTime.Parse(toDate),
-                                                            balancesType)
-                                           .FindAll(x => x.ItemType == TrialBalanceItemType.Entry &&
-                                                         !x.IsParentPostingEntry);
+      FixedList<SaldosPorAuxiliarEntryDto> saldosAuxiliar =
+                                                SaldosPorAuxiliarYPorCuentaTestHelpers.GetSaldosPorAuxiliar(
+                                                                                    DateTime.Parse(fromDate),
+                                                                                    DateTime.Parse(toDate),
+                                                                                    balancesType)
+                                                    .FindAll(x => x.ItemType == TrialBalanceItemType.Entry &&
+                                                                 !x.IsParentPostingEntry);
       
       RunTest(coreBalances, saldosAuxiliar);
 

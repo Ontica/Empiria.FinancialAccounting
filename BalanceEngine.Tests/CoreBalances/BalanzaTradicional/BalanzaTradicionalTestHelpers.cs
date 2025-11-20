@@ -18,7 +18,7 @@ using Empiria.FinancialAccounting.Tests;
 namespace Empiria.Tests.FinancialAccounting.BalanceEngine {
 
   /// <summary></summary>
-  static public class BalanzaTradicionalTestHelpers {
+  static internal class BalanzaTradicionalTestHelpers {
 
     #region Methods
 

@@ -21,7 +21,7 @@ using Empiria.Time;
 namespace Empiria.Tests.FinancialAccounting.BalanceEngine {
 
   /// <summary>Provides services for BalanzaDiferenciaDiariaMonedaVsCoreBalancesTests tests.</summary>
-  static public class BalanzaDiferenciaDiariaMonedaTestHelpers {
+  static internal class BalanzaDiferenciaDiariaMonedaTestHelpers {
 
     #region Methods
 

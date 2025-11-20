@@ -18,7 +18,7 @@ using Empiria.FinancialAccounting.Tests;
 namespace Empiria.Tests.FinancialAccounting.BalanceEngine {
 
   /// <summary>Provides services for AnaliticoCuentasVsCoreBalancesTests tests</summary>
-  static public class AnaliticoCuentasTestHelpers {
+  static internal class AnaliticoCuentasTestHelpers {
 
     #region Methods
 

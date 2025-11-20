@@ -35,13 +35,43 @@ namespace Empiria.Tests.FinancialAccounting.BalanceEngine {
                                                                            DateTime.Parse(toDate),
                                                                            ExchangeRateType.Empty);
 
-      FixedList<BalanceExplorerEntryDto> saldosCuenta = TestsHelpers.GetExploradorSaldosPorCuenta(
-                                                            DateTime.Parse(fromDate),
-                                                            DateTime.Parse(toDate),
-                                                            accountsFilter)
-                                           .FindAll(x => x.ItemType == TrialBalanceItemType.Entry);
+      FixedList<BalanceExplorerEntryDto> saldosCuenta =
+                                        SaldosPorAuxiliarYPorCuentaTestHelpers.GetExploradorSaldosPorCuenta(
+                                                                                    DateTime.Parse(fromDate),
+                                                                                    DateTime.Parse(toDate),
+                                                                                    accountsFilter)
+                                                     .FindAll(x => x.ItemType == TrialBalanceItemType.Entry);
 
       RunTest(coreBalances, saldosCuenta);
+
+      Assert.True(saldosCuenta.Count > 500);
+    }
+
+
+    [Theory]
+    [InlineData("2024-10-01", "2024-10-31", true)]
+    [InlineData("2024-11-01", "2024-11-30", true)]
+    [InlineData("2024-12-01", "2024-12-31", true)]
+    [InlineData("2025-01-01", "2025-01-31", true)]
+    [InlineData("2025-02-01", "2025-02-28", true)]
+    [InlineData("2025-03-01", "2025-03-31", true)]
+    [InlineData("2025-04-01", "2025-04-30", true)]
+    [InlineData("2025-05-01", "2025-05-31", true)]
+    public void Should_Have_Same_SubledgerAccount_Entries(string fromDate, string toDate,
+                                                          bool accountsFilter) {
+
+      CoreBalanceEntries coreBalances = TestsHelpers.GetCoreBalanceEntries(DateTime.Parse(fromDate),
+                                                                           DateTime.Parse(toDate),
+                                                                           ExchangeRateType.Empty);
+
+      FixedList<BalanceExplorerEntryDto> saldosCuenta =
+                              SaldosPorAuxiliarYPorCuentaTestHelpers.GetExploradorSaldosPorCuentaConAuxiliar(
+                                                                                    DateTime.Parse(fromDate),
+                                                                                    DateTime.Parse(toDate),
+                                                                                    accountsFilter)
+                                                     .FindAll(x => x.ItemType == TrialBalanceItemType.Entry);
+
+      RunTestForSubledgerAccount(coreBalances, saldosCuenta);
 
       Assert.True(saldosCuenta.Count > 500);
     }
@@ -65,34 +95,6 @@ namespace Empiria.Tests.FinancialAccounting.BalanceEngine {
                                                 $"sector {sut.SectorCode} ({sut.DebtorCreditor})",
                                                 totalCurrentBalance, sut.CurrentBalance.Value));
       }
-    }
-
-
-    [Theory]
-    [InlineData("2024-10-01", "2024-10-31", true)]
-    [InlineData("2024-11-01", "2024-11-30", true)]
-    [InlineData("2024-12-01", "2024-12-31", true)]
-    [InlineData("2025-01-01", "2025-01-31", true)]
-    [InlineData("2025-02-01", "2025-02-28", true)]
-    [InlineData("2025-03-01", "2025-03-31", true)]
-    [InlineData("2025-04-01", "2025-04-30", true)]
-    [InlineData("2025-05-01", "2025-05-31", true)]
-    public void Should_Have_Same_SubledgerAccount_Entries(string fromDate, string toDate,
-                                                          bool accountsFilter) {
-
-      CoreBalanceEntries coreBalances = TestsHelpers.GetCoreBalanceEntries(DateTime.Parse(fromDate),
-                                                                           DateTime.Parse(toDate),
-                                                                           ExchangeRateType.Empty);
-
-      FixedList<BalanceExplorerEntryDto> saldosCuenta = TestsHelpers.GetExploradorSaldosPorCuentaConAuxiliar(
-                                                            DateTime.Parse(fromDate),
-                                                            DateTime.Parse(toDate),
-                                                            accountsFilter)
-                                           .FindAll(x => x.ItemType == TrialBalanceItemType.Entry);
-
-      RunTestForSubledgerAccount(coreBalances, saldosCuenta);
-
-      Assert.True(saldosCuenta.Count > 500);
     }
 
 
