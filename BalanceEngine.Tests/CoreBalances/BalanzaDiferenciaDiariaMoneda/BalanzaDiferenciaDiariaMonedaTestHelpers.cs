@@ -4,7 +4,7 @@
 *  Assembly : FinancialAccounting.BalanceEngine.Tests    Pattern   : Service provider                        *
 *  Type     : BalanzaDiferenciaDiariaMonedaTestHelpers   License   : Please read LICENSE.txt file            *
 *                                                                                                            *
-*  Summary  : Provides services for BalanzaDiferenciaDiariaMoneda tests.                                     *
+*  Summary  : Provides services for BalanzaDiferenciaDiariaMonedaVsCoreBalancesTests tests.                  *
 *                                                                                                            *
 ************************* Copyright(c) La Vía Óntica SC, Ontica LLC and contributors. All rights reserved. **/
 
@@ -20,7 +20,7 @@ using Empiria.Time;
 
 namespace Empiria.Tests.FinancialAccounting.BalanceEngine {
 
-  /// <summary>Provides services for BalanzaDiferenciaDiariaMoneda tests.</summary>
+  /// <summary>Provides services for BalanzaDiferenciaDiariaMonedaVsCoreBalancesTests tests.</summary>
   static public class BalanzaDiferenciaDiariaMonedaTestHelpers {
 
     #region Methods

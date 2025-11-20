@@ -2,53 +2,58 @@
 *                                                                                                            *
 *  Module   : Balance Engine                             Component : Test cases                              *
 *  Assembly : FinancialAccounting.BalanceEngine.Tests    Pattern   : Service provider                        *
-*  Type     : BalanzaComparativaTestHelpers              License   : Please read LICENSE.txt file            *
+*  Type     : BalanzaContCascadaTestHelpers              License   : Please read LICENSE.txt file            *
 *                                                                                                            *
 *  Summary  : Provides services for BalanzaComparativaVsCoreBalancesTests tests.                             *
 *                                                                                                            *
 ************************* Copyright(c) La Vía Óntica SC, Ontica LLC and contributors. All rights reserved. **/
 
 using System;
-
+using Empiria.FinancialAccounting;
 using Empiria.FinancialAccounting.BalanceEngine;
 using Empiria.FinancialAccounting.BalanceEngine.Adapters;
-
 using Empiria.FinancialAccounting.Tests;
 
 namespace Empiria.Tests.FinancialAccounting.BalanceEngine {
 
   /// <summary>Provides services for BalanzaComparativaVsCoreBalancesTests tests</summary>
-  static public class BalanzaComparativaTestHelpers {
+  internal class BalanzaContCascadaTestHelpers {
 
     #region Methods
 
-    static internal FixedList<BalanzaComparativaEntryDto> GetBalanzaComparativa(DateTime fromDate,
-                                                                              DateTime toDate,
-                                                                              DateTime fromDate2,
-                                                                              DateTime toDate2,
-                                                                              BalancesType balancesType) {
+    static internal FixedList<BalanzaContabilidadesCascadaEntryDto> GetBalanzaContabilidadesCascada(
+                                            DateTime fromDate, DateTime toDate, BalancesType balancesType) {
       var query = new TrialBalanceQuery() {
-        TrialBalanceType = TrialBalanceType.BalanzaValorizadaComparativa,
+        TrialBalanceType = TrialBalanceType.BalanzaConContabilidadesEnCascada,
         AccountsChartUID = TestingConstants.IFRS_ACCOUNTS_CHART.UID,
         BalancesType = balancesType,
-        ShowCascadeBalances = false,
-        UseDefaultValuation = true,
-        WithSubledgerAccount = true,
         InitialPeriod = new BalancesPeriod {
           FromDate = fromDate,
           ToDate = toDate
-        },
-        FinalPeriod = new BalancesPeriod {
-          FromDate = fromDate2,
-          ToDate = toDate2
         }
       };
 
-      return TestsHelpers.ExecuteTrialBalance<BalanzaComparativaEntryDto>(query);
+      return TestsHelpers.ExecuteTrialBalance<BalanzaContabilidadesCascadaEntryDto>(query);
+    }
+
+
+    static internal CoreBalanceEntries GetCoreBalanceEntriesInCascade(DateTime fromDate, DateTime toDate,
+                                                            ExchangeRateType exchangeRateType) {
+      var query = new TrialBalanceQuery() {
+        AccountsChartUID = TestingConstants.IFRS_ACCOUNTS_CHART.UID,
+        TrialBalanceType = TrialBalanceType.Balanza,
+        BalancesType = BalancesType.AllAccounts,
+        InitialPeriod = new BalancesPeriod {
+          FromDate = fromDate,
+          ToDate = toDate,
+        }
+      };
+
+      return new CoreBalanceEntries(query, exchangeRateType);
     }
 
     #endregion Methods
 
-  } // class BalanzaComparativaTestHelpers
+  } // class BalanzaContCascadaTestHelpers
 
 } // namespace Empiria.Tests.FinancialAccounting.BalanceEngine

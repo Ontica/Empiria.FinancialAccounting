@@ -4,7 +4,7 @@
 *  Assembly : FinancialAccounting.BalanceEngine.Tests    Pattern   : Service provider                        *
 *  Type     : AnaliticoCuentasTestHelpers                License   : Please read LICENSE.txt file            *
 *                                                                                                            *
-*  Summary  : Provides services for AnaliticoCuentasTestHelpers tests.                                       *
+*  Summary  : Provides services for AnaliticoCuentasVsCoreBalancesTests tests.                               *
 *                                                                                                            *
 ************************* Copyright(c) La Vía Óntica SC, Ontica LLC and contributors. All rights reserved. **/
 
@@ -17,7 +17,7 @@ using Empiria.FinancialAccounting.Tests;
 
 namespace Empiria.Tests.FinancialAccounting.BalanceEngine {
 
-  /// <summary></summary>
+  /// <summary>Provides services for AnaliticoCuentasVsCoreBalancesTests tests</summary>
   static public class AnaliticoCuentasTestHelpers {
 
     #region Methods

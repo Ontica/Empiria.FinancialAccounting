@@ -25,16 +25,17 @@ namespace Empiria.Tests.FinancialAccounting.BalanceEngine {
     [InlineData("2025-09-01", "2025-09-30", BalancesType.WithCurrentBalanceOrMovements)]
     public void Should_Have_Same_Entries(string fromDate, string toDate, BalancesType balancesType) {
 
-      CoreBalanceEntries coreBalances = TestsHelpers.GetCoreBalanceEntriesInCascade(
+      CoreBalanceEntries coreBalances = BalanzaContCascadaTestHelpers.GetCoreBalanceEntriesInCascade(
                                                                             DateTime.Parse(fromDate),
                                                                             DateTime.Parse(toDate),
                                                                             ExchangeRateType.Empty);
 
-      FixedList<BalanzaContabilidadesCascadaEntryDto> balanzaCascada = TestsHelpers.GetBalanzaContabilidadesCascada(
-                                                            DateTime.Parse(fromDate),
-                                                            DateTime.Parse(toDate),
-                                                            balancesType)
-                                                        .FindAll(x => x.ItemType == TrialBalanceItemType.Entry);
+      FixedList<BalanzaContabilidadesCascadaEntryDto> balanzaCascada =
+                                              BalanzaContCascadaTestHelpers.GetBalanzaContabilidadesCascada(
+                                                                                    DateTime.Parse(fromDate),
+                                                                                    DateTime.Parse(toDate),
+                                                                                    balancesType)
+                                                     .FindAll(x => x.ItemType == TrialBalanceItemType.Entry);
       RunTest(coreBalances, balanzaCascada);
 
       Assert.True(balanzaCascada.Count > 500);
