@@ -75,30 +75,6 @@ namespace Empiria.Tests.FinancialAccounting.BalanceEngine {
     }
 
 
-    static internal async Task<FixedList<SaldosEncerradosBaseEntryDto>> GetSaldosEncerrados(
-                                DateTime fromDate, DateTime toDate) {
-
-      var query = new SaldosEncerradosQuery() {
-        AccountsChartUID = TestingConstants.IFRS_ACCOUNTS_CHART.UID,
-        FromDate = fromDate,
-        ToDate = toDate
-      };
-
-      return await ExecuteLockedUpBalances(query);
-    }
-
-
-    static internal async Task<FixedList<SaldosEncerradosBaseEntryDto>> ExecuteLockedUpBalances(SaldosEncerradosQuery query) {
-
-      using (var usecase = TrialBalanceUseCases.UseCaseInteractor()) {
-
-        var dto = await usecase.BuildSaldosEncerrados(query);
-
-        return dto.Entries;
-      }
-    }
-
-
     static internal FixedList<T> ExecuteTrialBalance<T>(TrialBalanceQuery query) {
 
       using (var usecase = TrialBalanceUseCases.UseCaseInteractor()) {

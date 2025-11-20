@@ -32,8 +32,8 @@ namespace Empiria.Tests.FinancialAccounting.BalanceEngine {
                                                                            DateTime.Parse(toDate),
                                                                            ExchangeRateType.Empty);
 
-      FixedList<SaldosEncerradosBaseEntryDto> saldos = await TestsHelpers.GetSaldosEncerrados(
-                                                        DateTime.Parse(fromDate), DateTime.Parse(toDate));
+      FixedList<SaldosEncerradosBaseEntryDto> saldos = await SaldosEncerradosTestHelpers.GetSaldosEncerrados(
+                                                           DateTime.Parse(fromDate), DateTime.Parse(toDate));
       RunTest(coreBalances, saldos);
 
       Assert.True(saldos.Count > 100);
