@@ -10,7 +10,7 @@
 
 using System;
 using System.Collections.Generic;
-using DocumentFormat.OpenXml.VariantTypes;
+
 using Empiria.FinancialAccounting;
 using Empiria.FinancialAccounting.BalanceEngine;
 using Empiria.FinancialAccounting.BalanceEngine.Adapters;

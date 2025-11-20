@@ -31,9 +31,9 @@ namespace Empiria.Tests.FinancialAccounting.BalanceEngine {
                                                                            DateTime.Parse(toDate),
                                                                            ExchangeRateType.Empty);
 
-      FixedList<BalanzaDolarizadaEntryDto> balanzaDol = TestsHelpers.GetBalanzaDolarizada(
-                                                        DateTime.Parse(fromDate), DateTime.Parse(toDate),
-                                                        balancesType)
+      FixedList<BalanzaDolarizadaEntryDto> balanzaDol = BalanzaDolarizadaTestHelpers.GetBalanzaDolarizada(
+                                                          DateTime.Parse(fromDate), DateTime.Parse(toDate),
+                                                          balancesType)
                                                         .FindAll(x=>x.ItemType == TrialBalanceItemType.Summary ||
                                                                  x.ItemType == TrialBalanceItemType.Entry);
 
