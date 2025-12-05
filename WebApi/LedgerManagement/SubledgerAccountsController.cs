@@ -58,7 +58,7 @@ namespace Empiria.FinancialAccounting.WebApi {
     }
 
 
-    [HttpPost]   // ToDo: AllowAnonymous Removed
+    [HttpPost, AllowAnonymous]   // ToDo: AllowAnonymous Removed
     [Route("v2/financial-accounting/subledger-accounts/search")]
     public CollectionModel SearchSubledgerAccounts([FromBody] SubledgerAccountQuery query) {
 
@@ -81,12 +81,23 @@ namespace Empiria.FinancialAccounting.WebApi {
       query.AccountsChartUID = AccountsChart.IFRS.UID;
 
       using (var usecases = SubledgerUseCases.UseCaseInteractor()) {
-        FixedList<SubledgerAccountDescriptorDto> list = usecases.SearchSubledgerAccounts(query);
+        FixedList<SubledgerAccountDescriptorDto> accounts = usecases.SearchSubledgerAccounts(query);
 
-        return new CollectionModel(base.Request, list);
+        return new CollectionModel(base.Request, accounts);
       }
     }
 
+
+    [HttpPost]
+    [Route("v2/financial-accounting/subledger-accounts/search-suppliers")]
+    public CollectionModel SearchSupplierAccounts([FromBody] NamedEntityFields query) {
+
+      using (var usecases = SubledgerUseCases.UseCaseInteractor()) {
+        FixedList<NamedEntityDto> accounts = usecases.SearchSupplierAccounts(query);
+
+        return new CollectionModel(base.Request, accounts);
+      }
+    }
 
     [HttpPost]
     [Route("v2/financial-accounting/subledger-accounts")]

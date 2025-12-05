@@ -7,7 +7,6 @@
 *  Summary  : Use cases for subledgers and subledger accounts management.                                    *
 *                                                                                                            *
 ************************* Copyright(c) La Vía Óntica SC, Ontica LLC and contributors. All rights reserved. **/
-using System;
 
 using Empiria.Services;
 
@@ -102,6 +101,28 @@ namespace Empiria.FinancialAccounting.UseCases {
     }
 
 
+    public FixedList<NamedEntityDto> SearchSupplierAccounts(NamedEntityFields query) {
+      Assertion.Require(query, nameof(query));
+
+      var filter = $"ID_TIPO_MAYOR_AUXILIAR IN ({SubledgerType.Suppliers.Id}, {SubledgerType.Pending.Id}) AND " +
+                   $"NUMERO_CUENTA_AUXILIAR LIKE '___%80______' AND " +
+                   $"ELIMINADA = 0";
+
+      FixedList<SubledgerAccount> accounts = SubledgerAccount.Search(AccountsChart.IFRS, filter);
+
+      var supplierName = EmpiriaStringDistance.KeywordsForDistance(query.Name);
+
+      accounts = accounts.FindAll(x => Proximity(x, supplierName) >= 75);
+
+      if (accounts.Count > 1) {
+        accounts = accounts.FindAll(x => Proximity(x, supplierName) >= 90);
+      }
+
+      return accounts.Select(x => new NamedEntityDto(x.Number, x.Name))
+                     .ToFixedList();
+    }
+
+
     public SubledgerAccountDto SuspendSubledgerAccount(int subledgerAccountId) {
       Assertion.Require(subledgerAccountId > 0, nameof(subledgerAccountId));
 
@@ -133,6 +154,15 @@ namespace Empiria.FinancialAccounting.UseCases {
 
 
     #endregion Use cases
+
+    #region Helpers
+
+    private decimal Proximity(SubledgerAccount account, string supplierName) {
+      return EmpiriaStringDistance.MongeElkanProximityFactor(EmpiriaStringDistance.DistanceAlgorithm.Levenshtein,
+                                                             supplierName, account.KeywordsForDistance) * 100;
+    }
+
+    #endregion Helpers
 
   }  // class SubledgerUseCases
 

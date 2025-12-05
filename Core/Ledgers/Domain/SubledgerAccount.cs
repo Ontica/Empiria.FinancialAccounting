@@ -126,9 +126,23 @@ namespace Empiria.FinancialAccounting {
     }
 
 
+    private string _keywordsForDistance = null;
+    public string KeywordsForDistance {
+      get {
+        if (_keywordsForDistance != null) {
+          return _keywordsForDistance;
+        }
+
+        _keywordsForDistance = EmpiriaStringDistance.KeywordsForDistance(Name);
+
+        return _keywordsForDistance;
+      }
+    }
+
+
     public bool IsEmptyInstance {
       get {
-        return (this.Id == -1 || this.Id == 0);
+        return (Id == -1 || Id == 0);
       }
     }
 
