@@ -1,6 +1,6 @@
 ﻿/* Empiria Financial *****************************************************************************************
 *                                                                                                            *
-*  Module   : Cash Ledger                                Component : Data Layer                              *
+*  Module   : Web API Client                             Component : Data Layer                              *
 *  Assembly : FinancialAccounting.WebApiClient.dll       Pattern   : Abstract type                           *
 *  Type     : BaseService                                License   : Please read LICENSE.txt file            *
 *                                                                                                            *
