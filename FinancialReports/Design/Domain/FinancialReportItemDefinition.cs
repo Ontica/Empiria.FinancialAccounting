@@ -87,6 +87,20 @@ namespace Empiria.FinancialAccounting.FinancialReports {
     } = JsonObject.Empty;
 
 
+    internal DateTime StartDate {
+      get {
+        return ExtendedData.Get("startDate", ExecutionServer.DateMinValue);
+      }
+    }
+
+
+    internal DateTime EndDate {
+      get {
+        return ExtendedData.Get("endDate", ExecutionServer.DateMaxValue);
+      }
+    }
+
+
     [DataField("STATUS", Default = EntityStatus.Active)]
     public EntityStatus Status {
       get; private set;

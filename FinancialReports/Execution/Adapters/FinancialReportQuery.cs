@@ -25,7 +25,9 @@ namespace Empiria.FinancialAccounting.FinancialReports.Adapters {
 
 
     public DateTime FromDate {
-      get; set;
+      get {
+        return new DateTime(ToDate.Year, ToDate.Month, 1);
+      }
     }
 
 

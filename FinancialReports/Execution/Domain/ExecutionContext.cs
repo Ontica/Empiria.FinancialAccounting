@@ -119,7 +119,12 @@ namespace Empiria.FinancialAccounting.FinancialReports {
 
 
     private FixedList<FinancialConcept> GetPrecalculatedConcepts() {
-      FixedList<FinancialReportItemDefinition> reportItems = this.FinancialReportType.GetItems();
+
+      DateTime fromDate = this.BuildQuery.FromDate;
+      DateTime toDate = this.BuildQuery.ToDate;
+
+      FixedList<FinancialReportItemDefinition> reportItems = FinancialReportType.GetItems()
+                                                                                .FindAll(x => fromDate <= x.EndDate && x.StartDate <= toDate);
 
       FixedList<FinancialConcept> reportConcepts = reportItems.FindAll(x => !x.FinancialConcept.IsEmptyInstance)
                                                               .Select(x => x.FinancialConcept)

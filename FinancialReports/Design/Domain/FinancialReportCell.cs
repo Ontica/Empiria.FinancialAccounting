@@ -7,7 +7,6 @@
 *  Summary  : Describes a financial report fixed cell.                                                        *
 *                                                                                                            *
 ************************* Copyright(c) La Vía Óntica SC, Ontica LLC and contributors. All rights reserved. **/
-using System;
 
 using Empiria.FinancialAccounting.FinancialReports.Data;
 
@@ -15,7 +14,6 @@ namespace Empiria.FinancialAccounting.FinancialReports {
 
   /// <summary>Describes a financial report fixed row.</summary>
   public class FinancialReportCell : FinancialReportItemDefinition {
-
 
     #region Constructors and parsers
 
