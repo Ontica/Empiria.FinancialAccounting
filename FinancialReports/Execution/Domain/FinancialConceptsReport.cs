@@ -68,7 +68,12 @@ namespace Empiria.FinancialAccounting.FinancialReports {
 
 
     internal FixedList<FinancialReportEntry> Generate() {
-      FixedList<FinancialReportItemDefinition> reportItems = FinancialReportType.GetItems();
+
+      DateTime fromDate = _executionContext.BuildQuery.FromDate;
+      DateTime toDate = _executionContext.BuildQuery.ToDate;
+
+      FixedList<FinancialReportItemDefinition> reportItems = FinancialReportType.GetItems()
+                                                                                .FindAll(x => fromDate <= x.EndDate && x.StartDate <= toDate);
 
       FixedList<FinancialReportEntryResult> reportEntries = CreateReportEntriesWithoutTotals(reportItems);
 
@@ -99,7 +104,12 @@ namespace Empiria.FinancialAccounting.FinancialReports {
 
 
     internal FixedList<FinancialReportEntry> GenerateIntegration() {
-      FixedList<FinancialReportItemDefinition> reportItems = FinancialReportType.GetItems();
+
+      DateTime fromDate = _executionContext.BuildQuery.FromDate;
+      DateTime toDate = _executionContext.BuildQuery.ToDate;
+
+      FixedList<FinancialReportItemDefinition> reportItems = FinancialReportType.GetItems()
+                                                                                .FindAll(x => fromDate <= x.EndDate && x.StartDate <= toDate);
 
       reportItems = FilterItemsWithIntegrationAccounts(reportItems);
 

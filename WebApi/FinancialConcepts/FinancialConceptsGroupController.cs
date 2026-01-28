@@ -84,7 +84,6 @@ namespace Empiria.FinancialAccounting.WebApi.FinancialConcepts {
       }
     }
 
-
     #endregion Web Apis
 
   }  // class FinancialConceptsController
