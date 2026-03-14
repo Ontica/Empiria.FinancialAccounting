@@ -7,7 +7,7 @@
 *  Summary  : Provides services to validate account edition commands.                                        *
 *                                                                                                            *
 ************************* Copyright(c) La Vía Óntica SC, Ontica LLC and contributors. All rights reserved. **/
-using System;
+
 using System.Collections.Generic;
 
 using Empiria.FinancialAccounting.AccountsChartEdition.Adapters;
@@ -259,11 +259,11 @@ namespace Empiria.FinancialAccounting.AccountsChartEdition {
       }
 
       if (dataToBeUpdated.Contains(AccountDataToBeUpdated.MainRole) &&
-          (account.Role == AccountRole.Sumaria ||_command.AccountFields.Role == AccountRole.Sumaria)) {
+          (account.Role == AccountRole.Sumaria || _command.AccountFields.Role == AccountRole.Sumaria)) {
         return;
       }
 
-      if (!updateCurrencies) {
+      if (!updateCurrencies && account.Role != AccountRole.Sumaria) {
         var registered = account.GetCurrencies(account.StartDate)
                                 .Select(x => x.Currency.Code)
                                 .ToFixedList();

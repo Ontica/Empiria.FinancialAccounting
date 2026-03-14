@@ -86,6 +86,9 @@ namespace Empiria.FinancialAccounting {
       _rules = new Lazy<AccountsChartRules>(() => new AccountsChartRules(this));
 
       if (afterUpdated) {
+        Account.RestoreCache<Account>();
+        StandardAccount.RestoreCache<StandardAccount>();
+
         _ = _accounts.Value;
         _ = _standardAccounts.Value;
         _ = _rules.Value;
