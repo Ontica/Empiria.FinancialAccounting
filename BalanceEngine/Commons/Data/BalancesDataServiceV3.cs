@@ -26,8 +26,7 @@ namespace Empiria.FinancialAccounting.BalanceEngine.Data {
         "FROM vw_cof_movimiento " +
         $"WHERE " +
             $"fecha_afectacion >= {DataCommonMethods.FormatSqlDbDate(fromDate)} AND " +
-            $"fecha_afectacion < {DataCommonMethods.FormatSqlDbDate(toDate.AddDays(1))} AND " +
-            "id_moneda <> 1 " +
+            $"fecha_afectacion < {DataCommonMethods.FormatSqlDbDate(toDate.AddDays(1))}" +
         "GROUP BY " +
             "id_cuenta_estandar, fecha_afectacion, id_moneda";
 

@@ -75,8 +75,33 @@ namespace Empiria.FinancialAccounting.BalanceEngine.UseCases {
                        .ThenBy(x => x.FechaAfectacion)
                        .ToFixedList();
 
+
+
+      TrialBalanceQuery initialBalanceQuery = new TrialBalanceQuery() {
+        AccountsChartUID = AccountsChart.IFRS.UID,
+        FromAccount = "1",
+        ToAccount = "3.99",
+        TrialBalanceType = TrialBalanceType.Balanza,
+        InitialPeriod = new BalancesPeriod {
+          FromDate = query.InitialPeriod.FromDate.AddDays(-1),
+          ToDate = query.InitialPeriod.FromDate.AddDays(-1)
+        },
+        BalancesType = BalancesType.AllAccounts
+      };
+
+      var intialBalancesBuilder = new BalanzaTradicionalBuilder(initialBalanceQuery);
+
+      var initialBalances = intialBalancesBuilder.BuildBalanzaTradicional()
+                                                 .Entries.Cast<TrialBalanceEntry>()
+                                                 .ToFixedList();
+
+      foreach (var entry in entries) {
+        entry.SetInitialBalance(initialBalances, entries, query.InitialPeriod.FromDate);
+      }
+
       var exchangeRates = ExchangeRate.GetList(query.InitialPeriod.FromDate.AddDays(-20),
                                                query.InitialPeriod.ToDate);
+
 
       foreach (var entry in entries) {
         entry.SetExchangeRate(exchangeRates, query.InitialPeriod.FromDate.AddDays(-20), query.InitialPeriod.ToDate);

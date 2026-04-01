@@ -113,6 +113,14 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
       }
     }
 
+    private bool FirstEntry {
+      get; set;
+    }
+
+    private bool LastEntry {
+      get; set;
+    }
+
     #endregion Properties
 
     #region Methods
@@ -130,6 +138,35 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
                                                    x.ToCurrency.Equals(Currency) &&
                                                    x.ExchangeRateType.Equals(ExchangeRateType.Diario));
         TipoCambio = exchangeRate.Value;
+      }
+    }
+
+
+    internal void SetInitialBalance(FixedList<TrialBalanceEntry> initialBalances,
+                                    FixedList<TrialBalanceValued> entries,
+                                    DateTime startDate) {
+
+      var lastEntries = entries.FindAll(x => !LastEntry &&
+                                             FechaAfectacion < x.FechaAfectacion &&
+                                             !x.CuentaEstandar.Equals(CuentaEstandar) &&
+                                             x.Currency.Equals(Currency));
+
+      foreach (var last in lastEntries) {
+        last.LastEntry = true;
+      }
+
+      var firstEntry = entries.Find(x => FechaAfectacion < x.FechaAfectacion &&
+                                         !FirstEntry && !LastEntry &&
+                                         x.CuentaEstandar.Equals(CuentaEstandar) &&
+                                         x.Currency.Equals(Currency));
+
+      if (firstEntry != null) {
+        var balance = initialBalances.Find(x => x.Account.Equals(CuentaEstandar) &&
+                                                x.Currency.Equals(Currency) &&
+                                                x.Sector.IsEmptyInstance);
+
+        SaldoInicial = balance?.CurrentBalance ?? 0;
+        FirstEntry = true;
       }
     }
 
