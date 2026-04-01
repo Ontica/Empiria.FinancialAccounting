@@ -67,6 +67,18 @@ namespace Empiria.FinancialAccounting.Data {
     }
 
 
+    static internal FixedList<ExchangeRate> GetExchangeRates(DateTime fromDate, DateTime toDate) {
+      var sql = "SELECT * FROM AO_EXCHANGE_RATES " +
+                $"WHERE FROM_DATE >= {DataCommonMethods.FormatSqlDbDate(fromDate)} " +
+                $"AND TO_DATE <= {DataCommonMethods.FormatSqlDbDate(toDate)} " +
+                $"ORDER BY EXCHANGE_RATE_TYPE_ID, TO_CURRENCY_ID";
+
+      var dataOperation = DataOperation.Parse(sql);
+
+      return DataReader.GetFixedList<ExchangeRate>(dataOperation);
+    }
+
+
     static internal FixedList<ExchangeRate> GetExchangeRates(ExchangeRateType exchangeRateType,
                                                              DateTime date) {
       string hashKey = GetHashKey(exchangeRateType, date);

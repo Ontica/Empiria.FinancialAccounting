@@ -71,6 +71,9 @@ namespace Empiria.FinancialAccounting {
       return ExchangeRatesData.GetExchangeRates(date);
     }
 
+    static public FixedList<ExchangeRate> GetList(DateTime fromDate, DateTime toDate) {
+      return ExchangeRatesData.GetExchangeRates(fromDate, toDate);
+    }
 
     static public FixedList<ExchangeRate> GetList(ExchangeRateType exchangeRateType, DateTime date) {
       return ExchangeRatesData.GetExchangeRates(exchangeRateType, date);
