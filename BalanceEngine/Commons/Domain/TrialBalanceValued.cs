@@ -7,28 +7,33 @@
 *  Summary  : Contains entries from TrialBalanceValued.                                                      *
 *                                                                                                            *
 ************************* Copyright(c) La Vía Óntica SC, Ontica LLC and contributors. All rights reserved. **/
+
 using System;
-using Empiria.FinancialAccounting.BalanceEngine.Data;
 
 namespace Empiria.FinancialAccounting.BalanceEngine {
 
   /// <summary>Contains entries from TrialBalanceValued.</summary>
   public class TrialBalanceValued {
 
-    #region Constructors and parsers
-
-    protected TrialBalanceValued() {
-      // Require by Empiria FrameWork
-    }
-
-    #endregion Constructors and parsers
-
     #region Properties
 
     [DataField("ID_CUENTA_ESTANDAR", ConvertFrom = typeof(long))]
-    public int IdCuentaEstandar {
-      get; set;
-    } = 0;
+    internal StandardAccount CuentaEstandar {
+      get; private set;
+    }
+
+
+    public string NumeroCuenta {
+      get {
+        return CuentaEstandar.Number;
+      }
+    }
+
+    public string NombreCuenta {
+      get {
+        return CuentaEstandar.Name;
+      }
+    }
 
     [DataField("FECHA_AFECTACION", ConvertFrom = typeof(DateTime))]
     public DateTime FechaAfectacion {
@@ -36,23 +41,26 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
     } = ExecutionServer.DateMinValue;
 
 
-    [DataField("NATURALEZA", Default = DebtorCreditorType.Deudora)]
     public DebtorCreditorType Naturaleza {
-      get; private set;
-    } = DebtorCreditorType.Deudora;
-
-    [DataField("ID_CUENTA_AUXILIAR", ConvertFrom = typeof(long))]
-    public long IdCuentaAuxiliar {
-      get; private set;
+      get {
+        return CuentaEstandar.DebtorCreditor;
+      }
     }
 
-    [DataField("ID_SECTOR", ConvertFrom = typeof(long))]
-    public Sector Sector {
-      get; private set;
-    }
 
     [DataField("ID_MONEDA", ConvertFrom = typeof(decimal))]
-    public Currency Currency {
+    internal Currency Currency {
+      get; private set;
+    }
+
+
+    public string CodigoMoneda {
+      get {
+        return Currency.ISOCode;
+      }
+    }
+
+    public decimal SaldoInicial {
       get; private set;
     }
 
@@ -66,33 +74,66 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
       get; private set;
     }
 
-    [DataField("EXCHANGE_RATE", ConvertFrom = typeof(decimal))]
+    public decimal SaldoFinal {
+      get {
+        if (Naturaleza == DebtorCreditorType.Deudora) {
+          return SaldoInicial + Debe - Haber;
+        } else {
+          return SaldoInicial - Debe + Haber;
+        }
+      }
+    }
+
     public decimal TipoCambio {
       get; private set;
     }
 
-    [DataField("DEBE_VAL", ConvertFrom = typeof(decimal))]
-    public decimal DebeValorizado {
-      get; private set;
+
+    public decimal SaldoInicialMXN {
+      get {
+        return SaldoInicial * TipoCambio;
+      }
     }
 
-    [DataField("HABER_VAL", ConvertFrom = typeof(decimal))]
-    public decimal HaberValorizado {
-      get; private set;
+    public decimal DebeMXN {
+      get {
+        return Debe * TipoCambio;
+      }
+    }
+
+    public decimal HaberMXN {
+      get {
+        return Haber * TipoCambio;
+      }
+    }
+
+    public decimal SaldoFinalMXN {
+      get {
+        return SaldoFinal * TipoCambio;
+      }
     }
 
     #endregion Properties
 
-    #region Public methods
+    #region Methods
 
-    static public FixedList<TrialBalanceValued> GetTrialBalanceValuedTransactions(DateTime fromDate, DateTime toDate, int ExchangeRateTypeId) {
+    internal void SetExchangeRate(FixedList<ExchangeRate> exchangeRates,
+                                  DateTime initialDate, DateTime endDate) {
+      int lastDay = DateTime.DaysInMonth(FechaAfectacion.Year, FechaAfectacion.Month);
 
-      return TrialBalanceValuedDataService.GetTransactions(fromDate, toDate, ExchangeRateTypeId);
+      if (FechaAfectacion.Day == lastDay) {
+        var exchangeRate = exchangeRates.Find(x => x.Date == FechaAfectacion && x.ToCurrency.Equals(Currency) &&
+                                                   x.ExchangeRateType.Equals(ExchangeRateType.ValorizacionBanxico));
+        TipoCambio = exchangeRate.Value;
+      } else {
+        var exchangeRate = exchangeRates.Find(x => x.Date == FechaAfectacion &&
+                                                   x.ToCurrency.Equals(Currency) &&
+                                                   x.ExchangeRateType.Equals(ExchangeRateType.Diario));
+        TipoCambio = exchangeRate.Value;
+      }
     }
 
-
-    #endregion Public methods
-
+    #endregion Methods
 
   } // class TrialBalanceValued
 
