@@ -25,6 +25,8 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
 
     BalanzaDiferenciaDiariaPorMoneda,
 
+    BalanzaValorizada,
+
     BalanzaValorizadaComparativa,
 
     GeneracionDeSaldos,

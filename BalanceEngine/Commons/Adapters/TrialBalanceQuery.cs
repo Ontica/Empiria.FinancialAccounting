@@ -13,7 +13,7 @@ using Empiria.Json;
 namespace Empiria.FinancialAccounting.BalanceEngine.Adapters {
 
   /// <summary>Query payload used to generate trial balances.</summary>
-  public class TrialBalanceQuery {
+  public class TrialBalanceQuery : IQuery {
 
     public TrialBalanceType TrialBalanceType {
       get; set;

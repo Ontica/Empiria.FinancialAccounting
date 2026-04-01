@@ -11,13 +11,15 @@
 using System.Threading.Tasks;
 using System.Web.Http;
 
+using Empiria.DynamicData;
 using Empiria.Storage;
 using Empiria.WebApi;
 
-using Empiria.FinancialAccounting.Reporting.Balances;
-
+using Empiria.FinancialAccounting.BalanceEngine;
 using Empiria.FinancialAccounting.BalanceEngine.Adapters;
 using Empiria.FinancialAccounting.BalanceEngine.UseCases;
+
+using Empiria.FinancialAccounting.Reporting.Balances;
 
 namespace Empiria.FinancialAccounting.WebApi.BalanceEngine {
 
@@ -170,18 +172,28 @@ namespace Empiria.FinancialAccounting.WebApi.BalanceEngine {
     }
 
 
-    [HttpPost]  // ToDo: AllowAnonymous Removed
+    [HttpPost, AllowAnonymous]  // ToDo: AllowAnonymous Removed
     [Route("v2/financial-accounting/balance-engine/trial-balance")]
     public SingleObjectModel GetTrialBalance([FromBody] TrialBalanceQuery query) {
 
       base.RequireBody(query);
 
-      using (var usecases = TrialBalanceUseCases.UseCaseInteractor()) {
+      if (query.TrialBalanceType != TrialBalanceType.BalanzaValorizada) {
+        using (var usecases = TrialBalanceUseCases.UseCaseInteractor()) {
 
-        TrialBalanceDto trialBalance = usecases.BuildTrialBalance(query);
+          TrialBalanceDto trialBalance = usecases.BuildTrialBalance(query);
+
+          return new SingleObjectModel(this.Request, trialBalance);
+        }
+      }
+
+
+      using (var usecases = TrialBalancesUseCasesV3.UseCaseInteractor()) {
+        DynamicDto<TrialBalanceValued> trialBalance = usecases.GetValuatedTrialBalance(query);
 
         return new SingleObjectModel(this.Request, trialBalance);
       }
+
     }
 
 
