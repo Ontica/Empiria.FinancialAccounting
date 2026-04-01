@@ -101,7 +101,7 @@ namespace Empiria.FinancialAccounting.WebApi {
                         command.CommandType == AccountEditionCommandType.FixAccountName,
                         $"Unrecognized command type '{command.CommandType}'.");
 
-      base.SetOperation($"Se actualizó la cuenta {command.AccountFields.AccountNumber} del catálogo de cuentas.");
+      base.SetOperation($"Se actualizó la cuenta {command.AccountFields.AccountNumber} en el catálogo de cuentas.");
 
       using (var usecases = AccountEditionUseCases.UseCaseInteractor()) {
         ExecutionResult<AccountDto> result = usecases.ExecuteCommand(command);

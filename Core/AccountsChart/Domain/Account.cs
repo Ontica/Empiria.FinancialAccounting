@@ -332,6 +332,7 @@ namespace Empiria.FinancialAccounting {
       return _sectorRules.Value.FindAll(x => x.AppliesOn(fromDate, toDate));
     }
 
+
     internal bool HasChildrenWithSectors() {
       FixedList<Account> children = this.GetChildren();
 

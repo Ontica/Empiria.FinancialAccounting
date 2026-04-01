@@ -8,8 +8,8 @@
 *                                                                                                            *
 ************************* Copyright(c) La Vía Óntica SC, Ontica LLC and contributors. All rights reserved. **/
 using System;
+
 using Empiria.FinancialAccounting.Adapters;
-using Microsoft.Extensions.Logging;
 
 namespace Empiria.FinancialAccounting.BalanceEngine {
 
@@ -183,7 +183,7 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
     public DebtorCreditorType DebtorCreditor {
       get; internal set;
     } = DebtorCreditorType.Deudora;
-    
+
 
     public int SubledgerAccountIdParent {
       get; internal set;

@@ -254,10 +254,9 @@ namespace Empiria.FinancialAccounting.AccountsChartEdition.Adapters {
 
       public FixedList<SectorInputRuleDto> GetSectorRules() {
         return _command.SectorRules.Select(x => {
-                                              x.Sector = Sector.Parse(x.Code);
-                                              return x;
-                                           })
-                                   .ToFixedList();
+          x.Sector = Sector.Parse(x.Code);
+          return x;
+        }).ToFixedList();
       }
 
 

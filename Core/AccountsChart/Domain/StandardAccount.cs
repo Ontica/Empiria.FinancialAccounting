@@ -171,7 +171,6 @@ namespace Empiria.FinancialAccounting {
       return _parent;
     }
 
-
     #endregion Public methods
 
   }  // class StandardAccount

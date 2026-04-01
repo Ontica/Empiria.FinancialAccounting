@@ -7,9 +7,11 @@
 *  Summary  : Provides data read methods for balances.                                                       *
 *                                                                                                            *
 ************************* Copyright(c) La Vía Óntica SC, Ontica LLC and contributors. All rights reserved. **/
+
 using System.Collections.Generic;
 
 using Empiria.Data;
+
 using Empiria.FinancialAccounting.BalanceEngine.Adapters;
 using Empiria.FinancialAccounting.BalanceEngine.BalanceExplorer.Adapters;
 
@@ -48,7 +50,7 @@ namespace Empiria.FinancialAccounting.BalanceEngine.Data {
 
     #region Helpers
 
-    
+
     static private List<TrialBalanceEntry> GetTrialBalanceEntries(BalancesSqlClauses clauses) {
       var operation = DataOperation.Parse("@qryTrialBalance",
                             DataCommonMethods.FormatSqlDbDate(clauses.StoredInitialBalanceSet.BalancesDate),

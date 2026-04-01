@@ -7,7 +7,7 @@
 *  Summary  : Transforms an account edition command in a set of AccountsChartEditionAction items.            *
 *                                                                                                            *
 ************************* Copyright(c) La Vía Óntica SC, Ontica LLC and contributors. All rights reserved. **/
-using System;
+
 using System.Collections.Generic;
 
 using Empiria.Data;

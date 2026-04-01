@@ -207,7 +207,6 @@ namespace Empiria.FinancialAccounting {
       this.Subledger = newSubledger;
     }
 
-
     #endregion Methods
 
   }  // class SubledgerAccount
