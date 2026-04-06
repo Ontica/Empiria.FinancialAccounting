@@ -7,11 +7,12 @@
 *  Summary  : Main service to export balances information to Microsoft Excel.                                *
 *                                                                                                            *
 ************************* Copyright(c) La Vía Óntica SC, Ontica LLC and contributors. All rights reserved. **/
-using System;
 
+using Empiria.DynamicData;
 using Empiria.Office;
 using Empiria.Storage;
 
+using Empiria.FinancialAccounting.BalanceEngine;
 using Empiria.FinancialAccounting.BalanceEngine.Adapters;
 using Empiria.FinancialAccounting.BalanceEngine.BalanceExplorer.Adapters;
 
@@ -28,6 +29,21 @@ namespace Empiria.FinancialAccounting.Reporting.Balances {
       var templateConfig = FileTemplateConfig.Parse(templateUID);
 
       var exporter = new BalancesExcelExporter(templateConfig);
+
+      ExcelFile excelFile = exporter.CreateExcelFile(trialBalance);
+
+      return excelFile.ToFileDto();
+    }
+
+
+    public FileDto Export(DynamicDto<BalanzaValorizadaEntry> trialBalance) {
+      Assertion.Require(trialBalance, nameof(trialBalance));
+
+      var templateUID = $"TrialBalanceTemplate.BalanzaValorizada";
+
+      var templateConfig = FileTemplateConfig.Parse(templateUID);
+
+      var exporter = new BalanzaValorizadaExcelExporter(templateConfig);
 
       ExcelFile excelFile = exporter.CreateExcelFile(trialBalance);
 
@@ -55,7 +71,7 @@ namespace Empiria.FinancialAccounting.Reporting.Balances {
 
       var templateUID = $"BalanceTemplate.{dto.Query.TrialBalanceType}";
 
-      if (dto.Query.ExportTo != BalanceEngine.FileReportVersion.V1) {
+      if (dto.Query.ExportTo != FileReportVersion.V1) {
         templateUID = $"BalanceTemplate.{dto.Query.TrialBalanceType}" +
                       $"{dto.Query.ExportTo}";
       }
@@ -68,7 +84,6 @@ namespace Empiria.FinancialAccounting.Reporting.Balances {
 
       return excelFile.ToFileDto();
     }
-
 
   } // class BalancesExcelExporterService
 

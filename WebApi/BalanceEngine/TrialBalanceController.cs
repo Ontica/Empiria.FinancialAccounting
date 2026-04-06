@@ -203,9 +203,23 @@ namespace Empiria.FinancialAccounting.WebApi.BalanceEngine {
 
       base.RequireBody(query);
 
-      using (var usecases = TrialBalanceUseCases.UseCaseInteractor()) {
+      if (query.TrialBalanceType != TrialBalanceType.BalanzaValorizada) {
 
-        TrialBalanceDto trialBalance = usecases.BuildTrialBalance(query);
+        using (var usecases = TrialBalanceUseCases.UseCaseInteractor()) {
+
+          TrialBalanceDto trialBalance = usecases.BuildTrialBalance(query);
+
+          var excelExporter = new BalancesExcelExporterService();
+
+          FileDto excelFileDto = excelExporter.Export(trialBalance);
+
+          return new SingleObjectModel(this.Request, excelFileDto);
+        }
+      }
+
+      using (var usecases = TrialBalancesUseCasesV3.UseCaseInteractor()) {
+
+        DynamicDto<BalanzaValorizadaEntry> trialBalance = usecases.BalanzaValorizada(query);
 
         var excelExporter = new BalancesExcelExporterService();
 
