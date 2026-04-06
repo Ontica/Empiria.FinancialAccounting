@@ -8,8 +8,10 @@
 *                                                                                                            *
 ************************* Copyright(c) La Vía Óntica SC, Ontica LLC and contributors. All rights reserved. **/
 
+using System;
 using System.Collections.Generic;
 using System.Linq;
+
 using Empiria.DynamicData;
 using Empiria.Time;
 
@@ -86,14 +88,18 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
 
         ExchangeRate exchangeRate;
 
-        exchangeRate = dailyExchangeRates.Find(x => x.Date == date);
-
-        if (date.Day == 1) {
-          lastExchangeRate = banxicoExchangeRates.FindLast(x => x.Date < date);
+        if (DateTime.DaysInMonth(date.Year, date.Month) == date.Day) {
+          exchangeRate = banxicoExchangeRates.Find(x => x.Date == date);
+        } else {
+          exchangeRate = dailyExchangeRates.Find(x => x.Date == date);
         }
 
         if (exchangeRate == null) {
           continue;
+        }
+
+        if (date.Day == 1) {
+          lastExchangeRate = banxicoExchangeRates.Find(x => x.Date == date.AddDays(-1));
         }
 
         var dateEntry = _entries.Find(x => x.CuentaEstandar.Equals(balance.Account) &&

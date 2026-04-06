@@ -72,8 +72,12 @@ namespace Empiria.FinancialAccounting.BalanceEngine.UseCases {
 
       var builder = new BalanzaValorizadaBuilder(initialBalances, movsDiarios, exchangeRates);
 
-
       FixedList<BalanzaValorizadaEntry> entries = builder.Build(period);
+
+      entries = entries.OrderBy(x => x.NumeroCuenta)
+                       .ThenBy(x => x.Moneda.Code)
+                       .ThenBy(x => x.FechaAfectacion)
+                       .ToFixedList();
 
       return new DynamicDto<BalanzaValorizadaEntry>(query, builder.GetColumns(), entries);
     }
