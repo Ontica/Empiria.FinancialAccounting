@@ -189,7 +189,7 @@ namespace Empiria.FinancialAccounting.WebApi.BalanceEngine {
 
 
       using (var usecases = TrialBalancesUseCasesV3.UseCaseInteractor()) {
-        DynamicDto<TrialBalanceValued> trialBalance = usecases.GetValuatedTrialBalance(query);
+        DynamicDto<BalanzaValorizadaEntry> trialBalance = usecases.BalanzaValorizada(query);
 
         return new SingleObjectModel(this.Request, trialBalance);
       }

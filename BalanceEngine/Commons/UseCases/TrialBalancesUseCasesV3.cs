@@ -8,35 +8,13 @@
 *                                                                                                            *
 ************************* Copyright(c) La Vía Óntica SC, Ontica LLC and contributors. All rights reserved. **/
 
-using Empiria;
-using Empiria.DynamicData;
-
-using Empiria.Services;
-
-using Empiria.FinancialAccounting.BalanceEngine.Adapters;
-using Empiria.FinancialAccounting.BalanceEngine.Data;
 using System.Linq;
 
-/// <summary>Output DTO used to return trial balances.</summary>
-public class TrialBalanceDtoV3 {
+using Empiria.DynamicData;
+using Empiria.Services;
+using Empiria.Time;
 
-  public TrialBalanceQuery Query {
-    get; internal set;
-  }
-
-
-  public FixedList<DataTableColumn> Columns {
-    get; internal set;
-  }
-
-
-  public FixedList<ITrialBalanceEntryDto> Entries {
-    get; internal set;
-  }
-
-}  // class TrialBalanceDtoV3
-
-
+using Empiria.FinancialAccounting.BalanceEngine.Adapters;
 
 namespace Empiria.FinancialAccounting.BalanceEngine.UseCases {
 
@@ -57,36 +35,31 @@ namespace Empiria.FinancialAccounting.BalanceEngine.UseCases {
 
     #region Use cases
 
-    public DynamicDto<TrialBalanceValued> GetValuatedTrialBalance(TrialBalanceQuery query) {
+    public DynamicDto<BalanzaValorizadaEntry> BalanzaValorizada(TrialBalanceQuery query) {
       Assertion.Require(query, nameof(query));
 
-      var trialBalanceEngine = new TrialBalanceEngine(query);
+      var period = new TimePeriod(query.InitialPeriod.FromDate, query.InitialPeriod.ToDate);
 
-      query = trialBalanceEngine.Query;
+      FixedList<MovimientosPorDia> movsDiarios = MovimientosPorDia.GetList(period);
 
-      FixedList<TrialBalanceValued> entries = BalancesDataServiceV3.GetDailyMovements(query.InitialPeriod.FromDate,
-                                                                                      query.InitialPeriod.ToDate);
+      movsDiarios = movsDiarios.FindAll(x => x.CuentaEstandar.Number.StartsWith("1") ||
+                                             x.CuentaEstandar.Number.StartsWith("2") ||
+                                             x.CuentaEstandar.Number.StartsWith("3"));
 
-      entries = entries.FindAll(x => x.NumeroCuenta.StartsWith("1") ||
-                                     x.NumeroCuenta.StartsWith("2") ||
-                                     x.NumeroCuenta.StartsWith("3"));
+      movsDiarios = movsDiarios.OrderBy(x => x.CuentaEstandar.Number)
+                               .ThenBy(x => x.FechaAfectacion)
+                               .ToFixedList();
 
-      entries = entries.OrderBy(x => x.NumeroCuenta)
-                       .ThenBy(x => x.FechaAfectacion)
-                       .ToFixedList();
-
-
-
-      TrialBalanceQuery initialBalanceQuery = new TrialBalanceQuery() {
+      var initialBalanceQuery = new TrialBalanceQuery() {
         AccountsChartUID = AccountsChart.IFRS.UID,
+        TrialBalanceType = TrialBalanceType.Balanza,
         FromAccount = "1",
         ToAccount = "3.99",
-        TrialBalanceType = TrialBalanceType.Balanza,
         InitialPeriod = new BalancesPeriod {
-          FromDate = query.InitialPeriod.FromDate.AddDays(-1),
-          ToDate = query.InitialPeriod.FromDate.AddDays(-1)
+          FromDate = period.StartTime,
+          ToDate = period.EndTime
         },
-        BalancesType = BalancesType.AllAccounts
+        BalancesType = BalancesType.AllAccounts,
       };
 
       var intialBalancesBuilder = new BalanzaTradicionalBuilder(initialBalanceQuery);
@@ -95,35 +68,14 @@ namespace Empiria.FinancialAccounting.BalanceEngine.UseCases {
                                                  .Entries.Cast<TrialBalanceEntry>()
                                                  .ToFixedList();
 
-      foreach (var entry in entries) {
-        entry.SetInitialBalance(initialBalances, entries, query.InitialPeriod.FromDate);
-      }
+      var exchangeRates = ExchangeRate.GetList(period.StartTime.AddDays(-1), period.EndTime);
 
-      var exchangeRates = ExchangeRate.GetList(query.InitialPeriod.FromDate.AddDays(-20),
-                                               query.InitialPeriod.ToDate);
+      var builder = new BalanzaValorizadaBuilder(initialBalances, movsDiarios, exchangeRates);
 
 
-      foreach (var entry in entries) {
-        entry.SetExchangeRate(exchangeRates, query.InitialPeriod.FromDate.AddDays(-20), query.InitialPeriod.ToDate);
-      }
+      FixedList<BalanzaValorizadaEntry> entries = builder.Build(period);
 
-      var columns = new DataTableColumn[] {
-        new DataTableColumn("numeroCuenta", "Cuenta", "text-nowrap"),
-        new DataTableColumn("nombreCuenta", "Descripción", "text"),
-        new DataTableColumn("codigoMoneda", "Moneda", "text"),
-        new DataTableColumn("fechaAfectacion", "Fecha", "date"),
-        new DataTableColumn("saldoInicial", "Saldo inicial MO", "decimal"),
-        new DataTableColumn("debe", "Cargos MO", "decimal"),
-        new DataTableColumn("haber", "Abonos MO", "decimal"),
-        new DataTableColumn("saldoFinal", "Saldo final MO", "decimal"),
-        new DataTableColumn("tipoCambio", "T. Cambio", "decimal", 4),
-        new DataTableColumn("saldoInicialMXN", "Saldo inicial MXN", "decimal", 6),
-        new DataTableColumn("debeMXN", "Cargos MXN", "decimal", 6),
-        new DataTableColumn("haberMXN", "Abonos MXN", "decimal", 6),
-        new DataTableColumn("saldoFinalMXN", "Saldo final MXN", "decimal", 6),
-      }.ToFixedList();
-
-      return new DynamicDto<TrialBalanceValued>(query, columns, entries);
+      return new DynamicDto<BalanzaValorizadaEntry>(query, builder.GetColumns(), entries);
     }
 
     #endregion Use cases
