@@ -21,14 +21,14 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
   internal class BalanzaValorizadaBuilder {
 
     private readonly FixedList<TrialBalanceEntry> _balances;
-    private readonly FixedList<MovimientosPorDia> _entries;
+    private readonly FixedList<MovimientosPorDia> _byDayEntries;
     private readonly FixedList<ExchangeRate> _exchangeRates;
 
     public BalanzaValorizadaBuilder(FixedList<TrialBalanceEntry> balances,
-                                    FixedList<MovimientosPorDia> entries,
+                                    FixedList<MovimientosPorDia> byDayEntries,
                                     FixedList<ExchangeRate> exchangeRates) {
       _balances = balances;
-      _entries = entries;
+      _byDayEntries = byDayEntries;
       _exchangeRates = exchangeRates;
     }
 
@@ -55,9 +55,31 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
       return list.ToFixedList();
     }
 
+
+    internal FixedList<BalanzaValorizadaEntry> BuildSummaryAccounts(FixedList<BalanzaValorizadaEntry> entries) {
+
+      var list = new List<BalanzaValorizadaEntry>(_balances.Count);
+
+      foreach (var summary in _balances.FindAll(x => x.Account.Role == AccountRole.Sumaria &&
+                                                     !x.HasSector)) {
+
+        var summaryEntries = entries.FindAll(x => x.CuentaEstandar.Number.StartsWith(summary.Account.Number) &&
+                                                  x.Moneda.Equals(summary.Currency));
+
+        foreach (var group in summaryEntries.GroupBy(x => x.FechaAfectacion)) {
+          var entry = new BalanzaValorizadaEntry(summary, group.Key, group.ToFixedList());
+
+          list.Add(entry);
+        }
+      }
+
+      return list.ToFixedList();
+    }
+
+
     private BalanzaValorizadaEntry BuildMxnEntry(TrialBalanceEntry balance, TimePeriod period) {
 
-      var entries = _entries.FindAll(x => x.CuentaEstandar.Equals(balance.Account) &&
+      var entries = _byDayEntries.FindAll(x => x.CuentaEstandar.Equals(balance.Account) &&
                                           x.Moneda.Equals(Currency.MXN));
 
       var entry = new BalanzaValorizadaEntry(balance, period.EndTime,
@@ -102,7 +124,7 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
           lastExchangeRate = banxicoExchangeRates.Find(x => x.Date == date.AddDays(-1));
         }
 
-        var dateEntry = _entries.Find(x => x.CuentaEstandar.Equals(balance.Account) &&
+        var dateEntry = _byDayEntries.Find(x => x.CuentaEstandar.Equals(balance.Account) &&
                                            x.Moneda.Equals(balance.Currency) &&
                                            x.FechaAfectacion == date);
 

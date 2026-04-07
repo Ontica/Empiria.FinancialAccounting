@@ -7,11 +7,12 @@
 *  Summary  : Genera los datos para el reporte de balanzas tradicionales.                                    *
 *                                                                                                            *
 ************************* Copyright(c) La Vía Óntica SC, Ontica LLC and contributors. All rights reserved. **/
-using System;
+
 using System.Collections.Generic;
 using System.Linq;
-using System.Security.Policy;
+
 using Empiria.Collections;
+
 using Empiria.FinancialAccounting.BalanceEngine.Adapters;
 
 namespace Empiria.FinancialAccounting.BalanceEngine {
@@ -29,7 +30,7 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
     internal TrialBalance BuildV2() {
 
       if (!_query.IsOperationalReport) {
-        
+
         return BuildBalanzaTradicional();
       } else {
 
@@ -70,7 +71,7 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
     internal TrialBalance Build() {
 
       var helper = new BalanzaTradicionalHelper(_query);
-      
+
       FixedList<TrialBalanceEntry> accountEntries = helper.GetPostingEntries();
 
       if (accountEntries.Count == 0) {
@@ -215,7 +216,7 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
       List<TrialBalanceEntry> returnedBalance = new List<TrialBalanceEntry>();
 
       var debtorEntries = trialBalance.Where(x => x.Sector.Code == "00" &&
-                                             x.DebtorCreditor == DebtorCreditorType.Deudora && 
+                                             x.DebtorCreditor == DebtorCreditorType.Deudora &&
                                              (x.ItemType == TrialBalanceItemType.Entry ||
                                               x.ItemType == TrialBalanceItemType.Summary)
                                             ).OrderBy(x => x.Account.Number).ToList();
@@ -225,7 +226,7 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
                                                x.DebtorCreditor == DebtorCreditorType.Acreedora &&
                                                (x.ItemType == TrialBalanceItemType.Entry ||
                                                 x.ItemType == TrialBalanceItemType.Summary)
-                                              ).OrderBy(x=>x.Account.Number).ToList();
+                                              ).OrderBy(x => x.Account.Number).ToList();
       returnedBalance.AddRange(creditorEntries);
 
       var balanceWithoutParentEntries = returnedBalance.FindAll(x => !x.IsParentPostingEntry);
@@ -252,7 +253,7 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
       if (_query.IsSATBalanceReport) {
         hash = $"{entry.Account.Number}||{entry.Sector.Code}";
       }
-      
+
       var balanceHelper = new TrialBalanceHelper(_query);
       balanceHelper.GenerateOrIncreaseEntries(totalByEntries, entry, entry.Account,
                                 entry.Sector, TrialBalanceItemType.Entry, hash);

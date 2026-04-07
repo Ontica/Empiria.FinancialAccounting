@@ -74,6 +74,10 @@ namespace Empiria.FinancialAccounting.BalanceEngine.UseCases {
 
       FixedList<BalanzaValorizadaEntry> entries = builder.Build(period);
 
+      FixedList<BalanzaValorizadaEntry> summaries = builder.BuildSummaryAccounts(entries);
+
+      entries = FixedList<BalanzaValorizadaEntry>.MergeDistinct(summaries, entries);
+
       entries = entries.OrderBy(x => x.NumeroCuenta)
                        .ThenBy(x => x.Moneda.Code)
                        .ThenBy(x => x.FechaAfectacion)

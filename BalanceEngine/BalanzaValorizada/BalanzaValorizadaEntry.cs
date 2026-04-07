@@ -9,6 +9,7 @@
 ************************* Copyright(c) La Vía Óntica SC, Ontica LLC and contributors. All rights reserved. **/
 
 using System;
+using System.Linq;
 
 namespace Empiria.FinancialAccounting.BalanceEngine {
 
@@ -29,8 +30,22 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
       TipoCambioAnterior = lastExchangeRate.Value;
     }
 
-    public BalanzaValorizadaEntry(TrialBalanceEntry balance, DateTime date,
-                                  decimal initialBalance, decimal cargos, decimal abonos) {
+
+    internal BalanzaValorizadaEntry(TrialBalanceEntry summary, DateTime date,
+                                    FixedList<BalanzaValorizadaEntry> summaryEntries) {
+      CuentaEstandar = summary.Account;
+      Moneda = summary.Currency;
+      FechaAfectacion = date;
+      SaldoInicial = summaryEntries.Sum(x => x.SaldoInicial);
+      Cargos = summaryEntries.Sum(x => x.Cargos);
+      Abonos = summaryEntries.Sum(x => x.Abonos);
+      TipoCambio = summaryEntries.First().TipoCambio;
+      TipoCambioAnterior = summaryEntries.First().TipoCambioAnterior;
+    }
+
+
+    internal BalanzaValorizadaEntry(TrialBalanceEntry balance, DateTime date,
+                                    decimal initialBalance, decimal cargos, decimal abonos) {
       CuentaEstandar = balance.Account;
       Moneda = balance.Currency;
       FechaAfectacion = date;

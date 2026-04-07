@@ -23,8 +23,6 @@ namespace Empiria.FinancialAccounting.Tests.BalanceEngine.BalanzaBalorizadaPorDi
 
     #endregion Initialization
 
-    #region Facts
-
   } // class TrialBalanceValuedTests
 
 } // namespace Empiria.FinancialAccounting.Tests.BalanceEngine.BalanzaTradicional
