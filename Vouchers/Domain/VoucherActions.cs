@@ -17,6 +17,10 @@ namespace Empiria.FinancialAccounting.Vouchers {
       // no-op
     }
 
+    public bool CanEditDocuments {
+      get; internal set;
+    } = true;
+
     public bool ChangeConcept {
       get; internal set;
     }
