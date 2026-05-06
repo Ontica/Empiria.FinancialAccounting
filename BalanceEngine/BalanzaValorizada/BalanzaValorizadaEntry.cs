@@ -160,7 +160,19 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
 
     public decimal UtilidadCambiaria {
       get {
-        return (TipoCambio - TipoCambioAnterior) * SaldoInicial;
+        if ((TipoCambio - TipoCambioAnterior) * SaldoInicial > 0) {
+          return (TipoCambio - TipoCambioAnterior) * SaldoInicial;
+        }
+        return 0;
+      }
+    }
+
+    public decimal PerdidaCambiaria {
+      get {
+        if ((TipoCambio - TipoCambioAnterior) * SaldoInicial < 0) {
+          return Math.Abs((TipoCambio - TipoCambioAnterior) * SaldoInicial);
+        }
+        return 0;
       }
     }
 
