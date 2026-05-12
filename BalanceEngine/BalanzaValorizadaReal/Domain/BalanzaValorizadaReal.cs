@@ -8,10 +8,6 @@
 *                                                                                                            *
 ************************* Copyright(c) La Vía Óntica SC, Ontica LLC and contributors. All rights reserved. **/
 
-using System;
-
-using Empiria.FinancialAccounting.BalanceEngine.Data;
-
 namespace Empiria.FinancialAccounting.BalanceEngine {
 
   /// <summary>Used to read Real valorize balance.</summary>
@@ -57,6 +53,16 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
       get; set;
     }
 
+    public decimal SaldoFinal {
+      get {
+        if (CuentaEstandar.DebtorCreditor == DebtorCreditorType.Deudora) {
+          return SaldoInicial + Debe - Haber;
+        } else {
+          return SaldoInicial - Debe + Haber;
+        }
+      }
+    }
+
     [DataField("SALDO_INICIAL_REAL", ConvertFrom = typeof(decimal))]
     public decimal SaldoInicialReal {
       get; set;
@@ -72,17 +78,17 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
       get; set;
     }
 
-
-    #endregion Properties
-
-    #region Methods
-
-    public FixedList<BalanzaValorizadaReal> GetBalance(DateTime fromDate, DateTime toDate) {
-
-      return BalanzaValirozadaRealDataService.GetBalanza(fromDate, toDate);
+    public decimal SaldoFinalReal {
+      get {
+        if (CuentaEstandar.DebtorCreditor == DebtorCreditorType.Deudora) {
+          return SaldoInicialReal + DebeMonedaReal - HaberMonedaReal;
+        } else {
+          return SaldoInicialReal - DebeMonedaReal + HaberMonedaReal;
+        }
+      }
     }
 
-    #endregion Methods
+    #endregion Properties
 
   } // class BalanzaValorizadaReal
 

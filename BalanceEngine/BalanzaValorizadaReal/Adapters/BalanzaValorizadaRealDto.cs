@@ -4,14 +4,16 @@
 *  Assembly : FinancialAccounting.BalanceEngine.dll      Pattern   : Data Transfer Object                    *
 *  Type     : BalanzaValorizadaRealDto                   License   : Please read LICENSE.txt file            *
 *                                                                                                            *
-*  Summary  : Output DTO used to return a Balanza en columnas por moneda.                                    *
+*  Summary  : Output DTO used to return a BalanzaValorizadaRealDto.                                          *
 *                                                                                                            *
 ************************* Copyright(c) La Vía Óntica SC, Ontica LLC and contributors. All rights reserved. **/
+
 namespace Empiria.FinancialAccounting.BalanceEngine.Adapters {
 
+  /// <summary>Output DTO used to return a BalanzaValorizadaRealDto.</summary>
   public class BalanzaValorizadaRealDto {
 
-    public string StandarAccount {
+    public string AccountNo {
       get; internal set;
     }
 
@@ -23,19 +25,19 @@ namespace Empiria.FinancialAccounting.BalanceEngine.Adapters {
       get; internal set;
     }
 
-    public string CurrencyName {
-      get; internal set;
-    }
-
     public decimal InitialBalance {
       get; internal set;
     }
 
-    public decimal Credit {
+    public decimal Credits {
       get; internal set;
     }
 
-    public decimal Debit {
+    public decimal Debits {
+      get; internal set;
+    }
+
+    public decimal FinalBalance {
       get; internal set;
     }
 
@@ -43,19 +45,19 @@ namespace Empiria.FinancialAccounting.BalanceEngine.Adapters {
       get; internal set;
     }
 
-    public string RealCurrencyName {
-      get; internal set;
-    }
-
     public decimal RealInitialBalance {
       get; internal set;
     }
 
-    public decimal RealCredit {
+    public decimal RealCredits {
       get; internal set;
     }
 
-    public decimal RealDebit {
+    public decimal RealDebits {
+      get; internal set;
+    }
+
+    public decimal RealFinalBalance {
       get; internal set;
     }
 
