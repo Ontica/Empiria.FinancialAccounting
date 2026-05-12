@@ -6,7 +6,7 @@
       This module is part of the Financial Accounting System, and provides information
       models and services that return account balances and trial balances.
     </Description>
-    <Copyright>(c) 2021-2025. La Vía Óntica SC, Ontica LLC y de los autores. Todos los derechos reservados.</Copyright>
+    <Copyright>(c) 2021-2026. La Vía Óntica SC, Ontica LLC y de los autores. Todos los derechos reservados.</Copyright>
     <Version>2.4.0</Version>
     <AssemblyVersion>2.4.0</AssemblyVersion>
     <FileVersion>2.4.0.0</FileVersion>
@@ -16,7 +16,7 @@
     <PackageProjectUrl>https://github.com/Ontica/Empiria.FinancialAccounting/tree/master/BalanceEngine</PackageProjectUrl>
     <PackageIconUrl>http://www.ontica.org/logo.ontica.png</PackageIconUrl>
     <PackageTags>
-      Contabilidad Financiera, SICOFIN, Banobras, Banca de desarrollo, México, Saldos, Balanzas de comprobación
+      Contabilidad Financiera, Banca de desarrollo, México, Saldos, Balanzas de comprobación
     </PackageTags>
     <RepositoryUrl>https://github.com/Ontica/Empiria.FinancialAccounting</RepositoryUrl>
     <RepositoryType>git</RepositoryType>

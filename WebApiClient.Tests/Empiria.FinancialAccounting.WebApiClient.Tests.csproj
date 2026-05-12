@@ -3,7 +3,7 @@
     <Company>Ontica</Company>
     <Product>Empiria Financial Accounting</Product>
     <Description>Tests suite for Empiria Financial Accounting Web Api Client services.</Description>
-    <Copyright>(c) 2021-2025. La Vía Óntica SC, Ontica LLC y de los autores. Todos los derechos reservados.</Copyright>
+    <Copyright>(c) 2021-2026. La Vía Óntica SC, Ontica LLC y de los autores. Todos los derechos reservados.</Copyright>
     <Version>3.0.0</Version>
     <AssemblyVersion>3.0.0</AssemblyVersion>
     <FileVersion>3.0.0.0</FileVersion>
@@ -14,8 +14,7 @@
     <PackageProjectUrl>https://github.com/Ontica/Empiria.FinancialAccounting/tree/master/WebApiClient.Tests</PackageProjectUrl>
     <PackageIconUrl>http://www.ontica.org/logo.ontica.png</PackageIconUrl>
     <PackageTags>
-      contabilidad financiera, SICOFIN, Banobras, Banca de desarrollo, México,
-      pruebas unitarias, pruebas de integración, servicios web, cliente http
+      contabilidad financiera, Banca de desarrollo, México, pruebas unitarias, pruebas de integración, servicios web, cliente http
     </PackageTags>
     <RepositoryUrl>https://github.com/Ontica/Empiria.FinancialAccounting</RepositoryUrl>
     <RepositoryType>git</RepositoryType>

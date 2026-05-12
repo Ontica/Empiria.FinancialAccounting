@@ -4,12 +4,6 @@
 &nbsp; &nbsp;
 [![Maintainability](https://api.codeclimate.com/v1/badges/3982e4436bbd2779606f/maintainability)](https://codeclimate.com/github/Ontica/Empiria.FinancialAccounting/maintainability)
 
-Este producto de software está siendo desarrollado a la medida para el Banco Nacional de Obras y Servicios Públicos, S.N.C (BANOBRAS).
-
-[BANOBRAS](https://www.gob.mx/banobras) es una institución de banca de desarrollo mexicana cuya labor
-es financiar obras para la creación de servicios públicos. Por el tamaño de su cartera de crédito directo,
-es el cuarto Banco más grande del sistema bancario mexicano y el primero de la Banca de Desarrollo de nuestro país.
-
 Este repositorio contiene los módulos del *backend* del **Sistema de contabilidad financiera**.
 
 Todos los módulos están escritos en C# 7.0 y utilizan .NET Framework versión 4.8.  
@@ -20,11 +14,6 @@ mismos que están basados en ASP .NET.
 
 Al igual que otros productos Empiria, este *backend* se apoya en [Empiria Framework](https://github.com/Ontica/Empiria.Core),
 y también en algunos módulos de [Empiria Extensions](https://github.com/Ontica/Empiria.Extensions).
-
-La versión anterior de este sistema, la cual operó en BANOBRAS durante más de 20 años, 
-también fue desarrollada por nuestra organización en el período 2000-2002,
-y el código fuente de la misma se puede consultar [aquí](https://github.com/Ontica/Sicofin-2002).
-
 
 ## Contenido
 
@@ -64,9 +53,9 @@ El *backend* del **Sistema de contabilidad financiera** se conforma de los sigui
 ## Licencia
 
 Este producto y sus partes se distribuyen mediante una licencia GNU AFFERO
-GENERAL PUBLIC LICENSE, para uso exclusivo de BANOBRAS y de su personal, y
-también para su uso por cualquier otro organismo en México perteneciente a
-la Administración Pública Federal.
+GENERAL PUBLIC LICENSE, para uso exclusivo de la Banca de Desarrollo en México
+y de su personal, y también para su uso por cualquier otro organismo en
+México perteneciente a la Administración Pública Federal.
 
 Para cualquier otro uso (con excepción a lo estipulado en los Términos de
 Servicio de GitHub), es indispensable obtener con nuestra organización una
@@ -83,5 +72,5 @@ e internacionales de derechos de autor.
 
 ## Copyright
 
-Copyright © 2021-2024. La Vía Óntica SC, Ontica LLC y autores.
+Copyright © 2021-2026. La Vía Óntica SC, Ontica LLC y autores.
 Todos los derechos reservados.

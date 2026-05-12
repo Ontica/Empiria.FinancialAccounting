@@ -5,9 +5,9 @@ Provides HTTP client access services for Empiria Financial Accounting Web Apis.
 ## Licencia
 
 Este producto y sus partes se distribuyen mediante una licencia GNU AFFERO
-GENERAL PUBLIC LICENSE, para uso exclusivo de BANOBRAS y de su personal, y
-también para su uso por cualquier otro organismo en México perteneciente a
-la Administración Pública Federal.
+GENERAL PUBLIC LICENSE, para uso exclusivo de la Banca de Desarrollo en México
+y de su personal, y también para su uso por cualquier otro organismo en
+México perteneciente a la Administración Pública Federal.
 
 Para cualquier otro uso (con excepción a lo estipulado en los Términos de
 Servicio de GitHub), es indispensable obtener con nuestra organización una
@@ -24,5 +24,5 @@ e internacionales de derechos de autor.
 
 ## Copyright
 
-Copyright © 2021-2025. La Vía Óntica SC, Ontica LLC y autores.
+Copyright © 2021-2026. La Vía Óntica SC, Ontica LLC y autores.
 Todos los derechos reservados.
