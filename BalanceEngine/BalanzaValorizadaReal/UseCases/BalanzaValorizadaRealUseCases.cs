@@ -7,10 +7,14 @@
 *  Summary  : Use cases used to read Real valorize balance.                                                   *
 *                                                                                                            *
 ************************* Copyright(c) La Vía Óntica SC, Ontica LLC and contributors. All rights reserved. **/
+
+using System;
+
+using Empiria.DynamicData;
 using Empiria.Services;
 
 using Empiria.FinancialAccounting.BalanceEngine.Adapters;
-using System;
+using Empiria.FinancialAccounting.BalanceEngine.Data;
 
 namespace Empiria.FinancialAccounting.BalanceEngine.UseCases {
 
@@ -31,15 +35,14 @@ namespace Empiria.FinancialAccounting.BalanceEngine.UseCases {
 
     #region Use cases
 
-    public FixedList<BalanzaValorizadaRealDto> BuildBalances(DateTime fromDate, DateTime toDate) {
+    public DynamicDto<BalanzaValorizadaRealDto> BuildBalances(DateTime fromDate, DateTime toDate) {
       Assertion.Require(fromDate, nameof(fromDate));
       Assertion.Require(toDate, nameof(toDate));
 
-      var balanzaValorizadaReal = new BalanzaValorizadaReal();
+      FixedList<BalanzaValorizadaReal> balances =
+                            BalanzaValorizadaRealDataService.GetBalances(fromDate, toDate);
 
-      FixedList<BalanzaValorizadaReal> balance = balanzaValorizadaReal.GetBalance(fromDate, toDate);
-
-      return BalanzaValorizadaRealMapper.Map(balance);
+      return BalanzaValorizadaRealMapper.Map(balances);
     }
 
     #endregion
