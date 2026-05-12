@@ -9,11 +9,10 @@
 ************************* Copyright(c) La Vía Óntica SC, Ontica LLC and contributors. All rights reserved. **/
 using System;
 using System.Collections.Generic;
-using Empiria.Collections;
 using System.Linq;
-
-using Empiria.FinancialAccounting.BalanceEngine.Data;
+using Empiria.Collections;
 using Empiria.FinancialAccounting.BalanceEngine.Adapters;
+using Empiria.FinancialAccounting.BalanceEngine.Data;
 
 namespace Empiria.FinancialAccounting.BalanceEngine {
 
@@ -24,6 +23,7 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
     private readonly TrialBalanceQuery _query;
 
     internal BalanzaTradicionalHelper(TrialBalanceQuery query) {
+      
       _query = query;
     }
 

@@ -14,8 +14,6 @@ using Empiria.FinancialAccounting;
 
 using Empiria.FinancialAccounting.BalanceEngine;
 using Empiria.FinancialAccounting.BalanceEngine.Adapters;
-using Empiria.FinancialAccounting.BalanceEngine.BalanceExplorer.Adapters;
-using Empiria.FinancialAccounting.BalanceEngine.BalanceExplorer.UseCases;
 using Empiria.FinancialAccounting.BalanceEngine.UseCases;
 
 using Empiria.FinancialAccounting.Tests;

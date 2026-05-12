@@ -32,17 +32,17 @@ namespace Empiria.FinancialAccounting.Tests.Reporting {
       using (var usecases = TrialBalanceUseCases.UseCaseInteractor()) {
 
         var query = new TrialBalanceQuery() {
+          TrialBalanceType = TrialBalanceType.Balanza,
+          InitialPeriod = {
+           FromDate = new DateTime(2026,1,1),
+           ToDate = new DateTime(2026,1,31)
+          },
           AccountsChartUID = AccountsChart.IFRS.UID,
+          WithSubledgerAccount = true,
+          FromAccount = "1.15",
+          ToAccount = "1.15",
           BalancesType = BalancesType.WithCurrentBalanceOrMovements,
-          TrialBalanceType = TrialBalanceType.ResumenAjusteAnual,
-          Ledgers = new string[] { },
-          ShowCascadeBalances = false,
-          UseDefaultValuation = false,
-          WithSubledgerAccount = false,
-          InitialPeriod = new BalancesPeriod {
-            FromDate = new DateTime(2025, 08, 01),
-            ToDate = new DateTime(2025, 08, 31)
-          }
+          ShowCascadeBalances = false
         };
 
         TrialBalanceDto trialBalance = usecases.BuildTrialBalance(query);
@@ -58,7 +58,7 @@ namespace Empiria.FinancialAccounting.Tests.Reporting {
 
     [Fact]
     public async Task ExportSaldosEncerradosTest() {
-      
+
       using (var service = TrialBalanceUseCases.UseCaseInteractor()) {
 
         SaldosEncerradosQuery query = new SaldosEncerradosQuery {
