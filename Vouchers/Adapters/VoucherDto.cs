@@ -92,6 +92,10 @@ namespace Empiria.FinancialAccounting.Vouchers.Adapters {
       get; internal set;
     }
 
+    public FixedList<object> Documents {
+      get; internal set;
+    } = new FixedList<object>(0);
+
   }  // class VoucherDto
 
 

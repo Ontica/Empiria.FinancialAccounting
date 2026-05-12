@@ -5,7 +5,7 @@
     <Description>
       Provides Empiria Financial Accounting Cash Transaction Recording services.
     </Description>
-    <Copyright>(c) 2021-2025. La Vía Óntica SC, Ontica LLC y de los autores. Todos los derechos reservados.</Copyright>
+    <Copyright>(c) 2021-2026. La Vía Óntica SC, Ontica LLC y de los autores. Todos los derechos reservados.</Copyright>
     <Version>3.0.0</Version>
     <AssemblyVersion>3.0.0</AssemblyVersion>
     <FileVersion>3.0.0.0</FileVersion>
@@ -15,7 +15,7 @@
     <PackageProjectUrl>https://github.com/Ontica/Empiria.FinancialAccounting/tree/master/CashLedger</PackageProjectUrl>
     <PackageIconUrl>http://www.ontica.org/logo.ontica.png</PackageIconUrl>
     <PackageTags>
-      contabilidad financiera, financial accounting, flujo de efectivo, cash flow management, administración, Banca de desarrollo, BANOBRAS, México
+      contabilidad financiera, financial accounting, flujo de efectivo, cash flow management, administración, Banca de desarrollo, México
     </PackageTags>
     <RepositoryUrl>https://github.com/Ontica/Empiria.Financial.Accounting</RepositoryUrl>
     <RepositoryType>git</RepositoryType>

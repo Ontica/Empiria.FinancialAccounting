@@ -113,7 +113,7 @@ namespace Empiria.FinancialAccounting.CashLedger {
           reordered.Add(legacyEntry);
         } else {
           Assertion.RequireFail($"En el sistema legado no se encuentra el movimiento {entry.Id} " +
-                                $"correspondiente a la póliza {entry.VoucherId} de SICOFIN.");
+                                $"correspondiente a la póliza {entry.VoucherId} del sistema de contabilidad.");
         }
       }
 

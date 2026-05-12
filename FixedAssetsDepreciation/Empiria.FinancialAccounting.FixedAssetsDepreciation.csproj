@@ -3,7 +3,7 @@
     <Company>Ontica</Company>
     <Product>Empiria Financial Accounting Fixed Assets Depreciation Module</Product>
     <Description>This module provides data for fixed assets depreciation.</Description>
-    <Copyright>(c) 2021-2025. La Vía Óntica SC, Ontica LLC y de los autores. Todos los derechos reservados.</Copyright>
+    <Copyright>(c) 2021-2026. La Vía Óntica SC, Ontica LLC y de los autores. Todos los derechos reservados.</Copyright>
     <Version>2.4.0</Version>
     <AssemblyVersion>2.4.0</AssemblyVersion>
     <FileVersion>2.4.0.0</FileVersion>
@@ -13,7 +13,7 @@
     <PackageProjectUrl>https://github.com/Ontica/Empiria.FinancialAccounting/tree/master/FixedAssetsDepreciation</PackageProjectUrl>
     <PackageIconUrl>http://www.ontica.org/logo.ontica.png</PackageIconUrl>
     <PackageTags>
-      Contabilidad Financiera, SICOFIN, Banobras, Banca de desarrollo, México, Estados financieros, conceptos financieros, IFRS, variables externas
+      Contabilidad Financiera, Banca de desarrollo, México, Estados financieros, conceptos financieros, IFRS, variables externas
     </PackageTags>
     <RepositoryUrl>https://github.com/Ontica/Empiria.FinancialAccounting</RepositoryUrl>
     <RepositoryType>git</RepositoryType>

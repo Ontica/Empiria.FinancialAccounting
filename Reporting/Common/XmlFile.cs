@@ -66,4 +66,5 @@ namespace Empiria.FinancialAccounting.Reporting.Exporters.Xml {
 
   } // class XmlFile
 
-} // namespace Empiria.FinancialAccounting.BanobrasIntegration.SATReports
+} // namespace Empiria.FinancialAccounting.Reporting.Exporters.Xml
+

@@ -164,6 +164,7 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
         new DataTableColumn("abonosMXN", "Abonos MXN", "decimal", 8),
         new DataTableColumn("saldoFinalMXN", "Saldo final MXN", "decimal", 8),
         new DataTableColumn("utilidadCambiaria", "Utilidad cambiaria", "decimal", 8),
+        new DataTableColumn("perdidaCambiaria", "Pérdida cambiaria", "decimal", 8),
       }.ToFixedList();
     }
 
