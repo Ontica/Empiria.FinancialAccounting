@@ -19,9 +19,7 @@ namespace Empiria.FinancialAccounting.BalanceEngine.Data {
 
     static internal FixedList<BalanzaValorizadaReal> GetBalances(DateTime fromDate, DateTime toDate) {
 
-      var op = DataOperation.Parse("@qry_cof_balanza_real",
-                                   DataCommonMethods.FormatSqlDbDate(fromDate),
-                                   DataCommonMethods.FormatSqlDbDate(toDate.AddDays(1)));
+      var op = DataOperation.Parse("qry_cof_balanza_real", fromDate, toDate);
 
       return DataReader.GetPlainObjectFixedList<BalanzaValorizadaReal>(op);
     }
