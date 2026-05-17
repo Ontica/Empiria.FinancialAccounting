@@ -19,9 +19,11 @@ using Empiria.FinancialAccounting.BalanceEngine;
 using Empiria.FinancialAccounting.BalanceEngine.Adapters;
 using Empiria.FinancialAccounting.BalanceEngine.UseCases;
 
+using Empiria.FinancialAccounting.Reclassification.Adapters;
 using Empiria.FinancialAccounting.Reclassification.Services;
 
 using Empiria.FinancialAccounting.Reporting.Balances;
+using Empiria.FinancialAccounting.Reporting.Reclassification;
 
 namespace Empiria.FinancialAccounting.WebApi.BalanceEngine {
 

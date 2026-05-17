@@ -13,12 +13,12 @@ using Xunit;
 using System;
 using System.Collections.Generic;
 
-using Empiria.FinancialAccounting.BalanceEngine;
-using Empiria.FinancialAccounting.BalanceEngine.Data;
+using Empiria.FinancialAccounting.Reclassification;
+using Empiria.FinancialAccounting.Reclassification.Data;
 
-using Empiria.FinancialAccounting.BalanceEngine.Adapters;
+using Empiria.FinancialAccounting.Reclassification.Adapters;
 
-namespace Empiria.FinancialAccounting.Tests.BalanceEngine.BalanzaValorizadaRealTests {
+namespace Empiria.FinancialAccounting.Tests.Reclassification {
 
   /// <summary>Unit tests for BalanzaValorizadaReal report entries.</summary>
   public class BalanzaValorizadaRealTests {
@@ -101,4 +101,4 @@ namespace Empiria.FinancialAccounting.Tests.BalanceEngine.BalanzaValorizadaRealT
 
   } // class BalanzaValorizadaRealTests
 
-} // namespace Empiria.FinancialAccounting.Tests.BalanceEngine.BalanzaTradicional
+} // namespace Empiria.FinancialAccounting.Tests.Reclassification

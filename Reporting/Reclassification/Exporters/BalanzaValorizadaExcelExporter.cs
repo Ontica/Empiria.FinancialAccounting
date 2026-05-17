@@ -12,10 +12,11 @@ using Empiria.DynamicData;
 using Empiria.Office;
 using Empiria.Storage;
 
-using Empiria.FinancialAccounting.BalanceEngine;
 using Empiria.FinancialAccounting.BalanceEngine.Adapters;
 
-namespace Empiria.FinancialAccounting.Reporting.Balances {
+using Empiria.FinancialAccounting.Reclassification;
+
+namespace Empiria.FinancialAccounting.Reporting.Reclassification {
 
   /// <summary>Creates a Microsoft Excel file with BalanzaValorizada information.</summary>
   internal class BalanzaValorizadaExcelExporter {
@@ -95,4 +96,4 @@ namespace Empiria.FinancialAccounting.Reporting.Balances {
 
   }  // class BalanzaValorizadaExcelExporter
 
-}  // namespace Empiria.FinancialAccounting.Reporting.Balances
+}  // namespace Empiria.FinancialAccounting.Reporting.Reclassification

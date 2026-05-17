@@ -8,7 +8,7 @@
 *                                                                                                            *
 ************************* Copyright(c) La Vía Óntica SC, Ontica LLC and contributors. All rights reserved. **/
 
-namespace Empiria.FinancialAccounting.BalanceEngine {
+namespace Empiria.FinancialAccounting.Reclassification {
 
   /// <summary>Builds BalanzaValorizada entries to determine daily exchange rate profit or loss variation.</summary>
   internal class BalanzaValorizadaBuilder {
@@ -163,4 +163,4 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
 
   }  // class BalanzaValorizadaBuilder
 
-}  // namespace Empiria.FinancialAccounting.BalanceEngine
+}  // namespace Empiria.FinancialAccounting.Reclassification

@@ -12,7 +12,7 @@ using System;
 
 using Empiria.Data;
 
-namespace Empiria.FinancialAccounting.BalanceEngine.Data {
+namespace Empiria.FinancialAccounting.Reclassification.Data {
 
   /// <summary>Provides data access for Balanza Valorizada Real data.</summary>
   static internal class BalanzaValorizadaRealDataService {
@@ -27,4 +27,4 @@ namespace Empiria.FinancialAccounting.BalanceEngine.Data {
 
   }  // class BalanzaValorizadaRealDataService
 
-}  // namespace Empiria.FinancialAccounting.BalanceEngine.Data
+}  // namespace Empiria.FinancialAccounting.Reclassification.Data

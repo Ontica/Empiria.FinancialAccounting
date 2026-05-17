@@ -14,9 +14,9 @@ using System.Collections.Generic;
 using Empiria.DynamicData;
 using Empiria.Services;
 
-using Empiria.FinancialAccounting.BalanceEngine;
-using Empiria.FinancialAccounting.BalanceEngine.Adapters;
-using Empiria.FinancialAccounting.BalanceEngine.Data;
+using Empiria.FinancialAccounting.Reclassification.Data;
+
+using Empiria.FinancialAccounting.Reclassification.Adapters;
 
 namespace Empiria.FinancialAccounting.Reclassification.Services {
 
@@ -158,4 +158,4 @@ namespace Empiria.FinancialAccounting.Reclassification.Services {
 
   } // class ReclassifiedTrialBalancesServices
 
-} // Empiria.FinancialAccounting.Reclassification.Services
+} // namespace Empiria.FinancialAccounting.Reclassification.Services

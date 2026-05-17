@@ -10,7 +10,7 @@
 
 using Empiria.DynamicData;
 
-namespace Empiria.FinancialAccounting.BalanceEngine.Adapters {
+namespace Empiria.FinancialAccounting.Reclassification.Adapters {
 
   internal class BalanzaValorizadaRealMapper {
 
@@ -66,4 +66,4 @@ namespace Empiria.FinancialAccounting.BalanceEngine.Adapters {
 
   } // class BalanzaValorizadaRealMapper
 
-} // namespace Empiria.FinancialAccounting.BalanceEngine.Adapters
+} // namespace Empiria.FinancialAccounting.Reclassification.Adapters

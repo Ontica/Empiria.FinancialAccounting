@@ -8,7 +8,7 @@
 *                                                                                                            *
 ************************* Copyright(c) La Vía Óntica SC, Ontica LLC and contributors. All rights reserved. **/
 
-namespace Empiria.FinancialAccounting.BalanceEngine {
+namespace Empiria.FinancialAccounting.Reclassification {
 
   /// <summary>Used to read Real valorize balance.</summary>
   public class BalanzaValorizadaReal {
@@ -92,4 +92,4 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
 
   } // class BalanzaValorizadaReal
 
-} // namespace Empiria.FinancialAccounting.BalanceEngine
+} // namespace Empiria.FinancialAccounting.Reclassification

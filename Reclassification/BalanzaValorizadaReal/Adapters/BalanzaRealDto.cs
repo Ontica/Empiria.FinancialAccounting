@@ -8,7 +8,7 @@
 *                                                                                                            *
 ************************* Copyright(c) La Vía Óntica SC, Ontica LLC and contributors. All rights reserved. **/
 
-namespace Empiria.FinancialAccounting.BalanceEngine.Adapters {
+namespace Empiria.FinancialAccounting.Reclassification.Adapters {
 
   /// <summary>Output DTO used to return a BalanzaEnColumnasRealDto.</summary>
   public class BalanzaEnColumnasRealDto {
@@ -71,4 +71,4 @@ namespace Empiria.FinancialAccounting.BalanceEngine.Adapters {
 
   }  // class BalanzaEnColumnasRealDto
 
-} // namespace Empiria.FinancialAccounting.BalanceEngine.Adapters
+} // namespace Empiria.FinancialAccounting.Reclassification.Adapters

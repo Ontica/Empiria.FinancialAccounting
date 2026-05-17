@@ -13,7 +13,7 @@ using System;
 using Empiria.Data;
 using Empiria.Time;
 
-namespace Empiria.FinancialAccounting.BalanceEngine {
+namespace Empiria.FinancialAccounting.Reclassification {
 
   /// <summary>Contiene la suma de cargos y abonos por fecha y cuenta.</summary>
   public class MovimientosPorDia {
@@ -74,4 +74,4 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
 
   } // class MovimientosPorDia
 
-} // namespace Empiria.FinancialAccounting.BalanceEngine
+} // namespace Empiria.FinancialAccounting.Reclassification

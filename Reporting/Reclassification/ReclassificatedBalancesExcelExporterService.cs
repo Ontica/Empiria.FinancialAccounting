@@ -14,10 +14,10 @@ using Empiria.DynamicData;
 using Empiria.Office;
 using Empiria.Storage;
 
-using Empiria.FinancialAccounting.BalanceEngine;
-using Empiria.FinancialAccounting.BalanceEngine.Adapters;
+using Empiria.FinancialAccounting.Reclassification;
+using Empiria.FinancialAccounting.Reclassification.Adapters;
 
-namespace Empiria.FinancialAccounting.Reporting.Balances {
+namespace Empiria.FinancialAccounting.Reporting.Reclassification {
 
   /// <summary>Main service to export balances information to Microsoft Excel.</summary>
   public class ReclassificatedBalancesExcelExporterService {
@@ -43,4 +43,4 @@ namespace Empiria.FinancialAccounting.Reporting.Balances {
 
   } // class BalancesExcelExporterService
 
-} // namespace Empiria.FinancialAccounting.Reporting.Balances
+} // namespace Empiria.FinancialAccounting.Reporting.Reclassification

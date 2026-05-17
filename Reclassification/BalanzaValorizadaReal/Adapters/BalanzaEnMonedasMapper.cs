@@ -12,7 +12,7 @@ using System.Collections.Generic;
 
 using Empiria.DynamicData;
 
-namespace Empiria.FinancialAccounting.BalanceEngine.Adapters {
+namespace Empiria.FinancialAccounting.Reclassification.Adapters {
 
   /// <summary>Maps reclassified trial balances to their respective currency representations in columns.</summary>
   internal class BalanzaEnMonedasMapper {
@@ -106,4 +106,4 @@ namespace Empiria.FinancialAccounting.BalanceEngine.Adapters {
 
   } // class BalanzaEnMonedasMapper
 
-} // namespace Empiria.FinancialAccounting.BalanceEngine.Adapters
+} // namespace Empiria.FinancialAccounting.Reclassification.Adapters
