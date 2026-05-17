@@ -1,7 +1,7 @@
 ﻿/* Empiria Financial *****************************************************************************************
 *                                                                                                            *
 *  Module   : Balance Engine                             Component : Interface adapters                      *
-*  Assembly : FinancialAccounting.BalanceEngine.dll      Pattern   : Query payload                           *
+*  Assembly : FinancialAccounting.Core.dll               Pattern   : Query payload                           *
 *  Type     : BalancesPeriod                             License   : Please read LICENSE.txt file            *
 *                                                                                                            *
 *  Summary  : Describes balances' date periods.                                                              *
@@ -25,7 +25,7 @@ namespace Empiria.FinancialAccounting.BalanceEngine.Adapters {
     }
 
     public DateTime ExchangeRateDate {
-      get;  set;
+      get; set;
     } = DateTime.Today;
 
 

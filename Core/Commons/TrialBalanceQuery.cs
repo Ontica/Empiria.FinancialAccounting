@@ -1,7 +1,7 @@
 ﻿/* Empiria Financial *****************************************************************************************
 *                                                                                                            *
 *  Module   : Balance Engine                             Component : Interface adapters                      *
-*  Assembly : FinancialAccounting.BalanceEngine.dll      Pattern   : Query payload                           *
+*  Assembly : FinancialAccounting.Core.dll               Pattern   : Query payload                           *
 *  Type     : TrialBalanceQuery                          License   : Please read LICENSE.txt file            *
 *                                                                                                            *
 *  Summary  : Query payload used to generate trial balances.                                                 *
@@ -107,7 +107,7 @@ namespace Empiria.FinancialAccounting.BalanceEngine.Adapters {
 
     public bool DoNotReturnSubledgerAccounts {
       get {
-        return !this.WithSubledgerAccount;
+        return !WithSubledgerAccount;
       }
     }
 
@@ -139,31 +139,31 @@ namespace Empiria.FinancialAccounting.BalanceEngine.Adapters {
 
     public bool UseNewSectorizationModel {
       get {
-        return this.AccountsChartUID == AccountsChart.IFRS.UID;
+        return AccountsChartUID == AccountsChart.IFRS.UID;
       }
     }
 
 
     public bool ValuateBalances {
       get {
-        return this.InitialPeriod.ValuateToCurrrencyUID.Length != 0 &&
-               this.InitialPeriod.ExchangeRateTypeUID.Length != 0;
+        return InitialPeriod.ValuateToCurrrencyUID.Length != 0 &&
+               InitialPeriod.ExchangeRateTypeUID.Length != 0;
       }
     }
 
 
     public bool ValuateFinalBalances {
       get {
-        return this.FinalPeriod.ValuateToCurrrencyUID.Length != 0 &&
-               this.FinalPeriod.ExchangeRateTypeUID.Length != 0;
+        return FinalPeriod.ValuateToCurrrencyUID.Length != 0 &&
+               FinalPeriod.ExchangeRateTypeUID.Length != 0;
       }
     }
 
 
     public bool ReturnLedgerColumn {
       get {
-        return (!this.Consolidated &&
-                !this.ConsolidateBalancesToTargetCurrency);
+        return (!Consolidated &&
+                !ConsolidateBalancesToTargetCurrency);
       }
     }
 
@@ -179,10 +179,10 @@ namespace Empiria.FinancialAccounting.BalanceEngine.Adapters {
 
 
     public void AssignDefaultDateAndValuation(DateTime dateFilter) {
-      this.InitialPeriod.FromDate = dateFilter;
-      this.InitialPeriod.ToDate = dateFilter;
-      this.InitialPeriod.ValuateToCurrrencyUID = string.Empty;
-      this.UseDefaultValuation = false;
+      InitialPeriod.FromDate = dateFilter;
+      InitialPeriod.ToDate = dateFilter;
+      InitialPeriod.ValuateToCurrrencyUID = string.Empty;
+      UseDefaultValuation = false;
     }
 
 

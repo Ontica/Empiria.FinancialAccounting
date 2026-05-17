@@ -11,93 +11,6 @@ using Empiria.FinancialAccounting.BalanceEngine.Adapters;
 
 namespace Empiria.FinancialAccounting.BalanceEngine {
 
-  public enum TrialBalanceType {
-
-    AnaliticoDeCuentas,
-
-    Balanza,
-
-    BalanzaConContabilidadesEnCascada,
-
-    BalanzaEnColumnasPorMoneda,
-
-    BalanzaDolarizada,
-
-    BalanzaDiferenciaDiariaPorMoneda,
-
-    BalanzaValorizada,
-
-    BalanzaValorizadaComparativa,
-
-    GeneracionDeSaldos,
-
-    ResumenAjusteAnual,
-
-    SaldosPorAuxiliar,
-
-    SaldosPorAuxiliarConsultaRapida,
-
-    SaldosPorAuxiliarID,
-
-    SaldosPorCuenta,
-
-    SaldosPorCuentaConsultaRapida,
-
-    ValorizacionEstimacionPreventiva
-
-  }
-
-
-  public enum BalancesType {
-
-    AllAccounts,
-
-    AllAccountsInCatalog,
-
-    WithCurrentBalance,
-
-    WithCurrentBalanceOrMovements,
-
-    WithMovements
-
-  }
-
-
-  public enum TrialBalanceItemType {
-
-    Entry,
-
-    Summary,
-
-    Group,
-
-    Total,
-
-    BalanceTotalGroupDebtor,
-
-    BalanceTotalGroupCreditor,
-
-    BalanceTotalDebtor,
-
-    BalanceTotalCreditor,
-
-    BalanceTotalCurrency,
-
-    BalanceTotalConsolidatedByLedger,
-
-    BalanceTotalConsolidated
-
-  }
-
-
-  public enum FileReportVersion {
-    V1,
-
-    V2,
-
-    V3
-  }
-
 
   /// <summary>Provides services to generate a trial balance.</summary>
   internal class TrialBalanceEngine {
@@ -178,6 +91,7 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
           return new TrialBalance(this.Query, balanzaDolarizada);
 
         case TrialBalanceType.BalanzaEnColumnasPorMoneda:
+        case TrialBalanceType.BalanzaMonedaOrigenValorizada:
 
           var balanzaMOBuilder = new BalanzaColumnasMonedaBuilder(this.Query);
           var balanzaColumnasEntries = balanzaMOBuilder.Build();
