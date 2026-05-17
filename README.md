@@ -37,16 +37,19 @@ El *backend* del **Sistema de contabilidad financiera** se conforma de los sigui
 6.  **Fixed Assets Depreciation**  
     Proporciona información y servicios para el manejo de la depreciación del activo fijo.  
 
-7.  **Reconciliation**  
+7.  **Reclassification**  
+    Provee servicios de reclasificación de movimientos contables, así como de consulta de saldos y balanzas reclasificadas.  
+
+8.  **Reconciliation**  
     Provee servicios de conciliación de saldos y movimientos contables contra operaciones originadas en otros sistemas.  
 
-8.  **Reporting**  
+9.  **Reporting**  
     Genera reportes fiscales, reportes de contabilidad financiera y reportes operativos.  
 
-9.  **Vouchers Management**  
+10.  **Vouchers Management**  
     Provee servicios para la edición, importación y administración de las pólizas contables.  
 
-10. **Web API**  
+11. **Web API**  
     Capa de servicios web HTTP/Json para interactuar con todos los módulos que conforman el *backend* del Sistema.  
 
 
