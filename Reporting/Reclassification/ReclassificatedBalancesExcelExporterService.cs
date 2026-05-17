@@ -8,63 +8,35 @@
 *                                                                                                            *
 ************************* Copyright(c) La Vía Óntica SC, Ontica LLC and contributors. All rights reserved. **/
 
+using System;
+
+using Empiria.DynamicData;
 using Empiria.Office;
 using Empiria.Storage;
 
 using Empiria.FinancialAccounting.BalanceEngine;
 using Empiria.FinancialAccounting.BalanceEngine.Adapters;
-using Empiria.FinancialAccounting.BalanceEngine.BalanceExplorer.Adapters;
 
 namespace Empiria.FinancialAccounting.Reporting.Balances {
 
   /// <summary>Main service to export balances information to Microsoft Excel.</summary>
-  public class BalancesExcelExporterService {
+  public class ReclassificatedBalancesExcelExporterService {
 
-    public FileDto Export(TrialBalanceDto trialBalance) {
-      Assertion.Require(trialBalance, "trialBalance");
+    public FileDto Export(DynamicDto<BalanzaValorizadaRealDto> trialBalance) {
+      throw new NotImplementedException();
+    }
 
-      var templateUID = $"TrialBalanceTemplate.{trialBalance.Query.TrialBalanceType}";
+
+    public FileDto Export(DynamicDto<BalanzaValorizadaEntry> trialBalance) {
+      Assertion.Require(trialBalance, nameof(trialBalance));
+
+      var templateUID = $"TrialBalanceTemplate.BalanzaValorizada";
 
       var templateConfig = FileTemplateConfig.Parse(templateUID);
 
-      var exporter = new BalancesExcelExporter(templateConfig);
+      var exporter = new BalanzaValorizadaExcelExporter(templateConfig);
 
       ExcelFile excelFile = exporter.CreateExcelFile(trialBalance);
-
-      return excelFile.ToFileDto();
-    }
-
-
-    public FileDto Export(SaldosEncerradosDto reportData) {
-      Assertion.Require(reportData, "reportData");
-
-      var templateUID = $"TrialBalanceTemplate.SaldosEncerrados";
-
-      var templateConfig = FileTemplateConfig.Parse(templateUID);
-
-      var exporter = new SaldosEncerradosExcelExporter(templateConfig);
-
-      ExcelFile excelFile = exporter.CreateExcelFile(reportData);
-
-      return excelFile.ToFileDto();
-    }
-
-
-    public FileDto Export(BalanceExplorerDto dto) {
-      Assertion.Require(dto, nameof(dto));
-
-      var templateUID = $"BalanceTemplate.{dto.Query.TrialBalanceType}";
-
-      if (dto.Query.ExportTo != FileReportVersion.V1) {
-        templateUID = $"BalanceTemplate.{dto.Query.TrialBalanceType}" +
-                      $"{dto.Query.ExportTo}";
-      }
-
-      var templateConfig = FileTemplateConfig.Parse(templateUID);
-
-      var exporter = new BalanceExplorerExcelExporter(templateConfig);
-
-      ExcelFile excelFile = exporter.CreateExcelFile(dto);
 
       return excelFile.ToFileDto();
     }

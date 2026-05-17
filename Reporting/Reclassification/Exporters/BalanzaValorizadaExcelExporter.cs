@@ -71,20 +71,20 @@ namespace Empiria.FinancialAccounting.Reporting.Balances {
 
       foreach (var entry in entries) {
 
-        _excelFile.SetCell($"A{i}", entry.NumeroCuenta);
-        _excelFile.SetCell($"B{i}", entry.NombreCuenta);
-        _excelFile.SetCell($"C{i}", entry.CodigoMoneda);
-        _excelFile.SetCell($"D{i}", entry.FechaAfectacion.ToString("dd/MMM/yyyy"));
-        _excelFile.SetCell($"E{i}", entry.SaldoInicial);
-        _excelFile.SetCell($"F{i}", entry.Cargos);
-        _excelFile.SetCell($"G{i}", entry.Abonos);
-        _excelFile.SetCell($"H{i}", entry.SaldoFinal);
-        _excelFile.SetCell($"I{i}", entry.TipoCambio);
-        _excelFile.SetCell($"J{i}", entry.SaldoInicialMXN);
-        _excelFile.SetCell($"K{i}", entry.CargosMXN);
-        _excelFile.SetCell($"L{i}", entry.AbonosMXN);
-        _excelFile.SetCell($"M{i}", entry.SaldoFinalMXN);
-        _excelFile.SetCell($"N{i}", entry.UtilidadCambiaria);
+        //_excelFile.SetCell($"A{i}", entry.NumeroCuenta);
+        //_excelFile.SetCell($"B{i}", entry.NombreCuenta);
+        //_excelFile.SetCell($"C{i}", entry.CodigoMoneda);
+        //_excelFile.SetCell($"D{i}", entry.FechaAfectacion.ToString("dd/MMM/yyyy"));
+        //_excelFile.SetCell($"E{i}", entry.SaldoInicial);
+        //_excelFile.SetCell($"F{i}", entry.Cargos);
+        //_excelFile.SetCell($"G{i}", entry.Abonos);
+        //_excelFile.SetCell($"H{i}", entry.SaldoFinal);
+        //_excelFile.SetCell($"I{i}", entry.TipoCambio);
+        //_excelFile.SetCell($"J{i}", entry.SaldoInicialMXN);
+        //_excelFile.SetCell($"K{i}", entry.CargosMXN);
+        //_excelFile.SetCell($"L{i}", entry.AbonosMXN);
+        //_excelFile.SetCell($"M{i}", entry.SaldoFinalMXN);
+        //_excelFile.SetCell($"N{i}", entry.UtilidadCambiaria);
 
         i++;
       }
