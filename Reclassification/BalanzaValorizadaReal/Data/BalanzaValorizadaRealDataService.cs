@@ -1,7 +1,7 @@
 ﻿/* Empiria Financial *****************************************************************************************
 *                                                                                                            *
-*  Module   : Financial Accounting                       Component : Data Layer                              *
-*  Assembly : FinancialAccounting.BalanceEngine.dll      Pattern   : Data Services                           *
+*  Module   : Reclassification Services                  Component : Data Layer                              *
+*  Assembly : FinancialAccounting.Reclassification.dll   Pattern   : Data Services                           *
 *  Type     : BalanzaValorizadaRealDataService           License   : Please read LICENSE.txt file            *
 *                                                                                                            *
 *  Summary  : Provides data access for Balanza Valorizada Real data.                                         *

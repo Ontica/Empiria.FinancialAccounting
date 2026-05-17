@@ -1,7 +1,7 @@
 ﻿/* Empiria Financial *****************************************************************************************
 *                                                                                                            *
-*  Module   : Balance Engine                             Component : Domain Layer                            *
-*  Assembly : FinancialAccounting.BalanceEngine.dll      Pattern   : Information Holder                      *
+*  Module   : Reclassification Services                  Component : Domain Layer                            *
+*  Assembly : FinancialAccounting.Reclassification.dll   Pattern   : Information Holder                      *
 *  Type     : MovimientosPorDia                          License   : Please read LICENSE.txt file            *
 *                                                                                                            *
 *  Summary  : Contiene la suma de cargos y abonos por fecha y cuenta.                                        *

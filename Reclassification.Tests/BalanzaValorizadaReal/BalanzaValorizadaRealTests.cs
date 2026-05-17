@@ -1,23 +1,26 @@
 ﻿/* Empiria Financial *****************************************************************************************
 *                                                                                                            *
-*  Module   : Balance Engine                             Component : Test cases                              *
-*  Assembly : FinancialAccounting.BalanceEngine.Tests    Pattern   : Unit tests                              *
-*  Type     : BalanzaValorizadaRealTests                 License   : Please read LICENSE.txt file            *
+*  Module   : Reclassification Services                    Component : Test cases                            *
+*  Assembly : FinancialAccounting.Reclassification.Tests   Pattern   : Unit tests                            *
+*  Type     : BalanzaValorizadaRealTests                   License   : Please read LICENSE.txt file          *
 *                                                                                                            *
-*  Summary  : Unit test cases for 'Balanza tradicional' report entries.                                      *
+*  Summary  : Unit tests for BalanzaValorizadaReal report entries.                                           *
 *                                                                                                            *
 ************************* Copyright(c) La Vía Óntica SC, Ontica LLC and contributors. All rights reserved. **/
 
+using Xunit;
+
 using System;
 using System.Collections.Generic;
+
 using Empiria.FinancialAccounting.BalanceEngine;
-using Empiria.FinancialAccounting.BalanceEngine.Adapters;
 using Empiria.FinancialAccounting.BalanceEngine.Data;
-using Xunit;
+
+using Empiria.FinancialAccounting.BalanceEngine.Adapters;
 
 namespace Empiria.FinancialAccounting.Tests.BalanceEngine.BalanzaValorizadaRealTests {
 
-  /// <summary>Unit test cases for 'Balanza valorizada real' report entries.</summary>
+  /// <summary>Unit tests for BalanzaValorizadaReal report entries.</summary>
   public class BalanzaValorizadaRealTests {
 
     #region Facts
@@ -45,7 +48,7 @@ namespace Empiria.FinancialAccounting.Tests.BalanceEngine.BalanzaValorizadaRealT
       var balanzaEntries = MapToBalanzaReal(balanzaValorizadaReal);
 
 
-      var sut = BalanzaRealMapper.Map(balanzaEntries);
+      var sut = BalanzaEnMonedasMapper.Map(balanzaEntries);
 
       Assert.NotNull(sut);
     }
@@ -95,7 +98,6 @@ namespace Empiria.FinancialAccounting.Tests.BalanceEngine.BalanzaValorizadaRealT
 
 
     #endregion Helpers
-
 
   } // class BalanzaValorizadaRealTests
 
