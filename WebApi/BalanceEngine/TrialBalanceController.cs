@@ -19,6 +19,8 @@ using Empiria.FinancialAccounting.BalanceEngine;
 using Empiria.FinancialAccounting.BalanceEngine.Adapters;
 using Empiria.FinancialAccounting.BalanceEngine.UseCases;
 
+using Empiria.FinancialAccounting.Reclassification.Services;
+
 using Empiria.FinancialAccounting.Reporting.Balances;
 
 namespace Empiria.FinancialAccounting.WebApi.BalanceEngine {
@@ -178,22 +180,16 @@ namespace Empiria.FinancialAccounting.WebApi.BalanceEngine {
 
       base.RequireBody(query);
 
-      if (query.TrialBalanceType != TrialBalanceType.BalanzaValorizada) {
-        using (var usecases = TrialBalanceUseCases.UseCaseInteractor()) {
-
-          TrialBalanceDto trialBalance = usecases.BuildTrialBalance(query);
-
-          return new SingleObjectModel(this.Request, trialBalance);
-        }
+      if (query.TrialBalanceType.IsForReclassification()) {
+        return GetReclassifiedTrialBalance(query);
       }
 
+      using (var usecases = TrialBalanceUseCases.UseCaseInteractor()) {
 
-      using (var usecases = TrialBalancesUseCasesV3.UseCaseInteractor()) {
-        DynamicDto<BalanzaValorizadaEntry> trialBalance = usecases.BalanzaValorizada(query);
+        TrialBalanceDto trialBalance = usecases.BuildTrialBalance(query);
 
         return new SingleObjectModel(this.Request, trialBalance);
       }
-
     }
 
 
@@ -203,23 +199,13 @@ namespace Empiria.FinancialAccounting.WebApi.BalanceEngine {
 
       base.RequireBody(query);
 
-      if (query.TrialBalanceType != TrialBalanceType.BalanzaValorizada) {
-
-        using (var usecases = TrialBalanceUseCases.UseCaseInteractor()) {
-
-          TrialBalanceDto trialBalance = usecases.BuildTrialBalance(query);
-
-          var excelExporter = new BalancesExcelExporterService();
-
-          FileDto excelFileDto = excelExporter.Export(trialBalance);
-
-          return new SingleObjectModel(this.Request, excelFileDto);
-        }
+      if (query.TrialBalanceType.IsForReclassification()) {
+        return ExportReclassifiedTrialBalanceToExcel(query);
       }
 
-      using (var usecases = TrialBalancesUseCasesV3.UseCaseInteractor()) {
+      using (var usecases = TrialBalanceUseCases.UseCaseInteractor()) {
 
-        DynamicDto<BalanzaValorizadaEntry> trialBalance = usecases.BalanzaValorizada(query);
+        TrialBalanceDto trialBalance = usecases.BuildTrialBalance(query);
 
         var excelExporter = new BalancesExcelExporterService();
 
@@ -262,6 +248,41 @@ namespace Empiria.FinancialAccounting.WebApi.BalanceEngine {
     }
 
     #endregion Web Apis
+
+    #region Helpers
+
+    private SingleObjectModel ExportReclassifiedTrialBalanceToExcel(TrialBalanceQuery query) {
+
+      Assertion.Require(query.TrialBalanceType.IsForReclassification(), nameof(query.TrialBalanceType));
+
+      using (var usecases = ReclassifiedTrialBalancesServices.UseCaseInteractor()) {
+
+        DynamicDto<BalanzaValorizadaRealDto> trialBalance = usecases.Balanza(query.InitialPeriod.FromDate,
+                                                                             query.InitialPeriod.ToDate);
+
+        var excelExporter = new ReclassificatedBalancesExcelExporterService();
+
+        FileDto excelFileDto = excelExporter.Export(trialBalance);
+
+        return new SingleObjectModel(this.Request, excelFileDto);
+      }
+    }
+
+
+    private SingleObjectModel GetReclassifiedTrialBalance(TrialBalanceQuery query) {
+
+      Assertion.Require(query.TrialBalanceType.IsForReclassification(), nameof(query.TrialBalanceType));
+
+      using (var usecases = ReclassifiedTrialBalancesServices.UseCaseInteractor()) {
+
+        DynamicDto<BalanzaValorizadaRealDto> trialBalance = usecases.Balanza(query.InitialPeriod.FromDate,
+                                                                             query.InitialPeriod.ToDate);
+
+        return new SingleObjectModel(this.Request, trialBalance);
+      }
+    }
+
+    #endregion Helpers
 
   } // class TrialBalanceController
 
