@@ -1,17 +1,17 @@
 ﻿/* Empiria Financial *****************************************************************************************
 *                                                                                                            *
-*  Module   : Balance Engine                             Component : Interface adapters                      *
-*  Assembly : FinancialAccounting.BalanceEngine.dll      Pattern   : Data Transfer Object                    *
-*  Type     : BalanzaRealDto                             License   : Please read LICENSE.txt file            *
+*  Module   : Reclassification Services                  Component : Adapters Layer                          *
+*  Assembly : FinancialAccounting.Reclassification.dll   Pattern   : Output DTO                              *
+*  Type     : BalanzaEnColumnasRealDto                   License   : Please read LICENSE.txt file            *
 *                                                                                                            *
-*  Summary  : Output DTO used to return a BalanzaRealDto.                                                    *
+*  Summary  : Output DTO used to return a BalanzaEnColumnasRealDto.                                          *
 *                                                                                                            *
 ************************* Copyright(c) La Vía Óntica SC, Ontica LLC and contributors. All rights reserved. **/
 
 namespace Empiria.FinancialAccounting.BalanceEngine.Adapters {
 
-  /// <summary>Output DTO used to return a BalanzaRealDto.</summary>
-  public class BalanzaRealDto {
+  /// <summary>Output DTO used to return a BalanzaEnColumnasRealDto.</summary>
+  public class BalanzaEnColumnasRealDto {
 
     public string AccountNo {
       get; internal set;
@@ -69,7 +69,6 @@ namespace Empiria.FinancialAccounting.BalanceEngine.Adapters {
       get; internal set;
     }
 
-
-  }  // class BalanzaRealDto
+  }  // class BalanzaEnColumnasRealDto
 
 } // namespace Empiria.FinancialAccounting.BalanceEngine.Adapters

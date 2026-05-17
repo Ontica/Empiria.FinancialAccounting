@@ -1,54 +1,55 @@
 ﻿/* Empiria Financial *****************************************************************************************
 *                                                                                                            *
-*  Module   : Balance Engine                             Component : Use cases Layer                         *
-*  Assembly : FinancialAccounting.BalanceEngine.dll      Pattern   : Use case interactor class               *
-*  Type     : BalanzaRealMapper                          License   : Please read LICENSE.txt file            *
+*  Module   : Reclassification Services                  Component : Adapters Layer                          *
+*  Assembly : FinancialAccounting.Reclassification.dll   Pattern   : Mapper                                  *
+*  Type     : BalanzaEnMonedasMapper                     License   : Please read LICENSE.txt file            *
 *                                                                                                            *
-*  Summary  : Use cases used to read Real valorize balance.                                                  *
+*  Summary  : Maps reclassified trial balances to their respective currency representations in columns.      *
 *                                                                                                            *
 ************************* Copyright(c) La Vía Óntica SC, Ontica LLC and contributors. All rights reserved. **/
 
 using System.Collections.Generic;
+
 using Empiria.DynamicData;
 
 namespace Empiria.FinancialAccounting.BalanceEngine.Adapters {
 
-  internal class BalanzaRealMapper {
+  /// <summary>Maps reclassified trial balances to their respective currency representations in columns.</summary>
+  internal class BalanzaEnMonedasMapper {
 
     #region Mappers
 
-    static internal DynamicDto<BalanzaRealDto> Map(FixedList<BalanzaReal> entries) {
-      return new DynamicDto<BalanzaRealDto>(MapColumns(), MapEntries(entries));
+    static internal DynamicDto<BalanzaEnColumnasRealDto> Map(FixedList<BalanzaReal> entries) {
+      return new DynamicDto<BalanzaEnColumnasRealDto>(MapColumns(), MapEntries(entries));
     }
 
 
     static public FixedList<DataTableColumn> MapColumns() {
       List<DataTableColumn> columns = new List<DataTableColumn>();
-      columns.Add(new DataTableColumn("accountNumber", "Cuenta", "text-nowrap"));
-      columns.Add(new DataTableColumn("accountName", "Nombre", "text"));
-      columns.Add(new DataTableColumn("domesticBalance", "M.N. (01)", "decimal"));
-      columns.Add(new DataTableColumn("dollarBalance", "Dólares (02)", "decimal"));
-      columns.Add(new DataTableColumn("yenBalance", "Yenes (06)", "decimal"));
-      columns.Add(new DataTableColumn("euroBalance", "Euros (27)", "decimal"));
-      columns.Add(new DataTableColumn("udisBalance", "UDIS (44)", "decimal"));
-      columns.Add(new DataTableColumn("domesticRealBalance", "M.N. (01)", "decimal"));
-      columns.Add(new DataTableColumn("dollarRealBalance", "Dólares (02)", "decimal"));
-      columns.Add(new DataTableColumn("yenRealBalance", "Yenes (06)", "decimal"));
-      columns.Add(new DataTableColumn("euroRealBalance", "Euros (27)", "decimal"));
-      columns.Add(new DataTableColumn("udisRealBalance", "UDIS (44)", "decimal"));
-
+      new DataTableColumn("accountNumber", "Cuenta", "text-nowrap");
+      new DataTableColumn("accountName", "Nombre", "text");
+      new DataTableColumn("domesticRealBalance", "MXN (Rec)", "decimal");
+      new DataTableColumn("dollarRealBalance", "USD", "decimal");
+      new DataTableColumn("yenRealBalance", "JPY", "decimal");
+      new DataTableColumn("euroRealBalance", "EUR", "decimal");
+      new DataTableColumn("udisRealBalance", "UDIS", "decimal");
+      new DataTableColumn("domesticBalance", "MXN", "decimal");
+      new DataTableColumn("dollarBalance", "USD", "decimal");
+      new DataTableColumn("yenBalance", "JPY", "decimal");
+      new DataTableColumn("euroBalance", "EUR", "decimal");
+      new DataTableColumn("udisBalance", "UDIS", "decimal");
       return columns.ToFixedList();
     }
 
 
-    static private FixedList<BalanzaRealDto> MapEntries(FixedList<BalanzaReal> entries) {
+    static private FixedList<BalanzaEnColumnasRealDto> MapEntries(FixedList<BalanzaReal> entries) {
       return entries.Select(x => Map(x))
                     .ToFixedList();
     }
 
 
-    static private BalanzaRealDto Map(BalanzaReal entry) {
-      BalanzaRealDto balanzRealDto = new BalanzaRealDto();
+    static private BalanzaEnColumnasRealDto Map(BalanzaReal entry) {
+      BalanzaEnColumnasRealDto balanzRealDto = new BalanzaEnColumnasRealDto();
 
       balanzRealDto.AccountNo = entry.CuentaEstandar.Number;
       balanzRealDto.AccountName = entry.CuentaEstandar.Name;
@@ -103,6 +104,6 @@ namespace Empiria.FinancialAccounting.BalanceEngine.Adapters {
 
     #endregion Mappers
 
-  } // class BalanzaValorizadaRealMapper
+  } // class BalanzaEnMonedasMapper
 
 } // namespace Empiria.FinancialAccounting.BalanceEngine.Adapters

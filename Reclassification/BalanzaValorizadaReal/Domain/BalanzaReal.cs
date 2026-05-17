@@ -1,8 +1,8 @@
 ﻿/* Empiria Financial *****************************************************************************************
 *                                                                                                            *
-*  Module   : Balance Engine                             Component : Domain Layer                            *
-*  Assembly : FinancialAccounting.BalanceEngine.dll      Pattern   : Information Holder                      *
-*  Type     : BalanzaValorizadaReal                      License   : Please read LICENSE.txt file            *
+*  Module   : Reclassification Services                  Component : Domain Layer                            *
+*  Assembly : FinancialAccounting.Reclassification.dll   Pattern   : Information Holder                      *
+*  Type     : BalanzaReal                                License   : Please read LICENSE.txt file            *
 *                                                                                                            *
 *  Summary  : Used to read Real valorize balance.                                                            *
 *                                                                                                            *

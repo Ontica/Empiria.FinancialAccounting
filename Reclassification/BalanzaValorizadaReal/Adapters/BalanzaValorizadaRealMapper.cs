@@ -1,7 +1,7 @@
 ﻿/* Empiria Financial *****************************************************************************************
 *                                                                                                            *
-*  Module   : Balance Engine                             Component : Use cases Layer                         *
-*  Assembly : FinancialAccounting.BalanceEngine.dll      Pattern   : Use case interactor class               *
+*  Module   : Reclassification Services                  Component : Use cases Layer                         *
+*  Assembly : FinancialAccounting.Reclassification.dll   Pattern   : Use case interactor class               *
 *  Type     : BalanzaValorizadaRealUseCases              License   : Please read LICENSE.txt file            *
 *                                                                                                            *
 *  Summary  : Use cases used to read Real valorize balance.                                                  *

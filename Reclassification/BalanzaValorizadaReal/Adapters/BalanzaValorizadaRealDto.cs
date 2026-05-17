@@ -1,7 +1,7 @@
 ﻿/* Empiria Financial *****************************************************************************************
 *                                                                                                            *
-*  Module   : Balance Engine                             Component : Interface adapters                      *
-*  Assembly : FinancialAccounting.BalanceEngine.dll      Pattern   : Data Transfer Object                    *
+*  Module   : Reclassification Services                  Component : Interface adapters                      *
+*  Assembly : FinancialAccounting.Reclassification.dll   Pattern   : Data Transfer Object                    *
 *  Type     : BalanzaValorizadaRealDto                   License   : Please read LICENSE.txt file            *
 *                                                                                                            *
 *  Summary  : Output DTO used to return a BalanzaValorizadaRealDto.                                          *
