@@ -7,7 +7,7 @@
 *  Summary  : Contains the header and entries of a trial balance                                             *
 *                                                                                                            *
 ************************* Copyright(c) La Vía Óntica SC, Ontica LLC and contributors. All rights reserved. **/
-using System;
+
 using System.Collections.Generic;
 
 using Empiria.DynamicData;
@@ -23,7 +23,7 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
 
     internal TrialBalance(TrialBalanceQuery query,
                           FixedList<ITrialBalanceEntry> entries) {
-      Assertion.Require(query,nameof(query));
+      Assertion.Require(query, nameof(query));
       Assertion.Require(entries, nameof(entries));
 
       this.Query = query;
@@ -33,13 +33,13 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
 
     internal FixedList<DataTableColumn> DataColumns() {
       switch (this.Query.TrialBalanceType) {
-        
+
         case TrialBalanceType.AnaliticoDeCuentas:
           return AnaliticoDeCuentasMapper.DataColumns(this.Query);
 
         case TrialBalanceType.Balanza:
           return BalanzaTradicionalMapper.DataColumns(this.Query);
-        
+
         case TrialBalanceType.BalanzaConContabilidadesEnCascada:
           return BalanzaContabilidadesCascadaMapper.DataColumns(this.Query);
 

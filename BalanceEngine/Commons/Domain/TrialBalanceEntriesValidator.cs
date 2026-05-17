@@ -7,13 +7,8 @@
 *  Summary  : Helper methods to validate entries for trial balances and related accounting information.      *
 *                                                                                                            *
 ************************* Copyright(c) La Vía Óntica SC, Ontica LLC and contributors. All rights reserved. **/
-using System;
-using System.Linq;
+
 using System.Collections.Generic;
-
-using Empiria.Collections;
-
-using Empiria.FinancialAccounting.BalanceEngine.Adapters;
 
 namespace Empiria.FinancialAccounting.BalanceEngine {
 
@@ -21,8 +16,7 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
   /// related accounting information.</summary>
   internal class TrialBalanceEntriesValidator {
 
-
-    #region Public methods
+    #region Methods
 
     public bool ValidateToCountEntries(List<TrialBalanceEntry> entries) {
 
@@ -49,10 +43,9 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
     }
 
 
-    #endregion Public methods
+    #endregion Methods
 
-
-    #region Private methods
+    #region Helpers
 
     private void CheckIfHaveNullEntry(List<TrialBalanceEntry> entries, int i) {
 
@@ -62,8 +55,7 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
 
     }
 
-    #endregion
-
+    #endregion Helpers
 
   } // class TrialBalanceEntriesValidator
 

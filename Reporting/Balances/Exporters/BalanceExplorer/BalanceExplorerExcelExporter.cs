@@ -96,8 +96,6 @@ namespace Empiria.FinancialAccounting.Reporting.Balances {
         case FileReportVersion.V2:
           FillOutSaldosAuxiliarPorColumna(entries);
           break;
-        case FileReportVersion.V3:
-          break;
         default:
           throw Assertion.EnsureNoReachThisCode();
       }
@@ -111,8 +109,6 @@ namespace Empiria.FinancialAccounting.Reporting.Balances {
           break;
         case FileReportVersion.V2:
           FillOutSaldosCuentaPorColumna(entries);
-          break;
-        case FileReportVersion.V3:
           break;
         default:
           throw Assertion.EnsureNoReachThisCode();
