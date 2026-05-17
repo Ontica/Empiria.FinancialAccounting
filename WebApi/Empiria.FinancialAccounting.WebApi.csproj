@@ -68,6 +68,7 @@
     <PackageReference Include="Empiria.FinancialAccounting.Core" Version="2.4.0" />
     <PackageReference Include="Empiria.FinancialAccounting.BalanceEngine" Version="2.4.0" />
     <PackageReference Include="Empiria.FinancialAccounting.FinancialReports" Version="2.4.0" />
+    <PackageReference Include="Empiria.FinancialAccounting.Reclassification" Version="3.0.0" />
     <PackageReference Include="Empiria.FinancialAccounting.Reconciliation" Version="2.4.0" />
     <PackageReference Include="Empiria.FinancialAccounting.Reporting" Version="2.4.0" />
     <PackageReference Include="Empiria.FinancialAccounting.Vouchers" Version="2.4.0" />
@@ -79,6 +80,7 @@
     <ProjectReference Include="..\Core\Empiria.FinancialAccounting.Core.csproj" />
     <ProjectReference Include="..\BalanceEngine\Empiria.FinancialAccounting.BalanceEngine.csproj" />
     <ProjectReference Include="..\FinancialReports\Empiria.FinancialAccounting.FinancialReports.csproj" />
+    <ProjectReference Include="..\Reclassification\Empiria.FinancialAccounting.Reclassification.csproj" />
     <ProjectReference Include="..\Reconciliation\Empiria.FinancialAccounting.Reconciliation.csproj" />
     <ProjectReference Include="..\Reporting\Empiria.FinancialAccounting.Reporting.csproj" />
     <ProjectReference Include="..\Vouchers\Empiria.FinancialAccounting.Vouchers.csproj" />
