@@ -40,7 +40,9 @@ namespace Empiria.FinancialAccounting.Reclassification {
     }
 
     public decimal FinalBalance {
-      get; set;
+      get {
+        return InitialBalance + Debits - Credits;
+      }
     }
 
 

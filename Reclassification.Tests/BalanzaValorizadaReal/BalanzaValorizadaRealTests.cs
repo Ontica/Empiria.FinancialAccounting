@@ -77,7 +77,7 @@ namespace Empiria.FinancialAccounting.Tests.Reclassification {
         currencyBalance.Credits = entry.Haber;
         currencyBalance.Debits = entry.Debe;
         currencyBalance.Currency = entry.Moneda;
-        currencyBalance.FinalBalance = entry.SaldoFinal;
+        //currencyBalance.FinalBalance = entry.SaldoFinal;
 
         entryBalance.SaldosPorMoneda.Add(currencyBalance);
 
@@ -86,7 +86,7 @@ namespace Empiria.FinancialAccounting.Tests.Reclassification {
         currencyBalanceReal.Credits = entry.HaberMonedaReal;
         currencyBalanceReal.Debits = entry.DebeMonedaReal;
         currencyBalanceReal.Currency = entry.MonedaReal;
-        currencyBalanceReal.FinalBalance = entry.SaldoFinalReal;
+        //currencyBalanceReal.FinalBalance = entry.SaldoFinalReal;
 
         entryBalance.SaldosPorMonedaReal.Add(currencyBalanceReal);
       }

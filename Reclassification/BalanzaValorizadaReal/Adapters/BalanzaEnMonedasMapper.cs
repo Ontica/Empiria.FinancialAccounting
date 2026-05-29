@@ -25,20 +25,20 @@ namespace Empiria.FinancialAccounting.Reclassification.Adapters {
 
 
     static public FixedList<DataTableColumn> MapColumns() {
-      List<DataTableColumn> columns = new List<DataTableColumn>();
-      new DataTableColumn("accountNumber", "Cuenta", "text-nowrap");
-      new DataTableColumn("accountName", "Nombre", "text");
-      new DataTableColumn("domesticRealBalance", "MXN (Rec)", "decimal");
-      new DataTableColumn("dollarRealBalance", "USD", "decimal");
-      new DataTableColumn("yenRealBalance", "JPY", "decimal");
-      new DataTableColumn("euroRealBalance", "EUR", "decimal");
-      new DataTableColumn("udisRealBalance", "UDIS", "decimal");
-      new DataTableColumn("domesticBalance", "MXN", "decimal");
-      new DataTableColumn("dollarBalance", "USD", "decimal");
-      new DataTableColumn("yenBalance", "JPY", "decimal");
-      new DataTableColumn("euroBalance", "EUR", "decimal");
-      new DataTableColumn("udisBalance", "UDIS", "decimal");
-      return columns.ToFixedList();
+      return new List<DataTableColumn> {
+        new DataTableColumn("accountNo", "Cuenta", "text-nowrap"),
+        new DataTableColumn("accountName", "Nombre", "text"),
+        new DataTableColumn("domesticRealFinalBalance", "MXN", "decimal"),
+        new DataTableColumn("dollarRealFinalBalance", "USD", "decimal"),
+        new DataTableColumn("yenRealFinalBalance", "JPY", "decimal"),
+        new DataTableColumn("euroRealFinalBalance", "EUR", "decimal"),
+        new DataTableColumn("udisRealFinalBalance", "UDIS", "decimal"),
+        new DataTableColumn("domesticFinalBalance", "MXN (Captura)", "decimal"),
+        new DataTableColumn("dollarFinalBalance", "USD (Capt)", "decimal"),
+        new DataTableColumn("yenFinalBalance", "JPY (Capt)", "decimal"),
+        new DataTableColumn("euroFinalBalance", "EUR (Capt)", "decimal"),
+        new DataTableColumn("udisFinalBalance", "UDIS (Capt)", "decimal")
+      }.ToFixedList();
     }
 
 

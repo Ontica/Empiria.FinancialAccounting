@@ -116,18 +116,22 @@ namespace Empiria.FinancialAccounting.Reclassification.Services {
 
     #region Helpers
 
-    private FixedList<BalanzaReal> MapToBalanzaReal(FixedList<BalanzaValorizadaReal> balance) {
-      var idCuentaStandar = -1;
+    private FixedList<BalanzaReal> MapToBalanzaReal(FixedList<BalanzaValorizadaReal> balances) {
+      var idCuentaStandard = -1;
+
       BalanzaReal entryBalance = new BalanzaReal();
       List<BalanzaReal> balanzaEntries = new List<BalanzaReal>();
 
-      foreach (var entry in balance) {
-        if (entry.CuentaEstandar.Id != idCuentaStandar) {
+      balances = balances.Sort((x, y) => x.CuentaEstandar.Number.CompareTo(y.CuentaEstandar.Number));
+
+      foreach (var entry in balances) {
+
+        if (entry.CuentaEstandar.Id != idCuentaStandard) {
           balanzaEntries.Add(entryBalance);
           entryBalance = new BalanzaReal();
 
           entryBalance.CuentaEstandar = entry.CuentaEstandar;
-          idCuentaStandar = entry.CuentaEstandar.Id;
+          idCuentaStandard = entry.CuentaEstandar.Id;
         }
 
         CurrencyBalance currencyBalance = new CurrencyBalance();
@@ -135,7 +139,6 @@ namespace Empiria.FinancialAccounting.Reclassification.Services {
         currencyBalance.Credits = entry.Haber;
         currencyBalance.Debits = entry.Debe;
         currencyBalance.Currency = entry.Moneda;
-        currencyBalance.FinalBalance = entry.SaldoFinal;
 
         entryBalance.SaldosPorMoneda.Add(currencyBalance);
 
@@ -144,7 +147,6 @@ namespace Empiria.FinancialAccounting.Reclassification.Services {
         currencyBalanceReal.Credits = entry.HaberMonedaReal;
         currencyBalanceReal.Debits = entry.DebeMonedaReal;
         currencyBalanceReal.Currency = entry.MonedaReal;
-        currencyBalanceReal.FinalBalance = entry.SaldoFinalReal;
 
         entryBalance.SaldosPorMonedaReal.Add(currencyBalanceReal);
       }
