@@ -156,84 +156,70 @@ namespace Empiria.FinancialAccounting.BalanceEngine.Adapters {
     public decimal ValuedExchangeRate {
       get; internal set;
     } = 1;
+
+
     public decimal USDDebit {
-      get;
-      internal set;
+      get; internal set;
     }
 
     public decimal USDCredit {
-      get;
-      internal set;
+      get; internal set;
     }
 
     public decimal YENDebit {
-      get;
-      internal set;
+      get; internal set;
     }
 
     public decimal YENCredit {
-      get;
-      internal set;
+      get; internal set;
     }
 
     public decimal EURDebit {
-      get;
-      internal set;
+      get; internal set;
     }
 
     public decimal EURCredit {
-      get;
-      internal set;
+      get; internal set;
     }
 
     public decimal UDIDebit {
-      get;
-      internal set;
+      get; internal set;
     }
 
     public decimal UDICredit {
-      get;
-      internal set;
+      get; internal set;
     }
 
     public decimal ValuedUSDDebit {
-      get;
-      internal set;
+      get; internal set;
     }
 
     public decimal ValuedYENDebit {
-      get;
-      internal set;
+      get; internal set;
     }
 
     public decimal ValuedEURDebit {
-      get;
-      internal set;
+      get; internal set;
     }
 
     public decimal ValuedUDIDebit {
-      get;
-      internal set;
+      get; internal set;
     }
 
     public decimal ValuedUSDCredit {
-      get;
-      internal set;
+      get; internal set;
     }
 
     public decimal ValuedYENCredit {
-      get;
-      internal set;
+      get; internal set;
     }
 
     public decimal ValuedEURCredit {
-      get;
-      internal set;
+      get; internal set;
     }
 
     public decimal ValuedUDICredit {
-      get;
-      internal set;
+      get; internal set;
     }
 
     public decimal ValuedEffectDebitUSD {

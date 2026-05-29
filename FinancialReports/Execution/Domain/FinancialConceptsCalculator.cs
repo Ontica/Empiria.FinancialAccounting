@@ -7,8 +7,6 @@
 *  Summary  : Calculates financial concepts values.                                                          *
 *                                                                                                            *
 ************************* Copyright(c) La Vía Óntica SC, Ontica LLC and contributors. All rights reserved. **/
-using System;
-
 using Empiria.DynamicData;
 using Empiria.DynamicData.ExternalData;
 
@@ -229,15 +227,6 @@ namespace Empiria.FinancialAccounting.FinancialReports {
 
       foreach (var value in externalValues) {
         totals = totals.Sum(value);
-
-        //EmpiriaLog.Debug($"ExternalValueProcessed: {integrationEntry.ExternalVariableCode} " +
-        //                 $"{integrationEntry.Code} {integrationEntry.Name} " +
-        //                 $"{integrationEntry.Id} " +
-        //                 $"{value.Id} " +
-        //                 $"{integrationEntry.FinancialConcept.Id} " +
-        //                 $"{integrationEntry.FinancialConcept.Code} {integrationEntry.FinancialConcept.Name} " +
-        //                 $"{totals.GetTotalField("debeCompensacionesMonedaNacional")} " +
-        //                 $"{totals.GetTotalField("debeCompensacionesMonedaExtranjera")} ");
       }
 
       if (integrationEntry.CalculationRule == "ConsolidarEnUnaColumna") {
