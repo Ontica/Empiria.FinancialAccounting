@@ -277,11 +277,27 @@ namespace Empiria.FinancialAccounting.WebApi.BalanceEngine {
 
       using (var usecases = ReclassifiedTrialBalancesServices.UseCaseInteractor()) {
 
-        DynamicDto<BalanzaValorizadaRealDto> trialBalance = usecases.Balanza(query.InitialPeriod.FromDate,
-                                                                             query.InitialPeriod.ToDate);
+        switch (query.TrialBalanceType) {
 
-        return new SingleObjectModel(this.Request, trialBalance);
+          case TrialBalanceType.BalanzaMonedaOrigenValorizada:
+
+            DynamicDto<BalanzaEnColumnasRealDto> enColumnas = usecases.BalanzaEnColumnas(query.InitialPeriod.FromDate,
+                                                                                         query.InitialPeriod.ToDate);
+
+            return new SingleObjectModel(this.Request, enColumnas);
+
+          case TrialBalanceType.BalanzaValorizada:
+
+            DynamicDto<BalanzaValorizadaRealDto> valorizada = usecases.Balanza(query.InitialPeriod.FromDate,
+                                                                               query.InitialPeriod.ToDate);
+
+            return new SingleObjectModel(this.Request, valorizada);
+
+          default:
+            throw Assertion.EnsureNoReachThisCode($"Trial balance type {query.TrialBalanceType} is not supported for reclassification.");
+        }
       }
+
     }
 
     #endregion Helpers
