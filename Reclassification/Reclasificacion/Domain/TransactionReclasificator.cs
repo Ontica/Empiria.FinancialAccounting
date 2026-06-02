@@ -37,9 +37,9 @@ namespace Empiria.FinancialAccounting.Reclassification {
       get; set;
     }
 
-    private List<RealTransaction> RealTrasactions {
-      get; set;
-    } = new List<RealTransaction>();
+    //private List<RealTransaction> RealTrasactions {
+    //  get; set;
+    //} = new List<RealTransaction>();
 
 
     #endregion Properties
@@ -48,11 +48,12 @@ namespace Empiria.FinancialAccounting.Reclassification {
 
     public Boolean GroupTransactions() {
 
-      AccountingOperation accountingOperation = AccountingOperation.GetList().Find(x => x.DebitAccount == "1.05.04.02");
-      Group(accountingOperation);
-      UpdateTransaction();
+      var accountingOperations = AccountingOperation.GetList().FindAll(x => x.DebitAccount == "2.13.01.01.03" || x.DebitAccount == "1.05.04.02");
 
-
+      foreach (var accountingOperation in accountingOperations) {
+        Group(accountingOperation);
+      }
+      //  
       return false;
     }
 
@@ -74,22 +75,44 @@ namespace Empiria.FinancialAccounting.Reclassification {
             cuenta, contraCuenta
       };
 
+      var IdMoneda = Convert.ToInt32(cuenta.Currency.Substring(0, 2));
 
-      var cuentaNueveDebe = FindAccount("9.01.01", cuenta, isDebit: true);
-      if (cuentaNueveDebe == null) {
-        GenerateTransaction(transactionsGroup, operation);
-        return;
+      if (IdMoneda == 28) {
+
+        var cuentaNueveUDISDebe = FindAccount("9.01.03", cuenta, isDebit: true);
+        if (cuentaNueveUDISDebe == null) {
+          var transactions1 = GenerateTransaction(transactionsGroup, operation);
+          UpdateTransaction(transactions1);
+          return;
+        }
+
+
+        var cuentaNueveUDISHaber = FindAccount("9.01.04", cuenta, isDebit: false);
+        if (cuentaNueveUDISHaber == null)
+          return;
+
+        transactionsGroup.Add(cuentaNueveUDISDebe);
+        transactionsGroup.Add(cuentaNueveUDISHaber);
+      } else {
+
+        var cuentaNueveDebe = FindAccount("9.01.01", cuenta, isDebit: true);
+        if (cuentaNueveDebe == null) {
+          var transactions2 = GenerateTransaction(transactionsGroup, operation);
+          UpdateTransaction(transactions2);
+          return;
+        }
+
+        var cuentaNueveHaber = FindAccount("9.01.02", cuenta, isDebit: false);
+        if (cuentaNueveHaber == null)
+          return;
+
+        transactionsGroup.Add(cuentaNueveDebe);
+        transactionsGroup.Add(cuentaNueveHaber);
       }
 
 
-      var cuentaNueveHaber = FindAccount("9.01.02", cuenta, isDebit: false);
-      if (cuentaNueveHaber == null)
-        return;
-
-      transactionsGroup.Add(cuentaNueveDebe);
-      transactionsGroup.Add(cuentaNueveHaber);
-
-      GenerateTransaction(transactionsGroup, operation);
+      var transactions = GenerateTransaction(transactionsGroup, operation);
+      UpdateTransaction(transactions);
     }
 
 
@@ -125,26 +148,30 @@ namespace Empiria.FinancialAccounting.Reclassification {
     }
 
 
-    private void GenerateTransaction(List<VoucherEntryDescriptorDto> transactionsGroup, AccountingOperation operation) {
+    private List<RealTransaction> GenerateTransaction(List<VoucherEntryDescriptorDto> transactionsGroup, AccountingOperation operation) {
       string uid = Guid.NewGuid().ToString();
+      var realTrasactions = new List<RealTransaction>();
+
 
       foreach (var transaction in transactionsGroup) {
         var realTransaction = new RealTransaction(uid, operation, transaction);
-        RealTrasactions.Add(realTransaction);
+        realTrasactions.Add(realTransaction);
 
         _transactions.Remove(transaction);
       }
 
-      RealTrasactions[0].IdMonedaReal = Convert.ToInt32(RealTrasactions[0].Transaction.Currency.Substring(0, 2));
-      RealTrasactions[0].MontoReal = RealTrasactions[0].Transaction.Debit;
+      realTrasactions[0].IdMonedaReal = Convert.ToInt32(realTrasactions[0].Transaction.Currency.Substring(0, 2));
+      realTrasactions[0].MontoReal = realTrasactions[0].Transaction.Debit;
 
-      RealTrasactions[1].IdMonedaReal = Convert.ToInt32(RealTrasactions[0].Transaction.Currency.Substring(0, 2));
-      RealTrasactions[1].MontoReal = RealTrasactions[0].Transaction.Debit;
+      realTrasactions[1].IdMonedaReal = Convert.ToInt32(realTrasactions[0].Transaction.Currency.Substring(0, 2));
+      realTrasactions[1].MontoReal = realTrasactions[0].Transaction.Debit;
+
+      return realTrasactions;
     }
 
 
-    private void UpdateTransaction() {
-      foreach (var transaction in RealTrasactions) {
+    private void UpdateTransaction(List<RealTransaction> realTransactions) {
+      foreach (var transaction in realTransactions) {
         AccountingOperationDataService.UpdateTransaction(transaction);
       }
 
