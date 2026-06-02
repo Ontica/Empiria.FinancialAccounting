@@ -49,7 +49,7 @@ namespace Empiria.FinancialAccounting.Tests.Reclassification {
         VoucherDto sut = usecases.GetVoucher(9195387);
         var op = new TransactionReclasificator(sut);
 
-        var clas = op.GroupTransactions();
+        op.GroupTransactions();
 
 
         Assert.NotNull(sut);

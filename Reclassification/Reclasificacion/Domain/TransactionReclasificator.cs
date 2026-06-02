@@ -46,26 +46,29 @@ namespace Empiria.FinancialAccounting.Reclassification {
 
     #region Methods
 
-    public Boolean GroupTransactions() {
+    public void GroupTransactions() {
 
-      var accountingOperations = AccountingOperation.GetList().FindAll(x => x.DebitAccount == "2.13.01.01.03" || x.DebitAccount == "1.05.04.02");
+      var accountingOperations = AccountingOperation.GetList().FindAll(x => x.DebitAccount == "1.05.04.02");
 
       foreach (var accountingOperation in accountingOperations) {
-        Group(accountingOperation);
+        var debitAccounts = FindDebitAccounts(accountingOperation);
+
+        foreach (var debitAccount in debitAccounts) {
+          Group(debitAccount, accountingOperation);
+        }
+
       }
-      //  
-      return false;
     }
 
     #endregion Methods
 
     #region Helpers
 
-    private void Group(AccountingOperation operation) {
+    private void Group(VoucherEntryDescriptorDto cuenta, AccountingOperation operation) {
 
-      var cuenta = FindDebitAccount(operation);
-      if (cuenta == null)
-        return;
+      //var cuenta = FindDebitAccount(operation);
+      //if (cuenta == null)
+      //  return;
 
       var contraCuenta = FindCreditAccount(operation, cuenta);
       if (contraCuenta == null)
@@ -77,7 +80,7 @@ namespace Empiria.FinancialAccounting.Reclassification {
 
       var IdMoneda = Convert.ToInt32(cuenta.Currency.Substring(0, 2));
 
-      if (IdMoneda == 28) {
+      if (IdMoneda == 44) {
 
         var cuentaNueveUDISDebe = FindAccount("9.01.03", cuenta, isDebit: true);
         if (cuentaNueveUDISDebe == null) {
@@ -113,6 +116,8 @@ namespace Empiria.FinancialAccounting.Reclassification {
 
       var transactions = GenerateTransaction(transactionsGroup, operation);
       UpdateTransaction(transactions);
+
+
     }
 
 
@@ -145,6 +150,10 @@ namespace Empiria.FinancialAccounting.Reclassification {
 
     private VoucherEntryDescriptorDto FindDebitAccount(AccountingOperation operation) {
       return _transactions.Find(x => x.AccountNumber == operation.DebitAccount);
+    }
+
+    private FixedList<VoucherEntryDescriptorDto> FindDebitAccounts(AccountingOperation operation) {
+      return _transactions.FindAll(x => x.AccountNumber == operation.DebitAccount);
     }
 
 
