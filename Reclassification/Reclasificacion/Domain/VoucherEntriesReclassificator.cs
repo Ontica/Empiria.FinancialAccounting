@@ -126,11 +126,11 @@ namespace Empiria.FinancialAccounting.Reclassification {
         _toProcessEntries.Remove(entry);
       }
 
-      reclassifiedEntries[0].ReclassifyCurrency(reclassifiedEntries[0].VoucherEntry.Currency,
-                                                reclassifiedEntries[0].VoucherEntry.Debit);
+      reclassifiedEntries[0].ReclassifyCurrency(entries[0].Currency,
+                                                entries[0].Amount);
 
-      reclassifiedEntries[1].ReclassifyCurrency(reclassifiedEntries[0].VoucherEntry.Currency,
-                                                reclassifiedEntries[0].VoucherEntry.Debit);
+      reclassifiedEntries[1].ReclassifyCurrency(entries[0].Currency,
+                                                entries[0].Amount);
 
       ReclassificationDataService.UpdateReclassifiedVoucherEntries(reclassifiedEntries.ToFixedList());
     }
@@ -142,23 +142,30 @@ namespace Empiria.FinancialAccounting.Reclassification {
     }
 
 
-    private VoucherEntry TryFindEntry(string accountNumber, VoucherEntry cuenta, bool isDebit) {
-      return _toProcessEntries.Find(x => x.LedgerAccount.Number == accountNumber &&
-                                         AmountsMatch(isDebit ? x.Debit * x.ExchangeRate : x.Credit * x.ExchangeRate,
-                                                      cuenta.ExchangeRate * cuenta.Debit));
+    private VoucherEntry TryFindEntry(string accountNumber, VoucherEntry entry, bool isDebit) {
+      if (isDebit) {
+        return _toProcessEntries.Find(x => x.Debit > 0 && x.LedgerAccount.Number == accountNumber &&
+                                         AmountsMatch(x.Amount * x.ExchangeRate,
+                                                      entry.Amount * entry.ExchangeRate));
+      } else {
+
+        return _toProcessEntries.Find(x => x.Credit > 0 && x.LedgerAccount.Number == accountNumber &&
+                                         AmountsMatch(x.Amount * x.ExchangeRate,
+                                                      entry.Amount * entry.ExchangeRate));
+      }
     }
 
 
-    private VoucherEntry TryFindCreditEntry(AccountingRule operation, VoucherEntry debitEntry) {
-      return _toProcessEntries.Find(x => x.LedgerAccount.Number == operation.CreditAccount &&
+    private VoucherEntry TryFindCreditEntry(AccountingRule rule, VoucherEntry debitEntry) {
+      return _toProcessEntries.Find(x => x.Credit > 0 && x.LedgerAccount.Number == rule.CreditAccount &&
                                          x.SubledgerAccount.Number == debitEntry.SubledgerAccount.Number &&
-                                         AmountsMatch(x.Credit * x.ExchangeRate,
-                                                      debitEntry.ExchangeRate * debitEntry.Debit));
+                                         AmountsMatch(x.Amount * x.ExchangeRate,
+                                                      debitEntry.Amount * debitEntry.ExchangeRate));
     }
 
 
-    private FixedList<VoucherEntry> FindDebitEntries(AccountingRule operation) {
-      return _toProcessEntries.FindAll(x => x.LedgerAccount.Number == operation.DebitAccount);
+    private FixedList<VoucherEntry> FindDebitEntries(AccountingRule rule) {
+      return _toProcessEntries.FindAll(x => x.Debit > 0 && x.LedgerAccount.Number == rule.DebitAccount);
     }
 
     #endregion Helpers
