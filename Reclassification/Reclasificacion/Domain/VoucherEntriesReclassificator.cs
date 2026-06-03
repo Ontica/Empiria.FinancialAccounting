@@ -22,10 +22,11 @@ namespace Empiria.FinancialAccounting.Reclassification {
   /// operative transactions using a set of accounting rules.</summary>
   public class VoucherEntriesReclassificator {
 
-    const string COMPRAVENTA_UDIS_DEBE = "9.01.03";
-    const string COMPRAVENTA_UDIS_HABER = "9.01.04";
-    const string COMPRAVENTA_EXTRANJERA_DEBE = "9.01.01";
-    const string COMPRAVENTA_EXTRANJERA_HABER = "9.01.02";
+    const string COMPRAVENTA_EXTRANJERA = "9.01.02";
+    const string COMPRAVENTA_EXTRANJERA_PESOS = "9.01.01";
+
+    const string COMPRAVENTA_UDIS = "9.01.04";
+    const string COMPRAVENTA_UDIS_PESOS = "9.01.03";
 
     static readonly FixedList<AccountingRule> RULES = AccountingRule.GetList();
 
@@ -45,42 +46,66 @@ namespace Empiria.FinancialAccounting.Reclassification {
 
     public void Execute() {
 
+
       foreach (var rule in RULES) {
 
-        var debitEntries = FindDebitEntries(rule);
+        var debitEntries = FindDebitEntries(rule.DebitAccount);
 
         foreach (var debitEntry in debitEntries) {
-          var creditEntry = TryFindCreditEntry(rule, debitEntry);
+
+          var creditEntry = TryFindCreditEntry(rule.CreditAccount, debitEntry);
 
           if (creditEntry == null) {
             continue;
           }
 
-          ExecuteRule(debitEntry, creditEntry, rule);
-        }
-      }
+          ExecuteRule(debitEntry, creditEntry, rule, false);
+
+        }  // foreach debitEntry
+
+      }  // foreach rule
+
+
+      foreach (var cancelationRule in RULES) {
+
+        var canceledEntries = FindDebitEntries(cancelationRule.CreditAccount);
+
+        foreach (var canceledEntry in canceledEntries) {
+
+          var creditEntry = TryFindCreditEntry(cancelationRule.DebitAccount, canceledEntry);
+
+          if (creditEntry == null) {
+            continue;
+          }
+
+          ExecuteRule(creditEntry, canceledEntry, cancelationRule, true);
+
+        }  // foreach canceledEntry
+
+      }  // foreach cancelationRule
+
     }
 
     #endregion Methods
 
     #region Reclassificators
 
-    private void ExecuteRule(VoucherEntry debitEntry, VoucherEntry creditEntry, AccountingRule rule) {
+    private void ExecuteRule(VoucherEntry baseEntry, VoucherEntry contraAccountEntry,
+                             AccountingRule rule, bool isCancelation) {
 
       var reclassifiedEntries = new List<VoucherEntry> {
-        debitEntry, creditEntry
+        baseEntry, contraAccountEntry
       };
 
 
-      if (debitEntry.Currency.Equals(creditEntry.Currency)) {
+      if (baseEntry.Currency.Equals(contraAccountEntry.Currency)) {
 
         ProcessReclassifiedEntries(reclassifiedEntries, rule);
 
         return;
       }
 
-
-      List<VoucherEntry> compraventaEntries = TryGetCompraventaEntries(debitEntry);
+      List<VoucherEntry> compraventaEntries = TryGetCompraventaEntries(baseEntry, !isCancelation);
 
       if (compraventaEntries == null) {
         return;
@@ -94,13 +119,13 @@ namespace Empiria.FinancialAccounting.Reclassification {
 
     private void ProcessReclassifiedEntries(List<VoucherEntry> entries, AccountingRule rule) {
 
-      string uid = Guid.NewGuid().ToString();
+      string entriesTxnUID = Guid.NewGuid().ToString();
 
       var reclassifiedEntries = new List<ReclassifiedVoucherEntry>();
 
       foreach (var entry in entries) {
 
-        var reclassifiedEntry = new ReclassifiedVoucherEntry(uid, entry, rule);
+        var reclassifiedEntry = new ReclassifiedVoucherEntry(entriesTxnUID, entry, rule);
 
         reclassifiedEntries.Add(reclassifiedEntry);
 
@@ -115,43 +140,43 @@ namespace Empiria.FinancialAccounting.Reclassification {
     }
 
 
-    private List<VoucherEntry> TryGetCompraventaEntries(VoucherEntry debitEntry) {
+    private List<VoucherEntry> TryGetCompraventaEntries(VoucherEntry baseEntry, bool asDebit) {
 
       var compraventaEntries = new List<VoucherEntry>();
 
-      if (debitEntry.Currency.Equals(Currency.UDI)) {
+      if (baseEntry.Currency.Equals(Currency.UDI)) {
 
-        var entryUDISDebe = TryFindEntry(COMPRAVENTA_UDIS_DEBE, debitEntry, isDebit: true);
+        var entryUDISPesos = TryFindEntry(COMPRAVENTA_UDIS_PESOS, baseEntry, asDebit);
 
-        if (entryUDISDebe == null) {
+        if (entryUDISPesos == null) {
           return null;
         }
 
-        var entryUDISHaber = TryFindEntry(COMPRAVENTA_UDIS_HABER, debitEntry, isDebit: false);
+        var entryUDIS = TryFindEntry(COMPRAVENTA_UDIS, baseEntry, !asDebit);
 
-        if (entryUDISHaber == null) {
+        if (entryUDIS == null) {
           return null;
         }
 
-        compraventaEntries.Add(entryUDISDebe);
-        compraventaEntries.Add(entryUDISHaber);
+        compraventaEntries.Add(entryUDISPesos);
+        compraventaEntries.Add(entryUDIS);
 
       } else {
 
-        var entryMExtDebe = TryFindEntry(COMPRAVENTA_EXTRANJERA_DEBE, debitEntry, isDebit: true);
+        var entryMonExtPesos = TryFindEntry(COMPRAVENTA_EXTRANJERA_PESOS, baseEntry, asDebit);
 
-        if (entryMExtDebe == null) {
+        if (entryMonExtPesos == null) {
           return null;
         }
 
-        var entryMExtHaber = TryFindEntry(COMPRAVENTA_EXTRANJERA_HABER, debitEntry, isDebit: false);
+        var entryMonExt = TryFindEntry(COMPRAVENTA_EXTRANJERA, baseEntry, !asDebit);
 
-        if (entryMExtHaber == null) {
+        if (entryMonExt == null) {
           return null;
         }
 
-        compraventaEntries.Add(entryMExtDebe);
-        compraventaEntries.Add(entryMExtHaber);
+        compraventaEntries.Add(entryMonExtPesos);
+        compraventaEntries.Add(entryMonExt);
       }
 
       return compraventaEntries;
@@ -167,22 +192,22 @@ namespace Empiria.FinancialAccounting.Reclassification {
     }
 
 
-    private FixedList<VoucherEntry> FindDebitEntries(AccountingRule rule) {
-      return _toProcessEntries.FindAll(x => x.Debit > 0 && x.LedgerAccount.Number == rule.DebitAccount);
+    private FixedList<VoucherEntry> FindDebitEntries(string accountNumber) {
+      return _toProcessEntries.FindAll(x => x.Debit > 0 && x.LedgerAccount.Number == accountNumber);
     }
 
 
-    private VoucherEntry TryFindCreditEntry(AccountingRule rule, VoucherEntry debitEntry) {
+    private VoucherEntry TryFindCreditEntry(string accountNumber, VoucherEntry debitEntry) {
       return _toProcessEntries.Find(x => x.Credit > 0 &&
-                                         x.LedgerAccount.Number == rule.CreditAccount &&
+                                         x.LedgerAccount.Number == accountNumber &&
                                          x.SubledgerAccount.Number == debitEntry.SubledgerAccount.Number &&
                                          AmountsMatch(x.Amount * x.ExchangeRate,
                                                       debitEntry.Amount * debitEntry.ExchangeRate));
     }
 
 
-    private VoucherEntry TryFindEntry(string accountNumber, VoucherEntry entry, bool isDebit) {
-      if (isDebit) {
+    private VoucherEntry TryFindEntry(string accountNumber, VoucherEntry entry, bool asDebit) {
+      if (asDebit) {
         return _toProcessEntries.Find(x => x.Debit > 0 &&
                                            x.LedgerAccount.Number == accountNumber &&
                                            AmountsMatch(x.Amount * x.ExchangeRate,
