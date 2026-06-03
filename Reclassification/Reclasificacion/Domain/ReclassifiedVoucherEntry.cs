@@ -57,9 +57,9 @@ namespace Empiria.FinancialAccounting.Reclassification {
 
     #region Methods
 
-    internal void ReclassifyCurrency(Currency newCurrency, decimal newAmount) {
-      this.NewCurrency = newCurrency;
-      this.NewAmount = newAmount;
+    internal void ReclassifyCurrency(VoucherEntry baseEntry) {
+      this.NewCurrency = baseEntry.Currency;
+      this.NewAmount = baseEntry.Amount;
     }
 
     #endregion Methods
