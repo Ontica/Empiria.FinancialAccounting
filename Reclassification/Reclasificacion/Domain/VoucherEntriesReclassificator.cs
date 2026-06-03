@@ -1,7 +1,7 @@
 ﻿/* Empiria Financial *****************************************************************************************
 *                                                                                                            *
 *  Module   : Reclassification Services                  Component : Domain Layer                            *
-*  Assembly : FinancialAccounting.Reclassification.dll   Pattern   : Information Holder                      *
+*  Assembly : FinancialAccounting.Reclassification.dll   Pattern   : Service provider                        *
 *  Type     : VoucherEntriesReclassificator              License   : Please read LICENSE.txt file            *
 *                                                                                                            *
 *  Summary  : Reclassifies the entries of an accounting voucher in operative transactions                    *
@@ -105,7 +105,7 @@ namespace Empiria.FinancialAccounting.Reclassification {
         return;
       }
 
-      List<VoucherEntry> compraventaEntries = TryGetCompraventaEntries(baseEntry, !isCancelation);
+      FixedList<VoucherEntry> compraventaEntries = TryGetCompraventaEntries(baseEntry, !isCancelation);
 
       if (compraventaEntries == null) {
         return;
@@ -138,50 +138,6 @@ namespace Empiria.FinancialAccounting.Reclassification {
 
       ReclassificationDataService.UpdateReclassifiedVoucherEntries(reclassifiedEntries.ToFixedList());
     }
-
-
-    private List<VoucherEntry> TryGetCompraventaEntries(VoucherEntry baseEntry, bool asDebit) {
-
-      var compraventaEntries = new List<VoucherEntry>();
-
-      if (baseEntry.Currency.Equals(Currency.UDI)) {
-
-        var entryUDISPesos = TryFindEntry(COMPRAVENTA_UDIS_PESOS, baseEntry, asDebit);
-
-        if (entryUDISPesos == null) {
-          return null;
-        }
-
-        var entryUDIS = TryFindEntry(COMPRAVENTA_UDIS, baseEntry, !asDebit);
-
-        if (entryUDIS == null) {
-          return null;
-        }
-
-        compraventaEntries.Add(entryUDISPesos);
-        compraventaEntries.Add(entryUDIS);
-
-      } else {
-
-        var entryMonExtPesos = TryFindEntry(COMPRAVENTA_EXTRANJERA_PESOS, baseEntry, asDebit);
-
-        if (entryMonExtPesos == null) {
-          return null;
-        }
-
-        var entryMonExt = TryFindEntry(COMPRAVENTA_EXTRANJERA, baseEntry, !asDebit);
-
-        if (entryMonExt == null) {
-          return null;
-        }
-
-        compraventaEntries.Add(entryMonExtPesos);
-        compraventaEntries.Add(entryMonExt);
-      }
-
-      return compraventaEntries;
-    }
-
 
     #endregion Reclassificators
 
@@ -219,6 +175,40 @@ namespace Empiria.FinancialAccounting.Reclassification {
                                            AmountsMatch(x.Amount * x.ExchangeRate,
                                                         entry.Amount * entry.ExchangeRate));
       }
+    }
+
+
+    private FixedList<VoucherEntry> TryGetCompraventaEntries(VoucherEntry baseEntry, bool asDebit) {
+
+      var compraventaEntries = new List<VoucherEntry>();
+
+      if (baseEntry.Currency.Equals(Currency.UDI)) {
+
+        return TryGetCompraventaPairEntries(COMPRAVENTA_UDIS_PESOS, COMPRAVENTA_UDIS, baseEntry, asDebit);
+
+      } else {
+
+        return TryGetCompraventaPairEntries(COMPRAVENTA_EXTRANJERA_PESOS, COMPRAVENTA_EXTRANJERA, baseEntry, asDebit);
+      }
+    }
+
+
+    private FixedList<VoucherEntry> TryGetCompraventaPairEntries(string cuentaEnPesos, string cuentaMonedaBase,
+                                                                 VoucherEntry baseEntry, bool asDebit) {
+
+      var entryEnPesos = TryFindEntry(cuentaEnPesos, baseEntry, asDebit);
+
+      if (entryEnPesos == null) {
+        return null;
+      }
+
+      var entryEnMonedaBase = TryFindEntry(cuentaMonedaBase, baseEntry, !asDebit);
+
+      if (entryEnMonedaBase == null) {
+        return null;
+      }
+
+      return new VoucherEntry[] { entryEnPesos, entryEnMonedaBase }.ToFixedList();
     }
 
     #endregion Helpers
