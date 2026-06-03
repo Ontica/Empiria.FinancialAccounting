@@ -2,88 +2,84 @@
 *                                                                                                            *
 *  Module   : Reclassification Services                  Component : Domain Layer                            *
 *  Assembly : FinancialAccounting.Reclassification.dll   Pattern   : Information Holder                      *
-*  Type     : AccountingOperation                        License   : Please read LICENSE.txt file            *
+*  Type     : AccountingRule                             License   : Please read LICENSE.txt file            *
 *                                                                                                            *
-*  Summary  : Used to read accounting operation rules.                                                       *
+*  Summary  : Holds information about an accounting rule.                                                    *
 *                                                                                                            *
 ************************* Copyright(c) La Vía Óntica SC, Ontica LLC and contributors. All rights reserved. **/
+
+using Empiria.StateEnums;
 
 using Empiria.FinancialAccounting.Reclassification.Data;
 
 namespace Empiria.FinancialAccounting.Reclassification {
 
-  /// <summary>Used to read accounting operation rules.</summary>
-  public class AccountingOperation {
+  /// <summary>Holds information about an accounting rule.</summary>
+  public class AccountingRule {
 
-    #region Constructors and Parsers
+    #region Constructors and parsers
 
-    internal AccountingOperation() {
+    private AccountingRule() {
       // Required by Empiria Framework
     }
 
-    #endregion Constructors and Parsers
+    static public FixedList<AccountingRule> GetList() {
+      return ReclassificationDataService.GetAccountingRules();
+    }
+
+    #endregion Constructors and parsers
 
     #region Properties
 
     [DataField("ID_REGLA")]
     public int Id {
-      get; set;
+      get; private set;
     }
 
 
     [DataField("UID_REGLA")]
     public string UID {
-      get; set;
+      get; private set;
     }
 
 
     [DataField("ID_TIPO_OPERACION")]
     public AccountingOperationType AccountingOperationType {
-      get; set;
+      get; private set;
     }
 
 
     [DataField("CUENTA_DEBE")]
     public string DebitAccount {
-      get; set;
+      get; private set;
     }
 
 
     [DataField("NOMBRE_CUENTA_DEBE")]
     public string DebitAccountName {
-      get; set;
+      get; private set;
     }
 
 
     [DataField("CUENTA_HABER")]
     public string CreditAccount {
-      get; set;
+      get; private set;
     }
 
 
     [DataField("NOMBRE_CUENTA_HABER")]
     public string CreditAccountName {
-      get; set;
+      get; private set;
     }
 
 
-    [DataField("STATUS", Default = 'A')]
-    public char Status {
-      get; set;
+    [DataField("STATUS", Default = EntityStatus.Active)]
+    public EntityStatus Status {
+      get; private set;
     }
 
     #endregion Properties
 
-    #region Methods
-
-    static public FixedList<AccountingOperation> GetList() {
-      return AccountingOperationDataService.GetOperations();
-    }
-
-
-    #endregion Methods
-
-
-  } // class AccountingOperation
+  } // class AccountingRule
 
 } // namespace Empiria.FinancialAccounting.Reclassification

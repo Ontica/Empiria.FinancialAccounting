@@ -10,10 +10,9 @@
 
 using Xunit;
 
-using Empiria.FinancialAccounting.Vouchers.Adapters;
-using Empiria.FinancialAccounting.Vouchers.UseCases;
-using Empiria.FinancialAccounting.Reclassification;
+using Empiria.FinancialAccounting.Vouchers;
 
+using Empiria.FinancialAccounting.Reclassification;
 
 namespace Empiria.FinancialAccounting.Tests.Reclassification {
 
@@ -24,7 +23,7 @@ namespace Empiria.FinancialAccounting.Tests.Reclassification {
 
     [Fact]
     public void Should_Parse_All_AccountingOperation() {
-      var operations = AccountingOperation.GetList();
+      var operations = AccountingRule.GetList();
 
       foreach (var sut in operations) {
         Assert.NotEmpty(sut.DebitAccount);
@@ -34,7 +33,7 @@ namespace Empiria.FinancialAccounting.Tests.Reclassification {
 
     [Fact]
     public void Should_Read_All_AccountingOperation() {
-      var sut = AccountingOperation.GetList();
+      var sut = AccountingRule.GetList();
 
       Assert.NotNull(sut);
       Assert.NotEmpty(sut);
@@ -44,17 +43,13 @@ namespace Empiria.FinancialAccounting.Tests.Reclassification {
     [Fact]
     public void ExportVoucherMovementesTest() {
 
-      using (var usecases = VoucherUseCases.UseCaseInteractor()) {
+      Voucher sut = Voucher.Parse(9195387);
 
-        VoucherDto sut = usecases.GetVoucher(9195387);
-        var op = new TransactionReclasificator(sut);
+      var op = new VoucherEntriesReclassificator(sut);
 
-        op.GroupTransactions();
+      op.Execute();
 
-
-        Assert.NotNull(sut);
-      }
-
+      Assert.NotNull(sut);
     }
 
     #endregion Facts
