@@ -8,8 +8,6 @@
 *                                                                                                            *
 ************************* Copyright(c) La Vía Óntica SC, Ontica LLC and contributors. All rights reserved. **/
 
-using System;
-
 using Empiria.Data;
 
 namespace Empiria.FinancialAccounting.Reclassification.Data {
@@ -31,10 +29,16 @@ namespace Empiria.FinancialAccounting.Reclassification.Data {
 
       foreach (var o in entries) {
 
-        var op = DataOperation.Parse("write_cof_movimiento_bis",
-          o.VoucherEntry.Id, -1, string.Empty, string.Empty, -1, -1,
-          DateTime.Today, string.Empty, -1, o.UID, o.NewCurrency.Id,
-          o.NewAmount, 0, o.OperationType.Id, o.AccountingRule.Id);
+        var sql = "UPDATE COF_MOVIMIENTO_BIS SET " +
+                      $"UID_TXN_REAL = '{o.UID}', " +
+                      $"ID_TIPO_TXN_REAL = {o.OperationType.Id}, " +
+                      $"ID_MONEDA_REAL = '{o.NewCurrency.Id}', " +
+                      $"MONTO_REAL = {o.NewAmount:0.00}, " +
+                      $"TIPO_CAMBIO_REAL = 0, " +
+                      $"ID_GUIA_CONTABLE = {o.AccountingRule.Id} " +
+                  $"WHERE ID_MOVIMIENTO = {o.VoucherEntry.Id}";
+
+        var op = DataOperation.Parse(sql);
 
         DataWriter.Execute(op);
 
