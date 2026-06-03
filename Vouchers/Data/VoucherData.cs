@@ -114,6 +114,17 @@ namespace Empiria.FinancialAccounting.Vouchers.Data {
     }
 
 
+    static internal FixedList<Voucher> GetVouchers(DateTime fromDate, DateTime toDate) {
+      var sql = "SELECT * FROM COF_TRANSACCION " +
+                $"WHERE {DataCommonMethods.FormatSqlDbDate(fromDate)} <= FECHA_AFECTACION AND " +
+                $"FECHA_AFECTACION < {DataCommonMethods.FormatSqlDbDate(toDate.AddDays(1))}";
+
+      var op = DataOperation.Parse(sql);
+
+      return DataReader.GetPlainObjectFixedList<Voucher>(op);
+    }
+
+
     static internal FixedList<Voucher> GetVouchers(string filter, string sort, int pageSize) {
       var sql = "SELECT * FROM (" +
                   "SELECT * FROM VW_COF_TRANSACCION " +
