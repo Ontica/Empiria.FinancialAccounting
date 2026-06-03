@@ -83,11 +83,13 @@
     <PackageReference Include="Empiria.Tests" Version="1.0.0" />
     <PackageReference Include="Empiria.FinancialAccounting.Core" Version="2.4.0" />
     <PackageReference Include="Empiria.FinancialAccounting.Reclassification" Version="3.0.0" />
+    <PackageReference Include="Empiria.FinancialAccounting.Vouchers" Version="2.4.0" />
   </ItemGroup>
   <ItemGroup Condition=" '$(Configuration)' == 'Multisolutions' ">
     <ProjectReference Include="..\..\extensions\Tests\Empiria.Tests.csproj" />
     <ProjectReference Include="..\Core\Empiria.FinancialAccounting.Core.csproj" />
     <ProjectReference Include="..\Reclassification\Empiria.FinancialAccounting.Reclassification.csproj" />
+    <ProjectReference Include="..\Vouchers\Empiria.FinancialAccounting.Vouchers.csproj" />
   </ItemGroup>
   <ItemGroup>
     <None Update="empiria.config.json">
