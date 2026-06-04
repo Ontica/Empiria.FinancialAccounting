@@ -15,15 +15,15 @@ using Empiria.DynamicData;
 using Empiria.Storage;
 using Empiria.WebApi;
 
-using Empiria.FinancialAccounting.BalanceEngine;
-using Empiria.FinancialAccounting.BalanceEngine.Adapters;
-using Empiria.FinancialAccounting.BalanceEngine.UseCases;
-
 using Empiria.FinancialAccounting.Reclassification.Adapters;
 using Empiria.FinancialAccounting.Reclassification.Services;
 
 using Empiria.FinancialAccounting.Reporting.Balances;
 using Empiria.FinancialAccounting.Reporting.Reclassification;
+
+using Empiria.FinancialAccounting.BalanceEngine;
+using Empiria.FinancialAccounting.BalanceEngine.Adapters;
+using Empiria.FinancialAccounting.BalanceEngine.UseCases;
 
 namespace Empiria.FinancialAccounting.WebApi.BalanceEngine {
 
@@ -183,7 +183,9 @@ namespace Empiria.FinancialAccounting.WebApi.BalanceEngine {
       base.RequireBody(query);
 
       if (query.TrialBalanceType.IsForReclassification()) {
-        return GetReclassifiedTrialBalance(query);
+        var reclassifiedTrialBalance = GetReclassifiedTrialBalance(query);
+
+        return new SingleObjectModel(this.Request, reclassifiedTrialBalance);
       }
 
       using (var usecases = TrialBalanceUseCases.UseCaseInteractor()) {
@@ -257,21 +259,39 @@ namespace Empiria.FinancialAccounting.WebApi.BalanceEngine {
 
       Assertion.Require(query.TrialBalanceType.IsForReclassification(), nameof(query.TrialBalanceType));
 
-      using (var usecases = ReclassifiedTrialBalancesServices.UseCaseInteractor()) {
+      var reclassifiedTrialBalance = GetReclassifiedTrialBalance(query);
 
-        DynamicDto<BalanzaTradicionalRealDto> trialBalance = usecases.BalanzaTradicional(query.InitialPeriod.FromDate,
-                                                                                         query.InitialPeriod.ToDate);
+      var excelExporter = new ReclassificatedBalancesExcelExporterService();
 
-        var excelExporter = new ReclassificatedBalancesExcelExporterService();
+      FileDto excelFileDto;
 
-        FileDto excelFileDto = excelExporter.Export(trialBalance);
+      switch (query.TrialBalanceType) {
 
-        return new SingleObjectModel(this.Request, excelFileDto);
+        case TrialBalanceType.BalanzaAnaliticaOperaciones:
+
+          excelFileDto = excelExporter.BalanzaAnaliticaOperaciones(reclassifiedTrialBalance as DynamicDto<BalanzaAnaliticaOperacionesDto>);
+
+          return new SingleObjectModel(this.Request, excelFileDto);
+
+        case TrialBalanceType.BalanzaMonedaOrigenReclasificada:
+
+          excelFileDto = excelExporter.BalanzaEnColumnas(reclassifiedTrialBalance as DynamicDto<BalanzaEnColumnasRealDto>);
+
+          return new SingleObjectModel(this.Request, excelFileDto);
+
+        case TrialBalanceType.BalanzaTradicionalReclasificada:
+
+          excelFileDto = excelExporter.BalanzaTradicional(reclassifiedTrialBalance as DynamicDto<BalanzaTradicionalRealDto>);
+
+          return new SingleObjectModel(this.Request, excelFileDto);
+
+        default:
+          throw Assertion.EnsureNoReachThisCode($"Trial balance type {query.TrialBalanceType} is not supported for reclassification.");
       }
     }
 
 
-    private SingleObjectModel GetReclassifiedTrialBalance(TrialBalanceQuery query) {
+    private object GetReclassifiedTrialBalance(TrialBalanceQuery query) {
 
       Assertion.Require(query.TrialBalanceType.IsForReclassification(), nameof(query.TrialBalanceType));
 
@@ -281,25 +301,21 @@ namespace Empiria.FinancialAccounting.WebApi.BalanceEngine {
 
           case TrialBalanceType.BalanzaAnaliticaOperaciones:
 
-            DynamicDto<BalanzaAnaliticaOperacionesDto> analitica = usecases.BalanzaAnaliticaOperaciones(query.InitialPeriod.FromDate,
-                                                                                                        query.InitialPeriod.ToDate);
+            DynamicDto<BalanzaAnaliticaOperacionesDto> analitica = usecases.BalanzaAnaliticaOperaciones(query);
 
-            return new SingleObjectModel(this.Request, analitica);
-
+            return analitica;
 
           case TrialBalanceType.BalanzaMonedaOrigenReclasificada:
 
             DynamicDto<BalanzaEnColumnasRealDto> enColumnas = usecases.BalanzaEnColumnas(query.InitialPeriod.FromDate,
                                                                                          query.InitialPeriod.ToDate);
-
-            return new SingleObjectModel(this.Request, enColumnas);
+            return enColumnas;
 
           case TrialBalanceType.BalanzaTradicionalReclasificada:
 
             DynamicDto<BalanzaTradicionalRealDto> tradicional = usecases.BalanzaTradicional(query.InitialPeriod.FromDate,
                                                                                             query.InitialPeriod.ToDate);
-
-            return new SingleObjectModel(this.Request, tradicional);
+            return tradicional;
 
           default:
             throw Assertion.EnsureNoReachThisCode($"Trial balance type {query.TrialBalanceType} is not supported for reclassification.");

@@ -17,9 +17,9 @@ namespace Empiria.FinancialAccounting.Reclassification.Adapters {
 
     #region Mappers
 
-    static internal DynamicDto<BalanzaAnaliticaOperacionesDto> Map(FixedList<AccountReclassifiedBalances> entries) {
+    static internal DynamicDto<BalanzaAnaliticaOperacionesDto> Map(IQuery query, FixedList<AccountReclassifiedBalances> entries) {
 
-      return new DynamicDto<BalanzaAnaliticaOperacionesDto>(MapColumns(), MapEntries(entries));
+      return new DynamicDto<BalanzaAnaliticaOperacionesDto>(query, MapColumns(), MapEntries(entries));
     }
 
 

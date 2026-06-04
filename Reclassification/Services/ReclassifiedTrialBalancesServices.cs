@@ -15,6 +15,8 @@ using System.Linq;
 using Empiria.DynamicData;
 using Empiria.Services;
 
+using Empiria.FinancialAccounting.BalanceEngine.Adapters;
+
 using Empiria.FinancialAccounting.Reclassification.Adapters;
 using Empiria.FinancialAccounting.Reclassification.Data;
 
@@ -38,10 +40,10 @@ namespace Empiria.FinancialAccounting.Reclassification.Services {
 
     #region Use cases
 
-    public DynamicDto<BalanzaAnaliticaOperacionesDto> BalanzaAnaliticaOperaciones(DateTime fromDate, DateTime toDate) {
+    public DynamicDto<BalanzaAnaliticaOperacionesDto> BalanzaAnaliticaOperaciones(TrialBalanceQuery query) {
 
       FixedList<AccountReclassifiedBalances> balances =
-                      ReclassifiedBalancesDataService.GetBalances(fromDate, toDate);
+                      ReclassifiedBalancesDataService.GetBalances(query.InitialPeriod.FromDate, query.InitialPeriod.ToDate);
 
       balances = balances.FindAll(x => x.RealDebits != 0 || x.RealCredits != 0)
                          .OrderBy(x => x.OperationType.Name)
@@ -49,7 +51,7 @@ namespace Empiria.FinancialAccounting.Reclassification.Services {
                          .ThenBy(x => x.RealCurrency.Id)
                          .ToFixedList();
 
-      return BalanzaAnaliticaOperacionesMapper.Map(balances);
+      return BalanzaAnaliticaOperacionesMapper.Map(query, balances);
     }
 
 
