@@ -13,6 +13,10 @@ namespace Empiria.FinancialAccounting.Reclassification.Adapters {
   /// <summary>Output DTO used to return a BalanzaEnColumnasRealDto.</summary>
   public class BalanzaEnColumnasRealDto {
 
+    public string OperationType {
+      get; internal set;
+    }
+
     public string AccountNo {
       get; internal set;
     }

@@ -26,6 +26,7 @@ namespace Empiria.FinancialAccounting.Reclassification.Adapters {
 
     static public FixedList<DataTableColumn> MapColumns() {
       return new List<DataTableColumn> {
+        new DataTableColumn("operationType", "Tipo de transacción", "text"),
         new DataTableColumn("accountNo", "Cuenta", "text-nowrap"),
         new DataTableColumn("accountName", "Nombre", "text"),
         new DataTableColumn("domesticRealFinalBalance", "MXN", "decimal"),
@@ -33,11 +34,11 @@ namespace Empiria.FinancialAccounting.Reclassification.Adapters {
         new DataTableColumn("yenRealFinalBalance", "JPY", "decimal"),
         new DataTableColumn("euroRealFinalBalance", "EUR", "decimal"),
         new DataTableColumn("udisRealFinalBalance", "UDIS", "decimal"),
-        new DataTableColumn("domesticFinalBalance", "MXN (Captura)", "decimal"),
-        new DataTableColumn("dollarFinalBalance", "USD (Capt)", "decimal"),
-        new DataTableColumn("yenFinalBalance", "JPY (Capt)", "decimal"),
-        new DataTableColumn("euroFinalBalance", "EUR (Capt)", "decimal"),
-        new DataTableColumn("udisFinalBalance", "UDIS (Capt)", "decimal")
+        //new DataTableColumn("domesticFinalBalance", "MXN (Captura)", "decimal"),
+        //new DataTableColumn("dollarFinalBalance", "USD (Capt)", "decimal"),
+        //new DataTableColumn("yenFinalBalance", "JPY (Capt)", "decimal"),
+        //new DataTableColumn("euroFinalBalance", "EUR (Capt)", "decimal"),
+        //new DataTableColumn("udisFinalBalance", "UDIS (Capt)", "decimal")
       }.ToFixedList();
     }
 
@@ -51,17 +52,15 @@ namespace Empiria.FinancialAccounting.Reclassification.Adapters {
     static private BalanzaEnColumnasRealDto Map(BalanzaReal entry) {
       BalanzaEnColumnasRealDto balanzRealDto = new BalanzaEnColumnasRealDto();
 
+      balanzRealDto.OperationType = entry.OperationType.Name;
       balanzRealDto.AccountNo = entry.CuentaEstandar.Number;
       balanzRealDto.AccountName = entry.CuentaEstandar.Name;
-
-      decimal totalMxn = 0;
 
       foreach (var saldosMonedaReal in entry.SaldosPorMoneda) {
 
         switch (saldosMonedaReal.Currency.ISOCode) {
           case "MXN":
-            totalMxn += saldosMonedaReal.FinalBalance;
-            balanzRealDto.DomesticFinalBalance = totalMxn;
+            balanzRealDto.DomesticFinalBalance = saldosMonedaReal.FinalBalance;
             break;
           case "USD":
             balanzRealDto.DollarFinalBalance = saldosMonedaReal.FinalBalance;

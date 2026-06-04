@@ -37,7 +37,7 @@ namespace Empiria.FinancialAccounting.Reclassification {
     public new string Name {
       get {
         if (IsEmptyInstance) {
-          return string.Empty;
+          return "Otras transacciones";
         }
         return base.Name;
       }
@@ -47,4 +47,4 @@ namespace Empiria.FinancialAccounting.Reclassification {
 
   } // class AccountingOperationType
 
-}  // namespace Empiria.FinancialAccounting
+}  // namespace Empiria.FinancialAccounting.Reclassification

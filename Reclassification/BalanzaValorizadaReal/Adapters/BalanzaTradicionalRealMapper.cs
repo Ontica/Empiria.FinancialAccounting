@@ -26,17 +26,17 @@ namespace Empiria.FinancialAccounting.Reclassification.Adapters {
       return new DataTableColumn[] {
           new DataTableColumn("accountNo", "Cuenta", "text"),
           new DataTableColumn("accountName", "Nombre de la cuenta", "text"),
-          new DataTableColumn("operationType", "Tipo de operación", "text"),
+          new DataTableColumn("operationType", "Tipo de transacción", "text"),
           new DataTableColumn("realCurrencyCode", "Mon", "text"),
           new DataTableColumn("realInitialBalance", "Saldo inicial", "decimal"),
           new DataTableColumn("realDebits", "Cargos", "decimal"),
           new DataTableColumn("realCredits", "Abonos", "decimal"),
           new DataTableColumn("realFinalBalance", "Saldo final", "decimal"),
-          new DataTableColumn("currencyCode", "Moneda (orig)", "text"),
-          new DataTableColumn("initialBalance", "Saldo inicial (orig)", "decimal"),
-          new DataTableColumn("debits", "Cargos (orig)", "decimal"),
-          new DataTableColumn("credits", "Abonos (orig)", "decimal"),
-          new DataTableColumn("finalBalance", "Saldo final (orig)", "decimal")
+          //new DataTableColumn("currencyCode", "Moneda (orig)", "text"),
+          //new DataTableColumn("initialBalance", "Saldo inicial (orig)", "decimal"),
+          //new DataTableColumn("debits", "Cargos (orig)", "decimal"),
+          //new DataTableColumn("credits", "Abonos (orig)", "decimal"),
+          //new DataTableColumn("finalBalance", "Saldo final (orig)", "decimal")
         }.ToFixedList();
     }
 
@@ -51,7 +51,7 @@ namespace Empiria.FinancialAccounting.Reclassification.Adapters {
       return new BalanzaTradicionalRealDto {
         AccountNo = entry.StdAccount.Number,
         AccountName = entry.StdAccount.Name,
-        OperationType = entry.OperationType.Name,
+        OperationType = entry.OperationType.IsEmptyInstance ? string.Empty : entry.OperationType.Name,
         CurrencyCode = entry.Currency.ISOCode,
         InitialBalance = entry.InitialBalance,
         Credits = entry.Credits,

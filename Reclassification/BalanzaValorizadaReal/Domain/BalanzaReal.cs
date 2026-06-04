@@ -29,9 +29,14 @@ namespace Empiria.FinancialAccounting.Reclassification {
       get; set;
     }
 
+    public AccountingOperationType OperationType {
+      get; set;
+    }
+
     public List<CurrencyBalance> SaldosPorMoneda {
       get; set;
     } = new List<CurrencyBalance>();
+
 
     public List<CurrencyBalance> SaldosPorMonedaReal {
       get; set;
