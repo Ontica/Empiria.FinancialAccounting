@@ -14,9 +14,8 @@ using System.Collections.Generic;
 using Empiria.DynamicData;
 using Empiria.Services;
 
-using Empiria.FinancialAccounting.Reclassification.Data;
-
 using Empiria.FinancialAccounting.Reclassification.Adapters;
+using Empiria.FinancialAccounting.Reclassification.Data;
 
 namespace Empiria.FinancialAccounting.Reclassification.Services {
 
@@ -37,29 +36,24 @@ namespace Empiria.FinancialAccounting.Reclassification.Services {
 
     #region Use cases
 
-    public DynamicDto<BalanzaValorizadaRealDto> Balanza(DateTime fromDate, DateTime toDate) {
-      Assertion.Require(fromDate, nameof(fromDate));
-      Assertion.Require(toDate, nameof(toDate));
-
-      FixedList<BalanzaValorizadaReal> balances =
-                            BalanzaValorizadaRealDataService.GetBalances(fromDate, toDate);
-
-      return BalanzaValorizadaRealMapper.Map(balances);
-    }
-
-
     public DynamicDto<BalanzaEnColumnasRealDto> BalanzaEnColumnas(DateTime fromDate, DateTime toDate) {
-      Assertion.Require(fromDate, nameof(fromDate));
-      Assertion.Require(toDate, nameof(toDate));
 
-      FixedList<BalanzaValorizadaReal> balances =
-                            BalanzaValorizadaRealDataService.GetBalances(fromDate, toDate);
+      FixedList<AccountReclassifiedBalances> balances =
+                            ReclassifiedBalancesDataService.GetBalances(fromDate, toDate);
 
       FixedList<BalanzaReal> balanzaReal = MapToBalanzaReal(balances);
 
       return BalanzaEnMonedasMapper.Map(balanzaReal);
     }
 
+
+    public DynamicDto<BalanzaTradicionalRealDto> BalanzaTradicional(DateTime fromDate, DateTime toDate) {
+
+      FixedList<AccountReclassifiedBalances> balances =
+                            ReclassifiedBalancesDataService.GetBalances(fromDate, toDate);
+
+      return BalanzaValorizadaRealMapper.Map(balances);
+    }
 
     //public DynamicDto<BalanzaValorizadaEntry> BalanzaValorizada(TrialBalanceQuery query) {
     //  Assertion.Require(query, nameof(query));
@@ -116,40 +110,40 @@ namespace Empiria.FinancialAccounting.Reclassification.Services {
 
     #region Helpers
 
-    private FixedList<BalanzaReal> MapToBalanzaReal(FixedList<BalanzaValorizadaReal> balances) {
+    private FixedList<BalanzaReal> MapToBalanzaReal(FixedList<AccountReclassifiedBalances> balances) {
       var idCuentaStandard = -1;
 
       BalanzaReal entryBalance = new BalanzaReal();
       List<BalanzaReal> balanzaEntries = new List<BalanzaReal>();
 
-      balances = balances.Sort((x, y) => x.CuentaEstandar.Number.CompareTo(y.CuentaEstandar.Number));
+      balances = balances.Sort((x, y) => x.StdAccount.Number.CompareTo(y.StdAccount.Number));
 
       foreach (var entry in balances) {
 
-        if (entry.CuentaEstandar.Id != idCuentaStandard) {
+        if (entry.StdAccount.Id != idCuentaStandard) {
           balanzaEntries.Add(entryBalance);
           entryBalance = new BalanzaReal();
 
-          entryBalance.CuentaEstandar = entry.CuentaEstandar;
-          idCuentaStandard = entry.CuentaEstandar.Id;
+          entryBalance.CuentaEstandar = entry.StdAccount;
+          idCuentaStandard = entry.StdAccount.Id;
         }
 
         var currencyBalance = new CurrencyBalance {
-          InitialBalance = entry.SaldoInicial,
-          Credits = entry.Haber,
-          Debits = entry.Debe,
-          FinalBalance = entry.SaldoFinal,
-          Currency = entry.Moneda
+          InitialBalance = entry.InitialBalance,
+          Credits = entry.Credits,
+          Debits = entry.Debits,
+          FinalBalance = entry.FinalBalance,
+          Currency = entry.Currency
         };
 
         entryBalance.SaldosPorMoneda.Add(currencyBalance);
 
         var realCurrencyBalance = new CurrencyBalance {
-          InitialBalance = entry.SaldoInicialReal,
-          Credits = entry.HaberMonedaReal,
-          Debits = entry.DebeMonedaReal,
-          FinalBalance = entry.SaldoFinalReal,
-          Currency = entry.MonedaReal
+          InitialBalance = entry.RealInitialBalance,
+          Credits = entry.RealCredits,
+          Debits = entry.RealDebits,
+          FinalBalance = entry.RealFinalBalance,
+          Currency = entry.RealCurrency
         };
 
         entryBalance.SaldosPorMonedaReal.Add(realCurrencyBalance);

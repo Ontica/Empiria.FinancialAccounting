@@ -1,17 +1,17 @@
 ﻿/* Empiria Financial *****************************************************************************************
 *                                                                                                            *
 *  Module   : Reclassification Services                  Component : Interface adapters                      *
-*  Assembly : FinancialAccounting.Reclassification.dll   Pattern   : Data Transfer Object                    *
-*  Type     : BalanzaValorizadaRealDto                   License   : Please read LICENSE.txt file            *
+*  Assembly : FinancialAccounting.Reclassification.dll   Pattern   : Output DTO                              *
+*  Type     : BalanzaTradicionalRealDto                  License   : Please read LICENSE.txt file            *
 *                                                                                                            *
-*  Summary  : Output DTO used to return a BalanzaValorizadaRealDto.                                          *
+*  Summary  : Output DTO used to return a traditional trial balance with balances and real balances.         *
 *                                                                                                            *
 ************************* Copyright(c) La Vía Óntica SC, Ontica LLC and contributors. All rights reserved. **/
 
 namespace Empiria.FinancialAccounting.Reclassification.Adapters {
 
-  /// <summary>Output DTO used to return a BalanzaValorizadaRealDto.</summary>
-  public class BalanzaValorizadaRealDto {
+  /// <summary>Output DTO used to return a traditional trial balance with balances and real balances.</summary>
+  public class BalanzaTradicionalRealDto {
 
     public string AccountNo {
       get; internal set;

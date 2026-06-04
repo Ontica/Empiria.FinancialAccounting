@@ -14,9 +14,8 @@ using System;
 using System.Collections.Generic;
 
 using Empiria.FinancialAccounting.Reclassification;
-using Empiria.FinancialAccounting.Reclassification.Data;
-
 using Empiria.FinancialAccounting.Reclassification.Adapters;
+using Empiria.FinancialAccounting.Reclassification.Data;
 
 namespace Empiria.FinancialAccounting.Tests.Reclassification {
 
@@ -31,7 +30,7 @@ namespace Empiria.FinancialAccounting.Tests.Reclassification {
       DateTime fromDate = Convert.ToDateTime("01-01-2026");
       DateTime toDate = Convert.ToDateTime("01-02-2026");
 
-      FixedList<BalanzaValorizadaReal> sut = BalanzaValorizadaRealDataService.GetBalances(fromDate, toDate);
+      FixedList<AccountReclassifiedBalances> sut = ReclassifiedBalancesDataService.GetBalances(fromDate, toDate);
 
       Assert.NotNull(sut);
     }
@@ -43,7 +42,7 @@ namespace Empiria.FinancialAccounting.Tests.Reclassification {
       DateTime fromDate = Convert.ToDateTime("01-01-2026");
       DateTime toDate = Convert.ToDateTime("01-02-2026");
 
-      FixedList<BalanzaValorizadaReal> balanzaValorizadaReal = BalanzaValorizadaRealDataService.GetBalances(fromDate, toDate);
+      FixedList<AccountReclassifiedBalances> balanzaValorizadaReal = ReclassifiedBalancesDataService.GetBalances(fromDate, toDate);
 
       var balanzaEntries = MapToBalanzaReal(balanzaValorizadaReal);
 
@@ -57,36 +56,36 @@ namespace Empiria.FinancialAccounting.Tests.Reclassification {
 
     #region Helpers
 
-    private FixedList<BalanzaReal> MapToBalanzaReal(FixedList<BalanzaValorizadaReal> balance) {
+    private FixedList<BalanzaReal> MapToBalanzaReal(FixedList<AccountReclassifiedBalances> balance) {
 
       var idCuentaStandar = -1;
       BalanzaReal entryBalance = new BalanzaReal();
       List<BalanzaReal> balanzaEntries = new List<BalanzaReal>();
 
       foreach (var entry in balance) {
-        if (entry.CuentaEstandar.Id != idCuentaStandar) {
+        if (entry.StdAccount.Id != idCuentaStandar) {
           balanzaEntries.Add(entryBalance);
           entryBalance = new BalanzaReal();
 
-          entryBalance.CuentaEstandar = entry.CuentaEstandar;
-          idCuentaStandar = entry.CuentaEstandar.Id;
+          entryBalance.CuentaEstandar = entry.StdAccount;
+          idCuentaStandar = entry.StdAccount.Id;
         }
 
         CurrencyBalance currencyBalance = new CurrencyBalance();
-        currencyBalance.InitialBalance = entry.SaldoInicial;
-        currencyBalance.Credits = entry.Haber;
-        currencyBalance.Debits = entry.Debe;
-        currencyBalance.Currency = entry.Moneda;
-        //currencyBalance.FinalBalance = entry.SaldoFinal;
+        currencyBalance.InitialBalance = entry.InitialBalance;
+        currencyBalance.Credits = entry.Credits;
+        currencyBalance.Debits = entry.Debits;
+        currencyBalance.Currency = entry.Currency;
+        currencyBalance.FinalBalance = entry.FinalBalance;
 
         entryBalance.SaldosPorMoneda.Add(currencyBalance);
 
         CurrencyBalance currencyBalanceReal = new CurrencyBalance();
-        currencyBalanceReal.InitialBalance = entry.SaldoInicialReal;
-        currencyBalanceReal.Credits = entry.HaberMonedaReal;
-        currencyBalanceReal.Debits = entry.DebeMonedaReal;
-        currencyBalanceReal.Currency = entry.MonedaReal;
-        //currencyBalanceReal.FinalBalance = entry.SaldoFinalReal;
+        currencyBalanceReal.InitialBalance = entry.RealInitialBalance;
+        currencyBalanceReal.Credits = entry.RealCredits;
+        currencyBalanceReal.Debits = entry.RealDebits;
+        currencyBalanceReal.Currency = entry.RealCurrency;
+        currencyBalanceReal.FinalBalance = entry.RealFinalBalance;
 
         entryBalance.SaldosPorMonedaReal.Add(currencyBalanceReal);
       }

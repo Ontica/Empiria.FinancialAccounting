@@ -22,7 +22,7 @@ namespace Empiria.FinancialAccounting.Reporting.Reclassification {
   /// <summary>Main service to export balances information to Microsoft Excel.</summary>
   public class ReclassificatedBalancesExcelExporterService {
 
-    public FileDto Export(DynamicDto<BalanzaValorizadaRealDto> trialBalance) {
+    public FileDto Export(DynamicDto<BalanzaTradicionalRealDto> trialBalance) {
       throw new NotImplementedException();
     }
 

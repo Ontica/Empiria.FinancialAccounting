@@ -2,9 +2,9 @@
 *                                                                                                            *
 *  Module   : Reclassification Services                  Component : Data Layer                              *
 *  Assembly : FinancialAccounting.Reclassification.dll   Pattern   : Data Services                           *
-*  Type     : BalanzaValorizadaRealDataService           License   : Please read LICENSE.txt file            *
+*  Type     : ReclassifiedBalancesDataService            License   : Please read LICENSE.txt file            *
 *                                                                                                            *
-*  Summary  : Provides data access for Balanza Valorizada Real data.                                         *
+*  Summary  : Provides data access for reclassified balances data.                                           *
 *                                                                                                            *
 ************************* Copyright(c) La Vía Óntica SC, Ontica LLC and contributors. All rights reserved. **/
 
@@ -15,16 +15,16 @@ using Empiria.Data;
 namespace Empiria.FinancialAccounting.Reclassification.Data {
 
   /// <summary>Provides data access for Balanza Valorizada Real data.</summary>
-  static internal class BalanzaValorizadaRealDataService {
+  static internal class ReclassifiedBalancesDataService {
 
-    static internal FixedList<BalanzaValorizadaReal> GetBalances(DateTime fromDate, DateTime toDate) {
+    static internal FixedList<AccountReclassifiedBalances> GetBalances(DateTime fromDate, DateTime toDate) {
 
       var op = DataOperation.Parse("qry_balanza_reclasificada", fromDate, toDate.AddDays(1));
 
-      return DataReader.GetPlainObjectFixedList<BalanzaValorizadaReal>(op);
+      return DataReader.GetPlainObjectFixedList<AccountReclassifiedBalances>(op);
     }
 
 
-  }  // class BalanzaValorizadaRealDataService
+  }  // class ReclassifiedBalancesDataService
 
 }  // namespace Empiria.FinancialAccounting.Reclassification.Data

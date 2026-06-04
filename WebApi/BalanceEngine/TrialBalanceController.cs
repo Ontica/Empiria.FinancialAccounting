@@ -136,7 +136,7 @@ namespace Empiria.FinancialAccounting.WebApi.BalanceEngine {
 
       using (var usecases = TrialBalanceUseCases.UseCaseInteractor()) {
 
-        BalanzaTradicionalDto dto = await usecases.BuildBalanzaTradicional(query)
+        FinancialAccounting.BalanceEngine.Adapters.BalanzaTradicionalDto dto = await usecases.BuildBalanzaTradicional(query)
                                                   .ConfigureAwait(false);
 
         return new SingleObjectModel(this.Request, dto);
@@ -259,8 +259,8 @@ namespace Empiria.FinancialAccounting.WebApi.BalanceEngine {
 
       using (var usecases = ReclassifiedTrialBalancesServices.UseCaseInteractor()) {
 
-        DynamicDto<BalanzaValorizadaRealDto> trialBalance = usecases.Balanza(query.InitialPeriod.FromDate,
-                                                                             query.InitialPeriod.ToDate);
+        DynamicDto<BalanzaTradicionalRealDto> trialBalance = usecases.BalanzaTradicional(query.InitialPeriod.FromDate,
+                                                                              query.InitialPeriod.ToDate);
 
         var excelExporter = new ReclassificatedBalancesExcelExporterService();
 
@@ -286,12 +286,12 @@ namespace Empiria.FinancialAccounting.WebApi.BalanceEngine {
 
             return new SingleObjectModel(this.Request, enColumnas);
 
-          case TrialBalanceType.BalanzaValorizadaReclasificada:
+          case TrialBalanceType.BalanzaTradicionalReclasificada:
 
-            DynamicDto<BalanzaValorizadaRealDto> valorizada = usecases.Balanza(query.InitialPeriod.FromDate,
-                                                                               query.InitialPeriod.ToDate);
+            DynamicDto<BalanzaTradicionalRealDto> tradicional = usecases.BalanzaTradicional(query.InitialPeriod.FromDate,
+                                                                                            query.InitialPeriod.ToDate);
 
-            return new SingleObjectModel(this.Request, valorizada);
+            return new SingleObjectModel(this.Request, tradicional);
 
           default:
             throw Assertion.EnsureNoReachThisCode($"Trial balance type {query.TrialBalanceType} is not supported for reclassification.");

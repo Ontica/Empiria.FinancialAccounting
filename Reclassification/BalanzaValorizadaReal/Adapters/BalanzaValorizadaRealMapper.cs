@@ -16,8 +16,8 @@ namespace Empiria.FinancialAccounting.Reclassification.Adapters {
 
     #region Mappers
 
-    static internal DynamicDto<BalanzaValorizadaRealDto> Map(FixedList<BalanzaValorizadaReal> entries) {
-      return new DynamicDto<BalanzaValorizadaRealDto>(MapColumns(), MapEntries(entries));
+    static internal DynamicDto<BalanzaTradicionalRealDto> Map(FixedList<AccountReclassifiedBalances> entries) {
+      return new DynamicDto<BalanzaTradicionalRealDto>(MapColumns(), MapEntries(entries));
     }
 
 
@@ -39,26 +39,26 @@ namespace Empiria.FinancialAccounting.Reclassification.Adapters {
     }
 
 
-    static private FixedList<BalanzaValorizadaRealDto> MapEntries(FixedList<BalanzaValorizadaReal> entries) {
+    static private FixedList<BalanzaTradicionalRealDto> MapEntries(FixedList<AccountReclassifiedBalances> entries) {
       return entries.Select(x => Map(x))
                     .ToFixedList();
     }
 
 
-    static private BalanzaValorizadaRealDto Map(BalanzaValorizadaReal entry) {
-      return new BalanzaValorizadaRealDto {
-        AccountNo = entry.CuentaEstandar.Number,
-        AccountName = entry.CuentaEstandar.Name,
-        CurrencyCode = entry.Moneda.ISOCode,
-        InitialBalance = entry.SaldoInicial,
-        Credits = entry.Haber,
-        Debits = entry.Debe,
-        FinalBalance = entry.SaldoFinal,
-        RealCurrencyCode = entry.MonedaReal.ISOCode,
-        RealInitialBalance = entry.SaldoInicialReal,
-        RealCredits = entry.HaberMonedaReal,
-        RealDebits = entry.DebeMonedaReal,
-        RealFinalBalance = entry.SaldoFinalReal
+    static private BalanzaTradicionalRealDto Map(AccountReclassifiedBalances entry) {
+      return new BalanzaTradicionalRealDto {
+        AccountNo = entry.StdAccount.Number,
+        AccountName = entry.StdAccount.Name,
+        CurrencyCode = entry.Currency.ISOCode,
+        InitialBalance = entry.InitialBalance,
+        Credits = entry.Credits,
+        Debits = entry.Debits,
+        FinalBalance = entry.FinalBalance,
+        RealCurrencyCode = entry.RealCurrency.ISOCode,
+        RealInitialBalance = entry.RealInitialBalance,
+        RealCredits = entry.RealCredits,
+        RealDebits = entry.RealDebits,
+        RealFinalBalance = entry.RealFinalBalance
       };
     }
 

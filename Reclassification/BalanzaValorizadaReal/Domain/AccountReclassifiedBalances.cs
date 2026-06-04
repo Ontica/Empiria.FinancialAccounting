@@ -2,20 +2,20 @@
 *                                                                                                            *
 *  Module   : Reclassification Services                  Component : Domain Layer                            *
 *  Assembly : FinancialAccounting.Reclassification.dll   Pattern   : Information Holder                      *
-*  Type     : BalanzaValorizadaReal                      License   : Please read LICENSE.txt file            *
+*  Type     : AccountReclassifiedBalances                License   : Please read LICENSE.txt file            *
 *                                                                                                            *
-*  Summary  : Used to read Real valorize balance.                                                            *
+*  Summary  : Holds an account balances with registered and reclassified values.                             *
 *                                                                                                            *
 ************************* Copyright(c) La Vía Óntica SC, Ontica LLC and contributors. All rights reserved. **/
 
 namespace Empiria.FinancialAccounting.Reclassification {
 
-  /// <summary>Used to read Real valorize balance.</summary>
-  public class BalanzaValorizadaReal {
+  /// <summary>Holds an account balances with registered and reclassified values.</summary>
+  public class AccountReclassifiedBalances {
 
     #region Constructors and Parsers
 
-    internal BalanzaValorizadaReal() {
+    internal AccountReclassifiedBalances() {
       // Required by Empiria Framework
     }
 
@@ -24,72 +24,81 @@ namespace Empiria.FinancialAccounting.Reclassification {
     #region Properties
 
     [DataField("ID_CUENTA_ESTANDAR")]
-    public StandardAccount CuentaEstandar {
-      get; set;
+    public StandardAccount StdAccount {
+      get; private set;
     }
 
     [DataField("ID_MONEDA")]
-    public Currency Moneda {
-      get; set;
+    public Currency Currency {
+      get; private set;
     }
 
-    [DataField("ID_MONEDA_REAL")]
-    public Currency MonedaReal {
-      get; set;
-    }
 
     [DataField("SALDO_INICIAL", ConvertFrom = typeof(decimal))]
-    public decimal SaldoInicial {
-      get; set;
+    public decimal InitialBalance {
+      get; private set;
     }
 
     [DataField("DEBE", ConvertFrom = typeof(decimal))]
-    public decimal Debe {
-      get; set;
+    public decimal Debits {
+      get; private set;
     }
 
     [DataField("HABER", ConvertFrom = typeof(decimal))]
-    public decimal Haber {
-      get; set;
+    public decimal Credits {
+      get; private set;
     }
 
-    public decimal SaldoFinal {
+    public decimal FinalBalance {
       get {
-        if (CuentaEstandar.DebtorCreditor == DebtorCreditorType.Deudora) {
-          return SaldoInicial + Debe - Haber;
+        if (StdAccount.DebtorCreditor == DebtorCreditorType.Deudora) {
+          return InitialBalance + Debits - Credits;
         } else {
-          return SaldoInicial - Debe + Haber;
+          return InitialBalance - Debits + Credits;
         }
       }
     }
 
-    [DataField("SALDO_INICIAL_REAL", ConvertFrom = typeof(decimal))]
-    public decimal SaldoInicialReal {
-      get; set;
+
+    [DataField("ID_MONEDA_REAL")]
+    public Currency RealCurrency {
+      get; private set;
     }
+
+
+    [DataField("SALDO_INICIAL_REAL", ConvertFrom = typeof(decimal))]
+    public decimal RealInitialBalance {
+      get; private set;
+    }
+
 
     [DataField("DEBE_MONEDA_REAL", ConvertFrom = typeof(decimal))]
-    public decimal DebeMonedaReal {
-      get; set;
+    public decimal RealDebits {
+      get; private set;
     }
+
 
     [DataField("HABER_MONEDA_REAL", ConvertFrom = typeof(decimal))]
-    public decimal HaberMonedaReal {
-      get; set;
+    public decimal RealCredits {
+      get; private set;
     }
 
-    public decimal SaldoFinalReal {
+
+    public decimal RealFinalBalance {
       get {
-        if (CuentaEstandar.DebtorCreditor == DebtorCreditorType.Deudora) {
-          return SaldoInicialReal + DebeMonedaReal - HaberMonedaReal;
+        if (StdAccount.DebtorCreditor == DebtorCreditorType.Deudora) {
+
+          return RealInitialBalance + RealDebits - RealCredits;
+
         } else {
-          return SaldoInicialReal - DebeMonedaReal + HaberMonedaReal;
+
+          return RealInitialBalance - RealDebits + RealCredits;
         }
       }
     }
 
     #endregion Properties
 
-  } // class BalanzaValorizadaReal
+  } // class AccountReclassifiedBalances
 
 } // namespace Empiria.FinancialAccounting.Reclassification
