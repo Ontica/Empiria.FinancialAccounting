@@ -28,8 +28,15 @@ namespace Empiria.FinancialAccounting.Reclassification {
       get; private set;
     }
 
+
     [DataField("ID_MONEDA")]
     public Currency Currency {
+      get; private set;
+    }
+
+
+    [DataField("ID_TIPO_TXN_REAL")]
+    public AccountingOperationType OperationType {
       get; private set;
     }
 
@@ -39,15 +46,18 @@ namespace Empiria.FinancialAccounting.Reclassification {
       get; private set;
     }
 
+
     [DataField("DEBE", ConvertFrom = typeof(decimal))]
     public decimal Debits {
       get; private set;
     }
 
+
     [DataField("HABER", ConvertFrom = typeof(decimal))]
     public decimal Credits {
       get; private set;
     }
+
 
     public decimal FinalBalance {
       get {

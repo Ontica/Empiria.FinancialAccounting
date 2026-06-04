@@ -32,6 +32,19 @@ namespace Empiria.FinancialAccounting.Reclassification {
 
     #endregion Constructors and parsers
 
+    #region Properties
+
+    public new string Name {
+      get {
+        if (IsEmptyInstance) {
+          return string.Empty;
+        }
+        return base.Name;
+      }
+    }
+
+    #endregion Properties
+
   } // class AccountingOperationType
 
 }  // namespace Empiria.FinancialAccounting

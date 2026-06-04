@@ -1,10 +1,10 @@
 ﻿/* Empiria Financial *****************************************************************************************
 *                                                                                                            *
-*  Module   : Reclassification Services                  Component : Use cases Layer                         *
-*  Assembly : FinancialAccounting.Reclassification.dll   Pattern   : Use case interactor class               *
-*  Type     : BalanzaValorizadaRealUseCases              License   : Please read LICENSE.txt file            *
+*  Module   : Reclassification Services                  Component : Adapters Layer                          *
+*  Assembly : FinancialAccounting.Reclassification.dll   Pattern   : Mapper                                  *
+*  Type     : BalanzaTradicionalRealMapper               License   : Please read LICENSE.txt file            *
 *                                                                                                            *
-*  Summary  : Use cases used to read Real valorize balance.                                                  *
+*  Summary  : Maps AccountReclassifiedBalances to a Dynamic<BalanzaTradicionalRealDto>.                      *
 *                                                                                                            *
 ************************* Copyright(c) La Vía Óntica SC, Ontica LLC and contributors. All rights reserved. **/
 
@@ -12,7 +12,8 @@ using Empiria.DynamicData;
 
 namespace Empiria.FinancialAccounting.Reclassification.Adapters {
 
-  internal class BalanzaValorizadaRealMapper {
+  /// <summary>Maps AccountReclassifiedBalances to a Dynamic<BalanzaTradicionalRealDto>.</summary>
+  internal class BalanzaTradicionalRealMapper {
 
     #region Mappers
 
@@ -25,16 +26,17 @@ namespace Empiria.FinancialAccounting.Reclassification.Adapters {
       return new DataTableColumn[] {
           new DataTableColumn("accountNo", "Cuenta", "text"),
           new DataTableColumn("accountName", "Nombre de la cuenta", "text"),
-          new DataTableColumn("currencyCode", "Moneda", "text"),
-          new DataTableColumn("initialBalance", "Saldo inicial", "decimal"),
-          new DataTableColumn("debits", "Cargos", "decimal"),
-          new DataTableColumn("credits", "Abonos", "decimal"),
-          new DataTableColumn("finalBalance", "Saldo final", "decimal"),
-          new DataTableColumn("realCurrencyCode", "Mon Real", "text"),
-          new DataTableColumn("realInitialBalance", "Saldo inicial real", "decimal"),
-          new DataTableColumn("realDebits", "Cargos real", "decimal"),
-          new DataTableColumn("realCredits", "Abonos real", "decimal"),
-          new DataTableColumn("realFinalBalance", "Saldo final real", "decimal")
+          new DataTableColumn("operationType", "Tipo de operación", "text"),
+          new DataTableColumn("realCurrencyCode", "Mon", "text"),
+          new DataTableColumn("realInitialBalance", "Saldo inicial", "decimal"),
+          new DataTableColumn("realDebits", "Cargos", "decimal"),
+          new DataTableColumn("realCredits", "Abonos", "decimal"),
+          new DataTableColumn("realFinalBalance", "Saldo final", "decimal"),
+          new DataTableColumn("currencyCode", "Moneda (orig)", "text"),
+          new DataTableColumn("initialBalance", "Saldo inicial (orig)", "decimal"),
+          new DataTableColumn("debits", "Cargos (orig)", "decimal"),
+          new DataTableColumn("credits", "Abonos (orig)", "decimal"),
+          new DataTableColumn("finalBalance", "Saldo final (orig)", "decimal")
         }.ToFixedList();
     }
 
@@ -49,6 +51,7 @@ namespace Empiria.FinancialAccounting.Reclassification.Adapters {
       return new BalanzaTradicionalRealDto {
         AccountNo = entry.StdAccount.Number,
         AccountName = entry.StdAccount.Name,
+        OperationType = entry.OperationType.Name,
         CurrencyCode = entry.Currency.ISOCode,
         InitialBalance = entry.InitialBalance,
         Credits = entry.Credits,
@@ -64,6 +67,6 @@ namespace Empiria.FinancialAccounting.Reclassification.Adapters {
 
     #endregion Mappers
 
-  } // class BalanzaValorizadaRealMapper
+  } // class BalanzaTradicionalRealMapper
 
 } // namespace Empiria.FinancialAccounting.Reclassification.Adapters

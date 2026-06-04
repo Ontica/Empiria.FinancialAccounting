@@ -21,6 +21,10 @@ namespace Empiria.FinancialAccounting.Reclassification.Adapters {
       get; internal set;
     }
 
+    public string OperationType {
+      get; internal set;
+    }
+
     public string CurrencyCode {
       get; internal set;
     }

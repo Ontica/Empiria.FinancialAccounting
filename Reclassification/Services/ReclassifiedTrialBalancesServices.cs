@@ -52,7 +52,7 @@ namespace Empiria.FinancialAccounting.Reclassification.Services {
       FixedList<AccountReclassifiedBalances> balances =
                             ReclassifiedBalancesDataService.GetBalances(fromDate, toDate);
 
-      return BalanzaValorizadaRealMapper.Map(balances);
+      return BalanzaTradicionalRealMapper.Map(balances);
     }
 
     //public DynamicDto<BalanzaValorizadaEntry> BalanzaValorizada(TrialBalanceQuery query) {
