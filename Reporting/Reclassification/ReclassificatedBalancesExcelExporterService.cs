@@ -14,7 +14,6 @@ using Empiria.DynamicData;
 using Empiria.Office;
 using Empiria.Storage;
 
-using Empiria.FinancialAccounting.Reclassification;
 using Empiria.FinancialAccounting.Reclassification.Adapters;
 
 namespace Empiria.FinancialAccounting.Reporting.Reclassification {
@@ -22,23 +21,28 @@ namespace Empiria.FinancialAccounting.Reporting.Reclassification {
   /// <summary>Main service to export balances information to Microsoft Excel.</summary>
   public class ReclassificatedBalancesExcelExporterService {
 
-    public FileDto Export(DynamicDto<BalanzaTradicionalRealDto> trialBalance) {
-      throw new NotImplementedException();
-    }
-
-
-    public FileDto Export(DynamicDto<BalanzaValorizadaEntry> trialBalance) {
+    public FileDto BalanzaAnaliticaOperaciones(DynamicDto<BalanzaAnaliticaOperacionesDto> trialBalance) {
       Assertion.Require(trialBalance, nameof(trialBalance));
 
-      var templateUID = $"TrialBalanceTemplate.BalanzaValorizada";
+      var templateUID = $"TrialBalanceTemplate.BalanzaAnaliticaOperaciones";
 
       var templateConfig = FileTemplateConfig.Parse(templateUID);
 
-      var exporter = new BalanzaValorizadaExcelExporter(templateConfig);
+      var exporter = new BalanzaAnaliticaOperacionesExcelExporter(templateConfig);
 
       ExcelFile excelFile = exporter.CreateExcelFile(trialBalance);
 
       return excelFile.ToFileDto();
+    }
+
+
+    public FileDto BalanzaEnColumnas(DynamicDto<BalanzaEnColumnasRealDto> dynamicDto) {
+      throw new NotImplementedException();
+    }
+
+
+    public FileDto BalanzaTradicional(DynamicDto<BalanzaTradicionalRealDto> dynamicDto) {
+      throw new NotImplementedException();
     }
 
   } // class BalancesExcelExporterService
