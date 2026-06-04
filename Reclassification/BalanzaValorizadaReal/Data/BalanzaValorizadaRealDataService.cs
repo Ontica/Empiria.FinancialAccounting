@@ -19,7 +19,7 @@ namespace Empiria.FinancialAccounting.Reclassification.Data {
 
     static internal FixedList<BalanzaValorizadaReal> GetBalances(DateTime fromDate, DateTime toDate) {
 
-      var op = DataOperation.Parse("qry_cof_balanza_real", fromDate, toDate);
+      var op = DataOperation.Parse("qry_balanza_reclasificada", fromDate, toDate.AddDays(1));
 
       return DataReader.GetPlainObjectFixedList<BalanzaValorizadaReal>(op);
     }

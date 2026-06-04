@@ -57,6 +57,7 @@ namespace Empiria.FinancialAccounting.Reclassification.Adapters {
       decimal totalMxn = 0;
 
       foreach (var saldosMonedaReal in entry.SaldosPorMoneda) {
+
         switch (saldosMonedaReal.Currency.ISOCode) {
           case "MXN":
             totalMxn += saldosMonedaReal.FinalBalance;
@@ -73,7 +74,7 @@ namespace Empiria.FinancialAccounting.Reclassification.Adapters {
             break;
           case "MXV":
           case "UDI":
-            balanzRealDto.UdisRealFinalBalance = saldosMonedaReal.FinalBalance;
+            balanzRealDto.UdisFinalBalance = saldosMonedaReal.FinalBalance;
             break;
         }
       }
