@@ -134,21 +134,25 @@ namespace Empiria.FinancialAccounting.Reclassification.Services {
           idCuentaStandard = entry.CuentaEstandar.Id;
         }
 
-        CurrencyBalance currencyBalance = new CurrencyBalance();
-        currencyBalance.InitialBalance = entry.SaldoInicial;
-        currencyBalance.Credits = entry.Haber;
-        currencyBalance.Debits = entry.Debe;
-        currencyBalance.Currency = entry.Moneda;
+        var currencyBalance = new CurrencyBalance {
+          InitialBalance = entry.SaldoInicial,
+          Credits = entry.Haber,
+          Debits = entry.Debe,
+          FinalBalance = entry.SaldoFinal,
+          Currency = entry.Moneda
+        };
 
         entryBalance.SaldosPorMoneda.Add(currencyBalance);
 
-        CurrencyBalance currencyBalanceReal = new CurrencyBalance();
-        currencyBalanceReal.InitialBalance = entry.SaldoInicialReal;
-        currencyBalanceReal.Credits = entry.HaberMonedaReal;
-        currencyBalanceReal.Debits = entry.DebeMonedaReal;
-        currencyBalanceReal.Currency = entry.MonedaReal;
+        var realCurrencyBalance = new CurrencyBalance {
+          InitialBalance = entry.SaldoInicialReal,
+          Credits = entry.HaberMonedaReal,
+          Debits = entry.DebeMonedaReal,
+          FinalBalance = entry.SaldoFinalReal,
+          Currency = entry.MonedaReal
+        };
 
-        entryBalance.SaldosPorMonedaReal.Add(currencyBalanceReal);
+        entryBalance.SaldosPorMonedaReal.Add(realCurrencyBalance);
       }
 
       balanzaEntries.RemoveAt(0);

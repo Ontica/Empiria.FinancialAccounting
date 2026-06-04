@@ -4,13 +4,13 @@
 *  Assembly : FinancialAccounting.Reclassification.dll   Pattern   : Information Holder                      *
 *  Type     : CurrencyBalance                            License   : Please read LICENSE.txt file            *
 *                                                                                                            *
-*  Summary  : Used to read valorize balance by currency.                                                     *
+*  Summary  : Holds trial accounting balances for a given currency.                                          *
 *                                                                                                            *
 ************************* Copyright(c) La Vía Óntica SC, Ontica LLC and contributors. All rights reserved. **/
 
 namespace Empiria.FinancialAccounting.Reclassification {
 
-  /// <summary>sed to read valorize balance by currency.</summary>
+  /// <summary>Holds trial accounting balances for a given currency.</summary>
   public class CurrencyBalance {
 
     #region Constructors and Parsers
@@ -24,27 +24,24 @@ namespace Empiria.FinancialAccounting.Reclassification {
     #region Properties
 
     public Currency Currency {
-      get; set;
+      get; internal set;
     }
 
     public decimal InitialBalance {
-      get; set;
+      get; internal set;
     }
 
     public decimal Debits {
-      get; set;
+      get; internal set;
     }
 
     public decimal Credits {
-      get; set;
+      get; internal set;
     }
 
     public decimal FinalBalance {
-      get {
-        return InitialBalance + Debits - Credits;
-      }
+      get; internal set;
     }
-
 
     #endregion Properties
 
