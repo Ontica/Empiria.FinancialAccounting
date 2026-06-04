@@ -260,7 +260,7 @@ namespace Empiria.FinancialAccounting.WebApi.BalanceEngine {
       using (var usecases = ReclassifiedTrialBalancesServices.UseCaseInteractor()) {
 
         DynamicDto<BalanzaTradicionalRealDto> trialBalance = usecases.BalanzaTradicional(query.InitialPeriod.FromDate,
-                                                                              query.InitialPeriod.ToDate);
+                                                                                         query.InitialPeriod.ToDate);
 
         var excelExporter = new ReclassificatedBalancesExcelExporterService();
 
@@ -278,6 +278,14 @@ namespace Empiria.FinancialAccounting.WebApi.BalanceEngine {
       using (var usecases = ReclassifiedTrialBalancesServices.UseCaseInteractor()) {
 
         switch (query.TrialBalanceType) {
+
+          case TrialBalanceType.BalanzaAnaliticaOperaciones:
+
+            DynamicDto<BalanzaAnaliticaOperacionesDto> analitica = usecases.BalanzaAnaliticaOperaciones(query.InitialPeriod.FromDate,
+                                                                                                        query.InitialPeriod.ToDate);
+
+            return new SingleObjectModel(this.Request, analitica);
+
 
           case TrialBalanceType.BalanzaMonedaOrigenReclasificada:
 

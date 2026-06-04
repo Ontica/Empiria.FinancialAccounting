@@ -10,6 +10,7 @@
 
 using System;
 using System.Collections.Generic;
+using System.Linq;
 
 using Empiria.DynamicData;
 using Empiria.Services;
@@ -32,14 +33,32 @@ namespace Empiria.FinancialAccounting.Reclassification.Services {
       return UseCase.CreateInstance<ReclassifiedTrialBalancesServices>();
     }
 
+
     #endregion Constructors and parsers
 
     #region Use cases
+
+    public DynamicDto<BalanzaAnaliticaOperacionesDto> BalanzaAnaliticaOperaciones(DateTime fromDate, DateTime toDate) {
+
+      FixedList<AccountReclassifiedBalances> balances =
+                      ReclassifiedBalancesDataService.GetBalances(fromDate, toDate);
+
+      balances = balances.FindAll(x => x.RealDebits != 0 || x.RealCredits != 0)
+                         .OrderBy(x => x.OperationType.Name)
+                         .ThenBy(x => x.StdAccount.Number)
+                         .ThenBy(x => x.RealCurrency.Id)
+                         .ToFixedList();
+
+      return BalanzaAnaliticaOperacionesMapper.Map(balances);
+    }
+
 
     public DynamicDto<BalanzaEnColumnasRealDto> BalanzaEnColumnas(DateTime fromDate, DateTime toDate) {
 
       FixedList<AccountReclassifiedBalances> balances =
                             ReclassifiedBalancesDataService.GetBalances(fromDate, toDate);
+
+      balances = balances.FindAll(x => x.RealFinalBalance != 0);
 
       FixedList<BalanzaReal> balanzaReal = MapToBalanzaReal(balances);
 
@@ -112,19 +131,23 @@ namespace Empiria.FinancialAccounting.Reclassification.Services {
 
     private FixedList<BalanzaReal> MapToBalanzaReal(FixedList<AccountReclassifiedBalances> balances) {
       var idCuentaStandard = -1;
+      var idOperationId = -999;
 
       BalanzaReal entryBalance = new BalanzaReal();
       List<BalanzaReal> balanzaEntries = new List<BalanzaReal>();
 
-      balances = balances.Sort((x, y) => x.StdAccount.Number.CompareTo(y.StdAccount.Number));
+      balances = balances.OrderBy(x => x.OperationType.Name)
+                         .ThenBy(x => x.StdAccount.Number)
+                         .ToFixedList();
 
       foreach (var entry in balances) {
 
-        if (entry.StdAccount.Id != idCuentaStandard) {
+        if (entry.StdAccount.Id != idCuentaStandard || entry.OperationType.Id != idOperationId) {
           balanzaEntries.Add(entryBalance);
           entryBalance = new BalanzaReal();
 
           entryBalance.CuentaEstandar = entry.StdAccount;
+          entryBalance.OperationType = entry.OperationType;
           idCuentaStandard = entry.StdAccount.Id;
         }
 
