@@ -46,11 +46,13 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
 
     BalanzaAnaliticaOperaciones,
 
-    BalanzaMonedaOrigenValorizada,
+    BalanzaMonedaOrigenReclasificada,
 
-    BalanzaValorizada,
+    BalanzaTradicionalReclasificada,
 
+    BalanzaValorizadaReclasificada
   }
+
 
   static public class TrialBalanceTypeExtensions {
 
@@ -58,8 +60,9 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
 
       switch (trialBalanceType) {
         case TrialBalanceType.BalanzaAnaliticaOperaciones:
-        case TrialBalanceType.BalanzaValorizada:
-        case TrialBalanceType.BalanzaMonedaOrigenValorizada:
+        case TrialBalanceType.BalanzaMonedaOrigenReclasificada:
+        case TrialBalanceType.BalanzaTradicionalReclasificada:
+        case TrialBalanceType.BalanzaValorizadaReclasificada:
           return true;
 
         default:

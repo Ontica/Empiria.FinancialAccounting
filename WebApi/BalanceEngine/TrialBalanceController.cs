@@ -279,14 +279,14 @@ namespace Empiria.FinancialAccounting.WebApi.BalanceEngine {
 
         switch (query.TrialBalanceType) {
 
-          case TrialBalanceType.BalanzaMonedaOrigenValorizada:
+          case TrialBalanceType.BalanzaMonedaOrigenReclasificada:
 
             DynamicDto<BalanzaEnColumnasRealDto> enColumnas = usecases.BalanzaEnColumnas(query.InitialPeriod.FromDate,
                                                                                          query.InitialPeriod.ToDate);
 
             return new SingleObjectModel(this.Request, enColumnas);
 
-          case TrialBalanceType.BalanzaValorizada:
+          case TrialBalanceType.BalanzaValorizadaReclasificada:
 
             DynamicDto<BalanzaValorizadaRealDto> valorizada = usecases.Balanza(query.InitialPeriod.FromDate,
                                                                                query.InitialPeriod.ToDate);
