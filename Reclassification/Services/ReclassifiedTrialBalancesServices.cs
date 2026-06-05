@@ -8,7 +8,6 @@
 *                                                                                                            *
 ************************* Copyright(c) La Vía Óntica SC, Ontica LLC and contributors. All rights reserved. **/
 
-using System;
 using System.Collections.Generic;
 using System.Linq;
 
@@ -55,25 +54,25 @@ namespace Empiria.FinancialAccounting.Reclassification.Services {
     }
 
 
-    public DynamicDto<BalanzaEnColumnasRealDto> BalanzaEnColumnas(DateTime fromDate, DateTime toDate) {
+    public DynamicDto<BalanzaEnColumnasRealDto> BalanzaEnColumnas(TrialBalanceQuery query) {
 
       FixedList<AccountReclassifiedBalances> balances =
-                            ReclassifiedBalancesDataService.GetBalances(fromDate, toDate);
+                            ReclassifiedBalancesDataService.GetBalances(query.InitialPeriod.FromDate, query.InitialPeriod.ToDate);
 
       balances = balances.FindAll(x => x.RealFinalBalance != 0);
 
       FixedList<BalanzaReal> balanzaReal = MapToBalanzaReal(balances);
 
-      return BalanzaEnMonedasMapper.Map(balanzaReal);
+      return BalanzaEnMonedasMapper.Map(query, balanzaReal);
     }
 
 
-    public DynamicDto<BalanzaTradicionalRealDto> BalanzaTradicional(DateTime fromDate, DateTime toDate) {
+    public DynamicDto<BalanzaTradicionalRealDto> BalanzaTradicional(TrialBalanceQuery query) {
 
       FixedList<AccountReclassifiedBalances> balances =
-                            ReclassifiedBalancesDataService.GetBalances(fromDate, toDate);
+                            ReclassifiedBalancesDataService.GetBalances(query.InitialPeriod.FromDate, query.InitialPeriod.ToDate);
 
-      return BalanzaTradicionalRealMapper.Map(balances);
+      return BalanzaTradicionalRealMapper.Map(query, balances);
     }
 
     //public DynamicDto<BalanzaValorizadaEntry> BalanzaValorizada(TrialBalanceQuery query) {

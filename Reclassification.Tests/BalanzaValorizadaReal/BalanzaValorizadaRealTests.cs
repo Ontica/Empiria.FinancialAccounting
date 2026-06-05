@@ -14,7 +14,6 @@ using System;
 using System.Collections.Generic;
 
 using Empiria.FinancialAccounting.Reclassification;
-using Empiria.FinancialAccounting.Reclassification.Adapters;
 using Empiria.FinancialAccounting.Reclassification.Data;
 
 namespace Empiria.FinancialAccounting.Tests.Reclassification {
@@ -44,10 +43,7 @@ namespace Empiria.FinancialAccounting.Tests.Reclassification {
 
       FixedList<AccountReclassifiedBalances> balanzaValorizadaReal = ReclassifiedBalancesDataService.GetBalances(fromDate, toDate);
 
-      var balanzaEntries = MapToBalanzaReal(balanzaValorizadaReal);
-
-
-      var sut = BalanzaEnMonedasMapper.Map(balanzaEntries);
+      var sut = MapToBalanzaReal(balanzaValorizadaReal);
 
       Assert.NotNull(sut);
     }
