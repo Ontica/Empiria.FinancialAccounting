@@ -36,8 +36,18 @@ namespace Empiria.FinancialAccounting.Reporting.Reclassification {
     }
 
 
-    public FileDto BalanzaEnColumnas(DynamicDto<BalanzaEnColumnasRealDto> dynamicDto) {
-      throw new NotImplementedException();
+    public FileDto BalanzaEnColumnas(DynamicDto<BalanzaEnColumnasRealDto> trialBalance) {
+      Assertion.Require(trialBalance, nameof(trialBalance));
+
+      var templateUID = $"TrialBalanceTemplate.BalanzaMonedaOrigenReclasificada";
+
+      var templateConfig = FileTemplateConfig.Parse(templateUID);
+
+      var exporter = new BalanzaValorizadaExcelExporter(templateConfig);
+
+      ExcelFile excelFile = exporter.CreateExcelFile(trialBalance);
+
+      return excelFile.ToFileDto();
     }
 
 

@@ -9,12 +9,12 @@
 ************************* Copyright(c) La Vía Óntica SC, Ontica LLC and contributors. All rights reserved. **/
 
 using Empiria.DynamicData;
+
 using Empiria.Office;
 using Empiria.Storage;
 
 using Empiria.FinancialAccounting.BalanceEngine.Adapters;
-
-using Empiria.FinancialAccounting.Reclassification;
+using Empiria.FinancialAccounting.Reclassification.Adapters;
 
 namespace Empiria.FinancialAccounting.Reporting.Reclassification {
 
@@ -34,7 +34,7 @@ namespace Empiria.FinancialAccounting.Reporting.Reclassification {
     }
 
 
-    internal ExcelFile CreateExcelFile(DynamicDto<BalanzaValorizadaEntry> balanzaValorizada) {
+    internal ExcelFile CreateExcelFile(DynamicDto<BalanzaEnColumnasRealDto> balanzaValorizada) {
       Assertion.Require(balanzaValorizada, nameof(balanzaValorizada));
 
       _query = (TrialBalanceQuery) balanzaValorizada.Query;
@@ -66,26 +66,20 @@ namespace Empiria.FinancialAccounting.Reporting.Reclassification {
     }
 
 
-    private void SetTable(FixedList<BalanzaValorizadaEntry> entries) {
+    private void SetTable(FixedList<BalanzaEnColumnasRealDto> entries) {
 
       int i = _templateConfig.FirstRowIndex;
 
       foreach (var entry in entries) {
 
-        //_excelFile.SetCell($"A{i}", entry.NumeroCuenta);
-        //_excelFile.SetCell($"B{i}", entry.NombreCuenta);
-        //_excelFile.SetCell($"C{i}", entry.CodigoMoneda);
-        //_excelFile.SetCell($"D{i}", entry.FechaAfectacion.ToString("dd/MMM/yyyy"));
-        //_excelFile.SetCell($"E{i}", entry.SaldoInicial);
-        //_excelFile.SetCell($"F{i}", entry.Cargos);
-        //_excelFile.SetCell($"G{i}", entry.Abonos);
-        //_excelFile.SetCell($"H{i}", entry.SaldoFinal);
-        //_excelFile.SetCell($"I{i}", entry.TipoCambio);
-        //_excelFile.SetCell($"J{i}", entry.SaldoInicialMXN);
-        //_excelFile.SetCell($"K{i}", entry.CargosMXN);
-        //_excelFile.SetCell($"L{i}", entry.AbonosMXN);
-        //_excelFile.SetCell($"M{i}", entry.SaldoFinalMXN);
-        //_excelFile.SetCell($"N{i}", entry.UtilidadCambiaria);
+        _excelFile.SetCell($"A{i}", entry.OperationType);
+        _excelFile.SetCell($"B{i}", entry.AccountNo);
+        _excelFile.SetCell($"C{i}", entry.AccountName);
+        _excelFile.SetCell($"D{i}", entry.DomesticRealFinalBalance);
+        _excelFile.SetCell($"E{i}", entry.DollarRealFinalBalance);
+        _excelFile.SetCell($"F{i}", entry.YenRealFinalBalance);
+        _excelFile.SetCell($"G{i}", entry.EuroRealFinalBalance);
+        _excelFile.SetCell($"H{i}", entry.UdisRealFinalBalance);
 
         i++;
       }
