@@ -78,7 +78,7 @@ namespace Empiria.FinancialAccounting.Reporting.Reclassification {
         _excelFile.SetCell($"E{i}", entry.RealInitialBalance);
         _excelFile.SetCell($"F{i}", entry.RealDebits);
         _excelFile.SetCell($"G{i}", entry.RealCredits);
-        _excelFile.SetCell($"G{i}", entry.RealFinalBalance);
+        _excelFile.SetCell($"H{i}", entry.RealFinalBalance);
 
         i++;
       }
