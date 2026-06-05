@@ -15,6 +15,7 @@ using Empiria.Office;
 using Empiria.Storage;
 
 using Empiria.FinancialAccounting.Reclassification.Adapters;
+using Empiria.FinancialAccounting.BalanceEngine;
 
 namespace Empiria.FinancialAccounting.Reporting.Reclassification {
 
@@ -51,8 +52,18 @@ namespace Empiria.FinancialAccounting.Reporting.Reclassification {
     }
 
 
-    public FileDto BalanzaTradicional(DynamicDto<BalanzaTradicionalRealDto> dynamicDto) {
-      throw new NotImplementedException();
+    public FileDto BalanzaTradicional(DynamicDto<BalanzaTradicionalRealDto> trialBalance) {
+      Assertion.Require(trialBalance, nameof(trialBalance));
+
+      var templateUID = $"TrialBalanceTemplate.BalanzaTradicionalReclasificada";
+
+      var templateConfig = FileTemplateConfig.Parse(templateUID);
+
+      var exporter = new BalanzaTradicionalReclasificadaExcelExporter(templateConfig);
+
+      ExcelFile excelFile = exporter.CreateExcelFile(trialBalance);
+
+      return excelFile.ToFileDto();
     }
 
   } // class BalancesExcelExporterService
