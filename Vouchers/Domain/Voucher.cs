@@ -19,7 +19,7 @@ using Empiria.FinancialAccounting.Vouchers.Data;
 namespace Empiria.FinancialAccounting.Vouchers {
 
   /// <summary>Represents an accounting voucher.</summary>
-  internal class Voucher {
+  public class Voucher : BaseObject {
 
     private Lazy<FixedList<VoucherEntry>> _entries;
     private readonly VoucherHelper _helper;
@@ -71,8 +71,12 @@ namespace Empiria.FinancialAccounting.Vouchers {
     }
 
 
-    static public Voucher Parse(long id) {
+    static public Voucher Parse(int id) {
       return VoucherData.GetVoucher(id);
+    }
+
+    static public Voucher Parse(long id) {
+      return VoucherData.GetVoucher((int) id);
     }
 
     internal static Voucher TryParse(Ledger ledger, string voucherNumber) {
@@ -89,10 +93,10 @@ namespace Empiria.FinancialAccounting.Vouchers {
 
     #region Properties
 
-    [DataField("ID_TRANSACCION")]
-    public long Id {
-      get; private set;
-    }
+    //[DataField("ID_TRANSACCION")]
+    //public long Id {
+    //  get; private set;
+    //}
 
 
     [DataField("NUMERO_TRANSACCION")]
@@ -177,13 +181,6 @@ namespace Empiria.FinancialAccounting.Vouchers {
     public FixedList<VoucherEntry> Entries {
       get {
         return _entries.Value;
-      }
-    }
-
-
-    public bool IsEmptyInstance {
-      get {
-        return Id == -1;
       }
     }
 
@@ -356,9 +353,9 @@ namespace Empiria.FinancialAccounting.Vouchers {
     }
 
 
-    protected internal void Save() {
+    protected override void OnSave() {
       if (Id == 0) {
-        Id = VoucherData.NextVoucherId();
+        base.PatchObjectId(VoucherData.NextVoucherId());
       }
       VoucherData.WriteVoucher(this);
     }

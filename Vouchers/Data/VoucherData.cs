@@ -66,12 +66,12 @@ namespace Empiria.FinancialAccounting.Vouchers.Data {
     }
 
 
-    static internal Voucher GetVoucher(long id) {
+    static internal Voucher GetVoucher(int id) {
       var sql = $"SELECT * FROM COF_TRANSACCION WHERE ID_TRANSACCION = {id}";
 
       var dataOperation = DataOperation.Parse(sql);
 
-      return DataReader.GetPlainObject<Voucher>(dataOperation);
+      return DataReader.GetObject<Voucher>(dataOperation);
     }
 
 
@@ -90,7 +90,7 @@ namespace Empiria.FinancialAccounting.Vouchers.Data {
 
       var dataOperation = DataOperation.Parse(sql);
 
-      return DataReader.GetPlainObjectFixedList<Voucher>(dataOperation);
+      return DataReader.GetFixedList<Voucher>(dataOperation);
     }
 
 
@@ -121,7 +121,7 @@ namespace Empiria.FinancialAccounting.Vouchers.Data {
 
       var op = DataOperation.Parse(sql);
 
-      return DataReader.GetPlainObjectFixedList<Voucher>(op);
+      return DataReader.GetFixedList<Voucher>(op);
     }
 
 
@@ -134,7 +134,7 @@ namespace Empiria.FinancialAccounting.Vouchers.Data {
 
       var dataOperation = DataOperation.Parse(sql);
 
-      return DataReader.GetPlainObjectFixedList<Voucher>(dataOperation);
+      return DataReader.GetFixedList<Voucher>(dataOperation);
     }
 
 
@@ -145,8 +145,8 @@ namespace Empiria.FinancialAccounting.Vouchers.Data {
     }
 
 
-    static internal long NextVoucherId() {
-      return DataCommonMethods.GetNextObjectId("SEC_ID_TRANSACCION");
+    static internal int NextVoucherId() {
+      return (int) DataCommonMethods.GetNextObjectId("SEC_ID_TRANSACCION");
     }
 
 
@@ -173,7 +173,7 @@ namespace Empiria.FinancialAccounting.Vouchers.Data {
 
       var dataOperation = DataOperation.Parse(sql);
 
-      return DataReader.GetPlainObject<Voucher>(dataOperation, null);
+      return DataReader.GetObject<Voucher>(dataOperation, null);
     }
 
 

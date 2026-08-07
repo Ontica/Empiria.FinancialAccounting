@@ -24,7 +24,7 @@ namespace Empiria.FinancialAccounting.Vouchers {
   }
 
   /// <summary>Represents an accounting voucher entry: a debit or credit movement.</summary>
-  internal class VoucherEntry : IVoucherEntry {
+  public class VoucherEntry : IVoucherEntry {
 
     #region Constructors and parsers
 
