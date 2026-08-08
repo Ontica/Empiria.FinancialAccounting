@@ -9,6 +9,7 @@
 ************************* Copyright(c) La Vía Óntica SC, Ontica LLC and contributors. All rights reserved. **/
 using System;
 
+using Empiria.Documents;
 using Empiria.FinancialAccounting.Adapters;
 
 namespace Empiria.FinancialAccounting.Vouchers.Adapters {
@@ -92,9 +93,9 @@ namespace Empiria.FinancialAccounting.Vouchers.Adapters {
       get; internal set;
     }
 
-    public FixedList<object> Documents {
+    public FixedList<DocumentDto> Documents {
       get; internal set;
-    } = new FixedList<object>(0);
+    }
 
   }  // class VoucherDto
 

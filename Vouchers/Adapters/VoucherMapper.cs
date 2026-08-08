@@ -10,6 +10,7 @@
 
 using System.Collections.Generic;
 
+using Empiria.Documents;
 using Empiria.FinancialAccounting.Adapters;
 
 namespace Empiria.FinancialAccounting.Vouchers.Adapters {
@@ -46,6 +47,7 @@ namespace Empiria.FinancialAccounting.Vouchers.Adapters {
         IsClosed = voucher.IsClosed,
         AllEntriesAreInBaseCurrency = !voucher.Entries.Contains(x => !x.Currency.Equals(voucher.Ledger.BaseCurrency)),
         Actions = voucher.Helper.Actions,
+        Documents = DocumentServices.GetAllEntityDocuments(voucher),
         Entries = MapToVoucherEntriesDescriptorWithTotals(voucher)
       };
 
