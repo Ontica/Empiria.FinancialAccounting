@@ -1,7 +1,7 @@
 ﻿/* Empiria Financial *****************************************************************************************
 *                                                                                                            *
 *  Module   : Vouchers Management                        Component : Domain Layer                            *
-*  Assembly : FinancialAccounting.Vouchers.dll           Pattern   : Empiria General Object                  *
+*  Assembly : FinancialAccounting.Vouchers.dll           Pattern   : Common Storage Items                    *
 *  Type     : TransactionType                            License   : Please read LICENSE.txt file            *
 *                                                                                                            *
 *  Summary  : Describes a business transaction type related with an accounting voucher.                      *
@@ -11,7 +11,7 @@
 namespace Empiria.FinancialAccounting.Vouchers {
 
   /// <summary>Describes a business transaction type related with an accounting voucher.</summary>
-  public class TransactionType : GeneralObject {
+  public class TransactionType : CommonStorage {
 
     private TransactionType() {
       // Required by Empiria Framework.
@@ -28,7 +28,7 @@ namespace Empiria.FinancialAccounting.Vouchers {
 
 
     static public FixedList<TransactionType> GetList() {
-      return BaseObject.GetList<TransactionType>(string.Empty, "ObjectName")
+      return BaseObject.GetList<TransactionType>(string.Empty, "Object_Name")
                        .ToFixedList();
     }
 
