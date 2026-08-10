@@ -1,7 +1,7 @@
 ﻿/* Empiria Financial *****************************************************************************************
 *                                                                                                            *
 *  Module   : Ledger Management                          Component : Domain Layer                            *
-*  Assembly : FinancialAccounting.Core.dll               Pattern   : Empiria General Object                  *
+*  Assembly : FinancialAccounting.Core.dll               Pattern   : Common Storage Item                     *
 *  Type     : SubledgerType                              License   : Please read LICENSE.txt file            *
 *                                                                                                            *
 *  Summary  : Describes the type of the accounts of a subledger (e.g. activo, clientes, proveedores, etc).   *
@@ -11,7 +11,7 @@ namespace Empiria.FinancialAccounting {
 
   /// <summary>Describes the type of the accounts of a subledger
   /// (e.g. activo, clientes, proveedores, etc).</summary>
-  public class SubledgerType : GeneralObject {
+  public class SubledgerType : CommonStorage {
 
     private SubledgerType() {
       // Required by Empiria Framework.
