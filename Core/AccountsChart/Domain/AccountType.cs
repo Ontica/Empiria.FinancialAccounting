@@ -1,7 +1,7 @@
 ﻿/* Empiria Financial *****************************************************************************************
 *                                                                                                            *
 *  Module   : Accounts Chart                             Component : Domain Layer                            *
-*  Assembly : FinancialAccounting.Core.dll               Pattern   : Empiria General Object                  *
+*  Assembly : FinancialAccounting.Core.dll               Pattern   : Common Storage Item                     *
 *  Type     : AccountType                                License   : Please read LICENSE.txt file            *
 *                                                                                                            *
 *  Summary  : Describes the type or use of an account (e.g. activo, pasivo, capital, orden, etc).            *
@@ -11,7 +11,7 @@
 namespace Empiria.FinancialAccounting {
 
   /// <summary>Describes the type or use of an account (e.g. activo, pasivo, capital, orden, etc).</summary>
-  public class AccountType : GeneralObject {
+  public class AccountType : CommonStorage {
 
     private AccountType() {
       // Required by Empiria Framework.

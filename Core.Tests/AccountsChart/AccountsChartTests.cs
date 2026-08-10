@@ -95,6 +95,15 @@ namespace Empiria.FinancialAccounting.Tests {
       }
     }
 
+
+    [Fact]
+    public void Should_Parse_All_AccountTypes() {
+      var sut = AccountType.GetList();
+
+      Assert.NotNull(sut);
+      Assert.NotEmpty(sut);
+    }
+
     #endregion Facts
 
   }  // class AccountsChartTests
