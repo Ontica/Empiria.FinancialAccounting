@@ -1,7 +1,7 @@
-﻿/* Empiria Financial *****************************************************************************************
+﻿  /* Empiria Financial *****************************************************************************************
 *                                                                                                            *
 *  Module   : Vouchers Management                        Component : Domain Layer                            *
-*  Assembly : FinancialAccounting.Vouchers.dll           Pattern   : Empiria General Object                  *
+*  Assembly : FinancialAccounting.Vouchers.dll           Pattern   : Common Storage Items                    *
 *  Type     : VoucherType                                License   : Please read LICENSE.txt file            *
 *                                                                                                            *
 *  Summary  : Describes the type of a voucher.                                                               *
@@ -11,7 +11,7 @@
 namespace Empiria.FinancialAccounting.Vouchers {
 
   /// <summary>Describes the type of a voucher.</summary>
-  public class VoucherType : GeneralObject {
+  public class VoucherType : CommonStorage {
 
     protected VoucherType() {
       // Required by Empiria Framework.
@@ -28,7 +28,7 @@ namespace Empiria.FinancialAccounting.Vouchers {
 
 
     static public FixedList<VoucherType> GetList() {
-      return BaseObject.GetList<VoucherType>(string.Empty, "ObjectName")
+      return BaseObject.GetList<VoucherType>(string.Empty, "Object_Name")
                        .ToFixedList();
     }
 
@@ -38,7 +38,7 @@ namespace Empiria.FinancialAccounting.Vouchers {
 
     public bool SkipEntriesValidation {
       get {
-        return base.ExtendedDataField.Get("skipEntriesValidation", false);
+        return base.ExtData.Get("skipEntriesValidation", false);
       }
     }
 
