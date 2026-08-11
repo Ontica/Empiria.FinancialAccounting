@@ -1,18 +1,16 @@
 ﻿/* Empiria Financial *****************************************************************************************
 *                                                                                                            *
 *  Module   : Vouchers Management                        Component : Domain Layer                            *
-*  Assembly : FinancialAccounting.Vouchers.dll           Pattern   : Empiria General Object                  *
+*  Assembly : FinancialAccounting.Vouchers.dll           Pattern   : Common Storage Item                     *
 *  Type     : VoucherSpecialCaseType                     License   : Please read LICENSE.txt file            *
 *                                                                                                            *
 *  Summary  : Describes the coniguration of  a voucher special case type.                                    *
 *                                                                                                            *
 ************************* Copyright(c) La Vía Óntica SC, Ontica LLC and contributors. All rights reserved. **/
-using System;
-
 namespace Empiria.FinancialAccounting.Vouchers {
 
   /// <summary>Describes a voucher special case type with its configuration.</summary>
-  internal class VoucherSpecialCaseType : GeneralObject {
+  internal class VoucherSpecialCaseType : CommonStorage {
 
     protected VoucherSpecialCaseType() {
       // Required by Empiria Framework.
@@ -29,7 +27,7 @@ namespace Empiria.FinancialAccounting.Vouchers {
 
 
     static internal FixedList<VoucherSpecialCaseType> GetList() {
-      return BaseObject.GetList<VoucherSpecialCaseType>(string.Empty, "ObjectName")
+      return BaseObject.GetList<VoucherSpecialCaseType>(string.Empty, "Object_Name")
                        .ToFixedList();
     }
 
@@ -38,67 +36,67 @@ namespace Empiria.FinancialAccounting.Vouchers {
 
     public AccountsList AccountsList {
       get {
-        return base.ExtendedDataField.Get<AccountsList>("accountsListId", AccountsList.Empty);
+        return base.ExtData.Get<AccountsList>("accountsListId", AccountsList.Empty);
       }
     }
 
 
     public bool AllowAllLedgersSelection {
       get {
-        return base.ExtendedDataField.Get("allowAllLedgersSelection", false);
+        return base.ExtData.Get("allowAllLedgersSelection", false);
       }
     }
 
     public bool AllowAllChildrenLedgersSelection {
       get {
-        return base.ExtendedDataField.Get("allowAllChildrenLedgersSelection", false);
+        return base.ExtData.Get("allowAllChildrenLedgersSelection", false);
       }
     }
 
     public bool AskForCalculationDateField {
       get {
-        return base.ExtendedDataField.Get("askForCalculationDateField", false);
+        return base.ExtData.Get("askForCalculationDateField", false);
       }
     }
 
 
     public bool AskForDatePeriodField {
       get {
-        return base.ExtendedDataField.Get("askForDatePeriodField", false);
+        return base.ExtData.Get("askForDatePeriodField", false);
       }
     }
 
 
     public bool AskForVoucherNumberField {
       get {
-        return base.ExtendedDataField.Get("askForVoucherNumberField", false);
+        return base.ExtData.Get("askForVoucherNumberField", false);
       }
     }
 
 
     public bool SkipEntriesValidation {
       get {
-        return base.ExtendedDataField.Get("skipEntriesValidation", false);
+        return base.ExtData.Get("skipEntriesValidation", false);
       }
     }
 
     public string CalculationDateFieldName {
       get {
-        return base.ExtendedDataField.Get("calculationDateFieldName", "Fecha");
+        return base.ExtData.Get("calculationDateFieldName", "Fecha");
       }
     }
 
 
     public string DatePeriodFieldName {
       get {
-        return base.ExtendedDataField.Get("datePeriodFieldName", "Período");
+        return base.ExtData.Get("datePeriodFieldName", "Período");
       }
     }
 
 
     public VoucherType VoucherType {
       get {
-        return base.ExtendedDataField.Get<VoucherType>("voucherTypeId");
+        return base.ExtData.Get<VoucherType>("voucherTypeId");
       }
     }
 
