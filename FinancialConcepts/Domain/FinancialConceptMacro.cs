@@ -14,7 +14,7 @@ using Empiria.Expressions;
 namespace Empiria.FinancialAccounting.FinancialConcepts {
 
   /// <summary>Programming macros that contain user defined code for financial concepts calculation.</summary>
-  public class FinancialConceptMacro : BaseObject, IMacro {
+  public class FinancialConceptMacro : CommonStorage, IMacro {
 
     #region Constructors and parsers
 
@@ -27,17 +27,9 @@ namespace Empiria.FinancialAccounting.FinancialConcepts {
 
     #region Properties
 
-    [DataField("ObjectName")]
-    public string Name {
-      get;
-      private set;
-    }
-
-
-    [DataField("ObjectExtData")]
-    public string Code {
-      get;
-      private set;
+    [DataField("OBJECT_CODE")]
+    public new string Code {
+      get; set;
     }
 
     #endregion Properties
