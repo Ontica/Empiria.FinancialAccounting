@@ -1,7 +1,7 @@
 ﻿/* Empiria Financial *****************************************************************************************
 *                                                                                                            *
 *  Module   : Exchange Rates                             Component : Domain Layer                            *
-*  Assembly : FinancialAccounting.Core.dll               Pattern   : Empiria General Object                  *
+*  Assembly : FinancialAccounting.Core.dll               Pattern   : Common Storage Item                     *
 *  Type     : ExchangeRateType                           License   : Please read LICENSE.txt file            *
 *                                                                                                            *
 *  Summary  : Represents an exchange rate type.                                                              *
@@ -12,7 +12,7 @@ using System;
 namespace Empiria.FinancialAccounting {
 
   /// <summary>Represents an exchange rate type.</summary>
-  public class ExchangeRateType : GeneralObject {
+  public class ExchangeRateType : CommonStorage {
 
     internal readonly int MIN_EDITION_DAYS = ConfigurationData.Get("ExchangeRateEdition.MinDays", 20);
     internal readonly int MAX_EDITION_DAYS = ConfigurationData.Get("ExchangeRateEdition.MaxDays", 7);
@@ -54,7 +54,7 @@ namespace Empiria.FinancialAccounting {
 
     public FixedList<Currency> Currencies {
       get {
-        return base.ExtendedDataField.GetFixedList<Currency>("currencies", false);
+        return base.ExtData.GetFixedList<Currency>("currencies", false);
       }
     }
 

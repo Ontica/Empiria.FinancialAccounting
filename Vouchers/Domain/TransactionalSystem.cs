@@ -1,7 +1,7 @@
 ﻿/* Empiria Financial *****************************************************************************************
 *                                                                                                            *
 *  Module   : Vouchers Management                        Component : Domain Layer                            *
-*  Assembly : FinancialAccounting.Vouchers.dll           Pattern   : Empiria General Object                  *
+*  Assembly : FinancialAccounting.Vouchers.dll           Pattern   : Common Storage Item                     *
 *  Type     : TransactionalSystem                        License   : Please read LICENSE.txt file            *
 *                                                                                                            *
 *  Summary  : Describes the transactional system that sends transactions or accountable information.         *
@@ -14,7 +14,7 @@ using Empiria.FinancialAccounting.Vouchers.Data;
 namespace Empiria.FinancialAccounting.Vouchers {
 
   /// <summary>Describes the transactional system that sends transactions or accountable information.</summary>
-  public class TransactionalSystem : GeneralObject {
+  public class TransactionalSystem : CommonStorage {
 
     private Lazy<FixedList<TransactionalSystemRule>> _rules;
 
@@ -35,7 +35,7 @@ namespace Empiria.FinancialAccounting.Vouchers {
 
 
     static public FixedList<TransactionalSystem> GetList() {
-      return BaseObject.GetList<TransactionalSystem>(string.Empty, "ObjectName")
+      return BaseObject.GetList<TransactionalSystem>(string.Empty, "Object_Name")
                        .ToFixedList();
     }
 
@@ -68,7 +68,7 @@ namespace Empiria.FinancialAccounting.Vouchers {
 
     public int SourceSystemId {
       get {
-        return base.ExtendedDataField.Get<int>("sourceSystemId", -1);
+        return base.ExtData.Get<int>("sourceSystemId", -1);
       }
     }
 
