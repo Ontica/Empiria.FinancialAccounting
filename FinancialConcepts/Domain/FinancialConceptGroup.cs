@@ -22,7 +22,7 @@ namespace Empiria.FinancialAccounting.FinancialConcepts {
 
   /// <summary>Holds a set of financial concepts, which unique purpose is to classify concepts.
   /// A given financial concept always belongs to a single group.</summary>
-  public class FinancialConceptGroup : GeneralObject, IInvariant {
+  public class FinancialConceptGroup : CommonStorage, IInvariant {
 
     #region Fields
 
@@ -49,7 +49,7 @@ namespace Empiria.FinancialAccounting.FinancialConcepts {
 
 
     static public FixedList<FinancialConceptGroup> GetList() {
-      return BaseObject.GetList<FinancialConceptGroup>(String.Empty, "ObjectName")
+      return BaseObject.GetList<FinancialConceptGroup>(String.Empty, "Object_Name")
                        .ToFixedList();
     }
 
@@ -77,14 +77,14 @@ namespace Empiria.FinancialAccounting.FinancialConcepts {
 
     public AccountsChart AccountsChart {
       get {
-        return base.ExtendedDataField.Get("accountsChartId", AccountsChart.Empty);
+        return base.ExtData.Get("accountsChartId", AccountsChart.Empty);
       }
     }
 
 
-    public string Code {
+    public new string Code {
       get {
-        return base.ExtendedDataField.Get<string>("code");
+        return base.ExtData.Get<string>("code");
       }
     }
 
@@ -96,23 +96,23 @@ namespace Empiria.FinancialAccounting.FinancialConcepts {
       }
     }
 
-    public DateTime StartDate {
+    public new DateTime StartDate {
       get {
-        return base.ExtendedDataField.Get("startDate", AccountsChart.MasterData.StartDate);
+        return base.ExtData.Get<DateTime>("startDate", AccountsChart.MasterData.StartDate);
       }
     }
 
 
-    public DateTime EndDate {
+    public new DateTime EndDate {
       get {
-        return base.ExtendedDataField.Get("endDate", AccountsChart.MasterData.EndDate);
+        return base.ExtData.Get("endDate", AccountsChart.MasterData.EndDate);
       }
     }
 
 
     public FixedList<string> CalculationRules {
       get {
-        var rules = base.ExtendedDataField.GetFixedList<string>("calculationRules", false);
+        var rules = base.ExtData.GetFixedList<string>("calculationRules", false);
 
         if (rules.Count != 0) {
           return rules;
@@ -125,7 +125,7 @@ namespace Empiria.FinancialAccounting.FinancialConcepts {
 
     public FixedList<string> DataColumns {
       get {
-        var columns = base.ExtendedDataField.GetFixedList<string>("dataColumns", false);
+        var columns = base.ExtData.GetFixedList<string>("dataColumns", false);
 
         if (columns.Count != 0) {
           return columns;
@@ -138,14 +138,14 @@ namespace Empiria.FinancialAccounting.FinancialConcepts {
 
     public FixedList<ExternalVariablesSet> ExternalVariablesSets {
       get {
-        return base.ExtendedDataField.GetFixedList<ExternalVariablesSet>("externalVariablesSets", false);
+        return base.ExtData.GetFixedList<ExternalVariablesSet>("externalVariablesSets", false);
       }
     }
 
 
-    public string Tags {
+    public new string Tags {
       get {
-        return base.ExtendedDataField.Get<string>("tags", string.Empty);
+        return base.ExtData.Get<string>("tags", string.Empty);
       }
     }
 
