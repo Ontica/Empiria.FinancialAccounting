@@ -1,7 +1,7 @@
 ﻿/* Empiria Financial *****************************************************************************************
 *                                                                                                            *
 *  Module   : Reclasfication                             Component : Domain Layer                            *
-*  Assembly : FinancialAccounting.Core.dll               Pattern   : Empiria General Object                  *
+*  Assembly : FinancialAccounting.Core.dll               Pattern   : Common Storage Items                    *
 *  Type     : AccountingOperationType                    License   : Please read LICENSE.txt file            *
 *                                                                                                            *
 *  Summary  : Represents an accouting operation type.                                                        *
@@ -11,7 +11,7 @@
 namespace Empiria.FinancialAccounting.Reclassification {
 
   /// <summary>Represents an accouting operation type.</summary>
-  public class AccountingOperationType : GeneralObject {
+  public class AccountingOperationType : CommonStorage {
 
     #region Constructors and parsers
 
