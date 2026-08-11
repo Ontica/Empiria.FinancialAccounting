@@ -100,6 +100,14 @@ namespace Empiria.FinancialAccounting.Tests.Vouchers {
       Assert.NotEmpty(accounts);
     }
 
+    [Fact]
+    public void Should_Read_Transactional_Systems() {
+      var sut = _usecases.TransactionalSystems();
+
+      Assert.NotEmpty(sut);
+      Assert.NotNull(sut);
+    }
+
 
     #endregion Facts
 

@@ -1,7 +1,7 @@
 ﻿/* Empiria Financial *****************************************************************************************
 *                                                                                                            *
 *  Module   : Exchange Rates                             Component : Domain Layer                            *
-*  Assembly : FinancialAccounting.Core.dll               Pattern   : Empiria General Object                  *
+*  Assembly : FinancialAccounting.Core.dll               Pattern   : Common Storage Item                     *
 *  Type     : ExchangeRateType                           License   : Please read LICENSE.txt file            *
 *                                                                                                            *
 *  Summary  : Represents an exchange rate type.                                                              *
