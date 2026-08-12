@@ -61,7 +61,7 @@ namespace Empiria.FinancialAccounting.AccountsLists.SpecialCases {
     }
 
     public FixedList<SwapsCoberturaListConfigItem> GetConfiguration() {
-      return ExtendedDataField.GetFixedList<SwapsCoberturaListConfigItem>("configuration");
+      return ExtData.GetFixedList<SwapsCoberturaListConfigItem>("configuration");
     }
 
     public FixedList<string> GetClassificationValues() {

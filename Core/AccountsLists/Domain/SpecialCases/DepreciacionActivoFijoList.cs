@@ -92,7 +92,7 @@ namespace Empiria.FinancialAccounting.AccountsLists.SpecialCases {
 
     public FixedList<TipoActivoFijo> TiposActivoFijo {
       get {
-        return base.ExtendedDataField.GetFixedList<TipoActivoFijo>("tiposActivoFijo");
+        return base.ExtData.GetFixedList<TipoActivoFijo>("tiposActivoFijo");
       }
     }
 

@@ -1,7 +1,7 @@
-﻿/* Empiria Financial *****************************************************************************************
+﻿  /* Empiria Financial *****************************************************************************************
 *                                                                                                            *
 *  Module   : Accounts Lists                             Component : Domain Layer                            *
-*  Assembly : Empiria.FinancialAccounting.dll            Pattern   : Empiria General Object                  *
+*  Assembly : Empiria.FinancialAccounting.dll            Pattern   : Common Storage Items                    *
 *  Type     : AccountsList                               License   : Please read LICENSE.txt file            *
 *                                                                                                            *
 *  Summary  : Describes a list of accounts.                                                                  *
@@ -15,7 +15,7 @@ using Empiria.FinancialAccounting.AccountsLists.Data;
 namespace Empiria.FinancialAccounting {
 
   /// <summary>Describes a list of accounts.</summary>
-  public class AccountsList : GeneralObject {
+  public class AccountsList : CommonStorage {
 
     #region Constructors and parsers
 
@@ -35,7 +35,7 @@ namespace Empiria.FinancialAccounting {
 
 
     static internal FixedList<AccountsList> GetList() {
-      return BaseObject.GetList<AccountsList>(string.Empty, "ObjectName")
+      return BaseObject.GetList<AccountsList>(string.Empty, "Object_Name")
                        .ToFixedList();
     }
 
@@ -48,14 +48,14 @@ namespace Empiria.FinancialAccounting {
 
     public FixedList<DataTableColumn> DataTableColumns {
       get {
-        return base.ExtendedDataField.GetFixedList<DataTableColumn>("columns", false);
+        return base.ExtData.GetFixedList<DataTableColumn>("columns", false);
       }
     }
 
 
     public bool IsEditable {
       get {
-        return base.ExtendedDataField.Get("isEditable", false);
+        return base.ExtData.Get("isEditable", false);
       }
     }
 

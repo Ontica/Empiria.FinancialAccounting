@@ -27,8 +27,6 @@ namespace Empiria.FinancialAccounting.Tests {
       Assert.NotNull(sut.TryGetAccountValue("2.13.01.02.01.02", "Rubro"));
     }
 
-
-
     [Fact]
     public void Should_Parse_All_AccountsList_Items() {
       var list = AccountClassificatorList.Parse("BitacoraCuentasValorizacion");

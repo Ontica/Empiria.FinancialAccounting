@@ -147,7 +147,7 @@ namespace Empiria.FinancialAccounting.AccountsLists.SpecialCases {
     }
 
     public FixedList<PrestamoBase> GetPrestamosBase() {
-      return ExtendedDataField.GetFixedList<PrestamoBase>("prestamos");
+      return ExtData.GetFixedList<PrestamoBase>("prestamos");
     }
 
 
