@@ -12,7 +12,7 @@ using System;
 namespace Empiria.FinancialAccounting {
 
   /// <summary>Abstract class that describes a report type.</summary>
-  public abstract class BaseReportType : GeneralObject {
+  public abstract class BaseReportType : CommonStorage {
 
     protected BaseReportType() {
       // Required by Empiria Framework.
@@ -28,7 +28,7 @@ namespace Empiria.FinancialAccounting {
     }
 
     static public FixedList<BaseReportType> GetList() {
-      return BaseObject.GetList<BaseReportType>(string.Empty, "ObjectName")
+      return BaseObject.GetList<BaseReportType>(string.Empty, "Object_Name")
                        .ToFixedList();
     }
 

@@ -72,7 +72,7 @@ namespace Empiria.FinancialAccounting.FinancialReports {
 
 
     static public new FixedList<FinancialReportType> GetList() {
-      return BaseObject.GetList<FinancialReportType>(string.Empty, "ObjectName")
+      return BaseObject.GetList<FinancialReportType>(string.Empty, "Object_Name")
                        .ToFixedList();
     }
 
@@ -113,49 +113,49 @@ namespace Empiria.FinancialAccounting.FinancialReports {
 
     public AccountsChart AccountsChart {
       get {
-        return base.ExtendedDataField.Get<AccountsChart>("accountsChartId");
+        return base.ExtData.Get<AccountsChart>("accountsChartId");
       }
     }
 
 
     public FixedList<DataTableColumn> DataColumns {
       get {
-        return base.ExtendedDataField.GetFixedList<DataTableColumn>("dataColumns", false);
+        return base.ExtData.GetFixedList<DataTableColumn>("dataColumns", false);
       }
     }
 
 
     public FixedList<DataTableColumn> BreakdownColumns {
       get {
-        return base.ExtendedDataField.GetFixedList<DataTableColumn>("breakdownColumns", false);
+        return base.ExtData.GetFixedList<DataTableColumn>("breakdownColumns", false);
       }
     }
 
 
     public FinancialReportDataSource DataSource {
       get {
-        return base.ExtendedDataField.Get<FinancialReportDataSource>("dataSource");
+        return base.ExtData.Get<FinancialReportDataSource>("dataSource");
       }
     }
 
 
     public FinancialReportDesignType DesignType {
       get {
-        return base.ExtendedDataField.Get<FinancialReportDesignType>("designType");
+        return base.ExtData.Get<FinancialReportDesignType>("designType");
       }
     }
 
 
     public bool ConsecutiveRows {
       get {
-        return base.ExtendedDataField.Get<bool>("consecutiveRows", true);
+        return base.ExtData.Get<bool>("consecutiveRows", true);
       }
     }
 
 
     public string Group {
       get {
-        return base.ExtendedDataField.Get("group", "ReportesRegulatorios");
+        return base.ExtData.Get("group", "ReportesRegulatorios");
       }
     }
 
@@ -169,42 +169,42 @@ namespace Empiria.FinancialAccounting.FinancialReports {
 
     public RoundTo RoundTo {
       get {
-        return base.ExtendedDataField.Get("roundTo", RoundTo.DoNotRound);
+        return base.ExtData.Get("roundTo", RoundTo.DoNotRound);
       }
     }
 
 
     public FixedList<ExportTo> ExportTo {
       get {
-        return base.ExtendedDataField.GetFixedList<ExportTo>("exportTo", false);
+        return base.ExtData.GetFixedList<ExportTo>("exportTo", false);
       }
     }
 
 
     public FinancialReportType BaseReport {
       get {
-        return base.ExtendedDataField.Get("baseReportId", FinancialReportType.Empty);
+        return base.ExtData.Get("baseReportId", FinancialReportType.Empty);
       }
     }
 
 
     public string Title {
       get {
-        return base.ExtendedDataField.Get("title", string.Empty);
+        return base.ExtData.Get("title", string.Empty);
       }
     }
 
 
     public FixedList<FinancialConceptGroup> FinancialConceptGroups {
       get {
-        return base.ExtendedDataField.GetFixedList<FinancialConceptGroup>("groupingRules", false);
+        return base.ExtData.GetFixedList<FinancialConceptGroup>("groupingRules", false);
       }
     }
 
 
     public FixedList<ExternalVariablesSet> ExternalVariablesSets {
       get {
-        return base.ExtendedDataField.GetFixedList<ExternalVariablesSet>("externalVariablesSets", false);
+        return base.ExtData.GetFixedList<ExternalVariablesSet>("externalVariablesSets", false);
       }
     }
 
@@ -232,21 +232,21 @@ namespace Empiria.FinancialAccounting.FinancialReports {
                             .Select(x => x.Column)
                             .ToFixedList();
         }
-        return base.ExtendedDataField.GetFixedList<string>("grid/columns");
+        return base.ExtData.GetFixedList<string>("grid/columns");
       }
     }
 
 
     public int GridStartRow {
       get {
-        return base.ExtendedDataField.Get<int>("grid/startRow", 1);
+        return base.ExtData.Get<int>("grid/startRow", 1);
       }
     }
 
 
     public int GridEndRow {
       get {
-        return base.ExtendedDataField.Get<int>("grid/endRow", 100);
+        return base.ExtData.Get<int>("grid/endRow", 100);
       }
     }
 
@@ -260,7 +260,7 @@ namespace Empiria.FinancialAccounting.FinancialReports {
 
     public FinancialReportType PrecalculateConceptsFromReportType {
       get {
-        return base.ExtendedDataField.Get<FinancialReportType>("precalculatedConcepts/reportType",
+        return base.ExtData.Get<FinancialReportType>("precalculatedConcepts/reportType",
                                                                FinancialReportType.Empty);
       }
     }
@@ -268,14 +268,14 @@ namespace Empiria.FinancialAccounting.FinancialReports {
 
     public FixedList<FinancialConceptGroup> PrecalculatedConceptsGroups {
       get {
-        return base.ExtendedDataField.GetList<FinancialConceptGroup>("precalculatedConcepts/groups", false)
+        return base.ExtData.GetList<FinancialConceptGroup>("precalculatedConcepts/groups", false)
                                      .ToFixedList();
       }
     }
 
     public int RowsOffset {
       get {
-        return base.ExtendedDataField.Get<int>("rowsOffset", 0);
+        return base.ExtData.Get<int>("rowsOffset", 0);
       }
     }
 

@@ -33,60 +33,60 @@ namespace Empiria.FinancialAccounting.Reporting {
 
     public FixedList<AccountsChart> AccountsCharts {
       get {
-        return base.ExtendedDataField.GetFixedList<AccountsChart>("accountsCharts");
+        return base.ExtData.GetFixedList<AccountsChart>("accountsCharts");
       }
       private set {
-        base.ExtendedDataField.Set("accountsCharts", value);
+        base.ExtData.Set("accountsCharts", value);
       }
     }
 
 
     public FixedList<FileType> ExportTo {
       get {
-        return base.ExtendedDataField.GetFixedList<FileType>("exportTo");
+        return base.ExtData.GetFixedList<FileType>("exportTo");
       }
       private set {
-        base.ExtendedDataField.Set("exportTo", value);
+        base.ExtData.Set("exportTo", value);
       }
     }
 
 
     public string Group {
       get {
-        return base.ExtendedDataField.Get<string>("group");
+        return base.ExtData.Get<string>("group");
       }
       private set {
-        base.ExtendedDataField.Set("group", value);
+        base.ExtData.Set("group", value);
       }
     }
 
 
     public string PayloadType {
       get {
-        return base.ExtendedDataField.Get<string>("payloadType");
+        return base.ExtData.Get<string>("payloadType");
       }
       private set {
-        base.ExtendedDataField.Set("payloadType", value);
+        base.ExtData.Set("payloadType", value);
       }
     }
 
 
     public ReportTypeActions Show {
       get {
-        return base.ExtendedDataField.Get<ReportTypeActions>("show", new ReportTypeActions());
+        return base.ExtData.Get<ReportTypeActions>("show", new ReportTypeActions());
       }
       private set {
-        base.ExtendedDataField.Set("show", value);
+        base.ExtData.Set("show", value);
       }
     }
 
 
     public FixedList<OutputTypeObject> OutputType {
       get {
-        return base.ExtendedDataField.GetFixedList<OutputTypeObject>("outputType", false);
+        return base.ExtData.GetFixedList<OutputTypeObject>("outputType", false);
       }
       private set {
-        base.ExtendedDataField.Set("outputType", value);
+        base.ExtData.Set("outputType", value);
       }
     }
 
