@@ -104,6 +104,14 @@ namespace Empiria.FinancialAccounting.Tests {
       Assert.NotEmpty(sut);
     }
 
+    [Fact]
+    public void Should_All_AccountChars() {
+      var sut = AccountsChart.GetList();
+
+      Assert.NotNull(sut);
+      Assert.NotEmpty(sut);
+    }
+
     #endregion Facts
 
   }  // class AccountsChartTests

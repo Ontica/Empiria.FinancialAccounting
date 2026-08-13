@@ -19,7 +19,7 @@ using Empiria.FinancialAccounting.Data;
 namespace Empiria.FinancialAccounting {
 
   /// <summary>Aggregate root that holds an accounts chart.</summary>
-  public class AccountsChart : GeneralObject {
+  public class AccountsChart : CommonStorage {
 
     #region Fields
 
@@ -71,8 +71,8 @@ namespace Empiria.FinancialAccounting {
 
 
     static public FixedList<AccountsChart> GetList() {
-      return BaseObject.GetList<AccountsChart>(String.Empty, "ObjectId DESC")
-                       .FindAll(x => x.Status != StateEnums.EntityStatus.Deleted)
+      return BaseObject.GetList<AccountsChart>(String.Empty, "Object_Id DESC")
+                       .FindAll(x => x.GetStatus<StateEnums.EntityStatus>() != StateEnums.EntityStatus.Deleted)
                        .ToFixedList();
     }
 
@@ -98,7 +98,7 @@ namespace Empiria.FinancialAccounting {
 
     protected override void OnLoad() {
       if (!this.IsEmptyInstance) {
-        this.MasterData = new AccountsChartMasterData(this, this.ExtendedDataField);
+        this.MasterData = new AccountsChartMasterData(this, this.ExtData);
       } else {
         this.MasterData = new AccountsChartMasterData(this);
       }
