@@ -1,7 +1,7 @@
 ﻿/* Empiria Financial *****************************************************************************************
 *                                                                                                            *
 *  Module   : Balance Engine                               Component : Domain Layer                          *
-*  Assembly : FinancialAccounting.BalanceEngine.dll        Pattern   : Empiria General Object                *
+*  Assembly : FinancialAccounting.BalanceEngine.dll        Pattern   : Common Storage Item                   *
 *  Type     : StoredBalanceSet                             License   : Please read LICENSE.txt file          *
 *                                                                                                            *
 *  Summary  : Describes a stored chart of accounts accumulated balance set.                                  *
@@ -10,13 +10,15 @@
 using System;
 using System.Collections.Generic;
 
+using Empiria.StateEnums;
+
 using Empiria.FinancialAccounting.BalanceEngine.Adapters;
 using Empiria.FinancialAccounting.BalanceEngine.Data;
 
 namespace Empiria.FinancialAccounting.BalanceEngine {
 
   /// <summary>Describes a stored chart of accounts accumulated balance set.</summary>
-  internal class StoredBalanceSet : GeneralObject {
+  internal class StoredBalanceSet : CommonStorage {
 
     static private Lazy<List<StoredBalanceSet>> _list =
                                     new Lazy<List<StoredBalanceSet>>(() => LoadList());
@@ -98,50 +100,50 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
 
     public AccountsChart AccountsChart {
       get {
-        return this.ExtendedDataField.Get<AccountsChart>("accountsChartId");
+        return this.ExtData.Get<AccountsChart>("accountsChartId");
       }
       set {
-        this.ExtendedDataField.Set("accountsChartId", value.Id);
+        this.ExtData.Set("accountsChartId", value.Id);
       }
     }
 
 
     public DateTime BalancesDate {
       get {
-        return this.ExtendedDataField.Get<DateTime>("balancesDate");
+        return this.ExtData.Get<DateTime>("balancesDate");
       }
       set {
-        this.ExtendedDataField.Set("balancesDate", value);
+        this.ExtData.Set("balancesDate", value);
       }
     }
 
 
     public bool Calculated {
       get {
-        return this.ExtendedDataField.Get<bool>("calculated", false);
+        return this.ExtData.Get<bool>("calculated", false);
       }
       set {
-        this.ExtendedDataField.Set("calculated", value);
+        this.ExtData.Set("calculated", value);
       }
     }
 
 
     public DateTime CalculationTime {
       get {
-        return this.ExtendedDataField.Get<DateTime>("calculationTime", ExecutionServer.DateMinValue);
+        return this.ExtData.Get<DateTime>("calculationTime", ExecutionServer.DateMinValue);
       }
       set {
-        this.ExtendedDataField.Set("calculationTime", value);
+        this.ExtData.Set("calculationTime", value);
       }
     }
 
 
     public bool Protected {
       get {
-        return this.ExtendedDataField.Get<bool>("protected", false);
+        return this.ExtData.Get<bool>("protected", false);
       }
       set {
-        this.ExtendedDataField.Set("protected", value);
+        this.ExtData.Set("protected", value);
       }
     }
 
@@ -156,6 +158,13 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
     public bool Unprotected {
       get {
         return !this.Protected;
+      }
+    }
+
+
+    public EntityStatus Status {
+      get {
+        return base.GetStatus<EntityStatus>();
       }
     }
 
@@ -212,7 +221,7 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
 
       this.Calculated = false;
 
-      base.Status = StateEnums.EntityStatus.Deleted;
+      base.SetStatus(EntityStatus.Deleted);
 
       this.Save();
 
@@ -230,13 +239,16 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
       _list = new Lazy<List<StoredBalanceSet>>(() => LoadList());
     }
 
+
     static private List<StoredBalanceSet> LoadList() {
-      var list = BaseObject.GetList<StoredBalanceSet>("ObjectStatus <> 'X'", string.Empty);
+      var array = GetStorageObjects<StoredBalanceSet>().ToArray();
+      List<StoredBalanceSet> list = new List<StoredBalanceSet>(array);
 
       list.Sort((x, y) => x.BalancesDate.CompareTo(y.BalancesDate));
 
       return list;
     }
+
 
     private void ResetBalances() {
       _balances = new Lazy<FixedList<StoredBalance>>(() => StoredBalanceDataService.GetBalances(this));
