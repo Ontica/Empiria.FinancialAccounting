@@ -262,8 +262,8 @@ namespace Empiria.FinancialAccounting.Tests.BalanceEngine {
         ShowCascadeBalances = false,
         UseDefaultValuation = false,
         WithSubledgerAccount = false,
-        FromAccount = "1.15",
-        ToAccount = "1.15",
+        FromAccount = "6.05",
+        ToAccount = "6.05",
         InitialPeriod = new BalancesPeriod {
           FromDate = TestingConstants.FROM_DATE,
           ToDate = TestingConstants.TO_DATE

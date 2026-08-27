@@ -53,8 +53,8 @@ namespace Empiria.FinancialAccounting.BalanceEngine.Data {
         sqlClauses.InitialGrouping = GetInitialGroupingClause();
         sqlClauses.Where = GetWhereClause();
         sqlClauses.Ordering = GetOrderClause();
-
         sqlClauses.AverageBalance = GetAverageBalance();
+        //sqlClauses.RefusedVouchersFilter = GetRefusedVouchersFilter();
 
         return sqlClauses;
       }
@@ -75,6 +75,7 @@ namespace Empiria.FinancialAccounting.BalanceEngine.Data {
         } else {
           sqlClauses.FromDate = _query.InitialPeriod.FromDate;
           sqlClauses.ToDate = _query.InitialPeriod.ToDate;
+          GetDateClausesForRefusedVouchers(sqlClauses);
         }
 
         // Start on Jan 2nd because Jan 1st 2022 was used for initial balances loading
@@ -112,13 +113,29 @@ namespace Empiria.FinancialAccounting.BalanceEngine.Data {
       }
 
 
+      private void GetDateClausesForRefusedVouchers(BalancesSqlClauses sqlClauses) {
+
+        if (_query.TrialBalanceType != TrialBalanceType.BalanzaMes13) {
+
+          if (_query.InitialPeriod.FromDate == new DateTime(_query.InitialPeriod.FromDate.Year, 01, 01)) {
+
+            sqlClauses.FromDate = _query.InitialPeriod.FromDate.AddDays(1);
+            sqlClauses.ToDate = _query.InitialPeriod.ToDate;
+
+          } else if (_query.InitialPeriod.ToDate == new DateTime(_query.InitialPeriod.ToDate.Year, 12, 31)) {
+            //TODO
+          }
+        }
+      }
+
+
       private string GetFilterString() {
+
         string ledgerFilter = GetLedgerFilter();
         string sectorFilter = GetSectorFilter();
         string currencyFilter = GetCurrencyFilter();
         string accountRangeFilter = GetAccountsFilterByTrialBalanceType();
         string subledgerAccountFilter = GetSubledgerAccountsFilterByTrialBalanceType();
-        //string polizasDeCancelacion = GetRefusedVouchersFilter();
 
         var filter = new Filter(ledgerFilter);
 
@@ -126,20 +143,25 @@ namespace Empiria.FinancialAccounting.BalanceEngine.Data {
         filter.AppendAnd(accountRangeFilter);
         filter.AppendAnd(subledgerAccountFilter);
         filter.AppendAnd(currencyFilter);
-        //filter.AppendAnd(polizasDeCancelacion);
+
         return filter.ToString().Length > 0 ? $"AND ({filter})" : "";
       }
 
 
       private string GetRefusedVouchersFilter() {
 
-        DateTime minVoucherDateRange = new DateTime(2024, 12, 31);
-        DateTime lastDayOfTheYear = new DateTime(_query.InitialPeriod.ToDate.Year, 12, 31);
+        if (_query.TrialBalanceType != TrialBalanceType.BalanzaMes13 &&
+            (_query.InitialPeriod.FromDate == new DateTime(_query.InitialPeriod.FromDate.Year, 01, 01) ||
+             _query.InitialPeriod.ToDate == new DateTime(_query.InitialPeriod.ToDate.Year, 12, 31)
+           )) {
 
-        if (_query.InitialPeriod.ToDate >= minVoucherDateRange &&
-            _query.InitialPeriod.ToDate != lastDayOfTheYear) {
+          return $"AND ID_TIPO_POLIZA != 30 ";
+        }
 
-          return $"(ID_TIPO_POLIZA != 30)";
+        if (_query.TrialBalanceType == TrialBalanceType.BalanzaMes13 &&
+            _query.InitialPeriod.ToDate != new DateTime(_query.InitialPeriod.ToDate.Year, 12, 31)) {
+
+          return $"AND ID_TIPO_POLIZA != 30 ";
         }
         return string.Empty;
       }

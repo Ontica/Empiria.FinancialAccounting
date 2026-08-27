@@ -65,7 +65,8 @@ namespace Empiria.FinancialAccounting.BalanceEngine.Data {
                             clauses.InitialFields,
                             clauses.InitialGrouping,
                             clauses.AccountsChart.Id,
-                            clauses.AverageBalance
+                            clauses.AverageBalance,
+                            clauses.RefusedVouchersFilter
                             );
 
       return DataReader.GetPlainObjectList<TrialBalanceEntry>(operation);

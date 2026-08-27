@@ -124,6 +124,11 @@ namespace Empiria.FinancialAccounting.BalanceEngine.Data {
       private set;
     } = string.Empty;
 
+
+    public string RefusedVouchersFilter {
+      get; private set;
+    } = string.Empty;
+
     #endregion Properties
 
     #region Helpers

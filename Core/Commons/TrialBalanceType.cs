@@ -18,11 +18,13 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
 
     BalanzaConContabilidadesEnCascada,
 
-    BalanzaEnColumnasPorMoneda,
+    BalanzaDiferenciaDiariaPorMoneda,
 
     BalanzaDolarizada,
 
-    BalanzaDiferenciaDiariaPorMoneda,
+    BalanzaEnColumnasPorMoneda,
+
+    BalanzaMes13,
 
     BalanzaValorizadaComparativa,
 
