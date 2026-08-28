@@ -193,6 +193,11 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
 
       FixedList<TrialBalanceEntry> accountEntries = BalancesDataService.GetTrialBalanceEntries(_query);
 
+      if (_query.TrialBalanceType == TrialBalanceType.BalanzaMes13) {
+        
+        GetEntriesWithRefusedVouchers(accountEntries);
+      }
+
       var trialBalanceHelper = new TrialBalanceHelper(_query);
 
       if (_query.ValuateBalances || _query.InitialPeriod.UseDefaultValuation) {
@@ -215,7 +220,7 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
       return accountEntries;
     }
 
-
+    
     internal void SummaryByCurrencyEntries(EmpiriaHashTable<TrialBalanceEntry> totalsByCurrency,
                                            TrialBalanceEntry balanceEntry) {
 
@@ -317,6 +322,16 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
         }
 
       } // while
+    }
+
+
+    private FixedList<TrialBalanceEntry> GetEntriesWithRefusedVouchers(
+                                          FixedList<TrialBalanceEntry> accountEntries) {
+      //TODO FILTRAR RefusedVouchers SOLAMENTE
+      var refusedVouchers = accountEntries.FindAll(x=>x.LastChangeDate == _query.InitialPeriod.ToDate)
+                                          .ToFixedList();
+      
+      return accountEntries;
     }
 
 

@@ -120,11 +120,11 @@ namespace Empiria.FinancialAccounting.BalanceEngine.Data {
           if (_query.InitialPeriod.FromDate == new DateTime(_query.InitialPeriod.FromDate.Year, 01, 01)) {
 
             sqlClauses.FromDate = _query.InitialPeriod.FromDate.AddDays(1);
-            sqlClauses.ToDate = _query.InitialPeriod.ToDate;
-
-          } else if (_query.InitialPeriod.ToDate == new DateTime(_query.InitialPeriod.ToDate.Year, 12, 31)) {
-            //TODO
           }
+
+        } else if (_query.TrialBalanceType == TrialBalanceType.BalanzaMes13) {
+
+          sqlClauses.ToDate = _query.InitialPeriod.FromDate.AddDays(1);
         }
       }
 
@@ -159,9 +159,9 @@ namespace Empiria.FinancialAccounting.BalanceEngine.Data {
         }
 
         if (_query.TrialBalanceType == TrialBalanceType.BalanzaMes13 &&
-            _query.InitialPeriod.ToDate != new DateTime(_query.InitialPeriod.ToDate.Year, 12, 31)) {
-
-          return $"AND ID_TIPO_POLIZA != 30 ";
+            _query.InitialPeriod.ToDate == new DateTime(_query.InitialPeriod.ToDate.Year, 12, 31)) {
+          
+          return $"AND ID_TIPO_POLIZA == 30";
         }
         return string.Empty;
       }
