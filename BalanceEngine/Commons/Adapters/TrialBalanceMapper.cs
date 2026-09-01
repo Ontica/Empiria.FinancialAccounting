@@ -38,6 +38,7 @@ namespace Empiria.FinancialAccounting.BalanceEngine.Adapters {
           return new FixedList<ITrialBalanceEntryDto>(analitico);
 
         case TrialBalanceType.Balanza:
+        case TrialBalanceType.BalanzaMes13:
 
           var balanza = list.Select((x) => BalanzaTradicionalMapper.MapEntry((TrialBalanceEntry) x, query));
           return new FixedList<ITrialBalanceEntryDto>(balanza);

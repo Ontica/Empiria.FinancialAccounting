@@ -38,6 +38,7 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
           return AnaliticoDeCuentasMapper.DataColumns(this.Query);
 
         case TrialBalanceType.Balanza:
+        case TrialBalanceType.BalanzaMes13:
           return BalanzaTradicionalMapper.DataColumns(this.Query);
 
         case TrialBalanceType.BalanzaConContabilidadesEnCascada:

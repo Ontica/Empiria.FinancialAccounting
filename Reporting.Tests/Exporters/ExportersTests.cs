@@ -32,15 +32,15 @@ namespace Empiria.FinancialAccounting.Tests.Reporting {
       using (var usecases = TrialBalanceUseCases.UseCaseInteractor()) {
 
         var query = new TrialBalanceQuery() {
-          TrialBalanceType = TrialBalanceType.Balanza,
+          TrialBalanceType = TrialBalanceType.BalanzaMes13,
           InitialPeriod = {
-           FromDate = new DateTime(2026,1,1),
-           ToDate = new DateTime(2026,1,31)
+           FromDate = new DateTime(2025,12,1),
+           ToDate = new DateTime(2025,12,31)
           },
           AccountsChartUID = AccountsChart.IFRS.UID,
-          WithSubledgerAccount = true,
-          FromAccount = "1.15",
-          ToAccount = "1.15",
+          WithSubledgerAccount = false,
+          FromAccount = "6.05",
+          ToAccount = "6.05",
           BalancesType = BalancesType.WithCurrentBalanceOrMovements,
           ShowCascadeBalances = false
         };

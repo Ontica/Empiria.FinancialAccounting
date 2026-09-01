@@ -114,17 +114,17 @@ namespace Empiria.FinancialAccounting.BalanceEngine.Data {
 
       private void GetDateClausesForRefusedVouchers(BalancesSqlClauses sqlClauses) {
 
-        if (_query.InitialPeriod.FromDate == new DateTime(_query.InitialPeriod.FromDate.Year, 01, 01)) {
+        if (_query.TrialBalanceType != TrialBalanceType.BalanzaMes13 &&
+            _query.InitialPeriod.FromDate == new DateTime(_query.InitialPeriod.FromDate.Year, 01, 01)) {
 
           sqlClauses.FromDate = _query.InitialPeriod.FromDate.AddDays(1);
         }
-
-        if (_query.TrialBalanceType == TrialBalanceType.Balanza &&
+        
+        if (_query.TrialBalanceType == TrialBalanceType.BalanzaMes13 &&
             _query.InitialPeriod.ToDate == new DateTime(_query.InitialPeriod.ToDate.Year, 12, 31)) {
 
           sqlClauses.ToDate = _query.InitialPeriod.ToDate.AddDays(1);
         }
-
       }
 
 
