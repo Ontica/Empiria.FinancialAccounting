@@ -54,7 +54,6 @@ namespace Empiria.FinancialAccounting.BalanceEngine.Data {
         sqlClauses.Where = GetWhereClause();
         sqlClauses.Ordering = GetOrderClause();
         sqlClauses.AverageBalance = GetAverageBalance();
-        //sqlClauses.RefusedVouchersFilter = GetRefusedVouchersFilter();
 
         return sqlClauses;
       }
@@ -115,17 +114,17 @@ namespace Empiria.FinancialAccounting.BalanceEngine.Data {
 
       private void GetDateClausesForRefusedVouchers(BalancesSqlClauses sqlClauses) {
 
-        if (_query.TrialBalanceType != TrialBalanceType.BalanzaMes13) {
+        if (_query.InitialPeriod.FromDate == new DateTime(_query.InitialPeriod.FromDate.Year, 01, 01)) {
 
-          if (_query.InitialPeriod.FromDate == new DateTime(_query.InitialPeriod.FromDate.Year, 01, 01)) {
-
-            sqlClauses.FromDate = _query.InitialPeriod.FromDate.AddDays(1);
-          }
-
-        } else if (_query.TrialBalanceType == TrialBalanceType.BalanzaMes13) {
-
-          sqlClauses.ToDate = _query.InitialPeriod.FromDate.AddDays(1);
+          sqlClauses.FromDate = _query.InitialPeriod.FromDate.AddDays(1);
         }
+
+        if (_query.TrialBalanceType == TrialBalanceType.Balanza &&
+            _query.InitialPeriod.ToDate == new DateTime(_query.InitialPeriod.ToDate.Year, 12, 31)) {
+
+          sqlClauses.ToDate = _query.InitialPeriod.ToDate.AddDays(1);
+        }
+
       }
 
 
@@ -145,25 +144,6 @@ namespace Empiria.FinancialAccounting.BalanceEngine.Data {
         filter.AppendAnd(currencyFilter);
 
         return filter.ToString().Length > 0 ? $"AND ({filter})" : "";
-      }
-
-
-      private string GetRefusedVouchersFilter() {
-
-        if (_query.TrialBalanceType != TrialBalanceType.BalanzaMes13 &&
-            (_query.InitialPeriod.FromDate == new DateTime(_query.InitialPeriod.FromDate.Year, 01, 01) ||
-             _query.InitialPeriod.ToDate == new DateTime(_query.InitialPeriod.ToDate.Year, 12, 31)
-           )) {
-
-          return $"AND ID_TIPO_POLIZA != 30 ";
-        }
-
-        if (_query.TrialBalanceType == TrialBalanceType.BalanzaMes13 &&
-            _query.InitialPeriod.ToDate == new DateTime(_query.InitialPeriod.ToDate.Year, 12, 31)) {
-          
-          return $"AND ID_TIPO_POLIZA == 30";
-        }
-        return string.Empty;
       }
 
 

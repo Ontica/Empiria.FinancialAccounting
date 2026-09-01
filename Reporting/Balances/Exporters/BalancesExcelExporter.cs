@@ -87,7 +87,6 @@ namespace Empiria.FinancialAccounting.Reporting.Balances {
           return;
 
         case TrialBalanceType.Balanza:
-        case TrialBalanceType.BalanzaMes13:
           balaceSetTable.FillOutBalanza(_excelFile,
                           trialBalance.Entries.Select(x => (BalanzaTradicionalEntryDto) x));
           return;

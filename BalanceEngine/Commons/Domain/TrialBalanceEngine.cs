@@ -61,7 +61,6 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
           return new TrialBalance(this.Query, analyticBalance);
 
         case TrialBalanceType.Balanza:
-        case TrialBalanceType.BalanzaMes13:
           var balanzaTradicional = new BalanzaTradicionalBuilder(this.Query);
 
           return balanzaTradicional.BuildV2();

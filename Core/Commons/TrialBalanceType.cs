@@ -24,8 +24,6 @@ namespace Empiria.FinancialAccounting.BalanceEngine {
 
     BalanzaEnColumnasPorMoneda,
 
-    BalanzaMes13,
-
     BalanzaValorizadaComparativa,
 
     GeneracionDeSaldos,
