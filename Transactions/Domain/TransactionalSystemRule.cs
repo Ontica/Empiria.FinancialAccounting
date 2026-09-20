@@ -1,15 +1,16 @@
 ﻿/* Empiria Financial *****************************************************************************************
 *                                                                                                            *
-*  Module   : Vouchers Management                        Component : Domain Layer                            *
-*  Assembly : FinancialAccounting.Vouchers.dll           Pattern   : Empiria Data Object                     *
+*  Module   : Financial Transactions Services            Component : Domain Layer                            *
+*  Assembly : FinancialAccounting.Transactions.dll       Pattern   : Information holder                      *
 *  Type     : TransactionalSystemRule                    License   : Please read LICENSE.txt file            *
 *                                                                                                            *
 *  Summary  : Holds rule data for a transactional system.                                                    *
 *                                                                                                            *
 ************************* Copyright(c) La Vía Óntica SC, Ontica LLC and contributors. All rights reserved. **/
-using System;
 
-namespace Empiria.FinancialAccounting.Vouchers {
+using Empiria.FinancialAccounting.Vouchers;
+
+namespace Empiria.FinancialAccounting.Transactions {
 
   /// <summary>Holds rule data for transactional system.</summary>
   public class TransactionalSystemRule {
@@ -55,4 +56,4 @@ namespace Empiria.FinancialAccounting.Vouchers {
 
   } // class TransactionalSystemRule
 
-}  // namespace Empiria.FinancialAccounting.Vouchers
+}  // namespace Empiria.FinancialAccounting.Transactions

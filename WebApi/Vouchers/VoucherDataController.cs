@@ -15,6 +15,8 @@ using Empiria.WebApi;
 using Empiria.FinancialAccounting.Adapters;
 using Empiria.FinancialAccounting.Vouchers.UseCases;
 
+using Empiria.FinancialAccounting.Transactions;
+
 namespace Empiria.FinancialAccounting.WebApi.Vouchers {
 
   /// <summary>Query web API used to retrive accounting vouchers related data.</summary>
@@ -63,11 +65,9 @@ namespace Empiria.FinancialAccounting.WebApi.Vouchers {
     [Route("v2/financial-accounting/vouchers/transactional-systems")]
     public CollectionModel GetTransactionalSystems() {
 
-      using (var usecases = VoucherDataUseCases.UseCaseInteractor()) {
-        FixedList<NamedEntityDto> systems = usecases.TransactionalSystems();
+      var systemList = TransactionalSystem.GetList();
 
-        return new CollectionModel(base.Request, systems);
-      }
+      return new CollectionModel(base.Request, systemList.MapToNamedEntityList());
     }
 
 

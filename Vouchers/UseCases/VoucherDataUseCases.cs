@@ -89,13 +89,6 @@ namespace Empiria.FinancialAccounting.Vouchers.UseCases {
     }
 
 
-    public FixedList<NamedEntityDto> TransactionalSystems() {
-      var systemList = TransactionalSystem.GetList();
-
-      return systemList.MapToNamedEntityList();
-    }
-
-
     public FixedList<NamedEntityDto> TransactionTypes() {
       return TransactionType.GetList()
                             .MapToNamedEntityList();

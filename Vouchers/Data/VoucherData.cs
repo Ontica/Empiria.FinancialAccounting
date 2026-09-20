@@ -55,17 +55,6 @@ namespace Empiria.FinancialAccounting.Vouchers.Data {
     }
 
 
-    static internal FixedList<TransactionalSystemRule> GetTransactionalSystemRules(TransactionalSystem system) {
-      var sql = "SELECT * " +
-                "FROM COF_MAPEO_SISTEMAS_POLIZAS " +
-               $"WHERE ID_SISTEMA = {system.Id} ";
-
-      var dataOperation = DataOperation.Parse(sql);
-
-      return DataReader.GetPlainObjectFixedList<TransactionalSystemRule>(dataOperation);
-    }
-
-
     static internal Voucher GetVoucher(int id) {
       var sql = $"SELECT * FROM COF_TRANSACCION WHERE ID_TRANSACCION = {id}";
 

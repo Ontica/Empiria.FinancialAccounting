@@ -1,17 +1,18 @@
 ﻿/* Empiria Financial *****************************************************************************************
 *                                                                                                            *
-*  Module   : Vouchers Management                        Component : Domain Layer                            *
-*  Assembly : FinancialAccounting.Vouchers.dll           Pattern   : Common Storage Item                     *
+*  Module   : Financial Transactions Services            Component : Domain Layer                            *
+*  Assembly : FinancialAccounting.Transactions.dll       Pattern   : Common storage type                     *
 *  Type     : TransactionalSystem                        License   : Please read LICENSE.txt file            *
 *                                                                                                            *
 *  Summary  : Describes the transactional system that sends transactions or accountable information.         *
 *                                                                                                            *
 ************************* Copyright(c) La Vía Óntica SC, Ontica LLC and contributors. All rights reserved. **/
+
 using System;
 
-using Empiria.FinancialAccounting.Vouchers.Data;
+using Empiria.FinancialAccounting.Transactions.Data;
 
-namespace Empiria.FinancialAccounting.Vouchers {
+namespace Empiria.FinancialAccounting.Transactions {
 
   /// <summary>Describes the transactional system that sends transactions or accountable information.</summary>
   public class TransactionalSystem : CommonStorage {
@@ -24,20 +25,13 @@ namespace Empiria.FinancialAccounting.Vouchers {
       // Required by Empiria Framework.
     }
 
-    static public TransactionalSystem Parse(int id) {
-      return BaseObject.ParseId<TransactionalSystem>(id);
-    }
+    static public TransactionalSystem Parse(int id) => ParseId<TransactionalSystem>(id);
 
+    static public TransactionalSystem Parse(string uid) => ParseKey<TransactionalSystem>(uid);
 
-    static public TransactionalSystem Parse(string uid) {
-      return BaseObject.ParseKey<TransactionalSystem>(uid);
-    }
+    static public TransactionalSystem ParseWithCode(string code) => ParseWithCode<TransactionalSystem>(code);
 
-
-    static public FixedList<TransactionalSystem> GetList() {
-      return BaseObject.GetList<TransactionalSystem>(string.Empty, "Object_Name")
-                       .ToFixedList();
-    }
+    static public FixedList<TransactionalSystem> GetList() => GetStorageObjects<TransactionalSystem>();
 
     static public TransactionalSystem Get(Predicate<TransactionalSystem> match) {
       FixedList<TransactionalSystem> list = GetList();
@@ -45,19 +39,34 @@ namespace Empiria.FinancialAccounting.Vouchers {
       return list.Find(match);
     }
 
-    static public TransactionalSystem Empty => BaseObject.ParseEmpty<TransactionalSystem>();
+    static public TransactionalSystem Empty => ParseEmpty<TransactionalSystem>();
 
     protected override void OnLoad() {
       LoadRules();
     }
 
     private void LoadRules() {
-      _rules = new Lazy<FixedList<TransactionalSystemRule>>(() => VoucherData.GetTransactionalSystemRules(this));
+      _rules = new Lazy<FixedList<TransactionalSystemRule>>(() =>
+                          TransactionalSystemData.GetTransactionalSystemRules(this));
     }
 
     #endregion Constructors and parsers
 
     #region Properties
+
+    public new string Code {
+      get {
+        return base.Code;
+      }
+    }
+
+
+    public int ExternalSourceSystemId {
+      get {
+        return ExtData.Get("externalSourceSystemId", -1);
+      }
+    }
+
 
     public FixedList<TransactionalSystemRule> Rules {
       get {
@@ -65,15 +74,8 @@ namespace Empiria.FinancialAccounting.Vouchers {
       }
     }
 
-
-    public int SourceSystemId {
-      get {
-        return base.ExtData.Get<int>("sourceSystemId", -1);
-      }
-    }
-
     #endregion Properties
 
   } // class TransactionalSystem
 
-}  // namespace Empiria.FinancialAccounting.Vouchers
+}  // namespace Empiria.FinancialAccounting.Transactions
