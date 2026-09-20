@@ -113,10 +113,10 @@ namespace Empiria.FinancialAccounting.Reporting {
         case ReportTypes.IntegracionSaldosCapital:
           return new IntegracionSaldosCapitalBuilder();
 
-        case ReportTypes.IntegracionSaldosCapitalInteresesConsolidado:
+        case ReportTypes.InSaldosCapitalInteresesConsolidado:
           return new IntegracionSaldosCapitalInteresesConsolidadoBuilder();
 
-        case ReportTypes.IntegracionSaldosCapitalInteresesDesglosado:
+        case ReportTypes.InSaldosCapitalInteresesDesglosado:
           return new IntegracionSaldosCapitalInteresesBuilder();
 
         case ReportTypes.ValorizacionEstimacionPreventiva:

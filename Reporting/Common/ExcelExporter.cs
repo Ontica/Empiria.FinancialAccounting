@@ -76,10 +76,10 @@ namespace Empiria.FinancialAccounting.Reporting {
         case ReportTypes.IntegracionSaldosCapital:
           return new IntegracionSaldosCapitalExcelExporter(reportData, templateConfig);
 
-        case ReportTypes.IntegracionSaldosCapitalInteresesConsolidado:
+        case ReportTypes.InSaldosCapitalInteresesConsolidado:
           return new IntegracionSaldosCapitalInteresesConsolidadoExcelExporter(reportData, templateConfig);
 
-        case ReportTypes.IntegracionSaldosCapitalInteresesDesglosado:
+        case ReportTypes.InSaldosCapitalInteresesDesglosado:
           return new IntegracionSaldosCapitalInteresesDesglosadoExcelExporter(reportData, templateConfig);
 
 

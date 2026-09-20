@@ -42,9 +42,9 @@ namespace Empiria.FinancialAccounting.Reporting {
 
     IntegracionSaldosCapital,
 
-    IntegracionSaldosCapitalInteresesConsolidado,
+    InSaldosCapitalInteresesConsolidado,
 
-    IntegracionSaldosCapitalInteresesDesglosado,
+    InSaldosCapitalInteresesDesglosado,
 
     ValorizacionEstimacionPreventiva
 
