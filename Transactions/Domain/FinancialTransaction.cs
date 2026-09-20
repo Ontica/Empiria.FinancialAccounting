@@ -12,6 +12,10 @@ using System;
 
 using Empiria.Json;
 
+using Empiria.Financial.Transactions.Adapters;
+
+using Empiria.FinancialAccounting.Transactions.Data;
+
 namespace Empiria.FinancialAccounting.Transactions {
 
   /// <summary>Holds information about a financial transaction received from an external system.</summary>
@@ -19,13 +23,34 @@ namespace Empiria.FinancialAccounting.Transactions {
 
     #region Constructors and parsers
 
-    protected FinancialTransaction() {
+    private FinancialTransaction() {
       // Required by Empiria Framework.
     }
 
     static public FinancialTransaction Parse(int id) => ParseId<FinancialTransaction>(id);
 
     static public FinancialTransaction Parse(string uid) => ParseKey<FinancialTransaction>(uid);
+
+    static public FinancialTransaction Empty => ParseEmpty<FinancialTransaction>();
+
+    static internal FinancialTransaction Create(FinancialTransactionFields fields) {
+      Assertion.Require(fields, nameof(fields));
+
+      fields.EnsureValid();
+
+      return new FinancialTransaction {
+        TransactionType = FinancialTransactionType.ParseKey(fields.TransactionKey),
+        TransactionReferenceId = fields.TransactionReferenceId,
+        TraceableEntityReferenceId = fields.TraceableEntityReferenceId,
+        Source = TransactionalSystem.ParseWithCode(fields.SourceCode),
+        Description = fields.Description,
+        Payload = fields.Payload,
+        ApplicationDate = fields.ApplicationDate,
+        RecordingTime = fields.RecordingTime,
+        ProcessingTime = ExecutionServer.DateMaxValue,
+        Status = FinancialTransactionStatus.Received,
+      };
+    }
 
     #endregion Constructors and parsers
 
@@ -104,12 +129,24 @@ namespace Empiria.FinancialAccounting.Transactions {
     }
 
 
-    [DataField("TXN_STATUS")]
+    [DataField("TXN_STATUS", Default = FinancialTransactionStatus.Received)]
     public FinancialTransactionStatus Status {
       get; private set;
     }
 
     #endregion Properties
+
+    #region Methods
+
+    protected override void OnSave() {
+      if (IsNew) {
+        PostingTime = DateTime.Now;
+      }
+
+      FinancialTransactionData.Write(this);
+    }
+
+    #endregion Methods
 
   }  // class FinancialTransaction
 

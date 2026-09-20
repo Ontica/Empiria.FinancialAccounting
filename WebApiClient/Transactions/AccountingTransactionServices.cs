@@ -17,11 +17,14 @@ namespace Empiria.FinancialAccounting.ClientServices {
   /// <summary>Provides financial accounting transactions services using a web proxy.</summary>
   public class AccountingTransactionServices : BaseService {
 
-    public Task<int> NotifyTransaction(FinancialTransactionDto transactionDto) {
+    public Task<int> NotifyTransaction(FinancialTransactionFields fields) {
+      Assertion.Require(fields, nameof(fields));
+
+      fields.EnsureValid();
 
       string path = "v2/financial-accounting/transactions";
 
-      return WebApiClient.PostAsync<int>(transactionDto, path);
+      return WebApiClient.PostAsync<int>(fields, path);
     }
 
   }  // class AccountingTransactionServices

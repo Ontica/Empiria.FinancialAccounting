@@ -4,18 +4,17 @@
 *  Assembly : FinancialAccounting.Transactions.dll       Pattern   : Use case interactor class               *
 *  Type     : FinancialTransactionUseCases               License   : Please read LICENSE.txt file            *
 *                                                                                                            *
-*  Summary  : Use cases used to process external financial transactions as accounting transactions.          *
+*  Summary  : Use cases for post and manage financial transactions sent from external systems.               *
 *                                                                                                            *
 ************************* Copyright(c) La Vía Óntica SC, Ontica LLC and contributors. All rights reserved. **/
 
 using Empiria.Services;
 
 using Empiria.Financial.Transactions.Adapters;
-using Empiria.Json;
 
 namespace Empiria.FinancialAccounting.Transactions.UseCases {
 
-  /// <summary>Use cases used to process external financial transactions as accounting transactions.</summary>
+  /// <summary>Use cases for post and manage financial transactions sent from external systems.</summary>
   public class FinancialTransactionUseCases : UseCase {
 
     #region Constructors and parsers
@@ -33,13 +32,16 @@ namespace Empiria.FinancialAccounting.Transactions.UseCases {
 
     #region Use cases
 
-    public int PostTransaction(FinancialTransactionDto fields) {
+    public int PostTransaction(FinancialTransactionFields fields) {
+      Assertion.Require(fields, nameof(fields));
 
-      JsonObject payload = JsonObject.Parse(fields.Payload);
+      fields.EnsureValid();
 
-      EmpiriaLog.Debug($"Payload recibido de {fields.TransactionId}: {fields.Payload.ToString()}");
+      var txn = FinancialTransaction.Create(fields);
 
-      return EmpiriaMath.GetRandom(1, 100);
+      txn.Save();
+
+      return txn.Id;
     }
 
     #endregion Use cases

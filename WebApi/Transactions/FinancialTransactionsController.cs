@@ -25,11 +25,10 @@ namespace Empiria.FinancialAccounting.Transactions.WebApi {
 
     [HttpPost]
     [Route("v2/financial-accounting/transactions")]
-    public SingleObjectModel PostTransaction([FromBody] FinancialTransactionDto fields) {
-
-      // base.RequireBody(fields);
+    public SingleObjectModel PostTransaction([FromBody] FinancialTransactionFields fields) {
 
       using (var usecases = FinancialTransactionUseCases.UseCaseInteractor()) {
+
         int result = usecases.PostTransaction(fields);
 
         return new SingleObjectModel(base.Request, result);
