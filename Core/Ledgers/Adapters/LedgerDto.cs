@@ -7,6 +7,7 @@
 *  Summary  : Output DTO with data related to an accounting ledger book.                                     *
 *                                                                                                            *
 ************************* Copyright(c) La Vía Óntica SC, Ontica LLC and contributors. All rights reserved. **/
+
 using System;
 
 namespace Empiria.FinancialAccounting.Adapters {
@@ -56,6 +57,7 @@ namespace Empiria.FinancialAccounting.Adapters {
     }
 
   }  // public class LedgerDto
+
 
 
   /// <summary>Output DTO for a ledger account.</summary>
@@ -120,6 +122,33 @@ namespace Empiria.FinancialAccounting.Adapters {
   }  // class LedgerAccountDto
 
 
+
+  public class CurrencyRuleDto {
+
+    internal CurrencyRuleDto() {
+      // no-op
+    }
+
+    public string UID {
+      get; internal set;
+    }
+
+    public CurrencyDto Currency {
+      get; internal set;
+    }
+
+    public DateTime StartDate {
+      get; internal set;
+    }
+
+    public DateTime EndDate {
+      get; internal set;
+    }
+
+  }  // class CurrencyRuleDto
+
+
+
   public class SectorRuleDto {
 
     internal SectorRuleDto() {
@@ -149,6 +178,7 @@ namespace Empiria.FinancialAccounting.Adapters {
   }  // class SectorRuleDto
 
 
+
   public class SectorRuleShortDto {
 
     internal SectorRuleShortDto() {
@@ -171,7 +201,8 @@ namespace Empiria.FinancialAccounting.Adapters {
       get; internal set;
     }
 
-  }  // class SectorRuleDto
+  }  // class SectorRuleShortDto
+
 
 
   public class LedgerRuleDto {

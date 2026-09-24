@@ -30,7 +30,7 @@ namespace Empiria.FinancialAccounting.Adapters {
       get; internal set;
     }
 
-    public FixedList<CurrencyRule> CurrencyRules {
+    public FixedList<CurrencyRuleDto> CurrencyRules {
       get; internal set;
     }
 

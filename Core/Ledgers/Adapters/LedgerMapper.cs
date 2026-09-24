@@ -7,6 +7,7 @@
 *  Summary  : Mapping methods for accounting ledger books.                                                   *
 *                                                                                                            *
 ************************* Copyright(c) La Vía Óntica SC, Ontica LLC and contributors. All rights reserved. **/
+
 using System;
 using System.Collections.Generic;
 
@@ -85,6 +86,16 @@ namespace Empiria.FinancialAccounting.Adapters {
         Currencies = MapToValuedCurrencies(ledgerAccount.CurrencyRulesOn(date), ledgerAccount.Ledger.BaseCurrency, date),
         Sectors = MapSectorRulesShort(ledgerAccount.SectorRulesOn(date))
       };
+    }
+
+
+    static internal FixedList<CurrencyRuleDto> MapCurrencyRules(FixedList<CurrencyRule> rules) {
+      return new FixedList<CurrencyRuleDto>(rules.Select(x => new CurrencyRuleDto {
+        UID = x.UID,
+        Currency = CurrenciesMapper.MapCurrency(x.Currency),
+        StartDate = x.StartDate,
+        EndDate = x.EndDate
+      }));
     }
 
 
@@ -169,9 +180,9 @@ namespace Empiria.FinancialAccounting.Adapters {
 
     static private ValuedCurrencyDto MapToValuedCurrency(CurrencyRule currencyRule) {
       return new ValuedCurrencyDto {
-         UID = currencyRule.Currency.UID,
-         Name = currencyRule.Currency.FullName,
-         ExchangeRate = 1m
+        UID = currencyRule.Currency.UID,
+        Name = currencyRule.Currency.FullName,
+        ExchangeRate = 1m
       };
     }
 
