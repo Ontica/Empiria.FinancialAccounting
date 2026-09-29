@@ -60,6 +60,13 @@ namespace Empiria.FinancialAccounting.AccountingRules {
     }
 
 
+    [DataField("ACG_DESCRIPTION")]
+    public string Description {
+      get;
+      private set;
+    }
+
+
     [DataField("ACG_SOURCE_SYSTEM_CODE")]
     public string SourceSystemCode {
       get; private set;

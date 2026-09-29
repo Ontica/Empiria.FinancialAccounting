@@ -18,7 +18,7 @@ using Empiria.FinancialAccounting.AccountingRules.UseCases;
 
 namespace Empiria.FinancialAccounting.WebApi.AccountingRules {
 
-  /// <summary>Query web API used to retrive accounts charts.</summary>
+  /// <summary>Query web API used to retrieve accounting classifications.</summary>
   public class AccountingClassificationsController : WebApiController {
 
     #region Web Apis
