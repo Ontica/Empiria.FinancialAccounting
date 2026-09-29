@@ -66,6 +66,7 @@
     <PackageReference Include="Empiria.DynamicData" Version="2.0.0" />
     <PackageReference Include="Empiria.WebApi" Version="2.0.0" />
     <PackageReference Include="Empiria.FinancialAccounting.Core" Version="2.4.0" />
+    <PackageReference Include="Empiria.FinancialAccounting.AccountingRules" Version="3.0.0" />
     <PackageReference Include="Empiria.FinancialAccounting.BalanceEngine" Version="2.4.0" />
     <PackageReference Include="Empiria.FinancialAccounting.FinancialReports" Version="2.4.0" />
     <PackageReference Include="Empiria.FinancialAccounting.Reclassification" Version="3.0.0" />
@@ -79,6 +80,7 @@
     <ProjectReference Include="..\..\extensions\DynamicData\Empiria.DynamicData.csproj" />
     <ProjectReference Include="..\..\extensions\WebApi\Empiria.WebApi.csproj" />
     <ProjectReference Include="..\Core\Empiria.FinancialAccounting.Core.csproj" />
+    <ProjectReference Include="..\AccountingRules\Empiria.FinancialAccounting.AccountingRules.csproj" />
     <ProjectReference Include="..\BalanceEngine\Empiria.FinancialAccounting.BalanceEngine.csproj" />
     <ProjectReference Include="..\FinancialReports\Empiria.FinancialAccounting.FinancialReports.csproj" />
     <ProjectReference Include="..\Reclassification\Empiria.FinancialAccounting.Reclassification.csproj" />
