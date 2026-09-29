@@ -154,6 +154,12 @@ namespace Empiria.FinancialAccounting {
     }
 
 
+    public FixedList<StandardAccount> GetStandardAccounts() {
+
+      return _standardAccounts.Value.ToFixedList();
+    }
+
+
     public Account TryGetAccount(string accountNumber) {
       Account account;
 
