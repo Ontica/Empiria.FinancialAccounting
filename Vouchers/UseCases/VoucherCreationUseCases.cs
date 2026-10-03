@@ -92,7 +92,8 @@ namespace Empiria.FinancialAccounting.Vouchers.UseCases {
 
       SubledgerAccount subledger = ResolveSubledgerAccount(ledger, movement.SubledgerAccountNo);
 
-      FunctionalArea responsibilityArea = ResolveResponsibilityArea(movement.ResponsibilityAreaCode);
+      FunctionalArea responsibilityArea = ResolveResponsibilityArea(movement.ResponsibilityAreaCode,
+                                                                    voucher.AccountingDate);
 
       Currency currency = ResolveCurrency(movement.CurrencyISOCode);
 
@@ -185,13 +186,13 @@ namespace Empiria.FinancialAccounting.Vouchers.UseCases {
     }
 
 
-    private FunctionalArea ResolveResponsibilityArea(string areaCode) {
+    private FunctionalArea ResolveResponsibilityArea(string areaCode, DateTime accountingDate) {
 
       if (string.IsNullOrWhiteSpace(areaCode)) {
         return FunctionalArea.Empty;
       }
 
-      FunctionalArea area = FunctionalArea.TryParse(areaCode);
+      FunctionalArea area = FunctionalArea.ParseActive(areaCode, accountingDate);
 
       Assertion.Require(area, $"No existe el área de responsabilidad '{areaCode}'.");
 
