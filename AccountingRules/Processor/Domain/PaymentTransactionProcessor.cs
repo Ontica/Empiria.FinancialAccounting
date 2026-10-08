@@ -23,15 +23,26 @@ namespace Empiria.FinancialAccounting.AccountingRules {
 
       Assertion.Require(transaction, nameof(transaction));
 
-      var result = new AccountingRuleProcessingResult();
+      var result = new PaymentProvisionProcessor().Process(transaction);
 
-      FixedList<JsonObject> bills = transaction.Payload.GetFixedList<JsonObject>("bills");
+      if (result.HasPendingItems) {
+        return result;
+      }
+
+      ProcessBills(transaction, result);
+
+      return result;
+    }
+
+
+    private void ProcessBills(FinancialTransaction transaction,
+                              AccountingRuleProcessingResult result) {
+
+      var bills = transaction.Payload.GetFixedList<JsonObject>("bills");
 
       foreach (JsonObject bill in bills) {
         ProcessBill(transaction, bill, result);
       }
-
-      return result;
     }
 
 
