@@ -1,4 +1,4 @@
-﻿  /* Empiria Financial *****************************************************************************************
+﻿/* Empiria Financial *****************************************************************************************
 *                                                                                                            *
 *  Module   : Vouchers Management                        Component : Domain Layer                            *
 *  Assembly : FinancialAccounting.Vouchers.dll           Pattern   : Common Storage Items                    *
@@ -17,22 +17,15 @@ namespace Empiria.FinancialAccounting.Vouchers {
       // Required by Empiria Framework.
     }
 
-    static public VoucherType Parse(int id) {
-      return BaseObject.ParseId<VoucherType>(id);
-    }
+    static public VoucherType Parse(int id) => ParseId<VoucherType>(id);
 
+    static public VoucherType Parse(string uid) => ParseKey<VoucherType>(uid);
 
-    static public VoucherType Parse(string uid) {
-      return BaseObject.ParseKey<VoucherType>(uid);
-    }
+    static public VoucherType ParseWithCode(string code) => ParseWithCode<VoucherType>(code);
 
+    static public FixedList<VoucherType> GetList() => GetStorageObjects<VoucherType>();
 
-    static public FixedList<VoucherType> GetList() {
-      return BaseObject.GetList<VoucherType>(string.Empty, "Object_Name")
-                       .ToFixedList();
-    }
-
-    static public VoucherType Empty => BaseObject.ParseEmpty<VoucherType>();
+    static public VoucherType Empty => ParseEmpty<VoucherType>();
 
     #region Properties
 
