@@ -2,9 +2,9 @@
 *                                                                                                            *
 *  Module   : Financial Accounting Rules                   Component : Domain Layer                          *
 *  Assembly : FinancialAccounting.AccountingRules.dll      Pattern   : Service provider                      *
-*  Type     : FinancialTransactionProcessor                License   : Please read LICENSE.txt file          *
+*  Type     : PaymentProvisionProcessor                    License   : Please read LICENSE.txt file          *
 *                                                                                                            *
-*  Summary  : Processes a financial transaction and generates the corresponding voucher                      *
+*  Summary  : Processes a payment provision transaction and generates the corresponding voucher              *
 *             movements based on the applicable accounting rules.                                            *
 *                                                                                                            *
 ************************* Copyright(c) La Vía Óntica SC, Ontica LLC and contributors. All rights reserved. **/
@@ -20,9 +20,9 @@ using Empiria.FinancialAccounting.Vouchers.Adapters;
 
 namespace Empiria.FinancialAccounting.AccountingRules {
 
-  /// <summary>Processes a financial transaction and generates the corresponding voucher
+  /// <summary>Processes a payment provision transaction and generates the corresponding voucher
   /// movements based on the applicable accounting rules.</summary>
-  internal sealed class FinancialTransactionProcessor {
+  internal sealed class PaymentProvisionProcessor {
 
     internal AccountingRuleProcessingResult Process(FinancialTransaction transaction) {
 
@@ -173,6 +173,6 @@ namespace Empiria.FinancialAccounting.AccountingRules {
 
     #endregion Helpers
 
-  }  // class FinancialTransactionProcessor
+  }  // class PaymentProvisionProcessor
 
 }  // namespace Empiria.FinancialAccounting.AccountingRules

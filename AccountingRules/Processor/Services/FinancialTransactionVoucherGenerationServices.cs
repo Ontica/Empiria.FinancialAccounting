@@ -39,9 +39,7 @@ namespace Empiria.FinancialAccounting.AccountingRules.Processor.Services {
 
       Assertion.Require(transaction, nameof(transaction));
 
-      var processor = new FinancialTransactionProcessor();
-
-      AccountingRuleProcessingResult processingResult = processor.Process(transaction);
+      AccountingRuleProcessingResult processingResult = ProcessTransaction(transaction);
 
       if (processingResult.HasPendingItems) {
         return -1;
@@ -56,6 +54,7 @@ namespace Empiria.FinancialAccounting.AccountingRules.Processor.Services {
         return voucher.Id;
       }
     }
+
 
     #endregion Services
 
@@ -83,6 +82,22 @@ namespace Empiria.FinancialAccounting.AccountingRules.Processor.Services {
         Concept = transaction.Description,
         Movements = processingResult.Movements
       };
+    }
+
+
+    private AccountingRuleProcessingResult ProcessTransaction(FinancialTransaction transaction) {
+      switch (transaction.TransactionType.Key) {
+
+        case "PROVISION_DE_PAGO":
+          return new PaymentProvisionProcessor().Process(transaction);
+
+        case "PAGO":
+          return new PaymentTransactionProcessor().Process(transaction);
+
+        default:
+          throw Assertion.EnsureNoReachThisCode(
+              $"Unsupported financial transaction type '{transaction.TransactionType.Key}'.");
+      }
     }
 
     #endregion Helpers
