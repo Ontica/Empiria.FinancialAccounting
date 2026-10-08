@@ -23,6 +23,8 @@ namespace Empiria.FinancialAccounting.Transactions {
 
     static public FixedList<FinancialTransactionType> GetList() => GetStorageObjects<FinancialTransactionType>();
 
+    static public FinancialTransactionType Empty => ParseEmpty<FinancialTransactionType>();
+
     #endregion Constructors and parsers
 
     #region Properties

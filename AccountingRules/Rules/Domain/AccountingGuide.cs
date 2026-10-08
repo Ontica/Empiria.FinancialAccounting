@@ -38,7 +38,22 @@ namespace Empiria.FinancialAccounting.AccountingRules {
 
     static public AccountingGuide Parse(string uid) => ParseKey<AccountingGuide>(uid);
 
+    static public AccountingGuide ParseWithCode(string code) {
+      var guide = TryParse<AccountingGuide>($"ACG_CODE = '{code}'");
+
+      Assertion.Require(guide, $"There is no accounting guide with code '{code}'.");
+
+      return guide;
+    }
+
+
     static public AccountingGuide Empty => ParseEmpty<AccountingGuide>();
+
+
+    static public FixedList<AccountingGuide> GetList() {
+      return BaseObject.GetList<AccountingGuide>()
+                       .ToFixedList();
+    }
 
     protected override void OnLoad() {
       _accountingRules = new Lazy<List<AccountingRule>>(() => AccountingRulesData.GetAccountingRules(this));

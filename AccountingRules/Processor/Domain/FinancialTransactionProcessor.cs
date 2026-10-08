@@ -28,7 +28,7 @@ namespace Empiria.FinancialAccounting.AccountingRules {
 
       Assertion.Require(transaction, nameof(transaction));
 
-      AccountingGuide guide = AccountingGuide.Parse(1);
+      var guide = AccountingGuide.ParseWithCode(transaction.TransactionType.Key);
 
       var result = new AccountingRuleProcessingResult();
 
