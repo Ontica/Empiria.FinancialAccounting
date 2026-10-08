@@ -17,37 +17,19 @@ namespace Empiria.FinancialAccounting.Vouchers {
       // Required by Empiria Framework.
     }
 
-    static public TransactionType Parse(int id) {
-      return BaseObject.ParseId<TransactionType>(id);
-    }
+    static public TransactionType Parse(int id) => ParseId<TransactionType>(id);
 
+    static public TransactionType Parse(string uid) => ParseKey<TransactionType>(uid);
 
-    static public TransactionType Parse(string uid) {
-      return BaseObject.ParseKey<TransactionType>(uid);
-    }
+    static public TransactionType ParseWithCode(string code) => ParseWithCode<TransactionType>(code);
 
+    static public TransactionType Empty => ParseEmpty<TransactionType>();
 
-    static public FixedList<TransactionType> GetList() {
-      return BaseObject.GetList<TransactionType>(string.Empty, "Object_Name")
-                       .ToFixedList();
-    }
+    static public FixedList<TransactionType> GetList() => GetStorageObjects<TransactionType>();
 
-    static public TransactionType Empty => BaseObject.ParseEmpty<TransactionType>();
+    static public TransactionType Automatic => Parse("58892e04-b66c-47f7-8766-799663ea776b");
 
-
-    static public TransactionType Automatic {
-      get {
-        return TransactionType.Parse("58892e04-b66c-47f7-8766-799663ea776b");
-      }
-    }
-
-
-    static public TransactionType Manual {
-      get {
-        return TransactionType.Parse("6ea907ee-1534-49ba-9678-a13e90fdf6d2");
-      }
-    }
-
+    static public TransactionType Manual => Parse("6ea907ee-1534-49ba-9678-a13e90fdf6d2");
 
   } // class TransactionType
 
