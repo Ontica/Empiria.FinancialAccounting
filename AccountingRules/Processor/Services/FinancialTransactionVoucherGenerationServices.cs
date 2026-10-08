@@ -64,6 +64,8 @@ namespace Empiria.FinancialAccounting.AccountingRules.Processor.Services {
     private VoucherCreationFields BuildVoucherCreationFields(FinancialTransaction transaction,
                                                              AccountingRuleProcessingResult processingResult) {
 
+      var guide = AccountingGuide.ParseWithCode(transaction.TransactionType.Key);
+
       var area = transaction.Payload.Get<string>("orgUnitCode");
 
       if (area.StartsWith("2")) {
@@ -74,9 +76,9 @@ namespace Empiria.FinancialAccounting.AccountingRules.Processor.Services {
 
       return new VoucherCreationFields {
         LedgerNo = area,
-        SourceSystemCode = "PYC",
-        OperationTypeCode = "PROVISION_DE_PAGO",
-        VoucherTypeCode = "GASTOS",
+        SourceSystemCode = guide.SourceSystemCode,
+        OperationTypeCode = guide.OperationTypeCode,
+        VoucherTypeCode = guide.VoucherTypeCode,
         AccountingDate = transaction.ApplicationDate,
         Concept = transaction.Description,
         Movements = processingResult.Movements
