@@ -63,8 +63,8 @@ namespace Empiria.FinancialAccounting.Vouchers.UseCases {
         AccountingDate = fields.AccountingDate,
         RecordingDate = DateTime.Today,
         LedgerUID = ledger.UID,
-        TransactionTypeUID = TransactionType.Parse(115).UID,
-        VoucherTypeUID = VoucherType.Parse(65).UID,
+        TransactionTypeUID = TransactionType.ParseWithCode(fields.OperationTypeCode).UID,
+        VoucherTypeUID = VoucherType.ParseWithCode(fields.VoucherTypeCode).UID,
         FunctionalAreaId = -1
       };
     }
