@@ -100,7 +100,6 @@ namespace Empiria.FinancialAccounting.AccountingRules {
     }
 
 
-
     [DataField("ACG_RULES_EXT_DATA")]
     public JsonObject ExtData {
       get; private set;
@@ -127,6 +126,13 @@ namespace Empiria.FinancialAccounting.AccountingRules {
     [DataField("ACG_STATUS", Default = EntityStatus.Active)]
     public EntityStatus Status {
       get; private set;
+    }
+
+
+    public AccountingGuideAccounts Accounts {
+      get {
+        return new AccountingGuideAccounts(ExtData);
+      }
     }
 
 
