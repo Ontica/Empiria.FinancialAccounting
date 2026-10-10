@@ -33,30 +33,44 @@ namespace Empiria.FinancialAccounting.AccountingRules {
 
     #region Properties
 
-    public string PenaltyIncomeAccount {
+    public string CreditNoteVatAccount {
       get {
-        return _extData.Get<string>("penaltyIncomeAccount");
+        return _extData.Get("creditNoteVatAccount", string.Empty);
       }
     }
 
 
-    public string PenaltyVatAccount {
+    public string CreditNoteVatSubledgerAccount {
       get {
-        return _extData.Get<string>("penaltyVatAccount");
+        return _extData.Get("creditNoteVatSubledgerAccount", string.Empty);
+      }
+    }
+
+
+    public string PenaltyIncomeAccount {
+      get {
+        return _extData.Get("penaltyIncomeAccount", string.Empty);
       }
     }
 
 
     public string VatCreditableAccount {
       get {
-        return _extData.Get<string>("vatCreditableAccount");
+        return _extData.Get("vatCreditableAccount", string.Empty);
       }
     }
 
 
     public string VatPendingAccount {
       get {
-        return _extData.Get<string>("vatPendingAccount");
+        return _extData.Get("vatPendingAccount", string.Empty);
+      }
+    }
+
+
+    public string VatSubledgerAccount {
+      get {
+        return _extData.Get("vatSubledgerAccount", string.Empty);
       }
     }
 
