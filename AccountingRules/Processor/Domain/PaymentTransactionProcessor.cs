@@ -27,7 +27,10 @@ namespace Empiria.FinancialAccounting.AccountingRules {
 
       Assertion.Require(transaction, nameof(transaction));
 
-      var result = new PaymentProvisionProcessor().Process(transaction);
+
+      var provisionGuide = AccountingGuide.ParseWithCode("PROVISION_DE_PAGO");
+
+      var result = new PaymentProvisionProcessor().Process(transaction, provisionGuide);
 
       if (result.HasPendingItems) {
         return result;

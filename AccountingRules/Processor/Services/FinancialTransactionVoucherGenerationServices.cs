@@ -42,7 +42,9 @@ namespace Empiria.FinancialAccounting.AccountingRules.Processor.Services {
       AccountingRuleProcessingResult processingResult = ProcessTransaction(transaction);
 
       if (processingResult.HasPendingItems) {
-        return -1;
+        string message = string.Join(", ", processingResult.PendingItems);
+
+        Assertion.RequireFail(message);
       }
 
       VoucherCreationFields voucherFields = BuildVoucherCreationFields(transaction, processingResult);
@@ -86,10 +88,14 @@ namespace Empiria.FinancialAccounting.AccountingRules.Processor.Services {
 
 
     private AccountingRuleProcessingResult ProcessTransaction(FinancialTransaction transaction) {
+
       switch (transaction.TransactionType.Key) {
 
         case "PROVISION_DE_PAGO":
-          return new PaymentProvisionProcessor().Process(transaction);
+
+          var guide = AccountingGuide.ParseWithCode("PROVISION_DE_PAGO");
+
+          return new PaymentProvisionProcessor().Process(transaction, guide);
 
         case "PAGO":
           return new PaymentTransactionProcessor().Process(transaction);

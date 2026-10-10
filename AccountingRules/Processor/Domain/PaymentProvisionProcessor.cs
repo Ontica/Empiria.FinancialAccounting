@@ -24,11 +24,11 @@ namespace Empiria.FinancialAccounting.AccountingRules {
   /// movements based on the applicable accounting rules.</summary>
   internal sealed class PaymentProvisionProcessor {
 
-    internal AccountingRuleProcessingResult Process(FinancialTransaction transaction) {
+    internal AccountingRuleProcessingResult Process(FinancialTransaction transaction,
+                                                    AccountingGuide guide) {
 
       Assertion.Require(transaction, nameof(transaction));
-
-      var guide = AccountingGuide.ParseWithCode(transaction.TransactionType.Key);
+      Assertion.Require(guide, nameof(guide));
 
       var result = new AccountingRuleProcessingResult();
 
