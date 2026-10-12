@@ -24,8 +24,9 @@ namespace Empiria.FinancialAccounting.AccountingRules {
   /// movements based on the applicable accounting rules.</summary>
   internal sealed class PaymentProvisionProcessor {
 
-    internal AccountingRuleProcessingResult Process(FinancialTransaction transaction,
-                                                    AccountingGuide guide) {
+    internal AccountingRuleProcessingResult Process(
+        FinancialTransaction transaction,
+        AccountingGuide guide) {
 
       Assertion.Require(transaction, nameof(transaction));
       Assertion.Require(guide, nameof(guide));
@@ -38,10 +39,9 @@ namespace Empiria.FinancialAccounting.AccountingRules {
 
         var context = new AccountingRuleContext(transaction, budgetEntry);
 
-        AccountingRule rule = FindRule(guide, context);
+        AccountingRule rule = FindRule(guide, context, result);
 
         if (rule == null) {
-          RegisterPendingRule(context, result);
           continue;
         }
 
@@ -87,13 +87,88 @@ namespace Empiria.FinancialAccounting.AccountingRules {
     }
 
 
+
     private AccountingRule FindRule(AccountingGuide guide,
-                                    AccountingRuleContext context) {
+                                    AccountingRuleContext context,
+                                    AccountingRuleProcessingResult result) {
 
-      string budgetAccountCode = context.Entry.Get<string>("budgetAccountCode");
+      string budgetAccountCode =
+          context.Entry.Get<string>("budgetAccountCode");
 
-      return guide.Rules.Find(x => x.SelectorValues.Contains(budgetAccountCode));
+      string classification =
+          context.Entry.Get("accountingClassificationUID", string.Empty);
+
+      var candidates = guide.Rules.FindAll(
+          x => x.SelectorValues.Contains(budgetAccountCode));
+
+      // Validate the conditions supported by this processor.
+      foreach (AccountingRule candidate in candidates) {
+
+        JsonObject conditions = candidate.Conditions;
+
+        if (conditions == null || !conditions.HasItems) {
+          continue;
+        }
+
+        if (!conditions.Contains("accountingClassificationUID") ||
+            conditions.ToDictionary().Count != 1 ||
+            !conditions.HasValue("accountingClassificationUID")) {
+
+          result.AddPendingItem(
+              $"La regla '{candidate.Code}' tiene condiciones " +
+              $"no admitidas para la partida '{budgetAccountCode}'.");
+
+          return null;
+        }
+      }
+
+      if (!string.IsNullOrWhiteSpace(classification)) {
+
+        var specialized = candidates.FindAll(x =>
+            x.Conditions != null &&
+            x.Conditions.HasItems &&
+            x.Conditions.Get<string>("accountingClassificationUID") ==
+                classification);
+
+        if (specialized.Count == 1) {
+          return specialized[0];
+        }
+
+        if (specialized.Count > 1) {
+          result.AddPendingItem(
+              $"Existen varias reglas para la partida " +
+              $"'{budgetAccountCode}' y la clasificación " +
+              $"'{classification}'.");
+        } else {
+          result.AddPendingItem(
+              $"No existe una regla para la partida " +
+              $"'{budgetAccountCode}' y la clasificación " +
+              $"'{classification}'.");
+        }
+
+        return null;
+      }
+
+      var ordinary = candidates.FindAll(
+          x => x.Conditions == null || !x.Conditions.HasItems);
+
+      if (ordinary.Count == 1) {
+        return ordinary[0];
+      }
+
+      if (ordinary.Count > 1) {
+        result.AddPendingItem(
+            $"Existen varias reglas ordinarias para la partida " +
+            $"'{budgetAccountCode}'.");
+      } else {
+        result.AddPendingItem(
+            $"No existe una regla ordinaria para la partida " +
+            $"'{budgetAccountCode}'.");
+      }
+
+      return null;
     }
+
 
 
     private FixedList<JsonObject> GetBudgetEntries(FinancialTransaction transaction) {
@@ -116,20 +191,6 @@ namespace Empiria.FinancialAccounting.AccountingRules {
 
         result.AddMovement(movement);
       }
-    }
-
-
-    private void RegisterPendingRule(AccountingRuleContext context,
-                                     AccountingRuleProcessingResult result) {
-
-      string budgetAccountCode = context.Entry.Get<string>("budgetAccountCode");
-
-      string message = $"No existe una regla contable para la partida presupuestal " +
-                       $"'{budgetAccountCode}'. El movimiento queda pendiente de contabilizar.";
-
-      EmpiriaLog.Info(message);
-
-      result.AddPendingItem(message);
     }
 
 
