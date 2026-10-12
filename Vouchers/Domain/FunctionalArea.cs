@@ -9,6 +9,7 @@
 ************************* Copyright(c) La Vía Óntica SC, Ontica LLC and contributors. All rights reserved. **/
 
 using System;
+
 using Empiria.Data;
 
 namespace Empiria.FinancialAccounting.Vouchers {
@@ -44,8 +45,8 @@ namespace Empiria.FinancialAccounting.Vouchers {
 
       var filter = $"ParticipantType = 'O' AND ParticipantKey = '{areaCode}' AND " +
                    $"Status = 'A' AND " +
-                   $"FromDate <= '{DataCommonMethods.FormatSqlDbDate(applicationDate)}' AND " +
-                   $"'{DataCommonMethods.FormatSqlDbDate(applicationDate)}' <= ToDate";
+                   $"FromDate <= {DataCommonMethods.FormatSqlDbDate(applicationDate)} AND " +
+                   $"{DataCommonMethods.FormatSqlDbDate(applicationDate)} <= ToDate";
 
       var area = BaseObject.TryParse<FunctionalArea>(filter);
 
