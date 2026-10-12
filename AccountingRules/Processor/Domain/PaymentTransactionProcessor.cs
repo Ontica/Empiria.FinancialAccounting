@@ -27,7 +27,6 @@ namespace Empiria.FinancialAccounting.AccountingRules {
 
       Assertion.Require(transaction, nameof(transaction));
 
-
       var provisionGuide = AccountingGuide.ParseWithCode("PROVISION_DE_PAGO");
 
       var result = new PaymentProvisionProcessor().Process(transaction, provisionGuide);
@@ -88,6 +87,30 @@ namespace Empiria.FinancialAccounting.AccountingRules {
     }
 
 
+    private decimal GetWithholdingAmount(JsonObject bill,
+                                     string taxCode) {
+
+      var taxes = bill.GetFixedList<JsonObject>("taxes");
+
+      decimal amount = 0m;
+
+      foreach (JsonObject tax in taxes) {
+
+        if (tax.Get<string>("taxMethod") != "Retencion") {
+          continue;
+        }
+
+        if (tax.Get<string>("taxCode") != taxCode) {
+          continue;
+        }
+
+        amount += tax.Get<decimal>("amount");
+      }
+
+      return amount;
+    }
+
+
     private void ProcessBills(FinancialTransaction transaction,
                               AccountingRuleProcessingResult result) {
 
@@ -98,6 +121,9 @@ namespace Empiria.FinancialAccounting.AccountingRules {
       decimal penaltyAmount = 0m;
       decimal creditNoteVatAmount = 0m;
 
+      decimal isrWithholdingAmount = 0m;
+      decimal vatWithholdingAmount = 0m;
+
       foreach (JsonObject bill in bills) {
 
         string categoryCode = bill.Get<string>("billCategoryCode");
@@ -106,6 +132,9 @@ namespace Empiria.FinancialAccounting.AccountingRules {
 
           case "BILL-CFDI-FE":
             invoiceVatAmount += GetTransferredVatAmount(bill);
+            isrWithholdingAmount += GetWithholdingAmount(bill, "001");
+            vatWithholdingAmount += GetWithholdingAmount(bill, "002");
+
             break;
 
           case "BILL-CFDI-NC":
@@ -132,11 +161,16 @@ namespace Empiria.FinancialAccounting.AccountingRules {
       invoiceVatAmount = Math.Round(invoiceVatAmount, 2);
       creditNoteVatAmount = Math.Round(creditNoteVatAmount, 2);
 
+      isrWithholdingAmount = Math.Round(isrWithholdingAmount, 2);
+      vatWithholdingAmount = Math.Round(vatWithholdingAmount, 2);
+
       ProcessPayment(transaction,
                      invoiceVatAmount,
                      creditNoteAmount,
                      penaltyAmount,
                      creditNoteVatAmount,
+                     isrWithholdingAmount,
+                     vatWithholdingAmount,
                      result);
     }
 
@@ -146,6 +180,8 @@ namespace Empiria.FinancialAccounting.AccountingRules {
                                 decimal creditNoteAmount,
                                 decimal penaltyAmount,
                                 decimal creditNoteVatAmount,
+                                decimal isrWithholdingAmount,
+                                decimal vatWithholdingAmount,
                                 AccountingRuleProcessingResult result) {
 
       var guide = AccountingGuide.ParseWithCode(transaction.TransactionType.Key);
@@ -157,6 +193,22 @@ namespace Empiria.FinancialAccounting.AccountingRules {
           result.Movements.FindAll(x =>
               x.LedgerAccountNo.StartsWith("2.07.04.07.") &&
               x.CreditAmount > 0);
+
+
+      EmpiriaLog.Info(
+    $"Payment: {provisionMovements.Count} provision liability movements found.");
+
+      foreach (VoucherMovementFields movement in result.Movements) {
+
+        EmpiriaLog.Info(
+            $"Account={movement.LedgerAccountNo}, " +
+            $"Subledger={movement.SubledgerAccountNo}, " +
+            $"BudgetAccount={movement.BudgetAccountCode}, " +
+            $"BudgetControl={movement.BudgetControlNo}, " +
+            $"Debit={movement.DebitAmount:N2}, " +
+            $"Credit={movement.CreditAmount:N2}");
+      }
+
 
       if (provisionMovements.Count != 1) {
         result.AddPendingItem(
@@ -200,8 +252,9 @@ namespace Empiria.FinancialAccounting.AccountingRules {
           liabilityAmount -
           creditNoteAmount -
           penaltyAmount -
-          creditNoteVatAmount;
-
+          creditNoteVatAmount -
+          isrWithholdingAmount -
+          vatWithholdingAmount;
 
       if (expectedTotal != total) {
         result.AddPendingItem(
@@ -213,6 +266,8 @@ namespace Empiria.FinancialAccounting.AccountingRules {
             $"Penalty={penaltyAmount}, " +
             $"Credit note VAT={creditNoteVatAmount}, " +
             $"Liability={liabilityAmount}, " +
+            $"ISR withholding={isrWithholdingAmount}, " +
+            $"VAT withholding={vatWithholdingAmount}, " +
             $"Expected total={expectedTotal}, " +
             $"Total={total}.");
 
@@ -347,6 +402,23 @@ namespace Empiria.FinancialAccounting.AccountingRules {
                     accounts.CreditNoteVatAccount,
                     accounts.CreditNoteVatSubledgerAccount,
                     0, creditNoteVatAmount);
+      }
+
+
+      if (isrWithholdingAmount > 0) {
+
+        AddMovement(result, provision,
+                    accounts.IsrWithholdingAccount,
+                    string.Empty,
+                    0, isrWithholdingAmount);
+      }
+
+      if (vatWithholdingAmount > 0) {
+
+        AddMovement(result, provision,
+                    accounts.VatWithholdingAccount,
+                    string.Empty,
+                    0, vatWithholdingAmount);
       }
 
 

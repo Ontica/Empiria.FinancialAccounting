@@ -47,6 +47,13 @@ namespace Empiria.FinancialAccounting.AccountingRules {
     }
 
 
+    public string IsrWithholdingAccount {
+      get {
+        return _extData.Get("isrWithholdingAccount", string.Empty);
+      }
+    }
+
+
     public string PenaltyIncomeAccount {
       get {
         return _extData.Get("penaltyIncomeAccount", string.Empty);
@@ -71,6 +78,13 @@ namespace Empiria.FinancialAccounting.AccountingRules {
     public string VatSubledgerAccount {
       get {
         return _extData.Get("vatSubledgerAccount", string.Empty);
+      }
+    }
+
+
+    public string VatWithholdingAccount {
+      get {
+        return _extData.Get("vatWithholdingAccount", string.Empty);
       }
     }
 
