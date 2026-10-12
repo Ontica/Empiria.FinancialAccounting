@@ -10,6 +10,7 @@
 ************************* Copyright(c) La Vía Óntica SC, Ontica LLC and contributors. All rights reserved. **/
 
 using System;
+using System.Linq;
 
 using Empiria.Json;
 
@@ -55,6 +56,29 @@ namespace Empiria.FinancialAccounting.AccountingRules {
         ResponsibilityAreaCode = source.ResponsibilityAreaCode,
         BudgetAccountCode = source.BudgetAccountCode,
         BudgetControlNo = source.BudgetControlNo,
+        CurrencyISOCode = source.CurrencyISOCode,
+        ExchangeRate = source.ExchangeRate,
+        Concept = source.Concept,
+        DebitAmount = debitAmount,
+        CreditAmount = creditAmount
+      });
+    }
+
+
+    private void AddPaymentMovement(
+        AccountingRuleProcessingResult result,
+        VoucherMovementFields source,
+        string ledgerAccountNo,
+        string subledgerAccountNo,
+        decimal debitAmount,
+        decimal creditAmount) {
+
+      result.AddMovement(new VoucherMovementFields {
+        LedgerAccountNo = ledgerAccountNo,
+        SubledgerAccountNo = subledgerAccountNo,
+        ResponsibilityAreaCode = source.ResponsibilityAreaCode,
+        BudgetAccountCode = string.Empty,
+        BudgetControlNo = string.Empty,
         CurrencyISOCode = source.CurrencyISOCode,
         ExchangeRate = source.ExchangeRate,
         Concept = source.Concept,
@@ -175,6 +199,220 @@ namespace Empiria.FinancialAccounting.AccountingRules {
     }
 
 
+    private void ProcessMultipleEntriesPayment(
+        FinancialTransaction transaction,
+        AccountingGuideAccounts accounts,
+        FixedList<VoucherMovementFields> provisions,
+        FixedList<VoucherMovementFields> expenses,
+        decimal invoiceVatAmount,
+        decimal creditNoteAmount,
+        decimal penaltyAmount,
+        decimal creditNoteVatAmount,
+        decimal isrWithholdingAmount,
+        decimal vatWithholdingAmount,
+        AccountingRuleProcessingResult result) {
+
+      if (provisions.Count < 2 ||
+          expenses.Count < 2) {
+
+        result.AddPendingItem(
+            "Multiple-entry payment requires expense and provision movements.");
+
+        return;
+      }
+
+      // Adjustments involving multiple expense entries
+      // require additional accounting knowledge.
+      if (creditNoteAmount != 0 ||
+          penaltyAmount != 0 ||
+          creditNoteVatAmount != 0) {
+
+        result.AddPendingItem(
+            "Credit notes and penalties with multiple " +
+            "budget entries are not supported yet.");
+
+        return;
+      }
+
+      VoucherMovementFields source = provisions[0];
+
+      // All provisions must use the same liability account
+      // and accounting dimensions for this first increment.
+      if (provisions.Any(x =>
+              x.LedgerAccountNo != source.LedgerAccountNo ||
+              x.SubledgerAccountNo != source.SubledgerAccountNo ||
+              x.ResponsibilityAreaCode != source.ResponsibilityAreaCode ||
+              x.CurrencyISOCode != source.CurrencyISOCode ||
+              x.ExchangeRate != source.ExchangeRate)) {
+
+        result.AddPendingItem(
+            "Multiple-entry payment requires one provision " +
+            "account and compatible accounting dimensions.");
+
+        return;
+      }
+
+      // Verify expense/provision correspondence
+      // for each budget classification and control.
+      var expenseGroups = expenses.GroupBy(x => new {
+        x.BudgetAccountCode,
+        x.BudgetControlNo,
+        x.ResponsibilityAreaCode,
+        x.CurrencyISOCode,
+        x.ExchangeRate
+      }).ToList();
+
+      var provisionGroups = provisions.GroupBy(x => new {
+        x.BudgetAccountCode,
+        x.BudgetControlNo,
+        x.ResponsibilityAreaCode,
+        x.CurrencyISOCode,
+        x.ExchangeRate
+      }).ToList();
+
+      if (expenseGroups.Count != provisionGroups.Count ||
+          expenseGroups.Any(group => {
+
+            var matching = provisionGroups.FirstOrDefault(x =>
+                x.Key.Equals(group.Key));
+
+            return matching == null ||
+                   group.Sum(x => x.DebitAmount) !=
+                   matching.Sum(x => x.CreditAmount);
+          })) {
+
+        result.AddPendingItem(
+            "Expense and provision amounts do not match " +
+            "by budget entry.");
+
+        return;
+      }
+
+      decimal baseAmount =
+          provisions.Sum(x => x.CreditAmount);
+
+      decimal liabilityAmount =
+          baseAmount + invoiceVatAmount;
+
+      decimal expectedTotal =
+          liabilityAmount -
+          isrWithholdingAmount -
+          vatWithholdingAmount;
+
+      decimal total =
+          transaction.Payload.Get<decimal>("total");
+
+      if (expectedTotal != total) {
+
+        result.AddPendingItem(
+            $"Payment amounts do not match. " +
+            $"Base={baseAmount}, " +
+            $"VAT={invoiceVatAmount}, " +
+            $"ISR withholding={isrWithholdingAmount}, " +
+            $"VAT withholding={vatWithholdingAmount}, " +
+            $"Expected={expectedTotal}, Total={total}.");
+
+        return;
+      }
+
+      string paymentMethodCode =
+          transaction.Payload.Get<string>("paymentMethodCode");
+
+      if (paymentMethodCode != "40") {
+
+        result.AddPendingItem(
+            $"Payment method '{paymentMethodCode}' is not supported yet.");
+
+        return;
+      }
+
+      string realLiabilityAccount =
+          "2.07.04.08." +
+          source.LedgerAccountNo.Substring("2.07.04.07.".Length);
+
+      // Cancel each provision and construct
+      // its corresponding base liability.
+      foreach (VoucherMovementFields provision in provisions) {
+
+        decimal amount = provision.CreditAmount;
+
+        AddMovement(result, provision,
+                    provision.LedgerAccountNo,
+                    provision.SubledgerAccountNo,
+                    amount, 0);
+
+        AddMovement(result, provision,
+                    realLiabilityAccount,
+                    provision.SubledgerAccountNo,
+                    0, amount);
+      }
+
+      // Invoice VAT is part of the same real liability,
+      // without assigning it to a specific budget entry.
+      if (invoiceVatAmount > 0) {
+
+        AddPaymentMovement(result, source,
+                           accounts.VatPendingAccount,
+                           accounts.VatSubledgerAccount,
+                           invoiceVatAmount, 0);
+
+        AddPaymentMovement(result, source,
+                           realLiabilityAccount,
+                           source.SubledgerAccountNo,
+                           0, invoiceVatAmount);
+      }
+
+      // Liquidate base liabilities individually.
+      foreach (VoucherMovementFields provision in provisions) {
+
+        AddMovement(result, provision,
+                    realLiabilityAccount,
+                    provision.SubledgerAccountNo,
+                    provision.CreditAmount, 0);
+      }
+
+      // Liquidate the global VAT component.
+      if (invoiceVatAmount > 0) {
+
+        AddPaymentMovement(result, source,
+                           realLiabilityAccount,
+                           source.SubledgerAccountNo,
+                           invoiceVatAmount, 0);
+
+        AddPaymentMovement(result, source,
+                           accounts.VatCreditableAccount,
+                           accounts.VatSubledgerAccount,
+                           invoiceVatAmount, 0);
+
+        AddPaymentMovement(result, source,
+                           accounts.VatPendingAccount,
+                           accounts.VatSubledgerAccount,
+                           0, invoiceVatAmount);
+      }
+
+      if (isrWithholdingAmount > 0) {
+
+        AddPaymentMovement(result, source,
+                           accounts.IsrWithholdingAccount,
+                           string.Empty,
+                           0, isrWithholdingAmount);
+      }
+
+      if (vatWithholdingAmount > 0) {
+
+        AddPaymentMovement(result, source,
+                           accounts.VatWithholdingAccount,
+                           string.Empty,
+                           0, vatWithholdingAmount);
+      }
+
+      AddPaymentMovement(result, source,
+                         "9.02.15",
+                         string.Empty,
+                         0, total);
+    }
+
+
     private void ProcessPayment(FinancialTransaction transaction,
                                 decimal invoiceVatAmount,
                                 decimal creditNoteAmount,
@@ -210,21 +448,25 @@ namespace Empiria.FinancialAccounting.AccountingRules {
       }
 
 
-      if (provisionMovements.Count != 1) {
-        result.AddPendingItem(
-            "Payment processing supports exactly one provision liability movement.");
-
-        return;
-      }
-
-
       FixedList<VoucherMovementFields> expenseMovements =
         result.Movements.FindAll(x => x.LedgerAccountNo.StartsWith("6.") &&
                                       x.DebitAmount > 0);
 
-      if (expenseMovements.Count != 1) {
-        result.AddPendingItem(
-            "Payment processing supports exactly one expense movement.");
+      if (provisionMovements.Count > 1 ||
+          expenseMovements.Count > 1) {
+
+        ProcessMultipleEntriesPayment(
+            transaction,
+            accounts,
+            provisionMovements,
+            expenseMovements,
+            invoiceVatAmount,
+            creditNoteAmount,
+            penaltyAmount,
+            creditNoteVatAmount,
+            isrWithholdingAmount,
+            vatWithholdingAmount,
+            result);
 
         return;
       }
