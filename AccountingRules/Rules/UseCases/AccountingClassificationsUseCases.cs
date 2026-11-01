@@ -8,10 +8,12 @@
 *                                                                                                            *
 ************************* Copyright(c) La Vía Óntica SC, Ontica LLC and contributors. All rights reserved. **/
 
+using System;
 using System.Collections.Generic;
 using System.Linq;
 
 using Empiria.Services;
+
 using Empiria.FinancialAccounting.Transactions.Adapters;
 
 namespace Empiria.FinancialAccounting.AccountingRules.UseCases {
@@ -35,122 +37,94 @@ namespace Empiria.FinancialAccounting.AccountingRules.UseCases {
 
     public FixedList<AccountingClassificationDto> GetAccountingClassifications() {
 
-      var accountsChart = AccountsChart.IFRS;
+      var results = new Dictionary<string, ClassificationGroup>(StringComparer.Ordinal);
 
-      FixedList<StandardAccount> accounts = accountsChart.GetStandardAccounts();
+      foreach (ClassificationGuide guide in ClassificationGuide.GetList()) {
 
-      var summaryAccounts = accounts.FindAll(x => x.Number.StartsWith("6.05") &&
-                                                  x.Role == AccountRole.Sumaria &&
-                                                  TryGetSelectorValue(x.Name) != null);
+        foreach (ClassificationRule rule in guide.Rules) {
 
+          foreach (string selector in rule.SelectorValues) {
 
-      var selectorValues = summaryAccounts.Select(x => GetSelectorValue(x.Name))
-                                          .Distinct()
-                                          .OrderBy(x => x)
-                                          .ToList();
+            ClassificationGroup group = GetOrCreateClassificationGroup(results, rule, selector);
 
-      var result = new List<AccountingClassificationDto>();
+            foreach (ClassificationEntry entry in rule.Entries) {
 
-      foreach (string selectorValue in selectorValues) {
+              string uid = entry.StandardAccount.Number;
+              string displayName = GetDisplayName(entry);
 
-        FixedList<StandardAccount> parents = summaryAccounts.FindAll(x => GetSelectorValue(x.Name) == selectorValue);
-
-        FixedList<StandardAccount> children = GetDetailChildren(accounts, parents);
-
-        if (children.Count == 0) {
-          continue;
+              group.Items.Add(uid, displayName);
+            }
+          }
         }
-
-        result.Add(new AccountingClassificationDto {
-          SelectorValue = selectorValue,
-          Name = GetSelectorName(parents),
-          Classifications = children.OrderBy(x => x.Number)
-                                    .Select(x => MapClassification(x))
-                                    .ToFixedList()
-        });
       }
 
-      return result.ToFixedList();
+      return Map(results);
     }
 
     #endregion Use cases
 
     #region Helpers
 
-    static private FixedList<StandardAccount> GetDetailChildren(FixedList<StandardAccount> accounts,
-                                                                FixedList<StandardAccount> parents) {
+    static private string GetDisplayName(ClassificationEntry entry) {
 
-      var children = new List<StandardAccount>();
+      string configuredName = entry.ExtData.Get("displayName", entry.StandardAccount.Name);
 
-      foreach (StandardAccount parent in parents) {
+      string suffix = entry.StandardAccount.Number.Split('.').Last();
 
-        FixedList<StandardAccount> parentChildren = accounts.FindAll(x => x.HasParent &&
-                                                                          x.GetParent().Equals(parent) &&
-                                                                          x.Role != AccountRole.Sumaria);
-
-        children.AddRange(parentChildren);
-      }
-
-      return children.GroupBy(x => x.Number)
-                     .Select(x => x.First())
-                     .OrderBy(x => x.Number)
-                     .ToFixedList();
+      return $"{suffix} - {configuredName}";
     }
 
 
-    static private string GetSelectorName(FixedList<StandardAccount> parents) {
+    private ClassificationGroup GetOrCreateClassificationGroup(Dictionary<string, ClassificationGroup> results,
+                                                               ClassificationRule rule,
+                                                               string selector) {
+      if (results.TryGetValue(selector, out ClassificationGroup group)) {
+        return group;
+      }
 
-      Assertion.Require(parents.Count > 0, nameof(parents));
 
-      return parents[0].Name;
+      var newGroup = new ClassificationGroup(rule.Name);
+
+      results.Add(selector, newGroup);
+
+      return newGroup;
     }
 
 
-    static private string GetSelectorValue(string accountName) {
-
-      var selectorValue = TryGetSelectorValue(accountName);
-
-      Assertion.Require(selectorValue, nameof(selectorValue));
-
-      return selectorValue;
-    }
-
-
-    static private NamedEntityDto MapClassification(StandardAccount account) {
-
-      string suffix = account.Number.Split('.')
-                                    .Last();
-
-      return new NamedEntityDto(account.Number, $"{suffix} - {account.Name}");
-    }
-
-
-    static private string TryGetSelectorValue(string accountName) {
-
-      if (string.IsNullOrWhiteSpace(accountName)) {
-        return null;
-      }
-
-      string candidate = accountName.Trim()
-                                    .Split(' ')
-                                    .FirstOrDefault();
-
-      if (string.IsNullOrWhiteSpace(candidate)) {
-        return null;
-      }
-
-      if (candidate.Length != 5) {
-        return null;
-      }
-
-      if (!candidate.All(char.IsDigit)) {
-        return null;
-      }
-
-      return candidate;
+    static private FixedList<AccountingClassificationDto> Map(Dictionary<string, ClassificationGroup> results) {
+      return results.OrderBy(x => x.Key)
+                    .Where(x => x.Value.Items.Count != 0)
+                    .Select(x => new AccountingClassificationDto {
+                      SelectorValue = x.Key,
+                      Name = x.Value.Name,
+                      Classifications = x.Value.Items.OrderBy(y => y.Key)
+                                                       .Select(y => new NamedEntityDto(y.Key, y.Value))
+                                                       .ToFixedList()
+                    })
+                    .ToFixedList();
     }
 
     #endregion Helpers
+
+    #region Nested types
+
+    private sealed class ClassificationGroup {
+
+      internal ClassificationGroup(string name) {
+        Name = name;
+        Items = new Dictionary<string, string>(StringComparer.Ordinal);
+      }
+
+      internal string Name {
+        get;
+      }
+
+      internal Dictionary<string, string> Items {
+        get;
+      }
+    }
+
+    #endregion Nested types
 
   }  // class AccountingClassificationsUseCases
 
